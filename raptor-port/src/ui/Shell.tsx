@@ -2,7 +2,7 @@
    reference (#shell, .topbar, .page sections). Only the view-only schedule
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { WARN, validate } from '../engine/validate'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -11,9 +11,11 @@ import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pen
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { setSession, notify, setPage } from '../state/store'
+import { HLSET, setSearch, openWarns } from '../state/view'
 import { useVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
+import { routeClick } from './interactions'
 
 /* the week banner — the exact strings renderStatus builds, as a pure value */
 function banner() {
@@ -46,6 +48,11 @@ const HL_CHIPS2: [string, string, string][] = [
 export function Shell() {
   useVersion()
   const [page, setPageLocal] = useState('viewsched')
+  /* one delegated click listener, exactly as the reference wires it */
+  useEffect(() => {
+    document.addEventListener('click', routeClick)
+    return () => document.removeEventListener('click', routeClick)
+  }, [])
   validate()
   const hard = WARN.all.filter((x: any) => x.sev === 'hard').length
   const note = WARN.all.filter((x: any) => x.sev === 'note').length
@@ -81,9 +88,9 @@ export function Shell() {
             {admin && <button className="abtn" id="manageUsers" data-admin="" title="Arrives in a later slice of the port">Manage users</button>}
           </div>
           <button className="fastsync" id="fastSync" title="Toggle 1-second sync (for publishing / meetings)"><span className="dot"></span><span id="syncLbl">Sync · slow</span></button>
-          <button className="pillbtn hard" id="warnBtn"><span className="dot"></span><span id="nHard">{hard}</span> warning</button>
-          <button className="pillbtn adv" id="warnBtn2"><span className="dot"></span><span id="nAdv">{adv}</span> advisory</button>
-          <button className="pillbtn note" id="warnBtn3"><span className="dot"></span><span id="nNote">{note}</span> note</button>
+          <button className="pillbtn hard" id="warnBtn" onClick={() => { openWarns('hard'); notify() }}><span className="dot"></span><span id="nHard">{hard}</span> warning</button>
+          <button className="pillbtn adv" id="warnBtn2" onClick={() => { openWarns('adv'); notify() }}><span className="dot"></span><span id="nAdv">{adv}</span> advisory</button>
+          <button className="pillbtn note" id="warnBtn3" onClick={() => { openWarns('note'); notify() }}><span className="dot"></span><span id="nNote">{note}</span> note</button>
           <button className="abtn" id="insightBtn" title="Week insights — arrives in a later slice">Insights</button>
           <button className="abtn ghost" id="logout" onClick={() => { setSession(null); notify() }}>Logout</button>
         </div>
@@ -97,11 +104,14 @@ export function Shell() {
         </div>
         <div className="filters">
           <span className="lab">Highlight</span>
-          {HL_CHIPS.map(([k, t, ttl]) => <button key={k} className="fchip" data-hl={k} title={ttl}>{t}</button>)}
+          {HL_CHIPS.map(([k, t, ttl]) => <button key={k} className={'fchip' + (HLSET.has(k) ? ' on' : '')} data-hl={k} title={ttl}
+            onClick={() => { HLSET.has(k) ? HLSET.delete(k) : HLSET.add(k); notify() }}>{t}</button>)}
           <span className="div"></span>
-          {HL_CHIPS2.map(([k, t, ttl]) => <button key={k} className="fchip" data-hl={k} title={ttl}>{t}</button>)}
+          {HL_CHIPS2.map(([k, t, ttl]) => <button key={k} className={'fchip' + (HLSET.has(k) ? ' on' : '')} data-hl={k} title={ttl}
+            onClick={() => { HLSET.has(k) ? HLSET.delete(k) : HLSET.add(k); notify() }}>{t}</button>)}
           <div className="right">
-            <div className="searchbox">🔍<input id="searchV" placeholder="name / callsign" /></div>
+            <div className="searchbox">🔍<input id="searchV" placeholder="name / callsign"
+              onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
         </div>
         <div className="title"><h1 id="vTitle">Jul 13 – Jul 17</h1><span className="sub mono" id="vSub">142 SQN · week of 13 Jul 26 · all times local</span></div>

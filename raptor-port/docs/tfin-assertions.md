@@ -19,33 +19,33 @@ so every skipped assertion continues to be enforced against the reference.
 | 17 | ground shown | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
 | 18 | DT/C/CR/TT chips | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
 | 19 | stores view | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 22 | click select | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 26 | puck click opens that person's issue boxes | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 28 | opened boxes are the days that person is flagged on | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 30 | person-focused boxes are marked | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 31 | person-focused box names the callsign | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
+| 22 | click select | **ported** → ui/interact.test.tsx |
+| 26 | puck click opens that person's issue boxes | **ported** → ui/interact.test.tsx |
+| 28 | opened boxes are the days that person is flagged on | **ported** → ui/interact.test.tsx |
+| 30 | person-focused boxes are marked | **ported** → ui/interact.test.tsx |
+| 31 | person-focused box names the callsign | **ported** → ui/interact.test.tsx |
 | 33 | person-focused box lists only that person's issues | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
 | 36 | cross-day pointer when flagged on more than one day | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
 | 38 | the clicked person stays selected, not warning-focused | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 41 | clicking the same puck again clears it | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 44 | INS hl | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
+| 41 | clicking the same puck again clears it | **ported** → ui/interact.test.tsx |
+| 44 | INS hl | **ported** → ui/interact.test.tsx |
 | 47 | insights sorties | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
 | 49 | no warn modal | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
 | 50 | day issue strips | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 51 | strips start collapsed | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 55 | strip expands inline | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 56 | expanded day highlights affected pucks | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 57 | other pucks dimmed | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 62 | focused item marked | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 64 | warning focus lights pucks | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 65 | only related pucks lit | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 69 | solid focus stays on the focused day | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 72 | any echo is off the focused day and same-person | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 74 | clear-focus button shown | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 76 | focus cleared | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 78 | strip collapses again | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 81 | blocking pill expands days | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
-| 83 | all strips collapsed | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
+| 51 | strips start collapsed | **ported** → ui/interact.test.tsx |
+| 55 | strip expands inline | **ported** → ui/interact.test.tsx |
+| 56 | expanded day highlights affected pucks | **ported** → ui/interact.test.tsx |
+| 57 | other pucks dimmed | **ported** → ui/interact.test.tsx |
+| 62 | focused item marked | **ported** → ui/interact.test.tsx |
+| 64 | warning focus lights pucks | **ported** → ui/interact.test.tsx |
+| 65 | only related pucks lit | **ported** → ui/interact.test.tsx |
+| 69 | solid focus stays on the focused day | **ported** → ui/interact.test.tsx |
+| 72 | any echo is off the focused day and same-person | **ported** → ui/interact.test.tsx |
+| 74 | clear-focus button shown | **ported** → ui/interact.test.tsx |
+| 76 | focus cleared | **ported** → ui/interact.test.tsx |
+| 78 | strip collapses again | **ported** → ui/interact.test.tsx |
+| 81 | blocking pill expands days | **ported** → ui/interact.test.tsx |
+| 83 | all strips collapsed | **ported** → ui/interact.test.tsx |
 | 86 | draft banner | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
 | 87 | draft banner names no days | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
 | 97 | every day carries its own sign-off strip | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
@@ -261,15 +261,15 @@ so every skipped assertion continues to be enforced against the reference.
 | 668 | there is no week-wide sign-off bar any more | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
 | 669 | severity pills still count the week | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
 | 670 | the warn pill still expands the days | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
-| 688 | a cross-day warning exists in the seed | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
-| 696 | the guilty day lights solid | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
-| 698 | the same aircrew light on the other days | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
-| 699 | echo pucks are never on the focused day | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
-| 700 | echo pucks are the same people | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
+| 688 | a cross-day warning exists in the seed | **ported** → ui/interact.test.tsx |
+| 696 | the guilty day lights solid | **ported** → ui/interact.test.tsx |
+| 698 | the same aircrew light on the other days | **ported** → ui/interact.test.tsx |
+| 699 | echo pucks are never on the focused day | **ported** → ui/interact.test.tsx |
+| 700 | echo pucks are the same people | **ported** → ui/interact.test.tsx |
 | 702 | everyone else is still dimmed | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
 | 704 | every flagged person is accounted for | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
 | 706 | the box explains the dashed pucks | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
-| 708 | clear focus drops the echo too | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
+| 708 | clear focus drops the echo too | **ported** → ui/interact.test.tsx |
 | 715 | cross-day echo (no seed case) | skipped — jsdom UI — advisory-bar removal and cross-day warning focus rendering |
 | 726 | a person with several issues on one day exists | skipped — jsdom UI — person-focus narrowing of the warning box |
 | 733 | puck click narrows the box | skipped — jsdom UI — person-focus narrowing of the warning box |
@@ -567,8 +567,8 @@ so every skipped assertion continues to be enforced against the reference.
 | 1593 | selClear leaves a warning focus alone, selDrop takes it too | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
 | 1596 | clearOtherHL uses the narrow one — its callers set WFOCUS first | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
 | 1603 | the roster has someone carrying no warning | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
-| 1607 | clicking them selects every puck of theirs | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
-| 1610 | clicking the same puck again un-clicks them | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
+| 1607 | clicking them selects every puck of theirs | **ported** → ≈ ui/interact.test.tsx |
+| 1610 | clicking the same puck again un-clicks them | **ported** → ≈ ui/interact.test.tsx |
 | 1613 | a delete is caught by counting, so every delete path is covered | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
 | 1615 | the count walks every place a person can be written | **ported** → ≈ avail.test.ts (as behaviour) |
 | 1620 | an edit-week puck exists to delete | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
@@ -578,7 +578,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 1632 | and it disarms an armed slot at the same time | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
 | 1634 | the exclusion list still protects everything you can click | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
 | 1636 | the board repaints after a blank-space clear | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
-| 1642 | clicking the week background un-clicks everybody | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
+| 1642 | clicking the week background un-clicks everybody | **ported** → ui/interact.test.tsx |
 | 1645 | changing who you are viewing as drops the selection too | skipped — UI selection state (SELID/WFOCUS et al) — phase 3/4; personCount behaviour is ported |
 | 1655 | a standalone line takes its own hours, unpadded | skipped — engine (X·shift) — behavioural parts ported; the rest are source-text pins on collectEvents/validate internals already held by the parity test |
 | 1660 | and it is filed as a shift, not a sortie | skipped — engine (X·shift) — behavioural parts ported; the rest are source-text pins on collectEvents/validate internals already held by the parity test |
@@ -733,4 +733,4 @@ so every skipped assertion continues to be enforced against the reference.
 | 2258 | the list row’s name cell kept the treatment it already had | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2260 | a puck name is untouched — it still ellipsises on one line | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 
-Totals: 140 labels ported (some cover several tfin result lines), 583 skipped.
+Totals: 170 labels ported (some cover several tfin result lines), 553 skipped.
