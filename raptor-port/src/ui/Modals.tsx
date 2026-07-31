@@ -1,14 +1,19 @@
-/* The day-details panel (read-only on purpose) and the week Insights modal.
-   Content strings are the reference's, verbatim. */
+/* The day-details panel (read-only on purpose), the week Insights modal, the
+   Manage-users modal and the airspace/traffic popup. Content strings are the
+   reference's, verbatim. */
+import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayCount } from '../engine/waves'
 import { validate, WARN, WCODE, wlbl } from '../engine/validate'
 import { computeInsights } from '../engine/insights'
-import { esc } from '../state/view'
+import { markEdit } from '../engine/publish'
+import { esc, afterSchedMutate } from '../state/view'
+import { SESSION } from '../state/auth'
+import { USERS, addUser, delUser } from '../state/users'
 import { notify } from '../state/store'
 import { dayInfoHTML } from './html'
-import { DAYPOP, setDayPop, INSIGHTS, setInsights } from './pops'
+import { DAYPOP, setDayPop, INSIGHTS, setInsights, AIRKEY, setAirKey, USERM, setUserModal } from './pops'
 import { useVersion } from './useStore'
 
 export function DayPop() {
@@ -53,6 +58,92 @@ function insightsHTML() {
   h += `<div class="isec-h">By day</div>`
   I.dayStats.forEach((s: any) => h += `<div class="irow"><span>${s.dow}</span><span style="color:var(--ink-3)">${s.ac} sorties · ${s.forms} formations · ${s.warns ? `<span style="color:${s.hard ? 'var(--hard)' : 'var(--adv)'}">${s.warns} issue${s.warns > 1 ? 's' : ''}</span>` : '<span style="color:var(--ok)">clear</span>'}</span></div>`)
   return h
+}
+
+/* ---- Manage users (admin) — the reference's userModal, USERS mutations
+   verbatim (prototype-only, no server) ---- */
+export function UserModal() {
+  useVersion()
+  const nameRef = useRef<HTMLInputElement>(null)
+  const roleRef = useRef<HTMLSelectElement>(null)
+  if (!USERM) return <div className="modal" id="userModal" hidden />
+  const close = () => { setUserModal(false); notify() }
+  const add = () => {
+    const name = nameRef.current!.value.trim(), role = roleRef.current!.value
+    if (!name) return
+    addUser(name, role); nameRef.current!.value = ''; notify()
+  }
+  return (
+    <div className="modal" id="userModal">
+      <div className="modal-box">
+        <div className="modal-head"><b>Manage users</b><button className="x" id="userClose" onClick={close}>✕</button></div>
+        <div className="modal-body">
+          <div className="mfield"><label>Callsign / name</label><input id="newName" ref={nameRef} placeholder="e.g. Viper" /></div>
+          <div className="mfield"><label>Role</label><select id="newRole" ref={roleRef} aria-label="Role for the new user"><option value="main">Squadron member (view only)</option><option value="admin">Scheduler / admin (edit)</option></select></div>
+          <button className="abtn primary" id="userAdd" style={{ width: '100%' }} onClick={add}>Add user</button>
+          <div className="userlist" id="userList" dangerouslySetInnerHTML={{
+            __html: USERS.map((u: any, i: number) =>
+              `<div class="urow"><span>${esc(u.name)}</span><span class="ub ${u.role}">${u.role === 'admin' ? 'Admin' : 'Member'}</span>
+      <button class="abtn" data-deluser="${i}" style="padding:2px 8px">Remove</button></div>`).join('')
+          }} onClick={e => {
+            const d = (e.target as HTMLElement).closest('[data-deluser]') as HTMLElement | null
+            if (d) { delUser(+d.dataset.deluser!); notify() }
+          }} />
+        </div>
+        <div className="modal-foot"><button className="abtn" id="userCancel" onClick={close}>Close</button></div>
+      </div>
+    </div>
+  )
+}
+
+/* ---- airspace / traffic popup — renderAir + airEdit verbatim. Traffic is a
+   scheduled airspace booking like any other field on the board, so it has to
+   earn an amendment mark and a history step (the tr: funnel). ---- */
+function findGo(key: any) { const [di, gi] = key.split('|'); return DAYS[+di] && DAYS[+di].waves[+gi] }
+function airEdit() {
+  if (!AIRKEY) return; const [di, gi] = String(AIRKEY).split('|')
+  markEdit(`tr:${+di!}.${+gi!}`); afterSchedMutate(); notify()
+}
+export function AirPop() {
+  useVersion()
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const open = AIRKEY != null
+  const g = open ? findGo(AIRKEY) : null
+  /* renderAir: innerHTML + delegated input/focusout, exactly as the reference
+     wires #airBody (a React-controlled list would repaint under the caret) */
+  useEffect(() => {
+    if (!g) return
+    g.traffic = g.traffic || []
+    const admin = SESSION && SESSION.role === 'admin', body = bodyRef.current!
+    if (admin) {
+      body.innerHTML = g.traffic.map((a: any, i: number) => `<div class="airrow"><span class="adot"></span>
+      <input value="${esc(a)}" data-airi="${i}" aria-label="Airspace line ${i + 1}"><button class="del" data-airdel="${i}">✕</button></div>`).join('')
+        || `<div style="color:var(--ink-3);font-size:12px">No traffic booked yet — add a row.</div>`
+    } else {
+      body.innerHTML = `<div class="airview">` + (g.traffic.length ? g.traffic.map((a: any) => `<div><span class="adot"></span>${a}</div>`).join('') : '<span style="color:var(--ink-3)">No traffic booked.</span>') + `</div>`
+    }
+  })
+  if (!open) return <div className="airpop" id="airpop" hidden />
+  const close = () => { setAirKey(null); notify() }
+  const admin = SESSION && SESSION.role === 'admin'
+  return (
+    <div className="airpop" id="airpop" onClick={e => { if ((e.target as HTMLElement).id === 'airpop') close() }}>
+      <div className="airpop-box">
+        <div className="airpop-head"><b id="airTitle">{`Traffic · ${g.label || ''}`}</b><button className="x" id="airClose" onClick={close}>✕</button></div>
+        <div className="airpop-body" id="airBody" ref={bodyRef}
+          onInput={e => { const i = (e.target as HTMLElement).closest('[data-airi]') as HTMLInputElement | null; if (!i) return; findGo(AIRKEY).traffic[+i.dataset.airi!] = i.value }}
+          onBlur={e => { if ((e.target as HTMLElement).closest('[data-airi]')) airEdit() }}
+          onClick={e => {
+            const del = (e.target as HTMLElement).closest('[data-airdel]') as HTMLElement | null
+            if (del) { const gg = findGo(AIRKEY); gg.traffic.splice(+del.dataset.airdel!, 1); airEdit() }
+          }} />
+        {admin && <div className="airpop-foot" data-admin="">
+          <button className="abtn" id="airAdd" onClick={() => { const gg = findGo(AIRKEY); gg.traffic = gg.traffic || []; gg.traffic.push('1 X … / … / … / …'); airEdit() }}>Add row</button>
+          <button className="abtn primary" id="airDone" onClick={close}>Done</button>
+        </div>}
+      </div>
+    </div>
+  )
 }
 
 export function InsightsModal() {

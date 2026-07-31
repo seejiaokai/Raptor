@@ -1,4 +1,4 @@
-ported 341 skipped 382
+ported 347 skipped 376
 rt map (phase 2)
 
 Every assertion in `reference/tfin.js`, by its label, marked **ported** (with
@@ -366,13 +366,13 @@ so every skipped assertion continues to be enforced against the reference.
 | 965 | the roster is pinned to the bottom on a phone | skipped — CSS — phone board layout and the roster resize grip |
 | 968 | the pinned roster still scrolls its own list | skipped — CSS — phone board layout and the roster resize grip |
 | 970 | drop bins are unchanged | skipped — CSS — phone board layout and the roster resize grip |
-| 972 | the roster has a resize grip | skipped — CSS — phone board layout and the roster resize grip |
+| 972 | the roster has a resize grip | **ported** → odds.test.tsx |
 | 973 | the grip only exists in the phone layout | skipped — CSS — phone board layout and the roster resize grip |
 | 979 | the grip will not scroll the page under the finger | skipped — CSS — phone board layout and the roster resize grip |
 | 982 | the height is a variable, so it can be dragged | skipped — CSS — phone board layout and the roster resize grip |
-| 984 | it is clamped at both ends | skipped — CSS — phone board layout and the roster resize grip |
-| 986 | a double-tap resets it | skipped — CSS — phone board layout and the roster resize grip |
-| 987 | the size is re-applied whenever the board opens | skipped — CSS — phone board layout and the roster resize grip |
+| 984 | it is clamped at both ends | **ported** → ≈ SchedBoard.tsx (verbatim SBSIDE_MIN/SBSIDE_MAX machine) |
+| 986 | a double-tap resets it | **ported** → odds.test.tsx |
+| 987 | the size is re-applied whenever the board opens | **ported** → ≈ SchedBoard.tsx (effect on open) |
 | 991 | one arrow click = one whole day | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
 | 993 | the step is measured off the live layout | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
 | 994 | panning clamps to the day count | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
@@ -633,7 +633,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 1782 | night is the wave OR the sortie running past 19:00 | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
 | 1784 | the picker bars a pilot who is not current | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
 | 1785 | and the palette carries the reason on the puck | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
-| 1794 | the Logic page exists and is reachable from both navs | **ported** → ≈ ui/logic.test.tsx (drawer nav is a later surface) |
+| 1794 | the Logic page exists and is reachable from both navs | **ported** → logic.test.tsx + odds.test.tsx (both navs) |
 | 1798 | and it renders every group and rule | **ported** → ui/logic.test.tsx |
 | 1802 | it is read-only — nothing but the search box takes input | **ported** → ui/logic.test.tsx |
 | 1804 | the thresholds are read from the live VCONF, not copied | **ported** → ui/logic.test.tsx |
@@ -658,7 +658,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 1898 | a modified rule set is never silent | **ported** → ≈ ui/logic.test.tsx (page-rules-off stamp) |
 | 1901 | a sentence quoting a threshold quotes the live one | **ported** → ≈ ui/logic.test.tsx (10h/12h swap) |
 | 1906 | the Inputs person filter is called Personnel, not All flights | **ported** → ≈ ui/inputs.test.tsx |
-| 1909 | a squadron member sees it too | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
+| 1909 | a squadron member sees it too | **ported** → odds.test.tsx |
 | 1920 | a hole in a programme row renders nothing at all | skipped — source-text pins — B49 drag internals, toast hit-test, click-eater |
 | 1922 | the toast cannot take the hit test | skipped — source-text pins — B49 drag internals, toast hit-test, click-eater |
 | 1923 | a wobble restarts the hold instead of killing the gesture | skipped — source-text pins — B49 drag internals, toast hit-test, click-eater |
@@ -678,7 +678,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 1966 | barDrop revalidates before it judges | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
 | 1967 | the free count ranks men on leave as unavailable | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
 | 1969 | reflow redraws the Inputs table | **ported** → ≈ ui/inputs.test.tsx (as behaviour) |
-| 1970 | a traffic edit goes through the amendment funnel | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
+| 1970 | a traffic edit goes through the amendment funnel | **ported** → odds.test.tsx |
 | 1972 | shiftKeys exists and every splice calls it | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
 | 1980 | and it drops the deleted row, shifts the rest, leaves the earlier ones | **ported** → keys.test.ts |
 | 1989 | undo puts down an armed slot | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
@@ -734,4 +734,4 @@ so every skipped assertion continues to be enforced against the reference.
 | 2258 | the list row’s name cell kept the treatment it already had | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2260 | a puck name is untouched — it still ellipsises on one line | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 
-Totals: 341 labels ported (some cover several tfin result lines), 382 skipped.
+Totals: 347 labels ported (some cover several tfin result lines), 376 skipped.

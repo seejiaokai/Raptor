@@ -60,6 +60,7 @@ export function dayCount(d:any){
 /* ---- weeks ---- */
 export const WEEKS=[{lbl:'Jun 29',v:'29/06/2026'},{lbl:'Jul 06',v:'06/07/2026'},{lbl:'Jul 13',v:'13/07/2026'},{lbl:'Jul 20',v:'20/07/2026'},{lbl:'Jul 27',v:'27/07/2026'}];
 export let CURWEEK='13/07/2026';
+export function setCurWeek(v:any){ CURWEEK=v }
 
 /* ---- mission → colour ---- */
 export const MTYPE:any={BFM:'flight',ACM:'flight',SAT:'flight',SA:'flight',INST:'flight',NVG:'flight',IAT:'cft',CFT:'cft',EPT:'cft','EP-4N':'sim','EP-6N':'sim','EP-3N':'sim',SIM:'sim',TEST:'test',CHK:'test'};

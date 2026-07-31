@@ -11,8 +11,9 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify } from '../state/store'
 import { scrollToWarnFocus } from './highlights'
-import { setDayPop } from './pops'
+import { setDayPop, setAirKey, setDrawer } from './pops'
 import { openScheduler } from './board'
+import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
 
 export function routeClick(e: MouseEvent) {
@@ -71,6 +72,21 @@ export function routeClick(e: MouseEvent) {
     view.selectPerson(pk.dataset.person, !!pk.closest('.week'))
     notify(); e.stopPropagation(); return
   }
+
+  /* a week chip (the seg strips and the drawer share this) — the demo data is
+     the Jul 20 week regardless; the chips re-render for feedback and the
+     drawer closes, exactly as the reference's handler does */
+  const wk = t.closest('[data-wk]') as HTMLElement | null
+  if (wk) {
+    setCurWeek(wk.dataset.wk)
+    const f = document.getElementById('dateVField') as HTMLInputElement | null
+    if (f) f.value = wk.dataset.wk!
+    setDrawer(false); notify(); return
+  }
+
+  /* the Traffic button on a wave → the airspace popup */
+  const air = t.closest('[data-air]') as HTMLElement | null
+  if (air) { setAirKey(air.dataset.air!); notify(); return }
 
   /* a day head on the EDIT week opens the scheduler board (edit-page gated) */
   const sbo = t.closest('.sb-open[data-sbday]') as HTMLElement | null

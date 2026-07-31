@@ -4,3 +4,12 @@ export let DAYPOP: number | null = null
 export function setDayPop(di: number | null) { DAYPOP = di }
 export let INSIGHTS = false
 export function setInsights(on: boolean) { INSIGHTS = on }
+/* the airspace/traffic popup: which wave it is looking at, as 'di|gi' */
+export let AIRKEY: string | null = null
+export function setAirKey(k: string | null) { AIRKEY = k }
+/* the Manage-users modal */
+export let USERM = false
+export function setUserModal(on: boolean) { USERM = on }
+/* the mobile drawer */
+export let DRAWER = false
+export function setDrawer(on: boolean) { DRAWER = on }
