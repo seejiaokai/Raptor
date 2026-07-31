@@ -15,6 +15,7 @@
 import { HOOKS } from '../engine/hooks'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
+import { rulesLoad } from '../engine/rules'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit } from './history'
@@ -83,10 +84,14 @@ export function wireStore() {
 }
 export function setToast(fn: (...a: any[]) => any) { HOOKS.toast = fn }
 
-/* boot: wire, validate once, take the baseline history snapshot — the same
-   order the reference's bootApp establishes */
+/* boot: wire, reload any persisted rule overrides, validate once, take the
+   baseline history snapshot — the same order the reference establishes
+   (rulesLoad() runs at its module scope, before bootApp's validate). Without
+   the rulesLoad an edited threshold silently reverted to standard on every
+   reload — caught by the audit2 probe (#6 "the override reloaded"). */
 export function initStore() {
   wireStore()
+  rulesLoad()
   validate()
   histInit()
   notify()

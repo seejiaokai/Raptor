@@ -93,3 +93,19 @@ describe('the flag order is read from RANK, at module scope (tfin B50)', () => {
     expect(RANK.C).toBe(9); expect(RANK.CR).toBe(8)
   })
 })
+
+describe('a stored override survives a fresh boot (audit2 probe #6)', () => {
+  it('initStore reloads the persisted diff before the first validate', async () => {
+    /* the reference calls rulesLoad() at module scope, before bootApp — the
+       port must reload inside initStore, or an edited threshold silently
+       reverts to standard on every page load */
+    const { initStore } = await import('../state/store')
+    const was = VCONF.crewRest, g = store.get
+    ;(store as any).get = (k: any, d: any) => k === 'rules' ? { v: { crewRest: 600 }, s: {} } : g(k, d)
+    VCONF.crewRest = RULE_STD.v.crewRest       // simulate the pre-boot default
+    initStore()
+    ;(store as any).get = g
+    expect(VCONF.crewRest).toBe(600)
+    VCONF.crewRest = was; rulesLoad()
+  })
+})

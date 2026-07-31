@@ -116,6 +116,11 @@ export function Shell() {
      page switches), DEFERRED — its call sites are setTimeout(hsSync,0), so
      the layout reads never land inside the paint being measured */
   useEffect(() => { const t = setTimeout(updateWeekNav, 0); return () => clearTimeout(t) })
+  /* the RULES MODIFIED stamp rides with the banner, not with the Logic page —
+     the reference's renderStatus comment records the bug: "the stamp used to
+     be set only by renderLogic(), so a reload with saved overrides showed a
+     clean banner until someone happened to open Logic" (audit2 probe #6) */
+  useEffect(() => { document.body.classList.toggle('page-rules-off', !!rulesOffCount()) })
   /* NO validate() here: the reference never validates during a repaint — the
      banner and pills read WARN as the last mutation left it (initStore and
      every mutation path have already validated), and a second engine pass per

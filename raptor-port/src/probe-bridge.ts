@@ -6,21 +6,22 @@
    drive the React build unchanged. It changes no behaviour — it only makes
    the existing API reachable — and it weighs a few hundred bytes. */
 import { DAYS } from './engine/data'
-import { PEOPLE, isScheduler, isLead, isInstr, isOcu, sanStatus, nameToId, aarNeed } from './engine/people'
-import { INPUTS, INPUT_TYPES } from './engine/inputs'
-import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount } from './engine/rules'
-import { SCHED, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, signMissing, unpublishAL } from './engine/publish'
+import { PEOPLE, isScheduler, isLead, isInstr, isOcu, sanStatus, nameToId, aarNeed, scShiftKind } from './engine/people'
+import { INPUTS, INPUT_TYPES, DATES, isLeave, isLocalLeave, isDownchit, isOffType } from './engine/inputs'
+import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
+import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel } from './engine/publish'
 import * as V from './engine/validate'
-import { validate, WCODE, wlbl } from './engine/validate'
+import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, restClear, dayEvents } from './engine/validate'
 import { collectEvents } from './engine/events'
-import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr } from './engine/slots'
-import { slotBar } from './engine/avail'
-import { isStandalone, makeStandalone, SAWAVE, dayCount } from './engine/waves'
+import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef } from './engine/slots'
+import { slotBar, dayEngaged, slotRules, dayOff } from './engine/avail'
+import { isStandalone, makeStandalone, SAWAVE, dayCount, saExempt } from './engine/waves'
 import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays } from './engine/keys'
-import { hhmm, parseHM, minus, overlap } from './engine/time'
-import { HIST } from './state/history'
+import { hhmm, parseHM, minus, overlap, hm24 } from './engine/time'
+import { HIST, histApply, histSnap, histPush } from './state/history'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
+import { setLgEdit } from './state/auth'
 import { notify, undo, redo } from './state/store'
 
 export function installProbeBridge() {
@@ -75,6 +76,28 @@ export function installProbeBridge() {
   w.isScheduler = isScheduler; w.isLead = isLead; w.isInstr = isInstr; w.isOcu = isOcu
   w.sanStatus = sanStatus; w.nameToId = nameToId
   w.aarNeed = aarNeed; w.WCODE = WCODE; w.wlbl = wlbl
+  w.chipOf = chipOf; w.sevOf = sevOf; w.isLeave = isLeave; w.SIGN_ROLES = SIGN_ROLES
+  w.CHIP_LABEL = CHIP_LABEL; w.restClear = restClear; w.dayEvents = dayEvents
+  w.isLocalLeave = isLocalLeave; w.slotRules = slotRules; w.saExempt = saExempt
+  w.isDownchit = isDownchit; w.isOffType = isOffType; w.dayOff = dayOff; w.rulesReset = rulesReset
+  w.rulesLoad = rulesLoad; w.rulesSave = rulesSave; w.DATES = DATES
+  w.alCount = alCount; w.alDays = alDays; w.pendDays = pendDays; w.pendCount = pendCount; w.approvedDays = approvedDays
+  w.renderInputs = () => notify()
+  w.renderStatus = () => notify()
+  w.ruleFmt = ruleFmt; w.ruleOff = ruleOff; w.kindOff = kindOff; w.KIND_LABEL = KIND_LABEL
+  w.lgSetEdit = (on: any) => { setLgEdit(on); notify() }
+  w.daysLabel = daysLabel
+  w.findGo = (key: any) => { const [di, gi] = String(key).split('|'); return DAYS[+di!] && DAYS[+di!].waves[+gi!] }
+  w.histApply = histApply; w.histSnap = histSnap; w.histPush = histPush
+  w.dayEngaged = dayEngaged; w.scShiftKind = scShiftKind; w.hm24 = hm24; w.rowRef = rowRef
+  w.armedKey = () => view.armedKey()
+  w.placeArmed = (id: any) => { view.placeArmed(id); notify() }
+  w.reflow = () => HOOKS.reflow()
+  /* mechanism shims: the reference exposes its render internals; in React the
+     equivalent of "poke the cache, re-render" is a plain store tick */
+  w.renderLogic = () => notify()
+  w.weekDirty = () => notify()
+  w.ruleApply = () => { rulesSave(); validate(); notify() }
   import('./ui/board').then(b => {
     w.openScheduler = b.openScheduler
     w.closeScheduler = b.closeScheduler
@@ -83,7 +106,9 @@ export function installProbeBridge() {
     Object.defineProperty(w, 'CXT', { get: () => b.CXT, configurable: true })
   })
   w.whoArr = whoArr
-  import('./ui/html').then(m => { w.cxText = m.cxText })
+  import('./ui/html').then(m => { w.cxText = m.cxText; w.dayHTML = m.dayHTML; w.puck = m.puck })
   import('./ui/pan').then(m => { w.hsSync = m.hsSync; w.panDays = m.panDays })
+  import('./ui/drag').then(m => { w.applyDrop = m.applyDrop; w.dragFrom = m.dragFrom; w.nearSeat = m.nearSeat; w.barDrop = m.barDrop; Object.defineProperty(w, 'DRAG', { get: () => m.DRAG, set: v => m.setDrag(v), configurable: true }) })
   import('./ui/palette-html').then(m => { w.paletteDay = m.paletteDay; w.paletteHTML = m.paletteHTML; w.offReason = (m as any).offReason })
+  import('./ui/board-html').then(m => { w.inTypeCls = (m as any).inTypeCls; w.sbInputsHTML = m.sbInputsHTML })
 }

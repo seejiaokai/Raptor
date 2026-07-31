@@ -145,3 +145,14 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
     await act(async () => { setSession({ user: 'a', role: 'admin' }); setLgEdit(false); notify(); rulesReset() })
   })
 })
+
+describe('the stamp does not need the Logic page (audit2 #6)', () => {
+  it('a modified rule stamps the body from the banner path, on any page', async () => {
+    const { VCONF } = await import('../engine/rules')
+    const was = VCONF.crewRest
+    await act(async () => { VCONF.crewRest = 600; notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(true)
+    await act(async () => { VCONF.crewRest = was; notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+  })
+})

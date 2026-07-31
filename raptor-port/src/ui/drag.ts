@@ -15,6 +15,9 @@ const toast = (...a: any[]) => HOOKS.toast(...a)
 const isPhone = () => HOOKS.isPhone()
 
 export let DRAG: any = null                     // {kind:'slot',key} | {kind:'roster',id}
+/* probes and tests need to place a drag in flight from outside the module
+   (the reference's DRAG was a window global, assignable from anywhere) */
+export function setDrag(v: any) { DRAG = v }
 
 const DROP_SEL = '.sb-slot,.seat[data-slot],[data-fill]'
 const BIN_SEL = '.sb-roster,.eroster,.availpuck'
