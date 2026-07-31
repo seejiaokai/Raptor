@@ -1,0 +1,1544 @@
+:root{
+  /* CANONICAL PUCK SIZE — every puck (flying, programme, avail, duties, roster, future) uses this.
+     Measured off the reference squadron tool's own flight line, pixel-scanned from a
+     402pt iPhone screenshot at 3x: their puck body is 222 x 43 device px = 74 x 14.3
+     CSS px, and the name inside it has a 19px cap height = 6.3 CSS px, i.e. a ~9px
+     font. So: 74 x 15 (15 rather than 14.3 so 9px type and a square qual chip both
+     clear the 1px border), with the type set in .puck below.
+     ONE size everywhere, desktop included — there is deliberately no per-breakpoint
+     override, because two pucks + remarks have to fit on one row at every width. */
+  --puck-w:74px; --puck-h:15px;
+  --san:#B24DEA;   /* SANS (staff-assigned & NS aircrew) purple */
+  --bg:#0B0D10; --panel:#14181D; --panel-2:#1A1F26; --raised:#20262E;
+  --edge:#2A313A; --edge-2:#39424D; --ink:#F1F4F7; --ink-2:#B6C0CB; --ink-3:#8A96A3;
+  --accent:#3BC6E8; --accent-ink:#052A34;
+  --hard:#F0555F; --adv:#E5A83B; --ok:#57C97A;
+  --flight:#3BC6E8; --acad:#57C97A; --test:#F0555F; --sim:#E7C13A; --cft:#A972E8; --dpco:#3B7DF0;
+  /* seat colours (kept from the working file) */
+  --fcp:#6E6A2E; --fcp-ink:#FBFAF0; --rcp:#1F6E52; --rcp-ink:#EAFBF3;
+  /* qual-ladder chip colours: OCU→D→C→B→A cool→hot, instructors share slate */
+  --q-ocu:#8A6ED0; --q-d:#3B7DF0; --q-c:#3BC6E8; --q-b:#E5A83B; --q-a:#F0555F; --q-ins:#A64DE8;
+  /* highlight states */
+  --me:#9B2FAE; --sel:#2668C4;
+  --r:16px;
+}
+*{box-sizing:border-box}
+/* an author `display` beats the UA `[hidden]{display:none}` rule, so two
+   admin-only blocks (.qadd, .airpop-foot) stayed visible for members even
+   though applyRole() had set el.hidden. Make hidden mean hidden. */
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;color-scheme:dark}
+select option,select optgroup{background:#1A1F26;color:#F1F4F7}
+select{color-scheme:dark}
+body{
+  background:
+    radial-gradient(900px 420px at 12% -8%,rgba(59,198,232,.09),transparent 62%),
+    radial-gradient(760px 380px at 98% -6%,rgba(87,201,122,.05),transparent 58%),
+    var(--bg);
+  color:var(--ink); font-family:'Inter Tight',system-ui,sans-serif;
+  font-size:13px;-webkit-font-smoothing:antialiased;letter-spacing:-.005em;padding-bottom:120px;
+}
+.mono{font-family:'JetBrains Mono',monospace}
+button{font-family:'Inter Tight',sans-serif}
+a{color:var(--accent)}
+
+/* ============ LOGIN · RAPTOR ============ */
+/* The app is RAPTOR — Readiness, Availability, Planning, Tracking & Ops
+   Reporting. One centred column: the mark, the name, the line it stands for,
+   and the two fields. Nothing else. The build note is folded away behind its
+   own stamp — it is a changelog, not part of the page. */
+.login{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;
+  padding:24px;overflow:auto;
+  background:
+    radial-gradient(760px 420px at 50% 6%,rgba(59,198,232,.13),transparent 62%),
+    var(--bg)}
+.login[hidden]{display:none}
+.login-wrap{width:100%;max-width:352px;display:flex;flex-direction:column;align-items:stretch}
+
+/* ---- the mark ---- */
+/* the squadron, once, quietly */
+.lb-unit{text-align:center;font-size:9px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--ink-3);opacity:.6;margin-bottom:14px}
+.lb-mark{display:flex;align-items:center;justify-content:center;gap:13px;margin-bottom:12px}
+/* the mark: three talon rakes, nothing else. No badge to hold them — the claws
+   ARE the mark, tapered to a point at both ends and hooked the way a real one
+   drags. Sized off the type it sits beside so the two always agree. */
+.lb-glyph{flex:0 0 auto;width:42px;height:42px;display:block;fill:var(--accent);
+  filter:drop-shadow(0 0 16px rgba(59,198,232,.55))}
+.rglyph{flex:0 0 auto;width:1.55em;height:1.55em;display:block;fill:var(--accent)}
+.lb-word{font-size:38px;font-weight:800;letter-spacing:.19em;line-height:1;color:var(--ink);
+  padding-left:.19em}
+.lb-sub{text-align:center;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink-3);line-height:2;margin-bottom:26px}
+.lb-sub b{color:var(--accent);font-weight:700}
+
+/* ---- the card ---- */
+.login-card{width:100%;box-sizing:border-box;
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0)),var(--panel);
+  border:1px solid var(--edge);border-radius:16px;padding:22px 20px;
+  box-shadow:0 40px 90px -40px rgba(0,0,0,.9)}
+.login label{display:block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 5px}
+.login input{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--edge);color:var(--ink);
+  font-family:'Inter Tight',sans-serif;font-size:14px;padding:11px 12px;border-radius:10px;margin-bottom:13px}
+.login input:focus{outline:2px solid var(--accent);outline-offset:0}
+.login .go{display:block;width:100%;box-sizing:border-box;-webkit-appearance:none;appearance:none;
+  background:var(--accent);color:var(--accent-ink);border:none;font-size:14px;font-weight:700;
+  padding:12px;border-radius:10px;cursor:pointer;margin-top:5px;letter-spacing:.04em}
+.login .go:hover{filter:brightness(1.06)}
+/* the error line takes no room until there is one to print */
+.login .err{color:#FBB4B9;font-size:12px;margin:0 0 8px}
+.login .err:empty{display:none;margin:0}
+.login .hint{margin-top:14px;font-size:10.5px;color:var(--ink-3);line-height:1.7;
+  border-top:1px solid var(--edge);padding-top:11px}
+.login .hint b{color:var(--ink-2);font-weight:600}
+
+/* ---- the build note, folded ---- */
+.login-build{margin-top:14px;font-size:10px;line-height:1.7;color:var(--ink-3);letter-spacing:.01em}
+.login-build>summary{list-style:none;cursor:pointer;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;
+  color:var(--ink-3);opacity:.75;padding:4px}
+.login-build>summary::-webkit-details-marker{display:none}
+.login-build>summary:hover{opacity:1;color:var(--ink-2)}
+.login-build>summary::after{content:' ▸';color:var(--edge-2)}
+.login-build[open]>summary::after{content:' ▾'}
+.login-build .bt{border-top:1px solid var(--edge);padding-top:10px;margin-top:2px}
+.login-build b{color:var(--ink-2);font-weight:600}
+
+@media (max-width:480px){
+  .login{align-items:flex-start;padding:44px 18px 28px}
+  .lb-word{font-size:32px}
+  .lb-glyph{width:32px;height:32px}
+}
+
+
+/* ============ LOGIC ============
+   A read-only account of every rule the engine applies. Every number and every
+   table on this page is READ OUT OF THE LIVE OBJECTS at render time — VCONF,
+   SHIFT_HARD, RANK, WCODE, the SC window, the leave taxonomy — so the page can
+   never drift from the engine it is describing. If you change a threshold in the
+   code, this page changes with it; there is no second copy to forget. */
+.lgbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 20px;
+  border-bottom:1px solid var(--edge);background:rgba(20,24,29,.4);position:sticky;top:0;z-index:20;
+  backdrop-filter:blur(10px)}
+.lgbar .searchbox{min-width:260px}
+.lgfilters{display:flex;gap:4px;flex-wrap:wrap}
+.lgnote{margin-left:auto;font-size:11px;color:var(--ink-3)}
+.lgwrap{padding:14px 20px 40px;max-width:1080px}
+.lggrp{margin-bottom:22px}
+.lggrp>h2{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 3px;font-weight:700}
+.lggrp>.gsub{font-size:11.5px;color:var(--ink-3);margin:0 0 10px;line-height:1.5}
+.lgrule{display:grid;grid-template-columns:78px 1fr 118px;gap:12px;align-items:start;
+  padding:10px 12px;border:1px solid var(--edge);border-radius:11px;margin-bottom:7px;
+  background:linear-gradient(180deg,rgba(255,255,255,.018),transparent)}
+.lgrule:hover{border-color:var(--edge-2)}
+.lgrule.hard{border-left:3px solid var(--hard)}
+.lgrule.adv{border-left:3px solid var(--adv)}
+.lgrule.note{border-left:3px solid var(--ink-3)}
+.lgrule.set{border-left:3px solid var(--accent)}
+.lgsev{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.lgsev .tier{font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 6px;border-radius:5px}
+.lgsev .tier.hard{background:rgba(240,85,95,.16);color:#FBB4B9}
+.lgsev .tier.adv{background:rgba(229,168,59,.16);color:#F2D699}
+.lgsev .tier.note{background:rgba(138,150,163,.16);color:var(--ink-2)}
+.lgsev .tier.set{background:rgba(59,198,232,.14);color:var(--accent)}
+.lgsev .code{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--ink-3);
+  letter-spacing:.02em;word-break:break-all}
+.lgtxt{font-size:12.5px;line-height:1.55;color:var(--ink-2);min-width:0}
+.lgtxt b{color:var(--ink);font-weight:600}
+.lgtxt .val{font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700}
+.lgtxt .why{display:block;margin-top:4px;font-size:11px;color:var(--ink-3);line-height:1.5}
+.lgsrc{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-3);opacity:.75;
+  text-align:right;line-height:1.5;word-break:break-all}
+.lgfired{display:block;margin-top:4px;font-size:10px;font-weight:700;font-family:'Inter Tight',sans-serif}
+.lgfired.on{color:var(--adv)}
+.lgfired.off{color:var(--ink-3);opacity:.6;font-weight:500}
+.lgmatrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:7px}
+.lgcell{display:flex;align-items:center;gap:7px;font-size:11px;padding:5px 8px;border-radius:7px;
+  background:var(--panel-2);border:1px solid var(--edge)}
+.lgcell .k{font-weight:700;color:var(--ink)}
+.lgcell.hard{border-color:rgba(240,85,95,.4)}
+.lgcell.adv{border-color:rgba(229,168,59,.4)}
+.lgcell.none{opacity:.62}
+.lgchips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;align-items:center}
+.lgchips .lgc{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink-2);
+  background:var(--panel-2);border:1px solid var(--edge);border-radius:999px;padding:2px 9px 2px 3px}
+.lgchips .lgc i{font-style:normal;font-size:8.5px;font-weight:800;color:#12100a;border-radius:4px;
+  min-width:15px;text-align:center;padding:1px 3px}
+.lgempty{color:var(--ink-3);font-size:12px;padding:22px 2px}
+.lgedit{display:flex;gap:6px}
+.lgoff{margin:12px 20px 0;max-width:1080px;padding:9px 13px;border-radius:10px;font-size:11.5px;
+  line-height:1.5;background:rgba(229,168,59,.12);border:1px solid rgba(229,168,59,.5);color:#F2D699}
+.lgoff b{color:#FBDFA3}
+.lgrule.edited{border-left-color:var(--adv)}
+.lgmod{display:inline-block;margin-left:6px;font-size:8.5px;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;color:#12100a;background:var(--adv);border-radius:4px;padding:1px 5px;
+  vertical-align:1px}
+.lgin{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;color:var(--accent);
+  background:var(--bg);border:1px solid var(--edge-2);border-radius:6px;padding:2px 6px;width:66px;
+  text-align:center}
+.lgin:focus{outline:2px solid var(--accent);outline-offset:0}
+.lgin.bad{border-color:var(--hard);color:#FBB4B9}
+.lgstd{font-size:10px;color:var(--ink-3);margin-left:6px}
+.lgtog{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--ink-2)}
+.lgtog input{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
+.page-rules-off .schedbanner::after{content:'RULES MODIFIED';font-size:9px;font-weight:800;
+  letter-spacing:.08em;color:#12100a;background:var(--adv);border-radius:5px;padding:2px 7px;
+  margin-left:8px;white-space:nowrap}
+@media (max-width:820px){ .lgoff{margin:10px 12px 0} .lgin{width:58px} }
+@media (max-width:820px){
+  .lgbar{padding:10px 12px;gap:7px}
+  .lgbar .searchbox{min-width:0;flex:1 1 100%}
+  .lgnote{margin-left:0;flex:1 1 100%}
+  .lgwrap{padding:12px 12px 34px}
+  .lgrule{grid-template-columns:64px 1fr;gap:9px;padding:9px 10px}
+  .lgsrc{grid-column:2;text-align:left;opacity:.6}
+  .lgmatrix{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ============ TOP BAR ============ */
+.topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 20px;
+  background:linear-gradient(180deg,rgba(14,17,22,.92),rgba(8,10,13,.78));backdrop-filter:blur(18px);border-bottom:1px solid var(--edge)}
+.mark{display:flex;align-items:center;gap:8px;line-height:1}
+.mark .tx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.mark .k{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.mark .v{font-size:19px;font-weight:800;letter-spacing:.12em}
+.mark .rglyph{width:22px;height:22px}
+.nav{display:flex;gap:2px;margin-left:6px;flex-wrap:wrap}
+.nav a{padding:7px 13px;border-radius:10px;color:var(--ink-2);text-decoration:none;font-size:12.5px;font-weight:500;
+  white-space:nowrap;border:1px solid transparent;cursor:pointer}
+.nav a:hover{background:var(--raised);color:var(--ink)}
+.nav a.on{background:rgba(59,198,232,.12);color:var(--accent);border-color:rgba(59,198,232,.5);font-weight:600}
+.nav a[hidden]{display:none}
+.spring{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.acct{display:flex;align-items:center;gap:8px}
+.acct .sel{display:flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:4px 6px 4px 10px}
+.acct .sel label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.acct select{background:transparent;border:none;color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:2px}
+.acct select:focus{outline:none}
+.rolebadge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+.rolebadge.admin{background:rgba(59,198,232,.16);color:var(--accent);border:1px solid rgba(59,198,232,.5)}
+.rolebadge.main{background:rgba(138,150,163,.16);color:var(--ink-2);border:1px solid var(--edge-2)}
+.abtn{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);cursor:pointer;font-size:12px;font-weight:600;padding:6px 12px;border-radius:9px}
+.abtn:hover{border-color:var(--edge-2)}
+.abtn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.abtn.ghost{background:transparent}
+.abtn.danger{color:#FBB4B9;border-color:rgba(240,85,95,.4)}
+.abtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.burger{display:none;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);width:36px;height:34px;border-radius:9px;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:3px}
+.burger span{width:16px;height:2px;background:var(--ink);border-radius:2px}
+
+.pillbtn{border:1px solid transparent;background:none;cursor:pointer;color:inherit;display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;font-size:12px;font-weight:600}
+.pillbtn .dot{width:7px;height:7px;border-radius:50%}
+.pillbtn.hard{border-color:rgba(240,85,95,.4);color:#FBB4B9;background:rgba(240,85,95,.08)}
+.pillbtn.hard .dot{background:var(--hard)}
+.pillbtn.adv{border-color:rgba(229,168,59,.4);color:#F2D69B;background:rgba(229,168,59,.08)}
+.pillbtn.adv .dot{background:var(--adv)}
+.pillbtn.note{border-color:rgba(138,150,163,.4);color:#C4CCD5;background:rgba(138,150,163,.08)}
+.pillbtn.note .dot{background:#8A96A3}
+.fastsync{display:inline-flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);
+  padding:6px 11px;border-radius:9px;cursor:pointer;font-size:11.5px;font-weight:600}
+.fastsync.on{color:var(--ok);border-color:rgba(87,201,122,.5);background:rgba(87,201,122,.10)}
+.fastsync .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+.fastsync.on .dot{background:var(--ok);box-shadow:0 0 0 3px rgba(87,201,122,.2)}
+
+/* ============ PAGE SHELL ============ */
+.page{display:none}
+.page.on{display:block}
+
+/* segment / week selector */
+.seg{display:flex;gap:8px;padding:8px 20px;flex-wrap:wrap;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.5);align-items:center}
+.seg .datef{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);border-radius:10px;padding:6px 10px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.wk{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);padding:6px 14px;border-radius:11px;cursor:pointer;font-size:12px;font-weight:500}
+.wk:hover{border-color:var(--edge-2);color:var(--ink)}
+.wk.on{background:rgba(87,201,122,.14);color:#A8E6BC;border-color:rgba(87,201,122,.55);font-weight:600}
+
+/* filter / highlight chips */
+.filters{display:flex;gap:6px;padding:8px 20px;flex-wrap:wrap;border-bottom:1px solid var(--edge);align-items:center;background:rgba(20,24,29,.35)}
+.filters .lab{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-right:2px;font-weight:600}
+.fchip{min-width:34px;text-align:center;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);padding:6px 11px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:600}
+.fchip:hover{border-color:var(--edge-2);color:var(--ink)}
+.fchip.on{background:rgba(59,198,232,.16);color:var(--accent);border-color:rgba(59,198,232,.6)}
+.filters .div{width:1px;align-self:stretch;background:var(--edge);margin:0 4px}
+.searchbox{display:flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--edge);border-radius:9px;padding:4px 10px}
+.searchbox input{background:transparent;border:none;color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;width:150px}
+.searchbox input:focus{outline:none}
+.filters .right{margin-left:auto;display:flex;gap:6px;align-items:center}
+
+.title{display:flex;align-items:baseline;gap:14px;padding:16px 20px 4px}
+.title h1{font-size:24px;font-weight:700;letter-spacing:-.025em;margin:0}
+.title .sub{color:var(--ink-3);font-size:11.5px}
+.legend{display:flex;gap:14px;padding:8px 20px 12px;font-size:11px;color:var(--ink-3);flex-wrap:wrap;align-items:center}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:middle}
+.legend .qk{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:14px;padding:0 3px;border-radius:3px;font-size:9px;font-weight:800;margin-right:5px;vertical-align:middle;color:#fff}
+
+/* ============ WEEK / DAY ============ */
+.week{display:flex;gap:14px;padding:2px 20px 30px;overflow-x:auto;align-items:flex-start;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+/* floating left/right arrows to pan the week horizontally (desktop) */
+.week-nav{position:fixed;top:52%;transform:translateY(-50%);z-index:150;width:38px;height:70px;border:1px solid var(--edge);background:rgba(20,24,29,.82);backdrop-filter:blur(5px);color:var(--ink-2);font-size:26px;font-weight:700;line-height:1;cursor:pointer;border-radius:12px;display:flex;align-items:center;justify-content:center;opacity:.75;transition:opacity .15s,border-color .15s,color .15s}
+.week-nav:hover{opacity:1;border-color:var(--accent);color:var(--accent)}
+.week-nav.prev{left:8px}
+.week-nav.next{right:8px}
+.week-nav[hidden]{display:none}
+@media (max-width:820px){.week-nav{display:none!important}}
+/* ---- sticky horizontal scroll bar, tagged to the bottom of the viewport (desktop) ---- */
+.hscroll{position:fixed;left:0;bottom:0;z-index:185;display:none;align-items:center;gap:8px;
+  padding:6px 10px;background:rgba(11,13,16,.93);backdrop-filter:blur(7px);border-top:1px solid var(--edge);
+  border-radius:12px 12px 0 0;box-shadow:0 -6px 18px rgba(0,0,0,.45)}
+.hscroll.on{display:flex}
+/* it is a live scrollbar, so it must stay clickable when idle — but while a drag
+   is running it is a 35px dead strip across the bottom of the window */
+body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
+.hs-arrow{flex:0 0 auto;width:26px;height:22px;border:1px solid var(--edge);background:var(--panel-2);color:var(--ink-2);
+  font-size:16px;font-weight:700;line-height:1;cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;padding:0}
+.hs-arrow:hover{border-color:var(--accent);color:var(--accent);background:rgba(59,198,232,.10)}
+.hs-track{flex:1 1 auto;min-width:0;overflow-x:scroll;overflow-y:hidden;height:16px;background:var(--panel-2);border:1px solid var(--edge);border-radius:8px}
+.hs-in{height:1px}
+.hs-track::-webkit-scrollbar{height:14px}
+.hs-track::-webkit-scrollbar-track{background:transparent}
+.hs-track::-webkit-scrollbar-thumb{background:var(--edge-2);border-radius:7px;border:3px solid var(--panel-2)}
+.hs-track::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.hs-track{scrollbar-color:var(--edge-2) var(--panel-2);scrollbar-width:auto}
+.hs-lbl{flex:0 0 auto;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.07em;
+  font-size:9px;font-weight:700;color:var(--ink-3);min-width:74px;text-align:right}
+@media (max-width:820px){.hscroll{display:none!important}}
+/* On desktop the pinned bar above IS the week's scrollbar, so the week must not
+   draw a second one of its own — it still scrolls, it just has no chrome. */
+@media (min-width:821px){
+  .week{scrollbar-width:none;-ms-overflow-style:none}
+  .week::-webkit-scrollbar{height:0;width:0;display:none}
+}
+/* edit-schedule board + right roster palette */
+.edit-board{display:flex;align-items:flex-start;gap:0}
+.edit-board .week{flex:1 1 auto;min-width:0}
+/* NOTE: the aside carries BOTH .sb-roster and .eroster, and .sb-roster{flex:1}
+   is declared later in this sheet — so every geometry rule here needs the
+   extra .edit-board specificity or the palette balloons to half the page. */
+.edit-board .eroster{flex:0 0 auto;width:max-content;align-self:stretch;position:sticky;top:8px;
+  max-height:calc(100vh - 118px);overflow-y:auto;overflow-x:hidden;
+  border:1px solid var(--edge);border-right:none;border-radius:11px 0 0 11px;
+  background:var(--panel);margin:2px 0 0 4px;padding:8px 8px 10px}
+.edit-board .week{padding-right:8px}
+.eroster .er-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:11px;font-weight:700;color:var(--accent);padding:2px 2px 6px;border-bottom:1px solid var(--edge);margin-bottom:6px;white-space:nowrap}
+/* two vertical columns: pilots left, WSOs right — each exactly one puck wide */
+.edit-board .eroster .rcols{display:flex;gap:7px;align-items:flex-start}
+.edit-board .eroster .rcol{flex:0 0 var(--puck-w);width:var(--puck-w);display:flex;flex-direction:column;gap:3px;min-width:0}
+.eroster .rcol .rh{display:block;margin:2px 0 3px;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:9px;font-weight:700;color:var(--ink-3)}
+.eroster .rcol .rh.sans{color:var(--san);border-top:1px solid var(--edge);padding-top:5px;margin-top:4px}
+.eroster .rpuck{display:flex;flex:0 0 auto;cursor:grab}
+/* the grab tab — the only part on screen when the drawer is parked */
+.eroster .ros-tab{display:none;flex:0 0 26px;align-items:center;justify-content:center;gap:8px;
+  cursor:pointer;background:var(--panel-2);border-right:1px solid var(--edge);border-radius:12px 0 0 12px;
+  writing-mode:vertical-rl;text-orientation:mixed;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:700;color:var(--accent);
+  -webkit-user-select:none;user-select:none;touch-action:manipulation}
+.eroster .ros-tab b{font-weight:700}
+body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink);border-right-color:var(--accent)}
+/* ---- the aircrew palette as a right-edge pull-out drawer (mobile) ----------
+   It used to be hidden outright below 820px, which left a phone with no palette
+   at all — the only way to crew a slot was a name dropdown. The drawer parks
+   against the right edge with a grab tab showing, pulls out over the schedule,
+   and stays put while the week pans underneath it. Pinch out and it sits beside
+   the day block just like the reference tool. */
+@media (max-width:820px){
+  .edit-board{display:block}
+  .edit-board .eroster{position:fixed;right:0;top:0;bottom:0;z-index:190;
+    width:max-content;max-width:78vw;max-height:none;align-self:auto;margin:0;
+    padding:8px 8px 12px 0;border:1px solid var(--edge);border-right:none;border-radius:12px 0 0 12px;
+    background:rgba(11,13,16,.965);backdrop-filter:blur(8px);box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);
+    overflow:visible;transform:translateX(calc(100% - 26px));transition:transform .2s ease;
+    display:flex;align-items:stretch}
+  body.ros-open .edit-board .eroster{transform:translateX(0)}
+  .eroster .ros-tab{display:flex}
+  .eroster .ros-body{overflow:auto;max-height:100vh;padding-right:2px}
+  .edit-board .week{padding-right:0}
+}
+/* ---- who may be planned where ----------------------------------------------
+   .standby — on an SC SPARE line: free for anything else, so barely marked
+   .busy    — already tasked that day, but still perfectly legal to plan
+   .no      — may NOT be planned into the armed slot, or is on leave / downchit
+   The first two used to sit at .36 and .20 opacity, which on a phone read as
+   the same grey — so anyone already tasked looked un-selectable. They are now
+   told apart by KIND of mark, not by a shade: busy keeps its colour and wears a
+   left bar, barred loses its colour entirely and is struck through. */
+.rpuck.standby{opacity:.82}
+.rpuck.standby .puck{box-shadow:inset 2px 0 0 var(--ok)}
+.rpuck.busy{opacity:.62}
+.rpuck.busy .puck{filter:saturate(.55);box-shadow:inset 2px 0 0 var(--ink-3)}
+.rpuck.no{opacity:.26;position:relative}
+.rpuck.no .puck{filter:grayscale(1) brightness(.6)}
+.rpuck.no::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:1px;
+  background:var(--ink-3);transform:translateY(-.5px);pointer-events:none}
+.rpuck.no,.rpuck.no:active{cursor:not-allowed}
+/* the slot waiting for a name */
+.seat.armed,.sb-slot.armed,[data-fill].armed{outline:2px dashed var(--accent);outline-offset:-2px;
+  border-radius:7px;background:rgba(59,198,232,.10)}
+.eroster .ros-arm,.sb-roster .ros-arm{display:flex;align-items:center;gap:7px;margin:0 0 7px;padding:5px 7px;
+  border:1px solid var(--accent);border-radius:8px;background:rgba(59,198,232,.12);
+  font-size:10.5px;line-height:1.35;color:var(--ink)}
+.eroster .ros-arm .x,.sb-roster .ros-arm .x{margin-left:auto;flex:0 0 auto;background:none;border:none;
+  color:var(--ink-3);font-size:13px;cursor:pointer;padding:0 2px}
+.eroster .ros-arm b,.sb-roster .ros-arm b{color:var(--accent);font-weight:700}
+/* the second line of the arm strip when an SC slot is armed: the shift window and
+   the currency the list has been cut down to */
+.eroster .ros-arm .scnote,.sb-roster .ros-arm .scnote{display:block;color:var(--ink-3);font-size:9.5px;
+  letter-spacing:.02em;margin-top:1px}
+.day{flex:0 0 620px;border-radius:var(--r);overflow:hidden;scroll-snap-align:start;
+  background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,0)),var(--panel);
+  border:1px solid var(--edge);box-shadow:0 24px 60px -34px rgba(0,0,0,.9)}
+.day.today{border-color:rgba(59,198,232,.45);box-shadow:0 24px 60px -30px rgba(59,198,232,.35)}
+.day-head{display:flex;align-items:baseline;gap:9px;padding:13px 15px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--edge)}
+.day-head .dow{font-size:16px;font-weight:700}
+.day-head .dt{color:var(--ink-3);font-size:12px}
+.day-head .badge{margin-left:auto;font-size:10.5px;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--edge);padding:2px 8px;border-radius:6px}
+/* ---- per-day approval strip in the day head -------------------------------
+   Approval is per day, so the publish control lives on the day itself rather than
+   on the week banner. `.dstat` wraps onto its own line when the head is narrow
+   (mobile day columns are ~364px), hence flex-wrap on .day-head plus a 100%
+   flex-basis fallback — the chips must never push the date off the row. */
+.day-head{flex-wrap:wrap;row-gap:7px}
+.day-head .dstat{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:8px}
+.day-head .dal{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.06em;color:#08131b;background:var(--alc,var(--accent));padding:1px 6px;border-radius:5px}
+.day-head .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
+  border:1px solid rgba(229,194,74,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
+/* PUBLISH DAY is the primary action on a day, so it wears the same blue as the
+   banner buttons rather than looking like one more grey chip. Published flips it
+   green (and it is then the reopen control); unsigned darkens it — see the
+   [disabled] rule further down. The view-only page keeps a plain chip: it is a
+   status, not a button. */
+.dbeak{font-family:inherit;font-size:11.5px;font-weight:700;letter-spacing:.02em;cursor:pointer;
+  color:var(--accent-ink);background:var(--accent);border:1px solid var(--accent);
+  padding:4px 11px;border-radius:8px;white-space:nowrap}
+.dbeak:hover{filter:brightness(1.07)}
+.dbeak.ok{color:#A8E6BC;background:rgba(87,201,122,.16);border-color:rgba(87,201,122,.55)}
+.dbeak.ok:hover{filter:none;border-color:rgba(87,201,122,.85)}
+.dbeak.ro{cursor:default;font-size:10.5px;font-weight:600;padding:3px 9px;
+  background:transparent;color:var(--ink-2);border-color:var(--edge-2)}
+.dbeak.ro:hover{filter:none;color:var(--ink-2);border-color:var(--edge-2)}
+.dbeak.ro.ok{color:#A8E6BC;background:rgba(87,201,122,.16);border-color:rgba(87,201,122,.55)}
+.dbeak.ro.ok:hover{border-color:rgba(87,201,122,.55)}
+.day.dok{border-color:rgba(87,201,122,.34)}
+.day.dok .day-head{background:rgba(87,201,122,.055);border-bottom-color:rgba(87,201,122,.3)}
+
+.go{margin:10px 10px 4px;border:1px solid var(--edge);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.014);border-left:3px solid var(--flight)}
+.go-tab{display:flex;align-items:center;gap:8px;padding:6px 11px;font-size:11px;color:var(--ink-2);border-bottom:1px solid var(--edge);flex-wrap:wrap}
+.go-tab .asd{font-weight:700;color:var(--ink);white-space:nowrap}
+.airbtn{background:var(--panel-2);border:1px solid var(--edge);color:var(--accent);cursor:pointer;font-size:10px;font-weight:600;padding:3px 10px;border-radius:7px;letter-spacing:.03em}
+.airbtn:hover{border-color:var(--accent);background:rgba(59,198,232,.10)}
+
+/* 5 columns: CS/MSN | B/TO | LD | FCP/RCP | RMKS.
+   AREA + TIME used to be columns 6 and 7, which squeezed RMKS down to ~60px. They now
+   sit in a full-width horizontal strip under each formation (.form-area), so the five
+   columns above get all the room back. */
+.form{display:grid;grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);align-items:stretch;border-bottom:1px solid rgba(42,49,58,.55)}
+.form:last-child{border-bottom:none}
+.form:hover{background:rgba(255,255,255,.018)}
+.form.cx{opacity:.5;filter:grayscale(.7)}
+.fcell{display:flex;flex-direction:column;justify-content:flex-start;padding:4px 3px;border-right:1px solid rgba(42,49,58,.4);overflow:hidden}
+/* placement comes from the custom properties the renderer stamps on each cell, so
+   the phone block can re-map the same markup onto a taller row grid */
+.fcell.csmsn{grid-column:1;grid-row:1/span var(--gs)}
+.fcell.bto{grid-column:2;grid-row:1/span var(--gs)}
+.fcell.ld{grid-column:3;grid-row:1/span var(--gs)}
+.form .csmsn{overflow:hidden}
+.form .bto,.form .ld{white-space:nowrap;overflow:hidden}
+.form .csmsn b{display:block;font-size:10px;font-weight:700;color:var(--ink);white-space:nowrap;line-height:1.15;overflow:hidden;text-overflow:ellipsis}
+.form .csmsn i{display:block;font-style:normal;font-size:8.5px;color:var(--ink-3);font-weight:600}
+.form .csmsn .mdot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:2px;vertical-align:middle}
+.form .bto{font-family:'JetBrains Mono',monospace;text-align:center;line-height:1.25}
+.form .bto b{font-size:9px;color:#F2D699;font-weight:600}
+.form .bto span{font-size:9px;color:var(--ink-2)}
+.form .ld{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-2);text-align:center;justify-content:flex-start}
+/* min-height is load-bearing, not cosmetic: CS/MSN and B/TO are two-line stacks in
+   cells that span the formation, so a single-aircraft row has to be tall enough to
+   hold two lines of ~10px type on its own or the second line gets clipped by
+   .fcell's overflow:hidden. Derived from the puck so it tracks any resize. */
+.acrow{display:flex;flex-direction:column;gap:2px;padding:3px 4px;min-width:0;grid-column:4;grid-row:var(--gr);min-height:calc(var(--puck-h) + 13px);border-top:1px solid rgba(42,49,58,.28)}
+.acrow .pucks{display:flex;gap:3px}
+.acrow.r1,.rmkcell.r1{border-top:none}
+.rmkcell{font-size:8.5px;color:var(--ink-2);line-height:1.25;padding:4px 5px;min-width:0;grid-column:5;grid-row:var(--gr);border-top:1px solid rgba(42,49,58,.28);border-left:1px solid rgba(42,49,58,.4);display:flex;flex-direction:column;justify-content:flex-start;gap:2px;overflow-wrap:anywhere;white-space:normal}
+/* AREA strip — one per formation, full width under that formation's aircraft rows.
+   Reads horizontally: AREA  <airspace>  ·  <time block>.  Both halves stay separately
+   editable and separately amendment-highlightable, hence the two class names. */
+.form-area{grid-column:1/-1;grid-row:var(--ga);display:flex;align-items:baseline;gap:8px;padding:3px 8px;
+  border-top:1px solid rgba(59,198,232,.18);background:rgba(59,198,232,.045)}
+.form-area .fa-lb{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:700;
+  letter-spacing:.09em;color:var(--accent);flex:0 0 auto;opacity:.85}
+.areacell{min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:700;
+  line-height:1.35;overflow-wrap:anywhere;white-space:normal;flex:0 1 auto}
+/* area and time sit side by side at the left, so both are readable without swiping
+   on a phone — no margin-left:auto pushing the time off the end of the strip */
+.timecell{min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-2);font-weight:600;
+  line-height:1.35;letter-spacing:-.01em;white-space:nowrap;flex:0 0 auto;padding-left:8px;
+  border-left:1px solid rgba(59,198,232,.18)}
+.areacell[contenteditable],.timecell[contenteditable]{outline:none}
+.areacell[contenteditable]:focus,.timecell[contenteditable]:focus{background:rgba(59,198,232,.10)}
+/* in edit mode an empty half still needs something to click on */
+.page.editing .areacell:empty::before,.page.editing .timecell:empty::before{content:'—';color:var(--ink-3);font-weight:600}
+.seat{display:flex}
+.acrow .seat .puck{width:var(--puck-w);flex:0 0 var(--puck-w)}
+.acrow .seat.empty-slot{width:var(--puck-w);flex:0 0 var(--puck-w);height:var(--puck-h);border:1px dashed var(--edge-2);border-radius:3px;align-items:center;justify-content:center;
+  color:var(--ink-3);font-size:9px;font-weight:700;letter-spacing:.05em;cursor:pointer;background:rgba(255,255,255,.02)}
+.acrow .seat.empty-slot:hover{border-color:var(--accent);color:var(--accent)}
+.page.editing .acrow .seat[data-slot]{cursor:pointer}
+.page.editing .acrow .seat[data-slot]:hover .puck{outline:2px solid var(--accent);outline-offset:1px}
+.cols.formcols{display:grid;grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);background:var(--panel-2);border-bottom:1px solid var(--edge);
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:8.5px;font-weight:700;color:var(--ink-2)}
+.cols.formcols span{text-align:left;white-space:nowrap;overflow:hidden;padding:3px 5px;border-right:1px solid rgba(42,49,58,.4)}
+.cols.formcols .c-c{text-align:center}
+
+/* ============ PUCK ============ */
+/* 9px is not arbitrary: it is the reference tool's own puck type, back-computed from a
+   19-device-px cap height on a 3x screen. Same size on desktop — see the note in :root. */
+.puck{display:inline-flex;align-items:stretch;border-radius:3px;overflow:hidden;font-size:9px;font-weight:600;cursor:pointer;line-height:1;border:1px solid transparent;height:var(--puck-h);width:var(--puck-w);max-width:var(--puck-w);flex:0 0 var(--puck-w)}
+/* every puck, anywhere, is exactly the flying-puck size */
+.seat .puck,.ppl .seat .puck,.ap-grid .seat .puck,.rpuck .puck,.sb-slot .seat .puck{width:var(--puck-w)!important;max-width:var(--puck-w)!important;flex:0 0 var(--puck-w)!important;height:var(--puck-h)!important}
+/* SANS: bright purple line down the right edge of the puck (deliberately the
+   brightest thing on the puck so SANS read at a glance across the whole week) */
+.puck.san{position:relative}
+.puck.san::after{content:'';position:absolute;top:-1px;bottom:-1px;right:0;width:4px;
+  background:linear-gradient(180deg,#F2C8FF 0%,#D98CFF 45%,#B24DEA 100%);
+  box-shadow:0 0 5px 1px rgba(214,124,255,.95),0 0 12px rgba(178,77,234,.6),inset 0 0 1px #fff;
+  z-index:4}
+/* left flag chip: DT/TT double/tight turn (orange), C conflict (strong orange), CR crew-rest (red) */
+.puck .lchip{display:flex;align-items:center;justify-content:center;padding:0 3px;font-size:8px;font-weight:800;letter-spacing:.02em;color:#12100a;min-width:14px}
+.puck .lchip.l-dt{background:#E5A83B}
+.puck .lchip.l-tt{background:#E5A83B}
+.puck .lchip.l-c{background:#F0555F;color:#fff}
+.puck .lchip.l-cr{background:#F0555F;color:#fff}
+.puck .lchip.l-q{background:#F0555F;color:#fff}
+/* NB/SB = no time for the brief (red, hard) · DB/SD = no time for the debrief (orange) */
+.puck .lchip.l-nb{background:#F0555F;color:#fff}
+.puck .lchip.l-sb{background:#F0555F;color:#fff}
+.puck .lchip.l-db{background:#E5A83B}
+.puck .lchip.l-sd{background:#E5A83B}
+/* A = advisory — on shift AND down for a ground event or a programme item.
+   It used to borrow the conflict chip: a red C on the puck with an amber line in
+   the notes, which read as a hard clash at a glance. Its own amber letter now. */
+.puck .lchip.l-a{background:#E5A83B}
+/* LD = long work day — a grey note, not a warning */
+.puck .lchip.l-ld{background:#8A96A3;color:#0B0D10}
+/* conflict / crew rest → red box around the whole puck */
+.puck.boxred{box-shadow:0 0 0 2px var(--hard)!important;border-color:var(--hard)!important}
+.puck.sel.boxred,.puck.me.boxred{box-shadow:0 0 0 2px var(--hard),0 0 10px 1px rgba(240,85,95,.7)!important}
+.puck .nm{display:flex;align-items:center;padding:0 4px;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* the reference's qual chip is deliberately CHUNKIER than the name it sits next to —
+   its glyph measures a 23px cap against the name's 19px — and it is a full-height
+   square, so the chip tracks --puck-h rather than a fixed width */
+.puck .role{display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;min-width:var(--puck-h);padding:0 2px;color:#fff}
+.puck{background:var(--fcp);color:var(--fcp-ink)}
+.puck.r{background:var(--rcp);color:var(--rcp-ink)}
+/* qual chip colours */
+.puck .role.q-ocu{background:var(--q-ocu);color:#fff}
+.puck .role.q-d{background:var(--q-d);color:#fff}
+.puck .role.q-c{background:var(--q-c);color:#04222b}
+.puck .role.q-b{background:var(--q-b);color:#2a1e02}
+.puck .role.q-a{background:var(--q-a);color:#fff}
+.puck .role.q-ins{background:var(--q-ins);color:#fff}/* patch (no qual) chip grey *//* neutral / duty */
+.puck.duty{background:rgba(150,120,220,.16);border-color:rgba(150,120,220,.45);color:#DAD1F2}
+.puck.duty .role{display:none}
+/* warnings */
+.puck.warn{box-shadow:0 0 0 1.5px var(--adv);border-color:var(--adv)}
+.puck.warn.hard{box-shadow:0 0 0 1.5px var(--hard);border-color:var(--hard)}
+/* the third, gentlest tier: a grey ring means "worth knowing", not "fix this" */
+.puck.warn.note{box-shadow:0 0 0 1.5px #8A96A3;border-color:#8A96A3}
+.puck.warn .flag{display:flex;align-items:center;padding:0 3px;background:rgba(0,0,0,.35);color:#FFD9D0;font-weight:800;font-size:10px}
+/* .sm is only a label for "puck outside the flying grid" — it must NOT change the
+   geometry. Height/width always come from --puck-h/--puck-w so every puck in the
+   app (now and in future) is exactly one size. */
+/* .sm is a historical marker for pucks rendered inside list cells. It must NOT resize
+   or restyle the type: one canonical puck everywhere. It used to force font-size:11px,
+   which in a 15px box pushed the line box to 13px and sliced the descenders off every
+   name with a g/j/p/q/y in the sims, duties and programme tables. */
+/* (.puck.sm carried height+padding identical to .puck's own defaults — a
+   no-op left over from when small pucks were a separate size. Removed; the
+   class is still applied and still means "in a list", it just styles nothing.) */
+.puck:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+/* highlight states — me (purple) wins over sel (blue) */
+.puck.sel{background:#1E86FF!important;color:#fff!important;box-shadow:0 0 0 2px #BFE0FF,0 0 12px 1px rgba(30,134,255,.85)!important;border-color:#BFE0FF!important;z-index:2;position:relative}
+.puck.sel .nm{color:#fff;font-weight:700}
+.puck.me{background:var(--me)!important;color:#fff!important;box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important;z-index:2;position:relative}
+.puck.me .nm{color:#fff;font-weight:700}
+.puck.hl{box-shadow:0 0 0 2px var(--accent),0 0 10px -1px rgba(59,198,232,.7);border-color:var(--accent)}
+.puck.dim{opacity:.18}
+
+.nobox{margin:3px 10px 9px;font-size:11px;padding:6px 10px;line-height:1.4;background:rgba(229,168,59,.10);border:1px solid rgba(229,168,59,.22);border-left:2px solid var(--adv);border-radius:8px;color:#F2D699}
+/* all-hands header */
+.allhands{margin:8px 10px;border:1px solid var(--edge);border-radius:10px;background:rgba(59,198,232,.05)}
+.allhands .ah-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:10px;font-weight:700;color:var(--accent);padding:5px 10px;border-bottom:1px solid var(--edge)}
+.allhands .ah-note{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#F2D699;padding:3px 10px 0;overflow-wrap:anywhere}
+.allhands .ah-cols,.allhands .ah-row{display:grid;grid-template-columns:minmax(0,1fr) 42px 42px minmax(112px,232px);gap:8px;padding:5px 10px}
+.allhands .ah-cols{align-items:center;border-bottom:1px solid var(--edge);font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.07em;font-size:9px;font-weight:700;color:var(--ink-3)}
+.allhands .ah-row{align-items:start;font-size:11px;border-top:1px solid rgba(255,255,255,.035)}
+/* direct child: '.nm' is ALSO the class on a puck's name span, so a descendant
+   selector here would restyle every puck inside the row. */
+.allhands .ah-row>.nm{line-height:1.25;padding-top:3px;min-width:0;overflow-wrap:anywhere}
+.allhands .ah-row>.nm .sub{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-3);margin-top:2px;overflow-wrap:anywhere}
+.allhands .ah-row .t{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);padding-top:4px}
+.allhands .ah-row .ppl{display:flex;flex-wrap:wrap;gap:4px;align-content:start}
+.allhands .ah-row .ppl .seat{display:flex;flex:0 0 auto}
+.allhands .ah-row:last-child{padding-bottom:6px}
+/* All-available pucks */
+.availpuck{margin:8px 10px;border:1px solid var(--edge);border-radius:10px;background:rgba(87,201,122,.05);overflow:hidden}
+.availpuck .ap-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:10px;font-weight:700;color:var(--ok);padding:5px 10px;border-bottom:1px solid var(--edge);display:flex;justify-content:space-between;align-items:center}
+.availpuck .ap-h .n{color:var(--ink-3);font-weight:600;font-size:9px}
+.availpuck .ap-grp{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:9px;font-weight:700;color:var(--ink-3);padding:6px 10px 2px}
+.availpuck .ap-grp.sans-grp{color:var(--san);border-top:1px solid var(--edge);margin-top:4px;padding-top:8px}
+.availpuck .ap-grid{display:flex;flex-wrap:wrap;gap:4px;padding:2px 10px 4px}
+.availpuck .ap-grid .seat{display:flex;flex:0 0 auto}
+.availpuck .ap-empty{color:var(--ink-3);font-size:11px;padding:4px 10px 8px}
+.availpuck:last-child{margin-bottom:10px}
+/* columnar list (duties / sims / ground / inputs) — NAME | START | END | PEOPLE | RMKS.
+   NAME is clamped instead of 1fr so START/END sit hard left next to it; the people
+   column is derived from the canonical puck so TWO pucks always sit side by side
+   (an 8-crew AMT box therefore reads as four rows of two, not eight rows of one),
+   and everything left over goes to RMKS on the right of the pucks. */
+.plist{margin:10px}
+.plist .sub-h{padding:4px 6px 5px}
+.plist .pl-cols,.plist .pl-row{display:grid;grid-template-columns:minmax(64px,1fr) 44px 44px calc(var(--puck-w)*2 + 10px) minmax(0,1.25fr);gap:8px;padding:4px 6px}
+.plist .pl-cols{align-items:center;border-bottom:1px solid var(--edge);font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.07em;font-size:9px;font-weight:700;color:var(--ink-3)}
+.plist .pl-sub{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:9px;font-weight:700;color:var(--accent);padding:6px 6px 1px}
+.plist .pl-row{align-items:start;font-size:11px;border-top:1px solid rgba(255,255,255,.03)}
+/* direct child on purpose — see the note on .ah-row>.nm above */
+.plist .pl-row>.nm{line-height:1.25;padding-top:3px;color:var(--ink-2);min-width:0;overflow-wrap:anywhere}
+/* ---- single-puck blocks -------------------------------------------------------
+   Ground programme (scheduler AND personal inputs), Available, Office, Leave and
+   Downchit only ever carry ONE puck on a row, so the two-puck PEOPLE column was
+   holding 80px of empty space while NAME — which carries things like
+   "CAF ENGAGEMENT @ MINDEF HQ" — wrapped over the TIME column. The people track
+   drops to a single puck (still derived from --puck-w; the puck itself never
+   changes size, see §1.2) and every pixel that frees goes to NAME.            */
+.plist.one .pl-cols,.plist.one .pl-row{grid-template-columns:minmax(96px,1.4fr) 44px 44px var(--puck-w) minmax(0,1fr)}
+.plist .pl-row .t{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);padding-top:4px}
+.plist .pl-row .t.allday{grid-column:2/span 2;letter-spacing:-.02em}
+.plist .pl-row .ppl{display:flex;flex-wrap:wrap;gap:4px;align-content:start}
+.plist .pl-row .ppl .seat{display:flex;flex:0 0 auto}
+.plist .pl-row .ppl .itxt{color:var(--ink-3);font-size:10px;padding-top:3px}
+/* "N pax" count chip — shown when a sim row carries more than a 2-seat crew, so an
+   AMT box with 8 aircrew reads its headcount at a glance without counting pucks.
+   flex-basis:100% puts it on its own line above the pucks, which keeps the pucks
+   themselves on a clean 2-per-row grid at the canonical puck width. */
+/* the "drop here to add" strip — see lCell() */
+.ppl .addz{flex:0 0 100%;height:13px;margin-top:2px;border:1px dashed transparent;border-radius:4px;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;color:transparent;
+  display:flex;align-items:center;justify-content:center;pointer-events:none;transition:none}
+body.dnd .ppl[data-fill] .addz{border-color:var(--edge-2);color:var(--ink-3)}
+body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--accent);background:rgba(59,198,232,.07)}
+/* remarks, to the RIGHT of the pucks (column 5 on desktop, its own strip on a phone) */
+.plist .pl-row .rmk{grid-column:5;font-size:9.5px;color:var(--ink-2);line-height:1.3;padding-top:3px;min-width:0;overflow-wrap:anywhere}
+.plist .pl-row .rmk .ntx{display:block}
+/* wave in-times note block */
+.intimes{margin:0;padding:5px 11px;border-bottom:1px solid var(--edge);background:rgba(229,201,74,.05);display:flex;flex-direction:column;gap:2px}
+.intimes span{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#F2D699;line-height:1.4;display:block}
+.intimes span b{font-weight:800;color:#FFDF9E}
+.intimes[contenteditable]{outline:none}
+.intimes[contenteditable]:focus{background:rgba(229,201,74,.10)}
+.go.night{background:rgba(240,85,95,.04)}
+.go.night .go-tab .asd{color:#FBB4B9}/* sims sub-blocks */
+/* duties by wave */
+/* stores (2TK / TPOD / NAV / bombs) */
+.stores{display:inline-flex;flex-wrap:wrap;gap:2px;margin-left:4px;vertical-align:middle}
+.stchip{font-size:7.5px;font-weight:800;letter-spacing:.02em;padding:1px 3px;border-radius:4px;border:1px solid var(--edge-2);color:var(--ink-3);cursor:default}
+.stchip.on{background:rgba(59,198,232,.16);border-color:rgba(59,198,232,.5);color:var(--accent)}
+.stchip.bomb{background:rgba(217,121,31,.16);border-color:rgba(217,121,31,.5);color:#F2B980}
+.page.editing .stchip{cursor:pointer}
+.page.editing .stchip:hover{border-color:var(--accent)}
+.bombs{font-size:8px;color:var(--ink-2);min-width:34px;border-bottom:1px dashed var(--edge-2);outline:none;padding:0 2px}
+.bombs:empty::before{content:'bombs…';color:var(--ink-3)}
+/* approval / amendment banner */
+/* ---- sign-off strip ----------------------------------------------------------
+   Four names have to be on an amendment before it goes out: who checked the
+   current programme, who checked the schedule, who planned it and who approved
+   it. Each is a native <select> so it drops down properly on a phone. The
+   Publish buttons stay disabled until all four are filled, and publishing
+   clears them again — the next AL is signed for on its own merits. */
+.signoff{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:0 20px 8px;padding:8px 11px;
+  border-radius:10px;background:var(--panel);border:1px solid var(--edge)}
+.signoff .so-h{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-right:2px}
+.sgn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--edge-2);border-radius:999px;
+  background:var(--panel-2);padding:3px 4px 3px 10px;position:relative}
+.sgn>.k{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.07em;
+  font-size:10px;font-weight:800;color:var(--ink-3);white-space:nowrap}
+.sgn>select{appearance:none;-webkit-appearance:none;background:transparent;border:0;color:var(--ink-3);
+  font-family:inherit;font-size:11.5px;font-weight:700;padding:2px 18px 2px 4px;border-radius:999px;
+  cursor:pointer;min-width:74px;outline:none}
+.sgn::after{content:'▾';position:absolute;right:9px;font-size:9px;color:var(--ink-3);pointer-events:none}
+.sgn.sch>.k::after{content:'✦';margin-left:3px;color:var(--san);font-size:8px;vertical-align:top}
+.sgn.on{border-color:rgba(87,201,122,.6);background:rgba(87,201,122,.12)}
+.sgn.on>.k{color:#A8E6BC}
+.sgn.on>select{color:#DFF6E7}
+.sgn.on::after{color:#A8E6BC}
+.signoff .so-state{margin-left:auto;font-size:10.5px;font-weight:700;white-space:nowrap}
+.signoff .so-state.no{color:var(--adv)}
+.signoff .so-state.yes{color:var(--ok)}
+.signoff button.so-clear{background:transparent;border:1px dashed var(--edge-2);color:var(--ink-3);
+  border-radius:8px;padding:4px 8px;font-size:10.5px;font-weight:600;cursor:pointer}
+.signoff button.so-clear:hover{border-color:var(--accent);color:var(--accent)}
+.abtn[disabled]{opacity:.42;cursor:not-allowed}
+@media (max-width:820px){
+  .signoff{margin:0 12px 8px;padding:7px 9px;gap:5px}
+  .signoff .so-state{margin-left:0;flex:0 0 100%}
+}
+/* the resize grip on the pinned roster (phone layout only) */
+.sb-grip{display:none;align-items:center;justify-content:center;height:17px;flex:0 0 17px;
+  cursor:row-resize;touch-action:none;background:var(--panel-2);border-bottom:1px solid var(--edge);
+  border-radius:10px 10px 0 0;margin-top:-1px;user-select:none;-webkit-user-select:none}
+.sb-grip>span{display:block;width:44px;height:4px;border-radius:2px;background:var(--edge-2)}
+.sb-grip:hover>span,.sb-grip.on>span{background:var(--accent)}
+.sb-grip.on{background:rgba(59,198,232,.10)}
+body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
+.schedboard.sb-wide .sb-grip{display:none}
+#sbSignBar{margin:0 0 10px}
+.signoff.board-sign{position:static}
+/* the per-day strip, in the day's own header. Four names, two rows on a phone,
+   and the day's Publish button stays locked until all four carry one. */
+.signoff.day-sign{margin:8px 10px 0;padding:6px 8px;gap:4px;background:var(--panel-2);border-color:var(--edge)}
+.signoff.day-sign .so-h{font-size:8.5px;letter-spacing:.08em;flex:0 0 100%;margin:0 0 1px}
+.signoff.day-sign .sgn{padding:2px 3px 2px 7px;gap:4px;flex:1 1 auto;min-width:0}
+.signoff.day-sign .sgn>.k{font-size:9px}
+.signoff.day-sign .sgn>select{font-size:10.5px;min-width:52px;padding:1px 15px 1px 3px}
+.signoff.day-sign .sgn::after{right:6px;font-size:8px}
+.signoff.day-sign .so-state{flex:0 0 100%;margin-left:0;font-size:9.5px;padding-top:1px}
+.signoff.day-sign button.so-clear{padding:2px 6px;font-size:9.5px}
+/* not yet signed off — the same button, darkened. Deliberately not `opacity`:
+   a half-transparent cyan over a dark panel reads as a rendering fault, a solid
+   dim blue reads as "this button is not live yet". */
+.dbeak[disabled]{cursor:not-allowed;opacity:1;
+  background:rgba(59,198,232,.16);color:rgba(59,198,232,.62);border-color:rgba(59,198,232,.3)}
+.dbeak.locked{border-style:dashed}
+.dbeak.locked::before{content:'🔒 ';font-size:9px}
+.schedbanner{margin:0 20px 8px;display:none}
+.schedbanner.approved,.schedbanner.draft,.schedbanner.al,.schedbanner.part{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:9px 14px;border-radius:10px;font-weight:700}
+.schedbanner .sb-badge{font-size:13px;letter-spacing:.04em}
+.schedbanner .sb-actions{margin-left:auto;display:flex;gap:8px}
+.schedbanner.draft{background:rgba(138,150,163,.12);border:1px solid var(--edge-2);color:var(--ink-2)}
+.schedbanner.approved{background:rgba(87,201,122,.14);border:1px solid rgba(87,201,122,.5);color:#A8E6BC}
+/* part-published: some days approved, some still draft — amber, because the week is
+   neither safe to fly wholesale nor still wholly a draft */
+.schedbanner.part{background:rgba(229,168,59,.13);border:1px solid rgba(229,168,59,.5);color:#F2D699}
+.schedbanner.al{background:rgba(0,0,0,.25);border:1px solid var(--al);color:var(--al)}
+/* which ALs are live and which days each one covers, right in the banner */
+.schedbanner .sb-als{display:flex;flex-wrap:wrap;gap:6px}
+.schedbanner .sb-al{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;
+  color:var(--ink-2);background:rgba(0,0,0,.28);border:1px solid var(--alc);border-radius:999px;padding:2px 9px}
+.schedbanner .sb-al b{color:var(--alc);font-weight:800;letter-spacing:.04em}
+/* ---- AL amendment marks: ONLY the changed item is coloured ---- */
+[data-alc="1"]{--alc:#3BC6E8}   /* AL1 · cyan blue */
+[data-alc="2"]{--alc:#E5C24A}   /* AL2 · amber */
+[data-alc="3"]{--alc:#3DE86B}   /* AL3 · bright green */
+[data-alc="4"]{--alc:#FFFFFF}   /* AL4 · white */
+[data-alc="5"]{--alc:#C21E93}
+[data-alc="6"]{--alc:#E5872B}   /* moved off green so it can't be read as AL3 */
+[data-alc="7"]{--alc:#8A6ED0}
+/* any AL past the palette still gets a visible mark rather than an unset var */
+[data-alc]{--alc:#8A6ED0}
+[data-alc="1"]{--alc:#3BC6E8}[data-alc="2"]{--alc:#E5C24A}[data-alc="3"]{--alc:#3DE86B}
+[data-alc="4"]{--alc:#FFFFFF}[data-alc="5"]{--alc:#C21E93}[data-alc="6"]{--alc:#E5872B}
+.seat[data-alc]{position:relative}
+.seat[data-alc] .puck{box-shadow:0 0 0 2px var(--alc)}
+.seat[data-alc]::after{content:'AL' attr(data-alc);position:absolute;top:-5px;right:-3px;z-index:4;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
+  padding:1px 3px;border-radius:4px;background:var(--alc);color:#08131b;pointer-events:none}
+.areacell[data-alc],.timecell[data-alc],.rmkcell[data-alc],.intimes[data-alc]{position:relative;
+  outline:1px solid var(--alc);outline-offset:-1px;border-radius:4px}
+.areacell[data-alc]::after,.timecell[data-alc]::after,.rmkcell[data-alc]::after,.intimes[data-alc]::after{
+  content:'AL' attr(data-alc);position:absolute;top:0;right:1px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:7px;font-weight:800;letter-spacing:.02em;color:var(--alc);pointer-events:none;opacity:.95}
+/* inside the horizontal AREA strip the halves are only one line tall, so the AL tag
+   trails the text inline instead of floating over it */
+.form-area .areacell[data-alc]::after,.form-area .timecell[data-alc]::after{position:static;margin-left:4px}
+/* edited but not published yet — neutral dashed hint, no AL colour */
+.seat[data-alp]{position:relative}
+.seat[data-alp] .puck{box-shadow:0 0 0 1.5px rgba(242,214,153,.75)}
+.areacell[data-alp],.timecell[data-alp],.rmkcell[data-alp],.intimes[data-alp]{
+  outline:1px dashed rgba(242,214,153,.6);outline-offset:-1px;border-radius:4px}
+/* amendment-level panel (edit page) */
+.alpanel{margin:0 20px 8px;border:1px solid var(--edge);border-radius:10px;background:var(--panel);padding:7px 11px}
+.alpanel .al-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:9.5px;font-weight:700;color:var(--ink-3);margin-bottom:5px}
+.alpanel .al-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2)}
+.alpanel .al-pend{font-weight:700;color:var(--ink-3)}
+.alpanel .al-pend.on{color:#F2D699}
+.alpanel select{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);border-radius:6px;padding:3px 6px;font-size:11.5px;font-family:inherit}
+.alpanel .al-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.alpanel .al-tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink-2);
+  border:1px solid var(--alc);background:rgba(255,255,255,.03);border-radius:999px;padding:2px 4px 2px 9px}
+.alpanel .al-tag b{color:var(--alc);font-weight:800}
+.alpanel .al-tag .al-days{font-style:normal;color:var(--ink);font-weight:600}
+/* per-day breakdown of pending edits: green = day is published so these go out,
+   amber = day is still draft so they are held back out of the next AL */
+.alpanel .al-brk{display:flex;flex-wrap:wrap;gap:5px}
+.alpanel .al-d{font-size:10px;font-weight:700;letter-spacing:.03em;padding:1px 7px;border-radius:999px;white-space:nowrap}
+.alpanel .al-d.ok{color:#A8E6BC;background:rgba(87,201,122,.14);border:1px solid rgba(87,201,122,.45)}
+.alpanel .al-d.held{color:#F2D699;background:rgba(229,168,59,.12);border:1px solid rgba(229,168,59,.42)}
+.alpanel .al-un{background:transparent;border:none;color:var(--ink-3);cursor:pointer;font-size:11px;line-height:1;padding:2px 5px;border-radius:999px}
+.alpanel .al-un:hover{color:var(--hard);background:rgba(240,85,95,.14)}
+.alpanel .al-none,.alpanel .al-note{font-size:11px;color:var(--ink-3)}
+.alpanel .abtn[disabled]{opacity:.4;cursor:not-allowed}
+.abtn.hbtn{min-width:76px}
+.abtn.hbtn[disabled]{opacity:.35;cursor:not-allowed}
+@media (max-width:820px){.alpanel{display:none}}
+/* ============ SECTION COLOUR CODES (left bar + tinted header per block) ============ */
+.sec{position:relative;border-left:3px solid var(--sec);border-radius:0 9px 9px 0;background:var(--secbg);padding-left:6px}
+.sec>.sub-h{color:var(--sec)}
+.sec .pl-sub{color:var(--sec)}
+
+.sec .pl-cols{border-bottom-color:var(--secln)}
+.sec-prog{--sec:#3BC6E8;--secbg:rgba(59,198,232,.05);--secln:rgba(59,198,232,.28)}
+.sec-duty{--sec:#57C97A;--secbg:rgba(87,201,122,.05);--secln:rgba(87,201,122,.28)}
+.sec-sim{--sec:#B24DEA;--secbg:rgba(178,77,234,.055);--secln:rgba(178,77,234,.3)}
+.sec-grnd{--sec:#E5A83B;--secbg:rgba(229,168,59,.05);--secln:rgba(229,168,59,.28)}
+.sec-inp{--sec:#F08A4A;--secbg:rgba(240,138,74,.05);--secln:rgba(240,138,74,.28)}
+.sec-avail{--sec:#35D6A4;--secbg:rgba(53,214,164,.05);--secln:rgba(53,214,164,.28)}
+.sec-off{--sec:#3B7DF0;--secbg:rgba(59,125,240,.05);--secln:rgba(59,125,240,.28)}
+.sec-dnco{--sec:#F0555F;--secbg:rgba(240,85,95,.055);--secln:rgba(240,85,95,.3)}
+.sec-leave{--sec:#8A96A3;--secbg:rgba(138,150,163,.05);--secln:rgba(138,150,163,.28)}
+/* the framed blocks (Programme / Available crew) get the same left bar */
+.allhands.sec,.availpuck.sec{border-left:3px solid var(--sec);background:var(--secbg)}
+.allhands.sec .ah-h{color:var(--sec)}
+.availpuck.sec .ap-h{color:var(--sec)}
+/* edit footer: SANS REQ CAA / SAF100A / VERIFIED BY */
+.schedfoot{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;padding:6px 20px 40px}
+.sf-box{background:var(--panel);border:1px solid var(--edge);border-radius:10px;overflow:hidden}
+.sf-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:10px;font-weight:700;color:var(--accent);padding:6px 10px;background:rgba(59,198,232,.06);border-bottom:1px solid var(--edge)}
+.sf-body{padding:8px 10px;font-size:11.5px;color:var(--ink-2);line-height:1.5;outline:none;min-height:20px}
+.sf-body:focus{background:rgba(59,198,232,.05)}
+@media (max-width:820px){.schedfoot{grid-template-columns:1fr}}
+details.gp[open]>summary::before{content:'▾ '}
+details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+
+.sub{margin:10px}
+.sub-h{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);padding:4px 4px 5px;font-weight:600}/* sub-section rows: fixed-size pucks (same as flying) + timings shifted left, right after the puck */
+/* (removed: .puck.sm used to add 2px/8px padding here, which ate the name column
+   and clipped the callsign vertically. Geometry lives on .puck only.) */
+
+/* daydots */
+.daydots{display:none;justify-content:center;gap:7px;padding:8px 0 4px}
+.daydots button{width:8px;height:8px;border-radius:50%;border:none;padding:0;cursor:pointer;background:var(--edge-2)}
+.daydots button.on{background:var(--accent);width:22px;border-radius:4px}
+
+/* ============ QUALS PAGE ============ */
+.qbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 20px;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.4)}
+.qbar .grow{flex:1}
+.qhelp{padding:10px 20px;color:var(--ink-3);font-size:11.5px;line-height:1.6}
+.qhelp a{cursor:pointer}
+.qadd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--edge)}
+.qadd input,.qadd select{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:7px 9px;border-radius:8px}
+.qadd .lab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.qwrap{padding:6px 20px 40px;overflow-x:auto}
+.qtbl{border-collapse:collapse;width:100%;min-width:1050px;font-size:11.5px}
+.qtbl th,.qtbl td{border:1px solid var(--edge);padding:5px 7px;text-align:center;white-space:nowrap}
+.qtbl thead th{position:sticky;top:0;background:var(--panel-2);color:var(--ink-2);font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;font-weight:700;z-index:2}
+.qtbl th.lav{background:#2a2740;color:#cfc6ef}
+.qtbl th.fix{background:#22302a;color:#bfe8d4}
+.qtbl th.apt{background:#2b2536;color:#E9C7FF}
+.qtbl th.scq{background:#2e2a1c;color:#F2D699}
+.qtbl td.qcell.scq-on .qchk{color:var(--adv)}
+.qtbl th.aarq{background:#16303a;color:#A9E4F5}
+.qtbl td.qcell.aar-on .qchk{color:var(--accent)}
+.qtbl td.qcell.na{color:var(--edge-2);cursor:default}
+.qtbl td.qcell.apt-on .qchk{color:var(--san)}
+.qtbl .qname{text-align:left;font-weight:600;color:var(--accent);cursor:pointer}
+.qtbl .qname:hover{text-decoration:underline}
+.qtbl tbody tr:hover{background:rgba(255,255,255,.02)}
+.qtbl .grp td{background:rgba(59,198,232,.06);color:var(--accent);text-align:left;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:10.5px;font-family:'Barlow Condensed','Inter Tight',sans-serif}
+.qtbl .lvl{font-weight:700}
+.qchk{cursor:default;color:var(--ok);font-weight:800}
+.qtbl.editing .qcell{cursor:pointer}
+.qtbl.editing .qcell:hover{background:rgba(59,198,232,.12)}
+.qlvlsel{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-size:11px;border-radius:6px;padding:2px 4px}
+.qarch{color:var(--hard);cursor:pointer;font-weight:800;display:none}
+.qtbl.editing .qarch{display:inline}
+.qmini{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:15px;border-radius:3px;font-size:9px;font-weight:800;color:#fff;margin-right:4px}
+
+/* ============ INPUTS PAGE ============ */
+.inbar{padding:16px 20px;background:rgba(59,198,232,.05);border-bottom:1px solid var(--edge)}
+.ingrid{display:grid;grid-template-columns:minmax(160px,1.2fr) 1fr 1fr auto 1fr auto minmax(160px,1.4fr) auto;gap:10px;align-items:end}
+/* the fixed eight-column track forced a ~930px document, so on a phone the whole
+   app was scaled down to 41% and half the form sat off the right edge */
+@media (max-width:820px){
+  .ingrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .ingrid>.ifield.chk{align-items:flex-start}
+  .ingrid>.abtn,.ingrid>button{grid-column:1/-1}
+  .inwrap{overflow-x:auto}
+  .intbl{min-width:640px}
+}
+@media (max-width:430px){ .ingrid{grid-template-columns:minmax(0,1fr)} }
+.ifield{display:flex;flex-direction:column;gap:4px}
+.ifield label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.ifield input,.ifield select{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:8px 9px;border-radius:8px}
+.ifield.chk{align-items:center;justify-content:center}
+.infilter{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.4)}
+.infilter select,.infilter input{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:7px 9px;border-radius:8px}
+.intbl{width:100%;border-collapse:collapse;font-size:12px}
+.intbl th,.intbl td{border-bottom:1px solid var(--edge);padding:9px 12px;text-align:left}
+.intbl thead th{background:var(--panel-2);color:var(--ink-2);font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;font-weight:700}
+.intbl tbody tr:hover{background:rgba(255,255,255,.02)}
+.intag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
+.inwrap{padding:6px 20px 40px}
+.rmx{color:var(--hard);cursor:pointer;font-weight:800}
+
+/* ============ MODALS / DRAWER / AIRSPACE ============ */
+/* Stacking, highest last: the scheduler board is a full-screen overlay at 400,
+   so every dialog that can be opened FROM it has to sit above that — the assign
+   picker and the CX box were at 115 and opened invisibly behind the board. The
+   drag ghost stays on top of everything. */
+.modal{position:fixed;inset:0;z-index:470;background:rgba(4,7,10,.7);display:flex;align-items:center;justify-content:center;padding:22px}
+.modal[hidden]{display:none}
+.modal-box{background:var(--panel);border:1px solid var(--edge);border-radius:16px;width:460px;max-width:100%;max-height:84vh;overflow:auto}
+.modal-head{padding:14px 16px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
+.modal-head b{font-size:16px;font-weight:700}
+.modal-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px;line-height:1}
+.modal-body{padding:14px 16px}
+.mfield{display:flex;flex-direction:column;gap:3px;margin-bottom:11px}
+.mfield label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.mfield input,.mfield select{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:13px;padding:8px 10px;border-radius:9px}
+.userlist{margin-top:6px;border-top:1px solid var(--edge);padding-top:10px}
+.urow{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12.5px}
+.urow .ub{margin-left:auto;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:999px}
+.urow .ub.admin{background:rgba(59,198,232,.16);color:var(--accent)}
+.urow .ub.main{background:rgba(138,150,163,.16);color:var(--ink-2)}
+.modal-foot{padding:12px 16px;border-top:1px solid var(--edge);display:flex;gap:8px;justify-content:flex-end}
+.witem{display:flex;gap:10px;padding:10px 12px;font-size:12px;line-height:1.4;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;align-items:flex-start;cursor:pointer}
+.witem:hover{border-color:var(--edge-2)}
+.witem .wbar{width:3px;border-radius:2px;flex:0 0 3px;align-self:stretch}
+.witem.hard .wbar{background:var(--hard)}.witem.adv .wbar{background:var(--adv)}.witem.note .wbar{background:#8A96A3}
+.witem .wcode{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.03em;color:var(--ink-3);display:block;margin-bottom:1px}
+.empty{color:var(--ink-3);font-size:12px;padding:8px 0}
+.daywarn{margin:8px 10px 2px;padding:7px 11px;border-radius:9px;font-size:11.5px;cursor:pointer;display:flex;gap:8px;align-items:center;border:1px solid}
+.daywarn b{font-weight:700}
+.daywarn.hard{background:rgba(240,85,95,.12);border-color:rgba(240,85,95,.4);color:#FBB4B9}
+.daywarn.adv{background:rgba(229,168,59,.10);border-color:rgba(229,168,59,.35);color:#F2D69B}
+.daywarn.note{background:rgba(138,150,163,.10);border-color:rgba(138,150,163,.35);color:#C4CCD5}
+.daywarn:hover{filter:brightness(1.12)}
+/* ---- inline (expanding) day warnings — replaces the old centred modal ---- */
+.dwbox{margin:8px 10px 2px;border-radius:10px}
+.dwbox .daywarn{margin:0;border-radius:9px}
+.dwbox.open .daywarn{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.daywarn .dwcue{color:inherit;opacity:.72}
+.daywarn .dwcar{margin-left:auto;font-size:10px;opacity:.8}
+.dwlist{display:flex;flex-direction:column;gap:5px;padding:7px;border:1px solid var(--edge);border-top:none;
+  border-radius:0 0 9px 9px;background:rgba(0,0,0,.22)}
+.dwlist .witem{padding:7px 9px;font-size:11px;line-height:1.35;gap:8px;border-radius:8px}
+.dwlist .witem.on{border-color:var(--accent);background:rgba(59,198,232,.10);box-shadow:0 0 0 1px rgba(59,198,232,.35)}
+.dwlist .witem b{color:var(--ink)}
+.dwclear{margin-top:1px;background:transparent;border:1px dashed var(--edge-2);color:var(--ink-3);
+  border-radius:8px;padding:5px 8px;font-size:10.5px;font-weight:600;cursor:pointer;letter-spacing:.02em}
+.dwclear:hover{border-color:var(--accent);color:var(--accent)}
+/* the puck (or pucks) that caused the focused warning */
+.puck.wfoc{outline:2px solid var(--hard);outline-offset:1px;box-shadow:0 0 0 1px #0B0D10,0 0 14px rgba(240,85,95,.55);z-index:5;position:relative}
+.puck.wfoc.advf{outline-color:var(--adv);box-shadow:0 0 0 1px #0B0D10,0 0 14px rgba(229,168,59,.5)}
+/* B14 · the SAME aircrew on the other days of the week — dashed and quieter, so
+   a cause sitting on the day before (crew rest, a late land, a double turn) is
+   traceable without competing with the puck that actually raised the warning */
+.puck.wfoc.echo{outline-style:dashed;outline-offset:1px;box-shadow:0 0 0 1px #0B0D10,0 0 7px rgba(240,85,95,.28);opacity:.92}
+.puck.wfoc.echo.advf{box-shadow:0 0 0 1px #0B0D10,0 0 7px rgba(229,168,59,.26)}
+/* the callsign chip shown on a day box that was opened by clicking a puck */
+.dwbox.pfoc .daywarn{border-style:dashed}
+.daywarn .dwwho{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:5px;margin-right:7px;
+  background:rgba(255,255,255,.10);color:var(--ink)}
+.dwecho{font-size:10.5px;color:var(--ink-3);line-height:1.35;padding:2px 1px 1px}
+.itiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+.itile{background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:10px}
+.itile .n{font-size:22px;font-weight:700;line-height:1}
+.itile .l{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-top:5px;font-weight:600}
+.itile.hard .n{color:var(--hard)}
+.isec-h{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin:15px 0 7px}
+.ibar{display:flex;align-items:center;gap:8px;margin:3px 0;font-size:12px}
+.ibar .nm{width:74px;flex:0 0 74px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ibar .track{flex:1;height:12px;background:var(--panel-2);border-radius:6px;overflow:hidden}
+.ibar .fill{height:100%;background:linear-gradient(90deg,var(--accent),#57C9A0);border-radius:6px}
+.ibar .v{width:22px;text-align:right;color:var(--ink-2);font-family:'JetBrains Mono',monospace;font-size:11px}
+.ichips{display:flex;flex-wrap:wrap;gap:5px}
+.ichip{font-size:11px;padding:3px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
+.irow{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--edge)}
+
+.drawer{position:fixed;inset:0;z-index:440;background:rgba(4,7,10,.55);display:none}
+.drawer.open{display:block}
+.drawer-panel{position:absolute;top:0;left:0;bottom:0;width:min(88vw,340px);overflow:auto;background:var(--panel);border-right:1px solid var(--edge);padding:16px}
+.drawer-panel h4{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:16px 0 7px;font-weight:600}
+.drawer-panel h4:first-child{margin-top:4px}
+.drawer-nav a{display:block;padding:10px;border-radius:9px;color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;cursor:pointer}
+.drawer-nav a.on{background:rgba(59,198,232,.14);color:var(--accent)}
+.drawer-row{display:flex;gap:6px;flex-wrap:wrap}
+
+.airpop{position:fixed;inset:0;z-index:460;background:rgba(4,7,10,.55);display:flex;align-items:center;justify-content:center;padding:22px}
+.airpop[hidden]{display:none}
+.airpop-box{background:var(--panel);border:1px solid var(--edge);border-radius:14px;width:520px;max-width:100%;max-height:80vh;overflow:auto}
+.airpop-head{padding:12px 15px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
+.airpop-head b{font-size:15px;font-weight:700}
+.airpop-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px}
+.airpop-body{padding:12px 15px}
+.airrow{display:flex;gap:8px;align-items:center;margin-bottom:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink)}
+.airrow .adot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:0 0 7px}
+.airrow input{flex:1;background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:12px;padding:5px 8px;border-radius:7px}
+.airrow .del{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:14px}
+.airpop-foot{padding:10px 15px;border-top:1px solid var(--edge);display:flex;gap:8px;align-items:center}
+/* a name the slot's rules bar: still selectable, clearly not the default */
+/* ---- day details panel ---- */
+.dip-stat{padding:9px 12px;border-radius:9px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.dip-stat.ok{background:rgba(87,201,122,.13);border:1px solid rgba(87,201,122,.45);color:#A8E6BC}
+.dip-stat.draft{background:rgba(138,150,163,.10);border:1px solid var(--edge-2);color:var(--ink-2)}
+.dip-stat .dip-pend{margin-left:auto;font-size:10.5px;font-weight:700;color:#F2D699;
+  background:rgba(229,194,74,.13);border:1px solid rgba(229,194,74,.4);padding:2px 7px;border-radius:6px}
+.dip-h{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);margin:14px 0 6px}
+.dip-als{display:flex;flex-wrap:wrap;gap:6px}
+.dip-al{display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:11.5px;font-weight:800;letter-spacing:.05em;color:var(--alc,var(--accent));
+  border:1px solid currentColor;border-radius:6px;padding:2px 8px;background:rgba(0,0,0,.25)}
+.dip-al i{font-family:'Inter Tight',sans-serif;font-style:normal;font-weight:600;font-size:10px;color:var(--ink-3);letter-spacing:0}
+.dip-none{font-size:11.5px;color:var(--ink-3);padding:3px 0}
+.dip-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px}
+.dip-r{display:flex;align-items:baseline;gap:8px;font-size:12px;border-bottom:1px dotted var(--edge);padding:3px 0}
+.dip-r .k{color:var(--ink-3)}
+.dip-r .v{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ink)}
+.dip-r .v i{font-style:normal;font-weight:500;color:var(--ink-3);font-size:10.5px}
+.dip-sev{display:flex;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:7px}
+.dip-sev b.hard{color:var(--hard)}.dip-sev b.adv{color:var(--adv)}.dip-sev b.note{color:#8A96A3}
+.dip-list{display:flex;flex-direction:column;gap:5px}
+.airview{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:var(--ink)}
+.airview .adot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle}
+
+.mobile-note{display:none;margin:14px 20px;padding:12px 14px;border:1px dashed var(--edge-2);border-radius:10px;color:var(--ink-3);font-size:12px;line-height:1.5}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:820px){
+  .burger{display:flex}
+  .topbar .nav{display:none}
+  .acct .sel,.acct .rolebadge{display:none}
+  .seg{display:none}
+  /* the qualification filters are the fastest way to read a phone screen —
+     "who here is a supervisor / an instructor / SANS" — so instead of hiding
+     the row it becomes ONE horizontally scrollable line with the label pinned */
+  #page-viewsched .filters{display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;padding:7px 12px;gap:5px}
+  #page-viewsched .filters::-webkit-scrollbar{display:none}
+  #page-viewsched .filters>*{flex:0 0 auto}
+  #page-viewsched .filters .lab{position:sticky;left:0;z-index:1;background:var(--panel);padding-right:6px}
+  #page-viewsched .filters .right{display:none}
+  #page-editsched .filters{padding:8px 12px}
+  .day{flex:0 0 calc(100vw - 24px);overflow-x:auto}
+  .week{padding:2px 12px 30px;gap:12px}
+  /* ---- phone header: ONE scrollable row ----
+     It used to wrap onto four rows (182px of chrome before you saw any schedule).
+     Now it is a single nowrap strip that scrolls sideways, with the mark + burger
+     pinned left, and every control inside it tightened a notch. */
+  .topbar{gap:9px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;padding:8px 12px}
+  .topbar::-webkit-scrollbar{display:none}
+  .topbar>*{flex:0 0 auto}
+  .topbar .burger,.topbar .mark{position:sticky;left:0;z-index:2}
+  .topbar .mark{background:linear-gradient(90deg,rgba(11,13,16,.96) 72%,rgba(11,13,16,0));padding-right:10px;left:41px}
+  .topbar .mark .k{font-size:8.5px;letter-spacing:.14em}
+  .topbar .mark .v{font-size:15px}
+  .topbar .mark .rglyph{width:24px;height:24px}
+  .burger{width:32px;height:30px}
+  .spring{gap:6px;flex-wrap:nowrap}
+  .topbar .pillbtn{padding:5px 9px;font-size:11px;gap:5px}
+  .topbar .pillbtn .dot{width:6px;height:6px}
+  .topbar .abtn{padding:5px 9px;font-size:11px}
+  .topbar .fastsync{padding:5px 8px;font-size:10.5px}
+  /* ---- flying grid on a phone: THE WHOLE LINE FITS, no sideways swipe ----
+     Never scaled: iOS/WebKit shrinks boxes under CSS zoom but leaves the text at its
+     specified px, which clipped B/TO, LD and the puck callsigns. Instead the phone
+     keeps the SAME five columns as the desktop — CS/MSN | B/TO | LD | FCP/RCP | RMKS,
+     remarks to the right of the pucks — and AREA + TIME stay in their full-width strip
+     under each formation. That is only affordable because the puck is now the reference
+     tool's 74 x 15 at 9px type; it is also exactly how the reference lays its own
+     flight line out on a phone (measured: 7 columns inside 357 CSS px).
+     The three left columns are FIXED, not minmax, and that is the whole trick. With
+     minmax the grid's "maximise tracks" step hands them their maximum before the 1fr
+     RMKS track is ever resolved, so RMKS was collapsing to 32px at 375 while CS/MSN sat
+     on 46. Pinning them close to the reference tool's own measured widths (it uses
+     CS 28, B/TO 40, LD 29) gives RMKS every remaining pixel instead: 340 - 159 - 108
+     = 73 at 390, 58 at 375, 113 at a 430 Pro Max. Narrow, but readable at 8.5px, and
+     the reference wraps its own remarks to two or three lines too. Overflow-x stays on
+     purely as a safety net. The widths are set by what has to render without clipping,
+     measured not guessed: a 'hh:mm' in 9px JetBrains Mono is 27px, so B/TO and LD need
+     34 and 28 of content respectively, i.e. 38 and 32 of track once .fcell's 2px side
+     padding is counted. */
+  .week .go{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+  /* FCP/RCP is derived from the puck: 2 x 74 + 3px gap + 8px .acrow padding = 159 */
+  .form,.cols.formcols{grid-template-columns:38px 38px 32px calc(var(--puck-w)*2 + 11px) minmax(0,1fr)}
+  .rmkcell{font-size:8.5px;padding:3px 4px;gap:1px;overflow:hidden}
+  /* .ntx carries a 30px min-width globally so an empty editable field stays tappable.
+     Inside a phone flight line that min-width is wider than the columns that hold it —
+     it is what pushed the wave 3px into a horizontal scroll at 375, and what made LD
+     and CS/MSN report as clipped when their actual text fitted fine. Released here for
+     both RMKS and the left cells; the cell itself is the tap target, and RMKS also gets
+     overflow:hidden above so an unbreakable token clips instead of buying a swipe.
+     Edit mode keeps a small 14px floor so a genuinely empty field is still findable. */
+  .rmkcell .ntx,.fcell .ntx{min-width:0}
+  .page.editing .fcell .ntx{min-width:14px}
+  .form .bto b,.form .bto span,.form .ld{font-size:9px}
+  /* tighter leading + 3px top padding so the BRIEF/T-O pair and the CS/MSN pair both
+     land inside the first puck row */
+  .form .bto{line-height:1.15}
+  .form .csmsn b{font-size:9.5px}
+  .form .csmsn i{line-height:1.05}
+  .fcell{padding:3px 2px 4px}
+  .cols.formcols span{padding:3px 4px}
+  .daydots{display:flex}
+  /* Columnar lists (programme / duties / sims / ground / inputs) all render 1:1 too.
+     Give START / END their own breathing room so the puck never butts against END. */
+  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:minmax(0,1fr) 44px 44px minmax(calc(var(--puck-w) + 14px),1fr);gap:5px 11px}
+  /* Duties / sims / ground / inputs on a phone: remarks sit to the RIGHT of the pucks
+     here too, not on a strip below — same as the flying table, same as the desktop.
+     The trick that pays for it is stacking START over END into one TIME column instead
+     of giving each its own. That is copied from the reference tool: its own phone Sims
+     table has no END column at all, which is exactly why it can afford a ~73px remarks
+     column next to two 74px pucks inside a 402pt screen. Ours: 323px of row at 390,
+     minus NAME 52, TIME 34, PEOPLE 154 (74 + 2px gap + 74, plus the 2px .ppl inset)
+     and three 5px gaps = 68px for RMKS. Within a couple of px of the reference. */
+  .plist .pl-cols,.plist .pl-row{grid-template-columns:52px 34px calc(var(--puck-w)*2 + 6px) minmax(0,1fr);gap:3px 5px}
+  /* fixed leading track + one trailing 1fr — see trap (b) */
+  .plist.one .pl-cols,.plist.one .pl-row{grid-template-columns:132px 34px calc(var(--puck-w) + 2px) minmax(0,1fr)}
+  .plist .pl-cols>.h-en{display:none}
+  .plist .pl-cols>.h-nm{grid-column:1}
+  /* START's heading reads TIME on a phone, because the cell under it holds both times */
+  .plist .pl-cols>.h-st{grid-column:2;font-size:0}
+  .plist .pl-cols>.h-st::before{content:'TIME';font-size:9px}
+  .plist .pl-cols>.h-pp{grid-column:3}
+  .plist .pl-cols>.h-rk{grid-column:4}
+  .plist .pl-row>.nm{grid-column:1;grid-row:1/span 2}
+  .plist .pl-row .t.t-s{grid-column:2;grid-row:1}
+  .plist .pl-row .t.t-e{grid-column:2;grid-row:2;padding-top:0}
+  .plist .pl-row .t.allday{grid-column:2;grid-row:1/span 2}
+  .plist .pl-row .ppl{grid-column:3;grid-row:1/span 2;gap:2px}
+  .plist .pl-row .rmk{grid-column:4;grid-row:1/span 2;font-size:8.5px;padding-top:2px;overflow:hidden}
+  .plist .pl-row .rmk .ntx{min-width:0}
+  .allhands .ah-row .ppl,.plist .pl-row .ppl{padding-left:2px}
+  .allhands .ah-cols>:nth-child(4),.plist .pl-cols>:nth-child(4){padding-left:2px}
+}
+/* ---- small phones (360px Android, iPhone SE/mini) ----
+   Same FIVE-column layout as every other width — CS/MSN | B/TO | LD | FCP/RCP | RMKS —
+   just one notch tighter so the whole flight line still fits with no swipe: 2px gaps
+   and paddings round the pucks, 9px times. Fixed left columns for the same reason as
+   the block above — minmax would let them eat the RMKS budget. Puck column is
+   2 x 74 + 2px gap + 4px .acrow padding = 154, so at a 310px wave RMKS keeps
+   310 - 154 - 100 = 56. Times drop to 8.5px here, where 'hh:mm' measures 26px and so
+   still clears LD's 26px of content. */
+@media (max-width:374px){
+  .form,.cols.formcols{grid-template-columns:34px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
+  .form .bto b,.form .bto span,.form .ld{font-size:8.5px}
+  .form .csmsn b{font-size:9px}
+  .fcell{padding:3px 2px 4px}
+  .acrow{padding:3px 2px;gap:3px}
+  .acrow .pucks{gap:2px}
+  .rmkcell{padding:2px 3px;font-size:8px}
+  .plist .pl-cols,.plist .pl-row{grid-template-columns:46px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr);gap:3px 4px}
+  .plist.one .pl-cols,.plist.one .pl-row{grid-template-columns:110px 30px calc(var(--puck-w) + 2px) minmax(0,1fr)}
+  .plist .pl-row .rmk{font-size:8px;padding-top:2px}
+  .plist .pl-row .t{font-size:9px}
+}
+/* ===== DESKTOP density + horizontal scroll (mobile above is untouched) ===== */
+@media (min-width:821px){
+  /* No scrollbar of its own: the pinned #hscroll at the foot of the window IS
+     the week's scrollbar. (Five rules here used to try to draw a second one and
+     were overridden by the earlier min-width:821px block — dead either way.) */
+  .week{scroll-snap-type:none;padding:2px 20px 40px;gap:12px}
+  /* tighter day column — less width, less wasted space */
+  .day{flex:0 0 552px}
+  .day-head{padding:10px 13px}
+  .day-head .dow{font-size:15px}
+  /* flying table: larger fonts, tighter columns (ScheduleTrain-style density).
+     With AREA + TIME moved out to the strip below each formation, RMKS grows from
+     ~61px to ~198px, so remarks and stores chips finally sit on one or two lines. */
+  .form,.cols.formcols{grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr)}
+  .cols.formcols span{font-size:9.5px;padding:3px 5px}
+  .fcell{padding:4px 4px}
+  .fcell.csmsn b{font-size:12.5px}
+  .fcell.csmsn i{font-size:9.5px}
+  .fcell.bto b,.fcell.bto span{font-size:11px}
+  .fcell.ld{font-size:11px}
+  .acrow{padding:3px 4px;gap:3px}
+  /* NO puck font override here on purpose. The puck is 74 x 15 with 9px type at every
+     width, desktop included — that is the reference tool's own measured puck, and the
+     standing rule is one canonical puck size everywhere including anything added later.
+     A 12px override used to live here; it broke that rule and clipped the type. */
+  .rmkcell{font-size:10px;padding:4px 6px}
+  .rmkcell .stores .stchip{font-size:9px}
+  .form-area{padding:4px 9px;gap:9px}
+  .form-area .fa-lb{font-size:9.5px}
+  .areacell{font-size:10.5px}
+  .timecell{font-size:10.5px;padding-left:9px}
+  .intimes span{font-size:10.5px}
+  /* columnar lists (programme / duties / sims / ground): bigger, denser */
+  .allhands .ah-row,.plist .pl-row{font-size:12px}
+  .allhands .ah-cols,.plist .pl-cols{font-size:9.5px}
+  .allhands .ah-row .t,.plist .pl-row .t{font-size:11px}
+  .plist .pl-row .rmk{font-size:10.5px}
+  .plist .pl-sub,.availpuck .ap-grp{font-size:9.5px}
+  .sub-h{font-size:11px}
+}
+/* ============ SCHEDULER BOARD (deep single-day editor) ============ */
+.schedboard{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column}
+.schedboard[hidden]{display:none}
+.sb-top{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--edge);background:var(--panel);flex-wrap:wrap}
+.sb-title{font-weight:700;font-size:15px}
+.sb-title b{color:var(--accent)}
+.sb-title .mono{color:var(--ink-3);font-weight:500;font-size:12px}
+.sb-days{display:flex;gap:5px}
+.sb-days .sbday{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer}
+.sb-days .sbday.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.sb-actions{margin-left:auto;display:flex;gap:7px}
+.sb-main{flex:1;display:flex;min-height:0}
+.sb-boardwrap{flex:1;display:flex;flex-direction:column;min-height:0;min-width:0}
+.sb-board{flex:1;overflow:auto;padding:12px 14px}
+/* ---- inputs panel: every personal input for the open day, morning → late ---- */
+.sb-inputs{flex:0 0 auto;max-height:36%;overflow:auto;padding:9px 14px 12px;
+  border-top:1px solid var(--edge);background:var(--panel-2)}
+.sb-inputs .sbi-h{display:flex;align-items:baseline;gap:9px;position:sticky;top:-9px;z-index:2;
+  background:var(--panel-2);padding:2px 0 7px}
+.sb-inputs .sbi-h b{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.09em;font-size:11px;color:var(--ink)}
+.sb-inputs .sbi-n{font-size:10.5px;color:var(--ink-3);font-family:'JetBrains Mono',monospace;margin-left:auto}
+.sb-inputs .sbi-empty{font-size:11.5px;color:var(--ink-3);padding:4px 0}
+.sbi-band{display:flex;align-items:center;gap:8px;margin:7px 0 4px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  text-transform:uppercase;letter-spacing:.07em;font-size:9.5px;font-weight:700;color:var(--ink-3)}
+.sbi-band:first-of-type{margin-top:0}
+.sbi-band::after{content:'';flex:1;height:1px;background:var(--edge)}
+.sbi-band .bn{font-family:'JetBrains Mono',monospace;letter-spacing:0;color:var(--ink-3);font-weight:500}
+.sbi-band.allday{color:var(--accent)}.sbi-band.allday::after{background:rgba(59,198,232,.25)}
+.sbi-row{display:grid;grid-template-columns:96px var(--puck-w) 112px 1fr;gap:9px;align-items:center;
+  padding:3px 6px;border-radius:7px}
+.sbi-row:hover{background:rgba(255,255,255,.03)}
+.sbi-row .sbi-t{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-2)}
+.sbi-row .seat{display:flex}
+.sbi-row .itxt{font-size:11px;color:var(--ink-2)}
+.sbi-row .sbi-ty{font-size:8.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;text-align:center;
+  padding:2px 5px;border-radius:999px;border:1px solid;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbi-ty.ty-dn{color:#FBB4B9;border-color:rgba(240,85,95,.45);background:rgba(240,85,95,.12)}
+.sbi-ty.ty-lv{color:#DDA8F5;border-color:rgba(178,77,234,.45);background:rgba(178,77,234,.12)}
+.sbi-ty.ty-of{color:#9FC4FF;border-color:rgba(59,125,240,.45);background:rgba(59,125,240,.12)}
+.sbi-ty.ty-av{color:#9BE3B4;border-color:rgba(87,201,122,.45);background:rgba(87,201,122,.12)}
+.sbi-ty.ty-gp{color:#F2D69B;border-color:rgba(229,168,59,.4);background:rgba(229,168,59,.10)}
+.sbi-row .sbi-rm{font-size:11px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-side{width:320px;flex:0 0 320px;border-left:1px solid var(--edge);display:flex;flex-direction:column;min-height:0;background:var(--panel)}
+.sb-warn{max-height:38%;overflow:auto;padding:10px 12px;border-bottom:1px solid var(--edge)}
+.sb-warn .wh{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.09em;font-size:10px;font-weight:700;color:var(--ink-3);margin-bottom:6px}
+.sb-warn .wln{font-size:11.5px;line-height:1.5;padding:3px 7px;border-radius:6px;margin-bottom:3px;border-left:3px solid var(--edge-2)}
+.sb-warn .wln.hard{color:#FBB4B9;background:rgba(240,85,95,.08);border-left-color:var(--hard)}
+.sb-warn .wln.adv{color:#F2D699;background:rgba(229,168,59,.07);border-left-color:var(--adv)}
+.sb-warn .wln.ok{color:var(--ok)}
+.sb-roster{flex:1;overflow:auto;padding:10px 12px}
+.sb-roster .rcols{display:flex;gap:8px;align-items:flex-start}
+.sb-roster .rcol{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.sb-roster .rh{display:block;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:9.5px;font-weight:700;color:var(--ink-3);margin:2px 0 4px}
+.sb-roster .rh.sans{color:var(--san);border-top:1px solid var(--edge);padding-top:5px;margin-top:5px}
+.sb-roster .rh .hint{font-weight:500;letter-spacing:0;text-transform:none;font-size:9.5px;color:var(--ink-3)}
+.sb-roster .rpuck{display:flex;flex:0 0 auto;cursor:grab}
+/* NB: no .sb-roster .rpuck.busy override here. There used to be one at .34
+   opacity, and being more specific it beat the shared .rpuck.busy rule — so the
+   board palette kept the old fade that was indistinguishable from "barred". */
+.sb-roster .rpuck:active{cursor:grabbing}
+/* go / line board */
+.sb-go{border:1px solid var(--edge);border-radius:10px;margin-bottom:12px;overflow:hidden;background:var(--panel)}
+.sb-go-h{display:flex;align-items:center;gap:10px;padding:7px 11px;background:var(--panel-2);border-bottom:1px solid var(--edge);font-weight:700;font-size:12px}
+.sb-go-h .asd{color:var(--ink-3);font-weight:500;font-size:11px;font-family:'JetBrains Mono',monospace;margin-left:auto}
+.sb-go-h .night{color:#FBB4B9}
+.sb-wtitle{background:var(--panel);border:1px solid var(--edge);color:var(--ink);border-radius:7px;padding:4px 8px;font-size:12px;font-weight:600;cursor:pointer}
+.sb-wtitle:focus{outline:2px solid var(--accent);outline-offset:0}
+.sb-lcols,.sb-line{display:grid;grid-template-columns:64px 74px 52px 52px 1fr 1fr 1.2fr;gap:8px;align-items:center;padding:5px 11px}
+.sb-lcols{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:9px;font-weight:700;color:var(--ink-3);border-bottom:1px solid var(--edge)}
+.sb-line{border-top:1px solid rgba(255,255,255,.03)}
+.sb-line:first-of-type{border-top:none}
+.sb-line .lin,.sb-line .msn,.sb-line .tm{background:var(--bg);border:1px solid var(--edge);border-radius:6px;color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 6px;width:100%;box-sizing:border-box}
+.sb-line .nts{background:var(--bg);border:1px solid var(--edge);border-radius:6px;color:var(--ink-2);font-size:11px;padding:5px 7px;width:100%;box-sizing:border-box}
+.sb-slot{min-height:26px;border:1px dashed transparent;border-radius:6px;display:flex;align-items:center}
+.sb-slot .seat{display:flex}
+.sb-slot.empty{border-color:var(--edge-2);align-items:center;justify-content:center;color:var(--ink-3);font-size:10.5px;cursor:pointer;min-width:var(--puck-w)}
+.sb-slot.empty:hover{border-color:var(--accent);color:var(--accent)}
+.seat[draggable="true"]{cursor:grab}
+.sb-slot.dragover,.sb-roster.dragover{outline:2px solid var(--accent);outline-offset:1px;border-radius:6px}
+/* touch drag: the ghost that follows the finger, and the page lock while it does */
+/* standalone waves — SC / AVALON / BB. Marked in the SANS purple so they read
+   as "not part of the day's flying" at a glance. */
+.go.sa .go-tab{background:rgba(178,77,234,.10)}
+.satag{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.07em;
+  font-size:9px;font-weight:800;color:var(--san);border:1px solid rgba(178,77,234,.45);
+  background:rgba(178,77,234,.10);border-radius:5px;padding:1px 6px;margin-left:8px;white-space:nowrap}
+.acrow.spare .puck,.form .spare .puck{opacity:.82}
+/* MAIN / SPARE on a standalone line. Main is solid, spare is dashed — the
+   difference matters: only the spares sit outside the conflict engine. */
+.rolet{display:inline-block;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.06em;font-size:8.5px;font-weight:800;border-radius:4px;padding:0 4px;margin-right:4px;
+  vertical-align:middle;white-space:nowrap}
+.rolet.main{color:#DDA9F5;border:1px solid rgba(178,77,234,.45);background:rgba(178,77,234,.10)}
+.rolet.spare{color:var(--ink-3);border:1px dashed var(--edge-2)}
+/* the add-wave menu */
+.wavemenu{position:fixed;z-index:480;background:var(--panel);border:1px solid var(--edge-2);border-radius:12px;
+  box-shadow:0 14px 34px rgba(0,0,0,.6);padding:9px;min-width:250px;max-width:min(94vw,340px)}
+.wavemenu h5{margin:0 0 7px;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.1em;font-size:10px;color:var(--ink-3);font-weight:700}
+.wavemenu .wm-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
+.wavemenu button.wm{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);border-radius:8px;
+  padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;text-align:left}
+.wavemenu button.wm:hover{border-color:var(--accent);color:var(--accent)}
+.wavemenu button.wm.sa{border-color:rgba(178,77,234,.45);color:#DDA9F5}
+.wavemenu button.wm.sa:hover{border-color:var(--san);color:var(--san)}
+.wavemenu .wm-note{font-size:10.5px;color:var(--ink-3);line-height:1.4;margin:-4px 0 8px}
+.tdghost{position:fixed!important;z-index:520;pointer-events:none;margin:0!important;
+  transform:translate(-50%,-50%);opacity:.92;box-shadow:0 8px 20px rgba(0,0,0,.6);
+  outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
+body.tdrag{touch-action:none;-webkit-user-select:none;user-select:none}
+body.tdrag *{-webkit-touch-callout:none}
+/* ---- drag & drop affordances outside the flying grid (programme / duties / sims /
+   ground / available). Empty cells stay clean until a drag starts. ---- */
+.ppl,.availpuck .ap-grid{min-height:var(--puck-h)}
+body.dnd [data-fill]{outline:1px dashed rgba(59,198,232,.38);outline-offset:2px;border-radius:5px}
+body.dnd [data-fill]:empty::after{content:'drop here';color:rgba(59,198,232,.5);font-size:9px;font-weight:700;letter-spacing:.04em}
+[data-fill].dragover{outline:2px solid var(--accent)!important;outline-offset:2px;background:rgba(59,198,232,.08)}
+.availpuck.dragover,.eroster.dragover{outline:2px solid var(--accent);outline-offset:-2px;border-radius:10px}
+/* the position:relative only anchors the "drop to unassign" badge — but at
+   (0,2,1) it beat the phone rule that pins the aircrew drawer, so the drawer flew
+   3000px down the document the instant a drag armed: the palette vanished, and the
+   bin you drag a puck back to became unreachable on a phone. */
+body.dnd .availpuck{position:relative}
+@media (min-width:821px){body.dnd .eroster{position:relative}}
+body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';position:absolute;top:3px;left:50%;transform:translateX(-50%);font-size:8.5px;font-weight:700;letter-spacing:.05em;color:rgba(59,198,232,.72);background:rgba(11,13,16,.9);border:1px solid rgba(59,198,232,.3);border-radius:999px;padding:1px 7px;pointer-events:none;z-index:3;white-space:nowrap}
+.sb-open{cursor:pointer}
+.page.editing .day-head .dow,.page.editing .day-head .dt{cursor:pointer}
+.day-head .dow.sb-open:hover,.day-head .dt.sb-open:hover{color:var(--accent)}
+
+/* =====================================================================
+   B9 — EDITABLE TEXT · CANCELLED LINES · RED FLAGS · BOARD PANELS
+   ===================================================================== */
+/* ---- inline editable text (edit-schedule mode) --------------------------
+   Every string in the day model is reachable through data-txt, so one class
+   styles them all. Kept deliberately quiet until hover/focus — a board full
+   of boxed inputs is unreadable at a glance, which is the one thing a flying
+   programme must stay. */
+.txed{outline:none;cursor:text;border-radius:3px;transition:background .12s}
+.txed:hover{background:rgba(59,198,232,.09);box-shadow:inset 0 -1px 0 rgba(59,198,232,.4)}
+.txed:focus{background:rgba(59,198,232,.14);box-shadow:inset 0 0 0 1px var(--accent)}
+.txed:empty::before{content:'—';color:var(--ink-3);opacity:.55}
+.page.editing .go-tab .asd.txed,.page.editing .fcell .txed{min-width:14px;display:inline-block}
+/* FREE TEXT WRAPS, ALWAYS.
+   Every one of these cells sits in a grid track next to the START and END times.
+   A run of characters with no space in it — a callsign mashed together, a pasted
+   string, someone leaning on the keyboard — has no break opportunity, so it does
+   not wrap: it runs straight out of its own track and paints over the time beside
+   it, which is how a programme item ends up hiding the one thing the squadron
+   needs off that row. `anywhere` lets the break happen mid-token, and min-width:0
+   lets the cell actually shrink to its track instead of forcing its own width.
+   Both are needed; either alone leaves the overflow. */
+.ntx{display:inline-block;min-width:30px;overflow-wrap:anywhere}
+.itxt,.blknote,.ah-note,.wln,.sbi-rmk,.pl-nil{overflow-wrap:anywhere}
+.plist .pl-row .ppl,.allhands .ah-row .ppl,.sb-arow .ppl{min-width:0}
+.pl-nil{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-3);padding:3px 8px 5px;letter-spacing:.04em}
+.allhands .ah-empty{font-size:10.5px;color:var(--ink-3);font-style:italic;padding:4px 10px 6px}
+.dinfobtn{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-weight:800;font-size:10px;
+  line-height:1;width:16px;height:16px;border-radius:50%;cursor:pointer;flex:0 0 auto;
+  color:var(--ink-2);background:var(--raised);border:1px solid var(--edge-2)}
+.dinfobtn:hover{color:#0B0D10;background:var(--accent);border-color:var(--accent)}
+.di-open{cursor:pointer}
+.di-open:hover{color:var(--accent)}
+.page.editing .pl-row .t.txed,.page.editing .ah-row .t.txed{display:inline-block;min-width:28px}
+
+/* ---- cancelled (CX) rows ------------------------------------------------
+   "greyed out faded with a line striking through it" — the fade is opacity +
+   grayscale, the strike is BOTH a text-decoration (for the words) and a 1px
+   overlay rule (because pucks paint their own background and would otherwise
+   hide the line). */
+/* ---- cancelled (CX) ----------------------------------------------------------
+   ONE mechanism, not three. A cancelled row used to get a strike-through on the
+   row box AND a 1px rule drawn edge-to-edge at 50% of its height: on a wrapped
+   name the rule landed in the gap between the two lines, on a flight line it
+   floated under the pucks pointing at nothing, and the row-level strike painted
+   straight across the crew pucks and the rounded 2TK / TPOD / NAV pills.
+
+   Now the line is drawn through the WORDS only — the leaf text cells — so it
+   wraps with them and stops where they stop. Pucks and pills are greyed rather
+   than crossed out (a line through a rounded pill reads as a rendering fault),
+   and the row carries a red left edge and a faint wash so it is unmistakably
+   cancelled even where there is no text to strike. */
+.form.cx,.acrow.cx,.rmkcell.cx,.pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx{
+  position:relative;opacity:.55;filter:grayscale(.7)}
+.pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx,.form.cx{
+  box-shadow:inset 2px 0 0 rgba(240,85,95,.55);background:rgba(240,85,95,.045)}
+.acrow.cx,.rmkcell.cx{background:rgba(240,85,95,.045)}
+/* the strike, on leaf text only */
+.cx .ntx,.cx .t,.cx .itxt,.cx .sub,.cx .rmk,.cx .areacell,.cx .timecell,
+.cx .ah-note,.cx .asub,.cx .nts,
+.form.cx .fcell i,.form.cx .fcell b{
+  text-decoration:line-through;text-decoration-color:rgba(240,85,95,.85);
+  text-decoration-thickness:1px;text-decoration-skip-ink:none}
+/* boxes keep their shape — they read as cancelled by being greyed back */
+.cx .puck{opacity:.62}
+.cx .stores,.cx .stchip,.cx .bombs{opacity:.5}
+.form.cx .fcell b .mdot{text-decoration:none}
+.airpop-box.cxbox{width:min(94vw,420px)}
+.cxbody{padding:13px 15px 4px}
+.cxlead{display:block;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.1em;font-size:11px;font-weight:800;color:var(--hard);margin-bottom:6px}
+#cxReason{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--edge-2);
+  border-radius:9px;color:var(--ink);font:600 14px inherit;padding:10px 11px;text-transform:uppercase}
+#cxReason:focus{outline:none;border-color:var(--accent)}
+.cxhint{font-size:10.5px;color:var(--ink-3);margin-top:7px;line-height:1.4}
+.cxquick{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.cxquick button{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:999px;
+  padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.cxquick button:hover{border-color:var(--hard);color:#FBB4B9}
+.cxtag{display:inline-block;vertical-align:middle;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:800;
+  letter-spacing:.06em;color:#fff;background:var(--hard);border-radius:3px;padding:0 4px;margin-right:5px;
+  text-decoration:none;position:relative;z-index:2;
+  /* the reason rides in the badge, so it has to wrap rather than push the row wide */
+  white-space:normal;overflow-wrap:anywhere;max-width:100%;line-height:1.35}
+
+/* ---- red box: "look at this" flag for the next scheduler ---------------- */
+.redbox{box-shadow:inset 0 0 0 2px var(--hard);border-radius:5px;background:rgba(240,85,95,.09)}
+.pl-row.redbox,.ah-row.redbox,.sb-line.redbox{box-shadow:inset 0 0 0 2px var(--hard)}
+.flagtag{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:800;
+  letter-spacing:.08em;color:#fff;background:var(--hard);border-radius:3px;padding:0 4px;margin-right:4px;text-decoration:none}
+
+/* ---- ALL AVAIL puck ----------------------------------------------------
+   A sentinel body, not a person: it says "whoever is free covers this". Styled
+   apart from every crew puck so nobody mistakes it for a callsign, but it is
+   the same canonical puck size as every other puck in the app. */
+.puck.allavail{background:repeating-linear-gradient(135deg,rgba(87,201,122,.30) 0 6px,rgba(59,198,232,.26) 6px 12px);
+  border-color:var(--ok);color:#DFF6E7}
+.puck.allavail .nm{font-family:'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.04em;
+  font-weight:800;font-size:10px;justify-content:center;padding:0 2px}
+.puck.allavail .role{display:none}
+.puck.allavail::after{display:none}
+.rall{display:flex;flex-direction:column;gap:4px;margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid var(--edge)}
+.rall .rh2{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.07em;font-size:9px;font-weight:700;color:var(--ok)}
+.rall .rpuck{cursor:grab}
+
+/* ---- block notes (sims / any section) ---------------------------------- */
+.blknote-h{display:flex;align-items:center;gap:7px;margin:8px 6px 3px;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;
+  font-size:9px;font-weight:700;color:var(--ink-3)}
+.blknote-h::after{content:'';flex:1;height:1px;background:var(--edge)}
+.blknote{margin:0 6px 4px;padding:5px 8px;border:1px solid var(--edge);border-radius:7px;
+  font-size:11px;line-height:1.45;color:#F2D699;background:rgba(229,194,74,.06);
+  white-space:pre-wrap;min-height:15px}
+.blknote.ed{border-style:dashed;border-color:var(--edge-2);cursor:text}
+.blknote.ed:hover{border-color:rgba(59,198,232,.55);background:rgba(59,198,232,.07)}
+.blknote.ed:focus{outline:none;border-color:var(--accent);background:rgba(59,198,232,.10);color:var(--ink)}
+.blknote:empty::before{content:'No planning notes yet.';color:var(--ink-3);font-style:italic}
+
+/* ---- scheduler-board line controls ------------------------------------- */
+.sb-lcols,.sb-line{grid-template-columns:64px 74px 52px 52px 1fr 1fr 1.2fr 92px}
+.sb-line .lctl{display:flex;gap:3px;justify-content:flex-end}
+.mbtn{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:9.5px;font-weight:800;
+  letter-spacing:.05em;cursor:pointer;color:var(--ink-2);background:var(--raised);
+  border:1px solid var(--edge-2);border-radius:5px;padding:3px 5px;line-height:1;white-space:nowrap}
+.mbtn:hover{color:var(--ink);border-color:var(--accent)}
+.mbtn.on{color:#0B0D10;background:var(--ink-2);border-color:var(--ink-2)}
+.mbtn.red{color:#FBB4B9;border-color:rgba(240,85,95,.5)}
+.mbtn.red:hover{border-color:var(--hard);color:#fff;background:rgba(240,85,95,.2)}
+.mbtn.red.on{background:var(--hard);border-color:var(--hard);color:#fff}
+.mbtn.del:hover{color:#FBB4B9;border-color:var(--hard)}
+.mbtn.add:hover{color:#9BE3B4;border-color:var(--ok)}
+.sb-go-h .gctl{display:flex;gap:5px;margin-left:9px}
+
+/* ---- scheduler-board panels: overall notes / overall programme / sim notes ---- */
+.sb-panel{border:1px solid var(--edge);border-radius:10px;margin-bottom:12px;overflow:hidden;background:var(--panel)}
+.sb-panel.notes{border-left:3px solid var(--adv)}
+.sb-panel.prog{border-left:3px solid var(--accent)}
+.sb-panel.simn{border-left:3px solid var(--san)}
+.sb-ph{display:flex;align-items:center;gap:9px;padding:7px 11px;background:var(--panel-2);
+  border-bottom:1px solid var(--edge);font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  text-transform:uppercase;letter-spacing:.09em;font-size:11px;font-weight:700;color:var(--ink)}
+.sb-ph .sub{font-family:'JetBrains Mono',monospace;text-transform:none;letter-spacing:0;
+  font-size:10px;font-weight:500;color:var(--ink-3)}
+.sb-ph .gctl{margin-left:auto;display:flex;gap:5px}
+.sb-pb{padding:8px 11px 10px}
+.sb-nrow{display:grid;grid-template-columns:22px 1fr 30px;gap:7px;align-items:center;margin-bottom:5px}
+.sb-nrow .nx{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);text-align:right}
+.sb-nrow .nin{background:var(--bg);border:1px solid var(--edge);border-radius:6px;color:#F2D699;
+  font-size:11.5px;padding:5px 7px;width:100%;box-sizing:border-box}
+.sb-nrow .nin:focus{outline:none;border-color:var(--accent);color:var(--ink)}
+.sb-empty{font-size:11px;color:var(--ink-3);font-style:italic;padding:2px 0 4px}
+.sb-acols,.sb-arow{display:grid;grid-template-columns:1.5fr 1.1fr 52px 52px minmax(96px,1.1fr) 92px;
+  gap:8px;align-items:center;padding:4px 0}
+.sb-acols{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.06em;font-size:9px;font-weight:700;color:var(--ink-3);border-bottom:1px solid var(--edge);padding-bottom:5px}
+.sb-arow{border-top:1px solid rgba(255,255,255,.03)}
+/* board rows follow the same rule as the week — see the CX block above */
+.sb-arow.redbox{box-shadow:inset 0 0 0 2px var(--hard);border-radius:5px;background:rgba(240,85,95,.09)}
+.sb-arow .ain,.sb-arow .atm{background:var(--bg);border:1px solid var(--edge);border-radius:6px;
+  color:var(--ink);font-size:11px;padding:5px 6px;width:100%;box-sizing:border-box}
+.sb-arow .atm{font-family:'JetBrains Mono',monospace}
+.sb-arow .ain:focus,.sb-arow .atm:focus{outline:none;border-color:var(--accent)}
+.sb-arow .ppl{display:flex;flex-wrap:wrap;gap:4px;min-height:var(--puck-h)}
+.sb-arow .ppl .seat{display:flex;flex:0 0 auto}
+.sb-arow .ppl .itxt{font-size:10px;color:var(--ink-3)}
+.sb-nbox{background:var(--bg);border:1px solid var(--edge);border-radius:8px;color:#F2D699;
+  font-size:11.5px;line-height:1.5;padding:7px 9px;width:100%;box-sizing:border-box;
+  min-height:58px;resize:vertical;font-family:inherit}
+.sb-nbox:focus{outline:none;border-color:var(--accent);color:var(--ink)}
+.sb-hint{font-size:10px;color:var(--ink-3);margin-top:5px;font-family:'JetBrains Mono',monospace}
+@media (max-width:820px){
+  /* ONE vertical scroller for the whole board.
+     The panes used to stack but keep their desktop sizing — .sb-boardwrap took
+     flex:1 of a squeezed column while .sb-board sized to its content, so the
+     board overflowed its wrapper and painted straight over the roster below it.
+     Every slot under that overlap was unreachable: elementFromPoint returned
+     the roster, so no tap, no drop, nothing. Panes now size to content and
+     .sb-main does the scrolling. */
+  .sb-main{flex-direction:column;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+  .sb-boardwrap{flex:0 0 auto;min-height:0}
+  .sb-board{flex:none;overflow:visible}
+  /* the roster stays PINNED to the bottom of that scroller while the board
+     scrolls above it, so a puck and the slot you are aiming at are on screen at
+     the same time — without it a drag from the roster to a slot is a blind
+     journey down a page and a half. How much of the screen it takes is the
+     scheduler's call: drag the grip on its top edge. */
+  .sb-side{width:100%;flex:0 0 auto;border-left:none;border-top:1px solid var(--edge);
+    position:sticky;bottom:0;z-index:6;max-height:var(--sbside,40vh);
+    display:flex;flex-direction:column;min-height:0;
+    box-shadow:0 -9px 20px rgba(0,0,0,.5)}
+  .sb-grip{display:flex}
+  .sb-warn{max-height:16vh;overflow:auto}
+  .sb-roster{flex:1 1 auto;overflow:auto;min-height:0}
+  .sb-lcols,.sb-line{grid-template-columns:54px 60px 46px 46px 1fr 1fr;font-size:10px}
+  .sb-line .nts{grid-column:1 / -1}
+  .sb-lcols>:nth-child(7),.sb-lcols>:nth-child(8){display:none}
+  .sb-line .lctl{grid-column:1 / -1;justify-content:flex-start;margin-top:2px}
+  .sb-acols,.sb-arow{grid-template-columns:1fr 46px 46px;gap:6px}
+  .sb-acols>:nth-child(2),.sb-acols>:nth-child(5),.sb-acols>:nth-child(6){display:none}
+  .sb-arow .asub,.sb-arow .ppl,.sb-arow .lctl{grid-column:1 / -1}
+  .sb-inputs{max-height:none;overflow:visible}
+  .sbi-row{grid-template-columns:84px var(--puck-w) 1fr;gap:7px}
+  .sbi-row .sbi-rm{grid-column:1 / -1;font-size:10.5px;color:var(--ink-3)}
+}
+/* ---- the board in its DESKTOP layout on a phone -------------------------------
+   Opened from a day's date in edit mode. The phone stack is right for quick
+   edits, but for reading a whole day at once — board and roster side by side,
+   every column present — the desktop layout is what the squadron knows. It is
+   pinned to a real desktop width and the whole panel pans horizontally.
+   The selectors carry .sb-wide so they outrank the phone rules above at any
+   viewport width. */
+.sb-widebtn{display:none}
+@media (max-width:820px){.sb-widebtn{display:inline-flex}}
+.schedboard.sb-wide{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+.schedboard.sb-wide>*{min-width:1180px}
+.schedboard.sb-wide .sb-main{flex-direction:row;overflow-y:hidden;overflow-x:visible;min-height:0}
+.schedboard.sb-wide .sb-boardwrap{flex:1 1 auto;min-width:0;min-height:0}
+.schedboard.sb-wide .sb-board{flex:1;overflow:auto}
+.schedboard.sb-wide .sb-inputs{max-height:36%;overflow:auto}
+.schedboard.sb-wide .sb-side{position:static;width:320px;flex:0 0 320px;max-height:none;
+  border-left:1px solid var(--edge);border-top:none;box-shadow:none;min-height:0}
+.schedboard.sb-wide .sb-warn{max-height:38%;overflow:auto}
+.schedboard.sb-wide .sb-roster{flex:1;overflow:auto}
+.schedboard.sb-wide .sb-lcols,.schedboard.sb-wide .sb-line{grid-template-columns:64px 74px 54px 54px 1fr 1fr 92px 92px;font-size:11.5px}
+.schedboard.sb-wide .sb-lcols>:nth-child(7),.schedboard.sb-wide .sb-lcols>:nth-child(8){display:revert}
+.schedboard.sb-wide .sb-acols,.schedboard.sb-wide .sb-arow{grid-template-columns:120px 54px 54px 1fr 1fr 1fr;gap:8px}
+.schedboard.sb-wide .sb-acols>:nth-child(2),.schedboard.sb-wide .sb-acols>:nth-child(5),
+.schedboard.sb-wide .sb-acols>:nth-child(6){display:revert}
+.schedboard.sb-wide .sb-arow .asub,.schedboard.sb-wide .sb-arow .ppl,
+.schedboard.sb-wide .sb-arow .lctl,.schedboard.sb-wide .sb-line .nts,
+.schedboard.sb-wide .sb-line .lctl{grid-column:auto}
+.schedboard.sb-wide .sbi-row{grid-template-columns:96px var(--puck-w) 112px 1fr;gap:9px}
+.schedboard.sb-wide .sbi-row .sbi-rm{grid-column:auto;font-size:11px}

@@ -7,6 +7,8 @@ export const ACCOUNTS: any = { a: { pass: 'a', role: 'admin', label: 'Admin' }, 
 export let SESSION: any = null                 // {user, role}
 export let LGEDIT: any = false                 // Logic-tab edit mode; reset on login/logout
 export function setSession(s: any) { SESSION = s; LGEDIT = false }
+export let ME: any = 'bane'                    // "view as" — selected person, own puck = purple
+export function setMe(id: any) { ME = id }
 export function setLgEdit(on: any) { LGEDIT = !!on }
 export function canEditSched(){return !!SESSION&&SESSION.role==='admin';}
 export const lgCanEdit=()=>LGEDIT&&!!SESSION&&SESSION.role==='admin';
