@@ -2,9 +2,10 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
-import { slotBar, personCount } from '../engine/avail'
-import { validate } from '../engine/validate'
+import { slotBar, personCount, personWarnDays } from '../engine/avail'
+import { validate, WARN } from '../engine/validate'
 import { markEdit } from '../engine/publish'
+import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from './auth'
 
@@ -27,13 +28,55 @@ export function setBoardDay(n:any){ if(ARM&&ARM.di!==n)disarmSlot(); SBDAY=n }
 export function setPage(p:any){ CURPAGE=p }
 /* ARM put-down for history.ts (ESM cannot reassign across modules) */
 export function armDrop(){ ARM=null }
-/* the phase-3 model half of a puck click: toggle the selection and remember
-   the person's count so afterSchedMutate can drop a stale selection. The
-   full click behaviour (highlights, warning boxes) is phase-4 UI. */
-export function selectPerson(id:any){
-  const off=(SELID===id)
-  if(off){selRestore();return}
-  selKeep(); SELID=id; SELSEEN=personCount(id)
+/* the model half of a puck click — the reference's handler body verbatim
+   (2527-2549), with pk.closest('.week') passed in as inWeek. */
+export function selectPerson(id:any,inWeek?:any){
+  const off=(SELID===id);
+  if(off){ selRestore(); }
+  else {
+    selKeep();
+    SELID=id;
+    WFOCUS=null; DWOPEN.clear(); PFOCUS=null;
+    if(inWeek){
+      if(!WARN.byDay.length)validate();
+      const days=personWarnDays(id);
+      if(days.length){ PFOCUS={id,days}; days.forEach((di:any)=>DWOPEN.add(di)); }
+    }
+    SELSEEN=personCount(id);
+  }
+}
+/* a warning focus owns the highlight, so drop the other selections — the
+   reference also blanks the chip classes and search fields here; in React
+   both derive from HLSET/SEARCH, so clearing the state IS clearing the UI */
+export function clearOtherHL(){
+  selClear(); HLSET.clear(); SEARCH='';
+}
+export function setSearch(v:any){ SEARCH=String(v==null?'':v).trim() }
+/* day strip → expand / collapse in place (reference 3992-3994, verbatim) */
+export function toggleDayWarn(di:any){
+  di=+di;
+  if(DWOPEN.has(di)){DWOPEN.delete(di); if(WFOCUS&&WFOCUS.di===di)WFOCUS=null;}
+  else {DWOPEN.add(di); WFOCUS=null; clearOtherHL();}
+}
+/* one warning → focus + snap (reference 3997-4003, verbatim) */
+export function focusWarn(di:any,ix:any){
+  di=+di; ix=+ix;
+  const g=WARN.byDay[di], w=g&&g.warns&&g.warns[ix]; if(!w)return;
+  if(WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix)WFOCUS=null;
+  /* keep PFOCUS across clearOtherHL: picking one of a person's warnings must
+     not widen their box back out to the whole day's list */
+  else {const keep=PFOCUS, keepSel=keep?SELID:null; clearOtherHL(); PFOCUS=keep; SELID=keepSel;
+        WFOCUS={di,ix,ids:(w.who||[]).slice(),sev:w.sev};}
+}
+/* step back one level: drop the warning focus but stay on the person */
+export function clearWarnFocus(){ WFOCUS=null }
+/* pill buttons: expand every day carrying that severity (reference 3901-3908) */
+export function openWarns(sev:any){
+  validate();
+  DWOPEN.clear(); WFOCUS=null; PFOCUS=null;
+  WARN.byDay.forEach((g:any)=>{if(g&&g.warns&&g.warns.length&&(!sev||g.warns.some((w:any)=>w.sev===sev)))DWOPEN.add(g.di);});
+  clearOtherHL();
+  if(!DWOPEN.size){toast(sev==='hard'?'No warnings this week ✓':'Nothing flagged this week ✓');}
 }
 export function esc(s:any){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
   .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
@@ -71,6 +114,45 @@ export let WFOCUS:any=null;                // {di,ix,ids:[…],sev}
    fall, so a Tuesday crew-rest breach caused by a Monday night wave shows up
    on both days at once. PFOCUS is the clicked person, not a warning. */
 export let PFOCUS:any=null;                // {id, days:[…]}
+export function personMatchesHL(p:any){
+  for(const f of HLSET){
+    if(f==='A'&&p.q==='A')return true;
+    if(f==='B'&&p.q==='B')return true;
+    if(f==='C'&&p.q==='C')return true;
+    if(f==='D'&&p.q==='D')return true;
+    if(f==='FL'&&isLead(p.q))return true;
+    if(f==='SUP'&&isLead(p.q))return true;      // supervisors — Cat A and B
+    if(f==='INS'&&(isInstr(p.q)||p.ip))return true;
+    if(f==='SXO'&&p.quals.sxo)return true;
+    if(f==='SANS'&&p.san)return true;
+    if(f==='OCU'&&isOcu(p.q))return true;
+  }
+  if(SEARCH){const s=SEARCH.toLowerCase(); if(p.cs.toLowerCase().includes(s)||(p.name||'').toLowerCase().includes(s))return true;}
+  return false;
+}
+/* {map: day index -> {ids:Set, sev}, echo:Set, sev} for the current warning
+   focus, or null.
+   A single focused warning wins. The day it belongs to lights its crew solid;
+   B14 also lights those same people on EVERY other day of the week, dashed, so
+   a cross-day cause — crew rest running back into last night's wave, a double
+   turn split over midnight — is visible without hunting for it. With no single
+   warning focused, every expanded day box lights all of the people flagged that
+   day, scoped per day, and nothing echoes. */
+export function warnFocusMap(){
+  /* a focused warning always owns the highlight, even inside a person focus —
+     the box stays narrowed to the clicked person, the lighting follows the
+     warning's whole crew */
+  if(WFOCUS){const m=new Map();m.set(WFOCUS.di,{ids:new Set(WFOCUS.ids),sev:WFOCUS.sev});
+    return {map:m,echo:new Set(WFOCUS.ids),sev:WFOCUS.sev};}
+  if(PFOCUS)return null;          // a clicked puck alone uses the ordinary selection highlight
+  if(!DWOPEN.size)return null;
+  const m=new Map();
+  DWOPEN.forEach((di:any)=>{const g=WARN.byDay[di]; if(!g||!g.warns||!g.warns.length)return;
+    const ids=new Set(); let sev='adv';
+    g.warns.forEach((w:any)=>{(w.who||[]).forEach((id:any)=>ids.add(id)); if(w.sev==='hard')sev='hard';});
+    if(ids.size)m.set(di,{ids,sev});});
+  return m.size?{map:m,echo:null,sev:null}:null;
+}
 export let ARM:any=null;                                   // {key, di, title} or null
 export function armedKey(){return ARM?ARM.key:'';}
 export function armSlot(key:any,el?:any){

@@ -8,6 +8,7 @@
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { dayHTML } from './html'
+import { refreshHighlights } from './highlights'
 import { useVersion } from './useStore'
 
 export function ViewWeek() {
@@ -30,6 +31,8 @@ export function ViewWeek() {
     }
     root.scrollLeft = sl
     prev.current = html
+    /* the reference re-hangs selection/highlight classes after every render */
+    refreshHighlights()
   }, [version])
 
   return <div className="week" id="vWeek" ref={ref} />
