@@ -19,7 +19,7 @@ const TYPED = {
   SEVWORD: ':any', WARN: ':any', REST: ':any', EVD: ':any', SCHED: ':any',
   AL_COLORS: ':any[]', SIGN_ROLES: ':any[]', RULE_STD: ':any', RULE_SPEC: ':any',
   KIND_LABEL: ':any', ID_BY_CS: ':any', DAYS: ':any[]', HIST: ':any',
-  QCHIP: ':any', QCLASS: ':any', LEVELNAME: ':any', DUTY_ORDER: ':any', LG_TIER: ':any',
+  QCHIP: ':any', QCLASS: ':any', QCOLOR: ':any', LEVELNAME: ':any', DUTY_ORDER: ':any', LG_TIER: ':any',
 };
 // functions whose trailing params must be optional (callers omit them)
 const OPTIONAL = { win: ['openEnd'], signPeople: ['keep'], markEdit: ['key'], slotBar: ['rules'], armSlot: ['el'], ted: ['tag'], plRow: ['rmkTxt'], puck: [] };

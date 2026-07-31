@@ -51,7 +51,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 97 | every day carries its own sign-off strip | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
 | 100 | the strip has the four roles | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
 | 102 | each role is a roster dropdown | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 106 | Scheduler is a qual column | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
+| 106 | Scheduler is a qual column | **ported** → ≈ ui/quals.test.tsx (against QUAL_COLS in the port) |
 | 109 | some schedulers are appointed | **ported** → ≈ publish.test.ts |
 | 112 | the three scheduling roles offer ONLY appointed schedulers | **ported** → ≈ publish.test.ts (signPeople, not the dropdowns) |
 | 117 | CUR CK stays open to everyone | **ported** → ≈ publish.test.ts |
@@ -139,16 +139,16 @@ so every skipped assertion continues to be enforced against the reference.
 | 351 | board inputs panel | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 352 | board inputs banded | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 355 | SANS pucks marked | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 358 | quals rows | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 361 | the Quals table has a Scheduler column | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 362 | the column sits with the appointments, not the flying quals | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 364 | appointed people are ticked | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 366 | every row carries the cell | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 369 | a tick matches isScheduler | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 375 | ticking the cell appoints them | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 377 | unticking withdraws it | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 379 | ticking the cell appoints them | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 379 | unticking withdraws it | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 358 | quals rows | **ported** → ui/quals.test.tsx |
+| 361 | the Quals table has a Scheduler column | **ported** → ui/quals.test.tsx |
+| 362 | the column sits with the appointments, not the flying quals | **ported** → ui/quals.test.tsx |
+| 364 | appointed people are ticked | **ported** → ui/quals.test.tsx |
+| 366 | every row carries the cell | **ported** → ui/quals.test.tsx |
+| 369 | a tick matches isScheduler | **ported** → ui/quals.test.tsx |
+| 375 | ticking the cell appoints them | **ported** → ui/quals.test.tsx |
+| 377 | unticking withdraws it | **ported** → ui/quals.test.tsx |
+| 379 | ticking the cell appoints them | **ported** → ui/quals.test.tsx |
+| 379 | unticking withdraws it | **ported** → ui/quals.test.tsx |
 | 382 | inputs rows | **ported** → ui/inputs.test.tsx |
 | 383 | no TDY | **ported** → leave.test.ts + ui/inputs.test.tsx |
 | 386 | sched board opens | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
@@ -620,10 +620,10 @@ so every skipped assertion continues to be enforced against the reference.
 | 1760 | a negation does not swallow a real requirement after it | **ported** → aar.test.ts |
 | 1761 | remarks with no AAR in them ask for nothing | **ported** → aar.test.ts |
 | 1763 | the digit is ignored — only the letter is read | **ported** → aar.test.ts |
-| 1765 | DAAR and NAAR are qual columns | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
+| 1765 | DAAR and NAAR are qual columns | **ported** → ≈ ui/quals.test.tsx |
 | 1768 | AAR is front seat only | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
-| 1769 | NAAR cannot be ticked before DAAR | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
-| 1770 | removing DAAR removes NAAR with it | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
+| 1769 | NAAR cannot be ticked before DAAR | **ported** → ≈ ui/quals.test.tsx (as behaviour) |
+| 1770 | removing DAAR removes NAAR with it | **ported** → ≈ ui/quals.test.tsx (as behaviour) |
 | 1771 | the invariant holds across the whole roster | **ported** → ≈ aar.test.ts (over PEOPLE, not palette DOM) |
 | 1775 | no WSO holds AAR currency | **ported** → ≈ aar.test.ts (made non-vacuous) |
 | 1779 | AAR has its own code at hard severity | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
@@ -733,4 +733,4 @@ so every skipped assertion continues to be enforced against the reference.
 | 2258 | the list row’s name cell kept the treatment it already had | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2260 | a puck name is untouched — it still ellipsises on one line | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 
-Totals: 190 labels ported (some cover several tfin result lines), 533 skipped.
+Totals: 204 labels ported (some cover several tfin result lines), 519 skipped.
