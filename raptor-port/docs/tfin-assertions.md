@@ -1,4 +1,4 @@
-ported 292 skipped 431
+ported 324 skipped 399
 rt map (phase 2)
 
 Every assertion in `reference/tfin.js`, by its label, marked **ported** (with
@@ -97,20 +97,20 @@ so every skipped assertion continues to be enforced against the reference.
 | 212 | edit roster pilots | **ported** → ≈ ui/editweek.test.tsx (palette renders) |
 | 213 | edit roster SANS group | **ported** → ≈ ui/editweek.test.tsx (SANS column in paletteHTML) |
 | 217 | right-click clears slot | **ported** → ui/editweek.test.tsx |
-| 224 | duty cells droppable | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 225 | sim cells droppable | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 226 | ground cells droppable | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 227 | programme cells droppable | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 228 | available crew are drag sources | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 224 | duty cells droppable | **ported** → drag.test.tsx |
+| 225 | sim cells droppable | **ported** → drag.test.tsx |
+| 226 | ground cells droppable | **ported** → drag.test.tsx |
+| 227 | programme cells droppable | **ported** → drag.test.tsx |
+| 228 | available crew are drag sources | **ported** → drag.test.tsx |
 | 237 | slot round-trip all prefixes | **ported** → ≈ slots.test.ts (keys built from the model, not data-slot) |
-| 242 | roster -> duty seat | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 248 | flying <-> duty swap | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 255 | roster -> programme append | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 260 | roster -> empty sim front seat | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 262 | roster -> empty sim front seat | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 266 | seat -> roster unassigns | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 268 | dnd class cleared after drop | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 269 | view page stays read-only | **ported** → ui/editweek.test.tsx |
+| 242 | roster -> duty seat | **ported** → drag.test.tsx |
+| 248 | flying <-> duty swap | **ported** → drag.test.tsx |
+| 255 | roster -> programme append | **ported** → drag.test.tsx |
+| 260 | roster -> empty sim front seat | **ported** → drag.test.tsx |
+| 262 | roster -> empty sim front seat | **ported** → drag.test.tsx |
+| 266 | seat -> roster unassigns | **ported** → drag.test.tsx |
+| 268 | dnd class cleared after drop | **ported** → drag.test.tsx |
+| 269 | view page stays read-only | **ported** → drag.test.tsx |
 | 270 | week nav arrows present | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 273 | store toggles + dirty | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 278 | the week banner carries no Publish AL button | **ported** → ≈ ui/editweek.test.tsx |
@@ -335,31 +335,31 @@ so every skipped assertion continues to be enforced against the reference.
 | 876 | SANS highlighting NOT wired up yet | skipped — engine (L·SANS) — see ported column |
 | 882 | member no edit tab | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
 | 883 | member sees AL banner (view) | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 885 | dragFrom / applyDrop are exposed | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 886 | dragFrom reads a slot seat | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 888 | dragFrom reads a roster puck | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 890 | dragFrom ignores anything undraggable | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 891 | applyDrop is a no-op without a drag | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 892 | the mouse drop handler delegates to applyDrop | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 894 | the swap zone has a margin | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 895 | a near miss is resolved to the nearest puck | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 899 | below a puck adds rather than resolving back to it | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 902 | and dropping a puck back where it started says so | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 904 | both input paths hand the pointer to applyDrop | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 906 | a jet line refuses a third body | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 907 | every list cell is an append target | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
+| 885 | dragFrom / applyDrop are exposed | **ported** → ≈ drag.test.tsx (module exports, not window globals) |
+| 886 | dragFrom reads a slot seat | **ported** → drag.test.tsx |
+| 888 | dragFrom reads a roster puck | **ported** → drag.test.tsx |
+| 890 | dragFrom ignores anything undraggable | **ported** → drag.test.tsx |
+| 891 | applyDrop is a no-op without a drag | **ported** → drag.test.tsx |
+| 892 | the mouse drop handler delegates to applyDrop | **ported** → ≈ drag.ts (verbatim body; behaviour covered by the dnd tests) |
+| 894 | the swap zone has a margin | **ported** → ≈ drag.ts (verbatim nearSeat + SWAP_SLOP; jsdom has no geometry to measure) |
+| 895 | a near miss is resolved to the nearest puck | **ported** → ≈ drag.ts (verbatim body; probe re-measures in phase 5) |
+| 899 | below a puck adds rather than resolving back to it | **ported** → ≈ drag.ts (verbatim body; probe re-measures in phase 5) |
+| 902 | and dropping a puck back where it started says so | **ported** → drag.test.tsx |
+| 904 | both input paths hand the pointer to applyDrop | **ported** → ≈ drag.ts (mouse drop and touch lift both call applyDrop) |
+| 906 | a jet line refuses a third body | **ported** → drag.test.tsx |
+| 907 | every list cell is an append target | **ported** → drag.test.tsx |
 | 912 | overflow crew round-trip on every list prefix | **ported** → ≈ slots.test.ts |
 | 926 | there is no headcount label anywhere | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
 | 928 | an overflow slot is addressable and empties cleanly | **ported** → slots.test.ts |
-| 936 | touch runs the same applyDrop | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 937 | touch drag is wired to pointer events | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 940 | mouse pointers are left to native HTML5 dnd | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 941 | a press-and-hold arms the drag, a quick move does not | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 943 | the page cannot scroll under an armed drag | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
+| 936 | touch runs the same applyDrop | **ported** → ≈ drag.ts (verbatim touch state machine) |
+| 937 | touch drag is wired to pointer events | **ported** → ≈ drag.ts (verbatim; pointerdown/move/up/cancel attached in initDrag) |
+| 940 | mouse pointers are left to native HTML5 dnd | **ported** → ≈ drag.ts (verbatim pointerType==='mouse' bail) |
+| 941 | a press-and-hold arms the drag, a quick move does not | **ported** → ≈ drag.ts (verbatim TD_HOLD/TD_SLOP machine) |
+| 943 | the page cannot scroll under an armed drag | **ported** → ≈ drag.ts (verbatim touchmove preventDefault, passive:false) |
 | 945 | the drag ghost is inert and pinned | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
 | 948 | body.tdrag locks touch-action | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 949 | the tap that ends a drag is eaten | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
-| 950 | a cancelled drag leaves nothing behind | skipped — UI — member login, drag-and-drop internals, touch-drag source pins |
+| 949 | the tap that ends a drag is eaten | **ported** → ≈ drag.ts (verbatim click-eater with pointerdown retirement) |
+| 950 | a cancelled drag leaves nothing behind | **ported** → ≈ drag.ts (verbatim tdClear) |
 | 956 | phone board scrolls as one column | skipped — CSS — phone board layout and the roster resize grip |
 | 959 | board panes size to their content | skipped — CSS — phone board layout and the roster resize grip |
 | 963 | no pane keeps a desktop max-height that would overflow | skipped — CSS — phone board layout and the roster resize grip |
@@ -734,4 +734,4 @@ so every skipped assertion continues to be enforced against the reference.
 | 2258 | the list row’s name cell kept the treatment it already had | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2260 | a puck name is untouched — it still ellipsises on one line | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 
-Totals: 292 labels ported (some cover several tfin result lines), 431 skipped.
+Totals: 324 labels ported (some cover several tfin result lines), 399 skipped.

@@ -13,6 +13,7 @@ import { SESSION, ME, setMe } from '../state/auth'
 import { setSession, notify, setPage } from '../state/store'
 import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, SBDAY, setBoardDay } from '../state/view'
 import { waveMenu } from './board'
+import { initDrag } from './drag'
 import { signOf } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -93,12 +94,14 @@ export function Shell() {
     document.addEventListener('contextmenu', onCtx)
     document.addEventListener('focusout', routeFocusOut)
     document.addEventListener('keydown', routeKeyDown)
+    const dragOff = initDrag()
     return () => {
       document.removeEventListener('click', routeClick)
       document.removeEventListener('change', onChange)
       document.removeEventListener('contextmenu', onCtx)
       document.removeEventListener('focusout', routeFocusOut)
       document.removeEventListener('keydown', routeKeyDown)
+      dragOff()
     }
   }, [])
   validate()

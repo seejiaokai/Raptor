@@ -1,0 +1,306 @@
+/* Drag & drop — the reference's whole DnD block (mouse HTML5 drag + the
+   touch-pointer state machine that reuses it), bodies verbatim. The ONE
+   mutation path is applyDrop(): mouse drop and touch lift both call it, so
+   the two input methods can never drift apart. Repaint is the store's
+   notify(), folded into applyDrop's done(). */
+import { PEOPLE } from '../engine/people'
+import { slotVal, setSlotVal, fillSlot } from '../engine/slots'
+import { slotBar } from '../engine/avail'
+import { validate } from '../engine/validate'
+import { HOOKS } from '../engine/hooks'
+import * as view from '../state/view'
+import { notify } from '../state/store'
+
+const toast = (...a: any[]) => HOOKS.toast(...a)
+const isPhone = () => HOOKS.isPhone()
+
+export let DRAG: any = null                     // {kind:'slot',key} | {kind:'roster',id}
+
+const DROP_SEL = '.sb-slot,.seat[data-slot],[data-fill]'
+const BIN_SEL = '.sb-roster,.eroster,.availpuck'
+
+/* On a phone the aircrew drawer covers half the screen, so a name picked up
+   INSIDE it would have almost nothing to land on. Picking one up parks the
+   drawer back against its tab for the duration of the drag — the tab is still
+   part of .eroster, so dropping there is still "put them back" — and the drawer
+   slides out again when the drag ends. */
+let ROS_REOPEN = false
+function dndOn(from: any) {
+  document.body.classList.add('dnd')
+  if (isPhone() && document.body.classList.contains('ros-open') && from && from.closest && from.closest('.eroster')) {
+    ROS_REOPEN = true; document.body.classList.remove('ros-open')
+  }
+}
+function dndOff() {
+  document.body.classList.remove('dnd')
+  document.querySelectorAll('.dragover').forEach(x => x.classList.remove('dragover'))
+  if (ROS_REOPEN) { ROS_REOPEN = false; document.body.classList.add('ros-open') }
+}
+/* what a drag STARTS from — shared by the mouse (dragstart) and touch paths */
+export function dragFrom(el: any) {
+  if (!el || !el.closest) return null
+  const slot = el.closest('.seat[data-slot][draggable="true"]')
+  if (slot) return { kind: 'slot', key: slot.dataset.slot }
+  const rp = el.closest('[data-person][draggable="true"]')
+  if (rp) return { kind: 'roster', id: rp.dataset.person }
+  return null
+}
+/* what a drag ENDS on. The ONE mutation path — mouse drop and touch lift both
+   call this, so the two input methods can never drift apart. */
+/* "directly over a puck" gets a few pixels of slack, so a near-miss on a phone
+   still swaps instead of quietly adding an extra body to the row */
+const SWAP_SLOP = 7
+export function nearSeat(cell: any, x: any, y: any) {
+  if (!cell || x == null || y == null) return null
+  let best: any = null, bd = SWAP_SLOP
+  cell.querySelectorAll('.seat[data-slot]').forEach((sEl: any) => {
+    const r = sEl.getBoundingClientRect(); if (!r.width) return
+    const dx = x < r.left ? r.left - x : (x > r.right ? x - r.right : 0)
+    const dy = y < r.top ? r.top - y : (y > r.bottom ? y - r.bottom : 0)
+    const d = Math.sqrt(dx * dx + dy * dy)
+    if (d <= bd) { bd = d; best = sEl }
+  })
+  return best
+}
+/* The picker hides crew who are not qualified for the position. Drag & drop had
+   no such gate, so an SC NIGHT shift could quietly be filled with SC DAY crew
+   and the only sign was a red Qual chip afterwards. Dropping is still allowed —
+   the schedule sometimes has to be built before the currency catches up — but it
+   now says what is wrong at the moment it happens. Returns true when it warned. */
+export function barDrop(id: any, key: any) {
+  if (!id || !key) return false
+  /* The drop has already been written, but nothing has revalidated yet — EVD
+     still holds the pre-drop picture, so a man moved between two seats of the
+     same SC shift was warned about the seat he had just vacated. Recompute
+     first, then ask; slotBar's own self-exclusion covers where he now sits. */
+  try { validate() } catch (_) {}
+  let why = ''; try { why = slotBar(id, String(key).replace(/\.\+$/, '')) } catch (_) { return false }
+  if (!why) return false
+  toast(`${(PEOPLE[id] || {}).cs || id} — ${why}`, 'warn')
+  return true
+}
+export function applyDrop(el: any, x: any, y: any) {
+  if (!DRAG || !el || !el.closest) { DRAG = null; dndOff(); return false }
+  let slotEl = el.closest('.sb-slot,.seat[data-slot]')
+  /* A drop anywhere on a list row means THAT ROW. The .ppl cell is only a third of
+     a row tall on a phone, so better than eight in ten pixels of a duty / sim /
+     ground / programme row used to swallow the drop without a word. */
+  const cell = el.closest('[data-fill]')
+    || (() => {
+      const row = el.closest('.pl-row,.ah-row,.sb-arow')
+      return row ? row.querySelector('[data-fill]') : null
+    })()
+  /* Landed in the cell but within a hair of one of its pucks → treat it as that
+     puck, i.e. swap. Landed BELOW a puck → add, even inside the slop: on a 15px
+     puck the natural "nudge it down to add a second body" gesture used to resolve
+     back onto the puck being dragged and do nothing at all. */
+  if (!slotEl && cell) {
+    const n = nearSeat(cell, x, y)
+    if (n && !(DRAG.kind === 'slot' && n.dataset.slot === DRAG.key)
+      && y <= n.getBoundingClientRect().bottom) slotEl = n
+  }
+  /* a jet line is two seats — FCP and RCP. Dropping below them adds nothing. */
+  if (!slotEl && !cell && el.closest('.acrow')) {
+    toast('A jet line carries two — FCP and RCP')
+    DRAG = null; dndOff(); return false
+  }
+  const bin = el.closest(BIN_SEL)
+  const done = () => { DRAG = null; dndOff(); view.afterSchedMutate(); notify(); return true }
+  if (slotEl) {
+    const targetKey = slotEl.dataset.slot || (slotEl.querySelector('[data-slot]') && slotEl.querySelector('[data-slot]').dataset.slot)
+    if (!targetKey) { DRAG = null; dndOff(); return false }
+    if (DRAG.kind === 'roster') { setSlotVal(targetKey, DRAG.id); barDrop(DRAG.id, targetKey) }
+    else if (DRAG.key !== targetKey) {
+      const a = slotVal(DRAG.key), b = slotVal(targetKey); setSlotVal(targetKey, a); setSlotVal(DRAG.key, b)
+      barDrop(a, targetKey) || barDrop(b, DRAG.key)
+    }
+    /* dropped back where he started — say so rather than reporting nothing */
+    else { DRAG = null; dndOff(); toast('Already in that seat'); return false }
+    return done()
+  }
+  if (cell) {                                     // dropped on an empty / shared people cell
+    if (DRAG.kind === 'roster') { fillSlot(cell.dataset.fill, DRAG.id); barDrop(DRAG.id, cell.dataset.fill) }
+    else { const id = slotVal(DRAG.key); setSlotVal(DRAG.key, ''); fillSlot(cell.dataset.fill, id); barDrop(id, cell.dataset.fill) }
+    return done()
+  }
+  if (bin && DRAG.kind === 'slot') { setSlotVal(DRAG.key, ''); return done() }
+  DRAG = null; dndOff(); return false
+}
+
+/* ---- the mouse path: HTML5 drag events, verbatim ---- */
+function onDragStart(e: DragEvent) {
+  const d = dragFrom(e.target); if (!d) return
+  DRAG = d
+  if (e.dataTransfer) {
+    e.dataTransfer.effectAllowed = d.kind === 'slot' ? 'move' : 'copy'
+    try { e.dataTransfer.setData('text/plain', d.kind === 'slot' ? d.key : d.id) } catch (_) {}
+  }
+  dndOn(e.target)
+}
+function onDragOver(e: DragEvent) {
+  if (!DRAG) return
+  const drop = (e.target as HTMLElement).closest(DROP_SEL) || (e.target as HTMLElement).closest(BIN_SEL)
+  if (!drop) return
+  e.preventDefault()
+  drop.classList.add('dragover')
+}
+function onDragLeave(e: DragEvent) { const t = (e.target as HTMLElement).closest('.dragover'); if (t) t.classList.remove('dragover') }
+function onDrop(e: DragEvent) {
+  if (!DRAG) return
+  const t = e.target as HTMLElement
+  if (t.closest && (t.closest('.sb-slot,.seat[data-slot]') || t.closest('[data-fill]')
+    || (t.closest(BIN_SEL) && DRAG.kind === 'slot'))) e.preventDefault()
+  applyDrop(t, e.clientX, e.clientY)
+}
+function onDragEnd() { dndOff(); DRAG = null }
+
+/* ---- touch drag ---------------------------------------------------------
+   HTML5 drag & drop is mouse-only: a touch pointer never fires dragstart, so
+   on a phone or tablet every puck was inert — the roster palette, the swap,
+   the bin, all of it. This runs the SAME DRAG state machine off pointer
+   events. Press and hold ~180 ms on anything [draggable="true"] to pick it up
+   (a move before that is a scroll, and cancels), a ghost follows the finger,
+   whatever sits under it takes .dragover exactly as on desktop, and lifting
+   off calls applyDrop() — the identical mutation path the mouse uses.        */
+let TD: any = null
+const TD_SLOP = 8, TD_GIVEUP = 26, TD_HOLD = 180, TD_EDGE = 52, TD_SPEED = 16
+function tdClear() {
+  if (!TD) return
+  clearTimeout(TD.timer)
+  if (TD.ghost && TD.ghost.parentNode) TD.ghost.parentNode.removeChild(TD.ghost)
+  if (TD.armed) { document.body.classList.remove('tdrag'); dndOff(); DRAG = null }
+  TD = null
+}
+function tdScrollerFor(el: any) {
+  let n = el
+  while (n && n !== document.body && n !== document.documentElement) {
+    const cs = getComputedStyle(n)
+    if (/auto|scroll/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 4) return n
+    n = n.parentElement
+  }
+  return document.scrollingElement || document.documentElement
+}
+function tdAutoScroll(y: any) {
+  const el = TD.scroller; if (!el) return
+  const top = (el === document.scrollingElement || el === document.documentElement) ? 0 : el.getBoundingClientRect().top
+  const bot = (el === document.scrollingElement || el === document.documentElement) ? window.innerHeight : el.getBoundingClientRect().bottom
+  if (y < top + TD_EDGE) el.scrollTop -= TD_SPEED
+  else if (y > bot - TD_EDGE) el.scrollTop += TD_SPEED
+}
+function tdOver(x: any, y: any) {
+  const g = TD.ghost
+  if (g) { g.style.left = x + 'px'; g.style.top = y + 'px' }
+  const el = document.elementFromPoint(x, y)
+  const t = el && el.closest ? (el.closest(DROP_SEL) || el.closest(BIN_SEL)) : null
+  if (t !== TD.over) {
+    if (TD.over) TD.over.classList.remove('dragover')
+    if (t) t.classList.add('dragover')
+    TD.over = t
+  }
+  tdAutoScroll(y)
+}
+function tdArm() {
+  if (!TD || TD.armed) return
+  const d = dragFrom(TD.src); if (!d) { tdClear(); return }
+  DRAG = d; TD.armed = true
+  TD.scroller = tdScrollerFor(TD.src)
+  const r = TD.src.getBoundingClientRect()
+  const g = TD.src.cloneNode(true)
+  g.classList.add('tdghost')
+  g.removeAttribute('draggable')
+  g.style.width = r.width + 'px'; g.style.height = r.height + 'px'
+  g.style.left = TD.x + 'px'; g.style.top = TD.y + 'px'
+  document.body.appendChild(g)
+  TD.ghost = g
+  document.body.classList.add('tdrag')
+  dndOn(TD.src)
+  tdOver(TD.x, TD.y)
+  if (navigator.vibrate) try { navigator.vibrate(12) } catch (_) {}
+}
+function onPointerDown(e: PointerEvent) {
+  if (e.pointerType === 'mouse' || !e.isPrimary) return
+  const src = (e.target as HTMLElement).closest && (e.target as HTMLElement).closest('[draggable="true"]')
+  if (!src) return
+  tdClear()
+  TD = { src, x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, id: e.pointerId }
+  TD.timer = setTimeout(tdArm, TD_HOLD)
+}
+function onPointerMove(e: PointerEvent) {
+  if (!TD || e.pointerId !== TD.id) return
+  TD.x = e.clientX; TD.y = e.clientY
+  if (!TD.armed) {
+    /* A finger settling on a 15px puck routinely travels more than 8px inside the
+       180ms hold. That used to CANCEL the gesture outright — no ghost, no feedback,
+       and holding still could not re-arm it. A small wobble now just restarts the
+       hold clock from where the finger actually is; only a movement big enough to be
+       a deliberate pan gives up and lets the page scroll. */
+    const dx = Math.abs(e.clientX - TD.x0), dy = Math.abs(e.clientY - TD.y0)
+    if (dx > TD_GIVEUP || dy > TD_GIVEUP) { tdClear(); return }
+    if (dx > TD_SLOP || dy > TD_SLOP) {
+      TD.x0 = e.clientX; TD.y0 = e.clientY
+      clearTimeout(TD.timer); TD.timer = setTimeout(tdArm, TD_HOLD)
+    }
+    return
+  }
+  tdOver(e.clientX, e.clientY)
+}
+/* while a touch drag is armed the page must not scroll under the finger */
+function onTouchMove(e: TouchEvent) { if (TD && TD.armed) e.preventDefault() }
+function onPointerUp(e: PointerEvent) {
+  if (!TD || e.pointerId !== TD.id) return
+  const armed = TD.armed, x = e.clientX, y = e.clientY
+  if (armed) {
+    if (TD.ghost && TD.ghost.parentNode) TD.ghost.parentNode.removeChild(TD.ghost)
+    TD.ghost = null
+    const el = document.elementFromPoint(x, y)
+    document.body.classList.remove('tdrag')
+    applyDrop(el, x, y)
+    /* The tap that ends a drag must not also select the puck. But a real drag ends
+       on a different element than it started on, so the browser fires NO click at
+       all — {once:true} never self-removed and the eater sat there for 350ms
+       swallowing the user's NEXT genuine tap (it is a capture listener on document,
+       so arming a slot, planting a name and selecting a person all went dead).
+       Retire it on the next pointerdown too: it can now only eat the click that
+       belongs to the drag that installed it. */
+    const eat = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
+    const dropEat = () => {
+      document.removeEventListener('click', eat, { capture: true } as any)
+      document.removeEventListener('pointerdown', dropEat, { capture: true } as any)
+    }
+    document.addEventListener('click', eat, { capture: true, once: true })
+    document.addEventListener('pointerdown', dropEat, { capture: true, once: true })
+    setTimeout(dropEat, 350)
+  }
+  /* tdClear, not TD=null — a quick tap left its 180 ms arm timer pending, and it
+     would fire against the NEXT gesture and pick up a puck nobody grabbed */
+  tdClear()
+}
+function onPointerCancel() { tdClear() }
+
+/* attach the whole block to the document, exactly as the reference does;
+   returns the detach for React's effect cleanup */
+export function initDrag() {
+  document.addEventListener('dragstart', onDragStart)
+  document.addEventListener('dragover', onDragOver)
+  document.addEventListener('dragleave', onDragLeave)
+  document.addEventListener('drop', onDrop)
+  document.addEventListener('dragend', onDragEnd)
+  document.addEventListener('pointerdown', onPointerDown, { passive: true })
+  document.addEventListener('pointermove', onPointerMove, { passive: true })
+  document.addEventListener('touchmove', onTouchMove, { passive: false })
+  document.addEventListener('pointerup', onPointerUp, { passive: true })
+  document.addEventListener('pointercancel', onPointerCancel, { passive: true })
+  return () => {
+    tdClear()
+    document.removeEventListener('dragstart', onDragStart)
+    document.removeEventListener('dragover', onDragOver)
+    document.removeEventListener('dragleave', onDragLeave)
+    document.removeEventListener('drop', onDrop)
+    document.removeEventListener('dragend', onDragEnd)
+    document.removeEventListener('pointerdown', onPointerDown)
+    document.removeEventListener('pointermove', onPointerMove)
+    document.removeEventListener('touchmove', onTouchMove)
+    document.removeEventListener('pointerup', onPointerUp)
+    document.removeEventListener('pointercancel', onPointerCancel)
+  }
+}
