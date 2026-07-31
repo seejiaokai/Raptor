@@ -1,0 +1,107 @@
+import { hhmm, parseHM, lgT } from './time'
+import { store } from './hooks'
+/* =====================================================================
+   VALIDATION ENGINE — automatically flags scheduling conflicts.
+   Thresholds are taken from the 149/142 aircrew sheet (BRF 02:20, crew
+   rest 08:00, min turn 20). Rules are pure functions; re-run on any edit.
+   ===================================================================== */
+export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, tightTurn:120, crewRest:720,
+  debrief:120,      // land + 2h — the flight debrief window
+  reportLead:180,   // report to squadron 3h before T/O
+  longDay:720,      // more than 12h on the books = long work day
+  epBrief:15,       // an EP sim briefs 15 min prior
+  simDebrief:30,    // sim debrief runs 30 min after
+  amtDebrief:30,    // AMT DEBRIEF row + 30 min
+  openEnd:60,       // a row with a start and no end is assumed to run an hour
+  scDayFrom:7*60,   // an SC shift wholly inside this window is a DAY shift
+  scDayTo:19*60};
+/* SC currency. A shift that sits wholly inside 07:00–19:00 is a DAY shift and
+   needs SC DAY; anything reaching outside it is a NIGHT shift and needs SC
+   NIGHT. Crew change times move, so the window is read off the shift as
+   scheduled rather than assumed from the AM/PM label. */
+/* the SC day window is a setting, not a constant — it is edited on the Logic tab
+   like every other threshold, so it lives in VCONF with the rest of them */
+export const SC_DAY_FROM=7*60, SC_DAY_TO=19*60;   // squadron standard, kept for reference
+/* What an SC MAIN shift cannot share a minute with. A flight, a sim, a duty post
+   or another shift means the man is wanted in two places — hard. A ground event
+   or a squadron programme item is not: you can still give academics to the man
+   standing SC, so that pairing is only an advisory (SHIFT_SOFT). The crew picker
+   reads this same table, so what bars a name from an armed SC slot and what the
+   engine flags afterwards can never drift apart. */
+/* Every event kind, and whether an SC MAIN shift clashing with it is a Warning
+   (true) or an Advisory (false). A full map rather than a sparse one so the Logic
+   tab can offer every kind as a toggle — the engine only ever tests truthiness. */
+export const SHIFT_HARD:any={fly:true,sim:true,duty:true,shift:true,ground:false,prog:false};
+/* =====================================================================
+   EDITABLE RULES
+   The engine reads its thresholds out of VCONF and its clash grading out of
+   SHIFT_HARD. Both are plain objects, so the Logic tab edits them in place and
+   every rule that reads them changes with them — nothing is duplicated.
+
+   RULE_STD is the squadron standard, captured before anything can touch it. It
+   is the thing "Reset to standard" restores, and the thing a modified setting is
+   measured against. Overrides are saved locally and reloaded on next open.
+
+   Deliberately NOT here: no rule versioning (a published day is not stamped with
+   the rules it was flown under) and no second-person approval. The squadron
+   asked for neither. What IS kept: only an admin can edit, a modified value is
+   labelled wherever it appears, and the week banner says so.
+   ===================================================================== */
+export const RULE_STD:any=Object.freeze({v:JSON.parse(JSON.stringify(VCONF)),
+                              s:JSON.parse(JSON.stringify(SHIFT_HARD))});
+/* every setting the Logic tab may edit: label, unit, and the bounds outside
+   which a value is not a squadron rule but a typo */
+export const RULE_SPEC:any={
+  step:      {t:'Step before take-off',      u:'min', lo:0,  hi:240},
+  dekit:     {t:'Dekit after landing',       u:'min', lo:0,  hi:240},
+  briefLead: {t:'Flight brief before T/O',   u:'min', lo:0,  hi:480},
+  reportLead:{t:'Nominal report before T/O', u:'min', lo:0,  hi:480},
+  debrief:   {t:'Flight debrief after land', u:'min', lo:0,  hi:480},
+  crewRest:  {t:'Crew rest',                 u:'min', lo:240,hi:1440},
+  tightTurn: {t:'Tight turn threshold',      u:'min', lo:0,  hi:480},
+  longDay:   {t:'Long work day',             u:'min', lo:240,hi:1440},
+  openEnd:   {t:'Assumed length, no end time',u:'min',lo:5,  hi:480},
+  epBrief:   {t:'EP sim brief',              u:'min', lo:0,  hi:240},
+  simDebrief:{t:'Sim debrief',               u:'min', lo:0,  hi:240},
+  amtDebrief:{t:'AMT debrief',               u:'min', lo:0,  hi:240},
+  scDayFrom: {t:'SC day window opens',       u:'time',lo:0,  hi:1439},
+  scDayTo:   {t:'SC day window closes',      u:'time',lo:0,  hi:1439},
+  minTurn:   {t:'Minimum turn (unused)',     u:'min', lo:0,  hi:480},
+  dur:       {t:'Default sortie length (unused)',u:'min',lo:0,hi:480},
+};
+export const KIND_LABEL:any={fly:'a flight',sim:'a sim',duty:'a duty post',shift:'another shift',
+  ground:'a ground event',prog:'a programme item'};
+/* a setting reads as a clock time or as a duration */
+export const ruleFmt=(k:any,v:any)=>RULE_SPEC[k]&&RULE_SPEC[k].u==='time'?hhmm(v):lgT(v);
+export const ruleParse=(k:any,txt:any)=>{
+  const s=String(txt).trim();
+  if(RULE_SPEC[k]&&RULE_SPEC[k].u==='time'){const m=parseHM(s); return m==null?null:m;}
+  /* "12h", "2h20", "90", "90 min" all mean the same thing */
+  const hm=s.match(/^(\d+)\s*h\s*(\d{1,2})?$/i);
+  if(hm)return +hm[1]*60+(+(hm[2]||0));
+  const n=s.match(/^(\d+(?:\.\d+)?)\s*(?:min|m)?$/i);
+  return n?Math.round(+n[1]):null;};
+export function ruleOff(k:any){return VCONF[k]!==RULE_STD.v[k];}
+export function kindOff(k:any){return !!SHIFT_HARD[k]!==!!RULE_STD.s[k];}
+export function rulesOffCount(){
+  return Object.keys(RULE_SPEC).filter(ruleOff).length
+       + Object.keys(KIND_LABEL).filter(kindOff).length;}
+/* persistence — only what differs from standard is stored, so a later change to
+   the standard is picked up rather than silently overridden by a stale copy */
+export function rulesSave(){
+  const v:any={},s:any={};
+  Object.keys(RULE_SPEC).forEach((k:any)=>{if(ruleOff(k))v[k]=VCONF[k];});
+  Object.keys(KIND_LABEL).forEach((k:any)=>{if(kindOff(k))s[k]=!!SHIFT_HARD[k];});
+  store.set('rules',(Object.keys(v).length||Object.keys(s).length)?{v,s}:null);}
+export function rulesLoad(){
+  const r=store.get('rules',null); if(!r)return;
+  /* isFinite("840") is true — a string sailed through and every arithmetic on
+     it became concatenation, poisoning REST[] and the crew-rest maths. Storage
+     is editable by hand, so it is treated as untrusted input. */
+  Object.keys(r.v||{}).forEach((k:any)=>{const sp=RULE_SPEC[k], n=r.v[k];
+    if(sp&&typeof n==='number'&&isFinite(n)&&n>=sp.lo&&n<=sp.hi)VCONF[k]=n;});
+  Object.keys(r.s||{}).forEach((k:any)=>{if(k in KIND_LABEL)SHIFT_HARD[k]=!!r.s[k];});}
+export function rulesReset(){
+  Object.keys(RULE_STD.v).forEach((k:any)=>VCONF[k]=RULE_STD.v[k]);
+  Object.keys(RULE_STD.s).forEach((k:any)=>SHIFT_HARD[k]=RULE_STD.s[k]);
+  store.set('rules',null);}

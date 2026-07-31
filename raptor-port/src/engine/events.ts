@@ -1,0 +1,147 @@
+import { DAYS } from './data'
+import { INPUTS, inputCoversDate } from './inputs'
+import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
+import { toMin, parseHM, win } from './time'
+import { VCONF } from './rules'
+import { isStandalone, saExempt } from './waves'
+import { whoArr } from './slots'
+export function intimeMap(w:any){ const m:any={}; (w.intimes||[]).forEach((t:any)=>{ const tm=(t.match(/(\d{3,4})\s*H/)||[])[1]; const cs=(t.match(/\b([A-Z]{2})\s+IN\s+TIME/i)||[])[1]; if(tm&&cs)m[cs.toUpperCase()]=parseHM(tm); }); return m; }
+export function collectEvents(){
+  return DAYS.map((d:any,di:any)=>{
+    const fly:any[]=[],forms:any[]=[],events:any[]=[],simcrew:any[]=[];
+    (d.waves||[]).forEach((w:any,gi:any)=>{
+      const im=intimeMap(w);
+      w.formations.forEach((f:any,li:any)=>{
+        if(f.cx)return;                                        // cancelled line — nothing to check
+        if(saExempt(w,f,null))return;                          // AVALON / BB — wholly outside the engine
+        const toM=toMin(f.to);
+        let ldM=toMin(f.ld||f.to); if(ldM<toM)ldM+=1440;      // landed after midnight
+        /* A STANDALONE line is a SHIFT, not a sortie: 0700–1300 means 0700–1300.
+           It used to be padded like a jet — an hour of step in front, half an
+           hour of dekit behind, a brief before that and a two-hour debrief tail —
+           which made SC AM (07–13) and SC PM (13–19) overlap by 50 minutes and
+           reported two clean abutting shifts as one fifteen-hour day. */
+        const shiftLine=isStandalone(w);
+        const briefM=shiftLine?null:toM-VCONF.briefLead;
+        const stepM=shiftLine?toM:toM-VCONF.step;               // sortie: step 1h pre-T/O
+        const dekitM=shiftLine?ldM:ldM+VCONF.dekit;             // sortie: land + 30m dekit
+        /* intime is the in-time the wave actually PUBLISHED (null when none is
+           given); report falls back to the step time so the occupied window is
+           still right. Crew rest needs the difference between the two. */
+        const intime=(im[f.cs]!=null)?im[f.cs]:null;
+        const report=(intime!=null)?intime:stepM;
+        const fcps:any[]=[],acs:any[]=[],allCrew:any[]=[],spareCrew:any[]=[];
+        f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;
+          /* collected BEFORE the spare exemption: a spare crew is not checked
+             against other commitments, but their SC currency still is */
+          [a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!isSpecial(id))allCrew.push(id);});
+          if(saExempt(w,f,a)){                                  // SC SPARE — stood by, not cross-checked
+            /* ...but still kept, because "not cross-checked against other tasks"
+               is not the same as "may be anywhere on earth" */
+            [a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!isSpecial(id))spareCrew.push(id);});
+            return;}
+          /* night for AAR purposes: the wave says so, or the sortie itself runs
+             past 19:00 between take-off and landing */
+          acs.push({p:a.p,w:a.w,rmks:a.rmks,aar:aarNeed(a.rmks,!!w.night||ldM>19*60)});
+          [['FCP',a.p],['RCP',a.w]].forEach((pair:any)=>{ const seat=pair[0],id=pair[1]; if(!id||isSpecial(id))return;
+            if(seat==='FCP')fcps.push(id);
+            fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,
+              shift:shiftLine,label:`${f.cs} ${f.msn}`});
+            /* the slot key this event came off — so the crew picker can ask
+               "is he busy at this hour" without counting the very slot it is
+               about to plant him into (he occupies it in a swap or a re-test) */
+            events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report,brief:briefM,label:`${f.cs} ${f.msn}`,
+              kind:shiftLine?'shift':'fly',slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
+          });
+        });
+        /* an SC formation carries its shift window so the SC DAY / SC NIGHT
+           currency can be checked against it */
+        forms.push({label:`${f.cs} ${f.msn}`,cs:f.cs,fcps,acs,
+          sc:isStandalone(w)&&w.kind==='sc', shift:f.msn||f.shift||'', s:toM, e:ldM,
+          allCrew:[...new Set(allCrew)], spareCrew:[...new Set(spareCrew)]});
+      });
+    });
+    ['amt','oft'].forEach((k:any)=>((d.sims&&d.sims[k])||[]).forEach((s:any,ri:any)=>{ if(s.cx)return;
+      const st=parseHM(s.str), en=parseHM(s.end)!=null?parseHM(s.end):(st!=null?st+90:null);
+      /* a sim box has the same two seats as the jet: front = pilot, back = WSO.
+         only rows that actually name a p/w pair get seat-qualification checked. */
+      if(s.p||s.w)simcrew.push({p:s.p,w:s.w,label:(k.toUpperCase()+' '+(s.label||'sim')),kind:k,ri});
+      /* through win(), like every other row: a 2300–0100 box used to be stored
+         as [1380,60] — an inverted interval that `overlap` can never match, so
+         every check on that row was silently switched off. And the bodies
+         dropped underneath the row (more[]) are as tasked as the two in seats. */
+      const sw=win(st,en,90); if(!sw)return;
+      [s.p,s.w,nameToId(s.who)].concat(s.pax||[]).concat(s.more||[])
+        .forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim'}); }); }));
+    /* ---- sim brief / debrief windows -------------------------------------
+       An EP profile on the OFT briefs 15 min before the box and debriefs for
+       30 min after. The AMT is run as a block: it carries its OWN BRIEF row,
+       and that row's time is the hard line — no extra lead is added on top —
+       while its debrief is the DEBRIEF row + 30. Windows deliberately ABUT the
+       box rather than overlap it, so the sim never clashes with itself.       */
+    const simwin:any[]=[];
+    const isB=(r:any)=>/^\s*BRIEF/i.test(r.label||''), isD=(r:any)=>/DEBRIEF/i.test(r.label||'');
+    const rowIds=(r:any)=>[r.p,r.w,nameToId(r.who)].concat(r.pax||[]).concat(r.more||[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id));
+    ((d.sims&&d.sims.oft)||[]).forEach((s:any)=>{ if(s.cx)return; if(!/EP/i.test(s.label||''))return;
+      const st=parseHM(s.str); if(st==null)return;
+      const en=parseHM(s.end)!=null?parseHM(s.end):st+90, ids=rowIds(s); if(!ids.length)return;
+      simwin.push({ids,label:'OFT '+(s.label||'sim'),bs:st-VCONF.epBrief,be:st,ds:en,de:en+VCONF.simDebrief}); });
+    (()=>{ const rows=((d.sims&&d.sims.amt)||[]).filter((r:any)=>!r.cx); if(!rows.length)return;
+      const box=rows.filter((r:any)=>!isB(r)&&!isD(r));
+      const ids=[...new Set(box.reduce((a:any,r:any)=>a.concat(rowIds(r)),[]))]; if(!ids.length)return;
+      const br=rows.find(isB), dr=rows.find(isD);
+      const bs=br?parseHM(br.str):null;
+      const boxStart=box.reduce((m:any,r:any)=>{const t=parseHM(r.str);return t!=null&&(m==null||t<m)?t:m;},null);
+      const boxEnd=box.reduce((m:any,r:any)=>{const t=parseHM(r.end)!=null?parseHM(r.end):parseHM(r.str);return t!=null&&(m==null||t>m)?t:m;},null);
+      const ds=dr?parseHM(dr.str):boxEnd;
+      simwin.push({ids,label:'AMT',
+        bs:bs!=null?bs:null, be:bs!=null?(boxStart!=null?boxStart:bs):null,
+        ds:ds!=null?ds:null, de:ds!=null?ds+VCONF.amtDebrief:null}); })();
+    /* every body on a row counts, not just the one in its primary seat: the
+       extras dropped underneath (row.more) were invisible to the engine, so a
+       man added to a duty could fly straight through it unflagged. */
+    /* kind matters now: a shift clashing with a duty post is a Warning, with a
+       ground event or a programme item only an Advisory. */
+    const push=(id:any,st:any,en:any,label:any,kind:any)=>{
+      if(!id||!PEOPLE[id]||isSpecial(id))return;
+      const w2=win(st,en); if(!w2)return;
+      /* the same man in the row's seat AND in its more[] is one commitment, not
+         two — he used to be flagged as clashing with himself */
+      if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label))return;
+      events.push({id,s:w2[0],e:w2[1],label,kind:kind||'other'});
+    };
+    const extras=(r:any)=>(r&&r.more)||[];
+    (d.dutywaves||[]).forEach((dw:any)=>dw.rows.forEach((r:any)=>{ if(r.cx||dw.noconf||r.noconf)return;
+      const st=parseHM(r.str),en=parseHM(r.end);
+      push(r.id,st,en,r.role+' duty','duty');
+      extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty')); }));
+    (d.ground||[]).forEach((g:any)=>{ if(g.cx)return;
+      const st=parseHM(g.str),en=parseHM(g.end);
+      push(nameToId(g.who),st,en,g.prog,'ground');
+      extras(g).forEach((x:any)=>push(x,st,en,g.prog,'ground')); });
+    /* the squadron-wide Programme was never read here at all — a man booked to
+       a 0845–1630 engagement could be scheduled to fly at 1245 with nothing
+       said about it */
+    (d.allhands||[]).forEach((x:any)=>{ if(x.cx)return;
+      const st=parseHM(x.str),en=parseHM(x.end);
+      whoArr(x).forEach((nm:any)=>push(nameToId(nm),st,en,x.prog||'programme','prog'));
+      extras(x).forEach((v:any)=>push(v,st,en,x.prog||'programme','prog')); });
+    const input=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)).map((inp:any)=>({id:inp.person,s:inp.allday?0:inp.s,e:inp.allday?1439:inp.e,type:inp.type,remarks:inp.remarks}));
+    return {di,dow:d.dow,dt:d.dt,fly,forms,input,events,simcrew,simwin};
+  });
+}
+/* earliest IN-TIME of a wave (from the wave's in-time lines; fallback = earliest TO) */
+export function waveInTime(w:any){
+  let best:any=null;
+  (w.intimes||[]).forEach((s:any)=>{const m=String(s).match(/(\d{3,4})\s*[hH]/); if(m){const t=parseHM(m[1]); if(t!=null&&(best==null||t<best))best=t;}});
+  if(best==null)(w.formations||[]).forEach((f:any)=>{const to=parseHM(f.to); if(to!=null&&(best==null||to<best))best=to;});
+  return best;
+}
+/* Contiguous wave BANDS keyed off each wave's earliest in-time.
+   Band 1 = start-of-day → wave-2 in-time; band 2 = wave-2 in-time → wave-3 in-time;
+   last band → end of day. (matches "morning up to next wave's in-time = this wave") */
+export function waveWindows(d:any){
+  const ws=(d.waves||[]).map((w:any)=>({label:w.label,night:!!w.night,in:waveInTime(w)})).filter((w:any)=>w.in!=null)
+          .sort((a:any,b:any)=>a.in-b.in);
+  return ws.map((w:any,i:any)=>({label:w.label,night:w.night,in:w.in,s:(i===0?0:w.in),e:(i<ws.length-1?ws[i+1].in:1440)}));
+}
