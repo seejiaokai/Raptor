@@ -23,6 +23,9 @@ import { useVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
 import { routeClick } from './interactions'
+import { routeFocusOut, routeKeyDown } from './textedit'
+import { DayPop, InsightsModal } from './Modals'
+import { setInsights } from './pops'
 import { InputsPage } from './InputsPage'
 import { LogicPage } from './LogicPage'
 import { QualsPage } from './QualsPage'
@@ -87,10 +90,14 @@ export function Shell() {
     document.addEventListener('click', routeClick)
     document.addEventListener('change', onChange)
     document.addEventListener('contextmenu', onCtx)
+    document.addEventListener('focusout', routeFocusOut)
+    document.addEventListener('keydown', routeKeyDown)
     return () => {
       document.removeEventListener('click', routeClick)
       document.removeEventListener('change', onChange)
       document.removeEventListener('contextmenu', onCtx)
+      document.removeEventListener('focusout', routeFocusOut)
+      document.removeEventListener('keydown', routeKeyDown)
     }
   }, [])
   validate()
@@ -131,7 +138,7 @@ export function Shell() {
           <button className="pillbtn hard" id="warnBtn" onClick={() => { openWarns('hard'); notify() }}><span className="dot"></span><span id="nHard">{hard}</span> warning</button>
           <button className="pillbtn adv" id="warnBtn2" onClick={() => { openWarns('adv'); notify() }}><span className="dot"></span><span id="nAdv">{adv}</span> advisory</button>
           <button className="pillbtn note" id="warnBtn3" onClick={() => { openWarns('note'); notify() }}><span className="dot"></span><span id="nNote">{note}</span> note</button>
-          <button className="abtn" id="insightBtn" title="Week insights — arrives in a later slice">Insights</button>
+          <button className="abtn" id="insightBtn" title="Week insights" onClick={() => { setInsights(true); notify() }}>Insights</button>
           <button className="abtn ghost" id="logout" onClick={() => { setSession(null); notify() }}>Logout</button>
         </div>
       </div>
@@ -202,6 +209,9 @@ export function Shell() {
       <section className={'page' + (page === 'logic' ? ' on' : '')} id="page-logic">
         {page === 'logic' && <LogicPage />}
       </section>
+
+      <DayPop />
+      <InsightsModal />
     </div>
   )
 }

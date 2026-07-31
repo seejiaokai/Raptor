@@ -11,6 +11,8 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify } from '../state/store'
 import { scrollToWarnFocus } from './highlights'
+import { setDayPop } from './pops'
+import { WARN } from '../engine/validate'
 
 export function routeClick(e: MouseEvent) {
   const t = e.target as HTMLElement
@@ -67,6 +69,23 @@ export function routeClick(e: MouseEvent) {
   if (pk) {
     view.selectPerson(pk.dataset.person, !!pk.closest('.week'))
     notify(); e.stopPropagation(); return
+  }
+
+  /* the ⓘ chip / day head → the read-only day-details panel */
+  const dib = t.closest('[data-dayinfo]') as HTMLElement | null
+  if (dib) { setDayPop(+dib.dataset.dayinfo!); notify(); e.stopPropagation(); return }
+
+  /* an issue listed in the day-detail panel → open that day's issue box and
+     snap to the guilty puck (the panel closes behind it) */
+  const adv = t.closest('[data-adv]') as HTMLElement | null
+  if (adv) {
+    const a = String(adv.dataset.adv).split('.'), di = +a[0]!, ix = +a[1]!
+    const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]; if (!w) return
+    setDayPop(null)
+    view.DWOPEN.clear(); view.DWOPEN.add(di)
+    view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev })
+    view.clearOtherHL()
+    notify(); setTimeout(scrollToWarnFocus, 0); e.stopPropagation(); return
   }
 
   /* day strip → expand / collapse in place */

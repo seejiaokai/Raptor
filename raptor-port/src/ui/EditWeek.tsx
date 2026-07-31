@@ -10,6 +10,7 @@ import { dayHTML } from './html'
 import { paletteHTML, paletteDay } from './palette-html'
 import { ARM } from '../state/view'
 import { refreshHighlights } from './highlights'
+import { editingText } from './textedit'
 import { useVersion } from './useStore'
 
 export function EditWeek() {
@@ -19,6 +20,9 @@ export function EditWeek() {
 
   useEffect(() => {
     const root = ref.current!
+    /* never repaint under the caret — the deferred commit repaints once focus
+       has left every text field (the reference's txtCommit guarantee) */
+    if (editingText()) return
     const ed = HOOKS.editMode()
     const html = DAYS.map((_: any, di: number) => dayHTML(di, ed))
     const p = prev.current

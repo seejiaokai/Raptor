@@ -5,8 +5,9 @@ import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../en
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/slots'
 import { WARN, sevOf, chipOf, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from '../engine/validate'
-import { availByWave, personBusy, dayOff, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayALs, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort } from '../engine/publish'
+import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
+import { SCHED, alAttr, dayApproved, dayALs, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays } from '../engine/publish'
+import { keyDay } from '../engine/keys'
 import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
@@ -485,4 +486,54 @@ export function signoffHTML(di:any,full:any){
     +`<span class="so-state ${miss.length?'no':'yes'}">${miss.length
         ? `${miss.length} to sign${full?' · '+miss.join(', '):''}`
         : 'Signed — this day can be published'}</span>`;
+}
+/* =====================================================================
+   DAY DETAILS — the ⓘ chip on every day head. Approval state, which AL
+   versions amended this day, unpublished edits, what the day is actually
+   tasking, and every warning / advisory / note on it. Read-only: opening it
+   from the view page must never lead into editing.
+   ===================================================================== */
+export function dayInfoHTML(di:any){
+  const d=DAYS[di]; if(!d)return '';
+  const ok=dayApproved(di), dp=dayPendCount(di);
+  const dw=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
+  const nS=(v:any)=>dw.filter((w:any)=>w.sev===v).length;
+  let ac=0,forms=0,cxn=0;
+  (d.waves||[]).forEach((w:any)=>(w.formations||[]).forEach((f:any)=>{forms++;(f.aircraft||[]).forEach((a:any)=>{ac++; if(a.cx||f.cx)cxn++;});}));
+  const sims=['amt','oft'].reduce((n:any,k:any)=>n+((((d.sims||{})[k])||[]).filter((r:any)=>!r.cx).length),0);
+  const duties=(d.dutywaves||[]).reduce((n:any,g:any)=>n+(g.rows||[]).filter((r:any)=>!r.cx).length,0);
+  const grd=(d.ground||[]).filter((g:any)=>!g.cx).length;
+  const prog=(d.allhands||[]).filter((x:any)=>!x.cx).length;
+  const eng=dayEngaged(d).size, off=dayOff(d).size;
+  const A=availByWave(d), freeAll=A.anyWave.length;
+  const row=(k:any,v:any)=>`<div class="dip-r"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+  const alRecs=SCHED.als.filter((a:any)=>alDays(a).includes(di));
+  const alRows=alRecs.length
+    ? alRecs.map((a:any)=>{const n=(a.keys||[]).filter((k:any)=>keyDay(k)===di).length;
+        return `<span class="dip-al" data-alc="${a.n}">AL${a.n}<i>${n} item${n===1?'':'s'}</i></span>`;}).join('')
+    : `<span class="dip-none">No amendment has touched this day yet</span>`;
+  let h=`<div class="dip-stat ${ok?'ok':'draft'}">${ok?'✓ Published — APPROVED':'Draft — not yet published'}`
+    +`${dp?`<span class="dip-pend">${dp} unpublished edit${dp>1?'s':''}</span>`:''}</div>`;
+  h+=`<div class="dip-h">AL versions covering ${esc(d.dow)}</div><div class="dip-als">${alRows}</div>`;
+  h+=`<div class="dip-h">What this day is tasking</div><div class="dip-grid">`
+    +row('Waves',(d.waves||[]).length)+row('Formations',forms)
+    +row('Aircraft lines',ac+(cxn?` <i>(${cxn} CX)</i>`:''))
+    +row('Sim rows',sims)+row('Duties',duties)+row('Ground items',grd)
+    +row('Squadron-wide',prog)+row('Aircrew tasked',eng)
+    +row('Leave / downchit',off)+row('Free all day',freeAll)
+    +`</div>`;
+  h+=`<div class="dip-h">Issues on this day</div>`;
+  if(!dw.length)h+=`<div class="dip-none">Nothing flagged — this day is clean ✓</div>`;
+  else{
+    h+=`<div class="dip-sev">`
+      +(nS('hard')?`<b class="hard">${nS('hard')} warning</b>`:'')
+      +(nS('adv')?`<b class="adv">${nS('adv')} advisory</b>`:'')
+      +(nS('note')?`<b class="note">${nS('note')} note</b>`:'')+`</div>`;
+    h+=`<div class="dwlist dip-list">`+dw.map((w:any,ix:any)=>{
+      const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
+      return `<div class="witem ${w.sev}" data-adv="${di}.${ix}" title="Jump to the puck that caused this">`
+        +`<span class="wbar"></span><span><span class="wcode">${SEVWORD[w.sev]} · ${esc(wlbl(WCODE[w.code]||w.code))}</span>`
+        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span></div>`;}).join('')+`</div>`;
+  }
+  return h;
 }

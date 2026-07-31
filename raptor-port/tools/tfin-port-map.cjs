@@ -5,6 +5,29 @@ const src = fs.readFileSync(require('path').join(__dirname,'..','reference','tfi
 
 // tfin labels ported to Vitest (exact label → test file; '≈' = adapted/behavioural port)
 const PORTED = new Map(Object.entries({
+  // Inline text editing + day panel + Insights — phase 4g (ui/textedit.test.tsx)
+  "insights sorties": 'ui/textedit.test.tsx',
+  "day panel exists and starts hidden": '≈ ui/textedit.test.tsx',
+  "every day offers the info button": 'ui/textedit.test.tsx',
+  "info buttons address their own day": '≈ ui/textedit.test.tsx',
+  "day panel opens on click": 'ui/textedit.test.tsx',
+  "panel titles the day": '≈ ui/textedit.test.tsx',
+  "panel shows the beak state": 'ui/textedit.test.tsx',
+  "panel lists AL coverage": 'ui/textedit.test.tsx',
+  "panel tasking grid": 'ui/textedit.test.tsx',
+  "panel names the tasking rows": 'ui/textedit.test.tsx',
+  "panel lists that day's issues": 'ui/textedit.test.tsx',
+  "panel says clean when the day is clean": '≈ ui/textedit.test.tsx',
+  "panel items use the Warning/Advisory/Note wording": 'ui/textedit.test.tsx',
+  "day panel is read-only": 'ui/textedit.test.tsx',
+  "panel issue jumps to the puck": 'ui/textedit.test.tsx',
+  "day panel closes": 'ui/textedit.test.tsx',
+  "Enter commits in the sim-notes block too, since a break never survived": '≈ ui/textedit.test.tsx (as behaviour)',
+  "a drifted inline field is healed from the model, in place": '≈ ui/textedit.test.tsx (as behaviour)',
+  "the repair never re-renders inside focusout": '≈ ui/textedit.ts (deferred txtCommit + editingText guard)',
+  "the text-domain time formatter does not double-escape": '≈ ui/textedit.test.tsx (fmtTxt path)',
+  "an inner comparison survives esc/serialiser disagreement": '≈ ui/textedit.ts (sameInner verbatim)',
+  "in-times has ONE builder, shared by the renderer and the repair": '≈ ui/textedit.ts (intimesInner shared)',
   // Edit week — ported in phase 4f (ui/editweek.test.tsx)
   "draft banner": 'ui/editweek.test.tsx',
   "draft banner names no days": 'ui/editweek.test.tsx',

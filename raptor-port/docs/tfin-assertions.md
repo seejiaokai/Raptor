@@ -29,7 +29,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 38 | the clicked person stays selected, not warning-focused | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
 | 41 | clicking the same puck again clears it | **ported** → ui/interact.test.tsx |
 | 44 | INS hl | **ported** → ui/interact.test.tsx |
-| 47 | insights sorties | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
+| 47 | insights sorties | **ported** → ui/textedit.test.tsx |
 | 49 | no warn modal | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
 | 50 | day issue strips | skipped — jsdom UI — login, view-week rendering, puck selection, inline warning boxes |
 | 51 | strips start collapsed | **ported** → ui/interact.test.tsx |
@@ -284,22 +284,22 @@ so every skipped assertion continues to be enforced against the reference.
 | 755 | a second click on the puck leaves warning mode entirely | skipped — jsdom UI — person-focus narrowing of the warning box |
 | 759 | the day strip alone still lists every issue on the day | skipped — jsdom UI — person-focus narrowing of the warning box |
 | 764 | narrowed person focus (no seed case) | skipped — jsdom UI — person-focus narrowing of the warning box |
-| 768 | day panel exists and starts hidden | skipped — jsdom UI — day-detail panel |
-| 769 | every day offers the info button | skipped — jsdom UI — day-detail panel |
-| 772 | info buttons address their own day | skipped — jsdom UI — day-detail panel |
-| 775 | day panel opens on click | skipped — jsdom UI — day-detail panel |
-| 777 | panel titles the day | skipped — jsdom UI — day-detail panel |
-| 778 | panel shows the beak state | skipped — jsdom UI — day-detail panel |
-| 779 | panel lists AL coverage | skipped — jsdom UI — day-detail panel |
-| 780 | panel tasking grid | skipped — jsdom UI — day-detail panel |
-| 782 | panel names the tasking rows | skipped — jsdom UI — day-detail panel |
-| 787 | panel lists that day's issues | skipped — jsdom UI — day-detail panel |
-| 789 | panel says clean when the day is clean | skipped — jsdom UI — day-detail panel |
-| 790 | panel items use the Warning/Advisory/Note wording | skipped — jsdom UI — day-detail panel |
-| 793 | day panel is read-only | skipped — jsdom UI — day-detail panel |
-| 797 | panel issue jumps to the puck | skipped — jsdom UI — day-detail panel |
-| 800 | panel issue jumps to the puck | skipped — jsdom UI — day-detail panel |
-| 803 | day panel closes | skipped — jsdom UI — day-detail panel |
+| 768 | day panel exists and starts hidden | **ported** → ≈ ui/textedit.test.tsx |
+| 769 | every day offers the info button | **ported** → ui/textedit.test.tsx |
+| 772 | info buttons address their own day | **ported** → ≈ ui/textedit.test.tsx |
+| 775 | day panel opens on click | **ported** → ui/textedit.test.tsx |
+| 777 | panel titles the day | **ported** → ≈ ui/textedit.test.tsx |
+| 778 | panel shows the beak state | **ported** → ui/textedit.test.tsx |
+| 779 | panel lists AL coverage | **ported** → ui/textedit.test.tsx |
+| 780 | panel tasking grid | **ported** → ui/textedit.test.tsx |
+| 782 | panel names the tasking rows | **ported** → ui/textedit.test.tsx |
+| 787 | panel lists that day's issues | **ported** → ui/textedit.test.tsx |
+| 789 | panel says clean when the day is clean | **ported** → ≈ ui/textedit.test.tsx |
+| 790 | panel items use the Warning/Advisory/Note wording | **ported** → ui/textedit.test.tsx |
+| 793 | day panel is read-only | **ported** → ui/textedit.test.tsx |
+| 797 | panel issue jumps to the puck | **ported** → ui/textedit.test.tsx |
+| 800 | panel issue jumps to the puck | **ported** → ui/textedit.test.tsx |
+| 803 | day panel closes | **ported** → ui/textedit.test.tsx |
 | 809 | AL1–AL4 colours pinned | skipped — CSS — AL colour variables (phase 4); alColor itself is tested in publish.test.ts |
 | 810 | AL1 is cyan, AL3 bright green, AL4 white | skipped — CSS — AL colour variables (phase 4); alColor itself is tested in publish.test.ts |
 | 811 | no whole-page AL tint | skipped — CSS — AL colour variables (phase 4); alColor itself is tested in publish.test.ts |
@@ -717,14 +717,14 @@ so every skipped assertion continues to be enforced against the reference.
 | 2164 | identical markup is never written back over itself | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
 | 2170 | nothing writes a week or a board panel raw any more | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
 | 2174 | every edit-week repaint asks the Edit-mode switch | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
-| 2181 | a drifted inline field is healed from the model, in place | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
+| 2181 | a drifted inline field is healed from the model, in place | **ported** → ≈ ui/textedit.test.tsx (as behaviour) |
 | 2189 | AREA and TIME derive from ONE builder each, used by both surfaces | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
 | 2194 | clearing a derived AREA cell does not blank it behind the renderer | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
-| 2203 | the text-domain time formatter does not double-escape | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
-| 2207 | an inner comparison survives esc/serialiser disagreement | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
-| 2214 | the repair never re-renders inside focusout | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
-| 2217 | in-times has ONE builder, shared by the renderer and the repair | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
-| 2221 | Enter commits in the sim-notes block too, since a break never survived | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
+| 2203 | the text-domain time formatter does not double-escape | **ported** → ≈ ui/textedit.test.tsx (fmtTxt path) |
+| 2207 | an inner comparison survives esc/serialiser disagreement | **ported** → ≈ ui/textedit.ts (sameInner verbatim) |
+| 2214 | the repair never re-renders inside focusout | **ported** → ≈ ui/textedit.ts (deferred txtCommit + editingText guard) |
+| 2217 | in-times has ONE builder, shared by the renderer and the repair | **ported** → ≈ ui/textedit.ts (intimesInner shared) |
+| 2221 | Enter commits in the sim-notes block too, since a break never survived | **ported** → ≈ ui/textedit.test.tsx (as behaviour) |
 | 2226 | a one-day edit rewrites exactly one section | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
 | 2247 | the programme row’s name cell breaks a long token | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2250 | its sub-line and the EP/ORDERS notes do too | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
@@ -733,4 +733,4 @@ so every skipped assertion continues to be enforced against the reference.
 | 2258 | the list row’s name cell kept the treatment it already had | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2260 | a puck name is untouched — it still ellipsises on one line | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 
-Totals: 247 labels ported (some cover several tfin result lines), 476 skipped.
+Totals: 270 labels ported (some cover several tfin result lines), 453 skipped.

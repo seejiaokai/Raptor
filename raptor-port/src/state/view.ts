@@ -34,6 +34,7 @@ export function setBoardDay(n:any){ if(ARM&&ARM.di!==n)disarmSlot(); SBDAY=n }
 export function setPage(p:any){ CURPAGE=p }
 /* ARM put-down for history.ts (ESM cannot reassign across modules) */
 export function armDrop(){ ARM=null }
+export function setWarnFocus(w:any){ WFOCUS=w }
 /* the model half of a puck click — the reference's handler body verbatim
    (2527-2549), with pk.closest('.week') passed in as inWeek. */
 export function selectPerson(id:any,inWeek?:any){
