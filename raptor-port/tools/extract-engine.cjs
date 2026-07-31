@@ -18,10 +18,10 @@ const TYPED = {
   WCODE: ':any', CHIP_TEXT: ':any', RANK: ':any', CHIP_LABEL: ':any',
   SEVWORD: ':any', WARN: ':any', REST: ':any', EVD: ':any', SCHED: ':any',
   AL_COLORS: ':any[]', SIGN_ROLES: ':any[]', RULE_STD: ':any', RULE_SPEC: ':any',
-  KIND_LABEL: ':any', ID_BY_CS: ':any', DAYS: ':any[]',
+  KIND_LABEL: ':any', ID_BY_CS: ':any', DAYS: ':any[]', HIST: ':any',
 };
 // functions whose trailing params must be optional (callers omit them)
-const OPTIONAL = { win: ['openEnd'], signPeople: ['keep'], markEdit: ['key'], slotBar: ['rules'], puck: [] };
+const OPTIONAL = { win: ['openEnd'], signPeople: ['keep'], markEdit: ['key'], slotBar: ['rules'], armSlot: ['el'], puck: [] };
 
 function annotateParams(fnName, params) {
   if (!params.trim()) return params;
@@ -92,6 +92,10 @@ function transform(text) {
     ['const SORD={hard:0,adv:1,note:2};', 'const SORD:any={hard:0,adv:1,note:2};'],
     // [...new Set(...)] infers unknown[] under strict TS
     ['export function uniqDays(keys:any){', 'export function uniqDays(keys:any):any[]{'],
+    /* history.ts: ARM lives in src/state/view.ts — armDrop() is its exported
+       put-down, doing exactly what the reference's `ARM=null;` did here (an
+       ESM module cannot reassign another module's binding). */
+    ['  ARM=null;', '  armDrop();'],
   ];
   for (const [a, b] of targeted) text = text.split(a).join(b);
   return text;
@@ -152,9 +156,27 @@ const MODS = {
   },
 };
 
+/* ---- phase 3: src/state/ — view state + history, same verbatim discipline ---- */
+const STATE_OUT = require('path').join(__dirname, '..', 'src', 'state');
+const STATE_MODS = {
+  'view.ts': {
+    head: `import { DAYS } from '../engine/data'\nimport { PEOPLE } from '../engine/people'\nimport { keyDay } from '../engine/keys'\nimport { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'\nimport { slotBar, personCount } from '../engine/avail'\nimport { validate } from '../engine/validate'\nimport { markEdit } from '../engine/publish'\nimport { HOOKS } from '../engine/hooks'\nimport { canEditSched } from './auth'\n\n/* the repaint/gesture call sites inside these verbatim bodies route through\n   the hooks — no-ops headless, mapped to the store's notify() when wired */\nconst toast=(...a:any[])=>HOOKS.toast(...a)\nconst paintArm=()=>HOOKS.paintArm()\nconst renderRosters=()=>HOOKS.renderRosters()\nconst renderScheduler=()=>HOOKS.renderScheduler()\nconst renderEditWeek=()=>HOOKS.renderEditWeek()\nconst renderSchedule=(_t?:any,_e?:any)=>HOOKS.renderSchedule()\nconst isPhone=()=>HOOKS.isPhone()\n\n/* board / page state the reference keeps as globals; the two render gates in\n   afterSchedMutate read them. setBoardDay carries the reference's day-tab\n   rule: changing the board day disarms a slot armed on another day. */\nexport let SBDAY:any=null\nexport let CURPAGE:any='viewsched'\nexport function setBoardDay(n:any){ if(ARM&&ARM.di!==n)disarmSlot(); SBDAY=n }\nexport function setPage(p:any){ CURPAGE=p }\n/* ARM put-down for history.ts (ESM cannot reassign across modules) */\nexport function armDrop(){ ARM=null }\n/* the phase-3 model half of a puck click: toggle the selection and remember\n   the person's count so afterSchedMutate can drop a stale selection. The\n   full click behaviour (highlights, warning boxes) is phase-4 UI. */\nexport function selectPerson(id:any){\n  const off=(SELID===id)\n  if(off){selRestore();return}\n  selKeep(); SELID=id; SELSEEN=personCount(id)\n}\n`,
+    ranges: [[2616, 2617], [2386, 2408], [2424, 2434], [4161, 4161], [4172, 4182], [4189, 4200], [4202, 4217], [4710, 4728]],
+  },
+  'history.ts': {
+    head: `import { DAYS } from '../engine/data'\nimport { INPUTS } from '../engine/inputs'\nimport { SCHED } from '../engine/publish'\nimport { HOOKS } from '../engine/hooks'\nimport { armDrop } from './view'\n\nconst toast=(...a:any[])=>HOOKS.toast(...a)\nconst reflow=()=>HOOKS.reflow()\nconst syncHistBtns=()=>HOOKS.syncHistBtns()\n`,
+    ranges: [[5931, 5969]],
+  },
+};
 fs.mkdirSync(OUT, { recursive: true });
 for (const [file, spec] of Object.entries(MODS)) {
   const body = spec.ranges.map(([a, b]) => grab(a, b)).join('\n');
   fs.writeFileSync(`${OUT}/${file}`, spec.head + transform(body) + '\n');
   console.log(file, spec.ranges.map(([a, b]) => b - a + 1).reduce((x, y) => x + y, 0), 'lines');
+}
+fs.mkdirSync(STATE_OUT, { recursive: true });
+for (const [file, spec] of Object.entries(STATE_MODS)) {
+  const body = spec.ranges.map(([a, b]) => grab(a, b)).join('\n');
+  fs.writeFileSync(`${STATE_OUT}/${file}`, spec.head + transform(body) + '\n');
+  console.log('state/' + file, spec.ranges.map(([a, b]) => b - a + 1).reduce((x, y) => x + y, 0), 'lines');
 }
