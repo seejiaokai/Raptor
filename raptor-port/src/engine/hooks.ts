@@ -26,6 +26,7 @@ export const HOOKS = {
   renderInputs: (): void => {},
   syncHistBtns: (): void => {},
   isPhone: (): boolean => false,
+  editMode: (): boolean => false,
 }
 
 /* tiny preference store — same guarded semantics as the reference's

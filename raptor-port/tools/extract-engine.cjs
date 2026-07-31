@@ -19,9 +19,10 @@ const TYPED = {
   SEVWORD: ':any', WARN: ':any', REST: ':any', EVD: ':any', SCHED: ':any',
   AL_COLORS: ':any[]', SIGN_ROLES: ':any[]', RULE_STD: ':any', RULE_SPEC: ':any',
   KIND_LABEL: ':any', ID_BY_CS: ':any', DAYS: ':any[]', HIST: ':any',
+  QCHIP: ':any', QCLASS: ':any', LEVELNAME: ':any', DUTY_ORDER: ':any',
 };
 // functions whose trailing params must be optional (callers omit them)
-const OPTIONAL = { win: ['openEnd'], signPeople: ['keep'], markEdit: ['key'], slotBar: ['rules'], armSlot: ['el'], puck: [] };
+const OPTIONAL = { win: ['openEnd'], signPeople: ['keep'], markEdit: ['key'], slotBar: ['rules'], armSlot: ['el'], ted: ['tag'], plRow: ['rmkTxt'], puck: [] };
 
 function annotateParams(fnName, params) {
   if (!params.trim()) return params;
@@ -96,6 +97,10 @@ function transform(text) {
        put-down, doing exactly what the reference's `ARM=null;` did here (an
        ESM module cannot reassign another module's binding). */
     ['  ARM=null;', '  armDrop();'],
+    // html.ts literal tables / object-destructure params
+    ['const lab={tk2:', 'const lab:any={tk2:'],
+    ['items.map(({w,ix})=>{', 'items.map(({w,ix}:any)=>{'],
+    ['const inGrp=(title:any,filt:any,cls:any,always:any)=>', 'const inGrp=(title:any,filt:any,cls:any,always?:any)=>'],
   ];
   for (const [a, b] of targeted) text = text.split(a).join(b);
   return text;
@@ -112,7 +117,7 @@ const MODS = {
   },
   'people.ts': {
     head: `import { VCONF } from './rules'\n`,
-    ranges: [[1895, 2050], [2110, 2112], [2618, 2618], [2642, 2688], [5844, 5844]],
+    ranges: [[1885, 2050], [2110, 2112], [2618, 2618], [2642, 2688], [5844, 5844]],
   },
   'inputs.ts': {
     head: ``,
@@ -120,7 +125,7 @@ const MODS = {
   },
   'waves.ts': {
     head: ``,
-    ranges: [[2051, 2109], [2114, 2115], [2118, 2120], [3243, 3245]],
+    ranges: [[2051, 2109], [2114, 2120], [3243, 3245]],
   },
   'data.ts': {
     head: ``,
@@ -156,6 +161,19 @@ const MODS = {
   },
 };
 
+/* ---- phase 4: src/ui/html.ts — the verbatim HTML-string builders --------
+   The reference renders each day as a pure string (its own comment on
+   dayHTML pins this: "it touches no DOM and holds no state"). The React
+   components own the page; day markup comes from these builders verbatim,
+   so the rendered week is byte-identical to the reference by construction. */
+const UI_OUT = require('path').join(__dirname, '..', 'src', 'ui');
+const UI_MODS = {
+  'html.ts': {
+    head: `import { DAYS } from '../engine/data'\nimport { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME } from '../engine/people'\nimport { INPUTS, inputCoversDate, isOffType, offWord, isLeave, isDownchit } from '../engine/inputs'\nimport { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'\nimport { parseHM, hhmm, hm24, minus } from '../engine/time'\nimport { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/slots'\nimport { WARN, sevOf, chipOf, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from '../engine/validate'\nimport { availByWave, personBusy, dayOff, personWarns } from '../engine/avail'\nimport { SCHED, alAttr, dayApproved, dayALs, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort } from '../engine/publish'\nimport { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN } from '../state/view'\nimport { canEditSched } from '../state/auth'\nimport { ME } from '../state/auth'\nimport { HOOKS } from '../engine/hooks'\n\nconst editMode=()=>HOOKS.editMode()\n`,
+    ranges: [[2587, 2615], [2369, 2393], [3195, 3200], [3202, 3203], [3285, 3416], [3462, 3482], [4679, 4692], [4703, 4708], [3600, 3820], [5861, 5877]],
+  },
+};
+
 /* ---- phase 3: src/state/ — view state + history, same verbatim discipline ---- */
 const STATE_OUT = require('path').join(__dirname, '..', 'src', 'state');
 const STATE_MODS = {
@@ -180,3 +198,13 @@ for (const [file, spec] of Object.entries(STATE_MODS)) {
   fs.writeFileSync(`${STATE_OUT}/${file}`, spec.head + transform(body) + '\n');
   console.log('state/' + file, spec.ranges.map(([a, b]) => b - a + 1).reduce((x, y) => x + y, 0), 'lines');
 }
+fs.mkdirSync(UI_OUT, { recursive: true });
+for (const [file, spec] of Object.entries(UI_MODS)) {
+  const body = spec.ranges.map(([a, b]) => grab(a, b)).join('\n');
+  fs.writeFileSync(`${UI_OUT}/${file}`, spec.head + transform(body) + '\n');
+  console.log('ui/' + file, spec.ranges.map(([a, b]) => b - a + 1).reduce((x, y) => x + y, 0), 'lines');
+}
+/* the stylesheet, verbatim */
+const css = lines.slice(13, 1557).join('\n');   // inside <style> … </style>
+fs.writeFileSync(require('path').join(UI_OUT, 'scheduler.css'), css + '\n');
+console.log('ui/scheduler.css', 1557 - 13, 'lines');
