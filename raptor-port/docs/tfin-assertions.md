@@ -149,8 +149,8 @@ so every skipped assertion continues to be enforced against the reference.
 | 377 | unticking withdraws it | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 379 | ticking the cell appoints them | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 379 | unticking withdraws it | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 382 | inputs rows | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 383 | no TDY | **ported** → ≈ leave.test.ts (against INPUT_TYPES, not the select) |
+| 382 | inputs rows | **ported** → ui/inputs.test.tsx |
+| 383 | no TDY | **ported** → leave.test.ts + ui/inputs.test.tsx |
 | 386 | sched board opens | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 387 | sched lines render | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 388 | sched roster render | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
@@ -424,7 +424,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 1127 | publishing a day spends its signature | **ported** → ≈ publish.test.ts |
 | 1128 | reopening a day voids it too | **ported** → ≈ publish.test.ts (as behaviour) |
 | 1129 | the banner cannot claim nothing is published while ALs exist | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
-| 1130 | personal inputs join the undo stack | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
+| 1130 | personal inputs join the undo stack | **ported** → ≈ state/store.test.ts + ui/inputs.test.tsx |
 | 1132 | a tap clears its own arm timer | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
 | 1136 | no orphaned advisory-bar / paxn / aircrew-roster CSS | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
 | 1141 | dead functions removed | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
@@ -656,7 +656,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 1894 | editing is admin-only, in the UI and in the handler | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
 | 1898 | a modified rule set is never silent | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
 | 1901 | a sentence quoting a threshold quotes the live one | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1906 | the Inputs person filter is called Personnel, not All flights | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
+| 1906 | the Inputs person filter is called Personnel, not All flights | **ported** → ≈ ui/inputs.test.tsx |
 | 1909 | a squadron member sees it too | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
 | 1920 | a hole in a programme row renders nothing at all | skipped — source-text pins — B49 drag internals, toast hit-test, click-eater |
 | 1922 | the toast cannot take the hit test | skipped — source-text pins — B49 drag internals, toast hit-test, click-eater |
@@ -676,7 +676,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 1965 | slotRules reads a sim seat | **ported** → ≈ slotrules.test.ts (as behaviour) |
 | 1966 | barDrop revalidates before it judges | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
 | 1967 | the free count ranks men on leave as unavailable | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
-| 1969 | reflow redraws the Inputs table | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
+| 1969 | reflow redraws the Inputs table | **ported** → ≈ ui/inputs.test.tsx (as behaviour) |
 | 1970 | a traffic edit goes through the amendment funnel | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
 | 1972 | shiftKeys exists and every splice calls it | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
 | 1980 | and it drops the deleted row, shifts the rest, leaves the earlier ones | **ported** → keys.test.ts |
@@ -733,4 +733,4 @@ so every skipped assertion continues to be enforced against the reference.
 | 2258 | the list row’s name cell kept the treatment it already had | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2260 | a puck name is untouched — it still ellipsises on one line | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 
-Totals: 170 labels ported (some cover several tfin result lines), 553 skipped.
+Totals: 174 labels ported (some cover several tfin result lines), 549 skipped.

@@ -5,6 +5,11 @@ const src = fs.readFileSync(require('path').join(__dirname,'..','reference','tfi
 
 // tfin labels ported to Vitest (exact label → test file; '≈' = adapted/behavioural port)
 const PORTED = new Map(Object.entries({
+  // Inputs page — ported in phase 4c (ui/inputs.test.tsx)
+  "inputs rows": 'ui/inputs.test.tsx',
+  "the Inputs person filter is called Personnel, not All flights": '≈ ui/inputs.test.tsx',
+  "personal inputs join the undo stack": '≈ state/store.test.ts + ui/inputs.test.tsx',
+  "reflow redraws the Inputs table": '≈ ui/inputs.test.tsx (as behaviour)',
   // B14 view-week interactivity — ported in phase 4b (ui/interact.test.tsx)
   "click select": 'ui/interact.test.tsx',
   "puck click opens that person's issue boxes": 'ui/interact.test.tsx',
@@ -124,7 +129,7 @@ const PORTED = new Map(Object.entries({
   "LL and OIL keep the man on the island, OL does not": 'leave.test.ts',
   "and a downchit is still its own thing": 'leave.test.ts',
   "the roster really does carry leave to test against": 'leave.test.ts',
-  "no TDY": '≈ leave.test.ts (against INPUT_TYPES, not the select)',
+  "no TDY": 'leave.test.ts + ui/inputs.test.tsx',
   // U · slotRules / slotBar
   "slotRules reads the slot": '≈ slotrules.test.ts',
   "a front seat leaves no WSO selectable": '≈ slotrules.test.ts (through slotBar, not the palette DOM)',

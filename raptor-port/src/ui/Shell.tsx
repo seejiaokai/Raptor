@@ -16,6 +16,7 @@ import { useVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
 import { routeClick } from './interactions'
+import { InputsPage } from './InputsPage'
 
 /* the week banner — the exact strings renderStatus builds, as a pure value */
 function banner() {
@@ -127,7 +128,7 @@ export function Shell() {
         <div className="mobile-note">The edit board arrives in the next slice of the port.</div>
       </section>
       <section className={'page' + (page === 'inputs' ? ' on' : '')} id="page-inputs">
-        <div className="mobile-note">The Inputs page arrives in a later slice of the port.</div>
+        {page === 'inputs' && <InputsPage />}
       </section>
       <section className={'page' + (page === 'quals' ? ' on' : '')} id="page-quals">
         <div className="mobile-note">The Quals page arrives in a later slice of the port.</div>

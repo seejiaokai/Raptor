@@ -168,6 +168,10 @@ const MODS = {
    so the rendered week is byte-identical to the reference by construction. */
 const UI_OUT = require('path').join(__dirname, '..', 'src', 'ui');
 const UI_MODS = {
+  'toast.ts': {
+    head: `/* The toast — verbatim; wired into the engine's HOOKS.toast at app boot */\nconst $=(id:any)=>document.getElementById(id)\n`,
+    ranges: [[6520, 6538]],
+  },
   'highlights.ts': {
     head: `/* The highlight pass and warning-focus scroll — DOM code, verbatim from\n   the reference. Runs after every week render; the markup it decorates is\n   the verbatim dayHTML output, so the selectors line up exactly. */\nimport { PEOPLE } from '../engine/people'\nimport { HLSET, SEARCH, SELID, WFOCUS, ARM, warnFocusMap, personMatchesHL, CURPAGE } from '../state/view'\nimport { ME } from '../state/auth'\n\n/* the proxy-scrollbar mirror arrives with the week-pan surface */\nconst hsSync:any=undefined\n`,
     ranges: [[3876, 3876], [2485, 2514], [4183, 4188], [3889, 3899]],
