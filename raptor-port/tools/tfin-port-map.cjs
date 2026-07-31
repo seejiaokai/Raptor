@@ -353,6 +353,24 @@ const PORTED = new Map(Object.entries({
   "the page cannot scroll under an armed drag": '≈ drag.ts (verbatim touchmove preventDefault, passive:false)',
   "the tap that ends a drag is eaten": '≈ drag.ts (verbatim click-eater with pointerdown retirement)',
   "a cancelled drag leaves nothing behind": '≈ drag.ts (verbatim tdClear)',
+  // —— week panning + proxy scrollbar (phase 4j) ——
+  "week nav arrows present": 'pan.test.tsx',
+  "the 260ms ownership lock is gone": '≈ pan.ts (the lock never existed in the port; B33 sync ported directly)',
+  "echo counting is gone too": '≈ pan.ts (same)',
+  "a mirror write is suppressed only when already in sync": 'pan.test.tsx',
+  "every mirror write goes through hsSet": '≈ pan.ts (verbatim wiring)',
+  "hsSet clamps to the real overflow": 'pan.test.tsx',
+  "travel is mapped end to end, not by a width ratio": '≈ pan.ts (verbatim formulas)',
+  "the thumb keeps a proportional size": '≈ pan.ts (verbatim)',
+  "mirror writes are instant, never CSS-smooth": '≈ pan.ts (verbatim hsSet)',
+  "hsSet falls back to a bare write if instant is refused": 'pan.test.tsx',
+  "the week still carries scroll-behavior:smooth for the arrows": '≈ scheduler.css + pan.ts (both verbatim)',
+  "the arrows do not claim ownership any more, so the thumb follows the pan": '≈ pan.ts (verbatim panDays)',
+  "both arrow pairs share panDays": 'pan.test.tsx',
+  "the scroll bar strip is no longer hidden from assistive tech": 'pan.test.tsx',
+  "the palette has a day, and an armed slot pins it": '≈ palette-html.ts (verbatim paletteDay)',
+  "panning the week walks the palette along, debounced": 'pan.test.tsx',
+  "an armed slot stops the palette wandering off its day": 'pan.test.tsx',
 }));
 
 // line-range → skip reason

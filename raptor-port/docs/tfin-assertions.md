@@ -1,4 +1,4 @@
-ported 324 skipped 399
+ported 341 skipped 382
 rt map (phase 2)
 
 Every assertion in `reference/tfin.js`, by its label, marked **ported** (with
@@ -111,7 +111,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 266 | seat -> roster unassigns | **ported** → drag.test.tsx |
 | 268 | dnd class cleared after drop | **ported** → drag.test.tsx |
 | 269 | view page stays read-only | **ported** → drag.test.tsx |
-| 270 | week nav arrows present | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 270 | week nav arrows present | **ported** → pan.test.tsx |
 | 273 | store toggles + dirty | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 278 | the week banner carries no Publish AL button | **ported** → ≈ ui/editweek.test.tsx |
 | 280 | the day that carries the edits carries the button | **ported** → ui/editweek.test.tsx |
@@ -377,18 +377,18 @@ so every skipped assertion continues to be enforced against the reference.
 | 993 | the step is measured off the live layout | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
 | 994 | panning clamps to the day count | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
 | 995 | the instantaneous scroll lock is gone | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1000 | the 260ms ownership lock is gone | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1002 | echo counting is gone too | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1003 | a mirror write is suppressed only when already in sync | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1005 | every mirror write goes through hsSet | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1010 | hsSet clamps to the real overflow | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1012 | travel is mapped end to end, not by a width ratio | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1014 | the thumb keeps a proportional size | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1018 | mirror writes are instant, never CSS-smooth | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1020 | hsSet falls back to a bare write if instant is refused | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1022 | the week still carries scroll-behavior:smooth for the arrows | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1024 | the arrows do not claim ownership any more, so the thumb follows the pan | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1026 | both arrow pairs share panDays | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
+| 1000 | the 260ms ownership lock is gone | **ported** → ≈ pan.ts (the lock never existed in the port; B33 sync ported directly) |
+| 1002 | echo counting is gone too | **ported** → ≈ pan.ts (same) |
+| 1003 | a mirror write is suppressed only when already in sync | **ported** → pan.test.tsx |
+| 1005 | every mirror write goes through hsSet | **ported** → ≈ pan.ts (verbatim wiring) |
+| 1010 | hsSet clamps to the real overflow | **ported** → pan.test.tsx |
+| 1012 | travel is mapped end to end, not by a width ratio | **ported** → ≈ pan.ts (verbatim formulas) |
+| 1014 | the thumb keeps a proportional size | **ported** → ≈ pan.ts (verbatim) |
+| 1018 | mirror writes are instant, never CSS-smooth | **ported** → ≈ pan.ts (verbatim hsSet) |
+| 1020 | hsSet falls back to a bare write if instant is refused | **ported** → pan.test.tsx |
+| 1022 | the week still carries scroll-behavior:smooth for the arrows | **ported** → ≈ scheduler.css + pan.ts (both verbatim) |
+| 1024 | the arrows do not claim ownership any more, so the thumb follows the pan | **ported** → ≈ pan.ts (verbatim panDays) |
+| 1026 | both arrow pairs share panDays | **ported** → pan.test.tsx |
 | 1032 | logout closes the scheduler board | **ported** → board.test.tsx |
 | 1034 | only one contextmenu handler survives | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
 | 1039 | it is gated on the role AND on Edit mode being on | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
@@ -431,7 +431,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 1141 | dead functions removed | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
 | 1142 | sanStatus is kept on purpose and still works | **ported** → sans.test.ts |
 | 1143 | the conflicting desktop scrollbar block is gone | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
-| 1145 | the scroll bar strip is no longer hidden from assistive tech | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
+| 1145 | the scroll bar strip is no longer hidden from assistive tech | **ported** → pan.test.tsx |
 | 1147 | every select has an accessible name | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
 | 1156 | the sign-off scrolls with the board, it is not pinned | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1159 | it is the first thing in the board | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
@@ -462,9 +462,9 @@ so every skipped assertion continues to be enforced against the reference.
 | 1216 | the tab is in the palette markup | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1218 | tapping the tab toggles the drawer | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1225 | pinch-to-zoom is allowed | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
-| 1230 | the palette has a day, and an armed slot pins it | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
-| 1232 | panning the week walks the palette along, debounced | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
-| 1234 | an armed slot stops the palette wandering off its day | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
+| 1230 | the palette has a day, and an armed slot pins it | **ported** → ≈ palette-html.ts (verbatim paletteDay) |
+| 1232 | panning the week walks the palette along, debounced | **ported** → pan.test.tsx |
+| 1234 | an armed slot stops the palette wandering off its day | **ported** → pan.test.tsx |
 | 1236 | crew on leave are darkened, not deleted from the list | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1238 | tasked crew are faded, unavailable crew are darkened harder | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1242 | the armed slot is ringed, not merely coloured | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
@@ -734,4 +734,4 @@ so every skipped assertion continues to be enforced against the reference.
 | 2258 | the list row’s name cell kept the treatment it already had | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2260 | a puck name is untouched — it still ellipsises on one line | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 
-Totals: 324 labels ported (some cover several tfin result lines), 399 skipped.
+Totals: 341 labels ported (some cover several tfin result lines), 382 skipped.

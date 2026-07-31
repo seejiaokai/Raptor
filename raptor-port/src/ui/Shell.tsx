@@ -14,6 +14,7 @@ import { setSession, notify, setPage } from '../state/store'
 import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, SBDAY, setBoardDay } from '../state/view'
 import { waveMenu } from './board'
 import { initDrag } from './drag'
+import { initPan, updateWeekNav, panDays } from './pan'
 import { signOf } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -95,7 +96,9 @@ export function Shell() {
     document.addEventListener('focusout', routeFocusOut)
     document.addEventListener('keydown', routeKeyDown)
     const dragOff = initDrag()
+    const panOff = initPan()
     return () => {
+      panOff()
       document.removeEventListener('click', routeClick)
       document.removeEventListener('change', onChange)
       document.removeEventListener('contextmenu', onCtx)
@@ -104,6 +107,9 @@ export function Shell() {
       dragOff()
     }
   }, [])
+  /* the reference re-runs hsSync/updateWeekNav after every render (and on
+     page switches) — mirror that after every store-driven paint */
+  useEffect(() => { updateWeekNav() })
   validate()
   const hard = WARN.all.filter((x: any) => x.sev === 'hard').length
   const note = WARN.all.filter((x: any) => x.sev === 'note').length
@@ -170,7 +176,9 @@ export function Shell() {
           style={{ ['--al' as any]: b.col }} dangerouslySetInnerHTML={{ __html: b.html }} />
         <div className="legend" id="vLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
         <ViewWeek />
-        <div className="daydots" id="vDots"></div>
+        <div className="daydots" id="vDots" dangerouslySetInnerHTML={{
+          __html: DAYS.map((d: any, i: number) => `<button data-day="${i}" class="${i === 0 ? 'on' : ''}" title="${d.dow}"></button>`).join('')
+        }}></div>
       </section>
 
       {/* ===== EDIT SCHEDULE (admin) ===== */}
@@ -213,6 +221,17 @@ export function Shell() {
       <section className={'page' + (page === 'logic' ? ' on' : '')} id="page-logic">
         {page === 'logic' && <LogicPage />}
       </section>
+
+      {/* week pan arrows + the pinned proxy scrollbar (desktop) — markup 1:1;
+          visibility is driven by updateWeekNav, not by React */}
+      <button className="week-nav prev" id="weekPrev" aria-label="Scroll days left" onClick={() => panDays(-1)}>‹</button>
+      <button className="week-nav next" id="weekNext" aria-label="Scroll days right" onClick={() => panDays(1)}>›</button>
+      <div className="hscroll" id="hscroll" role="group" aria-label="Scroll the week sideways">
+        <button className="hs-arrow" id="hsL" aria-label="Scroll left" onClick={() => panDays(-1)}>‹</button>
+        <div className="hs-track" id="hsTrack"><div className="hs-in" id="hsIn"></div></div>
+        <button className="hs-arrow" id="hsR" aria-label="Scroll right" onClick={() => panDays(1)}>›</button>
+        <span className="hs-lbl" id="hsLbl"></span>
+      </div>
 
       <DayPop />
       <InsightsModal />
