@@ -19,7 +19,7 @@ const TYPED = {
   SEVWORD: ':any', WARN: ':any', REST: ':any', EVD: ':any', SCHED: ':any',
   AL_COLORS: ':any[]', SIGN_ROLES: ':any[]', RULE_STD: ':any', RULE_SPEC: ':any',
   KIND_LABEL: ':any', ID_BY_CS: ':any', DAYS: ':any[]', HIST: ':any',
-  QCHIP: ':any', QCLASS: ':any', LEVELNAME: ':any', DUTY_ORDER: ':any',
+  QCHIP: ':any', QCLASS: ':any', LEVELNAME: ':any', DUTY_ORDER: ':any', LG_TIER: ':any',
 };
 // functions whose trailing params must be optional (callers omit them)
 const OPTIONAL = { win: ['openEnd'], signPeople: ['keep'], markEdit: ['key'], slotBar: ['rules'], armSlot: ['el'], ted: ['tag'], plRow: ['rmkTxt'], puck: [] };
@@ -101,6 +101,7 @@ function transform(text) {
     ['const lab={tk2:', 'const lab:any={tk2:'],
     ['items.map(({w,ix})=>{', 'items.map(({w,ix}:any)=>{'],
     ['const inGrp=(title:any,filt:any,cls:any,always:any)=>', 'const inGrp=(title:any,filt:any,cls:any,always?:any)=>'],
+    ['const KIND={fly:', 'const KIND:any={fly:'],
   ];
   for (const [a, b] of targeted) text = text.split(a).join(b);
   return text;
@@ -168,6 +169,10 @@ const MODS = {
    so the rendered week is byte-identical to the reference by construction. */
 const UI_OUT = require('path').join(__dirname, '..', 'src', 'ui');
 const UI_MODS = {
+  'logic-html.ts': {
+    head: `/* The Logic tab's rule book — lgRules verbatim. Every value is read out\n   of the live engine objects at render time, so the page cannot drift. */\nimport { VCONF, SHIFT_HARD, kindOff } from '../engine/rules'\nimport { RANK, CHIP_LABEL, WCODE, chipText, wlbl } from '../engine/validate'\nimport { LEAVE_TYPES, isLocalLeave, isLeave, isDownchit, isOffer } from '../engine/inputs'\nimport { lgT, hm24, hhmm } from '../engine/time'\nimport { SC_DAY_FROM, SC_DAY_TO } from '../engine/rules'\nimport { esc } from '../state/view'\nimport { lgCanEdit } from '../state/auth'\n\n`,
+    ranges: [[6102, 6102], [6106, 6106], [6114, 6276]],
+  },
   'toast.ts': {
     head: `/* The toast — verbatim; wired into the engine's HOOKS.toast at app boot */\nconst $=(id:any)=>document.getElementById(id)\n`,
     ranges: [[6520, 6538]],

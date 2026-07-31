@@ -632,19 +632,19 @@ so every skipped assertion continues to be enforced against the reference.
 | 1782 | night is the wave OR the sortie running past 19:00 | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
 | 1784 | the picker bars a pilot who is not current | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
 | 1785 | and the palette carries the reason on the puck | skipped — engine (V·AAR) — see ported column; quals-page tick wiring is UI |
-| 1794 | the Logic page exists and is reachable from both navs | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1798 | and it renders every group and rule | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1802 | it is read-only — nothing but the search box takes input | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1804 | the thresholds are read from the live VCONF, not copied | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1811 | the clash matrix is read from SHIFT_HARD | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
+| 1794 | the Logic page exists and is reachable from both navs | **ported** → ≈ ui/logic.test.tsx (drawer nav is a later surface) |
+| 1798 | and it renders every group and rule | **ported** → ui/logic.test.tsx |
+| 1802 | it is read-only — nothing but the search box takes input | **ported** → ui/logic.test.tsx |
+| 1804 | the thresholds are read from the live VCONF, not copied | **ported** → ui/logic.test.tsx |
+| 1811 | the clash matrix is read from SHIFT_HARD | **ported** → ui/logic.test.tsx |
 | 1819 | the flag order is read from RANK, at module scope now | **ported** → ≈ rules.test.ts (RANK values; module-scope is true by construction) |
-| 1823 | the leave taxonomy is read from LEAVE_TYPES | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1831 | every SETTING the engine carries is documented | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
+| 1823 | the leave taxonomy is read from LEAVE_TYPES | **ported** → ui/logic.test.tsx |
+| 1831 | every SETTING the engine carries is documented | **ported** → ui/logic.test.tsx |
 | 1837 | and the guard actually bites — an undocumented setting fails it | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
 | 1842 | every EVENT KIND the engine produces is documented | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1849 | every warning code the engine can raise is documented | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1855 | the firing counts come from the live WARN | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1859 | search narrows the list and clears back | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
+| 1849 | every warning code the engine can raise is documented | **ported** → ui/logic.test.tsx |
+| 1855 | the firing counts come from the live WARN | **ported** → ui/logic.test.tsx |
+| 1859 | search narrows the list and clears back | **ported** → ui/logic.test.tsx |
 | 1867 | the squadron standard is captured before anything can touch it | **ported** → rules.test.ts |
 | 1869 | every editable setting is bounded and named | **ported** → rules.test.ts |
 | 1873 | and every VCONF setting is editable — none is stranded | **ported** → rules.test.ts |
@@ -653,9 +653,9 @@ so every skipped assertion continues to be enforced against the reference.
 | 1885 | the formats a scheduler would type all parse | **ported** → rules.test.ts |
 | 1889 | only what differs from standard is stored | **ported** → ≈ rules.test.ts (ruleOff/rulesOffCount behaviour) |
 | 1891 | reset restores the standard exactly | **ported** → rules.test.ts |
-| 1894 | editing is admin-only, in the UI and in the handler | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1898 | a modified rule set is never silent | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
-| 1901 | a sentence quoting a threshold quotes the live one | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
+| 1894 | editing is admin-only, in the UI and in the handler | **ported** → ≈ ui/logic.test.tsx (as behaviour) |
+| 1898 | a modified rule set is never silent | **ported** → ≈ ui/logic.test.tsx (page-rules-off stamp) |
+| 1901 | a sentence quoting a threshold quotes the live one | **ported** → ≈ ui/logic.test.tsx (10h/12h swap) |
 | 1906 | the Inputs person filter is called Personnel, not All flights | **ported** → ≈ ui/inputs.test.tsx |
 | 1909 | a squadron member sees it too | skipped — Logic-tab UI (jsdom evals over the rendered page); the engine rules behind it are ported to rules.test.ts |
 | 1920 | a hole in a programme row renders nothing at all | skipped — source-text pins — B49 drag internals, toast hit-test, click-eater |
@@ -684,9 +684,9 @@ so every skipped assertion continues to be enforced against the reference.
 | 1990 | changing the board day disarms a slot on another day | skipped — B48 — source-text pins; shiftKeys renumbering and flyRef safety are ported |
 | 2002 | #5 a live rule field asks the role, not just the flag | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
 | 2006 | #5 and the flag is dropped on both edges of a session | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
-| 2008 | #5 a member never renders an editable field | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
+| 2008 | #5 a member never renders an editable field | **ported** → ≈ ui/logic.test.tsx |
 | 2015 | #6 the stamp is set by renderStatus, not only by the Logic page | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
-| 2017 | #6 and it appears without ever opening Logic | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
+| 2017 | #6 and it appears without ever opening Logic | **ported** → ≈ ui/logic.test.tsx (body class from rulesOffCount) |
 | 2024 | #7 chip and code labels quote the live threshold | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
 | 2029 | #7 an edited crew rest changes what the label says | **ported** → rules.test.ts |
 | 2033 | #7 the CREW_TIGHT message does too | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
@@ -701,7 +701,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 2082 | #14 the issue stamps its own day list and item count | **ported** → ≈ publish.test.ts (as behaviour) |
 | 2085 | #14 a delete cannot shrink an amendment that already went out | **ported** → publish.test.ts |
 | 2093 | #17 right-click obeys the Edit-mode switch | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
-| 2097 | #19 the repaint remembers where the finger was going | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
+| 2097 | #19 the repaint remembers where the finger was going | **ported** → ≈ ui/LogicPage.tsx (LGNEXT restore, post-commit) |
 | 2102 | #22 a stored rule must be a number inside its own bounds | **ported** → ≈ rules.test.ts (as behaviour) |
 | 2106 | #22 a hand-edited string never reaches VCONF | **ported** → rules.test.ts |
 | 2122 | a day’s markup is a pure function, extracted from the week loop | skipped — B54 per-day string-diff redraw — the mechanism React's reconciler replaces; its guarantees return as probes in phases 4–5 |
@@ -733,4 +733,4 @@ so every skipped assertion continues to be enforced against the reference.
 | 2258 | the list row’s name cell kept the treatment it already had | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2260 | a puck name is untouched — it still ellipsises on one line | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 
-Totals: 174 labels ported (some cover several tfin result lines), 549 skipped.
+Totals: 190 labels ported (some cover several tfin result lines), 533 skipped.
