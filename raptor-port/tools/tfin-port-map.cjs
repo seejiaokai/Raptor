@@ -5,6 +5,19 @@ const src = fs.readFileSync(require('path').join(__dirname,'..','reference','tfi
 
 // tfin labels ported to Vitest (exact label → test file; '≈' = adapted/behavioural port)
 const PORTED = new Map(Object.entries({
+  // Quals page — ported in phase 4e (ui/quals.test.tsx)
+  "quals rows": 'ui/quals.test.tsx',
+  "the Quals table has a Scheduler column": 'ui/quals.test.tsx',
+  "the column sits with the appointments, not the flying quals": 'ui/quals.test.tsx',
+  "appointed people are ticked": 'ui/quals.test.tsx',
+  "every row carries the cell": 'ui/quals.test.tsx',
+  "a tick matches isScheduler": 'ui/quals.test.tsx',
+  "ticking the cell appoints them": 'ui/quals.test.tsx',
+  "unticking withdraws it": 'ui/quals.test.tsx',
+  "Scheduler is a qual column": '≈ ui/quals.test.tsx (against QUAL_COLS in the port)',
+  "DAAR and NAAR are qual columns": '≈ ui/quals.test.tsx',
+  "NAAR cannot be ticked before DAAR": '≈ ui/quals.test.tsx (as behaviour)',
+  "removing DAAR removes NAAR with it": '≈ ui/quals.test.tsx (as behaviour)',
   // Logic tab — ported in phase 4d (ui/logic.test.tsx)
   "the Logic page exists and is reachable from both navs": '≈ ui/logic.test.tsx (drawer nav is a later surface)',
   "and it renders every group and rule": 'ui/logic.test.tsx',
