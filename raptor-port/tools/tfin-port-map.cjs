@@ -91,7 +91,7 @@ const PORTED = new Map(Object.entries({
   "NAAR cannot be ticked before DAAR": '≈ ui/quals.test.tsx (as behaviour)',
   "removing DAAR removes NAAR with it": '≈ ui/quals.test.tsx (as behaviour)',
   // Logic tab — ported in phase 4d (ui/logic.test.tsx)
-  "the Logic page exists and is reachable from both navs": '≈ ui/logic.test.tsx (drawer nav is a later surface)',
+  "the Logic page exists and is reachable from both navs": 'logic.test.tsx + odds.test.tsx (both navs)',
   "and it renders every group and rule": 'ui/logic.test.tsx',
   "it is read-only — nothing but the search box takes input": 'ui/logic.test.tsx',
   "the thresholds are read from the live VCONF, not copied": 'ui/logic.test.tsx',
@@ -371,6 +371,13 @@ const PORTED = new Map(Object.entries({
   "the palette has a day, and an armed slot pins it": '≈ palette-html.ts (verbatim paletteDay)',
   "panning the week walks the palette along, debounced": 'pan.test.tsx',
   "an armed slot stops the palette wandering off its day": 'pan.test.tsx',
+  // —— remaining odds (phase 4k) ——
+  "the roster has a resize grip": 'odds.test.tsx',
+  "it is clamped at both ends": '≈ SchedBoard.tsx (verbatim SBSIDE_MIN/SBSIDE_MAX machine)',
+  "a double-tap resets it": 'odds.test.tsx',
+  "the size is re-applied whenever the board opens": '≈ SchedBoard.tsx (effect on open)',
+  "a traffic edit goes through the amendment funnel": 'odds.test.tsx',
+  "a squadron member sees it too": 'odds.test.tsx',
 }));
 
 // line-range → skip reason

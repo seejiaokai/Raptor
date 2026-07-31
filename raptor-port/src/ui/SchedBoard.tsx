@@ -14,6 +14,15 @@ import { refreshHighlights } from './highlights'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
 
+/* ---- resize the pinned roster ------------------------------------------------
+   On a phone the board and the roster share one screen, and how they split it
+   depends on what you are doing: throwing pucks wants a tall roster, reading
+   the day wants a tall board. Drag the grip; double-tap it to go back to 40%.
+   Kept as a fraction of the viewport so it survives a rotation.              */
+const SBSIDE_DEF = 40, SBSIDE_MIN = 14, SBSIDE_MAX = 82
+let SBSIDE = SBSIDE_DEF
+function sbApplySide() { document.documentElement.style.setProperty('--sbside', SBSIDE + 'vh') }
+
 export function SchedBoard() {
   const version = useVersion()
   const boardRef = useRef<HTMLDivElement>(null)
@@ -21,7 +30,54 @@ export function SchedBoard() {
   const daysRef = useRef<HTMLDivElement>(null)
   const warnRef = useRef<HTMLDivElement>(null)
   const inputsRef = useRef<HTMLDivElement>(null)
+  const gripRef = useRef<HTMLDivElement>(null)
   const open = SBDAY != null
+
+  /* the grip's pointer machine, verbatim — attached once */
+  useEffect(() => {
+    const grip = gripRef.current!
+    let drag: any = null, lastTap = 0
+    const vh = () => Math.max(1, window.innerHeight) / 100
+    const down = (e: PointerEvent) => {
+      drag = { y: e.clientY, start: SBSIDE }
+      grip.classList.add('on'); document.body.classList.add('sbresize')
+      try { grip.setPointerCapture(e.pointerId) } catch (_) {}
+      e.preventDefault(); e.stopPropagation()
+    }
+    const move = (e: PointerEvent) => {
+      if (!drag) return
+      /* dragging UP grows the roster, which is the direction the grip moves */
+      SBSIDE = Math.min(SBSIDE_MAX, Math.max(SBSIDE_MIN, drag.start + (drag.y - e.clientY) / vh()))
+      sbApplySide(); e.preventDefault(); e.stopPropagation()
+    }
+    const end = (e: any) => {
+      if (!drag) return
+      const moved = Math.abs(drag.y - (e && e.clientY != null ? e.clientY : drag.y))
+      drag = null; grip.classList.remove('on'); document.body.classList.remove('sbresize')
+      if (moved < 3) {                       // a tap, not a drag — double-tap resets
+        const now = (window.performance && performance.now) ? performance.now() : 0
+        if (now - lastTap < 420) { SBSIDE = SBSIDE_DEF; sbApplySide(); HOOKS.toast('Roster height reset') }
+        lastTap = now
+      }
+    }
+    const dbl = (e: MouseEvent) => { SBSIDE = SBSIDE_DEF; sbApplySide(); e.preventDefault() }
+    grip.addEventListener('pointerdown', down)
+    grip.addEventListener('pointermove', move)
+    grip.addEventListener('pointerup', end)
+    grip.addEventListener('pointercancel', end)
+    grip.addEventListener('dblclick', dbl)
+    return () => {
+      grip.removeEventListener('pointerdown', down)
+      grip.removeEventListener('pointermove', move)
+      grip.removeEventListener('pointerup', end)
+      grip.removeEventListener('pointercancel', end)
+      grip.removeEventListener('dblclick', dbl)
+    }
+  }, [])
+
+  /* the size is re-applied whenever the board opens (openScheduler does
+     sbApplyWide();sbApplySide() in the reference) */
+  useEffect(() => { if (open) sbApplySide() }, [open])
 
   /* the board's own handlers, attached once */
   useEffect(() => {
@@ -69,7 +125,7 @@ export function SchedBoard() {
           <div className="sb-inputs" id="sbInputs" ref={inputsRef} />
         </div>
         <div className="sb-side" id="sbSide">
-          <div className="sb-grip" id="sbGrip" title="Drag to resize · double-tap to reset"><span></span></div>
+          <div className="sb-grip" id="sbGrip" ref={gripRef} title="Drag to resize · double-tap to reset"><span></span></div>
           <div className="sb-warn" id="sbWarn" ref={warnRef} />
           <div className="sb-roster" id="sbRoster" ref={rosterRef} />
         </div>

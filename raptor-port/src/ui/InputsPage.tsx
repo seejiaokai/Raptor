@@ -11,18 +11,13 @@ import { HOOKS } from '../engine/hooks'
 import { SESSION, ME } from '../state/auth'
 import { writeInputs, notify } from '../state/store'
 import { useVersion } from './useStore'
+import { exportCSV } from './export'
 
 const people = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 
 /* the reference's date formatter, verbatim (yyyy-mm-dd → 'Jul 14') */
 const fmt = (d: any) => { if (!d) return DATES[0]; const [, m, da] = d.split('-'); return ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m] + ' ' + String(+da) }
-
-function exportCSV(name: string, rows: any[][]) {
-  const csv = rows.map(r => r.map(c => `"${String(c == null ? '' : c).replace(/"/g, '""')}"`).join(',')).join('\r\n')
-  const blob = new Blob([csv], { type: 'text/csv' })
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click()
-}
 
 export function InputsPage() {
   useVersion()

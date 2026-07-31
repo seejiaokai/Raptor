@@ -102,6 +102,9 @@ function transform(text) {
     ['items.map(({w,ix})=>{', 'items.map(({w,ix}:any)=>{'],
     ['const inGrp=(title:any,filt:any,cls:any,always:any)=>', 'const inGrp=(title:any,filt:any,cls:any,always?:any)=>'],
     ['const KIND={fly:', 'const KIND:any={fly:'],
+    /* waves.ts: the week chips reassign CURWEEK — same-module setter, as an
+       ESM module cannot reassign another module's binding */
+    ["export let CURWEEK='13/07/2026';", "export let CURWEEK='13/07/2026';\nexport function setCurWeek(v:any){ CURWEEK=v }"],
   ];
   for (const [a, b] of targeted) text = text.split(a).join(b);
   return text;

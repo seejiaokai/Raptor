@@ -27,8 +27,10 @@ import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
 import { routeClick } from './interactions'
 import { routeFocusOut, routeKeyDown } from './textedit'
-import { DayPop, InsightsModal } from './Modals'
-import { setInsights } from './pops'
+import { DayPop, InsightsModal, UserModal, AirPop } from './Modals'
+import { setInsights, setUserModal, setDrawer } from './pops'
+import { Drawer } from './Drawer'
+import { exportCSV, schedRows } from './export'
 import { InputsPage } from './InputsPage'
 import { LogicPage } from './LogicPage'
 import { QualsPage } from './QualsPage'
@@ -66,6 +68,9 @@ const HL_CHIPS2: [string, string, string][] = [
 export function Shell() {
   useVersion()
   const [page, setPageLocal] = useState('viewsched')
+  /* fast sync (demo) — the toggle only demonstrates itself, as the reference
+     notes: no server in the prototype */
+  const [fast, setFast] = useState(false)
   /* one delegated click listener, exactly as the reference wires it — plus
      the sign-off change listener and right-click-to-clear */
   useEffect(() => {
@@ -123,7 +128,7 @@ export function Shell() {
   return (
     <div id="shell" style={{ ['--al' as any]: b.col }}>
       <div className="topbar">
-        <button className="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+        <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
         <div className="mark">
           <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
           <span className="tx"><span className="k">142 SQN · Flying Programme</span><span className="v">RAPTOR</span></span>
@@ -142,9 +147,11 @@ export function Shell() {
                 {people.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
               </select></div>
             <span className={'rolebadge ' + (admin ? 'admin' : '')} id="roleBadge">{admin ? 'Admin' : 'Member'}</span>
-            {admin && <button className="abtn" id="manageUsers" data-admin="" title="Arrives in a later slice of the port">Manage users</button>}
+            {admin && <button className="abtn" id="manageUsers" data-admin=""
+              onClick={() => { if (!admin) return; setUserModal(true); notify() }}>Manage users</button>}
           </div>
-          <button className="fastsync" id="fastSync" title="Toggle 1-second sync (for publishing / meetings)"><span className="dot"></span><span id="syncLbl">Sync · slow</span></button>
+          <button className={'fastsync' + (fast ? ' on' : '')} id="fastSync" title="Toggle 1-second sync (for publishing / meetings)"
+            onClick={() => setFast(f => !f)}><span className="dot"></span><span id="syncLbl">{fast ? 'Sync · 1 s' : 'Sync · slow'}</span></button>
           <button className="pillbtn hard" id="warnBtn" onClick={() => { openWarns('hard'); notify() }}><span className="dot"></span><span id="nHard">{hard}</span> warning</button>
           <button className="pillbtn adv" id="warnBtn2" onClick={() => { openWarns('adv'); notify() }}><span className="dot"></span><span id="nAdv">{adv}</span> advisory</button>
           <button className="pillbtn note" id="warnBtn3" onClick={() => { openWarns('note'); notify() }}><span className="dot"></span><span id="nNote">{note}</span> note</button>
@@ -198,6 +205,7 @@ export function Shell() {
             <span className="div"></span>
             <button className="abtn" id="addGo" onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, null) }}>+ Add wave</button>
             <button className="abtn" id="throwPucks" onClick={() => HOOKS.toast('Auto-throw uses the Quals rules to seat crews (stub in prototype).')}>Throw pucks (auto)</button>
+            <button className="abtn" id="exportSched" onClick={() => exportCSV('142SQN-schedule.csv', schedRows())}>Export to Excel</button>
             <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
           </div>
@@ -235,6 +243,9 @@ export function Shell() {
 
       <DayPop />
       <InsightsModal />
+      <UserModal />
+      <AirPop />
+      <Drawer page={page} onNav={p => setPageLocal(p)} />
     </div>
   )
 }
