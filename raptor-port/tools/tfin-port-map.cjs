@@ -5,6 +5,25 @@ const src = fs.readFileSync(require('path').join(__dirname,'..','reference','tfi
 
 // tfin labels ported to Vitest (exact label → test file; '≈' = adapted/behavioural port)
 const PORTED = new Map(Object.entries({
+  // Logic tab — ported in phase 4d (ui/logic.test.tsx)
+  "the Logic page exists and is reachable from both navs": '≈ ui/logic.test.tsx (drawer nav is a later surface)',
+  "and it renders every group and rule": 'ui/logic.test.tsx',
+  "it is read-only — nothing but the search box takes input": 'ui/logic.test.tsx',
+  "the thresholds are read from the live VCONF, not copied": 'ui/logic.test.tsx',
+  "the clash matrix is read from SHIFT_HARD": 'ui/logic.test.tsx',
+  "the flag order is read from RANK, at module scope": '≈ rules.test.ts + ui/logic.test.tsx',
+  "the leave taxonomy is read from LEAVE_TYPES": 'ui/logic.test.tsx',
+  "every SETTING the engine carries is documented": 'ui/logic.test.tsx',
+  "every warning code the engine can raise is documented": 'ui/logic.test.tsx',
+  "the firing counts come from the live WARN": 'ui/logic.test.tsx',
+  "search narrows the list and clears back": 'ui/logic.test.tsx',
+  "a member never rendered an editable field": 'ui/logic.test.tsx',
+  "#5 a member never renders an editable field": '≈ ui/logic.test.tsx',
+  "#6 and it appears without ever opening Logic": '≈ ui/logic.test.tsx (body class from rulesOffCount)',
+  "a modified rule set is never silent": '≈ ui/logic.test.tsx (page-rules-off stamp)',
+  "editing is admin-only, in the UI and in the handler": '≈ ui/logic.test.tsx (as behaviour)',
+  "#19 the repaint remembers where the finger was going": '≈ ui/LogicPage.tsx (LGNEXT restore, post-commit)',
+  "a sentence quoting a threshold quotes the live one": '≈ ui/logic.test.tsx (10h/12h swap)',
   // Inputs page — ported in phase 4c (ui/inputs.test.tsx)
   "inputs rows": 'ui/inputs.test.tsx',
   "the Inputs person filter is called Personnel, not All flights": '≈ ui/inputs.test.tsx',

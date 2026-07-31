@@ -17,6 +17,7 @@ import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
 import { routeClick } from './interactions'
 import { InputsPage } from './InputsPage'
+import { LogicPage } from './LogicPage'
 
 /* the week banner — the exact strings renderStatus builds, as a pure value */
 function banner() {
@@ -134,7 +135,7 @@ export function Shell() {
         <div className="mobile-note">The Quals page arrives in a later slice of the port.</div>
       </section>
       <section className={'page' + (page === 'logic' ? ' on' : '')} id="page-logic">
-        <div className="mobile-note">The Logic tab arrives in a later slice of the port.</div>
+        {page === 'logic' && <LogicPage />}
       </section>
     </div>
   )
