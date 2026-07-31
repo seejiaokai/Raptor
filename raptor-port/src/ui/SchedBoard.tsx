@@ -88,16 +88,25 @@ export function SchedBoard() {
     return () => { el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick); el.removeEventListener('change', boardChange) }
   }, [])
 
-  /* renderScheduler: fill every panel from the verbatim builders */
+  /* renderScheduler: fill every panel from the verbatim builders. Each panel
+     is written ONLY when its markup changed — the reference's setHTML diff
+     (B54), which is also what keeps a focused field alive through an
+     unrelated panel's change and keeps a board edit inside the phone
+     budget. */
+  const panelPrev = useRef<any>({})
   useEffect(() => {
-    if (SBDAY == null) return
+    if (SBDAY == null) { panelPrev.current = {}; return }
     if (editingText()) return
     const di = SBDAY
-    daysRef.current!.innerHTML = dayTabsHTML(di)
-    boardRef.current!.innerHTML = boardHTML(di)
-    warnRef.current!.innerHTML = boardWarnHTML(di)
-    rosterRef.current!.innerHTML = paletteHTML(paletteDay(), { head: false })
-    inputsRef.current!.innerHTML = sbInputsHTML(DAYS[di], di)
+    const set = (el: HTMLElement, key: string, html: string) => {
+      if (panelPrev.current[key] === html) return
+      el.innerHTML = html; panelPrev.current[key] = html
+    }
+    set(daysRef.current!, 'days', dayTabsHTML(di))
+    set(boardRef.current!, 'board', boardHTML(di))
+    set(warnRef.current!, 'warn', boardWarnHTML(di))
+    set(rosterRef.current!, 'roster', paletteHTML(paletteDay(), { head: false }))
+    set(inputsRef.current!, 'inputs', sbInputsHTML(DAYS[di], di))
     refreshHighlights()
   }, [version])
 

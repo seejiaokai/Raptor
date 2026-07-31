@@ -2,7 +2,7 @@
    reference (#shell, .topbar, .page sections). Only the view-only schedule
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { WARN, validate } from '../engine/validate'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -113,9 +113,13 @@ export function Shell() {
     }
   }, [])
   /* the reference re-runs hsSync/updateWeekNav after every render (and on
-     page switches) — mirror that after every store-driven paint */
-  useEffect(() => { updateWeekNav() })
-  validate()
+     page switches), DEFERRED — its call sites are setTimeout(hsSync,0), so
+     the layout reads never land inside the paint being measured */
+  useEffect(() => { const t = setTimeout(updateWeekNav, 0); return () => clearTimeout(t) })
+  /* NO validate() here: the reference never validates during a repaint — the
+     banner and pills read WARN as the last mutation left it (initStore and
+     every mutation path have already validated), and a second engine pass per
+     paint is what blew the phone budget */
   const hard = WARN.all.filter((x: any) => x.sev === 'hard').length
   const note = WARN.all.filter((x: any) => x.sev === 'note').length
   const adv = WARN.all.length - hard - note
@@ -124,9 +128,16 @@ export function Shell() {
   const nav = (p: string) => { setPageLocal(p); setPage(p); notify() }
   const people = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
     .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
+  /* memoized chrome: a store tick that changes nothing in the topbar or a
+     page's controls must not re-reconcile their few hundred elements — the
+     reference's equivalent guarantee is "a no-op state change repaints
+     nothing" (B54). The week/panel components inside subscribe on their own,
+     so a memoized parent never starves them. */
+  const legend = legendHTML()
+  const hlSig = [...HLSET].sort().join(',')
+  const rulesOff = rulesOffCount()
 
-  return (
-    <div id="shell" style={{ ['--al' as any]: b.col }}>
+  const topbar = useMemo(() => (
       <div className="topbar">
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
         <div className="mark">
@@ -159,8 +170,9 @@ export function Shell() {
           <button className="abtn ghost" id="logout" onClick={() => { setBoardDay(null); setSession(null); notify() }}>Logout</button>
         </div>
       </div>
+  ), [page, admin, ME, hard, adv, note, fast])
 
-      {/* ===== VIEW-ONLY SCHEDULE ===== */}
+  const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">
         <div className="seg" id="weekSeg">
           <input className="datef" id="dateVField" defaultValue={CURWEEK} style={{ maxWidth: 120 }} />
@@ -187,8 +199,9 @@ export function Shell() {
           __html: DAYS.map((d: any, i: number) => `<button data-day="${i}" class="${i === 0 ? 'on' : ''}" title="${d.dow}"></button>`).join('')
         }}></div>
       </section>
+  ), [page, b.cls, b.col, b.html, hlSig, rulesOff, legend, CURWEEK])
 
-      {/* ===== EDIT SCHEDULE (admin) ===== */}
+  const editPage = useMemo(() => (
       <section className={'page' + (page === 'editsched' ? ' on' : '') + (page === 'editsched' && EDITON ? ' editing' : '')} id="page-editsched">
         <div className="mobile-note edit-mobile-block">The schedule can only be edited on a desktop. On mobile the board is view-only — switch to <b>View-only Sched</b>.</div>
         <div className="edit-inner">
@@ -220,6 +233,13 @@ export function Shell() {
           </div>
         </div>
       </section>
+  ), [page, EDITON, b.cls, b.col, b.html, HIST.ix, HIST.stack.length, legend, CURWEEK])
+
+  return (
+    <div id="shell" style={{ ['--al' as any]: b.col }}>
+      {topbar}
+      {viewPage}
+      {editPage}
       <section className={'page' + (page === 'inputs' ? ' on' : '')} id="page-inputs">
         {page === 'inputs' && <InputsPage />}
       </section>
