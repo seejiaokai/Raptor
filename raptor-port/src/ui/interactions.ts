@@ -4,7 +4,10 @@
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
 import { slotVal } from '../engine/slots'
+import { PEOPLE } from '../engine/people'
+import { dayApproved, setDayApproved, publishALDay, signClear } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
+import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify } from '../state/store'
 import { scrollToWarnFocus } from './highlights'
@@ -12,6 +15,42 @@ import { scrollToWarnFocus } from './highlights'
 export function routeClick(e: MouseEvent) {
   const t = e.target as HTMLElement
   if (!t || !t.closest) return
+
+  /* the palette drawer tab and the arm-strip cancel */
+  if (t.closest('.ros-tab')) { document.body.classList.toggle('ros-open'); e.stopPropagation(); return }
+  if (t.closest('[data-disarm]')) { view.disarmSlot(); notify(); e.stopPropagation(); return }
+
+  /* a tap on a palette name: plant it if something is armed, otherwise fall
+     through to the ordinary select-this-person-in-blue behaviour */
+  const rp = t.closest('.rpuck[data-person]') as HTMLElement | null
+  if (rp && view.ARM) {
+    e.stopPropagation()
+    if (rp.classList.contains('no')) { HOOKS.toast(`${PEOPLE[rp.dataset.person!].cs} — ${rp.dataset.why || 'not eligible here'}`, 'warn'); return }
+    view.placeArmed(rp.dataset.person)
+    notify(); return
+  }
+
+  /* per-day publish toggle — edit page only; the view page renders .dbeak.ro
+     which carries no data-beak at all */
+  const beak = t.closest('button[data-beak]') as HTMLElement | null
+  if (beak) {
+    e.stopPropagation()
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    const di = +beak.dataset.beak!; setDayApproved(di, !dayApproved(di)); notify(); return
+  }
+  /* per-day AL publish — same gate */
+  const alp = t.closest('button[data-alpub]') as HTMLElement | null
+  if (alp) {
+    e.stopPropagation()
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    publishALDay(+alp.dataset.alpub!); notify(); return
+  }
+  /* clear a day's sign-off */
+  const sc = t.closest('[data-signclear]') as HTMLElement | null
+  if (sc) {
+    e.stopPropagation()
+    signClear(+sc.dataset.signclear!); HOOKS.histPush(); HOOKS.reflow(); return
+  }
 
   /* an EMPTY slot arms itself in edit mode; a FILLED puck falls through to
      the ordinary selection below (reference 2522-2526) */

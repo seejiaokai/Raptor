@@ -11,7 +11,14 @@ import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pen
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { setSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, openWarns } from '../state/view'
+import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, SBDAY } from '../state/view'
+import { signOf } from '../engine/publish'
+import { HOOKS } from '../engine/hooks'
+import { canEditSched } from '../state/auth'
+import { slotVal, setSlotVal } from '../engine/slots'
+import { afterSchedMutate } from '../state/view'
+import { undo, redo } from '../state/store'
+import { HIST } from '../state/history'
 import { useVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
@@ -19,6 +26,8 @@ import { routeClick } from './interactions'
 import { InputsPage } from './InputsPage'
 import { LogicPage } from './LogicPage'
 import { QualsPage } from './QualsPage'
+import { EditWeek, EditRoster } from './EditWeek'
+import { ALPanel } from './ALPanel'
 
 /* the week banner — the exact strings renderStatus builds, as a pure value */
 function banner() {
@@ -51,10 +60,38 @@ const HL_CHIPS2: [string, string, string][] = [
 export function Shell() {
   useVersion()
   const [page, setPageLocal] = useState('viewsched')
-  /* one delegated click listener, exactly as the reference wires it */
+  /* one delegated click listener, exactly as the reference wires it — plus
+     the sign-off change listener and right-click-to-clear */
   useEffect(() => {
+    const onChange = (e: Event) => {
+      const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null
+      if (!sel) return
+      const di = +sel.dataset.signday!
+      signOf(di)[sel.dataset.sign!] = sel.value
+      HOOKS.histPush(); HOOKS.reflow()
+    }
+    /* right-click a filled slot in edit mode → clear it (reference verbatim:
+       gated on the role AND on Edit mode being on) */
+    const onCtx = (e: MouseEvent) => {
+      const s = (e.target as HTMLElement).closest('.seat[data-slot]') as HTMLElement | null
+      if (!s) return
+      if (!canEditSched()) return
+      if (!(HOOKS.editMode() || SBDAY != null)) return
+      const key = s.dataset.slot!, id = slotVal(key)
+      e.preventDefault()
+      if (!id) return
+      setSlotVal(key, '')
+      afterSchedMutate()
+      HOOKS.toast((PEOPLE[id] ? PEOPLE[id].cs : id) + ' removed')
+    }
     document.addEventListener('click', routeClick)
-    return () => document.removeEventListener('click', routeClick)
+    document.addEventListener('change', onChange)
+    document.addEventListener('contextmenu', onCtx)
+    return () => {
+      document.removeEventListener('click', routeClick)
+      document.removeEventListener('change', onChange)
+      document.removeEventListener('contextmenu', onCtx)
+    }
   }, [])
   validate()
   const hard = WARN.all.filter((x: any) => x.sev === 'hard').length
@@ -125,9 +162,36 @@ export function Shell() {
         <div className="daydots" id="vDots"></div>
       </section>
 
-      {/* the remaining pages arrive surface by surface (phase 4b+) */}
-      <section className={'page' + (page === 'editsched' ? ' on' : '')} id="page-editsched">
-        <div className="mobile-note">The edit board arrives in the next slice of the port.</div>
+      {/* ===== EDIT SCHEDULE (admin) ===== */}
+      <section className={'page' + (page === 'editsched' ? ' on' : '') + (page === 'editsched' && EDITON ? ' editing' : '')} id="page-editsched">
+        <div className="mobile-note edit-mobile-block">The schedule can only be edited on a desktop. On mobile the board is view-only — switch to <b>View-only Sched</b>.</div>
+        <div className="edit-inner">
+          <div className="seg" id="weekSegE">
+            {WEEKS.map((w: any) => <button key={w.v} className={'wk' + (w.v === CURWEEK ? ' on' : '')} data-wk={w.v}>{w.lbl}</button>)}
+          </div>
+          <div className="filters">
+            <span className="lab">Editing</span>
+            <button className={'fchip' + (EDITON ? ' on' : '')} id="editToggle" style={{ minWidth: 'auto' }}
+              onClick={() => { setEditOn(!EDITON); notify() }}>{EDITON ? '✎ Edit mode ON' : '✎ Edit mode OFF'}</button>
+            <span className="div"></span>
+            <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}>↶ Undo</button>
+            <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}>↷ Redo</button>
+            <span className="div"></span>
+            <button className="abtn" id="addGo" title="Arrives with the scheduler-board slice">+ Add wave</button>
+            <button className="abtn" id="throwPucks" onClick={() => HOOKS.toast('Auto-throw uses the Quals rules to seat crews (stub in prototype).')}>Throw pucks (auto)</button>
+            <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"
+              onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
+          </div>
+          <div className="title"><h1 id="eTitle">142 SQN Scheduling board · Jul 13</h1><span className="sub mono">Edit mode · changes are local to this prototype</span></div>
+          <div className={'schedbanner ' + b.cls} id="eBanner" style={{ ['--al' as any]: b.col }}
+            dangerouslySetInnerHTML={{ __html: b.html }} />
+          <ALPanel />
+          <div className="legend" id="eLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
+          <div className="edit-board">
+            <EditWeek />
+            <EditRoster />
+          </div>
+        </div>
       </section>
       <section className={'page' + (page === 'inputs' ? ' on' : '')} id="page-inputs">
         {page === 'inputs' && <InputsPage />}
