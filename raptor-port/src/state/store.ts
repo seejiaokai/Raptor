@@ -16,6 +16,7 @@ import { HOOKS } from '../engine/hooks'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { afterSchedMutate } from './view'
+import * as view from './view'
 import { histPush, histInit } from './history'
 
 let VERSION = 0
@@ -67,6 +68,8 @@ export function writeInputs(fn: () => void) {
 
 /* ---- wiring ---- */
 export function wireStore() {
+  /* the reference's editMode(): the edit page is open AND the switch is on */
+  HOOKS.editMode = () => view.CURPAGE === 'editsched' && view.EDITON
   HOOKS.reflow = () => { validate(); notify() }
   HOOKS.renderStatus = () => notify()
   HOOKS.histPush = () => histPush()

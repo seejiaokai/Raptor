@@ -24,6 +24,12 @@ const isPhone=()=>HOOKS.isPhone()
    rule: changing the board day disarms a slot armed on another day. */
 export let SBDAY:any=null
 export let CURPAGE:any='viewsched'
+/* the Edit-mode switch (the reference's #editToggle, on by default) and the
+   day the palette is looking at */
+export let EDITON:any=true
+export function setEditOn(v:any){ EDITON=!!v }
+export let ROSDAY:any=0
+export function setRosDay(n:any){ ROSDAY=n }
 export function setBoardDay(n:any){ if(ARM&&ARM.di!==n)disarmSlot(); SBDAY=n }
 export function setPage(p:any){ CURPAGE=p }
 /* ARM put-down for history.ts (ESM cannot reassign across modules) */

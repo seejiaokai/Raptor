@@ -46,22 +46,22 @@ so every skipped assertion continues to be enforced against the reference.
 | 78 | strip collapses again | **ported** → ui/interact.test.tsx |
 | 81 | blocking pill expands days | **ported** → ui/interact.test.tsx |
 | 83 | all strips collapsed | **ported** → ui/interact.test.tsx |
-| 86 | draft banner | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 87 | draft banner names no days | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 97 | every day carries its own sign-off strip | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 100 | the strip has the four roles | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 102 | each role is a roster dropdown | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
+| 86 | draft banner | **ported** → ui/editweek.test.tsx |
+| 87 | draft banner names no days | **ported** → ui/editweek.test.tsx |
+| 97 | every day carries its own sign-off strip | **ported** → ui/editweek.test.tsx |
+| 100 | the strip has the four roles | **ported** → ui/editweek.test.tsx |
+| 102 | each role is a roster dropdown | **ported** → ≈ ui/editweek.test.tsx |
 | 106 | Scheduler is a qual column | **ported** → ≈ ui/quals.test.tsx (against QUAL_COLS in the port) |
 | 109 | some schedulers are appointed | **ported** → ≈ publish.test.ts |
 | 112 | the three scheduling roles offer ONLY appointed schedulers | **ported** → ≈ publish.test.ts (signPeople, not the dropdowns) |
 | 117 | CUR CK stays open to everyone | **ported** → ≈ publish.test.ts |
 | 122 | the three are marked as restricted | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
 | 123 | the restricted list is a strict subset of the roster | **ported** → ≈ publish.test.ts |
-| 127 | the strip knows which day it belongs to | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 129 | the view page shows no sign-off strip | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 130 | publish day is locked while unsigned | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 131 | the lock says what is missing | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 133 | a locked day cannot be published by clicking | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
+| 127 | the strip knows which day it belongs to | **ported** → ≈ ui/editweek.test.tsx |
+| 129 | the view page shows no sign-off strip | **ported** → ui/editweek.test.tsx |
+| 130 | publish day is locked while unsigned | **ported** → ui/editweek.test.tsx |
+| 131 | the lock says what is missing | **ported** → ≈ ui/editweek.test.tsx (title from signMissing) |
+| 133 | a locked day cannot be published by clicking | **ported** → ui/editweek.test.tsx |
 | 135 | nor through the model | **ported** → publish.test.ts |
 | 139 | three of four is still locked | **ported** → ≈ publish.test.ts (signMissing, not the strip DOM) |
 | 141 | the strip counts what is left | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
@@ -69,22 +69,22 @@ so every skipped assertion continues to be enforced against the reference.
 | 145 | all four unlocks the day | **ported** → ≈ publish.test.ts |
 | 146 | the strip says so | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
 | 147 | signing one day leaves the others locked | **ported** → ≈ publish.test.ts |
-| 148 | day 1 keeps its own empty strip | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
+| 148 | day 1 keeps its own empty strip | **ported** → ≈ ui/editweek.test.tsx |
 | 155 | publish-day is the primary blue button | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
 | 157 | unsigned darkens it instead of fading it | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
 | 160 | and the view-only chip stays a chip, not a button | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 162 | per-day beak buttons | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 164 | view beak read-only | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 169 | part-published banner | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
+| 162 | per-day beak buttons | **ported** → ≈ ui/editweek.test.tsx |
+| 164 | view beak read-only | **ported** → ≈ ui/editweek.test.tsx |
+| 169 | part-published banner | **ported** → ui/editweek.test.tsx |
 | 170 | banner names the beaked day | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 171 | day 0 marked ok | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
+| 171 | day 0 marked ok | **ported** → ui/editweek.test.tsx |
 | 173 | the word "beaked" is gone from the interface | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 176 | day 1 still draft | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
+| 176 | day 1 still draft | **ported** → ≈ ui/editweek.test.tsx |
 | 179 | view page mirrors day 0 | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 181 | undo unpublishes the day | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 182 | redo re-publishes the day | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 184 | publish-day toggles off | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
-| 187 | no publish-all button on the edit page | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
+| 181 | undo unpublishes the day | **ported** → ≈ state/store.test.ts + ui/editweek.test.tsx |
+| 182 | redo re-publishes the day | **ported** → ≈ state/store.test.ts |
+| 184 | publish-day toggles off | **ported** → ≈ ui/editweek.test.tsx |
+| 187 | no publish-all button on the edit page | **ported** → ≈ ui/editweek.test.tsx (never rendered) |
 | 189 | and the AL / reopen actions are still there | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
 | 193 | a signed day publishes from its own button | **ported** → ≈ publish.test.ts (setDayApproved, not the button) |
 | 199 | publishing a day spends its signature | **ported** → ≈ publish.test.ts |
@@ -93,9 +93,9 @@ so every skipped assertion continues to be enforced against the reference.
 | 207 | all days dok | skipped — jsdom UI — edit page, sign-off strips, publish buttons, banners (the model contracts behind them are ported to publish.test.ts) |
 | 208 | AL3 bright green | **ported** → ≈ publish.test.ts (alColor; the CSS var is phase 4) |
 | 210 | AL4 white | **ported** → ≈ publish.test.ts (alColor; the CSS var is phase 4) |
-| 212 | edit roster pilots | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 213 | edit roster SANS group | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 217 | right-click clears slot | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 212 | edit roster pilots | **ported** → ≈ ui/editweek.test.tsx (palette renders) |
+| 213 | edit roster SANS group | **ported** → ≈ ui/editweek.test.tsx (SANS column in paletteHTML) |
+| 217 | right-click clears slot | **ported** → ui/editweek.test.tsx |
 | 224 | duty cells droppable | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 225 | sim cells droppable | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 226 | ground cells droppable | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
@@ -109,17 +109,17 @@ so every skipped assertion continues to be enforced against the reference.
 | 262 | roster -> empty sim front seat | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 266 | seat -> roster unassigns | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 268 | dnd class cleared after drop | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 269 | view page stays read-only | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 269 | view page stays read-only | **ported** → ui/editweek.test.tsx |
 | 270 | week nav arrows present | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 273 | store toggles + dirty | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 278 | the week banner carries no Publish AL button | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 280 | the day that carries the edits carries the button | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 282 | and a day with nothing pending carries none | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 283 | the view page never renders one | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 278 | the week banner carries no Publish AL button | **ported** → ≈ ui/editweek.test.tsx |
+| 280 | the day that carries the edits carries the button | **ported** → ui/editweek.test.tsx |
+| 282 | and a day with nothing pending carries none | **ported** → ui/editweek.test.tsx |
+| 283 | the view page never renders one | **ported** → ≈ ui/editweek.test.tsx |
 | 284 | publishing an AL needs that day signed | **ported** → ≈ publish.test.ts (canPublishAL/alUnsignedDays) |
 | 290 | the lock names the day, not the week | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 293 | a blocked publish issues no AL | **ported** → ≈ publish.test.ts |
-| 295 | signing that day again unlocks it | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 295 | signing that day again unlocks it | **ported** → ui/editweek.test.tsx |
 | 298 | AL1 published | **ported** → ≈ publish.test.ts (SCHED.changes/als, not the banner) |
 | 299 | publishing spends that day's signatures | **ported** → ≈ publish.test.ts |
 | 302 | the day stays published though | **ported** → publish.test.ts |
@@ -127,12 +127,12 @@ so every skipped assertion continues to be enforced against the reference.
 | 308 | the published AL records a name per day | **ported** → ≈ publish.test.ts |
 | 314 | the board shows the open day's strip | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 325 | no global AL tint | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 326 | only changed item marked AL1 | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 328 | AL panel lists AL1 | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 331 | undo+redo buttons | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 336 | undo restores slot | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 338 | redo reapplies slot | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 342 | AL has unpublish control | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 326 | only changed item marked AL1 | **ported** → ≈ ui/editweek.test.tsx |
+| 328 | AL panel lists AL1 | **ported** → ui/editweek.test.tsx |
+| 331 | undo+redo buttons | **ported** → ui/editweek.test.tsx |
+| 336 | undo restores slot | **ported** → ≈ state/store.test.ts + ui/editweek.test.tsx |
+| 338 | redo reapplies slot | **ported** → ≈ state/store.test.ts + ui/editweek.test.tsx |
+| 342 | AL has unpublish control | **ported** → ui/editweek.test.tsx |
 | 344 | unpublish clears AL1 marks | **ported** → ≈ publish.test.ts (model marks, not the tint) |
 | 345 | the AL-panel publish is gated too | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 347 | signing again re-enables it | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
@@ -442,11 +442,11 @@ so every skipped assertion continues to be enforced against the reference.
 | 1175 | the dropdown and its whole apparatus are gone | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1178 | and its markup went with it | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1179 | its dead styling went too | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
-| 1180 | arming and planting exist instead | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
+| 1180 | arming and planting exist instead | **ported** → ≈ state/store.test.ts |
 | 1182 | the palette is built from one function for both surfaces | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1185 | the board arms on a tap and is still edit-gated | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1188 | a filled puck on the board is left to the ordinary selection | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
-| 1190 | the week arms only EMPTY positions | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
+| 1190 | the week arms only EMPTY positions | **ported** → ≈ ui/editweek.test.tsx (via routeClick gate) |
 | 1192 | the phone gate is gone with the dropdown | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1193 | isPhone survives for the places that still need it | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1194 | dragging still works alongside it | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
@@ -511,11 +511,11 @@ so every skipped assertion continues to be enforced against the reference.
 | 1421 | slotRules reads the slot | **ported** → ≈ slotrules.test.ts |
 | 1422 | the scheduler is back in edit mode | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
 | 1425 | a front seat leaves no WSO selectable | **ported** → ≈ slotrules.test.ts (through slotBar, not the palette DOM) |
-| 1427 | the ineligible are darkened, not dropped from the list | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
-| 1430 | the palette header says what is being planned | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
+| 1427 | the ineligible are darkened, not dropped from the list | **ported** → ≈ ui/editweek.test.tsx (.rpuck.no rendered) |
+| 1430 | the palette header says what is being planned | **ported** → ui/editweek.test.tsx |
 | 1432 | and the reason is the real one | **ported** → slotrules.test.ts |
-| 1434 | a darkened name cannot be planted | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
-| 1437 | a name still showing can | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
+| 1434 | a darkened name cannot be planted | **ported** → ≈ state/store.test.ts + ui/editweek.test.tsx |
+| 1437 | a name still showing can | **ported** → ≈ ui/editweek.test.tsx |
 | 1443 | a rear seat leaves only WSOs and IPs | **ported** → slotrules.test.ts |
 | 1444 | a plain pilot is barred from the rear seat | **ported** → slotrules.test.ts |
 | 1457 | an SC day shift leaves only SC DAY current crew selectable | **ported** → ≈ slotrules.test.ts |
@@ -530,7 +530,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 1489 | everyone darkened has a reason | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
 | 1490 | and the reason rides on the puck for a tap to report | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
 | 1492 | a darkened name does not plant | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
-| 1495 | and the slot stays armed after a refusal | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
+| 1495 | and the slot stays armed after a refusal | **ported** → ≈ ui/editweek.test.tsx |
 | 1497 | a name still showing plants on the first tap | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
 | 1499 | planting puts the slot down again | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
 | 1500 | tapping the same slot twice disarms it | skipped — engine (U·slotRules/slotBar) — see ported column; the palette DOM, armSlot/placeArmed and toast wiring are phase-3/4 UI |
@@ -700,7 +700,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 2077 | #11 and the Logic sentence no longer claims one derives the other | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
 | 2082 | #14 the issue stamps its own day list and item count | **ported** → ≈ publish.test.ts (as behaviour) |
 | 2085 | #14 a delete cannot shrink an amendment that already went out | **ported** → publish.test.ts |
-| 2093 | #17 right-click obeys the Edit-mode switch | skipped — B53 audit — engine parts ported (see ported column); session/edit-mode/Logic-page items are UI |
+| 2093 | #17 right-click obeys the Edit-mode switch | **ported** → ≈ ui/editweek.test.tsx (as behaviour) |
 | 2097 | #19 the repaint remembers where the finger was going | **ported** → ≈ ui/LogicPage.tsx (LGNEXT restore, post-commit) |
 | 2102 | #22 a stored rule must be a number inside its own bounds | **ported** → ≈ rules.test.ts (as behaviour) |
 | 2106 | #22 a hand-edited string never reaches VCONF | **ported** → rules.test.ts |
@@ -733,4 +733,4 @@ so every skipped assertion continues to be enforced against the reference.
 | 2258 | the list row’s name cell kept the treatment it already had | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2260 | a puck name is untouched — it still ellipsises on one line | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 
-Totals: 204 labels ported (some cover several tfin result lines), 519 skipped.
+Totals: 247 labels ported (some cover several tfin result lines), 476 skipped.
