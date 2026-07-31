@@ -11,7 +11,8 @@ import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pen
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { setSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, SBDAY } from '../state/view'
+import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, SBDAY, setBoardDay } from '../state/view'
+import { waveMenu } from './board'
 import { signOf } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -139,7 +140,7 @@ export function Shell() {
           <button className="pillbtn adv" id="warnBtn2" onClick={() => { openWarns('adv'); notify() }}><span className="dot"></span><span id="nAdv">{adv}</span> advisory</button>
           <button className="pillbtn note" id="warnBtn3" onClick={() => { openWarns('note'); notify() }}><span className="dot"></span><span id="nNote">{note}</span> note</button>
           <button className="abtn" id="insightBtn" title="Week insights" onClick={() => { setInsights(true); notify() }}>Insights</button>
-          <button className="abtn ghost" id="logout" onClick={() => { setSession(null); notify() }}>Logout</button>
+          <button className="abtn ghost" id="logout" onClick={() => { setBoardDay(null); setSession(null); notify() }}>Logout</button>
         </div>
       </div>
 
@@ -184,7 +185,7 @@ export function Shell() {
             <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}>↶ Undo</button>
             <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}>↷ Redo</button>
             <span className="div"></span>
-            <button className="abtn" id="addGo" title="Arrives with the scheduler-board slice">+ Add wave</button>
+            <button className="abtn" id="addGo" onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, null) }}>+ Add wave</button>
             <button className="abtn" id="throwPucks" onClick={() => HOOKS.toast('Auto-throw uses the Quals rules to seat crews (stub in prototype).')}>Throw pucks (auto)</button>
             <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
