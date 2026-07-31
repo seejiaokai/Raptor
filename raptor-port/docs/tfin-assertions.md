@@ -1,4 +1,5 @@
-# tfin.js → Vitest port map (phase 2)
+ported 292 skipped 431
+rt map (phase 2)
 
 Every assertion in `reference/tfin.js`, by its label, marked **ported** (with
 its Vitest home under `src/engine/`) or **skipped** (with why). “≈” means the
@@ -125,7 +126,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 302 | the day stays published though | **ported** → publish.test.ts |
 | 303 | signing is per day, not shared | **ported** → ≈ publish.test.ts |
 | 308 | the published AL records a name per day | **ported** → ≈ publish.test.ts |
-| 314 | the board shows the open day's strip | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 314 | the board shows the open day's strip | **ported** → board.test.tsx |
 | 325 | no global AL tint | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 326 | only changed item marked AL1 | **ported** → ≈ ui/editweek.test.tsx |
 | 328 | AL panel lists AL1 | **ported** → ui/editweek.test.tsx |
@@ -136,8 +137,8 @@ so every skipped assertion continues to be enforced against the reference.
 | 344 | unpublish clears AL1 marks | **ported** → ≈ publish.test.ts (model marks, not the tint) |
 | 345 | the AL-panel publish is gated too | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 347 | signing again re-enables it | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 351 | board inputs panel | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 352 | board inputs banded | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 351 | board inputs panel | **ported** → board.test.tsx |
+| 352 | board inputs banded | **ported** → board.test.tsx |
 | 355 | SANS pucks marked | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 358 | quals rows | **ported** → ui/quals.test.tsx |
 | 361 | the Quals table has a Scheduler column | **ported** → ui/quals.test.tsx |
@@ -151,11 +152,11 @@ so every skipped assertion continues to be enforced against the reference.
 | 379 | unticking withdraws it | **ported** → ui/quals.test.tsx |
 | 382 | inputs rows | **ported** → ui/inputs.test.tsx |
 | 383 | no TDY | **ported** → leave.test.ts + ui/inputs.test.tsx |
-| 386 | sched board opens | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 387 | sched lines render | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 388 | sched roster render | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 389 | sched wave title select | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
-| 393 | sched setSlotVal | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
+| 386 | sched board opens | **ported** → board.test.tsx |
+| 387 | sched lines render | **ported** → board.test.tsx |
+| 388 | sched roster render | **ported** → board.test.tsx |
+| 389 | sched wave title select | **ported** → board.test.tsx |
+| 393 | sched setSlotVal | **ported** → board.test.tsx |
 | 397 | downchit renamed | skipped — jsdom UI — roster palette, drag & drop wiring, store pills, AL panel, undo buttons, quals page, inputs page, scheduler board |
 | 424 | css parsed | skipped — CSS layout contract — parses the stylesheet (puck geometry, grid templates, columnar lists); binding in phases 4–5 |
 | 428 | puck vars declared once | skipped — CSS layout contract — parses the stylesheet (puck geometry, grid templates, columnar lists); binding in phases 4–5 |
@@ -388,7 +389,7 @@ so every skipped assertion continues to be enforced against the reference.
 | 1022 | the week still carries scroll-behavior:smooth for the arrows | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
 | 1024 | the arrows do not claim ownership any more, so the thumb follows the pan | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
 | 1026 | both arrow pairs share panDays | skipped — source-text pins — week panning / proxy-scrollbar internals (behaviour proven by probes, phase 5) |
-| 1032 | logout closes the scheduler board | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
+| 1032 | logout closes the scheduler board | **ported** → board.test.tsx |
 | 1034 | only one contextmenu handler survives | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
 | 1039 | it is gated on the role AND on Edit mode being on | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
 | 1041 | [hidden] beats an author display rule | skipped — B26 audit — source-text pins and UI wiring; the model-level items are ported (see ported column) |
@@ -467,19 +468,19 @@ so every skipped assertion continues to be enforced against the reference.
 | 1236 | crew on leave are darkened, not deleted from the list | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1238 | tasked crew are faded, unavailable crew are darkened harder | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
 | 1242 | the armed slot is ringed, not merely coloured | skipped — jsdom UI / CSS — board on a phone, palette drawer, arm-and-plant wiring |
-| 1250 | the CX button opens a box, it does not toggle silently | skipped — jsdom UI — the CX reason dialog |
-| 1253 | it asks for a reason under a CX DUE label | skipped — jsdom UI — the CX reason dialog |
-| 1255 | nothing is cancelled just by opening it | skipped — jsdom UI — the CX reason dialog |
-| 1257 | it offers the usual reasons | skipped — jsdom UI — the CX reason dialog |
-| 1258 | Un-cancel is hidden on a line that is not cancelled | skipped — jsdom UI — the CX reason dialog |
-| 1259 | the action button says what it will do | skipped — jsdom UI — the CX reason dialog |
-| 1260 | a quick reason fills the field | skipped — jsdom UI — the CX reason dialog |
-| 1263 | saving cancels the line and keeps the reason | skipped — jsdom UI — the CX reason dialog |
-| 1267 | the line reads CX DUE <reason> everywhere it is drawn | skipped — jsdom UI — the CX reason dialog |
-| 1271 | cxText falls back to a plain CX with no reason | skipped — cxText/cxTag are HTML renderers (phase 4) |
-| 1273 | the change is recorded for the amendment | skipped — jsdom UI — the CX reason dialog |
-| 1274 | re-clicking CX reopens the box to edit the reason | skipped — jsdom UI — the CX reason dialog |
-| 1281 | Un-cancel restores the line and drops the reason | skipped — jsdom UI — the CX reason dialog |
+| 1250 | the CX button opens a box, it does not toggle silently | **ported** → board.test.tsx |
+| 1253 | it asks for a reason under a CX DUE label | **ported** → board.test.tsx |
+| 1255 | nothing is cancelled just by opening it | **ported** → board.test.tsx |
+| 1257 | it offers the usual reasons | **ported** → board.test.tsx |
+| 1258 | Un-cancel is hidden on a line that is not cancelled | **ported** → board.test.tsx |
+| 1259 | the action button says what it will do | **ported** → board.test.tsx |
+| 1260 | a quick reason fills the field | **ported** → board.test.tsx |
+| 1263 | saving cancels the line and keeps the reason | **ported** → board.test.tsx |
+| 1267 | the line reads CX DUE <reason> everywhere it is drawn | **ported** → board.test.tsx |
+| 1271 | cxText falls back to a plain CX with no reason | **ported** → board.test.tsx |
+| 1273 | the change is recorded for the amendment | **ported** → ≈ board.test.tsx (a board field commit earns its pending mark) |
+| 1274 | re-clicking CX reopens the box to edit the reason | **ported** → board.test.tsx |
+| 1281 | Un-cancel restores the line and drops the reason | **ported** → board.test.tsx |
 | 1284 | every dialog outranks the full-screen board | skipped — jsdom UI — the CX reason dialog |
 | 1309 | SC keeps its AM and PM shifts | **ported** → waves.test.ts |
 | 1314 | AVALON runs overnight and no longer calls its shift MAIN | **ported** → waves.test.ts |
@@ -733,4 +734,4 @@ so every skipped assertion continues to be enforced against the reference.
 | 2258 | the list row’s name cell kept the treatment it already had | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 | 2260 | a puck name is untouched — it still ellipsises on one line | skipped — CSS text-wrapping contract (B55) — phase 4; probes/wrap.js measures the behaviour |
 
-Totals: 270 labels ported (some cover several tfin result lines), 453 skipped.
+Totals: 292 labels ported (some cover several tfin result lines), 431 skipped.

@@ -169,6 +169,10 @@ const MODS = {
    so the rendered week is byte-identical to the reference by construction. */
 const UI_OUT = require('path').join(__dirname, '..', 'src', 'ui');
 const UI_MODS = {
+  'board-html.ts': {
+    head: `/* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,\n   sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */\nimport { INPUTS, isLeave, inputCoversDate } from '../engine/inputs'\nimport { PEOPLE, nameToId } from '../engine/people'\nimport { hhmm } from '../engine/time'\nimport { sevOf, chipOf } from '../engine/validate'\nimport { whoArr } from '../engine/slots'\nimport { esc } from '../state/view'\nimport { ORD } from './html'\nimport { puck, rowCls } from './html'\n\n`,
+    ranges: [[5283, 5377]],
+  },
   'palette-html.ts': {
     head: `/* The aircrew palette — paletteDay/rosterPuck/armStripHTML/paletteHTML and\n   the placeholder row, verbatim. */\nimport { DAYS } from '../engine/data'\nimport { PEOPLE, SPECIALS, scQualOK } from '../engine/people'\nimport { INPUTS, isOffType, inputCoversDate, offWord } from '../engine/inputs'\nimport { hm24 } from '../engine/time'\nimport { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'\nimport { sevOf, chipOf } from '../engine/validate'\nimport { esc, ARM, ROSDAY } from '../state/view'\nimport { puck } from './html'\n\n`,
     ranges: [[4326, 4394], [5006, 5013]],

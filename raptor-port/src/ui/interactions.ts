@@ -12,6 +12,7 @@ import * as view from '../state/view'
 import { notify } from '../state/store'
 import { scrollToWarnFocus } from './highlights'
 import { setDayPop } from './pops'
+import { openScheduler } from './board'
 import { WARN } from '../engine/validate'
 
 export function routeClick(e: MouseEvent) {
@@ -70,6 +71,10 @@ export function routeClick(e: MouseEvent) {
     view.selectPerson(pk.dataset.person, !!pk.closest('.week'))
     notify(); e.stopPropagation(); return
   }
+
+  /* a day head on the EDIT week opens the scheduler board (edit-page gated) */
+  const sbo = t.closest('.sb-open[data-sbday]') as HTMLElement | null
+  if (sbo && canEditSched() && view.CURPAGE === 'editsched') { openScheduler(+sbo.dataset.sbday!); e.stopPropagation(); return }
 
   /* the ⓘ chip / day head → the read-only day-details panel */
   const dib = t.closest('[data-dayinfo]') as HTMLElement | null
