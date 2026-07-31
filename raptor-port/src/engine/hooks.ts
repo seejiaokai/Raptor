@@ -15,6 +15,17 @@ export const HOOKS = {
   /* the reference guards `$('nHard')` etc. — outside a browser $ returns null
      and the guards skip, exactly as they do in jsdom before boot */
   $: (_id: any): any => null,
+  /* phase-3 additions: the repaint/gesture call sites inside the view-state
+     functions (armSlot, placeArmed, histPush/histApply, afterSchedMutate).
+     All no-ops headless; the store maps the repaints to its notify(). */
+  paintArm: (): void => {},
+  renderRosters: (): void => {},
+  renderScheduler: (): void => {},
+  renderEditWeek: (): void => {},
+  renderSchedule: (): void => {},
+  renderInputs: (): void => {},
+  syncHistBtns: (): void => {},
+  isPhone: (): boolean => false,
 }
 
 /* tiny preference store — same guarded semantics as the reference's
