@@ -1,5 +1,5 @@
 const fs=require('fs');const {JSDOM,VirtualConsole}=require('jsdom');
-const html=fs.readFileSync('/home/claude/scheduler.html','utf8');
+const html=fs.readFileSync(process.argv[2]||process.env.SCHEDULER_HTML||'reference/scheduler.html','utf8');
 const errs=[];const vc=new VirtualConsole();vc.on('jsdomError',e=>{if(!/Could not (parse CSS|load link)/.test(e.message))errs.push(''+(e.detail||e.message));});vc.on('error',(...a)=>errs.push('E:'+a.join(' ')));
 const dom=new JSDOM(html,{runScripts:'dangerously',resources:'usable',virtualConsole:vc,pretendToBeVisual:true});
 const w=dom.window;w.URL.createObjectURL=()=>'blob:x';w.HTMLElement.prototype.scrollIntoView=()=>{};
