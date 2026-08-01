@@ -5,12 +5,12 @@
 import { PEOPLE } from '../engine/people'
 import { WEEKS, CURWEEK } from '../engine/waves'
 import { SESSION, ME, setMe, setSession } from '../state/auth'
-import { setBoardDay } from '../state/view'
+import { setBoardDay, CURPAGE } from '../state/view'
 import { notify, setPage } from '../state/store'
 import { DRAWER, setDrawer } from './pops'
 import { useVersion } from './useStore'
 
-export function Drawer({ page, onNav }: { page: string, onNav: (p: string) => void }) {
+export function Drawer() {
   useVersion()
   const admin = SESSION && SESSION.role === 'admin'
   const items: [string, string, boolean][] = [
@@ -27,8 +27,8 @@ export function Drawer({ page, onNav }: { page: string, onNav: (p: string) => vo
         <h4>Menu</h4>
         <nav className="drawer-nav" id="drawerNav">
           {items.filter(i => i[2]).map(([p, label]) =>
-            <a key={p} data-page={p} className={p === page ? 'on' : ''}
-              onClick={() => { onNav(p); setPage(p); setDrawer(false); notify() }}>{label}</a>)}
+            <a key={p} data-page={p} className={p === CURPAGE ? 'on' : ''}
+              onClick={() => { setPage(p); setDrawer(false); notify() }}>{label}</a>)}
         </nav>
         <h4>View as</h4>
         <div className="drawer-row" id="drawerViewAs">

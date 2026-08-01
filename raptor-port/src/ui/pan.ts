@@ -4,7 +4,6 @@
    lock — see the B33 note), the palette following the visible day, the day
    dots on a phone, and the wave blocks in a day mirroring each other's
    sideways swipe. */
-import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { notify } from '../state/store'
 

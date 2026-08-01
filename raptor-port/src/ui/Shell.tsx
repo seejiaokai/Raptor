@@ -3,7 +3,7 @@
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
 import { useEffect, useMemo, useState } from 'react'
-import { WARN, validate } from '../engine/validate'
+import { WARN } from '../engine/validate'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { WEEKS, CURWEEK } from '../engine/waves'
@@ -67,7 +67,10 @@ const HL_CHIPS2: [string, string, string][] = [
 
 export function Shell() {
   useVersion()
-  const [page, setPageLocal] = useState('viewsched')
+  /* the current page IS view.CURPAGE — the reference's global, one source of
+     truth. A nav click writes it and notifies; this component re-reads it on
+     every store tick, so no parallel React state is needed. */
+  const page = CURPAGE
   /* fast sync (demo) — the toggle only demonstrates itself, as the reference
      notes: no server in the prototype */
   const [fast, setFast] = useState(false)
@@ -130,7 +133,7 @@ export function Shell() {
   const adv = WARN.all.length - hard - note
   const b = banner()
   const admin = SESSION && SESSION.role === 'admin'
-  const nav = (p: string) => { setPageLocal(p); setPage(p); notify() }
+  const nav = (p: string) => { setPage(p); notify() }
   const people = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
     .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
   /* memoized chrome: a store tick that changes nothing in the topbar or a
@@ -270,7 +273,7 @@ export function Shell() {
       <InsightsModal />
       <UserModal />
       <AirPop />
-      <Drawer page={page} onNav={p => setPageLocal(p)} />
+      <Drawer />
     </div>
   )
 }
