@@ -12,10 +12,10 @@ import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { slotVal, setSlotVal } from '../engine/slots'
 import { isStandalone } from '../engine/waves'
-import { SBDAY, ARM, afterSchedMutate } from '../state/view'
+import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { cxText } from './html'
-import { openScheduler, closeScheduler } from './board'
+import { openScheduler } from './board'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

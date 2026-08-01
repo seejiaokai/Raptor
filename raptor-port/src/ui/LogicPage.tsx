@@ -7,7 +7,7 @@ import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse,
 import { WARN, validate, lgFired } from '../engine/validate'
 import { dowShort } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
-import { SESSION, LGEDIT, setLgEdit, lgCanEdit } from '../state/auth'
+import { SESSION, setLgEdit, lgCanEdit } from '../state/auth'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { useVersion } from './useStore'
