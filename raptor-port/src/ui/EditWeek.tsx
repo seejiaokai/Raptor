@@ -8,7 +8,7 @@ import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { dayHTML } from './html'
 import { paletteHTML, paletteDay } from './palette-html'
-import { ARM } from '../state/view'
+import { ARM, CURPAGE } from '../state/view'
 import { refreshHighlights } from './highlights'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
@@ -19,6 +19,11 @@ export function EditWeek() {
   const prev = useRef<{ ed: boolean, html: string[] } | null>(null)
 
   useEffect(() => {
+    /* only the page on screen is rendered (as the reference's renderSchedule
+       gate has it). The week behind the open board still repaints — the
+       reference's rerenderWarnUI does too, and the per-day diff keeps it
+       cheap. */
+    if (CURPAGE !== 'editsched') return
     const root = ref.current!
     /* never repaint under the caret — the deferred commit repaints once focus
        has left every text field (the reference's txtCommit guarantee) */
@@ -48,6 +53,7 @@ export function EditRoster() {
   const prev = useRef<string>('')
 
   useEffect(() => {
+    if (CURPAGE !== 'editsched') return
     const el = ref.current!
     const html = `<div class="ros-tab" id="rosTab" title="Aircrew palette"><b>${ARM ? 'PLAN' : 'AIRCREW'}</b></div>`
       + `<div class="ros-body">${paletteHTML(paletteDay())}</div>`

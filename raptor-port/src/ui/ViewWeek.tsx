@@ -7,6 +7,7 @@
    surfaces. */
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
+import { CURPAGE } from '../state/view'
 import { dayHTML } from './html'
 import { refreshHighlights } from './highlights'
 import { useVersion } from './useStore'
@@ -17,6 +18,12 @@ export function ViewWeek() {
   const prev = useRef<string[] | null>(null)
 
   useEffect(() => {
+    /* the reference renders only the page on screen (renderSchedule is called
+       for CURPAGE alone); building a hidden week's markup on every store tick
+       is pure waste on a throttled phone. The prev cache stays coherent: the
+       DOM was not touched while hidden, so the next visible pass diffs
+       against exactly what is on screen. */
+    if (CURPAGE !== 'viewsched') return
     const root = ref.current!
     const html = DAYS.map((_: any, di: number) => dayHTML(di, false))
     const p = prev.current

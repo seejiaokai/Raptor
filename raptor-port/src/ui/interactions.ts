@@ -4,8 +4,9 @@
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
 import { slotVal } from '../engine/slots'
+import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { dayApproved, setDayApproved, publishALDay, signClear } from '../engine/publish'
+import { dayApproved, setDayApproved, publishALDay, signClear, markEdit } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -123,6 +124,16 @@ export function routeClick(e: MouseEvent) {
   /* step back one level: drop the warning focus, stay on the person */
   const c = t.closest('[data-dwclear]')
   if (c) { view.clearWarnFocus(); notify(); e.stopPropagation(); return }
+
+  /* stores toggle (edit mode) — verbatim; NO return: in the reference this is
+     its own listener, so the blank-space clear below still sees the click */
+  const st = t.closest('[data-store]') as HTMLElement | null
+  if (st && HOOKS.editMode()) {
+    const [di, gi, li, ai, k] = st.dataset.store!.split('.')
+    const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
+    a.opts = a.opts || {}; a.opts[k!] = !a.opts[k!]; markEdit(`st:${di}.${gi}.${li}.${ai}`)
+    notify()
+  }
 
   /* Clicking any blank part of a schedule surface un-clicks everything —
      the exclusion list is the reference's, verbatim */

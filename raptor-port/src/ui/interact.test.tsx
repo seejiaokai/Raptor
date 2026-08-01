@@ -170,3 +170,21 @@ describe('cross-day warning focus (tfin G2)', () => {
     }
   })
 })
+
+describe('the stores toggle (sign probe — a store click must earn a pending mark)', () => {
+  it('clicking a stchip in edit mode toggles the option and marks st: pending', async () => {
+    const { DAYS } = await import('../engine/data')
+    const { SCHED } = await import('../engine/publish')
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    const st = document.querySelector('#eWeek .stchip[data-store]') as HTMLElement
+    expect(st, 'a stores chip renders on the edit week').toBeTruthy()
+    const [di, gi, li, ai, k] = st.dataset.store!.split('.')
+    const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
+    const was = !!(a.opts && a.opts[k!])
+    await click(st)
+    expect(!!a.opts[k!]).toBe(!was)
+    expect(SCHED.pending[`st:${di}.${gi}.${li}.${ai}`]).toBeTruthy()
+    await click(document.querySelector(`#eWeek .stchip[data-store="${st.dataset.store}"]`))
+    expect(!!a.opts[k!]).toBe(was)
+  })
+})
