@@ -758,11 +758,11 @@ body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
 .areacell[data-alp],.timecell[data-alp],.rmkcell[data-alp],.intimes[data-alp]{
   outline:1px dashed rgba(242,214,153,.6);outline-offset:-1px;border-radius:4px}
 /* every OTHER inline-edited string (timings, labels, remarks, notes, list-row
-   fields): the mark rides on the text itself — dashed amber while pending,
-   then underlined in the AL colour with a trailing ALn tag once published.
+   fields): once PUBLISHED, the mark rides on the text itself — underlined in
+   the AL colour with a trailing ALn tag. Pending edits show no text-level
+   mark (owner decision: the dashed underline read as noise while editing);
+   the Amendments panel count and the puck/cell hints still cover pending.
    Post-port enhancement: the reference marked only pucks and the cells above. */
-:is(span,b,i,div)[data-alp]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes){
-  text-decoration:underline dashed rgba(242,214,153,.75);text-decoration-thickness:1px;text-underline-offset:2px}
 :is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes){
   text-decoration:underline solid var(--alc);text-decoration-thickness:1px;text-underline-offset:2px}
 :is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes)::after{
