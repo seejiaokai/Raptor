@@ -101,9 +101,9 @@ the phone perf budget. Don't convert them to components.
 
 - `reference/` is **read-only** — the spec for existing behaviour. New
   features go beyond it but must not break it.
-- **Never rerun `tools/extract-engine.cjs`.** The engine is ordinary
-  source now; regenerating would clobber post-port work. The generator,
-  `docs/tfin-assertions.md` and `tools/tfin-port-map.cjs` are archaeology.
+- The engine was historically generated from the original; that generator
+  is **deleted** (git history keeps it). Never recreate or rerun it — the
+  engine is ordinary source now and regenerating would clobber real work.
 - Keep `src/probe-bridge.ts` in sync when adding engine API.
 - Product: no rule versioning · no two-person approval · no "publish all
   days" · OIL is LL-equivalent · sim notes are single-line · pucks never
@@ -115,7 +115,7 @@ the phone perf budget. Don't convert them to components.
 |---|---|
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
-| Project narrative, current state, known gaps, TODOs | `../HANDOFF.md` |
+| Current state, known gaps, TODOs, full file map | `../HANDOFF.md` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
 | What changed recently | `git log --oneline` (not duplicated here) |
 | The rules engine | `src/engine/` — `validate.ts` is the heart |
