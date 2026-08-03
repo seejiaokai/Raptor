@@ -107,7 +107,6 @@ export function applyDrop(el: any, x: any, y: any) {
     toast('A jet line carries two — FCP and RCP')
     DRAG = null; dndOff(); return false
   }
-  const bin = el.closest(BIN_SEL)
   const done = () => { DRAG = null; dndOff(); view.afterSchedMutate(); notify(); return true }
   if (slotEl) {
     const targetKey = slotEl.dataset.slot || (slotEl.querySelector('[data-slot]') && slotEl.querySelector('[data-slot]').dataset.slot)
@@ -126,7 +125,11 @@ export function applyDrop(el: any, x: any, y: any) {
     else { const id = slotVal(DRAG.key); setSlotVal(DRAG.key, ''); fillSlot(cell.dataset.fill, id); barDrop(id, cell.dataset.fill) }
     return done()
   }
-  if (bin && DRAG.kind === 'slot') { setSlotVal(DRAG.key, ''); return done() }
+  /* a seat puck let go anywhere else — the roster, blank page space, the
+     chrome — comes off its seat; the name reappears in the palette. Rows
+     above already caught their own drops, and el == null (finger lifted
+     off-window) never reaches here, so leaving the window never deletes. */
+  if (DRAG.kind === 'slot') { setSlotVal(DRAG.key, ''); return done() }
   DRAG = null; dndOff(); return false
 }
 
@@ -143,7 +146,12 @@ function onDragStart(e: DragEvent) {
 function onDragOver(e: DragEvent) {
   if (!DRAG) return
   const drop = (e.target as HTMLElement).closest(DROP_SEL) || (e.target as HTMLElement).closest(BIN_SEL)
-  if (!drop) return
+  if (!drop) {
+    /* empty space is a valid landing for a seat puck (letting go removes it),
+       and the browser only fires drop where dragover was preventDefault'd */
+    if (DRAG.kind === 'slot') e.preventDefault()
+    return
+  }
   e.preventDefault()
   drop.classList.add('dragover')
 }
@@ -151,8 +159,7 @@ function onDragLeave(e: DragEvent) { const t = (e.target as HTMLElement).closest
 function onDrop(e: DragEvent) {
   if (!DRAG) return
   const t = e.target as HTMLElement
-  if (t.closest && (t.closest('.sb-slot,.seat[data-slot]') || t.closest('[data-fill]')
-    || (t.closest(BIN_SEL) && DRAG.kind === 'slot'))) e.preventDefault()
+  if (DRAG.kind === 'slot' || (t.closest && (t.closest('.sb-slot,.seat[data-slot]') || t.closest('[data-fill]')))) e.preventDefault()
   applyDrop(t, e.clientX, e.clientY)
 }
 function onDragEnd() { dndOff(); DRAG = null }

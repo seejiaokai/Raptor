@@ -170,8 +170,11 @@ The login is a prototype gate, not security — the deployed app is public.
 
 Toast is `pointer-events:none`. Touch drag: 8px slop restarts the 180ms
 hold, >26px cancels; ghost follows finger; click-eater dies on next
-pointerdown. A drop anywhere on a list row resolves to that row. Self-drop
-says "Already in that seat". Arm-and-plant: empty slot arms, palette tap
+pointerdown. A drop anywhere on a list row resolves to that row. A seat
+puck let go anywhere ELSE — roster, blank space, chrome — comes off its
+seat (post-port enhancement; the reference only unassigned on the roster
+panel). Jet-row dead space still refuses with a toast, and a drop outside
+the window never deletes. Self-drop says "Already in that seat". Arm-and-plant: empty slot arms, palette tap
 plants, darkened names refuse with a toast, changing board day disarms.
 `applyDrop()` is the ONE drop path for mouse and touch.
 

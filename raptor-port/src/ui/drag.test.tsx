@@ -10,7 +10,7 @@ import { initStore, setSession, notify } from '../state/store'
 import { slotVal, setSlotVal } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
 import { setEditOn, afterSchedMutate } from '../state/view'
-import { dragFrom, applyDrop } from './drag'
+import { dragFrom, applyDrop, setDrag } from './drag'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -156,6 +156,32 @@ describe('applyDrop contracts (B23 / B49)', () => {
     toasts = []
     await dnd(src, el as Element)
     expect(toasts).toContain('A jet line carries two — FCP and RCP')
+  })
+
+  it('dragging a seat to empty page space removes it', async () => {
+    const seat = $$('#eWeek .seat[data-slot^="d:"][draggable="true"]').find(s => slotVal(s.dataset.slot!))!
+    const key = seat.dataset.slot!, before = slotVal(key)
+    await dnd(seat, document.body)
+    expect(slotVal(key)).toBe('')
+    setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
+  })
+
+  it('a roster puck let go on empty space is still a no-op', () => {
+    const id = $('#eRoster .rpuck[data-person]').dataset.person!
+    setDrag({ kind: 'roster', id })
+    expect(applyDrop(document.body, 0, 0)).toBe(false)
+  })
+
+  it('a seat puck dropped on jet-row dead space keeps its seat', async () => {
+    const seat = $$('#eWeek .acrow .seat[data-slot][draggable="true"]').find(s => slotVal(s.dataset.slot!))!
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const row = seat.closest('.acrow')!
+    const el = [...row.querySelectorAll('*')].find(x =>
+      !x.closest('.sb-slot,.seat[data-slot]') && !x.closest('[data-fill]')) || row
+    toasts = []
+    await dnd(seat, el as Element)
+    expect(toasts).toContain('A jet line carries two — FCP and RCP')
+    expect(slotVal(key)).toBe(before)
   })
 
   it('every duty / ground / sim list cell is an append target', () => {
