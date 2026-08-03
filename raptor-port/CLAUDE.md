@@ -11,6 +11,16 @@ after a day has been signed off.
 the subject of ongoing enhancement. The user is non-technical — explain
 changes in plain language, no jargon.
 
+## Working style (owner instruction, Aug 2026)
+
+Spend tokens frugally, at the assistant's discretion: orchestrate and
+delegate to cheaper agents (Explore / Plan / general-purpose on haiku or
+sonnet) whenever the work is exploration-heavy, plannable or mechanical
+enough that a briefed sub-agent is cheaper than doing it inline — and do
+small precise work directly, since spawning an agent costs more than a
+one-file fix. The owner does not want to micro-manage this; use judgment,
+and keep final review and the verification gates first-hand.
+
 ## Codebase map
 
 - `src/engine/` — the DOM-free rules engine (validation, slots, publishing,
