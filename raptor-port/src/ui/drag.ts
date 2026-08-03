@@ -85,14 +85,16 @@ export function barDrop(id: any, key: any) {
 export function applyDrop(el: any, x: any, y: any) {
   if (!DRAG || !el || !el.closest) { DRAG = null; dndOff(); return false }
   let slotEl = el.closest('.sb-slot,.seat[data-slot]')
-  /* A drop anywhere on a list row means THAT ROW. The .ppl cell is only a third of
-     a row tall on a phone, so better than eight in ten pixels of a duty / sim /
-     ground / programme row used to swallow the drop without a word. */
+  /* A PALETTE drop anywhere on a list row means THAT ROW. The .ppl cell is only a
+     third of a row tall on a phone, so better than eight in ten pixels of a duty /
+     sim / ground / programme row used to swallow the drop without a word. A SEAT
+     puck is stricter: it only lands on a seat or a crew cell — a drop on the row's
+     title / timings / remarks falls through and takes it off the seat instead. */
   const cell = el.closest('[data-fill]')
-    || (() => {
+    || (DRAG.kind === 'roster' ? (() => {
       const row = el.closest('.pl-row,.ah-row,.sb-arow')
       return row ? row.querySelector('[data-fill]') : null
-    })()
+    })() : null)
   /* Landed in the cell but within a hair of one of its pucks → treat it as that
      puck, i.e. swap. Landed BELOW a puck → add, even inside the slop: on a 15px
      puck the natural "nudge it down to add a second body" gesture used to resolve
@@ -102,8 +104,9 @@ export function applyDrop(el: any, x: any, y: any) {
     if (n && !(DRAG.kind === 'slot' && n.dataset.slot === DRAG.key)
       && y <= n.getBoundingClientRect().bottom) slotEl = n
   }
-  /* a jet line is two seats — FCP and RCP. Dropping below them adds nothing. */
-  if (!slotEl && !cell && el.closest('.acrow')) {
+  /* a jet line is two seats — FCP and RCP. A palette drop below them adds
+     nothing; a seat puck falls through and comes off instead. */
+  if (!slotEl && !cell && DRAG.kind === 'roster' && el.closest('.acrow')) {
     toast('A jet line carries two — FCP and RCP')
     DRAG = null; dndOff(); return false
   }

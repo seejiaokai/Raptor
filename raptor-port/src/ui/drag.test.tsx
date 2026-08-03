@@ -7,7 +7,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
-import { slotVal, setSlotVal } from '../engine/slots'
+import { slotVal, setSlotVal, rowCrew } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
 import { setEditOn, afterSchedMutate } from '../state/view'
 import { dragFrom, applyDrop, setDrag } from './drag'
@@ -172,16 +172,51 @@ describe('applyDrop contracts (B23 / B49)', () => {
     expect(applyDrop(document.body, 0, 0)).toBe(false)
   })
 
-  it('a seat puck dropped on jet-row dead space keeps its seat', async () => {
+  it('a seat puck dropped on jet-row dead space comes off the seat', async () => {
     const seat = $$('#eWeek .acrow .seat[data-slot][draggable="true"]').find(s => slotVal(s.dataset.slot!))!
     const key = seat.dataset.slot!, before = slotVal(key)
     const row = seat.closest('.acrow')!
     const el = [...row.querySelectorAll('*')].find(x =>
       !x.closest('.sb-slot,.seat[data-slot]') && !x.closest('[data-fill]')) || row
     toasts = []
-    await dnd(seat, el as Element)
-    expect(toasts).toContain('A jet line carries two — FCP and RCP')
-    expect(slotVal(key)).toBe(before)
+    await dnd($(`#eWeek .seat[data-slot="${key}"]`), el as Element)
+    expect(toasts).not.toContain('A jet line carries two — FCP and RCP')
+    expect(slotVal(key)).toBe('')
+    setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
+  })
+
+  it('a seat puck dropped on a row TITLE comes off the seat', async () => {
+    const seat = $$('#eWeek .seat[data-slot^="d:"][draggable="true"]').find(s => slotVal(s.dataset.slot!))!
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const nm = $('#eWeek .pl-row .nm')
+    await dnd($(`#eWeek .seat[data-slot="${key}"]`), nm)
+    expect(slotVal(key)).toBe('')
+    setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
+  })
+
+  it('a seat puck dropped on a row TIMING comes off the seat', async () => {
+    const seat = $$('#eWeek .seat[data-slot^="d:"][draggable="true"]').find(s => slotVal(s.dataset.slot!))!
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const t = $('#eWeek .pl-row .t')
+    await dnd($(`#eWeek .seat[data-slot="${key}"]`), t)
+    expect(slotVal(key)).toBe('')
+    setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
+  })
+
+  it('a roster puck dropped on a row title still lands on that row', async () => {
+    const row = $('#eWeek .pl-row .ppl[data-fill]').closest('.pl-row')!
+    const fill = row.querySelector('[data-fill]')!.getAttribute('data-fill')!   // d:di.dwi.ri.+
+    const base = fill.slice(0, -2), a = base.slice(base.indexOf(':') + 1).split('.')
+    const n = () => rowCrew(base[0], a).filter(Boolean).length
+    const crew0 = rowCrew(base[0], a)
+    const src = $$('#eRoster .rpuck[data-person]').find(x => !crew0.includes(x.dataset.person))!
+    const id = src.dataset.person!, before = n()
+    await dnd(src, row.querySelector('.nm')!)
+    expect(n()).toBe(before + 1)
+    /* take the appended body back out — primary if it landed there, else its .xN */
+    if (slotVal(base) === id) setSlotVal(base, '')
+    else { let i = 0; while (slotVal(base + '.x' + i) && slotVal(base + '.x' + i) !== id) i++; setSlotVal(base + '.x' + i, '') }
+    await act(async () => { afterSchedMutate(); notify() })
   })
 
   it('every duty / ground / sim list cell is an append target', () => {
