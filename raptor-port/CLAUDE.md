@@ -1,216 +1,123 @@
 # RAPTOR — 142 SQN Flying Programme (React app)
 
-RAPTOR is a flying-schedule planner for an F-15SG squadron: a week of flying
-waves, duty crews, sims, ground events and personal inputs, with a validation
+A flying-schedule planner for an F-15SG squadron: a week of flying waves,
+duty crews, sims, ground events and personal inputs, with a validation
 engine that flags crew-rest breaches, double bookings, missing briefs and
-qualification problems, and an amendment (AL) workflow for publishing changes
-after a day has been signed off.
+qualification problems, plus an amendment (AL) workflow for publishing
+changes after a day is signed off. No server — per-browser localStorage.
 
-**The port from the original single-file app is COMPLETE** (16 PRs, phases
-1–5 of the old PORTING.md). This codebase is now the primary application and
-the subject of ongoing enhancement. The user is non-technical — explain
-changes in plain language, no jargon.
+This file is the INDEX. It holds the rules that apply to every task and
+routes to where the detail lives; don't duplicate that detail back here.
 
-## Working style (owner instruction, Aug 2026)
+## How to work here
 
-Spend tokens frugally, at the assistant's discretion: orchestrate and
-delegate to cheaper agents (Explore / Plan / general-purpose on haiku or
-sonnet) whenever the work is exploration-heavy, plannable or mechanical
-enough that a briefed sub-agent is cheaper than doing it inline — and do
-small precise work directly, since spawning an agent costs more than a
-one-file fix. The owner does not want to micro-manage this; use judgment,
-and keep final review and the verification gates first-hand.
+**Reach 95% confidence before building.** If the request could reasonably
+mean two different things, or a choice would materially change the result,
+ask follow-up questions until it wouldn't. Small, unambiguous asks clear
+that bar on their own — don't manufacture questions for them.
 
-Token discipline (terse in WORK, never in what the owner reads — his
-explanations stay plain-language and complete):
+- **The owner is non-technical.** Explanations to him are plain-language
+  and complete; terseness applies to tool use and internal work, never to
+  what he reads.
+- **Ship it.** Once the gates are green, open a PR to `main` and merge so
+  it deploys — don't wait to be asked (unless a gate is red or the change
+  was called an experiment).
+- **Delegate frugally, by judgment.** Push exploration-heavy, plannable or
+  mechanical work to cheaper agents (Explore / Plan / general-purpose on
+  haiku or sonnet); do small precise work inline, since spawning an agent
+  costs more than a one-file fix. Keep final review and the gates
+  first-hand. The owner does not want to micro-manage this.
+- **Token discipline.** Never let a tool dump raw output — pipe logs
+  through `tail`/`grep`, ask GitHub MCP tools for `minimal_output: true`,
+  paginate 5–10, and prefer a 2-line `curl | grep` over a full API object
+  when checking one field. Never read `reference/` whole (6.6k lines) —
+  `grep` it. Trust this index instead of re-exploring. Prefer a fresh
+  session per task; a long conversation re-sends itself every turn.
 
-- Never let a tool dump raw output. Pipe logs through `tail`/`grep`; ask
-  GitHub MCP tools for `minimal_output: true` and paginate 5–10; when
-  checking one field of an API response, a 2-line `curl | grep` beats the
-  full object by ~99%.
-- Never read `reference/` whole — it is a 6.6k-line read-only spec.
-  `grep` it for the contract and quote only the lines that matter.
-- Trust the codebase map above instead of re-exploring; open the specific
-  file it names.
-- Prefer a fresh session per task. `HANDOFF.md` + this file orient a cold
-  session cheaply, while a long conversation re-sends itself every turn.
+## Build & verify
 
-## Codebase map
-
-- `src/engine/` — the DOM-free rules engine (validation, slots, publishing,
-  people, waves, rules, history helpers). **Historically generated** from the
-  original by `tools/extract-engine.cjs` — DO NOT rerun that generator any
-  more: the engine is now ordinary source, and regenerating would clobber any
-  enhancement. Treat the generator + `docs/tfin-assertions.md` +
-  `tools/tfin-port-map.cjs` as port-era archaeology.
-- `src/state/` — the store: `notify()` bumps a version, components subscribe
-  via `useVersion()` (useSyncExternalStore). `view.ts` holds UI state the
-  engine reads (CURPAGE, SBDAY, ARM, selection, EDITON). `auth.ts` session.
-  `history.ts` undo/redo snapshots. ONE mutation path: writes go through the
-  engine funnel (below) and end in `afterSchedMutate()`.
-- `src/ui/` — React components (Shell, ViewWeek, EditWeek, SchedBoard,
-  Drawer, Modals, pages) plus verbatim HTML-string builders (`html.ts`,
-  `board-html.ts`, `palette-html.ts`, `logic-html.ts`) rendered via innerHTML
-  with string-diffing (only changed sections are rewritten — this preserves
-  scroll/caret and the phone perf budget). `drag.ts` (mouse+touch DnD),
-  `pan.ts` (week panning + proxy scrollbar), `interactions.ts` (delegated
-  click routing), `textedit.ts` (Enter commits / Escape restores),
-  `highlights.ts` (post-render decoration pass). `scheduler.css` is the
-  ported stylesheet — it carries MEASURED contracts, not preferences.
-- `src/probe-bridge.ts` — republishes app internals on `window` so the
-  browser probes can drive the built app. Keep it in sync when adding
-  engine API that probes/tests might need.
-- `reference/` — the original single-file app + its 728-assertion suite
-  (`tfin.js`) + Playwright probes. **Read-only.** It remains the spec for
-  EXISTING behaviour; new features go beyond it, but must not break it.
-
-## Verification gates (run all three after any change)
+Run from `raptor-port/`, not the repo root. All three, after any change:
 
 ```
-npm test                    # Vitest suite (320+ tests) — must stay green
+npm test                    # Vitest — must stay green
 npm run build               # typecheck + build
-node reference/tfin.js      # the original's 728 assertions — must stay 728/0
+node reference/tfin.js      # the original's assertions — must stay 728/0
 ```
-For UI-visible work: `npx vite preview --port 4173` then
-`node probes/run.cjs <name> port`, `probes/perf-port.cjs` (no-regression perf
-gate vs the reference), `probes/adapted/*.cjs`. Full table:
-`docs/probe-sweep.md`.
 
-**Discipline:** never weaken a failing assertion — understand it. Every bug
-fix lands with a test that pins it. New features get new tests.
+UI-visible work also needs the browser path (jsdom can't measure layout):
+`npx vite preview --port 4173`, then `probes/run.cjs <name> port`,
+`probes/perf-port.cjs` (perf no-regression), `probes/adapted/*.cjs`.
 
-## Deployment
+Push to `main` → `.github/workflows/deploy.yml` reruns the gates and
+publishes to **https://seejiaokai.github.io/Raptor/**. Nothing deploys red.
 
-Push to `main` → `.github/workflows/deploy.yml` runs the Vitest suite AND
-tfin.js, builds, and publishes to GitHub Pages:
-**https://seejiaokai.github.io/Raptor/**. Nothing deploys unless green.
-Data is per-browser localStorage — there is no server; each device has its
-own copy.
+## Architecture rules (apply to nearly every task)
 
-## The slot-key grammar (load-bearing — everything addresses through this)
+**The store.** `notify()` bumps a version; components subscribe via
+`useVersion()` (useSyncExternalStore) and re-read the singletons.
+`state/view.ts` holds UI state the engine reads (CURPAGE, SBDAY, ARM,
+selection, EDITON) as module `let`s with same-module setters — ESM can't
+reassign across modules. `WARN`/`REST`/`EVD` are reassigned by every
+`validate()`: always re-read, never cache.
 
-Every fillable position and editable text has a string key. The **day index
-is always first** after the prefix; `keyDay(key)` depends on it.
+**The slot-key grammar** — everything addresses through this, and the day
+index is always first after the prefix (`keyDay()` depends on it):
 
-- Flying seat: `di.gi.li.ai.seat` — day, wave (go), formation (line),
-  aircraft, seat `p` (FCP/pilot) or `w` (RCP/WSO). No prefix.
-- Duty `d:di.dwi.ri` · Sim `s:kind.di.ri` (amt|oft) · Ground `g:di.ri` ·
-  Programme `a:di.ri`
-- `.+` = append to the row's crew; `.xN` = overflow slot `row.more[N]`.
-- Text keys: `dn:` day note · `sn:` sim notes · `ap:` programme · `wl:` wave
-  label · `ff:` formation fields · `fr:` flight remarks · `it:` in-times ·
-  `dl:/dr:` duty label/remarks · `sr:` sim remarks · `gr:` ground remarks ·
-  `st:` stores · `ar:/at:` area/area-time · `tr:` traffic.
+- Flying seat `di.gi.li.ai.seat` (no prefix) — day, wave, formation,
+  aircraft, seat `p` (FCP) or `w` (RCP).
+- Duty `d:di.dwi.ri` · Sim `s:kind.di.ri` · Ground `g:di.ri` ·
+  Programme `a:di.ri` · `.+` appends · `.xN` is overflow `row.more[N]`.
+- Text keys: `dn:` day note · `sn:` sim notes · `ap:` programme · `wl:`
+  wave label · `ff:` formation · `fr:` flight remarks · `it:` in-times ·
+  `dl:/dr:` duty · `sr:` sim · `gr:` ground · `st:` stores ·
+  `ar:/at:` area/area-time · `tr:` traffic.
 
-`shiftKeys(head,pos,ix)` renumbers keys when a row is deleted, over
-`SCHED.pending`, `SCHED.changes` and every AL's live `keys`.
-`shiftAircraft`/`shiftFormation`/`shiftWave` compose it. Deleting a
-standalone wave also removes its duty block (`d:`/`dr:`/`dl:` keys).
+**The mutation funnel — bypassing it is always a bug.** All schedule
+writes go through `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet` →
+`noteChange(key)` → `afterSchedMutate()`. A write that skips it is
+invisible to the amendment machinery: not marked pending, absent from the
+next AL, never re-validated. Deletes call `markEdit()` with **no key** — a
+delete must not re-mark the address it just removed.
 
-## The mutation funnel (bypassing it is always a bug)
+**React owns chrome, strings own density.** The dense surfaces (week,
+board, palette) are built by verbatim HTML-string builders and swapped via
+innerHTML with string-diffing — that is what preserves scroll, carets and
+the phone perf budget. Don't convert them to components.
 
-All schedule writes go through `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/
-`txtSet` → `noteChange(key)` → `afterSchedMutate()`. A write that skips the
-funnel is invisible to the amendment machinery: not marked pending, absent
-from the next AL, no re-validation. `afterSchedMutate()` also drops a
-selection whose person count fell, disarms an armed slot whose target
-vanished, then `validate()` and repaint (via the render hooks → `notify()`).
+## Coding conventions
 
-Deletes call `markEdit()` with **no key** — a delete must never re-mark the
-address it just removed.
+- **`src/engine/` bodies are verbatim ports.** Compressed one-line style,
+  semicolons, `:any` annotations — leave it alone. A diff there should be
+  the behaviour change and nothing else; no tidying, no reformatting.
+- **`src/ui/` and `src/state/` are ordinary TS/React**: 2-space indent, no
+  semicolons, single quotes.
+- **Comments explain WHY**, in prose, above the code — often the bug they
+  fix. That density is the house style; match it.
+- **`scheduler.css` carries measured contracts, not preferences.**
+- **Every bug fix lands with a test that pins it**; new features get new
+  tests. Never weaken a failing assertion — understand it.
 
-## The engine rules, as shipped
+## Stable decisions (do not relitigate)
 
-`collectEvents()` builds per-day events from DAYS + INPUTS; `validate()`
-produces `WARN {all, byDay, sev, chip}` and publishes `REST`/`EVD` (all three
-are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
-`note`. `overlap()` is **half-open** — abutting windows do not clash.
+- `reference/` is **read-only** — the spec for existing behaviour. New
+  features go beyond it but must not break it.
+- **Never rerun `tools/extract-engine.cjs`.** The engine is ordinary
+  source now; regenerating would clobber post-port work. The generator,
+  `docs/tfin-assertions.md` and `tools/tfin-port-map.cjs` are archaeology.
+- Keep `src/probe-bridge.ts` in sync when adding engine API.
+- Product: no rule versioning · no two-person approval · no "publish all
+  days" · OIL is LL-equivalent · sim notes are single-line · pucks never
+  wrap · login page stays simple · the talon logo stays.
 
-- A sortie occupies step (T/O − VCONF.step) to dekit (land + VCONF.dekit).
-- Brief window = T/O − briefLead to T/O, **always pinned to T/O**; a
-  published in-time moves report time and crew rest, never the brief.
-- Crew rest (VCONF.crewRest) runs off the last REST-BEARING commitment
-  (sortie or shift). Breach = hard CR; nominal-inside-rest = adv TT.
-- Tight turn needs `max(VCONF.tightTurn, dekit + step)`.
-- Double turn: two+ sorties in a day → ONE hard DT_SUM line naming everyone;
-  pucks stay amber. No span test.
-- "Available fly/duty"/"Fly" inputs are OFFERS (`isOffer`): never clash with
-  anything, including their own sortie's brief/debrief.
-- Leave: LL, OL, OIL (`isLocalLeave` = LL+OIL). LL/OIL may stand an SC SPARE;
-  OL and Downchit may not (hard DNIF_FLY/LEAVE_FLY) even though spares are
-  otherwise `saExempt`. SC SPARE carries no crew rest either way. SC currency
-  is checked for MAIN and SPARE. SC NIGHT ⊂ SC DAY.
-- Standalone waves: SC (spares uncrosschecked), AVALON/BB (`noconf`).
-- Chip ranking `RANK` (highest wins): LD<DT<TT<A<SD<SB<DB<NB<CR<C<Q.
-  Glyphs shorten: CR→R, NB/SB→B, DB/SD→D, LD→L. `A` = on shift AND down for
-  a ground event/programme.
-- Warning labels embed `{crewRest}`-style tokens; `wlbl()` interpolates the
-  LIVE VCONF value.
+## Where things live
 
-## Editable rules
-
-`VCONF` (16 numbers) + `SHIFT_HARD` (6 gradings), Logic tab, admin-only.
-`RULE_STD` frozen standard; `RULE_SPEC[k]={t,u,lo,hi}`. `ruleParse` accepts
-"12h", "2h20", "90", "0700". Storage keeps ONLY the diff in
-`localStorage['sqn142_rules']`; `rulesLoad` (called by `initStore` at boot —
-do not remove) treats storage as untrusted: number, finite, in bounds.
-By owner decision: no rule versioning, no two-person approval.
-
-## Publishing / amendments
-
-`SCHED = {al, pending, changes, als, dayOK, sign}`. Four sign-offs per day
-(`SIGN_ROLES`) → "Publish day" clears that day's pending and spends its
-signatures. Later edits become pending; "Publish AL n" stamps `{n, keys,
-sign, days, n0}` — `days`/`n0` are stamped at issue time and NEVER
-recalculated. `unpublishAL(n)` returns changes to pending. Publishing is
-per-day; there is deliberately no "publish all days".
-
-## Auth / roles
-
-`a/a` = admin, `user/user` = member (view-only). `canEditSched()` = session
-AND admin. Members: no edit page, no Inputs add/delete, read-only Logic.
-Logout closes the scheduler board (a sibling of the shell) and resets LGEDIT.
-The login is a prototype gate, not security — the deployed app is public.
-
-## Rendering contracts (guarantees to preserve in any enhancement)
-
-- An edit on one day must not visibly disturb the other days (per-day string
-  diff in ViewWeek/EditWeek; per-panel diff in SchedBoard).
-- The week keeps its scroll through any edit and through an Edit-mode
-  toggle; the palette keeps its scroll; wave blocks keep swipe offset.
-- Only the page on screen re-renders (CURPAGE gates in the week effects);
-  Shell chrome is memoized; no validate() during render — mutation paths
-  validate. Perf gate: `probes/perf-port.cjs` (port ≤ reference × 1.15 on a
-  4×-throttled phone).
-- Never repaint under the caret: `editingText()` guard + deferred txtCommit.
-  Enter commits (everywhere, including sim notes), Escape restores.
-- Layout is measured, suite-enforced: puck exactly 74×15px (grids derive
-  from `--puck-w`); free text needs `overflow-wrap:anywhere` AND
-  `min-width:0`; a hole in a programme row renders NO element; week pan =
-  one day box per click; proxy scrollbar maps linearly (HS_EPS echo guard,
-  `behavior:'instant'` writes).
-
-## Drag / arm-and-plant (hard-won — test on touch)
-
-Toast is `pointer-events:none`. Touch drag: 8px slop restarts the 180ms
-hold, >26px cancels; ghost follows finger; click-eater dies on next
-pointerdown. A PALETTE drop anywhere on a list row resolves to that row;
-a SEAT puck only lands on a seat (swap) or a crew cell (move) — dropped
-anywhere else (row title/timings/remarks, jet-row dead space, blank
-space, roster, chrome) it comes off the seat (post-port enhancement; the
-reference only unassigned on the roster panel). A drop outside the window
-never deletes. Self-drop says "Already in that seat". Arm-and-plant: empty slot arms, palette tap
-plants, darkened names refuse with a toast, changing board day disarms.
-`applyDrop()` is the ONE drop path for mouse and touch.
-
-## History
-
-`histSnap()` serialises `{DAYS, INPUTS, changes, pending, als, al, dayOK,
-sign}`; undo/redo restores wholesale. Publishing is its own undo step. Undo
-is refused while focus is in an editable field.
-
-## Product decisions already made (do not relitigate)
-
-No rule versioning · no two-person approval · no "publish all days" · OIL is
-LL-equivalent, nothing more · sim notes are single-line · pucks never wrap ·
-login page stays simple · the talon logo stays.
+| Need | Go to |
+|---|---|
+| Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
+| Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
+| Project narrative, current state, known gaps, TODOs | `../HANDOFF.md` |
+| Probe → reference → port results | `docs/probe-sweep.md` |
+| What changed recently | `git log --oneline` (not duplicated here) |
+| The rules engine | `src/engine/` — `validate.ts` is the heart |
+| Store / UI state / undo | `src/state/` |
+| Components + HTML builders | `src/ui/` |
