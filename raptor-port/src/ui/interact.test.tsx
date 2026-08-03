@@ -208,3 +208,64 @@ describe('the stores toggle (sign probe — a store click must earn a pending ma
     a.opts.bombs = was
   })
 })
+
+describe('text edits carry amendment marks (area/atime commit + AL colouring)', () => {
+  it('typing in the AREA cell commits on focusout and marks ar: pending', async () => {
+    const { DAYS } = await import('../engine/data')
+    const { SCHED } = await import('../engine/publish')
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    const ar = document.querySelector('#eWeek .areacell[data-area]') as HTMLElement
+    expect(ar, 'an area cell renders on the edit week').toBeTruthy()
+    const [di, gi, li] = ar.dataset.area!.split('.')
+    const f = DAYS[+di!].waves[+gi!].formations[+li!]
+    const was = f.area
+    ar.textContent = 'D99X'
+    await act(async () => { ar.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+    expect(f.area).toBe('D99X')
+    expect(SCHED.pending[`ar:${di}.${gi}.${li}`]).toBeTruthy()
+    f.area = was; delete SCHED.pending[`ar:${di}.${gi}.${li}`]
+    await act(async () => { const { afterSchedMutate } = await import('../state/view'); const { notify } = await import('../state/store'); afterSchedMutate(); notify() })
+  })
+
+  it('typing in the AREA TIME cell commits on focusout and marks at: pending', async () => {
+    const { DAYS } = await import('../engine/data')
+    const { SCHED } = await import('../engine/publish')
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    const at = document.querySelector('#eWeek .timecell[data-atime]') as HTMLElement
+    expect(at, 'an area-time cell renders on the edit week').toBeTruthy()
+    const [di, gi, li] = at.dataset.atime!.split('.')
+    const f = DAYS[+di!].waves[+gi!].formations[+li!]
+    const was = f.atime
+    at.textContent = '0900-1000'
+    await act(async () => { at.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+    expect(f.atime).toBe('0900-1000')
+    expect(SCHED.pending[`at:${di}.${gi}.${li}`]).toBeTruthy()
+    f.atime = was; delete SCHED.pending[`at:${di}.${gi}.${li}`]
+    await act(async () => { const { afterSchedMutate } = await import('../state/view'); const { notify } = await import('../state/store'); afterSchedMutate(); notify() })
+  })
+
+  it('an edited remark shows the pending mark, then its AL colour once published', async () => {
+    const { SCHED, alIssue, unpublishAL } = await import('../engine/publish')
+    const { txtGet, txtSet } = await import('../engine/slots')
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    const tx = document.querySelector('#eWeek [data-txt^="fr:"]') as HTMLElement
+    expect(tx, 'a remark span renders on the edit week').toBeTruthy()
+    const key = tx.dataset.txt!, was = txtGet(key)
+    tx.textContent = 'AL MARK TEST'
+    await act(async () => { tx.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+    expect(SCHED.pending[key]).toBeTruthy()
+    let el = document.querySelector(`#eWeek [data-txt="${key}"]`) as HTMLElement
+    expect(el.hasAttribute('data-alp'), 'pending mark rendered on the text').toBe(true)
+    await act(async () => { alIssue(8, [key]); const { notify } = await import('../state/store'); notify() })
+    el = document.querySelector(`#eWeek [data-txt="${key}"]`) as HTMLElement
+    expect(el.getAttribute('data-alc'), 'AL colour rendered on the text').toBe('8')
+    /* and the read-only view carries the same mark */
+    await click($$('.nav a[data-page]').find(x => x.dataset.page === 'viewsched')!)
+    const vw = [...document.querySelectorAll('#vWeek [data-alc="8"]')].find(x => x.textContent!.includes('AL MARK TEST'))
+    expect(vw, 'the view week shows the AL-coloured text').toBeTruthy()
+    await act(async () => { unpublishAL(8); txtSet(key, was); delete SCHED.pending[key]; const { notify } = await import('../state/store'); notify() })
+  })
+})

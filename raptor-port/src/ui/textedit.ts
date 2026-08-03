@@ -8,7 +8,7 @@ import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
 import { markEdit } from '../engine/publish'
 import { validate } from '../engine/validate'
 import { afterSchedMutate } from '../state/view'
-import { fmtTxt, intimesInner } from './html'
+import { fmtTxt, intimesInner, areaText, atimeText } from './html'
 
 let SCRATCH: any = null
 function sameInner(el: any, want: any) {
@@ -63,6 +63,25 @@ export function routeFocusOut(e: FocusEvent) {
     if (nv !== (a.opts.bombs || '')) { a.opts.bombs = nv; markEdit(`st:${di}.${gi}.${li}.${ai}`); txtCommit() }
     heal(bo, a.opts.bombs || '')
     return
+  }
+  /* the AREA / AREA-TIME strip under a formation — like bombs, these live
+     outside the txt-key grammar and commit here, as the reference did */
+  const ar = t.closest('[data-area]') as HTMLElement | null
+  if (ar) {
+    const [di, gi, li] = ar.dataset.area!.split('.')
+    const f = DAYS[+di!].waves[+gi!].formations[+li!]
+    const nv = ar.textContent!.trim()
+    if (nv !== (f.area != null ? f.area : '')) { f.area = nv; markEdit(`ar:${di}.${gi}.${li}`); txtCommit() }
+    heal(ar, areaText(f))
+    return
+  }
+  const at = t.closest('[data-atime]') as HTMLElement | null
+  if (at) {
+    const [di, gi, li] = at.dataset.atime!.split('.')
+    const f = DAYS[+di!].waves[+gi!].formations[+li!]
+    const nv = at.textContent!.trim()
+    if (nv !== (f.atime != null ? f.atime : '')) { f.atime = nv; markEdit(`at:${di}.${gi}.${li}`); txtCommit() }
+    heal(at, atimeText(f))
   }
 }
 
