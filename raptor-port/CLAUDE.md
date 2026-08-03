@@ -118,6 +118,7 @@ the phone perf budget. Don't convert them to components.
 | Current state, known gaps, TODOs, full file map | `../HANDOFF.md` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
 | What changed recently | `git log --oneline` (not duplicated here) |
+| Last session's leftovers, **if any** | `docs/session-state.md` (absent = nothing was pending) |
 | The rules engine | `src/engine/` — `validate.ts` is the heart |
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |
