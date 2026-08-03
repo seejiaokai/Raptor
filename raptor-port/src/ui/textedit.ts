@@ -53,6 +53,17 @@ export function routeFocusOut(e: FocusEvent) {
     const want = intimesInner(w); if (!sameInner(it, want)) it.innerHTML = want
     return
   }
+  /* the typed stores text ("bombs…") — opts.bombs lives outside the txt-key
+     grammar, so it commits here exactly as the reference's focusout did */
+  const bo = t.closest('[data-bombs]') as HTMLElement | null
+  if (bo) {
+    const [di, gi, li, ai] = bo.dataset.bombs!.split('.')
+    const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
+    a.opts = a.opts || {}; const nv = bo.textContent!.trim()
+    if (nv !== (a.opts.bombs || '')) { a.opts.bombs = nv; markEdit(`st:${di}.${gi}.${li}.${ai}`); txtCommit() }
+    heal(bo, a.opts.bombs || '')
+    return
+  }
 }
 
 export function routeKeyDown(e: KeyboardEvent) {

@@ -187,4 +187,24 @@ describe('the stores toggle (sign probe — a store click must earn a pending ma
     await click(document.querySelector(`#eWeek .stchip[data-store="${st.dataset.store}"]`))
     expect(!!a.opts[k!]).toBe(was)
   })
+
+  it('typing in the bombs box commits on focusout, marks st: pending, and shows on the view week', async () => {
+    const { DAYS } = await import('../engine/data')
+    const { SCHED } = await import('../engine/publish')
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    const bo = document.querySelector('#eWeek .bombs[data-bombs]') as HTMLElement
+    expect(bo, 'a bombs box renders on the edit week').toBeTruthy()
+    const [di, gi, li, ai] = bo.dataset.bombs!.split('.')
+    const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
+    const was = (a.opts && a.opts.bombs) || ''
+    bo.textContent = '2 X GBU-38'
+    await act(async () => { bo.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+    expect(a.opts.bombs).toBe('2 X GBU-38')
+    expect(SCHED.pending[`st:${di}.${gi}.${li}.${ai}`]).toBeTruthy()
+    await click($$('.nav a[data-page]').find(x => x.dataset.page === 'viewsched')!)
+    const chip = [...document.querySelectorAll('#vWeek .stchip.bomb')].find(x => x.textContent!.includes('2 X GBU-38'))
+    expect(chip, 'the view week shows the typed bombs').toBeTruthy()
+    a.opts.bombs = was
+  })
 })
