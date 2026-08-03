@@ -21,6 +21,20 @@ small precise work directly, since spawning an agent costs more than a
 one-file fix. The owner does not want to micro-manage this; use judgment,
 and keep final review and the verification gates first-hand.
 
+Token discipline (terse in WORK, never in what the owner reads — his
+explanations stay plain-language and complete):
+
+- Never let a tool dump raw output. Pipe logs through `tail`/`grep`; ask
+  GitHub MCP tools for `minimal_output: true` and paginate 5–10; when
+  checking one field of an API response, a 2-line `curl | grep` beats the
+  full object by ~99%.
+- Never read `reference/` whole — it is a 6.6k-line read-only spec.
+  `grep` it for the contract and quote only the lines that matter.
+- Trust the codebase map above instead of re-exploring; open the specific
+  file it names.
+- Prefer a fresh session per task. `HANDOFF.md` + this file orient a cold
+  session cheaply, while a long conversation re-sends itself every turn.
+
 ## Codebase map
 
 - `src/engine/` — the DOM-free rules engine (validation, slots, publishing,
