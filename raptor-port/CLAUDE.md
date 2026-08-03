@@ -96,6 +96,10 @@ the phone perf budget. Don't convert them to components.
 - **`scheduler.css` carries measured contracts, not preferences.**
 - **Every bug fix lands with a test that pins it**; new features get new
   tests. Never weaken a failing assertion — understand it.
+- **Keep `../HANDOFF.md` true in the same PR.** A change that resolves (or
+  creates) a known issue edits its list; a change that adds, removes or
+  renames a file edits its file map. Stale is worse than absent — the next
+  session trusts it.
 
 ## Stable decisions (do not relitigate)
 
