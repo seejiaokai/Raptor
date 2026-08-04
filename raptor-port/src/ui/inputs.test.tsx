@@ -8,6 +8,8 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo } from '../state/store'
 import { INPUTS } from '../engine/inputs'
+import { DAYS } from '../engine/data'
+import { acceptInput, inpKey } from '../engine/slots'
 import { validate } from '../engine/validate'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -228,5 +230,69 @@ describe('editing an input from its own line', () => {
     await act(async () => { setter.call(rm, 'THROWN AWAY'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
     await click($('#inBody tr.ined [data-cancel]'))
     expect(JSON.stringify(INPUTS[0])).toBe(before)
+  })
+})
+
+/* Two bugs the pencil introduced, both found in the post-change sweep. */
+describe('editing an input that is already accepted', () => {
+  /* an earlier test leaves the type filter narrowed; these need the whole list */
+  beforeAll(async () => {
+    await act(async () => {
+      const sel = $('#inFType') as unknown as HTMLSelectElement
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
+      setter.call(sel, 'all'); sel.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+  })
+
+  const setV = async (el: any, v: string) => act(async () => {
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+    setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+
+  /* the row acceptInput created is linked by `src` = person|date|type|s.
+     Editing any of those used to break the link, stranding a row on the
+     programme that undo could never find. */
+  it('keeps the ground row in step instead of orphaning it', async () => {
+    INPUTS.unshift({ person: 'vinci', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'sweep', mod: '' })
+    const inp = INPUTS[0]
+    await act(async () => { acceptInput(0, inp, 'g'); notify() })
+    const nGround = DAYS[0].ground.length
+    expect(DAYS[0].ground.some((r: any) => r.src === inpKey(inp))).toBe(true)
+
+    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    const ty = $('#inBody tr.ined [data-ed="type"]') as HTMLSelectElement
+    await act(async () => {
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
+      setter.call(ty, 'Appointment'); ty.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    await click($('#inBody tr.ined [data-save]'))
+
+    expect(inp.type).toBe('Appointment')
+    expect(DAYS[0].ground.length, 'no duplicate row left behind').toBe(nGround)
+    // the link followed the edit, so the row is still reachable
+    expect(DAYS[0].ground.some((r: any) => r.src === inpKey(inp)), 'src re-linked').toBe(true)
+    const row = DAYS[0].ground.find((r: any) => r.src === inpKey(inp))
+    expect(row.prog).toBe('APPOINTMENT')      // and it re-reads under the new type
+    await act(async () => { INPUTS.splice(INPUTS.indexOf(inp), 1); notify() })
+  })
+
+  /* the editor used to hold a model INDEX; adding a row renumbers INPUTS and
+     the draft then committed onto whoever had shifted into that slot */
+  it('commits onto the right row even after the list renumbers underneath', async () => {
+    const target = INPUTS[0]
+    const wasOther = INPUTS[1] ? { ...INPUTS[1] } : null
+    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
+    await setV(rm, 'STAYS ON TARGET')
+    // something else lands at the top of the list while the editor is open
+    await act(async () => {
+      const { writeInputs } = await import('../state/store')
+      writeInputs(() => INPUTS.unshift({ person: 'yeti', date: 'Jul 14', allday: true, type: 'LL', remarks: 'jumped the queue', mod: '' }))
+    })
+    await click($('#inBody tr.ined [data-save]'))
+    expect(target.remarks).toBe('STAYS ON TARGET')
+    expect(INPUTS[0].remarks).toBe('jumped the queue')   // the interloper is untouched
+    if (wasOther) expect(INPUTS.find((x: any) => x.remarks === wasOther.remarks)).toBeTruthy()
+    await act(async () => { undo() })
   })
 })

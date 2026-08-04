@@ -5,6 +5,7 @@
    stack and re-validate the week. */
 import { useState } from 'react'
 import { INPUTS, INPUT_TYPES, DATES } from '../engine/inputs'
+import { acceptInput, unacceptInput } from '../engine/slots'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -45,7 +46,7 @@ export function InputsPage() {
   const [fPerson, setFPerson] = useState('all')
   const [fType, setFType] = useState('all')
   const [fSearch, setFSearch] = useState('')
-  const [editIx, setEditIx] = useState<number | null>(null)
+  const [editRow, setEditRow] = useState<any>(null)
   const [draft, setDraft] = useState<any>(null)
 
   const add = () => {
@@ -74,7 +75,10 @@ export function InputsPage() {
   const startEdit = (inx: number) => {
     if (SESSION.role !== 'admin') return HOOKS.toast('View only — ask a scheduler to edit this', 'warn')
     const r = INPUTS[inx]
-    setEditIx(inx)
+    /* the ROW ITSELF is held, never its index: adding, deleting or undoing
+       while an editor is open renumbers INPUTS, and an index captured before
+       that would commit the draft onto somebody else's input */
+    setEditRow(r)
     setDraft({
       person: r.person, type: r.type, allday: !!r.allday,
       start: unfmt(r.date), end: r.endDate ? unfmt(r.endDate) : '',
@@ -83,18 +87,35 @@ export function InputsPage() {
     })
   }
   const saveEdit = () => {
-    if (editIx == null || !draft) return
+    const r = editRow
+    if (!r || !draft) return
+    if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
+      setEditRow(null); setDraft(null)
+      return HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
+    }
     const s = draft.allday ? 0 : parseHM(draft.sTime), e = draft.allday ? 1439 : parseHM(draft.eTime)
     if (!draft.allday && (s == null || e == null)) return HOOKS.toast('Give the input a start and end time, or tick All day', 'warn')
     if (!draft.allday && (e as number) <= (s as number)) return HOOKS.toast('End time must be after start time', 'warn')
     const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
     writeInputs(() => {
-      const r = INPUTS[editIx]
+      /* An ACCEPTED input is linked to the row it created by `src`, a content
+         key of person|date|type|s. Editing any of those silently broke the
+         link: the row stayed on the programme, undo could no longer find it,
+         and it could never be removed. So an accepted input is un-accepted
+         through the real path FIRST, edited, then re-accepted — which also
+         moves the row when the date moves it to another day. */
+      const wasAcc = r.acc
+      if (wasAcc) unacceptInput(DATES.indexOf(r.date), r)
       r.person = draft.person; r.type = draft.type; r.allday = draft.allday
       r.s = s; r.e = e; r.date = date; r.remarks = draft.remarks.trim(); r.mod = 'now'
       if (endDate) r.endDate = endDate; else delete r.endDate
+      if (wasAcc) {
+        const di = DATES.indexOf(r.date)
+        if (di >= 0) acceptInput(di, r, wasAcc)
+        else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
+      }
     })
-    setEditIx(null); setDraft(null)
+    setEditRow(null); setDraft(null)
   }
 
   const del = (inx: number) => {
@@ -158,7 +179,7 @@ export function InputsPage() {
               const st = r.date + (r.allday ? '' : ' ' + hhmm(r.s))
               const en = (r.endDate || r.date) + (r.allday ? '' : ' ' + hhmm(r.e))
               const inx = INPUTS.indexOf(r)
-              if (editIx === inx && draft) return (
+              if (editRow === r && draft) return (
                 <tr key={inx} className="ined">
                   <td><select aria-label="Person" data-ed="person" value={draft.person}
                     onChange={e => setDraft({ ...draft, person: e.target.value })}>
@@ -187,7 +208,7 @@ export function InputsPage() {
                   <td className="mono" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
                   <td className="inact">
                     <span className="rok" data-save={inx} title="Save" onClick={saveEdit}>✓</span>
-                    <span className="rmx" data-cancel={inx} title="Cancel" onClick={() => { setEditIx(null); setDraft(null) }}>✕</span>
+                    <span className="rmx" data-cancel={inx} title="Cancel" onClick={() => { setEditRow(null); setDraft(null) }}>✕</span>
                   </td>
                 </tr>
               )
