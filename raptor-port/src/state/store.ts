@@ -81,6 +81,16 @@ export function wireStore() {
   HOOKS.renderEditWeek = () => notify()
   HOOKS.renderSchedule = () => notify()
   HOOKS.renderInputs = () => notify()
+  /* the reference's isPhone() (matchMedia max-width:820px). It was never wired
+     in the port, so the default `false` made every isPhone call site dead: a
+     palette drag on a phone never parked the drawer — the drop could only land
+     back on the drawer itself, a silent no-op — and arming a slot never slid
+     the drawer open. Guarded for jsdom, which has no matchMedia. */
+  HOOKS.isPhone = () => {
+    if (typeof window === 'undefined') return false
+    try { if (window.matchMedia) return window.matchMedia('(max-width:820px)').matches } catch (_) {}
+    return (window.innerWidth || 821) <= 820
+  }
 }
 export function setToast(fn: (...a: any[]) => any) { HOOKS.toast = fn }
 
