@@ -27,12 +27,13 @@ The port from the original single-file app is complete; that history is in
   on both builds — environment-bound, not a port defect.
 - **`sbWide` / board-grip state** is module-local and resets on reload
   (matches the original's session-scoped behaviour).
-- **The AL version feature (PR #33) is under owner review — expect rework.**
-  The per-day version dropdown / preview / restore shipped, but the owner
-  says it is not what he wants and reports AL bugs on the deployed site
-  (specifics not yet given — ask him first; see
-  `raptor-port/docs/session-state.md` for the feature's full file list).
-  Known limitation regardless: previews freeze the schedule content but the
+- **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** The PR
+  #33 restore-as-pending behaviour was reworked: "Restore this version"
+  makes that version live immediately (content + marks + the single
+  day-head chip from `dayCurVer`), discards the day's pending edits, needs
+  no sign-off, and keeps later ALs in the dropdown; new edits publish as
+  `nextAL()`. See `docs/engine-rules.md` §Version snapshots / restore.
+  Known limitation still: previews freeze the schedule content but the
   personal-INPUTS sections and day-info pop read live data — inputs are not
   part of the issued document. Snapshots are session-only, like everything
   else.
@@ -54,8 +55,8 @@ The port from the original single-file app is complete; that history is in
 | `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`. |
 | `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering. |
 | `waves.ts` | WEEKS/CURWEEK, standalone waves (SC/AVALON/BB): `isStandalone`, `makeStandalone`, `saExempt`. |
-| `publish.ts` | SCHED, sign-offs (SIGN_ROLES), `setDayApproved`, `publishALDay`/`alIssue`/`unpublishAL`, `markEdit`, AL colours, per-day version snapshots (`daySnap`/`daySnapOf`/`dayVersions`). |
-| `restore.ts` | `dayKeys` walker + `restoreDayVersion` — revert a day to a published version as pending edits. |
+| `publish.ts` | SCHED, sign-offs (SIGN_ROLES), `setDayApproved`, `publishALDay`/`alIssue`/`unpublishAL`, `markEdit`, AL colours, per-day version snapshots (`daySnap`/`daySnapOf`/`dayVersions`), `dayCurVer` (the day-head chip). |
+| `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |
 | `rules.ts` | VCONF/SHIFT_HARD editing, `ruleParse`/`ruleFmt`, `rulesSave`/`rulesLoad`/`rulesReset`. |
 | `insights.ts` | `computeInsights()` for the Insights modal. |
 | `hooks.ts` | HOOKS — injectable callbacks (toast, repaints, histPush, storage) so verbatim bodies stay DOM-free headless. |

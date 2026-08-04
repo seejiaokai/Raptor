@@ -9,7 +9,7 @@ import { DAYS } from './engine/data'
 import { PEOPLE, isScheduler, isLead, isInstr, isOcu, sanStatus, nameToId, aarNeed, scShiftKind } from './engine/people'
 import { INPUTS, INPUT_TYPES, DATES, isLeave, isLocalLeave, isDownchit, isOffType } from './engine/inputs'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
-import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel } from './engine/publish'
+import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
 import * as V from './engine/validate'
 import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, restClear, dayEvents } from './engine/validate'
@@ -83,7 +83,7 @@ export function installProbeBridge() {
   w.isDownchit = isDownchit; w.isOffType = isOffType; w.dayOff = dayOff; w.rulesReset = rulesReset
   w.rulesLoad = rulesLoad; w.rulesSave = rulesSave; w.DATES = DATES
   w.alCount = alCount; w.alDays = alDays; w.pendDays = pendDays; w.pendCount = pendCount; w.approvedDays = approvedDays
-  w.daySnapOf = daySnapOf; w.dayVersions = dayVersions; w.verLabel = verLabel
+  w.daySnapOf = daySnapOf; w.dayVersions = dayVersions; w.verLabel = verLabel; w.dayCurVer = dayCurVer
   w.restoreDayVersion = restoreDayVersion; w.dayKeys = dayKeys
   w.setDayPreview = (di: any, v: any) => { view.setDayPreview(di, v); notify() }
   w.renderInputs = () => notify()

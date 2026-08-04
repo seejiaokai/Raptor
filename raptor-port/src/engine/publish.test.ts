@@ -5,7 +5,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { PEOPLE, isScheduler } from './people'
-import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, publishAL, publishALDay, unpublishAL, discardPending, alIssue, alCount, alDays, alUsed, nextAL, markEdit, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel } from './publish'
+import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, publishAL, publishALDay, unpublishAL, discardPending, alIssue, alCount, alDays, alUsed, nextAL, markEdit, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
 import { noteChange } from './slots'
 
 const sign = (di: number) => {
@@ -15,7 +15,7 @@ const sign = (di: number) => {
 
 beforeEach(() => {
   SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []
-  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}
+  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
 })
 
 describe('per-day sign-off (tfin B22/B24)', () => {
@@ -295,5 +295,37 @@ describe('per-day version snapshots', () => {
     unpublishAL(1)
     expect(dayVersions(0)).toEqual(['live', 'orig'])
     expect(verLabel('live') + verLabel('orig') + verLabel(1)).toBe('LiveOriginalAL1')
+  })
+})
+
+describe('dayCurVer — the version a day is currently showing', () => {
+  it('null before publish, orig after the first publish, n after an issue', () => {
+    expect(dayCurVer(0)).toBeNull()
+    sign(0); setDayApproved(0, 1)
+    expect(dayCurVer(0)).toBe('orig')
+    sign(0); alIssue(1, ['dn:0.0'])
+    expect(dayCurVer(0)).toBe(1)
+  })
+
+  it('falls back by ISSUE ORDER, not AL number, when the stamp is gone', () => {
+    sign(0); setDayApproved(0, 1)
+    /* AL2 goes out first, then AL1 fills the freed lower number — legal via
+       the AL panel's number picker. The most recent ISSUE is AL1. */
+    sign(0); alIssue(2, ['dn:0.0'])
+    sign(0); alIssue(1, ['dn:0.1'])
+    expect(dayCurVer(0)).toBe(1)          // stamped by the later issue
+    delete SCHED.cur[0]
+    expect(dayCurVer(0)).toBe(1)          // derived: newest issue, not max n
+  })
+
+  it('an unpublished cur AL falls back to the remaining newest issue, then orig', () => {
+    sign(0); setDayApproved(0, 1)
+    sign(0); alIssue(1, ['dn:0.0'])
+    sign(0); alIssue(2, ['dn:0.1'])
+    expect(dayCurVer(0)).toBe(2)
+    unpublishAL(2)                         // its snapshot vanishes with the record
+    expect(dayCurVer(0)).toBe(1)
+    unpublishAL(1)
+    expect(dayCurVer(0)).toBe('orig')
   })
 })

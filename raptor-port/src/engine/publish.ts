@@ -21,8 +21,12 @@ const renderStatus=()=>HOOKS.renderStatus();
                     Approval is per day, not per week: Monday can be published and
                     flown while Thursday is still being built. The week banner is a
                     summary of this object, never the source of truth. There is no
-                    SCHED.approved / SCHED.dirty any more — both are derived.      */
-export let SCHED:any={al:0, pending:{}, changes:{}, als:[], dayOK:{}, sign:{}, orig:{}};
+                    SCHED.approved / SCHED.dirty any more — both are derived.
+   SCHED.cur      — {di: 'orig'|n} which version each day is CURRENTLY showing.
+                    Stamped by alIssue and by restoreDayVersion; read through
+                    dayCurVer(), which self-heals when the stamped version's
+                    snapshot has gone (unpublishAL, undo past the issue).      */
+export let SCHED:any={al:0, pending:{}, changes:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}};
 export function dayApproved(di:any){return !!SCHED.dayOK[di];}
 export function approvedDays(){return DAYS.map((_:any,i:any)=>i).filter(dayApproved);}
 export function dowShort(di:any){return String((DAYS[di]||{}).dow||('day '+di)).slice(0,3);}
@@ -37,6 +41,17 @@ export function alDays(rec:any){ if(!rec)return [];
   return live.length?live:(rec.days||[]).filter((i:any)=>i>=0&&i<DAYS.length);}
 export function alCount(rec:any){return rec&&rec.n0!=null?rec.n0:((rec&&rec.keys||[]).length);}
 export function dayALs(di:any){return SCHED.als.filter((a:any)=>alDays(a).includes(di)).map((a:any)=>a.n).sort((a:any,b:any)=>a-b);}
+/* the version a day is currently showing. The stamp only counts while its
+   snapshot still exists; otherwise fall back to the NEWEST ISSUE with a snap
+   for this day — array order, not max-n, because publishAL can legally issue
+   a lower number after a higher one was freed — then the Original, then null
+   (never published). This derivation IS the orphan guard: a stale SCHED.cur
+   entry after unpublishAL or an undo is inert, no cleanup pass exists. */
+export function dayCurVer(di:any){di=+di;
+  const v=(SCHED.cur||{})[di];
+  if(v!=null&&daySnapOf(di,v))return v;
+  for(let i=SCHED.als.length-1;i>=0;i--){const a=SCHED.als[i];if(a.snap&&a.snap[di])return a.n;}
+  return (SCHED.orig||{})[di]?'orig':null;}
 export function dayPendCount(di:any){return Object.keys(SCHED.pending).filter((k:any)=>keyDay(k)===di).length;}
 export function pendDays(){return uniqDays(Object.keys(SCHED.pending));}
 /* pending edits only become publishable amendments once their day is published —
@@ -148,6 +163,7 @@ export function alIssue(n:any,keys:any){
   /* freeze every covered day AFTER its marks are on — this is the document */
   const rec=SCHED.als[SCHED.als.length-1];
   rec.snap={}; days.forEach((di:any)=>{rec.snap[di]=daySnap(di);});
+  SCHED.cur=SCHED.cur||{}; days.forEach((di:any)=>{SCHED.cur[di]=n;});   // issuing makes it current
   days.forEach((di:any)=>signClear(di));
   SCHED.al=Math.max(...alUsed());
   reflow(); histPush();   // publishing is its own undo step, not a silent baseline shift

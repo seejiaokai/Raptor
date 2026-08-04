@@ -6,7 +6,7 @@ import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/slots'
 import { WARN, sevOf, chipOf, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayALs, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
 import { keyDay } from '../engine/keys'
 import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV } from '../state/view'
 import { canEditSched } from '../state/auth'
@@ -300,12 +300,22 @@ export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Fl
 export function dayHTML(di:any,ed:any,vsel?:any){
   const d=DAYS[di];
     /* ---- per-day approval strip -------------------------------------------
-       Each day carries its own publish state, its own AL chips (which amendments
-       touched THIS day) and its own pending-edit count. In edit mode the publish
-       is a button; in view mode it is a read-only stamp, because clicking a day
-       in the view-only page must never lead into editing.                      */
+       Each day carries its own publish state, ONE version chip (the version the
+       day is currently showing — not the AL history, which lives in the ⓘ
+       panel) and its own pending-edit count. In edit mode the publish is a
+       button; in view mode it is a read-only stamp, because clicking a day in
+       the view-only page must never lead into editing.                        */
     const ok=dayApproved(di), dals=dayALs(di), dp=dayPendCount(di);
-    const alChips=dals.map((n:any)=>`<span class="dal" data-alc="${n}" title="AL${n} amends ${DAYS[di].dow}">AL${n}</span>`).join('');
+    /* the chip appears once amendments exist: a published day with no ALs
+       anywhere keeps the clean "✓ Published" look, but a day rolled back to
+       the Original while ALs sit in the dropdown must say so — silence there
+       would look identical to "never amended". Grey ORIG, never AL1's cyan. */
+    const cv=dayCurVer(di);
+    const alChips=(ok&&cv!=null&&(cv!=='orig'||dals.length))
+      ? (cv==='orig'
+        ? `<span class="dal orig" title="${DAYS[di].dow} is currently at the Original — as first published">ORIG</span>`
+        : `<span class="dal" data-alc="${cv}" title="${DAYS[di].dow} is currently at AL${cv}">AL${cv}</span>`)
+      : '';
     const pendChip=dp?`<span class="dpend" title="${dp} unpublished edit${dp>1?'s':''} on this day${ok?'':' — publish the day before publishing an AL'}">${dp}&nbsp;pending</span>`:'';
     const sgOK=daySigned(di);
     const beak=ed
@@ -328,7 +338,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        looking at" reads the same way the marks do */
     const pvBar=PV
       ? `<div class="dprev-bar"${PVV!=='orig'?` style="--alc:${alColor(+PVV)}"`:''}>Viewing <b>${verLabel(PVV)}</b> as issued — read-only`
-        +`<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${PVV}" title="Copy this version back as pending edits — publish them as the next AL">Restore this version</button></div>`
+        +`<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${PVV}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button></div>`
       : '';
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?' preview':''}" data-day="${di}">
       <div class="day-head">${ed
@@ -524,8 +534,14 @@ export function signoffHTML(di:any,full:any){
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{
       const v=g[k], ids=signPeople(sch,v);
+      /* the select is stretched invisibly over the whole pill (iPhone Safari
+         will not open a select from a tap on its wrapping label, so the label
+         text used to be dead space on the phone). The .v span is the visible
+         value; it re-renders on every reflow, the same path that used to move
+         the `selected` attribute. */
+      const shown=v&&PEOPLE[v]?PEOPLE[v].cs:(ids.length?'— name —':'— none appointed —');
       return `<label class="sgn ${v?'on':''}${sch?' sch':''}" title="${esc(lbl)}${sch?' — appointed schedulers only':''}${v&&PEOPLE[v]?' — '+esc(PEOPLE[v].name||PEOPLE[v].cs):''}">`
-        +`<span class="k">${esc(lbl)}</span>`
+        +`<span class="k">${esc(lbl)}</span><span class="v">${esc(shown)}</span>`
         +`<select data-sign="${k}" data-signday="${di}" aria-label="${esc(lbl)} — ${esc((DAYS[di]||{}).dow||'')}">`
         +`<option value="">${ids.length?'— name —':'— none appointed —'}</option>`
         +ids.map((id:any)=>`<option value="${id}"${id===v?' selected':''}>${esc(PEOPLE[id].cs)}</option>`).join('')
@@ -560,7 +576,11 @@ export function dayInfoHTML(di:any){
     ? alRecs.map((a:any)=>{const n=(a.keys||[]).filter((k:any)=>keyDay(k)===di).length;
         return `<span class="dip-al" data-alc="${a.n}">AL${a.n}<i>${n} item${n===1?'':'s'}</i></span>`;}).join('')
     : `<span class="dip-none">No amendment has touched this day yet</span>`;
-  let h=`<div class="dip-stat ${ok?'ok':'draft'}">${ok?'✓ Published — APPROVED':'Draft — not yet published'}`
+  /* same visibility rule as the day-head chip: name the current version once
+     amendments exist, so a rolled-back day says which document it is showing */
+  const cv=dayCurVer(di);
+  const atVer=(ok&&cv!=null&&(cv!=='orig'||alRecs.length))?` · at ${verLabel(cv)}`:'';
+  let h=`<div class="dip-stat ${ok?'ok':'draft'}">${ok?'✓ Published — APPROVED'+atVer:'Draft — not yet published'}`
     +`${dp?`<span class="dip-pend">${dp} unpublished edit${dp>1?'s':''}</span>`:''}</div>`;
   h+=`<div class="dip-h">AL versions covering ${esc(d.dow)}</div><div class="dip-als">${alRows}</div>`;
   h+=`<div class="dip-h">What this day is tasking</div><div class="dip-grid">`

@@ -1,16 +1,21 @@
 import { DAYS } from './data'
 import { SCHED, daySnapOf } from './publish'
+import { keyDay } from './keys'
 /* =====================================================================
-   RESTORE A DAY TO A PUBLISHED VERSION
-   Not a history rewrite: the snapshot replaces the live day and every field
-   that actually moved is marked PENDING, so the revert goes out as the next
-   AL like any other edit. Lives in its own module because slots.ts already
-   imports publish.ts — restore needs both sides of that edge.
+   ROLL A DAY BACK TO A PUBLISHED VERSION
+   A rollback, not an amendment (owner decision, Aug 26): clicking Restore
+   makes that version the live document immediately — content, marks and the
+   header chip all become that AL. Nothing goes pending; unpublished edits on
+   the day are DISCARDED (reported to the caller); later ALs keep their
+   records and stay in the dropdown. Lives in its own module because slots.ts
+   already imports publish.ts — restore needs both sides of that edge.
    ===================================================================== */
 /* Every user-meaningful field of a PASSED day object (never the global DAYS —
    live and snapshot are walked by the same function without any swap), keyed
-   by the address the app itself uses, so the pending marks the diff raises
-   decorate real on-screen elements. Row state that has no text key of its own
+   by the address the app itself uses. restoreDayVersion no longer diffs, but
+   the walker stays: it is the executable documentation of the slot-key
+   grammar, its tests pin every prefix, and probe-bridge exports it.
+   Row state that has no text key of its own
    (cx / cx reason / red flag / night) rides as a composite on the row's name
    field — a CX toggle then marks the row it cancelled, which is where the
    scheduler's eye goes. Structured values (opts, intimes, traffic, areas) are
@@ -71,23 +76,26 @@ export function dayKeys(d:any,di:any){
   });
   return m;
 }
-/* false = no such version. Otherwise the number of keys that moved (0 is a
-   legitimate answer: restoring a version identical to live). Deliberately NO
-   histPush and NO reflow here — the UI caller's afterSchedMutate() → markEdit()
-   is the single undo step; a push here would double-step the stack. */
+/* false = no such version. Otherwise the number of unpublished edits the
+   rollback DISCARDED (0 is the common answer) — that count is what the toast
+   owes the user. Deliberately NO histPush and NO reflow here — the UI
+   caller's afterSchedMutate() → markEdit() is the single undo step; a push
+   here would double-step the stack. Signatures, dayOK, orig and the AL
+   records are all untouched: the day stays published, rolling back neither
+   needs nor spends a sign-off, and later ALs keep their dropdown entries. */
 export function restoreDayVersion(di:any,ver:any){
   di=+di;
   const snap=daySnapOf(di,ver); if(!snap)return false;
-  const live=dayKeys(DAYS[di],di), old=dayKeys(snap.d,di);
   const nd=JSON.parse(JSON.stringify(snap.d));
   nd.today=!!(DAYS[di]&&DAYS[di].today);   // 'today' tracks the calendar, not the document
   DAYS[di]=nd;
-  let n=0;
-  /* noteChange's exact body (slots.ts), inlined so this module needs nothing
-     from slots: mark pending, drop any published colour the key carried. Keys
-     equal in both versions stay untouched — their AL marks survive the revert.
-     Keys that exist only in LIVE are rows the restore just removed, and the
-     delete rule holds: a delete must not re-mark the address it removed. */
-  old.forEach((v:any,k:any)=>{ if(live.get(k)!==v){SCHED.pending[k]=1; delete SCHED.changes[k]; n++;} });
-  return n;
+  /* wipe the day's mark slices FIRST, then install the snapshot's own changes
+     slice, so the day wears exactly the marks it was issued with — a rollback
+     to the Original (whose slice is empty) shows no marks at all */
+  Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.changes[k];});
+  let dropped=0;
+  Object.keys(SCHED.pending).forEach((k:any)=>{if(keyDay(k)===di){delete SCHED.pending[k];dropped++;}});
+  Object.keys(snap.c||{}).forEach((k:any)=>{SCHED.changes[k]=snap.c[k];});
+  SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=(ver==='orig')?'orig':+ver;
+  return dropped;
 }
