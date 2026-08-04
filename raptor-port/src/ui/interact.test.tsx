@@ -54,6 +54,19 @@ describe('puck selection (tfin B14)', () => {
     await click($('#vWeek'))   // reset for the next test
   })
 
+  /* owner, Aug 26: selecting another puck must dim your own view-as ("you")
+     puck too — the passive purple indicator yields to an active selection */
+  it('selecting another puck dims your own view-as puck (no lingering "you")', async () => {
+    const other = $$('#vWeek .puck[data-person]').find(p => p.dataset.person !== 'bane')
+    expect(other, 'a non-me puck to click').toBeTruthy()
+    await click(other!)
+    const bane = $$('#vWeek .puck[data-person="bane"]')
+    expect(bane.length).toBeGreaterThan(0)
+    expect(bane.every(p => !p.classList.contains('me'))).toBe(true)
+    expect(bane.every(p => p.classList.contains('dim'))).toBe(true)
+    await click($('#vWeek'))   // reset for the next test
+  })
+
   it('click select — and it opens that person\'s issue boxes on every flagged day', async () => {
     await click($('#vWeek .puck[data-person="bane"]'))
     expect($$('#vWeek .puck.sel').length).toBe(1)

@@ -209,7 +209,7 @@ export function availHTML(d:any,di:any,ed:any){
    toggles. [key,label] — the key is what lands in aircraft.opts, the label is
    what prints. Bombs stays a separate free-text chip. One list, read by both
    the read-only and the edit builders so they never drift. */
-export const STORE_CFG:[string,string][]=[['nav','NAV'],['nc','N/C'],['tks3','3 TKS'],['cl','CL']];
+export const STORE_CFG:[string,string][]=[['nav','NAV'],['nc','N/C'],['tk2','2 TKS'],['tks3','3 TKS'],['tpod','TPOD'],['cl','CL']];
 export function storesView(o:any){
   o=o||{};
   const on=STORE_CFG.filter(([k]:any)=>o[k]);
