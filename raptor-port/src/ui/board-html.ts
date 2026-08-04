@@ -202,7 +202,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any){
     : `<span class="itxt">${esc(inp.person)}</span>`;
   const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
   return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
-    +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inp.type)}</span>`
+    +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`
     +`<span class="sbi-rm" title="${esc(inp.remarks||'')}">${esc(inp.remarks||'—')}</span>`
     +(acc&&!pv?accCtl(di,inp):'')+`</div>`;
 }

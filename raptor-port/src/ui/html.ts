@@ -96,15 +96,6 @@ export function puck(id:any,warn:any,sm:any,flag:any){
   return `<span class="${cls.join(' ')}" tabindex="0" data-person="${id}" title="${ttl}">${lchip}<span class="nm">${p.cs}</span>${qchip}</span>`;
 }
 
-/* highlight state */
-export let SELID:any=null;                 // clicked person (blue)
-/* What was on screen before the current selection, so a second click on the
-   same puck reverses the first rather than clearing everything. */
-export let SELPREV:any=null;
-/* How many places that person occupied when they were selected. If a delete
-   takes one away the selection is dropped for everybody — you cannot go on
-   pointing at a puck that is no longer there. */
-export let SELSEEN=0;
 export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any){
   const al=alAttr(key);
   /* preview: no data-slot, no draggable — the key addresses the LIVE model */

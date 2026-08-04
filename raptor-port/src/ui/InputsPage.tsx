@@ -4,13 +4,13 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useState } from 'react'
-import { INPUTS, INPUT_TYPES, DATES } from '../engine/inputs'
-import { acceptInput, unacceptInput } from '../engine/slots'
+import { INPUTS, INPUT_TYPES, DATES, inputCoversDate } from '../engine/inputs'
+import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { SESSION, ME } from '../state/auth'
-import { writeInputs, notify } from '../state/store'
+import { writeInputs, writeInputsBatch, notify } from '../state/store'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
 import { RangeCal } from './RangeCal'
@@ -53,6 +53,9 @@ export function InputsPage() {
     /* the Inputs page is the one page a member can reach that mutates the
        shared model — the role gate is the reference's, verbatim */
     if (SESSION.role !== 'admin') return HOOKS.toast('View only — ask a scheduler to add this', 'warn')
+    /* the calendar asks for a pick and the readout says so — accepting the
+       click anyway and quietly dating it Monday was a trap */
+    if (!start) return HOOKS.toast('Pick a start date on the calendar first', 'warn')
     const date = fmt(start), endDate = end && fmt(end) !== date ? fmt(end) : undefined
     /* timing is the owner's ask (Aug 26): the validator reasons in minutes, so
        a timed input carries the times the aircrew actually stated — no more
@@ -97,7 +100,7 @@ export function InputsPage() {
     if (!draft.allday && (s == null || e == null)) return HOOKS.toast('Give the input a start and end time, or tick All day', 'warn')
     if (!draft.allday && (e as number) <= (s as number)) return HOOKS.toast('End time must be after start time', 'warn')
     const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
-    writeInputs(() => {
+    writeInputsBatch(() => {
       /* An ACCEPTED input is linked to the row it created by `src`, a content
          key of person|date|type|s. Editing any of those silently broke the
          link: the row stayed on the programme, undo could no longer find it,
@@ -105,12 +108,17 @@ export function InputsPage() {
          through the real path FIRST, edited, then re-accepted — which also
          moves the row when the date moves it to another day. */
       const wasAcc = r.acc
-      if (wasAcc) unacceptInput(DATES.indexOf(r.date), r)
+      /* the row may sit on any day the input spans, not its start date */
+      const wasDi = wasAcc === 'g' ? acceptedDay(r) : -1
+      if (wasAcc) unacceptInput(wasDi, r)
       r.person = draft.person; r.type = draft.type; r.allday = draft.allday
       r.s = s; r.e = e; r.date = date; r.remarks = draft.remarks.trim(); r.mod = 'now'
       if (endDate) r.endDate = endDate; else delete r.endDate
       if (wasAcc) {
-        const di = DATES.indexOf(r.date)
+        /* put it back on the day it was on, if the edit still covers that day;
+           otherwise its new start date */
+        const keep = wasDi >= 0 && DATES[wasDi] && inputCoversDate(r, DATES[wasDi])
+        const di = keep ? wasDi : DATES.indexOf(r.date)
         if (di >= 0) acceptInput(di, r, wasAcc)
         else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
       }
@@ -120,7 +128,15 @@ export function InputsPage() {
 
   const del = (inx: number) => {
     if (SESSION.role !== 'admin') return HOOKS.toast('View only — ask a scheduler to remove this', 'warn')
-    writeInputs(() => INPUTS.splice(inx, 1))
+    const r = INPUTS[inx]
+    /* deleting an ACCEPTED input used to leave its ground row on the programme
+       for good — nothing pointed at it any more, so it could never be removed
+       and it still printed and validated as a real commitment */
+    writeInputsBatch(() => {
+      if (r && r.acc) unacceptInput(acceptedDay(r), r)
+      INPUTS.splice(inx, 1)
+      if (editRow === r) { setEditRow(null); setDraft(null) }
+    })
   }
 
   let rows = INPUTS.slice()

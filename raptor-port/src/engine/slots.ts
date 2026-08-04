@@ -3,6 +3,7 @@ import { PEOPLE, nameToId, ID_BY_CS } from './people'
 import { SCHED, markEdit } from './publish'
 import { parseHM, hhmm } from './time'
 import { isUnavail, inpLabel } from './inputs'
+import { shiftKeys } from './keys'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -265,11 +266,37 @@ export function acceptInput(di:any,inp:any,dest:any){
   noteChange(`g:${di}.${ri}`);
   return true;
 }
+/* Which day carries the row this input was accepted onto, or -1. The row does
+   NOT record its day, and the caller cannot infer it: a multi-day input
+   renders an Accept button on every day it spans, so it may have been accepted
+   onto any of them — the start date is a guess that silently misses. */
+export function acceptedDay(inp:any){
+  if(!inp||inp.acc!=='g')return -1;
+  const key=inpKey(inp);
+  for(let i=0;i<DAYS.length;i++){
+    const g=(DAYS[i]||{}).ground;
+    if(g&&g.some((r:any)=>r.src===key))return i;
+  }
+  return -1;
+}
 export function unacceptInput(di:any,inp:any){
-  const d=DAYS[di]; if(!d||!inp||!inp.acc)return false;
-  if(inp.acc==='g'&&d.ground&&d.ground.length){
-    const key=inpKey(inp), i=d.ground.findIndex((r:any)=>r.src===key);
-    if(i>=0)d.ground.splice(i,1);
+  if(!inp||!inp.acc)return false;
+  if(inp.acc==='g'){
+    /* search by content key across the week rather than trusting di — see
+       acceptedDay. Guessing the day left the real row orphaned on another day
+       AND let the next accept push a duplicate. */
+    const key=inpKey(inp);
+    for(let d2=0;d2<DAYS.length;d2++){
+      const g=(DAYS[d2]||{}).ground; if(!g||!g.length)continue;
+      const i=g.findIndex((r:any)=>r.src===key);
+      if(i<0)continue;
+      g.splice(i,1);
+      /* every other ground delete renumbers the key space (see board.ts's
+         grdel). Skipping it slid every g:/gr: mark after the cut onto the
+         wrong row — permanently, including inside an issued AL's keys. */
+      [`g:${d2}.`,`gr:${d2}.`].forEach((h:any)=>shiftKeys(h,0,i));
+      break;
+    }
   }
   delete inp.acc;
   /* markEdit with NO key: the address we just removed must not be re-marked,

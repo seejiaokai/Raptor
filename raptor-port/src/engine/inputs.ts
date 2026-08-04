@@ -86,8 +86,21 @@ export let INPUTS:any[]=[
   {person:'yeti',  date:'Jul 13', allday:false, s:600, e:660, type:'Appointment', remarks:'HSP blood panel',mod:'2026-07-12'},
 ];
 export const DATES=['Jul 13','Jul 14','Jul 15','Jul 16','Jul 17','Jul 18','Jul 19'];  // Mon..Sun index → date label
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+/* 'Jul 18' → 718, a sortable ordinal. Spans used to be compared through
+   DATES.indexOf, which returns -1 for any date outside the loaded week: a
+   detachment running Jul 15→24 then covered NO day at all and the man read as
+   available all week. Comparing the dates themselves clamps at both ends and
+   does not care whether an endpoint is in the week. */
+export function dateOrd(lbl:any){
+  const p=String(lbl==null?'':lbl).trim().split(/\s+/);
+  const m=MONTHS.indexOf(p[0]), d=+p[1];
+  return (m<0||!isFinite(d))?null:(m+1)*100+d;
+}
 export function inputCoversDate(inp:any,dt:any){
-  if(inp.endDate){return DATES.indexOf(dt)>=DATES.indexOf(inp.date)&&DATES.indexOf(dt)<=DATES.indexOf(inp.endDate);}
-  return inp.date===dt;
+  if(!inp.endDate)return inp.date===dt;
+  const t=dateOrd(dt), a=dateOrd(inp.date), b=dateOrd(inp.endDate);
+  if(t==null||a==null||b==null)return false;
+  return t>=a&&t<=b;
 }
 
