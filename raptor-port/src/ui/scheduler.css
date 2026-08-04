@@ -402,6 +402,9 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .day-head .dstat{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:8px}
 .day-head .dal{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
   letter-spacing:.06em;color:#08131b;background:var(--alc,var(--accent));padding:1px 6px;border-radius:5px}
+/* a day rolled back to the Original — grey on purpose: the bare .dal fallback
+   is --accent, which is AL1's cyan, and ORIG must never read as AL1 */
+.day-head .dal.orig{background:var(--ink-3)}
 .day-head .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
   border:1px solid rgba(229,194,74,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
 /* PUBLISH DAY is the primary action on a day, so it wears the same blue as the
@@ -678,14 +681,23 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
   background:var(--panel-2);padding:3px 4px 3px 10px;position:relative}
 .sgn>.k{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.07em;
   font-size:10px;font-weight:800;color:var(--ink-3);white-space:nowrap}
-.sgn>select{appearance:none;-webkit-appearance:none;background:transparent;border:0;color:var(--ink-3);
-  font-family:inherit;font-size:11.5px;font-weight:700;padding:2px 18px 2px 4px;border-radius:999px;
-  cursor:pointer;min-width:74px;outline:none}
+/* the select is stretched invisibly over the WHOLE pill: iOS Safari does not
+   open a select from a tap on its wrapping label, so with the visible select
+   only covering the name, the role label was dead space on the phone (owner
+   report, Aug 26). The .v span underneath is the visible value; it mirrors the
+   old select's text metrics exactly so pill geometry (and the 820px wrap) is
+   unchanged. font-size 16px on the control stops iOS zooming on focus — the
+   control is invisible, so its own text size is otherwise irrelevant. */
+.sgn>select{position:absolute;inset:0;width:100%;height:100%;opacity:0;appearance:none;
+  -webkit-appearance:none;border:0;margin:0;padding:0;cursor:pointer;font-size:16px;outline:none}
+.sgn>.v{font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink-3);
+  padding:2px 18px 2px 4px;min-width:74px;white-space:nowrap}
+.sgn:focus-within{border-color:var(--accent)}
 .sgn::after{content:'▾';position:absolute;right:9px;font-size:9px;color:var(--ink-3);pointer-events:none}
 .sgn.sch>.k::after{content:'✦';margin-left:3px;color:var(--san);font-size:8px;vertical-align:top}
 .sgn.on{border-color:rgba(87,201,122,.6);background:rgba(87,201,122,.12)}
 .sgn.on>.k{color:#A8E6BC}
-.sgn.on>select{color:#DFF6E7}
+.sgn.on>.v{color:#DFF6E7}
 .sgn.on::after{color:#A8E6BC}
 .signoff .so-state{margin-left:auto;font-size:10.5px;font-weight:700;white-space:nowrap}
 .signoff .so-state.no{color:var(--adv)}
@@ -715,7 +727,7 @@ body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
 .signoff.day-sign .so-h{font-size:8.5px;letter-spacing:.08em;flex:0 0 100%;margin:0 0 1px}
 .signoff.day-sign .sgn{padding:2px 3px 2px 7px;gap:4px;flex:1 1 auto;min-width:0}
 .signoff.day-sign .sgn>.k{font-size:9px}
-.signoff.day-sign .sgn>select{font-size:10.5px;min-width:52px;padding:1px 15px 1px 3px}
+.signoff.day-sign .sgn>.v{font-size:10.5px;min-width:52px;padding:1px 15px 1px 3px}
 .signoff.day-sign .sgn::after{right:6px;font-size:8px}
 .signoff.day-sign .so-state{flex:0 0 100%;margin-left:0;font-size:9.5px;padding-top:1px}
 .signoff.day-sign button.so-clear{padding:2px 6px;font-size:9.5px}

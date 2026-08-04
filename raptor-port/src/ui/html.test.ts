@@ -9,6 +9,7 @@ import { DAYS } from '../engine/data'
 import { validate } from '../engine/validate'
 import { dayHTML, dayPreviewHTML, withDaySnap, legendHTML } from './html'
 import { SCHED, signOf, setDayApproved, alIssue } from '../engine/publish'
+import { restoreDayVersion } from '../engine/restore'
 import { txtSet, txtGet } from '../engine/slots'
 import { setDayPreview, DPREV } from '../state/view'
 
@@ -35,11 +36,26 @@ describe('view-week markup parity with the reference', () => {
     })
   })
 
-  it('the edit-mode markup is byte-identical too', () => {
+  it('the edit-mode markup is byte-identical too (minus the sign-off strip)', () => {
+    /* THE one deliberate divergence from the reference: the sign-off pills
+       carry an extra .v value span so the select can stretch invisibly over
+       the whole pill (iPhone Safari won't open a select from a label tap —
+       owner request, Aug 26). Excise the strip from both sides — signoffHTML
+       nests no <div>, so the lazy match ends at the strip's own close — and
+       pin the new pill structure separately below. */
+    const noSign = (s: string) => s.replace(/<div class="signoff day-sign"[\s\S]*?<\/div>/, '')
     DAYS.forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
-      expect(dayHTML(di, true), 'day ' + di).toBe(ref)
+      expect(noSign(dayHTML(di, true)), 'day ' + di).toBe(noSign(ref))
     })
+  })
+
+  it('the sign-off pill: label + visible value + the full-pill select', () => {
+    const h = dayHTML(0, true)
+    /* each of the four pills wraps k-label, v-value and its select, in order */
+    const pills = h.match(/<label class="sgn[^"]*"[^>]*><span class="k">[^<]*<\/span><span class="v">[^<]*<\/span><select data-sign=/g) || []
+    expect(pills.length).toBe(4)
+    expect(h).toContain('<span class="v">— name —</span>')   // unsigned placeholder
   })
 
   it('the legend is byte-identical', () => {
@@ -64,6 +80,34 @@ describe('version dropdown and preview build', () => {
     setDayPreview(0, 'orig')
     expect(dayHTML(0, true, true)).toMatch(/value="orig" selected/)
     setDayPreview(0, null)
+  })
+
+  it('the day head wears ONE chip — the current version, on view and edit alike', () => {
+    /* state from the previous test: day 0 published, AL1 issued */
+    for (const ed of [false, true]) {
+      const h = dayHTML(0, ed)
+      expect((h.match(/class="dal[ "]/g) || []).length).toBe(1)
+      expect(h).toContain('data-alc="1"')
+    }
+    /* a second AL replaces the chip, it does not join it */
+    txtSet('dn:0.1', 'AL2 CHANGE'); sgn(0); alIssue(2, ['dn:0.1'])
+    const h2 = dayHTML(0, false)
+    expect((h2.match(/class="dal[ "]/g) || []).length).toBe(1)
+    expect(h2).toContain('>AL2<')
+    expect(h2).not.toContain('>AL1<')
+    /* rolled back to the Original while ALs exist → the grey ORIG chip */
+    restoreDayVersion(0, 'orig')
+    const h3 = dayHTML(0, false)
+    expect(h3).toContain('class="dal orig"')
+    expect(h3).toContain('>ORIG<')
+    /* roll forward again so the next tests see AL1's world */
+    restoreDayVersion(0, 1)
+  })
+
+  it('a published day with no ALs anywhere shows no chip at all', () => {
+    sgn(1); setDayApproved(1, 1)
+    expect(dayHTML(1, false)).not.toContain('class="dal')
+    setDayApproved(1, 0)
   })
 
   it('the preview shows the frozen day, read-only, wearing its frozen marks', () => {
@@ -93,7 +137,7 @@ describe('version dropdown and preview build', () => {
     /* leave the file's shared state as the next suite expects */
     txtSet('dn:0.0', 'EP: AB BURN THROUGH ON TAKE OFF')
     SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []
-    SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}
+    SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
     DPREV.clear()
   })
 })

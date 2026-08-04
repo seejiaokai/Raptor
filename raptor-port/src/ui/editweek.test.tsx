@@ -165,10 +165,12 @@ describe('the edit page (tfin)', () => {
 
   /* the version dropdown: publish → edit → preview a version → restore it.
      Driven through the real surfaces: the day-head <select> via the document
-     change listener, the restore button via routeClick. */
-  it('version dropdown previews a published version and restores it', async () => {
-    await signDay(0)
-    await click(dayBtn(0))                     // publish Monday → Original stamped
+     change listener, the restore button via routeClick. Restore is a ROLLBACK:
+     the version becomes live at once, the edit is discarded, nothing pends. */
+  it('version dropdown previews a published version and rolls back to it', async () => {
+    /* Monday is still published from the publish-day test above — dayBtn would
+       TOGGLE it back to draft. Publish only if some earlier state changed. */
+    if (!dayApproved(0)) { await signDay(0); await click(dayBtn(0)) }
     const key = '0.0.0.0.p', before = slotVal(key)
     await act(async () => { writeSlot(key, 'casper') })
     const sel = $(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement
@@ -186,11 +188,50 @@ describe('the edit page (tfin)', () => {
     expect($$('#vWeek select[data-dver]').length).toBe(0)   // view page never gets it
     await click(day().querySelector('.dprev-restore'))
     expect(day().className).not.toContain('preview')
-    expect(slotVal(key)).toBe(before)          // the restore reverted the seat
-    expect(SCHED.pending[key]).toBe(1)         // as a pending edit, not a rewrite
+    expect(slotVal(key)).toBe(before)          // the rollback reverted the seat
+    expect(SCHED.pending[key]).toBeUndefined() // discarded, not re-pended
+    expect(Object.keys(SCHED.pending)).toEqual([])
+    expect(dayApproved(0)).toBe(true)          // the day stays published
     /* put the file's shared state back */
     await act(async () => {
-      SCHED.pending = {}; SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}
+      SCHED.pending = {}; SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}; SCHED.cur = {}
+      notify()
+    })
+  })
+
+  /* the chip lifecycle end-to-end: AL1 chip on issue → grey ORIG after a
+     rollback to the Original → a fresh edit previews as the next AL (AL2) */
+  it('the day head chip follows the current version through a rollback', async () => {
+    await signDay(0)
+    await click(dayBtn(0))                     // publish → no chip yet (no ALs)
+    expect($(`#eWeek .day[data-day="0"] .dal`)).toBeNull()
+    const key = '0.0.0.0.p'
+    await act(async () => { writeSlot(key, 'casper') })
+    await signDay(0)
+    await click($(`#eWeek button[data-alpub="0"]`))         // AL1 goes out
+    const chip = () => $(`#eWeek .day[data-day="0"] .dal`)
+    expect(chip(), 'chip after AL1').toBeTruthy()
+    expect(chip()!.textContent).toBe('AL1')
+    expect($$(`#eWeek .day[data-day="0"] .dal`).length).toBe(1)
+    /* roll back to the Original through the real preview surface */
+    const sel = $(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement
+    await act(async () => {
+      sel.value = 'orig'
+      sel.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    await click($(`#eWeek .day[data-day="0"] .dprev-restore`))
+    expect(chip()!.classList.contains('orig'), 'grey ORIG chip').toBe(true)
+    expect(chip()!.textContent).toBe('ORIG')
+    expect(Object.keys(SCHED.pending)).toEqual([])          // rollback pends nothing
+    /* a NEW edit after the rollback previews as the next AL */
+    await act(async () => { writeSlot(key, 'casper') })
+    const seat = $(`#eWeek .seat[data-slot="${key}"]`)
+    expect(seat!.getAttribute('data-aln')).toBe('2')
+    /* put the file's shared state back */
+    await act(async () => {
+      writeSlot(key, '')
+      SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.al = 0
+      SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}; SCHED.cur = {}
       notify()
     })
   })

@@ -55,7 +55,7 @@ standalone wave also removes its duty block (`d:`/`dr:`/`dl:` keys).
 
 ## Publishing / amendments
 
-`SCHED = {al, pending, changes, als, dayOK, sign}`. Four sign-offs per day
+`SCHED = {al, pending, changes, als, dayOK, sign, orig, cur}`. Four sign-offs per day
 (`SIGN_ROLES`) → "Publish day" clears that day's pending and spends its
 signatures. Later edits become pending; "Publish AL n" stamps `{n, keys,
 sign, days, n0}` — `days`/`n0` are stamped at issue time and NEVER
@@ -77,16 +77,40 @@ and `unpublishAL` with the state they belong to. `daySnapOf(di, ver)`
 (`'orig'` | AL number) and `dayVersions(di)` derive options from live
 records — orphan-safe by construction. Session-only, like the AL list.
 
+**The current version.** `SCHED.cur = {di: 'orig'|n}` — which version each
+day is showing. Stamped only by `alIssue` (cur = n for covered days) and
+`restoreDayVersion` (cur = the restored version). Read through
+`dayCurVer(di)`: the stamp counts only while its snapshot still exists,
+else it falls back to the newest **issue** with a snap for the day (array
+order — `publishAL` can issue a lower number after a higher was freed),
+then `'orig'`, then `null`. That derivation is the orphan guard — a stale
+`cur` after `unpublishAL` or an undo is inert, no cleanup pass exists.
+The day-head shows ONE chip from it (grey ORIG when rolled back to the
+Original while ALs exist; no chip on a published day no AL ever touched);
+the ⓘ panel keeps the full historical AL list.
+
 `restoreDayVersion(di, ver)` (engine/restore.ts — its own module because
-slots.ts already imports publish.ts): replaces `DAYS[di]` with a clone of
-the snapshot (live `today` flag kept), then diff-marks via the `dayKeys`
-walker — every key whose value moved becomes **pending** and loses any
-published colour; equal keys keep their AL marks; keys existing only in
-the live day (rows the restore removed) get NO mark (the delete rule).
-Returns false for a missing version, else the pending count (0 = nothing
-differed). It pushes NO history and calls NO reflow — the UI caller's
-`afterSchedMutate()` is the single undo step. Restore is an amendment,
-never a rewrite: the reverted content publishes as the next AL.
+slots.ts already imports publish.ts) is a **ROLLBACK**, owner decision
+Aug 26: the version becomes the live document immediately. It replaces
+`DAYS[di]` with a clone of the snapshot (live `today` flag kept), wipes
+the day's `changes` slice and installs the snapshot's own (`snap.c`) so
+the day wears exactly its issued marks, **discards** the day's pending
+edits, and stamps `SCHED.cur[di]`. Nothing pends; no sign-off is needed
+or spent; `dayOK`/`orig`/`als` are untouched, so later ALs keep their
+dropdown entries and `nextAL()` keeps counting up. Returns false for a
+missing version, else the number of pending edits discarded (0 is the
+common case, and the toast reports the count). It pushes NO history and
+calls NO reflow — the UI caller's `afterSchedMutate()` is the single undo
+step. New edits after a rollback are ordinary pending and publish as
+`nextAL()`. Corner case: unpublishing the AL a day was rolled back TO
+orphans its snapshot — `dayCurVer` falls back and that AL's keys on the
+day return to pending (self-describing on screen: fallback chip plus a
+pending count, one undo away). Unpublishing a LATER AL does not re-pend a
+rolled-back day: the rollback already overwrote its `changes` slice.
+
+The `dayKeys` walker stays although the rollback no longer diffs — it is
+the executable documentation of the slot-key grammar and probe-bridge
+exports it.
 
 ## Auth / roles
 
@@ -98,5 +122,6 @@ The login is a prototype gate, not security — the deployed app is public.
 ## History
 
 `histSnap()` serialises `{DAYS, INPUTS, changes, pending, als, al, dayOK,
-sign}`; undo/redo restores wholesale. Publishing is its own undo step. Undo
-is refused while focus is in an editable field.
+sign, orig, cur}` (`o`/`cv` fields); undo/redo restores wholesale.
+Publishing is its own undo step, and so is a rollback. Undo is refused
+while focus is in an editable field.

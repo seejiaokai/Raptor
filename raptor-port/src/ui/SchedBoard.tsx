@@ -117,7 +117,7 @@ export function SchedBoard() {
          never validated, so live warnings against it would be nonsense */
       set(warnRef.current!, 'warn',
         `<div class="dprev-bar"${ver !== 'orig' ? ` style="--alc:${alColor(+ver)}"` : ''}>Viewing <b>${verLabel(ver)}</b> as issued — read-only`
-        + `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${ver}" title="Copy this version back as pending edits — publish them as the next AL">Restore this version</button></div>`)
+        + `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${ver}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button></div>`)
     } else {
       set(boardRef.current!, 'board', boardHTML(di))
       set(warnRef.current!, 'warn', boardWarnHTML(di))

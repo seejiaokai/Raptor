@@ -65,9 +65,37 @@ becomes the preview banner. Belt-and-braces gates on stale markup:
 `armSlot`, `boardChange`/`boardMbtn`/`boardArmClick`, `dragFrom`
 (`.preview`/`.pv-frozen`), Shell's contextmenu clear. Previews are pruned
 lazily (EditWeek/SchedBoard), on `histApply`, and on week switch. The
-`data-restore` button routes through `routeClick` → `restoreDayVersion`.
+`data-restore` button routes through `routeClick` → `restoreDayVersion` —
+a ROLLBACK: the version becomes live at once, discarding the day's pending
+edits (see engine-rules.md). Restoring the version the day is already at
+with nothing pending is a no-op toast, no history step. Under a preview
+the day-head chip still names the LIVE current version while the banner
+names the previewed one — deliberate ("live is at AL2, you're viewing
+AL1").
 Known limitation: personal-INPUTS sections and the day-info pop show LIVE
 data inside a preview — inputs are not part of the issued document.
+
+## The day-head version chip
+
+One `.dal` chip per day = `dayCurVer(di)`, everywhere (view page, edit
+week; the board has no chips). `data-alc` tints it; `ORIG` is `.dal.orig`,
+grey by design — the bare `.dal` fallback colour is `--accent`, which is
+AL1's cyan, and ORIG must never read as AL1. No chip on a published day no
+AL ever touched. The full "which ALs amended this day" history lives only
+in the ⓘ day-info panel.
+
+## Sign-off pills (iOS tap contract)
+
+Each `.sgn` pill = `.k` role label + `.v` visible value + a `<select
+data-sign>` stretched invisibly over the whole pill (absolute inset:0,
+opacity:0, font-size 16px so iOS never zooms on focus). iPhone Safari does
+not open a select from a tap on its wrapping label, so the select itself
+must cover every tappable pixel — do not shrink it back. `.v` mirrors the
+old select's text metrics so pill geometry and the 820px wrap are
+unchanged; it re-renders on reflow, which is what updates the shown name
+after a change. This is the ONE deliberate markup divergence from the
+reference; `html.test.ts` excises the strip from the edit-mode byte-parity
+assertion and pins the pill structure separately.
 
 ## Drag / arm-and-plant (hard-won — test on touch)
 

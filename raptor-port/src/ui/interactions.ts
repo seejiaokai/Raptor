@@ -6,7 +6,7 @@
 import { slotVal } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, nextAL, verLabel } from '../engine/publish'
+import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
 import { restoreDayVersion } from '../engine/restore'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -51,22 +51,30 @@ export function routeClick(e: MouseEvent) {
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
     publishALDay(+alp.dataset.alpub!); notify(); return
   }
-  /* restore a previewed version — the revert is ordinary pending edits that go
-     out as the next AL, never a rewrite of what was already issued */
+  /* restore a previewed version — a ROLLBACK: that version becomes the live
+     document immediately, marks and all. Unpublished edits on the day are
+     discarded (the toast says how many); later ALs keep their records. No
+     confirm dialog — the app has none anywhere, and undo is one step. */
   const rst = t.closest('button[data-restore]') as HTMLElement | null
   if (rst) {
     e.stopPropagation()
     if (!canEditSched() || !(view.CURPAGE === 'editsched' || view.SBDAY != null)) return
     const di = +rst.dataset.restore!
     const ver = rst.dataset.rver === 'orig' ? 'orig' : +rst.dataset.rver!
-    if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the restore may remove the armed row
-    const n = restoreDayVersion(di, ver)
+    /* already the current version with nothing pending — close the preview
+       without a history step */
+    if (String(dayCurVer(di)) === String(ver) && dayPendCount(di) === 0) {
+      view.setDayPreview(di, null)
+      HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver)}`)
+      notify(); return
+    }
+    if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the rollback may remove the armed row
+    const dropped = restoreDayVersion(di, ver)
     view.setDayPreview(di, null)
-    if (n === false) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
+    if (dropped === false) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
     view.afterSchedMutate()
-    HOOKS.toast(n === 0
-      ? `${DAYS[di].dow} already matches ${verLabel(ver)} — nothing to publish`
-      : `${DAYS[di].dow} restored to ${verLabel(ver)} — ${n} change${n === 1 ? '' : 's'} pending · publish as AL${nextAL()}`)
+    HOOKS.toast(`${DAYS[di].dow} rolled back to ${verLabel(ver)} — this is now the live schedule`
+      + (dropped ? ` · ${dropped} unpublished edit${dropped === 1 ? '' : 's'} discarded` : ''))
     notify(); return
   }
 

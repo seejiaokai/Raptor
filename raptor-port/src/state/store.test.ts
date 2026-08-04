@@ -4,7 +4,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
-import { SCHED, signOf, dayApproved, setDayApproved, publishALDay, unpublishAL, daySnapOf } from '../engine/publish'
+import { SCHED, signOf, dayApproved, setDayApproved, publishALDay, unpublishAL, daySnapOf, dayCurVer } from '../engine/publish'
 import { restoreDayVersion } from '../engine/restore'
 import { slotVal, txtGet } from '../engine/slots'
 import { shiftKeys } from '../engine/keys'
@@ -109,18 +109,24 @@ describe('undo / redo (tfin, through the store)', () => {
     expect(daySnapOf(0, 'orig')).toBeTruthy()
   })
 
-  it('a restore is one undo step', () => {
+  it('a rollback is one undo step, and dayCurVer rides the stack', () => {
     sign(0)
     setDayApproved(0, true)
     const key = '0.0.0.0.p', before = slotVal(key)
     writeSlot(key, 'casper')
-    /* the routeClick body: restore, then the one afterSchedMutate */
+    /* the routeClick body: rollback, then the one afterSchedMutate */
     restoreDayVersion(0, 'orig')
     view.afterSchedMutate()
     expect(slotVal(key)).toBe(before)
-    expect(SCHED.pending[key]).toBe(1)
+    expect(SCHED.pending[key]).toBeUndefined()   // discarded, not re-pended
+    expect(dayCurVer(0)).toBe('orig')
     undo()
-    expect(slotVal(key)).toBe('casper')   // one step back = the pre-restore state
+    expect(slotVal(key)).toBe('casper')   // one step back = the pre-rollback state
+    expect(SCHED.pending[key]).toBe(1)    // the discarded edit is pending again
+    /* the cur stamp itself rides the stack: gone on undo, back on redo */
+    expect(SCHED.cur[0]).toBeUndefined()
+    redo()
+    expect(SCHED.cur[0]).toBe('orig')
   })
 
   it('personal inputs join the undo stack', () => {
