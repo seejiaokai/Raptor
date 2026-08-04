@@ -58,11 +58,15 @@ export function routeClick(e: MouseEvent) {
   }
 
   /* an EMPTY slot arms itself in edit mode; a FILLED puck falls through to
-     the ordinary selection below (reference 2522-2526) */
+     the ordinary selection below (reference 2522-2526). The ARMED element is
+     let through the emptiness guard: arm an empty cell, then fill its row by
+     drag instead of a palette tap, and the guard used to make the ring
+     untouchable — armSlot's own tap-again-to-put-down could never run, and a
+     phone (no Escape key, no blank space to tap) wore the ring forever. */
   const slot = t.closest('.seat[data-slot],[data-fill]') as HTMLElement | null
   if (slot && HOOKS.editMode() && !t.closest('.puck[data-person]')) {
     const key = slot.dataset.slot || slot.dataset.fill
-    if (key && !slotVal(String(key).replace(/\.\+$/, ''))) {
+    if (key && (view.armedKey() === key || !slotVal(String(key).replace(/\.\+$/, '')))) {
       view.armSlot(key, slot); notify(); e.stopPropagation(); return
     }
   }

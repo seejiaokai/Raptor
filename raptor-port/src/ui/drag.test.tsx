@@ -7,9 +7,9 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
-import { slotVal, setSlotVal, rowCrew } from '../engine/slots'
+import { slotVal, setSlotVal, rowCrew, fillSlot } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
-import { setEditOn, afterSchedMutate } from '../state/view'
+import { setEditOn, afterSchedMutate, armedKey } from '../state/view'
 import { dragFrom, applyDrop, setDrag } from './drag'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -224,6 +224,47 @@ describe('applyDrop contracts (B23 / B49)', () => {
     const list = f.filter(k => /^[dgs]:/.test(k))
     expect(list.length).toBeGreaterThanOrEqual(6)
     expect(list.every(k => /\.\+$/.test(k))).toBe(true)
+  })
+})
+
+/* the phone trap (owner report, Aug 26): arm an empty programme cell, then
+   fill its row by DRAG instead of a palette tap. The ring used to be
+   permanent on a phone — the emptiness guard blocked armSlot's tap-again
+   toggle once the row had people, the drop never put the arm down, and the
+   reference's Escape hatch (ref 4201) had been lost in the port. */
+describe('a stale arm always has a way down', () => {
+  const emptyCell = () => $$('#eWeek [data-fill^="a:0."]').find(c => !c.querySelector('.puck[data-person]'))!
+  const clearAdded = async (key: string, id: string) => {
+    const seat = $$(`#eWeek [data-fill="${key}"] .seat[data-slot]`).find(s => slotVal(s.dataset.slot!) === id)!
+    setSlotVal(seat.dataset.slot!, ''); await act(async () => { afterSchedMutate(); notify() })
+  }
+
+  it('a drop that lands on the armed cell puts the arm down', async () => {
+    const cell = emptyCell(); await click(cell)
+    const key = cell.dataset.fill!
+    expect(armedKey()).toBe(key)
+    setDrag({ kind: 'roster', id: 'casper' })
+    await act(async () => { applyDrop(cell, 0, 0); notify() })
+    expect(armedKey()).toBe('')
+    await clearAdded(key, 'casper')
+  })
+
+  it('the armed cell answers the put-me-down tap even once its row is filled', async () => {
+    const cell = emptyCell(); await click(cell)
+    const key = cell.dataset.fill!
+    expect(armedKey()).toBe(key)
+    await act(async () => { fillSlot(key, 'casper'); afterSchedMutate(); notify() })
+    expect(armedKey()).toBe(key)               // the fill alone leaves the arm up
+    await click($(`#eWeek [data-fill="${key}"]`))
+    expect(armedKey()).toBe('')
+    await clearAdded(key, 'casper')
+  })
+
+  it('Escape puts an armed slot down — the reference hatch, restored', async () => {
+    const cell = emptyCell(); await click(cell)
+    expect(armedKey()).toBe(cell.dataset.fill)
+    await act(async () => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })) })
+    expect(armedKey()).toBe('')
   })
 })
 
