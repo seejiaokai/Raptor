@@ -12,23 +12,25 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',OCU_NO_IP:'OCU without IP',CREW_REST:'Crew rest (<{crewRest})',QUAL:'Qualification — illegal seat',
   NO_BRIEF:'No time for the flight brief',DEBRIEF:'No time for the flight debrief',SIM_BRIEF:'No time for the sim brief',SIM_DEBRIEF:'No time for the sim debrief',
   CREW_TIGHT:'Tight turning — crew rest',LONGDAY:'Long work day',DT_SUM:'Double turning',
+  DAYS_RUN:'No break day — too many days in a row',
   SC_QUAL:'SC currency — wrong shift',AAR_QUAL:'AAR currency — not qualified',
   SHIFT_SOFT:'On shift — also down for a ground event'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
    at 9px on a phone, so the glyphs are short: R for crew rest, B for either
    brief, D for either debrief, L for a long day. */
-export const CHIP_TEXT:any={DT:'DT',TT:'TT',C:'C',A:'A',Q:'Q',CR:'R',NB:'B',SB:'B',DB:'D',SD:'D',LD:'L'};
+export const CHIP_TEXT:any={DT:'DT',TT:'TT',C:'C',A:'A',Q:'Q',CR:'R',RUN:'7',NB:'B',SB:'B',DB:'D',SD:'D',LD:'L'};
 export const chipText=(c:any)=>CHIP_TEXT[c]||c;
 /* Which flag a puck shows when a person has more than one on the day. Highest
    wins. Order set by the squadron: qual → conflict → crew rest → no flight brief
    → no flight debrief → no sim brief → no sim debrief → advisory → tight turn →
    double turn → long work day. Module scope, not inside validate(), so the Logic
    tab can print the real ordering rather than a second copy of it. */
-export const RANK:any={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CR:8,C:9,Q:10};
+export const RANK:any={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CR:8,RUN:9,C:10,Q:11};
 export const CHIP_LABEL:any={DT:'Double turn',TT:'Tight turn',C:'Conflict (two events at once)',
   A:'Advisory — on shift and also down for a ground event or programme item',CR:'Crew rest breach (<{crewRest})',Q:'Qualification — illegal seat',
-  NB:'No time for the flight brief',DB:'No time for the flight debrief',SB:'No time for the sim brief',SD:'No time for the sim debrief',LD:'Long work day (>{longDay})'};
+  NB:'No time for the flight brief',DB:'No time for the flight debrief',SB:'No time for the sim brief',SD:'No time for the sim debrief',LD:'Long work day (>{longDay})',
+  RUN:'No break day — too many days on the programme in a row'};
 export const SEVWORD:any={hard:'Warning',adv:'Advisory',note:'Note'};
 /* A label may quote a live threshold: {crewRest} prints whatever crew rest is
    set to right now. Without this an edited rule leaves stale numbers behind in
@@ -55,6 +57,23 @@ export function validate(){
   const markRing=(di:any,id:any,s:any)=>{sev[di]=sev[di]||{}; const c=sev[di][id]; if(!c||SEVR[s]>SEVR[c])sev[di][id]=s;};
   const markChip=(di:any,id:any,c:any)=>{chip[di]=chip[di]||{}; if(!chip[di][id]||RANK[c]>RANK[chip[di][id]])chip[di][id]=c;};
   const dur=(m:any)=>`${Math.floor(m/60)}h${String(Math.round(m%60)).padStart(2,'0')}`;
+  /* CONSECUTIVE WORKING DAYS (owner, Aug 26) — nobody may be on the programme
+     more than VCONF.maxRun days without a break day. Counted in day order off
+     day.events, which is every kind of tasking there is: a flight, a duty
+     post, a sim, a ground item, a programme row. Leave and downchits are not
+     tasking, so a day off breaks the run exactly as it should. Computed in one
+     pass up front because a run is a property of the WEEK, not of a day, and
+     the per-day loop below can then just read the number off. */
+  const RUNLEN:any[]=[]; {
+    const run:any={};
+    ev.forEach((day:any,i:any)=>{
+      const on=new Set<any>();
+      (day.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))on.add(e.id); });
+      Object.keys(run).forEach((id:any)=>{ if(!on.has(id))run[id]=0; });   // a clear day resets it
+      const m:any={}; on.forEach((id:any)=>{ m[id]=run[id]=(run[id]||0)+1; });
+      RUNLEN[i]=m;
+    });
+  }
   ev.forEach((day:any,idx:any)=>{
     const di=day.di, ws:any[]=[], seen=new Set();
     /* publish this day's events for the crew picker (see dayEvents) */
@@ -224,6 +243,14 @@ export function validate(){
       const span=e-s;
       if(span>VCONF.longDay){markChip(di,id,'LD');markRing(di,id,'note');
         add('note','LONGDAY',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} has a long work day: ${dur(span)} (${hm24(s)} → ${hm24(e)})`);}
+    });
+    /* the run breaks its limit ON this day, which is the day the scheduler has
+       to clear — so that is where the flag lands */
+    Object.keys(RUNLEN[idx]||{}).forEach((id:any)=>{
+      const n=RUNLEN[idx][id];
+      if(n>VCONF.maxRun){
+        markChip(di,id,'RUN'); markRing(di,id,'hard');
+        add('hard','DAYS_RUN',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`);}
     });
     /* ---- crew rest across the day boundary -------------------------------
        12h clear from the previous day's last commitment. A sortie's day ends at

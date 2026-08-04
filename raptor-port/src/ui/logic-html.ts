@@ -90,6 +90,8 @@ export function lgRules(){
      t:()=>`<b>Double turning</b> — <b>two or more sorties in one day</b> — raises one Advisory line at the head of the day naming everyone who is on it, matching the amber DT pucks. Double turning is routine and planned, not an error.<span class="why">There is no span test: a man on two sorties is double turning whether they are back to back or a whole day apart. How tight the gap is belongs to the tight-turn rule.</span>`},
     {sev:'note',code:'LONGDAY',set:['longDay'],src:()=>`VCONF.longDay ${VCONF.longDay}`,
      t:()=>`More than ${lgV(lgT(VCONF.longDay))} on the books, first commitment to last, is a <b>long work day</b> — a grey note, not a warning.`},
+    {sev:'hard',code:'DAYS_RUN',set:['maxRun'],src:()=>`VCONF.maxRun ${VCONF.maxRun}`,
+     t:()=>`Nobody may be on the programme more than <span class="val">${VCONF.maxRun}</span> days in a row — a <b>break day</b> is due. The Warning lands on the day that breaks the limit, which is the day to clear.<span class="why">Every kind of tasking counts: a flight, a duty post, a sim, a ground item, a programme row. Leave and downchits are not tasking, so a day off resets the count.</span>`},
    ]},
 
   {g:'Briefs and debriefs',
