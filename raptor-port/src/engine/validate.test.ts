@@ -133,8 +133,12 @@ describe('validation engine (tfin F)', () => {
   })
 })
 
-describe('an offer is not a commitment (tfin B53 #8)', () => {
-  it('an offer adds nothing where a meeting would', () => {
+/* Was "an offer is not a commitment (tfin B53 #8)". The offer exemption is gone
+   (owner decision, Aug 26) and the reference assertion no longer describes the
+   port: a man who says he is flying elsewhere is not available for this sortie,
+   so Fly now costs exactly what a Meeting costs. */
+describe('every personal input is a commitment, Fly included', () => {
+  it('Fly eats brief/debrief time exactly as a meeting does', () => {
     const d = DAYS[0], ce = collectEvents()[0]
     const id = ((ce.fly || []).find((e: any) => !isSpecial(e.id)) || {}).id
     expect(id).toBeTruthy()
@@ -146,10 +150,10 @@ describe('an offer is not a commitment (tfin B53 #8)', () => {
     }
     const base = validate().all.filter((x: any) => (x.who || []).indexOf(id) >= 0
       && (x.code === 'NO_BRIEF' || x.code === 'DEBRIEF')).length
-    const offer = n('Available fly'), real = n('Meeting')
+    const fly = n('Fly'), meeting = n('Meeting')
     validate()
-    expect(offer).toBe(base)
-    expect(real).toBeGreaterThan(base)
+    expect(fly).toBeGreaterThan(base)
+    expect(fly).toBe(meeting)
   })
 })
 

@@ -1,9 +1,9 @@
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME } from '../engine/people'
-import { INPUTS, inputCoversDate, isOffType, offWord, isLeave, isDownchit } from '../engine/inputs'
+import { INPUTS, inputCoversDate, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
-import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/slots'
+import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
 import { WARN, sevOf, chipOf, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
@@ -161,13 +161,17 @@ export function plRmk(base:any,ed:any,o:any,rmkTxt:any){
 /* free-text planning notes attached to a whole block (currently the Sims block).
    Read-only viewers see the note only when there is one; schedulers always get the
    box so there is somewhere to write before anything has been written. */
-export function simNoteHTML(di:any,d:any,ed:any){
-  const v=d.simnotes||'';
-  if(!v&&!ed)return '';
-  const a=alAttr(`sn:${di}`);
-  return `<div class="blknote-h">Sim planning notes</div>`
-    +(ed&&canEditSched()
-      ? `<div class="blknote ed" contenteditable="true" spellcheck="false" data-txt="sn:${di}"${a}>${esc(v)}</div>`
+/* The scheduler's hand-over note for one block of the day. EDIT AND BOARD ONLY —
+   the view-only week is the ISSUED programme and must not carry working notes,
+   so this returns nothing when ed is false even if the note has text in it
+   (owner request, Aug 26). Reading is still open to any scheduler-side viewer;
+   only writing needs canEditSched(). */
+export function blkNoteHTML(di:any,d:any,ed:any,key:any,field:any){
+  if(!ed)return '';
+  const v=d[field]||'', a=alAttr(`${key}:${di}`);
+  return `<div class="blknote-h">Scheduler notes</div>`
+    +(canEditSched()
+      ? `<div class="blknote ed" contenteditable="true" spellcheck="false" data-txt="${key}:${di}"${a}>${esc(v)}</div>`
       : `<div class="blknote"${a}>${esc(v)}</div>`);
 }
 /* duty display order: SDO, then SXO, then OPS-O, then anything else */
@@ -376,6 +380,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         });
       }
       if(ed&&!hasNotes&&!hasAH)h+=`<div class="ah-empty">Nothing squadron-wide yet — add notes and programme items from the scheduler board.</div>`;
+      h+=blkNoteHTML(di,d,ed,'pn','prognotes');
       h+=`</div>`;
     }
     if(!d.waves||!d.waves.length)
@@ -447,9 +452,12 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=`</div>`;
     });
     // ---- duties by wave (directly below the last flying wave) ----
-    if(d.dutywaves&&d.dutywaves.length){
-      h+=`<div class="sub plist sec sec-duty"><div class="sub-h">Duties</div>`+plCols();
-      d.dutywaves.forEach((dwv:any,wi:any)=>{
+    /* `|| ed` so a day with no duty rows still offers its scheduler-notes box —
+       otherwise deleting the last row would strand text already in the model. */
+    if((d.dutywaves&&d.dutywaves.length)||ed){
+      const dws=d.dutywaves||[];
+      h+=`<div class="sub plist sec sec-duty"><div class="sub-h">Duties</div>`+(dws.length?plCols():'');
+      dws.forEach((dwv:any,wi:any)=>{
         h+=`<div class="pl-sub">${ted(`dl:${di}.${wi}`,dwv.label,ed,'ntx')}</div>`;
         dutySort(dwv.rows).forEach((r:any)=>{
           const ri=dwv.rows.indexOf(r), key=`d:${di}.${wi}.${ri}`;
@@ -457,11 +465,12 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           const n=rowCrew('d',[di,wi,ri]).filter(Boolean).length;
           h+=plRow(r.role,r.str,r.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`dr:${di}.${wi}.${ri}`,'role',ed,r);});
       });
+      h+=blkNoteHTML(di,d,ed,'dtn','dutynotes');
       h+=`</div>`;
     }
     // ---- SIMS category (AMT + OFT), after duties ----
     const sims=d.sims||{};
-    if((sims.amt&&sims.amt.length)||(sims.oft&&sims.oft.length)||d.simnotes||ed){
+    if((sims.amt&&sims.amt.length)||(sims.oft&&sims.oft.length)||ed){
       h+=`<div class="sub plist sec sec-sim"><div class="sub-h">Sims</div>`+plCols();
       const blk=(title:any,kind:any,rows:any)=>{ if(!rows||!rows.length)return'';
         let s=`<div class="pl-sub">${title}</div>`;
@@ -482,28 +491,44 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=blk('AMT','amt',sims.amt)+blk('OFT','oft',sims.oft);
       /* free-text planning notes, at the BOTTOM of the sims block, so whoever plans
          the next sim cycle reads what this scheduler already committed. */
-      h+=simNoteHTML(di,d,ed);
+      h+=blkNoteHTML(di,d,ed,'sn','simnotes');
       h+=`</div>`;
     }
-    // ---- ground programme (scheduler-entered, always shown) ----
-    if(d.ground&&d.ground.length){
-      h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground programme · scheduler</div>`+plCols();
-      d.ground.forEach((x:any,ri:any)=>{const id=nameToId(x.who), key=`g:${di}.${ri}`;
+    /* ---- ground programme (scheduler-entered) ----
+       On the scheduler's side it is one of TWO ground blocks, so it says which
+       one it is. The view-only page sees no personal inputs at all, so there is
+       nothing to distinguish it from and the qualifier would be noise.
+       `|| ed` for the same reason as Duties: the notes box must survive an
+       empty section. */
+    if((d.ground&&d.ground.length)||ed){
+      const grd=d.ground||[];
+      h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground programme${ed?' · scheduler':''}</div>`+(grd.length?plCols():'');
+      grd.forEach((x:any,ri:any)=>{const id=nameToId(x.who), key=`g:${di}.${ri}`;
         const inner=((id&&PEOPLE[id])?lSeat(di,id,key,ed):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+moreSeats(di,key,ed);
         const n=rowCrew('g',[di,ri]).filter(Boolean).length;
         h+=plRow(x.prog,x.str,x.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x);});
+      h+=blkNoteHTML(di,d,ed,'gn','grndnotes');
       h+=`</div>`;
     }
-    // ---- personal inputs (user-entered) grouped into ground / available / office / DNIF / leave ----
+    /* ---- the two input-derived blocks -------------------------------------
+       PERSONAL INPUTS is what aircrew submitted and the scheduler has not yet
+       acted on, so it is scheduler-side only — it never reaches the view page.
+       The scheduler ACCEPTS a row to promote it into the ground programme above
+       (or, for "Other", files it under Unavailable). An accepted row stays here,
+       faded, so the scheduler can see what they have already dealt with and undo
+       it.  UNAVAILABLE is the opposite: leave, downchits and detachments close a
+       man's day on their own, with nobody accepting anything, so it prints on
+       every page. It replaces the old separate Leave and Downchit blocks, and
+       Available / Office are gone entirely (owner request, Aug 26). */
     const dayInputs=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt));
     /* personal-input groups use the SAME columnar grid as duties / sims / ground:
        Name | Start | End | People.  All-day rows span the two time columns. */
-    const inGrp=(title:any,filt:any,cls:any,always?:any)=>{ const rows=dayInputs.filter(filt);
+    const inGrp=(title:any,filt:any,cls:any,always?:any,acc?:any)=>{ const rows=dayInputs.filter(filt);
       if(!rows.length&&!always)return'';
       let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h">${title}</div>`;
-      /* Leave and Downchit are the two blocks the squadron reads every single day,
-         so they print even when nobody is on them — "NIL" is the answer, not a
-         missing section. */
+      /* Unavailable is the block the squadron reads every single day, so it
+         prints even when nobody is on it — "Nil" is the answer, not a missing
+         section. */
       if(!rows.length)return s+`<div class="pl-nil">Nil</div></div>`;
       s+=plCols();
       rows.forEach((inp:any)=>{
@@ -515,25 +540,33 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           : `<span class="t">${esc(hhmm(inp.s))}</span><span class="t">${esc(hhmm(inp.e))}</span>`;
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
-        s+=`<div class="pl-row"><span class="nm"><span class="ntx">${esc(inp.type)}</span></span>${tcell}<div class="ppl one">${pk}</div>${plRmk(null,ed,null,inp.remarks||'')}</div>`; });
+        s+=`<div class="pl-row${acc&&inp.acc?' accd':''}">`
+          +`<span class="nm"><span class="ntx">${esc(inp.type)}</span></span>${tcell}`
+          +`<div class="ppl one">${pk}</div>${plRmk(null,ed,null,inp.remarks||'')}`
+          +(acc?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
-    h+=inGrp('Ground programme · personal inputs',(inp:any)=>/Appointment|Meeting|Personal|Training|Fly$|Other/i.test(inp.type),'sec-inp');
-    /* Available, Office and the Available-crew strip are SCHEDULING tools —
-       who can be tasked, who is at a desk. The view-only page reads as the
-       issued programme, so they stay off it (owner request, Aug 26). Version
-       previews build with ed=false and follow the view page — intentional.
-       The parity test excises these blocks from the reference string. */
-    if(ed){
-      h+=inGrp('Available',(inp:any)=>/^Available/i.test(inp.type),'sec-avail');
-      h+=inGrp('Office',(inp:any)=>inp.type==='Office','sec-off');
-      // ---- available crew sits directly under Office ----
-      h+=availHTML(d,di,ed);
-    }
-    // ---- leave, then downchit, close the day ----
-    h+=inGrp('Leave',(inp:any)=>isLeave(inp.type),'sec-leave',true);
-    h+=inGrp('Downchit',(inp:any)=>inp.type==='Downchit','sec-dnco',true);
+    if(ed)h+=inGrp('Personal inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true);
+    // ---- available crew (computed, not an input type) stays scheduler-side ----
+    if(ed)h+=availHTML(d,di,ed);
+    h+=inGrp('Unavailable',(inp:any)=>isUnavail(inp.type)||inp.acc==='u','sec-unav',true);
     h+=`</div>`; // /day-body
     return h+`</section>`;
+}
+/* The accept control on a personal-input row. "Other" is the one type whose
+   destination is genuinely ambiguous — it can be something the squadron has to
+   run (ground programme) or something that simply closes the man (unavailable) —
+   so it offers both. Everything else has one sensible home. An accepted row
+   shows Undo instead, which removes the ground row it created. */
+export function accCtl(di:any,inp:any){
+  if(!canEditSched())return `<span class="accs"></span>`;
+  const k=esc(inpKey(inp));
+  if(inp.acc)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Undo — removes the ground-programme row this created">Undo</button></span>`;
+  const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" data-acck="${k}" title="${ttl}">${lbl}</button>`;
+  return `<span class="accs">`
+    +(/^Other$/i.test(String(inp.type))
+      ? b('g','→ Ground','Accept into the ground programme')+b('u','→ Unavail','File under Unavailable')
+      : b('g','Accept','Accept into the ground programme'))
+    +`</span>`;
 }
 /* the strip that lives in one day's header. `full` is the roomy board version. */
 export function signoffHTML(di:any,full:any){

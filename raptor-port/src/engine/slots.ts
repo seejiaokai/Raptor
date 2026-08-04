@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { PEOPLE, nameToId } from './people'
-import { SCHED } from './publish'
+import { SCHED, markEdit } from './publish'
 import { parseHM, hhmm } from './time'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
@@ -158,7 +158,10 @@ export function fillSlot(key:any,id:any){
    comes FIRST after the prefix so keyDay() still resolves the amendment day
    and per-item AL colouring works on text as well as on pucks.
      dn:di.i             day (overall) note line
-     sn:di               sims planning-notes block
+     sn:di               sims scheduler-notes block
+     pn:di               programme scheduler-notes block
+     dtn:di              duties scheduler-notes block
+     gn:di               ground scheduler-notes block
      ap:di.ri.fld        programme row   (prog|sub|str|end)
      wl:di.gi            wave label
      ff:di.gi.li.fld     formation       (cs|msn|to|ld)
@@ -175,6 +178,9 @@ export function txtRef(path:any){
   try{
     if(k==='dn'){d.notes=d.notes||[];return{o:d.notes,k:+a[1]};}
     if(k==='sn')return{o:d,k:'simnotes'};
+    if(k==='pn')return{o:d,k:'prognotes'};
+    if(k==='dtn')return{o:d,k:'dutynotes'};
+    if(k==='gn')return{o:d,k:'grndnotes'};
     if(k==='ap')return{o:d.allhands[+a[1]],k:a[2]};
     if(k==='wl')return{o:d.waves[+a[1]],k:'label'};
     if(k==='ff')return{o:d.waves[+a[1]].formations[+a[2]],k:a[3]};
@@ -215,3 +221,45 @@ export const acRef=(k:any)=>{const[di,gi,li,ai]=String(k).split('.').map(Number)
   return f?{d:DAYS[di],w,f,a:f.aircraft[ai],ai,li,gi,di}:null;};
 /* a formation is cancelled exactly when every one of its aircraft is */
 export const rollCx=(f:any)=>{f.cx=f.aircraft.length>0&&f.aircraft.every((a:any)=>a.cx);};
+/* ---- accepting a personal input ---------------------------------------
+   A personal input is what aircrew SUBMITTED; it is not part of the issued
+   programme until a scheduler accepts it. Accepting to 'g' promotes it into
+   the day's ground programme as an ordinary row — from that moment it
+   validates, drags, publishes and prints on the view-only page like anything
+   else the scheduler wrote. Accepting to 'u' just files it under Unavailable
+   and creates no row.
+
+   The push goes through noteChange() on the row's own key, exactly as the
+   board's "+ Item" control does. A write that skipped the funnel would be
+   invisible to the amendment machinery: not marked pending, absent from the
+   next AL and never re-validated.
+
+   The link back to the source input is `src` on the ground row, so unaccept
+   can find and remove the row it created even after other rows shift around
+   it. Storing an index instead would rot the moment a row above it is deleted. */
+export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${inp.s==null?'':inp.s}`;}
+export function acceptInput(di:any,inp:any,dest:any){
+  const d=DAYS[di]; if(!d||!inp)return false;
+  if(inp.acc)return false;                       // already actioned — unaccept first
+  if(dest==='u'){ inp.acc='u'; markEdit(); return true; }
+  d.ground=d.ground||[];
+  const ri=d.ground.length;
+  d.ground.push({prog:(inp.remarks||inp.type||'').toUpperCase(),
+                 str:inp.allday?'':hhmm(inp.s), end:inp.allday?'':hhmm(inp.e),
+                 who:inp.person, src:inpKey(inp)});
+  inp.acc='g';
+  noteChange(`g:${di}.${ri}`);
+  return true;
+}
+export function unacceptInput(di:any,inp:any){
+  const d=DAYS[di]; if(!d||!inp||!inp.acc)return false;
+  if(inp.acc==='g'&&d.ground&&d.ground.length){
+    const key=inpKey(inp), i=d.ground.findIndex((r:any)=>r.src===key);
+    if(i>=0)d.ground.splice(i,1);
+  }
+  delete inp.acc;
+  /* markEdit with NO key: the address we just removed must not be re-marked,
+     or the next AL carries a line pointing at a row that no longer exists. */
+  markEdit();
+  return true;
+}

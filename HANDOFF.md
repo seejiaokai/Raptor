@@ -37,6 +37,33 @@ The port from the original single-file app is complete; that history is in
   personal-INPUTS sections and day-info pop read live data — inputs are not
   part of the issued document. Snapshots are session-only, like everything
   else.
+- **Personal inputs need accepting (Aug 26).** A day now closes with three
+  blocks, not five: `Ground programme` (the scheduler's, titled
+  `· scheduler` only on the edit side), `Personal inputs` (scheduler-side ONLY)
+  and `Unavailable` (Detachment + Leave + Downchit, everyone). `Available` and
+  `Office` are gone as types and as blocks. A personal input reaches the issued
+  programme only when a scheduler **accepts** it, which pushes a real ground row;
+  the input stays behind, faded, with Undo. See `docs/engine-rules.md`
+  §Accepting a personal input.
+- **Drag-to-section is NOT implemented.** The owner asked for `Other` rows to be
+  draggable onto Unavailable or Ground programme on the edit week. The same
+  capability shipped as two buttons (`→ Ground` / `→ Unavail`) on both the week
+  and the board, which is complete but not the drag interaction. `drag.ts` is
+  the hard-won touch/mouse machine and adding drop targets there needs the
+  browser probes, not Vitest.
+- **`Fly` now blocks.** The offer exemption is gone, so a `Fly` input clashes
+  with a sortie and eats brief/debrief time like a Meeting. Reference probe
+  `audit2 #8` pins the OLD rule and therefore fails on the port by design —
+  recorded in `docs/probe-sweep.md`.
+- **Scheduler notes are edit/board only** — four boxes (`pn:` programme,
+  `dtn:` duties, `sn:` sims, `gn:` ground). They never render on the view page,
+  even when populated, and like every other edit here they do not survive a
+  reload (only `rules` is persisted).
+- **`probes/perf-port.cjs` is flaky in the container** — roughly 2 runs in 5
+  trip one of the two no-regression assertions, and it does so at the SAME rate
+  on the pre-change baseline. Measured, not assumed. CI does not run it
+  (`deploy.yml` gates on `npm test`, `tfin.js`, `npm run build`); judge it over
+  several runs, not one.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
   GitHub Actions). The workflow refuses to publish on any red test.
 
@@ -47,12 +74,12 @@ The port from the original single-file app is complete; that history is in
 |---|---|
 | `data.ts` | The demo week: DAYS with waves/formations/aircraft, duties, sims, ground, programme rows. |
 | `people.ts` | PEOPLE roster (quals, seat, categories), qual ladder, `isScheduler`/`isLead`/`isInstr`/`isOcu`, `scShiftKind`, `sanStatus`, `aarNeed`. |
-| `inputs.ts` | INPUTS list + taxonomy: `isLeave`, `isLocalLeave`, `isDownchit`, `isOffer`, INPUT_TYPES, DATES. |
+| `inputs.ts` | INPUTS list + taxonomy: `isLeave`, `isLocalLeave`, `isDownchit`, `isDetach`, **`isPersonal`/`isUnavail`** (the two day blocks), INPUT_TYPES, DATES. |
 | `time.ts` | `parseHM`/`hhmm`/`minus`/`overlap` (half-open — abutting windows do not clash). |
 | `events.ts` | `collectEvents()` — the per-day event build the validator consumes. |
 | `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`. **The conflict engine.** |
 | `avail.ts` | `slotRules`/`slotBar` eligibility, `dayOff`/`dayEngaged`, free-count ranking. |
-| `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`. |
+| `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`**. |
 | `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering. |
 | `waves.ts` | WEEKS/CURWEEK, standalone waves (SC/AVALON/BB): `isStandalone`, `makeStandalone`, `saExempt`. |
 | `publish.ts` | SCHED, sign-offs (SIGN_ROLES), `setDayApproved`, `publishALDay`/`alIssue`/`unpublishAL`, `markEdit`, AL colours, per-day version snapshots (`daySnap`/`daySnapOf`/`dayVersions`), `dayCurVer` (the day-head chip). |
@@ -98,6 +125,7 @@ The port from the original single-file app is complete; that history is in
 | `probes/run.cjs` | Runs any reference probe against the reference build or the port. |
 | `probes/perf-port.cjs` | The perf gate — measures BOTH builds, asserts no regression. |
 | `probes/adapted/` | Async-repaint adaptations of the `wrap` and `drop` probes. |
+| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests and pushes the port's seed INPUTS into it, so both engines compute from identical data. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table. |
 | `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the three gates. |
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main. |

@@ -19,11 +19,24 @@ export function isOffType(t:any){return isLeave(t)||isDownchit(t);}
 /* how an entry reads when it is the reason a slot is closed */
 export function offWord(inp:any){const k=leaveKey(inp.type);
   return (k?`${LEAVE_TYPES[k]} (${k})`:String(inp.type).toLowerCase())+(inp.remarks?' — '+inp.remarks:'');}
-export const INPUT_TYPES=['LL','OL','OIL','Training','Meeting','Fly','Personal','Office','Downchit','Appointment','Available fly','Available duty','Other'];
-/* "Available fly", "Available duty" and "Fly" say what a man WANTS, not where he
-   has to be. They must never clash with anything — a volunteer being flagged for
-   blocking his own brief is nonsense, and it is exactly what used to happen. */
-export const isOffer=(t:any)=>/^Available/i.test(String(t||''))||/^Fly$/i.test(String(t||''));
+/* "Office", "Available fly" and "Available duty" are gone (owner decision, Aug 26).
+   The first was a desk marker nobody read off the programme; the other two were
+   OFFERS — a man saying what he WANTED rather than where he had to be. With them
+   gone the offer concept goes with them: every remaining non-leave type is a real
+   commitment, "Fly" included, so it clashes and consumes brief/debrief time
+   exactly like an Appointment does. "Detachment" is new and reads as unavailable. */
+export const INPUT_TYPES=['LL','OL','OIL','Detachment','Training','Meeting','Fly','Personal','Downchit','Appointment','Other'];
+/* The two halves of the day's input blocks, and the ONLY place the split is
+   decided — the week and the board both used to carry their own copy of this
+   regex and could drift apart.
+     UNAVAIL  — closes the man's day outright. Rendered to everyone, on every
+                page, without the scheduler doing anything.
+     PERSONAL — submitted by aircrew, NOT yet part of the issued programme. The
+                scheduler accepts it (see acceptInput) to promote it into the
+                ground programme, so it never reaches the view-only page. */
+export function isDetach(t:any){return /^Detachment$/i.test(String(t==null?'':t).trim());}
+export function isUnavail(t:any){return isDetach(t)||isLeave(t)||isDownchit(t);}
+export function isPersonal(t:any){return /^(Meeting|Training|Personal|Appointment|Fly|Other)$/i.test(String(t==null?'':t).trim());}
 /* inputs use machine-readable date + minute fields so the validator can reason about them.
    s/e are minutes-from-midnight; allday inputs cover the whole day. */
 export let INPUTS:any[]=[
@@ -34,9 +47,9 @@ export let INPUTS:any[]=[
   {person:'nasty', date:'Jul 14', allday:true,               type:'LL',          remarks:'Local leave',  mod:'2026-07-13'},
   {person:'shrek', date:'Jul 14', allday:true,               type:'OIL',         remarks:'OIL — CO approved, post-detachment',mod:'2026-07-13'},
   {person:'sufa',  date:'Jul 13', endDate:'Jul 17', allday:true, type:'Downchit', remarks:'Downchit till 17 Jul', mod:'2026-07-12'},
-  {person:'bruise',date:'Jul 13', allday:true,               type:'Available fly',remarks:'Avail all day',mod:'2026-07-12'},
-  {person:'pike',  date:'Jul 13', allday:true,               type:'Available duty',remarks:'',           mod:'2026-07-12'},
-  {person:'vinci', date:'Jul 13', allday:false, s:540, e:1020,type:'Office',      remarks:'Office day',   mod:'2026-07-12'},
+  {person:'bruise',date:'Jul 13', allday:true,               type:'Fly',         remarks:'Keen for any wave',mod:'2026-07-12'},
+  {person:'vinci', date:'Jul 13', allday:false, s:540, e:1020,type:'Meeting',     remarks:'Desk / staff work',mod:'2026-07-12'},
+  {person:'pike',  date:'Jul 15', endDate:'Jul 17', allday:true, type:'Detachment', remarks:'Det — exercise, off island',mod:'2026-07-13'},
   {person:'yeti',  date:'Jul 13', allday:false, s:600, e:660, type:'Appointment', remarks:'HSP blood panel',mod:'2026-07-12'},
 ];
 export const DATES=['Jul 13','Jul 14','Jul 15','Jul 16','Jul 17'];  // Mon..Fri index → date label

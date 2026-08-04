@@ -27,7 +27,15 @@ with a Vitest assertion before this table was final:
 lgn lgn2 logic one ovw pal pal3 perf0 pubday rules(19/19) sc sc3 scdiag
 sched scmix scpal screst scroll sel selprev selx shot2 shota shotsc
 sign sim tdrag warn zdup2` — same output / same pass counts, and
-`audit2` **18/18 on both** (after fixes 1 and 2 above).
+`audit2` **18/18 on the reference, 17/18 on the port** (after fixes 1 and 2
+above). The one gap is deliberate: **#8 "an offer adds nothing, a meeting still
+does"** pins the old OFFER exemption, where `Available fly` / `Available duty` /
+`Fly` clashed with nothing. Those first two types were removed and `Fly` became
+an ordinary commitment (owner decision, Aug 26), so the port now raises 3
+warnings where the probe wants 0. The probe still describes the reference
+correctly; it no longer describes the port. The replacement assertion lives in
+`src/engine/validate.test.ts` ("Fly eats brief/debrief time exactly as a meeting
+does").
 
 Spot-parity worth recording: the ink probe measures the SAME pixel
 geometry on both builds to the first decimal (puck 15px, text −3px below,

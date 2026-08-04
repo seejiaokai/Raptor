@@ -1,6 +1,6 @@
 /* Ported from reference/tfin.js — the B42 leave taxonomy (LL / OL / OIL). */
 import { describe, expect, it } from 'vitest'
-import { LEAVE_TYPES, INPUT_TYPES, isLeave, isLocalLeave, isDownchit, isOffType, isOffer, offWord, inputCoversDate } from './inputs'
+import { LEAVE_TYPES, INPUT_TYPES, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, offWord, inputCoversDate } from './inputs'
 import { validate } from './validate'
 
 describe('leave is LL / OL / OIL (tfin B42)', () => {
@@ -33,9 +33,29 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
     expect(isOffType('OIL')).toBe(true)
   })
 
-  it('an offer to fly is not a clash (isOffer)', () => {
-    expect(isOffer('Available fly') && isOffer('Available duty') && isOffer('Fly')).toBe(true)
-    expect(isOffer('Office')).toBe(false)
+  /* The offer exemption is gone (owner decision, Aug 26): "Available fly" and
+     "Available duty" were removed as types, and "Fly" became an ordinary
+     commitment. What is left is the two-way split the day's blocks render. */
+  it('every type is either personal or unavailable, and the dead ones are gone', () => {
+    expect(INPUT_TYPES).toContain('Fly')
+    expect(INPUT_TYPES).toContain('Detachment')
+    for (const dead of ['Office', 'Available fly', 'Available duty'])
+      expect(INPUT_TYPES).not.toContain(dead)
+    /* the two predicates partition the list — nothing falls between them */
+    for (const t of INPUT_TYPES)
+      expect(isPersonal(t) !== isUnavail(t), t).toBe(true)
+  })
+
+  it('isUnavail covers detachment, leave and downchits only', () => {
+    expect(isUnavail('Detachment') && isUnavail('LL') && isUnavail('OL')
+      && isUnavail('OIL') && isUnavail('Downchit')).toBe(true)
+    expect(isUnavail('Meeting') || isUnavail('Fly') || isUnavail('Other')).toBe(false)
+  })
+
+  it('isPersonal is what aircrew submit for a scheduler to accept', () => {
+    for (const t of ['Meeting', 'Training', 'Personal', 'Appointment', 'Fly', 'Other'])
+      expect(isPersonal(t), t).toBe(true)
+    expect(isPersonal('LL') || isPersonal('Downchit') || isPersonal('Detachment')).toBe(false)
   })
 
   it('offWord names the leave, with its remark', () => {

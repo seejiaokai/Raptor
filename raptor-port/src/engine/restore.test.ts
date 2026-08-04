@@ -28,7 +28,7 @@ describe('the dayKeys walker', () => {
     const m = dayKeys(DAYS[0], 0)
     for (const k of ['0.0.0.0.p', '0.0.0.0.w', 'fr:0.0.0.0', 'st:0.0.0.0',
       'ff:0.0.0.cs', 'ff:0.0.0.to', 'ar:0.0.0', 'at:0.0.0',
-      'wl:0.0', 'it:0.0', 'tr:0.0', 'dn:0.0', 'sn:0',
+      'wl:0.0', 'it:0.0', 'tr:0.0', 'dn:0.0', 'sn:0', 'pn:0', 'dtn:0', 'gn:0',
       'ap:0.0.prog', 'a:0.1.0', 'dl:0.0', 'dr:0.0.0.role', 'd:0.0.0', 'd:0.0.0.x0',
       'sr:0.amt.0.label', 's:0.amt.1.pax.0', 's:0.oft.0.p', 'gr:0.0.prog', 'g:0.0'])
       expect(m.has(k), k).toBe(true)

@@ -19,8 +19,18 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - Tight turn needs `max(VCONF.tightTurn, dekit + step)`.
 - Double turn: two+ sorties in a day → ONE hard DT_SUM line naming everyone;
   pucks stay amber. No span test.
-- "Available fly/duty"/"Fly" inputs are OFFERS (`isOffer`): never clash with
-  anything, including their own sortie's brief/debrief.
+- There are no OFFERS any more (owner decision, Aug 26). `Office`,
+  `Available fly` and `Available duty` were removed as types and `isOffer` is
+  gone with them, so **every** personal input is a real commitment — `Fly`
+  included. A `Fly` overlapping a sortie raises `INPUT_FLY`, and a timed one
+  eats brief/debrief windows exactly as a `Meeting` does.
+- `Detachment` is a new type. It groups under Unavailable with leave and
+  downchits, but it is NOT `isOffType`: it does not confer leave's special
+  powers (SC-spare eligibility and the rest), it simply reads as away.
+- The input types split two ways, and this is the only place the split lives:
+  `isUnavail` = Detachment + leave + downchit; `isPersonal` = Meeting,
+  Training, Personal, Appointment, Fly, Other. Together they partition
+  `INPUT_TYPES` — a test pins that nothing falls between them.
 - Leave: LL, OL, OIL (`isLocalLeave` = LL+OIL). LL/OIL may stand an SC SPARE;
   OL and Downchit may not (hard DNIF_FLY/LEAVE_FLY) even though spares are
   otherwise `saExempt`. SC SPARE carries no crew rest either way. SC currency
@@ -37,6 +47,25 @@ Where flags reach the screen: `ui/html.ts` builders read `WARN`/`chipOf`;
 live-checks panel is `boardWarnHTML` in `ui/board.ts`; warning-box
 interaction is `ui/interactions.ts` + `state/view.ts` (`DWOPEN`, `WFOCUS`,
 `focusWarn`).
+
+## Accepting a personal input
+
+A personal input is aircrew-submitted and is NOT part of the issued programme
+until a scheduler accepts it. `acceptInput(di, inp, dest)` in the mutation
+funnel:
+
+- `dest='g'` pushes a real row onto `DAYS[di].ground` built from the input
+  (remarks or type as the title, `hhmm(s)`/`hhmm(e)`, blank for all-day) and
+  calls `noteChange()` on its key, so it is pending and reaches the next AL.
+  The row carries `src` — a content key back to the input.
+- `dest='u'` only sets `acc='u'`, moving it into the Unavailable block; no row
+  is created.
+- `unacceptInput` reverses either, finding the created row by `src` (not by
+  index, which would rot when rows above it move) and calling `markEdit()` with
+  no key.
+
+Accepting twice is a no-op; undo first. The input is never removed — it stays in
+Personal inputs, faded, so the scheduler can see what they have dealt with.
 
 ## Editable rules (Logic tab)
 

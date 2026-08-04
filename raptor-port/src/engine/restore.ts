@@ -27,6 +27,9 @@ export function dayKeys(d:any,di:any){
   const J=(v:any)=>JSON.stringify(v==null?null:v);
   (d.notes||[]).forEach((t:any,ni:any)=>m.set(`dn:${di}.${ni}`,S(t)));
   m.set(`sn:${di}`,S(d.simnotes));
+  m.set(`pn:${di}`,S(d.prognotes));
+  m.set(`dtn:${di}`,S(d.dutynotes));
+  m.set(`gn:${di}`,S(d.grndnotes));
   (d.allhands||[]).forEach((r:any,ri:any)=>{
     m.set(`ap:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+S(r.cxr)+'␟'+(r.flag?1:0));
     m.set(`ap:${di}.${ri}.sub`,S(r.sub)); m.set(`ap:${di}.${ri}.str`,S(r.str)); m.set(`ap:${di}.${ri}.end`,S(r.end));

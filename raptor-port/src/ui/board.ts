@@ -2,6 +2,7 @@
    delegated handlers — the reference's bodies, verbatim, with repaint via the
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
+import { INPUTS, inputCoversDate } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { isStandalone, makeStandalone, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
@@ -16,7 +17,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
-import { sbNotesPanel, sbProgPanel, sbSimPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, labelToTitle, titleToLabel } from './board-html'
+import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -68,8 +69,12 @@ export function boardHTML(di: number, pv?: boolean) {
   b += fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet — use “+ Wave”.</div>`
   /* the four sections the board was missing (owner request, Aug 26): same
      order as the week day, with the sim planning notes staying last */
-  b += sbDutyPanel(d, di, pv) + sbSimRowsPanel(d, di, pv) + sbGroundPanel(d, di, pv) + sbInputsGroupPanel(d, di)
-  b += sbSimPanel(d, di, pv)
+  /* the sim note used to be a panel of its own at the very bottom; it now sits
+     inside the Sims panel, so the board reads the same way the week does. */
+  b += sbDutyPanel(d, di, pv) + sbSimRowsPanel(d, di, pv) + sbGroundPanel(d, di, pv)
+  /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
+  const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
+  b += sbInputsGroupPanel(d, di, pv, dayInp) + sbUnavailPanel(d, di, dayInp)
   return b
 }
 

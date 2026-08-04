@@ -1,6 +1,6 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { INPUTS, isLeave, inputCoversDate } from '../engine/inputs'
+import { INPUTS, isLeave, inputCoversDate, isPersonal, isUnavail } from '../engine/inputs'
 import { PEOPLE, nameToId } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
@@ -8,7 +8,7 @@ import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { esc } from '../state/view'
 import { ORD } from './html'
-import { puck, rowCls } from './html'
+import { puck, rowCls, accCtl } from './html'
 
 export const SB_BANDS=[
   {k:'early',t:'Early',      note:'before 08:00',    lo:0,   hi:480},
@@ -21,8 +21,7 @@ export const SB_BANDS=[
 export function inTypeCls(t:any){
   if(/^Downchit/i.test(t))return 'ty-dn';
   if(isLeave(t))return 'ty-lv';
-  if(/^Office/i.test(t))return 'ty-of';
-  if(/^Available/i.test(t))return 'ty-av';
+  if(/^Detachment/i.test(t))return 'ty-dt';
   return 'ty-gp';
 }
 export function sbInputsHTML(d:any,di:any){
@@ -93,7 +92,14 @@ export function sbProgPanel(d:any,di:any,pv?:any){
         +`<button class="mbtn del" data-pdel="${di}.${ri}" title="Remove this item">✕</button></span>`)+`</div>`;
     });
   }
-  return s+`</div></div>`;
+  return s+sbNote(d,di,'pn','prognotes','e.g. CFG visit shifts SODB right by 15 min — brief the duty crew.',pv)+`</div></div>`;
+}
+/* The scheduler's hand-over note for one block. Same text the week shows under
+   the matching section, through the same funnel key — edit it in either place.
+   Never on the view-only page: it is working traffic, not the issued programme. */
+export function sbNote(d:any,di:any,key:any,field:any,ph:any,pv?:any){
+  return `<div class="sb-note"><div class="sb-nh">Scheduler notes</div>`
+    +`<textarea class="sb-nbox" data-bfld="${key}:${di}"${alAttr(`${key}:${di}`)}${pv?' disabled':''} placeholder="${esc(ph)}">${esc(d[field]||'')}</textarea></div>`;
 }
 /* ---- duty / sim / ground panels (owner request, Aug 26) -------------------
    The board finally carries every section the week day carries. Same
@@ -140,7 +146,7 @@ export function sbDutyPanel(d:any,di:any,pv?:any){
         +sbRowCtl(pv,r,`${di}.${wi}.${ri}`,'dr','this duty')+`</div>`;
     });
   });
-  return s+`</div></div>`;
+  return s+sbNote(d,di,'dtn','dutynotes','e.g. SDO swapped — Bane has the PHA at 1700, Pike covers the last hour.',pv)+`</div></div>`;
 }
 export function sbSimRowsPanel(d:any,di:any,pv?:any){
   const sims=d.sims||{};
@@ -165,7 +171,7 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any){
         +sbRowCtl(pv,r,`${di}.${kind}.${ri}`,'sr','this sim')+`</div>`;
     });
   });
-  return s+`</div></div>`;
+  return s+sbNote(d,di,'sn','simnotes','e.g. OFT 2 u/s Thu PM — 4-ship EP profile pushed to next week. Divot still owes an AMT EP.',pv)+`</div></div>`;
 }
 export function sbGroundPanel(d:any,di:any,pv?:any){
   const rows=d.ground||[];
@@ -184,31 +190,36 @@ export function sbGroundPanel(d:any,di:any,pv?:any){
         +sbRowCtl(pv,x,`${di}.${ri}`,'gr','this item')+`</div>`;
     });
   }
-  return s+`</div></div>`;
+  return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',pv)+`</div></div>`;
 }
 /* read-only ALWAYS: these rows are aircrew-submitted inputs, not schedule
    data — there are no funnel keys for them, and the place to change them is
    the Inputs page. Reuses the .sbi-row look from the bands panel below. */
-export function sbInputsGroupPanel(d:any,di:any){
-  const rows=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&/Appointment|Meeting|Personal|Training|Fly$|Other/i.test(inp.type));
-  let s=`<div class="sb-panel pinp"><div class="sb-ph">Ground programme · personal inputs <span class="sub">submitted by aircrew — edit on the Inputs page</span></div><div class="sb-pb">`;
-  if(!rows.length)s+=`<div class="sb-empty">No personal ground-programme inputs for this day.</div>`;
-  rows.forEach((inp:any)=>{
-    const pk=PEOPLE[inp.person]
-      ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
-      : `<span class="itxt">${esc(inp.person)}</span>`;
-    const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
-    s+=`<div class="sbi-row"><span class="sbi-t">${t}</span>${pk}`
-      +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inp.type)}</span>`
-      +`<span class="sbi-rm" title="${esc(inp.remarks||'')}">${esc(inp.remarks||'—')}</span></div>`;
-  });
+function sbInpRow(di:any,inp:any,acc:any,pv:any){
+  const pk=PEOPLE[inp.person]
+    ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
+    : `<span class="itxt">${esc(inp.person)}</span>`;
+  const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
+  return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
+    +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inp.type)}</span>`
+    +`<span class="sbi-rm" title="${esc(inp.remarks||'')}">${esc(inp.remarks||'—')}</span>`
+    +(acc&&!pv?accCtl(di,inp):'')+`</div>`;
+}
+export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any){
+  const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
+  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal inputs <span class="sub">submitted by aircrew — accept to put it on the programme</span></div><div class="sb-pb">`;
+  if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
+  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,pv); });
   return s+`</div></div>`;
 }
-/* ---- board panel 3: sim planning notes, at the bottom of the board ------- */
-export function sbSimPanel(d:any,di:any,pv?:any){
-  return `<div class="sb-panel simn"><div class="sb-ph">Sim planning notes <span class="sub">read by whoever plans the next cycle</span></div>`
-    +`<div class="sb-pb"><textarea class="sb-nbox" data-bfld="sn:${di}"${alAttr(`sn:${di}`)}${pv?' disabled':''} placeholder="e.g. OFT 2 u/s Thu PM — 4-ship EP profile pushed to next week. Divot still owes an AMT EP.">${esc(d.simnotes||'')}</textarea>`
-    +`<div class="sb-hint">Appears under the Sims block of the day for every viewer.</div></div></div>`;
+/* Leave, downchits and detachments close a man's day on their own — nobody
+   accepts them, so this panel is read-only and carries no controls. */
+export function sbUnavailPanel(d:any,di:any,day?:any){
+  const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isUnavail(inp.type)||inp.acc==='u');
+  let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable <span class="sub">leave, downchits and detachments — edit on the Inputs page</span></div><div class="sb-pb">`;
+  if(!rows.length)s+=`<div class="sb-empty">Nil — everybody is available today.</div>`;
+  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,true); });
+  return s+`</div></div>`;
 }
 /* the board never carried the amendment marks the week view had — added with
    the AL preview (Aug 26) so a board edit shows what it will go out as.
