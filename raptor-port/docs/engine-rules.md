@@ -21,9 +21,22 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   pucks stay amber. No span test.
 - There are no OFFERS any more (owner decision, Aug 26). `Office`,
   `Available fly` and `Available duty` were removed as types and `isOffer` is
-  gone with them, so **every** personal input is a real commitment — `Fly`
-  included. A `Fly` overlapping a sortie raises `INPUT_FLY`, and a timed one
-  eats brief/debrief windows exactly as a `Meeting` does.
+  gone with them. `Fly` gets no exemption: filed under Unavailable it raises
+  `INPUT_FLY` and eats brief/debrief windows exactly as a `Meeting` does,
+  using only its stated times — no brief/debrief padding is added to any
+  input (padding is sortie-side: step→dekit).
+- **The validator gate** (owner, Aug 26): `collectEvents` filters `day.input`
+  through `inputFlags` = `isUnavail(type) || acc==='u'`, the single point all
+  input passes inherit from. An UN-ACTIONED personal input is a request, not
+  a commitment — invisible to `validate()`. Accepted to `'g'` it is
+  represented by the ground row `acceptInput` created (in `day.events`), so a
+  clash surfaces exactly once, as `DOUBLE_BOOK`/`SHIFT_SOFT`/brief-window
+  codes on the ROW — keeping the input in `day.input` too would print every
+  clash twice. (Accepted rows raising advisory `SHIFT_SOFT` vs SC shifts
+  where the raw input raised nothing is intended — do not "fix" it.) Accepted
+  to `'u'` the input itself clashes, like a Detachment. Known edge, by
+  design: an all-day input accepted to `'g'` makes a time-less ground row →
+  no event → no flag, same as any time-less scheduler-typed row.
 - `Detachment` is a new type. It groups under Unavailable with leave and
   downchits, but it is NOT `isOffType`: it does not confer leave's special
   powers (SC-spare eligibility and the rest), it simply reads as away.
@@ -55,9 +68,10 @@ until a scheduler accepts it. `acceptInput(di, inp, dest)` in the mutation
 funnel:
 
 - `dest='g'` pushes a real row onto `DAYS[di].ground` built from the input
-  (remarks or type as the title, `hhmm(s)`/`hhmm(e)`, blank for all-day) and
-  calls `noteChange()` on its key, so it is pending and reaches the next AL.
-  The row carries `src` — a content key back to the input.
+  (the TYPE as the title, the remarks in the row's `rmks` cell, the CALLSIGN
+  in `who` like every other ground write, `hhmm(s)`/`hhmm(e)`, blank for
+  all-day) and calls `noteChange()` on its key, so it is pending and reaches
+  the next AL. The row carries `src` — a content key back to the input.
 - `dest='u'` only sets `acc='u'`, moving it into the Unavailable block; no row
   is created.
 - `unacceptInput` reverses either, finding the created row by `src` (not by
@@ -65,7 +79,7 @@ funnel:
   no key.
 
 Accepting twice is a no-op; undo first. The input is never removed — it stays in
-Personal inputs, faded, so the scheduler can see what they have dealt with.
+Personal Inputs, faded, so the scheduler can see what they have dealt with.
 
 ## Editable rules (Logic tab)
 

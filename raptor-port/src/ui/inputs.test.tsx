@@ -66,6 +66,36 @@ describe('the Inputs page (tfin)', () => {
     expect(INPUTS.length).toBe(n)
   })
 
+  /* the timing fields (owner, Aug 26): an untouched form still writes the old
+     06:00–18:00 window, All day still writes 0–1439, and unticking All day
+     frees the two time fields so the stated minutes land on the input */
+  it('a timed add stores the stated minutes; all-day stays 0–1439', async () => {
+    const setV = async (el: any, v: string) => act(async () => {
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+      setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    await click($('#inAdd'))
+    expect(INPUTS[0].s).toBe(0)
+    expect(INPUTS[0].e).toBe(1439)
+    await act(async () => { undo() })
+    expect(($('#inStartT') as HTMLInputElement).disabled).toBe(true)
+    await click($('#inAllday'))
+    expect(($('#inStartT') as HTMLInputElement).disabled).toBe(false)
+    await setV($('#inStartT'), '10:20')
+    await setV($('#inEndT'), '11:35')
+    await click($('#inAdd'))
+    expect(INPUTS[0].allday).toBe(false)
+    expect(INPUTS[0].s).toBe(620)
+    expect(INPUTS[0].e).toBe(695)
+    await act(async () => { undo() })
+    /* an end at or before the start never reaches the model */
+    await setV($('#inEndT'), '09:00')
+    const n = INPUTS.length
+    await click($('#inAdd'))
+    expect(INPUTS.length).toBe(n)
+    await click($('#inAllday'))                      // back to all-day for later tests
+  })
+
   it('the ✕ deletes a row, and undo resurrects it', async () => {
     const n = INPUTS.length
     const first = INPUTS[0]

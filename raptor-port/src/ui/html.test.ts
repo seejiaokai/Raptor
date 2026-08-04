@@ -11,6 +11,7 @@ import { dayHTML, dayPreviewHTML, withDaySnap, legendHTML } from './html'
 import { SCHED, signOf, setDayApproved, alIssue } from '../engine/publish'
 import { restoreDayVersion } from '../engine/restore'
 import { txtSet, txtGet } from '../engine/slots'
+import { parseHM } from '../engine/time'
 import { setDayPreview, DPREV } from '../state/view'
 import { setSession } from '../state/auth'
 import { acceptInput, unacceptInput } from '../engine/slots'
@@ -34,10 +35,15 @@ beforeAll(async () => {
    Leave, Downchit — became two: a scheduler-only "Personal inputs" and an
    everyone-sees-it "Unavailable". Titles, membership, order and visibility all
    moved, so this region can no longer be byte-compared and is cut from both
-   sides. The cut starts at the first input group and runs to the end of the
-   day body. */
+   sides. The cut starts at the first input group OR the Available-crew strip,
+   whichever comes first, and runs to the end of the day body: the two builds
+   interleave the strip differently (port: inputs → strip → unavailable;
+   reference: strip → input groups), and since the reference now receives only
+   inputFlags-filtered inputs its personal group can be empty and skipped,
+   which would otherwise leave its strip inside the comparison while the
+   port's was cut. The strip's structure is pinned separately below. */
 const noInpGrp = (s: string) => s.replace(
-  /<div class="sub plist one sec sec-(?:inp|avail|off|leave|dnco|unav)"[\s\S]*(?=<\/div><\/section>)/, '')
+  /<div class="(?:sub plist one sec sec-(?:inp|avail|off|leave|dnco|unav)|availpuck sec sec-avail)"[\s\S]*(?=<\/div><\/section>)/, '')
 
 /* Divergence #4: the sim "planning notes" block became one of four per-section
    "Scheduler notes" blocks, and they are edit-only now. .blknote nests no
@@ -48,13 +54,28 @@ const noInpGrp = (s: string) => s.replace(
 const noNotes = (s: string) => s.replace(
   /<div class="blknote-h">[^<]*<\/div><div class="blknote[^>]*>[\s\S]*?<\/div>/g, '')
 
-/* Divergence #5: on the view page the scheduler's ground block is just "Ground
-   programme" — there is no personal-inputs block beside it to distinguish it
-   from, so the qualifier is noise. Normalise the title rather than excising the
-   block, which keeps every ground ROW under byte comparison. A no-op in edit
-   mode, where the port emits the qualifier too. */
+/* Divergence #5: the port titles the block "Ground Programme" (owner casing,
+   Aug 26) with the "· scheduler" qualifier in edit mode only; the reference
+   says "Ground programme · scheduler" in both. Normalise the title on both
+   sides rather than excising the block, which keeps every ground ROW under
+   byte comparison. */
 const grndTitle = (s: string) => s.replace(
-  '<div class="sub-h">Ground programme · scheduler</div>', '<div class="sub-h">Ground programme</div>')
+  /<div class="sub-h">Ground [Pp]rogramme(?: · scheduler)?<\/div>/, '<div class="sub-h">GRND</div>')
+
+/* Divergence #6 (owner, Aug 26): the port renders Ground Programme rows in
+   start-time order; the reference keeps model order. After noInpGrp the ground
+   block is the day body's last content, so sort its row substrings
+   LEXICOGRAPHICALLY on both sides — each row stays byte-pinned as a set
+   member, only the order is excised. The port's real time-ordering is pinned
+   positively in the structure block below. */
+const sortGrnd = (s: string) => {
+  const i = s.indexOf('sec sec-grnd">')
+  const SUF = '</div></div></section>'
+  if (i < 0 || !s.endsWith(SUF)) return s
+  const parts = s.slice(i, -SUF.length).split('<div class="pl-row')
+  const head = s.slice(0, i) + parts.shift()
+  return head + parts.sort().map(p => '<div class="pl-row' + p).join('') + SUF
+}
 
 /* View only: the port also drops the Available-crew puck strip. In EDIT mode
    the port keeps it, so it must NOT be cut there or it silently falls out of
@@ -64,7 +85,7 @@ const noAvailPuck = (s: string) => s.replace(
 
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => grndTitle(noInpGrp(noAvailPuck(noNotes(s))))
+    const V = (s: string) => sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))
     DAYS.forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di).toBe(V(ref))
@@ -97,9 +118,11 @@ describe('view-week markup parity with the reference', () => {
        nests no <div>, so the lazy match ends at the strip's own close — and
        pin the new pill structure separately below. */
     const noSign = (s: string) => s.replace(/<div class="signoff day-sign"[\s\S]*?<\/div>/, '')
-    /* NB: noAvailPuck is deliberately NOT applied here — the port keeps the
-       Available-crew strip in edit mode, so it stays byte-compared. */
-    const E = (s: string) => noInpGrp(noNotes(noSign(s)))
+    /* The Available-crew strip sits inside noInpGrp's cut on both sides (the
+       port's first input group precedes it, the reference's strip is the cut's
+       own start), so it is not byte-compared here; the pins below assert the
+       port keeps it in edit mode. */
+    const E = (s: string) => sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s)))))
     DAYS.forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
@@ -126,18 +149,19 @@ describe('view-week markup parity with the reference', () => {
   it('the day carries the three blocks, in order, on the scheduler side', () => {
     const e = dayHTML(0, true)
     const at = (m: string) => e.indexOf(m)
-    expect(at('>Ground programme · scheduler<')).toBeGreaterThan(-1)
-    expect(at('>Personal inputs<')).toBeGreaterThan(at('>Ground programme · scheduler<'))
-    expect(at('>Unavailable<')).toBeGreaterThan(at('>Personal inputs<'))
+    expect(at('>Ground Programme · scheduler<')).toBeGreaterThan(-1)
+    expect(at('>Personal Inputs<')).toBeGreaterThan(at('>Ground Programme · scheduler<'))
+    expect(at('>Unavailable<')).toBeGreaterThan(at('>Personal Inputs<'))
   })
 
   it('the view page shows the scheduler ground block and Unavailable only', () => {
     const v = dayHTML(0, false)
-    expect(v).toContain('>Ground programme<')       // no "· scheduler" qualifier
+    expect(v).toContain('>Ground Programme<')       // no "· scheduler" qualifier
     expect(v).toContain('>Unavailable<')
-    expect(v).not.toContain('>Personal inputs<')
+    expect(v).not.toContain('>Personal Inputs<')
     expect(v).not.toContain('data-acc=')            // and no accept controls
   })
+
 
   it('Unavailable gathers detachment, leave and downchit', () => {
     /* day 2 carries a Detachment (pike, Jul 15–17) and an OL (j_lee) */
@@ -304,5 +328,35 @@ describe('the scheduler-side controls', () => {
   it('the view page never grows a control, signed in or not', () => {
     expect(dayHTML(0, false)).not.toContain('data-acc=')
     expect(dayHTML(0, false)).not.toContain('blknote')
+  })
+
+  /* the render-time sort (owner, Aug 26): rows read in start-time order while
+     their keys keep the MODEL index — reordering the array would rot every
+     pending mark and published AL address that points into it. Sits in this
+     signed-in block because the key check reads data-txt attributes. */
+  it('ground rows render in start-time order, keys pinned to the model', () => {
+    const d: any = DAYS[0]
+    /* the seed must actually be out of order for this to prove anything */
+    const mtimes = d.ground.map((r: any) => parseHM(r.str))
+    expect(mtimes.some((t: any, i: number) => i && t != null && mtimes[i - 1] != null && t < mtimes[i - 1]),
+      'seed day 0 ground is already sorted — pick a day that is not').toBe(true)
+    const rows = dayHTML(0, true).slice(dayHTML(0, true).indexOf('sec-grnd'))
+      .split('<div class="pl-row').slice(1)
+      .map(p => ({ ri: +(p.match(/data-txt="gr:0\.(\d+)\.str"/) || [])[1] }))
+      .filter(r => !isNaN(r.ri))
+    expect(rows.length).toBe(d.ground.length)
+    const rtimes = rows.map(r => parseHM(d.ground[r.ri].str))
+    const timed = rtimes.filter((t: any) => t != null)
+    expect(timed).toEqual([...timed].sort((a: any, b: any) => a - b))
+    /* time-less rows sink to the bottom */
+    rtimes.forEach((t: any, i: number) => {
+      if (t == null) expect(rtimes.slice(i).every((x: any) => x == null)).toBe(true)
+    })
+    /* a fresh, still-blank row lands at the bottom of the render too */
+    d.ground.push({ prog: '', str: '', end: '', who: '' })
+    const e2 = dayHTML(0, true)
+    const gblk = e2.slice(e2.indexOf('sec-grnd'), e2.indexOf('sec-inp'))
+    expect(gblk.slice(gblk.lastIndexOf('<div class="pl-row'))).toContain(`gr:0.${d.ground.length - 1}.str`)
+    d.ground.pop()
   })
 })

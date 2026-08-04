@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate } from './inputs'
+import { INPUTS, inputCoversDate, inputFlags } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
 import { toMin, parseHM, win } from './time'
 import { VCONF } from './rules'
@@ -126,7 +126,7 @@ export function collectEvents(){
       const st=parseHM(x.str),en=parseHM(x.end);
       whoArr(x).forEach((nm:any)=>push(nameToId(nm),st,en,x.prog||'programme','prog'));
       extras(x).forEach((v:any)=>push(v,st,en,x.prog||'programme','prog')); });
-    const input=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)).map((inp:any)=>({id:inp.person,s:inp.allday?0:inp.s,e:inp.allday?1439:inp.e,type:inp.type,remarks:inp.remarks}));
+    const input=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&inputFlags(inp)).map((inp:any)=>({id:inp.person,s:inp.allday?0:inp.s,e:inp.allday?1439:inp.e,type:inp.type,remarks:inp.remarks}));
     return {di,dow:d.dow,dt:d.dt,fly,forms,input,events,simcrew,simwin};
   });
 }

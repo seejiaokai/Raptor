@@ -301,6 +301,24 @@ export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Fl
 /* vsel: emit the per-day version dropdown. Only EditWeek (and the preview
    path) passes it, so the view-only page never grows the control — read-only
    users see issued schedules, not the version machinery. */
+/* Ground Programme reads in start-time order (owner, Aug 26) — but ONLY at
+   render. ri is the row's slot key (g:di.ri / gr:di.ri) and pending marks, AL
+   colouring and published amendments all address through it, so the MODEL
+   array is never reordered; each entry keeps its original index for key
+   building. parseHM reads both the seed's '1020' and accept's '10:20' forms.
+   Time-less rows (all-day accepts, fresh "+ Item" blanks) sink to the bottom —
+   which is also where the model appends them, so a new row never jumps away
+   from under the scheduler typing into it. Ties keep model order; the
+   explicit fallback matters because Infinity-Infinity is NaN, which sort
+   treats as "equal" inconsistently. */
+export function groundOrder(grd:any[]){
+  return grd.map((row:any,ri:number)=>({row,ri})).sort((a:any,b:any)=>{
+    const ta=parseHM(a.row.str), tb=parseHM(b.row.str)
+    if(ta==null||tb==null)return ta==null&&tb==null?a.ri-b.ri:(ta==null?1:-1)
+    return (ta-tb)||(a.ri-b.ri)
+  })
+}
+
 export function dayHTML(di:any,ed:any,vsel?:any){
   const d=DAYS[di];
     /* ---- per-day approval strip -------------------------------------------
@@ -502,8 +520,8 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        empty section. */
     if((d.ground&&d.ground.length)||ed){
       const grd=d.ground||[];
-      h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground programme${ed?' · scheduler':''}</div>`+(grd.length?plCols():'');
-      grd.forEach((x:any,ri:any)=>{const id=nameToId(x.who), key=`g:${di}.${ri}`;
+      h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme${ed?' · scheduler':''}</div>`+(grd.length?plCols():'');
+      groundOrder(grd).forEach(({row:x,ri}:any)=>{const id=nameToId(x.who), key=`g:${di}.${ri}`;
         const inner=((id&&PEOPLE[id])?lSeat(di,id,key,ed):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+moreSeats(di,key,ed);
         const n=rowCrew('g',[di,ri]).filter(Boolean).length;
         h+=plRow(x.prog,x.str,x.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x);});
@@ -545,7 +563,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           +`<div class="ppl one">${pk}</div>${plRmk(null,ed,null,inp.remarks||'')}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
-    if(ed)h+=inGrp('Personal inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true);
+    if(ed)h+=inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true);
     // ---- available crew (computed, not an input type) stays scheduler-side ----
     if(ed)h+=availHTML(d,di,ed);
     h+=inGrp('Unavailable',(inp:any)=>isUnavail(inp.type)||inp.acc==='u','sec-unav',true);

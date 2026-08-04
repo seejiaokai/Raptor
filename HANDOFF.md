@@ -38,23 +38,35 @@ The port from the original single-file app is complete; that history is in
   part of the issued document. Snapshots are session-only, like everything
   else.
 - **Personal inputs need accepting (Aug 26).** A day now closes with three
-  blocks, not five: `Ground programme` (the scheduler's, titled
-  `· scheduler` only on the edit side), `Personal inputs` (scheduler-side ONLY)
+  blocks, not five: `Ground Programme` (the scheduler's, titled
+  `· scheduler` only on the edit side), `Personal Inputs` (scheduler-side ONLY)
   and `Unavailable` (Detachment + Leave + Downchit, everyone). `Available` and
   `Office` are gone as types and as blocks. A personal input reaches the issued
-  programme only when a scheduler **accepts** it, which pushes a real ground row;
-  the input stays behind, faded, with Undo. See `docs/engine-rules.md`
-  §Accepting a personal input.
+  programme only when a scheduler **accepts** it, which pushes a real ground row
+  (type as title, remarks in the row's rmks cell, callsign in `who`); the input
+  stays behind, faded, with Undo. **The validator only sees an input once it is
+  actioned** (`inputFlags` gate in `collectEvents`) — un-actioned personal
+  inputs are requests and flag nothing. Ground Programme renders in start-time
+  order (render-time only; `ri` keys stay model-true — `groundOrder` in
+  `ui/html.ts`). The Inputs page takes start/end times (defaults 06:00–18:00;
+  the old hardcode is gone). See `docs/engine-rules.md` §Accepting a personal
+  input and §validation.
 - **Drag-to-section is NOT implemented.** The owner asked for `Other` rows to be
   draggable onto Unavailable or Ground programme on the edit week. The same
   capability shipped as two buttons (`→ Ground` / `→ Unavail`) on both the week
   and the board, which is complete but not the drag interaction. `drag.ts` is
   the hard-won touch/mouse machine and adding drop targets there needs the
   browser probes, not Vitest.
-- **`Fly` now blocks.** The offer exemption is gone, so a `Fly` input clashes
-  with a sortie and eats brief/debrief time like a Meeting. Reference probe
-  `audit2 #8` pins the OLD rule and therefore fails on the port by design —
-  recorded in `docs/probe-sweep.md`.
+- **`Fly` now blocks (once actioned).** The offer exemption is gone: a `Fly`
+  input filed under Unavailable clashes with a sortie and eats brief/debrief
+  time like a Meeting, on its stated times only. Reference probe `audit2 #8`
+  pins the OLD rule and therefore fails on the port by design — recorded in
+  `docs/probe-sweep.md`.
+- **Resolved (Aug 26): accept used to store the person ID in the ground row's
+  `who`.** It now stores the callsign like every other ground write; rows
+  persisted before the fix keep the id form and stay unresolved for people
+  whose id ≠ lowercased callsign (Hao Wen, X-Ray) — same visible behaviour as
+  before, no migration.
 - **Scheduler notes are edit/board only** — four boxes (`pn:` programme,
   `dtn:` duties, `sn:` sims, `gn:` ground). They never render on the view page,
   even when populated, and like every other edit here they do not survive a
@@ -64,6 +76,11 @@ The port from the original single-file app is complete; that history is in
   on the pre-change baseline. Measured, not assumed. CI does not run it
   (`deploy.yml` gates on `npm test`, `tfin.js`, `npm run build`); judge it over
   several runs, not one.
+- **Open spec question (owner not yet asked, Aug 26):** should a `Fly` input
+  ALSO make a man count as not-free in the Available-crew strip / free-count
+  ranking? Today it clashes (once actioned) but does not change `dayOff` —
+  extending `dayOff` would drop people out of the crew strip and change the
+  edit-mode `availpuck`. Ask before building anything on either answer.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
   GitHub Actions). The workflow refuses to publish on any red test.
 

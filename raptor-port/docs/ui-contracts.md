@@ -101,19 +101,21 @@ assertion and pins the pill structure separately.
 
 `boardHTML(di, pv)` renders, in order: sign-off strip (first child — pinned
 by a test; pv-suppressed) · overall notes · overall programme · flying waves
-· **Duties** (`.sb-panel.duty`) · **Sims** (`.simr`, AMT/OFT rows) ·
-**Ground programme · scheduler** (`.grnd`) · **Ground programme · personal
-inputs** (`.pinp`) · sim planning notes. The duty/sim/ground panels (added
-Aug 26) share the `c6r` grid (Item | Start | End | People | Rmks | ctl) and
-speak the ordinary grammar — seats `d:di.wi.ri` / `s:di.kind.ri` / `g:di.ri`
-(+ `.xN`, fill `.+`), texts `dl:/dr:/sr:/gr:` via `data-bfld` — so the
-board's generic arm/drag/change handlers cover them with no extra wiring.
-Row mbtns: `dr*/sr*/gr*` cx (CxDialog) / flag / del, `dwadd/dwdel/dradd`,
-`sradd`, `gradd` (board.ts). Duty rows render in MODEL order, not
-`dutySort` — an editor whose rows jump as a role is typed would be hostile.
-`.pinp` is read-only always: aircrew-submitted inputs have no funnel keys;
-they are edited on the Inputs page. Every control is pv-gated in markup AND
-guarded at runtime (DPREV check) like the rest of the board.
+· **Duties** (`.sb-panel.duty`) · **Sims** (`.simr`, AMT/OFT rows, its
+planning note inside the panel) · **Ground Programme · scheduler** (`.grnd`)
+· **Personal Inputs** (`.pinp`, with the accept controls) · **Unavailable**
+(`.unav`). The duty/sim/ground panels (added Aug 26) share the `c6r` grid
+(Item | Start | End | People | Rmks | ctl) and speak the ordinary grammar —
+seats `d:di.wi.ri` / `s:di.kind.ri` / `g:di.ri` (+ `.xN`, fill `.+`), texts
+`dl:/dr:/sr:/gr:` via `data-bfld` — so the board's generic arm/drag/change
+handlers cover them with no extra wiring. Row mbtns: `dr*/sr*/gr*` cx
+(CxDialog) / flag / del, `dwadd/dwdel/dradd`, `sradd`, `gradd` (board.ts).
+Duty rows render in MODEL order, not `dutySort` — an editor whose rows jump
+as a role is typed would be hostile. Ground rows render through
+`groundOrder` (see the blocks section below). `.pinp` rows themselves are
+read-only (aircrew-submitted inputs have no funnel keys; they are edited on
+the Inputs page) — only the accept buttons act. Every control is pv-gated in
+markup AND guarded at runtime (DPREV check) like the rest of the board.
 
 ## The day's three closing blocks, and who sees them
 
@@ -122,9 +124,24 @@ A day ends with three blocks, not the reference's five (owner request, Aug 26 �
 
 | block | view-only | edit week / board |
 |---|---|---|
-| `Ground programme` — the scheduler's own rows | ✓ | ✓, titled `Ground programme · scheduler` |
-| `Personal inputs` — what aircrew submitted | ✗ | ✓ |
+| `Ground Programme` — the scheduler's own rows | ✓ | ✓, titled `Ground Programme · scheduler` |
+| `Personal Inputs` — what aircrew submitted | ✗ | ✓ |
 | `Unavailable` — Detachment, Leave, Downchit | ✓ | ✓ |
+
+(Owner casing, Aug 26: `Ground Programme` / `Personal Inputs`, everywhere they
+are titled — both week surfaces, both board panels, and the Inputs page h1.)
+
+**Ground Programme rows read in start-time order** (owner, Aug 26), via
+`groundOrder` in `ui/html.ts`, used by the week AND the board panel. The sort
+is RENDER-TIME ONLY: `ri` is the slot key (`g:di.ri` / `gr:di.ri`) and pending
+marks, AL colouring and published amendments all address through it, so the
+model array is never reordered — each rendered row keeps its model index for
+every key it emits, which is why a delete or drag on a visually re-ordered row
+still hits the right model row. Time-less rows (all-day accepts, fresh
+`+ Item` blanks) sink to the bottom, which is also where the model appends
+them. `parseHM` reads both the seed's `'1020'` and accept's `'10:20'` forms.
+Version previews re-render through the same builders, so historical previews
+sort too — render-time by design.
 
 The split is decided in ONE place, `isPersonal` / `isUnavail` in
 `engine/inputs.ts`; the week and the board both used to carry their own copy of
@@ -139,13 +156,18 @@ is still an answer.
 ## Accepting a personal input
 
 A personal input is not part of the issued programme until a scheduler accepts
-it, which is why the view page never shows that block. `acceptInput()` (in the
-mutation funnel, `engine/slots.ts`) promotes it into the day's ground programme
-as an ordinary row — from then on it validates, drags, publishes and prints for
-everyone. `Other` is the one type whose destination is ambiguous, so it offers
-both `→ Ground` and `→ Unavail`; everything else has a single `Accept`.
+it, which is why the view page never shows that block — and why the validator
+does not see it either (`inputFlags`, see `engine-rules.md`). `acceptInput()`
+(in the mutation funnel, `engine/slots.ts`) promotes it into the day's ground
+programme as an ordinary row — from then on it validates, drags, publishes and
+prints for everyone. The row's title is the input's TYPE (`MEETING`), its
+remarks travel to the row's own `rmks` cell, and `who` stores the CALLSIGN
+like every other ground write (an id would render as free text for anyone
+whose id ≠ lowercased callsign — Hao Wen, X-Ray). `Other` is the one type
+whose destination is ambiguous, so it offers both `→ Ground` and `→ Unavail`;
+everything else has a single `Accept`.
 
-The accepted row STAYS in Personal inputs, faded (`.pl-row.accd`), with an
+The accepted row STAYS in Personal Inputs, faded (`.pl-row.accd`), with an
 `Undo` — so the scheduler can see what they have dealt with. The ground row
 carries `src`, a content key back to the input, so `unacceptInput()` removes the
 right row even after other rows shift around it; an index would rot.

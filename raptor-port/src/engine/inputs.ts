@@ -37,6 +37,14 @@ export const INPUT_TYPES=['LL','OL','OIL','Detachment','Training','Meeting','Fly
 export function isDetach(t:any){return /^Detachment$/i.test(String(t==null?'':t).trim());}
 export function isUnavail(t:any){return isDetach(t)||isLeave(t)||isDownchit(t);}
 export function isPersonal(t:any){return /^(Meeting|Training|Personal|Appointment|Fly|Other)$/i.test(String(t==null?'':t).trim());}
+/* The validator's gate (owner, Aug 26): an unavailable-typed input always
+   counts, but a personal input only counts once a scheduler has ACTIONED it.
+   'u' files it under Unavailable, so it clashes like a Detachment does; 'g' is
+   already represented by the ground row acceptInput created — letting it flag
+   here too would print every clash twice (INPUT_FLY on the input plus
+   DOUBLE_BOOK on the row). An un-actioned personal input is invisible to
+   validate(): it is a request, not yet part of anyone's programme. */
+export function inputFlags(inp:any){return isUnavail(inp.type)||inp.acc==='u';}
 /* inputs use machine-readable date + minute fields so the validator can reason about them.
    s/e are minutes-from-midnight; allday inputs cover the whole day. */
 export let INPUTS:any[]=[

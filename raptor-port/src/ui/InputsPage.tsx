@@ -6,7 +6,7 @@
 import { useState } from 'react'
 import { INPUTS, INPUT_TYPES, DATES } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { hhmm } from '../engine/time'
+import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { SESSION, ME } from '../state/auth'
 import { writeInputs, notify } from '../state/store'
@@ -26,6 +26,10 @@ export function InputsPage() {
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
   const [allday, setAllday] = useState(true)
+  /* the defaults reproduce the old hardcoded window, so an untouched form
+     still writes 06:00–18:00 */
+  const [sTime, setSTime] = useState('06:00')
+  const [eTime, setETime] = useState('18:00')
   const [repeat, setRepeat] = useState(0)
   const [remarks, setRemarks] = useState('')
   const [fPerson, setFPerson] = useState('all')
@@ -37,9 +41,14 @@ export function InputsPage() {
        shared model — the role gate is the reference's, verbatim */
     if (SESSION.role !== 'admin') return HOOKS.toast('View only — ask a scheduler to add this', 'warn')
     const date = fmt(start), endDate = end && fmt(end) !== date ? fmt(end) : undefined
+    /* timing is the owner's ask (Aug 26): the validator reasons in minutes, so
+       a timed input carries the times the aircrew actually stated — no more
+       silent 06:00–18:00. The overlap math assumes s < e within one day. */
+    const s = allday ? 0 : parseHM(sTime), e = allday ? 1439 : parseHM(eTime)
+    if (!allday && (s == null || e == null)) return HOOKS.toast('Give the input a start and end time, or tick All day', 'warn')
+    if (!allday && (e as number) <= (s as number)) return HOOKS.toast('End time must be after start time', 'warn')
     writeInputs(() => INPUTS.unshift({
-      person, date, endDate, allday,
-      s: allday ? 0 : 360, e: allday ? 1439 : 1080,
+      person, date, endDate, allday, s, e,
       type, remarks: remarks.trim(),
       recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
     }))
@@ -58,7 +67,7 @@ export function InputsPage() {
 
   return (
     <>
-      <div className="title"><h1>Personal inputs</h1></div>
+      <div className="title"><h1>Personal Inputs</h1></div>
       <div className="inbar">
         <div className="ingrid">
           <div className="ifield"><label>Person</label>
@@ -68,6 +77,8 @@ export function InputsPage() {
           <div className="ifield"><label>Start</label><input id="inStart" type="date" value={start} onChange={e => setStart(e.target.value)} /></div>
           <div className="ifield"><label>End</label><input id="inEnd" type="date" value={end} onChange={e => setEnd(e.target.value)} /></div>
           <div className="ifield chk"><label>All day</label><input id="inAllday" type="checkbox" checked={allday} onChange={e => setAllday(e.target.checked)} /></div>
+          <div className="ifield"><label>Start time</label><input id="inStartT" type="time" value={sTime} disabled={allday} onChange={e => setSTime(e.target.value)} /></div>
+          <div className="ifield"><label>End time</label><input id="inEndT" type="time" value={eTime} disabled={allday} onChange={e => setETime(e.target.value)} /></div>
           <div className="ifield"><label>Type</label>
             <select id="inType" aria-label="Input type" value={type} onChange={e => setType(e.target.value)}>
               {INPUT_TYPES.map((t: string) => <option key={t}>{t}</option>)}

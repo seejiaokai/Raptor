@@ -137,20 +137,25 @@ describe('validation engine (tfin F)', () => {
    (owner decision, Aug 26) and the reference assertion no longer describes the
    port: a man who says he is flying elsewhere is not available for this sortie,
    so Fly now costs exactly what a Meeting costs. */
-describe('every personal input is a commitment, Fly included', () => {
-  it('Fly eats brief/debrief time exactly as a meeting does', () => {
+describe('personal inputs flag only once actioned (owner, Aug 26)', () => {
+  it('un-actioned Fly/Meeting are invisible; filed under Unavailable, Fly clashes exactly as a Meeting does', () => {
     const d = DAYS[0], ce = collectEvents()[0]
     const id = ((ce.fly || []).find((e: any) => !isSpecial(e.id)) || {}).id
     expect(id).toBeTruthy()
-    const n = (t: string) => {
-      INPUTS.push({ person: id, date: d.dt, allday: false, s: 300, e: 1380, type: t, remarks: '', mod: '' })
+    const n = (t: string, acc?: string) => {
+      INPUTS.push({ person: id, date: d.dt, allday: false, s: 300, e: 1380, type: t, remarks: '', mod: '', ...(acc ? { acc } : {}) })
       const c = validate().all.filter((x: any) => (x.who || []).indexOf(id) >= 0
         && (x.code === 'NO_BRIEF' || x.code === 'DEBRIEF')).length
       INPUTS.pop(); return c
     }
     const base = validate().all.filter((x: any) => (x.who || []).indexOf(id) >= 0
       && (x.code === 'NO_BRIEF' || x.code === 'DEBRIEF')).length
-    const fly = n('Fly'), meeting = n('Meeting')
+    /* a submitted-but-unactioned personal input is a request, not a
+       commitment — the validator must not see it at all */
+    expect(n('Fly')).toBe(base)
+    expect(n('Meeting')).toBe(base)
+    /* filed under Unavailable it is real, and Fly gets no offer exemption */
+    const fly = n('Fly', 'u'), meeting = n('Meeting', 'u')
     validate()
     expect(fly).toBeGreaterThan(base)
     expect(fly).toBe(meeting)
