@@ -183,6 +183,28 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(alColor(1)).toBe('#3BC6E8')
     expect(alColor(3)).toBe('#3DE86B')
     expect(alColor(4)).toBe('#FFFFFF')
+    expect(alColor(5)).toBe('#B388FF')   // purple
+    expect(alColor(6)).toBe('#FF7FC4')   // pink
+    expect(alColor(7)).toBe('#E5872B')   // orange
+  })
+
+  /* every colour is also a background the ALn tag is printed on in #08131b, so a
+     dark entry makes its own tag unreadable — the AL5 magenta this replaced sat
+     at 3.5:1. Pin the floor rather than the hexes alone, or the next recolour
+     re-introduces the fault the recolour was for. */
+  it('every AL colour carries its own tag in dark ink', () => {
+    const lum = (hex: string) => {
+      const ch = [1, 3, 5].map(i => {
+        const c = parseInt(hex.slice(i, i + 2), 16) / 255
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+      })
+      return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2]
+    }
+    const ink = lum('#08131b')
+    for (let n = 1; n <= 7; n++) {
+      const ratio = (lum(alColor(n)) + 0.05) / (ink + 0.05)
+      expect(ratio, `AL${n} ${alColor(n)}`).toBeGreaterThanOrEqual(4.5)
+    }
   })
 })
 

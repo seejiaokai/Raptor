@@ -727,18 +727,22 @@ body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
 .schedbanner .sb-al{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;
   color:var(--ink-2);background:rgba(0,0,0,.28);border:1px solid var(--alc);border-radius:999px;padding:2px 9px}
 .schedbanner .sb-al b{color:var(--alc);font-weight:800;letter-spacing:.04em}
-/* ---- AL amendment marks: ONLY the changed item is coloured ---- */
+/* ---- AL amendment marks: ONLY the changed item is coloured ----
+   Keep in step with AL_COLORS in engine/publish.ts — the banner reads its tint
+   from there, everything else from these rules, and the two drifting apart shows
+   up as one AL wearing two colours on the same screen.
+   The catch-all goes FIRST on purpose: `[data-alc]` and `[data-alc="5"]` have
+   identical specificity, so source order is the only thing that decides. The
+   numbered rules used to be listed above it and lost, which is why they were
+   pasted a second time underneath — one colour, two places to edit. */
+[data-alc]{--alc:#E5872B}       /* any AL past the palette — a visible mark beats an unset var */
 [data-alc="1"]{--alc:#3BC6E8}   /* AL1 · cyan blue */
 [data-alc="2"]{--alc:#E5C24A}   /* AL2 · amber */
 [data-alc="3"]{--alc:#3DE86B}   /* AL3 · bright green */
 [data-alc="4"]{--alc:#FFFFFF}   /* AL4 · white */
-[data-alc="5"]{--alc:#C21E93}
-[data-alc="6"]{--alc:#E5872B}   /* moved off green so it can't be read as AL3 */
-[data-alc="7"]{--alc:#8A6ED0}
-/* any AL past the palette still gets a visible mark rather than an unset var */
-[data-alc]{--alc:#8A6ED0}
-[data-alc="1"]{--alc:#3BC6E8}[data-alc="2"]{--alc:#E5C24A}[data-alc="3"]{--alc:#3DE86B}
-[data-alc="4"]{--alc:#FFFFFF}[data-alc="5"]{--alc:#C21E93}[data-alc="6"]{--alc:#E5872B}
+[data-alc="5"]{--alc:#B388FF}   /* AL5 · purple */
+[data-alc="6"]{--alc:#FF7FC4}   /* AL6 · pink */
+[data-alc="7"]{--alc:#E5872B}   /* AL7 · orange — off green so it can't be read as AL3 */
 .seat[data-alc]{position:relative}
 .seat[data-alc] .puck{box-shadow:0 0 0 2px var(--alc)}
 .seat[data-alc]::after{content:'AL' attr(data-alc);position:absolute;top:-5px;right:-3px;z-index:4;

@@ -56,9 +56,14 @@ export function setDayApproved(di:any,on:any){
   reflow(); histPush();
   toast(on?`${DAYS[di].dow} published — APPROVED`:`${DAYS[di].dow} reopened to draft`);
 }
-/* AL1 cyan · AL2 amber · AL3 bright green · AL4 white · then magenta, orange, violet.
+/* AL1 cyan · AL2 amber · AL3 bright green · AL4 white · AL5 purple · AL6 pink ·
+   AL7 orange. Every entry has to read as an ALn tag in dark ink (#08131b) on top
+   of itself, so the ramp stays light and saturated — the old AL5 magenta (#C21E93)
+   was too dark for its own tag. Orange moved 6→7 to make room for the pink; it
+   stays off green so it can never be misread as AL3, and it is the last entry,
+   which alColor() also hands to any AL past the palette.
    Must stay in step with the [data-alc="n"]{--alc:…} rules in the stylesheet. */
-export const AL_COLORS:any[]=['','#3BC6E8','#E5C24A','#3DE86B','#FFFFFF','#C21E93','#E5872B','#8A6ED0'];
+export const AL_COLORS:any[]=['','#3BC6E8','#E5C24A','#3DE86B','#FFFFFF','#B388FF','#FF7FC4','#E5872B'];
 export function alColor(n:any){return AL_COLORS[n]||AL_COLORS[AL_COLORS.length-1];}
 export function pendCount(){return Object.keys(SCHED.pending).length;}
 /* record an edit.  `key` is the slot/field address that changed — that single
