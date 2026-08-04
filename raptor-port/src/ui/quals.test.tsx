@@ -6,7 +6,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
-import { PEOPLE, isScheduler } from '../engine/people'
+import { PEOPLE, isScheduler, ID_BY_CS } from '../engine/people'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -95,5 +95,57 @@ describe('the Quals page (tfin)', () => {
     expect($$('#qtbl tbody tr').length).toBeGreaterThan(10)
     expect($('#qEdit')).toBeFalsy()
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+  })
+})
+
+/* CALLSIGN + INITIALS (owner, Aug 26). The callsign is the identity the whole
+   app plans by — it is what every puck prints — so it heads the table and is
+   the only field Add person requires; first/last name are gone. */
+describe('the callsign / initials columns', () => {
+  const setV = async (el: HTMLElement, v: string) => act(async () => {
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+    setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+
+  it('the table heads with Callsign then Initials, and Name is gone', () => {
+    const hs = $$('#qtbl thead th').map(x => x.textContent)
+    expect(hs[0]).toBe('Callsign')
+    expect(hs[1]).toBe('Initials')
+    expect(hs).not.toContain('Name')
+    // every row carries the new cell, so the columns stay square
+    expect($$('#qtbl tbody tr:not(.grp) td.qinitc').length).toBe($$('#qtbl tbody tr:not(.grp)').length)
+  })
+
+  it('Add person takes callsign + initials + pilot/WSO + cat, with no name fields', async () => {
+    expect($('#qLast')).toBeFalsy()
+    expect($('#qFirst')).toBeFalsy()
+    await setV($('#qCS') as HTMLElement, 'Tester')
+    await setV($('#qInitials') as HTMLElement, 'tkl')
+    await click($('#qAddPerson'))
+    const id = Object.keys(PEOPLE).find(k => PEOPLE[k].cs === 'Tester')!
+    expect(id, 'the person was added').toBeTruthy()
+    expect(PEOPLE[id].initials).toBe('TKL')          // stored upper-case
+    expect(PEOPLE[id].seat).toBe('FCP')
+    expect(PEOPLE[id].q).toBe('OCU')
+    // the callsign is what a puck would resolve — that identity still holds
+    expect(ID_BY_CS['tester']).toBe(id)
+    const row = $$('#qtbl tbody tr:not(.grp)').find(r => r.querySelector('.qname')!.textContent === 'Tester')!
+    expect(row.querySelector('.qinitc')!.textContent).toBe('TKL')
+    PEOPLE[id].archived = true; delete ID_BY_CS['tester']
+    await act(async () => notify())
+  })
+
+  it('edit mode lets an existing person\'s initials be filled in', async () => {
+    await click($('#qEdit'))
+    const input = $('#qtbl input.qinit[data-init]') as HTMLInputElement
+    expect(input, 'edit mode renders an initials input').toBeTruthy()
+    const id = input.dataset.init!
+    await act(async () => {
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+      setter.call(input, 'ab'); input.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    expect(PEOPLE[id].initials).toBe('AB')
+    PEOPLE[id].initials = ''
+    await act(async () => notify())
   })
 })

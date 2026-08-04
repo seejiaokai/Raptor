@@ -940,6 +940,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .qtbl.editing .qcell{cursor:pointer}
 .qtbl.editing .qcell:hover{background:rgba(59,198,232,.12)}
 .qlvlsel{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-size:11px;border-radius:6px;padding:2px 4px}
+/* the INITIALS column: plain text until edit mode hands it an input */
+.qtbl .qinitc{color:var(--ink-2);letter-spacing:.04em;font-weight:600}
+.qinit{width:52px;background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-size:11px;
+  border-radius:6px;padding:2px 4px;text-align:center;text-transform:uppercase;letter-spacing:.04em}
+.qinit:focus{outline:none;border-color:var(--accent)}
 .qarch{color:var(--hard);cursor:pointer;font-weight:800;display:none}
 .qtbl.editing .qarch{display:inline}
 .qmini{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:15px;border-radius:3px;font-size:9px;font-weight:800;color:#fff;margin-right:4px}
