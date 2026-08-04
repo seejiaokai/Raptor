@@ -101,6 +101,11 @@ assertion and pins the pill structure separately.
 
 `applyDrop()` is the ONE drop path for mouse and touch.
 
+- The `body.dnd` decoration is added one tick AFTER dragstart (guarded on
+  the drag still being alive), never synchronously: Chromium aborts a
+  native drag whose dragstart handler reflows the page before the drag
+  image is captured, which killed every desktop mouse drag. The touch
+  machine keeps its synchronous `dndOn` — no native capture there.
 - Touch drag: 8px slop restarts the 180ms hold, >26px cancels; ghost
   follows finger; click-eater dies on next pointerdown.
 - Toast is `pointer-events:none`.

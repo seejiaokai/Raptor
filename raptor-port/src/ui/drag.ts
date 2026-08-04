@@ -146,7 +146,7 @@ export function applyDrop(el: any, x: any, y: any) {
   DRAG = null; dndOff(); return false
 }
 
-/* ---- the mouse path: HTML5 drag events, verbatim ---- */
+/* ---- the mouse path: HTML5 drag events ---- */
 function onDragStart(e: DragEvent) {
   const d = dragFrom(e.target); if (!d) return
   DRAG = d
@@ -154,7 +154,16 @@ function onDragStart(e: DragEvent) {
     e.dataTransfer.effectAllowed = d.kind === 'slot' ? 'move' : 'copy'
     try { e.dataTransfer.setData('text/plain', d.kind === 'slot' ? d.key : d.id) } catch (_) {}
   }
-  dndOn(e.target)
+  /* Chromium aborts a native drag whose dragstart handler restyles the page
+     before the drag image is captured — body.dnd reflows every drop cell
+     ("drop here", the + add strips), so adding it synchronously killed every
+     mouse drag ~7ms in: dragstart, then dragend, nothing in between, the puck
+     just snapped back. One tick later the browser has its image and the same
+     decoration is harmless. Guard on DRAG: a drag that already ended must not
+     decorate the page after the fact. (The touch path keeps its synchronous
+     dndOn — no native capture there.) */
+  const from = e.target
+  setTimeout(() => { if (DRAG === d) dndOn(from) }, 0)
 }
 function onDragOver(e: DragEvent) {
   if (!DRAG) return

@@ -6,7 +6,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
+import { initStore, wireStore, setSession, notify } from '../state/store'
 import { slotVal, setSlotVal, rowCrew, fillSlot } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
 import { setEditOn, afterSchedMutate, armedKey } from '../state/view'
@@ -265,6 +265,55 @@ describe('a stale arm always has a way down', () => {
     expect(armedKey()).toBe(cell.dataset.fill)
     await act(async () => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })) })
     expect(armedKey()).toBe('')
+  })
+})
+
+/* Chromium aborts a native drag whose dragstart handler restyles the page
+   before the drag image is captured — adding body.dnd synchronously killed
+   every mouse drag (owner report, Aug 26: nothing dragged in from the
+   Placeholders row, or anywhere else, on a desktop). The decoration now waits
+   one tick; these pin the timing and the no-stale-class guard. */
+describe('the dragstart decoration waits one tick', () => {
+  const src = () => $('#eRoster .rpuck[data-person]')
+  const ev = (t: string) => new Event(t, { bubbles: true, cancelable: true })
+
+  it('body.dnd is not added synchronously, but lands a tick later', async () => {
+    src().dispatchEvent(ev('dragstart'))
+    expect(document.body.classList.contains('dnd')).toBe(false)
+    await new Promise(r => setTimeout(r, 0))
+    expect(document.body.classList.contains('dnd')).toBe(true)
+    src().dispatchEvent(ev('dragend'))
+    expect(document.body.classList.contains('dnd')).toBe(false)
+  })
+
+  it('a drag that ends before the tick never decorates the page', async () => {
+    src().dispatchEvent(ev('dragstart'))
+    src().dispatchEvent(ev('dragend'))
+    await new Promise(r => setTimeout(r, 0))
+    expect(document.body.classList.contains('dnd')).toBe(false)
+  })
+})
+
+/* isPhone was never wired in the port — the default `false` meant a palette
+   drag on a phone never parked the drawer, so the drop could only land back
+   on the drawer itself: a silent no-op. */
+describe('isPhone is wired', () => {
+  it('follows matchMedia when the browser provides it', () => {
+    const orig = (window as any).matchMedia
+    ;(window as any).matchMedia = (q: string) => ({ matches: q === '(max-width:820px)' })
+    wireStore()
+    expect(HOOKS.isPhone()).toBe(true)
+    ;(window as any).matchMedia = () => ({ matches: false })
+    expect(HOOKS.isPhone()).toBe(false)
+    ;(window as any).matchMedia = orig
+  })
+
+  it('falls back to innerWidth where matchMedia is missing (jsdom)', () => {
+    const orig = (window as any).matchMedia
+    delete (window as any).matchMedia
+    wireStore()
+    expect(HOOKS.isPhone()).toBe(window.innerWidth <= 820)
+    ;(window as any).matchMedia = orig
   })
 })
 
