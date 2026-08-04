@@ -5,6 +5,7 @@ import { PEOPLE, nameToId } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
+import { alAttr } from '../engine/publish'
 import { esc } from '../state/view'
 import { ORD } from './html'
 import { puck, rowCls } from './html'
@@ -59,7 +60,7 @@ export function sbNotesPanel(d:any,di:any){
     +`<span class="gctl"><button class="mbtn add" data-nadd="${di}" title="Add a note line">+ Note</button></span></div><div class="sb-pb">`;
   if(!n.length)s+=`<div class="sb-empty">Nothing yet — “+ Note” adds a line that every viewer sees at the top of the day.</div>`;
   n.forEach((t:any,ni:any)=>{ s+=`<div class="sb-nrow"><span class="nx">${ni+1}.</span>`
-    +`<input class="nin" data-bfld="dn:${di}.${ni}" value="${esc(t)}" placeholder="e.g. EP OF THE WEEK — ENGINE FIRE ON GROUND">`
+    +`<input class="nin" data-bfld="dn:${di}.${ni}"${alAttr(`dn:${di}.${ni}`)} value="${esc(t)}" placeholder="e.g. EP OF THE WEEK — ENGINE FIRE ON GROUND">`
     +`<button class="mbtn del" data-ndel="${di}.${ni}" title="Remove this note">✕</button></div>`; });
   return s+`</div></div>`;
 }
@@ -75,13 +76,13 @@ export function sbProgPanel(d:any,di:any){
       const arr=whoArr(x);
       /* same hole guard as the week view — an empty .itxt shifts every later puck */
       const inner=arr.map((nm:any,k:any)=>{const id=nameToId(nm);
-        if(id&&PEOPLE[id])return `<span class="seat" data-slot="a:${di}.${ri}.${k}" draggable="true">${puck(id,sevOf(di,id),true,chipOf(di,id))}</span>`;
+        if(id&&PEOPLE[id])return `<span class="seat" data-slot="a:${di}.${ri}.${k}"${alAttr(`a:${di}.${ri}.${k}`)} draggable="true">${puck(id,sevOf(di,id),true,chipOf(di,id))}</span>`;
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
       s+=`<div class="sb-arow${rowCls(x)}">`
-        +`<input class="ain" data-bfld="ap:${di}.${ri}.prog" value="${esc(x.prog||'')}" placeholder="MASS BRIEF">`
-        +`<input class="ain" data-bfld="ap:${di}.${ri}.sub" value="${esc(x.sub||'')}" placeholder="detail / location">`
-        +`<input class="atm" data-bfld="ap:${di}.${ri}.str" value="${esc(x.str||'')}" placeholder="0800">`
-        +`<input class="atm" data-bfld="ap:${di}.${ri}.end" value="${esc(x.end||'')}" placeholder="0900">`
+        +`<input class="ain" data-bfld="ap:${di}.${ri}.prog"${alAttr(`ap:${di}.${ri}.prog`)} value="${esc(x.prog||'')}" placeholder="MASS BRIEF">`
+        +`<input class="ain" data-bfld="ap:${di}.${ri}.sub"${alAttr(`ap:${di}.${ri}.sub`)} value="${esc(x.sub||'')}" placeholder="detail / location">`
+        +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)} value="${esc(x.str||'')}" placeholder="0800">`
+        +`<input class="atm" data-bfld="ap:${di}.${ri}.end"${alAttr(`ap:${di}.${ri}.end`)} value="${esc(x.end||'')}" placeholder="0900">`
         +`<div class="ppl" data-fill="a:${di}.${ri}.+">${inner||'<span class="itxt">all</span>'}</div>`
         +`<span class="lctl">`
         +`<button class="mbtn${x.cx?' on':''}" data-pcx="${di}.${ri}" title="${x.cx?'Restore this item':'Cancel this item (CX)'}">CX</button>`
@@ -94,11 +95,13 @@ export function sbProgPanel(d:any,di:any){
 /* ---- board panel 3: sim planning notes, at the bottom of the board ------- */
 export function sbSimPanel(d:any,di:any){
   return `<div class="sb-panel simn"><div class="sb-ph">Sim planning notes <span class="sub">read by whoever plans the next cycle</span></div>`
-    +`<div class="sb-pb"><textarea class="sb-nbox" data-bfld="sn:${di}" placeholder="e.g. OFT 2 u/s Thu PM — 4-ship EP profile pushed to next week. Divot still owes an AMT EP.">${esc(d.simnotes||'')}</textarea>`
+    +`<div class="sb-pb"><textarea class="sb-nbox" data-bfld="sn:${di}"${alAttr(`sn:${di}`)} placeholder="e.g. OFT 2 u/s Thu PM — 4-ship EP profile pushed to next week. Divot still owes an AMT EP.">${esc(d.simnotes||'')}</textarea>`
     +`<div class="sb-hint">Appears under the Sims block of the day for every viewer.</div></div></div>`;
 }
+/* the board never carried the amendment marks the week view had — added with
+   the AL preview (Aug 26) so a board edit shows what it will go out as */
 export function sbSlot(di:any,key:any,seat:any,id:any){
-  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat" data-slot="${key}" draggable="true">${puck(id,sevOf(di,id),true,chipOf(di,id))}</span></div>`;
+  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat" data-slot="${key}"${alAttr(key)} draggable="true">${puck(id,sevOf(di,id),true,chipOf(di,id))}</span></div>`;
   return `<div class="sb-slot empty" data-slot="${key}">+ ${seat==='p'?'FCP':'RCP'}</div>`;
 }
 /* wave title <-> label. night is set explicitly by choosing "Night wave". */

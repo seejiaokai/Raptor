@@ -36,10 +36,15 @@ edits, so check this list when a field "won't save":
 ## Amendment marks on screen
 
 `alAttr(key)` emits `data-alc="n"` (published in AL n) or `data-alp="1"`
-(pending). Pucks and the area/time/rmk/in-times cells get outlines and an
-ALn tag; every other inline-edited string gets an AL-coloured underline +
-tag once published. Pending edits deliberately show NO text-level mark
-(owner decision — the dashed underline read as noise while editing).
+(pending); pending on a PUBLISHED day also carries `data-aln="n"` — the
+`nextAL()` it will go out as. Pucks and the area/time/rmk/in-times cells
+get outlines and an ALn tag; every other inline-edited string gets an
+AL-coloured underline + tag once published. Pending marks split by
+surface (owner request, Aug 26): on `#eWeek` and `#schedBoard`,
+`data-aln` items are painted DOTTED in the upcoming AL's colour (solid
+means issued, dotted means coming); the view-only page and draft-day
+edits keep the neutral dashed hint and no text-level mark. `data-aln`
+resolves its colour through the same `--alc` palette rules as `data-alc`.
 
 ## Drag / arm-and-plant (hard-won — test on touch)
 

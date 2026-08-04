@@ -734,15 +734,18 @@ body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
    The catch-all goes FIRST on purpose: `[data-alc]` and `[data-alc="5"]` have
    identical specificity, so source order is the only thing that decides. The
    numbered rules used to be listed above it and lost, which is why they were
-   pasted a second time underneath — one colour, two places to edit. */
-[data-alc]{--alc:#E5872B}       /* any AL past the palette — a visible mark beats an unset var */
-[data-alc="1"]{--alc:#3BC6E8}   /* AL1 · cyan blue */
-[data-alc="2"]{--alc:#E5C24A}   /* AL2 · amber */
-[data-alc="3"]{--alc:#3DE86B}   /* AL3 · bright green */
-[data-alc="4"]{--alc:#FFFFFF}   /* AL4 · white */
-[data-alc="5"]{--alc:#B388FF}   /* AL5 · purple */
-[data-alc="6"]{--alc:#FF7FC4}   /* AL6 · pink */
-[data-alc="7"]{--alc:#E5872B}   /* AL7 · orange — off green so it can't be read as AL3 */
+   pasted a second time underneath — one colour, two places to edit.
+   data-aln (a pending edit previewing the AL it will go out as) resolves
+   through the SAME rules, so published marks and their preview can never
+   disagree about what colour an AL is. */
+[data-alc],[data-aln]{--alc:#E5872B}       /* any AL past the palette — a visible mark beats an unset var */
+[data-alc="1"],[data-aln="1"]{--alc:#3BC6E8}   /* AL1 · cyan blue */
+[data-alc="2"],[data-aln="2"]{--alc:#E5C24A}   /* AL2 · amber */
+[data-alc="3"],[data-aln="3"]{--alc:#3DE86B}   /* AL3 · bright green */
+[data-alc="4"],[data-aln="4"]{--alc:#FFFFFF}   /* AL4 · white */
+[data-alc="5"],[data-aln="5"]{--alc:#B388FF}   /* AL5 · purple */
+[data-alc="6"],[data-aln="6"]{--alc:#FF7FC4}   /* AL6 · pink */
+[data-alc="7"],[data-aln="7"]{--alc:#E5872B}   /* AL7 · orange — off green so it can't be read as AL3 */
 .seat[data-alc]{position:relative}
 .seat[data-alc] .puck{box-shadow:0 0 0 2px var(--alc)}
 .seat[data-alc]::after{content:'AL' attr(data-alc);position:absolute;top:-5px;right:-3px;z-index:4;
@@ -761,11 +764,35 @@ body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
 .seat[data-alp] .puck{box-shadow:0 0 0 1.5px rgba(242,214,153,.75)}
 .areacell[data-alp],.timecell[data-alp],.rmkcell[data-alp],.intimes[data-alp]{
   outline:1px dashed rgba(242,214,153,.6);outline-offset:-1px;border-radius:4px}
+/* ---- the AL preview (data-aln): pending edits on a PUBLISHED day, painted in
+   the colour of the AL they will go out as — dotted, where the issued mark is
+   solid, so "coming in ALn" and "went out in ALn" never read the same.
+   Owner request (Aug 26). Scoped to the edit surfaces (#eWeek + #schedBoard)
+   by id on purpose: the same builders feed #vWeek, and the view-only page must
+   NOT see these — read-only users see issued amendments only. The id prefix is
+   also what outranks the neutral [data-alp] hints above, which stay as-is for
+   draft-day edits everywhere and for all pending marks on the view page. */
+#eWeek .seat[data-aln] .puck,#schedBoard .seat[data-aln] .puck{
+  box-shadow:none;outline:1.5px dotted var(--alc);outline-offset:1px}
+#eWeek :is(.areacell,.timecell,.rmkcell,.intimes)[data-aln],
+#schedBoard :is(.areacell,.timecell,.rmkcell,.intimes)[data-aln],
+#schedBoard :is(input,textarea)[data-aln]{
+  outline:1px dotted var(--alc);outline-offset:-1px}
+/* the board's fields are <input>/<textarea> — no ::after on replaced elements,
+   so the outline and the title are the whole mark: solid = issued, dotted =
+   coming in the next AL. (The board gained amendment marks with the preview;
+   its seats reuse the generic .seat[data-alc]/[data-aln] rules.) */
+#schedBoard :is(input,textarea)[data-alc]{outline:1px solid var(--alc);outline-offset:-1px}
+#eWeek :is(span,b,i,div)[data-aln]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes),
+#schedBoard :is(span,b,i,div)[data-aln]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes){
+  text-decoration:underline dotted var(--alc);text-decoration-thickness:1px;text-underline-offset:2px}
 /* every OTHER inline-edited string (timings, labels, remarks, notes, list-row
    fields): once PUBLISHED, the mark rides on the text itself — underlined in
    the AL colour with a trailing ALn tag. Pending edits show no text-level
-   mark (owner decision: the dashed underline read as noise while editing);
-   the Amendments panel count and the puck/cell hints still cover pending.
+   mark on the VIEW page (the Amendments panel count and the puck/cell hints
+   cover pending there); on the edit surfaces the data-aln preview above now
+   carries it — the owner asked for it (Aug 26), superseding the earlier call
+   that any pending underline was noise while editing.
    Post-port enhancement: the reference marked only pucks and the cells above. */
 :is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes){
   text-decoration:underline solid var(--alc);text-decoration-thickness:1px;text-underline-offset:2px}

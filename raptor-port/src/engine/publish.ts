@@ -73,12 +73,23 @@ export function markEdit(key?:any){
   renderStatus();
   histPush();
 }
-/* the per-item amendment mark, emitted straight into the renderer's HTML */
+/* the per-item amendment mark, emitted straight into the renderer's HTML.
+   A pending edit on a PUBLISHED day is different from draft work: publishing a
+   day clears its pending marks (the day goes out as it stands), so anything
+   pending on it afterwards is exactly what the next AL will carry. Those keys
+   also get data-aln — the AL number they will go out as — so the edit surfaces
+   can paint them in that AL's colour before it exists (owner request, Aug 26;
+   the view page ignores the attribute). nextAL() is the panel's default pick;
+   choosing a different number in the dropdown is the one case the preview
+   colour can be wrong, and it corrects itself on publish. */
 export function alAttr(key:any){
   if(!key)return '';
   const n=SCHED.changes[key];
   if(n)return ` data-alc="${n}" title="Changed at AL${n}"`;
-  if(SCHED.pending[key])return ` data-alp="1" title="Edited — not published yet"`;
+  if(SCHED.pending[key]){
+    if(dayApproved(keyDay(key))){const x=nextAL();return ` data-alp="1" data-aln="${x}" title="Edited — goes out as AL${x}"`;}
+    return ` data-alp="1" title="Edited — not published yet"`;
+  }
   return '';
 }
 export function alUsed(){return SCHED.als.map((a:any)=>a.n);}
