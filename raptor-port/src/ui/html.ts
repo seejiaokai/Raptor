@@ -518,10 +518,17 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         s+=`<div class="pl-row"><span class="nm"><span class="ntx">${esc(inp.type)}</span></span>${tcell}<div class="ppl one">${pk}</div>${plRmk(null,ed,null,inp.remarks||'')}</div>`; });
       return s+`</div>`; };
     h+=inGrp('Ground programme · personal inputs',(inp:any)=>/Appointment|Meeting|Personal|Training|Fly$|Other/i.test(inp.type),'sec-inp');
-    h+=inGrp('Available',(inp:any)=>/^Available/i.test(inp.type),'sec-avail');
-    h+=inGrp('Office',(inp:any)=>inp.type==='Office','sec-off');
-    // ---- available crew sits directly under Office ----
-    h+=availHTML(d,di,ed);
+    /* Available, Office and the Available-crew strip are SCHEDULING tools —
+       who can be tasked, who is at a desk. The view-only page reads as the
+       issued programme, so they stay off it (owner request, Aug 26). Version
+       previews build with ed=false and follow the view page — intentional.
+       The parity test excises these blocks from the reference string. */
+    if(ed){
+      h+=inGrp('Available',(inp:any)=>/^Available/i.test(inp.type),'sec-avail');
+      h+=inGrp('Office',(inp:any)=>inp.type==='Office','sec-off');
+      // ---- available crew sits directly under Office ----
+      h+=availHTML(d,di,ed);
+    }
     // ---- leave, then downchit, close the day ----
     h+=inGrp('Leave',(inp:any)=>isLeave(inp.type),'sec-leave',true);
     h+=inGrp('Downchit',(inp:any)=>inp.type==='Downchit','sec-dnco',true);

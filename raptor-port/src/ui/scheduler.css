@@ -1515,6 +1515,12 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .sb-panel.notes{border-left:3px solid var(--adv)}
 .sb-panel.prog{border-left:3px solid var(--accent)}
 .sb-panel.simn{border-left:3px solid var(--san)}
+/* the duty / sim / ground / personal-inputs panels wear the same hues as
+   their week sections (.sec-duty etc.) so the board reads as the same day */
+.sb-panel.duty{border-left:3px solid #57C97A}
+.sb-panel.simr{border-left:3px solid #B24DEA}
+.sb-panel.grnd{border-left:3px solid #E5A83B}
+.sb-panel.pinp{border-left:3px solid #F08A4A}
 .sb-ph{display:flex;align-items:center;gap:9px;padding:7px 11px;background:var(--panel-2);
   border-bottom:1px solid var(--edge);font-family:'Barlow Condensed','Inter Tight',sans-serif;
   text-transform:uppercase;letter-spacing:.09em;font-size:11px;font-weight:700;color:var(--ink)}
@@ -1542,6 +1548,19 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .sb-arow .ppl{display:flex;flex-wrap:wrap;gap:4px;min-height:var(--puck-h)}
 .sb-arow .ppl .seat{display:flex;flex:0 0 auto}
 .sb-arow .ppl .itxt{font-size:10px;color:var(--ink-3)}
+/* the c6r grid — duty / sim / ground rows: Item | Start | End | People | Rmks | ctl.
+   Distinct from the prog grid (whose column 2 is Detail), so it carries its own
+   modifier instead of bending the shared rule. */
+.sb-acols.c6r,.sb-arow.c6r{grid-template-columns:1.3fr 52px 52px minmax(96px,1.2fr) 1fr 92px}
+/* a duty-block / AMT / OFT sub-head inside a panel body */
+.sb-psub{display:flex;align-items:center;gap:7px;margin:8px 0 3px;padding-top:7px;border-top:1px solid var(--edge)}
+.sb-psub:first-child{border-top:none;margin-top:0;padding-top:0}
+.sb-psub .ntx{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.07em;font-size:10px;font-weight:800;color:var(--ink-3)}
+.sb-psub .ain{background:var(--bg);border:1px solid var(--edge);border-radius:6px;color:var(--ink);
+  font-size:11px;padding:5px 6px;max-width:240px;box-sizing:border-box}
+.sb-psub .ain:focus{outline:none;border-color:var(--accent)}
+.sb-psub .gctl{margin-left:auto;display:flex;gap:5px}
 .sb-nbox{background:var(--bg);border:1px solid var(--edge);border-radius:8px;color:#F2D699;
   font-size:11.5px;line-height:1.5;padding:7px 9px;width:100%;box-sizing:border-box;
   min-height:58px;resize:vertical;font-family:inherit}
@@ -1577,6 +1596,11 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   .sb-acols,.sb-arow{grid-template-columns:1fr 46px 46px;gap:6px}
   .sb-acols>:nth-child(2),.sb-acols>:nth-child(5),.sb-acols>:nth-child(6){display:none}
   .sb-arow .asub,.sb-arow .ppl,.sb-arow .lctl{grid-column:1 / -1}
+  /* c6r's column 2 is Start (keep it), 4 is People (its header goes, the cell
+     spans); the rmks input drops to its own full-width strip like .nts */
+  .sb-acols.c6r>:nth-child(2){display:revert}
+  .sb-acols.c6r>:nth-child(4){display:none}
+  .sb-arow.c6r .rmkin{grid-column:1 / -1}
   .sb-inputs{max-height:none;overflow:visible}
   .sbi-row{grid-template-columns:84px var(--puck-w) 1fr;gap:7px}
   .sbi-row .sbi-rm{grid-column:1 / -1;font-size:10.5px;color:var(--ink-3)}
@@ -1608,5 +1632,8 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .schedboard.sb-wide .sb-arow .asub,.schedboard.sb-wide .sb-arow .ppl,
 .schedboard.sb-wide .sb-arow .lctl,.schedboard.sb-wide .sb-line .nts,
 .schedboard.sb-wide .sb-line .lctl{grid-column:auto}
+.schedboard.sb-wide .sb-acols.c6r,.schedboard.sb-wide .sb-arow.c6r{grid-template-columns:150px 54px 54px 1fr 1fr 92px}
+.schedboard.sb-wide .sb-acols.c6r>:nth-child(4){display:revert}
+.schedboard.sb-wide .sb-arow.c6r .rmkin{grid-column:auto}
 .schedboard.sb-wide .sbi-row{grid-template-columns:96px var(--puck-w) 112px 1fr;gap:9px}
 .schedboard.sb-wide .sbi-row .sbi-rm{grid-column:auto;font-size:11px}

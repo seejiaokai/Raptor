@@ -29,11 +29,32 @@ beforeAll(async () => {
 })
 
 describe('view-week markup parity with the reference', () => {
-  it('every day of the read-only week is byte-identical', () => {
+  it('every day of the read-only week is byte-identical (minus Available/Office)', () => {
+    /* deliberate divergence #2: the view page drops the Available group, the
+       Office group and the Available-crew strip (owner request, Aug 26 — they
+       are scheduling tools, not part of the issued programme). Excise them
+       from the reference string; the blocks nest divs, so anchor the cut on
+       the ALWAYS-rendered Leave group instead of a lazy close-tag match. The
+       replace is a no-op on the port string, and the pins below assert the
+       divergence rather than just tolerating it. */
+    const noAvail = (s: string) => s.replace(
+      /<div class="(?:sub plist one sec sec-avail|availpuck sec sec-avail)"[\s\S]*?(?=<div class="sub plist one sec sec-leave")/, '')
     DAYS.forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
-      expect(dayHTML(di, false), 'day ' + di).toBe(ref)
+      expect(noAvail(dayHTML(di, false)), 'day ' + di).toBe(noAvail(ref))
     })
+  })
+
+  it('view mode drops Available/Office/Available-crew; edit mode keeps them', () => {
+    /* day 0 is the only demo day carrying Available and Office inputs */
+    const v = dayHTML(0, false)
+    expect(v).not.toContain('sec sec-avail')
+    expect(v).not.toContain('sec-off')
+    expect(v).not.toContain('availpuck')
+    const e = dayHTML(0, true)
+    expect(e).toContain('sub plist one sec sec-avail')
+    expect(e).toContain('sec-off')
+    expect(e).toContain('availpuck')
   })
 
   it('the edit-mode markup is byte-identical too (minus the sign-off strip)', () => {

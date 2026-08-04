@@ -16,7 +16,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
-import { sbNotesPanel, sbProgPanel, sbSimPanel, sbSlot, labelToTitle, titleToLabel } from './board-html'
+import { sbNotesPanel, sbProgPanel, sbSimPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, labelToTitle, titleToLabel } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -66,6 +66,9 @@ export function boardHTML(di: number, pv?: boolean) {
     fly += `</div>`
   })
   b += fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet — use “+ Wave”.</div>`
+  /* the four sections the board was missing (owner request, Aug 26): same
+     order as the week day, with the sim planning notes staying last */
+  b += sbDutyPanel(d, di, pv) + sbSimRowsPanel(d, di, pv) + sbGroundPanel(d, di, pv) + sbInputsGroupPanel(d, di)
   b += sbSimPanel(d, di, pv)
   return b
 }
@@ -175,6 +178,75 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.pflag != null) {
     const [di, ri] = ds.pflag.split('.').map(Number); const x = DAYS[di].allhands[ri]
     x.flag = !x.flag; markEdit(`ap:${di}.${ri}.prog`); afterSchedMutate(); notify()
+    return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+  }
+  /* ---- duty / sim / ground rows (the panels added Aug 26) ---------------
+     Same shapes as the p* programme branches: adds mark the new row's name
+     key, deletes renumber the surviving keys and mark NOTHING (the delete
+     rule), CX goes through the reason dialog. */
+  if (ds.dwadd != null) {
+    const d = DAYS[+ds.dwadd]; d.dutywaves = d.dutywaves || []
+    d.dutywaves.push({ label: 'DUTY', rows: [{ role: '', id: '', str: '', end: '' }] })
+    markEdit(`dl:${+ds.dwadd}.${d.dutywaves.length - 1}`); afterSchedMutate(); notify(); return
+  }
+  if (ds.dwdel != null) {
+    const [di, wi] = ds.dwdel.split('.').map(Number)
+    DAYS[di].dutywaves.splice(wi, 1)
+    ;[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, wi))
+    markEdit(); afterSchedMutate(); notify(); return toast('Duty block removed')
+  }
+  if (ds.dradd != null) {
+    const [di, wi] = ds.dradd.split('.').map(Number)
+    const rows = DAYS[di].dutywaves[wi].rows
+    rows.push({ role: '', id: '', str: '', end: '' })
+    markEdit(`dr:${di}.${wi}.${rows.length - 1}.role`); afterSchedMutate(); notify(); return
+  }
+  if (ds.drdel != null) {
+    const [di, wi, ri] = ds.drdel.split('.').map(Number)
+    DAYS[di].dutywaves[wi].rows.splice(ri, 1)
+    ;[`d:${di}.${wi}.`, `dr:${di}.${wi}.`].forEach(h => shiftKeys(h, 0, ri))
+    markEdit(); afterSchedMutate(); notify(); return toast('Duty row removed')
+  }
+  if (ds.drcx != null) { const [di, wi, ri] = ds.drcx.split('.').map(Number); return askCx(DAYS[di].dutywaves[wi].rows[ri], `dr:${di}.${wi}.${ri}.role`, 'this duty') }
+  if (ds.drflag != null) {
+    const [di, wi, ri] = ds.drflag.split('.').map(Number); const x = DAYS[di].dutywaves[wi].rows[ri]
+    x.flag = !x.flag; markEdit(`dr:${di}.${wi}.${ri}.role`); afterSchedMutate(); notify()
+    return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+  }
+  if (ds.sradd != null) {
+    const [di, kind] = ds.sradd.split('.')
+    const d = DAYS[+di]; d.sims = d.sims || {}
+    const rows = (d.sims[kind] = d.sims[kind] || [])
+    rows.push({ label: '', str: '', end: '' })
+    markEdit(`sr:${+di}.${kind}.${rows.length - 1}.label`); afterSchedMutate(); notify(); return
+  }
+  if (ds.srdel != null) {
+    const [di, kind, ri] = ds.srdel.split('.')
+    DAYS[+di].sims[kind].splice(+ri, 1)
+    ;[`s:${di}.${kind}.`, `sr:${di}.${kind}.`].forEach(h => shiftKeys(h, 0, +ri))
+    markEdit(); afterSchedMutate(); notify(); return toast('Sim row removed')
+  }
+  if (ds.srcx != null) { const [di, kind, ri] = ds.srcx.split('.'); return askCx(DAYS[+di].sims[kind][+ri], `sr:${di}.${kind}.${ri}.label`, 'this sim') }
+  if (ds.srflag != null) {
+    const [di, kind, ri] = ds.srflag.split('.'); const x = DAYS[+di].sims[kind][+ri]
+    x.flag = !x.flag; markEdit(`sr:${di}.${kind}.${ri}.label`); afterSchedMutate(); notify()
+    return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+  }
+  if (ds.gradd != null) {
+    const d = DAYS[+ds.gradd]; d.ground = d.ground || []
+    d.ground.push({ prog: '', str: '', end: '', who: '' })
+    markEdit(`gr:${+ds.gradd}.${d.ground.length - 1}.prog`); afterSchedMutate(); notify(); return
+  }
+  if (ds.grdel != null) {
+    const [di, ri] = ds.grdel.split('.').map(Number)
+    DAYS[di].ground.splice(ri, 1)
+    ;[`g:${di}.`, `gr:${di}.`].forEach(h => shiftKeys(h, 0, ri))
+    markEdit(); afterSchedMutate(); notify(); return toast('Ground item removed')
+  }
+  if (ds.grcx != null) { const [di, ri] = ds.grcx.split('.').map(Number); return askCx(DAYS[di].ground[ri], `gr:${di}.${ri}.prog`, 'this item') }
+  if (ds.grflag != null) {
+    const [di, ri] = ds.grflag.split('.').map(Number); const x = DAYS[di].ground[ri]
+    x.flag = !x.flag; markEdit(`gr:${di}.${ri}.prog`); afterSchedMutate(); notify()
     return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
   }
 }
