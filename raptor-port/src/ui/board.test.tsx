@@ -206,6 +206,92 @@ describe('the scheduler board (tfin board group)', () => {
   })
 })
 
+describe('duty / sim / ground panels on the board (owner request, Aug 26)', () => {
+  it('the four new panels render, in week order, before the sim-notes panel', () => {
+    const kids = [...$('#sbBoard').children].map(x => x.className)
+    const ix = (m: string) => kids.findIndex(c => c.includes(m))
+    expect(ix('sb-panel duty')).toBeGreaterThan(ix('sb-go'))
+    expect(ix('sb-panel simr')).toBeGreaterThan(ix('sb-panel duty'))
+    expect(ix('sb-panel grnd')).toBeGreaterThan(ix('sb-panel simr'))
+    expect(ix('sb-panel pinp')).toBeGreaterThan(ix('sb-panel grnd'))
+    expect(ix('sb-panel simn')).toBeGreaterThan(ix('sb-panel pinp'))
+  })
+
+  it('duty seats speak the slot grammar — round-trip and arm targets', () => {
+    const seat = document.querySelector('#sbBoard .sb-panel.duty .seat[data-slot^="d:"]') as HTMLElement
+    expect(seat).toBeTruthy()
+    const key = seat.dataset.slot!
+    const before = slotVal(key)
+    setSlotVal(key, 'bane')
+    expect(slotVal(key)).toBe('bane')
+    setSlotVal(key, before || '')
+    expect(document.querySelector('#sbBoard .sb-panel.duty [data-fill^="d:"]')).toBeTruthy()
+  })
+
+  it('sim and ground rows carry drop targets', () => {
+    expect(document.querySelector('#sbBoard .sb-panel.simr [data-fill^="s:"]')).toBeTruthy()
+    expect(document.querySelector('#sbBoard .sb-panel.grnd [data-fill^="g:"]')).toBeTruthy()
+  })
+
+  it('a duty field commits through the text funnel and earns a pending mark', async () => {
+    const inp = document.querySelector('#sbBoard input[data-bfld^="dr:"][data-bfld$=".role"]') as HTMLInputElement
+    expect(inp).toBeTruthy()
+    const key = inp.dataset.bfld!, before = inp.value
+    await change(inp, 'TEST DUTY')
+    expect(SCHED.pending[key]).toBeTruthy()
+    await change(document.querySelector(`#sbBoard input[data-bfld="${key}"]`) as HTMLInputElement, before)
+  })
+
+  it('+ Row / ✕ on duty rows renumbers the keys under the delete', async () => {
+    const rows = DAYS[0].dutywaves[0].rows
+    const B = rows.length
+    await click($('#sbBoard [data-dradd="0.0"]'))
+    await click($('#sbBoard [data-dradd="0.0"]'))
+    expect(rows.length).toBe(B + 2)
+    setSlotVal(`d:0.0.${B + 1}`, 'bane')
+    await act(async () => { afterSchedMutate(); notify() })
+    await click(document.querySelector(`#sbBoard [data-drdel="0.0.${B}"]`))
+    expect(rows.length).toBe(B + 1)
+    /* the named row slid down one index and kept its body */
+    expect(slotVal(`d:0.0.${B}`)).toBe('bane')
+    await click(document.querySelector(`#sbBoard [data-drdel="0.0.${B}"]`))
+    expect(rows.length).toBe(B)
+  })
+
+  it('CX on a duty row goes through the reason dialog, and un-cancels clean', async () => {
+    const r = DAYS[0].dutywaves[0].rows[0]
+    await click($('#sbBoard [data-drcx="0.0.0"]'))
+    expect(($('#cxPop') as any).hidden).toBe(false)
+    expect(!!r.cx).toBe(false)                     // opening cancels nothing
+    ;($('#cxReason') as HTMLInputElement).value = 'TASKING'
+    await click($('#cxSave'))
+    expect(r.cx).toBe(true)
+    expect(document.querySelector('#sbBoard .sb-panel.duty .sb-arow.cx')).toBeTruthy()
+    await click($('#sbBoard [data-drcx="0.0.0"]'))
+    await click($('#cxUn'))
+    expect(!!r.cx).toBe(false)
+    expect(document.querySelector('#sbBoard .sb-panel.duty .sb-arow.cx')).toBeFalsy()
+  })
+
+  it('the red-box flag toggles on a ground row', async () => {
+    const btn = document.querySelector('#sbBoard [data-grflag]') as HTMLElement
+    expect(btn).toBeTruthy()
+    const [di, ri] = btn.dataset.grflag!.split('.').map(Number)
+    const x = DAYS[di!].ground[ri!]
+    expect(!!x.flag).toBe(false)
+    await click(btn)
+    expect(x.flag).toBe(true)
+    expect(document.querySelector('#sbBoard .sb-panel.grnd .sb-arow.redbox')).toBeTruthy()
+    await click(document.querySelector(`#sbBoard [data-grflag="${di}.${ri}"]`))
+    expect(!!x.flag).toBe(false)
+  })
+
+  it('the personal-inputs panel is inert even on the live board', () => {
+    const p = document.querySelector('#sbBoard .sb-panel.pinp')!
+    expect(p.querySelectorAll('input,textarea,.mbtn,[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
+  })
+})
+
 describe('CX carries a reason (tfin R group, B28)', () => {
   const cxBtn = () => document.querySelector('#sbBoard .mbtn[data-lcx]') as HTMLElement
 
@@ -305,6 +391,7 @@ describe('board lifecycle', () => {
     await act(async () => { view.setDayPreview(0, 'orig'); notify() })
     const board = $('#sbBoard')
     expect(board.querySelector('.pv-frozen')).toBeTruthy()
+    expect(board.querySelector('.pv-frozen .sb-panel.duty')).toBeTruthy()   // new panels render frozen too
     expect(board.querySelectorAll("input:not([disabled]),textarea:not([disabled])").length).toBe(0)
     expect(board.querySelectorAll('.mbtn,[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
     /* the live-checks panel is now the preview banner with the restore button */

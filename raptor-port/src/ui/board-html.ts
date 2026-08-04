@@ -95,6 +95,115 @@ export function sbProgPanel(d:any,di:any,pv?:any){
   }
   return s+`</div></div>`;
 }
+/* ---- duty / sim / ground panels (owner request, Aug 26) -------------------
+   The board finally carries every section the week day carries. Same
+   six-column grid (c6r): Item | Start | End | People | Rmks | ctl. Seats and
+   fill targets speak the ordinary slot-key grammar, so the board's generic
+   arm/drag handlers and the mutation funnel cover them with NO new wiring —
+   only the row-level mbtns needed handler branches (board.ts). */
+function sbSeat(di:any,key:any,id:any,pv?:any){
+  if(!(id&&PEOPLE[id]))return '';
+  return `<span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' draggable="true"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id))}</span>`;
+}
+function sbMore(di:any,base:any,r:any,pv?:any){
+  return ((r&&r.more)||[]).map((id:any,i:any)=>sbSeat(di,`${base}.x${i}`,id,pv)).join('');
+}
+function sbTxt(cls:any,path:any,v:any,ph:any,pv:any){
+  return `<input class="${cls}" data-bfld="${path}"${alAttr(path)}${pv?' disabled':''} value="${esc(v||'')}" placeholder="${ph}">`;
+}
+function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any){
+  return pv?'':`<span class="lctl">`
+    +`<button class="mbtn${o.cx?' on':''}" data-${pre}cx="${addr}" title="${o.cx?'Restore '+what:'Cancel '+what+' (CX)'}">CX</button>`
+    +`<button class="mbtn red${o.flag?' on':''}" data-${pre}flag="${addr}" title="${o.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
+    +`<button class="mbtn del" data-${pre}del="${addr}" title="Remove ${what}">✕</button></span>`;
+}
+const C6=`<div class="sb-acols c6r"><span>Item</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
+export function sbDutyPanel(d:any,di:any,pv?:any){
+  const dws=d.dutywaves||[];
+  let s=`<div class="sb-panel duty"><div class="sb-ph">Duties <span class="sub">SDO / SXO / ops desk, by block</span>`
+    +(pv?'':`<span class="gctl"><button class="mbtn add" data-dwadd="${di}" title="Add a duty block">+ Block</button></span>`)+`</div><div class="sb-pb">`;
+  if(!dws.length)s+=`<div class="sb-empty">No duty blocks yet — “+ Block” adds one.</div>`;
+  dws.forEach((dwv:any,wi:any)=>{
+    s+=`<div class="sb-psub">`+sbTxt('ain',`dl:${di}.${wi}`,dwv.label,'WAVE 1 DUTIES',pv)
+      +(pv?'':`<span class="gctl"><button class="mbtn add" data-dradd="${di}.${wi}" title="Add a duty row">+ Row</button>`
+      +`<button class="mbtn del" data-dwdel="${di}.${wi}" title="Remove this block and its rows">✕ Block</button></span>`)+`</div>`;
+    if((dwv.rows||[]).length)s+=C6;
+    /* MODEL order, not dutySort — an editor whose rows jump as a role is typed
+       would be hostile, and the slot keys are model indices anyway */
+    (dwv.rows||[]).forEach((r:any,ri:any)=>{
+      const base=`d:${di}.${wi}.${ri}`, t=`dr:${di}.${wi}.${ri}`;
+      const inner=(PEOPLE[r.id]?sbSeat(di,base,r.id,pv):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+sbMore(di,base,r,pv);
+      s+=`<div class="sb-arow c6r${rowCls(r)}">`
+        +sbTxt('ain',`${t}.role`,r.role,'SDO',pv)+sbTxt('atm',`${t}.str`,r.str,'0800',pv)+sbTxt('atm',`${t}.end`,r.end,'1700',pv)
+        +`<div class="ppl"${pv?'':` data-fill="${base}.+"`}>${inner}</div>`
+        +sbTxt('ain rmkin',`${t}.rmks`,r.rmks,'remarks',pv)
+        +sbRowCtl(pv,r,`${di}.${wi}.${ri}`,'dr','this duty')+`</div>`;
+    });
+  });
+  return s+`</div></div>`;
+}
+export function sbSimRowsPanel(d:any,di:any,pv?:any){
+  const sims=d.sims||{};
+  let s=`<div class="sb-panel simr"><div class="sb-ph">Sims <span class="sub">AMT and OFT rows</span></div><div class="sb-pb">`;
+  [['AMT','amt'],['OFT','oft']].forEach(([title,kind]:any)=>{
+    const rows=sims[kind]||[];
+    s+=`<div class="sb-psub"><span class="ntx">${title}</span>`
+      +(pv?'':`<span class="gctl"><button class="mbtn add" data-sradd="${di}.${kind}" title="Add a ${title} row">+ Row</button></span>`)+`</div>`;
+    if(!rows.length){s+=`<div class="sb-empty">No ${title} rows.</div>`;return;}
+    s+=C6;
+    rows.forEach((r:any,ri:any)=>{
+      const base=`s:${di}.${kind}.${ri}`, t=`sr:${di}.${kind}.${ri}`;
+      /* same two row shapes as the week: a 2-seat crew (p/w) or a pax list */
+      const pax=Array.isArray(r.pax)?r.pax:null;
+      const seats=pax?pax.map((id:any,pi:any)=>sbSeat(di,`${base}.pax.${pi}`,id,pv)).join('')
+        :sbSeat(di,`${base}.p`,r.p,pv)+sbSeat(di,`${base}.w`,r.w,pv);
+      const txt=(!seats&&r.who)?`<span class="itxt">${esc(r.who)}</span>`:'';
+      s+=`<div class="sb-arow c6r${rowCls(r)}">`
+        +sbTxt('ain',`${t}.label`,r.label,'EP SIM',pv)+sbTxt('atm',`${t}.str`,r.str,'0900',pv)+sbTxt('atm',`${t}.end`,r.end,'1100',pv)
+        +`<div class="ppl"${pv?'':` data-fill="${base}.+"`}>${txt+seats+sbMore(di,base,r,pv)}</div>`
+        +sbTxt('ain rmkin',`${t}.rmks`,r.rmks,'remarks',pv)
+        +sbRowCtl(pv,r,`${di}.${kind}.${ri}`,'sr','this sim')+`</div>`;
+    });
+  });
+  return s+`</div></div>`;
+}
+export function sbGroundPanel(d:any,di:any,pv?:any){
+  const rows=d.ground||[];
+  let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground programme · scheduler <span class="sub">briefs, reviews, admin</span>`
+    +(pv?'':`<span class="gctl"><button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
+  if(!rows.length)s+=`<div class="sb-empty">No ground items yet — “+ Item” adds one.</div>`;
+  else{
+    s+=C6;
+    rows.forEach((x:any,ri:any)=>{
+      const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=nameToId(x.who);
+      const inner=((id&&PEOPLE[id])?sbSeat(di,base,id,pv):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,pv);
+      s+=`<div class="sb-arow c6r${rowCls(x)}">`
+        +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',pv)+sbTxt('atm',`${t}.str`,x.str,'1400',pv)+sbTxt('atm',`${t}.end`,x.end,'1500',pv)
+        +`<div class="ppl"${pv?'':` data-fill="${base}.+"`}>${inner}</div>`
+        +sbTxt('ain rmkin',`${t}.rmks`,x.rmks,'remarks',pv)
+        +sbRowCtl(pv,x,`${di}.${ri}`,'gr','this item')+`</div>`;
+    });
+  }
+  return s+`</div></div>`;
+}
+/* read-only ALWAYS: these rows are aircrew-submitted inputs, not schedule
+   data — there are no funnel keys for them, and the place to change them is
+   the Inputs page. Reuses the .sbi-row look from the bands panel below. */
+export function sbInputsGroupPanel(d:any,di:any){
+  const rows=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&/Appointment|Meeting|Personal|Training|Fly$|Other/i.test(inp.type));
+  let s=`<div class="sb-panel pinp"><div class="sb-ph">Ground programme · personal inputs <span class="sub">submitted by aircrew — edit on the Inputs page</span></div><div class="sb-pb">`;
+  if(!rows.length)s+=`<div class="sb-empty">No personal ground-programme inputs for this day.</div>`;
+  rows.forEach((inp:any)=>{
+    const pk=PEOPLE[inp.person]
+      ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
+      : `<span class="itxt">${esc(inp.person)}</span>`;
+    const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
+    s+=`<div class="sbi-row"><span class="sbi-t">${t}</span>${pk}`
+      +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inp.type)}</span>`
+      +`<span class="sbi-rm" title="${esc(inp.remarks||'')}">${esc(inp.remarks||'—')}</span></div>`;
+  });
+  return s+`</div></div>`;
+}
 /* ---- board panel 3: sim planning notes, at the bottom of the board ------- */
 export function sbSimPanel(d:any,di:any,pv?:any){
   return `<div class="sb-panel simn"><div class="sb-ph">Sim planning notes <span class="sub">read by whoever plans the next cycle</span></div>`

@@ -97,6 +97,33 @@ after a change. This is the ONE deliberate markup divergence from the
 reference; `html.test.ts` excises the strip from the edit-mode byte-parity
 assertion and pins the pill structure separately.
 
+## The scheduler board's panels
+
+`boardHTML(di, pv)` renders, in order: sign-off strip (first child — pinned
+by a test; pv-suppressed) · overall notes · overall programme · flying waves
+· **Duties** (`.sb-panel.duty`) · **Sims** (`.simr`, AMT/OFT rows) ·
+**Ground programme · scheduler** (`.grnd`) · **Ground programme · personal
+inputs** (`.pinp`) · sim planning notes. The duty/sim/ground panels (added
+Aug 26) share the `c6r` grid (Item | Start | End | People | Rmks | ctl) and
+speak the ordinary grammar — seats `d:di.wi.ri` / `s:di.kind.ri` / `g:di.ri`
+(+ `.xN`, fill `.+`), texts `dl:/dr:/sr:/gr:` via `data-bfld` — so the
+board's generic arm/drag/change handlers cover them with no extra wiring.
+Row mbtns: `dr*/sr*/gr*` cx (CxDialog) / flag / del, `dwadd/dwdel/dradd`,
+`sradd`, `gradd` (board.ts). Duty rows render in MODEL order, not
+`dutySort` — an editor whose rows jump as a role is typed would be hostile.
+`.pinp` is read-only always: aircrew-submitted inputs have no funnel keys;
+they are edited on the Inputs page. Every control is pv-gated in markup AND
+guarded at runtime (DPREV check) like the rest of the board.
+
+## View-only page: no Available / Office
+
+The view page (and version previews, which build with ed=false) drops the
+Available inputs group, the Office inputs group and the Available-crew puck
+strip — scheduling tools, not part of the issued programme (owner request,
+Aug 26). Edit week keeps all three. The view-parity test excises these
+blocks from the reference string (anchored on the always-rendered Leave
+group) and pins the divergence explicitly.
+
 ## Drag / arm-and-plant (hard-won — test on touch)
 
 `applyDrop()` is the ONE drop path for mouse and touch.
