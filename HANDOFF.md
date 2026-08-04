@@ -95,7 +95,7 @@ The port from the original single-file app is complete; that history is in
 | file | what it does |
 |---|---|
 | `store.ts` | `notify()`/subscribe/version; `wireStore()` maps HOOKS→notify; write helpers; `initStore()` boot (wires, **rulesLoad**, validate, history baseline). |
-| `view.ts` | UI state the engine reads: CURPAGE, SBDAY, EDITON, ROSDAY, ARM, selection (SELID/SELKEY/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — SELKEY scopes the blue to the one clicked puck), `afterSchedMutate()`, `focusWarn`, setters. |
+| `view.ts` | UI state the engine reads: CURPAGE, SBDAY, EDITON, ROSDAY, ARM, selection (SELID/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — clicking a puck lights every copy of that person), `afterSchedMutate()`, `focusWarn`, setters. |
 | `history.ts` | HIST snapshots, `histPush`/`histApply`, undo/redo bodies. |
 | `auth.ts` | SESSION, `setSession` (resets LGEDIT), `canEditSched`, ME/`setMe`. |
 | `users.ts` | The Manage-users prototype list. |

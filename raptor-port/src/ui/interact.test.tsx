@@ -32,25 +32,16 @@ beforeAll(async () => {
 })
 
 describe('puck selection (tfin B14)', () => {
-  /* owner, Aug 26: the blue lands on the ONE puck clicked, never on that
-     person's other copies — those dim like the rest of the board. Compare by
-     slot key, not element identity: notify() rebuilds the week DOM, so the
-     node captured before the click is detached afterwards. */
-  const keyOf = (el: HTMLElement | null) => { const c = el && el.closest('[data-slot],[data-fill]') as HTMLElement | null; return c ? (c.dataset.slot || c.dataset.fill) : null }
-  it('only the clicked puck lights up — never the person\'s other copies', async () => {
-    const pk = $('#vWeek .puck[data-person="bane"]')
-    const key = keyOf(pk)
-    await click(pk)
+  /* owner, Aug 26: clicking a puck lights up EVERY copy of that person — you
+     want to see everywhere the name is planted — while the rest dims */
+  it('clicking a puck lights up every copy of that person', async () => {
+    await click($('#vWeek .puck[data-person="bane"]'))
+    const bane = $$('#vWeek .puck[data-person="bane"]')
     const sel = $$('#vWeek .puck.sel')
-    expect(sel.length).toBe(1)                       // only the clicked puck is blue
-    expect(keyOf(sel[0])).toBe(key)
-    expect(sel[0].dataset.person).toBe('bane')
-    // the person's other copies no longer light up person-wide
-    const others = $$('#vWeek .puck[data-person="bane"]').filter(p => keyOf(p) !== key)
-    expect(others.every(p => !p.classList.contains('sel'))).toBe(true)
-    // and the rest of the board dims so the one pops (bane is "me", exempt, so
-    // measure dimming on the board at large rather than on bane's own copies)
-    expect($$('#vWeek .puck.dim').length).toBeGreaterThan(0)
+    expect(bane.length).toBeGreaterThan(0)
+    expect(bane.every(p => p.classList.contains('sel'))).toBe(true)   // all same-name copies
+    expect(sel.every(p => p.dataset.person === 'bane')).toBe(true)    // and nobody else
+    expect($$('#vWeek .puck.dim').length).toBeGreaterThan(0)          // the rest dims
     await click($('#vWeek'))   // reset for the next test
   })
 
@@ -69,7 +60,7 @@ describe('puck selection (tfin B14)', () => {
 
   it('click select — and it opens that person\'s issue boxes on every flagged day', async () => {
     await click($('#vWeek .puck[data-person="bane"]'))
-    expect($$('#vWeek .puck.sel').length).toBe(1)
+    expect($$('#vWeek .puck.sel').length).toBe($$('#vWeek .puck[data-person="bane"]').length)
     const days = personWarnDays('bane')
     expect($$('#vWeek .dwbox.open').length).toBe(days.length)
     expect($$('#vWeek .dwbox.open').every(b => b.classList.contains('pfoc'))).toBe(true)
