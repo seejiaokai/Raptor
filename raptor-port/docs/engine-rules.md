@@ -122,6 +122,32 @@ do not remove) treats storage as untrusted: number, finite, in bounds.
 `shiftAircraft`/`shiftFormation`/`shiftWave` compose it. Deleting a
 standalone wave also removes its duty block (`d:`/`dr:`/`dl:` keys).
 
+## Who a row stores: ID vs CALLSIGN
+
+Two different things live in the model and mixing them up breaks rows silently:
+
+- **Person IDs** — flying seats (`a.p`/`a.w`), duty rows (`r.id`), sim
+  `p`/`w`/`pax[]`, the `more[]` overflow on every row, and `INPUTS[].person`.
+- **Callsign STRINGS** — `ground[].who`, `allhands[].who` (a string or an
+  array of them) and sim `.who`, all resolved through
+  `nameToId` → `ID_BY_CS`, case-insensitively. `setSlotVal` writes
+  `PEOPLE[id].cs` into them; a row may also hold free text that is nobody
+  (`'149'`, `'ALL PILOTS'`), which simply fails to resolve and renders as
+  plain text.
+
+`rowCrew`/`slotVal` read the callsign rows back as IDs, so snapshots, AL diffs
+and published days are all ID-based.
+
+**Renaming a callsign** (`renameCallsign(id, cs)`, owner Aug 26) therefore has
+to rewrite all three string fields as well as remapping `ID_BY_CS` — changing
+`PEOPLE[id].cs` alone leaves those rows pointing at a name nobody answers to,
+and the puck collapses to free text. It refuses a blank, a no-op and a
+duplicate (`ID_BY_CS` can only point one way). It deliberately marks **nothing
+pending**: the person in the seat has not changed, only the spelling, and
+`rowCrew` diffs identically — an AL full of spelling would be noise. Published
+day snapshots keep the spelling they were issued with, which is correct for a
+historical document.
+
 ## Publishing / amendments
 
 `SCHED = {al, pending, changes, als, dayOK, sign, orig, cur}`. Four sign-offs per day
