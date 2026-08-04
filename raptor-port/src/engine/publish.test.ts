@@ -179,6 +179,27 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(alAttr('')).toBe('')
   })
 
+  /* the AL preview: a pending edit on a PUBLISHED day carries the number it
+     will go out as (data-aln), so the edit surfaces can paint it in that AL's
+     colour before the AL exists. Draft-day pending must NOT carry it — an edit
+     on an unpublished day is draft work and will not ride the next AL. */
+  it('pending on a published day previews the AL it will go out as', () => {
+    sign(0); setDayApproved(0, 1)
+    noteChange('dn:0.0')
+    expect(alAttr('dn:0.0')).toContain('data-aln="1"')
+    noteChange('dn:1.0')                          // day 1 still draft
+    expect(alAttr('dn:1.0')).toContain('data-alp')
+    expect(alAttr('dn:1.0')).not.toContain('data-aln')
+  })
+
+  it('the preview number tracks nextAL as amendments are issued', () => {
+    sign(0); setDayApproved(0, 1)
+    noteChange('dn:0.0')
+    SCHED.als = [{ n: 1, keys: [], sign: {} }, { n: 3, keys: [], sign: {} }]
+    expect(alAttr('dn:0.0')).toContain('data-aln="2"')
+    expect(alAttr('dn:0.0')).toContain('AL2')     // the tooltip names it too
+  })
+
   it('AL colours follow the fixed sequence', () => {
     expect(alColor(1)).toBe('#3BC6E8')
     expect(alColor(3)).toBe('#3DE86B')

@@ -8,7 +8,7 @@ import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm } from '../engine/time'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
-import { markEdit } from '../engine/publish'
+import { markEdit, alAttr } from '../engine/publish'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/keys'
 import { signoffHTML, cxText } from './html'
 import { HOOKS } from '../engine/hooks'
@@ -44,13 +44,13 @@ export function boardHTML(di: number) {
       const key = `${di}.${gi}.${li}.${ai}`, fp = `ff:${di}.${gi}.${li}`
       const cxOn = !!(a.cx || f.cx)
       fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}">
-        <input class="lin" data-bfld="${fp}.cs" value="${esc(f.cs)}">
-        <input class="msn" data-bfld="${fp}.msn" value="${esc(f.msn)}">
-        <input class="tm" data-bfld="${fp}.to" value="${esc(f.to)}">
-        <input class="tm" data-bfld="${fp}.ld" value="${esc(f.ld)}">
+        <input class="lin" data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)} value="${esc(f.cs)}">
+        <input class="msn" data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)} value="${esc(f.msn)}">
+        <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)} value="${esc(f.to)}">
+        <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)} value="${esc(f.ld)}">
         ${sbSlot(di, key + '.p', 'p', a.p)}
         ${sbSlot(di, key + '.w', 'w', a.w)}
-        <input class="nts" data-bfld="fr:${key}" value="${esc(a.rmks || '')}">
+        <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)} value="${esc(a.rmks || '')}">
         <span class="lctl">
           <button class="mbtn${cxOn ? ' on' : ''}" data-lcx="${key}" title="${cxOn ? 'Restore this line' : 'Cancel this line (CX)'}">CX</button>
           <button class="mbtn red${a.flag ? ' on' : ''}" data-lflag="${key}" title="${a.flag ? 'Clear the red box' : 'Red box — flag this for the next scheduler'}">■</button>
