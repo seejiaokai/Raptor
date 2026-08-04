@@ -2,7 +2,7 @@
    the placeholder row, verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
-import { INPUTS, isOffType, inputCoversDate, offWord } from '../engine/inputs'
+import { INPUTS, isAway, inputCoversDate, offWord } from '../engine/inputs'
 import { hm24 } from '../engine/time'
 import { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
 import { sevOf, chipOf } from '../engine/validate'
@@ -25,7 +25,7 @@ export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rule
 }
 export function offReason(id:any,di:any){
   const d=DAYS[di]; if(!d)return '';
-  const x=INPUTS.find((i:any)=>isOffType(i.type)&&i.person===id&&inputCoversDate(i,d.dt));
+  const x=INPUTS.find((i:any)=>isAway(i)&&i.person===id&&inputCoversDate(i,d.dt));
   return x?offWord(x):'';
 }
 export function armStripHTML(){

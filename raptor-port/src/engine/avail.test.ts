@@ -3,9 +3,10 @@
    the day sets the free-crew list is built from). */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { personCount, personWarnDays, dayOff, dayEngaged, dayStandby, availByWave } from './avail'
+import { personCount, personWarnDays, dayOff, dayEngaged, dayStandby, availByWave, slotBar } from './avail'
 import { makeStandalone } from './waves'
-import { setSlotVal } from './slots'
+import { setSlotVal, acceptInput, unacceptInput } from './slots'
+import { INPUTS } from './inputs'
 import { validate } from './validate'
 import { SCHED } from './publish'
 
@@ -56,5 +57,38 @@ describe('selection counting and day sets (tfin W / B38)', () => {
     /* nobody off that day is offered anywhere */
     expect(a.anyWave).not.toContain('divot')
     a.byWave.forEach((b: string[]) => expect(b).not.toContain('divot'))
+  })
+})
+
+/* Fly availability (owner, Aug 26): a Fly input means the man is flying with
+   ANOTHER SQUADRON, so once a scheduler actions it he is away — off the
+   Available-crew strip, faded in the palette, barred from slots with the
+   reason. Un-actioned it is still just a request, matching the validator
+   gate; the two gates must not drift apart. */
+describe('an actioned Fly reads as away', () => {
+  const fly = () => INPUTS.find((i: any) => i.type === 'Fly' && i.person === 'bruise')!
+
+  it('un-actioned free · actioned off/barred · undo frees again', () => {
+    const inp = fly(), d = DAYS[0]
+    expect(inp).toBeTruthy()
+    expect(dayOff(d).has('bruise')).toBe(false)
+    const free0 = availByWave(d)
+    expect(free0.anyWave.concat(...free0.byWave)).toContain('bruise')
+    expect(slotBar('bruise', '0.0.0.0.p')).toBe('')
+    acceptInput(0, inp, 'g')
+    expect(dayOff(d).has('bruise')).toBe(true)
+    const free1 = availByWave(d)
+    expect(free1.anyWave.concat(...free1.byWave)).not.toContain('bruise')
+    expect(slotBar('bruise', '0.0.0.0.p')).toContain('flying with another squadron')
+    unacceptInput(0, inp)
+    expect(dayOff(d).has('bruise')).toBe(false)
+    expect(slotBar('bruise', '0.0.0.0.p')).toBe('')
+  })
+
+  it('filing it under Unavailable closes the day just the same', () => {
+    const inp = fly(), d = DAYS[0]
+    acceptInput(0, inp, 'u')
+    expect(dayOff(d).has('bruise')).toBe(true)
+    unacceptInput(0, inp)
   })
 })

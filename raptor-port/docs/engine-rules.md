@@ -37,6 +37,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   to `'u'` the input itself clashes, like a Detachment. Known edge, by
   design: an all-day input accepted to `'g'` makes a time-less ground row →
   no event → no flag, same as any time-less scheduler-typed row.
+- **An actioned `Fly` is AWAY** (owner, Aug 26: a Fly means flying with
+  another squadron). `isAway(inp)` = `isOffType(type) || (isFly(type) &&
+  acc)` — it feeds `dayOff` (the Available-crew strip and the palette fade),
+  `slotBar` (reason: "flying with another squadron") and the palette's
+  `offReason`. Whole-day, either destination, no SC-SPARE exemption (that is
+  local-leave only). Un-actioned Fly affects nothing, matching the
+  `inputFlags` gate — keep the two gates aligned.
 - `Detachment` is a new type. It groups under Unavailable with leave and
   downchits, but it is NOT `isOffType`: it does not confer leave's special
   powers (SC-spare eligibility and the rest), it simply reads as away.
