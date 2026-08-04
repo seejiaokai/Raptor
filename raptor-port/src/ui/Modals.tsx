@@ -153,7 +153,7 @@ export function InsightsModal() {
   return (
     <div className="modal" id="insightModal" onClick={e => { if ((e.target as HTMLElement).id === 'insightModal') close() }}>
       <div className="modal-box" style={{ width: 600 }}>
-        <div className="modal-head"><b>Week insights · 13–17 Jul</b><button className="x" id="insightClose" onClick={close}>✕</button></div>
+        <div className="modal-head"><b>Week insights · {DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</b><button className="x" id="insightClose" onClick={close}>✕</button></div>
         <div className="modal-body" id="insightBody" dangerouslySetInnerHTML={{ __html: insightsHTML() }} />
       </div>
     </div>

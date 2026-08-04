@@ -84,7 +84,7 @@ describe('week panning (tfin)', () => {
     const w = $('#vWeek')
     const days = $$('#vWeek .day')
     expect(days.length).toBeGreaterThan(1)
-    /* stub the live layout: day pitch 564, five days, two visible */
+    /* stub the live layout: day pitch 564, five days stubbed, two visible */
     days.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
     Object.defineProperty(w, 'scrollWidth', { value: days.length * 564, configurable: true })
     Object.defineProperty(w, 'clientWidth', { value: 1128, configurable: true })

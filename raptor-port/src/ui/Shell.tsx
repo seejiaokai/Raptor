@@ -210,7 +210,7 @@ export function Shell() {
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
         </div>
-        <div className="title"><h1 id="vTitle">Jul 13 – Jul 17</h1><span className="sub mono" id="vSub">142 SQN · week of 13 Jul 26 · all times local</span></div>
+        <div className="title"><h1 id="vTitle">{DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</h1><span className="sub mono" id="vSub">142 SQN · week of 13 Jul 26 · all times local</span></div>
         <div className={'schedbanner ' + b.cls + (rulesOffCount() ? ' rules-off' : '')} id="vBanner"
           style={{ ['--al' as any]: b.col }} dangerouslySetInnerHTML={{ __html: b.html }} />
         <div className="legend" id="vLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />

@@ -14,7 +14,8 @@ The port from the original single-file app is complete; that history is in
   backend; touches `engine/hooks.ts:storeBackend` and the mutation funnel).
 - **Prototype auth.** Hard-coded accounts; the deployed site is public.
   Manage-users edits the in-memory list only. Real accounts = server work.
-- **One dataset.** The schedule is the demo week (13–17 Jul 26). Week chips
+- **One dataset.** The schedule is the demo week (Mon 13 – Sun 19 Jul 26, a
+  full Monday-to-Sunday week; the weekend is non-flying, duty crew only). Week chips
   re-label but every week shows the same data (the original behaved the
   same way). "Throw pucks (auto)" is a stub, as in the original.
 - **jsdom cannot measure layout** — geometry contracts live in the probes,

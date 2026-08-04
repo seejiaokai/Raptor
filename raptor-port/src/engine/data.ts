@@ -1,4 +1,4 @@
-/* ---- schedule data (Jul 20 week) ---- */
+/* ---- schedule data (week of Mon 13 Jul 26, Monday..Sunday) ---- */
 export const DAYS:any[]=[
  {dow:'Monday',dt:'Jul 13',wc:'4 X 4 X 0',today:true,
   notes:['EP: AB BURN THROUGH ON TAKE OFF','ORDERS: FG SOP CHAP 2 PARA 1-2'],
@@ -108,5 +108,25 @@ export const DAYS:any[]=[
   sims:{amt:[],oft:[{label:'SIMS (149)',str:'0900',end:'1030',who:'149'},{label:'EP-6',str:'1400',end:'1530',p:'bapster',w:'shaft'}]},
   dutywaves:[{label:'Duty',rows:[{role:'SXO',id:'razer',str:'0730',end:'1730'},{role:'SDO',id:'yeti',str:'0730',end:'1730'}]}],
   ground:[{prog:'GROUND SCHOOL - EW',str:'0900',end:'1100',who:'stiff'},{prog:'AIRCREW ADMIN',str:'1100',end:'1200'}]},
+ /* The week runs Monday..Sunday (owner, Aug 26). The weekend is non-flying:
+    every section is present but empty, exactly as Friday's shape, because
+    dayCount reads `wc` for the head badge and dayKeys walks every section to
+    build a day's snapshot key space — an omitted key would leave holes in
+    both. A duty crew still stands the weekend, which is what the squadron
+    actually does, and gives the days something real to validate. */
+ {dow:'Saturday',dt:'Jul 18',wc:'0 X 0 X 0',
+  notes:['WEEKEND - NO FLYING','DUTY CREW ON CALL'],
+  allhands:[],
+  waves:[],
+  sims:{amt:[],oft:[]},
+  dutywaves:[{label:'Duty',rows:[{role:'SDO',id:'plasma',str:'0800',end:'1800'}]}],
+  ground:[]},
+ {dow:'Sunday',dt:'Jul 19',wc:'0 X 0 X 0',
+  notes:['WEEKEND - NO FLYING','DUTY CREW ON CALL'],
+  allhands:[],
+  waves:[],
+  sims:{amt:[],oft:[]},
+  dutywaves:[{label:'Duty',rows:[{role:'SDO',id:'spaceman',str:'0800',end:'1800'}]}],
+  ground:[]},
 ];
 
