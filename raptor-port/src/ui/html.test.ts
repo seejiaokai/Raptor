@@ -153,8 +153,19 @@ describe('view-week markup parity with the reference', () => {
     expect(h).toContain('<span class="v">— name —</span>')   // unsigned placeholder
   })
 
+  /* Divergence #8 (owner, Aug 26): the break-day flag is a rule the reference
+     does not have, so its legend swatch is excised from both sides — a no-op
+     on the reference — and pinned positively just below. */
+  const noRunKey = (s: string) => s.replace(
+    /\n\s*<span><span class="qk"[^>]*>7<\/span>no break day<\/span>/, '')
+
   it('the legend is byte-identical', () => {
-    expect(legendHTML()).toBe(w.eval('legendHTML()'))
+    expect(noRunKey(legendHTML())).toBe(noRunKey(w.eval('legendHTML()')))
+  })
+
+  it('the legend explains the break-day flag', () => {
+    expect(legendHTML()).toContain('no break day')
+    expect(legendHTML()).toContain('>7</span>no break day')
   })
 
   /* ---- what the excised region above is replaced by ---------------------

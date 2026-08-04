@@ -67,6 +67,7 @@ export function legendHTML(){
     <span><span class="qk" style="background:#F0555F">C</span>conflict</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">A</span>advisory — shift + ground</span>
     <span><span class="qk" style="background:#F0555F">R</span>crew rest</span>
+    <span><span class="qk" style="background:#F0555F">7</span>no break day</span>
     <span><span class="qk" style="background:#F0555F">Q</span>qual / illegal seat</span>
     <span><span class="qk" style="background:#F0555F">B</span>no flight brief</span>
     <span><span class="qk" style="background:#F0555F">B</span>no sim brief</span>

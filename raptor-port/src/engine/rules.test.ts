@@ -89,8 +89,13 @@ describe('a label may not hard-code a threshold (tfin B53 #7)', () => {
 
 describe('the flag order is read from RANK, at module scope (tfin B50)', () => {
   it('RANK carries the squadron ordering', () => {
-    expect(RANK.Q).toBe(10); expect(RANK.LD).toBe(0); expect(RANK.A).toBe(3)
-    expect(RANK.C).toBe(9); expect(RANK.CR).toBe(8)
+    /* RUN (no break day) was inserted just above crew rest — both are rest
+       breaches and this is the graver one — which shifts C and Q up by one.
+       The ORDER is the squadron's and unchanged; only the numbering moved. */
+    expect(RANK.Q).toBe(11); expect(RANK.LD).toBe(0); expect(RANK.A).toBe(3)
+    expect(RANK.C).toBe(10); expect(RANK.RUN).toBe(9); expect(RANK.CR).toBe(8)
+    expect(RANK.RUN).toBeGreaterThan(RANK.CR)
+    expect(RANK.C).toBeGreaterThan(RANK.RUN)
   })
 })
 

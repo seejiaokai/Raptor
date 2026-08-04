@@ -13,6 +13,7 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
   simDebrief:30,    // sim debrief runs 30 min after
   amtDebrief:30,    // AMT DEBRIEF row + 30 min
   openEnd:60,       // a row with a start and no end is assumed to run an hour
+  maxRun:6,         // most consecutive days on the programme before a break day is due
   scDayFrom:7*60,   // an SC shift wholly inside this window is a DAY shift
   scDayTo:19*60};
 /* SC currency. A shift that sits wholly inside 07:00–19:00 is a DAY shift and
@@ -66,16 +67,20 @@ export const RULE_SPEC:any={
   amtDebrief:{t:'AMT debrief',               u:'min', lo:0,  hi:240},
   scDayFrom: {t:'SC day window opens',       u:'time',lo:0,  hi:1439},
   scDayTo:   {t:'SC day window closes',      u:'time',lo:0,  hi:1439},
+  maxRun:    {t:'Max days worked in a row',  u:'days',lo:1,  hi:14},
   minTurn:   {t:'Minimum turn (unused)',     u:'min', lo:0,  hi:480},
   dur:       {t:'Default sortie length (unused)',u:'min',lo:0,hi:480},
 };
 export const KIND_LABEL:any={fly:'a flight',sim:'a sim',duty:'a duty post',shift:'another shift',
   ground:'a ground event',prog:'a programme item'};
 /* a setting reads as a clock time or as a duration */
-export const ruleFmt=(k:any,v:any)=>RULE_SPEC[k]&&RULE_SPEC[k].u==='time'?hhmm(v):lgT(v);
+export const ruleFmt=(k:any,v:any)=>{const u=RULE_SPEC[k]&&RULE_SPEC[k].u;
+  return u==='time'?hhmm(v):u==='days'?`${v} day${v===1?'':'s'}`:lgT(v);};
 export const ruleParse=(k:any,txt:any)=>{
   const s=String(txt).trim();
   if(RULE_SPEC[k]&&RULE_SPEC[k].u==='time'){const m=parseHM(s); return m==null?null:m;}
+  /* a day count is a plain number — "6", "6 days" — never minutes */
+  if(RULE_SPEC[k]&&RULE_SPEC[k].u==='days'){const m=s.match(/^(\d+)/); return m?+m[1]:null;}
   /* "12h", "2h20", "90", "90 min" all mean the same thing */
   const hm=s.match(/^(\d+)\s*h\s*(\d{1,2})?$/i);
   if(hm)return +hm[1]*60+(+(hm[2]||0));

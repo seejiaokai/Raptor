@@ -75,9 +75,21 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   otherwise `saExempt`. SC SPARE carries no crew rest either way. SC currency
   is checked for MAIN and SPARE. SC NIGHT ⊂ SC DAY.
 - Standalone waves: SC (spares uncrosschecked), AVALON/BB (`noconf`).
-- Chip ranking `RANK` (highest wins): LD<DT<TT<A<SD<SB<DB<NB<CR<C<Q.
-  Glyphs shorten: CR→R, NB/SB→B, DB/SD→D, LD→L. `A` = on shift AND down for
+- Chip ranking `RANK` (highest wins): LD<DT<TT<A<SD<SB<DB<NB<CR<RUN<C<Q.
+  Glyphs shorten: CR→R, RUN→7, NB/SB→B, DB/SD→D, LD→L. `A` = on shift AND down for
   a ground event/programme.
+- **A break day is due after `VCONF.maxRun` (6) consecutive days** (owner,
+  Aug 26). `DAYS_RUN`, hard, chip `RUN` (glyph `7`), ranked just above crew
+  rest — both are rest breaches and this is the graver one. The run is counted
+  once per `validate()` over the whole loaded week, in day order, off
+  `day.events`, which is every kind of tasking there is: a flight, a duty
+  post, a sim, a ground item, a programme row. Leave and downchits are NOT
+  tasking, so a clear day resets the count, which is exactly what a break day
+  is. The flag lands on the day that BREAKS the limit — the day the scheduler
+  has to clear — not on the whole run. Because a run is a property of the week
+  rather than of a day, it is precomputed before the per-day loop.
+  NB the label carries no `{maxRun}` token: `wlbl()` renders every token
+  through `lgT()`, which would print a day count as minutes.
 - Warning labels embed `{crewRest}`-style tokens; `wlbl()` interpolates the
   LIVE VCONF value.
 
