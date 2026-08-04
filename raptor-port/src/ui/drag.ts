@@ -110,7 +110,14 @@ export function applyDrop(el: any, x: any, y: any) {
     toast('A jet line carries two — FCP and RCP')
     DRAG = null; dndOff(); return false
   }
-  const done = () => { DRAG = null; dndOff(); view.afterSchedMutate(); notify(); return true }
+  /* a drop that lands ON the armed target puts the arm down — it just did the
+     arm's job. Left armed, the ring outlived the row it was waiting on (and
+     the next palette tap would plant a second body into a row the user had
+     already filled by hand). Drops elsewhere leave the arm alone. */
+  const done = (served?: any) => {
+    if (served && view.armedKey() === served) view.disarmSlot()
+    DRAG = null; dndOff(); view.afterSchedMutate(); notify(); return true
+  }
   if (slotEl) {
     const targetKey = slotEl.dataset.slot || (slotEl.querySelector('[data-slot]') && slotEl.querySelector('[data-slot]').dataset.slot)
     if (!targetKey) { DRAG = null; dndOff(); return false }
@@ -121,12 +128,12 @@ export function applyDrop(el: any, x: any, y: any) {
     }
     /* dropped back where he started — say so rather than reporting nothing */
     else { DRAG = null; dndOff(); toast('Already in that seat'); return false }
-    return done()
+    return done(targetKey)
   }
   if (cell) {                                     // dropped on an empty / shared people cell
     if (DRAG.kind === 'roster') { fillSlot(cell.dataset.fill, DRAG.id); barDrop(DRAG.id, cell.dataset.fill) }
     else { const id = slotVal(DRAG.key); setSlotVal(DRAG.key, ''); fillSlot(cell.dataset.fill, id); barDrop(id, cell.dataset.fill) }
-    return done()
+    return done(cell.dataset.fill)
   }
   /* a seat puck let go anywhere else — the roster, blank page space, the
      chrome — comes off its seat; the name reappears in the palette. Rows

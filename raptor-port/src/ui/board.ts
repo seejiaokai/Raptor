@@ -194,7 +194,9 @@ export function boardArmClick(e: MouseEvent) {
   const empty = t.closest('.sb-slot.empty[data-slot]') as HTMLElement | null
   if (empty) { view.armSlot(empty.dataset.slot, empty); notify(); e.stopPropagation(); return }
   const seat = t.closest('.seat[data-slot]') as HTMLElement | null
-  if (seat && !slotVal(seat.dataset.slot!)) { view.armSlot(seat.dataset.slot, seat); notify(); e.stopPropagation(); return }
+  /* same armed-element escape as routeClick: a seat armed while empty, then
+     filled by drag, must still answer the put-me-down tap */
+  if (seat && (view.armedKey() === seat.dataset.slot || !slotVal(seat.dataset.slot!))) { view.armSlot(seat.dataset.slot, seat); notify(); e.stopPropagation(); return }
   const cell = t.closest('[data-fill]') as HTMLElement | null
   if (cell && !seat) { view.armSlot(cell.dataset.fill, cell); notify(); e.stopPropagation() }
 }

@@ -8,6 +8,8 @@ import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
 import { markEdit } from '../engine/publish'
 import { validate } from '../engine/validate'
 import { afterSchedMutate } from '../state/view'
+import * as view from '../state/view'
+import { notify } from '../state/store'
 import { fmtTxt, intimesInner, areaText, atimeText } from './html'
 
 let SCRATCH: any = null
@@ -88,7 +90,13 @@ export function routeFocusOut(e: FocusEvent) {
 export function routeKeyDown(e: KeyboardEvent) {
   const t = e.target as HTMLElement
   const tx = t && t.closest && t.closest('[data-txt]') as HTMLElement | null
-  if (!tx) return
+  /* Escape outside a text field puts an armed slot down — the reference's
+     global escape hatch (ref 4201), lost in the port. Inside a text field
+     Escape keeps its restore-the-text meaning below. */
+  if (!tx) {
+    if (e.key === 'Escape' && view.ARM) { view.disarmSlot(); notify() }
+    return
+  }
   /* Enter commits a one-line text field instead of inserting a line break;
      Escape abandons the edit and puts the model value back. Enter commits in
      the sim-notes block too — txtSet collapses the break anyway. */
