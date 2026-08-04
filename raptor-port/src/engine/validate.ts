@@ -1,5 +1,5 @@
 import { PEOPLE, isSpecial, realP, isOcu, isInstr, aarOK, scShiftKind, scQualOK } from './people'
-import { isDownchit, isLeave, isLocalLeave } from './inputs'
+import { isDownchit, isLeave, isLocalLeave, isDetach } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
 import { collectEvents } from './events'
@@ -132,24 +132,36 @@ export function validate(){
           dn?`Downchit but planned to fly ${e.label}${why}`
             :lv?`On leave but planned to fly ${e.label}${why}`
               :`${inp.type} clashes with ${e.label}${why}`);} }));
-    /* being on leave or downchit does not only bar flying — a duty, a sim seat
-       or a ground slot on the same day is just as wrong, and used to pass */
+    /* being unavailable does not only bar flying — a duty, a sim seat or a
+       ground slot on the same day is just as wrong, and used to pass. This
+       covered leave and downchits only (owner, 4 Aug 26): a Detachment, or a
+       personal input a scheduler has actioned to Unavailable, warned against a
+       sortie but let a sim seat, a duty post or a ground row through silently
+       — so "unavailable" guarded the jets and nothing else. Now every input
+       the validator can see clashes with every kind of tasking. Shifts are the
+       one carve-out for the ordinary personal types: an accepted row against
+       an SC shift is deliberately the soft SHIFT_SOFT advisory, and the raw
+       input must not shout red over that. Leave, downchits and detachments
+       still hard-flag a shift — those close the man's day outright. */
     day.events.forEach((e:any)=>{ if(e.kind==='fly')return;
       day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
         const dn=isDownchit(inp.type), lv=isLeave(inp.type);
-        if(!dn&&!lv)return;
+        if(!dn&&!lv&&!isDetach(inp.type)&&e.kind==='shift')return;
         if(!overlap(e.s,e.e,inp.s,inp.e))return;
         markChip(di,e.id,'C'); markRing(di,e.id,'hard');
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
-        add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[e.id],
-          (dn?'Downchit but tasked':'On leave but tasked')+` — ${e.label}${why}`); }); });
+        add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
+          (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${e.label}${why}`); }); });
     /* ---- BRIEF / DEBRIEF windows round each sortie -----------------------
        The published BRIEF time (the B column, T/O − 2h20) is the hardline: the
        brief starts then, so only an event reaching PAST it steals brief time.
        An event that finishes at or before the brief time is fine — e.g. a stand
        -down 0830–0900 against a 1020 brief is no issue. Anything sitting inside
-       brief → T/O means there is no time for the flight brief (red). Land + 2h
-       is the debrief; losing that is bad but not unflyable (orange). Both are
+       brief → T/O means there is no time for the flight brief. Losing the brief
+       or the debrief window is amber, not red (owner, 4 Aug 26): the clash
+       itself already carries the red — the eaten window is advice on top of it,
+       and a red here painted the whole puck red for what is a squeeze, not an
+       impossibility. Land + 2h is the debrief. Both are
        tested against the person's non-flying commitments and their timed personal
        inputs — a second sortie in the window is the tight-turn rule's business,
        and all-day inputs are already caught above.                            */
@@ -161,8 +173,8 @@ export function validate(){
         const hits=(s:any,e:any)=>others.filter((o:any)=>overlap(s,e,o.s,o.e)).map((o:any)=>o.label)
           .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>i.type));
         const hb=hits(bs,lg.to);
-        if(hb.length){markChip(di,id,'NB');markRing(di,id,'hard');
-          add('hard','NO_BRIEF',[id],`No time for the ${lg.label} flight brief — ${hb.join(', ')} sits inside ${hm24(bs)}–${hm24(lg.to)} (brief ${hm24(bs)})`);}
+        if(hb.length){markChip(di,id,'NB');markRing(di,id,'adv');
+          add('adv','NO_BRIEF',[id],`No time for the ${lg.label} flight brief — ${hb.join(', ')} sits inside ${hm24(bs)}–${hm24(lg.to)} (brief ${hm24(bs)})`);}
         const hd=hits(lg.ld,de);
         if(hd.length){markChip(di,id,'DB');markRing(di,id,'adv');
           add('adv','DEBRIEF',[id],`Not enough time to attend the ${lg.label} debrief — ${hd.join(', ')} sits inside ${hm24(lg.ld)}–${hm24(de)} (land + 2h)`);}
@@ -177,17 +189,20 @@ export function validate(){
       const hits=(s:any,e:any)=>mine.filter((o:any)=>overlap(s,e,o.s,o.e)).map((o:any)=>o.label)
         .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>i.type));
       if(sw.bs!=null&&sw.be!=null&&sw.be>sw.bs){ const h=hits(sw.bs,sw.be);
-        if(h.length){markChip(di,id,'SB');markRing(di,id,'hard');
-          add('hard','SIM_BRIEF',[id],`No time for the ${sw.label} brief — ${h.join(', ')} sits inside ${hm24(sw.bs)}–${hm24(sw.be)}`);} }
+        /* amber like NO_BRIEF (owner, 4 Aug 26) — same rule, sim flavour */
+        if(h.length){markChip(di,id,'SB');markRing(di,id,'adv');
+          add('adv','SIM_BRIEF',[id],`No time for the ${sw.label} brief — ${h.join(', ')} sits inside ${hm24(sw.bs)}–${hm24(sw.be)}`);} }
       if(sw.ds!=null&&sw.de!=null&&sw.de>sw.ds){ const h=hits(sw.ds,sw.de);
         if(h.length){markChip(di,id,'SD');markRing(di,id,'adv');
           add('adv','SIM_DEBRIEF',[id],`No time for the ${sw.label} debrief — ${h.join(', ')} sits inside ${hm24(sw.ds)}–${hm24(sw.de)}`);} }
     }));
     /* ---- double-turn summary --------------------------------------------
-       One red line at the head of the day telling the next scheduler how many
-       bodies are flying twice — the individual DT chips stay amber.            */
+       One line at the head of the day telling the next scheduler how many
+       bodies are flying twice. Amber, not red (owner, 4 Aug 26): double
+       turning is routine and planned, so the summary now matches the amber DT
+       chips instead of shouting over them.                                     */
     const dts=Object.keys(byP).filter((id:any)=>byP[id].length>=2);
-    if(dts.length)add('hard','DT_SUM',dts,`${dts.length} ${dts.length===1?'person is':'people are'} double turning: ${dts.map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ')}`);
+    if(dts.length)add('adv','DT_SUM',dts,`${dts.length} ${dts.length===1?'person is':'people are'} double turning: ${dts.map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ')}`);
     /* ---- long work day --------------------------------------------------
        Report (T/O − 3h, or the published in-time) through land + 2h, or plain
        start→end for everything that is not flying. Over 12h and the day gets a

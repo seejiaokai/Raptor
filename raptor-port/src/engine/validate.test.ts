@@ -68,8 +68,11 @@ describe('validation engine (tfin F)', () => {
   })
 
   it('runtime tiers agree with the source', () => {
-    const WANT: any = { TURN: 'adv', DOUBLE_BOOK: 'hard', NO_BRIEF: 'hard', DEBRIEF: 'adv', SIM_BRIEF: 'hard', SIM_DEBRIEF: 'adv',
-      DT_SUM: 'hard', LONGDAY: 'note', CREW_REST: 'hard', CREW_TIGHT: 'adv', ILLEGAL_CREW: 'hard', QUAL: 'hard', OCU_NO_IP: 'adv' }
+    /* NO_BRIEF, SIM_BRIEF and DT_SUM are amber (owner, 4 Aug 26) — the clash
+       itself carries the red; the eaten window and the double-turn count are
+       advice on top of it */
+    const WANT: any = { TURN: 'adv', DOUBLE_BOOK: 'hard', NO_BRIEF: 'adv', DEBRIEF: 'adv', SIM_BRIEF: 'adv', SIM_DEBRIEF: 'adv',
+      DT_SUM: 'adv', LONGDAY: 'note', CREW_REST: 'hard', CREW_TIGHT: 'adv', ILLEGAL_CREW: 'hard', QUAL: 'hard', OCU_NO_IP: 'adv' }
     const bad = validate().all.filter((x: any) => WANT[x.code] && WANT[x.code] !== x.sev)
     expect(bad, bad.map((x: any) => x.code + '=' + x.sev).join(',')).toEqual([])
   })

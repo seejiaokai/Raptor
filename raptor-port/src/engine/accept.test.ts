@@ -10,6 +10,7 @@ import { acceptInput, unacceptInput, inpKey, slotVal, txtGet, txtSet } from './s
 import { keyDay } from './keys'
 import { dayKeys } from './restore'
 import { SCHED } from './publish'
+import { makeStandalone } from './waves'
 import { validate } from './validate'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -171,5 +172,85 @@ describe('the validator gate on personal inputs', () => {
     expect(hits('INPUT_FLY')).toBe(0)
     expect(acceptInput(0, inp, 'u')).toBe(true)
     expect(hits('INPUT_FLY')).toBeGreaterThan(0)        // unavailable is real
+  })
+
+  /* regression (owner report, 4 Aug 26): an ALL-DAY Fly accepted to Ground made
+     a time-less row, a time-less row never becomes an event, and the inputFlags
+     gate hid the input itself — so a man flying with another squadron all day
+     could sit planted in a sortie with nothing said about it. The gate now
+     keeps an all-day Fly-to-'g' visible; the time-less row it leaves behind
+     still raises nothing, so the clash prints once, not twice. */
+  it('an all-day Fly accepted to Ground still flags the planted sortie', () => {
+    const inp = findInp('Fly')!                        // bruise, all-day, flies Jul 13 in the seed
+    const hits = () => validate().all
+      .filter((x: any) => x.code === 'INPUT_FLY' && (x.who || []).indexOf('bruise') >= 0)
+    expect(hits().length).toBe(0)                      // un-actioned: a request, silent
+    expect(acceptInput(0, inp, 'g')).toBe(true)
+    const after = hits()
+    expect(after.length).toBeGreaterThan(0)
+    expect(after[0].sev).toBe('hard')
+    /* and the time-less row adds no DOUBLE_BOOK on top */
+    expect(validate().all.filter((x: any) => x.code === 'DOUBLE_BOOK'
+      && (x.who || []).indexOf('bruise') >= 0).length).toBe(0)
+    unacceptInput(0, inp)
+    expect(hits().length).toBe(0)
+  })
+
+  it('accept refuses unavailable types — they are already issued, not requests', () => {
+    const inp = INPUTS.find((x: any) => x.type === 'Downchit' && x.date === 'Jul 13')!
+    const before = DAYS[0].ground.length
+    expect(acceptInput(0, inp, 'g')).toBe(false)
+    expect(acceptInput(0, inp, 'u')).toBe(false)
+    expect(DAYS[0].ground.length).toBe(before)
+    expect(inp.acc).toBeUndefined()
+  })
+})
+
+/* "Unavailable" guards everything, not just the jets (owner, 4 Aug 26): a
+   Detachment, or a personal input actioned to Unavailable, used to warn
+   against a sortie but let a sim seat, a duty post or a ground row through
+   silently. The one carve-out: ordinary personal types stay quiet against an
+   SC shift, where the accepted row's soft SHIFT_SOFT advisory is the designed
+   voice — leave, downchits and detachments still hard-flag a shift. */
+describe('inputs clash with every kind of tasking', () => {
+  const tasked = (id: string, code: string) => validate().all
+    .filter((x: any) => x.code === code && / but tasked /.test(x.msg) && (x.who || []).indexOf(id) >= 0)
+
+  it('a Detachment bars a duty post and a ground row, not only flying', () => {
+    /* pike is on detachment Jul 15–17 and flies only on Monday */
+    DAYS[2].dutywaves[0].rows.push({ role: 'TEST', id: 'pike', str: '1000', end: '1100' })
+    DAYS[2].ground.push({ prog: 'ESCORT VISIT', str: '1300', end: '1400', who: 'pike' })
+    const w = tasked('pike', 'INPUT_FLY')
+    expect(w.length).toBe(2)
+    expect(w.every((x: any) => x.sev === 'hard')).toBe(true)
+    expect(w.map((x: any) => x.msg).join('|')).toMatch(/TEST duty/)
+    expect(w.map((x: any) => x.msg).join('|')).toMatch(/ESCORT VISIT/)
+  })
+
+  it('a Meeting actioned to Unavailable bars a duty; abutting it does not', () => {
+    const inp = findInp('Meeting')!                    // vinci, 09:00–17:00
+    acceptInput(0, inp, 'u')
+    DAYS[0].dutywaves[0].rows.push({ role: 'TEST', id: 'vinci', str: '1700', end: '1800' })
+    expect(tasked('vinci', 'INPUT_FLY').length).toBe(0)   // half-open: abutting is clean
+    DAYS[0].dutywaves[0].rows[DAYS[0].dutywaves[0].rows.length - 1].str = '1630'
+    expect(tasked('vinci', 'INPUT_FLY').length).toBe(1)   // overlapping is not
+  })
+
+  it('an ordinary input stays quiet against an SC shift; a Detachment does not', () => {
+    /* vinci's Meeting (09:00–17:00) actioned to Unavailable, vinci on SC AM
+       07:00–13:00: the accepted row's SHIFT_SOFT is the designed voice there,
+       the raw input must not shout over it */
+    const sc0: any = makeStandalone('sc')!
+    sc0.formations[0].aircraft[0].p = 'vinci'
+    DAYS[0].waves.push(sc0)
+    acceptInput(0, findInp('Meeting')!, 'u')
+    expect(validate().all.filter((x: any) =>
+      /Meeting but tasked — SC AM/.test(x.msg)).length).toBe(0)
+    /* pike's detachment closes the day outright — an SC shift included */
+    const sc2: any = makeStandalone('sc')!
+    sc2.formations[0].aircraft[0].p = 'pike'
+    DAYS[2].waves.push(sc2)
+    expect(validate().all.filter((x: any) =>
+      /Detachment but tasked — SC AM/.test(x.msg)).length).toBe(1)
   })
 })

@@ -2,6 +2,7 @@ import { DAYS } from './data'
 import { PEOPLE, nameToId } from './people'
 import { SCHED, markEdit } from './publish'
 import { parseHM, hhmm } from './time'
+import { isUnavail } from './inputs'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -241,6 +242,13 @@ export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${
 export function acceptInput(di:any,inp:any,dest:any){
   const d=DAYS[di]; if(!d||!inp)return false;
   if(inp.acc)return false;                       // already actioned — unaccept first
+  /* leave / downchit / detachment are never accepted — they are already issued
+     to everyone via the Unavailable block, and promoting one to a ground row
+     would make the validator flag the row against its own source input (the
+     two carry identical times, so overlap() is trivially true). The board
+     never offers the control for these; this guard keeps any future call
+     site honest. */
+  if(isUnavail(inp.type))return false;
   if(dest==='u'){ inp.acc='u'; markEdit(); return true; }
   d.ground=d.ground||[];
   const ri=d.ground.length;

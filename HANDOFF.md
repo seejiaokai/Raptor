@@ -76,6 +76,30 @@ The port from the original single-file app is complete; that history is in
   on the pre-change baseline. Measured, not assumed. CI does not run it
   (`deploy.yml` gates on `npm test`, `tfin.js`, `npm run build`); judge it over
   several runs, not one.
+- **Resolved (owner, 4 Aug 26): NO_BRIEF, SIM_BRIEF and DT_SUM are amber
+  (adv), not red (hard).** The clash itself already carries the red; the eaten
+  brief window and the double-turn count are advice on top of it. The parity
+  tests stay byte-exact via `retier()` in `src/testing/refwin.ts`, which
+  re-tiers the three call sites in the in-memory reference before boot (the
+  file on disk is untouched). DOUBLE_BOOK stays red on purpose — a puck can
+  still ring red when the man carries a true conflict.
+- **Resolved (owner report, 4 Aug 26): an all-day `Fly` accepted to Ground
+  flagged nothing** even with the man planted in a sortie (time-less row → no
+  event, and `inputFlags` hid the input). The gate now keeps exactly that case
+  visible; timed Fly-to-`g` still defers to its row. `acceptInput` also now
+  refuses Unavailable-typed inputs (they are already issued; promoting one
+  made its row clash with its own source input — a latent footgun, never
+  reachable from the shipped UI).
+- **Resolved (owner, 4 Aug 26): "unavailable" now guards everything.** The
+  "but tasked" loop covered leave/downchits only, so a Detachment or an
+  actioned-to-Unavailable personal input warned against a sortie but let a
+  sim seat, a duty post or a ground row through silently. Now every
+  validator-visible input clashes with every kind of tasking; ordinary
+  personal types stay quiet against SC shifts (SHIFT_SOFT is the designed
+  voice there). See `docs/engine-rules.md` §validation.
+- **`audit` probe now dies at item 3 on the port** (it looks up an
+  `Available *` offer input, a type the port removed) — same by-design class
+  as `audit2 #8`; recorded in `docs/probe-sweep.md`.
 - **Resolved (owner, Aug 26): an actioned `Fly` is away.** Fly means flying
   with another squadron, so once accepted (either destination) the man drops
   out of the Available-crew strip, fades in the palette and is barred from

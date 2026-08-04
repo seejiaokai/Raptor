@@ -59,7 +59,7 @@ sweep's shared-CPU load; quiet-machine numbers are below.
 
 | probe | status |
 |---|---|
-| `audit` | **all 21 assertions pass on the port**; the run then stops at console item 14, which assigns the module-internal `AIRKEY` as a bare window global and clicks `#airAdd` synchronously. The item-14 contract (a traffic edit earns a history step + `tr:` pending mark) is pinned in `odds.test.tsx`; item 9 (board day-tab disarms) in `board.test.tsx`. |
+| `audit` | Originally **all 21 assertions passed on the port**, stopping at console item 14 (assigns the module-internal `AIRKEY` as a bare window global and clicks `#airAdd` synchronously); item-14's contract (a traffic edit earns a history step + `tr:` pending mark) is pinned in `odds.test.tsx`, item 9 (board day-tab disarms) in `board.test.tsx`. **Since the offers removal (owner, Aug 26) the port run dies earlier, at item 3**: the probe looks up an `Available *` input (`off.person`), a type the port no longer ships, and the whole evaluate crashes before printing — same by-design class as `audit2 #8`. Everything the probe checked is pinned in Vitest. |
 | `aar` | engine parse checks print and match; stops reading the Quals DOM synchronously after `go('quals')`. The NAAR-before-DAAR invariants are pinned in `quals.test.tsx` and the engine tests. |
 | `sa` | standalone-wave checks stop at a synchronous post-`addWave` DOM read. The SC/AVALON/BB shapes, `saExempt` and the duty block are pinned in the engine suites and `board.test.tsx`. |
 | `sc2` | stops at a synchronous post-arm palette read. The SC DAY/NIGHT palette gating is pinned in `slotrules.test.ts` and `editweek.test.tsx`. |
