@@ -85,7 +85,7 @@ export let INPUTS:any[]=[
   {person:'pike',  date:'Jul 15', endDate:'Jul 17', allday:true, type:'Detachment', remarks:'Det — exercise, off island',mod:'2026-07-13'},
   {person:'yeti',  date:'Jul 13', allday:false, s:600, e:660, type:'Appointment', remarks:'HSP blood panel',mod:'2026-07-12'},
 ];
-export const DATES=['Jul 13','Jul 14','Jul 15','Jul 16','Jul 17'];  // Mon..Fri index → date label
+export const DATES=['Jul 13','Jul 14','Jul 15','Jul 16','Jul 17','Jul 18','Jul 19'];  // Mon..Sun index → date label
 export function inputCoversDate(inp:any,dt:any){
   if(inp.endDate){return DATES.indexOf(dt)>=DATES.indexOf(inp.date)&&DATES.indexOf(dt)<=DATES.indexOf(inp.endDate);}
   return inp.date===dt;

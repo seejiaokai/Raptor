@@ -18,8 +18,13 @@ import { acceptInput, unacceptInput } from '../engine/slots'
 
 let w: any
 
+/* The port's week runs Mon..SUN; the reference stops at Friday and is
+   read-only, so byte-comparison is bounded to the days it actually has. The
+   weekend days are pinned positively in their own block below. */
+let REFN = 0
 beforeAll(async () => {
   w = await refWindow()          // syncs the port's seed INPUTS into the reference
+  REFN = w.eval('DAYS.length')
   validate()
 })
 
@@ -97,7 +102,7 @@ const noStores = (s: string) => s.replace(
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
     const V = (s: string) => noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))
-    DAYS.forEach((_: any, di: number) => {
+    DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di).toBe(V(ref))
     })
@@ -134,7 +139,7 @@ describe('view-week markup parity with the reference', () => {
        own start), so it is not byte-compared here; the pins below assert the
        port keeps it in edit mode. */
     const E = (s: string) => noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))
-    DAYS.forEach((_: any, di: number) => {
+    DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
     })
@@ -369,5 +374,30 @@ describe('the scheduler-side controls', () => {
     const gblk = e2.slice(e2.indexOf('sec-grnd'), e2.indexOf('sec-inp'))
     expect(gblk.slice(gblk.lastIndexOf('<div class="pl-row'))).toContain(`gr:0.${d.ground.length - 1}.str`)
     d.ground.pop()
+  })
+})
+
+/* The two days the bounded byte-comparison above stops covering. */
+describe('the weekend days render (owner, Aug 26)', () => {
+  it('build on both surfaces, read as non-flying, and carry their duty crew', () => {
+    DAYS.slice(REFN).forEach((d: any, i: number) => {
+      const di = REFN + i
+      for (const ed of [false, true]) {
+        const h = dayHTML(di, ed)
+        expect(h, `${d.dow} ed=${ed}`).toContain(`data-day="${di}"`)
+        expect(h).toContain(d.dow)
+        expect(h).toContain('No flying')          // the .nobox stands in for the waves
+        expect(h).not.toContain('undefined')
+      }
+      // the duty block is real, so it addresses through the ordinary grammar
+      expect(dayHTML(di, true)).toContain(`d:${di}.0.0`)
+    })
+  })
+
+  it('Saturday and Sunday are the last two, in order', () => {
+    const week = DAYS.map((_: any, di: number) => dayHTML(di, false))
+    expect(week.length).toBe(7)
+    expect(week[5]).toContain('Saturday')
+    expect(week[6]).toContain('Sunday')
   })
 })
