@@ -25,7 +25,7 @@ import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
 
 export async function refWindow(): Promise<any> {
-  const html = readFileSync('reference/scheduler.html', 'utf8')
+  const html = retier(readFileSync('reference/scheduler.html', 'utf8'))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -48,6 +48,30 @@ export async function refWindow(): Promise<any> {
 export function syncInputs(w: any) {
   w.eval('INPUTS.length=0;INPUTS.push.apply(INPUTS,JSON.parse('
     + JSON.stringify(JSON.stringify(INPUTS.filter(inputFlags))) + '))')
+}
+
+/* Second structural divergence, closed the same way as the INPUTS push — at
+   the source, before boot. NO_BRIEF, SIM_BRIEF and DT_SUM are amber in the
+   port (owner, 4 Aug 26); the reference bakes 'hard' into those three call
+   sites as string literals. Patch the in-memory copy so both engines carry
+   the same tiers and every byte-comparison (WARN, dayHTML markup, banner
+   counts) stays exact — the file on disk is never touched. Each replacement
+   must hit exactly once: if the reference text ever shifts, this throws
+   rather than silently comparing the un-patched behaviour. */
+function retier(html: string): string {
+  const swaps: Array<[string, string]> = [
+    ["markChip(di,id,'NB');markRing(di,id,'hard');\n          add('hard','NO_BRIEF'",
+     "markChip(di,id,'NB');markRing(di,id,'adv');\n          add('adv','NO_BRIEF'"],
+    ["markChip(di,id,'SB');markRing(di,id,'hard');\n          add('hard','SIM_BRIEF'",
+     "markChip(di,id,'SB');markRing(di,id,'adv');\n          add('adv','SIM_BRIEF'"],
+    ["add('hard','DT_SUM'", "add('adv','DT_SUM'"],
+  ]
+  for (const [from, to] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin retier: expected exactly 1 match, got ${n} for: ${from.slice(0, 40)}…`)
+    html = html.replace(from, to)
+  }
+  return html
 }
 
 /* One divergence the sync CANNOT close: the reference's `isOffer` is a `const`,

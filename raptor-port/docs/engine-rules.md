@@ -17,8 +17,14 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - Crew rest (VCONF.crewRest) runs off the last REST-BEARING commitment
   (sortie or shift). Breach = hard CR; nominal-inside-rest = adv TT.
 - Tight turn needs `max(VCONF.tightTurn, dekit + step)`.
-- Double turn: two+ sorties in a day → ONE hard DT_SUM line naming everyone;
-  pucks stay amber. No span test.
+- Double turn: two+ sorties in a day → ONE DT_SUM line naming everyone;
+  **adv, not hard** (owner, 4 Aug 26 — double turning is routine and planned),
+  matching the amber pucks. No span test.
+- **NO_BRIEF and SIM_BRIEF are adv, not hard** (owner, 4 Aug 26): the clash
+  itself already carries the red; the eaten brief window is advice on top of
+  it. DEBRIEF/SIM_DEBRIEF were already adv. The parity tests stay byte-exact
+  via `refwin.ts:retier()`, which re-tiers the three call sites in the
+  in-memory copy of the reference before boot.
 - There are no OFFERS any more (owner decision, Aug 26). `Office`,
   `Available fly` and `Available duty` were removed as types and `isOffer` is
   gone with them. `Fly` gets no exemption: filed under Unavailable it raises
@@ -36,7 +42,20 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   where the raw input raised nothing is intended — do not "fix" it.) Accepted
   to `'u'` the input itself clashes, like a Detachment. Known edge, by
   design: an all-day input accepted to `'g'` makes a time-less ground row →
-  no event → no flag, same as any time-less scheduler-typed row.
+  no event → no flag, same as any time-less scheduler-typed row — **except an
+  all-day `Fly`** (owner report, 4 Aug 26): he is flying with another squadron
+  the whole day, so `inputFlags` keeps that one case visible and the clash
+  prints once, off the input. `acceptInput` refuses Unavailable-typed inputs
+  outright (they are already issued, and promoting one would make its row
+  clash with its own source input).
+- **Every input the validator can see clashes with every kind of tasking**
+  (owner, 4 Aug 26). The "but tasked" loop used to cover leave and downchits
+  only, so a Detachment or an actioned-to-`'u'` personal input warned against
+  a sortie but let a sim seat, a duty post or a ground row through silently.
+  Now all of `day.input` clashes with all of `day.events`, with one carve-out:
+  ordinary personal types stay quiet against `kind==='shift'` (the accepted
+  row's `SHIFT_SOFT` is the designed voice there); leave, downchits and
+  detachments still hard-flag a shift.
 - **An actioned `Fly` is AWAY** (owner, Aug 26: a Fly means flying with
   another squadron). `isAway(inp)` = `isOffType(type) || (isFly(type) &&
   acc)` — it feeds `dayOff` (the Available-crew strip and the palette fade),

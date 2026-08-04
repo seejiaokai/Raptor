@@ -51,8 +51,15 @@ export function isPersonal(t:any){return /^(Meeting|Training|Personal|Appointmen
    already represented by the ground row acceptInput created — letting it flag
    here too would print every clash twice (INPUT_FLY on the input plus
    DOUBLE_BOOK on the row). An un-actioned personal input is invisible to
-   validate(): it is a request, not yet part of anyone's programme. */
-export function inputFlags(inp:any){return isUnavail(inp.type)||inp.acc==='u';}
+   validate(): it is a request, not yet part of anyone's programme.
+   The one exception to the 'g' rule (4 Aug 26): an ALL-DAY input accepted to
+   Ground makes a time-less row, and a time-less row never becomes an event —
+   so an all-day Fly accepted to the ground programme flagged nothing even
+   with the man planted in a sortie. An all-day Fly is exactly the case that
+   must flag (he is flying with another squadron the whole day), so it stays
+   visible here; a TIMED Fly to 'g' still defers to its row, and the all-day
+   row it leaves behind is time-less, so nothing prints twice. */
+export function inputFlags(inp:any){return isUnavail(inp.type)||inp.acc==='u'||(isFly(inp.type)&&inp.acc==='g'&&!!inp.allday);}
 /* inputs use machine-readable date + minute fields so the validator can reason about them.
    s/e are minutes-from-midnight; allday inputs cover the whole day. */
 export let INPUTS:any[]=[
