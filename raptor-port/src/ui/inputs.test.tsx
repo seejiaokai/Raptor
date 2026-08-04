@@ -143,3 +143,90 @@ describe('the Inputs page (tfin)', () => {
     await act(async () => { undo() })
   })
 })
+
+/* The two-click range calendar (owner, Aug 26) replaced the pair of date
+   boxes. First click starts, second ends, and a second click BEFORE the start
+   cannot make a backwards range — it becomes the new start instead. */
+describe('the range calendar', () => {
+  const day = (d: string) => $(`#inCal [data-cal="2026-07-${d}"]`)
+  const readout = () => $('#inDates').textContent
+
+  it('replaced the two date inputs', () => {
+    expect($('#inStart')).toBeFalsy()
+    expect($('#inEnd')).toBeFalsy()
+    expect($('#inCal'), 'the calendar renders').toBeTruthy()
+  })
+
+  it('starts on Monday and marks the weekend', () => {
+    const dow = $$('#inCal .rc-dow span').map(x => x.textContent)
+    expect(dow).toEqual(['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'])
+    // 18 Jul 2026 is a Saturday
+    expect(day('18').classList.contains('wk')).toBe(true)
+    expect(day('15').classList.contains('wk')).toBe(false)
+  })
+
+  it('two clicks make a range, and the days between are marked', async () => {
+    await click(day('14'))
+    expect(readout()).toBe('Jul 14')
+    expect(day('14').classList.contains('s')).toBe(true)
+    await click(day('17'))
+    expect(readout()).toBe('Jul 14 → Jul 17')
+    expect(day('17').classList.contains('e')).toBe(true)
+    expect(day('15').classList.contains('mid')).toBe(true)
+  })
+
+  it('a backwards second click becomes the new start instead', async () => {
+    await click(day('20'))                 // fresh range
+    expect(readout()).toBe('Jul 20')
+    await click(day('16'))                 // earlier — cannot be an end
+    expect(readout()).toBe('Jul 16')
+    expect(day('16').classList.contains('s')).toBe(true)
+    expect($$('#inCal .rc-d.e').length).toBe(0)
+    await click(day('17'))                 // now it can close
+    expect(readout()).toBe('Jul 16 → Jul 17')
+  })
+
+  it('a third click begins a fresh range rather than sticking', async () => {
+    await click(day('21'))
+    expect(readout()).toBe('Jul 21')
+  })
+
+  it('the picked range is what Add writes', async () => {
+    await click(day('14')); await click(day('16'))
+    const n = INPUTS.length
+    await click($('#inAdd'))
+    expect(INPUTS.length).toBe(n + 1)
+    expect(INPUTS[0].date).toBe('Jul 14')
+    expect(INPUTS[0].endDate).toBe('Jul 16')
+    await act(async () => { undo() })
+  })
+})
+
+/* the pencil edits the row in place */
+describe('editing an input from its own line', () => {
+  it('opens on the pencil, commits on ✓, and joins the undo stack', async () => {
+    const row0 = () => $$('#inBody tr')[0]
+    await click(row0().querySelector('[data-edit]'))
+    expect($('#inBody tr.ined'), 'the row became fields').toBeTruthy()
+    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+    await act(async () => { setter.call(rm, 'EDITED IN PLACE'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
+    const inx = +($('#inBody tr.ined [data-save]') as HTMLElement).dataset.save!
+    const was = INPUTS[inx].remarks
+    await click($('#inBody tr.ined [data-save]'))
+    expect($('#inBody tr.ined'), 'the row closed').toBeFalsy()
+    expect(INPUTS[inx].remarks).toBe('EDITED IN PLACE')
+    await act(async () => { undo() })
+    expect(INPUTS[inx].remarks).toBe(was)
+  })
+
+  it('cancel leaves the row untouched', async () => {
+    const before = JSON.stringify(INPUTS[0])
+    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+    await act(async () => { setter.call(rm, 'THROWN AWAY'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
+    await click($('#inBody tr.ined [data-cancel]'))
+    expect(JSON.stringify(INPUTS[0])).toBe(before)
+  })
+})

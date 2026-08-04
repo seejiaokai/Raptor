@@ -12,12 +12,22 @@ import { SESSION, ME } from '../state/auth'
 import { writeInputs, notify } from '../state/store'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
+import { RangeCal } from './RangeCal'
 
 const people = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 
 /* the reference's date formatter, verbatim (yyyy-mm-dd → 'Jul 14') */
 const fmt = (d: any) => { if (!d) return DATES[0]; const [, m, da] = d.split('-'); return ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m] + ' ' + String(+da) }
+
+/* fmt's inverse — the model stores 'Jul 14' labels, the calendar speaks
+   yyyy-mm-dd. The demo week is 2026, which is the only year the labels imply. */
+const unfmt = (lbl: any) => {
+  const p = String(lbl || '').trim().split(/\s+/)
+  const mi = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(p[0])
+  if (mi < 0 || !p[1]) return ''
+  return `2026-${String(mi + 1).padStart(2, '0')}-${String(+p[1]).padStart(2, '0')}`
+}
 
 export function InputsPage() {
   useVersion()
@@ -35,6 +45,8 @@ export function InputsPage() {
   const [fPerson, setFPerson] = useState('all')
   const [fType, setFType] = useState('all')
   const [fSearch, setFSearch] = useState('')
+  const [editIx, setEditIx] = useState<number | null>(null)
+  const [draft, setDraft] = useState<any>(null)
 
   const add = () => {
     /* the Inputs page is the one page a member can reach that mutates the
@@ -53,6 +65,36 @@ export function InputsPage() {
       recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
     }))
     setRemarks('')
+  }
+
+  /* the pencil turns ONE row into fields in place (owner, Aug 26). The draft is
+     held apart from the model so Cancel is a real cancel, and the commit runs
+     through writeInputs like every other mutation — so an edit joins the undo
+     stack and re-validates the week. */
+  const startEdit = (inx: number) => {
+    if (SESSION.role !== 'admin') return HOOKS.toast('View only — ask a scheduler to edit this', 'warn')
+    const r = INPUTS[inx]
+    setEditIx(inx)
+    setDraft({
+      person: r.person, type: r.type, allday: !!r.allday,
+      start: unfmt(r.date), end: r.endDate ? unfmt(r.endDate) : '',
+      sTime: r.allday ? '06:00' : hhmm(r.s), eTime: r.allday ? '18:00' : hhmm(r.e),
+      remarks: r.remarks || '',
+    })
+  }
+  const saveEdit = () => {
+    if (editIx == null || !draft) return
+    const s = draft.allday ? 0 : parseHM(draft.sTime), e = draft.allday ? 1439 : parseHM(draft.eTime)
+    if (!draft.allday && (s == null || e == null)) return HOOKS.toast('Give the input a start and end time, or tick All day', 'warn')
+    if (!draft.allday && (e as number) <= (s as number)) return HOOKS.toast('End time must be after start time', 'warn')
+    const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
+    writeInputs(() => {
+      const r = INPUTS[editIx]
+      r.person = draft.person; r.type = draft.type; r.allday = draft.allday
+      r.s = s; r.e = e; r.date = date; r.remarks = draft.remarks.trim(); r.mod = 'now'
+      if (endDate) r.endDate = endDate; else delete r.endDate
+    })
+    setEditIx(null); setDraft(null)
   }
 
   const del = (inx: number) => {
@@ -74,8 +116,10 @@ export function InputsPage() {
             <select id="inPerson" aria-label="Person" value={person} onChange={e => setPerson(e.target.value)}>
               {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
             </select></div>
-          <div className="ifield"><label>Start</label><input id="inStart" type="date" value={start} onChange={e => setStart(e.target.value)} /></div>
-          <div className="ifield"><label>End</label><input id="inEnd" type="date" value={end} onChange={e => setEnd(e.target.value)} /></div>
+          <div className="ifield cal"><label>Dates</label>
+            <RangeCal idPrefix="in" start={start} end={end} onPick={(s2, e2) => { setStart(s2); setEnd(e2) }} />
+            <div className="rc-read" id="inDates">{start ? (fmt(start) + (end ? ' → ' + fmt(end) : '')) : 'pick a start date'}</div>
+          </div>
           <div className="ifield chk"><label>All day</label><input id="inAllday" type="checkbox" checked={allday} onChange={e => setAllday(e.target.checked)} /></div>
           <div className="ifield"><label>Start time</label><input id="inStartT" type="time" value={sTime} disabled={allday} onChange={e => setSTime(e.target.value)} /></div>
           <div className="ifield"><label>End time</label><input id="inEndT" type="time" value={eTime} disabled={allday} onChange={e => setETime(e.target.value)} /></div>
@@ -114,13 +158,49 @@ export function InputsPage() {
               const st = r.date + (r.allday ? '' : ' ' + hhmm(r.s))
               const en = (r.endDate || r.date) + (r.allday ? '' : ' ' + hhmm(r.e))
               const inx = INPUTS.indexOf(r)
+              if (editIx === inx && draft) return (
+                <tr key={inx} className="ined">
+                  <td><select aria-label="Person" data-ed="person" value={draft.person}
+                    onChange={e => setDraft({ ...draft, person: e.target.value })}>
+                    {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+                  </select></td>
+                  <td colSpan={2}>
+                    <RangeCal idPrefix="ined" start={draft.start} end={draft.end}
+                      onPick={(s2, e2) => setDraft({ ...draft, start: s2, end: e2 })} />
+                    <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
+                    <label className="ined-ad"><input type="checkbox" data-ed="allday" checked={draft.allday}
+                      onChange={e => setDraft({ ...draft, allday: e.target.checked })} /> all day</label>
+                    <span className="ined-t" hidden={draft.allday}>
+                      <input type="time" aria-label="Start time" data-ed="stime" value={draft.sTime}
+                        onChange={e => setDraft({ ...draft, sTime: e.target.value })} />
+                      <input type="time" aria-label="End time" data-ed="etime" value={draft.eTime}
+                        onChange={e => setDraft({ ...draft, eTime: e.target.value })} />
+                    </span>
+                  </td>
+                  <td><select aria-label="Type" data-ed="type" value={draft.type}
+                    onChange={e => setDraft({ ...draft, type: e.target.value })}>
+                    {INPUT_TYPES.map((t: string) => <option key={t}>{t}</option>)}
+                  </select></td>
+                  <td><input aria-label="Remarks" data-ed="remarks" value={draft.remarks}
+                    onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
+                  <td>{r.recur || ''}</td>
+                  <td className="mono" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
+                  <td className="inact">
+                    <span className="rok" data-save={inx} title="Save" onClick={saveEdit}>✓</span>
+                    <span className="rmx" data-cancel={inx} title="Cancel" onClick={() => { setEditIx(null); setDraft(null) }}>✕</span>
+                  </td>
+                </tr>
+              )
               return (
                 <tr key={inx}>
                   <td>{cs}</td><td>{st}</td><td>{en}</td>
                   <td><span className="intag">{r.type}</span></td>
                   <td>{r.remarks || ''}</td><td>{r.recur || ''}</td>
                   <td className="mono" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
-                  <td><span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span></td>
+                  <td className="inact">
+                    <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
+                    <span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span>
+                  </td>
                 </tr>
               )
             })}

@@ -1,6 +1,6 @@
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME } from '../engine/people'
-import { INPUTS, inputCoversDate, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpLabel, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
@@ -569,7 +569,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
         s+=`<div class="pl-row${acc&&inp.acc?' accd':''}">`
-          +`<span class="nm"><span class="ntx">${esc(inp.type)}</span></span>${tcell}`
+          +`<span class="nm"><span class="ntx">${esc(inpLabel(inp))}</span></span>${tcell}`
           +`<div class="ppl one">${pk}</div>${plRmk(null,ed,null,inp.remarks||'')}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
