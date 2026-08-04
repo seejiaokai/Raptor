@@ -206,3 +206,31 @@ stranding text already in the model.
   seat".
 - Arm-and-plant: empty slot arms, palette tap plants, darkened names refuse
   with a toast, changing board day disarms.
+
+## Selection highlight (`ui/highlights.ts`)
+
+Clicking a puck selects **that one puck**, not every copy of the person (owner,
+Aug 26). `interactions.ts` captures the clicked puck's enclosing slot key
+(`data-slot`/`data-fill`) and passes it to `selectPerson` as `SELKEY`; the
+highlight pass paints the blue `.sel` only where a puck's own slot key matches
+`SELKEY`. A keyless puck (palette, version preview) has no key and falls back to
+the old name-wide highlight. `SELID` still holds the person, so the rest of the
+board dims (`focusActive`) and the same person's OTHER copies dim like anything
+else — that dimming is what makes the one clicked puck pop. The "me" puck
+(`ME`) stays exempt from dimming, as before. Opening that person's issue boxes
+(`PFOCUS`) is unchanged and still person-scoped. Clicking blank space clears
+everything (`selDrop`).
+
+## Line configs — the stores "+" picker
+
+Under Remarks, each flying line carries an additive config set (owner, Aug 26):
+**NAV · N/C · 3 TKS · CL**, replacing the old fixed 2TK/TPOD/NAV toggles. The
+set lives once in `STORE_CFG` (`ui/html.ts`), read by both the read-only
+(`storesView`) and edit builders so they never drift. Edit mode shows the
+on-chips (click one to remove it) plus a `+` button (`data-stadd`) that opens a
+body-level picker mirroring `board.ts`'s `waveMenu`; the picker offers only the
+configs not yet on, and the `+` stays so more can be added. Each add/remove
+flips a boolean on `aircraft.opts` and calls `markEdit('st:…')`, so it lands in
+the next AL exactly as the old toggles did — configs are display + amendment
+state only, invisible to validation. The separate bombs free-text chip is
+unchanged. Pre-existing 2TK/TPOD flags in saved data simply stop rendering.

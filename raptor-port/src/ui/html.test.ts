@@ -83,9 +83,20 @@ const sortGrnd = (s: string) => {
 const noAvailPuck = (s: string) => s.replace(
   /<div class="availpuck sec sec-avail"[\s\S]*?(?=<div class="sub plist one sec sec-)/, '')
 
+/* Divergence #7 (owner, Aug 26): the fixed 2TK/TPOD/NAV store toggles became an
+   additive NAV/N/C/3 TKS/CL picker (a "+" button + the on-chips), so the
+   .stores span diverges from the reference in BOTH view and edit mode. Excise
+   the whole span from both sides — it always sits last in the rmkcell, closing
+   right before that cell's </div>, so the lazy match ends at that boundary. The
+   new store markup and its funnel behaviour are pinned positively in
+   interact.test.tsx. Bombs live inside .stores and ride along in the cut; the
+   bombs commit is pinned there too. */
+const noStores = (s: string) => s.replace(
+  /<span class="stores">[\s\S]*?<\/span>(?=<\/div>)/g, '')
+
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))
+    const V = (s: string) => noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))
     DAYS.forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di).toBe(V(ref))
@@ -122,7 +133,7 @@ describe('view-week markup parity with the reference', () => {
        port's first input group precedes it, the reference's strip is the cut's
        own start), so it is not byte-compared here; the pins below assert the
        port keeps it in edit mode. */
-    const E = (s: string) => sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s)))))
+    const E = (s: string) => noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))
     DAYS.forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
