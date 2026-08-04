@@ -16,9 +16,17 @@ export function isLeave(t:any){return !!leaveKey(t);}
 export function isLocalLeave(t:any){const k=leaveKey(t); return k==='LL'||k==='OIL';}   // still on the island
 export function isDownchit(t:any){return /DNIF|Downchit/i.test(String(t==null?'':t));}
 export function isOffType(t:any){return isLeave(t)||isDownchit(t);}
+export function isFly(t:any){return /^Fly$/i.test(String(t==null?'':t).trim());}
+/* AWAY for availability (owner, Aug 26): leave and downchits close the day on
+   type alone. A Fly means the man is flying with ANOTHER SQUADRON — so once a
+   scheduler has actioned it (either destination) he reads as unavailable in
+   the crew strip, the palette and slotBar, while the item itself can sit on
+   the Ground Programme. Un-actioned Fly is still just a request, exactly like
+   the validator gate — the two gates must not drift apart. */
+export function isAway(inp:any){return isOffType(inp.type)||(isFly(inp.type)&&!!inp.acc);}
 /* how an entry reads when it is the reason a slot is closed */
 export function offWord(inp:any){const k=leaveKey(inp.type);
-  return (k?`${LEAVE_TYPES[k]} (${k})`:String(inp.type).toLowerCase())+(inp.remarks?' — '+inp.remarks:'');}
+  return (k?`${LEAVE_TYPES[k]} (${k})`:isFly(inp.type)?'flying with another squadron':String(inp.type).toLowerCase())+(inp.remarks?' — '+inp.remarks:'');}
 /* "Office", "Available fly" and "Available duty" are gone (owner decision, Aug 26).
    The first was a desk marker nobody read off the programme; the other two were
    OFFERS — a man saying what he WANTED rather than where he had to be. With them

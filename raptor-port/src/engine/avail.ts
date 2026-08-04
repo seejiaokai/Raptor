@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, isOffType, isLocalLeave, offWord } from './inputs'
+import { INPUTS, inputCoversDate, isAway, isLocalLeave, offWord } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstr } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD } from './rules'
@@ -52,7 +52,7 @@ export function dayEngaged(d:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE
   ['amt','oft'].forEach((k:any)=>((d.sims||{})[k]||[]).forEach((o:any)=>{if(!o.cx)more(o);}));
   return s;}
 export function dayOff(d:any){const s=new Set();
-  INPUTS.forEach((inp:any)=>{ if(isOffType(inp.type)&&inputCoversDate(inp,d.dt)&&PEOPLE[inp.person])s.add(inp.person); });
+  INPUTS.forEach((inp:any)=>{ if(isAway(inp)&&inputCoversDate(inp,d.dt)&&PEOPLE[inp.person])s.add(inp.person); });
   return s;}
 /* available crew bucketed by wave; anyWave = free across every wave (untasked) */
 export function availByWave(d:any){
@@ -177,7 +177,7 @@ export function slotBar(id:any,key:any,rules?:any){
        than a task — so those two do not close a spare slot to him. OL does, and
        so does a downchit: away is away, and unfit is unfit. */
     const sparePost=!!(r.sc&&r.scSpare);
-    const off=INPUTS.filter((x:any)=>isOffType(x.type)&&x.person===id&&inputCoversDate(x,DAYS[r.di].dt))
+    const off=INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,DAYS[r.di].dt))
       .filter((x:any)=>!(sparePost&&isLocalLeave(x.type)));
     if(off.length)return offWord(off[0]);
   }

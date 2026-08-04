@@ -76,11 +76,12 @@ The port from the original single-file app is complete; that history is in
   on the pre-change baseline. Measured, not assumed. CI does not run it
   (`deploy.yml` gates on `npm test`, `tfin.js`, `npm run build`); judge it over
   several runs, not one.
-- **Open spec question (owner not yet asked, Aug 26):** should a `Fly` input
-  ALSO make a man count as not-free in the Available-crew strip / free-count
-  ranking? Today it clashes (once actioned) but does not change `dayOff` —
-  extending `dayOff` would drop people out of the crew strip and change the
-  edit-mode `availpuck`. Ask before building anything on either answer.
+- **Resolved (owner, Aug 26): an actioned `Fly` is away.** Fly means flying
+  with another squadron, so once accepted (either destination) the man drops
+  out of the Available-crew strip, fades in the palette and is barred from
+  slots ("flying with another squadron"), whole-day. Un-actioned Fly affects
+  nothing — same philosophy as the validator gate (`isAway` beside
+  `inputFlags` in `engine/inputs.ts`; keep them aligned).
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
   GitHub Actions). The workflow refuses to publish on any red test.
 
