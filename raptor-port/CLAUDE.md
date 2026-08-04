@@ -118,6 +118,10 @@ the phone perf budget. Don't convert them to components.
 - Product: no rule versioning · no two-person approval · no "publish all
   days" · OIL is LL-equivalent · sim notes are single-line · pucks never
   wrap · login page stays simple · the talon logo stays.
+- **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
+  Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
+  `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add
+  drop targets to `drag.ts` for it; that machine stays scoped to pucks.
 
 ## Where things live
 

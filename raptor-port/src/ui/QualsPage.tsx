@@ -30,7 +30,7 @@ function exportCSV(name: string, rows: any[][]) {
 /* renderQuals' head + rows, verbatim strings */
 function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch: string) {
   let ids = Object.keys(PEOPLE).filter(id => PEOPLE[id].seat === qSeatView && !PEOPLE[id].archived)
-  if (qSearch) { const s = qSearch.toLowerCase(); ids = ids.filter(id => PEOPLE[id].cs.toLowerCase().includes(s) || (PEOPLE[id].name || '').toLowerCase().includes(s)) }
+  if (qSearch) { const s = qSearch.toLowerCase(); ids = ids.filter(id => PEOPLE[id].cs.toLowerCase().includes(s) || (PEOPLE[id].initials || '').toLowerCase().includes(s) || (PEOPLE[id].name || '').toLowerCase().includes(s)) }
   ids.sort((a, a2) => {
     const p = PEOPLE[a], q = PEOPLE[a2]
     if (qSort === 'name') return p.cs.localeCompare(q.cs)
@@ -38,7 +38,10 @@ function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch
     if (qSort === 'level') return (QORDER[q.q] - QORDER[p.q]) || p.cs.localeCompare(q.cs)
     return 0
   })
-  const head = `<thead><tr><th style="text-align:left">Name</th><th>Flight</th><th>Office</th><th>Level</th>` +
+  /* CALLSIGN is the identity the whole app plans by — it is what every puck
+     prints — so it heads the table; INITIALS sits beside it as the admin
+     record (owner, Aug 26). */
+  const head = `<thead><tr><th style="text-align:left">Callsign</th><th>Initials</th><th>Flight</th><th>Office</th><th>Level</th>` +
     QUAL_COLS.map(c => `<th class="${c.lav ? 'lav' : c.fix ? 'fix' : c.apt ? 'apt' : c.scq ? 'scq' : c.aar ? 'aarq' : ''}" title="${
       c.k === 'sched' ? 'Appointed scheduler — may sign SKED CK, PLANNED BY and APPROVED BY'
       : c.k === 'scDay' ? 'SC DAY — may be planned on an SC shift inside 07:00–19:00'
@@ -56,9 +59,17 @@ function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch
       if (qualNA(p, c)) return `<td class="qcell na" title="${esc(p.cs)} is a WSO — AAR is a front-seat qualification">–</td>`
       return `<td class="qcell${(c.k === 'sched' && p.quals[c.k]) ? ' apt-on' : ''}${(c.scq && p.quals[c.k]) ? ' scq-on' : ''}${(c.aar && p.quals[c.k]) ? ' aar-on' : ''}" data-q="${id}|${c.k}">${p.quals[c.k] ? '<span class="qchk">✓</span>' : ''}</td>`
     }).join('')
-    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${esc(p.cs)}</td><td>${esc(p.flight || '')}</td><td>${esc(p.office || '')}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
+    /* editable in edit mode, so the initials of the people already on the
+       roster can be filled in without re-adding them. It commits on CHANGE
+       (blur / Enter), never on input: the table is an innerHTML string that
+       notify() rebuilds, so a per-keystroke commit would tear the field out
+       from under the cursor. */
+    const init = qEditing
+      ? `<input class="qinit" data-init="${id}" value="${esc(p.initials || '')}" maxlength="5" aria-label="Initials for ${esc(p.cs)}" />`
+      : esc(p.initials || '')
+    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${esc(p.cs)}</td><td class="qinitc">${init}</td><td>${esc(p.flight || '')}</td><td>${esc(p.office || '')}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
   }).join('')
-  return head + `<tbody><tr class="grp"><td colspan="${5 + QUAL_COLS.length + 1}">${qSeatView === 'FCP' ? 'Assigned pilots' : 'Assigned WSOs'} · ${ids.length}</td></tr>${rows}</tbody>`
+  return head + `<tbody><tr class="grp"><td colspan="${6 + QUAL_COLS.length + 1}">${qSeatView === 'FCP' ? 'Assigned pilots' : 'Assigned WSOs'} · ${ids.length}</td></tr>${rows}</tbody>`
 }
 
 export function QualsPage() {
@@ -67,7 +78,7 @@ export function QualsPage() {
   const [qSort, setSort] = useState('name')
   const [qEditing, setEditing] = useState(false)
   const [qSearch, setQSearch] = useState('')
-  const [addP, setAddP] = useState({ last: '', first: '', cs: '', flight: '', seat: 'FCP', level: 'OCU' })
+  const [addP, setAddP] = useState({ initials: '', cs: '', flight: '', seat: 'FCP', level: 'OCU' })
   const tblRef = useRef<HTMLTableElement>(null)
   const admin = !!SESSION && SESSION.role === 'admin'
 
@@ -95,7 +106,9 @@ export function QualsPage() {
     }
     const onChange = (e: Event) => {
       const s = (e.target as HTMLElement).closest('[data-lvl]') as HTMLSelectElement | null
-      if (s) { PEOPLE[s.dataset.lvl!].q = s.value; deriveQuals(PEOPLE[s.dataset.lvl!]); notify() }
+      if (s) { PEOPLE[s.dataset.lvl!].q = s.value; deriveQuals(PEOPLE[s.dataset.lvl!]); notify(); return }
+      const ini = (e.target as HTMLElement).closest('[data-init]') as HTMLInputElement | null
+      if (ini) { PEOPLE[ini.dataset.init!].initials = ini.value.trim().toUpperCase(); notify() }
     }
     tbl.addEventListener('click', onClick)
     tbl.addEventListener('change', onChange)
@@ -105,18 +118,21 @@ export function QualsPage() {
   const addPerson = () => {
     const cs = addP.cs.trim(); if (!cs) return
     const id = 'p' + Date.now()
-    PEOPLE[id] = { cs, name: (addP.first + ' "' + cs + '" ' + addP.last).trim(), seat: addP.seat, q: addP.level, flight: addP.flight.trim() || '-', office: '-' }
+    /* the callsign IS the person here — it is what every puck prints and what
+       ID_BY_CS resolves — so it is the only required field; initials are the
+       administrative record beside it (owner, Aug 26, replacing first/last). */
+    PEOPLE[id] = { cs, initials: addP.initials.trim().toUpperCase(), seat: addP.seat, q: addP.level, flight: addP.flight.trim() || '-', office: '-' }
     deriveQuals(PEOPLE[id]); ID_BY_CS[cs.toLowerCase()] = id
-    setAddP({ last: '', first: '', cs: '', flight: '', seat: addP.seat, level: addP.level })
+    setAddP({ initials: '', cs: '', flight: '', seat: addP.seat, level: addP.level })
     if (PEOPLE[id].seat !== qSeatView) setSeat(PEOPLE[id].seat)
     notify()
   }
 
   const doExport = () => {
-    const cols = ['Callsign', 'Name', 'Flight', 'Office', 'Level', ...QUAL_COLS.map(c => c.h)]
+    const cols = ['Callsign', 'Initials', 'Flight', 'Office', 'Level', ...QUAL_COLS.map(c => c.h)]
     const rows: any[][] = [cols]
     Object.keys(PEOPLE).filter(id => PEOPLE[id].seat === qSeatView && !PEOPLE[id].archived).forEach(id => {
-      const p = PEOPLE[id]; rows.push([p.cs, (p.name || '').replace(/"/g, ''), p.flight, p.office, p.q, ...QUAL_COLS.map(c => p.quals[c.k] ? 'Y' : '')])
+      const p = PEOPLE[id]; rows.push([p.cs, p.initials || '', p.flight, p.office, p.q, ...QUAL_COLS.map(c => p.quals[c.k] ? 'Y' : '')])
     })
     exportCSV(`142SQN-LoX-${qSeatView}.csv`, rows)
   }
@@ -147,12 +163,11 @@ export function QualsPage() {
       </div>
       {admin && <div className="qadd" data-admin="">
         <span className="lab">Add person</span>
-        <input id="qLast" placeholder="Last name" style={{ width: 110 }} value={addP.last} onChange={e => setAddP({ ...addP, last: e.target.value })} />
-        <input id="qFirst" placeholder="First name" style={{ width: 110 }} value={addP.first} onChange={e => setAddP({ ...addP, first: e.target.value })} />
-        <input id="qCS" placeholder="Callsign" style={{ width: 100 }} value={addP.cs} onChange={e => setAddP({ ...addP, cs: e.target.value })} />
+        <input id="qCS" placeholder="Callsign" style={{ width: 110 }} value={addP.cs} onChange={e => setAddP({ ...addP, cs: e.target.value })} />
+        <input id="qInitials" placeholder="Initials" maxLength={5} style={{ width: 80 }} value={addP.initials} onChange={e => setAddP({ ...addP, initials: e.target.value })} />
         <input id="qFlight" placeholder="Flight" style={{ width: 70 }} value={addP.flight} onChange={e => setAddP({ ...addP, flight: e.target.value })} />
-        <select id="qSeat" aria-label="Seat" value={addP.seat} onChange={e => setAddP({ ...addP, seat: e.target.value })}><option value="FCP">Pilot (FCP)</option><option value="RCP">WSO (RCP)</option></select>
-        <select id="qLevel" aria-label="Qualification level" value={addP.level} onChange={e => setAddP({ ...addP, level: e.target.value })}>{Object.keys(QCHIP).map(k => <option key={k}>{k}</option>)}</select>
+        <select id="qSeat" aria-label="Pilot or WSO" value={addP.seat} onChange={e => setAddP({ ...addP, seat: e.target.value })}><option value="FCP">Pilot (FCP)</option><option value="RCP">WSO (RCP)</option></select>
+        <select id="qLevel" aria-label="Cat" value={addP.level} onChange={e => setAddP({ ...addP, level: e.target.value })}>{Object.keys(QCHIP).map(k => <option key={k}>{k}</option>)}</select>
         <button className="abtn primary" id="qAddPerson" onClick={addPerson}>Add</button>
       </div>}
       <div className="qwrap">

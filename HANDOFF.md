@@ -38,12 +38,6 @@ The port from the original single-file app is complete; that history is in
   input reaches the issued programme only when a scheduler **accepts** it, and
   the validator only sees actioned inputs (`inputFlags` gate). Full rules:
   `docs/engine-rules.md` §Accepting a personal input and §validation.
-- **Drag-to-section is NOT implemented.** The owner asked for `Other` rows to be
-  draggable onto Unavailable or Ground programme on the edit week. The same
-  capability shipped as two buttons (`→ Ground` / `→ Unavail`) on both the week
-  and the board, which is complete but not the drag interaction. `drag.ts` is
-  the hard-won touch/mouse machine and adding drop targets there needs the
-  browser probes, not Vitest.
 - **`Fly` semantics changed from the original** (blocks once actioned; an
   actioned Fly is AWAY — off the crew strip, faded, barred whole-day). Rules
   in `docs/engine-rules.md`. Reference probes `audit2 #8` and `audit` (item 3)
