@@ -21,11 +21,14 @@ import { sbNotesPanel, sbProgPanel, sbSimPanel, sbSlot, labelToTitle, titleToLab
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
 
-/* renderScheduler's board string, verbatim */
-export function boardHTML(di: number) {
+/* renderScheduler's board string, verbatim. pv = published-version preview:
+   read-only markup throughout, and no sign-off bar — the frozen record's
+   signatures live on the AL record; live sign selects against an old day
+   would invite edits against the wrong document. */
+export function boardHTML(di: number, pv?: boolean) {
   const d = DAYS[di]
-  let b = `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`
-    + sbNotesPanel(d, di) + sbProgPanel(d, di)
+  let b = (pv ? '' : `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`)
+    + sbNotesPanel(d, di, pv) + sbProgPanel(d, di, pv)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
     const asd = w.formations.reduce((n: number, f: any) => n + f.aircraft.length, 0)
@@ -33,36 +36,37 @@ export function boardHTML(di: number) {
     const cur = labelToTitle(w); if (!opts.includes(cur)) opts.unshift(cur)
     const inT = waveInTime(w)
     fly += `<div class="sb-go"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
-      + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}">${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
+      + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${pv ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
       + `${w.night ? '<span class="night">· night</span>' : ''}`
       + `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`
-      + `<span class="gctl"><button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
-      + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span></div>`
+      + (pv ? '' : `<span class="gctl"><button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
+      + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     fly += `<div class="sb-lcols"><span>CS</span><span>MSN</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
     w.formations.forEach((f: any, li: number) => f.aircraft.forEach((a: any, ai: number) => {
       const key = `${di}.${gi}.${li}.${ai}`, fp = `ff:${di}.${gi}.${li}`
       const cxOn = !!(a.cx || f.cx)
+      const dis = pv ? ' disabled' : ''
       fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}">
-        <input class="lin" data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)} value="${esc(f.cs)}">
-        <input class="msn" data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)} value="${esc(f.msn)}">
-        <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)} value="${esc(f.to)}">
-        <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)} value="${esc(f.ld)}">
-        ${sbSlot(di, key + '.p', 'p', a.p)}
-        ${sbSlot(di, key + '.w', 'w', a.w)}
-        <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)} value="${esc(a.rmks || '')}">
-        <span class="lctl">
+        <input class="lin" data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis} value="${esc(f.cs)}">
+        <input class="msn" data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis} value="${esc(f.msn)}">
+        <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(f.to)}">
+        <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
+        ${sbSlot(di, key + '.p', 'p', a.p, pv)}
+        ${sbSlot(di, key + '.w', 'w', a.w, pv)}
+        <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}">
+        ${pv ? '' : `<span class="lctl">
           <button class="mbtn${cxOn ? ' on' : ''}" data-lcx="${key}" title="${cxOn ? 'Restore this line' : 'Cancel this line (CX)'}">CX</button>
           <button class="mbtn red${a.flag ? ' on' : ''}" data-lflag="${key}" title="${a.flag ? 'Clear the red box' : 'Red box — flag this for the next scheduler'}">■</button>
           <button class="mbtn add" data-lac="${di}.${gi}.${li}" title="Add another aircraft to this formation">+</button>
           <button class="mbtn del" data-ldel="${key}" title="Remove this line">✕</button>
-        </span>
+        </span>`}
       </div>`
     }))
     fly += `</div>`
   })
   b += fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet — use “+ Wave”.</div>`
-  b += sbSimPanel(d, di)
+  b += sbSimPanel(d, di, pv)
   return b
 }
 
@@ -106,6 +110,9 @@ export function cxCommit(cancel: boolean, reason: string) {
 
 /* the board's delegated .mbtn click handler, verbatim bodies */
 export function boardMbtn(e: MouseEvent) {
+  /* previewing a published version: the panels render no controls, but a stale
+     element from the pre-preview markup must not mutate the live day */
+  if (view.DPREV.has(view.SBDAY as any)) return
   const t = (e.target as HTMLElement).closest('.mbtn') as HTMLElement | null; if (!t) return
   const ds = t.dataset
   if (ds.lcx != null) { const r = acRef(ds.lcx); if (!r || !r.a) return; return askCx(r.a, `fr:${ds.lcx}`, 'this line', () => rollCx(r.f)) }
@@ -174,6 +181,7 @@ export function boardMbtn(e: MouseEvent) {
 
 /* the board field-change handler (through the text funnel) */
 export function boardChange(e: Event) {
+  if (view.DPREV.has(view.SBDAY as any)) return   // same stale-markup guard as boardMbtn
   /* the wave-title select: night flag + label, verbatim */
   const s = (e.target as HTMLElement).closest('[data-wsel]') as HTMLSelectElement | null
   if (s) {
@@ -189,6 +197,7 @@ export function boardChange(e: Event) {
 /* the board's slot-arm click handler */
 export function boardArmClick(e: MouseEvent) {
   if (!canEditSched()) return
+  if (view.DPREV.has(view.SBDAY as any)) return   // same stale-markup guard as boardMbtn
   const t = e.target as HTMLElement
   if (t.closest('.puck[data-person]')) return
   const empty = t.closest('.sb-slot.empty[data-slot]') as HTMLElement | null

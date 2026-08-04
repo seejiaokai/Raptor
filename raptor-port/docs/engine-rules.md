@@ -65,6 +65,29 @@ per-day; there is deliberately no "publish all days".
 Edits only become AL changes on a day that is already published — edits to
 a draft day are folded in when the day is first published, with no AL mark.
 
+## Version snapshots / restore
+
+`daySnap(di)` = `{d: deep clone of DAYS[di], c: that day's slice of
+SCHED.changes}` — the day "as issued, wearing its marks". Stamped at the
+two issue moments: `setDayApproved(di, true)` → `SCHED.orig[di]`
+(**first publish wins**; a re-publish after reopen is a later state, not a
+new Original) and `alIssue` → `rec.snap[di]` per covered day. Snapshots
+live on the AL record / `SCHED.orig`, so they ride `histSnap` (`a` / `o`)
+and `unpublishAL` with the state they belong to. `daySnapOf(di, ver)`
+(`'orig'` | AL number) and `dayVersions(di)` derive options from live
+records — orphan-safe by construction. Session-only, like the AL list.
+
+`restoreDayVersion(di, ver)` (engine/restore.ts — its own module because
+slots.ts already imports publish.ts): replaces `DAYS[di]` with a clone of
+the snapshot (live `today` flag kept), then diff-marks via the `dayKeys`
+walker — every key whose value moved becomes **pending** and loses any
+published colour; equal keys keep their AL marks; keys existing only in
+the live day (rows the restore removed) get NO mark (the delete rule).
+Returns false for a missing version, else the pending count (0 = nothing
+differed). It pushes NO history and calls NO reflow — the UI caller's
+`afterSchedMutate()` is the single undo step. Restore is an amendment,
+never a rewrite: the reverted content publishes as the next AL.
+
 ## Auth / roles
 
 `a/a` = admin, `user/user` = member (view-only). `canEditSched()` = session

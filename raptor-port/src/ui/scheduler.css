@@ -412,6 +412,20 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .dbeak{font-family:inherit;font-size:11.5px;font-weight:700;letter-spacing:.02em;cursor:pointer;
   color:var(--accent-ink);background:var(--accent);border:1px solid var(--accent);
   padding:4px 11px;border-radius:8px;white-space:nowrap}
+/* ---- per-day version dropdown + published-version preview ---- */
+.dstat .dver{font-family:inherit;font-size:11px;font-weight:600;color:var(--ink);
+  background:var(--panel-2);border:1px solid var(--edge-2);border-radius:8px;padding:3px 6px;cursor:pointer}
+/* the whole day wears the version's colour while previewing, dashed — the same
+   dashed-vs-solid grammar the pending marks use: dashed means "not the issued
+   live document" */
+.day.preview{outline:2px dashed var(--alc,var(--edge-2));outline-offset:-2px}
+.dprev-bar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 10px 6px;padding:6px 10px;
+  border:1px solid var(--alc,var(--edge-2));border-radius:9px;font-size:11.5px;font-weight:600;color:var(--ink-2);
+  background:rgba(0,0,0,.25)}
+.dprev-bar b{color:var(--alc,var(--ink))}
+.dprev-bar .dprev-restore{margin-left:auto;font-size:10.5px;padding:3px 9px}
+/* board fields frozen by a preview: visibly dimmed, not just unresponsive */
+#schedBoard .pv-frozen input[disabled],#schedBoard .pv-frozen textarea[disabled],#schedBoard .pv-frozen select[disabled]{opacity:.55}
 .dbeak:hover{filter:brightness(1.07)}
 .dbeak.ok{color:#A8E6BC;background:rgba(87,201,122,.16);border-color:rgba(87,201,122,.55)}
 .dbeak.ok:hover{filter:none;border-color:rgba(87,201,122,.85)}

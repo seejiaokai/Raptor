@@ -9,13 +9,13 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
-import { SCHED } from '../engine/publish'
+import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { slotVal, setSlotVal } from '../engine/slots'
 import { isStandalone } from '../engine/waves'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { cxText } from './html'
-import { openScheduler } from './board'
+import { openScheduler, boardArmClick } from './board'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -290,5 +290,36 @@ describe('board lifecycle', () => {
     expect($('#schedBoard')).toBeFalsy()
     /* back in for any later suites */
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+  })
+
+  it('previewing a version freezes the whole board read-only', async () => {
+    /* an earlier test may have left the caret in a board field — the panel
+       effect rightly refuses to repaint under a caret, so put it down first */
+    ;(document.activeElement as HTMLElement | null)?.blur?.()
+    await act(async () => {
+      const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+      setDayApproved(0, 1)
+      openScheduler(0); notify()
+    })
+    expect($('#schedBoard select.dver')).toBeTruthy()
+    await act(async () => { view.setDayPreview(0, 'orig'); notify() })
+    const board = $('#sbBoard')
+    expect(board.querySelector('.pv-frozen')).toBeTruthy()
+    expect(board.querySelectorAll("input:not([disabled]),textarea:not([disabled])").length).toBe(0)
+    expect(board.querySelectorAll('.mbtn,[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
+    /* the live-checks panel is now the preview banner with the restore button */
+    expect($('#schedBoard .dprev-bar .dprev-restore')).toBeTruthy()
+    expect(($('#sbAddLine') as HTMLButtonElement).disabled).toBe(true)
+    /* a write through a gated handler is refused outright */
+    const before = slotVal('0.0.0.0.p')
+    boardArmClick(new MouseEvent('click', { bubbles: true }))
+    expect(view.armedKey()).toBe('')
+    expect(slotVal('0.0.0.0.p')).toBe(before)
+    await act(async () => {
+      view.setDayPreview(0, null)
+      SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}
+      const { closeScheduler } = await import('./board'); closeScheduler()
+      notify()
+    })
   })
 })

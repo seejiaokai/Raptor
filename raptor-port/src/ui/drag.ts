@@ -42,6 +42,9 @@ function dndOff() {
 /* what a drag STARTS from — shared by the mouse (dragstart) and touch paths */
 export function dragFrom(el: any) {
   if (!el || !el.closest) return null
+  /* preview markup emits no draggables, but a drag must never start from a
+     stale pre-preview element either — its key addresses the live model */
+  if (el.closest('.preview,.pv-frozen')) return null
   const slot = el.closest('.seat[data-slot][draggable="true"]')
   if (slot) return { kind: 'slot', key: slot.dataset.slot }
   const rp = el.closest('[data-person][draggable="true"]')

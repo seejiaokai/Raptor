@@ -6,9 +6,10 @@
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { dayHTML } from './html'
+import { dayHTML, dayPreviewHTML } from './html'
+import { daySnapOf } from '../engine/publish'
 import { paletteHTML, paletteDay } from './palette-html'
-import { ARM, CURPAGE } from '../state/view'
+import { ARM, CURPAGE, DPREV } from '../state/view'
 import { refreshHighlights } from './highlights'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
@@ -29,7 +30,12 @@ export function EditWeek() {
        has left every text field (the reference's txtCommit guarantee) */
     if (editingText()) return
     const ed = HOOKS.editMode()
-    const html = DAYS.map((_: any, di: number) => dayHTML(di, ed))
+    const html = DAYS.map((_: any, di: number) => {
+      /* lazy orphan prune: the previewed AL may have been unpublished or
+         undone since the last paint — render the live day, not a ghost */
+      if (DPREV.has(di) && !daySnapOf(di, DPREV.get(di))) DPREV.delete(di)
+      return DPREV.has(di) ? dayPreviewHTML(di, DPREV.get(di), ed) : dayHTML(di, ed, true)
+    })
     const p = prev.current
     const sl = root.scrollLeft
     const whole = !p || p.ed !== ed || p.html.length !== html.length || root.children.length !== html.length
