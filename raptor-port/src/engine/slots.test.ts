@@ -4,7 +4,8 @@
    here the same model contracts are driven through the funnel directly. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { slotVal, setSlotVal, fillSlot, flyRef, rowRef, rowCrew, txtRef, txtGet, txtSet, whoSet, armTargetExists } from './slots'
+import { slotVal, setSlotVal, fillSlot, flyRef, rowRef, rowCrew, txtRef, txtGet, txtSet, whoSet, armTargetExists, renameCallsign } from './slots'
+import { PEOPLE, ID_BY_CS, nameToId } from './people'
 import { SCHED } from './publish'
 
 const SNAP = JSON.stringify(DAYS)
@@ -113,5 +114,55 @@ describe('the mutation funnel (tfin edit-board group)', () => {
     expect(armTargetExists('0.99.0.0.p')).toBe(false)
     expect(armTargetExists('d:0.0.1')).toBe(true)
     expect(armTargetExists('d:0.99.0')).toBe(false)
+  })
+})
+
+/* Renaming a callsign (owner, Aug 26). The callsign is the identity ground,
+   programme and sim rows store as a STRING, so a rename has to rewrite them
+   or those rows stop resolving and the puck collapses to plain text. */
+describe('renaming a callsign', () => {
+  const CS = JSON.stringify(Object.keys(PEOPLE).map(id => [id, PEOPLE[id].cs]))
+  beforeEach(() => {
+    JSON.parse(CS).forEach(([id, cs]: any) => {
+      if (PEOPLE[id].cs !== cs) { delete ID_BY_CS[PEOPLE[id].cs.toLowerCase()]; PEOPLE[id].cs = cs }
+      ID_BY_CS[cs.toLowerCase()] = id
+    })
+  })
+
+  it('carries every stored who-string with it, so the seat still resolves', () => {
+    // dj holds ground rows on day 0 (and a programme row on day 2)
+    const before = DAYS.flatMap((d: any, di: number) =>
+      (d.ground || []).map((r: any, ri: number) => ({ di, ri, id: slotVal(`g:${di}.${ri}`) }))).filter(x => x.id === 'dj')
+    expect(before.length, 'the seed plants dj on a ground row').toBeGreaterThan(0)
+    expect(renameCallsign('dj', 'Deejay')).toBe(true)
+    expect(PEOPLE.dj.cs).toBe('Deejay')
+    // the rows still resolve to the same person — that is what keeps the puck
+    before.forEach(x => expect(slotVal(`g:${x.di}.${x.ri}`)).toBe('dj'))
+    expect(DAYS[0].ground.find((r: any) => r.who === 'Deejay'), 'the stored string was rewritten').toBeTruthy()
+    expect(nameToId('Deejay')).toBe('dj')
+    expect(nameToId('dj')).toBeUndefined()      // the old name no longer resolves
+  })
+
+  it('rewrites programme rows, including multi-person who arrays', () => {
+    const r = DAYS[0].allhands.find((x: any) => x.who === 'nact')
+    expect(r).toBeTruthy()
+    r.who = ['nact', 'bane']                     // a row carrying two people
+    expect(renameCallsign('nact', 'Nacho')).toBe(true)
+    expect(r.who).toEqual(['Nacho', 'bane'])
+    expect(slotVal(`a:0.${DAYS[0].allhands.indexOf(r)}.0`)).toBe('nact')
+  })
+
+  it('refuses a duplicate, an empty name and a no-op', () => {
+    expect(renameCallsign('dj', 'Bane')).toBe(false)     // already taken
+    expect(renameCallsign('dj', 'bane')).toBe(false)     // ...case-insensitively
+    expect(PEOPLE.dj.cs).toBe('DJ')
+    expect(renameCallsign('dj', '  ')).toBe(false)
+    expect(renameCallsign('dj', 'DJ')).toBe(false)
+    expect(renameCallsign('nobody', 'X')).toBe(false)
+  })
+
+  it('is not a schedule amendment — nothing is marked pending', () => {
+    expect(renameCallsign('dj', 'Deejay')).toBe(true)
+    expect(Object.keys(SCHED.pending).length).toBe(0)
   })
 })

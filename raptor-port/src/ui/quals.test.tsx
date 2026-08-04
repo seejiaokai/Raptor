@@ -149,3 +149,40 @@ describe('the callsign / initials columns', () => {
     await act(async () => notify())
   })
 })
+
+/* the callsign is editable in edit mode and the rename reaches the schedule —
+   the pucks print the new name (owner, Aug 26) */
+describe('editing a callsign', () => {
+  const commit = async (el: HTMLInputElement, v: string) => act(async () => {
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+    setter.call(el, v); el.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+
+  it('renames the person and every puck follows; duplicates are refused', async () => {
+    if (!$('#qtbl input.qcs')) await click($('#qEdit'))
+    const box = $('#qtbl input.qcs[data-cs="bane"]') as HTMLInputElement
+    expect(box, 'edit mode renders a callsign input').toBeTruthy()
+
+    await commit(box, 'Banzai')
+    expect(PEOPLE.bane.cs).toBe('Banzai')
+    expect(ID_BY_CS['banzai']).toBe('bane')
+    expect(ID_BY_CS['bane']).toBeUndefined()
+
+    // the schedule follows: a puck for that person now prints the new name
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
+    const puck = $('#vWeek .puck[data-person="bane"] .nm')
+    expect(puck, 'bane still holds a seat').toBeTruthy()
+    expect(puck.textContent).toBe('Banzai')
+
+    // and a duplicate is refused, leaving the name as it was.
+    // NB: leaving the page unmounts QualsPage, so edit mode has to be re-armed
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'quals')!)
+    if (!$('#qtbl input.qcs')) await click($('#qEdit'))
+    const box2 = $('#qtbl input.qcs[data-cs="bane"]') as HTMLInputElement
+    await commit(box2, 'Snap')
+    expect(PEOPLE.bane.cs).toBe('Banzai')
+
+    await commit($('#qtbl input.qcs[data-cs="bane"]') as HTMLInputElement, 'Bane')
+    expect(PEOPLE.bane.cs).toBe('Bane')
+  })
+})

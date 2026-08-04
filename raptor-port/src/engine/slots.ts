@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { PEOPLE, nameToId } from './people'
+import { PEOPLE, nameToId, ID_BY_CS } from './people'
 import { SCHED, markEdit } from './publish'
 import { parseHM, hhmm } from './time'
 import { isUnavail } from './inputs'
@@ -275,5 +275,39 @@ export function unacceptInput(di:any,inp:any){
   /* markEdit with NO key: the address we just removed must not be re-marked,
      or the next AL carries a line pointing at a row that no longer exists. */
   markEdit();
+  return true;
+}
+/* RENAMING A CALLSIGN (owner, Aug 26).
+
+   The callsign is not a label — it is the identity half the model addresses by.
+   Crew SEATS, duty rows, sim p/w/pax and the `more[]` overflow all hold person
+   IDs and so ride a rename untouched; but ground rows, programme (allhands)
+   rows and sim `who` store the callsign as a STRING, resolved through
+   nameToId → ID_BY_CS. Change PEOPLE[id].cs alone and every one of those rows
+   stops resolving: the puck collapses to plain free text and the person drops
+   out of that row's crew.
+
+   So the rename rewrites all three, and remaps ID_BY_CS. It does NOT mark
+   anything pending: rowCrew reads those rows back as IDs, so a published day
+   diffs identically — the person in the seat has not changed, only how their
+   name is spelt, and an AL full of spelling is noise. */
+export function renameCallsign(id:any,next:any){
+  const p=PEOPLE[id]; if(!p)return false;
+  const cs=String(next==null?'':next).trim();
+  if(!cs||cs===p.cs)return false;
+  /* two people sharing a callsign would make every stored `who` string
+     ambiguous — ID_BY_CS can only point one way */
+  const taken=ID_BY_CS[cs.toLowerCase()];
+  if(taken&&taken!==id)return false;
+  const oldK=String(p.cs||'').toLowerCase().trim();
+  p.cs=cs;
+  delete ID_BY_CS[oldK]; ID_BY_CS[cs.toLowerCase()]=id;
+  const sw=(v:any)=>(typeof v==='string'&&v.toLowerCase().trim()===oldK)?cs:v;
+  const row=(r:any)=>{ if(r)r.who=Array.isArray(r.who)?r.who.map(sw):sw(r.who); };
+  DAYS.forEach((d:any)=>{
+    (d.ground||[]).forEach(row);
+    (d.allhands||[]).forEach(row);
+    ['amt','oft'].forEach((k:any)=>(((d.sims||{})[k])||[]).forEach(row));
+  });
   return true;
 }

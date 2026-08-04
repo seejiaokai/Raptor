@@ -4,6 +4,8 @@
    qualification takes the night one with it. */
 import { useEffect, useRef, useState } from 'react'
 import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME, deriveQuals, ID_BY_CS } from '../engine/people'
+import { renameCallsign } from '../engine/slots'
+import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
 import { esc } from '../state/view'
@@ -67,7 +69,13 @@ function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch
     const init = qEditing
       ? `<input class="qinit" data-init="${id}" value="${esc(p.initials || '')}" maxlength="5" aria-label="Initials for ${esc(p.cs)}" />`
       : esc(p.initials || '')
-    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${esc(p.cs)}</td><td class="qinitc">${init}</td><td>${esc(p.flight || '')}</td><td>${esc(p.office || '')}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
+    /* the callsign is editable in edit mode too, and renameCallsign rewrites
+       every stored `who` string with it, so the pucks re-print under the new
+       name (owner, Aug 26). Same commit-on-change reasoning as the initials. */
+    const cs = qEditing
+      ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
+      : esc(p.cs)
+    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td>${esc(p.flight || '')}</td><td>${esc(p.office || '')}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
   }).join('')
   return head + `<tbody><tr class="grp"><td colspan="${6 + QUAL_COLS.length + 1}">${qSeatView === 'FCP' ? 'Assigned pilots' : 'Assigned WSOs'} · ${ids.length}</td></tr>${rows}</tbody>`
 }
@@ -108,7 +116,20 @@ export function QualsPage() {
       const s = (e.target as HTMLElement).closest('[data-lvl]') as HTMLSelectElement | null
       if (s) { PEOPLE[s.dataset.lvl!].q = s.value; deriveQuals(PEOPLE[s.dataset.lvl!]); notify(); return }
       const ini = (e.target as HTMLElement).closest('[data-init]') as HTMLInputElement | null
-      if (ini) { PEOPLE[ini.dataset.init!].initials = ini.value.trim().toUpperCase(); notify() }
+      if (ini) { PEOPLE[ini.dataset.init!].initials = ini.value.trim().toUpperCase(); notify(); return }
+      const cs = (e.target as HTMLElement).closest('[data-cs]') as HTMLInputElement | null
+      if (cs) {
+        const id = cs.dataset.cs!, was = PEOPLE[id].cs, want = cs.value.trim()
+        if (!renameCallsign(id, want)) {
+          cs.value = was                       // put the old name back in the box
+          if (want && want !== was) HOOKS.toast(`${want} is already taken — callsigns must be unique`)
+          return
+        }
+        /* warning text embeds the callsign, so re-run the engine or the issue
+           strips would keep naming them by the name they no longer have */
+        validate(); notify()
+        HOOKS.toast(`${was} is now ${PEOPLE[id].cs} — every puck follows`)
+      }
     }
     tbl.addEventListener('click', onClick)
     tbl.addEventListener('change', onChange)

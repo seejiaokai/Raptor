@@ -236,3 +236,25 @@ the next AL exactly as the old toggles did — configs are display + amendment
 state only, invisible to validation. The separate bombs free-text chip is
 unchanged. The `tk2`/`tpod` keys are reused, so demo rows already carrying them
 render as **2 TKS** / **TPOD**.
+
+## The Quals page's editable columns
+
+`CALLSIGN` heads the table (it is what every puck prints) with `INITIALS`
+beside it; Add person takes callsign / initials / pilot-WSO / cat, and the
+callsign is the only required field — first and last name are gone (owner,
+Aug 26; the seed roster never carried them).
+
+In edit mode both columns become inputs, and both commit on **change**
+(blur / Enter) rather than on input: the table is an innerHTML string that
+`notify()` rebuilds, so a per-keystroke commit would tear the field out from
+under the cursor. Initials are stored upper-cased. A callsign edit goes
+through `renameCallsign` (see `engine-rules.md` §Who a row stores) which
+rewrites the schedule's stored callsign strings so the pucks follow, then
+re-runs `validate()` — warning text embeds the callsign, so skipping that
+would leave the issue strips naming people by a name they no longer have. A
+refused rename (blank / duplicate) puts the old value back in the box and
+toasts why.
+
+Seeded people have EMPTY initials on purpose — `engine/people.ts` carries
+callsigns and never names, so there is nothing to derive them from. Do not
+invent them.
