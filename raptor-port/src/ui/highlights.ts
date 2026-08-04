@@ -38,8 +38,13 @@ export function refreshHighlights(){
     const isSel=selActive&&(SELKEY!=null?elKey===SELKEY:id===SELID);
     if(matchHL)el.classList.add('hl');
     if(isSel)el.classList.add('sel');
-    if(id===ME)el.classList.add('me');
-    const isFocus=matchHL||isSel||id===ME;
+    /* the "you" indicator is passive: it yields the moment the scheduler is
+       actively focusing something (a puck click or a highlight chip), so
+       selecting another puck dims your own view-as puck like the rest of the
+       board instead of leaving it lit (owner, Aug 26). Idle, it still marks
+       your puck, and the legend "you" swatch stays meaningful. */
+    if(id===ME&&!focusActive)el.classList.add('me');
+    const isFocus=matchHL||isSel;
     if(focusActive&&!isFocus)el.classList.add('dim');
   });
   paintArm();      // every render rebuilds the slots, so the ring is re-hung here

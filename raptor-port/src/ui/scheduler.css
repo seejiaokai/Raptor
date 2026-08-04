@@ -657,7 +657,7 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .go.night{background:rgba(240,85,95,.04)}
 .go.night .go-tab .asd{color:#FBB4B9}/* sims sub-blocks */
 /* duties by wave */
-/* stores (NAV / N/C / 3 TKS / CL configs via the "+" picker, + bombs) */
+/* stores (NAV / N/C / 2 TKS / 3 TKS / TPOD / CL configs via the "+" picker, + bombs) */
 .stores{display:inline-flex;flex-wrap:wrap;gap:2px;margin-left:4px;vertical-align:middle}
 .stchip{font-size:7.5px;font-weight:800;letter-spacing:.02em;padding:1px 3px;border-radius:4px;border:1px solid var(--edge-2);color:var(--ink-3);cursor:default}
 .stchip.on{background:rgba(59,198,232,.16);border-color:rgba(59,198,232,.5);color:var(--accent)}

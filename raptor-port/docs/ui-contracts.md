@@ -224,8 +224,9 @@ everything (`selDrop`).
 ## Line configs — the stores "+" picker
 
 Under Remarks, each flying line carries an additive config set (owner, Aug 26):
-**NAV · N/C · 3 TKS · CL**, replacing the old fixed 2TK/TPOD/NAV toggles. The
-set lives once in `STORE_CFG` (`ui/html.ts`), read by both the read-only
+**NAV · N/C · 2 TKS · 3 TKS · TPOD · CL**, replacing the old fixed three-toggle
+strip. The set lives once in `STORE_CFG` (`ui/html.ts`), read by both the
+read-only
 (`storesView`) and edit builders so they never drift. Edit mode shows the
 on-chips (click one to remove it) plus a `+` button (`data-stadd`) that opens a
 body-level picker mirroring `board.ts`'s `waveMenu`; the picker offers only the
@@ -233,4 +234,5 @@ configs not yet on, and the `+` stays so more can be added. Each add/remove
 flips a boolean on `aircraft.opts` and calls `markEdit('st:…')`, so it lands in
 the next AL exactly as the old toggles did — configs are display + amendment
 state only, invisible to validation. The separate bombs free-text chip is
-unchanged. Pre-existing 2TK/TPOD flags in saved data simply stop rendering.
+unchanged. The `tk2`/`tpod` keys are reused, so demo rows already carrying them
+render as **2 TKS** / **TPOD**.
