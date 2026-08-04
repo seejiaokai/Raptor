@@ -4,7 +4,9 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS, isPersonal, isUnavail } from './inputs'
-import { acceptInput, unacceptInput, inpKey, txtGet, txtSet } from './slots'
+import { collectEvents } from './events'
+import { isSpecial } from './people'
+import { acceptInput, unacceptInput, inpKey, slotVal, txtGet, txtSet } from './slots'
 import { keyDay } from './keys'
 import { dayKeys } from './restore'
 import { SCHED } from './publish'
@@ -30,10 +32,26 @@ describe('accepting a personal input', () => {
     expect(acceptInput(0, inp, 'g')).toBe(true)
     expect(DAYS[0].ground.length).toBe(before + 1)
     const row = DAYS[0].ground[DAYS[0].ground.length - 1]
-    expect(row.who).toBe(inp.person)
+    /* who is the CALLSIGN, like every other ground write — an id would render
+       as free text for anyone whose id !== cs.toLowerCase(). Title is the bare
+       type; the submitter's remarks travel to the row's own rmks cell. */
+    expect(row.who).toBe('Vinci')
+    expect(row.prog).toBe('MEETING')
+    expect(row.rmks).toBe(inp.remarks)
     expect(row.str).toBe('09:00')            // 540 minutes from midnight
     expect(row.end).toBe('17:00')
     expect(inp.acc).toBe('g')
+  })
+
+  /* regression: id and callsign diverge for some people ('haowen' → 'Hao Wen').
+     Storing the id made the row render as free text and never validate. */
+  it('stores the callsign even when it differs from the id', () => {
+    INPUTS.push({ person: 'haowen', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Appointment', remarks: 'x' })
+    const inp = INPUTS[INPUTS.length - 1]
+    expect(acceptInput(0, inp, 'g')).toBe(true)
+    const ri = DAYS[0].ground.length - 1
+    expect(DAYS[0].ground[ri].who).toBe('Hao Wen')
+    expect(slotVal(`g:0.${ri}`)).toBe('haowen')
   })
 
   /* a write that skipped the funnel would be invisible to the amendment
@@ -121,5 +139,37 @@ describe('per-section scheduler notes', () => {
   it('writing the same text twice is not a change', () => {
     txtSet('pn:1', 'same')
     expect(txtSet('pn:1', 'same')).toBe(false)
+  })
+})
+
+/* The validator gate (owner, Aug 26): a personal input is a request until a
+   scheduler actions it. Un-actioned → invisible to validate(); accepted to the
+   ground programme → its ROW clashes (once, as DOUBLE_BOOK — never doubled by
+   INPUT_FLY on the input it came from); filed under Unavailable → the input
+   itself clashes. Unavailable-typed inputs never needed accepting. */
+describe('the validator gate on personal inputs', () => {
+  it('day.input keeps unavailable types, drops un-actioned personal ones', () => {
+    const inp0 = collectEvents()[0].input
+    expect(inp0.some((x: any) => x.type === 'Downchit')).toBe(true)   // divot / sufa, no acc
+    expect(inp0.some((x: any) => isPersonal(x.type))).toBe(false)     // bruise / vinci / yeti gone
+  })
+
+  it('accept → one DOUBLE_BOOK from the row; undo → silence; file-u → INPUT_FLY', () => {
+    const id = ((collectEvents()[0].fly || []).find((e: any) => !isSpecial(e.id)) || {}).id
+    expect(id).toBeTruthy()
+    INPUTS.push({ person: id, date: DAYS[0].dt, allday: false, s: 300, e: 1380, type: 'Meeting', remarks: 'staff work', mod: '' })
+    const inp = INPUTS[INPUTS.length - 1]
+    const hits = (code: string) => validate().all
+      .filter((x: any) => x.code === code && (x.who || []).indexOf(id) >= 0).length
+    expect(hits('INPUT_FLY')).toBe(0)                  // un-actioned: silent
+    const dbBase = hits('DOUBLE_BOOK')
+    expect(acceptInput(0, inp, 'g')).toBe(true)
+    expect(hits('DOUBLE_BOOK')).toBeGreaterThan(dbBase) // the row clashes…
+    expect(hits('INPUT_FLY')).toBe(0)                   // …and only the row
+    unacceptInput(0, inp)
+    expect(hits('DOUBLE_BOOK')).toBe(dbBase)
+    expect(hits('INPUT_FLY')).toBe(0)
+    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(hits('INPUT_FLY')).toBeGreaterThan(0)        // unavailable is real
   })
 })

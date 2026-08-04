@@ -13,10 +13,16 @@
    "Available duty" and gained "Detachment" (owner decision, Aug 26). Rather
    than excising every row those types touch, push the port's INPUTS into the
    reference so both engines compute from IDENTICAL input data, leaving only the
-   structural divergences for the tests themselves to handle. */
+   structural divergences for the tests themselves to handle.
+
+   The push is filtered through inputFlags (owner, Aug 26): the port's
+   validator no longer sees an un-actioned personal input, and the reference
+   has no accept gate of its own, so it must be fed only what the port's
+   validator would see or its warnings diverge. filter() preserves order, so
+   day.input still compares byte-for-byte. */
 import { readFileSync } from 'node:fs'
 import { JSDOM, VirtualConsole } from 'jsdom'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, inputFlags } from '../engine/inputs'
 
 export async function refWindow(): Promise<any> {
   const html = readFileSync('reference/scheduler.html', 'utf8')
@@ -41,14 +47,14 @@ export async function refWindow(): Promise<any> {
    restore does `INPUTS.length=0; …push(…)` and holds references to the array. */
 export function syncInputs(w: any) {
   w.eval('INPUTS.length=0;INPUTS.push.apply(INPUTS,JSON.parse('
-    + JSON.stringify(JSON.stringify(INPUTS)) + '))')
+    + JSON.stringify(JSON.stringify(INPUTS.filter(inputFlags))) + '))')
 }
 
 /* One divergence the sync CANNOT close: the reference's `isOffer` is a `const`,
    so it cannot be patched out, and the reference still treats "Fly" as an offer
-   that clashes with nothing. Verified invisible on this seed for two
-   independent reasons — bruise has no fly legs on the day he holds a Fly input,
-   and his row is all-day (e-s === 1439), which the brief/debrief pass excludes
-   either way. If a future seed hands an offer-typed input to somebody who
-   flies, the parity tests will go red here. That is correct: the two builds
-   really would disagree, and the seed would need re-thinking. */
+   that clashes with nothing. The inputFlags filter shrinks the exposure — an
+   UN-ACTIONED Fly input no longer reaches either engine — but a Fly input
+   filed under Unavailable ('u') would pass the filter and the engines really
+   would disagree (the port clashes it, the reference exempts it). The seed
+   accepts nothing, so this stays invisible; if a future seed does that, the
+   parity tests go red here, correctly, and the seed needs re-thinking. */

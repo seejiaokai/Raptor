@@ -11,6 +11,7 @@ import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { slotVal, setSlotVal } from '../engine/slots'
+import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
@@ -219,6 +220,34 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(ix('sb-panel unav')).toBeGreaterThan(ix('sb-panel pinp'))
     expect(kids.some(c => c.includes('sb-panel simn'))).toBe(false)
     expect(document.querySelector('#sbBoard .sb-panel.simr textarea[data-bfld^="sn:"]')).toBeTruthy()
+  })
+
+  it('the panel headers carry the owner labels', () => {
+    expect($('#sbBoard .sb-panel.grnd .sb-ph').textContent).toContain('Ground Programme · scheduler')
+    expect($('#sbBoard .sb-panel.pinp .sb-ph').textContent).toContain('Personal Inputs')
+  })
+
+  /* the render-time sort (owner, Aug 26): rows read in start-time order but
+     keep their MODEL index as key, so a delete on a visually re-ordered row
+     must remove the row it names, not the one in that screen position */
+  it('ground rows render in start-time order; delete removes the model row', async () => {
+    const d: any = DAYS[SBDAY], n = d.ground.length
+    /* two temp rows that sort to the TOP while sitting at the model's bottom */
+    d.ground.push({ prog: 'ZTEMP-A', str: '0100', end: '0130', who: '' })
+    d.ground.push({ prog: 'ZTEMP-B', str: '0050', end: '0110', who: '' })
+    await act(async () => { afterSchedMutate(); notify() })
+    const ris = [...document.querySelectorAll('#sbBoard .sb-panel.grnd [data-grdel]')]
+      .map(x => +((x as HTMLElement).dataset.grdel || '').split('.')[1])
+    expect(ris.length).toBe(n + 2)
+    const times = ris.map(ri => parseHM(d.ground[ri].str)).filter((t: any) => t != null)
+    expect(times).toEqual([...times].sort((a: any, b: any) => a - b))
+    expect(ris[0]).toBe(n + 1)                       // 0050 renders first, keyed to the model's last row
+    await click(document.querySelector('#sbBoard .sb-panel.grnd [data-grdel]'))
+    expect(d.ground.length).toBe(n + 1)
+    expect(d.ground.some((r: any) => r.prog === 'ZTEMP-B')).toBe(false)
+    expect(d.ground.some((r: any) => r.prog === 'ZTEMP-A')).toBe(true)
+    d.ground.pop()                                   // clean up the survivor
+    await act(async () => { afterSchedMutate(); notify() })
   })
 
   it('duty seats speak the slot grammar — round-trip and arm targets', () => {

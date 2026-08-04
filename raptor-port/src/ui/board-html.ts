@@ -8,7 +8,7 @@ import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { esc } from '../state/view'
 import { ORD } from './html'
-import { puck, rowCls, accCtl } from './html'
+import { puck, rowCls, accCtl, groundOrder } from './html'
 
 export const SB_BANDS=[
   {k:'early',t:'Early',      note:'before 08:00',    lo:0,   hi:480},
@@ -175,12 +175,13 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any){
 }
 export function sbGroundPanel(d:any,di:any,pv?:any){
   const rows=d.ground||[];
-  let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground programme · scheduler <span class="sub">briefs, reviews, admin</span>`
+  let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme · scheduler <span class="sub">briefs, reviews, admin</span>`
     +(pv?'':`<span class="gctl"><button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No ground items yet — “+ Item” adds one.</div>`;
   else{
     s+=C6;
-    rows.forEach((x:any,ri:any)=>{
+    /* same render-time ordering as the week — keys keep their model index */
+    groundOrder(rows).forEach(({row:x,ri}:any)=>{
       const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=nameToId(x.who);
       const inner=((id&&PEOPLE[id])?sbSeat(di,base,id,pv):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,pv);
       s+=`<div class="sb-arow c6r${rowCls(x)}">`
@@ -207,7 +208,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any){
 }
 export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any){
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
-  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal inputs <span class="sub">submitted by aircrew — accept to put it on the programme</span></div><div class="sb-pb">`;
+  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme</span></div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,pv); });
   return s+`</div></div>`;

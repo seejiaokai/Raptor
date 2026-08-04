@@ -244,9 +244,15 @@ export function acceptInput(di:any,inp:any,dest:any){
   if(dest==='u'){ inp.acc='u'; markEdit(); return true; }
   d.ground=d.ground||[];
   const ri=d.ground.length;
-  d.ground.push({prog:(inp.remarks||inp.type||'').toUpperCase(),
+  /* who must be the CALLSIGN — every other ground write stores cs (see setSlotVal's
+     'g' branch) and the renderers resolve nameToId(who), so an id like 'haowen'
+     (cs 'Hao Wen') would render as free text and never validate as that person.
+     Title is the TYPE and the submitter's remarks land in the row's rmks cell
+     (owner, Aug 26): 'APPOINTMENT · dental review', not one mashed title. */
+  d.ground.push({prog:(inp.type||'').toUpperCase(),
                  str:inp.allday?'':hhmm(inp.s), end:inp.allday?'':hhmm(inp.e),
-                 who:inp.person, src:inpKey(inp)});
+                 who:PEOPLE[inp.person]?PEOPLE[inp.person].cs:inp.person,
+                 rmks:inp.remarks||'', src:inpKey(inp)});
   inp.acc='g';
   noteChange(`g:${di}.${ri}`);
   return true;
