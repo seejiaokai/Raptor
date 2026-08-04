@@ -67,6 +67,17 @@ export function writeInputs(fn: () => void) {
   HOOKS.renderInputs(); HOOKS.reflow(); HOOKS.histPush()
 }
 
+/* Same as writeInputs, but for an action that calls engine helpers which push
+   history of their OWN (markEdit does). Without this a single ✓ left two
+   snapshots, so the first Undo landed the user in a half-applied state they
+   never created — old fields, but already un-accepted. One action, one step. */
+export function writeInputsBatch(fn: () => void) {
+  const push = HOOKS.histPush
+  HOOKS.histPush = () => {}
+  try { fn() } finally { HOOKS.histPush = push }
+  HOOKS.renderInputs(); HOOKS.reflow(); HOOKS.histPush()
+}
+
 /* ---- wiring ---- */
 export function wireStore() {
   /* the reference's editMode(): the edit page is open AND the switch is on */

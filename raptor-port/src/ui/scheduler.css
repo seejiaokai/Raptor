@@ -982,8 +982,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .rmx{color:var(--hard);cursor:pointer;font-weight:800}
 /* the pencil sits beside the ✕, and both stay on one line */
 .inact{white-space:nowrap;display:flex;gap:8px;align-items:center;justify-content:center}
-.red{color:var(--accent);cursor:pointer;font-weight:800}
-.red:hover{filter:brightness(1.25)}
+/* scoped to the inputs table: a bare .red also matches the board's
+   .mbtn.red flag button, whose hover this was overriding */
+.inact .red{color:var(--accent);cursor:pointer;font-weight:800}
+.inact .red:hover{filter:brightness(1.25)}
 .rok{color:var(--ok,#57D9A3);cursor:pointer;font-weight:800}
 /* the two-click range calendar */
 .ifield.cal{grid-column:span 2}

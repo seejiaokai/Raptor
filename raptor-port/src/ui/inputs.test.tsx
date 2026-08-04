@@ -9,7 +9,8 @@ import { App } from './App'
 import { initStore, setSession, notify, undo } from '../state/store'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { acceptInput, inpKey } from '../engine/slots'
+import { acceptInput, inpKey, acceptedDay } from '../engine/slots'
+import { HIST } from '../state/history'
 import { validate } from '../engine/validate'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -53,6 +54,7 @@ describe('the Inputs page (tfin)', () => {
 
   it('an admin add lands in INPUTS, the table, and the undo stack', async () => {
     const n = INPUTS.length
+    await click($('#inCal [data-cal="2026-07-13"]'))   // a start date is required now
     await act(async () => {
       const rm = $('#inRemarks') as HTMLInputElement
       const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
@@ -76,6 +78,7 @@ describe('the Inputs page (tfin)', () => {
       const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
       setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
     })
+    await click($('#inCal [data-cal="2026-07-13"]'))   // a start date is required now
     await click($('#inAdd'))
     expect(INPUTS[0].s).toBe(0)
     expect(INPUTS[0].e).toBe(1439)
@@ -293,6 +296,81 @@ describe('editing an input that is already accepted', () => {
     expect(target.remarks).toBe('STAYS ON TARGET')
     expect(INPUTS[0].remarks).toBe('jumped the queue')   // the interloper is untouched
     if (wasOther) expect(INPUTS.find((x: any) => x.remarks === wasOther.remarks)).toBeTruthy()
+    await act(async () => { undo() })
+  })
+})
+
+/* The rest of the post-change sweep. */
+describe('accepted rows are never stranded', () => {
+  const groundRows = () => DAYS.flatMap((d: any, di: number) => (d.ground || []).map((r: any) => ({ di, src: r.src })))
+
+  /* a multi-day input shows an Accept button on EVERY day it spans, so the row
+     can be on any of them; the start date was a guess that silently missed */
+  it('a row accepted on a later day of a span is found, not duplicated', async () => {
+    INPUTS.unshift({ person: 'vinci', date: 'Jul 15', endDate: 'Jul 17', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'span', mod: '' })
+    const inp = INPUTS[0]
+    await act(async () => { acceptInput(4, inp, 'g'); notify() })   // accepted on the LAST day
+    expect(acceptedDay(inp)).toBe(4)
+    const before = groundRows().filter(r => r.src === inpKey(inp)).length
+    expect(before).toBe(1)
+
+    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    await click($('#inBody tr.ined [data-save]'))                  // change nothing
+
+    const after = groundRows().filter(r => r.src === inpKey(inp))
+    expect(after.length, 'still exactly one row').toBe(1)
+    expect(after[0].di, 'and still on the day it was accepted on').toBe(4)
+    await act(async () => { INPUTS.splice(INPUTS.indexOf(inp), 1); notify() })
+  })
+
+  it('deleting an accepted input takes its ground row with it', async () => {
+    INPUTS.unshift({ person: 'yeti', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'del me', mod: '' })
+    const inp = INPUTS[0]
+    await act(async () => { acceptInput(0, inp, 'g'); notify() })
+    const key = inpKey(inp)
+    expect(groundRows().some(r => r.src === key)).toBe(true)
+    await click($$('#inBody tr')[0].querySelector('.rmx'))
+    expect(INPUTS.indexOf(inp)).toBe(-1)
+    expect(groundRows().some(r => r.src === key), 'no row left behind').toBe(false)
+    await act(async () => { undo() })
+  })
+
+  /* one ✓ used to push two history snapshots, so the first Undo landed in a
+     half-applied state: old fields, but already un-accepted */
+  it('editing an accepted input is a single undo step', async () => {
+    /* added and accepted through the real paths, so history has a proper
+       baseline to step back to — undo restores the ARRAY, so the assertions
+       below look the row up by content rather than by object identity */
+    await act(async () => {
+      const { writeInputs } = await import('../state/store')
+      writeInputs(() => INPUTS.unshift({ person: 'salsa', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'one step', mod: '' }))
+    })
+    const inp = INPUTS[0]
+    await act(async () => { acceptInput(0, inp, 'g'); notify() })
+    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
+    await act(async () => {
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+      setter.call(rm, 'CHANGED'); rm.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    /* the bug was that ONE ✓ pushed TWO snapshots — unacceptInput's markEdit
+       fired mid-way, so the first Undo landed on old fields that were already
+       un-accepted, a state the user never created */
+    const depth = HIST.stack.length
+    await click($('#inBody tr.ined [data-save]'))
+    expect(INPUTS[0].remarks).toBe('CHANGED')
+    expect(HIST.stack.length - depth, 'one action, one undo step').toBe(1)
+    await act(async () => { undo() })
+    expect(INPUTS.some((x: any) => x.remarks === 'CHANGED')).toBe(false)
+    expect(INPUTS.find((x: any) => x.person === 'salsa' && x.remarks === 'one step')).toBeTruthy()
+  })
+
+  it('Add refuses to invent a date when none was picked', async () => {
+    // a fresh page state has no pick; the readout says so and Add must agree
+    const n = INPUTS.length
+    await click($('#inCal [data-cal="2026-07-14"]'))
+    await click($('#inAdd'))
+    expect(INPUTS.length).toBe(n + 1)
     await act(async () => { undo() })
   })
 })
