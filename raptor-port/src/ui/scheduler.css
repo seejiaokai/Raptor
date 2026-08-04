@@ -980,6 +980,35 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .intag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
 .inwrap{padding:6px 20px 40px}
 .rmx{color:var(--hard);cursor:pointer;font-weight:800}
+/* the pencil sits beside the ✕, and both stay on one line */
+.inact{white-space:nowrap;display:flex;gap:8px;align-items:center;justify-content:center}
+.red{color:var(--accent);cursor:pointer;font-weight:800}
+.red:hover{filter:brightness(1.25)}
+.rok{color:var(--ok,#57D9A3);cursor:pointer;font-weight:800}
+/* the two-click range calendar */
+.ifield.cal{grid-column:span 2}
+.rangecal{background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:6px 7px;width:212px}
+.rc-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.rc-mon{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.08em;font-size:11px;font-weight:700;color:var(--ink-2)}
+.rc-nav{background:transparent;border:1px solid var(--edge);color:var(--ink-2);border-radius:6px;
+  width:20px;height:20px;line-height:1;cursor:pointer;font-size:12px;padding:0}
+.rc-nav:hover{border-color:var(--accent);color:var(--accent)}
+.rc-dow,.rc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.rc-dow span{text-align:center;font-size:8.5px;color:var(--ink-3);font-weight:700;letter-spacing:.04em}
+.rc-d{background:transparent;border:1px solid transparent;color:var(--ink);border-radius:6px;
+  font-size:10.5px;padding:3px 0;cursor:pointer;text-align:center}
+.rc-d:hover{border-color:var(--accent)}
+.rc-d.wk{color:var(--ink-3)}
+.rc-d.mid{background:rgba(59,198,232,.13)}
+.rc-d.s,.rc-d.e{background:var(--accent);color:#04222b;font-weight:800}
+.rc-x{padding:3px 0}
+.rc-read{font-size:9.5px;color:var(--ink-3);margin-top:4px;letter-spacing:.02em}
+/* the inline-edit row */
+.ined>td{background:rgba(59,198,232,.05);vertical-align:top}
+.ined-ad{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;color:var(--ink-2);margin-top:4px}
+.ined-t{display:inline-flex;gap:4px;margin-left:8px}
+.ined-t input{width:78px}
 
 /* ============ MODALS / DRAWER / AIRSPACE ============ */
 /* Stacking, highest last: the scheduler board is a full-screen overlay at 400,

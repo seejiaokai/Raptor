@@ -3,7 +3,7 @@
    the issued programme when a scheduler accepts it. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { INPUTS, isPersonal, isUnavail } from './inputs'
+import { INPUTS, isPersonal, isUnavail, inpLabel } from './inputs'
 import { collectEvents } from './events'
 import { isSpecial } from './people'
 import { acceptInput, unacceptInput, inpKey, slotVal, txtGet, txtSet } from './slots'
@@ -252,5 +252,29 @@ describe('inputs clash with every kind of tasking', () => {
     DAYS[2].waves.push(sc2)
     expect(validate().all.filter((x: any) =>
       /Detachment but tasked — SC AM/.test(x.msg)).length).toBe(1)
+  })
+})
+
+/* "Other" says nothing on its own, so what the person typed IS the name of the
+   thing (owner, Aug 26) — in the lists and on the row accept creates. */
+describe('an Other input reads by its remarks', () => {
+  it('labels by remarks, and the accepted ground row takes that as its title', () => {
+    INPUTS.push({ person: 'vinci', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Other', remarks: 'Range clearance run' })
+    const inp = INPUTS[INPUTS.length - 1]
+    expect(inpLabel(inp)).toBe('Range clearance run')
+    expect(acceptInput(0, inp, 'g')).toBe(true)
+    const row = DAYS[0].ground[DAYS[0].ground.length - 1]
+    expect(row.prog).toBe('RANGE CLEARANCE RUN')
+    expect(row.rmks).toBe('Range clearance run')
+  })
+
+  it('falls back to the bare type while the remarks box is still empty', () => {
+    expect(inpLabel({ type: 'Other', remarks: '' })).toBe('Other')
+    expect(inpLabel({ type: 'Other' })).toBe('Other')
+  })
+
+  it('every other type still reads by its type, remarks or not', () => {
+    expect(inpLabel({ type: 'Meeting', remarks: 'Desk / staff work' })).toBe('Meeting')
+    expect(inpLabel({ type: 'LL', remarks: 'Local leave' })).toBe('LL')
   })
 })

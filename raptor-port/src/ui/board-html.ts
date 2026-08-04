@@ -1,6 +1,6 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { INPUTS, isLeave, inputCoversDate, isPersonal, isUnavail } from '../engine/inputs'
+import { INPUTS, isLeave, inputCoversDate, inpLabel, isPersonal, isUnavail } from '../engine/inputs'
 import { PEOPLE, nameToId } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
@@ -36,7 +36,7 @@ export function sbInputsHTML(d:any,di:any){
     const t=inp.allday?(inp.endDate?`all day · till ${esc(inp.endDate)}`:'all day')
                       :`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row"><span class="sbi-t">${t}</span>${pk}`
-      +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inp.type)}</span>`
+      +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`
       +`<span class="sbi-rm" title="${esc(inp.remarks||'')}">${esc(inp.remarks||'—')}</span></div>`;
   };
   const band=(title:any,note:any,cls:any,list:any)=>`<div class="sbi-band ${cls}">${title}<span class="bn">${note}</span></div>`

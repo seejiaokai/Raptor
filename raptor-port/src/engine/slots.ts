@@ -2,7 +2,7 @@ import { DAYS } from './data'
 import { PEOPLE, nameToId, ID_BY_CS } from './people'
 import { SCHED, markEdit } from './publish'
 import { parseHM, hhmm } from './time'
-import { isUnavail } from './inputs'
+import { isUnavail, inpLabel } from './inputs'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -257,7 +257,7 @@ export function acceptInput(di:any,inp:any,dest:any){
      (cs 'Hao Wen') would render as free text and never validate as that person.
      Title is the TYPE and the submitter's remarks land in the row's rmks cell
      (owner, Aug 26): 'APPOINTMENT · dental review', not one mashed title. */
-  d.ground.push({prog:(inp.type||'').toUpperCase(),
+  d.ground.push({prog:inpLabel(inp).toUpperCase(),
                  str:inp.allday?'':hhmm(inp.s), end:inp.allday?'':hhmm(inp.e),
                  who:PEOPLE[inp.person]?PEOPLE[inp.person].cs:inp.person,
                  rmks:inp.remarks||'', src:inpKey(inp)});

@@ -45,6 +45,16 @@ export const INPUT_TYPES=['LL','OL','OIL','Detachment','Training','Meeting','Fly
 export function isDetach(t:any){return /^Detachment$/i.test(String(t==null?'':t).trim());}
 export function isUnavail(t:any){return isDetach(t)||isLeave(t)||isDownchit(t);}
 export function isPersonal(t:any){return /^(Meeting|Training|Personal|Appointment|Fly|Other)$/i.test(String(t==null?'':t).trim());}
+export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim());}
+/* "Other" is the catch-all: the TYPE says nothing, so what the person actually
+   typed is the name of the thing (owner, Aug 26). Everywhere an input is
+   labelled — the Personal Inputs list, the Unavailable block, the board rows,
+   and the ground row accept creates — an Other reads by its remarks, falling
+   back to the bare type while the box is still empty. */
+export function inpLabel(inp:any){
+  const rm=String((inp&&inp.remarks)||'').trim();
+  return (isOther(inp&&inp.type)&&rm)?rm:String((inp&&inp.type)||'');
+}
 /* The validator's gate (owner, Aug 26): an unavailable-typed input always
    counts, but a personal input only counts once a scheduler has ACTIONED it.
    'u' files it under Unavailable, so it clashes like a Detachment does; 'g' is
