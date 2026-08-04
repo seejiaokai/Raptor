@@ -32,9 +32,31 @@ beforeAll(async () => {
 })
 
 describe('puck selection (tfin B14)', () => {
+  /* owner, Aug 26: the blue lands on the ONE puck clicked, never on that
+     person's other copies — those dim like the rest of the board. Compare by
+     slot key, not element identity: notify() rebuilds the week DOM, so the
+     node captured before the click is detached afterwards. */
+  const keyOf = (el: HTMLElement | null) => { const c = el && el.closest('[data-slot],[data-fill]') as HTMLElement | null; return c ? (c.dataset.slot || c.dataset.fill) : null }
+  it('only the clicked puck lights up — never the person\'s other copies', async () => {
+    const pk = $('#vWeek .puck[data-person="bane"]')
+    const key = keyOf(pk)
+    await click(pk)
+    const sel = $$('#vWeek .puck.sel')
+    expect(sel.length).toBe(1)                       // only the clicked puck is blue
+    expect(keyOf(sel[0])).toBe(key)
+    expect(sel[0].dataset.person).toBe('bane')
+    // the person's other copies no longer light up person-wide
+    const others = $$('#vWeek .puck[data-person="bane"]').filter(p => keyOf(p) !== key)
+    expect(others.every(p => !p.classList.contains('sel'))).toBe(true)
+    // and the rest of the board dims so the one pops (bane is "me", exempt, so
+    // measure dimming on the board at large rather than on bane's own copies)
+    expect($$('#vWeek .puck.dim').length).toBeGreaterThan(0)
+    await click($('#vWeek'))   // reset for the next test
+  })
+
   it('click select — and it opens that person\'s issue boxes on every flagged day', async () => {
     await click($('#vWeek .puck[data-person="bane"]'))
-    expect($$('#vWeek .puck.sel').length).toBeGreaterThanOrEqual(1)
+    expect($$('#vWeek .puck.sel').length).toBe(1)
     const days = personWarnDays('bane')
     expect($$('#vWeek .dwbox.open').length).toBe(days.length)
     expect($$('#vWeek .dwbox.open').every(b => b.classList.contains('pfoc'))).toBe(true)
@@ -171,21 +193,41 @@ describe('cross-day warning focus (tfin G2)', () => {
   })
 })
 
-describe('the stores toggle (sign probe — a store click must earn a pending mark)', () => {
-  it('clicking a stchip in edit mode toggles the option and marks st: pending', async () => {
+describe('stores configs — the "+" picker (owner, Aug 26)', () => {
+  const editTab = () => $$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!
+
+  it('the + menu adds a config, marks st: pending, and the + stays for more', async () => {
     const { DAYS } = await import('../engine/data')
     const { SCHED } = await import('../engine/publish')
-    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
-    const st = document.querySelector('#eWeek .stchip[data-store]') as HTMLElement
-    expect(st, 'a stores chip renders on the edit week').toBeTruthy()
-    const [di, gi, li, ai, k] = st.dataset.store!.split('.')
-    const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
-    const was = !!(a.opts && a.opts[k!])
-    await click(st)
-    expect(!!a.opts[k!]).toBe(!was)
+    await click(editTab())
+    const add = $('#eWeek .stadd[data-stadd]')
+    expect(add, 'a + button renders on the edit week').toBeTruthy()
+    const [di, gi, li, ai] = add.dataset.stadd!.split('.')
+    const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]; a.opts = a.opts || {}
+    a.opts.cl = false; await act(async () => notify())
+    await click($(`#eWeek .stadd[data-stadd="${di}.${gi}.${li}.${ai}"]`))
+    const item = document.querySelector('.stmenu [data-cfg="cl"]') as HTMLElement
+    expect(item, 'the menu offers CL').toBeTruthy()
+    await click(item)
+    expect(a.opts.cl).toBe(true)
     expect(SCHED.pending[`st:${di}.${gi}.${li}.${ai}`]).toBeTruthy()
-    await click(document.querySelector(`#eWeek .stchip[data-store="${st.dataset.store}"]`))
-    expect(!!a.opts[k!]).toBe(was)
+    expect($(`#eWeek .stchip[data-store="${di}.${gi}.${li}.${ai}.cl"]`), 'the CL chip now shows').toBeTruthy()
+    expect($(`#eWeek .stadd[data-stadd="${di}.${gi}.${li}.${ai}"]`), 'the + remains').toBeTruthy()
+    a.opts.cl = false; await act(async () => notify())
+  })
+
+  it('clicking an on-chip removes that config', async () => {
+    const { DAYS } = await import('../engine/data')
+    await click(editTab())
+    const chip = $('#eWeek .stchip[data-store]')
+    expect(chip, 'an on-chip renders').toBeTruthy()
+    const [di, gi, li, ai, k] = chip.dataset.store!.split('.')
+    const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
+    expect(!!a.opts[k!]).toBe(true)
+    await click(chip)
+    expect(!!a.opts[k!]).toBe(false)
+    expect($(`#eWeek .stchip[data-store="${di}.${gi}.${li}.${ai}.${k}"]`), 'the chip is gone').toBeFalsy()
+    a.opts[k!] = true; await act(async () => notify())
   })
 
   it('typing in the bombs box commits on focusout, marks st: pending, and shows on the view week', async () => {

@@ -14,10 +14,39 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify } from '../state/store'
 import { scrollToWarnFocus } from './highlights'
+import { STORE_CFG } from './html'
 import { setDayPop, setAirKey, setDrawer } from './pops'
 import { openScheduler } from './board'
 import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
+
+/* The config picker — a body-level popup anchored to the "+" button, built the
+   same way board.ts builds waveMenu: it lives outside the React tree, offers
+   only the configs not yet on, adds the chosen one through the funnel
+   (markEdit → pending → next AL) and removes itself on any outside click. */
+function openStoresMenu(anchor: HTMLElement, key: string) {
+  document.querySelectorAll('.stmenu').forEach(x => x.remove())
+  const [di, gi, li, ai] = key.split('.')
+  const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
+  a.opts = a.opts || {}
+  const left = STORE_CFG.filter(([k]) => !a.opts[k])
+  const box = document.createElement('div')
+  box.className = 'stmenu wavemenu'
+  box.innerHTML = `<h5>Add config</h5><div class="wm-row">`
+    + (left.length
+      ? left.map(([k, lab]) => `<button class="wm" data-cfg="${k}">${lab}</button>`).join('')
+      : `<div class="wm-note">All configs added.</div>`)
+    + `</div>`
+  document.body.appendChild(box)
+  const r = anchor.getBoundingClientRect()
+  box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
+  box.style.top = Math.min(window.innerHeight - box.offsetHeight - 8, Math.round(r.bottom + 6)) + 'px'
+  box.addEventListener('click', (ev: any) => {
+    const b = ev.target.closest('[data-cfg]'); if (!b) return
+    a.opts[b.dataset.cfg] = true; markEdit(`st:${di}.${gi}.${li}.${ai}`); box.remove(); notify(); ev.stopPropagation()
+  })
+  setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
+}
 
 export function routeClick(e: MouseEvent) {
   const t = e.target as HTMLElement
@@ -121,10 +150,14 @@ export function routeClick(e: MouseEvent) {
     }
   }
 
-  /* click a puck → select all same-name pucks (blue), open their issues */
+  /* click a puck → select just THAT puck (blue), open that person's issues.
+     The identifying key is the enclosing seat/cell's slot key, the same value
+     the highlight pass matches on, so the blue lands only on the one clicked. */
   const pk = t.closest('.puck[data-person]') as HTMLElement | null
   if (pk) {
-    view.selectPerson(pk.dataset.person, !!pk.closest('.week'))
+    const cell = pk.closest('[data-slot],[data-fill]') as HTMLElement | null
+    const key = cell ? (cell.dataset.slot || cell.dataset.fill) : null
+    view.selectPerson(pk.dataset.person, !!pk.closest('.week'), key)
     notify(); e.stopPropagation(); return
   }
 
@@ -180,8 +213,9 @@ export function routeClick(e: MouseEvent) {
   const c = t.closest('[data-dwclear]')
   if (c) { view.clearWarnFocus(); notify(); e.stopPropagation(); return }
 
-  /* stores toggle (edit mode) — verbatim; NO return: in the reference this is
-     its own listener, so the blank-space clear below still sees the click */
+  /* a stores chip click removes that config (edit mode) — chips only render
+     when on now, so a click can only ever be a removal. NO return: the
+     blank-space clear below still sees the click, as it always has. */
   const st = t.closest('[data-store]') as HTMLElement | null
   if (st && HOOKS.editMode()) {
     const [di, gi, li, ai, k] = st.dataset.store!.split('.')
@@ -189,6 +223,10 @@ export function routeClick(e: MouseEvent) {
     a.opts = a.opts || {}; a.opts[k!] = !a.opts[k!]; markEdit(`st:${di}.${gi}.${li}.${ai}`)
     notify()
   }
+
+  /* the "+" opens the config picker — a body-level popup mirroring waveMenu */
+  const stAdd = t.closest('[data-stadd]') as HTMLElement | null
+  if (stAdd && HOOKS.editMode()) { openStoresMenu(stAdd, stAdd.dataset.stadd!); e.stopPropagation(); return }
 
   /* Clicking any blank part of a schedule surface un-clicks everything —
      the exclusion list is the reference's, verbatim */
