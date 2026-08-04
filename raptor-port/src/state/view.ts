@@ -4,7 +4,7 @@ import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
 import { slotBar, personCount, personWarnDays } from '../engine/avail'
 import { validate, WARN } from '../engine/validate'
-import { markEdit } from '../engine/publish'
+import { markEdit, daySnapOf } from '../engine/publish'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from './auth'
@@ -116,6 +116,17 @@ export let SEARCH='';                  // search term (applies to active page)
    the view is focused on. WFOCUS wins over every other highlight so the puck that
    caused the error is the only thing lit. */
 export const DWOPEN=new Set();         // day indices whose issue box is expanded
+/* which days are previewing a published version instead of the live model —
+   di → 'orig' | AL number. View state, never model state: it survives no
+   reload and takes no part in undo. Same in-place-mutation pattern as DWOPEN
+   (ESM cannot reassign across modules). */
+export const DPREV=new Map()
+export function setDayPreview(di:any,ver:any){ if(ver==null||ver==='live')DPREV.delete(+di); else DPREV.set(+di,ver) }
+export function dayPreview(di:any){ return DPREV.has(+di)?DPREV.get(+di):null }
+/* drop any preview whose snapshot no longer exists — undo across a publish,
+   unpublishAL, a week switch: without this the day would render the live model
+   while its header claims to show history */
+export function prunePreviews(){ for(const [di,ver] of [...DPREV]){ if(!daySnapOf(di,ver))DPREV.delete(di) } }
 export let WFOCUS:any=null;                // {di,ix,ids:[…],sev}
 /* B14: clicking a puck opens that person's issues wherever in the week they
    fall, so a Tuesday crew-rest breach caused by a Monday night wave shows up
@@ -165,6 +176,9 @@ export function armedKey(){return ARM?ARM.key:'';}
 export function armSlot(key:any,el?:any){
   if(!canEditSched())return;
   const base=String(key).replace(/\.\+$/,'');
+  /* a previewing day is read-only; preview markup emits no armable surfaces,
+     but a stale element from the pre-preview render must not arm a live key */
+  if(DPREV.has(keyDay(base)))return
   if(ARM&&ARM.key===key){disarmSlot();return;}   // tapping it again puts it down
   ARM={key,di:keyDay(base),title:slotTitle(base)};
   paintArm(); renderRosters();

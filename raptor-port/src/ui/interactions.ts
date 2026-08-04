@@ -6,7 +6,8 @@
 import { slotVal } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { dayApproved, setDayApproved, publishALDay, signClear, markEdit } from '../engine/publish'
+import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, nextAL, verLabel } from '../engine/publish'
+import { restoreDayVersion } from '../engine/restore'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -50,6 +51,25 @@ export function routeClick(e: MouseEvent) {
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
     publishALDay(+alp.dataset.alpub!); notify(); return
   }
+  /* restore a previewed version — the revert is ordinary pending edits that go
+     out as the next AL, never a rewrite of what was already issued */
+  const rst = t.closest('button[data-restore]') as HTMLElement | null
+  if (rst) {
+    e.stopPropagation()
+    if (!canEditSched() || !(view.CURPAGE === 'editsched' || view.SBDAY != null)) return
+    const di = +rst.dataset.restore!
+    const ver = rst.dataset.rver === 'orig' ? 'orig' : +rst.dataset.rver!
+    if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the restore may remove the armed row
+    const n = restoreDayVersion(di, ver)
+    view.setDayPreview(di, null)
+    if (n === false) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
+    view.afterSchedMutate()
+    HOOKS.toast(n === 0
+      ? `${DAYS[di].dow} already matches ${verLabel(ver)} — nothing to publish`
+      : `${DAYS[di].dow} restored to ${verLabel(ver)} — ${n} change${n === 1 ? '' : 's'} pending · publish as AL${nextAL()}`)
+    notify(); return
+  }
+
   /* clear a day's sign-off */
   const sc = t.closest('[data-signclear]') as HTMLElement | null
   if (sc) {
@@ -83,6 +103,7 @@ export function routeClick(e: MouseEvent) {
      drawer closes, exactly as the reference's handler does */
   const wk = t.closest('[data-wk]') as HTMLElement | null
   if (wk) {
+    view.DPREV.clear()   // day indices are only meaningful within the loaded week
     setCurWeek(wk.dataset.wk)
     const f = document.getElementById('dateVField') as HTMLInputElement | null
     if (f) f.value = wk.dataset.wk!

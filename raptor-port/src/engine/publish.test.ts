@@ -5,7 +5,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { PEOPLE, isScheduler } from './people'
-import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, publishAL, publishALDay, unpublishAL, discardPending, alIssue, alCount, alDays, alUsed, nextAL, markEdit, pendCount, alColor, alAttr } from './publish'
+import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, publishAL, publishALDay, unpublishAL, discardPending, alIssue, alCount, alDays, alUsed, nextAL, markEdit, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel } from './publish'
 import { noteChange } from './slots'
 
 const sign = (di: number) => {
@@ -15,7 +15,7 @@ const sign = (di: number) => {
 
 beforeEach(() => {
   SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []
-  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}
+  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}
 })
 
 describe('per-day sign-off (tfin B22/B24)', () => {
@@ -243,5 +243,57 @@ describe('an issued AL is history (tfin B53 #14)', () => {
     const rec = SCHED.als[0]; rec.keys = []
     expect(alCount(rec)).toBe(2)
     expect(alDays(rec).join(',')).toBe('0')
+  })
+})
+
+describe('per-day version snapshots', () => {
+  it('publishing a day stamps the Original once — first publish wins', () => {
+    const note0 = DAYS[0].notes[0]
+    sign(0); setDayApproved(0, 1)
+    expect(daySnapOf(0, 'orig')).toBeTruthy()
+    expect(daySnapOf(0, 'orig').d.notes[0]).toBe(note0)
+    /* reopen, change the model, republish — the Original must not move */
+    setDayApproved(0, 0)
+    DAYS[0].notes[0] = 'CHANGED AFTER REOPEN'
+    sign(0); setDayApproved(0, 1)
+    expect(daySnapOf(0, 'orig').d.notes[0]).toBe(note0)
+    DAYS[0].notes[0] = note0
+  })
+
+  it('the snapshot is a deep clone — later edits cannot reach back into it', () => {
+    const note0 = DAYS[0].notes[0]
+    sign(0); setDayApproved(0, 1)
+    DAYS[0].notes[0] = 'LIVE EDIT'
+    expect(daySnapOf(0, 'orig').d.notes[0]).toBe(note0)
+    DAYS[0].notes[0] = note0
+  })
+
+  it('alIssue freezes every covered day wearing its own new marks', () => {
+    sign(0); setDayApproved(0, 1)
+    sign(1); setDayApproved(1, 1)
+    sign(0); sign(1)
+    alIssue(2, ['dn:0.0', 'dn:1.0'])
+    const s0 = daySnapOf(0, 2), s1 = daySnapOf(1, 2)
+    expect(s0 && s1).toBeTruthy()
+    expect(s0.c['dn:0.0']).toBe(2)         // the AL's own mark is IN the snapshot
+    expect(s0.c['dn:1.0']).toBeUndefined() // and only this day's slice
+    expect(s1.c['dn:1.0']).toBe(2)
+    /* the record's issued fields are untouched by the stamp */
+    expect(SCHED.als[0].n0).toBe(2)
+    expect(SCHED.als[0].days).toEqual([0, 1])
+  })
+
+  it('dayVersions lists live, orig and snapshot-bearing ALs; unpublish drops one', () => {
+    expect(dayVersions(0)).toEqual(['live'])
+    sign(0); setDayApproved(0, 1)
+    sign(0); alIssue(1, ['dn:0.0'])
+    expect(dayVersions(0)).toEqual(['live', 'orig', 1])
+    /* a record from before snapshots existed offers no version and breaks nothing */
+    SCHED.als.push({ n: 2, keys: ['dn:0.1'], sign: {}, days: [0], n0: 1 })
+    expect(dayVersions(0)).toEqual(['live', 'orig', 1])
+    expect(daySnapOf(0, 2)).toBeNull()
+    unpublishAL(1)
+    expect(dayVersions(0)).toEqual(['live', 'orig'])
+    expect(verLabel('live') + verLabel('orig') + verLabel(1)).toBe('LiveOriginalAL1')
   })
 })

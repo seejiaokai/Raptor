@@ -11,7 +11,7 @@ import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pen
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { setSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, SBDAY, setBoardDay } from '../state/view'
+import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, SBDAY, setBoardDay, setDayPreview } from '../state/view'
 import { waveMenu } from './board'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
@@ -78,6 +78,15 @@ export function Shell() {
      the sign-off change listener and right-click-to-clear */
   useEffect(() => {
     const onChange = (e: Event) => {
+      /* the per-day version dropdown lives in the same string-built day head as
+         the sign-off selects, so it routes through the same document listener.
+         Pure view state — no histPush: previewing is looking, not editing. */
+      const dv = (e.target as HTMLElement).closest('select[data-dver]') as HTMLSelectElement | null
+      if (dv) {
+        const v = dv.value
+        setDayPreview(+dv.dataset.dver!, v === 'live' ? null : (v === 'orig' ? 'orig' : +v))
+        notify(); return
+      }
       const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null
       if (!sel) return
       const di = +sel.dataset.signday!
@@ -89,6 +98,9 @@ export function Shell() {
     const onCtx = (e: MouseEvent) => {
       const s = (e.target as HTMLElement).closest('.seat[data-slot]') as HTMLElement | null
       if (!s) return
+      /* preview markup drops data-slot, but a stale pre-preview element must
+         not clear a live seat from underneath an old rendering */
+      if (s.closest('.preview')) return
       if (!canEditSched()) return
       if (!(HOOKS.editMode() || SBDAY != null)) return
       const key = s.dataset.slot!, id = slotVal(key)

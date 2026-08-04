@@ -4,7 +4,8 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
-import { SCHED, signOf, dayApproved, setDayApproved, publishALDay, unpublishAL } from '../engine/publish'
+import { SCHED, signOf, dayApproved, setDayApproved, publishALDay, unpublishAL, daySnapOf } from '../engine/publish'
+import { restoreDayVersion } from '../engine/restore'
 import { slotVal, txtGet } from '../engine/slots'
 import { shiftKeys } from '../engine/keys'
 import { validate, WARN } from '../engine/validate'
@@ -22,9 +23,9 @@ beforeEach(() => {
   DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
   INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
   SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []
-  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}
+  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}
   setSession({ user: 'a', role: 'admin' })
-  view.selDrop(); view.armDrop()
+  view.selDrop(); view.armDrop(); view.DPREV.clear()
   initStore()
 })
 
@@ -92,6 +93,34 @@ describe('undo / redo (tfin, through the store)', () => {
     expect(dayApproved(0)).toBe(false)
     redo()
     expect(dayApproved(0)).toBe(true)
+  })
+
+  it('version snapshots ride the undo stack, and a dead preview is pruned', () => {
+    sign(0)
+    setDayApproved(0, true)
+    expect(daySnapOf(0, 'orig')).toBeTruthy()
+    /* previewing the Original, then undoing past its publish: the snapshot is
+       gone, so the preview must not survive to render a ghost */
+    view.setDayPreview(0, 'orig')
+    undo()
+    expect(daySnapOf(0, 'orig')).toBeNull()
+    expect(view.DPREV.has(0)).toBe(false)
+    redo()
+    expect(daySnapOf(0, 'orig')).toBeTruthy()
+  })
+
+  it('a restore is one undo step', () => {
+    sign(0)
+    setDayApproved(0, true)
+    const key = '0.0.0.0.p', before = slotVal(key)
+    writeSlot(key, 'casper')
+    /* the routeClick body: restore, then the one afterSchedMutate */
+    restoreDayVersion(0, 'orig')
+    view.afterSchedMutate()
+    expect(slotVal(key)).toBe(before)
+    expect(SCHED.pending[key]).toBe(1)
+    undo()
+    expect(slotVal(key)).toBe('casper')   // one step back = the pre-restore state
   })
 
   it('personal inputs join the undo stack', () => {

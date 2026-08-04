@@ -162,4 +162,36 @@ describe('the edit page (tfin)', () => {
     expect($$('#vWeek [data-fill]').length).toBe(0)
     expect($$('#vWeek [draggable="true"]').length).toBe(0)
   })
+
+  /* the version dropdown: publish → edit → preview a version → restore it.
+     Driven through the real surfaces: the day-head <select> via the document
+     change listener, the restore button via routeClick. */
+  it('version dropdown previews a published version and restores it', async () => {
+    await signDay(0)
+    await click(dayBtn(0))                     // publish Monday → Original stamped
+    const key = '0.0.0.0.p', before = slotVal(key)
+    await act(async () => { writeSlot(key, 'casper') })
+    const sel = $(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement
+    expect(sel, 'version dropdown on Monday').toBeTruthy()
+    expect($$(`#eWeek select[data-dver]`).length).toBe(1)   // only the published day
+    await act(async () => {
+      sel.value = 'orig'
+      sel.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    const day = () => $(`#eWeek .day[data-day="0"]`)
+    expect(day().className).toContain('preview')
+    expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
+    expect(day().querySelector('.dprev-bar')).toBeTruthy()
+    expect(slotVal(key)).toBe('casper')        // the MODEL is untouched by previewing
+    expect($$('#vWeek select[data-dver]').length).toBe(0)   // view page never gets it
+    await click(day().querySelector('.dprev-restore'))
+    expect(day().className).not.toContain('preview')
+    expect(slotVal(key)).toBe(before)          // the restore reverted the seat
+    expect(SCHED.pending[key]).toBe(1)         // as a pending edit, not a rewrite
+    /* put the file's shared state back */
+    await act(async () => {
+      SCHED.pending = {}; SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}
+      notify()
+    })
+  })
 })

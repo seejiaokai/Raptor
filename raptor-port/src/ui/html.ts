@@ -6,14 +6,50 @@ import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/slots'
 import { WARN, sevOf, chipOf, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayALs, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayALs, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
 import { keyDay } from '../engine/keys'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
 
 const editMode=()=>HOOKS.editMode()
+
+/* =====================================================================
+   VERSION PREVIEW — render a day as a published snapshot instead of live
+   PV is true only while a preview build is in flight. It suppresses the two
+   things a snapshot must not touch: WARN reads (warnings are live-model state;
+   validating a snapshot would clobber WARN for every surface — the
+   no-validate-on-repaint rule) and the write surfaces (data-slot / draggable —
+   those keys address the LIVE model, so acting on them from an old rendering
+   would edit today's schedule while showing yesterday's).
+   ===================================================================== */
+let PV=false, PVV:any=null
+const sev=(di:any,id:any)=>PV?null:sevOf(di,id)
+const chip=(di:any,id:any)=>PV?null:chipOf(di,id)
+/* the ONE place the snapshot may stand in for the live model. finally is not
+   optional: a throw mid-build with the swap live would leave the old day
+   installed as the real schedule — a silent history rewrite on the next
+   validate. */
+export function withDaySnap(di:any,ver:any,fn:any){
+  const snap=daySnapOf(di,ver)
+  if(!snap)return fn(false)
+  const d0=DAYS[di], c0=SCHED.changes, p0=SCHED.pending
+  DAYS[di]=snap.d; SCHED.changes=snap.c||{}; SCHED.pending={}
+  PV=true; PVV=ver
+  try { return fn(true) }
+  finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null }
+}
+export function dayPreviewHTML(di:any,ver:any,edFallback:any){
+  return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false,true):dayHTML(di,edFallback,true))
+}
+export function verSelHTML(di:any){
+  const vs=dayVersions(di)
+  if(vs.length<2)return ''
+  const cur=DPREV.has(di)?DPREV.get(di):'live'
+  return `<select class="dver" data-dver="${di}" title="View this day as it was issued — pick a version">`
+    +vs.map((v:any)=>`<option value="${v}"${String(v)===String(cur)?' selected':''}>${verLabel(v)}</option>`).join('')+`</select>`
+}
 export function legendHTML(){
   return `<span><i style="background:var(--fcp)"></i>FCP (pilot)</span><span><i style="background:var(--rcp)"></i>RCP (WSO)</span>
     <span style="margin-left:8px">Level:</span>
@@ -70,7 +106,8 @@ export let SELPREV:any=null;
 export let SELSEEN=0;
 export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any){
   const al=alAttr(key);
-  if(id) return `<span class="seat" data-slot="${key}"${al}${editable?' draggable="true"':''}>${puck(id,sev,false,flag)}</span>`;
+  /* preview: no data-slot, no draggable — the key addresses the LIVE model */
+  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' draggable="true"':''}>${puck(id,sev,false,flag)}</span>`;
   if(editable) return `<span class="seat empty-slot" data-slot="${key}"${al}>+ ${kind}</span>`;
   return `<span class="seat"${al}></span>`;
 }
@@ -81,7 +118,7 @@ export function plCols(){return `<div class="pl-cols"><span class="h-nm">Name</s
    Draggable in edit mode; renders nothing when empty so cells stay clean. */
 export function lSeat(di:any,id:any,key:any,ed:any){
   if(!(id&&PEOPLE[id]))return '';
-  return `<span class="seat" data-slot="${key}"${alAttr(key)}${ed?' draggable="true"':''}>${puck(id,sevOf(di,id),true,chipOf(di,id))}</span>`;}
+  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' draggable="true"':''}>${puck(id,sev(di,id),true,chip(di,id))}</span>`;}
 /* the people cell itself — a drop target in edit mode (data-fill) */
 /* the extra bodies dropped onto a row, after its own seats */
 export function moreSeats(di:any,base:any,ed:any){
@@ -142,7 +179,7 @@ export function availHTML(d:any,di:any,ed:any){
   const A=availByWave(d);
   /* in edit mode an available puck is a drag source — drag it straight onto a line,
      a duty, a sim or a programme item */
-  const pk=(id:any)=>`<span class="seat"${ed?` draggable="true" data-person="${id}"`:''}>${puck(id,sevOf(di,id),true,chipOf(di,id))}</span>`;
+  const pk=(id:any)=>`<span class="seat"${ed?` draggable="true" data-person="${id}"`:''}>${puck(id,sev(di,id),true,chip(di,id))}</span>`;
   const active=(ids:any)=>ids.filter((id:any)=>!PEOPLE[id].san), sans=(ids:any)=>ids.filter((id:any)=>PEOPLE[id].san);
   const grid=(ids:any)=>ids.length?`<div class="ap-grid">`+ids.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   const bandTxt=(w:any)=>{const a=w.s>0?hhmm(w.s):'AM', b=w.e<1440?hhmm(w.e):'end';return `${a}–${b}`;};
@@ -257,7 +294,10 @@ export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Fl
    <section class="day"> for a freshly built one indistinguishable from redrawing
    the whole week.
    ===================================================================== */
-export function dayHTML(di:any,ed:any){
+/* vsel: emit the per-day version dropdown. Only EditWeek (and the preview
+   path) passes it, so the view-only page never grows the control — read-only
+   users see issued schedules, not the version machinery. */
+export function dayHTML(di:any,ed:any,vsel?:any){
   const d=DAYS[di];
     /* ---- per-day approval strip -------------------------------------------
        Each day carries its own publish state, its own AL chips (which amendments
@@ -284,15 +324,23 @@ export function dayHTML(di:any,ed:any){
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a
        read-only panel — clicking a day in view mode must never lead into editing. */
     const infoChip=`<button class="dinfobtn" data-dayinfo="${di}" title="${d.dow} — approval, AL versions, advisories">i</button>`;
-    let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}" data-day="${di}">
+    /* preview banner: the tint is the version's own colour, so "which AL am I
+       looking at" reads the same way the marks do */
+    const pvBar=PV
+      ? `<div class="dprev-bar"${PVV!=='orig'?` style="--alc:${alColor(+PVV)}"`:''}>Viewing <b>${verLabel(PVV)}</b> as issued — read-only`
+        +`<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${PVV}" title="Copy this version back as pending edits — publish them as the next AL">Restore this version</button></div>`
+      : '';
+    let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?' preview':''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow sb-open" data-sbday="${di}" title="Open scheduler board">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
-      <span class="dstat">${alChips}${pendChip}${infoChip}${beak}${alpub}</span></div>`
+      <span class="dstat">${vsel?verSelHTML(di):''}${alChips}${pendChip}${infoChip}${beak}${alpub}</span></div>`
+      +pvBar
       +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}</div>`:'')
       +`<div class="day-body">`;
-    h+=dayWarnHTML(di);
+    /* warnings are live-model state — a snapshot is never validated */
+    if(!PV)h+=dayWarnHTML(di);
     // ---- all-hands header: EP/ORDERS notes + squadron-wide items ----
     const hasNotes=!!(d.notes&&d.notes.length), hasAH=!!(d.allhands&&d.allhands.length);
     if(hasNotes||hasAH||ed){
@@ -374,7 +422,7 @@ export function dayHTML(di:any,ed:any){
              puck there would read as "this SC line has a problem" when the
              problem, if any, belongs to that person's other flying */
           const chk=!saExempt(w,f,a);
-          const sv=(id:any)=>chk?sevOf(di,id):null, cp=(id:any)=>chk?chipOf(di,id):null;
+          const sv=(id:any)=>chk?sev(di,id):null, cp=(id:any)=>chk?chip(di,id):null;
           h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w))}</span></div>
               <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${sa?`<span class="rolet ${a.spare?'spare':'main'}" title="${a.spare?'Spare crew — standing by, not cross-checked against anything else':'Main crew'}">${esc(a.role||(a.spare?'SPARE':'MAIN'))}</span>`:''}${ted(`fr:${key}`,a.rmks,ed,'ntx')}${sa?'':stores}</div>`;
         });
@@ -450,7 +498,7 @@ export function dayHTML(di:any,ed:any){
       s+=plCols();
       rows.forEach((inp:any)=>{
         const pk=PEOPLE[inp.person]
-          ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
+          ? `<span class="seat">${puck(inp.person,sev(di,inp.person),true,chip(di,inp.person))}</span>`
           : `<span class="itxt">${esc(inp.person)}</span>`;
         const tcell=inp.allday
           ? `<span class="t allday">all day</span>`

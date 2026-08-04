@@ -5,7 +5,9 @@
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY } from '../state/view'
+import { SBDAY, DPREV, setDayPreview } from '../state/view'
+import { daySnapOf, dayVersions, verLabel, alColor } from '../engine/publish'
+import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
@@ -103,10 +105,25 @@ export function SchedBoard() {
       el.innerHTML = html; panelPrev.current[key] = html
     }
     set(daysRef.current!, 'days', dayTabsHTML(di))
-    set(boardRef.current!, 'board', boardHTML(di))
-    set(warnRef.current!, 'warn', boardWarnHTML(di))
+    /* same lazy orphan prune as the edit week */
+    if (DPREV.has(di) && !daySnapOf(di, DPREV.get(di))) DPREV.delete(di)
+    if (DPREV.has(di)) {
+      const ver = DPREV.get(di)
+      withDaySnap(di, ver, () => {
+        set(boardRef.current!, 'board', '<div class="pv-frozen">' + boardHTML(di, true) + '</div>')
+        set(inputsRef.current!, 'inputs', sbInputsHTML(DAYS[di], di))
+      })
+      /* the live-checks panel becomes the preview banner — a past version is
+         never validated, so live warnings against it would be nonsense */
+      set(warnRef.current!, 'warn',
+        `<div class="dprev-bar"${ver !== 'orig' ? ` style="--alc:${alColor(+ver)}"` : ''}>Viewing <b>${verLabel(ver)}</b> as issued — read-only`
+        + `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${ver}" title="Copy this version back as pending edits — publish them as the next AL">Restore this version</button></div>`)
+    } else {
+      set(boardRef.current!, 'board', boardHTML(di))
+      set(warnRef.current!, 'warn', boardWarnHTML(di))
+      set(inputsRef.current!, 'inputs', sbInputsHTML(DAYS[di], di))
+    }
     set(rosterRef.current!, 'roster', paletteHTML(paletteDay(), { head: false }))
-    set(inputsRef.current!, 'inputs', sbInputsHTML(DAYS[di], di))
     refreshHighlights()
   }, [version])
 
@@ -122,8 +139,15 @@ export function SchedBoard() {
           <button className={'abtn sb-widebtn' + (SBWIDE ? ' on' : '')} id="sbWide"
             title={SBWIDE ? 'Back to the stacked phone layout' : 'Show the board in its full desktop layout'}
             onClick={() => { toggleWide(); notify() }}>{SBWIDE ? '📱 Phone layout' : '🖥 Desktop layout'}</button>
-          <button className="abtn" id="sbAddLine" onClick={() => { if (SBDAY != null) addLine(SBDAY) }}>+ Line</button>
-          <button className="abtn" id="sbAddGo" onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, SBDAY) }}>+ Wave</button>
+          {open && dayVersions(SBDAY).length > 1
+            ? <select className="dver" aria-label="View this day as it was issued"
+                value={String(DPREV.get(SBDAY) ?? 'live')}
+                onChange={e => { const v = e.target.value; setDayPreview(SBDAY, v === 'live' ? null : (v === 'orig' ? 'orig' : +v)); notify() }}>
+                {dayVersions(SBDAY).map((v: any) => <option key={String(v)} value={String(v)}>{verLabel(v)}</option>)}
+              </select>
+            : null}
+          <button className="abtn" id="sbAddLine" disabled={open && DPREV.has(SBDAY)} onClick={() => { if (SBDAY != null) addLine(SBDAY) }}>+ Line</button>
+          <button className="abtn" id="sbAddGo" disabled={open && DPREV.has(SBDAY)} onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, SBDAY) }}>+ Wave</button>
           <button className="abtn primary" id="sbDone" onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}>Done</button>
           <button className="abtn ghost" id="sbClose" onClick={closeScheduler}>✕ Close</button>
         </div>

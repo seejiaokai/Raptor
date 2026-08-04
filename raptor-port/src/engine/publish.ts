@@ -22,7 +22,7 @@ const renderStatus=()=>HOOKS.renderStatus();
                     flown while Thursday is still being built. The week banner is a
                     summary of this object, never the source of truth. There is no
                     SCHED.approved / SCHED.dirty any more — both are derived.      */
-export let SCHED:any={al:0, pending:{}, changes:{}, als:[], dayOK:{}, sign:{}};
+export let SCHED:any={al:0, pending:{}, changes:{}, als:[], dayOK:{}, sign:{}, orig:{}};
 export function dayApproved(di:any){return !!SCHED.dayOK[di];}
 export function approvedDays(){return DAYS.map((_:any,i:any)=>i).filter(dayApproved);}
 export function dowShort(di:any){return String((DAYS[di]||{}).dow||('day '+di)).slice(0,3);}
@@ -51,11 +51,35 @@ export function setDayApproved(di:any,on:any){
        leaving those marks meant the day's first AL re-issued the whole day and
        claimed to have "changed" every field the schedulers had ever typed. */
     Object.keys(SCHED.pending).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.pending[k];});
-    SCHED.dayOK[di]=1; signClear(di);}          // the signature is spent on the issue
+    SCHED.dayOK[di]=1; signClear(di);          // the signature is spent on the issue
+    /* Original = the day as FIRST published. First publish wins: reopening voids
+       the signature, not the history — a re-publish after reopen is a later
+       state, and restamping would let a rewrite masquerade as the Original. */
+    SCHED.orig=SCHED.orig||{};
+    if(!SCHED.orig[di])SCHED.orig[di]=daySnap(di);}
   else {delete SCHED.dayOK[di]; signClear(di);} // reopening voids it — resign to reissue
   reflow(); histPush();
   toast(on?`${DAYS[di].dow} published — APPROVED`:`${DAYS[di].dow} reopened to draft`);
 }
+/* ---- per-day version snapshots -------------------------------------------
+   A snapshot is the frozen day plus ITS slice of the changes map, taken at the
+   moment of issue — it reproduces the day "as issued, wearing its marks". AL
+   snapshots live ON the AL record (rec.snap) and the Original in SCHED.orig,
+   so both ride the undo stack and unpublishAL with the state they belong to.
+   Nothing here persists past the session — neither does the AL list itself. */
+export function daySnap(di:any){di=+di;
+  const c:any={}; Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)c[k]=SCHED.changes[k];});
+  return {d:JSON.parse(JSON.stringify(DAYS[di])),c};}
+export function daySnapOf(di:any,ver:any){di=+di;
+  if(ver==='orig')return (SCHED.orig||{})[di]||null;
+  const r=SCHED.als.find((a:any)=>a.n===+ver);
+  return (r&&r.snap&&r.snap[di])||null;}   // records from before snapshots carry none
+export function dayVersions(di:any){di=+di;
+  const v:any[]=['live'];
+  if((SCHED.orig||{})[di])v.push('orig');
+  SCHED.als.slice().sort((a:any,b:any)=>a.n-b.n).forEach((a:any)=>{if(a.snap&&a.snap[di])v.push(a.n);});
+  return v;}
+export function verLabel(ver:any){return ver==='live'?'Live':(ver==='orig'?'Original':'AL'+ver);}
 /* AL1 cyan · AL2 amber · AL3 bright green · AL4 white · AL5 purple · AL6 pink ·
    AL7 orange. Every entry has to read as an ALn tag in dark ink (#08131b) on top
    of itself, so the ramp stays light and saturated — the old AL5 magenta (#C21E93)
@@ -121,6 +145,9 @@ export function alIssue(n:any,keys:any){
   const days=uniqDays(keys);
   const sign:any={}; days.forEach((di:any)=>{sign[di]=signNames(di);});
   SCHED.als.push({n,keys,sign,days:days.slice(),n0:keys.length});
+  /* freeze every covered day AFTER its marks are on — this is the document */
+  const rec=SCHED.als[SCHED.als.length-1];
+  rec.snap={}; days.forEach((di:any)=>{rec.snap[di]=daySnap(di);});
   days.forEach((di:any)=>signClear(di));
   SCHED.al=Math.max(...alUsed());
   reflow(); histPush();   // publishing is its own undo step, not a silent baseline shift

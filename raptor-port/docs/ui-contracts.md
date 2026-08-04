@@ -46,6 +46,29 @@ means issued, dotted means coming); the view-only page and draft-day
 edits keep the neutral dashed hint and no text-level mark. `data-aln`
 resolves its colour through the same `--alc` palette rules as `data-alc`.
 
+## Version preview (edit week + board only)
+
+The day-head `<select data-dver>` (emitted only when `dayHTML` gets its
+`vsel` param — EditWeek passes it, ViewWeek never does) and the board's
+React `.dver` select set `DPREV` (state/view.ts, di → `'orig'`|AL n).
+`withDaySnap(di, ver, fn)` (ui/html.ts) is the ONE place the snapshot may
+stand in for the live model: it swaps `DAYS[di]`/`SCHED.changes`/
+`SCHED.pending`, sets the PV flag, and restores everything in `finally` —
+a throw mid-build must never leave the snapshot installed as the real
+schedule. Under PV: no WARN reads (a snapshot is never validated), no
+sev/chip rings, no `data-slot`/`data-fill`/`draggable` (those keys address
+the LIVE model), pucks keep `data-person` so selection works, and the
+frozen `data-alc` marks come from the snapshot's own changes slice. The
+board renders `boardHTML(di, pv)` read-only (disabled fields, no mbtn/arm
+targets, no sign-off bar) inside `.pv-frozen`, and its live-checks panel
+becomes the preview banner. Belt-and-braces gates on stale markup:
+`armSlot`, `boardChange`/`boardMbtn`/`boardArmClick`, `dragFrom`
+(`.preview`/`.pv-frozen`), Shell's contextmenu clear. Previews are pruned
+lazily (EditWeek/SchedBoard), on `histApply`, and on week switch. The
+`data-restore` button routes through `routeClick` → `restoreDayVersion`.
+Known limitation: personal-INPUTS sections and the day-info pop show LIVE
+data inside a preview — inputs are not part of the issued document.
+
 ## Drag / arm-and-plant (hard-won — test on touch)
 
 `applyDrop()` is the ONE drop path for mouse and touch.
