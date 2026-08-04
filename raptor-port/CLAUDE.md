@@ -22,16 +22,21 @@ that bar on their own — don't manufacture questions for them.
 - **Ship it.** Once the gates are green, open a PR to `main` and merge so
   it deploys — don't wait to be asked (unless a gate is red or the change
   was called an experiment).
-- **Delegate frugally, by judgment.** Push exploration-heavy, plannable or
-  mechanical work to cheaper agents (Explore / Plan / general-purpose on
-  haiku or sonnet); do small precise work inline, since spawning an agent
-  costs more than a one-file fix. Keep final review and the gates
-  first-hand. The owner does not want to micro-manage this.
+- **Delegate frugally, by judgment.** The main session plans, reviews
+  diffs and runs the gates first-hand. Scanning/exploration goes to
+  Explore on **haiku**; multi-file or mechanical code-writing goes to
+  general-purpose on **sonnet**, handed a precise spec (files, expected
+  shape, which tests to run) so it never explores. Agents return diffs
+  and conclusions, never file dumps. Small precise work stays inline —
+  spawning an agent costs more than a one-file fix.
 - **Token discipline.** Never let a tool dump raw output — pipe logs
   through `tail`/`grep`, ask GitHub MCP tools for `minimal_output: true`,
   paginate 5–10, and prefer a 2-line `curl | grep` over a full API object
   when checking one field. Never read `reference/` whole (6.6k lines) —
-  `grep` it. Trust this index instead of re-exploring. Prefer a fresh
+  `grep` it; same for any file over ~300 lines (Grep or offset/limit Reads).
+  While iterating run only the affected test file
+  (`npx vitest run <file>`); the full three gates once, before the PR.
+  Trust this index instead of re-exploring. Prefer a fresh
   session per task; a long conversation re-sends itself every turn.
 
 ## Build & verify
