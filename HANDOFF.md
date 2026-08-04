@@ -27,46 +27,30 @@ The port from the original single-file app is complete; that history is in
   on both builds — environment-bound, not a port defect.
 - **`sbWide` / board-grip state** is module-local and resets on reload
   (matches the original's session-scoped behaviour).
-- **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** The PR
-  #33 restore-as-pending behaviour was reworked: "Restore this version"
-  makes that version live immediately (content + marks + the single
-  day-head chip from `dayCurVer`), discards the day's pending edits, needs
-  no sign-off, and keeps later ALs in the dropdown; new edits publish as
-  `nextAL()`. See `docs/engine-rules.md` §Version snapshots / restore.
-  Known limitation still: previews freeze the schedule content but the
-  personal-INPUTS sections and day-info pop read live data — inputs are not
-  part of the issued document. Snapshots are session-only, like everything
-  else.
-- **Personal inputs need accepting (Aug 26).** A day now closes with three
-  blocks, not five: `Ground Programme` (the scheduler's, titled
-  `· scheduler` only on the edit side), `Personal Inputs` (scheduler-side ONLY)
-  and `Unavailable` (Detachment + Leave + Downchit, everyone). `Available` and
-  `Office` are gone as types and as blocks. A personal input reaches the issued
-  programme only when a scheduler **accepts** it, which pushes a real ground row
-  (type as title, remarks in the row's rmks cell, callsign in `who`); the input
-  stays behind, faded, with Undo. **The validator only sees an input once it is
-  actioned** (`inputFlags` gate in `collectEvents`) — un-actioned personal
-  inputs are requests and flag nothing. Ground Programme renders in start-time
-  order (render-time only; `ri` keys stay model-true — `groundOrder` in
-  `ui/html.ts`). The Inputs page takes start/end times (defaults 06:00–18:00;
-  the old hardcode is gone). See `docs/engine-rules.md` §Accepting a personal
-  input and §validation.
+- **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** "Restore
+  this version" makes that version live immediately, discards the day's
+  pending edits, needs no sign-off; new edits publish as `nextAL()`. Details:
+  `docs/engine-rules.md` §Version snapshots / restore. Known limitation:
+  previews freeze schedule content but personal-INPUTS and day-info read live
+  data; snapshots are session-only.
+- **Personal inputs need accepting (Aug 26).** Three day blocks (`Ground
+  Programme`, scheduler-only `Personal Inputs`, `Unavailable`); a personal
+  input reaches the issued programme only when a scheduler **accepts** it, and
+  the validator only sees actioned inputs (`inputFlags` gate). Full rules:
+  `docs/engine-rules.md` §Accepting a personal input and §validation.
 - **Drag-to-section is NOT implemented.** The owner asked for `Other` rows to be
   draggable onto Unavailable or Ground programme on the edit week. The same
   capability shipped as two buttons (`→ Ground` / `→ Unavail`) on both the week
   and the board, which is complete but not the drag interaction. `drag.ts` is
   the hard-won touch/mouse machine and adding drop targets there needs the
   browser probes, not Vitest.
-- **`Fly` now blocks (once actioned).** The offer exemption is gone: a `Fly`
-  input filed under Unavailable clashes with a sortie and eats brief/debrief
-  time like a Meeting, on its stated times only. Reference probe `audit2 #8`
-  pins the OLD rule and therefore fails on the port by design — recorded in
-  `docs/probe-sweep.md`.
-- **Resolved (Aug 26): accept used to store the person ID in the ground row's
-  `who`.** It now stores the callsign like every other ground write; rows
-  persisted before the fix keep the id form and stay unresolved for people
-  whose id ≠ lowercased callsign (Hao Wen, X-Ray) — same visible behaviour as
-  before, no migration.
+- **`Fly` semantics changed from the original** (blocks once actioned; an
+  actioned Fly is AWAY — off the crew strip, faded, barred whole-day). Rules
+  in `docs/engine-rules.md`. Reference probes `audit2 #8` and `audit` (item 3)
+  pin OLD rules and fail on the port by design — `docs/probe-sweep.md`.
+- **Ground rows accepted before the Aug-26 callsign fix** keep the person-ID
+  form in `who` and stay unresolved where id ≠ lowercased callsign (Hao Wen,
+  X-Ray) — same visible behaviour as before, no migration.
 - **Scheduler notes are edit/board only** — four boxes (`pn:` programme,
   `dtn:` duties, `sn:` sims, `gn:` ground). They never render on the view page,
   even when populated, and like every other edit here they do not survive a
@@ -76,36 +60,13 @@ The port from the original single-file app is complete; that history is in
   on the pre-change baseline. Measured, not assumed. CI does not run it
   (`deploy.yml` gates on `npm test`, `tfin.js`, `npm run build`); judge it over
   several runs, not one.
-- **Resolved (owner, 4 Aug 26): NO_BRIEF, SIM_BRIEF and DT_SUM are amber
-  (adv), not red (hard).** The clash itself already carries the red; the eaten
-  brief window and the double-turn count are advice on top of it. The parity
-  tests stay byte-exact via `retier()` in `src/testing/refwin.ts`, which
-  re-tiers the three call sites in the in-memory reference before boot (the
-  file on disk is untouched). DOUBLE_BOOK stays red on purpose — a puck can
-  still ring red when the man carries a true conflict.
-- **Resolved (owner report, 4 Aug 26): an all-day `Fly` accepted to Ground
-  flagged nothing** even with the man planted in a sortie (time-less row → no
-  event, and `inputFlags` hid the input). The gate now keeps exactly that case
-  visible; timed Fly-to-`g` still defers to its row. `acceptInput` also now
-  refuses Unavailable-typed inputs (they are already issued; promoting one
-  made its row clash with its own source input — a latent footgun, never
-  reachable from the shipped UI).
-- **Resolved (owner, 4 Aug 26): "unavailable" now guards everything.** The
-  "but tasked" loop covered leave/downchits only, so a Detachment or an
-  actioned-to-Unavailable personal input warned against a sortie but let a
-  sim seat, a duty post or a ground row through silently. Now every
-  validator-visible input clashes with every kind of tasking; ordinary
-  personal types stay quiet against SC shifts (SHIFT_SOFT is the designed
-  voice there). See `docs/engine-rules.md` §validation.
-- **`audit` probe now dies at item 3 on the port** (it looks up an
-  `Available *` offer input, a type the port removed) — same by-design class
-  as `audit2 #8`; recorded in `docs/probe-sweep.md`.
-- **Resolved (owner, Aug 26): an actioned `Fly` is away.** Fly means flying
-  with another squadron, so once accepted (either destination) the man drops
-  out of the Available-crew strip, fades in the palette and is barred from
-  slots ("flying with another squadron"), whole-day. Un-actioned Fly affects
-  nothing — same philosophy as the validator gate (`isAway` beside
-  `inputFlags` in `engine/inputs.ts`; keep them aligned).
+- **NO_BRIEF, SIM_BRIEF and DT_SUM are amber (adv), not red** (owner, 4 Aug
+  26); DOUBLE_BOOK stays red. Parity tests stay byte-exact via `retier()` in
+  `src/testing/refwin.ts` (re-tiers the in-memory reference before boot; the
+  reference file on disk is untouched).
+- Other owner decisions of 4 Aug 26 (all-day Fly gate, `acceptInput` refusing
+  Unavailable-typed inputs, unavailable guarding all tasking) are documented
+  in `docs/engine-rules.md` §validation — this file no longer duplicates them.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
   GitHub Actions). The workflow refuses to publish on any red test.
 
