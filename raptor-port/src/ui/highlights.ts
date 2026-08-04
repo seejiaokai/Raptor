@@ -2,7 +2,7 @@
    the reference. Runs after every week render; the markup it decorates is
    the verbatim dayHTML output, so the selectors line up exactly. */
 import { PEOPLE } from '../engine/people'
-import { HLSET, SEARCH, SELID, SELKEY, WFOCUS, ARM, warnFocusMap, personMatchesHL, CURPAGE } from '../state/view'
+import { HLSET, SEARCH, SELID, WFOCUS, ARM, warnFocusMap, personMatchesHL, CURPAGE } from '../state/view'
 import { ME } from '../state/auth'
 
 /* the proxy-scrollbar mirror arrives with the week-pan surface */
@@ -29,13 +29,9 @@ export function refreshHighlights(){
       return;
     }
     const matchHL=hlActive&&personMatchesHL(p);
-    /* blue paints on the ONE clicked puck: match its slot key when we have one
-       (the normal case), falling back to name-wide only for a keyless puck.
-       selActive still keys off SELID, so every OTHER puck — including this
-       person's other copies — dims, which is what makes the one pop. */
-    const cell=el.closest('[data-slot],[data-fill]');
-    const elKey=cell?(cell.dataset.slot||cell.dataset.fill):null;
-    const isSel=selActive&&(SELKEY!=null?elKey===SELKEY:id===SELID);
+    /* blue paints on EVERY puck of the clicked person — you want to see
+       everywhere that name is planted (owner, Aug 26) */
+    const isSel=selActive&&id===SELID;
     if(matchHL)el.classList.add('hl');
     if(isSel)el.classList.add('sel');
     /* the "you" indicator is passive: it yields the moment the scheduler is

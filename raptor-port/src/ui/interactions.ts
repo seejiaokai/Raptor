@@ -150,14 +150,11 @@ export function routeClick(e: MouseEvent) {
     }
   }
 
-  /* click a puck → select just THAT puck (blue), open that person's issues.
-     The identifying key is the enclosing seat/cell's slot key, the same value
-     the highlight pass matches on, so the blue lands only on the one clicked. */
+  /* click a puck → select that person: every copy of the name lights blue,
+     and their issue boxes open */
   const pk = t.closest('.puck[data-person]') as HTMLElement | null
   if (pk) {
-    const cell = pk.closest('[data-slot],[data-fill]') as HTMLElement | null
-    const key = cell ? (cell.dataset.slot || cell.dataset.fill) : null
-    view.selectPerson(pk.dataset.person, !!pk.closest('.week'), key)
+    view.selectPerson(pk.dataset.person, !!pk.closest('.week'))
     notify(); e.stopPropagation(); return
   }
 

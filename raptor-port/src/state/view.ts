@@ -37,18 +37,15 @@ export function armDrop(){ ARM=null }
 export function setWarnFocus(w:any){ WFOCUS=w }
 /* the model half of a puck click — the reference's handler body verbatim
    (2527-2549), with pk.closest('.week') passed in as inWeek. */
-export function selectPerson(id:any,inWeek?:any,key?:any){
-  /* Selection is scoped to the ONE puck the scheduler clicked, not every copy
-     of that person (owner, Aug 26). So the toggle-off test is "same puck"
-     (same slot key), not merely "same name" — clicking a second puck of the
-     same person moves the blue to it rather than clearing. A keyless puck
-     (palette, version preview) has no slot key and falls back to the old
-     name-wide behaviour. */
-  const off = key!=null ? (SELKEY===key) : (SELID===id);
+export function selectPerson(id:any,inWeek?:any){
+  /* Clicking a puck lights up EVERY copy of that person (owner, Aug 26): you
+     want to see everywhere that name is planted, so selection is name-scoped.
+     A second click on the same person clears. */
+  const off=(SELID===id);
   if(off){ selRestore(); }
   else {
     selKeep();
-    SELID=id; SELKEY=(key==null?null:key);
+    SELID=id;
     WFOCUS=null; DWOPEN.clear(); PFOCUS=null;
     if(inWeek){
       if(!WARN.byDay.length)validate();
@@ -93,8 +90,7 @@ export function openWarns(sev:any){
 }
 export function esc(s:any){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
   .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-export let SELID:any=null;                 // clicked person (blue)
-export let SELKEY:any=null;                // the ONE puck clicked (its slot key) — scopes the blue paint to it
+export let SELID:any=null;                 // clicked person (blue) — every puck of that name lights
 /* What was on screen before the current selection, so a second click on the
    same puck reverses the first rather than clearing everything. */
 export let SELPREV:any=null;
@@ -107,14 +103,14 @@ export function selKeep(){
   SELPREV={wfocus:WFOCUS,dwopen:[...DWOPEN],pfocus:PFOCUS};
 }
 export function selRestore(){
-  SELID=null; SELKEY=null; SELSEEN=0;
+  SELID=null; SELSEEN=0;
   const p=SELPREV; SELPREV=null;
   WFOCUS=p?p.wfocus:null; PFOCUS=p?p.pfocus:null;
   DWOPEN.clear(); if(p&&p.dwopen)p.dwopen.forEach((di:any)=>DWOPEN.add(di));
 }
 /* the person selection only — a warning focus set by the caller must survive,
    which is why clearOtherHL uses this and not selDrop */
-export function selClear(){ SELID=null; SELKEY=null; SELSEEN=0; SELPREV=null; PFOCUS=null; }
+export function selClear(){ SELID=null; SELSEEN=0; SELPREV=null; PFOCUS=null; }
 /* everything: the person, the warning focus and every open day box */
 export function selDrop(){ selClear(); WFOCUS=null; DWOPEN.clear(); }
 export const HLSET=new Set();          // active highlight chips

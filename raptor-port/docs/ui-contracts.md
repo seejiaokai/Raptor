@@ -209,17 +209,17 @@ stranding text already in the model.
 
 ## Selection highlight (`ui/highlights.ts`)
 
-Clicking a puck selects **that one puck**, not every copy of the person (owner,
-Aug 26). `interactions.ts` captures the clicked puck's enclosing slot key
-(`data-slot`/`data-fill`) and passes it to `selectPerson` as `SELKEY`; the
-highlight pass paints the blue `.sel` only where a puck's own slot key matches
-`SELKEY`. A keyless puck (palette, version preview) has no key and falls back to
-the old name-wide highlight. `SELID` still holds the person, so the rest of the
-board dims (`focusActive`) and the same person's OTHER copies dim like anything
-else — that dimming is what makes the one clicked puck pop. The "me" puck
-(`ME`) stays exempt from dimming, as before. Opening that person's issue boxes
-(`PFOCUS`) is unchanged and still person-scoped. Clicking blank space clears
-everything (`selDrop`).
+Clicking a puck selects the **person**: every copy of that name lights blue
+(`.sel`, matched on `id===SELID`), so you can see everywhere they are planted
+(owner, Aug 26). A second click on the same person clears. `SELID` holds the
+person; every non-matching puck dims (`focusActive`) so the name pops, and
+opening that person's issue boxes (`PFOCUS`) rides along, person-scoped.
+
+The "you" indicator (`ME`, purple) is **passive**: it marks your own view-as
+puck only while nothing is actively focused. The moment a selection or a
+highlight chip is active it yields — your puck dims with the rest instead of
+staying lit (owner, Aug 26) — so selecting someone else never leaves your own
+name glowing. Clicking blank space clears everything (`selDrop`).
 
 ## Line configs — the stores "+" picker
 
