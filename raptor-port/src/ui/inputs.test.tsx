@@ -34,8 +34,14 @@ describe('the Inputs page (tfin)', () => {
     expect($$('#inBody tr').length).toBeGreaterThanOrEqual(4)
   })
 
-  it('no TDY', () => {
-    expect([...($('#inType') as unknown as HTMLSelectElement).options].map(o => o.value)).not.toContain('TDY')
+  it('no TDY, and the retired types are gone', () => {
+    const opts = [...($('#inType') as unknown as HTMLSelectElement).options].map(o => o.value)
+    expect(opts).not.toContain('TDY')
+    /* removed Aug 26 — Office was a desk marker nobody read, and the two
+       "Available" types were offers rather than commitments */
+    for (const dead of ['Office', 'Available fly', 'Available duty'])
+      expect(opts).not.toContain(dead)
+    expect(opts).toContain('Detachment')
   })
 
   it('the person filter is called Personnel, not All flights', () => {

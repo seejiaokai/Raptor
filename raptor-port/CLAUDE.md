@@ -67,7 +67,8 @@ index is always first after the prefix (`keyDay()` depends on it):
   aircraft, seat `p` (FCP) or `w` (RCP).
 - Duty `d:di.dwi.ri` · Sim `s:di.kind.ri` · Ground `g:di.ri` ·
   Programme `a:di.ri` · `.+` appends · `.xN` is overflow `row.more[N]`.
-- Text keys: `dn:` day note · `sn:` sim notes · `ap:` programme · `wl:`
+- Text keys: `dn:` day note · scheduler notes `pn:` programme, `dtn:` duties,
+  `sn:` sims, `gn:` ground · `ap:` programme · `wl:`
   wave label · `ff:` formation · `fr:` flight remarks · `it:` in-times ·
   `dl:/dr:` duty · `sr:` sim · `gr:` ground · `st:` stores ·
   `ar:/at:` area/area-time · `tr:` traffic.

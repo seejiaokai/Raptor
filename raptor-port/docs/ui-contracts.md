@@ -115,14 +115,53 @@ Row mbtns: `dr*/sr*/gr*` cx (CxDialog) / flag / del, `dwadd/dwdel/dradd`,
 they are edited on the Inputs page. Every control is pv-gated in markup AND
 guarded at runtime (DPREV check) like the rest of the board.
 
-## View-only page: no Available / Office
+## The day's three closing blocks, and who sees them
 
-The view page (and version previews, which build with ed=false) drops the
-Available inputs group, the Office inputs group and the Available-crew puck
-strip — scheduling tools, not part of the issued programme (owner request,
-Aug 26). Edit week keeps all three. The view-parity test excises these
-blocks from the reference string (anchored on the always-rendered Leave
-group) and pins the divergence explicitly.
+A day ends with three blocks, not the reference's five (owner request, Aug 26 —
+`Available` and `Office` are gone entirely, and `Leave` + `Downchit` merged):
+
+| block | view-only | edit week / board |
+|---|---|---|
+| `Ground programme` — the scheduler's own rows | ✓ | ✓, titled `Ground programme · scheduler` |
+| `Personal inputs` — what aircrew submitted | ✗ | ✓ |
+| `Unavailable` — Detachment, Leave, Downchit | ✓ | ✓ |
+
+The split is decided in ONE place, `isPersonal` / `isUnavail` in
+`engine/inputs.ts`; the week and the board both used to carry their own copy of
+that regex and could drift. The Available-**crew** puck strip is a different
+thing — computed from who is free, not from an input type — and stays
+scheduler-side as before. Version previews build with ed=false and follow the
+view page, intentionally.
+
+`Unavailable` prints `Nil` when empty: it is read every day, so an empty answer
+is still an answer.
+
+## Accepting a personal input
+
+A personal input is not part of the issued programme until a scheduler accepts
+it, which is why the view page never shows that block. `acceptInput()` (in the
+mutation funnel, `engine/slots.ts`) promotes it into the day's ground programme
+as an ordinary row — from then on it validates, drags, publishes and prints for
+everyone. `Other` is the one type whose destination is ambiguous, so it offers
+both `→ Ground` and `→ Unavail`; everything else has a single `Accept`.
+
+The accepted row STAYS in Personal inputs, faded (`.pl-row.accd`), with an
+`Undo` — so the scheduler can see what they have dealt with. The ground row
+carries `src`, a content key back to the input, so `unacceptInput()` removes the
+right row even after other rows shift around it; an index would rot.
+
+The push goes through `noteChange()` on the new row's key, so it is marked
+pending and reaches the next AL. Undo calls `markEdit()` with NO key — a delete
+must not re-mark the address it just removed.
+
+## Scheduler notes (edit week + board only)
+
+Four free-text blocks — under Programme, Duties, Sims and Ground programme —
+on keys `pn:` / `dtn:` / `sn:` / `gn:`. `blkNoteHTML` returns `''` whenever
+`ed` is false, so a populated note still never reaches the issued programme;
+writing additionally needs `canEditSched()`. The Duties and Ground sections
+render on `|| ed` so an empty section still offers its box rather than
+stranding text already in the model.
 
 ## Drag / arm-and-plant (hard-won — test on touch)
 

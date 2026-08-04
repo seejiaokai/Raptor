@@ -214,7 +214,11 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(ix('sb-panel simr')).toBeGreaterThan(ix('sb-panel duty'))
     expect(ix('sb-panel grnd')).toBeGreaterThan(ix('sb-panel simr'))
     expect(ix('sb-panel pinp')).toBeGreaterThan(ix('sb-panel grnd'))
-    expect(ix('sb-panel simn')).toBeGreaterThan(ix('sb-panel pinp'))
+    /* the sim note is no longer a panel of its own — it sits inside the Sims
+       panel, so the board reads the way the week does */
+    expect(ix('sb-panel unav')).toBeGreaterThan(ix('sb-panel pinp'))
+    expect(kids.some(c => c.includes('sb-panel simn'))).toBe(false)
+    expect(document.querySelector('#sbBoard .sb-panel.simr textarea[data-bfld^="sn:"]')).toBeTruthy()
   })
 
   it('duty seats speak the slot grammar — round-trip and arm targets', () => {

@@ -2,7 +2,7 @@
    of the live engine objects at render time, so the page cannot drift. */
 import { VCONF, SHIFT_HARD, kindOff } from '../engine/rules'
 import { RANK, CHIP_LABEL, WCODE, chipText, wlbl } from '../engine/validate'
-import { LEAVE_TYPES, isLocalLeave, isLeave, isDownchit, isOffer } from '../engine/inputs'
+import { LEAVE_TYPES, isLocalLeave, isLeave, isDownchit } from '../engine/inputs'
 import { lgT, hm24, hhmm } from '../engine/time'
 import { SC_DAY_FROM, SC_DAY_TO } from '../engine/rules'
 import { esc } from '../state/view'
@@ -63,8 +63,8 @@ export function lgRules(){
      t:()=>`Two commitments at the same time for one person is a <b>Warning</b> — he cannot be in two places.<span class="why">Sortie against sortie is excluded here: that is the tight-turn rule's business, not this one.</span>`},
     {sev:'adv',code:'SHIFT_SOFT',extra:matrix,kinds:true,
      t:()=>`A man on an <b>SC MAIN</b> shift is graded by what he runs into — ${SH.length} kinds are hard, the rest are advisory:`},
-    {sev:'set',src:()=>`/^Available|^Fly$/i`,
-     t:()=>`<b>“Available fly”, “Available duty” and “Fly”</b> are offers. Being taken up on one is the point of them, so it raises nothing at all.`},
+    {sev:'set',src:()=>`isPersonal / isUnavail`,
+     t:()=>`Every personal input is a <b>real commitment</b>, <b>“Fly”</b> included — it clashes with a sortie and eats brief/debrief time exactly like an appointment.<span class="why">There used to be an “offer” exemption for “Available fly”, “Available duty” and “Fly”. Those first two types are gone, and a man who says he is flying elsewhere is not available for this sortie.</span>`},
    ]},
 
   {g:'Crew rest',

@@ -2,9 +2,8 @@
    its engine, and require the ported engine to produce byte-identical results
    on the seed week. This pins the verbatim port far harder than spot
    assertions can — any drift in validate/collectEvents/REST/EVD shows up here. */
-import { readFileSync } from 'node:fs'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { JSDOM, VirtualConsole } from 'jsdom'
+import { refWindow } from '../testing/refwin'
 import { validate, WARN, REST, EVD } from './validate'
 import { collectEvents } from './events'
 import { dayCount } from './waves'
@@ -12,16 +11,10 @@ import { DAYS } from './data'
 
 let w: any
 
-beforeAll(async () => {
-  const html = readFileSync('reference/scheduler.html', 'utf8')
-  const vc = new VirtualConsole()
-  vc.on('jsdomError', () => {})
-  const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
-  w = dom.window
-  w.URL.createObjectURL = () => 'blob:x'
-  w.HTMLElement.prototype.scrollIntoView = () => {}
-  await new Promise(r => setTimeout(r, 300))
-})
+/* refWindow pushes the port's seed INPUTS into the reference first — the two
+   builds no longer ship the same input types, and comparing engines on
+   different data would prove nothing. See src/testing/refwin.ts. */
+beforeAll(async () => { w = await refWindow() })
 
 describe('engine parity with the reference', () => {
   it('collectEvents matches the reference exactly', () => {

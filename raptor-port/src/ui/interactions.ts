@@ -3,7 +3,8 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
-import { slotVal } from '../engine/slots'
+import { slotVal, inpKey, acceptInput, unacceptInput } from '../engine/slots'
+import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
@@ -21,6 +22,27 @@ import { WARN } from '../engine/validate'
 export function routeClick(e: MouseEvent) {
   const t = e.target as HTMLElement
   if (!t || !t.closest) return
+
+  /* accepting a personal input — the same control on the week and the board, so
+     it is routed here rather than duplicated in board.ts. Promotes the input
+     into the ground programme (or files it under Unavailable), through the
+     mutation funnel so it lands in the next AL like any other edit. */
+  const ab = t.closest('[data-acc]') as HTMLElement | null
+  if (ab) {
+    e.stopPropagation()
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can accept inputs', 'warn'); return }
+    const di = +ab.dataset.accd!, k = ab.dataset.acck!, dest = ab.dataset.acc!
+    const inp = INPUTS.find((x: any) => inpKey(x) === k)
+    if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
+    const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
+    if (ok) {
+      HOOKS.toast(dest === 'x' ? 'Accept undone'
+        : dest === 'u' ? `${inp.type} filed under Unavailable`
+        : `${inp.type} added to the ground programme`, 'ok')
+      view.afterSchedMutate()
+    }
+    return
+  }
 
   /* the palette drawer tab and the arm-strip cancel */
   if (t.closest('.ros-tab')) { document.body.classList.toggle('ros-open'); e.stopPropagation(); return }

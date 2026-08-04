@@ -7,14 +7,14 @@
    the existing API reachable — and it weighs a few hundred bytes. */
 import { DAYS } from './engine/data'
 import { PEOPLE, isScheduler, isLead, isInstr, isOcu, sanStatus, nameToId, aarNeed, scShiftKind } from './engine/people'
-import { INPUTS, INPUT_TYPES, DATES, isLeave, isLocalLeave, isDownchit, isOffType } from './engine/inputs'
+import { INPUTS, INPUT_TYPES, DATES, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail } from './engine/inputs'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
 import * as V from './engine/validate'
 import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, restClear, dayEvents } from './engine/validate'
 import { collectEvents } from './engine/events'
-import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef } from './engine/slots'
+import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef, acceptInput, unacceptInput, inpKey } from './engine/slots'
 import { slotBar, dayEngaged, slotRules, dayOff } from './engine/avail'
 import { isStandalone, makeStandalone, SAWAVE, dayCount, saExempt } from './engine/waves'
 import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays } from './engine/keys'
@@ -81,6 +81,8 @@ export function installProbeBridge() {
   w.CHIP_LABEL = CHIP_LABEL; w.restClear = restClear; w.dayEvents = dayEvents
   w.isLocalLeave = isLocalLeave; w.slotRules = slotRules; w.saExempt = saExempt
   w.isDownchit = isDownchit; w.isOffType = isOffType; w.dayOff = dayOff; w.rulesReset = rulesReset
+  w.isPersonal = isPersonal; w.isUnavail = isUnavail
+  w.acceptInput = acceptInput; w.unacceptInput = unacceptInput; w.inpKey = inpKey
   w.rulesLoad = rulesLoad; w.rulesSave = rulesSave; w.DATES = DATES
   w.alCount = alCount; w.alDays = alDays; w.pendDays = pendDays; w.pendCount = pendCount; w.approvedDays = approvedDays
   w.daySnapOf = daySnapOf; w.dayVersions = dayVersions; w.verLabel = verLabel; w.dayCurVer = dayCurVer

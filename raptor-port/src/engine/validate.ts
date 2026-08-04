@@ -1,5 +1,5 @@
 import { PEOPLE, isSpecial, realP, isOcu, isInstr, aarOK, scShiftKind, scQualOK } from './people'
-import { isDownchit, isLeave, isLocalLeave, isOffer } from './inputs'
+import { isDownchit, isLeave, isLocalLeave } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
 import { collectEvents } from './events'
@@ -119,12 +119,10 @@ export function validate(){
     // C via input clash (DNIF / leave / appointment vs a sortie)
     day.fly.forEach((e:any)=>day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
       if(overlap(e.step,e.dekit,inp.s,inp.e)){
-        /* "Available fly" / "Available duty" / "Fly" are OFFERS — being taken up
-           on one is the point of them, not a conflict. Tested BEFORE the marks go
-           on: the chip and the ring used to be painted first, so a man who had
-           offered himself and was then given the sortie wore a red conflict chip
-           with an empty issue box behind it. */
-        if(/^Available|^Fly$/i.test(inp.type))return;
+        /* the offer exemption is gone with the "Available *" types (owner
+           decision, Aug 26). "Fly" is now an ordinary commitment: a man who
+           says he is flying elsewhere is not available for this sortie, so it
+           clashes exactly like a Meeting or an Appointment does. */
         markChip(di,e.id,'C'); markRing(di,e.id,'hard');
         const dn=isDownchit(inp.type),lv=isLeave(inp.type);
         /* the REASON is the whole point of the flag — a downchit body planned to
@@ -155,7 +153,7 @@ export function validate(){
        tested against the person's non-flying commitments and their timed personal
        inputs — a second sortie in the window is the tight-turn rule's business,
        and all-day inputs are already caught above.                            */
-    const timedInput=day.input.filter((i:any)=>i.e-i.s<1439&&!isOffer(i.type));
+    const timedInput=day.input.filter((i:any)=>i.e-i.s<1439);
     Object.keys(byE).forEach((id:any)=>{
       const legs=byE[id].filter((e:any)=>e.kind==='fly'), others=byE[id].filter((e:any)=>e.kind!=='fly');
       legs.forEach((lg:any)=>{
