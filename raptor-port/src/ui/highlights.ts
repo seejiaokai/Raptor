@@ -76,22 +76,35 @@ export function paintArm(){
    is added. */
 function warnTarget(root:any,ids:any[]){
   /* ONE query, so the candidates come back in document order — looping the ids
-     instead would order by `who` and silently break the tie-break below */
+     instead would order by `who` and silently break the tie-break below.
+     The Available-crew block is excluded outright: it is a derived list of who
+     is FREE that hour, so no warning ever comes from it, and being a flat grid
+     it would out-score a puck nested in a flying line under any depth rule
+     (it renders on the edit week only, which is where this was reported). */
   const cand=[...root.querySelectorAll('.puck[data-person]')]
-    .filter((el:any)=>ids.includes(el.dataset.person));
-  if(cand.length<2)return cand[0]||null;
-  let best=cand[0], bestD=Infinity;
+    .filter((el:any)=>ids.includes(el.dataset.person)&&!el.closest('.availpuck'));
+  /* One named person cannot have a "row holding two of them", so there is
+     nothing to weigh: take the first, which is the old behaviour. Testing the
+     CANDIDATE count here instead of the NAME count was the bug — a lone name
+     on screen twice fell into the loop below, never satisfied it, and every
+     candidate scored full depth-to-root, handing the win to the shallowest
+     nesting rather than the right seat. */
+  if(ids.length<2||cand.length<2)return cand[0]||null;
+  let best=null, bestD=Infinity;
   for(const el of cand){
     let d=0;
     for(let a=el.parentElement; a&&a!==root.parentElement; a=a.parentElement){
       d++;
       const seen=new Set([...a.querySelectorAll('.puck[data-person]')]
         .map((x:any)=>x.dataset.person).filter((p:any)=>ids.includes(p)));
-      if(seen.size>=2)break;
+      /* only a REAL co-location scores; strict < leaves document order to
+         break ties */
+      if(seen.size>=2){if(d<bestD){bestD=d; best=el;} break;}
     }
-    if(d<bestD){bestD=d; best=el;}   // strict <, so document order breaks ties
   }
-  return best;
+  /* nobody shares a row — the crew are spread across the day, so fall back to
+     document order rather than to whichever puck happens to sit shallowest */
+  return best||cand[0];
 }
 export function scrollToWarnFocus(){
   if(!WFOCUS)return;

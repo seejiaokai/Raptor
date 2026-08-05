@@ -310,6 +310,19 @@ Two or more is the crew-combination family, where `who` is the pilot AND the
 WSO of one aircraft — there `scrollToWarnFocus` prefers the candidate whose
 nearest ancestor holding two of the named people is shallowest, which finds
 `.acrow` on the week and `.sb-line` on the board without naming either class.
+Where no two of them share a row at all, it falls back to document order:
+only a REAL co-location may score, or the winner is just whichever puck sits
+shallowest in the page, which is not a fact about the schedule.
+
+**`.availpuck` is never a destination.** The Available-crew block is a derived
+list of who is FREE that hour, so no warning can originate there, and it is a
+flat grid — under any depth-based rule it out-scores a puck nested inside a
+flying line. It is excluded from the candidate set outright. Note it renders
+on the **edit week only** (`if(ed)h+=availHTML(…)` in `html.ts`), so a test
+that drives the view week cannot see this class of bug: the regression that
+prompted the rule (owner, 5 Aug 26 — a crew-rest warning panning to the free
+crew instead of the flight that caused it) was invisible to every view-week
+test in the suite.
 
 **The scroll is two moves, and the order matters.** `.week` is
 `scroll-snap-type:x mandatory` with `.day{scroll-snap-align:start}`, so
