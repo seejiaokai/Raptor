@@ -27,7 +27,7 @@ import { useVersion } from './useStore'
    inputs.ts), which is what DNIF_FLY and the fade on the pucks actually key
    off. A permanent tick on the LoX said nothing the inputs did not, and
    could not say when. */
-const QUAL_COLS: any[] = [
+const DEFAULT_QUAL_COLS: any[] = [
   { k: 'san', h: 'SANS', lav: true }, { k: 'sxo', h: 'SXO', lav: true },
   { k: 'sched', h: 'Scheduler', apt: true },
   { k: 'scDay', h: 'SC DAY', scq: true }, { k: 'scNight', h: 'SC NIGHT', scq: true },
@@ -39,6 +39,31 @@ const QUAL_COLS: any[] = [
      reads it: it is a record, not a gate, until the squadron asks for one. */
   { k: 'tf', h: 'TF', lav: true },
 ]
+/* ---- EDIT QUALS: which columns the LoX carries (owner, 5 Aug 26) ---------
+   A second mode inside edit mode, admin only: add a qualification, remove
+   one, or drag a heading to move it. It is the page's own `Set which quals
+   your squadron uses`, so it lives here rather than in the engine.
+
+   SIX OF THEM ARE WIRED INTO THE RULES, and removing one takes away the only
+   place the squadron can grant it while the rule that reads it carries on
+   enforcing it. That is not a reason to refuse — the owner asked to be able
+   to delete qualifications — so those six ARM instead: the first ✕ says what
+   reads the column and the second one removes it. Deleting a column never
+   touches p.quals, so a rule still sees whoever already held it and adding
+   the column back brings the ticks back with it.
+
+   Nothing here is persisted, exactly like the ticks, initials and flights it
+   sits beside: reload and the LoX is the default set again. `rules` is still
+   the only thing this app writes to storage. */
+const WIRED: any = {
+  sched: 'the sign-off drop-downs — SKED CK, PLANNED BY and APPROVED BY',
+  scDay: 'the SC shift rules', scNight: 'the SC shift rules',
+  daar: 'the air-to-air refuelling rules', naar: 'the air-to-air refuelling rules',
+  sxo: 'the VIEW AS filter, and who is appointed a scheduler automatically',
+}
+/* a heading becomes a key: letters and digits, first word lower-cased, so
+   "Night SC" and "night sc" cannot become two columns holding one flag */
+const qualKey = (h: string) => h.trim().toLowerCase().replace(/[^a-z0-9]+/g, '')
 /* AAR is a front-seat qualification; the rear seat has none */
 const qualNA = (p: any, c: any) => !!(c.fcpOnly && p && p.seat !== 'FCP')
 /* the CAT dropdowns are seat-filtered so the inconsistent combinations can't
@@ -88,7 +113,7 @@ function qualsIds(qSeatView: string, qSort: any, qSearch: string) {
 }
 
 /* renderQuals' head + rows, verbatim strings */
-function qualsTable(qSeatView: string, qSort: any, qEditing: boolean, qSearch: string) {
+function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolean, qSearch: string, qualsEdit: boolean, armDel: string) {
   const ids = qualsIds(qSeatView, qSort, qSearch)
   /* the heading cell for a sortable column. The arrow box is rendered at a
      fixed width whether or not it holds an arrow, so switching the sorted
@@ -107,22 +132,36 @@ function qualsTable(qSeatView: string, qSort: any, qEditing: boolean, qSearch: s
     + sortTh('initials', 'Initials', '', 'Sort by initials')
     + sortTh('flight', 'Flight', '', 'Sort by flight — groups each flight together')
     + sortTh('cat', 'CAT', '', 'Sort by CAT — most senior first') +
-    QUAL_COLS.map(c => sortTh(c.k, esc(c.h),
-      c.lav ? 'lav' : c.fix ? 'fix' : c.apt ? 'apt' : c.scq ? 'scq' : c.aar ? 'aarq' : '',
-      (c.k === 'sched' ? 'Appointed scheduler — may sign SKED CK, PLANNED BY and APPROVED BY'
-      : c.k === 'scDay' ? 'SC DAY — may be planned on an SC shift inside 07:00–19:00'
-      : c.k === 'scNight' ? 'SC NIGHT — may be planned on an SC shift reaching outside 07:00–19:00. Needs SC DAY first'
-      : c.k === 'daar' ? 'DAAR — day air-to-air refuelling (front seat only)'
-      : c.k === 'naar' ? 'NAAR — night air-to-air refuelling. Needs DAAR first'
-      : c.k === 'tf' ? 'TF — terrain following'
-      : c.h) + ' · click to bring the qualified to the top')).join('') +
+    cols.map(c => {
+      const cls = c.lav ? 'lav' : c.fix ? 'fix' : c.apt ? 'apt' : c.scq ? 'scq' : c.aar ? 'aarq' : ''
+      const what = c.k === 'sched' ? 'Appointed scheduler — may sign SKED CK, PLANNED BY and APPROVED BY'
+        : c.k === 'scDay' ? 'SC DAY — may be planned on an SC shift inside 07:00–19:00'
+        : c.k === 'scNight' ? 'SC NIGHT — may be planned on an SC shift reaching outside 07:00–19:00. Needs SC DAY first'
+        : c.k === 'daar' ? 'DAAR — day air-to-air refuelling (front seat only)'
+        : c.k === 'naar' ? 'NAAR — night air-to-air refuelling. Needs DAAR first'
+        : c.k === 'tf' ? 'TF — terrain following'
+        : c.h
+      /* in EDIT QUALS the heading stops being a sort button and becomes the
+         column itself: drag it to move it, ✕ to remove it. It carries no
+         data-sort at all, so a drag can never be read as a click that
+         re-sorts the table under the hand that is moving it. */
+      if (qualsEdit) return `<th class="qcol${cls ? ' ' + cls : ''}${armDel === c.k ? ' arm' : ''}" data-col="${c.k}"`
+        + ` title="${esc(what)} · drag to move${WIRED[c.k] ? ' · used by ' + WIRED[c.k] : ''}">`
+        /* the label keeps an element of its own here: in this mode the
+           heading is a grip, a name and a ✕, and anything reading the column
+           name — a test, a future export — should not have to strip the
+           furniture back off it */
+        + `<span class="qgrip">⋮⋮</span><span class="qlbl">${esc(c.h)}</span>`
+        + `<span class="qdel" data-del="${c.k}" title="Remove ${esc(c.h)}">${armDel === c.k ? 'remove?' : '✕'}</span></th>`
+      return sortTh(c.k, esc(c.h), cls, what + ' · click to bring the qualified to the top')
+    }).join('') +
     `<th>Remarks</th><th></th></tr></thead>`
   const rows = ids.map(id => {
     const p = PEOPLE[id]
     const lvl = qEditing
       ? `<select class="qlvlsel" data-lvl="${id}" aria-label="CAT for ${esc(p.cs)}">${catsFor(p.seat).map(k => `<option ${k === p.q ? 'selected' : ''}>${k}</option>`).join('')}</select>`
       : `<span class="lvl"><span class="qmini" style="background:${QCOLOR[p.q]};${(p.q === 'C' || p.q === 'B') ? 'color:#04222b' : ''}">${QCHIP[p.q]}</span>${p.q}</span>`
-    const cells = QUAL_COLS.map(c => {
+    const cells = cols.map(c => {
       if (qualNA(p, c)) return `<td class="qcell na" title="${esc(p.cs)} is a WSO — AAR is a front-seat qualification">–</td>`
       return `<td class="qcell${(c.k === 'sched' && p.quals[c.k]) ? ' apt-on' : ''}${(c.scq && p.quals[c.k]) ? ' scq-on' : ''}${(c.aar && p.quals[c.k]) ? ' aar-on' : ''}" data-q="${id}|${c.k}">${p.quals[c.k] ? '<span class="qchk">✓</span>' : ''}</td>`
     }).join('')
@@ -150,7 +189,7 @@ function qualsTable(qSeatView: string, qSort: any, qEditing: boolean, qSearch: s
     return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
   }).join('')
   const grp = qSeatView === 'FCP' ? 'Assigned pilots' : qSeatView === 'RCP' ? 'Assigned WSOs' : 'Assigned aircrew'
-  return head + `<tbody><tr class="grp"><td colspan="${5 + QUAL_COLS.length + 1}">${grp} · ${ids.length}</td></tr>${rows}</tbody>`
+  return head + `<tbody><tr class="grp"><td colspan="${5 + cols.length + 1}">${grp} · ${ids.length}</td></tr>${rows}</tbody>`
 }
 
 export function QualsPage() {
@@ -159,15 +198,68 @@ export function QualsPage() {
   const [qSort, setSort] = useState({ key: 'cs', dir: 1 })
   const [qEditing, setEditing] = useState(false)
   const [qSearch, setQSearch] = useState('')
+  /* the LoX's own shape: which qualification columns, in which order */
+  const [cols, setCols] = useState<any[]>(DEFAULT_QUAL_COLS)
+  const [qualsEdit, setQualsEdit] = useState(false)
+  const [newQual, setNewQual] = useState('')
+  /* the column whose ✕ has been pressed once — see WIRED above */
+  const [armDel, setArmDel] = useState('')
   const [addP, setAddP] = useState({ initials: '', cs: '', flight: '', seat: 'FCP', level: 'OCU' })
   const tblRef = useRef<HTMLTableElement>(null)
   const admin = !!SESSION && SESSION.role === 'admin'
+
+  /* EDIT QUALS is admin-only at the button AND here: the table's listeners are
+     delegated and long-lived, so the mode is re-checked on every event rather
+     than trusted because a button was once rendered. */
+  const canEditQuals = () => admin && qEditing && qualsEdit
+
+  /* remove a column. WIRED ones arm first — see the note beside WIRED. */
+  const delQual = (k: string) => {
+    const c = cols.find((x: any) => x.k === k); if (!c) return
+    if (WIRED[k] && armDel !== k) {
+      setArmDel(k)
+      return HOOKS.toast(`${c.h} is read by ${WIRED[k]}. Press REMOVE? to take it off the LoX — who already holds it is kept.`)
+    }
+    setArmDel(''); setCols(cs => cs.filter((x: any) => x.k !== k))
+    /* the table cannot go on being sorted by a column that is no longer
+       there — the arrow would have nowhere to sit and the order would look
+       arbitrary, so it falls back to the callsign it opens on */
+    setSort(s => s.key === k ? { key: 'cs', dir: 1 } : s)
+    HOOKS.toast(`${c.h} removed from the LoX. Nobody's record changed — add it back and the ticks return.`)
+  }
+
+  const addQual = () => {
+    const h = newQual.trim(); if (!h) return
+    const k = qualKey(h)
+    if (!k) return HOOKS.toast('A qualification needs a letter or a number in its name')
+    if (cols.some((c: any) => c.k === k)) return HOOKS.toast(`${h} is already on the LoX`)
+    /* held by nobody until it is ticked, exactly as TF arrived — except where
+       the flag is already on the roster, which is a column coming back */
+    setCols(cs => [...cs, { k, h: h.toUpperCase(), lav: true }])
+    setNewQual('')
+    HOOKS.toast(`${h.toUpperCase()} added — tick the people who hold it`)
+  }
+
+  const moveQual = (from: string, to: string) => setCols(cs => {
+    const i = cs.findIndex((c: any) => c.k === from), j = cs.findIndex((c: any) => c.k === to)
+    if (i < 0 || j < 0 || i === j) return cs
+    const out = [...cs]; out.splice(j, 0, out.splice(i, 1)[0]); return out
+  })
+
+  /* the delegated listeners below are mounted once and never re-bound, so
+     anything of theirs that changes per render is read through this ref
+     rather than captured in the closure */
+  const live = useRef<any>({})
+  live.current = { canEditQuals, delQual, moveQual }
 
   /* the reference's tick/untick + archive + level handlers, verbatim logic */
   useEffect(() => {
     const tbl = tblRef.current!
     const onClick = (e: Event) => {
       const t = e.target as HTMLElement
+      /* EDIT QUALS: the ✕ on a heading takes the column off the LoX */
+      const del = t.closest('[data-del]') as HTMLElement | null
+      if (del && live.current.canEditQuals()) { live.current.delQual(del.dataset.del!); return }
       /* the headings sort in EVERY mode — reading the table is not editing it,
          and this runs before the edit gate below for exactly that reason. The
          dir flip reads the live state through the functional update, so this
@@ -215,9 +307,52 @@ export function QualsPage() {
         HOOKS.toast(`${was} is now ${PEOPLE[id].cs} — every puck follows`)
       }
     }
+    /* ---- dragging a heading to move its column --------------------------
+       Its own little machine, deliberately: `drag.ts` stays scoped to pucks
+       (owner, Aug 26) and a column is not a puck. Pointer events rather than
+       HTML5 drag-and-drop so a finger works as well as a mouse — and the
+       implicit pointer capture a touch gets is RELEASED on the way down,
+       because without that every pointermove keeps reporting the heading the
+       drag began on and the column can never find a new home.
+
+       The highlight is written straight onto the DOM instead of through
+       state: the table is an innerHTML string that a re-render rebuilds, and
+       rebuilding it under a moving finger would drop the drag. Only the drop
+       itself changes state. */
+    let from = '', over: HTMLElement | null = null
+    const clear = () => { if (over) over.classList.remove('qdrop'); over = null }
+    const onDown = (e: any) => {
+      if (!live.current.canEditQuals()) return
+      const th = (e.target as HTMLElement).closest('th[data-col]') as HTMLElement | null
+      if (!th || (e.target as HTMLElement).closest('[data-del]')) return
+      from = th.dataset.col!
+      try { th.releasePointerCapture?.(e.pointerId) } catch { /* mouse: nothing to release */ }
+      th.classList.add('qdragging')
+    }
+    const onMove = (e: any) => {
+      if (!from) return
+      const th = (e.target as HTMLElement).closest?.('th[data-col]') as HTMLElement | null
+      if (!th || th.dataset.col === from) return
+      if (th !== over) { clear(); over = th; th.classList.add('qdrop') }
+    }
+    const onUp = () => {
+      if (from && over) live.current.moveQual(from, over.dataset.col!)
+      tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
+      clear(); from = ''
+    }
     tbl.addEventListener('click', onClick)
     tbl.addEventListener('change', onChange)
-    return () => { tbl.removeEventListener('click', onClick); tbl.removeEventListener('change', onChange) }
+    tbl.addEventListener('pointerdown', onDown)
+    tbl.addEventListener('pointermove', onMove)
+    /* on the document, not the table: a finger that lifts off the edge of the
+       table must still end the drag rather than leave it armed */
+    document.addEventListener('pointerup', onUp)
+    document.addEventListener('pointercancel', onUp)
+    return () => {
+      tbl.removeEventListener('click', onClick); tbl.removeEventListener('change', onChange)
+      tbl.removeEventListener('pointerdown', onDown); tbl.removeEventListener('pointermove', onMove)
+      document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onUp)
+    }
   }, [])
 
   const addPerson = () => {
@@ -241,12 +376,12 @@ export function QualsPage() {
      Seat column, since the rows no longer say which is which. */
   const doExport = () => {
     const all = qSeatView === 'ALL'
-    const cols = ['Callsign', 'Initials', 'Flight', ...(all ? ['Seat'] : []), 'CAT', ...QUAL_COLS.map(c => c.h)]
-    const rows: any[][] = [cols]
+    const head = ['Callsign', 'Initials', 'Flight', ...(all ? ['Seat'] : []), 'CAT', ...cols.map(c => c.h)]
+    const rows: any[][] = [head]
     qualsIds(qSeatView, qSort, qSearch).forEach(id => {
       const p = PEOPLE[id]
       rows.push([p.cs, p.initials || '', p.flight, ...(all ? [p.seat === 'FCP' ? 'Pilot' : 'WSO'] : []), p.q,
-        ...QUAL_COLS.map(c => qualNA(p, c) ? '–' : p.quals[c.k] ? 'Y' : '')])
+        ...cols.map(c => qualNA(p, c) ? '–' : p.quals[c.k] ? 'Y' : '')])
     })
     exportCSV(`142SQN-LoX-${qSeatView}.csv`, rows)
   }
@@ -256,7 +391,15 @@ export function QualsPage() {
       <div className="qbar">
         {admin && <button className="abtn primary" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}>Enable editing</button>}
         <button className="abtn" id="qSave" hidden={!qEditing}
-          onClick={() => { setEditing(false); HOOKS.toast('Quals saved (prototype — writes to Dataverse in the full build).') }}>Save changes</button>
+          onClick={() => { setEditing(false); setQualsEdit(false); setArmDel(''); HOOKS.toast('Quals saved (prototype — writes to Dataverse in the full build).') }}>Save changes</button>
+        {/* the second mode, inside edit mode and admin-only (owner, 5 Aug 26):
+            which qualifications the LoX carries, and in which order. Off by
+            default every time editing is switched on — reshaping the table is
+            a deliberate act, not the state you land in to tick a box. */}
+        {admin && qEditing &&
+          <button className={'abtn' + (qualsEdit ? ' primary' : '')} id="qEditQuals"
+            aria-pressed={qualsEdit}
+            onClick={() => { setQualsEdit(v => !v); setArmDel('') }}>Edit quals</button>}
         <input className="datef" id="qDate" defaultValue="23/06/2026" style={{ maxWidth: 120 }} />
         <button className="abtn" id="qExport" onClick={doExport}>Export to Excel</button>
         <span className="div" style={{ width: 1, height: 22, background: 'var(--edge)' }}></span>
@@ -270,6 +413,19 @@ export function QualsPage() {
         <div className="grow"></div>
         <div className="searchbox">🔍<input id="qFilter" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
       </div>
+      {/* only while the mode is on: adding a qualification, and the sentence
+          that says what the headings do while it is on. Both live here rather
+          than in the qbar so the toolbar does not change width every time the
+          mode is toggled. */}
+      {canEditQuals() && <div className="qadd" id="qQualBar">
+        <span className="lab">Add qualification</span>
+        <input id="qNewQual" placeholder="e.g. LOW LEVEL" maxLength={14} style={{ width: 150 }}
+          value={newQual} onChange={e => setNewQual(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') addQual() }} />
+        <button className="abtn primary" id="qAddQualBtn" onClick={addQual}>Add</button>
+        <span className="qhint">Drag a heading to move its column · ✕ takes one off the LoX ·
+          removing a column never changes who holds what</span>
+      </div>}
       <div className="qhelp">
         Similar to a LoX and integrated with the board — a person's <b>CAT</b> drives their puck's qualification chip colour and the validator rules.
         A check (✓) means the person holds that qualification. In edit mode, click a cell to toggle it, or the red ✕ to archive someone.
@@ -286,8 +442,8 @@ export function QualsPage() {
         <button className="abtn primary" id="qAddPerson" onClick={addPerson}>Add</button>
       </div>}
       <div className="qwrap">
-        <table className={'qtbl' + (qEditing ? ' editing' : '')} id="qtbl" ref={tblRef}
-          dangerouslySetInnerHTML={{ __html: qualsTable(qSeatView, qSort, qEditing, qSearch) }} />
+        <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
+          dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel) }} />
       </div>
     </>
   )
