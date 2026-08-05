@@ -89,6 +89,25 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Parity stays byte-exact via `refwin.ts:remap()` (retier's sibling), which
   migrates the in-memory reference's ladder tables, `isInstr`, puck builder,
   PEOPLE literals and legend to this world before boot.
+- **The combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26)** grades a
+  crewed aircraft — the jet only, not the sim box — whenever the front seat
+  is a CAT A–D or OCU pilot AND the back seat is a CAT A–D or OCU WSO. An
+  instructor in either seat clears the matrix outright (an instructor pilot
+  IP/IR/FI flies with anyone; an instructor WSO with any front seat — the
+  table's "OCU pilot needs a valid IR" footnote is deliberately disregarded,
+  owner), and a mis-seated body belongs to the seat rules (`QUAL`), not here.
+  The gradings, all ring-only with no chip of their own:
+  - `ILLEGAL_CREW`, hard: OCU pilot + CAT A–D WSO, or CAT A–D pilot + OCU
+    WSO — "not an authorised combination". This code SUPERSEDES the old
+    two-OCU hard rule; the two-OCU pairing is now the advisory below.
+  - `CREW_SOLO`, adv: OCU pilot + OCU WSO — a crew solo, only allowed for
+    sorties designated under the F-15SG Basic Course Syllabus.
+  - `CO_APPROVAL`, adv: D+C, C+D and D+D (pilot+WSO) — CO approval required.
+  Unlike `NO_IR`, the matrix DOES fire on the seed week (Mon bapster+nick is
+  the crew-solo advisory, Wed krait+wrangler and pike+badger want CO
+  approval, Thu bapster+badger is unauthorised), so `refwin.ts:rematrix()`
+  patches the identical rule and WCODE labels into the in-memory reference
+  before boot, at the exact call site the two-OCU line occupied.
 - **`NO_IR`, hard: an IRT needs an IR examiner in the crew** (owner,
   Aug 5 '26). `IRT` (word-bounded, case-insensitive) in a formation's msn →
   an IR anywhere in that formation's crew; in one aircraft's remarks → the

@@ -25,7 +25,7 @@ import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
 
 export async function refWindow(): Promise<any> {
-  const html = remap(retier(readFileSync('reference/scheduler.html', 'utf8')))
+  const html = rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -125,6 +125,36 @@ function remap(html: string): string {
     const n = html.split(from).length - 1
     if (n !== (want ?? 1)) throw new Error(`refwin remap: expected ${want ?? 1} match(es), got ${n} for: ${from.slice(0, 50)}…`)
     html = html.split(from).join(to)
+  }
+  return html
+}
+
+/* Fourth structural divergence, closed the same way. The port grades every
+   properly-seated non-instructor crew through the F-15SG combination matrix
+   (Table 1.5-2, owner Aug 5 '26); the reference only knows the old two-OCU
+   hard rule, and the matrix DOES fire on the seed week (Mon bapster+nick is
+   now the crew-solo advisory, Wed krait+wrangler and pike+badger want CO
+   approval, Thu bapster+badger is an unauthorised combination). So the rule
+   itself is patched into the in-memory reference at the exact call site the
+   two-OCU line occupied — same insertion order, byte-identical messages —
+   and WCODE gains the two new labels so dayHTML renders them identically.
+   Runs AFTER remap: the injected code leans on the patched four-CAT isInstr;
+   isInstrPilot has no reference equivalent, so it is inlined. */
+function rematrix(html: string): string {
+  const swaps: Array<[string, string]> = [
+    ["TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',OCU_NO_IP:",
+     "TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',CREW_SOLO:'Crew solo — only allowed under syllabus',CO_APPROVAL:'Crew combination — CO approval required',OCU_NO_IP:"],
+    ["if(p&&w&&isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');add('hard','ILLEGAL_CREW',[ac.p,ac.w],`Two OCU in one aircraft (${f.label})`);}",
+     "if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!(p.q==='IP'||p.q==='IR'||p.q==='FI')&&!isInstr(w.q)){"
+     + "if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`);}"
+     + "else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`);}"
+     + "else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`);}"
+     + "}"],
+  ]
+  for (const [from, to] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin rematrix: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
+    html = html.replace(from, to)
   }
   return html
 }
