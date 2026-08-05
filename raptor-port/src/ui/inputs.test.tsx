@@ -18,9 +18,27 @@ import { validate } from '../engine/validate'
 let host: HTMLDivElement
 const $ = (sel: string) => host.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
+/* The table is sorted by start date now (owner, Aug 5), so DOM row order is
+   no longer INPUTS order. A test that means "the row for INPUTS[n]" has to say
+   so — its buttons carry the model index, so find it by that. */
+const rowFor = (inx: number) => $$('#inBody tr').find(tr =>
+  tr.querySelector(`[data-edit="${inx}"],[data-inx="${inx}"],[data-save="${inx}"]`))!
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+}
+
+/* The table opens on a today → +2-months window (owner, Aug 5). The seeded
+   demo inputs are July 2026, so with the default window every assertion about
+   ROWS below would really be an assertion about the window. Widen it once in
+   beforeAll; the window itself has its own describe at the bottom. */
+const showAllDates = async () => {
+  if (!$('#inRangePop')) await click($('#inRangeBtn'))
+  await click($('#inRangeAll'))
+}
+const useDefaultRange = async () => {
+  if (!$('#inRangePop')) await click($('#inRangeBtn'))
+  await click($('#inRangeDef'))
 }
 
 beforeAll(async () => {
@@ -30,6 +48,7 @@ beforeAll(async () => {
   await act(async () => { createRoot(host).render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'inputs')!)
+  await showAllDates()
 })
 
 describe('the Inputs page (tfin)', () => {
@@ -128,7 +147,7 @@ describe('the Inputs page (tfin)', () => {
   it('the ✕ deletes a row, and undo resurrects it', async () => {
     const n = INPUTS.length
     const first = INPUTS[0]
-    await click($('#inBody .rmx'))
+    await click(rowFor(0).querySelector('.rmx'))
     expect(INPUTS.length).toBe(n - 1)
     expect(INPUTS[0]).not.toBe(first)
     await act(async () => { undo() })
@@ -234,7 +253,7 @@ describe('the range calendar', () => {
 /* the pencil edits the row in place */
 describe('editing an input from its own line', () => {
   it('opens on the pencil, commits on ✓, and joins the undo stack', async () => {
-    const row0 = () => $$('#inBody tr')[0]
+    const row0 = () => rowFor(0)
     await click(row0().querySelector('[data-edit]'))
     expect($('#inBody tr.ined'), 'the row became fields').toBeTruthy()
     const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
@@ -251,7 +270,7 @@ describe('editing an input from its own line', () => {
 
   it('cancel leaves the row untouched', async () => {
     const before = JSON.stringify(INPUTS[0])
-    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    await click(rowFor(0).querySelector('[data-edit]'))
     const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
     await act(async () => { setter.call(rm, 'THROWN AWAY'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
@@ -263,7 +282,20 @@ describe('editing an input from its own line', () => {
 /* Two bugs the pencil introduced, both found in the post-change sweep. */
 describe('editing an input that is already accepted', () => {
   /* an earlier test leaves the type filter narrowed; these need the whole list */
-  beforeAll(async () => {
+  /* The table opens on a today → +2-months window (owner, Aug 5). The seeded
+   demo inputs are July 2026, so with the default window every assertion about
+   ROWS below would really be an assertion about the window. Widen it once in
+   beforeAll; the window itself has its own describe at the bottom. */
+const showAllDates = async () => {
+  if (!$('#inRangePop')) await click($('#inRangeBtn'))
+  await click($('#inRangeAll'))
+}
+const useDefaultRange = async () => {
+  if (!$('#inRangePop')) await click($('#inRangeBtn'))
+  await click($('#inRangeDef'))
+}
+
+beforeAll(async () => {
     await act(async () => {
       const sel = $('#inFType') as unknown as HTMLSelectElement
       const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
@@ -286,7 +318,7 @@ describe('editing an input that is already accepted', () => {
     const nGround = DAYS[0].ground.length
     expect(DAYS[0].ground.some((r: any) => r.src === inpKey(inp))).toBe(true)
 
-    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    await click(rowFor(0).querySelector('[data-edit]'))
     const ty = $('#inBody tr.ined [data-ed="type"]') as HTMLSelectElement
     await act(async () => {
       const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
@@ -308,7 +340,7 @@ describe('editing an input that is already accepted', () => {
   it('commits onto the right row even after the list renumbers underneath', async () => {
     const target = INPUTS[0]
     const wasOther = INPUTS[1] ? { ...INPUTS[1] } : null
-    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    await click(rowFor(0).querySelector('[data-edit]'))
     const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
     await setV(rm, 'STAYS ON TARGET')
     // something else lands at the top of the list while the editor is open
@@ -338,7 +370,7 @@ describe('accepted rows are never stranded', () => {
     const before = groundRows().filter(r => r.src === inpKey(inp)).length
     expect(before).toBe(1)
 
-    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    await click(rowFor(0).querySelector('[data-edit]'))
     await click($('#inBody tr.ined [data-save]'))                  // change nothing
 
     const after = groundRows().filter(r => r.src === inpKey(inp))
@@ -353,7 +385,7 @@ describe('accepted rows are never stranded', () => {
     await act(async () => { acceptInput(0, inp, 'g'); notify() })
     const key = inpKey(inp)
     expect(groundRows().some(r => r.src === key)).toBe(true)
-    await click($$('#inBody tr')[0].querySelector('.rmx'))
+    await click(rowFor(0).querySelector('.rmx'))
     expect(INPUTS.indexOf(inp)).toBe(-1)
     expect(groundRows().some(r => r.src === key), 'no row left behind').toBe(false)
     await act(async () => { undo() })
@@ -371,7 +403,7 @@ describe('accepted rows are never stranded', () => {
     })
     const inp = INPUTS[0]
     await act(async () => { acceptInput(0, inp, 'g'); notify() })
-    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    await click(rowFor(0).querySelector('[data-edit]'))
     const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
     await act(async () => {
       const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
@@ -448,7 +480,7 @@ describe('the end date writes itself into Remarks', () => {
   })
 
   it('the row editor writes the same tail — but only from a click', async () => {
-    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    await click(rowFor(0).querySelector('[data-edit]'))
     const ed = () => $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
     expect(ed().value, 'opening the editor rewrites nothing').toBe(INPUTS[0].remarks || '')
     await typeInto(ed(), 'LL')
@@ -459,5 +491,103 @@ describe('the end date writes itself into Remarks', () => {
     await click($('#inedCal [data-cal="2026-07-14"]'))
     expect(ed().value).toBe('LL till 14 Jul')
     await click($('#inBody tr.ined [data-cancel]'))
+  })
+})
+
+/* ---- the table's own view: which window, and sorted how (owner, Aug 5) ---- */
+
+/* dates are asserted RELATIVE to the clock, never against a hardcoded day, so
+   these keep meaning whatever date the suite runs on */
+const isoIn = (days: number) => {
+  const d = new Date(); d.setDate(d.getDate() + days)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+const lbl = (iso: string) => {
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return MON[+iso.slice(5, 7) - 1] + ' ' + +iso.slice(8, 10)
+}
+const seed = (o: any) => { INPUTS.unshift({ allday: true, s: 0, e: 1439, type: 'LL', mod: '', ...o }); notify() }
+const startsShown = () => $$('#inBody tr td:nth-child(2)').map(td => td.textContent!.trim())
+
+describe('the date window', () => {
+  it('opens on today → +2 months, and hides what is outside it', async () => {
+    const n = INPUTS.length
+    await act(async () => {
+      seed({ person: 'bane', date: lbl(isoIn(-40)), remarks: 'WELL BEHIND' })
+      seed({ person: 'bane', date: lbl(isoIn(3)), remarks: 'THIS WEEK' })
+      seed({ person: 'bane', date: lbl(isoIn(150)), remarks: 'FAR AHEAD' })
+    })
+    await useDefaultRange()
+    const shown = () => $$('#inBody tr').map(tr => tr.textContent || '')
+    expect(shown().some(t => t.includes('THIS WEEK')), 'inside the window').toBe(true)
+    expect(shown().some(t => t.includes('WELL BEHIND')), 'before today').toBe(false)
+    expect(shown().some(t => t.includes('FAR AHEAD')), 'beyond two months').toBe(false)
+
+    /* the readout names the window rather than leaving the user to guess */
+    expect($('#inRangeBtn').textContent).toContain(lbl(isoIn(0)))
+    /* and an empty table under a window says it is the window */
+    expect($('#inEmpty').textContent).toContain('All dates')
+
+    await act(async () => { INPUTS.splice(0, INPUTS.length - n); notify() })
+    await showAllDates()
+  })
+
+  /* an input that STARTED before the window but is still running is exactly
+     the one a scheduler must not lose sight of */
+  it('keeps a span that began before today but has not ended', async () => {
+    const n = INPUTS.length
+    await act(async () => { seed({ person: 'bane', date: lbl(isoIn(-10)), endDate: lbl(isoIn(10)), remarks: 'STILL RUNNING' }) })
+    await useDefaultRange()
+    expect($$('#inBody tr').some(tr => (tr.textContent || '').includes('STILL RUNNING'))).toBe(true)
+    await act(async () => { INPUTS.splice(0, INPUTS.length - n); notify() })
+    await showAllDates()
+  })
+
+  it('All dates puts everything back', async () => {
+    await useDefaultRange()
+    const windowed = $$('#inBody tr').length
+    await showAllDates()
+    expect($$('#inBody tr').length, 'the July demo rows are back').toBeGreaterThan(windowed)
+    expect($('#inRangeBtn').textContent).toContain('All dates')
+  })
+})
+
+describe('sorting by column', () => {
+  it('opens sorted by start date, earliest first', () => {
+    expect($('#intbl thead th[data-sort="start"]').className).toContain('on')
+    expect($('#intbl thead th[data-sort="start"]').getAttribute('aria-sort')).toBe('ascending')
+    const starts = startsShown()
+    expect(starts.length).toBeGreaterThan(2)
+    /* rendered as 'Jul 13' labels; compare on the ordinal the label implies */
+    const ord = (s: string) => {
+      const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      const p = s.split(/\s+/)
+      return (MON.indexOf(p[0]) + 1) * 100 + (+p[1] || 0)
+    }
+    const asc = starts.map(ord)
+    expect(asc, 'ascending').toEqual([...asc].sort((a, b) => a - b))
+  })
+
+  it('a second click on the same heading inverts it', async () => {
+    await click($('#intbl thead th[data-sort="start"]'))
+    expect($('#intbl thead th[data-sort="start"]').getAttribute('aria-sort')).toBe('descending')
+    const first = startsShown()
+    await click($('#intbl thead th[data-sort="start"]'))
+    expect($('#intbl thead th[data-sort="start"]').getAttribute('aria-sort')).toBe('ascending')
+    expect(startsShown()).toEqual([...first].reverse())
+  })
+
+  it('every heading sorts, and only the sorted one is marked', async () => {
+    for (const key of ['name', 'end', 'type', 'remarks', 'recur', 'mod']) {
+      await click($(`#intbl thead th[data-sort="${key}"]`))
+      expect($(`#intbl thead th[data-sort="${key}"]`).className, key).toContain('on')
+      expect($$('#intbl thead th.on').length, `only ${key} is marked`).toBe(1)
+    }
+    /* the loop left `mod` sorted, so ONE click on a different heading is a
+       fresh ascending sort — inverting only happens on a repeat click */
+    await click($('#intbl thead th[data-sort="name"]'))
+    const names = $$('#inBody tr td:nth-child(1)').map(td => td.textContent!.trim().toLowerCase())
+    expect(names).toEqual([...names].sort())
+    await click($('#intbl thead th[data-sort="start"]'))  // leave it as it opened
   })
 })

@@ -25,6 +25,24 @@ several are measured and suite-enforced, not preferences.
   suite runs in CI as the fourth gate; `docs/probe-sweep.md` lists what it
   covers.
 
+## The Inputs table's view state (`ui/InputsPage.tsx`)
+
+Owner, Aug 5. Three things, all view-only — none of them touches the model:
+
+- **Window.** Opens on today → +`DEFAULT_SPAN_MONTHS` (2). Membership is
+  **overlap**, not "starts inside": a span that began before today and has not
+  ended is still live and must stay on screen. `#inRangeBtn` drops the same
+  two-click `RangeCal` the add form uses; `#inRangeDef` restores the default
+  and `#inRangeAll` clears the window entirely.
+- **Sort.** Every `<th data-sort>` sorts; a repeat click inverts, and the first
+  click on any column is always ascending. Default is `start` ascending.
+  Start date is the tie-break on every other column.
+- **DOM row order is therefore NOT `INPUTS` order.** Anything addressing a row
+  must go through the model index its buttons carry (`data-edit` / `data-inx` /
+  `data-save`), never a position. The row under edit is pinned into the list
+  even when the window or sort would drop it, so an open editor cannot vanish
+  mid-edit.
+
 ## Inline text editing (`ui/textedit.ts`)
 
 Enter commits (everywhere, including sim notes), Escape restores the model

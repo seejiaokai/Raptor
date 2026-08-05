@@ -251,6 +251,12 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
 
   /* ---- 12 · undo on the Inputs page redraws the table -------------------- */
   await p.evaluate(() => go('inputs')); await p.waitForTimeout(600)
+  /* the table now opens on a today → +2-months window (owner, Aug 5) and this
+     item's contract is "the table follows the MODEL" — so widen the window
+     first, or the Jul 13 row it adds is filtered out and the count is a
+     statement about the window instead */
+  await p.click('#inRangeBtn'); await p.waitForTimeout(200)
+  await p.click('#inRangeAll'); await p.waitForTimeout(300)
   {
     const rows = () => p.evaluate(() => document.querySelectorAll('#inBody [data-inx]').length)
     const n0 = await p.evaluate(() => INPUTS.length), r0 = await rows()

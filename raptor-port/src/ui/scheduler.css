@@ -1003,13 +1003,42 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .intag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
 .inwrap{padding:6px 20px 40px}
 .rmx{color:var(--hard);cursor:pointer;font-weight:800}
-/* the pencil sits beside the ✕, and both stay on one line */
-.inact{white-space:nowrap;display:flex;gap:8px;align-items:center;justify-content:center}
+/* Every heading sorts (owner, Aug 5). The arrow is a fixed-width column of its
+   own so the heading text does not shuffle sideways as the arrow appears. */
+.intbl thead th.insort{cursor:pointer;user-select:none;white-space:nowrap}
+.intbl thead th.insort:hover{color:var(--ink);background:rgba(255,255,255,.04)}
+.intbl thead th.insort.on{color:var(--accent)}
+.inarrow{display:inline-block;width:11px;margin-left:4px;font-size:8.5px;vertical-align:middle}
+/* The pencil sits beside the ✕, and both stay on one line. They are DELIBERATELY
+   far apart and finger-sized (owner, Aug 5 — the ✕ was being hit instead of the
+   pencil, and deleting an input is not an easy thing to undo by hand). 30px is
+   above the 24px minimum for a pointer target, and the 22px gap is wider than
+   the buttons' own centres are from their edges, so a near miss lands on
+   nothing rather than on the wrong one. */
+.inact{white-space:nowrap;display:flex;gap:22px;align-items:center;justify-content:center}
+.inact>span{display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:6px;font-size:15px;line-height:1;
+  border:1px solid transparent;transition:background .12s,border-color .12s}
 /* scoped to the inputs table: a bare .red also matches the board's
    .mbtn.red flag button, whose hover this was overriding */
 .inact .red{color:var(--accent);cursor:pointer;font-weight:800}
-.inact .red:hover{filter:brightness(1.25)}
+.inact .red:hover{filter:brightness(1.25);background:rgba(93,168,255,.14);border-color:rgba(93,168,255,.45)}
+.inact .rmx:hover{background:rgba(240,85,95,.16);border-color:rgba(240,85,95,.5)}
+.inact .rok:hover{background:rgba(87,217,163,.16);border-color:rgba(87,217,163,.5)}
 .rok{color:var(--ok,#57D9A3);cursor:pointer;font-weight:800}
+/* the date-window picker: a button in the filter bar that drops the same
+   two-click calendar the add form uses */
+.inrange{position:relative}
+.inrange-pop{position:absolute;z-index:60;top:calc(100% + 6px);left:0;
+  background:var(--panel);border:1px solid var(--edge);border-radius:10px;
+  padding:10px;box-shadow:0 12px 28px rgba(0,0,0,.5)}
+.inrange-pop .rc-read{margin-top:6px;text-align:center}
+.inrange-btns{display:flex;gap:8px;margin-top:8px}
+/* nowrap, or "Next 2 months" breaks across two lines and the two buttons stop
+   matching heights */
+.inrange-btns .abtn{flex:1 1 0;min-width:0;white-space:nowrap;padding:7px 8px}
+/* on a phone the filter bar wraps, so the popover must not hang off the edge */
+@media (max-width:700px){.inrange{position:static}.inrange-pop{left:8px;right:8px}}
 /* the two-click range calendar — its grid placement lives with the .ingrid
    tracks above, NOT here: a bare `grid-column:span 2` this far down the file
    outranked every breakpoint rule (same specificity, later source) and was
