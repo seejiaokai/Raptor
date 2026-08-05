@@ -58,7 +58,13 @@ Any NEW Playwright script must pass `executablePath:'/opt/pw-browsers/chromium'`
 doesn't ship, so a bare `chromium.launch()` dies with "Executable doesn't
 exist … run npx playwright install" — do NOT run that, it re-downloads for
 nothing. Every probe in `reference/probes/` already hardcodes the path.
-Login is `a`/`a` (full edit) or `user`/`user` (view-only).
+Login is `a`/`a` (full edit) or `user`/`user` (view-only) — the username is
+lowercased before matching, the PASSWORD is compared exactly, so `A`/`A` is
+rejected.
+The deployed Pages URL is NOT reachable from the container (the agent proxy
+answers 403 to CONNECT for `github.io`). Confirm a deploy from the workflow
+run's job conclusions, and check rendering against `vite preview` locally —
+do not plan on fetching the live site.
 
 Push to `main` → `.github/workflows/deploy.yml` reruns the gates and
 publishes to **https://seejiaokai.github.io/Raptor/**. Nothing deploys red.
