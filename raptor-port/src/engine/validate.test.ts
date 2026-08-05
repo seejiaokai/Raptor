@@ -34,7 +34,7 @@ describe('validation engine (tfin F)', () => {
 
   const SEV = ['hard', 'adv', 'note']
   const CODES = ['DOUBLE_BOOK', 'DNIF_FLY', 'LEAVE_FLY', 'INPUT_FLY', 'TURN', 'ILLEGAL_CREW', 'OCU_NO_IP', 'CREW_REST', 'QUAL',
-    'NO_BRIEF', 'DEBRIEF', 'SIM_BRIEF', 'SIM_DEBRIEF', 'CREW_TIGHT', 'LONGDAY', 'DT_SUM']
+    'NO_BRIEF', 'DEBRIEF', 'SIM_BRIEF', 'SIM_DEBRIEF', 'CREW_TIGHT', 'LONGDAY', 'DT_SUM', 'NO_IR']
 
   it('every warning has a known tier', () => {
     const W = validate()
@@ -47,7 +47,7 @@ describe('validation engine (tfin F)', () => {
     expect(bad, bad.join(',')).toEqual([])
   })
 
-  it('WCODE covers all 16 codes', () => {
+  it('WCODE covers all 17 codes', () => {
     expect(CODES.filter(c => !WCODE[c]), CODES.filter(c => !WCODE[c]).join(',')).toEqual([])
     expect(Object.keys(WCODE)).toContain('SC_QUAL')
     expect(Object.keys(WCODE)).toContain('AAR_QUAL')
@@ -72,7 +72,7 @@ describe('validation engine (tfin F)', () => {
        itself carries the red; the eaten window and the double-turn count are
        advice on top of it */
     const WANT: any = { TURN: 'adv', DOUBLE_BOOK: 'hard', NO_BRIEF: 'adv', DEBRIEF: 'adv', SIM_BRIEF: 'adv', SIM_DEBRIEF: 'adv',
-      DT_SUM: 'adv', LONGDAY: 'note', CREW_REST: 'hard', CREW_TIGHT: 'adv', ILLEGAL_CREW: 'hard', QUAL: 'hard', OCU_NO_IP: 'adv' }
+      DT_SUM: 'adv', LONGDAY: 'note', CREW_REST: 'hard', CREW_TIGHT: 'adv', ILLEGAL_CREW: 'hard', QUAL: 'hard', OCU_NO_IP: 'adv', NO_IR: 'hard' }
     const bad = validate().all.filter((x: any) => WANT[x.code] && WANT[x.code] !== x.sev)
     expect(bad, bad.map((x: any) => x.code + '=' + x.sev).join(',')).toEqual([])
   })
@@ -217,5 +217,63 @@ describe('a downchit or OL closes an SC SPARE (tfin B53 #10)', () => {
     bad = validate().all.filter((x: any) => (x.who || []).includes('sufa')
       && x.code === 'DNIF_FLY' && /SPARE/.test(x.msg))
     expect(bad.length).toBeGreaterThan(0)
+  })
+})
+
+/* ---- NO_IR: an IRT needs an IR examiner in the crew (owner, Aug 5 '26) ----
+   Dice is the seed's only IR. The seed schedules no IRT, so the rule fires
+   nothing until a test writes one in — which is also what keeps the parity
+   suite byte-exact. */
+describe('an IRT needs an IR examiner (NO_IR)', () => {
+  it('IRT in the formation msn without an IR flags the whole crew, red', () => {
+    const chipBefore = (validate().chip[0] || {}).stiff
+    txtSet('ff:0.0.0.msn', 'IRT')                    // VL BFM → VL IRT; crew stiff/freak + bane/wolf
+    const W = validate()
+    const hits = W.all.filter((x: any) => x.code === 'NO_IR')
+    expect(hits.length).toBe(1)
+    expect(hits[0].sev).toBe('hard')
+    expect([...hits[0].who].sort()).toEqual(['bane', 'freak', 'stiff', 'wolf'])
+    /* hard ring on the crew, and no chip OF ITS OWN — same shape as
+       OCU_NO_IP (other rules' chips are theirs and stay whatever they were) */
+    expect(W.sev[0].stiff).toBe('hard')
+    expect((W.chip[0] || {}).stiff).toBe(chipBefore)
+  })
+
+  it('seating the IR examiner anywhere in the formation clears it', () => {
+    txtSet('ff:0.0.0.msn', 'IRT')
+    setSlotVal('0.0.0.1.p', 'dice')                  // dice replaces bane in the second aircraft
+    const hits = validate().all.filter((x: any) => x.code === 'NO_IR')
+    expect(hits, hits.map((x: any) => x.msg).join(' | ')).toEqual([])
+  })
+
+  it('IRT in one aircraft\'s remarks wants the IR in THAT aircraft', () => {
+    txtSet('fr:0.0.0.0', 'IRT')                      // remarks of the stiff/freak jet
+    setSlotVal('0.0.0.1.p', 'dice')                  // the IR sits in the OTHER aircraft
+    const hits = validate().all.filter((x: any) => x.code === 'NO_IR')
+    expect(hits.length).toBe(1)
+    expect([...hits[0].who].sort()).toEqual(['freak', 'stiff'])
+    setSlotVal('0.0.0.0.p', 'dice')                  // now the IR is aboard the flagged jet
+    expect(validate().all.filter((x: any) => x.code === 'NO_IR')).toEqual([])
+  })
+
+  it('a word containing IRT does not trip it', () => {
+    txtSet('ff:0.0.0.msn', 'DIRTY')                  // \bIRT\b must not match inside a word
+    expect(validate().all.filter((x: any) => x.code === 'NO_IR')).toEqual([])
+  })
+})
+
+/* ---- the IW-in-FCP guard: a hand-edited record, not a UI path -------------
+   The Quals-page dropdowns never offer IW to a pilot, so this state can only
+   be written by hand — and the validator still refuses to seat it forward. */
+describe('CAT IW is a WSO category (data-inconsistency guard)', () => {
+  it('an IW record whose seat says FCP is flagged in a front seat', () => {
+    const rocky = PEOPLE.rocky, was = { seat: rocky.seat, q: rocky.q }
+    try {
+      rocky.seat = 'FCP'; rocky.q = 'IW'
+      setSlotVal('0.0.0.0.p', 'rocky')
+      const hits = validate().all.filter((x: any) => x.code === 'QUAL' && /CAT IW/.test(x.msg))
+      expect(hits.length).toBeGreaterThan(0)
+      expect(hits[0].sev).toBe('hard')
+    } finally { rocky.seat = was.seat; rocky.q = was.q; validate() }
   })
 })

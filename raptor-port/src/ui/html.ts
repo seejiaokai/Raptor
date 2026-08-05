@@ -58,7 +58,10 @@ export function legendHTML(){
     <span><span class="qk" style="background:var(--q-c);color:#04222b">C</span>C</span>
     <span><span class="qk" style="background:var(--q-b);color:#2a1e02">B</span>B</span>
     <span><span class="qk" style="background:var(--q-a)">A</span>A</span>
-    <span><span class="qk" style="background:var(--q-ins)">I</span>IP / instr</span>
+    <span><span class="qk" style="background:var(--q-ins)">IW</span>IWSO</span>
+    <span><span class="qk" style="background:var(--q-ins)">IP</span>IP</span>
+    <span><span class="qk" style="background:var(--q-ins)">IR</span>IR exmr</span>
+    <span><span class="qk" style="background:var(--q-ins)">FI</span>FWI</span>
     <span style="margin-left:8px"><span class="qk" style="background:var(--me)">▮</span>you</span>
     <span><span class="qk" style="background:#1E86FF">▮</span>selected</span>
     <span style="margin-left:8px">Flags:</span>
@@ -89,10 +92,10 @@ export function puck(id:any,warn:any,sm:any,flag:any){
   if(warn){cls.push('warn'); if(warn==='hard')cls.push('hard'); else if(warn==='note')cls.push('note');}
   if(flag==='C'||flag==='CR'||flag==='Q'||flag==='NB'||flag==='SB')cls.push('boxred');   // conflict / crew rest / qual / missed brief → red box
   if(p.san)cls.push('san');                         // SANS → purple right-edge line
-  const chipTxt=p.ip?'I':QCHIP[p.q], chipCls=p.ip?'q-ins':QCLASS[p.q];
+  const chipTxt=QCHIP[p.q], chipCls=QCLASS[p.q];
   const qchip=`<span class="role ${chipCls}">${chipTxt}</span>`;
   const lchip=flag?`<span class="lchip l-${flag.toLowerCase()}" title="${esc(wlbl(CHIP_LABEL[flag]||flag))}">${chipText(flag)}</span>`:'';
-  const ttl=p.cs+' · '+LEVELNAME[p.q]+(p.ip?' · IP':'')+(p.sxo?' · SXO':'')+(p.san?' · SANS':'')+(flag?' · '+wlbl(CHIP_LABEL[flag]||flag):'');
+  const ttl=p.cs+' · '+LEVELNAME[p.q]+(p.sxo?' · SXO':'')+(p.san?' · SANS':'')+(flag?' · '+wlbl(CHIP_LABEL[flag]||flag):'');
   return `<span class="${cls.join(' ')}" tabindex="0" data-person="${id}" title="${ttl}">${lchip}<span class="nm">${p.cs}</span>${qchip}</span>`;
 }
 

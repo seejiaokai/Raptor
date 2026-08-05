@@ -14,19 +14,23 @@ import { useVersion } from './useStore'
 
 const QUAL_COLS: any[] = [
   { k: 'san', h: 'SANS', lav: true }, { k: 'sxo', h: 'SXO', lav: true }, { k: 'imc', h: 'IMC', lav: true }, { k: 'nvg', h: 'NVG', lav: true },
-  /* CAT A / CAT B were here. They were derived from the CAT dropdown at boot
-     and read by NOTHING else in the app — not a rule, not a check — so they
-     duplicated the dropdown and, because deriveQuals lets an existing tick win,
-     could sit there contradicting it. Removed (owner, Aug 5). IP stays: it is
-     the one of the three that carries something the dropdown cannot, since a
-     pilot can be CAT A *and* an instructor. */
-  { k: 'instr', h: 'IP', fix: true }, { k: 'dnif', h: 'Downchit', lav: true },
+  /* CAT A / CAT B / IP were here. All three were shadows of the CAT dropdown
+     and are gone: A/B duplicated it outright (removed, owner Aug 5), and IP —
+     kept then because a pilot could be CAT A *and* an instructor — went when
+     instructor-ness moved into CAT itself as IW / IP / IR / FI (owner,
+     Aug 5 '26). The tick was also silently broken: it wrote quals.instr while
+     every rule read p.ip. */
+  { k: 'dnif', h: 'Downchit', lav: true },
   { k: 'sched', h: 'Scheduler', apt: true },
   { k: 'scDay', h: 'SC DAY', scq: true }, { k: 'scNight', h: 'SC NIGHT', scq: true },
   { k: 'daar', h: 'DAAR', aar: true, fcpOnly: true }, { k: 'naar', h: 'NAAR', aar: true, fcpOnly: true },
 ]
 /* AAR is a front-seat qualification; the rear seat has none */
 const qualNA = (p: any, c: any) => !!(c.fcpOnly && p && p.seat !== 'FCP')
+/* the CAT dropdowns are seat-filtered so the inconsistent combinations can't
+   be picked at all: IW is a WSO-only category, IP and IR are pilot-only, FI
+   goes both ways. The validator still guards the hand-edited case. */
+const catsFor = (seat: any) => Object.keys(QCHIP).filter(k => seat === 'FCP' ? k !== 'IW' : (k !== 'IP' && k !== 'IR'))
 
 function exportCSV(name: string, rows: any[][]) {
   const csv = rows.map(r => r.map(c => `"${String(c == null ? '' : c).replace(/"/g, '""')}"`).join(',')).join('\r\n')
@@ -60,7 +64,7 @@ function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch
   const rows = ids.map(id => {
     const p = PEOPLE[id]
     const lvl = qEditing
-      ? `<select class="qlvlsel" data-lvl="${id}" aria-label="CAT for ${esc(p.cs)}">${Object.keys(QCHIP).map(k => `<option ${k === p.q ? 'selected' : ''}>${k}</option>`).join('')}</select>`
+      ? `<select class="qlvlsel" data-lvl="${id}" aria-label="CAT for ${esc(p.cs)}">${catsFor(p.seat).map(k => `<option ${k === p.q ? 'selected' : ''}>${k}</option>`).join('')}</select>`
       : `<span class="lvl"><span class="qmini" style="background:${QCOLOR[p.q]};${(p.q === 'C' || p.q === 'B') ? 'color:#04222b' : ''}">${QCHIP[p.q]}</span>${p.q}</span>`
     const cells = QUAL_COLS.map(c => {
       if (qualNA(p, c)) return `<td class="qcell na" title="${esc(p.cs)} is a WSO — AAR is a front-seat qualification">–</td>`
@@ -192,8 +196,9 @@ export function QualsPage() {
         <input id="qCS" placeholder="Callsign" style={{ width: 110 }} value={addP.cs} onChange={e => setAddP({ ...addP, cs: e.target.value })} />
         <input id="qInitials" placeholder="Initials" maxLength={12} style={{ width: 120 }} value={addP.initials} onChange={e => setAddP({ ...addP, initials: e.target.value })} />
         <input id="qFlight" placeholder="Flight" style={{ width: 70 }} value={addP.flight} onChange={e => setAddP({ ...addP, flight: e.target.value })} />
-        <select id="qSeat" aria-label="Pilot or WSO" value={addP.seat} onChange={e => setAddP({ ...addP, seat: e.target.value })}><option value="FCP">Pilot (FCP)</option><option value="RCP">WSO (RCP)</option></select>
-        <select id="qLevel" aria-label="Cat" value={addP.level} onChange={e => setAddP({ ...addP, level: e.target.value })}>{Object.keys(QCHIP).map(k => <option key={k}>{k}</option>)}</select>
+        <select id="qSeat" aria-label="Pilot or WSO" value={addP.seat}
+          onChange={e => { const seat = e.target.value; setAddP({ ...addP, seat, level: catsFor(seat).includes(addP.level) ? addP.level : 'OCU' }) }}><option value="FCP">Pilot (FCP)</option><option value="RCP">WSO (RCP)</option></select>
+        <select id="qLevel" aria-label="Cat" value={addP.level} onChange={e => setAddP({ ...addP, level: e.target.value })}>{catsFor(addP.seat).map(k => <option key={k}>{k}</option>)}</select>
         <button className="abtn primary" id="qAddPerson" onClick={addPerson}>Add</button>
       </div>}
       <div className="qwrap">

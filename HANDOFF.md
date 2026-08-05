@@ -87,6 +87,12 @@ The port from the original single-file app is complete; that history is in
 - Other owner decisions of 4 Aug 26 (all-day Fly gate, `acceptInput` refusing
   Unavailable-typed inputs, unavailable guarding all tasking) are documented
   in `docs/engine-rules.md` §validation — this file no longer duplicates them.
+- **CAT instructor rework (owner, 5 Aug 26).** The IP tick column is gone;
+  the ladder is `OCU→D→C→B→A→IW→IP→IR→FI` (no generic `I`, no `ip` flag) and
+  the new hard `NO_IR` rule wants an IR examiner on any IRT line. Bane went
+  `A+IP → IP`, so he no longer counts as `isLead` (FL/SUP chips) — accepted
+  when the letter was dropped. Rules and seat matrix:
+  `docs/engine-rules.md` §validation.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
   GitHub Actions). The workflow refuses to publish on any red test.
 
@@ -96,7 +102,7 @@ The port from the original single-file app is complete; that history is in
 | file | what it does |
 |---|---|
 | `data.ts` | The demo week: DAYS with waves/formations/aircraft, duties, sims, ground, programme rows. |
-| `people.ts` | PEOPLE roster (quals, seat, categories), qual ladder, `isScheduler`/`isLead`/`isInstr`/`isOcu`, `scShiftKind`, `sanStatus`, `aarNeed`. |
+| `people.ts` | PEOPLE roster (quals, seat, categories), qual ladder (`OCU→D→C→B→A→IW→IP→IR→FI` — instructor-ness lives in CAT, no `ip` flag), `isScheduler`/`isLead`/`isInstr`/`isInstrPilot`/`isOcu`, `scShiftKind`, `sanStatus`, `aarNeed`. |
 | `inputs.ts` | INPUTS list + taxonomy: `isLeave`, `isLocalLeave`, `isDownchit`, `isDetach`, **`isPersonal`/`isUnavail`** (the two day blocks), INPUT_TYPES, DATES. |
 | `time.ts` | `parseHM`/`hhmm`/`minus`/`overlap` (half-open — abutting windows do not clash). |
 | `events.ts` | `collectEvents()` — the per-day event build the validator consumes. |
@@ -148,7 +154,7 @@ The port from the original single-file app is complete; that history is in
 | `probes/run.cjs` | Runs any reference probe against the reference build or the port. |
 | `probes/perf-port.cjs` | The perf gate (`npm run perf`) — measures BOTH builds at once, round for round, and asserts no regression. |
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
-| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests and pushes the port's seed INPUTS into it, so both engines compute from identical data. NOT a test file. |
+| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it, `retier()`s the three amber codes and `remap()`s the CAT-ladder rework (tables, isInstr, PEOPLE literals, legend), so both engines compute from identical data. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table. |
 | `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the four gates. |
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser, `app.ts` holds login/nav/scroll-settle helpers. `playwright.config.ts` builds and serves the port itself. |

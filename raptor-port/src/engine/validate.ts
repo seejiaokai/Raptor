@@ -1,4 +1,4 @@
-import { PEOPLE, isSpecial, realP, isOcu, isInstr, aarOK, scShiftKind, scQualOK } from './people'
+import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, scShiftKind, scQualOK } from './people'
 import { isDownchit, isLeave, isLocalLeave, isDetach } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
@@ -13,7 +13,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   NO_BRIEF:'No time for the flight brief',DEBRIEF:'No time for the flight debrief',SIM_BRIEF:'No time for the sim brief',SIM_DEBRIEF:'No time for the sim debrief',
   CREW_TIGHT:'Tight turning — crew rest',LONGDAY:'Long work day',DT_SUM:'Double turning',
   DAYS_RUN:'No break day — too many days in a row',
-  SC_QUAL:'SC currency — wrong shift',AAR_QUAL:'AAR currency — not qualified',
+  SC_QUAL:'SC currency — wrong shift',AAR_QUAL:'AAR currency — not qualified',NO_IR:'IRT without an IR examiner',
   SHIFT_SOFT:'On shift — also down for a ground event'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
@@ -326,23 +326,41 @@ export function validate(){
     day.forms.forEach((f:any)=>{
       f.acs.forEach((ac:any)=>{ const p=realP(ac.p),w=realP(ac.w);
         if(p&&w&&isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');add('hard','ILLEGAL_CREW',[ac.p,ac.w],`Two OCU in one aircraft (${f.label})`);}
-        // Q — seat qualification: a WSO can't fly FCP; only an IP pilot may fly RCP
+        // Q — seat qualification: a WSO can't fly FCP; only an instructor pilot (IP / IR / FI) may fly RCP
         if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${f.label})`);}
-        if(w&&w.seat==='FCP'&&!(w.ip||isInstr(w.q))){markChip(di,ac.w,'Q');markRing(di,ac.w,'hard');add('hard','QUAL',[ac.w],`${w.cs} is a pilot, not IP — only IP may fly RCP (${f.label})`);}
+        /* belt and braces: CAT IW is a WSO-only category, so an IW record whose
+           seat says FCP is inconsistent data — the Quals-page dropdowns never
+           offer IW to a pilot, but a hand-edit could. Flag it, don't hide it. */
+        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label})`);}
+        if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,ac.w,'Q');markRing(di,ac.w,'hard');add('hard','QUAL',[ac.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may fly RCP (${f.label})`);}
         /* AAR — the remarks call for it and the FRONT seat is not current */
         if(ac.aar&&p&&!isSpecial(ac.p)&&!aarOK(ac.p,ac.aar)){
           markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');
           add('hard','AAR_QUAL',[ac.p],
             `${p.cs} is not ${ac.aar} current — ${f.label} remarks call for ${ac.aar==='NAAR'?'night':'day'} AAR`);} });
       const ocus=f.fcps.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
-      const hasIP=f.fcps.some((id:any)=>PEOPLE[id]&&(PEOPLE[id].ip||isInstr(PEOPLE[id].q)));
+      const hasIP=f.fcps.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
       /* an IP in the BACK seat supervises just as well as one in the front —
          the seat rules explicitly allow it, so looking only at FCPs both
          flagged the standard OCU sortie and missed an OCU in the rear */
       const crewAll=[...new Set(f.acs.reduce((a:any,x:any)=>a.concat([x.p,x.w]),[]).filter(Boolean))];
       const ocuAll=crewAll.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
-      const anyIP=crewAll.some((id:any)=>PEOPLE[id]&&(PEOPLE[id].ip||isInstr(PEOPLE[id].q)));
+      const anyIP=crewAll.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
       if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>markRing(di,id,'adv'));add('adv','OCU_NO_IP',ocuAll,`OCU in ${f.label} with no IP`);}
+      /* NO_IR — an instrument rating test needs an IR examiner aboard (owner,
+         Aug 5 '26). The mission lives in f.shift (collectEvents folds f.msn
+         into it); a per-aircraft IRT lives in that aircraft's remarks. IRT in
+         the formation's msn wants an IR anywhere in the formation; IRT in one
+         aircraft's remarks wants the IR in THAT aircraft. Ring only, no chip —
+         same shape as OCU_NO_IP, and red: the sortie cannot be examined. */
+      const isIR=(id:any)=>{const q=realP(id);return !!(q&&q.q==='IR');};
+      if(/\bIRT\b/i.test(String(f.shift||''))&&crewAll.length&&!crewAll.some(isIR)){
+        crewAll.forEach((id:any)=>markRing(di,id,'hard'));
+        add('hard','NO_IR',crewAll,`IRT in ${f.label} with no IR examiner`);}
+      f.acs.forEach((ac:any)=>{ if(!/\bIRT\b/i.test(String(ac.rmks||'')))return;
+        const crew=[ac.p,ac.w].filter((id:any)=>id&&realP(id));
+        if(crew.length&&!crew.some(isIR)){crew.forEach((id:any)=>markRing(di,id,'hard'));
+          add('hard','NO_IR',crew,`IRT remarks on ${f.label} with no IR examiner`);}});
       /* SC currency — read off the shift as scheduled, both MAIN and SPARE.
          This is about the person's own qualification, not a clash with another
          commitment, so the spare exemption does not cover it. */
@@ -375,10 +393,12 @@ export function validate(){
       }
     });
     /* Q (sims) — the sim box is seated like the jet: a WSO cannot occupy the
-       front seat, and only an IP pilot may occupy the back seat. */
+       front seat, and only an instructor pilot (IP / IR / FI) may occupy the
+       back seat. */
     (day.simcrew||[]).forEach((s:any)=>{ const p=realP(s.p),w=realP(s.w);
       if(p&&p.seat==='RCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is a WSO — cannot take the front seat (${s.label})`);}
-      if(w&&w.seat==='FCP'&&!(w.ip||isInstr(w.q))){markChip(di,s.w,'Q');markRing(di,s.w,'hard');add('hard','QUAL',[s.w],`${w.cs} is a pilot, not IP — only IP may take the back seat (${s.label})`);}
+      if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is CAT IW — a WSO category, cannot take the front seat (${s.label})`);}
+      if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,s.w,'Q');markRing(di,s.w,'hard');add('hard','QUAL',[s.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may take the back seat (${s.label})`);}
     });
     const SORD:any={hard:0,adv:1,note:2};
     ws.sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));

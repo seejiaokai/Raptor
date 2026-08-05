@@ -143,7 +143,7 @@ export function personMatchesHL(p:any){
     if(f==='D'&&p.q==='D')return true;
     if(f==='FL'&&isLead(p.q))return true;
     if(f==='SUP'&&isLead(p.q))return true;      // supervisors — Cat A and B
-    if(f==='INS'&&(isInstr(p.q)||p.ip))return true;
+    if(f==='INS'&&isInstr(p.q))return true;
     if(f==='SXO'&&p.quals.sxo)return true;
     if(f==='SANS'&&p.san)return true;
     if(f==='OCU'&&isOcu(p.q))return true;

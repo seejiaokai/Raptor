@@ -99,21 +99,18 @@ const noAvailPuck = (s: string) => s.replace(
 const noStores = (s: string) => s.replace(
   /<span class="stores">[\s\S]*?<\/span>(?=<\/div>)/g, '')
 
-/* Divergence #8 (owner, Aug 5): CI ("C-cat instructor") left the qual ladder.
-   Every pilot who held it also carried the IP flag, so the instructor half was
-   already recorded — and `isInstr` treated CI exactly as it treats I, so the
-   engine never told them apart. The six who held it are now I. `reference/` is
-   read-only and still says CI, so fold CI ONTO I on both sides: the puck's
-   chip text and the level name its title expands to. Every other byte of those
-   pucks stays under comparison, and the ladder itself is pinned positively in
-   quals.test.tsx. */
-const catCI = (s: string) => s
-  .replace(/(<span class="role q-ins">)CI(<\/span>)/g, '$1I$2')
-  .replace(/· CI · C-cat instr/g, '· I · instructor')
+/* Divergence #8 (owner, Aug 5, extended Aug 5 '26): the qual ladder itself.
+   CI left the ladder first; then the generic I tier and the `ip` flag went
+   too, replaced by the four instructor CATs (IW/IP/IR/FI). This used to be a
+   catCI excision helper here; it is now closed AT THE SOURCE by refwin's
+   remap(), which migrates the in-memory reference's ladder tables, isInstr,
+   puck builder, PEOPLE literals and legend to the port's world before boot —
+   so every byte of every puck is back under comparison. The ladder and the
+   seed migration are pinned positively in quals.test.tsx. */
 
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => catCI(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))))
+    const V = (s: string) => noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di).toBe(V(ref))
@@ -150,7 +147,7 @@ describe('view-week markup parity with the reference', () => {
        port's first input group precedes it, the reference's strip is the cut's
        own start), so it is not byte-compared here; the pins below assert the
        port keeps it in edit mode. */
-    const E = (s: string) => catCI(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s)))))))
+    const E = (s: string) => noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
@@ -178,6 +175,15 @@ describe('view-week markup parity with the reference', () => {
   it('the legend explains the break-day flag', () => {
     expect(legendHTML()).toContain('no break day')
     expect(legendHTML()).toContain('>7</span>no break day')
+  })
+
+  it('the legend names the four instructor CATs and the bare I swatch is gone', () => {
+    const l = legendHTML()
+    expect(l).toContain('>IW</span>IWSO')
+    expect(l).toContain('>IP</span>IP')
+    expect(l).toContain('>IR</span>IR exmr')
+    expect(l).toContain('>FI</span>FWI')
+    expect(l).not.toContain('>I</span>IP / instr')
   })
 
   /* ---- what the excised region above is replaced by ---------------------

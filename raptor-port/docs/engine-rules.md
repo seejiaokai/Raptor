@@ -70,6 +70,30 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   `isUnavail` = Detachment + leave + downchit; `isPersonal` = Meeting,
   Training, Personal, Appointment, Fly, Other. Together they partition
   `INPUT_TYPES` — a test pins that nothing falls between them.
+- **The CAT ladder is `OCU → D → C → B → A → IW → IP → IR → FI`** (owner,
+  Aug 5 '26). The generic `I` tier and the standalone `ip` flag (and its
+  derived `quals.instr`) are gone — instructor-ness lives solely in CAT.
+  `isInstr(q)` = any of the four; `isInstrPilot(q)` = IP/IR/FI (the rear-seat
+  privilege). Seat matrix:
+  - `IW` (instructor WSO): WSO-only category, RCP only. A hand-edited record
+    with `q:'IW'` + `seat:'FCP'` planted forward raises hard `QUAL` (the CAT
+    dropdowns are seat-filtered, so the UI can't create it).
+  - `IP` (instructor pilot) and `IR` (instrument rating examiner — pilot
+    only): may fly FCP or RCP. IR replaced the old "instr rating exmr"
+    meaning; holders kept the letters.
+  - `FI` (fighter wing instructor): pilot or WSO. Seated by the person's own
+    seat — a pilot FI follows the IP rules, a WSO FI the IW rules (the seat
+    checks test pilots with `isInstrPilot` and WSOs by seat, so this falls
+    out for free).
+  `OCU_NO_IP` counts any of the four as supervision, as `p.ip||isInstr` did.
+  Parity stays byte-exact via `refwin.ts:remap()` (retier's sibling), which
+  migrates the in-memory reference's ladder tables, `isInstr`, puck builder,
+  PEOPLE literals and legend to this world before boot.
+- **`NO_IR`, hard: an IRT needs an IR examiner in the crew** (owner,
+  Aug 5 '26). `IRT` (word-bounded, case-insensitive) in a formation's msn →
+  an IR anywhere in that formation's crew; in one aircraft's remarks → the
+  IR in THAT aircraft. Ring only, no chip — the OCU_NO_IP shape. Fires
+  nowhere on the seed week, which is what keeps the parity suite byte-exact.
 - Leave: LL, OL, OIL (`isLocalLeave` = LL+OIL). LL/OIL may stand an SC SPARE;
   OL and Downchit may not (hard DNIF_FLY/LEAVE_FLY) even though spares are
   otherwise `saExempt`. SC SPARE carries no crew rest either way. SC currency
