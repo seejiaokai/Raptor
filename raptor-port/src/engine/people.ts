@@ -108,7 +108,12 @@ export function deriveQuals(p:any){
   p.quals=Object.assign({
     sxo:!!p.sxo,
     imc:o>=1, nvg:o>=1,
-    dnif:false, san:!!p.san,
+    /* TF (terrain following) is granted, never derived — it arrived as a new
+       qualification with nobody signed off for it (owner, 5 Aug 26), so it
+       starts false for everyone and is ticked by hand on the Quals page.
+       `dnif` was here; it went with its column — a downchit is an INPUT with
+       dates (isDownchit), which is what every rule actually reads. */
+    tf:!!p.tf, san:!!p.san,
     /* Scheduler is an APPOINTMENT, not a flying qualification — it is ticked on
        the Quals page and it is what puts someone in the SKED CK, PLANNED BY and
        APPROVED BY drop-downs. Nothing derives it; it is granted. */

@@ -17,6 +17,11 @@ const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
 }
+/* heading labels without the sort arrow the sorted column carries */
+const heads = () => $$('#qtbl thead th').map(x => (x.textContent || '').replace(/[▲▼]/g, ''))
+/* the callsign column, top to bottom — what a sort is judged by */
+const col = (sel: string) => $$(`#qtbl tbody tr:not(.grp) ${sel}`).map(x => (x.textContent || '').trim())
+const callsigns = () => col('td.qname')
 
 beforeAll(async () => {
   initStore()
@@ -108,7 +113,9 @@ describe('the callsign / initials columns', () => {
   })
 
   it('the table heads with Callsign then Initials, and Name is gone', () => {
-    const hs = $$('#qtbl thead th').map(x => x.textContent)
+    /* the sorted heading carries an arrow inside it, so read the LABEL —
+       this assertion is about which columns exist, not how they are sorted */
+    const hs = heads()
     expect(hs[0]).toBe('Callsign')
     expect(hs[1]).toBe('Initials')
     expect(hs).not.toContain('Name')
@@ -245,5 +252,196 @@ describe('the CAT column', () => {
     expect(bane.quals.catA).toBeUndefined()
     expect(bane.quals.catB).toBeUndefined()
     expect(bane.quals.instr).toBeUndefined()
+  })
+})
+
+/* ---- the columns themselves (owner, 5 Aug 26) ---------------------------
+   a fixed left-to-right arrangement, Downchit dropped, TF added. */
+describe('the qualification columns', () => {
+  const QCOLS = ['SANS', 'SXO', 'Scheduler', 'SC DAY', 'SC NIGHT', 'DAAR', 'NAAR', 'NVG', 'IMC', 'TF']
+
+  it('run SANS → TF in the owner\'s order, between CAT and Remarks', () => {
+    const hs = heads()
+    expect(hs.slice(hs.indexOf('CAT') + 1, hs.indexOf('Remarks'))).toEqual(QCOLS)
+  })
+
+  it('Downchit is gone from the table and from the derived quals', () => {
+    expect(heads()).not.toContain('Downchit')
+    expect($$('#qtbl td[data-q$="|dnif"]')).toEqual([])
+    const p = { ...PEOPLE.bane, quals: undefined }
+    deriveQuals(p)
+    expect(p.quals.dnif, 'a downchit is an INPUT with dates, not a permanent tick').toBeUndefined()
+  })
+
+  it('TF is a real column that starts held by nobody', () => {
+    expect($$('#qtbl td[data-q$="|tf"]').length).toBe($$('#qtbl tbody tr:not(.grp)').length)
+    expect(Object.keys(PEOPLE).filter(id => PEOPLE[id].quals && PEOPLE[id].quals.tf)).toEqual([])
+    expect($$('#qtbl td[data-q$="|tf"] .qchk')).toEqual([])
+  })
+
+  it('and TF ticks and unticks like any other qualification', async () => {
+    await click($('#qEdit'))
+    await click($('#qtbl td[data-q="bane|tf"]'))
+    expect(PEOPLE.bane.quals.tf).toBe(true)
+    expect($('#qtbl td[data-q="bane|tf"] .qchk')).toBeTruthy()
+    await click($('#qtbl td[data-q="bane|tf"]'))
+    expect(PEOPLE.bane.quals.tf).toBe(false)
+    await click($('#qSave'))
+  })
+})
+
+/* ---- sorting by heading (owner, 5 Aug 26) -------------------------------
+   the Sort chips are gone: a click on a heading sorts by it, a second click
+   inverts. CAT sorts by seniority and a qual column by who holds it. */
+describe('sorting by clicking a heading', () => {
+  const th = (k: string) => $(`#qtbl thead th[data-sort="${k}"]`)
+  /* the same comparison the page sorts with, so the expectation is not
+     testing localeCompare's opinion against the code's */
+  const alpha = (list: string[]) => [...list].sort((a, b) => {
+    const x = a.toLowerCase(), y = b.toLowerCase(); return x < y ? -1 : x > y ? 1 : 0
+  })
+  const catOf = (cs: string) => QORDER[PEOPLE[ID_BY_CS[cs.toLowerCase()]].q]
+
+  beforeAll(async () => {
+    if ($('#qtbl').classList.contains('editing')) await click($('#qSave'))
+    await click($('#qViewP'))
+  })
+
+  it('the Sort chips are gone, and View carries the three seat choices', () => {
+    expect($$('.qbar .lab').map(x => x.textContent)).toContain('View')
+    expect($$('.qbar .lab').map(x => x.textContent)).not.toContain('Sort')
+    expect($$('.qbar .fchip').map(x => x.textContent)).toEqual(['Pilots', 'WSOs', 'All'])
+    for (const k of ['cs', 'initials', 'flight', 'cat', 'tf']) expect(th(k), k).toBeTruthy()
+  })
+
+  it('opens on callsign, ascending', () => {
+    expect(callsigns()).toEqual(alpha(callsigns()))
+    expect(th('cs').getAttribute('aria-sort')).toBe('ascending')
+    expect(th('cs').className).toContain('on')
+  })
+
+  it('a second click inverts it, a third puts it back', async () => {
+    await click(th('cs'))
+    expect(th('cs').getAttribute('aria-sort')).toBe('descending')
+    expect(callsigns()).toEqual(alpha(callsigns()).reverse())
+    await click(th('cs'))
+    expect(th('cs').getAttribute('aria-sort')).toBe('ascending')
+    expect(callsigns()).toEqual(alpha(callsigns()))
+  })
+
+  it('initials sort alphabetically, with the blanks at the bottom', async () => {
+    await click(th('initials'))
+    const inits = col('td.qinitc')
+    const filled = inits.filter(x => x)
+    expect(filled).toEqual(alpha(filled))
+    expect(inits.slice(0, filled.length), 'no blank interrupts the filled ones').toEqual(filled)
+    expect(th('initials').className).toContain('on')
+    expect(th('cs').className, 'only one column sorts at a time').not.toContain('on')
+  })
+
+  /* the roster arrived with every Flight blank, so the grouping is proved on
+     flights typed in through edit mode — which is also the only way the
+     squadron will ever get them in (owner, 5 Aug 26) */
+  it('flight is editable in edit mode, and the grouping follows what is typed', async () => {
+    await click($('#qEdit'))
+    const box = $('#qtbl input.qflt[data-flt="bane"]') as HTMLInputElement
+    expect(box, 'the Flight cell is a field in edit mode').toBeTruthy()
+    await act(async () => {
+      const set = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+      set.call(box, 'b flt'); box.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    expect(PEOPLE.bane.flight, 'upper-cased so it groups with any other B FLT').toBe('B FLT')
+    for (const [id, f] of [['snap', 'B FLT'], ['dice', 'A FLT'], ['chaps', 'A FLT']] as const) {
+      const b = $(`#qtbl input.qflt[data-flt="${id}"]`) as HTMLInputElement
+      await act(async () => {
+        const set = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+        set.call(b, f); b.dispatchEvent(new Event('change', { bubbles: true }))
+      })
+    }
+    await click($('#qSave'))
+    await click(th('flight'))
+    const fl = col('td.qfltc')
+    const named = fl.filter(x => x)
+    expect(named, 'the two A FLT sit together, then the two B FLT').toEqual(['A FLT', 'A FLT', 'B FLT', 'B FLT'])
+    /* the blanks stay in one block of their own rather than splitting them */
+    expect(fl.slice(0, named.length)).toEqual(named)
+  })
+
+  it('flight groups each flight together, pointed either way', async () => {
+    /* the test above left it sorted by flight, so point it back at ascending
+       rather than assuming which way a click leaves it */
+    if (th('flight').getAttribute('aria-sort') !== 'ascending') await click(th('flight'))
+    /* every flight appears in exactly ONE run of rows — that is what
+       "grouped" means, and it is stronger than checking the order */
+    const runsOf = () => { const fl = col('td.qfltc'); return fl.filter((f, i) => f !== fl[i - 1]) }
+    const up = runsOf()
+    expect(up.length, 'no flight is split across two blocks').toBe(new Set(up).size)
+    const named = up.filter(x => x)
+    expect(named).toEqual(alpha(named))
+    expect(up[up.length - 1], 'the people with no flight yet sit at the bottom').toBe('')
+    /* inverting keeps the blocks whole; it only turns them round */
+    await click(th('flight'))
+    const down = runsOf()
+    expect(down.length).toBe(new Set(down).size)
+    expect(down.filter(x => x)).toEqual(alpha(named).reverse())
+    expect(down[0], 'and the blanks come to the top instead').toBe('')
+    await click(th('cs'))
+  })
+
+  it('CAT sorts by seniority, most senior first, and inverts', async () => {
+    await click(th('cat'))
+    const down = callsigns().map(catOf)
+    expect(down, 'FI at the top, OCU at the bottom').toEqual([...down].sort((a, b) => b - a))
+    await click(th('cat'))
+    const up = callsigns().map(catOf)
+    expect(up).toEqual([...up].sort((a, b) => a - b))
+  })
+
+  it('a qualification column brings the qualified to the top', async () => {
+    await click(th('scDay'))
+    const held = $$('#qtbl tbody tr:not(.grp) td[data-q$="|scDay"]').map(td => !!td.querySelector('.qchk'))
+    expect(held.indexOf(false) === -1 || held.lastIndexOf(true) < held.indexOf(false),
+      'no unqualified row sits above a qualified one').toBe(true)
+    /* and the inversion puts the unqualified on top instead */
+    await click(th('scDay'))
+    const flipped = $$('#qtbl tbody tr:not(.grp) td[data-q$="|scDay"]').map(td => !!td.querySelector('.qchk'))
+    expect(flipped.indexOf(true) === -1 || flipped.lastIndexOf(false) < flipped.indexOf(true)).toBe(true)
+    await click(th('cs'))
+  })
+
+  it('a WSO with no AAR at all sorts with the unqualified, not above them', async () => {
+    await click($('#qViewW'))
+    await click(th('daar'))
+    /* every WSO row is struck out in BOTH AAR columns, so the sort has
+       nothing to lift: the block stays whole rather than the dashes being
+       thrown to the top as if they were ticks */
+    const rows = $$('#qtbl tbody tr:not(.grp)').length
+    expect($$('#qtbl tbody tr:not(.grp) td.qcell.na').length).toBe(rows * 2)
+    expect(callsigns().length).toBe(rows)
+    await click($('#qViewP')); await click(th('cs'))
+  })
+})
+
+/* ---- View: Pilots / WSOs / All (owner, 5 Aug 26) ------------------------- */
+describe('the View chips', () => {
+  it('All shows the pilots and the WSOs together', async () => {
+    await click($('#qViewP')); const pilots = callsigns().length
+    await click($('#qViewW')); const wsos = callsigns().length
+    await click($('#qViewA'))
+    expect(callsigns().length).toBe(pilots + wsos)
+    expect(callsigns()).toContain('Bane')      // a pilot
+    expect(callsigns()).toContain('Freak')     // a WSO
+    expect($('#qtbl tbody tr.grp').textContent).toContain('Assigned aircrew')
+    expect($('#qViewA').className).toContain('on')
+  })
+
+  it('and the seat views still show only their own seat', async () => {
+    await click($('#qViewP'))
+    expect(callsigns()).not.toContain('Freak')
+    expect($('#qtbl tbody tr.grp').textContent).toContain('Assigned pilots')
+    await click($('#qViewW'))
+    expect(callsigns()).not.toContain('Bane')
+    expect($('#qtbl tbody tr.grp').textContent).toContain('Assigned WSOs')
+    await click($('#qViewP'))
   })
 })

@@ -266,10 +266,13 @@ beside it; Add person takes callsign / initials / pilot-WSO / cat, and the
 callsign is the only required field — first and last name are gone (owner,
 Aug 26; the seed roster never carried them).
 
-In edit mode both columns become inputs, and both commit on **change**
+In edit mode callsign, initials and **flight** become inputs, and all three
+commit on **change**
 (blur / Enter) rather than on input: the table is an innerHTML string that
 `notify()` rebuilds, so a per-keystroke commit would tear the field out from
-under the cursor. Initials are stored upper-cased. A callsign edit goes
+under the cursor. Initials and flight are stored upper-cased — flight
+because the column exists to be GROUPED by, and `a` on one row against `A`
+on another would read as two flights. A callsign edit goes
 through `renameCallsign` (see `engine-rules.md` §Who a row stores) which
 rewrites the schedule's stored callsign strings so the pucks follow, then
 re-runs `validate()` — warning text embeds the callsign, so skipping that
@@ -279,4 +282,31 @@ toasts why.
 
 Seeded people have EMPTY initials on purpose — `engine/people.ts` carries
 callsigns and never names, so there is nothing to derive them from. Do not
-invent them.
+invent them. The same goes for FLIGHT: the roster records none, which is why
+the column became editable when the headings learned to group by it (owner,
+5 Aug 26). Type them in; do not seed invented ones.
+
+## The Quals page's columns, sorting and View (owner, 5 Aug 26)
+
+The qualification columns run in a fixed order — **SANS, SXO, SCHEDULER, SC
+DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF** — currency and appointments first,
+flying qualifications after. `Downchit` was dropped: it was the last tick
+column nothing read, and a downchit is an INPUT with dates (`isDownchit`),
+which is what DNIF_FLY and the faded pucks actually key off. `TF` (terrain
+following) is new, derived from nothing, held by nobody until it is ticked,
+and read by no rule — a record, not a gate.
+
+**The headings sort; the Sort chips are gone.** One click sorts a column, a
+second inverts it, and the sorted heading carries `▲`/`▼` plus `aria-sort`,
+the same idiom as the Inputs table (they share `.insort` / `.inarrow`).
+Callsign, initials and flight sort alphabetically with the blanks last;
+**CAT sorts by seniority** (`QORDER`, most senior first), not alphabetically;
+a **qualification column sorts by who holds it**, ticked above unticked. A
+struck-out AAR cell — a WSO, who holds no AAR at all — counts as not held and
+stays with the unticked rather than being lifted with the ticks. Callsign
+breaks every tie, so equal rows keep a stable order.
+
+`View` beside Export chooses **Pilots / WSOs / All**; All lists both under an
+`Assigned aircrew` group head. The CSV export follows the screen — same view,
+same filter, same sort — and the All export alone carries a `Seat` column,
+since mixed rows no longer say which is which.
