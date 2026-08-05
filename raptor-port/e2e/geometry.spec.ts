@@ -7,7 +7,7 @@
    pass `npm test` all day. Here they run in a real browser on the real
    production build, so a CSS change that breaks one fails a gate. */
 import { expect, test } from '@playwright/test'
-import { go, login, pan, puckSize, scrollTo, settle } from './app'
+import { go, login, pan, puckSize, scrollTo, settle, settleBoth } from './app'
 
 const PHONE = { width: 390, height: 844 }
 const DESK = { width: 1500, height: 950 }
@@ -240,4 +240,85 @@ test('puck text stays inside the puck, descenders and all', async ({ page }) => 
   test.skip(worst.over === -Infinity, 'no descender on screen to measure')
   expect(worst.fs, 'puck type is 9px').toBe('9px')
   expect(worst.over, `descender ink of "${worst.sample}" stays inside the puck`).toBeLessThanOrEqual(0)
+})
+
+/* ── Warning navigation ─────────────────────────────────────────────────────
+   Clicking an issue is supposed to bring the offending puck into view. jsdom
+   cannot see any of this — it has no layout and does not implement
+   scrollIntoView — so warnjump.test.tsx can only pin WHICH element is aimed
+   at. Whether the element actually ends up on screen is measurable here and
+   nowhere else. Desktop only: .week{scroll-snap-type} is switched off below
+   820px (scheduler.css), and the snap is half of what these guard. */
+test.describe('clicking a warning brings the puck into view', () => {
+  test('the week lands on the day, on its snap point, with the puck on screen', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'viewsched')
+
+    /* find a flagged day that is NOT the leftmost one, then scroll away from
+       it — otherwise "it is in view" proves nothing, it was never out of view */
+    const di = await page.evaluate(() => {
+      const days = [...document.querySelectorAll('#vWeek .day[data-day]')]
+      const hit = days.find(d => d.querySelector('.daywarn[data-daywarn]') && +(d as HTMLElement).dataset.day! > 1)
+      return hit ? +(hit as HTMLElement).dataset.day! : -1
+    })
+    test.skip(di < 0, 'no flagged day far enough into the week to scroll away from')
+
+    await scrollTo(page, '#vWeek', 0)
+    await page.click(`#vWeek .day[data-day="${di}"] .daywarn[data-daywarn]`)
+    await page.waitForSelector(`#vWeek .day[data-day="${di}"] .witem[data-wdi]`)
+    await scrollTo(page, '#vWeek', 0)          // the expand may have nudged it
+
+    await page.click(`#vWeek .day[data-day="${di}"] .witem[data-wdi]`)
+    await settleBoth(page, '#vWeek')
+
+    const m = await page.evaluate((d) => {
+      const week = document.querySelector('#vWeek') as HTMLElement
+      const day = document.querySelector(`#vWeek .day[data-day="${d}"]`) as HTMLElement
+      const puck = document.querySelector('#vWeek .puck.wfoc:not(.echo)') as HTMLElement
+      if (!puck) return null
+      const w = week.getBoundingClientRect(), p = puck.getBoundingClientRect()
+      return {
+        inView: p.left >= w.left - 1 && p.right <= w.right + 1,
+        /* the snap assertion: inline:'center' asks to rest between two snap
+           points, so the browser re-snaps and can leave you a whole day past
+           the one you clicked. On the snap point, this delta is 0. */
+        dayOffset: Math.round(day.getBoundingClientRect().left - w.left),
+      }
+    }, di)
+    expect(m, 'a focused puck is on the page').not.toBeNull()
+    expect(m!.dayOffset, 'the week rests on the day\'s snap point, not between two').toBe(0)
+    expect(m!.inView, 'the offending puck is inside the week viewport').toBe(true)
+  })
+
+  test('the board scrolls its own panel to the puck', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'editsched')
+
+    const di = await page.evaluate(() => {
+      const days = [...document.querySelectorAll('#eWeek .day[data-day]')]
+      const hit = days.find(d => d.querySelector('.daywarn[data-daywarn]'))
+      return hit ? +(hit as HTMLElement).dataset.day! : -1
+    })
+    test.skip(di < 0, 'no flagged day in the seed week')
+
+    await page.evaluate((d) => (window as any).openScheduler(d), di)
+    await page.waitForSelector('#sbWarn .wln[data-wdi]')
+    /* start from the bottom of the board, so landing on a puck means the panel
+       really moved rather than the target happening to be above the fold */
+    await page.evaluate(() => { const b = document.querySelector('#sbBoard') as HTMLElement; b.scrollTop = b.scrollHeight })
+    await page.click('#sbWarn .wln[data-wdi]')
+    await settleBoth(page, '#sbBoard')
+
+    const m = await page.evaluate(() => {
+      const board = document.querySelector('#sbBoard') as HTMLElement
+      const puck = document.querySelector('.sb-boardwrap .puck.wfoc') as HTMLElement
+      if (!puck) return null
+      const b = board.getBoundingClientRect(), p = puck.getBoundingClientRect()
+      return { inView: p.top >= b.top - 1 && p.bottom <= b.bottom + 1 }
+    })
+    expect(m, 'the board lit a puck for the focused warning').not.toBeNull()
+    expect(m!.inView, 'the offending puck is inside the board panel').toBe(true)
+  })
 })

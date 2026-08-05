@@ -7,9 +7,9 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 525/31
+**Every gate is green at this commit**, run first-hand: `npm test` 534/32
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 11/11, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 13/13, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 
 ## Known issues / open work
@@ -49,6 +49,18 @@ test:e2e` 11/11, and the two that are NOT in CI — `npm run probes:adapted`
   because its blind seat-stuffing eventually put a downchit man on an SC
   SPARE. One probe (`zdup`) still fails identically on both builds —
   environment-bound, not a port defect.
+- **Clicking a warning jumps to the puck (owner, 5 Aug 26).** All four surfaces
+  that flag aircrew now navigate: the week's issue rows, the day-detail panel,
+  the board's `Live checks` list (which was completely inert — no attributes,
+  no handler) and the flag chip on a puck. Warning focus now lights board pucks
+  too, not just the week's. Two defects on the old path went with it: a stale
+  row scrolled to the *previously* focused warning, and `hsSync` was a dead
+  `undefined` stub in `highlights.ts` so the proxy scrollbar never re-synced.
+  Known limit, by design: the crew-combination codes (`ILLEGAL_CREW`,
+  `CREW_SOLO`, `CO_APPROVAL`, `NO_IR`) set a ring but no chip, so those
+  warnings are unreachable from the chip surface — reaching them means making
+  the ring clickable, which collides with select-person. Contract:
+  `docs/ui-contracts.md` §Jumping from a warning to the puck that caused it.
 - **`sbWide` / board-grip state** is module-local and resets on reload
   (matches the original's session-scoped behaviour).
 - **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** "Restore
@@ -188,11 +200,11 @@ test:e2e` 11/11, and the two that are NOT in CI — `npm run probes:adapted`
 | `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. |
 | `html.ts` | THE builder library: `dayHTML`, `puck`, `slotCell`, `signoffHTML`, day warnings, day-info panel, legend, cx/flag tags. |
 | `board-html.ts` / `palette-html.ts` / `logic-html.ts` | Board panels (inputs bands, notes, programme, duties, sim rows, ground, personal-inputs group, sim notes), the aircrew palette, the Logic tab's rule text. |
-| `interactions.ts` | `routeClick` — the delegated click router: select/arm/plant, publish/AL/sign-clear, day-info, warning boxes, week chips, stores remove + the `+` config picker (`openStoresMenu`). |
+| `interactions.ts` | `routeClick` — the delegated click router: select/arm/plant, publish/AL/sign-clear, day-info, warning boxes, the board's issue list and a puck's flag chip (both via `jumpToWarn`, which opens `DWOPEN` as the day-detail branch does), week chips, stores remove + the `+` config picker (`openStoresMenu`). |
 | `drag.ts` | Mouse HTML5 DnD + the touch pointer machine; `applyDrop()` is the single drop path; `barDrop` qualification warning. |
 | `pan.ts` | Week arrows (`panDays`), proxy scrollbar (`hsSet`/`hsSync`, echo-guarded), shift+wheel, palette day-follow, phone day dots. |
 | `textedit.ts` | Inline text editing: Enter commits / Escape restores, heal-in-place, deferred commit, `editingText()`, plus the four fields outside the `data-txt` grammar. |
-| `highlights.ts` | Post-render decoration: selection/search/warning-focus classes on every puck, `paintArm`, `scrollToWarnFocus`. |
+| `highlights.ts` | Post-render decoration: selection/search/warning-focus classes on every puck (the week AND the board's `.sb-boardwrap`, never the palettes or a `.pv-frozen` preview), `paintArm`, and `scrollToWarnFocus` — surface-aware, snap-safe, picking the puck whose row holds the most of the warning's crew. |
 | `Modals.tsx` | DayPop (read-only day details), Insights, Manage-users, Airspace/traffic popup. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Contract: `docs/ui-contracts.md` §The Inputs table's view state. |
 | `RangeCal.tsx` | The Inputs date picker (owner, Aug 26): ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
@@ -212,6 +224,6 @@ test:e2e` 11/11, and the two that are NOT in CI — `npm run probes:adapted`
 | `docs/session-state.md` | The last session's leftovers — **often absent, and absent is meaningful**: it exists only while something is genuinely pending, and the session that clears the last item deletes it. This file holds the durable state; that one holds what a session could not finish. Written by `.claude/skills/session-handoff`. |
 | `PORTING.md` | **Historical** — the phase plan the port was built from. Nothing left to run; kept only because `probe-sweep.md` and `perf-port.cjs` cite its decisions (dropped probes, original timing budgets). |
 | `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the four gates. |
-| `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser, `app.ts` holds login/nav/scroll-settle helpers. `playwright.config.ts` builds and serves the port itself. |
+| `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both). `playwright.config.ts` builds and serves the port itself. |
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
