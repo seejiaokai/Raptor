@@ -18,7 +18,7 @@ export function lgRules(){
     ground:'a ground event',prog:'a programme item'};
   const chipRow=()=>`<span class="lgchips">`+Object.keys(RANK).sort((a:any,b:any)=>RANK[b]-RANK[a])
     .map((c:any)=>`<span class="lgc"><i style="background:${
-      c==='C'||c==='CR'||c==='Q'||c==='NB'||c==='SB'||c==='CCH'?'#F0555F;color:#fff':
+      c==='C'||c==='CR'||c==='Q'||c==='NB'||c==='SB'||c==='CPH'?'#F0555F;color:#fff':
       c==='LD'?'#8A96A3;color:#0B0D10':'#E5A83B'}">${esc(chipText(c))}</i>${esc(wlbl(CHIP_LABEL[c]||c))}</span>`).join('')+`</span>`;
   const matrix=()=>`<span class="lgmatrix">`+Object.keys(KIND).map((k:any)=>{
     const hard=!!SHIFT_HARD[k], off=kindOff(k);

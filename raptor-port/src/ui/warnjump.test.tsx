@@ -134,17 +134,17 @@ describe('the flag chip on a puck', () => {
     expect(scrolled.length).toBeGreaterThan(0)
   })
 
-  it('a CC chip reaches the crew-composition warning it stands for', async () => {
-    /* This is the gap CC was added to close: the pairing rules used to ring the
-       puck and caption nothing, so they were the one warning family with
-       nothing on the puck to click. */
+  it('a CP chip reaches the crew-pairing warning it stands for', async () => {
+    /* This is the gap CP (renamed from CC, owner ask 5 Aug 26) was added to
+       close: the pairing rules used to ring the puck and caption nothing, so
+       they were the one warning family with nothing on the puck to click. */
     await act(async () => { view.setBoardDay(null); view.selDrop(); notify() })
-    const cc = $$('#vWeek .puck[data-person] .lchip')
-      .find(c => (c.textContent || '').trim() === 'CC')
-    expect(cc, 'the seed week renders a CC chip').toBeTruthy()
-    const pk = cc!.closest('.puck[data-person]') as HTMLElement
+    const cp = $$('#vWeek .puck[data-person] .lchip')
+      .find(c => (c.textContent || '').trim() === 'CP')
+    expect(cp, 'the seed week renders a CP chip').toBeTruthy()
+    const pk = cp!.closest('.puck[data-person]') as HTMLElement
     const di = +(pk.closest('.day[data-day]') as HTMLElement).dataset.day!
-    await click(cc!)
+    await click(cp!)
     await flush()
     expect(view.WFOCUS, 'a warning is focused').toBeTruthy()
     const w = WARN.byDay[view.WFOCUS.di].warns[view.WFOCUS.ix]
@@ -155,11 +155,11 @@ describe('the flag chip on a puck', () => {
     expect(scrolled.length).toBeGreaterThan(0)
   })
 
-  it('both CC codes print the same two letters, so the squadron reads one flag', () => {
+  it('both CP codes print the same two letters, so the squadron reads one flag', () => {
     const txt = $$('#vWeek .puck .lchip').map(c => (c.textContent || '').trim())
-    expect(txt).toContain('CC')
-    /* CCH must never reach the screen as its own glyph — it is CC in red */
-    expect(txt).not.toContain('CCH')
+    expect(txt).toContain('CP')
+    /* CPH must never reach the screen as its own glyph — it is CP in red */
+    expect(txt).not.toContain('CPH')
   })
 
   it('the puck body still selects the person', async () => {
@@ -215,6 +215,44 @@ describe('a stale warning row', () => {
     expect(scrolled.length, 'a stale click scrolls nowhere at all').toBe(0)
     expect(view.WFOCUS.di, 'and leaves the live focus alone').toBe(was.di)
     expect(view.WFOCUS.ix).toBe(was.ix)
+  })
+})
+
+/* ---- the board day tab clears a stale warning focus (owner, 5 Aug 26) -----
+   setBoardDay disarms a cross-day armed slot but used to leave WFOCUS pointed
+   at the day just left. warnOnBoard() (WFOCUS.di===SBDAY) then goes false and
+   highlights.ts stops lighting anything — the lit pucks and the selected
+   issue row vanish while the app still holds a focus nothing on screen can
+   clear. Three paths, three assertions below: the open-board path (SBDAY
+   null -> n) must leave a week focus alone; switching the board day tab AWAY
+   from the focused day must drop it; switching the tab TO the focused day
+   must keep it. */
+describe('the board day tab clears a stale warning focus', () => {
+  it('open leaves it, switching away drops it, switching back keeps it', async () => {
+    const di = warnDay()
+    const other = di === 0 ? 1 : 0
+
+    /* focus a warning from the WEEK, board still closed */
+    await act(async () => { view.setBoardDay(null); view.toggleDayWarn(di); notify() })
+    await click($(`#vWeek .day[data-day="${di}"] .witem[data-wdi]`))
+    await flush()
+    expect(view.WFOCUS, 'a warning is focused from the week').toBeTruthy()
+    expect(view.WFOCUS.di).toBe(di)
+
+    /* opening the board on a DIFFERENT day is the null->n path — untouched */
+    await act(async () => { openScheduler(other); notify() })
+    expect(view.WFOCUS, 'opening the board on another day leaves a week focus alone').toBeTruthy()
+    expect(view.WFOCUS.di).toBe(di)
+
+    /* the real day-tab click (not a direct setBoardDay call), switching the
+       board TO the focused warning's own day — must keep it */
+    await click($(`#sbDays [data-sbtab="${di}"]`))
+    expect(view.WFOCUS, 'switching the board day tab onto the focused day keeps it').toBeTruthy()
+    expect(view.WFOCUS.di).toBe(di)
+
+    /* and switching the tab AWAY from that day clears the now-stale focus */
+    await click($(`#sbDays [data-sbtab="${other}"]`))
+    expect(view.WFOCUS, 'switching the board day tab off the focused day clears it').toBeNull()
   })
 })
 

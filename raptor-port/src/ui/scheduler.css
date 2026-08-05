@@ -540,13 +540,13 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .puck .lchip.l-a{background:#E5A83B}
 /* LD = long work day — a grey note, not a warning */
 .puck .lchip.l-ld{background:#8A96A3;color:#0B0D10}
-/* CC = crew composition — the pairing rules (owner, 5 Aug 26). Two classes for
-   one printed flag: amber where the pairing needs approval (crew solo, CO
-   approval, OCU with no IP), red where it is not authorised at all (illegal
-   crew, IRT with no IR examiner). The letters stay CC either way — the colour
-   is the severity, exactly as the ring behind it. */
-.puck .lchip.l-cc{background:#E5A83B}
-.puck .lchip.l-cch{background:#F0555F;color:#fff}
+/* CP = crew pairing (renamed from CC, owner ask 5 Aug 26) — the pairing rules.
+   Two classes for one printed flag: amber where the pairing needs approval
+   (crew solo, CO approval, OCU with no IP), red where it is not authorised at
+   all (illegal crew, IRT with no IR examiner). The letters stay CP either way
+   — the colour is the severity, exactly as the ring behind it. */
+.puck .lchip.l-cp{background:#E5A83B}
+.puck .lchip.l-cph{background:#F0555F;color:#fff}
 /* conflict / crew rest → red box around the whole puck */
 .puck.boxred{box-shadow:0 0 0 2px var(--hard)!important;border-color:var(--hard)!important}
 .puck.sel.boxred,.puck.me.boxred{box-shadow:0 0 0 2px var(--hard),0 0 10px 1px rgba(240,85,95,.7)!important}

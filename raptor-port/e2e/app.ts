@@ -61,6 +61,28 @@ export async function settleBoth(page: Page, sel: string) {
   }, sel)
 }
 
+/* The week surfaces (#vWeek/#eWeek) scroll horizontally on THEMSELVES but
+   vertically on the PAGE — there is no vertical scroller on the week element
+   at all, so settleBoth(page,'#eWeek') reports Y as "settled" from frame one
+   (it never moves) while window.scrollY is still animating underneath. A
+   measurement taken right after that false-settle lands mid-scroll about half
+   the time. This pairs the element's real horizontal axis with the page's
+   real vertical one. */
+export async function settleWeek(page: Page, sel: string) {
+  return page.evaluate(async (s) => {
+    const el = document.querySelector(s as string) as HTMLElement
+    let lx = NaN, ly = NaN, same = 0
+    for (let i = 0; i < 240; i++) {
+      await new Promise(r => requestAnimationFrame(() => r(null)))
+      const x = Math.round(el.scrollLeft), y = Math.round(window.scrollY)
+      same = (x === lx && y === ly) ? same + 1 : 0
+      lx = x; ly = y
+      if (same >= 8) break
+    }
+    return { left: lx, top: ly }
+  }, sel)
+}
+
 /* set a scroll position and wait for it to be real — 'instant' because 'auto'
    means "obey the element's CSS", and the week's CSS says smooth */
 export async function scrollTo(page: Page, sel: string, px: number) {

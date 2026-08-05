@@ -30,7 +30,21 @@ export let EDITON:any=true
 export function setEditOn(v:any){ EDITON=!!v }
 export let ROSDAY:any=0
 export function setRosDay(n:any){ ROSDAY=n }
-export function setBoardDay(n:any){ if(ARM&&ARM.di!==n)disarmSlot(); SBDAY=n }
+export function setBoardDay(n:any){
+  if(ARM&&ARM.di!==n)disarmSlot();
+  /* the day-tab switch disarms a slot armed on another day (above) but used to
+     leave WFOCUS pointed at the day just left — warnOnBoard() (WFOCUS.di===
+     SBDAY) then goes false and highlights.ts stops lighting anything, so the
+     lit pucks and selected issue row silently vanish while the app still
+     holds a focus the user can neither see nor clear from the board. Clear it
+     only when the board was ALREADY open (SBDAY!=null — the null->n open path
+     must not touch it, or a week-set focus would drop the moment the board
+     opens on some other day), the day is REALLY changing (n!==SBDAY), and the
+     focus is not for the day being switched TO (WFOCUS.di!==n) — landing on
+     the focused warning's own day must keep it lit. */
+  if(SBDAY!=null&&n!==SBDAY&&WFOCUS&&WFOCUS.di!==n)WFOCUS=null;
+  SBDAY=n;
+}
 export function setPage(p:any){ CURPAGE=p }
 /* ARM put-down for history.ts (ESM cannot reassign across modules) */
 export function armDrop(){ ARM=null }

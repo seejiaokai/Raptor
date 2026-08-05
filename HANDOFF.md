@@ -7,9 +7,9 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 544/32
+**Every gate is green at this commit**, run first-hand: `npm test` 546/32
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 13/13, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 17/17, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 
 ## Known issues / open work
@@ -33,7 +33,9 @@ test:e2e` 13/13, and the two that are NOT in CI — `npm run probes:adapted`
   browser against a preview of the production build — puck exactly 74×15,
   free text wrapping rather than overflowing, one day box per pan click, the
   proxy scrollbar, scroll held across an edit, a programme hole rendering no
-  element, descender ink inside the puck — seven contracts over 11 tests. It
+  element, descender ink inside the puck, and the warning-jump paths on every
+  surface (both weeks, day-detail, flag chip, the board small and large) —
+  eight contract families over 17 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
@@ -56,20 +58,30 @@ test:e2e` 13/13, and the two that are NOT in CI — `npm run probes:adapted`
   too, not just the week's. Two defects on the old path went with it: a stale
   row scrolled to the *previously* focused warning, and `hsSync` was a dead
   `undefined` stub in `highlights.ts` so the proxy scrollbar never re-synced.
+  A third went with it since (owner, 5 Aug 26): switching the **board's day
+  tab** used to leave `WFOCUS` pointed at the day just left, so `warnOnBoard()`
+  went false and the lit pucks and selected issue row vanished while the app
+  still held a focus nothing on screen could clear — `setBoardDay` now drops
+  it under those conditions, keeping it when the tab lands on the focused
+  day itself and leaving a week-set focus alone when the board merely opens.
+  `e2e/geometry.spec.ts` now also covers the edit week's far-day jump on both
+  axes, the view week's day-detail panel and flag-chip jumps, and the board at
+  a small (900×600) viewport scrolling to the deepest-nested warning's puck.
   Contract: `docs/ui-contracts.md` §Jumping from a warning to the puck that
   caused it.
-- **The crew-composition chip `CC` (owner, 5 Aug 26).** The pairing rules
-  (`CREW_SOLO`, `CO_APPROVAL`, `OCU_NO_IP`, `ILLEGAL_CREW`, `NO_IR`) used to
-  ring a puck and caption nothing, which left them the one warning family with
-  nothing to click. They now all chip: **two codes, one printed flag** — `CC`
-  amber where the pairing needs approval, `CCH` red where it is not authorised
-  — both printing `CC`. A ring with no chip is now a bug and a test asserts
-  there are none. Ranking is an insertion, not a reshuffle (`CC` leads the
-  advisories, `CCH` sits under `C`), so a man already carrying a conflict keeps
-  the `C` flag. Adding any chip code means patching `refwin.ts:rematrix()` in
-  the same breath — `RANK`, `CHIP_TEXT` **and** `CHIP_LABEL` — or the
-  byte-exact reference-markup parity fails on the tooltip, not the rule.
-  Rules: `docs/engine-rules.md` §The crew-composition chip.
+- **The crew-pairing chip `CP` (owner, 5 Aug 26; renamed from `CC`, owner ask
+  5 Aug 26).** The pairing rules (`CREW_SOLO`, `CO_APPROVAL`, `OCU_NO_IP`,
+  `ILLEGAL_CREW`, `NO_IR`) used to ring a puck and caption nothing, which left
+  them the one warning family with nothing to click. They now all chip:
+  **two codes, one printed flag** — `CP` amber where the pairing needs
+  approval, `CPH` red where it is not authorised — both printing `CP`. A ring
+  with no chip is now a bug and a test asserts there are none. Ranking is an
+  insertion, not a reshuffle (`CP` leads the advisories, `CPH` sits under
+  `C`), so a man already carrying a conflict keeps the `C` flag. Adding any
+  chip code means patching `refwin.ts:rematrix()` in the same breath —
+  `RANK`, `CHIP_TEXT` **and** `CHIP_LABEL` — or the byte-exact
+  reference-markup parity fails on the tooltip, not the rule.
+  Rules: `docs/engine-rules.md` §The crew-pairing chip.
 - **`sbWide` / board-grip state** is module-local and resets on reload
   (matches the original's session-scoped behaviour).
 - **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** "Restore
