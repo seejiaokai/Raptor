@@ -47,6 +47,30 @@ describe('the Inputs page (tfin)', () => {
     expect(opts).toContain('Detachment')
   })
 
+  /* All day owns the whole window, so the two time fields go out of play. They
+     were always `disabled`; the `dim` class is what makes that visible, so the
+     field is not aimed at first and ignored second (owner, Aug 5). */
+  it('All day dims the two time fields, and un-ticking restores them', async () => {
+    const st = () => $('#inStartT') as HTMLInputElement
+    const en = () => $('#inEndT') as HTMLInputElement
+    const dim = (el: HTMLElement) => el.closest('.ifield')!.classList.contains('dim')
+    /* the form opens all-day, so they start out of play */
+    expect(st().disabled, 'start time disabled under All day').toBe(true)
+    expect(en().disabled, 'end time disabled under All day').toBe(true)
+    expect(dim(st()), 'start time reads as out of play').toBe(true)
+    expect(dim(en()), 'end time reads as out of play').toBe(true)
+
+    await click($('#inAllday'))
+    expect(st().disabled, 'start time live once All day is off').toBe(false)
+    expect(en().disabled, 'end time live once All day is off').toBe(false)
+    expect(dim(st()), 'the fade lifts with the tick').toBe(false)
+    expect(dim(en()), 'the fade lifts with the tick').toBe(false)
+
+    await click($('#inAllday'))            // back to all-day for the tests below
+    expect(st().disabled).toBe(true)
+    expect(dim(st())).toBe(true)
+  })
+
   it('the person filter is called Personnel, not All flights', () => {
     const first = ($('#inFPerson') as unknown as HTMLSelectElement).options[0]!
     expect(first.textContent).toBe('Personnel')

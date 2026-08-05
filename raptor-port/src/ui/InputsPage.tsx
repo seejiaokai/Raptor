@@ -158,8 +158,11 @@ export function InputsPage() {
             <div className="rc-read" id="inDates">{start ? (fmt(start) + (end ? ' → ' + fmt(end) : '')) : 'pick a start date'}</div>
           </div>
           <div className="ifield chk"><label>All day</label><input id="inAllday" type="checkbox" checked={allday} onChange={e => setAllday(e.target.checked)} /></div>
-          <div className="ifield"><label>Start time</label><input id="inStartT" type="time" value={sTime} disabled={allday} onChange={e => setSTime(e.target.value)} /></div>
-          <div className="ifield"><label>End time</label><input id="inEndT" type="time" value={eTime} disabled={allday} onChange={e => setETime(e.target.value)} /></div>
+          {/* All day owns the whole window, so the two time fields fade to say
+              so. They were already `disabled`, but a disabled control that
+              still looks live invites the click it cannot accept. */}
+          <div className={'ifield' + (allday ? ' dim' : '')}><label>Start time</label><input id="inStartT" type="time" value={sTime} disabled={allday} onChange={e => setSTime(e.target.value)} /></div>
+          <div className={'ifield' + (allday ? ' dim' : '')}><label>End time</label><input id="inEndT" type="time" value={eTime} disabled={allday} onChange={e => setETime(e.target.value)} /></div>
           <div className="ifield"><label>Type</label>
             <select id="inType" aria-label="Input type" value={type} onChange={e => setType(e.target.value)}>
               {INPUT_TYPES.map((t: string) => <option key={t}>{t}</option>)}

@@ -986,6 +986,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    whatever the intrinsic width of a date/time/number widget happens to be */
 .ifield>input,.ifield>select,.ifield>button{width:100%;min-width:0;box-sizing:border-box;height:36px}
 .ifield>button{height:36px}
+/* A field the current mode has taken out of play — today that is START/END
+   TIME once All day is ticked. The control is genuinely `disabled`; this is
+   what makes that readable, label included, so nobody aims at it first. */
+.ifield.dim{opacity:.4;transition:opacity .15s ease}
+.ifield.dim>input,.ifield.dim>select{cursor:not-allowed}
 /* the All-day checkbox keeps its natural size and sits on the control line */
 .ifield.chk{justify-content:flex-start}
 .ifield.chk>input[type=checkbox]{width:18px;height:18px;min-width:18px;accent-color:var(--accent);margin:9px 0}
