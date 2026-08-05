@@ -12,18 +12,32 @@ import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { useVersion } from './useStore'
 
+/* Column order is the owner's, left to right (5 Aug 26): SANS, SXO, SCHEDULER,
+   SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF — currency and appointments
+   first, the flying qualifications after them.
+
+   CAT A / CAT B / IP used to sit in here. All three were shadows of the CAT
+   dropdown and are gone: A/B duplicated it outright (removed, owner Aug 5),
+   and IP — kept then because a pilot could be CAT A *and* an instructor —
+   went when instructor-ness moved into CAT itself as IW / IP / IR / FI
+   (owner, Aug 5 '26).
+
+   Downchit went with them (owner, 5 Aug 26). It was the last tick column
+   nothing read: a downchit is an INPUT with a date range (`isDownchit` in
+   inputs.ts), which is what DNIF_FLY and the fade on the pucks actually key
+   off. A permanent tick on the LoX said nothing the inputs did not, and
+   could not say when. */
 const QUAL_COLS: any[] = [
-  { k: 'san', h: 'SANS', lav: true }, { k: 'sxo', h: 'SXO', lav: true }, { k: 'imc', h: 'IMC', lav: true }, { k: 'nvg', h: 'NVG', lav: true },
-  /* CAT A / CAT B / IP were here. All three were shadows of the CAT dropdown
-     and are gone: A/B duplicated it outright (removed, owner Aug 5), and IP —
-     kept then because a pilot could be CAT A *and* an instructor — went when
-     instructor-ness moved into CAT itself as IW / IP / IR / FI (owner,
-     Aug 5 '26). The tick was also silently broken: it wrote quals.instr while
-     every rule read p.ip. */
-  { k: 'dnif', h: 'Downchit', lav: true },
+  { k: 'san', h: 'SANS', lav: true }, { k: 'sxo', h: 'SXO', lav: true },
   { k: 'sched', h: 'Scheduler', apt: true },
   { k: 'scDay', h: 'SC DAY', scq: true }, { k: 'scNight', h: 'SC NIGHT', scq: true },
   { k: 'daar', h: 'DAAR', aar: true, fcpOnly: true }, { k: 'naar', h: 'NAAR', aar: true, fcpOnly: true },
+  { k: 'nvg', h: 'NVG', lav: true }, { k: 'imc', h: 'IMC', lav: true },
+  /* TF is new (owner, 5 Aug 26) and starts UNHELD by everyone — nothing
+     derives it from CAT the way IMC and NVG are derived, because no one has
+     been signed off for it yet. Ticked by hand in edit mode, and no rule
+     reads it: it is a record, not a gate, until the squadron asks for one. */
+  { k: 'tf', h: 'TF', lav: true },
 ]
 /* AAR is a front-seat qualification; the rear seat has none */
 const qualNA = (p: any, c: any) => !!(c.fcpOnly && p && p.seat !== 'FCP')
@@ -38,28 +52,70 @@ function exportCSV(name: string, rows: any[][]) {
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click()
 }
 
-/* renderQuals' head + rows, verbatim strings */
-function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch: string) {
-  let ids = Object.keys(PEOPLE).filter(id => PEOPLE[id].seat === qSeatView && !PEOPLE[id].archived)
+/* ---- sorting (owner, 5 Aug 26) -------------------------------------------
+   The Sort chips are gone; the headings themselves sort, the way the Inputs
+   table's already do. One click sorts a column, a second click inverts it.
+   Each key returns something comparable, and callsign breaks every tie so
+   rows that match on the sorted column still land in a stable, readable
+   order.
+
+   Two of them do not sort the way the eye first expects, and both are what
+   was asked for. CAT sorts by SENIORITY, not alphabetically — the ladder
+   order in QORDER, most senior first — because "A above D" is the useful
+   reading of a CAT column and "A, B, C, D" is not. A qualification column
+   sorts by HELD, not by anything inside the cell: everyone with the tick
+   first, everyone without below them. A struck-out AAR cell (a WSO, who
+   holds no AAR at all) counts as not held and sits with the untickeds. */
+const SORTKEY: any = {
+  cs: (p: any) => p.cs.toLowerCase(),
+  /* initials are optional, so the blanks go to the BOTTOM ascending rather
+     than heading the table with a block of empty cells */
+  initials: (p: any) => (p.initials || '').toLowerCase() || '￿',
+  flight: (p: any) => (p.flight || '').toLowerCase() || '￿',
+  cat: (p: any) => -QORDER[p.q],
+}
+const sortKeyFor = (key: string) => SORTKEY[key] || ((p: any) => (p.quals && p.quals[key] ? 0 : 1))
+const cmp = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
+
+/* which people the table is showing: the seat view, then the filter box */
+function qualsIds(qSeatView: string, qSort: any, qSearch: string) {
+  let ids = Object.keys(PEOPLE).filter(id =>
+    (qSeatView === 'ALL' || PEOPLE[id].seat === qSeatView) && !PEOPLE[id].archived)
   if (qSearch) { const s = qSearch.toLowerCase(); ids = ids.filter(id => PEOPLE[id].cs.toLowerCase().includes(s) || (PEOPLE[id].initials || '').toLowerCase().includes(s) || (PEOPLE[id].name || '').toLowerCase().includes(s)) }
-  ids.sort((a, a2) => {
-    const p = PEOPLE[a], q = PEOPLE[a2]
-    if (qSort === 'name') return p.cs.localeCompare(q.cs)
-    if (qSort === 'flight') return (p.flight || '').localeCompare(q.flight || '') || p.cs.localeCompare(q.cs)
-    if (qSort === 'level') return (QORDER[q.q] - QORDER[p.q]) || p.cs.localeCompare(q.cs)
-    return 0
-  })
+  const key = sortKeyFor(qSort.key)
+  ids.sort((a, b) => cmp(key(PEOPLE[a]), key(PEOPLE[b])) * qSort.dir || cmp(SORTKEY.cs(PEOPLE[a]), SORTKEY.cs(PEOPLE[b])))
+  return ids
+}
+
+/* renderQuals' head + rows, verbatim strings */
+function qualsTable(qSeatView: string, qSort: any, qEditing: boolean, qSearch: string) {
+  const ids = qualsIds(qSeatView, qSort, qSearch)
+  /* the heading cell for a sortable column. The arrow box is rendered at a
+     fixed width whether or not it holds an arrow, so switching the sorted
+     column never shifts the headings sideways. */
+  const sortTh = (key: string, label: string, cls: string, title: string, style = '') => {
+    const on = qSort.key === key
+    return `<th class="insort${cls ? ' ' + cls : ''}${on ? ' on' : ''}" data-sort="${key}"`
+      + ` aria-sort="${on ? (qSort.dir > 0 ? 'ascending' : 'descending') : 'none'}"`
+      + ` title="${esc(title)}"${style}>${label}<span class="inarrow">${on ? (qSort.dir > 0 ? '▲' : '▼') : ''}</span></th>`
+  }
   /* CALLSIGN is the identity the whole app plans by — it is what every puck
      prints — so it heads the table; INITIALS sits beside it as the admin
      record (owner, Aug 26). */
-  const head = `<thead><tr><th style="text-align:left">Callsign</th><th>Initials</th><th>Flight</th><th>CAT</th>` +
-    QUAL_COLS.map(c => `<th class="${c.lav ? 'lav' : c.fix ? 'fix' : c.apt ? 'apt' : c.scq ? 'scq' : c.aar ? 'aarq' : ''}" title="${
-      c.k === 'sched' ? 'Appointed scheduler — may sign SKED CK, PLANNED BY and APPROVED BY'
+  const head = `<thead><tr>`
+    + sortTh('cs', 'Callsign', '', 'Sort by callsign', ' style="text-align:left"')
+    + sortTh('initials', 'Initials', '', 'Sort by initials')
+    + sortTh('flight', 'Flight', '', 'Sort by flight — groups each flight together')
+    + sortTh('cat', 'CAT', '', 'Sort by CAT — most senior first') +
+    QUAL_COLS.map(c => sortTh(c.k, esc(c.h),
+      c.lav ? 'lav' : c.fix ? 'fix' : c.apt ? 'apt' : c.scq ? 'scq' : c.aar ? 'aarq' : '',
+      (c.k === 'sched' ? 'Appointed scheduler — may sign SKED CK, PLANNED BY and APPROVED BY'
       : c.k === 'scDay' ? 'SC DAY — may be planned on an SC shift inside 07:00–19:00'
       : c.k === 'scNight' ? 'SC NIGHT — may be planned on an SC shift reaching outside 07:00–19:00. Needs SC DAY first'
       : c.k === 'daar' ? 'DAAR — day air-to-air refuelling (front seat only)'
       : c.k === 'naar' ? 'NAAR — night air-to-air refuelling. Needs DAAR first'
-      : esc(c.h)}">${c.h}</th>`).join('') +
+      : c.k === 'tf' ? 'TF — terrain following'
+      : c.h) + ' · click to bring the qualified to the top')).join('') +
     `<th>Remarks</th><th></th></tr></thead>`
   const rows = ids.map(id => {
     const p = PEOPLE[id]
@@ -84,15 +140,23 @@ function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch
     const cs = qEditing
       ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
       : esc(p.cs)
-    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td>${esc(p.flight || '')}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
+    /* Flight is editable for the same reason the initials are — the roster
+       arrived with the column blank, and the heading now sorts by it, so
+       there has to be a way to fill it in (owner, 5 Aug 26). Same
+       commit-on-change rule as the two beside it. */
+    const flt = qEditing
+      ? `<input class="qinit qflt" data-flt="${id}" value="${esc(p.flight || '')}" maxlength="10" aria-label="Flight for ${esc(p.cs)}" />`
+      : esc(p.flight || '')
+    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
   }).join('')
-  return head + `<tbody><tr class="grp"><td colspan="${5 + QUAL_COLS.length + 1}">${qSeatView === 'FCP' ? 'Assigned pilots' : 'Assigned WSOs'} · ${ids.length}</td></tr>${rows}</tbody>`
+  const grp = qSeatView === 'FCP' ? 'Assigned pilots' : qSeatView === 'RCP' ? 'Assigned WSOs' : 'Assigned aircrew'
+  return head + `<tbody><tr class="grp"><td colspan="${5 + QUAL_COLS.length + 1}">${grp} · ${ids.length}</td></tr>${rows}</tbody>`
 }
 
 export function QualsPage() {
   useVersion()
   const [qSeatView, setSeat] = useState('FCP')
-  const [qSort, setSort] = useState('name')
+  const [qSort, setSort] = useState({ key: 'cs', dir: 1 })
   const [qEditing, setEditing] = useState(false)
   const [qSearch, setQSearch] = useState('')
   const [addP, setAddP] = useState({ initials: '', cs: '', flight: '', seat: 'FCP', level: 'OCU' })
@@ -103,8 +167,14 @@ export function QualsPage() {
   useEffect(() => {
     const tbl = tblRef.current!
     const onClick = (e: Event) => {
-      if (!(tbl.classList.contains('editing'))) return
       const t = e.target as HTMLElement
+      /* the headings sort in EVERY mode — reading the table is not editing it,
+         and this runs before the edit gate below for exactly that reason. The
+         dir flip reads the live state through the functional update, so this
+         listener can stay mounted once with no dependency on the render. */
+      const th = t.closest('th[data-sort]') as HTMLElement | null
+      if (th) { const key = th.dataset.sort!; setSort(s => ({ key, dir: s.key === key ? -s.dir : 1 })); return }
+      if (!(tbl.classList.contains('editing'))) return
       const cell = t.closest('[data-q]') as HTMLElement | null
       if (cell) {
         const [id, k] = cell.dataset.q!.split('|') as [string, string]
@@ -126,6 +196,11 @@ export function QualsPage() {
       if (s) { PEOPLE[s.dataset.lvl!].q = s.value; deriveQuals(PEOPLE[s.dataset.lvl!]); notify(); return }
       const ini = (e.target as HTMLElement).closest('[data-init]') as HTMLInputElement | null
       if (ini) { PEOPLE[ini.dataset.init!].initials = ini.value.trim().toUpperCase(); notify(); return }
+      /* upper-cased on the way in, like the initials: the column is sorted by
+         GROUPING, and "a" typed on one row and "A" on another would read as
+         two flights in the table even though they sort together */
+      const flt = (e.target as HTMLElement).closest('[data-flt]') as HTMLInputElement | null
+      if (flt) { PEOPLE[flt.dataset.flt!].flight = flt.value.trim().toUpperCase(); notify(); return }
       const cs = (e.target as HTMLElement).closest('[data-cs]') as HTMLInputElement | null
       if (cs) {
         const id = cs.dataset.cs!, was = PEOPLE[id].cs, want = cs.value.trim()
@@ -154,15 +229,24 @@ export function QualsPage() {
     PEOPLE[id] = { cs, initials: addP.initials.trim().toUpperCase(), seat: addP.seat, q: addP.level, flight: addP.flight.trim() || '-' }
     deriveQuals(PEOPLE[id]); ID_BY_CS[cs.toLowerCase()] = id
     setAddP({ initials: '', cs: '', flight: '', seat: addP.seat, level: addP.level })
-    if (PEOPLE[id].seat !== qSeatView) setSeat(PEOPLE[id].seat)
+    /* ALL already shows them, so only a seat-specific view has to follow the
+       person who was just added into the view they landed in */
+    if (qSeatView !== 'ALL' && PEOPLE[id].seat !== qSeatView) setSeat(PEOPLE[id].seat)
     notify()
   }
 
+  /* the export is what is on the screen: the same view, the same filter and
+     the same sort order, so a printed LoX matches the one it was taken from.
+     ALL mixes pilots and WSOs, so that view — and only that view — carries a
+     Seat column, since the rows no longer say which is which. */
   const doExport = () => {
-    const cols = ['Callsign', 'Initials', 'Flight', 'CAT', ...QUAL_COLS.map(c => c.h)]
+    const all = qSeatView === 'ALL'
+    const cols = ['Callsign', 'Initials', 'Flight', ...(all ? ['Seat'] : []), 'CAT', ...QUAL_COLS.map(c => c.h)]
     const rows: any[][] = [cols]
-    Object.keys(PEOPLE).filter(id => PEOPLE[id].seat === qSeatView && !PEOPLE[id].archived).forEach(id => {
-      const p = PEOPLE[id]; rows.push([p.cs, p.initials || '', p.flight, p.q, ...QUAL_COLS.map(c => p.quals[c.k] ? 'Y' : '')])
+    qualsIds(qSeatView, qSort, qSearch).forEach(id => {
+      const p = PEOPLE[id]
+      rows.push([p.cs, p.initials || '', p.flight, ...(all ? [p.seat === 'FCP' ? 'Pilot' : 'WSO'] : []), p.q,
+        ...QUAL_COLS.map(c => qualNA(p, c) ? '–' : p.quals[c.k] ? 'Y' : '')])
     })
     exportCSV(`142SQN-LoX-${qSeatView}.csv`, rows)
   }
@@ -176,13 +260,13 @@ export function QualsPage() {
         <input className="datef" id="qDate" defaultValue="23/06/2026" style={{ maxWidth: 120 }} />
         <button className="abtn" id="qExport" onClick={doExport}>Export to Excel</button>
         <span className="div" style={{ width: 1, height: 22, background: 'var(--edge)' }}></span>
+        {/* View sits beside Export because the two answer the same question —
+            which people am I looking at, and which people come out. The Sort
+            chips that used to follow are gone: the headings sort now. */}
+        <span className="lab">View</span>
         <button className={'fchip' + (qSeatView === 'FCP' ? ' on' : '')} id="qViewP" onClick={() => setSeat('FCP')}>Pilots</button>
         <button className={'fchip' + (qSeatView === 'RCP' ? ' on' : '')} id="qViewW" onClick={() => setSeat('RCP')}>WSOs</button>
-        <span className="lab">Sort</span>
-        {(['name', 'flight', 'level'] as const).map(s =>
-          <button key={s} className={'fchip' + (qSort === s ? ' on' : '')} data-sort={s} onClick={() => setSort(s)}>
-            {{ name: 'Name', flight: 'Flight', level: 'CAT' }[s]}
-          </button>)}
+        <button className={'fchip' + (qSeatView === 'ALL' ? ' on' : '')} id="qViewA" onClick={() => setSeat('ALL')}>All</button>
         <div className="grow"></div>
         <div className="searchbox">🔍<input id="qFilter" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
       </div>

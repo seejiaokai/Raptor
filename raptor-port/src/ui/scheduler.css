@@ -945,6 +945,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .qinit{width:104px;background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-size:11px;
   border-radius:6px;padding:2px 4px;text-align:center;text-transform:uppercase;letter-spacing:.04em}
 .qinit:focus{outline:none;border-color:var(--accent)}
+/* Flight is editable on the same terms as the initials beside it (owner,
+   5 Aug 26) — the column exists to be GROUPED by, and a column nobody can
+   fill in never groups anything. Narrower because a flight is a letter or
+   two where initials are three. */
+.qflt{width:56px}
 /* the callsign is editable in edit mode — it keeps the accent colour it has
    when it is plain text, so the column reads the same either way */
 .qcs{width:100%;min-width:74px;background:var(--bg);border:1px solid var(--edge);color:var(--accent);
@@ -1005,9 +1010,14 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .rmx{color:var(--hard);cursor:pointer;font-weight:800}
 /* Every heading sorts (owner, Aug 5). The arrow is a fixed-width column of its
    own so the heading text does not shuffle sideways as the arrow appears. */
-.intbl thead th.insort{cursor:pointer;user-select:none;white-space:nowrap}
-.intbl thead th.insort:hover{color:var(--ink);background:rgba(255,255,255,.04)}
-.intbl thead th.insort.on{color:var(--accent)}
+/* the sortable-heading idiom, shared by the Inputs and Quals tables — one
+   look and one arrow, so a heading that sorts is recognisable on both pages
+   (Quals headings took over from its Sort chips, owner 5 Aug 26). The .on
+   colour has to out-specify .qtbl th.lav and friends, which is why it names
+   the table it sits in rather than being a bare .insort.on. */
+.intbl thead th.insort,.qtbl thead th.insort{cursor:pointer;user-select:none;white-space:nowrap}
+.intbl thead th.insort:hover,.qtbl thead th.insort:hover{color:var(--ink);background:rgba(255,255,255,.04)}
+.intbl thead th.insort.on,.qtbl thead th.insort.on{color:var(--accent)}
 .inarrow{display:inline-block;width:11px;margin-left:4px;font-size:8.5px;vertical-align:middle}
 /* The pencil sits beside the ✕, and both stay on one line. They are DELIBERATELY
    far apart and finger-sized (owner, Aug 5 — the ✕ was being hit instead of the

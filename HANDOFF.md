@@ -90,6 +90,15 @@ The port from the original single-file app is complete; that history is in
   `A+IP → IP`, so he no longer counts as `isLead` (FL/SUP chips) — accepted
   when the letter was dropped. Rules and seat matrix:
   `docs/engine-rules.md` §validation.
+- **Quals page reworked again (owner, 5 Aug 26).** Fixed column order (SANS,
+  SXO, SCHEDULER, SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF); `Downchit`
+  dropped (nothing read it — a downchit is a dated INPUT); **TF** added,
+  granted by hand and read by no rule. The Sort chips are gone: the headings
+  sort, second click inverts, CAT by seniority and a qual column by who holds
+  it. `View` is Pilots / WSOs / **All**, and the CSV follows the screen.
+  FLIGHT is now editable in edit mode because the roster records none —
+  same reason initials are: nothing to derive, do not invent. Contract:
+  `docs/ui-contracts.md` §The Quals page's columns, sorting and View.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
   GitHub Actions). The workflow refuses to publish on any red test.
 
