@@ -398,3 +398,66 @@ describe('accepted rows are never stranded', () => {
     await act(async () => { undo() })
   })
 })
+
+/* The remarks tail (owner, Aug 26): closing a range on the calendar writes its
+   last day into Remarks as `till 15 Jul`, and everything the typist put in
+   front of it is kept — `LL till 15 Jul`. The tail belongs to the calendar, so
+   it is rewritten and removed by picking, never duplicated. */
+describe('the end date writes itself into Remarks', () => {
+  const day = (d: string) => $(`#inCal [data-cal="2026-07-${d}"]`)
+  const rm = () => $('#inRemarks') as HTMLInputElement
+  const typeInto = async (el: any, v: string) => act(async () => {
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+    setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+
+  it('a start alone says nothing; closing the range writes the end date', async () => {
+    await click(day('13'))
+    expect(rm().value, 'one date is not a span').toBe('')
+    await click(day('15'))
+    expect(rm().value).toBe('till 15 Jul')
+  })
+
+  it('the typed note survives, and the tail follows the calendar', async () => {
+    await typeInto(rm(), 'LL till 15 Jul')
+    await click(day('16'))                  // a fresh range takes the tail with it…
+    expect(rm().value, 'only the tail is the calendars to remove').toBe('LL')
+    await click(day('18'))                  // …and the new end writes a new one
+    expect(rm().value).toBe('LL till 18 Jul')
+    /* re-picking rewrites the tail rather than stacking another one on */
+    await click(day('16')); await click(day('17'))
+    expect(rm().value).toBe('LL till 17 Jul')
+  })
+
+  it('a range that ends where it starts writes no tail', async () => {
+    await typeInto(rm(), '')
+    await click(day('20')); await click(day('20'))
+    // add() drops endDate for a one-day range, so a tail would name a span it lacks
+    expect(rm().value).toBe('')
+  })
+
+  it('Add clears the note but keeps the tail, because the dates stay on the form', async () => {
+    await click(day('14')); await click(day('16'))
+    await typeInto(rm(), 'LL till 16 Jul')
+    const n = INPUTS.length
+    await click($('#inAdd'))
+    expect(INPUTS[0].remarks).toBe('LL till 16 Jul')
+    expect(rm().value).toBe('till 16 Jul')
+    await act(async () => { undo() })
+    expect(INPUTS.length).toBe(n)
+  })
+
+  it('the row editor writes the same tail — but only from a click', async () => {
+    await click($$('#inBody tr')[0].querySelector('[data-edit]'))
+    const ed = () => $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
+    expect(ed().value, 'opening the editor rewrites nothing').toBe(INPUTS[0].remarks || '')
+    await typeInto(ed(), 'LL')
+    /* Jul 12 is before every date in the demo week, so this always lands as a
+       bare start whatever range the row opened with */
+    await click($('#inedCal [data-cal="2026-07-12"]'))
+    expect(ed().value).toBe('LL')
+    await click($('#inedCal [data-cal="2026-07-14"]'))
+    expect(ed().value).toBe('LL till 14 Jul')
+    await click($('#inBody tr.ined [data-cancel]'))
+  })
+})
