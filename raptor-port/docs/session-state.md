@@ -1,68 +1,78 @@
-# Session handoff — Quals column editing, member permissions, then this doc brought current
+# Session handoff — the handoff itself audited against the tree
 
 ## Where it started
-Long session, cleared partway through (`/clear`), so its own early context is
-gone — the record of what it shipped is `git log`, not memory. It ran from the
-perf-budget close through the Quals rework into column editing and the
-member/admin permission line. The final ask was to bring this file current: it
-had been written at PR #71 and still described the state as of #70, three PRs
-and 17 tests behind, while claiming its gate numbers were live.
+The session opened with a single instruction: read `HANDOFF.md`. The owner
+then chose, out of four offered next steps, to **audit that file against the
+current tree** — check the file map and the open-work list still describe
+reality, and fix whatever had drifted. No feature work was asked for and none
+was done.
 
 ## Shipped
-This session (`session_017TQdUyjoNZMnMSarXSxs4s`), all merged, all Pages
-deploys green. Rules and rationale live in `HANDOFF.md` and
-`raptor-port/docs/` — not repeated here.
+One commit, on `claude/read-handoff-rmog46`, touching documentation only.
 
-- Perf gate moved to a per-node budget + DOM ceiling — PR #69, merged, deploy green
-- Quals page: heading sort, fixed column order, TF, View Pilots/WSOs/All — PR #70, merged, deploy green
-- Handoff written at that point — PR #71, merged, deploy green
-- EDIT QUALS: add, remove and drag qualification columns — PR #72, merged, deploy green
-- Edit quals button reversed: blue to enter, dark ✕ to leave — PR #73, merged, deploy green
-- A member may edit their own Inputs and tick their own quals — PR #74, merged, deploy green
+`HANDOFF.md` had drifted in six places, all found by walking the tree rather
+than by reading the file:
 
-**Not this session:** PR #75 (crew combination matrix, Table 1.5-2) is a
-parallel session's work — `session_01QbakhXEbHvMKMQXgp3zSLv`, branch
-`claude/read-handoff-96fxlr`. It is merged and deployed green, it changed
-`src/engine/validate.ts`, `src/testing/refwin.ts` and `logic-html.ts`, and it
-is the current tip of `main`.
-
-## Unfinished
-- Nothing half-applied, no open PR beyond the one carrying this file, nothing
-  under `subscribe_pr_activity` watch.
-- **`npm run probes:adapted` and `npm run perf` were NOT run against #75.**
-  Both were last green before it (6/6 and 9/0). #75 changed `validate.ts`, and
-  the adapted probes (`aar`, `audit`, `sa`, `sc2`) all exercise validation, so
-  their state on the current tip is unverified. Neither is in CI and both need
-  `npx vite preview --port 4173` first. Run them before the next UI-visible or
-  validation change.
-
-## Branch state
-- Designated branch: `claude/read-handoff-docs-3xuleg`
-- Its PR (#74) is **merged**. The branch was therefore reset onto the new tip
-  this session (`git checkout -B claude/read-handoff-docs-3xuleg origin/main`
-  at `8d5f94d`) and now carries only this handoff commit.
-- Reset again before starting new work:
-  `git fetch origin main && git checkout -B claude/read-handoff-docs-3xuleg origin/main`
-- **`main` moved twice during this session** (#74 → #75) and a second session is
-  active on `claude/read-handoff-96fxlr`. Fetch before assuming what `main` or
-  any `claude/read-handoff-*` branch points at, and expect commits neither you
-  nor this session wrote. That session may also overwrite this file.
+- **`src/ui/RangeCal.tsx` was missing from the file map entirely** — it has
+  never appeared there, though it landed back in `5bdeb59`, is imported by
+  `InputsPage.tsx` and has its own section in `ui-contracts.md`. Added.
+- **The Inputs table's view state was unrecorded.** Its date window and
+  heading sort mean the DOM row order is NOT `INPUTS` order — the trap that
+  catches anything addressing a row by position. Now called out on the
+  `InputsPage.tsx` row, pointing at the contract.
+- **`src/engine/index.ts`** (the barrel every UI import goes through) and
+  **`docs/session-state.md`** (this file) were both absent from their tables.
+  Added.
+- **The deploy bullet described push-to-main only.** The four gates have run
+  on pull requests into main since the 5 Aug owner ask; a PR run gates but
+  uploads no artifact and never deploys. Recorded, in the bullet and in the
+  `deploy.yml` row.
+- **The perf bullet quoted `0.67×` per node as a fixed fact.** It measures
+  ~0.70× on this machine — the ratio moves with the hardware. Softened, and
+  the raw board ratio (~1.24×, still over the retired flat 1.15 budget) noted
+  so the reason for the per-node budget stays legible.
+- **A stray `raptor-port/~$ART_HERE.md` is tracked** — a 162-byte Word
+  owner-lock file committed by accident in PR #28. Flagged in the file, NOT
+  deleted: it is junk, but removing it was outside what was asked.
 
 ## Gates
-Run first-hand from `raptor-port/` at `8d5f94d` (main incl. #75), all green:
-- `npm test` — **520 passed**, 30 files
-- `npm run build` — clean (the two INEFFECTIVE_DYNAMIC_IMPORT warnings from
-  `probe-bridge.ts` are long-standing, not new)
+Run first-hand from `raptor-port/` at `9443d72` (the tip of `main`), all six
+green — a fresh container needs `npm ci` first, `node_modules/` is not in the
+image:
+
+- `npm test` — **525 passed**, 31 files (was 520/30; `ui/export.test.ts` is the
+  new file)
 - `node reference/tfin.js` — **728 passed, 0 failed**
+- `npm run build` — clean
 - `npm run test:e2e` — **11/11**
-- `npm run probes:adapted` / `npm run perf` — see Unfinished; not run at this tip.
+- `npm run probes:adapted` — **6/6**
+- `npm run perf` — **9 passed, 0 failed**; week DOM 5028n (ceiling 5530),
+  board DOM 699n (ceiling 770)
+
+The last two were the previous session's one piece of unfinished business:
+neither had been run against PR #75's `validate.ts` change, and both exercise
+validation. They are now verified at this tip, and #76 and #77 landed on top
+of #75 before this run, so all three are covered.
+
+## Unfinished
+Nothing. No open PR beyond the one carrying this change, nothing half-applied,
+nothing under `subscribe_pr_activity` watch.
+
+## Branch state
+- Designated branch: `claude/read-handoff-rmog46`, cut from `origin/main` at
+  `9443d72` (merge of PR #77).
+- Reset before starting new work:
+  `git fetch origin main && git checkout -B <branch> origin/main`
+- `main` did not move during this session, but earlier sessions saw it move
+  twice mid-flight and a second session run in parallel. Fetch before
+  assuming what `main` or any `claude/read-handoff-*` branch points at.
 
 ## Open questions
-None. The perf-budget question the earlier handoff carried was answered by the
-owner ("i am ok to loose the performance standards") and closed in #69.
+None.
 
 ## Pick up here
-Nothing is mid-flight. The next substantial items are the long-standing three
-in `HANDOFF.md`: no shared data between devices, prototype auth, one dataset —
-the first of which is also what would make EDIT QUALS column changes survive a
-reload.
+Nothing is mid-flight. The next substantial items are still the long-standing
+three in `HANDOFF.md`: no shared data between devices, prototype auth, one
+dataset — the first of which is also what would make EDIT QUALS column
+changes, quals ticks and initials survive a reload. The stray `~$ART_HERE.md`
+is a one-line cleanup whenever the owner wants it.
