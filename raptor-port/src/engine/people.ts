@@ -1,45 +1,59 @@
 import { VCONF } from './rules'
 /* =====================================================================
    142 SQN Flying Programme — prototype (single file, vanilla JS)
-   Qual ladder: OCU → D → C → B → A → I → IR
+   Qual ladder: OCU → D → C → B → A → IW → IP → IR → FI
    CI ("C-cat instructor") was removed from the ladder (owner, Aug 5): every
    pilot who held it also carried the IP flag, so the instructor half was
-   already recorded, and the six who held it are now I. Nothing in the engine
-   read CI except isInstr, which treated it exactly as it treats I.
+   already recorded, and the six who held it became I.
+   The generic I tier and the standalone `ip` flag are gone too (owner,
+   Aug 5 '26): instructor-ness now lives solely in CAT, as four categories —
+     IW  instructor WSO (IWSO) — WSO-only, sits RCP only
+     IP  instructor pilot      — may fly FCP or RCP
+     IR  instrument rating examiner — pilot only, seats like an IP; the old
+         IR ("instr rating exmr") holders keep the letters, new meaning
+     FI  fighter wing instructor — pilot or WSO; a pilot FI seats like an IP,
+         a WSO FI like an IW
+   Every I-or-ip holder was migrated: FCP → IP, RCP → IW (Bane dropped his A
+   for IP — a CAT can only be one value). That also retired a latent bug: the
+   quals-grid IP tick wrote p.quals.instr while every rule read p.ip.
    ===================================================================== */
 
 /* ---- qual system ---- */
-export const QCHIP:any={OCU:'O',D:'D',C:'C',B:'B',A:'A',I:'I',IR:'IR'};        // chip text — letters, not ship numbers
-export const QCLASS:any={OCU:'q-ocu',D:'q-d',C:'q-c',B:'q-b',A:'q-a',I:'q-ins',IR:'q-ins'};
-export const QCOLOR:any={OCU:'#8A6ED0',D:'#3B7DF0',C:'#3BC6E8',B:'#E5A83B',A:'#F0555F',I:'#A64DE8',IR:'#A64DE8'};
-export const LEVELNAME:any={OCU:'OCU (ab-initio)',D:'D · wingman',C:'C · ops wingman',B:'B · 2-ship FL',A:'A · 4-ship FL',I:'I · instructor',IR:'IR · instr rating exmr'};
+export const QCHIP:any={OCU:'O',D:'D',C:'C',B:'B',A:'A',IW:'IW',IP:'IP',IR:'IR',FI:'FI'};        // chip text — letters, not ship numbers
+export const QCLASS:any={OCU:'q-ocu',D:'q-d',C:'q-c',B:'q-b',A:'q-a',IW:'q-ins',IP:'q-ins',IR:'q-ins',FI:'q-ins'};
+export const QCOLOR:any={OCU:'#8A6ED0',D:'#3B7DF0',C:'#3BC6E8',B:'#E5A83B',A:'#F0555F',IW:'#A64DE8',IP:'#A64DE8',IR:'#A64DE8',FI:'#A64DE8'};
+export const LEVELNAME:any={OCU:'OCU (ab-initio)',D:'D · wingman',C:'C · ops wingman',B:'B · 2-ship FL',A:'A · 4-ship FL',IW:'IW · instructor WSO',IP:'IP · instructor pilot',IR:'IR · instrument rating exmr',FI:'FI · fighter wing instructor'};
 export const isLead=(q:any)=>q==='A'||q==='B';
-export const isInstr=(q:any)=>q==='I'||q==='IR';
+export const isInstr=(q:any)=>q==='IW'||q==='IP'||q==='IR'||q==='FI';
+/* rear-seat privilege for an FCP person: only these instructor CATs may fly
+   RCP. IW is deliberately absent (WSO-only category) and a WSO FI never
+   reaches this test — seat rules ask it about pilots alone. */
+export const isInstrPilot=(q:any)=>q==='IP'||q==='IR'||q==='FI';
 export const isOcu=(q:any)=>q==='OCU';
-export const QORDER:any={OCU:0,D:1,C:2,B:3,A:4,I:5,IR:6};
+export const QORDER:any={OCU:0,D:1,C:2,B:3,A:4,IW:5,IP:6,IR:7,FI:8};
 
 /* ---- people (real callsigns / quals from the LoX screenshots) ---- */
 /* seat: FCP=pilot RCP=wso · q=level · flight · sxo/opsSup extra quals · dt=downchit chip */
 export const PEOPLE:any={
   // ---- pilots (FCP) ----
-  bane:{cs:'Bane',seat:'FCP',q:'A',ip:true,sxo:true},
-  stiff:{cs:'Stiff',seat:'FCP',q:'I',ip:true,sxo:true},
+  bane:{cs:'Bane',seat:'FCP',q:'IP',sxo:true},
+  stiff:{cs:'Stiff',seat:'FCP',q:'IP',sxo:true},
   slipway:{cs:'Slipway',seat:'FCP',q:'A',sxo:true},
   dj:{cs:'DJ',seat:'FCP',q:'A'},
-  nact:{cs:'Nact',seat:'FCP',q:'I',ip:true,sxo:true},
-  prowler:{cs:'Prowler',seat:'FCP',q:'I',ip:true},
-  pump:{cs:'Pump',seat:'FCP',q:'I',ip:true,sxo:true},
-  slash:{cs:'Slash',seat:'FCP',q:'I',ip:true},
-  harpoon:{cs:'Harpoon',seat:'FCP',q:'I',ip:true},
-  snap:{cs:'Snap',seat:'FCP',q:'I',ip:true,sxo:true},
-  taipan:{cs:'Taipan',seat:'FCP',q:'I',ip:true},
-  mamba:{cs:'Mamba',seat:'FCP',q:'I',ip:true,sxo:true},
-  shaft:{cs:'Shaft',seat:'FCP',q:'I',ip:true,sxo:true},
-  chaps:{cs:'Chaps',seat:'FCP',q:'I',ip:true},
-  boosh:{cs:'Boosh',seat:'FCP',q:'I',ip:true},
-  beams:{cs:'Beams',seat:'FCP',q:'I',ip:true},
-  dice:{cs:'Dice',seat:'FCP',q:'IR',ip:true,sxo:true},
-  split:{cs:'Split',seat:'FCP',q:'I',ip:true},
+  nact:{cs:'Nact',seat:'FCP',q:'IP',sxo:true},
+  prowler:{cs:'Prowler',seat:'FCP',q:'IP'},
+  pump:{cs:'Pump',seat:'FCP',q:'IP',sxo:true},
+  slash:{cs:'Slash',seat:'FCP',q:'IP'},
+  harpoon:{cs:'Harpoon',seat:'FCP',q:'IP'},
+  snap:{cs:'Snap',seat:'FCP',q:'IP',sxo:true},
+  taipan:{cs:'Taipan',seat:'FCP',q:'IP'},
+  mamba:{cs:'Mamba',seat:'FCP',q:'IP',sxo:true},
+  shaft:{cs:'Shaft',seat:'FCP',q:'IP',sxo:true},
+  chaps:{cs:'Chaps',seat:'FCP',q:'IP'},
+  boosh:{cs:'Boosh',seat:'FCP',q:'IP'},
+  beams:{cs:'Beams',seat:'FCP',q:'IP'},
+  dice:{cs:'Dice',seat:'FCP',q:'IR',sxo:true},
+  split:{cs:'Split',seat:'FCP',q:'IP'},
   ignite:{cs:'Ignite',seat:'FCP',q:'C'},
   bruise:{cs:'Bruise',seat:'FCP',q:'C'},
   casper:{cs:'Casper',seat:'FCP',q:'C'},
@@ -57,13 +71,13 @@ export const PEOPLE:any={
   haowen:{cs:'Hao Wen',seat:'FCP',q:'OCU'},
   prism:{cs:'Prism',seat:'FCP',q:'OCU'},
   // ---- WSOs (RCP) ----
-  freak:{cs:'Freak',seat:'RCP',q:'I',ip:true,sxo:true},
-  wolf:{cs:'Wolf',seat:'RCP',q:'I',ip:true},
-  dirty:{cs:'Dirty',seat:'RCP',q:'I',ip:true},
-  stuff:{cs:'Stuff',seat:'RCP',q:'I',ip:true},
-  glass:{cs:'Glass',seat:'RCP',q:'I',ip:true,sxo:true},
-  drill:{cs:'Drill',seat:'RCP',q:'I',ip:true},
-  nasty:{cs:'Nasty',seat:'RCP',q:'I',ip:true},
+  freak:{cs:'Freak',seat:'RCP',q:'IW',sxo:true},
+  wolf:{cs:'Wolf',seat:'RCP',q:'IW'},
+  dirty:{cs:'Dirty',seat:'RCP',q:'IW'},
+  stuff:{cs:'Stuff',seat:'RCP',q:'IW'},
+  glass:{cs:'Glass',seat:'RCP',q:'IW',sxo:true},
+  drill:{cs:'Drill',seat:'RCP',q:'IW'},
+  nasty:{cs:'Nasty',seat:'RCP',q:'IW'},
   pain:{cs:'Pain',seat:'RCP',q:'B'},
   ammo:{cs:'Ammo',seat:'RCP',q:'B'},
   rocky:{cs:'Rocky',seat:'RCP',q:'C'},
@@ -94,7 +108,7 @@ export function deriveQuals(p:any){
   p.quals=Object.assign({
     sxo:!!p.sxo,
     imc:o>=1, nvg:o>=1,
-    instr:!!p.ip, dnif:false, san:!!p.san,
+    dnif:false, san:!!p.san,
     /* Scheduler is an APPOINTMENT, not a flying qualification — it is ticked on
        the Quals page and it is what puts someone in the SKED CK, PLANNED BY and
        APPROVED BY drop-downs. Nothing derives it; it is granted. */
@@ -154,13 +168,13 @@ Object.keys(PEOPLE).forEach((id:any)=>{if(PEOPLE[id].quals&&PEOPLE[id].quals.sxo
 Object.keys(PEOPLE).forEach((id:any)=>{const p=PEOPLE[id]; if(p.special||!p.quals)return;
   if(isOcu(p.q))return;
   p.quals.scDay=true;
-  if(p.ip||isInstr(p.q)||p.q==='A'||p.q==='B')p.quals.scNight=true;});
+  if(isInstr(p.q)||p.q==='A'||p.q==='B')p.quals.scNight=true;});
 /* AAR currency as it stands: front seat only, day first and night after — the
    more experienced hands hold both, the C and D pilots hold day only. */
 Object.keys(PEOPLE).forEach((id:any)=>{const p=PEOPLE[id]; if(p.special||!p.quals)return;
   if(p.seat!=='FCP'||isOcu(p.q))return;
   p.quals.daar=true;
-  if(p.ip||isInstr(p.q)||p.q==='A'||p.q==='B')p.quals.naar=true;});
+  if(isInstr(p.q)||p.q==='A'||p.q==='B')p.quals.naar=true;});
 /* the invariants, enforced once at boot as well as on every tick: night is
    signed off after day, never before it — for AAR and for SC alike */
 Object.keys(PEOPLE).forEach((id:any)=>{const q=PEOPLE[id].quals; if(!q)return;

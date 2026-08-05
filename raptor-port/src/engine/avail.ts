@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { INPUTS, inputCoversDate, isAway, isLocalLeave, offWord } from './inputs'
-import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstr } from './people'
+import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD } from './rules'
 import { isStandalone, scSpare } from './waves'
@@ -144,7 +144,7 @@ export function slotBar(id:any,key:any,rules?:any){
   const p=PEOPLE[id]; if(!p||p.special)return '';
   const r=rules||slotRules(key);
   if(r.seat==='p'&&p.seat==='RCP')return 'WSO — cannot fly front seat';
-  if(r.seat==='w'&&p.seat==='FCP'&&!(p.ip||isInstr(p.q)))return 'pilot, not IP — only an IP may fly rear seat';
+  if(r.seat==='w'&&p.seat==='FCP'&&!isInstrPilot(p.q))return 'pilot, not an instructor — only IP / IR / FI may fly rear seat';
   if(r.sc&&!scQualOK(id,r.sc))return `not ${r.sc==='day'?'SC DAY':'SC NIGHT'} current`;
   /* SC is treated as flying for crew rest: 12h clear of yesterday or he cannot
      be planned onto the shift at all. Read off the map validate() builds. */

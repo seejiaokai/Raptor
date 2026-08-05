@@ -4,7 +4,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
-import { PEOPLE, scQualOK, isInstr } from './people'
+import { PEOPLE, scQualOK, isInstrPilot } from './people'
 import { makeStandalone } from './waves'
 import { slotRules, slotBar } from './avail'
 import { txtSet } from './slots'
@@ -31,13 +31,18 @@ describe('who may be planned into a slot (tfin U)', () => {
     expect(fcps.some(id => slotBar(id, key) === '')).toBe(true)
   })
 
-  it('a rear seat leaves only WSOs and IPs', () => {
+  it('a rear seat leaves only WSOs and instructor pilots (IP / IR / FI)', () => {
     const key = '0.0.0.0.w'
-    const plain = ids.filter(id => PEOPLE[id].seat === 'FCP' && !(PEOPLE[id].ip || isInstr(PEOPLE[id].q)))
+    const plain = ids.filter(id => PEOPLE[id].seat === 'FCP' && !isInstrPilot(PEOPLE[id].q))
     expect(plain.length).toBeGreaterThan(0)
-    expect(plain.every(id => /pilot, not IP/.test(slotBar(id, key)))).toBe(true)
+    expect(plain.every(id => /pilot, not an instructor/.test(slotBar(id, key)))).toBe(true)
     const wso = ids.find(id => PEOPLE[id].seat === 'RCP')!
     expect(slotBar(wso, key)).toBe('')
+    /* the instructor CATs themselves clear the SEAT rule: neither an IP nor
+       the IR examiner is turned away as "not an instructor" (other bars —
+       rest, currency — are their own rules and may still apply) */
+    expect(/pilot, not an instructor/.test(slotBar('stiff', key))).toBe(false)   // IP
+    expect(/pilot, not an instructor/.test(slotBar('dice', key))).toBe(false)    // IR
   })
 
   it('an SC day shift demands SC DAY, and pushing the crew change past 19:00 demands SC NIGHT', () => {

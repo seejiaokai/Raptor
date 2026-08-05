@@ -25,7 +25,7 @@ import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
 
 export async function refWindow(): Promise<any> {
-  const html = retier(readFileSync('reference/scheduler.html', 'utf8'))
+  const html = remap(retier(readFileSync('reference/scheduler.html', 'utf8')))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -70,6 +70,61 @@ function retier(html: string): string {
     const n = html.split(from).length - 1
     if (n !== 1) throw new Error(`refwin retier: expected exactly 1 match, got ${n} for: ${from.slice(0, 40)}…`)
     html = html.replace(from, to)
+  }
+  return html
+}
+
+/* Third structural divergence, closed the same way. The port's CAT ladder is
+   OCU→D→C→B→A→IW→IP→IR→FI (owner, Aug 5 '26): the generic I tier and the
+   standalone `ip` flag are gone, instructor-ness lives solely in CAT. The
+   reference still carries I/CI + ip:true, so patch the in-memory copy to the
+   same world before boot:
+     · ladder tables (QCHIP/QCLASS/QCOLOR/LEVELNAME/QORDER) → the port's, byte
+       for byte, so migrated CATs resolve to identical chips and tooltips
+     · isInstr → the four-CAT body
+     · the puck builder loses its p.ip override, the tooltip its ' · IP'
+     · PEOPLE literals migrate: FCP I/CI → IP, RCP I → IW, Bane's A+ip → IP.
+       ip:true stays on the reference records — harmless, because after the
+       migration every read of it (`p.ip||isInstr(p.q)` in hasIP/anyIP and the
+       boot seeding) is true exactly when the patched isInstr is true, and
+       quals.instr is compared nowhere
+     · the two QUAL message literals and the legend swatch take the port's
+       wording, so IF they render they render identically
+   The port-only rules (NO_IR, the IW-in-FCP guard) fire nowhere on the seed,
+   so WARN stays byte-equal without patching them in. Multi-hit swaps carry
+   their expected count; a drifted count throws, same as retier. */
+function remap(html: string): string {
+  const swaps: Array<[string, string, number?]> = [
+    ["{OCU:'O',D:'D',C:'C',B:'B',A:'A',I:'I',CI:'CI',IR:'IR'}",
+     "{OCU:'O',D:'D',C:'C',B:'B',A:'A',IW:'IW',IP:'IP',IR:'IR',FI:'FI'}"],
+    ["{OCU:'q-ocu',D:'q-d',C:'q-c',B:'q-b',A:'q-a',I:'q-ins',CI:'q-ins',IR:'q-ins'}",
+     "{OCU:'q-ocu',D:'q-d',C:'q-c',B:'q-b',A:'q-a',IW:'q-ins',IP:'q-ins',IR:'q-ins',FI:'q-ins'}"],
+    ["{OCU:'#8A6ED0',D:'#3B7DF0',C:'#3BC6E8',B:'#E5A83B',A:'#F0555F',I:'#A64DE8',CI:'#A64DE8',IR:'#A64DE8'}",
+     "{OCU:'#8A6ED0',D:'#3B7DF0',C:'#3BC6E8',B:'#E5A83B',A:'#F0555F',IW:'#A64DE8',IP:'#A64DE8',IR:'#A64DE8',FI:'#A64DE8'}"],
+    ["{OCU:'OCU (ab-initio)',D:'D · wingman',C:'C · ops wingman',B:'B · 2-ship FL',A:'A · 4-ship FL',I:'I · instructor',CI:'CI · C-cat instr',IR:'IR · instr rating exmr'}",
+     "{OCU:'OCU (ab-initio)',D:'D · wingman',C:'C · ops wingman',B:'B · 2-ship FL',A:'A · 4-ship FL',IW:'IW · instructor WSO',IP:'IP · instructor pilot',IR:'IR · instrument rating exmr',FI:'FI · fighter wing instructor'}"],
+    ["const isInstr=q=>q==='I'||q==='CI'||q==='IR';",
+     "const isInstr=q=>q==='IW'||q==='IP'||q==='IR'||q==='FI';"],
+    ["{OCU:0,D:1,C:2,B:3,A:4,I:5,CI:6,IR:7}",
+     "{OCU:0,D:1,C:2,B:3,A:4,IW:5,IP:6,IR:7,FI:8}"],
+    ["const chipTxt=p.ip?'I':QCHIP[p.q], chipCls=p.ip?'q-ins':QCLASS[p.q];",
+     "const chipTxt=QCHIP[p.q], chipCls=QCLASS[p.q];"],
+    ["LEVELNAME[p.q]+(p.ip?' · IP':'')+", "LEVELNAME[p.q]+"],
+    ["is a pilot, not IP — only IP may fly RCP (",
+     "is a pilot, not an instructor — only IP / IR / FI may fly RCP ("],
+    ["is a pilot, not IP — only IP may take the back seat (",
+     "is a pilot, not an instructor — only IP / IR / FI may take the back seat ("],
+    [`<span><span class="qk" style="background:var(--q-ins)">I</span>IP / instr</span>`,
+     `<span><span class="qk" style="background:var(--q-ins)">IW</span>IWSO</span>\n    <span><span class="qk" style="background:var(--q-ins)">IP</span>IP</span>\n    <span><span class="qk" style="background:var(--q-ins)">IR</span>IR exmr</span>\n    <span><span class="qk" style="background:var(--q-ins)">FI</span>FWI</span>`],
+    ["seat:'FCP',q:'I',ip:true", "seat:'FCP',q:'IP',ip:true", 8],
+    ["seat:'FCP',q:'CI',ip:true", "seat:'FCP',q:'IP',ip:true", 6],
+    ["seat:'RCP',q:'I',ip:true", "seat:'RCP',q:'IW',ip:true", 7],
+    ["q:'A',ip:true", "q:'IP',ip:true", 1],
+  ]
+  for (const [from, to, want] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== (want ?? 1)) throw new Error(`refwin remap: expected ${want ?? 1} match(es), got ${n} for: ${from.slice(0, 50)}…`)
+    html = html.split(from).join(to)
   }
   return html
 }

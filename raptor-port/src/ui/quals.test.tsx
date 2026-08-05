@@ -187,9 +187,9 @@ describe('editing a callsign', () => {
   })
 })
 
-/* ---- the CAT column (owner, Aug 5) --------------------------------------
-   "Level" is called CAT; CI has left the ladder; and the two tick columns
-   that only duplicated the dropdown are gone. */
+/* ---- the CAT column (owner, Aug 5; ladder reworked Aug 5 '26) -----------
+   "Level" is called CAT; CI, the generic I tier and the IP tick column have
+   all left; instructor-ness lives in CAT itself as IW / IP / IR / FI. */
 describe('the CAT column', () => {
   it('the heading says CAT, not Level', () => {
     const heads = $$('#qtbl thead th').map(th => th.textContent!.trim())
@@ -197,38 +197,53 @@ describe('the CAT column', () => {
     expect(heads).not.toContain('Level')
   })
 
-  it('CI is off the ladder everywhere', () => {
-    for (const map of [QCHIP, QCOLOR, QORDER, LEVELNAME])
+  it('CI and the generic I are off the ladder everywhere', () => {
+    for (const map of [QCHIP, QCOLOR, QORDER, LEVELNAME]) {
       expect(Object.keys(map), 'CI is gone from the qual tables').not.toContain('CI')
-    /* the dropdown is built from QCHIP, so it offers what the ladder holds */
-    const opts = [...$$('#qtbl select.qlvlsel')[0].querySelectorAll('option')].map(o => o.textContent)
-    expect(opts).not.toContain('CI')
-    expect(opts).toEqual(['OCU', 'D', 'C', 'B', 'A', 'I', 'IR'])
-    /* and nobody is left holding it */
-    expect(Object.keys(PEOPLE).filter(id => PEOPLE[id].q === 'CI')).toEqual([])
-  })
-
-  /* the six who held CI all carried the IP flag too, so the instructor half
-     was never lost — and isInstr never told CI and I apart in the first place */
-  it('the ex-CI pilots are I, still instructors, still IP', () => {
-    for (const id of ['mamba', 'shaft', 'chaps', 'boosh', 'beams', 'split']) {
-      expect(PEOPLE[id].q, id).toBe('I')
-      expect(isInstr(PEOPLE[id].q), id + ' still reads as an instructor').toBe(true)
-      expect(!!PEOPLE[id].ip, id + ' keeps the IP flag').toBe(true)
+      expect(Object.keys(map), 'the generic I is gone from the qual tables').not.toContain('I')
+      for (const k of ['IW', 'IP', 'IR', 'FI']) expect(Object.keys(map)).toContain(k)
     }
+    /* nobody is left holding the retired tiers, and the ip flag itself is gone */
+    expect(Object.keys(PEOPLE).filter(id => PEOPLE[id].q === 'CI' || PEOPLE[id].q === 'I')).toEqual([])
+    expect(Object.keys(PEOPLE).filter(id => 'ip' in PEOPLE[id])).toEqual([])
   })
 
-  it('CAT A and CAT B are gone; IP stays', () => {
+  it('the CAT dropdown is seat-filtered: no IW for a pilot, no IP/IR for a WSO', async () => {
+    /* the table opens on the pilots; the first row dropdown belongs to an FCP */
+    if (!$('#qtbl select.qlvlsel')) await click($('#qEdit'))
+    let opts = [...$$('#qtbl select.qlvlsel')[0].querySelectorAll('option')].map(o => o.textContent)
+    expect(opts).toEqual(['OCU', 'D', 'C', 'B', 'A', 'IP', 'IR', 'FI'])
+    await click($('#qViewW'))
+    opts = [...$$('#qtbl select.qlvlsel')[0].querySelectorAll('option')].map(o => o.textContent)
+    expect(opts).toEqual(['OCU', 'D', 'C', 'B', 'A', 'IW', 'FI'])
+    await click($('#qViewP'))
+  })
+
+  /* the migration (owner, Aug 5 '26): every I-or-ip holder moved into the
+     instructor CATs — FCP → IP, RCP → IW; Dice keeps IR under its new
+     meaning (instrument rating examiner); Bane dropped his A for IP */
+  it('the instructors were migrated into the CATs', () => {
+    for (const id of ['mamba', 'shaft', 'chaps', 'boosh', 'beams', 'split', 'stiff', 'bane']) {
+      expect(PEOPLE[id].q, id).toBe('IP')
+      expect(isInstr(PEOPLE[id].q), id + ' still reads as an instructor').toBe(true)
+      expect(PEOPLE[id].ip, id + ' has no ip flag left').toBeUndefined()
+    }
+    for (const id of ['freak', 'wolf', 'dirty', 'stuff', 'glass', 'drill', 'nasty'])
+      expect(PEOPLE[id].q, id).toBe('IW')
+    expect(PEOPLE.dice.q).toBe('IR')
+    expect(isInstr('IR')).toBe(true)
+  })
+
+  it('CAT A, CAT B and IP tick columns are gone; nothing derives instr', () => {
     const heads = $$('#qtbl thead th').map(th => th.textContent!.trim())
     expect(heads).not.toContain('CAT A')
     expect(heads).not.toContain('CAT B')
-    expect(heads, 'IP carries what the dropdown cannot').toContain('IP')
-    /* and the engine no longer derives the two it no longer shows */
-    deriveQuals(PEOPLE.bane)
-    expect(PEOPLE.bane.quals.catA).toBeUndefined()
-    expect(PEOPLE.bane.quals.catB).toBeUndefined()
-    /* a CAT A pilot who instructs is still both — the case IP exists for */
-    expect(PEOPLE.bane.q).toBe('A')
-    expect(!!PEOPLE.bane.ip).toBe(true)
+    expect(heads, 'the IP tick went when IP became a CAT').not.toContain('IP')
+    /* and the engine no longer derives any of the three it no longer shows */
+    const bane = { ...PEOPLE.bane, quals: undefined }
+    deriveQuals(bane)
+    expect(bane.quals.catA).toBeUndefined()
+    expect(bane.quals.catB).toBeUndefined()
+    expect(bane.quals.instr).toBeUndefined()
   })
 })
