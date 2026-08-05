@@ -13,7 +13,7 @@ the read-only spec it is measured against rather than a thing to copy from.
 | `docs/engine-rules.md` | The validation rules, roles, and the seat/qualification matrices. |
 | `docs/ui-contracts.md` | The UI contracts — what each page must do, and why. |
 | `docs/probe-sweep.md` | The probe → reference → port results table. |
-| `docs/session-state.md` | The last session's handoff: shipped, unfinished, branch. |
+| `docs/session-state.md` | The last session's leftovers — present **only** while something is pending, so its absence means nothing is. |
 | `PORTING.md` | Historical: the phase plan the port was built from. Kept because the probe docs still cite its decisions, not because anything is left to run. |
 
 ## Running it
