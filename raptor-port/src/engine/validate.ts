@@ -9,7 +9,7 @@ import { HOOKS } from './hooks'
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
 const $=(id:any)=>HOOKS.$(id);
 export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'Downchit + flying',LEAVE_FLY:'On leave + flying',INPUT_FLY:'Personal input clash',
-  TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',OCU_NO_IP:'OCU without IP',CREW_REST:'Crew rest (<{crewRest})',QUAL:'Qualification — illegal seat',
+  TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',CREW_SOLO:'Crew solo — only allowed under syllabus',CO_APPROVAL:'Crew combination — CO approval required',OCU_NO_IP:'OCU without IP',CREW_REST:'Crew rest (<{crewRest})',QUAL:'Qualification — illegal seat',
   NO_BRIEF:'No time for the flight brief',DEBRIEF:'No time for the flight debrief',SIM_BRIEF:'No time for the sim brief',SIM_DEBRIEF:'No time for the sim debrief',
   CREW_TIGHT:'Tight turning — crew rest',LONGDAY:'Long work day',DT_SUM:'Double turning',
   DAYS_RUN:'No break day — too many days in a row',
@@ -322,10 +322,30 @@ export function validate(){
         }
       });
     } else REST[di]={};
-    // illegal crew (2× OCU) + OCU without IP — shown as puck rings
+    // crew combination matrix + OCU without IP — shown as puck rings
     day.forms.forEach((f:any)=>{
       f.acs.forEach((ac:any)=>{ const p=realP(ac.p),w=realP(ac.w);
-        if(p&&w&&isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');add('hard','ILLEGAL_CREW',[ac.p,ac.w],`Two OCU in one aircraft (${f.label})`);}
+        /* ---- combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26) ----
+           Graded only when the front seat is a CAT A–D or OCU pilot and the
+           back seat is a CAT A–D or OCU WSO: an instructor in either seat
+           clears the matrix outright — an instructor pilot (IP/IR/FI) flies
+           with anyone, and an instructor WSO with any front seat (the
+           table's IR footnote on the OCU-pilot column is disregarded —
+           owner). A mis-seated body is the seat rules' (QUAL) business, not
+           this one's. The gradings:
+             OCU pilot + CAT A–D WSO  → Warning, not an authorised combination
+             CAT A–D pilot + OCU WSO  → Warning, not an authorised combination
+             OCU pilot + OCU WSO      → Advisory — a crew solo, only allowed
+                                        under the Basic Course Syllabus
+             D+C, C+D, D+D (fmr+WSO)  → Advisory — CO approval required
+           This SUPERSEDES the old two-OCU hard rule: the matrix reads that
+           pairing as the crew-solo advisory. Ring only, no chip — the
+           ILLEGAL_CREW shape. */
+        if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!isInstrPilot(p.q)&&!isInstr(w.q)){
+          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`);}
+          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`);}
+          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`);}
+        }
         // Q — seat qualification: a WSO can't fly FCP; only an instructor pilot (IP / IR / FI) may fly RCP
         if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${f.label})`);}
         /* belt and braces: CAT IW is a WSO-only category, so an IW record whose

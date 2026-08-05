@@ -95,6 +95,16 @@ The port from the original single-file app is complete; that history is in
   `A+IP → IP`, so he no longer counts as `isLead` (FL/SUP chips) — accepted
   when the letter was dropped. Rules and seat matrix:
   `docs/engine-rules.md` §validation.
+- **The combination matrix (owner, 5 Aug 26).** F-15SG Table 1.5-2 grades
+  every crewed aircraft (jet only, not the sim box): OCU pilot + CAT A–D WSO
+  and OCU WSO + CAT A–D pilot are red (`ILLEGAL_CREW` — this superseded the
+  old two-OCU hard rule), OCU + OCU is the `CREW_SOLO` advisory (syllabus
+  sorties only), and D+C / C+D / D+D is the `CO_APPROVAL` advisory. An
+  instructor in either seat clears it; the table's IR footnote on the
+  OCU-pilot column is deliberately disregarded. The matrix fires on the seed
+  week, so `src/testing/refwin.ts:rematrix()` patches the identical rule into
+  the in-memory reference for parity. Rules: `docs/engine-rules.md`
+  §validation.
 - **Quals page reworked again (owner, 5 Aug 26).** Fixed column order (SANS,
   SXO, SCHEDULER, SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF); `Downchit`
   dropped (nothing read it — a downchit is a dated INPUT); **TF** added,
@@ -175,7 +185,7 @@ The port from the original single-file app is complete; that history is in
 | `probes/run.cjs` | Runs any reference probe against the reference build or the port. |
 | `probes/perf-port.cjs` | The perf gate (`npm run perf`) — measures BOTH builds at once, round for round, and asserts no regression. |
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
-| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it, `retier()`s the three amber codes and `remap()`s the CAT-ladder rework (tables, isInstr, PEOPLE literals, legend), so both engines compute from identical data. NOT a test file. |
+| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it, `retier()`s the three amber codes, `remap()`s the CAT-ladder rework (tables, isInstr, PEOPLE literals, legend) and `rematrix()`es the combination matrix into the reference's validate, so both engines compute from identical data. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table. |
 | `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the four gates. |
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser, `app.ts` holds login/nav/scroll-settle helpers. `playwright.config.ts` builds and serves the port itself. |

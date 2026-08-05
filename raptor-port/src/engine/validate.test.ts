@@ -33,7 +33,7 @@ describe('validation engine (tfin F)', () => {
   })
 
   const SEV = ['hard', 'adv', 'note']
-  const CODES = ['DOUBLE_BOOK', 'DNIF_FLY', 'LEAVE_FLY', 'INPUT_FLY', 'TURN', 'ILLEGAL_CREW', 'OCU_NO_IP', 'CREW_REST', 'QUAL',
+  const CODES = ['DOUBLE_BOOK', 'DNIF_FLY', 'LEAVE_FLY', 'INPUT_FLY', 'TURN', 'ILLEGAL_CREW', 'CREW_SOLO', 'CO_APPROVAL', 'OCU_NO_IP', 'CREW_REST', 'QUAL',
     'NO_BRIEF', 'DEBRIEF', 'SIM_BRIEF', 'SIM_DEBRIEF', 'CREW_TIGHT', 'LONGDAY', 'DT_SUM', 'NO_IR']
 
   it('every warning has a known tier', () => {
@@ -47,7 +47,7 @@ describe('validation engine (tfin F)', () => {
     expect(bad, bad.join(',')).toEqual([])
   })
 
-  it('WCODE covers all 17 codes', () => {
+  it('WCODE covers all 19 codes', () => {
     expect(CODES.filter(c => !WCODE[c]), CODES.filter(c => !WCODE[c]).join(',')).toEqual([])
     expect(Object.keys(WCODE)).toContain('SC_QUAL')
     expect(Object.keys(WCODE)).toContain('AAR_QUAL')
@@ -72,7 +72,7 @@ describe('validation engine (tfin F)', () => {
        itself carries the red; the eaten window and the double-turn count are
        advice on top of it */
     const WANT: any = { TURN: 'adv', DOUBLE_BOOK: 'hard', NO_BRIEF: 'adv', DEBRIEF: 'adv', SIM_BRIEF: 'adv', SIM_DEBRIEF: 'adv',
-      DT_SUM: 'adv', LONGDAY: 'note', CREW_REST: 'hard', CREW_TIGHT: 'adv', ILLEGAL_CREW: 'hard', QUAL: 'hard', OCU_NO_IP: 'adv', NO_IR: 'hard' }
+      DT_SUM: 'adv', LONGDAY: 'note', CREW_REST: 'hard', CREW_TIGHT: 'adv', ILLEGAL_CREW: 'hard', CREW_SOLO: 'adv', CO_APPROVAL: 'adv', QUAL: 'hard', OCU_NO_IP: 'adv', NO_IR: 'hard' }
     const bad = validate().all.filter((x: any) => WANT[x.code] && WANT[x.code] !== x.sev)
     expect(bad, bad.map((x: any) => x.code + '=' + x.sev).join(',')).toEqual([])
   })
@@ -259,6 +259,84 @@ describe('an IRT needs an IR examiner (NO_IR)', () => {
   it('a word containing IRT does not trip it', () => {
     txtSet('ff:0.0.0.msn', 'DIRTY')                  // \bIRT\b must not match inside a word
     expect(validate().all.filter((x: any) => x.code === 'NO_IR')).toEqual([])
+  })
+})
+
+/* ---- the combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26) ---------
+   Front seat CAT A–D or OCU vs back seat CAT A–D or OCU; instructors clear
+   it outright and mis-seated bodies belong to the QUAL rules. Unlike NO_IR
+   this DOES fire on the seed week — refwin patches the same rule into the
+   in-memory reference, and the seed gradings are pinned here so the parity
+   patch can never drift from the engine unnoticed. */
+describe('the crew combination matrix (Table 1.5-2)', () => {
+  const crew = (p: any, w: any) => { setSlotVal('0.0.0.0.p', p); setSlotVal('0.0.0.0.w', w); return validate() }
+  const at = (W: any, code: any, p: any, w: any) =>
+    W.all.filter((x: any) => x.code === code && x.who.includes(p) && x.who.includes(w))
+
+  it('the seed week carries the matrix gradings', () => {
+    const W = validate()
+    /* Monday bapster+nick: the crew-solo advisory, where the old two-OCU rule
+       said hard — the matrix supersedes it */
+    const solo = at(W, 'CREW_SOLO', 'bapster', 'nick')
+    expect(solo.length).toBe(1); expect(solo[0].sev).toBe('adv'); expect(solo[0].di).toBe(0)
+    expect(solo[0].msg).toMatch(/Basic Course Syllabus/)
+    expect(W.all.filter((x: any) => x.code === 'ILLEGAL_CREW' && x.di === 0)).toEqual([])
+    // Wednesday krait+wrangler (D+D) and pike+badger (C front, D WSO): CO approval
+    expect(at(W, 'CO_APPROVAL', 'krait', 'wrangler').length).toBe(1)
+    const co = at(W, 'CO_APPROVAL', 'pike', 'badger')
+    expect(co.length).toBe(1); expect(co[0].sev).toBe('adv'); expect(co[0].msg).toMatch(/CO approval required/)
+    // Thursday bapster+badger (OCU pilot, D WSO): not an authorised combination
+    const ill = at(W, 'ILLEGAL_CREW', 'bapster', 'badger')
+    expect(ill.length).toBe(1); expect(ill[0].sev).toBe('hard'); expect(ill[0].di).toBe(3)
+    expect(ill[0].msg).toMatch(/not an authorised combination/)
+  })
+
+  it('an OCU pilot with a CAT A–D WSO is a Warning', () => {
+    ;['cards', 'pain', 'rocky', 'wrangler'].forEach((w: any) => {   // A, B, C, D WSOs
+      const W = crew('prism', w)
+      const hits = at(W, 'ILLEGAL_CREW', 'prism', w)
+      expect(hits.length, 'prism+' + w).toBe(1)
+      expect(hits[0].sev).toBe('hard')
+      expect(W.sev[0].prism).toBe('hard')                           // red ring, no chip of its own
+    })
+  })
+
+  it('an OCU WSO with a CAT A–D pilot is a Warning', () => {
+    ;['slipway', 'romeo', 'ignite', 'fantom'].forEach((p: any) => { // A, B, C, D pilots
+      const hits = at(crew(p, 'bullet'), 'ILLEGAL_CREW', p, 'bullet')
+      expect(hits.length, p + '+bullet').toBe(1)
+      expect(hits[0].sev).toBe('hard')
+    })
+  })
+
+  it('OCU pilot with OCU WSO is the crew-solo advisory, not the old hard rule', () => {
+    const W = crew('prism', 'bullet')
+    const hits = at(W, 'CREW_SOLO', 'prism', 'bullet')
+    expect(hits.length).toBe(1); expect(hits[0].sev).toBe('adv')
+    expect(hits[0].msg).toMatch(/a crew solo, only allowed under the Basic Course Syllabus/)
+    expect(at(W, 'ILLEGAL_CREW', 'prism', 'bullet')).toEqual([])
+  })
+
+  it('D+C, C+D and D+D want CO approval; every other CAT pairing is clean', () => {
+    const FP: any = { A: 'slipway', B: 'romeo', C: 'ignite', D: 'fantom' }
+    const BW: any = { A: 'cards', B: 'pain', C: 'rocky', D: 'wrangler' }
+    const want = new Set(['D+C', 'C+D', 'D+D'])
+    for (const f of ['A', 'B', 'C', 'D']) for (const b of ['A', 'B', 'C', 'D']) {
+      const W = crew(FP[f], BW[b]), tag = f + '+' + b
+      const co = at(W, 'CO_APPROVAL', FP[f], BW[b])
+      if (want.has(tag)) { expect(co.length, tag).toBe(1); expect(co[0].sev).toBe('adv') }
+      else expect(co, tag).toEqual([])
+      expect(at(W, 'ILLEGAL_CREW', FP[f], BW[b]), tag).toEqual([])
+    }
+  })
+
+  it('an instructor in either seat clears the matrix', () => {
+    const a = crew('stiff', 'bullet')                               // IP forward, OCU WSO aft
+    expect(at(a, 'ILLEGAL_CREW', 'stiff', 'bullet')).toEqual([])
+    expect(at(a, 'CREW_SOLO', 'stiff', 'bullet')).toEqual([])
+    const b = crew('prism', 'freak')                                // OCU pilot, IW aft
+    expect(at(b, 'ILLEGAL_CREW', 'prism', 'freak')).toEqual([])
+    expect(at(b, 'CREW_SOLO', 'prism', 'freak')).toEqual([])
   })
 })
 
