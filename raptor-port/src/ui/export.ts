@@ -4,9 +4,21 @@ import { PEOPLE } from '../engine/people'
 import { minus } from '../engine/time'
 import { STORE_CFG } from './html'
 
+/* Excel does not sniff a .csv for UTF-8: with no byte-order mark it decodes the
+   file in the machine's ANSI codepage, so every byte of a multi-byte character
+   is shown as its own Latin-1 glyph. The en dash the LoX prints in the AAR
+   cells a WSO cannot hold reached the spreadsheet as "â€“" — the three UTF-8
+   bytes of "–" read one at a time (owner, 5 Aug 26: DAAR and NAAR down the WSO
+   rows). A BOM is the only signal that survives the download; a charset in the
+   MIME type is a transport header and never reaches the file on disk, so both
+   are set and the BOM is the one doing the work.
+   Split out from exportCSV because the text is testable and the download is
+   not — jsdom has no Blob URL machinery. */
+export function csvText(rows: any[][]) {
+  return '\uFEFF' + rows.map(r => r.map(c => `"${String(c == null ? '' : c).replace(/"/g, '""')}"`).join(',')).join('\r\n')
+}
 export function exportCSV(name: string, rows: any[][]) {
-  const csv = rows.map(r => r.map(c => `"${String(c == null ? '' : c).replace(/"/g, '""')}"`).join(',')).join('\r\n')
-  const blob = new Blob([csv], { type: 'text/csv' })
+  const blob = new Blob([csvText(rows)], { type: 'text/csv;charset=utf-8' })
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click()
 }
 
