@@ -5,3 +5,6 @@ test-results/
 playwright-report/
 *.log
 raptor-port/probes/out/
+# Word owner-lock files — one of these (~$ART_HERE.md, for START_HERE.md)
+# was committed by accident and sat in the tree for weeks
+~$*

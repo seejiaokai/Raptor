@@ -139,9 +139,13 @@ test:e2e` 11/11, and the two that are NOT in CI — `npm run probes:adapted`
   gates also run on every **pull request** into main (owner ask, 5 Aug 26),
   so a red PR is caught before merge; a PR run gates only — it uploads no
   artifact and never deploys. Publishing stays push-to-main.
-- **A stray `raptor-port/~$ART_HERE.md` is tracked** — a 162-byte Word
-  owner-lock file committed by accident in PR #28. Nothing reads it; it is
-  safe to `git rm`, left alone here only because no one has asked.
+- **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
+  still described a three-gate, mid-port project — the root one also called a
+  member view-only, which the 5 Aug roles decision had already undone.
+  `START_HERE.md` (one-time cloud-onboarding for a repo that has existed for
+  months, referenced by nothing) and a stray Word lock file were deleted;
+  `PORTING.md` was kept but marked historical, because `probe-sweep.md` and
+  `perf-port.cjs` still cite its decisions. `~$*` is now git-ignored.
 
 ## File map
 
@@ -206,6 +210,7 @@ test:e2e` 11/11, and the two that are NOT in CI — `npm run probes:adapted`
 | `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it, `retier()`s the three amber codes, `remap()`s the CAT-ladder rework (tables, isInstr, PEOPLE literals, legend) and `rematrix()`es the combination matrix into the reference's validate, so both engines compute from identical data. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table. |
 | `docs/session-state.md` | The per-session handoff: what the last session shipped, what it left unfinished, which branch it used. Rewritten each session — this file holds the durable state, that one holds the last session's. |
+| `PORTING.md` | **Historical** — the phase plan the port was built from. Nothing left to run; kept only because `probe-sweep.md` and `perf-port.cjs` cite its decisions (dropped probes, original timing budgets). |
 | `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the four gates. |
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser, `app.ts` holds login/nav/scroll-settle helpers. `playwright.config.ts` builds and serves the port itself. |
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |

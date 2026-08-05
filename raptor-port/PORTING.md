@@ -1,5 +1,13 @@
 # Porting plan — feed Claude Code ONE phase at a time
 
+> **Historical. The port is finished — do not run these phases.** This file
+> is kept because its decisions are still cited as the reason for things in
+> the live build: `docs/probe-sweep.md` points here for why `perf2` and the
+> `perf1` cache sections were dropped and why the adapted probes "keep their
+> behavioural checks", and `probes/perf-port.cjs` points here for the
+> original timing budgets. For how to work in this repo now, read
+> `CLAUDE.md`; for what is still open, `../HANDOFF.md`.
+
 Each phase below is a prompt to paste into Claude Code, in order. Do not
 paste the next one until the current phase's exit gate is green and you have
 committed. The phrasing is deliberate — especially the "list first, code
