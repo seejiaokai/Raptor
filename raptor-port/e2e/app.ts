@@ -22,8 +22,8 @@ export async function go(page: Page, to: 'viewsched' | 'editsched' | 'inputs' | 
 /* .week carries scroll-behavior:smooth and panDays() asks for 'smooth' on
    purpose, so a read taken a fixed delay later can land mid-animation and
    report a position nothing ever settled at. Poll until it stops moving. */
-export async function settle(page: Page, sel: string, from?: number) {
-  return page.evaluate(async ([s, was]) => {
+export async function settle(page: Page, sel: string, from?: number, axis: 'x' | 'y' = 'x') {
+  return page.evaluate(async ([s, was, ax]) => {
     const el = document.querySelector(s as string) as HTMLElement
     const start = was as number | undefined
     let last = NaN, same = 0, moved = start === undefined
@@ -32,14 +32,33 @@ export async function settle(page: Page, sel: string, from?: number) {
        wait for it to leave that position before believing any stillness. */
     for (let i = 0; i < 180; i++) {
       await new Promise(r => requestAnimationFrame(() => r(null)))
-      const now = Math.round(el.scrollLeft)
+      const now = Math.round(ax === 'y' ? el.scrollTop : el.scrollLeft)
       if (!moved && now !== start) moved = true
       same = now === last ? same + 1 : 0
       last = now
       if (moved && same >= 6) return now
     }
     return last
-  }, [sel, from] as const)
+  }, [sel, from, axis] as const)
+}
+
+/* Warning navigation moves BOTH axes — the week is placed horizontally by hand
+   onto the day's snap point, then scrollIntoView does the vertical. Neither
+   settle() alone proves the motion is over, so wait for the pair to go quiet
+   together before measuring anything. */
+export async function settleBoth(page: Page, sel: string) {
+  return page.evaluate(async (s) => {
+    const el = document.querySelector(s as string) as HTMLElement
+    let lx = NaN, ly = NaN, same = 0
+    for (let i = 0; i < 240; i++) {
+      await new Promise(r => requestAnimationFrame(() => r(null)))
+      const x = Math.round(el.scrollLeft), y = Math.round(el.scrollTop)
+      same = (x === lx && y === ly) ? same + 1 : 0
+      lx = x; ly = y
+      if (same >= 8) break
+    }
+    return { left: lx, top: ly }
+  }, sel)
 }
 
 /* set a scroll position and wait for it to be real — 'instant' because 'auto'

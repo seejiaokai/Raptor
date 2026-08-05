@@ -139,6 +139,17 @@ read-only (aircrew-submitted inputs have no funnel keys; they are edited on
 the Inputs page) — only the accept buttons act. Every control is pv-gated in
 markup AND guarded at runtime (DPREV check) like the rest of the board.
 
+The side panel's `Live checks` list (`.sb-warn .wln`) is a **navigation
+surface** since 5 Aug 26: each line carries `data-wdi`/`data-wix` and jumps to
+the offending puck (§Jumping from a warning to the puck that caused it). It
+iterates `WARN.byDay[di].warns` **as stored** — `validate()` has already
+ordered it by severity, and the local hard-first sort that used to re-order a
+copy would now break the index the rows carry. The `.wln.ok` "no conflicts"
+line is deliberately not addressable. The selected state (`.wln.on`) is
+rendered **into the string**, not painted afterwards: `SchedBoard` diffs each
+panel's html to decide whether to re-hang it, so a class added later is lost
+on the next unrelated repaint.
+
 ## The day's three closing blocks, and who sees them
 
 A day ends with three blocks, not the reference's five (owner request, Aug 26 —
@@ -237,11 +248,77 @@ Clicking a puck selects the **person**: every copy of that name lights blue
 person; every non-matching puck dims (`focusActive`) so the name pops, and
 opening that person's issue boxes (`PFOCUS`) rides along, person-scoped.
 
+Warning focus outranks all of it, and since 5 Aug 26 it governs the board's
+schedule panels (`.sb-boardwrap`) as well as the week — the board's issue list
+became clickable, and navigation is useless if the destination is not lit.
+Board pucks take `wfoc`/`advf`/`dim` but never `echo`: the board is one day, so
+the cross-day echo has nothing to say there. The roster palettes still keep
+their normal look (a palette puck is a drag source for a day you may not be
+looking at, so dimming it would fight arm-and-plant), and `.pv-frozen` is
+excluded — `WARN` is live and a version preview is a published snapshot.
+See §Jumping from a warning to the puck that caused it.
+
 The "you" indicator (`ME`, purple) is **passive**: it marks your own view-as
 puck only while nothing is actively focused. The moment a selection or a
 highlight chip is active it yields — your puck dims with the rest instead of
 staying lit (owner, Aug 26) — so selecting someone else never leaves your own
 name glowing. Clicking blank space clears everything (`selDrop`).
+
+## Jumping from a warning to the puck that caused it
+
+Four surfaces flag aircrew, and all four navigate (owner, 5 Aug 26). A warning
+knows only `(di, who[])` — `validate()` stores no slot or row key — so the
+address every surface passes is `data-wdi`/`data-wix`, the day index and the
+index into `WARN.byDay[di].warns`:
+
+- **The week's issue rows** (`.witem[data-wdi]`, inside an expanded `.dwbox`)
+  go through `focusWarn`, which **toggles** — right for a list you are already
+  looking at.
+- **The day-detail panel** (`.witem[data-adv]`, `"di.ix"`) closes the modal
+  first.
+- **The board's issue list** (`.wln[data-wdi]`) — see below.
+- **The flag chip on a puck** (`.puck .lchip`) resolves to that person's worst
+  issue that day via `personWarns(di,id)[0]`. That is `[0]` and not a search
+  because `personWarns` preserves `WARN`'s order, which `validate()` has
+  already sorted by severity. It cannot go through `chipOf`: that collapses by
+  `RANK` and is not invertible.
+
+**The board list and the chip must open `DWOPEN` themselves** (both mirror the
+`[data-adv]` branch, not the `.witem` one). `focusWarn` never touches
+`DWOPEN`, which is correct on the week — a `.witem` only exists inside an
+already-open box — but a focus set from the board or a chip with `DWOPEN`
+empty leaves lit pucks and no way to clear them: `html.ts` renders
+`✕ Clear focus` only inside an open box.
+
+**Known limit, by design:** the crew-combination codes (`ILLEGAL_CREW`,
+`CREW_SOLO`, `CO_APPROVAL`, `NO_IR`) call `markRing` and never `markChip`, so
+those pucks carry no `.lchip` and are unreachable from the chip surface. Do
+not "fix" this by making the ring clickable — the ring is part of the puck,
+and the puck selects the person (owner, Aug 26).
+
+**Which puck wins.** One named person is the first puck in document order.
+Two or more is the crew-combination family, where `who` is the pilot AND the
+WSO of one aircraft — there `scrollToWarnFocus` prefers the candidate whose
+nearest ancestor holding two of the named people is shallowest, which finds
+`.acrow` on the week and `.sb-line` on the board without naming either class.
+
+**The scroll is two moves, and the order matters.** `.week` is
+`scroll-snap-type:x mandatory` with `.day{scroll-snap-align:start}`, so
+`inline:'center'` asks to rest between two snap points and the browser
+re-snaps afterwards — on a 620px day box that can land a whole day past the
+one clicked. So the day is placed by hand first, instantly, onto its snap
+point (`hsSet`, then `hsSync` for the bar geometry), and only then does
+`scrollIntoView({block:'center',inline:'nearest'})` do the vertical.
+`inline:'nearest'` is load-bearing: the puck is already in view sideways, so
+nothing fights the snap back. Gated by `e2e/geometry.spec.ts` — jsdom has no
+layout and does not implement `scrollIntoView`, so `warnjump.test.tsx` can
+only pin which element is aimed at, never where it lands.
+
+A stale row scrolls nowhere. `WARN` is reassigned wholesale by every
+`validate()`, so a row rendered before an edit can outlive its warning;
+`focusWarn` bails on the missing index, and the caller re-checks
+`view.WFOCUS` against the clicked `di`/`ix` before scrolling — without that,
+the week flies off to whatever was focused before.
 
 ## Line configs — the stores "+" picker
 

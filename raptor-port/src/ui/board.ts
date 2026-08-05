@@ -83,9 +83,19 @@ export function boardWarnHTML(di: number) {
   const dw = (WARN.byDay[di] && WARN.byDay[di].warns) || []
   let wh = `<div class="wh">Live checks · ${dw.length} for ${esc(d.dow)}</div>`
   if (dw.length) {
-    dw.slice().sort((a: any, b: any) => (a.sev === 'hard' ? 0 : 1) - (b.sev === 'hard' ? 0 : 1)).forEach((w: any) => {
+    /* Iterate WARN's own array, unsorted: validate() has already ordered it by
+       SORD (hard, adv, note), so the local hard-first sort this used to do was a
+       second copy of ordering the engine owns — and re-ordering would break the
+       index these rows now carry. Same order as the week's .dwlist, which also
+       iterates as stored; the two lists could previously disagree. */
+    dw.forEach((w: any, ix: number) => {
       const names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
-      wh += `<div class="wln ${w.sev}">${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || ''))}</div>`
+      /* the selected state goes in the STRING, not on a class painted later:
+         SchedBoard diffs this html against the last one to decide whether to
+         re-hang the panel, so a class added afterwards is lost on the next
+         unrelated repaint */
+      const on = view.WFOCUS && view.WFOCUS.di === di && view.WFOCUS.ix === ix ? ' on' : ''
+      wh += `<div class="wln ${w.sev}${on}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || ''))}</div>`
     })
   } else wh += `<div class="wln ok">No conflicts flagged for this day ✓</div>`
   return wh

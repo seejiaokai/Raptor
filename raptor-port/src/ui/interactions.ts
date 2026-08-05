@@ -19,6 +19,22 @@ import { setDayPop, setAirKey, setDrawer } from './pops'
 import { openScheduler } from './board'
 import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
+import { personWarns } from '../engine/avail'
+
+/* Focus a warning clicked from somewhere that is NOT an already-open day box —
+   the board's issue list, or a chip on a puck. Both have to open the box
+   themselves: html.ts renders the "✕ Clear focus" button only inside an open
+   box, so a focus set with DWOPEN empty would leave the user glowing pucks and
+   no way to clear them short of hunting for blank space. This mirrors the
+   day-detail panel's [data-adv] branch, which had the same problem to solve. */
+function jumpToWarn(di: number, ix: number) {
+  const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]
+  if (!w) return                       // a stale index — validate() rebuilds WARN wholesale
+  view.DWOPEN.clear(); view.DWOPEN.add(di)
+  view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev })
+  view.clearOtherHL()
+  notify(); setTimeout(scrollToWarnFocus, 0)
+}
 
 /* The config picker — a body-level popup anchored to the "+" button, built the
    same way board.ts builds waveMenu: it lives outside the React tree, offers
@@ -150,6 +166,33 @@ export function routeClick(e: MouseEvent) {
     }
   }
 
+  /* A warning clicked from the board's issue list. It has to sit AFTER the
+     arm-and-plant branch above — a board puck's chip is inside a palette-armed
+     flow's line of fire — and it deliberately does not use focusWarn: that
+     toggles, which is right for a list you are already looking at and wrong
+     here, and it leaves DWOPEN alone. See jumpToWarn. */
+  const wl = t.closest('.wln[data-wdi]') as HTMLElement | null
+  if (wl) { jumpToWarn(+wl.dataset.wdi!, +wl.dataset.wix!); e.stopPropagation(); return }
+
+  /* The flag chip ON a puck — the only warning surface that is not a list.
+     It resolves to the person's worst issue that day, and must be tested
+     before the puck branch below, or the chip would just select the person. */
+  const lc = t.closest('.puck[data-person] .lchip') as HTMLElement | null
+  if (lc) {
+    const pkc = lc.closest('.puck[data-person]') as HTMLElement
+    const dayEl = pkc.closest('.day[data-day]') as HTMLElement | null
+    /* on the board there is no .day wrapper — the board IS one day */
+    const di = dayEl ? +dayEl.dataset.day! : view.SBDAY
+    if (di != null) {
+      /* personWarns preserves WARN's own order, which validate() has already
+         sorted by severity, so [0] is the worst without a comparator. It also
+         carries the true engine index, which chipOf could never give back:
+         chipOf collapses by RANK and is not invertible. */
+      const hit = personWarns(di, pkc.dataset.person)[0]
+      if (hit) { jumpToWarn(di, hit.ix); e.stopPropagation(); return }
+    }
+  }
+
   /* click a puck → select that person: every copy of the name lights blue,
      and their issue boxes open */
   const pk = t.closest('.puck[data-person]') as HTMLElement | null
@@ -202,8 +245,17 @@ export function routeClick(e: MouseEvent) {
   /* one warning → focus + snap to the guilty puck */
   const it = t.closest('.witem[data-wdi]') as HTMLElement | null
   if (it) {
+    const di = +it.dataset.wdi!, ix = +it.dataset.wix!
     view.focusWarn(it.dataset.wdi, it.dataset.wix)
-    notify(); setTimeout(scrollToWarnFocus, 0); e.stopPropagation(); return
+    notify()
+    /* Only snap if the focus really landed on what was clicked. focusWarn
+       bails when the index no longer resolves — WARN is reassigned wholesale by
+       every validate(), so a row rendered before an edit can outlive its
+       warning — and scrolling anyway would fly the week off to whatever was
+       focused BEFORE. The toggle-off case needs no guard: WFOCUS is null and
+       scrollToWarnFocus returns on its own. */
+    if (view.WFOCUS && view.WFOCUS.di === di && view.WFOCUS.ix === ix) setTimeout(scrollToWarnFocus, 0)
+    e.stopPropagation(); return
   }
 
   /* step back one level: drop the warning focus, stay on the person */
