@@ -89,13 +89,21 @@ describe('a label may not hard-code a threshold (tfin B53 #7)', () => {
 
 describe('the flag order is read from RANK, at module scope (tfin B50)', () => {
   it('RANK carries the squadron ordering', () => {
-    /* RUN (no break day) was inserted just above crew rest — both are rest
-       breaches and this is the graver one — which shifts C and Q up by one.
-       The ORDER is the squadron's and unchanged; only the numbering moved. */
-    expect(RANK.Q).toBe(11); expect(RANK.LD).toBe(0); expect(RANK.A).toBe(3)
-    expect(RANK.C).toBe(10); expect(RANK.RUN).toBe(9); expect(RANK.CR).toBe(8)
+    /* Codes get INSERTED into this table as rules gain flags — RUN above crew
+       rest, then CC/CCH for crew composition (owner, 5 Aug 26) — and each
+       insertion renumbers everything above it. So pin the ORDER, which is the
+       squadron's actual contract, rather than the indices, which are an
+       accident of how many codes happen to sit below. */
+    expect(Object.keys(RANK).sort((a: any, b: any) => RANK[a] - RANK[b]))
+      .toEqual(['LD', 'DT', 'TT', 'A', 'SD', 'SB', 'DB', 'NB', 'CC', 'CR', 'RUN', 'CCH', 'C', 'Q'])
+    /* the pairwise rules that insertion must never disturb */
     expect(RANK.RUN).toBeGreaterThan(RANK.CR)
     expect(RANK.C).toBeGreaterThan(RANK.RUN)
+    expect(RANK.Q).toBeGreaterThan(RANK.C)
+    /* an illegal pairing is graver than one needing a signature, and a man
+       double-booked is graver still */
+    expect(RANK.CCH).toBeGreaterThan(RANK.CC)
+    expect(RANK.C).toBeGreaterThan(RANK.CCH)
   })
 })
 

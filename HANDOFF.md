@@ -7,7 +7,7 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 534/32
+**Every gate is green at this commit**, run first-hand: `npm test` 541/32
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
 test:e2e` 13/13, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
@@ -56,11 +56,20 @@ test:e2e` 13/13, and the two that are NOT in CI — `npm run probes:adapted`
   too, not just the week's. Two defects on the old path went with it: a stale
   row scrolled to the *previously* focused warning, and `hsSync` was a dead
   `undefined` stub in `highlights.ts` so the proxy scrollbar never re-synced.
-  Known limit, by design: the crew-combination codes (`ILLEGAL_CREW`,
-  `CREW_SOLO`, `CO_APPROVAL`, `NO_IR`) set a ring but no chip, so those
-  warnings are unreachable from the chip surface — reaching them means making
-  the ring clickable, which collides with select-person. Contract:
-  `docs/ui-contracts.md` §Jumping from a warning to the puck that caused it.
+  Contract: `docs/ui-contracts.md` §Jumping from a warning to the puck that
+  caused it.
+- **The crew-composition chip `CC` (owner, 5 Aug 26).** The pairing rules
+  (`CREW_SOLO`, `CO_APPROVAL`, `OCU_NO_IP`, `ILLEGAL_CREW`, `NO_IR`) used to
+  ring a puck and caption nothing, which left them the one warning family with
+  nothing to click. They now all chip: **two codes, one printed flag** — `CC`
+  amber where the pairing needs approval, `CCH` red where it is not authorised
+  — both printing `CC`. A ring with no chip is now a bug and a test asserts
+  there are none. Ranking is an insertion, not a reshuffle (`CC` leads the
+  advisories, `CCH` sits under `C`), so a man already carrying a conflict keeps
+  the `C` flag. Adding any chip code means patching `refwin.ts:rematrix()` in
+  the same breath — `RANK`, `CHIP_TEXT` **and** `CHIP_LABEL` — or the
+  byte-exact reference-markup parity fails on the tooltip, not the rule.
+  Rules: `docs/engine-rules.md` §The crew-composition chip.
 - **`sbWide` / board-grip state** is module-local and resets on reload
   (matches the original's session-scoped behaviour).
 - **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** "Restore

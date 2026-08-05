@@ -134,6 +134,34 @@ describe('the flag chip on a puck', () => {
     expect(scrolled.length).toBeGreaterThan(0)
   })
 
+  it('a CC chip reaches the crew-composition warning it stands for', async () => {
+    /* This is the gap CC was added to close: the pairing rules used to ring the
+       puck and caption nothing, so they were the one warning family with
+       nothing on the puck to click. */
+    await act(async () => { view.setBoardDay(null); view.selDrop(); notify() })
+    const cc = $$('#vWeek .puck[data-person] .lchip')
+      .find(c => (c.textContent || '').trim() === 'CC')
+    expect(cc, 'the seed week renders a CC chip').toBeTruthy()
+    const pk = cc!.closest('.puck[data-person]') as HTMLElement
+    const di = +(pk.closest('.day[data-day]') as HTMLElement).dataset.day!
+    await click(cc!)
+    await flush()
+    expect(view.WFOCUS, 'a warning is focused').toBeTruthy()
+    const w = WARN.byDay[view.WFOCUS.di].warns[view.WFOCUS.ix]
+    expect(['CREW_SOLO', 'CO_APPROVAL', 'OCU_NO_IP', 'ILLEGAL_CREW', 'NO_IR'])
+      .toContain(w.code)
+    expect(w.who).toContain(pk.dataset.person)
+    expect(view.DWOPEN.has(di)).toBe(true)
+    expect(scrolled.length).toBeGreaterThan(0)
+  })
+
+  it('both CC codes print the same two letters, so the squadron reads one flag', () => {
+    const txt = $$('#vWeek .puck .lchip').map(c => (c.textContent || '').trim())
+    expect(txt).toContain('CC')
+    /* CCH must never reach the screen as its own glyph — it is CC in red */
+    expect(txt).not.toContain('CCH')
+  })
+
   it('the puck body still selects the person', async () => {
     const pk = $('#vWeek .puck[data-person]')
     await click(pk.querySelector('.nm'))
