@@ -1060,6 +1060,22 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .rc-d.s,.rc-d.e{background:var(--accent);color:#04222b;font-weight:800}
 .rc-x{padding:3px 0}
 .rc-read{font-size:9.5px;color:var(--ink-3);margin-top:4px;letter-spacing:.02em}
+/* A row that has just been added lights up and fades back out (owner, Aug 5) —
+   the click that added it happens at the top of the page, the row lands in a
+   table that may be scrolled and re-sorted, and this is what carries the eye
+   from one to the other. It animates on the CELLS, not the row: a <tr>'s own
+   background sits under its cells' and the fade would be invisible. It ends on
+   fully transparent so the row settles back to the table's own colour and the
+   hover rule still works afterwards. */
+@keyframes inflash{
+  0%{background:rgba(59,198,232,.28)}
+  40%{background:rgba(59,198,232,.22)}
+  100%{background:rgba(59,198,232,0)}
+}
+.innew>td{animation:inflash 1.5s ease-out 1}
+/* a flash is decoration; for anyone who has asked for less motion the row is
+   simply already settled */
+@media (prefers-reduced-motion:reduce){.innew>td{animation:none}}
 /* the inline-edit row */
 .ined>td{background:rgba(59,198,232,.05);vertical-align:top}
 .ined-ad{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;color:var(--ink-2);margin-top:4px}
