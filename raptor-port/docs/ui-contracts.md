@@ -319,6 +319,11 @@ re-checks all three (`canEditQuals()`) rather than trusting that a button was
 once rendered. It starts OFF each time editing is switched on, and `Save
 changes` closes both.
 
+The button reads the way `Enable editing` does (owner, 5 Aug 26): **blue
+while it is the thing to press**, then plain dark and labelled `✕ Edit
+quals` once you are inside the mode. It shows the way OUT rather than
+lighting up to say where you already are.
+
 While it is on the heading stops being a sort button and becomes the column:
 it carries `data-col` and **no `data-sort` at all**, so a drag can never land
 as a click that re-sorts the table under the hand doing the dragging. Each

@@ -396,10 +396,14 @@ export function QualsPage() {
             which qualifications the LoX carries, and in which order. Off by
             default every time editing is switched on — reshaping the table is
             a deliberate act, not the state you land in to tick a box. */}
+        {/* it reads the way Enable editing does (owner, 5 Aug 26): BLUE while
+            it is the thing to press, then plain dark with a ✕ once you are
+            inside it, so the button always shows the way OUT rather than
+            lighting up to say where you already are. */}
         {admin && qEditing &&
-          <button className={'abtn' + (qualsEdit ? ' primary' : '')} id="qEditQuals"
+          <button className={'abtn' + (qualsEdit ? '' : ' primary')} id="qEditQuals"
             aria-pressed={qualsEdit}
-            onClick={() => { setQualsEdit(v => !v); setArmDel('') }}>Edit quals</button>}
+            onClick={() => { setQualsEdit(v => !v); setArmDel('') }}>{qualsEdit ? '✕ Edit quals' : 'Edit quals'}</button>}
         <input className="datef" id="qDate" defaultValue="23/06/2026" style={{ maxWidth: 120 }} />
         <button className="abtn" id="qExport" onClick={doExport}>Export to Excel</button>
         <span className="div" style={{ width: 1, height: 22, background: 'var(--edge)' }}></span>

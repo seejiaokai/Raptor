@@ -480,6 +480,16 @@ describe('Edit quals', () => {
     await click($('#qEdit'))
     expect($('#qEditQuals')).toBeTruthy()
     expect($('#qEditQuals').getAttribute('aria-pressed'), 'off until it is pressed').toBe('false')
+    /* blue while it is the thing to press, dark with a ✕ once you are in it —
+       the button shows the way OUT, exactly as Enable editing / Save changes
+       do beside it (owner, 5 Aug 26) */
+    expect($('#qEditQuals').className).toContain('primary')
+    expect($('#qEditQuals').textContent).toBe('Edit quals')
+    await click($('#qEditQuals'))
+    expect($('#qEditQuals').className, 'the same dark button once it is on').not.toContain('primary')
+    expect($('#qEditQuals').textContent).toBe('✕ Edit quals')
+    await click($('#qEditQuals'))
+    expect($('#qEditQuals').className).toContain('primary')
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     expect($('#qEditQuals'), 'a member never sees it').toBeFalsy()
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
