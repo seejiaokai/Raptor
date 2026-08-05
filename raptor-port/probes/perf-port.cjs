@@ -7,8 +7,29 @@
    elsewhere for BOTH builds. So this gate measures the REFERENCE and the
    PORT with one methodology — mutation → macrotask → forced layout, the
    full painted cost regardless of when each build does its work — and
-   asserts NO REGRESSION: port ≤ reference × 1.15 on every timed metric.
+   asserts NO REGRESSION against the reference measured beside it.
    Absolute numbers are printed for the record.
+
+   THE BUDGET IS PER NODE, NOT PER REPAINT (owner, 5 Aug 26). It used to be
+   a flat `port ≤ reference × 1.15` on the raw times, and the board went red
+   at 1.19× — not because anything had got slower, but because the port's
+   board is no longer the reference's board: it draws 1.78× the nodes (the
+   stores chips, the personal-inputs group, the day-version selects). A flat
+   ratio between two builds drawing different amounts of DOM measures FEATURE
+   GROWTH, and would keep going red for every feature added while saying
+   nothing about speed. Dividing by the node ratio asks the question the gate
+   was always for — is a unit of drawing getting more expensive — and the
+   board answers 0.67×, i.e. comfortably faster per node.
+
+   WHY THE COMPANION DOM CEILING. Per-node alone has an obvious hole: a bug
+   that doubles the DOM would halve the per-node cost and sail through, while
+   the user waits twice as long. So node counts are gated too — separately,
+   because they are the one measurement here that is NOT machine-dependent.
+   Times swing 3x on this VM and must be read as a ratio against a reference
+   measured in the same seconds; a node count is the same integer everywhere,
+   so it is checked against a recorded number instead. Growth past the
+   ceiling is not automatically a fault — it is a prompt to look at the time
+   and then raise the ceiling deliberately, in the PR that adds the nodes.
 
    HOW IT SURVIVES A NOISY MACHINE. This gate used to fail ~2 runs in 5 (3 in
    5 when it was measured for this rewrite), at the SAME rate on an unchanged
@@ -158,23 +179,45 @@ async function trial(b, measureSize) {
   const verdict = k => ratios[k][ratios[k].length >> 1]
   const best = who => Object.fromEntries(KEYS.map(k => [k, Math.min(...trials.map(x => x[k][who]))]))
   const ref = best('ref'), port = best('port')
-  console.log(`\n   4x phone, painted cost   ${'reference'.padStart(10)} ${'port'.padStart(8)}   ratio  (median of ${TRIALS} trials)`)
+  /* which surface each metric repaints — the per-node divisor below is the
+     ratio for THAT surface, and the two grew by very different amounts
+     (the board by 1.78×, the week by 1.20× when the weekend arrived) */
+  const SURFACE = { oneEdit: 'week', noop: 'week', board: 'board', noopB: 'board' }
+  const size = (trials[0] || {}).size || {}
+  const nodeRatio = k => {
+    const s = size[SURFACE[k]]
+    return s && s.ref.nodes > 0 ? s.port.nodes / s.ref.nodes : 1
+  }
+  const perNode = k => verdict(k) / nodeRatio(k)
+  console.log(`\n   4x phone, painted cost   ${'reference'.padStart(10)} ${'port'.padStart(8)}   ratio  per node  (median of ${TRIALS} trials)`)
   for (const k of KEYS) {
     console.log(`   ${k.padEnd(24)} ${String(ref[k]).padStart(8)}ms ${String(port[k]).padStart(6)}ms  ${verdict(k).toFixed(2)}×`
-      + `   [${ratios[k].map(r => r.toFixed(2)).join(' ')}]`)
+      + `    ${perNode(k).toFixed(2)}×   [${ratios[k].map(r => r.toFixed(2)).join(' ')}]`)
   }
   /* read this BEFORE the ratios: a ratio of two builds drawing different
      amounts of DOM is not a statement about rendering speed */
-  const size = (trials[0] || {}).size || {}
   for (const [surface, s] of Object.entries(size)) {
     console.log(`   ${(surface + ' DOM').padEnd(24)} ${String(s.ref.nodes).padStart(8)}n ${String(s.port.nodes).padStart(6)}n  `
       + `${(s.port.nodes / s.ref.nodes).toFixed(2)}× the nodes, ${(s.port.chars / s.ref.chars).toFixed(2)}× the markup`)
   }
-  const noRegress = (k, label) => T(`perf · ${label} does not regress vs the reference`,
-    verdict(k) <= 1.15 ? 'yes' : `no (${verdict(k).toFixed(2)}x)`, 'yes')
+  const noRegress = (k, label) => T(`perf · ${label} costs no more per node than the reference`,
+    perNode(k) <= 1.15 ? 'yes' : `no (${perNode(k).toFixed(2)}x per node, ${verdict(k).toFixed(2)}x total)`, 'yes')
   noRegress('oneEdit', 'one-day edit')
   noRegress('board', 'board edit')
   noRegress('noop', 'a no-op repaint')
+
+  /* The machine-independent half of the budget. Recorded 5 Aug 26 on the
+     demo week with day 1 open: board 699 nodes, week 5028 — about 10%
+     headroom each, so ordinary tinkering does not trip it but a surface
+     growing by half does. Raising a number here is a deliberate edit that
+     belongs in the PR that adds the nodes, next to a fresh `npm run perf`
+     showing the per-node cost held. */
+  const DOM_CEILING = { week: 5530, board: 770 }
+  for (const [surface, s] of Object.entries(size)) {
+    const cap = DOM_CEILING[surface]
+    T(`perf · the ${surface} stays under its recorded DOM ceiling (${cap})`,
+      s.port.nodes <= cap ? 'yes' : `no (${s.port.nodes} nodes)`, 'yes')
+  }
 
   /* ---- perf1 B (behavioural) · a day-1 edit rewrites ONLY day 1 ----------- */
   {
