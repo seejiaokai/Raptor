@@ -19,7 +19,11 @@ several are measured and suite-enforced, not preferences.
   from `--puck-w`); free text needs `overflow-wrap:anywhere` AND
   `min-width:0`; a hole in a programme row renders NO element; week pan =
   one day box per click; proxy scrollbar maps linearly (HS_EPS echo guard,
-  `behavior:'instant'` writes).
+  `behavior:'instant'` writes). **Enforced by `e2e/geometry.spec.ts`
+  (`npm run test:e2e`), not by Vitest** — jsdom has no layout engine, so
+  every rect it reports is 0×0 and a broken grid passes it silently. That
+  suite runs in CI as the fourth gate; `docs/probe-sweep.md` lists what it
+  covers.
 
 ## Inline text editing (`ui/textedit.ts`)
 

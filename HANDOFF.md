@@ -18,14 +18,25 @@ The port from the original single-file app is complete; that history is in
   full Monday-to-Sunday week; the weekend is non-flying, duty crew only). Week chips
   re-label but every week shows the same data (the original behaved the
   same way). "Throw pucks (auto)" is a stub, as in the original.
-- **jsdom cannot measure layout** — geometry contracts live in the probes,
-  not in Vitest. Anything visual needs `npx vite preview --port 4173` plus
-  `probes/`, not just `npm test`.
-- **Probe-sweep leftovers** (`docs/probe-sweep.md`): 4 probes stop partway
-  on the port because they read the DOM synchronously after a mutation
-  (React commits async). Their contracts are pinned in Vitest and adapted
-  versions live in `probes/adapted/`. One probe (`zdup`) fails identically
-  on both builds — environment-bound, not a port defect.
+- **jsdom still cannot measure layout, but the geometry contracts are gated
+  now.** `e2e/geometry.spec.ts` (`npm run test:e2e`) measures them in a real
+  browser against a preview of the production build — puck exactly 74×15,
+  free text wrapping rather than overflowing, one day box per pan click, the
+  proxy scrollbar, scroll held across an edit, a programme hole rendering no
+  element, descender ink inside the puck. It builds and serves itself, and it
+  is the **fourth CI gate** in `deploy.yml`. Vitest still cannot see any of
+  this: every rect it reports is 0×0. Wider visual work still wants the probe
+  path (`npx vite preview --port 4173` + `probes/`).
+- **The probe sweep has no leftovers** (`docs/probe-sweep.md`). The four that
+  used to stop partway — `aar`, `audit`, `sa`, `sc2` — now run end to end as
+  `probes/adapted/*-async.cjs`, six adapted files in all, run together by
+  `npm run probes:adapted` and each exiting non-zero on a failed assertion.
+  Two of them assert MORE than their originals did: `aar`'s ladder check was
+  vacuous on the reference (it never enabled qtbl editing, so every click was
+  swallowed), and `sa`'s "no new warnings" step failed on the reference too,
+  because its blind seat-stuffing eventually put a downchit man on an SC
+  SPARE. One probe (`zdup`) still fails identically on both builds —
+  environment-bound, not a port defect.
 - **`sbWide` / board-grip state** is module-local and resets on reload
   (matches the original's session-scoped behaviour).
 - **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** "Restore
@@ -50,11 +61,25 @@ The port from the original single-file app is complete; that history is in
   `dtn:` duties, `sn:` sims, `gn:` ground). They never render on the view page,
   even when populated, and like every other edit here they do not survive a
   reload (only `rules` is persisted).
-- **`probes/perf-port.cjs` is flaky in the container** — roughly 2 runs in 5
-  trip one of the two no-regression assertions, and it does so at the SAME rate
-  on the pre-change baseline. Measured, not assumed. CI does not run it
-  (`deploy.yml` gates on `npm test`, `tfin.js`, `npm run build`); judge it over
-  several runs, not one.
+- **`probes/perf-port.cjs` is no longer flaky — and now reports a real
+  question for the owner.** It used to trip a no-regression assertion in about
+  2 runs in 5 (3 in 5 when re-measured), at the same rate on unchanged code:
+  the estimator was the problem, not the app. It now warms up, takes the
+  minimum of per-trial medians, and — the part that mattered — keeps BOTH
+  builds open and measures them round for round instead of measuring all of one
+  and then all of the other ~15 s later. Per-trial ratios cluster within ±0.05
+  inside a run. Self-check: `PORT_URL="file://$PWD/reference/scheduler.html"
+  npm run perf` measures the reference against itself and reads 0.91–1.01×.
+  **Still red, deliberately: `board edit 1.19×` against a 1.15 budget.** That
+  is not a rendering regression — the port's board carries **1.78× the nodes**
+  of the reference's (699 vs 393; the stores chips, the personal-inputs group,
+  the day-version selects), so it paints 1.78× the DOM in 1.19× the time,
+  and the two no-op metrics come in at 0.62× / 0.66×. A `port ≤ reference ×
+  1.15` gate has outlived its usefulness for the board now that the two boards
+  are different boards. **Re-baselining it is an owner call** — the threshold
+  was left untouched rather than tuned green. Numbers and reasoning:
+  `docs/probe-sweep.md` §The performance gate. Still not in CI (too slow, and
+  it needs the reference); judge it with `npm run perf`.
 - **NO_BRIEF, SIM_BRIEF and DT_SUM are amber (adv), not red** (owner, 4 Aug
   26); DOUBLE_BOOK stays red. Parity tests stay byte-exact via `retier()` in
   `src/testing/refwin.ts` (re-tiers the in-memory reference before boot; the
@@ -121,9 +146,10 @@ The port from the original single-file app is complete; that history is in
 | file | what it does |
 |---|---|
 | `probes/run.cjs` | Runs any reference probe against the reference build or the port. |
-| `probes/perf-port.cjs` | The perf gate — measures BOTH builds, asserts no regression. |
-| `probes/adapted/` | Async-repaint adaptations of the `wrap` and `drop` probes. |
+| `probes/perf-port.cjs` | The perf gate (`npm run perf`) — measures BOTH builds at once, round for round, and asserts no regression. |
+| `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
 | `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests and pushes the port's seed INPUTS into it, so both engines compute from identical data. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table. |
-| `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the three gates. |
-| `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main. |
+| `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the four gates. |
+| `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser, `app.ts` holds login/nav/scroll-settle helpers. `playwright.config.ts` builds and serves the port itself. |
+| `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. |

@@ -6,13 +6,13 @@
    drive the React build unchanged. It changes no behaviour — it only makes
    the existing API reachable — and it weighs a few hundred bytes. */
 import { DAYS } from './engine/data'
-import { PEOPLE, isScheduler, isLead, isInstr, isOcu, sanStatus, nameToId, aarNeed, scShiftKind } from './engine/people'
+import { PEOPLE, isScheduler, isLead, isInstr, isOcu, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
 import { INPUTS, INPUT_TYPES, DATES, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd } from './engine/inputs'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
 import * as V from './engine/validate'
-import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, restClear, dayEvents } from './engine/validate'
+import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayEvents } from './engine/validate'
 import { collectEvents } from './engine/events'
 import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef, acceptInput, unacceptInput, inpKey, acceptedDay, renameCallsign } from './engine/slots'
 import { slotBar, dayEngaged, slotRules, dayOff } from './engine/avail'
@@ -76,7 +76,11 @@ export function installProbeBridge() {
   w.dayApproved = dayApproved; w.alColor = alColor; w.signMissing = signMissing; w.unpublishAL = unpublishAL
   w.isScheduler = isScheduler; w.isLead = isLead; w.isInstr = isInstr; w.isOcu = isOcu
   w.sanStatus = sanStatus; w.nameToId = nameToId
-  w.aarNeed = aarNeed; w.WCODE = WCODE; w.wlbl = wlbl
+  w.aarNeed = aarNeed; w.aarOK = aarOK; w.WCODE = WCODE; w.wlbl = wlbl
+  /* the reference's `sa` probe reads RANK by regexing the page source — the
+     whole app is one inline script there, so its consts are literally in the
+     HTML. ESM has no source to scrape, so publish the object itself. */
+  w.RANK = RANK
   w.chipOf = chipOf; w.sevOf = sevOf; w.isLeave = isLeave; w.SIGN_ROLES = SIGN_ROLES
   w.CHIP_LABEL = CHIP_LABEL; w.restClear = restClear; w.dayEvents = dayEvents
   w.isLocalLeave = isLocalLeave; w.slotRules = slotRules; w.saExempt = saExempt
