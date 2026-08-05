@@ -290,11 +290,12 @@ already-open box — but a focus set from the board or a chip with `DWOPEN`
 empty leaves lit pucks and no way to clear them: `html.ts` renders
 `✕ Clear focus` only inside an open box.
 
-**Every ringed puck carries a chip** (owner, 5 Aug 26). The crew-composition
+**Every ringed puck carries a chip** (owner, 5 Aug 26). The crew-pairing
 family (`CREW_SOLO`, `CO_APPROVAL`, `OCU_NO_IP`, `ILLEGAL_CREW`, `NO_IR`) used
 to ring and never chip, which left it the one family with nothing on the puck
-to click; it now marks `CC`/`CCH` (see `engine-rules.md` §The crew-composition
-chip). A ring without a chip is now a **bug**, and `validate.test.ts` asserts
+to click; it now marks `CP`/`CPH` (renamed from `CC`/`CCH`, owner ask 5 Aug 26
+— see `engine-rules.md` §The crew-pairing chip). A ring without a chip is now
+a **bug**, and `validate.test.ts` asserts
 there are none. What is still deliberate: the ring itself is never a click
 target — it is part of the puck, and the puck selects the person (owner,
 Aug 26).
@@ -341,6 +342,19 @@ A stale row scrolls nowhere. `WARN` is reassigned wholesale by every
 `focusWarn` bails on the missing index, and the caller re-checks
 `view.WFOCUS` against the clicked `di`/`ix` before scrolling — without that,
 the week flies off to whatever was focused before.
+
+**Switching the board's day tab clears a stale focus** (owner, 5 Aug 26).
+`setBoardDay` already disarms a slot armed on another day; it now also drops
+`WFOCUS` under the same conditions — the board was already open, the day is
+really changing, and the focus belongs to neither the day being left nor the
+day being entered. Left alone, `WFOCUS.di` kept pointing at the day just
+left, `warnOnBoard()` (`WFOCUS.di===SBDAY`) went false, and `highlights.ts`
+stopped lighting anything: the lit pucks and the selected issue row vanished
+while the app still held a focus nothing on screen could clear. Two cases
+stay untouched on purpose: switching the board tab **onto** the focused
+warning's own day keeps it lit, and **opening** the board (`SBDAY` null →
+`n`) never touches a week-set focus at all — that path is what lets a
+week-wide warning survive the board opening on some other day.
 
 ## Line configs — the stores "+" picker
 

@@ -144,38 +144,48 @@ function rematrix(html: string): string {
   const swaps: Array<[string, string]> = [
     ["TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',OCU_NO_IP:",
      "TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',CREW_SOLO:'Crew solo — only allowed under syllabus',CO_APPROVAL:'Crew combination — CO approval required',OCU_NO_IP:"],
-    /* The crew-composition chip (owner, 5 Aug 26). The reference's RANK has no
-       CC/CCH, and markChip compares `RANK[c] > RANK[current]` — with an unranked
-       code that is `undefined > n`, i.e. false — so the reference would keep
-       whichever crew-composition chip landed FIRST and drop every later one,
-       while the port ranks them properly. The whole literal is replaced rather
-       than appended to, so the two tables are identical and the comparison
-       cannot drift. (The reference has no RUN either; it is carried in for the
-       same reason — one table, not two that happen to agree on this week.) */
+    /* The crew-pairing chip (renamed from CC, owner ask 5 Aug 26). The
+       reference's RANK has no CP/CPH, and markChip compares
+       `RANK[c] > RANK[current]` — with an unranked code that is
+       `undefined > n`, i.e. false — so the reference would keep whichever
+       crew-pairing chip landed FIRST and drop every later one, while the port
+       ranks them properly. The whole literal is replaced rather than appended
+       to, so the two tables are identical and the comparison cannot drift.
+       (The reference has no RUN either; it is carried in for the same reason
+       — one table, not two that happen to agree on this week.) */
     ["const RANK={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CR:8,C:9,Q:10}",
-     "const RANK={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CC:8,CR:9,RUN:10,CCH:11,C:12,Q:13}"],
+     "const RANK={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CP:8,CR:9,RUN:10,CPH:11,C:12,Q:13}"],
     /* The chip also has to RENDER identically, and the reference's puck builder
        falls back to the raw code for both the glyph and the tooltip
-       (`CHIP_TEXT[flag]||flag`, `CHIP_LABEL[flag]||flag`). Left unpatched, CCH
-       would print the literal "CCH" against the port's "CC", and every CC puck
+       (`CHIP_TEXT[flag]||flag`, `CHIP_LABEL[flag]||flag`). Left unpatched, CPH
+       would print the literal "CPH" against the port's "CP", and every CP puck
        would carry the code as its title instead of the label — so the dayHTML
        byte-comparison in html.test.ts fails on the markup, not on the rule. */
     ["const CHIP_TEXT={DT:'DT',TT:'TT',C:'C',A:'A',Q:'Q',CR:'R',NB:'B',SB:'B',DB:'D',SD:'D',LD:'L'}",
-     "const CHIP_TEXT={DT:'DT',TT:'TT',C:'C',A:'A',Q:'Q',CR:'R',NB:'B',SB:'B',DB:'D',SD:'D',LD:'L',CC:'CC',CCH:'CC'}"],
+     "const CHIP_TEXT={DT:'DT',TT:'TT',C:'C',A:'A',Q:'Q',CR:'R',NB:'B',SB:'B',DB:'D',SD:'D',LD:'L',CP:'CP',CPH:'CP'}"],
     ["SD:'No time for the sim debrief',LD:'Long work day (>{longDay})'};",
      "SD:'No time for the sim debrief',LD:'Long work day (>{longDay})',"
-     + "CC:'Crew composition — this pairing needs approval',CCH:'Crew composition — not an authorised pairing'};"],
+     + "CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};"],
     ["if(p&&w&&isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');add('hard','ILLEGAL_CREW',[ac.p,ac.w],`Two OCU in one aircraft (${f.label})`);}",
      "if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!(p.q==='IP'||p.q==='IR'||p.q==='FI')&&!isInstr(w.q)){"
-     + "if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CC');markChip(di,ac.w,'CC');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`);}"
-     + "else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');markChip(di,ac.p,'CCH');markChip(di,ac.w,'CCH');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`);}"
-     + "else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CC');markChip(di,ac.w,'CC');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`);}"
+     + "if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`);}"
+     + "else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');markChip(di,ac.p,'CPH');markChip(di,ac.w,'CPH');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`);}"
+     + "else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`);}"
      + "}"],
     /* OCU_NO_IP exists in BOTH engines, so unlike NO_IR it cannot be left to
        diverge on the strength of "it does not fire on this week" — that is luck,
        not parity. Same code, same chip, both sides. */
     ["if(ocuAll.length&&!anyIP){ocuAll.forEach(id=>markRing(di,id,'adv'));",
-     "if(ocuAll.length&&!anyIP){ocuAll.forEach(id=>{markRing(di,id,'adv');markChip(di,id,'CC');});"],
+     "if(ocuAll.length&&!anyIP){ocuAll.forEach(id=>{markRing(di,id,'adv');markChip(di,id,'CP');});"],
+    /* The ALL AVAIL sentinel fix (owner scenario run, 5 Aug 26): crewAll used to
+       be `.filter(Boolean)`, so the sentinel flowed into ocuAll/anyIP here and
+       into NO_IR (port-only, never patched into the reference). OCU_NO_IP DOES
+       fire on the seed and IS patched above, so the reference's copy of this
+       line needs the identical fix or a sentinel could pick up a ring/chip on
+       one side and not the other — the same crewAll line lives at
+       reference/scheduler.html:3140, read-only, patched here in memory only. */
+    ["const crewAll=[...new Set(f.acs.reduce((a,x)=>a.concat([x.p,x.w]),[]).filter(Boolean))];",
+     "const crewAll=[...new Set(f.acs.reduce((a,x)=>a.concat([x.p,x.w]),[]).filter(id=>id&&PEOPLE[id]&&!isSpecial(id)))];"],
   ]
   for (const [from, to] of swaps) {
     const n = html.split(from).length - 1

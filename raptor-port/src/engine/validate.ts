@@ -19,7 +19,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
    key the colours, the ranking and the tooltips — but the squadron reads these
    at 9px on a phone, so the glyphs are short: R for crew rest, B for either
    brief, D for either debrief, L for a long day. */
-export const CHIP_TEXT:any={DT:'DT',TT:'TT',C:'C',A:'A',Q:'Q',CR:'R',RUN:'7',NB:'B',SB:'B',DB:'D',SD:'D',LD:'L',CC:'CC',CCH:'CC'};
+export const CHIP_TEXT:any={DT:'DT',TT:'TT',C:'C',A:'A',Q:'Q',CR:'R',RUN:'7',NB:'B',SB:'B',DB:'D',SD:'D',LD:'L',CP:'CP',CPH:'CP'};
 export const chipText=(c:any)=>CHIP_TEXT[c]||c;
 /* Which flag a puck shows when a person has more than one on the day. Highest
    wins. Order set by the squadron: qual → conflict → crew rest → no flight brief
@@ -27,23 +27,24 @@ export const chipText=(c:any)=>CHIP_TEXT[c]||c;
    double turn → long work day. Module scope, not inside validate(), so the Logic
    tab can print the real ordering rather than a second copy of it.
 
-   CC / CCH are crew composition (owner, 5 Aug 26) — the pairing rules, which
-   used to ring the puck and caption nothing. They are TWO codes rather than one
-   because a chip carries no severity of its own: CC is the advisory colour and
-   CCH the hard one, and both PRINT `CC`, so the squadron reads one flag while
-   the engine keeps the two apart. Both are INSERTED into the squadron's order
-   rather than reshuffling it: CC leads the advisories, CCH sits below the
-   conflict flag, because a man booked into two places at once is a harder stop
-   than a pairing that wants a signature. Everything that outranked everything
-   else before still does. Adding a code here without adding it to RANK would
-   half-work: markChip's first write lands (there is nothing to beat) and every
-   later one loses to `undefined`, silently freezing the flag. */
-export const RANK:any={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CC:8,CR:9,RUN:10,CCH:11,C:12,Q:13};
+   CP / CPH are crew pairing (renamed from CC, owner ask 5 Aug 26) — the
+   pairing rules, which used to ring the puck and caption nothing. They are TWO
+   codes rather than one because a chip carries no severity of its own: CP is
+   the advisory colour and CPH the hard one, and both PRINT `CP`, so the
+   squadron reads one flag while the engine keeps the two apart. Both are
+   INSERTED into the squadron's order rather than reshuffling it: CP leads the
+   advisories, CPH sits below the conflict flag, because a man booked into two
+   places at once is a harder stop than a pairing that wants a signature.
+   Everything that outranked everything else before still does. Adding a code
+   here without adding it to RANK would half-work: markChip's first write
+   lands (there is nothing to beat) and every later one loses to `undefined`,
+   silently freezing the flag. */
+export const RANK:any={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CP:8,CR:9,RUN:10,CPH:11,C:12,Q:13};
 export const CHIP_LABEL:any={DT:'Double turn',TT:'Tight turn',C:'Conflict (two events at once)',
   A:'Advisory — on shift and also down for a ground event or programme item',CR:'Crew rest breach (<{crewRest})',Q:'Qualification — illegal seat',
   NB:'No time for the flight brief',DB:'No time for the flight debrief',SB:'No time for the sim brief',SD:'No time for the sim debrief',LD:'Long work day (>{longDay})',
   RUN:'No break day — too many days on the programme in a row',
-  CC:'Crew composition — this pairing needs approval',CCH:'Crew composition — not an authorised pairing'};
+  CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};
 export const SEVWORD:any={hard:'Warning',adv:'Advisory',note:'Note'};
 /* A label may quote a live threshold: {crewRest} prints whatever crew rest is
    set to right now. Without this an edited rule leaves stale numbers behind in
@@ -355,9 +356,9 @@ export function validate(){
            pairing as the crew-solo advisory. Ring only, no chip — the
            ILLEGAL_CREW shape. */
         if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!isInstrPilot(p.q)&&!isInstr(w.q)){
-          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CC');markChip(di,ac.w,'CC');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`);}
-          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');markChip(di,ac.p,'CCH');markChip(di,ac.w,'CCH');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`);}
-          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CC');markChip(di,ac.w,'CC');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`);}
+          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`);}
+          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');markChip(di,ac.p,'CPH');markChip(di,ac.w,'CPH');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`);}
+          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`);}
         }
         // Q — seat qualification: a WSO can't fly FCP; only an instructor pilot (IP / IR / FI) may fly RCP
         if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${f.label})`);}
@@ -376,10 +377,19 @@ export function validate(){
       /* an IP in the BACK seat supervises just as well as one in the front —
          the seat rules explicitly allow it, so looking only at FCPs both
          flagged the standard OCU sortie and missed an OCU in the rear */
-      const crewAll=[...new Set(f.acs.reduce((a:any,x:any)=>a.concat([x.p,x.w]),[]).filter(Boolean))];
+      /* crewAll used to be `.filter(Boolean)` — truthy-only, so the ALL AVAIL
+         sentinel (a special PEOPLE record, never a real body) flowed straight
+         through into OCU_NO_IP's ocuAll/anyIP and NO_IR's who/ring/chip below,
+         landing a red ring + CPH chip on a sentinel that fills a seat with no
+         one really in it. events.ts:37 builds the same crew list and already
+         excludes specials this way; validate.test.ts pins "ALL AVAIL sentinels
+         never raise warnings" and this line was the hole in that invariant.
+         The warning itself still fires for the real crew that remains —
+         only the sentinel stops being named/ringed/chipped. */
+      const crewAll=[...new Set(f.acs.reduce((a:any,x:any)=>a.concat([x.p,x.w]),[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id)))];
       const ocuAll=crewAll.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
       const anyIP=crewAll.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
-      if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv');markChip(di,id,'CC');});add('adv','OCU_NO_IP',ocuAll,`OCU in ${f.label} with no IP`);}
+      if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv');markChip(di,id,'CP');});add('adv','OCU_NO_IP',ocuAll,`OCU in ${f.label} with no IP`);}
       /* NO_IR — an instrument rating test needs an IR examiner aboard (owner,
          Aug 5 '26). The mission lives in f.shift (collectEvents folds f.msn
          into it); a per-aircraft IRT lives in that aircraft's remarks. IRT in
@@ -388,11 +398,11 @@ export function validate(){
          same shape as OCU_NO_IP, and red: the sortie cannot be examined. */
       const isIR=(id:any)=>{const q=realP(id);return !!(q&&q.q==='IR');};
       if(/\bIRT\b/i.test(String(f.shift||''))&&crewAll.length&&!crewAll.some(isIR)){
-        crewAll.forEach((id:any)=>{markRing(di,id,'hard');markChip(di,id,'CCH');});
+        crewAll.forEach((id:any)=>{markRing(di,id,'hard');markChip(di,id,'CPH');});
         add('hard','NO_IR',crewAll,`IRT in ${f.label} with no IR examiner`);}
       f.acs.forEach((ac:any)=>{ if(!/\bIRT\b/i.test(String(ac.rmks||'')))return;
         const crew=[ac.p,ac.w].filter((id:any)=>id&&realP(id));
-        if(crew.length&&!crew.some(isIR)){crew.forEach((id:any)=>{markRing(di,id,'hard');markChip(di,id,'CCH');});
+        if(crew.length&&!crew.some(isIR)){crew.forEach((id:any)=>{markRing(di,id,'hard');markChip(di,id,'CPH');});
           add('hard','NO_IR',crew,`IRT remarks on ${f.label} with no IR examiner`);}});
       /* SC currency — read off the shift as scheduled, both MAIN and SPARE.
          This is about the person's own qualification, not a clash with another

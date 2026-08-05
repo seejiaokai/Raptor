@@ -7,7 +7,7 @@
    pass `npm test` all day. Here they run in a real browser on the real
    production build, so a CSS change that breaks one fails a gate. */
 import { expect, test } from '@playwright/test'
-import { go, login, pan, puckSize, scrollTo, settle, settleBoth } from './app'
+import { go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek } from './app'
 
 const PHONE = { width: 390, height: 844 }
 const DESK = { width: 1500, height: 950 }
@@ -320,5 +320,159 @@ test.describe('clicking a warning brings the puck into view', () => {
     })
     expect(m, 'the board lit a puck for the focused warning').not.toBeNull()
     expect(m!.inView, 'the offending puck is inside the board panel').toBe(true)
+  })
+
+  test('the edit week: a far-day witem brings its puck fully into view, on both axes', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'editsched')
+
+    /* day 3 (Thursday) carries ILLEGAL_CREW (bapster+badger) in the seed —
+       far enough into the week that "in view" actually proves something.
+       Both week pages stay mounted (one display:none), so every query below
+       is scoped to #eWeek — an unscoped one could grab the hidden #vWeek's
+       0x0 twin instead. */
+    const di = 3
+    await scrollTo(page, '#eWeek', 0)
+    await page.click(`#eWeek .day[data-day="${di}"] .daywarn[data-daywarn]`)
+    await page.waitForSelector(`#eWeek .day[data-day="${di}"] .witem[data-wdi]`)
+    await scrollTo(page, '#eWeek', 0)          // the expand may have nudged it
+
+    await page.click(`#eWeek .day[data-day="${di}"] .witem[data-wdi]`)
+    await settleWeek(page, '#eWeek')
+
+    const m = await page.evaluate((d) => {
+      const week = document.querySelector('#eWeek') as HTMLElement
+      const puck = document.querySelector(`#eWeek .day[data-day="${d}"] .puck.wfoc:not(.echo)`) as HTMLElement
+      if (!puck) return null
+      const w = week.getBoundingClientRect(), p = puck.getBoundingClientRect()
+      return {
+        insideX: p.left >= w.left - 1 && p.right <= w.right + 1,
+        /* the week test above only checks X — the week scrolls X on ITSELF
+           but Y on the PAGE (there is no vertical scroller on #eWeek), so the
+           vertical check reads the viewport, not a #eWeek.scrollTop that
+           never moves */
+        insideY: p.top >= -1 && p.bottom <= window.innerHeight + 1,
+      }
+    }, di)
+    expect(m, 'a focused puck is on the page').not.toBeNull()
+    expect(m!.insideX, 'the puck is inside the week horizontally').toBe(true)
+    expect(m!.insideY, 'the puck is inside the page viewport vertically').toBe(true)
+  })
+
+  test('view schedule: a day-detail warning row brings its puck fully into view, on both axes', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'viewsched')
+
+    const di = await page.evaluate(() => {
+      const days = [...document.querySelectorAll('#vWeek .day[data-day]')]
+      const hit = days.find(d => d.querySelector('.daywarn[data-daywarn]'))
+      return hit ? +(hit as HTMLElement).dataset.day! : -1
+    })
+    test.skip(di < 0, 'no flagged day in the seed week')
+
+    /* the day-detail (ⓘ) panel is read-only, opened by [data-dayinfo] on
+       either surface — the view page has no other way in */
+    await page.click(`#vWeek .day[data-day="${di}"] [data-dayinfo]`)
+    await page.waitForSelector('#dayPopBody [data-adv]')
+    await page.click('#dayPopBody [data-adv]')
+    await settleWeek(page, '#vWeek')
+
+    const m = await page.evaluate((d) => {
+      const week = document.querySelector('#vWeek') as HTMLElement
+      const puck = document.querySelector(`#vWeek .day[data-day="${d}"] .puck.wfoc:not(.echo)`) as HTMLElement
+      if (!puck) return null
+      const w = week.getBoundingClientRect(), p = puck.getBoundingClientRect()
+      return {
+        insideX: p.left >= w.left - 1 && p.right <= w.right + 1,
+        insideY: p.top >= -1 && p.bottom <= window.innerHeight + 1,
+      }
+    }, di)
+    expect(m, 'a focused puck is on the page').not.toBeNull()
+    expect(m!.insideX, 'the puck is inside the week horizontally').toBe(true)
+    expect(m!.insideY, 'the puck is inside the page viewport vertically').toBe(true)
+  })
+
+  test('view schedule: a puck flag chip focuses its warning and brings the puck fully into view', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'viewsched')
+
+    const has = await page.evaluate(() => !!document.querySelector('#vWeek .puck[data-person] .lchip'))
+    test.skip(!has, 'no flagged puck with a chip in the seed week')
+
+    /* .lchip clicks TOGGLE like .witem does — this test only clicks once */
+    await page.click('#vWeek .puck[data-person] .lchip')
+    await settleWeek(page, '#vWeek')
+
+    const m = await page.evaluate(() => {
+      const week = document.querySelector('#vWeek') as HTMLElement
+      /* the chip resolving to a warning IS "WFOCUS set" made visible — the
+         same .wfoc class highlights.ts paints from WFOCUS on every surface */
+      const puck = document.querySelector('#vWeek .puck.wfoc:not(.echo)') as HTMLElement
+      if (!puck) return null
+      const w = week.getBoundingClientRect(), p = puck.getBoundingClientRect()
+      return {
+        insideX: p.left >= w.left - 1 && p.right <= w.right + 1,
+        insideY: p.top >= -1 && p.bottom <= window.innerHeight + 1,
+      }
+    })
+    expect(m, 'clicking the chip focused a warning and lit a puck').not.toBeNull()
+    expect(m!.insideX, 'the puck is inside the week horizontally').toBe(true)
+    expect(m!.insideY, 'the puck is inside the page viewport vertically').toBe(true)
+  })
+
+  test('the board at a small viewport scrolls to the deepest warning\'s puck', async ({ page }) => {
+    await page.setViewportSize({ width: 900, height: 600 })
+    await login(page)
+    await go(page, 'editsched')
+
+    const di = await page.evaluate(() => {
+      const days = [...document.querySelectorAll('#eWeek .day[data-day]')]
+      const hit = days.find(d => d.querySelector('.daywarn[data-daywarn]'))
+      return hit ? +(hit as HTMLElement).dataset.day! : -1
+    })
+    test.skip(di < 0, 'no flagged day in the seed week')
+
+    await page.evaluate((d) => (window as any).openScheduler(d), di)
+    await page.waitForSelector('#sbWarn .wln[data-wix]')
+
+    /* "deepest" = the row whose target puck sits furthest down #sbBoard's OWN
+       content, not whichever the list happens to render first — that is the
+       one that actually needs the panel to scroll to reach it. A crew warning
+       paints .wfoc on every copy of both names, so the rank picks by the
+       FURTHEST candidate rather than assuming there is exactly one. */
+    const wix = await page.evaluate(() => {
+      const board = document.querySelector('#sbBoard') as HTMLElement
+      const W = (window as any).WARN
+      const rows = [...document.querySelectorAll('#sbWarn .wln[data-wix]')] as HTMLElement[]
+      let best = -1, bestTop = -Infinity
+      rows.forEach((r, i) => {
+        const w = W.byDay[+r.dataset.wdi!].warns[+r.dataset.wix!]
+        const ids: string[] = w.who || []
+        const tops = [...board.querySelectorAll('.puck[data-person]')]
+          .filter(p => ids.includes((p as HTMLElement).dataset.person!))
+          .map(p => (p as HTMLElement).getBoundingClientRect().top)
+        if (!tops.length) return
+        const top = Math.max(...tops)
+        if (top > bestTop) { bestTop = top; best = i }
+      })
+      return best
+    })
+    expect(wix, 'at least one warning on the board names a puck').toBeGreaterThan(-1)
+
+    await page.locator('#sbWarn .wln[data-wix]').nth(wix).click()
+    await settleBoth(page, '#sbBoard')
+
+    const m = await page.evaluate(() => {
+      const board = document.querySelector('#sbBoard') as HTMLElement
+      const puck = document.querySelector('.sb-boardwrap .puck.wfoc') as HTMLElement
+      if (!puck) return null
+      const b = board.getBoundingClientRect(), p = puck.getBoundingClientRect()
+      return { inView: p.top >= b.top - 1 && p.bottom <= b.bottom + 1 }
+    })
+    expect(m, 'the board lit a puck for the focused warning').not.toBeNull()
+    expect(m!.inView, 'the deepest warning\'s puck is inside the board panel').toBe(true)
   })
 })

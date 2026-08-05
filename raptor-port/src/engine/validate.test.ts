@@ -234,14 +234,39 @@ describe('an IRT needs an IR examiner (NO_IR)', () => {
     expect(hits[0].sev).toBe('hard')
     expect([...hits[0].who].sort()).toEqual(['bane', 'freak', 'stiff', 'wolf'])
     /* Hard ring on the whole crew, and since 5 Aug 26 a chip to go with it:
-       NO_IR is a crew-composition rule, so it marks CCH. Stiff is the case
+       NO_IR is a crew-pairing rule, so it marks CPH. Stiff is the case
        where that is NOT what shows — he is already carrying a conflict, and C
-       outranks CCH deliberately (a man in two places at once is the harder
+       outranks CPH deliberately (a man in two places at once is the harder
        stop). So his flag is unchanged, while a crew member with nothing else
        against him now shows the pairing flag instead of a bare ring. */
     expect(W.sev[0].stiff).toBe('hard')
     expect((W.chip[0] || {}).stiff).toBe(chipBefore)
-    expect((W.chip[0] || {}).wolf, 'the rest of the crew get the CC flag').toBe('CCH')
+    expect((W.chip[0] || {}).wolf, 'the rest of the crew get the CP flag').toBe('CPH')
+  })
+
+  /* Bug (owner scenario run, 5 Aug 26): crewAll used to be `.filter(Boolean)`,
+     so the ALL AVAIL sentinel — a special PEOPLE record standing in for an
+     unfilled seat, never a real body — flowed straight through into who/
+     ring/chip. A red ring + CPH landed on the sentinel itself whenever it
+     filled a seat on an IRT line with no IR examiner. The detection must
+     stay exactly as sensitive — only the sentinel's own marking goes away. */
+  it('an ALL AVAIL sentinel filling a seat is never named, ringed or chipped', () => {
+    /* RU/slipway+divot (0.0.1.0) is otherwise clean on Monday — no other
+       booking to fight CPH for RANK, unlike stiff/bane in the VL formation
+       above, so the "still ringed and chipped" half of this pin is unambiguous */
+    setSlotVal('0.0.1.1.p', '')                       // clear pump/dirty — isolate the flagged crew
+    setSlotVal('0.0.1.1.w', '')
+    setSlotVal('0.0.1.0.w', 'allavail')                // sentinel fills the WSO seat, slipway stays FCP
+    txtSet('ff:0.0.1.msn', 'IRT')
+    const W = validate()
+    const hits = W.all.filter((x: any) => x.code === 'NO_IR')
+    expect(hits.length).toBe(1)
+    expect(hits[0].who).not.toContain('allavail')
+    expect(hits[0].who).toContain('slipway')
+    expect((W.sev[0] || {}).allavail, 'the sentinel gets no ring').toBeUndefined()
+    expect((W.chip[0] || {}).allavail, 'the sentinel gets no chip').toBeUndefined()
+    expect((W.sev[0] || {}).slipway).toBe('hard')
+    expect((W.chip[0] || {}).slipway).toBe('CPH')
   })
 
   it('seating the IR examiner anywhere in the formation clears it', () => {
@@ -361,36 +386,36 @@ describe('CAT IW is a WSO category (data-inconsistency guard)', () => {
   })
 })
 
-/* ---- the crew-composition chip (owner, 5 Aug 26) --------------------------
+/* ---- the crew-pairing chip (renamed from CC, owner ask 5 Aug 26) ----------
    The pairing rules used to ring the puck and caption nothing, which left
    them the one warning family with nowhere to click. They now all mark a
-   chip: CC where the pairing needs approval, CCH where it is not authorised.
+   chip: CP where the pairing needs approval, CPH where it is not authorised.
    Two codes, one printed flag — the colour carries the severity. */
-describe('CC — crew composition', () => {
+describe('CP — crew pairing', () => {
   const chipFor = (di: any, id: any) => validate().chip[di]?.[id]
 
   it('both codes print the same two letters', () => {
-    expect(chipText('CC')).toBe('CC')
-    expect(chipText('CCH')).toBe('CC')
+    expect(chipText('CP')).toBe('CP')
+    expect(chipText('CPH')).toBe('CP')
   })
 
-  it('every crew-composition code is ranked', () => {
+  it('every crew-pairing code is ranked', () => {
     /* markChip compares RANK[new] > RANK[current]. An unranked code still wins
        the FIRST write (there is nothing to beat) and loses every one after, so
        a missing entry here does not fail loudly — it silently freezes the flag
        on whichever pairing happened to validate first. */
-    for (const c of ['CC', 'CCH']) expect(typeof RANK[c], `${c} is in RANK`).toBe('number')
-    expect(RANK.CCH, 'the hard pairing outranks the advisory one').toBeGreaterThan(RANK.CC)
-    expect(RANK.CCH, 'but an illegal SEAT still outranks an illegal pairing').toBeLessThan(RANK.Q)
+    for (const c of ['CP', 'CPH']) expect(typeof RANK[c], `${c} is in RANK`).toBe('number')
+    expect(RANK.CPH, 'the hard pairing outranks the advisory one').toBeGreaterThan(RANK.CP)
+    expect(RANK.CPH, 'but an illegal SEAT still outranks an illegal pairing').toBeLessThan(RANK.Q)
   })
 
   it('the seed week chips every pairing it flags', () => {
     validate()
-    /* Mon crew solo and Wed CO approval are advisories → amber CC */
+    /* Mon crew solo and Wed CO approval are advisories → amber CP */
     for (const [di, id] of [[0, 'bapster'], [0, 'nick'], [2, 'krait'], [2, 'wrangler'], [2, 'badger']] as any)
-      expect(chipFor(di, id), `${id} on day ${di}`).toBe('CC')
-    /* Thu bapster+badger is not an authorised combination → red CCH */
-    for (const id of ['bapster', 'badger']) expect(chipFor(3, id), `${id} on day 3`).toBe('CCH')
+      expect(chipFor(di, id), `${id} on day ${di}`).toBe('CP')
+    /* Thu bapster+badger is not an authorised combination → red CPH */
+    for (const id of ['bapster', 'badger']) expect(chipFor(3, id), `${id} on day 3`).toBe('CPH')
   })
 
   it('no pairing is left ringed but uncaptioned', () => {
@@ -409,12 +434,12 @@ describe('CC — crew composition', () => {
 
   it('an instructor in either seat clears the chip too', () => {
     /* the matrix only grades a non-instructor pair, so the chip has to follow
-       it — an IP forward must leave no crew-composition flag behind */
+       it — an IP forward must leave no crew-pairing flag behind */
     setSlotVal('0.0.0.0.p', 'stiff'); setSlotVal('0.0.0.0.w', 'bullet')
     const W = validate()
-    expect(W.chip[0]?.stiff).not.toBe('CC')
-    expect(W.chip[0]?.stiff).not.toBe('CCH')
-    expect(W.chip[0]?.bullet).not.toBe('CC')
-    expect(W.chip[0]?.bullet).not.toBe('CCH')
+    expect(W.chip[0]?.stiff).not.toBe('CP')
+    expect(W.chip[0]?.stiff).not.toBe('CPH')
+    expect(W.chip[0]?.bullet).not.toBe('CP')
+    expect(W.chip[0]?.bullet).not.toBe('CPH')
   })
 })
