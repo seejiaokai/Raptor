@@ -1,9 +1,14 @@
 # Build the React port and publish it to GitHub Pages on every push to main.
+# The same three gates also run on every pull request into main, so a red PR
+# is caught BEFORE merge — previously they only ran after, and the PR's only
+# checks were Vercel's (owner ask, Aug 5). Publishing stays push-to-main only.
 # One-time setup in the repo: Settings → Pages → Source: "GitHub Actions".
 name: Deploy to GitHub Pages
 
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -12,8 +17,11 @@ permissions:
   pages: write
   id-token: write
 
+# Main deploys keep the single serialized "pages" group. PR runs get a group
+# per PR instead of joining it — inside one shared group, cancel-in-progress
+# would let a PR run cancel a real deploy mid-flight.
 concurrency:
-  group: pages
+  group: ${{ github.event_name == 'pull_request' && format('pages-pr-{0}', github.event.pull_request.number) || 'pages' }}
   cancel-in-progress: true
 
 jobs:
@@ -38,12 +46,15 @@ jobs:
       - name: Build
         working-directory: raptor-port
         run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+      # a PR run exists to gate, not to publish — no artifact, no deploy
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: raptor-port/dist
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
