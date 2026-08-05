@@ -52,6 +52,48 @@ const unfmt = (lbl: any) => {
   return `2026-${String(mi + 1).padStart(2, '0')}-${String(+p[1]).padStart(2, '0')}`
 }
 
+/* ---- the table's own view state: which window, and sorted how ------------
+   (owner, Aug 5). The list is a planning tool, so it opens on what is COMING:
+   sorted by start date, today at the top, the next two months below it. */
+
+const pad = (n: number) => String(n).padStart(2, '0')
+const isoOf = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+/* Date normalises an overflowing month for us — 31 Dec + 2 months is 3 Mar,
+   not 31 Feb — which is the behaviour a "two months from now" window wants */
+const plusMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth() + n, d.getDate())
+export const DEFAULT_SPAN_MONTHS = 2
+const defaultRange = () => {
+  const now = new Date()
+  return { from: isoOf(now), to: isoOf(plusMonths(now, DEFAULT_SPAN_MONTHS)) }
+}
+
+/* The sort key per column. Dates sort on the ISO date the label implies, with
+   the minutes appended, so two inputs on the same day order by time of day.
+   `mod` is 'now' for anything edited this session and a yyyy-mm-dd stamp
+   otherwise — 'now' IS the most recent, so it sorts above every stamp. */
+const SORTKEY: any = {
+  name: (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person || '')).toLowerCase(),
+  start: (r: any) => unfmt(r.date) + pad(r.allday ? 0 : (r.s || 0)),
+  end: (r: any) => unfmt(r.endDate || r.date) + pad(r.allday ? 1439 : (r.e || 0)),
+  type: (r: any) => String(r.type || '').toLowerCase(),
+  remarks: (r: any) => String(r.remarks || '').toLowerCase(),
+  recur: (r: any) => String(r.recur || '').toLowerCase(),
+  mod: (r: any) => (r.mod === 'now' ? '9999-99-99' : String(r.mod || '')),
+}
+
+/* Does this input have any day inside the window? OVERLAP, not "starts
+   inside": a downchit that began last week and runs through next month is
+   live today, and a list that hid it would be lying about who is available. */
+const inWindow = (r: any, from: string, to: string) => {
+  if (!from && !to) return true
+  const s = unfmt(r.date)
+  if (!s) return true                       // unreadable label — never hide data
+  const e = unfmt(r.endDate || r.date) || s
+  if (from && e < from) return false
+  if (to && s > to) return false
+  return true
+}
+
 export function InputsPage() {
   useVersion()
   const [person, setPerson] = useState(ME)
@@ -70,6 +112,14 @@ export function InputsPage() {
   const [fSearch, setFSearch] = useState('')
   const [editRow, setEditRow] = useState<any>(null)
   const [draft, setDraft] = useState<any>(null)
+  const [range, setRange] = useState(defaultRange)
+  const [calOpen, setCalOpen] = useState(false)
+  const [sort, setSort] = useState({ key: 'start', dir: 1 })
+
+  /* first click on a heading sorts it ascending, a second click inverts it —
+     every column the same way round, so there is one rule to remember */
+  const sortBy = (key: string) =>
+    setSort(s => ({ key, dir: s.key === key ? -s.dir : 1 }))
 
   const add = () => {
     /* the Inputs page is the one page a member can reach that mutates the
@@ -167,6 +217,30 @@ export function InputsPage() {
   if (fPerson !== 'all') rows = rows.filter((r: any) => r.person === fPerson)
   if (fType !== 'all') rows = rows.filter((r: any) => r.type === fType)
   if (fSearch) { const s = fSearch.toLowerCase(); rows = rows.filter((r: any) => (r.remarks || '').toLowerCase().includes(s) || (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s)) }
+  rows = rows.filter((r: any) => inWindow(r, range.from, range.to))
+  /* the row being edited stays put whatever the sort and the window say —
+     retyping a date must not make the open editor jump or vanish mid-edit */
+  if (editRow && INPUTS.indexOf(editRow) >= 0 && rows.indexOf(editRow) < 0) rows.push(editRow)
+  {
+    const key = SORTKEY[sort.key] || SORTKEY.start
+    const cmp = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
+    /* start date is the tie-break on every other column, so two rows that
+       match on the sorted column still come out in a stable, useful order */
+    rows.sort((a: any, b: any) =>
+      cmp(key(a), key(b)) * sort.dir || cmp(SORTKEY.start(a), SORTKEY.start(b)))
+  }
+
+  const RANGE_ALL = 'All dates'
+  const rangeLabel = (!range.from && !range.to) ? RANGE_ALL
+    : (range.from ? fmt(range.from) : '…') + ' → ' + (range.to ? fmt(range.to) : '…')
+  /* the arrow reads as the direction the column is going, not as a button */
+  const th = (key: string, label: string) => (
+    <th className={'insort' + (sort.key === key ? ' on' : '')} data-sort={key}
+      aria-sort={sort.key === key ? (sort.dir > 0 ? 'ascending' : 'descending') : 'none'}
+      title={`Sort by ${label.toLowerCase()}`} onClick={() => sortBy(key)}>
+      {label}<span className="inarrow">{sort.key === key ? (sort.dir > 0 ? '▲' : '▼') : ''}</span>
+    </th>
+  )
 
   return (
     <>
@@ -207,6 +281,25 @@ export function InputsPage() {
           <option value="all">Show all types</option>
           {INPUT_TYPES.map((t: string) => <option key={t}>{t}</option>)}
         </select>
+        {/* the window, picked on the same two-click calendar as the form above:
+            first click is the from-date, second the to-date */}
+        <div className="inrange">
+          <button className={'abtn' + (calOpen ? ' primary' : '')} id="inRangeBtn"
+            aria-expanded={calOpen} onClick={() => setCalOpen(o => !o)}>📅 {rangeLabel}</button>
+          {calOpen && (
+            <div className="inrange-pop" id="inRangePop">
+              <RangeCal idPrefix="inRange" start={range.from} end={range.to}
+                onPick={(s2, e2) => setRange({ from: s2, to: e2 })} />
+              <div className="rc-read">{range.from
+                ? fmt(range.from) + (range.to ? ' → ' + fmt(range.to) : ' → pick an end date')
+                : 'showing every date'}</div>
+              <div className="inrange-btns">
+                <button className="abtn" id="inRangeDef" onClick={() => { setRange(defaultRange()); setCalOpen(false) }}>Next {DEFAULT_SPAN_MONTHS} months</button>
+                <button className="abtn" id="inRangeAll" onClick={() => { setRange({ from: '', to: '' }); setCalOpen(false) }}>{RANGE_ALL}</button>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="searchbox">🔍<input id="inFSearch" placeholder="search" value={fSearch} onChange={e => setFSearch(e.target.value)} /></div>
         <button className="abtn" id="inExport" onClick={() => {
           const out: any[][] = [['Name', 'Date', 'Start', 'End', 'Type', 'Remarks']]
@@ -216,7 +309,11 @@ export function InputsPage() {
       </div>
       <div className="inwrap">
         <table className="intbl" id="intbl">
-          <thead><tr><th>Name</th><th>Start</th><th>End</th><th>Type</th><th>Remarks</th><th>Recurring</th><th>Last modified</th><th></th></tr></thead>
+          <thead><tr>
+            {th('name', 'Name')}{th('start', 'Start')}{th('end', 'End')}{th('type', 'Type')}
+            {th('remarks', 'Remarks')}{th('recur', 'Recurring')}{th('mod', 'Last modified')}
+            <th></th>
+          </tr></thead>
           <tbody id="inBody">
             {rows.map((r: any) => {
               const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
@@ -274,7 +371,13 @@ export function InputsPage() {
             })}
           </tbody>
         </table>
-        <div className="empty" id="inEmpty" hidden={rows.length > 0}>No inputs match.</div>
+        {/* an empty table under a date window is almost always the WINDOW, not
+            an empty roster — say which, and where the way out is */}
+        <div className="empty" id="inEmpty" hidden={rows.length > 0}>
+          {(range.from || range.to)
+            ? `No inputs between ${rangeLabel}. Change the dates, or pick “${RANGE_ALL}”.`
+            : 'No inputs match.'}
+        </div>
       </div>
     </>
   )
