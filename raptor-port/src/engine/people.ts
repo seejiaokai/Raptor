@@ -1,18 +1,22 @@
 import { VCONF } from './rules'
 /* =====================================================================
    142 SQN Flying Programme — prototype (single file, vanilla JS)
-   Qual ladder: OCU → D → C → B → A → I → CI → IR
+   Qual ladder: OCU → D → C → B → A → I → IR
+   CI ("C-cat instructor") was removed from the ladder (owner, Aug 5): every
+   pilot who held it also carried the IP flag, so the instructor half was
+   already recorded, and the six who held it are now I. Nothing in the engine
+   read CI except isInstr, which treated it exactly as it treats I.
    ===================================================================== */
 
 /* ---- qual system ---- */
-export const QCHIP:any={OCU:'O',D:'D',C:'C',B:'B',A:'A',I:'I',CI:'CI',IR:'IR'};        // chip text — letters, not ship numbers
-export const QCLASS:any={OCU:'q-ocu',D:'q-d',C:'q-c',B:'q-b',A:'q-a',I:'q-ins',CI:'q-ins',IR:'q-ins'};
-export const QCOLOR:any={OCU:'#8A6ED0',D:'#3B7DF0',C:'#3BC6E8',B:'#E5A83B',A:'#F0555F',I:'#A64DE8',CI:'#A64DE8',IR:'#A64DE8'};
-export const LEVELNAME:any={OCU:'OCU (ab-initio)',D:'D · wingman',C:'C · ops wingman',B:'B · 2-ship FL',A:'A · 4-ship FL',I:'I · instructor',CI:'CI · C-cat instr',IR:'IR · instr rating exmr'};
+export const QCHIP:any={OCU:'O',D:'D',C:'C',B:'B',A:'A',I:'I',IR:'IR'};        // chip text — letters, not ship numbers
+export const QCLASS:any={OCU:'q-ocu',D:'q-d',C:'q-c',B:'q-b',A:'q-a',I:'q-ins',IR:'q-ins'};
+export const QCOLOR:any={OCU:'#8A6ED0',D:'#3B7DF0',C:'#3BC6E8',B:'#E5A83B',A:'#F0555F',I:'#A64DE8',IR:'#A64DE8'};
+export const LEVELNAME:any={OCU:'OCU (ab-initio)',D:'D · wingman',C:'C · ops wingman',B:'B · 2-ship FL',A:'A · 4-ship FL',I:'I · instructor',IR:'IR · instr rating exmr'};
 export const isLead=(q:any)=>q==='A'||q==='B';
-export const isInstr=(q:any)=>q==='I'||q==='CI'||q==='IR';
+export const isInstr=(q:any)=>q==='I'||q==='IR';
 export const isOcu=(q:any)=>q==='OCU';
-export const QORDER:any={OCU:0,D:1,C:2,B:3,A:4,I:5,CI:6,IR:7};
+export const QORDER:any={OCU:0,D:1,C:2,B:3,A:4,I:5,IR:6};
 
 /* ---- people (real callsigns / quals from the LoX screenshots) ---- */
 /* seat: FCP=pilot RCP=wso · q=level · flight · sxo/opsSup extra quals · dt=downchit chip */
@@ -29,13 +33,13 @@ export const PEOPLE:any={
   harpoon:{cs:'Harpoon',seat:'FCP',q:'I',ip:true},
   snap:{cs:'Snap',seat:'FCP',q:'I',ip:true,sxo:true},
   taipan:{cs:'Taipan',seat:'FCP',q:'I',ip:true},
-  mamba:{cs:'Mamba',seat:'FCP',q:'CI',ip:true,sxo:true},
-  shaft:{cs:'Shaft',seat:'FCP',q:'CI',ip:true,sxo:true},
-  chaps:{cs:'Chaps',seat:'FCP',q:'CI',ip:true},
-  boosh:{cs:'Boosh',seat:'FCP',q:'CI',ip:true},
-  beams:{cs:'Beams',seat:'FCP',q:'CI',ip:true},
+  mamba:{cs:'Mamba',seat:'FCP',q:'I',ip:true,sxo:true},
+  shaft:{cs:'Shaft',seat:'FCP',q:'I',ip:true,sxo:true},
+  chaps:{cs:'Chaps',seat:'FCP',q:'I',ip:true},
+  boosh:{cs:'Boosh',seat:'FCP',q:'I',ip:true},
+  beams:{cs:'Beams',seat:'FCP',q:'I',ip:true},
   dice:{cs:'Dice',seat:'FCP',q:'IR',ip:true,sxo:true},
-  split:{cs:'Split',seat:'FCP',q:'CI',ip:true},
+  split:{cs:'Split',seat:'FCP',q:'I',ip:true},
   ignite:{cs:'Ignite',seat:'FCP',q:'C'},
   bruise:{cs:'Bruise',seat:'FCP',q:'C'},
   casper:{cs:'Casper',seat:'FCP',q:'C'},
@@ -89,7 +93,7 @@ export function deriveQuals(p:any){
   const q=p.q, o=QORDER[q];
   p.quals=Object.assign({
     sxo:!!p.sxo,
-    imc:o>=1, nvg:o>=1, catB:o>=3, catA:o>=4,
+    imc:o>=1, nvg:o>=1,
     instr:!!p.ip, dnif:false, san:!!p.san,
     /* Scheduler is an APPOINTMENT, not a flying qualification — it is ticked on
        the Quals page and it is what puts someone in the SKED CK, PLANNED BY and
