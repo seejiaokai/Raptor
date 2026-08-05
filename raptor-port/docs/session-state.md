@@ -1,73 +1,97 @@
-# Session handoff — Mon–Sun week, inputs calendar + pencil edit, break-day rule, bug sweep
+# Session handoff — inputs-form layout, Office column, initials, PR-time gates
 
 ## Where it started
-Owner asked for five things in two batches: a Sat/Sun week starting Monday; the
-inputs date pair replaced by one two-click calendar; a pencil edit on each
-input row; `Other` inputs to read by what was typed; then a warning when
-anyone works 7 days in a row (6 max). He was asleep for all of it and said to
-make the decisions. The last ask was an explicit "test for any bugs and fix
-it", which found seven — three of them corrupting state, all from features
-shipped earlier the same night.
+Owner reviewed the deployed site on a phone and asked for three things: the
+inputs form looked ragged (START TIME and END TIME visibly different sizes),
+remove `Office` entirely, allow more letters in initials. A fourth followed —
+fade the time fields while `All day` is ticked. Owner is non-technical and
+asked twice for plain language; explanations in chat stayed jargon-free per
+`CLAUDE.md`. Two process problems surfaced along the way: the repo was also
+deploying to Vercel, and the three gates only ran AFTER a merge.
 
 ## Shipped
-All merged, all deploys green.
-- Two-click range calendar, pencil edit, `Other` reads by its remarks — PR #50
-- The demo week runs Monday to Sunday — PR #51
-- Two edit bugs the pencil introduced (accepted-row link rot; editor held a
-  model index) — PR #52
-- Break day due after `VCONF.maxRun` (6) consecutive days — PR #53
-- Bug sweep: five more fixes around accepted inputs and date spans — PR #54
+All merged, both Pages deploys green.
+- Container setup notes for the browser probe path (`raptor-port/CLAUDE.md`) —
+  PR #56
+- Inputs form laid out cleanly at 402 / 760 / 1440; `Office` column removed;
+  initials `maxlength` 5→12 with `.qinit` 52→104px; `All day` fades START/END
+  TIME (`.ifield.dim`, pinned in `inputs.test.tsx`) — PR #56
+- The three gates now run on every PR into main, not only after merge — PR #57
+
+Two layout root causes worth not rediscovering, both now fixed:
+- `.ifield.cal { grid-column: span 2 }` sat near the END of `scheduler.css`
+  and outranked every breakpoint rule above it (equal specificity, later
+  source). Grid placement for `.cal` now lives with the `.ingrid` tracks.
+- Spanning 2 columns in the one-column phone grid created an IMPLICIT second
+  column, which is `auto`-sized, not `1fr` — measured 173px vs 181px. The
+  phone form was written to be one column and had never been one.
 
 ## Unfinished
-- none. No open PR, no red or unrun gate, no half-applied edit, nothing under
-  `subscribe_pr_activity` watch.
+- none in code. No open PR, no half-applied edit, nothing under
+  `subscribe_pr_activity` watch. See Open questions for two unruled asks.
 
 ## Branch state
-- Designated branch: `claude/raptor-port-pr-merge-j0g7hx`
-- Its PR is **merged** (#54).
+- Designated branch: `claude/handoff-md-review-lpzbck`
+- Its PR is **merged** (#57; #56 before it).
 - Reset before starting new work, or commits stack onto merged history:
-  `git fetch origin main && git checkout -B claude/raptor-port-pr-merge-j0g7hx origin/main`
+  `git fetch origin main && git checkout -B claude/handoff-md-review-lpzbck origin/main`
 
 ## Gates
-- `npm test` (460) · `npm run build` · `node reference/tfin.js` (728/0) — last
-  run **green**. Run them from `raptor-port/`, not the repo root.
-- Browser: `wrap-async` 36/0, `drop-async` 9/0. Full 53-probe sweep run against
-  the 7-day week — failures identical to the documented baseline, no new
-  breakage. `audit2` 17/18 by design; `perf-port.cjs` flaky in-container.
-- **Perf was measured, not assumed**, when the week went 5→7 days: baseline
-  5-day port 2 fails in 5 runs, 7-day 3 in 7. Same rate — the weekend days are
-  nearly empty markup. Do not re-litigate this without re-measuring.
+- `npm test` (461, +1 this session) · `npm run build` · `node reference/tfin.js`
+  (728/0) — last run **green**. Run them from `raptor-port/`, not the repo root.
+- CI now runs those three on PRs as well as pushes (#57). The `deploy` job was
+  verified to still RUN on push and skip only on `pull_request` — a wrong
+  condition there would silently stop publishing while still showing green.
+- PRs no longer carry a Vercel check: the owner deleted the Vercel account and
+  project mid-session, on the reasoning that one app should have one live site.
+  Old Vercel entries remain in the repo's deployment history; they are dead.
+- Browser: probes `sc` and `sched` pass (`sc` now prints its header list
+  without Office). `aar` stops partway — **confirmed identical on the
+  pre-change build** by stashing and rebuilding, i.e. the async-repaint
+  leftover in `docs/probe-sweep.md`, not a regression.
+- **The full probe sweep and `perf-port.cjs` were NOT run this session.** The
+  CSS touched is scoped to `.ingrid` / `.ifield*` / `.qinit` (Inputs page form
+  and the Quals initials box), so week/board geometry probes should be
+  unaffected — but that is reasoning, not measurement. Verification was done
+  instead by measuring computed geometry in Chromium at three widths.
+- The public Pages URL is **not reachable from the container** (agent proxy
+  answers 403 to CONNECT for `github.io`). Verify a deploy via the workflow's
+  job conclusions plus `vite preview` locally; do not expect to fetch the live
+  site. Noted in `CLAUDE.md` too.
 
 ## Open questions
-Nine judgment calls taken without an answer, all shipped, all cheap to reverse.
+Two from this session:
+1. **The login password is case-sensitive; the username is not.** `Login.tsx`
+   lowercases the username but compares `pass` exactly, so `A`/`A` is rejected
+   and `A`/`a` succeeds — a real trap on phones, which auto-capitalise. Owner
+   was told to type lowercase `a` and was offered a case-insensitive compare;
+   he did not answer. Deliberately NOT changed: `ACCOUNTS` and both gate
+   functions are verbatim from the reference, and loosening password matching
+   is a behaviour change to auth. `raptor-port/src/ui/Login.tsx:17`.
+2. **`.ifield.chk` (All day) now sits in a wide, mostly empty grid cell.**
+   Tidy but airy. Owner was offered an inline-with-the-times variant and did
+   not answer.
 
-Tonight's five:
-1. **Weekend content is invented** — Sat/Sun are non-flying with one SDO on
-   call 0800–1800. Nothing else was fabricated.
-2. **The break-day warning is hard (red)**, ranked just above crew rest, because
-   the owner phrased it as a limit ("6 days max").
-3. **The demo seeds no 7-day violation** — longest run is 4 days, so the new
-   warning is invisible until someone is genuinely planned across seven. Not
-   faked to make it visible.
-4. **Add now REFUSES an input with no date picked.** It used to default
-   silently to Monday while the readout said "pick a start date". This changed
-   two existing tests, which now pick a date first.
-5. **The Flight box stayed** in the Add row (the owner listed only
-   callsign/initials/pilot-WSO/cat but asked to remove only first+last name).
-
-Carried, still unruled:
-6. **Selection is person-wide by DECISION.** Clicking a puck lights EVERY copy
+Carried from the previous handoff, still unruled — full wording in
+`git log` for `raptor-port/docs/session-state.md`:
+3. **Selection is person-wide by DECISION.** Clicking a puck lights EVERY copy
    of that person. Per-puck scoping was built (#43) and explicitly reverted
-   (#45) — "u should allow me to see all the pucks of the same name that i
-   clicked". Do not re-narrow it. The separate "you"-indicator fix (#44, the
-   view-as puck yields to a selection) was KEPT and is not part of that revert.
-7. **Initials are editable in edit mode**, not add-only.
-8. **A callsign rename marks nothing pending** — it is not a schedule amendment.
-9. **Published day snapshots keep the spelling they were issued with.**
+   (#45). Do not re-narrow it. The separate "you"-indicator fix (#44) was KEPT
+   and is not part of that revert.
+4. Weekend content is invented (Sat/Sun non-flying, one SDO 0800–1800).
+5. The break-day warning is hard (red), ranked just above crew rest.
+6. The demo seeds no 7-day violation, so that warning is invisible until
+   someone is genuinely planned across seven days. Not faked to show it.
+7. `Add` refuses an input with no date picked (was: silently defaulted Monday).
+8. The `Flight` box stayed in the Add-person row.
+9. Initials are editable in edit mode, not add-only.
+10. A callsign rename marks nothing pending; published day snapshots keep the
+    spelling they were issued with.
 
 ## Pick up here
-No work is queued. If the owner rules against 2 or 3, both live in
-`raptor-port/src/engine/validate.ts` (the `DAYS_RUN` block) and
-`raptor-port/src/engine/rules.ts` (`VCONF.maxRun`); 1 is
-`raptor-port/src/engine/data.ts`; 4 and 5 are
-`raptor-port/src/ui/InputsPage.tsx`.
+Nothing is queued. The cheapest real work is running the full probe sweep
+against the new form layout to close the gap under Gates
+(`npm run build && npx vite preview --port 4173 &`, then
+`node probes/run.cjs all port`). Otherwise the largest open items remain the
+ones in `HANDOFF.md`: no shared data and prototype auth, both of which need a
+server and an owner decision before any code.
