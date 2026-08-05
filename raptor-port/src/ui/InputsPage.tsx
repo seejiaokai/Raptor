@@ -3,7 +3,7 @@
    logic is the reference's verbatim, including the role gate that keeps a
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, DATES, inputCoversDate } from '../engine/inputs'
 import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { PEOPLE } from '../engine/people'
@@ -81,6 +81,11 @@ const SORTKEY: any = {
   mod: (r: any) => (r.mod === 'now' ? '9999-99-99' : String(r.mod || '')),
 }
 
+/* How long a just-added row stays lit (owner, Aug 5). Long enough to catch the
+   eye after the click that caused it, short enough that it is over before the
+   user reads the row it landed on. */
+const FLASH_MS = 1500
+
 /* Does this input have any day inside the window? OVERLAP, not "starts
    inside": a downchit that began last week and runs through next month is
    live today, and a list that hid it would be lying about who is available. */
@@ -115,11 +120,42 @@ export function InputsPage() {
   const [range, setRange] = useState(defaultRange)
   const [calOpen, setCalOpen] = useState(false)
   const [sort, setSort] = useState({ key: 'start', dir: 1 })
+  /* Rows just added, newest first, and rows still flashing. Both hold the input
+     OBJECT rather than its index, for the same reason the row editor does:
+     adding, deleting or undoing renumbers INPUTS underneath us. */
+  const [pinned, setPinned] = useState<any[]>([])
+  const [flash, setFlash] = useState<any[]>([])
+  const timers = useRef<any[]>([])
+  useEffect(() => () => timers.current.forEach(clearTimeout), [])
+
+  /* A just-added input rides at the top of the table whatever the filters, the
+     window and the sort say (owner, Aug 5). Adding something and watching it
+     vanish because it falls outside today's view reads as "it didn't save" —
+     the one thing the feedback has to rule out. It is a HOLD, not a new
+     ordering: the next touch of the filter bar or a column heading is the user
+     arranging the table for themselves, and it releases every pin. */
+  const unpin = () => setPinned(p => (p.length ? [] : p))
 
   /* first click on a heading sorts it ascending, a second click inverts it —
      every column the same way round, so there is one rule to remember */
-  const sortBy = (key: string) =>
+  const sortBy = (key: string) => {
+    unpin()
     setSort(s => ({ key, dir: s.key === key ? -s.dir : 1 }))
+  }
+
+  /* A dropdown that only closes on the button that opened it is a trap: the
+     next click is nearly always the thing the user opened it to get at, and it
+     lands on a page the popover is still covering. Close on any press outside
+     the picker — mousedown, so it is gone before that press becomes a click. */
+  const rangeRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!calOpen) return
+    const away = (e: Event) => {
+      if (!rangeRef.current || !rangeRef.current.contains(e.target as Node)) setCalOpen(false)
+    }
+    document.addEventListener('mousedown', away)
+    return () => document.removeEventListener('mousedown', away)
+  }, [calOpen])
 
   const add = () => {
     /* the Inputs page is the one page a member can reach that mutates the
@@ -140,6 +176,13 @@ export function InputsPage() {
       type, remarks: remarks.trim(),
       recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
     }))
+    /* the row INPUTS.unshift just made — pin it to the top of the table and
+       light it, so the add is visible even from a view that would filter it
+       out. The flash comes off on a timer; the pin waits for the user. */
+    const row = INPUTS[0]
+    setPinned(p => [row, ...p])
+    setFlash(f => [row, ...f])
+    timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
     /* the dates stay on the form after an add, so the tail that describes them
        stays too — only what the typist wrote is cleared */
     setRemarks(withTill('', start, end))
@@ -229,6 +272,14 @@ export function InputsPage() {
     rows.sort((a: any, b: any) =>
       cmp(key(a), key(b)) * sort.dir || cmp(SORTKEY.start(a), SORTKEY.start(b)))
   }
+  /* the pinned rows go on top, ahead of everything the sort just decided, and
+     they are removed from the body of the list so a pin never shows twice.
+     Deleted and undone rows fall out here — the pin points at an object, so a
+     row that has left INPUTS simply stops matching. */
+  {
+    const pins = pinned.filter((r: any) => INPUTS.indexOf(r) >= 0)
+    if (pins.length) rows = pins.concat(rows.filter((r: any) => pins.indexOf(r) < 0))
+  }
 
   const RANGE_ALL = 'All dates'
   const rangeLabel = (!range.from && !range.to) ? RANGE_ALL
@@ -273,34 +324,34 @@ export function InputsPage() {
       </div>
       <div className="infilter">
         <span className="lab">Filter</span>
-        <select id="inFPerson" aria-label="Filter by person" value={fPerson} onChange={e => { setFPerson(e.target.value); notify() }}>
+        <select id="inFPerson" aria-label="Filter by person" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
           <option value="all">Personnel</option>
           {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
         </select>
-        <select id="inFType" aria-label="Filter by type" value={fType} onChange={e => { setFType(e.target.value); notify() }}>
+        <select id="inFType" aria-label="Filter by type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
           <option value="all">Show all types</option>
           {INPUT_TYPES.map((t: string) => <option key={t}>{t}</option>)}
         </select>
         {/* the window, picked on the same two-click calendar as the form above:
             first click is the from-date, second the to-date */}
-        <div className="inrange">
+        <div className="inrange" ref={rangeRef}>
           <button className={'abtn' + (calOpen ? ' primary' : '')} id="inRangeBtn"
             aria-expanded={calOpen} onClick={() => setCalOpen(o => !o)}>📅 {rangeLabel}</button>
           {calOpen && (
             <div className="inrange-pop" id="inRangePop">
               <RangeCal idPrefix="inRange" start={range.from} end={range.to}
-                onPick={(s2, e2) => setRange({ from: s2, to: e2 })} />
+                onPick={(s2, e2) => { unpin(); setRange({ from: s2, to: e2 }) }} />
               <div className="rc-read">{range.from
                 ? fmt(range.from) + (range.to ? ' → ' + fmt(range.to) : ' → pick an end date')
                 : 'showing every date'}</div>
               <div className="inrange-btns">
-                <button className="abtn" id="inRangeDef" onClick={() => { setRange(defaultRange()); setCalOpen(false) }}>Next {DEFAULT_SPAN_MONTHS} months</button>
-                <button className="abtn" id="inRangeAll" onClick={() => { setRange({ from: '', to: '' }); setCalOpen(false) }}>{RANGE_ALL}</button>
+                <button className="abtn" id="inRangeDef" onClick={() => { unpin(); setRange(defaultRange()); setCalOpen(false) }}>Next {DEFAULT_SPAN_MONTHS} months</button>
+                <button className="abtn" id="inRangeAll" onClick={() => { unpin(); setRange({ from: '', to: '' }); setCalOpen(false) }}>{RANGE_ALL}</button>
               </div>
             </div>
           )}
         </div>
-        <div className="searchbox">🔍<input id="inFSearch" placeholder="search" value={fSearch} onChange={e => setFSearch(e.target.value)} /></div>
+        <div className="searchbox">🔍<input id="inFSearch" placeholder="search" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></div>
         <button className="abtn" id="inExport" onClick={() => {
           const out: any[][] = [['Name', 'Date', 'Start', 'End', 'Type', 'Remarks']]
           INPUTS.forEach((r: any) => out.push([PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person, r.date, r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, r.remarks]))
@@ -357,7 +408,7 @@ export function InputsPage() {
                 </tr>
               )
               return (
-                <tr key={inx}>
+                <tr key={inx} className={flash.indexOf(r) >= 0 ? 'innew' : undefined}>
                   <td>{cs}</td><td>{st}</td><td>{en}</td>
                   <td><span className="intag">{r.type}</span></td>
                   <td>{r.remarks || ''}</td><td>{r.recur || ''}</td>

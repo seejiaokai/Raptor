@@ -591,3 +591,100 @@ describe('sorting by column', () => {
     await click($('#intbl thead th[data-sort="start"]'))  // leave it as it opened
   })
 })
+
+/* Closing the window picker (owner, Aug 5). It used to close only on its own
+   button, so the click meant for the table under it was swallowed by a
+   still-open popover. */
+describe('the date-window calendar puts itself away', () => {
+  const press = async (el: Element) => act(async () => {
+    el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+  })
+
+  it('closes on a press anywhere outside it', async () => {
+    if (!$('#inRangePop')) await click($('#inRangeBtn'))
+    expect($('#inRangePop'), 'open to begin with').toBeTruthy()
+    await press($('#intbl'))
+    expect($('#inRangePop'), 'gone').toBeFalsy()
+    expect($('#inRangeBtn').getAttribute('aria-expanded')).toBe('false')
+  })
+
+  it('stays open for a press inside it, so picking a range still works', async () => {
+    await click($('#inRangeBtn'))
+    await press($('#inRangeCal [data-cal="2026-07-13"]'))
+    expect($('#inRangePop'), 'still open').toBeTruthy()
+    /* and its own button still toggles it shut */
+    await click($('#inRangeBtn'))
+    expect($('#inRangePop')).toBeFalsy()
+    await showAllDates()
+  })
+})
+
+/* A new input has to be visible from wherever the table happens to be pointed
+   (owner, Aug 5): adding something and watching nothing appear reads as a
+   failed save. It rides the top until the user re-arranges the table. */
+describe('a new input announces itself', () => {
+  const setV = async (el: any, v: string, proto: any) => act(async () => {
+    const setter = Object.getOwnPropertyDescriptor(proto.prototype, 'value')!.set!
+    setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  const setFType = async (v: string) => act(async () => {
+    const sel = $('#inFType') as unknown as HTMLSelectElement
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
+    setter.call(sel, v); sel.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  /* twice, so the pick lands on Jul 13 whatever range the form was left in:
+     two clicks on one day always end with that day as the start */
+  const addOne = async (remark: string) => {
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    await setV($('#inRemarks'), remark, window.HTMLInputElement)
+    await click($('#inAdd'))
+  }
+  const reset = async () => {
+    await setFType('all')
+    await showAllDates()
+  }
+
+  it('rides the top row even when the filter and the window both exclude it', async () => {
+    const n = INPUTS.length
+    await useDefaultRange()          // Jul 2026 is behind us — outside the window
+    await setFType('Downchit')       // and the add below is an LL, not a Downchit
+    await addOne('SHOUTS FROM THE TOP')
+    expect(INPUTS.length).toBe(n + 1)
+    expect($$('#inBody tr')[0].textContent).toContain('SHOUTS FROM THE TOP')
+    /* it is the only thing in there that is not a Downchit — the pin is one
+       row riding above the filter, not the filter being cancelled */
+    expect($$('#inBody .intag').filter(x => x.textContent !== 'Downchit').length).toBe(1)
+    await act(async () => { undo() })
+    await reset()
+    expect(INPUTS.length).toBe(n)
+  })
+
+  it('lets go the moment the table is re-arranged', async () => {
+    const n = INPUTS.length
+    await setFType('Downchit')
+    await addOne('LETS GO ON A RECLICK')
+    expect($$('#inBody tr')[0].textContent).toContain('LETS GO ON A RECLICK')
+    /* re-click a heading: the user is arranging the table for themselves now */
+    await click($('#intbl thead th[data-sort="start"]'))
+    expect($$('#inBody tr').some(tr => (tr.textContent || '').includes('LETS GO ON A RECLICK')),
+      'back under the filter').toBe(false)
+    await act(async () => { undo() })
+    await click($('#intbl thead th[data-sort="start"]'))   // leave it as it opened
+    await reset()
+    expect(INPUTS.length).toBe(n)
+  })
+
+  it('flashes once and settles back', async () => {
+    const n = INPUTS.length
+    await addOne('FLASHES ONCE')
+    const lit = $$('#inBody tr').find(tr => (tr.textContent || '').includes('FLASHES ONCE'))!
+    expect(lit.className, 'lit on arrival').toContain('innew')
+    expect($$('#inBody tr.innew').length, 'and it is the only one').toBe(1)
+    await act(async () => { await new Promise(r => setTimeout(r, 1700)) })
+    expect($$('#inBody tr.innew').length, 'settled').toBe(0)
+    await act(async () => { undo() })
+    await reset()
+    expect(INPUTS.length).toBe(n)
+  })
+})
