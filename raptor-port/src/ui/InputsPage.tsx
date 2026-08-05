@@ -18,8 +18,30 @@ import { RangeCal } from './RangeCal'
 const people = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 
+const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
 /* the reference's date formatter, verbatim (yyyy-mm-dd → 'Jul 14') */
-const fmt = (d: any) => { if (!d) return DATES[0]; const [, m, da] = d.split('-'); return ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m] + ' ' + String(+da) }
+const fmt = (d: any) => { if (!d) return DATES[0]; const [, m, da] = d.split('-'); return MON[+m] + ' ' + String(+da) }
+
+/* The remarks tail (owner, Aug 26). Closing a range on the calendar writes its
+   last day into Remarks as `till 15 Jul`, so a multi-day input says how long it
+   runs wherever remarks are read — nobody has to type it, and nobody forgets.
+
+   The tail belongs to the CALENDAR, not the typist: re-picking rewrites it and
+   starting a fresh range removes it. Everything in front of it is the typist's
+   and is kept verbatim, so `LL till 15 Jul` becomes `LL till 17 Jul` when the
+   end moves — the whole point of the ask. It is matched anchored at the END
+   because that is where the calendar puts it; text typed AFTER it is prose the
+   calendar has no business rewriting, so it is left alone. */
+const TILL = /\s*till\s+\d{1,2}\s+[A-Za-z]{3}\s*$/i
+const withTill = (rm: any, s: string, e: string) => {
+  const head = String(rm || '').replace(TILL, '').trimEnd()
+  /* a range that ends where it starts is one day: add() drops endDate for it,
+     so a tail there would name a span the input does not have */
+  if (!e || e === s) return head
+  const [, m, da] = e.split('-')
+  return (head ? head + ' ' : '') + 'till ' + (+da) + ' ' + MON[+m]
+}
 
 /* fmt's inverse — the model stores 'Jul 14' labels, the calendar speaks
    yyyy-mm-dd. The demo week is 2026, which is the only year the labels imply. */
@@ -68,7 +90,9 @@ export function InputsPage() {
       type, remarks: remarks.trim(),
       recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
     }))
-    setRemarks('')
+    /* the dates stay on the form after an add, so the tail that describes them
+       stays too — only what the typist wrote is cleared */
+    setRemarks(withTill('', start, end))
   }
 
   /* the pencil turns ONE row into fields in place (owner, Aug 26). The draft is
@@ -154,7 +178,8 @@ export function InputsPage() {
               {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
             </select></div>
           <div className="ifield cal"><label>Dates</label>
-            <RangeCal idPrefix="in" start={start} end={end} onPick={(s2, e2) => { setStart(s2); setEnd(e2) }} />
+            <RangeCal idPrefix="in" start={start} end={end}
+              onPick={(s2, e2) => { setStart(s2); setEnd(e2); setRemarks(r => withTill(r, s2, e2)) }} />
             <div className="rc-read" id="inDates">{start ? (fmt(start) + (end ? ' → ' + fmt(end) : '')) : 'pick a start date'}</div>
           </div>
           <div className="ifield chk"><label>All day</label><input id="inAllday" type="checkbox" checked={allday} onChange={e => setAllday(e.target.checked)} /></div>
@@ -205,8 +230,11 @@ export function InputsPage() {
                     {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
                   </select></td>
                   <td colSpan={2}>
+                    {/* the editor's calendar owns the tail the same way — but only
+                        from a click: OPENING the editor leaves an existing remark
+                        exactly as it was written */}
                     <RangeCal idPrefix="ined" start={draft.start} end={draft.end}
-                      onPick={(s2, e2) => setDraft({ ...draft, start: s2, end: e2 })} />
+                      onPick={(s2, e2) => setDraft({ ...draft, start: s2, end: e2, remarks: withTill(draft.remarks, s2, e2) })} />
                     <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
                     <label className="ined-ad"><input type="checkbox" data-ed="allday" checked={draft.allday}
                       onChange={e => setDraft({ ...draft, allday: e.target.checked })} /> all day</label>
