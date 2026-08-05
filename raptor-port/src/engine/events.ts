@@ -6,6 +6,15 @@ import { VCONF } from './rules'
 import { isStandalone, saExempt } from './waves'
 import { whoArr } from './slots'
 export function intimeMap(w:any){ const m:any={}; (w.intimes||[]).forEach((t:any)=>{ const tm=(t.match(/(\d{3,4})\s*H/)||[])[1]; const cs=(t.match(/\b([A-Z]{2})\s+IN\s+TIME/i)||[])[1]; if(tm&&cs)m[cs.toUpperCase()]=parseHM(tm); }); return m; }
+/* "BRIEF 30 PRIOR", "brief 30", "30 mins prior" — an OFT remark that names its
+   own brief lead overrides VCONF.epBrief for that line only (owner, 5 Aug 26);
+   the seed EP-4s said 30 while the engine padded 15. \b keeps DEBRIEF out, the
+   brief-first order settles "BRIEF 30 PRIOR" on the 30 it names, and the 0–240
+   bound mirrors RULE_SPEC.epBrief so a typo like "BRIEF 3000" falls back to
+   the default instead of minting a 50-hour window. */
+export const briefLeadOf=(rmks:any)=>{ const s=String(rmks||'');
+  const m=s.match(/\bbrief\s*[-:]?\s*(\d{1,3})\b/i)||s.match(/\b(\d{1,3})\s*(?:min(?:ute)?s?\s*)?prior\b/i);
+  if(!m)return null; const n=+m[1]; return n>0&&n<=240?n:null; };
 export function collectEvents(){
   return DAYS.map((d:any,di:any)=>{
     const fly:any[]=[],forms:any[]=[],events:any[]=[],simcrew:any[]=[];
@@ -74,18 +83,21 @@ export function collectEvents(){
       [s.p,s.w,nameToId(s.who)].concat(s.pax||[]).concat(s.more||[])
         .forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim'}); }); }));
     /* ---- sim brief / debrief windows -------------------------------------
-       An EP profile on the OFT briefs 15 min before the box and debriefs for
-       30 min after. The AMT is run as a block: it carries its OWN BRIEF row,
-       and that row's time is the hard line — no extra lead is added on top —
-       while its debrief is the DEBRIEF row + 30. Windows deliberately ABUT the
-       box rather than overlap it, so the sim never clashes with itself.       */
+       An EP profile on the OFT briefs 15 min before the box — unless its
+       remarks name their own lead (briefLeadOf above), which wins for that
+       line — and debriefs for 30 min after. The AMT is run as a block: it
+       carries its OWN BRIEF row, and that row's time is the hard line — no
+       extra lead is added on top — while its debrief is the DEBRIEF row + 30.
+       Windows deliberately ABUT the box rather than overlap it, so the sim
+       never clashes with itself.                                              */
     const simwin:any[]=[];
     const isB=(r:any)=>/^\s*BRIEF/i.test(r.label||''), isD=(r:any)=>/DEBRIEF/i.test(r.label||'');
     const rowIds=(r:any)=>[r.p,r.w,nameToId(r.who)].concat(r.pax||[]).concat(r.more||[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id));
     ((d.sims&&d.sims.oft)||[]).forEach((s:any)=>{ if(s.cx)return; if(!/EP/i.test(s.label||''))return;
       const st=parseHM(s.str); if(st==null)return;
       const en=parseHM(s.end)!=null?parseHM(s.end):st+90, ids=rowIds(s); if(!ids.length)return;
-      simwin.push({ids,label:'OFT '+(s.label||'sim'),bs:st-VCONF.epBrief,be:st,ds:en,de:en+VCONF.simDebrief}); });
+      const lead=briefLeadOf(s.rmks);
+      simwin.push({ids,label:'OFT '+(s.label||'sim'),bs:st-(lead!=null?lead:VCONF.epBrief),be:st,ds:en,de:en+VCONF.simDebrief}); });
     (()=>{ const rows=((d.sims&&d.sims.amt)||[]).filter((r:any)=>!r.cx); if(!rows.length)return;
       const box=rows.filter((r:any)=>!isB(r)&&!isD(r));
       const ids=[...new Set(box.reduce((a:any,r:any)=>a.concat(rowIds(r)),[]))]; if(!ids.length)return;

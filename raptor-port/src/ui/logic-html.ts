@@ -102,7 +102,7 @@ export function lgRules(){
     {sev:'adv',code:'DEBRIEF',
      t:()=>`Anything inside <b>landing + ${lgT(VCONF.debrief)}</b> costs the flight debrief. Bad, but not unflyable — an Advisory.`},
     {sev:'adv',code:'SIM_BRIEF',set:['epBrief'],src:()=>`VCONF.epBrief ${VCONF.epBrief}`,
-     t:()=>`An EP profile on the OFT briefs ${lgV(lgT(VCONF.epBrief))} before the box; the AMT carries its <b>own BRIEF row</b>, and that row's time is the hard line.`},
+     t:()=>`An EP profile on the OFT briefs ${lgV(lgT(VCONF.epBrief))} before the box — unless its remarks name a lead (<b>BRIEF 30 PRIOR</b>, <b>30 mins prior</b>), which wins for that line; the AMT carries its <b>own BRIEF row</b>, and that row's time is the hard line.`},
     {sev:'adv',code:'SIM_DEBRIEF',set:['simDebrief','amtDebrief'],src:()=>`VCONF.simDebrief ${VCONF.simDebrief} · VCONF.amtDebrief ${VCONF.amtDebrief}`,
      t:()=>`A sim debriefs for ${lgV(lgT(VCONF.simDebrief))} after the box, the AMT for ${lgV(lgT(VCONF.amtDebrief))} after its DEBRIEF row.`},
    ]},

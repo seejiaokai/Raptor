@@ -25,7 +25,7 @@ import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
 
 export async function refWindow(): Promise<any> {
-  const html = rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))
+  const html = relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -193,6 +193,22 @@ function rematrix(html: string): string {
     html = html.replace(from, to)
   }
   return html
+}
+
+/* The remark-driven OFT brief lead (owner, 5 Aug 26): a row whose rmks name a
+   brief time ("BRIEF 30 PRIOR", "30 mins prior") briefs THAT long, epBrief
+   only when it says nothing. The seed EP-4s carry "BRIEF 30 PRIOR" on both
+   builds, so parity needs the identical parse in the reference's simwin push —
+   same regexes, same 0–240 bound as the port's briefLeadOf. Note the swap
+   strings are TS string literals: the \\b below reaches the page as \b. */
+function relead(html: string): string {
+  const from = "simwin.push({ids,label:'OFT '+(s.label||'sim'),bs:st-VCONF.epBrief,be:st,ds:en,de:en+VCONF.simDebrief}); });"
+  const to = "const _r=String(s.rmks||''),_m=_r.match(/\\bbrief\\s*[-:]?\\s*(\\d{1,3})\\b/i)||_r.match(/\\b(\\d{1,3})\\s*(?:min(?:ute)?s?\\s*)?prior\\b/i);"
+    + "const _bl=_m&&+_m[1]>0&&+_m[1]<=240?+_m[1]:null;"
+    + "simwin.push({ids,label:'OFT '+(s.label||'sim'),bs:st-(_bl!=null?_bl:VCONF.epBrief),be:st,ds:en,de:en+VCONF.simDebrief}); });"
+  const n = html.split(from).length - 1
+  if (n !== 1) throw new Error(`refwin relead: expected exactly 1 match, got ${n}`)
+  return html.replace(from, to)
 }
 
 /* One divergence the sync CANNOT close: the reference's `isOffer` is a `const`,

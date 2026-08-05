@@ -7,7 +7,7 @@ import { INPUTS } from './inputs'
 import { PEOPLE, isSpecial, scQualOK } from './people'
 import { VCONF, SHIFT_HARD } from './rules'
 import { validate, WARN, WCODE, CHIP_LABEL, CHIP_TEXT, chipText, RANK, SEVWORD, REST, restClear } from './validate'
-import { collectEvents } from './events'
+import { collectEvents, briefLeadOf } from './events'
 import { makeStandalone } from './waves'
 import { setSlotVal, txtSet } from './slots'
 import { SCHED } from './publish'
@@ -441,5 +441,49 @@ describe('CP — crew pairing', () => {
     expect(W.chip[0]?.stiff).not.toBe('CPH')
     expect(W.chip[0]?.bullet).not.toBe('CP')
     expect(W.chip[0]?.bullet).not.toBe('CPH')
+  })
+})
+
+describe('the OFT brief lead reads the remarks (owner, 5 Aug 26)', () => {
+  it('briefLeadOf parses every phrasing the owner listed, and nothing else', () => {
+    expect(briefLeadOf('BRIEF 30 PRIOR')).toBe(30)
+    expect(briefLeadOf('brief 30')).toBe(30)
+    expect(briefLeadOf('brief 30 mins')).toBe(30)
+    expect(briefLeadOf('30 prior')).toBe(30)
+    expect(briefLeadOf('30 mins prior')).toBe(30)
+    expect(briefLeadOf('30 MIN PRIOR')).toBe(30)
+    expect(briefLeadOf('A: SA(S)-3 // BRIEF 45 PRIOR')).toBe(45)
+    /* DEBRIEF must not read as BRIEF — \b sees the E in front */
+    expect(briefLeadOf('DEBRIEF 30 AFTER')).toBe(null)
+    expect(briefLeadOf('B: SEFE')).toBe(null)
+    expect(briefLeadOf('')).toBe(null)
+    expect(briefLeadOf(undefined)).toBe(null)
+    /* outside the Logic tab's 0–240 bound = a typo, not a rule */
+    expect(briefLeadOf('BRIEF 3000 PRIOR')).toBe(null)
+    expect(briefLeadOf('BRIEF 0 PRIOR')).toBe(null)
+  })
+
+  it('a named lead widens that line only; a silent line keeps epBrief', () => {
+    const sw = collectEvents()[0].simwin
+    /* Monday's EP-4s both say "BRIEF 30 PRIOR" — 30 wins over the 15 default */
+    const ep4 = sw.filter((w: any) => w.label === 'OFT EP-4')
+    expect(ep4.length).toBe(2)
+    expect(ep4[0].be - ep4[0].bs).toBe(30)
+    expect(ep4[1].be - ep4[1].bs).toBe(30)
+    /* EP-6 says nothing about its brief → the VCONF.epBrief default */
+    const ep6 = sw.find((w: any) => w.label === 'OFT EP-6')
+    expect(ep6.be - ep6.bs).toBe(VCONF.epBrief)
+  })
+
+  it('the widened window flags what the default would have missed', () => {
+    /* prism's EP-6 briefs 15 before 1500; park him on a ground event that sits
+       1430–1445 — inside 30 prior, clear of 15 prior — and the flag must
+       follow the remark, not the default */
+    DAYS[0].ground.push({ prog: 'X', str: '1430', end: '1445', who: 'Prism' })
+    const hit = () => validate().all.some((w: any) =>
+      w.code === 'SIM_BRIEF' && w.di === 0 && (w.who || []).includes('prism'))
+    expect(hit()).toBe(false)
+    DAYS[0].sims.oft.find((s: any) => s.label === 'EP-6').rmks = 'B: SEFE // BRIEF 30 PRIOR'
+    expect(hit()).toBe(true)
   })
 })

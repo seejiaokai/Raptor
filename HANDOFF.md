@@ -7,7 +7,7 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 546/32
+**Every gate is green at this commit**, run first-hand: `npm test` 549/32
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
 test:e2e` 17/17, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
@@ -125,6 +125,15 @@ test:e2e` 17/17, and the two that are NOT in CI — `npm run probes:adapted`
   `PORT_URL="file://$PWD/reference/scheduler.html" npm run perf` measures the
   reference against itself (~1.00×). Still not in CI (too slow, and it needs
   the reference); judge it with `npm run perf`.
+- **An OFT sim's remarks can name its own brief lead (owner, 5 Aug 26).**
+  An EP profile briefs `VCONF.epBrief` (15 min) before the box unless its
+  remarks say otherwise — "BRIEF 30 PRIOR", "brief 30", "30 mins prior" all
+  read as 30, **for that line only** (`events.ts:briefLeadOf`; out-of-bound
+  values fall back to the default). The AMT keeps its own BRIEF row as the
+  hard line. The seed EP-4s say "BRIEF 30 PRIOR" on both builds, so
+  `refwin.ts:relead()` patches the identical parse into the in-memory
+  reference — one new seed advisory appeared (Bane's VL BFM eats his EP-4
+  brief), on both engines. Rules: `docs/engine-rules.md` §validation.
 - **NO_BRIEF, SIM_BRIEF and DT_SUM are amber (adv), not red** (owner, 4 Aug
   26); DOUBLE_BOOK stays red. Parity tests stay byte-exact via `retier()` in
   `src/testing/refwin.ts` (re-tiers the in-memory reference before boot; the
@@ -240,7 +249,7 @@ test:e2e` 17/17, and the two that are NOT in CI — `npm run probes:adapted`
 | `probes/run.cjs` | Runs any reference probe against the reference build or the port. |
 | `probes/perf-port.cjs` | The perf gate (`npm run perf`) — measures BOTH builds at once, round for round, and asserts no regression. |
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
-| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it, `retier()`s the three amber codes, `remap()`s the CAT-ladder rework (tables, isInstr, PEOPLE literals, legend) and `rematrix()`es the combination matrix into the reference's validate, so both engines compute from identical data. NOT a test file. |
+| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it, `retier()`s the three amber codes, `remap()`s the CAT-ladder rework (tables, isInstr, PEOPLE literals, legend), `rematrix()`es the combination matrix into the reference's validate and `relead()`s the remark-driven OFT brief lead into its simwin, so both engines compute from identical data. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table. |
 | `docs/session-state.md` | The last session's leftovers — **often absent, and absent is meaningful**: it exists only while something is genuinely pending, and the session that clears the last item deletes it. This file holds the durable state; that one holds what a session could not finish. Written by `.claude/skills/session-handoff`. |
 | `PORTING.md` | **Historical** — the phase plan the port was built from. Nothing left to run; kept only because `probe-sweep.md` and `perf-port.cjs` cite its decisions (dropped probes, original timing budgets). |
