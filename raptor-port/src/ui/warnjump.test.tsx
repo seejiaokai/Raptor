@@ -217,3 +217,75 @@ describe('a stale warning row', () => {
     expect(view.WFOCUS.ix).toBe(was.ix)
   })
 })
+
+/* ---- the Available-crew list is never the destination ---------------------
+   Reported from the deployed site (owner, 5 Aug 26): clicking Casper's
+   crew-rest warning on Tuesday panned to the AVAILABLE CREW block at the foot
+   of the day instead of the flight that caused the breach.
+
+   Two things conspired. The target rule's co-location guard tested how many
+   PUCKS it had found rather than how many PEOPLE the warning names — and a
+   one-person warning can never satisfy "an ancestor holding two of the named
+   crew", so every candidate scored full depth-to-root and the shallowest
+   nesting won. The Available-crew block is a flat grid, so it beats a puck
+   nested inside a flying line every time.
+
+   And it went unseen because that block renders on the EDIT week only
+   (`if(ed)h+=availHTML(...)`), while every other test here drives the view
+   week. These drive the edit surface for exactly that reason. */
+describe('the Available-crew list is never the destination (edit week)', () => {
+  beforeAll(async () => {
+    await click($$('.nav a[data-page]').find(a => (a as HTMLElement).dataset.page === 'editsched')!)
+  })
+
+  it('the edit week really is rendering the free-crew block', () => {
+    /* if this ever stops being true the two tests below go quietly vacuous */
+    expect($$('#eWeek .availpuck .puck[data-person]').length).toBeGreaterThan(0)
+  })
+
+  it('a one-person warning lands on a tasking, not on the free-crew grid', async () => {
+    let hit: any = null
+    WARN.byDay.forEach((g: any, di: number) => {
+      if (hit || !g || !g.warns) return
+      g.warns.forEach((w: any, ix: number) => {
+        if (hit || (w.who || []).length !== 1) return
+        const day = $(`#eWeek .day[data-day="${di}"]`)
+        if (!day) return
+        const pucks = [...day.querySelectorAll(`.puck[data-person="${w.who[0]}"]`)]
+        /* the shape that triggers it: ONE named person, on screen more than
+           once, at least one of those in the Available-crew block */
+        if (pucks.length > 1 && pucks.some(p => p.closest('.availpuck'))) hit = { di, ix, w }
+      })
+    })
+    expect(hit, 'the seed week flags someone who also shows as free').toBeTruthy()
+    await act(async () => { view.selDrop(); view.toggleDayWarn(hit.di); notify() })
+    const row = $(`#eWeek .day[data-day="${hit.di}"] .witem[data-wix="${hit.ix}"]`)
+    expect(row, 'its issue row is on screen').toBeTruthy()
+    scrolled.length = 0
+    await click(row)
+    await flush()
+    const tgt = scrolled[scrolled.length - 1] as HTMLElement
+    expect(tgt, 'it scrolled somewhere').toBeTruthy()
+    expect(tgt.closest('.availpuck'),
+      `${hit.w.who[0]}'s ${hit.w.code} must not land in AVAILABLE CREW`).toBeFalsy()
+    expect(tgt.dataset.person, 'and it is still one of the named crew').toBe(hit.w.who[0])
+  })
+
+  it('no warning on any day targets the free-crew grid', async () => {
+    /* the general form, so this cannot come back through a different code */
+    for (let di = 0; di < WARN.byDay.length; di++) {
+      const g = WARN.byDay[di]
+      if (!g || !g.warns || !g.warns.length) continue
+      await act(async () => { view.selDrop(); view.toggleDayWarn(di); notify() })
+      for (const r of $$(`#eWeek .day[data-day="${di}"] .witem[data-wdi]`)) {
+        scrolled.length = 0
+        await click(r)
+        await flush()
+        const tgt = scrolled[scrolled.length - 1] as HTMLElement | undefined
+        if (tgt) expect(tgt.closest('.availpuck'),
+          `day ${di} warning ${r.dataset.wix} landed in AVAILABLE CREW`).toBeFalsy()
+      }
+      await act(async () => { view.selDrop(); notify() })
+    }
+  })
+})
