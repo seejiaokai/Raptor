@@ -14,7 +14,12 @@ import { useVersion } from './useStore'
 
 const QUAL_COLS: any[] = [
   { k: 'san', h: 'SANS', lav: true }, { k: 'sxo', h: 'SXO', lav: true }, { k: 'imc', h: 'IMC', lav: true }, { k: 'nvg', h: 'NVG', lav: true },
-  { k: 'catA', h: 'CAT A', fix: true }, { k: 'catB', h: 'CAT B', fix: true },
+  /* CAT A / CAT B were here. They were derived from the CAT dropdown at boot
+     and read by NOTHING else in the app — not a rule, not a check — so they
+     duplicated the dropdown and, because deriveQuals lets an existing tick win,
+     could sit there contradicting it. Removed (owner, Aug 5). IP stays: it is
+     the one of the three that carries something the dropdown cannot, since a
+     pilot can be CAT A *and* an instructor. */
   { k: 'instr', h: 'IP', fix: true }, { k: 'dnif', h: 'Downchit', lav: true },
   { k: 'sched', h: 'Scheduler', apt: true },
   { k: 'scDay', h: 'SC DAY', scq: true }, { k: 'scNight', h: 'SC NIGHT', scq: true },
@@ -43,7 +48,7 @@ function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch
   /* CALLSIGN is the identity the whole app plans by — it is what every puck
      prints — so it heads the table; INITIALS sits beside it as the admin
      record (owner, Aug 26). */
-  const head = `<thead><tr><th style="text-align:left">Callsign</th><th>Initials</th><th>Flight</th><th>Level</th>` +
+  const head = `<thead><tr><th style="text-align:left">Callsign</th><th>Initials</th><th>Flight</th><th>CAT</th>` +
     QUAL_COLS.map(c => `<th class="${c.lav ? 'lav' : c.fix ? 'fix' : c.apt ? 'apt' : c.scq ? 'scq' : c.aar ? 'aarq' : ''}" title="${
       c.k === 'sched' ? 'Appointed scheduler — may sign SKED CK, PLANNED BY and APPROVED BY'
       : c.k === 'scDay' ? 'SC DAY — may be planned on an SC shift inside 07:00–19:00'
@@ -55,7 +60,7 @@ function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch
   const rows = ids.map(id => {
     const p = PEOPLE[id]
     const lvl = qEditing
-      ? `<select class="qlvlsel" data-lvl="${id}" aria-label="Level for ${esc(p.cs)}">${Object.keys(QCHIP).map(k => `<option ${k === p.q ? 'selected' : ''}>${k}</option>`).join('')}</select>`
+      ? `<select class="qlvlsel" data-lvl="${id}" aria-label="CAT for ${esc(p.cs)}">${Object.keys(QCHIP).map(k => `<option ${k === p.q ? 'selected' : ''}>${k}</option>`).join('')}</select>`
       : `<span class="lvl"><span class="qmini" style="background:${QCOLOR[p.q]};${(p.q === 'C' || p.q === 'B') ? 'color:#04222b' : ''}">${QCHIP[p.q]}</span>${p.q}</span>`
     const cells = QUAL_COLS.map(c => {
       if (qualNA(p, c)) return `<td class="qcell na" title="${esc(p.cs)} is a WSO — AAR is a front-seat qualification">–</td>`
@@ -150,7 +155,7 @@ export function QualsPage() {
   }
 
   const doExport = () => {
-    const cols = ['Callsign', 'Initials', 'Flight', 'Level', ...QUAL_COLS.map(c => c.h)]
+    const cols = ['Callsign', 'Initials', 'Flight', 'CAT', ...QUAL_COLS.map(c => c.h)]
     const rows: any[][] = [cols]
     Object.keys(PEOPLE).filter(id => PEOPLE[id].seat === qSeatView && !PEOPLE[id].archived).forEach(id => {
       const p = PEOPLE[id]; rows.push([p.cs, p.initials || '', p.flight, p.q, ...QUAL_COLS.map(c => p.quals[c.k] ? 'Y' : '')])
@@ -172,13 +177,13 @@ export function QualsPage() {
         <span className="lab">Sort</span>
         {(['name', 'flight', 'level'] as const).map(s =>
           <button key={s} className={'fchip' + (qSort === s ? ' on' : '')} data-sort={s} onClick={() => setSort(s)}>
-            {{ name: 'Name', flight: 'Flight', level: 'UG Level' }[s]}
+            {{ name: 'Name', flight: 'Flight', level: 'CAT' }[s]}
           </button>)}
         <div className="grow"></div>
         <div className="searchbox">🔍<input id="qFilter" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
       </div>
       <div className="qhelp">
-        Similar to a LoX and integrated with the board — a person's <b>Level</b> drives their puck's qualification chip colour and the validator rules.
+        Similar to a LoX and integrated with the board — a person's <b>CAT</b> drives their puck's qualification chip colour and the validator rules.
         A check (✓) means the person holds that qualification. In edit mode, click a cell to toggle it, or the red ✕ to archive someone.
         <a id="qAddQual" onClick={() => HOOKS.toast('Shortcut to the Admin page (Django-style backend in the full build).')}> Add qualifications</a> · <a id="qUses">Set which quals your squadron uses</a> · <a id="qAdminLink">Admin page</a>
       </div>
