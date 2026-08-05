@@ -24,12 +24,24 @@ All merged, all Pages deploys green.
 - Inputs table: sortable headings, today → +2-months default window with a
   `RangeCal` range picker, 30px row buttons 22px apart — PR #62.
 - Handoff doc — PR #63.
-- Quals: "Level" → CAT, CI removed from the ladder (the six who held it are
-  now `I`), CAT A / CAT B tick columns removed — PR #65.
+- Quals: "Level" → CAT, CI removed from the ladder, CAT A / CAT B tick columns
+  removed — PR #65. **Partly superseded by #67, below.** #65 moved the six CI
+  holders to `I` and kept the IP tick column, on the reasoning that IP was the
+  only way to record "CAT A *and* instructor". #67 then deleted the generic
+  `I` and the IP column both, folding instructor-ness into CAT itself — so
+  neither `I` nor an IP column exists now, and the six sit wherever #67's
+  migration put them. Do not plan against either.
 
-NOTE: PR #64 (`4e8614e`, calendar closes on outside click; a just-added input
-pins to the top whatever the window says) came from a PARALLEL session on this
-same branch and rode into `main` ahead of PR #65. It was not written here.
+NOTE: two PRs on this branch came from a PARALLEL session and were NOT written
+here. Both are on `main` and deployed.
+- PR #64 (`4e8614e`) — the window calendar closes on an outside click, and a
+  just-added input pins to the top whatever the window says.
+- PR #67 (`352f71f`) — instructor CATs replace the `ip` flag; the ladder is
+  now OCU/D/C/B/A/IW/IP/IR/FI, plus a hard NO_IR rule for IRT missions. It
+  documented itself in `HANDOFF.md` and `raptor-port/docs/engine-rules.md` —
+  read those, not this file, for the current ladder. It also replaced
+  `html.test.ts`'s `catCI` excision helper with a general `remap()` in
+  `src/testing/refwin.ts`.
 
 ## Unfinished
 - **The perf gate's board assertion is RED on purpose.** `board edit ~1.19×`
@@ -43,19 +55,24 @@ same branch and rode into `main` ahead of PR #65. It was not written here.
 
 ## Branch state
 - Designated branch: `claude/read-handoff-docs-3xuleg`
-- Its PR is **merged** (#65 → `main` as `d0231b9`).
+- Its latest PR is **merged** (#67 → `main` as `ad9469f`).
 - Because it is MERGED, reset before starting new work:
   `git fetch origin main && git checkout -B claude/read-handoff-docs-3xuleg origin/main`
   Otherwise commits stack onto already-merged history. NOTE: other sessions
-  use this same branch name concurrently (#60, #61 and #64 all landed from one
-  mid-session), so always fetch before assuming what it points at, and expect
-  commits on it that this session did not write.
+  use this same branch name CONCURRENTLY — #60, #61, #64 and #67 all landed
+  from one mid-session — so always fetch before assuming what it points at,
+  and expect commits on it that this session did not write. #67 landed after
+  this file's previous version was merged, which is why that version had gone
+  stale within the hour.
 
 ## Gates
-- `npm test` (481) · `npm run build` · `node reference/tfin.js` (728/0) ·
-  `npm run test:e2e` (11/11) — all **green**, locally and on every merged CI
-  run. Run them from `raptor-port/`, not the repo root.
-- `npm run probes:adapted` (6 files, 127 assertions) — green. Not in CI.
+- `npm test` (488) · `npm run build` · `node reference/tfin.js` (728/0) ·
+  `npm run test:e2e` (11/11) — all **green**, run first-hand against `main` at
+  `ad9469f`, not copied from a commit message. Run them from `raptor-port/`,
+  not the repo root.
+- `npm run probes:adapted` (6 files, 127 assertions) — green, also run
+  first-hand at `ad9469f`. Needs `npx vite preview --port 4173` first. Not in
+  CI.
 - `npm run perf` — **6 pass / 1 fail, the failure by design**; see Unfinished.
   Not in CI. Self-check that the instrument is honest:
   `PORT_URL="file://$PWD/reference/scheduler.html" npm run perf` → ~1.00×.
