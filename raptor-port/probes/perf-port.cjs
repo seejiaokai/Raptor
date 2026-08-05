@@ -8,11 +8,36 @@
    PORT with one methodology — mutation → macrotask → forced layout, the
    full painted cost regardless of when each build does its work — and
    asserts NO REGRESSION: port ≤ reference × 1.15 on every timed metric.
-   Absolute numbers are printed for the record. */
+   Absolute numbers are printed for the record.
+
+   HOW IT SURVIVES A NOISY MACHINE. This gate used to fail ~2 runs in 5 (3 in
+   5 when it was measured for this rewrite), at the SAME rate on an unchanged
+   baseline: the flakiness was the estimator, not the code under test. On this
+   container one round of the one-day edit reads anywhere from 210 to 830 ms
+   on the SAME build, so the question is never "how fast is it" but "how do
+   you compare two builds through that much noise". Three things do it:
+
+   · BOTH BUILDS OPEN AT ONCE, measured round for round — reference round 1,
+     port round 1, reference round 2, port round 2… The old run measured all
+     of the reference and then all of the port, ~15 seconds apart, and the
+     machine load in those two windows is simply not the same. That gap was
+     most of the flakiness. Alternating puts both builds under one machine.
+   · MINIMUM of the per-trial medians, not a single median. Scheduler noise
+     is strictly ADDITIVE — nothing makes a repaint faster than it really is
+     — so the fastest trial is the closest reading of the true cost, and more
+     trials only sharpen it. A single trial's median is a median of one
+     noisy sample.
+   · a WARMUP: the first two rounds of every metric are run and thrown away,
+     so first-paint and JIT are not counted as steady state.
+
+   PERF_TRIALS (default 3) sets the trial count; every trial is printed, so a
+   wide spread stays visible instead of being averaged away. */
 const { chromium } = require('playwright')
 const path = require('path')
 const REF = 'file://' + path.join(__dirname, '..', 'reference', 'scheduler.html')
 const PORT = process.env.PORT_URL || 'http://localhost:4173/'
+const TRIALS = Math.max(1, +(process.env.PERF_TRIALS || 3))
+const KEYS = ['oneEdit', 'noop', 'board', 'noopB']
 
 const boot = async (b, url, cfg) => {
   const ctx = await b.newContext({
@@ -31,47 +56,77 @@ const boot = async (b, url, cfg) => {
   return { p, ctx }
 }
 
-/* the one shared measurement: median full painted cost over n rounds */
-const MED = `async (f, n) => {
-  const a = []
-  for (let i = 0; i < n; i++) {
-    const t = performance.now(); f(i)
-    await new Promise(r => setTimeout(r, 0))
-    document.body.offsetHeight
-    a.push(performance.now() - t)
-  }
-  a.sort((x, y) => x - y); return +a[a.length >> 1].toFixed(1)
-}`
+/* ROUNDS measured rounds after WARM discarded ones, per metric per trial */
+const WARM = 2, ROUNDS = 7
 
-async function timings(b, url) {
+/* one round, run inside the page: mutate → macrotask → forced layout. The
+   whole painted cost, whenever each build chooses to do the work. */
+const round = (page, src, i) => page.evaluate(async ([s, idx]) => {
+  const f = eval(s)
+  /* the roster list is scenery, not the thing being timed — build it once and
+     leave it out of the measured window, as the original did */
+  const w = window
+  if (!w.__ids) w.__ids = Object.keys(PEOPLE).filter(x => !PEOPLE[x].special)
+  const t = performance.now(); f(idx)
+  await new Promise(r => setTimeout(r, 0))
+  document.body.offsetHeight
+  return +(performance.now() - t).toFixed(1)
+}, [src, i])
+
+/* the mutations, as source so both builds run the identical body */
+const METRICS = {
+  week: {
+    oneEdit: `i => {
+      const s = document.querySelector('#eWeek [data-day="1"] .seat[data-slot$=".p"],#eWeek [data-day="1"] .empty-slot[data-slot$=".p"]')
+      if (s) fillSlot(s.dataset.slot, window.__ids[i % window.__ids.length]); afterSchedMutate()
+    }`,
+    noop: `() => afterSchedMutate()`,
+  },
+  board: {
+    board: `i => {
+      const s = document.querySelector('#sbBoard .sb-slot[data-slot$=".p"],#sbBoard .seat[data-slot$=".p"]')
+      if (s) setSlotVal(s.dataset.slot, window.__ids[(i + 20) % window.__ids.length]); afterSchedMutate()
+    }`,
+    noopB: `() => afterSchedMutate()`,
+  },
+}
+
+const median = a => { const s = [...a].sort((x, y) => x - y); return +s[s.length >> 1].toFixed(1) }
+
+/* ONE trial: both builds open at the same time, measured round for round.
+   This is the part that matters. Measuring all of the reference and then all
+   of the port means ~15 seconds separate the two samples, and on a shared VM
+   the load in those two windows is simply not the same — that difference
+   went straight into the ratio and was the whole of the old flakiness.
+   Alternating round by round puts both builds under the same machine. */
+/* how much there is to draw, so a ratio is never read without it. The gate
+   assumes the two builds are doing the same work; where they are not, the
+   number to look at first is this one, not the milliseconds. */
+const SIZE = { week: '#eWeek', board: '#sbBoard' }
+const sizeOf = (page, sel) => page.evaluate(s => {
+  const el = document.querySelector(s)
+  return el ? { nodes: el.querySelectorAll('*').length, chars: el.innerHTML.length } : { nodes: -1, chars: -1 }
+}, sel)
+
+async function trial(b, measureSize) {
   const out = {}
-  { /* the week, 4x phone */
-    const { p, ctx } = await boot(b, url, { w: 390, h: 844, cpu: 4, touch: true })
-    Object.assign(out, await p.evaluate(async medSrc => {
-      const med = eval(medSrc)
-      const ids = Object.keys(PEOPLE).filter(x => !PEOPLE[x].special)
-      const oneEdit = await med(i => {
-        const s = document.querySelector('#eWeek [data-day="1"] .seat[data-slot$=".p"],#eWeek [data-day="1"] .empty-slot[data-slot$=".p"]')
-        if (s) fillSlot(s.dataset.slot, ids[i % ids.length]); afterSchedMutate()
-      }, 7)
-      const noop = await med(() => afterSchedMutate(), 7)
-      return { oneEdit, noop }
-    }, MED))
-    await p.close(); await ctx.close()
-  }
-  { /* the board, 4x phone */
-    const { p, ctx } = await boot(b, url, { w: 390, h: 844, cpu: 4, touch: true, board: 1 })
-    Object.assign(out, await p.evaluate(async medSrc => {
-      const med = eval(medSrc)
-      const ids = Object.keys(PEOPLE).filter(x => !PEOPLE[x].special)
-      const board = await med(i => {
-        const s = document.querySelector('#sbBoard .sb-slot[data-slot$=".p"],#sbBoard .seat[data-slot$=".p"]')
-        if (s) setSlotVal(s.dataset.slot, ids[(i + 20) % ids.length]); afterSchedMutate()
-      }, 7)
-      const noopB = await med(() => afterSchedMutate(), 7)
-      return { board, noopB }
-    }, MED))
-    await p.close(); await ctx.close()
+  for (const [surface, metrics] of Object.entries(METRICS)) {
+    const cfg = { w: 390, h: 844, cpu: 4, touch: true, board: surface === 'board' }
+    const R = await boot(b, REF, cfg), P = await boot(b, PORT, cfg)
+    if (measureSize) {
+      out.size = out.size || {}
+      out.size[surface] = { ref: await sizeOf(R.p, SIZE[surface]), port: await sizeOf(P.p, SIZE[surface]) }
+    }
+    for (const [name, src] of Object.entries(metrics)) {
+      const a = { ref: [], port: [] }
+      for (let i = 0; i < ROUNDS + WARM; i++) {
+        const r = await round(R.p, src, i)
+        const p = await round(P.p, src, i)
+        if (i >= WARM) { a.ref.push(r); a.port.push(p) }
+      }
+      out[name] = { ref: median(a.ref), port: median(a.port) }
+    }
+    for (const x of [R, P]) { await x.p.close(); await x.ctx.close() }
   }
   return out
 }
@@ -85,15 +140,41 @@ async function timings(b, url) {
   }
 
   /* ---- the no-regression gate: reference vs port, same method ------------- */
-  const ref = await timings(b, REF)
-  const port = await timings(b, PORT)
-  console.log(`   4x phone, painted cost   ${'reference'.padStart(10)} ${'port'.padStart(8)}`)
-  for (const k of ['oneEdit', 'noop', 'board', 'noopB']) {
-    console.log(`   ${k.padEnd(24)} ${String(ref[k]).padStart(8)}ms ${String(port[k]).padStart(6)}ms`)
+  const trials = []
+  for (let t = 0; t < TRIALS; t++) {
+    trials.push(await trial(b, t === 0))
+    console.log(`   trial ${t + 1}/${TRIALS}  ` + KEYS.map(k => {
+      const x = trials[t][k]; return `${k} ${x.ref}/${x.port}`
+    }).join(' · ') + '   (ref/port ms)')
   }
-  T('perf · one-day edit does not regress vs the reference', port.oneEdit <= ref.oneEdit * 1.15 ? 'yes' : `no (${port.oneEdit} vs ${ref.oneEdit})`, 'yes')
-  T('perf · board edit does not regress vs the reference', port.board <= ref.board * 1.15 ? 'yes' : `no (${port.board} vs ${ref.board})`, 'yes')
-  T('perf · a no-op repaint does not regress', port.noop <= ref.noop * 1.15 ? 'yes' : `no (${port.noop} vs ${ref.noop})`, 'yes')
+  /* The gate is a RATIO, and the only ratio worth trusting is one whose two
+     halves were measured under the same machine — so it is computed inside
+     each trial and then taken across trials, never by pairing the
+     reference's luckiest trial with the port's unluckiest. The median trial
+     is the verdict; the absolute times printed are each build's own best,
+     for the record only. */
+  const ratios = Object.fromEntries(KEYS.map(k =>
+    [k, trials.map(x => x[k].port / x[k].ref).sort((a, c) => a - c)]))
+  const verdict = k => ratios[k][ratios[k].length >> 1]
+  const best = who => Object.fromEntries(KEYS.map(k => [k, Math.min(...trials.map(x => x[k][who]))]))
+  const ref = best('ref'), port = best('port')
+  console.log(`\n   4x phone, painted cost   ${'reference'.padStart(10)} ${'port'.padStart(8)}   ratio  (median of ${TRIALS} trials)`)
+  for (const k of KEYS) {
+    console.log(`   ${k.padEnd(24)} ${String(ref[k]).padStart(8)}ms ${String(port[k]).padStart(6)}ms  ${verdict(k).toFixed(2)}×`
+      + `   [${ratios[k].map(r => r.toFixed(2)).join(' ')}]`)
+  }
+  /* read this BEFORE the ratios: a ratio of two builds drawing different
+     amounts of DOM is not a statement about rendering speed */
+  const size = (trials[0] || {}).size || {}
+  for (const [surface, s] of Object.entries(size)) {
+    console.log(`   ${(surface + ' DOM').padEnd(24)} ${String(s.ref.nodes).padStart(8)}n ${String(s.port.nodes).padStart(6)}n  `
+      + `${(s.port.nodes / s.ref.nodes).toFixed(2)}× the nodes, ${(s.port.chars / s.ref.chars).toFixed(2)}× the markup`)
+  }
+  const noRegress = (k, label) => T(`perf · ${label} does not regress vs the reference`,
+    verdict(k) <= 1.15 ? 'yes' : `no (${verdict(k).toFixed(2)}x)`, 'yes')
+  noRegress('oneEdit', 'one-day edit')
+  noRegress('board', 'board edit')
+  noRegress('noop', 'a no-op repaint')
 
   /* ---- perf1 B (behavioural) · a day-1 edit rewrites ONLY day 1 ----------- */
   {

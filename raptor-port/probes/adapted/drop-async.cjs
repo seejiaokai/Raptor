@@ -127,4 +127,5 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
 
   console.log(`\n${pass} passed · ${fail} failed`)
   await b.close(); console.log('drop-async done')
+  process.exit(fail ? 1 : 0)
 })().catch(e => { console.log('ERR', e.message); process.exit(1) })

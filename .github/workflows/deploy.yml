@@ -1,6 +1,6 @@
 # Build the React port and publish it to GitHub Pages on every push to main.
-# The same three gates also run on every pull request into main, so a red PR
-# is caught BEFORE merge — previously they only ran after, and the PR's only
+# The same gates also run on every pull request into main, so a red PR is
+# caught BEFORE merge — previously they only ran after, and the PR's only
 # checks were Vercel's (owner ask, Aug 5). Publishing stays push-to-main only.
 # One-time setup in the repo: Settings → Pages → Source: "GitHub Actions".
 name: Deploy to GitHub Pages
@@ -46,6 +46,16 @@ jobs:
       - name: Build
         working-directory: raptor-port
         run: npm run build
+      # jsdom has no layout engine, so the measured geometry contracts (puck
+      # 74x15, free text wraps instead of overflowing, one day box per pan
+      # click) can only be checked in a real browser. The runner has no
+      # browser of its own; the dev container's Chromium is not here.
+      - name: Install Chromium
+        working-directory: raptor-port
+        run: npx playwright install --with-deps chromium
+      - name: Geometry
+        working-directory: raptor-port
+        run: npm run test:e2e
       # a PR run exists to gate, not to publish — no artifact, no deploy
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3

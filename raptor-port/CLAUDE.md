@@ -35,23 +35,28 @@ that bar on their own — don't manufacture questions for them.
   when checking one field. Never read `reference/` whole (6.6k lines) —
   `grep` it; same for any file over ~300 lines (Grep or offset/limit Reads).
   While iterating run only the affected test file
-  (`npx vitest run <file>`); the full three gates once, before the PR.
+  (`npx vitest run <file>`); the full four gates once, before the PR.
   Trust this index instead of re-exploring. Prefer a fresh
   session per task; a long conversation re-sends itself every turn.
 
 ## Build & verify
 
-Run from `raptor-port/`, not the repo root. All three, after any change:
+Run from `raptor-port/`, not the repo root. All four, after any change:
 
 ```
 npm test                    # Vitest — must stay green
 npm run build               # typecheck + build
 node reference/tfin.js      # the original's assertions — must stay 728/0
+npm run test:e2e            # geometry in a real browser — builds & serves itself
 ```
 
-UI-visible work also needs the browser path (jsdom can't measure layout):
+`test:e2e` is the fourth gate because jsdom has no layout engine: a puck that
+had silently grown to 90px passes `npm test` all day. It runs in CI too.
+
+UI-visible work also needs the wider browser path:
 `npx vite preview --port 4173`, then `probes/run.cjs <name> port`,
-`probes/perf-port.cjs` (perf no-regression), `probes/adapted/*.cjs`.
+`npm run probes:adapted` (the six adapted probes), `npm run perf`
+(the reference-vs-port no-regression gate).
 A fresh container needs `npm ci` first — `node_modules/` is not in the image.
 Any NEW Playwright script must pass `executablePath:'/opt/pw-browsers/chromium'`
 (a stable symlink): the pinned Playwright looks for a browser build the image
