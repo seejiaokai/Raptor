@@ -25,6 +25,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   it. DEBRIEF/SIM_DEBRIEF were already adv. The parity tests stay byte-exact
   via `refwin.ts:retier()`, which re-tiers the three call sites in the
   in-memory copy of the reference before boot.
+- **An OFT remark can name its own brief lead** (owner, 5 Aug 26): an EP
+  profile briefs `VCONF.epBrief` (15) before the box **unless its remarks say
+  otherwise** — "BRIEF 30 PRIOR", "brief 30", "brief 30 mins", "30 prior",
+  "30 mins prior" all read as 30, for that line only.
+  `events.ts:briefLeadOf` does the parse (`\b` keeps DEBRIEF out; a value
+  outside the Logic tab's 0–240 bound is a typo and falls back to the
+  default). The AMT is untouched — its own BRIEF row is already the hard
+  line. The seed EP-4s carry "BRIEF 30 PRIOR" on both builds, so
+  `refwin.ts:relead()` patches the identical parse into the in-memory
+  reference for parity.
 - There are no OFFERS any more (owner decision, Aug 26). `Office`,
   `Available fly` and `Available duty` were removed as types and `isOffer` is
   gone with them. `Fly` gets no exemption: filed under Unavailable it raises
