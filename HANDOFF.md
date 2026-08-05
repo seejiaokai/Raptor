@@ -61,25 +61,22 @@ The port from the original single-file app is complete; that history is in
   `dtn:` duties, `sn:` sims, `gn:` ground). They never render on the view page,
   even when populated, and like every other edit here they do not survive a
   reload (only `rules` is persisted).
-- **`probes/perf-port.cjs` is no longer flaky — and now reports a real
-  question for the owner.** It used to trip a no-regression assertion in about
-  2 runs in 5 (3 in 5 when re-measured), at the same rate on unchanged code:
-  the estimator was the problem, not the app. It now warms up, takes the
-  minimum of per-trial medians, and — the part that mattered — keeps BOTH
-  builds open and measures them round for round instead of measuring all of one
-  and then all of the other ~15 s later. Per-trial ratios cluster within ±0.05
-  inside a run. Self-check: `PORT_URL="file://$PWD/reference/scheduler.html"
-  npm run perf` measures the reference against itself and reads 0.91–1.01×.
-  **Still red, deliberately: `board edit 1.19×` against a 1.15 budget.** That
-  is not a rendering regression — the port's board carries **1.78× the nodes**
-  of the reference's (699 vs 393; the stores chips, the personal-inputs group,
-  the day-version selects), so it paints 1.78× the DOM in 1.19× the time,
-  and the two no-op metrics come in at 0.62× / 0.66×. A `port ≤ reference ×
-  1.15` gate has outlived its usefulness for the board now that the two boards
-  are different boards. **Re-baselining it is an owner call** — the threshold
-  was left untouched rather than tuned green. Numbers and reasoning:
-  `docs/probe-sweep.md` §The performance gate. Still not in CI (too slow, and
-  it needs the reference); judge it with `npm run perf`.
+- **`probes/perf-port.cjs` is green (9/0) and its budget is now per node
+  (owner, 5 Aug 26).** It used to trip a no-regression assertion in about 2
+  runs in 5, at the same rate on unchanged code — the estimator, not the app;
+  it now warms up, takes the minimum of per-trial medians, and keeps BOTH
+  builds open measuring them round for round, so per-trial ratios cluster
+  within ±0.05. The remaining red light (`board edit 1.19×` against a flat
+  1.15) was feature growth, not a regression: the port's board carries **1.78×
+  the nodes** of the reference's (699 vs 393). The flat ratio was replaced
+  by `port ms/node ≤ reference ms/node × 1.15` — the board reads **0.67× per
+  node** — plus a machine-independent **DOM ceiling** (board ≤ 770, week ≤
+  5530) so a DOM explosion can't hide behind a per-node average. Raising a
+  ceiling is a deliberate edit in the PR that adds the nodes. Reasoning and
+  numbers: `docs/probe-sweep.md` §The performance gate. Self-check:
+  `PORT_URL="file://$PWD/reference/scheduler.html" npm run perf` measures the
+  reference against itself (~1.00×). Still not in CI (too slow, and it needs
+  the reference); judge it with `npm run perf`.
 - **NO_BRIEF, SIM_BRIEF and DT_SUM are amber (adv), not red** (owner, 4 Aug
   26); DOUBLE_BOOK stays red. Parity tests stay byte-exact via `retier()` in
   `src/testing/refwin.ts` (re-tiers the in-memory reference before boot; the

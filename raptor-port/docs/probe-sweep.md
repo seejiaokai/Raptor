@@ -81,7 +81,9 @@ The PORTING.md budgets (one-day ≤ 200 ms, board ≤ 120 ms) were measured on
 the author's machine. On this VM the *reference itself* lands elsewhere, so
 the gate measures both builds with one methodology — mutation → macrotask →
 forced layout, the full painted cost regardless of when each build does its
-work — and asserts **no regression** (port ≤ reference × 1.15).
+work — and asserts **no regression per node drawn** (port ms/node ≤
+reference ms/node × 1.15), plus a recorded ceiling on the node counts
+themselves. Why it is split that way is the next section.
 
 ### It is no longer flaky
 
@@ -111,35 +113,56 @@ Measured: 0.91 / 0.99 / 0.93 / 1.01 on the four metrics — no systematic
 penalty for being the second page open, if anything a slight advantage. That
 is the instrument's resolution: about ±10%.
 
-### What it now reports (and the one red light)
+### The budget is per node, with a DOM ceiling beside it (owner, 5 Aug 26)
 
-| 4×-throttled phone, painted cost | reference | port | ratio |
-|---|---|---|---|
-| one-day edit | 249 ms | **255 ms** | 1.12× |
-| no-op repaint | 94 ms | **60 ms** | 0.66× |
-| board edit | 418 ms | **496 ms** | **1.19× — over budget** |
-| board no-op | 131 ms | **83 ms** | 0.62× |
-
-**The board assertion is red, and it is not a rendering regression.** The
-gate assumes both builds draw the same thing. They no longer do:
+It used to be a flat `port ≤ reference × 1.15` on the raw times, and the
+board sat red at 1.19× (1.15× when re-measured — the failure was stable, not
+marginal). That was never a rendering regression: the gate assumed both
+builds draw the same thing, and they no longer do.
 
 | DOM at the moment of measurement | reference | port |
 |---|---|---|
-| `#sbBoard` | 393 nodes / 20 KB | **699 nodes / 37 KB** (1.78× / 1.84×) |
+| `#sbBoard` | 393 nodes / 20 KB | **699 nodes / 37 KB** (1.78× / 1.85×) |
 | `#eWeek` | 4173 nodes, 5 days | **5028 nodes, 7 days** (1.20×) |
 
-The board grew the stores config chips, the personal-inputs group, the
-day-version selects and the rest; the week grew the weekend. So the port
-paints 1.78× the board for 1.19× the time — per node it is comfortably
-*faster*, which is what the two no-op metrics (0.62× / 0.66×) say directly.
-The gate prints both DOM sizes above the ratios for exactly this reason.
+The board grew the stores config chips, the personal-inputs group and the
+day-version selects; the week grew the weekend. A flat ratio between two
+builds drawing different amounts of DOM measures **feature growth**, so it
+would have gone red for every feature added while saying nothing about
+speed. The budget is now the ratio **divided by that surface's node ratio**
+— is a unit of drawing getting more expensive — which is the question the
+gate was always for.
 
-**This is an owner decision, left open deliberately.** The threshold has not
-been moved and the assertion has not been weakened: a `port ≤ reference ×
-1.15` gate has simply outlived its usefulness for the board now that the two
-boards are different boards. Re-baselining it (port against a recorded port
-number, or a per-node budget) is a call about the squadron's performance
-budget, not a call to make while fixing a flaky estimator.
+Per-node alone has a hole: a bug that doubled the DOM would halve the
+per-node cost and sail through while the user waited twice as long. So node
+counts are gated too, and **separately**, because they are the one
+measurement here that is not machine-dependent — times swing 3× on this VM
+and only mean something as a ratio against a reference measured in the same
+seconds, while a node count is the same integer everywhere. Ceilings
+recorded 5 Aug 26 with ~10% headroom: **board ≤ 770**, **week ≤ 5530**.
+Tripping one is not automatically a fault; it is a prompt to check the time
+and then raise the number deliberately, in the PR that adds the nodes,
+beside a fresh `npm run perf` showing the per-node cost held.
+
+Rejected: comparing the port against a *recorded port* time. Node counts
+travel between machines, milliseconds do not — one round of the same edit
+reads 210–830 ms here — so a recorded time from another container would be
+noise. The reference stays in the loop precisely because measuring it beside
+the port is what cancels the machine out.
+
+### What it now reports
+
+| 4×-throttled phone, painted cost | reference | port | ratio | per node |
+|---|---|---|---|---|
+| one-day edit | 156 ms | **172 ms** | 1.10× | 0.91× |
+| no-op repaint | 56 ms | **43 ms** | 0.74× | 0.62× |
+| board edit | 261 ms | **313 ms** | 1.20× | **0.67×** |
+| board no-op | 75 ms | **49 ms** | 0.64× | 0.36× |
+
+**9 passed · 0 failed.** The port paints 1.78× the board for 1.20× the time,
+which is why the board edit reads 0.67× per node — comfortably faster than
+the reference at the same amount of drawing, exactly as the two no-op
+metrics said all along.
 
 Plus, all green: the other days' DOM is untouched by a day-1 edit, the week
 holds its scroll through an edit and through an Edit-mode toggle, Edit-mode
