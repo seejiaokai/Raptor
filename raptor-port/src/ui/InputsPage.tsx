@@ -9,7 +9,7 @@ import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
-import { SESSION, ME } from '../state/auth'
+import { ME } from '../state/auth'
 import { writeInputs, writeInputsBatch, notify } from '../state/store'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
@@ -157,10 +157,14 @@ export function InputsPage() {
     return () => document.removeEventListener('mousedown', away)
   }, [calOpen])
 
+  /* A MEMBER MAY EDIT INPUTS (owner, 5 Aug 26). The reference's role gate
+     turned all three of these away with "View only — ask a scheduler"; the
+     squadron's inputs are the crews' OWN leave, downchits and detachments, so
+     the people they belong to now enter them. Nothing else opened with it:
+     the schedule itself is still `canEditSched()` (admin), and ACCEPTING an
+     input into the programme is still a scheduler's act — `interactions.ts`
+     refuses it for a member exactly as before. */
   const add = () => {
-    /* the Inputs page is the one page a member can reach that mutates the
-       shared model — the role gate is the reference's, verbatim */
-    if (SESSION.role !== 'admin') return HOOKS.toast('View only — ask a scheduler to add this', 'warn')
     /* the calendar asks for a pick and the readout says so — accepting the
        click anyway and quietly dating it Monday was a trap */
     if (!start) return HOOKS.toast('Pick a start date on the calendar first', 'warn')
@@ -193,7 +197,6 @@ export function InputsPage() {
      through writeInputs like every other mutation — so an edit joins the undo
      stack and re-validates the week. */
   const startEdit = (inx: number) => {
-    if (SESSION.role !== 'admin') return HOOKS.toast('View only — ask a scheduler to edit this', 'warn')
     const r = INPUTS[inx]
     /* the ROW ITSELF is held, never its index: adding, deleting or undoing
        while an editor is open renumbers INPUTS, and an index captured before
@@ -244,7 +247,6 @@ export function InputsPage() {
   }
 
   const del = (inx: number) => {
-    if (SESSION.role !== 'admin') return HOOKS.toast('View only — ask a scheduler to remove this', 'warn')
     const r = INPUTS[inx]
     /* deleting an ACCEPTED input used to leave its ground row on the programme
        for good — nothing pointed at it any more, so it could never be removed

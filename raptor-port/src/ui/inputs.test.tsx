@@ -10,6 +10,7 @@ import { initStore, setSession, notify, undo } from '../state/store'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { acceptInput, inpKey, acceptedDay } from '../engine/slots'
+import { canEditSched } from '../state/auth'
 import { HIST } from '../state/history'
 import { validate } from '../engine/validate'
 
@@ -154,14 +155,30 @@ describe('the Inputs page (tfin)', () => {
     expect(INPUTS.length).toBe(n)
   })
 
-  it('a member may not add or delete', async () => {
+  /* owner, 5 Aug 26: the reference turned a member away with "View only —
+     ask a scheduler". These are the crews' OWN leave, downchits and
+     detachments, so the people they belong to enter them now. */
+  it('a member may add and delete too', async () => {
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     const n = INPUTS.length
     await click($('#inAdd'))
-    expect(INPUTS.length).toBe(n)
+    expect(INPUTS.length, 'the add went through').toBe(n + 1)
     await click($('#inBody .rmx'))
-    expect(INPUTS.length).toBe(n)
+    expect(INPUTS.length, 'and so did the delete').toBe(n)
+    /* the pencil opens for them as well — the third gate that used to refuse */
+    await click($('#inBody [data-edit]'))
+    expect($('#inBody [data-cancel]'), 'the row opened as fields').toBeTruthy()
+    await click($('#inBody [data-cancel]'))
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+  })
+
+  /* the boundary that did NOT move: entering an input is the crew's, putting
+     one into the issued programme is a scheduler's */
+  it('but accepting an input into the programme is still a scheduler\'s act', async () => {
+    await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
+    expect(canEditSched(), 'the gate routeClick asks before it accepts').toBe(false)
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    expect(canEditSched()).toBe(true)
   })
 
   it('the filters narrow the table', async () => {

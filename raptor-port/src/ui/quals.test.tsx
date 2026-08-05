@@ -99,11 +99,24 @@ describe('the Quals page (tfin)', () => {
     await click($('#qViewP'))
   })
 
-  it('a member sees the table but no editing', async () => {
+  /* owner, 5 Aug 26: a member edits the table's CONTENTS — they tick what
+     they have been signed off for — while the roster and the LoX's shape
+     stay with the admin */
+  it('a member may enable editing and tick, but not add people or reshape the LoX', async () => {
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     expect($$('#qtbl tbody tr').length).toBeGreaterThan(10)
-    expect($('#qEdit')).toBeFalsy()
-    expect($('#qEditQuals'), 'and no way to reshape the LoX either').toBeFalsy()
+    expect($('#qEdit'), 'Enable editing is theirs now').toBeTruthy()
+    await click($('#qEdit'))
+    expect($('#qEditQuals'), 'but EDIT QUALS is not').toBeFalsy()
+    expect($('#qAddPerson'), 'and neither is Add person').toBeFalsy()
+    /* the mode really works for them, it is not just a button */
+    const td = $$('#qtbl td[data-q$="|tf"]').find(x => !x.querySelector('.qchk'))!
+    const id = td.dataset.q!.split('|')[0]
+    await click($(`#qtbl td[data-q="${id}|tf"]`))
+    expect(PEOPLE[id].quals.tf, 'a member can record a qualification').toBe(true)
+    await click($(`#qtbl td[data-q="${id}|tf"]`))
+    expect(PEOPLE[id].quals.tf).toBe(false)
+    await click($('#qSave'))
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 })
