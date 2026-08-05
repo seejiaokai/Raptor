@@ -14,6 +14,11 @@ The port from the original single-file app is complete; that history is in
   backend; touches `engine/hooks.ts:storeBackend` and the mutation funnel).
 - **Prototype auth.** Hard-coded accounts; the deployed site is public.
   Manage-users edits the in-memory list only. Real accounts = server work.
+  **A member is no longer view-only (owner, 5 Aug 26):** they add, edit and
+  delete their own Inputs, and they use `Enable editing` on Quals to tick the
+  qualifications they hold. Still admin: accepting an input into the issued
+  programme, `Add person`, `Edit quals`, the whole Edit Schedule page and the
+  Logic editing. Table: `docs/engine-rules.md` §Auth / roles.
 - **One dataset.** The schedule is the demo week (Mon 13 – Sun 19 Jul 26, a
   full Monday-to-Sunday week; the weekend is non-flying, duty crew only). Week chips
   re-label but every week shows the same data (the original behaved the

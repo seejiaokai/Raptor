@@ -316,7 +316,10 @@ since mixed rows no longer say which is which.
 A second mode **inside** edit mode, admin only: `#qEditQuals` renders only
 when the session is admin AND editing is on, and every delegated handler
 re-checks all three (`canEditQuals()`) rather than trusting that a button was
-once rendered. It starts OFF each time editing is switched on, and `Save
+once rendered. `Enable editing` itself is NOT admin-only — a member ticks
+their own qualifications (owner, 5 Aug 26; the full split is in
+`engine-rules.md` §Auth / roles). `Add person` stays admin, like this mode:
+neither is the table's contents. It starts OFF each time editing is switched on, and `Save
 changes` closes both.
 
 The button reads the way `Enable editing` does (owner, 5 Aug 26): **blue

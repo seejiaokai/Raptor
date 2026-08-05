@@ -245,10 +245,28 @@ exports it.
 
 ## Auth / roles
 
-`a/a` = admin, `user/user` = member (view-only). `canEditSched()` = session
-AND admin. Members: no edit page, no Inputs add/delete, read-only Logic.
+`a/a` = admin, `user/user` = member. `canEditSched()` = session AND admin.
 Logout closes the scheduler board (a sibling of the shell) and resets LGEDIT.
 The login is a prototype gate, not security — the deployed app is public.
+
+**What a member may do (owner, 5 Aug 26).** The line is *their own record vs
+the squadron's programme*, not read vs write:
+
+| | member | admin |
+|---|---|---|
+| Inputs — add / edit / delete | **yes** | yes |
+| Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT | **yes** | yes |
+| Quals — `Edit quals` (which columns the LoX carries) | no | yes |
+| Quals — `Add person` (put someone on the roster) | no | yes |
+| Accepting an input into the issued programme | no | yes |
+| The Edit Schedule page at all (`canEditSched()`) | no | yes |
+| Logic — editing VCONF / SHIFT_HARD | no | yes |
+
+Inputs opened because they are the crews' OWN leave, downchits and
+detachments — the reference's `View only — ask a scheduler` gate made the
+people they belong to ask someone else to type them. Accepting one into the
+programme did NOT open with it: entering an input is the crew's, issuing it
+is the scheduler's (`interactions.ts`, `canEditSched()`).
 
 ## History
 

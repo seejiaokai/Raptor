@@ -208,9 +208,12 @@ export function QualsPage() {
   const tblRef = useRef<HTMLTableElement>(null)
   const admin = !!SESSION && SESSION.role === 'admin'
 
-  /* EDIT QUALS is admin-only at the button AND here: the table's listeners are
-     delegated and long-lived, so the mode is re-checked on every event rather
-     than trusted because a button was once rendered. */
+  /* WHO MAY EDIT WHAT HERE (owner, 5 Aug 26). `Enable editing` is open to a
+     squadron member now: they tick the qualifications they have been signed
+     off for, and fill in the initials, flight and CAT beside them. The two
+     things that are NOT the table's contents stay with the admin — `Add
+     person`, which puts someone on the roster, and EDIT QUALS, which decides
+     which qualifications the whole squadron's LoX carries. */
   const canEditQuals = () => admin && qEditing && qualsEdit
 
   /* remove a column. WIRED ones arm first — see the note beside WIRED. */
@@ -389,7 +392,7 @@ export function QualsPage() {
   return (
     <>
       <div className="qbar">
-        {admin && <button className="abtn primary" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}>Enable editing</button>}
+        <button className="abtn primary" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}>Enable editing</button>
         <button className="abtn" id="qSave" hidden={!qEditing}
           onClick={() => { setEditing(false); setQualsEdit(false); setArmDel(''); HOOKS.toast('Quals saved (prototype — writes to Dataverse in the full build).') }}>Save changes</button>
         {/* the second mode, inside edit mode and admin-only (owner, 5 Aug 26):
