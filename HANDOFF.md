@@ -175,7 +175,7 @@ The port from the original single-file app is complete; that history is in
 | `Modals.tsx` | DayPop (read-only day details), Insights, Manage-users, Airspace/traffic popup. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). |
 | `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer, login. |
-| `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export (`schedRows`). |
+| `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. |
 | `scheduler.css` | The ported stylesheet — it carries MEASURED contracts, not preferences. |
 | `../probe-bridge.ts` | Window bridge for the browser probes. Keep in sync when adding engine API. |
 

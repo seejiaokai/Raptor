@@ -311,6 +311,18 @@ breaks every tie, so equal rows keep a stable order.
 same filter, same sort — and the All export alone carries a `Seat` column,
 since mixed rows no longer say which is which.
 
+**Every CSV opens as UTF-8 because `csvText()` writes a BOM** (owner, 5 Aug
+26). Excel does not sniff a `.csv`: with no byte-order mark it decodes the
+file in the machine's ANSI codepage and prints each byte of a multi-byte
+character as its own glyph, which is why the en dash in the struck-out DAAR /
+NAAR cells arrived as `â€“` down every WSO row. The charset in the blob's MIME
+type is a transport header and never reaches the file on disk, so the BOM is
+the thing doing the work. `exportCSV` and `csvText` live in `ui/export.ts` and
+are the ONLY exporter — the Quals page carried a private copy of `exportCSV`
+until this fix, which is exactly how it came to miss the encoding; all three
+exports (schedule, inputs, LoX) now share one function. Pinned by
+`ui/export.test.ts`, which asserts the bytes rather than the glyph.
+
 ## EDIT QUALS — reshaping the LoX (owner, 5 Aug 26)
 
 A second mode **inside** edit mode, admin only: `#qEditQuals` renders only

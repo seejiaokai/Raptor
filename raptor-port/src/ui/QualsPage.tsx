@@ -11,6 +11,9 @@ import { SESSION } from '../state/auth'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { useVersion } from './useStore'
+/* this page used to carry its own copy of exportCSV — which is how it missed
+   the UTF-8 BOM the shared one now writes. One exporter, one encoding. */
+import { exportCSV } from './export'
 
 /* Column order is the owner's, left to right (5 Aug 26): SANS, SXO, SCHEDULER,
    SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF — currency and appointments
@@ -70,12 +73,6 @@ const qualNA = (p: any, c: any) => !!(c.fcpOnly && p && p.seat !== 'FCP')
    be picked at all: IW is a WSO-only category, IP and IR are pilot-only, FI
    goes both ways. The validator still guards the hand-edited case. */
 const catsFor = (seat: any) => Object.keys(QCHIP).filter(k => seat === 'FCP' ? k !== 'IW' : (k !== 'IP' && k !== 'IR'))
-
-function exportCSV(name: string, rows: any[][]) {
-  const csv = rows.map(r => r.map(c => `"${String(c == null ? '' : c).replace(/"/g, '""')}"`).join(',')).join('\r\n')
-  const blob = new Blob([csv], { type: 'text/csv' })
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click()
-}
 
 /* ---- sorting (owner, 5 Aug 26) -------------------------------------------
    The Sort chips are gone; the headings themselves sort, the way the Inputs
