@@ -43,12 +43,12 @@ watch.
   it points at, and expect commits on it this session did not write.
 
 ## Gates
-- `npm test` · `npm run build` · `node reference/tfin.js` (728/0) ·
-  `npm run test:e2e` — all green, run first-hand from `raptor-port/`.
+- `npm test` (488) · `npm run build` · `node reference/tfin.js` (728/0) ·
+  `npm run test:e2e` (11/11) — all green, run first-hand from `raptor-port/`.
 - `npm run perf` — **9/0 green**, run first-hand before and after the change
   (needs `npx vite preview --port 4173`). Self-check that the instrument is
-  honest: `PORT_URL="file://$PWD/reference/scheduler.html" npm run perf` → the
-  reference against itself, ~1.00× on every metric.
+  honest: `PORT_URL="file://$PWD/reference/scheduler.html" npm run perf` →
+  the reference against itself, also 9/0 with the node ratio reading 1.00×.
 
 ## Pick up here
 Nothing is mid-flight, and there is no open owner question. The next
