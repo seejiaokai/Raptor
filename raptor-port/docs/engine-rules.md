@@ -96,7 +96,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   IP/IR/FI flies with anyone; an instructor WSO with any front seat — the
   table's "OCU pilot needs a valid IR" footnote is deliberately disregarded,
   owner), and a mis-seated body belongs to the seat rules (`QUAL`), not here.
-  The gradings, all ring-only with no chip of their own:
+  The gradings, each carrying the **crew-composition chip** (owner, 5 Aug 26 —
+  they used to be ring-only, which left them the one family with nothing on
+  the puck to click):
   - `ILLEGAL_CREW`, hard: OCU pilot + CAT A–D WSO, or CAT A–D pilot + OCU
     WSO — "not an authorised combination". This code SUPERSEDES the old
     two-OCU hard rule; the two-OCU pairing is now the advisory below.
@@ -107,12 +109,27 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   the crew-solo advisory, Wed krait+wrangler and pike+badger want CO
   approval, Thu bapster+badger is unauthorised), so `refwin.ts:rematrix()`
   patches the identical rule and WCODE labels into the in-memory reference
-  before boot, at the exact call site the two-OCU line occupied.
+  before boot, at the exact call site the two-OCU line occupied — and, since
+  the chip landed, the reference's `RANK`, `CHIP_TEXT` and `CHIP_LABEL` too.
+  Miss any of those three and the failure is not in the rule but in the
+  markup: an unranked code freezes on its first write, and the reference's
+  puck builder falls back to the raw code for both glyph and tooltip.
+- **The crew-composition chip, `CC` (owner, 5 Aug 26).** Every pairing rule
+  above plus `OCU_NO_IP` and `NO_IR` marks it. It is **two internal codes**
+  because a chip carries no severity of its own — `CC` where the pairing needs
+  approval (amber), `CCH` where it is not authorised at all (red) — and BOTH
+  print `CC`, so the squadron reads one flag. `CHIP_TEXT` maps them; the
+  colours are `.l-cc` / `.l-cch` in `scheduler.css`. In `RANK` they are
+  inserted, not reshuffled: `CC` leads the advisories, `CCH` sits under `C`,
+  because a man booked in two places at once is a harder stop than a pairing
+  wanting a signature. So a crew member already carrying a conflict keeps the
+  `C` flag — the pairing is still reachable from the day's issue list.
 - **`NO_IR`, hard: an IRT needs an IR examiner in the crew** (owner,
   Aug 5 '26). `IRT` (word-bounded, case-insensitive) in a formation's msn →
   an IR anywhere in that formation's crew; in one aircraft's remarks → the
-  IR in THAT aircraft. Ring only, no chip — the OCU_NO_IP shape. Fires
-  nowhere on the seed week, which is what keeps the parity suite byte-exact.
+  IR in THAT aircraft. Rings hard and chips `CCH` — it is a crew-composition
+  rule like the matrix. Fires nowhere on the seed week, which is what lets it
+  stay out of `refwin` entirely while the parity suite stays byte-exact.
 - Leave: LL, OL, OIL (`isLocalLeave` = LL+OIL). LL/OIL may stand an SC SPARE;
   OL and Downchit may not (hard DNIF_FLY/LEAVE_FLY) even though spares are
   otherwise `saExempt`. SC SPARE carries no crew rest either way. SC currency

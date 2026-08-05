@@ -149,8 +149,12 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
   /* ---- chip priority ----------------------------------------------------- */
   {
     const r = await p.evaluate(() => Object.keys(RANK).sort((a, b) => RANK[b] - RANK[a]).join(' > '))
-    T('chips · the ladder is the reference order plus RUN', r,
-      'Q > C > RUN > CR > NB > DB > SB > SD > A > TT > DT > LD')
+    /* The reference ladder with the port's insertions: RUN (no break day, just
+       above crew rest) and the two crew-composition flags (owner, 5 Aug 26) —
+       CCH under the conflict flag, CC leading the advisories. The reference
+       order itself is untouched; the new codes slot between its rungs. */
+    T('chips · the ladder is the reference order plus RUN, CC and CCH', r,
+      'Q > C > CCH > RUN > CR > CC > NB > DB > SB > SD > A > TT > DT > LD')
   }
 
   /* ---- the SUP filter lights supervisors and nobody else ----------------- */

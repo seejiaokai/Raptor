@@ -290,11 +290,20 @@ already-open box — but a focus set from the board or a chip with `DWOPEN`
 empty leaves lit pucks and no way to clear them: `html.ts` renders
 `✕ Clear focus` only inside an open box.
 
-**Known limit, by design:** the crew-combination codes (`ILLEGAL_CREW`,
-`CREW_SOLO`, `CO_APPROVAL`, `NO_IR`) call `markRing` and never `markChip`, so
-those pucks carry no `.lchip` and are unreachable from the chip surface. Do
-not "fix" this by making the ring clickable — the ring is part of the puck,
-and the puck selects the person (owner, Aug 26).
+**Every ringed puck carries a chip** (owner, 5 Aug 26). The crew-composition
+family (`CREW_SOLO`, `CO_APPROVAL`, `OCU_NO_IP`, `ILLEGAL_CREW`, `NO_IR`) used
+to ring and never chip, which left it the one family with nothing on the puck
+to click; it now marks `CC`/`CCH` (see `engine-rules.md` §The crew-composition
+chip). A ring without a chip is now a **bug**, and `validate.test.ts` asserts
+there are none. What is still deliberate: the ring itself is never a click
+target — it is part of the puck, and the puck selects the person (owner,
+Aug 26).
+
+A chip resolves to the person's **worst** issue that day, not necessarily the
+one that set the chip. Those coincide except where a lower-ranked chip wins on
+severity — a man carrying both a conflict and a pairing problem shows `C` and
+lands on whichever the engine emitted first of the two hard warnings. Both are
+one click away in the day's issue list either way.
 
 **Which puck wins.** One named person is the first puck in document order.
 Two or more is the crew-combination family, where `who` is the pilot AND the
