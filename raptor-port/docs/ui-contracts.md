@@ -310,3 +310,38 @@ breaks every tie, so equal rows keep a stable order.
 `Assigned aircrew` group head. The CSV export follows the screen — same view,
 same filter, same sort — and the All export alone carries a `Seat` column,
 since mixed rows no longer say which is which.
+
+## EDIT QUALS — reshaping the LoX (owner, 5 Aug 26)
+
+A second mode **inside** edit mode, admin only: `#qEditQuals` renders only
+when the session is admin AND editing is on, and every delegated handler
+re-checks all three (`canEditQuals()`) rather than trusting that a button was
+once rendered. It starts OFF each time editing is switched on, and `Save
+changes` closes both.
+
+While it is on the heading stops being a sort button and becomes the column:
+it carries `data-col` and **no `data-sort` at all**, so a drag can never land
+as a click that re-sorts the table under the hand doing the dragging. Each
+heading gains a grip, a `.qlbl` label element and a `✕`.
+
+- **Add** — the name becomes a key through `qualKey()` (letters and digits,
+  lower-cased), so `Night SC` and `night sc` cannot become two columns over
+  one flag. Held by nobody until ticked. A duplicate or a nameless entry is
+  refused with a toast.
+- **Remove** — `✕`. The six flags the engine reads (`sched`, `scDay`,
+  `scNight`, `daar`, `naar`, `sxo` — see `WIRED`) **arm first**: the first
+  press names what reads the column, the second removes it. Removing a column
+  never touches `p.quals`, so the rule still sees whoever held it and adding
+  the column back brings the ticks with it. If the removed column was the one
+  being sorted by, the sort falls back to callsign.
+- **Reorder** — drag a heading. This is the page's OWN pointer machine, not
+  `drag.ts` (which stays scoped to pucks): pointer events so a finger works as
+  well as a mouse, the implicit touch capture **released** on `pointerdown` so
+  `pointermove` can report a new heading, `touch-action:none` on the heading so
+  the browser does not claim the gesture as a scroll, and the drop highlight
+  written straight to the DOM — a re-render would rebuild the innerHTML table
+  under the moving finger and drop the drag. Only the drop itself sets state.
+
+None of it is persisted, exactly like the ticks, initials and flights beside
+it: reload and the LoX is the default set again. `rules` is still the only
+thing this app writes to storage.

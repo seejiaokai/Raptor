@@ -950,6 +950,25 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    fill in never groups anything. Narrower because a flight is a letter or
    two where initials are three. */
 .qflt{width:56px}
+/* ---- EDIT QUALS (owner, 5 Aug 26): the headings become the columns -------
+   `touch-action:none` is what makes the drag work with a finger — without it
+   the browser claims the gesture as a scroll and the pointermove stream stops
+   at the first pixel. The grip and the ✕ only exist in this mode, so nothing
+   here narrows the heading the rest of the time. */
+.qtbl.qediting thead th.qcol{cursor:grab;user-select:none;touch-action:none}
+.qtbl.qediting thead th.qcol.qdragging{cursor:grabbing;opacity:.5}
+/* the drop target is marked on the side the column will land in — a solid
+   edge rather than a wash, so it reads at a glance against the coloured
+   heading backgrounds (lav / apt / scq / aarq all sit behind it) */
+.qtbl.qediting thead th.qcol.qdrop{box-shadow:inset 3px 0 0 var(--accent),inset -3px 0 0 var(--accent)}
+.qgrip{color:var(--ink-3);margin-right:5px;letter-spacing:-2px;font-size:9px;vertical-align:middle}
+.qdel{margin-left:6px;color:var(--hard);cursor:pointer;font-weight:800;font-size:10px;
+  padding:1px 4px;border-radius:5px;border:1px solid transparent}
+.qdel:hover{background:rgba(240,85,95,.16);border-color:rgba(240,85,95,.4)}
+/* armed: the second press removes a column the rules read, so it stops
+   looking like a dismiss ✕ and starts looking like a question */
+.qtbl thead th.qcol.arm .qdel{background:rgba(240,85,95,.2);border-color:rgba(240,85,95,.6);letter-spacing:.02em}
+.qhint{color:var(--ink-3);font-size:11px}
 /* the callsign is editable in edit mode — it keeps the accent colour it has
    when it is plain text, so the column reads the same either way */
 .qcs{width:100%;min-width:74px;background:var(--bg);border:1px solid var(--edge);color:var(--accent);

@@ -99,6 +99,16 @@ The port from the original single-file app is complete; that history is in
   FLIGHT is now editable in edit mode because the roster records none —
   same reason initials are: nothing to derive, do not invent. Contract:
   `docs/ui-contracts.md` §The Quals page's columns, sorting and View.
+- **EDIT QUALS (owner, 5 Aug 26).** An admin-only mode inside edit mode:
+  add a qualification, remove one, drag a heading to reorder. The six flags
+  the engine reads (`sched` `scDay` `scNight` `daar` `naar` `sxo`) arm before
+  they can be removed, and removal never touches `p.quals` — add the column
+  back and the ticks return. The drag is the page's own pointer machine;
+  `drag.ts` stays scoped to pucks. **Not persisted** — like the ticks,
+  initials and flights beside it, a reload restores the default column set
+  (`rules` is still the only thing written to storage). If the squadron wants
+  their LoX to survive a reload, that is the same server/sync work as the
+  first bullet. Contract: `docs/ui-contracts.md` §EDIT QUALS.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
   GitHub Actions). The workflow refuses to publish on any red test.
 

@@ -17,8 +17,12 @@ const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
 }
-/* heading labels without the sort arrow the sorted column carries */
-const heads = () => $$('#qtbl thead th').map(x => (x.textContent || '').replace(/[▲▼]/g, ''))
+/* heading labels: the sorted column carries an arrow and, in EDIT QUALS, a
+   grip and a ✕ — the label element is the name on its own */
+const heads = () => $$('#qtbl thead th').map(x => {
+  const lbl = x.querySelector('.qlbl')
+  return ((lbl || x).textContent || '').replace(/[▲▼]/g, '')
+})
 /* the callsign column, top to bottom — what a sort is judged by */
 const col = (sel: string) => $$(`#qtbl tbody tr:not(.grp) ${sel}`).map(x => (x.textContent || '').trim())
 const callsigns = () => col('td.qname')
@@ -99,6 +103,7 @@ describe('the Quals page (tfin)', () => {
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     expect($$('#qtbl tbody tr').length).toBeGreaterThan(10)
     expect($('#qEdit')).toBeFalsy()
+    expect($('#qEditQuals'), 'and no way to reshape the LoX either').toBeFalsy()
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 })
@@ -443,5 +448,167 @@ describe('the View chips', () => {
     expect(callsigns()).not.toContain('Bane')
     expect($('#qtbl tbody tr.grp').textContent).toContain('Assigned WSOs')
     await click($('#qViewP'))
+  })
+})
+
+/* ---- EDIT QUALS (owner, 5 Aug 26) ---------------------------------------
+   a second mode inside edit mode, admin only: add a qualification, remove
+   one, drag a heading to move it. */
+describe('Edit quals', () => {
+  /* pointer events, as a mouse or a finger sends them. jsdom has no
+     PointerEvent constructor and no layout, so they are dispatched as mouse
+     events with the pointer type names — which is exactly what the delegated
+     listeners bind to, so the machine under test is the real one. */
+  const pointer = async (type: string, el: Element | Document) =>
+    act(async () => { el.dispatchEvent(new MouseEvent(type, { bubbles: true })) })
+  const dragCol = async (from: string, to: string) => {
+    await pointer('pointerdown', $(`#qtbl thead th[data-col="${from}"]`))
+    await pointer('pointermove', $(`#qtbl thead th[data-col="${to}"]`))
+    await pointer('pointerup', document)
+  }
+  const qualCols = () => $$('#qtbl thead th[data-col]').map(t => t.dataset.col)
+  const on = async () => {
+    if (!$('#qEditQuals')) await click($('#qEdit'))
+    if ($('#qEditQuals').getAttribute('aria-pressed') !== 'true') await click($('#qEditQuals'))
+  }
+
+  beforeAll(async () => { await click($('#qViewP')) })
+
+  it('the button only exists under Enable editing, and only for an admin', async () => {
+    if ($('#qEditQuals')) await click($('#qSave'))
+    expect($('#qEditQuals'), 'not before editing is enabled').toBeFalsy()
+    await click($('#qEdit'))
+    expect($('#qEditQuals')).toBeTruthy()
+    expect($('#qEditQuals').getAttribute('aria-pressed'), 'off until it is pressed').toBe('false')
+    await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
+    expect($('#qEditQuals'), 'a member never sees it').toBeFalsy()
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+  })
+
+  it('turning it on hands the headings over: they move and delete, not sort', async () => {
+    await on()
+    expect($('#qtbl').className).toContain('qediting')
+    expect(qualCols().length, 'every qualification column is a handle').toBe(10)
+    expect($$('#qtbl thead th[data-col] .qdel').length).toBe(10)
+    /* the sort attribute is GONE from them, so a drag can never land as a
+       click that re-sorts the table under the hand doing the dragging */
+    expect($('#qtbl thead th[data-sort="tf"]')).toBeFalsy()
+    const before = callsigns()
+    await click($('#qtbl thead th[data-col="tf"]'))
+    expect(callsigns(), 'clicking a heading does not sort in this mode').toEqual(before)
+    /* the identity columns are not part of the arrangement and stay sortable */
+    expect($('#qtbl thead th[data-sort="cs"]')).toBeTruthy()
+    expect($('#qtbl thead th[data-col="cs"]')).toBeFalsy()
+  })
+
+  it('adds a qualification, held by nobody until it is ticked', async () => {
+    await on()
+    await act(async () => {
+      const box = $('#qNewQual') as HTMLInputElement
+      const set = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+      set.call(box, 'low level'); box.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    await click($('#qAddQualBtn'))
+    expect(qualCols()).toContain('lowlevel')
+    expect(heads(), 'named as it was typed, in the table\'s own case').toContain('LOW LEVEL')
+    expect($$('#qtbl td[data-q$="|lowlevel"] .qchk'), 'nobody holds it yet').toEqual([])
+    expect($$('#qtbl td[data-q$="|lowlevel"]').length).toBe($$('#qtbl tbody tr:not(.grp)').length)
+    /* and it behaves like any other column once it exists */
+    await click($('#qtbl td[data-q="bane|lowlevel"]'))
+    expect(PEOPLE.bane.quals.lowlevel).toBe(true)
+  })
+
+  it('refuses a duplicate and a nameless qualification', async () => {
+    await on()
+    const set = async (v: string) => act(async () => {
+      const box = $('#qNewQual') as HTMLInputElement
+      const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+      s.call(box, v); box.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    const was = qualCols().length
+    await set('LOW LEVEL'); await click($('#qAddQualBtn'))
+    await set('   '); await click($('#qAddQualBtn'))
+    await set('!!'); await click($('#qAddQualBtn'))
+    expect(qualCols().length).toBe(was)
+  })
+
+  it('removes a column the rules do not read, and keeps who held it', async () => {
+    await on()
+    expect(PEOPLE.bane.quals.lowlevel).toBe(true)
+    await click($('#qtbl thead th[data-col="lowlevel"] .qdel'))
+    expect(qualCols(), 'one press is enough — no rule reads it').not.toContain('lowlevel')
+    expect(PEOPLE.bane.quals.lowlevel, 'the record itself is untouched').toBe(true)
+    /* adding it back brings the ticks with it */
+    await act(async () => {
+      const box = $('#qNewQual') as HTMLInputElement
+      const s = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+      s.call(box, 'LOW LEVEL'); box.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    await click($('#qAddQualBtn'))
+    expect($('#qtbl td[data-q="bane|lowlevel"] .qchk'), 'Bane still holds it').toBeTruthy()
+    await click($('#qtbl thead th[data-col="lowlevel"] .qdel'))
+  })
+
+  it('arms first on a column the rules DO read, then removes it', async () => {
+    await on()
+    const held = Object.keys(PEOPLE).filter(id => PEOPLE[id].quals && PEOPLE[id].quals.scDay).length
+    expect(held).toBeGreaterThan(0)
+    await click($('#qtbl thead th[data-col="scDay"] .qdel'))
+    expect(qualCols(), 'the first press only asks').toContain('scDay')
+    expect($('#qtbl thead th[data-col="scDay"]').className).toContain('arm')
+    expect($('#qtbl thead th[data-col="scDay"] .qdel').textContent).toBe('remove?')
+    await click($('#qtbl thead th[data-col="scDay"] .qdel'))
+    expect(qualCols(), 'the second press removes it').not.toContain('scDay')
+    /* the rule that reads it still sees everyone who held it */
+    expect(Object.keys(PEOPLE).filter(id => PEOPLE[id].quals && PEOPLE[id].quals.scDay).length).toBe(held)
+  })
+
+  it('removing the column the table is sorted by falls back to callsign', async () => {
+    await click($('#qSave'))                       // sorting needs the reading mode
+    await click($('#qtbl thead th[data-sort="nvg"]'))
+    expect($('#qtbl thead th[data-sort="nvg"]').getAttribute('aria-sort')).toBe('ascending')
+    await on()
+    await click($('#qtbl thead th[data-col="nvg"] .qdel'))
+    await click($('#qSave'))
+    expect($('#qtbl thead th[data-sort="cs"]').getAttribute('aria-sort'),
+      'the arrow goes back somewhere it can sit').toBe('ascending')
+    expect(callsigns()).toEqual([...callsigns()].sort((a, b) => {
+      const x = a.toLowerCase(), y = b.toLowerCase(); return x < y ? -1 : x > y ? 1 : 0
+    }))
+    await on()
+  })
+
+  it('drags a heading to move its column', async () => {
+    await on()
+    const before = qualCols()
+    expect(before[0]).toBe('san')
+    await dragCol('tf', 'san')                       // last one to the front
+    expect(qualCols()[0]).toBe('tf')
+    expect(qualCols().length, 'moved, not copied').toBe(before.length)
+    expect(new Set(qualCols()).size).toBe(before.length)
+    await dragCol('tf', 'imc')                       // and back to the end
+    expect(qualCols()[qualCols().length - 1]).toBe('tf')
+    /* a drag that ends on its own column changes nothing */
+    const same = qualCols()
+    await dragCol('tf', 'tf')
+    expect(qualCols()).toEqual(same)
+  })
+
+  it('the cells follow their heading, so no column shows another one\'s ticks', async () => {
+    await on()
+    await dragCol('sched', 'san')
+    const order = qualCols()
+    const row = $$(`#qtbl tbody tr:not(.grp)`)[0]
+    expect([...row.querySelectorAll('td[data-q]')].map(td => (td as HTMLElement).dataset.q!.split('|')[1]))
+      .toEqual(order)
+  })
+
+  it('Save changes puts the table back to reading, and the mode with it', async () => {
+    await on()
+    await click($('#qSave'))
+    expect($('#qtbl').className).not.toContain('qediting')
+    expect($('#qEditQuals'), 'the button goes with edit mode').toBeFalsy()
+    expect($('#qtbl thead th[data-sort="tf"]'), 'the headings sort again').toBeTruthy()
+    expect($$('#qtbl .qdel')).toEqual([])
   })
 })
