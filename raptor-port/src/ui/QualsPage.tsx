@@ -43,7 +43,7 @@ function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch
   /* CALLSIGN is the identity the whole app plans by — it is what every puck
      prints — so it heads the table; INITIALS sits beside it as the admin
      record (owner, Aug 26). */
-  const head = `<thead><tr><th style="text-align:left">Callsign</th><th>Initials</th><th>Flight</th><th>Office</th><th>Level</th>` +
+  const head = `<thead><tr><th style="text-align:left">Callsign</th><th>Initials</th><th>Flight</th><th>Level</th>` +
     QUAL_COLS.map(c => `<th class="${c.lav ? 'lav' : c.fix ? 'fix' : c.apt ? 'apt' : c.scq ? 'scq' : c.aar ? 'aarq' : ''}" title="${
       c.k === 'sched' ? 'Appointed scheduler — may sign SKED CK, PLANNED BY and APPROVED BY'
       : c.k === 'scDay' ? 'SC DAY — may be planned on an SC shift inside 07:00–19:00'
@@ -67,7 +67,7 @@ function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch
        notify() rebuilds, so a per-keystroke commit would tear the field out
        from under the cursor. */
     const init = qEditing
-      ? `<input class="qinit" data-init="${id}" value="${esc(p.initials || '')}" maxlength="5" aria-label="Initials for ${esc(p.cs)}" />`
+      ? `<input class="qinit" data-init="${id}" value="${esc(p.initials || '')}" maxlength="12" aria-label="Initials for ${esc(p.cs)}" />`
       : esc(p.initials || '')
     /* the callsign is editable in edit mode too, and renameCallsign rewrites
        every stored `who` string with it, so the pucks re-print under the new
@@ -75,9 +75,9 @@ function qualsTable(qSeatView: string, qSort: string, qEditing: boolean, qSearch
     const cs = qEditing
       ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
       : esc(p.cs)
-    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td>${esc(p.flight || '')}</td><td>${esc(p.office || '')}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
+    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td>${esc(p.flight || '')}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
   }).join('')
-  return head + `<tbody><tr class="grp"><td colspan="${6 + QUAL_COLS.length + 1}">${qSeatView === 'FCP' ? 'Assigned pilots' : 'Assigned WSOs'} · ${ids.length}</td></tr>${rows}</tbody>`
+  return head + `<tbody><tr class="grp"><td colspan="${5 + QUAL_COLS.length + 1}">${qSeatView === 'FCP' ? 'Assigned pilots' : 'Assigned WSOs'} · ${ids.length}</td></tr>${rows}</tbody>`
 }
 
 export function QualsPage() {
@@ -142,7 +142,7 @@ export function QualsPage() {
     /* the callsign IS the person here — it is what every puck prints and what
        ID_BY_CS resolves — so it is the only required field; initials are the
        administrative record beside it (owner, Aug 26, replacing first/last). */
-    PEOPLE[id] = { cs, initials: addP.initials.trim().toUpperCase(), seat: addP.seat, q: addP.level, flight: addP.flight.trim() || '-', office: '-' }
+    PEOPLE[id] = { cs, initials: addP.initials.trim().toUpperCase(), seat: addP.seat, q: addP.level, flight: addP.flight.trim() || '-' }
     deriveQuals(PEOPLE[id]); ID_BY_CS[cs.toLowerCase()] = id
     setAddP({ initials: '', cs: '', flight: '', seat: addP.seat, level: addP.level })
     if (PEOPLE[id].seat !== qSeatView) setSeat(PEOPLE[id].seat)
@@ -150,10 +150,10 @@ export function QualsPage() {
   }
 
   const doExport = () => {
-    const cols = ['Callsign', 'Initials', 'Flight', 'Office', 'Level', ...QUAL_COLS.map(c => c.h)]
+    const cols = ['Callsign', 'Initials', 'Flight', 'Level', ...QUAL_COLS.map(c => c.h)]
     const rows: any[][] = [cols]
     Object.keys(PEOPLE).filter(id => PEOPLE[id].seat === qSeatView && !PEOPLE[id].archived).forEach(id => {
-      const p = PEOPLE[id]; rows.push([p.cs, p.initials || '', p.flight, p.office, p.q, ...QUAL_COLS.map(c => p.quals[c.k] ? 'Y' : '')])
+      const p = PEOPLE[id]; rows.push([p.cs, p.initials || '', p.flight, p.q, ...QUAL_COLS.map(c => p.quals[c.k] ? 'Y' : '')])
     })
     exportCSV(`142SQN-LoX-${qSeatView}.csv`, rows)
   }
@@ -185,7 +185,7 @@ export function QualsPage() {
       {admin && <div className="qadd" data-admin="">
         <span className="lab">Add person</span>
         <input id="qCS" placeholder="Callsign" style={{ width: 110 }} value={addP.cs} onChange={e => setAddP({ ...addP, cs: e.target.value })} />
-        <input id="qInitials" placeholder="Initials" maxLength={5} style={{ width: 80 }} value={addP.initials} onChange={e => setAddP({ ...addP, initials: e.target.value })} />
+        <input id="qInitials" placeholder="Initials" maxLength={12} style={{ width: 120 }} value={addP.initials} onChange={e => setAddP({ ...addP, initials: e.target.value })} />
         <input id="qFlight" placeholder="Flight" style={{ width: 70 }} value={addP.flight} onChange={e => setAddP({ ...addP, flight: e.target.value })} />
         <select id="qSeat" aria-label="Pilot or WSO" value={addP.seat} onChange={e => setAddP({ ...addP, seat: e.target.value })}><option value="FCP">Pilot (FCP)</option><option value="RCP">WSO (RCP)</option></select>
         <select id="qLevel" aria-label="Cat" value={addP.level} onChange={e => setAddP({ ...addP, level: e.target.value })}>{Object.keys(QCHIP).map(k => <option key={k}>{k}</option>)}</select>

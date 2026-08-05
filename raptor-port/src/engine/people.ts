@@ -15,7 +15,7 @@ export const isOcu=(q:any)=>q==='OCU';
 export const QORDER:any={OCU:0,D:1,C:2,B:3,A:4,I:5,CI:6,IR:7};
 
 /* ---- people (real callsigns / quals from the LoX screenshots) ---- */
-/* seat: FCP=pilot RCP=wso · q=level · flight · office · sxo/opsSup extra quals · dt=downchit chip */
+/* seat: FCP=pilot RCP=wso · q=level · flight · sxo/opsSup extra quals · dt=downchit chip */
 export const PEOPLE:any={
   // ---- pilots (FCP) ----
   bane:{cs:'Bane',seat:'FCP',q:'A',ip:true,sxo:true},

@@ -52,6 +52,13 @@ node reference/tfin.js      # the original's assertions — must stay 728/0
 UI-visible work also needs the browser path (jsdom can't measure layout):
 `npx vite preview --port 4173`, then `probes/run.cjs <name> port`,
 `probes/perf-port.cjs` (perf no-regression), `probes/adapted/*.cjs`.
+A fresh container needs `npm ci` first — `node_modules/` is not in the image.
+Any NEW Playwright script must pass `executablePath:'/opt/pw-browsers/chromium'`
+(a stable symlink): the pinned Playwright looks for a browser build the image
+doesn't ship, so a bare `chromium.launch()` dies with "Executable doesn't
+exist … run npx playwright install" — do NOT run that, it re-downloads for
+nothing. Every probe in `reference/probes/` already hardcodes the path.
+Login is `a`/`a` (full edit) or `user`/`user` (view-only).
 
 Push to `main` → `.github/workflows/deploy.yml` reruns the gates and
 publishes to **https://seejiaokai.github.io/Raptor/**. Nothing deploys red.
