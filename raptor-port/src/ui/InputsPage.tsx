@@ -164,7 +164,7 @@ export function InputsPage() {
             <select id="inType" aria-label="Input type" value={type} onChange={e => setType(e.target.value)}>
               {INPUT_TYPES.map((t: string) => <option key={t}>{t}</option>)}
             </select></div>
-          <div className="ifield"><label>Repeat wks</label><input id="inRepeat" type="number" value={repeat} min={0} style={{ width: 70 }} onChange={e => setRepeat(+e.target.value)} /></div>
+          <div className="ifield"><label>Repeat wks</label><input id="inRepeat" type="number" value={repeat} min={0} onChange={e => setRepeat(+e.target.value)} /></div>
           <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder="e.g. medical appt" value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={add}>Add input</button></div>
         </div>

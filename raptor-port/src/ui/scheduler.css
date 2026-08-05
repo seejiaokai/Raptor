@@ -942,7 +942,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .qlvlsel{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-size:11px;border-radius:6px;padding:2px 4px}
 /* the INITIALS column: plain text until edit mode hands it an input */
 .qtbl .qinitc{color:var(--ink-2);letter-spacing:.04em;font-weight:600}
-.qinit{width:52px;background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-size:11px;
+.qinit{width:104px;background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-size:11px;
   border-radius:6px;padding:2px 4px;text-align:center;text-transform:uppercase;letter-spacing:.04em}
 .qinit:focus{outline:none;border-color:var(--accent)}
 /* the callsign is editable in edit mode — it keeps the accent colour it has
@@ -956,21 +956,39 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 
 /* ============ INPUTS PAGE ============ */
 .inbar{padding:16px 20px;background:rgba(59,198,232,.05);border-bottom:1px solid var(--edge)}
-.ingrid{display:grid;grid-template-columns:minmax(160px,1.2fr) 1fr 1fr auto 1fr auto minmax(160px,1.4fr) auto;gap:10px;align-items:end}
+/* The calendar is ~3 field-rows tall, so it gets its own fixed column and the
+   eight remaining fields flow in a 4-wide track beside it — two tidy rows of
+   four. Every track is an equal `1fr` and every control fills its cell, so
+   START TIME and END TIME are the same width (they were `1fr` and `auto`
+   before, which is why the row read ragged). */
+.ingrid{display:grid;grid-template-columns:212px repeat(4,minmax(0,1fr));gap:12px 14px;align-items:start}
+.ifield.cal{grid-column:1;grid-row:1/span 3}
 /* the fixed eight-column track forced a ~930px document, so on a phone the whole
    app was scaled down to 41% and half the form sat off the right edge */
 @media (max-width:820px){
-  .ingrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .ingrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .ingrid>.ifield.chk{align-items:flex-start}
-  .ingrid>.abtn,.ingrid>button{grid-column:1/-1}
   .inwrap{overflow-x:auto}
   .intbl{min-width:640px}
 }
 @media (max-width:430px){ .ingrid{grid-template-columns:minmax(0,1fr)} }
-.ifield{display:flex;flex-direction:column;gap:4px}
-.ifield label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+/* Below 820px the calendar stops being a column of its own and simply spans the
+   row. `1/-1` spans the EXPLICIT tracks — `span 2` would have invented an
+   implicit second column in the one-column phone layout, and that implicit
+   track is `auto`, not `1fr`: that is what made the phone form two ragged
+   columns (173px / 181px) instead of the single column it was written to be. */
+@media (max-width:820px){ .ifield.cal{grid-column:1/-1;grid-row:auto} }
+.ifield{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ifield label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ifield input,.ifield select{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:8px 9px;border-radius:8px}
-.ifield.chk{align-items:center;justify-content:center}
+/* one shared height + full-bleed width for every control, so the row lines up
+   whatever the intrinsic width of a date/time/number widget happens to be */
+.ifield>input,.ifield>select,.ifield>button{width:100%;min-width:0;box-sizing:border-box;height:36px}
+.ifield>button{height:36px}
+/* the All-day checkbox keeps its natural size and sits on the control line */
+.ifield.chk{justify-content:flex-start}
+.ifield.chk>input[type=checkbox]{width:18px;height:18px;min-width:18px;accent-color:var(--accent);margin:9px 0}
 .infilter{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.4)}
 .infilter select,.infilter input{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:7px 9px;border-radius:8px}
 .intbl{width:100%;border-collapse:collapse;font-size:12px}
@@ -987,8 +1005,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .inact .red{color:var(--accent);cursor:pointer;font-weight:800}
 .inact .red:hover{filter:brightness(1.25)}
 .rok{color:var(--ok,#57D9A3);cursor:pointer;font-weight:800}
-/* the two-click range calendar */
-.ifield.cal{grid-column:span 2}
+/* the two-click range calendar — its grid placement lives with the .ingrid
+   tracks above, NOT here: a bare `grid-column:span 2` this far down the file
+   outranked every breakpoint rule (same specificity, later source) and was
+   what forced the implicit second column on phones. */
 .rangecal{background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:6px 7px;width:212px}
 .rc-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
 .rc-mon{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
