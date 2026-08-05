@@ -1,30 +1,51 @@
-# RAPTOR → React port package
+# RAPTOR — the application
 
-Everything Claude Code needs to port the single-file RAPTOR scheduler to
-React without losing five weeks of accumulated correctness.
+The React + TypeScript + Vite app. The port from the original single-file
+scheduler is complete; this is the live application, and `reference/` is now
+the read-only spec it is measured against rather than a thing to copy from.
+
+## Where to look
+
+| file | what it is |
+|---|---|
+| `CLAUDE.md` | **The index** — working rules, and the routes to every detail doc. Start here. |
+| `../HANDOFF.md` | What is still open, and where each file lives (the full file map). |
+| `docs/engine-rules.md` | The validation rules, roles, and the seat/qualification matrices. |
+| `docs/ui-contracts.md` | The UI contracts — what each page must do, and why. |
+| `docs/probe-sweep.md` | The probe → reference → port results table. |
+| `docs/session-state.md` | The last session's leftovers — present **only** while something is pending, so its absence means nothing is. |
+| `PORTING.md` | Historical: the phase plan the port was built from. Kept because the probe docs still cite its decisions, not because anything is left to run. |
+
+## Running it
 
 ```
-CLAUDE.md               ← invariants, rules, contracts (Claude Code reads this automatically)
-PORTING.md              ← the phase-by-phase prompts YOU paste, one at a time
-reference/
-  scheduler.html        ← build 29JUL·B55 — the working app, THE SPEC (read-only)
-  tfin.js               ← 728-assertion jsdom regression suite
-  probes/               ← 54 Playwright behaviour/geometry/perf probes
-.gitignore
+npm ci        # node_modules/ is not in the container image
+npm run dev
 ```
 
-## Quick start
+## The gates
 
-1. `git init` here and commit everything as-is (that commit is your
-   reference baseline forever).
-2. `npm i -D jsdom`, then `NODE_PATH=node_modules node reference/tfin.js`
-   after copying `reference/scheduler.html` to the path it expects (or do
-   PORTING.md phase 1 first, which makes the path configurable).
-   Expect: `RESULT 728 passed, 0 failed`.
-3. Open PORTING.md and run the phases in order. Do not skip phase 2
-   (engine extraction) — it is the whole risk-management strategy.
+All four, from this directory, after any change:
+
+```
+npm test                # Vitest — unit + component suite
+npm run build           # typecheck + production build
+node reference/tfin.js  # the original app's 728 assertions
+npm run test:e2e        # geometry in a real browser — builds and serves itself
+```
+
+`test:e2e` is a gate of its own because jsdom has no layout engine: a puck
+that had silently grown to 90px passes `npm test` all day. All four run in CI,
+on pushes to `main` and on pull requests into it.
+
+UI-visible work also wants the browser path, which is **not** in CI —
+`npx vite preview --port 4173`, then `npm run probes:adapted` (the six adapted
+probes) and `npm run perf` (the reference-vs-port no-regression gate).
 
 ## The one rule
 
 `reference/` is the specification. It never changes, everything is verified
-against it, and any port/reference disagreement means the port is wrong.
+against it, and any port/reference disagreement means the port is wrong —
+unless the owner has since changed the rule, in which case `docs/` records
+the decision and `src/testing/refwin.ts` patches the reference in memory so
+both engines still compute from identical data.

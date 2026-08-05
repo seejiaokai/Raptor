@@ -7,6 +7,11 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
+**Every gate is green at this commit**, run first-hand: `npm test` 525/31
+files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
+test:e2e` 11/11, and the two that are NOT in CI — `npm run probes:adapted`
+6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
+
 ## Known issues / open work
 
 - **No shared data.** localStorage only — two devices never see each
@@ -28,16 +33,18 @@ The port from the original single-file app is complete; that history is in
   browser against a preview of the production build — puck exactly 74×15,
   free text wrapping rather than overflowing, one day box per pan click, the
   proxy scrollbar, scroll held across an edit, a programme hole rendering no
-  element, descender ink inside the puck. It builds and serves itself, and it
-  is the **fourth CI gate** in `deploy.yml`. Vitest still cannot see any of
-  this: every rect it reports is 0×0. Wider visual work still wants the probe
-  path (`npx vite preview --port 4173` + `probes/`).
+  element, descender ink inside the puck — seven contracts over 11 tests. It
+  builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
+  Vitest still cannot see any of this: every rect it reports is 0×0. Wider
+  visual work still wants the probe path (`npx vite preview --port 4173` +
+  `probes/`).
 - **The probe sweep has no leftovers** (`docs/probe-sweep.md`). The four that
   used to stop partway — `aar`, `audit`, `sa`, `sc2` — now run end to end as
   `probes/adapted/*-async.cjs`, six adapted files in all, run together by
   `npm run probes:adapted` and each exiting non-zero on a failed assertion.
-  Two of them assert MORE than their originals did: `aar`'s ladder check was
-  vacuous on the reference (it never enabled qtbl editing, so every click was
+  The set is green at this commit (6/6). Two of them assert MORE than their
+  originals did: `aar`'s ladder check was vacuous on the reference (it never
+  enabled qtbl editing, so every click was
   swallowed), and `sa`'s "no new warnings" step failed on the reference too,
   because its blind seat-stuffing eventually put a downchit man on an SC
   SPARE. One probe (`zdup`) still fails identically on both builds —
@@ -74,11 +81,14 @@ The port from the original single-file app is complete; that history is in
   within ±0.05. The remaining red light (`board edit 1.19×` against a flat
   1.15) was feature growth, not a regression: the port's board carries **1.78×
   the nodes** of the reference's (699 vs 393). The flat ratio was replaced
-  by `port ms/node ≤ reference ms/node × 1.15` — the board reads **0.67× per
-  node** — plus a machine-independent **DOM ceiling** (board ≤ 770, week ≤
-  5530) so a DOM explosion can't hide behind a per-node average. Raising a
-  ceiling is a deliberate edit in the PR that adds the nodes. Reasoning and
-  numbers: `docs/probe-sweep.md` §The performance gate. Self-check:
+  by `port ms/node ≤ reference ms/node × 1.15` — the board reads **about 0.7×
+  per node**, while the raw ratio that budget replaced now sits near 1.24×,
+  so the flat one would still be red — plus a machine-independent **DOM
+  ceiling** (board ≤ 770, week ≤ 5530) so a DOM explosion can't hide behind a
+  per-node average. The per-node figures move with the machine; re-measure,
+  don't quote. Raising a ceiling is a deliberate edit in the PR that adds the
+  nodes. Reasoning and numbers: `docs/probe-sweep.md` §The performance gate.
+  Self-check:
   `PORT_URL="file://$PWD/reference/scheduler.html" npm run perf` measures the
   reference against itself (~1.00×). Still not in CI (too slow, and it needs
   the reference); judge it with `npm run perf`.
@@ -125,7 +135,17 @@ The port from the original single-file app is complete; that history is in
   their LoX to survive a reload, that is the same server/sync work as the
   first bullet. Contract: `docs/ui-contracts.md` §EDIT QUALS.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
-  GitHub Actions). The workflow refuses to publish on any red test.
+  GitHub Actions). The workflow refuses to publish on any red test. The four
+  gates also run on every **pull request** into main (owner ask, 5 Aug 26),
+  so a red PR is caught before merge; a PR run gates only — it uploads no
+  artifact and never deploys. Publishing stays push-to-main.
+- **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
+  still described a three-gate, mid-port project — the root one also called a
+  member view-only, which the 5 Aug roles decision had already undone.
+  `START_HERE.md` (one-time cloud-onboarding for a repo that has existed for
+  months, referenced by nothing) and a stray Word lock file were deleted;
+  `PORTING.md` was kept but marked historical, because `probe-sweep.md` and
+  `perf-port.cjs` still cite its decisions. `~$*` is now git-ignored.
 
 ## File map
 
@@ -146,7 +166,8 @@ The port from the original single-file app is complete; that history is in
 | `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |
 | `rules.ts` | VCONF/SHIFT_HARD editing, `ruleParse`/`ruleFmt`, `rulesSave`/`rulesLoad`/`rulesReset`. |
 | `insights.ts` | `computeInsights()` for the Insights modal. |
-| `hooks.ts` | HOOKS — injectable callbacks (toast, repaints, histPush, storage) so verbatim bodies stay DOM-free headless. |
+| `hooks.ts` | HOOKS — injectable callbacks (toast, repaints, histPush, storage) so verbatim bodies stay DOM-free headless; `storeBackend` is the injected localStorage (`main.tsx` plugs the real one in, null headless). |
+| `index.ts` | The barrel — re-exports every module above. UI and probes import from `../engine`, so a new engine file wants a line here. |
 
 ### `raptor-port/src/state/` — the store
 | file | what it does |
@@ -173,7 +194,8 @@ The port from the original single-file app is complete; that history is in
 | `textedit.ts` | Inline text editing: Enter commits / Escape restores, heal-in-place, deferred commit, `editingText()`, plus the four fields outside the `data-txt` grammar. |
 | `highlights.ts` | Post-render decoration: selection/search/warning-focus classes on every puck, `paintArm`, `scrollToWarnFocus`. |
 | `Modals.tsx` | DayPop (read-only day details), Insights, Manage-users, Airspace/traffic popup. |
-| `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). |
+| `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Contract: `docs/ui-contracts.md` §The Inputs table's view state. |
+| `RangeCal.tsx` | The Inputs date picker (owner, Aug 26): ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
 | `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer, login. |
 | `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. |
 | `scheduler.css` | The ported stylesheet — it carries MEASURED contracts, not preferences. |
@@ -187,6 +209,8 @@ The port from the original single-file app is complete; that history is in
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
 | `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it, `retier()`s the three amber codes, `remap()`s the CAT-ladder rework (tables, isInstr, PEOPLE literals, legend) and `rematrix()`es the combination matrix into the reference's validate, so both engines compute from identical data. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table. |
+| `docs/session-state.md` | The last session's leftovers — **often absent, and absent is meaningful**: it exists only while something is genuinely pending, and the session that clears the last item deletes it. This file holds the durable state; that one holds what a session could not finish. Written by `.claude/skills/session-handoff`. |
+| `PORTING.md` | **Historical** — the phase plan the port was built from. Nothing left to run; kept only because `probe-sweep.md` and `perf-port.cjs` cite its decisions (dropped probes, original timing budgets). |
 | `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the four gates. |
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser, `app.ts` holds login/nav/scroll-settle helpers. `playwright.config.ts` builds and serves the port itself. |
-| `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. |
+| `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
