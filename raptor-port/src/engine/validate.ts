@@ -497,6 +497,10 @@ export function validate(){
 }
 export const sevOf=(di:any,id:any)=>WARN.sev[di]&&WARN.sev[di][id];
 export const chipOf=(di:any,id:any)=>WARN.chip&&WARN.chip[di]&&WARN.chip[di][id];
+/* the ring STROKE, published per person like the ring colour above it: true
+   where a sanctioned late show still makes the latest show, so the puck reads
+   as a breach a scheduler meant rather than one nobody noticed. */
+export const dashOf=(di:any,id:any)=>!!(WARN.dash&&WARN.dash[di]&&WARN.dash[di][id]);
 /* how often each code fired across the week now on screen, and on which days */
 export function lgFired(){
   const out:any={}; (WARN.all||[]).forEach((w:any)=>{

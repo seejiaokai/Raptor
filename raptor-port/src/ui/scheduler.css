@@ -561,6 +561,16 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 /* conflict / crew rest → red box around the whole puck */
 .puck.boxred{box-shadow:0 0 0 2px var(--hard)!important;border-color:var(--hard)!important}
 .puck.sel.boxred,.puck.me.boxred{box-shadow:0 0 0 2px var(--hard),0 0 10px 1px rgba(240,85,95,.7)!important}
+/* The DASHED red box (owner, 6 Aug 26): same colour and same weight as the
+   solid one — it is the same red warning, and downgrading the colour would
+   read as "less of a problem" — but broken stroke, for the two cases where a
+   human deliberately put it there: a crew-rest breach sanctioned by a `late
+   show` remark, and the previous day traced from a clicked crew-rest warning.
+   box-shadow cannot dash, so it is an outline: same 2px, drawn outside the
+   border box like the shadow it replaces, so the puck's own 74×15 geometry is
+   untouched (e2e/geometry.spec.ts measures it). */
+.puck.boxdash{outline:2px dashed var(--hard);outline-offset:0;border-color:var(--hard)!important}
+.puck.sel.boxdash,.puck.me.boxdash{outline:2px dashed var(--hard);box-shadow:0 0 10px 1px rgba(240,85,95,.7)!important}
 .puck .nm{display:flex;align-items:center;padding:0 4px;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 /* the reference's qual chip is deliberately CHUNKIER than the name it sits next to —
    its glyph measures a 23px cap against the name's 19px — and it is a full-height

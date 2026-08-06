@@ -12,10 +12,34 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 `note`. `overlap()` is **half-open** — abutting windows do not clash.
 
 - A sortie occupies step (T/O − VCONF.step) to dekit (land + VCONF.dekit).
-- Brief window = T/O − briefLead to T/O, **always pinned to T/O**; a
-  published in-time moves report time and crew rest, never the brief.
+- **The brief is the time INDICATED on the line** (owner, 6 Aug 26): `f.br`,
+  key `ff:di.gi.li.br`, editable on the edit week and the board. Blank means
+  not indicated, and the line then briefs at `T/O − VCONF.briefLead` — the
+  same value the board offers above the box as a click-to-accept suggestion,
+  so a blank line is still checked but nothing is silently "decided". That
+  setting is a convenience for working out the suggestion, NOT a rule: what
+  every brief-driven check follows is the indicated B. A standalone wave is a
+  shift and briefs nothing, so a value typed on one stays inert. Brief window
+  = brief → T/O. A published in-time still moves report time and crew rest,
+  never the brief.
 - Crew rest (VCONF.crewRest) runs off the last REST-BEARING commitment
-  (sortie or shift). Breach = hard CR; nominal-inside-rest = adv TT.
+  (sortie or shift), and anchors on the earlier of the published in-time and
+  the leg's own brief. Breach = hard CR; nominal-inside-rest = adv TT.
+  Exactly `crewRest` is legal — the breach is strictly less (owner, 6 Aug 26).
+- **A late show changes the RING, not the rule** (owner, 6 Aug 26). `late
+  show` / `show at brief` / `show @ brief` in an AIRCRAFT's remarks
+  (`events.ts:lateShowOf`, parsed like `briefLeadOf` and `aarNeed`) never
+  moves the anchor and never removes the warning: it stays a hard red CR,
+  counted with the rest. While the man still clears rest by the **latest
+  show** (`VCONF.showLead`, 60 min before T/O, editable) his puck rings
+  **dashed** — sanctioned, and he makes the jet. Past that line it rings
+  **solid**: he cannot walk, kit up and start engines, so he is unable to
+  make the flight. Published per person as `WARN.dash[di][id]` (`dashOf`),
+  because a chip carries no stroke of its own.
+- **Every CR warning names the leave-by time** and the day it is measured
+  from (`leaveBy`, `prevDi` on the warning). Clicking it traces the breach
+  back: the same man's puck on that previous day rings dashed and is labelled
+  CR while the warning is focused. Contract: `ui-contracts.md`.
 - Tight turn needs `max(VCONF.tightTurn, dekit + step)`.
 - Double turn: two+ sorties in a day → ONE DT_SUM line naming everyone;
   **adv, not hard** (owner, 4 Aug 26 — double turning is routine and planned),

@@ -90,7 +90,10 @@ export function focusWarn(di:any,ix:any){
   /* keep PFOCUS across clearOtherHL: picking one of a person's warnings must
      not widen their box back out to the whole day's list */
   else {const keep=PFOCUS, keepSel=keep?SELID:null; clearOtherHL(); PFOCUS=keep; SELID=keepSel;
-        WFOCUS={di,ix,ids:(w.who||[]).slice(),sev:w.sev,key:w.key};}
+        /* code/prevDi/leaveBy ride along so the week can trace a crew-rest
+           breach back to the day that caused it without re-deriving anything
+           the engine already worked out (validate.ts attaches them). */
+        WFOCUS={di,ix,ids:(w.who||[]).slice(),sev:w.sev,key:w.key,code:w.code,prevDi:w.prevDi,leaveBy:w.leaveBy};}
 }
 /* step back one level: drop the warning focus but stay on the person */
 export function clearWarnFocus(){ WFOCUS=null }

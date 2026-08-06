@@ -7,7 +7,7 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 575/35
+**Every gate is green at this commit**, run first-hand: `npm test` 602/39
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
 test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
@@ -222,6 +222,23 @@ test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
   `CHIP_LABEL` legitimately holds `<`/`>` and escaping those breaks the
   byte-exact reference parity. The rulebook audit of every documented rule
   came back clean — no rule mismatches.
+- **The brief time is the scheduler's now (owner, 6 Aug 26).** `B` is typed
+  per formation (`f.br`, `ff:di.gi.li.br`) on the edit week and the board —
+  which grew a B column for it. Blank offers the calculated time as a ghost
+  above the box; clicking accepts it through the funnel, so it is pending,
+  amendable and undoable, and a blank line is still checked against that same
+  time. `VCONF.briefLead` is therefore a CONVENIENCE that works out the
+  suggestion, **not a rule** — every brief-driven check follows the indicated
+  B. Contract: `docs/ui-contracts.md` §The B box.
+- **Crew rest rings two ways (owner, 6 Aug 26).** The anchor is the earlier of
+  the in-time and the leg's own brief, and exactly `crewRest` stays legal. A
+  `late show` / `show at brief` remark on an aircraft does NOT excuse the
+  breach — still red, still counted — it draws it **dashed** while the man
+  clears rest by the new editable **latest show** (`VCONF.showLead`, 60 min
+  before T/O); past that line it is solid, because he cannot make the flight.
+  Every CR warning carries `leaveBy` and `prevDi`, and clicking one traces it:
+  the previous day's puck rings dashed and is labelled `CR` while focused.
+  Rules: `docs/engine-rules.md` §validation; visuals: `ui-contracts.md`.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
   GitHub Actions). The workflow refuses to publish on any red test. The four
   gates also run on every **pull request** into main (owner ask, 5 Aug 26),
