@@ -1,7 +1,10 @@
 # Session handoff — crew-rest trace, ring fixes, favicon, a live-app bug sweep, and two owner rules
 
-Supersedes every earlier version from this session. The GitHub outage they
-described has passed.
+Supersedes every earlier version from this session. Everything is merged; the
+ONLY thing outstanding is that none of it has reached the live site, because
+GitHub failed six deploy attempts in a row on four distinct faults. Detail at
+the end of this file — read it BEFORE retrying, because one of the four makes
+a re-run permanently useless.
 
 ## Where it started
 
@@ -26,12 +29,12 @@ blocked deploys — for a sweep of the running app for bugs.
 
 ## Shipped, waiting only on a deploy
 
-- **Favicon** — PR #93, merged. Its deploy failed twice on the outage, not on
-  content. Re-run `31116706755`, or let the next merge carry it.
+- **Favicon** — PR #93, merged. The talon from `Login.tsx`/`Shell.tsx` on a
+  tile, killing the `/favicon.ico` 404. Never published — see the end.
 
-## In flight
+## Also merged
 
-- **PR #94** — two owner rules in `CLAUDE.md` (live view every session; plain
+- **PR #94 — MERGED.** Contained two owner rules in `CLAUDE.md` (live view every session; plain
   language, spelled out) plus **three bugs found by the sweep**, each with a
   browser test verified to fail against the old code:
   1. **Touching AREA / AREA TIME committed it.** Those two cells are the only
@@ -85,8 +88,9 @@ clipped-and-faded.
   **NOT the branch named in the session instructions**
   (`claude/read-handoff-docs-o6qvqn`) — the owner's first message explicitly
   created and asked for `-3r97fl`, and every PR this session used it.
-- #90, #91, #92, #93 merged; **#94 open**, carrying everything above.
-- Once #94 merges, reset before new work or commits stack on merged history:
+- #90, #91, #92, #93 and #94 are ALL merged. The branch was reset onto `main`
+  afterwards and carries only this file's correction.
+- Reset again before new work or commits stack on merged history:
   `git fetch origin main && git checkout -B claude/read-handoff-docs-3r97fl origin/main`
 
 ## Gates
@@ -99,10 +103,42 @@ All six run first-hand from `raptor-port/` on the last code commit:
 - A fresh container needs `npm ci`; the adapted probes and perf need
   `npx vite preview --port 4173` already serving.
 
+## The ONLY thing outstanding: the live site is behind
+
+Everything above is merged into `main` and verified in a browser on the merged
+build. **None of it has reached GitHub Pages.** The live site still serves the
+build from around 15:05, which is complete and working — it is missing the
+favicon and the three sweep fixes, nothing more. Nothing is half-applied.
+
+Six consecutive deploy attempts failed on 6 Aug 26, on FOUR distinct GitHub
+faults, none of them ours. Recorded so the next session recognises them rather
+than re-diagnosing:
+
+1. **Pages queue over ten minutes** — `Timeout reached, aborting!`, cancelling
+   a deployment still reporting progress. The ten-minute ceiling cannot be
+   raised; see `HANDOFF.md` §Deploy.
+2. **`Failed to resolve action download info`** — `Service Unavailable` /
+   `Bad Gateway`. The runner could not download the action definitions.
+3. **`Invalid actions OIDC token ... No keys from key endpoint match`** — this
+   one is a TRAP: it appears when you RE-RUN an old failed job, because the
+   run's original identity token has since rotated. Re-running a stale run can
+   never work. Trigger a FRESH run instead (`workflow_dispatch` on
+   `deploy.yml`, ref `main`), which mints a new token.
+4. **No runner assigned at all** — job cancelled after ~15 minutes with an
+   empty `runner_name` and zero steps recorded. Pure capacity; nothing to fix.
+
+Retrying was stopped deliberately after the sixth. It costs nothing to try
+again and nothing is at risk either way.
+
 ## Pick up here
 
-Merge #94 once its checks pass, then confirm both it and the favicon reach the
-live site — GitHub was failing to resolve action downloads for about half an
-hour and the favicon deploy is the one still owed. After that nothing is
-outstanding and this file should be DELETED: `CLAUDE.md` promises the next
-session that an absent `session-state.md` means nothing was pending.
+Merge this PR. That single action does both jobs: it corrects this file, and
+the push to `main` is itself the deploy attempt that would publish the favicon
+and the three fixes. Confirm from the workflow run's conclusion — the Pages
+URL is not reachable from the container.
+
+If it fails again, check which of the four faults above it is before doing
+anything: a re-run is right for (1) and (4), and WRONG for (3). Once the live
+site is current, nothing is outstanding and this file should be DELETED —
+`CLAUDE.md` promises the next session that an absent `session-state.md` means
+nothing was pending.
