@@ -13,7 +13,7 @@ import { VCONF } from '../engine/rules'
 import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
 import { dayHTML } from './html'
-import { focusWarn, clearWarnFocus } from '../state/view'
+import { focusWarn, clearWarnFocus, setWarnFocus } from '../state/view'
 
 const CREW = 'waldo'
 const DSNAP = JSON.stringify(DAYS)
@@ -46,9 +46,14 @@ const build = (leftAt: string, rmks: string) => {
   validate()
   return WARN.byDay[1].warns.findIndex((w: any) => w.code === 'CREW_REST' && (w.who || []).includes(CREW))
 }
-/* the crew's own puck on a day, as markup */
+/* the crew's own puck on a day: [0] the class list, [1] the whole element,
+   because the flag chip is a CHILD (class l-cr / l-c), not part of the class */
 const puckOf = (di: number) => {
-  const m = dayHTML(di, false).match(new RegExp(`<span class="([^"]*puck[^"]*)"[^>]*data-person="${CREW}"`))
+  const m = dayHTML(di, false).match(new RegExp(`<span class="([^"]*puck[^"]*)"[^>]*data-person="${CREW}"[^>]*>(.{0,200})`))
+  return m ? m[1] : ''
+}
+const puckHtml = (di: number) => {
+  const m = dayHTML(di, false).match(new RegExp(`<span class="[^"]*puck[^"]*"[^>]*data-person="${CREW}"[^>]*>(.{0,200})`))
   return m ? m[1] : ''
 }
 
@@ -100,5 +105,37 @@ describe('the previous-day trace', () => {
     focusWarn(1, ix)
     /* day 2 is not the traced day, so nothing is painted there */
     expect(puckOf(2)).not.toContain('boxdash')
+  })
+})
+
+/* A man can carry a sanctioned late show AND an unrelated warning that
+   outranks it. The ring belongs to the flag the puck PRINTS, so a conflict
+   must not inherit the dash and read as a sanctioned conflict. */
+describe('the dash belongs to the crew-rest flag, not to the person', () => {
+  it('a louder unrelated flag rings solid even when the CR is sanctioned', () => {
+    build('01:30', '2A: LATE SHOW')
+    /* give him a conflict on the same day: C (rank 12) outranks CR (rank 9) */
+    const today: any = firstForm(1)!
+    DAYS[1].ground = DAYS[1].ground || []
+    DAYS[1].ground.push({ prog: 'CLASHING MTG', str: today.to, end: '17:30', who: 'Waldo' })
+    validate()
+    const cls = puckOf(1)
+    expect(puckHtml(1), 'the conflict wins the chip').toContain('l-c"')
+    expect(cls, 'so the ring is solid, not a sanctioned-looking dash').toContain('boxred')
+    expect(cls).not.toContain('boxdash')
+  })
+})
+
+/* Reached from the CHIP, not the issue row. jumpToWarn (interactions.ts)
+   builds its own focus object rather than calling focusWarn, so the trace
+   fields have to be carried there too — a real-browser check caught this
+   after the row path was already passing. */
+describe('the trace does not depend on which surface opened the warning', () => {
+  it('a focus built by jumpToWarn carries the trace fields', () => {
+    const ix = build('01:30', '2A: BFM-5')
+    const w = WARN.byDay[1].warns[ix]
+    setWarnFocus({ di: 1, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
+    expect(puckOf(0), 'the previous day still lights up').toContain('boxdash')
+    expect(puckHtml(0)).toContain('l-cr"')
   })
 })

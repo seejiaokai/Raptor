@@ -109,8 +109,12 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any){
   /* conflict / crew rest / qual / missed brief → red box. `dash` swaps the
      stroke without touching the colour: a crew-rest breach a scheduler
      sanctioned with a `late show` remark is the same red warning, drawn so
-     the reader can see somebody meant it (owner, 6 Aug 26). */
-  if(flag==='C'||flag==='CR'||flag==='Q'||flag==='NB'||flag==='SB')cls.push(dash?'boxdash':'boxred');
+     the reader can see somebody meant it (owner, 6 Aug 26). Gated on the
+     PRINTED flag being CR, not merely on dash: a man can carry a sanctioned
+     late show AND an unrelated conflict, and the conflict outranks it for the
+     chip — dashing that ring would caption someone else's warning as
+     "sanctioned". The ring belongs to the flag it shows. */
+  if(flag==='C'||flag==='CR'||flag==='Q'||flag==='NB'||flag==='SB')cls.push(dash&&flag==='CR'?'boxdash':'boxred');
   if(p.san)cls.push('san');                         // SANS → purple right-edge line
   const chipTxt=QCHIP[p.q], chipCls=QCLASS[p.q];
   const qchip=`<span class="role ${chipCls}">${chipTxt}</span>`;

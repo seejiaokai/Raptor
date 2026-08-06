@@ -7,7 +7,7 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 602/39
+**Every gate is green at this commit**, run first-hand: `npm test` 604/38
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
 test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.

@@ -31,7 +31,9 @@ function jumpToWarn(di: number, ix: number) {
   const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]
   if (!w) return                       // a stale index — validate() rebuilds WARN wholesale
   view.DWOPEN.clear(); view.DWOPEN.add(di)
-  view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key })
+  /* code/prevDi/leaveBy ride along exactly as focusWarn sets them — the
+     previous-day trace must not depend on WHICH surface opened the warning */
+  view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
   view.clearOtherHL()
   notify(); setTimeout(scrollToWarnFocus, 0)
 }
@@ -252,7 +254,9 @@ export function routeClick(e: MouseEvent) {
     const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]; if (!w) return
     setDayPop(null)
     view.DWOPEN.clear(); view.DWOPEN.add(di)
-    view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key })
+    /* code/prevDi/leaveBy ride along exactly as focusWarn sets them — the
+       previous-day trace must not depend on WHICH surface opened the warning */
+    view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
     view.clearOtherHL()
     notify(); setTimeout(scrollToWarnFocus, 0); e.stopPropagation(); return
   }
