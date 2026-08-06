@@ -90,7 +90,7 @@ export function focusWarn(di:any,ix:any){
   /* keep PFOCUS across clearOtherHL: picking one of a person's warnings must
      not widen their box back out to the whole day's list */
   else {const keep=PFOCUS, keepSel=keep?SELID:null; clearOtherHL(); PFOCUS=keep; SELID=keepSel;
-        WFOCUS={di,ix,ids:(w.who||[]).slice(),sev:w.sev};}
+        WFOCUS={di,ix,ids:(w.who||[]).slice(),sev:w.sev,key:w.key};}
 }
 /* step back one level: drop the warning focus but stay on the person */
 export function clearWarnFocus(){ WFOCUS=null }
@@ -144,7 +144,7 @@ export function dayPreview(di:any){ return DPREV.has(+di)?DPREV.get(+di):null }
    unpublishAL, a week switch: without this the day would render the live model
    while its header claims to show history */
 export function prunePreviews(){ for(const [di,ver] of [...DPREV]){ if(!daySnapOf(di,ver))DPREV.delete(di) } }
-export let WFOCUS:any=null;                // {di,ix,ids:[…],sev}
+export let WFOCUS:any=null;                // {di,ix,ids:[…],sev,key} — key = the causing line's slot-key, if the warning carries one
 /* B14: clicking a puck opens that person's issues wherever in the week they
    fall, so a Tuesday crew-rest breach caused by a Monday night wave shows up
    on both days at once. PFOCUS is the clicked person, not a warning. */

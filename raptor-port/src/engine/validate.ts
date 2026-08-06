@@ -94,9 +94,14 @@ export function validate(){
     const evd:any=EVD[di]={}; day.events.forEach((e:any)=>{(evd[e.id]=evd[e.id]||[]).push(e);});
     /* the same rule can fire off two legs of the same sortie pair, so identical
        rows are collapsed rather than printed twice. */
-    const add=(s:any,code:any,who:any,msg:any)=>{who=who.filter(Boolean);
+    /* key = the slot-key of the FIRST item the message names, so a click on the
+       warning pans to the line that caused it (di.gi.li.ai[.p|w] flying,
+       s:/d:/g:/a: rows). Optional — day-spanning warnings carry none. The dedup
+       string k stays key-free: first add wins and keeps the first item's key. */
+    const add=(s:any,code:any,who:any,msg:any,key?:any)=>{who=who.filter(Boolean);
       const k=code+'|'+who.join(',')+'|'+msg; if(seen.has(k))return; seen.add(k);
-      const w={sev:s,code,who,day:day.dow,di,msg};ws.push(w);all.push(w);};
+      const w={sev:s,code,who,day:day.dow,di,msg,key};ws.push(w);all.push(w);};
+    const kOf=(e:any)=>e&&(e.slot||e.key)||null;   // byE events carry slot (fly/shift) or key (the rest)
     /* An SC / AVALON / BB line is a SHIFT, not a sortie. Its crew still count
        as tasked and are still checked for clashes and qualification, but a
        handover is not a turn, a 12-hour watch is not a long flying day, and a
@@ -111,7 +116,7 @@ export function validate(){
            can be the binding one: a 60 min threshold with 30 dekit + 60 step
            would let a physically impossible turn through. Take the larger. */
         const need=Math.max(VCONF.tightTurn,VCONF.dekit+VCONF.step);
-        if(turn<need){markChip(di,id,'TT');add('adv','TURN',[id],`Tight turn ${es[i].label}→${es[i+1].label}: ${turn} min land→next T/O (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`);} }
+        if(turn<need){markChip(di,id,'TT');add('adv','TURN',[id],`Tight turn ${es[i].label}→${es[i+1].label}: ${turn} min land→next T/O (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`,es[i].key);} }
     });
     /* C — two commitments at the same time for one person.
        Sortie-vs-sortie is the tight-turn rule's business, not this one.
@@ -137,18 +142,18 @@ export function validate(){
           const sh=A.kind==='shift'?A:B, other=A.kind==='shift'?B:A;
           if(SHIFT_HARD[other.kind]){
             markChip(di,id,'C'); markRing(di,id,'hard');
-            add('hard','DOUBLE_BOOK',[id],`${sh.label} & ${other.label} clash`);
+            add('hard','DOUBLE_BOOK',[id],`${sh.label} & ${other.label} clash`,kOf(sh)||kOf(other));
           } else {
             /* amber A, not the red conflict C — the puck has to say advisory at a
                glance, the way the note under it already does */
             markChip(di,id,'A'); markRing(di,id,'adv');
             add('adv','SHIFT_SOFT',[id],
-              `${PEOPLE[id]?PEOPLE[id].cs:id} is on ${sh.label} (${hm24(sh.s)}–${hm24(sh.e)}) and also down for ${other.label}`);
+              `${PEOPLE[id]?PEOPLE[id].cs:id} is on ${sh.label} (${hm24(sh.s)}–${hm24(sh.e)}) and also down for ${other.label}`,kOf(sh)||kOf(other));
           }
           continue;
         }
         markChip(di,id,'C'); markRing(di,id,'hard');
-        add('hard','DOUBLE_BOOK',[id],`${A.label} & ${B.label} clash`);} });
+        add('hard','DOUBLE_BOOK',[id],`${A.label} & ${B.label} clash`,kOf(A)||kOf(B));} });
     // C via input clash (DNIF / leave / appointment vs a sortie)
     day.fly.forEach((e:any)=>day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
       if(overlap(e.step,e.dekit,inp.s,inp.e)){
@@ -164,7 +169,7 @@ export function validate(){
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
           dn?`Downchit but planned to fly ${e.label}${why}`
             :lv?`On leave but planned to fly ${e.label}${why}`
-              :`${inp.type} clashes with ${e.label}${why}`);} }));
+              :`${inp.type} clashes with ${e.label}${why}`,e.key);} }));
     /* being unavailable does not only bar flying — a duty, a sim seat or a
        ground slot on the same day is just as wrong, and used to pass. This
        covered leave and downchits only (owner, 4 Aug 26): a Detachment, or a
@@ -184,7 +189,7 @@ export function validate(){
         markChip(di,e.id,'C'); markRing(di,e.id,'hard');
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
-          (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${e.label}${why}`); }); });
+          (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${e.label}${why}`,kOf(e)); }); });
     /* ---- BRIEF / DEBRIEF windows round each sortie -----------------------
        The published BRIEF time (the B column, T/O − 2h20) is the hardline: the
        brief starts then, so only an event reaching PAST it steals brief time.
@@ -207,10 +212,10 @@ export function validate(){
           .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>i.type));
         const hb=hits(bs,lg.to);
         if(hb.length){markChip(di,id,'NB');markRing(di,id,'adv');
-          add('adv','NO_BRIEF',[id],`No time for the ${lg.label} flight brief — ${hb.join(', ')} sits inside ${hm24(bs)}–${hm24(lg.to)} (brief ${hm24(bs)})`);}
+          add('adv','NO_BRIEF',[id],`No time for the ${lg.label} flight brief — ${hb.join(', ')} sits inside ${hm24(bs)}–${hm24(lg.to)} (brief ${hm24(bs)})`,lg.slot);}
         const hd=hits(lg.ld,de);
         if(hd.length){markChip(di,id,'DB');markRing(di,id,'adv');
-          add('adv','DEBRIEF',[id],`Not enough time to attend the ${lg.label} debrief — ${hd.join(', ')} sits inside ${hm24(lg.ld)}–${hm24(de)} (land + 2h)`);}
+          add('adv','DEBRIEF',[id],`Not enough time to attend the ${lg.label} debrief — ${hd.join(', ')} sits inside ${hm24(lg.ld)}–${hm24(de)} (land + 2h)`,lg.slot);}
       });
     });
     /* ---- sim brief / debrief windows -------------------------------------
@@ -224,10 +229,10 @@ export function validate(){
       if(sw.bs!=null&&sw.be!=null&&sw.be>sw.bs){ const h=hits(sw.bs,sw.be);
         /* amber like NO_BRIEF (owner, 4 Aug 26) — same rule, sim flavour */
         if(h.length){markChip(di,id,'SB');markRing(di,id,'adv');
-          add('adv','SIM_BRIEF',[id],`No time for the ${sw.label} brief — ${h.join(', ')} sits inside ${hm24(sw.bs)}–${hm24(sw.be)}`);} }
+          add('adv','SIM_BRIEF',[id],`No time for the ${sw.label} brief — ${h.join(', ')} sits inside ${hm24(sw.bs)}–${hm24(sw.be)}`,sw.key);} }
       if(sw.ds!=null&&sw.de!=null&&sw.de>sw.ds){ const h=hits(sw.ds,sw.de);
         if(h.length){markChip(di,id,'SD');markRing(di,id,'adv');
-          add('adv','SIM_DEBRIEF',[id],`No time for the ${sw.label} debrief — ${h.join(', ')} sits inside ${hm24(sw.ds)}–${hm24(sw.de)}`);} }
+          add('adv','SIM_DEBRIEF',[id],`No time for the ${sw.label} debrief — ${h.join(', ')} sits inside ${hm24(sw.ds)}–${hm24(sw.de)}`,sw.key);} }
     }));
     /* ---- double-turn summary --------------------------------------------
        One line at the head of the day telling the next scheduler how many
@@ -328,11 +333,13 @@ export function validate(){
           markChip(di,id,'CR');markRing(di,id,'hard');
           add('hard','CREW_REST',[id],
             (onShift?`Crew rest breach — ${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `
-                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)+tail);
+                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)+tail,
+            legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m).key);   // the leg told to report earliest is the breach
         } else if(nominal<earliest||instructed<earliest){
           markChip(di,id,'TT');markRing(di,id,'adv');
           add('adv','CREW_TIGHT',[id],`Tight turning — T/O ${hm24(Math.min.apply(null,legs.map((e:any)=>e.to)))} puts the ${lgT(VCONF.reportLead)} report at ${hm24(nominal)}, inside ${lgT(VCONF.crewRest)}. ${tail}`
-            +(pfly[id]?'':' (prior day ended on a sim or ground event, so crew rest itself does not apply)'));
+            +(pfly[id]?'':' (prior day ended on a sim or ground event, so crew rest itself does not apply)'),
+            legs.reduce((m:any,e:any)=>nomOf(e)<nomOf(m)?e:m).key);
         }
       });
     } else REST[di]={};
@@ -356,22 +363,22 @@ export function validate(){
            pairing as the crew-solo advisory. Ring only, no chip — the
            ILLEGAL_CREW shape. */
         if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!isInstrPilot(p.q)&&!isInstr(w.q)){
-          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`);}
-          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');markChip(di,ac.p,'CPH');markChip(di,ac.w,'CPH');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`);}
-          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`);}
+          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`,ac.key);}
+          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');markChip(di,ac.p,'CPH');markChip(di,ac.w,'CPH');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`,ac.key);}
+          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`,ac.key);}
         }
         // Q — seat qualification: a WSO can't fly FCP; only an instructor pilot (IP / IR / FI) may fly RCP
-        if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${f.label})`);}
+        if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${f.label})`,ac.key+'.p');}
         /* belt and braces: CAT IW is a WSO-only category, so an IW record whose
            seat says FCP is inconsistent data — the Quals-page dropdowns never
            offer IW to a pilot, but a hand-edit could. Flag it, don't hide it. */
-        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label})`);}
-        if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,ac.w,'Q');markRing(di,ac.w,'hard');add('hard','QUAL',[ac.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may fly RCP (${f.label})`);}
+        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label})`,ac.key+'.p');}
+        if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,ac.w,'Q');markRing(di,ac.w,'hard');add('hard','QUAL',[ac.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may fly RCP (${f.label})`,ac.key+'.w');}
         /* AAR — the remarks call for it and the FRONT seat is not current */
         if(ac.aar&&p&&!isSpecial(ac.p)&&!aarOK(ac.p,ac.aar)){
           markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');
           add('hard','AAR_QUAL',[ac.p],
-            `${p.cs} is not ${ac.aar} current — ${f.label} remarks call for ${ac.aar==='NAAR'?'night':'day'} AAR`);} });
+            `${p.cs} is not ${ac.aar} current — ${f.label} remarks call for ${ac.aar==='NAAR'?'night':'day'} AAR`,ac.key+'.p');} });
       const ocus=f.fcps.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
       const hasIP=f.fcps.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
       /* an IP in the BACK seat supervises just as well as one in the front —
@@ -389,7 +396,7 @@ export function validate(){
       const crewAll=[...new Set(f.acs.reduce((a:any,x:any)=>a.concat([x.p,x.w]),[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id)))];
       const ocuAll=crewAll.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
       const anyIP=crewAll.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
-      if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv');markChip(di,id,'CP');});add('adv','OCU_NO_IP',ocuAll,`OCU in ${f.label} with no IP`);}
+      if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv');markChip(di,id,'CP');});add('adv','OCU_NO_IP',ocuAll,`OCU in ${f.label} with no IP`,f.key);}
       /* NO_IR — an instrument rating test needs an IR examiner aboard (owner,
          Aug 5 '26). The mission lives in f.shift (collectEvents folds f.msn
          into it); a per-aircraft IRT lives in that aircraft's remarks. IRT in
@@ -399,11 +406,11 @@ export function validate(){
       const isIR=(id:any)=>{const q=realP(id);return !!(q&&q.q==='IR');};
       if(/\bIRT\b/i.test(String(f.shift||''))&&crewAll.length&&!crewAll.some(isIR)){
         crewAll.forEach((id:any)=>{markRing(di,id,'hard');markChip(di,id,'CPH');});
-        add('hard','NO_IR',crewAll,`IRT in ${f.label} with no IR examiner`);}
+        add('hard','NO_IR',crewAll,`IRT in ${f.label} with no IR examiner`,f.key);}
       f.acs.forEach((ac:any)=>{ if(!/\bIRT\b/i.test(String(ac.rmks||'')))return;
         const crew=[ac.p,ac.w].filter((id:any)=>id&&realP(id));
         if(crew.length&&!crew.some(isIR)){crew.forEach((id:any)=>{markRing(di,id,'hard');markChip(di,id,'CPH');});
-          add('hard','NO_IR',crew,`IRT remarks on ${f.label} with no IR examiner`);}});
+          add('hard','NO_IR',crew,`IRT remarks on ${f.label} with no IR examiner`,ac.key);}});
       /* SC currency — read off the shift as scheduled, both MAIN and SPARE.
          This is about the person's own qualification, not a clash with another
          commitment, so the spare exemption does not cover it. */
@@ -416,7 +423,7 @@ export function validate(){
             wrong.forEach((id:any)=>{markChip(di,id,'Q');markRing(di,id,'hard');});
             add('hard','SC_QUAL',wrong,
               `${kind==='day'?'SC DAY':'SC NIGHT'} currency needed for ${f.label} (${win})`
-              +` — ${wrong.map((id:any)=>PEOPLE[id].cs).join(', ')} ${wrong.length===1?'is':'are'} not current`);
+              +` — ${wrong.map((id:any)=>PEOPLE[id].cs).join(', ')} ${wrong.length===1?'is':'are'} not current`,f.key);
           }
         }
         /* A downchit or OVERSEAS leave closes an SC SPARE: standing by means
@@ -432,16 +439,16 @@ export function validate(){
             const why=inp.remarks?` — reason: ${inp.remarks}`:'';
             add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[id],
               (dn?'Downchit but standing SC SPARE':`${inp.type} but standing SC SPARE`)
-              +` — ${f.label}${why}`); }); });
+              +` — ${f.label}${why}`,f.key); }); });
       }
     });
     /* Q (sims) — the sim box is seated like the jet: a WSO cannot occupy the
        front seat, and only an instructor pilot (IP / IR / FI) may occupy the
        back seat. */
     (day.simcrew||[]).forEach((s:any)=>{ const p=realP(s.p),w=realP(s.w);
-      if(p&&p.seat==='RCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is a WSO — cannot take the front seat (${s.label})`);}
-      if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is CAT IW — a WSO category, cannot take the front seat (${s.label})`);}
-      if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,s.w,'Q');markRing(di,s.w,'hard');add('hard','QUAL',[s.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may take the back seat (${s.label})`);}
+      if(p&&p.seat==='RCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is a WSO — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is CAT IW — a WSO category, cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,s.w,'Q');markRing(di,s.w,'hard');add('hard','QUAL',[s.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may take the back seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.w`);}
     });
     const SORD:any={hard:0,adv:1,note:2};
     ws.sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));

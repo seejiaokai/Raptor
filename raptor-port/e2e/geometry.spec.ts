@@ -423,6 +423,59 @@ test.describe('clicking a warning brings the puck into view', () => {
     expect(m!.insideY, 'the puck is inside the page viewport vertically').toBe(true)
   })
 
+  test('a SIM_BRIEF warning pans to the sim row that briefs, and it lands on screen', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'viewsched')
+
+    /* warnings carry the causing line's slot-key (w.key); jsdom pins WHICH
+       element the scroll aims at, but only a browser can verify the anchored
+       ROW — not merely some copy of the flagged name — ends up in view */
+    const hit = await page.evaluate(() => {
+      const W = (window as any).WARN
+      for (const g of W.byDay) for (let ix = 0; ix < ((g && g.warns) || []).length; ix++) {
+        const w = g.warns[ix]
+        if (w.code === 'SIM_BRIEF' && w.key) return { di: g.di, ix, key: w.key }
+      }
+      return null
+    })
+    test.skip(!hit, 'no SIM_BRIEF in the seed week')
+
+    await scrollTo(page, '#vWeek', 0)
+    await page.click(`#vWeek .day[data-day="${hit!.di}"] .daywarn[data-daywarn]`)
+    await page.waitForSelector(`#vWeek .day[data-day="${hit!.di}"] .witem[data-wix="${hit!.ix}"]`)
+    await scrollTo(page, '#vWeek', 0)          // the expand may have nudged it
+
+    await page.click(`#vWeek .day[data-day="${hit!.di}"] .witem[data-wix="${hit!.ix}"]`)
+    /* settleWeek, not settleBoth: the week scrolls X on itself but Y on the
+       PAGE, so watching #vWeek.scrollTop returns before the vertical settles */
+    await settleWeek(page, '#vWeek')
+
+    const m = await page.evaluate(({ di, key }) => {
+      const week = document.querySelector('#vWeek') as HTMLElement
+      const day = document.querySelector(`#vWeek .day[data-day="${di}"]`) as HTMLElement
+      /* the anchored sim row: the .pl-row holding a slot under the warning's key */
+      const seat = [...day.querySelectorAll('[data-slot],[data-fill]')].find(el => {
+        const k = (el as HTMLElement).dataset.slot || (el as HTMLElement).dataset.fill
+        return k === key || (k != null && k.indexOf(key + '.') === 0)
+      })
+      const row = seat && (seat.closest('.pl-row') as HTMLElement)
+      if (!row) return null
+      const w = week.getBoundingClientRect(), r = row.getBoundingClientRect()
+      return {
+        insideX: r.left >= w.left - 1 && r.right <= w.right + 1,
+        insideY: r.top >= -1 && r.bottom <= window.innerHeight + 1,
+        /* the destination really is IN the sim row — the flagged person's own
+           puck there carries the focus paint */
+        lit: !!row.querySelector('.puck.wfoc'),
+      }
+    }, hit!)
+    expect(m, 'the day renders the anchored sim row').not.toBeNull()
+    expect(m!.lit, 'the focused puck sits inside the anchored sim row').toBe(true)
+    expect(m!.insideX, 'the sim row is inside the week horizontally').toBe(true)
+    expect(m!.insideY, 'the sim row is inside the page viewport vertically').toBe(true)
+  })
+
   test('the board at a small viewport scrolls to the deepest warning\'s puck', async ({ page }) => {
     await page.setViewportSize({ width: 900, height: 600 })
     await login(page)

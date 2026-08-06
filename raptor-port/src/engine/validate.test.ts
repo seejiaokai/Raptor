@@ -6,10 +6,11 @@ import { DAYS } from './data'
 import { INPUTS } from './inputs'
 import { PEOPLE, isSpecial, scQualOK } from './people'
 import { VCONF, SHIFT_HARD } from './rules'
-import { validate, WARN, WCODE, CHIP_LABEL, CHIP_TEXT, chipText, RANK, SEVWORD, REST, restClear } from './validate'
+import { validate, WARN, WCODE, CHIP_LABEL, CHIP_TEXT, chipText, RANK, SEVWORD, REST, restClear, EVD } from './validate'
 import { collectEvents, briefLeadOf } from './events'
 import { makeStandalone } from './waves'
-import { setSlotVal, txtSet } from './slots'
+import { keyDay } from './keys'
+import { setSlotVal, txtSet, slotVal } from './slots'
 import { SCHED } from './publish'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -485,5 +486,52 @@ describe('the OFT brief lead reads the remarks (owner, 5 Aug 26)', () => {
     expect(hit()).toBe(false)
     DAYS[0].sims.oft.find((s: any) => s.label === 'EP-6').rmks = 'B: SEFE // BRIEF 30 PRIOR'
     expect(hit()).toBe(true)
+  })
+})
+
+/* ---- the anchor key: a warning knows the line that caused it ---------------
+   parity.test.ts strips `key` from both sides of the reference comparison, so
+   the keys must be pinned POSITIVELY here or they are merely tolerated. The
+   rule: `key` is the slot-key of the FIRST item the message names — the item
+   that caused the flagging — so a click on the warning pans to that line. */
+describe('warnings carry the causing line\'s slot-key (the anchor)', () => {
+  it('every key names the warning\'s own day', () => {
+    validate().all.forEach((w: any) => {
+      if (w.key != null) expect(keyDay(w.key), `${w.code}: ${w.key}`).toBe(w.di)
+    })
+  })
+
+  it('a NO_BRIEF anchors on the flagged person\'s own seat in the flight line', () => {
+    const nb = validate().all.filter((w: any) => w.code === 'NO_BRIEF')
+    expect(nb.length, 'the seed week has NO_BRIEF warnings').toBeGreaterThan(0)
+    nb.forEach((w: any) => {
+      expect(w.key, w.msg).toMatch(/^\d+\.\d+\.\d+\.\d+\.(p|w)$/)
+      expect(slotVal(w.key), `${w.key} seats the flagged person`).toBe(w.who[0])
+    })
+  })
+
+  it('a SIM_BRIEF anchors on the sim row that briefs', () => {
+    const sb = validate().all.filter((w: any) => w.code === 'SIM_BRIEF')
+    expect(sb.length, 'the seed week has SIM_BRIEF warnings').toBeGreaterThan(0)
+    sb.forEach((w: any) => expect(w.key, w.msg).toMatch(/^s:\d+\.(amt|oft)\.\d+$/))
+  })
+
+  it('a DOUBLE_BOOK anchors on the FIRST-named clashing item', () => {
+    const db = validate().all.filter((w: any) => w.code === 'DOUBLE_BOOK')
+    expect(db.length, 'the seed week has DOUBLE_BOOK warnings').toBeGreaterThan(0)
+    db.forEach((w: any) => {
+      const es = (EVD[w.di] && EVD[w.di][w.who[0]]) || []
+      const e = es.find((x: any) => (x.slot || x.key) === w.key)
+      expect(e, `${w.key} is one of ${w.who[0]}'s events that day`).toBeTruthy()
+      /* the msg reads "<A> & <B> clash" — the anchor must be A, the first named */
+      expect(w.msg.indexOf(e.label), `${w.msg} starts with the anchored item`).toBe(0)
+    })
+  })
+
+  it('day-spanning warnings carry no anchor at all', () => {
+    validate().all.forEach((w: any) => {
+      if (['DT_SUM', 'LONGDAY', 'DAYS_RUN'].includes(w.code))
+        expect(w.key, `${w.code} has no single causing line`).toBeUndefined()
+    })
   })
 })
