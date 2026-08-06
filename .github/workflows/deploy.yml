@@ -71,17 +71,22 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
+        # DO NOT pass `timeout:` here expecting a longer wait — it is capped.
+        # This step runs none of our code: it hands the built artifact to
+        # GitHub Pages and polls until Pages serves it. On 6 Aug 26 three
+        # deploys in a row died on `Timeout reached, aborting!` at ten minutes,
+        # each CANCELLING a deployment that was still reporting progress, so a
+        # green build published nothing. Raising the input does not help — the
+        # action clamps it and says so in the log:
+        #   "timeout value is greater than the allowed maximum
+        #    - timeout set to the maximum of 600000 milliseconds"
+        # Ten minutes is a hard ceiling. Ruled out on our side before blaming
+        # the queue: the artifact is 0.15 MB over 5 files, the environment goes
+        # waiting→queued→in_progress in 1–3s (no protection rule padding it),
+        # and the repo ran 2 deployments in the hour against a documented soft
+        # limit of 10. The same deploy took 8m04s and SUCCEEDED at 11:21 that
+        # morning, so this is Pages' queue moving, not anything we changed.
+        # If it stays over ten minutes, the fix is a different publish path
+        # (a gh-pages branch, which never waits on the rollout, or another
+        # host) — not another re-run and not another timeout value.
         uses: actions/deploy-pages@v4
-        # 20 minutes, not the action's default 10 (the input is milliseconds).
-        # This step runs none of our code — it hands the built artifact to
-        # GitHub Pages and waits for Pages to serve it — and for this repo that
-        # wait sits around 8 minutes against a 10-minute limit. On 6 Aug 26 two
-        # deploys in a row went a few seconds past it and the action CANCELLED
-        # a deployment that was still progressing, so a green build published
-        # nothing. The artifact is 0.15 MB and the repo is nowhere near the
-        # 10-builds-per-hour soft limit, so the queue length is GitHub's to
-        # decide and not ours to optimise; the only lever on our side is to
-        # stop killing it early. Raise this again rather than re-running blind
-        # if the wait ever grows past 20.
-        with:
-          timeout: 1200000
