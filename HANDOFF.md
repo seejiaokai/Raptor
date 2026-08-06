@@ -288,6 +288,20 @@ test:e2e` 20/20, and the two that are NOT in CI — `npm run probes:adapted`
   gates also run on every **pull request** into main (owner ask, 5 Aug 26),
   so a red PR is caught before merge; a PR run gates only — it uploads no
   artifact and never deploys. Publishing stays push-to-main.
+  **The publish step has a ten-minute ceiling you cannot raise (6 Aug 26).**
+  `actions/deploy-pages` polls until Pages serves the artifact and aborts at
+  600000 ms, CANCELLING a deployment that is still reporting progress — so a
+  green build publishes nothing. Passing a bigger `timeout:` does not work;
+  the action clamps it and says so in the log. Pages normally takes about 8
+  minutes for this repo (measured, 11:21 on 6 Aug), which leaves roughly two
+  minutes of margin against a queue nobody here controls. Ruled out as causes
+  before blaming the queue: the artifact is 0.15 MB over 5 files, the
+  environment goes waiting→queued→in_progress in 1–3 s, and the repo sits at
+  2 deployments/hour against a soft limit of 10. If the wait becomes
+  permanently over ten minutes the fix is a different publish path — a
+  `gh-pages` branch, which never waits on the rollout, or another host — not
+  a re-run and not another timeout value. Reasoning is in the deploy step's
+  own comment in `.github/workflows/deploy.yml`.
 - **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
   still described a three-gate, mid-port project — the root one also called a
   member view-only, which the 5 Aug roles decision had already undone.
