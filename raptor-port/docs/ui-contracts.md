@@ -451,6 +451,26 @@ the colour would read as "less of a problem".
 neither dash nor dot, and an outline is drawn outside the border box so the
 puck's measured 74×15 is untouched.
 
+**Three things make the strokes actually distinguishable**, and all three are
+measured by `e2e/geometry.spec.ts` — jsdom applies no stylesheet, so vitest can
+only prove which CLASS was emitted, never what it draws:
+
+- `.boxdash` carries `box-shadow:none!important`. Without it the puck keeps the
+  solid 1.5px ring `.puck.warn.hard` gives every hard flag, the dashes are
+  filled in from behind, and a sanctioned late show renders as a fat solid red
+  box — reported by the owner from the deployed site. `!important` because
+  `.puck.warn.hard` and the AL marks (`.seat[data-alc] .puck`) both out-specify
+  a two-class selector; `.boxred` already carries one for the same reason, so
+  the two rings keep the same precedence over everything they sit on.
+- `.boxdot` is **1.5px**, not 2. CSS `dotted` at 2px draws square dots, which
+  around a 74×15 puck is very nearly the dashed stroke — three meanings with
+  two of them looking alike is worse than having two. Half a pixel rounds the
+  dots and reads as the lightest of the three, which is what it means.
+- `.boxdot` sits at **`outline-offset:2px`**, because `.boxred`'s shadow
+  spreads 2px and dots any closer are drawn inside the solid band and vanish.
+  Its total reach is still 3px, the same as the dashed ring's, so it clears the
+  3px gap between the two pucks of a crew pair.
+
 ### The previous-day trace is a STANDING mark
 
 A crew-rest breach is raised on the day the man is **told to report**. The

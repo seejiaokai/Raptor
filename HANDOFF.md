@@ -9,7 +9,7 @@ The port from the original single-file app is complete; that history is in
 
 **Every gate is green at this commit**, run first-hand: `npm test` 613/38
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 19/19, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 20/20, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 
 ## Known issues / open work
@@ -47,7 +47,8 @@ test:e2e` 19/19, and the two that are NOT in CI — `npm run probes:adapted`
   element, descender ink inside the puck, and the warning-jump paths on every
   surface (both weeks, day-detail, flag chip, the board small and large, a
   warning landing on its anchored line, and the lateral view held when the
-  puck is already on screen) — eight contract families over 19 tests. It
+  puck is already on screen), and the three crew-rest strokes really rendering
+  as three — nine contract families over 20 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
@@ -261,6 +262,16 @@ test:e2e` 19/19, and the two that are NOT in CI — `npm run probes:adapted`
   broken and the leave-by where nothing louder outranks it, and the day's issue
   box grows a `.dwtrace` cross-day row. The chip and the row both carry the
   NEXT day's `(di, ix)`, so the ordinary warning jump navigates them.
+  **The dashed ring was never dashed on screen (owner, from the deployed site,
+  6 Aug 26).** `.puck.warn.hard` puts a solid 1.5px red ring on every hard flag
+  and `.boxdash` only ADDED an outline on top of it, so the dashes were filled
+  in from behind and a sanctioned late show rendered as a fat solid red box. It
+  clears the shadow now. Two sizing decisions came out of looking at the three
+  together: the dotted ring is 1.5px (at 2px, CSS `dotted` draws square dots
+  almost identical to the dashed stroke) and sits at `outline-offset:2px` (any
+  closer and it hides inside `.boxred`'s 2px spread on a puck wearing both).
+  All three are now measured in `e2e/geometry.spec.ts` — vitest can only see
+  which class was emitted, which is exactly why this shipped broken.
   One coupling falls out of it, and it is the only one: an edit on day N that
   changes its crew rest rewrites day N−1 too — `probes/perf-port.cjs`'s
   day-isolation assertion names that exemption and still fails on any other day.

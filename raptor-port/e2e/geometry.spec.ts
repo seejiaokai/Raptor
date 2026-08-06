@@ -219,6 +219,78 @@ test('a hole in a programme row renders no element at all', async ({ page }) => 
   expect(holed.lefts, 'so the pucks either side did not shift').toEqual(solid.lefts)
 })
 
+/* THE THREE CREW-REST STROKES, measured (owner, 6 Aug 26). Solid is his own
+   breach, dashed is his own breach that a scheduler sanctioned, dotted is the
+   day he CAUSES one. Vitest can prove which class the builder emitted and
+   nothing more: jsdom applies no stylesheet, so "the dash renders as a dash"
+   was untestable there — and it was not true. `.puck.warn.hard` puts a solid
+   1.5px ring on any hard-flagged puck, `.boxdash` only added an outline on top
+   of it, and the solid ring filled in every gap from behind: a sanctioned late
+   show came out a fat solid red box, which is what the owner reported. */
+test.describe('the crew-rest rings are three distinguishable strokes', () => {
+  test('dashed is not filled in from behind, and dotted clears the solid ring', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'editsched')
+
+    /* Drive the seed to a state that renders all three at once. The seed's one
+       crew-rest breach (casper, Tue, traced back to Mon) is too deep for a late
+       show to save — rest clears 10:45, the latest show is 07:40 — so the
+       remark alone leaves it solid; shortening crew rest is what puts it in the
+       sanctioned band. Both go through the ordinary funnel. */
+    const ok = await page.evaluate(() => {
+      const w = window as any
+      const seat = [...document.querySelectorAll('#eWeek [data-day="1"] .seat[data-slot]')]
+        .find(s => s.querySelector('.puck[data-person="casper"]')) as HTMLElement | undefined
+      if (!seat) return false
+      w.txtSet('fr:' + seat.dataset.slot!.split('.').slice(0, 4).join('.'), 'LATE SHOW')
+      w.VCONF.crewRest = 480
+      w.afterSchedMutate()
+      return true
+    })
+    test.skip(!ok, 'the seed no longer seats casper on the crew-rest line')
+    await page.waitForTimeout(400)
+
+    const r = await page.evaluate(() => {
+      const read = (sel: string) => {
+        const el = document.querySelector(sel) as HTMLElement
+        if (!el) return null
+        const cs = getComputedStyle(el), b = el.getBoundingClientRect()
+        return { shadow: cs.boxShadow, style: cs.outlineStyle, width: parseFloat(cs.outlineWidth),
+          off: parseFloat(cs.outlineOffset), w: +b.width.toFixed(1), h: +b.height.toFixed(1) }
+      }
+      return { dash: read('#eWeek .puck.boxdash'), dot: read('#eWeek .puck.boxdot:not(.boxred)'),
+        red: read('#eWeek .puck.boxred:not(.boxdot)') }
+    })
+    expect(r.dash, 'the sanctioned late show renders').not.toBeNull()
+    expect(r.dot, 'and so does the day that caused the breach').not.toBeNull()
+    expect(r.red, 'and an ordinary hard flag').not.toBeNull()
+
+    /* THE BUG: any box-shadow at all here is a solid ring behind the dashes */
+    expect(r.dash!.shadow, 'nothing solid is drawn behind the dashes').toBe('none')
+    expect(r.dash!.style, 'and the stroke really is dashed').toBe('dashed')
+
+    expect(r.dot!.style, 'the trace is dotted, not dashed').toBe('dotted')
+    expect(r.dot!.width, 'and lighter than the dashed stroke, or the two read alike')
+      .toBeLessThan(r.dash!.width)
+
+    /* the solid ring keeps its shadow — that is how .boxred draws — and the
+       dotted trace has to sit OUTSIDE its 2px spread or it vanishes into it */
+    expect(r.red!.shadow, 'the solid ring is still a shadow').toContain('px')
+    expect(r.red!.style, 'and draws no outline of its own').toBe('none')
+    const spread = 2
+    expect(r.dot!.off, 'the dots clear the solid ring rather than hiding in it')
+      .toBeGreaterThanOrEqual(spread)
+
+    /* and none of it moves the puck: outlines do not take part in layout, which
+       is the reason both rings are outlines and not shadows */
+    for (const [name, m] of Object.entries(r)) {
+      expect({ name, w: m!.w, h: m!.h }, `${name} keeps the measured puck box`)
+        .toEqual({ name, w: 74, h: 15 })
+    }
+  })
+})
+
 test('puck text stays inside the puck, descenders and all', async ({ page }) => {
   await page.setViewportSize(PHONE)
   await login(page)

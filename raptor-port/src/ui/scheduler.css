@@ -569,7 +569,17 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    box-shadow cannot dash, so it is an outline: same 2px, drawn outside the
    border box like the shadow it replaces, so the puck's own 74×15 geometry is
    untouched (e2e/geometry.spec.ts measures it). */
-.puck.boxdash{outline:2px dashed var(--hard);outline-offset:0;border-color:var(--hard)!important}
+/* box-shadow:none is what makes the dash a DASH (owner, 6 Aug 26). The puck
+   already carries a solid 1.5px red ring from `.puck.warn.hard` — that rule is
+   about severity and knows nothing about strokes — and this class only ADDED
+   an outline on top of it, so the solid ring filled in every gap from behind
+   and a sanctioned late show rendered as a fat solid red box. Clearing the
+   shadow leaves the dashed outline alone in the frame, which is the whole
+   point of it. !important because `.puck.warn.hard` and the AL marks
+   (`.seat[data-alc] .puck`) both out-specify a two-class selector — exactly
+   the reason .boxred carries one too, so the two rings keep the same
+   precedence over everything they sit on. */
+.puck.boxdash{outline:2px dashed var(--hard);outline-offset:0;border-color:var(--hard)!important;box-shadow:none!important}
 .puck.sel.boxdash,.puck.me.boxdash{outline:2px dashed var(--hard);box-shadow:0 0 10px 1px rgba(240,85,95,.7)!important}
 /* The DOTTED red ring (owner, 6 Aug 26): this day is the CAUSE, not the
    breach. The man flew a legal day here — the warning is raised tomorrow,
@@ -580,9 +590,18 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    is drawn outside the border box so the puck's measured 74×15 is untouched.
    Being an outline it also STACKS with .boxred's shadow, which is the point —
    a man can carry a conflict of his own here AND wreck tomorrow's rest, and
-   both rings have to be readable at once. */
-.puck.boxdot{outline:2px dotted var(--hard);outline-offset:1px}
-.puck.sel.boxdot,.puck.me.boxdot{outline:2px dotted var(--hard);outline-offset:1px}
+   both rings have to be readable at once. The 2px OFFSET is what buys that:
+   .boxred's shadow spreads 2px, so dots any closer are drawn inside the solid
+   band and vanish entirely — measured, not guessed. Total reach stays 3px,
+   the same as the dashed ring's, so it still clears the 3px gap between two
+   pucks in a crew pair.
+   1.5px, not 2: `dotted` at 2px draws SQUARE dots, which around a 74×15 puck
+   is very nearly the dashed stroke above it — three meanings and two of them
+   looking alike is worse than having only two. Dropping half a pixel rounds
+   the dots and reads distinctly lighter, which is also the right weight for
+   the lightest of the three claims. */
+.puck.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
+.puck.sel.boxdot,.puck.me.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
 .puck .nm{display:flex;align-items:center;padding:0 4px;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 /* the reference's qual chip is deliberately CHUNKIER than the name it sits next to —
    its glyph measures a 23px cap against the name's 19px — and it is a full-height
