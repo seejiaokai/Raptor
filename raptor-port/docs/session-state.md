@@ -32,14 +32,34 @@ gets driven in a real browser — which led to the standing instruction below.
   after three consecutive ten-minute aborts, with nothing changed to fix it.
   A genuine GitHub-side slowdown.
 
-## Unfinished
+## Unfinished — BOTH BLOCKED BY A GITHUB OUTAGE, NOT BY THIS REPO
 
-- **The live-view rule is in flight** — the only thing not yet merged. See
-  below; it is a `CLAUDE.md` edit plus this file.
-- **The favicon deploy (run `31116706755`) was still running** at the time of
-  writing. If it aborted at ten minutes, that is the known ceiling, not a new
-  fault: re-run it. `HANDOFF.md` §Deploy has the full reasoning.
+Late on 6 Aug 26 GitHub Actions started failing before it reached the code at
+all: `Failed to resolve action download info. Error: Service Unavailable` /
+`Bad Gateway`, i.e. the runner could not download the action definitions.
+Jobs also came back `cancelled` with no log (404 on the log endpoint), and one
+Pages deployment sat `queued` for 15 minutes then went straight to `error`
+without ever reaching `in_progress`. Four consecutive failures across two
+branches. **Retrying was stopped deliberately** — nothing here is fixable from
+this repo, and hammering a degraded service is not a strategy.
+
+Everything below is finished, gated green locally, and waiting only on GitHub:
+
+- **PR #94 is open** — `CLAUDE.md` gains TWO owner rules from this session:
+  the standing live-view instruction, and a spelled-out plain-language rule
+  (owner restated on 6 Aug 26 that explanations were too technical; it is now
+  a list of things not to do, not a sentiment). Its checks have failed twice
+  on the outage above, never on content. Merge it when Actions recovers.
+- **The favicon is merged (PR #93) but NOT published.** Deploy run
+  `31116706755` failed twice on the outage. Nothing is half-applied — the site
+  simply still serves the previous build, which contains all of this session's
+  actual features. Re-run that workflow, or let the next merge carry it.
 - **No PR is under `subscribe_pr_activity` watch.**
+
+Distinguish this from the EARLIER failure mode the same afternoon: that one
+reached `in_progress` and hit the ten-minute Pages ceiling (documented in
+`HANDOFF.md` §Deploy and in the deploy step's comment). This one never
+started. Same day, two different GitHub faults; neither is a code defect.
 
 ## The standing instruction (owner, 6 Aug 26)
 
@@ -100,6 +120,8 @@ From `raptor-port/`, on the favicon commit (the last one touching code):
 
 ## Pick up here
 
-Merge the live-view PR once green and confirm the deploy. Then this file has
-nothing left in it and should be deleted — `CLAUDE.md` promises the next
-session that an absent `session-state.md` means nothing was pending.
+Check whether GitHub Actions has recovered. If it has: merge PR #94, then
+re-run the deploy so the favicon publishes. Confirm the live site from the
+workflow conclusion. Then this file has nothing left in it and should be
+DELETED — `CLAUDE.md` promises the next session that an absent
+`session-state.md` means nothing was pending.
