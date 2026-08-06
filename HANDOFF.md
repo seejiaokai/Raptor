@@ -7,9 +7,9 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 613/38
+**Every gate is green at this commit**, run first-hand: `npm test` 616/38
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 20/20, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 
 ## Known issues / open work
@@ -47,8 +47,10 @@ test:e2e` 20/20, and the two that are NOT in CI — `npm run probes:adapted`
   element, descender ink inside the puck, and the warning-jump paths on every
   surface (both weeks, day-detail, flag chip, the board small and large, a
   warning landing on its anchored line, and the lateral view held when the
-  puck is already on screen), and the three crew-rest strokes really rendering
-  as three — nine contract families over 20 tests. It
+  puck is already on screen), the three crew-rest strokes really rendering as
+  three, a cut callsign fading rather than clipping, and the board's duty rows
+  keeping a readable ITEM column on a phone — eleven contract families over 22
+  tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
@@ -112,6 +114,35 @@ test:e2e` 20/20, and the two that are NOT in CI — `npm run probes:adapted`
   rather than `page.click`: Playwright scrolls a target into view before
   pressing it, which would hand the app a week already panned onto the day.
   Contract: `docs/ui-contracts.md` §Jumping from a warning to the puck.
+- **Three bugs found by sweeping the RUNNING app (owner ask, 6 Aug 26).** All
+  three were invisible to the unit suite and visible within minutes in a
+  browser, which is the argument the new live-view rule in `CLAUDE.md` rests
+  on. Each is pinned in `e2e/geometry.spec.ts` or `interact.test.tsx`, verified
+  failing against the old code first.
+  **Touching the AREA strip counted as editing it.** `AREA` and `AREA TIME`
+  are the only cells whose displayed value is DERIVED (codes off the aircraft,
+  the window off the formation's TO–LD), so `f.area`/`f.atime` stay null while
+  the cell already reads `1240-1405`. `textedit.ts` compared the text to the
+  MODEL field, i.e. to `''`, so every focusout looked like a change: a stray
+  click or a tab-through stored the derived value as a scheduler's own. The
+  dashed hint is what gets noticed; the damage is that a stored value WINS over
+  the derivation, so the airspace window then stops following the take-off. It
+  compares against `areaText()`/`atimeText()` now — the same functions the
+  builder renders with, so identical text is not a change, a real edit still
+  commits and an emptied cell still stores the blank.
+  **A long callsign was clipped mid-word.** `.puck .nm` carried
+  `text-overflow:ellipsis` and never got one — the property has no effect on a
+  flex container — so "Wrangler" rendered as "Wrangl", a plausible callsign
+  that is not the man's. It is `display:block` with a line-height replacing the
+  lost `align-items:center`, and a FADE rather than an ellipsis: `Wra…` throws
+  away three legible characters out of a 74px box, while the fade keeps every
+  character the width allows. Names that fit are pixel-identical to before.
+  **The board's phone layout was out-specified.** `.sb-arow.c6r` is two classes
+  where the phone override is one, and a media query adds no specificity, so
+  the desktop six-column template won below 820px: at 390px the ITEM column —
+  the only thing saying WHICH duty a row is — collapsed to a 14px stub while
+  START and END stayed legible. The template is restated inside the query.
+  Desktop was never wrong, which is why it survived.
 - **The crew-pairing chip `CP` (owner, 5 Aug 26; renamed from `CC`, owner ask
   5 Aug 26).** The pairing rules (`CREW_SOLO`, `CO_APPROVAL`, `OCU_NO_IP`,
   `ILLEGAL_CREW`, `NO_IR`) used to ring a puck and caption nothing, which left
