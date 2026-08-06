@@ -1,109 +1,85 @@
-# Session handoff — crew-rest trace, warning-jump lateral hold, and a Pages deploy that will not publish
+# Session handoff — crew-rest trace, warning-jump lateral hold, dashed-ring fix, favicon
+
+Supersedes the version written earlier this session, which described the
+deploy as red and PR #92 as open. Both have since resolved.
 
 ## Where it started
 
 Owner asked for two things on the warning-jump path: stop the week snapping
 sideways when the clicked warning is already on screen, and mark the puck on
-the PREVIOUS day whose day-end breaks the next day's crew rest, so the cause
-is readable from the day a scheduler can still change. He then sent a phone
-screenshot of the deployed site: the sanctioned-late-show ring was rendering
-as a solid red box, not a dashed one. All three shipped. The deploy did not.
+the PREVIOUS day whose day-end breaks the next day's crew rest. He then sent a
+phone screenshot: the sanctioned-late-show ring was rendering as a solid red
+box, not a dashed one. A Pages deploy outage then ate about an hour. Last, he
+asked for a favicon after a 404 for `/favicon.ico` surfaced while demonstrating
+how the production bundle can be driven in a real browser.
 
 ## Shipped
 
-- **Lateral hold on the warning jump + the standing previous-day trace** —
-  PR #90, merged. `validate()` files every crew-rest breach a second time
-  under the day that caused it (`WARN.trace`, with
-  `traceOf`/`traceLeads`/`traceIx`/`tracesOn`); that day draws a dotted ring,
-  a `CR` chip captioned with the day broken and the leave-by, and a
-  `.dwtrace` cross-day row. Chip and row carry the NEXT day's `(di, ix)` so
-  the ordinary jump navigates them. `scrollToWarnFocus` pans sideways only
-  when the target puck is genuinely off screen.
-- **The dashed ring was never dashed** — PR #90 (second commit), merged.
-  `.puck.warn.hard` puts a solid 1.5px ring on every hard flag and
-  `.boxdash` only added an outline over it, so the dashes were filled in from
-  behind. Cleared the shadow; dotted ring dropped to 1.5px at
-  `outline-offset:2px` so it neither mimics the dashed stroke nor hides
-  inside `.boxred`'s 2px spread.
-- **A dead timeout input** — PR #91, merged. Raised
-  `actions/deploy-pages`'s `timeout` to 20 min. **It did nothing** — see
-  Unfinished.
+- **Lateral hold + the standing previous-day trace** — PR #90, merged,
+  **deployed**. `WARN.trace` with `traceOf`/`traceLeads`/`traceIx`/`tracesOn`;
+  dotted ring, `CR` chip, `.dwtrace` cross-day row, all addressed to the NEXT
+  day's `(di, ix)`. `scrollToWarnFocus` pans sideways only when the target puck
+  is off screen.
+- **The dashed ring was never dashed** — PR #90 (second commit), merged,
+  **deployed**. `.boxdash` never cleared `.puck.warn.hard`'s solid shadow.
+- **A dead `timeout:` input** — PR #91, merged. Did nothing; the action clamps
+  it. Removed again by #92.
+- **The Pages ten-minute ceiling recorded** — PR #92, merged. Documentation
+  only. The finding lives in the deploy step's comment in
+  `.github/workflows/deploy.yml` and `HANDOFF.md` §Deploy.
+- **Deploy recovered on its own.** Run `31113391602` published in **7m12s**
+  after three consecutive 10-minute aborts. Nothing was changed to fix it —
+  it was a genuine GitHub-side slowdown, exactly as the owner bet. Everything
+  above is live.
 
 ## Unfinished
 
-- **The deploy is red and the live site does not have any of this work.**
-  Last successful publish is `90cf0cb` (11:18, PR #89 — before this session).
-  Three consecutive main deploys failed: `31108708522` (e3e052dd),
-  `31111122560` (6d1e3078), plus one re-run. Every one died on
-  `Timeout reached, aborting!` at ten minutes and CANCELLED a Pages
-  deployment that was still reporting `deployment_in_progress`.
-  **Do not try to fix this with the `timeout:` input** — that was PR #91 and
-  the action clamps it: `"timeout value is greater than the allowed maximum -
-  timeout set to the maximum of 600000 milliseconds"`. Ten minutes is a
-  ceiling. Full reasoning and what was ruled out (0.15 MB artifact, no
-  environment wait, 2 deployments/hour against a soft limit of 10, and the
-  SAME deploy succeeding in 8m04s at 11:21 that morning) is in the deploy
-  step's comment in `.github/workflows/deploy.yml` and in `HANDOFF.md`
-  §Deploy.
-- **PR #92 is OPEN** — the documentation-only correction that removes the
-  clamped input and records the ceiling. Its gates were still running at
-  session end (run `31112858167`); merge it once green. Merging is also the
-  next deploy retry.
-- **The retry loop was never run.** Owner chose "retry later, change
-  nothing"; nothing is scheduled. Retry by merging #92, or by re-running the
-  failed deploy job on run `31111122560` (that skips the 2.5-min build and
-  reuses the artifact).
+- **The favicon is the only thing in flight** — the talon on a tile, in
+  `raptor-port/public/favicon.svg`, plus a `<link rel="icon">` in
+  `index.html`. All four gates green locally at this commit. Not yet in a PR
+  at the time of writing; open one, merge, confirm the deploy.
 - **No PR is under `subscribe_pr_activity` watch.**
 
 ## Branch state
 
 - Designated branch: `claude/read-handoff-docs-3r97fl`.
-  **Note this is NOT the branch named in the session instructions**
+  **NOT the branch named in the session instructions**
   (`claude/read-handoff-docs-o6qvqn`) — the owner's first message explicitly
   created and asked for `-3r97fl`, and every PR this session used it.
-- Its PR is **open, #92**. #90 and #91 from the same branch are merged.
-- The branch is 1 commit of unmerged work ahead of main (`deploy.yml` only),
-  plus this handoff. Because #92 is still open, do NOT reset the branch —
-  resetting would discard it. Once #92 merges, the next session must reset
-  before new work:
+- It was reset from `origin/main` after #92 merged, so it carries only the
+  favicon work. #90, #91 and #92 are all merged.
+- If its PR is merged before the next session starts, reset again before new
+  work or commits stack on merged history:
   `git fetch origin main && git checkout -B claude/read-handoff-docs-3r97fl origin/main`
 
 ## Gates
 
-Run first-hand from `raptor-port/` at `6147e28` (the last code commit — #92
-touches only a YAML comment and cannot move any of them):
+Run first-hand from `raptor-port/`, on the favicon commit:
 
-- `npm test` **613 passed / 38 files** (was 604) · `npm run build` **clean** ·
-  `node reference/tfin.js` **728 / 0** · `npm run test:e2e` **20 / 20**
-  (was 18) — all green.
-- `npm run probes:adapted` **6 / 6** · `npm run perf` **9 / 0** — both green,
-  run because this was UI-visible work. Neither is in CI. `npm run perf`
-  needed its day-isolation assertion narrowed: the trace deliberately couples
-  day N−1's markup to day N's crew rest, and that one day is now exempted by
-  name.
-- A fresh container needs `npm ci` first. The adapted probes need
+- `npm test` **613 / 38 files** · `npm run build` **clean** ·
+  `node reference/tfin.js` **728 / 0** · `npm run test:e2e` **20 / 20** —
+  all green.
+- `npm run probes:adapted` **6 / 6** · `npm run perf` **9 / 0** — green, but
+  run against the crew-rest work EARLIER in the session, not against the
+  favicon. Deliberate: the favicon adds no DOM, no CSS and no engine code, so
+  nothing either probe measures can move. Re-run them if that reasoning ever
+  stops holding.
+- A fresh container needs `npm ci`. The adapted probes need
   `npx vite preview --port 4173` already serving.
-
-**Green gates are not a green deploy** — the four gates passed on every one
-of the three failed runs. The failure is entirely in the publish step.
 
 ## Open questions
 
-- **Is the Pages slowdown transient or permanent?** Unanswerable from this
-  container: the agent proxy 403s both `github.io` and `githubstatus.com`, so
-  neither the live site nor GitHub's incident page can be checked from here.
-  Owner was given three options (retry unchanged / `gh-pages` branch publish
-  / move host) and chose **retry unchanged**, on the reasoning that an
-  8-minute success that morning makes a GitHub-side blip most likely. If
-  retries keep failing, the `gh-pages` route is the real fix — it never waits
-  on the rollout — but it needs the owner to flip Settings → Pages → Source
-  to "Deploy from a branch" by hand, because the token here gets 403 on the
-  Pages API.
+- **Network policy.** The owner asked for `github.io` and `githubstatus.com`
+  to be allowed through the agent proxy so the deployed page can be inspected
+  directly. Both still return `connect_rejected` in this session — the policy
+  is fixed at session start, so a change only reaches a NEW session. Worth
+  re-testing on the next one:
+  `curl -sS -o /dev/null -w '%{http_code}' https://seejiaokai.github.io/Raptor/`
+  If it works, the deployed page can be checked directly instead of via a
+  local `vite preview` of the same bundle.
 
 ## Pick up here
 
-Check whether PR #92's gates went green and merge it; that merge is itself
-the next deploy attempt. Then watch run on `main` — if Pages publishes, the
-whole session's work goes live and nothing else is owed; if it aborts at ten
-minutes again, the slowdown is not transient and the `gh-pages` question
-above needs the owner.
+Open a PR for the favicon, merge once green, and confirm the deploy publishes
+(watch for the ten-minute abort — it is not fixed, only understood). After
+that nothing is outstanding and this file should be deleted.
