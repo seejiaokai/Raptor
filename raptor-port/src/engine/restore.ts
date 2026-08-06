@@ -44,6 +44,7 @@ export function dayKeys(d:any,di:any){
       m.set(`ff:${di}.${gi}.${li}.cs`,S(f.cs)+'␟'+(f.cx?1:0));
       m.set(`ff:${di}.${gi}.${li}.msn`,S(f.msn));
       m.set(`ff:${di}.${gi}.${li}.to`,S(f.to)); m.set(`ff:${di}.${gi}.${li}.ld`,S(f.ld));
+      m.set(`ff:${di}.${gi}.${li}.br`,S(f.br));   // the indicated brief time — rolls back with its line
       m.set(`ar:${di}.${gi}.${li}`,J((f.aircraft||[]).map((a:any)=>a.area==null?null:String(a.area))));
       m.set(`at:${di}.${gi}.${li}`,J((f.aircraft||[]).map((a:any)=>a.atime==null?null:String(a.atime))));
       (f.aircraft||[]).forEach((a:any,ai:any)=>{

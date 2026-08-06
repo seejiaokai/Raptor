@@ -14,6 +14,13 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
   amtDebrief:30,    // AMT DEBRIEF row + 30 min
   openEnd:60,       // a row with a start and no end is assumed to run an hour
   maxRun:6,         // most consecutive days on the programme before a break day is due
+  /* The latest a crew can show and still make the jet (owner, 6 Aug 26). A
+     `late show` remark excuses a man from the published in-time and from the
+     brief, so crew rest expiring after brief time is fine — but not past this
+     line, because he cannot walk, kit up and start engines in less than it.
+     Rest still running at T/O − showLead is a HARD breach: he is not late to
+     the brief, he is unable to make the flight. */
+  showLead:60,      // latest show, minutes before T/O
   scDayFrom:7*60,   // an SC shift wholly inside this window is a DAY shift
   scDayTo:19*60};
 /* SC currency. A shift that sits wholly inside 07:00–19:00 is a DAY shift and
@@ -57,6 +64,7 @@ export const RULE_SPEC:any={
   dekit:     {t:'Dekit after landing',       u:'min', lo:0,  hi:240},
   briefLead: {t:'Flight brief before T/O',   u:'min', lo:0,  hi:480},
   reportLead:{t:'Nominal report before T/O', u:'min', lo:0,  hi:480},
+  showLead:  {t:'Latest show before T/O',    u:'min', lo:0,  hi:480},
   debrief:   {t:'Flight debrief after land', u:'min', lo:0,  hi:480},
   crewRest:  {t:'Crew rest',                 u:'min', lo:240,hi:1440},
   tightTurn: {t:'Tight turn threshold',      u:'min', lo:0,  hi:480},

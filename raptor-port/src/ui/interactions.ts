@@ -3,7 +3,7 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
-import { slotVal, inpKey, acceptInput, unacceptInput } from '../engine/slots'
+import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/slots'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -31,7 +31,9 @@ function jumpToWarn(di: number, ix: number) {
   const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]
   if (!w) return                       // a stale index — validate() rebuilds WARN wholesale
   view.DWOPEN.clear(); view.DWOPEN.add(di)
-  view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key })
+  /* code/prevDi/leaveBy ride along exactly as focusWarn sets them — the
+     previous-day trace must not depend on WHICH surface opened the warning */
+  view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
   view.clearOtherHL()
   notify(); setTimeout(scrollToWarnFocus, 0)
 }
@@ -86,6 +88,25 @@ export function routeClick(e: MouseEvent) {
         : `${inp.type} added to the ground programme`, 'ok')
       view.afterSchedMutate()
     }
+    return
+  }
+
+  /* accepting the suggested B (owner spec, 6 Aug 26). A blank formation offers
+     the calculated take-off-minus-briefLead time as a ghost above the box —
+     see html.ts's .bto and board.ts's .sb-bcell, both emit .bsug — and a
+     click there is a deliberate "yes, that's the brief", written through the
+     funnel exactly like typing it would be, rather than landing as an
+     invisible default nobody chose. */
+  const bacc = t.closest('[data-bacc]') as HTMLElement | null
+  if (bacc) {
+    e.stopPropagation()
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can set the brief time', 'warn'); return }
+    const key = bacc.dataset.bacc!, val = bacc.dataset.bval || ''
+    /* txtSet is the mutation funnel (noteChange → pending); markEdit() below
+       carries NO key because txtSet already marked this one — the same
+       convention textedit.ts's routeFocusOut uses after a successful txtSet. */
+    if (txtSet(key, val)) { markEdit(); view.afterSchedMutate() }
+    notify()
     return
   }
 
@@ -233,7 +254,9 @@ export function routeClick(e: MouseEvent) {
     const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]; if (!w) return
     setDayPop(null)
     view.DWOPEN.clear(); view.DWOPEN.add(di)
-    view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key })
+    /* code/prevDi/leaveBy ride along exactly as focusWarn sets them — the
+       previous-day trace must not depend on WHICH surface opened the warning */
+    view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
     view.clearOtherHL()
     notify(); setTimeout(scrollToWarnFocus, 0); e.stopPropagation(); return
   }

@@ -25,7 +25,7 @@ import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
 
 export async function refWindow(): Promise<any> {
-  const html = relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))
+  const html = rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -209,6 +209,69 @@ function relead(html: string): string {
   const n = html.split(from).length - 1
   if (n !== 1) throw new Error(`refwin relead: expected exactly 1 match, got ${n}`)
   return html.replace(from, to)
+}
+
+/* The INDICATED brief time (owner, 6 Aug 26). The port lets a scheduler type a
+   B per formation and every brief-driven rule follows it, falling back to
+   VCONF.briefLead when the line has none; the reference only ever computes the
+   fallback. The seed week types no B, so both engines agree today — but "they
+   agree on this week" is luck, not parity, exactly as the OCU_NO_IP note in
+   rematrix says, and the first test to set f.br would silently compare a typed
+   port against an untyped reference. Two swaps, mirroring events.ts and
+   validate.ts: the brief itself, and the crew-rest anchor (which must read the
+   leg's own brief rather than recompute it, plus the late-show exemption off
+   the aircraft remarks). */
+function rebrief(html: string): string {
+  const swaps: Array<[string, string]> = [
+    /* carry showLead in too, so a test that edits the latest-show rule moves
+       both engines rather than leaving the reference on the hard-coded 60 */
+    ["const VCONF={briefLead:140,", "const VCONF={showLead:60, briefLead:140,"],
+    /* the dashed-ring store the CREW_REST patch below writes into, and its
+       publication on WARN — the reference has neither */
+    ["const ev=collectEvents(), all=[], byDay=[], sev={}, chip={};",
+     "const ev=collectEvents(), all=[], byDay=[], sev={}, chip={}, dash={};"],
+    ["WARN={all,byDay,sev,chip};", "WARN={all,byDay,sev,chip,dash};"],
+    ["const briefM=shiftLine?null:toM-VCONF.briefLead;",
+     "const _bt=shiftLine?null:parseHM(f.br);const briefM=shiftLine?null:(_bt!=null?_bt:toM-VCONF.briefLead);"],
+    ["const insOf=e=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,e.to-VCONF.briefLead);",
+     "const _bo=e=>e.brief!=null?e.brief:e.to-VCONF.briefLead;"
+     + "const insOf=e=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,_bo(e));"],
+    /* The crew-rest breach itself (owner, 6 Aug 26): the port names the
+       LEAVE-BY time in the message and carries prevDi/leaveBy/dashed on the
+       warning, so the previous day can be traced from a click. The reference
+       says none of that, and parity compares the message text — so mirror the
+       whole add, dashed ring included. `add` there takes no extras argument,
+       so they are attached to the pushed warning by patching the message
+       first and the object after; keep both sides' field ORDER identical or
+       the deep-equal compares unequal objects that print the same. */
+    ["          markChip(di,id,'CR');markRing(di,id,'hard');\n"
+     + "          add('hard','CREW_REST',[id],\n"
+     + "            (onShift?`Crew rest breach — ${legs.filter(e=>e.shift).map(e=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `\n"
+     + "                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)+tail);",
+     "          const _bl=legs.reduce((m,e)=>insOf(e)<insOf(m)?e:m);"
+     + "const _lv=hm24(instructed+1440-VCONF.crewRest);"
+     + "const _mk=!_bl.shift&&earliest<=_bl.to-(VCONF.showLead!=null?VCONF.showLead:60);"
+     + "const _da=!!_bl.lateShow&&_mk;"
+     + "markChip(di,id,'CR');markRing(di,id,'hard');if(_da){dash[di]=dash[di]||{};dash[di][id]=true;}\n"
+     + "          add('hard','CREW_REST',[id],\n"
+     + "            (onShift?`Crew rest breach — ${legs.filter(e=>e.shift).map(e=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `\n"
+     + "                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)"
+     + "+(_da?`Late show — he still makes the ${hm24(_bl.to-(VCONF.showLead!=null?VCONF.showLead:60))} show. `"
+     + ":(_bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(_bl.to-(VCONF.showLead!=null?VCONF.showLead:60))} latest show. `:''))"
+     + "+tail+`, so he had to leave by ${_lv}`);"
+     + "{const _w=ws[ws.length-1];_w.prevDi=idx-1>=0?ev[idx-1].di:null;_w.leaveBy=_lv;_w.dashed=_da;}"],
+    /* the reference's fly.push has no lateShow, so _bo's exemption could never
+       fire there — carry the same remark parse onto its legs */
+    ["fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,",
+     "fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,"
+     + "lateShow:!shiftLine&&/\\b(?:late\\s*show|show\\s*(?:at|@)\\s*brief|brief\\s*show)\\b/i.test(String(a.rmks||'')),"],
+  ]
+  for (const [from, to] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin rebrief: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
+    html = html.replace(from, to)
+  }
+  return html
 }
 
 /* One divergence the sync CANNOT close: the reference's `isOffer` is a `const`,

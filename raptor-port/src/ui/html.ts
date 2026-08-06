@@ -4,7 +4,7 @@ import { INPUTS, inputCoversDate, inpLabel, isOffType, offWord, isLeave, isDownc
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
-import { WARN, sevOf, chipOf, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, RANK } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
 import { keyDay } from '../engine/keys'
@@ -27,7 +27,22 @@ const editMode=()=>HOOKS.editMode()
    ===================================================================== */
 let PV=false, PVV:any=null
 const sev=(di:any,id:any)=>PV?null:sevOf(di,id)
-const chip=(di:any,id:any)=>PV?null:chipOf(di,id)
+/* THE PREVIOUS-DAY TRACE (owner, 6 Aug 26). Clicking a crew-rest breach asks
+   the obvious next question — what did he do yesterday? — so while that
+   warning is focused, the same man's puck on the day the rest is measured
+   FROM is marked too: dashed ring, CR label, and the leave-by time in its
+   tooltip. It is focus-scoped, not model state: nothing is painted until the
+   warning is clicked, and it clears when the focus does. validate() already
+   worked out prevDi and leaveBy, and view.ts carries them on WFOCUS, so this
+   re-derives nothing. */
+const traceHit=(di:any,id:any)=>!PV&&!!WFOCUS&&WFOCUS.code==='CREW_REST'
+  &&WFOCUS.prevDi===di&&(WFOCUS.ids||[]).indexOf(id)>=0
+/* the flag the puck prints: the day's own worst chip, or CR where this is the
+   traced previous day and the man carries nothing louder of his own */
+const chip=(di:any,id:any)=>{ if(PV)return null
+  const c=chipOf(di,id)
+  return traceHit(di,id)&&(!c||RANK['CR']>RANK[c])?'CR':c }
+const dsh=(di:any,id:any)=>PV?false:(dashOf(di,id)||traceHit(di,id))
 /* the ONE place the snapshot may stand in for the live model. finally is not
    optional: a throw mid-build with the swap live would leave the old day
    installed as the real schedule — a silent history rewrite on the next
@@ -84,14 +99,22 @@ export function legendHTML(){
 /* quotes matter: esc() output lands inside double-quoted attributes in a dozen
    places, so a remark containing a " used to close the attribute — truncating
    the field on the next render and injecting whatever followed */
-export function puck(id:any,warn:any,sm:any,flag:any){
+export function puck(id:any,warn:any,sm:any,flag:any,dash?:any){
   const p=PEOPLE[id]; if(!p)return'';
   if(p.special){   // sentinel puck: canonical size, no seat/qual/SANS decoration
     return `<span class="puck allavail${sm?' sm':''}" tabindex="0" data-person="${id}" title="${esc(p.cs)}"><span class="nm">${esc(p.cs)}</span></span>`;
   }
   const cls=['puck']; if(p.seat==='RCP')cls.push('r'); if(sm)cls.push('sm');
   if(warn){cls.push('warn'); if(warn==='hard')cls.push('hard'); else if(warn==='note')cls.push('note');}
-  if(flag==='C'||flag==='CR'||flag==='Q'||flag==='NB'||flag==='SB')cls.push('boxred');   // conflict / crew rest / qual / missed brief → red box
+  /* conflict / crew rest / qual / missed brief → red box. `dash` swaps the
+     stroke without touching the colour: a crew-rest breach a scheduler
+     sanctioned with a `late show` remark is the same red warning, drawn so
+     the reader can see somebody meant it (owner, 6 Aug 26). Gated on the
+     PRINTED flag being CR, not merely on dash: a man can carry a sanctioned
+     late show AND an unrelated conflict, and the conflict outranks it for the
+     chip — dashing that ring would caption someone else's warning as
+     "sanctioned". The ring belongs to the flag it shows. */
+  if(flag==='C'||flag==='CR'||flag==='Q'||flag==='NB'||flag==='SB')cls.push(dash&&flag==='CR'?'boxdash':'boxred');
   if(p.san)cls.push('san');                         // SANS → purple right-edge line
   const chipTxt=QCHIP[p.q], chipCls=QCLASS[p.q];
   const qchip=`<span class="role ${chipCls}">${chipTxt}</span>`;
@@ -109,10 +132,10 @@ export function puck(id:any,warn:any,sm:any,flag:any){
   return `<span class="${cls.join(' ')}" tabindex="0" data-person="${id}" title="${ttl}">${lchip}<span class="nm">${esc(p.cs)}</span>${qchip}</span>`;
 }
 
-export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any){
+export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any,dash?:any){
   const al=alAttr(key);
   /* preview: no data-slot, no draggable — the key addresses the LIVE model */
-  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' draggable="true"':''}>${puck(id,sev,false,flag)}</span>`;
+  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' draggable="true"':''}>${puck(id,sev,false,flag,dash)}</span>`;
   if(editable) return `<span class="seat empty-slot" data-slot="${key}"${al}>+ ${kind}</span>`;
   return `<span class="seat"${al}></span>`;
 }
@@ -123,7 +146,7 @@ export function plCols(){return `<div class="pl-cols"><span class="h-nm">Name</s
    Draggable in edit mode; renders nothing when empty so cells stay clean. */
 export function lSeat(di:any,id:any,key:any,ed:any){
   if(!(id&&PEOPLE[id]))return '';
-  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' draggable="true"':''}>${puck(id,sev(di,id),true,chip(di,id))}</span>`;}
+  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' draggable="true"':''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id))}</span>`;}
 /* the people cell itself — a drop target in edit mode (data-fill) */
 /* the extra bodies dropped onto a row, after its own seats */
 export function moreSeats(di:any,base:any,ed:any){
@@ -188,7 +211,7 @@ export function availHTML(d:any,di:any,ed:any){
   const A=availByWave(d);
   /* in edit mode an available puck is a drag source — drag it straight onto a line,
      a duty, a sim or a programme item */
-  const pk=(id:any)=>`<span class="seat"${ed?` draggable="true" data-person="${id}"`:''}>${puck(id,sev(di,id),true,chip(di,id))}</span>`;
+  const pk=(id:any)=>`<span class="seat"${ed?` draggable="true" data-person="${id}"`:''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id))}</span>`;
   const active=(ids:any)=>ids.filter((id:any)=>!PEOPLE[id].san), sans=(ids:any)=>ids.filter((id:any)=>PEOPLE[id].san);
   const grid=(ids:any)=>ids.length?`<div class="ap-grid">`+ids.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   const bandTxt=(w:any)=>{const a=w.s>0?hhmm(w.s):'AM', b=w.e<1440?hhmm(w.e):'end';return `${a}–${b}`;};
@@ -438,6 +461,24 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         const brief=minus(f.to,VCONF.briefLead), rows=f.aircraft.length;
         const areaTxt = areaText(f), timeTxt = atimeText(f);
         const fp=`ff:${di}.${gi}.${li}`;
+        /* B (owner, 6 Aug 26): the scheduler can now type an INDICATED brief time
+           at f.br — '.br' is already in TIME_TXT (engine/slots.ts) so ted() parses
+           and formats it exactly like '.to'/'.ld', and txtRef resolves the ff: key
+           generically with no new branch needed. editableBr mirrors ted()'s own
+           gate (!ed||!canEditSched() falls back to view rendering) rather than
+           just `ed`, so a caller that renders ed=true without edit rights (a
+           logged-out-mid-edit admin, or a markup-only test) still shows the
+           effective time as plain text instead of a blanked-out box. A blank line
+           still briefs off the calculated fallback (view mode, and the box's own
+           placeholder), and offers that fallback as a click-to-accept SUGGESTION
+           above the box in edit mode — accepting is a deliberate click, never a
+           silent default, so the model stays blank until someone decides it. */
+        const editableBr=ed&&canEditSched();
+        const brTyped=parseHM(f.br)!=null;
+        const brShown=editableBr?f.br:(brTyped?f.br:brief);
+        const brSug=(editableBr&&!brTyped)
+          ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
+          : '';
         /* Grid placement is handed to CSS through custom properties rather than
            hardcoded inline grid-row values, so a breakpoint can remap rows without
            the renderer knowing about it.
@@ -453,7 +494,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
             ? `<div class="fcell bto" style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
-            : `<div class="fcell bto" style="${spans}"><b>${brief}</b>${ted(fp+'.to',f.to,ed,'','span')}</div>`}
+            : `<div class="fcell bto" style="${spans}">${brSug}${ted(fp+'.br',brShown,ed,'','b')}${ted(fp+'.to',f.to,ed,'','span')}</div>`}
           <div class="fcell ld" style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`;
         f.aircraft.forEach((a:any,ai:any)=>{
           const key=`${di}.${gi}.${li}.${ai}`, o=a.opts||{};
@@ -474,8 +515,8 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              puck there would read as "this SC line has a problem" when the
              problem, if any, belongs to that person's other flying */
           const chk=!saExempt(w,f,a);
-          const sv=(id:any)=>chk?sev(di,id):null, cp=(id:any)=>chk?chip(di,id):null;
-          h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w))}</span></div>
+          const sv=(id:any)=>chk?sev(di,id):null, cp=(id:any)=>chk?chip(di,id):null, dh=(id:any)=>chk?dsh(di,id):false;
+          h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w))}</span></div>
               <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${sa?`<span class="rolet ${a.spare?'spare':'main'}" title="${a.spare?'Spare crew — standing by, not cross-checked against anything else':'Main crew'}">${esc(a.role||(a.spare?'SPARE':'MAIN'))}</span>`:''}${ted(`fr:${key}`,a.rmks,ed,'ntx')}${sa?'':stores}</div>`;
         });
         /* AREA strip: full-width row under this formation's aircraft. Rendered whenever

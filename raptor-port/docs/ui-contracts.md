@@ -386,6 +386,46 @@ warning's own day keeps it lit, and **opening** the board (`SBDAY` null →
 `n`) never touches a week-set focus at all — that path is what lets a
 week-wide warning survive the board opening on some other day.
 
+## The B box, and the suggestion above it (owner, 6 Aug 26)
+
+The brief time is typed per formation (`f.br`, key `ff:di.gi.li.br`) on the
+edit week and the board — the board grew a **B column** for it, before TO. It
+goes through `ted()` like the `.to` beside it, so `.br` in `TIME_TXT` is what
+gives it HH:MM parsing, and `txtRef` resolves the key with no new branch.
+
+While a line has no indicated B, the calculated time (`T/O − VCONF.briefLead`)
+is offered as a ghost **above** the box, carrying `data-bacc` (the key) and
+`data-bval` (the value); `interactions.ts` writes it through `txtSet` on click,
+so accepting is an ordinary edit — pending mark, next AL, undoable. It is
+never applied silently: the model stays blank until somebody decides, and a
+blank line is still validated against that same suggested time. Standalone
+waves have no B at all — they are shifts and brief nothing.
+
+Two measured contracts moved with it: `.acrow`'s `min-height` grew to
+`--puck-h + 20px` for the third line in the B/TO stack, and the board's
+`.sb-lcols`/`.sb-line` template gained a fifth time column. The geometry gate
+and the adapted `wrap` probe are what hold them.
+
+## Two crew-rest rings, and the previous day (owner, 6 Aug 26)
+
+`.puck.boxdash` is the same red at the same weight as `.puck.boxred`, drawn
+as a dashed `outline` rather than a `box-shadow` (a shadow cannot dash, and an
+outline leaves the puck's measured 74×15 alone). It means *a human meant
+this*, and it appears in exactly two places:
+
+- A crew-rest breach on a line whose aircraft remarks say `late show` /
+  `show at brief`, while that crew still clears rest by the latest show. Past
+  the latest show it goes back to solid — see `engine-rules.md` §validation.
+  Published by the engine as `WARN.dash[di][id]`, read through `dashOf`.
+- **The previous-day trace.** While a CREW_REST warning is focused, the same
+  man's puck on the day the rest is measured from rings dashed and is labelled
+  `CR`, with the leave-by time in the warning's own text. `html.ts:traceHit`
+  gates it on `WFOCUS.code==='CREW_REST'` and `WFOCUS.prevDi`, which
+  `view.ts:focusWarn` carries off the warning object — nothing is re-derived,
+  and nothing is painted until the click. It clears with the focus. A louder
+  chip on that day still wins the label (a `Q` outranks `CR`); the ring shows
+  regardless.
+
 ## Line configs — the stores "+" picker
 
 Under Remarks, each flying line carries an additive config set (owner, Aug 26):

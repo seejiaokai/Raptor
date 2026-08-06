@@ -7,7 +7,8 @@ import { PEOPLE } from '../engine/people'
 import { isStandalone, makeStandalone, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
-import { hhmm } from '../engine/time'
+import { hhmm, minus, parseHM } from '../engine/time'
+import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
 import { markEdit, alAttr } from '../engine/publish'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/keys'
@@ -42,15 +43,25 @@ export function boardHTML(di: number, pv?: boolean) {
       + `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`
       + (pv ? '' : `<span class="gctl"><button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
-    fly += `<div class="sb-lcols"><span>CS</span><span>MSN</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
+    fly += `<div class="sb-lcols"><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
     w.formations.forEach((f: any, li: number) => f.aircraft.forEach((a: any, ai: number) => {
       const key = `${di}.${gi}.${li}.${ai}`, fp = `ff:${di}.${gi}.${li}`
       const cxOn = !!(a.cx || f.cx)
       const dis = pv ? ' disabled' : ''
+      /* B (owner, 6 Aug 26), same funnel key and suggestion idiom as the
+         week (ui/html.ts): data-bfld already flows through boardChange's
+         generic txtSet path below, no new wiring needed. Wrapped so the
+         optional ghost never changes this row's grid-item count — see the
+         mobile column notes in scheduler.css. */
+      const brief = minus(f.to, VCONF.briefLead)
+      const brSug = (!pv && parseHM(f.br) == null)
+        ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
+        : ''
       fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}">
         <input class="lin" data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis} value="${esc(f.cs)}">
         <input class="msn" data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis} value="${esc(f.msn)}">
+        <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} placeholder="B" value="${esc(f.br || '')}"></div>
         <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(f.to)}">
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
         ${sbSlot(di, key + '.p', 'p', a.p, pv)}

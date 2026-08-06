@@ -15,6 +15,16 @@ export function intimeMap(w:any){ const m:any={}; (w.intimes||[]).forEach((t:any
 export const briefLeadOf=(rmks:any)=>{ const s=String(rmks||'');
   const m=s.match(/\bbrief\s*[-:]?\s*(\d{1,3})\b/i)||s.match(/\b(\d{1,3})\s*(?:min(?:ute)?s?\s*)?prior\b/i);
   if(!m)return null; const n=+m[1]; return n>0&&n<=240?n:null; };
+/* "2A: LATE SHOW", "SHOW AT BRIEF", "show @ brief" — an aircraft remark saying
+   this crew is not required at the published in-time, only from the brief
+   (owner, 6 Aug 26). Crew rest normally anchors on whichever comes first, the
+   in-time or the brief; this moves that crew's anchor onto the brief alone.
+   It does NOT excuse the rest rule — the 12h is still measured to the brief,
+   so a brief that is itself too early still breaches. Parsed off the remark
+   rather than a new field because the ride prefix ("2A:") is the squadron's
+   own labelling and the phrase is what carries meaning — the same shape as
+   briefLeadOf above and aarNeed in people.ts. */
+export const lateShowOf=(rmks:any)=>/\b(?:late\s*show|show\s*(?:at|@)\s*brief|brief\s*show)\b/i.test(String(rmks||''));
 export function collectEvents(){
   return DAYS.map((d:any,di:any)=>{
     const fly:any[]=[],forms:any[]=[],events:any[]=[],simcrew:any[]=[];
@@ -31,7 +41,15 @@ export function collectEvents(){
            which made SC AM (07–13) and SC PM (13–19) overlap by 50 minutes and
            reported two clean abutting shifts as one fifteen-hour day. */
         const shiftLine=isStandalone(w);
-        const briefM=shiftLine?null:toM-VCONF.briefLead;
+        /* The brief time the scheduler INDICATED on the line (f.br) governs
+           every brief-driven rule (owner, 6 Aug 26). VCONF.briefLead is only
+           the default the board offers as a suggestion to accept — a blank B
+           is still checked, against that same suggested time, so a line
+           nobody has confirmed never goes silently unchecked. A standalone
+           wave is a shift, not a sortie: it briefs nothing, and a value typed
+           on one stays inert because every consumer gates on shift first. */
+        const brTyped=shiftLine?null:parseHM(f.br);
+        const briefM=shiftLine?null:(brTyped!=null?brTyped:toM-VCONF.briefLead);
         const stepM=shiftLine?toM:toM-VCONF.step;               // sortie: step 1h pre-T/O
         const dekitM=shiftLine?ldM:ldM+VCONF.dekit;             // sortie: land + 30m dekit
         /* intime is the in-time the wave actually PUBLISHED (null when none is
@@ -58,6 +76,7 @@ export function collectEvents(){
           [['FCP',a.p],['RCP',a.w]].forEach((pair:any)=>{ const seat=pair[0],id=pair[1]; if(!id||isSpecial(id))return;
             if(seat==='FCP')fcps.push(id);
             fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,
+              lateShow:!shiftLine&&lateShowOf(a.rmks),   // this crew shows at the brief, not at the in-time
               shift:shiftLine,label:`${f.cs} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
             /* the slot key this event came off — so the crew picker can ask
                "is he busy at this hour" without counting the very slot it is
