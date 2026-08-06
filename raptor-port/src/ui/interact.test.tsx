@@ -292,6 +292,76 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     await act(async () => { const { afterSchedMutate } = await import('../state/view'); const { notify } = await import('../state/store'); afterSchedMutate(); notify() })
   })
 
+  /* THE OTHER DIRECTION, which is what actually shipped broken (owner spotted
+     it on screen, 6 Aug 26). AREA and AREA TIME are the only cells whose
+     displayed value is DERIVED, so the model field is null while the cell
+     already reads "D1415 · AA2NS" / "1240-1405". The commit compared the text
+     to '' and therefore called every focusout a change: clicking in and
+     straight back out, or tabbing through, stored the derived value as a typed
+     one. The dashed "edited" hint is what gets noticed; the damage is that the
+     stored value WINS over the derivation, so the airspace window then stops
+     following the take-off. */
+  it('touching AREA / AREA TIME without typing commits nothing', async () => {
+    const { DAYS } = await import('../engine/data')
+    const { SCHED } = await import('../engine/publish')
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    for (const [sel, attr, field] of [
+      ['#eWeek .areacell[data-area]', 'area', 'area'],
+      ['#eWeek .timecell[data-atime]', 'atime', 'atime'],
+    ] as const) {
+      const el = document.querySelector(sel) as HTMLElement
+      const [di, gi, li] = (el.dataset as any)[attr].split('.')
+      const f = DAYS[+di!].waves[+gi!].formations[+li!]
+      expect(f[field], `${field} starts derived, not stored`).toBeUndefined()
+      const shown = el.textContent
+      expect(shown, 'and the cell is showing that derivation').toBeTruthy()
+      /* focusout with the text exactly as rendered — a stray click, a tab */
+      await act(async () => { el.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+      await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+      expect(f[field], `${field} is still derived`).toBeUndefined()
+      expect(SCHED.pending[`${attr === 'area' ? 'ar' : 'at'}:${di}.${gi}.${li}`],
+        'and nothing is queued for the next amendment').toBeFalsy()
+    }
+  })
+
+  it('so the airspace window keeps following the take-off after a stray click', async () => {
+    const { DAYS } = await import('../engine/data')
+    const { txtSet } = await import('../engine/slots')
+    const { afterSchedMutate } = await import('../state/view')
+    const { notify } = await import('../state/store')
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    const at = document.querySelector('#eWeek .timecell[data-atime]') as HTMLElement
+    const [di, gi, li] = at.dataset.atime!.split('.')
+    const f = DAYS[+di!].waves[+gi!].formations[+li!]
+    const wasTo = f.to
+    /* touch it, type nothing */
+    await act(async () => { at.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+    /* now move the take-off; the strip has to move with it */
+    await act(async () => { txtSet(`ff:${di}.${gi}.${li}.to`, '08:00'); afterSchedMutate(); notify() })
+    await act(async () => { await new Promise(r => setTimeout(r, 10)) })
+    const now = document.querySelector('#eWeek .timecell[data-atime]') as HTMLElement
+    expect(now.textContent, 'the window tracks the new take-off').toBe(`0800-${f.ld.replace(':', '')}`)
+    await act(async () => { txtSet(`ff:${di}.${gi}.${li}.to`, wasTo); afterSchedMutate(); notify() })
+  })
+
+  it('but clearing the cell still stores the blank, rather than reverting', async () => {
+    const { DAYS } = await import('../engine/data')
+    const { SCHED } = await import('../engine/publish')
+    const { afterSchedMutate } = await import('../state/view')
+    const { notify } = await import('../state/store')
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    const at = document.querySelector('#eWeek .timecell[data-atime]') as HTMLElement
+    const [di, gi, li] = at.dataset.atime!.split('.')
+    const f = DAYS[+di!].waves[+gi!].formations[+li!]
+    at.textContent = ''
+    await act(async () => { at.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+    expect(f.atime, 'an emptied cell is a decision, and it sticks').toBe('')
+    delete f.atime; delete SCHED.pending[`at:${di}.${gi}.${li}`]
+    await act(async () => { afterSchedMutate(); notify() })
+  })
+
   it('an edited remark shows the pending mark, then its AL colour once published', async () => {
     const { SCHED, alIssue, unpublishAL } = await import('../engine/publish')
     const { txtGet, txtSet } = await import('../engine/slots')

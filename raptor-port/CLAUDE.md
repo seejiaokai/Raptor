@@ -18,7 +18,23 @@ that bar on their own — don't manufacture questions for them.
 
 - **The owner is non-technical.** Explanations to him are plain-language
   and complete; terseness applies to tool use and internal work, never to
-  what he reads.
+  what he reads. **He restated this on 6 Aug 26 because it was being
+  ignored**, so it is spelled out rather than left to judgment:
+  - **Never paste raw output at him** — no log lines, stack traces, JSON,
+    run IDs, commit hashes, HTTP codes, file:line references or CSS class
+    names. Read the thing yourself and report what it MEANS. "The publish
+    step gave up after ten minutes" — not `##[error]Timeout reached`.
+  - **Lead with what it means for him**, then the detail if it earns its
+    place. He wants to know: is it working, is it live, what do I do now.
+  - **Name things the way the app does.** "The ring around the puck", "the
+    warning list", "the previous day" — not `.boxdash`, `dayWarnHTML`,
+    `WARN.trace[prevDi]`. Internal names belong in code comments and
+    commit messages, which are written for the next agent, not for him.
+  - **Say what you did and whether it worked.** A gate table with counts is
+    fine — it is a result, not jargon. A diff walkthrough is not.
+  - This is about VOCABULARY, not depth. Do not thin out the reasoning, the
+    trade-offs or the caveats; say them in ordinary words. Never hide a
+    limitation because explaining it would take a sentence more.
 - **Ship it.** Once the gates are green, open a PR to `main` and merge so
   it deploys — don't wait to be asked (unless a gate is red or the change
   was called an experiment).
@@ -53,10 +69,32 @@ npm run test:e2e            # geometry in a real browser — builds & serves its
 `test:e2e` is the fourth gate because jsdom has no layout engine: a puck that
 had silently grown to 90px passes `npm test` all day. It runs in CI too.
 
+**Stand up the live view for any UI-visible task, every session** (owner ask,
+6 Aug 26 — a standing instruction, not a per-task one). Build, serve, and
+drive the real thing in a real browser BEFORE saying it works:
+
+```
+npm run build && npx vite preview --port 4173     # the production bundle
+```
+
+then a short Playwright script (`executablePath` rule below) to log in,
+navigate, **screenshot the element in question and LOOK at it**, read
+computed style, and watch for console errors, 4xx responses and page errors.
+`vite.config.ts` sets `base:'./'`, so this preview is the deployed page in
+every respect except the hostname — a local check is not a proxy for the real
+thing, it IS the real bundle.
+
+The reason is not diligence for its own sake. A crew-rest ring shipped drawn
+as a fat solid box while 604 vitest tests passed, because jsdom loads no
+stylesheet and reports every rect as 0×0: it could prove which CLASS was
+emitted and nothing about what was painted. The same pass caught a 404 on
+every page load, and caught a first favicon that was invisible at 16px. None
+of those are reachable from `npm test`.
+
 UI-visible work also needs the wider browser path:
-`npx vite preview --port 4173`, then `probes/run.cjs <name> port`,
-`npm run probes:adapted` (the six adapted probes), `npm run perf`
-(the reference-vs-port no-regression gate).
+`probes/run.cjs <name> port`, `npm run probes:adapted` (the six adapted
+probes), `npm run perf` (the reference-vs-port no-regression gate) — all
+against that same preview.
 A fresh container needs `npm ci` first — `node_modules/` is not in the image.
 Any NEW Playwright script must pass `executablePath:'/opt/pw-browsers/chromium'`
 (a stable symlink): the pinned Playwright looks for a browser build the image
@@ -68,10 +106,23 @@ since 5 Aug 26: a member edits their own Inputs and ticks their own quals;
 the split is in `docs/engine-rules.md` §Auth / roles). The username is
 lowercased before matching, the PASSWORD is compared exactly, so `A`/`A` is
 rejected.
-The deployed Pages URL is NOT reachable from the container (the agent proxy
-answers 403 to CONNECT for `github.io`). Confirm a deploy from the workflow
-run's job conclusions, and check rendering against `vite preview` locally —
-do not plan on fetching the live site.
+The deployed Pages URL has NOT been reachable from the container (the agent
+proxy answers 403 to CONNECT for `github.io`, and to `githubstatus.com`).
+**Re-test it once per session rather than assuming** — the owner asked for
+both to be allowed (6 Aug 26), the policy is fixed when a session starts, so
+a change only ever reaches a LATER session than the one that asked:
+
+```
+curl -sS -o /dev/null -w '%{http_code}\n' https://seejiaokai.github.io/Raptor/
+```
+
+`000` means still blocked; check the reason with
+`curl -sS "$HTTPS_PROXY/__agentproxy/status"`, which logs each rejected host.
+Do not route around a 403 — report the blocked host. While it is blocked,
+confirm a deploy from the workflow run's job conclusions and verify rendering
+against the `vite preview` above; when it opens up, the deployed page can be
+driven directly and is the only way to catch a CDN-level fault (a stale
+cache, a bad base path as served) that a local preview cannot show.
 
 Push to `main` → `.github/workflows/deploy.yml` reruns the gates and
 publishes to **https://seejiaokai.github.io/Raptor/**. Nothing deploys red.

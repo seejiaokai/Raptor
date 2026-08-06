@@ -76,12 +76,28 @@ export function routeFocusOut(e: FocusEvent) {
   }
   /* the AREA / AREA-TIME strip under a formation — like bombs, these live
      outside the txt-key grammar and commit here, as the reference did */
+  /* COMPARE AGAINST WHAT THE CELL IS SHOWING, not against the model field
+     (owner, 6 Aug 26). These two are the only cells whose displayed value is
+     DERIVED — area codes off the aircraft, the window off the formation's
+     TO–LD — so `f.area`/`f.atime` are null while the cell already reads
+     "D1415 · AA2NS" and "1240-1405". Comparing the text to '' therefore said
+     "changed" for a cell nobody had touched: clicking in and straight back
+     out, or tabbing through, wrote the derived value into the model as if a
+     scheduler had typed it.
+     That was never only cosmetic, though the dashed "edited" hint is what
+     gets noticed. The write FREEZES the cell: `atimeText` prefers the stored
+     value, so once it exists the strip stops following TO–LD, and moving the
+     take-off leaves the airspace window silently wrong. It also puts a
+     no-op change into the next amendment.
+     areaText/atimeText are the same functions the builder renders with, which
+     is what keeps this honest — a real edit still differs from them and still
+     commits, and clearing a cell still stores '' rather than reverting. */
   const ar = t.closest('[data-area]') as HTMLElement | null
   if (ar) {
     const [di, gi, li] = ar.dataset.area!.split('.')
     const f = DAYS[+di!].waves[+gi!].formations[+li!]
     const nv = ar.textContent!.trim()
-    if (nv !== (f.area != null ? f.area : '')) { f.area = nv; markEdit(`ar:${di}.${gi}.${li}`); txtCommit() }
+    if (nv !== areaText(f)) { f.area = nv; markEdit(`ar:${di}.${gi}.${li}`); txtCommit() }
     heal(ar, areaText(f))
     return
   }
@@ -90,7 +106,7 @@ export function routeFocusOut(e: FocusEvent) {
     const [di, gi, li] = at.dataset.atime!.split('.')
     const f = DAYS[+di!].waves[+gi!].formations[+li!]
     const nv = at.textContent!.trim()
-    if (nv !== (f.atime != null ? f.atime : '')) { f.atime = nv; markEdit(`at:${di}.${gi}.${li}`); txtCommit() }
+    if (nv !== atimeText(f)) { f.atime = nv; markEdit(`at:${di}.${gi}.${li}`); txtCommit() }
     heal(at, atimeText(f))
   }
 }
