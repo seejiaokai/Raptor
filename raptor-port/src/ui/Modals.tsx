@@ -120,7 +120,11 @@ export function AirPop() {
       <input value="${esc(a)}" data-airi="${i}" aria-label="Airspace line ${i + 1}"><button class="del" data-airdel="${i}">✕</button></div>`).join('')
         || `<div style="color:var(--ink-3);font-size:12px">No traffic booked yet — add a row.</div>`
     } else {
-      body.innerHTML = `<div class="airview">` + (g.traffic.length ? g.traffic.map((a: any) => `<div><span class="adot"></span>${a}</div>`).join('') : '<span style="color:var(--ink-3)">No traffic booked.</span>') + `</div>`
+      /* esc() as the admin branch above does: a traffic line is admin-typed
+         free text and airspace shorthand really does contain bare `<`
+         ("<090 inbound"), which silently swallowed the rest of the list for
+         every member reading it */
+      body.innerHTML = `<div class="airview">` + (g.traffic.length ? g.traffic.map((a: any) => `<div><span class="adot"></span>${esc(a)}</div>`).join('') : '<span style="color:var(--ink-3)">No traffic booked.</span>') + `</div>`
     }
   })
   if (!open) return <div className="airpop" id="airpop" hidden />

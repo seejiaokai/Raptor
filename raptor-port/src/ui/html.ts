@@ -8,6 +8,7 @@ import { WARN, sevOf, chipOf, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from 
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
 import { keyDay } from '../engine/keys'
+import { VCONF } from '../engine/rules'
 import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
@@ -95,8 +96,17 @@ export function puck(id:any,warn:any,sm:any,flag:any){
   const chipTxt=QCHIP[p.q], chipCls=QCLASS[p.q];
   const qchip=`<span class="role ${chipCls}">${chipTxt}</span>`;
   const lchip=flag?`<span class="lchip l-${flag.toLowerCase()}" title="${esc(wlbl(CHIP_LABEL[flag]||flag))}">${chipText(flag)}</span>`:'';
-  const ttl=p.cs+' · '+LEVELNAME[p.q]+(p.sxo?' · SXO':'')+(p.san?' · SANS':'')+(flag?' · '+wlbl(CHIP_LABEL[flag]||flag):'');
-  return `<span class="${cls.join(' ')}" tabindex="0" data-person="${id}" title="${ttl}">${lchip}<span class="nm">${p.cs}</span>${qchip}</span>`;
+  /* esc() the CALLSIGN in both places, as the sentinel branch above already
+     does. A callsign is free text — renameCallsign (slots.ts) only trims and
+     de-duplicates it — so one rename containing a quote or an angle bracket
+     used to close the title attribute early and inject real markup onto that
+     person's puck on every surface it renders (11 call sites, all landing via
+     innerHTML). Only the callsign: the rest of the title is our own constant
+     text, and CHIP_LABEL legitimately carries `<` and `>` ("Crew rest breach
+     (<12h)"), which the reference does not escape — escaping the whole string
+     would break the byte-exact markup parity for no safety gain. */
+  const ttl=esc(p.cs)+' · '+LEVELNAME[p.q]+(p.sxo?' · SXO':'')+(p.san?' · SANS':'')+(flag?' · '+wlbl(CHIP_LABEL[flag]||flag):'');
+  return `<span class="${cls.join(' ')}" tabindex="0" data-person="${id}" title="${ttl}">${lchip}<span class="nm">${esc(p.cs)}</span>${qchip}</span>`;
 }
 
 export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any){
@@ -421,7 +431,11 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         ? `<div class="cols formcols"><span>${esc(w.label||'')}<br>SHIFT</span><span class="c-c">START</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
         : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">B<br>TO</span><span class="c-c">LD</span><span>FCP / RCP</span><span>RMKS</span></div>`;
       w.formations.forEach((f:any,li:any)=>{
-        const brief=minus(f.to,140), rows=f.aircraft.length;
+        /* the brief lead is a rule the squadron edits on the Logic page, and
+           validate() already reads it live (VCONF.briefLead). Hard-coding 140
+           here left the engine flagging against the new number while the B
+           column kept printing the old one. */
+        const brief=minus(f.to,VCONF.briefLead), rows=f.aircraft.length;
         const areaTxt = areaText(f), timeTxt = atimeText(f);
         const fp=`ff:${di}.${gi}.${li}`;
         /* Grid placement is handed to CSS through custom properties rather than

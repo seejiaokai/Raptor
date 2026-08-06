@@ -7,9 +7,9 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 549/32
+**Every gate is green at this commit**, run first-hand: `npm test` 575/35
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 17/17, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 
 ## Known issues / open work
@@ -24,6 +24,17 @@ test:e2e` 17/17, and the two that are NOT in CI — `npm run probes:adapted`
   qualifications they hold. Still admin: accepting an input into the issued
   programme, `Add person`, `Edit quals`, the whole Edit Schedule page and the
   Logic editing. Table: `docs/engine-rules.md` §Auth / roles.
+  **The role split is now enforced on the page, not just the nav (bug sweep,
+  6 Aug 26).** `setSession` never cleared `CURPAGE`, so an admin who logged out
+  of the Edit Schedule page handed the next member session a live editable page
+  — the nav link was hidden, the page was not, and `HOOKS.editMode()` carried no
+  role test, so the pucks came out `draggable` and the text fields
+  `contenteditable`. `drag.ts` and `textedit.ts` had no role check at all. Three
+  layers now: `editMode()` requires `canEditSched()`, one `resetSession()` in
+  `state/store.ts` is the ONLY session-change path (every login and logout
+  routes through it, clearing page, board day, selection, focus, highlights and
+  previews), and `applyDrop`/`routeFocusOut` refuse to write for a non-admin.
+  Pinned by `src/state/session.test.ts`.
 - **One dataset.** The schedule is the demo week (Mon 13 – Sun 19 Jul 26, a
   full Monday-to-Sunday week; the weekend is non-flying, duty crew only). Week chips
   re-label but every week shows the same data (the original behaved the
@@ -193,6 +204,24 @@ test:e2e` 17/17, and the two that are NOT in CI — `npm run probes:adapted`
   (`rules` is still the only thing written to storage). If the squadron wants
   their LoX to survive a reload, that is the same server/sync work as the
   first bullet. Contract: `docs/ui-contracts.md` §EDIT QUALS.
+- **The 6 Aug 26 bug sweep** (four parallel read-only audits, then fixes).
+  Besides the role enforcement above: **Insights counted what never flew** —
+  `computeInsights()` walked every wave with no `cx` check and no standalone
+  exclusion, while `dayCount()` and every other consumer filter both, so
+  cancelled lines and SC/AVALON/BB crew inflated Sorties, Formations and top
+  flyers and wrongly cleared people off `idle` (owner decision: standalone
+  waves are excluded from the totals; pinned by the new
+  `src/engine/insights.test.ts`). **`minus()` printed a negative clock** —
+  it called `fromMin`, which does not wrap, so a brief lead off an early T/O
+  read `-2:-20` on the board's B column and in the CSV; it routes through
+  `hm24` now. **Both brief callers hard-coded 140** instead of
+  `VCONF.briefLead`, so an edited rule left the engine and the printed time
+  disagreeing. **Two unescaped strings** — `puck()`'s callsign (its own
+  sentinel branch already escaped) and the read-only traffic list in
+  `Modals.tsx`. Only the callsign is escaped inside the puck title:
+  `CHIP_LABEL` legitimately holds `<`/`>` and escaping those breaks the
+  byte-exact reference parity. The rulebook audit of every documented rule
+  came back clean — no rule mismatches.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
   GitHub Actions). The workflow refuses to publish on any red test. The four
   gates also run on every **pull request** into main (owner ask, 5 Aug 26),
@@ -231,7 +260,7 @@ test:e2e` 17/17, and the two that are NOT in CI — `npm run probes:adapted`
 ### `raptor-port/src/state/` — the store
 | file | what it does |
 |---|---|
-| `store.ts` | `notify()`/subscribe/version; `wireStore()` maps HOOKS→notify; write helpers; `initStore()` boot (wires, **rulesLoad**, validate, history baseline). |
+| `store.ts` | `notify()`/subscribe/version; `wireStore()` maps HOOKS→notify (including the role-aware `editMode()`); **`resetSession()` — the ONE session-change path, used by every login and logout**; write helpers; `initStore()` boot (wires, **rulesLoad**, validate, history baseline). |
 | `view.ts` | UI state the engine reads: CURPAGE, SBDAY, EDITON, ROSDAY, ARM, selection (SELID/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — clicking a puck lights every copy of that person), `afterSchedMutate()`, `focusWarn`, setters. |
 | `history.ts` | HIST snapshots, `histPush`/`histApply`, undo/redo bodies. |
 | `auth.ts` | SESSION, `setSession` (resets LGEDIT), `canEditSched`, ME/`setMe`. |

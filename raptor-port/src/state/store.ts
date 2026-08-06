@@ -19,6 +19,7 @@ import { rulesLoad } from '../engine/rules'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit } from './history'
+import { setSession as authSetSession, canEditSched } from './auth'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -78,10 +79,38 @@ export function writeInputsBatch(fn: () => void) {
   HOOKS.renderInputs(); HOOKS.reflow(); HOOKS.histPush()
 }
 
+/* the ONE session-reset path. Login.tsx and Shell.tsx's logout both called
+   setSession() from here, but Drawer.tsx's logout imported setSession
+   straight from state/auth — a caller could change SESSION without any of
+   the view state resetting behind it. CURPAGE in particular is never
+   cleared by setSession itself (auth.ts only resets LGEDIT), so an admin
+   who left the Edit Schedule page open and logged out handed the next
+   member session a live, editable page the instant they signed in — the
+   role gate on HOOKS.editMode() closes what renders, but the stale
+   CURPAGE/SELID/WFOCUS/etc. is still a wrong picture for a new user to
+   land on. Every login and logout now routes through here so a session
+   change always drags the whole view back to a safe, page-1 default. */
+export function resetSession(s: any) {
+  authSetSession(s)
+  view.setPage('viewsched')
+  view.setBoardDay(null)          // also disarms a slot armed on the outgoing session's day
+  view.selDrop()                  // SELID, SELSEEN, SELPREV, PFOCUS, WFOCUS, DWOPEN
+  view.clearOtherHL()             // HLSET, SEARCH (and SELID again — harmless)
+  view.armDrop()                  // ARM (belt-and-braces: setBoardDay only disarms if ARM was already set)
+  view.DPREV.clear()              // day-preview map — same in-place-mutation pattern as DWOPEN/HLSET
+}
+
 /* ---- wiring ---- */
 export function wireStore() {
-  /* the reference's editMode(): the edit page is open AND the switch is on */
-  HOOKS.editMode = () => view.CURPAGE === 'editsched' && view.EDITON
+  /* the reference's editMode(): the edit page is open AND the switch is on.
+     The reference never had a second session on the same tab, so it never
+     needed a role test here — this port does, because a session change on
+     the SAME running page (logout/login without a reload) can leave CURPAGE
+     sitting on 'editsched' from the outgoing user. editMode() is what drives
+     every draggable="true" / contenteditable="true" attribute in html.ts, so
+     one canEditSched() check here closes them all at once rather than
+     patching each rendered surface individually. */
+  HOOKS.editMode = () => canEditSched() && view.CURPAGE === 'editsched' && view.EDITON
   HOOKS.reflow = () => { validate(); notify() }
   HOOKS.renderStatus = () => notify()
   HOOKS.histPush = () => histPush()

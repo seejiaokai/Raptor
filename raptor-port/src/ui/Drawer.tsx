@@ -4,10 +4,10 @@
    reference's handlers all end with classList.remove('open'). */
 import { PEOPLE } from '../engine/people'
 import { WEEKS, CURWEEK } from '../engine/waves'
-import { SESSION, ME, setMe, setSession } from '../state/auth'
-import { setBoardDay, CURPAGE } from '../state/view'
-import { notify, setPage } from '../state/store'
-import { DRAWER, setDrawer } from './pops'
+import { SESSION, ME, setMe } from '../state/auth'
+import { CURPAGE } from '../state/view'
+import { notify, setPage, resetSession } from '../state/store'
+import { DRAWER, setDrawer, setUserModal } from './pops'
 import { useVersion } from './useStore'
 
 export function Drawer() {
@@ -40,8 +40,11 @@ export function Drawer() {
           {WEEKS.map((w: any) => <button key={w.v} className={'wk' + (w.v === CURWEEK ? ' on' : '')} data-wk={w.v}>{w.lbl}</button>)}
         </div>
         <h4>Account</h4>
+        {/* resetSession (state/store.ts) is the one session-change path — see Shell.tsx's
+            logout button for why setUserModal(false) still has to happen here, at the
+            call site, rather than inside resetSession itself. */}
         <div className="drawer-row"><button className="abtn" id="drawerLogout"
-          onClick={() => { setBoardDay(null); setSession(null); notify() }}>Logout</button></div>
+          onClick={() => { setUserModal(false); resetSession(null); notify() }}>Logout</button></div>
       </div>
     </div>
   )

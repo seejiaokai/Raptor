@@ -1,7 +1,7 @@
 /* Ported from reference/tfin.js — groups K (time helpers) and F (overlap).
    Source-text pins are re-expressed as behaviour where possible. */
 import { describe, expect, it } from 'vitest'
-import { parseHM, hhmm, hm24, overlap, win, lgT } from './time'
+import { parseHM, hhmm, hm24, minus, overlap, win, lgT } from './time'
 
 describe('time helpers (tfin K)', () => {
   it('time helpers round-trip', () => {
@@ -20,6 +20,20 @@ describe('time helpers (tfin K)', () => {
   it('hm24 wraps past midnight in both directions', () => {
     expect(hm24(1510)).toBe('01:10')
     expect(hm24(-100)).toBe('22:20')
+  })
+
+  /* minus() feeds the board's B column and the CSV's Brief field. It used to
+     call fromMin, which does not wrap a negative, so a brief lead subtracted
+     from an early T/O printed "-2:-20" rather than the previous evening. */
+  it('minus wraps back past midnight rather than printing a negative clock', () => {
+    expect(minus('01:00', 140)).toBe('22:40')
+    expect(minus('02:00', 140)).toBe('23:40')
+    expect(minus('00:10', 140)).toBe('21:50')
+    /* the boundary: exactly 02:20 lands on midnight, and anything later is
+       an ordinary same-day subtraction that must be untouched by the wrap */
+    expect(minus('02:20', 140)).toBe('00:00')
+    expect(minus('08:40', 140)).toBe('06:20')
+    expect(minus('12:45', 140)).toBe('10:25')
   })
 
   /* tfin pins `const overlap=(a1,a2,b1,b2)=>a1<b2&&b1<a2;` in the source —

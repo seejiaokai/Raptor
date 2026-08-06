@@ -10,6 +10,7 @@ import { validate } from '../engine/validate'
 import { afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { notify } from '../state/store'
+import { canEditSched } from '../state/auth'
 import { fmtTxt, intimesInner, areaText, atimeText } from './html'
 
 let SCRATCH: any = null
@@ -38,6 +39,13 @@ function txtCommit() {
 const heal = (el: any, want: any) => { if (el.children.length || el.textContent !== want) el.textContent = want }
 
 export function routeFocusOut(e: FocusEvent) {
+  /* editMode() (store.ts) drives whether html.ts renders contenteditable="true"
+     at all, but a field already focused when a session changes underneath it
+     (logout while mid-edit) still fires this handler on blur. Every text
+     mutation in this file — data-txt, intimes, bombs, area, atime — funnels
+     through this one function before any of them touch the model, so one
+     check at the top closes all five without scattering it across branches. */
+  if (!canEditSched()) return
   const t = e.target as HTMLElement
   if (!t || !t.closest) return
   const tx = t.closest('[data-txt]') as HTMLElement | null

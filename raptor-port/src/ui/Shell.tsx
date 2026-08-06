@@ -10,8 +10,8 @@ import { WEEKS, CURWEEK } from '../engine/waves'
 import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pendCount } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
-import { setSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, SBDAY, setBoardDay, setDayPreview } from '../state/view'
+import { resetSession, notify, setPage } from '../state/store'
+import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, SBDAY, setDayPreview } from '../state/view'
 import { waveMenu } from './board'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
@@ -187,7 +187,12 @@ export function Shell() {
           <button className="pillbtn adv" id="warnBtn2" onClick={() => { openWarns('adv'); notify() }}><span className="dot"></span><span id="nAdv">{adv}</span> advisory</button>
           <button className="pillbtn note" id="warnBtn3" onClick={() => { openWarns('note'); notify() }}><span className="dot"></span><span id="nNote">{note}</span> note</button>
           <button className="abtn" id="insightBtn" title="Week insights" onClick={() => { setInsights(true); notify() }}>Insights</button>
-          <button className="abtn ghost" id="logout" onClick={() => { setBoardDay(null); setSession(null); notify() }}>Logout</button>
+          {/* resetSession (state/store.ts) is the one session-change path: it clears
+              SBDAY itself, plus CURPAGE and the leftover selection/highlight/preview
+              state a next user must not inherit. setUserModal(false) here closes the
+              admin-only Manage-users modal, which lives in ui/pops.ts and so can't be
+              reached from state/store.ts without the state layer importing the UI layer. */}
+          <button className="abtn ghost" id="logout" onClick={() => { setUserModal(false); resetSession(null); notify() }}>Logout</button>
         </div>
       </div>
   ), [page, admin, ME, hard, adv, note, fast])
