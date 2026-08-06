@@ -34,8 +34,9 @@ test:e2e` 17/17, and the two that are NOT in CI — `npm run probes:adapted`
   free text wrapping rather than overflowing, one day box per pan click, the
   proxy scrollbar, scroll held across an edit, a programme hole rendering no
   element, descender ink inside the puck, and the warning-jump paths on every
-  surface (both weeks, day-detail, flag chip, the board small and large) —
-  eight contract families over 17 tests. It
+  surface (both weeks, day-detail, flag chip, the board small and large, and
+  a warning landing on its anchored line) — eight contract families over 18
+  tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
