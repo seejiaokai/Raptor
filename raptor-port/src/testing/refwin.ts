@@ -25,7 +25,7 @@ import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
 
 export async function refWindow(): Promise<any> {
-  const html = relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))
+  const html = rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -209,6 +209,37 @@ function relead(html: string): string {
   const n = html.split(from).length - 1
   if (n !== 1) throw new Error(`refwin relead: expected exactly 1 match, got ${n}`)
   return html.replace(from, to)
+}
+
+/* The INDICATED brief time (owner, 6 Aug 26). The port lets a scheduler type a
+   B per formation and every brief-driven rule follows it, falling back to
+   VCONF.briefLead when the line has none; the reference only ever computes the
+   fallback. The seed week types no B, so both engines agree today — but "they
+   agree on this week" is luck, not parity, exactly as the OCU_NO_IP note in
+   rematrix says, and the first test to set f.br would silently compare a typed
+   port against an untyped reference. Two swaps, mirroring events.ts and
+   validate.ts: the brief itself, and the crew-rest anchor (which must read the
+   leg's own brief rather than recompute it, plus the late-show exemption off
+   the aircraft remarks). */
+function rebrief(html: string): string {
+  const swaps: Array<[string, string]> = [
+    ["const briefM=shiftLine?null:toM-VCONF.briefLead;",
+     "const _bt=shiftLine?null:parseHM(f.br);const briefM=shiftLine?null:(_bt!=null?_bt:toM-VCONF.briefLead);"],
+    ["const insOf=e=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,e.to-VCONF.briefLead);",
+     "const _bo=e=>e.brief!=null?e.brief:e.to-VCONF.briefLead;"
+     + "const insOf=e=>e.shift?e.to:(e.lateShow?_bo(e):Math.min(e.intime!=null?e.intime:Infinity,_bo(e)));"],
+    /* the reference's fly.push has no lateShow, so _bo's exemption could never
+       fire there — carry the same remark parse onto its legs */
+    ["fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,",
+     "fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,"
+     + "lateShow:!shiftLine&&/\\b(?:late\\s*show|show\\s*(?:at|@)\\s*brief|brief\\s*show)\\b/i.test(String(a.rmks||'')),"],
+  ]
+  for (const [from, to] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin rebrief: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
+    html = html.replace(from, to)
+  }
+  return html
 }
 
 /* One divergence the sync CANNOT close: the reference's `isOffer` is a `const`,

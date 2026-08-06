@@ -310,7 +310,17 @@ export function validate(){
       const byR:any={}; day.fly.forEach((e:any)=>{(byR[e.id]=byR[e.id]||[]).push(e);});
       /* a shift reports when it starts; a sortie reports 3h before T/O */
       const nomOf=(e:any)=>e.shift?e.to:e.to-VCONF.reportLead;
-      const insOf=(e:any)=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,e.to-VCONF.briefLead);
+      /* Read the leg's OWN brief (events.ts sets it from the indicated B, or
+         from VCONF.briefLead when the line has none) — recomputing
+         `e.to-VCONF.briefLead` here would ignore a typed B and quietly
+         disagree with the brief window the same engine flags against.
+         `late show` / `show at brief` on the aircraft's remarks means the crew
+         is not required at the published in-time, so the anchor is the brief
+         alone (owner, 6 Aug 26). That is an exemption from the IN-TIME, not
+         from crew rest: the 12h is still measured to whatever anchor results,
+         so a brief that is itself inside the rest window still breaches. */
+      const briefOf=(e:any)=>e.brief!=null?e.brief:e.to-VCONF.briefLead;
+      const insOf=(e:any)=>e.shift?e.to:(e.lateShow?briefOf(e):Math.min(e.intime!=null?e.intime:Infinity,briefOf(e)));
       Object.keys(byR).forEach((id:any)=>{
         /* Crew rest runs off the last REST-BEARING commitment — a sortie or a
            shift — not off a late desk duty. Taking the max of both meant an
