@@ -2,8 +2,7 @@
    same ids, same copy), behaviour through the store's session state. */
 import { useState } from 'react'
 import { ACCOUNTS } from '../state/auth'
-import { setSession } from '../state/store'
-import { notify } from '../state/store'
+import { resetSession, notify } from '../state/store'
 
 export function Login() {
   const [user, setUser] = useState('')
@@ -16,7 +15,10 @@ export function Login() {
     const a = ACCOUNTS[u]
     if (!a || a.pass !== pass) { setErr('Incorrect username or password.'); return }
     setErr('')
-    setSession({ user: u, role: a.role })
+    /* resetSession (state/store.ts), not the bare setSession — a login must land
+       the incoming session on a clean view, not whatever page/selection/preview
+       the PREVIOUS session (on a shared browser) left behind. */
+    resetSession({ user: u, role: a.role })
     notify()
   }
 

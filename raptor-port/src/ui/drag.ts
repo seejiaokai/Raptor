@@ -10,6 +10,7 @@ import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { notify } from '../state/store'
+import { canEditSched } from '../state/auth'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const isPhone = () => HOOKS.isPhone()
@@ -86,6 +87,13 @@ export function barDrop(id: any, key: any) {
   return true
 }
 export function applyDrop(el: any, x: any, y: any) {
+  /* editMode() (store.ts) hides draggable="true" for a non-admin session, but
+     a drag already picked up before a session change lands underneath it
+     (logout mid-drag, or a stale DRAG left by an earlier session on a shared
+     browser) still reaches here with live DRAG state. applyDrop is the ONE
+     mutation path shared by the mouse and touch input methods, so one check
+     here — rather than one in each of onDrop/onPointerUp — closes both. */
+  if (!canEditSched()) { DRAG = null; dndOff(); return false }
   if (!DRAG || !el || !el.closest) { DRAG = null; dndOff(); return false }
   let slotEl = el.closest('.sb-slot,.seat[data-slot]')
   /* A PALETTE drop anywhere on a list row means THAT ROW. The .ppl cell is only a

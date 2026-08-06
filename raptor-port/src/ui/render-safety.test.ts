@@ -58,7 +58,7 @@ describe('the printed brief time follows the Brief-lead rule', () => {
     VCONF.briefLead = 90
     const want = minus(f.to, 90)
     expect(want, 'sanity: 90 min gives a different clock than 140').not.toBe(minus(f.to, 140))
-    expect(dayHTML(0)).toContain(want)
+    expect(dayHTML(0, false)).toContain(want)
     const row = schedRows().find((r: any) => r[3] === f.cs)
     expect(row && row[5], 'the CSV Brief field').toBe(want)
   })
