@@ -1,7 +1,7 @@
 /* CSV export — exportCSV and the schedule flattening (schedRows), verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { minus } from '../engine/time'
+import { minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { STORE_CFG } from './html'
 
@@ -29,9 +29,12 @@ export function schedRows() {
     const F = PEOPLE[a.p] || {}, W = PEOPLE[a.w] || {}, o = a.opts || {}
     const st = STORE_CFG.filter(([k]) => o[k]).map(([, lab]) => lab).concat(o.bombs ? [o.bombs] : []).join(' ')
     const at = f.atime != null ? f.atime : (a.area ? `${f.to.replace(':', '')}-${f.ld.replace(':', '')}` : '')
-    /* live VCONF.briefLead, not a hard-coded 140 — the exported Brief column
-       has to agree with the rule the engine is validating against */
-    rows.push([d.dow, d.dt, w.label, f.cs, f.msn, minus(f.to, VCONF.briefLead), f.to, f.ld, F.cs || '', F.q || '', W.cs || '', W.q || '', a.area || '', at, a.rmks || '', st])
+    /* the INDICATED brief (owner, 6 Aug 26) wins when the scheduler has typed
+       one; live VCONF.briefLead is only the fallback for a blank line, and
+       that fallback still has to agree with the rule the engine validates
+       against, so it stays computed rather than hard-coded. */
+    const brief = parseHM(f.br) != null ? f.br : minus(f.to, VCONF.briefLead)
+    rows.push([d.dow, d.dt, w.label, f.cs, f.msn, brief, f.to, f.ld, F.cs || '', F.q || '', W.cs || '', W.q || '', a.area || '', at, a.rmks || '', st])
   }))))
   return rows
 }

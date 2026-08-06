@@ -99,6 +99,23 @@ const noAvailPuck = (s: string) => s.replace(
 const noStores = (s: string) => s.replace(
   /<span class="stores">[\s\S]*?<\/span>(?=<\/div>)/g, '')
 
+/* Divergence #9 (owner, 6 Aug 26): the brief time is now typed (f.br), shown
+   through ted() so it is editable, with a click-to-accept suggestion ghost
+   above the box when it is blank — see ui/html.ts's .bto cell and .bsug. The
+   reference has no typed-brief concept at all: it always prints the bare
+   computed <b>brief</b> it always has, none of ted()'s wrapping (a class
+   attribute, alAttr's data-alc/data-alp, or the accept ghost). This file
+   never calls setSession, so canEditSched() is false throughout and ted()'s
+   own gate (`!ed||!canEditSched()`) takes the plain-text branch on both
+   dayHTML(di,false) and dayHTML(di,true) here — the port's brief node is the
+   same shape in both, just like the reference's. Excise the brief node (and
+   the ghost, when present — it never is in this file, but the regex covers
+   it so a future canEditSched()-aware call here would not silently pass) from
+   both sides, leaving the div wrapper and the TO span — still byte-compared —
+   untouched. The new structure is pinned positively in brieftime-ui.test.tsx. */
+const noBrief = (s: string) => s.replace(
+  /(<div class="fcell bto"[^>]*>)(?:<span class="bsug"[^>]*>[^<]*<\/span>)?<b[^>]*>[^<]*<\/b>/g, '$1')
+
 /* Divergence #8 (owner, Aug 5, extended Aug 5 '26): the qual ladder itself.
    CI left the ladder first; then the generic I tier and the `ip` flag went
    too, replaced by the four instructor CATs (IW/IP/IR/FI). This used to be a
@@ -110,7 +127,7 @@ const noStores = (s: string) => s.replace(
 
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))
+    const V = (s: string) => noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di).toBe(V(ref))
@@ -147,7 +164,7 @@ describe('view-week markup parity with the reference', () => {
        port's first input group precedes it, the reference's strip is the cut's
        own start), so it is not byte-compared here; the pins below assert the
        port keeps it in edit mode. */
-    const E = (s: string) => noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))
+    const E = (s: string) => noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s)))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))

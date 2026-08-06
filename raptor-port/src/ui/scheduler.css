@@ -467,13 +467,24 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .form .csmsn .mdot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:2px;vertical-align:middle}
 .form .bto{font-family:'JetBrains Mono',monospace;text-align:center;line-height:1.25}
 .form .bto b{font-size:9px;color:#F2D699;font-weight:600}
-.form .bto span{font-size:9px;color:var(--ink-2)}
+/* :not(.bsug) — the B suggestion ghost (below) is also a bare child of .bto
+   and would otherwise pick up the TO span's colour/size through this same
+   tag selector. Narrowed the selector rather than the measurements, which
+   is what the reference's TO box still wants unchanged. */
+.form .bto span:not(.bsug){font-size:9px;color:var(--ink-2)}
+/* the calculated brief, offered above the (blank) B box — a click accepts it
+   into f.br. Small and dim until hovered so it doesn't outweigh the box it
+   is a suggestion for. */
+.form .bto .bsug{display:block;font-size:7.5px;font-weight:700;color:var(--accent);cursor:pointer;line-height:1.2;letter-spacing:.02em}
+.form .bto .bsug:hover{text-decoration:underline}
 .form .ld{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-2);text-align:center;justify-content:flex-start}
-/* min-height is load-bearing, not cosmetic: CS/MSN and B/TO are two-line stacks in
-   cells that span the formation, so a single-aircraft row has to be tall enough to
-   hold two lines of ~10px type on its own or the second line gets clipped by
-   .fcell's overflow:hidden. Derived from the puck so it tracks any resize. */
-.acrow{display:flex;flex-direction:column;gap:2px;padding:3px 4px;min-width:0;grid-column:4;grid-row:var(--gr);min-height:calc(var(--puck-h) + 13px);border-top:1px solid rgba(42,49,58,.28)}
+/* min-height is load-bearing, not cosmetic: CS/MSN and B/TO are stacks in cells
+   that span the formation, so a single-aircraft row has to be tall enough to
+   hold every line on its own or the last one gets clipped by .fcell's
+   overflow:hidden. B/TO grew a third (short) line — the accept-suggestion
+   ghost above a blank B box — so the budget grew with it. Derived from the
+   puck so it tracks any resize. */
+.acrow{display:flex;flex-direction:column;gap:2px;padding:3px 4px;min-width:0;grid-column:4;grid-row:var(--gr);min-height:calc(var(--puck-h) + 20px);border-top:1px solid rgba(42,49,58,.28)}
 .acrow .pucks{display:flex;gap:3px}
 .acrow.r1,.rmkcell.r1{border-top:none}
 .rmkcell{font-size:8.5px;color:var(--ink-2);line-height:1.25;padding:4px 5px;min-width:0;grid-column:5;grid-row:var(--gr);border-top:1px solid rgba(42,49,58,.28);border-left:1px solid rgba(42,49,58,.4);display:flex;flex-direction:column;justify-content:flex-start;gap:2px;overflow-wrap:anywhere;white-space:normal}
@@ -1674,8 +1685,14 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .blknote:empty::before{content:'No notes yet.';color:var(--ink-3);font-style:italic}
 
 /* ---- scheduler-board line controls ------------------------------------- */
-.sb-lcols,.sb-line{grid-template-columns:64px 74px 52px 52px 1fr 1fr 1.2fr 92px}
+.sb-lcols,.sb-line{grid-template-columns:64px 74px 52px 52px 52px 1fr 1fr 1.2fr 92px}
 .sb-line .lctl{display:flex;gap:3px;justify-content:flex-end}
+/* the B cell wraps an optional suggestion ghost + the input so it is always
+   exactly one grid item regardless of whether f.br is set (see html.ts's
+   .bto for the same reasoning) — a bare flex column, same idea as .fcell. */
+.sb-bcell{display:flex;flex-direction:column;justify-content:center;gap:1px;min-width:0}
+.sb-bcell .bsug{font-size:8px;font-weight:700;color:var(--accent);cursor:pointer;letter-spacing:.02em}
+.sb-bcell .bsug:hover{text-decoration:underline}
 .mbtn{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:9.5px;font-weight:800;
   letter-spacing:.05em;cursor:pointer;color:var(--ink-2);background:var(--raised);
   border:1px solid var(--edge-2);border-radius:5px;padding:3px 5px;line-height:1;white-space:nowrap}
@@ -1771,9 +1788,16 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   .sb-grip{display:flex}
   .sb-warn{max-height:16vh;overflow:auto}
   .sb-roster{flex:1 1 auto;overflow:auto;min-height:0}
+  /* B's 3rd DOM position would otherwise steal the 46px track meant for TO
+     (grid auto-placement follows source order), so — same move as .nts/.lctl
+     just below — it drops to its own full-width strip instead of adding a
+     7th fixed column the phone has no room for (the wrap probe measures
+     exactly this at 390px). CS/MSN/TO/LD/FCP/RCP keep the same 6 tracks they
+     always had. */
   .sb-lcols,.sb-line{grid-template-columns:54px 60px 46px 46px 1fr 1fr;font-size:10px}
+  .sb-line .sb-bcell{grid-column:1 / -1}
   .sb-line .nts{grid-column:1 / -1}
-  .sb-lcols>:nth-child(7),.sb-lcols>:nth-child(8){display:none}
+  .sb-lcols>:nth-child(3),.sb-lcols>:nth-child(8),.sb-lcols>:nth-child(9){display:none}
   .sb-line .lctl{grid-column:1 / -1;justify-content:flex-start;margin-top:2px}
   .sb-acols,.sb-arow{grid-template-columns:1fr 46px 46px;gap:6px}
   .sb-acols>:nth-child(2),.sb-acols>:nth-child(5),.sb-acols>:nth-child(6){display:none}
@@ -1806,14 +1830,15 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   border-left:1px solid var(--edge);border-top:none;box-shadow:none;min-height:0}
 .schedboard.sb-wide .sb-warn{max-height:38%;overflow:auto}
 .schedboard.sb-wide .sb-roster{flex:1;overflow:auto}
-.schedboard.sb-wide .sb-lcols,.schedboard.sb-wide .sb-line{grid-template-columns:64px 74px 54px 54px 1fr 1fr 92px 92px;font-size:11.5px}
-.schedboard.sb-wide .sb-lcols>:nth-child(7),.schedboard.sb-wide .sb-lcols>:nth-child(8){display:revert}
+.schedboard.sb-wide .sb-lcols,.schedboard.sb-wide .sb-line{grid-template-columns:64px 74px 54px 54px 54px 1fr 1fr 92px 92px;font-size:11.5px}
+.schedboard.sb-wide .sb-lcols>:nth-child(3),.schedboard.sb-wide .sb-lcols>:nth-child(8),
+.schedboard.sb-wide .sb-lcols>:nth-child(9){display:revert}
 .schedboard.sb-wide .sb-acols,.schedboard.sb-wide .sb-arow{grid-template-columns:120px 54px 54px 1fr 1fr 1fr;gap:8px}
 .schedboard.sb-wide .sb-acols>:nth-child(2),.schedboard.sb-wide .sb-acols>:nth-child(5),
 .schedboard.sb-wide .sb-acols>:nth-child(6){display:revert}
 .schedboard.sb-wide .sb-arow .asub,.schedboard.sb-wide .sb-arow .ppl,
 .schedboard.sb-wide .sb-arow .lctl,.schedboard.sb-wide .sb-line .nts,
-.schedboard.sb-wide .sb-line .lctl{grid-column:auto}
+.schedboard.sb-wide .sb-line .sb-bcell,.schedboard.sb-wide .sb-line .lctl{grid-column:auto}
 .schedboard.sb-wide .sb-acols.c6r,.schedboard.sb-wide .sb-arow.c6r{grid-template-columns:150px 54px 54px 1fr 1fr 92px}
 .schedboard.sb-wide .sb-acols.c6r>:nth-child(4){display:revert}
 .schedboard.sb-wide .sb-arow.c6r .rmkin{grid-column:auto}

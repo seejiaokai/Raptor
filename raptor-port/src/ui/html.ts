@@ -438,6 +438,24 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         const brief=minus(f.to,VCONF.briefLead), rows=f.aircraft.length;
         const areaTxt = areaText(f), timeTxt = atimeText(f);
         const fp=`ff:${di}.${gi}.${li}`;
+        /* B (owner, 6 Aug 26): the scheduler can now type an INDICATED brief time
+           at f.br — '.br' is already in TIME_TXT (engine/slots.ts) so ted() parses
+           and formats it exactly like '.to'/'.ld', and txtRef resolves the ff: key
+           generically with no new branch needed. editableBr mirrors ted()'s own
+           gate (!ed||!canEditSched() falls back to view rendering) rather than
+           just `ed`, so a caller that renders ed=true without edit rights (a
+           logged-out-mid-edit admin, or a markup-only test) still shows the
+           effective time as plain text instead of a blanked-out box. A blank line
+           still briefs off the calculated fallback (view mode, and the box's own
+           placeholder), and offers that fallback as a click-to-accept SUGGESTION
+           above the box in edit mode — accepting is a deliberate click, never a
+           silent default, so the model stays blank until someone decides it. */
+        const editableBr=ed&&canEditSched();
+        const brTyped=parseHM(f.br)!=null;
+        const brShown=editableBr?f.br:(brTyped?f.br:brief);
+        const brSug=(editableBr&&!brTyped)
+          ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
+          : '';
         /* Grid placement is handed to CSS through custom properties rather than
            hardcoded inline grid-row values, so a breakpoint can remap rows without
            the renderer knowing about it.
@@ -453,7 +471,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
             ? `<div class="fcell bto" style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
-            : `<div class="fcell bto" style="${spans}"><b>${brief}</b>${ted(fp+'.to',f.to,ed,'','span')}</div>`}
+            : `<div class="fcell bto" style="${spans}">${brSug}${ted(fp+'.br',brShown,ed,'','b')}${ted(fp+'.to',f.to,ed,'','span')}</div>`}
           <div class="fcell ld" style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`;
         f.aircraft.forEach((a:any,ai:any)=>{
           const key=`${di}.${gi}.${li}.${ai}`, o=a.opts||{};

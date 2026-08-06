@@ -36,7 +36,7 @@ describe('the brief time a scheduler indicates', () => {
     const f: any = firstForm(0)!
     const crew = f.aircraft[0].p
     expect(legsOf(0, crew)[0].brief, 'blank B briefs off the default')
-      .toBe(parseHM(f.to) - VCONF.briefLead)
+      .toBe(parseHM(f.to)! - VCONF.briefLead)
     f.br = '06:05'
     expect(legsOf(0, crew)[0].brief, 'the typed B wins').toBe(parseHM('06:05'))
   })
@@ -45,9 +45,9 @@ describe('the brief time a scheduler indicates', () => {
     const f: any = firstForm(0)!
     const crew = f.aircraft[0].p
     f.br = ''
-    expect(legsOf(0, crew)[0].brief).toBe(parseHM(f.to) - VCONF.briefLead)
+    expect(legsOf(0, crew)[0].brief).toBe(parseHM(f.to)! - VCONF.briefLead)
     f.br = '  '
-    expect(legsOf(0, crew)[0].brief, 'whitespace is not a time either').toBe(parseHM(f.to) - VCONF.briefLead)
+    expect(legsOf(0, crew)[0].brief, 'whitespace is not a time either').toBe(parseHM(f.to)! - VCONF.briefLead)
   })
 
   /* A shift is not a sortie: it briefs nothing, and every consumer gates on
@@ -72,7 +72,7 @@ describe('the brief time a scheduler indicates', () => {
        a seed crew member often flies twice, and the second leg's own window
        would keep catching the meeting */
     f.aircraft.push({ p: CREW, w: '', area: '', rmks: '', opts: {} })
-    const to = parseHM(f.to)
+    const to = parseHM(f.to)!
     /* a meeting two hours before T/O: inside the default 2h20 brief window,
        outside a 30-minute one */
     DAYS[0].ground = DAYS[0].ground || []
@@ -123,13 +123,13 @@ describe('the crew-rest anchor (owner worked examples)', () => {
        is what "left at 02:21" means. Deriving T/O from the landing instead
        produced an early-morning sortie that ended before midnight, cleared
        rest before the day even started, and silently raised no warning. */
-    prev.to = '20:00'; prev.ld = hhmmOf(parseHM(leftAt) - VCONF.debrief)
+    prev.to = '20:00'; prev.ld = hhmmOf(parseHM(leftAt)! - VCONF.debrief)
     const today: any = firstForm(1)!
     today.aircraft.push({ p: CREW, w: '', area: '', rmks, opts: {} })
     today.br = brief
     /* T/O matters because the latest show is measured back from it, so the
        cases state it rather than inheriting whatever the seed line flies */
-    if (to) { today.to = to; today.ld = hhmmOf(parseHM(to) + 85) }
+    if (to) { today.to = to; today.ld = hhmmOf(parseHM(to)! + 85) }
     const wave = DAYS[1].waves.find((w: any) => (w.formations || []).includes(today))
     wave.intimes = [`${today.cs} IN TIME ${inTime.replace(':', '')}H`]
     validate()
