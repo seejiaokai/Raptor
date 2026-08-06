@@ -267,9 +267,11 @@ name glowing. Clicking blank space clears everything (`selDrop`).
 ## Jumping from a warning to the puck that caused it
 
 Four surfaces flag aircrew, and all four navigate (owner, 5 Aug 26). A warning
-knows only `(di, who[])` — `validate()` stores no slot or row key — so the
-address every surface passes is `data-wdi`/`data-wix`, the day index and the
-index into `WARN.byDay[di].warns`:
+carries `(di, who[])` and, since Aug 26, an optional **anchor** `key` — the
+slot-key of the line that caused it (see below). The address every surface
+passes is still `data-wdi`/`data-wix`, the day index and the index into
+`WARN.byDay[di].warns`; the anchor rides along in `WFOCUS.key` when the
+warning is focused:
 
 - **The week's issue rows** (`.witem[data-wdi]`, inside an expanded `.dwbox`)
   go through `focusWarn`, which **toggles** — right for a list you are already
@@ -306,14 +308,42 @@ severity — a man carrying both a conflict and a pairing problem shows `C` and
 lands on whichever the engine emitted first of the two hard warnings. Both are
 one click away in the day's issue list either way.
 
-**Which puck wins.** One named person is the first puck in document order.
-Two or more is the crew-combination family, where `who` is the pilot AND the
-WSO of one aircraft — there `scrollToWarnFocus` prefers the candidate whose
-nearest ancestor holding two of the named people is shallowest, which finds
-`.acrow` on the week and `.sb-line` on the board without naming either class.
-Where no two of them share a row at all, it falls back to document order:
-only a REAL co-location may score, or the winner is just whichever puck sits
-shallowest in the page, which is not a fact about the schedule.
+**The anchor: a warning knows the line that caused it.** `add()` in
+`validate.ts` takes an optional 5th argument — the slot-key (or key prefix) of
+the **first item the warning's message names**, which is the item that caused
+the flagging (owner, 6 Aug 26): `NO_BRIEF` anchors on the flagged person's own
+seat in the flight line (`di.gi.li.ai.p|w`), `SIM_BRIEF` on the sim row that
+briefs (`s:di.kind.ri`), `DOUBLE_BOOK` on the first-named clashing event,
+the crew-pairing family on the aircraft (`di.gi.li.ai`), formation-wide
+warnings (`OCU_NO_IP`, `SC_QUAL`…) on the formation (`di.gi.li`).
+Day-spanning warnings (`DT_SUM`, `LONGDAY`, `DAYS_RUN`) carry none. The keys
+come off `collectEvents`, which stamps every event it emits with the key of
+the row it came from (`fly`/`acs`/`forms`/`simwin`/duty/ground/programme all
+carry `key`; flying `events` keep their original `slot` field — `avail.ts`
+depends on that name). `add()`'s dedup string deliberately excludes the key:
+first add wins and keeps the first item's anchor. `parity.test.ts` strips
+`key` from BOTH sides of the reference comparison; the keys are pinned
+positively in `validate.test.ts` ("warnings carry the causing line's
+slot-key").
+
+**Which puck wins.** The anchor first: `anchorEl` (exported from
+`highlights.ts`) finds the element whose `data-slot`/`data-fill` equals the
+key or extends it through a `.` — segment-safe, so `s:0.oft.1` can never
+claim `s:0.oft.12.p` — then `closest('.acrow,.pl-row,.ah-row,.sb-line,.sb-arow')`
+recovers the row and the flagged person's puck INSIDE that row is the
+destination (the row element itself when the name is only free text there).
+The board renders every section under the same keys, so anchors resolve there
+too. Preview (`pv`) markup emits no `data-slot`, so an anchor never resolves
+into a frozen version. When the anchor is missing or stale (WARN is rebuilt
+wholesale; a held focus can outlive its line), the pre-anchor heuristic runs
+verbatim: one named person is the first puck in document order. Two or more
+is the crew-combination family, where `who` is the pilot AND the WSO of one
+aircraft — there `scrollToWarnFocus` prefers the candidate whose nearest
+ancestor holding two of the named people is shallowest, which finds `.acrow`
+on the week and `.sb-line` on the board without naming either class. Where no
+two of them share a row at all, it falls back to document order: only a REAL
+co-location may score, or the winner is just whichever puck sits shallowest
+in the page, which is not a fact about the schedule.
 
 **`.availpuck` is never a destination.** The Available-crew block is a derived
 list of who is FREE that hour, so no warning can originate there, and it is a

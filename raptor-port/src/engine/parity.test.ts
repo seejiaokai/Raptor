@@ -24,6 +24,20 @@ beforeAll(async () => { w = await refWindow(); REFN = w.eval('DAYS.length') })
 const byDay = (o: any) => Object.fromEntries(
   Object.entries(JSON.parse(JSON.stringify(o))).filter(([k]) => +k < REFN))
 
+/* The port's warnings and events carry an anchor `key` (the slot-key of the
+   line that caused the flag, so a warning click pans to it) that the reference
+   never emits. Same idiom as the week bound above: excise the divergence from
+   BOTH sides — every new field is deliberately named `key` so one excision
+   covers them all — and pin the keys POSITIVELY in validate.test.ts
+   ("warnings carry the causing line's slot-key"), so they are checked, not
+   merely tolerated. */
+const stripKeys = (o: any): any => {
+  if (Array.isArray(o)) return o.map(stripKeys)
+  if (o && typeof o === 'object')
+    return Object.fromEntries(Object.entries(o).filter(([k]) => k !== 'key').map(([k, v]) => [k, stripKeys(v)]))
+  return o
+}
+
 describe('engine parity with the reference', () => {
   it('the reference is the 5-day week this comparison is bounded to', () => {
     expect(REFN).toBe(5)
@@ -31,8 +45,8 @@ describe('engine parity with the reference', () => {
   })
 
   it('collectEvents matches the reference exactly', () => {
-    expect(JSON.parse(JSON.stringify(collectEvents().slice(0, REFN))))
-      .toEqual(JSON.parse(JSON.stringify(w.collectEvents())))
+    expect(stripKeys(JSON.parse(JSON.stringify(collectEvents().slice(0, REFN)))))
+      .toEqual(stripKeys(JSON.parse(JSON.stringify(w.collectEvents()))))
   })
 
   it('validate produces identical WARN {all, byDay, sev, chip}', () => {
@@ -40,9 +54,9 @@ describe('engine parity with the reference', () => {
     const port = validate()
     /* `all` is a flat list, so it is filtered by the day each warning names
        rather than sliced; every warning carries its di. */
-    const allTo = (a: any) => JSON.parse(JSON.stringify(a)).filter((x: any) => x.di == null || x.di < REFN)
+    const allTo = (a: any) => stripKeys(JSON.parse(JSON.stringify(a)).filter((x: any) => x.di == null || x.di < REFN))
     expect(allTo(port.all)).toEqual(allTo(ref.all))
-    expect(JSON.parse(JSON.stringify(port.byDay.slice(0, REFN)))).toEqual(JSON.parse(JSON.stringify(ref.byDay)))
+    expect(stripKeys(JSON.parse(JSON.stringify(port.byDay.slice(0, REFN))))).toEqual(stripKeys(JSON.parse(JSON.stringify(ref.byDay))))
     expect(byDay(port.sev)).toEqual(byDay(ref.sev))
     expect(byDay(port.chip)).toEqual(byDay(ref.chip))
     expect(WARN).toBe(port)
@@ -53,7 +67,7 @@ describe('engine parity with the reference', () => {
   it('REST and EVD publish identically', () => {
     validate(); w.validate()
     expect(byDay(REST)).toEqual(byDay(JSON.parse(w.eval('JSON.stringify(REST)'))))
-    expect(byDay(EVD)).toEqual(byDay(JSON.parse(w.eval('JSON.stringify(EVD)'))))
+    expect(stripKeys(byDay(EVD))).toEqual(stripKeys(byDay(JSON.parse(w.eval('JSON.stringify(EVD)')))))
   })
 
   it('seed data matches (DAYS) and day badges agree', () => {

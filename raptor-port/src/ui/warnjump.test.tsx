@@ -17,6 +17,7 @@ import { validate, WARN } from '../engine/validate'
 import { personWarns } from '../engine/avail'
 import * as view from '../state/view'
 import { openScheduler } from './board'
+import { anchorEl } from './highlights'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -325,5 +326,127 @@ describe('the Available-crew list is never the destination (edit week)', () => {
       }
       await act(async () => { view.selDrop(); notify() })
     }
+  })
+})
+
+/* ---- the anchored line wins ------------------------------------------------
+   Warnings now carry the causing line's slot-key (validate.ts add()'s 5th
+   argument — "the first item named in the message"), and warnTarget prefers
+   the flagged person's puck INSIDE that line. The owner's cases, pinned:
+   "no time for the flight brief" → the flight line, not the sim/duty row that
+   ate the brief (or wherever the name happens to appear first in document
+   order); "no time for the OFT brief" → the OFT row; a clash → the
+   first-named item's line. These run on the EDIT week (the previous describe
+   navigated there), which also renders the Available-crew grid — so they
+   double as proof the anchor can never land there: the free-crew pucks carry
+   no data-slot. */
+describe('the anchored line wins', () => {
+  /* find a warning of `code` whose row can be clicked on the edit week */
+  const findWarn = (pred: (w: any) => boolean) => {
+    let hit: any = null
+    WARN.byDay.forEach((g: any, di: number) => {
+      if (hit || !g || !g.warns) return
+      g.warns.forEach((w: any, ix: number) => { if (!hit && pred(w)) hit = { di, ix, w } })
+    })
+    return hit
+  }
+  const jump = async (hit: any) => {
+    await act(async () => { view.selDrop(); view.setBoardDay(null); view.toggleDayWarn(hit.di); notify() })
+    const row = $(`#eWeek .day[data-day="${hit.di}"] .witem[data-wix="${hit.ix}"]`)
+    expect(row, 'the issue row is on screen').toBeTruthy()
+    scrolled.length = 0
+    await click(row)
+    await flush()
+    return scrolled[scrolled.length - 1] as HTMLElement
+  }
+  /* the row containing the anchor key — segment-safe, same rule as anchorEl */
+  const rowOf = (day: Element, key: string) =>
+    [...day.querySelectorAll('[data-slot],[data-fill]')]
+      .find((el: any) => { const k = el.dataset.slot || el.dataset.fill
+        return k === key || (k && k.indexOf(key + '.') === 0) })
+      ?.closest('.acrow,.pl-row,.ah-row')
+
+  it('NO_BRIEF pans to the flagged person\'s seat in the FLIGHT line', async () => {
+    const hit = findWarn((w: any) => w.code === 'NO_BRIEF')
+    expect(hit, 'the seed week has a NO_BRIEF').toBeTruthy()
+    const tgt = await jump(hit)
+    expect(tgt, 'it scrolled somewhere').toBeTruthy()
+    expect(tgt.dataset.person, 'the destination is the flagged person\'s puck').toBe(hit.w.who[0])
+    /* ...and specifically the puck sitting in the anchored seat's aircraft row,
+       not wherever the name appears first in the day's markup */
+    const row = tgt.closest('.acrow')
+    expect(row, 'the destination is a flight line').toBeTruthy()
+    expect(row!.querySelector(`[data-slot="${hit.w.key}"]`),
+      `the line holds the anchored seat ${hit.w.key}`).toBeTruthy()
+  })
+
+  it('SIM_BRIEF pans to the sim row that briefs', async () => {
+    const hit = findWarn((w: any) => w.code === 'SIM_BRIEF')
+    expect(hit, 'the seed week has a SIM_BRIEF').toBeTruthy()
+    const tgt = await jump(hit)
+    expect(tgt, 'it scrolled somewhere').toBeTruthy()
+    const day = $(`#eWeek .day[data-day="${hit.di}"]`)
+    const want = rowOf(day, hit.w.key)
+    expect(want, `the day renders the anchored sim row ${hit.w.key}`).toBeTruthy()
+    expect(want!.contains(tgt), 'the destination sits inside that sim row').toBe(true)
+  })
+
+  it('DOUBLE_BOOK pans to the first-named clashing item\'s line', async () => {
+    const hit = findWarn((w: any) => w.code === 'DOUBLE_BOOK' && !!w.key)
+    expect(hit, 'the seed week has a DOUBLE_BOOK').toBeTruthy()
+    const tgt = await jump(hit)
+    expect(tgt, 'it scrolled somewhere').toBeTruthy()
+    const day = $(`#eWeek .day[data-day="${hit.di}"]`)
+    const want = rowOf(day, hit.w.key)
+    expect(want, `the day renders the anchored line ${hit.w.key}`).toBeTruthy()
+    expect(want!.contains(tgt), 'the destination sits inside the first-named item\'s line').toBe(true)
+  })
+
+  it('the board surface resolves the same anchors in its own panels', async () => {
+    const hit = findWarn((w: any) => w.code === 'SIM_BRIEF')
+    expect(hit, 'the seed week has a SIM_BRIEF').toBeTruthy()
+    await act(async () => { view.selDrop(); openScheduler(hit.di); notify() })
+    scrolled.length = 0
+    await click($(`#sbWarn .wln[data-wix="${hit.ix}"]`))
+    await flush()
+    const tgt = scrolled[scrolled.length - 1] as HTMLElement
+    expect(tgt, 'it scrolled somewhere').toBeTruthy()
+    expect(tgt.closest('.sb-boardwrap'), 'inside the board, never the roster').toBeTruthy()
+    expect(tgt.closest('#sbRoster')).toBeFalsy()
+    const row = tgt.closest('.sb-arow')
+    expect(row, 'the destination is a board sim row').toBeTruthy()
+    expect([...row!.querySelectorAll('[data-slot],[data-fill]')].some((el: any) => {
+      const k = el.dataset.slot || el.dataset.fill
+      return k === hit.w.key || (k && k.indexOf(hit.w.key + '.') === 0)
+    }, ), `the row speaks the anchored key ${hit.w.key}`).toBe(true)
+    await act(async () => { view.setBoardDay(null); notify() })
+  })
+
+  it('an unresolvable key falls back to the old rule, verbatim', async () => {
+    const hit = findWarn((w: any) => (w.who || []).length === 1)
+    expect(hit, 'a one-person warning to test with').toBeTruthy()
+    /* WARN is live state; a key can go stale the moment an edit rebuilds it.
+       Simulate exactly that: point the warning at a line that no longer exists. */
+    const saved = hit.w.key
+    hit.w.key = '9.9.9.9.p'
+    try {
+      const tgt = await jump(hit)
+      expect(tgt, 'it still scrolled').toBeTruthy()
+      /* the old rule: the first puck of the named person in document order,
+         Available-crew grid excluded */
+      const day = $(`#eWeek .day[data-day="${hit.di}"]`)
+      const want = [...day.querySelectorAll(`.puck[data-person="${hit.w.who[0]}"]`)]
+        .find(p => !p.closest('.availpuck'))
+      expect(tgt, 'the fallback is today\'s behaviour exactly').toBe(want)
+    } finally { hit.w.key = saved }
+  })
+
+  it('the anchor match is segment-safe: a row prefix never claims a longer index', () => {
+    const root = document.createElement('div')
+    root.innerHTML = '<span data-slot="s:0.oft.12.p"></span><span data-slot="s:0.oft.1.p"></span>'
+    expect((anchorEl(root, 's:0.oft.1') as any)?.dataset.slot).toBe('s:0.oft.1.p')
+    expect((anchorEl(root, 's:0.oft.12') as any)?.dataset.slot).toBe('s:0.oft.12.p')
+    expect(anchorEl(root, 's:0.oft.3')).toBeNull()
+    expect(anchorEl(root, null)).toBeNull()
   })
 })

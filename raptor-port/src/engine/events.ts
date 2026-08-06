@@ -51,11 +51,14 @@ export function collectEvents(){
             return;}
           /* night for AAR purposes: the wave says so, or the sortie itself runs
              past 19:00 between take-off and landing */
-          acs.push({p:a.p,w:a.w,rmks:a.rmks,aar:aarNeed(a.rmks,!!w.night||ldM>19*60)});
+          /* key = the aircraft's slot-key prefix, captured HERE because acs
+             excludes CX'd and spare aircraft — ai is not recoverable by
+             position later. Warnings anchor on it to pan to the line. */
+          acs.push({p:a.p,w:a.w,rmks:a.rmks,aar:aarNeed(a.rmks,!!w.night||ldM>19*60),key:`${di}.${gi}.${li}.${ai}`});
           [['FCP',a.p],['RCP',a.w]].forEach((pair:any)=>{ const seat=pair[0],id=pair[1]; if(!id||isSpecial(id))return;
             if(seat==='FCP')fcps.push(id);
             fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,
-              shift:shiftLine,label:`${f.cs} ${f.msn}`});
+              shift:shiftLine,label:`${f.cs} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
             /* the slot key this event came off — so the crew picker can ask
                "is he busy at this hour" without counting the very slot it is
                about to plant him into (he occupies it in a swap or a re-test) */
@@ -67,7 +70,7 @@ export function collectEvents(){
            currency can be checked against it */
         forms.push({label:`${f.cs} ${f.msn}`,cs:f.cs,fcps,acs,
           sc:isStandalone(w)&&w.kind==='sc', shift:f.msn||f.shift||'', s:toM, e:ldM,
-          allCrew:[...new Set(allCrew)], spareCrew:[...new Set(spareCrew)]});
+          allCrew:[...new Set(allCrew)], spareCrew:[...new Set(spareCrew)],key:`${di}.${gi}.${li}`});
       });
     });
     ['amt','oft'].forEach((k:any)=>((d.sims&&d.sims[k])||[]).forEach((s:any,ri:any)=>{ if(s.cx)return;
@@ -81,7 +84,7 @@ export function collectEvents(){
          dropped underneath the row (more[]) are as tasked as the two in seats. */
       const sw=win(st,en,90); if(!sw)return;
       [s.p,s.w,nameToId(s.who)].concat(s.pax||[]).concat(s.more||[])
-        .forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim'}); }); }));
+        .forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim',key:'s:'+di+'.'+k+'.'+ri}); }); }));
     /* ---- sim brief / debrief windows -------------------------------------
        An EP profile on the OFT briefs 15 min before the box — unless its
        remarks name their own lead (briefLeadOf above), which wins for that
@@ -93,11 +96,11 @@ export function collectEvents(){
     const simwin:any[]=[];
     const isB=(r:any)=>/^\s*BRIEF/i.test(r.label||''), isD=(r:any)=>/DEBRIEF/i.test(r.label||'');
     const rowIds=(r:any)=>[r.p,r.w,nameToId(r.who)].concat(r.pax||[]).concat(r.more||[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id));
-    ((d.sims&&d.sims.oft)||[]).forEach((s:any)=>{ if(s.cx)return; if(!/EP/i.test(s.label||''))return;
+    ((d.sims&&d.sims.oft)||[]).forEach((s:any,ri:any)=>{ if(s.cx)return; if(!/EP/i.test(s.label||''))return;
       const st=parseHM(s.str); if(st==null)return;
       const en=parseHM(s.end)!=null?parseHM(s.end):st+90, ids=rowIds(s); if(!ids.length)return;
       const lead=briefLeadOf(s.rmks);
-      simwin.push({ids,label:'OFT '+(s.label||'sim'),bs:st-(lead!=null?lead:VCONF.epBrief),be:st,ds:en,de:en+VCONF.simDebrief}); });
+      simwin.push({ids,label:'OFT '+(s.label||'sim'),bs:st-(lead!=null?lead:VCONF.epBrief),be:st,ds:en,de:en+VCONF.simDebrief,key:`s:${di}.oft.${ri}`}); });
     (()=>{ const rows=((d.sims&&d.sims.amt)||[]).filter((r:any)=>!r.cx); if(!rows.length)return;
       const box=rows.filter((r:any)=>!isB(r)&&!isD(r));
       const ids=[...new Set(box.reduce((a:any,r:any)=>a.concat(rowIds(r)),[]))]; if(!ids.length)return;
@@ -106,38 +109,41 @@ export function collectEvents(){
       const boxStart=box.reduce((m:any,r:any)=>{const t=parseHM(r.str);return t!=null&&(m==null||t<m)?t:m;},null);
       const boxEnd=box.reduce((m:any,r:any)=>{const t=parseHM(r.end)!=null?parseHM(r.end):parseHM(r.str);return t!=null&&(m==null||t>m)?t:m;},null);
       const ds=dr?parseHM(dr.str):boxEnd;
+      /* the AMT block anchors on its BRIEF row if it has one, else the first
+         box row; indexOf against the MODEL array recovers the true ri because
+         `rows` was filtered (cx dropped) */
       simwin.push({ids,label:'AMT',
         bs:bs!=null?bs:null, be:bs!=null?(boxStart!=null?boxStart:bs):null,
-        ds:ds!=null?ds:null, de:ds!=null?ds+VCONF.amtDebrief:null}); })();
+        ds:ds!=null?ds:null, de:ds!=null?ds+VCONF.amtDebrief:null,key:'s:'+di+'.amt.'+d.sims.amt.indexOf(br||box[0])}); })();
     /* every body on a row counts, not just the one in its primary seat: the
        extras dropped underneath (row.more) were invisible to the engine, so a
        man added to a duty could fly straight through it unflagged. */
     /* kind matters now: a shift clashing with a duty post is a Warning, with a
        ground event or a programme item only an Advisory. */
-    const push=(id:any,st:any,en:any,label:any,kind:any)=>{
+    const push=(id:any,st:any,en:any,label:any,kind:any,key?:any)=>{
       if(!id||!PEOPLE[id]||isSpecial(id))return;
       const w2=win(st,en); if(!w2)return;
       /* the same man in the row's seat AND in its more[] is one commitment, not
          two — he used to be flagged as clashing with himself */
       if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label))return;
-      events.push({id,s:w2[0],e:w2[1],label,kind:kind||'other'});
+      events.push({id,s:w2[0],e:w2[1],label,kind:kind||'other',key});
     };
     const extras=(r:any)=>(r&&r.more)||[];
-    (d.dutywaves||[]).forEach((dw:any)=>dw.rows.forEach((r:any)=>{ if(r.cx||dw.noconf||r.noconf)return;
+    (d.dutywaves||[]).forEach((dw:any,dwi:any)=>dw.rows.forEach((r:any,ri:any)=>{ if(r.cx||dw.noconf||r.noconf)return;
       const st=parseHM(r.str),en=parseHM(r.end);
-      push(r.id,st,en,r.role+' duty','duty');
-      extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty')); }));
-    (d.ground||[]).forEach((g:any)=>{ if(g.cx)return;
+      push(r.id,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`);
+      extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`)); }));
+    (d.ground||[]).forEach((g:any,ri:any)=>{ if(g.cx)return;
       const st=parseHM(g.str),en=parseHM(g.end);
-      push(nameToId(g.who),st,en,g.prog,'ground');
-      extras(g).forEach((x:any)=>push(x,st,en,g.prog,'ground')); });
+      push(nameToId(g.who),st,en,g.prog,'ground',`g:${di}.${ri}`);
+      extras(g).forEach((x:any)=>push(x,st,en,g.prog,'ground',`g:${di}.${ri}`)); });
     /* the squadron-wide Programme was never read here at all — a man booked to
        a 0845–1630 engagement could be scheduled to fly at 1245 with nothing
        said about it */
-    (d.allhands||[]).forEach((x:any)=>{ if(x.cx)return;
+    (d.allhands||[]).forEach((x:any,ri:any)=>{ if(x.cx)return;
       const st=parseHM(x.str),en=parseHM(x.end);
-      whoArr(x).forEach((nm:any)=>push(nameToId(nm),st,en,x.prog||'programme','prog'));
-      extras(x).forEach((v:any)=>push(v,st,en,x.prog||'programme','prog')); });
+      whoArr(x).forEach((nm:any)=>push(nameToId(nm),st,en,x.prog||'programme','prog',`a:${di}.${ri}`));
+      extras(x).forEach((v:any)=>push(v,st,en,x.prog||'programme','prog',`a:${di}.${ri}`)); });
     const input=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&inputFlags(inp)).map((inp:any)=>({id:inp.person,s:inp.allday?0:inp.s,e:inp.allday?1439:inp.e,type:inp.type,remarks:inp.remarks}));
     return {di,dow:d.dow,dt:d.dt,fly,forms,input,events,simcrew,simwin};
   });

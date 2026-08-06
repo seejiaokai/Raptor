@@ -69,6 +69,22 @@ test:e2e` 17/17, and the two that are NOT in CI — `npm run probes:adapted`
   a small (900×600) viewport scrolling to the deepest-nested warning's puck.
   Contract: `docs/ui-contracts.md` §Jumping from a warning to the puck that
   caused it.
+- **A warning now anchors on the LINE that caused it (owner, 6 Aug 26).**
+  The jump above used to pick its destination by heuristic — the flagged
+  person's first puck in document order — so "no time for the flight brief"
+  could pan to the sim row that ate the brief instead of the flight line.
+  Warnings now carry an optional `key`: the slot-key of the **first item the
+  message names** (`add()`'s 5th argument in `validate.ts`; the event keys
+  come off `collectEvents`). `warnTarget` prefers the flagged person's puck
+  inside the anchored row on both the week and the board, segment-safe prefix
+  matching (`anchorEl` in `highlights.ts`), and falls back to the old
+  heuristic verbatim when the key is absent or stale. Day-spanning warnings
+  (`DT_SUM`, `LONGDAY`, `DAYS_RUN`) carry no anchor by design. Parity holds
+  by stripping `key` from both sides in `parity.test.ts` and pinning the keys
+  positively in `validate.test.ts`; the jump itself is pinned in
+  `warnjump.test.tsx` ("the anchored line wins") and one browser scenario in
+  `e2e/geometry.spec.ts` (a SIM_BRIEF lands the sim row on screen). Pan only —
+  the owner declined a row highlight on landing.
 - **The crew-pairing chip `CP` (owner, 5 Aug 26; renamed from `CC`, owner ask
   5 Aug 26).** The pairing rules (`CREW_SOLO`, `CO_APPROVAL`, `OCU_NO_IP`,
   `ILLEGAL_CREW`, `NO_IR`) used to ring a puck and caption nothing, which left

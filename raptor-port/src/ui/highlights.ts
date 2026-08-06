@@ -64,7 +64,27 @@ export function paintArm(){
   document.querySelectorAll('[data-slot],[data-fill]').forEach((el:any)=>{
     if((el.dataset.slot||el.dataset.fill)===ARM.key)el.classList.add('armed');});
 }
-/* Which puck to land on, given a warning names PEOPLE and never a seat.
+/* The element carrying the warning's anchor key — the seat (or append cell) of
+   the LINE that caused the flag. Segment-safe prefix match: a full key matches
+   itself, a row/aircraft prefix matches only through a following '.', so
+   's:0.oft.1' can never claim 's:0.oft.12.p'. Preview markup emits no
+   data-slot (slotCell/lSeat drop it under PV), so an anchor never resolves
+   into a frozen version — exactly the fallback we want there. */
+export function anchorEl(root:any,key:any){
+  if(!key)return null
+  for(const el of root.querySelectorAll('[data-slot],[data-fill]')){
+    const k=(el as any).dataset.slot||(el as any).dataset.fill
+    if(k===key||(k&&k.indexOf(key+'.')===0))return el as any
+  }
+  return null
+}
+/* Which puck to land on. Since warnings carry the causing line's slot-key,
+   the anchor wins when it resolves: land on the flagged person's puck INSIDE
+   that line (so "no time for the flight brief" pans to the flight line, not
+   the sim row that ate the brief), or on the row itself when the name is only
+   free text there. Everything below the anchor branch is the old heuristic,
+   kept verbatim as the fallback — a stale key after an edit, or a surface not
+   rendering that section, must behave exactly as before.
    One id is the old rule: the first puck of the first id, in document order.
    Two or more is the crew-combination family (ILLEGAL_CREW, CREW_SOLO,
    CO_APPROVAL, NO_IR) where `who` is the pilot AND the WSO of ONE aircraft —
@@ -74,7 +94,17 @@ export function paintArm(){
    board without naming either: hard-coding the row classes would mean six
    selectors across two surfaces and a list that rots the next time a section
    is added. */
-function warnTarget(root:any,ids:any[]){
+function warnTarget(root:any,ids:any[],key?:any){
+  const a=anchorEl(root,key)
+  if(a){
+    /* the seat's row: .acrow / .pl-row / .ah-row on the week, .sb-line /
+       .sb-arow on the board — the anchor element itself when the key sits
+       outside any of them */
+    const row=a.closest('.acrow,.pl-row,.ah-row,.sb-line,.sb-arow')||a
+    const pk=[...row.querySelectorAll('.puck[data-person]')]
+      .find((el:any)=>ids.includes(el.dataset.person))
+    return pk||row
+  }
   /* ONE query, so the candidates come back in document order — looping the ids
      instead would order by `who` and silently break the tie-break below.
      The Available-crew block is excluded outright: it is a derived list of who
@@ -116,7 +146,7 @@ export function scrollToWarnFocus(){
        planted today would resolve there and scroll the roster instead */
     : document.querySelector('#'+warnWeekId()+' .day[data-day="'+WFOCUS.di+'"]');
   if(!root)return;
-  const tgt=warnTarget(root,WFOCUS.ids)||root;
+  const tgt=warnTarget(root,WFOCUS.ids,WFOCUS.key)||root;
   /* The week is snap-scrolled (.week{scroll-snap-type:x mandatory} with
      .day{scroll-snap-align:start}), and inline:'center' asks to rest at a
      position that is NOT a snap point — the browser re-snaps afterwards to

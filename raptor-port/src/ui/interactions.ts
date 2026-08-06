@@ -31,7 +31,7 @@ function jumpToWarn(di: number, ix: number) {
   const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]
   if (!w) return                       // a stale index — validate() rebuilds WARN wholesale
   view.DWOPEN.clear(); view.DWOPEN.add(di)
-  view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev })
+  view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key })
   view.clearOtherHL()
   notify(); setTimeout(scrollToWarnFocus, 0)
 }
@@ -233,7 +233,7 @@ export function routeClick(e: MouseEvent) {
     const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]; if (!w) return
     setDayPop(null)
     view.DWOPEN.clear(); view.DWOPEN.add(di)
-    view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev })
+    view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key })
     view.clearOtherHL()
     notify(); setTimeout(scrollToWarnFocus, 0); e.stopPropagation(); return
   }
