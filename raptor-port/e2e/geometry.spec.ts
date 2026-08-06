@@ -219,6 +219,36 @@ test('a hole in a programme row renders no element at all', async ({ page }) => 
   expect(holed.lefts, 'so the pucks either side did not shift').toEqual(solid.lefts)
 })
 
+/* THE BOARD'S DUTY ROWS ON A PHONE (owner sweep, 6 Aug 26). `.sb-arow.c6r` is
+   two classes where the phone rule is one, and a media query adds no
+   specificity, so the six-column desktop template kept winning at 390px: the
+   ITEM column — the only thing saying WHICH duty a row is — collapsed to a
+   14px stub while START and END stayed perfectly legible beside it. Desktop
+   was always fine, which is why it went unseen. */
+test('the board\'s duty rows keep a readable ITEM column on a phone', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(1))
+  await page.waitForSelector('#schedBoard .sb-arow input.ain')
+
+  const m = await page.evaluate(() => {
+    const ins = [...document.querySelectorAll('#schedBoard .sb-arow.c6r input.ain')] as HTMLInputElement[]
+    const named = ins.filter(e => (e.value || '').trim().length > 2)
+    if (!named.length) return null
+    return {
+      /* nothing may be squeezed narrower than the text it holds */
+      worstOverflow: Math.max(...named.map(e => e.scrollWidth - e.clientWidth)),
+      narrowest: Math.min(...named.map(e => Math.round(e.getBoundingClientRect().width))),
+      columns: getComputedStyle(named[0].parentElement!).gridTemplateColumns.split(' ').length,
+    }
+  })
+  test.skip(!m, 'no named duty row on the seed board')
+  expect(m!.columns, 'the phone template is three columns, not the desktop six').toBe(3)
+  expect(m!.worstOverflow, 'the item name is not clipped by its own box').toBeLessThanOrEqual(0)
+  expect(m!.narrowest, 'and the item column is actually readable').toBeGreaterThan(80)
+})
+
 /* A CALLSIGN THAT DOES NOT FIT MUST LOOK CUT (owner sweep, 6 Aug 26). The rule
    asked for an ellipsis and never got one — `text-overflow` is ignored on a
    flex container — so a long name was hard-clipped and "Wrangler" read as

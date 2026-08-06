@@ -1876,6 +1876,16 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   .sb-arow .asub,.sb-arow .ppl,.sb-arow .lctl{grid-column:1 / -1}
   /* c6r's column 2 is Start (keep it), 4 is People (its header goes, the cell
      spans); the rmks input drops to its own full-width strip like .nts */
+  /* ...and c6r needs the phone TEMPLATE restated, not just its cells adjusted
+     (owner sweep, 6 Aug 26). `.sb-arow.c6r` is two classes to the phone rule's
+     one, and a media query adds no specificity of its own, so the desktop
+     six-column template kept winning down here: on a 390px phone that laid out
+     as 14px 52px 52px 96px 0px 92px, crushing column 1 — the ITEM name, the
+     one thing that says WHICH duty the row is — to a 14px stub, while START
+     and END stayed perfectly legible beside it. The cell tweaks below were
+     written for the three-column phone layout, so they were already assuming
+     this line existed. */
+  .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:1fr 46px 46px}
   .sb-acols.c6r>:nth-child(2){display:revert}
   .sb-acols.c6r>:nth-child(4){display:none}
   .sb-arow.c6r .rmkin{grid-column:1 / -1}
