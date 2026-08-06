@@ -2,6 +2,7 @@
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { minus } from '../engine/time'
+import { VCONF } from '../engine/rules'
 import { STORE_CFG } from './html'
 
 /* Excel does not sniff a .csv for UTF-8: with no byte-order mark it decodes the
@@ -28,7 +29,9 @@ export function schedRows() {
     const F = PEOPLE[a.p] || {}, W = PEOPLE[a.w] || {}, o = a.opts || {}
     const st = STORE_CFG.filter(([k]) => o[k]).map(([, lab]) => lab).concat(o.bombs ? [o.bombs] : []).join(' ')
     const at = f.atime != null ? f.atime : (a.area ? `${f.to.replace(':', '')}-${f.ld.replace(':', '')}` : '')
-    rows.push([d.dow, d.dt, w.label, f.cs, f.msn, minus(f.to, 140), f.to, f.ld, F.cs || '', F.q || '', W.cs || '', W.q || '', a.area || '', at, a.rmks || '', st])
+    /* live VCONF.briefLead, not a hard-coded 140 — the exported Brief column
+       has to agree with the rule the engine is validating against */
+    rows.push([d.dow, d.dt, w.label, f.cs, f.msn, minus(f.to, VCONF.briefLead), f.to, f.ld, F.cs || '', F.q || '', W.cs || '', W.q || '', a.area || '', at, a.rmks || '', st])
   }))))
   return rows
 }

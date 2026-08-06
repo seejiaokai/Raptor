@@ -167,6 +167,25 @@ describe('the airspace popup (tr: funnel)', () => {
     await click($('#airClose'))
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
+
+  /* The read-only branch used to interpolate the traffic string raw while the
+     admin branch three lines above it escaped — and airspace shorthand really
+     does carry a bare `<` ("<090 inbound"), which swallowed the rest of the
+     list for every member reading it. */
+  it('the read-only view escapes a traffic line — markup renders as text', async () => {
+    const key = $('#eWeek [data-air]')?.dataset.air || $('[data-air]')!.dataset.air!
+    const [di, gi] = key.split('|').map(Number)
+    const g = DAYS[di!].waves[gi!]
+    g.traffic = ['<b>INJECTED</b> / <090 inbound']
+    await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
+    await click($('#vWeek [data-air]') || $('[data-air]'))
+    const body = $('#airBody')
+    expect(body.querySelector('b'), 'the angle brackets stay text, not markup').toBeNull()
+    expect(body.textContent).toContain('<b>INJECTED</b> / <090 inbound')
+    await click($('#airClose'))
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    g.traffic = []
+  })
 })
 
 describe('the roster resize grip (B25)', () => {
