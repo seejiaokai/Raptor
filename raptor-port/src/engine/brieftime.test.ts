@@ -2,9 +2,10 @@
    formation and every brief-driven rule follows it; VCONF.briefLead is only
    the default the board suggests, and a blank line is still checked against
    that suggestion. Crew rest anchors on the earlier of the in-time and the
-   brief — unless the aircraft's remarks say the crew shows at the brief, in
-   which case the brief alone anchors it. That is an exemption from the
-   IN-TIME, never from crew rest itself.
+   brief, for everyone. A `late show` remark does not move that anchor and
+   does not excuse the breach — it is still a red warning, counted — it
+   changes the RING: dashed while the crew still clears rest by the latest
+   show (VCONF.showLead before T/O), solid once they cannot make the jet.
 
    Snapshot/restore pattern lifted from engine/insights.test.ts so mutating
    DAYS here cannot leak into another test file. */
@@ -85,7 +86,7 @@ describe('the brief time a scheduler indicates', () => {
   })
 })
 
-describe('late show — an exemption from the in-time, not from crew rest', () => {
+describe('the late-show remark', () => {
   it('the remark parser reads the squadron phrasings and nothing else', () => {
     expect(lateShowOf('2A: LATE SHOW')).toBe(true)
     expect(lateShowOf('2A: show at brief')).toBe(true)
@@ -106,9 +107,9 @@ describe('late show — an exemption from the in-time, not from crew rest', () =
   })
 })
 
-/* The owner's worked examples, run against the real engine. Day 1 is used so
-   there is a previous day to have flown; both cases plant the same crew on a
-   late-finishing sortie the day before. */
+/* The owner's table, run against the real engine. Day 1 is used so there is a
+   previous day to have flown; every case plants the same otherwise-idle crew
+   on a late-finishing sortie the day before. */
 describe('the crew-rest anchor (owner worked examples)', () => {
   /* "the crew left at X" is the end of their working day, which the engine
      takes as landing + the 2h debrief — so the previous sortie lands 2h
@@ -117,56 +118,103 @@ describe('the crew-rest anchor (owner worked examples)', () => {
   const runCase = (leftAt: string, inTime: string, brief: string, rmks: string, to?: string) => {
     const prev: any = firstForm(0)!
     prev.aircraft.push({ p: CREW, w: '', area: '', rmks: '', opts: {} })
-    const ldPrev = hhmmOf(parseHM(leftAt) - VCONF.debrief)
-    prev.ld = ldPrev; prev.to = hhmmOf(parseHM(ldPrev) - 85)
+    /* the previous sortie takes off in the evening and lands `leftAt` minus
+       the debrief — so a finish after midnight WRAPS into the next day, which
+       is what "left at 02:21" means. Deriving T/O from the landing instead
+       produced an early-morning sortie that ended before midnight, cleared
+       rest before the day even started, and silently raised no warning. */
+    prev.to = '20:00'; prev.ld = hhmmOf(parseHM(leftAt) - VCONF.debrief)
     const today: any = firstForm(1)!
     today.aircraft.push({ p: CREW, w: '', area: '', rmks, opts: {} })
     today.br = brief
-    /* T/O matters now that a late show anchors on T/O − showLead, so the
+    /* T/O matters because the latest show is measured back from it, so the
        cases state it rather than inheriting whatever the seed line flies */
     if (to) { today.to = to; today.ld = hhmmOf(parseHM(to) + 85) }
     const wave = DAYS[1].waves.find((w: any) => (w.formations || []).includes(today))
     wave.intimes = [`${today.cs} IN TIME ${inTime.replace(':', '')}H`]
     validate()
-    return WARN.byDay[1].warns.some((w: any) => w.code === 'CREW_REST' && (w.who || []).includes(CREW))
+    const w = WARN.byDay[1].warns.find((x: any) => x.code === 'CREW_REST' && (x.who || []).includes(CREW))
+    return {
+      flagged: !!w, sev: w && w.sev, msg: (w && w.msg) || '',
+      leaveBy: w && w.leaveBy, prevDi: w && w.prevDi,
+      /* the ring style is published per person, not on the warning row —
+         a chip carries no stroke of its own */
+      dashed: !!(WARN.dash && WARN.dash[1] && WARN.dash[1][CREW]),
+    }
   }
 
-  it('in-time 11:00 with a 12:00 brief, off a midnight finish, breaches', () => {
-    /* left 00:00 → rest clears 12:00; the in-time is the earlier anchor and
-       11:00 is inside it */
-    expect(runCase('00:00', '11:00', '12:00', '2A: BFM-5', '14:20')).toBe(true)
+  /* The owner's table, in his own numbers: in-time 12:00, brief 13:00,
+     T/O 15:20 — so rest must be clear by 12:00, and the latest show is 14:20.
+     `left` is when the previous day ENDED (landing + the 2h debrief). */
+  const TABLE = { inTime: '12:00', brief: '13:00', to: '15:20' }
+  const run = (left: string, rmks: string) =>
+    runCase(left, TABLE.inTime, TABLE.brief, rmks, TABLE.to)
+
+  it('exactly 12 hours is legal — the boundary is not a breach', () => {
+    /* left 00:00 → rest clears 12:00, which is the in-time itself */
+    expect(run('00:00', '2A: BFM-5').flagged).toBe(false)
+    expect(run('00:00', '2A: LATE SHOW').flagged).toBe(false)
   })
 
-  it('a late-show remark clears it — the in-time no longer anchors him', () => {
-    expect(runCase('00:00', '11:00', '12:00', '2A: LATE SHOW', '14:20')).toBe(false)
+  it('inside the window it is red with a SOLID ring', () => {
+    for (const left of ['00:01', '01:30', '02:20']) {
+      const r = run(left, '2A: BFM-5')
+      expect(r.flagged, `left ${left}`).toBe(true)
+      expect(r.sev, `left ${left}`).toBe('hard')
+      expect(r.dashed, `left ${left} rings solid`).toBe(false)
+    }
   })
 
-  /* the revision (owner, 6 Aug 26): a late show is excused past the BRIEF too,
-     so rest expiring after brief time is no longer a breach on its own */
-  it('a late show is excused past the brief itself', () => {
-    /* left 00:30 → rest clears 12:30, after the 12:00 brief. T/O 14:20 puts
-       the latest show at 13:20, which he still makes. */
-    expect(runCase('00:30', '11:00', '12:00', '2A: LATE SHOW', '14:20')).toBe(false)
-    /* without the remark the same line breaches, because the in-time anchors */
-    expect(runCase('00:30', '11:00', '12:00', '2A: BFM-5', '14:20')).toBe(true)
+  it('a sanctioned late show rings DASHED — still red, still counted', () => {
+    for (const left of ['00:01', '01:30', '02:20']) {
+      const r = run(left, '2A: LATE SHOW')
+      expect(r.flagged, `left ${left}`).toBe(true)
+      expect(r.sev, `left ${left} is still a hard warning`).toBe('hard')
+      expect(r.dashed, `left ${left} rings dashed`).toBe(true)
+      expect(r.msg).toContain('still makes the 14:20 show')
+    }
   })
 
-  it('but never past the latest show — he cannot make the flight', () => {
-    /* left 00:30 → rest clears 12:30. T/O 13:00 puts the latest show at 12:00,
-       and he is still resting then: hard breach, remark or not. */
-    expect(runCase('00:30', '11:00', '12:00', '2A: LATE SHOW', '13:00')).toBe(true)
+  it('past the latest show it rings SOLID again — he cannot make the flight', () => {
+    for (const left of ['02:21', '04:00']) {
+      const r = run(left, '2A: LATE SHOW')
+      expect(r.flagged, `left ${left}`).toBe(true)
+      expect(r.dashed, `left ${left} is past 14:20, so solid`).toBe(false)
+      expect(r.msg).toContain('Late show cannot save it')
+      /* and without the remark it is solid for the ordinary reason */
+      expect(run(left, '2A: BFM-5').dashed).toBe(false)
+    }
   })
 
-  it('the latest-show line is the editable rule, not a hard-coded hour', () => {
+  it('the dashed/solid boundary is the editable latest-show rule', () => {
     const orig = VCONF.showLead
     try {
-      /* T/O 13:00, rest clearing 12:30: he makes a 60-minute show (12:00) but
-         not a 15-minute one (12:45) */
+      /* 02:21 clears rest at 14:21 — past a 60-minute show (14:20), inside a
+         120-minute one (13:20)... which makes it worse, so widen the other
+         way: a 30-minute show puts the line at 14:50 and he makes it */
       VCONF.showLead = 60
-      expect(runCase('00:30', '11:00', '12:00', '2A: LATE SHOW', '13:00')).toBe(true)
-      VCONF.showLead = 120
-      expect(runCase('00:30', '11:00', '12:00', '2A: LATE SHOW', '15:00')).toBe(false)
+      expect(run('02:21', '2A: LATE SHOW').dashed).toBe(false)
+      VCONF.showLead = 30
+      expect(run('02:21', '2A: LATE SHOW').dashed).toBe(true)
     } finally { VCONF.showLead = orig }
+  })
+
+  /* the previous-day trace: the warning must say when he had to leave, and
+     name the day it is measured from, so the UI needs no second derivation */
+  it('names the leave-by time and the previous day', () => {
+    const r = run('01:30', '2A: BFM-5')
+    /* anchor 12:00 − 12h = 00:00 the previous day */
+    expect(r.leaveBy).toBe('00:00')
+    expect(r.msg).toContain('so he had to leave by 00:00')
+    expect(r.prevDi).toBe(0)
+  })
+
+  it("the owner's 23:30 landing example reads as he described it", () => {
+    /* lands 23:30 → ends 01:30 with the debrief; next day's in-time 12:00
+       means he had to be gone by 00:00 */
+    const r = runCase('01:30', '12:00', '13:00', '2A: BFM-5', '15:20')
+    expect(r.flagged).toBe(true)
+    expect(r.leaveBy).toBe('00:00')
   })
 })
 

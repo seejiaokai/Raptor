@@ -50,7 +50,7 @@ export const SEVWORD:any={hard:'Warning',adv:'Advisory',note:'Note'};
    set to right now. Without this an edited rule leaves stale numbers behind in
    tooltips and warning lists — the engine says 10h, the chip still says 12h. */
 export const wlbl=(s:any)=>String(s==null?'':s).replace(/\{(\w+)\}/g,(m:any,k:any)=>k in VCONF?lgT(VCONF[k]):m);
-export let WARN:any={all:[],byDay:[],sev:{},chip:{}};
+export let WARN:any={all:[],byDay:[],sev:{},chip:{},dash:{}};
 /* when crew rest expires today, per day index, per person — minutes into the
    day. Filled by validate(); read by the crew picker so an SC slot can be
    closed to anyone who is not yet clear of the previous day. */
@@ -63,13 +63,17 @@ export function restClear(di:any,id:any){const m=REST[di]; const v=m&&m[id]; ret
 export let EVD:any={};
 export function dayEvents(di:any,id:any){const m=EVD[di]; return (m&&m[id])||[];}
 export function validate(){
-  const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={};
+  const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={};
   REST={}; EVD={};
   /* ring precedence: red beats orange beats grey, so a person carrying both a
      long day and a conflict still shows the conflict ring. */
   const SEVR:any={note:1,adv:2,hard:3};
   const markRing=(di:any,id:any,s:any)=>{sev[di]=sev[di]||{}; const c=sev[di][id]; if(!c||SEVR[s]>SEVR[c])sev[di][id]=s;};
   const markChip=(di:any,id:any,c:any)=>{chip[di]=chip[di]||{}; if(!chip[di][id]||RANK[c]>RANK[chip[di][id]])chip[di][id]=c;};
+  /* the ring STYLE, which a chip cannot carry: a sanctioned late show rings
+     dashed while still counting as the hard warning it is (owner, 6 Aug 26).
+     Separate from sev because it is orthogonal — same red, different stroke. */
+  const markDash=(di:any,id:any)=>{dash[di]=dash[di]||{}; dash[di][id]=true;};
   const dur=(m:any)=>`${Math.floor(m/60)}h${String(Math.round(m%60)).padStart(2,'0')}`;
   /* CONSECUTIVE WORKING DAYS (owner, Aug 26) — nobody may be on the programme
      more than VCONF.maxRun days without a break day. Counted in day order off
@@ -98,9 +102,9 @@ export function validate(){
        warning pans to the line that caused it (di.gi.li.ai[.p|w] flying,
        s:/d:/g:/a: rows). Optional — day-spanning warnings carry none. The dedup
        string k stays key-free: first add wins and keeps the first item's key. */
-    const add=(s:any,code:any,who:any,msg:any,key?:any)=>{who=who.filter(Boolean);
+    const add=(s:any,code:any,who:any,msg:any,key?:any,extra?:any)=>{who=who.filter(Boolean);
       const k=code+'|'+who.join(',')+'|'+msg; if(seen.has(k))return; seen.add(k);
-      const w={sev:s,code,who,day:day.dow,di,msg,key};ws.push(w);all.push(w);};
+      const w={sev:s,code,who,day:day.dow,di,msg,key,...(extra||{})};ws.push(w);all.push(w);};
     const kOf=(e:any)=>e&&(e.slot||e.key)||null;   // byE events carry slot (fly/shift) or key (the rest)
     /* An SC / AVALON / BB line is a SHIFT, not a sortie. Its crew still count
        as tasked and are still checked for clashes and qualification, but a
@@ -315,15 +319,13 @@ export function validate(){
          `e.to-VCONF.briefLead` here would ignore a typed B and quietly
          disagree with the brief window the same engine flags against.
 
-         `late show` / `show at brief` on the aircraft's remarks excuses a crew
-         from the published in-time AND from the brief (owner, 6 Aug 26): rest
-         running past brief time is fine, he joins the sortie late. What it
-         cannot do is push him past the LATEST SHOW, VCONF.showLead before T/O
-         — he still has to walk, kit up and start engines. So his anchor is
-         that line, not the brief, and rest still running at it is the same
-         hard CREW_REST breach as any other: this man cannot make the flight. */
+         A `late show` / `show at brief` remark does NOT move this anchor
+         (owner, 6 Aug 26): the breach is reported either way, in red, counted
+         like any other. What the remark changes is the RING — see makesIt
+         below — because a scheduler writing it has sanctioned the late join,
+         and the reader still needs to see that crew rest was broken. */
       const briefOf=(e:any)=>e.brief!=null?e.brief:e.to-VCONF.briefLead;
-      const insOf=(e:any)=>e.shift?e.to:(e.lateShow?e.to-VCONF.showLead:Math.min(e.intime!=null?e.intime:Infinity,briefOf(e)));
+      const insOf=(e:any)=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,briefOf(e));
       Object.keys(byR).forEach((id:any)=>{
         /* Crew rest runs off the last REST-BEARING commitment — a sortie or a
            shift — not off a late desk duty. Taking the max of both meant an
@@ -343,11 +345,29 @@ export function validate(){
         const onShift=legs.some((e:any)=>e.shift);
         const tail=`${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
         if(pfly[id]&&instructed<earliest){
-          markChip(di,id,'CR');markRing(di,id,'hard');
+          const bl=legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m);   // the leg told to report earliest is the breach
+          /* The LEAVE-BY: the latest the previous day could have ended for this
+             man to be clear. It is what the scheduler actually needs — "he is
+             short" is a complaint, "he had to be gone by 00:00" is an
+             instruction — and the previous day's puck prints it when the
+             warning is clicked. */
+          const leaveBy=hm24(instructed+1440-VCONF.crewRest);
+          /* A sanctioned late show still makes the jet if rest clears by the
+             latest show, VCONF.showLead before T/O. Then the ring is DASHED:
+             same red warning, same count, but the reader can see a scheduler
+             meant it. Past that line there is no sanctioning it — he cannot
+             walk, kit up and start engines — so it rings solid like any other
+             breach. A shift has no take-off to measure against. */
+          const makesIt=!bl.shift&&earliest<=bl.to-VCONF.showLead;
+          const dashed=!!bl.lateShow&&makesIt;
+          markChip(di,id,'CR');markRing(di,id,'hard'); if(dashed)markDash(di,id);
           add('hard','CREW_REST',[id],
             (onShift?`Crew rest breach — ${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `
-                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)+tail,
-            legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m).key);   // the leg told to report earliest is the breach
+                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)
+            +(dashed?`Late show — he still makes the ${hm24(bl.to-VCONF.showLead)} show. `
+                    :(bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(bl.to-VCONF.showLead)} latest show. `:''))
+            +tail+`, so he had to leave by ${leaveBy}`,
+            bl.key,{prevDi:idx-1>=0?ev[idx-1].di:null,leaveBy,dashed});
         } else if(nominal<earliest||instructed<earliest){
           markChip(di,id,'TT');markRing(di,id,'adv');
           add('adv','CREW_TIGHT',[id],`Tight turning — T/O ${hm24(Math.min.apply(null,legs.map((e:any)=>e.to)))} puts the ${lgT(VCONF.reportLead)} report at ${hm24(nominal)}, inside ${lgT(VCONF.crewRest)}. ${tail}`
@@ -467,7 +487,7 @@ export function validate(){
     ws.sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));
     byDay[di]={di,dow:day.dow,warns:ws};
   });
-  WARN={all,byDay,sev,chip};
+  WARN={all,byDay,sev,chip,dash};
   const hard=all.filter((w:any)=>w.sev==='hard').length;
   const note=all.filter((w:any)=>w.sev==='note').length;
   if($('nHard'))$('nHard').textContent=hard;

@@ -226,11 +226,40 @@ function rebrief(html: string): string {
     /* carry showLead in too, so a test that edits the latest-show rule moves
        both engines rather than leaving the reference on the hard-coded 60 */
     ["const VCONF={briefLead:140,", "const VCONF={showLead:60, briefLead:140,"],
+    /* the dashed-ring store the CREW_REST patch below writes into, and its
+       publication on WARN — the reference has neither */
+    ["const ev=collectEvents(), all=[], byDay=[], sev={}, chip={};",
+     "const ev=collectEvents(), all=[], byDay=[], sev={}, chip={}, dash={};"],
+    ["WARN={all,byDay,sev,chip};", "WARN={all,byDay,sev,chip,dash};"],
     ["const briefM=shiftLine?null:toM-VCONF.briefLead;",
      "const _bt=shiftLine?null:parseHM(f.br);const briefM=shiftLine?null:(_bt!=null?_bt:toM-VCONF.briefLead);"],
     ["const insOf=e=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,e.to-VCONF.briefLead);",
      "const _bo=e=>e.brief!=null?e.brief:e.to-VCONF.briefLead;"
-     + "const insOf=e=>e.shift?e.to:(e.lateShow?e.to-(VCONF.showLead!=null?VCONF.showLead:60):Math.min(e.intime!=null?e.intime:Infinity,_bo(e)));"],
+     + "const insOf=e=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,_bo(e));"],
+    /* The crew-rest breach itself (owner, 6 Aug 26): the port names the
+       LEAVE-BY time in the message and carries prevDi/leaveBy/dashed on the
+       warning, so the previous day can be traced from a click. The reference
+       says none of that, and parity compares the message text — so mirror the
+       whole add, dashed ring included. `add` there takes no extras argument,
+       so they are attached to the pushed warning by patching the message
+       first and the object after; keep both sides' field ORDER identical or
+       the deep-equal compares unequal objects that print the same. */
+    ["          markChip(di,id,'CR');markRing(di,id,'hard');\n"
+     + "          add('hard','CREW_REST',[id],\n"
+     + "            (onShift?`Crew rest breach — ${legs.filter(e=>e.shift).map(e=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `\n"
+     + "                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)+tail);",
+     "          const _bl=legs.reduce((m,e)=>insOf(e)<insOf(m)?e:m);"
+     + "const _lv=hm24(instructed+1440-VCONF.crewRest);"
+     + "const _mk=!_bl.shift&&earliest<=_bl.to-(VCONF.showLead!=null?VCONF.showLead:60);"
+     + "const _da=!!_bl.lateShow&&_mk;"
+     + "markChip(di,id,'CR');markRing(di,id,'hard');if(_da){dash[di]=dash[di]||{};dash[di][id]=true;}\n"
+     + "          add('hard','CREW_REST',[id],\n"
+     + "            (onShift?`Crew rest breach — ${legs.filter(e=>e.shift).map(e=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `\n"
+     + "                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)"
+     + "+(_da?`Late show — he still makes the ${hm24(_bl.to-(VCONF.showLead!=null?VCONF.showLead:60))} show. `"
+     + ":(_bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(_bl.to-(VCONF.showLead!=null?VCONF.showLead:60))} latest show. `:''))"
+     + "+tail+`, so he had to leave by ${_lv}`);"
+     + "{const _w=ws[ws.length-1];_w.prevDi=idx-1>=0?ev[idx-1].di:null;_w.leaveBy=_lv;_w.dashed=_da;}"],
     /* the reference's fly.push has no lateShow, so _bo's exemption could never
        fire there — carry the same remark parse onto its legs */
     ["fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,",
