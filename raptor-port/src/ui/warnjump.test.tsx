@@ -119,7 +119,10 @@ describe('the board issue list is a navigation surface', () => {
 describe('the flag chip on a puck', () => {
   it('jumps to that person\'s worst issue on the day', async () => {
     await act(async () => { view.setBoardDay(null); notify() })
-    const chip = $('#vWeek .day[data-day] .puck[data-person] .lchip')
+    /* explicitly NOT a trace chip: that one stands for a warning on another
+       day and is covered on its own below, so letting it be picked here would
+       quietly turn this into a test of something else */
+    const chip = $('#vWeek .day[data-day] .puck[data-person] .lchip:not([title*="is broken by"])')
     expect(chip, 'the seed week renders at least one flag chip').toBeTruthy()
     const pk = chip.closest('.puck[data-person]') as HTMLElement
     const di = +(pk.closest('.day[data-day]') as HTMLElement).dataset.day!
@@ -167,6 +170,50 @@ describe('the flag chip on a puck', () => {
     const pk = $('#vWeek .puck[data-person]')
     await click(pk.querySelector('.nm'))
     expect(view.SELID, 'clicking the name selects, it does not focus a warning').toBeTruthy()
+  })
+})
+
+/* THE CROSS-DAY JUMP (owner, 6 Aug 26). A crew-rest breach is raised on the
+   day the man is told to report, but it is marked on the day BEFORE — the day
+   a scheduler can still change. Both of that day's affordances, the dotted
+   puck's CR chip and the row on its warning strip, therefore have to leave the
+   day they were clicked on, which no other warning surface does. */
+describe('the previous day, clicked', () => {
+  const traceChip = () => $$('#vWeek .puck[data-person] .lchip')
+    .find(c => (c.getAttribute('title') || '').includes('is broken by'))
+
+  it('the dotted puck\'s chip opens the NEXT day\'s crew-rest warning', async () => {
+    await act(async () => { view.setBoardDay(null); view.selDrop(); view.clearWarnFocus(); notify() })
+    const chip = traceChip()
+    expect(chip, 'the seed week traces one crew-rest breach back a day').toBeTruthy()
+    const pk = chip!.closest('.puck[data-person]') as HTMLElement
+    const di = +(pk.closest('.day[data-day]') as HTMLElement).dataset.day!
+    expect(pk.classList.contains('boxdot'), 'and rings it dotted').toBe(true)
+
+    await click(chip!)
+    await flush()
+    expect(view.WFOCUS, 'a warning is focused').toBeTruthy()
+    expect(view.WFOCUS.di, 'on the day of the breach, not the day clicked').toBe(di + 1)
+    const w = WARN.byDay[view.WFOCUS.di].warns[view.WFOCUS.ix]
+    expect(w.code).toBe('CREW_REST')
+    expect(w.who, 'and it is this man\'s breach').toContain(pk.dataset.person)
+    expect(w.prevDi, 'traced back to the day whose chip was clicked').toBe(di)
+    expect(view.DWOPEN.has(di + 1), 'the issue box opens where the warning lives').toBe(true)
+    expect(scrolled.length).toBeGreaterThan(0)
+  })
+
+  it('the strip on the causing day\'s warning list reaches the same warning', async () => {
+    await act(async () => { view.setBoardDay(null); view.selDrop(); view.clearWarnFocus(); notify() })
+    const row = $('#vWeek .dwtrace .witem[data-wdi]')
+    expect(row, 'the causing day carries a cross-day row').toBeTruthy()
+    const di = +(row.closest('.day[data-day]') as HTMLElement).dataset.day!
+    expect(+row.dataset.wdi!, 'addressed to the next day').toBe(di + 1)
+
+    await click(row)
+    await flush()
+    expect(view.WFOCUS.di).toBe(di + 1)
+    expect(WARN.byDay[view.WFOCUS.di].warns[view.WFOCUS.ix].code).toBe('CREW_REST')
+    expect(scrolled.length).toBeGreaterThan(0)
   })
 })
 

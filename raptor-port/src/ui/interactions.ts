@@ -18,7 +18,7 @@ import { STORE_CFG } from './html'
 import { setDayPop, setAirKey, setDrawer } from './pops'
 import { openScheduler } from './board'
 import { setCurWeek } from '../engine/waves'
-import { WARN } from '../engine/validate'
+import { WARN, traceLeads, traceIx } from '../engine/validate'
 import { personWarns } from '../engine/avail'
 
 /* Focus a warning clicked from somewhere that is NOT an already-open day box —
@@ -205,11 +205,23 @@ export function routeClick(e: MouseEvent) {
     /* on the board there is no .day wrapper — the board IS one day */
     const di = dayEl ? +dayEl.dataset.day! : view.SBDAY
     if (di != null) {
+      const id = pkc.dataset.person!
+      /* A CR chip printed by the TRACE belongs to a warning on ANOTHER day —
+         this man has no crew-rest issue here, he causes one tomorrow — so the
+         click has to leave the day it was made on. traceLeads is the same test
+         html.ts:chip() printed the chip by, so the caption and the destination
+         can never disagree, and it is asked FIRST for that reason: where the
+         trace owns the flag, a quieter warning of his own on this day must not
+         hijack the jump. traceIx resolves it to the ordinary (day, index) pair,
+         and a -1 (the warning moved under an edit) falls through to his own. */
+      const tl = traceLeads(di, id)
+      const tix = tl ? traceIx(tl, id) : -1
+      if (tl && tix >= 0) { jumpToWarn(tl.di, tix); e.stopPropagation(); return }
       /* personWarns preserves WARN's own order, which validate() has already
          sorted by severity, so [0] is the worst without a comparator. It also
          carries the true engine index, which chipOf could never give back:
          chipOf collapses by RANK and is not invertible. */
-      const hit = personWarns(di, pkc.dataset.person)[0]
+      const hit = personWarns(di, id)[0]
       if (hit) { jumpToWarn(di, hit.ix); e.stopPropagation(); return }
     }
   }

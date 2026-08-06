@@ -367,6 +367,32 @@ nothing fights the snap back. Gated by `e2e/geometry.spec.ts` — jsdom has no
 layout and does not implement `scrollIntoView`, so `warnjump.test.tsx` can
 only pin which element is aimed at, never where it lands.
 
+**The lateral view is HELD when the target is already on screen** (owner,
+6 Aug 26). The horizontal move above used to run on every click, so a warning
+on a day you were already reading — the second day box, sitting mid-screen —
+snapped that day hard to the left edge and threw the rest of the week off the
+side. Nothing was gained: the puck was in front of you before the click. So
+`scrollToWarnFocus` now measures first and pans only when the destination is
+genuinely not in view; when it is, `scrollLeft` is not touched at all and the
+jump is purely vertical. Three details carry it:
+
+- The test is on the **puck**, not its day. Half a day box can hang past the
+  right edge with the target perfectly readable, and panning then would be
+  the same unasked-for lurch in a smaller size.
+- A **zero-width week** means nothing is measurable — that is jsdom, which
+  reports every rect as 0×0 — and the honest reading of "I cannot tell" is
+  the old unconditional pan. So `warnjump.test.tsx` still exercises the
+  shipped path and only a browser can see the hold.
+- `inline:'nearest'` then does nothing horizontally by definition, since the
+  branch only holds when the element is already in view inline.
+
+Both halves are gated in `e2e/geometry.spec.ts`: an off-screen day still
+lands on its snap point, and a day already on screen ends the click at
+**exactly** the `scrollLeft` it started at. Those tests drive the click with
+`clickHere` (`e2e/app.ts`) rather than `page.click`, because Playwright's
+actionability scrolls a target into view before pressing it — which would
+hand the app a week already panned onto the day and test nothing.
+
 A stale row scrolls nowhere. `WARN` is reassigned wholesale by every
 `validate()`, so a row rendered before an edit can outlive its warning;
 `focusWarn` bails on the missing index, and the caller re-checks
@@ -406,25 +432,67 @@ Two measured contracts moved with it: `.acrow`'s `min-height` grew to
 `.sb-lcols`/`.sb-line` template gained a fifth time column. The geometry gate
 and the adapted `wrap` probe are what hold them.
 
-## Two crew-rest rings, and the previous day (owner, 6 Aug 26)
+## Three crew-rest rings, and the day that caused the breach (owner, 6 Aug 26)
 
-`.puck.boxdash` is the same red at the same weight as `.puck.boxred`, drawn
-as a dashed `outline` rather than a `box-shadow` (a shadow cannot dash, and an
-outline leaves the puck's measured 74×15 alone). It means *a human meant
-this*, and it appears in exactly two places:
+One red, three strokes, in order of how directly the puck owns the problem:
+**solid** is his own breach, **dashed** is his own breach that a human
+sanctioned, **dotted** is not his breach at all — it is the day he causes
+one. All three are the same colour at the same weight, because downgrading
+the colour would read as "less of a problem".
 
-- A crew-rest breach on a line whose aircraft remarks say `late show` /
-  `show at brief`, while that crew still clears rest by the latest show. Past
-  the latest show it goes back to solid — see `engine-rules.md` §validation.
-  Published by the engine as `WARN.dash[di][id]`, read through `dashOf`.
-- **The previous-day trace.** While a CREW_REST warning is focused, the same
-  man's puck on the day the rest is measured from rings dashed and is labelled
-  `CR`, with the leave-by time in the warning's own text. `html.ts:traceHit`
-  gates it on `WFOCUS.code==='CREW_REST'` and `WFOCUS.prevDi`, which
-  `view.ts:focusWarn` carries off the warning object — nothing is re-derived,
-  and nothing is painted until the click. It clears with the focus. A louder
-  chip on that day still wins the label (a `Q` outranks `CR`); the ring shows
-  regardless.
+- `.puck.boxred` — the solid box (`box-shadow`), the ordinary hard flag.
+- `.puck.boxdash` — a crew-rest breach on a line whose aircraft remarks say
+  `late show` / `show at brief`, while that crew still clears rest by the
+  latest show. Past the latest show it goes back to solid — see
+  `engine-rules.md` §validation. Published as `WARN.dash[di][id]` (`dashOf`).
+- `.puck.boxdot` — **the previous-day trace**, below.
+
+`boxdash` and `boxdot` are `outline`s rather than `box-shadow`s: a shadow can
+neither dash nor dot, and an outline is drawn outside the border box so the
+puck's measured 74×15 is untouched.
+
+### The previous-day trace is a STANDING mark
+
+A crew-rest breach is raised on the day the man is **told to report**. The
+only day a scheduler can still change is the one **before** — so that day
+carries the mark, from the moment the week renders, with nothing clicked. It
+used to appear only while the warning was focused, which meant the reader had
+to already know about the breach to be shown its cause (owner, 6 Aug 26).
+
+Three things are drawn, all off `WARN.trace` (`engine-rules.md` §validation),
+so no surface re-derives a word of the breach and none of them can go stale
+against a focus that was never set:
+
+- **The dotted ring**, on every puck of that man on the causing day. It is
+  additive: `boxdot` is an outline and `boxred` a box-shadow, so a man with a
+  conflict of his own here AND tomorrow's rest to answer for wears both.
+- **The `CR` chip**, when the trace *leads* — `traceLeads`, i.e. he carries no
+  louder chip of his own that day (a `Q` still outranks it and keeps its own
+  caption; the dotted ring shows either way). Its title, and the puck's, name
+  the day broken and the leave-by rather than the generic threshold label:
+  the puck has no crew-rest breach of its own to caption, and printing
+  `CHIP_LABEL.CR` beside the trace's own sentence would say so twice.
+- **The cross-day row** — `.dwtrace`, a strip under that day's issue box.
+  Deliberately **outside** the `⚠ N issues` count and never collapsed: these
+  are not the day's issues, they are its consequences, and counting tomorrow's
+  breach here would have two days reporting the same warning. It renders even
+  when the day has no issue box at all, which is exactly the case the standing
+  mark exists for.
+
+**Both affordances leave the day they were clicked on.** The chip and the row
+carry the NEXT day's `(di, ix)` — `traceIx` resolves it — so the ordinary
+`.witem` handler and `jumpToWarn` navigate them with no path of their own.
+`traceLeads` is asked BEFORE `personWarns` in the chip handler: where the
+trace owns the flag, a quieter warning of his own on this day must not hijack
+the jump. A `-1` from `traceIx` (the warning moved under an edit — `WARN` is
+rebuilt wholesale) falls through to his own warnings rather than jumping
+somewhere arbitrary.
+
+**One rendering coupling follows from this**, and it is the only one: an edit
+on day N that changes its crew-rest picture rewrites day N−1 too. The
+day-isolation assertion in `probes/perf-port.cjs` names that exemption
+precisely — any OTHER day changing is still the bug that probe was written
+for.
 
 ## Line configs — the stores "+" picker
 

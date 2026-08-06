@@ -125,9 +125,36 @@ const noBrief = (s: string) => s.replace(
    so every byte of every puck is back under comparison. The ladder and the
    seed migration are pinned positively in quals.test.tsx. */
 
+/* Divergence #10 (owner, 6 Aug 26): the previous-day trace is now a STANDING
+   mark. A crew-rest breach is raised on the day the man is told to report, and
+   the day that caused it — the only one a scheduler can still change — carries
+   a dotted ring, a CR label and a cross-day row from the moment the week
+   renders. The seed week fires exactly one of these (casper, Tue, traced back
+   to Mon), so it lands inside the byte comparison on day 0. The reference has
+   no trace concept at all: it looks at Monday and says nothing.
+   Excised rather than patched into refwin, unlike the matrix and the OFT brief
+   lead: those two changed what the ENGINE decides, so the reference had to be
+   taught them or the two engines would disagree about the schedule itself.
+   This changes only what the previous day DRAWS about a warning both engines
+   already raise identically — parity.test.ts still compares every field of it
+   — so there is nothing to teach, only a decoration to lift off. The three
+   pieces are pinned positively in crewrest-ui.test.ts. */
+const noTrace = (s: string) => s
+  /* the CR chip and the title text, both distinguishable from a REAL crew-rest
+     flag by their wording: the trace says "Crew rest — <day> is broken by...",
+     the flag on the day of the breach says "Crew rest breach (<12h)". The
+     genuine one on Tuesday stays under comparison. */
+  .replace(/<span class="lchip l-cr" title="Crew rest — [^"]*">[^<]*<\/span>/g, '')
+  .replace(/ · Crew rest — [^"]*(?=")/g, '')
+  .replace(/ boxdot/g, '')
+  /* the cross-day strip: drop its rows first (each ends at the one
+     `</span></div>` that closes it), then the container they leave empty */
+  .replace(/<div class="witem hard wtr"[^>]*>[\s\S]*?<\/span><\/div>/g, '')
+  .replace(/<div class="dwtrace"><\/div>/g, '')
+
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))))
+    const V = (s: string) => noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di).toBe(V(ref))
@@ -164,7 +191,7 @@ describe('view-week markup parity with the reference', () => {
        port's first input group precedes it, the reference's strip is the cut's
        own start), so it is not byte-compared here; the pins below assert the
        port keeps it in edit mode. */
-    const E = (s: string) => noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s)))))))
+    const E = (s: string) => noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))

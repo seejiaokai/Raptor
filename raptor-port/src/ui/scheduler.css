@@ -571,6 +571,18 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    untouched (e2e/geometry.spec.ts measures it). */
 .puck.boxdash{outline:2px dashed var(--hard);outline-offset:0;border-color:var(--hard)!important}
 .puck.sel.boxdash,.puck.me.boxdash{outline:2px dashed var(--hard);box-shadow:0 0 10px 1px rgba(240,85,95,.7)!important}
+/* The DOTTED red ring (owner, 6 Aug 26): this day is the CAUSE, not the
+   breach. The man flew a legal day here — the warning is raised tomorrow,
+   where he is told to report short of rest — so the stroke is the lightest of
+   the three (dotted under dashed under solid) while the colour stays the same
+   red, because it is the same problem seen one day upstream. Like .boxdash it
+   is an outline rather than a box-shadow: a shadow cannot dot, and an outline
+   is drawn outside the border box so the puck's measured 74×15 is untouched.
+   Being an outline it also STACKS with .boxred's shadow, which is the point —
+   a man can carry a conflict of his own here AND wreck tomorrow's rest, and
+   both rings have to be readable at once. */
+.puck.boxdot{outline:2px dotted var(--hard);outline-offset:1px}
+.puck.sel.boxdot,.puck.me.boxdot{outline:2px dotted var(--hard);outline-offset:1px}
 .puck .nm{display:flex;align-items:center;padding:0 4px;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 /* the reference's qual chip is deliberately CHUNKIER than the name it sits next to —
    its glyph measures a 23px cap against the name's 19px — and it is a full-height
@@ -1174,6 +1186,16 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .daywarn.adv{background:rgba(229,168,59,.10);border-color:rgba(229,168,59,.35);color:#F2D69B}
 .daywarn.note{background:rgba(138,150,163,.10);border-color:rgba(138,150,163,.35);color:#C4CCD5}
 .daywarn:hover{filter:brightness(1.12)}
+/* THE CROSS-DAY STRIP (owner, 6 Aug 26) — what this day does to the NEXT one.
+   Always open, never collapsed behind the ⚠ count: it is one line, and the
+   whole point is that it is read without being looked for. Dotted left edge
+   and border, matching the dotted ring on the puck it names, so the two read
+   as one mark seen in two places. */
+.dwtrace{display:flex;flex-direction:column;gap:5px;margin:4px 10px 2px}
+.dwtrace .witem{padding:7px 9px;font-size:11px;line-height:1.35;gap:8px;border-radius:8px;
+  border-style:dotted;border-color:rgba(240,85,95,.5)}
+.dwtrace .witem .wbar{border-left:3px dotted var(--hard);background:none!important;border-radius:0}
+.dwtrace .witem .wcode{color:#FBB4B9}
 /* ---- inline (expanding) day warnings — replaces the old centred modal ---- */
 .dwbox{margin:8px 10px 2px;border-radius:10px}
 .dwbox .daywarn{margin:0;border-radius:9px}

@@ -37,9 +37,21 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   make the flight. Published per person as `WARN.dash[di][id]` (`dashOf`),
   because a chip carries no stroke of its own.
 - **Every CR warning names the leave-by time** and the day it is measured
-  from (`leaveBy`, `prevDi` on the warning). Clicking it traces the breach
-  back: the same man's puck on that previous day rings dashed and is labelled
-  CR while the warning is focused. Contract: `ui-contracts.md`.
+  from (`leaveBy`, `prevDi` on the warning).
+- **The breach is also filed against the day that CAUSED it** (owner, 6 Aug
+  26). A crew-rest warning is raised where the man is told to report, but the
+  only day a scheduler can still change is the one before, so `validate()`
+  publishes each breach a second time under its **previous** day:
+  `WARN.trace[prevDi][id] = {di, dow, leaveBy, dashed, msg}` — the day of the
+  breach, the leave-by, and the message, so no surface re-derives a word of
+  it. Accessors: `traceOf(di,id)`; `traceLeads(di,id)`, which is `traceOf`
+  narrowed to the case where the man carries no LOUDER chip of his own that
+  day (the one test both the printed flag and the click routing use, so they
+  cannot disagree); `traceIx(t,id)`, the breach's index in the next day's own
+  warning list; and `tracesOn(di)` for the whole day. It is model state, not
+  focus state — nothing has to be clicked for it to exist. What the UI draws
+  from it (a dotted ring, a CR label, a cross-day row) is in
+  `ui-contracts.md`.
 - Tight turn needs `max(VCONF.tightTurn, dekit + step)`.
 - Double turn: two+ sorties in a day → ONE DT_SUM line naming everyone;
   **adv, not hard** (owner, 4 Aug 26 — double turning is routine and planned),

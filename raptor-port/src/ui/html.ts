@@ -4,7 +4,10 @@ import { INPUTS, inputCoversDate, inpLabel, isOffType, offWord, isLeave, isDownc
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
-import { WARN, sevOf, chipOf, dashOf, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, RANK } from '../engine/validate'
+/* RANK left with the focus-scoped trace: ranking the CR chip against the day's
+   own worst is traceLeads' job now, in the engine, so both the chip and the
+   click that follows it read one test */
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
 import { keyDay } from '../engine/keys'
@@ -27,22 +30,23 @@ const editMode=()=>HOOKS.editMode()
    ===================================================================== */
 let PV=false, PVV:any=null
 const sev=(di:any,id:any)=>PV?null:sevOf(di,id)
-/* THE PREVIOUS-DAY TRACE (owner, 6 Aug 26). Clicking a crew-rest breach asks
-   the obvious next question — what did he do yesterday? — so while that
-   warning is focused, the same man's puck on the day the rest is measured
-   FROM is marked too: dashed ring, CR label, and the leave-by time in its
-   tooltip. It is focus-scoped, not model state: nothing is painted until the
-   warning is clicked, and it clears when the focus does. validate() already
-   worked out prevDi and leaveBy, and view.ts carries them on WFOCUS, so this
-   re-derives nothing. */
-const traceHit=(di:any,id:any)=>!PV&&!!WFOCUS&&WFOCUS.code==='CREW_REST'
-  &&WFOCUS.prevDi===di&&(WFOCUS.ids||[]).indexOf(id)>=0
-/* the flag the puck prints: the day's own worst chip, or CR where this is the
-   traced previous day and the man carries nothing louder of his own */
+/* THE PREVIOUS-DAY TRACE (owner, 6 Aug 26; made a standing mark 6 Aug 26).
+   A crew-rest breach is raised on the day the man is told to report, but the
+   day a scheduler can still FIX is the one before — so that day carries the
+   mark: a dotted ring, a CR label, and the leave-by time, painted the moment
+   the week renders. It used to appear only while the warning was focused,
+   which meant you had to already know about the breach to be shown its cause.
+   Model state now (validate() files every breach against its previous day and
+   publishes it as WARN.trace), so this re-derives nothing — and PV still gets
+   nothing at all, because a frozen snapshot must not read live WARN. */
+const traceHit=(di:any,id:any)=>PV?null:traceOf(di,id)
+/* the flag the puck prints: the day's own worst chip, or CR where this day
+   caused tomorrow's breach and the man carries nothing louder of his own.
+   traceLeads applies exactly that test, and interactions.ts routes the click
+   by the same call, so the chip and the warning it opens cannot disagree. */
 const chip=(di:any,id:any)=>{ if(PV)return null
-  const c=chipOf(di,id)
-  return traceHit(di,id)&&(!c||RANK['CR']>RANK[c])?'CR':c }
-const dsh=(di:any,id:any)=>PV?false:(dashOf(di,id)||traceHit(di,id))
+  return traceLeads(di,id)?'CR':chipOf(di,id) }
+const dsh=(di:any,id:any)=>PV?false:dashOf(di,id)
 /* the ONE place the snapshot may stand in for the live model. finally is not
    optional: a throw mid-build with the swap live would leave the old day
    installed as the real schedule — a silent history rewrite on the next
@@ -99,7 +103,7 @@ export function legendHTML(){
 /* quotes matter: esc() output lands inside double-quoted attributes in a dozen
    places, so a remark containing a " used to close the attribute — truncating
    the field on the next render and injecting whatever followed */
-export function puck(id:any,warn:any,sm:any,flag:any,dash?:any){
+export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
   const p=PEOPLE[id]; if(!p)return'';
   if(p.special){   // sentinel puck: canonical size, no seat/qual/SANS decoration
     return `<span class="puck allavail${sm?' sm':''}" tabindex="0" data-person="${id}" title="${esc(p.cs)}"><span class="nm">${esc(p.cs)}</span></span>`;
@@ -114,11 +118,26 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any){
      late show AND an unrelated conflict, and the conflict outranks it for the
      chip — dashing that ring would caption someone else's warning as
      "sanctioned". The ring belongs to the flag it shows. */
-  if(flag==='C'||flag==='CR'||flag==='Q'||flag==='NB'||flag==='SB')cls.push(dash&&flag==='CR'?'boxdash':'boxred');
+  /* A CR flag that came off the TRACE is not this man's own breach — he flew a
+     legal day, it is tomorrow he wrecks — so it must never ring solid red. The
+     dotted ring below is its whole visual, and the red-box branch stands down
+     for it. Any other flag still owns the box: the trace is additive, and
+     boxred is a box-shadow while boxdot is an outline, so both can be worn at
+     once by a man who has a conflict of his own AND breaks tomorrow's rest. */
+  const trFlag=!!trace&&flag==='CR';       // the printed flag came off the trace
+  if((flag==='C'||flag==='CR'||flag==='Q'||flag==='NB'||flag==='SB')&&!trFlag)
+    cls.push(dash&&flag==='CR'?'boxdash':'boxred');
+  if(trace)cls.push('boxdot');
   if(p.san)cls.push('san');                         // SANS → purple right-edge line
   const chipTxt=QCHIP[p.q], chipCls=QCLASS[p.q];
   const qchip=`<span class="role ${chipCls}">${chipTxt}</span>`;
-  const lchip=flag?`<span class="lchip l-${flag.toLowerCase()}" title="${esc(wlbl(CHIP_LABEL[flag]||flag))}">${chipText(flag)}</span>`:'';
+  /* The trace speaks in the reader's terms — the day it breaks and the time
+     this man had to be gone by — rather than the generic threshold label a CR
+     chip carries on the day of the breach itself. Only when the trace OWNS the
+     flag: where a louder chip won it, that chip keeps its own caption and the
+     trace text rides on the puck title below instead. */
+  const trLbl=trace?`Crew rest — ${trace.dow||'the next day'} is broken by this day: he had to leave by ${trace.leaveBy}`:'';
+  const lchip=flag?`<span class="lchip l-${flag.toLowerCase()}" title="${esc(trFlag?trLbl:wlbl(CHIP_LABEL[flag]||flag))}">${chipText(flag)}</span>`:'';
   /* esc() the CALLSIGN in both places, as the sentinel branch above already
      does. A callsign is free text — renameCallsign (slots.ts) only trims and
      de-duplicates it — so one rename containing a quote or an angle bracket
@@ -128,14 +147,19 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any){
      text, and CHIP_LABEL legitimately carries `<` and `>` ("Crew rest breach
      (<12h)"), which the reference does not escape — escaping the whole string
      would break the byte-exact markup parity for no safety gain. */
-  const ttl=esc(p.cs)+' · '+LEVELNAME[p.q]+(p.sxo?' · SXO':'')+(p.san?' · SANS':'')+(flag?' · '+wlbl(CHIP_LABEL[flag]||flag):'');
+  /* a trace-owned CR says its piece ONCE: the generic "Crew rest breach
+     (<12h)" that CHIP_LABEL prints on the day of the breach would sit here
+     next to the trace's own sentence and caption a breach this day does not
+     have. Any other flag keeps its label and the trace appends to it. */
+  const ttl=esc(p.cs)+' · '+LEVELNAME[p.q]+(p.sxo?' · SXO':'')+(p.san?' · SANS':'')
+    +(flag&&!trFlag?' · '+wlbl(CHIP_LABEL[flag]||flag):'')+(trace?' · '+trLbl:'');
   return `<span class="${cls.join(' ')}" tabindex="0" data-person="${id}" title="${ttl}">${lchip}<span class="nm">${esc(p.cs)}</span>${qchip}</span>`;
 }
 
-export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any,dash?:any){
+export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any,dash?:any,trace?:any){
   const al=alAttr(key);
   /* preview: no data-slot, no draggable — the key addresses the LIVE model */
-  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' draggable="true"':''}>${puck(id,sev,false,flag,dash)}</span>`;
+  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' draggable="true"':''}>${puck(id,sev,false,flag,dash,trace)}</span>`;
   if(editable) return `<span class="seat empty-slot" data-slot="${key}"${al}>+ ${kind}</span>`;
   return `<span class="seat"${al}></span>`;
 }
@@ -146,7 +170,7 @@ export function plCols(){return `<div class="pl-cols"><span class="h-nm">Name</s
    Draggable in edit mode; renders nothing when empty so cells stay clean. */
 export function lSeat(di:any,id:any,key:any,ed:any){
   if(!(id&&PEOPLE[id]))return '';
-  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' draggable="true"':''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id))}</span>`;}
+  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' draggable="true"':''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;}
 /* the people cell itself — a drop target in edit mode (data-fill) */
 /* the extra bodies dropped onto a row, after its own seats */
 export function moreSeats(di:any,base:any,ed:any){
@@ -211,7 +235,7 @@ export function availHTML(d:any,di:any,ed:any){
   const A=availByWave(d);
   /* in edit mode an available puck is a drag source — drag it straight onto a line,
      a duty, a sim or a programme item */
-  const pk=(id:any)=>`<span class="seat"${ed?` draggable="true" data-person="${id}"`:''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id))}</span>`;
+  const pk=(id:any)=>`<span class="seat"${ed?` draggable="true" data-person="${id}"`:''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;
   const active=(ids:any)=>ids.filter((id:any)=>!PEOPLE[id].san), sans=(ids:any)=>ids.filter((id:any)=>PEOPLE[id].san);
   const grid=(ids:any)=>ids.length?`<div class="ap-grid">`+ids.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   const bandTxt=(w:any)=>{const a=w.s>0?hhmm(w.s):'AM', b=w.e<1440?hhmm(w.e):'end';return `${a}–${b}`;};
@@ -246,15 +270,41 @@ export function storesView(o:any){
 }
 /* the day's issue strip. Collapsed it is a one-line summary; expanded (DWOPEN)
    it lists the warnings right here in the column — no centred modal. */
+/* THE CROSS-DAY STRIP: what this day does to the next one. A crew-rest breach
+   is raised where the man is TOLD TO REPORT, so the day that caused it — the
+   only day a scheduler can still change — used to say nothing at all. Its own
+   strip, deliberately outside the ⚠ count above: these are not this day's
+   issues, they are its consequences, and inflating the day's issue count with
+   tomorrow's warning would make two days report the same breach.
+   Each row carries the NEXT day's (di, ix), so the ordinary .witem handler
+   navigates it with no new click path — and a row whose warning has moved
+   under an edit (WARN is rebuilt wholesale) is dropped rather than left
+   pointing at whatever now sits at that index. */
+function dayTraceHTML(di:any,pf:any){
+  if(PV)return '';
+  const rows=tracesOn(di)
+    .filter(({id}:any)=>!pf||id===pf)
+    .map(({id,t}:any)=>({id,t,ix:traceIx(t,id)}))
+    .filter((r:any)=>r.ix>=0);
+  if(!rows.length)return '';
+  return `<div class="dwtrace">`+rows.map(({id,t,ix}:any)=>{
+    const cs=PEOPLE[id]?PEOPLE[id].cs:id;
+    return `<div class="witem hard wtr" data-wdi="${t.di}" data-wix="${ix}" title="Jump to the crew-rest warning this day causes">`
+      +`<span class="wbar"></span><span><span class="wcode">Breaks ${esc(t.dow||'the next day')}</span>`
+      +`<b>${esc(cs)}</b> — had to leave by <b>${esc(t.leaveBy)}</b>. ${esc(t.msg||'')}</span></div>`;
+  }).join('')+`</div>`;
+}
 export function dayWarnHTML(di:any){
   const all=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
-  if(!all.length)return '';
+  /* the strip stands on its own: a day with no issues of its own can still be
+     the day that wrecks tomorrow, and that is exactly the case worth seeing */
+  if(!all.length)return dayTraceHTML(di,PFOCUS&&PFOCUS.id);
   /* When a puck is clicked the box narrows to that person's issues on this day
      — every other day they are flagged on opens the same way, so a cause that
      sits on the day before is right there next to the effect. */
   const pf=PFOCUS&&PFOCUS.id;
   const items=pf?personWarns(di,pf):all.map((w:any,ix:any)=>({w,ix}));
-  if(pf&&!items.length)return '';
+  if(pf&&!items.length)return dayTraceHTML(di,pf);
   const dw=items.map((x:any)=>x.w);
   const worst=dw.some((w:any)=>w.sev==='hard')?'hard':dw.some((w:any)=>w.sev==='adv')?'adv':'note';
   const nh=dw.filter((w:any)=>w.sev==='hard').length;
@@ -281,7 +331,7 @@ export function dayWarnHTML(di:any){
           +`<button class="dwclear" data-dwclear="1">✕ ${pf?`Back to ${esc(cs)}’s issues`:'Clear focus'}</button>`:'')
      +`</div>`;
   }
-  return h+`</div>`;
+  return h+`</div>`+dayTraceHTML(di,pf);
 }
 export function intimesInner(w:any){
   return ((w&&w.intimes)||[]).map((t:any)=>`<span>${esc(t).replace(/^(\s*\d{3,4}\s*H)/i,'<b>$1</b>')}</span>`).join('');}
@@ -515,8 +565,9 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              puck there would read as "this SC line has a problem" when the
              problem, if any, belongs to that person's other flying */
           const chk=!saExempt(w,f,a);
-          const sv=(id:any)=>chk?sev(di,id):null, cp=(id:any)=>chk?chip(di,id):null, dh=(id:any)=>chk?dsh(di,id):false;
-          h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w))}</span></div>
+          const sv=(id:any)=>chk?sev(di,id):null, cp=(id:any)=>chk?chip(di,id):null, dh=(id:any)=>chk?dsh(di,id):false,
+                tr=(id:any)=>chk?traceHit(di,id):null;
+          h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w))}</span></div>
               <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${sa?`<span class="rolet ${a.spare?'spare':'main'}" title="${a.spare?'Spare crew — standing by, not cross-checked against anything else':'Main crew'}">${esc(a.role||(a.spare?'SPARE':'MAIN'))}</span>`:''}${ted(`fr:${key}`,a.rmks,ed,'ntx')}${sa?'':stores}</div>`;
         });
         /* AREA strip: full-width row under this formation's aircraft. Rendered whenever
