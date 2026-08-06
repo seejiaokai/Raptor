@@ -239,6 +239,13 @@ test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
   Every CR warning carries `leaveBy` and `prevDi`, and clicking one traces it:
   the previous day's puck rings dashed and is labelled `CR` while focused.
   Rules: `docs/engine-rules.md` §validation; visuals: `ui-contracts.md`.
+  **Known limitation, raised with the owner and deliberately not built
+  (6 Aug 26):** because crew rest anchors on the brief, typing a B LATER than
+  the real one makes a genuine breach disappear. With a `late show` remark
+  that is deliberate and visible; a plain typo does it silently, and the
+  bounded parse rejects nonsense values, not wrong ones. The cheap guards if
+  it ever bites: show the rest margin beside the B box, or flag a B sitting
+  more than some margin later than the suggestion. Neither is built.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
   GitHub Actions). The workflow refuses to publish on any red test. The four
   gates also run on every **pull request** into main (owner ask, 5 Aug 26),
