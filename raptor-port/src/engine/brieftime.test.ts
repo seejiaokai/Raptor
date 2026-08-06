@@ -114,7 +114,7 @@ describe('the crew-rest anchor (owner worked examples)', () => {
      takes as landing + the 2h debrief — so the previous sortie lands 2h
      before the time the owner quotes. Today's line then takes an in-time and
      a brief, and we read back whether CREW_REST fired for him. */
-  const runCase = (leftAt: string, inTime: string, brief: string, rmks: string) => {
+  const runCase = (leftAt: string, inTime: string, brief: string, rmks: string, to?: string) => {
     const prev: any = firstForm(0)!
     prev.aircraft.push({ p: CREW, w: '', area: '', rmks: '', opts: {} })
     const ldPrev = hhmmOf(parseHM(leftAt) - VCONF.debrief)
@@ -122,6 +122,9 @@ describe('the crew-rest anchor (owner worked examples)', () => {
     const today: any = firstForm(1)!
     today.aircraft.push({ p: CREW, w: '', area: '', rmks, opts: {} })
     today.br = brief
+    /* T/O matters now that a late show anchors on T/O − showLead, so the
+       cases state it rather than inheriting whatever the seed line flies */
+    if (to) { today.to = to; today.ld = hhmmOf(parseHM(to) + 85) }
     const wave = DAYS[1].waves.find((w: any) => (w.formations || []).includes(today))
     wave.intimes = [`${today.cs} IN TIME ${inTime.replace(':', '')}H`]
     validate()
@@ -131,20 +134,39 @@ describe('the crew-rest anchor (owner worked examples)', () => {
   it('in-time 11:00 with a 12:00 brief, off a midnight finish, breaches', () => {
     /* left 00:00 → rest clears 12:00; the in-time is the earlier anchor and
        11:00 is inside it */
-    expect(runCase('00:00', '11:00', '12:00', '2A: BFM-5')).toBe(true)
+    expect(runCase('00:00', '11:00', '12:00', '2A: BFM-5', '14:20')).toBe(true)
   })
 
-  it('the same line with a late-show remark does not, because the brief is the anchor', () => {
-    /* the crew is not required at 11:00, only from the 12:00 brief — which is
-       exactly when rest expires, so nothing is breached */
-    expect(runCase('00:00', '11:00', '12:00', '2A: LATE SHOW')).toBe(false)
+  it('a late-show remark clears it — the in-time no longer anchors him', () => {
+    expect(runCase('00:00', '11:00', '12:00', '2A: LATE SHOW', '14:20')).toBe(false)
   })
 
-  it('but a 00:30 finish against a 12:00 brief still breaches, remark or not', () => {
-    /* rest now clears 12:30 and the BRIEF itself is inside it: the remark
-       exempts the crew from the in-time, never from crew rest */
-    expect(runCase('00:30', '11:00', '12:00', '2A: LATE SHOW')).toBe(true)
-    expect(runCase('00:30', '11:00', '12:00', '2A: BFM-5')).toBe(true)
+  /* the revision (owner, 6 Aug 26): a late show is excused past the BRIEF too,
+     so rest expiring after brief time is no longer a breach on its own */
+  it('a late show is excused past the brief itself', () => {
+    /* left 00:30 → rest clears 12:30, after the 12:00 brief. T/O 14:20 puts
+       the latest show at 13:20, which he still makes. */
+    expect(runCase('00:30', '11:00', '12:00', '2A: LATE SHOW', '14:20')).toBe(false)
+    /* without the remark the same line breaches, because the in-time anchors */
+    expect(runCase('00:30', '11:00', '12:00', '2A: BFM-5', '14:20')).toBe(true)
+  })
+
+  it('but never past the latest show — he cannot make the flight', () => {
+    /* left 00:30 → rest clears 12:30. T/O 13:00 puts the latest show at 12:00,
+       and he is still resting then: hard breach, remark or not. */
+    expect(runCase('00:30', '11:00', '12:00', '2A: LATE SHOW', '13:00')).toBe(true)
+  })
+
+  it('the latest-show line is the editable rule, not a hard-coded hour', () => {
+    const orig = VCONF.showLead
+    try {
+      /* T/O 13:00, rest clearing 12:30: he makes a 60-minute show (12:00) but
+         not a 15-minute one (12:45) */
+      VCONF.showLead = 60
+      expect(runCase('00:30', '11:00', '12:00', '2A: LATE SHOW', '13:00')).toBe(true)
+      VCONF.showLead = 120
+      expect(runCase('00:30', '11:00', '12:00', '2A: LATE SHOW', '15:00')).toBe(false)
+    } finally { VCONF.showLead = orig }
   })
 })
 

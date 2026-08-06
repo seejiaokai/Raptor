@@ -223,11 +223,14 @@ function relead(html: string): string {
    the aircraft remarks). */
 function rebrief(html: string): string {
   const swaps: Array<[string, string]> = [
+    /* carry showLead in too, so a test that edits the latest-show rule moves
+       both engines rather than leaving the reference on the hard-coded 60 */
+    ["const VCONF={briefLead:140,", "const VCONF={showLead:60, briefLead:140,"],
     ["const briefM=shiftLine?null:toM-VCONF.briefLead;",
      "const _bt=shiftLine?null:parseHM(f.br);const briefM=shiftLine?null:(_bt!=null?_bt:toM-VCONF.briefLead);"],
     ["const insOf=e=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,e.to-VCONF.briefLead);",
      "const _bo=e=>e.brief!=null?e.brief:e.to-VCONF.briefLead;"
-     + "const insOf=e=>e.shift?e.to:(e.lateShow?_bo(e):Math.min(e.intime!=null?e.intime:Infinity,_bo(e)));"],
+     + "const insOf=e=>e.shift?e.to:(e.lateShow?e.to-(VCONF.showLead!=null?VCONF.showLead:60):Math.min(e.intime!=null?e.intime:Infinity,_bo(e)));"],
     /* the reference's fly.push has no lateShow, so _bo's exemption could never
        fire there — carry the same remark parse onto its legs */
     ["fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,",

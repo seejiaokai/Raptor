@@ -314,13 +314,16 @@ export function validate(){
          from VCONF.briefLead when the line has none) — recomputing
          `e.to-VCONF.briefLead` here would ignore a typed B and quietly
          disagree with the brief window the same engine flags against.
-         `late show` / `show at brief` on the aircraft's remarks means the crew
-         is not required at the published in-time, so the anchor is the brief
-         alone (owner, 6 Aug 26). That is an exemption from the IN-TIME, not
-         from crew rest: the 12h is still measured to whatever anchor results,
-         so a brief that is itself inside the rest window still breaches. */
+
+         `late show` / `show at brief` on the aircraft's remarks excuses a crew
+         from the published in-time AND from the brief (owner, 6 Aug 26): rest
+         running past brief time is fine, he joins the sortie late. What it
+         cannot do is push him past the LATEST SHOW, VCONF.showLead before T/O
+         — he still has to walk, kit up and start engines. So his anchor is
+         that line, not the brief, and rest still running at it is the same
+         hard CREW_REST breach as any other: this man cannot make the flight. */
       const briefOf=(e:any)=>e.brief!=null?e.brief:e.to-VCONF.briefLead;
-      const insOf=(e:any)=>e.shift?e.to:(e.lateShow?briefOf(e):Math.min(e.intime!=null?e.intime:Infinity,briefOf(e)));
+      const insOf=(e:any)=>e.shift?e.to:(e.lateShow?e.to-VCONF.showLead:Math.min(e.intime!=null?e.intime:Infinity,briefOf(e)));
       Object.keys(byR).forEach((id:any)=>{
         /* Crew rest runs off the last REST-BEARING commitment — a sortie or a
            shift — not off a late desk duty. Taking the max of both meant an
