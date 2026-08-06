@@ -18,7 +18,23 @@ that bar on their own — don't manufacture questions for them.
 
 - **The owner is non-technical.** Explanations to him are plain-language
   and complete; terseness applies to tool use and internal work, never to
-  what he reads.
+  what he reads. **He restated this on 6 Aug 26 because it was being
+  ignored**, so it is spelled out rather than left to judgment:
+  - **Never paste raw output at him** — no log lines, stack traces, JSON,
+    run IDs, commit hashes, HTTP codes, file:line references or CSS class
+    names. Read the thing yourself and report what it MEANS. "The publish
+    step gave up after ten minutes" — not `##[error]Timeout reached`.
+  - **Lead with what it means for him**, then the detail if it earns its
+    place. He wants to know: is it working, is it live, what do I do now.
+  - **Name things the way the app does.** "The ring around the puck", "the
+    warning list", "the previous day" — not `.boxdash`, `dayWarnHTML`,
+    `WARN.trace[prevDi]`. Internal names belong in code comments and
+    commit messages, which are written for the next agent, not for him.
+  - **Say what you did and whether it worked.** A gate table with counts is
+    fine — it is a result, not jargon. A diff walkthrough is not.
+  - This is about VOCABULARY, not depth. Do not thin out the reasoning, the
+    trade-offs or the caveats; say them in ordinary words. Never hide a
+    limitation because explaining it would take a sentence more.
 - **Ship it.** Once the gates are green, open a PR to `main` and merge so
   it deploys — don't wait to be asked (unless a gate is red or the change
   was called an experiment).
