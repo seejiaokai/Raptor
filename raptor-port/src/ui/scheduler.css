@@ -602,7 +602,28 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    the lightest of the three claims. */
 .puck.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
 .puck.sel.boxdot,.puck.me.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
-.puck .nm{display:flex;align-items:center;padding:0 4px;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* A CUT CALLSIGN HAS TO LOOK CUT (owner sweep, 6 Aug 26). This rule carried
+   `text-overflow:ellipsis` and never got one: the property has no effect on a
+   flex container, because the text becomes an anonymous flex item. So the
+   browser hard-clipped instead, and "Wrangler" came out as "Wrangl" — a
+   plausible-looking callsign that is not the man's, running under the qual
+   chip. In a flying programme a misread name is worth more than a tidy box.
+   Pucks never wrap and never grow (a stable decision), so long names WILL be
+   cut; the only question is whether the reader can tell.
+   A FADE rather than an ellipsis, having looked at both: `Wra…` is honest but
+   throws away three legible characters out of a 74px box, while the fade
+   keeps every character the width allows and still reads as "there is more".
+   It costs nothing on names that fit — the masked strip holds no ink, so a
+   short name is pixel-identical to before.
+   display:block is what the fix needs (a flex container would ignore an
+   ellipsis and does not need the mask either way), and line-height replaces
+   the `align-items:center` that block display gives up: the content box is
+   --puck-h less the 1px border top and bottom, so a line box of exactly that
+   height centres the text on the baseline it already had. Measured, not
+   assumed — e2e/geometry.spec.ts holds the 74x15 box, the descender ink and
+   this fade itself. */
+.puck .nm{display:block;line-height:calc(var(--puck-h) - 2px);padding:0 4px;white-space:nowrap;flex:1;min-width:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 7px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 7px),transparent)}
 /* the reference's qual chip is deliberately CHUNKIER than the name it sits next to —
    its glyph measures a 23px cap against the name's 19px — and it is a full-height
    square, so the chip tracks --puck-h rather than a fixed width */

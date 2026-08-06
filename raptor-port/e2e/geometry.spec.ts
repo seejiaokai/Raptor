@@ -219,6 +219,39 @@ test('a hole in a programme row renders no element at all', async ({ page }) => 
   expect(holed.lefts, 'so the pucks either side did not shift').toEqual(solid.lefts)
 })
 
+/* A CALLSIGN THAT DOES NOT FIT MUST LOOK CUT (owner sweep, 6 Aug 26). The rule
+   asked for an ellipsis and never got one — `text-overflow` is ignored on a
+   flex container — so a long name was hard-clipped and "Wrangler" read as
+   "Wrangl". Only a browser can catch this: jsdom has no layout, so scrollWidth
+   and clientWidth are both 0 there and nothing ever overflows. */
+test('a callsign too long for its puck fades instead of being clipped clean', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page)
+  await go(page, 'viewsched')
+
+  const m = await page.evaluate(() => {
+    const nms = [...document.querySelectorAll('#vWeek .puck .nm')] as HTMLElement[]
+    const over = (n: HTMLElement) => n.scrollWidth - n.clientWidth
+    const cut = nms.filter(n => over(n) > 0)
+    const fits = nms.filter(n => over(n) <= 0)
+    const cs = (n: HTMLElement) => getComputedStyle(n)
+    return {
+      cutCount: cut.length, fitCount: fits.length,
+      /* the fade has to be on the element that does the clipping */
+      mask: cut[0] ? (cs(cut[0]).maskImage || (cs(cut[0]) as any).webkitMaskImage) : null,
+      display: cut[0] ? cs(cut[0]).display : null,
+      /* and the box itself must not have moved to make room for it */
+      puck: cut[0] ? (() => { const r = cut[0].closest('.puck')!.getBoundingClientRect()
+        return { w: +r.width.toFixed(1), h: +r.height.toFixed(1) } })() : null,
+    }
+  })
+  test.skip(m.cutCount === 0, 'no callsign in the seed week is long enough to be cut')
+  expect(m.fitCount, 'and some names do fit, so the rule is not just always-on').toBeGreaterThan(0)
+  expect(m.display, 'a flex container would silently ignore the overflow rules').toBe('block')
+  expect(m.mask, 'the overflowing name is faded, not clipped clean').toContain('gradient')
+  expect(m.puck, 'and the puck is still the measured box').toEqual({ w: 74, h: 15 })
+})
+
 /* THE THREE CREW-REST STROKES, measured (owner, 6 Aug 26). Solid is his own
    breach, dashed is his own breach that a scheduler sanctioned, dotted is the
    day he CAUSES one. Vitest can prove which class the builder emitted and
