@@ -231,9 +231,22 @@ async function trial(b, measureSize) {
       fillSlot(s.dataset.slot, ids[9]); afterSchedMutate()
       await new Promise(r => setTimeout(r, 50))
       const now = [...document.querySelectorAll('#eWeek .day')].filter(d => d.dataset.day !== '1')
-      return { sameNodes: now.every((d, i) => d === beforeNodes[i]), sameHTML: now.every((d, i) => d.innerHTML === beforeHTML[i]) }
+      /* THE ONE LEGITIMATE COUPLING (owner, 6 Aug 26). A crew-rest breach is
+         marked on the day that CAUSED it, so the day before day 1 renders a
+         dotted ring and a cross-day row addressed to day 1's warning by index —
+         and a day-1 edit that changes that warning must therefore rewrite that
+         day too, or the strip would point at a warning that has moved. Any
+         OTHER day changing is still the bug this probe was written for, so the
+         exemption is named exactly: the day day-1's own trace is filed under. */
+      const traced = Object.keys((WARN.trace) || {})
+        .filter(di => Object.values(WARN.trace[di]).some(t => t.di === 1))
+      const bad = now.filter((d, i) => (d !== beforeNodes[i] || d.innerHTML !== beforeHTML[i])
+        && !traced.includes(d.dataset.day))
+      return { sameNodes: now.every((d, i) => d === beforeNodes[i]), sameHTML: now.every((d, i) => d.innerHTML === beforeHTML[i]),
+        traced, rewritten: bad.map(d => d.dataset.day) }
     })
-    T('B · the other days are not rewritten by a day-1 edit', r.sameNodes && r.sameHTML ? 'held' : JSON.stringify(r), 'held')
+    T('B · a day-1 edit rewrites only day 1 and the day its crew rest traces to',
+      r.rewritten.length === 0 ? 'held' : JSON.stringify(r), 'held')
     await p.close(); await ctx.close()
   }
 

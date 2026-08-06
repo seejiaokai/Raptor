@@ -108,6 +108,22 @@ export async function pan(page: Page, sel: string, dir: 1 | -1, from: number) {
   return at
 }
 
+/* A click that does NOT move the page first. page.click() is actionable —
+   Playwright scrolls the target into view before pressing it — which is
+   exactly wrong for the warning-navigation tests: they park the week somewhere
+   deliberate and then measure what the APP does about it, and an auto-scroll
+   quietly hands the app a position it never had to reach on its own. The app's
+   own listeners are delegated on document, so a bubbling MouseEvent is the
+   same event they would have seen. Returns false if the selector missed. */
+export async function clickHere(page: Page, sel: string) {
+  return page.evaluate((s) => {
+    const el = document.querySelector(s as string) as HTMLElement | null
+    if (!el) return false
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    return true
+  }, sel)
+}
+
 /* the two numbers every grid on the dense surfaces is derived from */
 export async function puckSize(page: Page) {
   return page.evaluate(() => {

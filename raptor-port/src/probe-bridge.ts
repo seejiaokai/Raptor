@@ -12,7 +12,7 @@ import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rules
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
 import * as V from './engine/validate'
-import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayEvents } from './engine/validate'
+import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayEvents, traceOf, traceLeads, traceIx } from './engine/validate'
 import { collectEvents } from './engine/events'
 import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef, acceptInput, unacceptInput, inpKey, acceptedDay, renameCallsign } from './engine/slots'
 import { slotBar, dayEngaged, slotRules, dayOff } from './engine/avail'
@@ -82,6 +82,7 @@ export function installProbeBridge() {
      HTML. ESM has no source to scrape, so publish the object itself. */
   w.RANK = RANK
   w.chipOf = chipOf; w.sevOf = sevOf; w.isLeave = isLeave; w.SIGN_ROLES = SIGN_ROLES
+  w.traceOf = traceOf; w.traceLeads = traceLeads; w.traceIx = traceIx
   w.CHIP_LABEL = CHIP_LABEL; w.restClear = restClear; w.dayEvents = dayEvents
   w.isLocalLeave = isLocalLeave; w.slotRules = slotRules; w.saExempt = saExempt
   w.isDownchit = isDownchit; w.isOffType = isOffType; w.dayOff = dayOff; w.rulesReset = rulesReset

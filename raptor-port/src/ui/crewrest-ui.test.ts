@@ -8,7 +8,7 @@
    measured contract in scheduler.css and is covered by the geometry gate. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
-import { validate, WARN } from '../engine/validate'
+import { validate, WARN, traceOf, traceLeads, traceIx } from '../engine/validate'
 import { VCONF } from '../engine/rules'
 import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
@@ -78,18 +78,34 @@ describe('the crew-rest ring', () => {
   })
 })
 
+/* THE TRACE IS A STANDING MARK (owner, 6 Aug 26). It used to appear only while
+   the warning was focused, which meant the reader had to already know about
+   the breach to be shown its cause. It is model state now — validate() files
+   every breach against the day that caused it — so it is on the page before
+   anything is clicked, and clicking is only ever navigation. */
 describe('the previous-day trace', () => {
-  it('is painted only while the warning is focused', () => {
+  it('is painted with nothing clicked, and does not clear with the focus', () => {
     const ix = build('01:30', '2A: BFM-5')
-    /* unfocused: the previous day carries nothing — the man flew a clean sortie */
-    expect(puckOf(0), 'nothing before the click').not.toContain('boxdash')
-    expect(puckOf(0)).not.toContain('l-cr')
+    expect(puckOf(0), 'the cause is marked before any click').toContain('boxdot')
+    expect(puckHtml(0), 'and labelled CR').toContain('l-cr"')
     focusWarn(1, ix)
-    expect(puckOf(0), 'the previous day rings dashed').toContain('boxdash')
-    expect(puckOf(0), 'and is labelled CR').toContain('boxdash')
-    expect(dayHTML(0, false)).toContain('l-cr')
+    expect(puckOf(0), 'focusing the warning does not change it').toContain('boxdot')
     clearWarnFocus()
-    expect(puckOf(0), 'and it clears with the focus').not.toContain('boxdash')
+    expect(puckOf(0), 'and clearing the focus does not take it away').toContain('boxdot')
+  })
+
+  it('rings DOTTED, never solid — he flew a legal day here', () => {
+    build('01:30', '2A: BFM-5')
+    expect(puckOf(0)).toContain('boxdot')
+    expect(puckOf(0), 'the breach is tomorrow, so no red box today').not.toContain('boxred')
+    expect(puckOf(0), 'and it is not the sanctioned-late-show dash either').not.toContain('boxdash')
+  })
+
+  it('the chip and the title name the day it breaks and the leave-by time', () => {
+    build('01:30', '2A: BFM-5')
+    const h = puckHtml(0)
+    expect(h, 'the caption is the reader\'s question, not the threshold').toContain('is broken by this day')
+    expect(h).toContain('had to leave by 00:00')
   })
 
   it('the warning names the time he had to leave', () => {
@@ -100,11 +116,50 @@ describe('the previous-day trace', () => {
     expect(w.prevDi, 'and which day to look back at').toBe(0)
   })
 
-  it('traces only the crew the warning names, and only its own previous day', () => {
+  it('publishes the same facts on WARN.trace, keyed by the day that caused it', () => {
     const ix = build('01:30', '2A: BFM-5')
-    focusWarn(1, ix)
-    /* day 2 is not the traced day, so nothing is painted there */
-    expect(puckOf(2)).not.toContain('boxdash')
+    const t = traceOf(0, CREW)
+    expect(t, 'filed against day 0, the day a scheduler can still fix').toBeTruthy()
+    expect(t.di, 'and pointing at the day of the breach').toBe(1)
+    expect(t.leaveBy).toBe('00:00')
+    expect(traceIx(t, CREW), 'resolving to the warning\'s own index').toBe(ix)
+    expect(traceOf(1, CREW), 'nothing is filed against the day of the breach').toBeNull()
+  })
+
+  it('traces only the crew the warning names, and only its own previous day', () => {
+    build('01:30', '2A: BFM-5')
+    expect(puckOf(2), 'day 2 caused nothing').not.toContain('boxdot')
+    expect(traceOf(0, 'bane'), 'and nobody else flew him into it').toBeNull()
+  })
+})
+
+/* The strip under the previous day's issue box — the same breach, read from
+   the day that caused it, addressed by the NEXT day's (di, ix) so the ordinary
+   .witem handler navigates it with no click path of its own. */
+describe('the cross-day row on the warning list', () => {
+  it('the causing day carries a row pointing at the next day\'s warning', () => {
+    const ix = build('01:30', '2A: BFM-5')
+    const h = dayHTML(0, false)
+    expect(h, 'the strip is there').toContain('dwtrace')
+    expect(h, 'addressed to the day of the breach, not this one')
+      .toContain(`data-wdi="1" data-wix="${ix}"`)
+    expect(h).toContain('had to leave by')
+  })
+
+  it('the day of the breach carries no such row — it is not that day\'s doing', () => {
+    build('01:30', '2A: BFM-5')
+    expect(dayHTML(1, false)).not.toContain('dwtrace')
+  })
+
+  it('the ⚠ count stays the day\'s OWN issues', () => {
+    build('01:30', '2A: BFM-5')
+    const own = ((WARN.byDay[0] && WARN.byDay[0].warns) || []).length
+    const m = dayHTML(0, false).match(/⚠ (\d+) issue/)
+    /* a day with no issues of its own shows no count at all, and the strip
+       still renders — that is the case the standing mark exists for */
+    if (own) expect(+m![1], 'tomorrow\'s breach is not counted here').toBe(own)
+    else expect(m, 'no issue box, but the strip stands alone').toBeNull()
+    expect(dayHTML(0, false)).toContain('dwtrace')
   })
 })
 
@@ -126,16 +181,36 @@ describe('the dash belongs to the crew-rest flag, not to the person', () => {
   })
 })
 
-/* Reached from the CHIP, not the issue row. jumpToWarn (interactions.ts)
-   builds its own focus object rather than calling focusWarn, so the trace
-   fields have to be carried there too — a real-browser check caught this
-   after the row path was already passing. */
+/* The trace used to be rebuilt from whatever the click had put on WFOCUS, so
+   each surface that opened a warning had to remember to carry prevDi and
+   leaveBy across — and the chip path once didn't. Reading it off the model
+   instead makes that whole class of bug unreachable: no surface can forget a
+   field it never passes. Pinned, because it is the reason for the rework. */
 describe('the trace does not depend on which surface opened the warning', () => {
-  it('a focus built by jumpToWarn carries the trace fields', () => {
+  it('a focus built by jumpToWarn carries no trace fields, and none are needed', () => {
     const ix = build('01:30', '2A: BFM-5')
     const w = WARN.byDay[1].warns[ix]
-    setWarnFocus({ di: 1, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
-    expect(puckOf(0), 'the previous day still lights up').toContain('boxdash')
+    setWarnFocus({ di: 1, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code })
+    expect(puckOf(0), 'the previous day is marked regardless').toContain('boxdot')
     expect(puckHtml(0)).toContain('l-cr"')
+  })
+})
+
+/* A louder flag of his own wins the CAPTION — a conflict is not a crew-rest
+   problem and must not be labelled as one — but the dotted ring is additive
+   and stays, because he still wrecks tomorrow either way. .boxdot is an
+   outline and .boxred a box-shadow, which is what lets both be worn at once. */
+describe('a louder flag on the causing day', () => {
+  it('takes the chip but leaves the dotted ring', () => {
+    build('01:30', '2A: BFM-5')
+    const prev: any = firstForm(0)!
+    DAYS[0].ground = DAYS[0].ground || []
+    DAYS[0].ground.push({ prog: 'CLASHING MTG', str: prev.to, end: '23:30', who: 'Waldo' })
+    validate()
+    expect(traceOf(0, CREW), 'the trace itself is untouched').toBeTruthy()
+    expect(traceLeads(0, CREW), 'but it no longer owns the flag').toBeNull()
+    expect(puckHtml(0), 'the conflict wins the chip').toContain('l-c"')
+    expect(puckOf(0), 'and both rings are worn at once').toContain('boxdot')
+    expect(puckOf(0)).toContain('boxred')
   })
 })

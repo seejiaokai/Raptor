@@ -7,9 +7,9 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 604/38
+**Every gate is green at this commit**, run first-hand: `npm test` 613/38
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 20/20, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 
 ## Known issues / open work
@@ -45,9 +45,10 @@ test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
   free text wrapping rather than overflowing, one day box per pan click, the
   proxy scrollbar, scroll held across an edit, a programme hole rendering no
   element, descender ink inside the puck, and the warning-jump paths on every
-  surface (both weeks, day-detail, flag chip, the board small and large, and
-  a warning landing on its anchored line) — eight contract families over 18
-  tests. It
+  surface (both weeks, day-detail, flag chip, the board small and large, a
+  warning landing on its anchored line, and the lateral view held when the
+  puck is already on screen), and the three crew-rest strokes really rendering
+  as three — nine contract families over 20 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
@@ -97,6 +98,20 @@ test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
   `warnjump.test.tsx` ("the anchored line wins") and one browser scenario in
   `e2e/geometry.spec.ts` (a SIM_BRIEF lands the sim row on screen). Pan only —
   the owner declined a row highlight on landing.
+- **The jump HOLDS the lateral view when the puck is already on screen
+  (owner, 6 Aug 26).** The horizontal move above used to run on every click,
+  so a warning on a day you were already reading snapped that day hard to the
+  left edge and threw the rest of the week off the side — for nothing, since
+  the puck was in front of you before the click. `scrollToWarnFocus` measures
+  the PUCK against the week viewport first and pans only when it is genuinely
+  off screen; otherwise `scrollLeft` is untouched and the jump is vertical
+  only. A zero-width week (jsdom, where every rect is 0×0) reads as "cannot
+  tell" and takes the old unconditional pan, so the vitest suite still drives
+  the shipped path — only `e2e/geometry.spec.ts` can see the hold, and it now
+  gates both halves. Those tests click through `clickHere` (`e2e/app.ts`, new)
+  rather than `page.click`: Playwright scrolls a target into view before
+  pressing it, which would hand the app a week already panned onto the day.
+  Contract: `docs/ui-contracts.md` §Jumping from a warning to the puck.
 - **The crew-pairing chip `CP` (owner, 5 Aug 26; renamed from `CC`, owner ask
   5 Aug 26).** The pairing rules (`CREW_SOLO`, `CO_APPROVAL`, `OCU_NO_IP`,
   `ILLEGAL_CREW`, `NO_IR`) used to ring a puck and caption nothing, which left
@@ -230,14 +245,36 @@ test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
   time. `VCONF.briefLead` is therefore a CONVENIENCE that works out the
   suggestion, **not a rule** — every brief-driven check follows the indicated
   B. Contract: `docs/ui-contracts.md` §The B box.
-- **Crew rest rings two ways (owner, 6 Aug 26).** The anchor is the earlier of
+- **Crew rest rings three ways (owner, 6 Aug 26).** The anchor is the earlier of
   the in-time and the leg's own brief, and exactly `crewRest` stays legal. A
   `late show` / `show at brief` remark on an aircraft does NOT excuse the
   breach — still red, still counted — it draws it **dashed** while the man
   clears rest by the new editable **latest show** (`VCONF.showLead`, 60 min
   before T/O); past that line it is solid, because he cannot make the flight.
-  Every CR warning carries `leaveBy` and `prevDi`, and clicking one traces it:
-  the previous day's puck rings dashed and is labelled `CR` while focused.
+  Every CR warning carries `leaveBy` and `prevDi`.
+  **The previous-day trace is a STANDING mark now (owner, 6 Aug 26).** It used
+  to be painted only while the warning was focused, so you had to already know
+  about the breach to be shown its cause. `validate()` files every breach a
+  second time under the day that CAUSED it (`WARN.trace[prevDi][id]`, with
+  `traceOf`/`traceLeads`/`traceIx`/`tracesOn`), and that day now draws it with
+  nothing clicked: the puck rings **dotted** (a third stroke, additive — it
+  stacks with a red box of his own), takes a `CR` chip captioned with the day
+  broken and the leave-by where nothing louder outranks it, and the day's issue
+  box grows a `.dwtrace` cross-day row. The chip and the row both carry the
+  NEXT day's `(di, ix)`, so the ordinary warning jump navigates them.
+  **The dashed ring was never dashed on screen (owner, from the deployed site,
+  6 Aug 26).** `.puck.warn.hard` puts a solid 1.5px red ring on every hard flag
+  and `.boxdash` only ADDED an outline on top of it, so the dashes were filled
+  in from behind and a sanctioned late show rendered as a fat solid red box. It
+  clears the shadow now. Two sizing decisions came out of looking at the three
+  together: the dotted ring is 1.5px (at 2px, CSS `dotted` draws square dots
+  almost identical to the dashed stroke) and sits at `outline-offset:2px` (any
+  closer and it hides inside `.boxred`'s 2px spread on a puck wearing both).
+  All three are now measured in `e2e/geometry.spec.ts` — vitest can only see
+  which class was emitted, which is exactly why this shipped broken.
+  One coupling falls out of it, and it is the only one: an edit on day N that
+  changes its crew rest rewrites day N−1 too — `probes/perf-port.cjs`'s
+  day-isolation assertion names that exemption and still fails on any other day.
   Rules: `docs/engine-rules.md` §validation; visuals: `ui-contracts.md`.
   **Known limitation, raised with the owner and deliberately not built
   (6 Aug 26):** because crew rest anchors on the brief, typing a B LATER than
@@ -269,7 +306,7 @@ test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
 | `inputs.ts` | INPUTS list + taxonomy: `isLeave`, `isLocalLeave`, `isDownchit`, `isDetach`, **`isPersonal`/`isUnavail`** (the two day blocks), INPUT_TYPES, DATES. |
 | `time.ts` | `parseHM`/`hhmm`/`minus`/`overlap` (half-open — abutting windows do not clash). |
 | `events.ts` | `collectEvents()` — the per-day event build the validator consumes. |
-| `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`. **The conflict engine.** |
+| `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`, `dashOf`, the crew-rest trace (`traceOf`/`traceLeads`/`traceIx`/`tracesOn`). **The conflict engine.** |
 | `avail.ts` | `slotRules`/`slotBar` eligibility, `dayOff`/`dayEngaged`, free-count ranking. |
 | `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`**. |
 | `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering. |
@@ -304,7 +341,7 @@ test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
 | `drag.ts` | Mouse HTML5 DnD + the touch pointer machine; `applyDrop()` is the single drop path; `barDrop` qualification warning. |
 | `pan.ts` | Week arrows (`panDays`), proxy scrollbar (`hsSet`/`hsSync`, echo-guarded), shift+wheel, palette day-follow, phone day dots. |
 | `textedit.ts` | Inline text editing: Enter commits / Escape restores, heal-in-place, deferred commit, `editingText()`, plus the four fields outside the `data-txt` grammar. |
-| `highlights.ts` | Post-render decoration: selection/search/warning-focus classes on every puck (the week AND the board's `.sb-boardwrap`, never the palettes or a `.pv-frozen` preview), `paintArm`, and `scrollToWarnFocus` — surface-aware, snap-safe, picking the puck whose row holds the most of the warning's crew. |
+| `highlights.ts` | Post-render decoration: selection/search/warning-focus classes on every puck (the week AND the board's `.sb-boardwrap`, never the palettes or a `.pv-frozen` preview), `paintArm`, and `scrollToWarnFocus` — surface-aware, snap-safe, lateral-holding (it pans sideways only when the target is off screen), picking the puck whose row holds the most of the warning's crew. |
 | `Modals.tsx` | DayPop (read-only day details), Insights, Manage-users, Airspace/traffic popup. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Contract: `docs/ui-contracts.md` §The Inputs table's view state. |
 | `RangeCal.tsx` | The Inputs date picker (owner, Aug 26): ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
@@ -324,6 +361,6 @@ test:e2e` 18/18, and the two that are NOT in CI — `npm run probes:adapted`
 | `docs/session-state.md` | The last session's leftovers — **often absent, and absent is meaningful**: it exists only while something is genuinely pending, and the session that clears the last item deletes it. This file holds the durable state; that one holds what a session could not finish. Written by `.claude/skills/session-handoff`. |
 | `PORTING.md` | **Historical** — the phase plan the port was built from. Nothing left to run; kept only because `probe-sweep.md` and `perf-port.cjs` cite its decisions (dropped probes, original timing budgets). |
 | `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the four gates. |
-| `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both). `playwright.config.ts` builds and serves the port itself. |
+| `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board, and where it deliberately does NOT — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both) plus `clickHere`, a click that does not scroll the target into view first (`page.click` does, which would defeat any test that parks the week on purpose). `playwright.config.ts` builds and serves the port itself. |
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |

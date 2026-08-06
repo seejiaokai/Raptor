@@ -50,7 +50,7 @@ export const SEVWORD:any={hard:'Warning',adv:'Advisory',note:'Note'};
    set to right now. Without this an edited rule leaves stale numbers behind in
    tooltips and warning lists — the engine says 10h, the chip still says 12h. */
 export const wlbl=(s:any)=>String(s==null?'':s).replace(/\{(\w+)\}/g,(m:any,k:any)=>k in VCONF?lgT(VCONF[k]):m);
-export let WARN:any={all:[],byDay:[],sev:{},chip:{},dash:{}};
+export let WARN:any={all:[],byDay:[],sev:{},chip:{},dash:{},trace:{}};
 /* when crew rest expires today, per day index, per person — minutes into the
    day. Filled by validate(); read by the crew picker so an SC slot can be
    closed to anyone who is not yet clear of the previous day. */
@@ -63,7 +63,7 @@ export function restClear(di:any,id:any){const m=REST[di]; const v=m&&m[id]; ret
 export let EVD:any={};
 export function dayEvents(di:any,id:any){const m=EVD[di]; return (m&&m[id])||[];}
 export function validate(){
-  const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={};
+  const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={}, trace:any={};
   REST={}; EVD={};
   /* ring precedence: red beats orange beats grey, so a person carrying both a
      long day and a conflict still shows the conflict ring. */
@@ -74,6 +74,14 @@ export function validate(){
      dashed while still counting as the hard warning it is (owner, 6 Aug 26).
      Separate from sev because it is orthogonal — same red, different stroke. */
   const markDash=(di:any,id:any)=>{dash[di]=dash[di]||{}; dash[di][id]=true;};
+  /* THE CAUSE, published on the day that CAUSED it (owner, 6 Aug 26). A crew-rest
+     breach is raised on the day the man is told to report, but the day a
+     scheduler can actually fix is the one BEFORE — so that day carries a
+     standing mark of its own: which day it breaks (`di`), the time he had to
+     be gone by (`leaveBy`), and the message, so the previous day can print the
+     warning without re-deriving a word of it. Keyed by the PREVIOUS day, which
+     is what makes it readable straight off the puck. */
+  const markTrace=(pdi:any,id:any,t:any)=>{if(pdi==null)return; trace[pdi]=trace[pdi]||{}; trace[pdi][id]=t;};
   const dur=(m:any)=>`${Math.floor(m/60)}h${String(Math.round(m%60)).padStart(2,'0')}`;
   /* CONSECUTIVE WORKING DAYS (owner, Aug 26) — nobody may be on the programme
      more than VCONF.maxRun days without a break day. Counted in day order off
@@ -361,13 +369,15 @@ export function validate(){
           const makesIt=!bl.shift&&earliest<=bl.to-VCONF.showLead;
           const dashed=!!bl.lateShow&&makesIt;
           markChip(di,id,'CR');markRing(di,id,'hard'); if(dashed)markDash(di,id);
-          add('hard','CREW_REST',[id],
-            (onShift?`Crew rest breach — ${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `
+          const prevDi=idx-1>=0?ev[idx-1].di:null;
+          const crMsg=(onShift?`Crew rest breach — ${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `
                    :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)
             +(dashed?`Late show — he still makes the ${hm24(bl.to-VCONF.showLead)} show. `
                     :(bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(bl.to-VCONF.showLead)} latest show. `:''))
-            +tail+`, so he had to leave by ${leaveBy}`,
-            bl.key,{prevDi:idx-1>=0?ev[idx-1].di:null,leaveBy,dashed});
+            +tail+`, so he had to leave by ${leaveBy}`;
+          add('hard','CREW_REST',[id],crMsg,bl.key,{prevDi,leaveBy,dashed});
+          /* the same breach, filed against the day that caused it */
+          markTrace(prevDi,id,{di,dow:day.dow,leaveBy,dashed,msg:crMsg});
         } else if(nominal<earliest||instructed<earliest){
           markChip(di,id,'TT');markRing(di,id,'adv');
           add('adv','CREW_TIGHT',[id],`Tight turning — T/O ${hm24(Math.min.apply(null,legs.map((e:any)=>e.to)))} puts the ${lgT(VCONF.reportLead)} report at ${hm24(nominal)}, inside ${lgT(VCONF.crewRest)}. ${tail}`
@@ -487,7 +497,7 @@ export function validate(){
     ws.sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));
     byDay[di]={di,dow:day.dow,warns:ws};
   });
-  WARN={all,byDay,sev,chip,dash};
+  WARN={all,byDay,sev,chip,dash,trace};
   const hard=all.filter((w:any)=>w.sev==='hard').length;
   const note=all.filter((w:any)=>w.sev==='note').length;
   if($('nHard'))$('nHard').textContent=hard;
@@ -501,6 +511,27 @@ export const chipOf=(di:any,id:any)=>WARN.chip&&WARN.chip[di]&&WARN.chip[di][id]
    where a sanctioned late show still makes the latest show, so the puck reads
    as a breach a scheduler meant rather than one nobody noticed. */
 export const dashOf=(di:any,id:any)=>!!(WARN.dash&&WARN.dash[di]&&WARN.dash[di][id]);
+/* THE PREVIOUS-DAY TRACE, read from the day that caused the breach: what this
+   man's day-end does to TOMORROW. Standing model state, not focus state — the
+   dotted ring, the CR label and the cross-day row are all painted off this the
+   moment the week renders, with nothing clicked (owner, 6 Aug 26). */
+export const traceOf=(di:any,id:any)=>(WARN.trace&&WARN.trace[di]&&WARN.trace[di][id])||null;
+/* ...and whether the trace OWNS the puck's flag, which it only does when the
+   man carries nothing louder of his own that day. One test, so the chip the
+   builder prints and the warning a click opens can never disagree. */
+export const traceLeads=(di:any,id:any)=>{const t=traceOf(di,id); if(!t)return null;
+  const c=chipOf(di,id); return (!c||RANK['CR']>RANK[c])?t:null;};
+/* Where the traced breach actually LIVES — its index in the NEXT day's own
+   warning list. That pair (day, index) is the address every warning surface
+   already navigates by, so a cross-day row and a traced puck both hand the
+   ordinary jump the ordinary thing and need no navigation path of their own.
+   -1 where the warning has moved under an edit: WARN is rebuilt wholesale. */
+export const traceIx=(t:any,id:any)=>{if(!t)return -1;
+  const g=WARN.byDay&&WARN.byDay[t.di];
+  return (((g&&g.warns)||[]) as any[]).findIndex((w:any)=>w.code==='CREW_REST'&&(w.who||[]).indexOf(id)>=0);};
+/* every man whose day-end breaks the NEXT day, for the day that caused it */
+export const tracesOn=(di:any)=>{const m=(WARN.trace&&WARN.trace[di])||{};
+  return Object.keys(m).map((id:any)=>({id,t:m[id]}));};
 /* how often each code fired across the week now on screen, and on which days */
 export function lgFired(){
   const out:any={}; (WARN.all||[]).forEach((w:any)=>{

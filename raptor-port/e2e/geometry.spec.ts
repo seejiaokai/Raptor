@@ -7,7 +7,7 @@
    pass `npm test` all day. Here they run in a real browser on the real
    production build, so a CSS change that breaks one fails a gate. */
 import { expect, test } from '@playwright/test'
-import { go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek } from './app'
+import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek } from './app'
 
 const PHONE = { width: 390, height: 844 }
 const DESK = { width: 1500, height: 950 }
@@ -219,6 +219,78 @@ test('a hole in a programme row renders no element at all', async ({ page }) => 
   expect(holed.lefts, 'so the pucks either side did not shift').toEqual(solid.lefts)
 })
 
+/* THE THREE CREW-REST STROKES, measured (owner, 6 Aug 26). Solid is his own
+   breach, dashed is his own breach that a scheduler sanctioned, dotted is the
+   day he CAUSES one. Vitest can prove which class the builder emitted and
+   nothing more: jsdom applies no stylesheet, so "the dash renders as a dash"
+   was untestable there — and it was not true. `.puck.warn.hard` puts a solid
+   1.5px ring on any hard-flagged puck, `.boxdash` only added an outline on top
+   of it, and the solid ring filled in every gap from behind: a sanctioned late
+   show came out a fat solid red box, which is what the owner reported. */
+test.describe('the crew-rest rings are three distinguishable strokes', () => {
+  test('dashed is not filled in from behind, and dotted clears the solid ring', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'editsched')
+
+    /* Drive the seed to a state that renders all three at once. The seed's one
+       crew-rest breach (casper, Tue, traced back to Mon) is too deep for a late
+       show to save — rest clears 10:45, the latest show is 07:40 — so the
+       remark alone leaves it solid; shortening crew rest is what puts it in the
+       sanctioned band. Both go through the ordinary funnel. */
+    const ok = await page.evaluate(() => {
+      const w = window as any
+      const seat = [...document.querySelectorAll('#eWeek [data-day="1"] .seat[data-slot]')]
+        .find(s => s.querySelector('.puck[data-person="casper"]')) as HTMLElement | undefined
+      if (!seat) return false
+      w.txtSet('fr:' + seat.dataset.slot!.split('.').slice(0, 4).join('.'), 'LATE SHOW')
+      w.VCONF.crewRest = 480
+      w.afterSchedMutate()
+      return true
+    })
+    test.skip(!ok, 'the seed no longer seats casper on the crew-rest line')
+    await page.waitForTimeout(400)
+
+    const r = await page.evaluate(() => {
+      const read = (sel: string) => {
+        const el = document.querySelector(sel) as HTMLElement
+        if (!el) return null
+        const cs = getComputedStyle(el), b = el.getBoundingClientRect()
+        return { shadow: cs.boxShadow, style: cs.outlineStyle, width: parseFloat(cs.outlineWidth),
+          off: parseFloat(cs.outlineOffset), w: +b.width.toFixed(1), h: +b.height.toFixed(1) }
+      }
+      return { dash: read('#eWeek .puck.boxdash'), dot: read('#eWeek .puck.boxdot:not(.boxred)'),
+        red: read('#eWeek .puck.boxred:not(.boxdot)') }
+    })
+    expect(r.dash, 'the sanctioned late show renders').not.toBeNull()
+    expect(r.dot, 'and so does the day that caused the breach').not.toBeNull()
+    expect(r.red, 'and an ordinary hard flag').not.toBeNull()
+
+    /* THE BUG: any box-shadow at all here is a solid ring behind the dashes */
+    expect(r.dash!.shadow, 'nothing solid is drawn behind the dashes').toBe('none')
+    expect(r.dash!.style, 'and the stroke really is dashed').toBe('dashed')
+
+    expect(r.dot!.style, 'the trace is dotted, not dashed').toBe('dotted')
+    expect(r.dot!.width, 'and lighter than the dashed stroke, or the two read alike')
+      .toBeLessThan(r.dash!.width)
+
+    /* the solid ring keeps its shadow — that is how .boxred draws — and the
+       dotted trace has to sit OUTSIDE its 2px spread or it vanishes into it */
+    expect(r.red!.shadow, 'the solid ring is still a shadow').toContain('px')
+    expect(r.red!.style, 'and draws no outline of its own').toBe('none')
+    const spread = 2
+    expect(r.dot!.off, 'the dots clear the solid ring rather than hiding in it')
+      .toBeGreaterThanOrEqual(spread)
+
+    /* and none of it moves the puck: outlines do not take part in layout, which
+       is the reason both rings are outlines and not shadows */
+    for (const [name, m] of Object.entries(r)) {
+      expect({ name, w: m!.w, h: m!.h }, `${name} keeps the measured puck box`)
+        .toEqual({ name, w: 74, h: 15 })
+    }
+  })
+})
+
 test('puck text stays inside the puck, descenders and all', async ({ page }) => {
   await page.setViewportSize(PHONE)
   await login(page)
@@ -255,21 +327,29 @@ test.describe('clicking a warning brings the puck into view', () => {
     await login(page)
     await go(page, 'viewsched')
 
-    /* find a flagged day that is NOT the leftmost one, then scroll away from
-       it — otherwise "it is in view" proves nothing, it was never out of view */
+    /* Find a flagged day that is genuinely OFF SCREEN from the left edge, and
+       measure that rather than counting day boxes: the pan is conditional now
+       (owner, 6 Aug 26 — it holds the lateral view when the target is already
+       visible), so a day merely "far enough along" is not the same question.
+       At 1500px the third day box hangs half into view, and picking it would
+       exercise the hold path while asserting the pan path's snap. */
+    await scrollTo(page, '#vWeek', 0)
     const di = await page.evaluate(() => {
-      const days = [...document.querySelectorAll('#vWeek .day[data-day]')]
-      const hit = days.find(d => d.querySelector('.daywarn[data-daywarn]') && +(d as HTMLElement).dataset.day! > 1)
+      const wr = (document.querySelector('#vWeek') as HTMLElement).getBoundingClientRect()
+      const hit = [...document.querySelectorAll('#vWeek .day[data-day]')]
+        .find(d => d.querySelector('.daywarn[data-daywarn]') && d.getBoundingClientRect().left >= wr.right)
       return hit ? +(hit as HTMLElement).dataset.day! : -1
     })
-    test.skip(di < 0, 'no flagged day far enough into the week to scroll away from')
+    test.skip(di < 0, 'no flagged day off screen to scroll to')
 
-    await scrollTo(page, '#vWeek', 0)
     await page.click(`#vWeek .day[data-day="${di}"] .daywarn[data-daywarn]`)
-    await page.waitForSelector(`#vWeek .day[data-day="${di}"] .witem[data-wdi]`)
+    await page.waitForSelector(`#vWeek .day[data-day="${di}"] .dwlist .witem[data-wdi]`)
     await scrollTo(page, '#vWeek', 0)          // the expand may have nudged it
 
-    await page.click(`#vWeek .day[data-day="${di}"] .witem[data-wdi]`)
+    /* clickHere, not page.click: an actionable click would scroll the row into
+       view first and hand the app a week already panned onto the day, which is
+       the very move under test */
+    expect(await clickHere(page, `#vWeek .day[data-day="${di}"] .dwlist .witem[data-wdi]`)).toBe(true)
     await settleBoth(page, '#vWeek')
 
     const m = await page.evaluate((d) => {
@@ -289,6 +369,66 @@ test.describe('clicking a warning brings the puck into view', () => {
     expect(m, 'a focused puck is on the page').not.toBeNull()
     expect(m!.dayOffset, 'the week rests on the day\'s snap point, not between two').toBe(0)
     expect(m!.inView, 'the offending puck is inside the week viewport').toBe(true)
+  })
+
+  /* THE HOLD (owner, 6 Aug 26). The pan above used to run on every click, so a
+     warning on a day you were already reading — the second day box, sitting
+     mid-screen — snapped that day hard to the left edge and threw the rest of
+     the week off the side, for no gain: the puck was already in front of you.
+     The horizontal now moves only when the destination is genuinely not on
+     screen. Measurable here and nowhere else: jsdom reports every rect as 0×0,
+     so it cannot tell "in view" from "off screen" at all. */
+  test('a warning already on screen does not move the week sideways', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'viewsched')
+    await scrollTo(page, '#vWeek', 0)
+
+    /* a flagged day that is NOT the leftmost, parked one snap point back so it
+       sits in the middle of the viewport — the exact case that was reported */
+    const pick = await page.evaluate(() => {
+      const days = [...document.querySelectorAll('#vWeek .day[data-day]')] as HTMLElement[]
+      const week = document.querySelector('#vWeek') as HTMLElement
+      const wr = week.getBoundingClientRect()
+      for (const d of days) {
+        const di = +d.dataset.day!
+        if (di < 1 || !d.querySelector('.daywarn[data-daywarn]')) continue
+        const prev = days.find(x => +x.dataset.day! === di - 1)!
+        return { di, at: Math.round(week.scrollLeft + prev.getBoundingClientRect().left - wr.left) }
+      }
+      return null
+    })
+    test.skip(!pick, 'no flagged day with a day before it')
+
+    await page.click(`#vWeek .day[data-day="${pick!.di}"] .daywarn[data-daywarn]`)
+    await page.waitForSelector(`#vWeek .day[data-day="${pick!.di}"] .dwlist .witem[data-wdi]`)
+    await scrollTo(page, '#vWeek', pick!.at)
+
+    const before = await page.evaluate(() => Math.round((document.querySelector('#vWeek') as HTMLElement).scrollLeft))
+    /* it has to actually BE on screen, or the hold proves nothing */
+    const visible = await page.evaluate((d) => {
+      const week = document.querySelector('#vWeek') as HTMLElement
+      const day = document.querySelector(`#vWeek .day[data-day="${d}"]`) as HTMLElement
+      const w = week.getBoundingClientRect(), r = day.getBoundingClientRect()
+      return r.left >= w.left - 1 && r.right <= w.right + 1
+    }, pick!.di)
+    test.skip(!visible, 'the day does not fit on screen beside its neighbour')
+
+    expect(await clickHere(page, `#vWeek .day[data-day="${pick!.di}"] .dwlist .witem[data-wdi]`)).toBe(true)
+    await settleWeek(page, '#vWeek')
+
+    const after = await page.evaluate(() => {
+      const week = document.querySelector('#vWeek') as HTMLElement
+      const puck = document.querySelector('#vWeek .puck.wfoc:not(.echo)') as HTMLElement
+      const w = week.getBoundingClientRect()
+      const p = puck && puck.getBoundingClientRect()
+      return {
+        left: Math.round(week.scrollLeft),
+        inView: !!p && p.left >= w.left - 1 && p.right <= w.right + 1,
+      }
+    })
+    expect(after.left, 'the lateral view is exactly where it was left').toBe(before)
+    expect(after.inView, 'and the puck was on screen all along').toBe(true)
   })
 
   test('the board scrolls its own panel to the puck', async ({ page }) => {
@@ -441,12 +581,35 @@ test.describe('clicking a warning brings the puck into view', () => {
     })
     test.skip(!hit, 'no SIM_BRIEF in the seed week')
 
+    /* Park the week where this day is genuinely off screen, whichever side
+       that is — the leftmost position when the day is late in the week, the
+       far right when it is early. The pan is conditional now (it holds the
+       lateral view for a target already visible), and this test is about the
+       PAN: it asserts the whole anchored row lands inside the week, which is a
+       stronger claim than "the puck is visible" and only the pan delivers it. */
+    const park = async () => page.evaluate(async (d) => {
+      const week = document.querySelector('#vWeek') as HTMLElement
+      const off = () => {
+        const day = document.querySelector(`#vWeek .day[data-day="${d}"]`) as HTMLElement
+        const w = week.getBoundingClientRect(), r = day.getBoundingClientRect()
+        return r.right <= w.left || r.left >= w.right
+      }
+      for (const x of [0, week.scrollWidth]) {
+        week.scrollTo({ left: x, behavior: 'instant' as ScrollBehavior })
+        await new Promise(r => requestAnimationFrame(() => r(null)))
+        if (off()) return true
+      }
+      return off()
+    }, hit!.di)
+
     await scrollTo(page, '#vWeek', 0)
     await page.click(`#vWeek .day[data-day="${hit!.di}"] .daywarn[data-daywarn]`)
-    await page.waitForSelector(`#vWeek .day[data-day="${hit!.di}"] .witem[data-wix="${hit!.ix}"]`)
-    await scrollTo(page, '#vWeek', 0)          // the expand may have nudged it
+    await page.waitForSelector(`#vWeek .day[data-day="${hit!.di}"] .dwlist .witem[data-wix="${hit!.ix}"]`)
+    const parked = await park()                // the expand may have nudged it
+    await settle(page, '#vWeek')
+    test.skip(!parked, 'the week is too short to park this day off screen')
 
-    await page.click(`#vWeek .day[data-day="${hit!.di}"] .witem[data-wix="${hit!.ix}"]`)
+    expect(await clickHere(page, `#vWeek .day[data-day="${hit!.di}"] .dwlist .witem[data-wix="${hit!.ix}"]`)).toBe(true)
     /* settleWeek, not settleBoth: the week scrolls X on itself but Y on the
        PAGE, so watching #vWeek.scrollTop returns before the vertical settles */
     await settleWeek(page, '#vWeek')

@@ -156,11 +156,28 @@ export function scrollToWarnFocus(){
      to do and inline:'nearest' keeps it from fighting the snap back. */
   if(!onBoard){
     const week:any=document.getElementById(warnWeekId());
+    /* HOLD THE LATERAL VIEW (owner, 6 Aug 26). The pan above used to run on
+       every click, so a warning on the day you were already reading — sitting
+       comfortably mid-screen — snapped that day hard to the left edge and
+       threw the rest of your week off the side. Nothing was gained: the puck
+       was already in front of you. So the horizontal moves only when the
+       destination is genuinely not on screen; when it is, scrollLeft is not
+       touched at all and the jump is purely vertical.
+       Measured on the PUCK, not its day: half a day box can hang past the
+       right edge with the target still perfectly readable, and panning then
+       would be the same unasked-for lurch in a smaller size.
+       A zero-width week means nothing is measurable — jsdom has no layout —
+       and the honest reading of "I cannot tell" is the old unconditional pan,
+       so the behaviour under test stays the behaviour that shipped. */
     if(week){
-      /* rect delta, not offsetLeft: .week is position:static, so a day's
-         offsetParent is not the scroller */
-      hsSet(week,week.scrollLeft+root.getBoundingClientRect().left-week.getBoundingClientRect().left);
-      hsSync();   // the bar geometry, now that the horizontal is final
+      const wr=week.getBoundingClientRect(), tr=tgt.getBoundingClientRect();
+      const inView=wr.width>0&&tr.left>=wr.left-1&&tr.right<=wr.right+1;
+      if(!inView){
+        /* rect delta, not offsetLeft: .week is position:static, so a day's
+           offsetParent is not the scroller */
+        hsSet(week,week.scrollLeft+root.getBoundingClientRect().left-wr.left);
+        hsSync();   // the bar geometry, now that the horizontal is final
+      }
     }
   }
   try{tgt.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'});}
