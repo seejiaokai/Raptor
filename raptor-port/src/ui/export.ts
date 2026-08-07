@@ -3,7 +3,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
-import { STORE_CFG } from './html'
+import { STORE_CFG } from '../engine'
 
 /* Excel does not sniff a .csv for UTF-8: with no byte-order mark it decodes the
    file in the machine's ANSI codepage, so every byte of a multi-byte character

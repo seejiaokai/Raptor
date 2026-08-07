@@ -16,6 +16,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
+import { STORE_CFG } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
 
@@ -258,12 +259,6 @@ export function availHTML(d:any,di:any,ed:any){
   h+= sansAll.length?`<div class="ap-grid">`+sansAll.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   return h+`</div>`;
 }
-/* The line's carriage configs (owner, Aug 26): an additive set the scheduler
-   builds up through the "+" picker, replacing the old fixed 2TK/TPOD/NAV
-   toggles. [key,label] — the key is what lands in aircraft.opts, the label is
-   what prints. Bombs stays a separate free-text chip. One list, read by both
-   the read-only and the edit builders so they never drift. */
-export const STORE_CFG:[string,string][]=[['nav','NAV'],['nc','N/C'],['tk2','2 TKS'],['tks3','3 TKS'],['tpod','TPOD'],['cl','CL']];
 export function storesView(o:any){
   o=o||{};
   const on=STORE_CFG.filter(([k]:any)=>o[k]);

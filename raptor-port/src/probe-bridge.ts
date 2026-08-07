@@ -9,6 +9,7 @@ import { DAYS } from './engine/data'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
 import { INPUTS, INPUT_TYPES, DATES, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd } from './engine/inputs'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
+import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard } from './engine/stores'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
 import * as V from './engine/validate'
@@ -39,6 +40,10 @@ export function installProbeBridge() {
   Object.defineProperty(w, 'ARM', { get: () => view.ARM, configurable: true })
   Object.defineProperty(w, 'SBDAY', { get: () => view.SBDAY, configurable: true })
   Object.defineProperty(w, 'CURPAGE', { get: () => view.CURPAGE, configurable: true })
+  /* STORE_CFG is a `let`, reassigned whole by storesLoad/storesReset — same
+     reason as ARM/SBDAY/CURPAGE above, a getter so a probe never reads a
+     stale array after a load/reset */
+  Object.defineProperty(w, 'STORE_CFG', { get: () => STORE_CFG, configurable: true })
   /* the mutation funnel + validation */
   w.slotVal = slotVal; w.setSlotVal = setSlotVal; w.fillSlot = fillSlot
   w.txtGet = txtGet; w.txtSet = txtSet
@@ -92,6 +97,9 @@ export function installProbeBridge() {
   w.acceptInput = acceptInput; w.unacceptInput = unacceptInput; w.inpKey = inpKey
   w.acceptedDay = acceptedDay; w.renameCallsign = renameCallsign
   w.rulesLoad = rulesLoad; w.rulesSave = rulesSave; w.DATES = DATES
+  w.STORE_STD = STORE_STD; w.storeKey = storeKey; w.storesAreStandard = storesAreStandard
+  w.addStore = addStore; w.delStore = delStore; w.renameStore = renameStore; w.moveStore = moveStore
+  w.storesSave = storesSave; w.storesLoad = storesLoad; w.storesReset = storesReset
   w.alCount = alCount; w.alDays = alDays; w.pendDays = pendDays; w.pendCount = pendCount; w.approvedDays = approvedDays
   w.daySnapOf = daySnapOf; w.dayVersions = dayVersions; w.verLabel = verLabel; w.dayCurVer = dayCurVer
   w.restoreDayVersion = restoreDayVersion; w.dayKeys = dayKeys
