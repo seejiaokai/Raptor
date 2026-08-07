@@ -165,8 +165,12 @@ describe('persistence', () => {
     renameStore('tk2', '2 TANKS'); delStore('cl'); addStore('LGB'); moveStore(0, 3)
     const expected = STORE_CFG.map(([k, l]) => [k, l])
     storesSave()
-    storesReset()
-    expect(storesAreStandard()).toBe(true)
+    /* diverge the LIVE list WITHOUT touching storage. storesReset() cannot be
+       used here: it nulls the saved blob — which is exactly what reset is for,
+       and is asserted by the next test — so loading afterwards would find
+       nothing and this would test the fallback instead of the round trip. */
+    addStore('DIVERGE')
+    expect(STORE_CFG).not.toEqual(expected)
     storesLoad()
     expect(STORE_CFG).toEqual(expected)
   })
