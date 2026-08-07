@@ -940,3 +940,182 @@ test.describe('clicking a warning brings the puck into view', () => {
     expect(m!.inView, 'the deepest warning\'s puck is inside the board panel').toBe(true)
   })
 })
+
+/* STORES CONFIGURATION — the four things vitest structurally cannot see
+   (Task 8). Every rect vitest reports is 0x0, so it can confirm which
+   classes were emitted and nothing about where anything sits. The four
+   below are the brief's, checked against the real built DOM — the brief
+   was written before the feature existed and named a couple of selectors
+   that never shipped (`.sb-open[data-sbday]` doesn't carry a data-sbday
+   attribute; the board's chip is `.stchip[data-store]`, not `[data-store$=]`
+   read off a synthetic key the way the brief assumed) — corrected below
+   against `git show ef0e83b/243d75b/adf3f15` and the live markup, not
+   transcribed. Three more follow: real regressions hand-fixed during this
+   build, none of which had a standing guard before this file. */
+
+test('board: the flying line keeps its grid-item count with stores present', async ({ page }) => {
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  /* $$eval reads once, immediately — it does not auto-wait the way a
+     locator does, so a bare click-then-$$eval can race the board's own
+     imperative paint (SchedBoard's effect sets the panel's innerHTML AFTER
+     mount, not synchronously with the click). Wait for the line to actually
+     be there first, same as every other board test in this file already
+     does before reading it.
+     `:first-of-type` (as the brief wrote it) never matches ANY .sb-line: a
+     wave's DOM order is .sb-go-h, .sb-lcols, then the .sb-line rows, all
+     four are <div>s, and :first-of-type means "the first sibling of this
+     TAG", not "the first sibling matching this selector" — so .sb-go-h,
+     the actual first div, wins that title every time and no .sb-line is
+     ever its own type's first child. Plain first-in-document-order (what
+     $$eval's first array element already is) is what the test needs. */
+  const n = await page.$eval('#schedBoard .sb-line', el => el.children.length)
+  expect(n, 'nine grid items — .sb-rcell must be exactly one').toBe(9)
+})
+
+test('board at 390px: the remarks cell drops to its own full-width strip', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  const line = await page.locator('#schedBoard .sb-line').first().boundingBox()
+  const cell = await page.locator('#schedBoard .sb-line .sb-rcell').first().boundingBox()
+  expect(cell!.width, 'full width, like .nts was').toBeGreaterThan(line!.width - 30)
+  const cfg = await page.locator('#schedBoard .sb-line .stcfg').first().boundingBox()
+  expect(cfg!.width, 'C is reachable, not collapsed to a stub').toBeGreaterThan(10)
+})
+
+test('the pen reorders, and the popup survives a click into a rename field', async ({ page }) => {
+  await login(page); await go(page, 'editsched')
+  await clickHere(page, '#eWeek .stcfg[data-stcfg]')
+  await page.click('.stmenu .st-pen')
+  await page.click('.stmenu .st-erow[data-k="tk2"] .st-lab')
+  await expect(page.locator('.stmenu'), 'an in-box click must not dismiss it').toBeVisible()
+  const first = () => page.locator('.stmenu .st-erow').first().getAttribute('data-k')
+  expect(await first()).toBe('nav')
+  await page.click('.stmenu .st-erow[data-k="nc"] .st-up')
+  expect(await first(), 'the up arrow really reorders').toBe('nc')
+})
+
+test('a renamed store keeps its chip on every jet that carries it', async ({ page }) => {
+  await login(page); await go(page, 'editsched')
+  await clickHere(page, '#eWeek .stcfg[data-stcfg]')
+  await page.click('.stmenu .st-pen')
+  await page.fill('.stmenu .st-erow[data-k="tk2"] .st-lab', '2 TANKS')
+  await page.locator('.stmenu .st-erow[data-k="tk2"] .st-lab').blur()
+  await page.keyboard.press('Escape')
+  const chip = page.locator('#eWeek .stchip[data-store$=".tk2"]').first()
+  await expect(chip, 'the key survived the rename').toBeVisible()
+  await expect(chip).toHaveText('2 TANKS')
+})
+
+/* THE POPUP MUST TRACK ITS ANCHOR (regression — ef0e83b, 7 Aug 26). The box
+   is positioned against the C button, and C sits inside .stores, which is
+   inline-flex;wrap — every toggle's notify() rebuilds the remarks cell and
+   can shift or wrap the button before it repaints. The bug: place() ran
+   once at open and never again, so the box stayed at its opening x while
+   the button visibly walked away underneath it. Measured live, before the
+   fix: the button moved 435 -> 467 -> 495 -> 455 across three toggles while
+   the box sat fixed at 435 the whole time (see the commit message this
+   pins). Three toggles, not one — a single toggle can accidentally land the
+   button back near its start and hide a still-broken tracker. */
+test('the stores popup tracks the live C button across a multi-toggle visit', async ({ page }) => {
+  await login(page); await go(page, 'editsched')
+  await clickHere(page, '#eWeek .stcfg[data-stcfg]')
+  await expect(page.locator('.stmenu')).toBeVisible()
+  const toggles = page.locator('.stmenu .wm[data-cfg]')
+  expect(await toggles.count(), 'the popup lists stores to toggle').toBeGreaterThanOrEqual(3)
+
+  const seenButtonLefts: number[] = []
+  for (let i = 0; i < 3; i++) {
+    await toggles.nth(i).click()
+    /* the toggle's notify() repaints .stores synchronously through
+       EditWeek's effect (queueHold), so no extra wait is needed for the
+       button to have already moved by the time this reads it — but give the
+       popup's own place() a frame to run before measuring it. */
+    await page.waitForTimeout(60)
+    const btnLeft = await page.evaluate(() =>
+      document.querySelector('[data-stcfg]')!.getBoundingClientRect().left)
+    const box = await page.locator('.stmenu').boundingBox()
+    seenButtonLefts.push(Math.round(btnLeft))
+    expect(Math.abs(btnLeft - box!.x), `toggle ${i + 1}: the box is anchored to the live button, not a stale one`)
+      .toBeLessThanOrEqual(3)
+  }
+  /* guard against a vacuous pass: if the button never actually moved, a box
+     glued to its OPENING position would still read as "anchored" by luck */
+  expect(new Set(seenButtonLefts).size, 'the button really did move across the three toggles').toBeGreaterThan(1)
+})
+
+/* THE FIRST CLICK AFTER A RENAME MUST NOT BE SWALLOWED (regression —
+   cbc0e87/243d75b, 7 Aug 26). A <button> takes focus on mousedown in
+   Chromium, before mouseup — so typing a rename and then clicking a control
+   on a DIFFERENT row fires the input's 'change' (blur, ahead of the click)
+   synchronously inside that same mousedown. The original bug repainted the
+   box from that handler, detaching the very button the mousedown had just
+   landed on; the mouseup that followed landed on nothing, and the click was
+   silently dropped — a scheduler had to click twice. Real keyboard input is
+   the point: `fill` plus a real `click`, not a synthetic 'change' dispatched
+   as its own already-committed step — that is exactly how the bug shipped
+   past the first round of tests once already. */
+test('typing a rename then clicking a different row\'s control does not eat the first click', async ({ page }) => {
+  await login(page); await go(page, 'editsched')
+  await clickHere(page, '#eWeek .stcfg[data-stcfg]')
+  await page.click('.stmenu .st-pen')
+  await page.waitForSelector('.stmenu .st-erow')
+
+  await page.fill('.stmenu .st-erow[data-k="tk2"] .st-lab', '2 TANKS WIDE LABEL')
+  /* one real click, on a DIFFERENT row's delete — the blur/change from the
+     field above fires first, synchronously, inside this same mousedown */
+  await page.click('.stmenu .st-erow[data-k="nc"] .st-del')
+
+  const keys = await page.locator('.stmenu .st-erow').evaluateAll(els => els.map(e => (e as HTMLElement).getAttribute('data-k')))
+  expect(keys, 'the delete landed on the first click — nc is really gone').not.toContain('nc')
+})
+
+/* THE BOARD'S FLYING LINE IN .sb-wide AT PHONE WIDTH (regression — fc62e05,
+   7 Aug 26). scheduler.css's .sb-wide reset still named .sb-line .nts, which
+   stopped being a grid item once .nts moved inside .sb-rcell — so .sb-rcell
+   kept the phone stylesheet's grid-column:1/-1 even inside .sb-wide's
+   nine-column desktop template, and "Desktop layout" on a phone turned
+   every flying line from one row into three (measured live: 36px -> 111px).
+   Checked across all four combinations a scheduler can actually reach:
+   1400px normal and 1400px .sb-wide are both outside the phone media query
+   and were never at risk; 390px stacked is the DELIBERATE phone layout
+   (scheduler.css's own comment: B and the remarks cell drop to their own
+   full-width strip on purpose, because there is no room for a 9th column) —
+   asserting it single-row would be asserting against a documented, reviewed
+   design choice, not a bug. 390px .sb-wide is the one combination that
+   shipped broken, and is the only one of the four the grid-child count
+   alone could not have caught: it stayed 9 in every combination, bug or no
+   bug — "three of four passing" is what let it through. */
+test('the board\'s flying line is single-row in .sb-wide at phone width, and stays 9 grid items throughout', async ({ page }) => {
+  const combos = [
+    { width: 1400, height: 950, wide: false, label: '1400px normal', singleRow: true },
+    { width: 1400, height: 950, wide: true, label: '1400px .sb-wide', singleRow: true },
+    { width: 390, height: 844, wide: false, label: '390px stacked', singleRow: false },
+    { width: 390, height: 844, wide: true, label: '390px .sb-wide', singleRow: true },
+  ] as const
+
+  for (const c of combos) {
+    await page.setViewportSize({ width: c.width, height: c.height })
+    await login(page); await go(page, 'editsched')
+    await page.click('.sb-open')
+    await page.waitForSelector('#schedBoard .sb-line')
+    if (c.wide) {
+      await clickHere(page, '#sbWide')
+      await page.waitForSelector('#schedBoard.sb-wide')
+    }
+    const m = await page.evaluate(() => {
+      const line = document.querySelector('#schedBoard .sb-line') as HTMLElement
+      return { children: line.children.length, height: Math.round(line.getBoundingClientRect().height) }
+    })
+    expect(m.children, `${c.label}: nine grid items — .sb-rcell must be exactly one`).toBe(9)
+    if (c.singleRow) {
+      expect(m.height, `${c.label}: single row, not exploded into three`).toBeLessThan(90)
+    } else {
+      /* the deliberate phone-stacked layout — pinned as multi-row on
+         purpose, so a future change can't collapse it to single-row and
+         quietly break the mobile reading order without anyone noticing */
+      expect(m.height, `${c.label}: the deliberate mobile stack, not collapsed to one row`).toBeGreaterThan(90)
+    }
+  }
+})
