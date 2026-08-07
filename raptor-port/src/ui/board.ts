@@ -12,7 +12,8 @@ import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
 import { markEdit, alAttr } from '../engine/publish'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/keys'
-import { signoffHTML, cxText } from './html'
+import { signoffHTML, cxText, storesView } from './html'
+import { STORE_CFG } from '../engine'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -29,6 +30,13 @@ const afterSchedMutate = () => view.afterSchedMutate()
    would invite edits against the wrong document. */
 export function boardHTML(di: number, pv?: boolean) {
   const d = DAYS[di]
+  /* the stores chips/C follow the page, not just pv: the board is a modal
+     that stays open across a nav click (SchedBoard's `hidden` only tracks
+     SBDAY, never CURPAGE), so a duty crew on View-only Sched who still has
+     a board open from earlier must see the same read-only chips the week
+     shows them there — same "which page decides read vs write" split
+     ViewWeek already applies by always calling dayHTML with ed=false. */
+  const stoRO = pv || view.CURPAGE !== 'editsched'
   let b = (pv ? '' : `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`)
     + sbNotesPanel(d, di, pv) + sbProgPanel(d, di, pv)
   let fly = ''
@@ -66,7 +74,20 @@ export function boardHTML(di: number, pv?: boolean) {
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
         ${sbSlot(di, key + '.p', 'p', a.p, pv)}
         ${sbSlot(di, key + '.w', 'w', a.w, pv)}
-        <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}">
+        <div class="sb-rcell">
+          <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}">
+          ${stoRO
+            ? storesView(a.opts)
+            : `<span class="stores">`
+              /* labels are user-renamable text (stores-edit.test.tsx's escape
+                 regression) — esc() here, same as html.ts's identical on-chip,
+                 or a renamed store types markup on the board same as the week
+                 used to before that fix. */
+              + STORE_CFG.filter(([k]: any) => (a.opts || {})[k]).map(([k, lab]: any) =>
+                  `<span class="stchip on" data-store="${key}.${k}" title="Remove ${esc(lab)}">${esc(lab)}</span>`).join('')
+              + `<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
+              + `<span class="bombs" contenteditable="true" data-bombs="${key}">${esc((a.opts || {}).bombs || '')}</span></span>`}
+        </div>
         ${pv ? '' : `<span class="lctl">
           <button class="mbtn${cxOn ? ' on' : ''}" data-lcx="${key}" title="${cxOn ? 'Restore this line' : 'Cancel this line (CX)'}">CX</button>
           <button class="mbtn red${a.flag ? ' on' : ''}" data-lflag="${key}" title="${a.flag ? 'Clear the red box' : 'Red box — flag this for the next scheduler'}">■</button>

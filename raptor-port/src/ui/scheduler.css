@@ -1794,6 +1794,18 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .sb-bcell{display:flex;flex-direction:column;justify-content:center;gap:1px;min-width:0}
 .sb-bcell .bsug{font-size:8px;font-weight:700;color:var(--accent);cursor:pointer;letter-spacing:.02em}
 .sb-bcell .bsug:hover{text-decoration:underline}
+/* the remarks cell wraps the input, the stores chips and C so the line keeps
+   exactly the same grid-item count it had when remarks was a bare input —
+   same move as .sb-bcell above, and the reason the nine-column template and
+   the phone override below did not have to change. */
+.sb-rcell{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0}
+.sb-rcell .stores{margin-left:0}
+/* the board has no separate "edit mode" toggle the way the week does — a
+   chip is clickable exactly when it carries data-store (the stoRO branch in
+   board.ts never renders that attribute), so that is what the cursor keys
+   off, not a #schedBoard.editing scope that nothing in this app ever sets. */
+#schedBoard .stchip[data-store]{cursor:pointer}
+#schedBoard .stchip[data-store]:hover{border-color:var(--accent)}
 .mbtn{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:9.5px;font-weight:800;
   letter-spacing:.05em;cursor:pointer;color:var(--ink-2);background:var(--raised);
   border:1px solid var(--edge-2);border-radius:5px;padding:3px 5px;line-height:1;white-space:nowrap}
@@ -1897,7 +1909,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      always had. */
   .sb-lcols,.sb-line{grid-template-columns:54px 60px 46px 46px 1fr 1fr;font-size:10px}
   .sb-line .sb-bcell{grid-column:1 / -1}
-  .sb-line .nts{grid-column:1 / -1}
+  .sb-line .sb-rcell{grid-column:1 / -1}
   .sb-lcols>:nth-child(3),.sb-lcols>:nth-child(8),.sb-lcols>:nth-child(9){display:none}
   .sb-line .lctl{grid-column:1 / -1;justify-content:flex-start;margin-top:2px}
   .sb-acols,.sb-arow{grid-template-columns:1fr 46px 46px;gap:6px}
