@@ -956,19 +956,22 @@ test.describe('clicking a warning brings the puck into view', () => {
 test('board: the flying line keeps its grid-item count with stores present', async ({ page }) => {
   await login(page); await go(page, 'editsched')
   await page.click('.sb-open')
-  /* $$eval reads once, immediately — it does not auto-wait the way a
-     locator does, so a bare click-then-$$eval can race the board's own
+  /* $eval reads once, immediately — it does not auto-wait the way a
+     locator does, so a bare click-then-$eval can race the board's own
      imperative paint (SchedBoard's effect sets the panel's innerHTML AFTER
      mount, not synchronously with the click). Wait for the line to actually
-     be there first, same as every other board test in this file already
-     does before reading it.
+     be there first, same convention every other board test in this file
+     already uses before reading geometry off it (see the phone duty-row
+     test above and the .sb-wide combos below).
      `:first-of-type` (as the brief wrote it) never matches ANY .sb-line: a
      wave's DOM order is .sb-go-h, .sb-lcols, then the .sb-line rows, all
      four are <div>s, and :first-of-type means "the first sibling of this
      TAG", not "the first sibling matching this selector" — so .sb-go-h,
      the actual first div, wins that title every time and no .sb-line is
      ever its own type's first child. Plain first-in-document-order (what
-     $$eval's first array element already is) is what the test needs. */
+     $eval already reads — the first match, not a collection) is what the
+     test needs. */
+  await page.waitForSelector('#schedBoard .sb-line')
   const n = await page.$eval('#schedBoard .sb-line', el => el.children.length)
   expect(n, 'nine grid items — .sb-rcell must be exactly one').toBe(9)
 })
@@ -981,7 +984,17 @@ test('board at 390px: the remarks cell drops to its own full-width strip', async
   const cell = await page.locator('#schedBoard .sb-line .sb-rcell').first().boundingBox()
   expect(cell!.width, 'full width, like .nts was').toBeGreaterThan(line!.width - 30)
   const cfg = await page.locator('#schedBoard .sb-line .stcfg').first().boundingBox()
-  expect(cfg!.width, 'C is reachable, not collapsed to a stub').toBeGreaterThan(10)
+  /* NOT the same failure shape as .sb-arow.c6r's ITEM column: that input
+     lived in a grid track fighting a competing template and could be
+     squeezed toward zero by it. .stcfg's size is intrinsic — a single
+     character at font-size:8px, padding:1px 4px, a 1px border, no grid
+     track to lose — and measures the SAME ~15.8px at 390px and at 1400px,
+     board and week alike (checked against the live build before setting
+     this number). A floor near "comfortably tappable" (24-30px) would
+     fail this assertion against the correct, unregressed build, since the
+     button was never that size to begin with; a floor of 12 still rules
+     out what this check exists to catch — collapsed to 0, or hidden. */
+  expect(cfg!.width, 'C is reachable, not collapsed to a stub').toBeGreaterThan(12)
 })
 
 test('the pen reorders, and the popup survives a click into a rename field', async ({ page }) => {
@@ -1025,23 +1038,37 @@ test('the stores popup tracks the live C button across a multi-toggle visit', as
   const toggles = page.locator('.stmenu .wm[data-cfg]')
   expect(await toggles.count(), 'the popup lists stores to toggle').toBeGreaterThanOrEqual(3)
 
-  const seenButtonLefts: number[] = []
+  const btnLeft = () => page.evaluate(() =>
+    Math.round(document.querySelector('[data-stcfg]')!.getBoundingClientRect().left))
+
+  const seenButtonLefts: number[] = [await btnLeft()]
   for (let i = 0; i < 3; i++) {
+    const before = seenButtonLefts[seenButtonLefts.length - 1]!
     await toggles.nth(i).click()
-    /* the toggle's notify() repaints .stores synchronously through
-       EditWeek's effect (queueHold), so no extra wait is needed for the
-       button to have already moved by the time this reads it — but give the
-       popup's own place() a frame to run before measuring it. */
-    await page.waitForTimeout(60)
-    const btnLeft = await page.evaluate(() =>
-      document.querySelector('[data-stcfg]')!.getBoundingClientRect().left)
+    /* Wait on something measurable, not a guessed sleep. Each of these
+       three toggles turns a DIFFERENT store on — [0], [1], [2] in the
+       popup's list — so the chip row strictly grows each time and the
+       button's own x, being a function of the chips before it in the
+       inline-flex row, is expected to change on every iteration. Poll for
+       that actually happening rather than assuming a fixed delay covers
+       it: on a slow run, a bare sleep can expire before the repaint lands,
+       and both readings would then reflect the PREVIOUS toggle's already-
+       correct position — passing without having exercised anything. If
+       the button genuinely never moves this poll times out and the test
+       fails loudly, which is the right outcome for a claim that no longer
+       holds, not a silently-widened tolerance. */
+    await expect.poll(btnLeft, `toggle ${i + 1}: the button actually repainted before this reading`)
+      .not.toBe(before)
+    const after = await btnLeft()
     const box = await page.locator('.stmenu').boundingBox()
-    seenButtonLefts.push(Math.round(btnLeft))
-    expect(Math.abs(btnLeft - box!.x), `toggle ${i + 1}: the box is anchored to the live button, not a stale one`)
+    seenButtonLefts.push(after)
+    expect(Math.abs(after - box!.x), `toggle ${i + 1}: the box is anchored to the live button, not a stale one`)
       .toBeLessThanOrEqual(3)
   }
-  /* guard against a vacuous pass: if the button never actually moved, a box
-     glued to its OPENING position would still read as "anchored" by luck */
+  /* belt-and-braces: the per-toggle poll above already proves each step
+     differs from the one before it, so this is now guaranteed by
+     construction rather than a separate guard against a vacuous pass —
+     kept as a plain sanity check on the whole run. */
   expect(new Set(seenButtonLefts).size, 'the button really did move across the three toggles').toBeGreaterThan(1)
 })
 
