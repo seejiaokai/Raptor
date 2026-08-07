@@ -155,6 +155,17 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
   chip code means patching `refwin.ts:rematrix()` in the same breath —
   `RANK`, `CHIP_TEXT` **and** `CHIP_LABEL` — or the byte-exact
   reference-markup parity fails on the tooltip, not the rule.
+  **The legend never learned about it (owner, from the deployed site, 7 Aug
+  26).** The chip shipped on 5 Aug and `legendHTML()` was not touched, so for
+  two days the squadron met a flag on a puck with nothing on the page saying
+  what it meant — and it is the one flag they cannot guess, because `CP` is
+  the only code whose COLOUR carries half the meaning. It takes **two** rows,
+  amber `needs approval` and red `not authorised`, sitting adjacent so the
+  distinction is visible rather than described. Port-only, so `html.test.ts`
+  excises both from the byte comparison (`noCP`, the `noRunKey` idiom) and
+  pins them positively. A new test walks `CHIP_LABEL` and fails on ANY chip
+  with no legend row — this gap existed because nothing checked, and that is
+  now the check.
   Rules: `docs/engine-rules.md` §The crew-pairing chip.
 - **A turn chips but never rings (owner, 7 Aug 26).** `DT` and the same-day
   `TT` chipped a puck without ringing it while the overnight `TT` rang amber,

@@ -6,7 +6,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { refWindow } from '../testing/refwin'
 import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, isUnavail } from '../engine/inputs'
-import { validate } from '../engine/validate'
+import { validate, CHIP_LABEL, chipText } from '../engine/validate'
 import { dayHTML, dayPreviewHTML, withDaySnap, legendHTML } from './html'
 import { SCHED, signOf, setDayApproved, alIssue } from '../engine/publish'
 import { restoreDayVersion } from '../engine/restore'
@@ -212,8 +212,38 @@ describe('view-week markup parity with the reference', () => {
   const noRunKey = (s: string) => s.replace(
     /\n\s*<span><span class="qk"[^>]*>7<\/span>no break day<\/span>/, '')
 
+  /* Same treatment for the crew-pairing key (owner, 7 Aug 26). CP is a
+     port-only flag, so both of its swatches come out of the comparison — a
+     no-op on the reference — and are pinned positively just below. */
+  const noCP = (s: string) => s.replace(
+    /\n\s*<span><span class="qk"[^>]*>CP<\/span>crew pairing — [^<]*<\/span>/g, '')
+
   it('the legend is byte-identical', () => {
-    expect(noRunKey(legendHTML())).toBe(noRunKey(w.eval('legendHTML()')))
+    expect(noCP(noRunKey(legendHTML()))).toBe(noCP(noRunKey(w.eval('legendHTML()'))))
+  })
+
+  /* The chip shipped on 5 Aug 26 and the legend was never told about it, so
+     the squadron met a flag on a puck with nothing on the page explaining it
+     (owner, from the deployed site, 7 Aug 26). It needs TWO rows because CP is
+     two codes printing one glyph: the colour is the only thing separating "get
+     a signature" from "this pairing is not allowed", so a single row would
+     explain the letters and hide the distinction that matters. */
+  it('the legend explains BOTH crew-pairing flags, and by colour', () => {
+    const l = legendHTML()
+    expect(l).toContain('>CP</span>crew pairing — needs approval')
+    expect(l).toContain('>CP</span>crew pairing — not authorised')
+    /* the swatches must be the puck's own colours, or the legend teaches a
+       colour code the pucks do not use: amber advisory, red hard */
+    expect(l).toContain('background:#E5A83B;color:#12100a">CP</span>crew pairing — needs approval')
+    expect(l).toContain('background:#F0555F">CP</span>crew pairing — not authorised')
+  })
+
+  /* Every chip the engine can put on a puck should be findable in the legend.
+     CP was missed for two days because nothing checked; this is the check. */
+  it('every chip code has a legend row', () => {
+    const l = legendHTML()
+    const missing = Object.keys(CHIP_LABEL).filter(c => !l.includes(`>${chipText(c)}</span>`))
+    expect(missing, 'chips with no legend row: ' + missing.join(',')).toEqual([])
   })
 
   it('the legend explains the break-day flag', () => {
