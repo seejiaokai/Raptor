@@ -317,6 +317,16 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
   broken and the leave-by where nothing louder outranks it, and the day's issue
   box grows a `.dwtrace` cross-day row. The chip and the row both carry the
   NEXT day's `(di, ix)`, so the ordinary warning jump navigates them.
+  **The ROW is on demand now (owner, from the deployed site, 7 Aug 26); the
+  puck marks still stand.** Several lines of tomorrow's prose sat on a day
+  whose own issue list was still collapsed, so the day read as though it had a
+  problem of its own while the count above it said otherwise. `dayTraceHTML`
+  renders only when that day's list is open (`DWOPEN`) or a puck is clicked
+  (`PFOCUS`) — gated INSIDE the builder, not at its three call sites, so a new
+  caller cannot bring the standing box back by forgetting it. The dotted ring
+  and the `CR` chip were deliberately KEPT (owner's choice when asked): on a
+  day with no issue box there is no list to open, so the puck is the only way
+  in, and without them nothing would say where to click.
   **The dashed ring was never dashed on screen (owner, from the deployed site,
   6 Aug 26).** `.puck.warn.hard` puts a solid 1.5px red ring on every hard flag
   and `.boxdash` only ADDED an outline on top of it, so the dashes were filled

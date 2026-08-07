@@ -203,9 +203,17 @@ describe('the previous day, clicked', () => {
   })
 
   it('the strip on the causing day\'s warning list reaches the same warning', async () => {
-    await act(async () => { view.setBoardDay(null); view.selDrop(); view.clearWarnFocus(); notify() })
+    /* the strip is on demand now (owner, 7 Aug 26), so ask for it: open every
+       day's warning list and then look. Opening them all rather than guessing
+       the causing day keeps this test indifferent to which seed day breaks
+       which — the point here is the row's NAVIGATION, not where it appears. */
+    await act(async () => {
+      view.setBoardDay(null); view.selDrop(); view.clearWarnFocus()
+      WARN.byDay.forEach((g: any) => { if (g) view.toggleDayWarn(g.di) })
+      notify()
+    })
     const row = $('#vWeek .dwtrace .witem[data-wdi]')
-    expect(row, 'the causing day carries a cross-day row').toBeTruthy()
+    expect(row, 'the causing day carries a cross-day row once its list is open').toBeTruthy()
     const di = +(row.closest('.day[data-day]') as HTMLElement).dataset.day!
     expect(+row.dataset.wdi!, 'addressed to the next day').toBe(di + 1)
 

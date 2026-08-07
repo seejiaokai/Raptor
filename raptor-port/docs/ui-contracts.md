@@ -471,7 +471,7 @@ only prove which CLASS was emitted, never what it draws:
   Its total reach is still 3px, the same as the dashed ring's, so it clears the
   3px gap between the two pucks of a crew pair.
 
-### The previous-day trace is a STANDING mark
+### The previous-day trace: a standing MARK, an on-demand STORY
 
 A crew-rest breach is raised on the day the man is **told to report**. The
 only day a scheduler can still change is the one **before** — so that day
@@ -479,9 +479,17 @@ carries the mark, from the moment the week renders, with nothing clicked. It
 used to appear only while the warning was focused, which meant the reader had
 to already know about the breach to be shown its cause (owner, 6 Aug 26).
 
-Three things are drawn, all off `WARN.trace` (`engine-rules.md` §validation),
-so no surface re-derives a word of the breach and none of them can go stale
-against a focus that was never set:
+The three marks then split on how loud they are (owner, from the deployed
+site, 7 Aug 26). The two on the PUCK stand; the PROSE does not. Several lines
+of tomorrow's warning used to sit on a day whose own issue list was still
+collapsed, so the day read as though it had a problem of its own — and the
+count above it disagreed. The row now needs an ask; the ring and chip still
+say *there is something here, and here is where to click*, which is the whole
+distance between this and the pre-6 Aug behaviour it superficially resembles.
+
+All three are drawn off `WARN.trace` (`engine-rules.md` §validation), so no
+surface re-derives a word of the breach and none of them can go stale against
+a focus that was never set:
 
 - **The dotted ring**, on every puck of that man on the causing day. It is
   additive: `boxdot` is an outline and `boxred` a box-shadow, so a man with a
@@ -492,12 +500,17 @@ against a focus that was never set:
   the day broken and the leave-by rather than the generic threshold label:
   the puck has no crew-rest breach of its own to caption, and printing
   `CHIP_LABEL.CR` beside the trace's own sentence would say so twice.
-- **The cross-day row** — `.dwtrace`, a strip under that day's issue box.
-  Deliberately **outside** the `⚠ N issues` count and never collapsed: these
-  are not the day's issues, they are its consequences, and counting tomorrow's
-  breach here would have two days reporting the same warning. It renders even
-  when the day has no issue box at all, which is exactly the case the standing
-  mark exists for.
+- **The cross-day row** — `.dwtrace`, a strip under that day's issue box,
+  and the only one of the three that is **on demand**. It renders when that
+  day's warning list is OPEN (`DWOPEN`) or when a puck is clicked (`PFOCUS`,
+  which narrows it to that man); otherwise `dayTraceHTML` returns empty. The
+  gate lives inside that builder, not at its three call sites, so a new caller
+  cannot reintroduce the standing box by forgetting it.
+  It stays deliberately **outside** the `⚠ N issues` count: these are not the
+  day's issues, they are its consequences, and counting tomorrow's breach here
+  would have two days reporting the same warning. On a day with no issue box
+  at all there is no list to open, so the puck is the only way in — which is
+  why the ring and chip had to stay standing for this to be reachable.
 
 **Both affordances leave the day they were clicked on.** The chip and the row
 carry the NEXT day's `(di, ix)` — `traceIx` resolves it — so the ordinary
