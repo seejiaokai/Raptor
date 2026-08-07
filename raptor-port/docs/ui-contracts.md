@@ -508,17 +508,25 @@ a focus that was never set:
   the day broken and the leave-by rather than the generic threshold label:
   the puck has no crew-rest breach of its own to caption, and printing
   `CHIP_LABEL.CR` beside the trace's own sentence would say so twice.
-- **The cross-day row** — `.dwtrace`, a strip under that day's issue box,
-  and the only one of the three that is **on demand**. It renders when that
-  day's warning list is OPEN (`DWOPEN`) or when a puck is clicked (`PFOCUS`,
-  which narrows it to that man); otherwise `dayTraceHTML` returns empty. The
-  gate lives inside that builder, not at its three call sites, so a new caller
-  cannot reintroduce the standing box by forgetting it.
+- **The cross-day row** — `.dwtrace`, and the only one of the three that is
+  **on demand**. It renders when that day's warning list is OPEN (`DWOPEN`)
+  or when a puck is clicked (`PFOCUS`, which narrows it to that man);
+  otherwise `dayTraceHTML` returns empty. The gate lives inside that builder,
+  not at its call sites, so a new caller cannot reintroduce the standing box
+  by forgetting it.
+  **It sits INSIDE the day's issue list, below the warnings and above the
+  advisories (owner, 7 Aug 26)** — red business, but tomorrow's, so it ranks
+  under this day's own hard rows. The `.dwtrace` container is
+  `display:contents`, so the rows take the list's own gap, width and row box:
+  matching the neighbours is structural, not imitated, and the identity is
+  carried by the dotted red bar and the pink label alone (the old dotted
+  outer border and private margins are gone). On a day with no list of its
+  own the strip wraps as `.dwlist.solo` — same box, top border restored —
+  and the puck is the only way in, which is why the ring and chip had to
+  stay standing for this to be reachable.
   It stays deliberately **outside** the `⚠ N issues` count: these are not the
-  day's issues, they are its consequences, and counting tomorrow's breach here
-  would have two days reporting the same warning. On a day with no issue box
-  at all there is no list to open, so the puck is the only way in — which is
-  why the ring and chip had to stay standing for this to be reachable.
+  day's issues, they are its consequences, and counting tomorrow's breach
+  here would have two days reporting the same warning.
 
 **Both affordances leave the day they were clicked on.** The chip and the row
 carry the NEXT day's `(di, ix)` — `traceIx` resolves it — so the ordinary

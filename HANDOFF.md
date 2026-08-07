@@ -345,6 +345,15 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
   and the `CR` chip were deliberately KEPT (owner's choice when asked): on a
   day with no issue box there is no list to open, so the puck is the only way
   in, and without them nothing would say where to click.
+  **And the row now sits IN the list, below the warnings and above the
+  advisories, in the same row box as its neighbours (owner, 7 Aug 26)** — it
+  used to render after the whole list in a narrower dotted container of its
+  own. `.dwtrace` is `display:contents` inside the `.dwlist`; a day with no
+  list of its own wraps the strip as `.dwlist.solo` (same box, top border
+  back). Identity = dotted red bar + pink label, never a different box.
+  Position pinned in `crewrest-ui.test.ts`, geometry measured in
+  `e2e/geometry.spec.ts` (same width, left edge, border and padding as a
+  sibling row).
   **The dashed ring was never dashed on screen (owner, from the deployed site,
   6 Aug 26).** `.puck.warn.hard` puts a solid 1.5px red ring on every hard flag
   and `.boxdash` only ADDED an outline on top of it, so the dashes were filled

@@ -274,10 +274,14 @@ export function storesView(o:any){
    it lists the warnings right here in the column — no centred modal. */
 /* THE CROSS-DAY STRIP: what this day does to the next one. A crew-rest breach
    is raised where the man is TOLD TO REPORT, so the day that caused it — the
-   only day a scheduler can still change — used to say nothing at all. Its own
-   strip, deliberately outside the ⚠ count above: these are not this day's
-   issues, they are its consequences, and inflating the day's issue count with
-   tomorrow's warning would make two days report the same breach.
+   only day a scheduler can still change — used to say nothing at all. It sits
+   INSIDE the day's issue list, below the warnings and above the advisories
+   (owner, 7 Aug 26 — red business, but tomorrow's), in the same row box as its
+   neighbours (the container is display:contents; the dotted bar and the pink
+   label are the identity, not a different box). Deliberately outside the
+   ⚠ count above it: these are not this day's issues, they are its
+   consequences, and inflating the day's issue count with tomorrow's warning
+   would make two days report the same breach.
    Each row carries the NEXT day's (di, ix), so the ordinary .witem handler
    navigates it with no new click path — and a row whose warning has moved
    under an edit (WARN is rebuilt wholesale) is dropped rather than left
@@ -309,17 +313,26 @@ function dayTraceHTML(di:any,pf:any){
       +`<b>${esc(cs)}</b> — had to leave by <b>${esc(t.leaveBy)}</b>. ${esc(t.msg||'')}</span></div>`;
   }).join('')+`</div>`;
 }
+/* A day with no issue box of its own still shows the trace in the SAME
+   geometry as everyone else's rows (owner, 7 Aug 26 — its old private
+   container was a different width and a different box, which read as a
+   different kind of thing). `solo` restores the top border .dwlist sheds
+   when a .daywarn header sits above it. */
+const soloTrace=(di:any,pf:any)=>{
+  const t=dayTraceHTML(di,pf);
+  return t?`<div class="dwbox open"><div class="dwlist solo">${t}</div></div>`:'';
+};
 export function dayWarnHTML(di:any){
   const all=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
   /* the strip stands on its own: a day with no issues of its own can still be
      the day that wrecks tomorrow, and that is exactly the case worth seeing */
-  if(!all.length)return dayTraceHTML(di,PFOCUS&&PFOCUS.id);
+  if(!all.length)return soloTrace(di,PFOCUS&&PFOCUS.id);
   /* When a puck is clicked the box narrows to that person's issues on this day
      — every other day they are flagged on opens the same way, so a cause that
      sits on the day before is right there next to the effect. */
   const pf=PFOCUS&&PFOCUS.id;
   const items=pf?personWarns(di,pf):all.map((w:any,ix:any)=>({w,ix}));
-  if(pf&&!items.length)return dayTraceHTML(di,pf);
+  if(pf&&!items.length)return soloTrace(di,pf);
   const dw=items.map((x:any)=>x.w);
   const worst=dw.some((w:any)=>w.sev==='hard')?'hard':dw.some((w:any)=>w.sev==='adv')?'adv':'note';
   const nh=dw.filter((w:any)=>w.sev==='hard').length;
@@ -332,13 +345,22 @@ export function dayWarnHTML(di:any){
    +`${nh?` · ${nh} warning`:''} · <span class="dwcue">${open?'tap to collapse':'tap to review'}</span>`
    +`<span class="dwcar">${open?'▲':'▼'}</span></div>`;
   if(open){
-    h+=`<div class="dwlist">`+items.map(({w,ix}:any)=>{
+    const row=({w,ix}:any)=>{
       const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
       return `<div class="witem ${w.sev}${on?' on':''}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
         +`<span class="wbar"></span><span><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
         +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span></div>`;
-    }).join('')
+    };
+    /* the cross-day row ranks below this day's warnings and above its
+       advisories (owner, 7 Aug 26): it is red business, but tomorrow's.
+       items are already severity-sorted (validate.ts), so the seam is the
+       first non-hard row. */
+    const cut=items.findIndex((x:any)=>x.w.sev!=='hard');
+    const hards=cut<0?items:items.slice(0,cut), rest=cut<0?[]:items.slice(cut);
+    h+=`<div class="dwlist">`+hards.map(row).join('')
+     +dayTraceHTML(di,pf)
+     +rest.map(row).join('')
      +(pf&&PFOCUS.days.length>1
         ? `<div class="dwecho">${esc(cs)} is also flagged on ${esc(PFOCUS.days.filter((x:any)=>x!==di).map(dowShort).join(', '))}</div>`:'')
      +(WFOCUS&&WFOCUS.di===di
@@ -346,7 +368,7 @@ export function dayWarnHTML(di:any){
           +`<button class="dwclear" data-dwclear="1">✕ ${pf?`Back to ${esc(cs)}’s issues`:'Clear focus'}</button>`:'')
      +`</div>`;
   }
-  return h+`</div>`+dayTraceHTML(di,pf);
+  return h+`</div>`;
 }
 export function intimesInner(w:any){
   return ((w&&w.intimes)||[]).map((t:any)=>`<span>${esc(t).replace(/^(\s*\d{3,4}\s*H)/i,'<b>$1</b>')}</span>`).join('');}

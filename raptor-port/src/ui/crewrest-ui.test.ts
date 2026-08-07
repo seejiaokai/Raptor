@@ -13,6 +13,7 @@ import { VCONF } from '../engine/rules'
 import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
 import { dayHTML } from './html'
+import { personWarns } from '../engine/avail'
 import { focusWarn, clearWarnFocus, setWarnFocus, toggleDayWarn, selectPerson, selDrop } from '../state/view'
 
 const CREW = 'waldo'
@@ -163,11 +164,50 @@ describe('the cross-day row on the warning list', () => {
   })
 
   it('clicking the man\'s puck reveals it too', () => {
-    /* the other half of the owner's sentence, and the ONLY route on a day with
-       no issues of its own — there is no list to open there */
+    /* the other half of the owner's sentence. Landing at 01:30 gives him a
+       long-day note on day 0 as well, so his narrowed box opens there and the
+       strip rides INSIDE it — the row sits with his own issues, in the same
+       list, which is the whole point of the 7 Aug 26 restyle. */
     build('01:30', '2A: BFM-5')
     selectPerson(CREW, true)
-    expect(dayHTML(0, false), 'his own puck is the way in').toContain('dwtrace')
+    const h = dayHTML(0, false)
+    expect(h, 'his own puck is the way in').toContain('dwtrace')
+    expect(h, 'and the strip is part of his list, not a private box').toContain('dwlist')
+  })
+
+  it('a day where he has nothing of his own wears the solo list box', () => {
+    /* Ending day 0 at 22:45 keeps his day short (no long-day note) while the
+       06:00 report still breaches — the seed's own Casper numbers. With no
+       row of his on the causing day there is no box to ride in, so the strip
+       stands alone — wrapped as a `solo` list so its box and width are the
+       SAME as an ordinary issue list's, not a private container (owner,
+       7 Aug 26). */
+    build('22:45', '2A: BFM-5')
+    const today: any = firstForm(1)!
+    const wave = DAYS[1].waves.find((w: any) => (w.formations || []).includes(today))
+    wave.intimes = [`${today.cs} IN TIME 0600H`]
+    validate()
+    expect(personWarns(0, CREW).length, 'the case depends on him carrying nothing on day 0').toBe(0)
+    selectPerson(CREW, true)
+    const h = dayHTML(0, false)
+    expect(h, 'the strip still reveals').toContain('dwtrace')
+    expect(h, 'wrapped as a solo list').toContain('dwlist solo')
+  })
+
+  it('sits below the warnings and above the advisories (owner, 7 Aug 26)', () => {
+    /* items are severity-sorted at validate(); the cross-day row is red
+       business but tomorrow's, so it ranks after this day's own hard rows and
+       before its ambers. Read the rendered order straight off the list. */
+    build('01:30', '2A: BFM-5')
+    toggleDayWarn(0)
+    const h = dayHTML(0, false)
+    const kinds = [...h.matchAll(/<div class="witem (hard wtr|hard|adv|note)[" ]/g)].map(m => m[1])
+    expect(kinds, 'the seed day gives the row neighbours on both sides')
+      .toEqual(expect.arrayContaining(['hard', 'hard wtr', 'adv']))
+    const tr = kinds.indexOf('hard wtr')
+    expect(kinds.slice(0, tr).every(k => k === 'hard'), 'nothing but warnings above it').toBe(true)
+    expect(kinds.slice(tr + 1).every(k => k !== 'hard'), 'every warning sits above it').toBe(true)
+    expect(kinds.slice(tr + 1).some(k => k === 'adv' || k === 'note'), 'and the advisories follow below').toBe(true)
   })
 
   it('the puck keeps its standing mark, so there is something to click', () => {

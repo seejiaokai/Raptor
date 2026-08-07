@@ -1241,9 +1241,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    whole point is that it is read without being looked for. Dotted left edge
    and border, matching the dotted ring on the puck it names, so the two read
    as one mark seen in two places. */
-.dwtrace{display:flex;flex-direction:column;gap:5px;margin:4px 10px 2px}
-.dwtrace .witem{padding:7px 9px;font-size:11px;line-height:1.35;gap:8px;border-radius:8px;
-  border-style:dotted;border-color:rgba(240,85,95,.5)}
+/* The cross-day rows live INSIDE the .dwlist (owner, 7 Aug 26): the container
+   is transparent to layout, so each row takes the list's own gap, width and
+   row box — matching its neighbours is structural, not imitated. What marks
+   them as tomorrow's business is the dotted red bar (the puck's dotted-ring
+   stroke language) and the pink label, never a different box. */
+.dwtrace{display:contents}
 .dwtrace .witem .wbar{border-left:3px dotted var(--hard);background:none!important;border-radius:0}
 .dwtrace .witem .wcode{color:#FBB4B9}
 /* ---- inline (expanding) day warnings — replaces the old centred modal ---- */
@@ -1254,6 +1257,9 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .daywarn .dwcar{margin-left:auto;font-size:10px;opacity:.8}
 .dwlist{display:flex;flex-direction:column;gap:5px;padding:7px;border:1px solid var(--edge);border-top:none;
   border-radius:0 0 9px 9px;background:rgba(0,0,0,.22)}
+/* a list with no .daywarn header above it (the solo cross-day strip on a day
+   with no issue box) gets its top edge back */
+.dwlist.solo{border-top:1px solid var(--edge);border-radius:9px}
 .dwlist .witem{padding:7px 9px;font-size:11px;line-height:1.35;gap:8px;border-radius:8px}
 .dwlist .witem.on{border-color:var(--accent);background:rgba(59,198,232,.10);box-shadow:0 0 0 1px rgba(59,198,232,.35)}
 .dwlist .witem b{color:var(--ink)}
