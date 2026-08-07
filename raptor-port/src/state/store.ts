@@ -16,6 +16,7 @@ import { HOOKS } from '../engine/hooks'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { rulesLoad } from '../engine/rules'
+import { storesLoad } from '../engine'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit } from './history'
@@ -142,6 +143,7 @@ export function setToast(fn: (...a: any[]) => any) { HOOKS.toast = fn }
 export function initStore() {
   wireStore()
   rulesLoad()
+  storesLoad()
   validate()
   histInit()
   notify()
