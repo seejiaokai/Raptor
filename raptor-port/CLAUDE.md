@@ -285,7 +285,11 @@ the phone perf budget. Don't convert them to components.
   days" · OIL is LL-equivalent · sim notes are single-line · pucks never
   wrap · login page stays simple · the talon logo stays · a clicked warning
   lights its crew in the warning colours, never selection blue (owner
-  declined the blue, 7 Aug 26 — blue is the puck-click selection only).
+  declined the blue, 7 Aug 26 — blue is the puck-click selection only) ·
+  **no My Programme page** (owner, 7 Aug 26 — a personal week-as-cards view
+  was built, shipped and removed the same day: "don't find a use for it for
+  now"; do not re-propose it unless the owner raises it, and if he does,
+  the removed implementation is one `git revert` away in history).
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add
