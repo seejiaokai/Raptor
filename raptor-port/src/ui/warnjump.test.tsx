@@ -557,3 +557,49 @@ describe('the anchored line wins', () => {
     expect(anchorEl(root, null)).toBeNull()
   })
 })
+
+/* THE CLICKED ROW SAYS SO, ON EVERY SURFACE (owner, 7 Aug 26). The week's
+   issue rows and the board's Live checks always marked the active row; the
+   day-detail panel and the cross-day crew-rest row were the two navigating
+   surfaces that did not — click one and nothing on the page said which row
+   was lit. The puck lighting itself is DELIBERATELY unchanged: the owner
+   considered painting the warning's first-named in the selection blue and
+   declined it — a warning click lights the whole affected crew in the warning
+   colours and fades the rest; blue stays what it always was, the puck-click
+   selection. */
+describe('the clicked row marks itself on every surface', () => {
+  it('the day-detail panel marks the focused row when reopened', async () => {
+    const di = warnDay()
+    /* an earlier describe drives #eWeek and leaves CURPAGE there — #vWeek's
+       markup freezes while it is not the current page, so come back first */
+    await act(async () => { view.setPage('viewsched'); view.setBoardDay(null); view.selDrop(); view.toggleDayWarn(di); notify() })
+    await click($(`#vWeek .day[data-day="${di}"] .witem[data-wdi="${di}"][data-wix="0"]`))
+    await flush()
+    await click($(`#vWeek .day[data-day="${di}"] [data-dayinfo]`))
+    const on = $('#dayPopBody .witem.on') as HTMLElement
+    expect(on, 'the active row is marked in the panel too').toBeTruthy()
+    expect(on.dataset.adv).toBe(`${di}.0`)
+    /* clicking it closes the panel (its own contract) and leaves the same
+       focus — which the beforeEach then clears */
+    await click(on)
+  })
+
+  it('the cross-day row marks itself while its warning is the focus', async () => {
+    await act(async () => {
+      view.setPage('viewsched'); view.setBoardDay(null); view.selDrop()
+      WARN.byDay.forEach((g: any) => { if (g) view.toggleDayWarn(g.di) })
+      notify()
+    })
+    const row = $('#vWeek .dwtrace .witem[data-wdi]')
+    expect(row, 'the causing day carries its cross-day row').toBeTruthy()
+    expect(row.classList.contains('on'), 'quiet until clicked').toBe(false)
+    await click(row)
+    await flush()
+    expect($('#vWeek .dwtrace .witem[data-wdi]')!.classList.contains('on'),
+      'lit once its warning is the focus').toBe(true)
+    /* and a second click toggles it back off, like any other row */
+    await click($('#vWeek .dwtrace .witem[data-wdi]'))
+    await flush()
+    expect($('#vWeek .dwtrace .witem[data-wdi]')!.classList.contains('on')).toBe(false)
+  })
+})

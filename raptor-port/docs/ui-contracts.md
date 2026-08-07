@@ -299,6 +299,23 @@ correct on the week — a `.witem` only exists inside an already-open box — bu
 a focus set from the board with `DWOPEN` empty leaves lit pucks and no way to
 clear them: `html.ts` renders `✕ Clear focus` only inside an open box.
 
+**Every surface marks its clicked row (owner, 7 Aug 26).** The week's rows
+and the board's Live checks always carried the `on` class while their warning
+was the focus; the day-detail panel's rows and the cross-day crew-rest row
+were the two that did not, so clicking one lit pucks with nothing on the page
+saying which row had done it. All four emit `on` by the same test now —
+`WFOCUS` against the address the row CARRIES, which for the cross-day row is
+the next day's warning. The panel closes itself on the click (its own
+contract), so its mark shows on reopen.
+
+**The click's LIGHTING is deliberately the warning colours, not blue (owner,
+7 Aug 26 — considered and declined).** A clicked warning lights every person
+it names — all four of a double-turning crew — in `wfoc` red or amber and
+fades the rest; painting the first-named in the selection blue was proposed,
+built and rolled back the same day. Blue means one thing in this app: the
+puck-click selection (which also narrows the lists to that person; the row
+click never narrows). Do not re-propose it.
+
 **The cross-day CR chip lost its jump with the rest** — the previous-day story
 is still one selection away: clicking the dotted man reveals the on-demand
 `.dwtrace` strip on the causing day AND opens the breach day's box (the breach
