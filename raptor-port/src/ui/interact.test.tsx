@@ -197,26 +197,26 @@ describe('cross-day warning focus (tfin G2)', () => {
   })
 })
 
-describe('stores configs — the "+" picker (owner, Aug 26)', () => {
+describe('stores configs — the C picker (owner, Aug 26; + became C, 7 Aug 26)', () => {
   const editTab = () => $$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!
 
-  it('the + menu adds a config, marks st: pending, and the + stays for more', async () => {
+  it('the C menu adds a config, marks st: pending, and C stays for more', async () => {
     const { DAYS } = await import('../engine/data')
     const { SCHED } = await import('../engine/publish')
     await click(editTab())
-    const add = $('#eWeek .stadd[data-stadd]')
-    expect(add, 'a + button renders on the edit week').toBeTruthy()
-    const [di, gi, li, ai] = add.dataset.stadd!.split('.')
+    const add = $('#eWeek .stcfg[data-stcfg]')
+    expect(add, 'a C button renders on the edit week').toBeTruthy()
+    const [di, gi, li, ai] = add.dataset.stcfg!.split('.')
     const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]; a.opts = a.opts || {}
     a.opts.cl = false; await act(async () => notify())
-    await click($(`#eWeek .stadd[data-stadd="${di}.${gi}.${li}.${ai}"]`))
+    await click($(`#eWeek .stcfg[data-stcfg="${di}.${gi}.${li}.${ai}"]`))
     const item = document.querySelector('.stmenu [data-cfg="cl"]') as HTMLElement
     expect(item, 'the menu offers CL').toBeTruthy()
     await click(item)
     expect(a.opts.cl).toBe(true)
     expect(SCHED.pending[`st:${di}.${gi}.${li}.${ai}`]).toBeTruthy()
     expect($(`#eWeek .stchip[data-store="${di}.${gi}.${li}.${ai}.cl"]`), 'the CL chip now shows').toBeTruthy()
-    expect($(`#eWeek .stadd[data-stadd="${di}.${gi}.${li}.${ai}"]`), 'the + remains').toBeTruthy()
+    expect($(`#eWeek .stcfg[data-stcfg="${di}.${gi}.${li}.${ai}"]`), 'C remains').toBeTruthy()
     a.opts.cl = false; await act(async () => notify())
   })
 

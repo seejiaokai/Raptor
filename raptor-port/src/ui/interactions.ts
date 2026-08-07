@@ -330,9 +330,9 @@ export function routeClick(e: MouseEvent) {
     notify()
   }
 
-  /* the "+" opens the config picker — a body-level popup mirroring waveMenu */
-  const stAdd = t.closest('[data-stadd]') as HTMLElement | null
-  if (stAdd && HOOKS.editMode()) { openStoresMenu(stAdd, stAdd.dataset.stadd!); e.stopPropagation(); return }
+  /* C opens the stores popup — a body-level box mirroring waveMenu */
+  const stCfg = t.closest('[data-stcfg]') as HTMLElement | null
+  if (stCfg && HOOKS.editMode()) { openStoresMenu(stCfg, stCfg.dataset.stcfg!); e.stopPropagation(); return }
 
   /* Clicking any blank part of a schedule surface un-clicks everything —
      the exclusion list is the reference's, verbatim */

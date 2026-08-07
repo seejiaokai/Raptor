@@ -599,7 +599,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              stays, so more can be added. View mode shows the on-chips only. */
           const stores=ed
             ? `<span class="stores">`+STORE_CFG.filter(([k]:any)=>o[k]).map(([k,lab]:any)=>`<span class="stchip on" data-store="${key}.${k}" title="Remove ${lab}">${lab}</span>`).join('')
-              +`<button class="stadd" data-stadd="${key}" title="Add a config">+</button>`
+              +`<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
               +`<span class="bombs" contenteditable="true" data-bombs="${key}">${esc(o.bombs||'')}</span></span>`
             : storesView(o);
           const acx=(f.cx?'':rowCls(a))+((sa&&a.spare)?' spare':'');   // a cancelled formation already fades the whole block
