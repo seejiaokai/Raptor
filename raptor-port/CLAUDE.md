@@ -220,7 +220,9 @@ the phone perf budget. Don't convert them to components.
 - Keep `src/probe-bridge.ts` in sync when adding engine API.
 - Product: no rule versioning · no two-person approval · no "publish all
   days" · OIL is LL-equivalent · sim notes are single-line · pucks never
-  wrap · login page stays simple · the talon logo stays.
+  wrap · login page stays simple · the talon logo stays · a clicked warning
+  lights its crew in the warning colours, never selection blue (owner
+  declined the blue, 7 Aug 26 — blue is the puck-click selection only).
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add

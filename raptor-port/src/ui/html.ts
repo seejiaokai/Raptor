@@ -319,7 +319,10 @@ function dayTraceHTML(di:any,pf:any){
        scrollToWarnFocus prefers them. Absent fromKey emits neither and the row
        behaves exactly as it did. */
     const pan=t.fromKey?` data-wpd="${di}" data-wpk="${esc(t.fromKey)}"`:'';
-    return `<div class="witem hard wtr" data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it">`
+    /* the active mark keys on the address the row CARRIES — the next day's
+       warning — because that is what a click on it focuses */
+    const on=WFOCUS&&WFOCUS.di===t.di&&WFOCUS.ix===ix;
+    return `<div class="witem hard wtr${on?' on':''}" data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it">`
       +`<span class="wbar"></span><span><span class="wcode">Breaks ${esc(t.dow||'the next day')}</span>`
       +`<b>${esc(cs)}</b> — had to leave by <b>${esc(t.leaveBy)}</b>. ${esc(t.msg||'')}</span></div>`;
   }).join('')+`</div>`;
@@ -816,7 +819,11 @@ export function dayInfoHTML(di:any){
       +(nS('note')?`<b class="note">${nS('note')} note</b>`:'')+`</div>`;
     h+=`<div class="dwlist dip-list">`+dw.map((w:any,ix:any)=>{
       const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
-      return `<div class="witem ${w.sev}" data-adv="${di}.${ix}" title="Jump to the puck that caused this">`
+      /* the active mark, same test as the week's rows — every surface that
+         navigates says which row is lit (owner, 7 Aug 26; this panel and the
+         cross-day row were the two that did not) */
+      const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
+      return `<div class="witem ${w.sev}${on?' on':''}" data-adv="${di}.${ix}" title="Jump to the puck that caused this">`
         +`<span class="wbar"></span><span><span class="wcode">${SEVWORD[w.sev]} · ${esc(wlbl(WCODE[w.code]||w.code))}</span>`
         +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span></div>`;}).join('')+`</div>`;
   }

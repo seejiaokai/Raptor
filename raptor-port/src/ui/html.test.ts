@@ -149,7 +149,7 @@ const noTrace = (s: string) => s
   .replace(/ boxdot/g, '')
   /* the cross-day strip: drop its rows first (each ends at the one
      `</span></div>` that closes it), then the container they leave empty */
-  .replace(/<div class="witem hard wtr"[^>]*>[\s\S]*?<\/span><\/div>/g, '')
+  .replace(/<div class="witem hard wtr[^"]*"[^>]*>[\s\S]*?<\/span><\/div>/g, '')
   .replace(/<div class="dwtrace"><\/div>/g, '')
 
 describe('view-week markup parity with the reference', () => {

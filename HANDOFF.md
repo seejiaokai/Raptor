@@ -92,6 +92,15 @@ believing a single red.)
   a small (900×600) viewport scrolling to the deepest-nested warning's puck.
   Contract: `docs/ui-contracts.md` §Jumping from a warning to the puck that
   caused it.
+  **Every surface now marks its clicked row (owner, 7 Aug 26)** — the
+  day-detail panel's rows and the cross-day crew-rest row were the two that
+  emitted no `on` class, so a click lit pucks with nothing saying which row
+  had done it; all four surfaces mark by the same WFOCUS test now (pinned in
+  `warnjump.test.tsx`). In the same conversation the owner CONSIDERED AND
+  DECLINED painting a clicked warning's first-named in selection blue — a
+  clicked warning lights its whole crew in the warning colours and fades the
+  rest; blue stays the puck-click selection only. Recorded in `CLAUDE.md`
+  §Stable decisions so it is not re-proposed.
 - **A warning now anchors on the LINE that caused it (owner, 6 Aug 26).**
   The jump above used to pick its destination by heuristic — the flagged
   person's first puck in document order — so "no time for the flight brief"
