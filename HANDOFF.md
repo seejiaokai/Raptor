@@ -346,14 +346,18 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
     (`workflow_dispatch` on `deploy.yml`, ref `main`), which mints a new one.
   - **No runner assigned at all** — job cancelled after ~15 min with an empty
     `runner_name` and zero steps recorded. Pure capacity. Re-run later.
-  Two things that cost time and are worth knowing up front: a merge performed
-  with an automation token does **not** trigger the push-deploy (GitHub
-  suppresses workflow events from automation to stop recursion), so a
-  self-merge needs an explicit dispatch afterwards; and the raw session token
-  gets `403 Resource not accessible by integration` on
-  `POST /actions/workflows/{id}/dispatches`, which returns an EMPTY body on
-  success too — so a script cannot tell refusal from success. Dispatch through
-  the GitHub tooling, not curl, or you will report runs you never started.
+  Two token traps, both measured, and the first is narrower than it first
+  looked: a merge made with the **raw session token** (curl `PUT
+  /pulls/{n}/merge`) produced NO push-deploy at all, while a merge through the
+  **GitHub tooling** triggers one normally. So do not reflexively dispatch
+  after merging — check for a push run first, or the dispatch supersedes a
+  healthy run and cancels it (the concurrency group is `cancel-in-progress`).
+  That mistake was made here twice, once in each direction.
+  The second: the raw session token gets `403 Resource not accessible by
+  integration` on `POST /actions/workflows/{id}/dispatches`, which returns an
+  EMPTY body on success too — so a script cannot tell refusal from success and
+  will cheerfully report runs it never started. Dispatch through the GitHub
+  tooling, not curl.
 - **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
   still described a three-gate, mid-port project — the root one also called a
   member view-only, which the 5 Aug roles decision had already undone.
