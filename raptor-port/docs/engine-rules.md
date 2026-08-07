@@ -26,6 +26,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (sortie or shift), and anchors on the earlier of the published in-time and
   the leg's own brief. Breach = hard CR; nominal-inside-rest = adv TT.
   Exactly `crewRest` is legal — the breach is strictly less (owner, 6 Aug 26).
+- **A turn chips but never rings (owner, 7 Aug 26).** All three turn rules —
+  `TURN` and `DT_SUM` on the day, `CREW_TIGHT` overnight — mark the puck with
+  a chip alone. `CREW_TIGHT` used to ring amber as well, so the same `TT`
+  glyph meant a ringed problem on one puck and an unringed note on another. A
+  turn is a note, not something to go and fix. The warning is untouched: still
+  filed, still counted in the banner, still clickable. This is a deliberate
+  divergence from `reference/`, patched into the in-memory copy by
+  `refwin.ts:rering()` so parity stays byte-exact; it fires nowhere on the seed
+  week, so `engine/turnring.test.ts` builds the case rather than finding it.
 - **A late show changes the RING, not the rule** (owner, 6 Aug 26). `late
   show` / `show at brief` / `show @ brief` in an AIRCRAFT's remarks
   (`events.ts:lateShowOf`, parsed like `briefLeadOf` and `aarNeed`) never
