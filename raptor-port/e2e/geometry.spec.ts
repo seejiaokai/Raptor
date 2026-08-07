@@ -765,6 +765,29 @@ test.describe('clicking a warning brings the puck into view', () => {
     }, sel)
     test.skip(!before, 'no bane puck in the seed week')
 
+    /* EVERY FRAME, not just the end state (owner, 7 Aug 26: "the page
+       jitters"). The first hold corrected on a setTimeout — after the browser
+       had painted the shifted layout — so the end position measured perfect
+       while one painted frame showed a ~220px leap-and-snap. rAF fires before
+       each paint: sample the puck's viewport top on every frame across the
+       click, and no sample may deviate.
+       CPU-throttled, because the race is machine-dependent: on a fast
+       headless box the timeout used to win against the next frame and the
+       buggy code measured clean — which is exactly how it shipped. The fixed
+       path is a single synchronous task, so no throttle can break it. */
+    const cdp = await page.context().newCDPSession(page)
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 8 })
+    await page.evaluate((s) => {
+      const w = window as any
+      w.__tops = []
+      const tick = () => {
+        const pk = document.querySelector(s) as HTMLElement
+        if (pk) w.__tops.push(pk.getBoundingClientRect().top)
+        if (w.__tops.length < 90) requestAnimationFrame(tick)
+      }
+      requestAnimationFrame(tick)
+    }, sel)
+
     /* clickHere, not page.click: an actionable click scrolls the target into
        view first, which would contaminate the very measurement under test */
     expect(await clickHere(page, sel)).toBe(true)
@@ -776,12 +799,16 @@ test.describe('clicking a warning brings the puck into view', () => {
         top: pk.getBoundingClientRect().top,
         sel: pk.classList.contains('sel'),
         boxes: document.querySelectorAll('#vWeek .dwbox.open').length,
+        tops: (window as any).__tops as number[],
       }
     }, sel)
     expect(after.sel, 'the click selected him').toBe(true)
     expect(after.boxes, 'his issue boxes still open').toBeGreaterThan(0)
     expect(Math.abs(after.top - before!.top),
       'and the puck never moved under the pointer').toBeLessThanOrEqual(1.5)
+    const worst = Math.max(...after.tops.map(t => Math.abs(t - before!.top)))
+    expect(worst, 'no single frame painted him anywhere else — no jitter')
+      .toBeLessThanOrEqual(1.5)
   })
 
   test('a SIM_BRIEF warning pans to the sim row that briefs, and it lands on screen', async ({ page }) => {

@@ -6,6 +6,14 @@ import { HLSET, SEARCH, SELID, WFOCUS, ARM, warnFocusMap, personMatchesHL, CURPA
 import { ME } from '../state/auth'
 import { hsSet, hsSync } from './pan'
 
+/* A ONE-SHOT callback run at the end of the next highlight pass — i.e. in the
+   SAME task as the innerHTML swap that just changed the layout, before the
+   browser paints it. The puck-click hold rides here (owner, 7 Aug 26: "the
+   page jitters"): its first shipping ran on setTimeout(0), a macrotask AFTER
+   paint, so one frame showed the schedule leapt ~220px before the corrective
+   scroll snapped it back. Consumed exactly once, cleared even if it throws. */
+let PENDING_HOLD:any=null
+export function queueHold(fn:()=>void){PENDING_HOLD=fn}
 export function warnWeekId(){return CURPAGE==='editsched'?'eWeek':'vWeek';}
 /* The board is showing the warning's own day, so the pucks the focus names are
    on screen there and the week behind the overlay is not worth scrolling.
@@ -57,6 +65,8 @@ export function refreshHighlights(){
     if(focusActive&&!isFocus)el.classList.add('dim');
   });
   paintArm();      // every render rebuilds the slots, so the ring is re-hung here
+  /* the queued hold, after the classes so it measures the final layout */
+  if(PENDING_HOLD){const f=PENDING_HOLD; PENDING_HOLD=null; try{f()}catch(_){}}
 }
 export function paintArm(){
   document.querySelectorAll('.armed').forEach((el:any)=>el.classList.remove('armed'));

@@ -96,10 +96,17 @@ believing a single red.)
   turn blue. it should not pan the view at all").** The page never scrolled —
   the person's issue box opening ABOVE the schedule pushed the clicked puck
   ~220px down the screen, which reads as a pan. `interactions.ts:
-  holdPuckStill` scrolls the page by the puck's own displacement one macrotask
-  after the render, so it stays under the pointer; the boxes still open (the
-  owner chose keeping them over dropping them when asked). jsdom sees a zero
-  delta by construction; gated in `e2e/geometry.spec.ts`.
+  holdPuckStill` scrolls the page by the puck's own displacement, so it stays
+  under the pointer; the boxes still open (the owner chose keeping them over
+  dropping them when asked). **The correction runs in the render's own task
+  (owner, same day: "the page jitters")** — the first version deferred it to a
+  timeout, which races the next paint, and on a slow machine one frame showed
+  the leap before the snap-back; `queueHold` in `highlights.ts` drains at the
+  end of `refreshHighlights`, the same task as the day-markup swap, so the
+  displaced frame can never be painted. The e2e test CPU-throttles (8×) and
+  samples every frame — a fast box wins the race and measured the buggy code
+  clean, which is how it shipped. jsdom sees a zero delta by construction;
+  gated in `e2e/geometry.spec.ts`.
   **Every surface now marks its clicked row (owner, 7 Aug 26)** — the
   day-detail panel's rows and the cross-day crew-rest row were the two that
   emitted no `on` class, so a click lit pucks with nothing saying which row
