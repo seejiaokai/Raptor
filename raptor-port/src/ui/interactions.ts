@@ -37,6 +37,35 @@ function jumpToWarn(di: number, ix: number) {
   notify(); setTimeout(scrollToWarnFocus, 0)
 }
 
+/* HOLD THE SCREEN STILL ON SELECTION (owner, 7 Aug 26 — "it should just turn
+   blue"). Selecting a man also opens his issue boxes, and a box opens ABOVE
+   the schedule inside its day column — so the very puck just clicked leapt
+   ~220px down the page, which read as the view panning. The click's only
+   visible change should be the lighting: capture where the puck sat, and one
+   macrotask later (the same deferral scrollToWarnFocus uses — the week's
+   effect swaps the day markup and restores scrollLeft first) scroll the PAGE
+   by however far it moved, so it stays put under the pointer. The swap
+   replaces the element itself, so it is re-found by week, day, name and
+   position, never by identity. Off the week (board, palettes) nothing above
+   the puck changes, the delta is zero and this is a no-op. jsdom reports
+   every rect at 0×0, so vitest sees a zero delta by construction — the hold
+   is measured where it is real, in e2e/geometry.spec.ts. */
+function holdPuckStill(pk: HTMLElement) {
+  const week = pk.closest('.week') as HTMLElement | null
+  const day = pk.closest('.day[data-day]') as HTMLElement | null
+  if (!week || !day) return () => {}
+  const id = pk.dataset.person!, di = day.dataset.day!, wk = week.id
+  const ix = [...day.querySelectorAll(`.puck[data-person="${id}"]`)].indexOf(pk)
+  const top = pk.getBoundingClientRect().top
+  return () => {
+    const d = document.querySelector(`#${wk} .day[data-day="${di}"]`)
+    const again = d && (d.querySelectorAll(`.puck[data-person="${id}"]`)[ix] as HTMLElement)
+    if (!again) return
+    const delta = again.getBoundingClientRect().top - top
+    if (Math.abs(delta) > 1) window.scrollBy(0, delta)
+  }
+}
+
 /* The config picker — a body-level popup anchored to the "+" button, built the
    same way board.ts builds waveMenu: it lives outside the React tree, offers
    only the configs not yet on, adds the chosen one through the funnel
@@ -206,8 +235,11 @@ export function routeClick(e: MouseEvent) {
      and their issue boxes open */
   const pk = t.closest('.puck[data-person]') as HTMLElement | null
   if (pk) {
+    const hold = holdPuckStill(pk)
     view.selectPerson(pk.dataset.person, !!pk.closest('.week'))
-    notify(); e.stopPropagation(); return
+    notify()
+    setTimeout(hold, 0)
+    e.stopPropagation(); return
   }
 
   /* a week chip (the seg strips and the drawer share this) — the demo data is

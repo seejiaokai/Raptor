@@ -743,6 +743,47 @@ test.describe('clicking a warning brings the puck into view', () => {
     expect(m!.box, 'selection styling must not move the box').toEqual({ w: 74, h: 15 })
   })
 
+  test('selecting a puck holds the screen still while his boxes open', async ({ page }) => {
+    /* Owner, 7 Aug 26: "it should just turn blue. it should not pan the view
+       at all." The view never scrolled — but his issue box opens ABOVE the
+       schedule inside the day column, so the very puck just clicked leapt
+       ~220px down the page, which reads exactly like a pan. interactions.ts
+       now scrolls the page by the puck's own displacement one macrotask after
+       the render, so it stays put under the pointer. jsdom reports every rect
+       at 0×0 — a zero delta by construction — so only this test can see the
+       hold, which is how the jump shipped unnoticed in the first place. */
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'viewsched')
+
+    /* a person flagged on the day of his own first puck, so a box really
+       opens above the puck being measured — found from the DOM, not assumed */
+    const sel = '#vWeek .puck[data-person="bane"]'
+    const before = await page.evaluate((s) => {
+      const pk = document.querySelector(s) as HTMLElement
+      return pk ? { top: pk.getBoundingClientRect().top } : null
+    }, sel)
+    test.skip(!before, 'no bane puck in the seed week')
+
+    /* clickHere, not page.click: an actionable click scrolls the target into
+       view first, which would contaminate the very measurement under test */
+    expect(await clickHere(page, sel)).toBe(true)
+    await page.waitForTimeout(500)
+
+    const after = await page.evaluate((s) => {
+      const pk = document.querySelector(s) as HTMLElement
+      return {
+        top: pk.getBoundingClientRect().top,
+        sel: pk.classList.contains('sel'),
+        boxes: document.querySelectorAll('#vWeek .dwbox.open').length,
+      }
+    }, sel)
+    expect(after.sel, 'the click selected him').toBe(true)
+    expect(after.boxes, 'his issue boxes still open').toBeGreaterThan(0)
+    expect(Math.abs(after.top - before!.top),
+      'and the puck never moved under the pointer').toBeLessThanOrEqual(1.5)
+  })
+
   test('a SIM_BRIEF warning pans to the sim row that briefs, and it lands on screen', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
