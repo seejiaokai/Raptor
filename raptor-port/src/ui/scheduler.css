@@ -1960,7 +1960,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .schedboard.sb-wide .sb-acols>:nth-child(2),.schedboard.sb-wide .sb-acols>:nth-child(5),
 .schedboard.sb-wide .sb-acols>:nth-child(6){display:revert}
 .schedboard.sb-wide .sb-arow .asub,.schedboard.sb-wide .sb-arow .ppl,
-.schedboard.sb-wide .sb-arow .lctl,.schedboard.sb-wide .sb-line .nts,
+.schedboard.sb-wide .sb-arow .lctl,.schedboard.sb-wide .sb-line .sb-rcell,
 .schedboard.sb-wide .sb-line .sb-bcell,.schedboard.sb-wide .sb-line .lctl{grid-column:auto}
 .schedboard.sb-wide .sb-acols.c6r,.schedboard.sb-wide .sb-arow.c6r{grid-template-columns:150px 54px 54px 1fr 1fr 92px}
 .schedboard.sb-wide .sb-acols.c6r>:nth-child(4){display:revert}

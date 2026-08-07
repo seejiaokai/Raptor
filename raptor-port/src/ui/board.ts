@@ -30,13 +30,19 @@ const afterSchedMutate = () => view.afterSchedMutate()
    would invite edits against the wrong document. */
 export function boardHTML(di: number, pv?: boolean) {
   const d = DAYS[di]
-  /* the stores chips/C follow the page, not just pv: the board is a modal
-     that stays open across a nav click (SchedBoard's `hidden` only tracks
-     SBDAY, never CURPAGE), so a duty crew on View-only Sched who still has
-     a board open from earlier must see the same read-only chips the week
-     shows them there — same "which page decides read vs write" split
-     ViewWeek already applies by always calling dayHTML with ed=false. */
-  const stoRO = pv || view.CURPAGE !== 'editsched'
+  /* the stores chips/C follow HOOKS.editMode(), not just pv: the board is a
+     modal that stays open across a nav click (SchedBoard's `hidden` only
+     tracks SBDAY, never CURPAGE), so a duty crew on View-only Sched who
+     still has a board open from earlier must see the same read-only chips
+     the week shows them there. editMode() — not a bare CURPAGE test — so
+     the render gate is EXACTLY the click gate interactions.ts already uses
+     for data-store/data-stcfg (canEditSched() && CURPAGE==='editsched' &&
+     EDITON): a CURPAGE-only test would still render the clickable chips
+     and the contenteditable bombs field with EDITON off, and routeFocusOut
+     (textedit.ts) checks only canEditSched() — so a blur on that field
+     would commit and markEdit in a state the week would never have
+     rendered the field in at all. */
+  const stoRO = pv || !HOOKS.editMode()
   let b = (pv ? '' : `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`)
     + sbNotesPanel(d, di, pv) + sbProgPanel(d, di, pv)
   let fly = ''
