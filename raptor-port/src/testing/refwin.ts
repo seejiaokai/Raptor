@@ -25,7 +25,7 @@ import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
 
 export async function refWindow(): Promise<any> {
-  const html = rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))))
+  const html = rering(rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -272,6 +272,20 @@ function rebrief(html: string): string {
     html = html.replace(from, to)
   }
   return html
+}
+
+/* The tight-turn chip loses its ring (owner, 7 Aug 26). Both builds chip DT
+   and the same-day TT bare, and both ring the crew-rest TT amber — so the same
+   glyph meant "ringed problem" in one place and "unringed note" in another.
+   The port drops that one ring; the reference has to drop it too or every
+   byte-comparison of a seed day's markup fails on the ring class rather than
+   on the rule. Chip and warning are untouched on both sides — this removes a
+   mark, nothing else. */
+function rering(html: string): string {
+  const from = "markChip(di,id,'TT');markRing(di,id,'adv');"
+  const n = html.split(from).length - 1
+  if (n !== 1) throw new Error(`refwin rering: expected exactly 1 match, got ${n}`)
+  return html.replace(from, "markChip(di,id,'TT');")
 }
 
 /* One divergence the sync CANNOT close: the reference's `isOffer` is a `const`,

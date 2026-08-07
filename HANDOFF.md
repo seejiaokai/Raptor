@@ -156,6 +156,19 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
   `RANK`, `CHIP_TEXT` **and** `CHIP_LABEL` — or the byte-exact
   reference-markup parity fails on the tooltip, not the rule.
   Rules: `docs/engine-rules.md` §The crew-pairing chip.
+- **A turn chips but never rings (owner, 7 Aug 26).** `DT` and the same-day
+  `TT` chipped a puck without ringing it while the overnight `TT` rang amber,
+  so one glyph meant "ringed problem" in one place and "unringed note" in
+  another. The owner's call: a turn is a note, so the ring goes and the chip
+  stays. One line in `validate.ts` (the `CREW_TIGHT` branch); the warning
+  itself is untouched — filed, counted and clickable exactly as before, and a
+  man who trips a ringing rule as well keeps that rule's ring. This is a
+  deliberate divergence from `reference/`, so `refwin.ts:rering()` patches the
+  in-memory reference to match. **It fires nowhere on the seed week**, which
+  is why it needs `engine/turnring.test.ts` to BUILD the case — every
+  seed-driven assertion passes identically with the ring left in, so the
+  change is invisible both on screen and to the parity suite. Rules:
+  `docs/engine-rules.md` §validation.
 - **`sbWide` / board-grip state** is module-local and resets on reload
   (matches the original's session-scoped behaviour).
 - **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** "Restore
@@ -432,7 +445,7 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
 | `probes/run.cjs` | Runs any reference probe against the reference build or the port. |
 | `probes/perf-port.cjs` | The perf gate (`npm run perf`) — measures BOTH builds at once, round for round, and asserts no regression. |
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
-| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it, `retier()`s the three amber codes, `remap()`s the CAT-ladder rework (tables, isInstr, PEOPLE literals, legend), `rematrix()`es the combination matrix into the reference's validate and `relead()`s the remark-driven OFT brief lead into its simwin, so both engines compute from identical data. NOT a test file. |
+| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it, `retier()`s the three amber codes, `remap()`s the CAT-ladder rework (tables, isInstr, PEOPLE literals, legend), `rematrix()`es the combination matrix into the reference's validate, `relead()`s the remark-driven OFT brief lead into its simwin, `rebrief()`s the indicated B and the crew-rest anchor, and `rering()`s the amber ring off the tight-turn chip, so both engines compute from identical data. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table. |
 | `docs/session-state.md` | The last session's leftovers — **often absent, and absent is meaningful**: it exists only while something is genuinely pending, and the session that clears the last item deletes it. This file holds the durable state; that one holds what a session could not finish. Written by `.claude/skills/session-handoff`. |
 | `PORTING.md` | **Historical** — the phase plan the port was built from. Nothing left to run; kept only because `probe-sweep.md` and `perf-port.cjs` cite its decisions (dropped probes, original timing budgets). |

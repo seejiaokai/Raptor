@@ -144,7 +144,10 @@ chromium.launch({
 })
 ```
 
-then `newPage({ ignoreHTTPSErrors: true })`, because the proxy re-signs TLS.
+Those three are the whole recipe — `ignoreHTTPSErrors` is NOT needed despite
+the proxy re-signing TLS (measured both ways, 7 Aug 26: the CA is already in
+Chromium's NSS store). Do not add it reflexively; it would mask a genuine
+certificate fault later.
 The reset is worth recognising on sight: it is silent at the proxy (only
 Chromium's own telemetry shows up in the failure log), it hits every host and
 not just this one, and it is TLS, not policy — a 403 is policy, a reset is

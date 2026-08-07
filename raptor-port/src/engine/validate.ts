@@ -379,7 +379,13 @@ export function validate(){
           /* the same breach, filed against the day that caused it */
           markTrace(prevDi,id,{di,dow:day.dow,leaveBy,dashed,msg:crMsg});
         } else if(nominal<earliest||instructed<earliest){
-          markChip(di,id,'TT');markRing(di,id,'adv');
+          /* Chip, no ring (owner, 7 Aug 26). A tight turn is a note, not a
+             problem to fix — and this was the ONLY TT that rang: the same-day
+             tight turn above chips bare, and so does DT. One glyph meaning
+             "ringed problem" here and "unringed note" there is unreadable, so
+             the ring goes rather than the chip. The warning itself is
+             unchanged — still filed, still counted, still clickable. */
+          markChip(di,id,'TT');
           add('adv','CREW_TIGHT',[id],`Tight turning — T/O ${hm24(Math.min.apply(null,legs.map((e:any)=>e.to)))} puts the ${lgT(VCONF.reportLead)} report at ${hm24(nominal)}, inside ${lgT(VCONF.crewRest)}. ${tail}`
             +(pfly[id]?'':' (prior day ended on a sim or ground event, so crew rest itself does not apply)'),
             legs.reduce((m:any,e:any)=>nomOf(e)<nomOf(m)?e:m).key);
