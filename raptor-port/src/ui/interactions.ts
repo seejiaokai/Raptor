@@ -67,30 +67,37 @@ function holdPuckStill(pk: HTMLElement) {
   }
 }
 
-/* The config picker — a body-level popup anchored to the "+" button, built the
-   same way board.ts builds waveMenu: it lives outside the React tree, offers
-   only the configs not yet on, adds the chosen one through the funnel
-   (markEdit → pending → next AL) and removes itself on any outside click. */
+/* The stores popup — a body-level box anchored to the C button, built the
+   way board.ts builds waveMenu: outside the React tree, removing itself on
+   any outside click. It lists EVERY store, lit where the jet carries it, so
+   the box is self-contained — the board has no inline chips to read.
+   Toggling goes through the funnel (markEdit → pending → next AL). */
 function openStoresMenu(anchor: HTMLElement, key: string) {
   document.querySelectorAll('.stmenu').forEach(x => x.remove())
   const [di, gi, li, ai] = key.split('.')
   const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
   a.opts = a.opts || {}
-  const left = STORE_CFG.filter(([k]) => !a.opts[k])
   const box = document.createElement('div')
   box.className = 'stmenu wavemenu'
-  box.innerHTML = `<h5>Add config</h5><div class="wm-row">`
-    + (left.length
-      ? left.map(([k, lab]) => `<button class="wm" data-cfg="${k}">${lab}</button>`).join('')
-      : `<div class="wm-note">All configs added.</div>`)
-    + `</div>`
+  const paint = () => {
+    box.innerHTML = `<h5>Stores configuration</h5><div class="wm-row">`
+      + STORE_CFG.map(([k, lab]) =>
+        `<button class="wm${a.opts[k] ? ' on' : ''}" data-cfg="${k}">${lab}</button>`).join('')
+      + `</div>`
+  }
+  paint()
   document.body.appendChild(box)
   const r = anchor.getBoundingClientRect()
   box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
   box.style.top = Math.min(window.innerHeight - box.offsetHeight - 8, Math.round(r.bottom + 6)) + 'px'
   box.addEventListener('click', (ev: any) => {
+    ev.stopPropagation()
     const b = ev.target.closest('[data-cfg]'); if (!b) return
-    a.opts[b.dataset.cfg] = true; markEdit(`st:${di}.${gi}.${li}.${ai}`); box.remove(); notify(); ev.stopPropagation()
+    const k = b.dataset.cfg
+    a.opts[k] = !a.opts[k]
+    markEdit(`st:${di}.${gi}.${li}.${ai}`)
+    paint()
+    notify()
   })
   setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
 }

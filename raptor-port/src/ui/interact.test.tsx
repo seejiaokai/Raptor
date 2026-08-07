@@ -253,6 +253,33 @@ describe('stores configs — the C picker (owner, Aug 26; + became C, 7 Aug 26)'
     expect(chip, 'the view week shows the typed bombs').toBeTruthy()
     a.opts.bombs = was
   })
+
+  it('the popup lists EVERY store, marking the ones already on this jet', async () => {
+    const { DAYS } = await import('../engine/data')
+    const { STORE_CFG } = await import('../engine/stores')
+    await click(editTab())
+    const add = $('#eWeek .stcfg[data-stcfg]')
+    const [di, gi, li, ai] = add.dataset.stcfg!.split('.')
+    const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]; a.opts = a.opts || {}
+    a.opts.nav = true; a.opts.cl = false; await act(async () => notify())
+    await click($(`#eWeek .stcfg[data-stcfg="${di}.${gi}.${li}.${ai}"]`))
+    const items = Array.from(document.querySelectorAll('.stmenu [data-cfg]')) as HTMLElement[]
+    expect(items.length, 'every store is offered, not only the unticked').toBe(STORE_CFG.length)
+    expect(items.find(b => b.dataset.cfg === 'nav')!.classList.contains('on')).toBe(true)
+    expect(items.find(b => b.dataset.cfg === 'cl')!.classList.contains('on')).toBe(false)
+  })
+
+  it('clicking a lit row in the popup takes that store OFF the jet', async () => {
+    const { DAYS } = await import('../engine/data')
+    await click(editTab())
+    const add = $('#eWeek .stcfg[data-stcfg]')
+    const [di, gi, li, ai] = add.dataset.stcfg!.split('.')
+    const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]; a.opts = a.opts || {}
+    a.opts.nav = true; await act(async () => notify())
+    await click($(`#eWeek .stcfg[data-stcfg="${di}.${gi}.${li}.${ai}"]`))
+    await click(document.querySelector('.stmenu [data-cfg="nav"]') as HTMLElement)
+    expect(a.opts.nav).toBe(false)
+  })
 })
 
 describe('text edits carry amendment marks (area/atime commit + AL colouring)', () => {

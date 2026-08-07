@@ -594,9 +594,11 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           <div class="fcell ld" style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`;
         f.aircraft.forEach((a:any,ai:any)=>{
           const key=`${di}.${gi}.${li}.${ai}`, o=a.opts||{};
-          /* edit mode shows only the configs that ARE on (click one to remove
-             it) plus a "+" that opens the picker for the rest — the "+" always
-             stays, so more can be added. View mode shows the on-chips only. */
+          /* edit mode shows the on-chips (click one to remove it) plus C, which
+             opens a box listing EVERY store, lit where the jet carries it —
+             self-contained because the board's popup (Task 6) has no chips
+             beside it to read (owner, 7 Aug 26). View mode shows the on-chips
+             only. */
           const stores=ed
             ? `<span class="stores">`+STORE_CFG.filter(([k]:any)=>o[k]).map(([k,lab]:any)=>`<span class="stchip on" data-store="${key}.${k}" title="Remove ${lab}">${lab}</span>`).join('')
               +`<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
