@@ -1,4 +1,4 @@
-# Session handoff — two owner questions, nothing in flight
+# Session handoff — one owner question, nothing in flight
 
 ## Where it started
 
@@ -26,13 +26,12 @@ questions he has not answered.
 
 ## Branch state
 
-- Designated branch: `claude/read-handoff-docs-3r97fl`.
-  **NOT the branch named in the session instructions**
-  (`claude/read-handoff-docs-o6qvqn`) — the owner's first message explicitly
-  created and asked for `-3r97fl`, and all six PRs used it.
-- Its PRs are all MERGED, so reset before starting new work or commits stack
-  onto already-merged history:
-  `git fetch origin main && git checkout -B claude/read-handoff-docs-3r97fl origin/main`
+- The 6 Aug session worked on `claude/read-handoff-docs-3r97fl`; all seven of
+  its PRs are merged and that branch is finished. The 7 Aug session started
+  clean on `claude/read-handoff-md-n4q4xt`, cut from `main`.
+- Whatever branch a session is given, check it is not sitting on already-merged
+  history before committing:
+  `git fetch origin main && git checkout -B <branch> origin/main`
 
 ## Gates
 
@@ -58,16 +57,15 @@ Run first-hand from `raptor-port/` on the last code commit, all green:
   keep parity green, plus his decision — he has already called double turning
   "routine and planned", which argues the chip-without-ring is RIGHT for DT
   and wrong only for TT.
-- **Network policy: `github.io` and `githubstatus.com`.** He asked for both to
-  be allowed through the agent proxy and was given the exact steps
-  (claude.ai/code → environment → Network access → Custom → allowed domains,
-  with "also include default package managers" ticked or `npm ci` breaks).
-  Both were still `connect_rejected` at session end, which proves nothing: the
-  egress policy is fixed when a session starts, so a change he makes can only
-  reach a LATER session. **Re-test once, early** — the one-line check is in
-  `CLAUDE.md` §Build & verify. If it now works, the deployed page can be
-  driven directly, which is the only way to catch a CDN-level fault that a
-  local `vite preview` cannot show.
+## Resolved since
+
+- **Network policy: `github.io` and `githubstatus.com` — OPEN (7 Aug 26).**
+  The owner allowed both. Verified first-hand: the deployed page was loaded,
+  logged into and screenshotted from the container, 149 pucks and 29 flagged
+  ones, no console errors and no 4xx. He asked in the same breath that work be
+  checked against the live link after every change, so that is now a standing
+  instruction in `CLAUDE.md` §Build & verify along with the three Chromium
+  launch settings it needs. Nothing further pending on this.
 
 ## Pick up here
 
