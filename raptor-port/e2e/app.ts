@@ -13,7 +13,7 @@ export async function login(page: Page, who: 'a' | 'user' = 'a') {
 
 /* React commits a tick after the nav, so every reader has to wait for the page
    it asked for rather than for a fixed delay. */
-export async function go(page: Page, to: 'viewsched' | 'editsched' | 'inputs' | 'quals' | 'logic') {
+export async function go(page: Page, to: 'viewsched' | 'editsched' | 'myprog' | 'inputs' | 'quals' | 'logic') {
   await page.evaluate(p => (window as any).go(p), to)
   await page.waitForFunction(p => (window as any).CURPAGE === p, to)
   await page.waitForTimeout(350)

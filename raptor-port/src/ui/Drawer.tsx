@@ -15,6 +15,7 @@ export function Drawer() {
   const admin = SESSION && SESSION.role === 'admin'
   const items: [string, string, boolean][] = [
     ['editsched', 'Edit Schedule', !!admin], ['viewsched', 'View-only Sched', true],
+    ['myprog', 'My Programme', true],
     ['inputs', 'Inputs', true], ['quals', 'Quals', true], ['logic', 'Logic', true],
   ]
   const close = () => { setDrawer(false); notify() }

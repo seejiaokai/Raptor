@@ -33,6 +33,7 @@ import { Drawer } from './Drawer'
 import { exportCSV, schedRows } from './export'
 import { InputsPage } from './InputsPage'
 import { LogicPage } from './LogicPage'
+import { MyProgPage } from './MyProgPage'
 import { QualsPage } from './QualsPage'
 import { EditWeek, EditRoster } from './EditWeek'
 import { ALPanel } from './ALPanel'
@@ -167,6 +168,7 @@ export function Shell() {
         <nav className="nav" id="topnav">
           <a data-page="editsched" data-admin="" hidden={!admin} className={page === 'editsched' ? 'on' : ''} onClick={() => nav('editsched')}>Edit Schedule</a>
           <a data-page="viewsched" className={page === 'viewsched' ? 'on' : ''} onClick={() => nav('viewsched')}>View-only Sched</a>
+          <a data-page="myprog" className={page === 'myprog' ? 'on' : ''} onClick={() => nav('myprog')}>My Programme</a>
           <a data-page="inputs" className={page === 'inputs' ? 'on' : ''} onClick={() => nav('inputs')}>Inputs</a>
           <a data-page="quals" className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')}>Quals</a>
           <a data-page="logic" className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')}>Logic</a>
@@ -265,6 +267,9 @@ export function Shell() {
       {topbar}
       {viewPage}
       {editPage}
+      <section className={'page' + (page === 'myprog' ? ' on' : '')} id="page-myprog">
+        {page === 'myprog' && <MyProgPage />}
+      </section>
       <section className={'page' + (page === 'inputs' ? ' on' : '')} id="page-inputs">
         {page === 'inputs' && <InputsPage />}
       </section>

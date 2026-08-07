@@ -69,6 +69,11 @@ ship without waiting to be asked.
   recommendation, and let the owner pick. Small unambiguous asks skip
   straight to building. (The 7 Aug blue-selection build-and-rollback is the
   standing example: the ideation question is cheaper than the build.)
+  **When a direction is visual, show a PICTURE before product code (owner,
+  7 Aug 26):** a throwaway HTML comp in the app's own stylesheet,
+  screenshotted at phone and desktop widths — pixel-faithful because it IS
+  the real palette — so the owner approves what it looks like, not a
+  description of it.
 - **Challenge a risky ask in a sentence or two**: the underlying user
   problem, any unnecessary complexity, a simpler alternative, a wrong
   assumption — then build what the owner decides, without relitigating.
