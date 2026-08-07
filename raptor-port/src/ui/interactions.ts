@@ -13,7 +13,7 @@ import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify } from '../state/store'
-import { scrollToWarnFocus } from './highlights'
+import { scrollToWarnFocus, queueHold } from './highlights'
 import { STORE_CFG } from './html'
 import { setDayPop, setAirKey, setDrawer } from './pops'
 import { openScheduler } from './board'
@@ -41,9 +41,10 @@ function jumpToWarn(di: number, ix: number) {
    blue"). Selecting a man also opens his issue boxes, and a box opens ABOVE
    the schedule inside its day column — so the very puck just clicked leapt
    ~220px down the page, which read as the view panning. The click's only
-   visible change should be the lighting: capture where the puck sat, and one
-   macrotask later (the same deferral scrollToWarnFocus uses — the week's
-   effect swaps the day markup and restores scrollLeft first) scroll the PAGE
+   visible change should be the lighting: capture where the puck sat, and at
+   the end of the render's own highlight pass (queueHold — the same task as
+   the day-markup swap, BEFORE the browser paints it, which is what keeps the
+   correction invisible) scroll the PAGE
    by however far it moved, so it stays put under the pointer. The swap
    replaces the element itself, so it is re-found by week, day, name and
    position, never by identity. Off the week (board, palettes) nothing above
@@ -235,10 +236,14 @@ export function routeClick(e: MouseEvent) {
      and their issue boxes open */
   const pk = t.closest('.puck[data-person]') as HTMLElement | null
   if (pk) {
-    const hold = holdPuckStill(pk)
+    /* queueHold, NOT setTimeout (owner, 7 Aug 26: "the page jitters") — a
+       timeout runs after the browser has painted the shifted layout, so one
+       frame showed the leap before the scroll snapped it back. The queue is
+       drained by refreshHighlights at the end of the same task that swaps
+       the day markup, so the displaced frame is never painted at all. */
+    queueHold(holdPuckStill(pk))
     view.selectPerson(pk.dataset.person, !!pk.closest('.week'))
     notify()
-    setTimeout(hold, 0)
     e.stopPropagation(); return
   }
 

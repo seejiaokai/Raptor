@@ -255,10 +255,15 @@ just turn blue. it should not pan the view at all").** The page never
 scrolled, but a `.dwbox` opens ABOVE the schedule inside its day column, so
 the very puck just clicked leapt ~220px down the screen — indistinguishable
 from a pan. `interactions.ts:holdPuckStill` captures the puck's viewport
-position at the click and, one macrotask after the render (the same deferral
-`scrollToWarnFocus` uses, because the week's effect swaps the day markup
-first), scrolls the page by the puck's own displacement — opening AND the
-toggle-off closing both. The swap replaces the element, so the puck is
+position at the click and scrolls the page by the puck's own displacement —
+opening AND the toggle-off closing both. The correction runs **in the same
+task as the day-markup swap** (`queueHold` in `highlights.ts`, drained at
+the end of `refreshHighlights`), never on a timeout: a deferred correction
+races the browser's next paint, and on a slow machine one frame showed the
+leap before the snap-back — the owner's "the page jitters", 7 Aug 26. The
+e2e test CPU-throttles and samples the puck's position on every frame,
+because a fast box wins that race and measures the buggy code clean — which
+is exactly how it shipped. The swap replaces the element, so the puck is
 re-found by week, day, name and position, never by identity. Off the week
 (board, palettes) the delta is zero and it is a no-op. jsdom reports every
 rect 0×0, so vitest sees a zero delta by construction — the hold is gated in
