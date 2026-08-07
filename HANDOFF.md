@@ -315,7 +315,13 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
   it ever bites: show the rest margin beside the B box, or flag a B sitting
   more than some margin later than the suggestion. Neither is built.
 - **Deploy**: GitHub Pages must stay enabled (Settings → Pages → Source:
-  GitHub Actions). The workflow refuses to publish on any red test. The four
+  GitHub Actions). The workflow refuses to publish on any red test.
+  **The deployed page can be opened and driven from the container now (owner
+  opened the network policy, 7 Aug 26), and checking a shipped change against
+  it is a standing instruction** — a green workflow is not evidence the page
+  serves. Recipe and the three Chromium launch settings it needs (without
+  them every host fails as `ERR_CONNECTION_RESET`, which looks like an outage
+  and is not): `CLAUDE.md` §Build & verify. The four
   gates also run on every **pull request** into main (owner ask, 5 Aug 26),
   so a red PR is caught before merge; a PR run gates only — it uploads no
   artifact and never deploys. Publishing stays push-to-main.

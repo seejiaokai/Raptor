@@ -106,23 +106,52 @@ since 5 Aug 26: a member edits their own Inputs and ticks their own quals;
 the split is in `docs/engine-rules.md` §Auth / roles). The username is
 lowercased before matching, the PASSWORD is compared exactly, so `A`/`A` is
 rejected.
-The deployed Pages URL has NOT been reachable from the container (the agent
-proxy answers 403 to CONNECT for `github.io`, and to `githubstatus.com`).
-**Re-test it once per session rather than assuming** — the owner asked for
-both to be allowed (6 Aug 26), the policy is fixed when a session starts, so
-a change only ever reaches a LATER session than the one that asked:
+**The deployed site is reachable now, and checking work against it is a
+standing instruction (owner, 7 Aug 26).** The proxy used to answer 403 for
+`github.io`; the owner opened it, and both the page and `githubstatus.com`
+were driven end to end from the container on 7 Aug. **After every change that
+ships, load the real page and look at it** — do not report a change as live
+on the strength of a green workflow.
+
+The two checks answer different questions and neither replaces the other: the
+`vite preview` above is the bundle BEFORE it ships, and it is what you iterate
+against; the deployed page is what the squadron actually gets, and it is the
+only thing that can show a fault introduced between the build and the browser
+— a stale CDN cache, a base path wrong as served, an asset that 404s only
+under the `/Raptor/` sub-path. Sequence is: preview while building, gates,
+merge, then the live page once Pages has rolled over.
+
+Reachability, and the reason if it ever closes again:
 
 ```
 curl -sS -o /dev/null -w '%{http_code}\n' https://seejiaokai.github.io/Raptor/
+curl -sS "$HTTPS_PROXY/__agentproxy/status"      # logs each rejected host
 ```
 
-`000` means still blocked; check the reason with
-`curl -sS "$HTTPS_PROXY/__agentproxy/status"`, which logs each rejected host.
-Do not route around a 403 — report the blocked host. While it is blocked,
-confirm a deploy from the workflow run's job conclusions and verify rendering
-against the `vite preview` above; when it opens up, the deployed page can be
-driven directly and is the only way to catch a CDN-level fault (a stale
-cache, a bad base path as served) that a local preview cannot show.
+`000` means blocked again — report the blocked host, never route around it,
+and fall back to the preview plus the workflow's job conclusions.
+
+**Driving it needs three launch settings Chromium does not take from the
+environment** (7 Aug 26 — a bare `chromium.launch()` fails with
+`ERR_CONNECTION_RESET`, which reads like the site is down and is not):
+
+```js
+chromium.launch({
+  executablePath: '/opt/pw-browsers/chromium',
+  chromiumSandbox: false,                              // sandbox + proxy = instant exit
+  proxy: { server: process.env.HTTPS_PROXY },          // NOT inherited from the env var
+  args: ['--ssl-version-max=tls1.2'],                  // TLS 1.3 handshakes get reset
+})
+```
+
+then `newPage({ ignoreHTTPSErrors: true })`, because the proxy re-signs TLS.
+The reset is worth recognising on sight: it is silent at the proxy (only
+Chromium's own telemetry shows up in the failure log), it hits every host and
+not just this one, and it is TLS, not policy — a 403 is policy, a reset is
+this. Login is `#luser` / `#lpass` / `#loginForm button[type=submit]`, same
+as `e2e/app.ts`, and `#vWeek .day` is the "week is up" signal. Watch console
+errors, page errors and 4xx responses on the way through; screenshot the
+element in question and LOOK at it.
 
 Push to `main` → `.github/workflows/deploy.yml` reruns the gates and
 publishes to **https://seejiaokai.github.io/Raptor/**. Nothing deploys red.
