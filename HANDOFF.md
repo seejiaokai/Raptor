@@ -333,6 +333,27 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
   `gh-pages` branch, which never waits on the rollout, or another host — not
   a re-run and not another timeout value. Reasoning is in the deploy step's
   own comment in `.github/workflows/deploy.yml`.
+  **Three more deploy faults, all GitHub's, seen the same evening — know them
+  before diagnosing a red publish (6 Aug 26).** They are separate from the
+  ceiling above and from each other, and one of them makes retrying pointless:
+  - `Failed to resolve action download info` · `Service Unavailable` /
+    `Bad Gateway` — the runner could not fetch the action definitions. It
+    never reached the repo. Re-run.
+  - **`Invalid actions OIDC token ... No keys from key endpoint match` — the
+    trap.** It appears when you RE-RUN an old failed job: that run's identity
+    token has since rotated, so re-running a stale run can NEVER succeed
+    however many times it is tried. Trigger a FRESH run instead
+    (`workflow_dispatch` on `deploy.yml`, ref `main`), which mints a new one.
+  - **No runner assigned at all** — job cancelled after ~15 min with an empty
+    `runner_name` and zero steps recorded. Pure capacity. Re-run later.
+  Two things that cost time and are worth knowing up front: a merge performed
+  with an automation token does **not** trigger the push-deploy (GitHub
+  suppresses workflow events from automation to stop recursion), so a
+  self-merge needs an explicit dispatch afterwards; and the raw session token
+  gets `403 Resource not accessible by integration` on
+  `POST /actions/workflows/{id}/dispatches`, which returns an EMPTY body on
+  success too — so a script cannot tell refusal from success. Dispatch through
+  the GitHub tooling, not curl, or you will report runs you never started.
 - **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
   still described a three-gate, mid-port project — the root one also called a
   member view-only, which the 5 Aug roles decision had already undone.
