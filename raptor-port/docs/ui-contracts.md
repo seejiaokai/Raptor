@@ -363,6 +363,15 @@ prompted the rule (owner, 5 Aug 26 — a crew-rest warning panning to the free
 crew instead of the flight that caused it) was invisible to every view-week
 test in the suite.
 
+**One surface pans somewhere other than the warning's own day** — the
+cross-day crew-rest row, and only it. `WFOCUS` may carry `panDi`/`panKey`,
+set by that row alone; when it does, `scrollToWarnFocus` builds its root from
+`panDi` and anchors on `panKey` instead of `WFOCUS.di`/`.key`, so the focus
+stays on the breach while the view stays on the day that caused it. Off-board
+only, and everything downstream — the snap placement, the lateral hold, the
+target-picking rule — works off that root unchanged. Full reasoning in §The
+previous-day trace.
+
 **The scroll is two moves, and the order matters.** `.week` is
 `scroll-snap-type:x mandatory` with `.day{scroll-snap-align:start}`, so
 `inline:'center'` asks to rest between two snap points and the browser
@@ -528,14 +537,41 @@ a focus that was never set:
   day's issues, they are its consequences, and counting tomorrow's breach
   here would have two days reporting the same warning.
 
-**Both affordances leave the day they were clicked on.** The chip and the row
-carry the NEXT day's `(di, ix)` — `traceIx` resolves it — so the ordinary
-`.witem` handler and `jumpToWarn` navigate them with no path of their own.
-`traceLeads` is asked BEFORE `personWarns` in the chip handler: where the
-trace owns the flag, a quieter warning of his own on this day must not hijack
-the jump. A `-1` from `traceIx` (the warning moved under an edit — `WARN` is
-rebuilt wholesale) falls through to his own warnings rather than jumping
-somewhere arbitrary.
+**The row focuses TOMORROW's warning but the view STAYS HERE (owner, from the
+deployed site, 7 Aug 26).** The chip stopped navigating on 7 Aug (§Jumping),
+so the row is the only affordance left, and it now does two things at once.
+It still carries the NEXT day's `(di, ix)` — `traceIx` resolves it — so the
+ordinary `.witem` handler focuses the real breach: it is that warning that is
+selected, his pucks over there that light, and the `✕ Clear focus` that
+appears in the breach day's open box. A `-1` from `traceIx` (the warning moved
+under an edit — `WARN` is rebuilt wholesale) drops the row entirely rather
+than addressing something arbitrary.
+
+But the **pan** lands on the causing day, on the line that caused it. It used
+to throw the week over to the breach day and centre the flagged leg — which
+the row's own prose had already named, so the move bought nothing and cost the
+reader the one thing they came for: WHICH sortie ran late, the only one still
+movable. The row carries that address alongside the warning's:
+`data-wpd` (its own day, taken from the builder's `di` so it cannot disagree
+with where the row is drawn) and `data-wpk`, the causing leg's slot-key, which
+the engine now publishes as `WARN.trace[…].fromKey` (`engine-rules.md`
+§validation). `interactions.ts` hangs them on the focus as `panDi`/`panKey`,
+and `scrollToWarnFocus` prefers them over `WFOCUS.di`/`.key` when they are
+there — the ONLY case where the pan and the focus name different days.
+
+The landing mark falls out of the existing machinery and is deliberately not
+new: `warnFocusMap()` puts the focus's ids in `echo`, so his puck here wears
+the dashed same-man-a-different-day stroke over its standing `boxdot`, and the
+rest of the day dims. The owner declined a full warning highlight — it would
+make the causing day read as having a breach of its own, which is the exact
+confusion the 7 Aug on-demand change was made to remove.
+
+Three fallbacks, all safe and all landing on the right DAY, which is more than
+the un-overridden path managed: no `fromKey` emits neither attribute and the
+row behaves as it did; a stale `panKey` resolves nothing in `anchorEl` and
+takes `warnTarget`'s document-order heuristic **within the causing day**; and
+the override is read only off the board, since `dayTraceHTML` is a `html.ts`
+builder the board never calls.
 
 **One rendering coupling follows from this**, and it is the only one: an edit
 on day N that changes its crew-rest picture rewrites day N−1 too. The

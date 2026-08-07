@@ -390,6 +390,65 @@ test.describe('the crew-rest rings are three distinguishable strokes', () => {
     expect(r!.sameBorder, 'same border, not the old dotted box').toBe(true)
     expect(r!.samePad, 'same padding').toBe(true)
   })
+
+  /* THE ROW PANS TO ITS OWN DAY (owner, from the deployed site, 7 Aug 26). It
+     used to throw the week over to the breach day and land on the flagged leg —
+     which the row's own prose had already named — while the sortie that ran
+     late, the only one a scheduler can still move, was left behind.
+
+     A phone is the viewport that can prove it: one day box fills the screen, so
+     Monday and Tuesday cannot both be in view and "did not move" is a real
+     measurement. On the desktop width both would be visible and the lateral
+     hold would keep the week still for the wrong reason. */
+  test('the cross-day row pans to the late line on its own day', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'viewsched')
+    await page.click('#vWeek .day[data-day="0"] [data-daywarn]')
+    await page.waitForSelector('#vWeek .day[data-day="0"] .dwtrace .witem[data-wdi]')
+    await scrollTo(page, '#vWeek', 0)
+
+    /* clickHere, not page.click: Playwright scrolls a target into view before
+       pressing it, which would pan the week for us and defeat the measurement */
+    expect(await clickHere(page, '#vWeek .day[data-day="0"] .dwtrace .witem[data-wdi]')).toBe(true)
+    await settleBoth(page, '#vWeek')
+
+    const m = await page.evaluate(() => {
+      const week = document.querySelector('#vWeek') as HTMLElement
+      const day = document.querySelector('#vWeek .day[data-day="0"]') as HTMLElement
+      const row = document.querySelector('#vWeek .day[data-day="0"] .dwtrace .witem[data-wdi]') as HTMLElement
+      /* the causing day's man is ECHO-lit: the focused warning is tomorrow's,
+         so his puck here wears the dashed same-person-different-day mark on top
+         of its standing dotted ring */
+      const puck = document.querySelector('#vWeek .day[data-day="0"] .puck.wfoc.echo') as HTMLElement
+      if (!puck || !row) return null
+      const w = week.getBoundingClientRect(), p = puck.getBoundingClientRect()
+      const seat = row.dataset.wpk
+        ? document.querySelector(`#vWeek .day[data-day="0"] [data-slot^="${row.dataset.wpk}"]`)
+        : null
+      const s = getComputedStyle(puck)
+      return {
+        focusDay: row.dataset.wdi,                                     // still tomorrow's warning
+        dayOffset: Math.round(day.getBoundingClientRect().left - w.left),
+        inView: p.left >= w.left - 1 && p.right <= w.right + 1,
+        /* the trace class survives the focus, so the standing dotted ring comes
+           back when it clears; while lit, .wfoc.echo's dashed stroke is what is
+           actually PAINTED (one outline per element, and it is declared later) */
+        stillTraced: puck.classList.contains('boxdot'),
+        stroke: s.outlineStyle,
+        strokeColor: s.outlineColor,
+        inCausingRow: !!seat && !!seat.closest('.acrow,.pl-row,.ah-row')?.contains(puck),
+      }
+    })
+    expect(m, 'the causing day lights its own puck').not.toBeNull()
+    expect(m!.focusDay, 'the row still addresses tomorrow\'s breach').toBe('1')
+    expect(m!.dayOffset, 'and the week never left the day it was clicked on').toBe(0)
+    expect(m!.inView, 'the late line\'s puck is inside the week viewport').toBe(true)
+    expect(m!.stillTraced, 'it keeps its trace mark under the focus').toBe(true)
+    expect(m!.stroke, 'and paints the dashed same-man-elsewhere stroke').toBe('dashed')
+    expect(m!.strokeColor, 'in the hard red, not the advisory amber').toBe('rgb(240, 85, 95)')
+    expect(m!.inCausingRow, 'and it is the line the engine blamed, not his first').toBe(true)
+  })
 })
 
 test('puck text stays inside the puck, descenders and all', async ({ page }) => {

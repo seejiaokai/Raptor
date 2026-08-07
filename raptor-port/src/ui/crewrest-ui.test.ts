@@ -31,6 +31,25 @@ const firstForm = (di: number) => {
   const w = (DAYS[di].waves || []).find((x: any) => !isStandalone(x) && (x.formations || []).length)
   return w ? w.formations[0] : null
 }
+/* another flying formation on the same day, so a man can be given two legs and
+   the trace asked which one it names */
+const otherForm = (di: number, not: any) => {
+  for (const w of (DAYS[di].waves || [])) {
+    if (isStandalone(w)) continue
+    for (const f of (w.formations || [])) if (f !== not) return f
+  }
+  return null
+}
+/* the slot-key the engine will mint for a seat — the raw indices of waves,
+   formations and aircraft, which is the grammar collectEvents builds from */
+const keyOf = (di: number, f: any, ai: number, seat: 'p' | 'w') => {
+  const waves = DAYS[di].waves || []
+  for (let gi = 0; gi < waves.length; gi++) {
+    const li = (waves[gi].formations || []).indexOf(f)
+    if (li >= 0) return `${di}.${gi}.${li}.${ai}.${seat}`
+  }
+  return ''
+}
 const hhmmOf = (m: number) => {
   const x = ((m % 1440) + 1440) % 1440
   return String(Math.floor(x / 60)).padStart(2, '0') + ':' + String(x % 60).padStart(2, '0')
@@ -131,6 +150,34 @@ describe('the previous-day trace', () => {
     expect(traceOf(1, CREW), 'nothing is filed against the day of the breach').toBeNull()
   })
 
+  /* THE TRACE NAMES THE LEG, NOT JUST THE DAY (owner, from the deployed site,
+     7 Aug 26). The row on the causing day is the only affordance a scheduler can
+     act on, so it has to be able to point at the sortie to move — and the engine
+     is the only place that knows which one it was. */
+  it('names the leg on the causing day that ran late', () => {
+    build('01:30', '2A: BFM-5')
+    const prev: any = firstForm(0)!
+    const t = traceOf(0, CREW)
+    expect(t.fromKey, 'his own RCP seat in the line that landed after midnight')
+      .toBe(keyOf(0, prev, prev.aircraft.length - 1, 'w'))
+  })
+
+  it('names the LATER-ending leg where he flew twice that day', () => {
+    /* the whole reason a key beats a heuristic: "his first puck in document
+       order" would land on the morning line, which broke nothing */
+    build('01:30', '2A: BFM-5')
+    const prev: any = firstForm(0)!
+    const am: any = otherForm(0, prev)!
+    expect(am, 'the seed day has a second flying formation').toBeTruthy()
+    am.aircraft.push({ p: '', w: CREW, area: '', rmks: '', opts: {} })
+    am.to = '08:00'; am.ld = '09:00'
+    validate()
+    const t = traceOf(0, CREW)
+    expect(t, 'the breach still stands').toBeTruthy()
+    expect(t.fromKey, 'the late line, not the morning one it renders before')
+      .toBe(keyOf(0, prev, prev.aircraft.length - 1, 'w'))
+  })
+
   it('traces only the crew the warning names, and only its own previous day', () => {
     build('01:30', '2A: BFM-5')
     expect(puckOf(2), 'day 2 caused nothing').not.toContain('boxdot')
@@ -161,6 +208,22 @@ describe('the cross-day row on the warning list', () => {
     expect(h, 'addressed to the day of the breach, not this one')
       .toContain(`data-wdi="1" data-wix="${ix}"`)
     expect(h).toContain('had to leave by')
+  })
+
+  /* THE WARNING IS TOMORROW'S, THE VIEW STAYS HERE (owner, from the deployed
+     site, 7 Aug 26). Clicking used to throw the week over to the breach day and
+     land on the flagged leg — which the row's own prose had already described.
+     What the reader came for is the sortie on THIS day that ran late, because
+     that is the only one still movable. */
+  it('carries the pan address of the line on this day that caused it', () => {
+    build('01:30', '2A: BFM-5')
+    toggleDayWarn(0)
+    const h = dayHTML(0, false)
+    const prev: any = firstForm(0)!
+    expect(h, 'the day it is drawn on, so the view does not leave it')
+      .toContain('data-wpd="0"')
+    expect(h, 'and the late leg inside it')
+      .toContain(`data-wpk="${keyOf(0, prev, prev.aircraft.length - 1, 'w')}"`)
   })
 
   it('clicking the man\'s puck reveals it too', () => {

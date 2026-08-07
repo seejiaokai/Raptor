@@ -139,14 +139,26 @@ function warnTarget(root:any,ids:any[],key?:any){
 export function scrollToWarnFocus(){
   if(!WFOCUS)return;
   const onBoard=warnOnBoard();
+  /* A PAN OVERRIDE: land somewhere other than the focused warning's own day.
+     Set only by the cross-day crew-rest row (interactions.ts), which is filed
+     against tomorrow's breach but is READ on the day that caused it — the
+     scheduler clicked it to be shown the late line here, not the flagged one
+     there. Off-board only: that row is built by html.ts and the board never
+     draws it, so an override cannot arise there, and today's behaviour is the
+     honest fallback if one somehow survives into a board context.
+     A panKey gone stale under an edit resolves nothing in anchorEl and falls
+     back to his first puck on this day — still the right day, which is more
+     than the un-overridden path would manage. */
+  const pan=!onBoard&&WFOCUS.panDi!=null;
+  const pdi=pan?WFOCUS.panDi:WFOCUS.di, pkey=pan?WFOCUS.panKey:WFOCUS.key;
   const root:any=onBoard
     ? document.querySelector('#schedBoard .sb-boardwrap')
     /* NOT #schedBoard: it also holds #sbRoster, whose palette pucks are real
        .puck[data-person] built for paletteDay() — a name flagged today but not
        planted today would resolve there and scroll the roster instead */
-    : document.querySelector('#'+warnWeekId()+' .day[data-day="'+WFOCUS.di+'"]');
+    : document.querySelector('#'+warnWeekId()+' .day[data-day="'+pdi+'"]');
   if(!root)return;
-  const tgt=warnTarget(root,WFOCUS.ids,WFOCUS.key)||root;
+  const tgt=warnTarget(root,WFOCUS.ids,pkey)||root;
   /* The week is snap-scrolled (.week{scroll-snap-type:x mandatory} with
      .day{scroll-snap-align:start}), and inline:'center' asks to rest at a
      position that is NOT a snap point — the browser re-snaps afterwards to

@@ -7,9 +7,9 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 626/39
+**Every gate is green at this commit**, run first-hand: `npm test` 630/39
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 23/23, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 24/24, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 (`npm run perf`'s one-day-edit budget was seen swinging 1.01×–1.28× across
 runs on identical code on a busy container, 7 Aug 26 — rerun before
@@ -362,6 +362,28 @@ believing a single red.)
   Position pinned in `crewrest-ui.test.ts`, geometry measured in
   `e2e/geometry.spec.ts` (same width, left edge, border and padding as a
   sibling row).
+  **And clicking the row now PANS to this day's late line, not tomorrow's
+  flagged one (owner, from the deployed site, 7 Aug 26).** It used to throw the
+  week over to the breach day and centre the leg that got flagged — which the
+  row's own prose had already named — while the sortie that ran late, the only
+  one a scheduler can still move, was left behind. The row still FOCUSES the
+  real warning (the breach stays selected, his pucks there light, the
+  `✕ Clear focus` is where it was); only the destination changed, and it is the
+  one place in the app where the pan and the focus name different days.
+  The engine had to learn which leg it was: rest is worked out from a minute
+  count, so `validate()` threw the event away — it now keeps the winning event's
+  slot-key as `WARN.trace[…].fromKey`, on the TRACE and not on the warning, so
+  `parity.test.ts` (which compares every field of `WARN.byDay`) never sees it
+  and `refwin.ts` needs no patch. The row carries it as `data-wpd`/`data-wpk`,
+  `interactions.ts` hangs it on the focus as `panDi`/`panKey`, and
+  `scrollToWarnFocus` prefers it. The landing mark is the existing dashed
+  same-man-elsewhere stroke over the standing dotted ring — the owner declined
+  a full warning highlight, which would make the causing day read as having a
+  breach of its own. Pinned in `crewrest-ui.test.ts` (the key names the LATER
+  leg where he flew twice — a heuristic would take his first), in
+  `warnjump.test.tsx` (the focus and the pan assert separately), and measured in
+  `e2e/geometry.spec.ts` on a phone, where one day box fills the screen so
+  "the week did not move" is a real measurement: the old code threw it 378px.
   **The dashed ring was never dashed on screen (owner, from the deployed site,
   6 Aug 26).** `.puck.warn.hard` puts a solid 1.5px red ring on every hard flag
   and `.boxdash` only ADDED an outline on top of it, so the dashes were filled
@@ -486,7 +508,7 @@ believing a single red.)
 | `drag.ts` | Mouse HTML5 DnD + the touch pointer machine; `applyDrop()` is the single drop path; `barDrop` qualification warning. |
 | `pan.ts` | Week arrows (`panDays`), proxy scrollbar (`hsSet`/`hsSync`, echo-guarded), shift+wheel, palette day-follow, phone day dots. |
 | `textedit.ts` | Inline text editing: Enter commits / Escape restores, heal-in-place, deferred commit, `editingText()`, plus the four fields outside the `data-txt` grammar. |
-| `highlights.ts` | Post-render decoration: selection/search/warning-focus classes on every puck (the week AND the board's `.sb-boardwrap`, never the palettes or a `.pv-frozen` preview), `paintArm`, and `scrollToWarnFocus` — surface-aware, snap-safe, lateral-holding (it pans sideways only when the target is off screen), picking the puck whose row holds the most of the warning's crew. |
+| `highlights.ts` | Post-render decoration: selection/search/warning-focus classes on every puck (the week AND the board's `.sb-boardwrap`, never the palettes or a `.pv-frozen` preview), `paintArm`, and `scrollToWarnFocus` — surface-aware, snap-safe, lateral-holding (it pans sideways only when the target is off screen), picking the puck whose row holds the most of the warning's crew, and honouring `WFOCUS.panDi`/`panKey` where the focus and the destination are different days (the cross-day crew-rest row, and only it). |
 | `Modals.tsx` | DayPop (read-only day details), Insights, Manage-users, Airspace/traffic popup. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Contract: `docs/ui-contracts.md` §The Inputs table's view state. |
 | `RangeCal.tsx` | The Inputs date picker (owner, Aug 26): ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
