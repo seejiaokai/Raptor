@@ -263,7 +263,7 @@ export function storesView(o:any){
   o=o||{};
   const on=STORE_CFG.filter(([k]:any)=>o[k]);
   if(!on.length&&!o.bombs)return'';
-  return `<span class="stores">`+on.map(([,lab]:any)=>`<span class="stchip on">${lab}</span>`).join('')+(o.bombs?`<span class="stchip bomb">◈ ${esc(o.bombs)}</span>`:'')+`</span>`;
+  return `<span class="stores">`+on.map(([,lab]:any)=>`<span class="stchip on">${esc(lab)}</span>`).join('')+(o.bombs?`<span class="stchip bomb">◈ ${esc(o.bombs)}</span>`:'')+`</span>`;
 }
 /* the day's issue strip. Collapsed it is a one-line summary; expanded (DWOPEN)
    it lists the warnings right here in the column — no centred modal. */
@@ -600,7 +600,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              not always rendered next to on-chips it could lean on to tell the
              rest of the story. View mode shows the on-chips only. */
           const stores=ed
-            ? `<span class="stores">`+STORE_CFG.filter(([k]:any)=>o[k]).map(([k,lab]:any)=>`<span class="stchip on" data-store="${key}.${k}" title="Remove ${lab}">${lab}</span>`).join('')
+            ? `<span class="stores">`+STORE_CFG.filter(([k]:any)=>o[k]).map(([k,lab]:any)=>`<span class="stchip on" data-store="${key}.${k}" title="Remove ${esc(lab)}">${esc(lab)}</span>`).join('')
               +`<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
               +`<span class="bombs" contenteditable="true" data-bombs="${key}">${esc(o.bombs||'')}</span></span>`
             : storesView(o);

@@ -77,8 +77,11 @@ function holdPuckStill(pk: HTMLElement) {
    reorder, rename, add, remove — and that is a settings change, not a
    schedule edit, so nothing in the pen branch ever calls markEdit. */
 function openStoresMenu(anchor: HTMLElement, key: string) {
+  /* _offClick: see the comment on `off` below — board.ts's waveMenu clears
+     '.wavemenu' too (this box carries that class as well, for its look),
+     so it has the matching two lines wherever it does that clearing. */
   document.querySelectorAll('.stmenu').forEach(x => {
-    const off = (x as any)._stOff
+    const off = (x as any)._offClick
     if (off) document.removeEventListener('click', off)
     x.remove()
   })
@@ -178,14 +181,49 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   })
 
   /* rename commits on change, so a click away inside the box is enough. No
-     markEdit here either — see the function comment. */
+     markEdit here either — see the function comment.
+
+     On SUCCESS this deliberately does NOT call paint(). A <button> takes
+     focus on mousedown in Chromium, before mouseup — so typing a rename
+     and then clicking ✕/↑/Add on the SAME row fires this handler (change
+     fires on blur, ahead of the click) synchronously inside that same
+     mousedown. paint() replaces the row's whole subtree via innerHTML,
+     detaching the very button the mousedown just landed on; the mouseup
+     that follows can't complete a click on a node that's no longer there,
+     so it lands on the box itself instead, where nothing matches, and the
+     click is silently dropped — a scheduler has to click twice. A deferred
+     paint() on a timer does not fix it either: the timer drains before
+     mouseup, same as a synchronous one. So patch just the one row in
+     place instead of rebuilding it.
+
+     AND — measured, not assumed — no queueHold(place) here either, unlike
+     every other branch in this box. If the jet this popup is CONFIGURING
+     carries the store being renamed, its own on-chip's text changes length
+     right here, which moves the live C button, which is exactly what
+     place() exists to track — but notify() drains queueHold() through
+     EditWeek's effect SYNCHRONOUSLY, inside this same mousedown, same as
+     the paint() case above: it moved the whole box (measured: 15px, a
+     real run, real 2-character rename) out from under the pointer before
+     the pending click's mouseup landed, and swallowed it exactly the same
+     way. A deferred call is no safer here than the deferred paint() above
+     was — same reasoning, same failure. The box can sit a few px off its
+     anchor until the next add/remove/move corrects it (those aren't typed
+     into, so they can't race a pending click this way); that is a smaller
+     wrong than a click that silently does nothing. */
   box.addEventListener('change', (ev: any) => {
     const inp = (ev.target as HTMLElement).closest('.st-lab') as HTMLInputElement | null
     if (!inp) return
-    const k = (inp.closest('.st-erow') as HTMLElement).dataset.k!
+    const row = inp.closest('.st-erow') as HTMLElement
+    const k = row.dataset.k!
     const why = renameStore(k, inp.value)
     if (why) { paint(); return HOOKS.toast(why) }
-    storesSave(); paint(); queueHold(place); notify()
+    storesSave()
+    const lab = STORE_CFG.find(([x]) => x === k)?.[1] || inp.value
+    inp.value = lab
+    inp.setAttribute('aria-label', `Name for ${lab}`)
+    const del = row.querySelector('.st-del') as HTMLElement | null
+    if (del) del.setAttribute('title', `Remove ${lab} from the list`)
+    notify()
   })
 
   /* The box removes itself on an outside click — but NOT while the pen is
@@ -193,15 +231,21 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
      bubbles to document, would otherwise kill it mid-edit. Not {once:true}
      any more, since a click it declines to act on (inside the box, or any
      click while the pen is open) must not deregister it — so the box
-     records its own handler on itself, and the "replace with a fresh
-     popup" branch above unhooks it explicitly, or it would leak one
-     listener per popup opened while a previous one's pen was left open. */
+     records its own handler on itself, as `_offClick`, and ANY code that
+     removes this box by other means has to check for it and unhook it
+     first, or it leaks a listener permanently attached to document: with
+     the pen open the box can be pulled out from under `off` (the "replace
+     with a fresh popup" branch above, or board.ts's waveMenu — both clear
+     by class, not by asking this box's permission), and `off` alone can
+     never notice; box.contains(ev.target) is false forever on a detached
+     node and `if (pen) return` never lets it get past that check to
+     self-remove. */
   const off = (ev: any) => {
     if (box.contains(ev.target)) return
     if (pen) return
     box.remove(); document.removeEventListener('click', off)
   }
-  ;(box as any)._stOff = off
+  ;(box as any)._offClick = off
   setTimeout(() => document.addEventListener('click', off), 0)
 }
 
