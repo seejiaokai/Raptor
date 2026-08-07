@@ -14,7 +14,8 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { validate, WARN } from '../engine/validate'
-import { personWarns } from '../engine/avail'
+import { personWarns, personWarnDays } from '../engine/avail'
+import { PEOPLE } from '../engine/people'
 import * as view from '../state/view'
 import { openScheduler } from './board'
 import { anchorEl } from './highlights'
@@ -116,47 +117,57 @@ describe('the board issue list is a navigation surface', () => {
   })
 })
 
+/* THE CHIP IS THE PUCK (owner, 7 Aug 26). It used to jump to the person's
+   worst warning — one view from the chip, another from the puck body around
+   it, on a target a few pixels wide. Now every click anywhere on a puck gives
+   the PERSON view: selected blue, his flagged days' boxes open narrowed to
+   him. The warning the chip used to jump to is in that box, alongside the
+   rest of his. */
 describe('the flag chip on a puck', () => {
-  it('jumps to that person\'s worst issue on the day', async () => {
+  it('does exactly what the puck body does — selects the person', async () => {
     await act(async () => { view.setBoardDay(null); notify() })
-    /* explicitly NOT a trace chip: that one stands for a warning on another
-       day and is covered on its own below, so letting it be picked here would
-       quietly turn this into a test of something else */
+    /* not a trace chip: the previous-day story is covered on its own below */
     const chip = $('#vWeek .day[data-day] .puck[data-person] .lchip:not([title*="is broken by"])')
     expect(chip, 'the seed week renders at least one flag chip').toBeTruthy()
     const pk = chip.closest('.puck[data-person]') as HTMLElement
-    const di = +(pk.closest('.day[data-day]') as HTMLElement).dataset.day!
-    const want = personWarns(di, pk.dataset.person)[0]
+    const id = pk.dataset.person!
     await click(chip)
     await flush()
-    expect(view.WFOCUS, 'a warning is focused').toBeTruthy()
-    /* personWarns preserves WARN's order, which validate() sorted by severity,
-       so [0] is the worst — no comparator, and no way to get here from chipOf,
-       which collapses by RANK and is not invertible */
-    expect(view.WFOCUS.ix).toBe(want.ix)
-    expect(view.DWOPEN.has(di)).toBe(true)
-    expect(scrolled.length).toBeGreaterThan(0)
+    expect(view.SELID, 'the chip selects').toBe(id)
+    expect(view.WFOCUS, 'and focuses no single warning').toBeNull()
+    expect(view.PFOCUS && view.PFOCUS.id, 'the boxes are narrowed to him').toBe(id)
+    personWarnDays(id).forEach((di: any) =>
+      expect(view.DWOPEN.has(di), 'every day he is flagged on opens').toBe(true))
+    const who = $('#vWeek .dwbox.pfoc .dwwho')
+    expect(who && who.textContent, 'the box header names him').toBe(PEOPLE[id].cs)
   })
 
-  it('a CP chip reaches the crew-pairing warning it stands for', async () => {
-    /* This is the gap CP (renamed from CC, owner ask 5 Aug 26) was added to
-       close: the pairing rules used to ring the puck and caption nothing, so
-       they were the one warning family with nothing on the puck to click. */
+  it('a CP chip shows the crew-pairing warning with BOTH names', async () => {
+    /* the pairing warning names pilot AND WSO; the person view must not lose
+       the other man — "if it concerns a few people in that puck, it will show
+       them too" (owner, 7 Aug 26). personWarns filters by membership, and the
+       row prints the full who list, so his box carries both callsigns. */
     await act(async () => { view.setBoardDay(null); view.selDrop(); notify() })
     const cp = $$('#vWeek .puck[data-person] .lchip')
       .find(c => (c.textContent || '').trim() === 'CP')
     expect(cp, 'the seed week renders a CP chip').toBeTruthy()
     const pk = cp!.closest('.puck[data-person]') as HTMLElement
     const di = +(pk.closest('.day[data-day]') as HTMLElement).dataset.day!
+    const id = pk.dataset.person!
     await click(cp!)
     await flush()
-    expect(view.WFOCUS, 'a warning is focused').toBeTruthy()
-    const w = WARN.byDay[view.WFOCUS.di].warns[view.WFOCUS.ix]
-    expect(['CREW_SOLO', 'CO_APPROVAL', 'OCU_NO_IP', 'ILLEGAL_CREW', 'NO_IR'])
-      .toContain(w.code)
-    expect(w.who).toContain(pk.dataset.person)
-    expect(view.DWOPEN.has(di)).toBe(true)
-    expect(scrolled.length).toBeGreaterThan(0)
+    expect(view.SELID).toBe(id)
+    const pair = personWarns(di, id).find((x: any) =>
+      ['CREW_SOLO', 'CO_APPROVAL', 'OCU_NO_IP', 'ILLEGAL_CREW', 'NO_IR'].includes(x.w.code))
+    expect(pair, 'his person view holds the pairing warning').toBeTruthy()
+    /* re-query the day: the week swaps day HTML via innerHTML, so the node
+       pk was found in is detached the moment the click re-renders */
+    const dayEl = $(`#vWeek .day[data-day="${di}"]`)
+    const rows = Array.from(dayEl.querySelectorAll('.dwlist .witem')).map(r => r.textContent || '')
+    const others = (pair!.w.who as string[]).filter((w: string) => w !== id)
+    expect(others.length, 'the pairing really names more than him').toBeGreaterThan(0)
+    others.forEach(o =>
+      expect(rows.some(r => r.includes(PEOPLE[o].cs)), `the row still names ${PEOPLE[o].cs}`).toBe(true))
   })
 
   it('both CP codes print the same two letters, so the squadron reads one flag', () => {
@@ -166,40 +177,46 @@ describe('the flag chip on a puck', () => {
     expect(txt).not.toContain('CPH')
   })
 
-  it('the puck body still selects the person', async () => {
+  it('the puck body selects the person — now the definition, not the contrast', async () => {
     const pk = $('#vWeek .puck[data-person]')
     await click(pk.querySelector('.nm'))
-    expect(view.SELID, 'clicking the name selects, it does not focus a warning').toBeTruthy()
+    expect(view.SELID, 'clicking the name selects').toBeTruthy()
   })
 })
 
-/* THE CROSS-DAY JUMP (owner, 6 Aug 26). A crew-rest breach is raised on the
-   day the man is told to report, but it is marked on the day BEFORE — the day
-   a scheduler can still change. Both of that day's affordances, the dotted
-   puck's CR chip and the row on its warning strip, therefore have to leave the
-   day they were clicked on, which no other warning surface does. */
+/* THE PREVIOUS DAY, CLICKED (owner, 6 Aug 26; chip unified 7 Aug 26). A
+   crew-rest breach is raised on the day the man is told to report, but it is
+   marked on the day BEFORE — the day a scheduler can still change. The dotted
+   puck now SELECTS like any other; what makes the cross-day story appear is
+   that selecting him reveals the trace strip on the causing day, and its row
+   is the affordance that leaves the day it was clicked on. */
 describe('the previous day, clicked', () => {
   const traceChip = () => $$('#vWeek .puck[data-person] .lchip')
     .find(c => (c.getAttribute('title') || '').includes('is broken by'))
 
-  it('the dotted puck\'s chip opens the NEXT day\'s crew-rest warning', async () => {
+  it('the dotted puck\'s chip selects him and surfaces the cross-day strip', async () => {
     await act(async () => { view.setBoardDay(null); view.selDrop(); view.clearWarnFocus(); notify() })
     const chip = traceChip()
     expect(chip, 'the seed week traces one crew-rest breach back a day').toBeTruthy()
     const pk = chip!.closest('.puck[data-person]') as HTMLElement
-    const di = +(pk.closest('.day[data-day]') as HTMLElement).dataset.day!
+    const dayEl = pk.closest('.day[data-day]') as HTMLElement
+    const di = +dayEl.dataset.day!
+    const id = pk.dataset.person!
     expect(pk.classList.contains('boxdot'), 'and rings it dotted').toBe(true)
 
     await click(chip!)
     await flush()
-    expect(view.WFOCUS, 'a warning is focused').toBeTruthy()
-    expect(view.WFOCUS.di, 'on the day of the breach, not the day clicked').toBe(di + 1)
-    const w = WARN.byDay[view.WFOCUS.di].warns[view.WFOCUS.ix]
-    expect(w.code).toBe('CREW_REST')
-    expect(w.who, 'and it is this man\'s breach').toContain(pk.dataset.person)
-    expect(w.prevDi, 'traced back to the day whose chip was clicked').toBe(di)
-    expect(view.DWOPEN.has(di + 1), 'the issue box opens where the warning lives').toBe(true)
-    expect(scrolled.length).toBeGreaterThan(0)
+    expect(view.SELID, 'the chip selects the man').toBe(id)
+    expect(view.WFOCUS, 'no single warning is focused').toBeNull()
+    /* the breach day is in personWarnDays (CREW_REST names him there), so his
+       selection opens tomorrow's box narrowed to him — the warning the chip
+       used to jump to is on screen without the jump */
+    expect(view.DWOPEN.has(di + 1), 'the day of the breach opens').toBe(true)
+    /* and the causing day now shows the strip, revealed by the selection —
+       its row is the navigation, pinned in the next test */
+    const strip = document.querySelector(`#vWeek .day[data-day="${di}"] .dwtrace .witem[data-wdi]`) as HTMLElement
+    expect(strip, 'the cross-day strip is revealed on the day clicked').toBeTruthy()
+    expect(+strip.dataset.wdi!, 'addressed to the next day').toBe(di + 1)
   })
 
   it('the strip on the causing day\'s warning list reaches the same warning', async () => {

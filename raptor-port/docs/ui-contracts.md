@@ -242,11 +242,21 @@ stranding text already in the model.
 
 ## Selection highlight (`ui/highlights.ts`)
 
-Clicking a puck selects the **person**: every copy of that name lights blue
-(`.sel`, matched on `id===SELID`), so you can see everywhere they are planted
-(owner, Aug 26). A second click on the same person clears. `SELID` holds the
-person; every non-matching puck dims (`focusActive`) so the name pops, and
-opening that person's issue boxes (`PFOCUS`) rides along, person-scoped.
+Clicking a puck — **anywhere on it, flag chip included** (owner, 7 Aug 26) —
+selects the **person**: every copy of that name lights blue (`.sel`, matched
+on `id===SELID`), so you can see everywhere they are planted (owner, Aug 26;
+re-confirmed 7 Aug 26 when asked). A second click on the same person clears.
+`SELID` holds the person; every non-matching puck dims (`focusActive`) so the
+name pops, and opening that person's issue boxes (`PFOCUS`) rides along,
+person-scoped — a multi-person warning stays whole there, both names printed.
+
+**Selection is the blue fill and nothing else (owner, 7 Aug 26).** `.puck.sel`
+used to add a 2px `#BFE0FF` ring + glow with `!important`, which read as a
+white halo AND buried the red/amber severity ring the selected puck was
+carrying. It now sets background and text colour only: `warn`/`boxred`/
+`boxdash`/`boxdot` keep their own strokes over the blue, and the compound
+`.sel.box*` punch-through rules went with the halo (the `.me.*` halves stay).
+The dim is `opacity:.5` — half-visible, not the near-invisible `.18` it was.
 
 Warning focus outranks all of it, and since 5 Aug 26 it governs the board's
 schedule panels (`.sb-boardwrap`) as well as the week — the board's issue list
@@ -266,7 +276,10 @@ name glowing. Clicking blank space clears everything (`selDrop`).
 
 ## Jumping from a warning to the puck that caused it
 
-Four surfaces flag aircrew, and all four navigate (owner, 5 Aug 26). A warning
+Four surfaces flag aircrew; the three LISTS navigate, and the chip — since
+7 Aug 26 — selects like the puck it sits on (it navigated 5 Aug–7 Aug 26; the
+owner unified the two views: a chip a few pixels wide giving a different
+answer than the puck around it read as two features). A warning
 carries `(di, who[])` and, since Aug 26, an optional **anchor** `key` — the
 slot-key of the line that caused it (see below). The address every surface
 passes is still `data-wdi`/`data-wix`, the day index and the index into
@@ -279,18 +292,18 @@ warning is focused:
 - **The day-detail panel** (`.witem[data-adv]`, `"di.ix"`) closes the modal
   first.
 - **The board's issue list** (`.wln[data-wdi]`) — see below.
-- **The flag chip on a puck** (`.puck .lchip`) resolves to that person's worst
-  issue that day via `personWarns(di,id)[0]`. That is `[0]` and not a search
-  because `personWarns` preserves `WARN`'s order, which `validate()` has
-  already sorted by severity. It cannot go through `chipOf`: that collapses by
-  `RANK` and is not invertible.
 
-**The board list and the chip must open `DWOPEN` themselves** (both mirror the
-`[data-adv]` branch, not the `.witem` one). `focusWarn` never touches
-`DWOPEN`, which is correct on the week — a `.witem` only exists inside an
-already-open box — but a focus set from the board or a chip with `DWOPEN`
-empty leaves lit pucks and no way to clear them: `html.ts` renders
-`✕ Clear focus` only inside an open box.
+**The board list must open `DWOPEN` itself** (it mirrors the `[data-adv]`
+branch, not the `.witem` one). `focusWarn` never touches `DWOPEN`, which is
+correct on the week — a `.witem` only exists inside an already-open box — but
+a focus set from the board with `DWOPEN` empty leaves lit pucks and no way to
+clear them: `html.ts` renders `✕ Clear focus` only inside an open box.
+
+**The cross-day CR chip lost its jump with the rest** — the previous-day story
+is still one selection away: clicking the dotted man reveals the on-demand
+`.dwtrace` strip on the causing day AND opens the breach day's box (the breach
+names him, so it is in `personWarnDays`); the strip's row is the affordance
+that still leaves the day it was clicked on.
 
 **Every ringed puck carries a chip** (owner, 5 Aug 26). The crew-pairing
 family (`CREW_SOLO`, `CO_APPROVAL`, `OCU_NO_IP`, `ILLEGAL_CREW`, `NO_IR`) used
@@ -298,15 +311,10 @@ to ring and never chip, which left it the one family with nothing on the puck
 to click; it now marks `CP`/`CPH` (renamed from `CC`/`CCH`, owner ask 5 Aug 26
 — see `engine-rules.md` §The crew-pairing chip). A ring without a chip is now
 a **bug**, and `validate.test.ts` asserts
-there are none. What is still deliberate: the ring itself is never a click
-target — it is part of the puck, and the puck selects the person (owner,
-Aug 26).
-
-A chip resolves to the person's **worst** issue that day, not necessarily the
-one that set the chip. Those coincide except where a lower-ranked chip wins on
-severity — a man carrying both a conflict and a pairing problem shows `C` and
-lands on whichever the engine emitted first of the two hard warnings. Both are
-one click away in the day's issue list either way.
+there are none. The ring and the chip are both part of the puck, and the puck
+selects the person (owner, Aug 26; the chip joined the ring 7 Aug 26). The
+warning a chip stands for is in the selection's own box, alongside the rest
+of that person's.
 
 **The anchor: a warning knows the line that caused it.** `add()` in
 `validate.ts` takes an optional 5th argument — the slot-key (or key prefix) of
