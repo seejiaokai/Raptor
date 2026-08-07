@@ -13,13 +13,17 @@ import { VCONF } from '../engine/rules'
 import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
 import { dayHTML } from './html'
-import { focusWarn, clearWarnFocus, setWarnFocus } from '../state/view'
+import { focusWarn, clearWarnFocus, setWarnFocus, toggleDayWarn, selectPerson, selDrop } from '../state/view'
 
 const CREW = 'waldo'
 const DSNAP = JSON.stringify(DAYS)
 beforeEach(() => {
   DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
-  clearWarnFocus()
+  /* selDrop, not clearWarnFocus alone: these tests now OPEN day boxes and
+     click pucks, and an open box leaking into the next test would make the
+     on-demand strip look standing again — i.e. hide the very regression the
+     block below exists to catch. */
+  selDrop()
 })
 
 const firstForm = (di: number) => {
@@ -135,10 +139,22 @@ describe('the previous-day trace', () => {
 
 /* The strip under the previous day's issue box — the same breach, read from
    the day that caused it, addressed by the NEXT day's (di, ix) so the ordinary
-   .witem handler navigates it with no click path of its own. */
+   .witem handler navigates it with no click path of its own.
+
+   It is ON DEMAND (owner, 7 Aug 26): several lines of tomorrow's prose used to
+   sit on a day whose own issue list was still collapsed, so the day read as
+   though it had a problem of its own. Two asks reveal it — open this day's
+   warning list, or click the man's puck — and the puck's own dotted ring and R
+   tag stay standing either way, so the day still shows WHERE to click. */
 describe('the cross-day row on the warning list', () => {
-  it('the causing day carries a row pointing at the next day\'s warning', () => {
+  it('stays hidden until asked for', () => {
+    build('01:30', '2A: BFM-5')
+    expect(dayHTML(0, false), 'nothing clicked, nothing opened').not.toContain('dwtrace')
+  })
+
+  it('opening this day\'s warning list reveals it', () => {
     const ix = build('01:30', '2A: BFM-5')
+    toggleDayWarn(0)
     const h = dayHTML(0, false)
     expect(h, 'the strip is there').toContain('dwtrace')
     expect(h, 'addressed to the day of the breach, not this one')
@@ -146,17 +162,33 @@ describe('the cross-day row on the warning list', () => {
     expect(h).toContain('had to leave by')
   })
 
+  it('clicking the man\'s puck reveals it too', () => {
+    /* the other half of the owner's sentence, and the ONLY route on a day with
+       no issues of its own — there is no list to open there */
+    build('01:30', '2A: BFM-5')
+    selectPerson(CREW, true)
+    expect(dayHTML(0, false), 'his own puck is the way in').toContain('dwtrace')
+  })
+
+  it('the puck keeps its standing mark, so there is something to click', () => {
+    build('01:30', '2A: BFM-5')
+    expect(puckOf(0), 'the dotted ring stays with nothing clicked').toContain('boxdot')
+    expect(dayHTML(0, false), 'even though the prose does not').not.toContain('dwtrace')
+  })
+
   it('the day of the breach carries no such row — it is not that day\'s doing', () => {
     build('01:30', '2A: BFM-5')
+    toggleDayWarn(1)
     expect(dayHTML(1, false)).not.toContain('dwtrace')
   })
 
   it('the ⚠ count stays the day\'s OWN issues', () => {
     build('01:30', '2A: BFM-5')
     const own = ((WARN.byDay[0] && WARN.byDay[0].warns) || []).length
+    toggleDayWarn(0)
     const m = dayHTML(0, false).match(/⚠ (\d+) issue/)
     /* a day with no issues of its own shows no count at all, and the strip
-       still renders — that is the case the standing mark exists for */
+       still renders once asked for — that is the case the mark exists for */
     if (own) expect(+m![1], 'tomorrow\'s breach is not counted here').toBe(own)
     else expect(m, 'no issue box, but the strip stands alone').toBeNull()
     expect(dayHTML(0, false)).toContain('dwtrace')

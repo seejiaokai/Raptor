@@ -281,9 +281,22 @@ export function storesView(o:any){
    Each row carries the NEXT day's (di, ix), so the ordinary .witem handler
    navigates it with no new click path — and a row whose warning has moved
    under an edit (WARN is rebuilt wholesale) is dropped rather than left
-   pointing at whatever now sits at that index. */
+   pointing at whatever now sits at that index.
+
+   ON DEMAND, not standing (owner, from the deployed site, 7 Aug 26). It used
+   to paint with nothing clicked, which put several lines of tomorrow's prose
+   on top of a day whose own issue list was still collapsed — the day read as
+   though it had a problem of its own. It now needs an ASK: the day's warning
+   list open, or that man's puck clicked. What stays standing is the mark on
+   the PUCK — the dotted ring and its R tag (owner's call, same message) — so
+   the day still says "there is something here, and here is where to click"
+   without saying what. That is the whole difference from the pre-6 Aug
+   behaviour this looks like a revert to: back then only focusing the warning
+   itself revealed the cause, so you had to already know; now the day tells
+   you where to look, and opening the list is enough to be told. */
 function dayTraceHTML(di:any,pf:any){
   if(PV)return '';
+  if(!pf&&!DWOPEN.has(di))return '';
   const rows=tracesOn(di)
     .filter(({id}:any)=>!pf||id===pf)
     .map(({id,t}:any)=>({id,t,ix:traceIx(t,id)}))
