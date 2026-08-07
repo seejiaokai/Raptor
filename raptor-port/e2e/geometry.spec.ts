@@ -352,6 +352,44 @@ test.describe('the crew-rest rings are three distinguishable strokes', () => {
         .toEqual({ name, w: 74, h: 15 })
     }
   })
+
+  test('the cross-day row sits inside the list, same box as its neighbours', async ({ page }) => {
+    /* Owner, 7 Aug 26: the "Breaks Tuesday" row used to render after the whole
+       list in its own narrower dotted container. It now ranks below the
+       warnings and above the advisories, in the row box everyone else gets —
+       which is geometry, so it is gated here and not in jsdom. */
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'viewsched')
+    await page.click('#vWeek .day[data-day="0"] [data-daywarn]')
+    await page.waitForTimeout(400)
+    const r = await page.evaluate(() => {
+      const list = document.querySelector('#vWeek .day[data-day="0"] .dwlist')
+      const tr = list && list.querySelector('.dwtrace .witem') as HTMLElement
+      if (!list || !tr) return null
+      const sib = [...list.querySelectorAll(':scope > .witem')] as HTMLElement[]
+      const kinds = [...list.querySelectorAll('.witem')].map(el =>
+        el.closest('.dwtrace') ? 'trace' : (el.classList.contains('hard') ? 'hard' : el.classList.contains('adv') ? 'adv' : 'note'))
+      const t = tr.getBoundingClientRect(), s = sib[0].getBoundingClientRect()
+      const ts = getComputedStyle(tr), ss = getComputedStyle(sib[0])
+      return {
+        kinds,
+        sameWidth: Math.abs(t.width - s.width) < 0.6,
+        sameLeft: Math.abs(t.left - s.left) < 0.6,
+        sameBorder: ts.borderTopStyle === ss.borderTopStyle && ts.borderTopColor === ss.borderTopColor,
+        samePad: ts.padding === ss.padding,
+      }
+    })
+    expect(r, 'Monday renders its list with the cross-day row inside it').not.toBeNull()
+    const ti = r!.kinds.indexOf('trace')
+    expect(ti, 'the row is in the list').toBeGreaterThan(-1)
+    expect(r!.kinds.slice(0, ti).every(k => k === 'hard'), 'below the warnings').toBe(true)
+    expect(r!.kinds.slice(ti + 1).every(k => k !== 'hard'), 'above the advisories').toBe(true)
+    expect(r!.sameWidth, 'same width as a sibling row').toBe(true)
+    expect(r!.sameLeft, 'same left edge').toBe(true)
+    expect(r!.sameBorder, 'same border, not the old dotted box').toBe(true)
+    expect(r!.samePad, 'same padding').toBe(true)
+  })
 })
 
 test('puck text stays inside the puck, descenders and all', async ({ page }) => {
