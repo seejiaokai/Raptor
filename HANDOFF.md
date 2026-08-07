@@ -92,6 +92,14 @@ believing a single red.)
   a small (900×600) viewport scrolling to the deepest-nested warning's puck.
   Contract: `docs/ui-contracts.md` §Jumping from a warning to the puck that
   caused it.
+  **Selecting a puck holds the screen still (owner, 7 Aug 26: "it should just
+  turn blue. it should not pan the view at all").** The page never scrolled —
+  the person's issue box opening ABOVE the schedule pushed the clicked puck
+  ~220px down the screen, which reads as a pan. `interactions.ts:
+  holdPuckStill` scrolls the page by the puck's own displacement one macrotask
+  after the render, so it stays under the pointer; the boxes still open (the
+  owner chose keeping them over dropping them when asked). jsdom sees a zero
+  delta by construction; gated in `e2e/geometry.spec.ts`.
   **Every surface now marks its clicked row (owner, 7 Aug 26)** — the
   day-detail panel's rows and the cross-day crew-rest row were the two that
   emitted no `on` class, so a click lit pucks with nothing saying which row

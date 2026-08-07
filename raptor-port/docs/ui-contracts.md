@@ -250,6 +250,20 @@ re-confirmed 7 Aug 26 when asked). A second click on the same person clears.
 name pops, and opening that person's issue boxes (`PFOCUS`) rides along,
 person-scoped — a multi-person warning stays whole there, both names printed.
 
+**The screen holds still while the boxes open (owner, 7 Aug 26 — "it should
+just turn blue. it should not pan the view at all").** The page never
+scrolled, but a `.dwbox` opens ABOVE the schedule inside its day column, so
+the very puck just clicked leapt ~220px down the screen — indistinguishable
+from a pan. `interactions.ts:holdPuckStill` captures the puck's viewport
+position at the click and, one macrotask after the render (the same deferral
+`scrollToWarnFocus` uses, because the week's effect swaps the day markup
+first), scrolls the page by the puck's own displacement — opening AND the
+toggle-off closing both. The swap replaces the element, so the puck is
+re-found by week, day, name and position, never by identity. Off the week
+(board, palettes) the delta is zero and it is a no-op. jsdom reports every
+rect 0×0, so vitest sees a zero delta by construction — the hold is gated in
+`e2e/geometry.spec.ts` ("selecting a puck holds the screen still").
+
 **Selection is the blue fill and nothing else (owner, 7 Aug 26).** `.puck.sel`
 used to add a 2px `#BFE0FF` ring + glow with `!important`, which read as a
 white halo AND buried the red/amber severity ring the selected puck was
