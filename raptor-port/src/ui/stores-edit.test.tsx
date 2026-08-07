@@ -62,6 +62,17 @@ beforeEach(async () => {
 const AC_KEY = 'st:0.0.0.0'
 
 describe('the pen edits the LIST, not the schedule', () => {
+  /* AC_KEY above is a hidden assumption — that the FIRST .stcfg on the edit
+     week is jet 0.0.0.0 — that every "...is not a schedule edit" test below
+     leans on without checking it. If seed data or day ordering ever moves
+     that jet, AC_KEY would quietly point at a key markEdit never touches,
+     and every one of those assertions would pass for the wrong reason —
+     exactly the vacuity this whole file was rewritten to close. Pin it. */
+  it('AC_KEY names the jet the first C button actually opens', async () => {
+    await click(editTab())
+    expect($('#eWeek .stcfg[data-stcfg]').dataset.stcfg).toBe('0.0.0.0')
+  })
+
   it('renaming changes the label and never the key', async () => {
     await openPen()
     const row = document.querySelector('.stmenu .st-erow[data-k="tk2"] .st-lab') as HTMLInputElement
@@ -151,10 +162,13 @@ describe('the pen edits the LIST, not the schedule', () => {
     const offFn = stmenu._offClick
     expect(offFn, 'the box records its own outside-click handler for exactly this').toBeTypeOf('function')
     const removeSpy = vi.spyOn(document, 'removeEventListener')
-    await click($('#addGo'))
-    expect(removeSpy, 'the wave picker unhooks the old popup\'s listener before discarding its node')
-      .toHaveBeenCalledWith('click', offFn)
-    removeSpy.mockRestore()
+    try {
+      await click($('#addGo'))
+      expect(removeSpy, 'the wave picker unhooks the old popup\'s listener before discarding its node')
+        .toHaveBeenCalledWith('click', offFn)
+    } finally {
+      removeSpy.mockRestore()
+    }
   })
 
   /* labels became arbitrary user input this task — html.ts had two sites

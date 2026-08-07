@@ -91,6 +91,9 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   const box = document.createElement('div')
   box.className = 'stmenu wavemenu'
   let pen = false
+  /* set by the rename handler on success — see its comment — and drained
+     at the top of the click handler below, never anywhere else. */
+  let needPlace = false
   const paint = () => {
     box.innerHTML = `<h5>Stores configuration`
       + `<button class="st-pen${pen ? ' on' : ''}" title="${pen ? 'Done editing the list' : 'Edit the list'}">✎</button></h5>`
@@ -127,6 +130,12 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   place()
   box.addEventListener('click', (ev: any) => {
     ev.stopPropagation()
+    /* drain first, unconditionally — see the rename handler's comment for
+       why this is the safe place to do it: THIS click has already been
+       dispatched and its target already resolved by the time any handler
+       runs, so re-anchoring here cannot affect it, only whatever happens
+       after. */
+    if (needPlace) { needPlace = false; place() }
     const T = ev.target as HTMLElement
 
     /* opening/closing the pen changes the box's HEIGHT dramatically — six
@@ -183,46 +192,79 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   /* rename commits on change, so a click away inside the box is enough. No
      markEdit here either — see the function comment.
 
-     On SUCCESS this deliberately does NOT call paint(). A <button> takes
+     NEITHER outcome (success or rejected) calls paint(). A <button> takes
      focus on mousedown in Chromium, before mouseup — so typing a rename
-     and then clicking ✕/↑/Add on the SAME row fires this handler (change
-     fires on blur, ahead of the click) synchronously inside that same
-     mousedown. paint() replaces the row's whole subtree via innerHTML,
-     detaching the very button the mousedown just landed on; the mouseup
-     that follows can't complete a click on a node that's no longer there,
-     so it lands on the box itself instead, where nothing matches, and the
-     click is silently dropped — a scheduler has to click twice. A deferred
-     paint() on a timer does not fix it either: the timer drains before
-     mouseup, same as a synchronous one. So patch just the one row in
+     (accepted or not — this handler fires either way) and then clicking
+     ✕/↑/Add on the SAME row fires this handler (change fires on blur,
+     ahead of the click) synchronously inside that same mousedown. paint()
+     replaces the row's whole subtree via innerHTML, detaching the very
+     button the mousedown just landed on; the mouseup that follows can't
+     complete a click on a node that's no longer there, so it lands on the
+     box itself instead, where nothing matches, and the click is silently
+     dropped — a scheduler has to click twice. A deferred paint() on a
+     timer does not fix it either: the timer drains before mouseup, same
+     as a synchronous one. So both outcomes patch just the one row in
      place instead of rebuilding it.
 
-     AND — measured, not assumed — no queueHold(place) here either, unlike
-     every other branch in this box. If the jet this popup is CONFIGURING
-     carries the store being renamed, its own on-chip's text changes length
-     right here, which moves the live C button, which is exactly what
-     place() exists to track — but notify() drains queueHold() through
-     EditWeek's effect SYNCHRONOUSLY, inside this same mousedown, same as
-     the paint() case above: it moved the whole box (measured: 15px, a
-     real run, real 2-character rename) out from under the pointer before
-     the pending click's mouseup landed, and swallowed it exactly the same
-     way. A deferred call is no safer here than the deferred paint() above
-     was — same reasoning, same failure. The box can sit a few px off its
-     anchor until the next add/remove/move corrects it (those aren't typed
-     into, so they can't race a pending click this way); that is a smaller
-     wrong than a click that silently does nothing. */
+     The SUCCESS path used to also call queueHold(place) here, like every
+     other branch in this box — measured, not assumed, that this is wrong
+     in exactly the same way. If the jet this popup is CONFIGURING carries
+     the store being renamed, its own on-chip's TEXT changes — and .stores
+     is display:inline-flex;flex-wrap:wrap, so the C button's x is a
+     function of that chip's WIDTH, not the chip count. Roughly 5px per
+     character, so up to ~70px at MAX_LABEL (16), possibly wrapping the
+     chip row onto another line. This is not a rare case: it is exactly
+     the case this popup exists to serve (configuring what THIS jet
+     carries), so it is the common case, not the edge one. queueHold(place)
+     drains SYNCHRONOUSLY inside this same mousedown — notify() bumps the
+     version, EditWeek's effect runs, refreshHighlights drains the held
+     place() — all before the pending click's mouseup lands. Measured: 15px
+     of drift for a 3-character delta, moving the box out from under the
+     pointer and swallowing the click exactly the way paint() did. A
+     deferred call is no safer, for the same reason the deferred paint()
+     above isn't: checked, a setTimeout(0) queued from inside a mousedown
+     handler fires before Playwright's next CDP command (the mouseup)
+     arrives — and there is no guarantee a real user's press is any slower.
+
+     So: set needPlace instead, and let the box's own click handler drain
+     it at its very top — see the comment there. By the time that runs,
+     THIS click (whichever one follows the rename) has already been
+     dispatched and its target already resolved; 'click' fires strictly
+     after 'mouseup', and the browser decides a click's target before any
+     JS sees it, so re-anchoring there cannot unwind the click that is
+     currently landing. It only means the box is correctly placed before
+     that click's own action runs, and before the next one.
+
+     What makes the gap in between — from the moment a rename commits to
+     the moment SOME click into this box drains needPlace — actually SAFE,
+     not just cheaper than the alternative: `.st-lab` exists only in pen
+     state, and the only way out of pen state is the ✎ button, which calls
+     place() itself, draining needPlace on the way in — so a drifted box
+     can never be seen in the chip view or at dismissal. Every other pen
+     action (✕, ↑/↓, Add) re-places too, on top of draining needPlace
+     first. And a rename never changes the box's own HEIGHT, so place()'s
+     viewport clamp is never invalidated by it — the box can drift
+     sideways but can never end up hanging off-screen for it. */
   box.addEventListener('change', (ev: any) => {
     const inp = (ev.target as HTMLElement).closest('.st-lab') as HTMLInputElement | null
     if (!inp) return
     const row = inp.closest('.st-erow') as HTMLElement
     const k = row.dataset.k!
     const why = renameStore(k, inp.value)
-    if (why) { paint(); return HOOKS.toast(why) }
+    if (why) {
+      const lab = STORE_CFG.find(([x]) => x === k)?.[1] || k
+      inp.value = lab
+      inp.setAttribute('aria-label', `Name for ${lab}`)
+      HOOKS.toast(why)
+      return
+    }
     storesSave()
     const lab = STORE_CFG.find(([x]) => x === k)?.[1] || inp.value
     inp.value = lab
     inp.setAttribute('aria-label', `Name for ${lab}`)
     const del = row.querySelector('.st-del') as HTMLElement | null
     if (del) del.setAttribute('title', `Remove ${lab} from the list`)
+    needPlace = true
     notify()
   })
 
