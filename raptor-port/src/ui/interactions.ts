@@ -18,8 +18,7 @@ import { STORE_CFG } from './html'
 import { setDayPop, setAirKey, setDrawer } from './pops'
 import { openScheduler } from './board'
 import { setCurWeek } from '../engine/waves'
-import { WARN, traceLeads, traceIx } from '../engine/validate'
-import { personWarns } from '../engine/avail'
+import { WARN } from '../engine/validate'
 
 /* Focus a warning clicked from somewhere that is NOT an already-open day box —
    the board's issue list, or a chip on a puck. Both have to open the box
@@ -195,36 +194,13 @@ export function routeClick(e: MouseEvent) {
   const wl = t.closest('.wln[data-wdi]') as HTMLElement | null
   if (wl) { jumpToWarn(+wl.dataset.wdi!, +wl.dataset.wix!); e.stopPropagation(); return }
 
-  /* The flag chip ON a puck — the only warning surface that is not a list.
-     It resolves to the person's worst issue that day, and must be tested
-     before the puck branch below, or the chip would just select the person. */
-  const lc = t.closest('.puck[data-person] .lchip') as HTMLElement | null
-  if (lc) {
-    const pkc = lc.closest('.puck[data-person]') as HTMLElement
-    const dayEl = pkc.closest('.day[data-day]') as HTMLElement | null
-    /* on the board there is no .day wrapper — the board IS one day */
-    const di = dayEl ? +dayEl.dataset.day! : view.SBDAY
-    if (di != null) {
-      const id = pkc.dataset.person!
-      /* A CR chip printed by the TRACE belongs to a warning on ANOTHER day —
-         this man has no crew-rest issue here, he causes one tomorrow — so the
-         click has to leave the day it was made on. traceLeads is the same test
-         html.ts:chip() printed the chip by, so the caption and the destination
-         can never disagree, and it is asked FIRST for that reason: where the
-         trace owns the flag, a quieter warning of his own on this day must not
-         hijack the jump. traceIx resolves it to the ordinary (day, index) pair,
-         and a -1 (the warning moved under an edit) falls through to his own. */
-      const tl = traceLeads(di, id)
-      const tix = tl ? traceIx(tl, id) : -1
-      if (tl && tix >= 0) { jumpToWarn(tl.di, tix); e.stopPropagation(); return }
-      /* personWarns preserves WARN's own order, which validate() has already
-         sorted by severity, so [0] is the worst without a comparator. It also
-         carries the true engine index, which chipOf could never give back:
-         chipOf collapses by RANK and is not invertible. */
-      const hit = personWarns(di, id)[0]
-      if (hit) { jumpToWarn(di, hit.ix); e.stopPropagation(); return }
-    }
-  }
+  /* The flag chip is NOT a navigation surface (owner, 7 Aug 26 — it used to
+     jump to the person's worst warning, so the chip and the puck body gave
+     two different views of the same problem). It falls through to the puck
+     branch below and selects the person, whose flagged days open narrowed to
+     him anyway — the chip, like the ring, is part of the puck. The surfaces
+     that still navigate to a single warning are the lists: the week's issue
+     rows, the day-detail panel and the board's Live checks. */
 
   /* click a puck → select that person: every copy of the name lights blue,
      and their issue boxes open */

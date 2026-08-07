@@ -180,6 +180,24 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
   seed-driven assertion passes identically with the ring left in, so the
   change is invisible both on screen and to the parity suite. Rules:
   `docs/engine-rules.md` §validation.
+- **The chip is the puck, and selection is blue-only (owner, from the deployed
+  site, 7 Aug 26).** The flag chip used to jump to the person's worst warning
+  while the puck body around it selected the person — two views a few pixels
+  apart. The `.lchip` branch in `interactions.ts` is gone; every click on a
+  puck selects, and the person view already answers the chip's question (his
+  flagged days open narrowed to him, multi-person warnings kept whole with all
+  names). The cross-day CR chip's jump folded into the same gesture: selecting
+  the dotted man reveals the trace strip AND opens the breach day's box.
+  Styling in the same breath: `.puck.sel` is the blue fill alone — the 2px
+  `#BFE0FF` halo went, and with it the `!important` shadow that was BURYING
+  the red/amber severity ring on any selected puck; the `.sel.box*`
+  punch-through rules went too (`.me.*` halves stay). `.puck.dim` is `.5`,
+  was `.18` (owner: "don't make it so faded"). Every copy of the person still
+  lights (asked, kept). Pinned in `warnjump.test.tsx` (chip = puck, CP box
+  carries both names, trace chip surfaces the strip) and a rewritten e2e case
+  that measures what vitest cannot: blue `rgb(30,134,255)`, no `#BFE0FF` in
+  the computed shadow, warn ring still drawn, dim at `0.5`, box still 74×15.
+  Contract: `docs/ui-contracts.md` §Selection highlight and §Jumping.
 - **`sbWide` / board-grip state** is module-local and resets on reload
   (matches the original's session-scoped behaviour).
 - **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** "Restore

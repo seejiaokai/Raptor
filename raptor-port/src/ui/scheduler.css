@@ -560,7 +560,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .puck .lchip.l-cph{background:#F0555F;color:#fff}
 /* conflict / crew rest → red box around the whole puck */
 .puck.boxred{box-shadow:0 0 0 2px var(--hard)!important;border-color:var(--hard)!important}
-.puck.sel.boxred,.puck.me.boxred{box-shadow:0 0 0 2px var(--hard),0 0 10px 1px rgba(240,85,95,.7)!important}
+.puck.me.boxred{box-shadow:0 0 0 2px var(--hard),0 0 10px 1px rgba(240,85,95,.7)!important}
 /* The DASHED red box (owner, 6 Aug 26): same colour and same weight as the
    solid one — it is the same red warning, and downgrading the colour would
    read as "less of a problem" — but broken stroke, for the two cases where a
@@ -580,7 +580,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    the reason .boxred carries one too, so the two rings keep the same
    precedence over everything they sit on. */
 .puck.boxdash{outline:2px dashed var(--hard);outline-offset:0;border-color:var(--hard)!important;box-shadow:none!important}
-.puck.sel.boxdash,.puck.me.boxdash{outline:2px dashed var(--hard);box-shadow:0 0 10px 1px rgba(240,85,95,.7)!important}
+.puck.me.boxdash{outline:2px dashed var(--hard);box-shadow:0 0 10px 1px rgba(240,85,95,.7)!important}
 /* The DOTTED red ring (owner, 6 Aug 26): this day is the CAUSE, not the
    breach. The man flew a legal day here — the warning is raised tomorrow,
    where he is told to report short of rest — so the stroke is the lightest of
@@ -601,7 +601,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    the dots and reads distinctly lighter, which is also the right weight for
    the lightest of the three claims. */
 .puck.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
-.puck.sel.boxdot,.puck.me.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
+.puck.me.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
 /* A CUT CALLSIGN HAS TO LOOK CUT (owner sweep, 6 Aug 26). This rule carried
    `text-overflow:ellipsis` and never got one: the property has no effect on a
    flex container, because the text becomes an anonymous flex item. So the
@@ -657,12 +657,22 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    class is still applied and still means "in a list", it just styles nothing.) */
 .puck:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 /* highlight states — me (purple) wins over sel (blue) */
-.puck.sel{background:#1E86FF!important;color:#fff!important;box-shadow:0 0 0 2px #BFE0FF,0 0 12px 1px rgba(30,134,255,.85)!important;border-color:#BFE0FF!important;z-index:2;position:relative}
+/* Selection is the BLUE FILL and nothing else (owner, 7 Aug 26). It used to
+   add a 2px #BFE0FF ring + glow with !important, which read as a white halo
+   AND silently buried the red/amber severity ring a selected puck was
+   carrying — the one thing a scheduler must not lose sight of while looking
+   at that person. So sel deliberately touches no box-shadow, no outline and
+   no border-color: warn/boxred/boxdash/boxdot keep their own strokes over
+   the blue. The blue is #1E86FF everywhere it appears — the legend swatch in
+   html.ts prints the same literal and is byte-compared to the reference. */
+.puck.sel{background:#1E86FF!important;color:#fff!important;z-index:2;position:relative}
 .puck.sel .nm{color:#fff;font-weight:700}
 .puck.me{background:var(--me)!important;color:#fff!important;box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important;z-index:2;position:relative}
 .puck.me .nm{color:#fff;font-weight:700}
 .puck.hl{box-shadow:0 0 0 2px var(--accent),0 0 10px -1px rgba(59,198,232,.7);border-color:var(--accent)}
-.puck.dim{opacity:.18}
+/* half-visible, not gone (owner, 7 Aug 26 — was .18, which made the rest
+   of the week unreadable while anything was selected) */
+.puck.dim{opacity:.5}
 
 .nobox{margin:3px 10px 9px;font-size:11px;padding:6px 10px;line-height:1.4;background:rgba(229,168,59,.10);border:1px solid rgba(229,168,59,.22);border-left:2px solid var(--adv);border-radius:8px;color:#F2D699}
 /* all-hands header */

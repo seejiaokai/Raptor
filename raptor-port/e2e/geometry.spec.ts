@@ -597,33 +597,53 @@ test.describe('clicking a warning brings the puck into view', () => {
     expect(m!.insideY, 'the puck is inside the page viewport vertically').toBe(true)
   })
 
-  test('view schedule: a puck flag chip focuses its warning and brings the puck fully into view', async ({ page }) => {
+  test('a chip click selects like the puck body, and the selection styling is blue-only', async ({ page }) => {
+    /* Owner, 7 Aug 26: the chip is no longer a navigation surface — it selects
+       the person like the puck around it — and selection is the blue fill
+       alone: no pale #BFE0FF halo, the red/amber severity ring still visible
+       on a selected puck, everything else at half strength rather than 18%.
+       All of that is paint, which is exactly what vitest cannot see (the class
+       assertions live in warnjump.test.tsx; the pixels are gated here). */
     await page.setViewportSize(DESK)
     await login(page)
     await go(page, 'viewsched')
 
-    const has = await page.evaluate(() => !!document.querySelector('#vWeek .puck[data-person] .lchip'))
+    const has = await page.evaluate(() => !!document.querySelector('#vWeek .puck.warn[data-person]:not(.sm) .lchip'))
     test.skip(!has, 'no flagged puck with a chip in the seed week')
 
-    /* .lchip clicks TOGGLE like .witem does — this test only clicks once */
-    await page.click('#vWeek .puck[data-person] .lchip')
+    /* :not(.sm) — the 74x15 contract belongs to the wave grid's pucks, not
+       the small ones in the programme rows */
+    await page.click('#vWeek .puck.warn[data-person]:not(.sm) .lchip')
     await settleWeek(page, '#vWeek')
 
     const m = await page.evaluate(() => {
-      const week = document.querySelector('#vWeek') as HTMLElement
-      /* the chip resolving to a warning IS "WFOCUS set" made visible — the
-         same .wfoc class highlights.ts paints from WFOCUS on every surface */
-      const puck = document.querySelector('#vWeek .puck.wfoc:not(.echo)') as HTMLElement
-      if (!puck) return null
-      const w = week.getBoundingClientRect(), p = puck.getBoundingClientRect()
+      const sel = document.querySelector('#vWeek .puck.sel.warn:not(.sm)') as HTMLElement
+      if (!sel) return null
+      const cs = getComputedStyle(sel)
+      const copies = document.querySelectorAll(`.puck[data-person="${sel.dataset.person}"]`)
+      const selCopies = document.querySelectorAll(`.puck.sel[data-person="${sel.dataset.person}"]`)
+      const dim = document.querySelector('#vWeek .puck.dim') as HTMLElement
+      const r = sel.getBoundingClientRect()
       return {
-        insideX: p.left >= w.left - 1 && p.right <= w.right + 1,
-        insideY: p.top >= -1 && p.bottom <= window.innerHeight + 1,
+        wfoc: !!document.querySelector('.puck.wfoc'),
+        bg: cs.backgroundColor,
+        shadow: cs.boxShadow,
+        everyCopy: copies.length === selCopies.length,
+        dimOpacity: dim ? getComputedStyle(dim).opacity : null,
+        box: { w: Math.round(r.width), h: Math.round(r.height) },
+        boxOpen: !!document.querySelector('#vWeek .dwbox.open.pfoc'),
       }
     })
-    expect(m, 'clicking the chip focused a warning and lit a puck').not.toBeNull()
-    expect(m!.insideX, 'the puck is inside the week horizontally').toBe(true)
-    expect(m!.insideY, 'the puck is inside the page viewport vertically').toBe(true)
+    expect(m, 'the chip click selected a warned puck').not.toBeNull()
+    expect(m!.wfoc, 'no warning-focus regime — this is the person view').toBe(false)
+    expect(m!.boxOpen, 'his issue box opened, narrowed to him').toBe(true)
+    expect(m!.everyCopy, 'every copy of the person is selected').toBe(true)
+    expect(m!.bg, 'the selection blue').toBe('rgb(30, 134, 255)')
+    /* the severity ring survives selection; the old pale halo is gone */
+    expect(m!.shadow, 'no #BFE0FF halo').not.toContain('rgb(191, 224, 255)')
+    expect(m!.shadow, 'the warn ring is still drawn').not.toBe('none')
+    expect(m!.dimOpacity, 'the rest at half strength, not 18%').toBe('0.5')
+    expect(m!.box, 'selection styling must not move the box').toEqual({ w: 74, h: 15 })
   })
 
   test('a SIM_BRIEF warning pans to the sim row that briefs, and it lands on screen', async ({ page }) => {
