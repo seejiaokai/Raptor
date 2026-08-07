@@ -55,6 +55,64 @@ that bar on their own — don't manufacture questions for them.
   Trust this index instead of re-exploring. Prefer a fresh
   session per task; a long conversation re-sends itself every turn.
 
+## Product bar & ideation (owner, 7 Aug 26)
+
+Distilled from the owner's product-standards brief; this section IS the
+standard — the full brief is deliberately not kept. Autonomy is unchanged:
+the confidence rule above still decides when to ask, and green gates still
+ship without waiting to be asked.
+
+- **Ideate before building non-trivial UX.** Restate the problem BEHIND the
+  literal ask, then offer 2–3 directions — the conventional one, a more
+  ambitious one where it genuinely serves the user, a leaner one where it
+  exists — each with a one-line case and rough effort, plus a
+  recommendation, and let the owner pick. Small unambiguous asks skip
+  straight to building. (The 7 Aug blue-selection build-and-rollback is the
+  standing example: the ideation question is cheaper than the build.)
+- **Challenge a risky ask in a sentence or two**: the underlying user
+  problem, any unnecessary complexity, a simpler alternative, a wrong
+  assumption — then build what the owner decides, without relitigating.
+- **The bar is production, not prototype.** Clear hierarchy and primary
+  actions; spacing, type and colour consistent with scheduler.css's
+  measured contracts; responsive at phone and desktop (both gated in e2e);
+  accessible — labels, contrast, keyboard reach; real empty, loading, error
+  and confirmation states on every new surface. No placeholder behaviour
+  presented as working.
+- **Scope is the ask.** Improvements noticed en route are REPORTED as
+  options, never built unasked. A rejected or rolled-back idea is recorded
+  in §Stable decisions and never reintroduced silently.
+- **Verified vs assumed, always distinguished.** "Checked" means read or
+  run first-hand this session; anything else is stated as an assumption.
+
+**Scoping any new work weighs four axes** (owner, 7 Aug 26), each grounded
+in what this repo actually has rather than a generic checklist:
+
+- **Performance & scalability.** The perf gate is the law: per-node budgets
+  and DOM ceilings in `probes/perf-port.cjs`, re-measured, never quoted. A
+  feature that grows the DOM raises its ceiling as a deliberate, argued
+  edit in the same PR. Dense surfaces stay string-built (§Architecture).
+  True scaling — shared data, real accounts — is server work (HANDOFF's
+  first bullet); until then every write goes through the mutation funnel
+  and storage through `HOOKS.storeBackend`, which is precisely what keeps
+  that migration possible. Do not add state outside those two paths.
+- **User experience.** The bar above, plus the standing proof: the
+  live-view pass in §Build & verify IS the UX check — drive the built
+  bundle, screenshot, and look, before calling anything done.
+- **Security.** No secrets, tokens or credentials in the repo or its
+  history — the deploy needs none. Every user-entered string is escaped at
+  the builder (two unescaped sinks were found 6 Aug; assume more is
+  possible). Role checks live at the PAGE and the write path, not the nav
+  (`canEditSched`, `resetSession` — the 6 Aug lesson). And never present
+  the prototype auth as security: the site is public, accounts are
+  hard-coded, and anything genuinely sensitive stays out of the demo data.
+- **Future development & DevOps.** Ship through the gated pipeline only —
+  four gates in CI on every PR and push, plus the two local-only gates for
+  UI work; nothing deploys red. Write for the next session: comments say
+  WHY, `HANDOFF.md` stays true in the same PR, decisions that must not be
+  relitigated go to §Stable decisions, and the deploy traps (OIDC re-runs,
+  the ten-minute Pages ceiling, dispatch-cancels-push) are documented in
+  HANDOFF before they are ever debugged twice.
+
 ## Build & verify
 
 Run from `raptor-port/`, not the repo root. All four, after any change:
