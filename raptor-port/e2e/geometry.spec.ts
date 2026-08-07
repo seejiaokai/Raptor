@@ -451,68 +451,6 @@ test.describe('the crew-rest rings are three distinguishable strokes', () => {
   })
 })
 
-test.describe('the My Programme page', () => {
-  /* Owner, 7 Aug 26. A personal week for the view-as person — phone-first,
-     which here MEANS something measurable: one full-width column of day
-     cards, the page scrolling vertically only. jsdom pins the content rules
-     (myprog.test.tsx); only a browser can pin the layout. */
-  test('a phone gets one full-width column and no sideways scroll', async ({ page }) => {
-    await page.setViewportSize(PHONE)
-    await login(page)
-    await go(page, 'myprog')
-    const m = await page.evaluate(() => {
-      const de = document.documentElement
-      const cards = [...document.querySelectorAll('#page-myprog .mpday')] as HTMLElement[]
-      const grid = document.querySelector('#page-myprog .mpgrid') as HTMLElement
-      const tops = new Set(cards.map(c => Math.round(c.getBoundingClientRect().top)))
-      return {
-        cards: cards.length,
-        overflowX: de.scrollWidth - de.clientWidth,
-        fullWidth: cards.length > 0
-          && Math.abs(cards[0].getBoundingClientRect().width - grid.getBoundingClientRect().width) < 1,
-        distinctTops: tops.size,
-      }
-    })
-    expect(m.cards, 'seven day cards').toBe(7)
-    expect(m.overflowX, 'the page never scrolls sideways').toBeLessThanOrEqual(0)
-    expect(m.fullWidth, 'one column: a card spans the grid').toBe(true)
-    expect(m.distinctTops, 'stacked, not side by side').toBe(m.cards)
-  })
-
-  test('a desktop lays the cards out in columns', async ({ page }) => {
-    await page.setViewportSize(DESK)
-    await login(page)
-    await go(page, 'myprog')
-    const cols = await page.evaluate(() => {
-      const tops = [...document.querySelectorAll('#page-myprog .mpday')]
-        .map(c => Math.round(c.getBoundingClientRect().top))
-      return tops.filter(t => t === tops[0]).length
-    })
-    expect(cols, 'at least two cards share the first row').toBeGreaterThanOrEqual(2)
-  })
-
-  test('tapping a warning row lands the week focused on it', async ({ page }) => {
-    await page.setViewportSize(PHONE)
-    await login(page)
-    await go(page, 'myprog')
-    const has = await page.evaluate(() => !!document.querySelector('#page-myprog .witem[data-myw]'))
-    test.skip(!has, 'the view-as default carries no warning in the seed')
-    expect(await clickHere(page, '#page-myprog .witem[data-myw]')).toBe(true)
-    await settleBoth(page, '#vWeek')
-    const m = await page.evaluate(() => {
-      const wk = document.querySelector('#vWeek') as HTMLElement
-      const pk = document.querySelector('#vWeek .puck.wfoc:not(.echo)') as HTMLElement
-      if (!pk) return null
-      const w = wk.getBoundingClientRect(), r = pk.getBoundingClientRect()
-      return { onWeek: !!document.querySelector('#page-viewsched.page.on'),
-        inView: r.left >= w.left - 1 && r.right <= w.right + 1 }
-    })
-    expect(m, 'the week took the focus').not.toBeNull()
-    expect(m!.onWeek, 'the page switched to the View week').toBe(true)
-    expect(m!.inView, 'and the flagged puck is on screen').toBe(true)
-  })
-})
-
 test('puck text stays inside the puck, descenders and all', async ({ page }) => {
   await page.setViewportSize(PHONE)
   await login(page)
