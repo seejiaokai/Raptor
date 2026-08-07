@@ -14,7 +14,8 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify } from '../state/store'
 import { scrollToWarnFocus, queueHold } from './highlights'
-import { STORE_CFG } from '../engine'
+import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave } from '../engine'
+import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer } from './pops'
 import { openScheduler } from './board'
 import { setCurWeek } from '../engine/waves'
@@ -71,19 +72,41 @@ function holdPuckStill(pk: HTMLElement) {
    way board.ts builds waveMenu: outside the React tree, removing itself on
    any outside click. It lists EVERY store, lit where the jet carries it, so
    the box is self-contained — the board has no inline chips to read.
-   Toggling goes through the funnel (markEdit → pending → next AL). */
+   Toggling goes through the funnel (markEdit → pending → next AL). The pen
+   (✎) switches the SAME box into an editor for the squadron's list itself —
+   reorder, rename, add, remove — and that is a settings change, not a
+   schedule edit, so nothing in the pen branch ever calls markEdit. */
 function openStoresMenu(anchor: HTMLElement, key: string) {
-  document.querySelectorAll('.stmenu').forEach(x => x.remove())
+  document.querySelectorAll('.stmenu').forEach(x => {
+    const off = (x as any)._stOff
+    if (off) document.removeEventListener('click', off)
+    x.remove()
+  })
   const [di, gi, li, ai] = key.split('.')
   const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
   a.opts = a.opts || {}
   const box = document.createElement('div')
   box.className = 'stmenu wavemenu'
+  let pen = false
   const paint = () => {
-    box.innerHTML = `<h5>Stores configuration</h5><div class="wm-row">`
-      + STORE_CFG.map(([k, lab]) =>
-        `<button class="wm${a.opts[k] ? ' on' : ''}" data-cfg="${k}">${lab}</button>`).join('')
-      + `</div>`
+    box.innerHTML = `<h5>Stores configuration`
+      + `<button class="st-pen${pen ? ' on' : ''}" title="${pen ? 'Done editing the list' : 'Edit the list'}">✎</button></h5>`
+      + (pen
+        ? `<div class="st-elist">`
+          + STORE_CFG.map(([k, lab], i) =>
+            `<div class="st-erow" data-k="${k}">`
+            + `<input class="st-lab" value="${esc(lab)}" maxlength="16" aria-label="Name for ${esc(lab)}">`
+            + `<button class="st-up" ${i === 0 ? 'disabled' : ''} title="Move up">↑</button>`
+            + `<button class="st-dn" ${i === STORE_CFG.length - 1 ? 'disabled' : ''} title="Move down">↓</button>`
+            + `<button class="st-del" title="Remove ${esc(lab)} from the list">✕</button></div>`).join('')
+          + `</div><div class="st-addrow">`
+          + `<input class="st-new" placeholder="e.g. LGB" maxlength="16" aria-label="New store name">`
+          + `<button class="st-add">Add</button></div>`
+          + `<div class="wm-note">The list is the squadron's, not this jet's — it survives a reload. Removing one keeps every jet that carries it.</div>`
+        : `<div class="wm-row">`
+          + STORE_CFG.map(([k, lab]) =>
+            `<button class="wm${a.opts[k] ? ' on' : ''}" data-cfg="${k}">${esc(lab)}</button>`).join('')
+          + `</div>`)
   }
   /* notify() rebuilds the remarks cell, so the captured `anchor` node may be
      detached AND the live button moves as chips appear or wrap before it in the
@@ -101,9 +124,48 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   place()
   box.addEventListener('click', (ev: any) => {
     ev.stopPropagation()
-    const b = ev.target.closest('[data-cfg]'); if (!b) return
-    const k = b.dataset.cfg
-    a.opts[k] = !a.opts[k]
+    const T = ev.target as HTMLElement
+
+    /* opening/closing the pen changes the box's HEIGHT dramatically — six
+       chips become six input rows plus an add-row and a note — and nothing
+       downstream of this branch calls notify(), so nothing else will ever
+       re-run place() for it. Call it directly, right here, rather than
+       through queueHold: queueHold only drains off the week's own repaint
+       (EditWeek's effect, on a version bump), and this branch causes none. */
+    if (T.closest('.st-pen')) { pen = !pen; paint(); place(); return }
+
+    if (pen) {
+      const row = T.closest('.st-erow') as HTMLElement | null
+      const k = row?.dataset.k
+      if (k && T.closest('.st-del')) {
+        const lab = STORE_CFG.find(([x]) => x === k)?.[1] || k
+        delStore(k); storesSave(); paint(); place()
+        HOOKS.toast(`${lab} removed from the list — every jet carrying it keeps it. Add it back and the chips return.`)
+        /* queueHold too: if this jet carries the removed store its own
+           on-chip vanishes from the remarks cell, shifting the C button
+           that place() just anchored to — re-run it once the week repaints. */
+        queueHold(place)
+        notify()
+        return
+      }
+      if (k && (T.closest('.st-up') || T.closest('.st-dn'))) {
+        const i = STORE_CFG.findIndex(([x]) => x === k)
+        if (moveStore(i, i + (T.closest('.st-up') ? -1 : 1))) { storesSave(); paint(); queueHold(place); notify() }
+        return
+      }
+      if (T.closest('.st-add')) {
+        const box2 = box.querySelector('.st-new') as HTMLInputElement
+        const why = addStore(box2.value)
+        if (why) return HOOKS.toast(why)
+        storesSave(); paint(); place(); queueHold(place); notify()
+        return
+      }
+      return
+    }
+
+    const b = T.closest('[data-cfg]') as HTMLElement | null; if (!b) return
+    const key2 = b.dataset.cfg!
+    a.opts[key2] = !a.opts[key2]
     markEdit(`st:${di}.${gi}.${li}.${ai}`)
     paint()
     /* queueHold, not setTimeout: the week repaints via EditWeek's effect,
@@ -114,7 +176,33 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
     queueHold(place)
     notify()
   })
-  setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
+
+  /* rename commits on change, so a click away inside the box is enough. No
+     markEdit here either — see the function comment. */
+  box.addEventListener('change', (ev: any) => {
+    const inp = (ev.target as HTMLElement).closest('.st-lab') as HTMLInputElement | null
+    if (!inp) return
+    const k = (inp.closest('.st-erow') as HTMLElement).dataset.k!
+    const why = renameStore(k, inp.value)
+    if (why) { paint(); return HOOKS.toast(why) }
+    storesSave(); paint(); queueHold(place); notify()
+  })
+
+  /* The box removes itself on an outside click — but NOT while the pen is
+     open: a drag past the box edge, or a click into a rename field that
+     bubbles to document, would otherwise kill it mid-edit. Not {once:true}
+     any more, since a click it declines to act on (inside the box, or any
+     click while the pen is open) must not deregister it — so the box
+     records its own handler on itself, and the "replace with a fresh
+     popup" branch above unhooks it explicitly, or it would leak one
+     listener per popup opened while a previous one's pen was left open. */
+  const off = (ev: any) => {
+    if (box.contains(ev.target)) return
+    if (pen) return
+    box.remove(); document.removeEventListener('click', off)
+  }
+  ;(box as any)._stOff = off
+  setTimeout(() => document.addEventListener('click', off), 0)
 }
 
 export function routeClick(e: MouseEvent) {
