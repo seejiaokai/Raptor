@@ -7,10 +7,13 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 616/38
+**Every gate is green at this commit**, run first-hand: `npm test` 626/39
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 23/23, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
+(`npm run perf`'s one-day-edit budget was seen swinging 1.01×–1.28× across
+runs on identical code on a busy container, 7 Aug 26 — rerun before
+believing a single red.)
 
 ## Known issues / open work
 
@@ -45,12 +48,15 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
   free text wrapping rather than overflowing, one day box per pan click, the
   proxy scrollbar, scroll held across an edit, a programme hole rendering no
   element, descender ink inside the puck, and the warning-jump paths on every
-  surface (both weeks, day-detail, flag chip, the board small and large, a
-  warning landing on its anchored line, and the lateral view held when the
-  puck is already on screen), the three crew-rest strokes really rendering as
-  three, a cut callsign fading rather than clipping, and the board's duty rows
-  keeping a readable ITEM column on a phone — eleven contract families over 22
-  tests. It
+  surface (both weeks, day-detail, the board small and large, a warning
+  landing on its anchored line, and the lateral view held when the puck is
+  already on screen), the three crew-rest strokes really rendering as three
+  and the cross-day row sitting in the list at its neighbours' geometry,
+  selection styling (blue fill only, warn ring surviving, the half-strength
+  dim — the flag-chip test became this when the chip stopped navigating,
+  7 Aug 26), a cut callsign fading rather than clipping, and the board's duty
+  rows keeping a readable ITEM column on a phone — twelve contract families
+  over 23 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
@@ -66,10 +72,12 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
   because its blind seat-stuffing eventually put a downchit man on an SC
   SPARE. One probe (`zdup`) still fails identically on both builds —
   environment-bound, not a port defect.
-- **Clicking a warning jumps to the puck (owner, 5 Aug 26).** All four surfaces
-  that flag aircrew now navigate: the week's issue rows, the day-detail panel,
-  the board's `Live checks` list (which was completely inert — no attributes,
-  no handler) and the flag chip on a puck. Warning focus now lights board pucks
+- **Clicking a warning jumps to the puck (owner, 5 Aug 26; the chip since
+  UNIFIED away, 7 Aug 26 — see the chip-is-the-puck entry below).** The three
+  LIST surfaces navigate: the week's issue rows, the day-detail panel and the
+  board's `Live checks` list (which was completely inert — no attributes,
+  no handler). The flag chip navigated from 5–7 Aug and now selects the person
+  like the puck it sits on. Warning focus now lights board pucks
   too, not just the week's. Two defects on the old path went with it: a stale
   row scrolled to the *previously* focused warning, and `hsSync` was a dead
   `undefined` stub in `highlights.ts` so the proxy scrollbar never re-synced.
@@ -474,7 +482,7 @@ test:e2e` 22/22, and the two that are NOT in CI — `npm run probes:adapted`
 | `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. |
 | `html.ts` | THE builder library: `dayHTML`, `puck`, `slotCell`, `signoffHTML`, day warnings, day-info panel, legend, cx/flag tags. |
 | `board-html.ts` / `palette-html.ts` / `logic-html.ts` | Board panels (inputs bands, notes, programme, duties, sim rows, ground, personal-inputs group, sim notes), the aircrew palette, the Logic tab's rule text. |
-| `interactions.ts` | `routeClick` — the delegated click router: select/arm/plant, publish/AL/sign-clear, day-info, warning boxes, the board's issue list and a puck's flag chip (both via `jumpToWarn`, which opens `DWOPEN` as the day-detail branch does), week chips, stores remove + the `+` config picker (`openStoresMenu`). |
+| `interactions.ts` | `routeClick` — the delegated click router: select/arm/plant (a puck's flag chip falls through to selection — the chip is the puck, 7 Aug 26), publish/AL/sign-clear, day-info, warning boxes, the board's issue list (via `jumpToWarn`, which opens `DWOPEN` as the day-detail branch does), week chips, stores remove + the `+` config picker (`openStoresMenu`). |
 | `drag.ts` | Mouse HTML5 DnD + the touch pointer machine; `applyDrop()` is the single drop path; `barDrop` qualification warning. |
 | `pan.ts` | Week arrows (`panDays`), proxy scrollbar (`hsSet`/`hsSync`, echo-guarded), shift+wheel, palette day-follow, phone day dots. |
 | `textedit.ts` | Inline text editing: Enter commits / Escape restores, heal-in-place, deferred commit, `editingText()`, plus the four fields outside the `data-txt` grammar. |
