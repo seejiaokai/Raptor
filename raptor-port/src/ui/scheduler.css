@@ -1340,6 +1340,45 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   text-transform:uppercase;margin-bottom:7px}
 .dip-sev b.hard{color:var(--hard)}.dip-sev b.adv{color:var(--adv)}.dip-sev b.note{color:#8A96A3}
 .dip-list{display:flex;flex-direction:column;gap:5px}
+
+/* ---- My Programme (owner, 7 Aug 26) — one person's week as day cards.
+   Phone-first: minmax(min(340px,100%),1fr) collapses to a single full-width
+   column on its own below ~730px, so the page needs no media query and can
+   never overflow sideways. Every colour is a token already on the page. */
+.mypage{padding:10px 14px 30px;max-width:1500px;margin:0 auto}
+.mphdr{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 2px 12px}
+.mphdr .cs{font-size:18px}
+.mprole{font:600 10.5px/1 var(--mono,ui-monospace);color:var(--ink-2);background:var(--panel-2);border:1px solid var(--edge);border-radius:999px;padding:4px 9px}
+.mphdr .badge{font:700 9.5px/1 var(--mono,ui-monospace);letter-spacing:.4px;color:#04222b;background:var(--accent);border-radius:5px;padding:3px 6px}
+.mphdr .badge.san{background:var(--san);color:#fff}
+.mpcount{font-size:11px;color:var(--ink-3)}
+.mphdr .right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.mphdr .right label{font-size:10.5px;color:var(--ink-3)}
+.mphdr select{background:var(--panel-2);color:var(--ink);border:1px solid var(--edge);border-radius:8px;padding:5px 8px;font-size:12px}
+.mpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:12px}
+.mpday{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.mphead{display:flex;align-items:baseline;gap:8px}
+.mphead b{font-size:13.5px}
+.mphead .dt{font:600 10.5px/1 var(--mono,ui-monospace);color:var(--ink-3)}
+.mphead .st{margin-left:auto;font:700 9px/1 var(--mono,ui-monospace);letter-spacing:.4px;border-radius:5px;padding:3px 6px}
+.mphead .st.ok{color:#0c2a17;background:var(--ok)}
+.mphead .st.draft{color:var(--ink-3);background:var(--raised);border:1px solid var(--edge)}
+.mpev{display:flex;gap:8px;align-items:baseline;background:var(--panel-2);border:1px solid var(--edge);border-left:3px solid var(--edge-2);border-radius:8px;padding:6px 9px;min-width:0}
+.mpev .t{font:600 11px/1.2 var(--mono,ui-monospace);color:var(--ink-2);white-space:nowrap}
+.mpev .lb{font-size:12px;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.mpev.fly{border-left-color:var(--flight)}
+.mpev.shift{border-left-color:var(--dpco)}
+.mpev.sim{border-left-color:var(--sim)}
+.mpev.duty{border-left-color:var(--cft)}
+.mpev.ground{border-left-color:var(--acad)}
+.mpev.prog{border-left-color:var(--edge-2)}
+.mpsub{font:500 10px/1.5 var(--mono,ui-monospace);color:var(--ink-3);font-weight:400}
+.mpsub b{color:var(--ink-2)}
+.mpinp{font-size:11px;color:var(--ink-2);background:var(--raised);border:1px dashed var(--edge-2);border-radius:8px;padding:5px 9px}
+.mpinp.accd{border-style:solid;border-color:var(--edge)}
+.mpinp i{float:right;font-style:normal;font-size:9.5px;color:var(--ink-3)}
+.mpwl{margin-top:2px}
+.mpwl .witem{cursor:pointer}
 .airview{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:var(--ink)}
 .airview .adot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle}
 

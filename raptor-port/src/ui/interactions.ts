@@ -286,6 +286,19 @@ export function routeClick(e: MouseEvent) {
     notify(); setTimeout(scrollToWarnFocus, 0); e.stopPropagation(); return
   }
 
+  /* A My Programme issue row: leave the personal page for the week, focused
+     on that warning. Its own attribute, NOT data-adv — that branch scrolls a
+     week which is display:none while this page is up. setPage first, then
+     the ordinary jump: jumpToWarn's deferred scroll runs after the week's
+     effect has rebuilt the days, so the pan lands on a real layout. */
+  const mw = t.closest('[data-myw]') as HTMLElement | null
+  if (mw) {
+    const a = String(mw.dataset.myw).split('.'), di = +a[0]!, ix = +a[1]!
+    view.setPage('viewsched')
+    jumpToWarn(di, ix)
+    e.stopPropagation(); return
+  }
+
   /* day strip → expand / collapse in place */
   const s = t.closest('[data-daywarn]') as HTMLElement | null
   if (s) { view.toggleDayWarn(s.dataset.daywarn); notify(); e.stopPropagation(); return }
