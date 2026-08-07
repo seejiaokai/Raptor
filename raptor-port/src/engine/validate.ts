@@ -301,13 +301,19 @@ export function validate(){
          Keeping only the single latest event meant a late duty row could mask
          the sortie underneath it and downgrade a hard crew-rest breach to an
          advisory — adding a duty removed a warning. */
-      const prevEnd:any={}, prevFlyEnd:any={};
+      /* WHICH leg ran late, not just how late. The end time alone answers the
+         rule but not the reader: the cross-day row on this day is the one
+         affordance a scheduler can act on, and it has to be able to point at
+         the sortie to move. So the winning event's own slot-key is kept beside
+         its minute count (`slot` on a flying/shift event, `key` on the others)
+         and travels on the trace — see markTrace below. */
+      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={};
       ev[idx-1].events.forEach((e:any)=>{
         const rests=(e.kind==='fly'||e.kind==='shift');
         const end=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift ends when it ends
         if(end==null)return;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id]))prevFlyEnd[e.id]=end;
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key;}
       });
       /* when rest expires today, for everyone who flew or stood a shift
          yesterday — the palette reads this to keep an SC slot closed to anyone
@@ -376,8 +382,12 @@ export function validate(){
                     :(bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(bl.to-VCONF.showLead)} latest show. `:''))
             +tail+`, so he had to leave by ${leaveBy}`;
           add('hard','CREW_REST',[id],crMsg,bl.key,{prevDi,leaveBy,dashed});
-          /* the same breach, filed against the day that caused it */
-          markTrace(prevDi,id,{di,dow:day.dow,leaveBy,dashed,msg:crMsg});
+          /* The same breach, filed against the day that caused it — with
+             `fromKey`, the leg on THAT day that ran late. It rides on the trace
+             and NOT on the warning: parity.test.ts compares every field of
+             WARN.byDay against the reference, while WARN.trace is port-only, so
+             this stays clear of the reference entirely. */
+          markTrace(prevDi,id,{di,dow:day.dow,leaveBy,dashed,msg:crMsg,fromKey:prevFlyKey[id]});
         } else if(nominal<earliest||instructed<earliest){
           /* Chip, no ring (owner, 7 Aug 26). A tight turn is a note, not a
              problem to fix — and this was the ONLY TT that rang: the same-day

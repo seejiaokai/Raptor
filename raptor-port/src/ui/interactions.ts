@@ -258,14 +258,23 @@ export function routeClick(e: MouseEvent) {
   if (it) {
     const di = +it.dataset.wdi!, ix = +it.dataset.wix!
     view.focusWarn(it.dataset.wdi, it.dataset.wix)
-    notify()
     /* Only snap if the focus really landed on what was clicked. focusWarn
        bails when the index no longer resolves — WARN is reassigned wholesale by
        every validate(), so a row rendered before an edit can outlive its
        warning — and scrolling anyway would fly the week off to whatever was
        focused BEFORE. The toggle-off case needs no guard: WFOCUS is null and
        scrollToWarnFocus returns on its own. */
-    if (view.WFOCUS && view.WFOCUS.di === di && view.WFOCUS.ix === ix) setTimeout(scrollToWarnFocus, 0)
+    const landed = view.WFOCUS && view.WFOCUS.di === di && view.WFOCUS.ix === ix
+    /* The cross-day crew-rest row is the one issue row whose warning lives on
+       a DIFFERENT day than the row itself. It focuses that warning like any
+       other — the breach is what is selected, and his pucks over there light —
+       but the view stays where it was clicked and lands on the line that caused
+       it (html.ts:dayTraceHTML). Patched onto the focus BEFORE notify() so one
+       render covers it; the guard above already excludes the toggle-off and
+       stale-index cases, which must not carry a pan of their own. */
+    if (landed && it.dataset.wpk) view.setWarnFocus({ ...view.WFOCUS, panDi: +it.dataset.wpd!, panKey: it.dataset.wpk })
+    notify()
+    if (landed) setTimeout(scrollToWarnFocus, 0)
     e.stopPropagation(); return
   }
 

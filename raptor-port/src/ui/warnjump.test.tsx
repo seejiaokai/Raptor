@@ -240,6 +240,41 @@ describe('the previous day, clicked', () => {
     expect(WARN.byDay[view.WFOCUS.di].warns[view.WFOCUS.ix].code).toBe('CREW_REST')
     expect(scrolled.length).toBeGreaterThan(0)
   })
+
+  /* ...AND LEAVES THE VIEW WHERE IT WAS CLICKED (owner, from the deployed site,
+     7 Aug 26). The two halves are deliberately separate: the row still FOCUSES
+     tomorrow's breach — the test above — but it PANS to the line on this day
+     that caused it. Clicking used to throw the week over to the breach day and
+     land on the flagged leg, which the row's own prose had already named; the
+     sortie that ran late is the one a scheduler can still move, and nothing on
+     the page pointed at it. */
+  it('but pans to the causing day\'s own late line, not the breach day\'s puck', async () => {
+    await act(async () => {
+      view.setBoardDay(null); view.selDrop(); view.clearWarnFocus()
+      WARN.byDay.forEach((g: any) => { if (g) view.toggleDayWarn(g.di) })
+      notify()
+    })
+    const row = $('#vWeek .dwtrace .witem[data-wdi]')
+    const di = +(row.closest('.day[data-day]') as HTMLElement).dataset.day!
+    expect(+row.dataset.wpd!, 'the row addresses its own day for the pan').toBe(di)
+    const key = row.dataset.wpk!
+    expect(key, 'and names the leg the engine blamed').toBeTruthy()
+
+    await click(row)
+    await flush()
+    const tgt = scrolled[scrolled.length - 1] as HTMLElement
+    expect(tgt, 'something was scrolled to').toBeTruthy()
+    const landedOn = +(tgt.closest('.day[data-day]') as HTMLElement).dataset.day!
+    expect(landedOn, 'the view stayed on the day the row was read from').toBe(di)
+    /* not merely the right day: the right LINE on it. anchorEl resolves the key
+       to a seat, and the destination is the flagged man's puck in that seat's
+       row — his first puck in document order would be the fallback, and on a
+       day where he flies twice that is the wrong one. */
+    const seat = anchorEl(tgt.closest('.day[data-day]'), key)
+    expect(seat, 'the causing seat is on the page').toBeTruthy()
+    const wantRow = seat!.closest('.acrow,.pl-row,.ah-row')
+    expect(wantRow!.contains(tgt), 'and the pan landed inside its row').toBe(true)
+  })
 })
 
 describe('the target puck', () => {

@@ -308,7 +308,18 @@ function dayTraceHTML(di:any,pf:any){
   if(!rows.length)return '';
   return `<div class="dwtrace">`+rows.map(({id,t,ix}:any)=>{
     const cs=PEOPLE[id]?PEOPLE[id].cs:id;
-    return `<div class="witem hard wtr" data-wdi="${t.di}" data-wix="${ix}" title="Jump to the crew-rest warning this day causes">`
+    /* THE VIEW STAYS HERE (owner, from the deployed site, 7 Aug 26). The row
+       still addresses the NEXT day's warning — that breach is what gets focused,
+       and his pucks there light — but the pan lands on the leg on THIS day that
+       caused it. The row's own prose already says which day breaks; what it
+       cannot show is which sortie ran late, and that is the only thing on the
+       page a scheduler can still move. `wpd` is this day (the builder's own di,
+       so it cannot disagree with where the row is drawn) and `wpk` the causing
+       leg's slot-key; interactions.ts hangs them on the focus and
+       scrollToWarnFocus prefers them. Absent fromKey emits neither and the row
+       behaves exactly as it did. */
+    const pan=t.fromKey?` data-wpd="${di}" data-wpk="${esc(t.fromKey)}"`:'';
+    return `<div class="witem hard wtr" data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it">`
       +`<span class="wbar"></span><span><span class="wcode">Breaks ${esc(t.dow||'the next day')}</span>`
       +`<b>${esc(cs)}</b> — had to leave by <b>${esc(t.leaveBy)}</b>. ${esc(t.msg||'')}</span></div>`;
   }).join('')+`</div>`;

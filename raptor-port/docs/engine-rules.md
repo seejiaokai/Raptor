@@ -51,9 +51,18 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   26). A crew-rest warning is raised where the man is told to report, but the
   only day a scheduler can still change is the one before, so `validate()`
   publishes each breach a second time under its **previous** day:
-  `WARN.trace[prevDi][id] = {di, dow, leaveBy, dashed, msg}` — the day of the
-  breach, the leave-by, and the message, so no surface re-derives a word of
-  it. Accessors: `traceOf(di,id)`; `traceLeads(di,id)`, which is `traceOf`
+  `WARN.trace[prevDi][id] = {di, dow, leaveBy, dashed, msg, fromKey}` — the day
+  of the breach, the leave-by, and the message, so no surface re-derives a word
+  of it. **`fromKey` names the leg on the CAUSING day that ran late** (owner,
+  from the deployed site, 7 Aug 26): the slot-key of the rest-bearing event
+  that set `prevFlyEnd`, i.e. the very sortie or shift the rule measured from.
+  Rest is worked out from a minute count, so the event itself used to be thrown
+  away — but the cross-day row is the one affordance a scheduler can act on,
+  and it has to be able to point at the sortie to MOVE. It rides on the trace
+  and deliberately **not** on the warning: `parity.test.ts` compares every field
+  of `WARN.byDay` against the reference, while `WARN.trace` is port-only, so
+  this stays clear of the reference entirely and needs no `refwin.ts` patch.
+  Accessors: `traceOf(di,id)`; `traceLeads(di,id)`, which is `traceOf`
   narrowed to the case where the man carries no LOUDER chip of his own that
   day (the one test both the printed flag and the click routing use, so they
   cannot disagree); `traceIx(t,id)`, the breach's index in the next day's own

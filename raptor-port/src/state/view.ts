@@ -147,7 +147,11 @@ export function dayPreview(di:any){ return DPREV.has(+di)?DPREV.get(+di):null }
    unpublishAL, a week switch: without this the day would render the live model
    while its header claims to show history */
 export function prunePreviews(){ for(const [di,ver] of [...DPREV]){ if(!daySnapOf(di,ver))DPREV.delete(di) } }
-export let WFOCUS:any=null;                // {di,ix,ids:[…],sev,key} — key = the causing line's slot-key, if the warning carries one
+/* {di,ix,ids:[…],sev,key,code,prevDi,leaveBy} — key = the causing line's
+   slot-key, if the warning carries one. The cross-day crew-rest row adds
+   panDi/panKey: land on THAT day and THAT line instead, the one case where the
+   focused warning and the place the view goes are different days. */
+export let WFOCUS:any=null;
 /* B14: clicking a puck opens that person's issues wherever in the week they
    fall, so a Tuesday crew-rest breach caused by a Monday night wave shows up
    on both days at once. PFOCUS is the clicked person, not a warning. */
