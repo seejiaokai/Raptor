@@ -1,6 +1,7 @@
 export * from './hooks'
 export * from './time'
 export * from './rules'
+export * from './stores'
 export * from './people'
 export * from './inputs'
 export * from './waves'
