@@ -595,10 +595,10 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         f.aircraft.forEach((a:any,ai:any)=>{
           const key=`${di}.${gi}.${li}.${ai}`, o=a.opts||{};
           /* edit mode shows the on-chips (click one to remove it) plus C, which
-             opens a box listing EVERY store, lit where the jet carries it —
-             self-contained because the board's popup (Task 6) has no chips
-             beside it to read (owner, 7 Aug 26). View mode shows the on-chips
-             only. */
+             opens a box listing EVERY store, lit where the jet carries it. The
+             box lists everything rather than just the leftovers because it is
+             not always rendered next to on-chips it could lean on to tell the
+             rest of the story. View mode shows the on-chips only. */
           const stores=ed
             ? `<span class="stores">`+STORE_CFG.filter(([k]:any)=>o[k]).map(([k,lab]:any)=>`<span class="stchip on" data-store="${key}.${k}" title="Remove ${lab}">${lab}</span>`).join('')
               +`<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`

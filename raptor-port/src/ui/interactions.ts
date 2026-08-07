@@ -85,11 +85,20 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
         `<button class="wm${a.opts[k] ? ' on' : ''}" data-cfg="${k}">${lab}</button>`).join('')
       + `</div>`
   }
+  /* notify() rebuilds the remarks cell, so the captured `anchor` node may be
+     detached AND the live button moves as chips appear or wrap before it in the
+     inline-flex row — measure the live one, and leave the box put when there is
+     nothing to measure (a detached node, or jsdom, both report 0x0). */
+  const place = () => {
+    const live = document.querySelector(`[data-stcfg="${key}"]`) as HTMLElement | null
+    const r = (live || anchor).getBoundingClientRect()
+    if (!r.width && !r.height) return
+    box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
+    box.style.top = Math.min(window.innerHeight - box.offsetHeight - 8, Math.round(r.bottom + 6)) + 'px'
+  }
   paint()
   document.body.appendChild(box)
-  const r = anchor.getBoundingClientRect()
-  box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
-  box.style.top = Math.min(window.innerHeight - box.offsetHeight - 8, Math.round(r.bottom + 6)) + 'px'
+  place()
   box.addEventListener('click', (ev: any) => {
     ev.stopPropagation()
     const b = ev.target.closest('[data-cfg]'); if (!b) return
@@ -97,6 +106,12 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
     a.opts[k] = !a.opts[k]
     markEdit(`st:${di}.${gi}.${li}.${ai}`)
     paint()
+    /* queueHold, not setTimeout: the week repaints via EditWeek's effect,
+       which calls refreshHighlights() once the DOM swap is done — draining
+       the held callback right there, in the same task as the swap, exactly
+       the ordering holdPuckStill needs for the same reason. A raw timer has
+       no guarantee it fires after that effect. */
+    queueHold(place)
     notify()
   })
   setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
