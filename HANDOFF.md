@@ -7,9 +7,9 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 630/39
+**Every gate is green at this commit**, run first-hand: `npm test` 632/39
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 24/24, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 25/25, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 (`npm run perf`'s one-day-edit budget was seen swinging 1.01×–1.28× across
 runs on identical code on a busy container, 7 Aug 26 — rerun before
@@ -467,6 +467,17 @@ believing a single red.)
     (`workflow_dispatch` on `deploy.yml`, ref `main`), which mints a new one.
   - **No runner assigned at all** — job cancelled after ~15 min with an empty
     `runner_name` and zero steps recorded. Pure capacity. Re-run later.
+  **The Actions status API reads 10–20 minutes STALE, and that is the single
+  biggest time-waster in this pipeline (7 Aug 26).** Repeatedly it reported a
+  step "in progress" that had finished half an hour earlier — a gate that took
+  2m17s looked hung for 35 minutes, and the natural conclusion (something is
+  wrong with my change) was wrong every time. Two things help, both measured:
+  `list_workflow_jobs` refreshes sooner than `get_workflow_job` or the PR
+  check-runs endpoint, and the ONLY trustworthy signal for a publish is the
+  deployed page itself — poll `curl -sS https://seejiaokai.github.io/Raptor/`
+  for the new bundle hash out of `dist/index.html` (Pages rolled over in
+  90 s–3.5 min all day, nowhere near the ten-minute ceiling). Never conclude a
+  run is hung from that API alone, and never re-run or dispatch on it.
   Two token traps, both measured, and the first is narrower than it first
   looked: a merge made with the **raw session token** (curl `PUT
   /pulls/{n}/merge`) produced NO push-deploy at all, while a merge through the
