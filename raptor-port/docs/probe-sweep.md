@@ -144,6 +144,13 @@ Tripping one is not automatically a fault; it is a prompt to check the time
 and then raise the number deliberately, in the PR that adds the nodes,
 beside a fresh `npm run perf` showing the per-node cost held.
 
+**Board raised again, 770 → 810, for stores configuration (owner, 7 Aug
+26).** The `C` button and its on-chips wrap the board's remarks cell
+(`.sb-rcell` — `docs/ui-contracts.md` §Stores configuration), measured at
+767 nodes before the new margin was added (up from 699 the last time this
+ceiling was set). Week is unchanged at 5530, measured 5056. See
+`probes/perf-port.cjs`'s `DOM_CEILING` for the live numbers.
+
 Rejected: comparing the port against a *recorded port* time. Node counts
 travel between machines, milliseconds do not — one round of the same edit
 reads 210–830 ms here — so a recorded time from another container would be

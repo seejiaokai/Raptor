@@ -3,6 +3,10 @@ import { store } from './hooks'
 /* THE SQUADRON'S STORES LIST (owner, 7 Aug 26). Was a const in ui/html.ts;
    it is persisted state with save/load/reset now — which is what `rules` is —
    so it lives in the engine and html.ts goes back to being a builder library.
+   That earlier list was itself already a rework (owner, Aug 26): an additive
+   set the scheduler built up through a picker, replacing the OLDER fixed
+   2TK/TPOD/NAV toggles that came before it. This is the second time the
+   stores UI has moved past a fixed set.
 
    [key,label]: the KEY is what lands in aircraft.opts and must never move
    (a rename that changes it strips the store from every jet carrying it);

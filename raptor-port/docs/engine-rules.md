@@ -256,6 +256,58 @@ Personal Inputs, faded, so the scheduler can see what they have dealt with.
 `localStorage['sqn142_rules']`; `rulesLoad` (called by `initStore` at boot —
 do not remove) treats storage as untrusted: number, finite, in bounds.
 
+## Stores configuration (`engine/stores.ts`, owner, 7 Aug 26)
+
+The squadron's stores list — **NAV, N/C, 2 TKS, 3 TKS, TPOD, CL** by
+default — used to be a fixed `const` in `ui/html.ts`. It is persisted state
+now, the same shape `rules` has: `STORE_CFG: [key,label][]`, editable through
+`addStore`/`delStore`/`renameStore`/`moveStore`, saved through `storesSave`,
+loaded through `storesLoad`, and reset through `storesReset`. Rendering and
+the pen's interaction rules are `docs/ui-contracts.md` §Stores configuration;
+this is the storage side.
+
+**A separate storage key, `localStorage['sqn142_stores']`, deliberately not
+folded into `rules`.** `rulesReset()` does `store.set('rules', null)` — it
+nulls the ENTIRE key, and `logic.test.tsx`/`rules.test.ts` both pin "reset
+restores the standard exactly" against that behaviour. If the stores list
+shared the `rules` key, resetting the rulebook back to standard would
+silently wipe a squadron's customised stores list as a side effect of a
+completely unrelated action — a scheduler resetting `VCONF.crewRest` back to
+12h should never touch what stores a jet can carry. Two keys keep the two
+resets independent.
+
+**Whole-list-on-deviation, no per-entry diff.** `rulesSave` only ever writes
+the entries that differ from `RULE_STD`, because a rule is an independent
+number — `crewRest` changing does not imply `briefLead` changed too. A
+stores list is not that: it is one ordered, renameable sequence, and its
+order and its labels ARE the data, so there is no meaningful smaller unit to
+diff against. `storesSave()` therefore writes nothing at all when the list
+still equals `STORE_STD` (`storesAreStandard()`), and the full array,
+whole, the moment it deviates in any way — one rename is enough to write
+every entry, including the five untouched ones.
+
+**Load validation treats storage as hostile input**, the same posture
+`rulesLoad`'s scar comment documents for `rules` (a plain string once
+poisoned the crew-rest maths because `isFinite("840")` is true). `storesLoad`
+walks the raw JSON and drops anything that does not survive, in order:
+
+- the top-level value must be an array; anything else is ignored outright
+  and the standard six stand;
+- each entry must be a 2-element array of two strings — a `[key, label]`
+  pair, nothing else;
+- the key must match `^[a-z0-9]+$` (same charset `storeKey` produces —
+  non-alphanumerics stripped, not replaced) and must not repeat one already
+  accepted;
+- the label must be non-empty after trimming and at most `MAX_LABEL` (16)
+  characters;
+- at most `MAX_STORES` (24) entries are kept — later ones in the array are
+  simply not read once the cap is hit.
+
+If nothing in the raw array survives all of that, `STORE_CFG` is left
+untouched at its current value (the module-level standard six on a fresh
+boot), so a squadron never lands on an empty list because of a corrupted or
+hand-edited storage blob.
+
 ## Key renumbering
 
 `shiftKeys(head,pos,ix)` renumbers keys when a row is deleted, over

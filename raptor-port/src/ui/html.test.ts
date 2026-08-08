@@ -89,7 +89,8 @@ const noAvailPuck = (s: string) => s.replace(
   /<div class="availpuck sec sec-avail"[\s\S]*?(?=<div class="sub plist one sec sec-)/, '')
 
 /* Divergence #7 (owner, Aug 26): the fixed 2TK/TPOD/NAV store toggles became an
-   additive NAV/N/C/3 TKS/CL picker (a "+" button + the on-chips), so the
+   additive, squadron-editable NAV/N/C/3 TKS/CL list (a "C" button that opens a
+   popup listing every store, plus the on-chips — 7 Aug 26), so the
    .stores span diverges from the reference in BOTH view and edit mode. Excise
    the whole span from both sides — it always sits last in the rmkcell, closing
    right before that cell's </div>, so the lazy match ends at that boundary. The

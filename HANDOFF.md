@@ -490,6 +490,71 @@ believing a single red.)
   EMPTY body on success too — so a script cannot tell refusal from success and
   will cheerfully report runs it never started. Dispatch through the GitHub
   tooling, not curl.
+- **Stores configuration shipped (owner, 7 Aug 26).** The squadron's stores
+  list — NAV, N/C, 2 TKS, 3 TKS, TPOD, CL — was a fixed `const` in
+  `ui/html.ts`; it is the squadron's own now (add, remove, rename, reorder),
+  persisted to `localStorage` separately from `rules`. A `C` button replaces
+  the week's old `+` and is newly added to the board; both surfaces share one
+  body-level popup listing every store lit-or-unlit, and a pen (`✎`) inside
+  that popup switches it into an editor for the list itself. View-only shows
+  the chips and gets no `C`. Full contracts: `docs/ui-contracts.md` §Stores
+  configuration (rendering/interaction) and `docs/engine-rules.md` §Stores
+  configuration (storage, load validation). Ten things worth knowing before
+  they are rediscovered as bugs:
+  - **A customised list freezes against the standard set.** The whole list
+    is stored the moment it deviates (`storesSave` — no per-entry diff makes
+    sense for an ordered, renameable sequence), so a squadron that has
+    customised its list will not pick up a store later added to
+    `STORE_STD`. Telling "never seen this new default" apart from
+    "deliberately deleted it" needs a tombstone list — machinery for a
+    problem that does not exist yet, and deliberately not built.
+  - **A frozen day preview renders with the CURRENT stores list**, not the
+    list as it stood when that version was published — `rules` already
+    behaves exactly this way, so this is consistent, not new.
+  - **Persistence is per-browser**, the same `localStorage` limitation the
+    first bullet on this list describes for `rules`.
+  - **The board's DOM ceiling was raised 770 → 810**, measured 767 nodes
+    (was 699 before this feature) — `probes/perf-port.cjs`'s `DOM_CEILING`,
+    reasoning in `docs/probe-sweep.md` §The performance gate.
+  - **Deleting every store silently reverts on reload.** `storesSave` writes
+    `[]` when the list is emptied, and `storesLoad` only assigns
+    `if (out.length)` — an empty saved list is indistinguishable from "load
+    found nothing", so the standard six quietly return. No last-store guard
+    exists; if a squadron ever wants a genuinely empty list to stick, this
+    needs one.
+  - **The stores popup outlives a page navigation while the pen is open.**
+    Nothing clears body-level popups on a `CURPAGE` change, and a nav click
+    is an outside click the pen's dismissal deliberately declines to act on
+    while open (so an in-box drag or a rename blur cannot kill it). Rare in
+    practice, but reachable.
+  - **A stores edit made on the BOARD shows no "Edited — not published yet"
+    marker there.** The week puts `alAttr('st:'+key)` on `.rmkcell`; the
+    board's `.sb-rcell` carries no equivalent, so the same edit is invisible
+    as pending on the board even though it lands in the next AL correctly.
+  - **`PENDING_HOLD` in `highlights.ts` is a single overwrite slot**, now
+    shared by two unrelated features — `holdPuckStill`'s scroll correction
+    and this popup's `place()` re-anchor. No reachable path today calls
+    `queueHold` twice in the same task, so nothing is lost yet, but a third
+    consumer would make that true silently; the module comment flags it as
+    a review question for whoever adds one.
+  - **`export.ts`'s CSV row for a schedule line puts store labels in
+    unescaped.** Not an HTML sink — `csvText` quotes for CSV, not for a
+    browser — but a store renamed to start with `=` is a spreadsheet-formula
+    injection vector once that CSV is opened in Excel/Sheets. Pre-existing
+    risk surface, worse now that labels are user-renamable.
+  - **A follow-up this feature is not the cause of, recorded here because
+    it was found while working nearby.** The Schedule Board stays open
+    across a page change generally (not just for stores) — at a phone width
+    (≤820px), tab to `#burger` behind an open board, the drawer paints above
+    it at `z-index:440`, and "View-only Sched" flips `CURPAGE` while the
+    board itself stays open with callsign, times, remarks, CX and ✕ all
+    still live and still writing to the model. Stores render was gated on
+    `HOOKS.editMode()` for exactly this reason and is safe; the rest of the
+    board's line is not. Proposed fix: `SchedBoard.tsx`'s
+    `const open = SBDAY != null` becomes
+    `SBDAY != null && CURPAGE === 'editsched'`, or `setPage` closes the
+    board outright. **Deliberately not fixed here** — out of scope for a
+    stores feature.
 - **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
   still described a three-gate, mid-port project — the root one also called a
   member view-only, which the 5 Aug roles decision had already undone.
