@@ -150,6 +150,37 @@ rendered **into the string**, not painted afterwards: `SchedBoard` diffs each
 panel's html to decide whether to re-hang it, so a class added later is lost
 on the next unrelated repaint.
 
+## The board on a phone is ONE window (owner, 8 Aug 26)
+
+Comp approved before build. Below 820px the board used to be three stacked
+zones — the panels, then a bottom-pinned sheet holding `Live checks` and the
+roster, split by a drag-grip (the B25 machine, now deleted). It matches the
+edit week now:
+
+- **The warnings ride at the top of the one scroller.** `.sb-side` is
+  `display:contents` on a phone, so `.sb-warn` becomes a flex item of
+  `.sb-main` and `order:-1` puts it above the panels; it scrolls away with
+  the content, exactly as the week's issue strips do. `flex:0 0 auto` is
+  load-bearing — an `overflow:auto` child's automatic minimum is 0, so a
+  shrinkable strip collapses to its header line.
+- **The roster is a right-edge AIRCREW drawer** (`.sb-ros`, carrying
+  `.eroster` so the week's tab styling, its `ros-open` accent flip and
+  interactions.ts's delegated `.ros-tab` toggle apply verbatim). Arming any
+  slot pulls it open — that is `armSlot`'s existing `isPhone()` line, not
+  new wiring — and `closeScheduler` parks it so an open drawer never leaks
+  onto the week underneath. The drawer geometry is restated in the board's
+  own 820px block because `.edit-board .eroster`'s rules are scoped to the
+  week's page wrapper; its z-index (120) lives inside `.schedboard`'s own
+  stacking context (400), so body-level popups at 480 still paint above
+  the whole board.
+- **Desktop (>820px) and `.sb-wide` are unchanged** — the side column
+  restates `display:flex` and melts the drawer wrapper back to
+  `display:contents`, tab hidden.
+
+Pinned in `odds.test.tsx` (tab, shared toggle, parks on close) and measured
+in `e2e/geometry.spec.ts` (strip above the first panel, drawer parked at
+26px, slides on tap, opens on arm).
+
 ## The day's three closing blocks, and who sees them
 
 A day ends with three blocks, not the reference's five (owner request, Aug 26 —

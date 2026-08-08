@@ -594,7 +594,7 @@ export function routeClick(e: MouseEvent) {
   if (pg && !t.closest('a,button,input,select,textarea,[contenteditable="true"],'
     + '.fchip,.puck,.seat,.rpuck,.ros-tab,.ros-arm,.sb-slot,[data-fill],[data-slot],'
     + '.dwbox,.pillbtn,.day-head,.sb-open,.dinfobtn,.airpop,.schedbanner,.alpanel,'
-    + '.sb-top,.sb-sign,.signoff,.sb-grip,.hscroll,.week-nav')) {
+    + '.sb-top,.sb-sign,.signoff,.hscroll,.week-nav')) {
     let any = false
     if (view.ARM) { view.disarmSlot(); any = true }
     if (view.SELID || view.WFOCUS || view.PFOCUS || view.DWOPEN.size) { view.selDrop(); any = true }

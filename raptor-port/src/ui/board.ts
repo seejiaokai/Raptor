@@ -430,4 +430,8 @@ export function toggleWide() {
 export function boardTab(n: number) { view.setBoardDay(n); validate(); notify() }
 
 export function openScheduler(di: number) { view.setBoardDay(di); validate(); notify() }
-export function closeScheduler() { view.setBoardDay(null); notify() }
+/* Done/Close also parks the aircrew drawer: ros-open is a body class shared
+   with the edit week's own drawer, and leaving it set would surprise-open
+   the week's palette the moment the board lifts (owner's one-window phone
+   board, 8 Aug 26). The week's tab is right there to reopen it. */
+export function closeScheduler() { view.setBoardDay(null); document.body.classList.remove('ros-open'); notify() }
