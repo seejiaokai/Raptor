@@ -7,9 +7,9 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 687/43
+**Every gate is green at this commit**, run first-hand: `npm test` 690/43
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 38/38, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 40/40, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 **`probes:adapted` and `perf` do NOT serve themselves** — start
 `npx vite preview --port 4173` first or both fail with
@@ -69,7 +69,7 @@ believing a single red.)
   board's one-window layout — warnings strip on top, AIRCREW drawer
   parked/sliding/arm-opened — and the board line's seats clear of every
   input plus a deleted pax's hole holding its place, 8 Aug 26) —
-  seventeen contract families over 38 tests. It
+  seventeen contract families over 40 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
@@ -265,11 +265,20 @@ believing a single red.)
   collapsed and the replacement had nowhere to land — the WEEK still draws
   holes as nothing, reference-shaped, by choice), and both drawers' bodies
   scroll the iOS way (flex-bound height instead of a 100vh cap that never
-  binds under Safari's toolbars, overscroll containment, and a 14px
-  invisible tap-area extension on both AIRCREW tabs). Contracts:
-  `docs/ui-contracts.md` §The board on a phone is ONE window and §The
-  scheduler board's panels; pinned in `odds.test.tsx` and `board.test.tsx`,
-  measured in `e2e/geometry.spec.ts`.
+  binds under Safari's toolbars, plus overscroll containment). A THIRD
+  wave, from a brainstormed critique the same day (spec:
+  `raptor-port/docs/superpowers/specs/2026-08-08-mobile-board-flaws-design.md`):
+  the parked tab had been stealing taps — its full-height sliver covered
+  ✕ Close and the Sun 19 chip, and a short-lived invisible 14px tap
+  extension covered input ends — so parked is now a centred grab-handle
+  (clamp(180px,55vh,440px), an honest 30px, week and board alike); a
+  successful fill parks the drawer so the puck is seen landing (tap path
+  in placeArmed, drag path via the ROS_REOPEN latch in applyDrop's
+  done()); and Live checks folds to one tappable line (SBWOPEN in
+  board.ts, collapsed afresh per visit, desktop/.sb-wide always open).
+  Contracts: `docs/ui-contracts.md` §The board on a phone is ONE window
+  and §The scheduler board's panels; pinned in `odds.test.tsx` and
+  `board.test.tsx`, measured in `e2e/geometry.spec.ts`.
 - **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** "Restore
   this version" makes that version live immediately, discards the day's
   pending edits, needs no sign-off; new edits publish as `nextAL()`. Details:

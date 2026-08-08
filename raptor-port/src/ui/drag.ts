@@ -127,6 +127,10 @@ export function applyDrop(el: any, x: any, y: any) {
      already filled by hand). Drops elsewhere leave the arm alone. */
   const done = (served?: any) => {
     if (served && view.armedKey() === served) view.disarmSlot()
+    /* a drop that LANDED parks the drawer (owner, 8 Aug 26) — clear the
+       reopen latch before dndOff() re-adds ros-open. Failed drops never
+       reach done(), so an aborted drag still gets its drawer back. */
+    ROS_REOPEN = false
     DRAG = null; dndOff(); view.afterSchedMutate(); notify(); return true
   }
   if (slotEl) {

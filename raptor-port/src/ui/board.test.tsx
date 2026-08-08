@@ -464,4 +464,47 @@ describe('board lifecycle', () => {
     expect($$('#sbBoard .sb-slot.empty.pax').length, 'the hole is gone once refilled').toBe(0)
     await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
   })
+
+  /* The point of planting is seeing the puck land, and the auto-opened
+     drawer covered it (owner critique, 8 Aug 26): a successful fill now
+     parks the drawer. Only success parks — an aborted gesture leaves it. */
+  it('planting from the drawer parks it — a refused plant does not', async () => {
+    const { HOOKS } = await import('../engine/hooks')
+    const orig = HOOKS.isPhone; HOOKS.isPhone = () => true
+    try {
+      await act(async () => { openScheduler(0) })
+      await act(async () => { setSlotVal('s:0.amt.1.pax.1', ''); afterSchedMutate() })
+      const hole = $('#sbBoard .sb-slot.empty.pax')
+      boardArmClick({ target: hole, stopPropagation() {} } as any)
+      expect(document.body.classList.contains('ros-open'), 'arming opened the drawer').toBe(true)
+      let ok: any
+      await act(async () => { ok = view.placeArmed('drill') })
+      expect(ok, 'the plant landed').toBe(true)
+      expect(document.body.classList.contains('ros-open'), 'a successful fill parks the drawer').toBe(false)
+    } finally {
+      HOOKS.isPhone = orig
+      await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
+    }
+  })
+
+  /* The phone board's Live checks fold (owner, 8 Aug 26): collapsed to the
+     header line each visit; the header toggles. Desktop keeps the always-
+     open side list — the flag only has CSS effect under 820px, so jsdom
+     pins the class/state machine and e2e measures the visibility. */
+  it('Live checks opens collapsed and the header toggles it', async () => {
+    const { HOOKS } = await import('../engine/hooks')
+    const orig = HOOKS.isPhone; HOOKS.isPhone = () => true
+    try {
+      await act(async () => { openScheduler(0) })
+      expect($('#sbWarn .sbwrap'), 'the strip is wrapped for the fold').toBeTruthy()
+      expect($('#sbWarn .sbwrap').classList.contains('open'), 'collapsed by default').toBe(false)
+      await click($('#sbWarn [data-sbwtog]'))
+      expect($('#sbWarn .sbwrap').classList.contains('open'), 'the header opens it').toBe(true)
+      await click($('#sbWarn [data-sbwtog]'))
+      expect($('#sbWarn .sbwrap').classList.contains('open'), 'and folds it back').toBe(false)
+    } finally {
+      HOOKS.isPhone = orig
+      await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
+    }
+  })
 })

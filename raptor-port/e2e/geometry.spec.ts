@@ -1069,6 +1069,66 @@ test('board at 390px: a deleted AMT pax leaves a droppable hole in its own place
   expect(hole!.w, 'puck-sized, so the pair rows stay level').toBeGreaterThanOrEqual(74)
 })
 
+/* THE PARKED TAB STOLE TAPS (owner critique, 8 Aug 26). The drawer aside
+   spanned top:0-bottom:0, so its parked sliver covered the header's right
+   edge — elementFromPoint at the centre of ✕ Close and of the Sun 19 chip
+   returned .ros-tab, and both taps opened the drawer. The invisible 14px
+   ::before extension likewise sat over the last ~13px of every full-width
+   input. The drawer is a centred grab-handle now, and nothing invisible
+   extends past it. */
+test('board at 390px: taps near the right edge land where they aim', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  /* elementFromPoint only sees the viewport — bring a flying line's remarks
+     input on screen first (the header stays pinned above the scroller) */
+  await page.locator('#sbBoard .sb-line .nts').first().scrollIntoViewIfNeeded()
+  const hits = await page.evaluate(() => {
+    const at = (sel: string) => {
+      const r = document.querySelector(sel)!.getBoundingClientRect()
+      const el = document.elementFromPoint(Math.min(386, r.right - 4), r.top + r.height / 2)
+      return el ? ((el as HTMLElement).id || el.className || el.tagName).toString() : 'nothing'
+    }
+    return { close: at('#sbClose'), sun: at('#sbDays [data-sbtab="6"]'), rmk: at('#sbBoard .sb-line .nts') }
+  })
+  expect(hits.close, 'the Close button owns its own pixels').toBe('sbClose')
+  expect(hits.sun, 'the Sunday chip owns its pixels').toContain('sbday')
+  expect(hits.rmk, 'a remarks input owns its right end').toContain('nts')
+  const band = await page.locator('#schedBoard .sb-ros').boundingBox()
+  expect(band!.height, 'a handle, not a full-height wall').toBeLessThan(500)
+  expect(band!.y, 'clear of the header above it').toBeGreaterThan(100)
+})
+
+/* THE FOLD AND THE PARK, MEASURED (owner, 8 Aug 26). jsdom pins the class
+   machine (board.test.tsx); only a browser can show the rows actually
+   hidden, the list actually expanding, and the planted puck actually
+   visible once the drawer parks itself. */
+test('board at 390px: Live checks folds to one line, and a fill parks the drawer', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  const rowVisible = () => page.locator('#sbWarn .wln[data-wdi]').first().isVisible()
+  expect(await rowVisible(), 'collapsed by default — one line, no list').toBe(false)
+  await page.click('#sbWarn [data-sbwtog]')
+  expect(await rowVisible(), 'the header opens the full list').toBe(true)
+  await page.click('#sbWarn [data-sbwtog]')
+  expect(await rowVisible(), 'and folds it away again').toBe(false)
+  await page.evaluate(() => { (window as any).setSlotVal('s:0.amt.1.pax.1', ''); (window as any).afterSchedMutate() })
+  const hole = page.locator('#sbBoard .sb-slot.empty.pax').first()
+  await hole.scrollIntoViewIfNeeded(); await hole.click({ position: { x: 20, y: 5 } })
+  await page.waitForTimeout(300)
+  await page.locator('#schedBoard .sb-roster .rpuck', { hasText: 'Drill' }).first().click()
+  await page.waitForTimeout(350)
+  const after = await page.evaluate(() => {
+    const s = document.querySelector('#sbBoard .seat[data-slot="s:0.amt.1.pax.1"]')
+    const r = s && s.getBoundingClientRect()
+    return { parked: !document.body.classList.contains('ros-open'),
+             seatVisible: !!r && r.left >= 0 && r.right <= 390 && r.top > 0 && r.bottom < 780 }
+  })
+  expect(after.parked, 'the drawer parked itself on the fill').toBe(true)
+  expect(after.seatVisible, 'and the planted puck is on screen').toBe(true)
+})
+
 /* THE PHONE BOARD IS ONE WINDOW (owner, 8 Aug 26 — comp approved before
    build). It used to be three stacked zones: panels, then a bottom-pinned
    Live-checks + roster sheet, split by a resize grip. Now it matches the
@@ -1081,13 +1141,16 @@ test('the phone board is one window: warnings on top, aircrew in an edge drawer'
   await page.setViewportSize({ width: 390, height: 780 })
   await login(page); await go(page, 'editsched')
   await page.click('.sb-open')
-  await expect(page.locator('#schedBoard .sb-warn .wln').first()).toBeVisible()
+  /* the strip opens FOLDED since the same-day critique (its rows hide until
+     the header is tapped — pinned both ways by the fold test), so the
+     on-top contract is asserted on the header line */
+  await expect(page.locator('#schedBoard .sb-warn .wh').first()).toBeVisible()
   const warn = await page.locator('#schedBoard .sb-warn').boundingBox()
   const panel = await page.locator('#sbBoard .sb-panel').first().boundingBox()
   expect(warn!.y, 'live checks ride above the first panel').toBeLessThan(panel!.y)
   expect(await page.locator('#sbGrip').count(), 'the resize grip is gone').toBe(0)
   const parked = await page.locator('#schedBoard .sb-ros').boundingBox()
-  expect(parked!.x, 'drawer parked: only the 26px tab on screen').toBeGreaterThan(390 - 30)
+  expect(parked!.x, 'drawer parked: only the 30px handle on screen').toBeGreaterThanOrEqual(358)
   const tab = await page.locator('#schedBoard .sb-ros .ros-tab').boundingBox()
   expect(tab!.x + tab!.width, 'the tab sits flush with the right edge').toBeGreaterThan(388)
   await page.click('#schedBoard .sb-ros .ros-tab')

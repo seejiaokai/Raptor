@@ -127,7 +127,15 @@ export function boardHTML(di: number, pv?: boolean) {
 export function boardWarnHTML(di: number) {
   const d = DAYS[di]
   const dw = (WARN.byDay[di] && WARN.byDay[di].warns) || []
-  let wh = `<div class="wh">Live checks · ${dw.length} for ${esc(d.dow)}</div>`
+  /* .sbwrap/.open + data-sbwtog + .sbw-car exist for the PHONE fold (owner,
+     8 Aug 26 — the always-open strip scrolled inside the one board
+     scroller). Desktop hides the caret and its toggle branch is
+     isPhone()-gated, so the header stays inert there and the rows always
+     show. The ⚠ prints only when there is something to warn about. */
+  let wh = `<div class="sbwrap${SBWOPEN ? ' open' : ''}">`
+    + `<div class="wh" data-sbwtog title="Show / hide the day's checks">`
+    + `<span class="sbw-car">${SBWOPEN ? '▾' : '▸'}</span>`
+    + `${dw.length ? '⚠ ' : ''}Live checks · ${dw.length} for ${esc(d.dow)}</div>`
   if (dw.length) {
     /* Iterate WARN's own array, unsorted: validate() has already ordered it by
        SORD (hard, adv, note), so the local hard-first sort this used to do was a
@@ -144,7 +152,7 @@ export function boardWarnHTML(di: number) {
       wh += `<div class="wln ${w.sev}${on}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || ''))}</div>`
     })
   } else wh += `<div class="wln ok">No conflicts flagged for this day ✓</div>`
-  return wh
+  return wh + `</div>`
 }
 
 export function dayTabsHTML(di: number) {
@@ -426,10 +434,18 @@ export function toggleWide() {
   toast(SBWIDE ? 'Desktop layout — pan sideways to read the whole day' : 'Phone layout')
 }
 
+/* the phone board's Live checks fold (owner, 8 Aug 26): module state like
+   SBWIDE, collapsed afresh on every openScheduler — a board visit starts
+   with the day, not the list; the flag survives day-tab switches. Desktop
+   ignores it (the fold is CSS under 820px only, and the toggle branch in
+   interactions.ts is isPhone()-gated). */
+export let SBWOPEN = false
+export function toggleSbwarn() { SBWOPEN = !SBWOPEN }
+
 /* day tab switch — setBoardDay carries the reference's cross-day disarm */
 export function boardTab(n: number) { view.setBoardDay(n); validate(); notify() }
 
-export function openScheduler(di: number) { view.setBoardDay(di); validate(); notify() }
+export function openScheduler(di: number) { SBWOPEN = false; view.setBoardDay(di); validate(); notify() }
 /* Done/Close also parks the aircrew drawer: ros-open is a body class shared
    with the edit week's own drawer, and leaving it set would surprise-open
    the week's palette the moment the board lifts (owner's one-window phone

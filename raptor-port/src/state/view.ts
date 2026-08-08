@@ -235,6 +235,10 @@ export function placeArmed(id:any){
   const key=ARM.key;
   if(/\.\+$/.test(key))fillSlot(key,id); else setSlotVal(key,id);
   armDrop();
+  /* a successful fill PARKS the drawer (owner, 8 Aug 26): the point of
+     planting is seeing the puck land, and the open drawer covers it.
+     Refusals return above, so an aborted pick keeps the drawer out. */
+  if(isPhone())document.body.classList.remove('ros-open');
   afterSchedMutate(); paintArm();
   toast(`${PEOPLE[id].cs} planned`);
   return true;
