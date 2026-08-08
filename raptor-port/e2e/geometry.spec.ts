@@ -1099,6 +1099,36 @@ test('board at 390px: taps near the right edge land where they aim', async ({ pa
   expect(band!.y, 'clear of the header above it').toBeGreaterThan(100)
 })
 
+/* THE FOLD AND THE PARK, MEASURED (owner, 8 Aug 26). jsdom pins the class
+   machine (board.test.tsx); only a browser can show the rows actually
+   hidden, the list actually expanding, and the planted puck actually
+   visible once the drawer parks itself. */
+test('board at 390px: Live checks folds to one line, and a fill parks the drawer', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  const rowVisible = () => page.locator('#sbWarn .wln[data-wdi]').first().isVisible()
+  expect(await rowVisible(), 'collapsed by default — one line, no list').toBe(false)
+  await page.click('#sbWarn [data-sbwtog]')
+  expect(await rowVisible(), 'the header opens the full list').toBe(true)
+  await page.click('#sbWarn [data-sbwtog]')
+  expect(await rowVisible(), 'and folds it away again').toBe(false)
+  await page.evaluate(() => { (window as any).setSlotVal('s:0.amt.1.pax.1', ''); (window as any).afterSchedMutate() })
+  const hole = page.locator('#sbBoard .sb-slot.empty.pax').first()
+  await hole.scrollIntoViewIfNeeded(); await hole.click({ position: { x: 20, y: 5 } })
+  await page.waitForTimeout(300)
+  await page.locator('#schedBoard .sb-roster .rpuck', { hasText: 'Drill' }).first().click()
+  await page.waitForTimeout(350)
+  const after = await page.evaluate(() => {
+    const s = document.querySelector('#sbBoard .seat[data-slot="s:0.amt.1.pax.1"]')
+    const r = s && s.getBoundingClientRect()
+    return { parked: !document.body.classList.contains('ros-open'),
+             seatVisible: !!r && r.left >= 0 && r.right <= 390 && r.top > 0 && r.bottom < 780 }
+  })
+  expect(after.parked, 'the drawer parked itself on the fill').toBe(true)
+  expect(after.seatVisible, 'and the planted puck is on screen').toBe(true)
+})
+
 /* THE PHONE BOARD IS ONE WINDOW (owner, 8 Aug 26 — comp approved before
    build). It used to be three stacked zones: panels, then a bottom-pinned
    Live-checks + roster sheet, split by a resize grip. Now it matches the

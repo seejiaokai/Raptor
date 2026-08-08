@@ -486,4 +486,25 @@ describe('board lifecycle', () => {
       await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
     }
   })
+
+  /* The phone board's Live checks fold (owner, 8 Aug 26): collapsed to the
+     header line each visit; the header toggles. Desktop keeps the always-
+     open side list — the flag only has CSS effect under 820px, so jsdom
+     pins the class/state machine and e2e measures the visibility. */
+  it('Live checks opens collapsed and the header toggles it', async () => {
+    const { HOOKS } = await import('../engine/hooks')
+    const orig = HOOKS.isPhone; HOOKS.isPhone = () => true
+    try {
+      await act(async () => { openScheduler(0) })
+      expect($('#sbWarn .sbwrap'), 'the strip is wrapped for the fold').toBeTruthy()
+      expect($('#sbWarn .sbwrap').classList.contains('open'), 'collapsed by default').toBe(false)
+      await click($('#sbWarn [data-sbwtog]'))
+      expect($('#sbWarn .sbwrap').classList.contains('open'), 'the header opens it').toBe(true)
+      await click($('#sbWarn [data-sbwtog]'))
+      expect($('#sbWarn .sbwrap').classList.contains('open'), 'and folds it back').toBe(false)
+    } finally {
+      HOOKS.isPhone = orig
+      await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
+    }
+  })
 })

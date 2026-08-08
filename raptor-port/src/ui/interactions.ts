@@ -17,7 +17,7 @@ import { scrollToWarnFocus, queueHold } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave } from '../engine'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer } from './pops'
-import { openScheduler } from './board'
+import { openScheduler, toggleSbwarn } from './board'
 import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
 
@@ -475,6 +475,11 @@ export function routeClick(e: MouseEvent) {
      flow's line of fire — and it deliberately does not use focusWarn: that
      toggles, which is right for a list you are already looking at and wrong
      here, and it leaves DWOPEN alone. See jumpToWarn. */
+  /* the phone board's Live checks header folds/unfolds its list (owner,
+     8 Aug 26) — phone only: on desktop the side panel is always open and
+     the header is inert */
+  if (t.closest('[data-sbwtog]') && HOOKS.isPhone()) { toggleSbwarn(); notify(); e.stopPropagation(); return }
+
   const wl = t.closest('.wln[data-wdi]') as HTMLElement | null
   if (wl) { jumpToWarn(+wl.dataset.wdi!, +wl.dataset.wix!); e.stopPropagation(); return }
 
