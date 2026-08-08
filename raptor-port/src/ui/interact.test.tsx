@@ -11,6 +11,8 @@ import { initStore, setSession, notify } from '../state/store'
 import { validate, WARN } from '../engine/validate'
 import { personWarnDays } from '../engine/avail'
 import { isSpecial } from '../engine/people'
+import { DAYS } from '../engine/data'
+import * as view from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -20,6 +22,22 @@ const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+}
+/* sync counterparts for tests that assert against the model right after the
+   click, with no debounce or timer in the way — act() alone flushes React's
+   pending updates before it returns, so no await is needed */
+const clickSync = (el: Element | null) => {
+  expect(el, 'click target exists').toBeTruthy()
+  act(() => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+}
+const clickAttr = (sel: string) => clickSync($(sel))
+/* idempotent: if the board is already open on this day (as an earlier test
+   in this block left it), no click is issued — that is what lets the
+   member-role test find the SAME admin-rendered markup still on screen
+   after setSession(), the stale-element scenario canEditSched() guards */
+const mountBoard = (di: number) => {
+  if (view.CURPAGE !== 'editsched') clickSync($('.nav a[data-page="editsched"]'))
+  if (view.SBDAY !== di) clickSync($(`#eWeek .day[data-day="${di}"] .dow.sb-open`))
 }
 
 beforeAll(async () => {
@@ -410,5 +428,49 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     const vw = [...document.querySelectorAll('#vWeek [data-alc="8"]')].find(x => x.textContent!.includes('AL MARK TEST'))
     expect(vw, 'the view week shows the AL-coloured text').toBeTruthy()
     await act(async () => { unpublishAL(8); txtSet(key, was); delete SCHED.pending[key]; const { notify } = await import('../state/store'); notify() })
+  })
+})
+
+describe('the nudge buttons move a row one place as rendered', () => {
+  it('▼ on the first programme item swaps it with the second', () => {
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    const was = DAYS[di].allhands.map((x: any) => x.prog)
+    mountBoard(di)
+    clickAttr(`[data-mvdn="mv:p.${di}.0"]`)
+    expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual([was[1], was[0], ...was.slice(2)])
+  })
+
+  it('▲ on the first row is a no-op rather than an error', () => {
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    const was = JSON.stringify(DAYS[di].allhands)
+    mountBoard(di)
+    clickAttr(`[data-mvup="mv:p.${di}.0"]`)
+    expect(JSON.stringify(DAYS[di].allhands)).toBe(was)
+  })
+
+  /* the ground list renders time-sorted, so "one place down" is a question
+     about the DOM, not about model indices */
+  it('▼ on a ground row moves it past the row rendered below it', () => {
+    DAYS[0].ground = [
+      { prog: 'C', str: '1000' }, { prog: 'A', str: '0800' }, { prog: 'B', str: '0900' },
+    ]
+    /* the panel is only ever repainted by a notify() (SchedBoard's own
+       version-diffed effect) — a raw fixture assignment above bypasses the
+       mutation funnel entirely, so without this the board would still be
+       showing whatever ground rows an earlier test in this block left it on */
+    act(() => notify())
+    mountBoard(0)
+    clickAttr('[data-mvdn="mv:g.0.1"]')     // model 1 is 'A', rendered first
+    expect(DAYS[0].gman).toBe(true)
+    expect(DAYS[0].ground.map((r: any) => r.prog)).toEqual(['B', 'A', 'C'])
+  })
+
+  it('a member cannot nudge', () => {
+    setSession({ user: 'user', role: 'member' } as any)
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    const was = JSON.stringify(DAYS[di].allhands)
+    mountBoard(di)
+    clickAttr(`[data-mvdn="mv:p.${di}.0"]`)
+    expect(JSON.stringify(DAYS[di].allhands)).toBe(was)
   })
 })

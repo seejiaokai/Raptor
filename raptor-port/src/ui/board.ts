@@ -12,6 +12,7 @@ import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
 import { markEdit, alAttr } from '../engine/publish'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/keys'
+import { applyMove } from '../engine/reorder'
 import { signoffHTML, cxText, storesView } from './html'
 import { STORE_CFG } from '../engine'
 import { HOOKS } from '../engine/hooks'
@@ -192,6 +193,28 @@ export function boardMbtn(e: MouseEvent) {
   if (view.DPREV.has(view.SBDAY as any)) return
   const t = (e.target as HTMLElement).closest('.mbtn') as HTMLElement | null; if (!t) return
   const ds = t.dataset
+  /* ▲/▼ — the phone's reorder gesture. The target is read off the NEIGHBOURING
+     ROW IN THE DOM rather than computed as index±1, because one list (Ground)
+     renders time-sorted: "one place down" is a question about what the
+     scheduler can see, and engine/reorder.ts translates the model indices. */
+  if (ds.mvup != null || ds.mvdn != null) {
+    if (!canEditSched()) return
+    const up = ds.mvup != null
+    const addr = up ? ds.mvup : ds.mvdn
+    /* the ▲/▼ buttons sit in the row's own control cluster (.lctl), a SIBLING
+       of the .sb-grip that carries data-move, not a descendant of it — so the
+       row itself is found by its container class, and a sibling's address is
+       read off its own grip, never off the button that was clicked */
+    const row = t.closest('.sb-arow, .sb-line, .sb-nrow') as HTMLElement | null
+    if (!row || !row.parentElement) return
+    const rows = [...row.parentElement.children]
+      .filter(x => (x as HTMLElement).querySelector('[data-move]')) as HTMLElement[]
+    const i = rows.indexOf(row), j = up ? i - 1 : i + 1
+    if (i < 0 || j < 0 || j >= rows.length) return
+    const toAddr = (rows[j].querySelector('[data-move]') as HTMLElement).dataset.move
+    if (applyMove(addr, toAddr)) { afterSchedMutate(); notify() }
+    return
+  }
   if (ds.lcx != null) { const r = acRef(ds.lcx); if (!r || !r.a) return; return askCx(r.a, `fr:${ds.lcx}`, 'this line', () => rollCx(r.f)) }
   if (ds.lflag != null) {
     const r = acRef(ds.lflag); if (!r || !r.a) return
