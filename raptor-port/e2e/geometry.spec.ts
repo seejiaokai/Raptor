@@ -1474,6 +1474,42 @@ test('the phone board keeps its column layout after the grip is added', async ({
   expect(m.flyLabels).toEqual(['CS', 'MSN', 'TO', 'LD'])
 })
 
+/* THE NOTES ROW WAS THE ONE TEMPLATE NEVER RESTATED ON A PHONE (fix round
+   1, 8 Aug 26 — found live, not by a test). .sb-nrow's three trailing
+   controls (▲ ▼ ✕) used to be flat siblings, not one grid item like every
+   other row's .lctl — so on desktop, with the nudge buttons display:none,
+   exactly four items landed in the four-track template and it looked
+   fine; on a phone, with the grip gone and the nudge buttons back, FIVE
+   flat items tried to fill four tracks. The note text fell into the nx
+   number's 22px column, the first control (▲) inflated to fill the 1fr
+   column meant for the note, and ✕ wrapped onto an implicit second row
+   under the hidden grip's column. Wrapping the controls in one .lctl
+   (matching every other row) plus restating the template fixed it — this
+   pins both halves: a readable text field, and a single grid row. */
+test('the notes row keeps a usable text field and a single row on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-nrow')
+  const m = await page.evaluate(() => {
+    const row = document.querySelector('#sbBoard .sb-nrow') as HTMLElement
+    const nin = row.querySelector('.nin') as HTMLElement
+    return {
+      /* row height, not child-to-child top comparisons — .sb-nrow centres
+         its items (align-items:center), so .nx (a short span) and .nin
+         (a padded input) legitimately sit at different tops even on a
+         single grid row; height is what actually tells single-row from
+         wrapped. Measured: 24px single-row (fixed), 48.5px wrapped to two
+         rows (the pre-fix bug, both here and independently confirmed at
+         a live 390px .sb-wide check during this fix). */
+      rowHeight: row.getBoundingClientRect().height,
+      ninWidth: nin.getBoundingClientRect().width,
+    }
+  })
+  expect(m.ninWidth, 'the note text is readable, not squeezed into the number column').toBeGreaterThan(100)
+  expect(m.rowHeight, 'one grid row, not wrapped onto a second').toBeLessThan(40)
+})
+
 /* the reference day's very first wave carries two formations (VL, RU), and
    the SECOND wave reuses the same two callsigns for its own pair (measured:
    DAYS[0].waves[0] and [1] both hold a VL 2-ship and a RU 2-ship) — so a

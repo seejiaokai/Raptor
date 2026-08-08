@@ -90,9 +90,13 @@ export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
   let s=`<div class="sb-panel notes"><div class="sb-ph">Overall notes <span class="sub">shown at the head of the day</span>`
     +(pv?'':`<span class="gctl"><button class="mbtn add" data-nadd="${di}" title="Add a note line">+ Note</button></span>`)+`</div><div class="sb-pb">`;
   if(!n.length)s+=`<div class="sb-empty">Nothing yet — “+ Note” adds a line that every viewer sees at the top of the day.</div>`;
+  /* the three trailing controls are wrapped in one .lctl, same as every
+     other row (sbRowCtl / board.ts's prog row) — an unwrapped ▲▼✕ is three
+     flat grid children, not one, and the phone template below is written
+     for four items (grip-gone, nx, nin, lctl), not five */
   n.forEach((t:any,ni:any)=>{ s+=`<div class="sb-nrow"${rowMove(`mv:n.${di}.${ni}`,ro)}>`+sbGrip(ro)+`<span class="nx">${ni+1}.</span>`
     +`<input class="nin" data-bfld="dn:${di}.${ni}"${alAttr(`dn:${di}.${ni}`)}${pv?' disabled':''} value="${esc(t)}" placeholder="e.g. EP OF THE WEEK — ENGINE FIRE ON GROUND">`
-    +(pv?'':sbNudge(`mv:n.${di}.${ni}`,ro)+`<button class="mbtn del" data-ndel="${di}.${ni}" title="Remove this note">✕</button>`)+`</div>`; });
+    +(pv?'':`<span class="lctl">`+sbNudge(`mv:n.${di}.${ni}`,ro)+`<button class="mbtn del" data-ndel="${di}.${ni}" title="Remove this note">✕</button></span>`)+`</div>`; });
   return s+`</div></div>`;
 }
 /* ---- board panel 2: overall programme (squadron-wide, affects everyone) --- */

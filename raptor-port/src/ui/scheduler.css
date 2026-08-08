@@ -1894,6 +1894,10 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .sb-nrow .nin{background:var(--bg);border:1px solid var(--edge);border-radius:6px;color:#F2D699;
   font-size:11.5px;padding:5px 7px;width:100%;box-sizing:border-box}
 .sb-nrow .nin:focus{outline:none;border-color:var(--accent);color:var(--ink)}
+/* the row's trailing controls (▲▼✕) are one grid item, same move as every
+   other row's .lctl — an unwrapped ▲▼✕ is three flat grid children, which
+   is what let the phone template below run out of tracks (8 Aug 26) */
+.sb-nrow .lctl{display:flex;gap:3px;justify-content:flex-end}
 .sb-empty{font-size:11px;color:var(--ink-3);font-style:italic;padding:2px 0 4px}
 .sb-acols,.sb-arow{display:grid;grid-template-columns:18px 1.5fr 1.1fr 52px 52px minmax(96px,1.1fr) 92px;
   gap:8px;align-items:center;padding:4px 0}
@@ -2014,6 +2018,21 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   .sb-grip{display:none}
   .mbtn.nudge{display:inline-flex}
   .sb-lcols>:nth-child(1),.sb-acols>:nth-child(1){display:none}
+  /* .sb-nrow is the one row template that was never restated down here
+     (found live, fix round 1, 8 Aug 26). With the grip hidden above, the
+     row is down to three real grid children — nx, nin, .lctl — but
+     without this override they fall through to the unconditional desktop
+     template above (18px 22px 1fr 62px, four tracks): nx lands in the
+     18px track (too narrow to matter, it's just "1."), nin lands in the
+     22px track meant for nx (the note text squeezed to ~22px), and .lctl
+     lands in the 1fr track meant for the note (its first button, ▲,
+     inflating to fill it) — with the last 62px track going unused. Before
+     .lctl existed, the bug was worse still: ▲ ▼ ✕ were three flat
+     children, not one, so a fifth item had nowhere to go and wrapped onto
+     an implicit second row. 74px is measured against the phone build:
+     ▲ ▼ ✕ at .mbtn.nudge's own size plus the .lctl gap, with a few px to
+     spare. */
+  .sb-nrow{grid-template-columns:22px 1fr 74px}
   .sb-lcols,.sb-line{grid-template-columns:54px 1fr 52px 52px;font-size:10px}
   .sb-line .sb-bcell{grid-column:1 / -1;grid-row:2}
   .sb-line .sb-slot{grid-column:1 / -1}
@@ -2078,6 +2097,13 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .schedboard.sb-wide .sb-roster{flex:1;overflow:auto}
 .schedboard.sb-wide .sb-grip{display:flex}
 .schedboard.sb-wide .mbtn.nudge{display:none}
+/* the phone .sb-nrow override (three tracks, grip gone) would otherwise
+   keep applying here too — .sb-wide brings the grip back as a real grid
+   item, so the row needs its full four-track desktop template restated,
+   same move as .sb-lcols/.sb-line below (8 Aug 26 fix-round-1 follow-up:
+   found by checking every panel this task touched at 390px, not just the
+   ones the first pass happened to screenshot). */
+.schedboard.sb-wide .sb-nrow{grid-template-columns:18px 22px 1fr 62px}
 .schedboard.sb-wide .sb-lcols>:nth-child(1),.schedboard.sb-wide .sb-acols>:nth-child(1){display:revert}
 .schedboard.sb-wide .sb-lcols,.schedboard.sb-wide .sb-line{grid-template-columns:18px 64px 74px 54px 54px 54px 1fr 1fr 92px 92px;font-size:11.5px}
 .schedboard.sb-wide .sb-lcols>:nth-child(4),.schedboard.sb-wide .sb-lcols>:nth-child(7),
