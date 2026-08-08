@@ -780,14 +780,46 @@ with:
           const key=`d:${di}.${wi}.${ri}`;
 ```
 
-- [ ] **Step 3: Run parity — this is the gate for this task**
+- [ ] **Step 3: Push the re-laid duty rows into the in-memory reference**
+
+**This step was added after the first attempt at this task blocked here — the
+original plan claimed no `refwin.ts` patch was needed, and that was wrong.**
+The claim only considered the RENDERED markup, where the re-lay does hold
+(the reference sorts an already-sorted list, which is a no-op, so both sides
+print the same HTML). But `parity.test.ts` also compares the two apps
+**structurally**: `seed data matches (DAYS)` deep-compares `DAYS` against the
+reference's own `DAYS`, and `collectEvents matches the reference exactly`
+compares an event list built by walking `dutywaves.rows` in raw stored order.
+Re-laying our seed data makes our data differ from the reference's, so both of
+those fail no matter what renders.
+
+The fix is the idiom this harness already exists for. `src/testing/refwin.ts`
+**already pushes the port's seed `INPUTS` into the in-memory reference** so both
+engines compute from identical data; duty-row order is the same class of thing.
+Add a `reduty()` beside it that pushes the port's `dutywaves` into the
+reference's `DAYS`, for the first `REFN` days only (the reference has never had
+the weekend the port adds).
+
+Follow the INPUTS push verbatim in shape, including its constraint — that file
+documents why `w.INPUTS = [...]` does not work (the reference declares
+`let INPUTS`, so assigning to the window property only shadows it) and uses
+`w.eval` to mutate the existing array in place. Do the same for each day's
+`dutywaves` rather than replacing `DAYS` wholesale.
+
+The reference file on disk stays **read-only** — this patches the in-memory
+copy only, exactly as `retier()`, `rering()`, `rematrix()` and `relead()`
+already do for other deliberate divergences.
+
+- [ ] **Step 4: Run parity — this is the gate for this task**
 
 Run: `npx vitest run src/engine/parity.test.ts`
-Expected: PASS, byte-exact.
+Expected: PASS, all 9.
 
-**If it fails: stop and report.** Do not patch `refwin.ts` and do not weaken the assertion. A red parity here means the re-lay does not reproduce what the sort produced, and diverging from the reference is an owner decision, not an implementation one. Diff the two markup strings and report which duty row differs.
+**If it still fails after the push: stop and report.** Do not weaken any
+assertion. Report which of the parity tests fails and the exact first
+difference it names.
 
-- [ ] **Step 4: Run the wider suite and the reference gate**
+- [ ] **Step 5: Run the wider suite and the reference gate**
 
 Run: `npm test && node reference/tfin.js`
 Expected: vitest green; the reference stays **728/0**.
@@ -803,10 +835,10 @@ belongs on the typing path and needs `sortDutyBlock`, which **Task 9 builds**.
 Task 9's brief carries that edit. Leave `boardChange` and the `dradd` branch
 alone here.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
-git add src/engine/data.ts src/ui/html.ts src/engine/*.test.ts
+git add src/engine/data.ts src/ui/html.ts src/testing/refwin.ts src/engine/*.test.ts
 git commit -m "Duties print in the scheduler's order, not a fixed role order"
 ```
 

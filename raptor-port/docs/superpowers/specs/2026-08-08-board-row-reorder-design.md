@@ -76,10 +76,24 @@ behaviour:
   **re-laid in the order they currently print** — day 0 wave 1 goes from
   `SXO, OPS-O, SDO` to `SDO, SXO, OPS-O`, and the same for every other block.
   With the stored order equal to the sorted order, deleting the sort produces
-  byte-identical markup, so `parity.test.ts` stays byte-exact against the
-  reference (which still sorts) with **no `refwin.ts` patch**. This is the whole
-  reason to re-lay the data rather than patch the reference: it keeps a
-  deliberate divergence out of the parity harness.
+  byte-identical **markup** — the reference sorts an already-sorted list, which
+  is a no-op.
+
+  **The re-lay is necessary but not sufficient, and the first build of this
+  found out the hard way.** `parity.test.ts` also compares the two apps
+  *structurally*: one test deep-compares `DAYS` against the reference's own
+  `DAYS`, and another compares an event list built by walking `dutywaves.rows`
+  in raw stored order. Re-laying our seed makes our data differ from the
+  reference's, so both fail whatever renders. So `src/testing/refwin.ts` gains
+  a `reduty()` that pushes the port's `dutywaves` into the in-memory reference
+  for the first `REFN` days — the same move it already makes for the seed
+  `INPUTS`, and the same in-memory-only patching `retier()`, `rering()`,
+  `rematrix()` and `relead()` already do. The reference on disk stays read-only.
+
+  The alternative was to leave the seed alone and let the week print the stored
+  order (SXO, OPS-O, SDO), which needs no data patch at all — rejected because
+  it changes how every duty list reads on day one for no gain, and the owner's
+  decision was that a list nobody has touched should still look right.
 
   Duty `d:`/`dr:` keys are model indices, so re-laying the seed changes which
   row a given index names. Nothing is persisted (only `rules` and `stores` are),
