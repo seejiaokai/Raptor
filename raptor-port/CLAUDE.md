@@ -16,10 +16,29 @@ mean two different things, or a choice would materially change the result,
 ask follow-up questions until it wouldn't. Small, unambiguous asks clear
 that bar on their own — don't manufacture questions for them.
 
+**Match the process to the risk — the owner chose MEDIUM as the default
+(owner, 7 Aug 26), after the stores-configuration feature took a full day
+under the heaviest one.** Medium is: understand the ask, build it, have one
+reviewer check the finished work, report. No separate spec document, no
+task-by-task plan, no per-step sign-off. Drop to LIGHT — just build it and
+run the gates — for cosmetic work, copy, a new column, a filter. Escalate
+to HEAVY (spec → plan → task-by-task with a review and fix loop on each)
+only where a defect would be SILENT rather than obvious: persisted data,
+roles and permissions, the validation engine, anything the byte-exact
+reference parity or the perf ceilings sit on top of. Say at the time that
+you are escalating, and why. And prefer BATCHES — most of the cost is
+loading this app into context, so five related changes in one pass cost
+barely more than one.
+
 - **The owner is non-technical.** Explanations to him are plain-language
   and complete; terseness applies to tool use and internal work, never to
-  what he reads. **He restated this on 6 Aug 26 because it was being
-  ignored**, so it is spelled out rather than left to judgment:
+  what he reads. **He does not want technical/implementation decisions put
+  to him either (owner, 7 Aug 26)** — make that call yourself and tell him
+  what you decided and why, in plain terms; this is distinct from the
+  product-direction options §Product bar & ideation still asks for, which
+  stay owner choices. **He restated the plain-language rule on 6 Aug 26
+  because it was being ignored**, so it is spelled out rather than left to
+  judgment:
   - **Never paste raw output at him** — no log lines, stack traces, JSON,
     run IDs, commit hashes, HTTP codes, file:line references or CSS class
     names. Read the thing yourself and report what it MEANS. "The publish

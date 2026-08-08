@@ -212,7 +212,10 @@ async function trial(b, measureSize) {
      growing by half does. Raising a number here is a deliberate edit that
      belongs in the PR that adds the nodes, next to a fresh `npm run perf`
      showing the per-node cost held. */
-  const DOM_CEILING = { week: 5530, board: 770 }
+  /* board raised from 770 on 7 Aug 26: stores came to the flying line
+     (.sb-rcell + chips + C + bombs, per line) — see the stores-configuration
+     spec. Measured at 767 before this margin was added. */
+  const DOM_CEILING = { week: 5530, board: 810 }
   for (const [surface, s] of Object.entries(size)) {
     const cap = DOM_CEILING[surface]
     T(`perf · the ${surface} stays under its recorded DOM ceiling (${cap})`,

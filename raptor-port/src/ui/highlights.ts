@@ -13,6 +13,12 @@ import { hsSet, hsSync } from './pan'
    paint, so one frame showed the schedule leapt ~220px before the corrective
    scroll snapped it back. Consumed exactly once, cleared even if it throws. */
 let PENDING_HOLD:any=null
+/* ONE overwrite slot, not a queue — a second queueHold() before the drain
+   silently replaces the first, whose callback is simply lost. Two unrelated
+   features already share it (holdPuckStill's scroll correction, the stores
+   popup's place()); nothing reachable today calls it twice in the same task,
+   but that stops being true the moment a third consumer shows up, so treat
+   any new use as a review question, not a given. */
 export function queueHold(fn:()=>void){PENDING_HOLD=fn}
 export function warnWeekId(){return CURPAGE==='editsched'?'eWeek':'vWeek';}
 /* The board is showing the warning's own day, so the pucks the focus names are

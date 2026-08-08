@@ -12,7 +12,8 @@ import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
 import { markEdit, alAttr } from '../engine/publish'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/keys'
-import { signoffHTML, cxText } from './html'
+import { signoffHTML, cxText, storesView } from './html'
+import { STORE_CFG } from '../engine'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -29,10 +30,31 @@ const afterSchedMutate = () => view.afterSchedMutate()
    would invite edits against the wrong document. */
 export function boardHTML(di: number, pv?: boolean) {
   const d = DAYS[di]
+  /* the stores chips/C follow HOOKS.editMode(), not just pv: the board is a
+     modal that stays open across a nav click (SchedBoard's `hidden` only
+     tracks SBDAY, never CURPAGE), so a duty crew on View-only Sched who
+     still has a board open from earlier must see the same read-only chips
+     the week shows them there. editMode() — not a bare CURPAGE test — so
+     the render gate is EXACTLY the click gate interactions.ts already uses
+     for data-store/data-stcfg (canEditSched() && CURPAGE==='editsched' &&
+     EDITON): a CURPAGE-only test would still render the clickable chips
+     and the contenteditable bombs field with EDITON off, and routeFocusOut
+     (textedit.ts) checks only canEditSched() — so a blur on that field
+     would commit and markEdit in a state the week would never have
+     rendered the field in at all. */
+  const stoRO = pv || !HOOKS.editMode()
   let b = (pv ? '' : `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`)
     + sbNotesPanel(d, di, pv) + sbProgPanel(d, di, pv)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
+    /* SC / AVALON / BB carry no store config on the week (html.ts's `sa`
+       gate — a standalone line isn't a real jet loadout, it's a duty
+       roster row wearing the flying-line template) — mirror that here so
+       a store set from the board on a standalone line can't reach the AL
+       and the CSV while staying permanently invisible/unremovable on the
+       week, which the design spec requires to render identically on both
+       surfaces. */
+    const sa = isStandalone(w)
     const asd = w.formations.reduce((n: number, f: any) => n + f.aircraft.length, 0)
     const opts = ['1st wave', '2nd wave', '3rd wave', '4th wave', '5th wave', 'Night wave']
     const cur = labelToTitle(w); if (!opts.includes(cur)) opts.unshift(cur)
@@ -66,7 +88,20 @@ export function boardHTML(di: number, pv?: boolean) {
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
         ${sbSlot(di, key + '.p', 'p', a.p, pv)}
         ${sbSlot(di, key + '.w', 'w', a.w, pv)}
-        <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}">
+        <div class="sb-rcell"${alAttr(`st:${key}`)}>
+          <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}">
+          ${sa ? '' : (stoRO
+            ? storesView(a.opts)
+            : `<span class="stores">`
+              /* labels are user-renamable text (stores-edit.test.tsx's escape
+                 regression) — esc() here, same as html.ts's identical on-chip,
+                 or a renamed store types markup on the board same as the week
+                 used to before that fix. */
+              + STORE_CFG.filter(([k]: any) => (a.opts || {})[k]).map(([k, lab]: any) =>
+                  `<span class="stchip on" data-store="${key}.${k}" title="Remove ${esc(lab)}">${esc(lab)}</span>`).join('')
+              + `<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
+              + `<span class="bombs" contenteditable="true" data-bombs="${key}">${esc((a.opts || {}).bombs || '')}</span></span>`)}
+        </div>
         ${pv ? '' : `<span class="lctl">
           <button class="mbtn${cxOn ? ' on' : ''}" data-lcx="${key}" title="${cxOn ? 'Restore this line' : 'Cancel this line (CX)'}">CX</button>
           <button class="mbtn red${a.flag ? ' on' : ''}" data-lflag="${key}" title="${a.flag ? 'Clear the red box' : 'Red box — flag this for the next scheduler'}">■</button>
@@ -341,7 +376,19 @@ export function addWave(di: number, kind: any) {
    builds it — it lives outside the React tree and removes itself on any
    outside click) */
 export function waveMenu(anchor: HTMLElement, di: any) {
-  document.querySelectorAll('.wavemenu').forEach(x => x.remove())
+  /* The stores popup (interactions.ts's openStoresMenu) shares this class
+     for its look, and while its pen is open it keeps a NOT-{once:true}
+     click listener attached to document that only it knows how to unhook
+     (_offClick) — its own outside-click handler declines to remove itself
+     while the pen is open, so pulling its box out from under it here,
+     the same way it pulls out any of ITS OWN stale popups, would leave
+     that listener attached to document forever, doing nothing on every
+     future click but never going away. */
+  document.querySelectorAll('.wavemenu').forEach(x => {
+    const off = (x as any)._offClick
+    if (off) document.removeEventListener('click', off)
+    x.remove()
+  })
   const box = document.createElement('div')
   box.className = 'wavemenu'
   const dayBtns = (di == null)

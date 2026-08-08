@@ -615,21 +615,119 @@ day-isolation assertion in `probes/perf-port.cjs` names that exemption
 precisely — any OTHER day changing is still the bug that probe was written
 for.
 
-## Line configs — the stores "+" picker
+## Stores configuration (owner, 7 Aug 26)
 
-Under Remarks, each flying line carries an additive config set (owner, Aug 26):
-**NAV · N/C · 2 TKS · 3 TKS · TPOD · CL**, replacing the old fixed three-toggle
-strip. The set lives once in `STORE_CFG` (`ui/html.ts`), read by both the
-read-only
-(`storesView`) and edit builders so they never drift. Edit mode shows the
-on-chips (click one to remove it) plus a `+` button (`data-stadd`) that opens a
-body-level picker mirroring `board.ts`'s `waveMenu`; the picker offers only the
-configs not yet on, and the `+` stays so more can be added. Each add/remove
-flips a boolean on `aircraft.opts` and calls `markEdit('st:…')`, so it lands in
-the next AL exactly as the old toggles did — configs are display + amendment
-state only, invisible to validation. The separate bombs free-text chip is
-unchanged. The `tk2`/`tpod` keys are reused, so demo rows already carrying them
-render as **2 TKS** / **TPOD**.
+Under Remarks, each flying line carries an additive config set — **NAV · N/C
+· 2 TKS · 3 TKS · TPOD · CL** by default, but the list is now the squadron's
+own to add to, remove from, rename and reorder, not a fixed six. `STORE_CFG`
+moved out of `ui/html.ts` into `engine/stores.ts` because it is persisted
+state with save/load/reset, the same shape `rules` has — see
+`docs/engine-rules.md` §Stores configuration for the storage side. This
+section is the rendering and interaction contract.
+
+**The `C` button, on both surfaces.** The week's old `+` picker (which only
+ever *added a config to this jet* from a fixed set) is gone; `C` replaces it
+in `html.ts` and is newly added to the board's `.sb-rcell` in `board.ts`.
+Both carry `data-stcfg="<di.gi.li.ai>"` — the aircraft's slot key — and both
+route through the same handler, `interactions.ts`'s `openStoresMenu`, so the
+week and the board can never drift into two behaviours for one button.
+**View-only shows the on-chips and no `C` at all** — `storesView()` (`ui/html.ts`)
+renders read-only chips with no `data-stcfg`, called from the view builder
+directly and from the edit surfaces whenever `HOOKS.editMode()` is false (the
+board's `stoRO` gate covers the case where the board stays open across a
+`View-only Sched` nav — see the board bullet below and `HANDOFF.md`'s "board
+stays open across a page change" item, which this render gate does not by
+itself fix for the rest of the board's line).
+
+**The popup lists every store, lit or unlit, not just this jet's leftovers.**
+It is a body-level box (`.stmenu`, styled off `board.ts`'s `waveMenu`) rather
+than a React node, so it can anchor to either surface identically and outlive
+a `notify()` repaint of the row underneath it. Every store in `STORE_CFG`
+prints as a button, `on` when `a.opts[key]` is truthy; clicking one toggles
+`a.opts[key]`, calls `markEdit('st:'+key)` and re-paints the same box in
+place — **the popup stays open across a toggle**, so a scheduler configuring
+several stores on one jet does not re-open it each time. It closes only on an
+outside click (or the ✎ pen's own exit — see below).
+
+**The pen (`✎`) inside that popup edits the LIST itself**, not this jet's
+selection — a settings change, not a schedule edit, so nothing in the pen
+branch ever calls `markEdit`:
+
+- **Rename changes the label and never the key.** An aircraft's config is
+  stored as `opts.tk2`, `opts.nav`, etc. — the label is display text a
+  scheduler can retype at will (`renameStore`, `STORE_CFG[i] = [key, lab]`);
+  the key is the only thing every jet's `opts` object actually points at, so
+  it never moves. Renaming "TPOD" to "Targeting pod" does not touch
+  `opts.tpod` anywhere it is set.
+- **Removal never touches `a.opts`.** `delStore` splices the entry out of
+  `STORE_CFG` and nothing else — no jet's `opts[key]` is cleared. Its chip
+  just stops having a label to render against, so it silently drops off
+  every remarks cell. Re-adding a store by typing its name back in restores
+  every chip that was carrying it, with no separate undo path needed —
+  `addStore` resolves the label against `STORE_STD` first and reuses THAT
+  key when it matches, falling back to the freshly derived `storeKey()`
+  only when it doesn't. This is not the same thing for two of the six: `2
+  TKS`/`3 TKS` are shipped keyed `tk2`/`tks3`, which is not what
+  `storeKey()` derives from those labels (`2tks`/`3tks`) — a mismatch that
+  predates `storeKey()`'s derivation rule. Deriving blind used to strand
+  every jet's `opts.tk2`/`opts.tks3` on an unreachable key the moment either
+  was deleted and retyped (fixed 8 Aug 26, `engine/stores.ts`'s `addStore`
+  comment has the full account, `stores.test.ts`'s
+  "re-adding a deleted standard store" block pins it).
+- **A single ✕ removes — no arm-step.** EDIT QUALS arms its six engine-read
+  flags before letting them go, because removing one changes what a rule
+  sees. Nothing in `validate.ts` reads a store (the module comment in
+  `engine/stores.ts` says so directly), so there is no rule to protect and
+  one click is enough.
+- **Dismiss is suspended while the pen is open.** The outside-click handler
+  that closes the box checks `pen` first and declines while it is true, so a
+  drag past the box edge, or a click landing inside a rename `<input>` that
+  bubbles to `document`, cannot kill the box mid-edit. Leaving the pen (a
+  second click on `✎`) is what re-arms dismissal.
+
+Each add/remove/toggle on the CONFIG side still flows through the mutation
+funnel exactly as the old toggles did (`markEdit('st:'+key)` → pending →
+next AL) — only the pen's list edits (rename/reorder/add/remove of the
+squadron's own list) bypass it, because they are not a schedule write.
+
+**The `.sb-rcell` one-grid-item contract.** `.sb-line`'s grid template
+(`scheduler.css`) is fixed at nine columns; the board's flying line must
+render exactly nine grid children or every cell after the first mismatch
+shifts one column over. Before this feature the remarks cell was a bare
+`<input>` — one child, one column. Adding the stores chips and the `C`
+button without changing that count meant wrapping, not appending: `.sb-rcell`
+is a flex column (`display:flex;flex-direction:column`) holding the remarks
+input AND the stores span as its own children, so from the grid's point of
+view the cell is still exactly one item. `.sb-bcell` (the B/brief cell,
+wrapping its optional suggestion ghost plus the time input) is the precedent
+this copies — same reasoning, same shape, added earlier for the same kind of
+optional extra content. Get this wrong and the phone override
+(`.sb-line .sb-rcell{grid-column:1 / -1}` under the narrow-viewport query)
+mis-targets the wrong cell instead.
+
+**Standalone (SC/AVALON/BB) lines carry no stores on EITHER surface —
+identically (fixed 8 Aug 26).** `html.ts`'s `sa?'':stores` is deliberate: a
+standalone line isn't a real jet loadout, it's a duty roster row wearing the
+flying-line template, so it renders no chips, no `C` and no bombs field.
+`board.ts` now computes the same `isStandalone(w)` gate per wave and wraps
+its `.sb-rcell` stores content identically — before this fix the board had
+no such gate at all, so a store set from a standalone line's `C` button
+(which existed only on the board) marked `st:` pending, reached the AL and
+the CSV, and could never be seen or removed from the week its own spec
+requires it to render identically on. Gating hides only the CELL'S
+CONTENT, never the cell itself — `.sb-rcell` still renders (with the
+remarks `<input>` inside it) on a standalone line, keeping the nine-grid-item
+contract above intact regardless of which branch fires.
+
+**A stores edit on the board carries the same "edited, not published" mark
+the week does (fixed 8 Aug 26).** The week puts `alAttr('st:'+key)` on
+`.rmkcell`; `.sb-rcell` now carries the identical attribute, and
+`scheduler.css`'s AL rule sets (`[data-alc]`, `[data-alp]`, `[data-aln]`)
+were extended to include `.sb-rcell` alongside `.rmkcell` so the dashed
+"edited" hint, the solid published-AL outline and the dotted preview all
+paint on whichever surface the edit was actually made from — a scheduler
+working the board no longer has to switch to the week to see their own
+pending edit.
 
 ## The Quals page's editable columns
 

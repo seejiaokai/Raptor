@@ -16,6 +16,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
+import { STORE_CFG } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
 
@@ -258,17 +259,11 @@ export function availHTML(d:any,di:any,ed:any){
   h+= sansAll.length?`<div class="ap-grid">`+sansAll.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   return h+`</div>`;
 }
-/* The line's carriage configs (owner, Aug 26): an additive set the scheduler
-   builds up through the "+" picker, replacing the old fixed 2TK/TPOD/NAV
-   toggles. [key,label] — the key is what lands in aircraft.opts, the label is
-   what prints. Bombs stays a separate free-text chip. One list, read by both
-   the read-only and the edit builders so they never drift. */
-export const STORE_CFG:[string,string][]=[['nav','NAV'],['nc','N/C'],['tk2','2 TKS'],['tks3','3 TKS'],['tpod','TPOD'],['cl','CL']];
 export function storesView(o:any){
   o=o||{};
   const on=STORE_CFG.filter(([k]:any)=>o[k]);
   if(!on.length&&!o.bombs)return'';
-  return `<span class="stores">`+on.map(([,lab]:any)=>`<span class="stchip on">${lab}</span>`).join('')+(o.bombs?`<span class="stchip bomb">◈ ${esc(o.bombs)}</span>`:'')+`</span>`;
+  return `<span class="stores">`+on.map(([,lab]:any)=>`<span class="stchip on">${esc(lab)}</span>`).join('')+(o.bombs?`<span class="stchip bomb">◈ ${esc(o.bombs)}</span>`:'')+`</span>`;
 }
 /* the day's issue strip. Collapsed it is a one-line summary; expanded (DWOPEN)
    it lists the warnings right here in the column — no centred modal. */
@@ -599,12 +594,14 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           <div class="fcell ld" style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`;
         f.aircraft.forEach((a:any,ai:any)=>{
           const key=`${di}.${gi}.${li}.${ai}`, o=a.opts||{};
-          /* edit mode shows only the configs that ARE on (click one to remove
-             it) plus a "+" that opens the picker for the rest — the "+" always
-             stays, so more can be added. View mode shows the on-chips only. */
+          /* edit mode shows the on-chips (click one to remove it) plus C, which
+             opens a box listing EVERY store, lit where the jet carries it. The
+             box lists everything rather than just the leftovers because it is
+             not always rendered next to on-chips it could lean on to tell the
+             rest of the story. View mode shows the on-chips only. */
           const stores=ed
-            ? `<span class="stores">`+STORE_CFG.filter(([k]:any)=>o[k]).map(([k,lab]:any)=>`<span class="stchip on" data-store="${key}.${k}" title="Remove ${lab}">${lab}</span>`).join('')
-              +`<button class="stadd" data-stadd="${key}" title="Add a config">+</button>`
+            ? `<span class="stores">`+STORE_CFG.filter(([k]:any)=>o[k]).map(([k,lab]:any)=>`<span class="stchip on" data-store="${key}.${k}" title="Remove ${esc(lab)}">${esc(lab)}</span>`).join('')
+              +`<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
               +`<span class="bombs" contenteditable="true" data-bombs="${key}">${esc(o.bombs||'')}</span></span>`
             : storesView(o);
           const acx=(f.cx?'':rowCls(a))+((sa&&a.spare)?' spare':'');   // a cancelled formation already fades the whole block

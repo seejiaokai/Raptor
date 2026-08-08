@@ -14,7 +14,8 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify } from '../state/store'
 import { scrollToWarnFocus, queueHold } from './highlights'
-import { STORE_CFG } from './html'
+import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave } from '../engine'
+import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer } from './pops'
 import { openScheduler } from './board'
 import { setCurWeek } from '../engine/waves'
@@ -67,32 +68,246 @@ function holdPuckStill(pk: HTMLElement) {
   }
 }
 
-/* The config picker — a body-level popup anchored to the "+" button, built the
-   same way board.ts builds waveMenu: it lives outside the React tree, offers
-   only the configs not yet on, adds the chosen one through the funnel
-   (markEdit → pending → next AL) and removes itself on any outside click. */
+/* The stores popup — a body-level box anchored to the C button, built the
+   way board.ts builds waveMenu: outside the React tree, removing itself on
+   any outside click. It lists EVERY store, lit where the jet carries it, so
+   the box is self-contained — the board has no inline chips to read.
+   Toggling goes through the funnel (markEdit → pending → next AL). The pen
+   (✎) switches the SAME box into an editor for the squadron's list itself —
+   reorder, rename, add, remove — and that is a settings change, not a
+   schedule edit, so nothing in the pen branch ever calls markEdit. */
 function openStoresMenu(anchor: HTMLElement, key: string) {
-  document.querySelectorAll('.stmenu').forEach(x => x.remove())
+  /* _offClick: see the comment on `off` below — board.ts's waveMenu clears
+     '.wavemenu' too (this box carries that class as well, for its look), so
+     this clears both classes right back at it: opening "+ Wave" then C used
+     to leave the wave chooser on screen underneath the stores box, since
+     this used to clear only its own class. Symmetric with waveMenu's own
+     clearing, and matching '.stmenu, .wavemenu' catches this box's own
+     stale instances exactly once (querySelectorAll never double-reports an
+     element that matches both halves of the selector list). */
+  document.querySelectorAll('.stmenu, .wavemenu').forEach(x => {
+    const off = (x as any)._offClick
+    if (off) document.removeEventListener('click', off)
+    x.remove()
+  })
   const [di, gi, li, ai] = key.split('.')
   const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
   a.opts = a.opts || {}
-  const left = STORE_CFG.filter(([k]) => !a.opts[k])
   const box = document.createElement('div')
   box.className = 'stmenu wavemenu'
-  box.innerHTML = `<h5>Add config</h5><div class="wm-row">`
-    + (left.length
-      ? left.map(([k, lab]) => `<button class="wm" data-cfg="${k}">${lab}</button>`).join('')
-      : `<div class="wm-note">All configs added.</div>`)
-    + `</div>`
+  /* ANCHOR TO THE SURFACE THE BUTTON WAS ACTUALLY PRESSED ON (regression —
+     final review, 8 Aug 26). `#eWeek` and `#schedBoard` both render
+     `data-stcfg="<same key>"` for the same jet when the board is open over
+     the week — `<Shell/>` (the week) precedes `<SchedBoard/>` in App.tsx,
+     so an unscoped `document.querySelector('[data-stcfg="..."]')` in place()
+     always finds the WEEK's button, even when the board's was the one
+     clicked. Measured on the built app before this fix: board button at
+     x=731,y=275, popup opened at x=435,y=594 — the week's button position,
+     ~300px away, floating over unrelated board content, wrong from the
+     very first paint. Capture the pressed button's own surface root here,
+     once, and scope EVERY re-query (initial place() and the re-placement
+     after a toggle/rename/pen action) to it, so the board and the week can
+     never cross-anchor even though they share the same data-stcfg value. */
+  const root: ParentNode = anchor.closest('#schedBoard') || document
+  let pen = false
+  /* set by the rename handler on success — see its comment — and drained
+     at the top of the click handler below, never anywhere else. */
+  let needPlace = false
+  const paint = () => {
+    box.innerHTML = `<h5>Stores configuration`
+      + `<button class="st-pen${pen ? ' on' : ''}" title="${pen ? 'Done editing the list' : 'Edit the list'}">✎</button></h5>`
+      + (pen
+        ? `<div class="st-elist">`
+          + STORE_CFG.map(([k, lab], i) =>
+            `<div class="st-erow" data-k="${k}">`
+            + `<input class="st-lab" value="${esc(lab)}" maxlength="16" aria-label="Name for ${esc(lab)}">`
+            + `<button class="st-up" ${i === 0 ? 'disabled' : ''} title="Move up">↑</button>`
+            + `<button class="st-dn" ${i === STORE_CFG.length - 1 ? 'disabled' : ''} title="Move down">↓</button>`
+            + `<button class="st-del" title="Remove ${esc(lab)} from the list">✕</button></div>`).join('')
+          + `</div><div class="st-addrow">`
+          + `<input class="st-new" placeholder="e.g. LGB" maxlength="16" aria-label="New store name">`
+          + `<button class="st-add">Add</button></div>`
+          + `<div class="wm-note">The list is the squadron's, not this jet's — it survives a reload. Removing one keeps every jet that carries it.</div>`
+        : `<div class="wm-row">`
+          + STORE_CFG.map(([k, lab]) =>
+            `<button class="wm${a.opts[k] ? ' on' : ''}" data-cfg="${k}">${esc(lab)}</button>`).join('')
+          + `</div>`)
+  }
+  /* notify() rebuilds the remarks cell, so the captured `anchor` node may be
+     detached AND the live button moves as chips appear or wrap before it in the
+     inline-flex row — measure the live one, and leave the box put when there is
+     nothing to measure (a detached node, or jsdom, both report 0x0). */
+  const place = () => {
+    const live = root.querySelector(`[data-stcfg="${key}"]`) as HTMLElement | null
+    const r = (live || anchor).getBoundingClientRect()
+    if (!r.width && !r.height) return
+    box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
+    box.style.top = Math.min(window.innerHeight - box.offsetHeight - 8, Math.round(r.bottom + 6)) + 'px'
+  }
+  paint()
   document.body.appendChild(box)
-  const r = anchor.getBoundingClientRect()
-  box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
-  box.style.top = Math.min(window.innerHeight - box.offsetHeight - 8, Math.round(r.bottom + 6)) + 'px'
+  place()
   box.addEventListener('click', (ev: any) => {
-    const b = ev.target.closest('[data-cfg]'); if (!b) return
-    a.opts[b.dataset.cfg] = true; markEdit(`st:${di}.${gi}.${li}.${ai}`); box.remove(); notify(); ev.stopPropagation()
+    ev.stopPropagation()
+    /* drain first, unconditionally — see the rename handler's comment for
+       why this is the safe place to do it: THIS click has already been
+       dispatched and its target already resolved by the time any handler
+       runs, so re-anchoring here cannot affect it, only whatever happens
+       after. */
+    if (needPlace) { needPlace = false; place() }
+    const T = ev.target as HTMLElement
+
+    /* opening/closing the pen changes the box's HEIGHT dramatically — six
+       chips become six input rows plus an add-row and a note — and nothing
+       downstream of this branch calls notify(), so nothing else will ever
+       re-run place() for it. Call it directly, right here, rather than
+       through queueHold: queueHold only drains off the week's own repaint
+       (EditWeek's effect, on a version bump), and this branch causes none. */
+    if (T.closest('.st-pen')) { pen = !pen; paint(); place(); return }
+
+    if (pen) {
+      const row = T.closest('.st-erow') as HTMLElement | null
+      const k = row?.dataset.k
+      if (k && T.closest('.st-del')) {
+        const lab = STORE_CFG.find(([x]) => x === k)?.[1] || k
+        delStore(k); storesSave(); paint(); place()
+        HOOKS.toast(`${lab} removed from the list — every jet carrying it keeps it. Add it back and the chips return.`)
+        /* queueHold too: if this jet carries the removed store its own
+           on-chip vanishes from the remarks cell, shifting the C button
+           that place() just anchored to — re-run it once the week repaints. */
+        queueHold(place)
+        notify()
+        return
+      }
+      if (k && (T.closest('.st-up') || T.closest('.st-dn'))) {
+        const i = STORE_CFG.findIndex(([x]) => x === k)
+        if (moveStore(i, i + (T.closest('.st-up') ? -1 : 1))) { storesSave(); paint(); queueHold(place); notify() }
+        return
+      }
+      if (T.closest('.st-add')) {
+        const box2 = box.querySelector('.st-new') as HTMLInputElement
+        const why = addStore(box2.value)
+        if (why) return HOOKS.toast(why)
+        storesSave(); paint(); place(); queueHold(place); notify()
+        return
+      }
+      return
+    }
+
+    const b = T.closest('[data-cfg]') as HTMLElement | null; if (!b) return
+    const key2 = b.dataset.cfg!
+    a.opts[key2] = !a.opts[key2]
+    markEdit(`st:${di}.${gi}.${li}.${ai}`)
+    paint()
+    /* queueHold, not setTimeout: the week repaints via EditWeek's effect,
+       which calls refreshHighlights() once the DOM swap is done — draining
+       the held callback right there, in the same task as the swap, exactly
+       the ordering holdPuckStill needs for the same reason. A raw timer has
+       no guarantee it fires after that effect. */
+    queueHold(place)
+    notify()
   })
-  setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
+
+  /* rename commits on change, so a click away inside the box is enough. No
+     markEdit here either — see the function comment.
+
+     NEITHER outcome (success or rejected) calls paint(). A <button> takes
+     focus on mousedown in Chromium, before mouseup — so typing a rename
+     (accepted or not — this handler fires either way) and then clicking
+     ✕/↑/Add on the SAME row fires this handler (change fires on blur,
+     ahead of the click) synchronously inside that same mousedown. paint()
+     replaces the row's whole subtree via innerHTML, detaching the very
+     button the mousedown just landed on; the mouseup that follows can't
+     complete a click on a node that's no longer there, so it lands on the
+     box itself instead, where nothing matches, and the click is silently
+     dropped — a scheduler has to click twice. A deferred paint() on a
+     timer does not fix it either: the timer drains before mouseup, same
+     as a synchronous one. So both outcomes patch just the one row in
+     place instead of rebuilding it.
+
+     The SUCCESS path used to also call queueHold(place) here, like every
+     other branch in this box — measured, not assumed, that this is wrong
+     in exactly the same way. If the jet this popup is CONFIGURING carries
+     the store being renamed, its own on-chip's TEXT changes — and .stores
+     is display:inline-flex;flex-wrap:wrap, so the C button's x is a
+     function of that chip's WIDTH, not the chip count. Roughly 5px per
+     character, so up to ~70px at MAX_LABEL (16), possibly wrapping the
+     chip row onto another line. This is not a rare case: it is exactly
+     the case this popup exists to serve (configuring what THIS jet
+     carries), so it is the common case, not the edge one. queueHold(place)
+     drains SYNCHRONOUSLY inside this same mousedown — notify() bumps the
+     version, EditWeek's effect runs, refreshHighlights drains the held
+     place() — all before the pending click's mouseup lands. Measured: 15px
+     of drift for a 3-character delta, moving the box out from under the
+     pointer and swallowing the click exactly the way paint() did. A
+     deferred call is no safer, for the same reason the deferred paint()
+     above isn't: checked, a setTimeout(0) queued from inside a mousedown
+     handler fires before Playwright's next CDP command (the mouseup)
+     arrives — and there is no guarantee a real user's press is any slower.
+
+     So: set needPlace instead, and let the box's own click handler drain
+     it at its very top — see the comment there. By the time that runs,
+     THIS click (whichever one follows the rename) has already been
+     dispatched and its target already resolved; 'click' fires strictly
+     after 'mouseup', and the browser decides a click's target before any
+     JS sees it, so re-anchoring there cannot unwind the click that is
+     currently landing. It only means the box is correctly placed before
+     that click's own action runs, and before the next one.
+
+     What makes the gap in between — from the moment a rename commits to
+     the moment SOME click into this box drains needPlace — actually SAFE,
+     not just cheaper than the alternative: `.st-lab` exists only in pen
+     state, and the only way out of pen state is the ✎ button, which calls
+     place() itself, draining needPlace on the way in — so a drifted box
+     can never be seen in the chip view or at dismissal. Every other pen
+     action (✕, ↑/↓, Add) re-places too, on top of draining needPlace
+     first. And a rename never changes the box's own HEIGHT, so place()'s
+     viewport clamp is never invalidated by it — the box can drift
+     sideways but can never end up hanging off-screen for it. */
+  box.addEventListener('change', (ev: any) => {
+    const inp = (ev.target as HTMLElement).closest('.st-lab') as HTMLInputElement | null
+    if (!inp) return
+    const row = inp.closest('.st-erow') as HTMLElement
+    const k = row.dataset.k!
+    const why = renameStore(k, inp.value)
+    if (why) {
+      const lab = STORE_CFG.find(([x]) => x === k)?.[1] || k
+      inp.value = lab
+      inp.setAttribute('aria-label', `Name for ${lab}`)
+      HOOKS.toast(why)
+      return
+    }
+    storesSave()
+    const lab = STORE_CFG.find(([x]) => x === k)?.[1] || inp.value
+    inp.value = lab
+    inp.setAttribute('aria-label', `Name for ${lab}`)
+    const del = row.querySelector('.st-del') as HTMLElement | null
+    if (del) del.setAttribute('title', `Remove ${lab} from the list`)
+    needPlace = true
+    notify()
+  })
+
+  /* The box removes itself on an outside click — but NOT while the pen is
+     open: a drag past the box edge, or a click into a rename field that
+     bubbles to document, would otherwise kill it mid-edit. Not {once:true}
+     any more, since a click it declines to act on (inside the box, or any
+     click while the pen is open) must not deregister it — so the box
+     records its own handler on itself, as `_offClick`, and ANY code that
+     removes this box by other means has to check for it and unhook it
+     first, or it leaks a listener permanently attached to document: with
+     the pen open the box can be pulled out from under `off` (the "replace
+     with a fresh popup" branch above, or board.ts's waveMenu — both clear
+     by class, not by asking this box's permission), and `off` alone can
+     never notice; box.contains(ev.target) is false forever on a detached
+     node and `if (pen) return` never lets it get past that check to
+     self-remove. */
+  const off = (ev: any) => {
+    if (box.contains(ev.target)) return
+    if (pen) return
+    box.remove(); document.removeEventListener('click', off)
+  }
+  ;(box as any)._offClick = off
+  setTimeout(() => document.addEventListener('click', off), 0)
 }
 
 export function routeClick(e: MouseEvent) {
@@ -330,9 +545,9 @@ export function routeClick(e: MouseEvent) {
     notify()
   }
 
-  /* the "+" opens the config picker — a body-level popup mirroring waveMenu */
-  const stAdd = t.closest('[data-stadd]') as HTMLElement | null
-  if (stAdd && HOOKS.editMode()) { openStoresMenu(stAdd, stAdd.dataset.stadd!); e.stopPropagation(); return }
+  /* C opens the stores popup — a body-level box mirroring waveMenu */
+  const stCfg = t.closest('[data-stcfg]') as HTMLElement | null
+  if (stCfg && HOOKS.editMode()) { openStoresMenu(stCfg, stCfg.dataset.stcfg!); e.stopPropagation(); return }
 
   /* Clicking any blank part of a schedule surface un-clicks everything —
      the exclusion list is the reference's, verbatim */
