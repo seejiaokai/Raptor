@@ -108,7 +108,7 @@ describe('permuteKeys / moveKeys reordering', () => {
   it('permuteKeys applies an arbitrary reordering, not just a single move', () => {
     SCHED.changes = { 'g:0.0': 'a', 'g:0.1': 'b', 'g:0.2': 'c' }
     permuteKeys('g:0.', 0, [2, 0, 1])      // new 0 was old 2, new 1 was old 0, new 2 was old 1
-    expect(SCHED.changes).toEqual({ 'g:0.0': 'b', 'g:0.1': 'c', 'g:0.2': 'a' })
+    expect(SCHED.changes).toEqual({ 'g:0.0': 'c', 'g:0.1': 'a', 'g:0.2': 'b' })
   })
 })
 ```
