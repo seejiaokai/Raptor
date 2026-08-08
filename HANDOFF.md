@@ -7,10 +7,14 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 632/39
+**Every gate is green at this commit**, run first-hand: `npm test` 685/43
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 25/25, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 33/33, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
+**`probes:adapted` and `perf` do NOT serve themselves** — start
+`npx vite preview --port 4173` first or both fail with
+`ERR_CONNECTION_REFUSED`, which reads like a code fault and is not
+(8 Aug 26). Playwright's own gate builds and serves itself.
 (`npm run perf`'s one-day-edit budget was seen swinging 1.01×–1.28× across
 runs on identical code on a busy container, 7 Aug 26 — rerun before
 believing a single red.)
@@ -55,8 +59,12 @@ believing a single red.)
   selection styling (blue fill only, warn ring surviving, the half-strength
   dim — the flag-chip test became this when the chip stopped navigating,
   7 Aug 26), a cut callsign fading rather than clipping, and the board's duty
-  rows keeping a readable ITEM column on a phone — twelve contract families
-  over 23 tests. It
+  rows keeping a readable ITEM column on a phone, and the stores work of
+  7–8 Aug 26 (the popup tracking its live `C` button across a multi-toggle
+  visit, a rename not eating the next click, the board line staying
+  single-row and nine grid items in `.sb-wide` at phone width, and the
+  popup opening against the BOARD's button rather than the week's) —
+  sixteen contract families over 33 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
@@ -599,6 +607,7 @@ believing a single red.)
 | `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |
 | `rules.ts` | VCONF/SHIFT_HARD editing, `ruleParse`/`ruleFmt`, `rulesSave`/`rulesLoad`/`rulesReset`. |
 | `insights.ts` | `computeInsights()` for the Insights modal. |
+| `stores.ts` | The squadron's stores list (owner, 7 Aug 26) — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Was a `const` in `ui/html.ts`; it is persisted state now, so it lives here. Nothing in `validate.ts` reads a store. |
 | `hooks.ts` | HOOKS — injectable callbacks (toast, repaints, histPush, storage) so verbatim bodies stay DOM-free headless; `storeBackend` is the injected localStorage (`main.tsx` plugs the real one in, null headless). |
 | `index.ts` | The barrel — re-exports every module above. UI and probes import from `../engine`, so a new engine file wants a line here. |
 
@@ -649,3 +658,4 @@ believing a single red.)
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board, and where it deliberately does NOT — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both) plus `clickHere`, a click that does not scroll the target into view first (`page.click` does, which would defeat any test that parks the week on purpose). `playwright.config.ts` builds and serves the port itself. |
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
+| `.claude/skills/` (14 more) | `obra/superpowers` v6.2.0, MIT, vendored 7 Aug 26 — a plugin install lives in `~/.claude/plugins` on a local machine and never reaches a web session's fresh container, while repo-level skills ship with the clone. Cross-references de-namespaced; the upstream SessionStart hook is vendored at `.claude/hooks/` but **not** wired in. Provenance and the update recipe: `.claude/skills/SUPERPOWERS-VENDORED.md`. |
