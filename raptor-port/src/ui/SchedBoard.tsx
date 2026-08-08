@@ -13,6 +13,7 @@ import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
 import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, addLine, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide } from './board'
 import { refreshHighlights } from './highlights'
+import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
 
@@ -31,7 +32,11 @@ export function SchedBoard() {
     el.addEventListener('click', boardMbtn)
     el.addEventListener('click', boardArmClick)
     el.addEventListener('change', boardChange)
-    return () => { el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick); el.removeEventListener('change', boardChange) }
+    const offDrag = wireRowDrag(el)
+    return () => {
+      el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
+      el.removeEventListener('change', boardChange); offDrag()
+    }
   }, [])
 
   /* renderScheduler: fill every panel from the verbatim builders. Each panel
