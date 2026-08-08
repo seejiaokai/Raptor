@@ -1933,6 +1933,12 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   .sb-acols,.sb-arow{grid-template-columns:1fr 46px 46px;gap:6px}
   .sb-acols>:nth-child(2),.sb-acols>:nth-child(5),.sb-acols>:nth-child(6){display:none}
   .sb-arow .asub,.sb-arow .ppl,.sb-arow .lctl{grid-column:1 / -1}
+  /* People stack two-wide, like the week's PEOPLE column (owner, 8 Aug 26:
+     the AMT BOX's eight pax wrapped four abreast on a phone, reading as two
+     unrelated ranks of names where the week shows the same row as vertical
+     pairs). Two pucks plus their 4px gap; rows with one or two people are
+     pixel-unchanged. Phone stack only — .sb-wide restates none below. */
+  .sb-arow .ppl{max-width:calc(var(--puck-w)*2 + 4px)}
   /* c6r's column 2 is Start (keep it), 4 is People (its header goes, the cell
      spans); the rmks input drops to its own full-width strip like .nts */
   /* ...and c6r needs the phone TEMPLATE restated, not just its cells adjusted
@@ -1980,6 +1986,9 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .schedboard.sb-wide .sb-arow .asub,.schedboard.sb-wide .sb-arow .ppl,
 .schedboard.sb-wide .sb-arow .lctl,.schedboard.sb-wide .sb-line .sb-rcell,
 .schedboard.sb-wide .sb-line .sb-bcell,.schedboard.sb-wide .sb-line .lctl{grid-column:auto}
+/* the desktop layout keeps its wide People cell — the phone-stack pair cap
+   above must not follow the board into .sb-wide */
+.schedboard.sb-wide .sb-arow .ppl{max-width:none}
 .schedboard.sb-wide .sb-acols.c6r,.schedboard.sb-wide .sb-arow.c6r{grid-template-columns:150px 54px 54px 1fr 1fr 92px}
 .schedboard.sb-wide .sb-acols.c6r>:nth-child(4){display:revert}
 .schedboard.sb-wide .sb-arow.c6r .rmkin{grid-column:auto}

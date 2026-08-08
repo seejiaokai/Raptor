@@ -9,7 +9,7 @@ The port from the original single-file app is complete; that history is in
 
 **Every gate is green at this commit**, run first-hand: `npm test` 687/43
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 34/34, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 35/35, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 **`probes:adapted` and `perf` do NOT serve themselves** — start
 `npx vite preview --port 4173` first or both fail with
@@ -63,9 +63,10 @@ believing a single red.)
   7–8 Aug 26 (the popup tracking its live `C` button across a multi-toggle
   visit, a rename not eating the next click, the board line staying
   single-row and nine grid items in `.sb-wide` at phone width, the
-  popup opening against the BOARD's button rather than the week's, and the
-  popup centring inside the visual viewport under a pinch zoom, 8 Aug 26) —
-  sixteen contract families over 34 tests. It
+  popup opening against the BOARD's button rather than the week's, the
+  popup centring inside the visual viewport under a pinch zoom, and the
+  board's crew cells stacking pucks in pairs on a phone, 8 Aug 26) —
+  sixteen contract families over 35 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +

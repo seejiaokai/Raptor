@@ -997,6 +997,29 @@ test('board at 390px: the remarks cell drops to its own full-width strip', async
   expect(cfg!.width, 'C is reachable, not collapsed to a stub').toBeGreaterThan(12)
 })
 
+/* THE BOARD'S CREW STACKS IN PAIRS ON A PHONE (owner, 8 Aug 26). Monday's
+   AMT BOX carries eight pax; the phone board's People cell used to let them
+   flex-wrap four abreast, reading as two unrelated ranks of names where the
+   week shows the same row as vertical pairs (FCP beside RCP, four rows).
+   The cell is capped at two pucks wide in the phone stack, so any row's
+   crew wraps into the week's pair geometry; .sb-wide (the desktop layout)
+   keeps its wide cell. CSS-only, which is exactly why it needs a browser:
+   jsdom would report every one of these rects at 0x0. */
+test('board at 390px: an eight-pax sim row stacks its pucks two per row', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  const tops = await page.$$eval('#schedBoard .sb-panel.simr .sb-arow .ppl', cells => {
+    const big = cells.find(c => c.querySelectorAll('.puck').length === 8)!
+    return [...big.querySelectorAll('.puck')].map(p => Math.round(p.getBoundingClientRect().top))
+  })
+  expect(tops.length, 'the seed AMT BOX row with its eight pax').toBe(8)
+  const rows = new Map<number, number>()
+  tops.forEach(t => rows.set(t, (rows.get(t) || 0) + 1))
+  expect(Math.max(...rows.values()), 'no visual row holds more than a pair').toBeLessThanOrEqual(2)
+  expect(rows.size, 'eight pax = four pair-rows').toBe(4)
+})
+
 test('the pen reorders, and the popup survives a click into a rename field', async ({ page }) => {
   await login(page); await go(page, 'editsched')
   await clickHere(page, '#eWeek .stcfg[data-stcfg]')
