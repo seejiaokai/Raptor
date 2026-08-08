@@ -37,7 +37,7 @@ export function wireRowDrag(el: HTMLElement) {
     if (view.DPREV.has(view.SBDAY as any)) return
     /* the GRIP only — a press on the row itself is a click on a field, and a
        row full of inputs has almost no blank space to spare */
-    const grip = (e.target as HTMLElement).closest?.('.sb-grip[data-move]') as HTMLElement | null
+    const grip = (e.target as HTMLElement).closest?.('.sb-grip') as HTMLElement | null
     if (!grip) return
     const row = rowOf(grip); if (!row) return
     from = row.dataset.move!

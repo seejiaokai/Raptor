@@ -7,12 +7,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DAYS } from '../engine/data'
 import { wireRowDrag } from './rowdrag'
 import { setSession } from '../state/auth'
+import { boardHTML } from './board'
+import { HOOKS } from '../engine/hooks'
 
 const DSNAP = JSON.stringify(DAYS)
 let host: HTMLElement, off: () => void
 
 function rowsHTML(addrs: string[]) {
-  return addrs.map(a => `<div class="sb-arow" data-move="${a}"><span class="sb-grip" data-move="${a}">⠿</span></div>`).join('')
+  /* mirrors the real markup: the ADDRESS is on the ROW, the grip carries none */
+  return addrs.map(a => `<div class="sb-arow" data-move="${a}"><span class="sb-grip">⠿</span></div>`).join('')
 }
 function down(el: Element) { el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1 })) }
 function over(el: Element) { el.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1 })) }
@@ -39,9 +42,17 @@ describe('wireRowDrag', () => {
   it('marks the row it is carrying and the row it is over, and clears both on drop', () => {
     host.innerHTML = rowsHTML(['mv:p.0.0', 'mv:p.0.1'])
     const [a, b] = [...host.querySelectorAll('.sb-grip')]
+    const [rowA, rowB] = [...host.querySelectorAll('.sb-arow')]
     down(a); over(b)
+    /* a COUNT of marked elements is not enough — it stays 1-and-1 whether the
+       mark lands on the row or on the 18px grip inside it. The address only
+       resolves on the row, so the mark must land there too, never the grip. */
     expect(host.querySelectorAll('.rowdrag').length).toBe(1)
     expect(host.querySelectorAll('.rowdrop').length).toBe(1)
+    expect(rowA.classList.contains('rowdrag')).toBe(true)
+    expect(a.classList.contains('rowdrag')).toBe(false)
+    expect(rowB.classList.contains('rowdrop')).toBe(true)
+    expect(b.classList.contains('rowdrop')).toBe(false)
     up()
     expect(host.querySelectorAll('.rowdrag,.rowdrop').length).toBe(0)
   })
@@ -95,5 +106,29 @@ describe('wireRowDrag', () => {
     ;(a as any).releasePointerCapture = released
     down(a)
     expect(released).toHaveBeenCalledWith(1)
+  })
+
+  /* A hand-written fixture can drift from what the real builders emit and
+     take every test above with it — that is exactly what happened here: the
+     fixture used to stamp the address on the grip, matching nothing sbGrip()
+     and rowMove() actually produce, and every test still passed. This test
+     drives boardHTML's genuine output instead, so it stays honest if the
+     markup ever moves again. */
+  it('drives the real board markup end to end, not a hand-written fixture', () => {
+    const origEditMode = HOOKS.editMode
+    HOOKS.editMode = () => true
+    try {
+      const was = DAYS[0].allhands.map((x: any) => x.prog)
+      host.innerHTML = boardHTML(0)
+      const rows = [...host.querySelectorAll('.sb-arow[data-move^="mv:p.0."]')] as HTMLElement[]
+      expect(rows.length).toBeGreaterThan(1)
+      const [rowA, rowB] = rows
+      const gripA = rowA.querySelector('.sb-grip') as HTMLElement
+      expect(gripA).toBeTruthy()
+      down(gripA); over(rowB); up()
+      expect(DAYS[0].allhands.map((x: any) => x.prog)).toEqual([was[1], was[0], ...was.slice(2)])
+    } finally {
+      HOOKS.editMode = origEditMode
+    }
   })
 })
