@@ -973,7 +973,11 @@ test('board: the flying line keeps its grid-item count with stores present', asy
      test needs. */
   await page.waitForSelector('#schedBoard .sb-line')
   const n = await page.$eval('#schedBoard .sb-line', el => el.children.length)
-  expect(n, 'nine grid items — .sb-rcell must be exactly one').toBe(9)
+  /* ten, not nine, since the reorder grip landed (8 Aug 26): the grip is
+     .sb-line's first child on every viewport — display:none on a phone
+     hides it from layout, not from the DOM — so the count this test pins
+     went from nine to ten everywhere, not just on desktop. */
+  expect(n, 'ten grid items — the grip plus the original nine, .sb-rcell still exactly one').toBe(10)
 })
 
 test('board at 390px: the remarks cell drops to its own full-width strip', async ({ page }) => {
@@ -1367,8 +1371,11 @@ test('typing a rename then clicking a different row\'s control does not eat the 
    design choice, not a bug. 390px .sb-wide is the one combination that
    shipped broken, and is the only one of the four the grid-child count
    alone could not have caught: it stayed 9 in every combination, bug or no
-   bug — "three of four passing" is what let it through. */
-test('the board\'s flying line is single-row in .sb-wide at phone width, and stays 9 grid items throughout', async ({ page }) => {
+   bug — "three of four passing" is what let it through. (8 Aug 26: the
+   count pinned below is now 10, not 9 — the reorder grip added a tenth
+   DOM child that is present at every width, hidden only by CSS on a
+   phone; the four-combo logic above is otherwise unchanged.) */
+test('the board\'s flying line is single-row in .sb-wide at phone width, and stays 10 grid items throughout', async ({ page }) => {
   const combos = [
     { width: 1400, height: 950, wide: false, label: '1400px normal', singleRow: true },
     { width: 1400, height: 950, wide: true, label: '1400px .sb-wide', singleRow: true },
@@ -1389,7 +1396,7 @@ test('the board\'s flying line is single-row in .sb-wide at phone width, and sta
       const line = document.querySelector('#schedBoard .sb-line') as HTMLElement
       return { children: line.children.length, height: Math.round(line.getBoundingClientRect().height) }
     })
-    expect(m.children, `${c.label}: nine grid items — .sb-rcell must be exactly one`).toBe(9)
+    expect(m.children, `${c.label}: ten grid items — the grip plus .sb-rcell still exactly one`).toBe(10)
     if (c.singleRow) {
       expect(m.height, `${c.label}: single row, not exploded into three`).toBeLessThan(90)
     } else {
@@ -1399,4 +1406,128 @@ test('the board\'s flying line is single-row in .sb-wide at phone width, and sta
       expect(m.height, `${c.label}: the deliberate mobile stack, not collapsed to one row`).toBeGreaterThan(90)
     }
   }
+})
+
+test('the grip shows on desktop and the nudge buttons on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line[data-move]')
+  const wide = await page.evaluate(() => {
+    const g = document.querySelector('#sbBoard .sb-line .sb-grip') as HTMLElement
+    const n = document.querySelector('#sbBoard .sb-line .mbtn.nudge') as HTMLElement
+    return { grip: getComputedStyle(g).display, nudge: getComputedStyle(n).display, w: g.getBoundingClientRect().width }
+  })
+  expect(wide.grip).not.toBe('none')
+  expect(wide.nudge).toBe('none')
+  expect(Math.round(wide.w)).toBe(18)
+
+  await page.setViewportSize({ width: 390, height: 780 })
+  const narrow = await page.evaluate(() => {
+    const g = document.querySelector('#sbBoard .sb-line .sb-grip') as HTMLElement
+    const n = document.querySelector('#sbBoard .sb-line .mbtn.nudge') as HTMLElement
+    return { grip: getComputedStyle(g).display, nudge: getComputedStyle(n).display }
+  })
+  expect(narrow.grip).toBe('none')
+  expect(narrow.nudge).not.toBe('none')
+})
+
+/* the nth-child re-index is the breakage-prone half of this change and jsdom
+   cannot see it: the phone board must keep the SAME column layout it had */
+test('the phone board keeps its column layout after the grip is added', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-arow.c6r')
+  const m = await page.evaluate(() => {
+    const row = document.querySelector('#sbBoard .sb-arow.c6r') as HTMLElement
+    const item = row.querySelector('.ain') as HTMLElement
+    const hdr = document.querySelector('#sbBoard .sb-acols.c6r') as HTMLElement
+    const flyHdr = document.querySelector('#sbBoard .sb-lcols') as HTMLElement
+    /* the template's own track COUNT (checked below) is fixed CSS and does
+       not move if a single nth-child index is wrong — hiding the wrong
+       header cell still leaves exactly as many cells visible, just the
+       WRONG ones. The only thing that actually catches an off-by-one here
+       is reading which labels survived, in DOM order — this is what
+       "the phone board must keep the SAME column layout" actually means. */
+    const visible = (el: HTMLElement) => [...el.children]
+      .filter(c => getComputedStyle(c as HTMLElement).display !== 'none')
+      .map(c => c.textContent)
+    return {
+      tracks: getComputedStyle(row).gridTemplateColumns.split(' ').length,
+      item: item.getBoundingClientRect().width,
+      hdrTracks: getComputedStyle(hdr).gridTemplateColumns.split(' ').length,
+      c6rLabels: visible(hdr),
+      flyLabels: visible(flyHdr),
+    }
+  })
+  expect(m.tracks).toBe(3)
+  expect(m.hdrTracks).toBe(3)
+  /* the 6 Aug regression: the ITEM column collapsed to a 14px stub */
+  expect(m.item).toBeGreaterThan(150)
+  /* the labels that survive the nth-child hide, in DOM order, must be
+     exactly the ones the phone body columns still show — Item/Start/End
+     for the c6r panels, CS/MSN/TO/LD for the flying line — or a header
+     is sitting over the wrong body column even though the cell COUNT
+     still happens to match the track count. */
+  expect(m.c6rLabels).toEqual(['Item', 'Start', 'End'])
+  expect(m.flyLabels).toEqual(['CS', 'MSN', 'TO', 'LD'])
+})
+
+/* the reference day's very first wave carries two formations (VL, RU), and
+   the SECOND wave reuses the same two callsigns for its own pair (measured:
+   DAYS[0].waves[0] and [1] both hold a VL 2-ship and a RU 2-ship) — so a
+   whole-board reading of every .lin in document order sees "VL" and "RU"
+   twice each no matter what the drag does, before a single pointer event.
+   Scoping both the read and the adjacency check to the ONE .sb-go the grips
+   came from is what actually tests "a formation's rows stay adjacent",
+   the invariant the comment below names — a board-wide read would be
+   asserting against this fixture's reused callsigns, not against the drag. */
+test('dragging a grip reorders the wave and keeps a pair together', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line[data-move]')
+  const go1 = page.locator('#sbBoard .sb-go').first()
+  const before = await go1.locator('.sb-line .lin').evaluateAll(els => els.map(i => (i as HTMLInputElement).value))
+  const grips = go1.locator('.sb-line .sb-grip')
+  const last = await grips.count() - 1
+  /* the day's flying section runs taller than the 900px viewport, so the
+     last row's grip starts off-screen — boundingBox() reports its real
+     page position either way, but a raw mouse.move to a point outside the
+     viewport hits nothing, so the row has to be scrolled into view first
+     (what a real drag would require of a person, too). */
+  await grips.nth(last).scrollIntoViewIfNeeded()
+  const a = await grips.nth(last).boundingBox()
+  await grips.nth(0).scrollIntoViewIfNeeded()
+  const b = await grips.nth(0).boundingBox()
+  await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2, { steps: 12 })
+  await page.mouse.up()
+  const after = await go1.locator('.sb-line .lin').evaluateAll(els => els.map(i => (i as HTMLInputElement).value))
+  expect(after).not.toEqual(before)
+  /* a formation's rows stay adjacent — a callsign must never appear twice in
+     two places in one Go */
+  const runs = after.filter((v, i) => i === 0 || v !== after[i - 1])
+  expect(new Set(runs).size).toBe(runs.length)
+})
+
+test('a phone nudge moves a row and the board still reads correctly', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-arow [data-mvdn]')
+  const first = () => page.evaluate(() =>
+    (document.querySelector('#sbBoard .sb-panel.prog .sb-arow .ain') as HTMLInputElement)?.value)
+  const was = await first()
+  await clickHere(page, '#sbBoard .sb-panel.prog .sb-arow [data-mvdn]')
+  expect(await first()).not.toBe(was)
+})
+
+test('a squadron member gets no grip and no nudge buttons', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page, 'user')
+  const n = await page.evaluate(() => document.querySelectorAll('[data-move],[data-mvup]').length)
+  expect(n).toBe(0)
 })
