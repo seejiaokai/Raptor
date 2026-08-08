@@ -1141,7 +1141,10 @@ test('the phone board is one window: warnings on top, aircrew in an edge drawer'
   await page.setViewportSize({ width: 390, height: 780 })
   await login(page); await go(page, 'editsched')
   await page.click('.sb-open')
-  await expect(page.locator('#schedBoard .sb-warn .wln').first()).toBeVisible()
+  /* the strip opens FOLDED since the same-day critique (its rows hide until
+     the header is tapped — pinned both ways by the fold test), so the
+     on-top contract is asserted on the header line */
+  await expect(page.locator('#schedBoard .sb-warn .wh').first()).toBeVisible()
   const warn = await page.locator('#schedBoard .sb-warn').boundingBox()
   const panel = await page.locator('#sbBoard .sb-panel').first().boundingBox()
   expect(warn!.y, 'live checks ride above the first panel').toBeLessThan(panel!.y)

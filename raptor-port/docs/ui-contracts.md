@@ -185,6 +185,30 @@ edit week now:
   week's page wrapper; its z-index (120) lives inside `.schedboard`'s own
   stacking context (400), so body-level popups at 480 still paint above
   the whole board.
+- **Parked, the drawer is a centred grab-handle, and a fill parks it
+  (owner critique, 8 Aug 26).** The first parked shape spanned
+  `top:0;bottom:0`, which put the sliver over ✕ Close and the Sun 19 chip
+  (elementFromPoint returned `.ros-tab` at both), and an invisible 14px
+  hit extension sat over the ends of full-width inputs. Parked is now
+  `top:50%`, `height:clamp(180px,55vh,440px)`, an honest 30px wide with
+  NO hidden hit area — the board's panels take 4px extra right padding
+  because the old tab cleared them by exactly 26 — and open restates full
+  height as it slides out. The week's `.eroster` has the identical parked
+  shape. A SUCCESSFUL fill parks the drawer so the puck is seen landing:
+  the tap path in `placeArmed`'s success branch, the drag path by clearing
+  `drag.ts`'s `ROS_REOPEN` latch inside `applyDrop`'s `done()` — refusals
+  and aborted drags leave the drawer out. Spec:
+  `docs/superpowers/specs/2026-08-08-mobile-board-flaws-design.md`.
+- **Live checks folds to one line on the phone board (owner, 8 Aug 26).**
+  The strip used to scroll inside the one board scroller. `boardWarnHTML`
+  wraps everything in `.sbwrap[.open]` with the header carrying
+  `data-sbwtog` and a caret; `SBWOPEN` (`board.ts`, module state like
+  `SBWIDE`) starts false on every `openScheduler` and survives day-tab
+  switches; the toggle branch in `routeClick` is `isPhone()`-gated. Open
+  shows every row — no inner cap or scroll. Desktop and `.sb-wide` keep
+  the always-open list (restated); a quiet day shows its ✓ line even
+  collapsed; a day preview still replaces the strip with the read-only
+  bar, which never folds.
 - **Desktop (>820px) and `.sb-wide` are unchanged** — the side column
   restates `display:flex` and melts the drawer wrapper back to
   `display:contents`, tab hidden.
@@ -201,13 +225,16 @@ edit week now:
   collapsed — so a 100vh cap never binds while the bars are up and the
   list's tail hides behind them), plus `overscroll-behavior:contain` so an
   end-of-list swipe cannot scroll the board underneath. The week's
-  `.ros-body` got the same treatment, and both tabs carry an invisible
-  14px hit-area extension past the visible 26px sliver.
+  `.ros-body` got the same treatment. (The invisible 14px hit-area
+  extension this bullet once described was itself a tap-stealer and is
+  gone — see the grab-handle bullet above.)
 
-Pinned in `odds.test.tsx` (tab, shared toggle, parks on close) and measured
-in `e2e/geometry.spec.ts` (strip above the first panel, drawer parked at
-26px, slides on tap, opens on arm, seats clear of every input and of each
-other).
+Pinned in `odds.test.tsx` (tab, shared toggle, parks on close) and
+`board.test.tsx` (park-after-fill, the fold's state machine), and measured
+in `e2e/geometry.spec.ts` (strip above the first panel, the parked handle
+a centred band whose taps never steal from Close / the day chips / input
+ends, the fold opening and closing, the drawer parking on a fill, seats
+clear of every input and of each other).
 
 ## The day's three closing blocks, and who sees them
 
