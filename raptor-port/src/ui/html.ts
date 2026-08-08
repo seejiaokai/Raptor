@@ -618,8 +618,17 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=`<div class="sub plist sec sec-duty"><div class="sub-h">Duties</div>`+(dws.length?plCols():'');
       dws.forEach((dwv:any,wi:any)=>{
         h+=`<div class="pl-sub">${ted(`dl:${di}.${wi}`,dwv.label,ed,'ntx')}</div>`;
-        dutySort(dwv.rows).forEach((r:any)=>{
-          const ri=dwv.rows.indexOf(r), key=`d:${di}.${wi}.${ri}`;
+        /* MODEL order, not dutySort (owner, 8 Aug 26): the board can reorder
+           duty rows now, and a fixed role order here would have swallowed the
+           change — a scheduler would move a row and the issued week would keep
+           printing the old sequence. The board already rendered model order, so
+           the two surfaces agree for the first time. The seed's rows were
+           re-laid into the order the sort used to produce, so this prints
+           identically until somebody actually drags one — which is also what
+           keeps parity.test.ts byte-exact against the still-sorting reference,
+           with no refwin patch. */
+        (dwv.rows||[]).forEach((r:any,ri:any)=>{
+          const key=`d:${di}.${wi}.${ri}`;
           const inner=(PEOPLE[r.id]?lSeat(di,r.id,key,ed):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+moreSeats(di,key,ed);
           const n=rowCrew('d',[di,wi,ri]).filter(Boolean).length;
           h+=plRow(r.role,r.str,r.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`dr:${di}.${wi}.${ri}`,'role',ed,r);});

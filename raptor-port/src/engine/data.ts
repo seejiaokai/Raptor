@@ -25,8 +25,8 @@ export const DAYS:any[]=[
              {label:'DEBRIEF',str:'1230',end:'',rmks:''}],
         oft:[{label:'EP-4',str:'0800',end:'0930',p:'haowen',w:'stiff',rmks:'A: IEPE / EP-3N // BRIEF 30 PRIOR'},{label:'EP-4',str:'1200',end:'1330',p:'bane',w:'snap',rmks:'A: SA(S)-3 // BRIEF 30 PRIOR'},{label:'SIMS (149)',str:'1330',end:'1500',who:'149',rmks:'149 SQN SLOT'},{label:'EP-6',str:'1500',end:'1630',p:'prism',rmks:'B: SEFE'},
              {label:'EP-6N',str:'1700',end:'1830',pax:['shaft','riddler','sufa'],rmks:'NIGHT EP // 3RD BODY = OBSERVER'}]},
-  dutywaves:[{label:'1st wave',rows:[{role:'SXO',id:'razer',str:'0600',end:'1300'},{role:'OPS-O',id:'glass',str:'0600',end:'1400'},{role:'SDO',id:'mamba',str:'0700',end:'1300'}]},
-             {label:'2nd wave',rows:[{role:'SXO',id:'yeti',str:'1300',end:'2130'},{role:'OPS-O',id:'stuff',str:'1400',end:'2130'},{role:'SDO',id:'chaps',str:'1300',end:'2130'}]}],
+  dutywaves:[{label:'1st wave',rows:[{role:'SDO',id:'mamba',str:'0700',end:'1300'},{role:'SXO',id:'razer',str:'0600',end:'1300'},{role:'OPS-O',id:'glass',str:'0600',end:'1400'}]},
+             {label:'2nd wave',rows:[{role:'SDO',id:'chaps',str:'1300',end:'2130'},{role:'SXO',id:'yeti',str:'1300',end:'2130'},{role:'OPS-O',id:'stuff',str:'1400',end:'2130'}]}],
   ground:[{prog:'CAF ENGAGEMENT @ MINDEF HQ',str:'0845',end:'1630',who:'dj'},{prog:'MTG W CACC @ MINDEF',str:'0930',end:'1100',who:'vegas'},{prog:'MEDICAL APPT',str:'1030',end:'1230',who:'fantom'},{prog:'DENTAL APPT',str:'1200',end:'1330',who:'krait'},{prog:'HAM ENGAGEMENT @ AFTC',str:'1630',end:'1800',who:'dj'},{prog:'OPS/LOGS @ 149 SQN',str:'1400',end:'1530',who:'slash'}]},
 
  {dow:'Tuesday',dt:'Jul 14',wc:'4 X 4 X 0',
@@ -49,8 +49,8 @@ export const DAYS:any[]=[
        {p:'vegas',w:'cards',area:'AA2NS',rmks:'2A: ACM-2',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]}],
   sims:{amt:[{label:'BRIEF',str:'1400',end:''},{label:'BOX',str:'1430',end:'1530'},{label:'DEBRIEF',str:'1530',end:''}],
         oft:[{label:'EP-5',str:'0930',end:'1100',p:'haowen',w:'freak'},{label:'SIMS (149)',str:'1200',end:'1330',who:'149'}]},
-  dutywaves:[{label:'1st wave',rows:[{role:'SXO',id:'snap',str:'0500',end:'1200'},{role:'OPS-O',id:'wolf',str:'0500',end:'1200'},{role:'SDO',id:'boosh',str:'0530',end:'1200'}]},
-             {label:'2nd wave',rows:[{role:'SXO',id:'razer',str:'1200',end:'1700'},{role:'OPS-O',id:'stuff',str:'1200',end:'1700'},{role:'SDO',id:'beams',str:'1200',end:'1700'}]}],
+  dutywaves:[{label:'1st wave',rows:[{role:'SDO',id:'boosh',str:'0530',end:'1200'},{role:'SXO',id:'snap',str:'0500',end:'1200'},{role:'OPS-O',id:'wolf',str:'0500',end:'1200'}]},
+             {label:'2nd wave',rows:[{role:'SDO',id:'beams',str:'1200',end:'1700'},{role:'SXO',id:'razer',str:'1200',end:'1700'},{role:'OPS-O',id:'stuff',str:'1200',end:'1700'}]}],
   ground:[{prog:'OPS BRIEFER / EP SUP',str:'0500',end:'',who:'dice'},{prog:'FLY W 149',str:'0845',end:'',who:'ipman'},{prog:'MEDICAL APPT',str:'1330',end:'1500',who:'yeti'}]},
 
  {dow:'Wednesday',dt:'Jul 15',wc:'4 X 4 X 0',
@@ -74,7 +74,7 @@ export const DAYS:any[]=[
   sims:{amt:[{label:'BRIEF',str:'1100',end:''},{label:'BOX',str:'1130',end:'1230'},{label:'DEBRIEF',str:'1230',end:''}],
         oft:[{label:'EP-4',str:'0900',end:'1030',pax:['boosh','xray','waldo']},
              {label:'IAT-3',str:'1500',end:'1630',p:'prism',w:'nasty'}]},
-  dutywaves:[{label:'1st wave',rows:[{role:'SXO',id:'shaft',str:'0800',end:'1400'},{role:'OPS-O',id:'divot',str:'0800',end:'1400'},{role:'SDO',id:'mamba',str:'0800',end:'1400'}]}],
+  dutywaves:[{label:'1st wave',rows:[{role:'SDO',id:'mamba',str:'0800',end:'1400'},{role:'SXO',id:'shaft',str:'0800',end:'1400'},{role:'OPS-O',id:'divot',str:'0800',end:'1400'}]}],
   ground:[{prog:'CFG-C7 CONF @ 7-AELG',str:'1400',end:'1630',who:'dj'},{prog:'EGI-GPS TRIAL PREP',str:'1400',end:'',who:'vegas'}]},
 
  {dow:'Thursday',dt:'Jul 16',wc:'4 X 4 X 0',
@@ -97,8 +97,8 @@ export const DAYS:any[]=[
        {p:'vinci',w:'drill',area:'AA2NS',rmks:'2A: BFM-8X / OC CHK',opts:{tk2:true,tpod:false,nav:true,bombs:''}}]}]}],
   sims:{amt:[{label:'BRIEF',str:'1100',end:''},{label:'BOX',str:'1130',end:'1230'},{label:'DEBRIEF',str:'1230',end:''}],
         oft:[{label:'EP-4',str:'0900',end:'1030',p:'haowen',w:'plasma'},{label:'SIMS (149)',str:'1200',end:'1330',who:'149'}]},
-  dutywaves:[{label:'1st wave',rows:[{role:'SXO',id:'shaft',str:'0800',end:'1400'},{role:'OPS-O',id:'divot',str:'0800',end:'1400'},{role:'SDO',id:'razer',str:'0800',end:'1400'}]},
-             {label:'2nd wave',rows:[{role:'SXO',id:'chaps',str:'1400',end:'1900'},{role:'OPS-O',id:'spaceman',str:'1400',end:'1900'},{role:'SDO',id:'beams',str:'1400',end:'1900'}]}],
+  dutywaves:[{label:'1st wave',rows:[{role:'SDO',id:'razer',str:'0800',end:'1400'},{role:'SXO',id:'shaft',str:'0800',end:'1400'},{role:'OPS-O',id:'divot',str:'0800',end:'1400'}]},
+             {label:'2nd wave',rows:[{role:'SDO',id:'beams',str:'1400',end:'1900'},{role:'SXO',id:'chaps',str:'1400',end:'1900'},{role:'OPS-O',id:'spaceman',str:'1400',end:'1900'}]}],
   ground:[{prog:'MEDICAL APPT',str:'1030',end:'1230',who:'fantom'},{prog:'DENTAL APPT',str:'1200',end:'1330',who:'krait'}]},
 
  {dow:'Friday',dt:'Jul 17',wc:'0 X 0 X 0',
@@ -106,7 +106,7 @@ export const DAYS:any[]=[
   allhands:[{prog:'SODB',str:'0745',end:'0800'},{prog:'SQN PT',str:'1500',end:'1630'},{prog:'MASS DEBRIEF + BEER CALL',str:'1700',end:''}],
   waves:[],
   sims:{amt:[],oft:[{label:'SIMS (149)',str:'0900',end:'1030',who:'149'},{label:'EP-6',str:'1400',end:'1530',p:'bapster',w:'shaft'}]},
-  dutywaves:[{label:'Duty',rows:[{role:'SXO',id:'razer',str:'0730',end:'1730'},{role:'SDO',id:'yeti',str:'0730',end:'1730'}]}],
+  dutywaves:[{label:'Duty',rows:[{role:'SDO',id:'yeti',str:'0730',end:'1730'},{role:'SXO',id:'razer',str:'0730',end:'1730'}]}],
   ground:[{prog:'GROUND SCHOOL - EW',str:'0900',end:'1100',who:'stiff'},{prog:'AIRCREW ADMIN',str:'1100',end:'1200'}]},
  /* The week runs Monday..Sunday (owner, Aug 26). The weekend is non-flying:
     every section is present but empty, exactly as Friday's shape, because

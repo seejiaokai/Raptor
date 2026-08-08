@@ -23,6 +23,7 @@
 import { readFileSync } from 'node:fs'
 import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
+import { DAYS } from '../engine/data'
 
 export async function refWindow(): Promise<any> {
   const html = rering(rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))
@@ -34,6 +35,7 @@ export async function refWindow(): Promise<any> {
   w.HTMLElement.prototype.scrollIntoView = () => {}
   await new Promise(r => setTimeout(r, 300))
   syncInputs(w)
+  reduty(w)
   w.eval('validate()')
   return w
 }
@@ -48,6 +50,39 @@ export async function refWindow(): Promise<any> {
 export function syncInputs(w: any) {
   w.eval('INPUTS.length=0;INPUTS.push.apply(INPUTS,JSON.parse('
     + JSON.stringify(JSON.stringify(INPUTS.filter(inputFlags))) + '))')
+}
+
+/* Fifth structural divergence, closed the same way as INPUTS. The week's
+   duty rows are re-laid into DUTY_ORDER in the port's seed (owner, 8 Aug 26)
+   so dropping html.ts's dutySort() prints the board's own order instead of
+   silently overriding it. The RENDER side needs no patch for this: the
+   reference still sorts, and sorting an already-sorted list is a no-op, so
+   both sides paint the same HTML either way. What the re-lay breaks is the
+   two STRUCTURAL comparisons in parity.test.ts that read `dutywaves.rows` in
+   raw stored order and never went through dutySort in the first place —
+   `seed data matches (DAYS)`, a straight deep-equal of the two models, and
+   `collectEvents matches the reference exactly`, which walks each day's rows
+   in array order to build the timeline. Both sides need the SAME stored
+   order for those to hold, and the reference file is read-only, so the fix
+   is the model this file already has for INPUTS: push the port's rows into
+   the in-memory reference before either engine runs. Same `w.eval` shape and
+   the same reason — the reference declares `let DAYS` at the top level of a
+   classic script, a lexical binding rather than a window property, so
+   `w.DAYS = …` would only shadow it and the page would keep reading its own.
+   Mutated wave-by-wave, in place, rather than replacing DAYS wholesale: the
+   reference has never had the weekend days the port adds, so only the first
+   REFN days are touched, and only their existing dutywaves entries — the
+   wave count and labels are unchanged between the two builds, only the row
+   order within each wave differs. */
+export function reduty(w: any) {
+  const refn = w.eval('DAYS.length')
+  DAYS.slice(0, refn).forEach((d: any, i: number) => {
+    d.dutywaves.forEach((dw: any, j: number) => {
+      w.eval(`DAYS[${i}].dutywaves[${j}].rows.length=0;`
+        + `DAYS[${i}].dutywaves[${j}].rows.push.apply(DAYS[${i}].dutywaves[${j}].rows,JSON.parse(`
+        + JSON.stringify(JSON.stringify(dw.rows)) + `))`)
+    })
+  })
 }
 
 /* Second structural divergence, closed the same way as the INPUTS push — at
