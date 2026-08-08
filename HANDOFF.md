@@ -540,6 +540,25 @@ believing a single red.)
     browser — but a store renamed to start with `=` is a spreadsheet-formula
     injection vector once that CSV is opened in Excel/Sheets. Pre-existing
     risk surface, worse now that labels are user-renamable.
+  - **Four residuals parked at the final review (8 Aug 26), none a
+    data-integrity risk.** (a) **No migration for a list already damaged by
+    the pre-fix key mismatch.** Until the 8 Aug wave, deleting `2 TKS` and
+    retyping it minted a second entry keyed `2tks` while every jet kept
+    `opts.tk2`; `storesLoad` still accepts such an entry, so a squadron that
+    hit it sees two identically-labelled chips and keeps a stranded `tk2`
+    until the stray is deleted by hand. Nothing makes it worse, and the
+    feature has not shipped to anyone yet. (b) **A misleading refusal.**
+    Rename `2 TKS` to something else, then type `2 TKS` as a new store, and
+    it is refused with "2 TKS is already on the list" while the list shows
+    the new label — the refusal is correct (the key is taken), only the
+    wording is confusing. (c) **The label match that restores a standard
+    key trims and upper-cases but does not normalise inner spacing or
+    punctuation**, so `2  TKS` or `2-TKS` still derive `2tks` rather than
+    recovering `tk2`. Retyping the name as printed works, which is the path
+    the toast promises. (d) **`export.ts:30` still writes stores for a
+    standalone line** if legacy `opts` survive there from before the SC /
+    AVALON / BB gate went on both surfaces; the entry paths are closed now,
+    the CSV read path is not.
   - **A follow-up this feature is not the cause of, recorded here because
     it was found while working nearby.** The Schedule Board stays open
     across a page change generally (not just for stores) — at a phone width
