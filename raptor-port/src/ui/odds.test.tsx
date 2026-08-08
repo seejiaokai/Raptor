@@ -188,23 +188,28 @@ describe('the airspace popup (tr: funnel)', () => {
   })
 })
 
-describe('the roster resize grip (B25)', () => {
-  it('exists on the board, drags as vh, double-tap resets', async () => {
+/* B25's resize grip is GONE (owner, 8 Aug 26): the phone board became one
+   window with the roster in an AIRCREW edge drawer, so there is no split to
+   resize. What replaces the grip's pin is the drawer's contract: the tab
+   exists on the board, the delegated .ros-tab toggle (interactions.ts —
+   the week's own handler, shared verbatim) opens and closes it, and
+   closing the board parks it rather than leaking an open drawer onto the
+   week underneath. Geometry (the drawer really slides, the warnings strip
+   really sits on top) is e2e — jsdom sees only classes. */
+describe('the board aircrew drawer (replaced the B25 grip, 8 Aug 26)', () => {
+  it('has the tab, toggles through the shared .ros-tab handler, and parks on close', async () => {
+    document.body.classList.remove('ros-open')
     await act(async () => { openScheduler(0) })
-    const grip = $('#sbGrip')
-    expect(grip).toBeTruthy()
-    expect($('#sbSide')).toBeTruthy()
-    /* drag up 100px → the roster grows by 100/vh */
-    await act(async () => {
-      grip.dispatchEvent(new MouseEvent('pointerdown', { clientY: 500, bubbles: true }))
-      grip.dispatchEvent(new MouseEvent('pointermove', { clientY: 400, bubbles: true }))
-      grip.dispatchEvent(new MouseEvent('pointerup', { clientY: 400, bubbles: true }))
-    })
-    const v1 = parseFloat(document.documentElement.style.getPropertyValue('--sbside'))
-    expect(v1).toBeGreaterThan(40)
-    /* double-tap (dblclick) goes back to 40vh */
-    await act(async () => { grip.dispatchEvent(new MouseEvent('dblclick', { bubbles: true })) })
-    expect(document.documentElement.style.getPropertyValue('--sbside')).toBe('40vh')
+    expect($('#sbGrip'), 'the resize grip is gone for good').toBeFalsy()
+    const tab = $('#schedBoard .sb-ros .ros-tab')
+    expect(tab, 'the AIRCREW tab lives on the board itself').toBeTruthy()
+    expect($('#schedBoard .sb-ros .ros-body #sbRoster'), 'the roster moved inside the drawer').toBeTruthy()
+    await click(tab)
+    expect(document.body.classList.contains('ros-open'), 'the tab opens the drawer').toBe(true)
+    await click(tab)
+    expect(document.body.classList.contains('ros-open'), 'a second tap parks it').toBe(false)
+    await click(tab)
     await act(async () => { closeScheduler() })
+    expect(document.body.classList.contains('ros-open'), 'closing the board parks the drawer too').toBe(false)
   })
 })

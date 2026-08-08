@@ -16,15 +16,6 @@ import { refreshHighlights } from './highlights'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
 
-/* ---- resize the pinned roster ------------------------------------------------
-   On a phone the board and the roster share one screen, and how they split it
-   depends on what you are doing: throwing pucks wants a tall roster, reading
-   the day wants a tall board. Drag the grip; double-tap it to go back to 40%.
-   Kept as a fraction of the viewport so it survives a rotation.              */
-const SBSIDE_DEF = 40, SBSIDE_MIN = 14, SBSIDE_MAX = 82
-let SBSIDE = SBSIDE_DEF
-function sbApplySide() { document.documentElement.style.setProperty('--sbside', SBSIDE + 'vh') }
-
 export function SchedBoard() {
   const version = useVersion()
   const boardRef = useRef<HTMLDivElement>(null)
@@ -32,54 +23,7 @@ export function SchedBoard() {
   const daysRef = useRef<HTMLDivElement>(null)
   const warnRef = useRef<HTMLDivElement>(null)
   const inputsRef = useRef<HTMLDivElement>(null)
-  const gripRef = useRef<HTMLDivElement>(null)
   const open = SBDAY != null
-
-  /* the grip's pointer machine, verbatim — attached once */
-  useEffect(() => {
-    const grip = gripRef.current!
-    let drag: any = null, lastTap = 0
-    const vh = () => Math.max(1, window.innerHeight) / 100
-    const down = (e: PointerEvent) => {
-      drag = { y: e.clientY, start: SBSIDE }
-      grip.classList.add('on'); document.body.classList.add('sbresize')
-      try { grip.setPointerCapture(e.pointerId) } catch (_) {}
-      e.preventDefault(); e.stopPropagation()
-    }
-    const move = (e: PointerEvent) => {
-      if (!drag) return
-      /* dragging UP grows the roster, which is the direction the grip moves */
-      SBSIDE = Math.min(SBSIDE_MAX, Math.max(SBSIDE_MIN, drag.start + (drag.y - e.clientY) / vh()))
-      sbApplySide(); e.preventDefault(); e.stopPropagation()
-    }
-    const end = (e: any) => {
-      if (!drag) return
-      const moved = Math.abs(drag.y - (e && e.clientY != null ? e.clientY : drag.y))
-      drag = null; grip.classList.remove('on'); document.body.classList.remove('sbresize')
-      if (moved < 3) {                       // a tap, not a drag — double-tap resets
-        const now = (window.performance && performance.now) ? performance.now() : 0
-        if (now - lastTap < 420) { SBSIDE = SBSIDE_DEF; sbApplySide(); HOOKS.toast('Roster height reset') }
-        lastTap = now
-      }
-    }
-    const dbl = (e: MouseEvent) => { SBSIDE = SBSIDE_DEF; sbApplySide(); e.preventDefault() }
-    grip.addEventListener('pointerdown', down)
-    grip.addEventListener('pointermove', move)
-    grip.addEventListener('pointerup', end)
-    grip.addEventListener('pointercancel', end)
-    grip.addEventListener('dblclick', dbl)
-    return () => {
-      grip.removeEventListener('pointerdown', down)
-      grip.removeEventListener('pointermove', move)
-      grip.removeEventListener('pointerup', end)
-      grip.removeEventListener('pointercancel', end)
-      grip.removeEventListener('dblclick', dbl)
-    }
-  }, [])
-
-  /* the size is re-applied whenever the board opens (openScheduler does
-     sbApplyWide();sbApplySide() in the reference) */
-  useEffect(() => { if (open) sbApplySide() }, [open])
 
   /* the board's own handlers, attached once */
   useEffect(() => {
@@ -157,10 +101,25 @@ export function SchedBoard() {
           <div className="sb-board" id="sbBoard" ref={boardRef} />
           <div className="sb-inputs" id="sbInputs" ref={inputsRef} />
         </div>
+        {/* ONE WINDOW ON A PHONE (owner, from the deployed site, 8 Aug 26 —
+            comp approved before build). The old phone board was three stacked
+            zones: panels, a bottom-pinned Live-checks + roster sheet, and a
+            drag-grip splitting them. Now the phone matches the edit week:
+            .sb-side dissolves (display:contents), the warnings ride at the
+            TOP of the one scroller (order:-1), and the roster parks in a
+            right-edge AIRCREW drawer — .eroster so the week's tab styling,
+            its accent flip and interactions.ts's delegated .ros-tab toggle
+            all apply verbatim, and armSlot's isPhone() ros-open means
+            tapping any slot slides it open, exactly like the week. The
+            desktop column and .sb-wide are unchanged (both restate). */}
         <div className="sb-side" id="sbSide">
-          <div className="sb-grip" id="sbGrip" ref={gripRef} title="Drag to resize · double-tap to reset"><span></span></div>
           <div className="sb-warn" id="sbWarn" ref={warnRef} />
-          <div className="sb-roster" id="sbRoster" ref={rosterRef} />
+          <aside className="sb-ros eroster">
+            <div className="ros-tab" title="Aircrew palette"><b>AIRCREW</b></div>
+            <div className="ros-body">
+              <div className="sb-roster" id="sbRoster" ref={rosterRef} />
+            </div>
+          </aside>
         </div>
       </div>
     </div>

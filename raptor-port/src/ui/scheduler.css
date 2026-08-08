@@ -828,15 +828,6 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
   .signoff{margin:0 12px 8px;padding:7px 9px;gap:5px}
   .signoff .so-state{margin-left:0;flex:0 0 100%}
 }
-/* the resize grip on the pinned roster (phone layout only) */
-.sb-grip{display:none;align-items:center;justify-content:center;height:17px;flex:0 0 17px;
-  cursor:row-resize;touch-action:none;background:var(--panel-2);border-bottom:1px solid var(--edge);
-  border-radius:10px 10px 0 0;margin-top:-1px;user-select:none;-webkit-user-select:none}
-.sb-grip>span{display:block;width:44px;height:4px;border-radius:2px;background:var(--edge-2)}
-.sb-grip:hover>span,.sb-grip.on>span{background:var(--accent)}
-.sb-grip.on{background:rgba(59,198,232,.10)}
-body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
-.schedboard.sb-wide .sb-grip{display:none}
 #sbSignBar{margin:0 0 10px}
 .signoff.board-sign{position:static}
 /* the per-day strip, in the day's own header. Four names, two rows on a phone,
@@ -1586,6 +1577,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .sbi-ty.ty-gp{color:#F2D69B;border-color:rgba(229,168,59,.4);background:rgba(229,168,59,.10)}
 .sbi-row .sbi-rm{font-size:11px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sb-side{width:320px;flex:0 0 320px;border-left:1px solid var(--edge);display:flex;flex-direction:column;min-height:0;background:var(--panel)}
+/* the aircrew drawer's wrapper is invisible on desktop — .sb-warn and
+   .sb-roster stay direct flex items of the side column, exactly as before
+   the phone drawer existed. The aside carries .eroster so the week's tab
+   styling (hidden on desktop, shown + accent-flipped on a phone) and the
+   delegated .ros-tab toggle in interactions.ts apply to it verbatim. */
+.sb-ros,.sb-ros .ros-body{display:contents}
 .sb-warn{max-height:38%;overflow:auto;padding:10px 12px;border-bottom:1px solid var(--edge)}
 .sb-warn .wh{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.09em;font-size:10px;font-weight:700;color:var(--ink-3);margin-bottom:6px}
 .sb-warn .wln{font-size:11.5px;line-height:1.5;padding:3px 7px;border-radius:6px;margin-bottom:3px;border-left:3px solid var(--edge-2)}
@@ -1907,18 +1904,28 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   .sb-main{flex-direction:column;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
   .sb-boardwrap{flex:0 0 auto;min-height:0}
   .sb-board{flex:none;overflow:visible}
-  /* the roster stays PINNED to the bottom of that scroller while the board
-     scrolls above it, so a puck and the slot you are aiming at are on screen at
-     the same time — without it a drag from the roster to a slot is a blind
-     journey down a page and a half. How much of the screen it takes is the
-     scheduler's call: drag the grip on its top edge. */
-  .sb-side{width:100%;flex:0 0 auto;border-left:none;border-top:1px solid var(--edge);
-    position:sticky;bottom:0;z-index:6;max-height:var(--sbside,40vh);
-    display:flex;flex-direction:column;min-height:0;
-    box-shadow:0 -9px 20px rgba(0,0,0,.5)}
-  .sb-grip{display:flex}
-  .sb-warn{max-height:16vh;overflow:auto}
-  .sb-roster{flex:1 1 auto;overflow:auto;min-height:0}
+  /* ONE WINDOW (owner, 8 Aug 26 — comp approved; replaces the bottom-pinned
+     Live-checks + roster sheet and its resize grip). The side column
+     dissolves; its two occupants go where the edit week puts theirs: the
+     warnings to the TOP of the scroller (order:-1 against .sb-boardwrap —
+     flex:0 0 auto matters, because .sb-main scrolls and an overflow:auto
+     child's automatic minimum is 0, so a shrinkable strip collapses to its
+     header), and the roster into a right-edge AIRCREW drawer. */
+  .sb-side{display:contents}
+  .sb-warn{order:-1;flex:0 0 auto;max-height:23vh;overflow:auto;background:var(--panel)}
+  /* the drawer geometry is .edit-board .eroster's, restated here because
+     those rules are scoped to the week's page wrapper. z-index is INSIDE
+     .schedboard's own stacking context (z 400), so 120 only has to clear
+     the panels; body-level popups (.wavemenu at 480) still paint above the
+     whole board. The tab itself is styled by the .eroster rules. */
+  .schedboard .sb-ros{position:fixed;right:0;top:0;bottom:0;z-index:120;display:flex;align-items:stretch;
+    width:max-content;max-width:78vw;padding:8px 0 12px 0;
+    border:1px solid var(--edge);border-right:none;border-radius:12px 0 0 12px;
+    background:rgba(11,13,16,.965);backdrop-filter:blur(8px);
+    box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);
+    transform:translateX(calc(100% - 26px));transition:transform .2s ease}
+  body.ros-open .schedboard .sb-ros{transform:translateX(0)}
+  .schedboard .sb-ros .ros-body{display:block;overflow:auto;max-height:100vh}
   /* B's 3rd DOM position would otherwise steal the 46px track meant for TO
      (grid auto-placement follows source order), so — same move as .nts/.lctl
      just below — it drops to its own full-width strip instead of adding a
@@ -1974,7 +1981,12 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .schedboard.sb-wide .sb-board{flex:1;overflow:auto}
 .schedboard.sb-wide .sb-inputs{max-height:36%;overflow:auto}
 .schedboard.sb-wide .sb-side{position:static;width:320px;flex:0 0 320px;max-height:none;
-  border-left:1px solid var(--edge);border-top:none;box-shadow:none;min-height:0}
+  border-left:1px solid var(--edge);border-top:none;box-shadow:none;min-height:0;
+  display:flex;flex-direction:column}
+/* the desktop layout keeps the plain side column: the drawer wrapper melts
+   away and its tab hides, same as at a real desktop width */
+.schedboard.sb-wide .sb-ros,.schedboard.sb-wide .sb-ros .ros-body{display:contents}
+.schedboard.sb-wide .sb-ros .ros-tab{display:none}
 .schedboard.sb-wide .sb-warn{max-height:38%;overflow:auto}
 .schedboard.sb-wide .sb-roster{flex:1;overflow:auto}
 .schedboard.sb-wide .sb-lcols,.schedboard.sb-wide .sb-line{grid-template-columns:64px 74px 54px 54px 54px 1fr 1fr 92px 92px;font-size:11.5px}

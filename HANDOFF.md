@@ -9,7 +9,7 @@ The port from the original single-file app is complete; that history is in
 
 **Every gate is green at this commit**, run first-hand: `npm test` 687/43
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 35/35, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 36/36, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 **`probes:adapted` and `perf` do NOT serve themselves** — start
 `npx vite preview --port 4173` first or both fail with
@@ -64,9 +64,11 @@ believing a single red.)
   visit, a rename not eating the next click, the board line staying
   single-row and nine grid items in `.sb-wide` at phone width, the
   popup opening against the BOARD's button rather than the week's, the
-  popup centring inside the visual viewport under a pinch zoom, and the
-  board's crew cells stacking pucks in pairs on a phone, 8 Aug 26) —
-  sixteen contract families over 35 tests. It
+  popup centring inside the visual viewport under a pinch zoom, the
+  board's crew cells stacking pucks in pairs on a phone, and the phone
+  board's one-window layout — warnings strip on top, AIRCREW drawer
+  parked/sliding/arm-opened, 8 Aug 26) —
+  seventeen contract families over 36 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
@@ -240,8 +242,22 @@ believing a single red.)
   that measures what vitest cannot: blue `rgb(30,134,255)`, no `#BFE0FF` in
   the computed shadow, warn ring still drawn, dim at `0.5`, box still 74×15.
   Contract: `docs/ui-contracts.md` §Selection highlight and §Jumping.
-- **`sbWide` / board-grip state** is module-local and resets on reload
-  (matches the original's session-scoped behaviour).
+- **`sbWide` state** is module-local and resets on reload (matches the
+  original's session-scoped behaviour).
+- **The phone board is ONE window (owner, 8 Aug 26 — comp approved before
+  build).** The three stacked zones — panels, a bottom-pinned Live-checks +
+  roster sheet, the B25 resize grip splitting them — became the edit week's
+  shape: warnings strip at the top of the one scroller, the roster in a
+  right-edge AIRCREW drawer (the week's `.eroster` tab, its `ros-open`
+  accent flip and the delegated `.ros-tab` toggle reused verbatim; arming
+  a slot pulls it open via `armSlot`'s existing `isPhone()` line, and
+  `closeScheduler` parks it so an open drawer never leaks onto the week).
+  The grip machine and its `--sbside` variable are DELETED, not hidden.
+  Desktop and `.sb-wide` are untouched. In the same pass the board's crew
+  cells stack pucks two-wide on a phone (the AMT BOX's eight pax read as
+  four vertical pairs, the week's geometry). Contract:
+  `docs/ui-contracts.md` §The board on a phone is ONE window; pinned in
+  `odds.test.tsx`, measured in `e2e/geometry.spec.ts`.
 - **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** "Restore
   this version" makes that version live immediately, discards the day's
   pending edits, needs no sign-off; new edits publish as `nextAL()`. Details:

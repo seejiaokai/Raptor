@@ -1020,6 +1020,40 @@ test('board at 390px: an eight-pax sim row stacks its pucks two per row', async 
   expect(rows.size, 'eight pax = four pair-rows').toBe(4)
 })
 
+/* THE PHONE BOARD IS ONE WINDOW (owner, 8 Aug 26 — comp approved before
+   build). It used to be three stacked zones: panels, then a bottom-pinned
+   Live-checks + roster sheet, split by a resize grip. Now it matches the
+   edit week: the warnings strip rides at the top of the one scroller, the
+   roster parks in a right-edge AIRCREW drawer that slides over the board,
+   and arming a slot pulls the drawer open by itself (the week's own
+   gesture). All geometry — jsdom can pin the classes (odds.test.tsx) but
+   not that anything actually sits, slides or stays on screen. */
+test('the phone board is one window: warnings on top, aircrew in an edge drawer', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  await expect(page.locator('#schedBoard .sb-warn .wln').first()).toBeVisible()
+  const warn = await page.locator('#schedBoard .sb-warn').boundingBox()
+  const panel = await page.locator('#sbBoard .sb-panel').first().boundingBox()
+  expect(warn!.y, 'live checks ride above the first panel').toBeLessThan(panel!.y)
+  expect(await page.locator('#sbGrip').count(), 'the resize grip is gone').toBe(0)
+  const parked = await page.locator('#schedBoard .sb-ros').boundingBox()
+  expect(parked!.x, 'drawer parked: only the 26px tab on screen').toBeGreaterThan(390 - 30)
+  const tab = await page.locator('#schedBoard .sb-ros .ros-tab').boundingBox()
+  expect(tab!.x + tab!.width, 'the tab sits flush with the right edge').toBeGreaterThan(388)
+  await page.click('#schedBoard .sb-ros .ros-tab')
+  await page.waitForTimeout(300)                       // the .2s slide
+  const slid = await page.locator('#schedBoard .sb-ros').boundingBox()
+  expect(slid!.x, 'drawer open: the palette slides over the board').toBeLessThan(390 - 100)
+  await expect(page.locator('#schedBoard .sb-roster .rpuck').first()).toBeVisible()
+  await page.click('#schedBoard .sb-ros .ros-tab')     // park it again
+  await page.waitForTimeout(300)
+  /* Monday's seed has every seat crewed, so arm through a People cell's
+     append target — the same boardArmClick path a slot takes */
+  await page.locator('#sbBoard .ppl[data-fill]').first().click()   // arm a slot…
+  await expect(page.locator('body'), '…and the drawer opens itself, like the week').toHaveClass(/ros-open/)
+})
+
 test('the pen reorders, and the popup survives a click into a rename field', async ({ page }) => {
   await login(page); await go(page, 'editsched')
   await clickHere(page, '#eWeek .stcfg[data-stcfg]')
