@@ -58,6 +58,15 @@ behaviour:
   the bottom. The way back is **Undo**, which restores `gman` along with the
   order because `histSnap()` serialises the whole of `DAYS` — no new control is
   needed, and none is added.
+
+  **The first move on a day freezes the visible order before it moves
+  anything.** A move expressed in model indices would otherwise be undone by the
+  next redraw — and the first one in particular would read as doing nothing at
+  all: drag the 1000 line above the 0800 line and a naive model move puts it at
+  model index 1, where the sort still prints it last. So `moveGroundRow` permutes
+  the model into the order on screen (keys and all), sets `gman`, translates the
+  caller's model indices into that frozen order, and only then moves. This is
+  what makes the general permutation the primitive above.
 - **Duties printed in a fixed role order on the week** (`dutySort`, SDO → SXO →
   OPS-O → …) while the board showed model order, so a reorder would have stuck
   on the board and never reached the issued programme. **(owner: the scheduler's
@@ -86,12 +95,19 @@ that key space for a **splice**: marks on the deleted row are dropped, marks
 after it move down one. A **move** is the missing sibling.
 
 ```
-moveKeys(head, pos, from, to)
-  n === from                     → to
-  from < to && from < n && n <= to → n - 1
-  from > to && to <= n && n < from → n + 1
-  otherwise                        → unchanged
+permuteKeys(head, pos, oldOf)      oldOf[newIndex] = oldIndex
+  n in the permutation → its new index
+  n outside it         → left alone (a stale key is inert; a dropped one is a lost record)
+
+moveKeys(head, pos, from, to, len) = permuteKeys over the splice-out/splice-in
+                                     permutation of a list of length `len`
 ```
+
+**A general permutation is the primitive, and a single move is the wrapper** —
+the reverse of the obvious arrangement, and planning forced it. Ground renders
+time-sorted, so its first manual move has to freeze the order on screen into the
+model before it can move anything within it (see below), and a freeze is a whole
+permutation. One primitive serves both.
 
 Applied to the same three places `shiftKeys` touches: `SCHED.pending`,
 `SCHED.changes`, and `keys` on every issued AL.
