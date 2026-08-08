@@ -137,9 +137,9 @@ describe('the pen edits the LIST, not the schedule', () => {
   it('the up arrow reorders and persists, and is not a schedule edit', async () => {
     await openPen()
     await click(document.querySelector('.stmenu .st-erow[data-k="tk2"] .st-up') as HTMLElement)
-    expect(STORE_CFG.map(([k]) => k)).toEqual(['nav', 'tk2', 'nc', 'tks3', 'tpod', 'cl'])
+    expect(STORE_CFG.map(([k]) => k)).toEqual(['tk2', 'tpod', 'nav', 'nc', 'tks3', 'cl'])
     expect(JSON.parse(mem['sqn142_stores']!).map((r: any) => r[0]))
-      .toEqual(['nav', 'tk2', 'nc', 'tks3', 'tpod', 'cl'])
+      .toEqual(['tk2', 'tpod', 'nav', 'nc', 'tks3', 'cl'])
     expect(SCHED.pending[AC_KEY], 'reordering the list is not a schedule edit').toBeUndefined()
   })
 
@@ -152,13 +152,14 @@ describe('the pen edits the LIST, not the schedule', () => {
     expect(SCHED.pending[AC_KEY], 'closing the pen is not a schedule edit').toBeUndefined()
   })
 
-  /* Deleting `if (pen) return` from the outside-click handler still left this
-     file green when it read `.st-lab` inside the box — the box's own click
-     handler stopPropagation()s before the click ever reaches document, and
-     box.contains(ev.target) would have caught it first regardless. Dispatch
-     the outside click on document.body itself, the only way to actually
-     exercise the document-level listener the pen suspends. */
-  it('the outside-click dismiss is suspended while the pen is open, and resumes once it closes', async () => {
+  /* The outside clicks are dispatched on document.body itself — a click read
+     from `.st-lab` inside the box never exercises the document-level listener
+     (the box's own handler stopPropagation()s, and box.contains() would catch
+     it first regardless). Until 8 Aug 26 the dismiss was suspended outright
+     while the pen was open; the owner asked for a click-away close there too,
+     so what survives of the suspension is only the press-origin guard the
+     next test exercises. */
+  it('an outside click dismisses the box with the pen open too (owner, 8 Aug 26)', async () => {
     const outside = async () => { await act(async () => {
       document.body.dispatchEvent(new MouseEvent('click', { bubbles: true })) }) }
     await click(editTab())
@@ -166,17 +167,56 @@ describe('the pen edits the LIST, not the schedule', () => {
     await act(async () => { await new Promise(r => setTimeout(r, 5)) })   // the setTimeout(0) arms `off`
     await click(document.querySelector('.stmenu .st-pen') as HTMLElement)
     await outside()
-    expect(document.querySelector('.stmenu'), 'an outside click while the pen is open must not dismiss the box').toBeTruthy()
-    await click(document.querySelector('.stmenu .st-pen') as HTMLElement)
+    expect(document.querySelector('.stmenu'), 'a click away closes the box even mid-edit').toBeFalsy()
+  })
+
+  /* What the old suspension was actually protecting: press down inside a
+     rename field, drag past the box edge, release — the browser dispatches
+     that click OUTSIDE the box (on the common ancestor), and it must not
+     kill the box mid-edit. The box notes the press (pointerdown on itself)
+     and `off` swallows exactly that one click; the next genuinely-outside
+     click closes as usual. */
+  it('a press that starts inside the box and ends outside does not dismiss it — the next outside click does', async () => {
+    const outside = async () => { await act(async () => {
+      document.body.dispatchEvent(new MouseEvent('click', { bubbles: true })) }) }
+    await openPen()
+    await act(async () => { await new Promise(r => setTimeout(r, 5)) })   // the setTimeout(0) arms `off`
+    const lab = document.querySelector('.stmenu .st-lab') as HTMLElement
+    await act(async () => { lab.dispatchEvent(new Event('pointerdown', { bubbles: true })) })
+    await outside()   // the click a drag-out dispatches: outside the box, press began inside
+    expect(document.querySelector('.stmenu'), 'the drag-out click is swallowed, the box survives').toBeTruthy()
     await outside()
-    expect(document.querySelector('.stmenu'), 'an outside click once the pen is closed dismisses the box as usual').toBeFalsy()
+    expect(document.querySelector('.stmenu'), 'a genuinely outside press-and-click still closes it').toBeFalsy()
+  })
+
+  /* The box lives on document.body, outside the React tree, so no unmount
+     ever takes it down — setPage does (state/view.ts), unhooking _offClick
+     on the way out. Driven through the state setter rather than a nav click
+     on purpose: a real nav click is ALSO an outside click, so it would pass
+     via `off` and prove nothing about the page change itself (and the
+     drawer, logout and any future programmatic setPage caller all reach
+     the page change without a click the popup can see). */
+  it('changing the page closes the box, pen open or not', async () => {
+    const { setPage } = await import('../state/store')
+    await openPen()
+    const stmenu = document.querySelector('.stmenu') as any
+    const offFn = stmenu._offClick
+    const removeSpy = vi.spyOn(document, 'removeEventListener')
+    try {
+      await act(async () => { setPage('viewsched'); notify() })
+      expect(document.querySelector('.stmenu'), 'the page change takes the box with it').toBeFalsy()
+      expect(removeSpy, 'and unhooks the box\'s document listener rather than leaking it')
+        .toHaveBeenCalledWith('click', offFn)
+    } finally {
+      removeSpy.mockRestore()
+    }
   })
 
   /* board.ts's waveMenu ('+ Add wave') clears '.wavemenu' by class, and this
-     box carries that class too. With the pen open the box's own outside-click
-     listener declines to remove itself (that's the whole point of the test
-     above) — so if waveMenu just yanked the node out from under it the same
-     way, that listener would stay attached to document forever, pointing at
+     box carries that class too. The box's outside-click listener is not
+     {once:true} — a click it declines (inside the box, or the press-origin
+     guard above) must not deregister it — so if waveMenu just yanked the
+     node out from under it, that listener would sit on document pointing at
      a box that is no longer there. It must unhook it instead. */
   it('the wave picker replacing this popup while the pen is open unhooks its listener rather than leaking it', async () => {
     await openPen()

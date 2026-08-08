@@ -646,8 +646,23 @@ a `notify()` repaint of the row underneath it. Every store in `STORE_CFG`
 prints as a button, `on` when `a.opts[key]` is truthy; clicking one toggles
 `a.opts[key]`, calls `markEdit('st:'+key)` and re-paints the same box in
 place — **the popup stays open across a toggle**, so a scheduler configuring
-several stores on one jet does not re-open it each time. It closes only on an
-outside click (or the ✎ pen's own exit — see below).
+several stores on one jet does not re-open it each time. It closes on an
+outside click — pen open or not, since 8 Aug 26; see the pen bullet — and on
+any page change (`setPage` in `state/view.ts` sweeps body-level popups,
+unhooking the box's document listener on the way, so navigating away can
+never leave it floating over a page with no `C` button on it).
+
+**Pinch-zoomed placement (owner, from the deployed site, 8 Aug 26).** On a
+phone the `C` button is small, so the natural gesture is zoom in and press
+it — and the box used to place itself in layout-viewport coordinates,
+usually off the visible slice, forcing a zoom-out-and-hunt. When a real
+pinch is on (`visualViewport.scale` comfortably past 1), `place()` centres
+the box in the **visual** viewport — the slice of page actually on screen —
+capped to fit it (inline `min-width:0`, or `.wavemenu`'s 250px floor holds
+the box wider than the visible slice; height capped with scroll). Un-zoomed
+placement is untouched: anchored under the live button, clamped to the
+window. Gated in `e2e/geometry.spec.ts` — jsdom reports every rect 0×0, so
+`place()` bails before the zoom branch is ever reached there.
 
 **The pen (`✎`) inside that popup edits the LIST itself**, not this jet's
 selection — a settings change, not a schedule edit, so nothing in the pen
@@ -679,11 +694,15 @@ branch ever calls `markEdit`:
   sees. Nothing in `validate.ts` reads a store (the module comment in
   `engine/stores.ts` says so directly), so there is no rule to protect and
   one click is enough.
-- **Dismiss is suspended while the pen is open.** The outside-click handler
-  that closes the box checks `pen` first and declines while it is true, so a
-  drag past the box edge, or a click landing inside a rename `<input>` that
-  bubbles to `document`, cannot kill the box mid-edit. Leaving the pen (a
-  second click on `✎`) is what re-arms dismissal.
+- **A click away closes the box, pen open or not (owner, 8 Aug 26).** The
+  dismiss used to be suspended outright while the pen was open, which left
+  the ✎ as the only way out of an edit. What that suspension protected is
+  kept as a narrower guard: a press that **starts inside** the box and ends
+  outside it — selecting a rename field's text and overshooting the edge —
+  dispatches its click outside the box, and the box notes the press
+  (pointerdown on itself) and swallows exactly that one click. An
+  in-progress rename is not lost to the close: pressing outside blurs the
+  field first, and `change` (the commit) fires on blur, ahead of the click.
 
 Each add/remove/toggle on the CONFIG side still flows through the mutation
 funnel exactly as the old toggles did (`markEdit('st:'+key)` → pending →

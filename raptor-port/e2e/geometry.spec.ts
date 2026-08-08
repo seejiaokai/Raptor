@@ -1004,9 +1004,39 @@ test('the pen reorders, and the popup survives a click into a rename field', asy
   await page.click('.stmenu .st-erow[data-k="tk2"] .st-lab')
   await expect(page.locator('.stmenu'), 'an in-box click must not dismiss it').toBeVisible()
   const first = () => page.locator('.stmenu .st-erow').first().getAttribute('data-k')
-  expect(await first()).toBe('nav')
-  await page.click('.stmenu .st-erow[data-k="nc"] .st-up')
-  expect(await first(), 'the up arrow really reorders').toBe('nc')
+  expect(await first()).toBe('tpod')
+  await page.click('.stmenu .st-erow[data-k="tk2"] .st-up')
+  expect(await first(), 'the up arrow really reorders').toBe('tk2')
+})
+
+/* PINCH-ZOOM PLACEMENT (owner, from the deployed site, 8 Aug 26). On a phone
+   the C button is small enough that the natural gesture is pinch in, press it
+   — and the popup used to place itself in layout-viewport coordinates, which
+   with the pinch on usually means the part of the page the zoom pushed off
+   screen: the user had to zoom back out and go hunting for the box they just
+   asked for. place() centres it in the VISUAL viewport instead when a real
+   pinch is on, capped to fit (the .wavemenu min-width would otherwise hold it
+   wider than the visible slice — measured before the inline zero). Only a
+   real browser can gate this: jsdom reports every rect 0x0, so place() bails
+   before the branch is even reached. */
+test('the stores popup opens inside the visible slice when the page is pinch-zoomed', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page); await go(page, 'editsched')
+  const cdp = await page.context().newCDPSession(page)
+  await cdp.send('Emulation.setPageScaleFactor', { pageScaleFactor: 2.5 })
+  /* element.click(), not page.click: Playwright's pointer maths and the CDP
+     pinch emulation disagree about coordinates, and the button is what the
+     user pressed either way — the placement is what's under test here */
+  await page.evaluate(() => (document.querySelector('#eWeek .stcfg[data-stcfg]') as HTMLElement).click())
+  const fit = await page.evaluate(() => {
+    const b = document.querySelector('.stmenu')!.getBoundingClientRect(), vv = window.visualViewport!
+    return { scale: vv.scale,
+             l: b.left - vv.offsetLeft, t: b.top - vv.offsetTop,
+             r: vv.offsetLeft + vv.width - b.right, b2: vv.offsetTop + vv.height - b.bottom }
+  })
+  expect(fit.scale, 'the pinch emulation really took').toBeGreaterThan(2)
+  for (const edge of ['l', 't', 'r', 'b2'] as const)
+    expect(fit[edge], `the box sits inside the visual viewport (${edge} edge)`).toBeGreaterThanOrEqual(0)
 })
 
 test('a renamed store keeps its chip on every jet that carries it', async ({ page }) => {

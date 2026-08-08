@@ -377,13 +377,13 @@ export function addWave(di: number, kind: any) {
    outside click) */
 export function waveMenu(anchor: HTMLElement, di: any) {
   /* The stores popup (interactions.ts's openStoresMenu) shares this class
-     for its look, and while its pen is open it keeps a NOT-{once:true}
-     click listener attached to document that only it knows how to unhook
-     (_offClick) — its own outside-click handler declines to remove itself
-     while the pen is open, so pulling its box out from under it here,
-     the same way it pulls out any of ITS OWN stale popups, would leave
-     that listener attached to document forever, doing nothing on every
-     future click but never going away. */
+     for its look, and it keeps a NOT-{once:true} click listener attached
+     to document that only it knows how to unhook (_offClick) — its
+     outside-click handler declines clicks inside its box and the one click
+     a press that began inside dispatches outside, so pulling its box out
+     from under it here, the same way it pulls out any of ITS OWN stale
+     popups, would leave that listener attached to document with no box to
+     ever remove it through. */
   document.querySelectorAll('.wavemenu').forEach(x => {
     const off = (x as any)._offClick
     if (off) document.removeEventListener('click', off)

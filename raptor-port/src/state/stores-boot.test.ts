@@ -21,6 +21,6 @@ describe('boot', () => {
   })
   it('initStore leaves the standard six when nothing is stored', () => {
     initStore()
-    expect(STORE_CFG.map(([k]) => k)).toEqual(['nav', 'nc', 'tk2', 'tks3', 'tpod', 'cl'])
+    expect(STORE_CFG.map(([k]) => k)).toEqual(['tpod', 'tk2', 'nav', 'nc', 'tks3', 'cl'])
   })
 })
