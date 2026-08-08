@@ -20,6 +20,7 @@
 - `parity.test.ts` must stay **byte-exact**. If it goes red, stop and report — that is a decision point about diverging from the reference, not something to patch around.
 - Keep `../HANDOFF.md` true in the same PR.
 - While iterating run only the affected test file (`npx vitest run <file>`); the full gates once, before the PR.
+- **Every `file.ts:NNN` line number in this plan is indicative, not authoritative.** They were taken before any task landed and drift as earlier tasks edit the same files. Locate code by searching for the quoted snippet the step gives you; if the line number and the snippet disagree, the snippet wins. If you cannot find the snippet at all, that is worth reporting — it may mean an earlier task already changed it.
 
 ---
 
@@ -715,7 +716,7 @@ The seed's duty rows are re-laid into the order they already print, so deleting 
 
 **Files:**
 - Modify: `src/engine/data.ts` (lines 28-29, 52-53, 77, 100-101, 109 — the seven `dutywaves` blocks)
-- Modify: `src/ui/html.ts:639-640` (drop `dutySort`, take `ri` from the loop)
+- Modify: `src/ui/html.ts` — the `dutySort(dwv.rows).forEach` line in the Duties block (drop `dutySort`, take `ri` from the loop). Locate it by searching for `dutySort(`, not by line number
 - Test: `src/engine/parity.test.ts` is the test — it must stay byte-exact.
 
 **Interfaces:**
@@ -757,7 +758,7 @@ Lines 122 and 129 (Saturday, Sunday) are a single `SDO` row each — leave them 
 
 - [ ] **Step 2: Drop the sort from the week's render**
 
-In `src/ui/html.ts`, replace lines 639-640:
+In `src/ui/html.ts`, find the `dutySort(dwv.rows).forEach` line in the Duties block (search for `dutySort(` — line numbers in this plan drift as earlier tasks land) and replace it and the line below:
 
 ```ts
         dutySort(dwv.rows).forEach((r:any)=>{

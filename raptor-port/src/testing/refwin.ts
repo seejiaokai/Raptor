@@ -73,7 +73,26 @@ export function syncInputs(w: any) {
    reference has never had the weekend days the port adds, so only the first
    REFN days are touched, and only their existing dutywaves entries — the
    wave count and labels are unchanged between the two builds, only the row
-   order within each wave differs. */
+   order within each wave differs.
+
+   The price: this makes both comparisons TAUTOLOGICAL for duty-row content
+   and order. By the time `seed data matches (DAYS)` or `collectEvents
+   matches the reference exactly` run, the reference's rows ARE the port's
+   rows — a corrupted duty row landing in data.ts (a wrong name, a dropped
+   role, a mistyped time) would not be caught here; it would show up
+   identically on both sides and compare equal. Nothing outside this
+   function narrows that gap. What still has teeth: every OTHER field of
+   DAYS and collectEvents — flying waves, sims, ground, notes — is still a
+   real comparison against the untouched reference; wave LABELS are never
+   touched by this push (only `.rows` is overwritten) so a wrong or renamed
+   label still fails for real; and a wave-count mismatch between the two
+   builds throws here, from the out-of-bounds `dutywaves[j]` write, rather
+   than silently comparing nothing. It's accepted because there is nothing
+   left for the old comparison to assert honestly: the port and the
+   reference deliberately no longer agree on duty order (that is the whole
+   point of dropping dutySort), so holding the parity gate to duty-row
+   content would not buy more coverage, it would just leave this gate
+   permanently red for a divergence that is intended and owner-approved. */
 export function reduty(w: any) {
   const refn = w.eval('DAYS.length')
   DAYS.slice(0, refn).forEach((d: any, i: number) => {
