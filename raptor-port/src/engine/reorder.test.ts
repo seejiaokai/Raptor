@@ -67,19 +67,22 @@ describe('moveAircraft', () => {
   it('moves the seat keys with the jet', () => {
     const f = DAYS[0].waves[0].formations.find((x: any) => x.aircraft.length > 1)!
     const li = DAYS[0].waves[0].formations.indexOf(f)
-    SCHED.changes = { [`0.0.${li}.1.p`]: 1, [`fr:0.0.${li}.1`]: 2 }
+    SCHED.changes = { [`0.0.${li}.1.p`]: 1, [`fr:0.0.${li}.0`]: 2 }
     moveAircraft(0, 0, li, 1, 0)
     expect(SCHED.changes[`0.0.${li}.0.p`]).toBe(1)
-    /* fr: has no sibling field the way ap:/dr: do (slots.ts: "fr:di.gi.li.ai
-       aircraft remarks" is ONE key per aircraft, not one-per-field) — it IS
-       the row's own mark address, the same one moveAircraft's done() lands
-       on. markEdit always clears a key's stale changes entry when it marks
-       that same key pending (publish.ts: "record an edit" — every other
-       call site in the app relies on exactly that to retire an old AL tag
-       on a re-edit), so this field cannot simultaneously carry an old AL
-       number AND be freshly pending at the SAME address — it becomes
-       pending, correctly superseding the AL2 tag, since the move itself is
-       the new edit. */
+    /* fr:0.0.${li}.0 belongs to the OTHER jet in the formation (index 0, not
+       moved) — the reindex shifts it to index 1 and it survives there
+       untouched, proving fr: carries across a move exactly like the bare
+       seat key above. Deliberately NOT preloaded at index 0 AFTER the move
+       (the moved jet's own new address, `to`=0 — exactly where done() marks
+       pending, checked below): fr: has no sibling field the way ap:/dr: do
+       (slots.ts: "fr:di.gi.li.ai aircraft remarks" is ONE key per aircraft,
+       not one-per-field), so a stale AL tag AT THAT address is retired the
+       instant markEdit marks the SAME key pending (publish.ts: "record an
+       edit" — every other call site in the app relies on exactly that to
+       retire an old AL tag on a re-edit). Preloading there would collide
+       with the mark and prove nothing about carry-over. */
+    expect(SCHED.changes[`fr:0.0.${li}.1`]).toBe(2)
     expect(SCHED.pending[`fr:0.0.${li}.0`]).toBe(1)
   })
 })
@@ -88,16 +91,21 @@ describe('moveDutyRow / moveSimRow / moveProgRow / moveNote', () => {
   it('a duty row moves inside its block and takes its keys', () => {
     const rows = DAYS[0].dutywaves[0].rows
     const was = rows.map((r: any) => r.role)
-    SCHED.changes = { 'd:0.0.2': 1, 'dr:0.0.2.role': 2 }
+    SCHED.changes = { 'd:0.0.2': 1, 'dr:0.0.0.role': 2 }
     expect(moveDutyRow(0, 0, 2, 0)).toBe(true)
     expect(rows.map((r: any) => r.role)).toEqual([was[2], was[0], was[1]])
     expect(SCHED.changes['d:0.0.0']).toBe(1)
-    /* dr:...role is the field done() marks pending for a duty row (same
-       address board.ts's "add duty row" uses), so a stale AL tag on THAT
-       exact field is retired in favour of the fresh pending mark — see the
-       fr: comment above moveAircraft's test. d: above is a different key
-       space and keeps its AL tag untouched, which is the carry-over this
-       test is really pinning. */
+    /* dr:0.0.0.role belongs to the OTHER duty row (index 0, not moved) — the
+       reindex shifts it to index 1 and it survives there untouched, proving
+       dr: carries across a move the same way d: does above. Deliberately NOT
+       preloaded at index 0 AFTER the move (the moved row's own new address,
+       `to`=0 — exactly where done() marks pending, checked below): dr:...role
+       is the field done() marks pending for a duty row (same address
+       board.ts's "add duty row" uses), so a stale AL tag AT THAT exact
+       address is retired the instant markEdit marks the SAME key pending —
+       see the fr: comment above moveAircraft's test. Preloading there would
+       collide with the mark and prove nothing about carry-over. */
+    expect(SCHED.changes['dr:0.0.1.role']).toBe(2)
     expect(SCHED.pending['dr:0.0.0.role']).toBe(1)
   })
 
@@ -119,26 +127,40 @@ describe('moveDutyRow / moveSimRow / moveProgRow / moveNote', () => {
     const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
     if (di < 0) throw new Error('seed week needs a day with two programme items')
     const was = DAYS[di].allhands.map((x: any) => x.prog)
-    SCHED.changes = { [`ap:${di}.1.prog`]: 1, [`a:${di}.1.0`]: 2 }
+    SCHED.changes = { [`ap:${di}.0.prog`]: 1, [`a:${di}.1.0`]: 2 }
     expect(moveProgRow(di, 1, 0)).toBe(true)
     expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual([was[1], was[0], ...was.slice(2)])
-    /* ap:...prog is the field done() marks pending for a programme row —
-       same reasoning as the dr:/fr: cases above, a stale AL tag on the
-       row's own mark field is retired by the fresh pending mark. a: is a
-       different key space (slots.ts) and carries its AL tag untouched. */
-    expect(SCHED.pending[`ap:${di}.0.prog`]).toBe(1)
+    /* ap:${di}.0.prog belongs to the OTHER programme item (index 0, not
+       moved) — the reindex shifts it to index 1 and it survives there
+       untouched, proving ap: carries across a move the same way a: does
+       below. Deliberately NOT preloaded at index 0 AFTER the move (the
+       moved row's own new address, `to`=0 — exactly where done() marks
+       pending, checked below): ap:...prog is the field done() marks pending
+       for a programme row, so a stale AL tag AT THAT exact address is
+       retired the instant markEdit marks the SAME key pending — see the fr:
+       comment above moveAircraft's test. Preloading there would collide
+       with the mark and prove nothing about carry-over. */
+    expect(SCHED.changes[`ap:${di}.1.prog`]).toBe(1)
     expect(SCHED.changes[`a:${di}.0.0`]).toBe(2)
+    expect(SCHED.pending[`ap:${di}.0.prog`]).toBe(1)
   })
 
   it('a note line moves and carries its key', () => {
     DAYS[0].notes = ['one', 'two', 'three']
-    SCHED.changes = { 'dn:0.2': 1 }
+    SCHED.changes = { 'dn:0.1': 1 }
     expect(moveNote(0, 2, 0)).toBe(true)
     expect(DAYS[0].notes).toEqual(['three', 'one', 'two'])
-    /* dn: is a note line's ONLY key (no per-field split at all), and it is
-       exactly the address done() marks pending — so, as with fr:/dr:/ap:
-       above, a stale AL tag there is retired by the fresh pending mark
-       rather than surviving alongside it. */
+    /* dn:0.1 belongs to the OTHER note line (index 1, not moved) — the
+       reindex shifts it to index 2 and it survives there untouched, proving
+       dn: carries across a move exactly like every other head above.
+       Deliberately NOT preloaded at index 0 AFTER the move (the moved
+       note's own new address, `to`=0 — exactly where done() marks pending,
+       checked below): dn: is a note line's ONLY key (no per-field split at
+       all, unlike ap:/dr:), so a stale AL tag AT THAT exact address is
+       retired the instant markEdit marks the SAME key pending — see the fr:
+       comment above moveAircraft's test. Preloading there would collide
+       with the mark and prove nothing about carry-over. */
+    expect(SCHED.changes['dn:0.2']).toBe(1)
     expect(SCHED.pending['dn:0.0']).toBe(1)
   })
 })
