@@ -141,6 +141,34 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
     const live = root.querySelector(`[data-stcfg="${key}"]`) as HTMLElement | null
     const r = (live || anchor).getBoundingClientRect()
     if (!r.width && !r.height) return
+    /* PINCH-ZOOMED (phone — owner, from the deployed site, 8 Aug 26): the C
+       button is small, so on a phone the natural gesture is zoom in, press it,
+       and everything below places in LAYOUT-viewport coordinates — the box
+       landed in the part of the page the zoom had pushed off screen, and the
+       user had to zoom back out to find it. When the pinch is real (scale
+       comfortably past 1 — the guard tolerates the sub-pixel scales some
+       browsers report unzoomed), centre the box in the VISUAL viewport — the
+       slice of page actually on screen — and cap it to fit, so it opens under
+       the user's eyes at any zoom. position:fixed anchors to the layout
+       viewport, which is why the visual viewport's own offset is added in.
+       Ordinary un-zoomed placement below is untouched. */
+    const vv = window.visualViewport
+    if (vv && vv.scale > 1.05) {
+      /* minWidth too: .wavemenu's min-width (250px) outranks any max-width,
+         so without zeroing it the cap below is a no-op and the box still
+         overflows a visual viewport narrower than that — measured, not
+         theorised, on the built bundle at 2.5×. The chips row flex-wraps,
+         so a narrow box grows down, and the height cap + scroll catch it. */
+      box.style.minWidth = '0'
+      box.style.maxWidth = (vv.width - 16) + 'px'
+      box.style.maxHeight = (vv.height - 16) + 'px'
+      box.style.overflowY = 'auto'
+      box.style.left = Math.round(vv.offsetLeft + Math.max(8, (vv.width - box.offsetWidth) / 2)) + 'px'
+      box.style.top = Math.round(vv.offsetTop + Math.max(8, (vv.height - box.offsetHeight) / 2)) + 'px'
+      return
+    }
+    /* zoomed out again since: hand the caps back to the stylesheet */
+    box.style.minWidth = box.style.maxWidth = box.style.maxHeight = box.style.overflowY = ''
     box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
     box.style.top = Math.min(window.innerHeight - box.offsetHeight - 8, Math.round(r.bottom + 6)) + 'px'
   }
@@ -149,6 +177,10 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   place()
   box.addEventListener('click', (ev: any) => {
     ev.stopPropagation()
+    /* this click began AND ended inside the box, and stopPropagation keeps
+       it from ever reaching `off` (below) — reset the press-origin note here
+       or it would swallow the NEXT outside click for nothing */
+    pressIn = false
     /* drain first, unconditionally — see the rename handler's comment for
        why this is the safe place to do it: THIS click has already been
        dispatched and its target already resolved by the time any handler
@@ -287,23 +319,30 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
     notify()
   })
 
-  /* The box removes itself on an outside click — but NOT while the pen is
-     open: a drag past the box edge, or a click into a rename field that
-     bubbles to document, would otherwise kill it mid-edit. Not {once:true}
-     any more, since a click it declines to act on (inside the box, or any
-     click while the pen is open) must not deregister it — so the box
-     records its own handler on itself, as `_offClick`, and ANY code that
-     removes this box by other means has to check for it and unhook it
-     first, or it leaks a listener permanently attached to document: with
-     the pen open the box can be pulled out from under `off` (the "replace
-     with a fresh popup" branch above, or board.ts's waveMenu — both clear
-     by class, not by asking this box's permission), and `off` alone can
-     never notice; box.contains(ev.target) is false forever on a detached
-     node and `if (pen) return` never lets it get past that check to
-     self-remove. */
+  /* The box removes itself on an outside click — the pen included (owner,
+     8 Aug 26: it used to stay put while the pen was open, and a scheduler
+     who was done editing had no way out but the ✎). What that suspension
+     was protecting against is real, though, and keeps its guard: a press
+     that STARTS inside the box and ends outside it — selecting a rename
+     field's text and overshooting the edge — dispatches its click on the
+     common ancestor, outside the box, and must not kill it mid-edit. So
+     the box notes every press that begins on it (pointerdown, so touch
+     counts too) and `off` swallows exactly that one click; a click whose
+     press also began outside still closes the box, pen open or not. An
+     in-progress rename is not lost to the close: pressing outside blurs
+     the field first, and change (the commit) fires on blur, ahead of the
+     click. Not {once:true}, since a click `off` declines to act on must
+     not deregister it — so the box records its own handler on itself, as
+     `_offClick`, and ANY code that removes this box by other means has to
+     check for it and unhook it first, or it leaks a listener attached to
+     document (the "replace with a fresh popup" branch above, and board.ts's
+     waveMenu, both clear by class — and a press-began-inside click would
+     sail past a detached box's guards to nothing). */
+  let pressIn = false
+  box.addEventListener('pointerdown', () => { pressIn = true })
   const off = (ev: any) => {
     if (box.contains(ev.target)) return
-    if (pen) return
+    if (pressIn) { pressIn = false; return }
     box.remove(); document.removeEventListener('click', off)
   }
   ;(box as any)._offClick = off

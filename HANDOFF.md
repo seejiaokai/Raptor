@@ -7,9 +7,9 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 685/43
+**Every gate is green at this commit**, run first-hand: `npm test` 687/43
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 33/33, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 34/34, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 **`probes:adapted` and `perf` do NOT serve themselves** — start
 `npx vite preview --port 4173` first or both fail with
@@ -62,9 +62,10 @@ believing a single red.)
   rows keeping a readable ITEM column on a phone, and the stores work of
   7–8 Aug 26 (the popup tracking its live `C` button across a multi-toggle
   visit, a rename not eating the next click, the board line staying
-  single-row and nine grid items in `.sb-wide` at phone width, and the
-  popup opening against the BOARD's button rather than the week's) —
-  sixteen contract families over 33 tests. It
+  single-row and nine grid items in `.sb-wide` at phone width, the
+  popup opening against the BOARD's button rather than the week's, and the
+  popup centring inside the visual viewport under a pinch zoom, 8 Aug 26) —
+  sixteen contract families over 34 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
@@ -532,11 +533,22 @@ believing a single red.)
     indistinguishable from "load found nothing" either way, so the standard
     six quietly return. No last-store guard exists; if a squadron ever wants
     a genuinely empty list to stick, this needs one.
-  - **The stores popup outlives a page navigation while the pen is open.**
-    Nothing clears body-level popups on a `CURPAGE` change, and a nav click
-    is an outside click the pen's dismissal deliberately declines to act on
-    while open (so an in-box drag or a rename blur cannot kill it). Rare in
-    practice, but reachable.
+  - **The popup's exits were reworked on the deployed site's feedback
+    (owner, 8 Aug 26), closing the old "outlives a page navigation" issue.**
+    Three changes in one pass: a click away now closes the box with the pen
+    open too (what the old suspension protected survives as a press-origin
+    guard — a press that starts inside the box and ends outside is swallowed,
+    and a mid-rename commit still lands because change fires on blur, ahead
+    of the click); any page change sweeps body-level popups in `setPage`
+    (`state/view.ts`), unhooking the box's document listener so nothing
+    leaks; and when the page is pinch-zoomed the box centres in the VISUAL
+    viewport, capped to fit, instead of landing in the off-screen part of
+    the layout viewport (`place()`'s zoom branch — the `.wavemenu` 250px
+    min-width must stay inline-zeroed there or the cap is a no-op). The
+    default ORDER also became the owner's: TPOD, 2 TKS, NAV, N/C, 3 TKS, CL
+    (keys unmoved, so nothing saved was affected). Pinned in
+    `stores-edit.test.tsx` (dismissal, page change) and
+    `e2e/geometry.spec.ts` (the zoom placement, which jsdom cannot see).
   - **`PENDING_HOLD` in `highlights.ts` is a single overwrite slot**, now
     shared by two unrelated features — `holdPuckStill`'s scroll correction
     and this popup's `place()` re-anchor. No reachable path today calls

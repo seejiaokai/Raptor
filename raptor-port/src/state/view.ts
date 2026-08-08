@@ -45,7 +45,24 @@ export function setBoardDay(n:any){
   if(SBDAY!=null&&n!==SBDAY&&WFOCUS&&WFOCUS.di!==n)WFOCUS=null;
   SBDAY=n;
 }
-export function setPage(p:any){ CURPAGE=p }
+export function setPage(p:any){
+  /* A page change closes any body-level popup (owner, 8 Aug 26 — the stores
+     box used to ride along to View-only Sched, floating over a page with no C
+     button on it). These popups live outside the React tree, so no component
+     unmount will ever take them down — and the stores box holds a document
+     click listener only it knows how to unhook (its _offClick — see
+     interactions.ts's openStoresMenu), so removal MUST go through that or it
+     leaks. Same-page set: nothing to do, and resetSession's setPage on a
+     login that lands where it already was must not reach into the DOM. The
+     typeof guard: resetSession routes every login/logout through here, and
+     the headless state tests run with no document at all. */
+  if(p!==CURPAGE&&typeof document!=='undefined')document.querySelectorAll('.stmenu, .wavemenu').forEach(x=>{
+    const off=(x as any)._offClick;
+    if(off)document.removeEventListener('click',off);
+    x.remove();
+  });
+  CURPAGE=p;
+}
 /* ARM put-down for history.ts (ESM cannot reassign across modules) */
 export function armDrop(){ ARM=null }
 export function setWarnFocus(w:any){ WFOCUS=w }

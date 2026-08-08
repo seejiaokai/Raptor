@@ -19,9 +19,9 @@ beforeEach(() => {
 })
 
 describe('the standard list', () => {
-  it('opens on the six the port shipped with, in order', () => {
-    expect(STORE_CFG.map(([k]) => k)).toEqual(['nav', 'nc', 'tk2', 'tks3', 'tpod', 'cl'])
-    expect(STORE_CFG.map(([, l]) => l)).toEqual(['NAV', 'N/C', '2 TKS', '3 TKS', 'TPOD', 'CL'])
+  it('opens on the six the port shipped with, in the owner\'s order (8 Aug 26)', () => {
+    expect(STORE_CFG.map(([k]) => k)).toEqual(['tpod', 'tk2', 'nav', 'nc', 'tks3', 'cl'])
+    expect(STORE_CFG.map(([, l]) => l)).toEqual(['TPOD', '2 TKS', 'NAV', 'N/C', '3 TKS', 'CL'])
     expect(storesAreStandard()).toBe(true)
   })
   it('STORE_STD cannot be mutated through STORE_CFG', () => {
@@ -129,7 +129,7 @@ describe('removing', () => {
 describe('reordering', () => {
   it('moves an entry and shuffles the rest up', () => {
     expect(moveStore(0, 2)).toBe(true)
-    expect(STORE_CFG.map(([k]) => k)).toEqual(['nc', 'tk2', 'nav', 'tks3', 'tpod', 'cl'])
+    expect(STORE_CFG.map(([k]) => k)).toEqual(['tk2', 'nav', 'tpod', 'nc', 'tks3', 'cl'])
   })
   it('refuses an out-of-range index rather than dropping an entry', () => {
     expect(moveStore(0, 99)).toBe(false)

@@ -258,8 +258,10 @@ do not remove) treats storage as untrusted: number, finite, in bounds.
 
 ## Stores configuration (`engine/stores.ts`, owner, 7 Aug 26)
 
-The squadron's stores list — **NAV, N/C, 2 TKS, 3 TKS, TPOD, CL** by
-default — used to be a fixed `const` in `ui/html.ts`. It is persisted state
+The squadron's stores list — **TPOD, 2 TKS, NAV, N/C, 3 TKS, CL** by
+default (the owner's order, 8 Aug 26 — set on the deployed site and asked
+for as the default; the keys never moved, so no saved jet config or saved
+list was affected) — used to be a fixed `const` in `ui/html.ts`. It is persisted state
 now, the same shape `rules` has: `STORE_CFG: [key,label][]`, editable through
 `addStore`/`delStore`/`renameStore`/`moveStore`, saved through `storesSave`,
 loaded through `storesLoad`, and reset through `storesReset`. Rendering and

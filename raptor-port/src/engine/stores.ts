@@ -15,9 +15,12 @@ import { store } from './hooks'
 
    Nothing in validate.ts reads a store, so removal carries no hazard and
    needs no arm-before-delete the way EDIT QUALS does. */
+/* This ORDER is the owner's (8 Aug 26, set on the deployed site and asked
+   for as the default): most-carried first. The KEYS are unchanged — order is
+   display-only, so no saved jet config or saved list is affected. */
 export const STORE_STD: readonly [string, string][] = Object.freeze([
-  ['nav', 'NAV'], ['nc', 'N/C'], ['tk2', '2 TKS'],
-  ['tks3', '3 TKS'], ['tpod', 'TPOD'], ['cl', 'CL'],
+  ['tpod', 'TPOD'], ['tk2', '2 TKS'], ['nav', 'NAV'],
+  ['nc', 'N/C'], ['tks3', '3 TKS'], ['cl', 'CL'],
 ] as [string, string][])
 
 export const MAX_STORES = 24, MAX_LABEL = 16
