@@ -335,6 +335,11 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
   text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:700;color:var(--accent);
   -webkit-user-select:none;user-select:none;touch-action:manipulation}
 .eroster .ros-tab b{font-weight:700}
+/* a 26px sliver is a hard thumb target — extend the tap area ~14px past the
+   visible edge, invisibly, on the week's tab and the board's alike (owner,
+   8 Aug 26: "I should be able to open the aircrew tab whenever I want") */
+.eroster .ros-tab{position:relative}
+.eroster .ros-tab::before{content:'';position:absolute;top:0;bottom:0;left:-14px;width:14px}
 body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink);border-right-color:var(--accent)}
 /* ---- the aircrew palette as a right-edge pull-out drawer (mobile) ----------
    It used to be hidden outright below 820px, which left a phone with no palette
@@ -352,7 +357,12 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
     display:flex;align-items:stretch}
   body.ros-open .edit-board .eroster{transform:translateX(0)}
   .eroster .ros-tab{display:flex}
-  .eroster .ros-body{overflow:auto;max-height:100vh;padding-right:2px}
+  /* same iOS reasoning as the board drawer's ros-body: flex stretch bounds
+     the height to the drawer's real extent (100vh over-measures under
+     Safari's toolbars), and overscroll containment keeps an end-of-list
+     swipe from scrolling the week underneath (owner, 8 Aug 26) */
+  .eroster .ros-body{flex:1 1 auto;min-height:0;overflow-y:auto;
+    overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-right:2px}
   .edit-board .week{padding-right:0}
 }
 /* ---- who may be planned where ----------------------------------------------
@@ -1625,6 +1635,9 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .sb-slot{min-height:26px;border:1px dashed transparent;border-radius:6px;display:flex;align-items:center}
 .sb-slot .seat{display:flex}
 .sb-slot.empty{border-color:var(--edge-2);align-items:center;justify-content:center;color:var(--ink-3);font-size:10.5px;cursor:pointer;min-width:var(--puck-w)}
+/* a pax HOLE in a sims People cell (owner, 8 Aug 26): puck-sized so the
+   pair rows stay level — the 26px flying-line slot would bulge the row */
+.ppl .sb-slot.empty{min-height:var(--puck-h);height:var(--puck-h);box-sizing:border-box;font-size:9.5px;line-height:1}
 .sb-slot.empty:hover{border-color:var(--accent);color:var(--accent)}
 .seat[draggable="true"]{cursor:grab}
 .sb-slot.dragover,.sb-roster.dragover{outline:2px solid var(--accent);outline-offset:1px;border-radius:6px}
@@ -1925,17 +1938,38 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
     box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);
     transform:translateX(calc(100% - 26px));transition:transform .2s ease}
   body.ros-open .schedboard .sb-ros{transform:translateX(0)}
-  .schedboard .sb-ros .ros-body{display:block;overflow:auto;max-height:100vh}
+  /* flex:1 + min-height:0, NOT max-height:100vh — on iOS Safari 100vh is
+     the LARGEST viewport (toolbars collapsed), so a 100vh cap never binds
+     while the bars are up and the list's tail hides behind them with no way
+     to scroll to it. The flex stretch bounds the body to the drawer's REAL
+     height instead. overscroll-behavior keeps a swipe that reaches the
+     list's end from scrolling the board underneath it — with only a little
+     slack, chaining makes the list feel like it does not scroll at all
+     (owner, 8 Aug 26). */
+  .schedboard .sb-ros .ros-body{display:block;flex:1 1 auto;min-width:0;min-height:0;
+    overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
   /* B's 3rd DOM position would otherwise steal the 46px track meant for TO
      (grid auto-placement follows source order), so — same move as .nts/.lctl
      just below — it drops to its own full-width strip instead of adding a
      7th fixed column the phone has no room for (the wrap probe measures
      exactly this at 390px). CS/MSN/TO/LD/FCP/RCP keep the same 6 tracks they
      always had. */
-  .sb-lcols,.sb-line{grid-template-columns:54px 60px 46px 46px 1fr 1fr;font-size:10px}
-  .sb-line .sb-bcell{grid-column:1 / -1}
+  /* The seats used to land in the 46px TIME tracks and overlap (owner, from
+     the deployed site, 8 Aug 26): grid auto-flow is strictly sequential, so
+     when the full-width B cell (child 3) broke to its own row, everything
+     after it slid two tracks left — TO/LD into the 54/60px name tracks and
+     the two 74px seats into the 46px time tracks, pucks painting over each
+     other. Pinning the B cell to row 2 takes it out of the flow; the seats
+     then get a full-width strip each (a 74px puck cannot share a 390px row
+     with four inputs and another puck at any track maths), which is also a
+     finger-sized drop target. MSN takes the slack (1fr) so row 1 fills the
+     width. */
+  .sb-lcols,.sb-line{grid-template-columns:54px 1fr 52px 52px;font-size:10px}
+  .sb-line .sb-bcell{grid-column:1 / -1;grid-row:2}
+  .sb-line .sb-slot{grid-column:1 / -1}
   .sb-line .sb-rcell{grid-column:1 / -1}
-  .sb-lcols>:nth-child(3),.sb-lcols>:nth-child(8),.sb-lcols>:nth-child(9){display:none}
+  .sb-lcols>:nth-child(3),.sb-lcols>:nth-child(6),.sb-lcols>:nth-child(7),
+  .sb-lcols>:nth-child(8),.sb-lcols>:nth-child(9){display:none}
   .sb-line .lctl{grid-column:1 / -1;justify-content:flex-start;margin-top:2px}
   .sb-acols,.sb-arow{grid-template-columns:1fr 46px 46px;gap:6px}
   .sb-acols>:nth-child(2),.sb-acols>:nth-child(5),.sb-acols>:nth-child(6){display:none}
@@ -1990,8 +2024,11 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .schedboard.sb-wide .sb-warn{max-height:38%;overflow:auto}
 .schedboard.sb-wide .sb-roster{flex:1;overflow:auto}
 .schedboard.sb-wide .sb-lcols,.schedboard.sb-wide .sb-line{grid-template-columns:64px 74px 54px 54px 54px 1fr 1fr 92px 92px;font-size:11.5px}
-.schedboard.sb-wide .sb-lcols>:nth-child(3),.schedboard.sb-wide .sb-lcols>:nth-child(8),
+.schedboard.sb-wide .sb-lcols>:nth-child(3),.schedboard.sb-wide .sb-lcols>:nth-child(6),
+.schedboard.sb-wide .sb-lcols>:nth-child(7),.schedboard.sb-wide .sb-lcols>:nth-child(8),
 .schedboard.sb-wide .sb-lcols>:nth-child(9){display:revert}
+.schedboard.sb-wide .sb-line .sb-slot{grid-column:auto}
+.schedboard.sb-wide .sb-line .sb-bcell{grid-row:auto}
 .schedboard.sb-wide .sb-acols,.schedboard.sb-wide .sb-arow{grid-template-columns:120px 54px 54px 1fr 1fr 1fr;gap:8px}
 .schedboard.sb-wide .sb-acols>:nth-child(2),.schedboard.sb-wide .sb-acols>:nth-child(5),
 .schedboard.sb-wide .sb-acols>:nth-child(6){display:revert}

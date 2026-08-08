@@ -442,4 +442,26 @@ describe('board lifecycle', () => {
       notify()
     })
   })
+
+  /* The model already held the hole (slots.ts's pax branch never splices),
+     but sbSeat rendered an empty id as NOTHING, so on screen the block
+     collapsed upward and there was no slot to drop the replacement into
+     (owner, 8 Aug 26). The hole is a droppable .sb-slot.empty now, keyed to
+     the index it holds, armable through the board's ordinary tap path. */
+  it('a deleted AMT pax leaves an empty slot IN PLACE, and fills back at the same index', async () => {
+    await act(async () => { openScheduler(0) })
+    expect($$('#sbBoard .sb-panel.simr .seat[data-slot^="s:0.amt.1.pax."]').length,
+      'the seed BOX renders its eight pax').toBe(8)
+    await act(async () => { setSlotVal('s:0.amt.1.pax.1', ''); afterSchedMutate() })
+    const hole = $('#sbBoard .sb-slot.empty.pax[data-slot="s:0.amt.1.pax.1"]')
+    expect(hole, 'the hole renders as a droppable slot, not a collapse').toBeTruthy()
+    expect(DAYS[0].sims.amt[1].pax[2], 'the neighbours keep their indices').toBe('taipan')
+    /* tap the hole — the board's ordinary arm path answers it */
+    boardArmClick({ target: hole, stopPropagation() {} } as any)
+    expect(view.armedKey(), 'the hole arms like any empty seat').toBe('s:0.amt.1.pax.1')
+    await act(async () => { view.armDrop(); setSlotVal('s:0.amt.1.pax.1', 'drill'); afterSchedMutate() })
+    expect(slotVal('s:0.amt.1.pax.1')).toBe('drill')
+    expect($$('#sbBoard .sb-slot.empty.pax').length, 'the hole is gone once refilled').toBe(0)
+    await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
+  })
 })

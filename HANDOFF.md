@@ -9,7 +9,7 @@ The port from the original single-file app is complete; that history is in
 
 **Every gate is green at this commit**, run first-hand: `npm test` 687/43
 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 36/36, and the two that are NOT in CI — `npm run probes:adapted`
+test:e2e` 38/38, and the two that are NOT in CI — `npm run probes:adapted`
 6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
 **`probes:adapted` and `perf` do NOT serve themselves** — start
 `npx vite preview --port 4173` first or both fail with
@@ -65,10 +65,11 @@ believing a single red.)
   single-row and nine grid items in `.sb-wide` at phone width, the
   popup opening against the BOARD's button rather than the week's, the
   popup centring inside the visual viewport under a pinch zoom, the
-  board's crew cells stacking pucks in pairs on a phone, and the phone
+  board's crew cells stacking pucks in pairs on a phone, the phone
   board's one-window layout — warnings strip on top, AIRCREW drawer
-  parked/sliding/arm-opened, 8 Aug 26) —
-  seventeen contract families over 36 tests. It
+  parked/sliding/arm-opened — and the board line's seats clear of every
+  input plus a deleted pax's hole holding its place, 8 Aug 26) —
+  seventeen contract families over 38 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
@@ -255,9 +256,20 @@ believing a single red.)
   The grip machine and its `--sbside` variable are DELETED, not hidden.
   Desktop and `.sb-wide` are untouched. In the same pass the board's crew
   cells stack pucks two-wide on a phone (the AMT BOX's eight pax read as
-  four vertical pairs, the week's geometry). Contract:
-  `docs/ui-contracts.md` §The board on a phone is ONE window; pinned in
-  `odds.test.tsx`, measured in `e2e/geometry.spec.ts`.
+  four vertical pairs, the week's geometry). A second wave off the owner's
+  first real use (same day): the flying line's seats got full-width strips —
+  the full-width B cell had been breaking grid auto-flow, sliding the 74px
+  seats into the 46px time tracks where the pucks painted over each other —
+  a deleted sim pax now renders as a droppable hole holding its place (the
+  engine always kept the index; the board drew nothing there, so the block
+  collapsed and the replacement had nowhere to land — the WEEK still draws
+  holes as nothing, reference-shaped, by choice), and both drawers' bodies
+  scroll the iOS way (flex-bound height instead of a 100vh cap that never
+  binds under Safari's toolbars, overscroll containment, and a 14px
+  invisible tap-area extension on both AIRCREW tabs). Contracts:
+  `docs/ui-contracts.md` §The board on a phone is ONE window and §The
+  scheduler board's panels; pinned in `odds.test.tsx` and `board.test.tsx`,
+  measured in `e2e/geometry.spec.ts`.
 - **AL versioning is ROLLBACK semantics (owner decision, Aug 26).** "Restore
   this version" makes that version live immediately, discards the day's
   pending edits, needs no sign-off; new edits publish as `nextAL()`. Details:

@@ -139,6 +139,18 @@ read-only (aircrew-submitted inputs have no funnel keys; they are edited on
 the Inputs page) — only the accept buttons act. Every control is pv-gated in
 markup AND guarded at runtime (DPREV check) like the rest of the board.
 
+**A deleted sim pax leaves a droppable hole (owner, 8 Aug 26).** The engine
+always held the index (`slots.ts`'s pax branch never splices), but `sbSeat`
+rendered an empty id as nothing, so deleting one WSO from the AMT BOX
+visually collapsed the block and left nowhere to drop the replacement. The
+board now renders a held pax hole as `.sb-slot.empty.pax[data-slot]` —
+puck-sized so the pair rows stay level, armable and droppable through the
+board's ordinary paths with no new wiring. Previews still render holes as
+nothing (a frozen day is not a planning surface), and the WEEK's builders
+are untouched — they stay reference-shaped, so a hole there still renders
+as nothing; the board is the planning surface this serves. Pinned in
+`board.test.tsx`, measured in place in `e2e/geometry.spec.ts`.
+
 The side panel's `Live checks` list (`.sb-warn .wln`) is a **navigation
 surface** since 5 Aug 26: each line carries `data-wdi`/`data-wix` and jumps to
 the offending puck (§Jumping from a warning to the puck that caused it). It
@@ -176,10 +188,26 @@ edit week now:
 - **Desktop (>820px) and `.sb-wide` are unchanged** — the side column
   restates `display:flex` and melts the drawer wrapper back to
   `display:contents`, tab hidden.
+- **A flying line's seats are full-width strips, below the times (fix,
+  8 Aug 26 — they used to overlap).** Grid auto-flow is sequential, so when
+  the full-width B cell (child 3) broke to its own row, TO/LD slid into the
+  name tracks and the two 74px seats into the 46px time tracks, pucks
+  painting over each other. The B cell is pinned to `grid-row:2` (taking it
+  out of the flow) and each `.sb-slot` spans the row — which is also a
+  finger-sized drop target. The FCP/RCP header labels hide at phone width;
+  `.sb-wide` restates all of it back.
+- **The drawer body scrolls the iOS way**: `flex:1` + `min-height:0` rather
+  than `max-height:100vh` (iOS's 100vh is the largest viewport — toolbars
+  collapsed — so a 100vh cap never binds while the bars are up and the
+  list's tail hides behind them), plus `overscroll-behavior:contain` so an
+  end-of-list swipe cannot scroll the board underneath. The week's
+  `.ros-body` got the same treatment, and both tabs carry an invisible
+  14px hit-area extension past the visible 26px sliver.
 
 Pinned in `odds.test.tsx` (tab, shared toggle, parks on close) and measured
 in `e2e/geometry.spec.ts` (strip above the first panel, drawer parked at
-26px, slides on tap, opens on arm).
+26px, slides on tap, opens on arm, seats clear of every input and of each
+other).
 
 ## The day's three closing blocks, and who sees them
 
