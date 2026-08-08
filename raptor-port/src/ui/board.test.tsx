@@ -408,8 +408,14 @@ describe('board lifecycle', () => {
     await click($('#logout'))
     expect(SBDAY).toBe(null)
     expect($('#schedBoard')).toBeFalsy()
-    /* back in for any later suites */
+    /* back in for any later suites — resetSession (state/store.ts) forces
+       CURPAGE to 'viewsched' by design, and restoring only the session
+       without the page left every later test in this file running against
+       HOOKS.editMode()===false (it's gated on CURPAGE==='editsched' too), so
+       "back in" was only half true. Mirror the file's own top-level
+       beforeAll to actually put it back. */
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
   })
 
   it('previewing a version freezes the whole board read-only', async () => {
@@ -537,12 +543,30 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
   })
 
   /* a ground row's address must be its MODEL index, not its position in the
-     time-sorted render — engine/reorder.ts translates model indices itself */
+     time-sorted render — engine/reorder.ts translates model indices itself.
+     DAYS[0].ground's start times are 0845, 0930, 1030, 1200, 1630, 1400 at
+     model indices 0..5 — the time-sorted render puts model index 5 (1400)
+     BEFORE model index 4 (1630), so render order and model order genuinely
+     diverge on this fixture. An earlier version of this test sorted the
+     captured indices before comparing, which only proves the emitted
+     addresses are SOME permutation of 0..n-1 — a bug that emitted the
+     render-loop counter instead of the model index would print
+     [0,1,2,3,4,5] and pass that check just as happily as the correct
+     [0,1,2,3,5,4]. Comparing the exact sequence, with no sort, is what
+     actually protects the one property this task exists to guard. */
   it('a ground address is the model index, not the rendered position', () => {
     const h = boardHTML(0)
     const order = [...h.matchAll(/data-move="mv:g\.0\.(\d+)"/g)].map(m => +m[1])
     expect(order.length).toBe(DAYS[0].ground.length)
-    expect([...order].sort((a, b) => a - b)).toEqual(order.map((_, i) => i))
+    expect(order).toEqual([0, 1, 2, 3, 5, 4])
+    /* prove the row-to-address correspondence, not just the sequence: the
+       row rendering the 1400 item (model index 5) must itself carry
+       mv:g.0.5, and the row rendering the 1630 item (model index 4) must
+       carry mv:g.0.4 — these are exactly the two rows the time sort swaps */
+    const pairs = [...h.matchAll(/data-move="mv:g\.0\.(\d+)"[\s\S]*?data-bfld="gr:0\.\d+\.prog"[^>]*value="([^"]*)"/g)]
+      .map(m => [+m[1], m[2]] as const)
+    expect(pairs.find(([, prog]) => prog === 'OPS/LOGS @ 149 SQN')?.[0]).toBe(5)
+    expect(pairs.find(([, prog]) => prog === 'HAM ENGAGEMENT @ AFTC')?.[0]).toBe(4)
   })
 
   it('the column headers gain a matching empty cell so the grid still lines up', () => {

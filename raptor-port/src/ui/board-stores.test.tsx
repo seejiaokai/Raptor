@@ -35,7 +35,7 @@ const openBoard = async () => {
 }
 
 describe('the board carries the week\'s stores interface', () => {
-  it('a flying line has exactly ten grid items, and the chips live inside the last', async () => {
+  it('a flying line has exactly ten grid items, and the chips live inside the second-to-last', async () => {
     const { DAYS } = await import('../engine/data')
     const a = DAYS[0].waves[0].formations[0].aircraft[0]
     a.opts = a.opts || {}; a.opts.tk2 = true
