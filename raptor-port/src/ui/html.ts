@@ -16,7 +16,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
-import { STORE_CFG } from '../engine'
+import { STORE_CFG, groundOrder } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
 
@@ -431,24 +431,6 @@ export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Fl
 /* vsel: emit the per-day version dropdown. Only EditWeek (and the preview
    path) passes it, so the view-only page never grows the control — read-only
    users see issued schedules, not the version machinery. */
-/* Ground Programme reads in start-time order (owner, Aug 26) — but ONLY at
-   render. ri is the row's slot key (g:di.ri / gr:di.ri) and pending marks, AL
-   colouring and published amendments all address through it, so the MODEL
-   array is never reordered; each entry keeps its original index for key
-   building. parseHM reads both the seed's '1020' and accept's '10:20' forms.
-   Time-less rows (all-day accepts, fresh "+ Item" blanks) sink to the bottom —
-   which is also where the model appends them, so a new row never jumps away
-   from under the scheduler typing into it. Ties keep model order; the
-   explicit fallback matters because Infinity-Infinity is NaN, which sort
-   treats as "equal" inconsistently. */
-export function groundOrder(grd:any[]){
-  return grd.map((row:any,ri:number)=>({row,ri})).sort((a:any,b:any)=>{
-    const ta=parseHM(a.row.str), tb=parseHM(b.row.str)
-    if(ta==null||tb==null)return ta==null&&tb==null?a.ri-b.ri:(ta==null?1:-1)
-    return (ta-tb)||(a.ri-b.ri)
-  })
-}
-
 export function dayHTML(di:any,ed:any,vsel?:any){
   const d=DAYS[di];
     /* ---- per-day approval strip -------------------------------------------

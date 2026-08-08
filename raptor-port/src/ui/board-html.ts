@@ -6,9 +6,10 @@ import { hhmm } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
+import { groundOrder } from '../engine/order'
 import { esc } from '../state/view'
 import { ORD } from './html'
-import { puck, rowCls, accCtl, groundOrder } from './html'
+import { puck, rowCls, accCtl } from './html'
 
 export const SB_BANDS=[
   {k:'early',t:'Early',      note:'before 08:00',    lo:0,   hi:480},
