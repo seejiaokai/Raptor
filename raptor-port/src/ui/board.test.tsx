@@ -464,4 +464,26 @@ describe('board lifecycle', () => {
     expect($$('#sbBoard .sb-slot.empty.pax').length, 'the hole is gone once refilled').toBe(0)
     await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
   })
+
+  /* The point of planting is seeing the puck land, and the auto-opened
+     drawer covered it (owner critique, 8 Aug 26): a successful fill now
+     parks the drawer. Only success parks — an aborted gesture leaves it. */
+  it('planting from the drawer parks it — a refused plant does not', async () => {
+    const { HOOKS } = await import('../engine/hooks')
+    const orig = HOOKS.isPhone; HOOKS.isPhone = () => true
+    try {
+      await act(async () => { openScheduler(0) })
+      await act(async () => { setSlotVal('s:0.amt.1.pax.1', ''); afterSchedMutate() })
+      const hole = $('#sbBoard .sb-slot.empty.pax')
+      boardArmClick({ target: hole, stopPropagation() {} } as any)
+      expect(document.body.classList.contains('ros-open'), 'arming opened the drawer').toBe(true)
+      let ok: any
+      await act(async () => { ok = view.placeArmed('drill') })
+      expect(ok, 'the plant landed').toBe(true)
+      expect(document.body.classList.contains('ros-open'), 'a successful fill parks the drawer').toBe(false)
+    } finally {
+      HOOKS.isPhone = orig
+      await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
+    }
+  })
 })
