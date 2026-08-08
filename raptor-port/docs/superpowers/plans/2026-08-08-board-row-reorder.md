@@ -880,13 +880,18 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
     expect(boardHTML(1)).toMatch(/data-move="mv:s\.1\.(amt|oft)\.0"/)
   })
 
-  /* a ground row's address must be its MODEL index, not its position in the
-     time-sorted render — engine/reorder.ts translates model indices itself */
+  /* A ground row's address must be its MODEL index, not its position in the
+     time-sorted render — engine/reorder.ts translates model indices itself.
+     Assert the emitted SEQUENCE, never a sorted set: both the correct code and
+     a bug using the render-loop counter emit some permutation of 0..n-1, so
+     sorting before comparing makes this test unfalsifiable. The seed's ground
+     times (0845 0930 1030 1200 1630 1400) put model index 5 ahead of index 4
+     once sorted, and that straddle is the whole test. */
   it('a ground address is the model index, not the rendered position', () => {
     const h = boardHTML(0)
     const order = [...h.matchAll(/data-move="mv:g\.0\.(\d+)"/g)].map(m => +m[1])
     expect(order.length).toBe(DAYS[0].ground.length)
-    expect([...order].sort((a, b) => a - b)).toEqual(order.map((_, i) => i))
+    expect(order).toEqual([0, 1, 2, 3, 5, 4])
   })
 
   it('the column headers gain a matching empty cell so the grid still lines up', () => {
