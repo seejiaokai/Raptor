@@ -251,7 +251,9 @@ A day ends with three blocks, not the reference's five (owner request, Aug 26 �
 are titled — both week surfaces, both board panels, and the Inputs page h1.)
 
 **Ground Programme rows read in start-time order** (owner, Aug 26), via
-`groundOrder` in `ui/html.ts`, used by the week AND the board panel. The sort
+`groundOrder` (`engine/order.ts`, moved out of `ui/html.ts` 8 Aug 26 so
+`engine/reorder.ts` can freeze a rendered order without the engine importing
+from `ui/`), used by the week AND the board panel. The sort
 is RENDER-TIME ONLY: `ri` is the slot key (`g:di.ri` / `gr:di.ri`) and pending
 marks, AL colouring and published amendments all address through it, so the
 model array is never reordered — each rendered row keeps its model index for
@@ -325,6 +327,84 @@ stranding text already in the model.
   seat".
 - Arm-and-plant: empty slot arms, palette tap plants, darkened names refuse
   with a toast, changing board day disarms.
+
+## Reordering rows on the board
+
+A grip (`⠿`, `board-html.ts`'s `sbGrip`) sits at the far left of every
+movable board row on desktop; below 820px it is `display:none` and the
+row's own control cluster (`.lctl`) shows ▲/▼ instead (`.mbtn.nudge`,
+`sbNudge`). **Both are always emitted — CSS alone decides which paints.**
+Rendering the grip or the buttons conditionally on viewport width would
+make the panel's string-diff depend on window size, and would not survive
+a resize: a board built at 900px and then resized to 700px would still be
+carrying whichever markup it happened to be built with, not the one the
+new width wants.
+
+**The address lives on the ROW, never on the grip** —
+`data-move="mv:…"` (`rowMove`) is an attribute of `.sb-line` / `.sb-arow` /
+`.sb-nrow` itself, not of the `.sb-grip` span sitting inside it.
+`rowdrag.ts`'s pointer machine depends on this directly: a `pointermove`
+finds the row under the moving finger with `closest('[data-move]')`, and a
+pointer spends far more of a drag hovering the row's middle than its 18px
+handle. If the address lived on the grip instead, a drag could only ever
+recognise a landing target the instant the pointer happened to be back over
+a handle — which is not a drag at all.
+
+**The grip's 18px track is a measured contract, and its phone treatment is
+the single most breakage-prone part of this change.** `.sb-lcols/.sb-line`
+and `.sb-acols/.sb-arow` both prepend one `18px` column for it on desktop.
+Below 820px the grip is `display:none`, so it claims no grid track — but it
+is *still a DOM child*, and every `:nth-child()` rule in the phone block,
+and in its mirror `.schedboard.sb-wide` (the block that restates the
+desktop layout at phone width), counts it whether or not it paints. Every
+column index in both blocks shifted by one the moment the grip was added;
+a future column change to either row template has to shift them again in
+lockstep or a phone or `.sb-wide` layout silently picks up the wrong cell.
+
+**`.sb-nrow` needed its own phone template when no other row did**, and
+that gap was found live, not in review (fix round 1, 8 Aug 26). Every
+other row already carried a phone override; with the grip hidden, the
+notes row is down to three real grid children — `nx`, `nin`, `.lctl` — and
+without a restated template it fell through to the unconditional desktop
+grid (`18px 22px 1fr 62px`, four tracks): `nx` landed in the 18px track
+(harmless — it is just "1."), `nin` — the note text itself — squeezed into
+the 22px track meant for `nx`, and `.lctl` (▲, ▼, ✕) inflated its first
+button to fill the `1fr` track meant for the note, the last 62px track
+going unused. The phone override is `22px 1fr 74px`, the 74px measured
+against the phone build for ▲ ▼ ✕ at `.mbtn.nudge`'s own size plus
+`.lctl`'s gap, with a few px to spare.
+
+**The landing mark is a border on the row being dropped onto, not an
+inserted element** — `.rowdrop{box-shadow:inset 0 2px 0 0 var(--accent)}`.
+Every board panel is an innerHTML string; inserting a node under a moving
+pointer would change the very child indices the `nth-child` rules above
+count, mid-drag. `.rowdrag` marks the row being carried (raised background,
+accent outline, `cursor:grabbing`). Both classes are written straight onto
+the DOM by `rowdrag.ts`, not through React state — a re-render mid-drag
+would rebuild the panel out from under the pointer and drop the gesture —
+so only the drop itself (`onUp`) calls `notify()`.
+
+**▲/▼ target the neighbouring RENDERED row, never index ± 1.** `boardMbtn`
+reads the row's actual DOM siblings that carry `data-move`
+(`row.parentElement.children`, filtered to movable rows), not model-index
+arithmetic, because one list — Ground — renders time-sorted
+(`groundOrder`): "one place down" is a question about what the scheduler
+can currently see, and `engine/reorder.ts` is what translates that screen
+position back into model indices (the freeze described in
+`engine-rules.md` §Reordering a board list). A grip drag resolves its
+target the same way, off whichever row is currently marked `.rowdrop`, never
+an index.
+
+**Three guards, no exceptions** — the same shape the rest of the board's
+write path already uses. Render: `HOOKS.editMode()` emits no grip and no
+buttons at all for a non-scheduler, or for a board left open by role change
+after a page nav. Gesture: `rowdrag.ts`'s `onDown` and the `▲/▼` branch in
+`boardMbtn` both refuse unless `canEditSched()`, and both bail on
+`view.DPREV.has(view.SBDAY)` — the same stale-markup guard every other
+board mbtn already checks, so a version preview a scheduler is still
+looking at cannot be dragged or nudged. Engine: every mover in
+`engine/reorder.ts` no-ops on an out-of-range index or `from === to`, so a
+stale or forged address reaching `applyMove` cannot corrupt the model.
 
 ## Selection highlight (`ui/highlights.ts`)
 

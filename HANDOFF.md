@@ -630,6 +630,32 @@ believing a single red.)
     `SBDAY != null && CURPAGE === 'editsched'`, or `setPage` closes the
     board outright. **Deliberately not fixed here** — out of scope for a
     stores feature.
+- **Board rows can be reordered (owner ask, 8 Aug 26): "drag lines up and
+  down to adjust the sequence."** Every movable list on the board — flying
+  lines (a formation, travelling as a block), jets inside a formation,
+  Duties, Sims, Ground Programme, the overall programme, overall notes —
+  gets a grip (`⠿`) at the far left on desktop and ▲/▼ buttons in its own
+  control cluster below 820px; both are always in the markup, CSS decides
+  which paints. A row moves only within its own list (a duty row cannot
+  change block, an AMT row cannot become an OFT row); a flying row's grip
+  carries the aircraft address, and the DROP decides whether it resequences
+  the jet within its formation or carries the whole formation — dropping
+  into another wave is refused. `engine/reorder.ts`'s movers reuse the
+  exact key-space heads `engine/keys.ts`'s existing delete-time renumbering
+  already proved correct, through a new bijective sibling
+  (`permuteKeys`/`moveKeys`) that drops nothing and cannot collide two
+  marks onto one address. A move marks the moved row at its own NEW
+  address — the same idiom every add uses, and the reverse of a delete,
+  which marks nothing. Contracts: `docs/engine-rules.md` §Reordering a
+  board list, `docs/ui-contracts.md` §Reordering rows on the board.
+  **Two behaviour changes a future reader must not mistake for bugs.**
+  Ground Programme stops time-sorting itself on any day once a row is
+  dragged there — the first move freezes the rendered order into the model
+  and sets `d.gman`, which switches that day from `groundOrder`'s
+  start-time sort to plain model order; the way back is Undo. Duty rows no
+  longer print in a fixed role order (SDO → SXO → OPS-O → …) — they print
+  in the order they are stored, on the week and the board alike, so a
+  reorder sticks instead of being overridden on the next render.
 - **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
   still described a three-gate, mid-port project — the root one also called a
   member view-only, which the 5 Aug roles decision had already undone.
@@ -651,7 +677,9 @@ believing a single red.)
 | `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`, `dashOf`, the crew-rest trace (`traceOf`/`traceLeads`/`traceIx`/`tracesOn`). **The conflict engine.** |
 | `avail.ts` | `slotRules`/`slotBar` eligibility, `dayOff`/`dayEngaged`, free-count ranking. |
 | `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`**. |
-| `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering. |
+| `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering (delete-time), and its bijective sibling `permuteKeys`/`moveKeys` for a reorder. |
+| `order.ts` | `groundOrder(rows, man)` — Ground Programme's render-time start-time sort, pulled out of `ui/html.ts` (8 Aug 26) so `reorder.ts` can freeze a rendered order into the model without the engine importing from `ui/`. `man` (a day's `d.gman`) returns model order untouched. |
+| `reorder.ts` | The board's row movers (owner, 8 Aug 26): one function per list (`moveFormation`/`moveAircraft`/`moveDutyRow`/`moveSimRow`/`moveGroundRow`/`moveProgRow`/`moveNote`) plus `applyMove`, the one entry point the UI calls — parses `mv:` addresses and resolves a flying row's two meanings (resequence vs. carry the formation) by what it was dropped on. |
 | `waves.ts` | WEEKS/CURWEEK, standalone waves (SC/AVALON/BB): `isStandalone`, `makeStandalone`, `saExempt`. |
 | `publish.ts` | SCHED, sign-offs (SIGN_ROLES), `setDayApproved`, `publishALDay`/`alIssue`/`unpublishAL`, `markEdit`, AL colours, per-day version snapshots (`daySnap`/`daySnapOf`/`dayVersions`), `dayCurVer` (the day-head chip). |
 | `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |
@@ -677,7 +705,8 @@ believing a single red.)
 | `Shell.tsx` | Topbar, nav, both schedule pages' chrome, global listeners (click/change/contextmenu/focusout/keydown, drag, pan), banner, memoized sections. |
 | `ViewWeek.tsx` / `EditWeek.tsx` | The week surfaces: build `dayHTML` per day, diff strings, swap only changed days, hold scroll; `EditRoster` palette. CURPAGE-gated. |
 | `SchedBoard.tsx` | The full-screen day board: panels with per-panel string diff; grip resize; CxDialog (cancel-with-reason). |
-| `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. |
+| `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. |
+| `rowdrag.ts` | The board row-reorder pointer machine (owner, 8 Aug 26) — its own small machine, deliberately not `drag.ts` (which stays scoped to pucks): pointer events so a finger works, releases implicit pointer capture on the way down, writes the lifted row and the drop bar straight onto the DOM, delegated on the board wrap so it survives every panel repaint. |
 | `html.ts` | THE builder library: `dayHTML`, `puck`, `slotCell`, `signoffHTML`, day warnings, day-info panel, legend, cx/flag tags. |
 | `board-html.ts` / `palette-html.ts` / `logic-html.ts` | Board panels (inputs bands, notes, programme, duties, sim rows, ground, personal-inputs group, sim notes), the aircrew palette, the Logic tab's rule text. |
 | `interactions.ts` | `routeClick` — the delegated click router: select/arm/plant (a puck's flag chip falls through to selection — the chip is the puck, 7 Aug 26), publish/AL/sign-clear, day-info, warning boxes, the board's issue list (via `jumpToWarn`, which opens `DWOPEN` as the day-detail branch does), week chips, stores remove + the `+` config picker (`openStoresMenu`). |

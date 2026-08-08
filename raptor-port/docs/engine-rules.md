@@ -318,6 +318,97 @@ corrupted or hand-edited storage blob.
 `shiftAircraft`/`shiftFormation`/`shiftWave` compose it. Deleting a
 standalone wave also removes its duty block (`d:`/`dr:`/`dl:` keys).
 
+## Reordering a board list
+
+Every list on the board — flying lines, jets inside a formation, Duties,
+Sims, Ground Programme, the overall programme, overall notes — can be
+dragged or nudged into a new position through `applyMove(fromAddr, toAddr)`
+in `engine/reorder.ts`. Addresses are `mv:<kind>.<container…>.<index>` (`ac`
+aircraft, `d` duty, `s` sim, `g` ground, `p` programme, `n` note). For every
+kind but `ac`, two rows may exchange places IFF their addresses agree on
+everything but the last component — one test that enforces every
+containment rule at once (a duty row cannot change block, an AMT row cannot
+become an OFT row) with no per-kind special casing. **A row moves only
+within its own list**; a move that would cross lists is refused, and moving
+a row *between* lists (a line to another Go, AMT ↔ OFT) is out of scope by
+owner decision — delete-and-retype stays the path there.
+
+**A flying row's address means two different things, and the drop decides
+which.** The grip on a flying row carries the full aircraft address
+`mv:ac.di.gi.li.ai`, because a flying row *is* one jet — but the owner asked
+for both a formation that travels as a block and jets that resequence
+inside it, and there is only one grip. `applyMove` resolves it off the drop
+target: land on a sibling jet (same `di.gi.li`) and `moveAircraft` swaps the
+two jets; land on another formation in the same wave (same `di.gi`,
+different `li`) and `moveFormation` carries the whole formation, jets in
+order; land in a different wave and the move is refused outright. That is
+the only reading consistent with "a jet may never leave its formation" — a
+drag ending outside the formation cannot mean "move this jet there", so it
+can only mean "move this formation there".
+
+**`permuteKeys`/`moveKeys` (`engine/keys.ts`) are the bijective sibling of
+`shiftKeys`'s splice.** `shiftKeys` handles a delete: marks on the cut row
+are dropped, marks after it slide down one. A reorder is the opposite
+shape — every row survives, it only changes address — so the remap has to
+be a bijection: `permuteKeys(head, pos, oldOf)` takes `oldOf[newIndex] =
+oldIndex` and rewrites `SCHED.pending`, `SCHED.changes` and every issued
+AL's `keys` through it. An index outside the permutation is left alone (a
+stale key from a longer list is inert), never dropped or collided — drop
+one and an issued AL silently forgets an amendment; collide two and one
+amendment permanently re-labels itself as being about a different sortie.
+Neither failure shows on screen, which is why it is tested on its own
+before any mover calls it. `moveKeys(head, pos, from, to, len)` is the
+one-move wrapper — the splice-out/splice-in permutation of a list of length
+`len` — and `from === to`, an out-of-range index, or a missing `head` is a
+no-op.
+
+**A move marks the row at its NEW address, against the rule that a DELETE
+marks nothing.** `markEdit()` with no key is how a delete avoids re-marking
+the address it just vacated; a move's row still exists and its position is
+what changed, so it marks its own new address — `ff:di.gi.to.cs`,
+`dr:di.wi.to.role`, `gr:di.to.prog`, `ap:di.to.prog`, `sr:di.kind.to.label`,
+`dn:di.to`, `fr:di.gi.li.to`. That is the same idiom every add already
+uses, it is what puts the day into the next AL (mechanically, what "a move
+counts as an amendment" has to mean), and it tints the row that actually
+moved. Re-marking a row that already carried a pending mark is idempotent.
+
+**Ground Programme's manual flag.** Ground renders in start-time order
+(`groundOrder`, `engine/order.ts`) on both the week and the board, so a move
+expressed in plain model indices would be undone by the very next redraw —
+and the first move in particular would read as doing nothing at all: drag
+the 1000 line above the 0800 line and a naive model move lands it at model
+index 1, where the sort still prints it last. `moveGroundRow` freezes the
+order on screen into the model before it moves anything: on a day with
+`d.gman` unset, it runs `groundOrder` itself, permutes the ground array and
+its keys into that rendered order (`permuteKeys` — the same primitive a
+plain move uses), sets `d.gman = true`, translates the caller's model
+indices into the frozen order, and only then does the ordinary splice. From
+that point the day's Ground list renders in model order and a new row lands
+at the bottom, same as every other list. The way back is Undo:
+`histSnap()` serialises the whole of `DAYS`, so `gman` rolls back together
+with the order and no dedicated control is needed.
+
+**Duties now print in the order they are stored, on both the week and the
+board** — dropping the week's fixed `dutySort` (SDO → SXO → OPS-O → …) so a
+reorder sticks where it is made instead of being overridden the moment the
+week renders. The port's seed data was re-laid to already match
+`dutySort`'s output, so nothing looks different on day one. What that costs
+is in `src/testing/refwin.ts`'s `reduty()`, which pushes the port's re-laid
+`dutywaves` rows into the in-memory reference for parity: it makes the two
+structural comparisons in `parity.test.ts` that read `dutywaves.rows` in raw
+stored order — the deep-equal of `DAYS` against the reference's own, and the
+walk of `collectEvents` — **tautological for duty-row content and order**.
+By the time either runs, the reference's rows *are* the port's rows, so a
+corrupted duty row (a wrong name, a dropped role, a mistyped time) would
+show up identically on both sides and compare equal rather than being
+caught. Nothing outside `reduty()` narrows that gap. What still has
+teeth: every other field of `DAYS` and `collectEvents` — flying waves,
+sims, ground, notes — is still a real comparison against the untouched
+reference; wave labels are never touched by the push (only `.rows` is
+overwritten), so a wrong or renamed label still fails for real; and a
+wave-count mismatch between the two builds throws, from the out-of-bounds
+`dutywaves[j]` write, rather than silently comparing nothing.
+
 ## Who a row stores: ID vs CALLSIGN
 
 Two different things live in the model and mixing them up breaks rows silently:
