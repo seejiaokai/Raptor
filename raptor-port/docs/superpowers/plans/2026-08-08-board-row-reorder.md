@@ -847,6 +847,17 @@ git commit -m "Duties print in the scheduler's order, not a fixed role order"
 
 ### Task 5: The grip and the ▲/▼ buttons in the board's markup
 
+**The ADDRESS lives on the ROW, not on the grip.** `data-move` goes on the
+`.sb-line` / `.sb-arow` / `.sb-nrow` element itself; the grip carries no
+address and is identified by its class alone. Both consumers need it this way:
+the nudge handler (Task 6) finds its row with `closest('[data-move]')` from the
+button, and the drag machine (Task 7) finds the row under the moving pointer
+the same way — and that pointer is over the row's middle far more often than
+over its 18px grip. An address only on the grip makes the drag able to find a
+drop target only while hovering a grip, which is no drag at all. Do not put it
+in both places either: `rowOf()` would then resolve to the grip, and the
+landing mark would paint on the handle instead of the row.
+
 Both are always in the markup; **CSS decides which is visible at which width** (Task 8). Rendering conditionally on viewport would make the panel string-diff depend on window size and would not survive a resize.
 
 **Files:**
@@ -856,7 +867,7 @@ Both are always in the markup; **CSS decides which is visible at which width** (
 
 **Interfaces:**
 - Consumes: `applyMove` is not called here; this task only emits addresses.
-- Produces: markup contract — every movable row carries, as its **first** child, `<span class="sb-grip" data-move="<mv:…>" title="Drag to move this row">⠿</span>`, and inside its existing `.lctl` a pair of `<button class="mbtn nudge" data-mvup="<mv:…>">▲</button><button class="mbtn nudge" data-mvdn="<mv:…>">▼</button>`. Column-header rows (`.sb-lcols`, `.sb-acols`) gain a leading empty `<span></span>` so their columns still line up.
+- Produces: markup contract — every movable row carries `data-move="<mv:…>"` **on the row element itself**, plus, as its **first** child, `<span class="sb-grip" title="Drag to move this row">⠿</span>` (no address on the grip — see below), and inside its existing `.lctl` a pair of `<button class="mbtn nudge" data-mvup="<mv:…>">▲</button><button class="mbtn nudge" data-mvdn="<mv:…>">▼</button>`. Column-header rows (`.sb-lcols`, `.sb-acols`) gain a leading empty `<span></span>` so their columns still line up.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -934,8 +945,8 @@ At the top of `src/ui/board-html.ts`, after the imports, add:
    viewport would make the panel string-diff depend on window size and would not
    survive a resize.
    `mv:<kind>.<container…>.<index>` — parsed only by engine/reorder.ts. */
-export function sbGrip(addr:any,ro?:any){
-  return ro?'':`<span class="sb-grip" data-move="${addr}" title="Drag to move this row">⠿</span>`;
+export function sbGrip(ro?:any){
+  return ro?'':`<span class="sb-grip" title="Drag to move this row">⠿</span>`;
 }
 export function sbNudge(addr:any,ro?:any){
   return ro?'':`<button class="mbtn nudge" data-mvup="${addr}" title="Move up">▲</button>`
@@ -1169,7 +1180,8 @@ const DSNAP = JSON.stringify(DAYS)
 let host: HTMLElement, off: () => void
 
 function rowsHTML(addrs: string[]) {
-  return addrs.map(a => `<div class="sb-arow" data-move="${a}"><span class="sb-grip" data-move="${a}">⠿</span></div>`).join('')
+  /* mirrors the real markup: the ADDRESS is on the ROW, the grip carries none */
+  return addrs.map(a => `<div class="sb-arow" data-move="${a}"><span class="sb-grip">⠿</span></div>`).join('')
 }
 function down(el: Element) { el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1 })) }
 function over(el: Element) { el.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1 })) }
@@ -1289,7 +1301,7 @@ export function wireRowDrag(el: HTMLElement) {
     if (view.DPREV.has(view.SBDAY as any)) return
     /* the GRIP only — a press on the row itself is a click on a field, and a
        row full of inputs has almost no blank space to spare */
-    const grip = (e.target as HTMLElement).closest?.('.sb-grip[data-move]') as HTMLElement | null
+    const grip = (e.target as HTMLElement).closest?.('.sb-grip') as HTMLElement | null
     if (!grip) return
     const row = rowOf(grip); if (!row) return
     from = row.dataset.move!
