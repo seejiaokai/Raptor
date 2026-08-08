@@ -17,9 +17,22 @@ import { puck, rowCls, accCtl } from './html'
    drag the wrong gesture. BOTH are always emitted and CSS picks: rendering by
    viewport would make the panel string-diff depend on window size and would not
    survive a resize.
-   `mv:<kind>.<container…>.<index>` — parsed only by engine/reorder.ts. */
-export function sbGrip(addr:any,ro?:any){
-  return ro?'':`<span class="sb-grip" data-move="${addr}" title="Drag to move this row">⠿</span>`;
+   `mv:<kind>.<container…>.<index>` — parsed only by engine/reorder.ts, and
+   carried by the ROW element itself (data-move on .sb-line / .sb-arow /
+   .sb-nrow), never by the grip: Task 7's drag machine finds the row under the
+   moving pointer with closest('[data-move]'), and a pointer is over the row's
+   middle far more often than over an 18px handle — the address has to resolve
+   there, not on the grip, or a drag would only ever find a target while
+   hovering the handle, which is no drag at all. */
+export function sbGrip(ro?:any){
+  return ro?'':`<span class="sb-grip" title="Drag to move this row">⠿</span>`;
+}
+/* the row's OWN data-move, gated the same way the grip used to gate it: a
+   preview or read-only board must render no live control at all, and that
+   now includes the address itself, or a stale mutable-looking attribute
+   would sit on markup nothing can act on. */
+export function rowMove(addr:any,ro?:any){
+  return ro?'':` data-move="${addr}"`;
 }
 export function sbNudge(addr:any,ro?:any){
   return ro?'':`<button class="mbtn nudge" data-mvup="${addr}" title="Move up">▲</button>`
@@ -77,7 +90,7 @@ export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
   let s=`<div class="sb-panel notes"><div class="sb-ph">Overall notes <span class="sub">shown at the head of the day</span>`
     +(pv?'':`<span class="gctl"><button class="mbtn add" data-nadd="${di}" title="Add a note line">+ Note</button></span>`)+`</div><div class="sb-pb">`;
   if(!n.length)s+=`<div class="sb-empty">Nothing yet — “+ Note” adds a line that every viewer sees at the top of the day.</div>`;
-  n.forEach((t:any,ni:any)=>{ s+=`<div class="sb-nrow">`+sbGrip(`mv:n.${di}.${ni}`,ro)+`<span class="nx">${ni+1}.</span>`
+  n.forEach((t:any,ni:any)=>{ s+=`<div class="sb-nrow"${rowMove(`mv:n.${di}.${ni}`,ro)}>`+sbGrip(ro)+`<span class="nx">${ni+1}.</span>`
     +`<input class="nin" data-bfld="dn:${di}.${ni}"${alAttr(`dn:${di}.${ni}`)}${pv?' disabled':''} value="${esc(t)}" placeholder="e.g. EP OF THE WEEK — ENGINE FIRE ON GROUND">`
     +(pv?'':sbNudge(`mv:n.${di}.${ni}`,ro)+`<button class="mbtn del" data-ndel="${di}.${ni}" title="Remove this note">✕</button>`)+`</div>`; });
   return s+`</div></div>`;
@@ -96,7 +109,7 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
       const inner=arr.map((nm:any,k:any)=>{const id=nameToId(nm);
         if(id&&PEOPLE[id])return `<span class="seat"${pv?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${pv?'':' draggable="true"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id))}</span>`;
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
-      s+=`<div class="sb-arow${rowCls(x)}">`+sbGrip(`mv:p.${di}.${ri}`,ro)
+      s+=`<div class="sb-arow${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +`<input class="ain" data-bfld="ap:${di}.${ri}.prog"${alAttr(`ap:${di}.${ri}.prog`)}${pv?' disabled':''} value="${esc(x.prog||'')}" placeholder="MASS BRIEF">`
         +`<input class="ain" data-bfld="ap:${di}.${ri}.sub"${alAttr(`ap:${di}.${ri}.sub`)}${pv?' disabled':''} value="${esc(x.sub||'')}" placeholder="detail / location">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)}${pv?' disabled':''} value="${esc(x.str||'')}" placeholder="0800">`
@@ -155,7 +168,7 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
     (dwv.rows||[]).forEach((r:any,ri:any)=>{
       const base=`d:${di}.${wi}.${ri}`, t=`dr:${di}.${wi}.${ri}`;
       const inner=(PEOPLE[r.id]?sbSeat(di,base,r.id,pv):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+sbMore(di,base,r,pv);
-      s+=`<div class="sb-arow c6r${rowCls(r)}">`+sbGrip(`mv:d.${di}.${wi}.${ri}`,ro)
+      s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:d.${di}.${wi}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.role`,r.role,'SDO',pv)+sbTxt('atm',`${t}.str`,r.str,'0800',pv)+sbTxt('atm',`${t}.end`,r.end,'1700',pv)
         +`<div class="ppl"${pv?'':` data-fill="${base}.+"`}>${inner}</div>`
         +sbTxt('ain rmkin',`${t}.rmks`,r.rmks,'remarks',pv)
@@ -192,7 +205,7 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
       }).join('')
         :sbSeat(di,`${base}.p`,r.p,pv)+sbSeat(di,`${base}.w`,r.w,pv);
       const txt=(!seats&&r.who)?`<span class="itxt">${esc(r.who)}</span>`:'';
-      s+=`<div class="sb-arow c6r${rowCls(r)}">`+sbGrip(`mv:s.${di}.${kind}.${ri}`,ro)
+      s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:s.${di}.${kind}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.label`,r.label,'EP SIM',pv)+sbTxt('atm',`${t}.str`,r.str,'0900',pv)+sbTxt('atm',`${t}.end`,r.end,'1100',pv)
         +`<div class="ppl"${pv?'':` data-fill="${base}.+"`}>${txt+seats+sbMore(di,base,r,pv)}</div>`
         +sbTxt('ain rmkin',`${t}.rmks`,r.rmks,'remarks',pv)
@@ -212,7 +225,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
     groundOrder(rows).forEach(({row:x,ri}:any)=>{
       const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=nameToId(x.who);
       const inner=((id&&PEOPLE[id])?sbSeat(di,base,id,pv):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,pv);
-      s+=`<div class="sb-arow c6r${rowCls(x)}">`+sbGrip(`mv:g.${di}.${ri}`,ro)
+      s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',pv)+sbTxt('atm',`${t}.str`,x.str,'1400',pv)+sbTxt('atm',`${t}.end`,x.end,'1500',pv)
         +`<div class="ppl"${pv?'':` data-fill="${base}.+"`}>${inner}</div>`
         +sbTxt('ain rmkin',`${t}.rmks`,x.rmks,'remarks',pv)

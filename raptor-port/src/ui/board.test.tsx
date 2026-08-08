@@ -526,20 +526,34 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
   })
 
-  it('every flying row carries its full aircraft address', () => {
+  /* the address sits on the ROW element itself, never on the .sb-grip inside
+     it: Task 7's drag machine finds the row under the moving pointer with
+     closest('[data-move]'), and a pointer spends far more of a drag over the
+     row's middle than over an 18px handle — if the grip carried the address
+     too, a drop there would resolve to the grip instead of the row it sits
+     in, and if only the grip carried it, hovering anywhere else would find
+     no row at all. So this checks BOTH sides: the row's own opening tag
+     carries data-move, and no <span class="sb-grip"> anywhere does. */
+  it('every flying row carries its full aircraft address, on the row — never the grip', () => {
     const h = boardHTML(0)
-    expect(h).toContain('data-move="mv:ac.0.0.0.0"')
+    expect(h).toMatch(/<div class="sb-line[^"]*" data-move="mv:ac\.0\.0\.0\.0">/)
     expect(h).toContain('data-mvup="mv:ac.0.0.0.0"')
     expect(h).toContain('data-mvdn="mv:ac.0.0.0.0"')
+    const grips = h.match(/<span class="sb-grip"[^>]*>/g) || []
+    expect(grips.length, 'grips actually render').toBeGreaterThan(0)
+    expect(grips.every(g => !g.includes('data-move')), 'no grip carries an address').toBe(true)
   })
 
-  it('the duty, sim, ground, programme and note rows all carry one', () => {
+  it('the duty, sim, ground, programme and note rows all carry one, on the row itself', () => {
     const h = boardHTML(0)
-    expect(h).toContain('data-move="mv:d.0.0.0"')
-    expect(h).toContain('data-move="mv:g.0.0"')
-    expect(h).toContain('data-move="mv:p.0.0"')
-    expect(h).toContain('data-move="mv:n.0.0"')
-    expect(boardHTML(1)).toMatch(/data-move="mv:s\.1\.(amt|oft)\.0"/)
+    expect(h).toMatch(/<div class="sb-arow c6r[^"]*" data-move="mv:d\.0\.0\.0">/)
+    expect(h).toMatch(/<div class="sb-arow c6r[^"]*" data-move="mv:g\.0\.0">/)
+    expect(h).toMatch(/<div class="sb-arow[^"]*" data-move="mv:p\.0\.0">/)
+    expect(h).toMatch(/<div class="sb-nrow" data-move="mv:n\.0\.0">/)
+    expect(boardHTML(1)).toMatch(/<div class="sb-arow c6r[^"]*" data-move="mv:s\.1\.(amt|oft)\.0">/)
+    const grips = h.match(/<span class="sb-grip"[^>]*>/g) || []
+    expect(grips.length, 'grips actually render').toBeGreaterThan(0)
+    expect(grips.every(g => !g.includes('data-move')), 'no grip carries an address').toBe(true)
   })
 
   /* a ground row's address must be its MODEL index, not its position in the

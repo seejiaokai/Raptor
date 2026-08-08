@@ -20,7 +20,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
-import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel, sbGrip, sbNudge } from './board-html'
+import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel, sbGrip, sbNudge, rowMove } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -84,8 +84,8 @@ export function boardHTML(di: number, pv?: boolean) {
       const brSug = (!pv && parseHM(f.br) == null)
         ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
         : ''
-      fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}">
-        ${sbGrip(`mv:ac.${key}`, mvRO)}
+      fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}"${rowMove(`mv:ac.${key}`, mvRO)}>
+        ${sbGrip(mvRO)}
         <input class="lin" data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis} value="${esc(f.cs)}">
         <input class="msn" data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis} value="${esc(f.msn)}">
         <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} placeholder="B" value="${esc(f.br || '')}"></div>
@@ -200,19 +200,13 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.mvup != null || ds.mvdn != null) {
     if (!canEditSched()) return
     const up = ds.mvup != null
-    const addr = up ? ds.mvup : ds.mvdn
-    /* the ▲/▼ buttons sit in the row's own control cluster (.lctl), a SIBLING
-       of the .sb-grip that carries data-move, not a descendant of it — so the
-       row itself is found by its container class, and a sibling's address is
-       read off its own grip, never off the button that was clicked */
-    const row = t.closest('.sb-arow, .sb-line, .sb-nrow') as HTMLElement | null
-    if (!row || !row.parentElement) return
-    const rows = [...row.parentElement.children]
-      .filter(x => (x as HTMLElement).querySelector('[data-move]')) as HTMLElement[]
+    const row = t.closest('[data-move]') as HTMLElement | null
+    if (!row) return
+    const rows = [...(row.parentElement ? row.parentElement.children : [])]
+      .filter(x => (x as HTMLElement).dataset && (x as HTMLElement).dataset.move) as HTMLElement[]
     const i = rows.indexOf(row), j = up ? i - 1 : i + 1
     if (i < 0 || j < 0 || j >= rows.length) return
-    const toAddr = (rows[j].querySelector('[data-move]') as HTMLElement).dataset.move
-    if (applyMove(addr, toAddr)) { afterSchedMutate(); notify() }
+    if (applyMove(row.dataset.move, rows[j].dataset.move)) { afterSchedMutate(); notify() }
     return
   }
   if (ds.lcx != null) { const r = acRef(ds.lcx); if (!r || !r.a) return; return askCx(r.a, `fr:${ds.lcx}`, 'this line', () => rollCx(r.f)) }
