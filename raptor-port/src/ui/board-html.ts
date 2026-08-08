@@ -161,7 +161,19 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any){
       const base=`s:${di}.${kind}.${ri}`, t=`sr:${di}.${kind}.${ri}`;
       /* same two row shapes as the week: a 2-seat crew (p/w) or a pax list */
       const pax=Array.isArray(r.pax)?r.pax:null;
-      const seats=pax?pax.map((id:any,pi:any)=>sbSeat(di,`${base}.pax.${pi}`,id,pv)).join('')
+      /* A deleted pax HOLDS its index (slots.ts's pax branch splices nothing),
+         so the hole must stay VISIBLE: render it as a droppable empty slot,
+         not as nothing (owner, 8 Aug 26 — deleting one WSO from the AMT BOX
+         visually collapsed the block upward, and there was no slot to drop
+         the replacement back into). Same .sb-slot.empty[data-slot] shape as
+         the flying line's seats, so boardArmClick's tap-to-arm and the drag
+         machine's drop targeting cover it with no new wiring. A preview
+         keeps rendering nothing — a frozen day is not a planning surface. */
+      const seats=pax?pax.map((id:any,pi:any)=>{
+        const k=`${base}.pax.${pi}`;
+        return (id&&PEOPLE[id])?sbSeat(di,k,id,pv)
+          :(pv?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);
+      }).join('')
         :sbSeat(di,`${base}.p`,r.p,pv)+sbSeat(di,`${base}.w`,r.w,pv);
       const txt=(!seats&&r.who)?`<span class="itxt">${esc(r.who)}</span>`:'';
       s+=`<div class="sb-arow c6r${rowCls(r)}">`

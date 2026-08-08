@@ -1020,6 +1020,55 @@ test('board at 390px: an eight-pax sim row stacks its pucks two per row', async 
   expect(rows.size, 'eight pax = four pair-rows').toBe(4)
 })
 
+/* THE SEATS SAT IN THE TIME TRACKS AND OVERLAPPED (owner, from the deployed
+   site, 8 Aug 26). Grid auto-flow is sequential: when the full-width B cell
+   (child 3) broke to its own row, TO/LD slid into the 54/60px name tracks
+   and the two 74px seats into the 46px time tracks — pucks painting over
+   each other and over the "+ RCP" dashed box. The B cell is pinned to row 2
+   now and each seat takes a full-width strip. Only a browser can see any of
+   this — the class list never changed. */
+test('board at 390px: the seats sit clear of the time boxes and of each other', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  const geo = await page.evaluate(() => {
+    const hit = (a: DOMRect, b: DOMRect) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
+    const bad: string[] = []
+    document.querySelectorAll('#sbBoard .sb-line').forEach((line, li) => {
+      const slots = [...line.querySelectorAll('.sb-slot')].map(s => s.getBoundingClientRect())
+      const inputs = [...line.querySelectorAll('input')].map(i => i.getBoundingClientRect())
+      if (slots.length === 2 && hit(slots[0]!, slots[1]!)) bad.push(`line ${li}: seats overlap`)
+      slots.forEach((s, si) => inputs.forEach(r => { if (hit(s, r)) bad.push(`line ${li} slot ${si}: overlaps an input`) }))
+    })
+    return bad
+  })
+  expect(geo, 'no seat overlaps a seat or an input on any line').toEqual([])
+})
+
+/* A DELETED PAX LEAVES ITS SLOT ON SCREEN (owner, 8 Aug 26). The engine
+   always held the hole; the board rendered it as nothing, so the block
+   collapsed upward and the replacement had nowhere to land. jsdom pins the
+   markup (board.test.tsx); this measures the hole really occupying the
+   deleted seat's place — same pair-row as its neighbour, right beside it. */
+test('board at 390px: a deleted AMT pax leaves a droppable hole in its own place', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  await page.evaluate(() => { (window as any).setSlotVal('s:0.amt.1.pax.1', ''); (window as any).afterSchedMutate() })
+  const hole = await page.evaluate(() => {
+    const el = document.querySelector('#sbBoard .sb-slot.empty.pax') as HTMLElement
+    if (!el) return null
+    const r = el.getBoundingClientRect()
+    const first = [...document.querySelectorAll('#sbBoard .sb-panel.simr .seat[data-slot="s:0.amt.1.pax.0"] .puck')][0]!.getBoundingClientRect()
+    return { key: el.dataset.slot, sameRow: Math.abs(r.top - first.top) < 3, besideIt: r.left > first.right, w: Math.round(r.width) }
+  })
+  expect(hole, 'the hole rendered').toBeTruthy()
+  expect(hole!.key).toBe('s:0.amt.1.pax.1')
+  expect(hole!.sameRow, 'the hole keeps the deleted seat\'s pair-row').toBe(true)
+  expect(hole!.besideIt, 'sitting beside its neighbour, not collapsed away').toBe(true)
+  expect(hole!.w, 'puck-sized, so the pair rows stay level').toBeGreaterThanOrEqual(74)
+})
+
 /* THE PHONE BOARD IS ONE WINDOW (owner, 8 Aug 26 — comp approved before
    build). It used to be three stacked zones: panels, then a bottom-pinned
    Live-checks + roster sheet, split by a resize grip. Now it matches the
