@@ -19,7 +19,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
-import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel } from './board-html'
+import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel, sbGrip, sbNudge } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -43,8 +43,11 @@ export function boardHTML(di: number, pv?: boolean) {
      would commit and markEdit in a state the week would never have
      rendered the field in at all. */
   const stoRO = pv || !HOOKS.editMode()
+  /* same gate as the stores chips: pv OR not in edit mode. A duty crew who
+     still has a board open after navigating away must not get live controls. */
+  const mvRO = stoRO
   let b = (pv ? '' : `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`)
-    + sbNotesPanel(d, di, pv) + sbProgPanel(d, di, pv)
+    + sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
     /* SC / AVALON / BB carry no store config on the week (html.ts's `sa`
@@ -65,7 +68,7 @@ export function boardHTML(di: number, pv?: boolean) {
       + `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`
       + (pv ? '' : `<span class="gctl"><button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
-    fly += `<div class="sb-lcols"><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
+    fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
     w.formations.forEach((f: any, li: number) => f.aircraft.forEach((a: any, ai: number) => {
       const key = `${di}.${gi}.${li}.${ai}`, fp = `ff:${di}.${gi}.${li}`
@@ -81,6 +84,7 @@ export function boardHTML(di: number, pv?: boolean) {
         ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
         : ''
       fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}">
+        ${sbGrip(`mv:ac.${key}`, mvRO)}
         <input class="lin" data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis} value="${esc(f.cs)}">
         <input class="msn" data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis} value="${esc(f.msn)}">
         <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} placeholder="B" value="${esc(f.br || '')}"></div>
@@ -103,6 +107,7 @@ export function boardHTML(di: number, pv?: boolean) {
               + `<span class="bombs" contenteditable="true" data-bombs="${key}">${esc((a.opts || {}).bombs || '')}</span></span>`)}
         </div>
         ${pv ? '' : `<span class="lctl">
+          ${sbNudge(`mv:ac.${key}`, mvRO)}
           <button class="mbtn${cxOn ? ' on' : ''}" data-lcx="${key}" title="${cxOn ? 'Restore this line' : 'Cancel this line (CX)'}">CX</button>
           <button class="mbtn red${a.flag ? ' on' : ''}" data-lflag="${key}" title="${a.flag ? 'Clear the red box' : 'Red box — flag this for the next scheduler'}">■</button>
           <button class="mbtn add" data-lac="${di}.${gi}.${li}" title="Add another aircraft to this formation">+</button>
@@ -117,7 +122,7 @@ export function boardHTML(di: number, pv?: boolean) {
      order as the week day, with the sim planning notes staying last */
   /* the sim note used to be a panel of its own at the very bottom; it now sits
      inside the Sims panel, so the board reads the same way the week does. */
-  b += sbDutyPanel(d, di, pv) + sbSimRowsPanel(d, di, pv) + sbGroundPanel(d, di, pv)
+  b += sbDutyPanel(d, di, pv, mvRO) + sbSimRowsPanel(d, di, pv, mvRO) + sbGroundPanel(d, di, pv, mvRO)
   /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
   const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
   b += sbInputsGroupPanel(d, di, pv, dayInp) + sbUnavailPanel(d, di, dayInp)

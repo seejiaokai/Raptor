@@ -11,6 +11,21 @@ import { esc } from '../state/view'
 import { ORD } from './html'
 import { puck, rowCls, accCtl } from './html'
 
+/* ---- reorder grip + nudge buttons (owner, 8 Aug 26) -----------------------
+   A grip at the far left on desktop, ▲/▼ in the row's own control cluster on a
+   phone, where a tall multi-strip flying block and a scrolling finger make a
+   drag the wrong gesture. BOTH are always emitted and CSS picks: rendering by
+   viewport would make the panel string-diff depend on window size and would not
+   survive a resize.
+   `mv:<kind>.<container…>.<index>` — parsed only by engine/reorder.ts. */
+export function sbGrip(addr:any,ro?:any){
+  return ro?'':`<span class="sb-grip" data-move="${addr}" title="Drag to move this row">⠿</span>`;
+}
+export function sbNudge(addr:any,ro?:any){
+  return ro?'':`<button class="mbtn nudge" data-mvup="${addr}" title="Move up">▲</button>`
+    +`<button class="mbtn nudge" data-mvdn="${addr}" title="Move down">▼</button>`;
+}
+
 export const SB_BANDS=[
   {k:'early',t:'Early',      note:'before 08:00',    lo:0,   hi:480},
   {k:'am',   t:'Morning',    note:'08:00 – 11:59',   lo:480, hi:720},
@@ -57,37 +72,37 @@ export function sbInputsHTML(d:any,di:any){
 /* pv: the board is showing a published snapshot — every control that could
    write is withheld (disabled inputs, no add/del/CX buttons, no drop targets),
    because the keys in this markup address the LIVE model, not the snapshot */
-export function sbNotesPanel(d:any,di:any,pv?:any){
+export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
   const n=d.notes||[];
   let s=`<div class="sb-panel notes"><div class="sb-ph">Overall notes <span class="sub">shown at the head of the day</span>`
     +(pv?'':`<span class="gctl"><button class="mbtn add" data-nadd="${di}" title="Add a note line">+ Note</button></span>`)+`</div><div class="sb-pb">`;
   if(!n.length)s+=`<div class="sb-empty">Nothing yet — “+ Note” adds a line that every viewer sees at the top of the day.</div>`;
-  n.forEach((t:any,ni:any)=>{ s+=`<div class="sb-nrow"><span class="nx">${ni+1}.</span>`
+  n.forEach((t:any,ni:any)=>{ s+=`<div class="sb-nrow">`+sbGrip(`mv:n.${di}.${ni}`,ro)+`<span class="nx">${ni+1}.</span>`
     +`<input class="nin" data-bfld="dn:${di}.${ni}"${alAttr(`dn:${di}.${ni}`)}${pv?' disabled':''} value="${esc(t)}" placeholder="e.g. EP OF THE WEEK — ENGINE FIRE ON GROUND">`
-    +(pv?'':`<button class="mbtn del" data-ndel="${di}.${ni}" title="Remove this note">✕</button>`)+`</div>`; });
+    +(pv?'':sbNudge(`mv:n.${di}.${ni}`,ro)+`<button class="mbtn del" data-ndel="${di}.${ni}" title="Remove this note">✕</button>`)+`</div>`; });
   return s+`</div></div>`;
 }
 /* ---- board panel 2: overall programme (squadron-wide, affects everyone) --- */
-export function sbProgPanel(d:any,di:any,pv?:any){
+export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
   const rows=d.allhands||[];
   let s=`<div class="sb-panel prog"><div class="sb-ph">Overall programme <span class="sub">squadron-wide — affects all</span>`
     +(pv?'':`<span class="gctl"><button class="mbtn add" data-padd="${di}" title="Add a squadron-wide item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like.</div>`;
   else{
-    s+=`<div class="sb-acols"><span>Item</span><span>Detail</span><span>Start</span><span>End</span><span>People</span><span></span></div>`;
+    s+=`<div class="sb-acols"><span></span><span>Item</span><span>Detail</span><span>Start</span><span>End</span><span>People</span><span></span></div>`;
     rows.forEach((x:any,ri:any)=>{
       const arr=whoArr(x);
       /* same hole guard as the week view — an empty .itxt shifts every later puck */
       const inner=arr.map((nm:any,k:any)=>{const id=nameToId(nm);
         if(id&&PEOPLE[id])return `<span class="seat"${pv?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${pv?'':' draggable="true"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id))}</span>`;
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
-      s+=`<div class="sb-arow${rowCls(x)}">`
+      s+=`<div class="sb-arow${rowCls(x)}">`+sbGrip(`mv:p.${di}.${ri}`,ro)
         +`<input class="ain" data-bfld="ap:${di}.${ri}.prog"${alAttr(`ap:${di}.${ri}.prog`)}${pv?' disabled':''} value="${esc(x.prog||'')}" placeholder="MASS BRIEF">`
         +`<input class="ain" data-bfld="ap:${di}.${ri}.sub"${alAttr(`ap:${di}.${ri}.sub`)}${pv?' disabled':''} value="${esc(x.sub||'')}" placeholder="detail / location">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)}${pv?' disabled':''} value="${esc(x.str||'')}" placeholder="0800">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.end"${alAttr(`ap:${di}.${ri}.end`)}${pv?' disabled':''} value="${esc(x.end||'')}" placeholder="0900">`
         +`<div class="ppl"${pv?'':` data-fill="a:${di}.${ri}.+"`}>${inner||'<span class="itxt">all</span>'}</div>`
-        +(pv?'':`<span class="lctl">`
+        +(pv?'':`<span class="lctl">`+sbNudge(`mv:p.${di}.${ri}`,ro)
         +`<button class="mbtn${x.cx?' on':''}" data-pcx="${di}.${ri}" title="${x.cx?'Restore this item':'Cancel this item (CX)'}">CX</button>`
         +`<button class="mbtn red${x.flag?' on':''}" data-pflag="${di}.${ri}" title="${x.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
         +`<button class="mbtn del" data-pdel="${di}.${ri}" title="Remove this item">✕</button></span>`)+`</div>`;
@@ -118,14 +133,14 @@ function sbMore(di:any,base:any,r:any,pv?:any){
 function sbTxt(cls:any,path:any,v:any,ph:any,pv:any){
   return `<input class="${cls}" data-bfld="${path}"${alAttr(path)}${pv?' disabled':''} value="${esc(v||'')}" placeholder="${ph}">`;
 }
-function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any){
-  return pv?'':`<span class="lctl">`
+function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,mv?:any){
+  return pv?'':`<span class="lctl">`+(mv||'')
     +`<button class="mbtn${o.cx?' on':''}" data-${pre}cx="${addr}" title="${o.cx?'Restore '+what:'Cancel '+what+' (CX)'}">CX</button>`
     +`<button class="mbtn red${o.flag?' on':''}" data-${pre}flag="${addr}" title="${o.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
     +`<button class="mbtn del" data-${pre}del="${addr}" title="Remove ${what}">✕</button></span>`;
 }
-const C6=`<div class="sb-acols c6r"><span>Item</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
-export function sbDutyPanel(d:any,di:any,pv?:any){
+const C6=`<div class="sb-acols c6r"><span></span><span>Item</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
+export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
   const dws=d.dutywaves||[];
   let s=`<div class="sb-panel duty"><div class="sb-ph">Duties <span class="sub">SDO / SXO / ops desk, by block</span>`
     +(pv?'':`<span class="gctl"><button class="mbtn add" data-dwadd="${di}" title="Add a duty block">+ Block</button></span>`)+`</div><div class="sb-pb">`;
@@ -140,16 +155,16 @@ export function sbDutyPanel(d:any,di:any,pv?:any){
     (dwv.rows||[]).forEach((r:any,ri:any)=>{
       const base=`d:${di}.${wi}.${ri}`, t=`dr:${di}.${wi}.${ri}`;
       const inner=(PEOPLE[r.id]?sbSeat(di,base,r.id,pv):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+sbMore(di,base,r,pv);
-      s+=`<div class="sb-arow c6r${rowCls(r)}">`
+      s+=`<div class="sb-arow c6r${rowCls(r)}">`+sbGrip(`mv:d.${di}.${wi}.${ri}`,ro)
         +sbTxt('ain',`${t}.role`,r.role,'SDO',pv)+sbTxt('atm',`${t}.str`,r.str,'0800',pv)+sbTxt('atm',`${t}.end`,r.end,'1700',pv)
         +`<div class="ppl"${pv?'':` data-fill="${base}.+"`}>${inner}</div>`
         +sbTxt('ain rmkin',`${t}.rmks`,r.rmks,'remarks',pv)
-        +sbRowCtl(pv,r,`${di}.${wi}.${ri}`,'dr','this duty')+`</div>`;
+        +sbRowCtl(pv,r,`${di}.${wi}.${ri}`,'dr','this duty',sbNudge(`mv:d.${di}.${wi}.${ri}`,ro))+`</div>`;
     });
   });
   return s+sbNote(d,di,'dtn','dutynotes','e.g. SDO swapped — Bane has the PHA at 1700, Pike covers the last hour.',pv)+`</div></div>`;
 }
-export function sbSimRowsPanel(d:any,di:any,pv?:any){
+export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
   const sims=d.sims||{};
   let s=`<div class="sb-panel simr"><div class="sb-ph">Sims <span class="sub">AMT and OFT rows</span></div><div class="sb-pb">`;
   [['AMT','amt'],['OFT','oft']].forEach(([title,kind]:any)=>{
@@ -177,16 +192,16 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any){
       }).join('')
         :sbSeat(di,`${base}.p`,r.p,pv)+sbSeat(di,`${base}.w`,r.w,pv);
       const txt=(!seats&&r.who)?`<span class="itxt">${esc(r.who)}</span>`:'';
-      s+=`<div class="sb-arow c6r${rowCls(r)}">`
+      s+=`<div class="sb-arow c6r${rowCls(r)}">`+sbGrip(`mv:s.${di}.${kind}.${ri}`,ro)
         +sbTxt('ain',`${t}.label`,r.label,'EP SIM',pv)+sbTxt('atm',`${t}.str`,r.str,'0900',pv)+sbTxt('atm',`${t}.end`,r.end,'1100',pv)
         +`<div class="ppl"${pv?'':` data-fill="${base}.+"`}>${txt+seats+sbMore(di,base,r,pv)}</div>`
         +sbTxt('ain rmkin',`${t}.rmks`,r.rmks,'remarks',pv)
-        +sbRowCtl(pv,r,`${di}.${kind}.${ri}`,'sr','this sim')+`</div>`;
+        +sbRowCtl(pv,r,`${di}.${kind}.${ri}`,'sr','this sim',sbNudge(`mv:s.${di}.${kind}.${ri}`,ro))+`</div>`;
     });
   });
   return s+sbNote(d,di,'sn','simnotes','e.g. OFT 2 u/s Thu PM — 4-ship EP profile pushed to next week. Divot still owes an AMT EP.',pv)+`</div></div>`;
 }
-export function sbGroundPanel(d:any,di:any,pv?:any){
+export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
   const rows=d.ground||[];
   let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme · scheduler <span class="sub">briefs, reviews, admin</span>`
     +(pv?'':`<span class="gctl"><button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
@@ -197,11 +212,11 @@ export function sbGroundPanel(d:any,di:any,pv?:any){
     groundOrder(rows).forEach(({row:x,ri}:any)=>{
       const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=nameToId(x.who);
       const inner=((id&&PEOPLE[id])?sbSeat(di,base,id,pv):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,pv);
-      s+=`<div class="sb-arow c6r${rowCls(x)}">`
+      s+=`<div class="sb-arow c6r${rowCls(x)}">`+sbGrip(`mv:g.${di}.${ri}`,ro)
         +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',pv)+sbTxt('atm',`${t}.str`,x.str,'1400',pv)+sbTxt('atm',`${t}.end`,x.end,'1500',pv)
         +`<div class="ppl"${pv?'':` data-fill="${base}.+"`}>${inner}</div>`
         +sbTxt('ain rmkin',`${t}.rmks`,x.rmks,'remarks',pv)
-        +sbRowCtl(pv,x,`${di}.${ri}`,'gr','this item')+`</div>`;
+        +sbRowCtl(pv,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro))+`</div>`;
     });
   }
   return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',pv)+`</div></div>`;

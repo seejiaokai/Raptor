@@ -16,7 +16,8 @@ import { isStandalone } from '../engine/waves'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { cxText } from './html'
-import { openScheduler, boardArmClick } from './board'
+import { openScheduler, boardArmClick, boardHTML } from './board'
+import { HOOKS } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -506,5 +507,62 @@ describe('board lifecycle', () => {
       HOOKS.isPhone = orig
       await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
     }
+  })
+})
+
+describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
+  /* an earlier test in this file logs out (resetSession), which parks
+     CURPAGE back on 'viewsched' — HOOKS.editMode() gates on CURPAGE===
+     'editsched', so these boardHTML(0) calls need the page put back or
+     every live-control assertion below would exercise the read-only path
+     for a reason that has nothing to do with this task's markup. */
+  beforeAll(async () => {
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+  })
+
+  it('every flying row carries its full aircraft address', () => {
+    const h = boardHTML(0)
+    expect(h).toContain('data-move="mv:ac.0.0.0.0"')
+    expect(h).toContain('data-mvup="mv:ac.0.0.0.0"')
+    expect(h).toContain('data-mvdn="mv:ac.0.0.0.0"')
+  })
+
+  it('the duty, sim, ground, programme and note rows all carry one', () => {
+    const h = boardHTML(0)
+    expect(h).toContain('data-move="mv:d.0.0.0"')
+    expect(h).toContain('data-move="mv:g.0.0"')
+    expect(h).toContain('data-move="mv:p.0.0"')
+    expect(h).toContain('data-move="mv:n.0.0"')
+    expect(boardHTML(1)).toMatch(/data-move="mv:s\.1\.(amt|oft)\.0"/)
+  })
+
+  /* a ground row's address must be its MODEL index, not its position in the
+     time-sorted render — engine/reorder.ts translates model indices itself */
+  it('a ground address is the model index, not the rendered position', () => {
+    const h = boardHTML(0)
+    const order = [...h.matchAll(/data-move="mv:g\.0\.(\d+)"/g)].map(m => +m[1])
+    expect(order.length).toBe(DAYS[0].ground.length)
+    expect([...order].sort((a, b) => a - b)).toEqual(order.map((_, i) => i))
+  })
+
+  it('the column headers gain a matching empty cell so the grid still lines up', () => {
+    const h = boardHTML(0)
+    expect(h).toContain('<div class="sb-lcols"><span></span><span>CS</span>')
+    expect(h).toContain('<div class="sb-acols c6r"><span></span><span>Item</span>')
+  })
+
+  /* the board is a modal that survives a page change, so a bare CURPAGE test
+     would hand live controls to a duty crew who still has a board open — the
+     same reason the stores chips use editMode() (board.ts's stoRO) */
+  it('a published-version preview renders no grip and no nudge buttons', () => {
+    const h = boardHTML(0, true)
+    expect(h).not.toContain('data-move=')
+    expect(h).not.toContain('data-mvup=')
+  })
+
+  it('read-only mode renders no grip and no nudge buttons', () => {
+    HOOKS.editMode = () => false
+    try { expect(boardHTML(0)).not.toContain('data-move=') }
+    finally { HOOKS.editMode = () => true }
   })
 })

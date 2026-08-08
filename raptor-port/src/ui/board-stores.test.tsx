@@ -35,7 +35,7 @@ const openBoard = async () => {
 }
 
 describe('the board carries the week\'s stores interface', () => {
-  it('a flying line has exactly nine grid items, and the chips live inside the ninth', async () => {
+  it('a flying line has exactly ten grid items, and the chips live inside the last', async () => {
     const { DAYS } = await import('../engine/data')
     const a = DAYS[0].waves[0].formations[0].aircraft[0]
     a.opts = a.opts || {}; a.opts.tk2 = true
@@ -43,10 +43,11 @@ describe('the board carries the week\'s stores interface', () => {
     const line = $('#schedBoard .sb-line')
     expect(line, 'the line exists').toBeTruthy()
     /* the whole point of .sb-rcell: wrapping the input, the chips and C must
-       not grow the line past the nine columns the desktop and phone grid
-       templates both assume — a tenth child or a split .sb-rcell passes
-       every other assertion here and still breaks the template */
-    expect(line.children.length, 'still exactly nine grid items').toBe(9)
+       not grow the line past the ten columns the desktop and phone grid
+       templates both assume (nine plus the reorder grip Task 5 added as the
+       first child) — an eleventh child or a split .sb-rcell passes every
+       other assertion here and still breaks the template */
+    expect(line.children.length, 'still exactly ten grid items').toBe(10)
     const cell = line.querySelector('.sb-rcell') as HTMLElement
     expect(cell, 'the remarks input is wrapped in a cell').toBeTruthy()
     expect(cell.querySelector('.nts'), 'the remarks input is inside it').toBeTruthy()
@@ -113,7 +114,7 @@ describe('the board carries the week\'s stores interface', () => {
     const lines = $$('#schedBoard .sb-line')
     const saLine = lines[lines.length - 1]
     expect(saLine, 'the SC line was added').toBeTruthy()
-    expect(saLine.children.length, 'still exactly nine grid items — sa hides CONTENT, not the cell').toBe(9)
+    expect(saLine.children.length, 'still exactly ten grid items — sa hides CONTENT, not the cell').toBe(10)
     const cell = saLine.querySelector('.sb-rcell') as HTMLElement
     expect(cell, 'the remarks cell itself is still there').toBeTruthy()
     expect(cell.querySelector('.nts'), 'remarks stay editable on a standalone line').toBeTruthy()
