@@ -794,6 +794,15 @@ Expected: vitest green; the reference stays **728/0**.
 
 Some tests hard-code a duty row index (`d:0.0.0` and friends) and will now name a different row. Update those tests to the new index — the assertion is about the mechanism, not about which person happens to sit at index 0. Do not weaken any assertion to make it pass.
 
+**Note for the implementer — do NOT build this here.** The owner also asked
+(8 Aug 26) that a new duty row land in *role* position rather than at the
+bottom, so that dropping the sort is not a quiet regression. That cannot be done
+in this task: a freshly added row has an EMPTY role, so there is nothing to
+position it by until the scheduler types one, and the reposition therefore
+belongs on the typing path and needs `sortDutyBlock`, which **Task 9 builds**.
+Task 9's brief carries that edit. Leave `boardChange` and the `dradd` branch
+alone here.
+
 - [ ] **Step 5: Commit**
 
 ```bash
@@ -1549,9 +1558,173 @@ git commit -m "Board: the grip's column, the phone nth-child re-index, and the g
 
 ---
 
-### Task 9: Re-measure the board's DOM ceiling
+### Task 9: Auto sort, per section
 
-Three nodes per movable row (grip + two buttons). The recorded ceiling is **810** against a last measurement of **767**, so this will very likely need raising. Raising a ceiling is a deliberate, argued edit in the PR that adds the nodes — never a silent one.
+**(owner, 8 Aug 26 — added mid-build.)** Manual order needs a way back that is
+not Undo. Each section sorts by **its own rule** — that is why a single global
+rule was rejected, and these per-section sorts are the primitive Task 10's
+`Sort all` composes.
+
+**Files:**
+- Modify: `src/engine/reorder.ts` (append the sorters)
+- Modify: `src/ui/board.ts` (`boardMbtn` branch; the duty-role reposition in `boardChange`)
+- Modify: `src/ui/board-html.ts` and `src/ui/board.ts` (the `Auto sort` button in each section header)
+- Test: `src/engine/sort.test.ts` (new); `src/ui/interact.test.tsx` (append)
+
+**Interfaces:**
+- Consumes: `moveKeys`/`permuteKeys` (Task 1), `groundOrder` (Task 2), the movers and `applyMove` (Task 3), `DUTY_ORDER` from `src/ui/html.ts` — but the engine must not import from `ui/`, so **move `DUTY_ORDER` into `src/engine/order.ts`** and re-point `html.ts`'s `dutySort` at it, exactly as Task 2 moved `groundOrder`. Take its comment with it.
+- Produces, each returning `true` if it changed anything:
+  - `sortWave(di:any,gi:any):boolean` — formations by take-off time
+  - `sortDutyBlock(di:any,wi:any):boolean` — by `DUTY_ORDER`
+  - `sortSims(di:any,kind:any):boolean` — by start time
+  - `sortGround(di:any):boolean` — by start time, and **clears `gman`**
+  - `sortProg(di:any):boolean` — by start time
+  - `sortDay(di:any):boolean` — every one of the above, for one day
+
+**The sort rules, verbatim:**
+
+| section | key | notes |
+|---|---|---|
+| flying | `parseHM(f.to)` | formations within one wave. Jets inside a formation are NOT reordered — their order is element order, not a time. |
+| Duties | `DUTY_ORDER[r.role] ?? 9` | per block |
+| Sims | `parseHM(r.str)` | AMT and OFT independently |
+| Ground | `parseHM(r.str)` | clears `gman` so the day resumes sorting itself |
+| Overall programme | `parseHM(x.str)` | |
+| Overall notes | — | **excluded.** Notes are prose in a deliberate order; there is no natural key, and a control that reordered them by an invented one would be a trap. |
+
+Every sorter is **stable** (ties keep model order) and **a no-op when already
+sorted** — it must mark nothing and return `false`, so sorting a tidy day
+creates no amendment.
+
+- [ ] **Step 1: Write the failing tests**
+
+Create `src/engine/sort.test.ts`. Follow the snapshot/restore idiom at the top of
+`src/engine/reorder.test.ts` verbatim (`DSNAP`, the `beforeEach` that restores
+`DAYS` and clears `SCHED`). Cover, one `it` each:
+
+- `sortWave` puts a later take-off below an earlier one, and leaves the jets inside each formation in their original order.
+- `sortDutyBlock` puts SDO above SXO above OPS-O, and an unknown role last.
+- `sortSims` sorts AMT without touching OFT.
+- `sortGround` orders by start time AND sets `gman` to a falsy value, so the day resumes sorting itself.
+- `sortProg` orders by start time.
+- Each sorter returns `false` and marks nothing (`SCHED.pending` stays `{}`) when the section is already in order.
+- A sort carries a pending mark, a `changes` entry and an issued AL key with its row — same assertion shape as `reorder.test.ts`'s mover tests.
+- Ties keep model order.
+- `sortDay` sorts every section of the day and leaves `notes` untouched.
+
+- [ ] **Step 2: Run them to verify they fail**
+
+Run: `npx vitest run src/engine/sort.test.ts`
+Expected: FAIL — the sorters do not exist.
+
+- [ ] **Step 3: Implement the sorters**
+
+Append to `src/engine/reorder.ts`. Each sorter builds `oldOf` (the `oldOf[newIndex] = oldIndex` shape Task 1 defined), returns `false` if it is the identity, otherwise reorders the model array to match, calls `permuteKeys` over the SAME key-space heads the matching mover uses, and calls `markEdit()` with the section's first row key. Use `parseHM` from `./time`. Keep the compressed engine style.
+
+Write a comment above the block explaining WHY each section has its own key, why notes are excluded, and why an already-sorted section must mark nothing.
+
+- [ ] **Step 4: Move `DUTY_ORDER` into the engine**
+
+Same shape as Task 2's move of `groundOrder`: `DUTY_ORDER` moves from `src/ui/html.ts:233` into `src/engine/order.ts`, its comment travels with it, `html.ts`'s `dutySort` imports it from `../engine`, and nothing about rendered output changes. `parity.test.ts` must stay byte-exact.
+
+- [ ] **Step 5: The duty-role reposition (the owner's "new row lands in role position")**
+
+In `src/ui/board.ts`'s `boardChange`, after a successful `txtSet`:
+
+```ts
+  if (txtSet(p, f.value)) {
+    markEdit(); afterSchedMutate()
+    /* A duty row's ROLE decides where it belongs (owner, 8 Aug 26). The week no
+       longer sorts duties, so without this a row typed as SDO would print below
+       OPS-O and the squadron would meet a duty list out of role order — which
+       cannot happen today. A new row is added with an EMPTY role, so there is
+       nothing to sort by until the role is typed; this is that moment.
+       sortDutyBlock is a no-op on an already-ordered block, so a correction
+       typed into an untouched list costs nothing. */
+    const m = /^dr:(\d+)\.(\d+)\.\d+\.role$/.exec(p)
+    if (m) sortDutyBlock(+m[1], +m[2])
+    notify()
+  }
+  else f.value = txtGet(p)
+```
+
+- [ ] **Step 6: The `Auto sort` button in each section header**
+
+One button per section, in that section's existing `.gctl` header group, beside its `+ Row` / `+ Line`:
+
+```html
+<button class="mbtn" data-sortsec="<addr>" title="Sort this section">⇅ Auto sort</button>
+```
+
+with `<addr>` being `w.<di>.<gi>` (a wave), `d.<di>.<wi>` (a duty block), `s.<di>.<kind>`, `g.<di>`, `p.<di>`. Gate it on the same `mvRO` flag Task 5 introduced. Handle it in `boardMbtn` alongside the `mvup`/`mvdn` branch, dispatching to the matching sorter, and toast `'Already in order'` when the sorter returns `false`.
+
+- [ ] **Step 7: Run the tests**
+
+Run: `npx vitest run src/engine/sort.test.ts src/ui/interact.test.tsx src/engine/parity.test.ts && npm run build`
+Expected: all PASS, parity byte-exact.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add src/engine/reorder.ts src/engine/order.ts src/engine/sort.test.ts src/ui/board.ts src/ui/board-html.ts src/ui/html.ts src/ui/interact.test.tsx
+git commit -m "Board: an Auto sort control on every section"
+```
+
+---
+
+### Task 10: Sort all
+
+**(owner, 8 Aug 26.)** One control at the top of the board that runs every
+section's own rule. This was advised against once — it rewrites every list on
+the day and every one of those is an amendment — and the owner chose it anyway,
+so it is built, with the two guards below.
+
+**Files:**
+- Modify: `src/ui/SchedBoard.tsx` (the button, in the board's top bar beside the existing controls)
+- Modify: `src/ui/board.ts` (`boardMbtn` branch, and the confirm)
+- Test: `src/ui/interact.test.tsx` (append)
+
+**Interfaces:**
+- Consumes: `sortDay(di)` from Task 9.
+
+- [ ] **Step 1: Write the failing tests**
+
+Append to `src/ui/interact.test.tsx`:
+
+- `Sort all` on a shuffled day orders every section and leaves `notes` in their typed order.
+- It is **ONE undo step**: after it, a single `undo()` restores every section at once. Assert against the pre-sort JSON of the whole day.
+- On a day already in order it changes nothing, marks nothing (`SCHED.pending` stays `{}`) and toasts that there was nothing to do.
+- A member cannot trigger it.
+
+- [ ] **Step 2: Run them to verify they fail**
+
+Run: `npx vitest run src/ui/interact.test.tsx`
+Expected: FAIL.
+
+- [ ] **Step 3: Implement**
+
+Two guards, both deliberate — they are the whole reason this control is safe:
+
+1. **It asks first.** Reuse the board's existing confirm idiom (the CX-with-a-reason dialog in `board.ts` is the precedent for a board-level modal). The prompt names the day and says every section will be reordered. Every other control on this board acts on one row; this one does not, and a misclick on an issued day would put the whole day out on the next AL.
+2. **It is ONE undo step.** `sortDay` must produce a single history entry, not six. `markEdit()` calls `histPush()`, so the sorters must not each push: wrap the whole of `sortDay` in the existing `HIST.lock` guard (`src/state/history.ts`) and push once at the end. Six separate undo steps would make the escape hatch worse than the mistake.
+
+- [ ] **Step 4: Run the tests**
+
+Run: `npx vitest run src/ui/interact.test.tsx src/engine/sort.test.ts && npm run build`
+Expected: all PASS.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add src/ui/SchedBoard.tsx src/ui/board.ts src/ui/interact.test.tsx
+git commit -m "Board: Sort all — every section, one confirm, one undo step"
+```
+
+---
+
+### Task 11: Re-measure the board's DOM ceiling
+
+Three nodes per movable row (grip + two nudge buttons), plus one Auto sort button per section and one Sort all button. The recorded ceiling is **810** against a last measurement of **767**, so this will very likely need raising. Raising a ceiling is a deliberate, argued edit in the PR that adds the nodes — never a silent one.
 
 **Files:**
 - Modify: `probes/perf-port.cjs:218` (only if the measurement demands it)
@@ -1585,7 +1758,7 @@ git commit -m "Perf: re-measure the board's DOM ceiling for the reorder controls
 
 ---
 
-### Task 10: Documentation, then the gates and the PR
+### Task 12: Documentation, then the gates and the PR
 
 `HANDOFF.md` must be true in the same PR, and the living contracts live in `engine-rules.md` and `ui-contracts.md` — the spec is a historical record of *why*, not the contract.
 

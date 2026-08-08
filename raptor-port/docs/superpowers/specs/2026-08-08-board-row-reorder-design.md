@@ -285,13 +285,59 @@ the weight.
   screenshot and look, per `CLAUDE.md` §Build & verify. Then the deployed page
   after it ships.
 
+## Sorting (owner, 8 Aug 26 — added mid-build)
+
+Manual order needs a way back that is not Undo. Three parts, all owner decisions:
+
+- **A new duty row lands in role position**, not at the bottom. Removing
+  `dutySort` from the week (above) would otherwise be a quiet regression: today
+  a duty list *always* prints SDO first whatever order it was typed in, and
+  after this change a freshly added row would print below OPS-O. Inserting at
+  role position keeps an untouched list correct without taking the scheduler's
+  order away the moment they drag something. Only `dradd` (the board's "+ Row")
+  changes; a dragged list is never re-sorted behind the scheduler.
+- **An `Auto sort` control on every section**, in that section's own header.
+- **A `Sort all` control at the top of the board**, running every section's own
+  rule at once.
+
+**Each section sorts by its own rule** — that is why one global rule was
+rejected and the per-section rules are the primitive that `Sort all` composes:
+
+| section | rule |
+|---|---|
+| flying lines | formations within each wave, by take-off time. Jets inside a formation are NOT reordered — their order is the element order, not a time. |
+| Duties | role order (`DUTY_ORDER`: SDO, SXO, OPS-O, RUNNER, LOGCELL, then anything unknown), per block |
+| Sims | start time, AMT and OFT independently |
+| Ground | start time — and it **clears `gman`**, so the day resumes sorting itself |
+| Overall programme | start time |
+| Overall notes | **excluded.** Notes are prose in a deliberate order; there is no natural key, and a control that reorders them by an invented one would be a trap. |
+
+Two calls made here rather than put to the owner, both about `Sort all` being
+the one control on the board whose mistake is expensive — it rewrites every
+list on the day, and every one of those is an amendment:
+
+- **It asks first.** A single confirm naming the day, consistent with the
+  CX-with-a-reason dialog already on this surface. Every other control on the
+  board acts on one row; this one does not, and a misclick on an issued day
+  would put the whole day out on the next AL.
+- **It is ONE undo step.** All sections are sorted inside a single history
+  entry, so one Undo puts the whole day back. Sorting section by section and
+  leaving six separate undo steps would make the escape hatch worse than the
+  mistake.
+
+Sorting is an ordinary edit in every other respect: it goes through the same
+movers, marks the rows it moved, and reaches the week and the CSV at once. A
+section already in its sorted order is a no-op and marks nothing — so `Sort all`
+on a tidy day is free and produces no amendment.
+
 ## Out of scope
 
 - Moving a row **between** lists (a line to another Go, AMT ↔ OFT). Declined by
   the owner as the boundary question; delete-and-retype stays the path.
 - Reordering anything from the **week** — the board is the editing surface.
-- A "sort by time" button to undo the Ground manual flag. **Undo is the way
-  back**, and a second control for the same job is not built.
+- ~~A "sort by time" button to undo the Ground manual flag.~~ **Superseded
+  (owner, 8 Aug 26)** — see §Sorting. Undo remains a way back; it is no longer
+  the only one.
 - An AL that names the before-and-after position of a moved row. The owner chose
   the plain "day amended" record; the AL stores addresses, not positions.
 - Persistence. Order lives in `DAYS`, which is not written to storage — a reload
