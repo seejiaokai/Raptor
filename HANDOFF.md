@@ -517,20 +517,18 @@ believing a single red.)
     (was 699 before this feature) — `probes/perf-port.cjs`'s `DOM_CEILING`,
     reasoning in `docs/probe-sweep.md` §The performance gate.
   - **Deleting every store silently reverts on reload.** `storesSave` writes
-    `[]` when the list is emptied, and `storesLoad` only assigns
-    `if (out.length)` — an empty saved list is indistinguishable from "load
-    found nothing", so the standard six quietly return. No last-store guard
-    exists; if a squadron ever wants a genuinely empty list to stick, this
-    needs one.
+    `[]` when the list is emptied, and `storesLoad` falls back to the
+    standard six whenever nothing valid survives (`out.length ? out :
+    STORE_STD...`, made explicit in the 8 Aug final fix wave — see
+    `docs/engine-rules.md` §Stores configuration) — an empty saved list is
+    indistinguishable from "load found nothing" either way, so the standard
+    six quietly return. No last-store guard exists; if a squadron ever wants
+    a genuinely empty list to stick, this needs one.
   - **The stores popup outlives a page navigation while the pen is open.**
     Nothing clears body-level popups on a `CURPAGE` change, and a nav click
     is an outside click the pen's dismissal deliberately declines to act on
     while open (so an in-box drag or a rename blur cannot kill it). Rare in
     practice, but reachable.
-  - **A stores edit made on the BOARD shows no "Edited — not published yet"
-    marker there.** The week puts `alAttr('st:'+key)` on `.rmkcell`; the
-    board's `.sb-rcell` carries no equivalent, so the same edit is invisible
-    as pending on the board even though it lands in the next AL correctly.
   - **`PENDING_HOLD` in `highlights.ts` is a single overwrite slot**, now
     shared by two unrelated features — `holdPuckStill`'s scroll correction
     and this popup's `place()` re-anchor. No reachable path today calls

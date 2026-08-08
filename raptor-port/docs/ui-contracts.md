@@ -662,9 +662,18 @@ branch ever calls `markEdit`:
 - **Removal never touches `a.opts`.** `delStore` splices the entry out of
   `STORE_CFG` and nothing else — no jet's `opts[key]` is cleared. Its chip
   just stops having a label to render against, so it silently drops off
-  every remarks cell. Re-adding a store with the same key (typing the same
-  name back in, which produces the same `storeKey()`) restores every chip
-  that was carrying it, with no separate undo path needed.
+  every remarks cell. Re-adding a store by typing its name back in restores
+  every chip that was carrying it, with no separate undo path needed —
+  `addStore` resolves the label against `STORE_STD` first and reuses THAT
+  key when it matches, falling back to the freshly derived `storeKey()`
+  only when it doesn't. This is not the same thing for two of the six: `2
+  TKS`/`3 TKS` are shipped keyed `tk2`/`tks3`, which is not what
+  `storeKey()` derives from those labels (`2tks`/`3tks`) — a mismatch that
+  predates `storeKey()`'s derivation rule. Deriving blind used to strand
+  every jet's `opts.tk2`/`opts.tks3` on an unreachable key the moment either
+  was deleted and retyped (fixed 8 Aug 26, `engine/stores.ts`'s `addStore`
+  comment has the full account, `stores.test.ts`'s
+  "re-adding a deleted standard store" block pins it).
 - **A single ✕ removes — no arm-step.** EDIT QUALS arms its six engine-read
   flags before letting them go, because removing one changes what a rule
   sees. Nothing in `validate.ts` reads a store (the module comment in
@@ -695,6 +704,30 @@ this copies — same reasoning, same shape, added earlier for the same kind of
 optional extra content. Get this wrong and the phone override
 (`.sb-line .sb-rcell{grid-column:1 / -1}` under the narrow-viewport query)
 mis-targets the wrong cell instead.
+
+**Standalone (SC/AVALON/BB) lines carry no stores on EITHER surface —
+identically (fixed 8 Aug 26).** `html.ts`'s `sa?'':stores` is deliberate: a
+standalone line isn't a real jet loadout, it's a duty roster row wearing the
+flying-line template, so it renders no chips, no `C` and no bombs field.
+`board.ts` now computes the same `isStandalone(w)` gate per wave and wraps
+its `.sb-rcell` stores content identically — before this fix the board had
+no such gate at all, so a store set from a standalone line's `C` button
+(which existed only on the board) marked `st:` pending, reached the AL and
+the CSV, and could never be seen or removed from the week its own spec
+requires it to render identically on. Gating hides only the CELL'S
+CONTENT, never the cell itself — `.sb-rcell` still renders (with the
+remarks `<input>` inside it) on a standalone line, keeping the nine-grid-item
+contract above intact regardless of which branch fires.
+
+**A stores edit on the board carries the same "edited, not published" mark
+the week does (fixed 8 Aug 26).** The week puts `alAttr('st:'+key)` on
+`.rmkcell`; `.sb-rcell` now carries the identical attribute, and
+`scheduler.css`'s AL rule sets (`[data-alc]`, `[data-alp]`, `[data-aln]`)
+were extended to include `.sb-rcell` alongside `.rmkcell` so the dashed
+"edited" hint, the solid published-AL outline and the dotted preview all
+paint on whichever surface the edit was actually made from — a scheduler
+working the board no longer has to switch to the week to see their own
+pending edit.
 
 ## The Quals page's editable columns
 

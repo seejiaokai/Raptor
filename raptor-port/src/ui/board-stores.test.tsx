@@ -6,7 +6,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, resetSession, notify, setPage } from '../state/store'
-import { openScheduler } from './board'
+import { openScheduler, addWave } from './board'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -97,5 +97,34 @@ describe('the board carries the week\'s stores interface', () => {
     expect($('#schedBoard .sb-line .stores'), 'a duty crew still sees what the jet carries').toBeTruthy()
     expect(document.querySelector('#schedBoard .sb-line .stcfg'), 'role, not just page, keeps C off').toBeFalsy()
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+  })
+
+  /* regression, final review 8 Aug 26: html.ts's `sa?'':stores` deliberately
+     renders no chips and no C on a standalone (SC/AVALON/BB) line — it isn't
+     a real jet loadout, it's a duty roster row wearing the flying-line
+     template — but board.ts had no matching `sa` gate at all, so a store
+     set from the board on an SC SPARE line marked `st:` pending, reached the
+     AL and the CSV, and could never be seen or removed on the week. The
+     design spec requires the two surfaces to render identically. */
+  it('a standalone (SC/AVALON/BB) line on the board carries no stores, no C, exactly like the week', async () => {
+    await openBoard()
+    const { DAYS } = await import('../engine/data')
+    await act(async () => { addWave(0, 'sc') })
+    const lines = $$('#schedBoard .sb-line')
+    const saLine = lines[lines.length - 1]
+    expect(saLine, 'the SC line was added').toBeTruthy()
+    expect(saLine.children.length, 'still exactly nine grid items — sa hides CONTENT, not the cell').toBe(9)
+    const cell = saLine.querySelector('.sb-rcell') as HTMLElement
+    expect(cell, 'the remarks cell itself is still there').toBeTruthy()
+    expect(cell.querySelector('.nts'), 'remarks stay editable on a standalone line').toBeTruthy()
+    expect(cell.querySelector('.stores'), 'no stores span on a standalone line, same as the week').toBeFalsy()
+    expect(cell.querySelector('.stcfg'), 'no C button either').toBeFalsy()
+    expect(cell.querySelector('.bombs'), 'nor the bombs field').toBeFalsy()
+    /* a flying (non-standalone) line on the same day still gets the full
+       stores interface — this is a gate on standalone lines specifically,
+       not stores support vanishing from the board altogether */
+    const flyingCell = $('#schedBoard .sb-line .sb-rcell') as HTMLElement
+    expect(flyingCell.querySelector('.stcfg'), 'an ordinary flying line is unaffected').toBeTruthy()
+    expect(DAYS[0].waves[DAYS[0].waves.length - 1].standalone, 'sanity: the wave really is standalone').toBe(true)
   })
 })

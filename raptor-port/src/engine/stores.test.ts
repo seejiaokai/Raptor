@@ -65,6 +65,39 @@ describe('adding', () => {
   })
 })
 
+/* storeKey('2 TKS')==='2tks', but the entry STORE_STD ships is keyed 'tk2'
+   (ditto '3 TKS'/'tks3'); every jet's config lives under the SHIPPED key.
+   Re-adding by name has to land back on that key, not a fresh derivation,
+   or the chips on every jet still carrying the old key become permanently
+   unreachable from the UI — see the comment on addStore. */
+describe('re-adding a deleted standard store lands on its shipped key', () => {
+  it('2 TKS: delStore then addStore reuses tk2, not 2tks', () => {
+    expect(delStore('tk2')).toBe(true)
+    expect(addStore('2 TKS')).toBe(null)
+    expect(STORE_CFG.find(([k]) => k === 'tk2')).toEqual(['tk2', '2 TKS'])
+    expect(STORE_CFG.some(([k]) => k === '2tks')).toBe(false)
+  })
+  it('3 TKS: delStore then addStore reuses tks3, not 3tks', () => {
+    expect(delStore('tks3')).toBe(true)
+    expect(addStore('3 TKS')).toBe(null)
+    expect(STORE_CFG.find(([k]) => k === 'tks3')).toEqual(['tks3', '3 TKS'])
+    expect(STORE_CFG.some(([k]) => k === '3tks')).toBe(false)
+  })
+  it('a jet holding the shipped key shows the chip again after delete+re-add', () => {
+    const opts: Record<string, boolean> = { tk2: true }
+    delStore('tk2')
+    expect(STORE_CFG.filter(([k]) => opts[k]).length, 'orphaned while deleted').toBe(0)
+    addStore('2 TKS')
+    const on = STORE_CFG.filter(([k]) => opts[k])
+    expect(on, 'the chip is reachable again, under the same key the jet holds').toEqual([['tk2', '2 TKS']])
+  })
+  it('typing a standard name while it is already on the list is refused as a duplicate, not appended under a second key', () => {
+    // tk2/'2 TKS' is on the list from the start (storesReset() in beforeEach)
+    expect(addStore('2 TKS')).toBe('2 TKS is already on the list')
+    expect(STORE_CFG.filter(([, l]) => l === '2 TKS').length).toBe(1)
+  })
+})
+
 describe('renaming — THE key never moves', () => {
   it('changes the label and leaves the key alone', () => {
     expect(renameStore('tk2', '2 TANKS')).toBe(null)
@@ -135,6 +168,11 @@ describe('persistence', () => {
 describe('a hand-edited blob is untrusted — see rulesLoad on isFinite("840")', () => {
   const load = (raw: any) => { mem['sqn142_stores'] = JSON.stringify(raw); storesLoad() }
   it('falls back to standard when the blob is not an array', () => {
+    /* diverge the LIVE list first — storesReset() in beforeEach already
+       leaves it standard, so without this the assertion below would pass
+       whether or not storesLoad falls back to anything at all. Same move
+       as the round-trip test above, and for the same reason. */
+    addStore('DIVERGE')
     load({ nav: true })
     expect(storesAreStandard()).toBe(true)
   })
@@ -159,10 +197,12 @@ describe('a hand-edited blob is untrusted — see rulesLoad on isFinite("840")',
     expect(STORE_CFG.length).toBe(24)
   })
   it('falls back to standard when nothing at all survives', () => {
+    addStore('DIVERGE')
     load([['UP', 'X'], ['', '']])
     expect(storesAreStandard()).toBe(true)
   })
   it('survives a corrupt JSON string without throwing', () => {
+    addStore('DIVERGE')
     mem['sqn142_stores'] = '{not json'
     expect(() => storesLoad()).not.toThrow()
     expect(storesAreStandard()).toBe(true)

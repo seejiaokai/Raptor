@@ -303,10 +303,11 @@ walks the raw JSON and drops anything that does not survive, in order:
 - at most `MAX_STORES` (24) entries are kept — later ones in the array are
   simply not read once the cap is hit.
 
-If nothing in the raw array survives all of that, `STORE_CFG` is left
-untouched at its current value (the module-level standard six on a fresh
-boot), so a squadron never lands on an empty list because of a corrupted or
-hand-edited storage blob.
+If nothing in the raw array survives all of that — including when the
+top-level value was never an array to begin with — `STORE_CFG` is set to
+the standard six explicitly, not merely left at whatever it happened to
+hold already, so a squadron never lands on an empty list because of a
+corrupted or hand-edited storage blob.
 
 ## Key renumbering
 

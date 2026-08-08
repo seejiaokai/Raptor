@@ -47,6 +47,14 @@ export function boardHTML(di: number, pv?: boolean) {
     + sbNotesPanel(d, di, pv) + sbProgPanel(d, di, pv)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
+    /* SC / AVALON / BB carry no store config on the week (html.ts's `sa`
+       gate — a standalone line isn't a real jet loadout, it's a duty
+       roster row wearing the flying-line template) — mirror that here so
+       a store set from the board on a standalone line can't reach the AL
+       and the CSV while staying permanently invisible/unremovable on the
+       week, which the design spec requires to render identically on both
+       surfaces. */
+    const sa = isStandalone(w)
     const asd = w.formations.reduce((n: number, f: any) => n + f.aircraft.length, 0)
     const opts = ['1st wave', '2nd wave', '3rd wave', '4th wave', '5th wave', 'Night wave']
     const cur = labelToTitle(w); if (!opts.includes(cur)) opts.unshift(cur)
@@ -80,9 +88,9 @@ export function boardHTML(di: number, pv?: boolean) {
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
         ${sbSlot(di, key + '.p', 'p', a.p, pv)}
         ${sbSlot(di, key + '.w', 'w', a.w, pv)}
-        <div class="sb-rcell">
+        <div class="sb-rcell"${alAttr(`st:${key}`)}>
           <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}">
-          ${stoRO
+          ${sa ? '' : (stoRO
             ? storesView(a.opts)
             : `<span class="stores">`
               /* labels are user-renamable text (stores-edit.test.tsx's escape
@@ -92,7 +100,7 @@ export function boardHTML(di: number, pv?: boolean) {
               + STORE_CFG.filter(([k]: any) => (a.opts || {})[k]).map(([k, lab]: any) =>
                   `<span class="stchip on" data-store="${key}.${k}" title="Remove ${esc(lab)}">${esc(lab)}</span>`).join('')
               + `<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
-              + `<span class="bombs" contenteditable="true" data-bombs="${key}">${esc((a.opts || {}).bombs || '')}</span></span>`}
+              + `<span class="bombs" contenteditable="true" data-bombs="${key}">${esc((a.opts || {}).bombs || '')}</span></span>`)}
         </div>
         ${pv ? '' : `<span class="lctl">
           <button class="mbtn${cxOn ? ' on' : ''}" data-lcx="${key}" title="${cxOn ? 'Restore this line' : 'Cancel this line (CX)'}">CX</button>

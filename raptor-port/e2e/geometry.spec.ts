@@ -1072,6 +1072,61 @@ test('the stores popup tracks the live C button across a multi-toggle visit', as
   expect(new Set(seenButtonLefts).size, 'the button really did move across the three toggles').toBeGreaterThan(1)
 })
 
+/* THE POPUP MUST ANCHOR TO THE SURFACE ITS OWN BUTTON WAS PRESSED ON
+   (regression — final review, 8 Aug 26). `#eWeek` and `#schedBoard` both
+   render `data-stcfg="0.0.0.0"` for the same jet while the board is open
+   over the week, and `<Shell/>` (the week) precedes `<SchedBoard/>` in
+   App.tsx — so an unscoped `document.querySelector('[data-stcfg="..."]')`
+   in openStoresMenu's place() always found the WEEK's button, even for a
+   popup opened from the board. Measured on the built app before the fix:
+   board button at x=731,y=275; the popup that opened from it landed at
+   x=435,y=594 — the week's button position, ~300px away and ~320px below
+   the control actually pressed, floating over unrelated board content.
+   Wrong from the very first paint, not just on re-placement — every other
+   popup test in this file opens from `#eWeek`, which is exactly why this
+   one shipped unguarded. */
+test('the stores popup opened from the BOARD anchors to the board\'s own C button, not the week\'s', async ({ page }) => {
+  /* tall on purpose: the board panel and its C button routinely sit below
+     a normal 720px fold (measured live: ~900px down the page), and
+     place()'s own viewport clamp (`Math.min(window.innerHeight -
+     box.offsetHeight - 8, r.bottom + 6)`) would then pull the popup up to
+     fit — a real, separate, and correct behaviour that has nothing to do
+     with which button it anchored to, and would otherwise swamp the
+     x/y distances this test actually cares about. Tall enough that
+     `r.bottom + 6` never hits that clamp, so a passing popup position
+     here can only be explained by the anchor fix, not by the clamp
+     coincidentally landing in the right place. */
+  await page.setViewportSize({ width: 1500, height: 1400 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  await page.waitForSelector('#schedBoard .sb-line .stcfg[data-stcfg]')
+
+  const weekBtn = page.locator('#eWeek .stcfg[data-stcfg]').first()
+  const boardBtn = page.locator('#schedBoard .sb-line .stcfg[data-stcfg]').first()
+  await expect(weekBtn, 'the week\'s own C button sits underneath the open board').toBeVisible()
+  /* both surfaces render the SAME jet's key while the board is open — the
+     exact precondition the bug needed */
+  expect(await boardBtn.getAttribute('data-stcfg')).toBe(await weekBtn.getAttribute('data-stcfg'))
+
+  const weekBox = (await weekBtn.boundingBox())!
+  const boardBox = (await boardBtn.boundingBox())!
+  /* sanity: the two buttons have to actually be far apart for the
+     assertions below to mean anything — if they ever coincided, landing
+     "near the board button" would also mean landing near the week's, and
+     this test would pass whether or not the fix is in place */
+  expect(Math.hypot(boardBox.x - weekBox.x, boardBox.y - weekBox.y),
+    'sanity: the week and board C buttons are not coincidentally co-located').toBeGreaterThan(100)
+
+  await clickHere(page, '#schedBoard .sb-line .stcfg[data-stcfg]')
+  await expect(page.locator('.stmenu')).toBeVisible()
+  const popup = (await page.locator('.stmenu').boundingBox())!
+
+  const dBoard = Math.hypot(popup.x - boardBox.x, popup.y - boardBox.y)
+  const dWeek = Math.hypot(popup.x - weekBox.x, popup.y - weekBox.y)
+  expect(dBoard, 'the popup lands beside the BOARD button that was actually clicked').toBeLessThan(80)
+  expect(dWeek, 'not beside the week\'s button underneath it').toBeGreaterThan(dBoard)
+})
+
 /* THE FIRST CLICK AFTER A RENAME MUST NOT BE SWALLOWED (regression —
    cbc0e87/243d75b, 7 Aug 26). A <button> takes focus on mousedown in
    Chromium, before mouseup — so typing a rename and then clicking a control

@@ -101,6 +101,28 @@ describe('the pen edits the LIST, not the schedule', () => {
     expect(SCHED.pending[AC_KEY], 'removing from the list is not a schedule edit').toBeUndefined()
   })
 
+  it('re-adding a deleted standard store by name reuses its shipped key, and the chip returns', async () => {
+    /* regression: storeKey('2 TKS') is '2tks', but the entry STORE_STD ships
+       is keyed 'tk2' — every jet's config lives under 'tk2', so re-adding by
+       the derived key used to create a brand-new, unreachable entry while
+       this jet's own opts.tk2 stayed orphaned. */
+    const { DAYS } = await import('../engine/data')
+    const a = DAYS[0].waves[0].formations[0].aircraft[0]
+    a.opts = a.opts || {}; a.opts.tk2 = true
+    await openPen()
+    await click(document.querySelector('.stmenu .st-erow[data-k="tk2"] .st-del') as HTMLElement)
+    expect(STORE_CFG.some(([k]) => k === 'tk2')).toBe(false)
+    expect(document.querySelector('[data-store="0.0.0.0.tk2"]'), 'the on-chip is gone with the entry').toBeFalsy()
+
+    const box = document.querySelector('.stmenu .st-new') as HTMLInputElement
+    box.value = '2 TKS'
+    await click(document.querySelector('.stmenu .st-add') as HTMLElement)
+
+    expect(STORE_CFG.some(([k, l]) => k === 'tk2' && l === '2 TKS'), 'reuses the shipped key, not a fresh "2tks"').toBe(true)
+    expect(STORE_CFG.some(([k]) => k === '2tks'), 'no orphan entry under the derived key').toBe(false)
+    expect(document.querySelector('[data-store="0.0.0.0.tk2"]'), 'the jet\'s chip is back, unlisted key restored').toBeTruthy()
+  })
+
   it('adding appends and persists, and is not a schedule edit', async () => {
     await openPen()
     const box = document.querySelector('.stmenu .st-new') as HTMLInputElement
@@ -169,6 +191,28 @@ describe('the pen edits the LIST, not the schedule', () => {
     } finally {
       removeSpy.mockRestore()
     }
+  })
+
+  /* the OTHER direction (regression, final review 8 Aug 26): openStoresMenu
+     used to clear only '.stmenu', so opening "+ Wave" and then C left BOTH
+     boxes on screen at once — waveMenu clears '.wavemenu' (this box's own
+     second class) symmetrically, but nothing made the stores popup return
+     the favour. A synthetic stand-in, not the real waveMenu() call: that
+     function's own outside-click listener is armed by a real setTimeout(0)
+     and has no `box.contains()` guard at all, so it self-removes on the
+     very NEXT click anywhere — including the one that opens the stores
+     popup — which would clear the box regardless of whether this fix is in
+     place and make the assertion pass either way. The class is exactly
+     what openStoresMenu's clearing logic keys off, so a bare node carrying
+     it proves the same guarantee without depending on that timing. */
+  it('opening the stores popup clears an open wave-picker menu, symmetrically', async () => {
+    await click(editTab())
+    const stray = document.createElement('div')
+    stray.className = 'wavemenu'
+    document.body.appendChild(stray)
+    await click($('#eWeek .stcfg[data-stcfg]'))
+    expect(document.body.contains(stray), 'a stray wave-picker box is cleared when the stores popup opens').toBe(false)
+    expect(document.querySelector('.stmenu'), 'the stores popup itself opened').toBeTruthy()
   })
 
   /* labels became arbitrary user input this task — html.ts had two sites

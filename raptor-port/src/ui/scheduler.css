@@ -754,8 +754,16 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .stchip{font-size:7.5px;font-weight:800;letter-spacing:.02em;padding:1px 3px;border-radius:4px;border:1px solid var(--edge-2);color:var(--ink-3);cursor:default}
 .stchip.on{background:rgba(59,198,232,.16);border-color:rgba(59,198,232,.5);color:var(--accent)}
 .stchip.bomb{background:rgba(217,121,31,.16);border-color:rgba(217,121,31,.5);color:#F2B980}
-.page.editing .stchip{cursor:pointer}
-.page.editing .stchip:hover{border-color:var(--accent)}
+/* "a chip is clickable" used to be expressed twice and disagree: this rule
+   used to key off .page.editing (page===editsched && EDITON, with no role
+   test) while the board's own rule below keyed off data-store, the
+   attribute a chip only carries when it is genuinely wired to the click
+   handler (interactions.ts's routeClick, gated on HOOKS.editMode() —
+   canEditSched() included). A view-only-role scheduler on Edit Schedule
+   with EDITON on got a pointer cursor over chips that could never actually
+   remove anything, since html.ts renders those as storesView()'s read-only
+   markup with no data-store at all. Converged on the attribute form below,
+   which is correct for both surfaces — see the module note there. */
 /* the C config button and its picker popup (shares .wavemenu look) */
 .stcfg{font-size:8px;font-weight:800;line-height:1;padding:1px 4px;border-radius:4px;border:1px dashed var(--edge-2);background:transparent;color:var(--ink-3);cursor:pointer}
 .stcfg:hover{border-color:var(--accent);color:var(--accent)}
@@ -887,18 +895,25 @@ body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
 .seat[data-alc]::after{content:'AL' attr(data-alc);position:absolute;top:-5px;right:-3px;z-index:4;
   font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
   padding:1px 3px;border-radius:4px;background:var(--alc);color:#08131b;pointer-events:none}
-.areacell[data-alc],.timecell[data-alc],.rmkcell[data-alc],.intimes[data-alc]{position:relative;
+.areacell[data-alc],.timecell[data-alc],.rmkcell[data-alc],.intimes[data-alc],.sb-rcell[data-alc]{position:relative;
   outline:1px solid var(--alc);outline-offset:-1px;border-radius:4px}
-.areacell[data-alc]::after,.timecell[data-alc]::after,.rmkcell[data-alc]::after,.intimes[data-alc]::after{
+.areacell[data-alc]::after,.timecell[data-alc]::after,.rmkcell[data-alc]::after,.intimes[data-alc]::after,.sb-rcell[data-alc]::after{
   content:'AL' attr(data-alc);position:absolute;top:0;right:1px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
   font-size:7px;font-weight:800;letter-spacing:.02em;color:var(--alc);pointer-events:none;opacity:.95}
 /* inside the horizontal AREA strip the halves are only one line tall, so the AL tag
    trails the text inline instead of floating over it */
 .form-area .areacell[data-alc]::after,.form-area .timecell[data-alc]::after{position:static;margin-left:4px}
-/* edited but not published yet — neutral dashed hint, no AL colour */
+/* edited but not published yet — neutral dashed hint, no AL colour. .sb-rcell
+   joins this set (regression, final review 8 Aug 26): the week put
+   alAttr('st:'+key) on .rmkcell for a stores edit, and the board's .sb-rcell
+   carried neither the attribute nor a matching rule, so the SAME edit made
+   from the board showed the "edited, not published" hint on the week only —
+   a scheduler working the board never saw it where they were actually
+   working. board.ts now emits the attribute on .sb-rcell too; this is its
+   other half. */
 .seat[data-alp]{position:relative}
 .seat[data-alp] .puck{box-shadow:0 0 0 1.5px rgba(242,214,153,.75)}
-.areacell[data-alp],.timecell[data-alp],.rmkcell[data-alp],.intimes[data-alp]{
+.areacell[data-alp],.timecell[data-alp],.rmkcell[data-alp],.intimes[data-alp],.sb-rcell[data-alp]{
   outline:1px dashed rgba(242,214,153,.6);outline-offset:-1px;border-radius:4px}
 /* ---- the AL preview (data-aln): pending edits on a PUBLISHED day, painted in
    the colour of the AL they will go out as — dotted, where the issued mark is
@@ -911,7 +926,7 @@ body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
 #eWeek .seat[data-aln] .puck,#schedBoard .seat[data-aln] .puck{
   box-shadow:none;outline:1.5px dotted var(--alc);outline-offset:1px}
 #eWeek :is(.areacell,.timecell,.rmkcell,.intimes)[data-aln],
-#schedBoard :is(.areacell,.timecell,.rmkcell,.intimes)[data-aln],
+#schedBoard :is(.areacell,.timecell,.rmkcell,.intimes,.sb-rcell)[data-aln],
 #schedBoard :is(input,textarea)[data-aln]{
   outline:1px dotted var(--alc);outline-offset:-1px}
 /* the board's fields are <input>/<textarea> — no ::after on replaced elements,
@@ -920,7 +935,7 @@ body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
    its seats reuse the generic .seat[data-alc]/[data-aln] rules.) */
 #schedBoard :is(input,textarea)[data-alc]{outline:1px solid var(--alc);outline-offset:-1px}
 #eWeek :is(span,b,i,div)[data-aln]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes),
-#schedBoard :is(span,b,i,div)[data-aln]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes){
+#schedBoard :is(span,b,i,div)[data-aln]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell){
   text-decoration:underline dotted var(--alc);text-decoration-thickness:1px;text-underline-offset:2px}
 /* every OTHER inline-edited string (timings, labels, remarks, notes, list-row
    fields): once PUBLISHED, the mark rides on the text itself — underlined in
@@ -930,9 +945,9 @@ body.sbresize{cursor:row-resize;user-select:none;-webkit-user-select:none}
    carries it — the owner asked for it (Aug 26), superseding the earlier call
    that any pending underline was noise while editing.
    Post-port enhancement: the reference marked only pucks and the cells above. */
-:is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes){
+:is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell){
   text-decoration:underline solid var(--alc);text-decoration-thickness:1px;text-underline-offset:2px}
-:is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes)::after{
+:is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell)::after{
   content:'AL' attr(data-alc);font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7px;font-weight:800;
   letter-spacing:.02em;color:var(--alc);margin-left:3px;vertical-align:top;pointer-events:none}
 /* amendment-level panel (edit page) */
@@ -1800,12 +1815,15 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
    the phone override below did not have to change. */
 .sb-rcell{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0}
 .sb-rcell .stores{margin-left:0}
-/* the board has no separate "edit mode" toggle the way the week does — a
-   chip is clickable exactly when it carries data-store (the stoRO branch in
-   board.ts never renders that attribute), so that is what the cursor keys
-   off, not a #schedBoard.editing scope that nothing in this app ever sets. */
-#schedBoard .stchip[data-store]{cursor:pointer}
-#schedBoard .stchip[data-store]:hover{border-color:var(--accent)}
+/* A chip is clickable exactly when it carries data-store — neither surface
+   ever renders that attribute unless html.ts/board.ts already decided the
+   viewer can act on it (the board's stoRO branch and the week's storesView()
+   fallback both omit it), so the attribute alone is the single correct
+   source for the cursor on EITHER surface — not a page/section class, which
+   the week used to key off instead (see the note by .stchip's own rules)
+   and which cannot see role or the board's stoRO gate at all. */
+:is(#eWeek,#schedBoard) .stchip[data-store]{cursor:pointer}
+:is(#eWeek,#schedBoard) .stchip[data-store]:hover{border-color:var(--accent)}
 .mbtn{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:9.5px;font-weight:800;
   letter-spacing:.05em;cursor:pointer;color:var(--ink-2);background:var(--raised);
   border:1px solid var(--edge-2);border-radius:5px;padding:3px 5px;line-height:1;white-space:nowrap}

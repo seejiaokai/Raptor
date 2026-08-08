@@ -151,6 +151,21 @@ beside a fresh `npm run perf` showing the per-node cost held.
 ceiling was set). Week is unchanged at 5530, measured 5056. See
 `probes/perf-port.cjs`'s `DOM_CEILING` for the live numbers.
 
+**That 810 margin was set against a six-store measurement, and the feature
+supports up to `MAX_STORES` (24, `engine/stores.ts`) — worth knowing before
+this gate trips on a legitimate configuration.** A squadron that grows its
+list toward the cap adds roughly one `.stchip` per store per aircraft line
+on the board (the week is unaffected — its chips sit in a wrapping
+`inline-flex` row, not a fixed grid, so it has no per-store DOM-count
+concern the way `.sb-rcell`'s nine-column contract does). A near-cap
+squadron would very plausibly trip `DOM_CEILING` for a configuration the
+feature explicitly promises to support, not for a regression — the fix in
+that case is the same one this section already prescribes for legitimate
+growth: check the time, then raise the ceiling deliberately in the PR that
+needs it, beside a fresh `npm run perf`. Not raised pre-emptively here
+because no squadron has approached the cap yet and a margin sized against a
+number nobody has hit is a guess, not a measurement.
+
 Rejected: comparing the port against a *recorded port* time. Node counts
 travel between machines, milliseconds do not — one round of the same edit
 reads 210–830 ms here — so a recorded time from another container would be

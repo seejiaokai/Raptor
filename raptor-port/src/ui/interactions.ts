@@ -78,9 +78,14 @@ function holdPuckStill(pk: HTMLElement) {
    schedule edit, so nothing in the pen branch ever calls markEdit. */
 function openStoresMenu(anchor: HTMLElement, key: string) {
   /* _offClick: see the comment on `off` below — board.ts's waveMenu clears
-     '.wavemenu' too (this box carries that class as well, for its look),
-     so it has the matching two lines wherever it does that clearing. */
-  document.querySelectorAll('.stmenu').forEach(x => {
+     '.wavemenu' too (this box carries that class as well, for its look), so
+     this clears both classes right back at it: opening "+ Wave" then C used
+     to leave the wave chooser on screen underneath the stores box, since
+     this used to clear only its own class. Symmetric with waveMenu's own
+     clearing, and matching '.stmenu, .wavemenu' catches this box's own
+     stale instances exactly once (querySelectorAll never double-reports an
+     element that matches both halves of the selector list). */
+  document.querySelectorAll('.stmenu, .wavemenu').forEach(x => {
     const off = (x as any)._offClick
     if (off) document.removeEventListener('click', off)
     x.remove()
@@ -90,6 +95,20 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   a.opts = a.opts || {}
   const box = document.createElement('div')
   box.className = 'stmenu wavemenu'
+  /* ANCHOR TO THE SURFACE THE BUTTON WAS ACTUALLY PRESSED ON (regression —
+     final review, 8 Aug 26). `#eWeek` and `#schedBoard` both render
+     `data-stcfg="<same key>"` for the same jet when the board is open over
+     the week — `<Shell/>` (the week) precedes `<SchedBoard/>` in App.tsx,
+     so an unscoped `document.querySelector('[data-stcfg="..."]')` in place()
+     always finds the WEEK's button, even when the board's was the one
+     clicked. Measured on the built app before this fix: board button at
+     x=731,y=275, popup opened at x=435,y=594 — the week's button position,
+     ~300px away, floating over unrelated board content, wrong from the
+     very first paint. Capture the pressed button's own surface root here,
+     once, and scope EVERY re-query (initial place() and the re-placement
+     after a toggle/rename/pen action) to it, so the board and the week can
+     never cross-anchor even though they share the same data-stcfg value. */
+  const root: ParentNode = anchor.closest('#schedBoard') || document
   let pen = false
   /* set by the rename handler on success — see its comment — and drained
      at the top of the click handler below, never anywhere else. */
@@ -119,7 +138,7 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
      inline-flex row — measure the live one, and leave the box put when there is
      nothing to measure (a detached node, or jsdom, both report 0x0). */
   const place = () => {
-    const live = document.querySelector(`[data-stcfg="${key}"]`) as HTMLElement | null
+    const live = root.querySelector(`[data-stcfg="${key}"]`) as HTMLElement | null
     const r = (live || anchor).getBoundingClientRect()
     if (!r.width && !r.height) return
     box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
