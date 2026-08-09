@@ -9,7 +9,7 @@ The port from the original single-file app is complete; that history is in
 
 **Every gate is green at this commit**, run first-hand: `npm test` 819 tests
 across 47 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 50/50, and `npm run probes:adapted` 6/6 (not in CI). Re-state
+run test:e2e` 51/51, and `npm run probes:adapted` 6/6 (not in CI). Re-state
 these only after re-running them.
 **`npm run perf` is the one gate that does NOT read the same way twice, and
 it is not a fault in the code.** It is 7 assertions now, not 9 — the
@@ -171,8 +171,10 @@ WITHOUT the edit, so a real week-render regression moves it too — it sat at
   board's crew cells stacking pucks in pairs on a phone, the phone
   board's one-window layout — warnings strip on top, AIRCREW drawer
   parked/sliding/arm-opened — and the board line's seats clear of every
-  input plus a deleted pax's hole holding its place, 8 Aug 26) —
-  seventeen contract families over 40 tests. It
+  input plus a deleted pax's hole holding its place, 8 Aug 26), and the
+  board's inputs-band remarks cell staying one clipped line with its full
+  text in the tooltip (9 Aug 26 — see the `.sbi-rmk` entry above) —
+  eighteen contract families over 51 tests. It
   builds and serves itself, and it is the **fourth CI gate** in `deploy.yml`.
   Vitest still cannot see any of this: every rect it reports is 0×0. Wider
   visual work still wants the probe path (`npx vite preview --port 4173` +
