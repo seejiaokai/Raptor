@@ -7,9 +7,9 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 764 tests
+**Every gate is green at this commit**, run first-hand: `npm test` 775 tests
 across 47 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 47/47, and the two that are NOT in CI — `npm run
+run test:e2e` 48/48, and the two that are NOT in CI — `npm run
 probes:adapted` 6/6 and `npm run perf` 9/0. Re-state these only after
 re-running them.
 **`probes:adapted` and `perf` do NOT serve themselves** — start
@@ -688,6 +688,69 @@ believing a single red.)
   button all landed on a board that already carried them once for the
   reorder feature above), measured 859 nodes — `probes/perf-port.cjs`'s
   `DOM_CEILING`, reasoning in `docs/probe-sweep.md` §The performance gate.
+- **A whole-branch review found five defects the per-task reviews could not
+  see, because each one only shows up crossing a boundary no single task's
+  diff crossed (9 Aug 26; fixed same day).** All five are now fixed, each
+  pinned by a test that failed before the fix and passes after:
+  1. **The read-only board lost its row register.** `sbGrip()` returned `''`
+     for a read-only render, but every row template in `scheduler.css`
+     unconditionally reserves the grip's leading 18px track — so a read-only
+     board (reachable by opening the board, then clicking View-only Sched;
+     the board deliberately stays open) lost each row's FIRST grid item
+     while the template still had ten tracks, and every field walked one
+     track left of its own header. Fixed by emitting `<span class="sb-grip">`
+     unconditionally and gating only a new `.ro` class, which
+     `scheduler.css` turns into `visibility:hidden` — not `display:none`,
+     which would drop the box from grid layout and reproduce the same bug.
+     Pinned by a Playwright test (jsdom cannot see this at all).
+  2. **`groundOrder(rows, man)`'s new `man` parameter never reached either
+     render call site** (`ui/html.ts`, `ui/board-html.ts` both called it
+     bare) — a scheduler's manual ground reorder (which sets `d.gman`) was
+     silently undone by the very next redraw, while the model stayed
+     permuted and a pending mark stayed set. Both call sites now pass
+     `d.gman`.
+  3. **A duty row's role-reposition fired on ANY role commit in the block**,
+     not only a new row's — retyping a different row's role after a manual
+     drag silently snapped the whole block back to role order. Now gated on
+     the edited row's OLD role having been empty (read via `txtGet` before
+     `txtSet` overwrites it) — the "+ Row" case the rule exists for.
+  4. **`Sort all` gated on the role check alone**, at both its render gate
+     and its write path, where every sibling control on the board (the
+     grip, the nudge buttons, every per-section Auto sort) gates on
+     `HOOKS.editMode()`. On the read-only board from #1, it stayed live and
+     enabled while everything around it correctly disappeared. Now gated on
+     `HOOKS.editMode()` in all three places (`SchedBoard.tsx`'s render,
+     `askSortAll`, `sortAllCommit`).
+  5. **The stale-arm guard checked only whether the armed address still
+     EXISTS**, and a reorder never changes a list's length — arm a slot,
+     drag that row elsewhere, tap a name, and it plants on whatever moved
+     INTO that index, with a success toast and the amendment mark on the
+     wrong key. `engine/reorder.ts` now exports `REORDERED_DI` (set by every
+     mover/sorter that actually permutes a list, popped once by
+     `afterSchedMutate`) and `state/view.ts` disarms whenever a reorder
+     touched the armed slot's OWN DAY — the same day-scoped blanket reflex
+     the undo path and the board's day-tab switch already use, not a
+     finer per-list one.
+  Smaller items in the same pass: a stale comment claiming duty-row parity
+  needs "no refwin patch" (it does — `testing/refwin.ts`'s `reduty()`);
+  `dutySort` (dead code, no callers) removed from `ui/html.ts` — `DUTY_ORDER`
+  stays, it moved to the engine; `reduty()`'s own comment corrected (the
+  wave-count-mismatch throw is one-directional — only when the PORT has more
+  duty blocks — and the guard that actually still holds duty order
+  accountable is the reference's own `dutySort` re-sorting the pushed rows
+  at render, not this function); the "squadron member gets no grip" e2e test
+  rewritten to actually open the board (`window.openScheduler`, no role
+  check of its own) instead of counting controls on a page where it was
+  never opened; the row-overflow e2e test's zero-match guard changed from
+  one aggregate count across five selectors to a per-selector presence
+  check; `+ Line`/`+ Wave` gained the same in-function `canEditSched()`
+  check every other board control has (`addLine`/`addWave`/`waveMenu`); and
+  `board-html.ts`'s two `from './html'` imports merged into one.
+  **Not fixed, deliberately, because it predates this pass and is a
+  separate, already-documented gap:** the read-only board's flying-line
+  CX/flag/+/✕ buttons and its callsign/times/remarks inputs stay fully live
+  — only the grip/nudge/Sort-all controls above were in scope this pass. See
+  the "board stays open across a page change" known issue above.
 - **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
   still described a three-gate, mid-port project — the root one also called a
   member view-only, which the 5 Aug roles decision had already undone.

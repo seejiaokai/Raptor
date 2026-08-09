@@ -7,7 +7,6 @@ import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { SBDAY, DPREV, setDayPreview } from '../state/view'
 import { daySnapOf, dayVersions, verLabel, alColor } from '../engine/publish'
-import { canEditSched } from '../state/auth'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
@@ -97,13 +96,19 @@ export function SchedBoard() {
               </select>
             : null}
           {/* Sort all — every section on this day at once, not one row like
-              every other control here. Hidden outright for a member (same
-              gate as the per-section ⇅ Auto sort buttons — canEditSched()
-              re-checked inside askSortAll too, so a stale button left over
-              from a role change can't open the dialog either) and disabled
+              every other control here. Gated on HOOKS.editMode() — the same
+              flag the grip, the nudge buttons and every per-section ⇅ Auto
+              sort already gate on, not the bare role check (review fix, 9
+              Aug 26: canEditSched() alone left this button live and enabled
+              on a read-only board — an admin who has navigated to View
+              sched but still has the board open, per finding #1 — while
+              every sibling control on the same row correctly disappeared).
+              editMode() is re-checked inside askSortAll and sortAllCommit
+              too, so a stale button left over from a role OR page change
+              can't open the dialog or act either. Disabled (not hidden)
               while previewing a frozen published version, same idiom as
               +Line/+Wave above. */}
-          {open && canEditSched() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
+          {open && HOOKS.editMode() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
             title="Reorder every section on this day back into its own reading order — one confirm, one undo step"
             onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}>⇅ Sort all</button>}
           <button className="abtn" id="sbAddLine" disabled={open && DPREV.has(SBDAY)} onClick={() => { if (SBDAY != null) addLine(SBDAY) }}>+ Line</button>

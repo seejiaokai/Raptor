@@ -2,6 +2,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
+import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, personWarnDays } from '../engine/avail'
 import { validate, WARN } from '../engine/validate'
 import { markEdit, daySnapOf } from '../engine/publish'
@@ -273,6 +274,15 @@ export function afterSchedMutate(){
      success toast and the amendment mark on the wrong key. histApply and the
      board's day tabs already disarm for exactly this reason. */
   if(ARM&&!armTargetExists(ARM.key))disarmSlot();
+  /* a reorder can strand an armed slot on a row that still EXISTS but is no
+     longer the one that was armed — armTargetExists alone cannot see that
+     (see engine/reorder.ts's REORDERED_DI comment). Popped UNCONDITIONALLY,
+     never inside the `ARM&&` short-circuit: skipping the read whenever
+     nothing is currently armed would leave a stale day index sitting there
+     for the NEXT arm to trip over, on a mutation that never reordered
+     anything itself. */
+  const reorderedDi=popReorderedDay();
+  if(ARM&&ARM.di===reorderedDi)disarmSlot();
   validate();
   if(SBDAY!=null)renderScheduler();
   if(CURPAGE==='editsched')renderEditWeek();

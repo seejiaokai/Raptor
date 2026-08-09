@@ -1828,6 +1828,15 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   color:var(--ink-3);font-size:13px;line-height:1;letter-spacing:-1.5px;
   cursor:grab;user-select:none;touch-action:none;border-radius:4px}
 .sb-grip:hover{color:var(--accent);background:rgba(59,198,232,.09)}
+/* a read-only board (finding #1, review 9 Aug 26): board-html.ts's sbGrip()
+   now always emits the element, so `.ro` is the ONLY thing that hides it.
+   visibility, not display — display:none removes the box from grid layout
+   entirely (as if the element were absent), which is exactly the bug this
+   fixes: every row template below reserves a real 18px track for the grip,
+   and a box that stops GENERATING loses that track, walking every field
+   after it one column left of its own header. visibility:hidden keeps the
+   box (and its track) while painting nothing and taking no clicks. */
+.sb-grip.ro{visibility:hidden;cursor:default}
 .rowdrag{background:var(--raised);outline:1px solid var(--accent);outline-offset:-1px;
   border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.55)}
 .rowdrag .sb-grip{color:var(--accent);cursor:grabbing}

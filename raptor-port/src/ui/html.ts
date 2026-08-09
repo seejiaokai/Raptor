@@ -16,7 +16,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
-import { STORE_CFG, groundOrder, DUTY_ORDER } from '../engine'
+import { STORE_CFG, groundOrder } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
 
@@ -229,7 +229,6 @@ export function blkNoteHTML(di:any,d:any,ed:any,key:any,field:any){
       ? `<div class="blknote ed" contenteditable="true" spellcheck="false" data-txt="${key}:${di}"${a}>${esc(v)}</div>`
       : `<div class="blknote"${a}>${esc(v)}</div>`);
 }
-export function dutySort(rows:any){return (rows||[]).slice().sort((a:any,b:any)=>((DUTY_ORDER[a.role]??9)-(DUTY_ORDER[b.role]??9)));}
 /* Available-crew block: active aircrew by wave, then SANS grouped separately (they run to
    different currency requirements — see sanStatus()). Rendered at the bottom of the day. */
 export function availHTML(d:any,di:any,ed:any){
@@ -616,15 +615,19 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=`<div class="sub plist sec sec-duty"><div class="sub-h">Duties</div>`+(dws.length?plCols():'');
       dws.forEach((dwv:any,wi:any)=>{
         h+=`<div class="pl-sub">${ted(`dl:${di}.${wi}`,dwv.label,ed,'ntx')}</div>`;
-        /* MODEL order, not dutySort (owner, 8 Aug 26): the board can reorder
-           duty rows now, and a fixed role order here would have swallowed the
-           change — a scheduler would move a row and the issued week would keep
-           printing the old sequence. The board already rendered model order, so
-           the two surfaces agree for the first time. The seed's rows were
-           re-laid into the order the sort used to produce, so this prints
-           identically until somebody actually drags one — which is also what
-           keeps parity.test.ts byte-exact against the still-sorting reference,
-           with no refwin patch. */
+        /* MODEL order, not role-sorted (owner, 8 Aug 26): the board can
+           reorder duty rows now, and a fixed role order here would have
+           swallowed the change — a scheduler would move a row and the
+           issued week would keep printing the old sequence. The board
+           already rendered model order, so the two surfaces agree for the
+           first time. The seed's rows were re-laid into the order the old
+           sort used to produce, so this prints identically until somebody
+           actually drags one — which is also what keeps parity.test.ts
+           byte-exact against the still-sorting reference, via a refwin
+           patch (testing/refwin.ts's reduty(), which pushes the port's
+           stored row order into the in-memory reference before either
+           engine runs — this diverged mid-build; see reduty()'s own
+           comment for what the patch does and does not still guard). */
         (dwv.rows||[]).forEach((r:any,ri:any)=>{
           const key=`d:${di}.${wi}.${ri}`;
           const inner=(PEOPLE[r.id]?lSeat(di,r.id,key,ed):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+moreSeats(di,key,ed);
@@ -669,7 +672,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     if((d.ground&&d.ground.length)||ed){
       const grd=d.ground||[];
       h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme${ed?' · scheduler':''}</div>`+(grd.length?plCols():'');
-      groundOrder(grd).forEach(({row:x,ri}:any)=>{const id=nameToId(x.who), key=`g:${di}.${ri}`;
+      groundOrder(grd,d.gman).forEach(({row:x,ri}:any)=>{const id=nameToId(x.who), key=`g:${di}.${ri}`;
         const inner=((id&&PEOPLE[id])?lSeat(di,id,key,ed):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+moreSeats(di,key,ed);
         const n=rowCrew('g',[di,ri]).filter(Boolean).length;
         h+=plRow(x.prog,x.str,x.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x);});

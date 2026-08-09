@@ -1561,11 +1561,71 @@ test('a phone nudge moves a row and the board still reads correctly', async ({ p
   expect(await first()).not.toBe(was)
 })
 
-test('a squadron member gets no grip and no nudge buttons', async ({ page }) => {
+/* finding #1 (whole-branch review, 9 Aug 26): sbGrip() used to return '' for
+   a read-only board, but every row template in scheduler.css unconditionally
+   keeps its leading 18px grip track — so a read-only board lost each row's
+   FIRST grid item while the template still had ten tracks: every field
+   shifted one track left, out of register with its own header. Reachable
+   exactly the way the reviewer found it: log in, open a day's board, then
+   click View sched — the board deliberately stays open (SchedBoard's
+   `hidden` only tracks SBDAY, never the page), which is the whole reason
+   the read-only render path exists. jsdom cannot see this at all (every
+   rect is 0x0), so it has to be a real-browser measurement. */
+test('the board keeps its row register after navigating to View sched with the board still open', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line[data-move]')
+  /* .lin is the flying line's callsign box, a fixed 64px track; .sb-nrow
+     .nin is the overall-day free-text note line, a wide 1fr track — the two
+     the reviewer measured live (64px and 783px respectively). The seed's
+     day 0 already carries a note, so .sb-nrow exists without adding one. */
+  const measure = () => page.evaluate(() => {
+    const lin = document.querySelector('#sbBoard .sb-line .lin') as HTMLElement
+    const nts = document.querySelector('#sbBoard .sb-nrow .nin') as HTMLElement
+    return { lin: lin.getBoundingClientRect().width, nts: nts.getBoundingClientRect().width }
+  })
+  const edit = await measure()
+  /* the callsign box is a fixed 64px track and the notes box a flexible
+     1.2fr one — sanity-check the edit-mode board actually has room before
+     trusting the read-only comparison below */
+  expect(edit.lin).toBeGreaterThan(50)
+  expect(edit.nts).toBeGreaterThan(300)
+
+  // the board deliberately stays open across this nav click
+  await go(page, 'viewsched')
+  await page.waitForSelector('#sbBoard .sb-line')
+  const ro = await measure()
+  expect(ro.lin, 'the callsign input keeps its full width, not the 18px grip track').toBeGreaterThan(50)
+  expect(ro.nts, 'the notes input stays usable, not squeezed into ~22px').toBeGreaterThan(300)
+  expect(Math.round(ro.lin)).toBe(Math.round(edit.lin))
+  expect(Math.round(ro.nts)).toBe(Math.round(edit.nts))
+})
+
+/* the squadron-member gate, actually exercised (review fix, 9 Aug 26): this
+   used to count reorder controls on a page where the board was never
+   opened at all — CURPAGE stays 'viewsched' and #schedBoard never mounts
+   any row, so the count is trivially 0 whether or not the gate works, and
+   it would still read 0 with sbGrip's `ro` check deleted outright. A
+   squadron member cannot reach the board through the UI (no sb-open day
+   head is ever rendered for them — canEditSched() is false, so ed is false
+   on every day, and Edit Schedule itself is hidden from their nav), but
+   `window.openScheduler` is a bare app global with no role check of its
+   own, so this drives the same board render the admin path does and reads
+   what canEditSched()-gated editMode() actually produces: a rendered board
+   (proving the gate was really exercised, not vacuously true) with no
+   data-move and no data-mvup anywhere in it. */
+test('a squadron member who reaches the board gets a read-only render — no grip, no nudge', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await login(page, 'user')
-  const n = await page.evaluate(() => document.querySelectorAll('[data-move],[data-mvup]').length)
-  expect(n).toBe(0)
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line')
+  const n = await page.evaluate(() => ({
+    rows: document.querySelectorAll('#sbBoard .sb-line, #sbBoard .sb-arow, #sbBoard .sb-nrow').length,
+    move: document.querySelectorAll('[data-move],[data-mvup],[data-mvdn]').length,
+  }))
+  expect(n.rows, 'the board actually rendered rows — otherwise this proves nothing').toBeGreaterThan(0)
+  expect(n.move).toBe(0)
 })
 
 /* ONE assertion for every button-row on the board, not one row at a time
@@ -1590,7 +1650,8 @@ test('no button/control row on the board overflows its own width on a phone', as
   await login(page); await go(page, 'editsched')
   await page.evaluate(() => (window as any).openScheduler(0))
   await page.waitForSelector('#sbBoard .sb-go-h')
-  const ROWS = '.sb-top, .sb-actions, .sb-go-h, .sb-ph, .sb-psub'
+  const ROW_SELECTORS = ['.sb-top', '.sb-actions', '.sb-go-h', '.sb-ph', '.sb-psub']
+  const ROWS = ROW_SELECTORS.join(', ')
   const rows = await page.evaluate((sel) =>
     [...document.querySelectorAll(sel)].map(el => ({
       sel: el.className,
@@ -1598,10 +1659,18 @@ test('no button/control row on the board overflows its own width on a phone', as
       client: (el as HTMLElement).clientWidth,
       text: (el.textContent || '').trim().slice(0, 40),
     })), ROWS)
-  /* the seed day has at least one of each kind (top bar, wave header, every
-     panel header, every duty/sim sub-header) — a count guard so a selector
-     typo that matches nothing can't pass this silently */
-  expect(rows.length, 'the seed day has rows of every kind to measure').toBeGreaterThan(10)
+  /* the seed day has at least one of EVERY kind (top bar, wave header, every
+     panel header, every duty/sim sub-header) — a PER-SELECTOR presence
+     check, not one aggregate count across all five (review fix, 9 Aug 26):
+     an aggregate total clears its own bar even when one whole selector's
+     rows silently stop matching (a class rename, a panel that stops
+     rendering) so long as the other four still supply enough rows between
+     them — the exact way a real gap in coverage could hide behind a
+     healthy-looking total. */
+  const counts = await page.evaluate((sels) =>
+    sels.map(s => ({ sel: s, n: document.querySelectorAll(s).length })), ROW_SELECTORS)
+  const missing = counts.filter(c => c.n === 0).map(c => c.sel)
+  expect(missing, 'every row kind must have at least one match on the seed day').toEqual([])
   /* ONE assertion over every offending row rather than expect-inside-a-loop:
      a loop's expect() throws on the FIRST failure and hides the rest — an
      outer row (.sb-top) and the inner row that actually caused it

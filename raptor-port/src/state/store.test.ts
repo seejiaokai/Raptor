@@ -8,6 +8,7 @@ import { SCHED, signOf, dayApproved, setDayApproved, publishALDay, unpublishAL, 
 import { restoreDayVersion } from '../engine/restore'
 import { slotVal, txtGet } from '../engine/slots'
 import { shiftKeys } from '../engine/keys'
+import { moveDutyRow, applyMove, sortDutyBlock } from '../engine/reorder'
 import { validate, WARN } from '../engine/validate'
 import { initStore, subscribe, getVersion, writeSlot, writeFill, writeText, writeDelete, writeInputs, undo, redo, HIST } from './store'
 import { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, SELID, ARM } from './view'
@@ -232,6 +233,51 @@ describe('arm and plant, model half (tfin U, through the store)', () => {
     writeSlot('0.0.0.0.p', '')
     armSlot('0.0.0.0.p')
     view.setBoardDay(2)
+    expect(armedKey()).toBe('')
+  })
+})
+
+/* finding #5 (whole-branch review, 9 Aug 26): the stale-arm guard checked
+   only whether the armed address still EXISTS — armTargetExists — and a
+   reorder never changes a list's length, so the guard always passed while
+   the address now named a different row. Proven live: arm the first duty
+   slot, drag it down, tap a name — it lands on the row that moved INTO that
+   index, with a success toast and the amendment mark on the wrong key. The
+   fix reuses the same blanket reflex the undo path (interactions.ts) and the
+   board's day-tab switch (setBoardDay, above) already apply: disarm
+   whenever a reorder touches the DAY the armed slot is on, not only when the
+   address stops resolving at all. */
+describe('a reorder disarms a stale-armed slot, not just a deleted one (finding #5)', () => {
+  it('moving a duty row disarms a slot armed in that same block', () => {
+    const rows = DAYS[0].dutywaves[0].rows
+    if (rows.length < 2) rows.push({ role: 'TEST', id: '', str: '0800', end: '1700' })
+    armSlot('d:0.0.0')
+    expect(armedKey()).toBe('d:0.0.0')
+    expect(moveDutyRow(0, 0, 0, 1)).toBe(true)
+    view.afterSchedMutate()
+    /* the OLD guard: armTargetExists('d:0.0.0') is still true (SOME row sits
+       at index 0 now — just not the one that was armed), so a bare
+       existence check cannot see this at all. */
+    expect(armedKey()).toBe('')
+  })
+
+  it('a nudge (the phone gesture, same applyMove path) disarms it too', () => {
+    const rows = DAYS[0].dutywaves[0].rows
+    if (rows.length < 2) rows.push({ role: 'TEST', id: '', str: '0800', end: '1700' })
+    armSlot('d:0.0.0')
+    expect(applyMove('mv:d.0.0.0', 'mv:d.0.0.1')).toBe(true)
+    view.afterSchedMutate()
+    expect(armedKey()).toBe('')
+  })
+
+  it('Auto sort on a duty block disarms a slot armed in it', () => {
+    DAYS[0].dutywaves[0].rows = [
+      { role: 'RUNNER', id: '', str: '0800', end: '1700' },
+      { role: 'SDO', id: '', str: '0800', end: '1700' },
+    ]
+    armSlot('d:0.0.0')                              // armed on RUNNER, out of role order
+    expect(sortDutyBlock(0, 0)).toBe(true)           // sorts SDO to the top
+    view.afterSchedMutate()
     expect(armedKey()).toBe('')
   })
 })

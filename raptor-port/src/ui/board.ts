@@ -200,7 +200,7 @@ export function setSortAll(v: any) { SORTALL = v }
    either. Same belt-and-braces the row-level sort/nudge branches use in
    boardMbtn below. */
 export function askSortAll(di: any) {
-  if (!canEditSched() || view.DPREV.has(di)) return
+  if (!canEditSched() || !HOOKS.editMode() || view.DPREV.has(di)) return
   SORTALL = di
   notify()
 }
@@ -220,7 +220,7 @@ export function sortAllCommit() {
   if (SORTALL == null) return
   const di = SORTALL
   SORTALL = null
-  if (!canEditSched() || view.DPREV.has(di)) { notify(); return }
+  if (!canEditSched() || !HOOKS.editMode() || view.DPREV.has(di)) { notify(); return }
   const d = DAYS[di]
   HIST.lock = true
   let any = false
@@ -430,17 +430,27 @@ export function boardChange(e: Event) {
   }
   const f = (e.target as HTMLElement).closest('[data-bfld]') as HTMLInputElement | null; if (!f) return
   const p = f.dataset.bfld!
+  /* the OLD role, read before txtSet overwrites it — this is what tells the
+     board's own "+ Row" case (a brand-new row, role still '') apart from
+     retyping an EXISTING row's role (review fix, 9 Aug 26). The reposition
+     used to fire on any successful role commit at all, which meant dragging
+     RUNNER to the top of a block and then correcting a DIFFERENT row's role
+     silently snapped the whole block back to role order — the drag gone,
+     with no toast and no confirmation. The spec is explicit this must never
+     happen: "a dragged list is never re-sorted behind the scheduler." */
+  const m = /^dr:(\d+)\.(\d+)\.\d+\.role$/.exec(p)
+  const wasEmptyRole = m ? !txtGet(p) : false
   if (txtSet(p, f.value)) {
     markEdit(); afterSchedMutate()
     /* A duty row's ROLE decides where it belongs (owner, 8 Aug 26). The week no
        longer sorts duties, so without this a row typed as SDO would print below
        OPS-O and the squadron would meet a duty list out of role order — which
        cannot happen today. A new row is added with an EMPTY role, so there is
-       nothing to sort by until the role is typed; this is that moment.
-       sortDutyBlock is a no-op on an already-ordered block, so a correction
-       typed into an untouched list costs nothing. */
-    const m = /^dr:(\d+)\.(\d+)\.\d+\.role$/.exec(p)
-    if (m) sortDutyBlock(+m[1], +m[2])
+       nothing to sort by until the role is typed; this is that moment — and
+       ONLY that moment: any row whose role was already non-empty was either
+       typed correctly before or moved there on purpose, and either way a
+       retype of it must not re-judge the rest of the block. */
+    if (m && wasEmptyRole) sortDutyBlock(+m[1], +m[2])
     notify()
   }
   else f.value = txtGet(p)
@@ -463,8 +473,16 @@ export function boardArmClick(e: MouseEvent) {
 }
 
 /* + Line, verbatim — a new formation on the day's LAST wave, seeded from the
-   wave's last line so times carry over */
+   wave's last line so times carry over. canEditSched() checked here too
+   (smaller item, review 9 Aug 26): this used to rely on being unreachable
+   through the UI for a non-admin (Edit Schedule hidden from their nav, the
+   board itself never opened) rather than refusing to act on its own — the
+   same "hidden, not gated" gap finding #1's read-only board proved a role
+   change or a stale reference can reopen. Every other control on this
+   board carries its own in-function check regardless of what the render
+   already withholds; this one now does too. */
 export function addLine(di: number) {
+  if (!canEditSched()) return
   const d = DAYS[di]; if (!d.waves || !d.waves.length) return toast('Add a wave first')
   const w = d.waves[d.waves.length - 1], last = w.formations[w.formations.length - 1] || { cs: 'NEW', msn: '-', to: '12:00', ld: '13:00' }
   w.formations.push({ cs: last.cs, msn: last.msn, to: last.to, ld: last.ld, aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
@@ -472,8 +490,12 @@ export function addLine(di: number) {
   afterSchedMutate(); notify(); toast('Line added')
 }
 
-/* + Wave, verbatim */
+/* + Wave, verbatim. Same in-function role check as addLine above — the
+   direct mutator, so this is the one that actually has to refuse, whether
+   it is reached through waveMenu's picker or (as the smaller-item test
+   does) called straight off the module. */
 export function addWave(di: number, kind: any) {
+  if (!canEditSched()) return
   const d = DAYS[di]; if (!d) return
   d.waves = d.waves || []
   if (!kind) {
@@ -495,6 +517,7 @@ export function addWave(di: number, kind: any) {
    builds it — it lives outside the React tree and removes itself on any
    outside click) */
 export function waveMenu(anchor: HTMLElement, di: any) {
+  if (!canEditSched()) return
   /* The stores popup (interactions.ts's openStoresMenu) shares this class
      for its look, and it keeps a NOT-{once:true} click listener attached
      to document that only it knows how to unhook (_offClick) — its

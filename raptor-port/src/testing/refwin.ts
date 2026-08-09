@@ -85,14 +85,33 @@ export function syncInputs(w: any) {
    DAYS and collectEvents — flying waves, sims, ground, notes — is still a
    real comparison against the untouched reference; wave LABELS are never
    touched by this push (only `.rows` is overwritten) so a wrong or renamed
-   label still fails for real; and a wave-count mismatch between the two
-   builds throws here, from the out-of-bounds `dutywaves[j]` write, rather
-   than silently comparing nothing. It's accepted because there is nothing
-   left for the old comparison to assert honestly: the port and the
-   reference deliberately no longer agree on duty order (that is the whole
-   point of dropping dutySort), so holding the parity gate to duty-row
-   content would not buy more coverage, it would just leave this gate
-   permanently red for a divergence that is intended and owner-approved. */
+   label still fails for real.
+   The wave-count-mismatch guard is ONE-DIRECTIONAL, not the blanket safety
+   net an earlier version of this comment claimed (corrected, review 9 Aug
+   26): the forEach above walks the PORT's `d.dutywaves`, so it only throws,
+   from the out-of-bounds `DAYS[i].dutywaves[j]` write, when the PORT has
+   MORE duty blocks for a day than the reference does. The reverse — the
+   port having FEWER — writes nothing at all for the missing indices and
+   leaves the reference's extra block exactly as it was; that direction is
+   caught downstream instead, by `seed data matches (DAYS)`'s ordinary deep
+   comparison of the two models (a dutywaves array of the wrong length
+   simply fails to deep-equal).
+   The guard that actually still holds duty-row ORDER accountable is a
+   different one, and it is not this function's own throw: the reference's
+   render still calls dutySort(dwv.rows) on whatever this push hands it
+   (reference/scheduler.html's dutySort, DUTY_ORDER unchanged), while the
+   port renders model order with no sort at all. The two markups agree only
+   because the seed's rows are ALREADY laid out in role order — the moment a
+   real drag (or a future seed) leaves a duty block out of role order, the
+   reference's render re-sorts it back and the port's does not, and
+   `html.test.ts`'s byte-exact dayHTML comparison fails on the DIVERGED
+   MARKUP, immediately, with no help needed from this function. It's
+   accepted because there is nothing left for the old model-level comparison
+   to assert honestly: the port and the reference deliberately no longer
+   agree on stored duty order (that is the whole point of dropping the
+   port's own dutySort), so holding the parity gate to duty-row model
+   content would not buy more coverage — the markup comparison above already
+   catches a drift, and buys it for free. */
 export function reduty(w: any) {
   const refn = w.eval('DAYS.length')
   DAYS.slice(0, refn).forEach((d: any, i: number) => {

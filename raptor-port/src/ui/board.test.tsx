@@ -16,7 +16,8 @@ import { isStandalone } from '../engine/waves'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { cxText } from './html'
-import { openScheduler, boardArmClick, boardHTML } from './board'
+import { openScheduler, boardArmClick, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave } from './board'
+import { applyMove } from '../engine/reorder'
 import { HOOKS } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -307,6 +308,57 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(document.querySelector('#sbBoard .sb-panel.duty .sb-arow.cx')).toBeFalsy()
   })
 
+  /* finding #2 (whole-branch review, 9 Aug 26): the board's own render call
+     site also dropped groundOrder's `man` argument — same bug as html.ts,
+     independently, since the two builders each call groundOrder bare.
+     Asserts the RENDERED order (the data-bfld values), not the model. */
+  it('a day frozen in manual ground order (gman) renders that order on the board too', async () => {
+    const d: any = DAYS[SBDAY], savedGround = d.ground, savedGman = d.gman
+    d.ground = [{ prog: 'GMAN-C', str: '1000' }, { prog: 'GMAN-A', str: '0800' }, { prog: 'GMAN-B', str: '0900' }]
+    d.gman = true
+    try {
+      await act(async () => { afterSchedMutate(); notify() })
+      const progs = [...document.querySelectorAll('#sbBoard .sb-panel.grnd [data-bfld$=".prog"]')]
+        .map(el => (el as HTMLInputElement).value)
+      expect(progs).toEqual(['GMAN-C', 'GMAN-A', 'GMAN-B'])
+    } finally {
+      d.ground = savedGround; d.gman = savedGman
+      await act(async () => { afterSchedMutate(); notify() })
+    }
+  })
+
+  /* finding #3 (whole-branch review, 9 Aug 26): the duty-role reposition used
+     to fire on ANY role commit in the block, not only a newly-added row — so
+     retyping a DIFFERENT row's role after a manual drag silently snapped the
+     whole block back to role order and threw the drag away, with no toast
+     and no confirmation. The spec is explicit this must never happen (only
+     the board's "+ Row" case — an empty role becoming non-empty — may
+     re-sort). */
+  it('editing an already-named duty role does not re-sort a hand-dragged block', async () => {
+    const d: any = DAYS[SBDAY], savedDW = d.dutywaves
+    d.dutywaves = [{
+      label: 'TEST BLOCK', rows: [
+        { role: 'SDO', id: '', str: '0800', end: '1700' },
+        { role: 'RUNNER', id: '', str: '0800', end: '1700' },
+      ]
+    }]
+    try {
+      await act(async () => { afterSchedMutate(); notify() })
+      // drag RUNNER (model index 1) to the top — a manual reorder
+      applyMove('mv:d.0.0.1', 'mv:d.0.0.0')
+      await act(async () => { afterSchedMutate(); notify() })
+      expect(d.dutywaves[0].rows.map((r: any) => r.role)).toEqual(['RUNNER', 'SDO'])
+      // retype the OTHER row's (already non-empty) role
+      const inp = document.querySelector('#sbBoard input[data-bfld="dr:0.0.1.role"]') as HTMLInputElement
+      expect(inp).toBeTruthy()
+      await change(inp, 'SXO')
+      expect(d.dutywaves[0].rows.map((r: any) => r.role)).toEqual(['RUNNER', 'SXO'])
+    } finally {
+      d.dutywaves = savedDW
+      await act(async () => { afterSchedMutate(); notify() })
+    }
+  })
+
   it('the red-box flag toggles on a ground row', async () => {
     const btn = document.querySelector('#sbBoard [data-grflag]') as HTMLElement
     expect(btn).toBeTruthy()
@@ -323,6 +375,81 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
   it('the personal-inputs panel is inert even on the live board', () => {
     const p = document.querySelector('#sbBoard .sb-panel.pinp')!
     expect(p.querySelectorAll('input,textarea,.mbtn,[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
+  })
+})
+
+/* finding #4 (whole-branch review, 9 Aug 26): Sort all gated on the role
+   check (canEditSched()) alone, at both its render gate and its write path,
+   where every sibling control on this board (the grip, the nudge buttons,
+   every per-section Auto sort) gates on the edit-mode flag — which also
+   covers the read-only-board state finding #1 exercises (an admin who has
+   navigated to View sched but still has the board open). */
+describe('Sort all gates on the edit-mode flag, not the role alone (finding #4)', () => {
+  it('the button is not rendered once editMode() goes false, even though the role is still admin', async () => {
+    expect(document.querySelector('#sbSortAll')).toBeTruthy()   // sanity: visible in edit mode
+    HOOKS.editMode = () => false
+    try {
+      await act(async () => { notify() })
+      expect(document.querySelector('#sbSortAll')).toBeFalsy()
+    } finally {
+      HOOKS.editMode = () => true
+      await act(async () => { notify() })
+    }
+  })
+
+  it('askSortAll refuses to arm the confirm dialog once editMode() goes false', () => {
+    HOOKS.editMode = () => false
+    try {
+      askSortAll(SBDAY as any)
+      expect(SORTALL).toBeNull()
+    } finally {
+      HOOKS.editMode = () => true
+    }
+  })
+
+  it('sortAllCommit refuses to act on a day armed before editMode() went false', () => {
+    const before = JSON.stringify(DAYS[SBDAY as any])
+    askSortAll(SBDAY as any)
+    expect(SORTALL).toBe(SBDAY)
+    HOOKS.editMode = () => false
+    try {
+      sortAllCommit()
+      expect(JSON.stringify(DAYS[SBDAY as any])).toBe(before)
+    } finally {
+      HOOKS.editMode = () => true
+    }
+  })
+})
+
+/* smaller item (whole-branch review, 9 Aug 26): the top-bar +Line/+Wave
+   buttons relied on being HIDDEN rather than refusing to act — every other
+   control on this board carries its own in-function role check
+   (canEditSched(), re-checked even where the render gate already covers it,
+   e.g. askSortAll above), so a member who somehow reaches these functions
+   directly (the same way finding #1's read-only-board test reaches the
+   board itself, via a bare window global with no role check of its own)
+   must not be able to mutate the day through them either. */
+describe('+ Line and + Wave refuse to act for a non-admin (smaller item)', () => {
+  it('addLine does not add a formation for a squadron member', () => {
+    setSession({ user: 'user', role: 'main' })
+    try {
+      const before = JSON.stringify(DAYS[0].waves)
+      addLine(0)
+      expect(JSON.stringify(DAYS[0].waves)).toBe(before)
+    } finally {
+      setSession({ user: 'a', role: 'admin' })
+    }
+  })
+
+  it('addWave does not add a wave for a squadron member', () => {
+    setSession({ user: 'user', role: 'main' })
+    try {
+      const before = DAYS[0].waves.length
+      addWave(0, null)
+      expect(DAYS[0].waves.length).toBe(before)
+    } finally {
+      setSession({ user: 'a', role: 'admin' })
+    }
   })
 })
 

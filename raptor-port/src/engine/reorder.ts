@@ -20,14 +20,33 @@ import { parseHM } from './time'
 const ok=(a:any,from:any,to:any)=>Array.isArray(a)&&isFinite(from)&&isFinite(to)&&from!==to
   &&from>=0&&to>=0&&from<a.length&&to<a.length;
 const slide=(a:any,from:any,to:any)=>{a.splice(to,0,a.splice(from,1)[0]);};
-const done=(key:any)=>{markEdit(key); return true;};
+/* REORDERED_DI (review fix, 9 Aug 26 — finding #5): the day a permutation
+   just touched, for state/view.ts's afterSchedMutate to disarm a stale-armed
+   slot against. armTargetExists alone only asks "does the index still hold
+   SOMETHING" — a reorder never changes a list's length, so that guard always
+   passed while the address now named a DIFFERENT row: arm the first duty
+   slot, drag it down, tap a name, and it plants on whatever moved into that
+   index, with a success toast and the amendment mark on the wrong key.
+   Day-scoped, not list-scoped — the same blanket reflex the undo path
+   (interactions.ts) and the board's own day-tab switch (setBoardDay,
+   state/view.ts) already apply: "something on this day just moved" is
+   enough reason to put an armed slot down, exactly as "you switched to a
+   different day" already is. `done`'s callers pass a day index only when a
+   real permutation happened (never for the ground no-op-but-flag-cleared
+   path, where the row array itself is untouched and nothing could have
+   changed identity). ESM cannot reassign this from another module, so
+   popReorderedDay() is the one way out, and it clears on read — the same
+   read-once shape SORTALL and CXT already use. */
+export let REORDERED_DI:any=null
+export function popReorderedDay(){const d=REORDERED_DI; REORDERED_DI=null; return d;}
+const done=(key:any,di?:any)=>{markEdit(key); if(di!=null)REORDERED_DI=di; return true;};
 
 export function moveFormation(di:any,gi:any,from:any,to:any){
   const w=(DAYS[di]||{}).waves&&DAYS[di].waves[gi]; if(!w||!ok(w.formations,from,to))return false;
   slide(w.formations,from,to);
   [`ff:${di}.${gi}.`,`fr:${di}.${gi}.`,`st:${di}.${gi}.`,`ar:${di}.${gi}.`,`at:${di}.${gi}.`,`${di}.${gi}.`]
     .forEach((h:any)=>moveKeys(h,0,from,to,w.formations.length));
-  return done(`ff:${di}.${gi}.${to}.cs`);
+  return done(`ff:${di}.${gi}.${to}.cs`,di);
 }
 export function moveAircraft(di:any,gi:any,li:any,from:any,to:any){
   const w=(DAYS[di]||{}).waves&&DAYS[di].waves[gi]; const f=w&&w.formations&&w.formations[li];
@@ -35,31 +54,31 @@ export function moveAircraft(di:any,gi:any,li:any,from:any,to:any){
   slide(f.aircraft,from,to);
   [`fr:${di}.${gi}.${li}.`,`st:${di}.${gi}.${li}.`,`${di}.${gi}.${li}.`]
     .forEach((h:any)=>moveKeys(h,0,from,to,f.aircraft.length));
-  return done(`fr:${di}.${gi}.${li}.${to}`);
+  return done(`fr:${di}.${gi}.${li}.${to}`,di);
 }
 export function moveDutyRow(di:any,wi:any,from:any,to:any){
   const dw=(DAYS[di]||{}).dutywaves&&DAYS[di].dutywaves[wi]; if(!dw||!ok(dw.rows,from,to))return false;
   slide(dw.rows,from,to);
   [`d:${di}.${wi}.`,`dr:${di}.${wi}.`].forEach((h:any)=>moveKeys(h,0,from,to,dw.rows.length));
-  return done(`dr:${di}.${wi}.${to}.role`);
+  return done(`dr:${di}.${wi}.${to}.role`,di);
 }
 export function moveSimRow(di:any,kind:any,from:any,to:any){
   const rows=((DAYS[di]||{}).sims||{})[kind]; if(!ok(rows,from,to))return false;
   slide(rows,from,to);
   [`s:${di}.${kind}.`,`sr:${di}.${kind}.`].forEach((h:any)=>moveKeys(h,0,from,to,rows.length));
-  return done(`sr:${di}.${kind}.${to}.label`);
+  return done(`sr:${di}.${kind}.${to}.label`,di);
 }
 export function moveProgRow(di:any,from:any,to:any){
   const rows=(DAYS[di]||{}).allhands; if(!ok(rows,from,to))return false;
   slide(rows,from,to);
   [`ap:${di}.`,`a:${di}.`].forEach((h:any)=>moveKeys(h,0,from,to,rows.length));
-  return done(`ap:${di}.${to}.prog`);
+  return done(`ap:${di}.${to}.prog`,di);
 }
 export function moveNote(di:any,from:any,to:any){
   const rows=(DAYS[di]||{}).notes; if(!ok(rows,from,to))return false;
   slide(rows,from,to);
   moveKeys(`dn:${di}.`,0,from,to,rows.length);
-  return done(`dn:${di}.${to}`);
+  return done(`dn:${di}.${to}`,di);
 }
 /* Ground is the one list rendered in a SORTED order (by start time, on the week
    and the board alike), so a move expressed in model indices would be undone by
@@ -85,7 +104,7 @@ export function moveGroundRow(di:any,from:any,to:any){
   if(!ok(rows,f,t))return false;
   slide(rows,f,t);
   [`g:${di}.`,`gr:${di}.`].forEach((h:any)=>moveKeys(h,0,f,t,rows.length));
-  return done(`gr:${di}.${t}.prog`);
+  return done(`gr:${di}.${t}.prog`,di);
 }
 /* ---- the one entry point the UI calls -------------------------------------
    Addresses are `mv:<kind>.<container…>.<index>`. For every kind but `ac`, two
@@ -154,7 +173,7 @@ export function sortWave(di:any,gi:any){
   w.formations=oldOf.map((o:any)=>fs[o]);
   [`ff:${di}.${gi}.`,`fr:${di}.${gi}.`,`st:${di}.${gi}.`,`ar:${di}.${gi}.`,`at:${di}.${gi}.`,`${di}.${gi}.`]
     .forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`ff:${di}.${gi}.0.cs`);
+  return done(`ff:${di}.${gi}.0.cs`,di);
 }
 export function sortDutyBlock(di:any,wi:any){
   const dw=(DAYS[di]||{}).dutywaves&&DAYS[di].dutywaves[wi]; if(!dw||!Array.isArray(dw.rows))return false;
@@ -162,7 +181,7 @@ export function sortDutyBlock(di:any,wi:any){
   if(isIdentity(oldOf))return false;
   dw.rows=oldOf.map((o:any)=>rows[o]);
   [`d:${di}.${wi}.`,`dr:${di}.${wi}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`dr:${di}.${wi}.0.role`);
+  return done(`dr:${di}.${wi}.0.role`,di);
 }
 export function sortSims(di:any,kind:any){
   const d=DAYS[di]; const rows=d&&d.sims&&d.sims[kind]; if(!Array.isArray(rows))return false;
@@ -170,7 +189,7 @@ export function sortSims(di:any,kind:any){
   if(isIdentity(oldOf))return false;
   d.sims[kind]=oldOf.map((o:any)=>rows[o]);
   [`s:${di}.${kind}.`,`sr:${di}.${kind}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`sr:${di}.${kind}.0.label`);
+  return done(`sr:${di}.${kind}.0.label`,di);
 }
 /* Ground also clears gman — Auto sort IS the way back to time-sorted
    rendering, so calling it must switch manual mode off even on the one day
@@ -194,7 +213,7 @@ export function sortGround(di:any){
   if(isIdentity(oldOf))return wasMan?done(`gr:${di}.0.prog`):false;
   d.ground=oldOf.map((o:any)=>rows[o]);
   [`g:${di}.`,`gr:${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`gr:${di}.0.prog`);
+  return done(`gr:${di}.0.prog`,di);
 }
 export function sortProg(di:any){
   const d=DAYS[di]; const rows=d&&d.allhands; if(!Array.isArray(rows))return false;
@@ -202,7 +221,7 @@ export function sortProg(di:any){
   if(isIdentity(oldOf))return false;
   d.allhands=oldOf.map((o:any)=>rows[o]);
   [`ap:${di}.`,`a:${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`ap:${di}.0.prog`);
+  return done(`ap:${di}.0.prog`,di);
 }
 /* every section of one day, notes excluded — the primitive Task 10's
    `Sort all` composes over every day in the week */

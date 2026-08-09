@@ -8,8 +8,7 @@ import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc } from '../state/view'
-import { ORD } from './html'
-import { puck, rowCls, accCtl } from './html'
+import { ORD, puck, rowCls, accCtl } from './html'
 
 /* ---- reorder grip + nudge buttons (owner, 8 Aug 26) -----------------------
    A grip at the far left on desktop, ▲/▼ in the row's own control cluster on a
@@ -25,7 +24,22 @@ import { puck, rowCls, accCtl } from './html'
    there, not on the grip, or a drag would only ever find a target while
    hovering the handle, which is no drag at all. */
 export function sbGrip(ro?:any){
-  return ro?'':`<span class="sb-grip" title="Drag to move this row">⠿</span>`;
+  /* ALWAYS emitted now (review fix, 9 Aug 26 — finding #1). Every row
+     template in scheduler.css reserves a fixed leading 18px track for this
+     element no matter the render mode, so omitting it (as this used to do
+     whenever ro) left every OTHER field in the row one track out of
+     register with its own header — a read-only board's callsign input went
+     64px → 18px, its notes input 783px → 22px, on every single row. `ro`
+     now governs only two things: the `.ro` class, which scheduler.css turns
+     into `visibility:hidden` (the box still generates and still holds its
+     grid track — display:none would not, and would reproduce the exact
+     register bug this fixes) — and the row's OWN data-move attribute
+     (rowMove, below), which is what the drag machinery actually keys off.
+     rowdrag.ts's onDown already requires closest('[data-move]') on the row
+     before it will start anything, so a read-only row's grip is inert the
+     moment rowMove withholds that attribute — no separate interaction gate
+     needed here. */
+  return `<span class="sb-grip${ro?' ro':''}" title="${ro?'':'Drag to move this row'}">⠿</span>`;
 }
 /* the row's OWN data-move, gated the same way the grip used to gate it: a
    preview or read-only board must render no live control at all, and that
@@ -235,7 +249,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
   else{
     s+=C6;
     /* same render-time ordering as the week — keys keep their model index */
-    groundOrder(rows).forEach(({row:x,ri}:any)=>{
+    groundOrder(rows,d.gman).forEach(({row:x,ri}:any)=>{
       const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=nameToId(x.who);
       const inner=((id&&PEOPLE[id])?sbSeat(di,base,id,pv):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,pv);
       s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
