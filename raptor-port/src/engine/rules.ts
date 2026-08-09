@@ -21,6 +21,13 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
      Rest still running at T/O − showLead is a HARD breach: he is not late to
      the brief, he is unable to make the flight. */
   showLead:60,      // latest show, minutes before T/O
+  /* How many days before the week starts a member's input is due (owner,
+     9 Aug 26). The deadline is the week's Monday minus this many days, and
+     the day itself is still on time: at 7, an input for the week of Mon 17
+     Aug is due by Mon 10 Aug, and one last touched on the 11th is LATE.
+     Unlike every other setting here it grades no flying — it marks the
+     input, and nothing else. */
+  inputLead:7,      // member input deadline, days before the week's Monday
   scDayFrom:7*60,   // an SC shift wholly inside this window is a DAY shift
   scDayTo:19*60};
 /* SC currency. A shift that sits wholly inside 07:00–19:00 is a DAY shift and
@@ -76,6 +83,7 @@ export const RULE_SPEC:any={
   scDayFrom: {t:'SC day window opens',       u:'time',lo:0,  hi:1439},
   scDayTo:   {t:'SC day window closes',      u:'time',lo:0,  hi:1439},
   maxRun:    {t:'Max days worked in a row',  u:'days',lo:1,  hi:14},
+  inputLead: {t:'Member input deadline before the week',u:'days',lo:0,hi:60},
   minTurn:   {t:'Minimum turn (unused)',     u:'min', lo:0,  hi:480},
   dur:       {t:'Default sortie length (unused)',u:'min',lo:0,hi:480},
 };

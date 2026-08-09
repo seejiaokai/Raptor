@@ -1,6 +1,6 @@
 /* The Logic tab's rule book — lgRules verbatim. Every value is read out
    of the live engine objects at render time, so the page cannot drift. */
-import { VCONF, SHIFT_HARD, kindOff } from '../engine/rules'
+import { VCONF, SHIFT_HARD, kindOff, ruleFmt } from '../engine/rules'
 import { RANK, CHIP_LABEL, WCODE, chipText, wlbl } from '../engine/validate'
 import { LEAVE_TYPES, isLocalLeave, isLeave, isDownchit } from '../engine/inputs'
 import { lgT, hm24, hhmm } from '../engine/time'
@@ -142,6 +142,10 @@ export function lgRules(){
      t:()=>`On a <b>downchit</b> and planned anyway — a Warning. A downchit closes everything, including an SC spare.`},
     {sev:'hard',code:'INPUT_FLY',
      t:()=>`Any other input the validator can see — a Detachment, or a personal input a scheduler has actioned to Unavailable — clashing with a sortie, a sim, a duty or a ground slot. Un-actioned personal inputs are requests and raise nothing.`},
+    /* no `code`: this is a MARK, not a validator code — giving it one would
+       put it in the fired-rules lookup and imply the engine emits it. */
+    {sev:'note',set:['inputLead'],src:()=>`VCONF.inputLead ${VCONF.inputLead}`,
+     t:()=>`A member's input is due <b>${lgV(ruleFmt('inputLead',VCONF.inputLead))}</b> before the week starts. One last changed after that deadline is marked <b>LATE</b> wherever it appears — the week, the board, the Inputs page, and the view-only programme.<span class="why">The deadline is the week's Monday minus this setting, and the deadline day itself is still on time: at ${esc(ruleFmt('inputLead',VCONF.inputLead))} an input for the week of Mon 17 Aug is due by Mon 10 Aug, and one touched on the 11th is late. What is measured is the <b>last change</b>, not the first submission, so an input raised early and then amended after the deadline still reads late — the deadline exists so the week can be planned against something that has stopped moving. This is a <b>mark only</b>: it raises no warning, closes no slot and changes nothing the validator sees. A late leave request and a late downchit are both marked, because the useful thing to know is that it landed after the plan was built.</span>`},
     {sev:'set',src:()=>`isLocalLeave · sparePost`,
      t:()=>`<b>LL and OIL keep the man on the island</b>, so he may still be raised as an <b>SC SPARE</b> — standby is not a task, and it raises no flag. <b>OL and a downchit cannot</b>, and putting one of them on a spare line is a Warning.<span class="why">Standing spare means being reachable and fit to walk. Overseas he is neither; downchecked he is not fit. This is the one thing that IS checked on a spare line besides currency.</span>`},
    ]},

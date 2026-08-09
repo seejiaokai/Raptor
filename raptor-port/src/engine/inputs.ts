@@ -1,3 +1,5 @@
+import { VCONF } from './rules'
+import { CURWEEK } from './waves'
 /* ---- LEAVE ---------------------------------------------------------------
    The squadron does not book "leave"; it books one of three things.
      LL  · local leave     — applied for on the leave system, man stays on island
@@ -72,18 +74,27 @@ export function inpLabel(inp:any){
 export function inputFlags(inp:any){return isUnavail(inp.type)||inp.acc==='u'||(isFly(inp.type)&&inp.acc==='g'&&!!inp.allday);}
 /* inputs use machine-readable date + minute fields so the validator can reason about them.
    s/e are minutes-from-midnight; allday inputs cover the whole day. */
+/* The `mod` stamps are spread either side of the demo week's input deadline on
+   purpose (owner, 9 Aug 26 — see isLateInput below). With the standard 7 days
+   the week of Mon 13 Jul is due by Mon 6 Jul, so this seed shows all three
+   cases a reader needs to see: comfortably early, exactly ON the deadline
+   (yeti — the deadline day itself is on time), and genuinely late (salsa's
+   appointment booked after planning closed, and the two downchits, which by
+   their nature cannot wait for a deadline). Before this they were all stamped
+   inside their own week, which marked every input late and made the mark
+   meaningless. */
 export let INPUTS:any[]=[
   {person:'divot', date:'Jul 13', allday:true,               type:'Downchit',    remarks:'Downchit 13 Jul', mod:'2026-07-12'},
-  {person:'bane',  date:'Jul 16', allday:false, s:1020,e:1110,type:'Appointment', remarks:'Medical / PHA', mod:'2026-07-14'},
-  {person:'salsa', date:'Jul 14', allday:false, s:840, e:960, type:'Appointment', remarks:'Dental appt',  mod:'2026-07-13'},
-  {person:'j_lee', date:'Jul 15', allday:true,               type:'OL',          remarks:'Overseas — SG out',mod:'2026-07-13'},
-  {person:'nasty', date:'Jul 14', allday:true,               type:'LL',          remarks:'Local leave',  mod:'2026-07-13'},
-  {person:'shrek', date:'Jul 14', allday:true,               type:'OIL',         remarks:'OIL — CO approved, post-detachment',mod:'2026-07-13'},
+  {person:'bane',  date:'Jul 16', allday:false, s:1020,e:1110,type:'Appointment', remarks:'Medical / PHA', mod:'2026-06-29'},
+  {person:'salsa', date:'Jul 14', allday:false, s:840, e:960, type:'Appointment', remarks:'Dental appt',  mod:'2026-07-09'},
+  {person:'j_lee', date:'Jul 15', allday:true,               type:'OL',          remarks:'Overseas — SG out',mod:'2026-06-22'},
+  {person:'nasty', date:'Jul 14', allday:true,               type:'LL',          remarks:'Local leave',  mod:'2026-06-30'},
+  {person:'shrek', date:'Jul 14', allday:true,               type:'OIL',         remarks:'OIL — CO approved, post-detachment',mod:'2026-07-02'},
   {person:'sufa',  date:'Jul 13', endDate:'Jul 17', allday:true, type:'Downchit', remarks:'Downchit till 17 Jul', mod:'2026-07-12'},
-  {person:'bruise',date:'Jul 13', allday:true,               type:'Fly',         remarks:'Keen for any wave',mod:'2026-07-12'},
-  {person:'vinci', date:'Jul 13', allday:false, s:540, e:1020,type:'Meeting',     remarks:'Desk / staff work',mod:'2026-07-12'},
-  {person:'pike',  date:'Jul 15', endDate:'Jul 17', allday:true, type:'Detachment', remarks:'Det — exercise, off island',mod:'2026-07-13'},
-  {person:'yeti',  date:'Jul 13', allday:false, s:600, e:660, type:'Appointment', remarks:'HSP blood panel',mod:'2026-07-12'},
+  {person:'bruise',date:'Jul 13', allday:true,               type:'Fly',         remarks:'Keen for any wave',mod:'2026-07-01'},
+  {person:'vinci', date:'Jul 13', allday:false, s:540, e:1020,type:'Meeting',     remarks:'Desk / staff work',mod:'2026-06-26'},
+  {person:'pike',  date:'Jul 15', endDate:'Jul 17', allday:true, type:'Detachment', remarks:'Det — exercise, off island',mod:'2026-06-18'},
+  {person:'yeti',  date:'Jul 13', allday:false, s:600, e:660, type:'Appointment', remarks:'HSP blood panel',mod:'2026-07-06'},
 ];
 export const DATES=['Jul 13','Jul 14','Jul 15','Jul 16','Jul 17','Jul 18','Jul 19'];  // Mon..Sun index → date label
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -102,5 +113,67 @@ export function inputCoversDate(inp:any,dt:any){
   const t=dateOrd(dt), a=dateOrd(inp.date), b=dateOrd(inp.endDate);
   if(t==null||a==null||b==null)return false;
   return t>=a&&t<=b;
+}
+/* ---- LATE INPUTS (owner, 9 Aug 26) ---------------------------------------
+   The squadron wants members' inputs in before the week is planned, and wants
+   a late one to SAY it is late wherever it appears. The deadline is the week's
+   Monday minus VCONF.inputLead days, and the deadline day itself is still on
+   time — "no later than a week prior" means the 10th is fine for the week of
+   the 17th, the 11th is not.
+
+   What is measured is `mod`, the stamp the Inputs page prints as "Last
+   modified" — so an input raised early but CHANGED after the deadline reads
+   as late (owner's call, 9 Aug 26). That is the whole point: the deadline
+   exists so the week can be planned against something that has stopped
+   moving.
+
+   This is a MARK, not a rule the validator reads. Nothing here raises a
+   warning, changes availability, or touches a seat — a paperwork deadline
+   does not belong in the list a scheduler reads for crew rest and double
+   bookings. Deliberate, and recorded in docs/engine-rules.md.
+
+   Anything with no usable stamp is NOT late. An unknown date is not evidence
+   of lateness, and accusing an input because its record is thin is worse
+   than staying quiet. */
+const pad2=(n:any)=>String(n).padStart(2,'0');
+const isISO=(s:any)=>/^\d{4}-\d{2}-\d{2}$/.test(String(s==null?'':s));
+/* CURWEEK is 'dd/mm/yyyy'; everything below works in ISO so plain string
+   comparison orders dates correctly and no Date object crosses a boundary. */
+export function weekStartISO(wk?:any){
+  const p=String(wk==null?CURWEEK:wk).split('/');
+  if(p.length!==3)return '';
+  const d=+p[0],m=+p[1],y=+p[2];
+  return (isFinite(d)&&isFinite(m)&&isFinite(y))?`${y}-${pad2(m)}-${pad2(d)}`:'';
+}
+/* the last day an input may be touched and still count as on time */
+export function inputDueISO(wk?:any){
+  const ws=weekStartISO(wk); if(!ws)return '';
+  const n=Math.max(0,+VCONF.inputLead||0);
+  const t=Date.UTC(+ws.slice(0,4),+ws.slice(5,7)-1,+ws.slice(8,10))-n*86400000;
+  const d=new Date(t);
+  return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`;
+}
+/* 'now' is what the Inputs page writes for anything touched this session, so
+   it resolves to today rather than reading as "no stamp" — an input edited
+   right now is exactly the case the deadline is about. */
+export function inputStampISO(inp:any){
+  const m=inp&&inp.mod;
+  if(m==='now'){const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;}
+  return isISO(m)?String(m):'';
+}
+export function isLateInput(inp:any){
+  const s=inputStampISO(inp), due=inputDueISO();
+  return !!s&&!!due&&s>due;
+}
+/* '2026-08-11' → '11 Aug', the form the rest of the app prints dates in */
+export function isoLabel(iso:any){
+  if(!isISO(iso))return '';
+  return `${+String(iso).slice(8,10)} ${MONTHS[+String(iso).slice(5,7)-1]||''}`.trim();
+}
+/* what the mark says when you hover it — plain enough for the squadron */
+export function lateNote(inp:any){
+  const s=inputStampISO(inp), due=inputDueISO();
+  if(!s||!due)return '';
+  return `Late input — last changed ${isoLabel(s)}, after the ${isoLabel(due)} deadline for the week of ${isoLabel(weekStartISO())}.`;
 }
 

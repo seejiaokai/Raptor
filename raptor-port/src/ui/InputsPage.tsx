@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, DATES, inputCoversDate } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, DATES, inputCoversDate, isLateInput, lateNote } from '../engine/inputs'
 import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
@@ -412,7 +412,7 @@ export function InputsPage() {
               return (
                 <tr key={inx} className={flash.indexOf(r) >= 0 ? 'innew' : undefined}>
                   <td>{cs}</td><td>{st}</td><td>{en}</td>
-                  <td><span className="intag">{r.type}</span></td>
+                  <td>{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}<span className="intag">{r.type}</span></td>
                   <td>{r.remarks || ''}</td><td>{r.recur || ''}</td>
                   <td className="mono" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
                   <td className="inact">

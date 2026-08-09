@@ -1806,3 +1806,82 @@ test('no button/control row on the board overflows its own width on a phone', as
     .map(m => `"${m.sel}" ("${m.text}…") scrollWidth ${m.scroll} > clientWidth ${m.client}`)
   expect(bad, 'no row may scroll past its own width').toEqual([])
 })
+
+/* ---- the late-input mark (owner, 9 Aug 26) ------------------------------
+   "This late input will be visible throughout and it sticks with that input
+   even though it's on view schedule." The view-only half is the reason this
+   is measured in a browser rather than left to the markup tests: jsdom can
+   prove the badge was EMITTED, but not that it is on screen, readable, and
+   has not knocked the row it lives in out of register. */
+test('a late input\'s mark is visible on the view-only page, where the squadron reads it', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page)                       // lands on View-only Sched
+  await page.waitForSelector('#vWeek .day')
+  const tag = page.locator('#vWeek .latetag').first()
+  await expect(tag, 'the view page carries at least one late mark').toBeVisible()
+  /* it has to READ, not merely exist — a zero-sized or transparent badge is
+     the failure mode a markup test cannot see */
+  const box = await tag.boundingBox()
+  expect(box!.width, 'the badge has real width').toBeGreaterThan(14)
+  expect(box!.height, 'and real height').toBeGreaterThan(7)
+  const seen = await tag.evaluate((el: any) => {
+    const s = getComputedStyle(el)
+    return { text: el.textContent, op: +s.opacity, vis: s.visibility, title: el.getAttribute('title') || '' }
+  })
+  expect(seen.text).toBe('LATE')
+  expect(seen.op).toBeGreaterThan(0.9)
+  expect(seen.vis).toBe('visible')
+  /* and it says WHICH deadline it missed, rather than just shouting */
+  expect(seen.title).toContain('deadline')
+})
+
+test('the mark never widens or overflows the row it sits in', async ({ page }) => {
+  await page.setViewportSize(PHONE)       // the tight case: a 390px day box
+  await login(page)
+  await page.waitForSelector('#vWeek .day')
+  const bad = await page.evaluate(() => {
+    const out: string[] = []
+    document.querySelectorAll('#vWeek .latetag').forEach((t: any) => {
+      const row = t.closest('.pl-row') as HTMLElement
+      if (!row) { out.push('no row'); return }
+      const tr = t.getBoundingClientRect(), rr = row.getBoundingClientRect()
+      if (tr.right > rr.right + 0.5) out.push('badge spills its row')
+      if (row.scrollWidth > row.clientWidth + 1) out.push('row gained a sideways scroll')
+    })
+    return out
+  })
+  expect(bad).toEqual([])
+})
+
+test('a promoted late input keeps the board row in register — no eighth grid item', async ({ page }) => {
+  /* the board's duty/sim/ground row is a seven-track template and its header
+     reserves exactly seven. The mark rides as a row class precisely so this
+     count cannot move; if someone later "improves" it into a chip, this is
+     what goes red rather than the fields silently walking one track left. */
+  await page.setViewportSize(DESK)
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => {
+    const w = window as any
+    const inp = w.INPUTS.find((i: any) => i.person === 'salsa')
+    w.acceptInput(1, inp, 'g')
+    w.openScheduler(1)
+  })
+  await page.waitForSelector('#sbBoard .sb-arow.c6r')
+  const reg = await page.evaluate(() => {
+    const row = document.querySelector('#sbBoard .sb-arow.c6r.lateinp') as HTMLElement
+    if (!row) return { found: false, items: 0, cols: 0, left: 0, headLeft: 0 }
+    const head = row.closest('.sb-panel')!.querySelector('.sb-acols.c6r') as HTMLElement
+    const cell = row.children[1] as HTMLElement          // the ITEM cell
+    const hcell = head.children[1] as HTMLElement        // its own heading
+    return {
+      found: true,
+      items: row.children.length,
+      cols: head.children.length,
+      left: Math.round(cell.getBoundingClientRect().left),
+      headLeft: Math.round(hcell.getBoundingClientRect().left),
+    }
+  })
+  expect(reg.found, 'the promoted row rendered and carries the late class').toBe(true)
+  expect(reg.items, 'same number of grid items as the header has tracks').toBe(reg.cols)
+  expect(reg.left, 'and the ITEM cell still sits under the ITEM heading').toBe(reg.headLeft)
+})

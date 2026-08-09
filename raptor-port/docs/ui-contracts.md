@@ -284,6 +284,47 @@ a centred band whose taps never steal from Close / the day chips / input
 ends, the fold opening and closing, the drawer parking on a fill, seats
 clear of every input and of each other).
 
+## The late-input mark on screen (owner, 9 Aug 26)
+
+The rule and what counts as late are in `docs/engine-rules.md` §The
+late-input mark. What this file owns is **where it is drawn**, and the ask
+was "visible throughout, and it sticks with that input even though it's on
+view schedule" — so the mark is gated on NOTHING. Not edit mode, not the
+role, not `pv`. Every other badge on these rows answers to at least one of
+those; this one deliberately does not.
+
+`.latetag` — a small amber `LATE` badge, same shape as `.flagtag` so the two
+read as one family, amber rather than red because it is an advisory about
+paperwork sitting in rows that also carry red CX badges and crew-rest rings
+it must not shout over. The full sentence (what changed, when, which deadline,
+which week) rides in the `title`, never in the badge, so no row grows.
+
+Where `lateTag()` is emitted:
+
+- the week's **Personal Inputs** and **Unavailable** blocks, in the row's
+  `.nm` cell, on the edit page and the view-only page alike (`ui/html.ts`);
+- the board's **inputs bands** and its **Personal Inputs panel**, inside the
+  `.sbi-ty` type chip (`ui/board-html.ts`);
+- the **Inputs page** table, beside the type (`ui/InputsPage.tsx`).
+
+**A promoted ground row carries it too, and that is the load-bearing case.**
+A personal input never reaches the view-only page on its own — accepting it
+onto the ground programme is the only route there — so if the mark did not
+survive the promotion it would vanish at exactly the surface the squadron
+reads. `plRow` emits `lateTagOf(o)` beside `cxTag`/`flagTag`, resolving the
+row's `src` back to its input.
+
+**The board's version of that row is a class, not a badge, and must stay
+one.** `.sb-arow.c6r` is a seven-track template whose header reserves exactly
+seven items, and every cell is a bare `<input>` with nowhere to nest a chip —
+an eighth grid item would walk every field one track left of its own heading,
+which is the register bug the whole-branch review already found once. So it
+wears `.lateinp` (an inset amber edge, the `.redbox` idiom) plus the note in
+its tooltip. `e2e/geometry.spec.ts` counts the row's grid items against its
+header's tracks so that "improving" it into a chip fails a gate rather than
+silently breaking the register. The row's own INPUT still carries the full
+badge in the Personal Inputs panel above it.
+
 ## The day's three closing blocks, and who sees them
 
 A day ends with three blocks, not the reference's five (owner request, Aug 26 —

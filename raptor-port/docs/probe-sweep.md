@@ -157,14 +157,25 @@ measurement here that is not machine-dependent — times swing 3× on this VM
 and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
-`probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 860**
-(measured 859), **week ≤ 5530** (measured 5056). Tripping one is not
+`probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 880**
+(measured 861), **week ≤ 5530** (measured 5056). Tripping one is not
 automatically a fault; it is a prompt to check the time and then raise the
 number deliberately, in the PR that adds the nodes, beside a fresh
 `npm run perf` showing the per-node cost held. The board has been raised
-twice that way — 770 → 810 for the stores `C` button and its on-chips in the
-remarks cell (7 Aug 26), 810 → 860 for the reorder grip, the two nudge
-buttons, the per-section Auto sort and Sort all (8 Aug 26).
+three times that way — 770 → 810 for the stores `C` button and its on-chips
+in the remarks cell (7 Aug 26), 810 → 860 for the reorder grip, the two
+nudge buttons, the per-section Auto sort and Sort all (8 Aug 26), and
+860 → 880 for the late-input mark (9 Aug 26).
+
+**That last raise took a wider margin than the others, on purpose.** The
+late-input badge is one `<span>` per late input drawn, so on the day this
+gate opens the count reads 859 with the mark off, 861 as the seed stands and
+863 with every input on that day late — all three measured through the gate's
+own boot. It is the first surface here whose node count moves with **data**
+rather than only with code: a date edited on the Inputs page can add or
+remove a node with no source change at all. A ceiling set to "measured + 1",
+which is what the two earlier raises took, would go red on a data change and
+teach the next reader to ignore it.
 
 **The board's margin was sized against a six-store measurement, and the
 stores feature supports up to `MAX_STORES` (24, `engine/stores.ts`) — worth

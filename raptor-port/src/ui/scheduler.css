@@ -1799,6 +1799,21 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .flagtag{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:800;
   letter-spacing:.08em;color:#fff;background:var(--hard);border-radius:3px;padding:0 4px;margin-right:4px;text-decoration:none}
 
+/* ---- LATE INPUT (owner, 9 Aug 26) --------------------------------------
+   An input last changed after the week's deadline. Same shape as .flagtag so
+   the two read as one family, but AMBER: it is an advisory about paperwork,
+   not a flying fault, and it sits in rows that may also carry a red CX badge
+   or a crew-rest ring it must not shout over. It never wraps and never grows
+   a row — the rows it lands in are fixed-height list rows, and the full
+   sentence lives in the title tooltip rather than in the badge. */
+.latetag{display:inline-block;vertical-align:middle;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:8.5px;font-weight:800;letter-spacing:.08em;color:#1B1305;background:var(--adv);
+  border-radius:3px;padding:0 4px;margin-right:4px;text-decoration:none;white-space:nowrap;flex:none}
+/* the board's promoted ground row cannot take a chip without adding an eighth
+   grid item to a seven-track template (see lateRowCls in ui/html.ts), so it
+   wears an inset amber edge instead — the .redbox idiom, no node, no track. */
+.sb-arow.lateinp{box-shadow:inset 3px 0 0 var(--adv)}
+
 /* ---- ALL AVAIL puck ----------------------------------------------------
    A sentinel body, not a person: it says "whoever is free covers this". Styled
    apart from every crew puck so nobody mistakes it for a callsign, but it is
