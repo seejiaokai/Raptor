@@ -57,7 +57,7 @@ assertion fails, so the whole set can be treated as one command.
 | `audit` | 21/21 | **`adapted/audit-async.cjs` 27/27** | three separate blockers: item 3 pinned the OFFER exemption (`Available *` types, removed Aug 26 — the lookup returned undefined and killed the whole evaluate); item 14 assigned the module-internal `AIRKEY` as a bare global; items 9/12/13 read the board and the Inputs page in the same tick as the nav that builds them. Item 3 is re-expressed against the rule that replaced it (a personal input is invisible to the validator until a scheduler accepts it); item 14 now opens the popup by clicking the wave's own Traffic button. |
 | `sa` | 1 assertion FAILS on the reference too | **`adapted/sa-async.cjs` 23/23** | `chip order` recovers RANK by regexing the page source — the reference is one inline script, an ESM build has nothing to scrape (RANK is on the probe bridge now). The `SUP filter` and the phone/board chrome read the DOM in the same tick as the click. And its "warnings UNCHANGED" step is FIXED rather than copied: it stuffs exempt seats from `dayEngaged()` without regard to who those men are, and on **both** builds eventually plants a downchit man on an SC SPARE, which raises DNIF_FLY — no exemption lets a grounded man near a jet. The adapted run stuffs eligible men only (so the exemption is tested on its own, and now really is UNCHANGED), and asserts DNIF_FLY and SC_QUAL separately. |
 | `sc2` | 13/13 | **`adapted/sc2-async.cjs` 15/15** | arms a slot and reads `#eRoster` in the same `evaluate`, and calls `$('qEdit').click()` on the line after `go('quals')`. Every count the reference prints (54 shown, 23 struck, busy 3, 32 shown) comes out identical on the port. |
-| `perf1` | 43/44¹ | **`probes/perf-port.cjs`** | sections E/H pin the string-diff cache itself (dropped per PORTING.md); C's `DAYHTML.eWeek=null` forced-rebuild has no React equivalent. The behavioural checks (one-day isolation B, scroll held D, Edit-toggle F) and the timing gate live in perf-port. |
+| `perf1` | 43/44¹ | **`probes/perf-port.cjs`** | sections E/H pin the string-diff cache itself (dropped per PORTING.md); C's `DAYHTML.eWeek=null` forced-rebuild has no React equivalent. The behavioural checks (one-day isolation B, scroll held D) and the timing gate live in perf-port; F measured a scroll-hold across the Edit-mode toggle and went with the toggle, 9 Aug 26. |
 | `perf3` | 13/13 | **`probes/perf-port.cjs`** | same — panel `__html=null` cache pokes; the board timings and the field-survival check (informational in the reference too) live in perf-port. |
 | `perf2` | — | — | dropped per PORTING.md: it pins the `setHTML` identity mechanism. |
 
@@ -85,13 +85,13 @@ work — and asserts **no regression per node drawn** (port ms/node ≤
 reference ms/node × 1.15), plus a recorded ceiling on the node counts
 themselves. Why it is split that way is the next section.
 
-### It is no longer flaky
+### Most of the flakiness went; the one-day edit still straddles its line
 
 It used to fail about 2 runs in 5 — measured at 3 in 5 before this rewrite,
 **at the same rate on an unchanged baseline**. The flakiness was the
 estimator, not the code: one round of the one-day edit reads anywhere from
-210 to 830 ms on the SAME build here. Three changes fixed it, and the third
-matters most:
+210 to 830 ms on the SAME build here. Three changes fixed most of it, and the
+third matters most:
 
 - a **warm-up**: the first two rounds of each metric are run and discarded;
 - the **minimum** of the per-trial medians, because scheduler noise is
@@ -107,6 +107,20 @@ matters most:
 Per-trial ratios now cluster within about ±0.05 of each other inside a run,
 where the same metric used to swing ±30% between runs.
 
+**What did not go away: the one-day-edit per-node reading straddles its own
+1.15 line on this container.** Nine readings of one unchanged commit ranged
+1.08×–1.23× (re-measured 9 Aug 26), so the gate returns 7/0 on some runs and
+6/1 on others with nothing changed. The budget was deliberately not raised to
+quiet it — one loosened to cover estimator noise stops catching a real
+regression. **A single red therefore proves nothing, and the only measurement
+that settles it is a PAIRED one**: build the parent commit into a second
+directory, serve it on a second port, and run `PORT_URL=… npm run perf`
+alternately against both in the same window. Done that way, three alternating
+rounds gave per-node differences of +0.07, −0.05 and +0.01 — i.e. none. The
+`noop` metric is the useful cross-check while diagnosing: it repaints the
+same week WITHOUT the edit, so a real week-render regression moves it too (it
+sat at 0.56×–0.57× per node throughout, on both builds).
+
 **Self-check.** Point the gate at the reference twice and it should read
 ≈ 1.00: `PORT_URL="file://$PWD/reference/scheduler.html" npm run perf`.
 Measured: 0.91 / 0.99 / 0.93 / 1.01 on the four metrics — no systematic
@@ -120,10 +134,13 @@ board sat red at 1.19× (1.15× when re-measured — the failure was stable, not
 marginal). That was never a rendering regression: the gate assumed both
 builds draw the same thing, and they no longer do.
 
-| DOM at the moment of measurement | reference | port |
+| DOM as it stood when the budget was rewritten (5 Aug 26) | reference | port |
 |---|---|---|
 | `#sbBoard` | 393 nodes / 20 KB | **699 nodes / 37 KB** (1.78× / 1.85×) |
 | `#eWeek` | 4173 nodes, 5 days | **5028 nodes, 7 days** (1.20×) |
+
+(The board has grown since — see the current reading below. The point these
+numbers make is about the SHAPE of the budget, not their own values.)
 
 The board grew the stores config chips, the personal-inputs group and the
 day-version selects; the week grew the weekend. A flat ratio between two
@@ -138,27 +155,20 @@ per-node cost and sail through while the user waited twice as long. So node
 counts are gated too, and **separately**, because they are the one
 measurement here that is not machine-dependent — times swing 3× on this VM
 and only mean something as a ratio against a reference measured in the same
-seconds, while a node count is the same integer everywhere. Ceilings
-recorded 5 Aug 26 with ~10% headroom: **board ≤ 770**, **week ≤ 5530**.
-Tripping one is not automatically a fault; it is a prompt to check the time
-and then raise the number deliberately, in the PR that adds the nodes,
-beside a fresh `npm run perf` showing the per-node cost held.
+seconds, while a node count is the same integer everywhere. Ceilings carry
+~10% headroom over the measured count, and the live numbers are always
+`probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 860**
+(measured 859), **week ≤ 5530** (measured 5056). Tripping one is not
+automatically a fault; it is a prompt to check the time and then raise the
+number deliberately, in the PR that adds the nodes, beside a fresh
+`npm run perf` showing the per-node cost held. The board has been raised
+twice that way — 770 → 810 for the stores `C` button and its on-chips in the
+remarks cell (7 Aug 26), 810 → 860 for the reorder grip, the two nudge
+buttons, the per-section Auto sort and Sort all (8 Aug 26).
 
-**Board raised again, 770 → 810, for stores configuration (owner, 7 Aug
-26).** The `C` button and its on-chips wrap the board's remarks cell
-(`.sb-rcell` — `docs/ui-contracts.md` §Stores configuration), measured at
-767 nodes before the new margin was added (up from 699 the last time this
-ceiling was set). Week is unchanged at 5530, measured 5056. See
-`probes/perf-port.cjs`'s `DOM_CEILING` for the live numbers.
-
-**The board's DOM ceiling was raised 810 → 860**, measured 859 nodes (was
-767 before this feature) — the reorder grip and the two nudge buttons on
-every movable row, plus one Auto sort button per section and one Sort all
-button, `probes/perf-port.cjs`'s `DOM_CEILING`.
-
-**That 810 margin was set against a six-store measurement, and the feature
-supports up to `MAX_STORES` (24, `engine/stores.ts`) — worth knowing before
-this gate trips on a legitimate configuration.** A squadron that grows its
+**The board's margin was sized against a six-store measurement, and the
+stores feature supports up to `MAX_STORES` (24, `engine/stores.ts`) — worth
+knowing before this gate trips on a legitimate configuration.** A squadron that grows its
 list toward the cap adds roughly one `.stchip` per store per aircraft line
 on the board (the week is unaffected — its chips sit in a wrapping
 `inline-flex` row, not a fixed grid, so it has no per-store DOM-count
@@ -181,21 +191,28 @@ the port is what cancels the machine out.
 
 | 4×-throttled phone, painted cost | reference | port | ratio | per node |
 |---|---|---|---|---|
-| one-day edit | 156 ms | **172 ms** | 1.10× | 0.91× |
-| no-op repaint | 56 ms | **43 ms** | 0.74× | 0.62× |
-| board edit | 261 ms | **313 ms** | 1.20× | **0.67×** |
-| board no-op | 75 ms | **49 ms** | 0.64× | 0.36× |
+| one-day edit | 153 ms | **204 ms** | 1.32× | 1.09× |
+| no-op repaint | 59 ms | **43 ms** | 0.72× | 0.59× |
+| board edit | 262 ms | **336 ms** | 1.27× | **0.58×** |
+| board no-op | 81 ms | **54 ms** | 0.64× | 0.29× |
+| `#eWeek` DOM | 4173 nodes | **5056 nodes** (1.21×) | | |
+| `#sbBoard` DOM | 393 nodes | **859 nodes** (2.19×) | | |
 
-**9 passed · 0 failed.** The port paints 1.78× the board for 1.20× the time,
-which is why the board edit reads 0.67× per node — comfortably faster than
-the reference at the same amount of drawing, exactly as the two no-op
-metrics said all along.
+**Seven assertions** — three per-node budgets, two DOM ceilings, and two
+behavioural checks. (Block F, a scroll-hold measured across the Edit-mode
+toggle, was two more; it went with the toggle on 9 Aug 26 and nothing
+replaced it, because no other control repaints all seven days in one
+gesture. D measures the same scroll-hold across an edit.) Six of the seven
+are solidly green every run; the seventh is the one-day-edit per-node budget
+described above. Re-measure, don't quote these numbers.
 
-Plus, all green: the other days' DOM is untouched by a day-1 edit, the week
-holds its scroll through an edit, and an open board field survives an
-unrelated panel change exactly as far as the reference's does. (A ninth
-assertion, the same scroll-hold measured across an Edit-mode toggle, went
-with the toggle itself on 9 Aug 26 — the gate is 7 assertions now.)
+The port paints 2.19× the board for 1.27× the time, which is why the board
+edit reads 0.58× per node — comfortably faster than the reference at the same
+amount of drawing, exactly as the two no-op metrics said all along. The
+behavioural pair: the other days' DOM is untouched by a day-1 edit, and the
+week holds its scroll through an edit. (An open board field surviving an
+unrelated panel change is printed too, but informational — no assertion, the
+same as in the reference's own perf3.)
 
 ## How to re-run
 

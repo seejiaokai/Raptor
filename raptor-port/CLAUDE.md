@@ -326,7 +326,7 @@ the phone perf budget. Don't convert them to components.
 |---|---|
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
-| Current state, known gaps, TODOs, full file map | `../HANDOFF.md` |
+| Open work, known gaps, the deploy traps, full file map | `../HANDOFF.md` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
 | What changed recently | `git log --oneline` (not duplicated here) |
 | Last session's leftovers, **if any** | `docs/session-state.md` (absent = nothing was pending) |

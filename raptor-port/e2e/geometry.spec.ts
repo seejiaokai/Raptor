@@ -1612,25 +1612,18 @@ test('a long unbreakable remark stays one clipped line and keeps its full text i
    a read-only board, but every row template in scheduler.css unconditionally
    keeps its leading 18px grip track — so a read-only board lost each row's
    FIRST grid item while the template still had ten tracks: every field
-   shifted one track left, out of register with its own header. Reachable
-   exactly the way the reviewer found it: log in, open a day's board, then
-   click View sched — the board deliberately stays open (SchedBoard's
-   `hidden` only tracks SBDAY, never the page), which is the whole reason
-   the read-only render path exists. jsdom cannot see this at all (every
-   rect is 0x0), so it has to be a real-browser measurement.
-   UPDATED TWICE. First (closing HANDOFF.md's "board stays open across a
-   page change" gap): a nav click no longer leaves the board open on the
-   wrong page — SchedBoard's `open` now also requires
-   CURPAGE==='editsched', so the original reproduction path (open the
-   board, click View sched) hides the board outright, which the block below
-   this one pins directly; the surviving read-only-but-open board was the
-   edit toggle switched off. Then (9 Aug 26) the toggle itself was removed
-   (owner), so the ONE remaining way to a rendered read-only board is a
-   session that may not edit one — a squadron member, driven in through
-   the same bare globals the member tests below use. The register bug's fix
-   (sbGrip always emitting its track) is still live defence for exactly
-   that render, and this measures both sides of it: an admin's board and a
-   member's must put the same fields in the same tracks. */
+   shifted one track left, out of register with its own header. jsdom cannot
+   see this at all (every rect is 0x0), so it has to be a real-browser
+   measurement.
+   The route in has since changed: leaving Edit Schedule now closes the board
+   outright (pinned by the block below), so the ONE way to a rendered
+   read-only board short of a preview is a session that may not edit one — a
+   squadron member, driven in through the same bare globals the member tests
+   below use. The register fix (sbGrip always emitting its track, gating only
+   a `.ro` class that is visibility:hidden rather than display:none) is still
+   live defence for exactly that render, and this measures both sides of it:
+   an admin's board and a member's must put the same fields in the same
+   tracks. */
 test('the board keeps its row register on a read-only render (finding #1, via a member session now)', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await login(page); await go(page, 'editsched')
@@ -1671,12 +1664,10 @@ test('the board keeps its row register on a read-only render (finding #1, via a 
   expect(Math.round(ro.nts)).toBe(Math.round(edit.nts))
 })
 
-/* HANDOFF.md, "the board stays open across a page change" — part 1 of the
-   documented gap, pinned live in a real browser (jsdom's rects are all
-   0×0, so `hidden` is the only thing it CAN see here — the visibility this
-   test actually cares about needs a layout engine).
-   UPDATED (coordinator review, 9 Aug 26 — the blocker): the board is now
-   CLOSED outright on the way out, not merely hidden — state/view.ts's
+/* Leaving Edit Schedule closes the board, pinned live in a real browser
+   (jsdom's rects are all 0×0, so `hidden` is the only thing it CAN see here
+   — the visibility this test actually cares about needs a layout engine).
+   The board is CLOSED outright on the way out, not merely hidden — state/view.ts's
    setPage clears SBDAY the moment the page leaves 'editsched', because a
    document-level handler elsewhere (Shell.tsx's right-click clear-a-seat)
    used to trust SBDAY!=null on its own as proof the board was safely open,
@@ -1741,7 +1732,7 @@ test('the blocker: right-clicking a WEEK puck on View-only Sched does not clear 
    what canEditSched()-gated editMode() actually produces: a rendered board
    (proving the gate was really exercised, not vacuously true) with no
    data-move and no data-mvup anywhere in it.
-   UPDATED for HANDOFF.md's page-change gap: SchedBoard's `open` now also
+   SchedBoard's `open` also
    requires CURPAGE==='editsched', and Edit Schedule's nav link does not
    exist for a member to click — so `window.setPage` (the same bare-global
    idiom as `openScheduler` itself) forces the page the same way, proving

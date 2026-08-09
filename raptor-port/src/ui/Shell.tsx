@@ -248,7 +248,6 @@ export function Shell() {
      went (owner, 9 Aug 26): being on Edit Schedule IS the edit mode. */
   const editPage = useMemo(() => (
       <section className={'page' + (page === 'editsched' ? ' on editing' : '')} id="page-editsched">
-        <div className="mobile-note edit-mobile-block">The schedule can only be edited on a desktop. On mobile the board is view-only — switch to <b>View-only Sched</b>.</div>
         <div className="edit-inner">
           <div className="seg" id="weekSegE">
             {WEEKS.map((w: any) => <button key={w.v} className={'wk' + (w.v === CURWEEK ? ' on' : '')} data-wk={w.v}>{w.lbl}</button>)}
