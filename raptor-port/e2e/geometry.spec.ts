@@ -1885,3 +1885,76 @@ test('a promoted late input keeps the board row in register — no eighth grid i
   expect(reg.items, 'same number of grid items as the header has tracks').toBe(reg.cols)
   expect(reg.left, 'and the ITEM cell still sits under the ITEM heading').toBe(reg.headLeft)
 })
+
+/* ---- carrying the day across a page switch (owner, 9 Aug 26) -------------
+   "If the admin is viewing on view only schedule that certain day, when the
+   edit schedule mode is entered, it will show the same day that the admin was
+   viewing vice versa."
+
+   Measured in a browser because it is a scroll position, and jsdom reports
+   every rect as 0x0 — src/state/carryday.test.ts can prove setPage took a
+   reading and nothing about where the week actually landed. The two viewports
+   are not padding either: the desktop week shows several days at once and the
+   phone shows one, so "the same day" means different scroll maths on each. */
+
+/* the leftmost day still on screen — the reading the app itself carries */
+async function dayOnScreen(page: any, wid: string) {
+  return page.evaluate((id: string) => {
+    const w = document.getElementById(id) as HTMLElement
+    const ds = [...w.querySelectorAll('.day[data-day]')] as HTMLElement[]
+    const x = w.getBoundingClientRect().left + 8
+    const hit = ds.find(d => d.getBoundingClientRect().right > x) || ds[0]
+    return +hit.dataset.day!
+  }, wid)
+}
+/* park a week on a day by scrolling it there, then let the scroll settle */
+async function parkOn(page: any, wid: string, di: number) {
+  await page.evaluate(([id, d]: any) => {
+    const w = document.getElementById(id) as HTMLElement
+    const day = w.querySelector(`.day[data-day="${d}"]`) as HTMLElement
+    w.scrollLeft += day.getBoundingClientRect().left - w.getBoundingClientRect().left
+  }, [wid, di])
+  await settleWeek(page, '#' + wid)
+}
+
+for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
+  test(`${name}: Edit Schedule opens on the day View-only was showing`, async ({ page }) => {
+    await page.setViewportSize(vp)
+    await login(page)
+    await parkOn(page, 'vWeek', 3)
+    const from = await dayOnScreen(page, 'vWeek')
+    /* the week may not scroll far enough to put day 3 flush left on a wide
+       screen — what matters is that wherever it settled is where edit opens,
+       so the assertion is against the reading taken, not against 3 */
+    await go(page, 'editsched')
+    await settleWeek(page, '#eWeek')
+    expect(await dayOnScreen(page, 'eWeek'), 'edit opened on the day view was showing').toBe(from)
+  })
+
+  test(`${name}: and back the other way — View-only opens on the day Edit was showing`, async ({ page }) => {
+    await page.setViewportSize(vp)
+    await login(page)
+    await go(page, 'editsched')
+    await parkOn(page, 'eWeek', 4)
+    const from = await dayOnScreen(page, 'eWeek')
+    await go(page, 'viewsched')
+    await settleWeek(page, '#vWeek')
+    expect(await dayOnScreen(page, 'vWeek'), 'view opened on the day edit was showing').toBe(from)
+  })
+}
+
+test('a repaint that is not a page switch still holds the week where it is', async ({ page }) => {
+  /* the carry must be consumed ONCE. If it stuck, every later repaint would
+     drag the week back to the carried day — which is the B54 scroll-hold
+     guarantee broken, and it would show up as the week jumping while you type. */
+  await page.setViewportSize(DESK)
+  await login(page)
+  await go(page, 'editsched')
+  await parkOn(page, 'eWeek', 2)
+  const parked = await dayOnScreen(page, 'eWeek')
+  /* a store tick with no page change: setPage to the page already showing
+     notifies (so every week repaints) but cannot capture a carry */
+  await page.evaluate(() => (window as any).setPage('editsched'))
+  await page.waitForTimeout(400)
+  expect(await dayOnScreen(page, 'eWeek'), 'a plain repaint moved nothing').toBe(parked)
+})

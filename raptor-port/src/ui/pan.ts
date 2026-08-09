@@ -108,13 +108,14 @@ function hsLabel() {
 /* the palette shows one day's availability. Panning the week changes which day
    you are looking at, so the palette walks along with it — debounced, because a
    scroll fires on every frame and rebuilding 60 pucks per frame is wasteful. */
+/* the reading itself is state/view.ts's weekLeftDay — the same one setPage
+   takes when it carries the day across a page switch, shared rather than
+   copied so the palette and the carry can never disagree about which day is
+   "the one you are looking at". ROSDAY stands in when there is nothing to
+   read (no week built yet), which is what this always did. */
 function weekDay() {
-  const w = activeWeekEl(); if (!w) return view.ROSDAY
-  const ds = [...w.querySelectorAll('.day[data-day]')] as HTMLElement[]
-  if (!ds.length) return view.ROSDAY
-  const x = w.getBoundingClientRect().left + 8
-  const hit = ds.find(d => d.getBoundingClientRect().right > x)
-  return hit ? +hit.dataset.day! : +ds[0]!.dataset.day!
+  const d = view.weekLeftDay(activeWeekEl())
+  return d == null ? view.ROSDAY : d
 }
 let ROSDAY_T: any = 0
 export function rosDayFollow() {
