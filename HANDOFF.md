@@ -22,6 +22,25 @@ believing a single red.)
 
 ## Known issues / open work
 
+- **NEXT PIECE OF WORK — remove the Edit-mode toggle entirely (owner, 9 Aug 26).**
+  Decided but deliberately NOT done on the reorder branch: the owner's sequencing
+  call, after two late additions to that branch each introduced a defect worse
+  than the one they fixed. His reasoning: the board is reachable only as admin →
+  Edit Schedule → board, so intent to edit is implied by being there at all.
+  The stronger argument is that **View-only Sched already IS the read-only mode**,
+  so the toggle is a second mechanism for the same job — and most of the
+  read-only-board defects fixed on that branch (a live board accepting typing,
+  adds and deletes; a right-click that cleared a week puck; controls that looked
+  live and did nothing) exist ONLY because that state can be entered at all.
+  Removing it deletes the class rather than guarding it.
+  Scope: `HOOKS.editMode()` becomes `canEditSched() && CURPAGE==='editsched'`
+  (drop `EDITON`), the `.editing` class goes unconditional on that page,
+  `Shell.tsx` loses `#editToggle`, and the tests and probes that click it need
+  updating. `EDITON` already defaults to `true`, so nobody meets it off unless
+  they turned it off. **Parity is not at risk** — the toggle is Shell chrome, not
+  part of the string-built day markup `parity.test.ts` compares.
+  Cost flagged to the owner and accepted: the toggle doubles as an
+  accidental-edit guard on a phone; View-only Sched covers that one tap away.
 - **No shared data.** localStorage only — two devices never see each
   other's edits. The obvious next enhancement (needs a server or a sync
   backend; touches `engine/hooks.ts:storeBackend` and the mutation funnel).
