@@ -12,6 +12,7 @@ import { validate, WARN } from '../engine/validate'
 import { personWarnDays } from '../engine/avail'
 import { isSpecial } from '../engine/people'
 import { DAYS } from '../engine/data'
+import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -481,5 +482,69 @@ describe('the nudge buttons move a row one place as rendered', () => {
     mountBoard(di)
     clickAttr(`[data-mvdn="mv:p.${di}.0"]`)
     expect(JSON.stringify(DAYS[di].allhands)).toBe(was)
+  })
+})
+
+describe('the Auto sort buttons put a section back in order', () => {
+  /* capture toasts without repainting anything, same idiom as drag.test.tsx */
+  let toasts: string[] = []
+  beforeAll(() => { setSession({ user: 'a', role: 'admin' }); HOOKS.toast = (m: any) => { toasts.push(String(m)) } })
+
+  it('sorts the Overall programme by start time', () => {
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    DAYS[di].allhands = [{ prog: 'LATER', str: '1500' }, { prog: 'EARLIER', str: '0800' }]
+    act(() => notify())
+    mountBoard(di)
+    clickAttr(`[data-sortsec="p.${di}"]`)
+    expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+  })
+
+  it('toasts "Already in order" and changes nothing when the section is already sorted', () => {
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    DAYS[di].allhands = [{ prog: 'EARLIER', str: '0800' }, { prog: 'LATER', str: '1500' }]
+    act(() => notify())
+    mountBoard(di)
+    toasts = []
+    clickAttr(`[data-sortsec="p.${di}"]`)
+    expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(toasts).toContain('Already in order')
+  })
+
+  it('sorts a duty block by role, SDO above SXO above OPS-O', () => {
+    DAYS[0].dutywaves[0].rows = [{ role: 'OPS-O', id: 'y' }, { role: 'SDO', id: 'x' }]
+    act(() => notify())
+    mountBoard(0)
+    clickAttr('[data-sortsec="d.0.0"]')
+    expect(DAYS[0].dutywaves[0].rows.map((r: any) => r.role)).toEqual(['SDO', 'OPS-O'])
+  })
+
+  it('sorts Ground by start time and clears gman, so the day resumes sorting itself', () => {
+    DAYS[0].ground = [{ prog: 'LATER', str: '1500' }, { prog: 'EARLIER', str: '0800' }]
+    DAYS[0].gman = true
+    act(() => notify())
+    mountBoard(0)
+    clickAttr('[data-sortsec="g.0"]')
+    expect(DAYS[0].ground.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(DAYS[0].gman).toBeFalsy()
+  })
+
+  it('sorts a flying wave by take-off time, without touching the jets inside a formation', () => {
+    const w = DAYS[0].waves[0]
+    w.formations = [
+      { cs: 'LATE', msn: 'BFM', to: '1400', ld: '1500', aircraft: [{ p: 'stiff', w: 'freak' }] },
+      { cs: 'EARLY', msn: 'BFM', to: '0800', ld: '0900', aircraft: [{ p: 'bane', w: 'wolf' }] },
+    ]
+    act(() => notify())
+    mountBoard(0)
+    clickAttr('[data-sortsec="w.0.0"]')
+    expect(w.formations.map((f: any) => f.cs)).toEqual(['EARLY', 'LATE'])
+  })
+
+  it('a member sees no Auto sort control', () => {
+    setSession({ user: 'user', role: 'member' } as any)
+    act(() => notify())   // canEditSched() flipped — repaint so mvRO takes hold, not stale admin markup
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    mountBoard(di)
+    expect($(`[data-sortsec="p.${di}"]`)).toBeFalsy()
   })
 })

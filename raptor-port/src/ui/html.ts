@@ -16,7 +16,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
-import { STORE_CFG, groundOrder } from '../engine'
+import { STORE_CFG, groundOrder, DUTY_ORDER } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
 
@@ -229,8 +229,6 @@ export function blkNoteHTML(di:any,d:any,ed:any,key:any,field:any){
       ? `<div class="blknote ed" contenteditable="true" spellcheck="false" data-txt="${key}:${di}"${a}>${esc(v)}</div>`
       : `<div class="blknote"${a}>${esc(v)}</div>`);
 }
-/* duty display order: SDO, then SXO, then OPS-O, then anything else */
-export const DUTY_ORDER:any={'SDO':0,'SXO':1,'OPS-O':2,'OPS O':2,'RUNNER':3,'LOGCELL':4,'LOG CELL':4};
 export function dutySort(rows:any){return (rows||[]).slice().sort((a:any,b:any)=>((DUTY_ORDER[a.role]??9)-(DUTY_ORDER[b.role]??9)));}
 /* Available-crew block: active aircrew by wave, then SANS grouped separately (they run to
    different currency requirements — see sanStatus()). Rendered at the bottom of the day. */

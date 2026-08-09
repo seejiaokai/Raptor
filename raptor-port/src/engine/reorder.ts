@@ -1,7 +1,8 @@
 import { DAYS } from './data'
 import { markEdit } from './publish'
 import { permuteKeys, moveKeys } from './keys'
-import { groundOrder } from './order'
+import { groundOrder, DUTY_ORDER } from './order'
+import { parseHM } from './time'
 /* ---------------------------------------------------------------------------
    REORDERING A BOARD LIST (owner, 8 Aug 26)
    Every list on the board is drawn in model order and a new row lands at the
@@ -121,4 +122,85 @@ export function applyMove(fromAddr:any,toAddr:any){
   if(kind==='p')return moveProgRow(n(a[1]),n(a[2]),n(b[2]));
   if(kind==='n')return moveNote(n(a[1]),n(a[2]),n(b[2]));
   return false;
+}
+/* ---------------------------------------------------------------------------
+   AUTO SORT — a way back that is not Undo (owner, 8 Aug 26)
+   The movers above have no rule at all: dragging a row IS the scheduler's
+   judgement, and that is deliberate. Auto sort is the opposite move — throw
+   the section's own reading order back at it — so each one sorts by whatever
+   key actually orders it for a reader: flying by take-off (the jets INSIDE a
+   formation are a position, not a time, so they never move), duties by role,
+   sims/ground/programme by start time. Overall notes get no sorter: they are
+   prose in a chosen order, not data with a natural key, and inventing one
+   (alphabetical? first-typed?) would silently reorder someone's argument.
+   Same three-beat idiom as a mover — build oldOf, reorder the model, permute
+   the SAME key-space heads the matching mover uses, mark the row — except the
+   move is a whole permutation rather than a splice, so the identity check
+   sits BEFORE any of that: an already-sorted section must change nothing and
+   mark nothing, or "Auto sort" on a tidy day becomes an edit of its own that
+   the next AL has to explain. */
+const isIdentity=(o:any)=>o.every((v:any,i:any)=>v===i);
+/* stable sort of the index range [0,n) by keyFn(i) — null keys (no parseable
+   time) sink to the bottom, in model order, same fallback as groundOrder;
+   ties elsewhere break on the original index so equal keys never reshuffle. */
+const keySort=(n:any,keyFn:any)=>{const idx:any[]=[];for(let i=0;i<n;i++)idx.push(i);
+  return idx.sort((a:any,b:any)=>{const ka=keyFn(a),kb=keyFn(b);
+    if(ka==null||kb==null)return ka==null&&kb==null?a-b:(ka==null?1:-1);
+    return (ka-kb)||(a-b);});};
+export function sortWave(di:any,gi:any){
+  const w=(DAYS[di]||{}).waves&&DAYS[di].waves[gi]; if(!w||!Array.isArray(w.formations))return false;
+  const fs=w.formations, oldOf=keySort(fs.length,(i:any)=>parseHM(fs[i].to));
+  if(isIdentity(oldOf))return false;
+  w.formations=oldOf.map((o:any)=>fs[o]);
+  [`ff:${di}.${gi}.`,`fr:${di}.${gi}.`,`st:${di}.${gi}.`,`ar:${di}.${gi}.`,`at:${di}.${gi}.`,`${di}.${gi}.`]
+    .forEach((h:any)=>permuteKeys(h,0,oldOf));
+  return done(`ff:${di}.${gi}.0.cs`);
+}
+export function sortDutyBlock(di:any,wi:any){
+  const dw=(DAYS[di]||{}).dutywaves&&DAYS[di].dutywaves[wi]; if(!dw||!Array.isArray(dw.rows))return false;
+  const rows=dw.rows, oldOf=keySort(rows.length,(i:any)=>DUTY_ORDER[rows[i].role]??9);
+  if(isIdentity(oldOf))return false;
+  dw.rows=oldOf.map((o:any)=>rows[o]);
+  [`d:${di}.${wi}.`,`dr:${di}.${wi}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
+  return done(`dr:${di}.${wi}.0.role`);
+}
+export function sortSims(di:any,kind:any){
+  const d=DAYS[di]; const rows=d&&d.sims&&d.sims[kind]; if(!Array.isArray(rows))return false;
+  const oldOf=keySort(rows.length,(i:any)=>parseHM(rows[i].str));
+  if(isIdentity(oldOf))return false;
+  d.sims[kind]=oldOf.map((o:any)=>rows[o]);
+  [`s:${di}.${kind}.`,`sr:${di}.${kind}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
+  return done(`sr:${di}.${kind}.0.label`);
+}
+/* Ground also clears gman — Auto sort IS the way back to time-sorted
+   rendering, so calling it must switch manual mode off even on the one day
+   it turns out there was nothing left to permute; that flag carries no
+   amendment key, so clearing it here never conflicts with "marks nothing". */
+export function sortGround(di:any){
+  const d=DAYS[di]; const rows=d&&d.ground; if(d)d.gman=false; if(!Array.isArray(rows))return false;
+  const oldOf=keySort(rows.length,(i:any)=>parseHM(rows[i].str));
+  if(isIdentity(oldOf))return false;
+  d.ground=oldOf.map((o:any)=>rows[o]);
+  [`g:${di}.`,`gr:${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
+  return done(`gr:${di}.0.prog`);
+}
+export function sortProg(di:any){
+  const d=DAYS[di]; const rows=d&&d.allhands; if(!Array.isArray(rows))return false;
+  const oldOf=keySort(rows.length,(i:any)=>parseHM(rows[i].str));
+  if(isIdentity(oldOf))return false;
+  d.allhands=oldOf.map((o:any)=>rows[o]);
+  [`ap:${di}.`,`a:${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
+  return done(`ap:${di}.0.prog`);
+}
+/* every section of one day, notes excluded — the primitive Task 10's
+   `Sort all` composes over every day in the week */
+export function sortDay(di:any){
+  const d=DAYS[di]; if(!d)return false;
+  let any=false;
+  (d.waves||[]).forEach((_:any,gi:any)=>{if(sortWave(di,gi))any=true;});
+  (d.dutywaves||[]).forEach((_:any,wi:any)=>{if(sortDutyBlock(di,wi))any=true;});
+  Object.keys(d.sims||{}).forEach((kind:any)=>{if(sortSims(di,kind))any=true;});
+  if(sortGround(di))any=true;
+  if(sortProg(di))any=true;
+  return any;
 }

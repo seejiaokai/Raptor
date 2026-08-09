@@ -38,6 +38,15 @@ export function sbNudge(addr:any,ro?:any){
   return ro?'':`<button class="mbtn nudge" data-mvup="${addr}" title="Move up">▲</button>`
     +`<button class="mbtn nudge" data-mvdn="${addr}" title="Move down">▼</button>`;
 }
+/* Auto sort — a way back to a sensible order that isn't Undo (owner, 8 Aug
+   26). One button per section, beside its own + Row / + Line, gated on the
+   same ro flag as the grip and the nudge buttons: a preview or read-only
+   board renders no live control at all. `addr` is the section address
+   engine/reorder.ts's sortsec dispatch in boardMbtn parses — NOT a mv:
+   address, sorting is a whole-section operation, not a row move. */
+export function sbSortBtn(addr:any,ro?:any){
+  return ro?'':`<button class="mbtn" data-sortsec="${addr}" title="Sort this section">⇅ Auto sort</button>`;
+}
 
 export const SB_BANDS=[
   {k:'early',t:'Early',      note:'before 08:00',    lo:0,   hi:480},
@@ -103,7 +112,7 @@ export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
 export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
   const rows=d.allhands||[];
   let s=`<div class="sb-panel prog"><div class="sb-ph">Overall programme <span class="sub">squadron-wide — affects all</span>`
-    +(pv?'':`<span class="gctl"><button class="mbtn add" data-padd="${di}" title="Add a squadron-wide item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
+    +(pv?'':`<span class="gctl">${sbSortBtn(`p.${di}`,ro)}<button class="mbtn add" data-padd="${di}" title="Add a squadron-wide item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like.</div>`;
   else{
     s+=`<div class="sb-acols"><span></span><span>Item</span><span>Detail</span><span>Start</span><span>End</span><span>People</span><span></span></div>`;
@@ -164,7 +173,7 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
   if(!dws.length)s+=`<div class="sb-empty">No duty blocks yet — “+ Block” adds one.</div>`;
   dws.forEach((dwv:any,wi:any)=>{
     s+=`<div class="sb-psub">`+sbTxt('ain',`dl:${di}.${wi}`,dwv.label,'WAVE 1 DUTIES',pv)
-      +(pv?'':`<span class="gctl"><button class="mbtn add" data-dradd="${di}.${wi}" title="Add a duty row">+ Row</button>`
+      +(pv?'':`<span class="gctl">${sbSortBtn(`d.${di}.${wi}`,ro)}<button class="mbtn add" data-dradd="${di}.${wi}" title="Add a duty row">+ Row</button>`
       +`<button class="mbtn del" data-dwdel="${di}.${wi}" title="Remove this block and its rows">✕ Block</button></span>`)+`</div>`;
     if((dwv.rows||[]).length)s+=C6;
     /* MODEL order, not dutySort — an editor whose rows jump as a role is typed
@@ -187,7 +196,7 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
   [['AMT','amt'],['OFT','oft']].forEach(([title,kind]:any)=>{
     const rows=sims[kind]||[];
     s+=`<div class="sb-psub"><span class="ntx">${title}</span>`
-      +(pv?'':`<span class="gctl"><button class="mbtn add" data-sradd="${di}.${kind}" title="Add a ${title} row">+ Row</button></span>`)+`</div>`;
+      +(pv?'':`<span class="gctl">${sbSortBtn(`s.${di}.${kind}`,ro)}<button class="mbtn add" data-sradd="${di}.${kind}" title="Add a ${title} row">+ Row</button></span>`)+`</div>`;
     if(!rows.length){s+=`<div class="sb-empty">No ${title} rows.</div>`;return;}
     s+=C6;
     rows.forEach((r:any,ri:any)=>{
@@ -221,7 +230,7 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
 export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
   const rows=d.ground||[];
   let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme · scheduler <span class="sub">briefs, reviews, admin</span>`
-    +(pv?'':`<span class="gctl"><button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
+    +(pv?'':`<span class="gctl">${sbSortBtn(`g.${di}`,ro)}<button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No ground items yet — “+ Item” adds one.</div>`;
   else{
     s+=C6;

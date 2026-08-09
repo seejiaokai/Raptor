@@ -1,4 +1,9 @@
 import { parseHM } from './time'
+/* duty display order: SDO, then SXO, then OPS-O, then anything else. Moved
+   out of ui/html.ts alongside groundOrder (8 Aug 26) — engine/reorder.ts's
+   sortDutyBlock needs this table to sort a duty block itself, and the
+   engine must not import from ui/. */
+export const DUTY_ORDER:any={'SDO':0,'SXO':1,'OPS-O':2,'OPS O':2,'RUNNER':3,'LOGCELL':4,'LOG CELL':4};
 /* Render-time ordering for the day's Ground Programme. It lived in ui/html.ts
    until the board learned to reorder rows (8 Aug 26): engine/reorder.ts has to
    freeze the order a scheduler can SEE before it moves anything within it, and

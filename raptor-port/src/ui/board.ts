@@ -12,7 +12,7 @@ import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
 import { markEdit, alAttr } from '../engine/publish'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/keys'
-import { applyMove } from '../engine/reorder'
+import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg } from '../engine/reorder'
 import { signoffHTML, cxText, storesView } from './html'
 import { STORE_CFG } from '../engine'
 import { HOOKS } from '../engine/hooks'
@@ -20,7 +20,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
-import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel, sbGrip, sbNudge, rowMove } from './board-html'
+import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel, sbGrip, sbNudge, rowMove, sbSortBtn } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -67,7 +67,7 @@ export function boardHTML(di: number, pv?: boolean) {
       + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${pv ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
       + `${w.night ? '<span class="night">· night</span>' : ''}`
       + `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`
-      + (pv ? '' : `<span class="gctl"><button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
+      + (pv ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
@@ -207,6 +207,28 @@ export function boardMbtn(e: MouseEvent) {
     const i = rows.indexOf(row), j = up ? i - 1 : i + 1
     if (i < 0 || j < 0 || j >= rows.length) return
     if (applyMove(row.dataset.move, rows[j].dataset.move)) { afterSchedMutate(); notify() }
+    return
+  }
+  /* ⇅ Auto sort — one control per section, dispatched by the address's own
+     prefix (w/d/s/g/p) rather than by which panel the click landed in, so
+     which sorter answers which section lives in exactly one place. Same
+     read-only gate as the nudge buttons above — sbSortBtn already withholds
+     the button itself, canEditSched() covers a stale element left over from
+     before a role change. 'Already in order' rather than silence: a
+     scheduler who reaches for the way-back control on a tidy section should
+     hear that it IS tidy, not wonder whether the click landed. */
+  if (ds.sortsec != null) {
+    if (!canEditSched()) return
+    const [kind, ...rest] = String(ds.sortsec).split('.')
+    const n = rest.map(Number)
+    let changed = false
+    if (kind === 'w') changed = sortWave(n[0], n[1])
+    else if (kind === 'd') changed = sortDutyBlock(n[0], n[1])
+    else if (kind === 's') changed = sortSims(n[0], rest[1])
+    else if (kind === 'g') changed = sortGround(n[0])
+    else if (kind === 'p') changed = sortProg(n[0])
+    if (changed) { afterSchedMutate(); notify() }
+    else toast('Already in order')
     return
   }
   if (ds.lcx != null) { const r = acRef(ds.lcx); if (!r || !r.a) return; return askCx(r.a, `fr:${ds.lcx}`, 'this line', () => rollCx(r.f)) }
@@ -353,7 +375,19 @@ export function boardChange(e: Event) {
   }
   const f = (e.target as HTMLElement).closest('[data-bfld]') as HTMLInputElement | null; if (!f) return
   const p = f.dataset.bfld!
-  if (txtSet(p, f.value)) { markEdit(); afterSchedMutate(); notify() }
+  if (txtSet(p, f.value)) {
+    markEdit(); afterSchedMutate()
+    /* A duty row's ROLE decides where it belongs (owner, 8 Aug 26). The week no
+       longer sorts duties, so without this a row typed as SDO would print below
+       OPS-O and the squadron would meet a duty list out of role order — which
+       cannot happen today. A new row is added with an EMPTY role, so there is
+       nothing to sort by until the role is typed; this is that moment.
+       sortDutyBlock is a no-op on an already-ordered block, so a correction
+       typed into an untouched list costs nothing. */
+    const m = /^dr:(\d+)\.(\d+)\.\d+\.role$/.exec(p)
+    if (m) sortDutyBlock(+m[1], +m[2])
+    notify()
+  }
   else f.value = txtGet(p)
 }
 
