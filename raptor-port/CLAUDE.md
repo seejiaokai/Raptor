@@ -333,6 +333,19 @@ the phone perf budget. Don't convert them to components.
   keeps the mark in one column everywhere — bar the board's promoted ground
   row, whose remarks cell is a bare `<input>` with nowhere to nest a chip, so
   that one keeps its amber row edge.
+  **The word stays a word — a compact dot was offered and declined** (owner,
+  9 Aug 26, after he raised a day carrying 10+ inputs). Measured before asking,
+  on a day loaded to eleven personal inputs: on DESKTOP the mark costs nothing
+  at all (666px block with and without it — the remarks column has the room);
+  on a PHONE it costs 33px over eleven rows (757 vs 724) and squeezes that
+  narrow column enough to split two long remarks mid-word ("Medic al appt").
+  A dot measured 724 — free — and a phone-only dot was the recommendation.
+  Owner chose to keep the word and wear the cost. Don't re-propose the dot,
+  and don't "fix" the mid-word splitting by shrinking the badge. Two other
+  ideas were measured and are dead ends, so don't retry them either: the word
+  at the END of the remark saved nothing (759), and turning off mid-word
+  breaking saved nothing (757). The badge's WIDTH is the whole cost, not its
+  position.
   Rules: `docs/engine-rules.md` §The late-input mark.
   Placement: `docs/ui-contracts.md` §The late-input mark on screen.
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
