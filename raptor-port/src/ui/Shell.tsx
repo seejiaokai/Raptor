@@ -11,7 +11,7 @@ import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pen
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { resetSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, SBDAY, setDayPreview } from '../state/view'
+import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, setDayPreview } from '../state/view'
 import { waveMenu } from './board'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
@@ -102,7 +102,24 @@ export function Shell() {
          not clear a live seat from underneath an old rendering */
       if (s.closest('.preview')) return
       if (!canEditSched()) return
-      if (!(HOOKS.editMode() || SBDAY != null)) return
+      /* editMode() ALONE now — the reference's own `|| SBDAY != null` escape
+         is GONE (reviewer-found blocker, 9 Aug 26). That escape trusted "a
+         board is open" as its own proof of safety, which was true only
+         because the board used to paint over whatever page you were on; once
+         SchedBoard.tsx stopped painting it there but state/view.ts's setPage
+         left SBDAY alive, the escape started trusting a HIDDEN board instead
+         — so on View-only Sched, with a board left open, this still read
+         SBDAY!=null as permission and a real right-click cleared a WEEK
+         puck straight through. state/view.ts's setPage now clears SBDAY the
+         moment the page leaves Edit Schedule, which alone closes that exact
+         reproduction — but SBDAY can still be non-null on Edit Schedule
+         itself with the edit toggle off (a board deliberately left open
+         read-only, same state the flying line's own inputs now go inert
+         for), and the escape would have kept clearing seats there too.
+         editMode() is the one condition already true for every legitimate
+         case (role, page AND the edit toggle) and false for every one of
+         these — no second flag needed. */
+      if (!HOOKS.editMode()) return
       const key = s.dataset.slot!, id = slotVal(key)
       e.preventDefault()
       if (!id) return

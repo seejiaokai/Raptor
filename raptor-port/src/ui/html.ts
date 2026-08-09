@@ -16,7 +16,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
-import { STORE_CFG } from '../engine'
+import { STORE_CFG, groundOrder } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
 
@@ -229,9 +229,6 @@ export function blkNoteHTML(di:any,d:any,ed:any,key:any,field:any){
       ? `<div class="blknote ed" contenteditable="true" spellcheck="false" data-txt="${key}:${di}"${a}>${esc(v)}</div>`
       : `<div class="blknote"${a}>${esc(v)}</div>`);
 }
-/* duty display order: SDO, then SXO, then OPS-O, then anything else */
-export const DUTY_ORDER:any={'SDO':0,'SXO':1,'OPS-O':2,'OPS O':2,'RUNNER':3,'LOGCELL':4,'LOG CELL':4};
-export function dutySort(rows:any){return (rows||[]).slice().sort((a:any,b:any)=>((DUTY_ORDER[a.role]??9)-(DUTY_ORDER[b.role]??9)));}
 /* Available-crew block: active aircrew by wave, then SANS grouped separately (they run to
    different currency requirements — see sanStatus()). Rendered at the bottom of the day. */
 export function availHTML(d:any,di:any,ed:any){
@@ -431,24 +428,6 @@ export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Fl
 /* vsel: emit the per-day version dropdown. Only EditWeek (and the preview
    path) passes it, so the view-only page never grows the control — read-only
    users see issued schedules, not the version machinery. */
-/* Ground Programme reads in start-time order (owner, Aug 26) — but ONLY at
-   render. ri is the row's slot key (g:di.ri / gr:di.ri) and pending marks, AL
-   colouring and published amendments all address through it, so the MODEL
-   array is never reordered; each entry keeps its original index for key
-   building. parseHM reads both the seed's '1020' and accept's '10:20' forms.
-   Time-less rows (all-day accepts, fresh "+ Item" blanks) sink to the bottom —
-   which is also where the model appends them, so a new row never jumps away
-   from under the scheduler typing into it. Ties keep model order; the
-   explicit fallback matters because Infinity-Infinity is NaN, which sort
-   treats as "equal" inconsistently. */
-export function groundOrder(grd:any[]){
-  return grd.map((row:any,ri:number)=>({row,ri})).sort((a:any,b:any)=>{
-    const ta=parseHM(a.row.str), tb=parseHM(b.row.str)
-    if(ta==null||tb==null)return ta==null&&tb==null?a.ri-b.ri:(ta==null?1:-1)
-    return (ta-tb)||(a.ri-b.ri)
-  })
-}
-
 export function dayHTML(di:any,ed:any,vsel?:any){
   const d=DAYS[di];
     /* ---- per-day approval strip -------------------------------------------
@@ -636,8 +615,21 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=`<div class="sub plist sec sec-duty"><div class="sub-h">Duties</div>`+(dws.length?plCols():'');
       dws.forEach((dwv:any,wi:any)=>{
         h+=`<div class="pl-sub">${ted(`dl:${di}.${wi}`,dwv.label,ed,'ntx')}</div>`;
-        dutySort(dwv.rows).forEach((r:any)=>{
-          const ri=dwv.rows.indexOf(r), key=`d:${di}.${wi}.${ri}`;
+        /* MODEL order, not role-sorted (owner, 8 Aug 26): the board can
+           reorder duty rows now, and a fixed role order here would have
+           swallowed the change — a scheduler would move a row and the
+           issued week would keep printing the old sequence. The board
+           already rendered model order, so the two surfaces agree for the
+           first time. The seed's rows were re-laid into the order the old
+           sort used to produce, so this prints identically until somebody
+           actually drags one — which is also what keeps parity.test.ts
+           byte-exact against the still-sorting reference, via a refwin
+           patch (testing/refwin.ts's reduty(), which pushes the port's
+           stored row order into the in-memory reference before either
+           engine runs — this diverged mid-build; see reduty()'s own
+           comment for what the patch does and does not still guard). */
+        (dwv.rows||[]).forEach((r:any,ri:any)=>{
+          const key=`d:${di}.${wi}.${ri}`;
           const inner=(PEOPLE[r.id]?lSeat(di,r.id,key,ed):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+moreSeats(di,key,ed);
           const n=rowCrew('d',[di,wi,ri]).filter(Boolean).length;
           h+=plRow(r.role,r.str,r.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`dr:${di}.${wi}.${ri}`,'role',ed,r);});
@@ -680,7 +672,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     if((d.ground&&d.ground.length)||ed){
       const grd=d.ground||[];
       h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme${ed?' · scheduler':''}</div>`+(grd.length?plCols():'');
-      groundOrder(grd).forEach(({row:x,ri}:any)=>{const id=nameToId(x.who), key=`g:${di}.${ri}`;
+      groundOrder(grd,d.gman).forEach(({row:x,ri}:any)=>{const id=nameToId(x.who), key=`g:${di}.${ri}`;
         const inner=((id&&PEOPLE[id])?lSeat(di,id,key,ed):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+moreSeats(di,key,ed);
         const n=rowCrew('g',[di,ri]).filter(Boolean).length;
         h+=plRow(x.prog,x.str,x.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x);});

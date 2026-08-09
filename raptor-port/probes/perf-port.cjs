@@ -215,7 +215,11 @@ async function trial(b, measureSize) {
   /* board raised from 770 on 7 Aug 26: stores came to the flying line
      (.sb-rcell + chips + C + bombs, per line) — see the stores-configuration
      spec. Measured at 767 before this margin was added. */
-  const DOM_CEILING = { week: 5530, board: 810 }
+  /* board raised from 810 on 9 Aug 26: the reorder grip and the two nudge
+     buttons landed on every movable row, plus one Auto sort button per
+     section and one Sort all button — see the board-row-reorder spec.
+     Measured at 859 nodes before this margin was added. */
+  const DOM_CEILING = { week: 5530, board: 860 }
   for (const [surface, s] of Object.entries(size)) {
     const cap = DOM_CEILING[surface]
     T(`perf · the ${surface} stays under its recorded DOM ceiling (${cap})`,

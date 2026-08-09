@@ -318,6 +318,183 @@ corrupted or hand-edited storage blob.
 `shiftAircraft`/`shiftFormation`/`shiftWave` compose it. Deleting a
 standalone wave also removes its duty block (`d:`/`dr:`/`dl:` keys).
 
+## Reordering a board list
+
+Every list on the board — flying lines, jets inside a formation, Duties,
+Sims, Ground Programme, the overall programme, overall notes — can be
+dragged or nudged into a new position through `applyMove(fromAddr, toAddr)`
+in `engine/reorder.ts`. Addresses are `mv:<kind>.<container…>.<index>` (`ac`
+aircraft, `d` duty, `s` sim, `g` ground, `p` programme, `n` note). For every
+kind but `ac`, two rows may exchange places IFF their addresses agree on
+everything but the last component — one test that enforces every
+containment rule at once (a duty row cannot change block, an AMT row cannot
+become an OFT row) with no per-kind special casing. **A row moves only
+within its own list**; a move that would cross lists is refused, and moving
+a row *between* lists (a line to another Go, AMT ↔ OFT) is out of scope by
+owner decision — delete-and-retype stays the path there.
+
+**A flying row's address means two different things, and the drop decides
+which.** The grip on a flying row carries the full aircraft address
+`mv:ac.di.gi.li.ai`, because a flying row *is* one jet — but the owner asked
+for both a formation that travels as a block and jets that resequence
+inside it, and there is only one grip. `applyMove` resolves it off the drop
+target: land on a sibling jet (same `di.gi.li`) and `moveAircraft` swaps the
+two jets; land on another formation in the same wave (same `di.gi`,
+different `li`) and `moveFormation` carries the whole formation, jets in
+order; land in a different wave and the move is refused outright. That is
+the only reading consistent with "a jet may never leave its formation" — a
+drag ending outside the formation cannot mean "move this jet there", so it
+can only mean "move this formation there".
+
+**`permuteKeys`/`moveKeys` (`engine/keys.ts`) are the bijective sibling of
+`shiftKeys`'s splice.** `shiftKeys` handles a delete: marks on the cut row
+are dropped, marks after it slide down one. A reorder is the opposite
+shape — every row survives, it only changes address — so the remap has to
+be a bijection: `permuteKeys(head, pos, oldOf)` takes `oldOf[newIndex] =
+oldIndex` and rewrites `SCHED.pending`, `SCHED.changes` and every issued
+AL's `keys` through it. An index outside the permutation is left alone (a
+stale key from a longer list is inert), never dropped or collided — drop
+one and an issued AL silently forgets an amendment; collide two and one
+amendment permanently re-labels itself as being about a different sortie.
+Neither failure shows on screen, which is why it is tested on its own
+before any mover calls it. `moveKeys(head, pos, from, to, len)` is the
+one-move wrapper — the splice-out/splice-in permutation of a list of length
+`len` — and `from === to`, an out-of-range index, or a missing `head` is a
+no-op.
+
+**A move marks the row at its NEW address, against the rule that a DELETE
+marks nothing.** `markEdit()` with no key is how a delete avoids re-marking
+the address it just vacated; a move's row still exists and its position is
+what changed, so it marks its own new address — `ff:di.gi.to.cs`,
+`dr:di.wi.to.role`, `gr:di.to.prog`, `ap:di.to.prog`, `sr:di.kind.to.label`,
+`dn:di.to`, `fr:di.gi.li.to`. That is the same idiom every add already
+uses, it is what puts the day into the next AL (mechanically, what "a move
+counts as an amendment" has to mean), and it tints the row that actually
+moved. Re-marking a row that already carried a pending mark is idempotent.
+
+**Ground Programme's manual flag.** Ground renders in start-time order
+(`groundOrder`, `engine/order.ts`) on both the week and the board, so a move
+expressed in plain model indices would be undone by the very next redraw —
+and the first move in particular would read as doing nothing at all: drag
+the 1000 line above the 0800 line and a naive model move lands it at model
+index 1, where the sort still prints it last. `moveGroundRow` freezes the
+order on screen into the model before it moves anything: on a day with
+`d.gman` unset, it runs `groundOrder` itself, permutes the ground array and
+its keys into that rendered order (`permuteKeys` — the same primitive a
+plain move uses), sets `d.gman = true`, translates the caller's model
+indices into the frozen order, and only then does the ordinary splice. From
+that point the day's Ground list renders in model order and a new row lands
+at the bottom, same as every other list. The way back is Undo:
+`histSnap()` serialises the whole of `DAYS`, so `gman` rolls back together
+with the order and no dedicated control is needed.
+
+**Duties now print in the order they are stored, on both the week and the
+board** — dropping the week's fixed `dutySort` (SDO → SXO → OPS-O → …) so a
+reorder sticks where it is made instead of being overridden the moment the
+week renders. The port's seed data was re-laid to already match
+`dutySort`'s output, so nothing looks different on day one. What that costs
+is in `src/testing/refwin.ts`'s `reduty()`, which pushes the port's re-laid
+`dutywaves` rows into the in-memory reference for parity: it makes the two
+structural comparisons in `parity.test.ts` that read `dutywaves.rows` in raw
+stored order — the deep-equal of `DAYS` against the reference's own, and the
+walk of `collectEvents` — **tautological for duty-row content and order**.
+By the time either runs, the reference's rows *are* the port's rows, so a
+corrupted duty row (a wrong name, a dropped role, a mistyped time) would
+show up identically on both sides and compare equal rather than being
+caught. Nothing outside `reduty()` narrows that gap. What still has
+teeth: every other field of `DAYS` and `collectEvents` — flying waves,
+sims, ground, notes — is still a real comparison against the untouched
+reference; wave labels are never touched by the push (only `.rows` is
+overwritten), so a wrong or renamed label still fails for real; and a
+wave-count mismatch between the two builds throws, from the out-of-bounds
+`dutywaves[j]` write, rather than silently comparing nothing.
+
+## Sorting a board section
+
+Where a manual move above is the scheduler's own judgement, sorting is the
+opposite move: throw the section's own reading order back at it. Every
+section but overall notes gets a sorter in `engine/reorder.ts` —
+`sortWave` (flying, by take-off — `parseHM(f.to)` — the jets INSIDE a
+formation are a position in the formation, never a time, so `sortWave`
+touches `w.formations` and nothing inside one), `sortDutyBlock` (by role,
+off `order.ts`'s `DUTY_ORDER` table, one call per duty BLOCK — `dw.rows`
+— never the whole day at once), `sortSims` (by start time, called once per
+`kind` so AMT and OFT sort independently of each other), `sortGround` and
+`sortProg` (both by start time). **Overall notes have no sorter at all** —
+prose in a chosen order has no natural key, and inventing one
+(alphabetical? first-typed?) would silently reorder someone's argument, so
+`sortDay` (below) walks waves, duty blocks, sims, ground and the programme
+and stops there.
+
+**Every sorter is a stable sort of the row's own INDEX range**, never the
+rows themselves — `keySort(n, keyFn)` sorts `[0..n)` by `keyFn(i)`, and its
+comparator falls back to `a-b` (the original index) whenever the keys tie
+or are both unparseable, so equal keys — two formations off at the same
+minute, two ground rows with no time at all — keep the order they already
+had. Unparseable keys (`parseHM` returning null) sink to the bottom in
+model order, the same fallback `groundOrder` already uses for a time-less
+row.
+
+**Every sorter is a no-op on an already-sorted section, and the identity
+check runs BEFORE anything else** — `isIdentity(oldOf)` (every index maps
+to itself) short-circuits with no model write, no key remap and no
+`markEdit`, so pressing "Auto sort" on a tidy section changes nothing and
+creates no amendment. This has to run first rather than after the fact,
+because the alternative — sort, then compare, then undo the write if it
+matched — would still have to invent a key ordering to compare against,
+which is exactly the risk overall notes exists to avoid.
+
+**A sorter remaps the amendment key space through the exact same
+primitive a manual move uses** — `permuteKeys(head, pos, oldOf)`, the
+bijective sibling `shiftKeys` gained for reordering (see above) — over the
+identical key-space heads the matching mover in this file already touches
+(`sortWave` over `ff:`/`fr:`/`st:`/`ar:`/`at:` plus the bare address,
+`sortDutyBlock` over `d:`/`dr:`, `sortSims` over `s:`/`sr:`, `sortGround`
+and `sortProg` over their own pair). A sorter that skipped this would move
+a row on screen while its amendment stayed addressed at the OLD index —
+silently re-labelling an old amendment onto whatever sortie now sits
+there. Like a move, a sorter marks the row now sitting at index 0 of the
+section it touched (the same "mark the NEW address" idiom, not the old
+one) — that single mark is what puts the day into the next AL.
+
+**Ground's Auto sort (`sortGround`) also owns the day's manual flag, and
+reports honestly when the flag is the only thing that moved.** Every
+`sortGround` call clears `d.gman` unconditionally — Auto sort IS the way
+back to the self-sorting render Ground normally has — even on the one path
+where nothing in the row array needs to move: a day frozen in manual mode
+whose rows already happen to read in time order. `wasMan` is read before
+the clear, so the caller (`board.ts`'s `boardMbtn`) can tell that case
+apart from a genuine no-op: `sortGround` still returns `true` and marks the
+row (the flag flipping IS a change, even though the row array is the same
+object, not a rebuilt copy), and the UI reports "Ground programme back to
+time order" rather than the generic "Already in order" toast — clearing
+the flag without moving a row is still something that happened, and saying
+nothing would hide it.
+
+**`sortDay(di)` is the primitive `⇅ Sort all` composes over**: every wave,
+every duty block, every sim kind, Ground, then the programme, in that
+order, returning whether ANY of them changed. `⇅ Sort all` itself
+(`board.ts`'s `sortAllCommit`) wraps one call to `sortDay` in
+`HIST.lock = true` for the duration — `histPush` (`state/history.ts`)
+bails outright while the lock is held, so however many of the day's
+sections `sortDay` touches, none of their individual `markEdit`s reaches
+the undo stack; only the ordinary `afterSchedMutate()` call AFTER the lock
+lifts pushes a snapshot, so Undo takes the whole day back in one step, not
+one per section. An already-tidy day never needs the lock's protection at
+all: `sortDay` returns `false`, nothing inside it ever called `markEdit`,
+and the caller shows "Already in order" instead of pushing a no-op step.
+
+**A new duty row lands in role position at the moment the role is typed,
+not when the blank row is added.** `boardChange` (`board.ts`) commits every
+`data-bfld` edit through the ordinary text funnel; the instant that commit
+is a duty row's OWN role field (`dr:<di>.<wi>.<ri>.role`), it calls
+`sortDutyBlock(di, wi)` right there. A freshly added row starts with an
+empty role — there is nothing to sort BY until the scheduler types one —
+so sorting at add-time would either do nothing or sort by "no role yet",
+neither of which answers where the row belongs. Because `sortDutyBlock` is
+itself a no-op on an already-ordered block, typing a correction into an
+untouched list costs nothing extra.
+
 ## Who a row stores: ID vs CALLSIGN
 
 Two different things live in the model and mixing them up breaks rows silently:

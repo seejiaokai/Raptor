@@ -151,6 +151,11 @@ beside a fresh `npm run perf` showing the per-node cost held.
 ceiling was set). Week is unchanged at 5530, measured 5056. See
 `probes/perf-port.cjs`'s `DOM_CEILING` for the live numbers.
 
+**The board's DOM ceiling was raised 810 → 860**, measured 859 nodes (was
+767 before this feature) — the reorder grip and the two nudge buttons on
+every movable row, plus one Auto sort button per section and one Sort all
+button, `probes/perf-port.cjs`'s `DOM_CEILING`.
+
 **That 810 margin was set against a six-store measurement, and the feature
 supports up to `MAX_STORES` (24, `engine/stores.ts`) — worth knowing before
 this gate trips on a legitimate configuration.** A squadron that grows its

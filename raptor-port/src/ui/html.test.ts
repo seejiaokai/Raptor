@@ -479,6 +479,29 @@ describe('the scheduler-side controls', () => {
     expect(gblk.slice(gblk.lastIndexOf('<div class="pl-row'))).toContain(`gr:0.${d.ground.length - 1}.str`)
     d.ground.pop()
   })
+
+  /* finding #2 (whole-branch review, 9 Aug 26): groundOrder(grd,man) gained a
+     second parameter so a day frozen in manual order (moveGroundRow sets
+     d.gman) stops time-sorting at render — but this call site never passed
+     it, so the freeze-then-move machinery a scheduler just used was silently
+     undone by the very next redraw. Asserts the RENDERED order, not the
+     model array: the model is already permuted the moment gman is set, so a
+     model-only assertion (as engine/reorder.test.ts already has) cannot
+     catch a render call site that forgot the flag. */
+  it('a day frozen in manual ground order (gman) renders that order, not time order', () => {
+    const d: any = DAYS[0]
+    const savedGround = d.ground, savedGman = d.gman
+    d.ground = [{ prog: 'GMAN-C', str: '1000' }, { prog: 'GMAN-A', str: '0800' }, { prog: 'GMAN-B', str: '0900' }]
+    d.gman = true
+    try {
+      const e = dayHTML(0, true)
+      const gblk = e.slice(e.indexOf('sec-grnd'), e.indexOf('sec-inp'))
+      const progs = [...gblk.matchAll(/data-txt="gr:0\.\d+\.prog"[^>]*>([^<]*)</g)].map(m => m[1])
+      expect(progs).toEqual(['GMAN-C', 'GMAN-A', 'GMAN-B'])
+    } finally {
+      d.ground = savedGround; d.gman = savedGman
+    }
+  })
 })
 
 /* The two days the bounded byte-comparison above stops covering. */

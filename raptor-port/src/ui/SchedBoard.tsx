@@ -5,14 +5,15 @@
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY, DPREV, setDayPreview } from '../state/view'
+import { SBDAY, CURPAGE, DPREV, setDayPreview } from '../state/view'
 import { daySnapOf, dayVersions, verLabel, alColor } from '../engine/publish'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
-import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, addLine, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide } from './board'
+import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, addLine, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll } from './board'
 import { refreshHighlights } from './highlights'
+import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
 
@@ -23,7 +24,39 @@ export function SchedBoard() {
   const daysRef = useRef<HTMLDivElement>(null)
   const warnRef = useRef<HTMLDivElement>(null)
   const inputsRef = useRef<HTMLDivElement>(null)
-  const open = SBDAY != null
+  /* The board's only home page is Edit Schedule — `open` used to be a bare
+     `SBDAY != null`, so a nav click while the board was open left the
+     modal (position:fixed, inset:0, z-index:400 — the whole viewport)
+     fully mounted and painted on top of whatever page the user actually
+     navigated to, covering its own nav and edit toggle in the process
+     (HANDOFF.md, "board stays open across a page change"). This render
+     gate is now belt-and-braces, not the only thing standing between a
+     page change and a live board: state/view.ts's setPage clears SBDAY
+     itself the moment the page leaves 'editsched' — the "leave SBDAY alone,
+     the render gate alone is enough" choice this comment used to describe
+     is GONE (reviewer-found blocker, 9 Aug 26): a document-level handler
+     elsewhere (Shell.tsx's right-click clear-a-seat) trusted SBDAY!=null on
+     its own as proof the board was safely open, which stopped being true
+     the instant the render here stopped painting it but the state kept
+     living — on View-only Sched with a board left open, a real right-click
+     on the now-visible WEEK underneath cleared a seat straight through that
+     escape hatch. SBDAY is cleared, full stop, not merely hidden — landing
+     back on Edit Schedule does NOT resume a day; a scheduler opens one
+     again, the same as any other visit. */
+  const open = SBDAY != null && CURPAGE === 'editsched'
+
+  /* wires HOOKS.closeBoardDialogs — state/view.ts's closeBoardState() calls
+     it, but the board's own dialog state (CXT, SORTALL) lives here, in the
+     one component that owns it, not in state/ (see the doorway comment on
+     closeBoardState itself). Raw setters, not the askCx/cancelSortAll
+     "commands" — those call notify() themselves, which closeBoardState has
+     no business doing mid-close; the caller (setPage) already gets its own
+     notify() from whoever calls it. Wired once, like store.ts's wireStore()
+     wires HOOKS.editMode/render* once at boot. */
+  useEffect(() => {
+    HOOKS.closeBoardDialogs = () => { setCxt(null); setSortAll(null) }
+    return () => { HOOKS.closeBoardDialogs = () => {} }
+  }, [])
 
   /* the board's own handlers, attached once */
   useEffect(() => {
@@ -31,7 +64,11 @@ export function SchedBoard() {
     el.addEventListener('click', boardMbtn)
     el.addEventListener('click', boardArmClick)
     el.addEventListener('change', boardChange)
-    return () => { el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick); el.removeEventListener('change', boardChange) }
+    const offDrag = wireRowDrag(el)
+    return () => {
+      el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
+      el.removeEventListener('change', boardChange); offDrag()
+    }
   }, [])
 
   /* renderScheduler: fill every panel from the verbatim builders. Each panel
@@ -41,6 +78,30 @@ export function SchedBoard() {
      budget. */
   const panelPrev = useRef<any>({})
   useEffect(() => {
+    /* Still keyed on a bare `SBDAY == null`, not `!open` (considered and
+       reverted, 9 Aug 26 — reviewer had asked for `!open` here as a
+       "wasted work only" cleanup, since a board left open on the wrong
+       page used to rebuild all four panels into a hidden subtree on every
+       repaint). Two things changed that call once setPage (above) clears
+       SBDAY itself the moment the page leaves 'editsched': first, the
+       wasted work the request was about no longer happens on any path a
+       real user can reach — SBDAY IS null on every other page now, so this
+       guard already skips the rebuild the ordinary way. Second, and why
+       `!open` was reverted rather than kept as extra safety: `SBDAY != null`
+       with CURPAGE not yet 'editsched' is now a TEST-ONLY state (`
+       window.openScheduler`/`window.setPage` called directly, the
+       deliberate pattern this whole suite uses to test a render/role gate
+       in isolation without a click path — warnjump.test.tsx, board-
+       stores.test.tsx's duty-crew test, the squadron-member e2e test, and
+       others), and `!open` made the panels never render AT ALL in that
+       state — which does not test the gate, it just makes every assertion
+       about what the gate withholds vacuously true, the exact "proves
+       nothing" trap this codebase's own comments warn about elsewhere
+       (interactions.ts, the squadron-member e2e test). Reverted rather than
+       patched further: the performance concern is real but already answered
+       by the setPage fix above, and this guard's ONE job is deciding
+       whether the panels have a day to render, which SBDAY alone answers
+       correctly. */
     if (SBDAY == null) { panelPrev.current = {}; return }
     if (editingText()) return
     const di = SBDAY
@@ -90,8 +151,32 @@ export function SchedBoard() {
                 {dayVersions(SBDAY).map((v: any) => <option key={String(v)} value={String(v)}>{verLabel(v)}</option>)}
               </select>
             : null}
-          <button className="abtn" id="sbAddLine" disabled={open && DPREV.has(SBDAY)} onClick={() => { if (SBDAY != null) addLine(SBDAY) }}>+ Line</button>
-          <button className="abtn" id="sbAddGo" disabled={open && DPREV.has(SBDAY)} onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, SBDAY) }}>+ Wave</button>
+          {/* Sort all — every section on this day at once, not one row like
+              every other control here. Gated on HOOKS.editMode() — the same
+              flag the grip, the nudge buttons and every per-section ⇅ Auto
+              sort already gate on, not the bare role check (review fix, 9
+              Aug 26: canEditSched() alone left this button live and enabled
+              on a read-only board — an admin who has navigated to View
+              sched but still has the board open, per finding #1 — while
+              every sibling control on the same row correctly disappeared).
+              editMode() is re-checked inside askSortAll and sortAllCommit
+              too, so a stale button left over from a role OR page change
+              can't open the dialog or act either. Disabled (not hidden)
+              while previewing a frozen published version, same idiom as
+              +Line/+Wave above. */}
+          {open && HOOKS.editMode() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
+            title="Reorder every section on this day back into its own reading order — one confirm, one undo step"
+            onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}>⇅ Sort all</button>}
+          {/* + Line / + Wave — matched to Sort all's own gate (coordinator
+              review, 9 Aug 26): these two carried no editMode() gate of
+              their own here, so they still rendered enabled on a read-only
+              board (edit toggle off, board still open on its own page) —
+              the last "looks live, does nothing" pair, genuinely inert
+              because addLine/addWave already refuse underneath (board.ts),
+              but that is exactly the shape Sort all was fixed for three
+              lines above. Hidden, not merely disabled, same as Sort all. */}
+          {open && HOOKS.editMode() && <button className="abtn" id="sbAddLine" disabled={DPREV.has(SBDAY)} onClick={() => { if (SBDAY != null) addLine(SBDAY) }}>+ Line</button>}
+          {open && HOOKS.editMode() && <button className="abtn" id="sbAddGo" disabled={DPREV.has(SBDAY)} onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, SBDAY) }}>+ Wave</button>}
           <button className="abtn primary" id="sbDone" onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}>Done</button>
           <button className="abtn ghost" id="sbClose" onClick={closeScheduler}>✕ Close</button>
         </div>
@@ -153,6 +238,38 @@ export function CxDialog() {
           <button className="abtn danger" id="cxUn" hidden={!on} onClick={() => cxCommit(false, '')}>Un-cancel</button>
           <span style={{ flex: 1 }}></span>
           <button className="abtn primary" id="cxSave" onClick={() => cxCommit(true, inRef.current ? inRef.current.value : '')}>{on ? 'Save reason' : 'Cancel line'}</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* Sort all's confirmation — same board-level modal shape as CxDialog above,
+   because this is the precedent the brief points at rather than a browser
+   confirm(): the day it names is read straight off SORTALL (the index
+   askSortAll armed), so the prompt can never say the wrong day even if the
+   board has since switched tabs underneath it. */
+export function SortAllDialog() {
+  useVersion()
+  const di = SORTALL
+  const open = di != null
+  const d = open ? DAYS[di] : null
+  const close = () => cancelSortAll()
+  return (
+    <div className="airpop" id="sortAllPop" hidden={!open}
+      onClick={e => { if ((e.target as HTMLElement).id === 'sortAllPop') close() }}>
+      <div className="airpop-box">
+        <div className="airpop-head"><b id="sortAllTitle">Sort all — {d ? d.dow : ''}</b><button className="x" id="sortAllClose" aria-label="Close" onClick={close}>✕</button></div>
+        <div className="airpop-body">
+          Every section on {d ? d.dow : 'this day'} — flying, duties, sims, ground and the
+          overall programme — goes back into its own reading order. Unlike every other
+          control on this board, this acts on the WHOLE day at once, not one row; a
+          single Undo reverses all of it together.
+        </div>
+        <div className="airpop-foot">
+          <span style={{ flex: 1 }}></span>
+          <button className="abtn ghost" id="sortAllCancel" onClick={close}>Cancel</button>
+          <button className="abtn primary" id="sortAllConfirm" onClick={() => sortAllCommit()}>Sort all</button>
         </div>
       </div>
     </div>

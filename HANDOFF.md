@@ -7,10 +7,11 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 690/43
-files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 40/40, and the two that are NOT in CI — `npm run probes:adapted`
-6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
+**Every gate is green at this commit**, run first-hand: `npm test` 782 tests
+across 47 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
+run test:e2e` 48/48, and the two that are NOT in CI — `npm run
+probes:adapted` 6/6 and `npm run perf` 9/0. Re-state these only after
+re-running them.
 **`probes:adapted` and `perf` do NOT serve themselves** — start
 `npx vite preview --port 4173` first or both fail with
 `ERR_CONNECTION_REFUSED`, which reads like a code fault and is not
@@ -21,6 +22,25 @@ believing a single red.)
 
 ## Known issues / open work
 
+- **NEXT PIECE OF WORK — remove the Edit-mode toggle entirely (owner, 9 Aug 26).**
+  Decided but deliberately NOT done on the reorder branch: the owner's sequencing
+  call, after two late additions to that branch each introduced a defect worse
+  than the one they fixed. His reasoning: the board is reachable only as admin →
+  Edit Schedule → board, so intent to edit is implied by being there at all.
+  The stronger argument is that **View-only Sched already IS the read-only mode**,
+  so the toggle is a second mechanism for the same job — and most of the
+  read-only-board defects fixed on that branch (a live board accepting typing,
+  adds and deletes; a right-click that cleared a week puck; controls that looked
+  live and did nothing) exist ONLY because that state can be entered at all.
+  Removing it deletes the class rather than guarding it.
+  Scope: `HOOKS.editMode()` becomes `canEditSched() && CURPAGE==='editsched'`
+  (drop `EDITON`), the `.editing` class goes unconditional on that page,
+  `Shell.tsx` loses `#editToggle`, and the tests and probes that click it need
+  updating. `EDITON` already defaults to `true`, so nobody meets it off unless
+  they turned it off. **Parity is not at risk** — the toggle is Shell chrome, not
+  part of the string-built day markup `parity.test.ts` compares.
+  Cost flagged to the owner and accepted: the toggle doubles as an
+  accidental-edit guard on a phone; View-only Sched covers that one tap away.
 - **No shared data.** localStorage only — two devices never see each
   other's edits. The obvious next enhancement (needs a server or a sync
   backend; touches `engine/hooks.ts:storeBackend` and the mutation funnel).
@@ -617,19 +637,303 @@ believing a single red.)
     standalone line** if legacy `opts` survive there from before the SC /
     AVALON / BB gate went on both surfaces; the entry paths are closed now,
     the CSV read path is not.
-  - **A follow-up this feature is not the cause of, recorded here because
-    it was found while working nearby.** The Schedule Board stays open
-    across a page change generally (not just for stores) — at a phone width
-    (≤820px), tab to `#burger` behind an open board, the drawer paints above
-    it at `z-index:440`, and "View-only Sched" flips `CURPAGE` while the
-    board itself stays open with callsign, times, remarks, CX and ✕ all
-    still live and still writing to the model. Stores render was gated on
-    `HOOKS.editMode()` for exactly this reason and is safe; the rest of the
-    board's line is not. Proposed fix: `SchedBoard.tsx`'s
-    `const open = SBDAY != null` becomes
-    `SBDAY != null && CURPAGE === 'editsched'`, or `setPage` closes the
-    board outright. **Deliberately not fixed here** — out of scope for a
-    stores feature.
+  - **CLOSED (owner ask, 9 Aug 26 — was tracked here as an open gap and as
+    "deliberately not fixed"; took two passes, the first of which introduced
+    a NEW hole a reviewer caught before it shipped — recorded honestly
+    below).** The Schedule Board used to stay open across a page change —
+    at a phone width (≤820px), tab to `#burger` behind an open board, the
+    drawer paints above it at `z-index:440`, and "View-only Sched" flips
+    `CURPAGE` while the board itself stayed open with callsign, times,
+    remarks, the CX/red-flag/add-aircraft/delete buttons and the FCP/RCP
+    arm targets all still live and still writing to the model. A reviewer
+    confirmed this in a real browser: a typed callsign committed, `+ Line`
+    added a formation, a row's `✕` deleted a line. **Was believed not
+    reachable by a normal user at the time — wrong, corrected in round 3
+    below.** A desktop pointer click straight at the nav was confirmed
+    blocked by the modal's own stacking context, which read as proof the
+    whole gap needed a bypass to reach; it only checked one path in. At
+    phone width the burger menu sits OUTSIDE the modal and stays
+    keyboard-focusable behind it — Tab to it, open the drawer (which paints
+    ABOVE the board), click a nav link normally. A real, ordinary phone
+    gesture, no bypass. This was a live hole, not defence in depth, and the
+    round-3 addendum below is what actually closes it (a page change now
+    closes the board outright rather than leaving it open-but-hidden for a
+    reachable UI path to land on).
+    **Pass 1 (render + the flying line's own write paths) — closed the
+    board's own controls, opened a different one.** `SchedBoard.tsx`'s
+    `const open = SBDAY != null` became `SBDAY != null && CURPAGE ===
+    'editsched'`, deliberately leaving `SBDAY` itself untouched ("a resume,
+    not a leak"), and `board.ts`'s flying-line render/write paths were
+    widened onto `stoRO`/`mvRO` (`pv OR not in edit mode`) the same way the
+    stores chips, grip, nudge buttons and Sort all already were. **This
+    reasoning was wrong**: `Shell.tsx`'s document-level right-click
+    clear-a-seat handler carried `HOOKS.editMode() || SBDAY != null` — an
+    escape hatch that existed BECAUSE the board used to paint over whatever
+    page you were on, and so trusted "a board is open" as proof of safety
+    on its own. Leaving `SBDAY` alive broke that assumption: the render
+    stopped painting the board on the wrong page, but the escape hatch kept
+    reading `SBDAY != null` as permission — so a real right-click on the
+    WEEK puck now VISIBLE underneath (no longer covered by the board)
+    cleared it straight through. Proven live by the reviewer with a real
+    pointer, and proven to be a NEW regression, not pre-existing, by
+    building the prior commit in a parallel worktree: before, the hit-test
+    on that puck was covered by the board and a right-click timed out;
+    after pass 1, it landed and deleted.
+    **Pass 2 (the fix): `SBDAY` is cleared, not left alive.**
+    `state/view.ts`'s `setPage` now clears the board outright the moment
+    the page stops being `'editsched'` (`closeBoardState()` — `SBDAY` null,
+    which disarms `ARM` for free since `setBoardDay`'s own disarm fires on
+    any day change including to null, plus the aircrew drawer's `ros-open`
+    body class parked), the same cleanup `closeScheduler`'s Done/Close
+    buttons already ran, now shared rather than duplicated. Landing back on
+    Edit Schedule does **not** silently resume a day any more — a
+    scheduler opens one again, same as any other visit; the "resume"
+    framing from pass 1 is gone. `Shell.tsx`'s handler lost the `SBDAY !=
+    null` escape entirely — `HOOKS.editMode()` alone gates it now, which is
+    the one condition already correct for every legitimate case (role,
+    page, AND the edit toggle) and false for every one that isn't.
+    `state/view.ts` staying DOM-free of `ui/board.ts` (the layering this
+    file's own map describes) is why the shared cleanup lives in
+    `state/view.ts` and `board.ts`'s `closeScheduler` calls into it, not
+    the reverse.
+    **The render widening also had a narrower boundary than the write
+    surface it was meant to close.** Pass 1 widened only the flying line
+    (what this entry named by name: callsign/mission/brief/take-off/
+    land/remarks, its CX/flag/add-aircraft/delete cluster, its FCP/RCP
+    seats). The SAME gap sat untouched in every other panel added Aug 26 —
+    Overall notes, the overall programme, duty/sim/ground rows — still
+    `pv`-only. Demonstrated live: a read-only board still let a name be
+    dragged onto a duty row (`drag.ts`'s `applyDrop`, the ONE mutation path
+    shared by mouse and touch, checked the role but never the mode — 36
+    draggable seats and 59 draggable roster pucks on a read-only board),
+    and typing into a day's Overall note left the wrong text sitting on
+    screen **permanently** — `boardChange`'s first-attempt guard was an
+    early `return` that skipped past the revert branch a rejected `txtSet`
+    already had, so a blocked field kept whatever was typed into it on
+    screen while the model held the old value underneath: worse than a
+    dead control, because a scheduler sees their own words and reasonably
+    believes it saved. Both fixed: six more call sites in `board-html.ts`
+    (`sbRowCtl`, `sbTxt`, `sbNote`, `sbSeat`/`sbMore`, the `data-fill`
+    cells, `sbInputsGroupPanel`'s accept control) plus the per-wave header
+    block and the `.bsug` brief-suggestion ghost in `board.ts` now pass the
+    same `ro` flag the flying line's `dis`/`stoRO` already used; `applyDrop`
+    checks `HOOKS.editMode()` alongside the role; `boardChange` reverts a
+    blocked field to the model's real value instead of merely refusing to
+    commit it, mirroring the revert a rejected edit always had.
+    `boardMbtn`'s consolidated guard (added in pass 1) is now
+    **load-bearing for tests that predate it** — the nudge, per-section-sort
+    and delete-line branches lost their own copy of the check when it moved
+    to the top of the function, so narrowing that guard later without
+    giving those three branches a check of their own back would silently
+    reopen a gap even though their own tests would keep passing; flagged in
+    a comment at the guard itself.
+    **Nineteen new tests pin all of this** — `board.test.tsx` (the blocker,
+    reproduced with a real `contextmenu` dispatch on a WEEK seat after a
+    board was opened then navigated away from; the render/write-path
+    widening for the other panels; two page-leave stale-state regressions,
+    `ros-open` and `ARM`), `drag.test.tsx` (`applyDrop`'s mode check, using
+    a stale-but-attached drag source/target the same way every other
+    write-path test in this pass does — a version that re-rendered between
+    capture and drop was tried first and passed for the wrong reason, the
+    target having gone stale/detached, which is recorded in the test's own
+    comment) — plus one rewritten and one added in `e2e/geometry.spec.ts`
+    (the page-nav-close test now asserts `SBDAY` is actually cleared, not
+    just hidden, since "resume" is gone; a new test drives the blocker with
+    a REAL pointer right-click, confirming the same real-browser
+    reproduction the reviewer used). `probe-bridge.ts` gained `w.setPage`
+    (same bare-global idiom as `w.openScheduler`) so the squadron-member
+    render-gate e2e test can force Edit Schedule with no click path there,
+    proving the role gate rather than the page gate. Every test in both
+    passes was run against the pre-fix code first and confirmed red —
+    including, for pass 2, checking that pass 1's OWN tests didn't
+    accidentally start passing for the wrong reason once SBDAY started
+    clearing (two did, and were rewritten: `board-stores.test.tsx`'s
+    stores-go-read-only test now reaches read-only via the edit toggle,
+    since the page-nav route it used no longer leaves the board open to
+    observe; the finding #1 row-register e2e test does the same).
+    **Pass 3 (coordinator ship review, 9 Aug 26) — a verdict of "ship it"
+    with two corrections and four small items.** First correction: pass 2's
+    "not reachable by a normal user" framing above was **wrong**, not just
+    imprecise. A desktop pointer click straight at the nav was blocked by
+    the modal and read as proof the whole gap needed a bypass; it only
+    checked one path in. At phone width the burger menu sits OUTSIDE the
+    modal's stacking context and stays keyboard-focusable behind it — Tab
+    to it, open the drawer (paints ABOVE the board), click a nav link with
+    an ordinary pointer. The reviewer drove exactly that. It was a live
+    hole, corrected here, not defence in depth. Second correction: pass 2's
+    render/write-path widening (the "residual" above) was in fact complete
+    — a stale instruction had told a fresh reviewer to judge it unfinished,
+    based on an out-of-scope paragraph in this task's own report that was
+    never struck through after pass 2 shipped and so still contradicted the
+    code; that paragraph is now corrected in the report itself.
+    Four items, all fixed the same day: **(1)** a zero-coverage gap on
+    `Shell.tsx`'s context-menu fix — the full suite stayed green with the
+    `HOOKS.editMode() || SBDAY != null` → `HOOKS.editMode()` line reverted,
+    because the blocker test only exercised the `setPage`-clears-`SBDAY`
+    half; a new test opens a board on Edit Schedule itself, switches the
+    edit toggle off, and right-clicks an `#eWeek` seat — the one state only
+    the `Shell.tsx` line protects, since `SBDAY` is genuinely non-null
+    there. **(2)** `#sbAddLine`/`#sbAddGo` (`SchedBoard.tsx`) matched to
+    `#sbSortAll`'s own gate three lines above them — `{open &&
+    HOOKS.editMode() && <button…>}`, hidden rather than merely disabled, the
+    last "looks live, does nothing" pair on the board. **(3)** the CX-with-
+    a-reason dialog and Sort all's confirm dialog (`CXT`/`SORTALL`, module
+    state in `ui/board.ts`) now drop when `closeBoardState()` runs, via a
+    new `HOOKS.closeBoardDialogs` — the same injectable-callback doorway
+    `HOOKS.editMode`/`HOOKS.renderScheduler` already use, wired once in
+    `SchedBoard.tsx`, chosen over a circular import because `state/`
+    importing `ui/board.ts` is exactly the layering violation
+    `closeBoardState`'s own comment already declined; `cxCommit` gained the
+    standard `!canEditSched() || !HOOKS.editMode()` guard it never had,
+    pre-existing and (per the coordinator) genuinely unreachable today, but
+    the last write path of this family with none. **(4)** this task's own
+    report corrected — the stale "out of scope" section struck through
+    rather than silently edited, and a dangling truncated sentence at the
+    very end of the file (a leftover from an earlier append that didn't
+    fully consume the text it was inserting after) removed. Six more new
+    tests, each checked against the pre-fix line/code first. Gates:
+    `npm test` 814+, `npm run build` clean, `node reference/tfin.js` 728/0,
+    `npm run test:e2e` 50/50, `npm run probes:adapted` 6/6, `npm run perf`
+    9/0 — exact counts in the task's own report, which this entry does not
+    duplicate.
+- **Board rows can be reordered (owner ask, 8 Aug 26): "drag lines up and
+  down to adjust the sequence."** Every movable list on the board — flying
+  lines (a formation, travelling as a block), jets inside a formation,
+  Duties, Sims, Ground Programme, the overall programme, overall notes —
+  gets a grip (`⠿`) at the far left on desktop and ▲/▼ buttons in its own
+  control cluster below 820px; both are always in the markup, CSS decides
+  which paints. A row moves only within its own list (a duty row cannot
+  change block, an AMT row cannot become an OFT row); a flying row's grip
+  carries the aircraft address, and the DROP decides whether it resequences
+  the jet within its formation or carries the whole formation — dropping
+  into another wave is refused. `engine/reorder.ts`'s movers reuse the
+  exact key-space heads `engine/keys.ts`'s existing delete-time renumbering
+  already proved correct, through a new bijective sibling
+  (`permuteKeys`/`moveKeys`) that drops nothing and cannot collide two
+  marks onto one address. A move marks the moved row at its own NEW
+  address — the same idiom every add uses, and the reverse of a delete,
+  which marks nothing. Contracts: `docs/engine-rules.md` §Reordering a
+  board list, `docs/ui-contracts.md` §Reordering rows on the board.
+  **Two behaviour changes a future reader must not mistake for bugs.**
+  Ground Programme stops time-sorting itself on any day once a row is
+  dragged there — the first move freezes the rendered order into the model
+  and sets `d.gman`, which switches that day from `groundOrder`'s
+  start-time sort to plain model order; the way back is Undo. Duty rows no
+  longer print in a fixed role order (SDO → SXO → OPS-O → …) — they print
+  in the order they are stored, on the week and the board alike, so a
+  reorder sticks instead of being overridden on the next render.
+  **Two controls followed at the owner's ask: Auto sort per section, Sort
+  all for the whole day.** A `⇅ Auto sort` button sits in every section's
+  own header — flying waves, Duties (per block), Sims (AMT and OFT each get
+  their own), Ground Programme, the overall programme — and throws that
+  section back into its own reading order: flying by take-off (the jets
+  INSIDE a formation never move, because their order is a position in the
+  formation, not a time), Duties by role, Sims/Ground/programme by start
+  time. Overall notes get no button at all — prose in a chosen order has no
+  natural key, and a sorter would silently invent one. `⇅ Sort all`, one
+  button in the board's own top bar, runs every section's sort for the
+  whole day at once; the owner asked for it after being advised against it,
+  so it ships with the two guards that make it safe — it asks first, naming
+  the day, in the board's own confirm-dialog shape rather than a browser
+  `confirm()`, and the whole run holds `HIST.lock` so Undo takes the day
+  back in ONE step, not six. Every sorter is stable (equal keys keep their
+  order) and a no-op when the section is already sorted — no model change,
+  no mark, no amendment — and every sorter remaps the amendment key space
+  through the same `permuteKeys` primitive the movers above use, so a sort
+  never mislabels an old amendment onto a different row. Ground's Auto sort
+  also clears that day's manual flag (`d.gman`) and says so honestly when
+  clearing the flag is the ONLY thing that happened — "back to time order"
+  rather than a false "already in order". A new duty row still lands in
+  role position, but only once the scheduler TYPES the role — a blank row
+  has nothing to sort by yet, so the sort fires off the role field's own
+  commit, not off the row being added. Contracts: `docs/engine-rules.md`
+  §Sorting a board section, `docs/ui-contracts.md` §Reordering rows on the
+  board. **The board's DOM ceiling was raised again, 810 → 860** (the grip,
+  the two nudge buttons, one Auto sort button per section and the Sort all
+  button all landed on a board that already carried them once for the
+  reorder feature above), measured 859 nodes — `probes/perf-port.cjs`'s
+  `DOM_CEILING`, reasoning in `docs/probe-sweep.md` §The performance gate.
+- **A whole-branch review found five defects the per-task reviews could not
+  see, because each one only shows up crossing a boundary no single task's
+  diff crossed (9 Aug 26; fixed same day).** All five are now fixed, each
+  pinned by a test that failed before the fix and passes after:
+  1. **The read-only board lost its row register.** `sbGrip()` returned `''`
+     for a read-only render, but every row template in `scheduler.css`
+     unconditionally reserves the grip's leading 18px track — so a read-only
+     board (reachable by opening the board, then clicking View-only Sched;
+     the board deliberately stays open) lost each row's FIRST grid item
+     while the template still had ten tracks, and every field walked one
+     track left of its own header. Fixed by emitting `<span class="sb-grip">`
+     unconditionally and gating only a new `.ro` class, which
+     `scheduler.css` turns into `visibility:hidden` — not `display:none`,
+     which would drop the box from grid layout and reproduce the same bug.
+     Pinned by a Playwright test (jsdom cannot see this at all).
+  2. **`groundOrder(rows, man)`'s new `man` parameter never reached either
+     render call site** (`ui/html.ts`, `ui/board-html.ts` both called it
+     bare) — a scheduler's manual ground reorder (which sets `d.gman`) was
+     silently undone by the very next redraw, while the model stayed
+     permuted and a pending mark stayed set. Both call sites now pass
+     `d.gman`.
+  3. **A duty row's role-reposition fired on ANY role commit in the block**,
+     not only a new row's — retyping a different row's role after a manual
+     drag silently snapped the whole block back to role order. Now gated on
+     the edited row's OLD role having been empty (read via `txtGet` before
+     `txtSet` overwrites it) — the "+ Row" case the rule exists for.
+  4. **`Sort all` gated on the role check alone**, at both its render gate
+     and its write path, where every sibling control on the board (the
+     grip, the nudge buttons, every per-section Auto sort) gates on
+     `HOOKS.editMode()`. On the read-only board from #1, it stayed live and
+     enabled while everything around it correctly disappeared. Now gated on
+     `HOOKS.editMode()` in all three places (`SchedBoard.tsx`'s render,
+     `askSortAll`, `sortAllCommit`).
+  5. **The stale-arm guard checked only whether the armed address still
+     EXISTS**, and a reorder never changes a list's length — arm a slot,
+     drag that row elsewhere, tap a name, and it plants on whatever moved
+     INTO that index, with a success toast and the amendment mark on the
+     wrong key. `engine/reorder.ts` now exports `REORDERED_DI` (set by every
+     mover/sorter that actually permutes a list, popped once by
+     `afterSchedMutate`) and `state/view.ts` disarms whenever a reorder
+     touched the armed slot's OWN DAY — the same day-scoped blanket reflex
+     the undo path and the board's day-tab switch already use, not a
+     finer per-list one.
+     **Re-review same day found this still reproduced through "+ Row, then
+     type the role":** `board.ts`'s `boardChange` called `afterSchedMutate()`
+     — the function that reads and clears `REORDERED_DI` — BEFORE calling
+     the auto-sort, so the sort's own flag-set always landed too late to be
+     seen, and (worse) leaked to disarm an unrelated LATER edit instead.
+     Fixed by moving the sort ahead of `afterSchedMutate()`, wrapped in
+     `HIST.lock` so the text commit and the auto-sort it triggers stay ONE
+     undo step (the `sortAllCommit` precedent) rather than two.
+  Smaller items in the same pass: a stale comment claiming duty-row parity
+  needs "no refwin patch" (it does — `testing/refwin.ts`'s `reduty()`);
+  `dutySort` (dead code, no callers) removed from `ui/html.ts` — `DUTY_ORDER`
+  stays, it moved to the engine; `reduty()`'s own comment corrected (the
+  wave-count-mismatch throw is one-directional — only when the PORT has more
+  duty blocks — and the guard that actually still holds duty order
+  accountable is the reference's own `dutySort` re-sorting the pushed rows
+  at render, not this function); the "squadron member gets no grip" e2e test
+  rewritten to actually open the board (`window.openScheduler`, no role
+  check of its own) instead of counting controls on a page where it was
+  never opened; the row-overflow e2e test's zero-match guard changed from
+  one aggregate count across five selectors to a per-selector presence
+  check; `+ Line`/`+ Wave` gained the same in-function `canEditSched()`
+  check every other board control has (`addLine`/`addWave`/`waveMenu`); and
+  `board-html.ts`'s two `from './html'` imports merged into one.
+  **Re-review same day: `addLine`/`addWave`/`waveMenu`, the nudge and
+  per-section Auto sort handlers in `boardMbtn`, and the delete-line (✕)
+  button — which had NO check at all — all gained `HOOKS.editMode()` on top
+  of the role check, matching finding #4's own gate on Sort all; the
+  reviewer had clicked a still-live ✕ on a read-only board and deleted a
+  line.** `addLine`/`addWave`/`waveMenu`'s gate is scoped to
+  `view.SBDAY != null` rather than a bare `editMode()` check — those three
+  are also called directly off `window` by `probes/adapted/sa-async.cjs`
+  with no board ever opened, and a bare gate broke that probe (caught by
+  `npm run probes:adapted`, not by `npm test`).
+  **Was deliberately not fixed here, because it predated this pass — closed
+  9 Aug 26, see the (now resolved) "board stays open across a page change"
+  entry above:** the read-only board's flying-line CX/flag/+ (add-aircraft)
+  buttons and its callsign/times/remarks inputs used to stay fully live —
+  only the controls named above were in scope for this pass.
 - **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
   still described a three-gate, mid-port project — the root one also called a
   member view-only, which the 5 Aug roles decision had already undone.
@@ -651,7 +955,9 @@ believing a single red.)
 | `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`, `dashOf`, the crew-rest trace (`traceOf`/`traceLeads`/`traceIx`/`tracesOn`). **The conflict engine.** |
 | `avail.ts` | `slotRules`/`slotBar` eligibility, `dayOff`/`dayEngaged`, free-count ranking. |
 | `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`**. |
-| `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering. |
+| `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering (delete-time), and its bijective sibling `permuteKeys`/`moveKeys` for a reorder. |
+| `order.ts` | `groundOrder(rows, man)` — Ground Programme's render-time start-time sort, pulled out of `ui/html.ts` (8 Aug 26) so `reorder.ts` can freeze a rendered order into the model without the engine importing from `ui/`. `man` (a day's `d.gman`) returns model order untouched. |
+| `reorder.ts` | The board's row movers (owner, 8 Aug 26): one function per list (`moveFormation`/`moveAircraft`/`moveDutyRow`/`moveSimRow`/`moveGroundRow`/`moveProgRow`/`moveNote`) plus `applyMove`, the one entry point the UI calls — parses `mv:` addresses and resolves a flying row's two meanings (resequence vs. carry the formation) by what it was dropped on. |
 | `waves.ts` | WEEKS/CURWEEK, standalone waves (SC/AVALON/BB): `isStandalone`, `makeStandalone`, `saExempt`. |
 | `publish.ts` | SCHED, sign-offs (SIGN_ROLES), `setDayApproved`, `publishALDay`/`alIssue`/`unpublishAL`, `markEdit`, AL colours, per-day version snapshots (`daySnap`/`daySnapOf`/`dayVersions`), `dayCurVer` (the day-head chip). |
 | `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |
@@ -677,7 +983,8 @@ believing a single red.)
 | `Shell.tsx` | Topbar, nav, both schedule pages' chrome, global listeners (click/change/contextmenu/focusout/keydown, drag, pan), banner, memoized sections. |
 | `ViewWeek.tsx` / `EditWeek.tsx` | The week surfaces: build `dayHTML` per day, diff strings, swap only changed days, hold scroll; `EditRoster` palette. CURPAGE-gated. |
 | `SchedBoard.tsx` | The full-screen day board: panels with per-panel string diff; grip resize; CxDialog (cancel-with-reason). |
-| `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. |
+| `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. |
+| `rowdrag.ts` | The board row-reorder pointer machine (owner, 8 Aug 26) — its own small machine, deliberately not `drag.ts` (which stays scoped to pucks): pointer events so a finger works, releases implicit pointer capture on the way down, writes the lifted row and the drop bar straight onto the DOM, delegated on the board wrap so it survives every panel repaint. |
 | `html.ts` | THE builder library: `dayHTML`, `puck`, `slotCell`, `signoffHTML`, day warnings, day-info panel, legend, cx/flag tags. |
 | `board-html.ts` / `palette-html.ts` / `logic-html.ts` | Board panels (inputs bands, notes, programme, duties, sim rows, ground, personal-inputs group, sim notes), the aircrew palette, the Logic tab's rule text. |
 | `interactions.ts` | `routeClick` — the delegated click router: select/arm/plant (a puck's flag chip falls through to selection — the chip is the puck, 7 Aug 26), publish/AL/sign-clear, day-info, warning boxes, the board's issue list (via `jumpToWarn`, which opens `DWOPEN` as the day-detail branch does), week chips, stores remove + the `+` config picker (`openStoresMenu`). |

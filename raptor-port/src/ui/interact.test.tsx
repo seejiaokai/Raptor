@@ -7,10 +7,15 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
+import { initStore, setSession, notify, undo } from '../state/store'
 import { validate, WARN } from '../engine/validate'
 import { personWarnDays } from '../engine/avail'
 import { isSpecial } from '../engine/people'
+import { DAYS } from '../engine/data'
+import { SCHED } from '../engine/publish'
+import { HOOKS } from '../engine/hooks'
+import { HIST, histPush } from '../state/history'
+import * as view from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -20,6 +25,22 @@ const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+}
+/* sync counterparts for tests that assert against the model right after the
+   click, with no debounce or timer in the way — act() alone flushes React's
+   pending updates before it returns, so no await is needed */
+const clickSync = (el: Element | null) => {
+  expect(el, 'click target exists').toBeTruthy()
+  act(() => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+}
+const clickAttr = (sel: string) => clickSync($(sel))
+/* idempotent: if the board is already open on this day (as an earlier test
+   in this block left it), no click is issued — that is what lets the
+   member-role test find the SAME admin-rendered markup still on screen
+   after setSession(), the stale-element scenario canEditSched() guards */
+const mountBoard = (di: number) => {
+  if (view.CURPAGE !== 'editsched') clickSync($('.nav a[data-page="editsched"]'))
+  if (view.SBDAY !== di) clickSync($(`#eWeek .day[data-day="${di}"] .dow.sb-open`))
 }
 
 beforeAll(async () => {
@@ -410,5 +431,271 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     const vw = [...document.querySelectorAll('#vWeek [data-alc="8"]')].find(x => x.textContent!.includes('AL MARK TEST'))
     expect(vw, 'the view week shows the AL-coloured text').toBeTruthy()
     await act(async () => { unpublishAL(8); txtSet(key, was); delete SCHED.pending[key]; const { notify } = await import('../state/store'); notify() })
+  })
+})
+
+describe('the nudge buttons move a row one place as rendered', () => {
+  it('▼ on the first programme item swaps it with the second', () => {
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    const was = DAYS[di].allhands.map((x: any) => x.prog)
+    mountBoard(di)
+    clickAttr(`[data-mvdn="mv:p.${di}.0"]`)
+    expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual([was[1], was[0], ...was.slice(2)])
+  })
+
+  it('▲ on the first row is a no-op rather than an error', () => {
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    const was = JSON.stringify(DAYS[di].allhands)
+    mountBoard(di)
+    clickAttr(`[data-mvup="mv:p.${di}.0"]`)
+    expect(JSON.stringify(DAYS[di].allhands)).toBe(was)
+  })
+
+  /* the ground list renders time-sorted, so "one place down/up" is a question
+     about the DOM, not about model indices — and a nudge test on a sorted
+     list only PROVES that if it picks a row whose on-screen neighbour is NOT
+     also its numeric neighbour. With this fixture (C=model0/1000, A=model1/
+     0800, B=model2/0900) the render order is A, B, C. Nudging A (model 1)
+     down targets B (model 2) — and index+1 from 1 is ALSO 2, so a naive
+     index±1 implementation lands on the same answer by coincidence and the
+     test would pass either way, proving nothing. C is the row that exposes
+     it: rendered LAST (position 2) but stored at model index 0, so its
+     on-screen neighbour above is B (model 2) while index-1 from 0 is -1 — the
+     two implementations now disagree, and only the correct one can pass. */
+  it('▲ on a ground row moves it past the row rendered above it, even though its model index is 0', () => {
+    DAYS[0].ground = [
+      { prog: 'C', str: '1000' }, { prog: 'A', str: '0800' }, { prog: 'B', str: '0900' },
+    ]
+    /* the panel is only ever repainted by a notify() (SchedBoard's own
+       version-diffed effect) — a raw fixture assignment above bypasses the
+       mutation funnel entirely, so without this the board would still be
+       showing whatever ground rows an earlier test in this block left it on */
+    act(() => notify())
+    mountBoard(0)
+    clickAttr('[data-mvup="mv:g.0.0"]')     // model 0 is 'C', rendered last
+    expect(DAYS[0].gman).toBe(true)
+    expect(DAYS[0].ground.map((r: any) => r.prog)).toEqual(['A', 'C', 'B'])
+  })
+
+  it('a member cannot nudge', () => {
+    setSession({ user: 'user', role: 'member' } as any)
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    const was = JSON.stringify(DAYS[di].allhands)
+    mountBoard(di)
+    clickAttr(`[data-mvdn="mv:p.${di}.0"]`)
+    expect(JSON.stringify(DAYS[di].allhands)).toBe(was)
+  })
+})
+
+describe('the Auto sort buttons put a section back in order', () => {
+  /* capture toasts without repainting anything, same idiom as drag.test.tsx */
+  let toasts: string[] = []
+  beforeAll(() => { setSession({ user: 'a', role: 'admin' }); HOOKS.toast = (m: any) => { toasts.push(String(m)) } })
+
+  it('sorts the Overall programme by start time', () => {
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    DAYS[di].allhands = [{ prog: 'LATER', str: '1500' }, { prog: 'EARLIER', str: '0800' }]
+    act(() => notify())
+    mountBoard(di)
+    clickAttr(`[data-sortsec="p.${di}"]`)
+    expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+  })
+
+  it('toasts "Already in order" and changes nothing when the section is already sorted', () => {
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    DAYS[di].allhands = [{ prog: 'EARLIER', str: '0800' }, { prog: 'LATER', str: '1500' }]
+    act(() => notify())
+    mountBoard(di)
+    toasts = []
+    clickAttr(`[data-sortsec="p.${di}"]`)
+    expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(toasts).toContain('Already in order')
+  })
+
+  it('sorts a duty block by role, SDO above SXO above OPS-O', () => {
+    DAYS[0].dutywaves[0].rows = [{ role: 'OPS-O', id: 'y' }, { role: 'SDO', id: 'x' }]
+    act(() => notify())
+    mountBoard(0)
+    clickAttr('[data-sortsec="d.0.0"]')
+    expect(DAYS[0].dutywaves[0].rows.map((r: any) => r.role)).toEqual(['SDO', 'OPS-O'])
+  })
+
+  it('sorts Ground by start time and clears gman, so the day resumes sorting itself', () => {
+    DAYS[0].ground = [{ prog: 'LATER', str: '1500' }, { prog: 'EARLIER', str: '0800' }]
+    DAYS[0].gman = true
+    act(() => notify())
+    mountBoard(0)
+    clickAttr('[data-sortsec="g.0"]')
+    expect(DAYS[0].ground.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(DAYS[0].gman).toBeFalsy()
+  })
+
+  /* review round 1: gman set, but the rows it was frozen into already read
+     in time order — sortGround reports true (the day DID un-freeze) and
+     the UI must say so, not the generic "Already in order" a pure identity
+     check would otherwise show for a click that changed nothing visible. */
+  it('tells the truth when Ground was manually frozen but already read in time order: something changed, and it says so', () => {
+    DAYS[0].ground = [{ prog: 'EARLIER', str: '0800' }, { prog: 'LATER', str: '1500' }]
+    DAYS[0].gman = true
+    act(() => notify())
+    mountBoard(0)
+    toasts = []
+    clickAttr('[data-sortsec="g.0"]')
+    expect(DAYS[0].ground.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(DAYS[0].gman).toBeFalsy()
+    expect(toasts).not.toContain('Already in order')
+    expect(toasts).toContain('Ground programme back to time order')
+  })
+
+  it('sorts a flying wave by take-off time, without touching the jets inside a formation', () => {
+    const w = DAYS[0].waves[0]
+    w.formations = [
+      { cs: 'LATE', msn: 'BFM', to: '1400', ld: '1500', aircraft: [{ p: 'stiff', w: 'freak' }] },
+      { cs: 'EARLY', msn: 'BFM', to: '0800', ld: '0900', aircraft: [{ p: 'bane', w: 'wolf' }] },
+    ]
+    act(() => notify())
+    mountBoard(0)
+    clickAttr('[data-sortsec="w.0.0"]')
+    expect(w.formations.map((f: any) => f.cs)).toEqual(['EARLY', 'LATE'])
+  })
+
+  it('a member sees no Auto sort control', () => {
+    setSession({ user: 'user', role: 'member' } as any)
+    act(() => notify())   // canEditSched() flipped — repaint so mvRO takes hold, not stale admin markup
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    mountBoard(di)
+    expect($(`[data-sortsec="p.${di}"]`)).toBeFalsy()
+  })
+})
+
+describe('Sort all — every section, one confirm, one undo step (owner, 8 Aug 26)', () => {
+  /* capture toasts without repainting anything, same idiom as the Auto sort
+     block above */
+  let toasts: string[] = []
+  beforeAll(() => { setSession({ user: 'a', role: 'admin' }); HOOKS.toast = (m: any) => { toasts.push(String(m)) } })
+
+  /* whole-day fixture with exactly one collection per section so nothing
+     left over from the seed data can quietly sneak an extra reorder in —
+     every section that HAS more than one row is shuffled out of order here,
+     and nothing else in the day is left ambiguous. */
+  const shuffle = (di: number) => {
+    DAYS[di].notes = ['SECOND TYPED', 'FIRST TYPED']   // no sorter reads notes — must survive untouched
+    DAYS[di].allhands = [{ prog: 'LATER', str: '1500', end: '' }, { prog: 'EARLIER', str: '0800', end: '' }]
+    DAYS[di].waves = [{
+      label: 'WAVE 1', night: false, intimes: [], traffic: [], formations: [
+        { cs: 'LATE', msn: 'BFM', to: '1400', ld: '1500', aircraft: [{ p: 'stiff', w: 'freak' }] },
+        { cs: 'EARLY', msn: 'BFM', to: '0800', ld: '0900', aircraft: [{ p: 'bane', w: 'wolf' }] },
+      ],
+    }]
+    DAYS[di].dutywaves = [{
+      label: '1st wave', rows: [
+        { role: 'OPS-O', id: 'y', str: '0600', end: '1400' },
+        { role: 'SDO', id: 'x', str: '0700', end: '1300' },
+      ],
+    }]
+    DAYS[di].sims = {
+      oft: [
+        { label: 'LATE', str: '1500', end: '1630', p: 'a' },
+        { label: 'EARLY', str: '0800', end: '0930', p: 'b' },
+      ],
+    }
+    DAYS[di].ground = [{ prog: 'LATER', str: '1500', end: '' }, { prog: 'EARLIER', str: '0800', end: '' }]
+    DAYS[di].gman = false
+  }
+  /* the same day, already in each section's own order — a single row per
+     collection makes "already sorted" unambiguous rather than relying on
+     careful multi-row ordering */
+  const tidy = (di: number) => {
+    DAYS[di].notes = ['ONLY NOTE']
+    DAYS[di].allhands = [{ prog: 'ONE', str: '0800', end: '' }]
+    DAYS[di].waves = [{
+      label: 'WAVE 1', night: false, intimes: [], traffic: [], formations: [
+        { cs: 'ONE', msn: 'BFM', to: '0800', ld: '0900', aircraft: [{ p: 'bane', w: 'wolf' }] },
+      ],
+    }]
+    DAYS[di].dutywaves = [{ label: '1st wave', rows: [{ role: 'SDO', id: 'x', str: '0700', end: '1300' }] }]
+    DAYS[di].sims = { oft: [{ label: 'ONE', str: '0800', end: '0930', p: 'b' }] }
+    DAYS[di].ground = [{ prog: 'ONE', str: '0800', end: '' }]
+    DAYS[di].gman = false
+  }
+  const runSortAll = (di: number) => {
+    mountBoard(di)
+    clickAttr('#sbSortAll')
+    clickAttr('#sortAllConfirm')
+  }
+
+  it('orders every section at once and leaves notes in their typed order', () => {
+    const di = 0
+    shuffle(di)
+    act(() => notify())
+    runSortAll(di)
+    expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(DAYS[di].dutywaves[0].rows.map((r: any) => r.role)).toEqual(['SDO', 'OPS-O'])
+    expect(DAYS[di].sims.oft.map((x: any) => x.label)).toEqual(['EARLY', 'LATE'])
+    expect(DAYS[di].ground.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(DAYS[di].waves[0].formations.map((f: any) => f.cs)).toEqual(['EARLY', 'LATE'])
+    expect(DAYS[di].notes).toEqual(['SECOND TYPED', 'FIRST TYPED'])
+  })
+
+  /* the confirm is the whole point — every other board control acts the
+     instant it's clicked, so this one alone must NOT: opening it must open
+     the dialog and touch nothing, and the day only moves once the SECOND
+     click (the dialog's own Sort all button) lands. */
+  it('the button alone opens a confirm and changes nothing; only confirming runs it', () => {
+    const di = 0
+    shuffle(di)
+    act(() => notify())
+    const before = JSON.stringify(DAYS[di])
+    mountBoard(di)
+    clickAttr('#sbSortAll')
+    expect(($('#sortAllPop') as HTMLElement).hidden).toBe(false)
+    expect(JSON.stringify(DAYS[di])).toBe(before)
+    clickAttr('#sortAllConfirm')
+    expect(JSON.stringify(DAYS[di])).not.toBe(before)
+  })
+
+  /* the whole reason the lock exists: six sorters marking six keys must not
+     leave six snapshots on the stack — capture the WHOLE day's JSON before
+     Sort all runs, and after one undo it must be byte-identical to that,
+     not merely "close" or "mostly restored". */
+  it('is ONE undo step: a single undo restores the whole day, byte-identical to before', () => {
+    const di = 0
+    shuffle(di)
+    /* the raw fixture assignment above bypasses the mutation funnel (same as
+       every other fixture in this file), so nothing has put it on the undo
+       stack yet — histPush() here stands in for the real edits (a drag, a
+       text commit) that would have put it there in actual use, so "before"
+       below names a snapshot Undo can actually land on, not a live object
+       that was never recorded */
+    act(() => { notify(); histPush() })
+    const before = JSON.stringify(DAYS[di])
+    const depth = HIST.stack.length
+    runSortAll(di)
+    // sanity: it actually changed something, or "one undo step" would prove nothing
+    expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(HIST.stack.length - depth, 'one action, one undo step').toBe(1)
+    act(() => undo())
+    expect(JSON.stringify(DAYS[di])).toBe(before)
+  })
+
+  it('changes nothing and marks nothing on a day already in order, and says so', () => {
+    const di = 0
+    tidy(di)
+    act(() => notify())
+    const before = JSON.stringify(DAYS[di])
+    SCHED.pending = {}
+    toasts = []
+    runSortAll(di)
+    expect(JSON.stringify(DAYS[di])).toBe(before)
+    expect(SCHED.pending).toEqual({})
+    expect(toasts).toContain('Already in order')
+  })
+
+  it('a member cannot trigger it', () => {
+    setSession({ user: 'user', role: 'member' } as any)
+    act(() => notify())
+    const di = 0
+    mountBoard(di)
+    expect($('#sbSortAll')).toBeFalsy()
   })
 })

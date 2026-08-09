@@ -23,6 +23,7 @@
 import { readFileSync } from 'node:fs'
 import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
+import { DAYS } from '../engine/data'
 
 export async function refWindow(): Promise<any> {
   const html = rering(rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))
@@ -34,6 +35,7 @@ export async function refWindow(): Promise<any> {
   w.HTMLElement.prototype.scrollIntoView = () => {}
   await new Promise(r => setTimeout(r, 300))
   syncInputs(w)
+  reduty(w)
   w.eval('validate()')
   return w
 }
@@ -48,6 +50,77 @@ export async function refWindow(): Promise<any> {
 export function syncInputs(w: any) {
   w.eval('INPUTS.length=0;INPUTS.push.apply(INPUTS,JSON.parse('
     + JSON.stringify(JSON.stringify(INPUTS.filter(inputFlags))) + '))')
+}
+
+/* Fifth structural divergence, closed the same way as INPUTS. The week's
+   duty rows are re-laid into DUTY_ORDER in the port's seed (owner, 8 Aug 26)
+   so dropping html.ts's dutySort() prints the board's own order instead of
+   silently overriding it. The RENDER side needs no patch for this: the
+   reference still sorts, and sorting an already-sorted list is a no-op, so
+   both sides paint the same HTML either way. What the re-lay breaks is the
+   two STRUCTURAL comparisons in parity.test.ts that read `dutywaves.rows` in
+   raw stored order and never went through dutySort in the first place —
+   `seed data matches (DAYS)`, a straight deep-equal of the two models, and
+   `collectEvents matches the reference exactly`, which walks each day's rows
+   in array order to build the timeline. Both sides need the SAME stored
+   order for those to hold, and the reference file is read-only, so the fix
+   is the model this file already has for INPUTS: push the port's rows into
+   the in-memory reference before either engine runs. Same `w.eval` shape and
+   the same reason — the reference declares `let DAYS` at the top level of a
+   classic script, a lexical binding rather than a window property, so
+   `w.DAYS = …` would only shadow it and the page would keep reading its own.
+   Mutated wave-by-wave, in place, rather than replacing DAYS wholesale: the
+   reference has never had the weekend days the port adds, so only the first
+   REFN days are touched, and only their existing dutywaves entries — the
+   wave count and labels are unchanged between the two builds, only the row
+   order within each wave differs.
+
+   The price: this makes both comparisons TAUTOLOGICAL for duty-row content
+   and order. By the time `seed data matches (DAYS)` or `collectEvents
+   matches the reference exactly` run, the reference's rows ARE the port's
+   rows — a corrupted duty row landing in data.ts (a wrong name, a dropped
+   role, a mistyped time) would not be caught here; it would show up
+   identically on both sides and compare equal. Nothing outside this
+   function narrows that gap. What still has teeth: every OTHER field of
+   DAYS and collectEvents — flying waves, sims, ground, notes — is still a
+   real comparison against the untouched reference; wave LABELS are never
+   touched by this push (only `.rows` is overwritten) so a wrong or renamed
+   label still fails for real.
+   The wave-count-mismatch guard is ONE-DIRECTIONAL, not the blanket safety
+   net an earlier version of this comment claimed (corrected, review 9 Aug
+   26): the forEach above walks the PORT's `d.dutywaves`, so it only throws,
+   from the out-of-bounds `DAYS[i].dutywaves[j]` write, when the PORT has
+   MORE duty blocks for a day than the reference does. The reverse — the
+   port having FEWER — writes nothing at all for the missing indices and
+   leaves the reference's extra block exactly as it was; that direction is
+   caught downstream instead, by `seed data matches (DAYS)`'s ordinary deep
+   comparison of the two models (a dutywaves array of the wrong length
+   simply fails to deep-equal).
+   The guard that actually still holds duty-row ORDER accountable is a
+   different one, and it is not this function's own throw: the reference's
+   render still calls dutySort(dwv.rows) on whatever this push hands it
+   (reference/scheduler.html's dutySort, DUTY_ORDER unchanged), while the
+   port renders model order with no sort at all. The two markups agree only
+   because the seed's rows are ALREADY laid out in role order — the moment a
+   real drag (or a future seed) leaves a duty block out of role order, the
+   reference's render re-sorts it back and the port's does not, and
+   `html.test.ts`'s byte-exact dayHTML comparison fails on the DIVERGED
+   MARKUP, immediately, with no help needed from this function. It's
+   accepted because there is nothing left for the old model-level comparison
+   to assert honestly: the port and the reference deliberately no longer
+   agree on stored duty order (that is the whole point of dropping the
+   port's own dutySort), so holding the parity gate to duty-row model
+   content would not buy more coverage — the markup comparison above already
+   catches a drift, and buys it for free. */
+export function reduty(w: any) {
+  const refn = w.eval('DAYS.length')
+  DAYS.slice(0, refn).forEach((d: any, i: number) => {
+    d.dutywaves.forEach((dw: any, j: number) => {
+      w.eval(`DAYS[${i}].dutywaves[${j}].rows.length=0;`
+        + `DAYS[${i}].dutywaves[${j}].rows.push.apply(DAYS[${i}].dutywaves[${j}].rows,JSON.parse(`
+        + JSON.stringify(JSON.stringify(dw.rows)) + `))`)
+    })
+  })
 }
 
 /* Second structural divergence, closed the same way as the INPUTS push — at

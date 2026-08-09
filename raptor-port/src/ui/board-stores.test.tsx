@@ -35,7 +35,7 @@ const openBoard = async () => {
 }
 
 describe('the board carries the week\'s stores interface', () => {
-  it('a flying line has exactly nine grid items, and the chips live inside the ninth', async () => {
+  it('a flying line has exactly ten grid items, and the chips live inside the second-to-last', async () => {
     const { DAYS } = await import('../engine/data')
     const a = DAYS[0].waves[0].formations[0].aircraft[0]
     a.opts = a.opts || {}; a.opts.tk2 = true
@@ -43,10 +43,11 @@ describe('the board carries the week\'s stores interface', () => {
     const line = $('#schedBoard .sb-line')
     expect(line, 'the line exists').toBeTruthy()
     /* the whole point of .sb-rcell: wrapping the input, the chips and C must
-       not grow the line past the nine columns the desktop and phone grid
-       templates both assume — a tenth child or a split .sb-rcell passes
-       every other assertion here and still breaks the template */
-    expect(line.children.length, 'still exactly nine grid items').toBe(9)
+       not grow the line past the ten columns the desktop and phone grid
+       templates both assume (nine plus the reorder grip Task 5 added as the
+       first child) — an eleventh child or a split .sb-rcell passes every
+       other assertion here and still breaks the template */
+    expect(line.children.length, 'still exactly ten grid items').toBe(10)
     const cell = line.querySelector('.sb-rcell') as HTMLElement
     expect(cell, 'the remarks input is wrapped in a cell').toBeTruthy()
     expect(cell.querySelector('.nts'), 'the remarks input is inside it').toBeTruthy()
@@ -61,23 +62,40 @@ describe('the board carries the week\'s stores interface', () => {
     expect(document.querySelectorAll('.stmenu [data-cfg]').length).toBeGreaterThan(0)
   })
 
-  it('an already-open board goes read-only for stores once the page becomes viewsched', async () => {
+  it('navigating to View sched with the board open closes it outright, stores and all', async () => {
+    /* UPDATED (closing HANDOFF.md's "board stays open across a page change"
+       gap, reviewer-found blocker 9 Aug 26): SchedBoard's `open` now also
+       requires CURPAGE==='editsched', AND state/view.ts's setPage clears
+       SBDAY itself the moment the page leaves 'editsched' — so this is no
+       longer a state where the board stays open, read-only, on the wrong
+       page; it is a state where the board is fully closed. The original
+       "goes read-only for stores" scenario this test pinned is now covered
+       differently, by the edit-toggle test below (the surviving way to
+       reach a read-only-but-open board is the SAME page with editing
+       switched off, not a page change). */
     const { DAYS } = await import('../engine/data')
     const a = DAYS[0].waves[0].formations[0].aircraft[0]
     a.opts = a.opts || {}; a.opts.tk2 = true
     await openBoard()
     await act(async () => notify())
     expect($('#schedBoard .sb-line .stcfg'), 'edit mode still shows C before the page changes').toBeTruthy()
-    /* SchedBoard's `hidden` only tracks SBDAY, never CURPAGE, so the board
-       modal survives a nav click underneath it — set the page directly
-       rather than depend on a stale .sb-open click, which is inert once
-       CURPAGE isn't 'editsched' (ViewWeek's own day markup has no .sb-open
-       at all — only .di-open — so this state is reached by leaving a board
-       open and navigating away, never by opening one from the view page). */
     await act(async () => { setPage('viewsched'); notify() })
+    expect(($('#schedBoard') as any).hidden, 'the board is closed, not merely read-only').toBe(true)
+    await act(async () => { setPage('editsched'); notify() })
+  })
+
+  it('the edit toggle switched off (same page, board still open) goes read-only for stores', async () => {
+    const { DAYS } = await import('../engine/data')
+    const a = DAYS[0].waves[0].formations[0].aircraft[0]
+    a.opts = a.opts || {}; a.opts.tk2 = true
+    await openBoard()
+    await act(async () => notify())
+    expect($('#schedBoard .sb-line .stcfg'), 'edit mode still shows C before the toggle changes').toBeTruthy()
+    const { setEditOn } = await import('../state/view')
+    await act(async () => { setEditOn(false); notify() })
     expect($('#schedBoard .sb-line .stores'), 'a duty crew sees what the jet carries').toBeTruthy()
     expect(document.querySelector('#schedBoard .sb-line .stcfg'), 'but cannot edit it').toBeFalsy()
-    await act(async () => { setPage('editsched'); notify() })
+    await act(async () => { setEditOn(true); notify() })
   })
 
   it('a duty-crew session (role main) never gets C on the board, independent of page', async () => {
@@ -113,7 +131,7 @@ describe('the board carries the week\'s stores interface', () => {
     const lines = $$('#schedBoard .sb-line')
     const saLine = lines[lines.length - 1]
     expect(saLine, 'the SC line was added').toBeTruthy()
-    expect(saLine.children.length, 'still exactly nine grid items — sa hides CONTENT, not the cell').toBe(9)
+    expect(saLine.children.length, 'still exactly ten grid items — sa hides CONTENT, not the cell').toBe(10)
     const cell = saLine.querySelector('.sb-rcell') as HTMLElement
     expect(cell, 'the remarks cell itself is still there').toBeTruthy()
     expect(cell.querySelector('.nts'), 'remarks stay editable on a standalone line').toBeTruthy()

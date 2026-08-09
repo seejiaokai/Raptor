@@ -973,7 +973,11 @@ test('board: the flying line keeps its grid-item count with stores present', asy
      test needs. */
   await page.waitForSelector('#schedBoard .sb-line')
   const n = await page.$eval('#schedBoard .sb-line', el => el.children.length)
-  expect(n, 'nine grid items — .sb-rcell must be exactly one').toBe(9)
+  /* ten, not nine, since the reorder grip landed (8 Aug 26): the grip is
+     .sb-line's first child on every viewport — display:none on a phone
+     hides it from layout, not from the DOM — so the count this test pins
+     went from nine to ten everywhere, not just on desktop. */
+  expect(n, 'ten grid items — the grip plus the original nine, .sb-rcell still exactly one').toBe(10)
 })
 
 test('board at 390px: the remarks cell drops to its own full-width strip', async ({ page }) => {
@@ -1367,8 +1371,11 @@ test('typing a rename then clicking a different row\'s control does not eat the 
    design choice, not a bug. 390px .sb-wide is the one combination that
    shipped broken, and is the only one of the four the grid-child count
    alone could not have caught: it stayed 9 in every combination, bug or no
-   bug — "three of four passing" is what let it through. */
-test('the board\'s flying line is single-row in .sb-wide at phone width, and stays 9 grid items throughout', async ({ page }) => {
+   bug — "three of four passing" is what let it through. (8 Aug 26: the
+   count pinned below is now 10, not 9 — the reorder grip added a tenth
+   DOM child that is present at every width, hidden only by CSS on a
+   phone; the four-combo logic above is otherwise unchanged.) */
+test('the board\'s flying line is single-row in .sb-wide at phone width, and stays 10 grid items throughout', async ({ page }) => {
   const combos = [
     { width: 1400, height: 950, wide: false, label: '1400px normal', singleRow: true },
     { width: 1400, height: 950, wide: true, label: '1400px .sb-wide', singleRow: true },
@@ -1389,7 +1396,7 @@ test('the board\'s flying line is single-row in .sb-wide at phone width, and sta
       const line = document.querySelector('#schedBoard .sb-line') as HTMLElement
       return { children: line.children.length, height: Math.round(line.getBoundingClientRect().height) }
     })
-    expect(m.children, `${c.label}: nine grid items — .sb-rcell must be exactly one`).toBe(9)
+    expect(m.children, `${c.label}: ten grid items — the grip plus .sb-rcell still exactly one`).toBe(10)
     if (c.singleRow) {
       expect(m.height, `${c.label}: single row, not exploded into three`).toBeLessThan(90)
     } else {
@@ -1399,4 +1406,360 @@ test('the board\'s flying line is single-row in .sb-wide at phone width, and sta
       expect(m.height, `${c.label}: the deliberate mobile stack, not collapsed to one row`).toBeGreaterThan(90)
     }
   }
+})
+
+test('the grip shows on desktop and the nudge buttons on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line[data-move]')
+  const wide = await page.evaluate(() => {
+    const g = document.querySelector('#sbBoard .sb-line .sb-grip') as HTMLElement
+    const n = document.querySelector('#sbBoard .sb-line .mbtn.nudge') as HTMLElement
+    return { grip: getComputedStyle(g).display, nudge: getComputedStyle(n).display, w: g.getBoundingClientRect().width }
+  })
+  expect(wide.grip).not.toBe('none')
+  expect(wide.nudge).toBe('none')
+  expect(Math.round(wide.w)).toBe(18)
+
+  await page.setViewportSize({ width: 390, height: 780 })
+  const narrow = await page.evaluate(() => {
+    const g = document.querySelector('#sbBoard .sb-line .sb-grip') as HTMLElement
+    const n = document.querySelector('#sbBoard .sb-line .mbtn.nudge') as HTMLElement
+    return { grip: getComputedStyle(g).display, nudge: getComputedStyle(n).display }
+  })
+  expect(narrow.grip).toBe('none')
+  expect(narrow.nudge).not.toBe('none')
+})
+
+/* the nth-child re-index is the breakage-prone half of this change and jsdom
+   cannot see it: the phone board must keep the SAME column layout it had */
+test('the phone board keeps its column layout after the grip is added', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-arow.c6r')
+  const m = await page.evaluate(() => {
+    const row = document.querySelector('#sbBoard .sb-arow.c6r') as HTMLElement
+    const item = row.querySelector('.ain') as HTMLElement
+    const hdr = document.querySelector('#sbBoard .sb-acols.c6r') as HTMLElement
+    const flyHdr = document.querySelector('#sbBoard .sb-lcols') as HTMLElement
+    /* the template's own track COUNT (checked below) is fixed CSS and does
+       not move if a single nth-child index is wrong — hiding the wrong
+       header cell still leaves exactly as many cells visible, just the
+       WRONG ones. The only thing that actually catches an off-by-one here
+       is reading which labels survived, in DOM order — this is what
+       "the phone board must keep the SAME column layout" actually means. */
+    const visible = (el: HTMLElement) => [...el.children]
+      .filter(c => getComputedStyle(c as HTMLElement).display !== 'none')
+      .map(c => c.textContent)
+    return {
+      tracks: getComputedStyle(row).gridTemplateColumns.split(' ').length,
+      item: item.getBoundingClientRect().width,
+      hdrTracks: getComputedStyle(hdr).gridTemplateColumns.split(' ').length,
+      c6rLabels: visible(hdr),
+      flyLabels: visible(flyHdr),
+    }
+  })
+  expect(m.tracks).toBe(3)
+  expect(m.hdrTracks).toBe(3)
+  /* the 6 Aug regression: the ITEM column collapsed to a 14px stub */
+  expect(m.item).toBeGreaterThan(150)
+  /* the labels that survive the nth-child hide, in DOM order, must be
+     exactly the ones the phone body columns still show — Item/Start/End
+     for the c6r panels, CS/MSN/TO/LD for the flying line — or a header
+     is sitting over the wrong body column even though the cell COUNT
+     still happens to match the track count. */
+  expect(m.c6rLabels).toEqual(['Item', 'Start', 'End'])
+  expect(m.flyLabels).toEqual(['CS', 'MSN', 'TO', 'LD'])
+})
+
+/* THE NOTES ROW WAS THE ONE TEMPLATE NEVER RESTATED ON A PHONE (fix round
+   1, 8 Aug 26 — found live, not by a test). .sb-nrow's three trailing
+   controls (▲ ▼ ✕) used to be flat siblings, not one grid item like every
+   other row's .lctl — so on desktop, with the nudge buttons display:none,
+   exactly four items landed in the four-track template and it looked
+   fine; on a phone, with the grip gone and the nudge buttons back, FIVE
+   flat items tried to fill four tracks. The note text fell into the nx
+   number's 22px column, the first control (▲) inflated to fill the 1fr
+   column meant for the note, and ✕ wrapped onto an implicit second row
+   under the hidden grip's column. Wrapping the controls in one .lctl
+   (matching every other row) plus restating the template fixed it — this
+   pins both halves: a readable text field, and a single grid row. */
+test('the notes row keeps a usable text field and a single row on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-nrow')
+  const m = await page.evaluate(() => {
+    const row = document.querySelector('#sbBoard .sb-nrow') as HTMLElement
+    const nin = row.querySelector('.nin') as HTMLElement
+    return {
+      /* row height, not child-to-child top comparisons — .sb-nrow centres
+         its items (align-items:center), so .nx (a short span) and .nin
+         (a padded input) legitimately sit at different tops even on a
+         single grid row; height is what actually tells single-row from
+         wrapped. Measured: 24px single-row (fixed), 48.5px wrapped to two
+         rows (the pre-fix bug, both here and independently confirmed at
+         a live 390px .sb-wide check during this fix). */
+      rowHeight: row.getBoundingClientRect().height,
+      ninWidth: nin.getBoundingClientRect().width,
+    }
+  })
+  expect(m.ninWidth, 'the note text is readable, not squeezed into the number column').toBeGreaterThan(100)
+  expect(m.rowHeight, 'one grid row, not wrapped onto a second').toBeLessThan(40)
+})
+
+/* the reference day's very first wave carries two formations (VL, RU), and
+   the SECOND wave reuses the same two callsigns for its own pair (measured:
+   DAYS[0].waves[0] and [1] both hold a VL 2-ship and a RU 2-ship) — so a
+   whole-board reading of every .lin in document order sees "VL" and "RU"
+   twice each no matter what the drag does, before a single pointer event.
+   Scoping both the read and the adjacency check to the ONE .sb-go the grips
+   came from is what actually tests "a formation's rows stay adjacent",
+   the invariant the comment below names — a board-wide read would be
+   asserting against this fixture's reused callsigns, not against the drag. */
+test('dragging a grip reorders the wave and keeps a pair together', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line[data-move]')
+  const go1 = page.locator('#sbBoard .sb-go').first()
+  const before = await go1.locator('.sb-line .lin').evaluateAll(els => els.map(i => (i as HTMLInputElement).value))
+  const grips = go1.locator('.sb-line .sb-grip')
+  const last = await grips.count() - 1
+  /* the day's flying section runs taller than the 900px viewport, so the
+     last row's grip starts off-screen — boundingBox() reports its real
+     page position either way, but a raw mouse.move to a point outside the
+     viewport hits nothing, so the row has to be scrolled into view first
+     (what a real drag would require of a person, too). */
+  await grips.nth(last).scrollIntoViewIfNeeded()
+  const a = await grips.nth(last).boundingBox()
+  await grips.nth(0).scrollIntoViewIfNeeded()
+  const b = await grips.nth(0).boundingBox()
+  await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2, { steps: 12 })
+  await page.mouse.up()
+  const after = await go1.locator('.sb-line .lin').evaluateAll(els => els.map(i => (i as HTMLInputElement).value))
+  expect(after).not.toEqual(before)
+  /* a formation's rows stay adjacent — a callsign must never appear twice in
+     two places in one Go */
+  const runs = after.filter((v, i) => i === 0 || v !== after[i - 1])
+  expect(new Set(runs).size).toBe(runs.length)
+})
+
+test('a phone nudge moves a row and the board still reads correctly', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-arow [data-mvdn]')
+  const first = () => page.evaluate(() =>
+    (document.querySelector('#sbBoard .sb-panel.prog .sb-arow .ain') as HTMLInputElement)?.value)
+  const was = await first()
+  await clickHere(page, '#sbBoard .sb-panel.prog .sb-arow [data-mvdn]')
+  expect(await first()).not.toBe(was)
+})
+
+/* finding #1 (whole-branch review, 9 Aug 26): sbGrip() used to return '' for
+   a read-only board, but every row template in scheduler.css unconditionally
+   keeps its leading 18px grip track — so a read-only board lost each row's
+   FIRST grid item while the template still had ten tracks: every field
+   shifted one track left, out of register with its own header. Reachable
+   exactly the way the reviewer found it: log in, open a day's board, then
+   click View sched — the board deliberately stays open (SchedBoard's
+   `hidden` only tracks SBDAY, never the page), which is the whole reason
+   the read-only render path exists. jsdom cannot see this at all (every
+   rect is 0x0), so it has to be a real-browser measurement.
+   UPDATED (closing HANDOFF.md's "board stays open across a page change"
+   gap): a nav click no longer leaves the board open on the wrong page —
+   SchedBoard's `open` now also requires CURPAGE==='editsched', so this
+   test's original reproduction path (open the board, click View sched)
+   now hides the board outright instead of leaving it read-only-but-open,
+   which the block below this one pins directly. The register bug's fix
+   (sbGrip always emitting its track) is still live defence, because the
+   board CAN still legitimately be open and read-only on its own page —
+   the edit toggle switched off. That is the surviving path exercised
+   here now. */
+test('the board keeps its row register once edit mode is switched off (finding #1, via the edit toggle now)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line[data-move]')
+  /* .lin is the flying line's callsign box, a fixed 64px track; .sb-nrow
+     .nin is the overall-day free-text note line, a wide 1fr track — the two
+     the reviewer measured live (64px and 783px respectively). The seed's
+     day 0 already carries a note, so .sb-nrow exists without adding one. */
+  const measure = () => page.evaluate(() => {
+    const lin = document.querySelector('#sbBoard .sb-line .lin') as HTMLElement
+    const nts = document.querySelector('#sbBoard .sb-nrow .nin') as HTMLElement
+    return { lin: lin.getBoundingClientRect().width, nts: nts.getBoundingClientRect().width }
+  })
+  const edit = await measure()
+  /* the callsign box is a fixed 64px track and the notes box a flexible
+     1.2fr one — sanity-check the edit-mode board actually has room before
+     trusting the read-only comparison below */
+  expect(edit.lin).toBeGreaterThan(50)
+  expect(edit.nts).toBeGreaterThan(300)
+
+  /* the edit toggle, not a page nav — the board stays open on ITS OWN page
+     (part 1 of the fix closes the page-nav route to a read-only-but-open
+     board), so this is the surviving way to reach one. `.click()` via
+     evaluate rather than a real pointer click for the same reason every
+     other bare-global call in this file uses one: the render gate is what
+     is under test, not whether a real pointer could reach the switch. */
+  await page.evaluate(() => (document.getElementById('editToggle') as HTMLElement)?.click())
+  await page.waitForFunction(() => (window as any).editMode() === false)
+  const ro = await measure()
+  expect(ro.lin, 'the callsign input keeps its full width, not the 18px grip track').toBeGreaterThan(50)
+  expect(ro.nts, 'the notes input stays usable, not squeezed into ~22px').toBeGreaterThan(300)
+  expect(Math.round(ro.lin)).toBe(Math.round(edit.lin))
+  expect(Math.round(ro.nts)).toBe(Math.round(edit.nts))
+
+  await page.evaluate(() => (document.getElementById('editToggle') as HTMLElement)?.click())   // restore
+})
+
+/* HANDOFF.md, "the board stays open across a page change" — part 1 of the
+   documented gap, pinned live in a real browser (jsdom's rects are all
+   0×0, so `hidden` is the only thing it CAN see here — the visibility this
+   test actually cares about needs a layout engine).
+   UPDATED (coordinator review, 9 Aug 26 — the blocker): the board is now
+   CLOSED outright on the way out, not merely hidden — state/view.ts's
+   setPage clears SBDAY the moment the page leaves 'editsched', because a
+   document-level handler elsewhere (Shell.tsx's right-click clear-a-seat)
+   used to trust SBDAY!=null on its own as proof the board was safely open,
+   which stopped being true once the render alone stopped painting it.
+   Landing back on Edit Schedule therefore does NOT resume a day any more —
+   there is nothing to resume, it was cleared — a scheduler opens one
+   again, same as any other visit. */
+test('navigating away from Edit Schedule with the board open hides it, not just its controls', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line')
+  await expect(page.locator('#schedBoard')).toBeVisible()
+  await go(page, 'viewsched')
+  await expect(page.locator('#schedBoard')).toBeHidden()
+  expect(await page.evaluate(() => (window as any).SBDAY), 'SBDAY is cleared, not just the render gate').toBeNull()
+  /* landing back on Edit Schedule does NOT silently resume a day */
+  await go(page, 'editsched')
+  await expect(page.locator('#schedBoard')).toBeHidden()
+  expect(await page.evaluate(() => (window as any).SBDAY)).toBeNull()
+})
+
+/* THE BLOCKER (coordinator review, 9 Aug 26), driven live with a REAL
+   pointer right-click — proven this way by the reviewer, and the only way
+   to actually exercise it: jsdom can dispatch a synthetic 'contextmenu'
+   event (pinned in board.test.tsx), but the reviewer's own reproduction
+   was "a real pointer confirmed this on the built bundle", and a real
+   right-click is also what proves the WEEK puck is genuinely reachable by
+   a pointer once the board no longer covers it — before this fix, the
+   modal's own subtree intercepted pointer events on the page underneath
+   (confirmed live during this fix's verification: a real Playwright click
+   on the nav timed out with "subtree intercepts pointer events" while the
+   board was still open), so the exploit needed the board to have ALREADY
+   closed its paint while SBDAY stayed alive — exactly the state a nav
+   click reaches. */
+test('the blocker: right-clicking a WEEK puck on View-only Sched does not clear it, even with a board previously left open', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line')
+  await go(page, 'viewsched')
+  await page.waitForSelector('#vWeek .seat[data-slot]')
+  const seat = page.locator('#vWeek .seat[data-slot]').first()
+  const key = await seat.getAttribute('data-slot')
+  const before = await page.evaluate((k) => (window as any).slotVal(k), key)
+  expect(before, 'sanity: the targeted seat is actually filled').toBeTruthy()
+  await seat.click({ button: 'right' })
+  const after = await page.evaluate((k) => (window as any).slotVal(k), key)
+  expect(after, 'the seat was NOT cleared by a real right-click').toBe(before)
+})
+
+/* the squadron-member gate, actually exercised (review fix, 9 Aug 26): this
+   used to count reorder controls on a page where the board was never
+   opened at all — CURPAGE stays 'viewsched' and #schedBoard never mounts
+   any row, so the count is trivially 0 whether or not the gate works, and
+   it would still read 0 with sbGrip's `ro` check deleted outright. A
+   squadron member cannot reach the board through the UI (no sb-open day
+   head is ever rendered for them — canEditSched() is false, so ed is false
+   on every day, and Edit Schedule itself is hidden from their nav), but
+   `window.openScheduler` is a bare app global with no role check of its
+   own, so this drives the same board render the admin path does and reads
+   what canEditSched()-gated editMode() actually produces: a rendered board
+   (proving the gate was really exercised, not vacuously true) with no
+   data-move and no data-mvup anywhere in it.
+   UPDATED for HANDOFF.md's page-change gap: SchedBoard's `open` now also
+   requires CURPAGE==='editsched', and Edit Schedule's nav link does not
+   exist for a member to click — so `window.setPage` (the same bare-global
+   idiom as `openScheduler` itself) forces the page the same way, proving
+   the ROLE gate on the render rather than accidentally proving the page
+   gate hid it instead. */
+test('a squadron member who reaches the board gets a read-only render — no grip, no nudge', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page, 'user')
+  await page.evaluate(() => (window as any).setPage('editsched'))
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line')
+  const n = await page.evaluate(() => ({
+    rows: document.querySelectorAll('#sbBoard .sb-line, #sbBoard .sb-arow, #sbBoard .sb-nrow').length,
+    move: document.querySelectorAll('[data-move],[data-mvup],[data-mvdn]').length,
+  }))
+  expect(n.rows, 'the board actually rendered rows — otherwise this proves nothing').toBeGreaterThan(0)
+  expect(n.move).toBe(0)
+})
+
+/* ONE assertion for every button-row on the board, not one row at a time
+   (owner review, 9 Aug 26 — round 1 of 5). The wave header ("Go N") shipped
+   with a hand-written test for exactly this failure (it packs a select, an
+   in-time readout and three .gctl buttons into one flex row, and Auto sort's
+   extra button once ran it 19px past its own width on a 390px phone), and
+   .sb-go has overflow:hidden, so what didn't fit wasn't scrollable — it was
+   CROPPED, and one of the three buttons deletes the whole wave. Then Sort
+   all (task 10) landed a FOURTH button in a completely different row,
+   .sb-actions, and did the same thing again: 7px of overflow nothing caught
+   until a person measured it by hand. Two rows, same shape of bug, twice —
+   so this walks every row that packs buttons/inputs into one flex line
+   (the top action bar, every wave header, every panel header's controls,
+   and every duty/sim sub-header) and asserts none of them overflows, rather
+   than pinning one row at a time and waiting for the third.
+   scrollWidth vs clientWidth is a real-browser measurement jsdom cannot
+   make — every one of these assertions must fail against the un-fixed CSS
+   and pass once the row's .gctl gets its own line on a phone. */
+test('no button/control row on the board overflows its own width on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-go-h')
+  const ROW_SELECTORS = ['.sb-top', '.sb-actions', '.sb-go-h', '.sb-ph', '.sb-psub']
+  const ROWS = ROW_SELECTORS.join(', ')
+  const rows = await page.evaluate((sel) =>
+    [...document.querySelectorAll(sel)].map(el => ({
+      sel: el.className,
+      scroll: (el as HTMLElement).scrollWidth,
+      client: (el as HTMLElement).clientWidth,
+      text: (el.textContent || '').trim().slice(0, 40),
+    })), ROWS)
+  /* the seed day has at least one of EVERY kind (top bar, wave header, every
+     panel header, every duty/sim sub-header) — a PER-SELECTOR presence
+     check, not one aggregate count across all five (review fix, 9 Aug 26):
+     an aggregate total clears its own bar even when one whole selector's
+     rows silently stop matching (a class rename, a panel that stops
+     rendering) so long as the other four still supply enough rows between
+     them — the exact way a real gap in coverage could hide behind a
+     healthy-looking total. */
+  const counts = await page.evaluate((sels) =>
+    sels.map(s => ({ sel: s, n: document.querySelectorAll(s).length })), ROW_SELECTORS)
+  const missing = counts.filter(c => c.n === 0).map(c => c.sel)
+  expect(missing, 'every row kind must have at least one match on the seed day').toEqual([])
+  /* ONE assertion over every offending row rather than expect-inside-a-loop:
+     a loop's expect() throws on the FIRST failure and hides the rest — an
+     outer row (.sb-top) and the inner row that actually caused it
+     (.sb-actions) can both be over at once, and a loop would only ever name
+     the outer one. Collecting every failure into one message means the
+     SPECIFIC row (class + a snippet of its own text) is always named,
+     however many rows are broken at once. */
+  const bad = rows.filter(m => m.scroll > m.client)
+    .map(m => `"${m.sel}" ("${m.text}…") scrollWidth ${m.scroll} > clientWidth ${m.client}`)
+  expect(bad, 'no row may scroll past its own width').toEqual([])
 })

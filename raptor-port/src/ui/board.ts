@@ -12,6 +12,8 @@ import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
 import { markEdit, alAttr } from '../engine/publish'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/keys'
+import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
+import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView } from './html'
 import { STORE_CFG } from '../engine'
 import { HOOKS } from '../engine/hooks'
@@ -19,7 +21,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
-import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel } from './board-html'
+import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel, sbGrip, sbNudge, rowMove, sbSortBtn } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -43,8 +45,11 @@ export function boardHTML(di: number, pv?: boolean) {
      would commit and markEdit in a state the week would never have
      rendered the field in at all. */
   const stoRO = pv || !HOOKS.editMode()
+  /* same gate as the stores chips: pv OR not in edit mode. A duty crew who
+     still has a board open after navigating away must not get live controls. */
+  const mvRO = stoRO
   let b = (pv ? '' : `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`)
-    + sbNotesPanel(d, di, pv) + sbProgPanel(d, di, pv)
+    + sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
     /* SC / AVALON / BB carry no store config on the week (html.ts's `sa`
@@ -59,35 +64,76 @@ export function boardHTML(di: number, pv?: boolean) {
     const opts = ['1st wave', '2nd wave', '3rd wave', '4th wave', '5th wave', 'Night wave']
     const cur = labelToTitle(w); if (!opts.includes(cur)) opts.unshift(cur)
     const inT = waveInTime(w)
+    /* mvRO, not pv (reviewer-found residual, 9 Aug 26): the wave header's
+       own title select and its + Line / ✕ Wave pair were still pv-only,
+       the same gap as everything else in this pass — a read-only board
+       (edit toggle off, board still legitimately open on its own page)
+       left the whole-wave rename and delete live even after the flying
+       line's own rows went inert. */
     fly += `<div class="sb-go"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
-      + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${pv ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
+      + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${mvRO ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
       + `${w.night ? '<span class="night">· night</span>' : ''}`
       + `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`
-      + (pv ? '' : `<span class="gctl"><button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
+      + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
-    fly += `<div class="sb-lcols"><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
+    fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
     w.formations.forEach((f: any, li: number) => f.aircraft.forEach((a: any, ai: number) => {
       const key = `${di}.${gi}.${li}.${ai}`, fp = `ff:${di}.${gi}.${li}`
       const cxOn = !!(a.cx || f.cx)
-      const dis = pv ? ' disabled' : ''
+      /* stoRO, not pv alone — this is the gap HANDOFF.md recorded and left
+         open on purpose while the stores-configuration feature shipped:
+         every OTHER live-looking thing on this board (the stores chips,
+         the grip, the nudge buttons, Sort all) already follows stoRO/mvRO
+         (pv OR not in edit mode), but the flying line's own callsign,
+         mission, brief, take-off, land and remarks inputs were still
+         gated on pv by itself — so a board left open on a read-only page,
+         or open with the edit toggle off, still let typed text commit.
+         Same variable, same widening, no second mechanism. */
+      const dis = stoRO ? ' disabled' : ''
       /* B (owner, 6 Aug 26), same funnel key and suggestion idiom as the
          week (ui/html.ts): data-bfld already flows through boardChange's
          generic txtSet path below, no new wiring needed. Wrapped so the
          optional ghost never changes this row's grid-item count — see the
          mobile column notes in scheduler.css. */
       const brief = minus(f.to, VCONF.briefLead)
-      const brSug = (!pv && parseHM(f.br) == null)
+      /* stoRO, not !pv (reviewer-found residual, 9 Aug 26): the ghost is a
+         SEPARATE clickable element from the .tm brief input right next to
+         it (interactions.ts's routeClick, data-bacc branch) — disabling
+         the input's own `dis` attribute above never touched this one, so a
+         read-only board still offered "click to accept" on the one field
+         HANDOFF.md named by name ("brief"). */
+      const brSug = (!stoRO && parseHM(f.br) == null)
         ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
         : ''
-      fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}">
+      /* sbSlot's own `pv` param means "read-only" to that function, not
+         literally "preview" — widened to stoRO below for the same reason
+         as `dis` above: the FCP/RCP seats are the "arm/drop targets" the
+         gap named, and sbSlot is only ever called from here (board.ts),
+         so this is the one and only call site that needs to widen what it
+         passes it.
+         The row-control cluster below (nudge, CX, red flag, add-aircraft,
+         delete) is the other half of the same gap, gated the same way:
+         every sibling control this board grew after 8 Aug (the grip, the
+         nudge buttons, Sort all) withholds itself on mvRO, but this OLDER
+         cluster still withheld only on pv, so CX / ■ / + / ✕ stayed live
+         and enabled on a read-only board — widened to mvRO below. Omitting
+         the whole span (not just disabling the buttons inside it) is the
+         same shape sbRowCtl already uses for the duty/sim/ground row
+         clusters, and it is safe here for the same reason: this is the
+         LAST grid item in the row template, so leaving it out empties the
+         trailing track rather than shifting every earlier field left the
+         way dropping the FIRST item (the grip) once did — finding #1's fix
+         is what taught this codebase that distinction. */
+      fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}"${rowMove(`mv:ac.${key}`, mvRO)}>
+        ${sbGrip(mvRO)}
         <input class="lin" data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis} value="${esc(f.cs)}">
         <input class="msn" data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis} value="${esc(f.msn)}">
         <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} placeholder="B" value="${esc(f.br || '')}"></div>
         <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(f.to)}">
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
-        ${sbSlot(di, key + '.p', 'p', a.p, pv)}
-        ${sbSlot(di, key + '.w', 'w', a.w, pv)}
+        ${sbSlot(di, key + '.p', 'p', a.p, stoRO)}
+        ${sbSlot(di, key + '.w', 'w', a.w, stoRO)}
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}">
           ${sa ? '' : (stoRO
@@ -102,7 +148,8 @@ export function boardHTML(di: number, pv?: boolean) {
               + `<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
               + `<span class="bombs" contenteditable="true" data-bombs="${key}">${esc((a.opts || {}).bombs || '')}</span></span>`)}
         </div>
-        ${pv ? '' : `<span class="lctl">
+        ${mvRO ? '' : `<span class="lctl">
+          ${sbNudge(`mv:ac.${key}`, mvRO)}
           <button class="mbtn${cxOn ? ' on' : ''}" data-lcx="${key}" title="${cxOn ? 'Restore this line' : 'Cancel this line (CX)'}">CX</button>
           <button class="mbtn red${a.flag ? ' on' : ''}" data-lflag="${key}" title="${a.flag ? 'Clear the red box' : 'Red box — flag this for the next scheduler'}">■</button>
           <button class="mbtn add" data-lac="${di}.${gi}.${li}" title="Add another aircraft to this formation">+</button>
@@ -117,10 +164,10 @@ export function boardHTML(di: number, pv?: boolean) {
      order as the week day, with the sim planning notes staying last */
   /* the sim note used to be a panel of its own at the very bottom; it now sits
      inside the Sims panel, so the board reads the same way the week does. */
-  b += sbDutyPanel(d, di, pv) + sbSimRowsPanel(d, di, pv) + sbGroundPanel(d, di, pv)
+  b += sbDutyPanel(d, di, pv, mvRO) + sbSimRowsPanel(d, di, pv, mvRO) + sbGroundPanel(d, di, pv, mvRO)
   /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
   const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
-  b += sbInputsGroupPanel(d, di, pv, dayInp) + sbUnavailPanel(d, di, dayInp)
+  b += sbInputsGroupPanel(d, di, pv, dayInp, mvRO) + sbUnavailPanel(d, di, dayInp)
   return b
 }
 
@@ -170,6 +217,17 @@ export function askCx(o: any, key: any, label: any, after?: any) {
 }
 export function cxCommit(cancel: boolean, reason: string) {
   if (!CXT) return
+  /* the standard guard, added here for the first time (reviewer-found
+     follow-up, 9 Aug 26): cxCommit carried NO role or mode check of its
+     own at all — every other write path in this file does now — so a
+     stale CX dialog left open through a role or mode change (or, before
+     closeBoardState() started clearing CXT on a page change, a dialog
+     that had genuinely outlived its board) could still confirm and write.
+     Not reachable by a normal user today (the dialog sits above the
+     drawer, and the page behind it takes neither pointer nor keyboard from
+     there), same defence-in-depth framing as the rest of this task — but
+     it is the last write path of this family with no check at all. */
+  if (!canEditSched() || !HOOKS.editMode()) { CXT = null; notify(); return }
   const { o, key, after } = CXT
   if (cancel) { o.cx = true; o.cxr = String(reason).trim() }
   else { o.cx = false; delete o.cxr }
@@ -180,13 +238,131 @@ export function cxCommit(cancel: boolean, reason: string) {
   toast(cancel ? cxText(o) : 'Restored')
 }
 
+/* ---- Sort all: one control for the WHOLE day, same confirm-dialog shape as
+   CX above (owner asked for this after being advised against it — it rewrites
+   every list on the day, and every one of those is an amendment). Every other
+   board control acts on one row; this one does not, so it gets its own
+   confirmation naming the day, not a browser confirm() and not silence. ---- */
+export let SORTALL: any = null
+export function setSortAll(v: any) { SORTALL = v }
+/* canEditSched() and the DPREV (frozen-preview) guard live HERE, not only on
+   the button's render gate — a stale button left over from a role change, or
+   a click that lands after a preview was armed, must not open the dialog
+   either. Same belt-and-braces the row-level sort/nudge branches use in
+   boardMbtn below. */
+export function askSortAll(di: any) {
+  if (!canEditSched() || !HOOKS.editMode() || view.DPREV.has(di)) return
+  SORTALL = di
+  notify()
+}
+export function cancelSortAll() { SORTALL = null; notify() }
+/* the confirmed run. HIST.lock suppresses every markEdit() that sortDay's six
+   sorters fire — so however many sections move, NOTHING pushes while it is
+   set — and the single afterSchedMutate() after the lock lifts is the one
+   push that reaches the stack: its own bare markEdit() is what actually
+   records the step, the same "the epilogue's markEdit is the one that
+   counts" idiom every mutation funnel entry already relies on. Six sorters,
+   one entry — that is the whole point of the lock: Undo has to be one step
+   back to "before Sort all", not six steps into a half-sorted day.
+   An already-ordered day must come back false from sortDay and change
+   nothing at all — no lock needed for that path, since nothing inside it
+   ever calls markEdit. */
+export function sortAllCommit() {
+  if (SORTALL == null) return
+  const di = SORTALL
+  SORTALL = null
+  if (!canEditSched() || !HOOKS.editMode() || view.DPREV.has(di)) { notify(); return }
+  const d = DAYS[di]
+  HIST.lock = true
+  let any = false
+  try { any = sortDay(di) } finally { HIST.lock = false }
+  if (any) { afterSchedMutate(); toast(`Every section on ${d.dow} sorted`) }
+  else { notify(); toast('Already in order') }
+}
+
 /* the board's delegated .mbtn click handler, verbatim bodies */
 export function boardMbtn(e: MouseEvent) {
   /* previewing a published version: the panels render no controls, but a stale
      element from the pre-preview markup must not mutate the live day */
   if (view.DPREV.has(view.SBDAY as any)) return
+  /* editMode(), not just the role — every branch below writes straight to
+     the live model, and a stale or forced click on a read-only board (the
+     role changed, or the page moved away from Edit Schedule while the
+     board itself stayed open — HANDOFF.md's documented gap) must not act
+     just because the session is still an admin's. This used to be three
+     separate copies of this exact check, found and added one at a time
+     across two review passes (the nudge branch below, the per-section sort
+     branch, delete-line) — CX, the red flag and add-aircraft never got a
+     copy of their own at all, which is the other half of the gap this
+     closes. One guard here covers every branch in this function, so the
+     next branch added here inherits it instead of having to rediscover the
+     gap by itself.
+     LOAD-BEARING for tests that predate this consolidation, not just the
+     ones added alongside it: the nudge, per-section-sort and delete-line
+     branches lost their OWN copy of this check when it moved up here
+     (board.test.tsx's "a stale nudge button does nothing", "a stale
+     per-section Auto sort button does nothing" and "the delete-line (✕)
+     button does nothing" all still pass, but only because THIS line still
+     runs before their branch — narrowing or removing this guard without
+     giving those three branches their own check back would silently
+     reopen the exact gap those tests were written to catch, even though
+     the tests themselves would keep passing right up until whatever future
+     change actually narrows it. */
+  if (!canEditSched() || !HOOKS.editMode()) return
   const t = (e.target as HTMLElement).closest('.mbtn') as HTMLElement | null; if (!t) return
   const ds = t.dataset
+  /* ▲/▼ — the phone's reorder gesture. The target is read off the NEIGHBOURING
+     ROW IN THE DOM rather than computed as index±1, because one list (Ground)
+     renders time-sorted: "one place down" is a question about what the
+     scheduler can see, and engine/reorder.ts translates the model indices. */
+  if (ds.mvup != null || ds.mvdn != null) {
+    const up = ds.mvup != null
+    const row = t.closest('[data-move]') as HTMLElement | null
+    if (!row) return
+    const rows = [...(row.parentElement ? row.parentElement.children : [])]
+      .filter(x => (x as HTMLElement).dataset && (x as HTMLElement).dataset.move) as HTMLElement[]
+    const i = rows.indexOf(row), j = up ? i - 1 : i + 1
+    if (i < 0 || j < 0 || j >= rows.length) return
+    if (applyMove(row.dataset.move, rows[j].dataset.move)) { afterSchedMutate(); notify() }
+    return
+  }
+  /* ⇅ Auto sort — one control per section, dispatched by the address's own
+     prefix (w/d/s/g/p) rather than by which panel the click landed in, so
+     which sorter answers which section lives in exactly one place. Same
+     read-only gate as every branch here (checked once, at the top of this
+     function) — sbSortBtn already withholds the button itself in the
+     ordinary case. 'Already in order' rather than silence: a scheduler who
+     reaches for the way-back control on a tidy section should hear that it
+     IS tidy, not wonder whether the click landed. */
+  if (ds.sortsec != null) {
+    const [kind, ...rest] = String(ds.sortsec).split('.')
+    const n = rest.map(Number)
+    /* Ground is the one section where "changed" can be true with the row
+       order untouched: sortGround always clears gman, so a day that was
+       frozen in manual mode but already happened to read in time order
+       comes back changed=true with the SAME row array (engine/reorder.ts
+       never reassigns it on that path) — read here before the call so the
+       toast can tell that apart from a real reorder, rather than staying
+       silent about the one thing that DID happen (review fix, 9 Aug 26). */
+    const gDay = kind === 'g' ? DAYS[n[0]] : null
+    const gWasMan = !!(gDay && gDay.gman), gRowsBefore = gDay && gDay.ground
+    let changed = false
+    if (kind === 'w') changed = sortWave(n[0], n[1])
+    else if (kind === 'd') changed = sortDutyBlock(n[0], n[1])
+    else if (kind === 's') changed = sortSims(n[0], rest[1])
+    else if (kind === 'g') changed = sortGround(n[0])
+    else if (kind === 'p') changed = sortProg(n[0])
+    if (changed) {
+      afterSchedMutate(); notify()
+      if (kind === 'g' && gWasMan && gDay!.ground === gRowsBefore) toast('Ground programme back to time order')
+    }
+    else toast('Already in order')
+    return
+  }
+  /* CX, the red flag and add-aircraft (below) carried no check of their own
+     at all before the top-level guard above — the read-only board's own
+     documented gap named these three by name. Covered now, same as every
+     other branch here. */
   if (ds.lcx != null) { const r = acRef(ds.lcx); if (!r || !r.a) return; return askCx(r.a, `fr:${ds.lcx}`, 'this line', () => rollCx(r.f)) }
   if (ds.lflag != null) {
     const r = acRef(ds.lflag); if (!r || !r.a) return
@@ -323,21 +499,98 @@ export function boardMbtn(e: MouseEvent) {
 /* the board field-change handler (through the text funnel) */
 export function boardChange(e: Event) {
   if (view.DPREV.has(view.SBDAY as any)) return   // same stale-markup guard as boardMbtn
+  /* boardChange carried NO check of any kind, role or mode — unlike
+     boardMbtn and boardArmClick, which at least checked the role. This is
+     the write path behind the flying line's callsign, mission, brief,
+     take-off, land and remarks inputs (and every other data-bfld field on
+     the board), so it is exactly the path a read-only board's still-live
+     inputs used to commit straight through: a typed callsign became a
+     model write with nothing here to refuse it. Same gate as boardMbtn's
+     top-level guard.
+     RO is computed, not an early return, on purpose (reviewer-found gap in
+     THIS pass's own first attempt, 9 Aug 26): an early `return` here skips
+     past the revert branch below (`else f.value = txtGet(p)`) exactly the
+     way a failed `txtSet` already reverts a rejected value — so a field
+     that is still rendered live for any reason (a stale render, or one of
+     the panels the render-widening below missed) would silently keep
+     whatever was typed into it ON SCREEN forever, with the model holding
+     the old value underneath: worse than a dead control, because a
+     scheduler sees their own words sitting there and reasonably believes
+     it saved. Blocked writes now revert the field the same way a rejected
+     one always has. */
+  const RO = !canEditSched() || !HOOKS.editMode()
   /* the wave-title select: night flag + label, verbatim */
   const s = (e.target as HTMLElement).closest('[data-wsel]') as HTMLSelectElement | null
   if (s) {
+    /* a <select>'s own chosen option is the browser's internal state, not
+       ours — notify() alone would not restore it, because nothing in the
+       model changed for the panel-diff to notice, so the stale selection
+       is put back explicitly, from the model, the same way the diff would
+       on the next real repaint. */
+    if (RO) { const [rdi, rgi] = s.dataset.wsel!.split('.'); const rw = DAYS[+rdi!]?.waves?.[+rgi!]; if (rw) s.value = labelToTitle(rw); return }
     const [di, gi] = s.dataset.wsel!.split('.'); const w = DAYS[+di!].waves[+gi!]
     w.night = /night/i.test(s.value); w.label = titleToLabel(s.value); afterSchedMutate(); notify(); return
   }
   const f = (e.target as HTMLElement).closest('[data-bfld]') as HTMLInputElement | null; if (!f) return
   const p = f.dataset.bfld!
-  if (txtSet(p, f.value)) { markEdit(); afterSchedMutate(); notify() }
+  if (RO) { f.value = txtGet(p); return }
+  /* the OLD role, read before txtSet overwrites it — this is what tells the
+     board's own "+ Row" case (a brand-new row, role still '') apart from
+     retyping an EXISTING row's role (review fix, 9 Aug 26). The reposition
+     used to fire on any successful role commit at all, which meant dragging
+     RUNNER to the top of a block and then correcting a DIFFERENT row's role
+     silently snapped the whole block back to role order — the drag gone,
+     with no toast and no confirmation. The spec is explicit this must never
+     happen: "a dragged list is never re-sorted behind the scheduler." */
+  const m = /^dr:(\d+)\.(\d+)\.\d+\.role$/.exec(p)
+  const wasEmptyRole = m ? !txtGet(p) : false
+  if (txtSet(p, f.value)) {
+    /* A duty row's ROLE decides where it belongs (owner, 8 Aug 26). The week no
+       longer sorts duties, so without this a row typed as SDO would print below
+       OPS-O and the squadron would meet a duty list out of role order — which
+       cannot happen today. A new row is added with an EMPTY role, so there is
+       nothing to sort by until the role is typed; this is that moment — and
+       ONLY that moment: any row whose role was already non-empty was either
+       typed correctly before or moved there on purpose, and either way a
+       retype of it must not re-judge the rest of the block. */
+    /* the sort (and the REORDERED_DI it may set) has to happen BEFORE
+       afterSchedMutate() runs, not after (review re-fix, 9 Aug 26 —
+       finding #5 still reproduced through this exact path: "+ Row", type
+       SDO into the blank role, arm a slot on another row first). ORDER
+       matters twice over: afterSchedMutate() is what reads and clears
+       REORDERED_DI to disarm a stale-armed slot, so a sort that lands
+       AFTER that read neither disarms the slot it should (the block just
+       resorted under an armed key) NOR leaves the flag cleared for the
+       NEXT, unrelated mutation — which is what let it wrongly disarm an
+       unrelated later edit instead (the MEDIUM half of the same bug).
+       HIST.lock holds every markEdit() in here — this funnel's own bare
+       call and sortDutyBlock's internal one — to a no-op push, the same
+       precedent sortAllCommit already set for its six sorters: the text
+       commit and the auto-sort it triggers are ONE user action, so Undo
+       should take it back in ONE step, not two (undo the sort, undo
+       separately back to before the role was typed). Locking even the
+       no-sort branch is harmless — histPush() already dedupes an unchanged
+       snapshot — it only matters when the sort actually moves something. */
+    HIST.lock = true
+    try {
+      markEdit()
+      if (m && wasEmptyRole) sortDutyBlock(+m[1], +m[2])
+    } finally {
+      HIST.lock = false
+    }
+    afterSchedMutate()
+    notify()
+  }
   else f.value = txtGet(p)
 }
 
 /* the board's slot-arm click handler */
 export function boardArmClick(e: MouseEvent) {
-  if (!canEditSched()) return
+  /* editMode() too, not just the role — a read-only board (role changed, or
+     the page moved away from Edit Schedule while the board stayed open)
+     must not still arm a seat just because the session is still an
+     admin's. Same gate as boardMbtn/boardChange. */
+  if (!canEditSched() || !HOOKS.editMode()) return
   if (view.DPREV.has(view.SBDAY as any)) return   // same stale-markup guard as boardMbtn
   const t = e.target as HTMLElement
   if (t.closest('.puck[data-person]')) return
@@ -352,8 +605,29 @@ export function boardArmClick(e: MouseEvent) {
 }
 
 /* + Line, verbatim — a new formation on the day's LAST wave, seeded from the
-   wave's last line so times carry over */
+   wave's last line so times carry over. canEditSched() checked here too
+   (smaller item, review 9 Aug 26): this used to rely on being unreachable
+   through the UI for a non-admin (Edit Schedule hidden from their nav, the
+   board itself never opened) rather than refusing to act on its own — the
+   same "hidden, not gated" gap finding #1's read-only board proved a role
+   change or a stale reference can reopen. Every other control on this
+   board carries its own in-function check regardless of what the render
+   already withholds; this one now does too. */
 export function addLine(di: number) {
+  /* editMode() too, not just the role (re-review fix, 9 Aug 26): a read-only
+     board (View sched, board left open — finding #1's state) still passes
+     canEditSched() for an admin, and this button carries no `disabled` of
+     its own for that state (only for a frozen preview) — so the role check
+     alone left it able to act. Same gate finding #4 put on Sort all.
+     Scoped to `view.SBDAY != null` — a board actually open somewhere —
+     rather than an unconditional editMode(): this function is also the
+     bridge's own `window.addLine`/`addWave`, called directly by probes
+     (sa-async.cjs) to build standalone waves before ever touching the UI
+     or navigating to Edit Schedule, and no board is rendered at all for
+     those calls (SBDAY stays null, so there is no live-looking button
+     anywhere for a stray click to exploit — the vulnerability this closes
+     needs a board that LOOKS open, not a bare API call). */
+  if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
   const d = DAYS[di]; if (!d.waves || !d.waves.length) return toast('Add a wave first')
   const w = d.waves[d.waves.length - 1], last = w.formations[w.formations.length - 1] || { cs: 'NEW', msn: '-', to: '12:00', ld: '13:00' }
   w.formations.push({ cs: last.cs, msn: last.msn, to: last.to, ld: last.ld, aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
@@ -361,8 +635,13 @@ export function addLine(di: number) {
   afterSchedMutate(); notify(); toast('Line added')
 }
 
-/* + Wave, verbatim */
+/* + Wave, verbatim. Same in-function role check as addLine above — the
+   direct mutator, so this is the one that actually has to refuse, whether
+   it is reached through waveMenu's picker or (as the smaller-item test
+   does) called straight off the module. */
 export function addWave(di: number, kind: any) {
+  // same SBDAY-scoped editMode() gate as addLine above, same reason.
+  if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
   const d = DAYS[di]; if (!d) return
   d.waves = d.waves || []
   if (!kind) {
@@ -384,6 +663,8 @@ export function addWave(di: number, kind: any) {
    builds it — it lives outside the React tree and removes itself on any
    outside click) */
 export function waveMenu(anchor: HTMLElement, di: any) {
+  // same SBDAY-scoped editMode() gate as addLine/addWave above, same reason.
+  if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
   /* The stores popup (interactions.ts's openStoresMenu) shares this class
      for its look, and it keeps a NOT-{once:true} click listener attached
      to document that only it knows how to unhook (_offClick) — its
@@ -450,4 +731,9 @@ export function openScheduler(di: number) { SBWOPEN = false; view.setBoardDay(di
    with the edit week's own drawer, and leaving it set would surprise-open
    the week's palette the moment the board lifts (owner's one-window phone
    board, 8 Aug 26). The week's tab is right there to reopen it. */
-export function closeScheduler() { view.setBoardDay(null); document.body.classList.remove('ros-open'); notify() }
+/* view.closeBoardState() is the shared cleanup — also what setPage now calls
+   the moment the page stops being Edit Schedule (state/view.ts), so a nav
+   click and the Done/Close buttons close the board through the exact same
+   path rather than two copies of "SBDAY null, park the drawer" drifting
+   apart. */
+export function closeScheduler() { view.closeBoardState(); notify() }

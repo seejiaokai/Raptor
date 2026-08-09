@@ -18,7 +18,8 @@ import { collectEvents } from './engine/events'
 import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef, acceptInput, unacceptInput, inpKey, acceptedDay, renameCallsign } from './engine/slots'
 import { slotBar, dayEngaged, slotRules, dayOff } from './engine/avail'
 import { isStandalone, makeStandalone, SAWAVE, dayCount, saExempt } from './engine/waves'
-import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays } from './engine/keys'
+import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays, permuteKeys, moveKeys } from './engine/keys'
+import { applyMove } from './engine/reorder'
 import { hhmm, parseHM, minus, overlap, hm24 } from './engine/time'
 import { HIST, histApply, histSnap, histPush } from './state/history'
 import { HOOKS } from './engine/hooks'
@@ -66,6 +67,11 @@ export function installProbeBridge() {
     const a = document.querySelector(`.nav a[data-page="${p}"]`) as HTMLElement | null
     if (a) a.click(); else { const d = document.querySelector(`#drawerNav a[data-page="${p}"]`) as HTMLElement | null; d && d.click() }
   }
+  /* the bare state setter behind w.go — needed by e2e tests that force the
+     scheduler board open on a role/page combination no click path can ever
+     reach (a squadron member's Edit Schedule link doesn't exist to click),
+     the same way w.openScheduler already forces SBDAY open with no click. */
+  w.setPage = (p: string) => { view.setPage(p); notify() }
   /* the board — loaded lazily to keep module order simple */
   /* the id-getter every probe leans on, and the wider engine surface */
   w.$ = (id: string) => document.getElementById(id)
@@ -77,6 +83,7 @@ export function installProbeBridge() {
   w.isStandalone = isStandalone; w.makeStandalone = makeStandalone; w.dayCount = dayCount
   w.keyDay = keyDay; w.shiftKeys = shiftKeys; w.shiftAircraft = shiftAircraft
   w.shiftFormation = shiftFormation; w.shiftWave = shiftWave; w.uniqDays = uniqDays
+  w.permuteKeys = permuteKeys; w.moveKeys = moveKeys; w.applyMove = applyMove
   w.hhmm = hhmm; w.parseHM = parseHM; w.minus = minus
   w.dayApproved = dayApproved; w.alColor = alColor; w.signMissing = signMissing; w.unpublishAL = unpublishAL
   w.isScheduler = isScheduler; w.isLead = isLead; w.isInstr = isInstr; w.isInstrPilot = isInstrPilot; w.isOcu = isOcu
