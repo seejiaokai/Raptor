@@ -619,63 +619,113 @@ believing a single red.)
     AVALON / BB gate went on both surfaces; the entry paths are closed now,
     the CSV read path is not.
   - **CLOSED (owner ask, 9 Aug 26 — was tracked here as an open gap and as
-    "deliberately not fixed").** The Schedule Board used to stay open across
-    a page change — at a phone width (≤820px), tab to `#burger` behind an
-    open board, the drawer paints above it at `z-index:440`, and
-    "View-only Sched" flips `CURPAGE` while the board itself stayed open
-    with callsign, times, remarks, the CX/red-flag/add-aircraft/delete
-    buttons and the FCP/RCP arm targets all still live and still writing to
-    the model. A reviewer confirmed this in a real browser: a typed
-    callsign committed, `+ Line` added a formation, a row's `✕` deleted a
-    line. Not reachable by a normal user (the modal is a full-screen overlay
-    that covers the nav and the edit toggle — a real pointer click on either
-    is blocked, confirmed live during this fix's own verification) — this
-    was defence in depth, not an open hole, and was fixed as such. Two
-    independent halves:
-    1. **The board no longer stays open on the wrong page.** `SchedBoard.tsx`'s
-       `const open = SBDAY != null` is now
-       `SBDAY != null && CURPAGE === 'editsched'` — the render-gate option
-       this entry proposed, chosen over having `setPage` close the board:
-       `setPage` is the single session/page-change primitive every login,
-       logout and nav click already routes through (`state/store.ts`'s
-       `resetSession`, `interactions.ts`'s nav handler), so teaching it a
-       new side effect risked every one of those callers, where `open` is a
-       plain derived boolean already computed in the one component that has
-       the bug. `SBDAY` is deliberately left untouched — landing back on
-       Edit Schedule with a day still armed re-opens it, a resume rather
-       than a leak, since nothing was ever live while hidden.
-    2. **The flying line itself now honours the same read-only flag the
-       stores chips, the grip, the nudge buttons and Sort all already did**
-       (`board.ts`'s `stoRO`/`mvRO`, `pv OR not in edit mode` — widened, not
-       a second mechanism): the `disabled` attribute on callsign / mission /
-       brief / take-off / land / remarks, the whole row-control cluster
-       (nudge, CX, red flag, add-aircraft, delete — omitted outright, the
-       same shape `sbRowCtl` already uses for duty/sim/ground rows, and safe
-       here because it is the LAST grid item, unlike the grip whose
-       omission caused finding #1), and the FCP/RCP seats' `data-slot` /
-       `draggable`. This is what still matters even with the board closing
-       on a page change, because the edit toggle switched OFF on the SAME
-       page (`#editToggle`, reachable without ever navigating) reaches
-       `HOOKS.editMode()===false` with the board legitimately still open —
-       the write paths behind it (`boardChange`, which had no check of its
-       own at all; `boardMbtn`'s CX/red-flag/add-aircraft branches, which
-       had none either; `boardArmClick`, which checked the role but not the
-       mode) all gained the same guard `boardMbtn`'s nudge/sort/delete
-       branches already carried, consolidated into one check at the top of
-       `boardMbtn` rather than three more scattered copies. `probe-bridge.ts`
-       gained `w.setPage`, the same bare-global idiom as `w.openScheduler`,
-       so an e2e test can force a squadron member onto Edit Schedule with no
-       click path there to prove the ROLE gate rather than the page gate.
-       Seventeen new tests pin this — `vitest`, closing HANDOFF's own stale
-       "board survives a page change" render-gate comment along the way —
-       plus two rewritten and one added in `e2e/geometry.spec.ts` (finding
-       #1's row-register regression now reached via the edit toggle instead
-       of a page nav, since the nav route it used to exercise no longer
-       leaves the board open; the squadron-member render-gate test forces
-       the page the same bare-global way it already forced the board open;
-       a new test pins the page-nav close directly, since jsdom's 0×0 rects
-       cannot see `hidden` turn into an actual invisible modal). Every test
-       was run against the pre-fix code first and confirmed red.
+    "deliberately not fixed"; took two passes, the first of which introduced
+    a NEW hole a reviewer caught before it shipped — recorded honestly
+    below).** The Schedule Board used to stay open across a page change —
+    at a phone width (≤820px), tab to `#burger` behind an open board, the
+    drawer paints above it at `z-index:440`, and "View-only Sched" flips
+    `CURPAGE` while the board itself stayed open with callsign, times,
+    remarks, the CX/red-flag/add-aircraft/delete buttons and the FCP/RCP
+    arm targets all still live and still writing to the model. A reviewer
+    confirmed this in a real browser: a typed callsign committed, `+ Line`
+    added a formation, a row's `✕` deleted a line. Not reachable by a
+    normal user through the board's OWN controls (the modal is a
+    full-screen overlay that covers the nav and the edit toggle — a real
+    pointer click on either is blocked, confirmed live) — this was defence
+    in depth on the board's own controls, not an open hole there, and was
+    fixed as such.
+    **Pass 1 (render + the flying line's own write paths) — closed the
+    board's own controls, opened a different one.** `SchedBoard.tsx`'s
+    `const open = SBDAY != null` became `SBDAY != null && CURPAGE ===
+    'editsched'`, deliberately leaving `SBDAY` itself untouched ("a resume,
+    not a leak"), and `board.ts`'s flying-line render/write paths were
+    widened onto `stoRO`/`mvRO` (`pv OR not in edit mode`) the same way the
+    stores chips, grip, nudge buttons and Sort all already were. **This
+    reasoning was wrong**: `Shell.tsx`'s document-level right-click
+    clear-a-seat handler carried `HOOKS.editMode() || SBDAY != null` — an
+    escape hatch that existed BECAUSE the board used to paint over whatever
+    page you were on, and so trusted "a board is open" as proof of safety
+    on its own. Leaving `SBDAY` alive broke that assumption: the render
+    stopped painting the board on the wrong page, but the escape hatch kept
+    reading `SBDAY != null` as permission — so a real right-click on the
+    WEEK puck now VISIBLE underneath (no longer covered by the board)
+    cleared it straight through. Proven live by the reviewer with a real
+    pointer, and proven to be a NEW regression, not pre-existing, by
+    building the prior commit in a parallel worktree: before, the hit-test
+    on that puck was covered by the board and a right-click timed out;
+    after pass 1, it landed and deleted.
+    **Pass 2 (the fix): `SBDAY` is cleared, not left alive.**
+    `state/view.ts`'s `setPage` now clears the board outright the moment
+    the page stops being `'editsched'` (`closeBoardState()` — `SBDAY` null,
+    which disarms `ARM` for free since `setBoardDay`'s own disarm fires on
+    any day change including to null, plus the aircrew drawer's `ros-open`
+    body class parked), the same cleanup `closeScheduler`'s Done/Close
+    buttons already ran, now shared rather than duplicated. Landing back on
+    Edit Schedule does **not** silently resume a day any more — a
+    scheduler opens one again, same as any other visit; the "resume"
+    framing from pass 1 is gone. `Shell.tsx`'s handler lost the `SBDAY !=
+    null` escape entirely — `HOOKS.editMode()` alone gates it now, which is
+    the one condition already correct for every legitimate case (role,
+    page, AND the edit toggle) and false for every one that isn't.
+    `state/view.ts` staying DOM-free of `ui/board.ts` (the layering this
+    file's own map describes) is why the shared cleanup lives in
+    `state/view.ts` and `board.ts`'s `closeScheduler` calls into it, not
+    the reverse.
+    **The render widening also had a narrower boundary than the write
+    surface it was meant to close.** Pass 1 widened only the flying line
+    (what this entry named by name: callsign/mission/brief/take-off/
+    land/remarks, its CX/flag/add-aircraft/delete cluster, its FCP/RCP
+    seats). The SAME gap sat untouched in every other panel added Aug 26 —
+    Overall notes, the overall programme, duty/sim/ground rows — still
+    `pv`-only. Demonstrated live: a read-only board still let a name be
+    dragged onto a duty row (`drag.ts`'s `applyDrop`, the ONE mutation path
+    shared by mouse and touch, checked the role but never the mode — 36
+    draggable seats and 59 draggable roster pucks on a read-only board),
+    and typing into a day's Overall note left the wrong text sitting on
+    screen **permanently** — `boardChange`'s first-attempt guard was an
+    early `return` that skipped past the revert branch a rejected `txtSet`
+    already had, so a blocked field kept whatever was typed into it on
+    screen while the model held the old value underneath: worse than a
+    dead control, because a scheduler sees their own words and reasonably
+    believes it saved. Both fixed: six more call sites in `board-html.ts`
+    (`sbRowCtl`, `sbTxt`, `sbNote`, `sbSeat`/`sbMore`, the `data-fill`
+    cells, `sbInputsGroupPanel`'s accept control) plus the per-wave header
+    block and the `.bsug` brief-suggestion ghost in `board.ts` now pass the
+    same `ro` flag the flying line's `dis`/`stoRO` already used; `applyDrop`
+    checks `HOOKS.editMode()` alongside the role; `boardChange` reverts a
+    blocked field to the model's real value instead of merely refusing to
+    commit it, mirroring the revert a rejected edit always had.
+    `boardMbtn`'s consolidated guard (added in pass 1) is now
+    **load-bearing for tests that predate it** — the nudge, per-section-sort
+    and delete-line branches lost their own copy of the check when it moved
+    to the top of the function, so narrowing that guard later without
+    giving those three branches a check of their own back would silently
+    reopen a gap even though their own tests would keep passing; flagged in
+    a comment at the guard itself.
+    **Nineteen new tests pin all of this** — `board.test.tsx` (the blocker,
+    reproduced with a real `contextmenu` dispatch on a WEEK seat after a
+    board was opened then navigated away from; the render/write-path
+    widening for the other panels; two page-leave stale-state regressions,
+    `ros-open` and `ARM`), `drag.test.tsx` (`applyDrop`'s mode check, using
+    a stale-but-attached drag source/target the same way every other
+    write-path test in this pass does — a version that re-rendered between
+    capture and drop was tried first and passed for the wrong reason, the
+    target having gone stale/detached, which is recorded in the test's own
+    comment) — plus one rewritten and one added in `e2e/geometry.spec.ts`
+    (the page-nav-close test now asserts `SBDAY` is actually cleared, not
+    just hidden, since "resume" is gone; a new test drives the blocker with
+    a REAL pointer right-click, confirming the same real-browser
+    reproduction the reviewer used). `probe-bridge.ts` gained `w.setPage`
+    (same bare-global idiom as `w.openScheduler`) so the squadron-member
+    render-gate e2e test can force Edit Schedule with no click path there,
+    proving the role gate rather than the page gate. Every test in both
+    passes was run against the pre-fix code first and confirmed red —
+    including, for pass 2, checking that pass 1's OWN tests didn't
+    accidentally start passing for the wrong reason once SBDAY started
+    clearing (two did, and were rewritten: `board-stores.test.tsx`'s
+    stores-go-read-only test now reaches read-only via the edit toggle,
+    since the page-nav route it used no longer leaves the board open to
+    observe; the finding #1 row-register e2e test does the same).
 - **Board rows can be reordered (owner ask, 8 Aug 26): "drag lines up and
   down to adjust the sequence."** Every movable list on the board — flying
   lines (a formation, travelling as a block), jets inside a formation,

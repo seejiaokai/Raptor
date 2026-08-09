@@ -11,6 +11,8 @@ import { slotVal, setSlotVal, rowCrew, fillSlot } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
 import { setEditOn, afterSchedMutate, armedKey } from '../state/view'
 import { dragFrom, applyDrop, setDrag } from './drag'
+import { openScheduler, closeScheduler } from './board'
+import { DAYS } from '../engine/data'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -314,6 +316,65 @@ describe('isPhone is wired', () => {
     wireStore()
     expect(HOOKS.isPhone()).toBe(window.innerWidth <= 820)
     ;(window as any).matchMedia = orig
+  })
+})
+
+/* reviewer-found residual (9 Aug 26): applyDrop is the ONE mutation path
+   shared by mouse and touch (the comment right above its role check said
+   so), but the check itself only ever tested canEditSched() — the role,
+   never HOOKS.editMode(). Demonstrated live on a read-only board (edit
+   toggle off, board still legitimately open on its own page): 36 draggable
+   seats and 59 draggable roster pucks, and dragging a name onto a duty row
+   wrote it straight into the model. board-html.ts's render-side widening
+   (sbSeat/data-fill now follow the same ro flag the flying line's seats
+   do) closes the ORDINARY path to this, but a stale drag already begun
+   before the toggle flips — grabbed here BEFORE editMode() goes false, the
+   same "stale element" shape every other write-path test in this task
+   uses — is exactly what a render fix alone cannot stop; only the check
+   inside applyDrop itself can. */
+describe('applyDrop refuses on a read-only board, not just the render (reviewer-found residual, 9 Aug 26)', () => {
+  it('dragging a roster puck onto a duty row does not write once editMode() is false', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    const fill = document.querySelector('#sbBoard .sb-panel.duty [data-fill]') as HTMLElement
+    expect(fill, 'sanity: a duty row fill target exists').toBeTruthy()
+    const puck = document.querySelector('#sbRoster [data-person][draggable="true"]') as HTMLElement
+    expect(puck, 'sanity: a draggable roster puck exists').toBeTruthy()
+    const before = JSON.stringify(DAYS[0].dutywaves)
+    /* HOOKS.editMode stubbed directly, NOT setEditOn()+notify() — the same
+       "stale element" shape every other write-path test in this task uses,
+       and for the same reason: notify() would re-render the duty panel
+       through board-html.ts's OWN render widening, which DETACHES `fill`
+       from the document (the panel's innerHTML is replaced wholesale, not
+       patched) — a detached element's events never bubble to document,
+       where drag.ts's listeners live, so the drop would silently no-op and
+       "pass" whether or not applyDrop's own check does anything at all.
+       Stubbing the answer without ever re-rendering keeps `fill` and `puck`
+       genuinely attached and live, so this proves applyDrop's OWN check,
+       not an accidentally-unreachable target. */
+    HOOKS.editMode = () => false
+    try {
+      await dnd(puck, fill)
+      expect(JSON.stringify(DAYS[0].dutywaves), 'the model never saw the drop').toBe(before)
+    } finally {
+      HOOKS.editMode = () => true
+      await act(async () => { closeScheduler(); notify() })
+    }
+  })
+
+  /* proves the guard is genuinely conditional, not a silent always-refuse:
+     the identical gesture, in edit mode, still writes. No later test in
+     this file reads DAYS[0].dutywaves, so the write this leaves behind
+     (a) doesn't need undoing — same reasoning drag.test.tsx's other
+     mutation-proving tests already rely on (see e.g. B23/B49 above, which
+     leave their own drops in place too). */
+  it('the same drag DOES write in edit mode (unchanged)', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    const fill = document.querySelector('#sbBoard .sb-panel.duty [data-fill]') as HTMLElement
+    const puck = document.querySelector('#sbRoster [data-person][draggable="true"]') as HTMLElement
+    const before = JSON.stringify(DAYS[0].dutywaves)
+    await dnd(puck, fill)
+    expect(JSON.stringify(DAYS[0].dutywaves), 'the model DID see the drop').not.toBe(before)
+    await act(async () => { closeScheduler(); notify() })
   })
 })
 

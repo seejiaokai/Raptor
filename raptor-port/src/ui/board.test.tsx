@@ -891,16 +891,24 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
    SBDAY is deliberately left untouched — this pins the render gate, not a
    claim that SBDAY itself gets cleared. */
 describe('the board closes when the page moves away from Edit Schedule (HANDOFF.md, part 1)', () => {
-  it('navigating to View sched hides the modal even though SBDAY is untouched', async () => {
+  it('navigating to View sched hides the modal AND clears SBDAY — closed outright, not just hidden', async () => {
     await act(async () => { openScheduler(0); notify() })
     expect(($('#schedBoard') as any).hidden, 'sanity: open on its own page').toBe(false)
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
-    expect(SBDAY, 'the day itself is left alone — only the render gate reacts').toBe(0)
+    /* SBDAY is cleared now, not merely hidden (reviewer-found blocker, 9 Aug
+       26 — see state/view.ts's setPage): Shell.tsx's right-click clear-a-
+       seat handler used to trust SBDAY!=null on its own as proof the board
+       was safely open, which stopped being true the moment the render
+       stopped painting it but the state kept living. */
+    expect(SBDAY, 'SBDAY is cleared, not just the render gate').toBe(null)
     expect(($('#schedBoard') as any).hidden, 'the modal stops covering the wrong page').toBe(true)
   })
 
-  it('coming back to Edit Schedule with the day still armed re-opens it — a resume, not a leak', async () => {
+  it('coming back to Edit Schedule does NOT silently resume a day — a scheduler opens one again', async () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    expect(SBDAY, 'nothing to resume — it was cleared on the way out').toBe(null)
+    expect(($('#schedBoard') as any).hidden).toBe(true)
+    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
     expect(($('#schedBoard') as any).hidden).toBe(false)
   })
 
@@ -909,6 +917,102 @@ describe('the board closes when the page moves away from Edit Schedule (HANDOFF.
     expect(SBDAY).toBe(null)
     expect(($('#schedBoard') as any).hidden).toBe(true)
     await act(async () => { openScheduler(0); notify() })   // leave the suite as later blocks expect
+  })
+})
+
+/* THE BLOCKER (coordinator review, 9 Aug 26). Shell.tsx's document-level
+   context-menu handler (right-click a filled seat → clear it) carried
+   `HOOKS.editMode() || SBDAY != null` — an escape hatch that trusted "a
+   board is open" as proof of safety on its own, which was only ever true
+   because the board used to paint over whatever page you were on. Once the
+   render stopped painting it there but SBDAY kept living (this task's own
+   first attempt at part 1), the escape hatch started trusting a HIDDEN
+   board instead: open a board on Edit Schedule, navigate to View-only
+   Sched, and the WEEK underneath — now fully visible and NOT covered by
+   the board any more — still answered a right-click as though editing were
+   on, because SBDAY was still non-null. A real pointer confirmed this live
+   on the built bundle. Two independent things now close it, both pinned
+   here: state/view.ts's setPage clears SBDAY the moment the page leaves
+   'editsched' (so the escape hatch's own condition goes false), AND
+   Shell.tsx's handler no longer has the escape hatch at all — editMode()
+   alone gates it, which is the one condition already correct for the case
+   this test does NOT cover too (edit toggle off, board still open on ITS
+   OWN page — the seat right there stays covered by mvRO/stoRO's disabled
+   render, but the escape hatch would have reached past that as well; see
+   the "no escape hatch" comment in Shell.tsx). Nothing in this suite
+   exercised the real document-level handler before this — every other
+   context-menu test in the codebase (editweek.test.tsx) never opens a
+   board, so SBDAY was always null there and the escape hatch was never
+   actually reached. */
+describe('the blocker: a board left open cannot be used to clear a WEEK puck after leaving Edit Schedule', () => {
+  /* an earlier describe in this file (finding #4's "board mutation handlers"
+     block) leaves HOOKS.editMode hard-stubbed `() => true` in its own
+     afterEach — correct for what THAT block tests, but it would make this
+     test pass for the wrong reason (the stub, not the real EDITON/CURPAGE
+     wiring, reading true). Put the real implementation back, same as the
+     "edit mode itself" block at the end of this file does. */
+  beforeAll(async () => { HOOKS.editMode = realEditMode; await act(async () => { notify() }) })
+
+  it('right-clicking a WEEK seat on View-only Sched does NOT clear it, even with a board previously left open', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    expect(($('#schedBoard') as any).hidden, 'sanity: the board really is open').toBe(false)
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
+    expect(SBDAY, 'sanity: leaving the page cleared it (part 1 of the fix)').toBe(null)
+    /* the view week's own seats carry data-slot (html.ts:165) regardless of
+       edit mode — only `draggable` is gated on it — which is exactly what
+       made this reachable: the context-menu handler's own target selector
+       is `.seat[data-slot]`, not anything draggable-specific. */
+    const seat = $('#vWeek .seat[data-slot]') as HTMLElement
+    expect(seat, 'sanity: the view week has a seat to target').toBeTruthy()
+    const key = seat.dataset.slot!
+    const before = slotVal(key)
+    expect(before, 'sanity: the targeted seat is actually filled').toBeTruthy()
+    try {
+      await act(async () => {
+        seat.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }))
+      })
+      expect(slotVal(key), 'the seat was NOT cleared').toBe(before)
+    } finally {
+      if (slotVal(key) !== before) await act(async () => { setSlotVal(key, before); afterSchedMutate() })
+      await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+      await act(async () => { openScheduler(0); notify() })   // leave the suite as later blocks expect
+    }
+  })
+})
+
+/* Stale state a board left open on the wrong page used to leave behind
+   (reviewer-found, 9 Aug 26) — both now fixed by routing setPage's
+   page-leave through the same closeBoardState() the Done/Close buttons
+   already use (state/view.ts), rather than leaving them for the next
+   visit to trip over. */
+describe('page-leave cleanup — closeBoardState (reviewer-found stale state, 9 Aug 26)', () => {
+  it('the aircrew drawer (ros-open) is parked when the page leaves Edit Schedule with the board open', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    /* simulates a phone-width visit where armSlot's isPhone() branch (or a
+       tap on the .ros-tab) had already slid the drawer out — this test
+       doesn't need a real phone viewport, only the class the drawer reads */
+    document.body.classList.add('ros-open')
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
+    expect(document.body.classList.contains('ros-open'), 'parked on the way out, not left for the next visit').toBe(false)
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
+  })
+
+  it('a slot armed on the board is disarmed when the page leaves Edit Schedule', async () => {
+    const key = '0.0.0.0.p'
+    const before = slotVal(key)
+    await act(async () => { setSlotVal(key, ''); openScheduler(0); notify() })
+    try {
+      view.armSlot(key)
+      expect(view.armedKey(), 'sanity: the seat is armed').toBe(key)
+      await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
+      expect(view.armedKey(), 'disarmed on the way out').toBe('')
+    } finally {
+      view.armDrop()
+      await act(async () => { setSlotVal(key, before); afterSchedMutate() })
+      await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+      await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
+    }
   })
 })
 
@@ -1067,6 +1171,112 @@ describe('the flying line\'s write paths refuse on a read-only board too, not ju
     const before = JSON.stringify(DAYS[SBDAY as any])
     boardMbtn({ target: btn } as any)
     expect(JSON.stringify(DAYS[SBDAY as any])).toBe(before)
+  })
+})
+
+/* Coordinator review, 9 Aug 26: "your boundary does not match the boundary
+   of what is safe" — everything above closed the flying line specifically
+   (what HANDOFF.md named by name), but the SAME gap sat untouched in every
+   OTHER panel: Overall notes, the overall programme, and the duty/sim/
+   ground rows added Aug 26 were all still `pv`-only — a read-only board
+   left their text inputs enabled, their seats draggable, and their
+   add/CX/flag/delete clusters live. Demonstrated live: typing into a day's
+   Overall note left the wrong text sitting on screen permanently, because
+   boardChange's FIRST attempt at a guard (an early return) skipped past
+   the revert branch a rejected txtSet already had — worse than a dead
+   field, because a scheduler sees their own words and reasonably believes
+   it saved. Six call sites in board-html.ts now pass the SAME ro flag the
+   flying line's dis/stoRO already used (sbRowCtl, sbTxt, sbNote, sbSeat/
+   sbMore, the data-fill cells, and the per-wave header block in board.ts),
+   and boardChange reverts a blocked field's on-screen value instead of
+   just refusing to commit it. */
+describe('the OTHER panels honour the read-only flag too, not just the flying line (coordinator review, 9 Aug 26)', () => {
+  afterEach(async () => {
+    HOOKS.editMode = () => true
+    await act(async () => { notify() })
+  })
+
+  it('the overall note, the programme item and a duty row all disable once editMode() is false', () => {
+    HOOKS.editMode = () => false
+    const h = boardHTML(0)
+    expect(h, 'Overall notes .nin').toMatch(/class="nin" data-bfld="dn:[^"]*"[^>]*disabled/)
+    expect(h, 'the programme item\'s own free-text field').toMatch(/class="ain" data-bfld="ap:[^"]*\.prog"[^>]*disabled/)
+    expect(h, 'a duty row\'s role field').toMatch(/class="ain" data-bfld="dr:[^"]*\.role"[^>]*disabled/)
+    expect(h, 'the scheduler notes textarea (sbNote)').toMatch(/class="sb-nbox" data-bfld="[^"]*"[^>]*disabled/)
+  })
+
+  it('none of those four are disabled in edit mode (unchanged)', () => {
+    const h = boardHTML(0)
+    expect(h).not.toMatch(/class="nin" data-bfld="dn:[^"]*"[^>]*disabled/)
+    expect(h).not.toMatch(/class="ain" data-bfld="ap:[^"]*\.prog"[^>]*disabled/)
+    expect(h).not.toMatch(/class="ain" data-bfld="dr:[^"]*\.role"[^>]*disabled/)
+    expect(h).not.toMatch(/class="sb-nbox" data-bfld="[^"]*"[^>]*disabled/)
+  })
+
+  it('+ Note / + Item / + Block / + Row and their CX/flag/delete clusters do not render once editMode() is false', () => {
+    HOOKS.editMode = () => false
+    const h = boardHTML(0)
+    expect(h).not.toContain('data-nadd=')
+    expect(h).not.toContain('data-padd=')
+    expect(h).not.toContain('data-dwadd=')
+    expect(h).not.toContain('data-dradd=')
+    expect(h).not.toContain('data-pcx=')
+    expect(h).not.toContain('data-drcx=')
+  })
+
+  it('the same controls render in edit mode (unchanged)', () => {
+    const h = boardHTML(0)
+    expect(h).toContain('data-nadd=')
+    expect(h).toContain('data-padd=')
+    expect(h).toContain('data-dwadd=')
+    expect(h).toContain('data-dradd=')
+  })
+
+  it('a duty row\'s seat carries no data-slot and no draggable once editMode() is false', () => {
+    HOOKS.editMode = () => false
+    const h = boardHTML(0)
+    /* duty seats use sbSeat, not sbSlot — a bare span, not wrapped in
+       .sb-slot — so the assertion matches that shape specifically rather
+       than reusing the flying-line one */
+    expect(h).not.toMatch(/<span class="seat" data-slot="d:[^"]*"/)
+  })
+
+  it('a duty row\'s seat is draggable in edit mode (unchanged)', () => {
+    const h = boardHTML(0)
+    expect(h).toMatch(/<span class="seat" data-slot="d:[^"]*"[^>]*draggable="true"/)
+  })
+
+  /* the exact scenario the reviewer demonstrated: typing into Overall notes
+     while read-only used to leave the typed text sitting on screen forever
+     (boardChange's first-attempt guard returned before the revert branch a
+     rejected txtSet already had), while the model kept the old value
+     underneath — worse than a dead field, because it LOOKS saved. */
+  it('boardChange reverts a blocked Overall-note edit to the model\'s real value, not just refuses to commit it', async () => {
+    const input = document.querySelector('#sbBoard .sb-nrow .nin') as HTMLInputElement
+    expect(input, 'sanity: an overall-note row exists (the seed carries one)').toBeTruthy()
+    const key = input.dataset.bfld!
+    const before = txtGet(key)
+    HOOKS.editMode = () => false
+    await act(async () => {
+      input.value = 'TYPED WHILE READ-ONLY — SHOULD NOT STICK'
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    expect(txtGet(key), 'the model never saw the edit').toBe(before)
+    expect(input.value, 'the FIELD ON SCREEN was put back too, not left showing the typed text').toBe(before)
+  })
+
+  it('the identical edit commits normally in edit mode, and does not auto-revert', async () => {
+    const input = document.querySelector('#sbBoard .sb-nrow .nin') as HTMLInputElement
+    const key = input.dataset.bfld!
+    const before = txtGet(key)
+    await change(input, before + ' — edited')
+    expect(txtGet(key)).toBe(before + ' — edited')
+    /* re-queried, not the same reference — a successful commit re-renders
+       the panel (innerHTML replaced wholesale), which detaches the
+       original `input`; dispatching on it again would silently no-op */
+    const input2 = document.querySelector('#sbBoard .sb-nrow .nin') as HTMLInputElement
+    await change(input2, before)   // restore
+    expect(txtGet(key)).toBe(before)
   })
 })
 

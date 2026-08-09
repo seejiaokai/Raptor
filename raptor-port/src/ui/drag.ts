@@ -12,6 +12,8 @@ import * as view from '../state/view'
 import { notify } from '../state/store'
 import { canEditSched } from '../state/auth'
 
+const editMode = () => HOOKS.editMode()
+
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const isPhone = () => HOOKS.isPhone()
 
@@ -87,13 +89,25 @@ export function barDrop(id: any, key: any) {
   return true
 }
 export function applyDrop(el: any, x: any, y: any) {
-  /* editMode() (store.ts) hides draggable="true" for a non-admin session, but
-     a drag already picked up before a session change lands underneath it
-     (logout mid-drag, or a stale DRAG left by an earlier session on a shared
-     browser) still reaches here with live DRAG state. applyDrop is the ONE
-     mutation path shared by the mouse and touch input methods, so one check
-     here — rather than one in each of onDrop/onPointerUp — closes both. */
-  if (!canEditSched()) { DRAG = null; dndOff(); return false }
+  /* editMode() checked too, not just the role (reviewer-found gap, 9 Aug
+     26): the comment below used to claim "editMode() hides draggable='true'
+     for a non-admin session" as if that made a write-path check here
+     redundant, but the check itself only ever tested canEditSched() — the
+     role, not the mode. On a read-only board (Edit Schedule, edit toggle
+     off) the duty/sim/ground seats and fill targets still carried
+     draggable/data-slot/data-fill (a separate render-gate gap, fixed
+     alongside this one), so an admin whose session never changed could
+     drag a name onto a duty row and have it write straight into the model.
+     applyDrop is the ONE mutation path shared by the mouse and touch input
+     methods, so one check here — rather than one in each of
+     onDrop/onPointerUp — closes both, the same reason the role check was
+     already centralised here rather than at each call site. A drag already
+     picked up before a role OR mode change lands underneath it (logout
+     mid-drag, the edit toggle flipped off mid-drag, or a stale DRAG left by
+     an earlier session on a shared browser) still reaches here with live
+     DRAG state — this is what actually stops it, not the render gate that
+     started the drag. */
+  if (!canEditSched() || !editMode()) { DRAG = null; dndOff(); return false }
   if (!DRAG || !el || !el.closest) { DRAG = null; dndOff(); return false }
   let slotEl = el.closest('.sb-slot,.seat[data-slot]')
   /* A PALETTE drop anywhere on a list row means THAT ROW. The .ppl cell is only a

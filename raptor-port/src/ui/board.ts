@@ -64,11 +64,17 @@ export function boardHTML(di: number, pv?: boolean) {
     const opts = ['1st wave', '2nd wave', '3rd wave', '4th wave', '5th wave', 'Night wave']
     const cur = labelToTitle(w); if (!opts.includes(cur)) opts.unshift(cur)
     const inT = waveInTime(w)
+    /* mvRO, not pv (reviewer-found residual, 9 Aug 26): the wave header's
+       own title select and its + Line / ✕ Wave pair were still pv-only,
+       the same gap as everything else in this pass — a read-only board
+       (edit toggle off, board still legitimately open on its own page)
+       left the whole-wave rename and delete live even after the flying
+       line's own rows went inert. */
     fly += `<div class="sb-go"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
-      + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${pv ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
+      + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${mvRO ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
       + `${w.night ? '<span class="night">· night</span>' : ''}`
       + `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`
-      + (pv ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
+      + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
@@ -91,7 +97,13 @@ export function boardHTML(di: number, pv?: boolean) {
          optional ghost never changes this row's grid-item count — see the
          mobile column notes in scheduler.css. */
       const brief = minus(f.to, VCONF.briefLead)
-      const brSug = (!pv && parseHM(f.br) == null)
+      /* stoRO, not !pv (reviewer-found residual, 9 Aug 26): the ghost is a
+         SEPARATE clickable element from the .tm brief input right next to
+         it (interactions.ts's routeClick, data-bacc branch) — disabling
+         the input's own `dis` attribute above never touched this one, so a
+         read-only board still offered "click to accept" on the one field
+         HANDOFF.md named by name ("brief"). */
+      const brSug = (!stoRO && parseHM(f.br) == null)
         ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
         : ''
       /* sbSlot's own `pv` param means "read-only" to that function, not
@@ -155,7 +167,7 @@ export function boardHTML(di: number, pv?: boolean) {
   b += sbDutyPanel(d, di, pv, mvRO) + sbSimRowsPanel(d, di, pv, mvRO) + sbGroundPanel(d, di, pv, mvRO)
   /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
   const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
-  b += sbInputsGroupPanel(d, di, pv, dayInp) + sbUnavailPanel(d, di, dayInp)
+  b += sbInputsGroupPanel(d, di, pv, dayInp, mvRO) + sbUnavailPanel(d, di, dayInp)
   return b
 }
 
@@ -273,7 +285,18 @@ export function boardMbtn(e: MouseEvent) {
      copy of their own at all, which is the other half of the gap this
      closes. One guard here covers every branch in this function, so the
      next branch added here inherits it instead of having to rediscover the
-     gap by itself. */
+     gap by itself.
+     LOAD-BEARING for tests that predate this consolidation, not just the
+     ones added alongside it: the nudge, per-section-sort and delete-line
+     branches lost their OWN copy of this check when it moved up here
+     (board.test.tsx's "a stale nudge button does nothing", "a stale
+     per-section Auto sort button does nothing" and "the delete-line (✕)
+     button does nothing" all still pass, but only because THIS line still
+     runs before their branch — narrowing or removing this guard without
+     giving those three branches their own check back would silently
+     reopen the exact gap those tests were written to catch, even though
+     the tests themselves would keep passing right up until whatever future
+     change actually narrows it. */
   if (!canEditSched() || !HOOKS.editMode()) return
   const t = (e.target as HTMLElement).closest('.mbtn') as HTMLElement | null; if (!t) return
   const ds = t.dataset
@@ -472,16 +495,34 @@ export function boardChange(e: Event) {
      the board), so it is exactly the path a read-only board's still-live
      inputs used to commit straight through: a typed callsign became a
      model write with nothing here to refuse it. Same gate as boardMbtn's
-     top-level guard. */
-  if (!canEditSched() || !HOOKS.editMode()) return
+     top-level guard.
+     RO is computed, not an early return, on purpose (reviewer-found gap in
+     THIS pass's own first attempt, 9 Aug 26): an early `return` here skips
+     past the revert branch below (`else f.value = txtGet(p)`) exactly the
+     way a failed `txtSet` already reverts a rejected value — so a field
+     that is still rendered live for any reason (a stale render, or one of
+     the panels the render-widening below missed) would silently keep
+     whatever was typed into it ON SCREEN forever, with the model holding
+     the old value underneath: worse than a dead control, because a
+     scheduler sees their own words sitting there and reasonably believes
+     it saved. Blocked writes now revert the field the same way a rejected
+     one always has. */
+  const RO = !canEditSched() || !HOOKS.editMode()
   /* the wave-title select: night flag + label, verbatim */
   const s = (e.target as HTMLElement).closest('[data-wsel]') as HTMLSelectElement | null
   if (s) {
+    /* a <select>'s own chosen option is the browser's internal state, not
+       ours — notify() alone would not restore it, because nothing in the
+       model changed for the panel-diff to notice, so the stale selection
+       is put back explicitly, from the model, the same way the diff would
+       on the next real repaint. */
+    if (RO) { const [rdi, rgi] = s.dataset.wsel!.split('.'); const rw = DAYS[+rdi!]?.waves?.[+rgi!]; if (rw) s.value = labelToTitle(rw); return }
     const [di, gi] = s.dataset.wsel!.split('.'); const w = DAYS[+di!].waves[+gi!]
     w.night = /night/i.test(s.value); w.label = titleToLabel(s.value); afterSchedMutate(); notify(); return
   }
   const f = (e.target as HTMLElement).closest('[data-bfld]') as HTMLInputElement | null; if (!f) return
   const p = f.dataset.bfld!
+  if (RO) { f.value = txtGet(p); return }
   /* the OLD role, read before txtSet overwrites it — this is what tells the
      board's own "+ Row" case (a brand-new row, role still '') apart from
      retyping an EXISTING row's role (review fix, 9 Aug 26). The reposition
@@ -679,4 +720,9 @@ export function openScheduler(di: number) { SBWOPEN = false; view.setBoardDay(di
    with the edit week's own drawer, and leaving it set would surprise-open
    the week's palette the moment the board lifts (owner's one-window phone
    board, 8 Aug 26). The week's tab is right there to reopen it. */
-export function closeScheduler() { view.setBoardDay(null); document.body.classList.remove('ros-open'); notify() }
+/* view.closeBoardState() is the shared cleanup — also what setPage now calls
+   the moment the page stops being Edit Schedule (state/view.ts), so a nav
+   click and the Done/Close buttons close the board through the exact same
+   path rather than two copies of "SBDAY null, park the drawer" drifting
+   apart. */
+export function closeScheduler() { view.closeBoardState(); notify() }

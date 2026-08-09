@@ -1622,7 +1622,16 @@ test('the board keeps its row register once edit mode is switched off (finding #
 /* HANDOFF.md, "the board stays open across a page change" — part 1 of the
    documented gap, pinned live in a real browser (jsdom's rects are all
    0×0, so `hidden` is the only thing it CAN see here — the visibility this
-   test actually cares about needs a layout engine). */
+   test actually cares about needs a layout engine).
+   UPDATED (coordinator review, 9 Aug 26 — the blocker): the board is now
+   CLOSED outright on the way out, not merely hidden — state/view.ts's
+   setPage clears SBDAY the moment the page leaves 'editsched', because a
+   document-level handler elsewhere (Shell.tsx's right-click clear-a-seat)
+   used to trust SBDAY!=null on its own as proof the board was safely open,
+   which stopped being true once the render alone stopped painting it.
+   Landing back on Edit Schedule therefore does NOT resume a day any more —
+   there is nothing to resume, it was cleared — a scheduler opens one
+   again, same as any other visit. */
 test('navigating away from Edit Schedule with the board open hides it, not just its controls', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await login(page); await go(page, 'editsched')
@@ -1631,10 +1640,40 @@ test('navigating away from Edit Schedule with the board open hides it, not just 
   await expect(page.locator('#schedBoard')).toBeVisible()
   await go(page, 'viewsched')
   await expect(page.locator('#schedBoard')).toBeHidden()
-  /* landing back on Edit Schedule with the day still armed re-opens it —
-     a resume, not a leak (nothing was ever live while hidden) */
+  expect(await page.evaluate(() => (window as any).SBDAY), 'SBDAY is cleared, not just the render gate').toBeNull()
+  /* landing back on Edit Schedule does NOT silently resume a day */
   await go(page, 'editsched')
-  await expect(page.locator('#schedBoard')).toBeVisible()
+  await expect(page.locator('#schedBoard')).toBeHidden()
+  expect(await page.evaluate(() => (window as any).SBDAY)).toBeNull()
+})
+
+/* THE BLOCKER (coordinator review, 9 Aug 26), driven live with a REAL
+   pointer right-click — proven this way by the reviewer, and the only way
+   to actually exercise it: jsdom can dispatch a synthetic 'contextmenu'
+   event (pinned in board.test.tsx), but the reviewer's own reproduction
+   was "a real pointer confirmed this on the built bundle", and a real
+   right-click is also what proves the WEEK puck is genuinely reachable by
+   a pointer once the board no longer covers it — before this fix, the
+   modal's own subtree intercepted pointer events on the page underneath
+   (confirmed live during this fix's verification: a real Playwright click
+   on the nav timed out with "subtree intercepts pointer events" while the
+   board was still open), so the exploit needed the board to have ALREADY
+   closed its paint while SBDAY stayed alive — exactly the state a nav
+   click reaches. */
+test('the blocker: right-clicking a WEEK puck on View-only Sched does not clear it, even with a board previously left open', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line')
+  await go(page, 'viewsched')
+  await page.waitForSelector('#vWeek .seat[data-slot]')
+  const seat = page.locator('#vWeek .seat[data-slot]').first()
+  const key = await seat.getAttribute('data-slot')
+  const before = await page.evaluate((k) => (window as any).slotVal(k), key)
+  expect(before, 'sanity: the targeted seat is actually filled').toBeTruthy()
+  await seat.click({ button: 'right' })
+  const after = await page.evaluate((k) => (window as any).slotVal(k), key)
+  expect(after, 'the seat was NOT cleared by a real right-click').toBe(before)
 })
 
 /* the squadron-member gate, actually exercised (review fix, 9 Aug 26): this

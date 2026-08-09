@@ -46,6 +46,20 @@ export function setBoardDay(n:any){
   if(SBDAY!=null&&n!==SBDAY&&WFOCUS&&WFOCUS.di!==n)WFOCUS=null;
   SBDAY=n;
 }
+/* The board's full close, shared by setPage (below) and ui/board.ts's
+   closeScheduler — one cleanup, two call sites, not two copies of it.
+   SBDAY null (setBoardDay already disarms ARM as part of that, since
+   ARM.di is never null so `ARM.di!==n` is true the moment n is null) and
+   the aircrew drawer parked (`ros-open`, a body class the phone board sets
+   — reviewer found it survives a page change otherwise, so a scheduler
+   landing back on Edit Schedule at phone width found the drawer already
+   out). state/ has no business importing ui/board.ts (the layering CLAUDE.md
+   describes — state is read by the engine and by ui, never the reverse),
+   so this lives here instead and board.ts's closeScheduler calls it. */
+export function closeBoardState(){
+  setBoardDay(null);
+  if(typeof document!=='undefined')document.body.classList.remove('ros-open');
+}
 export function setPage(p:any){
   /* A page change closes any body-level popup (owner, 8 Aug 26 — the stores
      box used to ride along to View-only Sched, floating over a page with no C
@@ -62,6 +76,24 @@ export function setPage(p:any){
     if(off)document.removeEventListener('click',off);
     x.remove();
   });
+  /* CLOSE THE BOARD OUTRIGHT the moment the page stops being Edit Schedule —
+     found live by a reviewer (9 Aug 26): SchedBoard.tsx's render gate
+     (CURPAGE==='editsched') hides the PAINT, but this codebase deliberately
+     left SBDAY itself untouched so a return to Edit Schedule would resume
+     the board — and Shell.tsx's context-menu clear-a-seat handler carries
+     `HOOKS.editMode() || SBDAY != null`, an escape hatch that exists ONLY
+     because the board used to legitimately paint over whatever page you
+     were on and so was assumed safe to trust on its own. Once the render
+     stopped painting it but SBDAY kept living, that assumption broke: on
+     View-only Sched with a board left open, editMode() reads false (wrong
+     page) but the escape hatch still read SBDAY!=null as "trust it anyway"
+     — so a real right-click on a WEEK puck (not the board's own, the one
+     now VISIBLE underneath) cleared it. Scoped to leaving 'editsched'
+     specifically (not every same-page no-op set, and not landing ON
+     'editsched', which is the resume this codebase chose to keep) —
+     p!==CURPAGE is already computed above for the popup cleanup, so this
+     reuses it rather than a second comparison. */
+  if(p!==CURPAGE&&p!=='editsched'&&SBDAY!=null)closeBoardState();
   CURPAGE=p;
 }
 /* ARM put-down for history.ts (ESM cannot reassign across modules) */

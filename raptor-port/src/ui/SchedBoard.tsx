@@ -29,18 +29,20 @@ export function SchedBoard() {
      modal (position:fixed, inset:0, z-index:400 — the whole viewport)
      fully mounted and painted on top of whatever page the user actually
      navigated to, covering its own nav and edit toggle in the process
-     (HANDOFF.md, "board stays open across a page change"). SBDAY is left
-     untouched here on purpose (not nulled) — the simplest fix that closes
-     the class of bug is the render gate, not a second place (setPage)
-     that would also have to know about the board; `open` already reads
-     module state exactly this way for SBDAY, and CURPAGE is the same
-     shape of state, read the same way, in the same component. Landing
-     back on Edit Schedule with a day still armed re-opens it, which is a
-     reasonable resume, not a leak — nothing renders live until the page
-     genuinely matches again. This does not replace the read-only render
-     below; it removes the reachable case where the modal is visible at
-     all on the wrong page, which is a stronger property than read-only
-     markup on a page you can still see. */
+     (HANDOFF.md, "board stays open across a page change"). This render
+     gate is now belt-and-braces, not the only thing standing between a
+     page change and a live board: state/view.ts's setPage clears SBDAY
+     itself the moment the page leaves 'editsched' — the "leave SBDAY alone,
+     the render gate alone is enough" choice this comment used to describe
+     is GONE (reviewer-found blocker, 9 Aug 26): a document-level handler
+     elsewhere (Shell.tsx's right-click clear-a-seat) trusted SBDAY!=null on
+     its own as proof the board was safely open, which stopped being true
+     the instant the render here stopped painting it but the state kept
+     living — on View-only Sched with a board left open, a real right-click
+     on the now-visible WEEK underneath cleared a seat straight through that
+     escape hatch. SBDAY is cleared, full stop, not merely hidden — landing
+     back on Edit Schedule does NOT resume a day; a scheduler opens one
+     again, the same as any other visit. */
   const open = SBDAY != null && CURPAGE === 'editsched'
 
   /* the board's own handlers, attached once */
@@ -63,6 +65,30 @@ export function SchedBoard() {
      budget. */
   const panelPrev = useRef<any>({})
   useEffect(() => {
+    /* Still keyed on a bare `SBDAY == null`, not `!open` (considered and
+       reverted, 9 Aug 26 — reviewer had asked for `!open` here as a
+       "wasted work only" cleanup, since a board left open on the wrong
+       page used to rebuild all four panels into a hidden subtree on every
+       repaint). Two things changed that call once setPage (above) clears
+       SBDAY itself the moment the page leaves 'editsched': first, the
+       wasted work the request was about no longer happens on any path a
+       real user can reach — SBDAY IS null on every other page now, so this
+       guard already skips the rebuild the ordinary way. Second, and why
+       `!open` was reverted rather than kept as extra safety: `SBDAY != null`
+       with CURPAGE not yet 'editsched' is now a TEST-ONLY state (`
+       window.openScheduler`/`window.setPage` called directly, the
+       deliberate pattern this whole suite uses to test a render/role gate
+       in isolation without a click path — warnjump.test.tsx, board-
+       stores.test.tsx's duty-crew test, the squadron-member e2e test, and
+       others), and `!open` made the panels never render AT ALL in that
+       state — which does not test the gate, it just makes every assertion
+       about what the gate withholds vacuously true, the exact "proves
+       nothing" trap this codebase's own comments warn about elsewhere
+       (interactions.ts, the squadron-member e2e test). Reverted rather than
+       patched further: the performance concern is real but already answered
+       by the setPage fix above, and this guard's ONE job is deciding
+       whether the panels have a day to render, which SBDAY alone answers
+       correctly. */
     if (SBDAY == null) { panelPrev.current = {}; return }
     if (editingText()) return
     const di = SBDAY
