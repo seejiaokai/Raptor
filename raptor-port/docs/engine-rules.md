@@ -409,6 +409,92 @@ overwritten), so a wrong or renamed label still fails for real; and a
 wave-count mismatch between the two builds throws, from the out-of-bounds
 `dutywaves[j]` write, rather than silently comparing nothing.
 
+## Sorting a board section
+
+Where a manual move above is the scheduler's own judgement, sorting is the
+opposite move: throw the section's own reading order back at it. Every
+section but overall notes gets a sorter in `engine/reorder.ts` —
+`sortWave` (flying, by take-off — `parseHM(f.to)` — the jets INSIDE a
+formation are a position in the formation, never a time, so `sortWave`
+touches `w.formations` and nothing inside one), `sortDutyBlock` (by role,
+off `order.ts`'s `DUTY_ORDER` table, one call per duty BLOCK — `dw.rows`
+— never the whole day at once), `sortSims` (by start time, called once per
+`kind` so AMT and OFT sort independently of each other), `sortGround` and
+`sortProg` (both by start time). **Overall notes have no sorter at all** —
+prose in a chosen order has no natural key, and inventing one
+(alphabetical? first-typed?) would silently reorder someone's argument, so
+`sortDay` (below) walks waves, duty blocks, sims, ground and the programme
+and stops there.
+
+**Every sorter is a stable sort of the row's own INDEX range**, never the
+rows themselves — `keySort(n, keyFn)` sorts `[0..n)` by `keyFn(i)`, and its
+comparator falls back to `a-b` (the original index) whenever the keys tie
+or are both unparseable, so equal keys — two formations off at the same
+minute, two ground rows with no time at all — keep the order they already
+had. Unparseable keys (`parseHM` returning null) sink to the bottom in
+model order, the same fallback `groundOrder` already uses for a time-less
+row.
+
+**Every sorter is a no-op on an already-sorted section, and the identity
+check runs BEFORE anything else** — `isIdentity(oldOf)` (every index maps
+to itself) short-circuits with no model write, no key remap and no
+`markEdit`, so pressing "Auto sort" on a tidy section changes nothing and
+creates no amendment. This has to run first rather than after the fact,
+because the alternative — sort, then compare, then undo the write if it
+matched — would still have to invent a key ordering to compare against,
+which is exactly the risk overall notes exists to avoid.
+
+**A sorter remaps the amendment key space through the exact same
+primitive a manual move uses** — `permuteKeys(head, pos, oldOf)`, the
+bijective sibling `shiftKeys` gained for reordering (see above) — over the
+identical key-space heads the matching mover in this file already touches
+(`sortWave` over `ff:`/`fr:`/`st:`/`ar:`/`at:` plus the bare address,
+`sortDutyBlock` over `d:`/`dr:`, `sortSims` over `s:`/`sr:`, `sortGround`
+and `sortProg` over their own pair). A sorter that skipped this would move
+a row on screen while its amendment stayed addressed at the OLD index —
+silently re-labelling an old amendment onto whatever sortie now sits
+there. Like a move, a sorter marks the row now sitting at index 0 of the
+section it touched (the same "mark the NEW address" idiom, not the old
+one) — that single mark is what puts the day into the next AL.
+
+**Ground's Auto sort (`sortGround`) also owns the day's manual flag, and
+reports honestly when the flag is the only thing that moved.** Every
+`sortGround` call clears `d.gman` unconditionally — Auto sort IS the way
+back to the self-sorting render Ground normally has — even on the one path
+where nothing in the row array needs to move: a day frozen in manual mode
+whose rows already happen to read in time order. `wasMan` is read before
+the clear, so the caller (`board.ts`'s `boardMbtn`) can tell that case
+apart from a genuine no-op: `sortGround` still returns `true` and marks the
+row (the flag flipping IS a change, even though the row array is the same
+object, not a rebuilt copy), and the UI reports "Ground programme back to
+time order" rather than the generic "Already in order" toast — clearing
+the flag without moving a row is still something that happened, and saying
+nothing would hide it.
+
+**`sortDay(di)` is the primitive `⇅ Sort all` composes over**: every wave,
+every duty block, every sim kind, Ground, then the programme, in that
+order, returning whether ANY of them changed. `⇅ Sort all` itself
+(`board.ts`'s `sortAllCommit`) wraps one call to `sortDay` in
+`HIST.lock = true` for the duration — `histPush` (`state/history.ts`)
+bails outright while the lock is held, so however many of the day's
+sections `sortDay` touches, none of their individual `markEdit`s reaches
+the undo stack; only the ordinary `afterSchedMutate()` call AFTER the lock
+lifts pushes a snapshot, so Undo takes the whole day back in one step, not
+one per section. An already-tidy day never needs the lock's protection at
+all: `sortDay` returns `false`, nothing inside it ever called `markEdit`,
+and the caller shows "Already in order" instead of pushing a no-op step.
+
+**A new duty row lands in role position at the moment the role is typed,
+not when the blank row is added.** `boardChange` (`board.ts`) commits every
+`data-bfld` edit through the ordinary text funnel; the instant that commit
+is a duty row's OWN role field (`dr:<di>.<wi>.<ri>.role`), it calls
+`sortDutyBlock(di, wi)` right there. A freshly added row starts with an
+empty role — there is nothing to sort BY until the scheduler types one —
+so sorting at add-time would either do nothing or sort by "no role yet",
+neither of which answers where the row belongs. Because `sortDutyBlock` is
+itself a no-op on an already-ordered block, typing a correction into an
+untouched list costs nothing extra.
+
 ## Who a row stores: ID vs CALLSIGN
 
 Two different things live in the model and mixing them up breaks rows silently:

@@ -406,6 +406,47 @@ looking at cannot be dragged or nudged. Engine: every mover in
 `engine/reorder.ts` no-ops on an out-of-range index or `from === to`, so a
 stale or forged address reaching `applyMove` cannot corrupt the model.
 
+**`⇅ Auto sort` sits in the section's own header, beside the button that
+adds a row to it — never in a shared toolbar.** `sbSortBtn(addr, ro)`
+(`board-html.ts`) is called once per section: inside each wave's `.gctl`
+next to `+ Line`, inside each duty block's sub-header next to `+ Row`,
+inside the AMT and OFT sim sub-headers each next to their own `+ Row`,
+and in the Ground and overall-programme panel heads next to `+ Item`.
+Overall notes' header carries only `+ Note` — no sort button — the same
+`ro`-gated absence the grip and the nudge buttons use, so a preview or a
+read-only board renders no live control there either. Which sorter answers
+a click is decided by the address's own prefix (`w`/`d`/`s`/`g`/`p`),
+dispatched in one place in `boardMbtn`, not by which panel the click
+happened to land in — so adding a section's sort behaviour never means
+teaching the click router a new location. The toast on a click that
+changed nothing is "Already in order", not silence — a scheduler reaching
+for the way-back control on a tidy section should hear that it IS tidy,
+not wonder whether the click landed; Ground's version of that toast is
+"Ground programme back to time order" instead, on the one path where
+clearing the manual flag was the only thing that happened (see
+`engine-rules.md` §Sorting a board section).
+
+**`⇅ Sort all` is the one board control that is not per-row or
+per-section — it lives in the board's own top bar (`.sb-actions`,
+`SchedBoard.tsx`), beside `+ Line` / `+ Wave`, hidden outright for a
+member (same `canEditSched()` gate as every Auto sort button) and disabled
+while a published version is being previewed (`DPREV.has(SBDAY)`), the
+same idiom `+ Line`/`+ Wave` already use.** Clicking it does not sort
+anything by itself — `askSortAll(di)` only arms `SORTALL = di` (re-checking
+`canEditSched()` and the preview guard a second time, so a stale button
+left over from a role change or a preview armed after the click still
+cannot open the dialog) and the confirmation is a modal in the board's own
+idiom, not a browser `confirm()`: `SortAllDialog` reads the day straight
+off `SORTALL` so it can never name the wrong day even if the board has
+since switched tabs underneath it, and its body spells out that this
+control — unlike every other one on the board — acts on the whole day at
+once and that a single Undo reverses all of it together. Confirming calls
+`sortAllCommit()`, which is the one place `HIST.lock` brackets a whole run
+of sorters (`engine-rules.md` §Sorting a board section); cancelling or
+clicking outside the box just drops `SORTALL` back to null. An already-tidy
+day still gets a toast — "Already in order" — rather than the confirm
+dialog closing silently.
+
 ## Selection highlight (`ui/highlights.ts`)
 
 Clicking a puck — **anywhere on it, flag chip included** (owner, 7 Aug 26) —

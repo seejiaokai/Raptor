@@ -7,10 +7,11 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 690/43
-files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
-test:e2e` 40/40, and the two that are NOT in CI — `npm run probes:adapted`
-6/6 and `npm run perf` 9/0. Re-state these only after re-running them.
+**Every gate is green at this commit**, run first-hand: `npm test` 764 tests
+across 47 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
+run test:e2e` 47/47, and the two that are NOT in CI — `npm run
+probes:adapted` 6/6 and `npm run perf` 9/0. Re-state these only after
+re-running them.
 **`probes:adapted` and `perf` do NOT serve themselves** — start
 `npx vite preview --port 4173` first or both fail with
 `ERR_CONNECTION_REFUSED`, which reads like a code fault and is not
@@ -656,6 +657,37 @@ believing a single red.)
   longer print in a fixed role order (SDO → SXO → OPS-O → …) — they print
   in the order they are stored, on the week and the board alike, so a
   reorder sticks instead of being overridden on the next render.
+  **Two controls followed at the owner's ask: Auto sort per section, Sort
+  all for the whole day.** A `⇅ Auto sort` button sits in every section's
+  own header — flying waves, Duties (per block), Sims (AMT and OFT each get
+  their own), Ground Programme, the overall programme — and throws that
+  section back into its own reading order: flying by take-off (the jets
+  INSIDE a formation never move, because their order is a position in the
+  formation, not a time), Duties by role, Sims/Ground/programme by start
+  time. Overall notes get no button at all — prose in a chosen order has no
+  natural key, and a sorter would silently invent one. `⇅ Sort all`, one
+  button in the board's own top bar, runs every section's sort for the
+  whole day at once; the owner asked for it after being advised against it,
+  so it ships with the two guards that make it safe — it asks first, naming
+  the day, in the board's own confirm-dialog shape rather than a browser
+  `confirm()`, and the whole run holds `HIST.lock` so Undo takes the day
+  back in ONE step, not six. Every sorter is stable (equal keys keep their
+  order) and a no-op when the section is already sorted — no model change,
+  no mark, no amendment — and every sorter remaps the amendment key space
+  through the same `permuteKeys` primitive the movers above use, so a sort
+  never mislabels an old amendment onto a different row. Ground's Auto sort
+  also clears that day's manual flag (`d.gman`) and says so honestly when
+  clearing the flag is the ONLY thing that happened — "back to time order"
+  rather than a false "already in order". A new duty row still lands in
+  role position, but only once the scheduler TYPES the role — a blank row
+  has nothing to sort by yet, so the sort fires off the role field's own
+  commit, not off the row being added. Contracts: `docs/engine-rules.md`
+  §Sorting a board section, `docs/ui-contracts.md` §Reordering rows on the
+  board. **The board's DOM ceiling was raised again, 810 → 860** (the grip,
+  the two nudge buttons, one Auto sort button per section and the Sort all
+  button all landed on a board that already carried them once for the
+  reorder feature above), measured 859 nodes — `probes/perf-port.cjs`'s
+  `DOM_CEILING`, reasoning in `docs/probe-sweep.md` §The performance gate.
 - **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
   still described a three-gate, mid-port project — the root one also called a
   member view-only, which the 5 Aug roles decision had already undone.
