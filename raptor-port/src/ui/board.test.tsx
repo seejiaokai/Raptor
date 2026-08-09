@@ -3,11 +3,11 @@
    render", "sched roster render", "sched wave title select", "sched
    setSlotVal", "the board shows the open day's strip", "board inputs panel")
    and the R group (CX carries a reason, B28), driven through the React app. */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
+import { initStore, setSession, notify, HIST } from '../state/store'
 import { DAYS } from '../engine/data'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { slotVal, setSlotVal } from '../engine/slots'
@@ -359,6 +359,71 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     }
   })
 
+  /* finding #5 follow-up (whole-branch re-review, 9 Aug 26): the "+ Row,
+     then type the role" path still reproduced the original bug, because
+     boardChange ran afterSchedMutate() BEFORE calling sortDutyBlock — so by
+     the time the sort actually reordered the block and set
+     engine/reorder.ts's REORDERED_DI, afterSchedMutate had already popped
+     that flag (finding it still null) and moved on. The armed slot never
+     got disarmed. Arms a slot on the FIRST row, commits the SECOND
+     (blank) row's role through the real change-event path boardChange
+     listens on — not moveDutyRow/sortDutyBlock called directly, which is
+     what store.test.ts's finding-#5 tests do and why they could not have
+     caught this: they already call afterSchedMutate() AFTER the reorder,
+     so they never exercised board.ts's own (wrong) call order at all. */
+  it('arming a slot, then typing a role that auto-sorts the block, disarms it', async () => {
+    const d: any = DAYS[SBDAY], savedDW = d.dutywaves
+    d.dutywaves = [{
+      label: 'TEST BLOCK', rows: [
+        { role: 'RUNNER', id: '', str: '0800', end: '1700' },
+        { role: '', id: '', str: '0800', end: '1700' },
+      ]
+    }]
+    try {
+      await act(async () => { afterSchedMutate(); notify() })
+      await act(async () => { view.armSlot('d:0.0.0'); notify() })
+      expect(view.armedKey()).toBe('d:0.0.0')
+      const inp = document.querySelector('#sbBoard input[data-bfld="dr:0.0.1.role"]') as HTMLInputElement
+      expect(inp).toBeTruthy()
+      await change(inp, 'SDO')
+      // the auto-sort actually fired — SDO outranks RUNNER in DUTY_ORDER
+      expect(d.dutywaves[0].rows.map((r: any) => r.role)).toEqual(['SDO', 'RUNNER'])
+      /* the OLD guard (armTargetExists alone) would still see SOME row at
+         d:0.0.0 — the SDO row that slid into RUNNER's old slot — and stay
+         armed, pointed at the wrong row. */
+      expect(view.armedKey()).toBe('')
+    } finally {
+      d.dutywaves = savedDW
+      view.disarmSlot()
+      await act(async () => { afterSchedMutate(); notify() })
+    }
+  })
+
+  /* the HIST.lock decision, verified: typing a role that also triggers the
+     auto-sort is ONE undo step (the text and the reorder it caused undo
+     together), matching sortAllCommit's own precedent — not two separate
+     steps a scheduler would have to Undo through one at a time. */
+  it('the auto-sort a role commit triggers is one undo step, not two', async () => {
+    const d: any = DAYS[SBDAY], savedDW = d.dutywaves
+    d.dutywaves = [{
+      label: 'TEST BLOCK', rows: [
+        { role: 'RUNNER', id: '', str: '0800', end: '1700' },
+        { role: '', id: '', str: '0800', end: '1700' },
+      ]
+    }]
+    try {
+      await act(async () => { afterSchedMutate(); notify() })
+      const ixBefore = HIST.ix
+      const inp = document.querySelector('#sbBoard input[data-bfld="dr:0.0.1.role"]') as HTMLInputElement
+      await change(inp, 'SDO')
+      expect(d.dutywaves[0].rows.map((r: any) => r.role)).toEqual(['SDO', 'RUNNER'])
+      expect(HIST.ix).toBe(ixBefore + 1)
+    } finally {
+      d.dutywaves = savedDW
+      await act(async () => { afterSchedMutate(); notify() })
+    }
+  })
+
   it('the red-box flag toggles on a ground row', async () => {
     const btn = document.querySelector('#sbBoard [data-grflag]') as HTMLElement
     expect(btn).toBeTruthy()
@@ -450,6 +515,77 @@ describe('+ Line and + Wave refuse to act for a non-admin (smaller item)', () =>
     } finally {
       setSession({ user: 'a', role: 'admin' })
     }
+  })
+})
+
+/* whole-branch re-review follow-up (9 Aug 26): a role check alone is not
+   enough on the READ-ONLY board finding #1 exercises — an admin who has
+   navigated away from Edit Schedule but still has the board open passes
+   canEditSched() every time, exactly the gap finding #4 closed for Sort
+   all. addLine/addWave/waveMenu and the nudge / per-section Auto sort
+   handlers in boardMbtn get the same HOOKS.editMode() gate. Reproduced
+   live by the reviewer: a still-rendered, still-enabled ✕ on the
+   read-only board actually deleted a line — so that handler (ds.ldel,
+   which had NO check of any kind before this) is pinned here too. The
+   nudge and section-sort tests grab a LIVE button reference before
+   flipping editMode() off, then click it without re-rendering — the same
+   "stale element left over from a role/page change" scenario the
+   sortAllCommit test above already covers for Sort all, and the one a
+   render-gate check alone cannot prove safe. */
+describe('board mutation handlers also refuse on a read-only board (re-review, 9 Aug 26)', () => {
+  afterEach(async () => {
+    HOOKS.editMode = () => true
+    await act(async () => { notify() })
+  })
+
+  it('addLine refuses once editMode() is false, admin role unchanged', () => {
+    HOOKS.editMode = () => false
+    const before = JSON.stringify(DAYS[0].waves)
+    addLine(0)
+    expect(JSON.stringify(DAYS[0].waves)).toBe(before)
+  })
+
+  it('addWave refuses once editMode() is false, admin role unchanged', () => {
+    HOOKS.editMode = () => false
+    const before = DAYS[0].waves.length
+    addWave(0, null)
+    expect(DAYS[0].waves.length).toBe(before)
+  })
+
+  it('a stale nudge button does nothing once editMode() is false', async () => {
+    const btn = document.querySelector('#sbBoard [data-mvdn]') as HTMLElement
+    expect(btn).toBeTruthy()
+    const before = JSON.stringify(DAYS[SBDAY as any])
+    HOOKS.editMode = () => false
+    await click(btn)
+    expect(JSON.stringify(DAYS[SBDAY as any])).toBe(before)
+  })
+
+  it('a stale per-section Auto sort button does nothing once editMode() is false', async () => {
+    /* Ground specifically, not the first [data-sortsec] match: the overall
+       programme panel's own Auto sort button comes first in DOM order and
+       the seed's allhands is ALREADY time-sorted, so clicking IT is a
+       genuine no-op regardless of any guard — sortProg() returns false on
+       its own — which would make this test pass whether or not the fix
+       exists. Ground's seed times (0845/0930/1030/1200/1630/1400) are
+       deliberately NOT already sorted (see the ground-order tests above),
+       so a click here can only pass for the right reason: the guard
+       actually stopped it. */
+    const btn = document.querySelector(`#sbBoard [data-sortsec="g.${SBDAY}"]`) as HTMLElement
+    expect(btn).toBeTruthy()
+    const before = JSON.stringify(DAYS[SBDAY as any].ground)
+    HOOKS.editMode = () => false
+    await click(btn)
+    expect(JSON.stringify(DAYS[SBDAY as any].ground)).toBe(before)
+  })
+
+  it('the delete-line (✕) button does nothing once editMode() is false, even though it stays rendered', async () => {
+    const btn = document.querySelector('#sbBoard [data-ldel]') as HTMLElement
+    expect(btn).toBeTruthy()
+    const before = JSON.stringify(DAYS[SBDAY as any].waves)
+    HOOKS.editMode = () => false
+    await click(btn)
+    expect(JSON.stringify(DAYS[SBDAY as any].waves)).toBe(before)
   })
 })
 

@@ -7,7 +7,7 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 775 tests
+**Every gate is green at this commit**, run first-hand: `npm test` 782 tests
 across 47 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
 run test:e2e` 48/48, and the two that are NOT in CI — `npm run
 probes:adapted` 6/6 and `npm run perf` 9/0. Re-state these only after
@@ -731,6 +731,14 @@ believing a single red.)
      touched the armed slot's OWN DAY — the same day-scoped blanket reflex
      the undo path and the board's day-tab switch already use, not a
      finer per-list one.
+     **Re-review same day found this still reproduced through "+ Row, then
+     type the role":** `board.ts`'s `boardChange` called `afterSchedMutate()`
+     — the function that reads and clears `REORDERED_DI` — BEFORE calling
+     the auto-sort, so the sort's own flag-set always landed too late to be
+     seen, and (worse) leaked to disarm an unrelated LATER edit instead.
+     Fixed by moving the sort ahead of `afterSchedMutate()`, wrapped in
+     `HIST.lock` so the text commit and the auto-sort it triggers stay ONE
+     undo step (the `sortAllCommit` precedent) rather than two.
   Smaller items in the same pass: a stale comment claiming duty-row parity
   needs "no refwin patch" (it does — `testing/refwin.ts`'s `reduty()`);
   `dutySort` (dead code, no callers) removed from `ui/html.ts` — `DUTY_ORDER`
@@ -746,11 +754,21 @@ believing a single red.)
   check; `+ Line`/`+ Wave` gained the same in-function `canEditSched()`
   check every other board control has (`addLine`/`addWave`/`waveMenu`); and
   `board-html.ts`'s two `from './html'` imports merged into one.
+  **Re-review same day: `addLine`/`addWave`/`waveMenu`, the nudge and
+  per-section Auto sort handlers in `boardMbtn`, and the delete-line (✕)
+  button — which had NO check at all — all gained `HOOKS.editMode()` on top
+  of the role check, matching finding #4's own gate on Sort all; the
+  reviewer had clicked a still-live ✕ on a read-only board and deleted a
+  line.** `addLine`/`addWave`/`waveMenu`'s gate is scoped to
+  `view.SBDAY != null` rather than a bare `editMode()` check — those three
+  are also called directly off `window` by `probes/adapted/sa-async.cjs`
+  with no board ever opened, and a bare gate broke that probe (caught by
+  `npm run probes:adapted`, not by `npm test`).
   **Not fixed, deliberately, because it predates this pass and is a
   separate, already-documented gap:** the read-only board's flying-line
-  CX/flag/+/✕ buttons and its callsign/times/remarks inputs stay fully live
-  — only the grip/nudge/Sort-all controls above were in scope this pass. See
-  the "board stays open across a page change" known issue above.
+  CX/flag/+ (add-aircraft) buttons and its callsign/times/remarks inputs
+  stay fully live — only the controls named above were in scope. See the
+  "board stays open across a page change" known issue above.
 - **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
   still described a three-gate, mid-port project — the root one also called a
   member view-only, which the 5 Aug roles decision had already undone.

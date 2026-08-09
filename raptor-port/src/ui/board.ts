@@ -241,7 +241,12 @@ export function boardMbtn(e: MouseEvent) {
      renders time-sorted: "one place down" is a question about what the
      scheduler can see, and engine/reorder.ts translates the model indices. */
   if (ds.mvup != null || ds.mvdn != null) {
-    if (!canEditSched()) return
+    /* editMode(), not just the role (re-review fix, 9 Aug 26): a stale
+       button left over from before a page change (View sched, board still
+       open — finding #1's state) must not still move a row just because
+       the session is still an admin's. Matches finding #4's own gate on
+       Sort all. */
+    if (!canEditSched() || !HOOKS.editMode()) return
     const up = ds.mvup != null
     const row = t.closest('[data-move]') as HTMLElement | null
     if (!row) return
@@ -261,7 +266,11 @@ export function boardMbtn(e: MouseEvent) {
      scheduler who reaches for the way-back control on a tidy section should
      hear that it IS tidy, not wonder whether the click landed. */
   if (ds.sortsec != null) {
-    if (!canEditSched()) return
+    /* editMode() too, same reason as the nudge branch above (re-review
+       fix, 9 Aug 26): this used to be exactly the gap finding #4 closed
+       for Sort all — a role check alone leaves a stale button live on a
+       read-only board. */
+    if (!canEditSched() || !HOOKS.editMode()) return
     const [kind, ...rest] = String(ds.sortsec).split('.')
     const n = rest.map(Number)
     /* Ground is the one section where "changed" can be true with the row
@@ -293,6 +302,11 @@ export function boardMbtn(e: MouseEvent) {
     return toast(r.a.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
   }
   if (ds.ldel != null) {
+    /* this branch carried NO check of any kind before this (re-review fix,
+       9 Aug 26) — reproduced live: a still-rendered ✕ on a read-only board
+       (View sched, board left open) actually deleted a line. Both checks,
+       matching every other guarded branch here. */
+    if (!canEditSched() || !HOOKS.editMode()) return
     const r = acRef(ds.ldel); if (!r || !r.a) return
     const [dI, gI] = String(ds.ldel).split('.').map(Number)
     r.f.aircraft.splice(r.ai, 1)
@@ -441,7 +455,6 @@ export function boardChange(e: Event) {
   const m = /^dr:(\d+)\.(\d+)\.\d+\.role$/.exec(p)
   const wasEmptyRole = m ? !txtGet(p) : false
   if (txtSet(p, f.value)) {
-    markEdit(); afterSchedMutate()
     /* A duty row's ROLE decides where it belongs (owner, 8 Aug 26). The week no
        longer sorts duties, so without this a row typed as SDO would print below
        OPS-O and the squadron would meet a duty list out of role order — which
@@ -450,7 +463,32 @@ export function boardChange(e: Event) {
        ONLY that moment: any row whose role was already non-empty was either
        typed correctly before or moved there on purpose, and either way a
        retype of it must not re-judge the rest of the block. */
-    if (m && wasEmptyRole) sortDutyBlock(+m[1], +m[2])
+    /* the sort (and the REORDERED_DI it may set) has to happen BEFORE
+       afterSchedMutate() runs, not after (review re-fix, 9 Aug 26 —
+       finding #5 still reproduced through this exact path: "+ Row", type
+       SDO into the blank role, arm a slot on another row first). ORDER
+       matters twice over: afterSchedMutate() is what reads and clears
+       REORDERED_DI to disarm a stale-armed slot, so a sort that lands
+       AFTER that read neither disarms the slot it should (the block just
+       resorted under an armed key) NOR leaves the flag cleared for the
+       NEXT, unrelated mutation — which is what let it wrongly disarm an
+       unrelated later edit instead (the MEDIUM half of the same bug).
+       HIST.lock holds every markEdit() in here — this funnel's own bare
+       call and sortDutyBlock's internal one — to a no-op push, the same
+       precedent sortAllCommit already set for its six sorters: the text
+       commit and the auto-sort it triggers are ONE user action, so Undo
+       should take it back in ONE step, not two (undo the sort, undo
+       separately back to before the role was typed). Locking even the
+       no-sort branch is harmless — histPush() already dedupes an unchanged
+       snapshot — it only matters when the sort actually moves something. */
+    HIST.lock = true
+    try {
+      markEdit()
+      if (m && wasEmptyRole) sortDutyBlock(+m[1], +m[2])
+    } finally {
+      HIST.lock = false
+    }
+    afterSchedMutate()
     notify()
   }
   else f.value = txtGet(p)
@@ -482,7 +520,20 @@ export function boardArmClick(e: MouseEvent) {
    board carries its own in-function check regardless of what the render
    already withholds; this one now does too. */
 export function addLine(di: number) {
-  if (!canEditSched()) return
+  /* editMode() too, not just the role (re-review fix, 9 Aug 26): a read-only
+     board (View sched, board left open — finding #1's state) still passes
+     canEditSched() for an admin, and this button carries no `disabled` of
+     its own for that state (only for a frozen preview) — so the role check
+     alone left it able to act. Same gate finding #4 put on Sort all.
+     Scoped to `view.SBDAY != null` — a board actually open somewhere —
+     rather than an unconditional editMode(): this function is also the
+     bridge's own `window.addLine`/`addWave`, called directly by probes
+     (sa-async.cjs) to build standalone waves before ever touching the UI
+     or navigating to Edit Schedule, and no board is rendered at all for
+     those calls (SBDAY stays null, so there is no live-looking button
+     anywhere for a stray click to exploit — the vulnerability this closes
+     needs a board that LOOKS open, not a bare API call). */
+  if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
   const d = DAYS[di]; if (!d.waves || !d.waves.length) return toast('Add a wave first')
   const w = d.waves[d.waves.length - 1], last = w.formations[w.formations.length - 1] || { cs: 'NEW', msn: '-', to: '12:00', ld: '13:00' }
   w.formations.push({ cs: last.cs, msn: last.msn, to: last.to, ld: last.ld, aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
@@ -495,7 +546,8 @@ export function addLine(di: number) {
    it is reached through waveMenu's picker or (as the smaller-item test
    does) called straight off the module. */
 export function addWave(di: number, kind: any) {
-  if (!canEditSched()) return
+  // same SBDAY-scoped editMode() gate as addLine above, same reason.
+  if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
   const d = DAYS[di]; if (!d) return
   d.waves = d.waves || []
   if (!kind) {
@@ -517,7 +569,8 @@ export function addWave(di: number, kind: any) {
    builds it — it lives outside the React tree and removes itself on any
    outside click) */
 export function waveMenu(anchor: HTMLElement, di: any) {
-  if (!canEditSched()) return
+  // same SBDAY-scoped editMode() gate as addLine/addWave above, same reason.
+  if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
   /* The stores popup (interactions.ts's openStoresMenu) shares this class
      for its look, and it keeps a NOT-{once:true} click listener attached
      to document that only it knows how to unhook (_offClick) — its
