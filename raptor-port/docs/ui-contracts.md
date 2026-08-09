@@ -330,6 +330,16 @@ by `ui/lateinput-ui.test.ts`:
   one extra line, because 36px of a narrow column goes to the badge. That is
   inherent to a badge in a wrapping column; the block already has rows of
   unequal height, and it was accepted rather than designed away.
+  The cost was then measured again at the scale the owner cares about — one
+  day loaded to **eleven** personal inputs, the case he raised — and it is
+  **zero on desktop** (666px block with the mark and without it) and **33px on
+  a phone** (757 vs 724 over eleven rows), where the column is narrow enough
+  that the badge also splits two long remarks mid-word. A compact dot measured
+  724, i.e. free, and a phone-only dot was recommended; **the owner chose to
+  keep the word** (9 Aug 26). Don't re-propose it. Two neighbouring ideas are
+  measured dead ends: the badge trailing the remark costs 759, and disabling
+  mid-word breaking costs 757 — the badge's WIDTH is the cost, not where in
+  the cell it sits.
 - **The board's em-dash placeholder gives way to the badge.** `.sbi-rm` prints
   `—` for "nothing written"; `LATE —` would read as a remark that says
   nothing, so `sbiRmk` drops it when the badge is there and keeps it
