@@ -1,6 +1,6 @@
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME } from '../engine/people'
-import { INPUTS, inputCoversDate, inpLabel, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpLabel, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
@@ -198,7 +198,7 @@ export function plRow(name:any,str:any,end:any,pplHtml:any,base:any,nf:any,ed:an
   /* t-s / t-e let the phone stack the two times into a single TIME column */
   const t=(v:any,f:any)=>{const c='t t-'+(f==='str'?'s':'e');
     return base?ted(base+'.'+f,v,ed,c):`<span class="${c}">${v?esc(fmtT(v)):''}</span>`;};
-  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${flagTag(o)}${nmi}</span>${t(str,'str')}${t(end,'end')}${pplHtml||'<div class="ppl one"></div>'}${plRmk(base,ed,o,rmkTxt)}</div>`;}
+  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${flagTag(o)}${lateTagOf(o)}${nmi}</span>${t(str,'str')}${t(end,'end')}${pplHtml||'<div class="ppl one"></div>'}${plRmk(base,ed,o,rmkTxt)}</div>`;}
 /* RMKS cell — column 5 on desktop, a full-width strip under the row on a phone.
    Rows addressable through a text key (duties / sims / ground) get an editable cell;
    read-only rows (personal inputs) get a plain one. An empty cell is dropped on the
@@ -417,6 +417,34 @@ export function rowCls(o:any){return (o&&o.cx?' cx':'')+(o&&o.flag?' redbox':'')
 export function cxText(o:any){const r=o&&o.cxr?String(o.cxr).trim():'';return r?('CX DUE '+r):'CX';}
 export function cxTag(o:any){return o&&o.cx?`<span class="cxtag" title="${esc(cxText(o))}">${esc(cxText(o))}</span>`:'';}
 export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Flagged for the next scheduler">!</span>':'';}
+/* LATE INPUT (owner, 9 Aug 26) — the mark that rides on an input last changed
+   after the week's deadline (engine/inputs.ts's isLateInput). It is drawn
+   wherever the input itself is drawn, on every page including View-only, and
+   it is deliberately NOT gated on edit mode or on the role: the whole ask was
+   that it stick with the input rather than being a scheduler's private note.
+   Amber, not red — it is an advisory about paperwork, not a flying fault, and
+   it must not read louder than a crew-rest ring sitting next to it. */
+export function lateTag(inp:any){
+  return (inp&&isLateInput(inp))?`<span class="latetag" title="${esc(lateNote(inp))}">LATE</span>`:'';}
+/* the same mark on a row that CAME from an input — the ground row acceptInput
+   builds, which carries the source input's key in `src`. This is what carries
+   the mark onto the view-only page for a personal input: accepting it is the
+   only way one reaches that page at all, and the mark has to survive the
+   promotion or it would vanish exactly where the squadron reads the day. */
+export function srcInput(o:any){
+  const k=o&&o.src; if(!k)return null;
+  return INPUTS.find((x:any)=>inpKey(x)===k)||null;}
+export function lateTagOf(o:any){return lateTag(srcInput(o));}
+/* The board's duty/sim/ground rows are a SEVEN-item grid whose header reserves
+   exactly seven tracks, and every cell is a bare <input> with nowhere to nest
+   a chip — an eighth grid item would walk every field one track left of its
+   own header, which is the register bug the whole-branch review already found
+   once. So the board's promoted ground row wears the mark as a row class (an
+   inset amber edge, the .redbox idiom) plus the note in its tooltip: no extra
+   node, no extra grid item, nothing to knock out of register. The row's own
+   INPUT still carries the full chip in the Personal Inputs panel above it. */
+export function lateRowCls(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp))?' lateinp':'';}
+export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp))?` title="${esc(lateNote(inp))}"`:'';}
 /* =====================================================================
    ONE DAY'S MARKUP
    Extracted verbatim from renderSchedule's DAYS.map body so a single day can be
@@ -710,7 +738,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
         s+=`<div class="pl-row${acc&&inp.acc?' accd':''}">`
-          +`<span class="nm"><span class="ntx">${esc(inpLabel(inp))}</span></span>${tcell}`
+          +`<span class="nm">${lateTag(inp)}<span class="ntx">${esc(inpLabel(inp))}</span></span>${tcell}`
           +`<div class="ppl one">${pk}</div>${plRmk(null,ed,null,inp.remarks||'')}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };

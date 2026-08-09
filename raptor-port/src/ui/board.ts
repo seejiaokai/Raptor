@@ -77,7 +77,7 @@ export function boardHTML(di: number, pv?: boolean) {
     w.formations.forEach((f: any, li: number) => f.aircraft.forEach((a: any, ai: number) => {
       const key = `${di}.${gi}.${li}.${ai}`, fp = `ff:${di}.${gi}.${li}`
       const cxOn = !!(a.cx || f.cx)
-      /* stoRO, not pv alone — this is the gap HANDOFF.md recorded and left
+      /* stoRO, not pv alone — this was the last of the read-only gap left
          open on purpose while the stores-configuration feature shipped:
          every OTHER live-looking thing on this board (the stores chips,
          the grip, the nudge buttons, Sort all) already follows stoRO/mvRO
@@ -97,8 +97,7 @@ export function boardHTML(di: number, pv?: boolean) {
          SEPARATE clickable element from the .tm brief input right next to
          it (interactions.ts's routeClick, data-bacc branch) — disabling
          the input's own `dis` attribute above never touched this one, so a
-         read-only board still offered "click to accept" on the one field
-         HANDOFF.md named by name ("brief"). */
+         read-only board still offered "click to accept" on the brief. */
       const brSug = (!stoRO && parseHM(f.br) == null)
         ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
         : ''
@@ -283,8 +282,8 @@ export function boardMbtn(e: MouseEvent) {
   if (view.DPREV.has(view.SBDAY as any)) return
   /* editMode(), not just the role — every branch below writes straight to
      the live model, and a stale or forced click on a read-only board (the
-     role changed, or the page moved away from Edit Schedule while the
-     board itself stayed open — HANDOFF.md's documented gap) must not act
+     role changed, or a stale element survived from a board that was open
+     before the page moved away from Edit Schedule) must not act
      just because the session is still an admin's. This used to be three
      separate copies of this exact check, found and added one at a time
      across two review passes (the nudge branch below, the per-section sort

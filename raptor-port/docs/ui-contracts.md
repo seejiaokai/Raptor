@@ -24,6 +24,18 @@ several are measured and suite-enforced, not preferences.
   every rect it reports is 0×0 and a broken grid passes it silently. That
   suite runs in CI as the fourth gate; `docs/probe-sweep.md` lists what it
   covers.
+- **Two cells truncate rather than wrap, and both are deliberate.** A puck's
+  callsign (`.puck .nm`) FADES at its right edge — a mask, not
+  `text-overflow:ellipsis`, which has no effect on a flex container anyway
+  and once rendered "Wrangler" as "Wrangl", a plausible callsign that is not
+  the man's; the fade keeps every character the 74px box allows. The board's
+  inputs-band remarks (`.sbi-row .sbi-rm`) is `white-space:nowrap` +
+  `text-overflow:ellipsis` by design — a one-line summary whose full text
+  lives in its `title` tooltip. Because that leaves no soft-wrap opportunity,
+  an `overflow-wrap` on it is provably inert (measured at 1500px and at 390px
+  with an 80-character unbreakable remark: width, height and scrollWidth
+  identical either way), so do not add one back. Both pinned in
+  `e2e/geometry.spec.ts`.
 
 ## The Inputs table's view state (`ui/InputsPage.tsx`)
 
@@ -54,6 +66,19 @@ all four were missed in the port at some point and silently discarded
 edits, so check this list when a field "won't save":
 `[data-intimes]` · `[data-bombs]` (stores text) · `[data-area]` ·
 `[data-atime]`.
+
+**AREA and AREA TIME are DERIVED, and must be compared against what was
+rendered, not against the model.** They are the only cells whose displayed
+value comes from elsewhere — the codes off the aircraft, the window off the
+formation's TO–LD — so `f.area`/`f.atime` stay null while the cell already
+reads `1240-1405`. Comparing the text to the model field means comparing it
+to `''`, which makes every focusout look like a change: a stray click or a
+tab-through then stores the derived value as a scheduler's own. That is not
+cosmetic — a stored value WINS over the derivation, so the airspace window
+stops following the take-off, and a no-op change lands in the next
+amendment. Both branches compare against `areaText()`/`atimeText()`, the
+same functions the builder renders with, so identical text is not a change,
+a real edit still commits, and an emptied cell still stores the blank.
 
 ## Amendment marks on screen
 
@@ -151,6 +176,29 @@ are untouched — they stay reference-shaped, so a hole there still renders
 as nothing; the board is the planning surface this serves. Pinned in
 `board.test.tsx`, measured in place in `e2e/geometry.spec.ts`.
 
+**Leaving Edit Schedule CLOSES the board — it does not hide it.**
+`state/view.ts`'s `setPage` calls `closeBoardState()` the moment the page
+stops being `'editsched'`: `SBDAY` goes null (which disarms `ARM` for free,
+since `setBoardDay` disarms on any day change including to null), the aircrew
+drawer's `ros-open` body class is parked, and `HOOKS.closeBoardDialogs()`
+drops the CX-with-a-reason and Sort-all dialogs. It is the same cleanup
+`closeScheduler`'s Done/Close buttons run, shared rather than duplicated —
+and `closeScheduler` calls into `state/view.ts` rather than the reverse,
+because `state/` must stay free of `ui/board.ts` (that layering is why
+`closeBoardDialogs` is an injectable hook instead of an import). Landing back
+on Edit Schedule does NOT resume a day; a scheduler opens one again. A board
+merely *hidden* is not equivalent: at phone width the burger menu sits
+outside the modal's stacking context and stays keyboard-focusable behind it,
+so a live-but-unpainted board was reachable with ordinary taps.
+
+**A rendered read-only board has exactly two routes in**, and every
+read-only path (`stoRO`/`mvRO`/`ro`, `sbGrip`'s `.ro` track, `applyDrop`'s
+mode check) is live defence for them: a published-version preview (`pv`), or
+a session that may not edit one (the role gate). `sbGrip` emits its
+`<span class="sb-grip">` unconditionally and gates only the `.ro` class,
+which is `visibility:hidden` — **not** `display:none`, which would drop the
+box out of grid layout and walk every field one track left of its header.
+
 The side panel's `Live checks` list (`.sb-warn .wln`) is a **navigation
 surface** since 5 Aug 26: each line carries `data-wdi`/`data-wix` and jumps to
 the offending puck (§Jumping from a warning to the puck that caused it). It
@@ -235,6 +283,47 @@ in `e2e/geometry.spec.ts` (strip above the first panel, the parked handle
 a centred band whose taps never steal from Close / the day chips / input
 ends, the fold opening and closing, the drawer parking on a fill, seats
 clear of every input and of each other).
+
+## The late-input mark on screen (owner, 9 Aug 26)
+
+The rule and what counts as late — including the downchit exemption — are in
+`docs/engine-rules.md` §The late-input mark. What this file owns is **where it is drawn**, and the ask
+was "visible throughout, and it sticks with that input even though it's on
+view schedule" — so the mark is gated on NOTHING. Not edit mode, not the
+role, not `pv`. Every other badge on these rows answers to at least one of
+those; this one deliberately does not.
+
+`.latetag` — a small amber `LATE` badge, same shape as `.flagtag` so the two
+read as one family, amber rather than red because it is an advisory about
+paperwork sitting in rows that also carry red CX badges and crew-rest rings
+it must not shout over. The full sentence (what changed, when, which deadline,
+which week) rides in the `title`, never in the badge, so no row grows.
+
+Where `lateTag()` is emitted:
+
+- the week's **Personal Inputs** and **Unavailable** blocks, in the row's
+  `.nm` cell, on the edit page and the view-only page alike (`ui/html.ts`);
+- the board's **inputs bands** and its **Personal Inputs panel**, inside the
+  `.sbi-ty` type chip (`ui/board-html.ts`);
+- the **Inputs page** table, beside the type (`ui/InputsPage.tsx`).
+
+**A promoted ground row carries it too, and that is the load-bearing case.**
+A personal input never reaches the view-only page on its own — accepting it
+onto the ground programme is the only route there — so if the mark did not
+survive the promotion it would vanish at exactly the surface the squadron
+reads. `plRow` emits `lateTagOf(o)` beside `cxTag`/`flagTag`, resolving the
+row's `src` back to its input.
+
+**The board's version of that row is a class, not a badge, and must stay
+one.** `.sb-arow.c6r` is a seven-track template whose header reserves exactly
+seven items, and every cell is a bare `<input>` with nowhere to nest a chip —
+an eighth grid item would walk every field one track left of its own heading,
+which is the register bug the whole-branch review already found once. So it
+wears `.lateinp` (an inset amber edge, the `.redbox` idiom) plus the note in
+its tooltip. `e2e/geometry.spec.ts` counts the row's grid items against its
+header's tracks so that "improving" it into a chip fails a gate rather than
+silently breaking the register. The row's own INPUT still carries the full
+badge in the Personal Inputs panel above it.
 
 ## The day's three closing blocks, and who sees them
 
@@ -841,10 +930,8 @@ week and the board can never drift into two behaviours for one button.
 **View-only shows the on-chips and no `C` at all** — `storesView()` (`ui/html.ts`)
 renders read-only chips with no `data-stcfg`, called from the view builder
 directly and from the edit surfaces whenever `HOOKS.editMode()` is false (the
-board's `stoRO` gate covers the case where the board stays open across a
-`View-only Sched` nav — see the board bullet below and `HANDOFF.md`'s "board
-stays open across a page change" item, which this render gate does not by
-itself fix for the rest of the board's line).
+board's `stoRO` gate is the same one every other control on a read-only board
+now follows — §The scheduler board's panels).
 
 **The popup lists every store, lit or unlit, not just this jet's leftovers.**
 It is a body-level box (`.stmenu`, styled off `board.ts`'s `waveMenu`) rather

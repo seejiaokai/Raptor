@@ -1612,25 +1612,18 @@ test('a long unbreakable remark stays one clipped line and keeps its full text i
    a read-only board, but every row template in scheduler.css unconditionally
    keeps its leading 18px grip track — so a read-only board lost each row's
    FIRST grid item while the template still had ten tracks: every field
-   shifted one track left, out of register with its own header. Reachable
-   exactly the way the reviewer found it: log in, open a day's board, then
-   click View sched — the board deliberately stays open (SchedBoard's
-   `hidden` only tracks SBDAY, never the page), which is the whole reason
-   the read-only render path exists. jsdom cannot see this at all (every
-   rect is 0x0), so it has to be a real-browser measurement.
-   UPDATED TWICE. First (closing HANDOFF.md's "board stays open across a
-   page change" gap): a nav click no longer leaves the board open on the
-   wrong page — SchedBoard's `open` now also requires
-   CURPAGE==='editsched', so the original reproduction path (open the
-   board, click View sched) hides the board outright, which the block below
-   this one pins directly; the surviving read-only-but-open board was the
-   edit toggle switched off. Then (9 Aug 26) the toggle itself was removed
-   (owner), so the ONE remaining way to a rendered read-only board is a
-   session that may not edit one — a squadron member, driven in through
-   the same bare globals the member tests below use. The register bug's fix
-   (sbGrip always emitting its track) is still live defence for exactly
-   that render, and this measures both sides of it: an admin's board and a
-   member's must put the same fields in the same tracks. */
+   shifted one track left, out of register with its own header. jsdom cannot
+   see this at all (every rect is 0x0), so it has to be a real-browser
+   measurement.
+   The route in has since changed: leaving Edit Schedule now closes the board
+   outright (pinned by the block below), so the ONE way to a rendered
+   read-only board short of a preview is a session that may not edit one — a
+   squadron member, driven in through the same bare globals the member tests
+   below use. The register fix (sbGrip always emitting its track, gating only
+   a `.ro` class that is visibility:hidden rather than display:none) is still
+   live defence for exactly that render, and this measures both sides of it:
+   an admin's board and a member's must put the same fields in the same
+   tracks. */
 test('the board keeps its row register on a read-only render (finding #1, via a member session now)', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await login(page); await go(page, 'editsched')
@@ -1671,12 +1664,10 @@ test('the board keeps its row register on a read-only render (finding #1, via a 
   expect(Math.round(ro.nts)).toBe(Math.round(edit.nts))
 })
 
-/* HANDOFF.md, "the board stays open across a page change" — part 1 of the
-   documented gap, pinned live in a real browser (jsdom's rects are all
-   0×0, so `hidden` is the only thing it CAN see here — the visibility this
-   test actually cares about needs a layout engine).
-   UPDATED (coordinator review, 9 Aug 26 — the blocker): the board is now
-   CLOSED outright on the way out, not merely hidden — state/view.ts's
+/* Leaving Edit Schedule closes the board, pinned live in a real browser
+   (jsdom's rects are all 0×0, so `hidden` is the only thing it CAN see here
+   — the visibility this test actually cares about needs a layout engine).
+   The board is CLOSED outright on the way out, not merely hidden — state/view.ts's
    setPage clears SBDAY the moment the page leaves 'editsched', because a
    document-level handler elsewhere (Shell.tsx's right-click clear-a-seat)
    used to trust SBDAY!=null on its own as proof the board was safely open,
@@ -1741,7 +1732,7 @@ test('the blocker: right-clicking a WEEK puck on View-only Sched does not clear 
    what canEditSched()-gated editMode() actually produces: a rendered board
    (proving the gate was really exercised, not vacuously true) with no
    data-move and no data-mvup anywhere in it.
-   UPDATED for HANDOFF.md's page-change gap: SchedBoard's `open` now also
+   SchedBoard's `open` also
    requires CURPAGE==='editsched', and Edit Schedule's nav link does not
    exist for a member to click — so `window.setPage` (the same bare-global
    idiom as `openScheduler` itself) forces the page the same way, proving
@@ -1814,4 +1805,83 @@ test('no button/control row on the board overflows its own width on a phone', as
   const bad = rows.filter(m => m.scroll > m.client)
     .map(m => `"${m.sel}" ("${m.text}…") scrollWidth ${m.scroll} > clientWidth ${m.client}`)
   expect(bad, 'no row may scroll past its own width').toEqual([])
+})
+
+/* ---- the late-input mark (owner, 9 Aug 26) ------------------------------
+   "This late input will be visible throughout and it sticks with that input
+   even though it's on view schedule." The view-only half is the reason this
+   is measured in a browser rather than left to the markup tests: jsdom can
+   prove the badge was EMITTED, but not that it is on screen, readable, and
+   has not knocked the row it lives in out of register. */
+test('a late input\'s mark is visible on the view-only page, where the squadron reads it', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page)                       // lands on View-only Sched
+  await page.waitForSelector('#vWeek .day')
+  const tag = page.locator('#vWeek .latetag').first()
+  await expect(tag, 'the view page carries at least one late mark').toBeVisible()
+  /* it has to READ, not merely exist — a zero-sized or transparent badge is
+     the failure mode a markup test cannot see */
+  const box = await tag.boundingBox()
+  expect(box!.width, 'the badge has real width').toBeGreaterThan(14)
+  expect(box!.height, 'and real height').toBeGreaterThan(7)
+  const seen = await tag.evaluate((el: any) => {
+    const s = getComputedStyle(el)
+    return { text: el.textContent, op: +s.opacity, vis: s.visibility, title: el.getAttribute('title') || '' }
+  })
+  expect(seen.text).toBe('LATE')
+  expect(seen.op).toBeGreaterThan(0.9)
+  expect(seen.vis).toBe('visible')
+  /* and it says WHICH deadline it missed, rather than just shouting */
+  expect(seen.title).toContain('deadline')
+})
+
+test('the mark never widens or overflows the row it sits in', async ({ page }) => {
+  await page.setViewportSize(PHONE)       // the tight case: a 390px day box
+  await login(page)
+  await page.waitForSelector('#vWeek .day')
+  const bad = await page.evaluate(() => {
+    const out: string[] = []
+    document.querySelectorAll('#vWeek .latetag').forEach((t: any) => {
+      const row = t.closest('.pl-row') as HTMLElement
+      if (!row) { out.push('no row'); return }
+      const tr = t.getBoundingClientRect(), rr = row.getBoundingClientRect()
+      if (tr.right > rr.right + 0.5) out.push('badge spills its row')
+      if (row.scrollWidth > row.clientWidth + 1) out.push('row gained a sideways scroll')
+    })
+    return out
+  })
+  expect(bad).toEqual([])
+})
+
+test('a promoted late input keeps the board row in register — no eighth grid item', async ({ page }) => {
+  /* the board's duty/sim/ground row is a seven-track template and its header
+     reserves exactly seven. The mark rides as a row class precisely so this
+     count cannot move; if someone later "improves" it into a chip, this is
+     what goes red rather than the fields silently walking one track left. */
+  await page.setViewportSize(DESK)
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => {
+    const w = window as any
+    const inp = w.INPUTS.find((i: any) => i.person === 'salsa')
+    w.acceptInput(1, inp, 'g')
+    w.openScheduler(1)
+  })
+  await page.waitForSelector('#sbBoard .sb-arow.c6r')
+  const reg = await page.evaluate(() => {
+    const row = document.querySelector('#sbBoard .sb-arow.c6r.lateinp') as HTMLElement
+    if (!row) return { found: false, items: 0, cols: 0, left: 0, headLeft: 0 }
+    const head = row.closest('.sb-panel')!.querySelector('.sb-acols.c6r') as HTMLElement
+    const cell = row.children[1] as HTMLElement          // the ITEM cell
+    const hcell = head.children[1] as HTMLElement        // its own heading
+    return {
+      found: true,
+      items: row.children.length,
+      cols: head.children.length,
+      left: Math.round(cell.getBoundingClientRect().left),
+      headLeft: Math.round(hcell.getBoundingClientRect().left),
+    }
+  })
+  expect(reg.found, 'the promoted row rendered and carries the late class').toBe(true)
+  expect(reg.items, 'same number of grid items as the header has tracks').toBe(reg.cols)
+  expect(reg.left, 'and the ITEM cell still sits under the ITEM heading').toBe(reg.headLeft)
 })

@@ -315,6 +315,18 @@ the phone perf budget. Don't convert them to components.
   (a live board on a dead page, controls that looked live and did nothing)
   that had to be guarded one at a time. `HOOKS.editMode()` is
   `canEditSched() && CURPAGE==='editsched'` — don't add a third term.
+- **The late-input mark is a MARK, not a warning** (owner, 9 Aug 26, asked and
+  answered explicitly). It never enters the day's checks list, never closes a
+  slot and is invisible to `validate()` — that list stays about flying
+  conflicts. And it measures the input's **last change**, not its first
+  submission (same conversation): an input raised early and amended after the
+  deadline still reads late, because the deadline exists so the week can be
+  planned against something that has stopped moving. **Downchits are exempt**
+  (same conversation): going DNIF is not a decision made in advance, and
+  badging the one type that is always last-minute is how a mark stops meaning
+  anything — leave and detachments stay in scope, because those are applied
+  for. Don't re-propose any of the three.
+  Rules: `docs/engine-rules.md` §The late-input mark.
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add
@@ -326,7 +338,7 @@ the phone perf budget. Don't convert them to components.
 |---|---|
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
-| Current state, known gaps, TODOs, full file map | `../HANDOFF.md` |
+| Open work, known gaps, the deploy traps, full file map | `../HANDOFF.md` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
 | What changed recently | `git log --oneline` (not duplicated here) |
 | Last session's leftovers, **if any** | `docs/session-state.md` (absent = nothing was pending) |

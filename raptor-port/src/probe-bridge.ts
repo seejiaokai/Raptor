@@ -7,7 +7,7 @@
    the existing API reachable — and it weighs a few hundred bytes. */
 import { DAYS } from './engine/data'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
-import { INPUTS, INPUT_TYPES, DATES, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd } from './engine/inputs'
+import { INPUTS, INPUT_TYPES, DATES, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd, isLateInput, lateNote, inputDueISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard } from './engine/stores'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
@@ -100,6 +100,8 @@ export function installProbeBridge() {
   w.isDownchit = isDownchit; w.isOffType = isOffType; w.dayOff = dayOff; w.rulesReset = rulesReset
   w.isFly = isFly; w.isAway = isAway; w.inputFlags = inputFlags
   w.inputCoversDate = inputCoversDate; w.inpLabel = inpLabel; w.isOther = isOther; w.dateOrd = dateOrd
+  w.isLateInput = isLateInput; w.lateNote = lateNote; w.inputDueISO = inputDueISO
+  w.weekStartISO = weekStartISO; w.inputStampISO = inputStampISO
   w.isPersonal = isPersonal; w.isUnavail = isUnavail
   w.acceptInput = acceptInput; w.unacceptInput = unacceptInput; w.inpKey = inpKey
   w.acceptedDay = acceptedDay; w.renameCallsign = renameCallsign

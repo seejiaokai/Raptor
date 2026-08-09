@@ -886,12 +886,13 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
   })
 
   /* boardHTML's own render still has to gate on editMode() rather than a
-     bare CURPAGE test, independent of SchedBoard's `open` gate (which now
+     bare CURPAGE test, independent of SchedBoard's `open` gate (which
      closes the board across a real page change — see the describe block
      below): board.ts's stoRO/mvRO is what the write-path guards and the
-     e2e "stale button" scenarios both lean on for the state a page change
-     alone cannot reach — the edit toggle switched off on the SAME page,
-     where the board legitimately stays open and rendered. */
+     e2e "stale button" scenarios both lean on for the two states a page
+     change cannot produce — a published-version preview, and a session
+     that may not edit, where the board legitimately stays open and
+     rendered (docs/ui-contracts.md §The scheduler board's panels). */
   it('a published-version preview renders no grip and no nudge buttons', () => {
     const h = boardHTML(0, true)
     expect(h).not.toContain('data-move=')
@@ -905,14 +906,15 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
   })
 })
 
-/* HANDOFF.md, "the board stays open across a page change" — part 1 of the
-   documented gap. SchedBoard's `open` used to be a bare `SBDAY != null`, so
-   a nav click while the board was open left the modal (position:fixed,
-   inset:0, the whole viewport) fully painted on top of whatever page was
-   actually navigated to. `open` now also requires CURPAGE==='editsched'.
-   SBDAY is deliberately left untouched — this pins the render gate, not a
-   claim that SBDAY itself gets cleared. */
-describe('the board closes when the page moves away from Edit Schedule (HANDOFF.md, part 1)', () => {
+/* Part 1 of three: the board must CLOSE when the page moves away from Edit
+   Schedule, not merely stop being painted (docs/ui-contracts.md §The
+   scheduler board's panels). SchedBoard's `open` used to be a bare
+   `SBDAY != null`, so a nav click while the board was open left the modal
+   (position:fixed, inset:0, the whole viewport) fully painted on top of
+   whatever page was actually navigated to. `open` now also requires
+   CURPAGE==='editsched', AND setPage clears SBDAY — this pins both, since
+   a live-but-unpainted board was still reachable behind the phone burger. */
+describe('the board closes when the page moves away from Edit Schedule (part 1)', () => {
   it('navigating to View sched hides the modal AND clears SBDAY — closed outright, not just hidden', async () => {
     await act(async () => { openScheduler(0); notify() })
     expect(($('#schedBoard') as any).hidden, 'sanity: open on its own page').toBe(false)
@@ -957,11 +959,9 @@ describe('the board closes when the page moves away from Edit Schedule (HANDOFF.
    here: state/view.ts's setPage clears SBDAY the moment the page leaves
    'editsched' (so the escape hatch's own condition goes false), AND
    Shell.tsx's handler no longer has the escape hatch at all — editMode()
-   alone gates it, which is the one condition already correct for the case
-   this test does NOT cover too (edit toggle off, board still open on ITS
-   OWN page — the seat right there stays covered by mvRO/stoRO's disabled
-   render, but the escape hatch would have reached past that as well; see
-   the "no escape hatch" comment in Shell.tsx). Nothing in this suite
+   alone gates it, which is the one condition correct for every legitimate
+   case (role AND page) and false for every one that is not (see the "no
+   escape hatch" comment in Shell.tsx). Nothing in this suite
    exercised the real document-level handler before this — every other
    context-menu test in the codebase (editweek.test.tsx) never opens a
    board, so SBDAY was always null there and the escape hatch was never
@@ -1001,26 +1001,18 @@ describe('the blocker: a board left open cannot be used to clear a WEEK puck aft
     }
   })
 
-  /* Coordinator review, round 3, 9 Aug 26: the `setPage`-clears-SBDAY half
-     of the blocker fix is what the test above actually exercises — leaving
-     Edit Schedule now closes the board outright, so `SBDAY != null` goes
-     false on its own and the escape hatch's OTHER half (removing `||
-     SBDAY != null` from Shell.tsx entirely) is never what makes that
-     specific test pass. That test used to reach the distinguishing state
-     by switching the Edit-mode toggle off, which is the one thing that
-     could hold a board open on Edit Schedule with editMode() false.
-     REWRITTEN 9 Aug 26, and the reason matters: with the toggle gone
-     (owner), setPage clears SBDAY on every exit from Edit Schedule, so
-     SBDAY != null now IMPLIES CURPAGE === 'editsched' — which makes
-     `HOOKS.editMode() || SBDAY != null` and `HOOKS.editMode()` provably
-     equivalent for an admin, and no test can tell them apart any more.
-     Don't write one that pretends to. What is still worth pinning here is
-     the BEHAVIOUR nothing else in this suite covers: a session that may
+  /* Why this pins the ROLE and not the escape hatch, and don't "improve" it:
+     setPage clears SBDAY on every exit from Edit Schedule, so `SBDAY != null`
+     now IMPLIES `CURPAGE === 'editsched'` — which makes the handler's old
+     `HOOKS.editMode() || SBDAY != null` and a plain `HOOKS.editMode()`
+     provably equivalent for an admin. No test can tell those two apart any
+     more, so don't write one that pretends to. What IS still worth pinning
+     is the behaviour nothing else in this suite covers: a session that may
      not edit cannot clear a seat by right-click even with a board open
-     (openScheduler is a bare global with no role check of its own, the
-     same door e2e's member-board tests use). The page half of the gate —
-     the part that would break if the editMode() line were deleted outright
-     — is pinned by the test above and by editweek.test.tsx's tfin #17. */
+     (openScheduler is a bare global with no role check of its own, the same
+     door e2e's member-board tests use). The page half of the gate — what
+     breaks if the editMode() line is deleted outright — is pinned by the
+     test above and by editweek.test.tsx's tfin #17. */
   it('right-clicking an EDIT WEEK seat does NOT clear it for a session that may not edit, board open or not', async () => {
     await act(async () => { setSession({ user: 'user', role: 'main' }); view.setPage('editsched'); openScheduler(0); notify() })
     expect(SBDAY, 'sanity: the board is genuinely open, not stale').toBe(0)
@@ -1142,18 +1134,18 @@ describe('cxCommit refuses on a read-only board too (round 3)', () => {
   })
 })
 
-/* HANDOFF.md, "the read-only board's flying-line CX/flag/+ (add-aircraft)
-   buttons and its callsign/times/remarks inputs stay fully live" — part 2 of
-   the documented gap, and deliberately left open while the stores feature
-   shipped. board.ts's stoRO/mvRO (pv OR not in edit mode) already gates the
-   stores chips, the grip, the nudge buttons and Sort all; this closes the
-   same gate over the line's OWN six inputs, its CX/flag/add-aircraft/delete
-   cluster, and its FCP/RCP seats — reached here through boardHTML(0)
-   directly, the same pattern the grip/nudge tests above already use, and
-   with HOOKS.editMode() stubbed rather than navigated away, because part 1
-   above closes the page-nav route to this state — the edit toggle off on
-   the SAME page is what actually still reaches it. */
-describe('the flying line itself honours the read-only flag (HANDOFF.md, part 2)', () => {
+/* Part 2 of three: the read-only board's flying-line CX/flag/+ (add-aircraft)
+   buttons and its callsign/times/remarks inputs used to stay fully live,
+   left that way on purpose while the stores feature shipped. board.ts's
+   stoRO/mvRO (pv OR not in edit mode) already gated the stores chips, the
+   grip, the nudge buttons and Sort all; this closes the same gate over the
+   line's OWN six inputs, its CX/flag/add-aircraft/delete cluster, and its
+   FCP/RCP seats — reached here through boardHTML(0) directly, the same
+   pattern the grip/nudge tests above use, with HOOKS.editMode() stubbed
+   rather than navigated away, because part 1 closes the page-nav route to
+   this state; a session that may not edit is what still reaches it (and is
+   driven end to end, unstubbed, at the bottom of this file). */
+describe('the flying line itself honours the read-only flag (part 2)', () => {
   afterEach(() => { HOOKS.editMode = () => true })
 
   it('callsign, mission, brief, take-off, land and remarks are all disabled once editMode() is false', () => {
@@ -1207,8 +1199,8 @@ describe('the flying line itself honours the read-only flag (HANDOFF.md, part 2)
   })
 })
 
-/* HANDOFF.md's gap named the RENDER; the WRITE paths behind it needed the
-   same check independently — relying on the render alone means the next
+/* Part 3 of three. Parts 1 and 2 close the RENDER; the WRITE paths behind
+   it need the same check independently — relying on the render alone means the next
    way of reaching a stale or forced element reopens the hole. boardChange
    had no check of its own at all; boardMbtn's CX/flag/add-aircraft branches
    had none either (only the nudge, per-section sort and delete-line
@@ -1218,7 +1210,7 @@ describe('the flying line itself honours the read-only flag (HANDOFF.md, part 2)
    a live reference grabbed BEFORE editMode() goes false, so the render gate
    (which now also withholds these controls, per the block above) is never
    what is actually being tested. */
-describe('the flying line\'s write paths refuse on a read-only board too, not just the render (HANDOFF.md, part 3)', () => {
+describe('the flying line\'s write paths refuse on a read-only board too, not just the render (part 3)', () => {
   afterEach(async () => {
     HOOKS.editMode = () => true
     await act(async () => { notify() })
@@ -1301,8 +1293,8 @@ describe('the flying line\'s write paths refuse on a read-only board too, not ju
 })
 
 /* Coordinator review, 9 Aug 26: "your boundary does not match the boundary
-   of what is safe" — everything above closed the flying line specifically
-   (what HANDOFF.md named by name), but the SAME gap sat untouched in every
+   of what is safe" — everything above closed the flying line specifically,
+   but the SAME gap sat untouched in every
    OTHER panel: Overall notes, the overall programme, and the duty/sim/
    ground rows added Aug 26 were all still `pv`-only — a read-only board
    left their text inputs enabled, their seats draggable, and their

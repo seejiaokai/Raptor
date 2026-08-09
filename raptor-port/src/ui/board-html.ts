@@ -8,7 +8,7 @@ import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc } from '../state/view'
-import { ORD, puck, rowCls, accCtl } from './html'
+import { ORD, puck, rowCls, accCtl, lateTag, lateRowCls, lateRowTitle } from './html'
 
 /* ---- reorder grip + nudge buttons (owner, 8 Aug 26) -----------------------
    A grip at the far left on desktop, ▲/▼ in the row's own control cluster on a
@@ -88,7 +88,7 @@ export function sbInputsHTML(d:any,di:any){
     const t=inp.allday?(inp.endDate?`all day · till ${esc(inp.endDate)}`:'all day')
                       :`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row"><span class="sbi-t">${t}</span>${pk}`
-      +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`
+      +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${lateTag(inp)}${esc(inpLabel(inp))}</span>`
       +`<span class="sbi-rm" title="${esc(inp.remarks||'')}">${esc(inp.remarks||'—')}</span></div>`;
   };
   const band=(title:any,note:any,cls:any,list:any)=>`<div class="sbi-band ${cls}">${title}<span class="bn">${note}</span></div>`
@@ -274,7 +274,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
     groundOrder(rows,d.gman).forEach(({row:x,ri}:any)=>{
       const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=nameToId(x.who);
       const inner=((id&&PEOPLE[id])?sbSeat(di,base,id,ro):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,ro);
-      s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
+      s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'1400',ro)+sbTxt('atm',`${t}.end`,x.end,'1500',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}</div>`
         +sbTxt('ain rmkin',`${t}.rmks`,x.rmks,'remarks',ro)
@@ -292,7 +292,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any){
     : `<span class="itxt">${esc(inp.person)}</span>`;
   const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
   return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
-    +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`
+    +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${lateTag(inp)}${esc(inpLabel(inp))}</span>`
     +`<span class="sbi-rm" title="${esc(inp.remarks||'')}">${esc(inp.remarks||'—')}</span>`
     +(acc&&!pv?accCtl(di,inp):'')+`</div>`;
 }

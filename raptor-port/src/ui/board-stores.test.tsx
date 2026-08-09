@@ -63,16 +63,14 @@ describe('the board carries the week\'s stores interface', () => {
   })
 
   it('navigating to View sched with the board open closes it outright, stores and all', async () => {
-    /* UPDATED (closing HANDOFF.md's "board stays open across a page change"
-       gap, reviewer-found blocker 9 Aug 26): SchedBoard's `open` now also
-       requires CURPAGE==='editsched', AND state/view.ts's setPage clears
-       SBDAY itself the moment the page leaves 'editsched' — so this is no
-       longer a state where the board stays open, read-only, on the wrong
-       page; it is a state where the board is fully closed. The original
-       "goes read-only for stores" scenario this test pinned is now covered
-       by the duty-crew test below: with the Edit-mode toggle gone (owner,
-       9 Aug 26) the ONLY way to a read-only-but-open board is a session
-       that may not edit one. */
+    /* Leaving Edit Schedule closes the board outright — SchedBoard's `open`
+       requires CURPAGE==='editsched' AND state/view.ts's setPage clears
+       SBDAY (docs/ui-contracts.md §The scheduler board's panels). So this is
+       not a state where the board stays open read-only on the wrong page; it
+       is one where the board is fully closed, and that is what this asserts.
+       The "goes read-only for stores" scenario this test used to pin is
+       covered by the duty-crew test below — a session that may not edit is
+       now the only way to a read-only-but-open board. */
     const { DAYS } = await import('../engine/data')
     const a = DAYS[0].waves[0].formations[0].aircraft[0]
     a.opts = a.opts || {}; a.opts.tk2 = true

@@ -49,6 +49,5 @@ they need a `vite preview` and are too slow for CI.
 - `raptor-port/reference/` — the original single-file app and its test
   suite, kept **read-only** as the behavioural spec for existing features.
 - `raptor-port/CLAUDE.md` — working rules and an index to the detail docs.
-- `raptor-port/docs/` — engine rules, UI contracts, the probe sweep, and the
-  last session's handoff.
-- `HANDOFF.md` — current state, known gaps, and the full file map.
+- `raptor-port/docs/` — engine rules, UI contracts, and the probe sweep.
+- `HANDOFF.md` — open work, the deploy traps, and the full file map.

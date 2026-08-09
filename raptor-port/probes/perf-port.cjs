@@ -219,7 +219,20 @@ async function trial(b, measureSize) {
      buttons landed on every movable row, plus one Auto sort button per
      section and one Sort all button — see the board-row-reorder spec.
      Measured at 859 nodes before this margin was added. */
-  const DOM_CEILING = { week: 5530, board: 860 }
+  /* board raised 860 → 880 on 9 Aug 26 for the late-input mark. Measured on
+     THIS day (day 1, the one this gate opens) with the same boot: 859 with
+     the mark switched off, 862 as the seed stands. The badge is exactly one
+     <span> per late input drawn, so the growth is bounded by the number of
+     inputs on the measured day — and the day's fourth is a downchit, which
+     is exempt from the mark and can never add a node.
+     The margin is deliberately wider than the 1-node margins above it, and
+     the reason is new: this is the first surface whose node count moves with
+     DATA rather than only with code. A stamp edited on the Inputs page can
+     add or remove a node without a line of source changing, so a ceiling set
+     to "measured + 1" would go red on a data change and teach the next
+     reader to ignore it. 880 still catches what this ceiling is for — a
+     DOM explosion — while leaving the seed room to gain a few inputs. */
+  const DOM_CEILING = { week: 5530, board: 880 }
   for (const [surface, s] of Object.entries(size)) {
     const cap = DOM_CEILING[surface]
     T(`perf · the ${surface} stays under its recorded DOM ceiling (${cap})`,
