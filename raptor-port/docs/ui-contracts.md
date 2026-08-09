@@ -37,6 +37,47 @@ several are measured and suite-enforced, not preferences.
   identical either way), so do not add one back. Both pinned in
   `e2e/geometry.spec.ts`.
 
+## The day carries across a page switch (owner, 9 Aug 26)
+
+View-only Sched and Edit Schedule are **two separate horizontal scrollers** —
+`#vWeek` and `#eWeek` — each holding its own `scrollLeft`. Reading Thursday on
+one and switching to the other used to drop you back on Monday. It is the same
+week, so it is now the same day, **in both directions**.
+
+Nothing in the model knows where a week is parked, so the reading is geometry:
+`state/view.ts`'s `weekLeftDay()` returns the leftmost day box still on screen,
+with 8px of slack so a sliver does not count. `pan.ts`'s palette follow reads
+through the same function — shared, not copied, so the two can never disagree
+about which day you are on.
+
+Three things make it work, and each is load-bearing:
+
+- **The reading is taken in `setPage`, before `CURPAGE` moves.** One line later
+  React swaps which `.page` carries `on`, and `.page{display:none}` takes the
+  outgoing week's layout away — there is no second chance to measure it.
+- **It is captured on leaving EITHER week page**, not only on a straight
+  view↔edit hop, so a detour through Inputs still lands you back on your day.
+  A page with no week never overwrites a pending carry.
+- **`CARRYDAY` is consumed ONCE**, by whichever week paints next
+  (`ViewWeek.tsx` / `EditWeek.tsx`, right after the `scrollLeft = sl` that
+  holds scroll across an ordinary repaint). If it stuck, every later repaint
+  would drag the week back — the B54 scroll-hold guarantee broken, visible as
+  the week jumping while you type.
+
+`state/store.ts`'s `resetSession` clears it **after** its own `setPage`, which
+is why that line sits at the end of the function rather than beside the other
+view resets: a session change must not let one user's day follow another's
+login, and on a phone a stale carry would immediately undo `initPan`'s scroll
+to today's column.
+
+Gated in two places because neither is sufficient alone: `state/carryday.test.ts`
+pins the plumbing (where the reading is taken, what returns null, the session
+clear), and `e2e/geometry.spec.ts` measures where the week actually LANDS, at
+desktop and phone — jsdom reports every rect as 0×0 and can prove only that a
+reading happened. The browser half was checked against a deliberately broken
+control (capture kept, landing removed): all four cases went red, so they are
+not passing for the wrong reason.
+
 ## The Inputs table's view state (`ui/InputsPage.tsx`)
 
 Owner, Aug 5. Three things, all view-only — none of them touches the model:

@@ -7,7 +7,7 @@
    surfaces. */
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
-import { CURPAGE } from '../state/view'
+import { CARRYDAY, CURPAGE, setCarryDay, scrollWeekToDay } from '../state/view'
 import { dayHTML } from './html'
 import { refreshHighlights } from './highlights'
 import { useVersion } from './useStore'
@@ -37,6 +37,12 @@ export function ViewWeek() {
       root.innerHTML = html.join('')
     }
     root.scrollLeft = sl
+    /* ...unless a page switch left a day to carry (owner, 9 Aug 26): the
+       other week was parked on it, and this one lands there rather than
+       wherever it was last left. Consumed once — a repaint that is not a
+       page switch must keep holding scroll, which is the B54 guarantee the
+       line above exists for. */
+    if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
     prev.current = html
     /* the reference re-hangs selection/highlight classes after every render */
     refreshHighlights()

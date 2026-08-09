@@ -9,7 +9,7 @@ import { HOOKS } from '../engine/hooks'
 import { dayHTML, dayPreviewHTML } from './html'
 import { daySnapOf } from '../engine/publish'
 import { paletteHTML, paletteDay } from './palette-html'
-import { ARM, CURPAGE, DPREV } from '../state/view'
+import { ARM, CARRYDAY, CURPAGE, DPREV, setCarryDay, scrollWeekToDay } from '../state/view'
 import { refreshHighlights } from './highlights'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
@@ -46,6 +46,9 @@ export function EditWeek() {
       root.innerHTML = html.join('')
     }
     root.scrollLeft = sl
+    /* the carried day from a page switch — see ViewWeek for the reasoning;
+       both weeks consume it the same way so the hop works in both directions */
+    if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
     prev.current = { ed, html }
     refreshHighlights()
   }, [version])

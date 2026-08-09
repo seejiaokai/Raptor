@@ -33,6 +33,47 @@ export let CURPAGE:any='viewsched'
    that looked live and did nothing) that had to be guarded one at a time. */
 export let ROSDAY:any=0
 export function setRosDay(n:any){ ROSDAY=n }
+
+/* ---- THE DAY YOU ARE LOOKING AT, CARRIED ACROSS A PAGE SWITCH ------------
+   (owner, 9 Aug 26.) View-only Sched and Edit Schedule are two separate
+   horizontal scrollers — `#vWeek` and `#eWeek` — each holding its own
+   scrollLeft, so reading Thursday on one and switching to the other used to
+   drop you back on Monday. It is the same week; it should be the same day.
+
+   Nothing in the model knows where a week is parked, so the only honest
+   answer is geometry: the leftmost day box still on screen. That has to be
+   read while the OUTGOING page is still laid out, and `.page` is display:none
+   the moment React re-renders — so setPage below is the one moment it can be
+   taken, and these two helpers live here rather than in ui/pan.ts because
+   pan.ts already imports this module and the reverse would be a cycle.
+   pan.ts's own palette-follow reads through weekLeftDay too, so the two
+   agree on the boundary case by construction rather than by coincidence. */
+export let CARRYDAY:any=null
+export function setCarryDay(n:any){ CARRYDAY=n }
+/* The 8px slack is what stops a day scrolled all but out of view from
+   counting as the one being read. Null, never a guess, when there is no DOM
+   (the headless state tests) or no week built yet — the caller then leaves
+   the destination's own scroll alone, which is the pre-existing behaviour. */
+export function weekLeftDay(el:any):any{
+  if(!el||typeof el.querySelectorAll!=='function'||typeof el.getBoundingClientRect!=='function')return null
+  const ds=Array.from(el.querySelectorAll('.day[data-day]')) as any[]
+  if(!ds.length)return null
+  const x=el.getBoundingClientRect().left+8
+  const hit=ds.find((d:any)=>d.getBoundingClientRect().right>x)||ds[0]
+  const n=+hit.dataset.day
+  return Number.isFinite(n)?n:null
+}
+/* the write half — put day `di` at the week's left edge. Deliberately the
+   mirror of weekLeftDay, so a read on one page and a write on the other land
+   where they started. `+=` on the measured gap rather than an absolute
+   offsetLeft: the week has padding and the day boxes are not its offset
+   parent on every layout, and a relative nudge is right under both. */
+export function scrollWeekToDay(el:any,di:any){
+  if(!el||di==null||typeof el.querySelector!=='function')return
+  const d=el.querySelector(`.day[data-day="${di}"]`)
+  if(!d||typeof d.getBoundingClientRect!=='function')return
+  el.scrollLeft+=d.getBoundingClientRect().left-el.getBoundingClientRect().left
+}
 export function setBoardDay(n:any){
   if(ARM&&ARM.di!==n)disarmSlot();
   /* the day-tab switch disarms a slot armed on another day (above) but used to
@@ -73,6 +114,8 @@ export function closeBoardState(){
   if(typeof document!=='undefined')document.body.classList.remove('ros-open');
   HOOKS.closeBoardDialogs();
 }
+/* the two pages that ARE a week, and the scroller each one owns */
+export const WEEK_EL:any={viewsched:'vWeek',editsched:'eWeek'}
 export function setPage(p:any){
   /* A page change closes any body-level popup (owner, 8 Aug 26 — the stores
      box used to ride along to View-only Sched, floating over a page with no C
@@ -108,6 +151,14 @@ export function setPage(p:any){
      p!==CURPAGE is already computed above for the popup cleanup, so this
      reuses it rather than a second comparison. */
   if(p!==CURPAGE&&p!=='editsched'&&SBDAY!=null)closeBoardState();
+  /* CARRY THE DAY (owner, 9 Aug 26). Read the outgoing week's leftmost day
+     while it is still on screen — one line later CURPAGE moves, React swaps
+     which .page carries `on`, and display:none takes its layout away. The
+     destination week picks CARRYDAY up on its next paint and clears it.
+     Captured on leaving EITHER week page, not only on a straight view<->edit
+     hop, so a detour through Inputs still lands you back on your day. */
+  if(p!==CURPAGE&&typeof document!=='undefined'&&WEEK_EL[CURPAGE])
+    CARRYDAY=weekLeftDay(document.getElementById(WEEK_EL[CURPAGE]));
   CURPAGE=p;
 }
 /* ARM put-down for history.ts (ESM cannot reassign across modules) */

@@ -99,6 +99,11 @@ export function resetSession(s: any) {
   view.clearOtherHL()             // HLSET, SEARCH (and SELID again — harmless)
   view.armDrop()                  // ARM (belt-and-braces: setBoardDay only disarms if ARM was already set)
   view.DPREV.clear()              // day-preview map — same in-place-mutation pattern as DWOPEN/HLSET
+  /* the carried day too: setPage above captures whatever week the OUTGOING
+     session was parked on, and a new session must open on the week's own
+     opening position — on a phone that is today's column, which initPan
+     scrolls to and a stale carry would immediately undo. */
+  view.setCarryDay(null)
 }
 
 /* ---- wiring ---- */
