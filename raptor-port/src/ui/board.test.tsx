@@ -10,13 +10,13 @@ import { App } from './App'
 import { initStore, setSession, notify, HIST } from '../state/store'
 import { DAYS } from '../engine/data'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
-import { slotVal, setSlotVal } from '../engine/slots'
+import { slotVal, setSlotVal, txtGet } from '../engine/slots'
 import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { cxText } from './html'
-import { openScheduler, boardArmClick, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave } from './board'
+import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave } from './board'
 import { applyMove } from '../engine/reorder'
 import { HOOKS } from '../engine/hooks'
 
@@ -36,6 +36,16 @@ const change = async (el: Element, value: string) => {
   })
 }
 
+/* the REAL HOOKS.editMode wireStore() installs — captured once, before any
+   test below stubs it out. Every "board mutation handlers" style describe
+   in this file restores its stub with a hard-coded `() => true` rather than
+   this reference (an existing pattern this file already used before this
+   task), which is fine for those tests but leaves HOOKS.editMode a dead
+   stub for the rest of the file afterwards — the last describe block below
+   restores THIS to prove the real EDITON->editMode()->render pipeline, not
+   a stub standing in for it. */
+let realEditMode: () => boolean
+
 beforeAll(async () => {
   initStore()
   host = document.createElement('div')
@@ -43,6 +53,7 @@ beforeAll(async () => {
   await act(async () => { createRoot(host).render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+  realEditMode = HOOKS.editMode
 })
 
 describe('the scheduler board (tfin board group)', () => {
@@ -852,9 +863,13 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
     expect(h).toContain('<div class="sb-acols c6r"><span></span><span>Item</span>')
   })
 
-  /* the board is a modal that survives a page change, so a bare CURPAGE test
-     would hand live controls to a duty crew who still has a board open — the
-     same reason the stores chips use editMode() (board.ts's stoRO) */
+  /* boardHTML's own render still has to gate on editMode() rather than a
+     bare CURPAGE test, independent of SchedBoard's `open` gate (which now
+     closes the board across a real page change — see the describe block
+     below): board.ts's stoRO/mvRO is what the write-path guards and the
+     e2e "stale button" scenarios both lean on for the state a page change
+     alone cannot reach — the edit toggle switched off on the SAME page,
+     where the board legitimately stays open and rendered. */
   it('a published-version preview renders no grip and no nudge buttons', () => {
     const h = boardHTML(0, true)
     expect(h).not.toContain('data-move=')
@@ -865,5 +880,250 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
     HOOKS.editMode = () => false
     try { expect(boardHTML(0)).not.toContain('data-move=') }
     finally { HOOKS.editMode = () => true }
+  })
+})
+
+/* HANDOFF.md, "the board stays open across a page change" — part 1 of the
+   documented gap. SchedBoard's `open` used to be a bare `SBDAY != null`, so
+   a nav click while the board was open left the modal (position:fixed,
+   inset:0, the whole viewport) fully painted on top of whatever page was
+   actually navigated to. `open` now also requires CURPAGE==='editsched'.
+   SBDAY is deliberately left untouched — this pins the render gate, not a
+   claim that SBDAY itself gets cleared. */
+describe('the board closes when the page moves away from Edit Schedule (HANDOFF.md, part 1)', () => {
+  it('navigating to View sched hides the modal even though SBDAY is untouched', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    expect(($('#schedBoard') as any).hidden, 'sanity: open on its own page').toBe(false)
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
+    expect(SBDAY, 'the day itself is left alone — only the render gate reacts').toBe(0)
+    expect(($('#schedBoard') as any).hidden, 'the modal stops covering the wrong page').toBe(true)
+  })
+
+  it('coming back to Edit Schedule with the day still armed re-opens it — a resume, not a leak', async () => {
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    expect(($('#schedBoard') as any).hidden).toBe(false)
+  })
+
+  it('Done still closes it outright, same as before', async () => {
+    await click($('#sbDone'))
+    expect(SBDAY).toBe(null)
+    expect(($('#schedBoard') as any).hidden).toBe(true)
+    await act(async () => { openScheduler(0); notify() })   // leave the suite as later blocks expect
+  })
+})
+
+/* HANDOFF.md, "the read-only board's flying-line CX/flag/+ (add-aircraft)
+   buttons and its callsign/times/remarks inputs stay fully live" — part 2 of
+   the documented gap, and deliberately left open while the stores feature
+   shipped. board.ts's stoRO/mvRO (pv OR not in edit mode) already gates the
+   stores chips, the grip, the nudge buttons and Sort all; this closes the
+   same gate over the line's OWN six inputs, its CX/flag/add-aircraft/delete
+   cluster, and its FCP/RCP seats — reached here through boardHTML(0)
+   directly, the same pattern the grip/nudge tests above already use, and
+   with HOOKS.editMode() stubbed rather than navigated away, because part 1
+   above closes the page-nav route to this state — the edit toggle off on
+   the SAME page is what actually still reaches it. */
+describe('the flying line itself honours the read-only flag (HANDOFF.md, part 2)', () => {
+  afterEach(() => { HOOKS.editMode = () => true })
+
+  it('callsign, mission, brief, take-off, land and remarks are all disabled once editMode() is false', () => {
+    HOOKS.editMode = () => false
+    const h = boardHTML(0)
+    expect(h).toMatch(/class="lin" data-bfld="[^"]*"[^>]*disabled/)
+    expect(h).toMatch(/class="msn" data-bfld="[^"]*"[^>]*disabled/)
+    /* brief, take-off and land all share class="tm" — at least one flying
+       line exists on day 0, so at least the three fields of its first row
+       must show up disabled */
+    const tmDisabled = (h.match(/class="tm" data-bfld="[^"]*"[^>]*disabled/g) || []).length
+    expect(tmDisabled, 'brief + take-off + land, at minimum the first row').toBeGreaterThanOrEqual(3)
+    expect(h).toMatch(/class="nts" data-bfld="fr:[^"]*"[^>]*disabled/)
+  })
+
+  it('none of those six inputs are disabled in edit mode (unchanged)', () => {
+    const h = boardHTML(0)
+    expect(h).not.toMatch(/class="lin" data-bfld="[^"]*"[^>]*disabled/)
+    expect(h).not.toMatch(/class="msn" data-bfld="[^"]*"[^>]*disabled/)
+    expect(h).not.toMatch(/class="tm" data-bfld="[^"]*"[^>]*disabled/)
+    expect(h).not.toMatch(/class="nts" data-bfld="fr:[^"]*"[^>]*disabled/)
+  })
+
+  it('CX, red flag, add-aircraft and delete do not render at all once editMode() is false', () => {
+    HOOKS.editMode = () => false
+    const h = boardHTML(0)
+    expect(h).not.toContain('data-lcx=')
+    expect(h).not.toContain('data-lflag=')
+    expect(h).not.toContain('data-lac=')
+    expect(h).not.toContain('data-ldel=')
+  })
+
+  it('the same four render in edit mode (unchanged)', () => {
+    const h = boardHTML(0)
+    expect(h).toContain('data-lcx=')
+    expect(h).toContain('data-lflag=')
+    expect(h).toContain('data-lac=')
+    expect(h).toContain('data-ldel=')
+  })
+
+  it('a filled FCP/RCP seat carries no data-slot and no draggable once editMode() is false', () => {
+    HOOKS.editMode = () => false
+    const h = boardHTML(0)
+    expect(h).not.toMatch(/<div class="sb-slot"><span class="seat" data-slot="[^"]*"/)
+    expect(h).not.toMatch(/<div class="sb-slot"><span class="seat"[^>]*draggable="true"/)
+  })
+
+  it('a filled FCP/RCP seat is draggable and armable in edit mode (unchanged)', () => {
+    const h = boardHTML(0)
+    expect(h).toMatch(/<div class="sb-slot"><span class="seat" data-slot="[^"]*"[^>]*draggable="true"/)
+  })
+})
+
+/* HANDOFF.md's gap named the RENDER; the WRITE paths behind it needed the
+   same check independently — relying on the render alone means the next
+   way of reaching a stale or forced element reopens the hole. boardChange
+   had no check of its own at all; boardMbtn's CX/flag/add-aircraft branches
+   had none either (only the nudge, per-section sort and delete-line
+   branches did, added one at a time across two earlier review passes);
+   boardArmClick checked the role but not the mode. All four write paths are
+   exercised here the same way the existing "stale button" tests above do —
+   a live reference grabbed BEFORE editMode() goes false, so the render gate
+   (which now also withholds these controls, per the block above) is never
+   what is actually being tested. */
+describe('the flying line\'s write paths refuse on a read-only board too, not just the render (HANDOFF.md, part 3)', () => {
+  afterEach(async () => {
+    HOOKS.editMode = () => true
+    await act(async () => { notify() })
+  })
+
+  it('boardChange does not commit a callsign edit once editMode() is false', async () => {
+    const input = document.querySelector('#sbBoard .sb-line .lin') as HTMLInputElement
+    expect(input, 'sanity: the input exists').toBeTruthy()
+    const key = input.dataset.bfld!
+    const before = txtGet(key)
+    HOOKS.editMode = () => false
+    await act(async () => {
+      input.value = before + 'X'
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    expect(txtGet(key), 'the model never saw the edit').toBe(before)
+  })
+
+  it('a stale CX button does not open the reason dialog once editMode() is false', async () => {
+    const btn = document.querySelector('#sbBoard [data-lcx]') as HTMLElement
+    expect(btn, 'sanity: the button exists').toBeTruthy()
+    HOOKS.editMode = () => false
+    await click(btn)
+    expect(($('#cxPop') as any).hidden, 'no dialog opened').toBe(true)
+  })
+
+  it('a stale red-flag button does not flag the line once editMode() is false', async () => {
+    const btn = document.querySelector('#sbBoard [data-lflag]') as HTMLElement
+    expect(btn, 'sanity: the button exists').toBeTruthy()
+    const before = JSON.stringify(DAYS[SBDAY as any])
+    HOOKS.editMode = () => false
+    await click(btn)
+    expect(JSON.stringify(DAYS[SBDAY as any])).toBe(before)
+  })
+
+  it('a stale add-aircraft (+) button does not add an aircraft once editMode() is false', async () => {
+    const btn = document.querySelector('#sbBoard [data-lac]') as HTMLElement
+    expect(btn, 'sanity: the button exists').toBeTruthy()
+    const before = JSON.stringify(DAYS[SBDAY as any].waves)
+    HOOKS.editMode = () => false
+    await click(btn)
+    expect(JSON.stringify(DAYS[SBDAY as any].waves)).toBe(before)
+  })
+
+  it('boardArmClick does not arm an EMPTY seat once editMode() is false, even though the role is still admin', async () => {
+    /* a FILLED seat only re-arms when it is already the armed key (the
+       "put-me-down" escape routeClick and boardArmClick share) — clicking
+       an ordinary filled seat is a no-op with or without this fix, which
+       would make it a test that passes for the wrong reason. An EMPTY seat
+       arms unconditionally in boardArmClick's `empty` branch, so it is the
+       one that actually proves the guard. */
+    const key = '0.0.0.0.p'
+    const before = slotVal(key)
+    await act(async () => { setSlotVal(key, ''); afterSchedMutate(); notify() })
+    try {
+      const empty = document.querySelector(`#sbBoard .sb-slot.empty[data-slot="${key}"]`) as HTMLElement
+      expect(empty, 'sanity: the seat is empty and rendered as armable').toBeTruthy()
+      HOOKS.editMode = () => false
+      boardArmClick({ target: empty, stopPropagation() {} } as any)
+      expect(view.armedKey()).toBe('')
+    } finally {
+      /* armSlot toggles OFF a key that is already armed (the "tap again to
+         put it down" rule) — if the guard under test had failed, this seat
+         WOULD be armed here, and leaving it armed would silently invert the
+         very next test that arms the same seat (a second arm reads as a
+         disarm). Put it down unconditionally, pass or fail. */
+      view.armDrop()
+      HOOKS.editMode = () => true
+      await act(async () => { setSlotVal(key, before); afterSchedMutate(); notify() })
+    }
+  })
+
+  it('boardMbtn refuses every branch tested above at the FUNCTION level too, not only through a click', () => {
+    const btn = document.querySelector('#sbBoard [data-lcx]') as HTMLElement
+    HOOKS.editMode = () => false
+    const before = JSON.stringify(DAYS[SBDAY as any])
+    boardMbtn({ target: btn } as any)
+    expect(JSON.stringify(DAYS[SBDAY as any])).toBe(before)
+  })
+})
+
+/* the same six behaviours above, proven UNCHANGED for a real scheduler in
+   edit mode — not a stub this time, the genuine #editToggle switch, so the
+   whole pipeline (EDITON -> HOOKS.editMode() -> render -> write path) is
+   exercised end to end at least once. */
+describe('edit mode itself is completely unaffected by any of the above', () => {
+  beforeAll(async () => {
+    /* undo every earlier describe block's `HOOKS.editMode = () => true`
+       stub in this file and put the REAL wireStore()-installed function
+       back, so this block actually exercises EDITON, not a fixed stub that
+       happens to also read true. */
+    HOOKS.editMode = realEditMode
+    await act(async () => { notify() })
+  })
+
+  it('a callsign edit commits, + adds an aircraft, CX opens its dialog, and the seat arms — all normally', async () => {
+    expect(view.EDITON, 'sanity: edit mode is on to start with').toBe(true)
+    const input = document.querySelector('#sbBoard .sb-line .lin') as HTMLInputElement
+    expect((input as any).disabled, 'the input is genuinely enabled').toBe(false)
+    const key = input.dataset.bfld!
+    const before = txtGet(key)
+    await change(input, before + ' EDIT')
+    expect(txtGet(key)).toBe(before + ' EDIT')
+    await change(input, before)   // restore
+
+    const acBtn = document.querySelector('#sbBoard [data-lac]') as HTMLElement
+    const wavesBefore = JSON.stringify(DAYS[SBDAY as any].waves)
+    await click(acBtn)
+    expect(JSON.stringify(DAYS[SBDAY as any].waves)).not.toBe(wavesBefore)
+
+    const cxBtn = document.querySelector('#sbBoard [data-lcx]') as HTMLElement
+    await click(cxBtn)
+    expect(($('#cxPop') as any).hidden).toBe(false)
+    await click($('#cxClose'))
+
+    const emptyKey = '0.0.0.0.p'
+    const seatBefore = slotVal(emptyKey)
+    await act(async () => { setSlotVal(emptyKey, ''); afterSchedMutate(); notify() })
+    const empty = document.querySelector(`#sbBoard .sb-slot.empty[data-slot="${emptyKey}"]`) as HTMLElement
+    boardArmClick({ target: empty, stopPropagation() {} } as any)
+    expect(view.armedKey()).not.toBe('')
+    view.armDrop()
+    await act(async () => { setSlotVal(emptyKey, seatBefore); afterSchedMutate(); notify() })
+  })
+
+  it('switching the edit toggle off and back on reaches the same read-only render through the real pipeline, not just a stub', async () => {
+    const toggle = $('#editToggle')
+    expect(toggle, 'sanity: the toggle exists on Edit Schedule').toBeTruthy()
+    await click(toggle)
+    expect(view.EDITON).toBe(false)
+    expect(HOOKS.editMode()).toBe(false)
+    const line = document.querySelector('#sbBoard .sb-line') as HTMLElement
+    expect((line.querySelector('.lin') as HTMLInputElement).disabled, 'the real render, not a stub, disables it').toBe(true)
+    expect(line.querySelector('[data-lcx]'), 'and the real render omits the CX cluster').toBeFalsy()
+    await click(toggle)   // back on for anything after this file
+    expect(view.EDITON).toBe(true)
   })
 })

@@ -75,7 +75,16 @@ export function boardHTML(di: number, pv?: boolean) {
     w.formations.forEach((f: any, li: number) => f.aircraft.forEach((a: any, ai: number) => {
       const key = `${di}.${gi}.${li}.${ai}`, fp = `ff:${di}.${gi}.${li}`
       const cxOn = !!(a.cx || f.cx)
-      const dis = pv ? ' disabled' : ''
+      /* stoRO, not pv alone — this is the gap HANDOFF.md recorded and left
+         open on purpose while the stores-configuration feature shipped:
+         every OTHER live-looking thing on this board (the stores chips,
+         the grip, the nudge buttons, Sort all) already follows stoRO/mvRO
+         (pv OR not in edit mode), but the flying line's own callsign,
+         mission, brief, take-off, land and remarks inputs were still
+         gated on pv by itself — so a board left open on a read-only page,
+         or open with the edit toggle off, still let typed text commit.
+         Same variable, same widening, no second mechanism. */
+      const dis = stoRO ? ' disabled' : ''
       /* B (owner, 6 Aug 26), same funnel key and suggestion idiom as the
          week (ui/html.ts): data-bfld already flows through boardChange's
          generic txtSet path below, no new wiring needed. Wrapped so the
@@ -85,6 +94,25 @@ export function boardHTML(di: number, pv?: boolean) {
       const brSug = (!pv && parseHM(f.br) == null)
         ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
         : ''
+      /* sbSlot's own `pv` param means "read-only" to that function, not
+         literally "preview" — widened to stoRO below for the same reason
+         as `dis` above: the FCP/RCP seats are the "arm/drop targets" the
+         gap named, and sbSlot is only ever called from here (board.ts),
+         so this is the one and only call site that needs to widen what it
+         passes it.
+         The row-control cluster below (nudge, CX, red flag, add-aircraft,
+         delete) is the other half of the same gap, gated the same way:
+         every sibling control this board grew after 8 Aug (the grip, the
+         nudge buttons, Sort all) withholds itself on mvRO, but this OLDER
+         cluster still withheld only on pv, so CX / ■ / + / ✕ stayed live
+         and enabled on a read-only board — widened to mvRO below. Omitting
+         the whole span (not just disabling the buttons inside it) is the
+         same shape sbRowCtl already uses for the duty/sim/ground row
+         clusters, and it is safe here for the same reason: this is the
+         LAST grid item in the row template, so leaving it out empties the
+         trailing track rather than shifting every earlier field left the
+         way dropping the FIRST item (the grip) once did — finding #1's fix
+         is what taught this codebase that distinction. */
       fly += `<div class="sb-line${cxOn ? ' cx' : ''}${a.flag ? ' redbox' : ''}"${rowMove(`mv:ac.${key}`, mvRO)}>
         ${sbGrip(mvRO)}
         <input class="lin" data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis} value="${esc(f.cs)}">
@@ -92,8 +120,8 @@ export function boardHTML(di: number, pv?: boolean) {
         <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} placeholder="B" value="${esc(f.br || '')}"></div>
         <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(f.to)}">
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
-        ${sbSlot(di, key + '.p', 'p', a.p, pv)}
-        ${sbSlot(di, key + '.w', 'w', a.w, pv)}
+        ${sbSlot(di, key + '.p', 'p', a.p, stoRO)}
+        ${sbSlot(di, key + '.w', 'w', a.w, stoRO)}
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}">
           ${sa ? '' : (stoRO
@@ -108,7 +136,7 @@ export function boardHTML(di: number, pv?: boolean) {
               + `<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
               + `<span class="bombs" contenteditable="true" data-bombs="${key}">${esc((a.opts || {}).bombs || '')}</span></span>`)}
         </div>
-        ${pv ? '' : `<span class="lctl">
+        ${mvRO ? '' : `<span class="lctl">
           ${sbNudge(`mv:ac.${key}`, mvRO)}
           <button class="mbtn${cxOn ? ' on' : ''}" data-lcx="${key}" title="${cxOn ? 'Restore this line' : 'Cancel this line (CX)'}">CX</button>
           <button class="mbtn red${a.flag ? ' on' : ''}" data-lflag="${key}" title="${a.flag ? 'Clear the red box' : 'Red box — flag this for the next scheduler'}">■</button>
@@ -234,6 +262,19 @@ export function boardMbtn(e: MouseEvent) {
   /* previewing a published version: the panels render no controls, but a stale
      element from the pre-preview markup must not mutate the live day */
   if (view.DPREV.has(view.SBDAY as any)) return
+  /* editMode(), not just the role — every branch below writes straight to
+     the live model, and a stale or forced click on a read-only board (the
+     role changed, or the page moved away from Edit Schedule while the
+     board itself stayed open — HANDOFF.md's documented gap) must not act
+     just because the session is still an admin's. This used to be three
+     separate copies of this exact check, found and added one at a time
+     across two review passes (the nudge branch below, the per-section sort
+     branch, delete-line) — CX, the red flag and add-aircraft never got a
+     copy of their own at all, which is the other half of the gap this
+     closes. One guard here covers every branch in this function, so the
+     next branch added here inherits it instead of having to rediscover the
+     gap by itself. */
+  if (!canEditSched() || !HOOKS.editMode()) return
   const t = (e.target as HTMLElement).closest('.mbtn') as HTMLElement | null; if (!t) return
   const ds = t.dataset
   /* ▲/▼ — the phone's reorder gesture. The target is read off the NEIGHBOURING
@@ -241,12 +282,6 @@ export function boardMbtn(e: MouseEvent) {
      renders time-sorted: "one place down" is a question about what the
      scheduler can see, and engine/reorder.ts translates the model indices. */
   if (ds.mvup != null || ds.mvdn != null) {
-    /* editMode(), not just the role (re-review fix, 9 Aug 26): a stale
-       button left over from before a page change (View sched, board still
-       open — finding #1's state) must not still move a row just because
-       the session is still an admin's. Matches finding #4's own gate on
-       Sort all. */
-    if (!canEditSched() || !HOOKS.editMode()) return
     const up = ds.mvup != null
     const row = t.closest('[data-move]') as HTMLElement | null
     if (!row) return
@@ -260,17 +295,12 @@ export function boardMbtn(e: MouseEvent) {
   /* ⇅ Auto sort — one control per section, dispatched by the address's own
      prefix (w/d/s/g/p) rather than by which panel the click landed in, so
      which sorter answers which section lives in exactly one place. Same
-     read-only gate as the nudge buttons above — sbSortBtn already withholds
-     the button itself, canEditSched() covers a stale element left over from
-     before a role change. 'Already in order' rather than silence: a
-     scheduler who reaches for the way-back control on a tidy section should
-     hear that it IS tidy, not wonder whether the click landed. */
+     read-only gate as every branch here (checked once, at the top of this
+     function) — sbSortBtn already withholds the button itself in the
+     ordinary case. 'Already in order' rather than silence: a scheduler who
+     reaches for the way-back control on a tidy section should hear that it
+     IS tidy, not wonder whether the click landed. */
   if (ds.sortsec != null) {
-    /* editMode() too, same reason as the nudge branch above (re-review
-       fix, 9 Aug 26): this used to be exactly the gap finding #4 closed
-       for Sort all — a role check alone leaves a stale button live on a
-       read-only board. */
-    if (!canEditSched() || !HOOKS.editMode()) return
     const [kind, ...rest] = String(ds.sortsec).split('.')
     const n = rest.map(Number)
     /* Ground is the one section where "changed" can be true with the row
@@ -295,6 +325,10 @@ export function boardMbtn(e: MouseEvent) {
     else toast('Already in order')
     return
   }
+  /* CX, the red flag and add-aircraft (below) carried no check of their own
+     at all before the top-level guard above — the read-only board's own
+     documented gap named these three by name. Covered now, same as every
+     other branch here. */
   if (ds.lcx != null) { const r = acRef(ds.lcx); if (!r || !r.a) return; return askCx(r.a, `fr:${ds.lcx}`, 'this line', () => rollCx(r.f)) }
   if (ds.lflag != null) {
     const r = acRef(ds.lflag); if (!r || !r.a) return
@@ -302,11 +336,6 @@ export function boardMbtn(e: MouseEvent) {
     return toast(r.a.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
   }
   if (ds.ldel != null) {
-    /* this branch carried NO check of any kind before this (re-review fix,
-       9 Aug 26) — reproduced live: a still-rendered ✕ on a read-only board
-       (View sched, board left open) actually deleted a line. Both checks,
-       matching every other guarded branch here. */
-    if (!canEditSched() || !HOOKS.editMode()) return
     const r = acRef(ds.ldel); if (!r || !r.a) return
     const [dI, gI] = String(ds.ldel).split('.').map(Number)
     r.f.aircraft.splice(r.ai, 1)
@@ -436,6 +465,15 @@ export function boardMbtn(e: MouseEvent) {
 /* the board field-change handler (through the text funnel) */
 export function boardChange(e: Event) {
   if (view.DPREV.has(view.SBDAY as any)) return   // same stale-markup guard as boardMbtn
+  /* boardChange carried NO check of any kind, role or mode — unlike
+     boardMbtn and boardArmClick, which at least checked the role. This is
+     the write path behind the flying line's callsign, mission, brief,
+     take-off, land and remarks inputs (and every other data-bfld field on
+     the board), so it is exactly the path a read-only board's still-live
+     inputs used to commit straight through: a typed callsign became a
+     model write with nothing here to refuse it. Same gate as boardMbtn's
+     top-level guard. */
+  if (!canEditSched() || !HOOKS.editMode()) return
   /* the wave-title select: night flag + label, verbatim */
   const s = (e.target as HTMLElement).closest('[data-wsel]') as HTMLSelectElement | null
   if (s) {
@@ -496,7 +534,11 @@ export function boardChange(e: Event) {
 
 /* the board's slot-arm click handler */
 export function boardArmClick(e: MouseEvent) {
-  if (!canEditSched()) return
+  /* editMode() too, not just the role — a read-only board (role changed, or
+     the page moved away from Edit Schedule while the board stayed open)
+     must not still arm a seat just because the session is still an
+     admin's. Same gate as boardMbtn/boardChange. */
+  if (!canEditSched() || !HOOKS.editMode()) return
   if (view.DPREV.has(view.SBDAY as any)) return   // same stale-markup guard as boardMbtn
   const t = e.target as HTMLElement
   if (t.closest('.puck[data-person]')) return

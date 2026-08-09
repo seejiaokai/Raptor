@@ -5,7 +5,7 @@
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY, DPREV, setDayPreview } from '../state/view'
+import { SBDAY, CURPAGE, DPREV, setDayPreview } from '../state/view'
 import { daySnapOf, dayVersions, verLabel, alColor } from '../engine/publish'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
@@ -24,7 +24,24 @@ export function SchedBoard() {
   const daysRef = useRef<HTMLDivElement>(null)
   const warnRef = useRef<HTMLDivElement>(null)
   const inputsRef = useRef<HTMLDivElement>(null)
-  const open = SBDAY != null
+  /* The board's only home page is Edit Schedule — `open` used to be a bare
+     `SBDAY != null`, so a nav click while the board was open left the
+     modal (position:fixed, inset:0, z-index:400 — the whole viewport)
+     fully mounted and painted on top of whatever page the user actually
+     navigated to, covering its own nav and edit toggle in the process
+     (HANDOFF.md, "board stays open across a page change"). SBDAY is left
+     untouched here on purpose (not nulled) — the simplest fix that closes
+     the class of bug is the render gate, not a second place (setPage)
+     that would also have to know about the board; `open` already reads
+     module state exactly this way for SBDAY, and CURPAGE is the same
+     shape of state, read the same way, in the same component. Landing
+     back on Edit Schedule with a day still armed re-opens it, which is a
+     reasonable resume, not a leak — nothing renders live until the page
+     genuinely matches again. This does not replace the read-only render
+     below; it removes the reachable case where the modal is visible at
+     all on the wrong page, which is a stronger property than read-only
+     markup on a page you can still see. */
+  const open = SBDAY != null && CURPAGE === 'editsched'
 
   /* the board's own handlers, attached once */
   useEffect(() => {

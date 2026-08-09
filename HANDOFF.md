@@ -618,19 +618,64 @@ believing a single red.)
     standalone line** if legacy `opts` survive there from before the SC /
     AVALON / BB gate went on both surfaces; the entry paths are closed now,
     the CSV read path is not.
-  - **A follow-up this feature is not the cause of, recorded here because
-    it was found while working nearby.** The Schedule Board stays open
-    across a page change generally (not just for stores) — at a phone width
-    (≤820px), tab to `#burger` behind an open board, the drawer paints above
-    it at `z-index:440`, and "View-only Sched" flips `CURPAGE` while the
-    board itself stays open with callsign, times, remarks, CX and ✕ all
-    still live and still writing to the model. Stores render was gated on
-    `HOOKS.editMode()` for exactly this reason and is safe; the rest of the
-    board's line is not. Proposed fix: `SchedBoard.tsx`'s
-    `const open = SBDAY != null` becomes
-    `SBDAY != null && CURPAGE === 'editsched'`, or `setPage` closes the
-    board outright. **Deliberately not fixed here** — out of scope for a
-    stores feature.
+  - **CLOSED (owner ask, 9 Aug 26 — was tracked here as an open gap and as
+    "deliberately not fixed").** The Schedule Board used to stay open across
+    a page change — at a phone width (≤820px), tab to `#burger` behind an
+    open board, the drawer paints above it at `z-index:440`, and
+    "View-only Sched" flips `CURPAGE` while the board itself stayed open
+    with callsign, times, remarks, the CX/red-flag/add-aircraft/delete
+    buttons and the FCP/RCP arm targets all still live and still writing to
+    the model. A reviewer confirmed this in a real browser: a typed
+    callsign committed, `+ Line` added a formation, a row's `✕` deleted a
+    line. Not reachable by a normal user (the modal is a full-screen overlay
+    that covers the nav and the edit toggle — a real pointer click on either
+    is blocked, confirmed live during this fix's own verification) — this
+    was defence in depth, not an open hole, and was fixed as such. Two
+    independent halves:
+    1. **The board no longer stays open on the wrong page.** `SchedBoard.tsx`'s
+       `const open = SBDAY != null` is now
+       `SBDAY != null && CURPAGE === 'editsched'` — the render-gate option
+       this entry proposed, chosen over having `setPage` close the board:
+       `setPage` is the single session/page-change primitive every login,
+       logout and nav click already routes through (`state/store.ts`'s
+       `resetSession`, `interactions.ts`'s nav handler), so teaching it a
+       new side effect risked every one of those callers, where `open` is a
+       plain derived boolean already computed in the one component that has
+       the bug. `SBDAY` is deliberately left untouched — landing back on
+       Edit Schedule with a day still armed re-opens it, a resume rather
+       than a leak, since nothing was ever live while hidden.
+    2. **The flying line itself now honours the same read-only flag the
+       stores chips, the grip, the nudge buttons and Sort all already did**
+       (`board.ts`'s `stoRO`/`mvRO`, `pv OR not in edit mode` — widened, not
+       a second mechanism): the `disabled` attribute on callsign / mission /
+       brief / take-off / land / remarks, the whole row-control cluster
+       (nudge, CX, red flag, add-aircraft, delete — omitted outright, the
+       same shape `sbRowCtl` already uses for duty/sim/ground rows, and safe
+       here because it is the LAST grid item, unlike the grip whose
+       omission caused finding #1), and the FCP/RCP seats' `data-slot` /
+       `draggable`. This is what still matters even with the board closing
+       on a page change, because the edit toggle switched OFF on the SAME
+       page (`#editToggle`, reachable without ever navigating) reaches
+       `HOOKS.editMode()===false` with the board legitimately still open —
+       the write paths behind it (`boardChange`, which had no check of its
+       own at all; `boardMbtn`'s CX/red-flag/add-aircraft branches, which
+       had none either; `boardArmClick`, which checked the role but not the
+       mode) all gained the same guard `boardMbtn`'s nudge/sort/delete
+       branches already carried, consolidated into one check at the top of
+       `boardMbtn` rather than three more scattered copies. `probe-bridge.ts`
+       gained `w.setPage`, the same bare-global idiom as `w.openScheduler`,
+       so an e2e test can force a squadron member onto Edit Schedule with no
+       click path there to prove the ROLE gate rather than the page gate.
+       Seventeen new tests pin this — `vitest`, closing HANDOFF's own stale
+       "board survives a page change" render-gate comment along the way —
+       plus two rewritten and one added in `e2e/geometry.spec.ts` (finding
+       #1's row-register regression now reached via the edit toggle instead
+       of a page nav, since the nav route it used to exercise no longer
+       leaves the board open; the squadron-member render-gate test forces
+       the page the same bare-global way it already forced the board open;
+       a new test pins the page-nav close directly, since jsdom's 0×0 rects
+       cannot see `hidden` turn into an actual invisible modal). Every test
+       was run against the pre-fix code first and confirmed red.
 - **Board rows can be reordered (owner ask, 8 Aug 26): "drag lines up and
   down to adjust the sequence."** Every movable list on the board — flying
   lines (a formation, travelling as a block), jets inside a formation,
@@ -764,11 +809,11 @@ believing a single red.)
   are also called directly off `window` by `probes/adapted/sa-async.cjs`
   with no board ever opened, and a bare gate broke that probe (caught by
   `npm run probes:adapted`, not by `npm test`).
-  **Not fixed, deliberately, because it predates this pass and is a
-  separate, already-documented gap:** the read-only board's flying-line
-  CX/flag/+ (add-aircraft) buttons and its callsign/times/remarks inputs
-  stay fully live — only the controls named above were in scope. See the
-  "board stays open across a page change" known issue above.
+  **Was deliberately not fixed here, because it predated this pass — closed
+  9 Aug 26, see the (now resolved) "board stays open across a page change"
+  entry above:** the read-only board's flying-line CX/flag/+ (add-aircraft)
+  buttons and its callsign/times/remarks inputs used to stay fully live —
+  only the controls named above were in scope for this pass.
 - **The doc set was aligned to the finished port (5 Aug 26).** Both READMEs
   still described a three-gate, mid-port project — the root one also called a
   member view-only, which the 5 Aug roles decision had already undone.

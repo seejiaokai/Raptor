@@ -67,6 +67,11 @@ export function installProbeBridge() {
     const a = document.querySelector(`.nav a[data-page="${p}"]`) as HTMLElement | null
     if (a) a.click(); else { const d = document.querySelector(`#drawerNav a[data-page="${p}"]`) as HTMLElement | null; d && d.click() }
   }
+  /* the bare state setter behind w.go — needed by e2e tests that force the
+     scheduler board open on a role/page combination no click path can ever
+     reach (a squadron member's Edit Schedule link doesn't exist to click),
+     the same way w.openScheduler already forces SBDAY open with no click. */
+  w.setPage = (p: string) => { view.setPage(p); notify() }
   /* the board — loaded lazily to keep module order simple */
   /* the id-getter every probe leans on, and the wider engine surface */
   w.$ = (id: string) => document.getElementById(id)

@@ -1570,8 +1570,18 @@ test('a phone nudge moves a row and the board still reads correctly', async ({ p
    click View sched — the board deliberately stays open (SchedBoard's
    `hidden` only tracks SBDAY, never the page), which is the whole reason
    the read-only render path exists. jsdom cannot see this at all (every
-   rect is 0x0), so it has to be a real-browser measurement. */
-test('the board keeps its row register after navigating to View sched with the board still open', async ({ page }) => {
+   rect is 0x0), so it has to be a real-browser measurement.
+   UPDATED (closing HANDOFF.md's "board stays open across a page change"
+   gap): a nav click no longer leaves the board open on the wrong page —
+   SchedBoard's `open` now also requires CURPAGE==='editsched', so this
+   test's original reproduction path (open the board, click View sched)
+   now hides the board outright instead of leaving it read-only-but-open,
+   which the block below this one pins directly. The register bug's fix
+   (sbGrip always emitting its track) is still live defence, because the
+   board CAN still legitimately be open and read-only on its own page —
+   the edit toggle switched off. That is the surviving path exercised
+   here now. */
+test('the board keeps its row register once edit mode is switched off (finding #1, via the edit toggle now)', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await login(page); await go(page, 'editsched')
   await page.evaluate(() => (window as any).openScheduler(0))
@@ -1592,14 +1602,39 @@ test('the board keeps its row register after navigating to View sched with the b
   expect(edit.lin).toBeGreaterThan(50)
   expect(edit.nts).toBeGreaterThan(300)
 
-  // the board deliberately stays open across this nav click
-  await go(page, 'viewsched')
-  await page.waitForSelector('#sbBoard .sb-line')
+  /* the edit toggle, not a page nav — the board stays open on ITS OWN page
+     (part 1 of the fix closes the page-nav route to a read-only-but-open
+     board), so this is the surviving way to reach one. `.click()` via
+     evaluate rather than a real pointer click for the same reason every
+     other bare-global call in this file uses one: the render gate is what
+     is under test, not whether a real pointer could reach the switch. */
+  await page.evaluate(() => (document.getElementById('editToggle') as HTMLElement)?.click())
+  await page.waitForFunction(() => (window as any).editMode() === false)
   const ro = await measure()
   expect(ro.lin, 'the callsign input keeps its full width, not the 18px grip track').toBeGreaterThan(50)
   expect(ro.nts, 'the notes input stays usable, not squeezed into ~22px').toBeGreaterThan(300)
   expect(Math.round(ro.lin)).toBe(Math.round(edit.lin))
   expect(Math.round(ro.nts)).toBe(Math.round(edit.nts))
+
+  await page.evaluate(() => (document.getElementById('editToggle') as HTMLElement)?.click())   // restore
+})
+
+/* HANDOFF.md, "the board stays open across a page change" — part 1 of the
+   documented gap, pinned live in a real browser (jsdom's rects are all
+   0×0, so `hidden` is the only thing it CAN see here — the visibility this
+   test actually cares about needs a layout engine). */
+test('navigating away from Edit Schedule with the board open hides it, not just its controls', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line')
+  await expect(page.locator('#schedBoard')).toBeVisible()
+  await go(page, 'viewsched')
+  await expect(page.locator('#schedBoard')).toBeHidden()
+  /* landing back on Edit Schedule with the day still armed re-opens it —
+     a resume, not a leak (nothing was ever live while hidden) */
+  await go(page, 'editsched')
+  await expect(page.locator('#schedBoard')).toBeVisible()
 })
 
 /* the squadron-member gate, actually exercised (review fix, 9 Aug 26): this
@@ -1614,10 +1649,17 @@ test('the board keeps its row register after navigating to View sched with the b
    own, so this drives the same board render the admin path does and reads
    what canEditSched()-gated editMode() actually produces: a rendered board
    (proving the gate was really exercised, not vacuously true) with no
-   data-move and no data-mvup anywhere in it. */
+   data-move and no data-mvup anywhere in it.
+   UPDATED for HANDOFF.md's page-change gap: SchedBoard's `open` now also
+   requires CURPAGE==='editsched', and Edit Schedule's nav link does not
+   exist for a member to click — so `window.setPage` (the same bare-global
+   idiom as `openScheduler` itself) forces the page the same way, proving
+   the ROLE gate on the render rather than accidentally proving the page
+   gate hid it instead. */
 test('a squadron member who reaches the board gets a read-only render — no grip, no nudge', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await login(page, 'user')
+  await page.evaluate(() => (window as any).setPage('editsched'))
   await page.evaluate(() => (window as any).openScheduler(0))
   await page.waitForSelector('#sbBoard .sb-line')
   const n = await page.evaluate(() => ({
