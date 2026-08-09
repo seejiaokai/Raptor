@@ -11,7 +11,7 @@ import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
-import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, addLine, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit } from './board'
+import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, addLine, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll } from './board'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
@@ -44,6 +44,19 @@ export function SchedBoard() {
      back on Edit Schedule does NOT resume a day; a scheduler opens one
      again, the same as any other visit. */
   const open = SBDAY != null && CURPAGE === 'editsched'
+
+  /* wires HOOKS.closeBoardDialogs — state/view.ts's closeBoardState() calls
+     it, but the board's own dialog state (CXT, SORTALL) lives here, in the
+     one component that owns it, not in state/ (see the doorway comment on
+     closeBoardState itself). Raw setters, not the askCx/cancelSortAll
+     "commands" — those call notify() themselves, which closeBoardState has
+     no business doing mid-close; the caller (setPage) already gets its own
+     notify() from whoever calls it. Wired once, like store.ts's wireStore()
+     wires HOOKS.editMode/render* once at boot. */
+  useEffect(() => {
+    HOOKS.closeBoardDialogs = () => { setCxt(null); setSortAll(null) }
+    return () => { HOOKS.closeBoardDialogs = () => {} }
+  }, [])
 
   /* the board's own handlers, attached once */
   useEffect(() => {
@@ -154,8 +167,16 @@ export function SchedBoard() {
           {open && HOOKS.editMode() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
             title="Reorder every section on this day back into its own reading order — one confirm, one undo step"
             onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}>⇅ Sort all</button>}
-          <button className="abtn" id="sbAddLine" disabled={open && DPREV.has(SBDAY)} onClick={() => { if (SBDAY != null) addLine(SBDAY) }}>+ Line</button>
-          <button className="abtn" id="sbAddGo" disabled={open && DPREV.has(SBDAY)} onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, SBDAY) }}>+ Wave</button>
+          {/* + Line / + Wave — matched to Sort all's own gate (coordinator
+              review, 9 Aug 26): these two carried no editMode() gate of
+              their own here, so they still rendered enabled on a read-only
+              board (edit toggle off, board still open on its own page) —
+              the last "looks live, does nothing" pair, genuinely inert
+              because addLine/addWave already refuse underneath (board.ts),
+              but that is exactly the shape Sort all was fixed for three
+              lines above. Hidden, not merely disabled, same as Sort all. */}
+          {open && HOOKS.editMode() && <button className="abtn" id="sbAddLine" disabled={DPREV.has(SBDAY)} onClick={() => { if (SBDAY != null) addLine(SBDAY) }}>+ Line</button>}
+          {open && HOOKS.editMode() && <button className="abtn" id="sbAddGo" disabled={DPREV.has(SBDAY)} onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, SBDAY) }}>+ Wave</button>}
           <button className="abtn primary" id="sbDone" onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}>Done</button>
           <button className="abtn ghost" id="sbClose" onClick={closeScheduler}>✕ Close</button>
         </div>

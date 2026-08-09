@@ -628,12 +628,18 @@ believing a single red.)
     remarks, the CX/red-flag/add-aircraft/delete buttons and the FCP/RCP
     arm targets all still live and still writing to the model. A reviewer
     confirmed this in a real browser: a typed callsign committed, `+ Line`
-    added a formation, a row's `✕` deleted a line. Not reachable by a
-    normal user through the board's OWN controls (the modal is a
-    full-screen overlay that covers the nav and the edit toggle — a real
-    pointer click on either is blocked, confirmed live) — this was defence
-    in depth on the board's own controls, not an open hole there, and was
-    fixed as such.
+    added a formation, a row's `✕` deleted a line. **Was believed not
+    reachable by a normal user at the time — wrong, corrected in round 3
+    below.** A desktop pointer click straight at the nav was confirmed
+    blocked by the modal's own stacking context, which read as proof the
+    whole gap needed a bypass to reach; it only checked one path in. At
+    phone width the burger menu sits OUTSIDE the modal and stays
+    keyboard-focusable behind it — Tab to it, open the drawer (which paints
+    ABOVE the board), click a nav link normally. A real, ordinary phone
+    gesture, no bypass. This was a live hole, not defence in depth, and the
+    round-3 addendum below is what actually closes it (a page change now
+    closes the board outright rather than leaving it open-but-hidden for a
+    reachable UI path to land on).
     **Pass 1 (render + the flying line's own write paths) — closed the
     board's own controls, opened a different one.** `SchedBoard.tsx`'s
     `const open = SBDAY != null` became `SBDAY != null && CURPAGE ===
@@ -726,6 +732,51 @@ believing a single red.)
     stores-go-read-only test now reaches read-only via the edit toggle,
     since the page-nav route it used no longer leaves the board open to
     observe; the finding #1 row-register e2e test does the same).
+    **Pass 3 (coordinator ship review, 9 Aug 26) — a verdict of "ship it"
+    with two corrections and four small items.** First correction: pass 2's
+    "not reachable by a normal user" framing above was **wrong**, not just
+    imprecise. A desktop pointer click straight at the nav was blocked by
+    the modal and read as proof the whole gap needed a bypass; it only
+    checked one path in. At phone width the burger menu sits OUTSIDE the
+    modal's stacking context and stays keyboard-focusable behind it — Tab
+    to it, open the drawer (paints ABOVE the board), click a nav link with
+    an ordinary pointer. The reviewer drove exactly that. It was a live
+    hole, corrected here, not defence in depth. Second correction: pass 2's
+    render/write-path widening (the "residual" above) was in fact complete
+    — a stale instruction had told a fresh reviewer to judge it unfinished,
+    based on an out-of-scope paragraph in this task's own report that was
+    never struck through after pass 2 shipped and so still contradicted the
+    code; that paragraph is now corrected in the report itself.
+    Four items, all fixed the same day: **(1)** a zero-coverage gap on
+    `Shell.tsx`'s context-menu fix — the full suite stayed green with the
+    `HOOKS.editMode() || SBDAY != null` → `HOOKS.editMode()` line reverted,
+    because the blocker test only exercised the `setPage`-clears-`SBDAY`
+    half; a new test opens a board on Edit Schedule itself, switches the
+    edit toggle off, and right-clicks an `#eWeek` seat — the one state only
+    the `Shell.tsx` line protects, since `SBDAY` is genuinely non-null
+    there. **(2)** `#sbAddLine`/`#sbAddGo` (`SchedBoard.tsx`) matched to
+    `#sbSortAll`'s own gate three lines above them — `{open &&
+    HOOKS.editMode() && <button…>}`, hidden rather than merely disabled, the
+    last "looks live, does nothing" pair on the board. **(3)** the CX-with-
+    a-reason dialog and Sort all's confirm dialog (`CXT`/`SORTALL`, module
+    state in `ui/board.ts`) now drop when `closeBoardState()` runs, via a
+    new `HOOKS.closeBoardDialogs` — the same injectable-callback doorway
+    `HOOKS.editMode`/`HOOKS.renderScheduler` already use, wired once in
+    `SchedBoard.tsx`, chosen over a circular import because `state/`
+    importing `ui/board.ts` is exactly the layering violation
+    `closeBoardState`'s own comment already declined; `cxCommit` gained the
+    standard `!canEditSched() || !HOOKS.editMode()` guard it never had,
+    pre-existing and (per the coordinator) genuinely unreachable today, but
+    the last write path of this family with none. **(4)** this task's own
+    report corrected — the stale "out of scope" section struck through
+    rather than silently edited, and a dangling truncated sentence at the
+    very end of the file (a leftover from an earlier append that didn't
+    fully consume the text it was inserting after) removed. Six more new
+    tests, each checked against the pre-fix line/code first. Gates:
+    `npm test` 814+, `npm run build` clean, `node reference/tfin.js` 728/0,
+    `npm run test:e2e` 50/50, `npm run probes:adapted` 6/6, `npm run perf`
+    9/0 — exact counts in the task's own report, which this entry does not
+    duplicate.
 - **Board rows can be reordered (owner ask, 8 Aug 26): "drag lines up and
   down to adjust the sequence."** Every movable list on the board — flying
   lines (a formation, travelling as a block), jets inside a formation,

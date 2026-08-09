@@ -16,7 +16,7 @@ import { isStandalone } from '../engine/waves'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { cxText } from './html'
-import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave } from './board'
+import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave, askCx, cxCommit, CXT } from './board'
 import { applyMove } from '../engine/reorder'
 import { HOOKS } from '../engine/hooks'
 
@@ -493,6 +493,28 @@ describe('Sort all gates on the edit-mode flag, not the role alone (finding #4)'
       expect(JSON.stringify(DAYS[SBDAY as any])).toBe(before)
     } finally {
       HOOKS.editMode = () => true
+    }
+  })
+})
+
+/* coordinator review, round 3, 9 Aug 26: the top toolbar's + Line / + Wave
+   were the last "looks live, does nothing" pair — genuinely inert
+   (addLine/addWave already refuse underneath, pinned above), but still
+   RENDERED enabled on a read-only board, exactly the shape #sbSortAll was
+   fixed for three lines above it in SchedBoard.tsx. Matched to that same
+   gate: hidden (not merely disabled) once editMode() is false. */
+describe('+ Line and + Wave are hidden on a read-only board, matching Sort all (round 3)', () => {
+  it('neither button is rendered once editMode() goes false, even though the role is still admin', async () => {
+    expect(document.querySelector('#sbAddLine'), 'sanity: visible in edit mode').toBeTruthy()
+    expect(document.querySelector('#sbAddGo'), 'sanity: visible in edit mode').toBeTruthy()
+    HOOKS.editMode = () => false
+    try {
+      await act(async () => { notify() })
+      expect(document.querySelector('#sbAddLine')).toBeFalsy()
+      expect(document.querySelector('#sbAddGo')).toBeFalsy()
+    } finally {
+      HOOKS.editMode = () => true
+      await act(async () => { notify() })
     }
   })
 })
@@ -978,6 +1000,38 @@ describe('the blocker: a board left open cannot be used to clear a WEEK puck aft
       await act(async () => { openScheduler(0); notify() })   // leave the suite as later blocks expect
     }
   })
+
+  /* Coordinator review, round 3, 9 Aug 26: the `setPage`-clears-SBDAY half
+     of the blocker fix is what the test above actually exercises — leaving
+     Edit Schedule now closes the board outright, so `SBDAY != null` goes
+     false on its own and the escape hatch's OTHER half (removing `||
+     SBDAY != null` from Shell.tsx entirely) is never what makes that
+     specific test pass. Proven by the coordinator reverting just that one
+     line: the full suite stayed 813/813 and e2e 50/50 — zero coverage on
+     load-bearing code. This test targets the case ONLY that line protects:
+     a board open on ITS OWN page (Edit Schedule, so SBDAY != null is
+     genuinely true, not merely stale) with the edit toggle off. The old
+     `HOOKS.editMode() || SBDAY != null` would still read true here — the
+     escape hatch's whole point was "the board is open, trust it" — even
+     though editMode() alone (EDITON off) correctly reads false. */
+  it('right-clicking an EDIT WEEK seat does NOT clear it when a board is open on its own page but the edit toggle is off', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    expect(SBDAY, 'sanity: the board is genuinely open, not stale').toBe(0)
+    await act(async () => { view.setEditOn(false); notify() })
+    try {
+      const seat = $('#eWeek .seat[data-slot]') as HTMLElement
+      expect(seat, 'sanity: the edit week has a seat to target').toBeTruthy()
+      const key = seat.dataset.slot!
+      const before = slotVal(key)
+      expect(before, 'sanity: the targeted seat is actually filled').toBeTruthy()
+      await act(async () => {
+        seat.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }))
+      })
+      expect(slotVal(key), 'the seat was NOT cleared').toBe(before)
+    } finally {
+      await act(async () => { view.setEditOn(true); notify() })   // leave the suite as later blocks expect
+    }
+  })
 })
 
 /* Stale state a board left open on the wrong page used to leave behind
@@ -1013,6 +1067,71 @@ describe('page-leave cleanup — closeBoardState (reviewer-found stale state, 9 
       await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
       await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
     }
+  })
+
+  /* coordinator review, round 3, 9 Aug 26: closeBoardState() didn't clear
+     the board's own dialog state, so a page change with the CX-with-a-
+     reason box open left it painting over the next page (not reachable by
+     a real user — the dialog sits above the drawer, and the page behind it
+     takes neither pointer nor keyboard from there — but it's the last loose
+     thread of this family). HOOKS.closeBoardDialogs, wired in
+     SchedBoard.tsx, is what actually clears it. */
+  it('the CX-with-a-reason dialog is dropped when the page leaves Edit Schedule', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    try {
+      const line = document.querySelector('#sbBoard .sb-line') as HTMLElement
+      const r = { cx: false }   // askCx only needs an object it can stamp cx/cxr onto
+      askCx(r, null, 'this line')
+      expect(CXT, 'sanity: the dialog is armed').not.toBeNull()
+      await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
+      expect(CXT, 'dropped on the way out, not left painting over the next page').toBeNull()
+    } finally {
+      await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+      await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
+    }
+  })
+
+  it('Sort all\'s confirm dialog is dropped when the page leaves Edit Schedule', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    try {
+      askSortAll(SBDAY as any)
+      expect(SORTALL, 'sanity: the dialog is armed').toBe(SBDAY)
+      await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
+      expect(SORTALL, 'dropped on the way out').toBeNull()
+    } finally {
+      await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+      await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
+    }
+  })
+})
+
+/* coordinator review, round 3, 9 Aug 26: cxCommit carried no role or mode
+   check of its own at all — every other write path in this file does now.
+   Pre-existing, not introduced by this task, and not reachable by a normal
+   user (same reasoning as the dialog-drop tests above), but it is the last
+   write path of this family with zero coverage. */
+describe('cxCommit refuses on a read-only board too (round 3)', () => {
+  afterEach(async () => {
+    HOOKS.editMode = () => true
+    await act(async () => { notify() })
+  })
+
+  it('a stale confirm does not write once editMode() is false, and drops the dialog', () => {
+    const r: any = { cx: false }
+    askCx(r, null, 'this line')
+    expect(CXT).not.toBeNull()
+    HOOKS.editMode = () => false
+    cxCommit(true, 'WX')
+    expect(r.cx, 'the model never saw the confirm').toBe(false)
+    expect(CXT, 'the stale dialog is dropped, not left open').toBeNull()
+  })
+
+  it('the identical confirm DOES write in edit mode (unchanged)', () => {
+    const r: any = { cx: false }
+    askCx(r, null, 'this line')
+    cxCommit(true, 'WX')
+    expect(r.cx).toBe(true)
+    expect(r.cxr).toBe('WX')
   })
 })
 

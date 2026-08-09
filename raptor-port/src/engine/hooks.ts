@@ -27,6 +27,15 @@ export const HOOKS = {
   syncHistBtns: (): void => {},
   isPhone: (): boolean => false,
   editMode: (): boolean => false,
+  /* the board's own dialog state (the CX-with-a-reason box, Sort all's
+     confirm) lives in ui/board.ts as module `let`s, not here — but
+     state/view.ts's closeBoardState() needs to clear them the moment the
+     board closes, and state/ does not import ui/ (the layering this repo's
+     file map describes: engine -> state -> ui, HOOKS is the one doorway
+     back out, same reason it exists for the engine at all). Defaults to a
+     no-op headless; SchedBoard.tsx wires the real implementation once, on
+     mount, the same way store.ts's wireStore() wires editMode/render*. */
+  closeBoardDialogs: (): void => {},
 }
 
 /* tiny preference store — same guarded semantics as the reference's

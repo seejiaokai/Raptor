@@ -55,10 +55,21 @@ export function setBoardDay(n:any){
    landing back on Edit Schedule at phone width found the drawer already
    out). state/ has no business importing ui/board.ts (the layering CLAUDE.md
    describes — state is read by the engine and by ui, never the reverse),
-   so this lives here instead and board.ts's closeScheduler calls it. */
+   so this lives here instead and board.ts's closeScheduler calls it.
+   HOOKS.closeBoardDialogs() (reviewer-found follow-up, 9 Aug 26): the
+   board's own CX-with-a-reason box and Sort all's confirm dialog are
+   module state in ui/board.ts (CXT/SORTALL), and neither was cleared by
+   this close — a page change with one of those open left it painting over
+   the next page, with cxCommit carrying no guard of its own to stop a
+   confirm from writing to the live model underneath. Same doorway-out
+   pattern as every other engine/state -> app callback (HOOKS.editMode,
+   HOOKS.renderScheduler, …), because a circular import straight to
+   ui/board.ts is exactly the layering violation this function's own
+   SBDAY/ros-open comment above already declined. */
 export function closeBoardState(){
   setBoardDay(null);
   if(typeof document!=='undefined')document.body.classList.remove('ros-open');
+  HOOKS.closeBoardDialogs();
 }
 export function setPage(p:any){
   /* A page change closes any body-level popup (owner, 8 Aug 26 — the stores

@@ -217,6 +217,17 @@ export function askCx(o: any, key: any, label: any, after?: any) {
 }
 export function cxCommit(cancel: boolean, reason: string) {
   if (!CXT) return
+  /* the standard guard, added here for the first time (reviewer-found
+     follow-up, 9 Aug 26): cxCommit carried NO role or mode check of its
+     own at all — every other write path in this file does now — so a
+     stale CX dialog left open through a role or mode change (or, before
+     closeBoardState() started clearing CXT on a page change, a dialog
+     that had genuinely outlived its board) could still confirm and write.
+     Not reachable by a normal user today (the dialog sits above the
+     drawer, and the page behind it takes neither pointer nor keyboard from
+     there), same defence-in-depth framing as the rest of this task — but
+     it is the last write path of this family with no check at all. */
+  if (!canEditSched() || !HOOKS.editMode()) { CXT = null; notify(); return }
   const { o, key, after } = CXT
   if (cancel) { o.cx = true; o.cxr = String(reason).trim() }
   else { o.cx = false; delete o.cxr }
