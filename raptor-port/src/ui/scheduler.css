@@ -753,6 +753,21 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 /* remarks, to the RIGHT of the pucks (column 5 on desktop, its own strip on a phone) */
 .plist .pl-row .rmk{grid-column:5;font-size:9.5px;color:var(--ink-2);line-height:1.3;padding-top:3px;min-width:0;overflow-wrap:anywhere}
 .plist .pl-row .rmk .ntx{display:block}
+/* the LATE badge FLOATS in this cell rather than sitting in a flex track beside
+   the text. `.ntx` above is display:block — it has to be, so the editable box
+   fills the cell and is clickable — so an inline-block badge in front of it
+   takes a line of its OWN, and a flex track next to it costs the badge's width
+   on EVERY line of a wrapping remark. A float costs it on the first line only,
+   which is the cheapest of the three.
+   Measured, and not free: the seed's longest remark ("OIL — CO approved,
+   post-detachment") is 39px unmarked and 53px marked at desktop width — one
+   extra line, because 36px of a narrow column goes to the badge and a word
+   drops. That is inherent to putting a badge in a wrapping column, not a
+   layout fault, and the block it sits in already has rows of unequal height.
+   flow-root is what contains the float when the remark is empty and the badge
+   is the cell's only content — without it the badge escapes a zero-height cell. */
+.plist .pl-row .rmk.has-late{display:flow-root}
+.plist .pl-row .rmk.has-late .latetag{float:left}
 /* wave in-times note block */
 .intimes{margin:0;padding:5px 11px;border-bottom:1px solid var(--edge);background:rgba(229,201,74,.05);display:flex;flex-direction:column;gap:2px}
 .intimes span{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#F2D699;line-height:1.4;display:block}
@@ -1803,9 +1818,12 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
    An input last changed after the week's deadline. Same shape as .flagtag so
    the two read as one family, but AMBER: it is an advisory about paperwork,
    not a flying fault, and it sits in rows that may also carry a red CX badge
-   or a crew-rest ring it must not shout over. It never wraps and never grows
-   a row — the rows it lands in are fixed-height list rows, and the full
-   sentence lives in the title tooltip rather than in the badge. */
+   or a crew-rest ring it must not shout over. The badge itself never wraps,
+   and the full sentence lives in the title tooltip rather than in the badge,
+   so it stays one short token wherever it lands. It rides in the REMARKS cell
+   on every surface (owner, 9 Aug 26) — which does wrap, so on the week it can
+   cost a long remark one extra line; see .rmk.has-late above for the numbers
+   and why a float is the cheapest way to carry it. */
 .latetag{display:inline-block;vertical-align:middle;font-family:'Barlow Condensed','Inter Tight',sans-serif;
   font-size:8.5px;font-weight:800;letter-spacing:.08em;color:#1B1305;background:var(--adv);
   border-radius:3px;padding:0 4px;margin-right:4px;text-decoration:none;white-space:nowrap;flex:none}

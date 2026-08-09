@@ -326,7 +326,15 @@ the phone perf budget. Don't convert them to components.
   badging the one type that is always last-minute is how a mark stops meaning
   anything — leave and detachments stay in scope, because those are applied
   for. Don't re-propose any of the three.
+  **And it reads in the REMARKS cell, not beside the name or the type** (owner,
+  9 Aug 26 — moved there the day after it shipped). Remarks is where a reader
+  already goes for "why is this man down"; the name and type columns stay pure
+  identity. Every surface that draws an input has a remarks cell, which is what
+  keeps the mark in one column everywhere — bar the board's promoted ground
+  row, whose remarks cell is a bare `<input>` with nowhere to nest a chip, so
+  that one keeps its amber row edge.
   Rules: `docs/engine-rules.md` §The late-input mark.
+  Placement: `docs/ui-contracts.md` §The late-input mark on screen.
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add

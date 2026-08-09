@@ -76,6 +76,16 @@ export function inTypeCls(t:any){
   if(/^Detachment/i.test(t))return 'ty-dt';
   return 'ty-gp';
 }
+/* The remarks cell shared by the board's two input surfaces — the inputs bands
+   and the Personal Inputs panel. The LATE badge leads it (owner, 9 Aug 26 —
+   the mark moved out of the type chip into remarks); the cell clips with an
+   ellipsis, so anything that must survive a long remark has to come first.
+   The em dash is the placeholder for "nothing written", and it is dropped when
+   the badge is there — "LATE —" would read as a remark that says nothing. */
+function sbiRmk(inp:any){
+  const lt=lateTag(inp), v=inp.remarks||'';
+  return `<span class="sbi-rm" title="${esc(v)}">${lt}${esc(v)||(lt?'':'—')}</span>`;
+}
 export function sbInputsHTML(d:any,di:any){
   const rows=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt));
   let h=`<div class="sbi-h"><b>Inputs · ${esc(d.dow)} ${esc(d.dt)}</b>`
@@ -88,8 +98,8 @@ export function sbInputsHTML(d:any,di:any){
     const t=inp.allday?(inp.endDate?`all day · till ${esc(inp.endDate)}`:'all day')
                       :`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row"><span class="sbi-t">${t}</span>${pk}`
-      +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${lateTag(inp)}${esc(inpLabel(inp))}</span>`
-      +`<span class="sbi-rm" title="${esc(inp.remarks||'')}">${esc(inp.remarks||'—')}</span></div>`;
+      +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`
+      +sbiRmk(inp)+`</div>`;
   };
   const band=(title:any,note:any,cls:any,list:any)=>`<div class="sbi-band ${cls}">${title}<span class="bn">${note}</span></div>`
       +list.map(row).join('');
@@ -292,8 +302,8 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any){
     : `<span class="itxt">${esc(inp.person)}</span>`;
   const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
   return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
-    +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${lateTag(inp)}${esc(inpLabel(inp))}</span>`
-    +`<span class="sbi-rm" title="${esc(inp.remarks||'')}">${esc(inp.remarks||'—')}</span>`
+    +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`
+    +sbiRmk(inp)
     +(acc&&!pv?accCtl(di,inp):'')+`</div>`;
 }
 /* ro (5th param, reviewer-found residual 9 Aug 26): accepting an input is a

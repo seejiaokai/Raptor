@@ -36,6 +36,12 @@ beforeEach(() => {
 const late = () => INPUTS.find((i: any) => i.person === 'nasty')
 const onTime = () => INPUTS.find((i: any) => i.person === 'bruise')
 const marks = (h: string) => (h.match(/class="latetag"/g) || []).length
+/* The mark lives in the REMARKS cell (owner, 9 Aug 26 — moved there out of the
+   name and type cells). These two count the badges that are actually in that
+   cell, so a mark that drifts back into `.nm` or the type chip fails the count
+   rather than passing on a bare "contains a badge somewhere". */
+const rmkMarks = (h: string) => (h.match(/class="rmk[^"]*has-late"><span class="latetag"/g) || []).length
+const sbRmkMarks = (h: string) => (h.match(/class="sbi-rm"[^>]*><span class="latetag"/g) || []).length
 
 describe('the week', () => {
   it('marks a late input in the Unavailable block, on the view-only page', () => {
@@ -43,6 +49,8 @@ describe('the week', () => {
     const v = dayHTML(1, false)
     expect(v, 'the view page draws Unavailable for everyone').toContain('sec-unav')
     expect(marks(v), 'nasty and shrek, both late leave').toBe(2)
+    expect(rmkMarks(v), 'and both are in the remarks cell').toBe(2)
+    expect(v, 'the name cell no longer opens on a badge').not.toContain('class="nm"><span class="latetag"')
   })
 
   it('leaves a day whose only late inputs are downchits completely clean', () => {
@@ -63,7 +71,11 @@ describe('the week', () => {
     const e = dayHTML(0, true)
     const row = e.slice(e.indexOf('sec-inp'), e.indexOf('sec-unav'))
     expect(row).toContain('Fly')
-    expect(row.slice(row.indexOf('Fly') - 120, row.indexOf('Fly'))).not.toContain('latetag')
+    /* the block carries exactly ONE mark — yeti's appointment, the next test —
+       so bruise's row being clean is the same as that count not moving. Slicing
+       around the type label was the old shape of this and it stopped meaning
+       anything the moment the badge moved out of that cell. */
+    expect(marks(row), 'only yeti is marked in this block, not bruise').toBe(1)
   })
 
   it('marks it on the edit page too — the mark is not a view-only courtesy', () => {
@@ -101,7 +113,11 @@ describe('a personal input promoted onto the programme', () => {
     expect(acceptInput(di, inp, 'g')).toBe(true)
     const row = DAYS[di].ground[DAYS[di].ground.length - 1]
     expect(row.src, 'the promoted row keeps the source key').toBe(inpKey(inp))
-    expect(marks(dayHTML(di, false)), 'the view page gained exactly one').toBe(before + 1)
+    const after = dayHTML(di, false)
+    expect(marks(after), 'the view page gained exactly one').toBe(before + 1)
+    /* and it landed in the promoted row's REMARKS cell like every other
+       surface — plRow resolves `src` back to the input for it */
+    expect(rmkMarks(after)).toBe(before + 1)
   })
 
   it('leaves an on-time promotion unmarked', () => {
@@ -114,8 +130,29 @@ describe('a personal input promoted onto the programme', () => {
 })
 
 describe('the board', () => {
-  it('marks the input in its own panels', () => {
-    expect(boardHTML(1)).toContain('class="latetag"')
+  it('marks the input in its own panels, in the remarks cell', () => {
+    const h = boardHTML(1)
+    expect(h).toContain('class="latetag"')
+    expect(sbRmkMarks(h), 'the badge leads the remarks cell').toBeGreaterThan(0)
+    expect(h, 'and no longer sits inside the type chip').not.toMatch(/class="sbi-ty [^"]*"[^>]*><span class="latetag"/)
+  })
+
+  it('drops the empty-remark dash where the badge is, and keeps it where it is not', () => {
+    /* "LATE —" would read as a remark that says nothing, so the placeholder
+       gives way to the badge. Both halves asserted: the dash must still print
+       on the unmarked rows, or this would pass by the board simply dropping
+       the placeholder everywhere. */
+    /* every seed input on Jul 14 happens to carry a remark, so the case is
+       built rather than found: salsa is marked, sufa is an exempt downchit. */
+    const salsa = INPUTS.find((i: any) => i.person === 'salsa')
+    const sufa = INPUTS.find((i: any) => i.person === 'sufa')
+    expect(isLateInput(salsa), 'sanity: salsa is marked').toBe(true)
+    expect(isLateInput(sufa), 'sanity: sufa is exempt').toBe(false)
+    salsa.remarks = ''; sufa.remarks = ''
+    const h = boardHTML(1)
+    expect(h, 'the unmarked empty remark still shows the dash').toContain('>—</span>')
+    expect(h, 'the marked one shows the badge alone').toContain('LATE</span></span>')
+    expect(h, 'and never pairs the badge with the placeholder').not.toContain('LATE</span>—')
   })
 
   it('leaves the downchit rows clean there too, beside a marked one', () => {
