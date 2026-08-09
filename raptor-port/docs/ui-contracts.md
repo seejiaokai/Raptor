@@ -299,26 +299,57 @@ paperwork sitting in rows that also carry red CX badges and crew-rest rings
 it must not shout over. The full sentence (what changed, when, which deadline,
 which week) rides in the `title`, never in the badge, so no row grows.
 
+**It lives in the REMARKS cell on every surface** (owner, 9 Aug 26 — moved out
+of the name and type cells the same day it shipped). Remarks is where a reader
+already goes for "why is this man down", which is the question the mark
+answers, and it leaves the name and type columns reading as pure identity.
+Every surface that draws an input has a remarks cell, which is what lets the
+mark sit in one column across all of them.
+
 Where `lateTag()` is emitted:
 
 - the week's **Personal Inputs** and **Unavailable** blocks, in the row's
-  `.nm` cell, on the edit page and the view-only page alike (`ui/html.ts`);
-- the board's **inputs bands** and its **Personal Inputs panel**, inside the
-  `.sbi-ty` type chip (`ui/board-html.ts`);
-- the **Inputs page** table, beside the type (`ui/InputsPage.tsx`).
+  `.rmk` cell, on the edit page and the view-only page alike (`ui/html.ts`);
+- the board's **inputs bands** and its **Personal Inputs panel**, in the
+  `.sbi-rm` cell (`ui/board-html.ts`);
+- the **Inputs page** table, in the Remarks column (`ui/InputsPage.tsx`).
+
+Three things fall out of that cell rather than the badge, and each is pinned
+by `ui/lateinput-ui.test.ts`:
+
+- **The badge LEADS the cell.** Both remarks cells clip a long remark — the
+  board's with an ellipsis, the week's by column width — and the mark is the
+  part that has to survive the clip.
+- **`.rmk.has-late` FLOATS the badge** (in a `flow-root` cell, so an empty
+  remark still contains it). `.rmk .ntx` is `display:block` — it has to be, so
+  the editable box fills the cell and is clickable — which means an
+  inline-block badge in front of it takes a line of its own, and a flex track
+  beside it costs the badge's width on every line of a wrapping remark. A
+  float costs it on the first line only. Not free even so, and measured:
+  the seed's longest remark is 39px unmarked, 53px marked at desktop width —
+  one extra line, because 36px of a narrow column goes to the badge. That is
+  inherent to a badge in a wrapping column; the block already has rows of
+  unequal height, and it was accepted rather than designed away.
+- **The board's em-dash placeholder gives way to the badge.** `.sbi-rm` prints
+  `—` for "nothing written"; `LATE —` would read as a remark that says
+  nothing, so `sbiRmk` drops it when the badge is there and keeps it
+  everywhere else.
 
 **A promoted ground row carries it too, and that is the load-bearing case.**
 A personal input never reaches the view-only page on its own — accepting it
 onto the ground programme is the only route there — so if the mark did not
 survive the promotion it would vanish at exactly the surface the squadron
-reads. `plRow` emits `lateTagOf(o)` beside `cxTag`/`flagTag`, resolving the
+reads. `plRow` passes `lateTagOf(o)` into its `plRmk` cell, resolving the
 row's `src` back to its input.
 
 **The board's version of that row is a class, not a badge, and must stay
-one.** `.sb-arow.c6r` is a seven-track template whose header reserves exactly
-seven items, and every cell is a bare `<input>` with nowhere to nest a chip —
-an eighth grid item would walk every field one track left of its own heading,
-which is the register bug the whole-branch review already found once. So it
+one — and it is the ONE surface where the mark is not in the remarks cell.**
+`.sb-arow.c6r` is a seven-track template whose header reserves exactly
+seven items, and every cell is a bare `<input>` — including its remarks cell,
+which is why the move to remarks could not reach this row: there is nowhere to
+nest a chip inside an `<input>`, and an eighth grid item would walk every
+field one track left of its own heading, which is the register bug the
+whole-branch review already found once. So it
 wears `.lateinp` (an inset amber edge, the `.redbox` idiom) plus the note in
 its tooltip. `e2e/geometry.spec.ts` counts the row's grid items against its
 header's tracks so that "improving" it into a chip fails a gate rather than

@@ -198,21 +198,29 @@ export function plRow(name:any,str:any,end:any,pplHtml:any,base:any,nf:any,ed:an
   /* t-s / t-e let the phone stack the two times into a single TIME column */
   const t=(v:any,f:any)=>{const c='t t-'+(f==='str'?'s':'e');
     return base?ted(base+'.'+f,v,ed,c):`<span class="${c}">${v?esc(fmtT(v)):''}</span>`;};
-  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${flagTag(o)}${lateTagOf(o)}${nmi}</span>${t(str,'str')}${t(end,'end')}${pplHtml||'<div class="ppl one"></div>'}${plRmk(base,ed,o,rmkTxt)}</div>`;}
+  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${flagTag(o)}${nmi}</span>${t(str,'str')}${t(end,'end')}${pplHtml||'<div class="ppl one"></div>'}${plRmk(base,ed,o,rmkTxt,lateTagOf(o))}</div>`;}
 /* RMKS cell — column 5 on desktop, a full-width strip under the row on a phone.
    Rows addressable through a text key (duties / sims / ground) get an editable cell;
    read-only rows (personal inputs) get a plain one. An empty cell is dropped on the
    phone so the strip never eats a row's worth of height for nothing, but it is kept
    in edit mode because that blank cell is the only place to click to write a remark. */
-export function plRmk(base:any,ed:any,o:any,rmkTxt:any){
+/* `late` is pre-built badge HTML, not a flag, because the two callers resolve it
+   differently — an input row has the input in hand, a promoted row has to walk
+   `src` back to it. It leads the cell rather than trailing the text: a remark
+   can be long enough to be clipped, and the mark is the part that must survive
+   the clip. `has-late` turns the cell into a flex row so the badge sits BESIDE
+   the text; `.ntx` is display:block, and without that switch the badge would
+   take a line of its own and grow a fixed-height list row. */
+export function plRmk(base:any,ed:any,o:any,rmkTxt:any,late?:any){
   const live=ed&&canEditSched();
+  const lt=late||'', lc=lt?' has-late':'';
   if(base&&rmkTxt===undefined){
     const v=(o&&o.rmks)||'';
-    if(!v&&!live)return `<span class="rmk rk-e"></span>`;
-    return `<span class="rmk">${ted(base+'.rmks',v,ed,'ntx')}</span>`;
+    if(!v&&!live)return `<span class="rmk rk-e${lc}">${lt}</span>`;
+    return `<span class="rmk${lc}">${lt}${ted(base+'.rmks',v,ed,'ntx')}</span>`;
   }
   const v=rmkTxt||'';
-  return `<span class="rmk${v?'':' rk-e'}"><span class="ntx">${esc(v)}</span></span>`;}
+  return `<span class="rmk${v?'':' rk-e'}${lc}">${lt}<span class="ntx">${esc(v)}</span></span>`;}
 /* free-text planning notes attached to a whole block (currently the Sims block).
    Read-only viewers see the note only when there is one; schedulers always get the
    box so there is somewhere to write before anything has been written. */
@@ -423,7 +431,15 @@ export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Fl
    it is deliberately NOT gated on edit mode or on the role: the whole ask was
    that it stick with the input rather than being a scheduler's private note.
    Amber, not red — it is an advisory about paperwork, not a flying fault, and
-   it must not read louder than a crew-rest ring sitting next to it. */
+   it must not read louder than a crew-rest ring sitting next to it.
+   It lives in the row's REMARKS cell (owner, 9 Aug 26 — moved out of the name
+   and type cells the same day it shipped). Remarks is where a reader already
+   goes for "why is this man down", which is the question the mark answers, and
+   it leaves the name and type columns reading as pure identity. Every surface
+   that draws an input has a remarks cell, so the mark stays in one place
+   across all of them — the one exception is the board's promoted ground row,
+   whose remarks cell is a bare <input> with nowhere to nest a chip; it keeps
+   its amber row edge (see lateRowCls). */
 export function lateTag(inp:any){
   return (inp&&isLateInput(inp))?`<span class="latetag" title="${esc(lateNote(inp))}">LATE</span>`:'';}
 /* the same mark on a row that CAME from an input — the ground row acceptInput
@@ -738,8 +754,8 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
         s+=`<div class="pl-row${acc&&inp.acc?' accd':''}">`
-          +`<span class="nm">${lateTag(inp)}<span class="ntx">${esc(inpLabel(inp))}</span></span>${tcell}`
-          +`<div class="ppl one">${pk}</div>${plRmk(null,ed,null,inp.remarks||'')}`
+          +`<span class="nm"><span class="ntx">${esc(inpLabel(inp))}</span></span>${tcell}`
+          +`<div class="ppl one">${pk}</div>${plRmk(null,ed,null,inp.remarks||'',lateTag(inp))}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
     if(ed)h+=inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true);

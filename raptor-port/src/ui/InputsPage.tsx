@@ -412,8 +412,12 @@ export function InputsPage() {
               return (
                 <tr key={inx} className={flash.indexOf(r) >= 0 ? 'innew' : undefined}>
                   <td>{cs}</td><td>{st}</td><td>{en}</td>
-                  <td>{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}<span className="intag">{r.type}</span></td>
-                  <td>{r.remarks || ''}</td><td>{r.recur || ''}</td>
+                  <td><span className="intag">{r.type}</span></td>
+                  {/* the mark reads in Remarks, not beside the type (owner,
+                      9 Aug 26) — same column on every surface that draws an
+                      input, and the type column stays pure identity */}
+                  <td>{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}</td>
+                  <td>{r.recur || ''}</td>
                   <td className="mono" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
                   <td className="inact">
                     <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
