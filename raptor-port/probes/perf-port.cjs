@@ -276,27 +276,12 @@ async function trial(b, measureSize) {
     await p.close(); await ctx.close()
   }
 
-  /* ---- perf1 F · the Edit-mode toggle holds its place --------------------- */
-  {
-    const { p, ctx } = await boot(b, PORT, { w: 1500, h: 950, cpu: 1 })
-    const r = await p.evaluate(async () => {
-      const wk = document.getElementById('eWeek')
-      try { wk.scrollTo({ left: 500, behavior: 'instant' }) } catch (e) { wk.scrollLeft = 500 }
-      wk.scrollLeft = 500; await new Promise(r => setTimeout(r, 150))
-      const before = Math.round(wk.scrollLeft)
-      document.getElementById('editToggle').click()
-      await new Promise(r => setTimeout(r, 150))
-      const after = Math.round(document.getElementById('eWeek').scrollLeft)
-      const editable = !!document.querySelector('#eWeek [contenteditable="true"]')
-      document.getElementById('editToggle').click()
-      await new Promise(r => setTimeout(r, 150))
-      return { before, after, editable }
-    })
-    console.log(`   scrollLeft across an Edit-mode toggle: ${r.before} → ${r.after}`)
-    T('F · the toggle does not jump back to Monday', r.after === r.before ? 'held' : `lost(${r.after})`, 'held')
-    T('F · and Edit mode OFF really is read-only', r.editable ? 'editable' : 'read-only', 'read-only')
-    await p.close(); await ctx.close()
-  }
+  /* perf1 F ("the Edit-mode toggle holds its place") was DELETED 9 Aug 26
+     with the toggle itself (owner). It measured the week's scroll across a
+     whole-week repaint; D above measures the same scroll-hold across an
+     edit, which is the mechanism (string diff + swap only the changed days)
+     the budget actually protects. Nothing replaced it — there is no other
+     control that repaints all seven days in one gesture. */
 
   /* ---- perf3 C · a field open while another panel changes (informational,
      exactly as it is in the reference's perf3 — no assertion there either) -- */

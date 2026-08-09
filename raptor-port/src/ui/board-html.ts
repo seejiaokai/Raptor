@@ -110,10 +110,10 @@ export function sbInputsHTML(d:any,di:any){
    because the keys in this markup address the LIVE model, not the snapshot.
    ro: pv OR not in edit mode (board.ts's stoRO/mvRO) — widened alongside pv
    at every gate below (reviewer-found residual, 9 Aug 26): a read-only board
-   (edit toggle off, board still legitimately open on its own page) used to
-   leave this panel's +Note/nudge/delete live and its own text input
-   `disabled`-free, exactly the same shape of gap the flying line's inputs
-   had before the first pass of this fix. */
+   (a session that may not edit it, board still legitimately open on its
+   own page) used to leave this panel's +Note/nudge/delete live and its own
+   text input `disabled`-free, exactly the same shape of gap the flying
+   line's inputs had before the first pass of this fix. */
 export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
   const n=d.notes||[];
   let s=`<div class="sb-panel notes"><div class="sb-ph">Overall notes <span class="sub">shown at the head of the day</span>`
@@ -179,8 +179,8 @@ export function sbNote(d:any,di:any,key:any,field:any,ph:any,pv?:any){
    same widening board.ts's flying line already got, closing a
    reviewer-found residual (9 Aug 26): these rows' seats, fill targets, text
    inputs and CX/flag/delete clusters were still `pv`-only, so a read-only
-   board (edit toggle off, board still legitimately open on its own page)
-   left them fully live — dragging a name onto a duty row wrote it into the
+   board (a session that may not edit it, board still legitimately open on
+   its own page) left them fully live — dragging a name onto a duty row wrote it into the
    model, and a duty/sim/ground/programme text field kept whatever was typed
    into it even though the write was never committed. */
 function sbSeat(di:any,key:any,id:any,pv?:any){

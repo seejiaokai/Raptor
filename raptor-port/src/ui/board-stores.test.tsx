@@ -70,9 +70,9 @@ describe('the board carries the week\'s stores interface', () => {
        longer a state where the board stays open, read-only, on the wrong
        page; it is a state where the board is fully closed. The original
        "goes read-only for stores" scenario this test pinned is now covered
-       differently, by the edit-toggle test below (the surviving way to
-       reach a read-only-but-open board is the SAME page with editing
-       switched off, not a page change). */
+       by the duty-crew test below: with the Edit-mode toggle gone (owner,
+       9 Aug 26) the ONLY way to a read-only-but-open board is a session
+       that may not edit one. */
     const { DAYS } = await import('../engine/data')
     const a = DAYS[0].waves[0].formations[0].aircraft[0]
     a.opts = a.opts || {}; a.opts.tk2 = true
@@ -82,20 +82,6 @@ describe('the board carries the week\'s stores interface', () => {
     await act(async () => { setPage('viewsched'); notify() })
     expect(($('#schedBoard') as any).hidden, 'the board is closed, not merely read-only').toBe(true)
     await act(async () => { setPage('editsched'); notify() })
-  })
-
-  it('the edit toggle switched off (same page, board still open) goes read-only for stores', async () => {
-    const { DAYS } = await import('../engine/data')
-    const a = DAYS[0].waves[0].formations[0].aircraft[0]
-    a.opts = a.opts || {}; a.opts.tk2 = true
-    await openBoard()
-    await act(async () => notify())
-    expect($('#schedBoard .sb-line .stcfg'), 'edit mode still shows C before the toggle changes').toBeTruthy()
-    const { setEditOn } = await import('../state/view')
-    await act(async () => { setEditOn(false); notify() })
-    expect($('#schedBoard .sb-line .stores'), 'a duty crew sees what the jet carries').toBeTruthy()
-    expect(document.querySelector('#schedBoard .sb-line .stcfg'), 'but cannot edit it').toBeFalsy()
-    await act(async () => { setEditOn(true); notify() })
   })
 
   it('a duty-crew session (role main) never gets C on the board, independent of page', async () => {

@@ -25,10 +25,12 @@ const isPhone=()=>HOOKS.isPhone()
    rule: changing the board day disarms a slot armed on another day. */
 export let SBDAY:any=null
 export let CURPAGE:any='viewsched'
-/* the Edit-mode switch (the reference's #editToggle, on by default) and the
-   day the palette is looking at */
-export let EDITON:any=true
-export function setEditOn(v:any){ EDITON=!!v }
+/* the day the palette is looking at. The reference's #editToggle used to sit
+   here as EDITON; it was removed on 9 Aug 26 (owner) — the board is reachable
+   only as admin → Edit Schedule, so intent to edit is implied by being there,
+   and View-only Sched already IS the read-only mode. A second mechanism for
+   the same job only created states (a live board on a dead page, controls
+   that looked live and did nothing) that had to be guarded one at a time. */
 export let ROSDAY:any=0
 export function setRosDay(n:any){ ROSDAY=n }
 export function setBoardDay(n:any){
@@ -91,17 +93,18 @@ export function setPage(p:any){
      found live by a reviewer (9 Aug 26): SchedBoard.tsx's render gate
      (CURPAGE==='editsched') hides the PAINT, but this codebase deliberately
      left SBDAY itself untouched so a return to Edit Schedule would resume
-     the board — and Shell.tsx's context-menu clear-a-seat handler carries
-     `HOOKS.editMode() || SBDAY != null`, an escape hatch that exists ONLY
-     because the board used to legitimately paint over whatever page you
-     were on and so was assumed safe to trust on its own. Once the render
-     stopped painting it but SBDAY kept living, that assumption broke: on
-     View-only Sched with a board left open, editMode() reads false (wrong
-     page) but the escape hatch still read SBDAY!=null as "trust it anyway"
-     — so a real right-click on a WEEK puck (not the board's own, the one
-     now VISIBLE underneath) cleared it. Scoped to leaving 'editsched'
-     specifically (not every same-page no-op set, and not landing ON
-     'editsched', which is the resume this codebase chose to keep) —
+     the board — and Shell.tsx's context-menu clear-a-seat handler USED TO
+     carry `HOOKS.editMode() || SBDAY != null`, an escape hatch that existed
+     ONLY because the board used to legitimately paint over whatever page
+     you were on and so was assumed safe to trust on its own. Once the
+     render stopped painting it but SBDAY kept living, that assumption
+     broke: on View-only Sched with a board left open, editMode() read
+     false (wrong page) but the escape hatch still read SBDAY!=null as
+     "trust it anyway" — so a real right-click on a WEEK puck (not the
+     board's own, the one now VISIBLE underneath) cleared it. Both halves
+     were fixed: the escape hatch is gone from Shell.tsx, and this clears
+     SBDAY. Scoped to leaving 'editsched' specifically — landing ON it
+     needs no clear, since nothing can have survived the last exit — and
      p!==CURPAGE is already computed above for the popup cleanup, so this
      reuses it rather than a second comparison. */
   if(p!==CURPAGE&&p!=='editsched'&&SBDAY!=null)closeBoardState();
@@ -203,7 +206,6 @@ export const DWOPEN=new Set();         // day indices whose issue box is expande
    (ESM cannot reassign across modules). */
 export const DPREV=new Map()
 export function setDayPreview(di:any,ver:any){ if(ver==null||ver==='live')DPREV.delete(+di); else DPREV.set(+di,ver) }
-export function dayPreview(di:any){ return DPREV.has(+di)?DPREV.get(+di):null }
 /* drop any preview whose snapshot no longer exists — undo across a publish,
    unpublishAL, a week switch: without this the day would render the live model
    while its header claims to show history */

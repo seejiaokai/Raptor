@@ -246,7 +246,7 @@ publishes to **https://seejiaokai.github.io/Raptor/**. Nothing deploys red.
 **The store.** `notify()` bumps a version; components subscribe via
 `useVersion()` (useSyncExternalStore) and re-read the singletons.
 `state/view.ts` holds UI state the engine reads (CURPAGE, SBDAY, ARM,
-selection, EDITON) as module `let`s with same-module setters — ESM can't
+selection) as module `let`s with same-module setters — ESM can't
 reassign across modules. `WARN`/`REST`/`EVD` are reassigned by every
 `validate()`: always re-read, never cache.
 
@@ -309,6 +309,12 @@ the phone perf budget. Don't convert them to components.
   was built, shipped and removed the same day: "don't find a use for it for
   now"; do not re-propose it unless the owner raises it, and if he does,
   the removed implementation is one `git revert` away in history).
+- **No Edit-mode toggle** (owner, 9 Aug 26 — removed after shipping for
+  months). Being on Edit Schedule IS the edit mode; View-only Sched is the
+  read-only mode, and a second switch for the same job only created states
+  (a live board on a dead page, controls that looked live and did nothing)
+  that had to be guarded one at a time. `HOOKS.editMode()` is
+  `canEditSched() && CURPAGE==='editsched'` — don't add a third term.
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add

@@ -192,9 +192,10 @@ the reference at the same amount of drawing, exactly as the two no-op
 metrics said all along.
 
 Plus, all green: the other days' DOM is untouched by a day-1 edit, the week
-holds its scroll through an edit and through an Edit-mode toggle, Edit-mode
-OFF renders no contenteditable, and an open board field survives an
-unrelated panel change exactly as far as the reference's does.
+holds its scroll through an edit, and an open board field survives an
+unrelated panel change exactly as far as the reference's does. (A ninth
+assertion, the same scroll-hold measured across an Edit-mode toggle, went
+with the toggle itself on 9 Aug 26 — the gate is 7 assertions now.)
 
 ## How to re-run
 
@@ -226,8 +227,7 @@ against a preview of the real production build, and they run in CI beside
   a jammed week still gains no sideways swipe;
 - one pan click moves exactly one day box, in both directions, and the proxy
   scrollbar sits where the week is;
-- an edit and an Edit-mode toggle both hold the week's scroll, and Edit off
-  renders no `contenteditable`;
+- an edit holds the week's scroll;
 - a hole in a programme row renders NO element, so the pucks either side do
   not shift;
 - puck type is 9px and a descender's ink stays inside the 15px puck.

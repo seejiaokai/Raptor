@@ -768,15 +768,15 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .stchip.on{background:rgba(59,198,232,.16);border-color:rgba(59,198,232,.5);color:var(--accent)}
 .stchip.bomb{background:rgba(217,121,31,.16);border-color:rgba(217,121,31,.5);color:#F2B980}
 /* "a chip is clickable" used to be expressed twice and disagree: this rule
-   used to key off .page.editing (page===editsched && EDITON, with no role
-   test) while the board's own rule below keyed off data-store, the
-   attribute a chip only carries when it is genuinely wired to the click
-   handler (interactions.ts's routeClick, gated on HOOKS.editMode() —
+   used to key off .page.editing (the edit page, with no role test) while
+   the board's own rule below keyed off data-store, the attribute a chip
+   only carries when it is genuinely wired to the click handler
+   (interactions.ts's routeClick, gated on HOOKS.editMode() —
    canEditSched() included). A view-only-role scheduler on Edit Schedule
-   with EDITON on got a pointer cursor over chips that could never actually
-   remove anything, since html.ts renders those as storesView()'s read-only
-   markup with no data-store at all. Converged on the attribute form below,
-   which is correct for both surfaces — see the module note there. */
+   got a pointer cursor over chips that could never actually remove
+   anything, since html.ts renders those as storesView()'s read-only markup
+   with no data-store at all. Converged on the attribute form below, which
+   is correct for both surfaces — see the module note there. */
 /* the C config button and its picker popup (shares .wavemenu look) */
 .stcfg{font-size:8px;font-weight:800;line-height:1;padding:1px 4px;border-radius:4px;border:1px dashed var(--edge-2);background:transparent;color:var(--ink-3);cursor:pointer}
 .stcfg:hover{border-color:var(--accent);color:var(--accent)}
@@ -1014,13 +1014,13 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .allhands.sec,.availpuck.sec{border-left:3px solid var(--sec);background:var(--secbg)}
 .allhands.sec .ah-h{color:var(--sec)}
 .availpuck.sec .ap-h{color:var(--sec)}
-/* edit footer: SANS REQ CAA / SAF100A / VERIFIED BY */
-.schedfoot{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;padding:6px 20px 40px}
-.sf-box{background:var(--panel);border:1px solid var(--edge);border-radius:10px;overflow:hidden}
-.sf-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:10px;font-weight:700;color:var(--accent);padding:6px 10px;background:rgba(59,198,232,.06);border-bottom:1px solid var(--edge)}
-.sf-body{padding:8px 10px;font-size:11.5px;color:var(--ink-2);line-height:1.5;outline:none;min-height:20px}
-.sf-body:focus{background:rgba(59,198,232,.05)}
-@media (max-width:820px){.schedfoot{grid-template-columns:1fr}}
+/* The reference's edit footer (.schedfoot / .sf-box / .sf-h / .sf-body — SANS
+   REQ CAA, SAF100A, VERIFIED BY) was hand-written static markup in the
+   original page; nothing in this port ever builds it, so its rules were
+   deleted 9 Aug 26 rather than left as a selector nothing can match. Same
+   for .sb-hint, which the reference's sim-notes block emitted and this
+   port's placeholder text replaced. Checked against the built bundle, not
+   just the source: neither class appears in dist/. */
 details.gp[open]>summary::before{content:'▾ '}
 details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
 
@@ -1939,7 +1939,6 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   font-size:11.5px;line-height:1.5;padding:7px 9px;width:100%;box-sizing:border-box;
   min-height:58px;resize:vertical;font-family:inherit}
 .sb-nbox:focus{outline:none;border-color:var(--accent);color:var(--ink)}
-.sb-hint{font-size:10px;color:var(--ink-3);margin-top:5px;font-family:'JetBrains Mono',monospace}
 /* the per-section scheduler note, at the foot of its own board panel */
 .sb-note{margin-top:9px;padding-top:8px;border-top:1px solid var(--edge)}
 .sb-nh{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;

@@ -103,15 +103,16 @@ export function resetSession(s: any) {
 
 /* ---- wiring ---- */
 export function wireStore() {
-  /* the reference's editMode(): the edit page is open AND the switch is on.
-     The reference never had a second session on the same tab, so it never
-     needed a role test here — this port does, because a session change on
-     the SAME running page (logout/login without a reload) can leave CURPAGE
-     sitting on 'editsched' from the outgoing user. editMode() is what drives
-     every draggable="true" / contenteditable="true" attribute in html.ts, so
-     one canEditSched() check here closes them all at once rather than
-     patching each rendered surface individually. */
-  HOOKS.editMode = () => canEditSched() && view.CURPAGE === 'editsched' && view.EDITON
+  /* the reference's editMode(): the edit page is open. The reference also
+     ANDed its #editToggle switch here; that toggle was removed 9 Aug 26
+     (owner) — being on Edit Schedule is the intent to edit, and View-only
+     Sched is the read-only mode. The role test is this port's own addition:
+     a session change on the SAME running page (logout/login without a
+     reload) can leave CURPAGE sitting on 'editsched' from the outgoing user.
+     editMode() is what drives every draggable="true" / contenteditable="true"
+     attribute in html.ts, so one canEditSched() check here closes them all at
+     once rather than patching each rendered surface individually. */
+  HOOKS.editMode = () => canEditSched() && view.CURPAGE === 'editsched'
   HOOKS.reflow = () => { validate(); notify() }
   HOOKS.renderStatus = () => notify()
   HOOKS.histPush = () => histPush()

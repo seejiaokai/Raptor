@@ -93,8 +93,8 @@ export function applyDrop(el: any, x: any, y: any) {
      26): the comment below used to claim "editMode() hides draggable='true'
      for a non-admin session" as if that made a write-path check here
      redundant, but the check itself only ever tested canEditSched() — the
-     role, not the mode. On a read-only board (Edit Schedule, edit toggle
-     off) the duty/sim/ground seats and fill targets still carried
+     role, not the mode. On a read-only board (Edit Schedule, a session
+     that may not edit it) the duty/sim/ground seats and fill targets still carried
      draggable/data-slot/data-fill (a separate render-gate gap, fixed
      alongside this one), so an admin whose session never changed could
      drag a name onto a duty row and have it write straight into the model.
@@ -102,8 +102,8 @@ export function applyDrop(el: any, x: any, y: any) {
      methods, so one check here — rather than one in each of
      onDrop/onPointerUp — closes both, the same reason the role check was
      already centralised here rather than at each call site. A drag already
-     picked up before a role OR mode change lands underneath it (logout
-     mid-drag, the edit toggle flipped off mid-drag, or a stale DRAG left by
+     picked up before a role OR page change lands underneath it (logout
+     mid-drag, a nav away from Edit Schedule mid-drag, or a stale DRAG left by
      an earlier session on a shared browser) still reaches here with live
      DRAG state — this is what actually stops it, not the render gate that
      started the drag. */

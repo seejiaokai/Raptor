@@ -11,7 +11,7 @@ import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pen
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { resetSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, openWarns, EDITON, setEditOn, CURPAGE, setDayPreview } from '../state/view'
+import { HLSET, setSearch, openWarns, CURPAGE, setDayPreview } from '../state/view'
 import { waveMenu } from './board'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
@@ -93,8 +93,8 @@ export function Shell() {
       signOf(di)[sel.dataset.sign!] = sel.value
       HOOKS.histPush(); HOOKS.reflow()
     }
-    /* right-click a filled slot in edit mode → clear it (reference verbatim:
-       gated on the role AND on Edit mode being on) */
+    /* right-click a filled slot in edit mode → clear it (reference verbatim,
+       gated on the role and on being on the edit page) */
     const onCtx = (e: MouseEvent) => {
       const s = (e.target as HTMLElement).closest('.seat[data-slot]') as HTMLElement | null
       if (!s) return
@@ -113,12 +113,13 @@ export function Shell() {
          puck straight through. state/view.ts's setPage now clears SBDAY the
          moment the page leaves Edit Schedule, which alone closes that exact
          reproduction — but SBDAY can still be non-null on Edit Schedule
-         itself with the edit toggle off (a board deliberately left open
-         read-only, same state the flying line's own inputs now go inert
-         for), and the escape would have kept clearing seats there too.
-         editMode() is the one condition already true for every legitimate
-         case (role, page AND the edit toggle) and false for every one of
-         these — no second flag needed. */
+         itself for a session that may not edit it (the role gate), and the
+         escape would have kept clearing seats there too. editMode() is the
+         one condition already true for every legitimate case (role AND
+         page) and false for every one of these — no second flag needed.
+         The canEditSched() line above is now subsumed by it and kept
+         deliberately: editMode() is an injectable HOOK, so the role check
+         must not depend on whatever is currently plugged into it. */
       if (!HOOKS.editMode()) return
       const key = s.dataset.slot!, id = slotVal(key)
       e.preventDefault()
@@ -243,18 +244,16 @@ export function Shell() {
       </section>
   ), [page, b.cls, b.col, b.html, hlSig, rulesOff, legend, CURWEEK])
 
+  /* .editing rides unconditionally with the page since the Edit-mode toggle
+     went (owner, 9 Aug 26): being on Edit Schedule IS the edit mode. */
   const editPage = useMemo(() => (
-      <section className={'page' + (page === 'editsched' ? ' on' : '') + (page === 'editsched' && EDITON ? ' editing' : '')} id="page-editsched">
+      <section className={'page' + (page === 'editsched' ? ' on editing' : '')} id="page-editsched">
         <div className="mobile-note edit-mobile-block">The schedule can only be edited on a desktop. On mobile the board is view-only — switch to <b>View-only Sched</b>.</div>
         <div className="edit-inner">
           <div className="seg" id="weekSegE">
             {WEEKS.map((w: any) => <button key={w.v} className={'wk' + (w.v === CURWEEK ? ' on' : '')} data-wk={w.v}>{w.lbl}</button>)}
           </div>
           <div className="filters">
-            <span className="lab">Editing</span>
-            <button className={'fchip' + (EDITON ? ' on' : '')} id="editToggle" style={{ minWidth: 'auto' }}
-              onClick={() => { setEditOn(!EDITON); notify() }}>{EDITON ? '✎ Edit mode ON' : '✎ Edit mode OFF'}</button>
-            <span className="div"></span>
             <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}>↶ Undo</button>
             <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}>↷ Redo</button>
             <span className="div"></span>
@@ -275,7 +274,7 @@ export function Shell() {
           </div>
         </div>
       </section>
-  ), [page, EDITON, b.cls, b.col, b.html, HIST.ix, HIST.stack.length, legend, CURWEEK])
+  ), [page, b.cls, b.col, b.html, HIST.ix, HIST.stack.length, legend, CURWEEK])
 
   return (
     <div id="shell" style={{ ['--al' as any]: b.col }}>

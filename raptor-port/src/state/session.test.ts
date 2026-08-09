@@ -29,18 +29,25 @@ beforeEach(() => {
 })
 
 describe('editMode is role-aware (state/store.ts HOOKS.editMode)', () => {
-  it('a member session cannot edit even with the edit page open and EDITON on', () => {
+  it('a member session cannot edit even with the edit page open', () => {
     setSession({ user: 'user', role: 'main' })
     view.setPage('editsched')
-    view.setEditOn(true)
     expect(HOOKS.editMode()).toBe(false)
   })
 
-  it('an admin session on the edit page with EDITON on can still edit', () => {
+  it('an admin session on the edit page can edit', () => {
     setSession({ user: 'a', role: 'admin' })
     view.setPage('editsched')
-    view.setEditOn(true)
     expect(HOOKS.editMode()).toBe(true)
+  })
+
+  /* the page half of the same gate — the Edit-mode toggle used to be a third
+     term here (removed 9 Aug 26), so the page IS the switch now and this is
+     the only way an admin is out of edit mode. */
+  it('an admin off the edit page cannot edit', () => {
+    setSession({ user: 'a', role: 'admin' })
+    view.setPage('viewsched')
+    expect(HOOKS.editMode()).toBe(false)
   })
 })
 
@@ -48,7 +55,6 @@ describe('resetSession clears the view for the next session (state/store.ts)', (
   it('an admin leaves Edit Schedule open, logs out, a member logs in — the view lands clean', () => {
     setSession({ user: 'a', role: 'admin' })
     view.setPage('editsched')
-    view.setEditOn(true)
     view.setBoardDay(0)
     view.selectPerson('bane')
     view.setSearch('cas')
