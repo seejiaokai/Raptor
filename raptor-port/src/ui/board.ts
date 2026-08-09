@@ -12,7 +12,8 @@ import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
 import { markEdit, alAttr } from '../engine/publish'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/keys'
-import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg } from '../engine/reorder'
+import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
+import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView } from './html'
 import { STORE_CFG } from '../engine'
 import { HOOKS } from '../engine/hooks'
@@ -184,6 +185,48 @@ export function cxCommit(cancel: boolean, reason: string) {
   if (after) after()
   afterSchedMutate()
   toast(cancel ? cxText(o) : 'Restored')
+}
+
+/* ---- Sort all: one control for the WHOLE day, same confirm-dialog shape as
+   CX above (owner asked for this after being advised against it — it rewrites
+   every list on the day, and every one of those is an amendment). Every other
+   board control acts on one row; this one does not, so it gets its own
+   confirmation naming the day, not a browser confirm() and not silence. ---- */
+export let SORTALL: any = null
+export function setSortAll(v: any) { SORTALL = v }
+/* canEditSched() and the DPREV (frozen-preview) guard live HERE, not only on
+   the button's render gate — a stale button left over from a role change, or
+   a click that lands after a preview was armed, must not open the dialog
+   either. Same belt-and-braces the row-level sort/nudge branches use in
+   boardMbtn below. */
+export function askSortAll(di: any) {
+  if (!canEditSched() || view.DPREV.has(di)) return
+  SORTALL = di
+  notify()
+}
+export function cancelSortAll() { SORTALL = null; notify() }
+/* the confirmed run. HIST.lock suppresses every markEdit() that sortDay's six
+   sorters fire — so however many sections move, NOTHING pushes while it is
+   set — and the single afterSchedMutate() after the lock lifts is the one
+   push that reaches the stack: its own bare markEdit() is what actually
+   records the step, the same "the epilogue's markEdit is the one that
+   counts" idiom every mutation funnel entry already relies on. Six sorters,
+   one entry — that is the whole point of the lock: Undo has to be one step
+   back to "before Sort all", not six steps into a half-sorted day.
+   An already-ordered day must come back false from sortDay and change
+   nothing at all — no lock needed for that path, since nothing inside it
+   ever calls markEdit. */
+export function sortAllCommit() {
+  if (SORTALL == null) return
+  const di = SORTALL
+  SORTALL = null
+  if (!canEditSched() || view.DPREV.has(di)) { notify(); return }
+  const d = DAYS[di]
+  HIST.lock = true
+  let any = false
+  try { any = sortDay(di) } finally { HIST.lock = false }
+  if (any) { afterSchedMutate(); toast(`Every section on ${d.dow} sorted`) }
+  else { notify(); toast('Already in order') }
 }
 
 /* the board's delegated .mbtn click handler, verbatim bodies */

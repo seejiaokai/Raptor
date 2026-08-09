@@ -2030,6 +2030,16 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      longer wave label could tip back into overflow. */
   .sb-go-h{flex-wrap:wrap}
   .sb-go-h .gctl{flex:1 0 100%;margin-left:0;justify-content:flex-end}
+  /* the top bar's own .sb-actions grew a fourth button (Sort all, task 10) —
+     six buttons (Desktop layout, Sort all, +Line, +Wave, Done, ✕ Close) ran
+     7px past a 390px row, the SAME shape of bug .sb-go-h had (found in
+     review that time, caught by measurement before shipping this time):
+     none of these buttons opt out of the flexbox automatic minimum, .sb-top
+     has no overflow-x of its own to clip it visibly, so what did not fit did
+     not crop — it pushed the WHOLE BOARD into an unwanted horizontal
+     scrollbar on a phone. flex-wrap here lets the row fold onto a second
+     line instead, same fix as .sb-go-h just above. */
+  .sb-actions{flex-wrap:wrap;justify-content:flex-end}
   .sb-lcols>:nth-child(1),.sb-acols>:nth-child(1){display:none}
   /* .sb-nrow is the one row template that was never restated down here
      (found live, fix round 1, 8 Aug 26). With the grip hidden above, the

@@ -7,11 +7,12 @@ import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { SBDAY, DPREV, setDayPreview } from '../state/view'
 import { daySnapOf, dayVersions, verLabel, alColor } from '../engine/publish'
+import { canEditSched } from '../state/auth'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
-import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, addLine, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide } from './board'
+import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, addLine, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit } from './board'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
@@ -95,6 +96,16 @@ export function SchedBoard() {
                 {dayVersions(SBDAY).map((v: any) => <option key={String(v)} value={String(v)}>{verLabel(v)}</option>)}
               </select>
             : null}
+          {/* Sort all — every section on this day at once, not one row like
+              every other control here. Hidden outright for a member (same
+              gate as the per-section ⇅ Auto sort buttons — canEditSched()
+              re-checked inside askSortAll too, so a stale button left over
+              from a role change can't open the dialog either) and disabled
+              while previewing a frozen published version, same idiom as
+              +Line/+Wave above. */}
+          {open && canEditSched() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
+            title="Reorder every section on this day back into its own reading order — one confirm, one undo step"
+            onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}>⇅ Sort all</button>}
           <button className="abtn" id="sbAddLine" disabled={open && DPREV.has(SBDAY)} onClick={() => { if (SBDAY != null) addLine(SBDAY) }}>+ Line</button>
           <button className="abtn" id="sbAddGo" disabled={open && DPREV.has(SBDAY)} onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, SBDAY) }}>+ Wave</button>
           <button className="abtn primary" id="sbDone" onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}>Done</button>
@@ -158,6 +169,38 @@ export function CxDialog() {
           <button className="abtn danger" id="cxUn" hidden={!on} onClick={() => cxCommit(false, '')}>Un-cancel</button>
           <span style={{ flex: 1 }}></span>
           <button className="abtn primary" id="cxSave" onClick={() => cxCommit(true, inRef.current ? inRef.current.value : '')}>{on ? 'Save reason' : 'Cancel line'}</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* Sort all's confirmation — same board-level modal shape as CxDialog above,
+   because this is the precedent the brief points at rather than a browser
+   confirm(): the day it names is read straight off SORTALL (the index
+   askSortAll armed), so the prompt can never say the wrong day even if the
+   board has since switched tabs underneath it. */
+export function SortAllDialog() {
+  useVersion()
+  const di = SORTALL
+  const open = di != null
+  const d = open ? DAYS[di] : null
+  const close = () => cancelSortAll()
+  return (
+    <div className="airpop" id="sortAllPop" hidden={!open}
+      onClick={e => { if ((e.target as HTMLElement).id === 'sortAllPop') close() }}>
+      <div className="airpop-box">
+        <div className="airpop-head"><b id="sortAllTitle">Sort all — {d ? d.dow : ''}</b><button className="x" id="sortAllClose" aria-label="Close" onClick={close}>✕</button></div>
+        <div className="airpop-body">
+          Every section on {d ? d.dow : 'this day'} — flying, duties, sims, ground and the
+          overall programme — goes back into its own reading order. Unlike every other
+          control on this board, this acts on the WHOLE day at once, not one row; a
+          single Undo reverses all of it together.
+        </div>
+        <div className="airpop-foot">
+          <span style={{ flex: 1 }}></span>
+          <button className="abtn ghost" id="sortAllCancel" onClick={close}>Cancel</button>
+          <button className="abtn primary" id="sortAllConfirm" onClick={() => sortAllCommit()}>Sort all</button>
         </div>
       </div>
     </div>
