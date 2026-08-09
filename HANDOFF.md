@@ -16,9 +16,9 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 819 tests
-across 47 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 51/51, and `npm run probes:adapted` 6/6 (not in CI). Re-state
+**Every gate is green at this commit**, run first-hand: `npm test` 844 tests
+across 49 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
+run test:e2e` 54/54, and `npm run probes:adapted` 6/6 (not in CI). Re-state
 these only after re-running them.
 
 - **`npm run perf` does NOT read the same way twice, and that is not a fault
@@ -44,7 +44,7 @@ these only after re-running them.
 - **jsdom cannot measure layout** — every rect Vitest reports is 0×0, so it
   can prove which class was emitted and nothing about what was painted.
   Geometry contracts are gated by `e2e/geometry.spec.ts` (the fourth CI
-  gate, 51 tests); wider visual work still wants the probe path
+  gate, 54 tests); wider visual work still wants the probe path
   (`npx vite preview --port 4173` + `probes/`).
 
 ## Known issues / open work
