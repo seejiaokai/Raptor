@@ -2040,6 +2040,18 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      scrollbar on a phone. flex-wrap here lets the row fold onto a second
      line instead, same fix as .sb-go-h just above. */
   .sb-actions{flex-wrap:wrap;justify-content:flex-end}
+  /* the THIRD row of this same shape (review, 9 Aug 26 round 1): a duty
+     block's sub-header packs its editable label input, ⇅ Auto sort, + Row
+     and ✕ Block into one line and ran 5px past a 390px row — smaller than
+     the other two, and visible rather than clipped (.sb-pb has no
+     overflow-x of its own), which is exactly why it went unnoticed as
+     "cosmetic" in an earlier review instead of being fixed then. It is
+     still an overflow; the general assertion below does not get a
+     hand-carved exception for the one row that happens to fail it quietly.
+     Sim sub-headers (AMT/OFT — no label input, only two buttons) already
+     fit and are unaffected: flex-wrap only acts on the row that needs it. */
+  .sb-psub{flex-wrap:wrap}
+  .sb-psub .gctl{flex:1 0 100%;margin-left:0;justify-content:flex-end}
   .sb-lcols>:nth-child(1),.sb-acols>:nth-child(1){display:none}
   /* .sb-nrow is the one row template that was never restated down here
      (found live, fix round 1, 8 Aug 26). With the grip hidden above, the

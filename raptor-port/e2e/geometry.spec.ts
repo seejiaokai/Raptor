@@ -1568,28 +1568,48 @@ test('a squadron member gets no grip and no nudge buttons', async ({ page }) => 
   expect(n).toBe(0)
 })
 
-/* The wave header ("Go N") packs the wave-title select, the in-time/
-   aircraft-count text and three .gctl buttons (Auto sort, + Line, ✕ Wave)
-   into one flex row. .sb-go has overflow:hidden, so anything that does not
-   fit is not scrollable — it is CROPPED, and ✕ Wave deletes the whole wave,
-   so a clipped, hard-to-hit label on a destructive control is a real
-   defect (found in review, 9 Aug 26: Auto sort's extra button pushed the
-   row 19px past its own width on a 390px phone). scrollWidth vs clientWidth
-   is a real-browser measurement jsdom cannot make — this is the assertion
-   that must fail against the un-fixed CSS and pass once .gctl gets its own
-   row on a phone. */
-test('the wave header does not overflow its own width on a phone', async ({ page }) => {
+/* ONE assertion for every button-row on the board, not one row at a time
+   (owner review, 9 Aug 26 — round 1 of 5). The wave header ("Go N") shipped
+   with a hand-written test for exactly this failure (it packs a select, an
+   in-time readout and three .gctl buttons into one flex row, and Auto sort's
+   extra button once ran it 19px past its own width on a 390px phone), and
+   .sb-go has overflow:hidden, so what didn't fit wasn't scrollable — it was
+   CROPPED, and one of the three buttons deletes the whole wave. Then Sort
+   all (task 10) landed a FOURTH button in a completely different row,
+   .sb-actions, and did the same thing again: 7px of overflow nothing caught
+   until a person measured it by hand. Two rows, same shape of bug, twice —
+   so this walks every row that packs buttons/inputs into one flex line
+   (the top action bar, every wave header, every panel header's controls,
+   and every duty/sim sub-header) and asserts none of them overflows, rather
+   than pinning one row at a time and waiting for the third.
+   scrollWidth vs clientWidth is a real-browser measurement jsdom cannot
+   make — every one of these assertions must fail against the un-fixed CSS
+   and pass once the row's .gctl gets its own line on a phone. */
+test('no button/control row on the board overflows its own width on a phone', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 780 })
   await login(page); await go(page, 'editsched')
   await page.evaluate(() => (window as any).openScheduler(0))
   await page.waitForSelector('#sbBoard .sb-go-h')
-  const rows = await page.evaluate(() =>
-    [...document.querySelectorAll('#sbBoard .sb-go-h')].map(el => ({
+  const ROWS = '.sb-top, .sb-actions, .sb-go-h, .sb-ph, .sb-psub'
+  const rows = await page.evaluate((sel) =>
+    [...document.querySelectorAll(sel)].map(el => ({
+      sel: el.className,
       scroll: (el as HTMLElement).scrollWidth,
       client: (el as HTMLElement).clientWidth,
-    })))
-  expect(rows.length, 'the seed day has at least one wave header to measure').toBeGreaterThan(0)
-  for (const m of rows) {
-    expect(m.scroll, `scrollWidth ${m.scroll} must not exceed clientWidth ${m.client}`).toBeLessThanOrEqual(m.client)
-  }
+      text: (el.textContent || '').trim().slice(0, 40),
+    })), ROWS)
+  /* the seed day has at least one of each kind (top bar, wave header, every
+     panel header, every duty/sim sub-header) — a count guard so a selector
+     typo that matches nothing can't pass this silently */
+  expect(rows.length, 'the seed day has rows of every kind to measure').toBeGreaterThan(10)
+  /* ONE assertion over every offending row rather than expect-inside-a-loop:
+     a loop's expect() throws on the FIRST failure and hides the rest — an
+     outer row (.sb-top) and the inner row that actually caused it
+     (.sb-actions) can both be over at once, and a loop would only ever name
+     the outer one. Collecting every failure into one message means the
+     SPECIFIC row (class + a snippet of its own text) is always named,
+     however many rows are broken at once. */
+  const bad = rows.filter(m => m.scroll > m.client)
+    .map(m => `"${m.sel}" ("${m.text}…") scrollWidth ${m.scroll} > clientWidth ${m.client}`)
+  expect(bad, 'no row may scroll past its own width').toEqual([])
 })
