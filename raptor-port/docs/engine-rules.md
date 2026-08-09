@@ -250,17 +250,18 @@ Personal Inputs, faded, so the scheduler can see what they have dealt with.
 
 ## The late-input mark (owner, 9 Aug 26)
 
-A member's input is due **`VCONF.inputLead` days before the week's Monday**,
+A member's input is due **`VCONF.inputLead` days before the week's Monday**
+(standard **14** — owner, 9 Aug 26, raised from an initial 7),
 and one last changed after that deadline is marked `LATE` wherever it is
 drawn. `engine/inputs.ts` owns the whole thing — `inputDueISO`,
 `inputStampISO`, `isLateInput`, `lateNote`.
 
 - **The deadline is relative, not a date.** Week Monday − `inputLead`. At the
-  standard 7, an input for the week of Mon 17 Aug is due by Mon 10 Aug. The
+  standard 14, an input for the week of Mon 17 Aug is due by Mon 3 Aug. The
   arithmetic runs through a real date, so it steps back over month and year
   boundaries rather than off the end of a day number.
 - **The deadline day itself is ON TIME.** Late is strictly `stamp > due` —
-  "no later than a week prior" makes the 10th fine and the 11th late. Pinned
+  "no later than a fortnight prior" makes the 3rd fine and the 4th late. Pinned
   in `engine/lateinput.test.ts`, and it is the assertion most likely to be
   broken by a "tidy-up" of the comparison.
 - **What is measured is the LAST CHANGE, not the first submission** (owner's
@@ -277,18 +278,26 @@ drawn. `engine/inputs.ts` owns the whole thing — `inputDueISO`,
   and is invisible to `validate()` — tightening the rule until every input is
   late must not move the warning count by one, which is pinned. It therefore
   needs no `refwin.ts` patch: the reference never sees it.
-- **Every type is marked, leave and downchits included.** A downchit cannot
-  obey a planning deadline, but the useful thing for a scheduler to know is
-  that it landed after the plan was built. No per-type exemption exists.
+- **DOWNCHITS ARE EXEMPT** (owner, 9 Aug 26). A deadline asks a man to decide
+  in advance; going DNIF is not a decision he makes, and a downchit raised the
+  morning of the flight is the system working. Marking it would scold him for
+  being ill and — worse for the scheduler — put a badge on the one input type
+  that is ALWAYS last-minute, which is how a mark stops meaning anything. The
+  test that pins this uses the seed's two downchits, which carry the LATEST
+  stamps in the file and are still clean. **Leave and detachments are not
+  exempt**: those are applied for, and applying late is the thing this is
+  about.
 - **There is no off switch.** `inputLead` is a day count (0–60); 0 means "due
   by the Monday itself", which is the most permissive setting. A squadron that
   does not run this policy has no way to silence the mark short of a rule
   change.
 
 The seed week's `mod` stamps are deliberately spread either side of its
-deadline so all three cases are visible — early, exactly on the deadline
-(yeti), and late (salsa, and the two downchits). Before that they all sat
-inside their own week, which marked every input and made the mark useless.
+deadline (Mon 29 Jun for the demo week) so every case is visible — early,
+exactly on the deadline (bane), one day late (nasty), plainly late (salsa,
+shrek, yeti), and exempt-though-latest-of-all (the two downchits). Before
+that they all sat inside their own week, which marked every input and made
+the mark useless.
 
 ## Editable rules (Logic tab)
 

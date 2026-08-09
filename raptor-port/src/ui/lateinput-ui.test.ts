@@ -28,22 +28,36 @@ beforeEach(() => {
   validate()
 })
 
-/* divot's downchit sits on day 0 and is stamped after the deadline; pike's
-   detachment is stamped weeks early. Both are Unavailable types, so both
-   render on the VIEW page with nothing accepted. */
-const late = () => INPUTS.find((i: any) => i.person === 'divot')
+/* Day 1 (Jul 14) is the day that shows the mark on the VIEW page: nasty's LL
+   and shrek's OIL are both stamped after the deadline and both are Unavailable
+   types, so they render to everyone with nothing accepted. Day 0's Unavailable
+   block is the counter-case — its only two rows are DOWNCHITS, which are
+   exempt (owner, 9 Aug 26), so that day stays clean however late they are. */
+const late = () => INPUTS.find((i: any) => i.person === 'nasty')
 const onTime = () => INPUTS.find((i: any) => i.person === 'bruise')
+const marks = (h: string) => (h.match(/class="latetag"/g) || []).length
 
 describe('the week', () => {
   it('marks a late input in the Unavailable block, on the view-only page', () => {
     expect(isLateInput(late()), 'sanity: the fixture really is late').toBe(true)
-    const v = dayHTML(0, false)
+    const v = dayHTML(1, false)
     expect(v, 'the view page draws Unavailable for everyone').toContain('sec-unav')
-    expect(v).toContain('class="latetag"')
+    expect(marks(v), 'nasty and shrek, both late leave').toBe(2)
+  })
+
+  it('leaves a day whose only late inputs are downchits completely clean', () => {
+    /* day 0's Unavailable block is divot and sufa, both downchits, both
+       stamped 12 Jul — the latest stamps in the seed. The exemption is what
+       makes this day read clean, so this is the test that goes red if
+       someone drops the downchit check out of isLateInput. */
+    const v = dayHTML(0, false)
+    expect(v).toContain('sec-unav')
+    expect(v).toContain('Downchit')
+    expect(marks(v), 'no mark on the view page for day 0').toBe(0)
   })
 
   it('does not mark an input that met the deadline', () => {
-    /* bruise's Fly is stamped 1 Jul, well inside the 6 Jul deadline. It is a
+    /* bruise's Fly is stamped 20 Jun, well inside the 29 Jun deadline. It is a
        personal input, so it shows on the EDIT page — and must show clean. */
     expect(isLateInput(onTime())).toBe(false)
     const e = dayHTML(0, true)
@@ -53,33 +67,32 @@ describe('the week', () => {
   })
 
   it('marks it on the edit page too — the mark is not a view-only courtesy', () => {
-    expect(dayHTML(0, true)).toContain('class="latetag"')
+    /* day 0's mark lives on the scheduler-only Personal Inputs block: yeti's
+       appointment, stamped 6 Jul against a 29 Jun deadline. */
+    expect(marks(dayHTML(0, true))).toBe(1)
   })
 
   it('is computed from the setting, not baked into the seed', () => {
-    /* relax the deadline to the Monday itself and every seed mark clears —
-       nothing in the seed is stamped later than 12 Jul. Tighten it and they
-       come back. This is what proves the Rules tab really drives the badge. */
-    expect(dayHTML(0, false)).toContain('class="latetag"')
+    /* relax the deadline past every stamp and the marks clear; tighten it and
+       they come back. This is what proves the Rules tab drives the badge. */
+    expect(marks(dayHTML(1, false))).toBeGreaterThan(0)
     VCONF.inputLead = 0
     expect(inputDueISO()).toBe('2026-07-13')
     expect(INPUTS.some(isLateInput), 'nothing is late against a Monday deadline').toBe(false)
-    expect(dayHTML(0, false), 'so the week draws no mark at all').not.toContain('class="latetag"')
-    VCONF.inputLead = 21
-    expect(dayHTML(0, false), 'a three-week deadline marks them again').toContain('class="latetag"')
+    expect(marks(dayHTML(1, false)), 'so the week draws no mark at all').toBe(0)
+    VCONF.inputLead = 28
+    expect(marks(dayHTML(1, false)), 'a four-week deadline marks them again').toBeGreaterThan(0)
   })
 })
 
 describe('a personal input promoted onto the programme', () => {
-  const marks = (h: string) => (h.match(/class="latetag"/g) || []).length
-
   it('carries the mark onto the VIEW page with it — the point of the ask', () => {
     /* A personal input never reaches view-only on its own; accepting it onto
        the ground programme is the only route. If the mark did not survive
        that promotion it would vanish exactly where the squadron reads the
        day, which is the one thing the owner asked for by name.
-       Counted, not merely detected: Jul 14 is already covered by sufa's late
-       multi-day downchit, so "contains a mark" was true before the accept and
+       Counted, not merely detected: Jul 14 already carries nasty's and
+       shrek's marks, so "contains a mark" was true before the accept and
        would have passed for the wrong reason. */
     const inp = INPUTS.find((i: any) => i.person === 'salsa')
     expect(isLateInput(inp), 'sanity: salsa booked after the deadline').toBe(true)
@@ -102,7 +115,22 @@ describe('a personal input promoted onto the programme', () => {
 
 describe('the board', () => {
   it('marks the input in its own panels', () => {
-    expect(boardHTML(0)).toContain('class="latetag"')
+    expect(boardHTML(1)).toContain('class="latetag"')
+  })
+
+  it('leaves the downchit rows clean there too, beside a marked one', () => {
+    /* the exemption has to hold on this surface as well as on the week — and
+       day 0's board is the sharpest case, because its Unavailable panel (two
+       downchits, the latest stamps in the seed) sits a few rows below a
+       Personal Inputs panel that DOES carry a mark. Both halves asserted, so
+       this cannot pass by the board simply drawing nothing. */
+    const h = boardHTML(0)
+    const unav = h.slice(h.indexOf('sb-panel unav'))
+    expect(unav).toContain('Downchit')
+    expect(unav, 'no mark on either downchit').not.toContain('class="latetag"')
+    const pinp = h.slice(h.indexOf('sb-panel pinp'), h.indexOf('sb-panel unav'))
+    expect(pinp, 'while the panel above it is marked — proving the render works')
+      .toContain('class="latetag"')
   })
 
   it('marks a promoted ground row without adding a grid item to it', () => {
@@ -134,7 +162,8 @@ describe('what it deliberately does NOT do', () => {
     const n = WARN.all.length
     VCONF.inputLead = 60
     validate()
-    expect(INPUTS.every(isLateInput), 'sanity: everything is late now').toBe(true)
+    /* every input except the exempt downchits */
+    expect(INPUTS.filter(isLateInput).length, 'sanity: all but the downchits are late now').toBe(INPUTS.length - 2)
     expect(WARN.all.length, 'the checks list is untouched').toBe(n)
   })
 })

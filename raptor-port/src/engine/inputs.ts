@@ -75,14 +75,15 @@ export function inputFlags(inp:any){return isUnavail(inp.type)||inp.acc==='u'||(
 /* inputs use machine-readable date + minute fields so the validator can reason about them.
    s/e are minutes-from-midnight; allday inputs cover the whole day. */
 /* The `mod` stamps are spread either side of the demo week's input deadline on
-   purpose (owner, 9 Aug 26 — see isLateInput below). With the standard 7 days
-   the week of Mon 13 Jul is due by Mon 6 Jul, so this seed shows all three
-   cases a reader needs to see: comfortably early, exactly ON the deadline
-   (yeti — the deadline day itself is on time), and genuinely late (salsa's
-   appointment booked after planning closed, and the two downchits, which by
-   their nature cannot wait for a deadline). Before this they were all stamped
-   inside their own week, which marked every input late and made the mark
-   meaningless. */
+   purpose (owner, 9 Aug 26 — see isLateInput below). At the standard 14 days
+   the week of Mon 13 Jul is due by Mon 29 Jun, so this seed shows every case
+   a reader needs to see: comfortably early (pike, j_lee, vinci, bruise),
+   exactly ON the deadline (bane — the deadline day itself is on time), just
+   missed by a day (nasty), plainly late (shrek, yeti, and salsa's dental
+   appointment booked after planning closed), and EXEMPT-though-latest-of-all
+   (divot and sufa's downchits, stamped 12 Jul and marked by nothing).
+   Before this they were all stamped inside their own week, which marked every
+   input late and made the mark meaningless. */
 export let INPUTS:any[]=[
   {person:'divot', date:'Jul 13', allday:true,               type:'Downchit',    remarks:'Downchit 13 Jul', mod:'2026-07-12'},
   {person:'bane',  date:'Jul 16', allday:false, s:1020,e:1110,type:'Appointment', remarks:'Medical / PHA', mod:'2026-06-29'},
@@ -91,7 +92,7 @@ export let INPUTS:any[]=[
   {person:'nasty', date:'Jul 14', allday:true,               type:'LL',          remarks:'Local leave',  mod:'2026-06-30'},
   {person:'shrek', date:'Jul 14', allday:true,               type:'OIL',         remarks:'OIL — CO approved, post-detachment',mod:'2026-07-02'},
   {person:'sufa',  date:'Jul 13', endDate:'Jul 17', allday:true, type:'Downchit', remarks:'Downchit till 17 Jul', mod:'2026-07-12'},
-  {person:'bruise',date:'Jul 13', allday:true,               type:'Fly',         remarks:'Keen for any wave',mod:'2026-07-01'},
+  {person:'bruise',date:'Jul 13', allday:true,               type:'Fly',         remarks:'Keen for any wave',mod:'2026-06-20'},
   {person:'vinci', date:'Jul 13', allday:false, s:540, e:1020,type:'Meeting',     remarks:'Desk / staff work',mod:'2026-06-26'},
   {person:'pike',  date:'Jul 15', endDate:'Jul 17', allday:true, type:'Detachment', remarks:'Det — exercise, off island',mod:'2026-06-18'},
   {person:'yeti',  date:'Jul 13', allday:false, s:600, e:660, type:'Appointment', remarks:'HSP blood panel',mod:'2026-07-06'},
@@ -126,6 +127,15 @@ export function inputCoversDate(inp:any,dt:any){
    as late (owner's call, 9 Aug 26). That is the whole point: the deadline
    exists so the week can be planned against something that has stopped
    moving.
+
+   DOWNCHITS ARE EXEMPT (owner, 9 Aug 26). A deadline asks a man to decide in
+   advance; going DNIF is not a decision he makes, and a downchit raised the
+   morning of the flight is the system working, not somebody being slack.
+   Marking it would be scolding him for being ill, and — worse for the
+   scheduler — it would put a badge on the one input type that is ALWAYS
+   last-minute, which is how a mark stops meaning anything. Leave and
+   detachments are NOT exempt: those are applied for, and applying late is
+   exactly what this is about.
 
    This is a MARK, not a rule the validator reads. Nothing here raises a
    warning, changes availability, or touches a seat — a paperwork deadline
@@ -162,6 +172,7 @@ export function inputStampISO(inp:any){
   return isISO(m)?String(m):'';
 }
 export function isLateInput(inp:any){
+  if(!inp||isDownchit(inp.type))return false;
   const s=inputStampISO(inp), due=inputDueISO();
   return !!s&&!!due&&s>due;
 }
@@ -172,8 +183,7 @@ export function isoLabel(iso:any){
 }
 /* what the mark says when you hover it — plain enough for the squadron */
 export function lateNote(inp:any){
-  const s=inputStampISO(inp), due=inputDueISO();
-  if(!s||!due)return '';
-  return `Late input — last changed ${isoLabel(s)}, after the ${isoLabel(due)} deadline for the week of ${isoLabel(weekStartISO())}.`;
+  if(!isLateInput(inp))return '';
+  return `Late input — last changed ${isoLabel(inputStampISO(inp))}, after the ${isoLabel(inputDueISO())} deadline for the week of ${isoLabel(weekStartISO())}.`;
 }
 

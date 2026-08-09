@@ -22,12 +22,13 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
      the brief, he is unable to make the flight. */
   showLead:60,      // latest show, minutes before T/O
   /* How many days before the week starts a member's input is due (owner,
-     9 Aug 26). The deadline is the week's Monday minus this many days, and
-     the day itself is still on time: at 7, an input for the week of Mon 17
-     Aug is due by Mon 10 Aug, and one last touched on the 11th is LATE.
-     Unlike every other setting here it grades no flying — it marks the
-     input, and nothing else. */
-  inputLead:7,      // member input deadline, days before the week's Monday
+     9 Aug 26; two weeks rather than one, owner 9 Aug 26). The deadline is
+     the week's Monday minus this many days, and the day itself is still on
+     time: at 14, an input for the week of Mon 17 Aug is due by Mon 3 Aug,
+     and one last touched on the 4th is LATE. Unlike every other setting here
+     it grades no flying — it marks the input, and nothing else, and
+     downchits are exempt from it entirely (engine/inputs.ts). */
+  inputLead:14,     // member input deadline, days before the week's Monday
   scDayFrom:7*60,   // an SC shift wholly inside this window is a DAY shift
   scDayTo:19*60};
 /* SC currency. A shift that sits wholly inside 07:00–19:00 is a DAY shift and

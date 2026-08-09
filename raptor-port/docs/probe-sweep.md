@@ -158,7 +158,7 @@ and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
 `probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 880**
-(measured 861), **week ≤ 5530** (measured 5056). Tripping one is not
+(measured 862), **week ≤ 5530** (measured 5056). Tripping one is not
 automatically a fault; it is a prompt to check the time and then raise the
 number deliberately, in the PR that adds the nodes, beside a fresh
 `npm run perf` showing the per-node cost held. The board has been raised
@@ -169,9 +169,9 @@ nudge buttons, the per-section Auto sort and Sort all (8 Aug 26), and
 
 **That last raise took a wider margin than the others, on purpose.** The
 late-input badge is one `<span>` per late input drawn, so on the day this
-gate opens the count reads 859 with the mark off, 861 as the seed stands and
-863 with every input on that day late — all three measured through the gate's
-own boot. It is the first surface here whose node count moves with **data**
+gate opens the count reads 859 with the mark off and 862 as the seed stands,
+both measured through the gate's own boot; the day's fourth input is a
+downchit, which is exempt from the mark and so can never add a node. It is the first surface here whose node count moves with **data**
 rather than only with code: a date edited on the Inputs page can add or
 remove a node with no source change at all. A ceiling set to "measured + 1",
 which is what the two earlier raises took, would go red on a data change and

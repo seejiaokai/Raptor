@@ -321,7 +321,11 @@ the phone perf budget. Don't convert them to components.
   conflicts. And it measures the input's **last change**, not its first
   submission (same conversation): an input raised early and amended after the
   deadline still reads late, because the deadline exists so the week can be
-  planned against something that has stopped moving. Don't re-propose either.
+  planned against something that has stopped moving. **Downchits are exempt**
+  (same conversation): going DNIF is not a decision made in advance, and
+  badging the one type that is always last-minute is how a mark stops meaning
+  anything — leave and detachments stay in scope, because those are applied
+  for. Don't re-propose any of the three.
   Rules: `docs/engine-rules.md` §The late-input mark.
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /

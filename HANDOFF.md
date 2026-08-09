@@ -116,15 +116,13 @@ these only after re-running them.
     a number nobody has hit is a guess; the fix when it bites is the
     ordinary one (check the time, raise the ceiling in the PR that needs
     it). Reasoning: `docs/probe-sweep.md` §The performance gate.
-- **The late-input mark has no off switch, and no per-type exemption.**
-  `VCONF.inputLead` is a day count; 0 ("due by the Monday itself") is the most
-  permissive setting there is, so a squadron that does not run an input
-  deadline cannot silence the mark. Every input type is marked, leave and
-  downchits included — a downchit cannot obey a planning deadline, and the
-  owner's framing was that what matters is knowing it landed after the plan
-  was built. Both are deliberate; if either bites, an "off" value and a
-  per-type skip are each a small change. Rules: `docs/engine-rules.md` §The
-  late-input mark.
+- **The late-input mark has no off switch.** `VCONF.inputLead` is a day count;
+  0 ("due by the Monday itself") is the most permissive setting there is, so a
+  squadron that does not run an input deadline cannot silence the mark short
+  of a rule change. Deliberate, and a small change if it ever bites.
+  (Downchits ARE exempt — owner, 9 Aug 26 — so the commonest genuinely
+  unavoidable late input is already covered. Leave and detachments are not.)
+  Rules: `docs/engine-rules.md` §The late-input mark.
 - **The Inputs page opens on a window that no longer contains the demo data.**
   It defaults to today → +2 months, and the one dataset is the week of
   13 Jul 26 — so with the container clock past that week the table opens

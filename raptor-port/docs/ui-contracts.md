@@ -286,8 +286,8 @@ clear of every input and of each other).
 
 ## The late-input mark on screen (owner, 9 Aug 26)
 
-The rule and what counts as late are in `docs/engine-rules.md` §The
-late-input mark. What this file owns is **where it is drawn**, and the ask
+The rule and what counts as late — including the downchit exemption — are in
+`docs/engine-rules.md` §The late-input mark. What this file owns is **where it is drawn**, and the ask
 was "visible throughout, and it sticks with that input even though it's on
 view schedule" — so the mark is gated on NOTHING. Not edit mode, not the
 role, not `pv`. Every other badge on these rows answers to at least one of

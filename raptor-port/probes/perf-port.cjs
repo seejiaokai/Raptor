@@ -221,9 +221,10 @@ async function trial(b, measureSize) {
      Measured at 859 nodes before this margin was added. */
   /* board raised 860 → 880 on 9 Aug 26 for the late-input mark. Measured on
      THIS day (day 1, the one this gate opens) with the same boot: 859 with
-     the mark switched off, 861 as the seed stands, 863 with every input on
-     the day late. The badge is exactly one <span> per late input drawn, so
-     the growth is bounded by the number of inputs on the measured day.
+     the mark switched off, 862 as the seed stands. The badge is exactly one
+     <span> per late input drawn, so the growth is bounded by the number of
+     inputs on the measured day — and the day's fourth is a downchit, which
+     is exempt from the mark and can never add a node.
      The margin is deliberately wider than the 1-node margins above it, and
      the reason is new: this is the first surface whose node count moves with
      DATA rather than only with code. A stamp edited on the Inputs page can
