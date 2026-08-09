@@ -25,6 +25,15 @@ estimator noise stops catching a real regression.
 `npx vite preview --port 4173` first or both fail with
 `ERR_CONNECTION_REFUSED`, which reads like a code fault and is not
 (8 Aug 26). Playwright's own gate builds and serves itself.
+**And that cuts the other way, which cost real time on 9 Aug 26: if a
+preview is ALREADY running on 4173, `npm run test:e2e` reuses it and never
+rebuilds** (`reuseExistingServer` in `playwright.config.ts`, off in CI only)
+— so e2e silently measures whatever was built last, not your working tree. A
+CSS change was proven "still passing" against a stale bundle that way, and a
+deliberately-broken control case passed too, which is how it was caught.
+**Kill the preview before trusting an e2e run after editing CSS or markup**,
+or run the two in the other order: e2e first, then start the preview for the
+probes.
 (`npm run perf`'s one-day-edit budget was seen swinging 1.01×–1.28× across
 runs on identical code on a busy container, 7 Aug 26 — rerun before
 believing a single red. Re-measured 9 Aug 26 and the advice is now sharper.
@@ -95,13 +104,26 @@ WITHOUT the edit, so a real week-render regression moves it too — it sat at
   (`.schedfoot`, `.sf-box`, `.sf-h`, `.sf-body`) and `.sb-hint` were deleted
   from `scheduler.css` — hand-written static markup in the original that this
   port never builds, verified absent from the BUILT bundle and not just the
-  source. Stylesheet 100.8 KB → 100.1 KB. Two more selector-list fragments
-  are dead and were deliberately LEFT: `.sbi-rmk` appears in the wrap rule
-  while the markup emits `.sbi-rm` (a typo carried over from the original —
-  so the inputs-band remarks cell has never had `overflow-wrap:anywhere` on
-  EITHER build; the wrap probes pass, so nothing is visibly wrong today, and
-  fixing it would be a deliberate divergence from the reference, not a
-  tidy-up), and `.asub` sits in two selector lists the port never matches.
+  source. Stylesheet 100.8 KB → 100.1 KB. `.asub` is dead in two selector
+  lists and was left — it sits inside rules that do other work.
+  **The `.sbi-rmk` typo was raised as the owner's call and then closed by him
+  the same day, and the ANSWER is the interesting part.** The wrap rule
+  (`overflow-wrap:anywhere`) listed `.sbi-rmk` while the board's inputs-band
+  remarks cell emits `.sbi-rm` — a typo carried over verbatim from the
+  original page, so the rule matched nothing on either build for the whole
+  life of both. Correcting the spelling was MEASURED before it was applied,
+  and it does nothing: `.sbi-row .sbi-rm` is deliberately
+  `white-space:nowrap` + `text-overflow:ellipsis`, which leaves no soft wrap
+  opportunity for the property to act on. With an 80-character unbreakable
+  remark, at 1500px and at 390px, the cell's width, height and scrollWidth
+  and its row's width were identical with the property applied and without
+  it. So the fix was to DELETE the dead name, not to correct it — shipping a
+  rule that provably does nothing is the same clutter in a new disguise.
+  That cell is a one-line truncated summary whose full text lives in its
+  `title` tooltip, which is the design, not an accident. Pinned by "a long
+  unbreakable remark stays one clipped line" in `e2e/geometry.spec.ts` — the
+  test fails if the nowrap is ever lost or the property re-added — so this
+  does not get re-argued from the stylesheet alone.
 - **No shared data.** localStorage only — two devices never see each
   other's edits. The obvious next enhancement (needs a server or a sync
   backend; touches `engine/hooks.ts:storeBackend` and the mutation funnel).

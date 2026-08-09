@@ -1556,6 +1556,58 @@ test('a phone nudge moves a row and the board still reads correctly', async ({ p
   expect(await first()).not.toBe(was)
 })
 
+/* The board's inputs-band remarks cell is a ONE-LINE truncated summary whose
+   full text lives in its title tooltip — not wrapping prose. That was not
+   obvious from the stylesheet: the wrap rule (`overflow-wrap:anywhere`)
+   listed `.sbi-rmk` while the markup emits `.sbi-rm`, a typo carried over
+   verbatim from the original page, so for the whole life of both builds the
+   rule matched nothing. Correcting the spelling was measured first and
+   changes NOTHING — `white-space:nowrap` leaves no soft wrap opportunity for
+   the property to act on, at either width — so the dead name was deleted
+   instead (9 Aug 26). This test is what stops that being re-argued, or
+   re-"fixed" into a rule that does nothing: it asserts the cell's real
+   contract in a real browser, which is the only place it is visible at all
+   (jsdom reports every rect as 0x0 and loads no stylesheet).
+   The remark is one 80-character unbreakable word on purpose: a wrappable
+   sentence would pass this test even with the nowrap lost. */
+test('a long unbreakable remark stays one clipped line and keeps its full text in the tooltip', async ({ page }) => {
+  const LONG = 'RETURNINGFROMDETACHMENTVIAPAYALEBARANDTENGAHWITHNOFIXEDTIMEOFARRIVALPLEASECONFIRM'
+  for (const size of [DESK, PHONE]) {
+    await page.setViewportSize(size)
+    await login(page); await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbBoard .sbi-row .sbi-rm')
+    await page.evaluate((t) => {
+      const w = window as any
+      w.INPUTS.filter((i: any) => w.inputCoversDate(i, w.DAYS[0].dt)).forEach((i: any) => { i.remarks = t })
+      w.renderScheduler()
+    }, LONG)
+    await page.waitForTimeout(300)
+    const m = await page.evaluate(() => {
+      const el = document.querySelector('#sbBoard .sbi-row .sbi-rm') as HTMLElement
+      const row = el.parentElement as HTMLElement
+      const cs = getComputedStyle(el)
+      return {
+        text: el.textContent, title: el.title,
+        h: Math.round(el.getBoundingClientRect().height),
+        ws: cs.whiteSpace, te: cs.textOverflow, ov: cs.overflowX,
+        rowW: Math.round(row.getBoundingClientRect().width), rowScrollW: row.scrollWidth,
+      }
+    })
+    const tag = size === DESK ? 'desktop' : 'phone'
+    expect(m.text, `${tag}: sanity — the long remark really is the one being measured`).toBe(LONG)
+    expect(m.title, `${tag}: the full text is reachable in the tooltip, since the cell clips it`).toBe(LONG)
+    /* ONE line. A wrapped 80-character word would be several times this at
+       11px/10.5px, so a lost nowrap fails here rather than passing quietly. */
+    expect(m.h, `${tag}: the remark stays on a single line`).toBeLessThanOrEqual(20)
+    expect(m.ws, `${tag}: nowrap is the mechanism, not an accident of the text`).toBe('nowrap')
+    expect(m.te, `${tag}: clipped with an ellipsis, not cut mid-glyph`).toBe('ellipsis')
+    expect(m.ov, `${tag}: the overflow is hidden, so the ellipsis can be drawn`).toBe('hidden')
+    /* and the row it sits in gains no sideways scroll from it */
+    expect(m.rowScrollW, `${tag}: the remark does not push its own row wider`).toBeLessThanOrEqual(m.rowW + 1)
+  }
+})
+
 /* finding #1 (whole-branch review, 9 Aug 26): sbGrip() used to return '' for
    a read-only board, but every row template in scheduler.css unconditionally
    keeps its leading 18px grip track — so a read-only board lost each row's

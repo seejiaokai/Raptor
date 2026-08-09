@@ -1720,7 +1720,21 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
    lets the cell actually shrink to its track instead of forcing its own width.
    Both are needed; either alone leaves the overflow. */
 .ntx{display:inline-block;min-width:30px;overflow-wrap:anywhere}
-.itxt,.blknote,.ah-note,.wln,.sbi-rmk,.pl-nil{overflow-wrap:anywhere}
+/* `.sbi-rmk` used to sit in this list and matched nothing — the board's
+   inputs-band remarks cell is `.sbi-rm` (board-html.ts), a typo carried over
+   verbatim from the original page. Corrected 9 Aug 26 by DELETING the dead
+   name rather than fixing its spelling, because the fix was measured in a
+   real browser first and does nothing: `.sbi-row .sbi-rm` is deliberately
+   `white-space:nowrap` + `text-overflow:ellipsis`, so there are no soft wrap
+   opportunities for `overflow-wrap` to act on — at 1500px and at 390px, with
+   an 80-character unbreakable remark, the cell's width, height, scrollWidth
+   and its row's width were byte-identical with the property applied and
+   without it. That cell is a ONE-LINE truncated summary whose full text
+   lives in its `title` tooltip; the other names here are genuinely wrapping
+   prose. Pinned by "a long unbreakable remark stays one clipped line" in
+   e2e/geometry.spec.ts, so re-adding the property (or losing the nowrap) is
+   caught rather than re-argued. */
+.itxt,.blknote,.ah-note,.wln,.pl-nil{overflow-wrap:anywhere}
 .plist .pl-row .ppl,.allhands .ah-row .ppl,.sb-arow .ppl{min-width:0}
 .pl-nil{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-3);padding:3px 8px 5px;letter-spacing:.04em}
 .allhands .ah-empty{font-size:10.5px;color:var(--ink-3);font-style:italic;padding:4px 10px 6px}
