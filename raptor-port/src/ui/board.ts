@@ -221,13 +221,25 @@ export function boardMbtn(e: MouseEvent) {
     if (!canEditSched()) return
     const [kind, ...rest] = String(ds.sortsec).split('.')
     const n = rest.map(Number)
+    /* Ground is the one section where "changed" can be true with the row
+       order untouched: sortGround always clears gman, so a day that was
+       frozen in manual mode but already happened to read in time order
+       comes back changed=true with the SAME row array (engine/reorder.ts
+       never reassigns it on that path) — read here before the call so the
+       toast can tell that apart from a real reorder, rather than staying
+       silent about the one thing that DID happen (review fix, 9 Aug 26). */
+    const gDay = kind === 'g' ? DAYS[n[0]] : null
+    const gWasMan = !!(gDay && gDay.gman), gRowsBefore = gDay && gDay.ground
     let changed = false
     if (kind === 'w') changed = sortWave(n[0], n[1])
     else if (kind === 'd') changed = sortDutyBlock(n[0], n[1])
     else if (kind === 's') changed = sortSims(n[0], rest[1])
     else if (kind === 'g') changed = sortGround(n[0])
     else if (kind === 'p') changed = sortProg(n[0])
-    if (changed) { afterSchedMutate(); notify() }
+    if (changed) {
+      afterSchedMutate(); notify()
+      if (kind === 'g' && gWasMan && gDay!.ground === gRowsBefore) toast('Ground programme back to time order')
+    }
     else toast('Already in order')
     return
   }

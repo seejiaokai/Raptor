@@ -175,11 +175,23 @@ export function sortSims(di:any,kind:any){
 /* Ground also clears gman — Auto sort IS the way back to time-sorted
    rendering, so calling it must switch manual mode off even on the one day
    it turns out there was nothing left to permute; that flag carries no
-   amendment key, so clearing it here never conflicts with "marks nothing". */
+   amendment key, so clearing it here never conflicts with "marks nothing".
+   But clearing it IS itself a change on a day that was frozen in manual
+   mode: the list resumes sorting itself even when the rows it was frozen
+   into already happened to read in time order, and a caller that reports
+   "nothing happened" there would be wrong — the day just stopped being
+   frozen (review fix, 9 Aug 26). `wasMan` is read before the clear so the
+   return can tell the two false-looking cases apart: truly nothing to do
+   (never marks, returns false) vs. only the flag moving (marks the row so
+   the day goes out amended, returns true, but the ROW ARRAY itself is left
+   untouched — same object, not a copy — which is what lets the caller in
+   board.ts tell "the flag flipped" apart from "the rows visibly moved" by
+   reference, without re-deriving the sort here a second time). */
 export function sortGround(di:any){
-  const d=DAYS[di]; const rows=d&&d.ground; if(d)d.gman=false; if(!Array.isArray(rows))return false;
+  const d=DAYS[di]; const rows=d&&d.ground; const wasMan=!!(d&&d.gman); if(d)d.gman=false;
+  if(!Array.isArray(rows))return false;
   const oldOf=keySort(rows.length,(i:any)=>parseHM(rows[i].str));
-  if(isIdentity(oldOf))return false;
+  if(isIdentity(oldOf))return wasMan?done(`gr:${di}.0.prog`):false;
   d.ground=oldOf.map((o:any)=>rows[o]);
   [`g:${di}.`,`gr:${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
   return done(`gr:${di}.0.prog`);

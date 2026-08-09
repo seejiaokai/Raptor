@@ -62,6 +62,24 @@ describe('sortGround', () => {
     expect(DAYS[0].ground.map((r: any) => r.prog)).toEqual(['A', 'B'])
     expect(DAYS[0].gman).toBeFalsy()
   })
+
+  /* the one combination review round 1 found untested: gman was set, but
+     the rows it was frozen into already happened to read in time order.
+     Nothing about the row array needs to move — yet the day WAS just
+     un-frozen, so this must report true, not the silence a pure identity
+     check would otherwise report. `.not.toBe` on the reference (not just
+     .toEqual on the content) is what actually proves the array was never
+     reassigned — matching content alone would pass even if reorder.ts
+     rebuilt a new, coincidentally-identical array. */
+  it('reports a change and clears gman when the flag was set but the rows already read in time order', () => {
+    DAYS[0].ground = [{ prog: 'A', str: '0800' }, { prog: 'B', str: '0900' }]
+    DAYS[0].gman = true
+    const before = DAYS[0].ground
+    expect(sortGround(0)).toBe(true)
+    expect(DAYS[0].gman).toBeFalsy()
+    expect(DAYS[0].ground).toBe(before)
+    expect(DAYS[0].ground.map((r: any) => r.prog)).toEqual(['A', 'B'])
+  })
 })
 
 describe('sortProg', () => {

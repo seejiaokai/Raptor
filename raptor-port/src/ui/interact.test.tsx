@@ -528,6 +528,23 @@ describe('the Auto sort buttons put a section back in order', () => {
     expect(DAYS[0].gman).toBeFalsy()
   })
 
+  /* review round 1: gman set, but the rows it was frozen into already read
+     in time order — sortGround reports true (the day DID un-freeze) and
+     the UI must say so, not the generic "Already in order" a pure identity
+     check would otherwise show for a click that changed nothing visible. */
+  it('tells the truth when Ground was manually frozen but already read in time order: something changed, and it says so', () => {
+    DAYS[0].ground = [{ prog: 'EARLIER', str: '0800' }, { prog: 'LATER', str: '1500' }]
+    DAYS[0].gman = true
+    act(() => notify())
+    mountBoard(0)
+    toasts = []
+    clickAttr('[data-sortsec="g.0"]')
+    expect(DAYS[0].ground.map((x: any) => x.prog)).toEqual(['EARLIER', 'LATER'])
+    expect(DAYS[0].gman).toBeFalsy()
+    expect(toasts).not.toContain('Already in order')
+    expect(toasts).toContain('Ground programme back to time order')
+  })
+
   it('sorts a flying wave by take-off time, without touching the jets inside a formation', () => {
     const w = DAYS[0].waves[0]
     w.formations = [

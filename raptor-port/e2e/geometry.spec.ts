@@ -1567,3 +1567,29 @@ test('a squadron member gets no grip and no nudge buttons', async ({ page }) => 
   const n = await page.evaluate(() => document.querySelectorAll('[data-move],[data-mvup]').length)
   expect(n).toBe(0)
 })
+
+/* The wave header ("Go N") packs the wave-title select, the in-time/
+   aircraft-count text and three .gctl buttons (Auto sort, + Line, ✕ Wave)
+   into one flex row. .sb-go has overflow:hidden, so anything that does not
+   fit is not scrollable — it is CROPPED, and ✕ Wave deletes the whole wave,
+   so a clipped, hard-to-hit label on a destructive control is a real
+   defect (found in review, 9 Aug 26: Auto sort's extra button pushed the
+   row 19px past its own width on a 390px phone). scrollWidth vs clientWidth
+   is a real-browser measurement jsdom cannot make — this is the assertion
+   that must fail against the un-fixed CSS and pass once .gctl gets its own
+   row on a phone. */
+test('the wave header does not overflow its own width on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-go-h')
+  const rows = await page.evaluate(() =>
+    [...document.querySelectorAll('#sbBoard .sb-go-h')].map(el => ({
+      scroll: (el as HTMLElement).scrollWidth,
+      client: (el as HTMLElement).clientWidth,
+    })))
+  expect(rows.length, 'the seed day has at least one wave header to measure').toBeGreaterThan(0)
+  for (const m of rows) {
+    expect(m.scroll, `scrollWidth ${m.scroll} must not exceed clientWidth ${m.client}`).toBeLessThanOrEqual(m.client)
+  }
+})
