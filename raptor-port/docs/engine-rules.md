@@ -301,7 +301,7 @@ the mark useless.
 
 ## Editable rules (Logic tab)
 
-`VCONF` (18 numbers) + `SHIFT_HARD` (6 gradings), admin-only.
+`VCONF` (19 numbers) + `SHIFT_HARD` (6 gradings), admin-only.
 `RULE_STD` frozen standard; `RULE_SPEC[k]={t,u,lo,hi}`. `ruleParse` accepts
 "12h", "2h20", "90", "0700". Storage keeps ONLY the diff in
 `localStorage['sqn142_rules']`; `rulesLoad` (called by `initStore` at boot —
