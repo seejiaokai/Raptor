@@ -28,7 +28,7 @@ export function SchedBoard() {
      `SBDAY != null`, so a nav click while the board was open left the
      modal (position:fixed, inset:0, z-index:400 — the whole viewport)
      fully mounted and painted on top of whatever page the user actually
-     navigated to, covering its own nav and edit toggle in the process
+     navigated to, covering that page's own nav in the process
      (HANDOFF.md, "board stays open across a page change"). This render
      gate is now belt-and-braces, not the only thing standing between a
      page change and a live board: state/view.ts's setPage clears SBDAY
@@ -170,7 +170,8 @@ export function SchedBoard() {
           {/* + Line / + Wave — matched to Sort all's own gate (coordinator
               review, 9 Aug 26): these two carried no editMode() gate of
               their own here, so they still rendered enabled on a read-only
-              board (edit toggle off, board still open on its own page) —
+              board (a session that may not edit it, board still open on
+              its own page) —
               the last "looks live, does nothing" pair, genuinely inert
               because addLine/addWave already refuse underneath (board.ts),
               but that is exactly the shape Sort all was fixed for three

@@ -172,11 +172,6 @@ test.describe('the week pans by whole day boxes', () => {
     await page.evaluate(() => { const w = window as any; w.txtSet('dn:0.0', 'GEOMETRY PROBE'); w.afterSchedMutate() })
     await page.waitForTimeout(300)
     expect(await settle(page, '#eWeek'), 'an edit holds the scroll').toBe(before)
-
-    await page.click('#editToggle'); await page.waitForTimeout(350)
-    expect(await settle(page, '#eWeek'), 'and so does the Edit-mode toggle').toBe(before)
-    expect(await page.evaluate(() => !!document.querySelector('#eWeek [contenteditable="true"]')),
-      'Edit mode OFF really is read-only').toBe(false)
   })
 })
 
@@ -1561,6 +1556,58 @@ test('a phone nudge moves a row and the board still reads correctly', async ({ p
   expect(await first()).not.toBe(was)
 })
 
+/* The board's inputs-band remarks cell is a ONE-LINE truncated summary whose
+   full text lives in its title tooltip — not wrapping prose. That was not
+   obvious from the stylesheet: the wrap rule (`overflow-wrap:anywhere`)
+   listed `.sbi-rmk` while the markup emits `.sbi-rm`, a typo carried over
+   verbatim from the original page, so for the whole life of both builds the
+   rule matched nothing. Correcting the spelling was measured first and
+   changes NOTHING — `white-space:nowrap` leaves no soft wrap opportunity for
+   the property to act on, at either width — so the dead name was deleted
+   instead (9 Aug 26). This test is what stops that being re-argued, or
+   re-"fixed" into a rule that does nothing: it asserts the cell's real
+   contract in a real browser, which is the only place it is visible at all
+   (jsdom reports every rect as 0x0 and loads no stylesheet).
+   The remark is one 80-character unbreakable word on purpose: a wrappable
+   sentence would pass this test even with the nowrap lost. */
+test('a long unbreakable remark stays one clipped line and keeps its full text in the tooltip', async ({ page }) => {
+  const LONG = 'RETURNINGFROMDETACHMENTVIAPAYALEBARANDTENGAHWITHNOFIXEDTIMEOFARRIVALPLEASECONFIRM'
+  for (const size of [DESK, PHONE]) {
+    await page.setViewportSize(size)
+    await login(page); await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbBoard .sbi-row .sbi-rm')
+    await page.evaluate((t) => {
+      const w = window as any
+      w.INPUTS.filter((i: any) => w.inputCoversDate(i, w.DAYS[0].dt)).forEach((i: any) => { i.remarks = t })
+      w.renderScheduler()
+    }, LONG)
+    await page.waitForTimeout(300)
+    const m = await page.evaluate(() => {
+      const el = document.querySelector('#sbBoard .sbi-row .sbi-rm') as HTMLElement
+      const row = el.parentElement as HTMLElement
+      const cs = getComputedStyle(el)
+      return {
+        text: el.textContent, title: el.title,
+        h: Math.round(el.getBoundingClientRect().height),
+        ws: cs.whiteSpace, te: cs.textOverflow, ov: cs.overflowX,
+        rowW: Math.round(row.getBoundingClientRect().width), rowScrollW: row.scrollWidth,
+      }
+    })
+    const tag = size === DESK ? 'desktop' : 'phone'
+    expect(m.text, `${tag}: sanity — the long remark really is the one being measured`).toBe(LONG)
+    expect(m.title, `${tag}: the full text is reachable in the tooltip, since the cell clips it`).toBe(LONG)
+    /* ONE line. A wrapped 80-character word would be several times this at
+       11px/10.5px, so a lost nowrap fails here rather than passing quietly. */
+    expect(m.h, `${tag}: the remark stays on a single line`).toBeLessThanOrEqual(20)
+    expect(m.ws, `${tag}: nowrap is the mechanism, not an accident of the text`).toBe('nowrap')
+    expect(m.te, `${tag}: clipped with an ellipsis, not cut mid-glyph`).toBe('ellipsis')
+    expect(m.ov, `${tag}: the overflow is hidden, so the ellipsis can be drawn`).toBe('hidden')
+    /* and the row it sits in gains no sideways scroll from it */
+    expect(m.rowScrollW, `${tag}: the remark does not push its own row wider`).toBeLessThanOrEqual(m.rowW + 1)
+  }
+})
+
 /* finding #1 (whole-branch review, 9 Aug 26): sbGrip() used to return '' for
    a read-only board, but every row template in scheduler.css unconditionally
    keeps its leading 18px grip track — so a read-only board lost each row's
@@ -1571,17 +1618,20 @@ test('a phone nudge moves a row and the board still reads correctly', async ({ p
    `hidden` only tracks SBDAY, never the page), which is the whole reason
    the read-only render path exists. jsdom cannot see this at all (every
    rect is 0x0), so it has to be a real-browser measurement.
-   UPDATED (closing HANDOFF.md's "board stays open across a page change"
-   gap): a nav click no longer leaves the board open on the wrong page —
-   SchedBoard's `open` now also requires CURPAGE==='editsched', so this
-   test's original reproduction path (open the board, click View sched)
-   now hides the board outright instead of leaving it read-only-but-open,
-   which the block below this one pins directly. The register bug's fix
-   (sbGrip always emitting its track) is still live defence, because the
-   board CAN still legitimately be open and read-only on its own page —
-   the edit toggle switched off. That is the surviving path exercised
-   here now. */
-test('the board keeps its row register once edit mode is switched off (finding #1, via the edit toggle now)', async ({ page }) => {
+   UPDATED TWICE. First (closing HANDOFF.md's "board stays open across a
+   page change" gap): a nav click no longer leaves the board open on the
+   wrong page — SchedBoard's `open` now also requires
+   CURPAGE==='editsched', so the original reproduction path (open the
+   board, click View sched) hides the board outright, which the block below
+   this one pins directly; the surviving read-only-but-open board was the
+   edit toggle switched off. Then (9 Aug 26) the toggle itself was removed
+   (owner), so the ONE remaining way to a rendered read-only board is a
+   session that may not edit one — a squadron member, driven in through
+   the same bare globals the member tests below use. The register bug's fix
+   (sbGrip always emitting its track) is still live defence for exactly
+   that render, and this measures both sides of it: an admin's board and a
+   member's must put the same fields in the same tracks. */
+test('the board keeps its row register on a read-only render (finding #1, via a member session now)', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await login(page); await go(page, 'editsched')
   await page.evaluate(() => (window as any).openScheduler(0))
@@ -1602,21 +1652,23 @@ test('the board keeps its row register once edit mode is switched off (finding #
   expect(edit.lin).toBeGreaterThan(50)
   expect(edit.nts).toBeGreaterThan(300)
 
-  /* the edit toggle, not a page nav — the board stays open on ITS OWN page
-     (part 1 of the fix closes the page-nav route to a read-only-but-open
-     board), so this is the surviving way to reach one. `.click()` via
-     evaluate rather than a real pointer click for the same reason every
-     other bare-global call in this file uses one: the render gate is what
-     is under test, not whether a real pointer could reach the switch. */
-  await page.evaluate(() => (document.getElementById('editToggle') as HTMLElement)?.click())
-  await page.waitForFunction(() => (window as any).editMode() === false)
+  /* a member session, not a page nav and no longer a toggle: setPage +
+     openScheduler are bare app globals with no role check of their own
+     (the same door the member tests below use), because a member has no
+     Edit Schedule link to click. login() re-navigates, so the read-only
+     board is measured in a genuinely fresh session at the same viewport —
+     which is what makes comparing the two sets of widths meaningful. */
+  await login(page, 'user')
+  await page.evaluate(() => (window as any).setPage('editsched'))
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard .sb-line')
+  expect(await page.evaluate(() => (window as any).editMode()),
+    'sanity: this really is the read-only render').toBe(false)
   const ro = await measure()
   expect(ro.lin, 'the callsign input keeps its full width, not the 18px grip track').toBeGreaterThan(50)
   expect(ro.nts, 'the notes input stays usable, not squeezed into ~22px').toBeGreaterThan(300)
   expect(Math.round(ro.lin)).toBe(Math.round(edit.lin))
   expect(Math.round(ro.nts)).toBe(Math.round(edit.nts))
-
-  await page.evaluate(() => (document.getElementById('editToggle') as HTMLElement)?.click())   // restore
 })
 
 /* HANDOFF.md, "the board stays open across a page change" — part 1 of the

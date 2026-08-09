@@ -6,7 +6,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify, writeSlot } from '../state/store'
+import { initStore, setSession, notify, writeSlot, setPage } from '../state/store'
 import { SCHED, dayApproved } from '../engine/publish'
 import { slotVal } from '../engine/slots'
 import { isScheduler, PEOPLE } from '../engine/people'
@@ -143,16 +143,23 @@ describe('the edit page (tfin)', () => {
     await act(async () => { writeSlot(key, before) })
   })
 
-  it('right-click clears a filled slot — but only with Edit mode ON (tfin #17)', async () => {
+  /* tfin #17. The Edit-mode toggle used to be what this switched off; it was
+     removed 9 Aug 26 (owner) and the PAGE is the switch now, so "not in edit
+     mode" is reached by leaving Edit Schedule. The section stays in the DOM
+     either way (only its `on` class moves), so the same stale seat element is
+     still there to right-click — which is exactly the hostile case worth
+     pinning: the handler must refuse on the element, not rely on it being
+     unreachable. */
+  it('right-click clears a filled slot — but only in edit mode (tfin #17)', async () => {
     const key = '0.0.0.0.p'
     const id = slotVal(key)
     expect(id).toBeTruthy()
-    /* Edit mode OFF: the right button may not change a thing */
-    await click($('#editToggle'))
+    /* off the edit page: the right button may not change a thing */
+    await act(async () => { setPage('viewsched'); notify() })
     await act(async () => { $(`#eWeek .seat[data-slot="${key}"]`)!.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })) })
     expect(slotVal(key)).toBe(id)
-    /* Edit mode ON: it clears */
-    await click($('#editToggle'))
+    /* back on Edit Schedule: it clears */
+    await act(async () => { setPage('editsched'); notify() })
     await act(async () => { $(`#eWeek .seat[data-slot="${key}"]`)!.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })) })
     expect(slotVal(key)).toBe('')
     await act(async () => { writeSlot(key, id) })

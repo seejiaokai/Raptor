@@ -9,7 +9,7 @@ import { App } from './App'
 import { initStore, wireStore, setSession, notify } from '../state/store'
 import { slotVal, setSlotVal, rowCrew, fillSlot } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
-import { setEditOn, afterSchedMutate, armedKey } from '../state/view'
+import { afterSchedMutate, armedKey } from '../state/view'
 import { dragFrom, applyDrop, setDrag } from './drag'
 import { openScheduler, closeScheduler } from './board'
 import { DAYS } from '../engine/data'
@@ -46,7 +46,6 @@ beforeAll(async () => {
   await act(async () => { createRoot(host).render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
-  await act(async () => { setEditOn(true); notify() })
   HOOKS.toast = (m: any) => { toasts.push(String(m)) }
 })
 
@@ -340,7 +339,8 @@ describe('applyDrop refuses on a read-only board, not just the render (reviewer-
     const puck = document.querySelector('#sbRoster [data-person][draggable="true"]') as HTMLElement
     expect(puck, 'sanity: a draggable roster puck exists').toBeTruthy()
     const before = JSON.stringify(DAYS[0].dutywaves)
-    /* HOOKS.editMode stubbed directly, NOT setEditOn()+notify() — the same
+    /* HOOKS.editMode stubbed directly rather than reached through a real
+       page change + notify() — the same
        "stale element" shape every other write-path test in this task uses,
        and for the same reason: notify() would re-render the duty panel
        through board-html.ts's OWN render widening, which DETACHES `fill`

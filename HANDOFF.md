@@ -7,40 +7,123 @@ those two don't: **what is still open**, and **where each file lives**.
 The port from the original single-file app is complete; that history is in
 `git log`. This is the live application now, under active development.
 
-**Every gate is green at this commit**, run first-hand: `npm test` 782 tests
+**Every gate is green at this commit**, run first-hand: `npm test` 819 tests
 across 47 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 48/48, and the two that are NOT in CI — `npm run
-probes:adapted` 6/6 and `npm run perf` 9/0. Re-state these only after
-re-running them.
+run test:e2e` 50/50, and `npm run probes:adapted` 6/6 (not in CI). Re-state
+these only after re-running them.
+**`npm run perf` is the one gate that does NOT read the same way twice, and
+it is not a fault in the code.** It is 7 assertions now, not 9 — the
+Edit-mode toggle's own two went with the toggle, 9 Aug 26 — and six of the
+seven are solidly green every run. The seventh, the one-day-edit per-node
+budget, straddles its own 1.15 line on this container: nine readings of THIS
+commit ranged 1.08×–1.23×, so it returns 7/0 on some runs and 6/1 on others.
+The unchanged parent commit behaves the same way, and a paired
+measurement (below) found no difference between them. The budget was
+deliberately NOT raised to make it quiet — a budget loosened to cover
+estimator noise stops catching a real regression.
 **`probes:adapted` and `perf` do NOT serve themselves** — start
 `npx vite preview --port 4173` first or both fail with
 `ERR_CONNECTION_REFUSED`, which reads like a code fault and is not
 (8 Aug 26). Playwright's own gate builds and serves itself.
+**And that cuts the other way, which cost real time on 9 Aug 26: if a
+preview is ALREADY running on 4173, `npm run test:e2e` reuses it and never
+rebuilds** (`reuseExistingServer` in `playwright.config.ts`, off in CI only)
+— so e2e silently measures whatever was built last, not your working tree. A
+CSS change was proven "still passing" against a stale bundle that way, and a
+deliberately-broken control case passed too, which is how it was caught.
+**Kill the preview before trusting an e2e run after editing CSS or markup**,
+or run the two in the other order: e2e first, then start the preview for the
+probes.
 (`npm run perf`'s one-day-edit budget was seen swinging 1.01×–1.28× across
 runs on identical code on a busy container, 7 Aug 26 — rerun before
-believing a single red.)
+believing a single red. Re-measured 9 Aug 26 and the advice is now sharper.
+Nine readings of ONE commit ranged 1.08×–1.23× per node against a 1.15
+budget — it straddles the budget on this container, so a single red proves
+nothing either way. **The only measurement that settles it is a PAIRED
+one**: build the parent commit into a second directory, serve it on a second
+port, and run `PORT_URL=… npm run perf` alternately against both in the same
+window. Done that way, three alternating rounds gave per-node differences of
++0.07, −0.05 and +0.01 — i.e. none. Unpaired runs minutes apart are not
+comparable here; the reference's own timing drifts as much as the port's.
+`noop` is the useful cross-check while diagnosing: it repaints the same week
+WITHOUT the edit, so a real week-render regression moves it too — it sat at
+0.56×–0.57× per node throughout, on both builds.)
 
 ## Known issues / open work
 
-- **NEXT PIECE OF WORK — remove the Edit-mode toggle entirely (owner, 9 Aug 26).**
-  Decided but deliberately NOT done on the reorder branch: the owner's sequencing
-  call, after two late additions to that branch each introduced a defect worse
-  than the one they fixed. His reasoning: the board is reachable only as admin →
-  Edit Schedule → board, so intent to edit is implied by being there at all.
-  The stronger argument is that **View-only Sched already IS the read-only mode**,
-  so the toggle is a second mechanism for the same job — and most of the
-  read-only-board defects fixed on that branch (a live board accepting typing,
-  adds and deletes; a right-click that cleared a week puck; controls that looked
-  live and did nothing) exist ONLY because that state can be entered at all.
-  Removing it deletes the class rather than guarding it.
-  Scope: `HOOKS.editMode()` becomes `canEditSched() && CURPAGE==='editsched'`
-  (drop `EDITON`), the `.editing` class goes unconditional on that page,
-  `Shell.tsx` loses `#editToggle`, and the tests and probes that click it need
-  updating. `EDITON` already defaults to `true`, so nobody meets it off unless
-  they turned it off. **Parity is not at risk** — the toggle is Shell chrome, not
-  part of the string-built day markup `parity.test.ts` compares.
-  Cost flagged to the owner and accepted: the toggle doubles as an
-  accidental-edit guard on a phone; View-only Sched covers that one tap away.
+- **DONE (9 Aug 26) — the Edit-mode toggle is gone.** The owner's reasoning:
+  the board is reachable only as admin → Edit Schedule → board, so intent to
+  edit is implied by being there at all, and **View-only Sched already IS the
+  read-only mode** — the toggle was a second mechanism for the same job, and
+  most of the read-only-board defects fixed on the reorder branch (a live
+  board accepting typing, adds and deletes; a right-click that cleared a week
+  puck; controls that looked live and did nothing) existed ONLY because that
+  state could be entered at all. Removing it deletes the class rather than
+  guarding it. Cost flagged and accepted before the build: the toggle doubled
+  as an accidental-edit guard on a phone; View-only Sched covers that one tap
+  away. Recorded in `CLAUDE.md` §Stable decisions so it is not re-proposed.
+  `HOOKS.editMode()` is now `canEditSched() && CURPAGE==='editsched'`,
+  `EDITON`/`setEditOn` are deleted from `state/view.ts`, `.editing` rides
+  unconditionally with the edit page, and `Shell.tsx` lost `#editToggle` and
+  its `Editing` label. Parity was never at risk — the toggle was Shell chrome,
+  not part of the string-built day markup `parity.test.ts` compares, and the
+  suite confirmed it.
+  **What this changes for the next reader, and it is the one thing worth
+  knowing:** a rendered read-only BOARD is now reachable only two ways — a
+  published-version preview (`pv`), or a session that may not edit one (the
+  role gate). Every read-only render path (`stoRO`/`mvRO`/`ro`, `sbGrip`'s
+  `.ro` track, `applyDrop`'s mode check) is still live defence for exactly
+  those two, and is still tested — but every test that used to reach that
+  state by switching the toggle off was rewritten to reach it by role
+  instead (`board.test.tsx`, `board-stores.test.tsx`, `e2e/geometry.spec.ts`),
+  and one that became a pure duplicate of its neighbour was deleted.
+  **One coverage claim was retired honestly rather than faked.** Round 3 of
+  the ship review added a test for the ONE state only `Shell.tsx`'s
+  `HOOKS.editMode()` line protected — a board open on Edit Schedule with the
+  toggle off. That state no longer exists: `setPage` clears `SBDAY` on every
+  exit from Edit Schedule, so `SBDAY != null` now IMPLIES
+  `CURPAGE === 'editsched'`, which makes the old
+  `HOOKS.editMode() || SBDAY != null` and plain `HOOKS.editMode()` provably
+  equivalent for an admin. No test can distinguish them any more; don't write
+  one that pretends to. The test was rewritten to pin the behaviour that IS
+  still distinguishable (a session that may not edit cannot right-click-clear
+  a seat, board open or not), and the page half of the gate — what breaks if
+  the `editMode()` line is deleted outright — is pinned by
+  `editweek.test.tsx`'s tfin #17, which now leaves Edit Schedule instead of
+  flipping a switch.
+  **`npm run perf` lost its block F** ("the Edit-mode toggle holds its
+  place", two assertions), so the gate is 7/0, not 9/0. It measured the
+  week's scroll across a whole-week repaint; nothing replaced it, because no
+  other control repaints all seven days in one gesture. D still measures the
+  same scroll-hold across an edit, which is the mechanism the budget
+  protects. `e2e/geometry.spec.ts`'s scroll test lost its toggle half for the
+  same reason.
+  **A small dead-code sweep rode along, since the ask was to de-clutter.**
+  `state/view.ts`'s `dayPreview()` accessor had no callers anywhere (the
+  `DPREV` map is read directly); the reference's edit-footer rules
+  (`.schedfoot`, `.sf-box`, `.sf-h`, `.sf-body`) and `.sb-hint` were deleted
+  from `scheduler.css` — hand-written static markup in the original that this
+  port never builds, verified absent from the BUILT bundle and not just the
+  source. Stylesheet 100.8 KB → 100.1 KB. `.asub` is dead in two selector
+  lists and was left — it sits inside rules that do other work.
+  **The `.sbi-rmk` typo was raised as the owner's call and then closed by him
+  the same day, and the ANSWER is the interesting part.** The wrap rule
+  (`overflow-wrap:anywhere`) listed `.sbi-rmk` while the board's inputs-band
+  remarks cell emits `.sbi-rm` — a typo carried over verbatim from the
+  original page, so the rule matched nothing on either build for the whole
+  life of both. Correcting the spelling was MEASURED before it was applied,
+  and it does nothing: `.sbi-row .sbi-rm` is deliberately
+  `white-space:nowrap` + `text-overflow:ellipsis`, which leaves no soft wrap
+  opportunity for the property to act on. With an 80-character unbreakable
+  remark, at 1500px and at 390px, the cell's width, height and scrollWidth
+  and its row's width were identical with the property applied and without
+  it. So the fix was to DELETE the dead name, not to correct it — shipping a
+  rule that provably does nothing is the same clutter in a new disguise.
+  That cell is a one-line truncated summary whose full text lives in its
+  `title` tooltip, which is the design, not an accident. Pinned by "a long
+  unbreakable remark stays one clipped line" in `e2e/geometry.spec.ts` — the
+  test fails if the nowrap is ever lost or the property re-added — so this
+  does not get re-argued from the stylesheet alone.
 - **No shared data.** localStorage only — two devices never see each
   other's edits. The obvious next enhancement (needs a server or a sync
   backend; touches `engine/hooks.ts:storeBackend` and the mutation funnel).
@@ -860,8 +943,10 @@ believing a single red.)
   1. **The read-only board lost its row register.** `sbGrip()` returned `''`
      for a read-only render, but every row template in `scheduler.css`
      unconditionally reserves the grip's leading 18px track — so a read-only
-     board (reachable by opening the board, then clicking View-only Sched;
-     the board deliberately stays open) lost each row's FIRST grid item
+     board (reachable at the time by opening the board and clicking
+     View-only Sched — the board used to stay open; today the two routes
+     are a published-version preview and a session that may not edit)
+     lost each row's FIRST grid item
      while the template still had ten tracks, and every field walked one
      track left of its own header. Fixed by emitting `<span class="sb-grip">`
      unconditionally and gating only a new `.ro` class, which
@@ -971,7 +1056,7 @@ believing a single red.)
 | file | what it does |
 |---|---|
 | `store.ts` | `notify()`/subscribe/version; `wireStore()` maps HOOKS→notify (including the role-aware `editMode()`); **`resetSession()` — the ONE session-change path, used by every login and logout**; write helpers; `initStore()` boot (wires, **rulesLoad**, validate, history baseline). |
-| `view.ts` | UI state the engine reads: CURPAGE, SBDAY, EDITON, ROSDAY, ARM, selection (SELID/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — clicking a puck lights every copy of that person), `afterSchedMutate()`, `focusWarn`, setters. |
+| `view.ts` | UI state the engine reads: CURPAGE, SBDAY, ROSDAY, ARM, selection (SELID/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — clicking a puck lights every copy of that person), `afterSchedMutate()`, `focusWarn`, setters. |
 | `history.ts` | HIST snapshots, `histPush`/`histApply`, undo/redo bodies. |
 | `auth.ts` | SESSION, `setSession` (resets LGEDIT), `canEditSched`, ME/`setMe`. |
 | `users.ts` | The Manage-users prototype list. |

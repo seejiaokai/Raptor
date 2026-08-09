@@ -8,8 +8,8 @@ several are measured and suite-enforced, not preferences.
 
 - An edit on one day must not visibly disturb the other days (per-day string
   diff in ViewWeek/EditWeek; per-panel diff in SchedBoard).
-- The week keeps its scroll through any edit and through an Edit-mode
-  toggle; the palette keeps its scroll; wave blocks keep swipe offset.
+- The week keeps its scroll through any edit; the palette keeps its scroll;
+  wave blocks keep swipe offset.
 - Only the page on screen re-renders (CURPAGE gates in the week effects);
   Shell chrome is memoized; no `validate()` during render — mutation paths
   validate. Perf gate: `probes/perf-port.cjs` (port ≤ reference × 1.15 on a

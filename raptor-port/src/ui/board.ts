@@ -32,18 +32,14 @@ const afterSchedMutate = () => view.afterSchedMutate()
    would invite edits against the wrong document. */
 export function boardHTML(di: number, pv?: boolean) {
   const d = DAYS[di]
-  /* the stores chips/C follow HOOKS.editMode(), not just pv: the board is a
-     modal that stays open across a nav click (SchedBoard's `hidden` only
-     tracks SBDAY, never CURPAGE), so a duty crew on View-only Sched who
-     still has a board open from earlier must see the same read-only chips
-     the week shows them there. editMode() — not a bare CURPAGE test — so
-     the render gate is EXACTLY the click gate interactions.ts already uses
-     for data-store/data-stcfg (canEditSched() && CURPAGE==='editsched' &&
-     EDITON): a CURPAGE-only test would still render the clickable chips
-     and the contenteditable bombs field with EDITON off, and routeFocusOut
-     (textedit.ts) checks only canEditSched() — so a blur on that field
-     would commit and markEdit in a state the week would never have
-     rendered the field in at all. */
+  /* the stores chips/C follow HOOKS.editMode(), not just pv: the render gate
+     is then EXACTLY the click gate interactions.ts uses for
+     data-store/data-stcfg (canEditSched() && CURPAGE==='editsched'). A bare
+     CURPAGE test would still render the clickable chips and the
+     contenteditable bombs field for a session that may not edit, and
+     routeFocusOut (textedit.ts) checks only canEditSched() — so a blur on
+     that field would commit and markEdit in a state the week would never
+     have rendered the field in at all. */
   const stoRO = pv || !HOOKS.editMode()
   /* same gate as the stores chips: pv OR not in edit mode. A duty crew who
      still has a board open after navigating away must not get live controls. */
@@ -67,9 +63,9 @@ export function boardHTML(di: number, pv?: boolean) {
     /* mvRO, not pv (reviewer-found residual, 9 Aug 26): the wave header's
        own title select and its + Line / ✕ Wave pair were still pv-only,
        the same gap as everything else in this pass — a read-only board
-       (edit toggle off, board still legitimately open on its own page)
-       left the whole-wave rename and delete live even after the flying
-       line's own rows went inert. */
+       (a session that may not edit it, board still legitimately open on
+       its own page) left the whole-wave rename and delete live even
+       after the flying line's own rows went inert. */
     fly += `<div class="sb-go"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
       + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${mvRO ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
       + `${w.night ? '<span class="night">· night</span>' : ''}`
@@ -87,8 +83,8 @@ export function boardHTML(di: number, pv?: boolean) {
          the grip, the nudge buttons, Sort all) already follows stoRO/mvRO
          (pv OR not in edit mode), but the flying line's own callsign,
          mission, brief, take-off, land and remarks inputs were still
-         gated on pv by itself — so a board left open on a read-only page,
-         or open with the edit toggle off, still let typed text commit.
+         gated on pv by itself — so a board open for a session that may
+         not edit it still let typed text commit.
          Same variable, same widening, no second mechanism. */
       const dis = stoRO ? ' disabled' : ''
       /* B (owner, 6 Aug 26), same funnel key and suggestion idiom as the

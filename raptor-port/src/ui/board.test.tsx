@@ -42,8 +42,8 @@ const change = async (el: Element, value: string) => {
    this reference (an existing pattern this file already used before this
    task), which is fine for those tests but leaves HOOKS.editMode a dead
    stub for the rest of the file afterwards — the last describe block below
-   restores THIS to prove the real EDITON->editMode()->render pipeline, not
-   a stub standing in for it. */
+   restores THIS to prove the real role/CURPAGE->editMode()->render
+   pipeline, not a stub standing in for it. */
 let realEditMode: () => boolean
 
 beforeAll(async () => {
@@ -970,7 +970,7 @@ describe('the blocker: a board left open cannot be used to clear a WEEK puck aft
   /* an earlier describe in this file (finding #4's "board mutation handlers"
      block) leaves HOOKS.editMode hard-stubbed `() => true` in its own
      afterEach — correct for what THAT block tests, but it would make this
-     test pass for the wrong reason (the stub, not the real EDITON/CURPAGE
+     test pass for the wrong reason (the stub, not the real role/CURPAGE
      wiring, reading true). Put the real implementation back, same as the
      "edit mode itself" block at the end of this file does. */
   beforeAll(async () => { HOOKS.editMode = realEditMode; await act(async () => { notify() }) })
@@ -1006,18 +1006,25 @@ describe('the blocker: a board left open cannot be used to clear a WEEK puck aft
      Edit Schedule now closes the board outright, so `SBDAY != null` goes
      false on its own and the escape hatch's OTHER half (removing `||
      SBDAY != null` from Shell.tsx entirely) is never what makes that
-     specific test pass. Proven by the coordinator reverting just that one
-     line: the full suite stayed 813/813 and e2e 50/50 — zero coverage on
-     load-bearing code. This test targets the case ONLY that line protects:
-     a board open on ITS OWN page (Edit Schedule, so SBDAY != null is
-     genuinely true, not merely stale) with the edit toggle off. The old
-     `HOOKS.editMode() || SBDAY != null` would still read true here — the
-     escape hatch's whole point was "the board is open, trust it" — even
-     though editMode() alone (EDITON off) correctly reads false. */
-  it('right-clicking an EDIT WEEK seat does NOT clear it when a board is open on its own page but the edit toggle is off', async () => {
-    await act(async () => { openScheduler(0); notify() })
+     specific test pass. That test used to reach the distinguishing state
+     by switching the Edit-mode toggle off, which is the one thing that
+     could hold a board open on Edit Schedule with editMode() false.
+     REWRITTEN 9 Aug 26, and the reason matters: with the toggle gone
+     (owner), setPage clears SBDAY on every exit from Edit Schedule, so
+     SBDAY != null now IMPLIES CURPAGE === 'editsched' — which makes
+     `HOOKS.editMode() || SBDAY != null` and `HOOKS.editMode()` provably
+     equivalent for an admin, and no test can tell them apart any more.
+     Don't write one that pretends to. What is still worth pinning here is
+     the BEHAVIOUR nothing else in this suite covers: a session that may
+     not edit cannot clear a seat by right-click even with a board open
+     (openScheduler is a bare global with no role check of its own, the
+     same door e2e's member-board tests use). The page half of the gate —
+     the part that would break if the editMode() line were deleted outright
+     — is pinned by the test above and by editweek.test.tsx's tfin #17. */
+  it('right-clicking an EDIT WEEK seat does NOT clear it for a session that may not edit, board open or not', async () => {
+    await act(async () => { setSession({ user: 'user', role: 'main' }); view.setPage('editsched'); openScheduler(0); notify() })
     expect(SBDAY, 'sanity: the board is genuinely open, not stale').toBe(0)
-    await act(async () => { view.setEditOn(false); notify() })
+    expect(HOOKS.editMode(), 'sanity: the role, not the page, is what makes this read-only').toBe(false)
     try {
       const seat = $('#eWeek .seat[data-slot]') as HTMLElement
       expect(seat, 'sanity: the edit week has a seat to target').toBeTruthy()
@@ -1029,7 +1036,7 @@ describe('the blocker: a board left open cannot be used to clear a WEEK puck aft
       })
       expect(slotVal(key), 'the seat was NOT cleared').toBe(before)
     } finally {
-      await act(async () => { view.setEditOn(true); notify() })   // leave the suite as later blocks expect
+      await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); notify() })
     }
   })
 })
@@ -1400,21 +1407,21 @@ describe('the OTHER panels honour the read-only flag too, not just the flying li
 })
 
 /* the same six behaviours above, proven UNCHANGED for a real scheduler in
-   edit mode — not a stub this time, the genuine #editToggle switch, so the
-   whole pipeline (EDITON -> HOOKS.editMode() -> render -> write path) is
-   exercised end to end at least once. */
+   edit mode — not a stub this time, the genuine wireStore() function, so
+   the whole pipeline (role + CURPAGE -> HOOKS.editMode() -> render ->
+   write path) is exercised end to end at least once. */
 describe('edit mode itself is completely unaffected by any of the above', () => {
   beforeAll(async () => {
     /* undo every earlier describe block's `HOOKS.editMode = () => true`
        stub in this file and put the REAL wireStore()-installed function
-       back, so this block actually exercises EDITON, not a fixed stub that
-       happens to also read true. */
+       back, so this block actually exercises the real gate, not a fixed
+       stub that happens to also read true. */
     HOOKS.editMode = realEditMode
     await act(async () => { notify() })
   })
 
   it('a callsign edit commits, + adds an aircraft, CX opens its dialog, and the seat arms — all normally', async () => {
-    expect(view.EDITON, 'sanity: edit mode is on to start with').toBe(true)
+    expect(HOOKS.editMode(), 'sanity: edit mode is on to start with').toBe(true)
     const input = document.querySelector('#sbBoard .sb-line .lin') as HTMLInputElement
     expect((input as any).disabled, 'the input is genuinely enabled').toBe(false)
     const key = input.dataset.bfld!
@@ -1443,16 +1450,19 @@ describe('edit mode itself is completely unaffected by any of the above', () => 
     await act(async () => { setSlotVal(emptyKey, seatBefore); afterSchedMutate(); notify() })
   })
 
-  it('switching the edit toggle off and back on reaches the same read-only render through the real pipeline, not just a stub', async () => {
-    const toggle = $('#editToggle')
-    expect(toggle, 'sanity: the toggle exists on Edit Schedule').toBeTruthy()
-    await click(toggle)
-    expect(view.EDITON).toBe(false)
+  /* the read-only board through the REAL pipeline, not a stub. This used to
+     switch the Edit-mode toggle off; the toggle is gone (owner, 9 Aug 26),
+     so a session that may not edit is what makes editMode() false while a
+     board is still open — and that is now the only such state, which is
+     precisely why it is worth rendering rather than stubbing. */
+  it('a session that may not edit reaches the same read-only render through the real pipeline, not just a stub', async () => {
+    await act(async () => { setSession({ user: 'user', role: 'main' }); view.setPage('editsched'); openScheduler(0); notify() })
     expect(HOOKS.editMode()).toBe(false)
     const line = document.querySelector('#sbBoard .sb-line') as HTMLElement
+    expect(line, 'sanity: the board really rendered rows — otherwise this proves nothing').toBeTruthy()
     expect((line.querySelector('.lin') as HTMLInputElement).disabled, 'the real render, not a stub, disables it').toBe(true)
     expect(line.querySelector('[data-lcx]'), 'and the real render omits the CX cluster').toBeFalsy()
-    await click(toggle)   // back on for anything after this file
-    expect(view.EDITON).toBe(true)
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); notify() })
+    expect(HOOKS.editMode()).toBe(true)
   })
 })
