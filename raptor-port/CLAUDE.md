@@ -54,6 +54,19 @@ barely more than one.
   - This is about VOCABULARY, not depth. Do not thin out the reasoning, the
     trade-offs or the caveats; say them in ordinary words. Never hide a
     limitation because explaining it would take a sentence more.
+  - **Keep it SHORT and ordinary** (owner, 10 Aug 26 — "can u speak to me in
+    layman terms, u are starting to sound weird"). Plain-language is not a
+    licence for length or for a literary register. Short sentences, everyday
+    words, no flourishes, no drum-roll structure, no repeating a point for
+    effect. The 6 Aug rule above bans jargon; this one bans PADDING. If a
+    reply is running past a screen, most of it is probably restatement.
+- **Tell him when you are DONE, with `PushNotification`** (owner, 10 Aug 26 —
+  "give me a notification so that I know when to reply"). He steps away while
+  a task runs, so send one when the work is genuinely finished — gates run,
+  PR merged, nothing left in flight — and when you are BLOCKED and waiting on
+  his answer. One line, plainly, what happened. Do NOT notify for progress
+  updates, for a quick reply he is clearly sitting there watching, or twice
+  for the same piece of work.
 - **Ship it.** Once the gates are green, open a PR to `main` and merge so
   it deploys — don't wait to be asked (unless a gate is red or the change
   was called an experiment).
