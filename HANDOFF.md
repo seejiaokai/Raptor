@@ -288,13 +288,22 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
   biggest time-waster in this pipeline.** Repeatedly it reported a step "in
   progress" that had finished half an hour earlier — a gate that took 2m17s
   looked hung for 35 minutes, and the natural conclusion (something is wrong
-  with my change) was wrong every time. Two things help, both measured:
-  `list_workflow_jobs` refreshes sooner than `get_workflow_job` or the PR
-  check-runs endpoint, and the ONLY trustworthy signal for a publish is the
-  deployed page itself — poll `curl -sS https://seejiaokai.github.io/Raptor/`
+  with my change) was wrong every time.
+  **`list_workflow_jobs` is NOT a reliable way round it** — that was the
+  advice here until 10 Aug 26, when a PR gate that finished at 10:36:13 was
+  still being reported step-by-step as "Geometry in progress" by that very
+  endpoint more than thirty minutes later. It is sometimes fresher; it is not
+  dependably fresher, so do not plan around it. On that run the PR
+  **check-runs** endpoint was the one that eventually told the truth.
+  What DOES work, both measured: for a PUBLISH, the deployed page itself is
+  the only trustworthy signal — poll `curl -sS https://seejiaokai.github.io/Raptor/`
   for the new bundle hash out of `dist/index.html` (Pages rolled over in
-  90 s–3.5 min all day, nowhere near the ten-minute ceiling). Never conclude a
-  run is hung from that API alone, and never re-run or dispatch on it.
+  90 s–3.5 min all day, nowhere near the ten-minute ceiling). For a PR GATE
+  there is no page, so there is no fast signal at all: budget for the answer
+  arriving up to half an hour after the job really finished, poll on a long
+  interval rather than a short one, and spend the wait on something else.
+  Never conclude a run is hung from that API alone, and never re-run or
+  dispatch on it.
 - **Two token traps.** A merge made with the **raw session token** (curl
   `PUT /pulls/{n}/merge`) produces NO push-deploy at all, while a merge
   through the **GitHub tooling** triggers one normally — so do not reflexively

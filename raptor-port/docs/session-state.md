@@ -23,9 +23,10 @@ layered on. Build one was brainstormed, spec'd and shipped in one sitting.
   Design note: `raptor-port/docs/superpowers/specs/2026-08-10-leave-types-design.md`.
 - **PR #134 — corrected this file**, which still claimed #133 was open.
   Merged.
-- **PR #135 — the handoff check's own findings** (see Branch state). Docs
-  only, plus deleting a scratch Playwright script that was committed by
-  mistake in #133.
+- **A short tail of docs-only PRs** (#135 onward) — the handoff check's own
+  findings, and a correction to HANDOFF's stale-status-API advice after
+  `list_workflow_jobs` was measured reporting a finished gate as still
+  running for over half an hour.
 
 ## Unfinished
 
@@ -59,9 +60,14 @@ layered on. Build one was brainstormed, spec'd and shipped in one sitting.
 - **#133 and #134 are merged and live.** The branch was reset onto `main`
   afterwards — do NOT stack new work on merged history. If it has drifted:
   `git fetch origin main && git checkout -B claude/read-handoff-docs-4vbob2 origin/main`
-- **#135 was OPEN when this file was written.** `git log --oneline origin/main`
-  settles whether it landed; if it did, nothing is in flight. It carries only
-  the four things the handoff check turned up, all of which were real:
+- **Do not trust any PR number in this file as still-open.** The session
+  closed with several small docs PRs landing one after another, and a file
+  that names "the open one" is stale the moment the next is raised. Ask git
+  and GitHub instead: `git log --oneline origin/main -5`, and check the
+  repository for any open PR on this branch. Everything this session produced
+  is either merged or in such a PR; nothing lives only on a local machine.
+- The last of those docs PRs carried the four things the handoff check turned
+  up, all of which were real:
   - `raptor-port/look3.mjs`, a throwaway browser script committed by accident
     in #133 (it hardcodes a container scratch path, so it is useless as well
     as unwanted) — deleted.
