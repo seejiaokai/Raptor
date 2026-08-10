@@ -64,7 +64,7 @@ describe('the Inputs page (tfin)', () => {
        "Available" types were offers rather than commitments */
     for (const dead of ['Office', 'Available fly', 'Available duty'])
       expect(opts).not.toContain(dead)
-    expect(opts).toContain('Detachment')
+    expect(opts).toContain('OD')
   })
 
   /* All day owns the whole window, so the two time fields go out of play. They
@@ -186,13 +186,13 @@ describe('the Inputs page (tfin)', () => {
     await act(async () => {
       const sel = $('#inFType') as unknown as HTMLSelectElement
       const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
-      setter.call(sel, 'Downchit')
+      setter.call(sel, 'OML')
       sel.dispatchEvent(new Event('change', { bubbles: true }))
     })
     const narrowed = $$('#inBody tr').length
     expect(narrowed).toBeGreaterThan(0)
     expect(narrowed).toBeLessThan(all)
-    expect($$('#inBody .intag').every(x => x.textContent === 'Downchit')).toBe(true)
+    expect($$('#inBody .intag').every(x => x.textContent === 'OML')).toBe(true)
   })
 
   it('an added downchit re-validates the week (reflow)', async () => {
@@ -201,7 +201,7 @@ describe('the Inputs page (tfin)', () => {
     /* put a downchit on someone flying Monday — stiff flies both waves */
     await act(async () => {
       const { writeInputs } = await import('../state/store')
-      writeInputs(() => INPUTS.unshift({ person: 'stiff', date: 'Jul 13', allday: true, type: 'Downchit', remarks: '', mod: 'now' }))
+      writeInputs(() => INPUTS.unshift({ person: 'stiff', date: 'Jul 13', allday: true, type: 'OML', remarks: '', mod: 'now' }))
     })
     const after = validate().all.filter((x: any) => x.code === 'DNIF_FLY').length
     expect(after).toBeGreaterThan(before)
@@ -665,13 +665,13 @@ describe('a new input announces itself', () => {
   it('rides the top row even when the filter and the window both exclude it', async () => {
     const n = INPUTS.length
     await useDefaultRange()          // Jul 2026 is behind us — outside the window
-    await setFType('Downchit')       // and the add below is an LL, not a Downchit
+    await setFType('OML')            // and the add below is an LL, not an OML
     await addOne('SHOUTS FROM THE TOP')
     expect(INPUTS.length).toBe(n + 1)
     expect($$('#inBody tr')[0].textContent).toContain('SHOUTS FROM THE TOP')
-    /* it is the only thing in there that is not a Downchit — the pin is one
+    /* it is the only thing in there that is not an OML — the pin is one
        row riding above the filter, not the filter being cancelled */
-    expect($$('#inBody .intag').filter(x => x.textContent !== 'Downchit').length).toBe(1)
+    expect($$('#inBody .intag').filter(x => x.textContent !== 'OML').length).toBe(1)
     await act(async () => { undo() })
     await reset()
     expect(INPUTS.length).toBe(n)
@@ -679,7 +679,7 @@ describe('a new input announces itself', () => {
 
   it('lets go the moment the table is re-arranged', async () => {
     const n = INPUTS.length
-    await setFType('Downchit')
+    await setFType('OML')
     await addOne('LETS GO ON A RECLICK')
     expect($$('#inBody tr')[0].textContent).toContain('LETS GO ON A RECLICK')
     /* re-click a heading: the user is arranging the table for themselves now */

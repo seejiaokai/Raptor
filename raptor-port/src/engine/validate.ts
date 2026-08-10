@@ -1,5 +1,5 @@
 import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
-import { isDownchit, isLeave, isLocalLeave, isDetach } from './inputs'
+import { isDownchit, isLeave, isUnavail, canSpare, canWork } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
 import { collectEvents } from './events'
@@ -191,12 +191,20 @@ export function validate(){
        the validator can see clashes with every kind of tasking. Shifts are the
        one carve-out for the ordinary personal types: an accepted row against
        an SC shift is deliberately the soft SHIFT_SOFT advisory, and the raw
-       input must not shout red over that. Leave, downchits and detachments
-       still hard-flag a shift — those close the man's day outright. */
+       input must not shout red over that. Leave, medical and overseas duty
+       still hard-flag a shift — those close the man's day outright.
+       AND ONE TYPE IS EXEMPT FROM THIS LOOP ENTIRELY: ATT B (owner, 10 Aug 26).
+       He is grounded, not absent — unfit to fly but at his desk — so a duty
+       post, a sim seat, a ground row or a programme item is perfectly proper
+       and must not flag. The FLYING loop above is untouched, so putting him in
+       a jet still raises a hard warning, which is the whole distinction. This
+       is the only place in the app where "cannot fly" and "cannot work" come
+       apart, and canWork() is the only thing that separates them. */
     day.events.forEach((e:any)=>{ if(e.kind==='fly')return;
       day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
+        if(canWork(inp.type))return;
         const dn=isDownchit(inp.type), lv=isLeave(inp.type);
-        if(!dn&&!lv&&!isDetach(inp.type)&&e.kind==='shift')return;
+        if(!isUnavail(inp.type)&&e.kind==='shift')return;
         if(!overlap(e.s,e.e,inp.s,inp.e))return;
         markChip(di,e.id,'C'); markRing(di,e.id,'hard');
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
@@ -513,20 +521,29 @@ export function validate(){
               +` — ${wrong.map((id:any)=>PEOPLE[id].cs).join(', ')} ${wrong.length===1?'is':'are'} not current`,f.key);
           }
         }
-        /* A downchit or OVERSEAS leave closes an SC SPARE: standing by means
-           being on the island and fit to walk. LL and OIL do not — the man is at
-           home, but he is here. The spare exemption keeps this crew out of every
-           clash rule, so this is the only place it can be caught at all. */
+        /* WHO MAY NOT STAND AN SC SPARE. Standing by means being on the island
+           and fit to walk, so the bar is canSpare() — the owner's rule, local
+           yes and overseas no, with the medical group carved out because those
+           four keep the man here but not fit (owner, 10 Aug 26). A local
+           commitment does NOT bar a spare: he is standing by, not tasked, so
+           leave at home, a meeting or a course all still leave him reachable.
+           The spare exemption keeps this crew out of every other clash rule,
+           so this is the only place any of it can be caught at all.
+           Deliberately written against "a standalone spare" rather than SC
+           alone: the owner reserved the AVALON rule and it drops in here. */
         (f.spareCrew||[]).forEach((id:any)=>{
           day.input.forEach((inp:any)=>{ if(inp.id!==id)return;
-            const dn=isDownchit(inp.type), lv=isLeave(inp.type)&&!isLocalLeave(inp.type);
-            if(!dn&&!lv)return;
+            if(canSpare(inp.type))return;
             if(!overlap(f.s,f.e,inp.s,inp.e))return;
             markChip(di,id,'C'); markRing(di,id,'hard');
             const why=inp.remarks?` — reason: ${inp.remarks}`:'';
+            /* say WHICH of the two disqualifies him — "overseas" and "medically
+               down" are different problems and the scheduler fixes them
+               differently */
+            const dn=isDownchit(inp.type);
             add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[id],
-              (dn?'Downchit but standing SC SPARE':`${inp.type} but standing SC SPARE`)
-              +` — ${f.label}${why}`,f.key); }); });
+              `${inp.type} but standing SC SPARE — ${dn?'medically down':'overseas'}`
+              +`, ${f.label}${why}`,f.key); }); });
       }
     });
     /* Q (sims) — the sim box is seated like the jet: a WSO cannot occupy the

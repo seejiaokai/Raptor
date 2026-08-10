@@ -79,9 +79,12 @@ describe('who may be planned into a slot (tfin U)', () => {
   })
 
   it('the bar checks leave and downchit for that day', () => {
-    /* sufa is downchit Jul 13–17; a duty key on Monday must report it */
-    expect(slotBar('sufa', 'd:0.0.0')).toContain('downchit')
-    expect(slotBar('sufa', 'd:0.0.0')).toContain('Downchit till 17 Jul')
+    /* sufa is ATT C Jul 13–17; a duty key on Monday must report it, in the
+       words the type legend uses — ATT C cannot report to work at all, so a
+       duty post is barred as surely as a jet is */
+    expect(slotBar('sufa', 'd:0.0.0')).toContain('medically down')
+    expect(slotBar('sufa', 'd:0.0.0')).toContain('ATT C')
+    expect(slotBar('sufa', 'd:0.0.0')).toContain('Medically down till 17 Jul')
   })
 
   it('an ordinary flying seat carries no shift start, so no rest bar', () => {

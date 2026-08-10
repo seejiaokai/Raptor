@@ -145,8 +145,13 @@ describe('validation engine (tfin F)', () => {
    (owner decision, Aug 26) and the reference assertion no longer describes the
    port: a man who says he is flying elsewhere is not available for this sortie,
    so Fly now costs exactly what a Meeting costs. */
-describe('personal inputs flag only once actioned (owner, Aug 26)', () => {
-  it('un-actioned Fly/Meeting are invisible; filed under Unavailable, Fly clashes exactly as a Meeting does', () => {
+/* REVERSED 10 Aug 26 (owner: "all will automatically go in"). A personal input
+   is no longer a request the validator ignores — it eats brief and debrief
+   time from the moment it is typed. What this test still pins is the OTHER
+   half of the original assertion, which did not change: Fly gets no offer
+   exemption, so it costs exactly what a Meeting costs, actioned or not. */
+describe('personal inputs count from the moment they are typed (owner, 10 Aug 26)', () => {
+  it('Fly and Meeting cost the same, un-actioned and filed under Unavailable alike', () => {
     const d = DAYS[0], ce = collectEvents()[0]
     const id = ((ce.fly || []).find((e: any) => !isSpecial(e.id)) || {}).id
     expect(id).toBeTruthy()
@@ -158,11 +163,15 @@ describe('personal inputs flag only once actioned (owner, Aug 26)', () => {
     }
     const base = validate().all.filter((x: any) => (x.who || []).indexOf(id) >= 0
       && (x.code === 'NO_BRIEF' || x.code === 'DEBRIEF')).length
-    /* a submitted-but-unactioned personal input is a request, not a
-       commitment — the validator must not see it at all */
-    expect(n('Fly')).toBe(base)
-    expect(n('Meeting')).toBe(base)
-    /* filed under Unavailable it is real, and Fly gets no offer exemption */
+    /* THE REVERSAL: both of these were `toBe(base)` before 10 Aug 26. An input
+       is a commitment the moment it is typed, so it eats the brief window
+       without anyone actioning it. */
+    const flyRaw = n('Fly'), meetRaw = n('Meeting')
+    expect(flyRaw).toBeGreaterThan(base)
+    expect(meetRaw).toBeGreaterThan(base)
+    /* Fly still gets no offer exemption — it costs exactly what a Meeting
+       costs, which is the half of this assertion that did not change */
+    expect(flyRaw).toBe(meetRaw)
     const fly = n('Fly', 'u'), meeting = n('Meeting', 'u')
     validate()
     expect(fly).toBeGreaterThan(base)

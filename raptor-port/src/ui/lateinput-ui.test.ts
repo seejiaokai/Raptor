@@ -60,7 +60,7 @@ describe('the week', () => {
        someone drops the downchit check out of isLateInput. */
     const v = dayHTML(0, false)
     expect(v).toContain('sec-unav')
-    expect(v).toContain('Downchit')
+    expect(v).toContain('OML')
     expect(marks(v), 'no mark on the view page for day 0').toBe(0)
   })
 
@@ -163,7 +163,7 @@ describe('the board', () => {
        this cannot pass by the board simply drawing nothing. */
     const h = boardHTML(0)
     const unav = h.slice(h.indexOf('sb-panel unav'))
-    expect(unav).toContain('Downchit')
+    expect(unav).toContain('OML')
     expect(unav, 'no mark on either downchit').not.toContain('class="latetag"')
     const pinp = h.slice(h.indexOf('sb-panel pinp'), h.indexOf('sb-panel unav'))
     expect(pinp, 'while the panel above it is marked — proving the render works')

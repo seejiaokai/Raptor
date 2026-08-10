@@ -1,6 +1,6 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { INPUTS, isLeave, inputCoversDate, inpLabel, isPersonal, isUnavail } from '../engine/inputs'
+import { INPUTS, inpMeta, inputCoversDate, inpLabel, isPersonal, isUnavail } from '../engine/inputs'
 import { PEOPLE, nameToId } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
@@ -70,11 +70,17 @@ export const SB_BANDS=[
   {k:'eve',  t:'Evening',    note:'17:00 – 19:59',   lo:1020,hi:1200},
   {k:'late', t:'Late',       note:'20:00 onwards',   lo:1200,hi:100000},
 ];
+/* The colour a type chip wears on the board. Read off INPUT_META rather than
+   its own regexes (10 Aug 26): it used to test /^Downchit/ and /^Detachment/
+   by hand, and with twenty types those two would simply have stopped matching
+   anything — every medical code and OD would have quietly turned into the
+   grey ty-gp, which is the "ordinary commitment" colour. Same four colours,
+   now derived: medical keeps the downchit red, leave the leave green, OD the
+   detachment amber it inherits, and the activity types the grey. */
 export function inTypeCls(t:any){
-  if(/^Downchit/i.test(t))return 'ty-dn';
-  if(isLeave(t))return 'ty-lv';
-  if(/^Detachment/i.test(t))return 'ty-dt';
-  return 'ty-gp';
+  const m=inpMeta(t);
+  if(!m)return 'ty-gp';
+  return m.grp==='med'?'ty-dn':m.grp==='leave'?'ty-lv':m.grp==='duty'?'ty-dt':'ty-gp';
 }
 /* The remarks cell shared by the board's two input surfaces — the inputs bands
    and the Personal Inputs panel. The LATE badge leads it (owner, 9 Aug 26 —

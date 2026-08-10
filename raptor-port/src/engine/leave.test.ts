@@ -1,6 +1,9 @@
-/* Ported from reference/tfin.js — the B42 leave taxonomy (LL / OL / OIL). */
+/* Ported from reference/tfin.js — the B42 leave taxonomy (LL / OL / OIL),
+   widened on 10 Aug 26 to the squadron's real vocabulary. The three original
+   assertions are kept intact below; everything after them pins the axes the
+   new table added. */
 import { describe, expect, it } from 'vitest'
-import { LEAVE_TYPES, INPUT_TYPES, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, offWord, inputCoversDate } from './inputs'
+import { LEAVE_TYPES, INPUT_TYPES, INPUT_META, inpMeta, canSpare, canWork, awayAllDay, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, offWord, inputCoversDate } from './inputs'
 import { validate } from './validate'
 
 describe('leave is LL / OL / OIL (tfin B42)', () => {
@@ -11,7 +14,9 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
   })
 
   it('LL is local, OL is overseas, OIL is off in lieu', () => {
-    expect(LEAVE_TYPES).toEqual({ LL: 'local leave', OL: 'overseas leave', OIL: 'off in lieu' })
+    expect(LEAVE_TYPES.LL).toBe('local leave')
+    expect(LEAVE_TYPES.OL).toBe('overseas leave')
+    expect(LEAVE_TYPES.OIL).toBe('off in lieu')
   })
 
   it('all three read as leave, none of them as anything else', () => {
@@ -26,41 +31,99 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
     expect(isLocalLeave('LL') && isLocalLeave('OIL') && !isLocalLeave('OL')).toBe(true)
   })
 
-  it('and a downchit is still its own thing', () => {
-    expect(isDownchit('Downchit')).toBe(true)
-    expect(isLeave('Downchit')).toBe(false)
-    expect(isOffType('Downchit')).toBe(true)
+  /* "Downchit" the TYPE was removed on 10 Aug 26; downchit the CONCEPT is the
+     medical group, and isDownchit still answers for it everywhere. */
+  it('the medical group is what a downchit became', () => {
+    for (const t of ['HL', 'OML', 'ATT C', 'ATT B'])
+      expect(isDownchit(t), t).toBe(true)
+    expect(INPUT_TYPES).not.toContain('Downchit')
+    expect(isLeave('OML')).toBe(false)
+    expect(isOffType('OML')).toBe(true)
     expect(isOffType('OIL')).toBe(true)
   })
 
   /* The offer exemption is gone (owner decision, Aug 26): "Available fly" and
      "Available duty" were removed as types, and "Fly" became an ordinary
-     commitment. What is left is the two-way split the day's blocks render. */
+     commitment. What is left is the two-way split the day's blocks render —
+     PRESENTATIONAL since 10 Aug 26, but still a partition. */
   it('every type is either personal or unavailable, and the dead ones are gone', () => {
     expect(INPUT_TYPES).toContain('Fly')
-    expect(INPUT_TYPES).toContain('Detachment')
-    for (const dead of ['Office', 'Available fly', 'Available duty'])
+    expect(INPUT_TYPES).toContain('OD')
+    for (const dead of ['Office', 'Available fly', 'Available duty', 'Detachment', 'Downchit'])
       expect(INPUT_TYPES).not.toContain(dead)
     /* the two predicates partition the list — nothing falls between them */
     for (const t of INPUT_TYPES)
       expect(isPersonal(t) !== isUnavail(t), t).toBe(true)
   })
 
-  it('isUnavail covers detachment, leave and downchits only', () => {
-    expect(isUnavail('Detachment') && isUnavail('LL') && isUnavail('OL')
-      && isUnavail('OIL') && isUnavail('Downchit')).toBe(true)
-    expect(isUnavail('Meeting') || isUnavail('Fly') || isUnavail('Other')).toBe(false)
+  /* The list and the rules are one object, so neither can grow a member the
+     other has never heard of. This is the assertion that keeps the generated
+     legend honest — it can only describe what INPUT_META holds. */
+  it('the type list IS the rule table, in its declaration order', () => {
+    expect(INPUT_TYPES).toEqual(Object.keys(INPUT_META))
+    for (const t of INPUT_TYPES) {
+      const m = inpMeta(t)
+      expect(m, t).toBeTruthy()
+      expect(typeof m.name === 'string' && m.name.length > 0, t).toBe(true)
+      expect(['leave', 'med', 'duty', 'act'], t).toContain(m.grp)
+    }
+    /* the owner's order: the new types sit below OIL */
+    expect(INPUT_TYPES.slice(3, 12)).toEqual(
+      ['OFF', 'CCL', 'PL', 'FCL', 'EL', 'HL', 'OML', 'ATT C', 'ATT B'])
   })
 
-  it('isPersonal is what aircrew submit for a scheduler to accept', () => {
-    for (const t of ['Meeting', 'Training', 'Personal', 'Appointment', 'Fly', 'Other'])
+  it('isUnavail covers leave, medical and overseas duty; the rest are personal', () => {
+    for (const t of ['LL', 'OL', 'OIL', 'OFF', 'CCL', 'PL', 'FCL', 'EL', 'HL', 'OML', 'ATT C', 'ATT B', 'OD'])
+      expect(isUnavail(t), t).toBe(true)
+    expect(isUnavail('Meeting') || isUnavail('Fly') || isUnavail('Other') || isUnavail('CSE')).toBe(false)
+  })
+
+  it('isPersonal is what a scheduler may lift onto the Ground Programme', () => {
+    for (const t of ['Meeting', 'Training', 'CSE', 'Personal', 'Appointment', 'Fly', 'Other'])
       expect(isPersonal(t), t).toBe(true)
-    expect(isPersonal('LL') || isPersonal('Downchit') || isPersonal('Detachment')).toBe(false)
+    expect(isPersonal('LL') || isPersonal('OML') || isPersonal('OD')).toBe(false)
+    /* isPersonal and the table's `ground` flag are the same set — the block a
+       row is drawn in and the button it carries must not disagree */
+    for (const t of INPUT_TYPES) expect(inpMeta(t).ground, t).toBe(isPersonal(t))
+  })
+
+  /* THE SPARE RULE, in the owner's own words (10 Aug 26): local yes, overseas
+     no, with medical the single carve-out — on the island but not fit to walk.
+     Derived rather than stored, so this is the whole of it. */
+  it('local may stand a spare, overseas may not, medical never does', () => {
+    for (const t of ['LL', 'OIL', 'OFF', 'CCL', 'PL', 'FCL', 'EL', 'Training', 'CSE', 'Meeting', 'Fly', 'Personal', 'Appointment', 'Other'])
+      expect(canSpare(t), t).toBe(true)
+    for (const t of ['OL', 'OD', 'HL', 'OML', 'ATT C', 'ATT B'])
+      expect(canSpare(t), t).toBe(false)
+    /* and it really is derived, not a hand-kept column */
+    for (const t of INPUT_TYPES)
+      expect(canSpare(t), t).toBe(inpMeta(t).local && inpMeta(t).grp !== 'med')
+  })
+
+  /* ATT B is the only type in the app that separates "cannot fly" from
+     "cannot work" — he is grounded, at his desk. */
+  it('only ATT B may still be given a non-flying tasking', () => {
+    expect(canWork('ATT B')).toBe(true)
+    for (const t of INPUT_TYPES) if (t !== 'ATT B') expect(canWork(t), t).toBe(false)
+  })
+
+  /* A half-day closes its own half; a record too thin to place closes the day.
+     Both ends are required, so an open-ended half-day cannot shrink to an
+     hour through win()'s default. */
+  it('awayAllDay: a thin record fails closed', () => {
+    expect(awayAllDay({ allday: true })).toBe(true)
+    expect(awayAllDay({ type: 'OD' })).toBe(true)                      // no allday, no s/e
+    expect(awayAllDay({ allday: false, s: 240 })).toBe(true)           // start only
+    expect(awayAllDay({ allday: false, e: 720 })).toBe(true)           // end only
+    expect(awayAllDay({ allday: false, s: 240, e: 720 })).toBe(false)  // a real AM
   })
 
   it('offWord names the leave, with its remark', () => {
     expect(offWord({ type: 'LL', remarks: '' })).toBe('local leave (LL)')
-    expect(offWord({ type: 'Downchit', remarks: 'MED' })).toBe('downchit — MED')
+    expect(offWord({ type: 'OML', remarks: 'MED' })).toBe('ordinary medical leave (OML) — MED')
+    /* a half-day says which half it is, so the reason a slot is closed is not
+       silently the whole day */
+    expect(offWord({ type: 'LL', half: 'am', remarks: '' })).toBe('local leave (LL) (AM)')
   })
 
   it('a ranged input covers every day of its range (inputCoversDate)', () => {
