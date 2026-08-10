@@ -14,9 +14,10 @@
    scheduler only has to fill in names. `main` / `spare` are the counts. */
 export const SAWAVE:any={
   sc:    {label:'SC',    all:false, main:2, spare:2, shifts:[['AM','07:00','13:00'],['PM','13:00','19:00']],
+          duties:['SXO','OPS-O','RUNNER','LOGCELL'],
           note:'Two MAIN and two SPARE per shift. The SPARE lines are not cross-checked.'},
   avalon:{label:'AVALON',all:true,  main:2, spare:2, shifts:[['NIGHT','19:00','07:00']],
-          duties:['SXO','OPS-O','RUNNER','LOGCELL'], dutyTime:['1900','0700'],
+          duties:['SXO','OPS-O','RUNNER','LOGCELL'],
           note:'Overnight, two MAIN and two SPARE. Nothing on an AVALON line is cross-checked.'},
   bb:    {label:'BB',    all:true,  main:2, spare:2, shifts:[['SHIFT','','']],
           note:'Two MAIN and two SPARE, times are yours to set. Nothing on a BB line is cross-checked.'}
@@ -41,6 +42,39 @@ export function makeStandalone(kind:any){
     w.formations.push({cs:S.label,msn:nm,shift:nm,to:st,ld:en,aircraft:ac});
   });
   return w;
+}
+/* The duty block(s) a standalone wave brings up with it (owner, 10 Aug 26 —
+   SC used to come up bare while AVALON brought its four, and the difference
+   was not intended). ONE BLOCK PER SHIFT, because that is what a shift is: SC
+   hands over at 13:00, so its AM and PM ops desks are different people and a
+   single 07:00–19:00 block could not say so. AVALON has one shift and so still
+   gets one block, labelled exactly as before.
+   Times come from the shift itself rather than a second `dutyTime` field — two
+   places to state the same hours is two places to disagree — and the shift's
+   `07:00` is written `0700` to match every other duty row on the board. They
+   are ordinary editable cells afterwards; this is a starting point, not a rule.
+   `noconf` mirrors the WAVE's own exemption: AVALON/BB are uncrosschecked
+   whole (`all`), so their desks are too, while SC's MAIN lines are checked
+   normally and its desks go through the conflict engine like any other duty. */
+export function saDutyBlocks(kind:any){
+  const S=SAWAVE[kind]; if(!S||!S.duties)return [];
+  const t=(x:any)=>String(x||'').replace(':','');
+  const one=(S.shifts||[]).length<2;
+  return (S.shifts||[]).map(([nm,st,en]:any)=>({
+    label: one?S.label:`${S.label} ${nm}`, sa:kind, noconf:!!S.all,
+    rows: S.duties.map((r:any)=>({role:r,id:'',str:t(st),end:t(en)}))
+  }));
+}
+/* Every duty block a standalone wave owns, by index, highest first — the order
+   a caller must splice them in. It matches on the `sa` marker so a RENAMED
+   block is still removed with its wave, and falls back to the old exact-label
+   match for anything built before the marker existed (an AL snapshot taken
+   earlier in the same session is the only way that can happen). */
+export function saDutyIx(d:any,w:any){
+  if(!w||!w.standalone)return [];
+  return (d&&d.dutywaves||[]).map((x:any,i:any)=>
+      (x&&(x.sa?x.sa===w.kind:x.label===w.label))?i:-1)
+    .filter((i:any)=>i>=0).reverse();
 }
 /* the day badge: normal waves counted X by X, standalone lines after a slash */
 export function dayCount(d:any){
