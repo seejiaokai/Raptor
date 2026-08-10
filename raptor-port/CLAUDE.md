@@ -124,10 +124,13 @@ ship without waiting to be asked.
 **Scoping any new work weighs four axes** (owner, 7 Aug 26), each grounded
 in what this repo actually has rather than a generic checklist:
 
-- **Performance & scalability.** The perf gate is the law: per-node budgets
-  and DOM ceilings in `probes/perf-port.cjs`, re-measured, never quoted. A
-  feature that grows the DOM raises its ceiling as a deliberate, argued
-  edit in the same PR. Dense surfaces stay string-built (§Architecture).
+- **Performance & scalability.** The perf gate's law is the DOM CEILINGS in
+  `probes/perf-port.cjs`, re-measured, never quoted. A feature that grows
+  the DOM raises its ceiling as a deliberate, argued edit in the same PR.
+  The three per-node TIMING budgets are no longer assertions (owner, 10 Aug
+  26 — they caught nothing in the life of the repo and went red on unchanged
+  code); they are still measured and printed, so read them, but a wandering
+  number is not a gate failure. Reasoning: `docs/probe-sweep.md`. Dense surfaces stay string-built (§Architecture).
   True scaling — shared data, real accounts — is server work (HANDOFF's
   first bullet); until then every write goes through the mutation funnel
   and storage through `HOOKS.storeBackend`, which is precisely what keeps
@@ -188,8 +191,9 @@ of those are reachable from `npm test`.
 
 UI-visible work also needs the wider browser path:
 `probes/run.cjs <name> port`, `npm run probes:adapted` (the six adapted
-probes), `npm run perf` (the reference-vs-port no-regression gate) — all
-against that same preview.
+probes), `npm run perf` (the DOM ceilings and two behavioural checks, with
+the reference-vs-port timings printed alongside) — all against that same
+preview.
 A fresh container needs `npm ci` first — `node_modules/` is not in the image.
 Any NEW Playwright script must pass `executablePath:'/opt/pw-browsers/chromium'`
 (a stable symlink): the pinned Playwright looks for a browser build the image

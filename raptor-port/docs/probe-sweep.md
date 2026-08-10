@@ -81,11 +81,50 @@ The PORTING.md budgets (one-day ≤ 200 ms, board ≤ 120 ms) were measured on
 the author's machine. On this VM the *reference itself* lands elsewhere, so
 the gate measures both builds with one methodology — mutation → macrotask →
 forced layout, the full painted cost regardless of when each build does its
-work — and asserts **no regression per node drawn** (port ms/node ≤
-reference ms/node × 1.15), plus a recorded ceiling on the node counts
-themselves. Why it is split that way is the next section.
+work — and REPORTS the cost per node drawn beside a recorded ceiling on the
+node counts themselves. It used to ASSERT the per-node figure too
+(port ms/node ≤ reference ms/node × 1.15); that went on 10 Aug 26 and the
+count is what the gate stands on now. Why it is split that way is the next
+section but one.
+
+### The three timing budgets stopped being assertions (owner, 10 Aug 26)
+
+**Decided on the record, do not re-add them.** The owner asked what the
+speed check had ever caught. Counted against this repo's history:
+
+| | times it fired | real problems found |
+|---|---|---|
+| the three per-node TIMING budgets | many (see below) | **0** |
+| the two DOM CEILINGS | 4 | **4** — all genuine growth |
+
+The timings never once caught a slowdown. They failed ~2 runs in 5 before
+the 5 Aug rewrite (3 in 5 on an unchanged baseline), and after it the
+one-day edit still straddles 1.15 — nine readings of one unchanged commit
+spread 1.08x-1.23x. Every red was chased and every one was the estimator;
+three of those chases are recorded in this section alone, each costing a
+paired re-measurement. The ceilings, measuring an integer that is the same
+on every machine, were right every time they fired.
+
+So `perNode(k) <= 1.15` is gone for all three. The gate now asserts FOUR
+things: two DOM ceilings and the two behavioural checks (B and D). **The
+timings are still measured and printed** — both builds are still opened at
+once and measured round for round, which is the only thing that makes them
+comparable — so a real slowdown is still visible; it just no longer stops a
+run on a coin flip.
+
+**The rejected alternative was a looser bar.** A budget widened enough to
+cover an estimator that swings 3x is wide enough to pass a genuine doubling,
+so it would have been an assertion in name only — worse than none, because
+it would read as cover. If a printed number ever looks wrong, the paired
+recipe below is still how to settle it.
 
 ### Most of the flakiness went; the one-day edit still straddles its line
+
+**(Historical from here to the end of this sub-section — these were the
+reasons the timing budget was kept while it was still an assertion. Retained
+because the paired recipe is still the way to investigate a suspicious
+number, and because the readings are the evidence for the decision above.)**
+
 
 It used to fail about 2 runs in 5 — measured at 3 in 5 before this rewrite,
 **at the same rate on an unchanged baseline**. The flakiness was the
@@ -109,10 +148,11 @@ where the same metric used to swing ±30% between runs.
 
 **What did not go away: the one-day-edit per-node reading straddles its own
 1.15 line on this container.** Nine readings of one unchanged commit ranged
-1.08×–1.23× (re-measured 9 Aug 26), so the gate returns 7/0 on some runs and
-6/1 on others with nothing changed. The budget was deliberately not raised to
-quiet it — one loosened to cover estimator noise stops catching a real
-regression. **A single red therefore proves nothing, and the only measurement
+1.08×–1.23× (re-measured 9 Aug 26), so the gate returned 7/0 on some runs and
+6/1 on others with nothing changed — this spread is the evidence that
+eventually retired the assertion. The budget was never raised to quiet it —
+one loosened to cover estimator noise stops catching a real regression, which
+is also why the assertion was DELETED rather than widened when it went. **A single red therefore proves nothing, and the only measurement
 that settles it is a PAIRED one**: build the parent commit into a second
 directory, serve it on a second port, and run `PORT_URL=… npm run perf`
 alternately against both in the same window. Done that way, three alternating
@@ -244,13 +284,14 @@ the port is what cancels the machine out.
 | `#eWeek` DOM | 4173 nodes | **5056 nodes** (1.21×) | | |
 | `#sbBoard` DOM | 393 nodes | **859 nodes** (2.19×) | | |
 
-**Seven assertions** — three per-node budgets, two DOM ceilings, and two
-behavioural checks. (Block F, a scroll-hold measured across the Edit-mode
-toggle, was two more; it went with the toggle on 9 Aug 26 and nothing
+**Four assertions** — two DOM ceilings and two behavioural checks. (It was
+seven until 10 Aug 26; the three per-node timing budgets became printed
+figures, above. Block F, a scroll-hold measured across the Edit-mode toggle,
+was two more before that; it went with the toggle on 9 Aug 26 and nothing
 replaced it, because no other control repaints all seven days in one
-gesture. D measures the same scroll-hold across an edit.) Six of the seven
-are solidly green every run; the seventh is the one-day-edit per-node budget
-described above. Re-measure, don't quote these numbers.
+gesture. D measures the same scroll-hold across an edit.) All four are
+solidly green every run — the one that was not is the one that went.
+Re-measure, don't quote these numbers.
 
 The port paints 2.19× the board for 1.27× the time, which is why the board
 edit reads 0.58× per node — comfortably faster than the reference at the same

@@ -7,10 +7,18 @@
    elsewhere for BOTH builds. So this gate measures the REFERENCE and the
    PORT with one methodology — mutation → macrotask → forced layout, the
    full painted cost regardless of when each build does its work — and
-   asserts NO REGRESSION against the reference measured beside it.
+   REPORTS it against the reference measured beside it.
    Absolute numbers are printed for the record.
 
-   THE BUDGET IS PER NODE, NOT PER REPAINT (owner, 5 Aug 26). It used to be
+   WHAT THIS GATE ASSERTS, SINCE 10 Aug 26: the two DOM ceilings and the two
+   behavioural checks (B, D) — FOUR assertions, not seven. The three timing
+   comparisons are measured and printed but no longer fail the run; the why
+   is at the call site below, and the short version is that they caught
+   nothing in the life of this repo while going red on unchanged code. Read
+   the next two sections as the reasoning behind the NUMBERS this still
+   prints, which is unchanged — only their status as pass/fail is gone.
+
+   THE TIMING FIGURE IS PER NODE, NOT PER REPAINT (owner, 5 Aug 26). It used to be
    a flat `port ≤ reference × 1.15` on the raw times, and the board went red
    at 1.19× — not because anything had got slower, but because the port's
    board is no longer the reference's board: it draws 1.78× the nodes (the
@@ -21,10 +29,13 @@
    was always for — is a unit of drawing getting more expensive — and the
    board answers 0.67×, i.e. comfortably faster per node.
 
-   WHY THE COMPANION DOM CEILING. Per-node alone has an obvious hole: a bug
-   that doubles the DOM would halve the per-node cost and sail through, while
-   the user waits twice as long. So node counts are gated too — separately,
-   because they are the one measurement here that is NOT machine-dependent.
+   WHY THE DOM CEILING IS THE PART THAT SURVIVED. It began as a companion to
+   the per-node figure, closing an obvious hole in it: a bug that doubles the
+   DOM would halve the per-node cost and sail through, while the user waits
+   twice as long. It is now the load-bearing half, and the reason is in the
+   next sentence — node counts are the one measurement here that is NOT
+   machine-dependent, which is exactly why they earned a 4-for-4 record while
+   the timings earned nothing.
    Times swing 3x on this VM and must be read as a ratio against a reference
    measured in the same seconds; a node count is the same integer everywhere,
    so it is checked against a recorded number instead. Growth past the
@@ -200,11 +211,23 @@ async function trial(b, measureSize) {
     console.log(`   ${(surface + ' DOM').padEnd(24)} ${String(s.ref.nodes).padStart(8)}n ${String(s.port.nodes).padStart(6)}n  `
       + `${(s.port.nodes / s.ref.nodes).toFixed(2)}× the nodes, ${(s.port.chars / s.ref.chars).toFixed(2)}× the markup`)
   }
-  const noRegress = (k, label) => T(`perf · ${label} costs no more per node than the reference`,
-    perNode(k) <= 1.15 ? 'yes' : `no (${perNode(k).toFixed(2)}x per node, ${verdict(k).toFixed(2)}x total)`, 'yes')
-  noRegress('oneEdit', 'one-day edit')
-  noRegress('board', 'board edit')
-  noRegress('noop', 'a no-op repaint')
+  /* THE THREE TIMING BUDGETS WERE ASSERTIONS AND ARE NOW ONLY PRINTED
+     (owner, 10 Aug 26, after being shown the record). They asserted
+     `perNode(k) <= 1.15` for oneEdit, board and noop. In the whole life of
+     this repo they caught ZERO real slowdowns and cost several sessions to
+     the paired re-measurement below. The one-day edit went red repeatedly on
+     unchanged code — nine readings of one commit spread 1.08x-1.23x — and
+     every red was chased down and proved to be the estimator. The DOM
+     ceilings, by contrast, fired four times and were RIGHT four times, so
+     they stay.
+     Deliberately NOT the alternative of a looser bar: a budget widened to
+     cover a 3x-swinging estimator is wide enough to pass a real doubling
+     too, so it would have been an assertion in name only. The numbers are
+     still measured and printed every run — the reference is still opened
+     beside the port and measured round for round, which is what makes them
+     comparable — so a genuine slowdown is still VISIBLE here, it just no
+     longer stops the run on a coin flip. If a reading ever looks wrong, the
+     paired recipe in docs/probe-sweep.md is still how you settle it. */
 
   /* The machine-independent half of the budget. Recorded 5 Aug 26 on the
      demo week with day 1 open: board 699 nodes, week 5028 — about 10%
