@@ -16,9 +16,9 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 878 tests
-across 51 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 59/59, and `npm run probes:adapted` 6/6 plus `npm run perf` 7/0
+**Every gate is green at this commit**, run first-hand: `npm test` 918 tests
+across 52 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
+run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 7/0
 (neither in CI). Re-state these only after re-running them.
 
 - **`npm run perf` does NOT read the same way twice, and that is not a fault
