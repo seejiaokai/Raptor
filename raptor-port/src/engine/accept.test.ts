@@ -143,48 +143,54 @@ describe('per-section scheduler notes', () => {
   })
 })
 
-/* The validator gate (owner, Aug 26): a personal input is a request until a
-   scheduler actions it. Un-actioned → invisible to validate(); accepted to the
-   ground programme → its ROW clashes (once, as DOUBLE_BOOK — never doubled by
-   INPUT_FLY on the input it came from); filed under Unavailable → the input
-   itself clashes. Unavailable-typed inputs never needed accepting. */
+/* The validator gate, REVERSED on 10 Aug 26 (owner: "all will automatically go
+   in"). A personal input used to be a request that blocked nothing until a
+   scheduler actioned it. Now EVERY input counts the moment it is typed, and
+   the scheduler's job is to edit or remove it, not to admit it.
+   One carve-out survives, and it is about double-printing rather than
+   admission: an input promoted to a ground row that can carry the clash defers
+   to that row, so a scheduler reads it once. An ALL-DAY promotion makes a
+   TIME-LESS row, which never becomes an event and so can carry nothing — that
+   one stays visible on the input itself. Unavailable-typed inputs are still
+   never promotable: leave does not belong on the Ground Programme. */
 describe('the validator gate on personal inputs', () => {
-  it('day.input keeps unavailable types, drops un-actioned personal ones', () => {
+  it('day.input keeps every type now, actioned or not', () => {
     const inp0 = collectEvents()[0].input
-    expect(inp0.some((x: any) => x.type === 'Downchit')).toBe(true)   // divot / sufa, no acc
-    expect(inp0.some((x: any) => isPersonal(x.type))).toBe(false)     // bruise / vinci / yeti gone
+    expect(inp0.some((x: any) => x.type === 'OML')).toBe(true)        // divot, no acc
+    expect(inp0.some((x: any) => isPersonal(x.type))).toBe(true)      // bruise / vinci / yeti count
   })
 
-  it('accept → one DOUBLE_BOOK from the row; undo → silence; file-u → INPUT_FLY', () => {
+  it('an un-actioned personal input clashes at once; promoting it moves the voice to the row', () => {
     const id = ((collectEvents()[0].fly || []).find((e: any) => !isSpecial(e.id)) || {}).id
     expect(id).toBeTruthy()
     INPUTS.push({ person: id, date: DAYS[0].dt, allday: false, s: 300, e: 1380, type: 'Meeting', remarks: 'staff work', mod: '' })
     const inp = INPUTS[INPUTS.length - 1]
     const hits = (code: string) => validate().all
       .filter((x: any) => x.code === code && (x.who || []).indexOf(id) >= 0).length
-    expect(hits('INPUT_FLY')).toBe(0)                  // un-actioned: silent
+    /* THE REVERSAL: this was 0 before 10 Aug 26 */
+    expect(hits('INPUT_FLY')).toBeGreaterThan(0)
     const dbBase = hits('DOUBLE_BOOK')
     expect(acceptInput(0, inp, 'g')).toBe(true)
-    expect(hits('DOUBLE_BOOK')).toBeGreaterThan(dbBase) // the row clashes…
-    expect(hits('INPUT_FLY')).toBe(0)                   // …and only the row
+    expect(hits('DOUBLE_BOOK')).toBeGreaterThan(dbBase) // the row now carries it…
+    expect(hits('INPUT_FLY')).toBe(0)                   // …and it is not said twice
     unacceptInput(0, inp)
     expect(hits('DOUBLE_BOOK')).toBe(dbBase)
-    expect(hits('INPUT_FLY')).toBe(0)
+    expect(hits('INPUT_FLY')).toBeGreaterThan(0)        // back on the input
     expect(acceptInput(0, inp, 'u')).toBe(true)
-    expect(hits('INPUT_FLY')).toBeGreaterThan(0)        // unavailable is real
+    expect(hits('INPUT_FLY')).toBeGreaterThan(0)
   })
 
   /* regression (owner report, 4 Aug 26): an ALL-DAY Fly accepted to Ground made
      a time-less row, a time-less row never becomes an event, and the inputFlags
      gate hid the input itself — so a man flying with another squadron all day
-     could sit planted in a sortie with nothing said about it. The gate now
-     keeps an all-day Fly-to-'g' visible; the time-less row it leaves behind
-     still raises nothing, so the clash prints once, not twice. */
-  it('an all-day Fly accepted to Ground still flags the planted sortie', () => {
+     could sit planted in a sortie with nothing said about it. Still pinned: an
+     all-day promotion keeps its voice on the input, and the time-less row adds
+     nothing on top, so the clash prints exactly once either way. */
+  it('an all-day Fly accepted to Ground still flags the planted sortie, exactly once', () => {
     const inp = findInp('Fly')!                        // bruise, all-day, flies Jul 13 in the seed
     const hits = () => validate().all
       .filter((x: any) => x.code === 'INPUT_FLY' && (x.who || []).indexOf('bruise') >= 0)
-    expect(hits().length).toBe(0)                      // un-actioned: a request, silent
+    expect(hits().length).toBeGreaterThan(0)           // counts from the moment it is typed
     expect(acceptInput(0, inp, 'g')).toBe(true)
     const after = hits()
     expect(after.length).toBeGreaterThan(0)
@@ -193,11 +199,11 @@ describe('the validator gate on personal inputs', () => {
     expect(validate().all.filter((x: any) => x.code === 'DOUBLE_BOOK'
       && (x.who || []).indexOf('bruise') >= 0).length).toBe(0)
     unacceptInput(0, inp)
-    expect(hits().length).toBe(0)
+    expect(hits().length).toBeGreaterThan(0)
   })
 
-  it('accept refuses unavailable types — they are already issued, not requests', () => {
-    const inp = INPUTS.find((x: any) => x.type === 'Downchit' && x.date === 'Jul 13')!
+  it('accept refuses unavailable types — leave does not go on the Ground Programme', () => {
+    const inp = INPUTS.find((x: any) => x.type === 'OML' && x.date === 'Jul 13')!
     const before = DAYS[0].ground.length
     expect(acceptInput(0, inp, 'g')).toBe(false)
     expect(acceptInput(0, inp, 'u')).toBe(false)
@@ -236,7 +242,7 @@ describe('inputs clash with every kind of tasking', () => {
     expect(tasked('vinci', 'INPUT_FLY').length).toBe(1)   // overlapping is not
   })
 
-  it('an ordinary input stays quiet against an SC shift; a Detachment does not', () => {
+  it('an ordinary input stays quiet against an SC shift; overseas duty does not', () => {
     /* vinci's Meeting (09:00–17:00) actioned to Unavailable, vinci on SC AM
        07:00–13:00: the accepted row's SHIFT_SOFT is the designed voice there,
        the raw input must not shout over it */
@@ -246,12 +252,46 @@ describe('inputs clash with every kind of tasking', () => {
     acceptInput(0, findInp('Meeting')!, 'u')
     expect(validate().all.filter((x: any) =>
       /Meeting but tasked — SC AM/.test(x.msg)).length).toBe(0)
-    /* pike's detachment closes the day outright — an SC shift included */
+    /* pike's overseas duty closes the day outright — an SC shift included */
     const sc2: any = makeStandalone('sc')!
     sc2.formations[0].aircraft[0].p = 'pike'
     DAYS[2].waves.push(sc2)
     expect(validate().all.filter((x: any) =>
-      /Detachment but tasked — SC AM/.test(x.msg)).length).toBe(1)
+      /OD but tasked — SC AM/.test(x.msg)).length).toBe(1)
+  })
+
+  /* ATT B is the one type that comes apart along this axis (owner, 10 Aug 26):
+     grounded, but at his desk. The flying rule still catches him in a jet; a
+     duty post, a sim seat and a ground row must all stay silent. Nothing else
+     in the app distinguishes the two, so this is the pin for the whole axis. */
+  it('ATT B bars the jet and nothing else', () => {
+    const d = DAYS[0]
+    const id = ((collectEvents()[0].fly || []).find((e: any) => !isSpecial(e.id)) || {}).id
+    expect(id).toBeTruthy()
+    INPUTS.push({ person: id, date: d.dt, allday: true, type: 'ATT B', remarks: 'grounded', mod: '' })
+    const mine = (code: string) => validate().all
+      .filter((x: any) => x.code === code && (x.who || []).indexOf(id) >= 0)
+    /* in a jet: still a hard warning, and it names the reason */
+    const fly = mine('DNIF_FLY')
+    expect(fly.length).toBeGreaterThan(0)
+    expect(fly.some((x: any) => /planned to fly/.test(x.msg))).toBe(true)
+    /* at a desk: silent. Put him on a duty post, a ground row and a sim seat
+       and none of the three may raise an input clash against him. */
+    d.dutywaves[0].rows[0].id = id
+    d.ground.push({ prog: 'ADMIN', who: id, str: '0900', end: '1000' })
+    expect(mine('DNIF_FLY').filter((x: any) => /but tasked/.test(x.msg)).length).toBe(0)
+    expect(mine('LEAVE_FLY').length + mine('INPUT_FLY').length).toBe(0)
+  })
+
+  /* the same man on ATT C — medically down and NOT able to report — must bar
+     all four, or the two codes would be indistinguishable */
+  it('ATT C bars the desk as well as the jet', () => {
+    const d = DAYS[0]
+    const id = ((collectEvents()[0].fly || []).find((e: any) => !isSpecial(e.id)) || {}).id
+    INPUTS.push({ person: id, date: d.dt, allday: true, type: 'ATT C', remarks: 'down', mod: '' })
+    d.dutywaves[0].rows[0].id = id
+    expect(validate().all.filter((x: any) => x.code === 'DNIF_FLY'
+      && (x.who || []).indexOf(id) >= 0 && /but tasked/.test(x.msg)).length).toBeGreaterThan(0)
   })
 })
 

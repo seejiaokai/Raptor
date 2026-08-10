@@ -2,7 +2,7 @@
    the placeholder row, verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
-import { INPUTS, isAway, inputCoversDate, offWord } from '../engine/inputs'
+import { INPUTS, isAway, inputCoversDate, offWord, awayAllDay } from '../engine/inputs'
 import { hm24 } from '../engine/time'
 import { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
 import { sevOf, chipOf } from '../engine/validate'
@@ -23,9 +23,14 @@ export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rule
     +(why?` data-why="${esc(why)}"`:'')+` title="${esc(note)}"`
     +`>${puck(id,sevOf(di,id),true,chipOf(di,id))}</span>`;
 }
+/* Why this man's DAY is closed. Only ever asked about someone dayOff() has
+   already named, so it must look at the same absences dayOff does — whole-day
+   ones. Without the awayAllDay filter a man carrying both an all-day absence
+   and a half-day one could have the half-day named as the reason his whole
+   day is gone, which reads as a bug in the rule rather than in the sentence. */
 export function offReason(id:any,di:any){
   const d=DAYS[di]; if(!d)return '';
-  const x=INPUTS.find((i:any)=>isAway(i)&&i.person===id&&inputCoversDate(i,d.dt));
+  const x=INPUTS.find((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id&&inputCoversDate(i,d.dt));
   return x?offWord(x):'';
 }
 export function armStripHTML(){

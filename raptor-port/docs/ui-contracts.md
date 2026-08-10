@@ -78,6 +78,37 @@ reading happened. The browser half was checked against a deliberately broken
 control (capture kept, landing removed): all four cases went red, so they are
 not passing for the wrong reason.
 
+## The Inputs add form (`ui/InputsPage.tsx`, owner 10 Aug 26)
+
+The form is a CSS grid, `.ingrid`: column 1 is a fixed 212px track owned
+entirely by the calendar (`grid-row:1/span 3`), and the remaining eight fields
+auto-flow into four `1fr` tracks as two tidy rows of four. **Anything added
+here costs a grid cell and reflows those rows**, which is why neither of the
+two 10 Aug additions took one:
+
+- **The type legend** hangs off the Type `<label>`, not the grid. A `?` button
+  opening `.tylegend-pop`, an anchored popover using the same pattern as the
+  date-window picker (`.inrange`): local state, mousedown-outside close, Esc,
+  `aria-expanded`, and a `position:static` phone fallback so it cannot hang
+  off the edge. Its content is GENERATED from `INPUT_META`, so it cannot
+  describe a rule the engine does not apply.
+  **`.ifield label` sets `overflow:hidden` and `white-space:nowrap`** for its
+  own 10px caps, and both are inherited straight into the popover — the first
+  clipped it to a 10px strip, the second ran every line off the right edge.
+  `label.withhelp` opts out of the clip; the popover resets the wrap. Neither
+  is reachable from `npm test` (jsdom has no layout) — a screenshot found both.
+- **The AM/PM span picker** REPLACES the all-day tick in the same cell rather
+  than sitting beside it: `.ifield.span` where `.ifield.chk` used to be, four
+  36px buttons so the row keeps its line. It is shown only for types whose
+  table entry has `half` (leave and medical); everything else keeps the tick.
+  The row editor mirrors it on the `.ined-ad` line.
+  It writes only the two time fields the form already had, plus a `half`
+  label — **no new engine input**.
+
+All three type dropdowns (add form, filter, row editor) carry the same three
+`<optgroup>`s, from `TYPE_GROUPS`/`typeGroup`. Twenty flat options is not a
+list anyone can pick from.
+
 ## The Inputs table's view state (`ui/InputsPage.tsx`)
 
 Owner, Aug 5. Three things, all view-only — none of them touches the model:
@@ -416,7 +447,7 @@ A day ends with three blocks, not the reference's five (owner request, Aug 26 �
 |---|---|---|
 | `Ground Programme` — the scheduler's own rows | ✓ | ✓, titled `Ground Programme · scheduler` |
 | `Personal Inputs` — what aircrew submitted | ✗ | ✓ |
-| `Unavailable` — Detachment, Leave, Downchit | ✓ | ✓ |
+| `Unavailable` — leave, medical (HL/OML/ATT B/ATT C), OD | ✓ | ✓ |
 
 (Owner casing, Aug 26: `Ground Programme` / `Personal Inputs`, everywhere they
 are titled — both week surfaces, both board panels, and the Inputs page h1.)

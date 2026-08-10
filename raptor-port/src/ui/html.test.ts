@@ -321,12 +321,12 @@ describe('view-week markup parity with the reference', () => {
 
 
   it('Unavailable gathers detachment, leave and downchit', () => {
-    /* day 2 carries a Detachment (pike, Jul 15–17) and an OL (j_lee) */
+    /* day 2 carries overseas duty (pike, Jul 15–17) and an OL (j_lee) */
     const v = dayHTML(2, false)
     const blk = v.slice(v.indexOf('sec-unav'))
-    expect(blk).toContain('Detachment')
+    expect(blk).toContain('OD')
     expect(blk).toContain('OL')
-    expect(dayHTML(0, false)).toMatch(/sec-unav[\s\S]*Downchit/)
+    expect(dayHTML(0, false)).toMatch(/sec-unav[\s\S]*OML/)
   })
 
   it('Unavailable prints Nil rather than going missing', () => {

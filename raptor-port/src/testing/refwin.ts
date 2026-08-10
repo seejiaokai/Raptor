@@ -26,7 +26,7 @@ import { INPUTS, inputFlags } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 
 export async function refWindow(): Promise<any> {
-  const html = rering(rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))
+  const html = reinput(redn(rering(rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -274,6 +274,81 @@ function rematrix(html: string): string {
    builds, so parity needs the identical parse in the reference's simwin push —
    same regexes, same 0–240 bound as the port's briefLeadOf. Note the swap
    strings are TS string literals: the \\b below reaches the page as \b. */
+/* The squadron's real absence vocabulary (owner, 10 Aug 26). The port removed
+   the plain `Downchit` and `Detachment` types: OML / ATT B / ATT C carry the
+   medical meaning now and OD the overseas one, and the seed was retyped to
+   match. The reference has never heard those words, so its isDownchit returns
+   false for divot and sufa and it grades them INPUT_FLY where the port grades
+   them DNIF_FLY — a divergence in the DATA, not in any rule.
+   Teaching the reference the four medical codes closes it at the source, the
+   same way syncInputs closes the INPUTS divergence. It is a pure RENAME: all
+   four behave in the reference exactly as `Downchit` did, because on the
+   reference side nothing distinguishes them — the port's own new axis (ATT B
+   may still work) lives in code the reference does not have, and the seed
+   deliberately puts ATT B on nobody, so it can never be exercised here.
+   `OD` needs no patch: the reference graded `Detachment` as an ordinary input
+   and grades `OD` identically, both falling through to INPUT_FLY. */
+function redn(html: string): string {
+  const from = "function isDownchit(t){return /DNIF|Downchit/i.test(String(t==null?'':t));}"
+  const to = "function isDownchit(t){return /DNIF|Downchit|^\\s*(HL|OML|ATT\\s*[BC])\\s*$/i.test(String(t==null?'':t));}"
+  const n = html.split(from).length - 1
+  if (n !== 1) throw new Error(`refwin redn: expected exactly 1 match, got ${n}`)
+  return html.replace(from, to)
+}
+
+/* THE GATE REVERSAL (owner, 10 Aug 26 — "all will automatically go in").
+   Every input now reaches the validator the moment it is typed, where a
+   personal one used to be a request that blocked nothing until a scheduler
+   actioned it. That change did not create a divergence; it EXPOSED two that
+   were already there, and that the old inputFlags filter had been hiding by
+   keeping personal inputs out of both engines.
+
+   The note at the foot of this file called the first one and said the parity
+   tests would go red here, correctly, the day a personal input reached both
+   engines. That day is today, so both are patched rather than excised — the
+   comparison stays whole.
+
+     1. THE OFFER EXEMPTION. The reference still treats `Fly` as an OFFER that
+        clashes with nothing. The port dropped the offer concept (owner,
+        Aug 26): a man flying with another squadron is not available for this
+        sortie, so Fly costs exactly what a Meeting costs. The old note said
+        this could not be patched because `isOffer` is a const — but the
+        FLY loop tests an inline regex, which is an ordinary string swap.
+     2. THE WIDENED TASKING LOOP (owner, 4 Aug 26). The reference's non-flying
+        loop covers leave and downchits only, so a personal input warned
+        against a sortie but let a sim seat, a duty post or a ground row
+        through silently. The port widened it to every input, with the SC
+        shift carve-out for ordinary personal types.
+
+   The port's ATT B exemption is folded in too, so the reference agrees about
+   the one type that may still work. It cannot actually fire — the seed puts
+   ATT B on nobody, deliberately — but leaving it out would mean the two
+   engines disagreed the moment a test seeded one. */
+function reinput(html: string): string {
+  const swaps: Array<[string, string]> = [
+    /* 1 — Fly is a commitment, not an offer */
+    ["if(/^Available|^Fly$/i.test(inp.type))return;",
+     "if(/^Available/i.test(inp.type))return;"],
+    /* 2 — every input clashes with every kind of tasking, except that ATT B
+       may still work, and an ordinary personal type stays quiet against a
+       shift (the accepted row's SHIFT_SOFT is the designed voice there) */
+    ["const dn=isDownchit(inp.type), lv=isLeave(inp.type);\n        if(!dn&&!lv)return;",
+     "if(/^\\s*ATT\\s*B\\s*$/i.test(String(inp.type||'')))return;"
+     + "const dn=isDownchit(inp.type), lv=isLeave(inp.type);"
+     + "const un=dn||lv||/^\\s*OD\\s*$/i.test(String(inp.type||''));"
+     + "if(!un&&e.kind==='shift')return;"],
+    ["add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[e.id],\n          (dn?'Downchit but tasked':'On leave but tasked')",
+     "add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],"
+     + "(dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)"],
+  ]
+  for (const [from, to] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin reinput: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
+    html = html.replace(from, to)
+  }
+  return html
+}
+
 function relead(html: string): string {
   const from = "simwin.push({ids,label:'OFT '+(s.label||'sim'),bs:st-VCONF.epBrief,be:st,ds:en,de:en+VCONF.simDebrief}); });"
   const to = "const _r=String(s.rmks||''),_m=_r.match(/\\bbrief\\s*[-:]?\\s*(\\d{1,3})\\b/i)||_r.match(/\\b(\\d{1,3})\\s*(?:min(?:ute)?s?\\s*)?prior\\b/i);"
@@ -361,11 +436,10 @@ function rering(html: string): string {
   return html.replace(from, "markChip(di,id,'TT');")
 }
 
-/* One divergence the sync CANNOT close: the reference's `isOffer` is a `const`,
-   so it cannot be patched out, and the reference still treats "Fly" as an offer
-   that clashes with nothing. The inputFlags filter shrinks the exposure — an
-   UN-ACTIONED Fly input no longer reaches either engine — but a Fly input
-   filed under Unavailable ('u') would pass the filter and the engines really
-   would disagree (the port clashes it, the reference exempts it). The seed
-   accepts nothing, so this stays invisible; if a future seed does that, the
-   parity tests go red here, correctly, and the seed needs re-thinking. */
+/* CLOSED, 10 Aug 26. This used to read "one divergence the sync CANNOT close":
+   the reference treats "Fly" as an offer that clashes with nothing, and the
+   note reasoned that `isOffer` being a `const` put it out of reach. That was
+   half right — the const is out of reach, but the FLY loop tests its own
+   inline regex, and swapping that string is enough. The prediction the note
+   made came true exactly as written the day every input started reaching the
+   validator, and the fix is `reinput` above rather than a re-thought seed. */

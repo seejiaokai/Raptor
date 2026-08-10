@@ -94,8 +94,12 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
       out.i2 = W(id).some(x => x.code === 'NO_BRIEF') ? 'NO_BRIEF' : 'nothing'
       if (g) g.who = ''; ff.aircraft[0].p = ''; afterSchedMutate()
     }
-    /* 3 (re-expressed) · a personal input is not the issued programme until a
-       scheduler accepts it — the offer exemption's successor rule */
+    /* 3 (re-expressed TWICE) · The reference exempted "Available fly" as an
+       OFFER. That became "a personal input is not the issued programme until a
+       scheduler accepts it" — and on 10 Aug 26 the owner reversed THAT too:
+       every input counts from the moment it is typed. So the assertion is
+       inverted rather than dropped; what it still guards is that planting a
+       man through his own input is never silent. */
     wipe(0)
     {
       const d = DAYS[0], fw = d.waves.find(x => !isStandalone(x)), ff = fw.formations[0]
@@ -190,7 +194,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
   T('1b · tomorrow inside the night tail DOES bar', R.i1b, 'BAR')
   T('2 · a meeting inside the brief window raises NO_BRIEF', R.i2, 'NO_BRIEF')
   console.log(`   3 · subject input type: ${R.i3type || '-'}`)
-  T('3 · an un-accepted personal input paints nothing', R.i3, 'none/none')
+  T('3 · an un-accepted personal input clashes at once (owner, 10 Aug 26)', R.i3, 'C/hard')
   T('3 · and accepting it puts it on the programme', R.i3seen, 'on the programme')
   T('4 · a 2300-0100 sim is stored rolled, not inverted', R.i4win, '1380-1500')
   T('4 · and it clashes with the duty inside it', R.i4, 'DOUBLE_BOOK')

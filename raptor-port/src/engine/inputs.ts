@@ -1,52 +1,173 @@
 import { VCONF } from './rules'
 import { CURWEEK } from './waves'
-/* ---- LEAVE ---------------------------------------------------------------
-   The squadron does not book "leave"; it books one of three things.
-     LL  · local leave     — applied for on the leave system, man stays on island
-     OL  · overseas leave  — applied for on the leave system, man is out of reach
-     OIL · off in lieu     — given by the commander, run inside the squadron.
-                             Nothing is applied for anywhere, but it is leave.
-   All three are leave for every purpose the schedule cares about: they close the
-   man to flying, duties, sims and ground slots exactly as before.
-   LL and OIL keep him on the island, so he MAY still be raised as an SC SPARE —
-   a spare is standing by, not tasked. OL cannot: he is away.               */
-export const LEAVE_TYPES:any={LL:'local leave',OL:'overseas leave',OIL:'off in lieu'};
+/* ---- THE INPUT TYPES ------------------------------------------------------
+   The squadron books far more kinds of absence than "leave" (owner, 10 Aug 26).
+   ONE TABLE decides everything about a type, and every predicate below is a
+   lookup into it. That shape is deliberate, for two reasons.
+
+   The first is drift. This file used to carry five hand-written regexes and the
+   week and the board each carried their own copy of one of them; they could and
+   did fall out of step. With twenty types and four axes, regexes stop being
+   readable long before they stop being wrong.
+
+   The second is the LEGEND (owner, 10 Aug 26 — a button by the type field
+   saying what each abbreviation means). It is generated from this table, so
+   the explanation a scheduler reads cannot drift from the rule the engine
+   enforces. That is only true while the table stays the single source.
+
+   The axes, and what each one actually decides:
+     work   — WITHIN the input's hours, may he take a NON-FLYING tasking (a duty
+              post, a sim seat, a ground row, a programme item)? Only ATT B: he
+              is grounded, not absent, and he is at his desk. Nobody on this
+              list may fly within their hours.
+     local  — is he still on the island? Drives the wording of the warning, and
+              it is the flag the AVALON spare rule will read when the owner
+              specifies it (he reserved it deliberately, 10 Aug 26 — do NOT
+              infer it).
+     ground — may a scheduler promote it onto the day's Ground Programme with
+              the → Ground button? The activity types only: leave does not
+              belong on the programme.
+     half   — does the AM / PM control appear on the Inputs page? Leave and
+              medical only (owner's call). The other types already take an
+              exact time range, which is finer.
+
+   SPARE ELIGIBILITY IS DERIVED, NOT STORED — see canSpare() below.        */
+export const INPUT_META:any={
+  /* leave — applied for, or granted inside the squadron. Closes the man to
+     everything, but he is at home and reachable, so he may still stand by. */
+  'LL':         {name:'local leave',              grp:'leave', work:false, local:true,  ground:false, half:true},
+  'OL':         {name:'overseas leave',           grp:'leave', work:false, local:false, ground:false, half:true},
+  'OIL':        {name:'off in lieu',              grp:'leave', work:false, local:true,  ground:false, half:true},
+  'OFF':        {name:'off — no leave counter',   grp:'leave', work:false, local:true,  ground:false, half:true},
+  'CCL':        {name:'childcare leave',          grp:'leave', work:false, local:true,  ground:false, half:true},
+  'PL':         {name:'paternity leave',          grp:'leave', work:false, local:true,  ground:false, half:true},
+  'FCL':        {name:'family care leave',        grp:'leave', work:false, local:true,  ground:false, half:true},
+  'EL':         {name:'embarkation leave',        grp:'leave', work:false, local:true,  ground:false, half:true},
+  /* medical — on the island but not fit to walk, so no spare either. ATT B is
+     the ONLY type in the app that separates "cannot fly" from "cannot work". */
+  'HL':         {name:'hospitalisation leave',    grp:'med',   work:false, local:true,  ground:false, half:true},
+  'OML':        {name:'ordinary medical leave',   grp:'med',   work:false, local:true,  ground:false, half:true},
+  'ATT C':      {name:'medically down — cannot report to work', grp:'med', work:false, local:true, ground:false, half:true},
+  'ATT B':      {name:'medically down — no flying, may still work', grp:'med', work:true, local:true, ground:false, half:true},
+  /* activity — a real commitment, but local and droppable, so he may stand by.
+     These are the types a scheduler may lift onto the Ground Programme. */
+  'Training':   {name:'training',                 grp:'act',   work:false, local:true,  ground:true,  half:false},
+  'CSE':        {name:'course',                   grp:'act',   work:false, local:true,  ground:true,  half:false},
+  'Meeting':    {name:'meeting',                  grp:'act',   work:false, local:true,  ground:true,  half:false},
+  'Fly':        {name:'flying with another squadron', grp:'act', work:false, local:true, ground:true, half:false},
+  'Personal':   {name:'personal',                 grp:'act',   work:false, local:true,  ground:true,  half:false},
+  'Appointment':{name:'appointment',              grp:'act',   work:false, local:true,  ground:true,  half:false},
+  /* overseas duty — replaces Detachment (owner, 10 Aug 26). Out of reach:
+     cannot be planned for anything at all, an SC spare included. */
+  'OD':         {name:'overseas duty',            grp:'duty',  work:false, local:false, ground:false, half:false},
+  'Other':      {name:'other',                    grp:'act',   work:false, local:true,  ground:true,  half:false},
+};
+/* Looked up case-insensitively and trimmed, because the predicates this
+   replaced were regexes with /i and the suite pins that (`isLeave(' oil ')`).
+   The types themselves come from a fixed dropdown, but an input restored from
+   an older store — or pushed in by a probe — need not match byte for byte. */
+const META_IX:any=Object.keys(INPUT_META).reduce((o:any,k:any)=>{o[k.toUpperCase()]=INPUT_META[k];return o;},{});
+export function inpMeta(t:any){return META_IX[String(t==null?'':t).trim().toUpperCase()]||null;}
+/* the canonical spelling of a type, whatever case it arrived in */
+export function inpType(t:any){const u=String(t==null?'':t).trim().toUpperCase();
+  return INPUT_TYPES.find((k:any)=>k.toUpperCase()===u)||String(t==null?'':t).trim();}
+/* MAY HE STAND A STANDALONE SPARE despite this input? The owner's rule, in the
+   words he used: local yes, overseas no — with medical the single carve-out,
+   because HL/OML/ATT B/ATT C keep him on the island but not fit to walk. A
+   spare is standing by, not tasked, which is why a local commitment does not
+   bar one. Derived rather than stored so the rule lives in one place and a
+   twenty-row column cannot fall out of step with it.
+   Written against "a standalone spare" on purpose: SC is the only kind
+   enforced today, and the owner's AVALON rule drops in without re-cutting. */
+export function canSpare(t:any){const m=inpMeta(t); return !!m&&m.local&&m.grp!=='med';}
+/* LEAVE_TYPES is kept — the Logic page builds its leave matrix from it, and
+   the reference suite reaches for it by name — but it is now a VIEW of the
+   table above rather than a second list to keep true. */
+export const LEAVE_TYPES:any=Object.keys(INPUT_META).reduce((o:any,k:any)=>{if(INPUT_META[k].grp==='leave')o[k]=INPUT_META[k].name;return o;},{});
 /* declared as functions, not const arrows, so the regression suite can reach
    them — jsdom does not put a top-level const on window */
 export function leaveKey(t:any){const k=String(t==null?'':t).trim().toUpperCase(); return LEAVE_TYPES[k]?k:'';}
-export function isLeave(t:any){return !!leaveKey(t);}
-export function isLocalLeave(t:any){const k=leaveKey(t); return k==='LL'||k==='OIL';}   // still on the island
-export function isDownchit(t:any){return /DNIF|Downchit/i.test(String(t==null?'':t));}
+export function isLeave(t:any){const m=inpMeta(t); return !!m&&m.grp==='leave';}
+export function isLocalLeave(t:any){const m=inpMeta(t); return !!m&&m.grp==='leave'&&m.local;}   // still on the island
+/* "Downchit" the TYPE is gone (owner, 10 Aug 26); downchit the CONCEPT is the
+   medical group — OML, ATT B, ATT C and HL. Everything that used to ask
+   isDownchit still gets the right answer, including the late-input exemption:
+   a deadline asks a man to decide in advance, and none of these four is
+   decided in advance. Leave and OD stay in scope, because they are applied
+   for. See the late-input block below. */
+export function isDownchit(t:any){const m=inpMeta(t); return !!m&&m.grp==='med';}
 export function isOffType(t:any){return isLeave(t)||isDownchit(t);}
 export function isFly(t:any){return /^Fly$/i.test(String(t==null?'':t).trim());}
+/* may a NON-FLYING tasking still be given inside this input's hours? */
+export function canWork(t:any){const m=inpMeta(t); return !!m&&!!m.work;}
 /* AWAY for availability (owner, Aug 26): leave and downchits close the day on
    type alone. A Fly means the man is flying with ANOTHER SQUADRON — so once a
    scheduler has actioned it (either destination) he reads as unavailable in
    the crew strip, the palette and slotBar, while the item itself can sit on
    the Ground Programme. Un-actioned Fly is still just a request, exactly like
    the validator gate — the two gates must not drift apart. */
-export function isAway(inp:any){return isOffType(inp.type)||(isFly(inp.type)&&!!inp.acc);}
-/* how an entry reads when it is the reason a slot is closed */
-export function offWord(inp:any){const k=leaveKey(inp.type);
-  return (k?`${LEAVE_TYPES[k]} (${k})`:isFly(inp.type)?'flying with another squadron':String(inp.type).toLowerCase())+(inp.remarks?' — '+inp.remarks:'');}
+/* OVERSEAS DUTY BELONGS HERE, and its predecessor never did (10 Aug 26).
+   `Detachment` sat in isUnavail but NOT in isAway, so a detached man was
+   neither hidden from the palette nor barred from a slot — he only ever raised
+   a warning after you had planted him. The owner's rule for OD is explicit:
+   "cannot be planned for anything, including an SC spare", and a picker that
+   still offers him cannot deliver that. Widened from isOffType to isUnavail,
+   which is leave + medical + overseas duty — the three groups that mean the
+   man is simply not there.
+   The activity types stay out on purpose. They close the man in the WARNING
+   list (every input counts now — see inputFlags) but they do not strike him
+   out of the palette, which is exactly how an actioned personal input has
+   always behaved. Widening that too would be a change nobody asked for. */
+export function isAway(inp:any){return isUnavail(inp.type)||(isFly(inp.type)&&!!inp.acc);}
+/* DOES THIS ABSENCE CLOSE THE WHOLE DAY, or only some hours (owner, 10 Aug 26 —
+   AM / PM half-days)? It does when it says so, AND when it carries no usable
+   window at all: {person:'pike', type:'OD'} with neither allday nor s/e is a
+   real shape (parity.test.ts pins one), and reading it as a zero-length
+   absence would quietly free a man who is off for a week. Both ends are
+   required, so a half-day with a blank end does not become a one-hour absence
+   through win()'s open-ended default. A thin record fails CLOSED — the same
+   rule slotRules follows for a row with no times of its own. */
+export function awayAllDay(inp:any){return !!inp.allday||inp.s==null||inp.e==null;}
+/* how an entry reads when it is the reason a slot is closed. The words come
+   off INPUT_META, so the reason a scheduler reads here, the text in the type
+   legend and the rule the engine applied are all the same string. */
+export function offWord(inp:any){const m=inpMeta(inp.type);
+  const half=inp.half==='am'?' (AM)':inp.half==='pm'?' (PM)':'';
+  if(!m)return String(inp.type).toLowerCase()+half+(inp.remarks?' — '+inp.remarks:'');
+  /* an ABBREVIATION carries its code so a reader can match it back to the
+     legend; a type that is already an ordinary word ("Training") would only
+     read as "training (Training)", so it does not */
+  const t=inpType(inp.type), abbr=m.name.toLowerCase()!==t.toLowerCase();
+  return `${m.name}${abbr?` (${t})`:''}${half}`+(inp.remarks?' — '+inp.remarks:'');}
 /* "Office", "Available fly" and "Available duty" are gone (owner decision, Aug 26).
    The first was a desk marker nobody read off the programme; the other two were
    OFFERS — a man saying what he WANTED rather than where he had to be. With them
    gone the offer concept goes with them: every remaining non-leave type is a real
    commitment, "Fly" included, so it clashes and consumes brief/debrief time
-   exactly like an Appointment does. "Detachment" is new and reads as unavailable. */
-export const INPUT_TYPES=['LL','OL','OIL','Detachment','Training','Meeting','Fly','Personal','Downchit','Appointment','Other'];
+   exactly like an Appointment does.
+   DERIVED from INPUT_META, in its declaration order, so the list a scheduler
+   picks from and the rules the engine applies cannot disagree about which
+   types exist. "Downchit" and "Detachment" were removed on 10 Aug 26 —
+   OML / ATT B / ATT C carry the medical meaning now, and OD the overseas one. */
+export const INPUT_TYPES=Object.keys(INPUT_META);
+/* the three groups the type dropdown and the legend are cut into */
+export const TYPE_GROUPS:any=[
+  {k:'leave',t:'Leave'},{k:'med',t:'Medical'},{k:'other',t:'Duty & other commitments'}];
+export function typeGroup(t:any){const m=inpMeta(t); return !m?'other':m.grp==='leave'?'leave':m.grp==='med'?'med':'other';}
 /* The two halves of the day's input blocks, and the ONLY place the split is
    decided — the week and the board both used to carry their own copy of this
    regex and could drift apart.
-     UNAVAIL  — closes the man's day outright. Rendered to everyone, on every
-                page, without the scheduler doing anything.
-     PERSONAL — submitted by aircrew, NOT yet part of the issued programme. The
-                scheduler accepts it (see acceptInput) to promote it into the
-                ground programme, so it never reaches the view-only page. */
-export function isDetach(t:any){return /^Detachment$/i.test(String(t==null?'':t).trim());}
-export function isUnavail(t:any){return isDetach(t)||isLeave(t)||isDownchit(t);}
-export function isPersonal(t:any){return /^(Meeting|Training|Personal|Appointment|Fly|Other)$/i.test(String(t==null?'':t).trim());}
+     UNAVAIL  — leave, medical and overseas duty. The block the squadron reads
+                every day: a man who is simply not there.
+     PERSONAL — the activity types. A real commitment he is here for, which a
+                scheduler may lift onto the Ground Programme (see acceptInput).
+   NOTE this split is now PRESENTATIONAL ONLY (owner, 10 Aug 26). It decides
+   which block a row is drawn in and nothing else — every input closes the
+   man's hours the moment it is entered, whichever block it lands in. The gate
+   that used to make "unavailable" mean "counts to the validator" was
+   inputFlags, and it no longer discriminates. */
+export function isUnavail(t:any){const m=inpMeta(t); return !!m&&m.grp!=='act';}
+export function isPersonal(t:any){const m=inpMeta(t); return !!m&&m.grp==='act';}
 export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim());}
 /* "Other" is the catch-all: the TYPE says nothing, so what the person actually
    typed is the name of the thing (owner, Aug 26). Everywhere an input is
@@ -57,21 +178,22 @@ export function inpLabel(inp:any){
   const rm=String((inp&&inp.remarks)||'').trim();
   return (isOther(inp&&inp.type)&&rm)?rm:String((inp&&inp.type)||'');
 }
-/* The validator's gate (owner, Aug 26): an unavailable-typed input always
-   counts, but a personal input only counts once a scheduler has ACTIONED it.
-   'u' files it under Unavailable, so it clashes like a Detachment does; 'g' is
-   already represented by the ground row acceptInput created — letting it flag
-   here too would print every clash twice (INPUT_FLY on the input plus
-   DOUBLE_BOOK on the row). An un-actioned personal input is invisible to
-   validate(): it is a request, not yet part of anyone's programme.
-   The one exception to the 'g' rule (4 Aug 26): an ALL-DAY input accepted to
-   Ground makes a time-less row, and a time-less row never becomes an event —
-   so an all-day Fly accepted to the ground programme flagged nothing even
-   with the man planted in a sortie. An all-day Fly is exactly the case that
-   must flag (he is flying with another squadron the whole day), so it stays
-   visible here; a TIMED Fly to 'g' still defers to its row, and the all-day
-   row it leaves behind is time-less, so nothing prints twice. */
-export function inputFlags(inp:any){return isUnavail(inp.type)||inp.acc==='u'||(isFly(inp.type)&&inp.acc==='g'&&!!inp.allday);}
+/* The validator's gate. EVERY INPUT NOW COUNTS (owner, 10 Aug 26 — "all will
+   automatically go in"). It used to be `isUnavail(type) || acc==='u' || …`,
+   so a Training or an Appointment blocked nothing at all until a scheduler had
+   actioned it: it was a request, not part of anyone's programme. The owner
+   wants the opposite — an input closes the man's hours the moment he types it,
+   and the scheduler's job becomes editing or removing it, not admitting it.
+
+   ONE carve-out survives, and it is not about admission: an input a scheduler
+   has promoted to a Ground row ('g') is already represented BY that row, so
+   letting it flag here as well would print every clash twice — INPUT_FLY on
+   the input plus DOUBLE_BOOK on the row.
+   That defers only where the row can actually carry the clash. An ALL-DAY
+   input makes a TIME-LESS ground row, and a time-less row never becomes an
+   event (4 Aug 26), so it would flag nothing at all — it stays visible here
+   instead. A timed one defers to its row, which does the flagging properly. */
+export function inputFlags(inp:any){return !(inp.acc==='g'&&!inp.allday);}
 /* inputs use machine-readable date + minute fields so the validator can reason about them.
    s/e are minutes-from-midnight; allday inputs cover the whole day. */
 /* The `mod` stamps are spread either side of the demo week's input deadline on
@@ -85,16 +207,16 @@ export function inputFlags(inp:any){return isUnavail(inp.type)||inp.acc==='u'||(
    Before this they were all stamped inside their own week, which marked every
    input late and made the mark meaningless. */
 export let INPUTS:any[]=[
-  {person:'divot', date:'Jul 13', allday:true,               type:'Downchit',    remarks:'Downchit 13 Jul', mod:'2026-07-12'},
+  {person:'divot', date:'Jul 13', allday:true,               type:'OML',         remarks:'Medical leave 13 Jul', mod:'2026-07-12'},
   {person:'bane',  date:'Jul 16', allday:false, s:1020,e:1110,type:'Appointment', remarks:'Medical / PHA', mod:'2026-06-29'},
   {person:'salsa', date:'Jul 14', allday:false, s:840, e:960, type:'Appointment', remarks:'Dental appt',  mod:'2026-07-09'},
   {person:'j_lee', date:'Jul 15', allday:true,               type:'OL',          remarks:'Overseas — SG out',mod:'2026-06-22'},
   {person:'nasty', date:'Jul 14', allday:true,               type:'LL',          remarks:'Local leave',  mod:'2026-06-30'},
   {person:'shrek', date:'Jul 14', allday:true,               type:'OIL',         remarks:'OIL — CO approved, post-detachment',mod:'2026-07-02'},
-  {person:'sufa',  date:'Jul 13', endDate:'Jul 17', allday:true, type:'Downchit', remarks:'Downchit till 17 Jul', mod:'2026-07-12'},
+  {person:'sufa',  date:'Jul 13', endDate:'Jul 17', allday:true, type:'ATT C',   remarks:'Medically down till 17 Jul', mod:'2026-07-12'},
   {person:'bruise',date:'Jul 13', allday:true,               type:'Fly',         remarks:'Keen for any wave',mod:'2026-06-20'},
   {person:'vinci', date:'Jul 13', allday:false, s:540, e:1020,type:'Meeting',     remarks:'Desk / staff work',mod:'2026-06-26'},
-  {person:'pike',  date:'Jul 15', endDate:'Jul 17', allday:true, type:'Detachment', remarks:'Det — exercise, off island',mod:'2026-06-18'},
+  {person:'pike',  date:'Jul 15', endDate:'Jul 17', allday:true, type:'OD',       remarks:'Overseas duty — exercise, off island',mod:'2026-06-18'},
   {person:'yeti',  date:'Jul 13', allday:false, s:600, e:660, type:'Appointment', remarks:'HSP blood panel',mod:'2026-07-06'},
 ];
 export const DATES=['Jul 13','Jul 14','Jul 15','Jul 16','Jul 17','Jul 18','Jul 19'];  // Mon..Sun index → date label
@@ -133,9 +255,13 @@ export function inputCoversDate(inp:any,dt:any){
    morning of the flight is the system working, not somebody being slack.
    Marking it would be scolding him for being ill, and — worse for the
    scheduler — it would put a badge on the one input type that is ALWAYS
-   last-minute, which is how a mark stops meaning anything. Leave and
-   detachments are NOT exempt: those are applied for, and applying late is
-   exactly what this is about.
+   last-minute, which is how a mark stops meaning anything. Leave and overseas
+   duty are NOT exempt: those are applied for, and applying late is exactly
+   what this is about.
+   Since 10 Aug 26 that exemption reads off the MEDICAL GROUP — HL, OML, ATT B
+   and ATT C — because the plain "Downchit" type is gone and those four are
+   what replaced it. The rule is unchanged in substance: none of the four is
+   decided in advance either.
 
    This is a MARK, not a rule the validator reads. Nothing here raises a
    warning, changes availability, or touches a seat — a paperwork deadline

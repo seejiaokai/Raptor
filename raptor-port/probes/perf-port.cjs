@@ -231,7 +231,14 @@ async function trial(b, measureSize) {
      add or remove a node without a line of source changing, so a ceiling set
      to "measured + 1" would go red on a data change and teach the next
      reader to ignore it. 880 still catches what this ceiling is for — a
-     DOM explosion — while leaving the seed room to gain a few inputs. */
+     DOM explosion — while leaving the seed room to gain a few inputs.
+     Re-measured 10 Aug 26 after the leave-types build: 864, up 2 from 862.
+     That is the margin above doing exactly the job it was left for, so the
+     ceiling is NOT raised — eating an argued margin to absorb a 2-node move
+     is how a ceiling stops meaning anything. The two nodes are data, not
+     markup: every input now reaches the validator the moment it is typed, so
+     the day's issue list gained entries. Whoever needs the next raise should
+     say what they measured, as these three notes do. */
   const DOM_CEILING = { week: 5530, board: 880 }
   for (const [surface, s] of Object.entries(size)) {
     const cap = DOM_CEILING[surface]

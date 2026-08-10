@@ -5,7 +5,7 @@
    ON TIME, and an input with no usable stamp is never accused. */
 import { describe, expect, it, afterEach } from 'vitest'
 import { VCONF, rulesReset } from './rules'
-import { INPUTS, isLateInput, inputDueISO, weekStartISO, inputStampISO, lateNote, isoLabel } from './inputs'
+import { INPUTS, isDownchit, isLateInput, inputDueISO, weekStartISO, inputStampISO, lateNote, isoLabel } from './inputs'
 
 afterEach(() => rulesReset())
 
@@ -51,11 +51,18 @@ describe('what counts as late', () => {
     /* going DNIF is not a decision made in advance. Marking the one type that
        is always last-minute would put a badge on every downchit and teach
        everyone to ignore the badge. */
-    const dnif = { person: 'divot', date: 'Jul 13', type: 'Downchit', mod: '2026-07-12' }
+    const dnif = { person: 'divot', date: 'Jul 13', type: 'OML', mod: '2026-07-12' }
     expect(isLateInput(dnif)).toBe(false)
     expect(lateNote(dnif), 'and it has nothing to say about one').toBe('')
-    /* the exemption is by TYPE, so the DNIF spelling is caught too */
-    expect(isLateInput({ ...dnif, type: 'DNIF' })).toBe(false)
+    /* the exemption is by TYPE, and since 10 Aug 26 it is the whole MEDICAL
+       GROUP — the plain "Downchit" type is gone and these four replaced it.
+       None of them is a decision made in advance either. */
+    for (const t of ['HL', 'OML', 'ATT C', 'ATT B'])
+      expect(isLateInput({ ...dnif, type: t }), t).toBe(false)
+    /* and leave is still NOT exempt: it is applied for, which is the whole
+       point of a deadline */
+    for (const t of ['LL', 'OL', 'OIL', 'OFF', 'CCL', 'EL', 'OD'])
+      expect(isLateInput({ ...dnif, type: t, mod: '2026-07-12' }), t).toBe(true)
   })
 
   it('still marks late LEAVE and a late detachment — those are applied for', () => {
@@ -105,7 +112,7 @@ describe('the seed week shows all three cases, so the mark reads as a signal', (
   it('leaves both downchits unmarked even though they are the LATEST stamps in it', () => {
     /* the strongest form of the exemption: these two are stamped later than
        anything else in the seed and are still clean. */
-    const dn = INPUTS.filter((i: any) => /Downchit/i.test(i.type))
+    const dn = INPUTS.filter((i: any) => isDownchit(i.type))
     expect(dn.length).toBe(2)
     const latest = INPUTS.map((i: any) => i.mod).sort().pop()
     expect(dn.every((i: any) => i.mod === latest), 'they really are the latest').toBe(true)
@@ -121,6 +128,6 @@ describe('the seed week shows all three cases, so the mark reads as a signal', (
   it('cannot be made to mark everything, because the downchits are exempt', () => {
     VCONF.inputLead = 60
     expect(INPUTS.every(isLateInput)).toBe(false)
-    expect(INPUTS.filter((i: any) => !isLateInput(i)).every((i: any) => /Downchit/i.test(i.type))).toBe(true)
+    expect(INPUTS.filter((i: any) => !isLateInput(i)).every((i: any) => isDownchit(i.type))).toBe(true)
   })
 })

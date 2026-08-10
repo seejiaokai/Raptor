@@ -114,8 +114,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   clash with its own source input).
 - **Every input the validator can see clashes with every kind of tasking**
   (owner, 4 Aug 26). The "but tasked" loop used to cover leave and downchits
-  only, so a Detachment or an actioned-to-`'u'` personal input warned against
-  a sortie but let a sim seat, a duty post or a ground row through silently.
+  only, so an overseas duty or an actioned-to-`'u'` personal input warned
+  against a sortie but let a sim seat, a duty post or a ground row through
+  silently.
   Now all of `day.input` clashes with all of `day.events`, with one carve-out:
   ordinary personal types stay quiet against `kind==='shift'` (the accepted
   row's `SHIFT_SOFT` is the designed voice there); leave, downchits and
@@ -124,16 +125,59 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   another squadron). `isAway(inp)` = `isOffType(type) || (isFly(type) &&
   acc)` — it feeds `dayOff` (the Available-crew strip and the palette fade),
   `slotBar` (reason: "flying with another squadron") and the palette's
-  `offReason`. Whole-day, either destination, no SC-SPARE exemption (that is
-  local-leave only). Un-actioned Fly affects nothing, matching the
-  `inputFlags` gate — keep the two gates aligned.
-- `Detachment` is a new type. It groups under Unavailable with leave and
-  downchits, but it is NOT `isOffType`: it does not confer leave's special
-  powers (SC-spare eligibility and the rest), it simply reads as away.
-- The input types split two ways, and this is the only place the split lives:
-  `isUnavail` = Detachment + leave + downchit; `isPersonal` = Meeting,
-  Training, Personal, Appointment, Fly, Other. Together they partition
-  `INPUT_TYPES` — a test pins that nothing falls between them.
+  `offReason`. Whole-day, either destination. An actioned Fly is local, so
+  since 10 Aug 26 it does NOT bar a standalone spare — `canSpare` decides
+  that now, not leave-ness.
+- **`INPUT_META` is the single source for every input type** (owner,
+  10 Aug 26). It holds the twenty types the squadron actually books, and
+  `INPUT_TYPES` is derived from its keys — the list, the rules, the Inputs
+  page's type legend and the Logic page's matrix all read the same object, so
+  none of them can describe a rule the engine does not apply. Fields: `name`,
+  `grp` (`leave|med|duty|act`), `work`, `local`, `ground`, `half`.
+  Every predicate is a lookup: `isLeave`/`isLocalLeave` off `grp`/`local`,
+  `isDownchit` = `grp==='med'`, `isUnavail` = `grp!=='act'`, `isPersonal` =
+  `grp==='act'`. Lookups are trimmed and case-insensitive, because the regexes
+  they replaced were `/i`.
+  `Downchit` and `Detachment` were REMOVED: OML / ATT B / ATT C carry the
+  medical meaning, OD the overseas one, and the seed was retyped to match
+  (a `refwin` patch, `redn`, teaches the reference the medical words).
+- **`canWork` — the one place "cannot fly" and "cannot work" come apart.**
+  Only `ATT B`: grounded but at his desk, so a duty post, a sim seat, a ground
+  row or a programme item is proper work for him and raises nothing. The
+  FLYING loop is untouched, so a jet still hard-flags. `validate.ts`'s
+  non-flying tasking loop skips him; `slotBar` bars only a flying key (the one
+  with no prefix).
+- **`canSpare` is DERIVED, not stored**: `local && grp!=='med'`. That is the
+  owner's rule in his words — local yes, overseas no — with medical the single
+  carve-out, because HL/OML/ATT B/ATT C keep the man on the island but not fit
+  to walk. Written against "a standalone spare" so the **AVALON rule the owner
+  reserved** (10 Aug 26 — do NOT infer it) drops in without re-cutting.
+- `isAway` = `isUnavail` + an actioned `Fly`. Widened from `isOffType` on
+  10 Aug 26: `Detachment` sat in `isUnavail` but never in `isAway`, so a
+  detached man was neither hidden from the palette nor barred — he only raised
+  a warning once you had already planted him. OD may not be planned for
+  anything, an SC spare included, so it has to be here.
+- The input types still split two ways, but the split is **presentational
+  only** since 10 Aug 26 — it decides which block a row is drawn in and
+  nothing else. `isUnavail` = leave + medical + OD; `isPersonal` = the
+  activity types (Training, CSE, Meeting, Fly, Personal, Appointment, Other),
+  which are also exactly the types a scheduler may lift onto the Ground
+  Programme (`ground` in the table). Together they partition `INPUT_TYPES` —
+  a test pins that nothing falls between them, and a second pins that
+  `isPersonal` and `ground` name the same set.
+- **Every input counts from the moment it is typed** (owner, 10 Aug 26 —
+  "all will automatically go in"). `inputFlags` used to be
+  `isUnavail(type) || acc==='u' || …`, so a personal input was a request the
+  validator ignored until a scheduler actioned it. One carve-out survives, and
+  it is about double-printing rather than admission: an input promoted to a
+  ground row that can carry the clash defers to that row. An ALL-DAY promotion
+  makes a TIME-LESS row, which never becomes an event and so can carry
+  nothing — that one stays visible on the input itself.
+- **Half-days** (owner, 10 Aug 26). Leave and medical types (`half` in the
+  table) can be booked AM (04:00–12:00), PM (12:01–23:59) or all day. Stored
+  as the `s`/`e` minutes the record already had, plus a `half:'am'|'pm'`
+  LABEL — the engine reads only `s`/`e`. A half-day closes its own half only;
+  see §Availability is time-aware below.
 - **The CAT ladder is `OCU → D → C → B → A → IW → IP → IR → FI`** (owner,
   Aug 5 '26). The generic `I` tier and the standalone `ip` flag (and its
   derived `quals.instr`) are gone — instructor-ness lives solely in CAT.
@@ -244,10 +288,12 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Without that last one the privilege would survive invisibly: the page only
   offers the third state to instructor pilots, so a stale `'I'` renders as an
   ordinary tick while still clearing a red warning.
-- Leave: LL, OL, OIL (`isLocalLeave` = LL+OIL). LL/OIL may stand an SC SPARE;
-  OL and Downchit may not (hard DNIF_FLY/LEAVE_FLY) even though spares are
-  otherwise `saExempt`. SC SPARE carries no crew rest either way. SC currency
-  is checked for MAIN and SPARE. SC NIGHT ⊂ SC DAY.
+- Leave and the rest of the absence vocabulary: see `INPUT_META` above.
+  A standalone SPARE is barred by `!canSpare(type)` — overseas (OL, OD) and
+  every medical code — raising a hard DNIF_FLY/LEAVE_FLY even though spares
+  are otherwise `saExempt`, and the message says which of the two it is. SC
+  SPARE carries no crew rest either way. SC currency is checked for MAIN and
+  SPARE. SC NIGHT ⊂ SC DAY.
 - Standalone waves: SC (spares uncrosschecked), AVALON/BB (`noconf`).
 - Chip ranking `RANK` (highest wins): LD<DT<TT<A<SD<SB<DB<NB<CR<RUN<C<Q.
   Glyphs shorten: CR→R, RUN→7, NB/SB→B, DB/SD→D, LD→L. `A` = on shift AND down for
@@ -272,6 +318,67 @@ Where flags reach the screen: `ui/html.ts` builders read `WARN`/`chipOf`;
 live-checks panel is `boardWarnHTML` in `ui/board.ts`; warning-box
 interaction is `ui/interactions.ts` + `state/view.ts` (`DWOPEN`, `WFOCUS`,
 `focusWarn`).
+
+## Availability is time-aware (owner, 10 Aug 26)
+
+The validator has judged inputs by their hours since day one — `collectEvents`
+carries `s`/`e` into `day.input` and every clash rule uses `overlap()`. The
+AVAILABILITY layer did not, which is why a half-day would otherwise have
+flagged correctly and still swept the man out of the crew palette.
+
+- **`awayAllDay(inp)`** — true when `allday` is set, **or when either of
+  `s`/`e` is missing**. A `{person, type}` record with no times is a real
+  shape, and reading it as a zero-length absence would free a man who is off
+  for a week. Both ends are required, so a half-day with a blank end cannot
+  shrink to an hour through `win()`'s open-ended default. **Thin records fail
+  closed.**
+- **`slotRules` reports the slot's own window**, `slotStart`/`slotEnd`, for
+  every key in the grammar. Each is read off the same row `collectEvents`
+  reads and padded the same way, so the picker and the warning list cannot
+  disagree: a sortie is `[to − VCONF.step, ld + VCONF.dekit]`, a standalone
+  line is unpadded (it is a shift), a sim defaults to 90 minutes and
+  everything else to `VCONF.openEnd`. `.+` and `.xN` strip to their row and
+  inherit its hours.
+  **`null` means UNKNOWN, never FREE.** A BB shift is written `['SHIFT','','']`
+  and a ground row may carry no times; treating either as "clashes with
+  nothing" would silently drop a real absence, so the consumer falls back to
+  the whole-day answer.
+- **`slotBar`'s filter chain, in order**: skip on a spare post if `canSpare`;
+  skip a non-flying key if `canWork`; then the overlap. **The order of the
+  last one is load-bearing** — an all-day absence, or one `awayAllDay` cannot
+  place, must short-circuit BEFORE the overlap test. Reversed, every all-day
+  absence starts being judged against a window it does not have. A test in
+  `slotrules.test.ts` fails if it is ever reversed.
+- **`dayOff` stays narrow — off for the WHOLE day.** It also feeds the
+  day-info "off" tally and the palette's struck-through rank, and a man on AM
+  leave is not off for the day. **Known, deliberate consequence: a half-day
+  absentee is no longer counted in that tally.**
+  `dayAway(d)` builds `{all, tw}` in one pass (whole-day set, timed windows by
+  person); `dayOff` is `.all`. One pass because the palette asks about sixty
+  people.
+- **Timed absences join `availByWave`'s existing per-wave overlap**, the same
+  one it runs for tasking — one overlap rule, not two that can drift. Two
+  holes in that path are closed and pinned: the untasked fast path (a man
+  whose only commitment is a timed absence would read free in every wave), and
+  its inverse on a **non-flying day**, where with no bands to bucket into he
+  must stay in `anyWave` or vanish from the strip.
+- `palette-html.ts`'s `offReason` takes the same `awayAllDay` filter, or a man
+  carrying both an all-day and a half-day absence can have the half-day named
+  as the reason his whole day is gone.
+
+**A morning absence does not free a sortie that starts walking before noon.**
+The flying window is padded to the step because that is what the validator
+judges against: Monday's first VL takes off 12:40 and steps at 11:40, so AM
+leave to 12:00 still bars it. Correct, and worth knowing before it is reported
+as a bug. The levers if it ever needs changing are the AM boundary or the step
+padding — never a picker rule that disagrees with the warning list.
+
+**Deferred, deliberately.** An overnight shift (AVALON, 19:00–07:00) has a
+tail belonging to tomorrow, and tomorrow's leave should bar it. `slotBar`
+already rolls back a day for the SC check, but the VALIDATOR does not do this
+either (`collectEvents` builds a day's inputs for that day only), so adding it
+to the picker alone would make it stricter than the warning list. Left out; in
+`HANDOFF.md`.
 
 ## Accepting a personal input
 

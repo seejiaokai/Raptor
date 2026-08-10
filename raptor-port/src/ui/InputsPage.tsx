@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, DATES, inputCoversDate, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isLateInput, lateNote } from '../engine/inputs'
 import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
@@ -99,6 +99,114 @@ const inWindow = (r: any, from: string, to: string) => {
   return true
 }
 
+/* ---- THE TYPE CONTROLS (owner, 10 Aug 26) ---------------------------------
+   Twenty types is too many for a flat list, so all three dropdowns are cut
+   into the same three groups the legend uses. Both are generated from
+   INPUT_META, which is the point of that table: the list you pick from, the
+   explanation you read and the rule the engine applies are one thing. */
+const typeOptions = () => TYPE_GROUPS.map((g: any) =>
+  <optgroup key={g.k} label={g.t}>
+    {INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k).map((t: string) => <option key={t}>{t}</option>)}
+  </optgroup>)
+
+/* AM is 04:00–12:00 and PM is 12:01 to late, the squadron's own halves. The
+   control writes nothing new: it fills in the two time fields the form
+   already had, so the engine still reads only s/e. `half` rides along as a
+   label, so reopening the editor says "AM" rather than guessing from minutes,
+   and the week can print "local leave (AM)".
+   Offered for leave and medical only (owner's call) — the other types take an
+   exact range, which is finer than a half-day. */
+export const HALF_AM: [string, string] = ['04:00', '12:00']
+export const HALF_PM: [string, string] = ['12:01', '23:59']
+const hasHalf = (t: string) => !!(inpMeta(t) || {}).half
+type Span = 'all' | 'am' | 'pm' | 'custom'
+const spanOf = (allday: boolean, half: string): Span => allday ? 'all' : half === 'am' ? 'am' : half === 'pm' ? 'pm' : 'custom'
+/* what a span means in the four fields it drives */
+const spanFields = (m: Span) => m === 'all' ? { allday: true, half: '', sTime: '06:00', eTime: '18:00' }
+  : m === 'am' ? { allday: false, half: 'am', sTime: HALF_AM[0], eTime: HALF_AM[1] }
+    : m === 'pm' ? { allday: false, half: 'pm', sTime: HALF_PM[0], eTime: HALF_PM[1] }
+      : { allday: false, half: '', sTime: '', eTime: '' }      // custom keeps whatever is typed
+
+const SPANS: Array<[Span, string, string]> = [
+  ['all', 'All day', 'The whole day'],
+  ['am', 'AM', 'Morning — 04:00 to 12:00'],
+  ['pm', 'PM', 'Afternoon and evening — 12:01 onwards'],
+  ['custom', 'Custom', 'Type your own start and end time'],
+]
+function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: Span) => void }) {
+  return <div className="spanpick" id={id} role="group" aria-label="How much of the day">
+    {SPANS.map(([m, label, title]) =>
+      <button key={m} type="button" className={'spanbtn' + (span === m ? ' on' : '')}
+        aria-pressed={span === m} title={title} data-span={m}
+        onClick={() => onPick(m)}>{label}</button>)}
+  </div>
+}
+
+/* The legend the owner asked for: a button by the type field saying what each
+   abbreviation means. Generated from INPUT_META so it cannot describe a rule
+   the engine does not apply — which is the whole reason the table exists.
+   It reuses the anchored-popover pattern already on this page (#inRangeBtn),
+   rather than a modal: it is a reference card, not a task. */
+function typeRule(t: string) {
+  const m = inpMeta(t); if (!m) return ''
+  if (m.work) return 'no flying — may still stand a duty, sit a sim or take a ground slot'
+  if (!m.local) return 'out of reach — cannot be planned for anything, an SC spare included'
+  if (m.grp === 'med') return 'cannot be planned, and cannot stand an SC spare'
+  return 'cannot be planned, but may still stand an SC spare'
+}
+/* "Training — training" says nothing twice. A code only earns a spelt-out
+   name when it IS an abbreviation, the same test offWord makes. */
+function typeName(t: string) {
+  const n = ((inpMeta(t) || {}).name || '')
+  return n.toLowerCase() === t.toLowerCase() ? '' : n
+}
+/* the rule the most of a group shares, or '' when they genuinely differ */
+function groupRule(ts: string[]) {
+  const n: any = {}
+  ts.forEach(t => { const r = typeRule(t); n[r] = (n[r] || 0) + 1 })
+  const best = Object.keys(n).sort((a, b) => n[b] - n[a])[0] || ''
+  return n[best] > 1 ? best : ''
+}
+function TypeLegend() {
+  const [open, setOpen] = useState(false)
+  const box = useRef<any>(null)
+  /* mousedown rather than click, for the same reason the date window uses it:
+     a click that starts inside and ends outside must not close the popover */
+  useEffect(() => {
+    if (!open) return
+    const away = (e: any) => { if (box.current && !box.current.contains(e.target)) setOpen(false) }
+    const esc = (e: any) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', away)
+    document.addEventListener('keydown', esc)
+    return () => { document.removeEventListener('mousedown', away); document.removeEventListener('keydown', esc) }
+  }, [open])
+  return <span className="tylegend" ref={box}>
+    <button type="button" className={'tylegend-b' + (open ? ' on' : '')} id="inTypeHelp"
+      aria-expanded={open} title="What do these mean?" onClick={() => setOpen(o => !o)}>?</button>
+    {open && <div className="tylegend-pop" id="inTypePop">
+      <div className="tylegend-h">What each type means</div>
+      {TYPE_GROUPS.map((g: any) => {
+        const ts = INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k)
+        /* Most of a group shares one rule — eight identical lines under Leave
+           is noise a reader has to look past to find the one that differs. So
+           the shared rule goes on the GROUP, and a row prints its own only
+           when it is an exception (OL, OD, ATT B). */
+        const common = groupRule(ts)
+        return <div key={g.k} className="tylegend-g">
+          <div className="tylegend-gt">{g.t}</div>
+          {common && <div className="tylegend-gr">{common}</div>}
+          {ts.map((t: string) => {
+            const r = typeRule(t)
+            return <div key={t} className="tylegend-r">
+              <b>{t}</b><span>{typeName(t)}{r !== common && <i>{r}</i>}</span>
+            </div>
+          })}
+        </div>
+      })}
+    </div>}
+  </span>
+}
+
 export function InputsPage() {
   useVersion()
   const [person, setPerson] = useState(ME)
@@ -106,6 +214,9 @@ export function InputsPage() {
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
   const [allday, setAllday] = useState(true)
+  /* '' | 'am' | 'pm' — a LABEL for the window below, never a second source of
+     truth. s/e stay the only thing the engine reads. */
+  const [half, setHalf] = useState('')
   /* the defaults reproduce the old hardcoded window, so an untouched form
      still writes 06:00–18:00 */
   const [sTime, setSTime] = useState('06:00')
@@ -177,6 +288,9 @@ export function InputsPage() {
     if (!allday && (e as number) <= (s as number)) return HOOKS.toast('End time must be after start time', 'warn')
     writeInputs(() => INPUTS.unshift({
       person, date, endDate, allday, s, e,
+      /* only carried when it is one — an absence typed as an exact range is
+         not a half-day and must not read as one */
+      ...(!allday && half ? { half } : {}),
       type, remarks: remarks.trim(),
       recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
     }))
@@ -203,7 +317,7 @@ export function InputsPage() {
        that would commit the draft onto somebody else's input */
     setEditRow(r)
     setDraft({
-      person: r.person, type: r.type, allday: !!r.allday,
+      person: r.person, type: r.type, allday: !!r.allday, half: r.half || '',
       start: unfmt(r.date), end: r.endDate ? unfmt(r.endDate) : '',
       sTime: r.allday ? '06:00' : hhmm(r.s), eTime: r.allday ? '18:00' : hhmm(r.e),
       remarks: r.remarks || '',
@@ -233,6 +347,7 @@ export function InputsPage() {
       if (wasAcc) unacceptInput(wasDi, r)
       r.person = draft.person; r.type = draft.type; r.allday = draft.allday
       r.s = s; r.e = e; r.date = date; r.remarks = draft.remarks.trim(); r.mod = 'now'
+      if (!draft.allday && draft.half) r.half = draft.half; else delete r.half
       if (endDate) r.endDate = endDate; else delete r.endDate
       if (wasAcc) {
         /* put it back on the day it was on, if the edit still covers that day;
@@ -309,15 +424,33 @@ export function InputsPage() {
               onPick={(s2, e2) => { setStart(s2); setEnd(e2); setRemarks(r => withTill(r, s2, e2)) }} />
             <div className="rc-read" id="inDates">{start ? (fmt(start) + (end ? ' → ' + fmt(end) : '')) : 'pick a start date'}</div>
           </div>
-          <div className="ifield chk"><label>All day</label><input id="inAllday" type="checkbox" checked={allday} onChange={e => setAllday(e.target.checked)} /></div>
+          {/* Leave and medical get the four-way span picker; everything else
+              keeps the plain tick, because those types take an exact range and
+              a half-day would be coarser than what they already say. */}
+          {hasHalf(type)
+            ? <div className="ifield span"><label>How long</label>
+              <SpanPicker id="inSpan" span={spanOf(allday, half)} onPick={m => {
+                const f = spanFields(m)
+                setAllday(f.allday); setHalf(f.half)
+                if (f.sTime) { setSTime(f.sTime); setETime(f.eTime) }
+              }} /></div>
+            : <div className="ifield chk"><label>All day</label><input id="inAllday" type="checkbox" checked={allday} onChange={e => setAllday(e.target.checked)} /></div>}
           {/* All day owns the whole window, so the two time fields fade to say
               so. They were already `disabled`, but a disabled control that
               still looks live invites the click it cannot accept. */}
           <div className={'ifield' + (allday ? ' dim' : '')}><label>Start time</label><input id="inStartT" type="time" value={sTime} disabled={allday} onChange={e => setSTime(e.target.value)} /></div>
           <div className={'ifield' + (allday ? ' dim' : '')}><label>End time</label><input id="inEndT" type="time" value={eTime} disabled={allday} onChange={e => setETime(e.target.value)} /></div>
-          <div className="ifield"><label>Type</label>
-            <select id="inType" aria-label="Input type" value={type} onChange={e => setType(e.target.value)}>
-              {INPUT_TYPES.map((t: string) => <option key={t}>{t}</option>)}
+          <div className="ifield"><label className="withhelp">Type <TypeLegend /></label>
+            <select id="inType" aria-label="Input type" value={type} onChange={e => {
+              const t = e.target.value
+              setType(t)
+              /* a half-day belongs to the types that offer one. Switching to a
+                 type without the picker would otherwise strand an invisible
+                 'am' on the record, and the row would claim a half nobody
+                 could see or change. */
+              if (!hasHalf(t) && half) setHalf('')
+            }}>
+              {typeOptions()}
             </select></div>
           <div className="ifield"><label>Repeat wks</label><input id="inRepeat" type="number" value={repeat} min={0} onChange={e => setRepeat(+e.target.value)} /></div>
           <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder="e.g. medical appt" value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
@@ -332,7 +465,7 @@ export function InputsPage() {
         </select>
         <select id="inFType" aria-label="Filter by type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
           <option value="all">Show all types</option>
-          {INPUT_TYPES.map((t: string) => <option key={t}>{t}</option>)}
+          {typeOptions()}
         </select>
         {/* the window, picked on the same two-click calendar as the form above:
             first click is the from-date, second the to-date */}
@@ -386,8 +519,18 @@ export function InputsPage() {
                     <RangeCal idPrefix="ined" start={draft.start} end={draft.end}
                       onPick={(s2, e2) => setDraft({ ...draft, start: s2, end: e2, remarks: withTill(draft.remarks, s2, e2) })} />
                     <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
-                    <label className="ined-ad"><input type="checkbox" data-ed="allday" checked={draft.allday}
-                      onChange={e => setDraft({ ...draft, allday: e.target.checked })} /> all day</label>
+                    {/* same split as the add form: the span picker where the
+                        type offers halves, the plain tick everywhere else */}
+                    {hasHalf(draft.type)
+                      ? <SpanPicker id="inedSpan" span={spanOf(draft.allday, draft.half)} onPick={m => {
+                        const f = spanFields(m)
+                        setDraft({
+                          ...draft, allday: f.allday, half: f.half,
+                          ...(f.sTime ? { sTime: f.sTime, eTime: f.eTime } : {}),
+                        })
+                      }} />
+                      : <label className="ined-ad"><input type="checkbox" data-ed="allday" checked={draft.allday}
+                        onChange={e => setDraft({ ...draft, allday: e.target.checked })} /> all day</label>}
                     <span className="ined-t" hidden={draft.allday}>
                       <input type="time" aria-label="Start time" data-ed="stime" value={draft.sTime}
                         onChange={e => setDraft({ ...draft, sTime: e.target.value })} />
@@ -396,8 +539,11 @@ export function InputsPage() {
                     </span>
                   </td>
                   <td><select aria-label="Type" data-ed="type" value={draft.type}
-                    onChange={e => setDraft({ ...draft, type: e.target.value })}>
-                    {INPUT_TYPES.map((t: string) => <option key={t}>{t}</option>)}
+                    onChange={e => {
+                      const t = e.target.value
+                      setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }) })
+                    }}>
+                    {typeOptions()}
                   </select></td>
                   <td><input aria-label="Remarks" data-ed="remarks" value={draft.remarks}
                     onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
