@@ -10,6 +10,12 @@ export function setAirKey(k: string | null) { AIRKEY = k }
 /* the Manage-users modal */
 export let USERM = false
 export function setUserModal(on: boolean) { USERM = on }
+/* The one personal input being edited from the week or the board (owner,
+   10 Aug 26). The INPUT OBJECT, never its index or its content key: undo is
+   still live under the modal and renumbers INPUTS, and the key is built from
+   the very fields the dialog exists to change. */
+export let INPEDIT: any = null
+export function setInpEdit(r: any) { INPEDIT = r }
 /* the mobile drawer */
 export let DRAWER = false
 export function setDrawer(on: boolean) { DRAWER = on }

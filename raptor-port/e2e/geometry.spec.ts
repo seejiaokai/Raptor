@@ -1958,3 +1958,86 @@ test('a repaint that is not a page switch still holds the week where it is', asy
   await page.waitForTimeout(400)
   expect(await dayOnScreen(page, 'eWeek'), 'a plain repaint moved nothing').toBe(parked)
 })
+
+/* EDITING AN INPUT FROM THE SCHEDULE (owner, 10 Aug 26). The control is the
+   input's own TYPE LABEL, and that is a layout decision before it is a UX one:
+   both surfaces draw these rows as grids with every track spoken for, and each
+   of the three shapes that put a separate button in the row cost the row
+   height at one width or the other (the reasoning is in html.ts's
+   inpEditLabel and beside the rule in scheduler.css). So the contract to hold
+   is that turning the label into a button moved NOTHING — and jsdom cannot
+   see that at all, since it reports every rect as 0x0.
+   The board half is measured under a remark long enough to fill the cell it
+   clips with an ellipsis, which is where an earlier shape hid the control. */
+test.describe('editing an input from the schedule', () => {
+  const LONG = 'RETURNINGFROMDETACHMENTVIAPAYALEBARANDTENGAHWITHNOFIXEDTIMEOFARRIVALPLEASECONFIRM'
+  for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
+    test(`${name}: the control costs its row no height, and stays reachable under a long remark`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page)
+      /* the same rows, on the page that carries the control and the page that
+         does not — the Unavailable block is the one drawn on both, and the one
+         with no Accept button to hide a second line behind */
+      await go(page, 'viewsched')
+      const bare = await page.evaluate(() => [...document.querySelectorAll('#vWeek .day[data-day="0"] .sec-unav .pl-row')]
+        .map(r => Math.round(r.getBoundingClientRect().height)))
+      await go(page, 'editsched')
+      const live = await page.evaluate(() => [...document.querySelectorAll('#eWeek .day[data-day="0"] .sec-unav .pl-row')]
+        .map(r => Math.round(r.getBoundingClientRect().height)))
+      expect(live.length, 'the same rows are drawn on both pages').toBe(bare.length)
+      expect(live.length).toBeGreaterThan(0)
+      expect(live, `${name}: making the label a button added no line to any row`).toEqual(bare)
+      expect(await page.locator('#eWeek .day[data-day="0"] .sec-unav [data-inpedit]').count(),
+        'and every row on the edit week carries one').toBe(live.length)
+
+      /* on the board, with a remark long enough to fill the cell it clips */
+      await page.evaluate((t) => {
+        const w = window as any
+        w.INPUTS.filter((i: any) => w.inputCoversDate(i, w.DAYS[0].dt)).forEach((i: any) => { i.remarks = t })
+        w.openScheduler(0)
+      }, LONG)
+      await page.waitForSelector('#schedBoard .pinp [data-inpedit]')
+      const m = await page.evaluate(() => {
+        const btn = document.querySelector('#schedBoard .pinp [data-inpedit]') as HTMLElement
+        btn.scrollIntoView({ block: 'center' })
+        const row = btn.closest('.sbi-row') as HTMLElement
+        const b = btn.getBoundingClientRect(), r = row.getBoundingClientRect()
+        const hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2) as HTMLElement
+        return {
+          tag: btn.tagName,
+          inside: b.right <= r.right + 1 && b.left >= r.left && b.top >= r.top - 1 && b.bottom <= r.bottom + 1,
+          w: Math.round(b.width), h: Math.round(b.height),
+          reached: !!(hit && hit.closest('[data-inpedit]')),
+          rowScrolls: row.scrollWidth > Math.round(r.width) + 1,
+        }
+      })
+      expect(m.tag, `${name}: a real button, so the keyboard reaches it too`).toBe('BUTTON')
+      expect(m.w, `${name}: it has a real size`).toBeGreaterThan(12)
+      expect(m.h, `${name}: it has a real size`).toBeGreaterThan(10)
+      expect(m.inside, `${name}: it sits inside its own row, not over the next one`).toBe(true)
+      expect(m.reached, `${name}: a press at its centre reaches it, not the remark over it`).toBe(true)
+      expect(m.rowScrolls, `${name}: it does not push the row sideways`).toBe(false)
+    })
+  }
+
+  test('the dialog fits a phone and never scrolls the page sideways', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.click('#eWeek .day[data-day="0"] .sec-unav [data-inpedit]')
+    await page.waitForSelector('#inpEditPop:not([hidden])')
+    const m = await page.evaluate(() => {
+      const box = document.querySelector('#inpEditPop .airpop-box') as HTMLElement
+      const r = box.getBoundingClientRect()
+      return { w: Math.round(r.width), left: Math.round(r.left), body: document.body.scrollWidth,
+        fields: [...box.querySelectorAll('select,input')].filter(e => {
+          const b = e.getBoundingClientRect()
+          return b.width > 0 && (b.right > r.right + 1 || b.left < r.left - 1)
+        }).length }
+    })
+    expect(m.w, 'the dialog fits inside the phone').toBeLessThanOrEqual(PHONE.width)
+    expect(m.left, 'and is not pushed off the left edge').toBeGreaterThanOrEqual(0)
+    expect(m.body, 'the page gains no sideways scroll from it').toBeLessThanOrEqual(PHONE.width)
+    expect(m.fields, 'no field spills out of the dialog').toBe(0)
+  })
+})

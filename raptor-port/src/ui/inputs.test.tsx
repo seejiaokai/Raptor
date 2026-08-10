@@ -110,7 +110,7 @@ describe('the Inputs page (tfin)', () => {
     const st = () => $('#inStartT') as HTMLInputElement
     const en = () => $('#inEndT') as HTMLInputElement
     await click($('#inSpan [data-span="am"]'))
-    expect([st().value, en().value]).toEqual(['04:00', '12:00'])
+    expect([st().value, en().value]).toEqual(['00:00', '12:00'])
     await click($('#inSpan [data-span="pm"]'))
     expect([st().value, en().value]).toEqual(['12:01', '23:59'])
     /* the minutes reach the model, and the half rides along as a label */

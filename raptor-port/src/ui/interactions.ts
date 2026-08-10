@@ -16,7 +16,7 @@ import { notify } from '../state/store'
 import { scrollToWarnFocus, queueHold } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave } from '../engine'
 import { esc } from '../state/view'
-import { setDayPop, setAirKey, setDrawer } from './pops'
+import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { openScheduler, toggleSbwarn } from './board'
 import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
@@ -371,6 +371,22 @@ export function routeClick(e: MouseEvent) {
         : `${inp.type} added to the ground programme`, 'ok')
       view.afterSchedMutate()
     }
+    return
+  }
+
+  /* an input's own label, pressed — the week's and the board's are the same
+     control, so it routes here beside Accept above. It only OPENS the dialog;
+     ui/inputedit.tsx owns the write, which is the same commit the Inputs page
+     runs. The row object is resolved here and handed over, because the content
+     key it is addressed by is built from the very fields the dialog changes. */
+  const ib = t.closest('[data-inpedit]') as HTMLElement | null
+  if (ib) {
+    e.stopPropagation()
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can edit inputs from here', 'warn'); return }
+    const inp = INPUTS.find((x: any) => inpKey(x) === ib.dataset.inpedit!)
+    if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
+    setInpEdit(inp)
+    notify()
     return
   }
 

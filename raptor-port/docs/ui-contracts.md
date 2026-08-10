@@ -499,6 +499,49 @@ The push goes through `noteChange()` on the new row's key, so it is marked
 pending and reaches the next AL. Undo calls `markEdit()` with NO key — a delete
 must not re-mark the address it just removed.
 
+## Editing an input from the schedule (owner, 10 Aug 26)
+
+Build two of the leave-types work: times, type, remarks and delete, reachable
+from Edit Schedule and from the schedule board, writing back to the Inputs
+page. The commit is the Inputs page's own — both call `commitInputEdit` /
+`removeInput` in `ui/inputedit.tsx`, so the accepted-row relink, the
+validation and the single undo step cannot drift between the two surfaces.
+
+**The control is the input's own TYPE LABEL** — `OML` in the week's name
+column, the type chip on the board — turned into a `<button>` by
+`inpEditLabel` (`ui/html.ts`). That is a layout decision as much as a UX one:
+both rows are grids with every track spoken for, and all three shapes that put
+a separate button in the row cost the row height at one width or the other (an
+extra grid child wraps onto its own line; an absolute button with the remark
+padded clear of it, and a 20px track of its own, both make a remark one word
+off the boundary wrap — measured at 27px → 39px on "Medically down till 17
+Jul"). The label costs nothing because it is already there. It must keep its
+metrics exactly: `e2e/geometry.spec.ts` §editing an input from the schedule
+compares the Unavailable rows on the edit week against the same rows on
+View-only, at both widths.
+
+Since a label reads as a label, each block says so once — `press a type to
+edit it` in the week's block heading and in both board panel subtitles —
+rather than every row carrying a hint it has no room for.
+
+**Who gets it:** `ed`, i.e. `HOOKS.editMode()` — a scheduler on Edit Schedule,
+and a board that is neither a preview nor read-only. View-only Sched draws the
+Unavailable block too and stays inert. The handler in `routeClick` re-checks
+`canEditSched()`, because the gate is the write path and not the markup.
+
+**The dialog** (`InputEditor`) is a sibling of the shell and the board in
+`App.tsx`, where `CxDialog` sits, so it paints above whichever surface opened
+it. It holds the input OBJECT, never an index or its content key: undo stays
+live underneath it and renumbers `INPUTS`, and the key is built from the very
+fields the dialog exists to change. A refusal (bad window) keeps it open with
+the typing in it; the one exception is a row that has gone from under it,
+where there is nothing left to hold the typing for.
+
+**Person and dates are NOT in it**, and the footer says so. The four fields
+the owner asked for all keep the row on the day it was opened from; moving it
+to another man or another date makes it vanish from the surface being looked
+at, which is the Inputs page's job.
+
 ## Scheduler notes (edit week + board only)
 
 Four free-text blocks — under Programme, Duties, Sims and Ground programme —

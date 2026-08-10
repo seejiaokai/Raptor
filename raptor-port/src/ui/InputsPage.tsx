@@ -4,13 +4,18 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isLateInput, lateNote } from '../engine/inputs'
-import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, typeGroup, isLateInput, lateNote } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { ME } from '../state/auth'
-import { writeInputs, writeInputsBatch, notify } from '../state/store'
+import { writeInputs, notify } from '../state/store'
+/* the halves, the span control, the draft shape and the commit are shared with
+   the dialog the week and the board open — see ui/inputedit.tsx */
+import {
+  fmt, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
+  draftOf, commitInputEdit, removeInput,
+} from './inputedit'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
 import { RangeCal } from './RangeCal'
@@ -19,9 +24,6 @@ const people = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 
 const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-/* the reference's date formatter, verbatim (yyyy-mm-dd → 'Jul 14') */
-const fmt = (d: any) => { if (!d) return DATES[0]; const [, m, da] = d.split('-'); return MON[+m] + ' ' + String(+da) }
 
 /* The remarks tail (owner, Aug 26). Closing a range on the calendar writes its
    last day into Remarks as `till 15 Jul`, so a multi-day input says how long it
@@ -41,15 +43,6 @@ const withTill = (rm: any, s: string, e: string) => {
   if (!e || e === s) return head
   const [, m, da] = e.split('-')
   return (head ? head + ' ' : '') + 'till ' + (+da) + ' ' + MON[+m]
-}
-
-/* fmt's inverse — the model stores 'Jul 14' labels, the calendar speaks
-   yyyy-mm-dd. The demo week is 2026, which is the only year the labels imply. */
-const unfmt = (lbl: any) => {
-  const p = String(lbl || '').trim().split(/\s+/)
-  const mi = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(p[0])
-  if (mi < 0 || !p[1]) return ''
-  return `2026-${String(mi + 1).padStart(2, '0')}-${String(+p[1]).padStart(2, '0')}`
 }
 
 /* ---- the table's own view state: which window, and sorted how ------------
@@ -97,49 +90,6 @@ const inWindow = (r: any, from: string, to: string) => {
   if (from && e < from) return false
   if (to && s > to) return false
   return true
-}
-
-/* ---- THE TYPE CONTROLS (owner, 10 Aug 26) ---------------------------------
-   Twenty types is too many for a flat list, so all three dropdowns are cut
-   into the same three groups the legend uses. Both are generated from
-   INPUT_META, which is the point of that table: the list you pick from, the
-   explanation you read and the rule the engine applies are one thing. */
-const typeOptions = () => TYPE_GROUPS.map((g: any) =>
-  <optgroup key={g.k} label={g.t}>
-    {INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k).map((t: string) => <option key={t}>{t}</option>)}
-  </optgroup>)
-
-/* AM is 04:00–12:00 and PM is 12:01 to late, the squadron's own halves. The
-   control writes nothing new: it fills in the two time fields the form
-   already had, so the engine still reads only s/e. `half` rides along as a
-   label, so reopening the editor says "AM" rather than guessing from minutes,
-   and the week can print "local leave (AM)".
-   Offered for leave and medical only (owner's call) — the other types take an
-   exact range, which is finer than a half-day. */
-export const HALF_AM: [string, string] = ['04:00', '12:00']
-export const HALF_PM: [string, string] = ['12:01', '23:59']
-const hasHalf = (t: string) => !!(inpMeta(t) || {}).half
-type Span = 'all' | 'am' | 'pm' | 'custom'
-const spanOf = (allday: boolean, half: string): Span => allday ? 'all' : half === 'am' ? 'am' : half === 'pm' ? 'pm' : 'custom'
-/* what a span means in the four fields it drives */
-const spanFields = (m: Span) => m === 'all' ? { allday: true, half: '', sTime: '06:00', eTime: '18:00' }
-  : m === 'am' ? { allday: false, half: 'am', sTime: HALF_AM[0], eTime: HALF_AM[1] }
-    : m === 'pm' ? { allday: false, half: 'pm', sTime: HALF_PM[0], eTime: HALF_PM[1] }
-      : { allday: false, half: '', sTime: '', eTime: '' }      // custom keeps whatever is typed
-
-const SPANS: Array<[Span, string, string]> = [
-  ['all', 'All day', 'The whole day'],
-  ['am', 'AM', 'Morning — 04:00 to 12:00'],
-  ['pm', 'PM', 'Afternoon and evening — 12:01 onwards'],
-  ['custom', 'Custom', 'Type your own start and end time'],
-]
-function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: Span) => void }) {
-  return <div className="spanpick" id={id} role="group" aria-label="How much of the day">
-    {SPANS.map(([m, label, title]) =>
-      <button key={m} type="button" className={'spanbtn' + (span === m ? ' on' : '')}
-        aria-pressed={span === m} title={title} data-span={m}
-        onClick={() => onPick(m)}>{label}</button>)}
-  </div>
 }
 
 /* The legend the owner asked for: a button by the type field saying what each
@@ -316,61 +266,16 @@ export function InputsPage() {
        while an editor is open renumbers INPUTS, and an index captured before
        that would commit the draft onto somebody else's input */
     setEditRow(r)
-    setDraft({
-      person: r.person, type: r.type, allday: !!r.allday, half: r.half || '',
-      start: unfmt(r.date), end: r.endDate ? unfmt(r.endDate) : '',
-      sTime: r.allday ? '06:00' : hhmm(r.s), eTime: r.allday ? '18:00' : hhmm(r.e),
-      remarks: r.remarks || '',
-    })
+    setDraft(draftOf(r))
   }
   const saveEdit = () => {
-    const r = editRow
-    if (!r || !draft) return
-    if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
-      setEditRow(null); setDraft(null)
-      return HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
-    }
-    const s = draft.allday ? 0 : parseHM(draft.sTime), e = draft.allday ? 1439 : parseHM(draft.eTime)
-    if (!draft.allday && (s == null || e == null)) return HOOKS.toast('Give the input a start and end time, or tick All day', 'warn')
-    if (!draft.allday && (e as number) <= (s as number)) return HOOKS.toast('End time must be after start time', 'warn')
-    const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
-    writeInputsBatch(() => {
-      /* An ACCEPTED input is linked to the row it created by `src`, a content
-         key of person|date|type|s. Editing any of those silently broke the
-         link: the row stayed on the programme, undo could no longer find it,
-         and it could never be removed. So an accepted input is un-accepted
-         through the real path FIRST, edited, then re-accepted — which also
-         moves the row when the date moves it to another day. */
-      const wasAcc = r.acc
-      /* the row may sit on any day the input spans, not its start date */
-      const wasDi = wasAcc === 'g' ? acceptedDay(r) : -1
-      if (wasAcc) unacceptInput(wasDi, r)
-      r.person = draft.person; r.type = draft.type; r.allday = draft.allday
-      r.s = s; r.e = e; r.date = date; r.remarks = draft.remarks.trim(); r.mod = 'now'
-      if (!draft.allday && draft.half) r.half = draft.half; else delete r.half
-      if (endDate) r.endDate = endDate; else delete r.endDate
-      if (wasAcc) {
-        /* put it back on the day it was on, if the edit still covers that day;
-           otherwise its new start date */
-        const keep = wasDi >= 0 && DATES[wasDi] && inputCoversDate(r, DATES[wasDi])
-        const di = keep ? wasDi : DATES.indexOf(r.date)
-        if (di >= 0) acceptInput(di, r, wasAcc)
-        else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
-      }
-    })
-    setEditRow(null); setDraft(null)
+    if (commitInputEdit(editRow, draft)) { setEditRow(null); setDraft(null) }
+    else if (editRow && INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
   }
 
   const del = (inx: number) => {
     const r = INPUTS[inx]
-    /* deleting an ACCEPTED input used to leave its ground row on the programme
-       for good — nothing pointed at it any more, so it could never be removed
-       and it still printed and validated as a real commitment */
-    writeInputsBatch(() => {
-      if (r && r.acc) unacceptInput(acceptedDay(r), r)
-      INPUTS.splice(inx, 1)
-      if (editRow === r) { setEditRow(null); setDraft(null) }
-    })
+    if (removeInput(r) && editRow === r) { setEditRow(null); setDraft(null) }
   }
 
   let rows = INPUTS.slice()

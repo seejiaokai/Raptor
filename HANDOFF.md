@@ -149,13 +149,19 @@ run test:e2e` 59/59, and `npm run probes:adapted` 6/6 plus `npm run perf` 7/0
     a number nobody has hit is a guess; the fix when it bites is the
     ordinary one (check the time, raise the ceiling in the PR that needs
     it). Reasoning: `docs/probe-sweep.md` §The performance gate.
-- **Editing an input from the week or the board is BUILD TWO of the
-  leave-types work, and is not started** (owner, 10 Aug 26 — he asked for
-  full edit: times, type, remarks and delete, from Edit Schedule or the
-  schedule board, writing back to the Inputs page). Build one (the type
-  table, the rules, the legend and the half-days) shipped; this did not. The
-  design note for build one is
-  `docs/superpowers/specs/2026-08-10-leave-types-design.md`.
+- **Editing an input from the schedule shipped with two things left open**
+  (build two of the leave-types work, 10 Aug 26; contract in
+  `docs/ui-contracts.md` §Editing an input from the schedule).
+  - **Person and dates are not in the dialog** — deliberate, and the footer
+    says so: all four fields it does carry keep the row on the day it was
+    opened from, while moving it to another man or another date makes it
+    vanish from the surface being looked at. If the owner asks for them, they
+    need the Inputs page's calendar, not another two fields.
+  - **A member still cannot edit his own leave from the week**, only from the
+    Inputs page. The control is gated on `HOOKS.editMode()`, which is
+    admin-and-Edit-Schedule, so the schedule surfaces stay a scheduler's.
+    Opening it wider means an OWNERSHIP check (his own inputs only), which
+    nothing in the app has yet.
 - **A USER GUIDE is wanted, for users and admins** (owner, 10 Aug 26 — "I
   eventually want u to create a user guide for this app"). Not started, and
   not urgent. The half that cannot be worked out by looking at the screen is
@@ -368,6 +374,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `highlights.ts` | Post-render decoration: selection/search/warning-focus classes on every puck (the week AND the board's `.sb-boardwrap`, never the palettes or a `.pv-frozen` preview), `paintArm`, and `scrollToWarnFocus` — surface-aware, snap-safe, lateral-holding (it pans sideways only when the target is off screen), picking the puck whose row holds the most of the warning's crew, and honouring `WFOCUS.panDi`/`panKey` where the focus and the destination are different days (the cross-day crew-rest row, and only it). |
 | `Modals.tsx` | DayPop (read-only day details), Insights, Manage-users, Airspace/traffic popup. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Contract: `docs/ui-contracts.md` §The Inputs table's view state. |
+| `inputedit.tsx` | Editing ONE personal input, shared by the Inputs page and the dialog the week and the board open: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, `commitInputEdit` (including the accepted-row relink), `removeInput`, and `InputEditor` itself. Two editors over one list is how the two drift apart. |
 | `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
 | `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer, login. |
 | `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. |

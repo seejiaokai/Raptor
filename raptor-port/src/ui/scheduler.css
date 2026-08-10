@@ -2294,3 +2294,40 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   .tylegend-pop{left:8px;right:8px;width:auto}
   .spanbtn{font-size:9.5px;letter-spacing:.02em}
 }
+
+/* ---- editing one input from the week or the board (owner, 10 Aug 26) ---- */
+/* The label IS the button, so it inherits everything about how it looked as a
+   span — font, colour, alignment, the type chip's own border on the board —
+   and adds only the affordance: a pointer, an underline under the pointer,
+   and a real focus ring for the keyboard. Anything that changed its metrics
+   would move the row it sits in, which is the whole reason it is the label. */
+.pl-hint{margin-left:8px;text-transform:none;letter-spacing:.02em;font-size:8.5px;font-weight:600;color:var(--ink-3)}
+.inpedit{font:inherit;color:inherit;background:none;border:none;padding:0;margin:0;
+  text-align:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+.pl-row .ntx.inpedit{display:block;width:100%;overflow-wrap:anywhere}
+.inpedit:hover{text-decoration:underline;text-underline-offset:2px}
+.inpedit:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+/* the board's type chip keeps its own frame and colours — `.sbi-row .sbi-ty`
+   and `.sbi-ty.ty-*` both out-specify .inpedit, so only the affordance is new,
+   and a chip lights rather than underlines */
+button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
+.inpeb:hover{color:var(--ink);border-color:var(--accent)}
+.inpeb:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+/* the dialog. Narrower than the airspace popup it borrows its frame from —
+   four fields, none of them wide. */
+.airpop-box.inpedbox{width:min(94vw,430px)}
+.inped-body{display:flex;flex-direction:column;gap:11px}
+.inped-f{display:flex;flex-direction:column;gap:5px}
+.inped-k{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.1em;font-size:10.5px;font-weight:800;color:var(--ink-3)}
+.inped-body select,.inped-body input[type=text],.inped-body input:not([type]){width:100%;box-sizing:border-box}
+.inped-body select,.inped-body input{background:var(--bg);border:1px solid var(--edge-2);border-radius:8px;
+  color:var(--ink);font:600 13px inherit;padding:8px 9px}
+.inped-body select:focus,.inped-body input:focus{outline:none;border-color:var(--accent)}
+.inped-when{display:flex;flex-direction:column;gap:7px}
+.inped-t{display:flex;gap:8px}
+.inped-t input{width:110px}
+.inped-t[hidden]{display:none}
+.inped-ad{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2)}
+.inped-ad input{width:auto;padding:0}
+.inped-hint{font-size:10.5px;color:var(--ink-3);line-height:1.4}

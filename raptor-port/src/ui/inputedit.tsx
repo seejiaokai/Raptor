@@ -1,0 +1,250 @@
+/* Editing ONE personal input, wherever it is read from.
+   ------------------------------------------------------------------------
+   The Inputs page has had a row editor since Aug 26; the owner asked (10 Aug
+   26) for the same edit — times, type, remarks and delete — from Edit Schedule
+   and the schedule board, writing back to the Inputs page. Two editors over one
+   list is how the two drift apart, so everything that is genuinely the EDIT
+   lives here and both surfaces call it: the halves, the span control, the draft
+   shape, the commit (including the accepted-row relink, which is the part that
+   is easy to get wrong) and the delete.
+
+   What is NOT here is the Inputs page's own furniture — the calendar, the
+   `till` remarks tail, the pins and the flashes. Those belong to a page that
+   is a list; the dialog is a single row, opened from a day. */
+import { useEffect, useRef, useState } from 'react'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate } from '../engine/inputs'
+import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
+import { PEOPLE } from '../engine/people'
+import { hhmm, parseHM } from '../engine/time'
+import { HOOKS } from '../engine/hooks'
+import { writeInputsBatch, notify } from '../state/store'
+import { INPEDIT, setInpEdit } from './pops'
+import { useVersion } from './useStore'
+
+const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+/* the reference's date formatter, verbatim (yyyy-mm-dd → 'Jul 14') */
+export const fmt = (d: any) => { if (!d) return DATES[0]; const [, m, da] = d.split('-'); return MON[+m] + ' ' + String(+da) }
+/* fmt's inverse — the model stores 'Jul 14' labels, the calendar speaks
+   yyyy-mm-dd. The demo week is 2026, which is the only year the labels imply. */
+export const unfmt = (lbl: any) => {
+  const p = String(lbl || '').trim().split(/\s+/)
+  const mi = MON.indexOf(p[0])
+  if (mi < 1 || !p[1]) return ''
+  return `2026-${String(mi).padStart(2, '0')}-${String(+p[1]).padStart(2, '0')}`
+}
+
+/* AM is 00:00–12:00 and PM is 12:01 to late, the squadron's own halves (the AM
+   start was 04:00 until the owner moved it to midnight, 10 Aug 26 — a man on
+   morning leave is off from the start of the day, and an 04:00 start left four
+   hours in which the app still thought he was at work).
+   The control writes nothing new: it fills in the two time fields the form
+   already had, so the engine still reads only s/e. `half` rides along as a
+   label, so reopening the editor says "AM" rather than guessing from minutes,
+   and the week can print "local leave (AM)".
+   Offered for leave and medical only (owner's call) — the other types take an
+   exact range, which is finer than a half-day. */
+export const HALF_AM: [string, string] = ['00:00', '12:00']
+export const HALF_PM: [string, string] = ['12:01', '23:59']
+export const hasHalf = (t: string) => !!(inpMeta(t) || {}).half
+export type Span = 'all' | 'am' | 'pm' | 'custom'
+export const spanOf = (allday: boolean, half: string): Span => allday ? 'all' : half === 'am' ? 'am' : half === 'pm' ? 'pm' : 'custom'
+/* what a span means in the four fields it drives */
+export const spanFields = (m: Span) => m === 'all' ? { allday: true, half: '', sTime: '06:00', eTime: '18:00' }
+  : m === 'am' ? { allday: false, half: 'am', sTime: HALF_AM[0], eTime: HALF_AM[1] }
+    : m === 'pm' ? { allday: false, half: 'pm', sTime: HALF_PM[0], eTime: HALF_PM[1] }
+      : { allday: false, half: '', sTime: '', eTime: '' }      // custom keeps whatever is typed
+
+const SPANS: Array<[Span, string, string]> = [
+  ['all', 'All day', 'The whole day'],
+  ['am', 'AM', 'Morning — 00:00 to 12:00'],
+  ['pm', 'PM', 'Afternoon and evening — 12:01 onwards'],
+  ['custom', 'Custom', 'Type your own start and end time'],
+]
+export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: Span) => void }) {
+  return <div className="spanpick" id={id} role="group" aria-label="How much of the day">
+    {SPANS.map(([m, label, title]) =>
+      <button key={m} type="button" className={'spanbtn' + (span === m ? ' on' : '')}
+        aria-pressed={span === m} title={title} data-span={m}
+        onClick={() => onPick(m)}>{label}</button>)}
+  </div>
+}
+
+/* THE TYPE CONTROLS. Twenty types is too many for a flat list, so every
+   dropdown is cut into the same three groups the legend uses, generated from
+   INPUT_META — the list you pick from, the explanation you read and the rule
+   the engine applies are one thing. */
+export const typeOptions = () => TYPE_GROUPS.map((g: any) =>
+  <optgroup key={g.k} label={g.t}>
+    {INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k).map((t: string) => <option key={t}>{t}</option>)}
+  </optgroup>)
+
+/* The draft is held apart from the model so Cancel is a real cancel. */
+export const draftOf = (r: any) => ({
+  person: r.person, type: r.type, allday: !!r.allday, half: r.half || '',
+  start: unfmt(r.date), end: r.endDate ? unfmt(r.endDate) : '',
+  sTime: r.allday ? '06:00' : hhmm(r.s), eTime: r.allday ? '18:00' : hhmm(r.e),
+  remarks: r.remarks || '',
+})
+
+/* Commit a draft onto its row. Returns false and toasts when it will not go —
+   the caller keeps its editor open on a false, so nothing typed is lost.
+   Runs through writeInputsBatch like every other mutation, so an edit joins
+   the undo stack as ONE step and re-validates the week. */
+export function commitInputEdit(r: any, draft: any) {
+  if (!r || !draft) return false
+  if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
+    HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
+    return false
+  }
+  const s = draft.allday ? 0 : parseHM(draft.sTime), e = draft.allday ? 1439 : parseHM(draft.eTime)
+  if (!draft.allday && (s == null || e == null)) { HOOKS.toast('Give the input a start and end time, or tick All day', 'warn'); return false }
+  if (!draft.allday && (e as number) <= (s as number)) { HOOKS.toast('End time must be after start time', 'warn'); return false }
+  const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
+  writeInputsBatch(() => {
+    /* An ACCEPTED input is linked to the row it created by `src`, a content
+       key of person|date|type|s. Editing any of those silently broke the
+       link: the row stayed on the programme, undo could no longer find it,
+       and it could never be removed. So an accepted input is un-accepted
+       through the real path FIRST, edited, then re-accepted — which also
+       moves the row when the date moves it to another day. */
+    const wasAcc = r.acc
+    /* the row may sit on any day the input spans, not its start date */
+    const wasDi = wasAcc === 'g' ? acceptedDay(r) : -1
+    if (wasAcc) unacceptInput(wasDi, r)
+    r.person = draft.person; r.type = draft.type; r.allday = draft.allday
+    r.s = s; r.e = e; r.date = date; r.remarks = String(draft.remarks || '').trim(); r.mod = 'now'
+    if (!draft.allday && draft.half) r.half = draft.half; else delete r.half
+    if (endDate) r.endDate = endDate; else delete r.endDate
+    if (wasAcc) {
+      /* put it back on the day it was on, if the edit still covers that day;
+         otherwise its new start date */
+      const keep = wasDi >= 0 && DATES[wasDi] && inputCoversDate(r, DATES[wasDi])
+      const di = keep ? wasDi : DATES.indexOf(r.date)
+      if (di >= 0) acceptInput(di, r, wasAcc)
+      else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
+    }
+  })
+  return true
+}
+
+/* Deleting an ACCEPTED input used to leave its ground row on the programme for
+   good — nothing pointed at it any more, so it could never be removed and it
+   still printed and validated as a real commitment. */
+export function removeInput(r: any) {
+  const inx = INPUTS.indexOf(r)
+  if (inx < 0) { HOOKS.toast('That input is no longer there', 'warn'); return false }
+  writeInputsBatch(() => {
+    if (r.acc) unacceptInput(acceptedDay(r), r)
+    INPUTS.splice(inx, 1)
+  })
+  return true
+}
+
+/* ---- the dialog the week and the board open (owner, 10 Aug 26) -----------
+   A modal rather than an in-place row editor, because both surfaces that open
+   it are string-built and swapped wholesale on every repaint: a set of live
+   fields inside that markup would lose its caret the first time anything else
+   on the day changed. It is a SIBLING of the shell and the board (App.tsx),
+   the same place CxDialog sits, so it paints above whichever of the two opened
+   it.
+
+   The row itself is held, never its index or its key: undo is still live under
+   the modal, and both renumber INPUTS and rewrite the content key an accept
+   button would have carried.
+
+   PERSON AND DATES ARE NOT HERE. What the owner asked for is times, type,
+   remarks and delete — and those four all keep the row on the day you opened
+   it from. Moving it to another man or another date makes it vanish from the
+   surface you are looking at, which is the Inputs page's job; the footer says
+   so rather than leaving it to be discovered. */
+export function InputEditor() {
+  useVersion()
+  const r = INPEDIT
+  const open = !!r
+  const [draft, setDraft] = useState<any>(null)
+  const box = useRef<HTMLDivElement>(null)
+  /* re-seed whenever a different row is opened, never on a repaint — a
+     re-seed mid-edit would throw away what has been typed */
+  useEffect(() => { setDraft(r ? draftOf(r) : null) }, [r])
+  useEffect(() => {
+    if (!open) return
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); close() } }
+    document.addEventListener('keydown', esc, true)
+    return () => document.removeEventListener('keydown', esc, true)
+  }, [open])
+
+  const close = () => { setInpEdit(null); notify() }
+  /* a refusal KEEPS the dialog open, so nothing typed is lost — bar the one
+     refusal there is no way back from: the row went (an undo under the modal),
+     and there is nothing left to hold the typing for */
+  const save = () => {
+    if (commitInputEdit(r, draft)) { HOOKS.toast('Input updated', 'ok'); close() }
+    else if (INPUTS.indexOf(r) < 0) close()
+  }
+  const del = () => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } }
+
+  const who = r && PEOPLE[r.person] ? PEOPLE[r.person].cs : (r ? String(r.person) : '')
+  const when = r ? (r.date + (r.endDate ? ' → ' + r.endDate : '')) : ''
+  const span = draft ? spanOf(draft.allday, draft.half) : 'all'
+
+  return (
+    <div className="airpop" id="inpEditPop" hidden={!open}
+      onClick={e => { if ((e.target as HTMLElement).id === 'inpEditPop') close() }}>
+      <div className="airpop-box inpedbox" ref={box}>
+        <div className="airpop-head">
+          <b id="inpEditTitle">{who}{when ? ' · ' + when : ''}</b>
+          <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
+        </div>
+        {draft && <div className="airpop-body inped-body">
+          <label className="inped-f">
+            <span className="inped-k">Type</span>
+            <select id="inpEditType" aria-label="Type" value={draft.type}
+              onChange={e => {
+                const t = e.target.value
+                /* a type with no halves cannot keep a half label — it would
+                   read "(AM)" on a row the picker can no longer express */
+                setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }) })
+              }}>{typeOptions()}</select>
+          </label>
+          <div className="inped-f">
+            <span className="inped-k">When</span>
+            <div className="inped-when">
+              {hasHalf(draft.type)
+                ? <SpanPicker id="inpEditSpan" span={span} onPick={m => {
+                  const f = spanFields(m)
+                  setDraft({
+                    ...draft, allday: f.allday, half: f.half,
+                    /* Custom keeps whatever is already in the boxes — the
+                       point of it is to adjust the times you can see */
+                    ...(m === 'custom' ? {} : { sTime: f.sTime, eTime: f.eTime }),
+                  })
+                }} />
+                : <label className="inped-ad"><input type="checkbox" id="inpEditAllday" checked={draft.allday}
+                  onChange={e => setDraft({ ...draft, allday: e.target.checked, half: '' })} /> all day</label>}
+              <span className="inped-t" hidden={draft.allday}>
+                <input type="time" id="inpEditStart" aria-label="Start time" value={draft.sTime}
+                  onChange={e => setDraft({ ...draft, sTime: e.target.value, half: '' })} />
+                <input type="time" id="inpEditEnd" aria-label="End time" value={draft.eTime}
+                  onChange={e => setDraft({ ...draft, eTime: e.target.value, half: '' })} />
+              </span>
+            </div>
+          </div>
+          <label className="inped-f">
+            <span className="inped-k">Remarks</span>
+            <input id="inpEditRmk" aria-label="Remarks" value={draft.remarks} autoComplete="off"
+              placeholder="e.g. medical appt, till 15 Jul"
+              onChange={e => setDraft({ ...draft, remarks: e.target.value })}
+              onKeyDown={e => { if (e.key === 'Enter') save() }} />
+          </label>
+          <div className="inped-hint">The person and the dates are changed on the Inputs page.</div>
+        </div>}
+        <div className="airpop-foot">
+          <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>
+          <span style={{ flex: 1 }}></span>
+          <button className="abtn ghost" id="inpEditCancel" onClick={close}>Cancel</button>
+          <button className="abtn primary" id="inpEditSave" onClick={save}>Save</button>
+        </div>
+      </div>
+    </div>
+  )
+}

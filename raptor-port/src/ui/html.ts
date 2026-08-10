@@ -744,7 +744,11 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        Name | Start | End | People.  All-day rows span the two time columns. */
     const inGrp=(title:any,filt:any,cls:any,always?:any,acc?:any)=>{ const rows=dayInputs.filter(filt);
       if(!rows.length&&!always)return'';
-      let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h">${title}</div>`;
+      /* the label being the control is only discoverable on hover, and half
+         the squadron is on a phone where there is no hover — so the block
+         says it once, rather than every row carrying a button it has no room
+         for. Scheduler-side only: the view-only week cannot edit anything. */
+      let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h">${title}${ed?`<span class="pl-hint">press a type to edit it</span>`:''}</div>`;
       /* Unavailable is the block the squadron reads every single day, so it
          prints even when nobody is on it — "Nil" is the answer, not a missing
          section. */
@@ -760,7 +764,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
         s+=`<div class="pl-row${acc&&inp.acc?' accd':''}">`
-          +`<span class="nm"><span class="ntx">${esc(inpLabel(inp))}</span></span>${tcell}`
+          +`<span class="nm">${inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${tcell}`
           +`<div class="ppl one">${pk}</div>${plRmk(null,ed,null,inp.remarks||'',lateTag(inp))}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
@@ -770,6 +774,36 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     h+=inGrp('Unavailable',(inp:any)=>isUnavail(inp.type)||inp.acc==='u','sec-unav',true);
     h+=`</div>`; // /day-body
     return h+`</section>`;
+}
+/* THE PENCIL ON AN INPUT ROW (owner, 10 Aug 26 — "full edit: times, type,
+   remarks and delete, from Edit Schedule or the schedule board").
+   It opens ui/inputedit.tsx's dialog through routeClick, the same delegated
+   path the Accept buttons beside it take, so the week and the board share one
+   handler rather than one each.
+   Gated on `ed`, which is HOOKS.editMode() — a scheduler on Edit Schedule.
+   View-only Sched draws the Unavailable block too and must stay read-only,
+   and a member who wants to change his own leave has the Inputs page, which
+   is where the role gate for that already lives. */
+/* THE INPUT'S OWN LABEL IS THE CONTROL (owner, 10 Aug 26 — "full edit: times,
+   type, remarks and delete, from Edit Schedule or the schedule board").
+   It is the label rather than a button beside it because both surfaces draw
+   these rows as GRIDS with every track already spoken for, and there is no
+   free space on either. Three shapes were built and measured first: an extra
+   child wraps onto a line of its own (the Unavailable block has no Accept
+   button to share that line with, so every row cost a second line); an
+   absolutely-positioned button with the remarks cell padded clear of it made
+   a remark one word off the boundary wrap, 27px to 39px on "Medically down
+   till 17 Jul" at desktop width; and a 20px track of its own does the same
+   thing for the same reason — the column has to give up the width either way.
+   The label costs nothing because it is already there, and it is also the
+   right thing to press: it is what names the input.
+   `ed` is HOOKS.editMode() — a scheduler on Edit Schedule. View-only Sched
+   draws the Unavailable block too and stays read-only; a member changes his
+   own leave on the Inputs page, where the role gate for that already lives. */
+export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
+  const t=esc(txt);
+  if(!ed)return `<span class="${cls}">${t}</span>`;
+  return `<button class="${cls} inpedit" data-inpedit="${esc(inpKey(inp))}" title="Edit this input — times, type, remarks or delete">${t}</button>`;
 }
 /* The accept control on a personal-input row. "Other" is the one type whose
    destination is genuinely ambiguous — it can be something the squadron has to
