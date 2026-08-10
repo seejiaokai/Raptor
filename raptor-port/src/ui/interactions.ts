@@ -603,6 +603,19 @@ export function routeClick(e: MouseEvent) {
     let any = false
     if (view.ARM) { view.disarmSlot(); any = true }
     if (view.SELID || view.WFOCUS || view.PFOCUS || view.DWOPEN.size) { view.selDrop(); any = true }
+    /* ...and the HIGHLIGHT chips and the search with them (owner, 10 Aug 26 —
+       "every puck should be deselected"). These light pucks exactly as a
+       selection does, but they used to survive a blank click, so a man could
+       clear the board and still be looking at a lit week with no idea what was
+       holding it. The search box is an UNCONTROLLED input, so its DOM value
+       has to be wiped by hand — clearing only the state would leave a box
+       reading "bane" with nothing lit, which is worse than not clearing at
+       all. The chips redraw themselves from HLSET on the notify below. */
+    if (view.HLSET.size || view.SEARCH) {
+      view.clearOtherHL()
+      document.querySelectorAll('#searchV,#searchE').forEach((el: any) => { el.value = '' })
+      any = true
+    }
     if (any) notify()
   }
 }

@@ -620,6 +620,25 @@ dialog closing silently.
 
 ## Selection highlight (`ui/highlights.ts`)
 
+**A click on blank schedule clears EVERYTHING that lights a puck** (owner,
+10 Aug 26 — "every puck should be deselected"). Three separate mechanisms can
+light one: the blue puck selection (`SELID`, plus `WFOCUS` / `PFOCUS` / the
+open day boxes), the **HIGHLIGHT chips** (`HLSET`), and the **search**
+(`SEARCH`). Only the first used to clear, so a scheduler could click the board
+empty and still be looking at a lit week with nothing on screen explaining
+what was holding it. All three now go together, in `interactions.ts`'s
+blank-click branch.
+
+The **search inputs are uncontrolled** (`#searchV` / `#searchE`, `onInput`
+only, no `value` prop), so their DOM value is wiped by hand — clearing just
+the state would leave a box reading "bane" with nothing lit, which is worse
+than not clearing at all. The chips redraw themselves from `HLSET`.
+
+The **exclusion list decides what counts as blank** and is the reference's,
+verbatim: `.fchip` and every form control are on it, so clicking a chip or
+into the search box is not a blank click and does not wipe what you just did.
+Pinned in `ui/interact.test.tsx`, both against a control.
+
 Clicking a puck — **anywhere on it, flag chip included** (owner, 7 Aug 26) —
 selects the **person**: every copy of that name lights blue (`.sel`, matched
 on `id===SELID`), so you can see everywhere they are planted (owner, Aug 26;

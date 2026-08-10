@@ -105,6 +105,36 @@ describe('puck selection (tfin B14)', () => {
     await click($('#vWeek'))
     expect($$('#vWeek .puck.sel').length).toBe(0)
   })
+
+  it('and the HIGHLIGHT chips go with it', async () => {
+    /* owner, 10 Aug 26: "every puck should be deselected". A chip lights
+       pucks exactly as a selection does, but it used to survive a blank
+       click — so the board could be cleared and still be lit, with nothing
+       on screen explaining what was holding it. */
+    const chip = $$('#vWeek, .fchip').length ? $('.fchip[data-hl]') : null
+    expect(chip, 'a highlight chip is on the page').toBeTruthy()
+    await click(chip)
+    expect(chip!.classList.contains('on'), 'the chip lit up').toBe(true)
+    expect($$('#vWeek .puck.hl').length, 'and it lit some pucks').toBeGreaterThan(0)
+    await click($('#vWeek'))
+    expect($('.fchip[data-hl]')!.classList.contains('on'), 'the chip went out').toBe(false)
+    expect($$('#vWeek .puck.hl').length, 'and the pucks with it').toBe(0)
+  })
+
+  it('and the search box is emptied, not just its effect', async () => {
+    /* the input is uncontrolled, so clearing only the state would leave a box
+       reading "bane" with nothing lit — worse than not clearing at all */
+    const box = $('#searchV') as HTMLInputElement
+    expect(box, 'the view week has a search box').toBeTruthy()
+    await act(async () => {
+      box.value = 'bane'
+      box.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    expect($$('#vWeek .puck.hl').length, 'the search lit somebody').toBeGreaterThan(0)
+    await click($('#vWeek'))
+    expect(($('#searchV') as HTMLInputElement).value, 'the box was emptied too').toBe('')
+    expect($$('#vWeek .puck.hl').length).toBe(0)
+  })
 })
 
 describe('warning strips (tfin B14)', () => {
