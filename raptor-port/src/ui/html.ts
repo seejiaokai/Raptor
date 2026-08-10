@@ -95,8 +95,8 @@ export function legendHTML(){
     <span><span class="qk" style="background:#F0555F">R</span>crew rest</span>
     <span><span class="qk" style="background:#F0555F">7</span>no break day</span>
     <span><span class="qk" style="background:#F0555F">Q</span>qual / illegal seat</span>
-    <span><span class="qk" style="background:#F0555F">B</span>no flight brief</span>
-    <span><span class="qk" style="background:#F0555F">B</span>no sim brief</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>no flight brief</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>no sim brief</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>no flight debrief</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>no sim debrief</span>
     <span><span class="qk" style="background:#8A96A3;color:#0B0D10">L</span>long work day</span>`;
@@ -128,7 +128,13 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
      boxred is a box-shadow while boxdot is an outline, so both can be worn at
      once by a man who has a conflict of his own AND breaks tomorrow's rest. */
   const trFlag=!!trace&&flag==='CR';       // the printed flag came off the trace
-  if((flag==='C'||flag==='CR'||flag==='Q'||flag==='NB'||flag==='SB')&&!trFlag)
+  /* The box follows the SEVERITY the rule was raised at (owner, 10 Aug 26).
+     NB and SB used to sit here, so a man whose brief was merely eaten wore a
+     red box over an amber ring — the puck said "warning", the checks list
+     said "advisory". They are adv (owner, 4 Aug 26: the clash carries the
+     red, the eaten window is advice on top) so they come off. RUN goes on:
+     no-break-day IS hard, and it was the one red rule drawing no box. */
+  if((flag==='C'||flag==='CR'||flag==='Q'||flag==='RUN')&&!trFlag)
     cls.push(dash&&flag==='CR'?'boxdash':'boxred');
   if(trace)cls.push('boxdot');
   if(p.san)cls.push('san');                         // SANS → purple right-edge line

@@ -553,15 +553,24 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .puck .lchip.l-c{background:#F0555F;color:#fff}
 .puck .lchip.l-cr{background:#F0555F;color:#fff}
 .puck .lchip.l-q{background:#F0555F;color:#fff}
-/* NB/SB = no time for the brief (red, hard) · DB/SD = no time for the debrief (orange) */
-.puck .lchip.l-nb{background:#F0555F;color:#fff}
-.puck .lchip.l-sb{background:#F0555F;color:#fff}
+/* NB/SB = no time for the brief · DB/SD = no time for the debrief. All four are
+   ADVISORIES (owner, 4 Aug 26 — the clash itself carries the red; the eaten
+   window is advice on top of it), so all four are amber. NB/SB were red until
+   10 Aug 26, which put a red chip and a red box over an amber ring and made
+   the puck contradict the checks list beside it. */
+.puck .lchip.l-nb{background:#E5A83B}
+.puck .lchip.l-sb{background:#E5A83B}
 .puck .lchip.l-db{background:#E5A83B}
 .puck .lchip.l-sd{background:#E5A83B}
 /* A = advisory — on shift AND down for a ground event or a programme item.
    It used to borrow the conflict chip: a red C on the puck with an amber line in
    the notes, which read as a hard clash at a glance. Its own amber letter now. */
 .puck .lchip.l-a{background:#E5A83B}
+/* RUN = no break day, too many days in a row. A HARD warning, so red — and it
+   had NO RULE AT ALL until 10 Aug 26, which left the 7 with the base chip's
+   dark text on no background: near invisible on a puck. Never seen because the
+   demo week does not trip it. */
+.puck .lchip.l-run{background:#F0555F;color:#fff}
 /* LD = long work day — a grey note, not a warning */
 .puck .lchip.l-ld{background:#8A96A3;color:#0B0D10}
 /* CP = crew pairing (renamed from CC, owner ask 5 Aug 26) — the pairing rules.
