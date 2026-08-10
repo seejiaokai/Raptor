@@ -1,5 +1,39 @@
 import { VCONF } from './rules'
+import { hhmm } from './time'
 import { CURWEEK } from './waves'
+/* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
+   and remarks in place, on the week and on the board).
+   Every other editable row in this app is addressed by its position in the
+   model (`g:di.ri`, `dr:di.dwi.ri`), and that is safe there because those
+   arrays only move when the surface that moves them re-renders. INPUTS does
+   not behave like that: `add()` UNSHIFTS, so raising one input renumbers every
+   other one, and undo replaces the array wholesale. A cell that captured an
+   index when it was drawn and committed it a moment later — after an add on
+   the Inputs page, or a Ctrl+Z — would write one man's hours onto another
+   man's leave, silently. The content key `inpKey` cannot do this job either:
+   it is built from the very fields these cells edit.
+   So each input carries an `iid`, minted once and then never changed. It rides
+   in the history snapshot with the rest of the record, so undo and redo hand
+   back the same object with the same address, and the counter only ever climbs
+   within a session, so a replayed snapshot can never collide with a new row. */
+/* what an input's two time cells SHOW. An all-day row shows NOTHING — the
+   placeholder says "all day", so the pair reads as the rule (see setInpField in
+   ui/inputedit.tsx) rather than as a gap somebody forgot to fill. */
+export function inpTimeText(inp:any,field:any){
+  return (inp.allday||inp.s==null||inp.e==null)?'':hhmm(field==='str'?inp.s:inp.e);}
+/* MINTED WHERE A ROW IS CREATED — the seed at boot (state/store.ts) and the
+   Inputs page's add() — not lazily at render. Lazily was the first cut and it
+   was subtly wrong: a history snapshot taken between the row being created and
+   the row being first drawn held no id, so an undo back to it handed back a
+   row that then minted a DIFFERENT one, and anything still holding the old
+   address was pointing at nothing. Minting at creation puts the id in every
+   snapshot the row appears in. The lazy branch stays as a backstop for a row
+   that reaches a builder without having gone through either path. */
+let IIDN=0;
+export function inpId(inp:any){return inp.iid||(inp.iid='i'+(++IIDN));}
+export function mintInpIds(){INPUTS.forEach(inpId);}
+export function inpById(id:any){return INPUTS.find((r:any)=>r.iid===id)||null;}
+
 /* ---- THE INPUT TYPES ------------------------------------------------------
    The squadron books far more kinds of absence than "leave" (owner, 10 Aug 26).
    ONE TABLE decides everything about a type, and every predicate below is a

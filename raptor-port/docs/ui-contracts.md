@@ -507,22 +507,61 @@ page. The commit is the Inputs page's own — both call `commitInputEdit` /
 `removeInput` in `ui/inputedit.tsx`, so the accepted-row relink, the
 validation and the single undo step cannot drift between the two surfaces.
 
-**The control is the input's own TYPE LABEL** — `OML` in the week's name
-column, the type chip on the board — turned into a `<button>` by
-`inpEditLabel` (`ui/html.ts`). That is a layout decision as much as a UX one:
-both rows are grids with every track spoken for, and all three shapes that put
-a separate button in the row cost the row height at one width or the other (an
-extra grid child wraps onto its own line; an absolute button with the remark
-padded clear of it, and a 20px track of its own, both make a remark one word
-off the boundary wrap — measured at 27px → 39px on "Medically down till 17
-Jul"). The label costs nothing because it is already there. It must keep its
-metrics exactly: `e2e/geometry.spec.ts` §editing an input from the schedule
-compares the Unavailable rows on the edit week against the same rows on
-View-only, at both widths.
+**The times and the remarks are ORDINARY CELLS** (owner, 10 Aug 26 — "edit the
+input directly like changing the start and end time... no need to open a new
+window... in the same modality as ground programme"). On the week they are
+`contenteditable` cells beside the ground rows' own; on a live board the two
+input panels draw their rows as `sb-arow c6r` — literally the ground
+programme's row, same seven tracks under the same header, including the
+leading GRIP track, which an input row keeps even though it cannot be dragged
+(the phone rule hides `.sb-grip` specifically, so a bare `<span>` standing in
+for it ate the phone's 1fr ITEM column and shunted every field one track
+left). A read-only board keeps the compact `.sbi-row`.
 
-Since a label reads as a label, each block says so once — `press a type to
-edit it` in the week's block heading and in both board panel subtitles —
-rather than every row carrying a hint it has no room for.
+They carry `data-inp` (week) and `data-ifld` (board), NOT `data-txt` /
+`data-bfld`: an input is not schedule data, has no funnel key, and commits
+through `setInpField` -> `commitInputEdit` -> `writeInputsBatch` rather than
+`txtSet` / `markEdit`. A refusal heals the cell from the model, exactly as a
+rejected `txtSet` does.
+
+**Clearing a time means all day.** That is what `awayAllDay` already believes,
+so the cell and the rule agree without a third control. It is deliberately
+asymmetric with filling one in — TYPING a time defaults the other end to the
+edge of the day, because an all-day row has nothing in either cell and without
+that default typing a start would do nothing. The symmetric "clear both" rule
+was built first and was unusable: the first clear defaulted the other end, so
+the pair was never blank at once and all-day was a one-way trip. The AM/PM
+label is DERIVED on commit — a window that lands exactly on a half gets it,
+anything else drops it — so a printed "(AM)" can never describe a window that
+is no longer a half.
+
+**Every input carries `iid`**, minted at creation (`mintInpIds` at boot,
+`add()` on the Inputs page) and never changed. The cells cannot be addressed
+by position — `add()` unshifts, so raising one input renumbers every other —
+nor by `inpKey`, which is built from the very fields they edit. Minting it
+lazily at render was the first cut and was wrong: a snapshot taken between
+creation and first paint held no id, so an undo back to it handed back a row
+that then minted a different one.
+
+**What is left behind the TYPE LABEL** — still a `<button>` via `inpEditLabel`
+— is the type and delete: the two that cannot be a text cell in these rows.
+That it is the label and not a button beside it is a layout decision as much as
+a UX one: all three shapes that put a separate button in the row cost the row
+height at one width or the other (an extra grid child wraps onto its own line;
+an absolute button with the remark padded clear of it, and a 20px track of its
+own, both make a remark one word off the boundary wrap — measured at 27px to
+39px on "Medically down till 17 Jul").
+
+`e2e/geometry.spec.ts` §editing an input from the schedule holds both halves:
+the Unavailable rows on the edit week against the same rows on View-only (a
+row may cost a few pixels for a tappable cell — measured identical on desktop,
++3px on a phone — but never a LINE), and an input row's first four tracks
+against a ground row's, at both widths.
+
+Each block says what is typeable once — `times and remarks type in place ·
+clear a time for all day · press the type to change it` — rather than every
+row carrying a hint it has no room for; half the squadron is on a phone, where
+nothing is discoverable by hover.
 
 **Who gets it:** `ed`, i.e. `HOOKS.editMode()` — a scheduler on Edit Schedule,
 and a board that is neither a preview nor read-only. View-only Sched draws the

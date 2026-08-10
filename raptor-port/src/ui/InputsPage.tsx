@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, typeGroup, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -225,6 +225,9 @@ export function InputsPage() {
      the schedule itself is still `canEditSched()` (admin), and ACCEPTING an
      input into the programme is still a scheduler's act — `interactions.ts`
      refuses it for a member exactly as before. */
+  /* the row's own address, minted INSIDE the write so the snapshot this add
+     pushes already carries it (see mintInpIds in engine/inputs.ts) */
+  const withId = (r: any) => { inpId(r); return r }
   const add = () => {
     /* the calendar asks for a pick and the readout says so — accepting the
        click anyway and quietly dating it Monday was a trap */
@@ -236,14 +239,14 @@ export function InputsPage() {
     const s = allday ? 0 : parseHM(sTime), e = allday ? 1439 : parseHM(eTime)
     if (!allday && (s == null || e == null)) return HOOKS.toast('Give the input a start and end time, or tick All day', 'warn')
     if (!allday && (e as number) <= (s as number)) return HOOKS.toast('End time must be after start time', 'warn')
-    writeInputs(() => INPUTS.unshift({
+    writeInputs(() => INPUTS.unshift(withId({
       person, date, endDate, allday, s, e,
       /* only carried when it is one — an absence typed as an exact range is
          not a half-day and must not read as one */
       ...(!allday && half ? { half } : {}),
       type, remarks: remarks.trim(),
       recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
-    }))
+    })))
     /* the row INPUTS.unshift just made — pin it to the top of the table and
        light it, so the add is visible even from a view that would filter it
        out. The flash comes off on a timer; the pin waits for the user. */

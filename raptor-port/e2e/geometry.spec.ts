@@ -1576,7 +1576,12 @@ test('a long unbreakable remark stays one clipped line and keeps its full text i
     await page.setViewportSize(size)
     await login(page); await go(page, 'editsched')
     await page.evaluate(() => (window as any).openScheduler(0))
-    await page.waitForSelector('#sbBoard .sbi-row .sbi-rm')
+    /* `#sbInputs`, not `#sbBoard`: the two input PANELS inside the board draw
+       their rows as ground-programme rows now (owner, 10 Aug 26), so the
+       compact `.sbi-row` this cell belongs to lives in the day's inputs strip
+       — which is where it always was, and where the clipping contract below
+       is still exactly the contract. */
+    await page.waitForSelector('#sbInputs .sbi-row .sbi-rm')
     await page.evaluate((t) => {
       const w = window as any
       w.INPUTS.filter((i: any) => w.inputCoversDate(i, w.DAYS[0].dt)).forEach((i: any) => { i.remarks = t })
@@ -1584,7 +1589,7 @@ test('a long unbreakable remark stays one clipped line and keeps its full text i
     }, LONG)
     await page.waitForTimeout(300)
     const m = await page.evaluate(() => {
-      const el = document.querySelector('#sbBoard .sbi-row .sbi-rm') as HTMLElement
+      const el = document.querySelector('#sbInputs .sbi-row .sbi-rm') as HTMLElement
       const row = el.parentElement as HTMLElement
       const cs = getComputedStyle(el)
       return {
@@ -1986,9 +1991,20 @@ test.describe('editing an input from the schedule', () => {
         .map(r => Math.round(r.getBoundingClientRect().height)))
       expect(live.length, 'the same rows are drawn on both pages').toBe(bare.length)
       expect(live.length).toBeGreaterThan(0)
-      expect(live, `${name}: making the label a button added no line to any row`).toEqual(bare)
+      /* NOT equality any more (owner, 10 Aug 26 — the times and remarks became
+         typeable cells). A row may cost a few pixels for a cell that has to be
+         tappable; what it may not do is gain a LINE, which is what every
+         rejected shape did. Measured at this commit: identical on desktop,
+         +3px a row on a phone, where the two time cells stack into the single
+         TIME column and the second one is empty on an all-day row. A line at
+         these sizes is 11px and up, so 6 catches one and tolerates this. */
+      live.forEach((h, i) => expect(h - bare[i], `${name}: row ${i} grew by a line`).toBeLessThanOrEqual(6))
+      expect(live.every((h, i) => h >= bare[i]), `${name}: sanity — no row shrank`).toBe(true)
       expect(await page.locator('#eWeek .day[data-day="0"] .sec-unav [data-inpedit]').count(),
-        'and every row on the edit week carries one').toBe(live.length)
+        'every row on the edit week carries the type control').toBe(live.length)
+      /* and the cells themselves: two times and a remark, on every row */
+      expect(await page.locator('#eWeek .day[data-day="0"] .sec-unav [data-inp]').count(),
+        'and three typeable cells').toBe(live.length * 3)
 
       /* on the board, with a remark long enough to fill the cell it clips */
       await page.evaluate((t) => {
@@ -2000,7 +2016,7 @@ test.describe('editing an input from the schedule', () => {
       const m = await page.evaluate(() => {
         const btn = document.querySelector('#schedBoard .pinp [data-inpedit]') as HTMLElement
         btn.scrollIntoView({ block: 'center' })
-        const row = btn.closest('.sbi-row') as HTMLElement
+        const row = btn.closest('.sb-arow') as HTMLElement
         const b = btn.getBoundingClientRect(), r = row.getBoundingClientRect()
         const hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2) as HTMLElement
         return {
@@ -2017,6 +2033,45 @@ test.describe('editing an input from the schedule', () => {
       expect(m.inside, `${name}: it sits inside its own row, not over the next one`).toBe(true)
       expect(m.reached, `${name}: a press at its centre reaches it, not the remark over it`).toBe(true)
       expect(m.rowScrolls, `${name}: it does not push the row sideways`).toBe(false)
+    })
+  }
+
+  /* "They can be editable in the same modality as ground programme" (owner,
+     10 Aug 26) is a REGISTER claim as much as a behaviour one: the input rows
+     and the ground rows sit one above the other in the same board, under
+     headers of their own, and a row that put Start where Ground puts End
+     would read as a mistake. Both use `sb-arow c6r`, so this measures that
+     they actually land in the same tracks — including the leading grip track,
+     which an input row keeps precisely so it does (the bare <span> that first
+     stood in its place was not hidden by the phone rule and shunted every
+     field one column left). */
+  for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
+    test(`${name}: an input row lines up with the ground programme's rows`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page); await go(page, 'editsched')
+      await page.evaluate(() => (window as any).openScheduler(0))
+      await page.waitForSelector('#schedBoard .pinp .sb-arow')
+      const m = await page.evaluate(() => {
+        const lefts = (sel: string) => {
+          const r = document.querySelector(sel) as HTMLElement
+          if (!r) return null
+          const base = r.getBoundingClientRect().left
+          return [...r.children].map(c => Math.round((c as HTMLElement).getBoundingClientRect().left - base))
+        }
+        const row = document.querySelector('#schedBoard .pinp .sb-arow') as HTMLElement
+        return {
+          inp: lefts('#schedBoard .pinp .sb-arow'),
+          grnd: lefts('#schedBoard .grnd .sb-arow'),
+          scrolls: row.scrollWidth > Math.round(row.getBoundingClientRect().width) + 1,
+        }
+      })
+      expect(m.grnd, 'sanity — there is a ground row to compare against').toBeTruthy()
+      expect(m.inp!.length, 'same number of cells as a ground row').toBe(m.grnd!.length)
+      /* the first four tracks are the ones both rows fill the same way: grip,
+         item, start, end. Beyond those a ground row carries CX/flag/delete
+         where an input carries Accept, so their widths legitimately differ. */
+      expect(m.inp!.slice(0, 4), 'grip, item, start and end land in the same tracks').toEqual(m.grnd!.slice(0, 4))
+      expect(m.scrolls, 'and the row gains no sideways scroll').toBe(false)
     })
   }
 

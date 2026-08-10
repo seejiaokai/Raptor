@@ -121,6 +121,22 @@ rounds gave per-node differences of +0.07, −0.05 and +0.01 — i.e. none. The
 same week WITHOUT the edit, so a real week-render regression moves it too (it
 sat at 0.56×–0.57× per node throughout, on both builds).
 
+**Measured again on 10 Aug 26**, when the input panels became editable rows
+and the one-day edit went red twice running at 1.18x and 1.19x. Three
+alternating rounds against the parent commit, built into a worktree and served
+on 4174:
+
+| round | parent | this change |
+|---|---|---|
+| 1 | 1.14x | 1.10x |
+| 2 | 1.08x | 1.06x |
+| 3 | 1.08x | 1.15x |
+
+Differences of -0.04, -0.02 and +0.07 — the same spread this section already
+records for an unchanged commit, and the PARENT straddles the 1.15 line in the
+same window. `noop` held at 0.58x-0.62x on both builds throughout. So: the
+estimator, again, and the budget stays where it is.
+
 **Self-check.** Point the gate at the reference twice and it should read
 ≈ 1.00: `PORT_URL="file://$PWD/reference/scheduler.html" npm run perf`.
 Measured: 0.91 / 0.99 / 0.93 / 1.01 on the four metrics — no systematic

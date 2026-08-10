@@ -1,6 +1,6 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { INPUTS, inpMeta, inputCoversDate, inpLabel, isPersonal, isUnavail } from '../engine/inputs'
+import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail } from '../engine/inputs'
 import { PEOPLE, nameToId } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
@@ -299,21 +299,47 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
   }
   return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',ro)+`</div></div>`;
 }
-/* The row carries no funnel keys — an input is not schedule data — so it has
-   never been editable in place. Pressing its TYPE CHIP (owner, 10 Aug 26)
-   opens the same dialog the week does, which writes back through
-   ui/inputedit.tsx; ro is the board's read-only test (a preview, or a session
-   that may not edit), and it withholds that exactly as it withholds Accept.
-   Reuses the .sbi-row look from the bands panel below. */
+/* AN INPUT ROW ON THE BOARD (owner, 10 Aug 26 — "on personal inputs and
+   unavailable in schedule board, they can be editable in the same modality as
+   ground programme").
+   So a live board draws them as `sb-arow c6r` rows, which IS the ground
+   programme's row: same seven tracks, same boxes, same register under the same
+   header. Start, End and Rmks are ordinary fields; they carry `data-ifld`
+   rather than the ground row's `data-bfld`, because an input has no funnel key
+   and its write is not a schedule write — see setInpField in ui/inputedit.tsx.
+   The TYPE keeps the dialog behind it: it is the one thing here that is a
+   choice from a list rather than typed text, and delete rides with it.
+   A READ-ONLY board (a preview, or a session that may not edit) keeps the old
+   compact `.sbi-row`, which is also what the read-only bands panel below
+   draws — nothing is gained by showing a scheduler's fields to someone who
+   cannot use them, and the two panels stay legible at a glance. */
 function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any){
+  const RO=ro??pv;
   const pk=PEOPLE[inp.person]
     ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
     : `<span class="itxt">${esc(inp.person)}</span>`;
-  const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
-  return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
-    +inpEditLabel(inp,!(ro??pv),inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
-    +sbiRmk(inp)
-    +(acc&&!pv?accCtl(di,inp):'')+`</div>`;
+  if(RO){
+    const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
+    return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
+      +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
+      +sbiRmk(inp)+`</div>`;
+  }
+  const id=inpId(inp);
+  const fld=(cls:any,f:any,v:any,ph:any)=>`<input class="${cls}" data-ifld="${esc(id)}.${f}" value="${esc(v||'')}" placeholder="${ph}">`;
+  /* the GRIP's own track, kept even though an input row cannot be dragged.
+     Every c6r template reserves a leading 18px track, and the phone rule
+     (`display:none` on .sb-grip, three columns for the rest) is written
+     against that element specifically — a bare <span> in its place is not
+     hidden down there, so it ate the phone's 1fr ITEM column and pushed the
+     type into a 46px stub. Same register lesson as finding #1 on 9 Aug 26,
+     reached from the other side. */
+  return `<div class="sb-arow c6r inprow${acc&&inp.acc?' accd':''}${lateRowCls(inp)}"${lateRowTitle(inp)}>`
+    +sbGrip(true)
+    +inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`)
+    +fld('atm','str',inpTimeText(inp,'str'),'all day')+fld('atm','end',inpTimeText(inp,'end'),'')
+    +`<div class="ppl">${pk}</div>`
+    +fld('ain rmkin','rmks',inp.remarks||'','remarks')
+    +`<span class="lctl">${acc?accCtl(di,inp):''}</span></div>`;
 }
 /* ro (5th param, reviewer-found residual 9 Aug 26): accepting an input is a
    write — promotes it into the ground programme through the mutation funnel
@@ -325,19 +351,22 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any){
    showing the buttons. */
 export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
-  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme, or press a type to edit it</span></div><div class="sb-pb">`;
-  if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
   const acRo=ro??pv;
+  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day'}</span></div><div class="sb-pb">`;
+  if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
+  else if(!acRo)s+=C6;
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo,acRo); });
   return s+`</div></div>`;
 }
-/* Leave, downchits and detachments close a man's day on their own — nobody
-   accepts them, so this panel is read-only and carries no controls. */
+/* Leave, medical and overseas duty close a man's day on their own — nobody
+   ACCEPTS them, so this panel carries no Accept control; its rows are as
+   editable as the ones above since the owner asked for both (10 Aug 26). */
 export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isUnavail(inp.type)||inp.acc==='u');
-  let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable <span class="sub">leave, medical and overseas duty — press a type to edit it</span></div><div class="sb-pb">`;
+  let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable <span class="sub">leave, medical and overseas duty${ro?'':' — times and remarks type in place, clear a time for all day'}</span></div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nil — everybody is available today.</div>`;
-  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,true,ro); });
+  else if(!ro)s+=C6;
+  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,ro,ro); });
   return s+`</div></div>`;
 }
 /* the board never carried the amendment marks the week view had — added with

@@ -1023,9 +1023,15 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 /* an accepted personal input stays visible so the scheduler can see what they
    have dealt with and undo it — faded, because the live copy is now the ground
    programme row above, not this one */
-.pl-row.accd{opacity:.45}
+/* .45 was right while these rows were read-only text: an accepted input is
+   dealt with, and it faded into the background. They are fields now (owner,
+   10 Aug 26), and .45 on a box you are meant to type into is a box you cannot
+   read. .62 still reads as "handled" next to its neighbours, and the row also
+   says so twice over — `· accepted` after the type, and UNDO where ACCEPT was. */
+.pl-row.accd{opacity:.62}
+.sb-arow.inprow.accd{opacity:.62}
 .pl-row.accd .ntx::after{content:' · accepted';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
-.sbi-row.accd{opacity:.45}
+.sbi-row.accd{opacity:.62}
 .accs{display:inline-flex;gap:4px;align-items:center;margin-left:6px}
 .accb{font:inherit;font-size:9px;letter-spacing:.05em;text-transform:uppercase;
   padding:2px 7px;border-radius:6px;cursor:pointer;white-space:nowrap;
@@ -2296,6 +2302,31 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 }
 
 /* ---- editing one input from the week or the board (owner, 10 Aug 26) ---- */
+/* The times and the remarks are ordinary cells now, so they borrow the look
+   the ground-programme rows beside them already have — `.txed` on the week,
+   the board's own `.atm` / `.ain` boxes on the board. The only thing new is
+   the PLACEHOLDER on a contenteditable cell, which has none of its own: an
+   empty pair of time cells is not a gap, it is how "all day" is said, and a
+   cell that just looked blank would read as something nobody filled in. */
+.pl-row .t.inpt{min-width:0;overflow:hidden;white-space:nowrap}
+/* "all day" is seven characters in a 44px (week) / 52px (board) time cell, and
+   at the cell's own size it wraps to two lines and grows the row. The
+   placeholder alone is stepped down so the pair still SAYS the rule at a
+   glance without costing the height that made the word worth saying. */
+.txed.inpt:empty::before{content:attr(data-ph);color:var(--ink-3);pointer-events:none;font-size:8.5px}
+/* 8px on the board, not 8.5: its phone START box is 46px, and the word was
+   still losing its last letter at 8.5 — the same clipped-text fault as the
+   time fields in the edit dialog, which is worth catching once rather than
+   twice. */
+.sb-arow.inprow .atm::placeholder{font-size:8px;letter-spacing:-.02em}
+.pl-row .rmk .ntx.inpt{display:block;min-height:1.3em}
+/* the board's input rows ARE ground-programme rows; the type keeps its chip
+   look inside the Item track, and the control track holds Accept where there
+   is one rather than the CX/flag/delete a schedule row carries */
+.sb-arow.inprow .inpty{width:100%;box-sizing:border-box}
+.sb-arow.inprow .lctl{justify-content:flex-end}
+.sb-arow.inprow .accs{margin-left:0}
+
 /* The label IS the button, so it inherits everything about how it looked as a
    span — font, colour, alignment, the type chip's own border on the board —
    and adds only the affordance: a pointer, an underline under the pointer,

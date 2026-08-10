@@ -16,6 +16,7 @@ import { HOOKS } from '../engine/hooks'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { rulesLoad } from '../engine/rules'
+import { mintInpIds } from '../engine/inputs'
 import { storesLoad } from '../engine'
 import { afterSchedMutate } from './view'
 import * as view from './view'
@@ -150,6 +151,10 @@ export function initStore() {
   wireStore()
   rulesLoad()
   storesLoad()
+  /* before histInit, so the FIRST snapshot already carries every input's
+     address — see mintInpIds in engine/inputs.ts for why an id minted later
+     than the snapshot it should be in is worse than no id at all */
+  mintInpIds()
   validate()
   histInit()
   notify()

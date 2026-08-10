@@ -1,6 +1,6 @@
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME } from '../engine/people'
-import { INPUTS, inputCoversDate, inpLabel, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
@@ -744,11 +744,11 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        Name | Start | End | People.  All-day rows span the two time columns. */
     const inGrp=(title:any,filt:any,cls:any,always?:any,acc?:any)=>{ const rows=dayInputs.filter(filt);
       if(!rows.length&&!always)return'';
-      /* the label being the control is only discoverable on hover, and half
-         the squadron is on a phone where there is no hover — so the block
-         says it once, rather than every row carrying a button it has no room
-         for. Scheduler-side only: the view-only week cannot edit anything. */
-      let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h">${title}${ed?`<span class="pl-hint">press a type to edit it</span>`:''}</div>`;
+      /* what is typeable is only discoverable on hover, and half the squadron
+         is on a phone where there is no hover — so the block says it once,
+         rather than every row carrying a hint it has no room for.
+         Scheduler-side only: the view-only week cannot edit anything. */
+      let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h">${title}${ed?`<span class="pl-hint">times and remarks type in place · clear a time for all day · press the type to change it</span>`:''}</div>`;
       /* Unavailable is the block the squadron reads every single day, so it
          prints even when nobody is on it — "Nil" is the answer, not a missing
          section. */
@@ -758,14 +758,11 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         const pk=PEOPLE[inp.person]
           ? `<span class="seat">${puck(inp.person,sev(di,inp.person),true,chip(di,inp.person))}</span>`
           : `<span class="itxt">${esc(inp.person)}</span>`;
-        const tcell=inp.allday
-          ? `<span class="t allday">all day</span>`
-          : `<span class="t">${esc(hhmm(inp.s))}</span><span class="t">${esc(hhmm(inp.e))}</span>`;
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
         s+=`<div class="pl-row${acc&&inp.acc?' accd':''}">`
-          +`<span class="nm">${inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${tcell}`
-          +`<div class="ppl one">${pk}</div>${plRmk(null,ed,null,inp.remarks||'',lateTag(inp))}`
+          +`<span class="nm">${inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${inpTimeCells(inp,ed)}`
+          +`<div class="ppl one">${pk}</div>${inpRmkCell(inp,ed)}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
     if(ed)h+=inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true);
@@ -775,22 +772,14 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     h+=`</div>`; // /day-body
     return h+`</section>`;
 }
-/* THE PENCIL ON AN INPUT ROW (owner, 10 Aug 26 — "full edit: times, type,
-   remarks and delete, from Edit Schedule or the schedule board").
-   It opens ui/inputedit.tsx's dialog through routeClick, the same delegated
-   path the Accept buttons beside it take, so the week and the board share one
-   handler rather than one each.
-   Gated on `ed`, which is HOOKS.editMode() — a scheduler on Edit Schedule.
-   View-only Sched draws the Unavailable block too and must stay read-only,
-   and a member who wants to change his own leave has the Inputs page, which
-   is where the role gate for that already lives. */
-/* THE INPUT'S OWN LABEL IS THE CONTROL (owner, 10 Aug 26 — "full edit: times,
-   type, remarks and delete, from Edit Schedule or the schedule board").
-   It is the label rather than a button beside it because both surfaces draw
-   these rows as GRIDS with every track already spoken for, and there is no
-   free space on either. Three shapes were built and measured first: an extra
-   child wraps onto a line of its own (the Unavailable block has no Accept
-   button to share that line with, so every row cost a second line); an
+/* THE INPUT'S OWN LABEL OPENS THE DIALOG, and since the times and the remarks
+   became ordinary cells (owner, 10 Aug 26 — "no need to open a new window")
+   what is left behind it is the TYPE and DELETE: the two that cannot be a
+   text cell in these rows. It is the label rather than a button beside it
+   because both surfaces draw these rows as GRIDS with every track already
+   spoken for. Three shapes were built and measured first: an extra child
+   wraps onto a line of its own (the Unavailable block has no Accept button to
+   share that line with, so every row cost a second line); an
    absolutely-positioned button with the remarks cell padded clear of it made
    a remark one word off the boundary wrap, 27px to 39px on "Medically down
    till 17 Jul" at desktop width; and a 20px track of its own does the same
@@ -800,6 +789,40 @@ export function dayHTML(di:any,ed:any,vsel?:any){
    `ed` is HOOKS.editMode() — a scheduler on Edit Schedule. View-only Sched
    draws the Unavailable block too and stays read-only; a member changes his
    own leave on the Inputs page, where the role gate for that already lives. */
+/* ---- an input's TIMES and REMARKS, typed in place (owner, 10 Aug 26) -----
+   "Edit the input directly like changing the start and end time... in the same
+   modality as ground programme." A ground row's cells are `ted()` nodes on a
+   `data-txt` key; an input has no funnel key — it is not schedule data — so
+   these carry `data-inp` instead and commit through ui/textedit.ts's own
+   branch. Everything else about them is the ground row's: same classes, same
+   grid tracks, same Enter-commits / Escape-restores.
+
+   READ-ONLY IS UNCHANGED, deliberately and to the byte: the view-only week and
+   the reference-parity compare both go down the first branch, which is the
+   markup this block has always emitted, `all day` spanning the two time
+   columns and all. Only a scheduler on Edit Schedule sees cells.
+   BOTH CELLS EMPTY IS "all day" — see setInpField in ui/inputedit.tsx for why
+   that is the rule rather than a third control; the placeholder says so, so an
+   empty pair reads as the rule and not as a gap. */
+export function inpTimeCells(inp:any,ed:any){
+  if(!ed||!canEditSched())return inp.allday
+    ? `<span class="t allday">all day</span>`
+    : `<span class="t">${esc(hhmm(inp.s))}</span><span class="t">${esc(hhmm(inp.e))}</span>`;
+  /* only the START cell says it. The phone stacks the two into one TIME column
+     (see the t-s / t-e note on plRow), so a placeholder on both read "all day"
+     twice down the column — and on either width the pair only needs telling
+     once. */
+  const cell=(f:any,c:any)=>`<span class="t t-${c} txed inpt" contenteditable="true" spellcheck="false" `
+    +`data-inp="${esc(inpId(inp))}.${f}"${f==='str'?' data-ph="all day"':''}>${esc(inpTimeText(inp,f))}</span>`;
+  return cell('str','s')+cell('end','e');
+}
+export function inpRmkCell(inp:any,ed:any){
+  const lt=lateTag(inp), lc=lt?' has-late':'';
+  const v=inp.remarks||'';
+  if(!ed||!canEditSched())return `<span class="rmk${v?'':' rk-e'}${lc}">${lt}<span class="ntx">${esc(v)}</span></span>`;
+  return `<span class="rmk${lc}">${lt}<span class="ntx txed inpt" contenteditable="true" spellcheck="false" `
+    +`data-inp="${esc(inpId(inp))}.rmks" data-ph="remarks">${esc(v)}</span></span>`;
+}
 export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
   const t=esc(txt);
   if(!ed)return `<span class="${cls}">${t}</span>`;

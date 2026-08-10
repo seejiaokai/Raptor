@@ -448,9 +448,18 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(!!x.flag).toBe(false)
   })
 
-  it('the personal-inputs panel is inert even on the live board', () => {
+  /* This used to read "the personal-inputs panel is inert even on the live
+     board", and asserted no `input` existed in it at all. The owner asked for
+     the opposite on 10 Aug 26 — "they can be editable in the same modality as
+     ground programme" — so the assertion is re-cut rather than dropped, onto
+     the half that is still true and still worth defending: an input is not
+     schedule data, so nothing in this panel may write the SCHEDULE. The
+     fields it does carry address the input itself (data-ifld → setInpField),
+     never a funnel key. */
+  it('the personal-inputs panel writes inputs, never the schedule', () => {
     const p = document.querySelector('#sbBoard .sb-panel.pinp')!
-    expect(p.querySelectorAll('input,textarea,.mbtn,[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
+    expect(p.querySelectorAll('[data-ifld]').length).toBeGreaterThan(0)
+    expect(p.querySelectorAll('[data-slot],[data-fill],[draggable="true"],.mbtn,[data-txt],[data-bfld]').length).toBe(0)
   })
 })
 

@@ -149,9 +149,17 @@ run test:e2e` 59/59, and `npm run probes:adapted` 6/6 plus `npm run perf` 7/0
     a number nobody has hit is a guess; the fix when it bites is the
     ordinary one (check the time, raise the ceiling in the PR that needs
     it). Reasoning: `docs/probe-sweep.md` §The performance gate.
-- **Editing an input from the schedule shipped with two things left open**
+- **Editing an input from the schedule shipped with three things left open**
   (build two of the leave-types work, 10 Aug 26; contract in
-  `docs/ui-contracts.md` §Editing an input from the schedule).
+  `docs/ui-contracts.md` §Editing an input from the schedule). The times and
+  the remarks are cells you type in on both surfaces; the type and delete sit
+  behind the type label.
+  - **The TYPE is still a dialog, not a cell.** It is the one field that is a
+    choice from a list, and a `<select>` in the week's 96px name column was
+    not attempted — the three measured attempts to fit a separate control into
+    these rows are recorded in the contract, and all three cost row height. If
+    it is ever wanted inline, the BOARD has the width for it before the week
+    does.
   - **Person and dates are not in the dialog** — deliberate, and the footer
     says so: all four fields it does carry keep the row on the day it was
     opened from, while moving it to another man or another date makes it
@@ -374,7 +382,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `highlights.ts` | Post-render decoration: selection/search/warning-focus classes on every puck (the week AND the board's `.sb-boardwrap`, never the palettes or a `.pv-frozen` preview), `paintArm`, and `scrollToWarnFocus` — surface-aware, snap-safe, lateral-holding (it pans sideways only when the target is off screen), picking the puck whose row holds the most of the warning's crew, and honouring `WFOCUS.panDi`/`panKey` where the focus and the destination are different days (the cross-day crew-rest row, and only it). |
 | `Modals.tsx` | DayPop (read-only day details), Insights, Manage-users, Airspace/traffic popup. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Contract: `docs/ui-contracts.md` §The Inputs table's view state. |
-| `inputedit.tsx` | Editing ONE personal input, shared by the Inputs page and the dialog the week and the board open: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, `commitInputEdit` (including the accepted-row relink), `removeInput`, and `InputEditor` itself. Two editors over one list is how the two drift apart. |
+| `inputedit.tsx` | Editing ONE personal input, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, `commitInputEdit` (including the accepted-row relink), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule) and `InputEditor` itself. Three editors over one list is how they drift apart. |
 | `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
 | `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer, login. |
 | `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. |
