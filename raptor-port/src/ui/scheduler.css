@@ -2326,7 +2326,16 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .inped-body select:focus,.inped-body input:focus{outline:none;border-color:var(--accent)}
 .inped-when{display:flex;flex-direction:column;gap:7px}
 .inped-t{display:flex;gap:8px}
-.inped-t input{width:110px}
+/* 130px, not the 78px the Inputs page's own pair uses. Measured on the built
+   app after this shipped: Chromium renders `<input type=time>` in the
+   BROWSER's locale, and on en-US that is a 12-hour field — "12:00 AM" plus
+   the clock button. At 110px it drew "12:00 A" with the marker cut off, and
+   nothing reports it: scrollWidth reads 108 against a 110px box, because the
+   truncation happens inside the field's own shadow DOM. The Inputs page gets
+   away with 78px because its boxes stretch to the form column (298px desktop,
+   350px phone); this dialog sizes its own. Two at 130px plus the gap is 268px
+   inside a 346px phone dialog, so it still fits. */
+.inped-t input{width:130px}
 .inped-t[hidden]{display:none}
 .inped-ad{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2)}
 .inped-ad input{width:auto;padding:0}

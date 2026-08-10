@@ -2026,10 +2026,15 @@ test.describe('editing an input from the schedule', () => {
     await go(page, 'editsched')
     await page.click('#eWeek .day[data-day="0"] .sec-unav [data-inpedit]')
     await page.waitForSelector('#inpEditPop:not([hidden])')
+    /* the seed's Unavailable rows are all-day, which hides the two time boxes
+       — put the dialog on a half-day so every field it can show is showing */
+    await page.click('#inpEditSpan [data-span="am"]')
     const m = await page.evaluate(() => {
       const box = document.querySelector('#inpEditPop .airpop-box') as HTMLElement
       const r = box.getBoundingClientRect()
+      const t = document.getElementById('inpEditStart')!.getBoundingClientRect()
       return { w: Math.round(r.width), left: Math.round(r.left), body: document.body.scrollWidth,
+        timeW: Math.round(t.width),
         fields: [...box.querySelectorAll('select,input')].filter(e => {
           const b = e.getBoundingClientRect()
           return b.width > 0 && (b.right > r.right + 1 || b.left < r.left - 1)
@@ -2039,5 +2044,14 @@ test.describe('editing an input from the schedule', () => {
     expect(m.left, 'and is not pushed off the left edge').toBeGreaterThanOrEqual(0)
     expect(m.body, 'the page gains no sideways scroll from it').toBeLessThanOrEqual(PHONE.width)
     expect(m.fields, 'no field spills out of the dialog').toBe(0)
+    /* THE TIME BOXES HAVE TO HOLD "12:00 AM". Chromium renders
+       `<input type=time>` in the BROWSER's locale, which on en-US is a
+       12-hour field, and at 110px it drew "12:00 A" with the marker cut off —
+       found on the deployed page, after every other gate was green. Nothing
+       else can catch it: the truncation happens inside the field's own shadow
+       DOM, so scrollWidth read 108 against a 110px box and reported no
+       overflow. So the contract is the WIDTH, measured — 130 draws it in
+       full, 110 does not. */
+    expect(m.timeW, 'the time boxes are wide enough for a 12-hour clock').toBeGreaterThanOrEqual(128)
   })
 })
