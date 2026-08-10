@@ -30,14 +30,33 @@ describe('sortWave', () => {
   })
 })
 
+/* BY START TIME since 10 Aug 26 (owner) — it used to be role rank, which
+   shuffled an SC PM desk above an AM one. A duty block is read down the day. */
 describe('sortDutyBlock', () => {
-  it('puts SDO above SXO above OPS-O, and an unknown role last', () => {
+  it('orders by start time, whatever the roles are called', () => {
     const dw = DAYS[0].dutywaves[0]
     dw.rows = [
-      { role: 'RANDOM', id: 'x' }, { role: 'OPS-O', id: 'y' }, { role: 'SXO', id: 'z' }, { role: 'SDO', id: 'w' },
+      { role: 'OPS O PM', id: 'x', str: '1300' }, { role: 'SDO', id: 'y', str: '0700' },
+      { role: 'SXO PM', id: 'z', str: '1300' }, { role: 'SXO AM', id: 'w', str: '0700' },
     ]
     expect(sortDutyBlock(0, 0)).toBe(true)
-    expect(dw.rows.map((r: any) => r.role)).toEqual(['SDO', 'SXO', 'OPS-O', 'RANDOM'])
+    /* the two 0700s keep the order they were typed in — a tie must not
+       reshuffle, or a scheduler's own arrangement is lost to a sort */
+    expect(dw.rows.map((r: any) => r.role)).toEqual(['SDO', 'SXO AM', 'OPS O PM', 'SXO PM'])
+  })
+
+  it('a row with no time yet sinks to the bottom, not to the top', () => {
+    const dw = DAYS[0].dutywaves[0]
+    dw.rows = [{ role: '', id: '' }, { role: 'SDO', id: 'y', str: '0700' }]
+    expect(sortDutyBlock(0, 0)).toBe(true)
+    expect(dw.rows.map((r: any) => r.role)).toEqual(['SDO', ''])
+  })
+
+  it('role order alone no longer moves anything', () => {
+    const dw = DAYS[0].dutywaves[0]
+    dw.rows = [{ role: 'OPS-O', str: '0700' }, { role: 'SDO', str: '0700' }]
+    expect(sortDutyBlock(0, 0)).toBe(false)
+    expect(dw.rows.map((r: any) => r.role)).toEqual(['OPS-O', 'SDO'])
   })
 })
 
@@ -93,7 +112,7 @@ describe('sortProg', () => {
 describe('the no-op property — an already-sorted section marks nothing', () => {
   it('every sorter returns false and leaves SCHED.pending empty when its section is already in order', () => {
     DAYS[0].waves[0].formations = [{ cs: 'A', to: '0800', ld: '0900', aircraft: [] }, { cs: 'B', to: '0900', ld: '1000', aircraft: [] }]
-    DAYS[0].dutywaves[0].rows = [{ role: 'SDO' }, { role: 'SXO' }, { role: 'OPS-O' }]
+    DAYS[0].dutywaves[0].rows = [{ role: 'SDO', str: '0700' }, { role: 'SXO', str: '0800' }, { role: 'OPS-O', str: '0900' }]
     DAYS[0].sims = { amt: [{ label: 'A', str: '0800' }], oft: [{ label: 'B', str: '0900' }] }
     DAYS[0].ground = [{ prog: 'A', str: '0800' }]
     DAYS[0].gman = false
@@ -133,7 +152,7 @@ describe('sortDay', () => {
   it('sorts every section of the day and leaves notes untouched', () => {
     const di = 0
     DAYS[di].waves[0].formations = [{ cs: 'L', to: '1200', ld: '1300', aircraft: [] }, { cs: 'E', to: '0800', ld: '0900', aircraft: [] }]
-    DAYS[di].dutywaves[0].rows = [{ role: 'OPS-O' }, { role: 'SDO' }]
+    DAYS[di].dutywaves[0].rows = [{ role: 'OPS-O', str: '1300' }, { role: 'SDO', str: '0700' }]
     DAYS[di].sims = { amt: [{ label: 'B', str: '1000' }, { label: 'A', str: '0800' }], oft: [] }
     DAYS[di].ground = [{ prog: 'B', str: '1000' }, { prog: 'A', str: '0800' }]
     DAYS[di].gman = true
@@ -141,7 +160,7 @@ describe('sortDay', () => {
     DAYS[di].notes = ['second', 'first']
     expect(sortDay(di)).toBe(true)
     expect(DAYS[di].waves[0].formations.map((f: any) => f.cs)).toEqual(['E', 'L'])
-    expect(DAYS[di].dutywaves[0].rows.map((r: any) => r.role)).toEqual(['SDO', 'OPS-O'])
+    expect(DAYS[di].dutywaves[0].rows.map((r: any) => r.role)).toEqual(['SDO', 'OPS-O'])   // by TIME now, 0700 before 1300
     expect(DAYS[di].sims.amt.map((r: any) => r.label)).toEqual(['A', 'B'])
     expect(DAYS[di].ground.map((r: any) => r.prog)).toEqual(['A', 'B'])
     expect(DAYS[di].gman).toBeFalsy()

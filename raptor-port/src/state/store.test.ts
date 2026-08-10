@@ -271,12 +271,14 @@ describe('a reorder disarms a stale-armed slot, not just a deleted one (finding 
   })
 
   it('Auto sort on a duty block disarms a slot armed in it', () => {
+    /* out of TIME order since 10 Aug 26 — the sort key is the start time now,
+       not the role rank, so the fixture has to differ on the times */
     DAYS[0].dutywaves[0].rows = [
-      { role: 'RUNNER', id: '', str: '0800', end: '1700' },
+      { role: 'RUNNER', id: '', str: '1700', end: '2100' },
       { role: 'SDO', id: '', str: '0800', end: '1700' },
     ]
-    armSlot('d:0.0.0')                              // armed on RUNNER, out of role order
-    expect(sortDutyBlock(0, 0)).toBe(true)           // sorts SDO to the top
+    armSlot('d:0.0.0')                              // armed on the LATE row, listed first
+    expect(sortDutyBlock(0, 0)).toBe(true)           // sorts the 0800 row to the top
     view.afterSchedMutate()
     expect(armedKey()).toBe('')
   })

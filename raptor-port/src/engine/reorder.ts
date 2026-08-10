@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { markEdit } from './publish'
 import { permuteKeys, moveKeys } from './keys'
-import { groundOrder, DUTY_ORDER } from './order'
+import { groundOrder } from './order'
 import { parseHM } from './time'
 /* ---------------------------------------------------------------------------
    REORDERING A BOARD LIST (owner, 8 Aug 26)
@@ -177,7 +177,15 @@ export function sortWave(di:any,gi:any){
 }
 export function sortDutyBlock(di:any,wi:any){
   const dw=(DAYS[di]||{}).dutywaves&&DAYS[di].dutywaves[wi]; if(!dw||!Array.isArray(dw.rows))return false;
-  const rows=dw.rows, oldOf=keySort(rows.length,(i:any)=>DUTY_ORDER[rows[i].role]??9);
+  /* BY START TIME, not by role rank (owner, 10 Aug 26). A duty block is read
+     down the day — who has the desk at 07:00, who takes it at 13:00 — and
+     role rank shuffled an SC PM desk above an AM one. Same key as sortSims
+     just below: parseHM, time-less rows to the bottom, ties keeping model
+     order. `DUTY_ORDER` stays — it is still the pick-list order for a fresh
+     row (engine/waves.ts DUTY_PICK) and the render order of a block nobody
+     has sorted. Nothing sorts on its own: this runs from Auto sort / Sort
+     all only, which is the whole point — rows must not move under a typist. */
+  const rows=dw.rows, oldOf=keySort(rows.length,(i:any)=>parseHM(rows[i].str));
   if(isIdentity(oldOf))return false;
   dw.rows=oldOf.map((o:any)=>rows[o]);
   [`d:${di}.${wi}.`,`dr:${di}.${wi}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));

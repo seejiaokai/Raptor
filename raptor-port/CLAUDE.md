@@ -365,6 +365,24 @@ the phone perf budget. Don't convert them to components.
   position.
   Rules: `docs/engine-rules.md` §The late-input mark.
   Placement: `docs/ui-contracts.md` §The late-input mark on screen.
+- **Nothing on the board re-orders itself** (owner, 10 Aug 26 — "prevent a
+  situation when the scheduler types and the line jumps"). Typing a role into
+  a blank duty cell used to reposition the whole block; that is gone. Auto
+  sort and Sort all are the only things that reorder a duty block, and they
+  order it by START TIME, not by role rank. Do not add an automatic sort back
+  to any board list. (The Ground Programme's render-time time sort predates
+  this and stays — it was a separate owner request and already avoids the
+  problem, since time-less rows sink to where the model appends them.)
+- **MAIN/SPARE on a standalone line is ghost text, and it disappears when a
+  remark is typed** (owner, 10 Aug 26). It was a permanent chip; the owner was
+  shown the trade-off — a line carrying a remark no longer says whether it is
+  main or spare — and chose ghost text anyway. Don't "fix" the disappearance.
+- **An SC wave creates no duty block; AVALON does** (owner, 10 Aug 26). SC
+  auto-created its desk for one morning and the owner moved it to `+ Block`
+  the same day. Everything but AVALON gets its desk from the picker.
+- **A new flying line comes up blank** (owner, 10 Aug 26). `+ Line` used to
+  copy the previous line's callsign, mission and times; a plausible wrong
+  value reads as filled in when nobody filled it in.
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add

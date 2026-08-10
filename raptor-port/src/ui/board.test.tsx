@@ -116,18 +116,21 @@ describe('the scheduler board (tfin board group)', () => {
     expect(SBDAY).toBe(0)
   })
 
-  it('+ Line seeds the new line from the last one on the LAST wave', async () => {
+  /* BLANK, not seeded from the last line (owner, 10 Aug 26). It used to copy
+     the previous line's callsign, mission and times, which reads as filled in
+     when nobody filled it in. */
+  it('+ Line adds a BLANK line to the LAST wave', async () => {
     const d = DAYS[0]
     const w = d.waves[d.waves.length - 1]
     const nBefore = w.formations.length
     const last = w.formations[w.formations.length - 1]
+    expect(last.cs, 'the fixture line has something to copy, so blank is meaningful').toBeTruthy()
     await click($('#sbAddLine'))
     expect(w.formations.length).toBe(nBefore + 1)
     const f = w.formations[w.formations.length - 1]
-    expect(f.to).toBe(last.to)
-    expect(f.cs).toBe(last.cs)
+    expect([f.cs, f.msn, f.to, f.ld]).toEqual(['', '', '', ''])
     expect(f.aircraft.length).toBe(1)
-    /* the seed key is marked pending so the line can be published */
+    /* the new line's key is marked pending so the line can be published */
     expect(SCHED.pending[`ff:0.${d.waves.length - 1}.${w.formations.length - 1}.cs`]).toBeTruthy()
     /* put it back */
     w.formations.pop()
@@ -171,21 +174,101 @@ describe('the scheduler board (tfin board group)', () => {
     expect(d.dutywaves.length).toBe(nDW)
   })
 
-  /* An SC wave used to arrive with NO duty block while AVALON brought its
-     four (owner, 10 Aug 26). It now brings TWO — one per shift — which is
-     also the case the single-index delete above could not have cleaned up. */
-  it('an SC wave brings TWO duty blocks, and deleting it removes both', async () => {
+  /* An SC wave auto-created its duty blocks for one morning (10 Aug 26); the
+     owner moved that to + Block the same day. AVALON is the only wave that
+     still brings a desk with it, so SC must now bring NOTHING. */
+  it('an SC wave brings no duty block at all', async () => {
     const d = DAYS[0]
     const nW = d.waves.length, nDW = (d.dutywaves || []).length
     await click($('#sbAddGo'))
     await click($('.wavemenu [data-wmkind="sc"]'))
     expect(d.waves.length).toBe(nW + 1)
-    expect(d.dutywaves.length).toBe(nDW + 2)
-    expect(d.dutywaves.slice(-2).map((x: any) => x.label)).toEqual(['SC AM', 'SC PM'])
-    expect(d.dutywaves.slice(-2).every((x: any) => x.rows.length === 4)).toBe(true)
+    expect((d.dutywaves || []).length).toBe(nDW)
     await click($(`#sbBoard [data-gdel="0.${d.waves.length - 1}"]`))
     expect(d.waves.length).toBe(nW)
-    expect(d.dutywaves.length).toBe(nDW)
+  })
+
+  /* + Block asks which wave the block is for, and fills the desk in */
+  it('+ Block offers the day’s waves, and picking one fills its desk', async () => {
+    const d = DAYS[0]
+    const nDW = (d.dutywaves || []).length
+    await click($('#sbBoard [data-dwadd="0"]'))
+    const pick = $$('.wavemenu [data-blkw]')
+    expect(pick.length, 'a button per wave, plus Empty block').toBe(d.waves.length + 1)
+    await click(pick[0])
+    expect(d.dutywaves.length).toBe(nDW + 1)
+    const b = d.dutywaves[d.dutywaves.length - 1]
+    expect(b.label).toBe(`${d.waves[0].label} duties`)
+    expect(b.rows.map((r: any) => r.role)).toEqual(['SDO', 'SXO', 'OPS O'])
+    expect(b.rows.every((r: any) => r.str === '' && r.end === '')).toBe(true)
+    d.dutywaves.pop()
+  })
+
+  it('+ Block’s Empty block still gives a bare block', async () => {
+    const d = DAYS[0]
+    const nDW = (d.dutywaves || []).length
+    await click($('#sbBoard [data-dwadd="0"]'))
+    await click($('.wavemenu [data-blkw=""]'))
+    expect(d.dutywaves.length).toBe(nDW + 1)
+    expect(d.dutywaves[d.dutywaves.length - 1].rows.map((r: any) => r.role)).toEqual([''])
+    d.dutywaves.pop()
+  })
+
+  /* THE GO DROPDOWN (owner-reported, 10 Aug 26). It read the wave's `night`
+     flag first, and makeStandalone sets night:true for AVALON — so an AVALON
+     wave showed "Night wave", and touching the dropdown then wrote the label
+     'NIGHT WAVE' onto a wave that was still standalone/avalon underneath. */
+  it('the Go dropdown names an AVALON wave AVALON, not Night wave', async () => {
+    const d = DAYS[0]
+    await click($('#sbAddGo'))
+    await click($('.wavemenu [data-wmkind="avalon"]'))
+    const gi = d.waves.length - 1
+    const sel = $(`#sbBoard [data-wsel="0.${gi}"]`) as HTMLSelectElement
+    expect(sel.value).toBe('AVALON')
+    expect([...sel.options].map(o => o.text)).toContain('SC')
+    await click($(`#sbBoard [data-gdel="0.${gi}"]`))
+  })
+
+  /* picking SC/AVALON LABELS the wave — it must not rebuild the lines, which
+     would throw away whatever is already planted (owner, asked and answered) */
+  it('picking AVALON on an ordinary wave keeps its lines and crew', async () => {
+    const d = DAYS[0]
+    await click($('#sbAddGo'))
+    await click($('.wavemenu [data-wmkind=""]'))
+    const gi = d.waves.length - 1, w = d.waves[gi]
+    w.formations[0].aircraft[0].p = 'mamba'
+    const nF = w.formations.length
+    await change($(`#sbBoard [data-wsel="0.${gi}"]`), 'AVALON')
+    expect(w.standalone).toBe(true)
+    expect(w.kind).toBe('avalon')
+    expect(w.label).toBe('AVALON')
+    expect(w.formations.length).toBe(nF)
+    expect(w.formations[0].aircraft[0].p).toBe('mamba')
+    /* and back again clears the standalone flags, or it would sit outside
+       the day's flying count for ever */
+    await change($(`#sbBoard [data-wsel="0.${gi}"]`), '2nd wave')
+    expect(w.standalone).toBeFalsy()
+    expect(w.kind).toBeFalsy()
+    await click($(`#sbBoard [data-gdel="0.${gi}"]`))
+  })
+
+  /* the ROLE pick-list on a block that belongs to no wave */
+  it('clicking a duty ROLE cell offers the five roles, and picking one writes it', async () => {
+    const d: any = DAYS[0], savedDW = d.dutywaves
+    d.dutywaves = [{ label: 'DUTY', rows: [{ role: '', id: '', str: '', end: '' }] }]
+    try {
+      await act(async () => { afterSchedMutate(); notify() })
+      const cell = $('#sbBoard [data-rolepick="0.0.0"]')
+      expect(cell, 'the role cell carries the hook').toBeTruthy()
+      await click(cell)
+      const opts = $$('.wavemenu [data-rolev]').map(b => b.textContent)
+      expect(opts).toEqual(['SDO', 'SXO', 'OPS O', 'RUNNER', 'LOG CELL'])
+      await click($('.wavemenu [data-rolev="RUNNER"]'))
+      expect(d.dutywaves[0].rows[0].role).toBe('RUNNER')
+    } finally {
+      d.dutywaves = savedDW
+      await act(async () => { afterSchedMutate(); notify() })
+    }
   })
 
   it('a board field commits through the text funnel and earns a pending mark', async () => {
@@ -399,7 +482,7 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
      what store.test.ts's finding-#5 tests do and why they could not have
      caught this: they already call afterSchedMutate() AFTER the reorder,
      so they never exercised board.ts's own (wrong) call order at all. */
-  it('arming a slot, then typing a role that auto-sorts the block, disarms it', async () => {
+  it('typing a role into a BLANK cell no longer moves the row', async () => {
     const d: any = DAYS[SBDAY], savedDW = d.dutywaves
     d.dutywaves = [{
       label: 'TEST BLOCK', rows: [
@@ -414,12 +497,14 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
       const inp = document.querySelector('#sbBoard input[data-bfld="dr:0.0.1.role"]') as HTMLInputElement
       expect(inp).toBeTruthy()
       await change(inp, 'SDO')
-      // the auto-sort actually fired — SDO outranks RUNNER in DUTY_ORDER
-      expect(d.dutywaves[0].rows.map((r: any) => r.role)).toEqual(['SDO', 'RUNNER'])
-      /* the OLD guard (armTargetExists alone) would still see SOME row at
-         d:0.0.0 — the SDO row that slid into RUNNER's old slot — and stay
-         armed, pointed at the wrong row. */
-      expect(view.armedKey()).toBe('')
+      /* THE POINT (owner, 10 Aug 26): "+ Row, then type SDO" used to
+         reposition the whole block, which is the line-jumps-under-the-typist
+         complaint. SDO outranks RUNNER in DUTY_ORDER and the row STILL does
+         not move — only Auto sort and Sort all reorder now. */
+      expect(d.dutywaves[0].rows.map((r: any) => r.role)).toEqual(['RUNNER', 'SDO'])
+      /* and with nothing reordering, the slot armed on row 0 still points at
+         the row it was armed on, so it stays armed */
+      expect(view.armedKey()).toBe('d:0.0.0')
     } finally {
       d.dutywaves = savedDW
       view.disarmSlot()
@@ -427,11 +512,11 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     }
   })
 
-  /* the HIST.lock decision, verified: typing a role that also triggers the
-     auto-sort is ONE undo step (the text and the reorder it caused undo
-     together), matching sortAllCommit's own precedent — not two separate
-     steps a scheduler would have to Undo through one at a time. */
-  it('the auto-sort a role commit triggers is one undo step, not two', async () => {
+  /* Typing a role is ONE undo step, and always was — it used to be one only
+     because HIST.lock folded the auto-sort it triggered into the same
+     snapshot. With no sort to fold in (10 Aug 26) it is one on its own, and
+     that still needs pinning: a text commit must never cost two Undos. */
+  it('typing a role is one undo step', async () => {
     const d: any = DAYS[SBDAY], savedDW = d.dutywaves
     d.dutywaves = [{
       label: 'TEST BLOCK', rows: [
@@ -444,7 +529,6 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
       const ixBefore = HIST.ix
       const inp = document.querySelector('#sbBoard input[data-bfld="dr:0.0.1.role"]') as HTMLInputElement
       await change(inp, 'SDO')
-      expect(d.dutywaves[0].rows.map((r: any) => r.role)).toEqual(['SDO', 'RUNNER'])
       expect(HIST.ix).toBe(ixBefore + 1)
     } finally {
       d.dutywaves = savedDW

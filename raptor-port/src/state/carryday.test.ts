@@ -118,6 +118,27 @@ describe('setPage — when the reading is taken', () => {
     expect(view.CARRYDAY).toBe(null)
   })
 
+  /* THE BOARD'S DAY COMES OUT WITH YOU (owner, 10 Aug 26). Same mechanism,
+     one more producer: closing the board writes SBDAY into the carry so the
+     week underneath lands on the day you were just editing. */
+  it('closing the board carries the day it was showing', () => {
+    view.setBoardDay(3)
+    view.setCarryDay(null)
+    view.closeBoardState()
+    expect(view.CARRYDAY).toBe(3)
+    expect(view.SBDAY).toBe(null)
+  })
+
+  it('closing a board that was never open carries nothing', () => {
+    /* closeBoardState also runs on logout and on leaving Edit Schedule, where
+       SBDAY is already null — writing the carry there would scroll the next
+       week somewhere nobody asked for. */
+    view.setBoardDay(null)
+    view.setCarryDay(2)
+    view.closeBoardState()
+    expect(view.CARRYDAY, 'a pending carry from a page hop survives').toBe(2)
+  })
+
   it('does not overwrite a pending carry when the page being left has no week', () => {
     /* Inputs -> Quals must not touch it. The capture is gated on the OUTGOING
        page owning a week, and this is the assertion that keeps that gate: drop

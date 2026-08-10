@@ -4,7 +4,7 @@
 import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { isStandalone, makeStandalone, saDutyBlocks, saDutyIx, SAWAVE } from '../engine/waves'
+import { isStandalone, makeStandalone, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, minus, parseHM } from '../engine/time'
@@ -22,7 +22,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
-import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel, sbGrip, sbNudge, rowMove, sbSortBtn } from './board-html'
+import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -58,7 +58,9 @@ export function boardHTML(di: number, pv?: boolean) {
        surfaces. */
     const sa = isStandalone(w)
     const asd = w.formations.reduce((n: number, f: any) => n + f.aircraft.length, 0)
-    const opts = ['1st wave', '2nd wave', '3rd wave', '4th wave', '5th wave', 'Night wave']
+    /* SC and AVALON after Night wave (owner, 10 Aug 26) — the same list the
+       + Wave picker offers, reachable from a wave that already exists. */
+    const opts = ['1st wave', '2nd wave', '3rd wave', '4th wave', '5th wave', 'Night wave', 'SC', 'AVALON']
     const cur = labelToTitle(w); if (!opts.includes(cur)) opts.unshift(cur)
     const inT = waveInTime(w)
     /* mvRO, not pv (reviewer-found residual, 9 Aug 26): the wave header's
@@ -125,13 +127,13 @@ export function boardHTML(di: number, pv?: boolean) {
         ${sbGrip(mvRO)}
         <input class="lin" data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis} value="${esc(f.cs)}">
         <input class="msn" data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis} value="${esc(f.msn)}">
-        <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} placeholder="B" value="${esc(f.br || '')}"></div>
+        <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(f.br || '')}"></div>
         <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(f.to)}">
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
         ${sbSlot(di, key + '.p', 'p', a.p, stoRO)}
         ${sbSlot(di, key + '.w', 'w', a.w, stoRO)}
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
-          <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}">
+          <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}"${sa ? ` placeholder="${esc(a.role || (a.spare ? 'SPARE' : 'MAIN'))}"` : ''}>
           ${sa ? '' : (stoRO
             ? storesView(a.opts)
             : `<span class="stores">`
@@ -381,8 +383,12 @@ export function boardMbtn(e: MouseEvent) {
   }
   if (ds.gline != null) {
     const [di, gi] = ds.gline.split('.').map(Number)
-    const w = DAYS[di].waves[gi], last = w.formations[w.formations.length - 1] || { cs: 'NEW', msn: '-', to: '12:00', ld: '13:00' }
-    w.formations.push({ cs: last.cs, msn: last.msn, to: last.to, ld: last.ld, aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
+    /* A NEW LINE COMES UP BLANK (owner, 10 Aug 26). It used to copy the
+       previous line's callsign, mission, take-off and land, which reads as
+       filled in when nobody filled it in — a plausible wrong time is worse
+       than an empty box, because only the empty one asks to be typed into. */
+    const w = DAYS[di].waves[gi]
+    w.formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
     markEdit(`ff:${di}.${gi}.${w.formations.length - 1}.cs`); afterSchedMutate(); notify(); return toast('Line added')
   }
   if (ds.gdel != null) {
@@ -429,10 +435,15 @@ export function boardMbtn(e: MouseEvent) {
      Same shapes as the p* programme branches: adds mark the new row's name
      key, deletes renumber the surviving keys and mark NOTHING (the delete
      rule), CX goes through the reason dialog. */
+  /* + BLOCK ASKS WHICH WAVE IT IS FOR (owner, 10 Aug 26). It used to push a
+     bare block titled DUTY with one empty row, so every block was typed out
+     by hand — the same three roles, every wave, every day. Naming the wave is
+     the one thing that decides all of it: the title, and which desk it needs
+     (engine/waves.ts's waveDutyBlock). "Empty block" keeps the old behaviour
+     for anything that is not a wave's desk at all. */
   if (ds.dwadd != null) {
-    const d = DAYS[+ds.dwadd]; d.dutywaves = d.dutywaves || []
-    d.dutywaves.push({ label: 'DUTY', rows: [{ role: '', id: '', str: '', end: '' }] })
-    markEdit(`dl:${+ds.dwadd}.${d.dutywaves.length - 1}`); afterSchedMutate(); notify(); return
+    const di = +ds.dwadd
+    return blockMenu(t, di)
   }
   if (ds.dwdel != null) {
     const [di, wi] = ds.dwdel.split('.').map(Number)
@@ -529,7 +540,23 @@ export function boardChange(e: Event) {
        on the next real repaint. */
     if (RO) { const [rdi, rgi] = s.dataset.wsel!.split('.'); const rw = DAYS[+rdi!]?.waves?.[+rgi!]; if (rw) s.value = labelToTitle(rw); return }
     const [di, gi] = s.dataset.wsel!.split('.'); const w = DAYS[+di!].waves[+gi!]
-    w.night = /night/i.test(s.value); w.label = titleToLabel(s.value); afterSchedMutate(); notify(); return
+    /* PICKING SC OR AVALON LABELS THE WAVE, IT DOES NOT REBUILD IT (owner,
+       10 Aug 26, asked and answered). Rebuilding into 4 or 8 MAIN/SPARE lines
+       would be the tidier shape but it throws away whatever is already
+       planted, and this control sits one mis-click away from a full wave.
+       So: the kind, the exemption flags and the name change; the formations
+       are left exactly as they are. Its duty block comes from + Block.
+       Going BACK to an ordinary wave clears the standalone flags, or the
+       wave would keep sitting outside the day's flying count for ever. */
+    const kind = titleToKind(s.value)
+    if (kind) {
+      const S = SAWAVE[kind]
+      w.standalone = true; w.kind = kind; w.noconf = !!S.all; w.night = kind !== 'sc'; w.label = S.label
+    } else {
+      if (w.standalone) { delete w.standalone; delete w.kind; delete w.noconf }
+      w.night = /night/i.test(s.value); w.label = titleToLabel(s.value)
+    }
+    afterSchedMutate(); notify(); return
   }
   /* an INPUT's own fields (owner, 10 Aug 26). Separate from data-bfld because
      the write is not a schedule write: an input has no funnel key, and
@@ -551,50 +578,21 @@ export function boardChange(e: Event) {
   const f = (e.target as HTMLElement).closest('[data-bfld]') as HTMLInputElement | null; if (!f) return
   const p = f.dataset.bfld!
   if (RO) { f.value = txtGet(p); return }
-  /* the OLD role, read before txtSet overwrites it — this is what tells the
-     board's own "+ Row" case (a brand-new row, role still '') apart from
-     retyping an EXISTING row's role (review fix, 9 Aug 26). The reposition
-     used to fire on any successful role commit at all, which meant dragging
-     RUNNER to the top of a block and then correcting a DIFFERENT row's role
-     silently snapped the whole block back to role order — the drag gone,
-     with no toast and no confirmation. The spec is explicit this must never
-     happen: "a dragged list is never re-sorted behind the scheduler." */
-  const m = /^dr:(\d+)\.(\d+)\.\d+\.role$/.exec(p)
-  const wasEmptyRole = m ? !txtGet(p) : false
+  /* NOTHING SORTS ON ITS OWN ANY MORE (owner, 10 Aug 26). Typing a role into
+     a blank cell used to reposition the whole block — the "+ Row, then type
+     SDO" path — which is precisely the jump the owner asked to be rid of:
+     "prevent a situation when the scheduler types and the line jumps."
+     Auto sort and Sort all remain the only things that reorder a duty block,
+     and they now order it by START TIME (engine/reorder.ts's sortDutyBlock).
+     What went with it: the `wasEmptyRole` read (there is no longer a moment
+     to detect), and the HIST.lock wrapper that held the commit and the sort
+     it triggered to ONE undo step — with no second mutation to fold in, the
+     text commit is a single action again and pushes its own snapshot.
+     The finding-#5 disarm this used to feed still works: REORDERED_DI is set
+     by every mover and sorter, and afterSchedMutate() below still reads it —
+     this path simply never sets it now. */
   if (txtSet(p, f.value)) {
-    /* A duty row's ROLE decides where it belongs (owner, 8 Aug 26). The week no
-       longer sorts duties, so without this a row typed as SDO would print below
-       OPS-O and the squadron would meet a duty list out of role order — which
-       cannot happen today. A new row is added with an EMPTY role, so there is
-       nothing to sort by until the role is typed; this is that moment — and
-       ONLY that moment: any row whose role was already non-empty was either
-       typed correctly before or moved there on purpose, and either way a
-       retype of it must not re-judge the rest of the block. */
-    /* the sort (and the REORDERED_DI it may set) has to happen BEFORE
-       afterSchedMutate() runs, not after (review re-fix, 9 Aug 26 —
-       finding #5 still reproduced through this exact path: "+ Row", type
-       SDO into the blank role, arm a slot on another row first). ORDER
-       matters twice over: afterSchedMutate() is what reads and clears
-       REORDERED_DI to disarm a stale-armed slot, so a sort that lands
-       AFTER that read neither disarms the slot it should (the block just
-       resorted under an armed key) NOR leaves the flag cleared for the
-       NEXT, unrelated mutation — which is what let it wrongly disarm an
-       unrelated later edit instead (the MEDIUM half of the same bug).
-       HIST.lock holds every markEdit() in here — this funnel's own bare
-       call and sortDutyBlock's internal one — to a no-op push, the same
-       precedent sortAllCommit already set for its six sorters: the text
-       commit and the auto-sort it triggers are ONE user action, so Undo
-       should take it back in ONE step, not two (undo the sort, undo
-       separately back to before the role was typed). Locking even the
-       no-sort branch is harmless — histPush() already dedupes an unchanged
-       snapshot — it only matters when the sort actually moves something. */
-    HIST.lock = true
-    try {
-      markEdit()
-      if (m && wasEmptyRole) sortDutyBlock(+m[1], +m[2])
-    } finally {
-      HIST.lock = false
-    }
+    markEdit()
     afterSchedMutate()
     notify()
   }
@@ -610,6 +608,13 @@ export function boardArmClick(e: MouseEvent) {
   if (!canEditSched() || !HOOKS.editMode()) return
   if (view.DPREV.has(view.SBDAY as any)) return   // same stale-markup guard as boardMbtn
   const t = e.target as HTMLElement
+  /* the duty ROLE cell offers its pick-list (owner, 10 Aug 26). Before the
+     arm branches, because a ROLE cell is not a seat and must not be treated
+     as one — and BEFORE nothing else, so the box still takes typing exactly
+     as it did: the popup is an offer beside the caret, not a replacement for
+     it, and clicking straight past it goes on editing the text. */
+  const rp = t.closest('[data-rolepick]') as HTMLElement | null
+  if (rp) { rolePickMenu(rp, rp.dataset.rolepick!); return }
   if (t.closest('.puck[data-person]')) return
   const empty = t.closest('.sb-slot.empty[data-slot]') as HTMLElement | null
   if (empty) { view.armSlot(empty.dataset.slot, empty); notify(); e.stopPropagation(); return }
@@ -621,8 +626,8 @@ export function boardArmClick(e: MouseEvent) {
   if (cell && !seat) { view.armSlot(cell.dataset.fill, cell); notify(); e.stopPropagation() }
 }
 
-/* + Line, verbatim — a new formation on the day's LAST wave, seeded from the
-   wave's last line so times carry over. canEditSched() checked here too
+/* + Line — a new BLANK formation on the day's LAST wave (it used to be seeded
+   from the wave's last line; owner, 10 Aug 26). canEditSched() checked here too
    (smaller item, review 9 Aug 26): this used to rely on being unreachable
    through the UI for a non-admin (Edit Schedule hidden from their nav, the
    board itself never opened) rather than refusing to act on its own — the
@@ -646,8 +651,9 @@ export function addLine(di: number) {
      needs a board that LOOKS open, not a bare API call). */
   if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
   const d = DAYS[di]; if (!d.waves || !d.waves.length) return toast('Add a wave first')
-  const w = d.waves[d.waves.length - 1], last = w.formations[w.formations.length - 1] || { cs: 'NEW', msn: '-', to: '12:00', ld: '13:00' }
-  w.formations.push({ cs: last.cs, msn: last.msn, to: last.to, ld: last.ld, aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
+  /* blank, same reason as the gline handler above */
+  const w = d.waves[d.waves.length - 1]
+  w.formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
   markEdit(`ff:${di}.${d.waves.length - 1}.${w.formations.length - 1}.cs`)
   afterSchedMutate(); notify(); toast('Line added')
 }
@@ -668,8 +674,13 @@ export function addWave(di: number, kind: any) {
   const w = makeStandalone(kind); if (!w) return
   d.waves.push(w)
   const S = SAWAVE[kind]
-  const dws = saDutyBlocks(kind)
-  if (dws.length) { d.dutywaves = d.dutywaves || []; d.dutywaves.push(...dws) }
+  /* AVALON alone brings its desk up with the wave. SC used to as well for one
+     afternoon (10 Aug 26) and the owner moved it to `+ Block` the same day —
+     an SC desk is a choice, an AVALON one is not, because nothing else on an
+     overnight wave tells you a runner and a log cell are needed. Everything
+     else, SC included, is filled from the `+ Block` picker via the same
+     `waveDutyBlock`, so there is one shape per wave kind and not two. */
+  if (S.autoDuty) { d.dutywaves = d.dutywaves || []; d.dutywaves.push(waveDutyBlock(w)) }
   markEdit(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
   toast(S.label + ' added — standalone, ' + (S.all ? 'nothing on it is cross-checked' : 'SPARE is not cross-checked'))
 }
@@ -677,17 +688,18 @@ export function addWave(di: number, kind: any) {
 /* the Add-a-wave chooser, verbatim (a body-level popup, just as the reference
    builds it — it lives outside the React tree and removes itself on any
    outside click) */
-export function waveMenu(anchor: HTMLElement, di: any) {
-  // same SBDAY-scoped editMode() gate as addLine/addWave above, same reason.
-  if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
-  /* The stores popup (interactions.ts's openStoresMenu) shares this class
-     for its look, and it keeps a NOT-{once:true} click listener attached
-     to document that only it knows how to unhook (_offClick) — its
-     outside-click handler declines clicks inside its box and the one click
-     a press that began inside dispatches outside, so pulling its box out
-     from under it here, the same way it pulls out any of ITS OWN stale
-     popups, would leave that listener attached to document with no box to
-     ever remove it through. */
+/* The one popup builder the board's three pickers share — Add-a-wave,
+   + Block's wave picker and the duty ROLE pick-list. It was waveMenu's body
+   until two more pickers wanted the same box (10 Aug 26); everything here
+   was already load-bearing there and is unchanged in behaviour.
+   The stores popup (interactions.ts's openStoresMenu) shares the `.wavemenu`
+   class for its LOOK, and it keeps a NOT-{once:true} document listener that
+   only it knows how to unhook (`_offClick`) — its outside-click handler
+   declines clicks inside its box and the one click a press beginning inside
+   dispatches outside. Pulling its box out from under it here, the way it
+   pulls out its own stale popups, would strand that listener on document
+   with no box to remove it through. So: unhook before removing. */
+function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () => void) => void) {
   document.querySelectorAll('.wavemenu').forEach(x => {
     const off = (x as any)._offClick
     if (off) document.removeEventListener('click', off)
@@ -695,21 +707,74 @@ export function waveMenu(anchor: HTMLElement, di: any) {
   })
   const box = document.createElement('div')
   box.className = 'wavemenu'
-  const dayBtns = (di == null)
-    ? `<h5>Day</h5><div class="wm-row" id="wmDays">`
-      + DAYS.map((x: any, i: number) => `<button class="wm ${i === 0 ? 'on' : ''}" data-wmday="${i}" style="padding:6px 9px;font-size:11.5px">${esc(x.dow.slice(0, 3))}</button>`).join('')
-      + `</div>` : ''
-  box.innerHTML = dayBtns
-    + `<h5>Add</h5><div class="wm-row">`
-    + `<button class="wm" data-wmkind="">Flying wave</button>`
-    + Object.keys(SAWAVE).map(k => `<button class="wm sa" data-wmkind="${k}">${SAWAVE[k].label}</button>`).join('')
-    + `</div><div class="wm-note">SC · AVALON · BB sit outside the day's flying count — two waves of four plus an SC reads <b>4 X 4 / 2</b>.</div>`
+  box.innerHTML = html
   document.body.appendChild(box)
   const r = anchor.getBoundingClientRect()
   box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
   box.style.top = Math.min(window.innerHeight - box.offsetHeight - 8, Math.round(r.bottom + 6)) + 'px'
+  box.addEventListener('click', (e: any) => onPick(e, () => box.remove()))
+  /* deferred by a tick, or the very click that OPENED this box closes it */
+  setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
+  return box
+}
+/* + BLOCK's picker: every wave on the day, plus a bare block. Picking a wave
+   fills the block from engine/waves.ts's waveDutyBlock, so the shapes live
+   with the waves they belong to and the UI only places the result. */
+export function blockMenu(anchor: HTMLElement, di: any) {
+  if (!canEditSched() || !HOOKS.editMode()) return
+  const d = DAYS[di]; if (!d) return
+  const waves = (d.waves || [])
+  const html = `<h5>Duties for</h5><div class="wm-row">`
+    + (waves.length
+      ? waves.map((w: any, gi: number) => `<button class="wm${isStandalone(w) ? ' sa' : ''}" data-blkw="${gi}">${esc(w.label || `Wave ${gi + 1}`)}</button>`).join('')
+      : '')
+    + `<button class="wm" data-blkw="">Empty block</button></div>`
+    + `<div class="wm-note">${waves.length
+      ? 'Picking a wave titles the block after it and fills in that wave\u2019s desk \u2014 times and names stay yours to set.'
+      : 'No waves on this day yet \u2014 add one and it will be offered here.'}</div>`
+  popMenu(anchor, html, (e, close) => {
+    const b = e.target.closest('[data-blkw]'); if (!b) return
+    const v = b.dataset.blkw
+    d.dutywaves = d.dutywaves || []
+    d.dutywaves.push(v === '' ? { label: 'DUTY', rows: [{ role: '', id: '', str: '', end: '' }] }
+      : waveDutyBlock(waves[+v]))
+    markEdit(`dl:${di}.${d.dutywaves.length - 1}`); afterSchedMutate(); notify()
+    close(); e.stopPropagation()
+  })
+}
+/* The duty ROLE cell's pick-list (owner, 10 Aug 26). A block that belongs to
+   no wave has no desk to fill in, so its rows are typed — and the five roles
+   the squadron actually uses were being retyped, and misspelt, every time.
+   The list is DUTY_PICK, which IS engine/order.ts's DUTY_ORDER keys, so what
+   you can pick and what Auto sort understands cannot drift apart. Typing is
+   untouched: this is an offer over an ordinary text cell, not a <select>. */
+export function rolePickMenu(anchor: HTMLElement, addr: string) {
+  if (!canEditSched() || !HOOKS.editMode()) return
+  const [di, wi, ri] = addr.split('.').map(Number)
+  const row = DAYS[di]?.dutywaves?.[wi]?.rows?.[ri]; if (!row) return
+  const html = `<h5>Role</h5><div class="wm-row">`
+    + DUTY_PICK.map(r => `<button class="wm${row.role === r ? ' sa' : ''}" data-rolev="${esc(r)}">${esc(r)}</button>`).join('')
+    + `</div><div class="wm-note">Or just type \u2014 the box takes any text.</div>`
+  popMenu(anchor, html, (e, close) => {
+    const b = e.target.closest('[data-rolev]'); if (!b) return
+    txtSet(`dr:${di}.${wi}.${ri}.role`, b.dataset.rolev)
+    afterSchedMutate(); notify(); close(); e.stopPropagation()
+  })
+}
+export function waveMenu(anchor: HTMLElement, di: any) {
+  // same SBDAY-scoped editMode() gate as addLine/addWave above, same reason.
+  if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
+  const dayBtns = (di == null)
+    ? `<h5>Day</h5><div class="wm-row" id="wmDays">`
+      + DAYS.map((x: any, i: number) => `<button class="wm ${i === 0 ? 'on' : ''}" data-wmday="${i}" style="padding:6px 9px;font-size:11.5px">${esc(x.dow.slice(0, 3))}</button>`).join('')
+      + `</div>` : ''
+  const html = dayBtns
+    + `<h5>Add</h5><div class="wm-row">`
+    + `<button class="wm" data-wmkind="">Flying wave</button>`
+    + Object.keys(SAWAVE).map(k => `<button class="wm sa" data-wmkind="${k}">${SAWAVE[k].label}</button>`).join('')
+    + `</div><div class="wm-note">SC \u00b7 AVALON \u00b7 BB sit outside the day's flying count \u2014 two waves of four plus an SC reads <b>4 X 4 / 2</b>.</div>`
   let day = (di == null) ? 0 : di
-  box.addEventListener('click', (e: any) => {
+  const box = popMenu(anchor, html, (e: any, close: () => void) => {
     const dbtn = e.target.closest('[data-wmday]')
     if (dbtn) {
       day = +dbtn.dataset.wmday
@@ -718,9 +783,8 @@ export function waveMenu(anchor: HTMLElement, di: any) {
       e.stopPropagation(); return
     }
     const kbtn = e.target.closest('[data-wmkind]')
-    if (kbtn) { addWave(day, kbtn.dataset.wmkind || null); box.remove(); e.stopPropagation() }
+    if (kbtn) { addWave(day, kbtn.dataset.wmkind || null); close(); e.stopPropagation() }
   })
-  setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
 }
 
 /* the board layout choice survives closing and reopening it within a session */

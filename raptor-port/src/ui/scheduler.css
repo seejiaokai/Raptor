@@ -1688,13 +1688,15 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   font-size:9px;font-weight:800;color:var(--san);border:1px solid rgba(178,77,234,.45);
   background:rgba(178,77,234,.10);border-radius:5px;padding:1px 6px;margin-left:8px;white-space:nowrap}
 .acrow.spare .puck,.form .spare .puck{opacity:.82}
-/* MAIN / SPARE on a standalone line. Main is solid, spare is dashed — the
-   difference matters: only the spares sit outside the conflict engine. */
-.rolet{display:inline-block;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
-  letter-spacing:.06em;font-size:8.5px;font-weight:800;border-radius:4px;padding:0 4px;margin-right:4px;
-  vertical-align:middle;white-space:nowrap}
-.rolet.main{color:#DDA9F5;border:1px solid rgba(178,77,234,.45);background:rgba(178,77,234,.10)}
-.rolet.spare{color:var(--ink-3);border:1px dashed var(--edge-2)}
+/* MAIN / SPARE on a standalone line is GHOST TEXT in the remarks cell now
+   (owner, 10 Aug 26) — it was a solid/dashed chip sitting beside the remark,
+   `.rolet`, whose rules lived here. The owner was told the trade before
+   choosing it: a line with a remark typed into it no longer shows whether it
+   is main or spare, because that is what ghost text means.
+   The cell is a contenteditable, which has no placeholder of its own, so
+   ui/html.ts's ted() emits data-ph and this paints it. Same opacity as the
+   ::placeholder rule further down, so a typed-into box and an empty one look
+   the same distance apart everywhere in the app. */
 /* the add-wave menu */
 .wavemenu{position:fixed;z-index:480;background:var(--panel);border:1px solid var(--edge-2);border-radius:12px;
   box-shadow:0 14px 34px rgba(0,0,0,.6);padding:9px;min-width:250px;max-width:min(94vw,340px)}
@@ -1742,6 +1744,14 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .txed:hover{background:rgba(59,198,232,.09);box-shadow:inset 0 -1px 0 rgba(59,198,232,.4)}
 .txed:focus{background:rgba(59,198,232,.14);box-shadow:inset 0 0 0 1px var(--accent)}
 .txed:empty::before{content:'—';color:var(--ink-3);opacity:.55}
+/* …unless the cell has ghost text of its own to say instead (owner, 10 Aug 26
+   — MAIN/SPARE on a standalone line, ui/html.ts's ted()). MUST sit AFTER the
+   em-dash rule above: the two selectors have identical specificity, so source
+   order is the whole of what decides it, and written the other way round the
+   dash silently won and no ghost text ever appeared. Found in the live pass,
+   not by a test — jsdom loads no stylesheet, so nothing in `npm test` can see
+   which of two equal rules wins. */
+[data-ph]:empty::before{content:attr(data-ph);color:var(--ink-3);opacity:.55;pointer-events:none}
 .page.editing .go-tab .asd.txed,.page.editing .fcell .txed{min-width:14px;display:inline-block}
 /* FREE TEXT WRAPS, ALWAYS.
    Every one of these cells sits in a grid track next to the START and END times.
@@ -2313,7 +2323,20 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
    at the cell's own size it wraps to two lines and grows the row. The
    placeholder alone is stepped down so the pair still SAYS the rule at a
    glance without costing the height that made the word worth saying. */
-.txed.inpt:empty::before{content:attr(data-ph);color:var(--ink-3);pointer-events:none;font-size:8.5px}
+/* EVERY PLACEHOLDER, ONE RULE (owner, 10 Aug 26 — "if there are faded text on
+   an empty text box, make it more faded so that its obvious its not a written
+   text"). The board's boxes were rendering their ghost text at the SAME
+   --ink-3 the real values use, so an empty role box reading SDO and a filled
+   one reading SDO were the same colour: a blank block looked staffed.
+   MEASURED, not guessed. Real text on these surfaces is --ink (#F1F4F7) and
+   the dimmest ink token is --ink-3 (#8A96A3, about 5.2:1 on --panel). A
+   placeholder at --ink-3 x 0.55 lands near 2.3:1 — legible enough to read
+   deliberately, plainly too faint to be mistaken for content. It is set
+   through opacity rather than a fourth ink token so it composes with the two
+   size overrides just below and follows every surface's own background.
+   One selector, not per field, so the contract lives in one place. */
+input::placeholder,textarea::placeholder{color:var(--ink-3);opacity:.55}
+.txed.inpt:empty::before{content:attr(data-ph);color:var(--ink-3);opacity:.55;pointer-events:none;font-size:8.5px}
 /* 8px on the board, not 8.5: its phone START box is 46px, and the word was
    still losing its last letter at 8.5 — the same clipped-text fault as the
    time fields in the edit dialog, which is worth catching once rather than

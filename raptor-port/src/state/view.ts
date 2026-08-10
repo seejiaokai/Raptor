@@ -110,6 +110,17 @@ export function setBoardDay(n:any){
    ui/board.ts is exactly the layering violation this function's own
    SBDAY/ros-open comment above already declined. */
 export function closeBoardState(){
+  /* THE BOARD'S DAY COMES BACK OUT WITH YOU (owner, 10 Aug 26). Tab through
+     to Thursday on the board, close it, and the week underneath was still
+     parked wherever you left it — so the day you had just been editing was
+     off screen. CARRYDAY is exactly the mechanism the View-only <-> Edit hop
+     already uses (owner, 9 Aug 26): the destination week reads it on its next
+     paint and clears it, so nothing new is needed and the two paths cannot
+     drift. Read BEFORE setBoardDay(null), which is what clears SBDAY.
+     Only when the board really had a day — closeBoardState also runs on
+     logout and on leaving the page, where SBDAY is already null and writing
+     CARRYDAY would scroll the next week somewhere nobody asked for. */
+  if(SBDAY!=null)CARRYDAY=SBDAY;
   setBoardDay(null);
   if(typeof document!=='undefined')document.body.classList.remove('ros-open');
   HOOKS.closeBoardDialogs();
