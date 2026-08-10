@@ -1192,6 +1192,19 @@ cleared to instruct that AAR from the back seat; the rule it feeds is in
 - **Not persisted**, like every other tick on this page — see the closing
   paragraph of §EDIT QUALS.
 
+**EVERY roster edit on this page re-runs `validate()`** (owner, 10 Aug 26 —
+reported as "I change the back seat to qualified to instruct, the warning is
+still there"). A qual is an INPUT to the rules: `daar`/`naar` drive the AAR
+warnings, `scDay`/`scNight` the SC ones, and a CAT change moves the seat
+rules, the crew matrix and OCU-without-IP. `notify()` only repaints, and the
+pucks are painted from `WARN` — so a tick that did not re-validate left the
+board showing a warning the roster no longer justified, until some unrelated
+schedule edit happened to run the validator. That is what made it look like
+"only editing the remarks triggers the engine". The tick, the archive ✕ and
+the CAT dropdown all validate now; the callsign path always did. Initials and
+flight do not, and need not — no rule reads them. Pinned in
+`ui/quals.test.tsx`, both against a control with the calls removed.
+
 **The headings sort; the Sort chips are gone.** One click sorts a column, a
 second inverts it, and the sorted heading carries `▲`/`▼` plus `aria-sort`,
 the same idiom as the Inputs table (they share `.insort` / `.inarrow`).
