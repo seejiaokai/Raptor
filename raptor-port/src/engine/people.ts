@@ -126,6 +126,22 @@ export function deriveQuals(p:any){
        all. NAAR cannot be held without DAAR: night is signed off after day. */
     daar:!!p.daar, naar:!!p.naar
   }, p.quals||{});
+  /* THE INSTRUCTOR MARK CANNOT OUTLIVE THE CAT THAT EARNED IT (owner,
+     10 Aug 26). This function is also the CAT-change handler — the Quals
+     page's dropdown calls it — and the merge above deliberately keeps
+     whatever was already set, which is right for a re-render and WRONG for a
+     demotion: an IP dropped to CAT C would keep his 'I' while the cell
+     renders a plain tick (the page only offers the third state to instructor
+     pilots), so the privilege would go on suppressing a red warning with
+     nothing on screen to show for it. Demote to a plain tick rather than
+     removing it: losing the instructor CAT does not cost him his currency.
+     The night rung is re-checked here for the same reason. */
+  const q2=p.quals;
+  if(!(p.seat==='FCP'&&isInstrPilot(p.q))){
+    if(q2.daar==='I')q2.daar=true;
+    if(q2.naar==='I')q2.naar=true;
+  }
+  if(q2.naar==='I'&&q2.daar!=='I')q2.naar=true;
 }
 /* ---- SANS (Staff-Assigned & NS aircrew) ----
    SANS fly to a different requirement from active aircrew (everyone else):
@@ -182,8 +198,13 @@ Object.keys(PEOPLE).forEach((id:any)=>{const p=PEOPLE[id]; if(p.special||!p.qual
   if(isInstr(p.q)||p.q==='A'||p.q==='B')p.quals.naar=true;});
 /* the invariants, enforced once at boot as well as on every tick: night is
    signed off after day, never before it — for AAR and for SC alike */
+/* and the same ladder one rung up: the INSTRUCTOR mark ('I' — see aarInstrOK)
+   follows day-before-night too, but a night mark that outruns its day one is
+   DEMOTED rather than removed. He is still night current; he is just not
+   cleared to teach it, which is a different sentence from "he has no NAAR". */
 Object.keys(PEOPLE).forEach((id:any)=>{const q=PEOPLE[id].quals; if(!q)return;
   if(q.naar&&!q.daar)q.naar=false;
+  if(q.naar==='I'&&q.daar!=='I')q.naar=true;
   if(q.scNight&&!q.scDay)q.scNight=false;});
 export const ID_BY_CS:any={}; Object.keys(PEOPLE).forEach((id:any)=>ID_BY_CS[PEOPLE[id].cs.toLowerCase()]=id);
 /* sentinel bodies (ALL AVAIL) occupy slots but are not people: no conflicts,
@@ -230,6 +251,18 @@ export function aarNeed(rmks:any,night:any){
 export function aarOK(id:any,need:any){
   const p=PEOPLE[id]; if(!p||!p.quals||!need)return true;
   return need==='NAAR'?!!p.quals.naar:!!p.quals.daar;
+}
+/* CLEARED TO INSTRUCT AAR FROM THE BACK SEAT (owner, 10 Aug 26).
+   An instructor pilot is not automatically cleared to TEACH air-to-air
+   refuelling from the rear cockpit — that is a separate sign-off, and the
+   Quals page records it by promoting the DAAR / NAAR tick to an 'I'.
+   The state is the string 'I', deliberately TRUTHY, so aarOK above and every
+   other reader that asks "does he hold this?" keeps working untouched and
+   keeps the right answer: a man cleared to teach AAR is by definition current
+   on it. Only this function asks the sharper question. */
+export function aarInstrOK(id:any,need:any){
+  const p=PEOPLE[id]; if(!p||!p.quals||!need)return false;
+  return p.quals[need==='NAAR'?'naar':'daar']==='I';
 }
 export function scShiftKind(s:any,e:any){
   if(s==null||e==null)return null;

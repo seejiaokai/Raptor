@@ -1161,6 +1161,37 @@ which is what DNIF_FLY and the faded pucks actually key off. `TF` (terrain
 following) is new, derived from nothing, held by nobody until it is ticked,
 and read by no rule — a record, not a gate.
 
+**DAAR and NAAR carry a THIRD state (owner, 10 Aug 26).** With editing on, an
+**instructor pilot's** AAR cell loops `blank → ✓ → I → blank`. `I` means
+cleared to instruct that AAR from the back seat; the rule it feeds is in
+`docs/engine-rules.md` §AAR, and who may teach it.
+
+- **Which cells.** `qualI()` — the key is `daar`/`naar` **and**
+  `p.seat === 'FCP' && isInstrPilot(p.q)`. `isInstrPilot` alone is not the
+  test: a WSO FI passes it, and a WSO holds no AAR at all (his cells are
+  already struck `na`). Scoped to the two AAR keys by name, because a third
+  state on a column no rule reads is a mark that means nothing.
+- **The `I` rung is OFFERED only where it is legal, never offered and then
+  refused.** A NAAR promotion refused mid-cycle would strand the cell — the
+  tick could not reach blank and the loop would stop being a loop. So while
+  DAAR is a plain tick, the NAAR cell simply behaves as two-state, and a
+  toast says why. Pinned by `ui/quals.test.tsx`.
+- **Markup.** The class stays `.qchk` — five existing assertions select on it
+  — with `.qi` added and the glyph `I` in place of `✓`, plus a title spelling
+  the mark out. The `aar-on` colour family is unchanged: `'I'` is truthy, so
+  every on-class still lights.
+- **Truthy on purpose.** The sort reads `I` as held, the CSV writes `I` where
+  a tick writes `Y`, and every engine reader that asks "does he hold this?"
+  keeps the right answer.
+- **Removing the column never touches `p.quals`** (the existing `WIRED`
+  contract), so an `I` survives a remove/re-add exactly as a tick does.
+- **A CAT change out of the instructor ranks demotes the mark** to a plain
+  tick, in `deriveQuals`. Silent, matching every other CAT-change effect —
+  but not optional: the page would render a stale `I` as an ordinary tick
+  while the engine went on honouring it.
+- **Not persisted**, like every other tick on this page — see the closing
+  paragraph of §EDIT QUALS.
+
 **The headings sort; the Sort chips are gone.** One click sorts a column, a
 second inverts it, and the sorted heading carries `▲`/`▼` plus `aria-sort`,
 the same idiom as the Inputs table (they share `.insort` / `.inarrow`).

@@ -116,6 +116,28 @@ these only after re-running them.
     a number nobody has hit is a guess; the fix when it bites is the
     ordinary one (check the time, raise the ceiling in the PR that needs
     it). Reasoning: `docs/probe-sweep.md` §The performance gate.
+- **The AAR instructor mark leaves two known gaps** (shipped 10 Aug 26;
+  rules in `docs/engine-rules.md` §AAR, and who may teach it).
+  - **The crew palette does not know about it.** `slotBar` folds a pilot away
+    from a front seat when he is not AAR current, and it still does that even
+    where an instructor in the back would legitimise him — so the palette is
+    now slightly over-strict against a legal training crew. Deliberately not
+    fixed: `slotBar` is per-person-per-slot, and a pair rule there would make
+    the list depend on WHICH SEAT YOU FILLED FIRST, and would refuse drops
+    through `drag.ts`. The combination matrix — the closest analogue, also a
+    pair rule — is warning-only for the same reason. The bar is soft (the name
+    still shows, with the reason against it), so nothing is unplannable.
+  - **`CHIP_LABEL.Q` still reads "Qualification — illegal seat"** while four
+    codes now wear that chip (`QUAL`, `SC_QUAL`, `AAR_QUAL`, `AAR_INSTR`).
+    Mildly untrue for three of them. Not fixed here because `CHIP_LABEL` is in
+    `refwin.ts`'s swap list: rewording it breaks the `html.test.ts` byte
+    compare and needs a matching reference patch, which is a bigger change
+    than the wording is worth today.
+- **Nobody holds the AAR instructor mark in the demo data.** Deliberate — the
+  seed's only AAR remark is `1A: NO AAR`, so no line asks for refuelling and
+  neither AAR rule fires anywhere in the week regardless. The mark is set by
+  hand on the Quals page in two clicks. If the demo week ever gains a real
+  AAR line, seed a few `'I'`s with it or every such line will read as a fault.
 - **The late-input mark has no off switch.** `VCONF.inputLead` is a day count;
   0 ("due by the Monday itself") is the most permissive setting there is, so a
   squadron that does not run an input deadline cannot silence the mark short

@@ -35,7 +35,7 @@ describe('validation engine (tfin F)', () => {
 
   const SEV = ['hard', 'adv', 'note']
   const CODES = ['DOUBLE_BOOK', 'DNIF_FLY', 'LEAVE_FLY', 'INPUT_FLY', 'TURN', 'ILLEGAL_CREW', 'CREW_SOLO', 'CO_APPROVAL', 'OCU_NO_IP', 'CREW_REST', 'QUAL',
-    'NO_BRIEF', 'DEBRIEF', 'SIM_BRIEF', 'SIM_DEBRIEF', 'CREW_TIGHT', 'LONGDAY', 'DT_SUM', 'NO_IR']
+    'NO_BRIEF', 'DEBRIEF', 'SIM_BRIEF', 'SIM_DEBRIEF', 'CREW_TIGHT', 'LONGDAY', 'DT_SUM', 'NO_IR', 'AAR_INSTR']
 
   it('every warning has a known tier', () => {
     const W = validate()
@@ -44,7 +44,7 @@ describe('validation engine (tfin F)', () => {
 
   it('every warning has a known code', () => {
     const W = validate()
-    const bad = [...new Set(W.all.map((x: any) => x.code))].filter(c => !CODES.includes(c as string) && c !== 'SC_QUAL' && c !== 'AAR_QUAL' && c !== 'SHIFT_SOFT')
+    const bad = [...new Set(W.all.map((x: any) => x.code))].filter(c => !CODES.includes(c as string) && c !== 'SC_QUAL' && c !== 'AAR_QUAL' && c !== 'AAR_INSTR' && c !== 'SHIFT_SOFT')
     expect(bad, bad.join(',')).toEqual([])
   })
 
@@ -52,6 +52,10 @@ describe('validation engine (tfin F)', () => {
     expect(CODES.filter(c => !WCODE[c]), CODES.filter(c => !WCODE[c]).join(',')).toEqual([])
     expect(Object.keys(WCODE)).toContain('SC_QUAL')
     expect(Object.keys(WCODE)).toContain('AAR_QUAL')
+    /* the back-seat instructor rule (owner, 10 Aug 26) — like the two above it
+       never fires on the seed week, so it is asserted by name rather than by
+       turning up in W.all */
+    expect(Object.keys(WCODE)).toContain('AAR_INSTR')
     expect(Object.keys(WCODE)).toContain('SHIFT_SOFT')
   })
 
@@ -73,7 +77,7 @@ describe('validation engine (tfin F)', () => {
        itself carries the red; the eaten window and the double-turn count are
        advice on top of it */
     const WANT: any = { TURN: 'adv', DOUBLE_BOOK: 'hard', NO_BRIEF: 'adv', DEBRIEF: 'adv', SIM_BRIEF: 'adv', SIM_DEBRIEF: 'adv',
-      DT_SUM: 'adv', LONGDAY: 'note', CREW_REST: 'hard', CREW_TIGHT: 'adv', ILLEGAL_CREW: 'hard', CREW_SOLO: 'adv', CO_APPROVAL: 'adv', QUAL: 'hard', OCU_NO_IP: 'adv', NO_IR: 'hard' }
+      DT_SUM: 'adv', LONGDAY: 'note', CREW_REST: 'hard', CREW_TIGHT: 'adv', ILLEGAL_CREW: 'hard', CREW_SOLO: 'adv', CO_APPROVAL: 'adv', QUAL: 'hard', OCU_NO_IP: 'adv', NO_IR: 'hard', AAR_QUAL: 'hard', AAR_INSTR: 'hard' }
     const bad = validate().all.filter((x: any) => WANT[x.code] && WANT[x.code] !== x.sev)
     expect(bad, bad.map((x: any) => x.code + '=' + x.sev).join(',')).toEqual([])
   })

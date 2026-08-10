@@ -1075,6 +1075,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .qtbl .grp td{background:rgba(59,198,232,.06);color:var(--accent);text-align:left;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:10.5px;font-family:'Barlow Condensed','Inter Tight',sans-serif}
 .qtbl .lvl{font-weight:700}
 .qchk{cursor:default;color:var(--ok);font-weight:800}
+/* the instructor mark (owner, 10 Aug 26): a LETTER where the others carry a
+   tick, so it reads as a different kind of statement at a glance rather than
+   as a tick someone drew oddly. It keeps its column's colour — the .aar-on
+   rule above still applies — and the letterform is squared up to sit on the
+   same optical centre as the ✓ so the column does not look ragged. */
+.qchk.qi{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:12.5px;letter-spacing:.06em;font-weight:900}
 .qtbl.editing .qcell{cursor:pointer}
 .qtbl.editing .qcell:hover{background:rgba(59,198,232,.12)}
 .qlvlsel{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-size:11px;border-radius:6px;padding:2px 4px}

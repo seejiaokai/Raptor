@@ -1,4 +1,4 @@
-import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, scShiftKind, scQualOK } from './people'
+import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
 import { isDownchit, isLeave, isLocalLeave, isDetach } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
@@ -13,7 +13,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   NO_BRIEF:'No time for the flight brief',DEBRIEF:'No time for the flight debrief',SIM_BRIEF:'No time for the sim brief',SIM_DEBRIEF:'No time for the sim debrief',
   CREW_TIGHT:'Tight turning — crew rest',LONGDAY:'Long work day',DT_SUM:'Double turning',
   DAYS_RUN:'No break day — too many days in a row',
-  SC_QUAL:'SC currency — wrong shift',AAR_QUAL:'AAR currency — not qualified',NO_IR:'IRT without an IR examiner',
+  SC_QUAL:'SC currency — wrong shift',AAR_QUAL:'AAR currency — not qualified',AAR_INSTR:'AAR — back seat not cleared to instruct',NO_IR:'IRT without an IR examiner',
   SHIFT_SOFT:'On shift — also down for a ground event'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
@@ -433,11 +433,39 @@ export function validate(){
            offer IW to a pilot, but a hand-edit could. Flag it, don't hide it. */
         if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label})`,ac.key+'.p');}
         if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,ac.w,'Q');markRing(di,ac.w,'hard');add('hard','QUAL',[ac.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may fly RCP (${f.label})`,ac.key+'.w');}
-        /* AAR — the remarks call for it and the FRONT seat is not current */
+        /* AAR — the remarks call for it and the FRONT seat is not current.
+           A man who is not current may still fly it as TRAINING, but only with
+           someone cleared to teach that AAR sitting behind him (owner,
+           10 Aug 26). So the three outcomes below, in order of what the
+           scheduler has to do about them:
+             back seat is an instructor pilot holding the mark → nothing. This
+               is the legal training sortie, and flagging it was the bug.
+             back seat is an instructor pilot WITHOUT it → AAR_INSTR, and the
+               warning names the BACK-SEATER and anchors on his seat, because
+               he is the man who has to change.
+             back seat empty, a WSO, or a pilot who is not an instructor →
+               AAR_QUAL, unchanged: nobody aboard could supervise him.
+           Night versus day is already decided — ac.aar is 'DAAR' or 'NAAR'
+           straight out of aarNeed, so the same call answers both. */
         if(ac.aar&&p&&!isSpecial(ac.p)&&!aarOK(ac.p,ac.aar)){
-          markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');
-          add('hard','AAR_QUAL',[ac.p],
-            `${p.cs} is not ${ac.aar} current — ${f.label} remarks call for ${ac.aar==='NAAR'?'night':'day'} AAR`,ac.key+'.p');} });
+          const teacher=!!(w&&w.seat==='FCP'&&isInstrPilot(w.q)&&!isSpecial(ac.w));
+          const day=ac.aar==='NAAR'?'night':'day';
+          if(teacher&&aarInstrOK(ac.w,ac.aar)){/* supervised — no warning */}
+          else if(teacher){
+            /* BOTH men wear it, as the combination matrix above does. The
+               message names the back-seater and the key anchors on his seat
+               because he is the one to change — but the jet is illegal, not
+               just his seat, and ringing him alone would leave the pilot who
+               is actually flying an AAR he is not current for reading clean.
+               Back-seater first in `who`: the message opens with his name. */
+            markChip(di,ac.w,'Q');markRing(di,ac.w,'hard');
+            markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');
+            add('hard','AAR_INSTR',[ac.w,ac.p],
+              `${w.cs} is not cleared to instruct ${ac.aar} — ${p.cs} is not ${ac.aar} current and ${f.label} remarks call for ${day} AAR`,ac.key+'.w');}
+          else{
+            markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');
+            add('hard','AAR_QUAL',[ac.p],
+              `${p.cs} is not ${ac.aar} current — ${f.label} remarks call for ${day} AAR`,ac.key+'.p');}} });
       const ocus=f.fcps.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
       const hasIP=f.fcps.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
       /* an IP in the BACK seat supervises just as well as one in the front —
