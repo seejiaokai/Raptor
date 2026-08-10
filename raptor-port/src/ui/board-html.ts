@@ -147,7 +147,7 @@ export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
 /* ---- board panel 2: overall programme (squadron-wide, affects everyone) --- */
 export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
   const rows=d.allhands||[];
-  let s=`<div class="sb-panel prog"><div class="sb-ph">Overall programme <span class="sub">squadron-wide — affects all</span>`
+  let s=`<div class="sb-panel prog"><div class="sb-ph">Common Programme <span class="sub">squadron-wide — affects all</span>`
     +(ro?'':`<span class="gctl">${sbSortBtn(`p.${di}`,ro)}<button class="mbtn add" data-padd="${di}" title="Add a squadron-wide item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like.</div>`;
   else{
@@ -178,9 +178,15 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
 /* The scheduler's hand-over note for one block. Same text the week shows under
    the matching section, through the same funnel key — edit it in either place.
    Never on the view-only page: it is working traffic, not the issued programme. */
-export function sbNote(d:any,di:any,key:any,field:any,ph:any,pv?:any){
+/* NO PLACEHOLDER (owner, 10 Aug 26). Every one of these boxes carried a
+   worked example — "e.g. SDO swapped — Bane has the PHA at 1700" — and a
+   scheduler reading the board fast could not tell a suggestion from a note
+   somebody had actually left. The heading above already says what the box is
+   for. `ph` is kept in the signature and ignored, so the four call sites stay
+   self-documenting about what each note is FOR without printing it. */
+export function sbNote(d:any,di:any,key:any,field:any,_ph:any,pv?:any){
   return `<div class="sb-note"><div class="sb-nh">Scheduler notes</div>`
-    +`<textarea class="sb-nbox" data-bfld="${key}:${di}"${alAttr(`${key}:${di}`)}${pv?' disabled':''} placeholder="${esc(ph)}">${esc(d[field]||'')}</textarea></div>`;
+    +`<textarea class="sb-nbox" data-bfld="${key}:${di}"${alAttr(`${key}:${di}`)}${pv?' disabled':''}>${esc(d[field]||'')}</textarea></div>`;
 }
 /* ---- duty / sim / ground panels (owner request, Aug 26) -------------------
    The board finally carries every section the week day carries. Same
@@ -206,8 +212,14 @@ function sbSeat(di:any,key:any,id:any,pv?:any){
 function sbMore(di:any,base:any,r:any,pv?:any){
   return ((r&&r.more)||[]).map((id:any,i:any)=>sbSeat(di,`${base}.x${i}`,id,pv)).join('');
 }
-function sbTxt(cls:any,path:any,v:any,ph:any,pv:any){
-  return `<input class="${cls}" data-bfld="${path}"${alAttr(path)}${pv?' disabled':''} value="${esc(v||'')}" placeholder="${ph}">`;
+/* `extra` carries per-cell attributes a caller needs on the input itself —
+   today only the duty ROLE cell's data-rolepick hook. Passed as a string
+   rather than another boolean so the next one costs nothing here.
+   An EMPTY `ph` emits no placeholder attribute at all rather than an empty
+   one: `placeholder=""` still counts as a placeholder to CSS, and the whole
+   point of the 10 Aug pass is that a box with nothing in it looks empty. */
+function sbTxt(cls:any,path:any,v:any,ph:any,pv:any,extra?:any){
+  return `<input class="${cls}" data-bfld="${path}"${alAttr(path)}${pv?' disabled':''}${extra||''} value="${esc(v||'')}"${ph?` placeholder="${ph}"`:''}>`;
 }
 function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,mv?:any){
   return pv?'':`<span class="lctl">`+(mv||'')
@@ -215,6 +227,11 @@ function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,mv?:any){
     +`<button class="mbtn red${o.flag?' on':''}" data-${pre}flag="${addr}" title="${o.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
     +`<button class="mbtn del" data-${pre}del="${addr}" title="Remove ${what}">✕</button></span>`;
 }
+/* ROLE, not Item (owner, 10 Aug 26) — a duty row names a job, and "Item" read
+   as a generic list entry. The other c6r panels (sims, ground) keep Item:
+   those rows genuinely are items, not roles, so this constant is duties-only
+   and the shared one below stays as it was. */
+const C6_DUTY=`<div class="sb-acols c6r"><span></span><span>Role</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
 const C6=`<div class="sb-acols c6r"><span></span><span>Item</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
 export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
   const dws=d.dutywaves||[];
@@ -225,16 +242,22 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
     s+=`<div class="sb-psub">`+sbTxt('ain',`dl:${di}.${wi}`,dwv.label,'WAVE 1 DUTIES',ro)
       +(ro?'':`<span class="gctl">${sbSortBtn(`d.${di}.${wi}`,ro)}<button class="mbtn add" data-dradd="${di}.${wi}" title="Add a duty row">+ Row</button>`
       +`<button class="mbtn del" data-dwdel="${di}.${wi}" title="Remove this block and its rows">✕ Block</button></span>`)+`</div>`;
-    if((dwv.rows||[]).length)s+=C6;
+    if((dwv.rows||[]).length)s+=C6_DUTY;
     /* MODEL order, not dutySort — an editor whose rows jump as a role is typed
        would be hostile, and the slot keys are model indices anyway */
     (dwv.rows||[]).forEach((r:any,ri:any)=>{
       const base=`d:${di}.${wi}.${ri}`, t=`dr:${di}.${wi}.${ri}`;
       const inner=(PEOPLE[r.id]?sbSeat(di,base,r.id,ro):(r.id?`<span class="itxt">${esc(r.id)}</span>`:''))+sbMore(di,base,r,ro);
+      /* NO PLACEHOLDERS ON A DUTY ROW (owner, 10 Aug 26). They read as typed
+         text — an empty role box showed "SDO" and a blank block looked
+         staffed. The column headings above already say Role / Start / End /
+         Rmks, so the ghost words were saying it twice and lying once. The
+         ROLE cell offers its pick-list on click instead (data-rolepick). */
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:d.${di}.${wi}.${ri}`,ro)}>`+sbGrip(ro)
-        +sbTxt('ain',`${t}.role`,r.role,'SDO',ro)+sbTxt('atm',`${t}.str`,r.str,'0800',ro)+sbTxt('atm',`${t}.end`,r.end,'1700',ro)
+        +sbTxt('ain',`${t}.role`,r.role,'',ro,ro?'':` data-rolepick="${di}.${wi}.${ri}"`)
+        +sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}</div>`
-        +sbTxt('ain rmkin',`${t}.rmks`,r.rmks,'remarks',ro)
+        +sbTxt('ain rmkin',`${t}.rmks`,r.rmks,'',ro)
         +sbRowCtl(ro,r,`${di}.${wi}.${ri}`,'dr','this duty',sbNudge(`mv:d.${di}.${wi}.${ri}`,ro))+`</div>`;
     });
   });
@@ -378,5 +401,16 @@ export function sbSlot(di:any,key:any,seat:any,id:any,pv?:any){
   return `<div class="sb-slot empty" data-slot="${key}">+ ${seat==='p'?'FCP':'RCP'}</div>`;
 }
 /* wave title <-> label. night is set explicitly by choosing "Night wave". */
-export function labelToTitle(w:any){ if(w.night)return 'Night wave'; const m=String(w.label).match(/(\d+)/); return m?((ORD[+m[1]-1]||m[1]+'th')+' wave'):(w.label||'1st wave'); }
+/* A STANDALONE WAVE ANSWERS WITH ITS OWN KIND, before `night` is consulted
+   (owner-reported, 10 Aug 26). `makeStandalone` sets night:true for AVALON and
+   BB, so this used to report an AVALON wave as "Night wave" — the board's Go
+   dropdown showed the wrong name, and touching that dropdown then ran
+   titleToLabel('Night wave') and overwrote w.label with 'NIGHT WAVE', leaving
+   a wave that was still `standalone` with kind 'avalon' wearing a name that
+   said otherwise. Both halves are fixed here: read the kind first, and let
+   titleToLabel round-trip the two standalone titles back out. */
+export const SA_TITLE:any={sc:'SC',avalon:'AVALON',bb:'BB'};
+export function labelToTitle(w:any){ if(w.standalone&&SA_TITLE[w.kind])return SA_TITLE[w.kind]; if(w.night)return 'Night wave'; const m=String(w.label).match(/(\d+)/); return m?((ORD[+m[1]-1]||m[1]+'th')+' wave'):(w.label||'1st wave'); }
 export function titleToLabel(v:any){ if(/night/i.test(v))return 'NIGHT WAVE'; const m=v.match(/(\d+)/); return m?('WAVE '+m[1]):v.toUpperCase(); }
+/* the kind a Go-dropdown title names, or '' for an ordinary wave */
+export function titleToKind(v:any){ const k=Object.keys(SA_TITLE).find(x=>SA_TITLE[x]===String(v).toUpperCase()); return k||''; }

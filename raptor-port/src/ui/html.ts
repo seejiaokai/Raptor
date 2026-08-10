@@ -414,10 +414,14 @@ export let SCRATCH:any=null;
 /* one inline-editable text node. View mode emits exactly what it emitted before
    the B9 refactor (a plain span/b/i), so read-only users see no change at all —
    but they DO get the per-item AL colour, which is the point of alAttr here. */
-export function ted(path:any,val:any,ed:any,cls:any,tag?:any){
+/* `ph` is ghost text for an EMPTY cell, painted by CSS off data-ph (a
+   contenteditable has no placeholder of its own). Emitted on the view branch
+   too, not only the editable one — the week is what the squadron READS, and
+   the one thing it carries today is MAIN/SPARE on a standalone line. */
+export function ted(path:any,val:any,ed:any,cls:any,tag?:any,ph?:any){
   tag=tag||'span';
   const t=TIME_TXT.test(String(path))?fmtT(val):esc(val==null?'':val);
-  const a=alAttr(path);
+  const a=alAttr(path)+(ph?` data-ph="${esc(ph)}"`:'');
   if(!ed||!canEditSched())return `<${tag} class="${cls||''}"${a}>${t}</${tag}>`;
   return `<${tag} class="${cls||''} txed" contenteditable="true" spellcheck="false" data-txt="${path}"${a}>${t}</${tag}>`;
 }
@@ -535,7 +539,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     // ---- all-hands header: EP/ORDERS notes + squadron-wide items ----
     const hasNotes=!!(d.notes&&d.notes.length), hasAH=!!(d.allhands&&d.allhands.length);
     if(hasNotes||hasAH||ed){
-      h+=`<div class="allhands sec sec-prog"><div class="ah-h">Programme</div>`;
+      h+=`<div class="allhands sec sec-prog"><div class="ah-h">Common Programme</div>`;
       (d.notes||[]).forEach((n:any,ni:any)=>h+=ted(`dn:${di}.${ni}`,n,ed,'ah-note','div'));
       if(hasAH){
         h+=`<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span></div>`;
@@ -645,7 +649,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           const sv=(id:any)=>chk?sev(di,id):null, cp=(id:any)=>chk?chip(di,id):null, dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
           h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w))}</span></div>
-              <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${sa?`<span class="rolet ${a.spare?'spare':'main'}" title="${a.spare?'Spare crew — standing by, not cross-checked against anything else':'Main crew'}">${esc(a.role||(a.spare?'SPARE':'MAIN'))}</span>`:''}${ted(`fr:${key}`,a.rmks,ed,'ntx')}${sa?'':stores}</div>`;
+              <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${ted(`fr:${key}`,a.rmks,ed,'ntx',null,sa?(a.role||(a.spare?'SPARE':'MAIN')):null)}${sa?'':stores}</div>`;
         });
         /* AREA strip: full-width row under this formation's aircraft. Rendered whenever
            there is something to show, or always in edit mode so it can be filled in. */

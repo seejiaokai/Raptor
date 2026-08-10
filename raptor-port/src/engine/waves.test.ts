@@ -1,7 +1,8 @@
 /* Ported from reference/tfin.js — group S (standalone waves) and the
    scShiftKind halves of groups T and B34. */
 import { describe, expect, it } from 'vitest'
-import { makeStandalone, saExempt, isStandalone, dayCount, saDutyBlocks, saDutyIx } from './waves'
+import { makeStandalone, saExempt, isStandalone, dayCount, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE } from './waves'
+import { DUTY_ORDER } from './order'
 import { scShiftKind } from './people'
 import { DAYS } from './data'
 
@@ -71,72 +72,85 @@ describe('SC / AVALON / BB come up as 2 MAIN + 2 SPARE per shift (tfin S)', () =
   })
 })
 
-/* Owner, 10 Aug 26: an SC wave came up with no duty block at all while AVALON
-   brought its four, and the difference was never intended. One block per SHIFT
-   — SC hands over at 13:00, so the AM and PM desks are different people. */
-describe('a standalone wave brings its own duty block(s)', () => {
-  it('SC brings one block per shift, AM then PM, labelled by shift', () => {
-    expect(saDutyBlocks('sc').map((b: any) => b.label)).toEqual(['SC AM', 'SC PM'])
-    expect(saDutyBlocks('sc').map((b: any) => b.rows[0].str + '-' + b.rows[0].end))
-      .toEqual(['0700-1300', '1300-1900'])
+/* THE DUTY BLOCK A WAVE BRINGS (owner, 10 Aug 26). Shipped that morning as
+   "SC auto-creates its own blocks"; the owner moved it to the `+ Block`
+   picker the same afternoon, so what is pinned here is the PICKER's shapes.
+   AVALON is the one wave that still brings its desk up with itself. */
+describe('the duty block a wave brings', () => {
+  const roles = (w: any) => waveDutyBlock(w)!.rows.map((r: any) => r.role)
+
+  it('an ordinary wave takes the standard desk, titled after itself', () => {
+    const b = waveDutyBlock({ label: 'WAVE 1' })!
+    expect(b.label).toBe('WAVE 1 duties')
+    expect(b.rows.map((r: any) => r.role)).toEqual(['SDO', 'SXO', 'OPS O'])
   })
 
-  it('SC carries the same four roles as AVALON', () => {
-    for (const b of saDutyBlocks('sc'))
-      expect(b.rows.map((r: any) => r.role)).toEqual(['SXO', 'OPS-O', 'RUNNER', 'LOGCELL'])
+  /* SC hands over at 13:00, so one block carries both shifts with the shift
+     in the role name — the owner spelled this set out by hand */
+  it('SC names the shift in the role: SXO AM, OPS O AM, SXO PM, OPS O PM', () => {
+    expect(roles(makeStandalone('sc'))).toEqual(['SXO AM', 'OPS O AM', 'SXO PM', 'OPS O PM'])
   })
 
-  it('every duty row comes up unmanned, for the scheduler to fill', () => {
-    expect(saDutyBlocks('sc').every((b: any) => b.rows.every((r: any) => r.id === ''))).toBe(true)
+  it('AVALON keeps its four, spelled the owner’s way', () => {
+    expect(roles(makeStandalone('avalon'))).toEqual(['SXO', 'OPS O', 'RUNNER', 'LOG CELL'])
   })
 
-  /* the times are a starting point: the shift's own hours, in the same 4-digit
-     form every other duty row on the board uses, so they type over cleanly */
-  it('the block times are the shift times, colon-free like every duty row', () => {
-    const sc = makeStandalone('sc')
-    expect(saDutyBlocks('sc').map((b: any, i: number) =>
-      b.rows[0].str + '-' + b.rows[0].end))
-      .toEqual(sc.formations.map((f: any) => f.to.replace(':', '') + '-' + f.ld.replace(':', '')))
+  it('the spellings it emits are ones DUTY_ORDER already ranks', () => {
+    for (const kind of ['sc', 'avalon', 'bb'])
+      for (const r of roles(makeStandalone(kind)))
+        expect(DUTY_ORDER[r.replace(/ (AM|PM)$/, '')], r).not.toBe(undefined)
+    for (const r of DUTY_PICK) expect(DUTY_ORDER[r], r).not.toBe(undefined)
   })
 
-  it('AVALON is unchanged — one shift, so one block, still labelled AVALON', () => {
-    const b = saDutyBlocks('avalon')
-    expect(b.length).toBe(1)
-    expect(b[0].label).toBe('AVALON')
-    expect(b[0].rows.map((r: any) => r.role)).toEqual(['SXO', 'OPS-O', 'RUNNER', 'LOGCELL'])
-    expect(b[0].rows[0].str + '-' + b[0].rows[0].end).toBe('1900-0700')
+  it('every row comes up unmanned, for the scheduler to fill', () => {
+    expect(waveDutyBlock(makeStandalone('avalon'))!.rows.every((r: any) => r.id === '')).toBe(true)
   })
 
-  it('BB brings none — its times are the scheduler’s to set', () => {
-    expect(saDutyBlocks('bb')).toEqual([])
+  /* times only where the wave HAS fixed hours to give */
+  it('AVALON stamps its overnight hours, SC and an ordinary wave leave them blank', () => {
+    const av = waveDutyBlock(makeStandalone('avalon'))!.rows[0]
+    expect(av.str + '-' + av.end).toBe('1900-0700')
+    for (const w of [makeStandalone('sc'), { label: 'WAVE 1' }])
+      expect(waveDutyBlock(w)!.rows.every((r: any) => r.str === '' && r.end === '')).toBe(true)
   })
 
-  /* noconf mirrors the WAVE: AVALON is uncrosschecked whole, SC's mains are
-     not, so an SC desk clashes like any other duty row */
+  /* noconf mirrors the WAVE: AVALON/BB sit outside the conflict engine whole,
+     so their desks do; an SC or ordinary desk is checked like any duty row */
   it('AVALON’s desk is exempt and SC’s is not', () => {
-    expect(saDutyBlocks('avalon')[0].noconf).toBe(true)
-    expect(saDutyBlocks('sc').every((b: any) => b.noconf === false)).toBe(true)
+    expect(waveDutyBlock(makeStandalone('avalon'))!.noconf).toBe(true)
+    expect(waveDutyBlock(makeStandalone('sc'))!.noconf).toBe(false)
+    expect(waveDutyBlock({ label: 'WAVE 1' })!.noconf).toBe(false)
   })
 
-  it('SC’s two blocks are both found for removal, highest index first', () => {
-    const d: any = { dutywaves: [{ label: '1st wave' }, ...saDutyBlocks('sc'), { label: 'Duty' }] }
-    expect(saDutyIx(d, makeStandalone('sc'))).toEqual([2, 1])
+  it('AVALON is the only wave that brings its desk up automatically', () => {
+    expect(SAWAVE.avalon.autoDuty).toBe(true)
+    expect(SAWAVE.sc.autoDuty).toBeFalsy()
+    expect(SAWAVE.bb.autoDuty).toBeFalsy()
   })
 
-  it('a RENAMED block is still removed with its wave', () => {
-    const d: any = { dutywaves: saDutyBlocks('sc') }
-    d.dutywaves[0].label = 'SC morning desk'
-    expect(saDutyIx(d, makeStandalone('sc'))).toEqual([1, 0])
+  it('a wave with no label still produces a usable title', () => {
+    expect(waveDutyBlock({})!.label).toBe('Wave duties')
+    expect(waveDutyBlock(null)).toBe(null)
   })
 
-  it('and one wave’s blocks are never mistaken for another’s', () => {
-    const d: any = { dutywaves: [...saDutyBlocks('sc'), ...saDutyBlocks('avalon')] }
-    expect(saDutyIx(d, makeStandalone('avalon'))).toEqual([2])
-    expect(saDutyIx(d, makeStandalone('sc'))).toEqual([1, 0])
+  /* the delete path: a standalone wave's blocks go with it */
+  it('a standalone wave’s block is found for removal, even renamed', () => {
+    const av = makeStandalone('avalon')
+    const d: any = { dutywaves: [{ label: '1st wave' }, waveDutyBlock(av)] }
+    expect(saDutyIx(d, av)).toEqual([1])
+    d.dutywaves[1].label = 'the overnight desk'
+    expect(saDutyIx(d, av)).toEqual([1])
   })
 
-  it('an ordinary wave owns no duty block', () => {
-    const d: any = { dutywaves: saDutyBlocks('sc') }
+  it('and one wave’s block is never mistaken for another’s', () => {
+    const sc = makeStandalone('sc'), av = makeStandalone('avalon')
+    const d: any = { dutywaves: [waveDutyBlock(sc), waveDutyBlock(av)] }
+    expect(saDutyIx(d, av)).toEqual([1])
+    expect(saDutyIx(d, sc)).toEqual([0])
+  })
+
+  it('an ordinary wave owns no block, so deleting it strands nothing', () => {
+    const d: any = { dutywaves: [waveDutyBlock(makeStandalone('sc'))] }
     expect(saDutyIx(d, { label: 'WAVE 1' })).toEqual([])
   })
 })

@@ -1435,9 +1435,13 @@ test('the phone board keeps its column layout after the grip is added', async ({
   await page.evaluate(() => (window as any).openScheduler(0))
   await page.waitForSelector('#sbBoard .sb-arow.c6r')
   const m = await page.evaluate(() => {
-    const row = document.querySelector('#sbBoard .sb-arow.c6r') as HTMLElement
+    /* scoped to the DUTY panel rather than "the first c6r on the board":
+       its header says Role where the sims/ground ones say Item (owner,
+       10 Aug 26), so an unscoped read would silently start checking a
+       different panel if the panel order ever changed. */
+    const row = document.querySelector('#sbBoard .sb-panel.duty .sb-arow.c6r') as HTMLElement
     const item = row.querySelector('.ain') as HTMLElement
-    const hdr = document.querySelector('#sbBoard .sb-acols.c6r') as HTMLElement
+    const hdr = document.querySelector('#sbBoard .sb-panel.duty .sb-acols.c6r') as HTMLElement
     const flyHdr = document.querySelector('#sbBoard .sb-lcols') as HTMLElement
     /* the template's own track COUNT (checked below) is fixed CSS and does
        not move if a single nth-child index is wrong — hiding the wrong
@@ -1461,11 +1465,11 @@ test('the phone board keeps its column layout after the grip is added', async ({
   /* the 6 Aug regression: the ITEM column collapsed to a 14px stub */
   expect(m.item).toBeGreaterThan(150)
   /* the labels that survive the nth-child hide, in DOM order, must be
-     exactly the ones the phone body columns still show — Item/Start/End
-     for the c6r panels, CS/MSN/TO/LD for the flying line — or a header
+     exactly the ones the phone body columns still show — Role/Start/End
+     for the duty panel, CS/MSN/TO/LD for the flying line — or a header
      is sitting over the wrong body column even though the cell COUNT
      still happens to match the track count. */
-  expect(m.c6rLabels).toEqual(['Item', 'Start', 'End'])
+  expect(m.c6rLabels).toEqual(['Role', 'Start', 'End'])
   expect(m.flyLabels).toEqual(['CS', 'MSN', 'TO', 'LD'])
 })
 

@@ -26,7 +26,7 @@ import { INPUTS, inputFlags } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 
 export async function refWindow(): Promise<any> {
-  const html = reinput(redn(rering(rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))))
+  const html = relabel(reinput(redn(rering(rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -369,6 +369,28 @@ function relead(html: string): string {
    validate.ts: the brief itself, and the crew-rest anchor (which must read the
    leg's own brief rather than recompute it, plus the late-show exemption off
    the aircraft remarks). */
+/* WORDING-ONLY divergences, kept apart from the behavioural patches above
+   because they change no rule at all — they exist purely so ui/html.test.ts's
+   byte comparison keeps comparing STRUCTURE rather than failing on a word the
+   owner renamed. A rename that reaches dayHTML has to land here in the same
+   PR, or the parity gate goes red for a reason that has nothing to do with
+   behaviour; HANDOFF.md records the same trap for CHIP_LABEL.
+   MAIN/SPARE needed no entry, and that is worth writing down so the next
+   reader does not go looking: the seed week has no standalone wave, so the
+   `sa` branch that carried the .rolet chip never renders on a compared day
+   in EITHER build. */
+function relabel(html: string): string {
+  const swaps: Array<[string, string]> = [
+    /* the day's all-hands heading (owner, 10 Aug 26) */
+    ['<div class="ah-h">Programme</div>', '<div class="ah-h">Common Programme</div>'],
+  ]
+  for (const [from, to] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin relabel: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
+    html = html.replace(from, to)
+  }
+  return html
+}
 function rebrief(html: string): string {
   const swaps: Array<[string, string]> = [
     /* carry showLead in too, so a test that edits the latest-show rule moves

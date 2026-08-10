@@ -62,11 +62,14 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
       + '{"label":"AVALON","kind":"avalon","noconf":true,"shifts":["NIGHT 19:00-07:00 ac4 spare2"]},'
       + '{"label":"BB","kind":"bb","noconf":true,"shifts":["SHIFT - ac4 spare2"]}]')
     const dw = await p.evaluate(() => {
-      const x = (DAYS[0].dutywaves || []).find(y => y.label === 'AVALON')
-      return x ? JSON.stringify({ noconf: x.noconf, roles: x.rows.map(r => r.role), t: x.rows[0].str + '-' + x.rows[0].end }) : 'MISSING'
+      const x = (DAYS[0].dutywaves || []).find(y => y.sa === 'avalon')
+      return x ? JSON.stringify({ label: x.label, noconf: x.noconf, roles: x.rows.map(r => r.role), t: x.rows[0].str + '-' + x.rows[0].end }) : 'MISSING'
     })
+    /* titled after its wave and spelled the owner's way since 10 Aug 26;
+       AVALON is also now the ONLY wave that brings a desk up automatically —
+       SC's comes from + Block. */
     T('shape · AVALON brings its own duty block', dw,
-      '{"noconf":true,"roles":["SXO","OPS-O","RUNNER","LOGCELL"],"t":"1900-0700"}')
+      '{"label":"AVALON duties","noconf":true,"roles":["SXO","OPS O","RUNNER","LOG CELL"],"t":"1900-0700"}')
   }
 
   /* ---- the exempt seats are invisible to the engine ---------------------- */
@@ -92,7 +95,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
         if (!saExempt(w, f, a)) return
         a.p = front[i++ % front.length]; a.w = rear[j++ % rear.length]; put += 2
       })))
-      const dw = (d.dutywaves || []).find(x => x.label === 'AVALON')
+      const dw = (d.dutywaves || []).find(x => x.sa === 'avalon')
       if (dw) dw.rows.forEach(r => { r.id = front[i++ % front.length]; put++ })
       afterSchedMutate()
       const now = validate().all.map(key)

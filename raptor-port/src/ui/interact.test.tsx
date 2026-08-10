@@ -542,8 +542,9 @@ describe('the Auto sort buttons put a section back in order', () => {
     expect(toasts).toContain('Already in order')
   })
 
-  it('sorts a duty block by role, SDO above SXO above OPS-O', () => {
-    DAYS[0].dutywaves[0].rows = [{ role: 'OPS-O', id: 'y' }, { role: 'SDO', id: 'x' }]
+  /* by START TIME since 10 Aug 26 (owner) — it used to be role rank */
+  it('sorts a duty block by start time, earliest desk first', () => {
+    DAYS[0].dutywaves[0].rows = [{ role: 'OPS-O', id: 'y', str: '1300' }, { role: 'SDO', id: 'x', str: '0700' }]
     act(() => notify())
     mountBoard(0)
     clickAttr('[data-sortsec="d.0.0"]')
@@ -617,9 +618,12 @@ describe('Sort all — every section, one confirm, one undo step (owner, 8 Aug 2
         { cs: 'EARLY', msn: 'BFM', to: '0800', ld: '0900', aircraft: [{ p: 'bane', w: 'wolf' }] },
       ],
     }]
+    /* out of TIME order, which is what sortDutyBlock keys on now — the old
+       fixture had the later-listed row starting EARLIER, so by time it was
+       already in order and the sort would correctly do nothing */
     DAYS[di].dutywaves = [{
       label: '1st wave', rows: [
-        { role: 'OPS-O', id: 'y', str: '0600', end: '1400' },
+        { role: 'OPS-O', id: 'y', str: '1400', end: '2100' },
         { role: 'SDO', id: 'x', str: '0700', end: '1300' },
       ],
     }]
