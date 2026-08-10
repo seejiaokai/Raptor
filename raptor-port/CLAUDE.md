@@ -337,7 +337,7 @@ the phone perf budget. Don't convert them to components.
   planned against something that has stopped moving. **Downchits are exempt**
   (same conversation): going DNIF is not a decision made in advance, and
   badging the one type that is always last-minute is how a mark stops meaning
-  anything — leave and detachments stay in scope, because those are applied
+  anything — leave and overseas duty stay in scope, because those are applied
   for. Don't re-propose any of the three.
   **And it reads in the REMARKS cell, not beside the name or the type** (owner,
   9 Aug 26 — moved there the day after it shipped). Remarks is where a reader

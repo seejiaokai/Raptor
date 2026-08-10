@@ -2,34 +2,42 @@
 
 ## Where it started
 
-The owner re-opened the leave-types requirement that the previous session had
-parked, added two things to it (AM/PM half-days, and editing an input from the
-schedule), and answered the open questions. It was brainstormed, spec'd and
-built in one sitting.
+The owner re-opened the leave-types requirement the previous session had
+parked, answered the questions it was blocked on, and added two things to it:
+AM/PM half-days, and editing an input from the schedule. He chose to split it
+into two builds so he could see the first working before the second was
+layered on. Build one was brainstormed, spec'd and shipped in one sitting.
 
 ## Shipped
 
-- **PR #133 — the squadron's real absence vocabulary.** Twenty input types in
-  one rule table, the ATT B "grounded but at work" axis, derived spare
-  eligibility, every input counting from the moment it is typed, AM/PM
-  half-days that genuinely free the other half, a generated type legend, and
-  `Downchit`/`Detachment` removed in favour of OML / ATT B / ATT C / OD.
-  Design note: `docs/superpowers/specs/2026-08-10-leave-types-design.md`.
+- **PR #133 — twenty input types in one rule table.** `INPUT_META` is the
+  single source: the type list is derived from its keys, every predicate is a
+  lookup, and the Inputs page's type legend and the Logic page's matrix are
+  both generated from it. Adds the `ATT B` grounded-but-at-work axis
+  (`canWork`), derived spare eligibility (`canSpare` = local && not medical),
+  every input counting from the moment it is typed, AM/PM half-days that
+  genuinely free the other half, and a `?` type legend. `Downchit` and
+  `Detachment` removed in favour of OML / ATT B / ATT C / OD.
+  Merged, deploy green, **verified on the live site** (20 types in order, PM
+  filling 12:01–23:59, legend opening, no console errors, no 4xx).
+  Design note: `raptor-port/docs/superpowers/specs/2026-08-10-leave-types-design.md`.
+- **PR #134 — corrected this file**, which still claimed #133 was open.
+  Merged.
+- **PR #135 — the handoff check's own findings** (see Branch state). Docs
+  only, plus deleting a scratch Playwright script that was committed by
+  mistake in #133.
 
 ## Unfinished
 
 - **BUILD TWO: editing an input from the week or the board.** The owner asked
   for FULL edit — times, type, remarks and delete — from Edit Schedule or the
-  schedule board, writing back to the Inputs page. Nothing was built and
-  nothing was designed. He chose two builds deliberately so build one could be
-  seen working first. This is the whole of what he is owed next.
-
-- **The AVALON spare rule is still RESERVED BY HIM.** Unchanged from the last
-  session: he said it follows "the same modality" as the SC spare and that he
-  would specify it separately. **Do not infer it.** The spare rule is already
-  written against "a standalone spare" with SC the only kind enforced, so his
-  answer is a small edit rather than a re-cut.
-
+  schedule board, writing back to the Inputs page. Nothing built, nothing
+  designed. This is the whole of what he is owed next.
+- **The AVALON spare rule is RESERVED BY HIM** (unchanged from the previous
+  session). He said it follows "the same modality" as the SC spare and that
+  he would specify it separately. **Do not infer it.** The spare rule is
+  already written against "a standalone spare" with SC the only kind
+  enforced, so his answer is a small edit rather than a re-cut.
 - **Integration heads-up, out of scope:** a separate app,
   `github.com/seejiaokai/leave-war`, will eventually feed these inputs and
   update the schedule automatically.
@@ -48,33 +56,59 @@ built in one sitting.
 ## Branch state
 
 - Designated branch: `claude/read-handoff-docs-4vbob2`
-- **PR #133 is MERGED, deployed and verified on the live site.** Nothing is in
-  flight. The branch was reset onto the merge commit afterwards, so it is
-  clean and ready for build two — do NOT stack new work on the merged
-  history. If it has drifted since, reset again first:
+- **#133 and #134 are merged and live.** The branch was reset onto `main`
+  afterwards — do NOT stack new work on merged history. If it has drifted:
   `git fetch origin main && git checkout -B claude/read-handoff-docs-4vbob2 origin/main`
+- **#135 was OPEN when this file was written.** `git log --oneline origin/main`
+  settles whether it landed; if it did, nothing is in flight. It carries only
+  the four things the handoff check turned up, all of which were real:
+  - `raptor-port/look3.mjs`, a throwaway browser script committed by accident
+    in #133 (it hardcodes a container scratch path, so it is useless as well
+    as unwanted) — deleted.
+  - `HANDOFF.md`'s file map still listed `isDetach` on `inputs.ts`, deleted
+    with the `Detachment` type.
+  - `docs/engine-rules.md` still said an actioned input "clashes like a
+    Detachment" and described the all-day `Fly` carve-out in its old,
+    narrower form. An earlier edit to that paragraph had silently failed to
+    match and nobody noticed.
+  - `CLAUDE.md`'s late-mark note still said "leave and detachments stay in
+    scope".
 
 ## Gates
 
-All six run first-hand at the head of #133, from `raptor-port/`:
+Run **first-hand and locally at the head of #133**, from `raptor-port/`:
 
 - `npm test` 900 across 51 files · `npm run build` clean ·
   `node reference/tfin.js` 728/0 · `npm run test:e2e` 59/59
-- `npm run probes:adapted` 6/6 · `npm run perf` 7/0 (twice)
+- `npm run probes:adapted` 6/6 · `npm run perf` 7/0 (twice — the board DOM
+  measured 864 against its 880 ceiling, up 2 from 862, which is data rather
+  than markup; the ceiling was deliberately NOT raised)
 
-`test:e2e` was run with **no preview up**; the probes and perf need one on
-4173. A fresh container needs `npm ci` first.
+`test:e2e` was run with **no preview up**. A live preview on 4173 is silently
+reused and measures a stale bundle. The probes and `perf` need one running.
 
-The built bundle was also driven in Chromium at 1440px and 390px — no console
-errors, no 4xx, no horizontal overflow.
+Nothing since #133 has touched source, so no gate can have moved: #134 and
+#135 are documentation, plus one deleted file that nothing imports and no
+glob matches. **#135's gate result is CI's, not a local run** — this
+container was reset mid-session and `node_modules` went with it.
+
+## Open questions
+
+- **The AVALON spare rule** — his, reserved, listed under Unfinished above.
+- **Does he want anything changed in build one before build two starts?** He
+  has been told it is live and what to expect from it, including the two
+  consequences that will look like bugs and are not: a morning absence still
+  bars a wave that STEPS before noon (Monday's first VL takes off 12:40 and
+  steps at 11:40), and a half-day man no longer counts in the day-info "off"
+  tally. He has not used it yet.
 
 ## Pick up here
 
-**Build two**, but ASK HIM FIRST. He was told build one is live and what it
-does, including the two consequences he should expect (a morning absence still
-bars a wave that steps before noon; a half-day man no longer counts in the
-day's "off" tally). He has not used it yet, so he may want changes to build
-one before more is layered on top.
+Ask him whether build one needs changes, then start **build two**. Do not
+start it unprompted — he has not used build one.
 
-The four things build one deliberately left open are in `HANDOFF.md`, under
-the leave-types bullet. None of them is urgent and none is a defect.
+Note for whoever reads this in a fresh container: this session's container
+was reset partway through and the working copy silently rewound to a commit
+from before the day's work, with a stale `session-state.md` in the tree.
+Nothing was lost — everything was already on `origin/main` — but check
+`git log --oneline -1` against `origin/main` before trusting the working copy.
