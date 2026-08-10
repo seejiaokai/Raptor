@@ -205,6 +205,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   currency) and already strips `NO AAR` / `NO DAAR` / `NO NAAR`. **It is
   byte-identical to `reference/scheduler.html` and pinned by `tfin.js` group
   V — do not touch it.** What is new sits on top of its answer.
+  One quirk of that segmenter, found by the owner asking and pinned in
+  `aar.test.ts`: it splits on an optional digit + `A`/`B` + colon, and that
+  pattern turns up inside ordinary words. `AREA: … AAR` is harmless (an `A:`
+  tag means the front seat, which is the default anyway), but a word ending in
+  **B** before a colon — `SUB: AAR` — reads as a REAR-seat tag and the whole
+  segment is dropped, so the AAR goes unseen. Inherent to a parser frozen by
+  reference parity; recorded, not fixed. `text, AAR` is fine.
   Instructing AAR **from the rear cockpit is a separate sign-off**: an
   IP / IR / FI is not automatically cleared to teach it. The Quals page
   records the clearance by promoting the man's DAAR / NAAR tick to `'I'`

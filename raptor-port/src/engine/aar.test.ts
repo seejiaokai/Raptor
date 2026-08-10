@@ -56,3 +56,37 @@ describe('DAAR / NAAR from the remarks (tfin V)', () => {
     expect(bad, bad.join(',')).toEqual([])
   })
 })
+
+/* Does an ordinary remark with AAR tacked on the end still register? (owner,
+   10 Aug 26 — "can u check if putting like a text then comma then AAR will
+   create some sort of bug?"). The seat SEGMENTER is the thing that could bite:
+   it splits on an optional digit + A or B + a colon, and that pattern can turn
+   up inside an ordinary word. */
+describe('AAR written after some other text', () => {
+  const N = (r: string, n?: any) => aarNeed(r, !!n)
+
+  it('a plain comma-separated mention reads normally', () => {
+    expect(N('PRI LSR, AAR')).toBe('DAAR')
+    expect(N('2A: BFM-5, AAR')).toBe('DAAR')
+    expect(N('NIGHT BFM, AAR', 1)).toBe('NAAR')
+    expect(N('RED AIR // AAR')).toBe('DAAR')
+    expect(N('BFM-6, NO AAR')).toBe(null)
+  })
+
+  it('a word ending in A before a colon is harmless — it still reads as front seat', () => {
+    /* "AREA:" ends in A, so the segmenter treats it as a front-seat tag. Front
+       is what an untagged remark defaults to anyway, so nothing changes. */
+    expect(N('AREA: D4445, AAR')).toBe('DAAR')
+  })
+
+  it('BUT a word ending in B before a colon swallows the rest of the line', () => {
+    /* "SUB:" reads as a REAR-seat tag, and a rear segment is dropped whole
+       because a WSO holds no AAR currency. So anything after it is invisible.
+       This is inherent to the segmenter, which is byte-identical to the
+       reference and frozen by tfin group V — it is recorded here rather than
+       fixed. Write the AAR before such a word, or tag it `1A:`. */
+    expect(N('SUB: AAR')).toBe(null)
+    expect(N('AAR, SUB: SOMETHING'), 'before the word it is fine').toBe('DAAR')
+    expect(N('1A: AAR // SUB: X'), 'and an explicit front tag survives it').toBe('DAAR')
+  })
+})

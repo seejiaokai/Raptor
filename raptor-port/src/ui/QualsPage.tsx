@@ -315,14 +315,27 @@ export function QualsPage() {
            the night one as well, but he keeps night currency itself. */
         if (k === 'daar' && next === true && p.quals.naar === 'I') { p.quals.naar = true; HOOKS.toast(`${p.cs} — NAAR instructor mark removed too, it cannot stand without DAAR's`) }
         if (k === 'scDay' && !next && p.quals.scNight) { p.quals.scNight = false; HOOKS.toast(`${p.cs} — SC NIGHT removed too, it cannot stand without SC DAY`) }
-        notify(); return
+        /* RE-CHECK THE WEEK (owner, 10 Aug 26 — reported as "the warning is
+           still there" after signing someone off). A qual is an INPUT to the
+           rules: daar/naar drive the AAR warnings, scDay/scNight the SC ones.
+           notify() only repaints, and the pucks are painted from WARN, which
+           nothing has recomputed — so the board kept showing a warning the
+           roster no longer justified until some unrelated schedule edit
+           happened to run the validator. The callsign path below already
+           re-validated for exactly this reason; the tick never did. */
+        validate(); notify(); return
       }
+      /* archiving takes a body off the roster, which can change what the
+         warnings say about the lines he was on */
       const arch = t.closest('[data-arch]') as HTMLElement | null
-      if (arch) { PEOPLE[arch.dataset.arch!].archived = true; notify() }
+      if (arch) { PEOPLE[arch.dataset.arch!].archived = true; validate(); notify() }
     }
     const onChange = (e: Event) => {
       const s = (e.target as HTMLElement).closest('[data-lvl]') as HTMLSelectElement | null
-      if (s) { PEOPLE[s.dataset.lvl!].q = s.value; deriveQuals(PEOPLE[s.dataset.lvl!]); notify(); return }
+      /* a CAT change moves MORE rules than a tick does — the seat rules, the
+         combination matrix, OCU-without-IP — so this one especially cannot
+         leave the week showing what it worked out for the old category */
+      if (s) { PEOPLE[s.dataset.lvl!].q = s.value; deriveQuals(PEOPLE[s.dataset.lvl!]); validate(); notify(); return }
       const ini = (e.target as HTMLElement).closest('[data-init]') as HTMLInputElement | null
       if (ini) { PEOPLE[ini.dataset.init!].initials = ini.value.trim().toUpperCase(); notify(); return }
       /* upper-cased on the way in, like the initials: the column is sorted by

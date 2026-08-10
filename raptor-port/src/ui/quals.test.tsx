@@ -6,6 +6,8 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
+import { DAYS } from '../engine/data'
+import { validate, WARN } from '../engine/validate'
 import { PEOPLE, isScheduler, isInstr, isInstrPilot, deriveQuals, ID_BY_CS, QCHIP, QCOLOR, QORDER, LEVELNAME } from '../engine/people'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -161,6 +163,52 @@ describe('the Quals page (tfin)', () => {
     PEOPLE[id].quals.daar = true
     deriveQuals(PEOPLE[id])
     expect(PEOPLE[id].quals.naar, 'he keeps night currency, loses only the teaching').toBe(true)
+  })
+
+  it('signing someone off RE-CHECKS the week — the warning goes at once', async () => {
+    /* owner, 10 Aug 26: "when I change the back seat to qualified to instruct,
+       the warning is still there... I needed to type in the remarks some random
+       thing, exit, then delete that random text." A qual is an INPUT to the
+       rules, but ticking one only repainted — nothing recomputed WARN, so the
+       board kept showing a warning the roster no longer justified until some
+       unrelated schedule edit happened to run the validator. */
+    const back = anIP()
+    const front = Object.keys(PEOPLE).find(i => PEOPLE[i].seat === 'FCP' && !isInstr(PEOPLE[i].q) && !PEOPLE[i].archived && !PEOPLE[i].special)!
+    const ac = DAYS[0].waves.find((w: any) => (w.formations || []).length)!.formations[0].aircraft[0]
+    ac.p = front; ac.w = back; ac.rmks = '1A: AAR'
+    PEOPLE[front].quals.daar = false
+    PEOPLE[back].quals.daar = true            // current, not cleared to teach
+    validate()
+    const fired = () => WARN.all.filter((x: any) => x.code === 'AAR_INSTR').length
+    expect(fired(), 'the warning is up to begin with').toBe(1)
+
+    /* one click promotes the tick to I — and nothing else is touched */
+    await act(async () => { notify() })
+    await click($(`#qtbl td[data-q="${back}|daar"]`))
+    expect(PEOPLE[back].quals.daar, 'sanity: he is now cleared to instruct').toBe('I')
+    expect(fired(), 'and the warning is gone without editing the schedule').toBe(0)
+  })
+
+  it('a CAT change re-checks it too', async () => {
+    /* CAT moves more rules than a tick does — the seat rules, the crew
+       combination matrix, OCU-without-IP — so it is the worse one to leave
+       stale. Demoting the front-seater to OCU makes an OCU pilot + CAT A-D
+       WSO pair, which the matrix calls an unauthorised combination. */
+    const front = Object.keys(PEOPLE).find(i => PEOPLE[i].seat === 'FCP' && PEOPLE[i].q === 'C' && !PEOPLE[i].archived && !PEOPLE[i].special)!
+    const back = Object.keys(PEOPLE).find(i => PEOPLE[i].seat === 'RCP' && !isInstr(PEOPLE[i].q) && !PEOPLE[i].archived && !PEOPLE[i].special)!
+    const ac = DAYS[0].waves.find((w: any) => (w.formations || []).length)!.formations[0].aircraft[0]
+    ac.p = front; ac.w = back; ac.rmks = ''
+    validate()
+    const illegal = () => WARN.all.filter((x: any) => x.code === 'ILLEGAL_CREW' && (x.who || []).includes(front)).length
+    expect(illegal(), 'a C pilot with this WSO is a legal pair').toBe(0)
+
+    await act(async () => { notify() })
+    const sel = $(`#qtbl select[data-lvl="${front}"]`) as HTMLSelectElement
+    expect(sel, 'the CAT dropdown is on screen').toBeTruthy()
+    await act(async () => { sel.value = 'OCU'; sel.dispatchEvent(new Event('change', { bubbles: true })) })
+    expect(PEOPLE[front].q, 'sanity: the CAT really changed').toBe('OCU')
+    expect(illegal(), 'and the week was re-checked on the spot').toBeGreaterThan(0)
+    PEOPLE[front].q = 'C'; deriveQuals(PEOPLE[front]); validate()
   })
 
   it('a CAT change out of the instructor ranks strips the mark', async () => {
