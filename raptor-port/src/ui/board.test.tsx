@@ -171,6 +171,23 @@ describe('the scheduler board (tfin board group)', () => {
     expect(d.dutywaves.length).toBe(nDW)
   })
 
+  /* An SC wave used to arrive with NO duty block while AVALON brought its
+     four (owner, 10 Aug 26). It now brings TWO — one per shift — which is
+     also the case the single-index delete above could not have cleaned up. */
+  it('an SC wave brings TWO duty blocks, and deleting it removes both', async () => {
+    const d = DAYS[0]
+    const nW = d.waves.length, nDW = (d.dutywaves || []).length
+    await click($('#sbAddGo'))
+    await click($('.wavemenu [data-wmkind="sc"]'))
+    expect(d.waves.length).toBe(nW + 1)
+    expect(d.dutywaves.length).toBe(nDW + 2)
+    expect(d.dutywaves.slice(-2).map((x: any) => x.label)).toEqual(['SC AM', 'SC PM'])
+    expect(d.dutywaves.slice(-2).every((x: any) => x.rows.length === 4)).toBe(true)
+    await click($(`#sbBoard [data-gdel="0.${d.waves.length - 1}"]`))
+    expect(d.waves.length).toBe(nW)
+    expect(d.dutywaves.length).toBe(nDW)
+  })
+
   it('a board field commits through the text funnel and earns a pending mark', async () => {
     const inp = document.querySelector('#sbBoard input[data-bfld^="ff:"][data-bfld$=".msn"]') as HTMLInputElement
     expect(inp).toBeTruthy()

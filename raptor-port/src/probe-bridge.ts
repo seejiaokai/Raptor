@@ -17,7 +17,7 @@ import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayE
 import { collectEvents } from './engine/events'
 import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef, acceptInput, unacceptInput, inpKey, acceptedDay, renameCallsign } from './engine/slots'
 import { slotBar, dayEngaged, slotRules, dayOff, dayAway } from './engine/avail'
-import { isStandalone, makeStandalone, SAWAVE, dayCount, saExempt } from './engine/waves'
+import { isStandalone, makeStandalone, saDutyBlocks, saDutyIx, SAWAVE, dayCount, saExempt } from './engine/waves'
 import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays, permuteKeys, moveKeys } from './engine/keys'
 import { applyMove } from './engine/reorder'
 import { hhmm, parseHM, minus, overlap, hm24 } from './engine/time'
@@ -81,6 +81,7 @@ export function installProbeBridge() {
   w.HIST = HIST; w.SAWAVE = SAWAVE
   w.overlap = overlap; w.rowCrew = rowCrew; w.acRef = acRef; w.rollCx = rollCx
   w.isStandalone = isStandalone; w.makeStandalone = makeStandalone; w.dayCount = dayCount
+  w.saDutyBlocks = saDutyBlocks; w.saDutyIx = saDutyIx
   w.keyDay = keyDay; w.shiftKeys = shiftKeys; w.shiftAircraft = shiftAircraft
   w.shiftFormation = shiftFormation; w.shiftWave = shiftWave; w.uniqDays = uniqDays
   w.permuteKeys = permuteKeys; w.moveKeys = moveKeys; w.applyMove = applyMove

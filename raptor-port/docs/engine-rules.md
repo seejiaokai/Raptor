@@ -297,6 +297,18 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   SPARE carries no crew rest either way. SC currency is checked for MAIN and
   SPARE. SC NIGHT ⊂ SC DAY.
 - Standalone waves: SC (spares uncrosschecked), AVALON/BB (`noconf`).
+- **A standalone wave brings its own duty block(s), one per SHIFT**
+  (`saDutyBlocks`, owner 10 Aug 26 — SC used to come up bare while AVALON
+  brought its four, which was never intended). SC hands over at 13:00, so it
+  gets `SC AM` (0700–1300) and `SC PM` (1300–1900); AVALON has one shift and
+  so still gets the single `AVALON` block it always did. Both carry the same
+  four roles — SXO, OPS-O, RUNNER, LOGCELL — unmanned, and the times are
+  ordinary editable cells afterwards. They come from the shift itself rather
+  than a second `dutyTime` field: two places to state the same hours is two
+  places to disagree. BB brings none, having no fixed times to bring.
+  A block's `noconf` mirrors its WAVE's exemption — AVALON's desk is outside
+  the conflict engine because the whole wave is, while an SC desk is checked
+  like any other duty row, matching SC's MAIN lines.
 - Chip ranking `RANK` (highest wins): LD<DT<TT<A<SD<SB<DB<NB<CR<RUN<C<Q.
   Glyphs shorten: CR→R, RUN→7, NB/SB→B, DB/SD→D, LD→L. `A` = on shift AND down for
   a ground event/programme.
@@ -521,7 +533,11 @@ corrupted or hand-edited storage blob.
 `shiftKeys(head,pos,ix)` renumbers keys when a row is deleted, over
 `SCHED.pending`, `SCHED.changes` and every AL's live `keys`.
 `shiftAircraft`/`shiftFormation`/`shiftWave` compose it. Deleting a
-standalone wave also removes its duty block (`d:`/`dr:`/`dl:` keys).
+standalone wave also removes its duty block**s** (`d:`/`dr:`/`dl:` keys) —
+plural since SC brings two, so `saDutyIx` returns every index the wave owns,
+HIGHEST FIRST, because each splice renumbers what follows it. It matches on
+the block's `sa` marker rather than its label, so a RENAMED block is still
+removed with its wave.
 
 ## Reordering a board list
 

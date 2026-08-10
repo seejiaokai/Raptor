@@ -137,6 +137,23 @@ records for an unchanged commit, and the PARENT straddles the 1.15 line in the
 same window. `noop` held at 0.58x-0.62x on both builds throughout. So: the
 estimator, again, and the budget stays where it is.
 
+**Measured again on 10 Aug 26**, when SC gained its duty blocks and the
+one-day edit came back 1.16x. Three alternating rounds against the parent
+commit, built into a worktree and served on 4174:
+
+| round | parent | this change |
+|---|---|---|
+| 1 | 1.22x | 1.14x |
+| 2 | 1.13x | 1.16x |
+| 3 | 1.12x | 1.10x |
+
+Differences of -0.08, +0.03 and -0.02, and the PARENT went red twice in the
+same window (1.22x here, 1.28x on a fourth reading) while this change went red
+once. `noop` held 0.51x-0.63x on both throughout. The estimator again — and
+this particular change cannot move the metric anyway: it alters what a NEWLY
+ADDED wave brings with it, and the gate measures the seed week, which gains
+no node from it.
+
 **Self-check.** Point the gate at the reference twice and it should read
 ≈ 1.00: `PORT_URL="file://$PWD/reference/scheduler.html" npm run perf`.
 Measured: 0.91 / 0.99 / 0.93 / 1.01 on the four metrics — no systematic

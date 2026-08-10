@@ -4,7 +4,7 @@
 import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { isStandalone, makeStandalone, SAWAVE } from '../engine/waves'
+import { isStandalone, makeStandalone, saDutyBlocks, saDutyIx, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, minus, parseHM } from '../engine/time'
@@ -389,9 +389,13 @@ export function boardMbtn(e: MouseEvent) {
     const [di, gi] = ds.gdel.split('.').map(Number)
     const gw = DAYS[di].waves[gi]
     DAYS[di].waves.splice(gi, 1); shiftWave(di, gi)
+    /* An SC wave owns TWO duty blocks, not one, so this walks the list rather
+       than finding a single index — highest first, because each splice
+       renumbers everything after it and shiftKeys has to see the same order. */
     if (gw && isStandalone(gw) && Array.isArray(DAYS[di].dutywaves)) {
-      const j = DAYS[di].dutywaves.findIndex((x: any) => x && x.label === gw.label)
-      if (j >= 0) { DAYS[di].dutywaves.splice(j, 1);[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, j)) }
+      saDutyIx(DAYS[di], gw).forEach((j: number) => {
+        DAYS[di].dutywaves.splice(j, 1);[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, j))
+      })
     }
     markEdit(); afterSchedMutate(); notify(); return toast('Wave removed')
   }
@@ -664,10 +668,8 @@ export function addWave(di: number, kind: any) {
   const w = makeStandalone(kind); if (!w) return
   d.waves.push(w)
   const S = SAWAVE[kind]
-  if (S.duties) {
-    d.dutywaves = d.dutywaves || []
-    d.dutywaves.push({ label: S.label, noconf: true, rows: S.duties.map((r: any) => ({ role: r, id: '', str: S.dutyTime[0], end: S.dutyTime[1] })) })
-  }
+  const dws = saDutyBlocks(kind)
+  if (dws.length) { d.dutywaves = d.dutywaves || []; d.dutywaves.push(...dws) }
   markEdit(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
   toast(S.label + ' added — standalone, ' + (S.all ? 'nothing on it is cross-checked' : 'SPARE is not cross-checked'))
 }
