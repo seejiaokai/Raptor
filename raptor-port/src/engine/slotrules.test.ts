@@ -106,3 +106,122 @@ describe('who may be planned into a slot (tfin U)', () => {
     expect(clean).toBeTruthy()
   })
 })
+
+/* ---------------------------------------------------------------------------
+   THE SLOT'S OWN HOURS, and the half-day absences they make possible
+   (owner, 10 Aug 26). Before this, only an SC shift carried a window, so a
+   personal input outside SC could only ever be judged against the WHOLE DAY —
+   which is why an AM leave used to strike a man out of an evening sortie.
+   --------------------------------------------------------------------------- */
+describe('slotStart / slotEnd, and half-day absences', () => {
+  /* Monday's seed, read off data.ts: VL 12:40–14:05, night VL 19:45–21:10,
+     SDO 0700–1300, CAF engagement 0845–1630, SODB 0745–0815, OFT EP-4
+     0800–0930. A sortie is PADDED to the step and the dekit, because that is
+     the window the validator judges an input against. */
+  it('every kind of key reports its own window', () => {
+    expect([slotRules('0.0.0.0.p').slotStart, slotRules('0.0.0.0.p').slotEnd]).toEqual([700, 875])
+    expect([slotRules('d:0.0.0').slotStart, slotRules('d:0.0.0').slotEnd]).toEqual([420, 780])
+    expect([slotRules('g:0.0').slotStart, slotRules('g:0.0').slotEnd]).toEqual([525, 990])
+    expect([slotRules('a:0.0').slotStart, slotRules('a:0.0').slotEnd]).toEqual([465, 495])
+    expect([slotRules('s:0.oft.0').slotStart, slotRules('s:0.oft.0').slotEnd]).toEqual([480, 570])
+  })
+
+  /* an append target and an overflow body hang off a row, so they inherit its
+     hours — otherwise dropping a third man on a duty row would judge him
+     against the whole day while the row itself was judged against its shift */
+  it('.+ and .xN inherit the row they hang off', () => {
+    const bare = slotRules('d:0.0.0')
+    for (const k of ['d:0.0.0.+', 'd:0.0.0.x1'])
+      expect([slotRules(k).slotStart, slotRules(k).slotEnd], k).toEqual([bare.slotStart, bare.slotEnd])
+  })
+
+  /* A BB shift is written ['SHIFT','',''] — no times at all. That must read as
+     UNKNOWN, never as "clashes with nothing", or a real absence would be
+     silently cleared. The consumer falls back to the whole-day answer. */
+  it('a shift with no times reports no window, and still bars an absence', () => {
+    DAYS[1].waves.push(makeStandalone('bb'))
+    const gi = DAYS[1].waves.length - 1
+    validate()
+    const r = slotRules(`1.${gi}.0.0.p`)
+    expect(r.slotStart == null && r.slotEnd == null).toBe(true)
+    /* pike is a pilot; give him a MORNING absence on Jul 14 and a slot with no
+       window of its own must still refuse him — unknown fails closed */
+    INPUTS.push({ person: 'pike', date: 'Jul 14', allday: false, s: 240, e: 720, half: 'am', type: 'LL', remarks: '', mod: '' })
+    validate()
+    expect(slotBar('pike', `1.${gi}.0.0.p`)).toContain('local leave')
+  })
+
+  it('a morning absence frees the evening and only the evening', () => {
+    /* nasty is a WSO. Monday wave 0 VL steps 11:40; wave 1 VL steps 18:45. */
+    INPUTS.push({ person: 'nasty', date: 'Jul 13', allday: false, s: 240, e: 720, half: 'am', type: 'LL', remarks: '', mod: '' })
+    validate()
+    expect(slotBar('nasty', '0.0.0.0.w')).toContain('local leave')   // 11:40 step — inside the AM
+    expect(slotBar('nasty', '0.0.0.0.w')).toContain('(AM)')          // and it says which half
+    expect(slotBar('nasty', '0.1.0.0.w')).toBe('')                   // the night wave is clear
+    expect(slotBar('nasty', 'd:0.1.0')).toBe('')                     // 2nd-wave duty 1300–2130
+    expect(slotBar('nasty', 'd:0.0.0')).toContain('local leave')     // 1st-wave duty 0700–1300
+  })
+
+  it('an afternoon absence frees the morning, the mirror of it', () => {
+    INPUTS.push({ person: 'nasty', date: 'Jul 13', allday: false, s: 721, e: 1439, half: 'pm', type: 'LL', remarks: '', mod: '' })
+    validate()
+    expect(slotBar('nasty', '0.1.0.0.w')).toContain('local leave')   // night wave — inside the PM
+    expect(slotBar('nasty', 's:0.oft.0.w')).toBe('')                 // OFT 0800–0930, wholly AM
+    /* and the boundary is a real one, not a rounding: the 1st-wave duty post
+       runs 0700–1300, so its last hour IS in the afternoon and it stays barred */
+    expect(slotBar('nasty', 'd:0.0.0')).toContain('local leave')
+  })
+
+  /* ORDER IS LOAD-BEARING: an all-day absence, and one whose record is too
+     thin to place, must short-circuit BEFORE any overlap test. Reverse the two
+     and every all-day absence starts being judged against a window it does not
+     have — which is how a whole week off would quietly stop barring anything. */
+  it('an all-day absence bars every slot, whatever the slot hours are', () => {
+    INPUTS.push({ person: 'nasty', date: 'Jul 13', allday: true, type: 'LL', remarks: '', mod: '' })
+    validate()
+    for (const k of ['0.0.0.0.w', '0.1.0.0.w', 'd:0.0.0', 'd:0.1.0', 'g:0.0'])
+      expect(slotBar('nasty', k), k).toContain('local leave')
+  })
+
+  it('a record with no usable hours bars every slot too', () => {
+    INPUTS.push({ person: 'nasty', date: 'Jul 13', type: 'OL', remarks: '', mod: '' })   // no allday, no s/e
+    validate()
+    for (const k of ['0.0.0.0.w', '0.1.0.0.w', 'd:0.1.0'])
+      expect(slotBar('nasty', k), k).toContain('overseas leave')
+  })
+
+  /* ATT B is grounded, not absent — the flying seat closes, the desk does not */
+  it('ATT B closes the jet and leaves the duty post, the sim and the ground row open', () => {
+    INPUTS.push({ person: 'nasty', date: 'Jul 13', allday: true, type: 'ATT B', remarks: '', mod: '' })
+    validate()
+    expect(slotBar('nasty', '0.0.0.0.w')).toContain('medically down')
+    for (const k of ['d:0.0.0', 's:0.oft.0.w', 'g:0.0'])
+      expect(slotBar('nasty', k), k).toBe('')
+    /* ATT C is the control: it closes the desk as well, or the two codes would
+       be indistinguishable */
+    INPUTS.pop()
+    INPUTS.push({ person: 'nasty', date: 'Jul 13', allday: true, type: 'ATT C', remarks: '', mod: '' })
+    validate()
+    expect(slotBar('nasty', 'd:0.0.0')).toContain('medically down')
+  })
+
+  /* the spare rule, through the picker rather than the warning list */
+  it('a spare post is open to local absences and shut to overseas and medical', () => {
+    DAYS[1].waves.push(makeStandalone('sc'))
+    const gi = DAYS[1].waves.length - 1
+    validate()
+    const spare = `1.${gi}.0.2.w`
+    for (const t of ['LL', 'OIL', 'OFF', 'CCL', 'Training']) {
+      INPUTS.push({ person: 'nasty', date: 'Jul 14', allday: true, type: t, remarks: '', mod: '' })
+      validate()
+      expect(slotBar('nasty', spare), t).toBe('')
+      INPUTS.pop()
+    }
+    for (const t of ['OL', 'OD', 'HL', 'OML', 'ATT B', 'ATT C']) {
+      INPUTS.push({ person: 'nasty', date: 'Jul 14', allday: true, type: t, remarks: '', mod: '' })
+      validate()
+      expect(slotBar('nasty', spare), t).not.toBe('')
+      INPUTS.pop()
+    }
+  })
+})

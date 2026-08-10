@@ -1,7 +1,7 @@
 /* Ported from reference/tfin.js — the availability / selection-count helpers
    that back the palette and the un-click rules (group W's personCount, plus
    the day sets the free-crew list is built from). */
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { personCount, personWarnDays, dayOff, dayEngaged, dayStandby, availByWave, slotBar } from './avail'
 import { makeStandalone } from './waves'
@@ -90,5 +90,75 @@ describe('an actioned Fly reads as away', () => {
     acceptInput(0, inp, 'u')
     expect(dayOff(d).has('bruise')).toBe(true)
     unacceptInput(0, inp)
+  })
+})
+
+/* ---------------------------------------------------------------------------
+   HALF-DAY ABSENCES IN THE PALETTE (owner, 10 Aug 26). dayOff still means "off
+   for the WHOLE day" — it feeds the day-info tally and the struck-through rank
+   as well as the palette, and a man on AM leave is genuinely not off for the
+   day. A timed absence occupies time exactly as a task does, so it is folded
+   into the same per-wave overlap availByWave already runs.
+   --------------------------------------------------------------------------- */
+describe('a half-day absence frees the other half in the palette', () => {
+  const ISNAP = JSON.stringify(INPUTS)
+  afterEach(() => { INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
+
+  /* Monday's two waves: VL/RU 12:40–15:05, then the night wave 19:20–21:10 */
+  it('dayOff keeps only whole-day absences', () => {
+    INPUTS.push({ person: 'stiff', date: 'Jul 13', allday: false, s: 240, e: 720, half: 'am', type: 'LL', remarks: '', mod: '' })
+    validate()
+    expect(dayOff(DAYS[0]).has('stiff')).toBe(false)     // not off for the DAY
+    expect(dayOff(DAYS[0]).has('divot')).toBe(true)      // OML all day, still is
+  })
+
+  it('and it drops him only from the waves it actually overlaps', () => {
+    const d = DAYS[0]
+    /* find a man the palette already offers for the NIGHT wave, so the only
+       thing this test can move is the absence */
+    const base = availByWave(d)
+    const wi = base.wins.length - 1
+    const who = base.byWave[wi][0] || base.anyWave[0]
+    expect(who, 'nobody available for the night wave in the seed').toBeTruthy()
+    const inWave = (i: number) => { const a = availByWave(d); return a.byWave[i].includes(who) || a.anyWave.includes(who) }
+    /* Monday flies in the afternoon and at night, so a MORNING absence takes
+       nothing away — he is still offered for the night wave */
+    INPUTS.push({ person: who, date: 'Jul 13', allday: false, s: 240, e: 720, half: 'am', type: 'LL', remarks: '', mod: '' })
+    validate()
+    expect(inWave(wi)).toBe(true)
+    /* the afternoon half covers both waves, so every band loses him */
+    INPUTS.pop()
+    INPUTS.push({ person: who, date: 'Jul 13', allday: false, s: 721, e: 1439, half: 'pm', type: 'LL', remarks: '', mod: '' })
+    validate()
+    const pm = availByWave(d)
+    expect(pm.byWave.every((b: any) => !b.includes(who))).toBe(true)
+    expect(pm.anyWave.includes(who)).toBe(false)
+  })
+
+  /* THE FAST-PATH HOLE: an untasked man skips the window check entirely, so a
+     man whose ONLY commitment is a timed absence would otherwise read free in
+     every wave — the absence would do nothing at all. */
+  it('an untasked man with a timed absence does not slip through as free-all-day', () => {
+    const d = DAYS[0]
+    const free = availByWave(d).anyWave.find((id: any) => !dayEngaged(d).has(id))!
+    expect(free, 'no untasked man in the seed').toBeTruthy()
+    INPUTS.push({ person: free, date: 'Jul 13', allday: false, s: 721, e: 1439, half: 'pm', type: 'LL', remarks: '', mod: '' })
+    validate()
+    const a = availByWave(d)
+    expect(a.anyWave.includes(free)).toBe(false)
+    expect(a.byWave.every((b: any) => !b.includes(free))).toBe(true)
+  })
+
+  /* THE OTHER SIDE OF THAT HOLE: a day with no flying has no bands to bucket
+     into, so anyWave is the only bucket there is. Without the second guard the
+     man would vanish from the strip altogether — the same bug inverted. */
+  it('but on a non-flying day he stays in the strip, because there are no bands', () => {
+    const di = DAYS.findIndex((d: any) => !(d.waves || []).length)
+    expect(di, 'the seed has no non-flying day to test').toBeGreaterThanOrEqual(0)
+    const d = DAYS[di]
+    const free = availByWave(d).anyWave[0]
+    INPUTS.push({ person: free, date: d.dt, allday: false, s: 721, e: 1439, half: 'pm', type: 'LL', remarks: '', mod: '' })
+    validate()
+    expect(availByWave(d).anyWave.includes(free)).toBe(true)
   })
 })

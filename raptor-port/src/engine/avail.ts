@@ -1,12 +1,12 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, isAway, isLocalLeave, offWord } from './inputs'
+import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
-import { SHIFT_HARD } from './rules'
+import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare } from './waves'
 import { WARN, restClear, dayEvents } from './validate'
 import { waveWindows } from './events'
-import { whoArr } from './slots'
+import { whoArr, rowRef, XKEY } from './slots'
 import { keyDay } from './keys'
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
 export function personBusy(d:any,id:any){
@@ -51,18 +51,40 @@ export function dayEngaged(d:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE
   (d.allhands||[]).forEach((x:any)=>{if(x.cx)return;(Array.isArray(x.who)?x.who:(x.who?[x.who]:[])).forEach((w:any)=>add(nameToId(w)));more(x);});
   ['amt','oft'].forEach((k:any)=>((d.sims||{})[k]||[]).forEach((o:any)=>{if(!o.cx)more(o);}));
   return s;}
-export function dayOff(d:any){const s=new Set();
-  INPUTS.forEach((inp:any)=>{ if(isAway(inp)&&inputCoversDate(inp,d.dt)&&PEOPLE[inp.person])s.add(inp.person); });
-  return s;}
+/* AWAY, split by whether the absence closes the DAY or only some HOURS
+   (10 Aug 26, for the AM/PM half-days). Built in ONE pass because the palette
+   asks about sixty people and sixty scans of the same list is the shape this
+   is replacing, not the shape to grow into. */
+export function dayAway(d:any){const all=new Set(), tw:any={};
+  INPUTS.forEach((inp:any)=>{ if(!isAway(inp)||!inputCoversDate(inp,d.dt)||!PEOPLE[inp.person])return;
+    if(awayAllDay(inp)){all.add(inp.person);return;}
+    const w2=win(inp.s,inp.e); if(w2)(tw[inp.person]=tw[inp.person]||[]).push(w2); });
+  return {all,tw};}
+/* OFF means off for the WHOLE day, and deliberately kept narrow: it also feeds
+   the day-info "off" tally and the palette's struck-through rank, and a man on
+   AM leave is genuinely not off for the day. Timed absences are handled by
+   availByWave below, per wave. */
+export function dayOff(d:any){return dayAway(d).all;}
 /* available crew bucketed by wave; anyWave = free across every wave (untasked) */
 export function availByWave(d:any){
-  const wins:any[]=waveWindows(d), off=dayOff(d), eng=dayEngaged(d);
+  const wins:any[]=waveWindows(d), aw=dayAway(d), off=aw.all, eng=dayEngaged(d);
   const byWave=wins.map(()=>[] as any[]), anyWave:any[]=[];
   const bySort=(a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
   Object.keys(PEOPLE).forEach((id:any)=>{
     if(PEOPLE[id].archived||off.has(id))return;
-    if(!eng.has(id)){anyWave.push(id);return;}          // untasked → free every wave
-    const busy=personBusy(d,id);
+    /* AN ABSENCE OCCUPIES TIME EXACTLY AS A TASK DOES, so it is folded into
+       the same busy list rather than checked on a second path — one overlap
+       rule, not two that can drift.
+       The untasked fast path is where a timed absence would otherwise be lost
+       outright: a man with nothing else on is still not available during his
+       leave, so he only reads free-all-day when there is genuinely nothing to
+       check him against. But a day with NO waves (Friday, the weekend) has no
+       bands to bucket into, and there anyWave is the only bucket there is —
+       without that second guard he would vanish from the strip altogether,
+       which is the same bug in a different corner. */
+    const away=aw.tw[id]||[];
+    if(!eng.has(id)&&(!away.length||!wins.length)){anyWave.push(id);return;}
+    const busy=personBusy(d,id).concat(away);
     wins.forEach((w:any,i:any)=>{ if(!busy.some(([bs,be]:any)=>bs<w.e&&be>w.s))byWave[i].push(id); });
   });
   byWave.forEach((a:any)=>a.sort(bySort)); anyWave.sort(bySort);
@@ -104,8 +126,28 @@ export function personWarns(di:any,id:any){
    against each name — but the default list is the one you can plan from.
    --------------------------------------------------------------------------- */
 export function slotRules(key:any){
-  const k=String(key), out:any={seat:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1};
+  /* an append target and an overflow body both sit on the row they hang off,
+     so they carry its hours — strip both before looking the row up */
+  const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
+  const out:any={seat:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null};
   out.di=keyDay(k);
+  /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
+     shift carried a window before, which is the whole reason a personal input
+     could only ever be judged against the WHOLE DAY outside SC: there was
+     nothing to judge it against. Every kind is read off the same row
+     collectEvents() reads, and padded the same way, so what the picker bars
+     and what the warning list flags cannot drift apart.
+     null means UNKNOWN, never FREE — a BB shift is written ['SHIFT','',''] and
+     a ground row may carry no times at all, and reading either as "clashes
+     with nothing" would silently drop a real absence. slotBar falls back to
+     the old whole-day answer instead. Fail closed, both sides. */
+  if(/^[dsga]:/.test(k)){
+    const kk=k[0], r=rowRef(kk,k.slice(2).split('.'));
+    /* a sim runs 90 minutes when it names no end, matching events.ts;
+       everything else falls to VCONF.openEnd, as win() does by default */
+    const w2=r&&win(parseHM(r.str),parseHM(r.end),kk==='s'?90:undefined);
+    if(w2){out.slotStart=w2[0]; out.slotEnd=w2[1];}
+  }
   /* a SIM box has the same two seats as the jet — front pilot, rear IP — and the
      engine checks them (day.simcrew). The picker used to skip the seat rules for
      any key carrying a ':' prefix, so it happily planted a WSO into a sim front
@@ -126,6 +168,17 @@ export function slotRules(key:any){
       if(ld!=null&&to!=null&&ld<to)ld+=1440;
       out.aar=aarNeed(ac.rmks,!!wv.night||(ld!=null&&ld>19*60));
     }
+    /* the sortie's window, PADDED to the step and the dekit — because that is
+       what the validator judges an input against (the brief/debrief loop), and
+       a picker that offered a man the engine would immediately flag would be
+       worse than no picker. Consequence worth knowing: a morning absence does
+       not free a sortie that starts WALKING before noon.
+       A standalone line is a shift, not a sortie: 07:00–13:00 means exactly
+       that, no step in front and no dekit behind, matching events.ts. */
+    if(f){ const st=parseHM(f.to); let en=parseHM(f.ld);
+      if(st!=null){ if(en==null)en=st; if(en<st)en+=1440;
+        const sh=wv&&isStandalone(wv);
+        out.slotStart=sh?st:st-VCONF.step; out.slotEnd=sh?en:en+VCONF.dekit; } }
     if(wv&&f&&isStandalone(wv)&&wv.kind==='sc'){
       const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null&&en!=null){ if(en<st)en+=1440; out.sc=scShiftKind(st,en); out.scEnd=en; }
@@ -173,12 +226,28 @@ export function slotBar(id:any,key:any,rules?:any){
   }
   if(r.aar&&r.seat==='p'&&!aarOK(id,r.aar))return `not ${r.aar} current`;
   if(r.di>=0&&DAYS[r.di]){
-    /* LL and OIL keep the man on the island, and an SC SPARE is standby rather
-       than a task — so those two do not close a spare slot to him. OL does, and
-       so does a downchit: away is away, and unfit is unfit. */
+    /* WHY A PERSONAL INPUT CLOSES THIS SLOT — three filters, and the ORDER of
+       the last one matters.
+       · A STANDALONE SPARE is standby, not a task, so a type that may spare
+         does not close it (canSpare: local yes, overseas no, medical never).
+       · ATT B is grounded, not absent, so it closes a FLYING seat only — a
+         duty post, a sim seat or a ground row is proper work for him. A flying
+         key is the one with no prefix.
+       · A HALF-DAY closes its own half. day.input has carried s/e since the
+         validator learned to overlap them; this was the last place still
+         reading every absence as the whole day, so a man on AM leave was
+         struck out of an evening sortie nothing had a complaint about.
+         An all-day absence — or one whose record is too thin to place — must
+         short-circuit BEFORE any overlap test, and a slot with no window of
+         its own keeps the old whole-day answer. Unknown is not "never
+         clashes", on either side. */
     const sparePost=!!(r.sc&&r.scSpare);
+    const flying=String(key).indexOf(':')<0;
+    const kn=r.slotStart!=null&&r.slotEnd!=null;
     const off=INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,DAYS[r.di].dt))
-      .filter((x:any)=>!(sparePost&&isLocalLeave(x.type)));
+      .filter((x:any)=>!(sparePost&&canSpare(x.type)))
+      .filter((x:any)=>!(canWork(x.type)&&!flying))
+      .filter((x:any)=>!kn||awayAllDay(x)||overlap(r.slotStart,r.slotEnd,x.s,x.e));
     if(off.length)return offWord(off[0]);
   }
   return '';

@@ -7,7 +7,7 @@
    the existing API reachable — and it weighs a few hundred bytes. */
 import { DAYS } from './engine/data'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
-import { INPUTS, INPUT_TYPES, DATES, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd, isLateInput, lateNote, inputDueISO, weekStartISO, inputStampISO } from './engine/inputs'
+import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd, isLateInput, lateNote, inputDueISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard } from './engine/stores'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
@@ -16,7 +16,7 @@ import * as V from './engine/validate'
 import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayEvents, traceOf, traceLeads, traceIx } from './engine/validate'
 import { collectEvents } from './engine/events'
 import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef, acceptInput, unacceptInput, inpKey, acceptedDay, renameCallsign } from './engine/slots'
-import { slotBar, dayEngaged, slotRules, dayOff } from './engine/avail'
+import { slotBar, dayEngaged, slotRules, dayOff, dayAway } from './engine/avail'
 import { isStandalone, makeStandalone, SAWAVE, dayCount, saExempt } from './engine/waves'
 import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays, permuteKeys, moveKeys } from './engine/keys'
 import { applyMove } from './engine/reorder'
@@ -103,6 +103,10 @@ export function installProbeBridge() {
   w.isLateInput = isLateInput; w.lateNote = lateNote; w.inputDueISO = inputDueISO
   w.weekStartISO = weekStartISO; w.inputStampISO = inputStampISO
   w.isPersonal = isPersonal; w.isUnavail = isUnavail
+  /* the 10 Aug 26 type table and everything derived from it */
+  w.INPUT_META = INPUT_META; w.TYPE_GROUPS = TYPE_GROUPS; w.inpMeta = inpMeta; w.inpType = inpType
+  w.canSpare = canSpare; w.canWork = canWork; w.awayAllDay = awayAllDay
+  w.typeGroup = typeGroup; w.dayAway = dayAway
   w.acceptInput = acceptInput; w.unacceptInput = unacceptInput; w.inpKey = inpKey
   w.acceptedDay = acceptedDay; w.renameCallsign = renameCallsign
   w.rulesLoad = rulesLoad; w.rulesSave = rulesSave; w.DATES = DATES

@@ -106,7 +106,19 @@ export function canWork(t:any){const m=inpMeta(t); return !!m&&!!m.work;}
    the crew strip, the palette and slotBar, while the item itself can sit on
    the Ground Programme. Un-actioned Fly is still just a request, exactly like
    the validator gate — the two gates must not drift apart. */
-export function isAway(inp:any){return isOffType(inp.type)||(isFly(inp.type)&&!!inp.acc);}
+/* OVERSEAS DUTY BELONGS HERE, and its predecessor never did (10 Aug 26).
+   `Detachment` sat in isUnavail but NOT in isAway, so a detached man was
+   neither hidden from the palette nor barred from a slot — he only ever raised
+   a warning after you had planted him. The owner's rule for OD is explicit:
+   "cannot be planned for anything, including an SC spare", and a picker that
+   still offers him cannot deliver that. Widened from isOffType to isUnavail,
+   which is leave + medical + overseas duty — the three groups that mean the
+   man is simply not there.
+   The activity types stay out on purpose. They close the man in the WARNING
+   list (every input counts now — see inputFlags) but they do not strike him
+   out of the palette, which is exactly how an actioned personal input has
+   always behaved. Widening that too would be a change nobody asked for. */
+export function isAway(inp:any){return isUnavail(inp.type)||(isFly(inp.type)&&!!inp.acc);}
 /* DOES THIS ABSENCE CLOSE THE WHOLE DAY, or only some hours (owner, 10 Aug 26 —
    AM / PM half-days)? It does when it says so, AND when it carries no usable
    window at all: {person:'pike', type:'OD'} with neither allday nor s/e is a
