@@ -21,6 +21,14 @@ two. No other direction was given, and none was asked for.
   which also now holds the halves, the span picker, the draft shape and the
   commit that the Inputs page uses, so there is one edit path and not two.
   Contract: `docs/ui-contracts.md` §Editing an input from the schedule.
+- **A follow-up the live check caught.** The dialog's two time boxes were
+  drawing `12:00 A` — Chromium renders `<input type=time>` in the BROWSER's
+  locale, en-US is a 12-hour field, and 110px does not hold `12:00 AM`. All six
+  gates were green on it, and none of them could have caught it: the truncation
+  happens inside the field's own shadow DOM, so `scrollWidth` reports no
+  overflow. 130px, now pinned in the geometry gate, proved failing at the old
+  width. **This is the case FOR the standing live-view instruction**, and it is
+  worth remembering next time it feels like a formality.
 
 ## Unfinished
 
@@ -54,6 +62,12 @@ one-day-edit per-node reading came up red once at 1.16× and green on the three
 runs around it (1.05×–1.09×), which is the documented straddle in
 `docs/probe-sweep.md` §The performance gate, not a regression — the `noop`
 cross-check held at 0.57×–0.58× throughout.
+
+The stale-preview trap in `HANDOFF.md` caught this session out once, and it is
+worth reading that bullet twice: proving the new time-box assertion actually
+fails at the old width gave a false PASS, because a preview left up on 4173 was
+still serving the previous bundle. Killed it, and the control case failed as it
+should.
 
 **No DOM ceiling was raised, and one nearly was.** An earlier shape of this
 work (a separate button per row) took the board from 862 to 872 against its
