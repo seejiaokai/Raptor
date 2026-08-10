@@ -3,7 +3,7 @@
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
 import { useEffect, useRef, useState } from 'react'
-import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME, deriveQuals, ID_BY_CS } from '../engine/people'
+import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME, deriveQuals, isInstrPilot, ID_BY_CS } from '../engine/people'
 import { renameCallsign } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
@@ -69,6 +69,16 @@ const WIRED: any = {
 const qualKey = (h: string) => h.trim().toLowerCase().replace(/[^a-z0-9]+/g, '')
 /* AAR is a front-seat qualification; the rear seat has none */
 const qualNA = (p: any, c: any) => !!(c.fcpOnly && p && p.seat !== 'FCP')
+/* CLEARED TO INSTRUCT AAR (owner, 10 Aug 26) — the cells that carry a third
+   state. An instructor pilot is not automatically cleared to teach AAR from
+   the back seat, so his DAAR / NAAR tick can be promoted to an 'I'.
+   isInstrPilot alone is NOT the test: a WSO FI passes it (people.ts's own
+   comment says so), and a WSO holds no AAR at all — hence the seat check,
+   the same pairing the engine uses at validate.ts and avail.ts. Scoped to the
+   two AAR keys by name because that is exactly what the owner asked for: a
+   third state on a column no rule reads would be a mark that means nothing. */
+const AAR_I_KEYS = ['daar', 'naar']
+const qualI = (p: any, k: string) => !!(p && AAR_I_KEYS.indexOf(k) >= 0 && p.seat === 'FCP' && isInstrPilot(p.q))
 /* the CAT dropdowns are seat-filtered so the inconsistent combinations can't
    be picked at all: IW is a WSO-only category, IP and IR are pilot-only, FI
    goes both ways. The validator still guards the hand-edited case. */
@@ -160,7 +170,15 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
       : `<span class="lvl"><span class="qmini" style="background:${QCOLOR[p.q]};${(p.q === 'C' || p.q === 'B') ? 'color:#04222b' : ''}">${QCHIP[p.q]}</span>${p.q}</span>`
     const cells = cols.map(c => {
       if (qualNA(p, c)) return `<td class="qcell na" title="${esc(p.cs)} is a WSO — AAR is a front-seat qualification">–</td>`
-      return `<td class="qcell${(c.k === 'sched' && p.quals[c.k]) ? ' apt-on' : ''}${(c.scq && p.quals[c.k]) ? ' scq-on' : ''}${(c.aar && p.quals[c.k]) ? ' aar-on' : ''}" data-q="${id}|${c.k}">${p.quals[c.k] ? '<span class="qchk">✓</span>' : ''}</td>`
+      /* 'I' — cleared to INSTRUCT this AAR from the back seat. It is a truthy
+         state, so every on-class above still lights and every reader that asks
+         "does he hold this?" still says yes; only the glyph differs, and the
+         title spells the mark out because a bare letter in a grid of ticks
+         explains itself to nobody. */
+      const held = p.quals[c.k]
+      const inst = held === 'I'
+      const glyph = held ? `<span class="qchk${inst ? ' qi' : ''}"${inst ? ` title="${esc(p.cs)} is cleared to instruct ${esc(c.h)} from the back seat"` : ''}>${inst ? 'I' : '✓'}</span>` : ''
+      return `<td class="qcell${(c.k === 'sched' && held) ? ' apt-on' : ''}${(c.scq && held) ? ' scq-on' : ''}${(c.aar && held) ? ' aar-on' : ''}" data-q="${id}|${c.k}">${glyph}</td>`
     }).join('')
     /* editable in edit mode, so the initials of the people already on the
        roster can be filled in without re-adding them. It commits on CHANGE
@@ -270,14 +288,33 @@ export function QualsPage() {
       const cell = t.closest('[data-q]') as HTMLElement | null
       if (cell) {
         const [id, k] = cell.dataset.q!.split('|') as [string, string]
-        const p = PEOPLE[id]; const on = !p.quals[k]
+        const p = PEOPLE[id]
+        /* THREE STATES on an instructor pilot's AAR cells (owner, 10 Aug 26):
+           blank → ✓ → I → blank. Every other cell keeps the plain flip, so
+           this is one extra rung on the same ladder rather than a new
+           mechanism. `next` is the whole difference. */
+        const cur = p.quals[k]
+        /* the I rung is OFFERED only where it is legal, rather than offered
+           and then refused. Refusing it mid-cycle would strand the cell: a
+           NAAR tick whose promotion is rejected has nowhere left to go, and
+           the next click rejects it again — blank becomes unreachable and the
+           loop the owner asked for stops being a loop. Gating instead makes
+           the cycle degrade cleanly to the ordinary two states. */
+        const canI = qualI(p, k) && (k === 'daar' || p.quals.daar === 'I')
+        const next = canI ? (!cur ? true : cur === true ? 'I' : false) : !cur
         /* night AAR is signed off after day AAR, never before it */
-        if (k === 'naar' && on && !p.quals.daar) { notify(); return HOOKS.toast(`${p.cs} needs DAAR before NAAR can be ticked`) }
+        if (k === 'naar' && next && !p.quals.daar) { notify(); return HOOKS.toast(`${p.cs} needs DAAR before NAAR can be ticked`) }
+        /* and say WHY the I was not offered — the click still unticks, but an
+           instructor who expected a third state deserves the reason */
+        if (k === 'naar' && qualI(p, k) && cur === true && p.quals.daar !== 'I') HOOKS.toast(`${p.cs} needs the DAAR instructor mark before NAAR can carry it — the tick comes off instead`)
         /* SC night is signed off after SC day, exactly as NAAR is after DAAR */
-        if (k === 'scNight' && on && !p.quals.scDay) { notify(); return HOOKS.toast(`${p.cs} needs SC DAY before SC NIGHT can be ticked`) }
-        p.quals[k] = on
-        if (k === 'daar' && !on && p.quals.naar) { p.quals.naar = false; HOOKS.toast(`${p.cs} — NAAR removed too, it cannot stand without DAAR`) }
-        if (k === 'scDay' && !on && p.quals.scNight) { p.quals.scNight = false; HOOKS.toast(`${p.cs} — SC NIGHT removed too, it cannot stand without SC DAY`) }
+        if (k === 'scNight' && next && !p.quals.scDay) { notify(); return HOOKS.toast(`${p.cs} needs SC DAY before SC NIGHT can be ticked`) }
+        p.quals[k] = next
+        if (k === 'daar' && !next && p.quals.naar) { p.quals.naar = false; HOOKS.toast(`${p.cs} — NAAR removed too, it cannot stand without DAAR`) }
+        /* DEMOTED, not removed: withdrawing the day instructor mark costs him
+           the night one as well, but he keeps night currency itself. */
+        if (k === 'daar' && next === true && p.quals.naar === 'I') { p.quals.naar = true; HOOKS.toast(`${p.cs} — NAAR instructor mark removed too, it cannot stand without DAAR's`) }
+        if (k === 'scDay' && !next && p.quals.scNight) { p.quals.scNight = false; HOOKS.toast(`${p.cs} — SC NIGHT removed too, it cannot stand without SC DAY`) }
         notify(); return
       }
       const arch = t.closest('[data-arch]') as HTMLElement | null
@@ -381,7 +418,9 @@ export function QualsPage() {
     qualsIds(qSeatView, qSort, qSearch).forEach(id => {
       const p = PEOPLE[id]
       rows.push([p.cs, p.initials || '', p.flight, ...(all ? [p.seat === 'FCP' ? 'Pilot' : 'WSO'] : []), p.q,
-        ...cols.map(c => qualNA(p, c) ? '–' : p.quals[c.k] ? 'Y' : '')])
+        /* I, not Y, for the instructor mark — the CSV is what gets printed and
+           passed around, so it has to carry the same three states the screen does */
+        ...cols.map(c => qualNA(p, c) ? '–' : p.quals[c.k] === 'I' ? 'I' : p.quals[c.k] ? 'Y' : '')])
     })
     exportCSV(`142SQN-LoX-${qSeatView}.csv`, rows)
   }

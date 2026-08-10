@@ -6,7 +6,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
-import { PEOPLE, isScheduler, isInstr, deriveQuals, ID_BY_CS, QCHIP, QCOLOR, QORDER, LEVELNAME } from '../engine/people'
+import { PEOPLE, isScheduler, isInstr, isInstrPilot, deriveQuals, ID_BY_CS, QCHIP, QCOLOR, QORDER, LEVELNAME } from '../engine/people'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -80,6 +80,10 @@ describe('the Quals page (tfin)', () => {
     expect(PEOPLE[id].quals.naar).toBe(false)          // NAAR went with it
   })
 
+  /* the fixture above is an FCP with no DAAR, which on the seed roster means
+     an OCU pilot — NOT an instructor, so his AAR cells are two-state and this
+     test stays about the plain ladder. The coupling is invisible; if that
+     `find` ever lands on an IP, the third state below is what it would meet. */
   it('SC NIGHT needs SC DAY, exactly as NAAR needs DAAR', async () => {
     const id = Object.keys(PEOPLE).find(i => PEOPLE[i].seat === 'FCP' && !PEOPLE[i].archived && !PEOPLE[i].quals.scDay && !PEOPLE[i].special)!
     expect(id).toBeTruthy()
@@ -90,6 +94,88 @@ describe('the Quals page (tfin)', () => {
     expect(PEOPLE[id].quals.scNight).toBe(true)
     await click($(`#qtbl td[data-q="${id}|scDay"]`))
     expect(PEOPLE[id].quals.scNight).toBe(false)
+    await click($('#qSave'))
+  })
+
+  /* ---- the AAR instructor mark (owner, 10 Aug 26) ------------------------
+     "A second click on a tick will show I instead of a tick. Next click will
+     go back to blank. And it just goes in this logic loop." Only instructor
+     PILOTS, only on the two AAR columns. */
+  const anIP = () => Object.keys(PEOPLE).find(i => PEOPLE[i].seat === 'FCP' && isInstrPilot(PEOPLE[i].q) && !PEOPLE[i].archived && !PEOPLE[i].special)!
+  const cellOf = (id: string, k: string) => $(`#qtbl td[data-q="${id}|${k}"]`)
+  const glyph = (id: string, k: string) => (cellOf(id, k).textContent || '').trim()
+
+  it('an instructor pilot\'s DAAR cell loops blank → tick → I → blank', async () => {
+    const id = anIP()
+    await click($('#qEdit'))
+    PEOPLE[id].quals.daar = false; PEOPLE[id].quals.naar = false
+    await act(async () => { notify() })
+    expect(glyph(id, 'daar'), 'starts blank').toBe('')
+    await click(cellOf(id, 'daar'))
+    expect(PEOPLE[id].quals.daar).toBe(true)
+    expect(glyph(id, 'daar')).toBe('✓')
+    await click(cellOf(id, 'daar'))
+    expect(PEOPLE[id].quals.daar, 'the second click promotes').toBe('I')
+    expect(glyph(id, 'daar'), 'and it reads as a letter, not a tick').toBe('I')
+    expect(cellOf(id, 'daar').querySelector('.qchk.qi'), 'carrying its own class').toBeTruthy()
+    await click(cellOf(id, 'daar'))
+    expect(PEOPLE[id].quals.daar, 'and the third closes the loop').toBe(false)
+    expect(glyph(id, 'daar')).toBe('')
+  })
+
+  it('a pilot who is not an instructor still only toggles', async () => {
+    const id = Object.keys(PEOPLE).find(i => PEOPLE[i].seat === 'FCP' && !isInstr(PEOPLE[i].q) && !PEOPLE[i].archived && !PEOPLE[i].special)!
+    PEOPLE[id].quals.daar = false
+    await act(async () => { notify() })
+    await click(cellOf(id, 'daar'))
+    expect(PEOPLE[id].quals.daar).toBe(true)
+    await click(cellOf(id, 'daar'))
+    expect(PEOPLE[id].quals.daar, 'no third state for him').toBe(false)
+  })
+
+  it('NAAR reaches I only once DAAR carries it — and never dead-ends before then', async () => {
+    /* the regression that matters: refusing the promotion outright would
+       strand the cell on a tick with blank unreachable, so while DAAR is a
+       plain tick the NAAR cell must simply behave as two-state. */
+    const id = anIP()
+    PEOPLE[id].quals.daar = true; PEOPLE[id].quals.naar = true
+    await act(async () => { notify() })
+    await click(cellOf(id, 'naar'))
+    expect(PEOPLE[id].quals.naar, 'it unticks rather than sticking').toBe(false)
+    PEOPLE[id].quals.daar = 'I'; PEOPLE[id].quals.naar = true
+    await act(async () => { notify() })
+    await click(cellOf(id, 'naar'))
+    expect(PEOPLE[id].quals.naar, 'with the day mark held, it promotes').toBe('I')
+  })
+
+  it('withdrawing the DAAR mark demotes NAAR rather than removing it', async () => {
+    const id = anIP()
+    PEOPLE[id].quals.daar = 'I'; PEOPLE[id].quals.naar = 'I'
+    await act(async () => { notify() })
+    await click(cellOf(id, 'daar'))          // I -> blank
+    expect(PEOPLE[id].quals.daar).toBe(false)
+    expect(PEOPLE[id].quals.naar, 'DAAR gone entirely takes NAAR with it').toBe(false)
+    PEOPLE[id].quals.daar = 'I'; PEOPLE[id].quals.naar = 'I'
+    await act(async () => { notify() })
+    /* now the softer case: DAAR demoted from I to a tick by way of the loop */
+    PEOPLE[id].quals.daar = true
+    deriveQuals(PEOPLE[id])
+    expect(PEOPLE[id].quals.naar, 'he keeps night currency, loses only the teaching').toBe(true)
+  })
+
+  it('a CAT change out of the instructor ranks strips the mark', async () => {
+    /* the invisible-privilege guard: the page only offers the third state to
+       instructor pilots, so an I left behind by a demotion would render as a
+       plain tick while still clearing a red warning in the engine. */
+    const id = anIP()
+    const was = PEOPLE[id].q
+    PEOPLE[id].quals.daar = 'I'; PEOPLE[id].quals.naar = 'I'
+    PEOPLE[id].q = 'C'
+    deriveQuals(PEOPLE[id])
+    expect(PEOPLE[id].quals.daar, 'demoted to a plain tick, not removed').toBe(true)
+    expect(PEOPLE[id].quals.naar).toBe(true)
+    PEOPLE[id].q = was
+    deriveQuals(PEOPLE[id])
     await click($('#qSave'))
   })
 

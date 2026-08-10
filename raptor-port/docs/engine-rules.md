@@ -199,6 +199,44 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (owner scenario run, 5 Aug 26) — a special PEOPLE record filling an unfilled
   seat is never named, ringed or chipped, the same exclusion `collectEvents`
   already applies to `allCrew`.
+- **AAR, and who may TEACH it** (owner, 10 Aug 26). Currency is read off the
+  remarks and has been since day one — `aarNeed` (`people.ts`) returns
+  `DAAR` / `NAAR` / `null`, ignores a `B:` segment (a WSO holds no AAR
+  currency) and already strips `NO AAR` / `NO DAAR` / `NO NAAR`. **It is
+  byte-identical to `reference/scheduler.html` and pinned by `tfin.js` group
+  V — do not touch it.** What is new sits on top of its answer.
+  Instructing AAR **from the rear cockpit is a separate sign-off**: an
+  IP / IR / FI is not automatically cleared to teach it. The Quals page
+  records the clearance by promoting the man's DAAR / NAAR tick to `'I'`
+  (`aarInstrOK`); the state is a **truthy string on purpose**, so `aarOK` and
+  every other "does he hold this?" reader keeps the right answer — a man
+  cleared to teach AAR is by definition current on it.
+  When the remarks call for AAR and the FRONT seat is not current, three
+  outcomes, all in `validate.ts` inside `f.acs.forEach`:
+  - back seat holds an instructor pilot **with** the matching mark → **nothing**.
+    A supervised training sortie is legal, and flagging it was the defect.
+  - back seat holds an instructor pilot **without** it → hard `AAR_INSTR`,
+    anchored `ac.key+'.w'` and named on him, because he is the man to change.
+    **Both crew ring and chip `Q`** — the matrix precedent; the jet is
+    illegal, not one seat, and ringing him alone would leave the pilot
+    actually flying the AAR reading clean.
+  - back seat empty, a WSO, a non-instructor pilot, or the ALL AVAIL sentinel
+    → hard `AAR_QUAL` on `.p`, exactly as before: nobody aboard can supervise.
+  The suppression is **per aircraft, not per formation** — "sitting behind"
+  was the ask, so an instructor in another jet of the same four-ship does not
+  clear it. **The sim box is out of scope** and structurally so: `simcrew`
+  records carry no remarks field, so there is no AAR need there to react to.
+  Neither code fires on the seed week (its only AAR string is `1A: NO AAR`),
+  which is what keeps `refwin.ts` unpatched and the parity suite byte-exact —
+  `engine/aarinstr.test.ts` pins that as a rot guard so it fails there first.
+  Two ladders, demoting to **different rungs**: `naar && !daar → false` (he
+  loses night currency), but `naar==='I' && daar!=='I' → true` (he keeps
+  night currency, loses only the clearance to teach it). Enforced at boot, on
+  every tick, and in `deriveQuals` — which is also the CAT-change handler, so
+  a man demoted out of the instructor ranks has his marks demoted with him.
+  Without that last one the privilege would survive invisibly: the page only
+  offers the third state to instructor pilots, so a stale `'I'` renders as an
+  ordinary tick while still clearing a red warning.
 - Leave: LL, OL, OIL (`isLocalLeave` = LL+OIL). LL/OIL may stand an SC SPARE;
   OL and Downchit may not (hard DNIF_FLY/LEAVE_FLY) even though spares are
   otherwise `saExempt`. SC SPARE carries no crew rest either way. SC currency
