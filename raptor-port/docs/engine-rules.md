@@ -104,14 +104,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   codes on the ROW — keeping the input in `day.input` too would print every
   clash twice. (Accepted rows raising advisory `SHIFT_SOFT` vs SC shifts
   where the raw input raised nothing is intended — do not "fix" it.) Accepted
-  to `'u'` the input itself clashes, like a Detachment. Known edge, by
+  to `'u'` the input itself clashes, as an `OD` does. Known edge, by
   design: an all-day input accepted to `'g'` makes a time-less ground row →
-  no event → no flag, same as any time-less scheduler-typed row — **except an
-  all-day `Fly`** (owner report, 4 Aug 26): he is flying with another squadron
-  the whole day, so `inputFlags` keeps that one case visible and the clash
-  prints once, off the input. `acceptInput` refuses Unavailable-typed inputs
-  outright (they are already issued, and promoting one would make its row
-  clash with its own source input).
+  no event → no flag, same as any time-less scheduler-typed row. Found on an
+  all-day `Fly` (owner report, 4 Aug 26) and GENERALISED on 10 Aug 26:
+  `inputFlags` now defers to the promoted row only where that row carries
+  real times, so every all-day promotion keeps its voice on the input and the
+  clash prints exactly once either way. `acceptInput` still refuses
+  Unavailable-typed inputs outright — leave does not belong on the Ground
+  Programme, and promoting one would make its row clash with its own source
+  input.
 - **Every input the validator can see clashes with every kind of tasking**
   (owner, 4 Aug 26). The "but tasked" loop used to cover leave and downchits
   only, so an overseas duty or an actioned-to-`'u'` personal input warned
