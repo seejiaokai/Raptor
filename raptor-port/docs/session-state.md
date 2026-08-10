@@ -48,9 +48,10 @@ built in one sitting.
 ## Branch state
 
 - Designated branch: `claude/read-handoff-docs-4vbob2`
-- Its PR is **open, #133**, three commits ahead of `main`.
-- **Do NOT reset the branch while #133 is open.** Once it merges, reset before
-  new work:
+- **PR #133 is MERGED, deployed and verified on the live site.** Nothing is in
+  flight. The branch was reset onto the merge commit afterwards, so it is
+  clean and ready for build two — do NOT stack new work on the merged
+  history. If it has drifted since, reset again first:
   `git fetch origin main && git checkout -B claude/read-handoff-docs-4vbob2 origin/main`
 
 ## Gates
@@ -69,9 +70,11 @@ errors, no 4xx, no horizontal overflow.
 
 ## Pick up here
 
-If #133 has merged, reset the branch and start **build two** — but only after
-asking him what he wants first, since he has not been shown build one working
-on the live site yet and may want changes to it before more is layered on.
+**Build two**, but ASK HIM FIRST. He was told build one is live and what it
+does, including the two consequences he should expect (a morning absence still
+bars a wave that steps before noon; a half-day man no longer counts in the
+day's "off" tally). He has not used it yet, so he may want changes to build
+one before more is layered on top.
 
 The four things build one deliberately left open are in `HANDOFF.md`, under
 the leave-types bullet. None of them is urgent and none is a defect.
