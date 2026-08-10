@@ -173,15 +173,17 @@ measurement here that is not machine-dependent — times swing 3× on this VM
 and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
-`probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 880**
-(measured 862), **week ≤ 5530** (measured 5056). Tripping one is not
+`probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 960**
+(measured 893), **week ≤ 5530** (measured 5078). Tripping one is not
 automatically a fault; it is a prompt to check the time and then raise the
 number deliberately, in the PR that adds the nodes, beside a fresh
 `npm run perf` showing the per-node cost held. The board has been raised
-three times that way — 770 → 810 for the stores `C` button and its on-chips
+four times that way — 770 → 810 for the stores `C` button and its on-chips
 in the remarks cell (7 Aug 26), 810 → 860 for the reorder grip, the two
-nudge buttons, the per-section Auto sort and Sort all (8 Aug 26), and
-860 → 880 for the late-input mark (9 Aug 26).
+nudge buttons, the per-section Auto sort and Sort all (8 Aug 26),
+860 → 880 for the late-input mark (9 Aug 26), and 880 → 960 when the two
+input panels became editable ground-programme rows (10 Aug 26 — about six
+nodes a row, and a wide margin because that count moves with data).
 
 **That last raise took a wider margin than the others, on purpose.** The
 late-input badge is one `<span>` per late input drawn, so on the day this

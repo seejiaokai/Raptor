@@ -31,9 +31,32 @@ most sessions end with nothing in flight. Check first, then branch:
   **overwriting** it, and commit it with the session's final push. Print the
   same content in chat.
 
+**Either way, it has to reach `main`.** The next session clones the DEFAULT
+BRANCH, not yours — a handoff sitting on `claude/<name>` behind an unmerged
+PR is invisible to the only reader it was written for, and so is a `git rm`
+that never landed. So the handoff commit gets the same treatment as any
+other: PR, checks, merge. Do not end the session on "pushed" — end it on
+merged, and if the PR cannot be merged, say so in chat, because the file the
+next session reads will then be the PREVIOUS session's.
+
 "Unfinished" means any of: an open or unmerged PR, a gate that is red or was
 never run, a half-applied edit, a question the owner never answered, a
-deliberate deferral, or a PR left under `subscribe_pr_activity` watch.
+half-finished piece of work THIS session deliberately stopped on, or a PR
+left under `subscribe_pr_activity` watch.
+
+**A standing item already recorded in `HANDOFF.md`'s open-work list is NOT
+by itself unfinished business, and must not keep this file alive.** The two
+files answer different questions: `HANDOFF.md` holds what is open about the
+PROJECT, this one holds what is open about the last SESSION. An owner-reserved
+decision, a known gap, a deferred nicety — those live in `HANDOFF.md` and stay
+there whether a session ran or not. Repeating one here does two kinds of
+damage: it duplicates (Rule 6), and it means the file can never be deleted, so
+`CLAUDE.md`'s promise that an absent file means nothing was pending quietly
+stops being true. That has already happened: the AVALON spare rule, reserved by
+the owner and correctly listed in `HANDOFF.md`, kept this file in the tree
+across four consecutive sessions that each ended with everything merged and
+deployed. Name such an item in ONE line under Open questions if the next
+session needs the pointer — never as the reason the file exists.
 
 ## Step 2 — gather state, in this order
 
@@ -84,6 +107,13 @@ memory:
   fact often sits in `README.md`, `raptor-port/README.md` and `CLAUDE.md`
   too. Grep the changed term across `*.md` and fix every copy. A member
   ceased to be view-only on 5 Aug and three docs went on saying otherwise.
+- **A NUMBER this session moved** — and this is the one the three bullets
+  above miss, because nothing was added, removed or re-ruled: test counts, DOM
+  ceilings, measured node counts, budgets, timings. They are quoted in prose
+  that no test reads, so nothing else can catch them. Two places carry them and
+  both went stale in one session: `HANDOFF.md` §The gates (the counts, which
+  you may only restate if you re-ran them) and `docs/probe-sweep.md` (the live
+  `DOM_CEILING` values and the list of raises). Check those two by name.
 
 Fix what you find, in this session's final commit. If a gap is real but
 outside what you were asked to do, put it in **Unfinished** — never leave it
