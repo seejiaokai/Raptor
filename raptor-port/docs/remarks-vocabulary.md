@@ -125,8 +125,13 @@ Worth stating, because these look like they might be:
 
 - **SC / AVALON / BB** waves are a property of the wave, set when it is
   created — not detected from its label.
-- **A downchit, leave, a detachment** are Inputs with dates, chosen from a
-  dropdown. Typing "downchit" in a remark does nothing.
+- **Leave, a medical code, overseas duty** are Inputs with dates, chosen from
+  a dropdown of twenty types. Typing "downchit" or "ATT B" in a remark does
+  nothing at all — pick the type. The **?** beside the type field says what
+  each abbreviation means and what it costs.
+- **AM / PM** on a leave or medical input are buttons, not words. They fill in
+  the start and end times (04:00–12:00, or 12:01 onwards) and a half-day only
+  closes its own half. Writing "AM" in the remarks changes nothing.
 - **The late-input mark** is worked out from when the input was last changed
   against the deadline on the Rules tab. Nothing in the text affects it.
 - **Initials, flight, area, traffic and the scheduler's notes** are read by

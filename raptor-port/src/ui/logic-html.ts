@@ -2,7 +2,7 @@
    of the live engine objects at render time, so the page cannot drift. */
 import { VCONF, SHIFT_HARD, kindOff, ruleFmt } from '../engine/rules'
 import { RANK, CHIP_LABEL, WCODE, chipText, wlbl } from '../engine/validate'
-import { LEAVE_TYPES, isLocalLeave, isLeave, isDownchit } from '../engine/inputs'
+import { INPUT_TYPES, inpMeta, canSpare, isLeave, isDownchit } from '../engine/inputs'
 import { lgT, hm24, hhmm } from '../engine/time'
 import { SC_DAY_FROM, SC_DAY_TO } from '../engine/rules'
 import { esc } from '../state/view'
@@ -31,9 +31,19 @@ export function lgRules(){
       : `<span>${hard?'Warning — he cannot be in two places':'Advisory — you can still give him academics'}</span>`;
     return `<span class="lgcell ${hard?'hard':'adv'}"><span class="k">${esc(KIND[k])}</span>`
       +body+(off?`<span class="lgmod">changed</span>`:'')+`</span>`;}).join('')+`</span>`;
-  const leaves=()=>`<span class="lgmatrix">`+Object.keys(LEAVE_TYPES).map((k:any)=>
-    `<span class="lgcell ${isLocalLeave(k)?'adv':'hard'}"><span class="k">${esc(k)}</span>`
-    +`<span>${esc(LEAVE_TYPES[k])} — ${isLocalLeave(k)?'may still stand an SC SPARE':'cannot be planned at all'}</span></span>`).join('')+`</span>`;
+  /* Every absence type the squadron books, and what each one costs. Built off
+     INPUT_META (10 Aug 26) rather than the old three-entry LEAVE_TYPES, and
+     the cell's severity follows canSpare — so this matrix cannot describe a
+     rule the engine does not apply, and a new type appears here the day it is
+     added to the table. Same source as the Inputs page's type legend. */
+  const rule=(t:any)=>{const m=inpMeta(t);
+    return !m?'':m.work?'no flying — may still stand a duty, sit a sim or take a ground slot'
+      :!m.local?'overseas — cannot be planned for anything, an SC SPARE included'
+      :m.grp==='med'?'cannot be planned, and cannot stand an SC SPARE'
+      :'cannot be planned, but may still stand an SC SPARE';};
+  const leaves=()=>`<span class="lgmatrix">`+INPUT_TYPES.map((k:any)=>
+    `<span class="lgcell ${canSpare(k)?'adv':'hard'}"><span class="k">${esc(k)}</span>`
+    +`<span>${esc((inpMeta(k)||{}).name||k)} — ${esc(rule(k))}</span></span>`).join('')+`</span>`;
 
   return [
   {g:'How a day is measured',
@@ -139,20 +149,23 @@ export function lgRules(){
 
   {g:'Leave, downchit and personal inputs',
    rows:[
-    {sev:'set',extra:leaves,src:()=>`LEAVE_TYPES`,
-     t:()=>`Leave is booked as one of ${lgV(Object.keys(LEAVE_TYPES).length)} things. All of them close a man to flying, sims, duties and ground slots:`},
+    {sev:'set',extra:leaves,src:()=>`INPUT_META`,
+     t:()=>`An absence is booked as one of ${lgV(INPUT_TYPES.length)} things. Every one of them closes the man for the hours it covers — flying, sims, duties and ground slots alike — from the moment it is typed:`},
     {sev:'hard',code:'LEAVE_FLY',
      t:()=>`On leave but planned to fly, sit a sim, stand a duty or take a ground slot — a Warning, and the <b>reason</b> is printed with it.`},
     {sev:'hard',code:'DNIF_FLY',
-     t:()=>`On a <b>downchit</b> and planned anyway — a Warning. A downchit closes everything, including an SC spare.`},
+     t:()=>`Medically down and planned anyway — a Warning. <b>HL</b>, <b>OML</b> and <b>ATT C</b> close everything, an SC spare included. <b>ATT B</b> is the exception: he may not fly, but a duty post, a sim seat or a ground slot is proper work for him and raises nothing.<span class="why">It is the only place the app separates “cannot fly” from “cannot come to work”. A man on ATT B is grounded, not absent.</span>`},
     {sev:'hard',code:'INPUT_FLY',
-     t:()=>`Any other input the validator can see — a Detachment, or a personal input a scheduler has actioned to Unavailable — clashing with a sortie, a sim, a duty or a ground slot. Un-actioned personal inputs are requests and raise nothing.`},
+     t:()=>`Any other input clashing with a sortie, a sim, a duty or a ground slot — a course, a meeting, an appointment, overseas duty. Since 10 Aug 26 these count the moment they are typed; a scheduler no longer has to accept one first.`},
     /* no `code`: this is a MARK, not a validator code — giving it one would
        put it in the fired-rules lookup and imply the engine emits it. */
     {sev:'note',set:['inputLead'],src:()=>`VCONF.inputLead ${VCONF.inputLead}`,
      t:()=>`A member's input is due <b>${lgV(ruleFmt('inputLead',VCONF.inputLead))}</b> before the week starts. One last changed after that deadline is marked <b>LATE</b> wherever it appears — the week, the board, the Inputs page, and the view-only programme.<span class="why">The deadline is the week's Monday minus this setting, and the deadline day itself is still on time: at ${esc(ruleFmt('inputLead',VCONF.inputLead))} an input for the week of Mon 17 Aug is due by Mon 3 Aug, and one touched on the 4th is late. What is measured is the <b>last change</b>, not the first submission, so an input raised early and then amended after the deadline still reads late — the deadline exists so the week can be planned against something that has stopped moving. This is a <b>mark only</b>: it raises no warning, closes no slot and changes nothing the validator sees. <b>Downchits are exempt</b> — going DNIF is not a decision a man makes in advance, and marking the one input type that is always last-minute would only teach everyone to ignore the mark. Leave and detachments are <b>not</b> exempt: those are applied for, and applying late is the thing this is about.</span>`},
-    {sev:'set',src:()=>`isLocalLeave · sparePost`,
-     t:()=>`<b>LL and OIL keep the man on the island</b>, so he may still be raised as an <b>SC SPARE</b> — standby is not a task, and it raises no flag. <b>OL and a downchit cannot</b>, and putting one of them on a spare line is a Warning.<span class="why">Standing spare means being reachable and fit to walk. Overseas he is neither; downchecked he is not fit. This is the one thing that IS checked on a spare line besides currency.</span>`},
+    {sev:'set',src:()=>`canSpare · sparePost`,
+     t:()=>`<b>Local keeps the man reachable</b>, so he may still be raised as an <b>SC SPARE</b> — standby is not a task, and it raises no flag. <b>Overseas cannot</b> (OL, OD), and <b>neither can any of the four medical codes</b>, HL, OML, ATT C and ATT B. Putting one of them on a spare line is a Warning.<span class="why">Standing spare means being reachable and fit to walk. Overseas he is not reachable; medically down he is not fit — which is why the medical codes are barred even though the man is on the island. Besides currency, this is the one thing that IS checked on a spare line.</span>`},
+    /* the half-days (owner, 10 Aug 26) */
+    {sev:'note',src:()=>`inp.s · inp.e · slotStart · slotEnd`,
+     t:()=>`Leave and medical absences can be booked <b>AM</b> (04:00–12:00), <b>PM</b> (12:01 onwards) or all day, and a half-day only closes its own half — a man on AM leave can still be planned for an afternoon wave.<span class="why">Each slot is judged against its own hours, and a sortie's hours run from the <b>step</b>, not the take-off. So a morning absence does not free a wave that starts walking before noon: Monday's first VL takes off 12:40 and steps at 11:40, which is still the morning. A row with no times on it at all is treated as covering the whole day rather than none of it — an unknown never clears an absence.</span>`},
    ]},
 
   {g:'The standby lines',

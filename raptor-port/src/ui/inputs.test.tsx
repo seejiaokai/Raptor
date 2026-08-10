@@ -7,7 +7,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo } from '../state/store'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { acceptInput, inpKey, acceptedDay } from '../engine/slots'
 import { canEditSched } from '../state/auth'
@@ -28,6 +28,15 @@ const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
 }
+
+/* the add form's type dropdown, for the tests that need a type with (or
+   without) the AM/PM span picker */
+const setType = async (v: string) => act(async () => {
+  const sel = $('#inType') as unknown as HTMLSelectElement
+  const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
+  setter.call(sel, v)
+  sel.dispatchEvent(new Event('change', { bubbles: true }))
+})
 
 /* The table opens on a today → +2-months window (owner, Aug 5). The seeded
    demo inputs are July 2026, so with the default window every assertion about
@@ -70,7 +79,7 @@ describe('the Inputs page (tfin)', () => {
   /* All day owns the whole window, so the two time fields go out of play. They
      were always `disabled`; the `dim` class is what makes that visible, so the
      field is not aimed at first and ignored second (owner, Aug 5). */
-  it('All day dims the two time fields, and un-ticking restores them', async () => {
+  it('All day dims the two time fields, and Custom restores them', async () => {
     const st = () => $('#inStartT') as HTMLInputElement
     const en = () => $('#inEndT') as HTMLInputElement
     const dim = (el: HTMLElement) => el.closest('.ifield')!.classList.contains('dim')
@@ -80,15 +89,77 @@ describe('the Inputs page (tfin)', () => {
     expect(dim(st()), 'start time reads as out of play').toBe(true)
     expect(dim(en()), 'end time reads as out of play').toBe(true)
 
-    await click($('#inAllday'))
-    expect(st().disabled, 'start time live once All day is off').toBe(false)
-    expect(en().disabled, 'end time live once All day is off').toBe(false)
-    expect(dim(st()), 'the fade lifts with the tick').toBe(false)
-    expect(dim(en()), 'the fade lifts with the tick').toBe(false)
+    /* the form opens on LL, a leave type, so it carries the four-way span
+       picker rather than the tick (owner, 10 Aug 26) */
+    await click($('#inSpan [data-span="custom"]'))
+    expect(st().disabled, 'start time live under Custom').toBe(false)
+    expect(en().disabled, 'end time live under Custom').toBe(false)
+    expect(dim(st()), 'the fade lifts with the span').toBe(false)
+    expect(dim(en()), 'the fade lifts with the span').toBe(false)
 
-    await click($('#inAllday'))            // back to all-day for the tests below
+    await click($('#inSpan [data-span="all"]'))   // back to all-day for the tests below
     expect(st().disabled).toBe(true)
     expect(dim(st())).toBe(true)
+  })
+
+  /* THE HALF-DAYS. AM and PM fill in the two time fields the form already had
+     — nothing new is stored but the label — and the picker is offered for
+     leave and medical types only, because the rest already take an exact
+     range, which is finer than a half. */
+  it('AM and PM fill the window, and only leave and medical are offered them', async () => {
+    const st = () => $('#inStartT') as HTMLInputElement
+    const en = () => $('#inEndT') as HTMLInputElement
+    await click($('#inSpan [data-span="am"]'))
+    expect([st().value, en().value]).toEqual(['04:00', '12:00'])
+    await click($('#inSpan [data-span="pm"]'))
+    expect([st().value, en().value]).toEqual(['12:01', '23:59'])
+    /* the minutes reach the model, and the half rides along as a label */
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    await click($('#inAdd'))
+    expect(INPUTS[0].allday).toBe(false)
+    expect([INPUTS[0].s, INPUTS[0].e]).toEqual([721, 1439])
+    expect(INPUTS[0].half).toBe('pm')
+    await act(async () => { undo() })
+    /* an activity type keeps the plain tick, and carries no half */
+    await setType('Training')
+    expect($('#inSpan')).toBeFalsy()
+    expect($('#inAllday')).toBeTruthy()
+    await click($('#inAdd'))
+    expect(INPUTS[0].type).toBe('Training')
+    expect(INPUTS[0].half).toBeUndefined()
+    await act(async () => { undo() })
+    await setType('LL')
+    await click($('#inSpan [data-span="all"]'))
+  })
+
+  /* switching away from a half-capable type must not strand an invisible half
+     on the record — the row would claim a window nobody could see or change */
+  it('changing to a type with no halves clears the half', async () => {
+    await click($('#inSpan [data-span="am"]'))
+    await setType('Appointment')
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    await click($('#inAdd'))
+    expect(INPUTS[0].half).toBeUndefined()
+    await act(async () => { undo() })
+    await setType('LL')
+    await click($('#inSpan [data-span="all"]'))
+  })
+
+  /* the legend the owner asked for: a button by the type field, generated from
+     the same table the rules come off, so it cannot describe a rule the engine
+     does not apply */
+  it('the type legend opens, names every type, and closes on an outside click', async () => {
+    expect($('#inTypePop'), 'closed to start with').toBeFalsy()
+    await click($('#inTypeHelp'))
+    const pop = $('#inTypePop')!
+    expect(pop, 'opens on the ?').toBeTruthy()
+    for (const t of INPUT_TYPES) expect(pop.textContent, t).toContain(t)
+    /* and it says what each one DOES, not just what it stands for */
+    expect(pop.textContent).toContain('may still stand an SC spare')
+    expect(pop.textContent).toContain('no flying')
+    expect(pop.textContent).toContain('overseas')
+    await act(async () => { document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })) })
+    expect($('#inTypePop'), 'closes on a press outside').toBeFalsy()
   })
 
   it('the person filter is called Personnel, not All flights', () => {
@@ -128,7 +199,7 @@ describe('the Inputs page (tfin)', () => {
     expect(INPUTS[0].e).toBe(1439)
     await act(async () => { undo() })
     expect(($('#inStartT') as HTMLInputElement).disabled).toBe(true)
-    await click($('#inAllday'))
+    await click($('#inSpan [data-span="custom"]'))
     expect(($('#inStartT') as HTMLInputElement).disabled).toBe(false)
     await setV($('#inStartT'), '10:20')
     await setV($('#inEndT'), '11:35')
@@ -142,7 +213,7 @@ describe('the Inputs page (tfin)', () => {
     const n = INPUTS.length
     await click($('#inAdd'))
     expect(INPUTS.length).toBe(n)
-    await click($('#inAllday'))                      // back to all-day for later tests
+    await click($('#inSpan [data-span="all"]'))       // back to all-day for later tests
   })
 
   it('the ✕ deletes a row, and undo resurrects it', async () => {

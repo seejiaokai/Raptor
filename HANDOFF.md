@@ -78,6 +78,39 @@ run test:e2e` 59/59, and `npm run probes:adapted` 6/6 plus `npm run perf` 7/0
 - **Ground rows accepted before the Aug-26 callsign fix** keep the person-ID
   form in `who` and stay unresolved where id ≠ lowercased callsign (Hao Wen,
   X-Ray) — same visible behaviour as before, no migration.
+- **The leave-types build left four things open** (shipped 10 Aug 26; rules in
+  `docs/engine-rules.md` §INPUT_META and §Availability is time-aware).
+  - **The AVALON spare rule is RESERVED BY THE OWNER** — he said it follows
+    "the same modality" as the SC spare and that he would specify it
+    separately. **Do not infer it.** The rule is already written against "a
+    standalone spare" with SC the only kind enforced, so his answer is a
+    small edit rather than a re-cut. AVALON/BB are `noconf` today, so no
+    spare rule reaches them at all.
+  - **An overnight shift's midnight tail is not checked against tomorrow's
+    leave.** An AVALON shift runs 19:00–07:00 and its tail belongs to the
+    next day. `slotBar` already rolls back a day for the SC currency check
+    and mirroring it is about four lines — but the VALIDATOR does not do
+    this either (`collectEvents` builds a day's inputs for that day only), so
+    adding it to the picker alone would make the picker stricter than the
+    warning list, which is the exact drift the SC comment warns against. Fix
+    both together or neither.
+  - **A half-day absentee is no longer counted in the day-info "off" tally.**
+    Deliberate — `dayOff` means off for the WHOLE day, and it also drives the
+    palette's struck-through rank, where a man available all afternoon must
+    not read as gone. But it is a number on screen that moved, so it is
+    written down rather than left to be rediscovered.
+  - **A morning absence still bars a sortie that STEPS before noon.** The
+    flying window is padded to the step time because that is what the
+    validator judges against — Monday's first VL takes off 12:40 and steps at
+    11:40. Correct, and the owner was told; expect it to be reported as a bug
+    at least once. The levers are the AM boundary or the step padding, never a
+    picker rule that disagrees with the warning list.
+- **The activity types warn but do not bar.** Training, CSE, Meeting, Fly,
+  Personal, Appointment and Other now reach the validator the moment they are
+  typed, so planting a man through one raises a warning — but they are not in
+  `isAway`, so the palette still offers him and no slot is struck through.
+  That matches how an actioned personal input has always behaved and nobody
+  asked to change it; the inconsistency is noted here rather than fixed.
 - **Stores configuration — the residuals.** The feature shipped (owner,
   7–8 Aug 26; contracts in `docs/ui-contracts.md` §Stores configuration and
   `docs/engine-rules.md` §Stores configuration). What is still open:
@@ -116,6 +149,13 @@ run test:e2e` 59/59, and `npm run probes:adapted` 6/6 plus `npm run perf` 7/0
     a number nobody has hit is a guess; the fix when it bites is the
     ordinary one (check the time, raise the ceiling in the PR that needs
     it). Reasoning: `docs/probe-sweep.md` §The performance gate.
+- **Editing an input from the week or the board is BUILD TWO of the
+  leave-types work, and is not started** (owner, 10 Aug 26 — he asked for
+  full edit: times, type, remarks and delete, from Edit Schedule or the
+  schedule board, writing back to the Inputs page). Build one (the type
+  table, the rules, the legend and the half-days) shipped; this did not. The
+  design note for build one is
+  `docs/superpowers/specs/2026-08-10-leave-types-design.md`.
 - **A USER GUIDE is wanted, for users and admins** (owner, 10 Aug 26 — "I
   eventually want u to create a user guide for this app"). Not started, and
   not urgent. The half that cannot be worked out by looking at the screen is
@@ -142,6 +182,11 @@ run test:e2e` 59/59, and `npm run probes:adapted` 6/6 plus `npm run perf` 7/0
     `refwin.ts`'s swap list: rewording it breaks the `html.test.ts` byte
     compare and needs a matching reference patch, which is a bigger change
     than the wording is worth today.
+- **Nobody is on ATT B in the demo data**, so the one type that separates
+  "cannot fly" from "cannot come to work" is never exercised on screen.
+  Deliberate: seeding it would put a divergence in front of the reference
+  parity gate, which has no such axis. Set it by hand on the Inputs page to
+  see it. Same shape as the AAR-instructor gap below.
 - **Nobody holds the AAR instructor mark in the demo data.** Deliberate — the
   seed's only AAR remark is `1A: NO AAR`, so no line asks for refuelling and
   neither AAR rule fires anywhere in the week regardless. The mark is set by
@@ -326,7 +371,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `probes/run.cjs` | Runs any reference probe against the reference build or the port. |
 | `probes/perf-port.cjs` | The perf gate (`npm run perf`) — measures BOTH builds at once, round for round, and asserts no regression per node drawn plus a DOM ceiling per surface. |
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
-| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it and patches the in-memory reference for every deliberate divergence (`retier`, `remap`, `rematrix`, `relead`, `rebrief`, `rering`, `reduty`) so both engines compute from identical data. Each patch is explained beside the rule it serves in `docs/engine-rules.md`. NOT a test file. |
+| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it and patches the in-memory reference for every deliberate divergence (`retier`, `remap`, `rematrix`, `reinput`, `redn`, `relead`, `rebrief`, `rering`, `reduty`) so both engines compute from identical data. Each patch is explained beside the rule it serves in `docs/engine-rules.md`. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table, and the performance gate's reasoning. |
 | `docs/remarks-vocabulary.md` | Every piece of text a scheduler can TYPE that turns a rule on — the seat tags, AAR, late show, IRT, the sim brief lead — plus the things that look like text triggers and are not. Written in a user guide's voice, for the guide the owner wants (10 Aug 26). A new text trigger belongs here as well as in `engine-rules.md`. |
 | `docs/session-state.md` | The last session's leftovers — **often absent, and absent is meaningful**: it exists only while something is genuinely pending, and the session that clears the last item deletes it. This file holds the durable state; that one holds what a session could not finish. Written by `.claude/skills/session-handoff`. |
