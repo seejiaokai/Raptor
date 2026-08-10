@@ -8,7 +8,7 @@ import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc } from '../state/view'
-import { ORD, puck, rowCls, accCtl, lateTag, lateRowCls, lateRowTitle } from './html'
+import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateRowCls, lateRowTitle } from './html'
 
 /* ---- reorder grip + nudge buttons (owner, 8 Aug 26) -----------------------
    A grip at the far left on desktop, ▲/▼ in the row's own control cluster on a
@@ -299,16 +299,19 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
   }
   return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',ro)+`</div></div>`;
 }
-/* read-only ALWAYS: these rows are aircrew-submitted inputs, not schedule
-   data — there are no funnel keys for them, and the place to change them is
-   the Inputs page. Reuses the .sbi-row look from the bands panel below. */
-function sbInpRow(di:any,inp:any,acc:any,pv:any){
+/* The row carries no funnel keys — an input is not schedule data — so it has
+   never been editable in place. Pressing its TYPE CHIP (owner, 10 Aug 26)
+   opens the same dialog the week does, which writes back through
+   ui/inputedit.tsx; ro is the board's read-only test (a preview, or a session
+   that may not edit), and it withholds that exactly as it withholds Accept.
+   Reuses the .sbi-row look from the bands panel below. */
+function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any){
   const pk=PEOPLE[inp.person]
     ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
     : `<span class="itxt">${esc(inp.person)}</span>`;
   const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
   return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
-    +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`
+    +inpEditLabel(inp,!(ro??pv),inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
     +sbiRmk(inp)
     +(acc&&!pv?accCtl(di,inp):'')+`</div>`;
 }
@@ -322,19 +325,19 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any){
    showing the buttons. */
 export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
-  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme</span></div><div class="sb-pb">`;
+  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme, or press a type to edit it</span></div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
   const acRo=ro??pv;
-  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo); });
+  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo,acRo); });
   return s+`</div></div>`;
 }
 /* Leave, downchits and detachments close a man's day on their own — nobody
    accepts them, so this panel is read-only and carries no controls. */
-export function sbUnavailPanel(d:any,di:any,day?:any){
+export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isUnavail(inp.type)||inp.acc==='u');
-  let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable <span class="sub">leave, downchits and detachments — edit on the Inputs page</span></div><div class="sb-pb">`;
+  let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable <span class="sub">leave, medical and overseas duty — press a type to edit it</span></div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nil — everybody is available today.</div>`;
-  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,true); });
+  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,true,ro); });
   return s+`</div></div>`;
 }
 /* the board never carried the amendment marks the week view had — added with

@@ -176,7 +176,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   makes a TIME-LESS row, which never becomes an event and so can carry
   nothing — that one stays visible on the input itself.
 - **Half-days** (owner, 10 Aug 26). Leave and medical types (`half` in the
-  table) can be booked AM (04:00–12:00), PM (12:01–23:59) or all day. Stored
+  table) can be booked AM (00:00–12:00), PM (12:01–23:59) or all day. Stored
   as the `s`/`e` minutes the record already had, plus a `half:'am'|'pm'`
   LABEL — the engine reads only `s`/`e`. A half-day closes its own half only;
   see §Availability is time-aware below.
