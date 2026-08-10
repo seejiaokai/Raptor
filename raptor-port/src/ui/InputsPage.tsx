@@ -150,7 +150,7 @@ function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: 
 function typeRule(t: string) {
   const m = inpMeta(t); if (!m) return ''
   if (m.work) return 'no flying — may still stand a duty, sit a sim or take a ground slot'
-  if (!m.local) return 'overseas — cannot be planned for anything, an SC spare included'
+  if (!m.local) return 'out of reach — cannot be planned for anything, an SC spare included'
   if (m.grp === 'med') return 'cannot be planned, and cannot stand an SC spare'
   return 'cannot be planned, but may still stand an SC spare'
 }

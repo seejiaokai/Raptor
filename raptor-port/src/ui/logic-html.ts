@@ -38,12 +38,17 @@ export function lgRules(){
      added to the table. Same source as the Inputs page's type legend. */
   const rule=(t:any)=>{const m=inpMeta(t);
     return !m?'':m.work?'no flying — may still stand a duty, sit a sim or take a ground slot'
-      :!m.local?'overseas — cannot be planned for anything, an SC SPARE included'
+      :!m.local?'out of reach — cannot be planned for anything, an SC SPARE included'
       :m.grp==='med'?'cannot be planned, and cannot stand an SC SPARE'
       :'cannot be planned, but may still stand an SC SPARE';};
+  /* a code only earns a spelt-out name when it IS an abbreviation — "Training
+     — training" says nothing twice. Same test offWord and the Inputs page's
+     type legend make. */
+  const tname=(t:any)=>{const n=((inpMeta(t)||{}).name)||'';
+    return n.toLowerCase()===String(t).toLowerCase()?'':n+' — ';};
   const leaves=()=>`<span class="lgmatrix">`+INPUT_TYPES.map((k:any)=>
     `<span class="lgcell ${canSpare(k)?'adv':'hard'}"><span class="k">${esc(k)}</span>`
-    +`<span>${esc((inpMeta(k)||{}).name||k)} — ${esc(rule(k))}</span></span>`).join('')+`</span>`;
+    +`<span>${esc(tname(k))}${esc(rule(k))}</span></span>`).join('')+`</span>`;
 
   return [
   {g:'How a day is measured',
