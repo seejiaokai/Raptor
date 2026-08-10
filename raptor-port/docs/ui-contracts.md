@@ -537,6 +537,15 @@ fields the dialog exists to change. A refusal (bad window) keeps it open with
 the typing in it; the one exception is a row that has gone from under it,
 where there is nothing left to hold the typing for.
 
+**The two time boxes are 130px, and that is measured, not chosen.** Chromium
+renders `<input type=time>` in the BROWSER's locale, which on en-US is a
+12-hour field — at 110px it drew `12:00 A` with the marker cut off, found on
+the deployed page after every gate was green. Nothing else can catch it: the
+truncation happens inside the field's own shadow DOM, so `scrollWidth` reads
+108 against a 110px box and reports no overflow. The width is pinned in
+`e2e/geometry.spec.ts`. (The Inputs page's own pair get away with 78px
+because they stretch to the form column; this dialog sizes its own.)
+
 **Person and dates are NOT in it**, and the footer says so. The four fields
 the owner asked for all keep the row on the day it was opened from; moving it
 to another man or another date makes it vanish from the surface being looked
