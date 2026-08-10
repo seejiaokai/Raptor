@@ -18,20 +18,22 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 **Every gate is green at this commit**, run first-hand: `npm test` 930 tests
 across 52 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 64/64, and `npm run probes:adapted` 6/6 (neither of the last two
-in CI). `npm run perf` read 6/1 then 7/0 twice — the one-day-edit flake below,
-settled against the parent commit by the paired recipe (rounds in
-`docs/probe-sweep.md`). Re-state these only after re-running them.
+run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
+(neither of the last two in CI). Re-state these only after re-running them.
 
-- **`npm run perf` does NOT read the same way twice, and that is not a fault
-  in the code.** Six of its seven assertions are solidly green every run; the
-  seventh, the one-day-edit per-node budget, straddles its own 1.15 line on
-  this container (nine readings of one unchanged commit: 1.08×–1.23×), so it
-  returns 7/0 on some runs and 6/1 on others. A single red proves nothing.
-  The only measurement that settles it is a PAIRED one — recipe and numbers
-  in `docs/probe-sweep.md` §The performance gate. The budget was deliberately
-  NOT raised to make it quiet: one loosened to cover estimator noise stops
-  catching a real regression.
+- **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
+  DOM ceilings and two behavioural checks. The three per-node TIMING budgets
+  were removed as assertions on the owner's decision, after he asked what
+  they had ever caught: nothing, in the life of this repo, while the ceilings
+  were right all four times they fired. The timings are still measured and
+  printed, so a real slowdown is still visible; a wandering number just isn't
+  a failure any more. **Do not re-add them, and do not "fix" one by widening
+  it** — a bar loose enough to cover a 3×-swinging estimator would pass a
+  genuine doubling too. Reasoning and the counted record:
+  `docs/probe-sweep.md` §The three timing budgets stopped being assertions.
+  If a printed timing ever looks wrong, the PAIRED recipe in the same file is
+  still how to settle it: one reading proves nothing on this container (nine
+  readings of one unchanged commit spread 1.08×–1.23×).
 - **`probes:adapted` and `perf` do NOT serve themselves** — start
   `npx vite preview --port 4173` first or both fail with
   `ERR_CONNECTION_REFUSED`, which reads like a code fault and is not.
@@ -395,7 +397,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | file | what it does |
 |---|---|
 | `probes/run.cjs` | Runs any reference probe against the reference build or the port. |
-| `probes/perf-port.cjs` | The perf gate (`npm run perf`) — measures BOTH builds at once, round for round, and asserts no regression per node drawn plus a DOM ceiling per surface. |
+| `probes/perf-port.cjs` | The perf gate (`npm run perf`) — measures BOTH builds at once, round for round. Asserts a DOM ceiling per surface plus two behavioural checks; PRINTS the per-node timings without asserting them (10 Aug 26 — see §The gates, and how they lie). |
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
 | `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it and patches the in-memory reference for every deliberate divergence (`retier`, `remap`, `rematrix`, `reinput`, `redn`, `relead`, `rebrief`, `rering`, `reduty`) so both engines compute from identical data. Each patch is explained beside the rule it serves in `docs/engine-rules.md`. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table, and the performance gate's reasoning. |
