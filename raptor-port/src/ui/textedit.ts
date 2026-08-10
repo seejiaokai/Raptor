@@ -5,6 +5,8 @@
    model rather than by a rebuild. */
 import { DAYS } from '../engine/data'
 import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
+import { inpById, inpTimeText } from '../engine/inputs'
+import { setInpField } from './inputedit'
 import { markEdit } from '../engine/publish'
 import { validate } from '../engine/validate'
 import { afterSchedMutate } from '../state/view'
@@ -53,6 +55,22 @@ export function routeFocusOut(e: FocusEvent) {
     const p = tx.dataset.txt!
     if (txtSet(p, tx.textContent)) { markEdit(); txtCommit() }
     else { const v = txtGet(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v)) }
+    return
+  }
+  /* an INPUT's times and remarks (owner, 10 Aug 26). Outside the data-txt
+     grammar on purpose: an input is not schedule data, it has no funnel key,
+     and its write is not a schedule write — setInpField goes through
+     writeInputsBatch and the accepted-row relink instead of txtSet/markEdit.
+     A refusal (an unreadable time, an end before its start) heals the cell
+     from the model, exactly as a rejected txtSet does. */
+  const ip = t.closest('[data-inp]') as HTMLElement | null
+  if (ip) {
+    const [id, field] = ip.dataset.inp!.split('.')
+    const inp = inpById(id)
+    if (!inp) return                       // deleted or undone from under the caret
+    const ok = setInpField(inp, field as any, ip.textContent)
+    if (ok) txtCommit()
+    else heal(ip, field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field))
     return
   }
   const it = t.closest('[data-intimes]') as HTMLElement | null
@@ -113,6 +131,21 @@ export function routeFocusOut(e: FocusEvent) {
 
 export function routeKeyDown(e: KeyboardEvent) {
   const t = e.target as HTMLElement
+  /* an input's cells get the same two keys as every other text cell — Enter
+     commits (by blurring, which runs the branch above), Escape puts the model
+     value back. They are not data-txt keys, so they are restored from the
+     input rather than through txtGet. */
+  const ic = t && t.closest && t.closest('[data-inp]') as HTMLElement | null
+  if (ic) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ic.blur() }
+    else if (e.key === 'Escape') {
+      const [id, field] = ic.dataset.inp!.split('.')
+      const inp = inpById(id); e.preventDefault()
+      if (inp) ic.textContent = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
+      ic.blur()
+    }
+    return
+  }
   const tx = t && t.closest && t.closest('[data-txt]') as HTMLElement | null
   /* Escape outside a text field puts an armed slot down — the reference's
      global escape hatch (ref 4201), lost in the port. Inside a text field
@@ -135,5 +168,5 @@ export function routeKeyDown(e: KeyboardEvent) {
    under the caret (the reference's txtCommit guard, as a predicate) */
 export function editingText() {
   const a = document.activeElement as any
-  return !!(a && a.closest && (a.closest('[data-txt]') || a.isContentEditable))
+  return !!(a && a.closest && (a.closest('[data-txt]') || a.closest('[data-inp]') || a.isContentEditable))
 }

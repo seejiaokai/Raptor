@@ -30,6 +30,17 @@ two. No other direction was given, and none was asked for.
   width. **This is the case FOR the standing live-view instruction**, and it is
   worth remembering next time it feels like a formality.
 
+- **AND THEN HE ASKED FOR IT INLINE.** Seeing build two, the owner came back:
+  "instead of pressing a type to edit... edit the input directly like changing
+  the start and end time... no need to open a new window... on personal inputs
+  and unavailable in schedule board, they can be editable in the same modality
+  as ground programme." So the times and the remarks are now ordinary cells on
+  both surfaces, and on a live board the two panels draw their rows AS ground-
+  programme rows. The dialog stays behind the type label for the two things a
+  text cell cannot be: the type, and delete.
+  Rules and the measurements behind them: `docs/ui-contracts.md` §Editing an
+  input from the schedule.
+
 ## Unfinished
 
 - **The AVALON spare rule is RESERVED BY HIM** (unchanged for three sessions
@@ -53,8 +64,8 @@ two. No other direction was given, and none was asked for.
 
 Run first-hand and locally at this commit, from `raptor-port/`:
 
-- `npm test` 911 across 52 files · `npm run build` clean ·
-  `node reference/tfin.js` 728/0 · `npm run test:e2e` 62/62
+- `npm test` 918 across 52 files · `npm run build` clean ·
+  `node reference/tfin.js` 728/0 · `npm run test:e2e` 64/64
 - `npm run probes:adapted` 6/6 · `npm run perf` 7/0
 
 `test:e2e` was run with no preview up; the probes and `perf` need one. The
@@ -69,7 +80,18 @@ fails at the old width gave a false PASS, because a preview left up on 4173 was
 still serving the previous bundle. Killed it, and the control case failed as it
 should.
 
-**No DOM ceiling was raised, and one nearly was.** An earlier shape of this
+**The board's DOM ceiling WAS raised for the inline edit, 880 -> 960**, and the
+argument is in `probes/perf-port.cjs` beside the number: each input row now
+carries a grip track, a type control, two time boxes, a remarks box and a
+control cell instead of four read-only spans — 893 measured, up 29 over five
+rows. The margin is wide on purpose because this count moves with DATA.
+The one-day-edit gate went red twice at 1.18x-1.19x on the way, and that was
+settled the way `docs/probe-sweep.md` says to settle it rather than by
+re-running: three PAIRED rounds against the parent commit, built into a
+worktree on a second port, gave -0.04, -0.02 and +0.07 — the parent straddles
+the same line in the same window. The table is in that file.
+
+**Earlier in the session, no ceiling was raised, and one nearly was.** An earlier shape of this
 work (a separate button per row) took the board from 862 to 872 against its
 880 ceiling and the ceiling was raised to 920 for it. Making the label the
 control put the count back to 864 — one node in, one node out — so that raise

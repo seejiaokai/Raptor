@@ -13,6 +13,7 @@ import { initStore, setSession, notify, undo, writeInputsBatch } from '../state/
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { acceptInput, acceptedDay, inpKey } from '../engine/slots'
+import { inpId } from '../engine/inputs'
 import { INPEDIT, setInpEdit } from './pops'
 import { HALF_AM } from './inputedit'
 
@@ -91,6 +92,98 @@ describe('the control — which surfaces carry it, and who may press it', () => 
     expect($$('#schedBoard .pinp [data-inpedit]').length).toBeGreaterThan(0)
     expect($$('#schedBoard .unav [data-inpedit]').length).toBeGreaterThan(0)
     await click($('#sbClose'))
+  })
+})
+
+/* ---- typing in the cells (owner, 10 Aug 26 — "no need to open a new window")
+   The commit is commitInputEdit's, already covered above, so these pin the
+   part that is new: the address survives the list moving under it, blank
+   times mean all day, and a refusal changes nothing. */
+describe('an input edited in place', () => {
+  /* the cells address an input by its own id, never by where it sits */
+  const cell = (inp: any, f: string) => $(`#eWeek .day[data-day="0"] [data-inp="${inpId(inp)}.${f}"]`)
+  /* rows are created the way the Inputs page creates them — inside the write,
+     with an address already on them, so the snapshot the add pushes carries it */
+  const plant = async (r: any) => {
+    await act(async () => { writeInputsBatch(() => { inpId(r); INPUTS.unshift(r) }); notify() })
+    return r
+  }
+  const type = async (el: Element, text: string) => {
+    await act(async () => { (el as HTMLElement).textContent = text })
+    await act(async () => { el.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+  }
+
+  it('a start time on an all-day row makes it timed, to the end of the day', async () => {
+    const inp: any = { person: 'pike', date: MON, allday: true, s: 0, e: 1439, type: 'LL', remarks: '', mod: 'now' }
+    await plant(inp)
+    expect(cell(inp, 'str').textContent).toBe('')          // all day shows nothing
+    await type(cell(inp, 'str'), '0900')
+    expect([inp.allday, inp.s, inp.e]).toEqual([false, 540, 1439])
+  })
+
+  /* clearing EITHER cell is the way back, and it has to be: with the
+     symmetric "clear both" rule the first clear defaulted the other end to
+     the edge of the day, so the pair was never blank at once and an all-day
+     row was a one-way trip. */
+  it('clearing a time puts it back to all day', async () => {
+    for (const f of ['str', 'end']) {
+      const inp: any = { person: 'pike', date: MON, allday: false, s: 540, e: 660, type: 'LL', remarks: '', mod: 'now' }
+      await plant(inp)
+      await type(cell(inp, f), '')
+      expect(inp.allday, `cleared ${f}`).toBe(true)
+    }
+  })
+
+  it('a window that lands exactly on a half gets the half label, and loses it again', async () => {
+    const inp: any = { person: 'pike', date: MON, allday: true, s: 0, e: 1439, type: 'LL', remarks: '', mod: 'now' }
+    await plant(inp)
+    await type(cell(inp, 'str'), '0000')
+    await type(cell(inp, 'end'), '1200')
+    expect(inp.half).toBe('am')
+    await type(cell(inp, 'end'), '1300')
+    /* commitInputEdit DELETES the label rather than blanking it, so a record
+       that is not a half carries no half at all */
+    expect(inp.half).toBeUndefined()
+  })
+
+  it('an unreadable time and a backwards window are both refused, and the cell heals', async () => {
+    const inp: any = { person: 'pike', date: MON, allday: false, s: 540, e: 660, type: 'LL', remarks: '', mod: 'now' }
+    await plant(inp)
+    await type(cell(inp, 'str'), 'lunchtime')
+    expect([inp.s, inp.e]).toEqual([540, 660])
+    expect(cell(inp, 'str').textContent).toBe('09:00')
+    await type(cell(inp, 'end'), '0800')                   // before the start
+    expect([inp.s, inp.e]).toEqual([540, 660])
+    expect(cell(inp, 'end').textContent).toBe('11:00')
+  })
+
+  it('remarks commit, and one edit is one undo step', async () => {
+    const inp: any = { person: 'pike', date: MON, allday: true, s: 0, e: 1439, type: 'LL', remarks: 'before', mod: 'now' }
+    await plant(inp)
+    await type(cell(inp, 'rmks'), 'after')
+    expect(inp.remarks).toBe('after')
+    await act(async () => { undo(); notify() })
+    expect((INPUTS.find((r: any) => r.iid === inp.iid) || {}).remarks).toBe('before')
+  })
+
+  /* THE ADDRESS IS THE POINT. INPUTS.unshift renumbers every row, so a cell
+     that had captured a position when it was drawn would commit onto the
+     wrong man's leave — which is why these carry an id at all. */
+  it('a row added above it does not move where the cell writes', async () => {
+    const mine: any = { person: 'pike', date: MON, allday: true, s: 0, e: 1439, type: 'LL', remarks: 'mine', mod: 'now' }
+    await plant(mine)
+    const other: any = { person: 'nasty', date: MON, allday: true, s: 0, e: 1439, type: 'LL', remarks: 'not mine', mod: 'now' }
+    await plant(other)
+    /* re-found by the SAME address after the list moved — that is the claim */
+    await type(cell(mine, 'rmks'), 'still mine')
+    expect(mine.remarks).toBe('still mine')
+    expect(other.remarks).toBe('not mine')
+  })
+
+  it('the view-only week gets no cells at all', async () => {
+    await page('viewsched')
+    expect($$('#vWeek [data-inp]')).toHaveLength(0)
+    await page('editsched')
   })
 })
 

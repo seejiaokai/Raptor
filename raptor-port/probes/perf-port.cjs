@@ -239,7 +239,25 @@ async function trial(b, measureSize) {
      markup: every input now reaches the validator the moment it is typed, so
      the day's issue list gained entries. Whoever needs the next raise should
      say what they measured, as these three notes do. */
-  const DOM_CEILING = { week: 5530, board: 880 }
+  /* board raised 880 -> 960 on 10 Aug 26: the Personal Inputs and Unavailable
+     panels now draw their rows as GROUND-PROGRAMME rows (owner — "they can be
+     editable in the same modality as ground programme"), so each one carries a
+     grip track, a type control, two time boxes, a remarks box and a control
+     cell instead of four read-only spans. Measured through this gate's own
+     boot on the day it opens: 893, up 29 over five input rows — about six
+     nodes a row.
+     960 rather than 900, and the reason is the one the note above already
+     names: this count moves with DATA. At six nodes a row a day that gains
+     ten inputs adds sixty, and a ceiling set just over today's reading would
+     go red on a busy Monday with nothing wrong. 67 nodes of margin is about
+     eleven more input rows, and still an order below what a DOM explosion
+     looks like. Per-node cost held in the same run: board 0.58x, noop
+     0.59x/0.32x, all unmoved from their recorded readings — the rows got
+     bigger, not more expensive to draw.
+     The week is NOT raised: same change, +13 nodes across seven days
+     (5078 against 5530), because a week row swaps its spans for cells rather
+     than gaining a column. */
+  const DOM_CEILING = { week: 5530, board: 960 }
   for (const [surface, s] of Object.entries(size)) {
     const cap = DOM_CEILING[surface]
     T(`perf · the ${surface} stays under its recorded DOM ceiling (${cap})`,

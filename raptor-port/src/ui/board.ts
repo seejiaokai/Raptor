@@ -2,7 +2,7 @@
    delegated handlers — the reference's bodies, verbatim, with repaint via the
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
-import { INPUTS, inputCoversDate } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { isStandalone, makeStandalone, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
@@ -15,6 +15,7 @@ import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/k
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView } from './html'
+import { setInpField } from './inputedit'
 import { STORE_CFG } from '../engine'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -525,6 +526,23 @@ export function boardChange(e: Event) {
     if (RO) { const [rdi, rgi] = s.dataset.wsel!.split('.'); const rw = DAYS[+rdi!]?.waves?.[+rgi!]; if (rw) s.value = labelToTitle(rw); return }
     const [di, gi] = s.dataset.wsel!.split('.'); const w = DAYS[+di!].waves[+gi!]
     w.night = /night/i.test(s.value); w.label = titleToLabel(s.value); afterSchedMutate(); notify(); return
+  }
+  /* an INPUT's own fields (owner, 10 Aug 26). Separate from data-bfld because
+     the write is not a schedule write: an input has no funnel key, and
+     setInpField goes through writeInputsBatch and the accepted-row relink
+     instead of txtSet/markEdit. Same RO treatment as every field above,
+     including the revert — a refused value must never be left sitting on
+     screen looking saved. */
+  const inf = (e.target as HTMLElement).closest('[data-ifld]') as HTMLInputElement | null
+  if (inf) {
+    const [id, field] = inf.dataset.ifld!.split('.')
+    const inp = inpById(id)
+    if (!inp) return notify()                    // deleted or undone underneath it
+    const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field) }
+    if (RO) return back()
+    if (setInpField(inp, field as any, inf.value)) notify()
+    else back()
+    return
   }
   const f = (e.target as HTMLElement).closest('[data-bfld]') as HTMLInputElement | null; if (!f) return
   const p = f.dataset.bfld!

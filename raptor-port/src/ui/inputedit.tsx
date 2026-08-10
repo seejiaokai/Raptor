@@ -127,6 +127,51 @@ export function commitInputEdit(r: any, draft: any) {
   return true
 }
 
+/* ---- ONE FIELD, TYPED IN PLACE (owner, 10 Aug 26) ------------------------
+   "Instead of pressing a type to edit... edit the input directly like changing
+   the start and end time... The remarks can be edited as well... in the same
+   modality as ground programme." So the times and the remarks are ordinary
+   cells on both surfaces now, and each commits one field through the SAME
+   commitInputEdit the dialog and the Inputs page use — the accepted-row
+   relink is exactly as easy to forget here as anywhere else.
+
+   HOW ALL-DAY IS SAID, now that the two cells are times: CLEAR ONE. That is
+   what the engine already believes (`awayAllDay` reads a record with no usable
+   window as off for the whole day, and fails closed), so the cell and the rule
+   agree without a third control to keep in step.
+   It is deliberately ASYMMETRIC with filling one in, and the first cut of this
+   was symmetric and WRONG: "blank both cells" could not actually be done. The
+   moment the first cell was cleared the other end defaulted to the edge of the
+   day and the row stayed timed, so the second cell was never blank at the same
+   moment as the first, and an all-day row was a one-way trip. TYPING a time
+   still defaults the other end — "from 09:00" is how a scheduler reads a
+   half-filled row, and an all-day row has nothing in either cell, so without
+   that default typing a start into one would do nothing at all.
+   And the AM/PM label is DERIVED here rather than set: times that land exactly
+   on a half get it, anything else clears it, so the printed "(AM)" can never
+   describe a window that is no longer a half. */
+const halfOf = (s:number, e:number) => (s === 0 && e === 720) ? 'am' : (s === 721 && e === 1439) ? 'pm' : ''
+export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) {
+  if (!inp) return false
+  const d: any = draftOf(inp)
+  if (field === 'rmks') { d.remarks = String(text == null ? '' : text) }
+  else {
+    const cur: any = { str: d.allday ? '' : d.sTime, end: d.allday ? '' : d.eTime }
+    cur[field] = String(text == null ? '' : text).trim()
+    /* an unreadable time is a typo, not a clear — refuse it and let the cell
+       heal back, the same way txtSet does for a schedule field */
+    for (const k of ['str', 'end']) {
+      if (cur[k] && parseHM(cur[k]) == null) { HOOKS.toast('That is not a time — try 0900 or 09:00', 'warn'); return false }
+    }
+    if (!cur[field]) { d.allday = true; d.half = '' }      // the cell just cleared
+    else {
+      const s = cur.str ? parseHM(cur.str) as number : 0
+      const e = cur.end ? parseHM(cur.end) as number : 1439
+      d.allday = false; d.sTime = hhmm(s); d.eTime = hhmm(e); d.half = halfOf(s, e)
+    }
+  }
+  return commitInputEdit(inp, d)
+}
 /* Deleting an ACCEPTED input used to leave its ground row on the programme for
    good — nothing pointed at it any more, so it could never be removed and it
    still printed and validated as a real commitment. */
