@@ -116,6 +116,15 @@ these only after re-running them.
     a number nobody has hit is a guess; the fix when it bites is the
     ordinary one (check the time, raise the ceiling in the PR that needs
     it). Reasoning: `docs/probe-sweep.md` §The performance gate.
+- **A USER GUIDE is wanted, for users and admins** (owner, 10 Aug 26 — "I
+  eventually want u to create a user guide for this app"). Not started, and
+  not urgent. The half that cannot be worked out by looking at the screen is
+  already collected in `docs/remarks-vocabulary.md` — every piece of text a
+  scheduler can type that turns a rule on, written in the guide's voice so it
+  can be lifted straight in. **Keep that file true as rules are added**; a
+  trigger that is not in it is one nobody outside the code will ever find.
+  Still to gather when the guide is written: the day/AL publishing flow, the
+  roles split, what each warning means in practice, and the phone gestures.
 - **The AAR instructor mark leaves two known gaps** (shipped 10 Aug 26;
   rules in `docs/engine-rules.md` §AAR, and who may teach it).
   - **The crew palette does not know about it.** `slotBar` folds a pilot away
@@ -319,6 +328,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
 | `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it and patches the in-memory reference for every deliberate divergence (`retier`, `remap`, `rematrix`, `relead`, `rebrief`, `rering`, `reduty`) so both engines compute from identical data. Each patch is explained beside the rule it serves in `docs/engine-rules.md`. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table, and the performance gate's reasoning. |
+| `docs/remarks-vocabulary.md` | Every piece of text a scheduler can TYPE that turns a rule on — the seat tags, AAR, late show, IRT, the sim brief lead — plus the things that look like text triggers and are not. Written in a user guide's voice, for the guide the owner wants (10 Aug 26). A new text trigger belongs here as well as in `engine-rules.md`. |
 | `docs/session-state.md` | The last session's leftovers — **often absent, and absent is meaningful**: it exists only while something is genuinely pending, and the session that clears the last item deletes it. This file holds the durable state; that one holds what a session could not finish. Written by `.claude/skills/session-handoff`. |
 | `docs/superpowers/specs/` + `plans/` | Design specs and task-by-task plans from brainstormed features (the vendored superpowers flow). Historical records of WHY a shipped shape was chosen — the living contracts stay in `engine-rules.md` / `ui-contracts.md`. |
 | `PORTING.md` | **Historical** — the phase plan the port was built from. Nothing left to run; kept only because `probe-sweep.md` and `perf-port.cjs` cite its decisions (dropped probes, original timing budgets). |
