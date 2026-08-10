@@ -618,6 +618,37 @@ clicking outside the box just drops `SORTALL` back to null. An already-tidy
 day still gets a toast — "Already in order" — rather than the confirm
 dialog closing silently.
 
+## Flag colour IS the tier (owner, 10 Aug 26)
+
+"7 should be red, its a warning. B, should be amber, they are advisories.
+including the rings." Red means the rule is raised **hard**; amber means
+**adv**; grey means **note**. Nothing else may decide it.
+
+Four places had drifted apart and now have to agree — change one, change all:
+
+- **the ring** — `.puck.warn` / `.warn.hard` / `.warn.note`, driven by
+  `sevOf`. This was always right.
+- **the red BOX** — `ui/html.ts`'s `boxred` list, driven by the PRINTED FLAG.
+  It carried `NB`/`SB` (advisories), so an eaten brief wore a red box over an
+  amber ring: the puck said warning, the checks list beside it said advisory.
+  It omitted `RUN`, the one hard rule drawing no box. Now `C`, `CR`, `Q`, `RUN`.
+- **the chip** — `scheduler.css` `.lchip.l-*`. `.l-nb` / `.l-sb` were red and
+  are now amber. **`.l-run` did not exist at all**, so the `7` fell back to the
+  base chip's dark text on no background — near invisible on a puck, and never
+  noticed because the demo week never trips a break day.
+- **the two legends** — `html.ts legendHTML()` (the week) and
+  `logic-html.ts chipRow()` (the Logic tab), which each hardcode their own
+  list. They disagreed with each other about the `7`: the week drew it red,
+  the Logic tab amber.
+
+`ui/html.test.ts` pins the swatch against the tier by name, so a new chip
+whose colour contradicts its severity fails rather than shipping. The two
+brief rows are excised from the legend byte-compare (`noBriefKey`) because the
+reference drew them red — a deliberate divergence, and **not** a no-op on the
+reference, which is why the positive pin carries the real assertion. Careful:
+there is already a module-level `noBrief` for the brief-time CELL; shadowing
+it silently breaks the day-parity tests on an unrelated `class=""`.
+
 ## Selection highlight (`ui/highlights.ts`)
 
 **A click on blank schedule clears EVERYTHING that lights a puck** (owner,

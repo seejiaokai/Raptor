@@ -219,8 +219,21 @@ describe('view-week markup parity with the reference', () => {
   const noCP = (s: string) => s.replace(
     /\n\s*<span><span class="qk"[^>]*>CP<\/span>crew pairing — [^<]*<\/span>/g, '')
 
+  /* Divergence (owner, 10 Aug 26): "B, should be amber, they are advisories".
+     The reference drew both brief swatches RED while raising the rules as adv,
+     so its puck contradicted its own checks list. The port grades the swatch by
+     the tier the rule is actually raised at, which makes these two rows differ
+     by colour alone. Excised from both sides — NOT a no-op on the reference
+     this time, which is why the positive pin below ('the legend swatch matches
+     the tier the rule is raised at') carries the real assertion. */
+  /* NB: named noBriefKey, not noBrief — there is already a module-level
+     noBrief for the brief-time CELL (line ~117), and shadowing it here made
+     the day-parity tests fail on an unrelated `class=""` difference. */
+  const noBriefKey = (s: string) => s.replace(
+    /\n\s*<span><span class="qk"[^>]*>B<\/span>no (?:flight|sim) brief<\/span>/g, '')
+
   it('the legend is byte-identical', () => {
-    expect(noCP(noRunKey(legendHTML()))).toBe(noCP(noRunKey(w.eval('legendHTML()'))))
+    expect(noBriefKey(noCP(noRunKey(legendHTML())))).toBe(noBriefKey(noCP(noRunKey(w.eval('legendHTML()')))))
   })
 
   /* The chip shipped on 5 Aug 26 and the legend was never told about it, so
@@ -237,6 +250,30 @@ describe('view-week markup parity with the reference', () => {
        colour code the pucks do not use: amber advisory, red hard */
     expect(l).toContain('background:#E5A83B;color:#12100a">CP</span>crew pairing — needs approval')
     expect(l).toContain('background:#F0555F">CP</span>crew pairing — not authorised')
+  })
+
+  /* THE COLOUR IS THE SEVERITY, and nothing else (owner, 10 Aug 26 — "7 should
+     be red, its a warning. B, should be amber, they are advisories").
+     The two legends and the puck used to disagree: the week said the 7 was red,
+     the Logic tab drew it amber, and both drew the brief chips red over an
+     amber ring. Red here means the rule is raised hard; amber means adv. */
+  it('the legend swatch matches the tier the rule is raised at', () => {
+    const l = legendHTML()
+    const RED = '#F0555F', AMBER = '#E5A83B'
+    const swatch = (label: string) => {
+      const i = l.indexOf('</span>' + label)
+      expect(i, 'legend has a row for ' + label).toBeGreaterThan(-1)
+      return l.slice(Math.max(0, i - 90), i).includes(RED) ? 'hard' : 'adv'
+    }
+    expect(swatch('no break day'), 'a break day is due — a Warning').toBe('hard')
+    expect(swatch('crew rest'), 'crew rest is a Warning').toBe('hard')
+    expect(swatch('conflict'), 'two places at once is a Warning').toBe('hard')
+    expect(swatch('no flight brief'), 'an eaten brief is an Advisory').toBe('adv')
+    expect(swatch('no sim brief'), 'and so is an eaten sim brief').toBe('adv')
+    expect(swatch('no flight debrief')).toBe('adv')
+    expect(swatch('tight turn')).toBe('adv')
+    expect(l, 'and the amber ones carry the dark text that goes with amber')
+      .toContain(AMBER + ';color:#12100a">B</span>no flight brief')
   })
 
   /* Every chip the engine can put on a puck should be findable in the legend.
