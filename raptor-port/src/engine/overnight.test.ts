@@ -19,6 +19,7 @@ import { validate } from './validate'
 import { collectEvents } from './events'
 import { makeStandalone, waveDutyBlock } from './waves'
 import { slotBar } from './avail'
+import { dayHTML } from '../ui/html'
 import { SCHED } from './publish'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -203,6 +204,61 @@ describe('the AVALON rule reaches the tail too, and stays exempt from everything
     INPUTS.push({ person: 'waldo', date: 'Jul 13', allday: true, type: 'OL', remarks: '' })
     expect(hits('LEAVE_FLY', 'waldo')).toEqual([])
     expect(hits('DNIF_FLY', 'waldo')).toEqual([])
+  })
+})
+
+describe('the AVALON puck wears its ring (11 Aug 26, owner’s first live use)', () => {
+  /* the engine flagged the man and the puck stayed clean — html.ts's chk gate
+     ("a line the engine isn't checking shows no ring") predates AVALON being
+     checked at all. The assertion anchors on the seat's data-slot key, and on
+     nothing looser: the same man also renders a DECORATED puck in the day's
+     Unavailable block the moment the input exists, so matching by person
+     finds a ring whichever way the gate is set — that copy made the first
+     cut of this test pass against the unfixed gate. */
+  const slotPuckClass = (html: string, key: string) => {
+    const m = html.match(new RegExp('data-slot="' + key.replace(/\./g, '\\.') + '"[^>]*><span class="(puck[^"]*)"'))
+    return m ? m[1] : null
+  }
+
+  it('an AVALON jet man with a barred input rings red on the AVALON line', () => {
+    const w = makeStandalone('avalon')
+    DAYS[0].waves.push(w)
+    const wi = DAYS[0].waves.length - 1
+    DAYS[0].dutywaves.push(waveDutyBlock(w))
+    w.formations[0].aircraft[0].w = 'badger'
+    INPUTS.push({ person: 'badger', date: 'Jul 13', allday: true, type: 'OL', remarks: '' })
+    validate()
+    const cls = slotPuckClass(dayHTML(0, false), `0.${wi}.0.0.w`)
+    expect(cls, 'AVALON seat renders a puck').toBeTruthy()
+    expect(/warn hard/.test(cls!) && /boxred/.test(cls!), cls!).toBe(true)
+  })
+
+  it('BB stays clean even when the man carries a warning of his own', () => {
+    const w = makeStandalone('bb')
+    DAYS[0].waves.push(w)
+    const wi = DAYS[0].waves.length - 1
+    w.formations[0].aircraft[0].p = 'split'
+    DAYS[0].waves[0].formations[0].aircraft[0].p = 'split'      // an ordinary seat too
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: true, type: 'ATT C', remarks: '' })
+    validate()
+    const html = dayHTML(0, false)
+    expect(/warn hard/.test(slotPuckClass(html, '0.0.0.0.p') || ''), 'ordinary copy rings').toBe(true)
+    const bb = slotPuckClass(html, `0.${wi}.0.0.p`)
+    expect(bb, 'BB seat renders a puck').toBeTruthy()
+    expect(/warn/.test(bb!), 'BB copy stays clean: ' + bb).toBe(false)
+  })
+
+  it('an SC SPARE stays clean on the spare line — deliberate, its check reads from the day list', () => {
+    const w = makeStandalone('sc')
+    DAYS[0].waves.push(w)
+    const wi = DAYS[0].waves.length - 1
+    const ai = w.formations[0].aircraft.findIndex((a: any) => a.spare)
+    w.formations[0].aircraft[ai].p = 'plasma'
+    INPUTS.push({ person: 'plasma', date: 'Jul 13', allday: true, type: 'OD', remarks: '' })
+    expect(hits('LEAVE_FLY', 'plasma').length).toBeGreaterThan(0)   // the engine does flag it
+    const cls = slotPuckClass(dayHTML(0, false), `0.${wi}.0.${ai}.p`)
+    expect(cls, 'spare seat renders a puck').toBeTruthy()
+    expect(/warn/.test(cls!), cls!).toBe(false)
   })
 })
 
