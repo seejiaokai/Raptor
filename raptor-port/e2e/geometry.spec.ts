@@ -2114,3 +2114,89 @@ test.describe('editing an input from the schedule', () => {
     expect(m.timeW, 'the time boxes are wide enough for a 12-hour clock').toBeGreaterThanOrEqual(128)
   })
 })
+
+/* ===================================================================
+   THE PHONE BOARD'S TOP BAR (owner, 11 Aug 26 — comp approved first)
+   The bar was four stacked rows and 166px of a 780px screen: the title, the
+   seven Mon–Sun chips, then six buttons that flex-wrap folded onto two lines.
+   The reform is the owner's list — chips out and swipe instead, `+ Line` out
+   because every wave header already has one, every label hidden, undo/redo
+   in, one row. Every number below is why this belongs in THIS gate and not
+   in Vitest: jsdom reports each of them as 0.
+   =================================================================== */
+test.describe('the phone board keeps its controls to one row', () => {
+  test('the buttons sit on a single line and the bar does not overflow sideways', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#schedBoard .sb-actions .abtn')
+
+    const m = await page.evaluate(() => {
+      const acts = document.querySelector('.sb-actions') as HTMLElement
+      const top = document.querySelector('.sb-top') as HTMLElement
+      const btns = [...acts.querySelectorAll(':scope > .abtn, :scope > select')] as HTMLElement[]
+      const tops = new Set(btns.map(b => Math.round(b.getBoundingClientRect().top)))
+      return {
+        rows: tops.size,
+        barH: Math.round(top.getBoundingClientRect().height),
+        overflow: top.scrollWidth - top.clientWidth,
+        pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        /* every control has to stay a finger-sized target while shrinking */
+        smallest: Math.min(...btns.map(b => Math.round(b.getBoundingClientRect().width))),
+        labelsHidden: [...acts.querySelectorAll('.bl')].every(l => (l as HTMLElement).offsetParent === null),
+      }
+    })
+    expect(m.rows, 'every top-bar control shares one line').toBe(1)
+    expect(m.overflow, 'and that line fits — nothing is clipped or pushed off').toBeLessThanOrEqual(0)
+    expect(m.pageOverflow, 'and the board gains no sideways scrollbar').toBeLessThanOrEqual(0)
+    expect(m.labelsHidden, 'the words come off the buttons on a phone').toBe(true)
+    expect(m.smallest, 'the icons stay tappable').toBeGreaterThanOrEqual(28)
+    /* the whole bar, dots included: 58px measured, against the 166px of
+       four stacked rows it replaces. The bound is 70 rather than 59 so an
+       ordinary type or padding tweak does not fail the gate, but a second
+       ROW cannot fit under it — which is the thing worth catching, and is
+       also caught outright by the rows assertion above. */
+    expect(m.barH, 'the bar is a fraction of the screen it used to eat').toBeLessThan(70)
+  })
+
+  test('the day chips are dots, and tapping one still jumps to that day', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbDays [data-sbtab]')
+    const box = await page.locator('#sbDays [data-sbtab]').nth(3).boundingBox()
+    expect(box!.width, 'an unselected day is a dot, not a chip').toBeLessThan(14)
+    await page.locator('#sbDays [data-sbtab]').nth(3).click()
+    expect(await page.evaluate(() => (window as any).SBDAY)).toBe(3)
+  })
+
+  test('the open AIRCREW drawer starts below the bar and scrolls', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#schedBoard .sb-ros .ros-tab')
+    await page.locator('#schedBoard .sb-ros .ros-tab').click()
+    await page.waitForTimeout(350)                       // the .2s slide
+
+    const m = await page.evaluate(() => {
+      const ros = document.querySelector('#schedBoard .sb-ros') as HTMLElement
+      const body = ros.querySelector('.ros-body') as HTMLElement
+      const top = document.querySelector('.sb-top') as HTMLElement
+      const r = ros.getBoundingClientRect(), t = top.getBoundingClientRect()
+      return {
+        drawerTop: Math.round(r.top), barBottom: Math.round(t.bottom),
+        width: Math.round(r.width), vw: window.innerWidth,
+        scrollable: body.scrollHeight > body.clientHeight,
+        canScroll: getComputedStyle(body).overflowY,
+      }
+    })
+    expect(m.drawerTop, 'the drawer clears the bar instead of painting over it')
+      .toBeGreaterThanOrEqual(m.barBottom - 1)
+    expect(m.width / m.vw, 'and it is thinner than it was — 64% of the width, not 78%')
+      .toBeLessThanOrEqual(0.66)
+    expect(m.canScroll, 'the crew list scrolls on its own').toBe('auto')
+  })
+})

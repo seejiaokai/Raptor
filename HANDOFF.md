@@ -16,9 +16,9 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 1008 tests
-across 54 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
+**Every gate is green at this commit**, run first-hand: `npm test` 1038 tests
+across 55 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
+run test:e2e` 67/67, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 (neither of the last two in CI). Re-state these only after re-running them.
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
@@ -48,7 +48,7 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 - **jsdom cannot measure layout** — every rect Vitest reports is 0×0, so it
   can prove which class was emitted and nothing about what was painted.
   Geometry contracts are gated by `e2e/geometry.spec.ts` (the fourth CI
-  gate, 54 tests); wider visual work still wants the probe path
+  gate, 57 tests); wider visual work still wants the probe path
   (`npx vite preview --port 4173` + `probes/`).
 
 ## Known issues / open work
@@ -464,5 +464,6 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `index.html` + `public/favicon.svg` | The Vite entry page and the **only** thing in `public/`. The favicon is the talon from `Login.tsx`/`Shell.tsx`, copied because a browser fetches it standalone before any bundle runs — edit the claw path in all three or the tab and the page disagree. It differs from the components on purpose: a tile and a same-colour stroke, because a tab paints it at 16px where bare thin claws vanish. `href="/favicon.svg"` in the page is rewritten to `./favicon.svg` by `base:'./'`, which is what makes it resolve under the Pages sub-path. |
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board, and where it deliberately does NOT — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both) plus `clickHere`, a click that does not scroll the target into view first (`page.click` does, which would defeat any test that parks the week on purpose). `playwright.config.ts` builds and serves the port itself. |
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
+| `src/ui/boardswipe.test.tsx` | The phone board's one-row top bar and its day swipe (11 Aug 26) — what the gesture claims and, more usefully, what it deliberately does NOT guard against. The GEOMETRY of the same change (one row, the drawer clearing the bar) is in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
 | `.claude/skills/` (14 more) | `obra/superpowers` v6.2.0, MIT, vendored 7 Aug 26 — a plugin install lives in `~/.claude/plugins` on a local machine and never reaches a web session's fresh container, while repo-level skills ship with the clone. Cross-references de-namespaced; the upstream SessionStart hook is vendored at `.claude/hooks/` but **not** wired in. Provenance and the update recipe: `.claude/skills/SUPERPOWERS-VENDORED.md`. |

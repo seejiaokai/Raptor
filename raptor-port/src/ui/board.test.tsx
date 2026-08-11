@@ -125,7 +125,11 @@ describe('the scheduler board (tfin board group)', () => {
     const nBefore = w.formations.length
     const last = w.formations[w.formations.length - 1]
     expect(last.cs, 'the fixture line has something to copy, so blank is meaningful').toBeTruthy()
-    await click($('#sbAddLine'))
+    /* the wave header's own + Line, not a top-bar one — the top-bar copy was
+       removed on 11 Aug 26 (owner: every section already adds its own rows),
+       and this button was always the better address anyway: it names the wave
+       it adds to instead of guessing at the day's last one. */
+    await click($(`#sbBoard [data-gline="0.${d.waves.length - 1}"]`))
     expect(w.formations.length).toBe(nBefore + 1)
     const f = w.formations[w.formations.length - 1]
     expect([f.cs, f.msn, f.to, f.ld]).toEqual(['', '', '', ''])
@@ -302,8 +306,8 @@ describe('the scheduler board (tfin board group)', () => {
     const d = DAYS[0]
     const gi = d.waves.length - 1
     const w = d.waves[gi]
-    await click($('#sbAddLine'))
-    await click($('#sbAddLine'))
+    await click($(`#sbBoard [data-gline="0.${gi}"]`))
+    await click($(`#sbBoard [data-gline="0.${gi}"]`))
     const li = w.formations.length - 1        // the second new line
     setSlotVal(`0.${gi}.${li}.0.p`, 'bane')
     await act(async () => { afterSchedMutate(); notify() })
@@ -612,15 +616,17 @@ describe('Sort all gates on the edit-mode flag, not the role alone (finding #4)'
    (addLine/addWave already refuse underneath, pinned above), but still
    RENDERED enabled on a read-only board, exactly the shape #sbSortAll was
    fixed for three lines above it in SchedBoard.tsx. Matched to that same
-   gate: hidden (not merely disabled) once editMode() is false. */
-describe('+ Line and + Wave are hidden on a read-only board, matching Sort all (round 3)', () => {
-  it('neither button is rendered once editMode() goes false, even though the role is still admin', async () => {
-    expect(document.querySelector('#sbAddLine'), 'sanity: visible in edit mode').toBeTruthy()
+   gate: hidden (not merely disabled) once editMode() is false.
+   + LINE LEFT THIS BAR on 11 Aug 26 (owner), so only + Wave is asserted here
+   now — the per-wave + Line it was a duplicate of carries its own gate,
+   pinned by the mvRO cases elsewhere in this file. */
+describe('+ Wave is hidden on a read-only board, matching Sort all (round 3)', () => {
+  it('the button is not rendered once editMode() goes false, even though the role is still admin', async () => {
+    expect(document.querySelector('#sbAddLine'), '+ Line is gone from the top bar for good').toBeFalsy()
     expect(document.querySelector('#sbAddGo'), 'sanity: visible in edit mode').toBeTruthy()
     HOOKS.editMode = () => false
     try {
       await act(async () => { notify() })
-      expect(document.querySelector('#sbAddLine')).toBeFalsy()
       expect(document.querySelector('#sbAddGo')).toBeFalsy()
     } finally {
       HOOKS.editMode = () => true
@@ -842,7 +848,7 @@ describe('board lifecycle', () => {
     expect(board.querySelectorAll('.mbtn,[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
     /* the live-checks panel is now the preview banner with the restore button */
     expect($('#schedBoard .dprev-bar .dprev-restore')).toBeTruthy()
-    expect(($('#sbAddLine') as HTMLButtonElement).disabled).toBe(true)
+    expect(($('#sbAddGo') as HTMLButtonElement).disabled).toBe(true)
     /* a write through a gated handler is refused outright */
     const before = slotVal('0.0.0.0.p')
     boardArmClick(new MouseEvent('click', { bubbles: true }))
