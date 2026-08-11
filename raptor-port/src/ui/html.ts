@@ -575,7 +575,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       const edge=sa?'var(--san)':`var(--${mColor(f0?f0.msn:'')})`;
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}" style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
         <div class="go-tab"><span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
-        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · not cross-checked':''}</span>`:''}</span>
+        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?(w.kind==='avalon'?' · availability check only':' · not cross-checked'):''}</span>`:''}</span>
         ${sa?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}</div>`;
       if(w.intimes&&w.intimes.length)
         h+=`<div class="intimes"${alAttr(`it:${di}.${gi}`)} ${ed?`contenteditable="true" spellcheck="false" data-intimes="${di}|${gi}"`:''}>${intimesInner(w)}</div>`;
@@ -642,22 +642,31 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              the empty cell just stays blank rather than being hidden, but the class is
              kept as the hook anything later needs to spot a silent aircraft. */
           const rmkE=(!ed&&!(a.rmks||'').trim()&&!storesView(o)&&!a.cx&&!a.flag)?' rmk-e':'';
-          /* a line the engine isn't checking shows no ring and no flag — a red
-             puck there would read as "this SC line has a problem" when the
-             problem, if any, belongs to that person's other flying.
-             AVALON STOPPED QUALIFYING on 11 Aug 26: its jets now carry the
-             one check (validate.ts, day.sacrew), and the owner's first live
-             use showed why the gate had to move — the engine flagged his man
-             and the puck stayed clean, so the warning read as missing until
-             a click lit the focus colours. A checked line's puck wears the
-             day's decoration, bleed-through and all, exactly as the duty
-             rows (lSeat, ungated) always have. BB stays clean — nothing on
-             it is checked — and an SC SPARE stays clean deliberately:
-             spares fly elsewhere by design, so the bled ring would be the
-             COMMON case there, and its own one check still reads from the
-             day's list. */
-          const chk=!saExempt(w,f,a)||(!!w.standalone&&w.kind==='avalon');
-          const sv=(id:any)=>chk?sev(di,id):null, cp=(id:any)=>chk?chip(di,id):null, dh=(id:any)=>chk?dsh(di,id):false,
+          /* AN EXEMPT LINE'S PUCK FOLLOWS ITS OWN RULES AND NOTHING ELSE
+             (owner, 11 Aug 26, second pass — "the rings should also follow").
+             A fully checked line wears the day's worst decoration like every
+             other surface. An exempt line — an SC SPARE, anything on AVALON or
+             BB — used to wear NOTHING ("a red puck there would read as 'this
+             line has a problem' when the problem belongs to that person's
+             other flying"), which hid the one red check these lines DO carry:
+             the owner's first live use showed the engine flagging his AVALON
+             man while the puck stayed clean. Wearing the whole day's
+             decoration instead would resurrect the bleed the old gate existed
+             to stop — a spare routinely flies elsewhere the same day. So the
+             exempt copy reads the day's warning list for entries ANCHORED TO
+             THIS LINE and naming this man: the availability check (DNIF_FLY /
+             LEAVE_FLY — the red C) and SC currency, which is checked for MAIN
+             and SPARE alike (SC_QUAL — the red Q). Nothing else can anchor to
+             an exempt line, and both rules are hard, so these pucks ring red
+             or not at all — the owner confirmed no amber rule lives here. BB
+             can anchor nothing and so never rings, with no special case. */
+          const chk=!saExempt(w,f,a), fkey=`${di}.${gi}.${li}`;
+          const own=(id:any)=>{ if(PV||!id)return null;
+            const g=WARN.byDay[di];
+            const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL')
+              &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0));
+            return hit?(hit.code==='SC_QUAL'?'Q':'C'):null; };
+          const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
           h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w))}</span></div>
               <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${ted(`fr:${key}`,a.rmks,ed,'ntx',null,sa?(a.role||(a.spare?'SPARE':'MAIN')):null)}${sa?'':stores}</div>`;

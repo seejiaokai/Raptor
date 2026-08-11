@@ -309,12 +309,20 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   raised, on either kind of seat. It warns, never blocks: the palette's fold
   is matched to exactly this rule (`slotRules().avJet/avDuty` widening
   `slotBar`'s spare exemption), so local leave no longer folds a man away
-  from an AVALON seat the engine has no complaint about. **And the puck on
-  the AVALON line wears the ring** — `html.ts`'s exempt-line gate (`chk`)
-  stops at BB and the SC spare now, because a checked line's puck must show
-  its own check (11 Aug 26, found on the owner's first live use: the engine
-  flagged his man and the puck stayed clean until a click lit the focus
-  colours). The 19:00–23:59
+  from an AVALON seat the engine has no complaint about. **And an exempt
+  line's puck follows ITS OWN rules and nothing else** (owner, 11 Aug 26,
+  in two passes — first live use showed the engine flagging his AVALON man
+  while the puck stayed clean; his second word was "the rings should also
+  follow" the line's own red rules). `html.ts` reads the day's warning list
+  for entries ANCHORED to the exempt line and naming the man: the
+  availability check (DNIF_FLY/LEAVE_FLY → red C) and, on an SC spare, SC
+  currency (SC_QUAL → red Q). A warning the man earned ELSEWHERE never
+  bleeds onto an exempt copy — a spare routinely flies elsewhere the same
+  day, which is why the old all-or-nothing gate existed. These lines ring
+  red or not at all; the owner confirmed no amber rule lives on them. BB
+  can anchor nothing and never rings. The badge and the add-toast say it
+  per wave: AVALON "availability check only", SC's spare "availability and
+  SC currency only", BB "not cross-checked". The 19:00–23:59
   half is judged against today's inputs and the 00:00–07:00 half against
   tomorrow's (the midnight tail below). Collected as `day.sacrew` in
   `events.ts`, checked in one loop in `validate.ts`. **BB is deliberately
