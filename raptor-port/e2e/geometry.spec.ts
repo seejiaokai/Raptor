@@ -7,6 +7,7 @@
    pass `npm test` all day. Here they run in a real browser on the real
    production build, so a CSS change that breaks one fails a gate. */
 import { expect, test } from '@playwright/test'
+import type { Page } from '@playwright/test'
 import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek } from './app'
 
 const PHONE = { width: 390, height: 844 }
@@ -2245,4 +2246,149 @@ test.describe('the phone board keeps its controls to one row', () => {
       .toBeLessThanOrEqual(0.66)
     expect(m.canScroll, 'the crew list scrolls on its own').toBe('auto')
   })
+})
+
+/* ===================================================================
+   HISTORY (owner, 11 Aug 26) — the bubble that says who changed a
+   detail, and when. Every number here is 0 in jsdom, which is the whole
+   reason this belongs in this file: src/ui/histbubble.test.tsx can prove
+   which element was emitted and what it says, and nothing about where it
+   landed or whether it fits.
+   =================================================================== */
+test.describe('the History bubble', () => {
+  /* History on, one real edit made, and the bubble raised over its own cell.
+     Returns the two rectangles so each test can ask its own question. */
+  async function raise(page: Page) {
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbHist')
+    const key = await page.evaluate(() => {
+      const w = window as any
+      const el = [...document.querySelectorAll('#sbBoard [data-slot]')]
+        .find(e => /\.[pw]$/.test((e as HTMLElement).dataset.slot || '') && w.slotVal((e as HTMLElement).dataset.slot))
+      const k = (el as HTMLElement).dataset.slot
+      w.setSlotVal(k, w.slotVal(k) === 'bane' ? 'stiff' : 'bane')
+      return k
+    })
+    await page.click('#sbHist')
+    await page.waitForTimeout(250)
+    const cell = page.locator(`#sbBoard [data-slot="${key}"]`).first()
+    /* the gesture the surface actually uses — a phone taps, a desktop hovers */
+    if (page.viewportSize()!.width <= 820) await cell.click()
+    else await cell.hover()
+    await page.waitForTimeout(250)
+    return page.evaluate(k => {
+      const b = document.querySelector('.histbub') as HTMLElement
+      const c = document.querySelector(`#sbBoard [data-slot="${k}"]`) as HTMLElement
+      if (!b) return null
+      const r = b.getBoundingClientRect(), cr = c.getBoundingClientRect()
+      return {
+        l: Math.round(r.left), t: Math.round(r.top), r: Math.round(r.right), b: Math.round(r.bottom),
+        w: Math.round(r.width), h: Math.round(r.height),
+        cellTop: Math.round(cr.top), cellBottom: Math.round(cr.bottom),
+        vw: window.innerWidth, vh: window.innerHeight,
+        pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        pe: getComputedStyle(b).pointerEvents,
+        text: (b.textContent || '').trim(),
+      }
+    }, key)
+  }
+
+  for (const c of [{ label: 'phone', vp: PHONE }, { label: 'desktop', vp: { width: 1440, height: 900 } }]) {
+    test(`${c.label}: it fits on screen and never pushes the page sideways`, async ({ page }) => {
+      await page.setViewportSize(c.vp)
+      await login(page)
+      await go(page, 'editsched')
+      const m = await raise(page)
+      expect(m, 'the bubble came up at all').not.toBe(null)
+      expect(m!.text, 'and it says something').not.toBe('')
+      expect(m!.l, 'not off the left edge').toBeGreaterThanOrEqual(0)
+      expect(m!.r, 'not off the right edge').toBeLessThanOrEqual(m!.vw)
+      expect(m!.t, 'not above the top').toBeGreaterThanOrEqual(0)
+      expect(m!.b, 'not below the bottom').toBeLessThanOrEqual(m!.vh)
+      expect(m!.pageOverflow, 'and the board gains no sideways scroll from it').toBeLessThanOrEqual(0)
+      /* THE ONE THAT MATTERS ON A PHONE. The bubble is raised by the same tap
+         that arms the seat and opens the keyboard on a text field; anything it
+         could intercept would make History a mode that stops the board
+         working. pointer-events:none is what guarantees it, and it is a CSS
+         value, so only a browser can read it back. */
+      expect(m!.pe, 'it cannot take a tap from the cell underneath').toBe('none')
+      /* above the cell, not on top of it — the thing being explained has to
+         stay visible while its explanation is up */
+      expect(m!.b, 'it sits clear of the cell it describes').toBeLessThanOrEqual(m!.cellTop + 1)
+    })
+  }
+})
+
+/* ===================================================================
+   THE PAGE BEHIND THE BOARD DOES NOT MOVE (owner-reported, 11 Aug 26 —
+   "I could scroll and see the edit schedule board leaking into it, and in
+   the end I was controlling the edit schedule board view at the bottom").
+   The board is a fixed full-viewport modal over a week that is 3600px of
+   live scrolling document. Two holes let a finger reach it: .sb-main had
+   no overscroll-behavior, so a swipe that hit the end of the board CHAINED
+   to the page; and the bar is in no scroller at all, so a drag there went
+   straight to the document. Measured before the fix, and on the build
+   before History: 2400px of page scrolled away under an open board.
+   jsdom cannot see any of this — it has no scrolling, no chaining and no
+   computed overscroll-behavior — so this is the only place it can be held.
+   =================================================================== */
+test.describe('the board holds the page still underneath it', () => {
+  for (const c of [{ label: 'phone', vp: PHONE }, { label: 'desktop', vp: { width: 1440, height: 900 } }]) {
+    test(`${c.label}: scrolling past the end of the board does not drive the week behind it`, async ({ page }) => {
+      await page.setViewportSize(c.vp)
+      await login(page)
+      await go(page, 'editsched')
+      /* park the page somewhere real first: "it went back to the top" would
+         be a worse fault than the one being fixed, so the restore is part of
+         the contract, not an implementation detail */
+      await page.evaluate(() => { document.scrollingElement!.scrollTop = 700 })
+      await page.waitForTimeout(200)
+      const parked = await page.evaluate(() => Math.round(document.scrollingElement!.scrollTop))
+      expect(parked, 'the page really was scrollable to begin with').toBeGreaterThan(0)
+
+      await page.evaluate(() => (window as any).openScheduler(0))
+      await page.waitForSelector('#sbHist')
+      await page.waitForTimeout(300)
+
+      /* the exact gesture that did it: run the board's own scroller to its
+         very end, then keep going */
+      await page.evaluate(() => {
+        const m = document.querySelector('.sb-main') as HTMLElement
+        m.scrollTop = m.scrollHeight
+      })
+      await page.waitForTimeout(200)
+      await page.mouse.move(c.vp.width / 2, c.vp.height / 2)
+      for (let i = 0; i < 6; i++) { await page.mouse.wheel(0, 400); await page.waitForTimeout(100) }
+      await page.waitForTimeout(300)
+
+      const during = await page.evaluate(() => ({
+        y: Math.round(document.scrollingElement!.scrollTop),
+        mainAtEnd: (() => { const m = document.querySelector('.sb-main') as HTMLElement
+          return m.scrollTop >= m.scrollHeight - m.clientHeight - 2 })(),
+        contain: getComputedStyle(document.querySelector('.sb-main') as HTMLElement).overscrollBehaviorY,
+        scrolls: (() => { const m = document.querySelector('.sb-main') as HTMLElement
+          return m.scrollHeight > m.clientHeight + 2 })(),
+        locked: getComputedStyle(document.body).overflow,
+      }))
+      expect(during.mainAtEnd, 'the board scroller really did reach its end').toBe(true)
+      /* containment only means anything where that scroller actually scrolls,
+         which is the PHONE layout — on a desktop .sb-main is a fixed-height
+         row and the panels scroll inside it, so there is no chain to break
+         and the body lock below is the whole defence. Asserting `contain`
+         there would pin a value that does nothing. */
+      if (during.scrolls) expect(during.contain, 'the one scroller contains its own overscroll').not.toBe('auto')
+      expect(during.locked, 'while the page itself is held').toBe('hidden')
+      expect(during.y, 'so the week behind has not moved a pixel').toBe(parked)
+
+      /* and closing hands the page back exactly where it was */
+      await page.click('#sbClose')
+      await page.waitForTimeout(400)
+      const after = await page.evaluate(() => ({
+        y: Math.round(document.scrollingElement!.scrollTop),
+        overflow: getComputedStyle(document.body).overflow,
+      }))
+      expect(after.overflow, 'the lock comes off with the board').not.toBe('hidden')
+      expect(after.y, 'and the page is where it was left').toBe(parked)
+    })
+  }
 })

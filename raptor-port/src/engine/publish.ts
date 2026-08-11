@@ -3,6 +3,7 @@ import { PEOPLE } from './people'
 import { keyDay, uniqDays } from './keys'
 import { isScheduler } from './people'
 import { HOOKS } from './hooks'
+import { logEdit } from './editlog'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -106,9 +107,15 @@ export const AL_COLORS:any[]=['','#3BC6E8','#E5C24A','#3DE86B','#FFFFFF','#B388F
 export function alColor(n:any){return AL_COLORS[n]||AL_COLORS[AL_COLORS.length-1];}
 export function pendCount(){return Object.keys(SCHED.pending).length;}
 /* record an edit.  `key` is the slot/field address that changed — that single
-   item is what gets coloured when the amendment is published. */
-export function markEdit(key?:any){
-  if(key){ SCHED.pending[key]=1; delete SCHED.changes[key]; }
+   item is what gets coloured when the amendment is published.
+   `was`/`now` are the edit log's (editlog.ts), and optional for the same
+   reason noteChange's are: this function is called three different ways and
+   only one of them knows both values. A funnel write passes them; a
+   structural mark after an add passes a key alone (there is no "before"); the
+   bare epilogue in afterSchedMutate() passes nothing at all. Only the first
+   reaches the log, which is what keeps a phantom row off every mutation. */
+export function markEdit(key?:any,was?:any,now?:any){
+  if(key){ SCHED.pending[key]=1; delete SCHED.changes[key]; logEdit(key,was,now); }
   renderStatus();
   histPush();
 }

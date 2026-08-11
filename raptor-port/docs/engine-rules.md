@@ -1017,3 +1017,54 @@ is the scheduler's (`interactions.ts`, `canEditSched()`).
 sign, orig, cur}` (`o`/`cv` fields); undo/redo restores wholesale.
 Publishing is its own undo step, and so is a rollback. Undo is refused
 while focus is in an editable field.
+
+## The edit log (`engine/editlog.ts`, owner, 11 Aug 26)
+
+Who changed which detail, when, and what it was before. Distinct from
+§History above: that is the undo stack (whole-state snapshots, no
+attribution); this is a per-key record with a name and a clock on it.
+
+`ELOG = {rows, cap:400}`, each row
+`{t, who, di, key, lbl, from, to}` — a ring buffer, oldest dropped. 400
+rather than HIST's 60 because a row is a handful of short strings where a
+history snapshot is a whole serialised schedule.
+
+**Written at the two funnel choke points, and only when both values are
+handed over.** `noteChange(key, was, now)` (`slots.ts`) and
+`markEdit(key, was, now)` (`publish.ts`) each end in `logEdit`, which
+returns immediately unless it has a key AND both values AND they differ.
+That single rule is what keeps the log clean of the two calls that would
+otherwise flood it: `afterSchedMutate()`'s bare `markEdit()` epilogue fires
+after every mutation and carries nothing, and the board's structural marks
+after an add carry a key with no "before".
+
+**The two orderings are not the same and the code depends on it.**
+`setSlotVal` calls `noteChange` BEFORE it assigns, so it reads the old
+value itself; `txtSet` calls it AFTER, so it captures the old string into a
+local first and passes it. Reversing either silently logs `X → X`, which
+renders as no row at all. Pinned by the first two tests in
+`editlog.test.ts`.
+
+**Structural changes carry a sentence, not a pair of values.** A line, wave,
+row or note added or removed reaches `markEdit()` with no key on purpose, so
+`logAction(di, text)` names it instead — routed through `act()` in `board.ts`
+so the toast and the log say the same words. Sort all logs one line, not six:
+the sorters mark keys whose values never move, so `logEdit` is silent through
+all of it by construction. Undo and redo log themselves.
+
+**`who` arrives through `HOOKS.whoami()`**, wired in `wireStore()` from
+`SESSION`/`ACCOUNTS`. Accounts are hard-coded, so today it only ever reads
+`Admin` or `Squadron member`. That hook is the one seam a real server has to
+fill; nothing else changes when it does.
+
+**Session-scoped, and cleared by `resetSession`.** Not persisted — the
+schedule it describes is not either. Deliberately NOT in `histSnap()`: an
+undo restores the schedule and leaves the record standing, because a log you
+can rewrite by pressing undo is not a log.
+
+`keyLabel(key)` turns a slot key into plain words ("MONSOON 1 · FCP", "Duty ·
+SOF") and is **frozen onto the row at log time** — the row it names can be
+deleted a minute later, and re-deriving then would print the wrong row's name
+once the indices below it shift up. `state/view.ts`'s `slotTitle()` answers a
+similar question for the arm picker and is deliberately separate: it emits
+HTML, covers only the crew keys, and lives where the engine cannot reach it.

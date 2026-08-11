@@ -2,6 +2,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { SCHED } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
+import { logAction } from '../engine/editlog'
 import { armDrop, prunePreviews } from './view'
 
 const toast=(...a:any[])=>HOOKS.toast(...a)
@@ -49,5 +50,11 @@ export function histApply(i:any){
   HIST.lock=false;
   syncHistBtns();
 }
-export function undo(){ if(HIST.ix<=0)return toast('Nothing to undo'); histApply(HIST.ix-1); toast('Undo'); }
-export function redo(){ if(HIST.ix>=HIST.stack.length-1)return toast('Nothing to redo'); histApply(HIST.ix+1); toast('Redo'); }
+/* Undo and redo are logged, and they do NOT erase what they undo.
+   histSnap() deliberately does not carry the edit log, so an undo restores
+   the schedule and leaves the record of how it got that way standing — a log
+   you can rewrite by pressing undo is not a log. Without these two lines the
+   list would show an edit whose value has since silently reverted, with
+   nothing to say why; with them it reads the way it happened. */
+export function undo(){ if(HIST.ix<=0)return toast('Nothing to undo'); histApply(HIST.ix-1); logAction(null,'Undo'); toast('Undo'); }
+export function redo(){ if(HIST.ix>=HIST.stack.length-1)return toast('Nothing to redo'); histApply(HIST.ix+1); logAction(null,'Redo'); toast('Redo'); }

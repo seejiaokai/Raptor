@@ -9,6 +9,7 @@ import { DAYS } from './engine/data'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
 import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd, isLateInput, lateNote, inputDueISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
+import { ELOG, elogRows, elogFor, elogWhen, elogClear, keyLabel } from './engine/editlog'
 import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard } from './engine/stores'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
@@ -114,6 +115,11 @@ export function installProbeBridge() {
   w.STORE_STD = STORE_STD; w.storeKey = storeKey; w.storesAreStandard = storesAreStandard
   w.addStore = addStore; w.delStore = delStore; w.renameStore = renameStore; w.moveStore = moveStore
   w.storesSave = storesSave; w.storesLoad = storesLoad; w.storesReset = storesReset
+  /* the edit log. ELOG is a const object mutated in place (rows.push /
+     splice), never reassigned, so a plain reference is enough — unlike
+     STORE_CFG above, which needs a getter because storesLoad swaps it whole. */
+  w.ELOG = ELOG; w.elogRows = elogRows; w.elogFor = elogFor; w.elogWhen = elogWhen
+  w.elogClear = elogClear; w.keyLabel = keyLabel
   w.alCount = alCount; w.alDays = alDays; w.pendDays = pendDays; w.pendCount = pendCount; w.approvedDays = approvedDays
   w.daySnapOf = daySnapOf; w.dayVersions = dayVersions; w.verLabel = verLabel; w.dayCurVer = dayCurVer
   w.restoreDayVersion = restoreDayVersion; w.dayKeys = dayKeys
