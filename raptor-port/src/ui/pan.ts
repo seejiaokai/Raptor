@@ -128,9 +128,17 @@ export function rosDayFollow() {
 /* shift+wheel pans the week. Routed through hsSet for the same reason the proxy
    is: a bare `scrollLeft +=` obeys .week{scroll-behavior:smooth}, so each notch
    started a fresh animation and the pan stuttered instead of following the wheel. */
+/* This listener is registered NON-PASSIVE (it must preventDefault when it pans),
+   which means the browser waits for it before every scroll step, everywhere on
+   the page. So the common case — no shift held — has to cost a boolean test and
+   nothing more. It used to walk the DOM (closest) on every wheel tick first,
+   which a fast JIT hides completely; Edge's "enhanced security" mode runs
+   unfamiliar sites without the JIT, and there that walk was a visible per-tick
+   tax the scroll had to wait for (owner, 11 Aug 26 — Edge scroll stutter). */
 function onWheel(e: WheelEvent) {
+  if (!e.shiftKey || !e.deltaY) return
   const w = (e.target as HTMLElement).closest('.week')
-  if (w && e.shiftKey && e.deltaY) { hsSet(w, (w as HTMLElement).scrollLeft + e.deltaY); e.preventDefault() }
+  if (w) { hsSet(w, (w as HTMLElement).scrollLeft + e.deltaY); e.preventDefault() }
 }
 function onTrackScroll() {
   const w = hsWeek(); if (!w) return
