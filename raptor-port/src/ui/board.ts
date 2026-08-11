@@ -682,7 +682,7 @@ export function addWave(di: number, kind: any) {
      `waveDutyBlock`, so there is one shape per wave kind and not two. */
   if (S.autoDuty) { d.dutywaves = d.dutywaves || []; d.dutywaves.push(waveDutyBlock(w)) }
   markEdit(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
-  toast(S.label + ' added — standalone, ' + (S.all ? 'nothing on it is cross-checked' : 'SPARE is not cross-checked'))
+  toast(S.label + ' added — standalone, ' + (kind === 'avalon' ? 'checked for availability only' : S.all ? 'nothing on it is cross-checked' : 'SPARE is checked for availability and SC currency only'))
 }
 
 /* the Add-a-wave chooser, verbatim (a body-level popup, just as the reference

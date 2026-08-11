@@ -19,6 +19,7 @@ import { validate } from './validate'
 import { collectEvents } from './events'
 import { makeStandalone, waveDutyBlock } from './waves'
 import { slotBar } from './avail'
+import { PEOPLE, scQualOK } from './people'
 import { dayHTML } from '../ui/html'
 import { SCHED } from './publish'
 
@@ -248,17 +249,71 @@ describe('the AVALON puck wears its ring (11 Aug 26, owner’s first live use)',
     expect(/warn/.test(bb!), 'BB copy stays clean: ' + bb).toBe(false)
   })
 
-  it('an SC SPARE stays clean on the spare line — deliberate, its check reads from the day list', () => {
+  it('an SC SPARE with a barred input rings red on the spare line too (owner, 11 Aug 26, second pass)', () => {
     const w = makeStandalone('sc')
     DAYS[0].waves.push(w)
     const wi = DAYS[0].waves.length - 1
     const ai = w.formations[0].aircraft.findIndex((a: any) => a.spare)
-    w.formations[0].aircraft[ai].p = 'plasma'
+    w.formations[0].aircraft[ai].w = 'plasma'
     INPUTS.push({ person: 'plasma', date: 'Jul 13', allday: true, type: 'OD', remarks: '' })
-    expect(hits('LEAVE_FLY', 'plasma').length).toBeGreaterThan(0)   // the engine does flag it
-    const cls = slotPuckClass(dayHTML(0, false), `0.${wi}.0.${ai}.p`)
+    expect(hits('LEAVE_FLY', 'plasma').length).toBeGreaterThan(0)
+    const cls = slotPuckClass(dayHTML(0, false), `0.${wi}.0.${ai}.w`)
     expect(cls, 'spare seat renders a puck').toBeTruthy()
-    expect(/warn/.test(cls!), cls!).toBe(false)
+    expect(/warn hard/.test(cls!) && /boxred/.test(cls!), cls!).toBe(true)
+  })
+
+  it('…but never bleeds: a spare warned only ELSEWHERE stays clean on the spare line', () => {
+    const w = makeStandalone('sc')
+    DAYS[0].waves.push(w)
+    const wi = DAYS[0].waves.length - 1
+    const ai = w.formations[0].aircraft.findIndex((a: any) => a.spare)
+    w.formations[0].aircraft[ai].w = 'plasma'
+    DAYS[0].waves[0].formations[0].aircraft[1].w = 'plasma'      // an ordinary sortie too
+    INPUTS.push({ person: 'plasma', date: 'Jul 13', allday: false, s: 600, e: 900, type: 'Meeting', remarks: '' })
+    validate()
+    const html = dayHTML(0, false)
+    expect(/warn/.test(slotPuckClass(html, '0.0.0.1.w') || ''), 'the sortie copy rings').toBe(true)
+    const sp = slotPuckClass(html, `0.${wi}.0.${ai}.w`)
+    expect(sp, 'spare seat renders a puck').toBeTruthy()
+    expect(/warn/.test(sp!), 'spare copy stays clean: ' + sp).toBe(false)
+  })
+
+  it('…and AVALON does not bleed either: warned only elsewhere, the AVALON copy stays clean', () => {
+    const w = makeStandalone('avalon')
+    DAYS[0].waves.push(w)
+    const wi = DAYS[0].waves.length - 1
+    w.formations[0].aircraft[0].w = 'badger'
+    DAYS[0].waves[0].formations[0].aircraft[0].w = 'badger'      // an ordinary sortie too
+    INPUTS.push({ person: 'badger', date: 'Jul 13', allday: false, s: 600, e: 900, type: 'Meeting', remarks: '' })
+    validate()
+    const html = dayHTML(0, false)
+    expect(/warn/.test(slotPuckClass(html, '0.0.0.0.w') || ''), 'the sortie copy rings').toBe(true)
+    const av = slotPuckClass(html, `0.${wi}.0.0.w`)
+    expect(av, 'AVALON seat renders a puck').toBeTruthy()
+    expect(/warn/.test(av!), 'AVALON copy stays clean: ' + av).toBe(false)
+  })
+
+  it('SC currency is the spare line’s other own rule: a non-current spare rings Q', () => {
+    const w = makeStandalone('sc')
+    DAYS[0].waves.push(w)
+    const wi = DAYS[0].waves.length - 1
+    const ai = w.formations[0].aircraft.findIndex((a: any) => a.spare)
+    const nc = Object.keys(PEOPLE).find(id =>
+      !PEOPLE[id].special && PEOPLE[id].seat === 'RCP' && !scQualOK(id, 'day'))
+    expect(nc, 'seed has a non-SC-current WSO').toBeTruthy()
+    w.formations[0].aircraft[ai].w = nc
+    expect(hits('SC_QUAL', nc!).length).toBeGreaterThan(0)
+    const cls = slotPuckClass(dayHTML(0, false), `0.${wi}.0.${ai}.w`)
+    expect(cls, 'spare seat renders a puck').toBeTruthy()
+    expect(/warn hard/.test(cls!), cls!).toBe(true)
+  })
+
+  it('the badge tells the truth per wave: AVALON names its one check, BB stays wholly exempt', () => {
+    DAYS[0].waves.push(makeStandalone('avalon'))
+    DAYS[0].waves.push(makeStandalone('bb'))
+    const html = dayHTML(0, false)
+    expect(html).toContain('availability check only')
+    expect(html).toContain('not cross-checked')
   })
 })
 
