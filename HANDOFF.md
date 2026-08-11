@@ -48,7 +48,7 @@ run test:e2e` 68/68, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 - **jsdom cannot measure layout** — every rect Vitest reports is 0×0, so it
   can prove which class was emitted and nothing about what was painted.
   Geometry contracts are gated by `e2e/geometry.spec.ts` (the fourth CI
-  gate, 61 tests); wider visual work still wants the probe path
+  gate, 68 checks); wider visual work still wants the probe path
   (`npx vite preview --port 4173` + `probes/`).
 
 ## Known issues / open work
