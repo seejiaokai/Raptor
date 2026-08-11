@@ -231,7 +231,7 @@ and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
 `probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 960**
-(measured 893), **week ≤ 5530** (measured 5078). Tripping one is not
+(measured 897), **week ≤ 5530** (measured 5078). Tripping one is not
 automatically a fault; it is a prompt to check the time and then raise the
 number deliberately, in the PR that adds the nodes, beside a fresh
 `npm run perf` showing the per-node cost held. The board has been raised
