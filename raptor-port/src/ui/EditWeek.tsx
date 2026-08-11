@@ -21,9 +21,10 @@ export function EditWeek() {
 
   useEffect(() => {
     /* only the page on screen is rendered (as the reference's renderSchedule
-       gate has it). The week behind the open board still repaints — the
-       reference's rerenderWarnUI does too, and the per-day diff keeps it
-       cheap. */
+       gate has it). The week behind the open board still repaints for real
+       mutations because safety flows deliberately address that mounted DOM;
+       boardTab's narrow notification lane prevents day-only swipes from
+       reaching this effect at all. */
     if (CURPAGE !== 'editsched') return
     const root = ref.current!
     /* never repaint under the caret — the deferred commit repaints once focus

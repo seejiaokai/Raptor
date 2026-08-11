@@ -17,12 +17,13 @@ import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArm
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
-import { useVersion } from './useStore'
+import { useBoardVersion, useVersion } from './useStore'
 import { HIST } from '../state/history'
 import { undo, redo } from '../state/store'
 
 export function SchedBoard() {
   const version = useVersion()
+  const boardVersion = useBoardVersion()
   const boardRef = useRef<HTMLDivElement>(null)
   const rosterRef = useRef<HTMLDivElement>(null)
   const daysRef = useRef<HTMLDivElement>(null)
@@ -211,7 +212,7 @@ export function SchedBoard() {
     }
     set(rosterRef.current!, 'roster', paletteHTML(paletteDay(), { head: false }))
     refreshHighlights()
-  }, [version])
+  }, [version, boardVersion])
 
   const d = open ? DAYS[SBDAY] : null
 

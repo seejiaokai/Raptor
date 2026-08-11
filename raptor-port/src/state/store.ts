@@ -27,10 +27,19 @@ import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS } from '.
 
 let VERSION = 0
 const listeners = new Set<() => void>()
+let BOARD_VERSION = 0
+const boardListeners = new Set<() => void>()
 
 export function subscribe(fn: () => void) { listeners.add(fn); return () => { listeners.delete(fn) } }
 export function getVersion() { return VERSION }
 export function notify() { VERSION++; listeners.forEach(f => f()) }
+/* Day-to-day board navigation is view-only. Give the board a narrow repaint
+   lane so a swipe does not wake every mounted store consumer (most notably
+   EditWeek's seven large dayHTML calculations) while ordinary mutations still
+   flow through notify() and repaint both the week and board. */
+export function subscribeBoard(fn: () => void) { boardListeners.add(fn); return () => { boardListeners.delete(fn) } }
+export function getBoardVersion() { return BOARD_VERSION }
+export function notifyBoard() { BOARD_VERSION++; boardListeners.forEach(f => f()) }
 
 /* ---- the one write path ---- */
 

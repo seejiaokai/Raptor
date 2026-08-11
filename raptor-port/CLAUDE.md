@@ -433,12 +433,19 @@ the phone perf budget. Don't convert them to components.
   selected; do not make the current one grow, it shifts the strip under a
   tracking finger.
   **The swipe is a CAROUSEL since 11 Aug 26** (owner: "the same logic and
-  mechanism as edit schedule ... full motion, feel and sensitivity"). The day
-  tracks the finger, the next day is really drawn beside it, and the release
-  settles on distance or velocity. It is NOT the week's mechanism and cannot
+  mechanism as edit schedule ... full motion, feel and sensitivity"). The live
+  day tracks the finger, a small summary identifies the incoming day, and the
+  release settles on distance or velocity. It is NOT the week's mechanism and cannot
   be: the week is a scroll-snap container holding all seven days, which here
-  would be ~6,300 nodes against a 960 ceiling. The neighbour is built only
-  while a finger is down. Do not "simplify" it back to a threshold jump, and
+  would be ~6,300 nodes against a 960 ceiling. The summary is built only while
+  a finger is down and stays under 20 nodes; do not put a full board back in
+  it. Re-evaluate direction after lock so a Sunday/Monday edge pull can reverse
+  inward in the same gesture, reconcile the final pointer-up coordinate, abort
+  if a newer day choice occurs while held, and treat `pointercancel` as an
+  immediate abort.
+  `boardTab` is view-only: it must not validate, and its board-only notification
+  lane must not wake the mounted EditWeek or EditRoster. Real mutations still
+  use the global lane and repaint both. Do not "simplify" it back to a threshold jump, and
   do not try to make `.sb-main` a snap track — the reasoning, and the three
   gestures that would break, are in `docs/ui-contracts.md`.
   Contract: `docs/ui-contracts.md` §The board on a phone is ONE window.

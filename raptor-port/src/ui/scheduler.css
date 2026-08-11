@@ -1591,15 +1591,25 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    in". Both surfaces: a desktop wheel over the bar did exactly the same thing.
    Set from SchedBoard.tsx while the board is open. */
 body.sb-lock{overflow:hidden}
-/* THE DAY COMING IN (owner, 11 Aug 26). Built only while a finger is down and
-   removed on settle, so the resting board is unchanged at 897 nodes against
-   its 960 ceiling — see wireBoardSwipe in board.ts for why the neighbour is an
-   overlay rather than a track around .sb-main. It is inert: the gesture owns
-   it, nothing in it is ever meant to be hit, and it must not take a tap from
-   the real board sliding out beside it. */
+/* THE DAY COMING IN. The first carousel put a second complete ~900-node board
+   here. Even after overlapping panes were capped at one, rapid Saturday /
+   Sunday swipes still made mobile Safari retain discarded render resources.
+   A small summary now identifies the destination while the one real board
+   tracks the finger. It is inert because the gesture owns it. */
 .sb-pane{position:absolute;width:100%;overflow:hidden;pointer-events:none;
   background:var(--bg);z-index:1;will-change:transform;contain:strict}
-.sb-pane .sb-boardwrap{padding:10px 12px}
+.sb-peek{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:28px;color:var(--ink-2);
+  background:linear-gradient(rgba(59,198,232,.055),rgba(59,198,232,.015)),
+    repeating-linear-gradient(180deg,transparent 0,transparent 66px,
+      rgba(255,255,255,.025) 67px,rgba(255,255,255,.025) 68px)}
+.sb-peek-k{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.sb-peek-date{font-size:24px;font-weight:750;color:var(--ink);margin:6px 0 20px}
+.sb-peek-grid{width:min(300px,100%);display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sb-peek-grid span{background:var(--panel);border:1px solid var(--edge);border-radius:9px;
+  padding:9px 10px;font-size:11px}
+.sb-peek-grid b{color:var(--ink);font-size:14px;margin-right:3px}
+.sb-peek-hint{margin-top:18px;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--ink-3)}
 .schedboard[hidden]{display:none}
 .sb-top{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--edge);background:var(--panel);flex-wrap:wrap}
 .sb-title{font-weight:700;font-size:15px}
