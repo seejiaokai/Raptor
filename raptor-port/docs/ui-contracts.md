@@ -313,14 +313,32 @@ edit week now:
 - **The top bar is ONE row, and the day is reached by SWIPING** (owner,
   11 Aug 26 — comp approved before build). It used to be four stacked rows
   and 166px of a 780px screen: the title, the seven Mon–Sun chips, then six
-  buttons that `flex-wrap` folded onto two lines. It measures 58px now, and
+  buttons that `flex-wrap` folded onto two lines. It measures 70px now, and
   each move below is one of the owner's own asks:
-  - **The chips became DOTS**, in CSS only — the same seven `.sbday`
-    elements, the same delegated `[data-sbtab]` handler, emptied with
-    `font-size:0` and sized to 6px (16px for the current day). No node is
-    added or removed, so the board's DOM ceiling is untouched, and a TAP on
-    a dot still jumps straight to that day, which is what keeps Monday to
-    Friday one gesture instead of five swipes.
+  - **The chips became DOTS, and the strip is a SCRUB BAR** (the dots
+    themselves 11 Aug 26; the drag the same day, owner: "the dots should
+    allow me to drag to select the pages, like a drag bar"). Same seven
+    `.sbday` elements and the same delegated `[data-sbtab]` handler, emptied
+    with `font-size:0` — no node added or removed, so the board's DOM ceiling
+    is untouched. A TAP still jumps straight to that day; a PRESS AND SLIDE
+    runs through the week live under the finger (`wireDayDots`, `board.ts`).
+    Three things that machine gets right and are easy to get wrong:
+    **every day owns the same 16px footprint** and only the mark inside it
+    changes (`::after`) — the obvious build, a 6px dot growing to a 16px
+    pill, re-lays the strip out mid-scrub and shoves its neighbours up to
+    10px sideways while the finger is tracking them, which on a 7-dot strip
+    is more than a whole dot; **the strip is 21px tall, not 9** (`touch-
+    action:none` as well, or the browser claims the horizontal drag for its
+    own scrolling and the moves stop arriving halfway along) — that 12px is
+    the whole reason the bar is 70px rather than 58; and **pointer capture is
+    taken on the first real MOVE, never on pointerdown**, because capture
+    retargets the following click onto the strip, so capturing up front left
+    a plain tap arriving with no `[data-sbtab]` under it and doing nothing at
+    all. It also eats the click after a scrub, which would otherwise re-apply
+    whichever day the finger went DOWN on and undo the drag.
+    Nearest-CENTRE, not a proportional map of the strip's width, so the same
+    code works unchanged on desktop where these are still `Mon 13` chips of
+    differing widths.
   - **`+ Line` left the bar for good.** It was the only control here that
     duplicated one inside the section it acts on — every wave header
     carries its own — and the top-bar copy had to guess which wave it
@@ -349,10 +367,23 @@ edit week now:
   `board.ts`, wired to `.sb-main`). The week can be a scroll-snap container
   because its days are cheap; the board draws one day at ~900 nodes against
   a ceiling of 960, so a week's worth would be seven times the DOM and
-  seven times every validate-driven repaint. 55px of travel, horizontal
-  beating vertical by 2×, and nothing at all in `.sb-wide` (where sideways
-  already pans the day's columns). It stops at both ends of the loaded week
-  with a toast rather than wrapping.
+  seven times every validate-driven repaint. It fires **on pointermove, the
+  instant the threshold is crossed**, and consumes the gesture — one day per
+  swipe, never a continuous scrub (a flick travels hundreds of px in a few
+  frames and would carry the day past whatever the scheduler meant). It
+  stops at both ends of the loaded week with a toast rather than wrapping.
+  **45px of travel and a 1.25× horizontal-over-vertical bias, and all three
+  numbers moved on 11 Aug 26** (owner: "the swipe left and right feels
+  unresponsive"). It started at 55px, 2×, firing on pointerUP, and the bias
+  was the worst of the three: a real thumb swipe arcs, so a deliberate 120px
+  sideways drag that also drifted 70px down was refused outright (120 < 140)
+  — the gesture did nothing, which reads as being ignored rather than as a
+  threshold. 1.25× still refuses an ordinary vertical scroll by a wide margin
+  (a 200px scroll needs 250px of sideways drift to be taken for a swipe).
+  Firing on UP was the other half: the day changed after the finger left the
+  glass, so the gesture and its result were separated by however long the
+  swipe took. Measured after the change: it fires 50px into a 140px drag,
+  with the finger still down.
   **What it does NOT guard against is the part worth reading.** Excluding
   inputs, buttons and seats at pointerdown is the obvious defensive list and
   it is wrong here: the board is wall-to-wall controls, so it made the

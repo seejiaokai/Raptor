@@ -411,8 +411,12 @@ the phone perf budget. Don't convert them to components.
   now, `+ Line` is gone from the bar (every wave header already has one),
   undo/redo are on it, and every label is icon-only under 820px. Do not add
   a control back to this bar without taking one off: the whole point was
-  getting it from 166px to 58px on a 780px screen, and the geometry gate
+  getting it from 166px to 70px on a 780px screen, and the geometry gate
   counts ROWS, not just overflow. Desktop is unchanged.
+  **The dots are also a scrub bar** (owner, same day) — press and slide to
+  run through the week. Every dot keeps the same footprint whatever is
+  selected; do not make the current one grow, it shifts the strip under a
+  tracking finger.
   Contract: `docs/ui-contracts.md` §The board on a phone is ONE window.
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /

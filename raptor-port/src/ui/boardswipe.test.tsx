@@ -24,15 +24,43 @@ import { HOOKS } from '../engine/hooks'
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
 
-/* one swipe, expressed the way a finger makes it: down somewhere, up
-   somewhere else. The handler reads only the two client points, so this is
-   the real event path and not a shortcut around it. */
+/* one swipe, expressed the way a finger makes it: down, MOVE, up. The move
+   matters — the day changes on the move now, with the finger still down
+   (owner, 11 Aug 26: waiting for the lift is what "unresponsive" was), so a
+   harness that only sent down/up would test a path the app no longer has. */
 const swipe = async (dx: number, dy = 0, target?: Element | null) => {
   const main = $('.sb-main')
   const from = (target || main) as Element
   await act(async () => {
     from.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+    main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 200 + dx, clientY: 400 + dy, pointerType: 'touch' } as any))
     main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 200 + dx, clientY: 400 + dy, pointerType: 'touch' } as any))
+  })
+}
+
+/* a press-and-slide along the day dots, in one or more steps */
+const scrub = async (...xs: number[]) => {
+  const dots = $('#sbDays')
+  await act(async () => {
+    dots.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: xs[0], clientY: 50, pointerType: 'touch', buttons: 1, pointerId: 1 } as any))
+  })
+  for (const x of xs.slice(1)) {
+    layOutDots()                       // the strip rebuilds on every day change
+    await act(async () => {
+      dots.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: x, clientY: 50, pointerType: 'touch', pointerId: 1 } as any))
+    })
+  }
+  await act(async () => {
+    dots.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: xs[xs.length - 1], clientY: 50, pointerType: 'touch', pointerId: 1 } as any))
+  })
+}
+
+/* jsdom gives every element a 0x0 rect, so nearest-CENTRE would always pick
+   dot 0. Stub each dot onto its own 20px slot so the mapping is testable
+   here; the real geometry is the geometry gate's job. */
+const layOutDots = () => {
+  $$('#sbDays [data-sbtab]').forEach((d, i) => {
+    (d as any).getBoundingClientRect = () => ({ left: i * 20, width: 20, right: i * 20 + 20, top: 40, bottom: 60, height: 20, x: i * 20, y: 40 })
   })
 }
 
@@ -163,6 +191,19 @@ describe('a swipe may start on the controls the board is made of', () => {
     expect(view.SBDAY).toBe(3)
   })
 
+  /* THE BIAS THAT WAS TOO STRICT (owner, 11 Aug 26 — "feels unresponsive").
+     At 2x, a deliberate 120px sideways drag that arced 70px down was refused
+     outright, which reads as the app ignoring you. At 1.25x it lands. */
+  it('takes a swipe that arcs, the way a real thumb travels', async () => {
+    await swipe(-120, 70)
+    expect(view.SBDAY, 'a 120px drag arcing 70px down is still a swipe').toBe(3)
+  })
+
+  it('and still refuses an ordinary vertical scroll that drifts sideways', async () => {
+    await swipe(-90, 240)
+    expect(view.SBDAY).toBe(2)
+  })
+
   /* in desktop layout the whole board IS a horizontal scroller, so sideways
      already means "pan across the day's columns" */
   it('does nothing in desktop layout, where sideways means panning the board', async () => {
@@ -177,3 +218,68 @@ describe('a swipe may start on the controls the board is made of', () => {
 })
 
 afterEach(() => { HOOKS.editMode = HOOKS.editMode })
+
+/* THE DOTS ARE A SCRUB BAR (owner, 11 Aug 26 — "the dots should allow me to
+   drag to select the pages, like a drag bar"). Seven taps still work; this is
+   the drag on top of them. */
+describe('dragging along the day dots runs through the week', () => {
+  it('slides the open day to whichever dot is under the finger', async () => {
+    layOutDots()
+    await scrub(50, 110)                       // dot 2 → dot 5
+    expect(view.SBDAY).toBe(5)
+  })
+
+  it('follows the finger continuously, not only where it lets go', async () => {
+    layOutDots()
+    const seen: number[] = []
+    const dots = $('#sbDays')
+    await act(async () => {
+      dots.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 50, clientY: 50, pointerType: 'touch', buttons: 1, pointerId: 1 } as any))
+    })
+    for (const x of [70, 90, 110, 130]) {
+      /* the strip's innerHTML is rebuilt on every day change (dayTabsHTML),
+         so the stubbed rects go with it — re-stub, exactly as a real browser
+         would hand back real rects for the fresh elements. The listeners
+         survive because they are delegated on the container. */
+      layOutDots()
+      await act(async () => {
+        dots.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: x, clientY: 50, pointerType: 'touch', pointerId: 1 } as any))
+      })
+      seen.push(view.SBDAY as number)
+    }
+    await act(async () => {
+      dots.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 130, clientY: 50, pointerType: 'touch', pointerId: 1 } as any))
+    })
+    expect(seen, 'the day changed at every step of the drag').toEqual([3, 4, 5, 6])
+  })
+
+  it('runs backwards too', async () => {
+    layOutDots()
+    await scrub(110, 30)
+    expect(view.SBDAY).toBe(1)
+  })
+
+  /* the release fires a click naming the dot the finger went DOWN on; left
+     alone it would undo the whole drag */
+  it('the click after a scrub does not snap back to where the drag started', async () => {
+    layOutDots()
+    await scrub(50, 130)
+    expect(view.SBDAY).toBe(6)
+    await act(async () => {
+      $$('#sbDays [data-sbtab]')[2].dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+    expect(view.SBDAY, 'the swallowed click left the scrubbed day alone').toBe(6)
+  })
+
+  /* a plain tap must still reach the ordinary click handler — the scrub
+     machine deliberately does nothing until the finger has moved */
+  it('a tap still jumps straight to that day', async () => {
+    layOutDots()
+    await act(async () => {
+      $$('#sbDays [data-sbtab]')[4].dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 90, clientY: 50, pointerType: 'touch', buttons: 1, pointerId: 2 } as any))
+      $$('#sbDays [data-sbtab]')[4].dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 90, clientY: 50, pointerType: 'touch', pointerId: 2 } as any))
+      $$('#sbDays [data-sbtab]')[4].dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+    expect(view.SBDAY).toBe(4)
+  })
+})

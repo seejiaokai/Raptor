@@ -11,7 +11,7 @@ import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
-import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, wireBoardSwipe } from './board'
+import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, wireBoardSwipe, wireDayDots } from './board'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
@@ -76,9 +76,12 @@ export function SchedBoard() {
        panels would be a day change on one half of the screen and nothing on
        the other */
     const offSwipe = wireBoardSwipe(mainRef.current!)
+    /* the dots are a scrub bar as well as seven tap targets (owner, 11 Aug
+       26) — press and slide along them to run through the week */
+    const offDots = wireDayDots(daysRef.current!)
     return () => {
       el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
-      el.removeEventListener('change', boardChange); offDrag(); offSwipe()
+      el.removeEventListener('change', boardChange); offDrag(); offSwipe(); offDots()
     }
   }, [])
 
