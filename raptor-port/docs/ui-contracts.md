@@ -438,6 +438,17 @@ edit week now:
   either alone silently breaks the other. What the forwarder does not
   reproduce is momentum — the board stops when the finger stops. A tap
   travels ~0px, so it scrolls nothing and still toggles the drawer.
+  **And a scroll must not OPEN it** (owner, 11 Aug 26 — "after I move the bar
+  at the top and tried to scroll vertically I can't"). That was the reported
+  fault and it is a two-step trap: the browser's tap slop is generous —
+  measured on the real build, a drag of up to 15px still fired a click — so
+  starting a scroll on the handle opened the drawer, which then covers 58% of
+  the width over a crew list with all of 39px to scroll, so the NEXT drag
+  moved nothing. It reads as the board having seized rather than as a panel
+  having opened over it. The forwarder already knows the finger travelled, so
+  a gesture that scrolled anything eats the click the browser fires
+  afterwards; under 6px is left alone, because a deliberate tap wobbles and
+  that is still a tap.
   **The top bar is a sibling of the scroller, so no drag anywhere on it
   scrolls the board** — the dots included. That is ordinary fixed-header
   behaviour, not a fault, and it is why `.sb-days` can take

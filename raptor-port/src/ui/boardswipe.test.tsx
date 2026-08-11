@@ -336,3 +336,50 @@ describe('a vertical drag on the parked aircrew handle scrolls the board', () =>
     expect($('.sb-main').scrollTop).toBe(500)
   })
 })
+
+/* THE REPORTED FAULT, AND IT IS THE CLICK THAT CAUSES IT (owner, 11 Aug 26 —
+   "after I move the bar at the top and tried to scroll vertically I can't").
+   A two-step trap: the handle sits at the right edge where a thumb rests and
+   the browser's tap slop is generous — measured on the real build, a drag of
+   up to 15px still fired a click — so beginning a scroll there OPENED the
+   aircrew drawer. The drawer then covers 58% of the width over a crew list
+   with 39px to scroll, so the next drag moved nothing, which reads as the
+   board having seized rather than as a panel having opened over it. */
+describe('a scroll on the parked handle must not open the drawer', () => {
+  const gesture = async (dy: number) => {
+    const main = $('.sb-main')
+    const tab = document.querySelector('#schedBoard .sb-ros .ros-tab') as HTMLElement
+    await act(async () => {
+      tab.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 378, clientY: 500, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 378, clientY: 500 - dy, pointerType: 'touch' } as any))
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 378, clientY: 500 - dy, pointerType: 'touch' } as any))
+      /* the click the browser fires after a short touch — the whole problem */
+      tab.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+  }
+  beforeEach(() => { document.body.classList.remove('ros-open'); $('.sb-main').scrollTop = 500 })
+  afterEach(() => { document.body.classList.remove('ros-open') })
+
+  it('a 15px scroll does not open it — that was the fault', async () => {
+    await gesture(15)
+    expect(document.body.classList.contains('ros-open'), 'a scroll is not a tap').toBe(false)
+    expect($('.sb-main').scrollTop, 'and it scrolled the board instead').toBe(515)
+  })
+
+  it('a long scroll does not open it either', async () => {
+    await gesture(200)
+    expect(document.body.classList.contains('ros-open')).toBe(false)
+    expect($('.sb-main').scrollTop).toBe(700)
+  })
+
+  /* a deliberate tap wobbles, and that is still a tap */
+  it('a real tap still opens it', async () => {
+    await gesture(0)
+    expect(document.body.classList.contains('ros-open'), 'the handle still works as a button').toBe(true)
+  })
+
+  it('and so does a tap that wobbles a couple of pixels', async () => {
+    await gesture(3)
+    expect(document.body.classList.contains('ros-open')).toBe(true)
+  })
+})

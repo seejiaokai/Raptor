@@ -16,7 +16,7 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 1050 tests
+**Every gate is green at this commit**, run first-hand: `npm test` 1054 tests
 across 55 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
 run test:e2e` 68/68, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 (neither of the last two in CI). Re-state these only after re-running them.
