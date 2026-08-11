@@ -2491,8 +2491,8 @@ test.describe('the day carousel', () => {
     await go(page, 'editsched')
     await page.evaluate(() => (window as any).openScheduler(0))
     await page.waitForSelector('#sbHist')
-    /* parked well down the day — the incoming pane has to preview the SAME
-       vertical window, or the day appears to jump when the animation ends */
+    /* Parked well down the day: the incoming summary stays viewport-fixed,
+       so it cannot become another many-thousand-pixel paint surface. */
     await page.evaluate(() => { (document.querySelector('.sb-main') as HTMLElement).scrollTop = 700 })
     await page.waitForTimeout(200)
     const y0 = await page.evaluate(() => (document.querySelector('.sb-main') as HTMLElement).scrollTop)
@@ -2507,22 +2507,22 @@ test.describe('the day carousel', () => {
       const m = document.querySelector('.sb-main') as HTMLElement
       const p = document.querySelector('.sb-pane') as HTMLElement
       const dx = (el: Element) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41
-      const dy = (el: Element) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m42
       return {
         boardDx: p ? Math.round(dx(m)) : null,
         paneDrawn: !!p,
         paneDx: p ? Math.round(dx(p)) : null,
         paneNodes: p ? p.querySelectorAll('*').length : 0,
-        paneInnerDy: p && p.firstElementChild ? Math.round(dy(p.firstElementChild)) : null,
-        boardScroll: Math.round(m.scrollTop),
+        paneDay: p?.dataset.day,
+        paneLabel: p?.querySelector('.sb-peek-k')?.textContent,
         pe: p ? getComputedStyle(p).pointerEvents : null,
       }
     })
-    expect(mid.paneDrawn, 'the next day is really drawn, not a placeholder').toBe(true)
-    expect(mid.paneNodes, 'and it is a whole day of board').toBeGreaterThan(200)
+    expect(mid.paneDrawn, 'the destination comes in beside the live board').toBe(true)
+    expect(mid.paneNodes, 'the swipe must not allocate a second full board').toBeLessThan(20)
+    expect(mid.paneDay).toBe('1')
+    expect(mid.paneLabel).toContain('Tuesday')
     expect(mid.boardDx, 'the board has moved with the finger').toBeLessThan(-100)
     expect(mid.paneDx, 'and the incoming day moves exactly with it').toBe(mid.boardDx)
-    expect(mid.paneInnerDy, 'previewing the same vertical window, not its own top').toBe(-mid.boardScroll!)
     expect(mid.pe, 'nothing in the incoming day can take a tap').toBe('none')
 
     await page.mouse.up()
@@ -2537,6 +2537,39 @@ test.describe('the day carousel', () => {
     expect(after.pane, 'and the pane it was drawn on is gone').toBe(false)
     expect(after.transform, 'with the board put back').toBe('none')
     expect(after.scroll, 'and the vertical position held').toBe(y0)
+  })
+
+  test('phone: Sunday back-and-forth never allocates another dense board', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(6))
+    await page.waitForSelector('#sbHist')
+    const swipe = async (dx: number) => {
+      const mid = await page.evaluate((travel) => {
+        const main = document.querySelector('.sb-main') as HTMLElement
+        const event = (kind: string, x: number) => main.dispatchEvent(new PointerEvent(kind, {
+          bubbles: true, clientX: x, clientY: 400, pointerType: 'touch', buttons: kind === 'pointerup' ? 0 : 1,
+        }))
+        event('pointerdown', 200); event('pointermove', 200 + travel)
+        const pane = document.querySelector('.sb-pane') as HTMLElement | null
+        const snap = { panes: document.querySelectorAll('.sb-pane').length, nodes: pane?.querySelectorAll('*').length || 0 }
+        event('pointerup', 200 + travel)
+        return snap
+      }, dx)
+      expect(mid.panes).toBeLessThanOrEqual(1)
+      expect(mid.nodes, 'the gesture preview stays tiny').toBeLessThan(20)
+      await page.waitForTimeout(280)
+    }
+    await swipe(-120)                    // outward at Sunday: rubber-band only
+    expect(await page.evaluate(() => (window as any).SBDAY)).toBe(6)
+    for (let i = 0; i < 6; i++) {
+      await swipe(120)
+      expect(await page.evaluate(() => (window as any).SBDAY)).toBe(5)
+      await swipe(-120)
+      expect(await page.evaluate(() => (window as any).SBDAY)).toBe(6)
+    }
+    expect(await page.locator('.sb-pane').count()).toBe(0)
   })
 
   /* the seam that makes the whole thing possible without a non-passive

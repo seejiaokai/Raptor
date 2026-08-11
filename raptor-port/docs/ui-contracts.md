@@ -380,19 +380,25 @@ edit week now:
   **That mechanism cannot be copied here, and the reason is a number:** one
   day of board is ~900 nodes against a 960 ceiling, so seven side by side is
   ~6,300 on the surface whose whole architecture exists to keep a phone fast.
-  Everything the scheduler can FEEL is copied instead — the day tracks the
-  finger 1:1, the next day is really there coming in, the ends rubber-band at
-  `EDGE_PULL`, and the release settles on distance OR velocity.
-  **The neighbour is built only while a finger is down** and thrown away on
-  settle, so the resting board is unchanged at 897 nodes. It is an absolutely
+  Everything the scheduler can FEEL is copied instead — the live day tracks
+  the finger 1:1, a small summary names the day coming in, the ends rubber-band
+  at `EDGE_PULL`, and the release settles on distance OR velocity.
+  **The neighbour is a lightweight summary built only while a finger is
+  down** and thrown away on settle, so the resting board is unchanged at 897
+  nodes and the gesture adds fewer than 20. The first version built another
+  complete ~900-node board here. Even after overlapping panes were capped at
+  one, rapid Saturday/Sunday swipes still made mobile Safari retain enough
+  discarded render resources to terminate the page: every drag built the
+  target once and the settle built it again as the live board. The gesture now
+  shows the destination's day, date and section counts; only the committed
+  live board builds the dense editor. It is an absolutely
   positioned `.sb-pane` inside `.schedboard`, NOT a track wrapped around
   `.sb-main`: that element is the phone's single scroller and carries
   overscroll containment, the parked-roster proxy scroll and the drawer, and
   wrapping it would have put all three back in play. A transform on a scroller
-  moves what you see and leaves its scrolling alone. The pane's content is
-  offset by the live `scrollTop`, so it previews the same vertical window the
-  swipe will land on — `boardTab` does not reset the scroll, and a pane drawn
-  from its own top made the day appear to jump when the animation ended.
+  moves what you see and leaves its scrolling alone. The summary is fixed to
+  the visible pane rather than offset by `scrollTop`; making it as tall as the
+  full board would recreate the paint-memory fault.
   **`touch-action:pan-y pinch-zoom` on `.sb-main` is the seam** that makes it
   work with no non-passive listener anywhere: the browser keeps the vertical
   scroll and stops claiming the horizontal, so nothing here calls
@@ -406,21 +412,35 @@ edit week now:
   in one frame is arbitrarily fast and a thumb resettling produces exactly
   that. Net sensitivity is HIGHER than the 45px jump it replaces, since a
   flick that never reached 45px now counts. It stops at both ends of the
-  loaded week with a toast rather than wrapping, and the day is swapped only
-  AFTER the settle animation, so the incoming day is never repainted in
-  flight.
-  **Only one neighbour may exist, including during settle.** A complete board
-  is close to the phone DOM ceiling; the first carousel build nulled its pane
-  reference as soon as the finger lifted but left that pane mounted for the
-  240ms animation. Another swipe in that window could therefore add another
-  whole day, and repeated swipes stacked thousands of nodes on mobile Safari.
-  The gesture is now locked until settle removes the pane. Its delayed commit
+  loaded week with a toast rather than wrapping. Direction is recalculated
+  after the gesture locks: an outward pull on Sunday that reverses inward with
+  the same finger must reveal and commit Saturday (and Monday is the mirror).
+  `pointercancel` is an abort, never a release decision; Safari can send it
+  with zero or stale coordinates after native scrolling or an interruption.
+  Pointer-up owns the final coordinate even when the browser sends no last
+  move, and a dot/day choice made while the finger is still held invalidates
+  that gesture against its lock-time day and generation. Never recompute a
+  release from the newly selected day: Saturday's stale left swipe would then
+  become Sunday + 1, outside the loaded week.
+  The day is swapped only AFTER the settle animation, so the incoming day is
+  never repainted in flight.
+  **Only one neighbour may exist, including during settle.** The first
+  carousel build nulled its pane reference as soon as the finger lifted but
+  left that full-board pane mounted for the 240ms animation. Another swipe in
+  that window could therefore add another whole day, and repeated swipes
+  stacked thousands of nodes on mobile Safari. The gesture is now locked until
+  settle removes its small summary pane. Its delayed commit
   checks both the day and a monotonic board-navigation generation, so Close,
   close-and-reopen on the same day, a dot scrub or another page change always
   wins over the stale callback. The
   pane is strictly contained to its viewport-sized paint box as well as being
-  overflow-clipped, so its off-screen board cannot enlarge the compositor
-  surface.
+  overflow-clipped, so it cannot enlarge the compositor surface.
+  **A day-only navigation does no schedule work.** `boardTab` changes view
+  state and uses a board-only notification lane; it does not run the full-week
+  rules engine or wake EditWeek/EditRoster behind the board. Their existing DOM
+  remains available to the stale-markup safety paths. Every actual schedule
+  mutation still uses the global lane, validates normally and repaints both the
+  mounted week and board.
   **What it does NOT guard against is the part worth reading.** Excluding
   inputs, buttons and seats at pointerdown is the obvious defensive list and
   it is wrong here: the board is wall-to-wall controls, so it made the

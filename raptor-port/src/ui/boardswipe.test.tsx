@@ -137,7 +137,7 @@ describe('swiping the board changes the day', () => {
     expect(view.SBDAY).toBe(DAYS.length - 1)
   })
 
-  it('keeps only one full-day preview while the carousel is settling', async () => {
+  it('keeps one small preview while the carousel is settling', async () => {
     const main = $('.sb-main')
     const gesture = () => {
       main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
@@ -146,7 +146,11 @@ describe('swiping the board changes the day', () => {
     }
     await act(async () => { gesture(); gesture(); gesture() })
     expect(document.querySelectorAll('.sb-pane').length,
-      'rapid swipes must not stack several ~900-node boards').toBe(1)
+      'rapid swipes must not stack preview panes').toBe(1)
+    const pane = document.querySelector('.sb-pane') as HTMLElement
+    expect(pane.querySelectorAll('*').length,
+      'a swipe must not allocate another ~900-node board').toBeLessThan(20)
+    expect(pane.dataset.day).toBe('3')
     await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
     expect(document.querySelectorAll('.sb-pane').length).toBe(0)
     expect(view.SBDAY, 'only the first swipe commits').toBe(3)
@@ -205,7 +209,7 @@ describe('swiping the board changes the day', () => {
     expect(document.querySelectorAll('.sb-pane').length).toBe(0)
   })
 
-  it('removes the settling full-day pane when its wiring is cleaned up', async () => {
+  it('removes the settling pane when its wiring is cleaned up', async () => {
     await act(async () => { openScheduler(2); notify() })
     const host = document.createElement('div')
     host.className = 'schedboard'
@@ -222,6 +226,82 @@ describe('swiping the board changes the day', () => {
     expect(host.querySelectorAll('.sb-pane').length, 'cleanup owns the pane even after pointerup nulled the live reference').toBe(0)
     host.remove()
   })
+
+  it('does not reinterpret a held Saturday swipe after a dot chooses Sunday', async () => {
+    await act(async () => { boardTab(5) })
+    const main = $('.sb-main')
+    await act(async () => {
+      main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      expect((document.querySelector('.sb-pane') as HTMLElement)?.dataset.day).toBe('6')
+      boardTab(6)
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+    })
+    await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+    expect(view.SBDAY, 'the newer Sunday choice wins without attempting day 7').toBe(6)
+    expect(document.querySelectorAll('.sb-pane').length).toBe(0)
+  })
+
+  it('uses the final lift side when pointerup crosses without another move', async () => {
+    const main = $('.sb-main')
+    await act(async () => {
+      main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      expect((document.querySelector('.sb-pane') as HTMLElement)?.dataset.day).toBe('3')
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 320, clientY: 400, pointerType: 'touch' } as any))
+      expect((document.querySelector('.sb-pane') as HTMLElement)?.dataset.day,
+        'the settling pane follows the final coordinate').toBe('1')
+    })
+    await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+    expect(view.SBDAY, 'the lift ended on the previous-day side').toBe(1)
+  })
+
+  it('survives the reported Sunday edge and repeated Saturday/Sunday swipes', async () => {
+    await act(async () => { openScheduler(DAYS.length - 1); notify() })
+    await swipe(-120)
+    expect(view.SBDAY, 'an outward swipe stops at Sunday').toBe(6)
+    for (let i = 0; i < 4; i++) {
+      await swipe(120)
+      expect(view.SBDAY).toBe(5)
+      await swipe(-120)
+      expect(view.SBDAY).toBe(6)
+      expect(document.querySelectorAll('.sb-pane').length).toBe(0)
+    }
+  })
+
+  it('lets an outward Sunday pull reverse into Saturday in the same gesture', async () => {
+    await act(async () => { openScheduler(DAYS.length - 1); notify() })
+    const main = $('.sb-main')
+    await act(async () => {
+      main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      expect(document.querySelectorAll('.sb-pane').length, 'there is no day beyond Sunday').toBe(0)
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 320, clientY: 400, pointerType: 'touch' } as any))
+      const pane = document.querySelector('.sb-pane') as HTMLElement
+      expect(pane?.dataset.day, 'reversing inward selects Saturday').toBe('5')
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 320, clientY: 400, pointerType: 'touch' } as any))
+    })
+    await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+    expect(view.SBDAY).toBe(5)
+    expect(document.querySelectorAll('.sb-pane').length).toBe(0)
+  })
+
+  it('aborts an iOS pointer cancellation without committing or blocking the next swipe', async () => {
+    const main = $('.sb-main')
+    await act(async () => {
+      main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      expect(document.querySelectorAll('.sb-pane').length).toBe(1)
+      main.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, clientX: 0, clientY: 0, pointerType: 'touch' } as any))
+    })
+    expect(view.SBDAY, 'cancellation is not a release decision').toBe(2)
+    expect(document.querySelectorAll('.sb-pane').length).toBe(0)
+    expect(main.style.transform).toBe('')
+    expect(main.style.transition).toBe('')
+    await swipe(-90)
+    expect(view.SBDAY, 'the next real gesture is accepted').toBe(3)
+  })
+
 })
 
 describe('the swipe refuses every gesture that belongs to something else', () => {

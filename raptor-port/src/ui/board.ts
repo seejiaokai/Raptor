@@ -22,7 +22,7 @@ import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
-import { notify } from '../state/store'
+import { notify, notifyBoard } from '../state/store'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
@@ -882,7 +882,10 @@ export let SBWOPEN = false
 export function toggleSbwarn() { SBWOPEN = !SBWOPEN }
 
 /* day tab switch — setBoardDay carries the reference's cross-day disarm */
-export function boardTab(n: number) { view.setBoardDay(n); validate(); notify() }
+/* Day navigation changes no schedule data. Validation is already run by every
+   mutation path; doing a full-week validate here made a rapid swipe pay the
+   engine cost again before repainting the target day. */
+export function boardTab(n: number) { view.setBoardDay(n); notifyBoard() }
 
 /* ---------------------------------------------------------------------------
    SWIPING BETWEEN DAYS ON THE PHONE BOARD (owner, 11 Aug 26)
@@ -963,12 +966,13 @@ export function boardTab(n: number) { view.setBoardDay(n); validate(); notify() 
    board is 897 nodes against a 960 ceiling (probes/perf-port.cjs), so seven
    side by side is ~6,300 on the surface whose whole architecture exists to
    keep a phone fast. What IS copied is everything the scheduler can feel —
-   the day tracks the finger 1:1, the next day is really there underneath
-   coming in, the ends rubber-band, and the release settles on distance OR
-   velocity rather than on one hard threshold.
+   the live day tracks the finger 1:1, a small summary identifies the incoming
+   day, the ends rubber-band, and the release settles on distance OR velocity
+   rather than on one hard threshold.
 
-   The neighbour is built only while a finger is down and thrown away on
-   settle, so the resting board is unchanged at 897. It is an absolutely
+   The summary is built only while a finger is down and thrown away on settle,
+   so the resting board is unchanged at 897 and a swipe adds fewer than 20
+   nodes. It is an absolutely
    positioned pane inside `.schedboard`, NOT a restructure of `.sb-main`:
    that element is the phone's single scroller and carries overscroll
    containment, the parked-roster proxy scroll and the drawer, and wrapping it
@@ -1007,30 +1011,46 @@ const EDGE_PULL = 0.32      // how much of the drag the ends give back
 export function wireBoardSwipe(el: HTMLElement) {
   let x0 = 0, y0 = 0, t0 = 0, lx = 0, lt = 0, vel = 0
   let live = false, lock = false, pane: HTMLElement | null = null, w = 1
+  let originDay: number | null = null, originRev: number | null = null, paneDay: number | null = null
   let settleTimer: ReturnType<typeof setTimeout> | null = null
   let settlingPane: HTMLElement | null = null
 
-  /* the neighbour, drawn once the gesture is taken. Built from the same
-     boardHTML the live board uses, so it IS that day, not a placeholder. */
+  /* A lightweight destination, not another complete board. A live phone
+     board is close to 900 nodes; rebuilding one during every drag and then
+     again on commit exhausted mobile Safari during rapid back-and-forth
+     swipes. The real board still tracks the finger and renders the target
+     exactly once after settle. */
   const makePane = (to: number, dir: number) => {
     const host = el.closest('.schedboard') as HTMLElement | null
     if (!host) return null
     const r = el.getBoundingClientRect()
+    const d = DAYS[to]
+    const waves = (d.waves || []).length
+    const aircraft = (d.waves || []).reduce((n: number, w: any) => n
+      + (w.formations || []).reduce((m: number, f: any) => m + (f.aircraft || []).length, 0), 0)
+    const duties = (d.dutywaves || []).reduce((n: number, w: any) => n + (w.rows || []).length, 0)
+    const sims = Object.values(d.sims || {}).reduce((n: number, rows: any) => n + (rows || []).length, 0)
+    const ground = (d.ground || []).length
+    const inputs = INPUTS.filter((i: any) => inputCoversDate(i, d.dt)).length
     const p = document.createElement('div')
     p.className = 'sb-pane'
+    p.dataset.day = String(to)
     p.style.top = (r.top - host.getBoundingClientRect().top) + 'px'
     p.style.height = r.height + 'px'
     p.style.left = (dir > 0 ? r.width : -r.width) + 'px'
-    p.innerHTML = `<div class="sb-boardwrap"><div class="sb-board">${boardHTML(to)}</div></div>`
-    /* SHOW THE SAME VERTICAL WINDOW the board is parked at. Changing day does
-       not reset `.sb-main.scrollTop` (boardTab only moves SBDAY), so a pane
-       drawn from its own top would preview one thing and settle on another —
-       the day would appear to jump down the moment the animation ended.
-       Offsetting the pane's content by the live scroll makes the preview the
-       truth. The week behaves the same way: its days share one vertical page
-       scroll, and swiping sideways does not move it. */
-    const inner = p.firstElementChild as HTMLElement | null
-    if (inner) inner.style.transform = `translateY(${-el.scrollTop}px)`
+    p.innerHTML = `<div class="sb-peek">
+      <div class="sb-peek-k">${esc(d.dow)} scheduler board</div>
+      <div class="sb-peek-date">${esc(d.dt)}</div>
+      <div class="sb-peek-grid">
+        <span><b>${waves}</b> wave${waves === 1 ? '' : 's'}</span>
+        <span><b>${aircraft}</b> aircraft</span>
+        <span><b>${duties}</b> dut${duties === 1 ? 'y' : 'ies'}</span>
+        <span><b>${sims}</b> sim row${sims === 1 ? '' : 's'}</span>
+        <span><b>${ground}</b> ground item${ground === 1 ? '' : 's'}</span>
+        <span><b>${inputs}</b> personal input${inputs === 1 ? '' : 's'}</span>
+      </div>
+      <div class="sb-peek-hint">Release to open</div>
+    </div>`
     host.appendChild(p)
     return p
   }
@@ -1044,7 +1064,7 @@ export function wireBoardSwipe(el: HTMLElement) {
     el.style.transition = ''; el.style.transform = ''
     if (pane) { pane.remove(); pane = null }
     if (settlingPane) { settlingPane.remove(); settlingPane = null }
-    live = false; lock = false
+    live = false; lock = false; originDay = null; originRev = null; paneDay = null
   }
 
   const onDown = (e: any) => {
@@ -1056,7 +1076,7 @@ export function wireBoardSwipe(el: HTMLElement) {
        cannot begin another drag while it is still settling anyway: hold the
        gesture until the one preview has been removed and the day committed. */
     if (settleTimer != null) return
-    live = false; lock = false
+    live = false; lock = false; originDay = null; originRev = null; paneDay = null
     if (pane) { pane.remove(); pane = null }
     el.style.transition = ''; el.style.transform = ''
     if (SBWIDE) return
@@ -1085,15 +1105,25 @@ export function wireBoardSwipe(el: HTMLElement) {
       const di = view.SBDAY
       if (di == null) { live = false; return }
       lock = true
+      originDay = di
+      originRev = view.BOARDREV
       /* jsdom reports every rect as 0, and a 0 width would make the distance
          test below meaningless (0.22 of nothing). Fall back through the layout
          box to the viewport rather than to 1. */
       w = el.getBoundingClientRect().width || el.clientWidth
         || (typeof window !== 'undefined' ? window.innerWidth : 0) || 360
-      const to = di + (dx < 0 ? 1 : -1)
-      /* no day that way: the drag still moves, it just gives most of it back —
-         the same "there is nothing here" a native scroller shows at its end */
-      if (to >= 0 && to < DAYS.length) pane = makePane(to, dx < 0 ? 1 : -1)
+    }
+    /* Re-evaluate the neighbour for the finger's CURRENT side of the origin.
+       At Sunday an outward pull locks with no pane; if that same finger then
+       reverses inward, Saturday must appear instead of the gesture remaining
+       permanently stuck in the edge branch. The Monday mirror is identical. */
+    const dir = dx < 0 ? 1 : -1
+    const to = originDay == null ? -1 : originDay + dir
+    const nextDay = to >= 0 && to < DAYS.length ? to : null
+    if (nextDay !== paneDay) {
+      if (pane) pane.remove()
+      pane = nextDay == null ? null : makePane(nextDay, dir)
+      paneDay = nextDay
     }
     put(pane ? dx : dx * EDGE_PULL)
   }
@@ -1101,16 +1131,35 @@ export function wireBoardSwipe(el: HTMLElement) {
   const end = (e: any) => {
     if (!live) return
     if (!lock) { live = false; return }
+    /* A dot scrub can legitimately choose another day while this finger is
+       still held. The gesture belongs to the day/revision captured at lock;
+       never reinterpret the eventual lift against the newer day (Saturday's
+       old left swipe otherwise became Sunday + 1 and rendered DAYS[7]). */
+    if (originDay == null || originRev == null
+        || view.SBDAY !== originDay || view.BOARDREV !== originRev) {
+      clear(); return
+    }
     const dx = (e && e.clientX != null ? e.clientX : x0) - x0
     const dir = dx < 0 ? 1 : -1
+    /* Browsers need not send one last pointermove before pointerup. Reconcile
+       the destination with the lift coordinate so crossing the origin on the
+       final event cannot animate one pane and commit the opposite day. */
+    const finalTo = dx === 0 ? null : originDay + dir
+    const finalDay = finalTo != null && finalTo >= 0 && finalTo < DAYS.length ? finalTo : null
+    if (finalDay !== paneDay) {
+      if (pane) pane.remove()
+      pane = finalDay == null ? null : makePane(finalDay, dir)
+      paneDay = finalDay
+      put(pane ? dx : dx * EDGE_PULL)
+    }
     const takeDist = Math.min(w * SWIPE_TAKE, SWIPE_TAKE_MAX)
-    const take = !!pane && (Math.abs(dx) > takeDist
+    const take = paneDay != null && !!pane && (Math.abs(dx) > takeDist
       /* a flick counts only if it is still travelling the way it started —
          a drag out and back has a big velocity pointing home */
       || (Math.abs(dx) > SWIPE_FLICK_MIN && Math.abs(vel) > SWIPE_FLICK
           && (vel < 0 ? 1 : -1) === dir))
-    const di = view.SBDAY, rev = view.BOARDREV
-    if (!take || di == null) {
+    const di = originDay, rev = originRev, target = paneDay
+    if (!take || target == null) {
       /* home, and say why if the end of the week is the reason */
       put(0, SWIPE_MS)
       if (!pane && Math.abs(dx) > takeDist)
@@ -1139,19 +1188,26 @@ export function wireBoardSwipe(el: HTMLElement) {
       /* The dots, Close, logout or a page change may have moved the board
          while this animation was finishing. Never let an old swipe overwrite
          that newer choice (or reopen a board that has just been closed). */
-      if (view.BOARDREV === rev && view.SBDAY === di) boardTab(di + dir)
+      if (view.BOARDREV === rev && view.SBDAY === di) boardTab(target)
     }, SWIPE_MS)
   }
+
+  /* Safari uses pointercancel when native scrolling, a system gesture or an
+     interruption takes the stream. Cancellation is not a release decision:
+     committing from its often-zero coordinates can send the board the wrong
+     way and leave a transition alive under the next finger. Abort immediately
+     and synchronously return the real board to rest. */
+  const cancel = () => { if (live) clear() }
 
   el.addEventListener('pointerdown', onDown, { passive: true })
   el.addEventListener('pointermove', onMove, { passive: true })
   el.addEventListener('pointerup', end, { passive: true })
-  el.addEventListener('pointercancel', end, { passive: true })
+  el.addEventListener('pointercancel', cancel, { passive: true })
   return () => {
     el.removeEventListener('pointerdown', onDown)
     el.removeEventListener('pointermove', onMove)
     el.removeEventListener('pointerup', end)
-    el.removeEventListener('pointercancel', end)
+    el.removeEventListener('pointercancel', cancel)
     clear()
   }
 }
