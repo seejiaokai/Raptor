@@ -93,7 +93,10 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
   - **The loaded week's LAST day has no next day**, so its overnight tail is
     unchecked (nothing to shift in). Fixes itself the day the app carries
     more than one week of data — same missing piece as the first bullet in
-    this list.
+    this list. **The FIRST day is now the mirror of it**: the tail runs both
+    ways since 11 Aug 26 (see below), so day 0 has no yesterday to shift in
+    either, and a small-hours take-off on the Monday is unchecked against the
+    Sunday before. Same fix, same day.
   - **Exempt-line pucks ring from their OWN red rules only** (owner, 11 Aug
     26 — asked and answered twice, settled the same day): an SC spare or an
     AVALON seat rings for the availability check, a spare also for SC
@@ -114,6 +117,21 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
     11:40. Correct, and the owner was told; expect it to be reported as a bug
     at least once. The levers are the AM boundary or the step padding, never a
     picker rule that disagrees with the warning list.
+- **The picker's busy-at-this-hour bar is ADVISORY, and that is the whole
+  design** (owner, 11 Aug 26). `slotBar` now names an overlapping commitment
+  for every slot, not only a standalone SC shift, excluding the seat being
+  planned into so a swap stays silent. Like every other bar here it does not
+  refuse anything: the name still shows, `barDrop` toasts the reason and the
+  drop goes through. Do not harden it into a refusal — the app's whole
+  vocabulary is soft bars, and a scheduler double-books deliberately more often
+  than by accident. Two existing tests were re-pointed at the reason they are
+  actually about (ATT B, actioned-Fly) rather than at "no reason at all",
+  because seeded men genuinely are busy at those hours; that is the confound to
+  expect when adding a slot-hours test, not a sign the bar is wrong.
+- **`DT_SUM` still counts a man double-BOOKED among those "double turning".**
+  The summary lists everyone with 2+ sorties, which is true of a man planned
+  into two seats at once as much as of a genuine double-turn. Harmless beside
+  the hard conflict that now fires, and left alone rather than special-cased.
 - **The activity types warn but do not bar.** Training, CSE, Meeting, Fly,
   Personal, Appointment and Other now reach the validator the moment they are
   typed, so planting a man through one raises a warning — but they are not in

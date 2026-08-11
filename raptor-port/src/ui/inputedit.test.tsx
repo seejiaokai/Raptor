@@ -15,7 +15,9 @@ import { DAYS } from '../engine/data'
 import { acceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { inpId } from '../engine/inputs'
 import { INPEDIT, setInpEdit } from './pops'
-import { HALF_AM } from './inputedit'
+import { HALF_AM, commitInputEdit, unfmt } from './inputedit'
+import { HOOKS } from '../engine/hooks'
+import { DATES } from '../engine/inputs'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -146,13 +148,31 @@ describe('an input edited in place', () => {
     expect(inp.half).toBeUndefined()
   })
 
-  it('an unreadable time and a backwards window are both refused, and the cell heals', async () => {
+  it('an unreadable time is refused and the cell heals back', async () => {
     const inp: any = { person: 'pike', date: MON, allday: false, s: 540, e: 660, type: 'LL', remarks: '', mod: 'now' }
     await plant(inp)
     await type(cell(inp, 'str'), 'lunchtime')
     expect([inp.s, inp.e]).toEqual([540, 660])
     expect(cell(inp, 'str').textContent).toBe('09:00')
-    await type(cell(inp, 'end'), '0800')                   // before the start
+  })
+
+  /* AN END BEFORE THE START IS AN OVERNIGHT ABSENCE (owner, 11 Aug 26), not an
+     error: 22:00–02:00 is a real thing to be down for, and a duty row, a sim box
+     and a night sortie have all rolled that way since the port. It commits as
+     typed; events.ts rolls it through inpWin. Only an end EQUAL to the start —
+     a zero-length absence — still heals back. */
+  it('an end before the start commits as an overnight absence', async () => {
+    const inp: any = { person: 'pike', date: MON, allday: false, s: 1320, e: 1410, type: 'LL', remarks: '', mod: 'now' }
+    await plant(inp)
+    await type(cell(inp, 'end'), '0200')
+    expect([inp.s, inp.e]).toEqual([1320, 120])
+    expect(cell(inp, 'end').textContent).toBe('02:00')
+  })
+
+  it('an end equal to the start is refused, and the cell heals back', async () => {
+    const inp: any = { person: 'pike', date: MON, allday: false, s: 540, e: 660, type: 'LL', remarks: '', mod: 'now' }
+    await plant(inp)
+    await type(cell(inp, 'end'), '0900')
     expect([inp.s, inp.e]).toEqual([540, 660])
     expect(cell(inp, 'end').textContent).toBe('11:00')
   })
@@ -233,16 +253,30 @@ describe('the dialog writes the row it was opened on', () => {
     expect(inp.type).toBe('CSE')
   })
 
-  it('a bad window is refused and the dialog stays open with the typing in it', async () => {
+  /* an end EARLIER than the start is an overnight absence and saves normally
+     (owner, 11 Aug 26); a zero-length one is what the dialog still refuses, and
+     it must stay open with the typing still in it rather than discard the edit. */
+  it('a zero-length window is refused and the dialog stays open with the typing in it', async () => {
     const inp = monRows()[0]
     await click(weekBtn(inp))
     if ($('#inpEditSpan')) await click($('#inpEditSpan [data-span="custom"]'))
     await set($('#inpEditStart'), '14:00')
-    await set($('#inpEditEnd'), '09:00')
+    await set($('#inpEditEnd'), '14:00')
     await click($('#inpEditSave'))
     expect(INPEDIT).toBe(inp)
-    expect(($('#inpEditEnd') as HTMLInputElement).value).toBe('09:00')
+    expect(($('#inpEditEnd') as HTMLInputElement).value).toBe('14:00')
     await click($('#inpEditCancel'))
+  })
+
+  it('an overnight window saves and closes the dialog', async () => {
+    const inp = monRows()[0]
+    await click(weekBtn(inp))
+    if ($('#inpEditSpan')) await click($('#inpEditSpan [data-span="custom"]'))
+    await set($('#inpEditStart'), '22:00')
+    await set($('#inpEditEnd'), '02:00')
+    await click($('#inpEditSave'))
+    expect(INPEDIT).toBe(null)
+    expect([inp.s, inp.e]).toEqual([1320, 120])
   })
 
   it('Cancel is a real cancel', async () => {
@@ -281,5 +315,50 @@ describe('the dialog writes the row it was opened on', () => {
     await click($('#inpEditSave'))
     expect(INPUTS.indexOf(inp)).toBe(-1)
     expect(INPEDIT).toBe(null)
+  })
+})
+
+/* ACCEPTING, THEN RETYPING INTO A TYPE THAT IS NEVER ACCEPTED. Leave, medical
+   and overseas duty are issued through the Unavailable block and never become a
+   Ground Programme row, so acceptInput refuses them. commitInputEdit un-accepts
+   before it edits, so retyping an accepted Meeting to LL legitimately drops its
+   row — but the re-accept's refusal was read by nobody, the save still reported
+   success, and a row vanished from a published programme in silence. */
+describe('retyping an accepted input into a never-accepted type', () => {
+  const draftOf = (r: any, type: string) => ({
+    person: r.person, type, allday: false,
+    sTime: '0900', eTime: '1700', remarks: r.remarks || '',
+    start: unfmt(r.date), end: null,
+  })
+
+  it('drops the programme row AND says so', () => {
+    const r: any = { person: 'split', date: DATES[0], allday: false, s: 540, e: 1020, type: 'Meeting', remarks: 'sqn brief' }
+    INPUTS.push(r)
+    expect(acceptInput(0, r, 'g')).toBe(true)
+    expect((DAYS[0].ground || []).filter((g: any) => g.src === inpKey(r)).length).toBe(1)
+
+    const said: string[] = []
+    const orig = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try { commitInputEdit(r, draftOf(r, 'LL')) } finally { HOOKS.toast = orig }
+
+    expect((DAYS[0].ground || []).filter((g: any) => g.src === inpKey(r)).length).toBe(0)
+    expect(r.acc).toBeFalsy()
+    expect(said.some(m => /does not go on the Ground Programme/.test(m)), said.join(' | ')).toBe(true)
+  })
+
+  it('stays silent when the retype is to another ordinary type', () => {
+    const r: any = { person: 'split', date: DATES[0], allday: false, s: 540, e: 1020, type: 'Meeting', remarks: 'sqn brief' }
+    INPUTS.push(r)
+    acceptInput(0, r, 'g')
+
+    const said: string[] = []
+    const orig = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try { commitInputEdit(r, draftOf(r, 'Appointment')) } finally { HOOKS.toast = orig }
+
+    expect((DAYS[0].ground || []).filter((g: any) => g.src === inpKey(r)).length).toBe(1)
+    expect(r.acc).toBe('g')
+    expect(said.some(m => /does not go on the Ground Programme/.test(m))).toBe(false)
   })
 })

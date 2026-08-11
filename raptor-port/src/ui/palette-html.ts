@@ -2,7 +2,7 @@
    the placeholder row, verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
-import { INPUTS, isAway, inputCoversDate, offWord, awayAllDay } from '../engine/inputs'
+import { INPUTS, isAway, inputCoversDate, offWord, awayAllDay, canWork } from '../engine/inputs'
 import { hm24 } from '../engine/time'
 import { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
 import { sevOf, chipOf } from '../engine/validate'
@@ -11,11 +11,27 @@ import { puck } from './html'
 
 export function paletteDay(){ return ARM&&ARM.di>=0?ARM.di:(DAYS[ROSDAY]?ROSDAY:0); }
 /* one puck, with the reason it cannot be used carried on the title */
+/* GROUNDED IS NOT ABSENT. ATT B is the one type that bars a flying seat and
+   leaves a duty desk, a sim seat and a ground row open — `canWork` is that
+   carve-out, and `slotBar` applies it the moment a slot is ARMED. With nothing
+   armed there is no slot to judge against, and this fell back to dayOff, which
+   only knows "away all day": the man came out struck through and cursor
+   not-allowed, i.e. "cannot be used", while the app itself would happily take
+   him at a desk one click later. Say what he cannot do instead of refusing him
+   outright. Only when EVERY whole-day absence he carries is a canWork one —
+   an ATT B man who is also on leave is properly away. */
+const groundedOnly=(id:any,di:any)=>{
+  const d=DAYS[di]; if(!d)return false;
+  const away=INPUTS.filter((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id&&inputCoversDate(i,d.dt));
+  return away.length>0&&away.every((i:any)=>canWork(i.type));
+};
 export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rules:any){
-  const why=armKey?slotBar(id,armKey,rules):(off&&off.has(id)?offReason(id,di):'');
+  const grounded=!armKey&&!!(off&&off.has(id))&&groundedOnly(id,di);
+  const why=armKey?slotBar(id,armKey,rules):((off&&off.has(id)&&!grounded)?offReason(id,di):'');
   const standby=!!(sby&&sby.has(id));
-  const cls=why?'no':((eng&&eng.has(id))?'busy':(standby?'standby':''));
+  const cls=why?'no':((grounded||(eng&&eng.has(id)))?'busy':(standby?'standby':''));
   const note=why?`${PEOPLE[id].cs} — ${why}`
+    :grounded?`${PEOPLE[id].cs} — grounded today: no flying, but a duty desk, a sim seat or a ground row is still open to him`
     :(eng&&eng.has(id))?`${PEOPLE[id].cs} — already tasked today, but you can still plan him`
     :standby?`${PEOPLE[id].cs} — SC spare, standing by and free for anything else`
     :PEOPLE[id].cs;
@@ -66,8 +82,12 @@ export function paletteHTML(di:any,opts?:any){
      off set (leave / downchit) is drawn struck-through but used to be ranked 0,
      so the column header counted men on leave among the "N free" and sorted them
      to the top alongside genuinely available crew. */
+  /* rank 2 is "cannot be planned here", which is what draws the strike-through
+     and drops him out of the "N free" count. A grounded-only man (ATT B) is
+     rank 1 — tasked-but-plannable — for the same reason rosterPuck no longer
+     strikes him: he is unavailable for a jet, not for the day. */
   const rank=(id:any)=>(armKey?(slotBar(id,armKey,arules)?2:0)
-                       :((off&&off.has(id))?2:0))||(eng.has(id)?1:0);
+                       :((off&&off.has(id))?(groundedOnly(id,di)?1:2):0))||(eng.has(id)?1:0);
   const bySort=(a:any,b:any)=>rank(a)-rank(b)||PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
   const sel=(seat:any,san:any)=>Object.keys(PEOPLE).filter((id:any)=>ok(id)&&PEOPLE[id].seat===seat&&!!PEOPLE[id].san===san).sort(bySort);
   const col=(title:any,seat:any)=>{

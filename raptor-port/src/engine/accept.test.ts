@@ -318,3 +318,40 @@ describe('an Other input reads by its remarks', () => {
     expect(inpLabel({ type: 'LL', remarks: 'Local leave' })).toBe('LL')
   })
 })
+
+/* THE CONTENT KEY IS NOT UNIQUE (11 Aug 26). inpKey is person|date|type|start,
+   so two inputs agreeing on all four mint the same `src`. acceptedDay and
+   unacceptInput both resolve a row by the FIRST match, so a second row carrying
+   an existing key makes the link ambiguous — unaccepting one input would remove
+   the other's row, and re-accepting would duplicate rather than restore. */
+describe('a second accept that would mint a duplicate content key', () => {
+  const twin = () => ({ person: 'pike', date: 'Jul 13', allday: false, s: 540, e: 600,
+                        type: 'Appointment', remarks: '', mod: '' } as any)
+
+  it('is refused rather than minting an ambiguous link', () => {
+    const a = twin(), b = twin()
+    b.e = 700                                  // a genuinely different input...
+    INPUTS.push(a); INPUTS.push(b)
+    expect(inpKey(a)).toBe(inpKey(b))          // ...that nonetheless shares the key
+    expect(acceptInput(0, a, 'g')).toBe(true)
+    expect(acceptInput(0, b, 'g')).toBe(false)
+    expect(b.acc).toBeFalsy()
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpKey(a)).length).toBe(1)
+  })
+
+  it('and the first input can still be unaccepted cleanly afterwards', () => {
+    const a = twin(), b = twin(); b.e = 700
+    INPUTS.push(a); INPUTS.push(b)
+    acceptInput(0, a, 'g'); acceptInput(0, b, 'g')
+    expect(unacceptInput(0, a)).toBe(true)
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpKey(a)).length).toBe(0)
+  })
+
+  it('a different start minute is a different key, and both are accepted', () => {
+    const a = twin(), b = twin(); b.s = 541
+    INPUTS.push(a); INPUTS.push(b)
+    expect(inpKey(a)).not.toBe(inpKey(b))
+    expect(acceptInput(0, a, 'g')).toBe(true)
+    expect(acceptInput(0, b, 'g')).toBe(true)
+  })
+})

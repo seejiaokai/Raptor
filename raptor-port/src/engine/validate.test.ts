@@ -548,3 +548,64 @@ describe('warnings carry the causing line\'s slot-key (the anchor)', () => {
     })
   })
 })
+
+/* TWO SORTIES AT THE SAME TIME ARE NOT A TURN (owner, 11 Aug 26 — "if you plan
+   the same crew in the same wave with the same timing, they do not get the
+   conflict"). Sortie-vs-sortie was excluded from the DOUBLE_BOOK loop wholesale,
+   because a legitimate tight turn overlaps once the step and dekit pads are
+   added and would have rung every time. But that exclusion also swallowed the
+   case where the man is genuinely airborne twice at once: it surfaced only as
+   the amber TURN advisory, carrying a NEGATIVE minute count, with no red ring.
+   The line between them is the AIRBORNE window (to..ld), not the padded one. */
+describe('the same man in two sorties at once', () => {
+  const hits = (code: string, id: string) =>
+    validate().all.filter((x: any) => x.code === code && (x.who || []).includes(id))
+
+  /* 'split' is idle all week, so his own mutation is the only thing driving the
+     result — the seed's own men already carry unrelated conflicts underneath.
+     Monday WAVE 1 · VL carries two aircraft on identical times (12:40–14:05),
+     so seating him in both is the owner's exact case. */
+  const sameWaveTwice = () => {
+    const f = DAYS[0].waves[0].formations[0]
+    f.aircraft[0].p = 'split'
+    f.aircraft[1].p = 'split'
+  }
+
+  it('raises a hard conflict, not a tight turn', () => {
+    sameWaveTwice()
+    const dbl = hits('DOUBLE_BOOK', 'split')
+    expect(dbl.length, JSON.stringify(dbl)).toBeGreaterThan(0)
+    expect(dbl.every((x: any) => x.sev === 'hard')).toBe(true)
+    /* two seats on one line share a label, so the general "X & Y clash" wording
+       came out as "VL BFM & VL BFM clash" — say what happened instead */
+    expect(dbl.some((x: any) => /is in two seats on VL BFM at once/.test(x.msg)),
+      JSON.stringify(dbl)).toBe(true)
+  })
+
+  it('rings the puck red rather than leaving it grey', () => {
+    sameWaveTwice()
+    const W = validate()
+    expect(W.sev[0] && W.sev[0]['split']).toBe('hard')
+    expect(String(W.chip[0] && W.chip[0]['split'])).toContain('C')
+  })
+
+  it('does not report a negative-minute tight turn for the same pair', () => {
+    sameWaveTwice()
+    const turns = hits('TURN', 'split')
+    expect(turns.some((x: any) => /-\d+ min/.test(x.msg)), JSON.stringify(turns)).toBe(false)
+  })
+
+  /* the control the exclusion existed to protect: a genuinely SEQUENTIAL pair
+     whose step/dekit pads overlap is still only a tight turn, and must not ring. */
+  it('a legitimate tight turn is still advisory only', () => {
+    const w = DAYS[0].waves[0]
+    w.formations[0].aircraft[0].p = 'split'           // VL 12:40–14:05
+    w.formations[1].to = '14:15'                      // RU launches 10 min after VL lands
+    w.formations[1].ld = '15:30'
+    w.formations[1].aircraft[0].p = 'split'
+    const turns = hits('TURN', 'split')
+    expect(turns.length, JSON.stringify(turns)).toBeGreaterThan(0)
+    expect(hits('DOUBLE_BOOK', 'split').length, JSON.stringify(hits('DOUBLE_BOOK', 'split'))).toBe(0)
+    expect(validate().sev[0]['split']).not.toBe('hard')
+  })
+})

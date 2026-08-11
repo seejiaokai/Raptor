@@ -238,7 +238,10 @@ export function InputsPage() {
        silent 06:00–18:00. The overlap math assumes s < e within one day. */
     const s = allday ? 0 : parseHM(sTime), e = allday ? 1439 : parseHM(eTime)
     if (!allday && (s == null || e == null)) return HOOKS.toast('Give the input a start and end time, or tick All day', 'warn')
-    if (!allday && (e as number) <= (s as number)) return HOOKS.toast('End time must be after start time', 'warn')
+    /* an end earlier than the start crosses midnight, as it does on every other
+       row type — see commitInputEdit for the reasoning. Only equal times are
+       refused, being a zero-length absence. */
+    if (!allday && (e as number) === (s as number)) return HOOKS.toast('Give the input a start and end that are not the same time', 'warn')
     writeInputs(() => INPUTS.unshift(withId({
       person, date, endDate, allday, s, e,
       /* only carried when it is one — an absence typed as an exact range is

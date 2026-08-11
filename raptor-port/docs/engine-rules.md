@@ -347,6 +347,21 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   tail is unchecked until the app carries more than one week. The parity
   gate excises the `nx` entries and `sacrew` exactly as it excises `key`
   (port-only); `overnight.test.ts` pins them positively.
+- **AND THE TAIL RUNS BOTH WAYS (11 Aug 26).** The half above covers a window
+  running PAST minute 1440; the mirror is a window opening BEFORE minute 0,
+  and a small-hours take-off produces one with no overnight row involved —
+  `briefLead` (140), `step` (60) and `reportLead` (180) are all subtracted
+  from the T/O, so a 00:30 launch briefs 22:10 the previous evening and its
+  occupied window opens 23:30 the night before. `collectEvents` therefore also
+  appends YESTERDAY's inputs shifted −1440 (marked `pv`), by the same rules:
+  a record with no usable window stays uncheckable, a shifted all-day copy
+  still spans 1439 minutes so `timedInput` treats every copy alike, and an
+  ordinary daytime sortie can never match one because its window never goes
+  negative. `slotBar` carries the matching backward block (reason suffixed
+  "(yesterday)"), because the picker and the warning list are required not to
+  drift apart. Day 0 has no yesterday, exactly as the last day has no
+  tomorrow. Found by measuring both directions against the same shape: the
+  forward case flagged, the backward case was silent.
 - **A duty block is filled from the WAVE it serves** (`waveDutyBlock`, owner
   10 Aug 26). `+ Block` on the scheduler board asks which wave the block is
   for and fills it in: the title is `<wave name> duties`, and the roles are
@@ -461,7 +476,51 @@ in the validator through `day.input`'s shifted append (see §Validation, the
 midnight tail) and in `slotBar` through the same filter chain run over the
 next day's inputs, so neither gate is stricter than the other. The bar
 reason carries "(tomorrow)" so a scheduler can see which day the absence
-lives on.
+lives on, "(yesterday)" for the backward half — a slot whose window opens
+before minute 0, which is what a small-hours take-off does — and
+"(overnight)" for an absence typed ACROSS midnight yesterday, whose second
+half lands on today's early minutes without today's slot ever going
+negative. That last one is checked WITHOUT the all-day shortcut the other two
+use: an ordinary all-day absence yesterday says nothing about today.
+
+**An absence may cross midnight** (owner, 11 Aug 26). 22:00–02:00 is a real
+thing to be down for, and a duty row, a sim box and a night sortie have all
+rolled that way since the port. Personal inputs were the one row type left
+out: both entry paths refused an end before the start, and `mapInp` was the
+one event build that did not roll its window, so such a record matched
+nothing even if it arrived another way. `inpWin` is now the single place an
+absence's window is read — `events.ts` and `slotBar` both go through it — and
+only a ZERO-LENGTH window is refused on entry. The cost of the roll is that a
+transposed 09:00–08:00 becomes a 23-hour absence rather than an error, which
+is the same trade every other row type already makes.
+
+**Two sorties at once are a CONFLICT, not a turn** (owner, 11 Aug 26).
+Sortie-vs-sortie is excluded from the double-booking loop because two
+back-to-back legs overlap the moment the step and dekit pads are added, and
+would otherwise ring on every legitimate tight turn. That exclusion also
+swallowed the case where a man is genuinely airborne twice at once: it
+surfaced only as the amber tight-turn advisory, carrying a NEGATIVE minute
+count. The line between the two is the AIRBORNE window (`to..ld`), never the
+padded one — an overlap there falls through to a hard `DOUBLE_BOOK`, and the
+tight-turn advisory is suppressed when the gap is negative. Two seats on one
+line share a label, so that message names the man and the line instead of
+reading "VL BFM & VL BFM clash".
+
+**The picker asks "is he busy at THIS hour"** (owner, 11 Aug 26). `slotBar`
+checks the day's events against the slot's own window for every key, not only
+a standalone SC shift, excluding the seat being planned into (`slot`/`key` on
+each event, normalised by `selfKey`) so a swap is silent. Every kind of event
+counts, because every non-shift overlap the validator finds is a hard
+`DOUBLE_BOOK`; a standby spare is exempt, being deliberately free. It is
+ADVISORY, like every other bar here — `barDrop` toasts and the drop still
+goes through.
+
+**A second accept that would mint a duplicate content key is refused.**
+`inpKey` is `person|date|type|start` and content keys are not unique;
+`acceptedDay` and `unacceptInput` both resolve a row by the first match, so a
+second row carrying an existing key would make the link ambiguous. The caller
+reports which refusal it was — the type is never accepted, or the key is
+taken — because saying the wrong one is its own bug.
 
 ## Accepting a personal input
 

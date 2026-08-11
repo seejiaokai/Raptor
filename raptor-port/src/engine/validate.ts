@@ -128,7 +128,11 @@ export function validate(){
            can be the binding one: a 60 min threshold with 30 dekit + 60 step
            would let a physically impossible turn through. Take the larger. */
         const need=Math.max(VCONF.tightTurn,VCONF.dekit+VCONF.step);
-        if(turn<need){markChip(di,id,'TT');add('adv','TURN',[id],`Tight turn ${es[i].label}→${es[i+1].label}: ${turn} min land→next T/O (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`,es[i].key);} }
+        /* turn<0 means the two legs OVERLAP — he is airborne twice at once,
+           which is not a turn at all. It was reported as one, carrying a
+           negative minute count ("Tight turn VL→VL: -85 min"), and the hard
+           clash below now speaks for that case instead (owner, 11 Aug 26). */
+        if(turn>=0&&turn<need){markChip(di,id,'TT');add('adv','TURN',[id],`Tight turn ${es[i].label}→${es[i+1].label}: ${turn} min land→next T/O (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`,es[i].key);} }
     });
     /* C — two commitments at the same time for one person.
        Sortie-vs-sortie is the tight-turn rule's business, not this one.
@@ -145,7 +149,18 @@ export function validate(){
     Object.keys(byE).forEach((id:any)=>{ const es=byE[id].slice().sort((a:any,b:any)=>a.s-b.s);
       for(let i=0;i<es.length;i++)for(let j=i+1;j<es.length;j++){
         const A=es[i],B=es[j];
-        if(A.kind==='fly'&&B.kind==='fly')continue;
+        /* Sortie-vs-sortie is the tight-turn rule's business — but only where
+           the legs are SEQUENTIAL. This used to skip every flying pair, because
+           two back-to-back legs overlap the moment the step and dekit pads are
+           added and would have rung on every legitimate tight turn. That also
+           swallowed the case where the man is genuinely airborne twice at once:
+           plan him into two aircraft on the same times and the only thing said
+           was an amber tight turn with a negative minute count (owner, 11 Aug
+           26). The line between the two is the AIRBORNE window (to..ld), never
+           the padded one — so compare those, and let a real overlap fall
+           through to the hard clash below. */
+        if(A.kind==='fly'&&B.kind==='fly'
+           &&!(A.to!=null&&B.to!=null&&overlap(A.to,A.ld,B.to,B.ld)))continue;
         if(!overlap(A.s,A.e,B.s,B.e))continue;
         /* every clash, not just the first: a man double-booked in the morning
            AND in the evening used to be told about the morning only. The red
@@ -165,7 +180,13 @@ export function validate(){
           continue;
         }
         markChip(di,id,'C'); markRing(di,id,'hard');
-        add('hard','DOUBLE_BOOK',[id],`${A.label} & ${B.label} clash`,kOf(A)||kOf(B));} });
+        /* two seats on the SAME line print the same label, so the general
+           wording came out as "VL BFM & VL BFM clash" — which reads like a
+           fault in the app rather than a fault in the plan. Name what actually
+           happened instead; the two-different-lines wording is unchanged. */
+        add('hard','DOUBLE_BOOK',[id],A.label===B.label
+          ?`${PEOPLE[id]?PEOPLE[id].cs:id} is in two seats on ${A.label} at once`
+          :`${A.label} & ${B.label} clash`,kOf(A)||kOf(B));} });
     // C via input clash (DNIF / leave / appointment vs a sortie)
     day.fly.forEach((e:any)=>day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
       if(overlap(e.step,e.dekit,inp.s,inp.e)){

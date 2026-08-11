@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, inputFlags } from './inputs'
+import { INPUTS, inputCoversDate, inputFlags, inpWin } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
 import { toMin, parseHM, win } from './time'
 import { VCONF } from './rules'
@@ -186,7 +186,11 @@ export function collectEvents(){
       const st=parseHM(x.str),en=parseHM(x.end);
       whoArr(x).forEach((nm:any)=>push(nameToId(nm),st,en,x.prog||'programme','prog',`a:${di}.${ri}`));
       extras(x).forEach((v:any)=>push(v,st,en,x.prog||'programme','prog',`a:${di}.${ri}`)); });
-    const mapInp=(inp:any)=>({id:inp.person,s:inp.allday?0:inp.s,e:inp.allday?1439:inp.e,type:inp.type,remarks:inp.remarks});
+    /* through inpWin, so an absence typed across midnight rolls exactly as a
+       duty row or a night sortie does — see inputs.ts. A record with no usable
+       window still comes through with null s/e and stays uncheckable. */
+    const mapInp=(inp:any)=>{const w2=inpWin(inp);
+      return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks};};
     const input:any[]=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&inputFlags(inp)).map(mapInp);
     /* THE MIDNIGHT TAIL (owner, 11 Aug 26 — "the default warning engine also checks
        in the same modality for all applicable rules based on timing"). A window that
@@ -204,6 +208,29 @@ export function collectEvents(){
     if(nd)INPUTS.filter((inp:any)=>inputCoversDate(inp,nd.dt)&&inputFlags(inp)).forEach((inp:any)=>{
       const m=mapInp(inp); if(m.s==null||m.e==null)return;
       input.push({...m,s:m.s+1440,e:m.e+1440,nx:true});
+    });
+    /* AND THE SAME TAIL BACKWARDS. The forward half above covers a window that
+       runs PAST midnight; the mirror case is a window that starts BEFORE minute
+       0. A sortie taking off in the small hours does exactly that — the brief
+       lead (140), the step (60) and the report lead (180) are all subtracted
+       from the take-off, so a 00:30 T/O briefs at 22:10 the PREVIOUS EVENING and
+       its occupied window opens at 23:30 the night before. Those minutes are
+       negative in this day's minute-space, and nothing in day.input could ever
+       reach them: yesterday's inputs live only on yesterday's day. So a genuine
+       clash — a man at a 22:00 meeting the night before a 00:30 take-off — went
+       unflagged in complete silence, while the identical case in the forward
+       direction flagged correctly (measured both ways, 11 Aug 26).
+       Shifted −1440 so yesterday's records land in this day's minute-space, by
+       the same rules as the forward half: a record with no usable window stays
+       uncheckable, and a shifted all-day input still spans exactly 1439 minutes
+       so validate.ts's timedInput filter treats every copy identically. An
+       ordinary daytime sortie can never match one of these — its window never
+       goes negative — so this adds no warning to any day that did not earn one.
+       `pv` marks them port-only for the parity excision, as `nx` does. */
+    const pd=DAYS[di-1];
+    if(pd)INPUTS.filter((inp:any)=>inputCoversDate(inp,pd.dt)&&inputFlags(inp)).forEach((inp:any)=>{
+      const m=mapInp(inp); if(m.s==null||m.e==null)return;
+      input.push({...m,s:m.s-1440,e:m.e-1440,pv:true});
     });
     return {di,dow:d.dow,dt:d.dt,fly,forms,input,events,simcrew,simwin,sacrew};
   });
