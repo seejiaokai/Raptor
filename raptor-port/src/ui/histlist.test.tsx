@@ -18,7 +18,7 @@ import { setSlotVal, slotVal, txtSet } from '../engine/slots'
 import { elogClear, elogAllFor, elogGroups, logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
-import { openScheduler } from './board'
+import { openScheduler, closeScheduler } from './board'
 import { setHistList, setHistGroup, HISTOPEN, HISTGROUP } from './pops'
 import { hideHistBub, histBubExpanded, histBubPinned } from './histbubble'
 
@@ -35,6 +35,11 @@ const hover = async (el: Element) =>
   act(async () => { el.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })) })
 /* jumpToChange defers to the repainted DOM, exactly as jumpToWarn does */
 const settle = async () => act(async () => { await new Promise(r => setTimeout(r, 20)) })
+/* the area/atime/intimes cells exist on the WEEK only, so reaching one means
+   leaving the board and coming back — closeScheduler/openScheduler, not a nav
+   click, because the board is what the changes list is opened from */
+const goEditWeek = async () => act(async () => { closeScheduler(); notify() })
+const backToBoard = async () => act(async () => { openScheduler(0); notify() })
 
 let phone = false
 const openList = async () => {
@@ -167,6 +172,30 @@ describe('clicking a change jumps to it', () => {
     expect(seen.length, 'it asked to be brought into view').toBe(1)
     expect(seen[0].o.block, 'and to the middle, not just barely on screen').toBe('center')
     expect((seen[0].el as HTMLElement).dataset.slot, 'the right cell').toBe(a)
+  })
+
+  /* THE FOUR FAMILIES THE BOARD NEVER DRAWS. The area/area-time strip and the
+     in-times render on the WEEK only, and traffic is typed into a modal with
+     no cell anywhere — so a row naming one could only ever answer with an
+     error, and the error was untrue as well ("no longer on this day" for a
+     detail sitting safely on the week). Found by the handoff's doc check,
+     after the two changes that combined to create it shipped separately:
+     one made these log a value at all, the next made rows clickable. */
+  it('a detail the board cannot draw is listed, but is not a button', async () => {
+    await goEditWeek()
+    const ar = $('#eWeek .areacell[data-area]')
+    expect(ar, 'the area strip is on the week').toBeTruthy()
+    ar.textContent = 'D99X'
+    await act(async () => { ar.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    await act(async () => { await new Promise(r => setTimeout(r, 10)) })
+    await backToBoard()
+    await openList()
+
+    const rows = $$('#histBody .hl-row')
+    const arRow = rows.find(r => (r.textContent || '').includes('area'))
+    expect(arRow, 'it is still LISTED — the change really happened').toBeTruthy()
+    expect(arRow!.tagName, 'but not offered as a jump').not.toBe('BUTTON')
+    expect($$('#histBody .hl-row.hit').length, 'nothing here is clickable').toBe(0)
   })
 
   it('a structural entry is not a button, because it has no cell to jump to', async () => {

@@ -1735,6 +1735,16 @@ carries no key and no cell, so it renders as a plain row rather than as a
 button that would do nothing, and a key whose row has since been deleted
 toasts rather than failing silently.
 
+**A row is a button only where the board can SHOW that detail** — `histJumpable`
+(`histbubble.ts`). Four families are edited somewhere the board does not draw:
+`ar:`/`at:` (the area and area-time strip) and `it:` (in-times) render on the
+week only, and `tr:` (traffic) is typed into a modal with no cell anywhere.
+They still LIST; they just offer no jump. This is deliberately a different
+question from `findHistCell` returning null, and the two must stay apart: a
+missing key means either "the row was deleted since" (worth saying) or "never
+drawable here" (where "no longer on this day" is simply untrue). A new key
+family the board does not render wants a line in `NO_BOARD_CELL`.
+
 **PINNED beats every rule that would take the bubble away** — the desktop
 mouseout, the phone timeout. It goes on the next click anywhere that is not
 the bubble. Without this the jump would have been undone by the pointer

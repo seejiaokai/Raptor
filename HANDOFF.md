@@ -16,7 +16,7 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 1113 tests
+**Every gate is green at this commit**, run first-hand: `npm test` 1114 tests
 across 59 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
 run test:e2e` 77/77, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 (neither of the last two in CI). Re-state these only after re-running them.
@@ -274,8 +274,20 @@ run test:e2e` 77/77, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
     one of those write paths passed a key with no values and `logEdit` returns
     on that (fixed 11 Aug 26, rules in `docs/engine-rules.md` §The edit log).
     Only `data-area`/`data-atime`/`data-intimes` are still bubble-less, and
-    for a different, harmless reason: those three cells render on the WEEK
-    only, and the bubble is wired to the board wrap. They are in the LIST.
+    for a different reason: those three cells render on the WEEK only, and the
+    bubble is wired to the board wrap. They are in the LIST.
+    **And they cannot be JUMPED to either, which is the residual worth
+    knowing** (11 Aug 26). Those three plus `tr:` are the four families the
+    board never draws, so `histJumpable` (`histbubble.ts`) keeps their rows
+    out of the clickable set — they list, they just do not offer a jump. That
+    guard exists because the two halves of this feature shipped separately and
+    combined into a wrong answer: one made the four log a value at all, the
+    next made every keyed row a button, and clicking one then said "That
+    detail is no longer on this day" about a detail sitting safely on the
+    week. **A new key family that the board does not render wants a line in
+    `NO_BOARD_CELL` as well as in `keyOf`.** The honest fix, if it is ever
+    wanted, is for the jump to leave the board for the week — nothing today
+    does that, and it was not built blind.
 - **The board's page lock is unverified on a real iPhone.** `body.sb-lock` is
   `overflow:hidden`, which locks the viewport by propagation from `body` (the
   root sets no overflow of its own) and was measured holding at both widths in

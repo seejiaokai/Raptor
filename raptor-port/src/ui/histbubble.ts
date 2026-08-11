@@ -92,6 +92,31 @@ export function findHistCell(root: ParentNode, key: string): HTMLElement | null 
   const cells = [...root.querySelectorAll(CELL_SEL)] as HTMLElement[]
   return cells.find(e => keyOf(e) === k) || null
 }
+
+/* CAN THE BOARD SHOW THIS DETAIL AT ALL? Four key families are edited
+   somewhere the board does not draw: `ar:`/`at:` (the area and area-time
+   strip) and `it:` (the in-times) render on the WEEK only — measured, 0 of
+   each inside `.sb-boardwrap` against 16/16/8 in the document — and `tr:`
+   (traffic) is typed into a modal and has no cell anywhere.
+
+   This is not the same question as findHistCell returning null, and keeping
+   them apart is the whole point. A key that is MISSING can be missing for two
+   reasons: the row was deleted since the edit (worth saying so), or it was
+   never drawable here (saying "no longer on this day" is then simply untrue —
+   the detail is fine, it is on the other surface). The changes list asks this
+   first so a row that could never work is not a button at all, which is the
+   same answer it already gives a structural entry.
+
+   Found on 11 Aug 26 by the handoff's own doc check, after the two changes
+   that combined to create it shipped separately: one made these four log a
+   value at all, the next made list rows clickable. Neither was wrong alone. */
+const NO_BOARD_CELL = ['ar', 'at', 'it', 'tr']
+export function histJumpable(key: any) {
+  const k = String(key || '')
+  if (!k) return false
+  const c = k.indexOf(':')
+  return c < 0 ? true : !NO_BOARD_CELL.includes(k.slice(0, c))
+}
 function keyOf(el: HTMLElement) {
   const d = el.dataset
   if (d.bfld) return d.bfld
