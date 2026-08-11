@@ -70,8 +70,9 @@ session needs the pointer — never as the reason the file exists.
    **Unless the context was cleared or compacted mid-session** — then you do
    NOT know, and guessing is worse than looking. Reconstruct from
    `git log --oneline origin/main..HEAD` and
-   `git diff --name-status origin/main...HEAD`, and say in the file that the
-   early context was lost so the next session weighs it accordingly.
+   `git diff --name-status origin/main...HEAD` (or, if this session's work has
+   already merged, the session-start range Step 3 gives), and say in the file
+   that the early context was lost so the next session weighs it accordingly.
 2. **Git** — `git status --short` and `git log --oneline -5`.
    (Nate's original skill forbids git here. That is right for a persistent
    local machine and wrong for us: the next session cannot read this chat but
@@ -96,8 +97,17 @@ This is a **bounded** check, not the filesystem audit Step 2 rules out. One
 command, over this session's diff only:
 
 ```
-git diff --name-status origin/main...HEAD
+git diff --name-status <session-start-commit>...origin/main
 ```
+
+**`origin/main...HEAD` is the WRONG range here, and it fails silently.** This
+project merges before the handoff runs (Step 1), so by the time you get here
+`HEAD` and `origin/main` are usually the same commit — that diff is empty and
+the check reports a clean bill on a session that added three files. Use the
+commit the session STARTED from, which is the parent of your first commit:
+`git log --oneline -8` will show it, or take it from the merge you just made.
+Corrected 11 Aug 26, after the empty-range version would have passed a session
+that had added two test files and moved four numbers.
 
 For each path it reports, confirm — by reading `HANDOFF.md`, not from
 memory:

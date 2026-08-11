@@ -5,6 +5,7 @@ import { esc, SBDAY } from '../state/view'
 import { notify } from '../state/store'
 import { HISTLIST, setHistList, HISTGROUP, setHistGroup, HISTOPEN, toggleHistOpen } from './pops'
 import { jumpToChange } from './interactions'
+import { histJumpable } from './histbubble'
 import { useVersion } from './useStore'
 
 /* THE LISTED VIEW (owner, 11 Aug 26) — every edit in time order, newest
@@ -39,13 +40,19 @@ function chg(r: ELogRow) {
 const dow = (di: any) => di == null ? '' : `<span class="hl-day">${esc((DAYS[di] || {}).dow || '')}</span>`
 const meta = (r: ELogRow) => `<span class="hl-meta">${esc(r.who)} · ${esc(elogWhen(r.t))}</span>`
 
-/* one clickable change. `hit` carries the address the jump needs; a row with
-   no key is not a button at all. */
+/* one clickable change. `hit` carries the address the jump needs. A row is a
+   button only where the board can actually SHOW that detail: no key at all (a
+   structural entry), or one of the four families the board never draws, and it
+   stays a plain row — see histJumpable. A button that could only ever answer
+   with an error is worse than no button, and the error it used to give was
+   untrue as well ("no longer on this day" for a detail sitting safely on the
+   week). */
 function rowHTML(r: ELogRow, cls = 'hl-row') {
+  const hit = histJumpable(r.key)
   const body = r.key
     ? `<span class="hl-what">${esc(r.lbl)}</span><span class="hl-chg">${chg(r)}</span>`
     : `<span class="hl-what struct">${esc(r.lbl)}</span>`
-  return r.key
+  return hit
     ? `<button class="${cls} hit" data-hkey="${esc(r.key)}" data-hdi="${r.di == null ? '' : r.di}"
          title="Go to this detail on the board">${dow(r.di)}${body}${meta(r)}</button>`
     : `<div class="${cls}">${dow(r.di)}${body}${meta(r)}</div>`
