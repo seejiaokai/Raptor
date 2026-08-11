@@ -180,21 +180,63 @@ export function elogRows(di?: any): ELogRow[] {
   return rows.reverse()
 }
 
-/* the newest entry for one detail — what the bubble shows */
+/* the newest entry for one detail — what the bubble shows collapsed */
 export function elogFor(key: any): ELogRow | null {
   const k = String(key)
   for (let i = ELOG.rows.length - 1; i >= 0; i--) if (ELOG.rows[i]!.key === k) return ELOG.rows[i]!
   return null
 }
 
-/* "14:32" for something changed today, "11 Aug 14:32" for anything older.
-   The owner asked for the date and time abbreviated; a scheduler working a
-   day does not need to be told twice that it is still today, and the date
-   appears the moment it stops being true. */
-const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-export function elogWhen(t: number, now?: number) {
-  const d = new Date(t), n = new Date(now == null ? Date.now() : now)
+/* EVERY entry for one detail, OLDEST FIRST — the expanded bubble and an
+   unfolded group in the list (owner, 11 Aug 26: "it will show every change
+   related to that"). Oldest first because this one is a story rather than a
+   feed: you read how the detail got to where it is, and the last line is what
+   it says now. The flat list stays newest-first, which is the opposite and
+   deliberately so — that answers "what just happened", this answers "how did
+   this end up like this". */
+export function elogAllFor(key: any): ELogRow[] {
+  const k = String(key)
+  return ELOG.rows.filter(r => r.key === k)
+}
+
+/* ONE ROW PER DETAIL for the grouped view (owner, 11 Aug 26), newest-touched
+   first, each carrying its own changes oldest-first.
+
+   A STRUCTURAL entry has no key, so it cannot be grouped with anything — a
+   line removed and a wave added are different events that happen to share an
+   empty address. Each stays its own group of one, keyed by its position in
+   the log so two identical sentences never fold together. */
+export type ELogGroup = { key: string; lbl: string; di: number | null; rows: ELogRow[]; last: number }
+export function elogGroups(di?: any): ELogGroup[] {
+  const src = (di == null) ? ELOG.rows : ELOG.rows.filter(r => r.di === +di)
+  const by = new Map<string, ELogGroup>()
+  src.forEach((r, i) => {
+    const id = r.key || ` act${i}`
+    let g = by.get(id)
+    if (!g) { g = { key: r.key, lbl: r.lbl, di: r.di, rows: [], last: 0 }; by.set(id, g) }
+    g.rows.push(r)
+    /* the group's NAME is the newest one's — keyLabel is frozen per row, so a
+       line renamed between two edits would otherwise head its own group with
+       the name it has since stopped having */
+    g.lbl = r.lbl; g.di = r.di; g.last = r.t
+  })
+  return [...by.values()].sort((a, b) => b.last - a.last)
+}
+
+/* "11/8 14:32" — ALWAYS the date, day/month, then the clock (owner, 11 Aug 26:
+   "There is no date stated on the change too like for e.g 11/8").
+
+   It used to print the clock alone for anything changed today and add the date
+   only once that stopped being true, on the reasoning that a scheduler working
+   a day does not need telling twice that it is still today. The owner asked
+   for the date outright, and he is right for a reason worth writing down: the
+   log is stamped with a WALL clock but the rows are about SCHEDULE days, so a
+   bare "14:32" beside "Monday" invites reading it as 14:32 on the Monday being
+   planned. The date removes that, and a tab left open past midnight stops
+   silently relabelling yesterday's work as today's.
+   `now` is still taken for the tests; nothing reads it any more. */
+export function elogWhen(t: number, _now?: number) {
+  const d = new Date(t)
   const hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0')
-  const sameDay = d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate()
-  return sameDay ? hm : `${d.getDate()} ${MON[d.getMonth()]} ${hm}`
+  return `${d.getDate()}/${d.getMonth() + 1} ${hm}`
 }

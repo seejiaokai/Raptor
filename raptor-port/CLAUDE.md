@@ -427,6 +427,15 @@ the phone perf budget. Don't convert them to components.
   run through the week. Every dot keeps the same footprint whatever is
   selected; do not make the current one grow, it shifts the strip under a
   tracking finger.
+  **The swipe is a CAROUSEL since 11 Aug 26** (owner: "the same logic and
+  mechanism as edit schedule ... full motion, feel and sensitivity"). The day
+  tracks the finger, the next day is really drawn beside it, and the release
+  settles on distance or velocity. It is NOT the week's mechanism and cannot
+  be: the week is a scroll-snap container holding all seven days, which here
+  would be ~6,300 nodes against a 960 ceiling. The neighbour is built only
+  while a finger is down. Do not "simplify" it back to a threshold jump, and
+  do not try to make `.sb-main` a snap track — the reasoning, and the three
+  gestures that would break, are in `docs/ui-contracts.md`.
   Contract: `docs/ui-contracts.md` §The board on a phone is ONE window.
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /

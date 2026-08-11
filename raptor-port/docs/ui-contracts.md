@@ -363,27 +363,46 @@ edit week now:
   - Measured by `e2e/geometry.spec.ts`, which counts ROWS as well as
     overflow: both regressions above fitted the width perfectly and simply
     used a second line.
-- **The swipe is a gesture, not seven rendered days** (`wireBoardSwipe`,
-  `board.ts`, wired to `.sb-main`). The week can be a scroll-snap container
-  because its days are cheap; the board draws one day at ~900 nodes against
-  a ceiling of 960, so a week's worth would be seven times the DOM and
-  seven times every validate-driven repaint. It fires **on pointermove, the
-  instant the threshold is crossed**, and consumes the gesture — one day per
-  swipe, never a continuous scrub (a flick travels hundreds of px in a few
-  frames and would carry the day past whatever the scheduler meant). It
-  stops at both ends of the loaded week with a toast rather than wrapping.
-  **45px of travel and a 1.25× horizontal-over-vertical bias, and all three
-  numbers moved on 11 Aug 26** (owner: "the swipe left and right feels
-  unresponsive"). It started at 55px, 2×, firing on pointerUP, and the bias
-  was the worst of the three: a real thumb swipe arcs, so a deliberate 120px
-  sideways drag that also drifted 70px down was refused outright (120 < 140)
-  — the gesture did nothing, which reads as being ignored rather than as a
-  threshold. 1.25× still refuses an ordinary vertical scroll by a wide margin
-  (a 200px scroll needs 250px of sideways drift to be taken for a swipe).
-  Firing on UP was the other half: the day changed after the finger left the
-  glass, so the gesture and its result were separated by however long the
-  swipe took. Measured after the change: it fires 50px into a 140px drag,
-  with the finger still down.
+- **The swipe is a CAROUSEL** (`wireBoardSwipe`, `board.ts`, wired to
+  `.sb-main`) — rewritten 11 Aug 26 on the owner's ask to make it "the same
+  logic and mechanism as edit schedule ... full motion, mechanism, feel and
+  sensitivity".
+  **What the week actually does, because it is not a gesture at all:**
+  `.week` is an ordinary horizontal scroller with `scroll-snap-type:x
+  mandatory` and `scroll-snap-align` on every `.day`. All seven days are in
+  the layout and the BROWSER supplies the tracking, the momentum and the snap.
+  **That mechanism cannot be copied here, and the reason is a number:** one
+  day of board is ~900 nodes against a 960 ceiling, so seven side by side is
+  ~6,300 on the surface whose whole architecture exists to keep a phone fast.
+  Everything the scheduler can FEEL is copied instead — the day tracks the
+  finger 1:1, the next day is really there coming in, the ends rubber-band at
+  `EDGE_PULL`, and the release settles on distance OR velocity.
+  **The neighbour is built only while a finger is down** and thrown away on
+  settle, so the resting board is unchanged at 897 nodes. It is an absolutely
+  positioned `.sb-pane` inside `.schedboard`, NOT a track wrapped around
+  `.sb-main`: that element is the phone's single scroller and carries
+  overscroll containment, the parked-roster proxy scroll and the drawer, and
+  wrapping it would have put all three back in play. A transform on a scroller
+  moves what you see and leaves its scrolling alone. The pane's content is
+  offset by the live `scrollTop`, so it previews the same vertical window the
+  swipe will land on — `boardTab` does not reset the scroll, and a pane drawn
+  from its own top made the day appear to jump when the animation ended.
+  **`touch-action:pan-y pinch-zoom` on `.sb-main` is the seam** that makes it
+  work with no non-passive listener anywhere: the browser keeps the vertical
+  scroll and stops claiming the horizontal, so nothing here calls
+  `preventDefault` and the scroll path stays passive. `pinch-zoom` is named
+  because `pan-y` alone would take it away.
+  **The commit rule is a fraction with a ceiling, plus a flick with a floor.**
+  22% of the width feels like a carousel, but 22% of a 390px phone is 86px and
+  the owner already had this out once at 55px ("feels unresponsive") — so it
+  is capped at 60px. A flick over 0.45px/ms commits however short, but only
+  past 35px of travel: velocity alone is a trap, because a 12px jab delivered
+  in one frame is arbitrarily fast and a thumb resettling produces exactly
+  that. Net sensitivity is HIGHER than the 45px jump it replaces, since a
+  flick that never reached 45px now counts. It stops at both ends of the
+  loaded week with a toast rather than wrapping, and the day is swapped only
+  AFTER the settle animation, so the incoming day is never repainted in
+  flight.
   **What it does NOT guard against is the part worth reading.** Excluding
   inputs, buttons and seats at pointerdown is the obvious defensive list and
   it is wrong here: the board is wall-to-wall controls, so it made the
@@ -1691,6 +1710,59 @@ inside the 820px block.
 body, newest first, whole week by default with a filter for the open day.
 Its footer states plainly that it is per-browser and per-session; that
 limitation is on the surface rather than in a document nobody opens.
+
+### The second pass (owner, 11 Aug 26)
+
+Five changes, after he used the first version.
+
+**The way in is TWO buttons and CSS picks one.** `.histln-top` rides at the
+head of `#sbBoard`, above the sign-off bar, and is the desktop one;
+`.histln` stays on the day's checks panel and is the phone one, because that
+bar has no room and the checks panel is already first in that scroller. Both
+are always rendered and a media query hides one — a builder asking
+`HOOKS.isPhone()` would be stuck on the wrong answer after a resize until
+something else triggered a repaint, and the panels are string-diffed, so
+nothing does until an edit lands. One extra node against 63 of headroom is
+the cheaper side of that trade. Which one is visible, and that the top one
+really is above the sign-off bar, is measured in `e2e/geometry.spec.ts`.
+
+**A row jumps to the detail it names** (`jumpToChange`, beside `jumpToWarn`,
+which is the same shape). The list closes first — on a desktop it is a
+centred modal over the board, so a jump behind it would move something the
+user cannot see. Then the day changes if it has to, the cell is scrolled to
+the middle, and its bubble opens **expanded and pinned**. A structural entry
+carries no key and no cell, so it renders as a plain row rather than as a
+button that would do nothing, and a key whose row has since been deleted
+toasts rather than failing silently.
+
+**PINNED beats every rule that would take the bubble away** — the desktop
+mouseout, the phone timeout. It goes on the next click anywhere that is not
+the bubble. Without this the jump would have been undone by the pointer
+leaving the cell it had just arrived at.
+
+**Grouped by detail is a VIEW, not a filter**, so it sits beside the day
+buttons rather than inside them. One row per detail, newest-touched first,
+unfolding to every change to it **oldest-first** — the flat list is
+newest-first and deliberately the opposite, because the two answer different
+questions ("what just happened" against "how did this end up like this"). A
+detail changed once is a plain row, not a fold that reveals the line already
+on screen. Both the grouping and the day filter reset when the list closes.
+
+**The phone expands the bubble with a control inside it** (`.hb-more`,
+`[data-histmore]`). The bubble itself stays `pointer-events:none` — that is
+the contract that keeps History from turning the board read-only, and it is
+still pinned by the geometry gate. The control is a CHILD with
+`pointer-events:auto`, so the thing that takes a tap is a 24px button you aim
+at rather than a 290px sheet lying over the board. Phone only, and only where
+there is more than one change: a desktop pointer can rest on the cell, so a
+click-to-expand would be asking for a click to get what hovering already
+gives. Its click is handled on the DOCUMENT in capture (`histbubble.ts`),
+because the bubble is body-level and the board wrap's own listeners can never
+see it.
+
+**The clock carries the date** — `11/8 14:32`, always, not just once "today"
+has stopped being true. The rows are about SCHEDULE days, so a bare `14:32`
+beside `Monday` invites being read as a time on the Monday being planned.
 
 ## The page behind the board does not scroll (owner-reported, 11 Aug 26)
 

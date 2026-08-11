@@ -26,3 +26,15 @@ export function setDrawer(on: boolean) { DRAWER = on }
    everything, not a narrowing you set ten minutes ago). */
 export let HISTLIST: false | 'all' | number = false
 export function setHistList(v: false | 'all' | number) { HISTLIST = v }
+/* GROUPED BY DETAIL, or the flat timeline (owner, 11 Aug 26). Off by default —
+   "whats the latest changes based on time by default" — and it is a view of the
+   same rows, not a filter, so it sits beside the day filter rather than in it.
+   Kept here with HISTLIST because it is list state, not schedule state, and
+   because closing the list resets both: a view you set ten minutes ago should
+   not be waiting for you when you reopen. */
+export let HISTGROUP = false
+export function setHistGroup(on: boolean) { HISTGROUP = !!on }
+/* which groups are unfolded, by the key they group on. A Set mutated in place,
+   like DWOPEN and HLSET — the store notifies, the builder re-reads. */
+export const HISTOPEN = new Set<string>()
+export function toggleHistOpen(k: string) { HISTOPEN.has(k) ? HISTOPEN.delete(k) : HISTOPEN.add(k) }

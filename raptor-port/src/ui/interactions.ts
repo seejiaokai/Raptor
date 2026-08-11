@@ -18,8 +18,8 @@ import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, stor
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList } from './pops'
-import { openScheduler, toggleSbwarn } from './board'
-import { hideHistBub } from './histbubble'
+import { openScheduler, toggleSbwarn, boardTab } from './board'
+import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
 
@@ -38,6 +38,46 @@ function jumpToWarn(di: number, ix: number) {
   view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
   view.clearOtherHL()
   notify(); setTimeout(scrollToWarnFocus, 0)
+}
+
+/* THE CHANGES LIST JUMPS TO THE DETAIL IT NAMES (owner, 11 Aug 26 — "if i
+   click on the changes on the list, my view will snap to that specific change
+   and show all the history of that specific change on the bubble until i click
+   away"). The warning list's jumpToWarn above is the same shape and the same
+   three steps, which is why this sits beside it: change what is on screen,
+   notify, then act on the repainted DOM one task later.
+
+   The list CLOSES first. On a desktop it is a centred modal over the board, so
+   a jump behind it would move something the user cannot see; the owner chose
+   this over keeping it open. Structural entries carry no key and no cell, so
+   the row is not clickable at all rather than clickable-and-inert.
+
+   `boardTab` before `notify` because the day may not be the open one — a
+   change made on Thursday, read from the whole-week list on Monday's board. */
+export function jumpToChange(key: string, di: any) {
+  if (!key) return
+  setHistList(false)
+  hideHistBub()
+  if (di != null && view.SBDAY !== +di) boardTab(+di)
+  notify()
+  setTimeout(() => {
+    const wrap = document.querySelector('.sb-boardwrap')
+    const el = wrap && findHistCell(wrap, key)
+    /* the row it addressed can have been deleted since — say so rather than
+       doing nothing, which reads as the click not registering */
+    if (!el) { HOOKS.toast('That detail is no longer on this day', 'warn'); return }
+    pinHistBubAt(el)
+    /* the bubble is already up, so the smooth scroll's own events re-anchor it
+       the whole way in (histbubble's document-level scroll listener).
+       GUARDED because jsdom does not implement scrollIntoView at all — it has
+       no scrolling to implement it with. Unguarded it threw out of this
+       deferred callback, where no test could catch it: every assertion still
+       passed and the run failed on two unhandled errors, which is a shape
+       worth recognising. Where the scroll is REAL it is measured in
+       e2e/geometry.spec.ts, which is the only place it can be. */
+    if (typeof el.scrollIntoView === 'function')
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  }, 0)
 }
 
 /* HOLD THE SCREEN STILL ON SELECTION (owner, 7 Aug 26 — "it should just turn

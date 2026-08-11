@@ -46,7 +46,19 @@ export function boardHTML(di: number, pv?: boolean) {
   /* same gate as the stores chips: pv OR not in edit mode. A duty crew who
      still has a board open after navigating away must not get live controls. */
   const mvRO = stoRO
-  let b = (pv ? '' : `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`)
+  /* THE WAY INTO THE CHANGES LIST, ON A DESKTOP (owner, 11 Aug 26 — "the
+     history list will be shifted and can opened at the top of the board above
+     the sign off section"). It rides at the top of the board proper, ahead of
+     the sign-off bar, where the phone's copy sits in the day's checks panel.
+     BOTH are rendered and CSS picks one per width (`.histln-top` desktop,
+     `.histln` phone) rather than the builder asking HOOKS.isPhone(): a media
+     query answers a resize instantly, where a builder decision is stuck until
+     something else triggers a repaint — and the panels are string-diffed, so
+     nothing does until an edit lands. It costs one node against 63 of
+     headroom, which is the cheaper side of that trade.
+     Not on a frozen preview: nothing else on that surface is live either. */
+  let b = (pv ? '' : histLineHTML('histln-top'))
+    + (pv ? '' : `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`)
     + sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
@@ -213,17 +225,26 @@ export function boardWarnHTML(di: number) {
      Counted here rather than in the modal so the number is visible before you
      open it: an empty log says so up front instead of after a tap. */
   wh += `</div>`
-  if (view.HISTMODE) {
-    const n = ELOG.rows.length
-    /* OUTSIDE .sbwrap, not inside it — on a phone that wrapper folds shut by
-       default and hides every .wln, so an entry in there would be invisible
-       until you had opened a panel about something else. It is also not one
-       of the day's checks: those are about this day's flying, this is about
-       the session. */
-    wh += `<button class="histln" data-histopen title="Every change made this session, newest first">`
-      + `☰ ${n ? `${n} change${n > 1 ? 's' : ''} this session` : 'No changes yet'}</button>`
-  }
+  /* OUTSIDE .sbwrap, not inside it — on a phone that wrapper folds shut by
+     default and hides every .wln, so an entry in there would be invisible
+     until you had opened a panel about something else. It is also not one
+     of the day's checks: those are about this day's flying, this is about
+     the session. CSS shows this copy only under 820px — see histLineHTML. */
+  wh += histLineHTML('histln')
   return wh
+}
+
+/* ONE definition of the way in, rendered twice at different widths. Counted
+   here rather than in the modal so the number is visible before you open it:
+   an empty log says so up front instead of after a tap. It shows only while
+   History is on — the owner's phrasing was "when I enable history, there is
+   ALSO an option to view the history of all edits", so it is a second thing
+   the mode brings, not a permanent control competing with the day's checks. */
+function histLineHTML(cls: string) {
+  if (!view.HISTMODE) return ''
+  const n = ELOG.rows.length
+  return `<button class="${cls}" data-histopen title="Every change made this session, newest first">`
+    + `☰ ${n ? `${n} change${n > 1 ? 's' : ''} this session` : 'No changes yet'}</button>`
 }
 
 export function dayTabsHTML(di: number) {
@@ -859,11 +880,12 @@ export function boardTab(n: number) { view.setBoardDay(n); validate(); notify() 
    The seven Mon–Sun chips are gone from the bar, so the day is reached the way
    the view week's is: a sideways swipe.
 
-   It is a GESTURE, not seven rendered days. The week can be a scroll-snap
-   container because its seven days are cheap; the board draws one day at ~900
-   nodes against a ceiling of 960 (`probes/perf-port.cjs`), so rendering the
-   week's worth would be seven times the DOM and seven times every validate-
-   driven repaint. One day stays rendered and the swipe just moves SBDAY.
+   REWRITTEN AS A CAROUSEL on 11 Aug 26 — see wireBoardSwipe below for the
+   mechanism and for why the week's own scroll-snap container could not simply
+   be reused. What this block still describes correctly is the set of GUARDS,
+   which are unchanged: which gestures the swipe declines, and why each of
+   those refusals was measured rather than assumed. The one number that moved
+   is the commit distance, and it is documented at the constants.
 
    Three guards, each answering a real conflict on this surface rather than a
    hypothetical one:
@@ -919,41 +941,175 @@ export function boardTab(n: number) { view.setBoardDay(n); validate(); notify() 
    laggy. It now fires the instant the threshold is crossed, with the finger
    still down, and `done` consumes the gesture so the rest of the drag and the
    pointerup that follows do nothing. */
-const SWIPE_MIN = 45        // px of travel before it counts as a swipe at all
+/* REWRITTEN AS A CAROUSEL (owner, 11 Aug 26 — "make scheduler board swipe
+   between days to be the same logic and mechanism as edit schedule ... full
+   motion, mechanism, feel and sensitivity").
+
+   WHAT THE WEEK ACTUALLY DOES, because it is not a gesture at all: `.week` is
+   an ordinary horizontal scroller with `scroll-snap-type:x mandatory` and a
+   `scroll-snap-align` on every `.day`. All seven days are in the layout, and
+   the BROWSER supplies the finger-tracking, the momentum and the snap.
+
+   That mechanism cannot be copied here and the reason is a number: one day of
+   board is 897 nodes against a 960 ceiling (probes/perf-port.cjs), so seven
+   side by side is ~6,300 on the surface whose whole architecture exists to
+   keep a phone fast. What IS copied is everything the scheduler can feel —
+   the day tracks the finger 1:1, the next day is really there underneath
+   coming in, the ends rubber-band, and the release settles on distance OR
+   velocity rather than on one hard threshold.
+
+   The neighbour is built only while a finger is down and thrown away on
+   settle, so the resting board is unchanged at 897. It is an absolutely
+   positioned pane inside `.schedboard`, NOT a restructure of `.sb-main`:
+   that element is the phone's single scroller and carries overscroll
+   containment, the parked-roster proxy scroll and the drawer, and wrapping it
+   in a track would have put all three back in play. A transform on a scroller
+   moves what you see and leaves its scrolling alone, which is exactly the
+   seam this needs.
+
+   `touch-action:pan-y` on `.sb-main` (see scheduler.css) is what makes it
+   possible without a non-passive listener: the browser keeps the vertical
+   scroll and hands us the horizontal, so nothing here ever calls
+   preventDefault and the scroll path stays passive. */
+const SWIPE_LOCK = 10       // px of travel before the gesture is taken as horizontal
 const SWIPE_BIAS = 1.25     // horizontal must beat vertical by this much
+/* HOW FAR COMMITS, and why it is a fraction with a CEILING rather than either
+   on its own. A fraction is what makes it feel like a carousel — you have
+   pulled the next day a fifth of the way across, so it comes. But 22% of a
+   390px phone is 86px, and the owner already had this out once at 55px ("the
+   swipe left and right feels unresponsive") and it was tuned down to 45. So
+   the fraction is capped: it never asks for more than 60px, and the flick path
+   below takes anything quick however short. Net sensitivity is HIGHER than the
+   45px jump it replaces, not lower — a flick that never reached 45px now
+   counts. */
+const SWIPE_TAKE = 0.22     // fraction of the width that commits on distance alone
+const SWIPE_TAKE_MAX = 60   // ...but never ask for more than this many px
+const SWIPE_FLICK = 0.45    // px/ms that commits however short the drag was
+/* ...but a flick still has to be a TRAVEL, not a twitch. Velocity alone is a
+   trap: a 12px jab delivered in one frame is arbitrarily fast, and a thumb
+   resettling on a scrolling board produces exactly that. 35px is under the
+   45px the old jump-on-threshold asked for, so the flick path is still the
+   more sensitive of the two, and it is what keeps a short deliberate drag
+   ("reading, not swiping") from flipping the day. */
+const SWIPE_FLICK_MIN = 35
+const SWIPE_MS = 240        // the settle animation
+const EDGE_PULL = 0.32      // how much of the drag the ends give back
+
 export function wireBoardSwipe(el: HTMLElement) {
-  let x0 = 0, y0 = 0, live = false, done = false
+  let x0 = 0, y0 = 0, t0 = 0, lx = 0, lt = 0, vel = 0
+  let live = false, lock = false, pane: HTMLElement | null = null, w = 1
+
+  /* the neighbour, drawn once the gesture is taken. Built from the same
+     boardHTML the live board uses, so it IS that day, not a placeholder. */
+  const makePane = (to: number, dir: number) => {
+    const host = el.closest('.schedboard') as HTMLElement | null
+    if (!host) return null
+    const r = el.getBoundingClientRect()
+    const p = document.createElement('div')
+    p.className = 'sb-pane'
+    p.style.top = (r.top - host.getBoundingClientRect().top) + 'px'
+    p.style.height = r.height + 'px'
+    p.style.left = (dir > 0 ? r.width : -r.width) + 'px'
+    p.innerHTML = `<div class="sb-boardwrap"><div class="sb-board">${boardHTML(to)}</div></div>`
+    /* SHOW THE SAME VERTICAL WINDOW the board is parked at. Changing day does
+       not reset `.sb-main.scrollTop` (boardTab only moves SBDAY), so a pane
+       drawn from its own top would preview one thing and settle on another —
+       the day would appear to jump down the moment the animation ended.
+       Offsetting the pane's content by the live scroll makes the preview the
+       truth. The week behaves the same way: its days share one vertical page
+       scroll, and swiping sideways does not move it. */
+    const inner = p.firstElementChild as HTMLElement | null
+    if (inner) inner.style.transform = `translateY(${-el.scrollTop}px)`
+    host.appendChild(p)
+    return p
+  }
+  const put = (dx: number, ms = 0) => {
+    const e2 = ms ? `transform ${ms}ms cubic-bezier(.22,.61,.36,1)` : ''
+    el.style.transition = e2; el.style.transform = `translateX(${dx}px)`
+    if (pane) { pane.style.transition = e2; pane.style.transform = `translateX(${dx}px)` }
+  }
+  const clear = () => {
+    el.style.transition = ''; el.style.transform = ''
+    if (pane) { pane.remove(); pane = null }
+    live = false; lock = false
+  }
+
   const onDown = (e: any) => {
-    live = false; done = false
+    live = false; lock = false
+    if (pane) { pane.remove(); pane = null }
+    el.style.transition = ''; el.style.transform = ''
     if (SBWIDE) return
     if (e.pointerType === 'mouse' && e.buttons !== 1) return
     const t = e.target as HTMLElement
     if (!t || !t.closest) return
-    /* the row grip only — see the note above on why nothing else is here */
-    if (t.closest('.sb-grip')) return
-    x0 = e.clientX; y0 = e.clientY; live = true
+    /* the row grip owns its own drag, and the parked aircrew handle forwards
+       a scroll it would otherwise swallow (wireParkedRosScroll below) */
+    if (t.closest('.sb-grip') || t.closest('.sb-ros')) return
+    x0 = lx = e.clientX; y0 = e.clientY; t0 = lt = e.timeStamp || Date.now()
+    vel = 0; live = true
   }
+
   const onMove = (e: any) => {
-    if (!live || done) return
+    if (!live) return
     /* a puck drag was armed before this gesture — that finger is spoken for */
-    if (document.body.classList.contains('tdrag')) { live = false; return }
+    if (document.body.classList.contains('tdrag')) { clear(); return }
     const dx = e.clientX - x0, dy = e.clientY - y0
-    if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) < Math.abs(dy) * SWIPE_BIAS) return
-    /* ONE day per gesture, not a continuous scrub: a flick travels hundreds of
-       px in a few frames, and re-arming would carry it past the day the
-       scheduler meant by a distance they never see until they let go. The
-       dots ARE the scrub (wireDayDots), where the finger is over an index it
-       can read. */
-    done = true; live = false
-    /* swipe LEFT (dx negative) reads as "pull the next day in from the right",
-       which is the direction the week's own sideways scroll already means */
-    const di = view.SBDAY
-    if (di == null) return
-    const to = di + (dx < 0 ? 1 : -1)
-    if (to < 0 || to >= DAYS.length) return toast(dx < 0 ? 'Last day of the week' : 'First day of the week')
-    boardTab(to)
+    const now = e.timeStamp || Date.now()
+    /* a rolling velocity, not one over the whole drag: a slow drag that ends
+       in a flick should read as a flick, which is how the week's native
+       scroller behaves */
+    if (now > lt) { vel = (e.clientX - lx) / (now - lt); lx = e.clientX; lt = now }
+    if (!lock) {
+      if (Math.abs(dx) < SWIPE_LOCK || Math.abs(dx) < Math.abs(dy) * SWIPE_BIAS) return
+      const di = view.SBDAY
+      if (di == null) { live = false; return }
+      lock = true
+      /* jsdom reports every rect as 0, and a 0 width would make the distance
+         test below meaningless (0.22 of nothing). Fall back through the layout
+         box to the viewport rather than to 1. */
+      w = el.getBoundingClientRect().width || el.clientWidth
+        || (typeof window !== 'undefined' ? window.innerWidth : 0) || 360
+      const to = di + (dx < 0 ? 1 : -1)
+      /* no day that way: the drag still moves, it just gives most of it back —
+         the same "there is nothing here" a native scroller shows at its end */
+      if (to >= 0 && to < DAYS.length) pane = makePane(to, dx < 0 ? 1 : -1)
+    }
+    put(pane ? dx : dx * EDGE_PULL)
   }
-  const end = () => { live = false }
+
+  const end = (e: any) => {
+    if (!live) return
+    if (!lock) { live = false; return }
+    const dx = (e && e.clientX != null ? e.clientX : x0) - x0
+    const dir = dx < 0 ? 1 : -1
+    const takeDist = Math.min(w * SWIPE_TAKE, SWIPE_TAKE_MAX)
+    const take = !!pane && (Math.abs(dx) > takeDist
+      /* a flick counts only if it is still travelling the way it started —
+         a drag out and back has a big velocity pointing home */
+      || (Math.abs(dx) > SWIPE_FLICK_MIN && Math.abs(vel) > SWIPE_FLICK
+          && (vel < 0 ? 1 : -1) === dir))
+    const di = view.SBDAY
+    if (!take || di == null) {
+      /* home, and say why if the end of the week is the reason */
+      put(0, SWIPE_MS)
+      if (!pane && Math.abs(dx) > takeDist)
+        toast(dir > 0 ? 'Last day of the week' : 'First day of the week')
+      const p = pane; pane = null; live = false; lock = false
+      setTimeout(() => { el.style.transition = ''; el.style.transform = ''; if (p) p.remove() }, SWIPE_MS)
+      return
+    }
+    /* run it the rest of the way, THEN swap the day underneath. Committing
+       first would repaint the board mid-flight and the animation would carry
+       the day it was already showing. */
+    put(-dir * w, SWIPE_MS)
+    const p = pane; pane = null; live = false; lock = false
+    setTimeout(() => {
+      el.style.transition = ''; el.style.transform = ''
+      if (p) p.remove()
+      boardTab(di + dir)
+    }, SWIPE_MS)
+  }
+
   el.addEventListener('pointerdown', onDown, { passive: true })
   el.addEventListener('pointermove', onMove, { passive: true })
   el.addEventListener('pointerup', end, { passive: true })
@@ -963,6 +1119,7 @@ export function wireBoardSwipe(el: HTMLElement) {
     el.removeEventListener('pointermove', onMove)
     el.removeEventListener('pointerup', end)
     el.removeEventListener('pointercancel', end)
+    clear()
   }
 }
 /* ---------------------------------------------------------------------------

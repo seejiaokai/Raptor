@@ -1095,6 +1095,19 @@ Pinned by `ui/editlog-writers.test.tsx`, which drives the real gestures: the
 bug was never in the log, it was in what the callers handed it, so a test
 calling `markEdit` with two values by hand would have passed throughout.
 
+**Three queries, and the ORDER of each is part of the contract.** `elogRows`
+is newest-first — a feed answering "what just happened". `elogAllFor(key)` is
+OLDEST-first — the story of one detail, so the last line is what it says now;
+it is what the expanded bubble and an unfolded group show. `elogGroups(di)` is
+one row per detail, newest-TOUCHED first, each carrying its own rows
+oldest-first. A structural entry has no key and cannot group with anything —
+a line removed and a wave added are different events that happen to share an
+empty address — so each is its own group of one, keyed by its position in the
+log so two identical sentences never fold together. A group takes its NAME
+from its newest row: `keyLabel` is frozen per row, so a line renamed between
+two edits would otherwise head its own group with a name it has stopped
+having.
+
 **`who` arrives through `HOOKS.whoami()`**, wired in `wireStore()` from
 `SESSION`/`ACCOUNTS`. Accounts are hard-coded, so today it only ever reads
 `Admin` or `Squadron member`. That hook is the one seam a real server has to

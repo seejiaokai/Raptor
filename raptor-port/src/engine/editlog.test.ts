@@ -151,12 +151,27 @@ describe('what a detail is called', () => {
 })
 
 describe('the time it shows', () => {
-  it('is the clock alone for something changed today, and gains a date once it is not', () => {
+  /* CHANGED 11 Aug 26 on the owner's ask ("There is no date stated on the
+     change too like for e.g 11/8"). It used to print the clock alone for
+     anything changed today and add the date only once that stopped being
+     true. The date is always there now — the rows are about SCHEDULE days, so
+     a bare "14:32" beside "Monday" invites being read as 14:32 on the Monday
+     being planned, and a tab left open past midnight stopped silently
+     relabelling yesterday's work as today's. */
+  it('is the date and the clock, today or not', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date(2026, 7, 11, 14, 32))
     const now = Date.now()
-    expect(elogWhen(now, now)).toBe('14:32')
+    expect(elogWhen(now, now)).toBe('11/8 14:32')
     const yesterday = new Date(2026, 7, 10, 9, 5).getTime()
-    expect(elogWhen(yesterday, now)).toBe('10 Aug 09:05')
+    expect(elogWhen(yesterday, now)).toBe('10/8 09:05')
+  })
+
+  /* day/month, not month/day — the squadron reads dates the British way, as
+     every other date on the app's surfaces does (DAYS' own `dt` strings) */
+  it('puts the day before the month, and does not pad either', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 11, 3, 8, 7))
+    expect(elogWhen(Date.now())).toBe('3/12 08:07')
   })
 })

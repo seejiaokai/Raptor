@@ -2436,3 +2436,119 @@ test.describe('the board holds the page still underneath it', () => {
     })
   }
 })
+
+/* ===================================================================
+   THE CHANGES LIST'S TWO WAYS IN, AND THE DAY CAROUSEL (owner, 11 Aug 26).
+   Both are questions only a browser can answer. The entry points are chosen
+   by a MEDIA QUERY — both are rendered and CSS shows one — which jsdom
+   resolves as nothing at all; and the carousel is a transform driven by a
+   pointer, where jsdom has neither layout nor a compositor.
+   =================================================================== */
+test.describe('the way into the changes list follows the width', () => {
+  for (const c of [
+    { label: 'desktop', vp: { width: 1440, height: 900 }, top: true },
+    { label: 'phone', vp: PHONE, top: false },
+  ]) {
+    test(`${c.label}: exactly one entry is on screen, and it is the right one`, async ({ page }) => {
+      await page.setViewportSize(c.vp)
+      await login(page)
+      await go(page, 'editsched')
+      await page.evaluate(() => (window as any).openScheduler(0))
+      await page.waitForSelector('#sbHist')
+      await page.click('#sbHist')                       // History on
+      await page.waitForTimeout(250)
+
+      const m = await page.evaluate(() => {
+        const vis = (s: string) => {
+          const e = document.querySelector(s) as HTMLElement
+          if (!e) return 'absent'
+          const r = e.getBoundingClientRect()
+          return getComputedStyle(e).display === 'none' ? 'hidden'
+            : (r.width > 0 && r.height > 0 ? 'shown' : 'zero')
+        }
+        const t = document.querySelector('#sbBoard .histln-top') as HTMLElement
+        const sign = document.querySelector('#sbSignBar') as HTMLElement
+        return {
+          top: vis('#sbBoard .histln-top'), panel: vis('#sbWarn .histln'),
+          /* the ask was ABOVE the sign-off section, so measure it */
+          topAboveSign: !!(t && sign) && Math.round(t.getBoundingClientRect().bottom)
+            <= Math.round(sign.getBoundingClientRect().top) + 1,
+          bothRendered: !!document.querySelector('.histln-top') && !!document.querySelector('.histln'),
+        }
+      })
+      expect(m.bothRendered, 'both are in the markup — CSS picks').toBe(true)
+      expect(m.top).toBe(c.top ? 'shown' : 'hidden')
+      expect(m.panel).toBe(c.top ? 'hidden' : 'shown')
+      if (c.top) expect(m.topAboveSign, 'and it sits above the sign-off bar').toBe(true)
+    })
+  }
+})
+
+test.describe('the day carousel', () => {
+  test('phone: the board follows the finger and the next day comes in with it', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbHist')
+    /* parked well down the day — the incoming pane has to preview the SAME
+       vertical window, or the day appears to jump when the animation ends */
+    await page.evaluate(() => { (document.querySelector('.sb-main') as HTMLElement).scrollTop = 700 })
+    await page.waitForTimeout(200)
+    const y0 = await page.evaluate(() => (document.querySelector('.sb-main') as HTMLElement).scrollTop)
+
+    const box = (await page.locator('.sb-main').boundingBox())!
+    const cy = box.y + box.height / 2
+    await page.mouse.move(box.x + 330, cy)
+    await page.mouse.down()
+    for (const x of [320, 290, 250, 210, 175]) { await page.mouse.move(box.x + x, cy); await page.waitForTimeout(30) }
+
+    const mid = await page.evaluate(() => {
+      const m = document.querySelector('.sb-main') as HTMLElement
+      const p = document.querySelector('.sb-pane') as HTMLElement
+      const dx = (el: Element) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41
+      const dy = (el: Element) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m42
+      return {
+        boardDx: p ? Math.round(dx(m)) : null,
+        paneDrawn: !!p,
+        paneDx: p ? Math.round(dx(p)) : null,
+        paneNodes: p ? p.querySelectorAll('*').length : 0,
+        paneInnerDy: p && p.firstElementChild ? Math.round(dy(p.firstElementChild)) : null,
+        boardScroll: Math.round(m.scrollTop),
+        pe: p ? getComputedStyle(p).pointerEvents : null,
+      }
+    })
+    expect(mid.paneDrawn, 'the next day is really drawn, not a placeholder').toBe(true)
+    expect(mid.paneNodes, 'and it is a whole day of board').toBeGreaterThan(200)
+    expect(mid.boardDx, 'the board has moved with the finger').toBeLessThan(-100)
+    expect(mid.paneDx, 'and the incoming day moves exactly with it').toBe(mid.boardDx)
+    expect(mid.paneInnerDy, 'previewing the same vertical window, not its own top').toBe(-mid.boardScroll!)
+    expect(mid.pe, 'nothing in the incoming day can take a tap').toBe('none')
+
+    await page.mouse.up()
+    await page.waitForTimeout(600)
+    const after = await page.evaluate(() => ({
+      day: (window as any).SBDAY,
+      pane: !!document.querySelector('.sb-pane'),
+      transform: getComputedStyle(document.querySelector('.sb-main') as HTMLElement).transform,
+      scroll: Math.round((document.querySelector('.sb-main') as HTMLElement).scrollTop),
+    }))
+    expect(after.day, 'it landed on the next day').toBe(1)
+    expect(after.pane, 'and the pane it was drawn on is gone').toBe(false)
+    expect(after.transform, 'with the board put back').toBe('none')
+    expect(after.scroll, 'and the vertical position held').toBe(y0)
+  })
+
+  /* the seam that makes the whole thing possible without a non-passive
+     listener: the browser keeps the vertical scroll, we take the horizontal */
+  test('phone: the board scroller hands the sideways gesture over', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbHist')
+    const ta = await page.evaluate(() =>
+      getComputedStyle(document.querySelector('.sb-main') as HTMLElement).touchAction)
+    expect(ta).toContain('pan-y')
+  })
+})
