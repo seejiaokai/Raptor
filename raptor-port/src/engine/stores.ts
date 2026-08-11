@@ -38,6 +38,23 @@ export function storesAreStandard() {
     && STORE_CFG.every(([k, l], i) => k === STORE_STD[i]![0] && l === STORE_STD[i]![1])
 }
 
+/* ONE JET'S STORES LOAD, in the words the chips print — "TPOD, 2 TKS, MK82×2".
+   The edit log's before/after for the `st:` key (editlog.ts), which is why it
+   folds the typed bombs text in beside the chips: both are written to the same
+   address, because the amendment mark is on the AIRCRAFT and every store on one
+   jet is one edit. Logging them separately would give two entries the same
+   name, each telling half the story.
+   Order follows STORE_CFG, so a squadron that has reordered its list reads its
+   own order back. `storesView` in ui/html.ts renders the same thing as markup;
+   this one is text, because the engine may not emit HTML and a log row is
+   escaped where it is printed. */
+export function storesText(o: any): string {
+  o = o || {}
+  const on = STORE_CFG.filter(([k]) => o[k]).map(([, lab]) => lab)
+  if (o.bombs) on.push(String(o.bombs))
+  return on.join(', ')
+}
+
 export function addStore(name: string): string | null {
   const label = name.trim().toUpperCase()
   const derived = storeKey(name)

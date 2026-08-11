@@ -1620,6 +1620,14 @@ there. No new per-cell markup: the cells that carry history are exactly the
 cells `alAttr` already marks, and a second badge would be a node each against
 the board's DOM ceiling to say the same thing twice.
 
+**That equivalence is a promise, and it was broken for the first day.** The
+`cursor:help` follows the amendment mark, so a cell that was edited says
+"ask me" whether or not anything ever reached the log — and six fields marked
+themselves without logging a value, so a stores chip invited a hover and then
+said nothing. Fixed at the writers (`docs/engine-rules.md` §The edit log, "the
+five fields that write their own model"). **A new cell that marks itself must
+log a value too, or it re-opens exactly this hole.**
+
 **Two gestures, on purpose.** Desktop hovers; a phone TAPS, and the tap still
 does its ordinary job. `histbubble.ts` registers on `.sb-boardwrap` in the
 **capture** phase — `boardArmClick` calls `stopPropagation()` the moment it
@@ -1637,6 +1645,22 @@ there is not — a phone tap opens the keyboard too. On scroll it **re-anchors
 rather than hides**: hiding was the first version and it broke the desktop
 hover outright, because bringing a cell into view scrolls the panel and that
 scroll lands after the mouseover it caused.
+
+**It stacks UNDER every box that can open over the board** — `z-index:430`,
+above `.schedboard` (400, the only surface it anchors to) and below `.drawer`
+(440), `.airpop` (460), `.modal` (470) and the wave/stores/role menus (480).
+It shipped at 500, above the lot, and on a phone it stays up for four seconds
+after the tap that raised it — so tapping a detail and then opening any dialog
+left the bubble sitting on top of that dialog. That was found once, with the
+changes list, and patched at that one call site with an explicit
+`hideHistBub()`; the other seven boxes still had it. **Fix the stacking, not
+the call sites** — a list of hide calls drifts the moment someone adds a box,
+and `pointer-events:none` means being underneath costs the bubble nothing,
+since it is never a click target. The explicit hide before the changes list
+stays as tidiness (a bubble hanging over the board behind an open list is
+clutter), not as the thing that stops it covering anything. Held by
+`e2e/geometry.spec.ts`, which is the only place a computed z-index can be read
+back.
 
 **The cell's own tooltip is parked while the bubble is up** and handed back on
 the way out. `alAttr` puts `title="Edited — not published yet"` on precisely

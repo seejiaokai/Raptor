@@ -12,7 +12,7 @@ import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
 import { markEdit, alAttr } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
-import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/keys'
+import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView } from './html'
@@ -252,13 +252,21 @@ export function cxCommit(cancel: boolean, reason: string) {
      there), same defence-in-depth framing as the rest of this task — but
      it is the last write path of this family with no check at all. */
   if (!canEditSched() || !HOOKS.editMode()) { CXT = null; notify(); return }
-  const { o, key, after } = CXT
+  const { o, key, after, label } = CXT
   if (cancel) { o.cx = true; o.cxr = String(reason).trim() }
   else { o.cx = false; delete o.cxr }
   CXT = null
   if (key) markEdit(key)
   if (after) after()
   afterSchedMutate()
+  /* logged as a sentence, not a value pair: cancelling writes `cx`/`cxr`,
+     which are not addressed by any slot key, so the markEdit above marks the
+     row's TEXT key and has no before/after to hand over. Cancelling a line is
+     one of the loudest things a scheduler does to a day and it used to leave
+     the changes list empty. The reason is carried too — it is the whole point
+     of asking for one. */
+  logAction(key == null ? null : keyDay(key),
+    cancel ? `${cxText(o)} — ${label}` : `Restored ${label}`)
   toast(cancel ? cxText(o) : 'Restored')
 }
 

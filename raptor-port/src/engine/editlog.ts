@@ -93,15 +93,29 @@ const NOTE_LBL: any = {
   dtn: 'Duty notes', gn: 'Ground notes',
 }
 
+/* WHICH JET of a line, for the four keys that address one aircraft rather than
+   the formation — a flying seat, `fr:` remarks and `st:` stores. Two seats in
+   one formation printed identically before (11 Aug 26): the demo Monday opens
+   with two "VL BFM" lines of two jets each, so "VL BFM · FCP" and "VL · stores"
+   each named four different details. The bubble was never wrong — it matches on
+   the key — but the changes list is the surface you read after the fact.
+   Empty where there is nothing to tell apart, so a single-ship reads as it
+   always did, and empty on a formation that has gone (the caller is inside the
+   try, and a missing line falls through to 'Schedule' as before). */
+function jetOf(f: any, ai: any) {
+  return (f && (f.aircraft || []).length > 1) ? `#${+ai + 1} ` : ''
+}
+
 export function keyLabel(key: any): string {
   const k = String(key), c = k.indexOf(':')
   try {
-    /* a flying seat: di.gi.li.ai.seat — name it by the line it is in */
+    /* a flying seat: di.gi.li.ai.seat — named by the line it is in, then the
+       jet, then the seat */
     if (c < 0) {
       const a = k.split('.')
       const f = DAYS[+a[0]].waves[+a[1]].formations[+a[2]]
       const seat = a[4] === 'p' ? 'FCP' : a[4] === 'w' ? 'RCP' : String(a[4] || '').toUpperCase()
-      return `${f.cs || 'Line'} ${f.msn || ''}`.trim() + ` · ${seat}`
+      return `${f.cs || 'Line'} ${f.msn || ''}`.trim() + ` · ${jetOf(f, a[3])}${seat}`
     }
     const p = k.slice(0, c), a = k.slice(c + 1).split('.'), d = DAYS[+a[0]]
     const fld = (n: number) => TXT_FLD[a[n]] ? ` · ${TXT_FLD[a[n]]}` : ''
@@ -118,9 +132,11 @@ export function keyLabel(key: any): string {
     if (p === 'wl') return `Wave · ${d.waves[+a[1]].label || 'label'}`
     const f = () => d.waves[+a[1]].formations[+a[2]]
     if (p === 'ff') return `${f().cs || 'Line'}${fld(3)}`
-    if (p === 'fr') return `${f().cs || 'Line'} · remarks`
+    /* fr: and st: are per-AIRCRAFT (…li.ai), unlike ff:/ar:/at: above and
+       below, which address the formation — so these two carry the jet */
+    if (p === 'fr') return `${f().cs || 'Line'} · ${jetOf(f(), a[3])}remarks`
     if (p === 'it') return `${d.waves[+a[1]].label || 'Wave'} · in-times`
-    if (p === 'st') return `${f().cs || 'Line'} · stores`
+    if (p === 'st') return `${f().cs || 'Line'} · ${jetOf(f(), a[3])}stores`
     if (p === 'ar') return `${f().cs || 'Line'} · area`
     if (p === 'at') return `${f().cs || 'Line'} · area time`
     if (p === 'tr') return `${d.waves[+a[1]].label || 'Wave'} · traffic`

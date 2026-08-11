@@ -10,7 +10,7 @@ import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, sanStatus, n
 import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd, isLateInput, lateNote, inputDueISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { ELOG, elogRows, elogFor, elogWhen, elogClear, keyLabel } from './engine/editlog'
-import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard } from './engine/stores'
+import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard, storesText } from './engine/stores'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
 import * as V from './engine/validate'
@@ -112,7 +112,7 @@ export function installProbeBridge() {
   w.acceptInput = acceptInput; w.unacceptInput = unacceptInput; w.inpKey = inpKey
   w.acceptedDay = acceptedDay; w.renameCallsign = renameCallsign
   w.rulesLoad = rulesLoad; w.rulesSave = rulesSave; w.DATES = DATES
-  w.STORE_STD = STORE_STD; w.storeKey = storeKey; w.storesAreStandard = storesAreStandard
+  w.STORE_STD = STORE_STD; w.storeKey = storeKey; w.storesAreStandard = storesAreStandard; w.storesText = storesText
   w.addStore = addStore; w.delStore = delStore; w.renameStore = renameStore; w.moveStore = moveStore
   w.storesSave = storesSave; w.storesLoad = storesLoad; w.storesReset = storesReset
   /* the edit log. ELOG is a const object mutated in place (rows.push /

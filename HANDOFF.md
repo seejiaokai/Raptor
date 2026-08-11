@@ -245,13 +245,38 @@ run test:e2e` 72/72, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
     reorder paths mark keys whose values never change, which is why Sort all
     manages one line instead of six. `applyMove` has no `logAction` of its
     own, so a hand-dragged row is currently invisible to the list. Cheap to
-    add if it is ever missed; not added blind.
+    add if it is ever missed; not added blind. It is now the LAST schedule
+    write with no line in the list: accepting an input, cancelling with a
+    reason and rolling a day back were the other three, and all three were
+    closed on 11 Aug 26 (`docs/engine-rules.md` §The edit log). The narrow
+    exception left beside them is an accepted input edited onto another person
+    or date through the Inputs dialog, which unaccepts and re-accepts
+    internally — deliberately silent rather than two contradictory lines.
   - **The bubble covers the cells that carry an address, not quite all of
     them.** Anything with `data-bfld`/`data-slot`/`data-txt` works, plus the
     five older attributes (`store`, `bombs`, `area`, `atime`, `intimes`) whose
-    prefixes `histbubble.ts` puts back by hand. The traffic field (`tr:`) is
-    written from a modal and has no cell to hang a bubble on, so it appears in
-    the LIST only. A new text trigger wants a line in `keyOf` as well.
+    prefixes `histbubble.ts` puts back by hand, and the traffic field (`tr:`),
+    which is written from a modal and has no cell to hang a bubble on, so it
+    appears in the LIST only. A new text trigger wants a line in `keyOf` as
+    well — **and a value passed to `markEdit`**: this bullet claimed all six
+    worked from the day History shipped and none of them did, because every
+    one of those write paths passed a key with no values and `logEdit` returns
+    on that (fixed 11 Aug 26, rules in `docs/engine-rules.md` §The edit log).
+    Only `data-area`/`data-atime`/`data-intimes` are still bubble-less, and
+    for a different, harmless reason: those three cells render on the WEEK
+    only, and the bubble is wired to the board wrap. They are in the LIST.
+- **The board's page lock is unverified on a real iPhone.** `body.sb-lock` is
+  `overflow:hidden`, which locks the viewport by propagation from `body` (the
+  root sets no overflow of its own) and was measured holding at both widths in
+  the container's Chromium — that is what `e2e/geometry.spec.ts` gates. iOS
+  Safari is the known exception to that technique for TOUCH scrolling; the
+  usual remedy is `position:fixed` on the body, which is why the scroll
+  position is already captured and put back by hand. No iPhone is reachable
+  from here, so this is a caveat, not a finding. If it does bite, the hole is
+  narrow: `overscroll-behavior:contain` on `.sb-main` is the other half of the
+  fix and does work there, so only a drag on the top bar would still reach the
+  week. Contract: `docs/ui-contracts.md` §The page behind the board does not
+  scroll.
 - **A USER GUIDE is wanted, for users and admins** (owner, 10 Aug 26 — "I
   eventually want u to create a user guide for this app"). Not started, and
   not urgent. The half that cannot be worked out by looking at the screen is
@@ -490,6 +515,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `index.html` + `public/favicon.svg` | The Vite entry page and the **only** thing in `public/`. The favicon is the talon from `Login.tsx`/`Shell.tsx`, copied because a browser fetches it standalone before any bundle runs — edit the claw path in all three or the tab and the page disagree. It differs from the components on purpose: a tile and a same-colour stroke, because a tab paints it at 16px where bare thin claws vanish. `href="/favicon.svg"` in the page is rewritten to `./favicon.svg` by `base:'./'`, which is what makes it resolve under the Pages sub-path. |
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board, and where it deliberately does NOT — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both) plus `clickHere`, a click that does not scroll the target into view first (`page.click` does, which would defeat any test that parks the week on purpose). `playwright.config.ts` builds and serves the port itself. |
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
+| `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. |
 | `src/ui/boardswipe.test.tsx` | The phone board's one-row top bar and its day swipe (11 Aug 26) — what the gesture claims and, more usefully, what it deliberately does NOT guard against. The GEOMETRY of the same change (one row, the drawer clearing the bar) is in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
 | `.claude/skills/` (14 more) | `obra/superpowers` v6.2.0, MIT, vendored 7 Aug 26 — a plugin install lives in `~/.claude/plugins` on a local machine and never reaches a web session's fresh container, while repo-level skills ship with the clone. Cross-references de-namespaced; the upstream SessionStart hook is vendored at `.claude/hooks/` but **not** wired in. Provenance and the update recipe: `.claude/skills/SUPERPOWERS-VENDORED.md`. |

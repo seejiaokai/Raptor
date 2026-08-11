@@ -100,15 +100,31 @@ export function UserModal() {
    scheduled airspace booking like any other field on the board, so it has to
    earn an amendment mark and a history step (the tr: funnel). ---- */
 function findGo(key: any) { const [di, gi] = key.split('|'); return DAYS[+di] && DAYS[+di].waves[+gi] }
+/* THE LIST AS IT STOOD, kept here rather than read back at commit time. The
+   three handlers below all write `traffic` in place BEFORE airEdit runs — the
+   typing one has to, because a React-controlled list would repaint under the
+   caret — so by the time the commit happens the old value is already gone and
+   the edit log had nothing to diff. Taken when the popup opens and refreshed
+   on every commit, which is exactly the window a "before" has to span. */
+let TRWAS: string[] = []
+function trText(g: any) { return (((g && g.traffic) || []) as any[]).join(' · ') }
 function airEdit() {
   if (!AIRKEY) return; const [di, gi] = String(AIRKEY).split('|')
-  markEdit(`tr:${+di!}.${+gi!}`); afterSchedMutate(); notify()
+  const now = trText(findGo(AIRKEY))
+  markEdit(`tr:${+di!}.${+gi!}`, TRWAS.join(' · '), now)
+  TRWAS = (((findGo(AIRKEY) || {}).traffic || []) as any[]).slice()
+  afterSchedMutate(); notify()
 }
 export function AirPop() {
   useVersion()
   const bodyRef = useRef<HTMLDivElement>(null)
   const open = AIRKEY != null
   const g = open ? findGo(AIRKEY) : null
+  /* the opening snapshot for the edit log. Keyed on AIRKEY, NOT on every
+     render: the effect below deliberately has no dependency list, and
+     re-snapshotting on an unrelated repaint would quietly adopt the half-typed
+     value as the "before". */
+  useEffect(() => { TRWAS = (((g || {}).traffic || []) as any[]).slice() }, [AIRKEY])
   /* renderAir: innerHTML + delegated input/focusout, exactly as the reference
      wires #airBody (a React-controlled list would repaint under the caret) */
   useEffect(() => {

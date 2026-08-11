@@ -14,7 +14,8 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify } from '../state/store'
 import { scrollToWarnFocus, queueHold } from './highlights'
-import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave } from '../engine'
+import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
+import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList } from './pops'
 import { openScheduler, toggleSbwarn } from './board'
@@ -229,8 +230,12 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
 
     const b = T.closest('[data-cfg]') as HTMLElement | null; if (!b) return
     const key2 = b.dataset.cfg!
+    /* the load either side of the toggle, so History can say what this jet was
+       carrying and what it carries now — one row per jet, matching the single
+       amendment mark the `st:` key stands for (stores.ts's storesText) */
+    const stWas = storesText(a.opts)
     a.opts[key2] = !a.opts[key2]
-    markEdit(`st:${di}.${gi}.${li}.${ai}`)
+    markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts))
     paint()
     /* queueHold, not setTimeout: the week repaints via EditWeek's effect,
        which calls refreshHighlights() once the DOM swap is done — draining
@@ -367,9 +372,17 @@ export function routeClick(e: MouseEvent) {
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
     const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (ok) {
-      HOOKS.toast(dest === 'x' ? 'Accept undone'
+      /* SAID ONCE, to the scheduler and to the log, in the same words — the
+         same shape as board.ts's act(). Accepting to the ground programme adds
+         a real row to the day, which the board's own "+ Item" has always
+         logged; this path reaches markEdit with no key (there is no "before"
+         for a row that did not exist), so it needs the sentence instead or the
+         row appears in the schedule and nowhere in the changes list. */
+      const said = dest === 'x' ? 'Accept undone'
         : dest === 'u' ? `${inp.type} filed under Unavailable`
-        : `${inp.type} added to the ground programme`, 'ok')
+        : `${inp.type} added to the ground programme`
+      logAction(di, said)
+      HOOKS.toast(said, 'ok')
       view.afterSchedMutate()
     }
     return
@@ -461,8 +474,14 @@ export function routeClick(e: MouseEvent) {
     view.setDayPreview(di, null)
     if (dropped === false) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
     view.afterSchedMutate()
-    HOOKS.toast(`${DAYS[di].dow} rolled back to ${verLabel(ver)} — this is now the live schedule`
-      + (dropped ? ` · ${dropped} unpublished edit${dropped === 1 ? '' : 's'} discarded` : ''))
+    /* the biggest single change on the board, and it used to leave no trace at
+       all: restoreDayVersion swaps the whole day object, so not one key passes
+       through the funnel and the value-diff path has nothing to compare. The
+       sentence is the record, exactly as it is for a removed line. */
+    const said = `${DAYS[di].dow} rolled back to ${verLabel(ver)} — this is now the live schedule`
+      + (dropped ? ` · ${dropped} unpublished edit${dropped === 1 ? '' : 's'} discarded` : '')
+    logAction(di, said)
+    HOOKS.toast(said)
     notify(); return
   }
 
@@ -504,9 +523,12 @@ export function routeClick(e: MouseEvent) {
      future warning row without an index cannot fall into it. Opens on the
      whole week; the dialog's own filter narrows it to a day. */
   /* hideHistBub first: on a phone the bubble is still up from the tap that
-     raised it (it times out, it does not wait for a pointer to leave), and it
-     sits above the modal in the stack — measured on the built app, covering
-     two rows of the list it had just been asked to open. */
+     raised it (it times out, it does not wait for a pointer to leave), and a
+     bubble hanging over the board behind the list it just opened is clutter
+     even now that it can no longer cover it. The COVERING was the original
+     reason for this line and is no longer what stops it — `.histbub` sits
+     below `.modal` in the stack since the stacking fix (scheduler.css), which
+     is what covers the other seven boxes this one call site never did. */
   if (t.closest('[data-histopen]')) { hideHistBub(); setHistList('all'); notify(); e.stopPropagation(); return }
 
   const wl = t.closest('.wln[data-wdi]') as HTMLElement | null
@@ -614,7 +636,9 @@ export function routeClick(e: MouseEvent) {
   if (st && HOOKS.editMode()) {
     const [di, gi, li, ai, k] = st.dataset.store!.split('.')
     const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
-    a.opts = a.opts || {}; a.opts[k!] = !a.opts[k!]; markEdit(`st:${di}.${gi}.${li}.${ai}`)
+    a.opts = a.opts || {}
+    const stWas = storesText(a.opts)                  // before the toggle — see the popup's own branch
+    a.opts[k!] = !a.opts[k!]; markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts))
     notify()
   }
 

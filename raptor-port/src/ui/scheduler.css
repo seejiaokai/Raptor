@@ -1733,7 +1733,17 @@ body.sb-lock{overflow:hidden}
    History into a mode that quietly stops the board working. z-index sits it
    above the board (400) and the wave menu (480) and below a drag ghost (520),
    which is the one thing that should ever cover it. */
-.histbub{position:fixed;z-index:500;pointer-events:none;background:var(--panel);
+/* z-index 430 — ABOVE the board (400, the only surface it ever anchors to) and
+   BELOW every box that can open over it: the drawer 440, the airspace popup
+   460, .modal 470, the wave/stores/role menus 480. It was 500, above the lot,
+   and on a phone it stays up for four seconds after a tap — so tapping a
+   detail and then opening any of those left the bubble sitting on top of it.
+   That was found once, with the changes list, and patched at that one call
+   site with an explicit hide; every other box still had it. Fixing the
+   STACKING fixes all of them at once and cannot drift the way a list of hide
+   calls would. The bubble is pointer-events:none, so being underneath costs it
+   nothing — it is never a click target. */
+.histbub{position:fixed;z-index:430;pointer-events:none;background:var(--panel);
   border:1px solid var(--edge-2);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.6);
   padding:7px 10px;max-width:min(84vw,290px);font-size:11.5px;line-height:1.45}
 .histbub .hb-what{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
