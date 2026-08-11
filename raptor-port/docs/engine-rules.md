@@ -297,6 +297,43 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   SPARE carries no crew rest either way. SC currency is checked for MAIN and
   SPARE. SC NIGHT ⊂ SC DAY.
 - Standalone waves: SC (spares uncrosschecked), AVALON/BB (`noconf`).
+- **AVALON's one check (owner, 11 Aug 26).** AVALON and its desk keep
+  `noconf` — nothing on them is cross-checked against tasks, rest or
+  qualifications — but every man on the wave now gets ONE look, the SC-spare
+  shape widened. A JET seat (MAIN and SPARE alike) raises a hard
+  DNIF_FLY/LEAVE_FLY for any input failing `canSpare` — overseas (OL, OD)
+  and the whole medical group, **ATT B included**: these are jet seats, and
+  ATT B means no flying. A DUTY role (SXO, OPS O, RUNNER, LOG CELL) mans a
+  desk, so ATT B is carved out by `canWork`; overseas, HL, OML and ATT C
+  still flag. Local leave, OIL, childcare, a course, an appointment — nothing
+  raised, on either kind of seat. It warns, never blocks: the palette's fold
+  is matched to exactly this rule (`slotRules().avJet/avDuty` widening
+  `slotBar`'s spare exemption), so local leave no longer folds a man away
+  from an AVALON seat the engine has no complaint about. The 19:00–23:59
+  half is judged against today's inputs and the 00:00–07:00 half against
+  tomorrow's (the midnight tail below). Collected as `day.sacrew` in
+  `events.ts`, checked in one loop in `validate.ts`. **BB is deliberately
+  untouched** — the owner specified AVALON only; extending the bar to BB
+  needs his word first.
+- **The midnight tail (owner, 11 Aug 26 — "check in the same modality for
+  all applicable rules based on timing").** A window that runs past midnight
+  — a night sortie's landing and debrief tail, an overnight duty row, an
+  AVALON shift — lives past minute 1440 of its day, where `win()` and the
+  `ld<to` roll already put it. `collectEvents` appends TOMORROW's inputs to
+  each `day.input` shifted +1440 (marked `nx`), so every consumer — the fly
+  clash, the tasked clash, the brief/debrief windows, the SC-spare and
+  AVALON checks, and any rule added later — judges the tail against the next
+  day's inputs with no per-rule code. Today's events all end at or before
+  1440, so they can never reach a shifted entry; a shifted all-day input
+  still spans 1439 minutes, so `timedInput`'s all-day filter treats both
+  copies alike; an input covering both days yields identical messages from
+  both copies and the warning dedup collapses them to one. `slotBar` runs
+  the same filter chain over the next day's inputs for any slot whose window
+  passes 1440 (reason suffixed "(tomorrow)"), so the picker and the warning
+  list move together. The loaded week's LAST day has no next day, so its
+  tail is unchecked until the app carries more than one week. The parity
+  gate excises the `nx` entries and `sacrew` exactly as it excises `key`
+  (port-only); `overnight.test.ts` pins them positively.
 - **A duty block is filled from the WAVE it serves** (`waveDutyBlock`, owner
   10 Aug 26). `+ Block` on the scheduler board asks which wave the block is
   for and fills it in: the title is `<wave name> duties`, and the roles are
@@ -319,7 +356,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   what Auto sort understands cannot drift.
   A block's `noconf` mirrors its WAVE's exemption: AVALON and BB sit outside
   the conflict engine whole, so their desks do too, while an SC or ordinary
-  desk is checked like any other duty row.
+  desk is checked like any other duty row. Since 11 Aug 26 an AVALON desk,
+  though `noconf`, still carries the wave's one check — see AVALON's one
+  check above.
 - **AVALON is the only wave that brings its desk up automatically**
   (`SAWAVE.avalon.autoDuty`). SC did too for one morning on 10 Aug 26 and the
   owner moved it to `+ Block` the same day: an SC desk is a choice, an AVALON
@@ -403,12 +442,13 @@ leave to 12:00 still bars it. Correct, and worth knowing before it is reported
 as a bug. The levers if it ever needs changing are the AM boundary or the step
 padding — never a picker rule that disagrees with the warning list.
 
-**Deferred, deliberately.** An overnight shift (AVALON, 19:00–07:00) has a
-tail belonging to tomorrow, and tomorrow's leave should bar it. `slotBar`
-already rolls back a day for the SC check, but the VALIDATOR does not do this
-either (`collectEvents` builds a day's inputs for that day only), so adding it
-to the picker alone would make it stricter than the warning list. Left out; in
-`HANDOFF.md`.
+**The overnight tail is checked on both sides (owner, 11 Aug 26).** An
+overnight window's part past midnight is judged against TOMORROW's inputs —
+in the validator through `day.input`'s shifted append (see §Validation, the
+midnight tail) and in `slotBar` through the same filter chain run over the
+next day's inputs, so neither gate is stricter than the other. The bar
+reason carries "(tomorrow)" so a scheduler can see which day the absence
+lives on.
 
 ## Accepting a personal input
 

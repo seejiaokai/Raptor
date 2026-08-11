@@ -82,26 +82,20 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 - **Ground rows accepted before the Aug-26 callsign fix** keep the person-ID
   form in `who` and stay unresolved where id ≠ lowercased callsign (Hao Wen,
   X-Ray) — same visible behaviour as before, no migration.
-- **The leave-types build left four things open** (shipped 10 Aug 26; rules in
+- **The AVALON rule and the general midnight tail are BUILT** (11 Aug 26 —
+  the owner's 11 Aug spec, both halves in one change; rules in
+  `docs/engine-rules.md` §Validation, "AVALON's one check" and "The midnight
+  tail"). What remains open around them:
+  - **BB is unspecified, and deliberately outside the AVALON check.** The
+    owner named AVALON jet seats and duty roles; BB stays wholly `noconf`
+    with no fixed hours and nothing on it is checked at all. Ask him before
+    extending the bar to BB.
+  - **The loaded week's LAST day has no next day**, so its overnight tail is
+    unchecked (nothing to shift in). Fixes itself the day the app carries
+    more than one week of data — same missing piece as the first bullet in
+    this list.
+- **The leave-types build left two things open** (shipped 10 Aug 26; rules in
   `docs/engine-rules.md` §INPUT_META and §Availability is time-aware).
-  - **The AVALON rule is now SPECIFIED and commissioned, and NOT YET BUILT**
-    (owner, 11 Aug 26 — the reservation that stood here for five sessions is
-    lifted). It arrived with a second, larger ask: the midnight tail below,
-    generalised to every timed rule. Full spec, owner-confirmed wording and
-    the implementation shape: `docs/session-state.md`. Do not re-derive it
-    and do not ask him again — he answered it in full.
-  - **An overnight shift's midnight tail is not checked against tomorrow's
-    leave — and the owner has now asked for this to be fixed GENERALLY, not
-    just for AVALON** (11 Aug 26: "make sure the default warning engine also
-    checks in the same modality for all applicable rules based on timing").
-    An AVALON shift runs 19:00–07:00 and its tail belongs to the next day; so
-    does a night sortie landing after midnight, and either debrief tail.
-    `collectEvents` builds a day's inputs for THAT DATE only
-    (`events.ts:166`), and four sites in `validate.ts` read that array, so
-    they all share the blind spot. `slotBar` already rolls back a day for the
-    SC currency check — but fixing the picker alone would make it stricter
-    than the warning list, which is the exact drift the SC comment warns
-    against. **Fix both together or neither.** Spec: `docs/session-state.md`.
   - **A half-day absentee is no longer counted in the day-info "off" tally.**
     Deliberate — `dayOff` means off for the WHOLE day, and it also drives the
     palette's struck-through rank, where a man available all afternoon must
@@ -347,7 +341,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `people.ts` | PEOPLE roster (quals, seat, categories), qual ladder (`OCU→D→C→B→A→IW→IP→IR→FI` — instructor-ness lives in CAT, no `ip` flag), `isScheduler`/`isLead`/`isInstr`/`isInstrPilot`/`isOcu`, `scShiftKind`, `sanStatus`, `aarNeed`. |
 | `inputs.ts` | INPUTS list + **`INPUT_META`, the one table every input type is decided by** (10 Aug 26) — `INPUT_TYPES` is derived from its keys and every predicate is a lookup: `isLeave`, `isLocalLeave`, `isDownchit` (= the medical group), **`isPersonal`/`isUnavail`** (the two day blocks, presentational only), plus `canSpare`, `canWork`, `awayAllDay`, `TYPE_GROUPS`/`typeGroup`. `isDetach` is gone with the `Detachment` type. Also DATES and the late-input block. |
 | `time.ts` | `parseHM`/`hhmm`/`minus`/`overlap` (half-open — abutting windows do not clash). |
-| `events.ts` | `collectEvents()` — the per-day event build the validator consumes. |
+| `events.ts` | `collectEvents()` — the per-day event build the validator consumes; appends tomorrow's inputs shifted +1440 (the midnight tail, marked `nx`) and collects AVALON crew (`day.sacrew`) for the one check the wave's `noconf` does not cover. |
 | `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`, `dashOf`, the crew-rest trace (`traceOf`/`traceLeads`/`traceIx`/`tracesOn`). **The conflict engine.** |
 | `avail.ts` | `slotRules`/`slotBar` eligibility, `dayOff`/`dayEngaged`, free-count ranking. |
 | `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`**. |
