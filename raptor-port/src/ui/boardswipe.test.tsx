@@ -25,9 +25,16 @@ const $ = (sel: string) => document.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
 
 /* one swipe, expressed the way a finger makes it: down, MOVE, up. The move
-   matters — the day changes on the move now, with the finger still down
-   (owner, 11 Aug 26: waiting for the lift is what "unresponsive" was), so a
-   harness that only sent down/up would test a path the app no longer has. */
+   matters, and it moved AGAIN on 11 Aug 26 when the swipe became a carousel
+   (board.ts's wireBoardSwipe). The move is what takes the gesture and starts
+   the day tracking the finger; the LIFT is what decides, and the day is
+   swapped only after the settle animation has run, so the incoming day is not
+   repainted mid-flight. So the harness sends down → move → up and then waits
+   out the settle. An earlier version of this file said waiting for the lift
+   was the "unresponsive" fault being fixed — that is still true of the old
+   jump-on-threshold, and is not the same thing: nothing waits for the lift to
+   MOVE any more, only to commit. */
+const SETTLE = 320             // > SWIPE_MS in board.ts, with room for the timer
 const swipe = async (dx: number, dy = 0, target?: Element | null) => {
   const main = $('.sb-main')
   const from = (target || main) as Element
@@ -36,6 +43,7 @@ const swipe = async (dx: number, dy = 0, target?: Element | null) => {
     main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 200 + dx, clientY: 400 + dy, pointerType: 'touch' } as any))
     main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 200 + dx, clientY: 400 + dy, pointerType: 'touch' } as any))
   })
+  await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
 }
 
 /* a press-and-slide along the day dots, in one or more steps */

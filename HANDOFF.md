@@ -16,9 +16,9 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 1088 tests
-across 57 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 72/72, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
+**Every gate is green at this commit**, run first-hand: `npm test` 1112 tests
+across 59 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
+run test:e2e` 77/77, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 (neither of the last two in CI). Re-state these only after re-running them.
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
@@ -48,7 +48,7 @@ run test:e2e` 72/72, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 - **jsdom cannot measure layout** — every rect Vitest reports is 0×0, so it
   can prove which class was emitted and nothing about what was painted.
   Geometry contracts are gated by `e2e/geometry.spec.ts` (the fourth CI
-  gate, 68 checks); wider visual work still wants the probe path
+  gate, 77 checks); wider visual work still wants the probe path
   (`npx vite preview --port 4173` + `probes/`).
 
 ## Known issues / open work
@@ -136,6 +136,17 @@ run test:e2e` 72/72, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
   If it ever bites, the honest fix is renumbering ONLY labels still matching
   the `WAVE <n>` default `+ Wave` mints — not a blanket rewrite. Rules:
   `docs/engine-rules.md` §Sorting a board section.
+- **A SECOND document-level scroll listener went on on 11 Aug 26**, and it is
+  deliberately not the same shape as the one below. `histbubble.ts`'s
+  re-anchor is registered on the document in capture — scroll events do not
+  bubble but they do run capture listeners from the window down, which is the
+  only way to see every scroller — and its first line is a boolean on a
+  variable that is null unless a bubble is actually up. It moved there from
+  the board wrap, which could only ever see the board PANELS' scrolls:
+  `.sb-main` is the wrap's parent, so the phone's single scroller never
+  reached it and a bubble would have been left behind by the very scroll that
+  brought its cell into view. If a third consumer ever wants this event, share
+  one listener rather than adding another.
 - **One per-tick DOM walk is left on the scroll path.** `onDotsScroll` in
   `ui/pan.ts` calls `closest('#vWeek')` on every scroll event before it can
   bail, and it is registered for the whole document, so it runs on desktop
@@ -515,6 +526,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `index.html` + `public/favicon.svg` | The Vite entry page and the **only** thing in `public/`. The favicon is the talon from `Login.tsx`/`Shell.tsx`, copied because a browser fetches it standalone before any bundle runs — edit the claw path in all three or the tab and the page disagree. It differs from the components on purpose: a tile and a same-colour stroke, because a tab paints it at 16px where bare thin claws vanish. `href="/favicon.svg"` in the page is rewritten to `./favicon.svg` by `base:'./'`, which is what makes it resolve under the Pages sub-path. |
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board, and where it deliberately does NOT — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both) plus `clickHere`, a click that does not scroll the target into view first (`page.click` does, which would defeat any test that parks the week on purpose). `playwright.config.ts` builds and serves the port itself. |
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
+| `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split and the carousel motion are in `e2e/geometry.spec.ts`, which is the only place either resolves. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. |
 | `src/ui/boardswipe.test.tsx` | The phone board's one-row top bar and its day swipe (11 Aug 26) — what the gesture claims and, more usefully, what it deliberately does NOT guard against. The GEOMETRY of the same change (one row, the drawer clearing the bar) is in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |

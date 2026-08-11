@@ -1591,6 +1591,15 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    in". Both surfaces: a desktop wheel over the bar did exactly the same thing.
    Set from SchedBoard.tsx while the board is open. */
 body.sb-lock{overflow:hidden}
+/* THE DAY COMING IN (owner, 11 Aug 26). Built only while a finger is down and
+   removed on settle, so the resting board is unchanged at 897 nodes against
+   its 960 ceiling — see wireBoardSwipe in board.ts for why the neighbour is an
+   overlay rather than a track around .sb-main. It is inert: the gesture owns
+   it, nothing in it is ever meant to be hit, and it must not take a tap from
+   the real board sliding out beside it. */
+.sb-pane{position:absolute;width:100%;overflow:hidden;pointer-events:none;
+  background:var(--bg);z-index:1;will-change:transform}
+.sb-pane .sb-boardwrap{padding:10px 12px}
 .schedboard[hidden]{display:none}
 .sb-top{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--edge);background:var(--panel);flex-wrap:wrap}
 .sb-title{font-weight:700;font-size:15px}
@@ -1769,20 +1778,79 @@ body.sb-lock{overflow:hidden}
    rather than as a control bolted onto it, but it is a real <button> — it is
    the one line in there that is not a warning, and a screen reader has to be
    able to tell. */
-.histln{display:block;width:100%;text-align:left;background:var(--panel);border:none;
-  border-top:1px solid var(--edge);color:var(--accent);cursor:pointer;
-  font:inherit;font-size:11.5px;padding:9px 11px}
-.histln:hover{background:var(--panel-2)}
+/* TWO COPIES, ONE SHOWN (owner, 11 Aug 26 — the desktop entry moved to the top
+   of the board, above the sign-off bar). `.histln-top` is the desktop one and
+   rides at the head of #sbBoard; `.histln` is the phone one and stays on the
+   day's checks panel, because the phone bar has no room and the checks panel
+   is already the first thing in that scroller. Both are rendered and CSS picks
+   — a media query answers a resize instantly where a builder decision would be
+   stuck until the next repaint (board.ts's histLineHTML). */
+.histln{display:none}
+.histln-top{display:block;width:100%;text-align:left;background:var(--panel);
+  border:1px solid var(--edge);border-radius:var(--r);color:var(--accent);cursor:pointer;
+  font:inherit;font-size:11.5px;font-weight:600;padding:9px 12px;margin-bottom:10px}
+.histln-top:hover{background:var(--panel-2);border-color:var(--accent)}
+@media (max-width:820px){
+  .histln-top{display:none}
+  .histln{display:block;width:100%;text-align:left;background:var(--panel);border:none;
+    border-top:1px solid var(--edge);color:var(--accent);cursor:pointer;
+    font:inherit;font-size:11.5px;padding:9px 11px}
+  .histln:hover{background:var(--panel-2)}
+}
+
+/* THE EXPANDED BUBBLE (owner, 11 Aug 26) — every change to one detail, oldest
+   first. It is the same box, taller: max-height so a detail edited thirty
+   times cannot run off the screen, and its own scroll inside that. */
+.histbub.open{max-width:min(88vw,330px)}
+.hb-all{list-style:none;margin:4px 0 0;padding:0;max-height:40vh;overflow-y:auto}
+.hb-all li{padding:4px 0;border-top:1px solid var(--edge)}
+.hb-all li:first-child{border-top:none}
+.hb-all .hb-chg{display:block}
+.hb-all .hb-who{display:block;margin-top:1px}
+/* THE ONE TAPPABLE THING IN A BUBBLE THAT IS OTHERWISE pointer-events:none.
+   A phone has one gesture, so expanding has to be a control you aim at rather
+   than the whole 290px sheet — which would sit over the board taking taps
+   meant for it. Phone only: a desktop pointer can rest on the cell, and
+   hovering already gives what this asks for a click. */
+.hb-more{pointer-events:auto;display:block;margin-top:6px;width:100%;
+  background:var(--panel-2);border:1px solid var(--edge);border-radius:7px;
+  color:var(--accent);font:inherit;font-size:10.5px;font-weight:700;
+  padding:5px 8px;cursor:pointer}
 
 .hl-filter{display:flex;align-items:center;gap:6px;padding:10px 16px 0}
 .hl-fb{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;
   padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer}
 .hl-fb.on{border-color:var(--accent);color:var(--accent)}
 .hl-count{margin-left:auto;font-size:10.5px;color:var(--ink-3)}
+/* a hairline between the day filter and the view switch — they are two
+   different questions and the row reads as one long strip without it */
+.hl-sep{width:1px;align-self:stretch;background:var(--edge);margin:0 2px}
 .hl-list{list-style:none;margin:0;padding:0}
 .hl-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;padding:7px 0;
   border-bottom:1px solid var(--edge);font-size:11.5px}
 .hl-row:last-child{border-bottom:none}
+/* every row that names a detail is a real <button> — it jumps the board to
+   that detail, and a screen reader has to be told it is pressable. Reset to
+   look exactly like the plain rows it sits among. */
+.hl-row.hit,.hl-ghead{width:100%;text-align:left;background:none;border-left:none;
+  border-right:none;border-top:none;color:inherit;font:inherit;font-size:11.5px;cursor:pointer}
+.hl-row.hit:hover,.hl-ghead:hover{background:var(--panel-2)}
+.hl-row.hit:focus-visible,.hl-ghead:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+/* GROUPED BY DETAIL. The count and the caret say the row folds; the caret
+   turns rather than swapping glyph, so nothing on the line changes width and
+   the rows below stay put as it opens. */
+.hl-grp{border-bottom:1px solid var(--edge)}
+.hl-grp:last-child{border-bottom:none}
+.hl-grp .hl-ghead{border-bottom:none}
+.hl-n{font-size:10px;font-weight:700;color:var(--accent);background:rgba(59,198,232,.1);
+  border-radius:999px;padding:1px 7px;flex:0 0 auto}
+.hl-caret{color:var(--ink-3);flex:0 0 auto;transition:transform .15s;display:inline-block}
+.hl-grp.open .hl-caret{transform:rotate(180deg)}
+.hl-sub{list-style:none;margin:0 0 6px;padding:0 0 0 14px;border-left:2px solid var(--edge)}
+.hl-subrow{border-bottom:none;padding:5px 0;font-size:11px}
+/* the group head already said both of these — repeating the day chip on every
+   line inside one detail's fold is noise, and it is the widest thing on the row */
+.hl-subrow .hl-what,.hl-subrow .hl-day{display:none}
 .hl-day{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
   letter-spacing:.08em;font-size:9.5px;font-weight:700;color:var(--accent-ink);
   background:var(--accent);border-radius:5px;padding:1px 5px;flex:0 0 auto}
@@ -2129,8 +2197,16 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      scroller never did. `body.sb-lock` below is the other half — this stops
      the chain from the scroller, that stops a drag on the BAR (which is not
      in any scroller at all) from doing the same thing. */
+  /* touch-action:pan-y — the seam the day carousel needs (board.ts's
+     wireBoardSwipe, owner 11 Aug 26). The browser keeps the vertical scroll
+     and stops claiming the horizontal, so the swipe can follow the finger
+     without a single non-passive listener or a preventDefault on the scroll
+     path. pinch-zoom is named explicitly because pan-y alone would take it
+     away, and this is the one surface a scheduler pinches to read a dense
+     row. */
   .sb-main{flex-direction:column;overflow-y:auto;overflow-x:hidden;
-    overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+    overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    touch-action:pan-y pinch-zoom}
   /* 4px: the grab-handle is 30px wide where the old tab was 26, and the
      panels' own padding cleared exactly 26 — without this the handle's band
      covers the last 4px of every full-width input (measured; the tap-landing
