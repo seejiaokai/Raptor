@@ -2187,6 +2187,37 @@ test.describe('the phone board keeps its controls to one row', () => {
     expect(after, 'and still the same after one is selected').toBe(1)
   })
 
+  /* THE PAIRING THAT TOOK TWO ATTEMPTS (owner, 11 Aug 26 — a drag down the
+     right-hand edge moved nothing). The parked handle is fixed, so its touch
+     scroll goes to the viewport, which cannot scroll here; the drag is
+     forwarded to the board by hand (`wireParkedRosScroll`). That forwarder
+     only works if the browser does NOT also claim the gesture — with
+     `touch-action:pan-y` it fires pointercancel after one move and the
+     scroll dies at 18px of 264. Hence `none` while parked, and NOT while
+     open, where the crew list owns its own scrolling. Both halves are
+     asserted, because either alone silently breaks the other. */
+  test('the parked aircrew handle does not claim the gesture it forwards', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#schedBoard .sb-ros .ros-tab')
+    const parked = await page.evaluate(() => ({
+      tab: getComputedStyle(document.querySelector('#schedBoard .sb-ros .ros-tab')!).touchAction,
+      aside: getComputedStyle(document.querySelector('#schedBoard .sb-ros')!).touchAction,
+      overTheRightEdge: Math.round(document.querySelector('#schedBoard .sb-ros')!.getBoundingClientRect().left) < 390,
+    }))
+    expect(parked.tab, 'parked, the handle leaves the whole gesture to the forwarder').toBe('none')
+    expect(parked.aside).toBe('none')
+    expect(parked.overTheRightEdge, 'and it really does sit under a thumb at the right edge').toBe(true)
+
+    await page.locator('#schedBoard .sb-ros .ros-tab').click()
+    await page.waitForTimeout(350)
+    const open = await page.evaluate(() =>
+      getComputedStyle(document.querySelector('#schedBoard .sb-ros .ros-tab')!).touchAction)
+    expect(open, 'open, the drawer scrolls its own crew list again').not.toBe('none')
+  })
+
   test('the open AIRCREW drawer starts below the bar and scrolls', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)

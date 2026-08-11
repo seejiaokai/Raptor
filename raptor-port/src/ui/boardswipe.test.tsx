@@ -283,3 +283,103 @@ describe('dragging along the day dots runs through the week', () => {
     expect(view.SBDAY).toBe(4)
   })
 })
+
+/* THE PARKED AIRCREW HANDLE HANDS ITS SCROLL BACK (owner, 11 Aug 26 — a
+   screenshot of a drag down the right-hand edge that moved nothing).
+   A position:fixed element gives its touch scroll to the VIEWPORT, not to
+   the overflow ancestor it sits inside, and the viewport cannot scroll here
+   (.schedboard is fixed, inset:0) — so the gesture went nowhere. The drag is
+   forwarded by hand instead. Measured in a browser at 0px before and 220px
+   after; what jsdom can pin is the arithmetic and, more importantly, the
+   two states it must tell apart. */
+describe('a vertical drag on the parked aircrew handle scrolls the board', () => {
+  const dragOn = async (sel: string, dy: number) => {
+    const main = $('.sb-main')
+    const from = document.querySelector(sel) as HTMLElement
+    expect(from, `there is a ${sel} to drag on`).toBeTruthy()
+    await act(async () => {
+      from.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 378, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 378, clientY: 400 + dy, pointerType: 'touch' } as any))
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 378, clientY: 400 + dy, pointerType: 'touch' } as any))
+    })
+  }
+
+  beforeEach(() => { document.body.classList.remove('ros-open'); $('.sb-main').scrollTop = 500 })
+
+  it('drags the board by the distance travelled', async () => {
+    await dragOn('#schedBoard .sb-ros .ros-tab', -200)
+    expect($('.sb-main').scrollTop, 'dragging up scrolls the board down').toBe(700)
+  })
+
+  it('and the other way', async () => {
+    await dragOn('#schedBoard .sb-ros .ros-tab', 150)
+    expect($('.sb-main').scrollTop).toBe(350)
+  })
+
+  it('does nothing once the drawer is OPEN — the crew list owns that gesture', async () => {
+    document.body.classList.add('ros-open')
+    try {
+      await dragOn('#schedBoard .sb-ros .ros-tab', -200)
+      expect($('.sb-main').scrollTop, 'the open drawer scrolls its own list, not the board').toBe(500)
+    } finally { document.body.classList.remove('ros-open') }
+  })
+
+  it('leaves a drag that started anywhere else to the browser', async () => {
+    await dragOn('#sbBoard', -200)
+    expect($('.sb-main').scrollTop, 'the board scrolls itself everywhere else').toBe(500)
+  })
+
+  /* a tap travels ~0px, so the forwarding is a no-op and the tap still
+     reaches the toggle */
+  it('a tap on the handle scrolls nothing', async () => {
+    await dragOn('#schedBoard .sb-ros .ros-tab', 0)
+    expect($('.sb-main').scrollTop).toBe(500)
+  })
+})
+
+/* THE REPORTED FAULT, AND IT IS THE CLICK THAT CAUSES IT (owner, 11 Aug 26 —
+   "after I move the bar at the top and tried to scroll vertically I can't").
+   A two-step trap: the handle sits at the right edge where a thumb rests and
+   the browser's tap slop is generous — measured on the real build, a drag of
+   up to 15px still fired a click — so beginning a scroll there OPENED the
+   aircrew drawer. The drawer then covers 58% of the width over a crew list
+   with 39px to scroll, so the next drag moved nothing, which reads as the
+   board having seized rather than as a panel having opened over it. */
+describe('a scroll on the parked handle must not open the drawer', () => {
+  const gesture = async (dy: number) => {
+    const main = $('.sb-main')
+    const tab = document.querySelector('#schedBoard .sb-ros .ros-tab') as HTMLElement
+    await act(async () => {
+      tab.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 378, clientY: 500, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 378, clientY: 500 - dy, pointerType: 'touch' } as any))
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 378, clientY: 500 - dy, pointerType: 'touch' } as any))
+      /* the click the browser fires after a short touch — the whole problem */
+      tab.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+  }
+  beforeEach(() => { document.body.classList.remove('ros-open'); $('.sb-main').scrollTop = 500 })
+  afterEach(() => { document.body.classList.remove('ros-open') })
+
+  it('a 15px scroll does not open it — that was the fault', async () => {
+    await gesture(15)
+    expect(document.body.classList.contains('ros-open'), 'a scroll is not a tap').toBe(false)
+    expect($('.sb-main').scrollTop, 'and it scrolled the board instead').toBe(515)
+  })
+
+  it('a long scroll does not open it either', async () => {
+    await gesture(200)
+    expect(document.body.classList.contains('ros-open')).toBe(false)
+    expect($('.sb-main').scrollTop).toBe(700)
+  })
+
+  /* a deliberate tap wobbles, and that is still a tap */
+  it('a real tap still opens it', async () => {
+    await gesture(0)
+    expect(document.body.classList.contains('ros-open'), 'the handle still works as a button').toBe(true)
+  })
+
+  it('and so does a tap that wobbles a couple of pixels', async () => {
+    await gesture(3)
+    expect(document.body.classList.contains('ros-open')).toBe(true)
+  })
+})

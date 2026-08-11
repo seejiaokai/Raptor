@@ -917,6 +917,82 @@ export function wireBoardSwipe(el: HTMLElement) {
   }
 }
 /* ---------------------------------------------------------------------------
+   THE PARKED AIRCREW HANDLE MUST NOT SWALLOW A SCROLL (owner, 11 Aug 26 —
+   a screenshot of a drag down the right-hand edge that moved nothing)
+   Parked, the drawer is a 30px sliver pinned to the right edge over a band
+   429px tall on a 780px screen — right where a thumb rests. A vertical drag
+   starting on it scrolled NOTHING: measured at x=378, 0px of board movement
+   against 264px two finger-widths to the left.
+
+   The cause is not this app's. A `position:fixed` element hands its touch
+   scroll to the VIEWPORT, not to the overflow ancestor it happens to sit
+   inside, and the viewport here cannot scroll (`.schedboard` is
+   `position:fixed; inset:0`) — so the gesture had nowhere to go. Both CSS
+   levers were tried against the real build and neither moves it:
+   `touch-action:pan-y` (the browser is then willing to pan, but there is
+   still nothing for it to pan) and `position:absolute` against `.schedboard`
+   (stays pinned, chains no better). So the drag is forwarded by hand.
+
+   It is deliberately NOT a general scroll proxy: it acts only while the
+   drawer is PARKED — open, the drawer holds a scrolling crew list that owns
+   its own gesture — and it drives the same `.sb-main.scrollTop` the browser
+   would have. A tap moves ~0px, so scrolling by that is a no-op and the tap
+   still toggles the drawer.
+   What it does not reproduce is momentum: the board stops when the finger
+   stops, where a native scroll would coast. Fixing that means running an
+   inertia loop by hand, which is a lot of machinery for a 30px strip — and a
+   scroll that works without coasting beats one that does nothing.
+   --------------------------------------------------------------------------- */
+const ROS_TAP = 6           // px of travel still readable as a tap, not a scroll
+export function wireParkedRosScroll(main: HTMLElement) {
+  let y0 = 0, top0 = 0, live = false, moved = false, ros: HTMLElement | null = null
+  const onDown = (e: any) => {
+    live = false; moved = false
+    if (document.body.classList.contains('ros-open')) return
+    const t = e.target as HTMLElement
+    if (!t || !t.closest) return
+    const r = t.closest('.sb-ros') as HTMLElement | null
+    if (!r) return
+    ros = r; y0 = e.clientY; top0 = main.scrollTop; live = true
+  }
+  const onMove = (e: any) => {
+    if (!live) return
+    if (Math.abs(e.clientY - y0) > ROS_TAP) moved = true
+    main.scrollTop = top0 - (e.clientY - y0)
+  }
+  /* A SCROLL MUST NOT OPEN THE DRAWER (owner, 11 Aug 26 — "after I move the
+     bar at the top and tried to scroll vertically I can't").
+     This was the whole reported fault, and it is a two-step trap. The handle
+     sits at the right edge where a thumb rests, and the browser's own tap
+     slop is generous: measured on the real build, a drag of up to 15px still
+     fired a click, so beginning a scroll there OPENED the aircrew drawer.
+     The drawer then covers 58% of the width and its crew list has all of
+     39px to scroll — so the next drag moved nothing at all, which reads as
+     the board having seized rather than as a panel having opened over it.
+     The scroll forwarded above is what makes the fix cheap: it already knows
+     the finger travelled, so a gesture that scrolled anything eats the click
+     the browser fires afterwards. Under 6px is left alone — a deliberate tap
+     wobbles, and that is still a tap. */
+  const end = () => {
+    live = false
+    if (!moved || !ros) return
+    const eat = (c: Event) => { c.stopPropagation(); c.preventDefault() }
+    const el = ros
+    el.addEventListener('click', eat, { capture: true, once: true })
+    setTimeout(() => el.removeEventListener('click', eat, { capture: true } as any), 350)
+  }
+  main.addEventListener('pointerdown', onDown, { passive: true })
+  main.addEventListener('pointermove', onMove, { passive: true })
+  main.addEventListener('pointerup', end, { passive: true })
+  main.addEventListener('pointercancel', end, { passive: true })
+  return () => {
+    main.removeEventListener('pointerdown', onDown)
+    main.removeEventListener('pointermove', onMove)
+    main.removeEventListener('pointerup', end)
+    main.removeEventListener('pointercancel', end)
+  }
+}
+/* ---------------------------------------------------------------------------
    THE DOTS ARE A SCRUB BAR (owner, 11 Aug 26 — "the dots should allow me to
    drag to select the pages, like a drag bar")
    Press anywhere on the strip and slide: the day under the finger becomes the
