@@ -17,7 +17,7 @@ import { scrollToWarnFocus, queueHold } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
-import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList } from './pops'
+import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
 import { openScheduler, toggleSbwarn, boardTab } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { setCurWeek } from '../engine/waves'
@@ -56,7 +56,7 @@ function jumpToWarn(di: number, ix: number) {
    change made on Thursday, read from the whole-week list on Monday's board. */
 export function jumpToChange(key: string, di: any) {
   if (!key) return
-  setHistList(false)
+  closeHistList()
   hideHistBub()
   if (di != null && view.SBDAY !== +di) boardTab(+di)
   notify()

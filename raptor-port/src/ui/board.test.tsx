@@ -135,9 +135,11 @@ describe('the scheduler board (tfin board group)', () => {
     expect([f.cs, f.msn, f.to, f.ld]).toEqual(['', '', '', ''])
     expect(f.aircraft.length).toBe(1)
     /* the new line's key is marked pending so the line can be published */
-    expect(SCHED.pending[`ff:0.${d.waves.length - 1}.${w.formations.length - 1}.cs`]).toBeTruthy()
+    const key = `ff:0.${d.waves.length - 1}.${w.formations.length - 1}.cs`
+    expect(SCHED.pending[key]).toBeTruthy()
     /* put it back */
     w.formations.pop()
+    delete SCHED.pending[key]; delete SCHED.added[key]
     await act(async () => { afterSchedMutate(); notify() })
   })
 
@@ -161,8 +163,11 @@ describe('the scheduler board (tfin board group)', () => {
 
   it('✕ Wave removes it again', async () => {
     const d = DAYS[0], nBefore = d.waves.length
+    const before = new Set(Object.keys(SCHED.pending))
     await click($(`#sbBoard [data-gdel="0.${nBefore - 1}"]`))
     expect(d.waves.length).toBe(nBefore - 1)
+    const added = Object.keys(SCHED.pending).filter(k => !before.has(k))
+    expect(added, 'adding then deleting before issue is a net no-op').toEqual([])
   })
 
   it('an AVALON wave arrives complete WITH its duty block, and deleting it removes both', async () => {
@@ -205,7 +210,9 @@ describe('the scheduler board (tfin board group)', () => {
     expect(b.label).toBe(`${d.waves[0].label} duties`)
     expect(b.rows.map((r: any) => r.role)).toEqual(['SDO', 'SXO', 'OPS O'])
     expect(b.rows.every((r: any) => r.str === '' && r.end === '')).toBe(true)
+    const key = `dl:0.${d.dutywaves.length - 1}`
     d.dutywaves.pop()
+    delete SCHED.pending[key]; delete SCHED.added[key]
   })
 
   it('+ Block’s Empty block still gives a bare block', async () => {
@@ -215,7 +222,9 @@ describe('the scheduler board (tfin board group)', () => {
     await click($('.wavemenu [data-blkw=""]'))
     expect(d.dutywaves.length).toBe(nDW + 1)
     expect(d.dutywaves[d.dutywaves.length - 1].rows.map((r: any) => r.role)).toEqual([''])
+    const key = `dl:0.${d.dutywaves.length - 1}`
     d.dutywaves.pop()
+    delete SCHED.pending[key]; delete SCHED.added[key]
   })
 
   /* THE GO DROPDOWN (owner-reported, 10 Aug 26). It read the wave's `night`

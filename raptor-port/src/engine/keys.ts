@@ -34,7 +34,8 @@ export function shiftKeys(head:any,pos:any,ix:any){
   const remap=(o:any)=>{const out:any={}; Object.keys(o||{}).forEach((k:any)=>{const m=move(k); if(m)out[m]=o[k];}); return out;};
   SCHED.pending=remap(SCHED.pending);
   SCHED.changes=remap(SCHED.changes);
-  (SCHED.als||[]).forEach((a:any)=>{a.keys=(a.keys||[]).map(move).filter(Boolean);});
+  SCHED.added=remap(SCHED.added);
+  (SCHED.als||[]).forEach((a:any)=>{a.keys=(a.keys||[]).map(move).filter(Boolean);a.adds=(a.adds||[]).map(move).filter(Boolean);a.structAdds=(a.structAdds||[]).map(move).filter(Boolean);});
 }
 /* ---------------------------------------------------------------------------
    REORDERING A LIST RENUMBERS IT TOO — and unlike a delete, nothing may be lost
@@ -63,7 +64,8 @@ export function permuteKeys(head:any,pos:any,oldOf:any){
   const remap=(o:any)=>{const out:any={}; Object.keys(o||{}).forEach((k:any)=>{out[move(k)]=o[k];}); return out;};
   SCHED.pending=remap(SCHED.pending);
   SCHED.changes=remap(SCHED.changes);
-  (SCHED.als||[]).forEach((a:any)=>{a.keys=(a.keys||[]).map(move);});
+  SCHED.added=remap(SCHED.added);
+  (SCHED.als||[]).forEach((a:any)=>{a.keys=(a.keys||[]).map(move);a.adds=(a.adds||[]).map(move);a.structAdds=(a.structAdds||[]).map(move);});
 }
 /* one row moving to another position, `to` being its index AFTER removal —
    plain splice-out / splice-in, the same arithmetic the model array does. */

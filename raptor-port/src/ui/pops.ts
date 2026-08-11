@@ -38,3 +38,12 @@ export function setHistGroup(on: boolean) { HISTGROUP = !!on }
    like DWOPEN and HLSET — the store notifies, the builder re-reads. */
 export const HISTOPEN = new Set<string>()
 export function toggleHistOpen(k: string) { HISTOPEN.has(k) ? HISTOPEN.delete(k) : HISTOPEN.add(k) }
+/* Every route out of the list forgets all of its view state. Keeping this in
+   one helper matters because a row jump is also a close: resetting only the
+   modal flag there made Grouped silently come back the next time the list was
+   opened, even though the close button correctly returned to By time. */
+export function closeHistList() {
+  HISTLIST = false
+  HISTGROUP = false
+  HISTOPEN.clear()
+}

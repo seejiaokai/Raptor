@@ -23,7 +23,7 @@ const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 
 beforeEach(() => {
   DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
   INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
-  SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []
+  SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}
   setSession({ user: 'a', role: 'admin' })
   view.selDrop(); view.armDrop(); view.DPREV.clear()
@@ -161,12 +161,22 @@ describe('deletes through the store (tfin B48/P2)', () => {
     DAYS[0].notes = ['A', 'B', 'C']
     SCHED.pending = {}; SCHED.changes = { 'dn:0.2': 1 }
     SCHED.als = [{ n: 1, keys: ['dn:0.2'], sign: {} }]
-    writeDelete(() => { DAYS[0].notes.splice(1, 1); shiftKeys('dn:0.', 0, 1) })
+    writeDelete(() => { DAYS[0].notes.splice(1, 1); shiftKeys('dn:0.', 0, 1) }, 0, 'note')
     const live = Object.keys(SCHED.pending).concat(Object.keys(SCHED.changes))
       .concat(SCHED.als[0].keys)
     expect(live.filter(k => k === 'dn:0.2')).toEqual([])       // renumbered, not re-marked
     expect(SCHED.changes['dn:0.1']).toBe(1)
-    expect(Object.keys(SCHED.pending)).toEqual([])             // bare markEdit named no key
+    expect(Object.keys(SCHED.pending)).toEqual([expect.stringMatching(/^del:0\.\d+\.note$/)])
+  })
+
+  it('undo restores the removed row and drops its tombstone in one step', () => {
+    sign(0); setDayApproved(0, true)
+    const before = DAYS[0].notes.slice()
+    writeDelete(() => { DAYS[0].notes.splice(0, 1); shiftKeys('dn:0.', 0, 0) }, 0, 'note')
+    expect(Object.keys(SCHED.pending)).toEqual([expect.stringMatching(/^del:0\.\d+\.note$/)])
+    undo()
+    expect(DAYS[0].notes).toEqual(before)
+    expect(Object.keys(SCHED.pending)).toEqual([])
   })
 
   it('a stale armed slot is put down when its row goes', () => {

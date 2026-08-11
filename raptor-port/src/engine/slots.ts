@@ -1,8 +1,8 @@
 import { DAYS } from './data'
 import { PEOPLE, nameToId, ID_BY_CS } from './people'
-import { SCHED, markEdit } from './publish'
+import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, trackStructuralAdd } from './publish'
 import { parseHM, hhmm } from './time'
-import { isUnavail, inpLabel } from './inputs'
+import { DATES, inpId, inputCoversDate, isUnavail, inpLabel } from './inputs'
 import { shiftKeys } from './keys'
 import { logEdit } from './editlog'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
@@ -249,6 +249,7 @@ export const rollCx=(f:any)=>{f.cx=f.aircraft.length>0&&f.aircraft.every((a:any)
    can find and remove the row it created even after other rows shift around
    it. Storing an index instead would rot the moment a row above it is deleted. */
 export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${inp.s==null?'':inp.s}`;}
+const markInputDays=(inp:any,fallback:any)=>{const token=inpId(inp);let any=false;DAYS.forEach((d:any,i:any)=>{if(inputCoversDate(inp,d.dt)){markInputFiling(i,token);any=true;}});if(!any&&+fallback>=0)markInputFiling(+fallback,token);};
 export function acceptInput(di:any,inp:any,dest:any){
   const d=DAYS[di]; if(!d||!inp)return false;
   if(inp.acc)return false;                       // already actioned — unaccept first
@@ -259,7 +260,7 @@ export function acceptInput(di:any,inp:any,dest:any){
      never offers the control for these; this guard keeps any future call
      site honest. */
   if(isUnavail(inp.type))return false;
-  if(dest==='u'){ inp.acc='u'; markEdit(); return true; }
+  if(dest==='u'){ inp.acc='u'; markInputDays(inp,di); return true; }
   /* inpKey is a CONTENT key, and content keys are not unique: two inputs that
      agree on person, date, type AND start minute mint the same `src`. Both
      acceptedDay and unacceptInput resolve a row by taking the FIRST match, so a
@@ -282,7 +283,7 @@ export function acceptInput(di:any,inp:any,dest:any){
                  who:PEOPLE[inp.person]?PEOPLE[inp.person].cs:inp.person,
                  rmks:inp.remarks||'', src:key});
   inp.acc='g';
-  noteChange(`g:${di}.${ri}`);
+  trackStructuralAdd(`g:${di}.${ri}`); noteChange(`g:${di}.${ri}`);
   return true;
 }
 /* Which day carries the row this input was accepted onto, or -1. The row does
@@ -300,6 +301,7 @@ export function acceptedDay(inp:any){
 }
 export function unacceptInput(di:any,inp:any){
   if(!inp||!inp.acc)return false;
+  const was=inp.acc;
   if(inp.acc==='g'){
     /* search by content key across the week rather than trusting di — see
        acceptedDay. Guessing the day left the real row orphaned on another day
@@ -309,17 +311,24 @@ export function unacceptInput(di:any,inp:any){
       const g=(DAYS[d2]||{}).ground; if(!g||!g.length)continue;
       const i=g.findIndex((r:any)=>r.src===key);
       if(i<0)continue;
+      const issued=deletionWasIssued(d2,'ground',i,key);
       g.splice(i,1);
       /* every other ground delete renumbers the key space (see board.ts's
          grdel). Skipping it slid every g:/gr: mark after the cut onto the
          wrong row — permanently, including inside an issued AL's keys. */
       [`g:${d2}.`,`gr:${d2}.`].forEach((h:any)=>shiftKeys(h,0,i));
+      markDeletion(d2,'ground',issued);
       break;
     }
   }
   delete inp.acc;
-  /* markEdit with NO key: the address we just removed must not be re-marked,
-     or the next AL carries a line pointing at a row that no longer exists. */
+  if(was==='u'){
+    const d2=+di>=0?+di:DATES.indexOf(inp.date);
+    markInputDays(inp,d2);
+  }
+  /* The amendment was marked on an inert deletion/input-action key above.
+     Keep the bare call as the history/render epilogue; it must never re-mark
+     the removed row address, which now belongs to whatever shifted into it. */
   markEdit();
   return true;
 }

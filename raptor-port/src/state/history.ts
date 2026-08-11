@@ -15,7 +15,7 @@ export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
 /* `ok` carries SCHED.dayOK — the per-day publish state. It replaced the old
    week-wide ap/dr pair, so publishing or reopening a single day is an ordinary
    undo step. */
-export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,c:SCHED.changes,p:SCHED.pending,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur});}
+export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur});}
 export function histInit(){HIST.stack=[histSnap()];HIST.ix=0;syncHistBtns();}
 export function histPush(){
   if(HIST.lock)return;
@@ -33,7 +33,7 @@ export function histApply(i:any){
   HIST.ix=i; HIST.lock=true;
   DAYS.length=0; s.d.forEach((x:any)=>DAYS.push(x));
   INPUTS.length=0; (s.i||[]).forEach((x:any)=>INPUTS.push(x));
-  SCHED.changes=s.c||{}; SCHED.pending=s.p||{}; SCHED.als=s.a||[];
+  SCHED.changes=s.c||{}; SCHED.pending=s.p||{}; SCHED.added=s.ad||{}; SCHED.als=s.a||[];
   SCHED.al=s.al||0; SCHED.dayOK=s.ok||{};
   SCHED.sign=s.sg||{};
   SCHED.orig=s.o||{};

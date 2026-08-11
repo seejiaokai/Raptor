@@ -43,8 +43,11 @@ export function Drawer() {
         {/* resetSession (state/store.ts) is the one session-change path — see Shell.tsx's
             logout button for why setUserModal(false) still has to happen here, at the
             call site, rather than inside resetSession itself. */}
+        {/* The menu unmounts with the outgoing shell, but its module flag does
+            not. Clear it here so a second login in the same tab does not
+            reopen the drawer from the previous user's session. */}
         <div className="drawer-row"><button className="abtn" id="drawerLogout"
-          onClick={() => { setUserModal(false); resetSession(null); notify() }}>Logout</button></div>
+          onClick={() => { setDrawer(false); setUserModal(false); resetSession(null); notify() }}>Logout</button></div>
       </div>
     </div>
   )

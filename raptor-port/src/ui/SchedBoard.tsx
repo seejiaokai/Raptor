@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode } from '../state/view'
-import { setHistList } from './pops'
+import { closeHistList } from './pops'
 import { wireHistBubble, hideHistBub } from './histbubble'
 import { daySnapOf, dayVersions, verLabel, alColor } from '../engine/publish'
 import { withDaySnap } from './html'
@@ -91,7 +91,7 @@ export function SchedBoard() {
     /* the changes list and any bubble go with them: both are opened from the
        board's own bar, so a page change that closes the board must not leave
        either painting over whatever the user navigated to */
-    HOOKS.closeBoardDialogs = () => { setCxt(null); setSortAll(null); setHistList(false); hideHistBub() }
+    HOOKS.closeBoardDialogs = () => { setCxt(null); setSortAll(null); closeHistList(); hideHistBub() }
     return () => { HOOKS.closeBoardDialogs = () => {} }
   }, [])
 

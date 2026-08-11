@@ -22,6 +22,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   shift and briefs nothing, so a value typed on one stays inert. Brief window
   = brief → T/O. A published in-time still moves report time and crew rest,
   never the brief.
+- **Typed pre-flight clocks follow a small-hours T/O across midnight.** When
+  the configured brief lead already puts the default brief on the previous
+  evening, an indicated B later on the clock than T/O is shifted back one day;
+  the published in-time does the same when `reportLead` crosses midnight.
+  Thus a 00:30 T/O can carry B 22:10 and an in-time of 21:30 as negative
+  minutes on the previous evening, exactly like its blank-B default. The roll
+  is deliberately limited to that small-hours boundary: a later clock typed
+  against an ordinary daytime sortie remains visible as typed rather than
+  silently becoming a nearly 24-hour lead.
 - Crew rest (VCONF.crewRest) runs off the last REST-BEARING commitment
   (sortie or shift), and anchors on the earlier of the published in-time and
   the leg's own brief. Breach = hard CR; nominal-inside-rest = adv TT.
@@ -534,10 +543,13 @@ funnel:
   all-day) and calls `noteChange()` on its key, so it is pending and reaches
   the next AL. The row carries `src` — a content key back to the input.
 - `dest='u'` only sets `acc='u'`, moving it into the Unavailable block; no row
-  is created.
+  is created. Because there is no live row key to tint, it marks one inert
+  `inp:di.input-id` amendment key for every loaded day the input covers.
 - `unacceptInput` reverses either, finding the created row by `src` (not by
-  index, which would rot when rows above it move) and calling `markEdit()` with
-  no key.
+  index, which would rot when rows above it move). Removing a Ground row uses
+  an inert `del:di.seq.ground` key; unfiling from Unavailable reuses the same
+  stable `inp:di.input-id` key on every covered loaded day, so filing and
+  unfiling before issue do not become two contradictory AL items.
 
 Accepting twice is a no-op; undo first. The input is never removed — it stays in
 Personal Inputs, faded, so the scheduler can see what they have dealt with.
@@ -938,6 +950,26 @@ per-day; there is deliberately no "publish all days".
 
 Edits only become AL changes on a day that is already published — edits to
 a draft day are folded in when the day is first published, with no AL mark.
+
+**Structural removals are real AL items even though their cells are gone.** A
+delete first renumbers the surviving address space, then marks an inert
+`del:di.seq.kind` tombstone. Reusing the removed row's old key would attach the
+amendment tint to whatever shifted into that address; the tombstone instead
+keeps the day index parseable while pointing at no live cell. Its sequence is
+derived from pending, issued and historical AL keys, so no separate counter can
+drift across undo. Tombstones travel unchanged through publish, unpublish,
+history and version snapshots; the AL panel counts them as removals, while the
+schedule CSV naturally contains only the rows that still exist.
+Draft structural additions carry an identity key that is remapped with the row
+through drag, nudge and Sort. Issue clears that identity; unpublish restores it.
+Therefore a row added after issue, reordered, and deleted again before its AL is
+a net no-op: its pending add key is removed and no false removal is published.
+The issued snapshot is the legacy fallback; accepted Ground inputs also carry
+their stable source token. A later AL keeps ownership if an older one is
+unpublished even when it changed a different field on the row: AL snapshots
+carry the live structural-add identities separately from field keys. Restoring
+a frozen day clears draft identities along with the
+draft rows it discards, so reused addresses cannot suppress a real removal.
 
 ## Version snapshots / restore
 

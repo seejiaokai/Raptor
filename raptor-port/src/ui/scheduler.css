@@ -1598,7 +1598,7 @@ body.sb-lock{overflow:hidden}
    it, nothing in it is ever meant to be hit, and it must not take a tap from
    the real board sliding out beside it. */
 .sb-pane{position:absolute;width:100%;overflow:hidden;pointer-events:none;
-  background:var(--bg);z-index:1;will-change:transform}
+  background:var(--bg);z-index:1;will-change:transform;contain:strict}
 .sb-pane .sb-boardwrap{padding:10px 12px}
 .schedboard[hidden]{display:none}
 .sb-top{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--edge);background:var(--panel);flex-wrap:wrap}

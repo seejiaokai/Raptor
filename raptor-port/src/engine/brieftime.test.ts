@@ -50,6 +50,29 @@ describe('the brief time a scheduler indicates', () => {
     expect(legsOf(0, crew)[0].brief, 'whitespace is not a time either').toBe(parseHM(f.to)! - VCONF.briefLead)
   })
 
+  it('places a typed brief and in-time before a small-hours take-off on the previous evening', () => {
+    const f: any = firstForm(1)!
+    const crew = f.aircraft[0].p
+    f.to = '00:30'; f.ld = '02:00'; f.br = '22:10'
+    const wave = DAYS[1].waves.find((w: any) => (w.formations || []).includes(f))
+    wave.intimes = [`${f.cs} IN TIME 2130H`]
+    const leg = legsOf(1, crew)[0]
+    expect(leg.brief).toBe(parseHM('22:10')! - 1440)
+    expect(leg.intime).toBe(parseHM('21:30')! - 1440)
+    expect(leg.report).toBe(parseHM('21:30')! - 1440)
+  })
+
+  it('does not silently roll a later clock on an ordinary daytime sortie back 24 hours', () => {
+    const f: any = firstForm(1)!
+    const crew = f.aircraft[0].p
+    f.to = '12:00'; f.ld = '13:30'; f.br = '18:10'
+    const wave = DAYS[1].waves.find((w: any) => (w.formations || []).includes(f))
+    wave.intimes = [`${f.cs} IN TIME 1930H`]
+    const leg = legsOf(1, crew)[0]
+    expect(leg.brief).toBe(parseHM('18:10'))
+    expect(leg.intime).toBe(parseHM('19:30'))
+  })
+
   /* A shift is not a sortie: it briefs nothing, and every consumer gates on
      shift before it reads a brief, so a value typed on one must stay inert.
      Standalone waves are built at runtime by makeStandalone rather than

@@ -9,7 +9,7 @@ import { isSpecial } from './people'
 import { acceptInput, unacceptInput, inpKey, slotVal, txtGet, txtSet } from './slots'
 import { keyDay } from './keys'
 import { dayKeys } from './restore'
-import { SCHED } from './publish'
+import { SCHED, signOf, setDayApproved, publishALDay } from './publish'
 import { makeStandalone } from './waves'
 import { validate } from './validate'
 
@@ -19,11 +19,12 @@ const ISNAP = JSON.stringify(INPUTS)
 beforeEach(() => {
   const d = JSON.parse(DSNAP); DAYS.length = 0; d.forEach((x: any) => DAYS.push(x))
   const i = JSON.parse(ISNAP); INPUTS.length = 0; i.forEach((x: any) => INPUTS.push(x))
-  SCHED.pending = {}; SCHED.changes = {}
+  SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}; SCHED.al = 0
   validate()
 })
 
 const findInp = (t: string) => INPUTS.find((x: any) => x.type === t && x.date === 'Jul 13')
+const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
 
 describe('accepting a personal input', () => {
   it('promotes it into the ground programme as a real row', () => {
@@ -103,6 +104,60 @@ describe('accepting a personal input', () => {
 
   it('undo on an un-accepted input does nothing', () => {
     expect(unacceptInput(0, findInp('Meeting')!)).toBe(false)
+  })
+
+  it('removing an accepted Ground row from a published day leaves an inert pending removal', () => {
+    const inp = findInp('Meeting')!
+    acceptInput(0, inp, 'g')
+    sign(0); setDayApproved(0, 1)             // the accepted row is now issued
+    expect(Object.keys(SCHED.pending)).toEqual([])
+    expect(unacceptInput(0, inp)).toBe(true)
+    const keys = Object.keys(SCHED.pending)
+    expect(keys.length).toBe(1)
+    expect(keys[0]).toMatch(/^del:0\.\d+\.ground$/)
+    expect(keys[0].startsWith('g:')).toBe(false) // never tint the shifted row
+  })
+
+  it('does not claim a removal when a Ground filing is added and undone before its AL', () => {
+    const inp = findInp('Meeting')!
+    sign(0); setDayApproved(0, 1)
+    expect(acceptInput(0, inp, 'g')).toBe(true)
+    expect(unacceptInput(0, inp)).toBe(true)
+    expect(SCHED.pending).toEqual({})
+  })
+
+  it('filing under Unavailable after publish becomes an amendment, and undoing it becomes the next one', () => {
+    const inp = findInp('Meeting')!
+    sign(0); setDayApproved(0, 1)
+    expect(acceptInput(0, inp, 'u')).toBe(true)
+    const filed = Object.keys(SCHED.pending)[0]
+    expect(filed).toMatch(/^inp:0\./)
+    sign(0); publishALDay(0)
+    expect(SCHED.changes[filed]).toBe(1)
+    expect(unacceptInput(0, inp)).toBe(true)
+    expect(Object.keys(SCHED.pending)).toEqual([filed])
+  })
+
+  it('filing and unfiling a spanning input marks every loaded day it covers', () => {
+    const inp = { person: 'waldo', date: 'Jul 13', endDate: 'Jul 15', allday: true, type: 'Meeting', remarks: '' }
+    INPUTS.push(inp)
+    expect(acceptInput(0, inp, 'u')).toBe(true)
+    expect(Object.keys(SCHED.pending).map(keyDay).sort()).toEqual([0, 1, 2])
+    expect(Object.keys(SCHED.pending).every(k => /^inp:\d+\./.test(k))).toBe(true)
+    SCHED.pending = {}
+    expect(unacceptInput(0, inp)).toBe(true)
+    expect(Object.keys(SCHED.pending).map(keyDay).sort()).toEqual([0, 1, 2])
+    expect(Object.keys(SCHED.pending).every(k => /^inp:\d+\./.test(k))).toBe(true)
+  })
+
+  it('keeps one amendment address when editable input details change before unfiling', () => {
+    const inp = findInp('Meeting')!
+    expect(acceptInput(0, inp, 'u')).toBe(true)
+    const filed = Object.keys(SCHED.pending)
+    inp.type = 'Training'
+    inp.s = (inp.s || 0) + 30
+    expect(unacceptInput(0, inp)).toBe(true)
+    expect(Object.keys(SCHED.pending)).toEqual(filed)
   })
 })
 

@@ -269,6 +269,20 @@ describe('grouped by detail', () => {
     await openList()
     expect($('#histByTime').className, 'back to the timeline').toContain('on')
   })
+
+  it('jumping from a grouped row also forgets the grouped view', async () => {
+    const { a } = await seed()
+    await openList()
+    await click($('#histGrouped'))
+    await click($(`[data-hgrp="${a}"]`))
+    await click($('#histBody .hl-sub .hl-row.hit'))
+    await settle()
+    expect(HISTOPEN.size, 'the old fold is not kept behind the closed list').toBe(0)
+
+    await openList()
+    expect($('#histByTime').className, 'a jump is still a complete close').toContain('on')
+    expect($$('#histBody .hl-ghead').length, 'no expanded groups leak into the next opening').toBe(0)
+  })
 })
 
 describe('the phone expands the bubble by hand', () => {
