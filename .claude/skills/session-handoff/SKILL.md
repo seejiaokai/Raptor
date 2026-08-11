@@ -15,8 +15,12 @@ plain-language and complete.
 
 ## Step 1 — decide whether a file is warranted
 
-This project ships every green change immediately (PR → merge → deploy), so
-most sessions end with nothing in flight. Check first, then branch:
+This project ships once per session, at the end (PR → merge → deploy —
+`CLAUDE.md` §How to work here, owner 10 Aug 26; it used to ship every green
+change as it landed). So the shipment normally happens just BEFORE this skill
+runs, and most sessions still end with nothing in flight — but the one PR now
+carries the whole session, which makes "did it merge" the single question that
+decides everything below. Check first, then branch:
 
 - **Nothing unfinished** → say so in chat, two lines, and write no file. The
   repo and `git log` already tell the next session everything it needs. A

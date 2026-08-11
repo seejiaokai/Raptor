@@ -40,7 +40,10 @@ on pushes to `main` and on pull requests into it.
 
 UI-visible work also wants the browser path, which is **not** in CI —
 `npx vite preview --port 4173`, then `npm run probes:adapted` (the six adapted
-probes) and `npm run perf` (the reference-vs-port no-regression gate).
+probes) and `npm run perf` — which asserts the DOM ceilings and two
+behavioural checks, and PRINTS the reference-vs-port timings beside them
+without asserting those (owner, 10 Aug 26: they never caught a slowdown and
+went red on unchanged code; `docs/probe-sweep.md` has the counted record).
 
 ## The one rule
 
