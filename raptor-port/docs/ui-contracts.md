@@ -416,7 +416,32 @@ edit week now:
   NO hidden hit area — the board's panels take 4px extra right padding
   because the old tab cleared them by exactly 26 — and open restates full
   height as it slides out. The week's `.eroster` has the identical parked
-  shape. **Open, it now starts BELOW the top bar and is thinner** (owner,
+  shape.
+  **Parked, it must not swallow a vertical scroll** (owner, 11 Aug 26 — a
+  screenshot of a drag down the right-hand edge that moved nothing). The
+  sliver is 30px wide over a band 429px tall on a 780px screen, right where
+  a thumb rests, and a drag starting on it scrolled NOTHING: measured at 0px
+  against the 264px the same drag gets two finger-widths to the left. The
+  cause is not this app's — a `position:fixed` element hands its touch scroll
+  to the VIEWPORT rather than to the overflow ancestor it sits inside, and
+  the viewport cannot scroll here because `.schedboard` is `fixed; inset:0`.
+  Both CSS levers were tried against the real build and neither moves it:
+  `touch-action:pan-y` (the browser is willing to pan, but there is nothing
+  to pan) and `position:absolute` against `.schedboard` (stays pinned,
+  chains no better). So `wireParkedRosScroll` (`board.ts`) drives
+  `.sb-main.scrollTop` from the drag by hand, and the handle takes
+  `touch-action:none` **while parked only** so the browser leaves it the
+  whole pointer stream — with `pan-y` the browser claims the gesture and
+  fires `pointercancel` after one move, which stops the forwarder dead at
+  18px of 264. Open, the drawer must NOT be `none`: the crew list owns its
+  own scrolling then. Both halves are asserted in the geometry gate, because
+  either alone silently breaks the other. What the forwarder does not
+  reproduce is momentum — the board stops when the finger stops. A tap
+  travels ~0px, so it scrolls nothing and still toggles the drawer.
+  **The top bar is a sibling of the scroller, so no drag anywhere on it
+  scrolls the board** — the dots included. That is ordinary fixed-header
+  behaviour, not a fault, and it is why `.sb-days` can take
+  `touch-action:none` for its scrub without costing a scroll. **Open, it now starts BELOW the top bar and is thinner** (owner,
   11 Aug 26): it used to be `top:0`, painting over the day, the undo pair
   and ✕ Close — the controls a scheduler reaches for while the palette is
   open — and `max-width` came down from 78vw to 64vw, which still clears the

@@ -11,7 +11,7 @@ import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
-import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, wireBoardSwipe, wireDayDots } from './board'
+import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, wireBoardSwipe, wireDayDots, wireParkedRosScroll } from './board'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
@@ -79,9 +79,13 @@ export function SchedBoard() {
     /* the dots are a scrub bar as well as seven tap targets (owner, 11 Aug
        26) — press and slide along them to run through the week */
     const offDots = wireDayDots(daysRef.current!)
+    /* the parked aircrew handle hands its vertical drag back to the board
+       (owner, 11 Aug 26) — a fixed element's scroll goes to the viewport,
+       which cannot scroll here, so it went nowhere */
+    const offRos = wireParkedRosScroll(mainRef.current!)
     return () => {
       el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
-      el.removeEventListener('change', boardChange); offDrag(); offSwipe(); offDots()
+      el.removeEventListener('change', boardChange); offDrag(); offSwipe(); offDots(); offRos()
     }
   }, [])
 

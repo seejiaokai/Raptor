@@ -283,3 +283,56 @@ describe('dragging along the day dots runs through the week', () => {
     expect(view.SBDAY).toBe(4)
   })
 })
+
+/* THE PARKED AIRCREW HANDLE HANDS ITS SCROLL BACK (owner, 11 Aug 26 — a
+   screenshot of a drag down the right-hand edge that moved nothing).
+   A position:fixed element gives its touch scroll to the VIEWPORT, not to
+   the overflow ancestor it sits inside, and the viewport cannot scroll here
+   (.schedboard is fixed, inset:0) — so the gesture went nowhere. The drag is
+   forwarded by hand instead. Measured in a browser at 0px before and 220px
+   after; what jsdom can pin is the arithmetic and, more importantly, the
+   two states it must tell apart. */
+describe('a vertical drag on the parked aircrew handle scrolls the board', () => {
+  const dragOn = async (sel: string, dy: number) => {
+    const main = $('.sb-main')
+    const from = document.querySelector(sel) as HTMLElement
+    expect(from, `there is a ${sel} to drag on`).toBeTruthy()
+    await act(async () => {
+      from.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 378, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 378, clientY: 400 + dy, pointerType: 'touch' } as any))
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 378, clientY: 400 + dy, pointerType: 'touch' } as any))
+    })
+  }
+
+  beforeEach(() => { document.body.classList.remove('ros-open'); $('.sb-main').scrollTop = 500 })
+
+  it('drags the board by the distance travelled', async () => {
+    await dragOn('#schedBoard .sb-ros .ros-tab', -200)
+    expect($('.sb-main').scrollTop, 'dragging up scrolls the board down').toBe(700)
+  })
+
+  it('and the other way', async () => {
+    await dragOn('#schedBoard .sb-ros .ros-tab', 150)
+    expect($('.sb-main').scrollTop).toBe(350)
+  })
+
+  it('does nothing once the drawer is OPEN — the crew list owns that gesture', async () => {
+    document.body.classList.add('ros-open')
+    try {
+      await dragOn('#schedBoard .sb-ros .ros-tab', -200)
+      expect($('.sb-main').scrollTop, 'the open drawer scrolls its own list, not the board').toBe(500)
+    } finally { document.body.classList.remove('ros-open') }
+  })
+
+  it('leaves a drag that started anywhere else to the browser', async () => {
+    await dragOn('#sbBoard', -200)
+    expect($('.sb-main').scrollTop, 'the board scrolls itself everywhere else').toBe(500)
+  })
+
+  /* a tap travels ~0px, so the forwarding is a no-op and the tap still
+     reaches the toggle */
+  it('a tap on the handle scrolls nothing', async () => {
+    await dragOn('#schedBoard .sb-ros .ros-tab', 0)
+    expect($('.sb-main').scrollTop).toBe(500)
+  })
+})

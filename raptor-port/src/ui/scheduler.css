@@ -2077,6 +2077,24 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
     background:rgba(11,13,16,.965);backdrop-filter:blur(8px);
     box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);
     transform:translate(calc(100% - 30px),-50%);transition:transform .2s ease}
+  /* PARKED, THE HANDLE MUST NOT EAT A SCROLL (fix, 11 Aug 26 — the owner's
+     screenshot: a drag down the right-hand edge moved nothing).
+     The parked drawer is a 30px sliver pinned to the right edge over a band
+     ~55vh tall — right where a thumb naturally rests — and a vertical drag
+     starting on it scrolled NOTHING at all: the gesture never chained
+     through to .sb-main underneath. Measured before and after, at x=378:
+     0px of board movement, against 255px two fingers-widths to the left.
+     `none` here, paired with `wireParkedRosScroll` (board.ts) which drives
+     `.sb-main.scrollTop` from the drag by hand. `pan-y` was tried first and
+     is WORSE THAN USELESS: the browser then claims the gesture as its own
+     vertical pan, fires `pointercancel` after the first move, and the
+     forwarder stops dead — measured at 18px of travel against the 264px the
+     same drag gets two finger-widths to the left. `none` keeps the whole
+     pointer stream, so the forwarder sees every move.
+     Scoped to the PARKED state: once open the drawer holds a scrolling crew
+     list that owns its own gesture. */
+  body:not(.ros-open) .schedboard .sb-ros,
+  body:not(.ros-open) .schedboard .sb-ros .ros-tab{touch-action:none}
   /* OPEN STARTS BELOW THE BAR (owner, 11 Aug 26 — "the aircrew tab shouldn't
      be blocked by the bar at the top area"). It used to be top:0/bottom:0
      against the VIEWPORT, so it painted over the day, the undo pair and
@@ -2216,6 +2234,14 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      and grows a 13px band around them, so the whole row is grabbable while
      the bar's own height is unchanged (it was already taller than its
      content; this only spends slack that existed). */
+  /* `none`, and nothing is lost by it. The instinct is `pan-y` — claim the
+     horizontal axis, leave vertical to the browser — but this strip lives in
+     `.sb-top`, which is a SIBLING of the scroller (`.sb-main`), so a vertical
+     drag here has no scrollable ancestor to chain to and scrolls nothing
+     under either value. Measured both ways. `none` is the one to keep,
+     because `pan-y` lets the browser claim any gesture it reads as vertical
+     and CANCEL the pointer stream mid-way, which on a diagonal scrub would
+     drop the drag halfway along the strip. */
   .sb-days{touch-action:none;padding:2px 0 3px;cursor:ew-resize}
   .sb-days .sbday{cursor:ew-resize}
   /* the THIRD row of this same shape (review, 9 Aug 26 round 1): a duty

@@ -917,6 +917,55 @@ export function wireBoardSwipe(el: HTMLElement) {
   }
 }
 /* ---------------------------------------------------------------------------
+   THE PARKED AIRCREW HANDLE MUST NOT SWALLOW A SCROLL (owner, 11 Aug 26 —
+   a screenshot of a drag down the right-hand edge that moved nothing)
+   Parked, the drawer is a 30px sliver pinned to the right edge over a band
+   429px tall on a 780px screen — right where a thumb rests. A vertical drag
+   starting on it scrolled NOTHING: measured at x=378, 0px of board movement
+   against 264px two finger-widths to the left.
+
+   The cause is not this app's. A `position:fixed` element hands its touch
+   scroll to the VIEWPORT, not to the overflow ancestor it happens to sit
+   inside, and the viewport here cannot scroll (`.schedboard` is
+   `position:fixed; inset:0`) — so the gesture had nowhere to go. Both CSS
+   levers were tried against the real build and neither moves it:
+   `touch-action:pan-y` (the browser is then willing to pan, but there is
+   still nothing for it to pan) and `position:absolute` against `.schedboard`
+   (stays pinned, chains no better). So the drag is forwarded by hand.
+
+   It is deliberately NOT a general scroll proxy: it acts only while the
+   drawer is PARKED — open, the drawer holds a scrolling crew list that owns
+   its own gesture — and it drives the same `.sb-main.scrollTop` the browser
+   would have. A tap moves ~0px, so scrolling by that is a no-op and the tap
+   still toggles the drawer.
+   What it does not reproduce is momentum: the board stops when the finger
+   stops, where a native scroll would coast. Fixing that means running an
+   inertia loop by hand, which is a lot of machinery for a 30px strip — and a
+   scroll that works without coasting beats one that does nothing.
+   --------------------------------------------------------------------------- */
+export function wireParkedRosScroll(main: HTMLElement) {
+  let y0 = 0, top0 = 0, live = false
+  const onDown = (e: any) => {
+    live = false
+    if (document.body.classList.contains('ros-open')) return
+    const t = e.target as HTMLElement
+    if (!t || !t.closest || !t.closest('.sb-ros')) return
+    y0 = e.clientY; top0 = main.scrollTop; live = true
+  }
+  const onMove = (e: any) => { if (live) main.scrollTop = top0 - (e.clientY - y0) }
+  const end = () => { live = false }
+  main.addEventListener('pointerdown', onDown, { passive: true })
+  main.addEventListener('pointermove', onMove, { passive: true })
+  main.addEventListener('pointerup', end, { passive: true })
+  main.addEventListener('pointercancel', end, { passive: true })
+  return () => {
+    main.removeEventListener('pointerdown', onDown)
+    main.removeEventListener('pointermove', onMove)
+    main.removeEventListener('pointerup', end)
+    main.removeEventListener('pointercancel', end)
+  }
+}
+/* ---------------------------------------------------------------------------
    THE DOTS ARE A SCRUB BAR (owner, 11 Aug 26 — "the dots should allow me to
    drag to select the pages, like a drag bar")
    Press anywhere on the strip and slide: the day under the finger becomes the
