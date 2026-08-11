@@ -175,6 +175,74 @@ export function sortWave(di:any,gi:any){
     .forEach((h:any)=>permuteKeys(h,0,oldOf));
   return done(`ff:${di}.${gi}.0.cs`,di);
 }
+/* THE BLOCKS THEMSELVES, ORDERED BY THE EARLIEST TIME INSIDE THEM (owner,
+   11 Aug 26). Until now Sort all tidied the rows INSIDE each wave and each
+   duty block and left the blocks themselves wherever they were added, so
+   building AVALON (19:00) before SC (07:00) left the night wave printed above
+   the morning one for the rest of the day, with nothing short of delete-and-
+   retype to fix it. The owner asked for the outer order too, and named the
+   two-level rule himself: sort the lines within a block first, then order the
+   blocks by the EARLIEST line in each — so 0700/0900 stays above 0800/1000
+   even though the second block owns the later 1000.
+   Taking the minimum rather than the first row is what makes those two beats
+   independent: sortDay runs the inner sorters first (the natural reading, and
+   the only order in which the inner key permutations are addressed at indices
+   that still exist), but the answer would be the same either way, so an
+   out-of-order block can never drag its whole wave to the wrong place.
+   A block with no parseable time anywhere in it — a BB wave, whose hours are
+   the scheduler's to set, or a wave whose last line was just deleted — has no
+   key at all and sinks to the bottom in model order, the same fallback every
+   sorter in this file already uses for a time-less row. */
+const firstT=(rows:any,pick:any)=>{let m:any=null;
+  (rows||[]).forEach((r:any)=>{const t=parseHM(pick(r)); if(t!=null&&(m==null||t<m))m=t;});
+  return m;};
+/* The wave key space is the widest permutation in this file — nine heads,
+   because a wave carries its label, its in-times, its traffic and every
+   formation, jet, remark, store and area beneath it. The list is `shiftWave`'s
+   (keys.ts) verbatim: the same heads a wave DELETE renumbers are exactly the
+   ones a wave move must remap, and keeping the two literally identical is what
+   stops one of them growing a tenth head the other never hears about.
+   The bare `${di}.` head is the flying seat address, which is why it must be
+   permuted at position 0 like the rest — a wave that moves without it leaves
+   every name on it addressed to whichever wave took its place.
+   Standalone waves are NOT held back to the end. SC, AVALON and BB sit outside
+   the day's flying count (engine/waves.ts) but they are read down the day like
+   any other block, and the owner's own example is two of them — AVALON built
+   first at 19:00, SC second at 07:00, SC wanted on top. So the sort is flat
+   across every wave on the day, standalone or not, and a 07:00 SC will
+   legitimately come to rest above an 08:00 ordinary wave.
+   What this deliberately does NOT do is renumber the labels. "WAVE 1" is free
+   text the scheduler typed and may well have replaced with something else
+   entirely, so a day sorted into 0700-then-0800 can read WAVE 2 above WAVE 1;
+   rewriting those to match would clobber every hand-chosen name on the day to
+   fix a cosmetic mismatch. Told to the owner at the time, not hidden. */
+export function sortWaves(di:any){
+  const d=DAYS[di]; const ws=d&&d.waves; if(!Array.isArray(ws))return false;
+  const oldOf=keySort(ws.length,(i:any)=>firstT(ws[i]&&ws[i].formations,(f:any)=>f.to));
+  if(isIdentity(oldOf))return false;
+  d.waves=oldOf.map((o:any)=>ws[o]);
+  [`wl:${di}.`,`ff:${di}.`,`fr:${di}.`,`st:${di}.`,`ar:${di}.`,`at:${di}.`,`it:${di}.`,
+   `tr:${di}.`,`${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
+  return done(`wl:${di}.0`,di);
+}
+/* The duty side of the same rule (owner, 11 Aug 26 — "apply this logic to
+   duties as well for their start time"): rows inside a block sort by start
+   time already, and now the BLOCKS order by the earliest start in each. A
+   block keeps its own label untouched for the same reason a wave does.
+   The `sa` marker that ties an AVALON desk to its wave (engine/waves.ts's
+   saDutyIx) is a string on the block, not an index into `d.waves`, so a wave
+   and its desk can be reordered independently without either losing the
+   other — which is what lets these two sorters stay separate functions
+   rather than one paired walk. */
+export function sortDutyBlocks(di:any){
+  const d=DAYS[di]; const dws=d&&d.dutywaves; if(!Array.isArray(dws))return false;
+  const oldOf=keySort(dws.length,(i:any)=>firstT(dws[i]&&dws[i].rows,(r:any)=>r.str));
+  if(isIdentity(oldOf))return false;
+  d.dutywaves=oldOf.map((o:any)=>dws[o]);
+  /* the same three heads the block DELETE path in ui/board.ts renumbers */
+  [`d:${di}.`,`dr:${di}.`,`dl:${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
+  return done(`dl:${di}.0`,di);
+}
 export function sortDutyBlock(di:any,wi:any){
   const dw=(DAYS[di]||{}).dutywaves&&DAYS[di].dutywaves[wi]; if(!dw||!Array.isArray(dw.rows))return false;
   /* BY START TIME, not by role rank (owner, 10 Aug 26). A duty block is read
@@ -232,12 +300,23 @@ export function sortProg(di:any){
   return done(`ap:${di}.0.prog`,di);
 }
 /* every section of one day, notes excluded — the primitive Task 10's
-   `Sort all` composes over every day in the week */
+   `Sort all` composes over every day in the week.
+   INSIDE BEFORE OUTSIDE, and the order is load-bearing (owner, 11 Aug 26):
+   each inner sorter permutes key heads addressed at a FIXED wave or block
+   index (`ff:0.2.`, `dr:0.1.`), so it has to run while those indices still
+   name the wave and block it was handed. Sorting the outer lists first would
+   leave every inner call remapping the key space of whichever block had moved
+   into that slot. The two-level result the owner asked for is the same either
+   way — an outer key is the minimum over the whole block, which no amount of
+   reordering inside it can change — so this is about the amendment records
+   staying attached to the right sortie, not about the order on screen. */
 export function sortDay(di:any){
   const d=DAYS[di]; if(!d)return false;
   let any=false;
   (d.waves||[]).forEach((_:any,gi:any)=>{if(sortWave(di,gi))any=true;});
+  if(sortWaves(di))any=true;
   (d.dutywaves||[]).forEach((_:any,wi:any)=>{if(sortDutyBlock(di,wi))any=true;});
+  if(sortDutyBlocks(di))any=true;
   Object.keys(d.sims||{}).forEach((kind:any)=>{if(sortSims(di,kind))any=true;});
   if(sortGround(di))any=true;
   if(sortProg(di))any=true;
