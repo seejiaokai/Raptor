@@ -53,6 +53,32 @@ export function SchedBoard() {
      again, the same as any other visit. */
   const open = SBDAY != null && CURPAGE === 'editsched'
 
+  /* LOCK THE PAGE WHILE THE BOARD IS OPEN (owner-reported, 11 Aug 26 — "I
+     could scroll and see the edit schedule board leaking into it, and in the
+     end I was controlling the edit schedule board view at the bottom").
+     The board is position:fixed over the whole viewport, but the shell behind
+     it stayed a live scrolling document, so a drag that started anywhere
+     outside .sb-main went to the WEEK. Measured before the fix: 2400px of page
+     scrolled away under an open board, at 390px — and the same on the build
+     before History, so this is an old fault that a lot of scrolling on a phone
+     finally surfaced, not something History introduced.
+     The scroll position is captured and put back by hand. `overflow:hidden`
+     keeps it in Chrome and Safari today, but it is not guaranteed to, and
+     landing the scheduler back on a week scrolled to the top after every visit
+     to the board would be a worse bug than the one being fixed. Restoring a
+     value that never moved is a no-op, so this costs nothing where the browser
+     already does the right thing. */
+  useEffect(() => {
+    if (!open) return
+    const el = document.scrollingElement || document.documentElement
+    const y = el.scrollTop, x = el.scrollLeft
+    document.body.classList.add('sb-lock')
+    return () => {
+      document.body.classList.remove('sb-lock')
+      el.scrollTop = y; el.scrollLeft = x
+    }
+  }, [open])
+
   /* wires HOOKS.closeBoardDialogs — state/view.ts's closeBoardState() calls
      it, but the board's own dialog state (CXT, SORTALL) lives here, in the
      one component that owns it, not in state/ (see the doorway comment on

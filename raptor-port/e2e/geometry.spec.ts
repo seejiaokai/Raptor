@@ -2318,3 +2318,77 @@ test.describe('the History bubble', () => {
     })
   }
 })
+
+/* ===================================================================
+   THE PAGE BEHIND THE BOARD DOES NOT MOVE (owner-reported, 11 Aug 26 —
+   "I could scroll and see the edit schedule board leaking into it, and in
+   the end I was controlling the edit schedule board view at the bottom").
+   The board is a fixed full-viewport modal over a week that is 3600px of
+   live scrolling document. Two holes let a finger reach it: .sb-main had
+   no overscroll-behavior, so a swipe that hit the end of the board CHAINED
+   to the page; and the bar is in no scroller at all, so a drag there went
+   straight to the document. Measured before the fix, and on the build
+   before History: 2400px of page scrolled away under an open board.
+   jsdom cannot see any of this — it has no scrolling, no chaining and no
+   computed overscroll-behavior — so this is the only place it can be held.
+   =================================================================== */
+test.describe('the board holds the page still underneath it', () => {
+  for (const c of [{ label: 'phone', vp: PHONE }, { label: 'desktop', vp: { width: 1440, height: 900 } }]) {
+    test(`${c.label}: scrolling past the end of the board does not drive the week behind it`, async ({ page }) => {
+      await page.setViewportSize(c.vp)
+      await login(page)
+      await go(page, 'editsched')
+      /* park the page somewhere real first: "it went back to the top" would
+         be a worse fault than the one being fixed, so the restore is part of
+         the contract, not an implementation detail */
+      await page.evaluate(() => { document.scrollingElement!.scrollTop = 700 })
+      await page.waitForTimeout(200)
+      const parked = await page.evaluate(() => Math.round(document.scrollingElement!.scrollTop))
+      expect(parked, 'the page really was scrollable to begin with').toBeGreaterThan(0)
+
+      await page.evaluate(() => (window as any).openScheduler(0))
+      await page.waitForSelector('#sbHist')
+      await page.waitForTimeout(300)
+
+      /* the exact gesture that did it: run the board's own scroller to its
+         very end, then keep going */
+      await page.evaluate(() => {
+        const m = document.querySelector('.sb-main') as HTMLElement
+        m.scrollTop = m.scrollHeight
+      })
+      await page.waitForTimeout(200)
+      await page.mouse.move(c.vp.width / 2, c.vp.height / 2)
+      for (let i = 0; i < 6; i++) { await page.mouse.wheel(0, 400); await page.waitForTimeout(100) }
+      await page.waitForTimeout(300)
+
+      const during = await page.evaluate(() => ({
+        y: Math.round(document.scrollingElement!.scrollTop),
+        mainAtEnd: (() => { const m = document.querySelector('.sb-main') as HTMLElement
+          return m.scrollTop >= m.scrollHeight - m.clientHeight - 2 })(),
+        contain: getComputedStyle(document.querySelector('.sb-main') as HTMLElement).overscrollBehaviorY,
+        scrolls: (() => { const m = document.querySelector('.sb-main') as HTMLElement
+          return m.scrollHeight > m.clientHeight + 2 })(),
+        locked: getComputedStyle(document.body).overflow,
+      }))
+      expect(during.mainAtEnd, 'the board scroller really did reach its end').toBe(true)
+      /* containment only means anything where that scroller actually scrolls,
+         which is the PHONE layout — on a desktop .sb-main is a fixed-height
+         row and the panels scroll inside it, so there is no chain to break
+         and the body lock below is the whole defence. Asserting `contain`
+         there would pin a value that does nothing. */
+      if (during.scrolls) expect(during.contain, 'the one scroller contains its own overscroll').not.toBe('auto')
+      expect(during.locked, 'while the page itself is held').toBe('hidden')
+      expect(during.y, 'so the week behind has not moved a pixel').toBe(parked)
+
+      /* and closing hands the page back exactly where it was */
+      await page.click('#sbClose')
+      await page.waitForTimeout(400)
+      const after = await page.evaluate(() => ({
+        y: Math.round(document.scrollingElement!.scrollTop),
+        overflow: getComputedStyle(document.body).overflow,
+      }))
+      expect(after.overflow, 'the lock comes off with the board').not.toBe('hidden')
+      expect(after.y, 'and the page is where it was left').toBe(parked)
+    })
+  }
+})

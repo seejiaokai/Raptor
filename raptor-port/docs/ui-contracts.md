@@ -1667,3 +1667,42 @@ inside the 820px block.
 body, newest first, whole week by default with a filter for the open day.
 Its footer states plainly that it is per-browser and per-session; that
 limitation is on the surface rather than in a document nobody opens.
+
+## The page behind the board does not scroll (owner-reported, 11 Aug 26)
+
+"I could scroll and see the edit schedule board leaking into it, and in the
+end I was controlling the edit schedule board view at the bottom."
+
+The board is `position:fixed; inset:0; z-index:400`, but the shell behind it
+stayed a live scrolling document — on Edit Schedule that is ~3600px of week.
+Two separate holes let a finger reach it, and both are closed:
+
+- **`.sb-main` had no `overscroll-behavior`.** It is the phone board's ONE
+  scroller, so a swipe that reached its end CHAINED to the page. The aircrew
+  drawer's list has carried containment since 8 Aug 26; the main scroller
+  never did.
+- **The top bar is in no scroller at all**, so a drag there went straight to
+  the document whatever `.sb-main` does. `body.sb-lock{overflow:hidden}`, set
+  from `SchedBoard.tsx` while the board is open, is what covers that — and it
+  covers the desktop too, where a wheel over the bar did the same thing.
+
+Measured before the fix at 390px: **2400px of page scrolled away under an open
+board** — and identically on the build before History shipped, so this is an
+old fault that heavy phone scrolling surfaced, not a new one.
+
+**The scroll position is captured and restored by hand** when the lock comes
+off. `overflow:hidden` happens to preserve it in Chrome and Safari today, but
+it is not guaranteed to, and dropping the scheduler back at the top of the
+week after every visit to the board would be a worse bug than the one being
+fixed. Restoring a value that never moved costs nothing.
+
+Held by `e2e/geometry.spec.ts` §the board holds the page still underneath it,
+at both widths — jsdom has no scrolling, no chaining and no computed
+`overscroll-behavior`, so this is not reachable from `npm test`. The
+containment assertion is skipped where `.sb-main` does not scroll (the desktop
+layout), because pinning a value that does nothing there would be theatre.
+
+**Not to be confused with the week's COLUMN moving.** Closing the board leaves
+the week on the board's day, so a week parked on Wednesday and a board opened
+on Monday comes back to Monday. That is the day-carry behaviour, it predates
+this, and it is unchanged — measured on both builds.

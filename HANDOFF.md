@@ -18,7 +18,7 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 **Every gate is green at this commit**, run first-hand: `npm test` 1088 tests
 across 57 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 70/70, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
+run test:e2e` 72/72, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 (neither of the last two in CI). Re-state these only after re-running them.
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two

@@ -1582,6 +1582,15 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 }
 /* ============ SCHEDULER BOARD (deep single-day editor) ============ */
 .schedboard{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column}
+/* THE PAGE BEHIND THE BOARD DOES NOT SCROLL (owner-reported, 11 Aug 26).
+   The board is a fixed, full-viewport modal, but the week underneath stayed
+   a live scrolling document the whole time it was open — so a drag that began
+   anywhere outside .sb-main (the top bar, the checks strip, any gap) drove the
+   week instead of the board, and on a phone, where the browser's own toolbars
+   collapse as the document scrolls, that is what shows as the week "leaking
+   in". Both surfaces: a desktop wheel over the bar did exactly the same thing.
+   Set from SchedBoard.tsx while the board is open. */
+body.sb-lock{overflow:hidden}
 .schedboard[hidden]{display:none}
 .sb-top{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--edge);background:var(--panel);flex-wrap:wrap}
 .sb-title{font-weight:700;font-size:15px}
@@ -2099,7 +2108,19 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      Every slot under that overlap was unreachable: elementFromPoint returned
      the roster, so no tap, no drop, nothing. Panes now size to content and
      .sb-main does the scrolling. */
-  .sb-main{flex-direction:column;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+  /* overscroll-behavior:contain (owner-reported, 11 Aug 26 — "I could scroll
+     and see the edit schedule leaking in, and in the end I was controlling
+     the week at the bottom"). This is the board's ONE scroller on a phone, and
+     without containment a swipe that reaches its end CHAINS to the document —
+     which is the Edit Schedule week, 3630px of it, sitting live behind a
+     position:fixed modal. Measured: 2400px of page scrolled away under an open
+     board, on this build and on the one before History was added. The
+     aircrew drawer's own list has carried this since 8 Aug; the board's main
+     scroller never did. `body.sb-lock` below is the other half — this stops
+     the chain from the scroller, that stops a drag on the BAR (which is not
+     in any scroller at all) from doing the same thing. */
+  .sb-main{flex-direction:column;overflow-y:auto;overflow-x:hidden;
+    overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
   /* 4px: the grab-handle is 30px wide where the old tab was 26, and the
      panels' own padding cleared exactly 26 — without this the handle's band
      covers the last 4px of every full-width input (measured; the tap-landing
