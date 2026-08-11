@@ -854,12 +854,28 @@ export function boardTab(n: number) { view.setBoardDay(n); validate(); notify() 
    already speak them. Attached to the scroller and passive, so it never
    delays the vertical scroll it usually turns out to be.
    --------------------------------------------------------------------------- */
-const SWIPE_MIN = 55        // px of travel before it counts as a swipe at all
-const SWIPE_BIAS = 2        // horizontal must beat vertical by this much
+/* THE TWO NUMBERS, AND WHY THEY MOVED (owner, 11 Aug 26 — "the swipe left and
+   right feels unresponsive").
+   They started at 55px of travel and a 2x horizontal-over-vertical bias, fired
+   on pointerUP. All three were wrong together, and the bias was the worst of
+   them: a real thumb swipe on a tall scroller arcs, so a perfectly deliberate
+   120px sideways drag that also drifted 70px down was REFUSED (120 < 140) —
+   the gesture did nothing at all, which reads as the app ignoring you rather
+   than as a threshold. 1.25x still refuses an ordinary vertical scroll by a
+   wide margin (a 200px scroll would need 250px of sideways drift to be taken
+   for a swipe) while accepting the arc.
+   Firing on MOVE rather than UP is the other half. Waiting for the lift meant
+   the day changed after the finger left the glass, so the gesture and its
+   result were separated by however long the swipe took — the definition of
+   laggy. It now fires the instant the threshold is crossed, with the finger
+   still down, and `done` consumes the gesture so the rest of the drag and the
+   pointerup that follows do nothing. */
+const SWIPE_MIN = 45        // px of travel before it counts as a swipe at all
+const SWIPE_BIAS = 1.25     // horizontal must beat vertical by this much
 export function wireBoardSwipe(el: HTMLElement) {
-  let x0 = 0, y0 = 0, live = false
+  let x0 = 0, y0 = 0, live = false, done = false
   const onDown = (e: any) => {
-    live = false
+    live = false; done = false
     if (SBWIDE) return
     if (e.pointerType === 'mouse' && e.buttons !== 1) return
     const t = e.target as HTMLElement
@@ -868,13 +884,18 @@ export function wireBoardSwipe(el: HTMLElement) {
     if (t.closest('.sb-grip')) return
     x0 = e.clientX; y0 = e.clientY; live = true
   }
-  const onUp = (e: any) => {
-    if (!live) return
-    live = false
+  const onMove = (e: any) => {
+    if (!live || done) return
     /* a puck drag was armed before this gesture — that finger is spoken for */
-    if (document.body.classList.contains('tdrag')) return
+    if (document.body.classList.contains('tdrag')) { live = false; return }
     const dx = e.clientX - x0, dy = e.clientY - y0
     if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) < Math.abs(dy) * SWIPE_BIAS) return
+    /* ONE day per gesture, not a continuous scrub: a flick travels hundreds of
+       px in a few frames, and re-arming would carry it past the day the
+       scheduler meant by a distance they never see until they let go. The
+       dots ARE the scrub (wireDayDots), where the finger is over an index it
+       can read. */
+    done = true; live = false
     /* swipe LEFT (dx negative) reads as "pull the next day in from the right",
        which is the direction the week's own sideways scroll already means */
     const di = view.SBDAY
@@ -883,12 +904,97 @@ export function wireBoardSwipe(el: HTMLElement) {
     if (to < 0 || to >= DAYS.length) return toast(dx < 0 ? 'Last day of the week' : 'First day of the week')
     boardTab(to)
   }
+  const end = () => { live = false }
   el.addEventListener('pointerdown', onDown, { passive: true })
-  el.addEventListener('pointerup', onUp, { passive: true })
-  el.addEventListener('pointercancel', () => { live = false }, { passive: true })
+  el.addEventListener('pointermove', onMove, { passive: true })
+  el.addEventListener('pointerup', end, { passive: true })
+  el.addEventListener('pointercancel', end, { passive: true })
   return () => {
     el.removeEventListener('pointerdown', onDown)
+    el.removeEventListener('pointermove', onMove)
+    el.removeEventListener('pointerup', end)
+    el.removeEventListener('pointercancel', end)
+  }
+}
+/* ---------------------------------------------------------------------------
+   THE DOTS ARE A SCRUB BAR (owner, 11 Aug 26 — "the dots should allow me to
+   drag to select the pages, like a drag bar")
+   Press anywhere on the strip and slide: the day under the finger becomes the
+   open day, live, so a week is one movement instead of six swipes.
+
+   Nearest-CENTRE rather than a proportional map of the strip's width, because
+   the dots are not all the same size — the current day is a 16px pill and the
+   rest are 6px — so proportional maths would drift by up to half a dot near
+   whichever end the pill happens to be. Nearest-centre is also what makes the
+   same code work unchanged on DESKTOP, where these are still `Mon 13` chips of
+   differing widths.
+
+   A TAP is deliberately left to the existing click handler: this machine only
+   starts scrubbing once the finger has moved past a few px, so a plain tap
+   never reaches it and there is no double `boardTab` (each one costs a
+   validate). When it HAS scrubbed it eats the click that the browser fires
+   afterwards, or the release would re-apply whatever day the finger went down
+   on and undo the whole drag.
+
+   Pointer capture on the strip is what lets the finger wander off it
+   vertically — which it will, since the strip is 9px tall — and keep
+   scrubbing. Without it the first move outside those 9px silently ends the
+   gesture.
+   --------------------------------------------------------------------------- */
+const DOTS_SLOP = 4         // px before a press becomes a scrub rather than a tap
+export function wireDayDots(el: HTMLElement) {
+  let live = false, moved = false, x0 = 0, id: any = null
+  const dayAt = (clientX: number) => {
+    const dots = [...el.querySelectorAll('[data-sbtab]')] as HTMLElement[]
+    if (!dots.length) return null
+    let best = -1, bd = Infinity
+    dots.forEach((d, i) => {
+      const r = d.getBoundingClientRect(); const dd = Math.abs(r.left + r.width / 2 - clientX)
+      if (dd < bd) { bd = dd; best = i }
+    })
+    return best < 0 ? null : best
+  }
+  const onDown = (e: any) => {
+    if (e.pointerType === 'mouse' && e.buttons !== 1) return
+    live = true; moved = false; x0 = e.clientX; id = e.pointerId
+  }
+  const onMove = (e: any) => {
+    if (!live || (id != null && e.pointerId !== id)) return
+    if (!moved && Math.abs(e.clientX - x0) < DOTS_SLOP) return
+    if (!moved) {
+      moved = true
+      /* CAPTURE ONLY ONCE IT IS A SCRUB, never on pointerdown. Capture
+         retargets the whole gesture — including the CLICK that follows the
+         release — onto the capturing element, so capturing up front left a
+         plain tap arriving at the strip rather than at a dot, `closest(
+         '[data-sbtab]')` finding nothing, and tapping a day silently doing
+         nothing. Taken here, a tap never captures at all and still reaches
+         the ordinary click handler. */
+      try { el.setPointerCapture?.(e.pointerId) } catch { /* not capturable */ }
+    }
+    const n = dayAt(e.clientX)
+    if (n != null && n !== view.SBDAY) boardTab(n)
+  }
+  const onUp = (e: any) => {
+    if (!live) return
+    live = false
+    try { el.releasePointerCapture?.(e.pointerId) } catch { /* never captured */ }
+    if (!moved) return
+    /* the click the browser fires after this release names the dot the finger
+       went DOWN on, which is no longer the day being shown */
+    const eat = (c: Event) => { c.stopPropagation(); c.preventDefault() }
+    el.addEventListener('click', eat, { capture: true, once: true })
+    setTimeout(() => el.removeEventListener('click', eat, { capture: true } as any), 350)
+  }
+  el.addEventListener('pointerdown', onDown, { passive: true })
+  el.addEventListener('pointermove', onMove, { passive: true })
+  el.addEventListener('pointerup', onUp, { passive: true })
+  el.addEventListener('pointercancel', onUp, { passive: true })
+  return () => {
+    el.removeEventListener('pointerdown', onDown)
+    el.removeEventListener('pointermove', onMove)
     el.removeEventListener('pointerup', onUp)
+    el.removeEventListener('pointercancel', onUp)
   }
 }
 

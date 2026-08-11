@@ -2152,12 +2152,14 @@ test.describe('the phone board keeps its controls to one row', () => {
     expect(m.pageOverflow, 'and the board gains no sideways scrollbar').toBeLessThanOrEqual(0)
     expect(m.labelsHidden, 'the words come off the buttons on a phone').toBe(true)
     expect(m.smallest, 'the icons stay tappable').toBeGreaterThanOrEqual(28)
-    /* the whole bar, dots included: 58px measured, against the 166px of
-       four stacked rows it replaces. The bound is 70 rather than 59 so an
-       ordinary type or padding tweak does not fail the gate, but a second
-       ROW cannot fit under it — which is the thing worth catching, and is
-       also caught outright by the rows assertion above. */
-    expect(m.barH, 'the bar is a fraction of the screen it used to eat').toBeLessThan(70)
+    /* the whole bar, dots included: 70px measured, against the 166px of four
+       stacked rows it replaces. It was 58px before the dots became a SCRUB
+       bar (owner, 11 Aug 26) — a 9px row of dots cannot be grabbed and
+       tracked along, so the strip grew to 21px, and that 12px buys the drag.
+       The bound is 78 rather than 71 so an ordinary type or padding tweak
+       does not fail the gate, while a second row of 30px buttons (which
+       would put it past 100) still cannot fit under it. */
+    expect(m.barH, 'the bar is a fraction of the screen it used to eat').toBeLessThan(78)
   })
 
   test('the day chips are dots, and tapping one still jumps to that day', async ({ page }) => {
@@ -2166,10 +2168,23 @@ test.describe('the phone board keeps its controls to one row', () => {
     await go(page, 'editsched')
     await page.evaluate(() => (window as any).openScheduler(0))
     await page.waitForSelector('#sbDays [data-sbtab]')
-    const box = await page.locator('#sbDays [data-sbtab]').nth(3).boundingBox()
-    expect(box!.width, 'an unselected day is a dot, not a chip').toBeLessThan(14)
+    const m = await page.evaluate(() => {
+      const ds = [...document.querySelectorAll('#sbDays [data-sbtab]')] as HTMLElement[]
+      const w = ds.map(d => Math.round(d.getBoundingClientRect().width))
+      const mark = getComputedStyle(ds[3], '::after').borderRadius
+      return { widths: w, dotBox: w[3], allEqual: new Set(w).size === 1, mark }
+    })
+    expect(m.dotBox, 'a day is a small square, not a Mon-13 chip').toBeLessThanOrEqual(18)
+    /* THE SCRUB DEPENDS ON THIS: if the selected day's box grew, every dot
+       after it would shift sideways under a tracking finger. Only the mark
+       inside the box changes. */
+    expect(m.allEqual, 'every day owns the same footprint, selected or not').toBe(true)
     await page.locator('#sbDays [data-sbtab]').nth(3).click()
     expect(await page.evaluate(() => (window as any).SBDAY)).toBe(3)
+    const after = await page.evaluate(() =>
+      new Set([...document.querySelectorAll('#sbDays [data-sbtab]')]
+        .map(d => Math.round(d.getBoundingClientRect().width))).size)
+    expect(after, 'and still the same after one is selected').toBe(1)
   })
 
   test('the open AIRCREW drawer starts below the bar and scrolls', async ({ page }) => {

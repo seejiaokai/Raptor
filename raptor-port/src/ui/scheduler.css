@@ -2190,10 +2190,34 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      straight to that day, which is what keeps Monday→Friday one gesture
      instead of five swipes. font-size:0 empties the chip of its text without
      removing a node, so the board's DOM ceiling is untouched. */
-  .sb-days{gap:5px;justify-content:center;flex:0 0 100%;order:2;padding:1px 0 2px}
-  .sb-days .sbday{font-size:0;width:6px;height:6px;padding:0;border-radius:50%;
-    background:var(--edge-2);border:none;transition:width .15s ease}
-  .sb-days .sbday.on{width:16px;border-radius:3px;background:var(--accent)}
+  /* EVERY DAY OWNS THE SAME FOOTPRINT, and only the mark inside it changes.
+     The obvious build — a 6px dot that grows to a 16px pill when selected —
+     re-lays the strip out on every step of a scrub, because the widening dot
+     shoves its neighbours sideways by up to 10px while the finger is tracking
+     them. On a 7-dot strip that is more than a dot's width, so the day under
+     the finger moves as you drag, which is exactly the slippery feel this
+     control exists to avoid. The BOX is a fixed 16px square (also a far
+     better touch target than 6px) and the visible dot is drawn by ::after,
+     so selecting one changes no geometry at all. */
+  .sb-days{gap:2px;justify-content:center;flex:0 0 100%;order:2}
+  .sb-days .sbday{position:relative;font-size:0;width:16px;height:16px;padding:0;
+    border:none;background:none;border-radius:0}
+  .sb-days .sbday::after{content:'';position:absolute;top:5px;bottom:5px;left:5px;right:5px;
+    border-radius:50%;background:var(--edge-2);transition:left .15s ease,right .15s ease}
+  .sb-days .sbday.on::after{left:0;right:0;border-radius:3px;background:var(--accent)}
+  /* ---- and the strip is a SCRUB BAR (owner, 11 Aug 26) -------------------
+     Press and slide along it to run through the week. Two properties make
+     that work, and neither is decoration:
+     `touch-action:none` — without it the browser claims a horizontal drag
+     here for its own scrolling and the pointermove events stop arriving
+     mid-gesture, so the scrub dies halfway along the strip.
+     The padding — the dots themselves are 6px tall, which is not a target a
+     thumb can find, let alone track along. The strip keeps its 9px of dots
+     and grows a 13px band around them, so the whole row is grabbable while
+     the bar's own height is unchanged (it was already taller than its
+     content; this only spends slack that existed). */
+  .sb-days{touch-action:none;padding:2px 0 3px;cursor:ew-resize}
+  .sb-days .sbday{cursor:ew-resize}
   /* the THIRD row of this same shape (review, 9 Aug 26 round 1): a duty
      block's sub-header packs its editable label input, ⇅ Auto sort, + Row
      and ✕ Block into one line and ran 5px past a 390px row — smaller than
