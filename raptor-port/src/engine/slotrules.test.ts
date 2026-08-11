@@ -195,8 +195,12 @@ describe('slotStart / slotEnd, and half-day absences', () => {
     INPUTS.push({ person: 'nasty', date: 'Jul 13', allday: true, type: 'ATT B', remarks: '', mod: '' })
     validate()
     expect(slotBar('nasty', '0.0.0.0.w')).toContain('medically down')
+    /* asserted as "not the ATT B reason" rather than "no reason at all": the
+       picker knows who is busy AT THIS HOUR since 11 Aug 26, and nasty is in a
+       sim box that overlaps the duty post. That is a true and unrelated reason;
+       what this test is about is that ATT B does not close these three. */
     for (const k of ['d:0.0.0', 's:0.oft.0.w', 'g:0.0'])
-      expect(slotBar('nasty', k), k).toBe('')
+      expect(slotBar('nasty', k), k).not.toContain('medically down')
     /* ATT C is the control: it closes the desk as well, or the two codes would
        be indistinguishable */
     INPUTS.pop()
@@ -223,5 +227,55 @@ describe('slotStart / slotEnd, and half-day absences', () => {
       expect(slotBar('nasty', spare), t).not.toBe('')
       INPUTS.pop()
     }
+  })
+})
+
+/* "IS HE BUSY AT THIS HOUR?" (owner, 11 Aug 26 — found from the other end: the
+   same man planned twice at once raised nothing). The picker knew only "tasked
+   somewhere today", a whole-day dimming captioned "you can still plan him", so
+   it offered a man mid-sortie for an overlapping sim seat with no reason at all
+   and the clash landed the instant he was planted. */
+describe('the picker knows who is already committed at this hour', () => {
+  it('names the clashing commitment for an overlapping sim seat', () => {
+    /* Monday OFT EP-6 runs 1500–1630; 'stuff' is OPS-O on duty 1400–2130 */
+    const ri = DAYS[0].sims.oft.findIndex((r: any) => /EP-6\b/.test(r.label || ''))
+    expect(ri).toBeGreaterThanOrEqual(0)
+    const why = slotBar('stuff', `s:0.oft.${ri}.w`)
+    expect(why, why).toContain('already on')
+    expect(why).toContain('OPS-O duty')
+  })
+
+  it('says nothing about a man whose commitments do not overlap the slot', () => {
+    /* 'split' is idle all week, so nothing can overlap */
+    const ri = DAYS[0].sims.oft.findIndex((r: any) => /EP-6\b/.test(r.label || ''))
+    expect(slotBar('split', `s:0.oft.${ri}.w`)).toBe('')
+  })
+
+  it('a SWAP is silent — the seat being planned into is not counted', () => {
+    /* he is already in this very seat, so re-planting him there is not a clash */
+    const f = DAYS[0].waves[0].formations[0]
+    f.aircraft[0].p = 'split'
+    validate()
+    expect(slotBar('split', '0.0.0.0.p')).toBe('')
+  })
+
+  it('but the OTHER seat of the same jet is a clash — one man, two seats', () => {
+    const f = DAYS[0].waves[0].formations[0]
+    f.aircraft[0].p = 'split'
+    validate()
+    const why = slotBar('split', '0.0.0.1.p')
+    expect(why, why).toContain('already on')
+  })
+
+  it('an SC SPARE is exempt — standing by is not being tasked', () => {
+    const w = makeStandalone('sc')
+    DAYS[0].waves.push(w)
+    const wi = DAYS[0].waves.length - 1
+    const f = DAYS[0].waves[wi].formations[0]
+    /* the spare line; a spare is deliberately free for anything else */
+    const spare = f.aircraft.length - 1
+    DAYS[0].dutywaves[0].rows.push({ role: 'SDO', id: 'split', str: '0000', end: '2359' })
+    validate()
+    expect(slotBar('split', `${0}.${wi}.0.${spare}.p`)).not.toContain('already on')
   })
 })

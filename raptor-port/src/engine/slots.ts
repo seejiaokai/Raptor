@@ -255,6 +255,16 @@ export function acceptInput(di:any,inp:any,dest:any){
      site honest. */
   if(isUnavail(inp.type))return false;
   if(dest==='u'){ inp.acc='u'; markEdit(); return true; }
+  /* inpKey is a CONTENT key, and content keys are not unique: two inputs that
+     agree on person, date, type AND start minute mint the same `src`. Both
+     acceptedDay and unacceptInput resolve a row by taking the FIRST match, so a
+     second row carrying an existing key makes the link ambiguous — unaccepting
+     one input would silently remove the other's row, and re-accepting would
+     duplicate rather than restore. Refuse the second accept instead of minting
+     the ambiguity; the caller reports it. Narrow (it needs an identical start
+     minute) but silent, which is the part worth closing. */
+  const key=inpKey(inp);
+  if(DAYS.some((dd:any)=>((dd&&dd.ground)||[]).some((r:any)=>r.src===key)))return false;
   d.ground=d.ground||[];
   const ri=d.ground.length;
   /* who must be the CALLSIGN — every other ground write stores cs (see setSlotVal's
@@ -265,7 +275,7 @@ export function acceptInput(di:any,inp:any,dest:any){
   d.ground.push({prog:inpLabel(inp).toUpperCase(),
                  str:inp.allday?'':hhmm(inp.s), end:inp.allday?'':hhmm(inp.e),
                  who:PEOPLE[inp.person]?PEOPLE[inp.person].cs:inp.person,
-                 rmks:inp.remarks||'', src:inpKey(inp)});
+                 rmks:inp.remarks||'', src:key});
   inp.acc='g';
   noteChange(`g:${di}.${ri}`);
   return true;

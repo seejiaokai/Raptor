@@ -208,11 +208,22 @@ describe('the Inputs page (tfin)', () => {
     expect(INPUTS[0].s).toBe(620)
     expect(INPUTS[0].e).toBe(695)
     await act(async () => { undo() })
-    /* an end at or before the start never reaches the model */
+    /* an end EARLIER than the start is an OVERNIGHT absence now — 22:00–02:00 is
+       a real thing to be down for, and every other row type has rolled that way
+       since the port (owner, 11 Aug 26). It reaches the model as typed and the
+       engine rolls it. Only an end EQUAL to the start is refused, being a
+       zero-length absence. */
     await setV($('#inEndT'), '09:00')
     const n = INPUTS.length
     await click($('#inAdd'))
-    expect(INPUTS.length).toBe(n)
+    expect(INPUTS.length).toBe(n + 1)
+    expect(INPUTS[0].s).toBe(620)
+    expect(INPUTS[0].e).toBe(540)
+    await act(async () => { undo() })
+    await setV($('#inEndT'), '10:20')                 // equal to the start
+    const n2 = INPUTS.length
+    await click($('#inAdd'))
+    expect(INPUTS.length).toBe(n2)
     await click($('#inSpan [data-span="all"]'))       // back to all-day for later tests
   })
 

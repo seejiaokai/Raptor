@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isUnavail } from '../engine/inputs'
 import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
@@ -98,7 +98,15 @@ export function commitInputEdit(r: any, draft: any) {
   }
   const s = draft.allday ? 0 : parseHM(draft.sTime), e = draft.allday ? 1439 : parseHM(draft.eTime)
   if (!draft.allday && (s == null || e == null)) { HOOKS.toast('Give the input a start and end time, or tick All day', 'warn'); return false }
-  if (!draft.allday && (e as number) <= (s as number)) { HOOKS.toast('End time must be after start time', 'warn'); return false }
+  /* An end EARLIER than the start crosses midnight — 22:00–02:00 is a real
+     absence, and a duty row, a sim box and a night sortie have all rolled that
+     way since the port (win() in time.ts). Personal inputs were the one row type
+     that refused it outright, so an overnight absence could not be recorded at
+     all (owner, 11 Aug 26). Only an end EQUAL to the start is refused now: that
+     is a zero-length absence, which means nothing either way. The cost of the
+     roll is that a transposed 09:00–08:00 becomes a 23-hour absence instead of
+     an error — the same trade every other row type on the board already makes. */
+  if (!draft.allday && (e as number) === (s as number)) { HOOKS.toast('Give the input a start and end that are not the same time', 'warn'); return false }
   const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
   writeInputsBatch(() => {
     /* An ACCEPTED input is linked to the row it created by `src`, a content
@@ -127,8 +135,14 @@ export function commitInputEdit(r: any, draft: any) {
          call returned false unread, and the save still reported success. The
          row vanished from a published programme with nothing said. Say it. */
       if (di >= 0) {
+        /* two different refusals, and saying the wrong one is its own bug: the
+           TYPE is never accepted (leave/medical/overseas duty), or an identical
+           row is already on the programme and a second would make the link
+           between input and row ambiguous — see acceptInput. */
         if (!acceptInput(di, r, wasAcc))
-          HOOKS.toast(`${r.type} does not go on the Ground Programme — its row has been removed`, 'warn')
+          HOOKS.toast(isUnavail(r.type)
+            ? `${r.type} does not go on the Ground Programme — its row has been removed`
+            : 'An identical row is already on the Ground Programme — this one was not put back', 'warn')
       }
       else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
     }

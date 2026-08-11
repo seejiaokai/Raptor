@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord } from './inputs'
+import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
@@ -257,13 +257,20 @@ export function slotBar(id:any,key:any,rules?:any){
          short-circuit BEFORE any overlap test, and a slot with no window of
          its own keeps the old whole-day answer. Unknown is not "never
          clashes", on either side. */
+    /* one place the absence's window is read, through inpWin, so an absence
+       typed across midnight rolls here exactly as it does in events.ts — the
+       picker and the warning list are required not to drift apart, and this is
+       the shape neither of them could see before. `shift` is 0 for today, and
+       ±1440 for the two tails. */
+    const inpHits=(x:any,shift:number)=>{const w2=inpWin(x);
+      return !!w2&&overlap(r.slotStart,r.slotEnd,w2[0]+shift,w2[1]+shift);};
     const spareLike=!!(r.sc&&r.scSpare)||!!r.avJet||!!r.avDuty;
     const flying=String(key).indexOf(':')<0;
     const kn=r.slotStart!=null&&r.slotEnd!=null;
     const off=INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,DAYS[r.di].dt))
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
-      .filter((x:any)=>!kn||awayAllDay(x)||overlap(r.slotStart,r.slotEnd,x.s,x.e));
+      .filter((x:any)=>!kn||awayAllDay(x)||inpHits(x,0));
     if(off.length)return offWord(off[0]);
     /* THE MIDNIGHT TAIL, picker side (owner, 11 Aug 26 — same modality as
        events.ts's day.input, so the picker and the warning list cannot
@@ -276,7 +283,7 @@ export function slotBar(id:any,key:any,rules?:any){
     const off2=!nd?[]:INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,nd.dt))
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
-      .filter((x:any)=>awayAllDay(x)||overlap(r.slotStart,r.slotEnd,x.s+1440,x.e+1440));
+      .filter((x:any)=>awayAllDay(x)||inpHits(x,1440));
     if(off2.length)return offWord(off2[0])+' (tomorrow)';
     /* ...and the same tail BACKWARDS, for the same reason and by the same
        chain (see events.ts's matching block). A slot whose window opens before
@@ -289,8 +296,56 @@ export function slotBar(id:any,key:any,rules?:any){
     const off3=!pdv?[]:INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,pdv.dt))
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
-      .filter((x:any)=>awayAllDay(x)||overlap(r.slotStart,r.slotEnd,x.s-1440,x.e-1440));
+      .filter((x:any)=>awayAllDay(x)||inpHits(x,-1440));
     if(off3.length)return offWord(off3[0])+' (yesterday)';
+    /* A different backward reach, and it is NOT the block above. An absence
+       typed ACROSS midnight yesterday (22:00–02:00) rolls past 1440, so its
+       second half lands on TODAY's early minutes — which an ordinary 01:00 duty
+       post runs into without its own window ever going negative. Checked
+       WITHOUT the awayAllDay shortcut the block above relies on: that shortcut
+       is sound only when the slot itself reaches back into yesterday, whereas
+       an ordinary all-day absence yesterday says nothing whatever about today.
+       So only records whose rolled window genuinely passes midnight qualify. */
+    const pdo=kn&&r.di>0?DAYS[r.di-1]:null;
+    const off4=!pdo?[]:INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,pdo.dt))
+      .filter((x:any)=>!(spareLike&&canSpare(x.type)))
+      .filter((x:any)=>!(canWork(x.type)&&!flying))
+      .filter((x:any)=>{const w2=inpWin(x); return !!w2&&w2[1]>1440&&inpHits(x,-1440);});
+    if(off4.length)return offWord(off4[0])+' (overnight)';
+  }
+  /* IS HE ALREADY BUSY AT THIS HOUR?
+     The SC block above asks exactly this, for a shift. Every other slot asked
+     nothing at all: the picker knew "tasked somewhere today" — a faint dimming,
+     captioned "you can still plan him" — and never "tasked AT THIS TIME". So it
+     offered a man who was airborne for an overlapping sim seat with no reason
+     against him, and planting him raised a hard clash the same instant (owner,
+     11 Aug 26, who found the same hole from the other end: two sorties on one
+     man at one time went unflagged). events.ts has carried `slot`/`key` on every
+     event for precisely this question — "is he busy at this hour, not counting
+     the very seat I am about to plant him into".
+     Kept in step with the validator on all three counts: every kind of event
+     counts, because every non-shift overlap it finds is a hard DOUBLE_BOOK; a
+     STANDBY spare is exempt, because he is deliberately free for anything else;
+     and the seat being planned into is excluded, so an ordinary swap is silent.
+     Advisory in force, like every other bar here — the name still shows with the
+     reason against it, and a drop still goes through with a warning. */
+  if(r.slotStart!=null&&r.slotEnd!=null&&r.di>=0&&!r.sc&&!spareLike0(r)){
+    const self=selfKey(key);
+    const hit=dayEvents(r.di,id).find((e:any)=>e.s!=null&&e.e!=null
+      &&selfKey(e.slot||e.key)!==self&&overlap(r.slotStart,r.slotEnd,e.s,e.e));
+    if(hit)return `already on ${hit.label} ${hm24(hit.s)}–${hm24(hit.e)}`;
   }
   return '';
 }
+/* An armed key names a SEAT; an event names the ROW it came off. Bring the two
+   to the same shape so "the slot I am planting into" can be excluded — without
+   this a swap warns about the seat the man is being moved out of. A flying event
+   already stores the full seat key, so it is compared as it stands. */
+function selfKey(k:any){
+  let s2=String(k==null?'':k).replace(/\.\+$/,'').replace(XKEY,'');
+  if(s2.indexOf(':')<0)return s2;                          // flying: di.gi.li.ai.seat
+  s2=s2.replace(/\.pax\.\d+$/,'').replace(/\.(p|w)$/,'');  // a sim's two seats and its pax
+  if(/^a:/.test(s2))s2=s2.replace(/\.\d+$/,'');            // programme: drop the person index
+  return s2;
+}
+const spareLike0=(r:any)=>!!(r.sc&&r.scSpare)||!!r.avJet||!!r.avDuty;

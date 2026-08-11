@@ -490,3 +490,46 @@ describe('the midnight tail, backwards (a small-hours take-off)', () => {
     expect(String(bar).endsWith('(yesterday)')).toBe(false)
   })
 })
+
+/* AN ABSENCE THAT CROSSES MIDNIGHT (owner, 11 Aug 26). Personal inputs were the
+   one row type that could not be typed across midnight — both entry paths
+   refused an end before the start, and mapInp was the one event build that did
+   not route its window through a roll, so such a record matched nothing even if
+   it arrived some other way. Now it rolls through inpWin like everything else,
+   and the two tails carry its second half onto the neighbouring day. */
+describe('an overnight personal absence', () => {
+  it('rolls into a single forward window rather than an inverted one', () => {
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: false, s: 1320, e: 120, type: 'Meeting', remarks: 'overnight' })
+    const mine = collectEvents()[0].input.filter((i: any) => i.id === 'split' && !i.nx && !i.pv)
+    expect(mine.length).toBe(1)
+    expect(mine[0].s).toBe(1320)
+    expect(mine[0].e).toBe(1560)          // 02:00 the next day, not 120
+  })
+
+  it('clashes with a night sortie it genuinely overlaps', () => {
+    const f = DAYS[0].waves[0].formations[0]
+    f.to = '23:00'; f.ld = '00:45'; f.br = ''
+    f.aircraft[0].p = 'split'
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: false, s: 1320, e: 120, type: 'Meeting', remarks: 'overnight' })
+    const h = hits('INPUT_FLY', 'split')
+    expect(h.length, JSON.stringify(h)).toBeGreaterThan(0)
+  })
+
+  it('its after-midnight half reaches the NEXT day through the backward tail', () => {
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: false, s: 1320, e: 120, type: 'Meeting', remarks: 'overnight' })
+    /* on Tuesday the same record arrives shifted −1440, so its 00:00–02:00 half
+       lands on Tuesday's own early minutes */
+    const pv = collectEvents()[1].input.filter((i: any) => i.pv && i.id === 'split')
+    expect(pv.length).toBe(1)
+    expect(pv[0].s).toBe(-120)
+    expect(pv[0].e).toBe(120)
+  })
+
+  it('the picker agrees — an overnight absence bars an early Tuesday duty', () => {
+    DAYS[1].dutywaves[0].rows.push({ role: 'SDO', id: '', str: '0100', end: '0300' })
+    const ri = DAYS[1].dutywaves[0].rows.length - 1
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: false, s: 1320, e: 120, type: 'OD', remarks: 'overnight' })
+    const bar = slotBar('split', `d:1.0.${ri}`)
+    expect(bar, bar).toBeTruthy()
+  })
+})

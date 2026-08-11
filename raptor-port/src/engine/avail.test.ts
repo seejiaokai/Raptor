@@ -75,7 +75,9 @@ describe('an actioned Fly reads as away', () => {
     expect(dayOff(d).has('bruise')).toBe(false)
     const free0 = availByWave(d)
     expect(free0.anyWave.concat(...free0.byWave)).toContain('bruise')
-    expect(slotBar('bruise', '0.0.0.0.p')).toBe('')
+    /* "not the actioned-Fly reason", not "no reason at all" — bruise is in a sim
+       box overlapping this seat, which the picker has reported since 11 Aug 26 */
+    expect(slotBar('bruise', '0.0.0.0.p')).not.toContain('flying with another squadron')
     acceptInput(0, inp, 'g')
     expect(dayOff(d).has('bruise')).toBe(true)
     const free1 = availByWave(d)
@@ -83,7 +85,7 @@ describe('an actioned Fly reads as away', () => {
     expect(slotBar('bruise', '0.0.0.0.p')).toContain('flying with another squadron')
     unacceptInput(0, inp)
     expect(dayOff(d).has('bruise')).toBe(false)
-    expect(slotBar('bruise', '0.0.0.0.p')).toBe('')
+    expect(slotBar('bruise', '0.0.0.0.p')).not.toContain('flying with another squadron')
   })
 
   it('filing it under Unavailable closes the day just the same', () => {

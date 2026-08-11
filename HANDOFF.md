@@ -117,39 +117,21 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
     11:40. Correct, and the owner was told; expect it to be reported as a bug
     at least once. The levers are the AM boundary or the step padding, never a
     picker rule that disagrees with the warning list.
-- **The crew picker does not know who is busy at THIS hour** (found by the
-  11 Aug 26 input-vs-schedule sweep; reported to the owner, who deferred it).
-  `slotBar` has no overlap check against the day's other commitments for any
-  key except a standalone SC shift, and `dayEngaged` — the only signal there
-  is — is whole-day and non-overlap-aware: it dims the puck and captions it
-  "already tasked today, but you can still plan him", which reads identically
-  for a man who is free at that hour and one who is mid-sortie. Reproducible
-  on the SEED data with no edits: arm Monday's OFT `EP-6` back seat (15:00–
-  16:30) and the picker offers five men committed across that window — one
-  airborne on `RU BFM`, three on duty desks — with no reason against any of
-  them; planting one raises `DOUBLE_BOOK` at once. Fixing it means deciding
-  whether the bar is hard or advisory, which is why it was not taken with the
-  other three: the palette is where a scheduler's habits live.
-- **A personal absence cannot cross midnight** (same sweep, same decision to
-  defer). Both entry paths refuse `e<=s` — `inputedit.tsx`'s `commitInputEdit`
-  and the Inputs page's add — so 22:00–02:00 is rejected as "end time must be
-  after start time", and `events.ts`'s `mapInp` is the one event build that
-  does NOT route its window through `win()`, so a record that got in some
-  other way is passed to `overlap()` inverted and silently matches nothing.
-  Every other row type rolls over midnight. Needs an owner decision on what an
-  overnight absence means before it is built.
-- **`inpKey` is a content key that is not guaranteed unique.** Two inputs
-  sharing person + date + type + start minute mint the same `src`, and
-  `acceptedDay`/`unacceptInput` both take the FIRST match — so unaccepting one
-  can remove the other's ground row. Narrow (it needs an identical start
-  minute) and unreached in practice; the cheap guard, if it ever bites, is to
-  refuse a second accept whose `src` is already on the day.
-- **The unarmed crew list strikes an ATT B man through** even though ATT B is
-  the one type that bars flying while leaving a desk, a sim seat or a ground
-  row open — `rosterPuck` falls back to `dayOff`/`isAway` when nothing is
-  armed, which cannot see the `canWork` carve-out that `slotBar` applies the
-  moment a slot IS armed. Reported, not fixed; nobody is on ATT B in the demo
-  data (see below), so it is invisible until someone sets it by hand.
+- **The picker's busy-at-this-hour bar is ADVISORY, and that is the whole
+  design** (owner, 11 Aug 26). `slotBar` now names an overlapping commitment
+  for every slot, not only a standalone SC shift, excluding the seat being
+  planned into so a swap stays silent. Like every other bar here it does not
+  refuse anything: the name still shows, `barDrop` toasts the reason and the
+  drop goes through. Do not harden it into a refusal — the app's whole
+  vocabulary is soft bars, and a scheduler double-books deliberately more often
+  than by accident. Two existing tests were re-pointed at the reason they are
+  actually about (ATT B, actioned-Fly) rather than at "no reason at all",
+  because seeded men genuinely are busy at those hours; that is the confound to
+  expect when adding a slot-hours test, not a sign the bar is wrong.
+- **`DT_SUM` still counts a man double-BOOKED among those "double turning".**
+  The summary lists everyone with 2+ sorties, which is true of a man planned
+  into two seats at once as much as of a genuine double-turn. Harmless beside
+  the hard conflict that now fires, and left alone rather than special-cased.
 - **The activity types warn but do not bar.** Training, CSE, Meeting, Fly,
   Personal, Appointment and Other now reach the validator the moment they are
   typed, so planting a man through one raises a warning — but they are not in

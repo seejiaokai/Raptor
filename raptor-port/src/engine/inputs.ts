@@ -162,6 +162,22 @@ export function isAway(inp:any){return isUnavail(inp.type)||(isFly(inp.type)&&!!
    through win()'s open-ended default. A thin record fails CLOSED — the same
    rule slotRules follows for a row with no times of its own. */
 export function awayAllDay(inp:any){return !!inp.allday||inp.s==null||inp.e==null;}
+/* THE ABSENCE'S WINDOW, ROLLED (owner, 11 Aug 26). An absence typed 22:00–02:00
+   crosses midnight, exactly as a duty row, a sim box or a night sortie typed the
+   same way does — win() and the ld<to roll have handled those since the port.
+   Personal inputs were the one row type left out: both entry paths refused
+   e<=s outright, so an overnight absence could not be recorded at all, and a
+   record that arrived any other way was passed to overlap() inverted, where it
+   silently matched nothing. Every reader goes through here, or the picker and
+   the warning list drift apart on the one shape neither of them can see.
+   Returns null for a record with no usable window — that is awayAllDay's
+   business, and it fails CLOSED there. */
+export function inpWin(inp:any){
+  if(!inp)return null;
+  const s=inp.allday?0:inp.s, e=inp.allday?1439:inp.e;
+  if(s==null||e==null)return null;
+  return [s,e<s?e+1440:e];
+}
 /* how an entry reads when it is the reason a slot is closed. The words come
    off INPUT_META, so the reason a scheduler reads here, the text in the type
    legend and the rule the engine applied are all the same string. */
