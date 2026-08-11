@@ -16,8 +16,9 @@ import { notify } from '../state/store'
 import { scrollToWarnFocus, queueHold } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave } from '../engine'
 import { esc } from '../state/view'
-import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
+import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList } from './pops'
 import { openScheduler, toggleSbwarn } from './board'
+import { hideHistBub } from './histbubble'
 import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
 
@@ -495,6 +496,18 @@ export function routeClick(e: MouseEvent) {
      8 Aug 26) — phone only: on desktop the side panel is always open and
      the header is inert */
   if (t.closest('[data-sbwtog]') && HOOKS.isPhone()) { toggleSbwarn(); notify(); e.stopPropagation(); return }
+
+  /* the changes list, opened from the last line of that same checks panel
+     while History is on (board.ts's boardWarnHTML). It sits ABOVE the
+     .wln[data-wdi] branch below because it is a .wln too and carries no
+     data-wdi — matched by its own attribute rather than by elimination, so a
+     future warning row without an index cannot fall into it. Opens on the
+     whole week; the dialog's own filter narrows it to a day. */
+  /* hideHistBub first: on a phone the bubble is still up from the tap that
+     raised it (it times out, it does not wait for a pointer to leave), and it
+     sits above the modal in the stack — measured on the built app, covering
+     two rows of the list it had just been asked to open. */
+  if (t.closest('[data-histopen]')) { hideHistBub(); setHistList('all'); notify(); e.stopPropagation(); return }
 
   const wl = t.closest('.wln[data-wdi]') as HTMLElement | null
   if (wl) { jumpToWarn(+wl.dataset.wdi!, +wl.dataset.wix!); e.stopPropagation(); return }

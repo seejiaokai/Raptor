@@ -1603,3 +1603,67 @@ heading gains a grip, a `.qlbl` label element and a `✕`.
 None of it is persisted, exactly like the ticks, initials and flights beside
 it: reload and the LoX is the default set again. `rules` is still the only
 thing this app writes to storage.
+
+## History on the board (owner, 11 Aug 26)
+
+A view mode on the scheduler board: with it on, a detail says who changed it,
+when, and what it was. Rules and the log itself: `docs/engine-rules.md` §The
+edit log.
+
+**One button on the top bar (`#sbHist`), and no editMode() gate.** Unlike
+Sort all and `+ Wave` it is a READ, so it stays on a read-only board — a
+scheduler looking at someone else's day has more reason to ask who changed
+something than the person who changed it. `HISTMODE` lives in `state/view.ts`
+(session-scoped, not persisted, cleared by `resetSession`), and the board wrap
+gains `.hist-on`, which puts `cursor:help` on the amendment marks already
+there. No new per-cell markup: the cells that carry history are exactly the
+cells `alAttr` already marks, and a second badge would be a node each against
+the board's DOM ceiling to say the same thing twice.
+
+**Two gestures, on purpose.** Desktop hovers; a phone TAPS, and the tap still
+does its ordinary job. `histbubble.ts` registers on `.sb-boardwrap` in the
+**capture** phase — `boardArmClick` calls `stopPropagation()` the moment it
+arms a slot, so a bubbling listener never sees the one tap most worth
+explaining. It calls neither `preventDefault` nor `stopPropagation` itself,
+and the bubble is `pointer-events:none`; those two together are the whole
+guarantee that History never turns the board read-only. Both are pinned —
+the arm in `histbubble.test.tsx`, the CSS value in `e2e/geometry.spec.ts`,
+which is the only place a computed style can be read back.
+
+**One bubble, at body level.** Not one per cell (the DOM ceiling counts every
+node under `#sbBoard`) and not inside a panel (the string diffs re-hang those
+mid-hover). It is anchored above its cell where there is room and below where
+there is not — a phone tap opens the keyboard too. On scroll it **re-anchors
+rather than hides**: hiding was the first version and it broke the desktop
+hover outright, because bringing a cell into view scrolls the panel and that
+scroll lands after the mouseover it caused.
+
+**The cell's own tooltip is parked while the bubble is up** and handed back on
+the way out. `alAttr` puts `title="Edited — not published yet"` on precisely
+these cells, and the browser would pop it over the top a second later saying
+less. Parked in JS rather than suppressed in `alAttr`, which is in
+`refwin.ts`'s byte-compare path.
+
+**The changes list is NOT a second bar button, and that is measured.** Two new
+controls took the phone bar from 70px to 92px — the day name wrapped onto a
+line of its own, exactly the failure CLAUDE.md's "do not add a control back to
+this bar without taking one off" describes. It opens instead from a line under
+the day's checks panel (`[data-histopen]`, `boardWarnHTML`), which shows only
+while History is on — the owner's own phrasing was "when I enable history,
+there is ALSO an option to view the history of all edits". It sits OUTSIDE
+`.sbwrap`: that wrapper folds shut by default on a phone and hides every
+`.wln`, so an entry inside it would be invisible until you opened a panel
+about something else.
+
+**One control did have to change to fit the eighth button**, and it is the one
+the phone bar's own comment already promised: `.sb-title` was `flex:0 1 auto`,
+whose auto basis makes the title's base size its full text width, so `.sb-top`
+wrapped it instead of shrinking it. `flex:1 1 0` takes it out of the wrap
+decision, and the day name ellipsises as that comment says it should. Bar
+measured back at 70px with eight buttons. Desktop is untouched — the rule is
+inside the 820px block.
+
+**The list** (`HistoryModal.tsx`) is the ordinary `.modal` idiom, string-built
+body, newest first, whole week by default with a filter for the open day.
+Its footer states plainly that it is per-browser and per-session; that
+limitation is on the surface rather than in a document nobody opens.

@@ -18,10 +18,11 @@ import { validate } from '../engine/validate'
 import { rulesLoad } from '../engine/rules'
 import { mintInpIds } from '../engine/inputs'
 import { storesLoad } from '../engine'
+import { elogClear } from '../engine/editlog'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit } from './history'
-import { setSession as authSetSession, canEditSched } from './auth'
+import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS } from './auth'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -105,6 +106,14 @@ export function resetSession(s: any) {
      opening position — on a phone that is today's column, which initPan
      scrolls to and a stale carry would immediately undo. */
   view.setCarryDay(null)
+  view.setHistMode(false)         // the board's History toggle is a per-session view mode
+  /* and the log itself goes. It is stamped with WHO made each change, so
+     carrying it across a logout would show the incoming user a list of
+     someone else's work under their own board — and the schedule those
+     entries describe is still there, which makes it read as fact rather
+     than as leftovers. Clearing is the honest half-measure while the app
+     has no server to keep a real per-person record. */
+  elogClear()
 }
 
 /* ---- wiring ---- */
@@ -134,6 +143,16 @@ export function wireStore() {
      palette drag on a phone never parked the drawer — the drop could only land
      back on the drawer itself, a silent no-op — and arming a slot never slid
      the drawer open. Guarded for jsdom, which has no matchMedia. */
+  /* the name the edit log stamps on every change. The accounts are hard-coded
+     and there are two of them, so today this is only ever "Admin" or
+     "Squadron member" — which is the truth of a prototype login, not a
+     placeholder standing in for something better. When accounts become real
+     this returns a person's name and the whole log starts naming people, with
+     no change anywhere else. */
+  HOOKS.whoami = () => {
+    if (!SESSION) return 'Unknown'
+    return (ACCOUNTS[SESSION.user] && ACCOUNTS[SESSION.user].label) || String(SESSION.user)
+  }
   HOOKS.isPhone = () => {
     if (typeof window === 'undefined') return false
     try { if (window.matchMedia) return window.matchMedia('(max-width:820px)').matches } catch (_) {}

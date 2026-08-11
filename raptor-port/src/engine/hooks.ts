@@ -27,6 +27,13 @@ export const HOOKS = {
   syncHistBtns: (): void => {},
   isPhone: (): boolean => false,
   editMode: (): boolean => false,
+  /* who is making this edit, for the edit log (editlog.ts). It arrives as a
+     hook for the same reason editMode does: the name lives in state/auth.ts
+     and the engine does not import state/. It is also the ONE seam that has
+     to change the day the app gains real accounts — a server-backed session
+     returns a person's name here and the log starts naming other people with
+     no other edit. Headless, and before login, it is 'Unknown'. */
+  whoami: (): string => 'Unknown',
   /* the board's own dialog state (the CX-with-a-reason box, Sort all's
      confirm) lives in ui/board.ts as module `let`s, not here — but
      state/view.ts's closeBoardState() needs to clear them the moment the

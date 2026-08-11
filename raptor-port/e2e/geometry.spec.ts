@@ -7,6 +7,7 @@
    pass `npm test` all day. Here they run in a real browser on the real
    production build, so a CSS change that breaks one fails a gate. */
 import { expect, test } from '@playwright/test'
+import type { Page } from '@playwright/test'
 import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek } from './app'
 
 const PHONE = { width: 390, height: 844 }
@@ -2245,4 +2246,75 @@ test.describe('the phone board keeps its controls to one row', () => {
       .toBeLessThanOrEqual(0.66)
     expect(m.canScroll, 'the crew list scrolls on its own').toBe('auto')
   })
+})
+
+/* ===================================================================
+   HISTORY (owner, 11 Aug 26) — the bubble that says who changed a
+   detail, and when. Every number here is 0 in jsdom, which is the whole
+   reason this belongs in this file: src/ui/histbubble.test.tsx can prove
+   which element was emitted and what it says, and nothing about where it
+   landed or whether it fits.
+   =================================================================== */
+test.describe('the History bubble', () => {
+  /* History on, one real edit made, and the bubble raised over its own cell.
+     Returns the two rectangles so each test can ask its own question. */
+  async function raise(page: Page) {
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbHist')
+    const key = await page.evaluate(() => {
+      const w = window as any
+      const el = [...document.querySelectorAll('#sbBoard [data-slot]')]
+        .find(e => /\.[pw]$/.test((e as HTMLElement).dataset.slot || '') && w.slotVal((e as HTMLElement).dataset.slot))
+      const k = (el as HTMLElement).dataset.slot
+      w.setSlotVal(k, w.slotVal(k) === 'bane' ? 'stiff' : 'bane')
+      return k
+    })
+    await page.click('#sbHist')
+    await page.waitForTimeout(250)
+    const cell = page.locator(`#sbBoard [data-slot="${key}"]`).first()
+    /* the gesture the surface actually uses — a phone taps, a desktop hovers */
+    if (page.viewportSize()!.width <= 820) await cell.click()
+    else await cell.hover()
+    await page.waitForTimeout(250)
+    return page.evaluate(k => {
+      const b = document.querySelector('.histbub') as HTMLElement
+      const c = document.querySelector(`#sbBoard [data-slot="${k}"]`) as HTMLElement
+      if (!b) return null
+      const r = b.getBoundingClientRect(), cr = c.getBoundingClientRect()
+      return {
+        l: Math.round(r.left), t: Math.round(r.top), r: Math.round(r.right), b: Math.round(r.bottom),
+        w: Math.round(r.width), h: Math.round(r.height),
+        cellTop: Math.round(cr.top), cellBottom: Math.round(cr.bottom),
+        vw: window.innerWidth, vh: window.innerHeight,
+        pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        pe: getComputedStyle(b).pointerEvents,
+        text: (b.textContent || '').trim(),
+      }
+    }, key)
+  }
+
+  for (const c of [{ label: 'phone', vp: PHONE }, { label: 'desktop', vp: { width: 1440, height: 900 } }]) {
+    test(`${c.label}: it fits on screen and never pushes the page sideways`, async ({ page }) => {
+      await page.setViewportSize(c.vp)
+      await login(page)
+      await go(page, 'editsched')
+      const m = await raise(page)
+      expect(m, 'the bubble came up at all').not.toBe(null)
+      expect(m!.text, 'and it says something').not.toBe('')
+      expect(m!.l, 'not off the left edge').toBeGreaterThanOrEqual(0)
+      expect(m!.r, 'not off the right edge').toBeLessThanOrEqual(m!.vw)
+      expect(m!.t, 'not above the top').toBeGreaterThanOrEqual(0)
+      expect(m!.b, 'not below the bottom').toBeLessThanOrEqual(m!.vh)
+      expect(m!.pageOverflow, 'and the board gains no sideways scroll from it').toBeLessThanOrEqual(0)
+      /* THE ONE THAT MATTERS ON A PHONE. The bubble is raised by the same tap
+         that arms the seat and opens the keyboard on a text field; anything it
+         could intercept would make History a mode that stops the board
+         working. pointer-events:none is what guarantees it, and it is a CSS
+         value, so only a browser can read it back. */
+      expect(m!.pe, 'it cannot take a tap from the cell underneath').toBe('none')
+      /* above the cell, not on top of it — the thing being explained has to
+         stay visible while its explanation is up */
+      expect(m!.b, 'it sits clear of the cell it describes').toBeLessThanOrEqual(m!.cellTop + 1)
+    })
+  }
 })

@@ -1717,6 +1717,71 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .wavemenu button.wm.sa{border-color:rgba(178,77,234,.45);color:#DDA9F5}
 .wavemenu button.wm.sa:hover{border-color:var(--san);color:var(--san)}
 .wavemenu .wm-note{font-size:10.5px;color:var(--ink-3);line-height:1.4;margin:-4px 0 8px}
+/* ---- HISTORY: the bubble and the changes list (owner, 11 Aug 26) ---------
+   POINTER-EVENTS:NONE IS THE LOAD-BEARING LINE HERE, not tidying. On a phone
+   the bubble is raised by the very tap that is also arming the seat or
+   focusing the field underneath it, so anything it could intercept would turn
+   History into a mode that quietly stops the board working. z-index sits it
+   above the board (400) and the wave menu (480) and below a drag ghost (520),
+   which is the one thing that should ever cover it. */
+.histbub{position:fixed;z-index:500;pointer-events:none;background:var(--panel);
+  border:1px solid var(--edge-2);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.6);
+  padding:7px 10px;max-width:min(84vw,290px);font-size:11.5px;line-height:1.45}
+.histbub .hb-what{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.09em;font-size:9.5px;color:var(--ink-3);font-weight:700;margin-bottom:2px}
+.histbub .hb-chg{color:var(--ink)}
+.histbub .hb-chg b{font-weight:700}
+.histbub .hb-who{color:var(--ink-3);font-size:10.5px;margin-top:3px}
+/* the arrow is the one glyph carrying the "was → is" meaning, so it is tinted
+   rather than left to read as punctuation */
+.hbar{font-style:normal;color:var(--accent);padding:0 2px}
+
+/* with History on, a detail that HAS a history says so before you reach for
+   it. It reuses the amendment marks already on the cell (data-alp pending,
+   data-alc published) rather than adding a mark of its own — those are
+   exactly the cells that were edited, and a second badge on the same cell
+   would be two ways of saying one thing, at a node each against the board's
+   DOM ceiling. Cursor only, so nothing moves and no row grows. */
+.hist-on [data-alp],.hist-on [data-alc]{cursor:help}
+.abtn.on{border-color:var(--accent);color:var(--accent)}
+
+/* the way into the changes list, the last line of the day's checks panel and
+   only while History is on. Styled as a .wln so it reads as part of that list
+   rather than as a control bolted onto it, but it is a real <button> — it is
+   the one line in there that is not a warning, and a screen reader has to be
+   able to tell. */
+.histln{display:block;width:100%;text-align:left;background:var(--panel);border:none;
+  border-top:1px solid var(--edge);color:var(--accent);cursor:pointer;
+  font:inherit;font-size:11.5px;padding:9px 11px}
+.histln:hover{background:var(--panel-2)}
+
+.hl-filter{display:flex;align-items:center;gap:6px;padding:10px 16px 0}
+.hl-fb{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;
+  padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.hl-fb.on{border-color:var(--accent);color:var(--accent)}
+.hl-count{margin-left:auto;font-size:10.5px;color:var(--ink-3)}
+.hl-list{list-style:none;margin:0;padding:0}
+.hl-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;padding:7px 0;
+  border-bottom:1px solid var(--edge);font-size:11.5px}
+.hl-row:last-child{border-bottom:none}
+.hl-day{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.08em;font-size:9.5px;font-weight:700;color:var(--accent-ink);
+  background:var(--accent);border-radius:5px;padding:1px 5px;flex:0 0 auto}
+.hl-what{color:var(--ink-3);flex:0 0 auto}
+/* an added or removed row is not a value change, so it does not pretend to be
+   one — it prints as the sentence it is, in the ink of a thing that happened */
+.hl-what.struct{color:var(--ink)}
+.hl-chg{color:var(--ink);flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.hl-meta{margin-left:auto;color:var(--ink-3);font-size:10.5px;white-space:nowrap;flex:0 0 auto}
+.hl-empty{color:var(--ink-3);font-size:12px;line-height:1.6;padding:6px 0}
+.hl-foot{padding:10px 16px 14px;border-top:1px solid var(--edge);color:var(--ink-3);
+  font-size:10.5px;line-height:1.5}
+@media (max-width:820px){
+  /* the meta drops onto its own line rather than squeezing the change itself —
+     "who and when" is the least urgent of the three and the first to give way */
+  .hl-meta{margin-left:0;flex-basis:100%}
+}
+
 .tdghost{position:fixed!important;z-index:520;pointer-events:none;margin:0!important;
   transform:translate(-50%,-50%);opacity:.92;box-shadow:0 8px 20px rgba(0,0,0,.6);
   outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
@@ -2181,7 +2246,18 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      degrades visibly, rather than silently restoring the two-row button
      block this replaces. */
   .sb-top{gap:6px;padding:6px 8px}
-  .sb-title{font-size:14px;white-space:nowrap;flex:0 1 auto;min-width:0;
+  /* `flex:1 1 0`, and the ZERO BASIS is the load-bearing part (11 Aug 26).
+     This was `0 1 auto`, which does not do what the comment above it promises:
+     with an AUTO basis the title's base size is its full text width, and
+     .sb-top keeps flex-wrap for the dots — so the browser decides the line is
+     over-full and WRAPS the title onto a row of its own rather than shrinking
+     it. Measured when History was added: the eighth button took the bar from
+     70px to 92px, one row of buttons and one of title, with the day name at
+     its full 115px and no overflow to show for it. A zero basis takes the
+     title out of the wrap decision entirely; it then grows into whatever the
+     buttons leave and ellipsises, which is the degradation the comment above
+     describes and the gate's 78px ceiling assumes. */
+  .sb-title{font-size:14px;white-space:nowrap;flex:1 1 0;min-width:0;
     overflow:hidden;text-overflow:ellipsis}
   .sb-title .mono{font-size:11px}
   /* the words come off every control; the accessible name stays, because the

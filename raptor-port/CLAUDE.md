@@ -413,6 +413,16 @@ the phone perf budget. Don't convert them to components.
   a control back to this bar without taking one off: the whole point was
   getting it from 166px to 70px on a 780px screen, and the geometry gate
   counts ROWS, not just overflow. Desktop is unchanged.
+  **AMENDED 11 Aug 26, once, with a measurement.** History added an eighth
+  button and took nothing off, and the bar still measures 70px — but only
+  because the same change fixed `.sb-title` to shrink instead of wrap
+  (`flex:0 1 auto` → `flex:1 1 0`; an auto basis made the title's base size
+  its full text width, so `.sb-top` wrapped it onto its own line and the bar
+  went to 92px). The rule STANDS: that was the last free 33px, the day name
+  is down to ~107px of a 390px screen, and the next control genuinely has to
+  displace one. The changes LIST is the worked example of the alternative —
+  it wanted a ninth button and went to the day's checks panel instead
+  (`docs/ui-contracts.md` §History on the board).
   **The dots are also a scrub bar** (owner, same day) — press and slide to
   run through the week. Every dot keeps the same footprint whatever is
   selected; do not make the current one grow, it shifts the strip under a

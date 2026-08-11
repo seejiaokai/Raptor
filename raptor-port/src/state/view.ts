@@ -34,6 +34,29 @@ export let CURPAGE:any='viewsched'
 export let ROSDAY:any=0
 export function setRosDay(n:any){ ROSDAY=n }
 
+/* ---- HISTORY MODE (owner, 11 Aug 26) --------------------------------------
+   The board's History toggle. A VIEW mode, not an edit mode: it changes what
+   the board tells you and never what it will let you do — a detail stays
+   just as editable with it on, on both surfaces. That is the whole reason it
+   is not gated on editMode() the way Sort all and + Wave are; reading who
+   changed something is not editing it, so a read-only board can carry it too.
+
+   It lives here rather than in ui/pops.ts because a BUILDER reads it:
+   boardWarnHTML puts the way into the changes list at the end of the day's
+   checks panel while the mode is on, and that has to be in the string —
+   SchedBoard diffs each panel to decide whether to re-hang it, so anything
+   added to the DOM afterwards is lost on the next unrelated repaint. ui/
+   builders already read this module for CURPAGE, ARM and the selection.
+   (The per-cell affordance is NOT in the string: it is one `.hist-on` class
+   on the board wrap, so the cells cost no extra nodes — see
+   `docs/ui-contracts.md` §History on the board.)
+   Session-scoped and deliberately not persisted, like sbWide: the log it
+   surfaces does not survive a reload either, so a toggle that did would come
+   back up pointing at nothing. */
+export let HISTMODE=false
+export function setHistMode(on:any){ HISTMODE=!!on }
+export function toggleHistMode(){ HISTMODE=!HISTMODE; return HISTMODE }
+
 /* ---- THE DAY YOU ARE LOOKING AT, CARRIED ACROSS A PAGE SWITCH ------------
    (owner, 9 Aug 26.) View-only Sched and Edit Schedule are two separate
    horizontal scrollers — `#vWeek` and `#eWeek` — each holding its own
@@ -351,7 +374,13 @@ export function placeArmed(id:any){
   toast(`${PEOPLE[id].cs} planned`);
   return true;
 }
-/* what a slot is called, for the picker's title */
+/* what a slot is called, for the picker's title.
+   NOT the same function as engine/editlog.ts's keyLabel, which answers a
+   similar question for the changes list, and deliberately so: this one emits
+   HTML with inline styles and covers only the crew keys, that one is plain
+   text and covers the whole grammar — and it lives in the engine, which
+   cannot import this module. If a THIRD caller ever wants a name for a slot
+   key, fold this into keyLabel rather than adding another. */
 export function slotTitle(key:any){
   const k=String(key);
   if(k.indexOf(':')<0){const a=k.split('.');

@@ -5,7 +5,9 @@
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY, CURPAGE, DPREV, setDayPreview } from '../state/view'
+import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode } from '../state/view'
+import { setHistList } from './pops'
+import { wireHistBubble, hideHistBub } from './histbubble'
 import { daySnapOf, dayVersions, verLabel, alColor } from '../engine/publish'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
@@ -29,6 +31,7 @@ export function SchedBoard() {
   const mainRef = useRef<HTMLDivElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const topRef = useRef<HTMLDivElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
   /* The board's only home page is Edit Schedule — `open` used to be a bare
      `SBDAY != null`, so a nav click while the board was open left the
      modal (position:fixed, inset:0, z-index:400 — the whole viewport)
@@ -59,7 +62,10 @@ export function SchedBoard() {
      notify() from whoever calls it. Wired once, like store.ts's wireStore()
      wires HOOKS.editMode/render* once at boot. */
   useEffect(() => {
-    HOOKS.closeBoardDialogs = () => { setCxt(null); setSortAll(null) }
+    /* the changes list and any bubble go with them: both are opened from the
+       board's own bar, so a page change that closes the board must not leave
+       either painting over whatever the user navigated to */
+    HOOKS.closeBoardDialogs = () => { setCxt(null); setSortAll(null); setHistList(false); hideHistBub() }
     return () => { HOOKS.closeBoardDialogs = () => {} }
   }, [])
 
@@ -83,9 +89,17 @@ export function SchedBoard() {
        (owner, 11 Aug 26) — a fixed element's scroll goes to the viewport,
        which cannot scroll here, so it went nowhere */
     const offRos = wireParkedRosScroll(mainRef.current!)
+    /* the History bubble rides on the WRAP, one level up from #sbBoard: the
+       personal-inputs panel is #sbBoard's sibling inside it, and both are
+       re-hung by their own string diffs, so a listener on either child would
+       be thrown away with it. Same reason wireRowDrag delegates here. Its
+       click handler is registered after the board's own two above, and never
+       stops propagation — with History on, a tap still arms and still edits
+       (histbubble.ts). */
+    const offHist = wireHistBubble(wrapRef.current!)
     return () => {
       el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
-      el.removeEventListener('change', boardChange); offDrag(); offSwipe(); offDots(); offRos()
+      el.removeEventListener('change', boardChange); offDrag(); offSwipe(); offDots(); offRos(); offHist()
     }
   }, [])
 
@@ -215,6 +229,34 @@ export function SchedBoard() {
             onClick={() => { undo(); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
           <button className="abtn hbtn" id="sbRedo" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1}
             onClick={() => { redo(); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
+          {/* HISTORY (owner, 11 Aug 26) — a VIEW mode, so unlike Sort all and
+              + Wave it carries no editMode() gate: reading who changed a
+              detail is not editing it, and a scheduler looking at a read-only
+              board has more reason to ask than one who made the change
+              himself. Toggling it repaints (notify) and drops any bubble
+              already up, which would otherwise hang over a board that has
+              stopped explaining itself.
+              The list is the SECOND button. It was nearly a chevron inside
+              this one, and is not, because the two are genuinely separate
+              things to want — "mark up what I'm looking at" and "show me
+              everything that happened" — and a split control on a 30px phone
+              button gives each half a 15px target, under the 28px the
+              geometry gate holds every control on this bar to.
+              THE LIST IS NOT A SECOND BUTTON, and that is measured, not
+              taste: two more controls took this bar from 70px to 92px on a
+              390px screen — the title wrapped onto a line of its own and the
+              geometry gate caught it, which is exactly the failure HANDOFF's
+              "do not add a control back to this bar without taking one off"
+              was written after. Rather than take an existing control off for
+              a new one, the list opens from the day's own checks panel, and
+              only while History is on — which is also the owner's own phrasing
+              for it ("when I enable history, there is also an option to view
+              the history of all edits"). See boardWarnHTML in board.ts. */}
+          <button className={'abtn' + (HISTMODE ? ' on' : '')} id="sbHist"
+            aria-pressed={HISTMODE}
+            title={HISTMODE ? 'Stop showing who changed each detail' : 'Show who changed each detail, and when — hover it, or tap it on a phone'}
+            onClick={() => { toggleHistMode(); hideHistBub(); notify() }}>
+            <span className="bi">🕘</span><span className="bl"> History</span></button>
           {open && dayVersions(SBDAY).length > 1
             ? <select className="dver" aria-label="View this day as it was issued"
                 value={String(DPREV.get(SBDAY) ?? 'live')}
@@ -259,7 +301,7 @@ export function SchedBoard() {
         </div>
       </div>
       <div className="sb-main" ref={mainRef}>
-        <div className="sb-boardwrap">
+        <div className={'sb-boardwrap' + (HISTMODE ? ' hist-on' : '')} ref={wrapRef}>
           <div className="sb-board" id="sbBoard" ref={boardRef} />
           <div className="sb-inputs" id="sbInputs" ref={inputsRef} />
         </div>

@@ -19,3 +19,10 @@ export function setInpEdit(r: any) { INPEDIT = r }
 /* the mobile drawer */
 export let DRAWER = false
 export function setDrawer(on: boolean) { DRAWER = on }
+/* The listed view of the edit log (owner, 11 Aug 26). `false` closed; open it
+   with `'all'` for the whole week or a day index to narrow it to one day —
+   the filter IS the open state, so there is no second flag to keep in step
+   with it, and closing forgets the filter (a list you reopen should show
+   everything, not a narrowing you set ten minutes ago). */
+export let HISTLIST: false | 'all' | number = false
+export function setHistList(v: false | 'all' | number) { HISTLIST = v }

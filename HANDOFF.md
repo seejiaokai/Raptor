@@ -16,9 +16,9 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 1054 tests
-across 55 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 68/68, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
+**Every gate is green at this commit**, run first-hand: `npm test` 1088 tests
+across 57 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
+run test:e2e` 70/70, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 (neither of the last two in CI). Re-state these only after re-running them.
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
@@ -229,6 +229,29 @@ run test:e2e` 68/68, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
     admin-and-Edit-Schedule, so the schedule surfaces stay a scheduler's.
     Opening it wider means an OWNERSHIP check (his own inputs only), which
     nothing in the app has yet.
+- **History on the board shipped with four things open** (11 Aug 26; contracts
+  in `docs/ui-contracts.md` §History on the board and `docs/engine-rules.md`
+  §The edit log). The owner was told the first one before it was built.
+  - **It can only ever say "Admin" or "Squadron member".** `HOOKS.whoami()`
+    reads the hard-coded prototype login, so the log names an ACCOUNT, not a
+    person, and it never shows what another scheduler did on another device.
+    That hook is the one seam a server has to fill — same missing piece as the
+    first bullet in this list. Do not dress it up as an audit trail.
+  - **It clears on reload and on logout**, because the schedule does. A log
+    that outlived the schedule it describes would point at nothing, and one
+    that survived a logout would show the incoming user someone else's work
+    under their own board.
+  - **A row moved by drag or by Auto sort logs nothing by value** — the
+    reorder paths mark keys whose values never change, which is why Sort all
+    manages one line instead of six. `applyMove` has no `logAction` of its
+    own, so a hand-dragged row is currently invisible to the list. Cheap to
+    add if it is ever missed; not added blind.
+  - **The bubble covers the cells that carry an address, not quite all of
+    them.** Anything with `data-bfld`/`data-slot`/`data-txt` works, plus the
+    five older attributes (`store`, `bombs`, `area`, `atime`, `intimes`) whose
+    prefixes `histbubble.ts` puts back by hand. The traffic field (`tr:`) is
+    written from a modal and has no cell to hang a bubble on, so it appears in
+    the LIST only. A new text trigger wants a line in `keyOf` as well.
 - **A USER GUIDE is wanted, for users and admins** (owner, 10 Aug 26 — "I
   eventually want u to create a user guide for this app"). Not started, and
   not urgent. The half that cannot be worked out by looking at the screen is
@@ -412,6 +435,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `insights.ts` | `computeInsights()` for the Insights modal. |
 | `stores.ts` | The squadron's stores list — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Persisted state, so it lives here. Nothing in `validate.ts` reads a store. |
 | `hooks.ts` | HOOKS — injectable callbacks (toast, repaints, histPush, storage, `closeBoardDialogs`) so verbatim bodies stay DOM-free headless; `storeBackend` is the injected localStorage (`main.tsx` plugs the real one in, null headless). |
+| `editlog.ts` | The EDIT LOG (11 Aug 26) — `ELOG` (a 400-row ring buffer of `{t,who,di,key,lbl,from,to}`), `logEdit`/`logAction`, `elogRows`/`elogFor`/`elogWhen`/`elogClear`, and `keyLabel`, which turns a slot key into plain words. Written from `noteChange`/`markEdit` and only when both values are handed over. Session-only, and deliberately NOT in `histSnap()`. Rules: `docs/engine-rules.md` §The edit log. |
 | `index.ts` | The barrel — re-exports every module above. UI and probes import from `../engine`, so a new engine file wants a line here. |
 
 ### `raptor-port/src/state/` — the store
@@ -439,6 +463,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `pan.ts` | Week arrows (`panDays`), proxy scrollbar (`hsSet`/`hsSync`, echo-guarded), shift+wheel, palette day-follow, phone day dots. |
 | `textedit.ts` | Inline text editing: Enter commits / Escape restores, heal-in-place, deferred commit, `editingText()`, plus the four fields outside the `data-txt` grammar. |
 | `highlights.ts` | Post-render decoration: selection/search/warning-focus classes on every puck (the week AND the board's `.sb-boardwrap`, never the palettes or a `.pv-frozen` preview), `paintArm`, and `scrollToWarnFocus` — surface-aware, snap-safe, lateral-holding (it pans sideways only when the target is off screen), picking the puck whose row holds the most of the warning's crew, and honouring `WFOCUS.panDi`/`panKey` where the focus and the destination are different days (the cross-day crew-rest row, and only it). |
+| `histbubble.ts` | The History bubble — one body-level element, delegated on the board wrap in the CAPTURE phase (the board's arm handler stops propagation, and a phone tap must still arm). `pointer-events:none` is load-bearing, not styling. Re-anchors on scroll rather than hiding; parks the cell's own `title` while it is up. |
+| `HistoryModal.tsx` | The changes list — every edit newest first, whole week with a filter for the open day, opened from the checks panel's `[data-histopen]` line. String-built body in the ordinary `.modal` idiom. |
 | `Modals.tsx` | DayPop (read-only day details), Insights, Manage-users, Airspace/traffic popup. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Contract: `docs/ui-contracts.md` §The Inputs table's view state. |
 | `inputedit.tsx` | Editing ONE personal input, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, `commitInputEdit` (including the accepted-row relink), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule) and `InputEditor` itself. Three editors over one list is how they drift apart. |

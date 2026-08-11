@@ -4,6 +4,7 @@ import { SCHED, markEdit } from './publish'
 import { parseHM, hhmm } from './time'
 import { isUnavail, inpLabel } from './inputs'
 import { shiftKeys } from './keys'
+import { logEdit } from './editlog'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -75,14 +76,17 @@ export function slotVal(key:any){
   return '';
 }
 /* every slot mutation funnels through setSlotVal, so this is the one place that
-   needs to remember WHICH item changed for the amendment-level marks */
-export function noteChange(key:any){ if(key){SCHED.pending[String(key)]=1; delete SCHED.changes[String(key)];} }
+   needs to remember WHICH item changed for the amendment-level marks.
+   `was`/`now` are the edit log's, and optional: a caller that does not know
+   both values logs nothing rather than logging a half-truth (editlog.ts). */
+export function noteChange(key:any,was?:any,now?:any){ if(key){SCHED.pending[String(key)]=1; delete SCHED.changes[String(key)]; logEdit(key,was,now);} }
 export function setSlotVal(key:any,id:any){
   key=String(key);const c=key.indexOf(':');
   /* dropping someone onto the seat they already occupy is not a change — it
      used to raise a pending mark, an undo step and a line in the next AL */
-  if(slotVal(key)===(id||''))return;
-  noteChange(key);
+  const was=slotVal(key);
+  if(was===(id||''))return;
+  noteChange(key,was,id||'');
   { const m=key.match(XKEY);
     if(m&&c>=0){const k=key.slice(0,c),a=key.slice(c+1).replace(XKEY,'').split('.');
       const r=rowRef(k,a); if(!r)return;
@@ -205,8 +209,9 @@ export function txtSet(path:any,v:any){
   v=String(v==null?'':v).replace(/\s+/g,' ').trim();
   if(v==='—')v='';                                       // the empty-field placeholder
   if(TIME_TXT.test(String(path))){const m=parseHM(v);v=(m==null)?'':hhmm(m);}
-  if(String(r.o[r.k]==null?'':r.o[r.k])===v)return false;
-  r.o[r.k]=v; noteChange(path); return true;
+  const was=String(r.o[r.k]==null?'':r.o[r.k]);
+  if(was===v)return false;
+  r.o[r.k]=v; noteChange(path,was,v); return true;
 }
 /* does the row an armed key addresses still exist? */
 export function armTargetExists(key:any){

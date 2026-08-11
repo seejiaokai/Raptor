@@ -11,6 +11,7 @@ import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
 import { markEdit, alAttr } from '../engine/publish'
+import { logAction, ELOG } from '../engine/editlog'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
@@ -197,7 +198,32 @@ export function boardWarnHTML(di: number) {
       wh += `<div class="wln ${w.sev}${on}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || ''))}</div>`
     })
   } else wh += `<div class="wln ok">No conflicts flagged for this day ✓</div>`
-  return wh + `</div>`
+  /* THE WAY INTO THE CHANGES LIST (owner, 11 Aug 26), and it lives here
+     rather than on the top bar for a measured reason: a second control up
+     there took the phone bar from 70px to 92px, wrapping the day name onto a
+     line of its own, which is the failure HANDOFF's "do not add a control
+     back to this bar without taking one off" describes. This panel is where
+     the board already puts what is true of the day as a whole, it is the
+     first thing on the phone board (order:-1) and the side column on a
+     desktop, and it costs the bar nothing.
+     It shows only while History is on — the owner's own phrasing was "when I
+     enable history, there is ALSO an option to view the history of all
+     edits", so it is a second thing the mode brings, not a permanent control
+     competing with the day's checks for attention.
+     Counted here rather than in the modal so the number is visible before you
+     open it: an empty log says so up front instead of after a tap. */
+  wh += `</div>`
+  if (view.HISTMODE) {
+    const n = ELOG.rows.length
+    /* OUTSIDE .sbwrap, not inside it — on a phone that wrapper folds shut by
+       default and hides every .wln, so an entry in there would be invisible
+       until you had opened a panel about something else. It is also not one
+       of the day's checks: those are about this day's flying, this is about
+       the session. */
+    wh += `<button class="histln" data-histopen title="Every change made this session, newest first">`
+      + `☰ ${n ? `${n} change${n > 1 ? 's' : ''} this session` : 'No changes yet'}</button>`
+  }
+  return wh
 }
 
 export function dayTabsHTML(di: number) {
@@ -274,9 +300,24 @@ export function sortAllCommit() {
   HIST.lock = true
   let any = false
   try { any = sortDay(di) } finally { HIST.lock = false }
-  if (any) { afterSchedMutate(); toast(`Every section on ${d.dow} sorted`) }
+  /* ONE line, not one per section. sortDay runs six sorters and the reorder
+     paths mark keys without changing a value, so the log stays silent through
+     all of it by construction — the same shape as HIST.lock above, and for the
+     same reason: this was one action. */
+  if (any) { logAction(di, `Every section on ${d.dow} sorted`); afterSchedMutate(); toast(`Every section on ${d.dow} sorted`) }
   else { notify(); toast('Already in order') }
 }
+
+/* A STRUCTURAL CHANGE — a line, wave, row or note added or removed — said
+   once, to the scheduler and to the edit log, in the same words.
+   Those changes reach markEdit() with NO key on purpose (a delete must not
+   re-mark the address it just removed), so the log has no pair of values to
+   diff and nothing to hang a bubble on; the sentence the toast already says
+   is the record. Routing both through one call is what stops the two
+   drifting: a toast reworded here cannot leave the log saying the old thing.
+   Returns the toast, so every `return toast(…)` site became `return act(…)`
+   with no change to how any of them behave. */
+const act = (di: any, msg: string) => { logAction(di, msg); return toast(msg) }
 
 /* the board's delegated .mbtn click handler, verbatim bodies */
 export function boardMbtn(e: MouseEvent) {
@@ -373,13 +414,13 @@ export function boardMbtn(e: MouseEvent) {
     r.f.aircraft.splice(r.ai, 1)
     shiftAircraft(dI, gI, r.li, r.ai)
     if (!r.f.aircraft.length) { r.w.formations.splice(r.li, 1); shiftFormation(dI, gI, r.li) } else rollCx(r.f)
-    markEdit(); afterSchedMutate(); notify(); return toast('Line removed')
+    markEdit(); afterSchedMutate(); notify(); return act(dI, 'Line removed')
   }
   if (ds.lac != null) {
     const [di, gi, li] = ds.lac.split('.').map(Number)
     const f = DAYS[di].waves[gi].formations[li]
     f.aircraft.push({ p: '', w: '', area: '', rmks: '', opts: {} }); rollCx(f)
-    markEdit(`fr:${di}.${gi}.${li}.${f.aircraft.length - 1}`); afterSchedMutate(); notify(); return toast('Aircraft added')
+    markEdit(`fr:${di}.${gi}.${li}.${f.aircraft.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Aircraft added')
   }
   if (ds.gline != null) {
     const [di, gi] = ds.gline.split('.').map(Number)
@@ -389,7 +430,7 @@ export function boardMbtn(e: MouseEvent) {
        than an empty box, because only the empty one asks to be typed into. */
     const w = DAYS[di].waves[gi]
     w.formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
-    markEdit(`ff:${di}.${gi}.${w.formations.length - 1}.cs`); afterSchedMutate(); notify(); return toast('Line added')
+    markEdit(`ff:${di}.${gi}.${w.formations.length - 1}.cs`); afterSchedMutate(); notify(); return act(di, 'Line added')
   }
   if (ds.gdel != null) {
     const [di, gi] = ds.gdel.split('.').map(Number)
@@ -403,27 +444,27 @@ export function boardMbtn(e: MouseEvent) {
         DAYS[di].dutywaves.splice(j, 1);[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, j))
       })
     }
-    markEdit(); afterSchedMutate(); notify(); return toast('Wave removed')
+    markEdit(); afterSchedMutate(); notify(); return act(di, 'Wave removed')
   }
   if (ds.nadd != null) {
     const d = DAYS[+ds.nadd]; d.notes = d.notes || []; d.notes.push('')
-    markEdit(`dn:${+ds.nadd}.${d.notes.length - 1}`); afterSchedMutate(); notify(); return
+    markEdit(`dn:${+ds.nadd}.${d.notes.length - 1}`); logAction(+ds.nadd, 'Note added'); afterSchedMutate(); notify(); return
   }
   if (ds.ndel != null) {
     const [di, ni] = ds.ndel.split('.').map(Number)
     DAYS[di].notes.splice(ni, 1); shiftKeys(`dn:${di}.`, 0, ni)
-    markEdit(); afterSchedMutate(); notify(); return toast('Note removed')
+    markEdit(); afterSchedMutate(); notify(); return act(di, 'Note removed')
   }
   if (ds.padd != null) {
     const d = DAYS[+ds.padd]; d.allhands = d.allhands || []
     d.allhands.push({ prog: '', sub: '', str: '', end: '', who: [] })
-    markEdit(`ap:${+ds.padd}.${d.allhands.length - 1}.prog`); afterSchedMutate(); notify(); return
+    markEdit(`ap:${+ds.padd}.${d.allhands.length - 1}.prog`); logAction(+ds.padd, 'Programme item added'); afterSchedMutate(); notify(); return
   }
   if (ds.pdel != null) {
     const [di, ri] = ds.pdel.split('.').map(Number)
     DAYS[di].allhands.splice(ri, 1)
     ;[`ap:${di}.`, `a:${di}.`].forEach(h => shiftKeys(h, 0, ri))
-    markEdit(); afterSchedMutate(); notify(); return toast('Item removed')
+    markEdit(); afterSchedMutate(); notify(); return act(di, 'Item removed')
   }
   if (ds.pcx != null) { const [di, ri] = ds.pcx.split('.').map(Number); return askCx(DAYS[di].allhands[ri], `ap:${di}.${ri}.prog`, 'this item') }
   if (ds.pflag != null) {
@@ -449,19 +490,19 @@ export function boardMbtn(e: MouseEvent) {
     const [di, wi] = ds.dwdel.split('.').map(Number)
     DAYS[di].dutywaves.splice(wi, 1)
     ;[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, wi))
-    markEdit(); afterSchedMutate(); notify(); return toast('Duty block removed')
+    markEdit(); afterSchedMutate(); notify(); return act(di, 'Duty block removed')
   }
   if (ds.dradd != null) {
     const [di, wi] = ds.dradd.split('.').map(Number)
     const rows = DAYS[di].dutywaves[wi].rows
     rows.push({ role: '', id: '', str: '', end: '' })
-    markEdit(`dr:${di}.${wi}.${rows.length - 1}.role`); afterSchedMutate(); notify(); return
+    markEdit(`dr:${di}.${wi}.${rows.length - 1}.role`); logAction(di, 'Duty row added'); afterSchedMutate(); notify(); return
   }
   if (ds.drdel != null) {
     const [di, wi, ri] = ds.drdel.split('.').map(Number)
     DAYS[di].dutywaves[wi].rows.splice(ri, 1)
     ;[`d:${di}.${wi}.`, `dr:${di}.${wi}.`].forEach(h => shiftKeys(h, 0, ri))
-    markEdit(); afterSchedMutate(); notify(); return toast('Duty row removed')
+    markEdit(); afterSchedMutate(); notify(); return act(di, 'Duty row removed')
   }
   if (ds.drcx != null) { const [di, wi, ri] = ds.drcx.split('.').map(Number); return askCx(DAYS[di].dutywaves[wi].rows[ri], `dr:${di}.${wi}.${ri}.role`, 'this duty') }
   if (ds.drflag != null) {
@@ -474,13 +515,13 @@ export function boardMbtn(e: MouseEvent) {
     const d = DAYS[+di]; d.sims = d.sims || {}
     const rows = (d.sims[kind] = d.sims[kind] || [])
     rows.push({ label: '', str: '', end: '' })
-    markEdit(`sr:${+di}.${kind}.${rows.length - 1}.label`); afterSchedMutate(); notify(); return
+    markEdit(`sr:${+di}.${kind}.${rows.length - 1}.label`); logAction(+di, 'Sim row added'); afterSchedMutate(); notify(); return
   }
   if (ds.srdel != null) {
     const [di, kind, ri] = ds.srdel.split('.')
     DAYS[+di].sims[kind].splice(+ri, 1)
     ;[`s:${di}.${kind}.`, `sr:${di}.${kind}.`].forEach(h => shiftKeys(h, 0, +ri))
-    markEdit(); afterSchedMutate(); notify(); return toast('Sim row removed')
+    markEdit(); afterSchedMutate(); notify(); return act(+di, 'Sim row removed')
   }
   if (ds.srcx != null) { const [di, kind, ri] = ds.srcx.split('.'); return askCx(DAYS[+di].sims[kind][+ri], `sr:${di}.${kind}.${ri}.label`, 'this sim') }
   if (ds.srflag != null) {
@@ -491,13 +532,13 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.gradd != null) {
     const d = DAYS[+ds.gradd]; d.ground = d.ground || []
     d.ground.push({ prog: '', str: '', end: '', who: '' })
-    markEdit(`gr:${+ds.gradd}.${d.ground.length - 1}.prog`); afterSchedMutate(); notify(); return
+    markEdit(`gr:${+ds.gradd}.${d.ground.length - 1}.prog`); logAction(+ds.gradd, 'Ground item added'); afterSchedMutate(); notify(); return
   }
   if (ds.grdel != null) {
     const [di, ri] = ds.grdel.split('.').map(Number)
     DAYS[di].ground.splice(ri, 1)
     ;[`g:${di}.`, `gr:${di}.`].forEach(h => shiftKeys(h, 0, ri))
-    markEdit(); afterSchedMutate(); notify(); return toast('Ground item removed')
+    markEdit(); afterSchedMutate(); notify(); return act(di, 'Ground item removed')
   }
   if (ds.grcx != null) { const [di, ri] = ds.grcx.split('.').map(Number); return askCx(DAYS[di].ground[ri], `gr:${di}.${ri}.prog`, 'this item') }
   if (ds.grflag != null) {
@@ -669,7 +710,7 @@ export function addWave(di: number, kind: any) {
   d.waves = d.waves || []
   if (!kind) {
     d.waves.push({ label: 'WAVE ' + (d.waves.filter((w: any) => !isStandalone(w)).length + 1), night: false, intimes: [], traffic: [], formations: [{ cs: 'NEW', msn: '-', to: '12:00', ld: '13:00', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }] })
-    markEdit(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify(); return toast('Wave added')
+    markEdit(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Wave added')
   }
   const w = makeStandalone(kind); if (!w) return
   d.waves.push(w)
