@@ -43,6 +43,36 @@ describe('sortWaves', () => {
     expect(DAYS[0].waves.map((w: any) => w.label)).toEqual(['SC', 'AVALON'])
   })
 
+  /* THE SHIFT HOURS ARE DEFAULTS, NOT FACTS (owner, 11 Aug 26 — "these are
+     default times, don't hardcode it … apply the same logic based on what u
+     see"). SAWAVE stamps 07:00 on a new SC and 19:00 on a new AVALON, and
+     the scheduler is free to retype either the moment it exists. So the key
+     is read live off `f.to` every time the sorter runs and no wave KIND
+     carries an assumed hour anywhere in this file — invert the two defaults
+     and the order must invert with them. */
+  it('follows the times actually in the cells, not the hours SC and AVALON come up with', () => {
+    DAYS[0].waves = [
+      { label: 'SC', kind: 'sc', standalone: true, formations: [{ cs: 'SC', msn: 'AM', to: '09:00', ld: '15:00', aircraft: [] }] },
+      { label: 'AVALON', kind: 'avalon', standalone: true, noconf: true, formations: [{ cs: 'AVALON', msn: 'NIGHT', to: '05:00', ld: '11:00', aircraft: [] }] },
+    ]
+    /* a 05:00 AVALON is above a 09:00 SC — the opposite of the default pair,
+       and the assertion fails the moment anything reads the kind instead */
+    expect(sortWaves(0)).toBe(true)
+    expect(DAYS[0].waves.map((w: any) => w.label)).toEqual(['AVALON', 'SC'])
+  })
+
+  it('re-reads the times on every run, so retyping one take-off is enough to move its wave', () => {
+    DAYS[0].waves = [
+      { label: 'EARLY', formations: [{ cs: 'e', to: '0700', aircraft: [] }] },
+      { label: 'LATE', formations: [{ cs: 'l', to: '1500', aircraft: [] }] },
+    ]
+    expect(sortWaves(0)).toBe(false)
+    /* the scheduler moves the second wave's take-off to before the first's */
+    DAYS[0].waves[1].formations[0].to = '0600'
+    expect(sortWaves(0)).toBe(true)
+    expect(DAYS[0].waves.map((w: any) => w.label)).toEqual(['LATE', 'EARLY'])
+  })
+
   /* a wave is ranked by its EARLIEST take-off, not its first-typed line —
      which is what makes the inner and outer sorts independent */
   it('ranks a wave by its earliest take-off even when that line is not the first one in it', () => {
@@ -108,6 +138,18 @@ describe('sortDutyBlocks', () => {
     /* the sa marker travels with its block — that is what keeps an AVALON
        desk tied to its wave when either of them moves */
     expect(DAYS[0].dutywaves[1].sa).toBe('avalon')
+  })
+
+  /* the duty half of the same rule: an AVALON desk is stamped 19:00 by
+     waveDutyBlock and every one of those is an ordinary editable cell
+     afterwards, so a desk retyped to an early start sorts to the top */
+  it('follows the times actually in the rows, not the hours a wave\'s desk comes up with', () => {
+    DAYS[0].dutywaves = [
+      { label: '1st wave', rows: [{ role: 'SDO', str: '1400' }, { role: 'SXO', str: '1500' }] },
+      { label: 'AVALON duties', sa: 'avalon', rows: [{ role: 'SXO', str: '0500' }] },
+    ]
+    expect(sortDutyBlocks(0)).toBe(true)
+    expect(DAYS[0].dutywaves.map((x: any) => x.label)).toEqual(['AVALON duties', '1st wave'])
   })
 
   it('carries a name, a role and a block-label key onto the block\'s new address', () => {

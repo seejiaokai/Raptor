@@ -788,6 +788,16 @@ moved by deleting and retyping it.
   example: a first wave of 0700/0900 and a second of 1000/0800 must come
   out 0700/0900 then 0800/1000 — ranking on the first line typed would
   read 1000 for the second wave and leave the pair as built.
+- **The shift hours are DEFAULTS, and the sort reads the CELLS** (owner,
+  11 Aug 26 — "these are default times, don't hardcode it … apply the same
+  logic based on what u see"). `SAWAVE` stamps 07:00 on a new SC and 19:00
+  on a new AVALON, and both are ordinary editable cells from that moment
+  on, as is every duty desk `waveDutyBlock` timestamps. So the key is read
+  live off `f.to` / `r.str` on every run and **no wave KIND carries an
+  assumed hour anywhere in `reorder.ts`** — retype an AVALON to 05:00 and
+  it sorts above a 09:00 SC. Pinned by two tests that invert the defaults;
+  a `kind`-aware shortcut here would pass every default-timed case and fail
+  the first squadron that flies its own hours.
 - **A block with no parseable time sinks to the bottom in model order** —
   a BB wave (hours are the scheduler's to set), a wave whose last line was
   just deleted, a duty block nobody has timed yet. Same fallback every
