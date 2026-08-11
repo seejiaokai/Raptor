@@ -1052,6 +1052,49 @@ so the toast and the log say the same words. Sort all logs one line, not six:
 the sorters mark keys whose values never move, so `logEdit` is silent through
 all of it by construction. Undo and redo log themselves.
 
+**Three more ACTIONS carry a sentence for the same reason** (added 11 Aug 26,
+after a review found the list silently missing them). Each changes the
+schedule and reaches `markEdit` with no key, or with a key whose values it
+cannot diff, so each says its own toast to the log through `logAction`:
+
+| action | where | why it has no value pair |
+|---|---|---|
+| Accepting an input to the ground programme (and undoing it) | `interactions.ts`, the `[data-acc]` branch | the row did not exist a moment ago, so there is no "before" |
+| Cancelling with a reason, and restoring | `cxCommit`, `board.ts` | `cx`/`cxr` are not addressed by any slot key |
+| Rolling a day back to a published version | `interactions.ts`, the `[data-restore]` branch | `restoreDayVersion` swaps the whole day object — not one key passes through the funnel |
+
+Accepting through `inputedit.tsx`'s relink (an accepted input edited onto
+another person or date) is deliberately NOT logged: it is one user action that
+internally unaccepts and re-accepts, and logging the engine call would put two
+contradictory lines against one edit. The gap is the input surfaces, which the
+changes list has never covered — it is a record of the SCHEDULE.
+
+**The five fields that write their own model must pass their values by hand.**
+Stores chips, the bombs box, area, area time, in-times and traffic live
+outside the txt-key grammar: they assign to the model directly and call
+`markEdit(key)` themselves rather than going through `txtSet`. Every one of
+them passed a key alone until 11 Aug 26, so changing a jet's stores or an
+airspace booking marked the cell as edited and then had nothing to say when
+History was asked what changed — while the cell still wore the `cursor:help`
+that promises an answer. They now pass `was`/`now`, read BEFORE the assignment
+in each case. Two of them need care and the reason is written beside each:
+
+- **`st:` is per-AIRCRAFT, and the chips and the bombs box share it**, because
+  the amendment mark does. Both log `storesText(a.opts)` (`stores.ts`) — the
+  whole load either side, not the one control that was touched — or two rows
+  would carry the same label and contradict each other.
+- **Traffic cannot read its own "before" at commit time.** All three handlers
+  in `AirPop` write `traffic` in place before `airEdit()` runs (the typing one
+  has to; a React-controlled list repaints under the caret), so the list is
+  snapshotted when the popup opens and refreshed on every commit. The
+  snapshot effect is keyed on `AIRKEY`, not on every render — the render
+  effect below it deliberately has no dependency list, and re-snapshotting on
+  an unrelated repaint would adopt the half-typed value as the "before".
+
+Pinned by `ui/editlog-writers.test.tsx`, which drives the real gestures: the
+bug was never in the log, it was in what the callers handed it, so a test
+calling `markEdit` with two values by hand would have passed throughout.
+
 **`who` arrives through `HOOKS.whoami()`**, wired in `wireStore()` from
 `SESSION`/`ACCOUNTS`. Accounts are hard-coded, so today it only ever reads
 `Admin` or `Squadron member`. That hook is the one seam a real server has to
@@ -1065,6 +1108,13 @@ can rewrite by pressing undo is not a log.
 `keyLabel(key)` turns a slot key into plain words ("MONSOON 1 · FCP", "Duty ·
 SOF") and is **frozen onto the row at log time** — the row it names can be
 deleted a minute later, and re-deriving then would print the wrong row's name
-once the indices below it shift up. `state/view.ts`'s `slotTitle()` answers a
+once the indices below it shift up. **The four per-AIRCRAFT keys name their
+jet where the line flies more than one** (`· #2 FCP`, `· #2 stores`, added
+11 Aug 26): the aircraft index used to be dropped from a flying seat, from
+`fr:` and from `st:`, so on the demo Monday — two `VL BFM` lines of two jets
+each — one label named four different details. `ff:`/`ar:`/`at:` address the
+FORMATION and take no number. It appears only where there is something to tell
+apart, so a single-ship reads as it always did, and the bubble was never
+affected: it matches on the key, not on the words. `state/view.ts`'s `slotTitle()` answers a
 similar question for the arm picker and is deliberately separate: it emits
 HTML, covers only the crew keys, and lives where the engine cannot reach it.

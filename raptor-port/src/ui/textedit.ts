@@ -8,6 +8,7 @@ import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
 import { inpById, inpTimeText } from '../engine/inputs'
 import { setInpField } from './inputedit'
 import { markEdit } from '../engine/publish'
+import { storesText } from '../engine/stores'
 import { validate } from '../engine/validate'
 import { afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
@@ -77,7 +78,15 @@ export function routeFocusOut(e: FocusEvent) {
   if (it) {
     const [di, gi] = it.dataset.intimes!.split('|'); const w = DAYS[+di!].waves[+gi!]
     const nv = [...it.querySelectorAll('span')].map(s => s.textContent!.trim()).filter(Boolean)
-    if (nv.join('|') !== (w.intimes || []).join('|')) { w.intimes = nv; markEdit(`it:${di}.${gi}`); txtCommit() }
+    /* READ BEFORE THE ASSIGNMENT — this and the three below are the fields that
+       live outside the txt-key grammar, so they write the model themselves and
+       call markEdit by hand instead of going through txtSet. That is why they
+       used to leave the edit log empty: markEdit logs only when handed both
+       values (editlog.ts), and none of them passed any, so changing a jet's
+       stores or an airspace booking marked the cell as edited and then had
+       nothing to say when History was asked what changed. */
+    const itWas = (w.intimes || []).join(', ')
+    if (nv.join('|') !== (w.intimes || []).join('|')) { w.intimes = nv; markEdit(`it:${di}.${gi}`, itWas, nv.join(', ')); txtCommit() }
     const want = intimesInner(w); if (!sameInner(it, want)) it.innerHTML = want
     return
   }
@@ -88,7 +97,13 @@ export function routeFocusOut(e: FocusEvent) {
     const [di, gi, li, ai] = bo.dataset.bombs!.split('.')
     const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
     a.opts = a.opts || {}; const nv = bo.textContent!.trim()
-    if (nv !== (a.opts.bombs || '')) { a.opts.bombs = nv; markEdit(`st:${di}.${gi}.${li}.${ai}`); txtCommit() }
+    /* the WHOLE stores load either side, not just the bombs text: the chips and
+       this box share one address (`st:` is per-aircraft, because the amendment
+       mark is), so a log row naming only half of it would carry the same label
+       as a chip toggle and contradict it. storesText is the engine's own
+       rendering of that cell — see stores.ts. */
+    const stWas = storesText(a.opts)
+    if (nv !== (a.opts.bombs || '')) { a.opts.bombs = nv; markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts)); txtCommit() }
     heal(bo, a.opts.bombs || '')
     return
   }
@@ -115,7 +130,10 @@ export function routeFocusOut(e: FocusEvent) {
     const [di, gi, li] = ar.dataset.area!.split('.')
     const f = DAYS[+di!].waves[+gi!].formations[+li!]
     const nv = ar.textContent!.trim()
-    if (nv !== areaText(f)) { f.area = nv; markEdit(`ar:${di}.${gi}.${li}`); txtCommit() }
+    /* areaText(f) is what the cell is SHOWING, derived or stored (see the long
+       comment above), so it is also the honest "before" for the log */
+    const arWas = areaText(f)
+    if (nv !== arWas) { f.area = nv; markEdit(`ar:${di}.${gi}.${li}`, arWas, nv); txtCommit() }
     heal(ar, areaText(f))
     return
   }
@@ -124,7 +142,8 @@ export function routeFocusOut(e: FocusEvent) {
     const [di, gi, li] = at.dataset.atime!.split('.')
     const f = DAYS[+di!].waves[+gi!].formations[+li!]
     const nv = at.textContent!.trim()
-    if (nv !== atimeText(f)) { f.atime = nv; markEdit(`at:${di}.${gi}.${li}`); txtCommit() }
+    const atWas = atimeText(f)
+    if (nv !== atWas) { f.atime = nv; markEdit(`at:${di}.${gi}.${li}`, atWas, nv); txtCommit() }
     heal(at, atimeText(f))
   }
 }

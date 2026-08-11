@@ -2317,6 +2317,50 @@ test.describe('the History bubble', () => {
       expect(m!.b, 'it sits clear of the cell it describes').toBeLessThanOrEqual(m!.cellTop + 1)
     })
   }
+
+  /* THE BUBBLE IS UNDER EVERY BOX THAT CAN OPEN OVER IT (11 Aug 26).
+     It was z-index 500, above the lot, and on a phone it stays up for four
+     seconds after the tap that raised it — so tapping a detail and then
+     opening any dialog left the bubble sitting on top of that dialog. It was
+     found once, with the changes list, and patched there with an explicit
+     hide; the other seven boxes still had it. The fix is the stacking, which
+     covers all of them at once and cannot drift the way a list of hide calls
+     would. Only a browser can read a computed z-index back, so this is the
+     one place it can be held. */
+  test('desktop: it stacks under every dialog that can open over the board', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await login(page)
+    await go(page, 'editsched')
+    const m = await raise(page)
+    expect(m, 'the bubble came up at all').not.toBe(null)
+
+    const z = await page.evaluate(() => {
+      const num = (sel: string) => {
+        const el = document.querySelector(sel) as HTMLElement
+        return el ? parseInt(getComputedStyle(el).zIndex, 10) : NaN
+      }
+      /* the dialogs are not all on screen, so read the RULES rather than live
+         elements — a stylesheet walk is what makes this independent of which
+         box happens to be open */
+      const want: any = {}
+      for (const sheet of [...document.styleSheets]) {
+        let rules: any[] = []
+        try { rules = [...(sheet as CSSStyleSheet).cssRules] } catch (_) { continue }
+        for (const r of rules as any[]) {
+          if (!r.selectorText || !r.style || !r.style.zIndex) continue
+          for (const s of ['.histbub', '.drawer', '.airpop', '.modal', '.wavemenu', '.schedboard'])
+            if (r.selectorText.split(',').map((x: string) => x.trim()).includes(s))
+              want[s] = parseInt(r.style.zIndex, 10)
+        }
+      }
+      return { ...want, live: num('.histbub') }
+    })
+
+    expect(z.live, 'the live bubble carries the rule').toBe(z['.histbub'])
+    expect(z['.histbub'], 'above the board it anchors to').toBeGreaterThan(z['.schedboard'])
+    for (const over of ['.drawer', '.airpop', '.modal', '.wavemenu'])
+      expect(z['.histbub'], `below ${over}, which can open over it`).toBeLessThan(z[over])
+  })
 })
 
 /* ===================================================================
