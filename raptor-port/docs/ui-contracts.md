@@ -50,7 +50,7 @@ with 8px of slack so a sliver does not count. `pan.ts`'s palette follow reads
 through the same function — shared, not copied, so the two can never disagree
 about which day you are on.
 
-Three things make it work, and each is load-bearing:
+Four things make it work, and each is load-bearing:
 
 - **The reading is taken in `setPage`, before `CURPAGE` moves.** One line later
   React swaps which `.page` carries `on`, and `.page{display:none}` takes the
@@ -58,6 +58,14 @@ Three things make it work, and each is load-bearing:
 - **It is captured on leaving EITHER week page**, not only on a straight
   view↔edit hop, so a detour through Inputs still lands you back on your day.
   A page with no week never overwrites a pending carry.
+- **Closing the SCHEDULER BOARD writes the carry too** (owner, 10 Aug 26).
+  `closeBoardState` sets `CARRYDAY` from `SBDAY` before clearing it, so
+  tabbing to Thursday on the board and closing it leaves the week on Thursday
+  rather than wherever it was parked. It is the same one mechanism, not a
+  second one — a board close is just another producer. Guarded on
+  `SBDAY!=null`: `closeBoardState` also runs on logout and on leaving Edit
+  Schedule, where a write would scroll the next week somewhere nobody asked
+  for, and would clobber a carry a page hop had just set.
 - **`CARRYDAY` is consumed ONCE**, by whichever week paints next
   (`ViewWeek.tsx` / `EditWeek.tsx`, right after the `scrollLeft = sl` that
   holds scroll across an ordinary repaint). If it stuck, every later repaint
@@ -224,13 +232,20 @@ by a test; pv-suppressed) · overall notes · overall programme · flying waves
 planning note inside the panel) · **Ground Programme · scheduler** (`.grnd`)
 · **Personal Inputs** (`.pinp`, with the accept controls) · **Unavailable**
 (`.unav`). The duty/sim/ground panels (added Aug 26) share the `c6r` grid
-(Item | Start | End | People | Rmks | ctl) and speak the ordinary grammar —
+(Item | Start | End | People | Rmks | ctl — **Duties says ROLE** where the
+other two say Item, its own `C6_DUTY` header, owner 10 Aug 26: a duty row
+names a job) and speak the ordinary grammar —
 seats `d:di.wi.ri` / `s:di.kind.ri` / `g:di.ri` (+ `.xN`, fill `.+`), texts
 `dl:/dr:/sr:/gr:` via `data-bfld` — so the board's generic arm/drag/change
 handlers cover them with no extra wiring. Row mbtns: `dr*/sr*/gr*` cx
 (CxDialog) / flag / del, `dwadd/dwdel/dradd`, `sradd`, `gradd` (board.ts).
 Duty rows render in MODEL order, not `dutySort` — an editor whose rows jump
-as a role is typed would be hostile. Ground rows render through
+as a role is typed would be hostile. **Nothing re-orders a duty block on its
+own** (owner, 10 Aug 26): typing a role into a blank cell used to reposition
+the whole block, and that is gone. Auto sort / Sort all are the only movers,
+and they order by START TIME, not role rank. `dwadd` opens a picker (which
+wave is this block for) rather than pushing a bare block, and the ROLE cell
+offers `DUTY_PICK` on click via `data-rolepick`. Ground rows render through
 `groundOrder` (see the blocks section below). `.pinp` rows themselves are
 read-only (aircrew-submitted inputs have no funnel keys; they are edited on
 the Inputs page) — only the accept buttons act. Every control is pv-gated in
