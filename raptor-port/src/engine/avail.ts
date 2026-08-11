@@ -129,7 +129,7 @@ export function slotRules(key:any){
   /* an append target and an overflow body both sit on the row they hang off,
      so they carry its hours — strip both before looking the row up */
   const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
-  const out:any={seat:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null};
+  const out:any={seat:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,avJet:false,avDuty:false};
   out.di=keyDay(k);
   /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
      shift carried a window before, which is the whole reason a personal input
@@ -142,7 +142,11 @@ export function slotRules(key:any){
      with nothing" would silently drop a real absence. slotBar falls back to
      the old whole-day answer instead. Fail closed, both sides. */
   if(/^[dsga]:/.test(k)){
-    const kk=k[0], r=rowRef(kk,k.slice(2).split('.'));
+    const kk=k[0], parts=k.slice(2).split('.'), r=rowRef(kk,parts);
+    /* AVALON's desk (owner, 11 Aug 26): the wave's `sa` marker survives on its
+       duty block (waveDutyBlock), so a `d:` key can tell whether its row is an
+       AVALON desk without walking back through DAYS.waves at all. */
+    if(kk==='d'){const dwx=((DAYS[+parts[0]]||{}).dutywaves||[])[+parts[1]]; if(dwx&&dwx.sa==='avalon')out.avDuty=true;}
     /* a sim runs 90 minutes when it names no end, matching events.ts;
        everything else falls to VCONF.openEnd, as win() does by default */
     const w2=r&&win(parseHM(r.str),parseHM(r.end),kk==='s'?90:undefined);
@@ -178,6 +182,7 @@ export function slotRules(key:any){
     if(f){ const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null){ if(en==null)en=st; if(en<st)en+=1440;
         const sh=wv&&isStandalone(wv);
+        if(sh&&wv.kind==='avalon')out.avJet=true;    // MAIN or SPARE, both are jet seats (owner, 11 Aug 26)
         out.slotStart=sh?st:st-VCONF.step; out.slotEnd=sh?en:en+VCONF.dekit; } }
     if(wv&&f&&isStandalone(wv)&&wv.kind==='sc'){
       const st=parseHM(f.to); let en=parseHM(f.ld);
@@ -230,6 +235,12 @@ export function slotBar(id:any,key:any,rules?:any){
        the last one matters.
        · A STANDALONE SPARE is standby, not a task, so a type that may spare
          does not close it (canSpare: local yes, overseas no, medical never).
+         AN AVALON SEAT — jet or desk, MAIN or SPARE (owner, 11 Aug 26) — bars
+         exactly what the validator's one check flags: canSpare, with canWork
+         already carving ATT B out of a desk below. Folded into the same
+         `spareLike` flag as the SC spare so the picker and the warning list
+         cannot drift apart — local leave no longer folds a man away from an
+         AVALON seat, because the engine raises nothing for it either.
        · ATT B is grounded, not absent, so it closes a FLYING seat only — a
          duty post, a sim seat or a ground row is proper work for him. A flying
          key is the one with no prefix.
@@ -241,14 +252,27 @@ export function slotBar(id:any,key:any,rules?:any){
          short-circuit BEFORE any overlap test, and a slot with no window of
          its own keeps the old whole-day answer. Unknown is not "never
          clashes", on either side. */
-    const sparePost=!!(r.sc&&r.scSpare);
+    const spareLike=!!(r.sc&&r.scSpare)||!!r.avJet||!!r.avDuty;
     const flying=String(key).indexOf(':')<0;
     const kn=r.slotStart!=null&&r.slotEnd!=null;
     const off=INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,DAYS[r.di].dt))
-      .filter((x:any)=>!(sparePost&&canSpare(x.type)))
+      .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>!kn||awayAllDay(x)||overlap(r.slotStart,r.slotEnd,x.s,x.e));
     if(off.length)return offWord(off[0]);
+    /* THE MIDNIGHT TAIL, picker side (owner, 11 Aug 26 — same modality as
+       events.ts's day.input, so the picker and the warning list cannot
+       disagree). A slot whose window runs past 1440 has a tail that belongs
+       to TOMORROW; the same filter chain runs again over tomorrow's inputs,
+       shifted +1440 so they land in this slot's minute-space, with an
+       all-day (or thin) record covering the whole shifted day so it always
+       overlaps a past-midnight window. */
+    const nd=kn&&r.slotEnd>1440&&r.di>=0?DAYS[r.di+1]:null;
+    const off2=!nd?[]:INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,nd.dt))
+      .filter((x:any)=>!(spareLike&&canSpare(x.type)))
+      .filter((x:any)=>!(canWork(x.type)&&!flying))
+      .filter((x:any)=>awayAllDay(x)||overlap(r.slotStart,r.slotEnd,x.s+1440,x.e+1440));
+    if(off2.length)return offWord(off2[0])+' (tomorrow)';
   }
   return '';
 }

@@ -181,7 +181,7 @@ export function lgRules(){
     {sev:'set',src:()=>`scSpare`,
      t:()=>`An <b>SC SPARE</b> is standing by, not tasked: he is checked for <b>currency</b>, and for being <b>able to stand it at all</b> — nothing else. He may fly, sit a sim or stand a duty in the same hours, and none of it raises anything; but an overseas leave or a downchit across the shift does.`},
     {sev:'set',src:()=>`w.noconf`,
-     t:()=>`<b>AVALON</b> and <b>BB</b> are wholly exempt — nothing on those lines is cross-checked at all.`},
+     t:()=>`<b>BB</b> is wholly exempt — nothing on it is cross-checked at all. <b>AVALON</b> is exempt from every cross-check but one: every man on it, jet seat or desk, must be <b>on the island</b> and <b>not medically down</b> — overseas leave, overseas duty, hospitalisation, medical leave or ATT C anywhere on the line, and ATT B on a jet seat too, though he may still man the desk.<span class="why">Local leave, an off in lieu, a course or an appointment plants him with nothing raised — the point of the rule is that standing AVALON is not the same as being cross-checked against the day's tasks. And the shift runs 19:00–07:00, so its morning half is judged against <b>tomorrow's</b> inputs, the same way a night sortie landing after midnight is.</span>`},
     {sev:'set',src:()=>`slotBar · dayEvents`,
      t:()=>`When an SC slot is armed, the crew picker judges each name against <b>that shift's own window</b>, not the whole day — so a man on SC AM is offered normally for SC PM.`},
    ]},
