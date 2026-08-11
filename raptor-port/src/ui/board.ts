@@ -805,6 +805,93 @@ export function toggleSbwarn() { SBWOPEN = !SBWOPEN }
 /* day tab switch — setBoardDay carries the reference's cross-day disarm */
 export function boardTab(n: number) { view.setBoardDay(n); validate(); notify() }
 
+/* ---------------------------------------------------------------------------
+   SWIPING BETWEEN DAYS ON THE PHONE BOARD (owner, 11 Aug 26)
+   The seven Mon–Sun chips are gone from the bar, so the day is reached the way
+   the view week's is: a sideways swipe.
+
+   It is a GESTURE, not seven rendered days. The week can be a scroll-snap
+   container because its seven days are cheap; the board draws one day at ~900
+   nodes against a ceiling of 960 (`probes/perf-port.cjs`), so rendering the
+   week's worth would be seven times the DOM and seven times every validate-
+   driven repaint. One day stays rendered and the swipe just moves SBDAY.
+
+   Three guards, each answering a real conflict on this surface rather than a
+   hypothetical one:
+
+   - **It never starts on the row grip, and never finishes during a puck
+     drag.** Those are the only two machines that can hold this finger, and
+     they need different answers because they claim it differently.
+     `rowdrag.ts` takes a press on `.sb-grip` IMMEDIATELY, so the grip is
+     excluded at pointerdown. `drag.ts` takes a puck only after a deliberate
+     HOLD and gives up the moment the finger travels — which a swipe does at
+     once — so a swipe can never arm it; the `tdrag` body class is checked at
+     pointerup anyway, in case one was armed before the swipe began.
+     **Everything else is deliberately allowed, and this is the guard that
+     had to be loosened after measurement.** Excluding inputs, buttons and
+     seats — the obvious defensive list — made the gesture work on the first
+     swipe and fail on every one after it: the board is wall-to-wall
+     controls, so whatever happened to land under the thumb once the day
+     changed decided whether the next swipe was permitted, which reads as
+     "swiping randomly stops working". A tap travels ~0px, so the distance
+     test below already separates tapping from swiping, and it does it on
+     what the finger DID rather than on what it started over.
+   - **Horizontal has to beat vertical by 2×.** The board is a tall scroller;
+     a thumb travelling down it wanders sideways, and a bare threshold turns
+     ordinary reading into day changes.
+   - **Not in desktop layout.** `.sb-wide` makes the whole board a horizontal
+     scroller, where sideways IS panning across the day's columns.
+
+   `editingText()` is deliberately NOT consulted. It asks "is a text cell
+   focused", which is true for the whole time a scheduler has tapped into a
+   field — including while they then swipe away from it — so gating on it
+   silently killed every swipe made after the first tap. The commit path is
+   unaffected either way: a day change re-renders through the ordinary funnel
+   and the field's own blur commits it, the same as tapping any other day.
+
+   Pointer events, not touch: the same choice `rowdrag.ts` documents — one
+   code path covers a finger and a trackpad, and the board's other machines
+   already speak them. Attached to the scroller and passive, so it never
+   delays the vertical scroll it usually turns out to be.
+   --------------------------------------------------------------------------- */
+const SWIPE_MIN = 55        // px of travel before it counts as a swipe at all
+const SWIPE_BIAS = 2        // horizontal must beat vertical by this much
+export function wireBoardSwipe(el: HTMLElement) {
+  let x0 = 0, y0 = 0, live = false
+  const onDown = (e: any) => {
+    live = false
+    if (SBWIDE) return
+    if (e.pointerType === 'mouse' && e.buttons !== 1) return
+    const t = e.target as HTMLElement
+    if (!t || !t.closest) return
+    /* the row grip only — see the note above on why nothing else is here */
+    if (t.closest('.sb-grip')) return
+    x0 = e.clientX; y0 = e.clientY; live = true
+  }
+  const onUp = (e: any) => {
+    if (!live) return
+    live = false
+    /* a puck drag was armed before this gesture — that finger is spoken for */
+    if (document.body.classList.contains('tdrag')) return
+    const dx = e.clientX - x0, dy = e.clientY - y0
+    if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) < Math.abs(dy) * SWIPE_BIAS) return
+    /* swipe LEFT (dx negative) reads as "pull the next day in from the right",
+       which is the direction the week's own sideways scroll already means */
+    const di = view.SBDAY
+    if (di == null) return
+    const to = di + (dx < 0 ? 1 : -1)
+    if (to < 0 || to >= DAYS.length) return toast(dx < 0 ? 'Last day of the week' : 'First day of the week')
+    boardTab(to)
+  }
+  el.addEventListener('pointerdown', onDown, { passive: true })
+  el.addEventListener('pointerup', onUp, { passive: true })
+  el.addEventListener('pointercancel', () => { live = false }, { passive: true })
+  return () => {
+    el.removeEventListener('pointerdown', onDown)
+    el.removeEventListener('pointerup', onUp)
+  }
+}
+
 export function openScheduler(di: number) { SBWOPEN = false; view.setBoardDay(di); validate(); notify() }
 /* Done/Close also parks the aircrew drawer: ros-open is a body class shared
    with the edit week's own drawer, and leaving it set would surprise-open

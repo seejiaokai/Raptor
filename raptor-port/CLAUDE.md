@@ -406,6 +406,14 @@ the phone perf budget. Don't convert them to components.
 - **A new flying line comes up blank** (owner, 10 Aug 26). `+ Line` used to
   copy the previous line's callsign, mission and times; a plausible wrong
   value reads as filled in when nobody filled it in.
+- **The phone board's top bar is ONE row, and the day is SWIPED** (owner,
+  11 Aug 26 — comp approved before build). The seven Mon–Sun chips are dots
+  now, `+ Line` is gone from the bar (every wave header already has one),
+  undo/redo are on it, and every label is icon-only under 820px. Do not add
+  a control back to this bar without taking one off: the whole point was
+  getting it from 166px to 58px on a 780px screen, and the geometry gate
+  counts ROWS, not just overflow. Desktop is unchanged.
+  Contract: `docs/ui-contracts.md` §The board on a phone is ONE window.
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add

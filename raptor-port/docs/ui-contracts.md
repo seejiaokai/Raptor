@@ -310,6 +310,62 @@ edit week now:
   the content, exactly as the week's issue strips do. `flex:0 0 auto` is
   load-bearing — an `overflow:auto` child's automatic minimum is 0, so a
   shrinkable strip collapses to its header line.
+- **The top bar is ONE row, and the day is reached by SWIPING** (owner,
+  11 Aug 26 — comp approved before build). It used to be four stacked rows
+  and 166px of a 780px screen: the title, the seven Mon–Sun chips, then six
+  buttons that `flex-wrap` folded onto two lines. It measures 58px now, and
+  each move below is one of the owner's own asks:
+  - **The chips became DOTS**, in CSS only — the same seven `.sbday`
+    elements, the same delegated `[data-sbtab]` handler, emptied with
+    `font-size:0` and sized to 6px (16px for the current day). No node is
+    added or removed, so the board's DOM ceiling is untouched, and a TAP on
+    a dot still jumps straight to that day, which is what keeps Monday to
+    Friday one gesture instead of five swipes.
+  - **`+ Line` left the bar for good.** It was the only control here that
+    duplicated one inside the section it acts on — every wave header
+    carries its own — and the top-bar copy had to guess which wave it
+    meant (`addLine` appends to the day's LAST wave, a coin flip on a
+    two-wave day). `addLine` itself stays: it is the probe bridge's
+    `window.addLine`, which `sa-async.cjs` calls before any UI exists.
+    `+ Wave` stays too — nothing else can create a wave.
+  - **Undo and redo joined it.** The board is a full-screen modal over the
+    shell, so the shell's own pair is unreachable while it is open; every
+    board edit had to be undone after closing it. Same two calls and the
+    same disabled tests as `Shell.tsx`'s pair.
+  - **Every label is hidden, not removed** (`.sb-top .bl{display:none}`),
+    so desktop is untouched and each button keeps its accessible name.
+    Scoped to `.sb-top` rather than `.sb-actions` deliberately: the title's
+    own `· scheduler board` tail is a `.bl` too, and while it still painted
+    it made the title ~140px wider than its box and pushed the button group
+    onto a second row. `min-width:0` on the buttons matters for the same
+    reason — `.abtn.hbtn` carries `min-width:76px` for the shell toolbar,
+    and a min-width beats a width whichever rule wins the cascade.
+  - **`today` is a dot, not a word** — it cost 46px of a 125px title and
+    ellipsised the DATE, the one thing the owner asked the bar to keep.
+  - Measured by `e2e/geometry.spec.ts`, which counts ROWS as well as
+    overflow: both regressions above fitted the width perfectly and simply
+    used a second line.
+- **The swipe is a gesture, not seven rendered days** (`wireBoardSwipe`,
+  `board.ts`, wired to `.sb-main`). The week can be a scroll-snap container
+  because its days are cheap; the board draws one day at ~900 nodes against
+  a ceiling of 960, so a week's worth would be seven times the DOM and
+  seven times every validate-driven repaint. 55px of travel, horizontal
+  beating vertical by 2×, and nothing at all in `.sb-wide` (where sideways
+  already pans the day's columns). It stops at both ends of the loaded week
+  with a toast rather than wrapping.
+  **What it does NOT guard against is the part worth reading.** Excluding
+  inputs, buttons and seats at pointerdown is the obvious defensive list and
+  it is wrong here: the board is wall-to-wall controls, so it made the
+  gesture work once and then fail depending on what happened to sit under
+  the thumb after the day changed — measured in a browser as Monday to
+  Tuesday working and Tuesday onward dead. Only `.sb-grip` is excluded
+  (`rowdrag.ts` claims a press there immediately); `drag.ts`'s puck drag
+  needs a deliberate HOLD and gives up the moment the finger travels, so a
+  swipe can never arm it, and its `tdrag` body class is checked at pointerup
+  for one armed beforehand. `editingText()` is deliberately NOT consulted —
+  it stays true for as long as a field is focused, including while the
+  scheduler swipes away from it, so gating on it killed every swipe after
+  the first tap.
 - **The roster is a right-edge AIRCREW drawer** (`.sb-ros`, carrying
   `.eroster` so the week's tab styling, its `ros-open` accent flip and
   interactions.ts's delegated `.ros-tab` toggle apply verbatim). Arming any
@@ -329,7 +385,20 @@ edit week now:
   NO hidden hit area — the board's panels take 4px extra right padding
   because the old tab cleared them by exactly 26 — and open restates full
   height as it slides out. The week's `.eroster` has the identical parked
-  shape. A SUCCESSFUL fill parks the drawer so the puck is seen landing:
+  shape. **Open, it now starts BELOW the top bar and is thinner** (owner,
+  11 Aug 26): it used to be `top:0`, painting over the day, the undo pair
+  and ✕ Close — the controls a scheduler reaches for while the palette is
+  open — and `max-width` came down from 78vw to 64vw, which still clears the
+  165px two puck columns need and gives the board back 55px. The offset is
+  `--sb-topH`, published by a ResizeObserver on the bar in `SchedBoard.tsx`.
+  Two simpler answers are wrong and were both measured: anchoring the drawer
+  to `.sb-main` with `position:absolute` looks right (it IS the box below
+  the bar) but `.sb-main` is the phone board's SCROLLER, so the drawer
+  scrolled away with the day and `bottom:0` stretched it to the full 7.8k px
+  scroll height, breaking the plant-from-the-drawer path outright; and
+  reading the bar once in a render effect landed 5px short, because the
+  effect runs before the bar's final reflow. Both were caught by the
+  geometry gate, not by eye. A SUCCESSFUL fill parks the drawer so the puck is seen landing:
   the tap path in `placeArmed`'s success branch, the drag path by clearing
   `drag.ts`'s `ROS_REOPEN` latch inside `applyDrop`'s `done()` — refusals
   and aborted drags leave the drawer out. Spec:

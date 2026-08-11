@@ -11,11 +11,13 @@ import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
-import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, addLine, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll } from './board'
+import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, wireBoardSwipe } from './board'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
+import { HIST } from '../state/history'
+import { undo, redo } from '../state/store'
 
 export function SchedBoard() {
   const version = useVersion()
@@ -24,6 +26,9 @@ export function SchedBoard() {
   const daysRef = useRef<HTMLDivElement>(null)
   const warnRef = useRef<HTMLDivElement>(null)
   const inputsRef = useRef<HTMLDivElement>(null)
+  const mainRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const topRef = useRef<HTMLDivElement>(null)
   /* The board's only home page is Edit Schedule — `open` used to be a bare
      `SBDAY != null`, so a nav click while the board was open left the
      modal (position:fixed, inset:0, z-index:400 — the whole viewport)
@@ -65,10 +70,39 @@ export function SchedBoard() {
     el.addEventListener('click', boardArmClick)
     el.addEventListener('change', boardChange)
     const offDrag = wireRowDrag(el)
+    /* the swipe rides on the SCROLLER, not #sbBoard: .sb-main is what a
+       finger actually travels over (the warnings strip and the inputs panel
+       are inside it too), and a swipe that only worked over the flying
+       panels would be a day change on one half of the screen and nothing on
+       the other */
+    const offSwipe = wireBoardSwipe(mainRef.current!)
     return () => {
       el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
-      el.removeEventListener('change', boardChange); offDrag()
+      el.removeEventListener('change', boardChange); offDrag(); offSwipe()
     }
+  }, [])
+
+  /* THE DRAWER HAS TO CLEAR THE BAR (owner, 11 Aug 26 — "the aircrew tab
+     shouldn't be blocked by the bar at the top area"). Opened, it was
+     top:0/bottom:0 against the viewport and painted straight over the day,
+     the undo pair and ✕ Close.
+     The drawer stays pinned to the viewport (it must — .sb-main, the only
+     box that sits below the bar, is also the phone board's scroller, so
+     anchoring to it makes the drawer scroll away with the day), which means
+     CSS needs the bar's height as a number. An OBSERVER rather than a read
+     in this render effect: measured once per render it came out 5px short,
+     because the effect runs before the bar's final reflow — the observer
+     fires again on that reflow and on anything else that changes the bar's
+     height later, such as the version dropdown appearing on a day that has
+     published versions. */
+  useEffect(() => {
+    const root = rootRef.current, top = topRef.current
+    if (!root || !top || typeof ResizeObserver === 'undefined') return
+    const publish = () => root.style.setProperty('--sb-topH', top.offsetHeight + 'px')
+    publish()
+    const ro = new ResizeObserver(publish)
+    ro.observe(top)
+    return () => ro.disconnect()
   }, [])
 
   /* renderScheduler: fill every panel from the verbatim builders. Each panel
@@ -135,15 +169,45 @@ export function SchedBoard() {
   const d = open ? DAYS[SBDAY] : null
 
   return (
-    <div className={'schedboard' + (SBWIDE ? ' sb-wide' : '')} id="schedBoard" hidden={!open}>
-      <div className="sb-top">
-        <div className="sb-title"><b id="sbDay">{d ? d.dow : ''}</b> <span className="mono" id="sbDate">{d ? d.dt + (d.today ? ' · today' : '') : ''}</span> · scheduler board</div>
+    <div className={'schedboard' + (SBWIDE ? ' sb-wide' : '')} id="schedBoard" ref={rootRef} hidden={!open}>
+      {/* ONE ROW ON A PHONE (owner, 11 Aug 26 — comp approved before build).
+          The bar was four stacked rows and 166px of a 780px screen: title, the
+          seven Mon–Sun chips, then six buttons wrapping onto two lines. It is
+          43px now. Three moves got it there, and each is the owner's own ask:
+          the day chips become dots and the day is reached by SWIPING (the
+          gesture the view week already uses), `+ Line` goes entirely because
+          every wave header already carries one, and every remaining control
+          shows only its icon.
+          The labels are still in the DOM — `.bl` is display:none under 820px,
+          not removed — so desktop is untouched, the accessible name of each
+          button is still its words, and nothing here needs a second markup
+          path to maintain. */}
+      <div className="sb-top" ref={topRef}>
+        <div className="sb-title">
+          <b id="sbDay">{d ? d.dow : ''}</b> <span className="mono" id="sbDate">{d ? d.dt : ''}</span>
+          {d && d.today ? <i className="sb-today" title="today" /> : null}
+          <span className="bl"> · scheduler board</span>
+        </div>
+        {/* the same seven buttons on both surfaces — CSS makes them chips on a
+            desktop and dots on a phone, so there is one list, one click
+            handler, and a tap on a dot still jumps straight to that day */}
         <div className="sb-days" id="sbDays" ref={daysRef}
           onClick={e => { const t = (e.target as HTMLElement).closest('[data-sbtab]') as HTMLElement | null; if (t) boardTab(+t.dataset.sbtab!) }} />
         <div className="sb-actions">
           <button className={'abtn sb-widebtn' + (SBWIDE ? ' on' : '')} id="sbWide"
             title={SBWIDE ? 'Back to the stacked phone layout' : 'Show the board in its full desktop layout'}
-            onClick={() => { toggleWide(); notify() }}>{SBWIDE ? '📱 Phone layout' : '🖥 Desktop layout'}</button>
+            onClick={() => { toggleWide(); notify() }}>
+            <span className="bi">{SBWIDE ? '📱' : '🖥'}</span><span className="bl"> {SBWIDE ? 'Phone layout' : 'Desktop layout'}</span></button>
+          {/* Undo / redo on the board itself (owner, 11 Aug 26). The board is
+              a full-screen modal over the shell, so the shell's own pair is
+              unreachable while it is open — every board edit had to be undone
+              after closing it. Same two calls and the same disabled tests as
+              Shell.tsx's pair; HIST is global, so this undoes the last edit
+              wherever it was made, which is what Undo has always meant here. */}
+          <button className="abtn hbtn" id="sbUndo" title="Undo" disabled={HIST.ix <= 0}
+            onClick={() => { undo(); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
+          <button className="abtn hbtn" id="sbRedo" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1}
+            onClick={() => { redo(); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
           {open && dayVersions(SBDAY).length > 1
             ? <select className="dver" aria-label="View this day as it was issued"
                 value={String(DPREV.get(SBDAY) ?? 'live')}
@@ -166,23 +230,28 @@ export function SchedBoard() {
               +Line/+Wave above. */}
           {open && HOOKS.editMode() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
             title="Reorder every section on this day back into its own reading order, waves and duty blocks included — one confirm, one undo step"
-            onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}>⇅ Sort all</button>}
-          {/* + Line / + Wave — matched to Sort all's own gate (coordinator
-              review, 9 Aug 26): these two carried no editMode() gate of
-              their own here, so they still rendered enabled on a read-only
-              board (a session that may not edit it, board still open on
-              its own page) —
-              the last "looks live, does nothing" pair, genuinely inert
-              because addLine/addWave already refuse underneath (board.ts),
-              but that is exactly the shape Sort all was fixed for three
-              lines above. Hidden, not merely disabled, same as Sort all. */}
-          {open && HOOKS.editMode() && <button className="abtn" id="sbAddLine" disabled={DPREV.has(SBDAY)} onClick={() => { if (SBDAY != null) addLine(SBDAY) }}>+ Line</button>}
-          {open && HOOKS.editMode() && <button className="abtn" id="sbAddGo" disabled={DPREV.has(SBDAY)} onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, SBDAY) }}>+ Wave</button>}
-          <button className="abtn primary" id="sbDone" onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}>Done</button>
-          <button className="abtn ghost" id="sbClose" onClick={closeScheduler}>✕ Close</button>
+            onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi">⇅</span><span className="bl"> Sort all</span></button>}
+          {/* + Wave — matched to Sort all's own gate (coordinator review, 9
+              Aug 26): it carried no editMode() gate of its own here, so it
+              still rendered enabled on a read-only board (a session that may
+              not edit it, board still open on its own page) — genuinely inert
+              because addWave already refuses underneath (board.ts), but that
+              is exactly the shape Sort all was fixed for three lines above.
+              Hidden, not merely disabled, same as Sort all.
+              `+ LINE IS GONE FROM HERE` (owner, 11 Aug 26 — "there will be no
+              +line at the top, because each section I can already add rows").
+              It was the only control on this bar that duplicated one already
+              sitting inside the section it acts on: every wave header carries
+              its own `+ Line`, next to the wave it adds to, where the top-bar
+              copy had to guess (`addLine` appends to the LAST wave of the day,
+              which on a two-wave day is a coin flip). `+ Wave` stays because
+              nothing else on the board can create a wave. */}
+          {open && HOOKS.editMode() && <button className="abtn" id="sbAddGo" disabled={DPREV.has(SBDAY)} onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, SBDAY) }}><span className="bi">+</span><span className="bl"> Wave</span></button>}
+          <button className="abtn primary" id="sbDone" onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}><span className="bi">✓</span><span className="bl"> Done</span></button>
+          <button className="abtn ghost" id="sbClose" onClick={closeScheduler}><span className="bi">✕</span><span className="bl"> Close</span></button>
         </div>
       </div>
-      <div className="sb-main">
+      <div className="sb-main" ref={mainRef}>
         <div className="sb-boardwrap">
           <div className="sb-board" id="sbBoard" ref={boardRef} />
           <div className="sb-inputs" id="sbInputs" ref={inputsRef} />

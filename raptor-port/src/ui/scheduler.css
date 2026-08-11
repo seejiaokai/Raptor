@@ -1590,6 +1590,14 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .sb-days{display:flex;gap:5px}
 .sb-days .sbday{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer}
 .sb-days .sbday.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+/* the today dot — "· today" cost 46px of a 125px title on a phone and
+   ellipsised the DATE, which is the one thing the owner asked the bar to keep
+   (11 Aug 26). It says the same in 5px, and reads on desktop too. */
+.sb-today{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ok);
+  margin-left:5px;vertical-align:middle}
+/* the icon/label split every top-bar button now carries. Desktop shows both,
+   so nothing here changes above 820px; the phone block hides .bl. */
+.sb-actions .bi{font-style:normal}
 .sb-actions{margin-left:auto;display:flex;gap:7px}
 .sb-main{flex:1;display:flex;min-height:0}
 .sb-boardwrap{flex:1;display:flex;flex-direction:column;min-height:0;min-width:0}
@@ -2064,12 +2072,38 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      else; OPEN restates full height as it slides out. */
   .schedboard .sb-ros{position:fixed;right:0;top:50%;bottom:auto;
     height:clamp(180px,55vh,440px);z-index:120;display:flex;align-items:stretch;
-    width:max-content;max-width:78vw;padding:8px 0 12px 0;
+    width:max-content;max-width:64vw;padding:8px 0 12px 0;
     border:1px solid var(--edge);border-right:none;border-radius:12px 0 0 12px;
     background:rgba(11,13,16,.965);backdrop-filter:blur(8px);
     box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);
     transform:translate(calc(100% - 30px),-50%);transition:transform .2s ease}
-  body.ros-open .schedboard .sb-ros{top:0;bottom:0;height:auto;transform:translateX(0)}
+  /* OPEN STARTS BELOW THE BAR (owner, 11 Aug 26 — "the aircrew tab shouldn't
+     be blocked by the bar at the top area"). It used to be top:0/bottom:0
+     against the VIEWPORT, so it painted over the day, the undo pair and
+     ✕ Close — the controls a scheduler reaches for while the palette is open.
+     It STAYS position:fixed, and the offset comes from --sb-topH, which
+     SchedBoard.tsx publishes from a ResizeObserver on the bar. Two simpler
+     things were tried first and both are wrong, so do not "simplify" back
+     to either:
+       - Anchoring to .sb-main (position:absolute inside it) reads like the
+         obvious answer — .schedboard is a flex column of exactly the bar and
+         .sb-main, so .sb-main IS everything below the bar. But .sb-main is
+         the phone board's SCROLLER (7.8k px of content at 390px), so an
+         absolutely-positioned child scrolls away with the day and stretches
+         `bottom:0` to the full scroll height. It broke the plant-from-the-
+         drawer path outright; the geometry gate caught it.
+       - Measuring the bar once in a render effect landed 5px short, because
+         the effect reads it before its final reflow. The observer fires
+         again on that reflow, which is the whole reason it is an observer
+         and not a one-shot read.
+     The 62px fallback is the current bar plus its dots, so a first paint
+     before the observer fires still clears the bar rather than starting at
+     zero.
+     max-width came down from 78vw to 64vw in the same pass (owner: "the
+     aircrew tab can be a bit thinner") — two 74px puck columns and their
+     gaps need 165px, so 64vw is 250px at 390px wide and still fits both
+     columns with room to spare, while giving the board back 55px. */
+  body.ros-open .schedboard .sb-ros{top:var(--sb-topH,62px);bottom:0;height:auto;transform:translateX(0)}
   /* flex:1 + min-height:0, NOT max-height:100vh — on iOS Safari 100vh is
      the LARGEST viewport (toolbars collapsed), so a 100vh cap never binds
      while the bars are up and the list's tail hides behind them with no way
@@ -2113,16 +2147,53 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      longer wave label could tip back into overflow. */
   .sb-go-h{flex-wrap:wrap}
   .sb-go-h .gctl{flex:1 0 100%;margin-left:0;justify-content:flex-end}
-  /* the top bar's own .sb-actions grew a fourth button (Sort all, task 10) —
-     six buttons (Desktop layout, Sort all, +Line, +Wave, Done, ✕ Close) ran
-     7px past a 390px row, the SAME shape of bug .sb-go-h had (found in
-     review that time, caught by measurement before shipping this time):
-     none of these buttons opt out of the flexbox automatic minimum, .sb-top
-     has no overflow-x of its own to clip it visibly, so what did not fit did
-     not crop — it pushed the WHOLE BOARD into an unwanted horizontal
-     scrollbar on a phone. flex-wrap here lets the row fold onto a second
-     line instead, same fix as .sb-go-h just above. */
-  .sb-actions{flex-wrap:wrap;justify-content:flex-end}
+  /* ============ ONE ROW (owner, 11 Aug 26 — comp approved before build) ====
+     The bar used to be FOUR stacked rows and 166px of a 780px screen: the
+     title, seven Mon–Sun chips, then six buttons that flex-wrap folded onto
+     two lines (the fix this replaces — it stopped the overflow, it did not
+     stop the bar eating a fifth of the phone). It is 43px now, and the row
+     no longer wraps at all: with `+ Line` gone and every label hidden, seven
+     30px squares plus the title measure 390px exactly at the narrowest
+     mainstream phone width, so there is nothing left to fold.
+     .sb-top KEEPS flex-wrap — but only the dots use it. They carry
+     `flex:0 0 100%`, so they always take a line of their own; the title and
+     the buttons share line 1 and cannot fold, because .sb-actions is
+     `flex:0 0 auto` and nowrap while the title is `0 1 auto` with an
+     ellipsis. Anything that grows therefore squeezes the DAY NAME, which
+     degrades visibly, rather than silently restoring the two-row button
+     block this replaces. */
+  .sb-top{gap:6px;padding:6px 8px}
+  .sb-title{font-size:14px;white-space:nowrap;flex:0 1 auto;min-width:0;
+    overflow:hidden;text-overflow:ellipsis}
+  .sb-title .mono{font-size:11px}
+  /* the words come off every control; the accessible name stays, because the
+     label is hidden rather than removed and each button still has its title.
+     Scoped to .sb-top, NOT .sb-actions: the title's own "· scheduler board"
+     tail is a .bl too, and while it was still painting it made the title
+     ~140px wider than its box, which pushed the whole button group onto a
+     second row — the bar measured 80px with seven correctly-sized 30px
+     icons sitting on a line of their own. */
+  .sb-top .bl{display:none}
+  .sb-actions{flex-wrap:nowrap;gap:3px;flex:0 0 auto}
+  /* min-width:0 is LOAD-BEARING, not tidying: `.abtn.hbtn` (the undo/redo
+     pair) carries min-width:76px for the shell's own toolbar, and a
+     min-width beats a width no matter which rule wins the cascade — the two
+     icons stayed 76px wide, which pushed the whole button group onto a
+     second row and made this bar 80px instead of 43. Caught by the geometry
+     gate's one-row assertion, which is why that assertion counts ROWS and
+     not just overflow. */
+  .sb-actions .abtn{width:30px;min-width:0;height:30px;padding:0;display:inline-flex;
+    align-items:center;justify-content:center;flex:0 0 auto;font-size:14px;line-height:1}
+  .sb-actions .dver{max-width:92px;flex:0 1 auto}
+  /* ---- the day chips become DOTS (owner: remove the Mon–Sun buttons) ------
+     Same seven elements, same click handler — a tap on a dot still jumps
+     straight to that day, which is what keeps Monday→Friday one gesture
+     instead of five swipes. font-size:0 empties the chip of its text without
+     removing a node, so the board's DOM ceiling is untouched. */
+  .sb-days{gap:5px;justify-content:center;flex:0 0 100%;order:2;padding:1px 0 2px}
+  .sb-days .sbday{font-size:0;width:6px;height:6px;padding:0;border-radius:50%;
+    background:var(--edge-2);border:none;transition:width .15s ease}
+  .sb-days .sbday.on{width:16px;border-radius:3px;background:var(--accent)}
   /* the THIRD row of this same shape (review, 9 Aug 26 round 1): a duty
      block's sub-header packs its editable label input, ⇅ Auto sort, + Row
      and ✕ Block into one line and ran 5px past a 390px row — smaller than
