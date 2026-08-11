@@ -644,8 +644,19 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           const rmkE=(!ed&&!(a.rmks||'').trim()&&!storesView(o)&&!a.cx&&!a.flag)?' rmk-e':'';
           /* a line the engine isn't checking shows no ring and no flag — a red
              puck there would read as "this SC line has a problem" when the
-             problem, if any, belongs to that person's other flying */
-          const chk=!saExempt(w,f,a);
+             problem, if any, belongs to that person's other flying.
+             AVALON STOPPED QUALIFYING on 11 Aug 26: its jets now carry the
+             one check (validate.ts, day.sacrew), and the owner's first live
+             use showed why the gate had to move — the engine flagged his man
+             and the puck stayed clean, so the warning read as missing until
+             a click lit the focus colours. A checked line's puck wears the
+             day's decoration, bleed-through and all, exactly as the duty
+             rows (lSeat, ungated) always have. BB stays clean — nothing on
+             it is checked — and an SC SPARE stays clean deliberately:
+             spares fly elsewhere by design, so the bled ring would be the
+             COMMON case there, and its own one check still reads from the
+             day's list. */
+          const chk=!saExempt(w,f,a)||(!!w.standalone&&w.kind==='avalon');
           const sv=(id:any)=>chk?sev(di,id):null, cp=(id:any)=>chk?chip(di,id):null, dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
           h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w))}</span></div>

@@ -309,7 +309,12 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   raised, on either kind of seat. It warns, never blocks: the palette's fold
   is matched to exactly this rule (`slotRules().avJet/avDuty` widening
   `slotBar`'s spare exemption), so local leave no longer folds a man away
-  from an AVALON seat the engine has no complaint about. The 19:00–23:59
+  from an AVALON seat the engine has no complaint about. **And the puck on
+  the AVALON line wears the ring** — `html.ts`'s exempt-line gate (`chk`)
+  stops at BB and the SC spare now, because a checked line's puck must show
+  its own check (11 Aug 26, found on the owner's first live use: the engine
+  flagged his man and the puck stayed clean until a click lit the focus
+  colours). The 19:00–23:59
   half is judged against today's inputs and the 00:00–07:00 half against
   tomorrow's (the midnight tail below). Collected as `day.sacrew` in
   `events.ts`, checked in one loop in `validate.ts`. **BB is deliberately

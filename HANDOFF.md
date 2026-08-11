@@ -16,7 +16,7 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 962 tests
+**Every gate is green at this commit**, run first-hand: `npm test` 965 tests
 across 53 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
 run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 (neither of the last two in CI). Re-state these only after re-running them.
@@ -94,6 +94,13 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
     unchecked (nothing to shift in). Fixes itself the day the app carries
     more than one week of data — same missing piece as the first bullet in
     this list.
+  - **An SC SPARE's own one-check warning shows in the day's list but never
+    rings the spare line's puck.** Deliberate, and pinned by a test: spares
+    fly elsewhere by design, so `html.ts`'s exempt-line gate keeps the spare
+    copy clean — a ring there would usually be describing the man's OTHER
+    flying. AVALON's line DOES ring since 11 Aug 26 (its check is why the
+    man is there at all). Offered to the owner as an option to align;
+    change it only on his word.
 - **The leave-types build left two things open** (shipped 10 Aug 26; rules in
   `docs/engine-rules.md` §INPUT_META and §Availability is time-aware).
   - **A half-day absentee is no longer counted in the day-info "off" tally.**
