@@ -68,8 +68,15 @@ export function jumpToChange(key: string, di: any) {
     if (!el) { HOOKS.toast('That detail is no longer on this day', 'warn'); return }
     pinHistBubAt(el)
     /* the bubble is already up, so the smooth scroll's own events re-anchor it
-       the whole way in (histbubble's document-level scroll listener) */
-    el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+       the whole way in (histbubble's document-level scroll listener).
+       GUARDED because jsdom does not implement scrollIntoView at all — it has
+       no scrolling to implement it with. Unguarded it threw out of this
+       deferred callback, where no test could catch it: every assertion still
+       passed and the run failed on two unhandled errors, which is a shape
+       worth recognising. Where the scroll is REAL it is measured in
+       e2e/geometry.spec.ts, which is the only place it can be. */
+    if (typeof el.scrollIntoView === 'function')
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' })
   }, 0)
 }
 

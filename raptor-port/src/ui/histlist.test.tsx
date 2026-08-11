@@ -140,6 +140,35 @@ describe('clicking a change jumps to it', () => {
     expect(histBubPinned()).toBe(false)
   })
 
+  /* THE JUMP SCROLLS, AND ASKING IT TO IS GUARDED. jsdom does not implement
+     scrollIntoView — it has no scrolling to implement it with — and the call
+     sits in a deferred callback, so unguarded it threw where no assertion
+     could see it: every test still passed and the RUN failed on two unhandled
+     errors. This pins both halves, and the guard is why the suite can assert
+     the scroll at all here. */
+  it('scrolls the cell it jumped to into the middle', async () => {
+    const { a } = await seed()
+    const seen: any[] = []
+    /* on the PROTOTYPE, which is where a browser has it — and it has to be:
+       the jump re-finds its cell after the repaint, so a spy pinned to the
+       element that was on screen when the list opened is left on a node the
+       string diff has already thrown away */
+    const proto = Element.prototype as any
+    const had = Object.prototype.hasOwnProperty.call(proto, 'scrollIntoView')
+    const real = proto.scrollIntoView
+    proto.scrollIntoView = function (o: any) { seen.push({ el: this, o }) }
+    try {
+      await openList()
+      await click($$('#histBody .hl-row.hit').find(r => r.dataset.hkey === a)!)
+      await settle()
+    } finally {
+      if (had) proto.scrollIntoView = real; else delete proto.scrollIntoView
+    }
+    expect(seen.length, 'it asked to be brought into view').toBe(1)
+    expect(seen[0].o.block, 'and to the middle, not just barely on screen').toBe('center')
+    expect((seen[0].el as HTMLElement).dataset.slot, 'the right cell').toBe(a)
+  })
+
   it('a structural entry is not a button, because it has no cell to jump to', async () => {
     logAction(0, 'Line removed')
     await openList()
