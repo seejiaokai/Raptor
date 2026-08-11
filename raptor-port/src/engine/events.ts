@@ -27,12 +27,25 @@ export const briefLeadOf=(rmks:any)=>{ const s=String(rmks||'');
 export const lateShowOf=(rmks:any)=>/\b(?:late\s*show|show\s*(?:at|@)\s*brief|brief\s*show)\b/i.test(String(rmks||''));
 export function collectEvents(){
   return DAYS.map((d:any,di:any)=>{
-    const fly:any[]=[],forms:any[]=[],events:any[]=[],simcrew:any[]=[];
+    const fly:any[]=[],forms:any[]=[],events:any[]=[],simcrew:any[]=[],sacrew:any[]=[];
     (d.waves||[]).forEach((w:any,gi:any)=>{
       const im=intimeMap(w);
       w.formations.forEach((f:any,li:any)=>{
         if(f.cx)return;                                        // cancelled line — nothing to check
-        if(saExempt(w,f,null))return;                          // AVALON / BB — wholly outside the engine
+        if(saExempt(w,f,null)){                                // AVALON / BB — outside the conflict engine
+          /* AVALON'S ONE CHECK (owner, 11 Aug 26). The wave stays noconf — its crew are
+             cross-checked against nothing — but the men on it must be on the island and
+             fit, so their names and the shift window are collected here for the single
+             look validate() gives them. MAIN and SPARE alike: both are jet seats.
+             BB is deliberately NOT collected — the owner specified AVALON only. */
+          if(w.kind==='avalon'){
+            const sTo=toMin(f.to); let sLd=toMin(f.ld||f.to); if(sLd<sTo)sLd+=1440;
+            if(isFinite(sTo)&&isFinite(sLd))f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;
+              [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:sTo,e:sLd,label:`${f.cs} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,work:false}); });
+            });
+          }
+          return;
+        }
         const toM=toMin(f.to);
         let ldM=toMin(f.ld||f.to); if(ldM<toM)ldM+=1440;      // landed after midnight
         /* A STANDALONE line is a SHIFT, not a sortie: 0700–1300 means 0700–1300.
@@ -148,7 +161,17 @@ export function collectEvents(){
       events.push({id,s:w2[0],e:w2[1],label,kind:kind||'other',key});
     };
     const extras=(r:any)=>(r&&r.more)||[];
-    (d.dutywaves||[]).forEach((dw:any,dwi:any)=>dw.rows.forEach((r:any,ri:any)=>{ if(r.cx||dw.noconf||r.noconf)return;
+    (d.dutywaves||[]).forEach((dw:any,dwi:any)=>dw.rows.forEach((r:any,ri:any)=>{ if(r.cx)return;
+      if(dw.noconf||r.noconf){
+        /* AVALON's desk shares the wave's exemption, not its invisibility: the same
+           one check applies, with ATT B carved out — he cannot fly but he can man a
+           desk (owner, 11 Aug 26). work:true is that carve-out. */
+        if(dw.sa==='avalon'){
+          const w2=win(parseHM(r.str),parseHM(r.end));
+          if(w2)[r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:w2[0],e:w2[1],label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,work:true}); });
+        }
+        return;
+      }
       const st=parseHM(r.str),en=parseHM(r.end);
       push(r.id,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`);
       extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`)); }));
@@ -163,8 +186,26 @@ export function collectEvents(){
       const st=parseHM(x.str),en=parseHM(x.end);
       whoArr(x).forEach((nm:any)=>push(nameToId(nm),st,en,x.prog||'programme','prog',`a:${di}.${ri}`));
       extras(x).forEach((v:any)=>push(v,st,en,x.prog||'programme','prog',`a:${di}.${ri}`)); });
-    const input=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&inputFlags(inp)).map((inp:any)=>({id:inp.person,s:inp.allday?0:inp.s,e:inp.allday?1439:inp.e,type:inp.type,remarks:inp.remarks}));
-    return {di,dow:d.dow,dt:d.dt,fly,forms,input,events,simcrew,simwin};
+    const mapInp=(inp:any)=>({id:inp.person,s:inp.allday?0:inp.s,e:inp.allday?1439:inp.e,type:inp.type,remarks:inp.remarks});
+    const input:any[]=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&inputFlags(inp)).map(mapInp);
+    /* THE MIDNIGHT TAIL (owner, 11 Aug 26 — "the default warning engine also checks
+       in the same modality for all applicable rules based on timing"). A window that
+       runs past midnight — a night sortie's landing and debrief, an overnight duty
+       or shift — lives past minute 1440 in this day's minute-space, and win() /
+       the ld<to roll already put it there. So TOMORROW's inputs are appended here,
+       shifted a day, and every consumer of day.input inherits the check without
+       knowing it exists: today's events (all ending ≤1440) can never reach them,
+       and a shifted all-day input still spans exactly 1439 minutes, so the
+       timedInput filter in validate.ts treats both copies identically. A record
+       with no usable window stays uncheckable, exactly as its unshifted copy is.
+       `nx` marks the entries as port-only for the parity excision (parity.test.ts)
+       and the positive pin in the overnight suite. */
+    const nd=DAYS[di+1];
+    if(nd)INPUTS.filter((inp:any)=>inputCoversDate(inp,nd.dt)&&inputFlags(inp)).forEach((inp:any)=>{
+      const m=mapInp(inp); if(m.s==null||m.e==null)return;
+      input.push({...m,s:m.s+1440,e:m.e+1440,nx:true});
+    });
+    return {di,dow:d.dow,dt:d.dt,fly,forms,input,events,simcrew,simwin,sacrew};
   });
 }
 /* earliest IN-TIME of a wave (from the wave's in-time lines; fallback = earliest TO) */

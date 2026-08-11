@@ -210,6 +210,29 @@ export function validate(){
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
           (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${e.label}${why}`,kOf(e)); }); });
+    /* AVALON'S ONE CHECK (owner, 11 Aug 26). The wave and its desk keep their
+       noconf exemption — nothing on them is cross-checked against tasks, rest or
+       qualifications — but the owner commissioned exactly one look, the same shape
+       as the SC SPARE rule below: a man standing AVALON must be on the island and
+       fit. Jet seats (MAIN and SPARE alike) bar what cannot spare — overseas (OL,
+       OD) and the whole medical group, ATT B included, because these are jet
+       seats and ATT B means no flying. A duty role mans a desk, so ATT B is the
+       carve-out (work:true rows test canWork). It warns, never blocks. The shift
+       runs 19:00–07:00: day.input's midnight tail (events.ts) is what lets the
+       morning half see tomorrow's inputs, so a man fine tonight but overseas from
+       tomorrow is caught here with no extra code. */
+    (day.sacrew||[]).forEach((sa:any)=>{
+      day.input.forEach((inp:any)=>{ if(inp.id!==sa.id)return;
+        if(canSpare(inp.type))return;
+        if(sa.work&&canWork(inp.type))return;
+        if(!overlap(sa.s,sa.e,inp.s,inp.e))return;
+        markChip(di,sa.id,'C'); markRing(di,sa.id,'hard');
+        const dn=isDownchit(inp.type);
+        const why=inp.remarks?` — reason: ${inp.remarks}`:'';
+        add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[sa.id],
+          `${inp.type} but on ${sa.label} — ${dn?'medically down':'overseas'}${why}`,sa.key);
+      });
+    });
     /* ---- BRIEF / DEBRIEF windows round each sortie -----------------------
        The published BRIEF time (the B column, T/O − 2h20) is the hardline: the
        brief starts then, so only an event reaching PAST it steals brief time.

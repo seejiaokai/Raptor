@@ -38,6 +38,14 @@ const stripKeys = (o: any): any => {
   return o
 }
 
+/* The port carries two port-only additions the reference has never had:
+   `day.sacrew` (AVALON's one check) and the shifted, `nx`-marked copies of
+   tomorrow's inputs appended to `day.input` (the midnight tail). Same idiom
+   as stripKeys above — excise from BOTH sides — and pinned positively in
+   overnight.test.ts ("positive pins for the parity excision"). */
+const noPortOnly = (days: any) => days.map(({ sacrew, ...d }: any) =>
+  ({ ...d, input: (d.input || []).filter((i: any) => !i.nx) }))
+
 describe('engine parity with the reference', () => {
   it('the reference is the 5-day week this comparison is bounded to', () => {
     expect(REFN).toBe(5)
@@ -45,8 +53,8 @@ describe('engine parity with the reference', () => {
   })
 
   it('collectEvents matches the reference exactly', () => {
-    expect(stripKeys(JSON.parse(JSON.stringify(collectEvents().slice(0, REFN)))))
-      .toEqual(stripKeys(JSON.parse(JSON.stringify(w.collectEvents()))))
+    expect(stripKeys(noPortOnly(JSON.parse(JSON.stringify(collectEvents().slice(0, REFN))))))
+      .toEqual(stripKeys(noPortOnly(JSON.parse(JSON.stringify(w.collectEvents())))))
   })
 
   it('validate produces identical WARN {all, byDay, sev, chip}', () => {
