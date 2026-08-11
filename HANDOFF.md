@@ -84,20 +84,24 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
   X-Ray) — same visible behaviour as before, no migration.
 - **The leave-types build left four things open** (shipped 10 Aug 26; rules in
   `docs/engine-rules.md` §INPUT_META and §Availability is time-aware).
-  - **The AVALON spare rule is RESERVED BY THE OWNER** — he said it follows
-    "the same modality" as the SC spare and that he would specify it
-    separately. **Do not infer it.** The rule is already written against "a
-    standalone spare" with SC the only kind enforced, so his answer is a
-    small edit rather than a re-cut. AVALON/BB are `noconf` today, so no
-    spare rule reaches them at all.
+  - **The AVALON rule is now SPECIFIED and commissioned, and NOT YET BUILT**
+    (owner, 11 Aug 26 — the reservation that stood here for five sessions is
+    lifted). It arrived with a second, larger ask: the midnight tail below,
+    generalised to every timed rule. Full spec, owner-confirmed wording and
+    the implementation shape: `docs/session-state.md`. Do not re-derive it
+    and do not ask him again — he answered it in full.
   - **An overnight shift's midnight tail is not checked against tomorrow's
-    leave.** An AVALON shift runs 19:00–07:00 and its tail belongs to the
-    next day. `slotBar` already rolls back a day for the SC currency check
-    and mirroring it is about four lines — but the VALIDATOR does not do
-    this either (`collectEvents` builds a day's inputs for that day only), so
-    adding it to the picker alone would make the picker stricter than the
-    warning list, which is the exact drift the SC comment warns against. Fix
-    both together or neither.
+    leave — and the owner has now asked for this to be fixed GENERALLY, not
+    just for AVALON** (11 Aug 26: "make sure the default warning engine also
+    checks in the same modality for all applicable rules based on timing").
+    An AVALON shift runs 19:00–07:00 and its tail belongs to the next day; so
+    does a night sortie landing after midnight, and either debrief tail.
+    `collectEvents` builds a day's inputs for THAT DATE only
+    (`events.ts:166`), and four sites in `validate.ts` read that array, so
+    they all share the blind spot. `slotBar` already rolls back a day for the
+    SC currency check — but fixing the picker alone would make it stricter
+    than the warning list, which is the exact drift the SC comment warns
+    against. **Fix both together or neither.** Spec: `docs/session-state.md`.
   - **A half-day absentee is no longer counted in the day-info "off" tally.**
     Deliberate — `dayOff` means off for the WHOLE day, and it also drives the
     palette's struck-through rank, where a man available all afternoon must
