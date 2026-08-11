@@ -143,4 +143,17 @@ describe('week panning (tfin)', () => {
     await act(async () => { $$('#vDots button')[2]!.dispatchEvent(new MouseEvent('click', { bubbles: true })) })
     expect(called).toBe(2)
   })
+
+  it('desktop inner-panel scrolling skips the hidden phone dots without walking the DOM', () => {
+    const oldWidth = window.innerWidth
+    Object.defineProperty(window, 'innerWidth', { value: 1024, configurable: true })
+    const target = document.createElement('div')
+    document.body.appendChild(target)
+    const closest = vi.spyOn(Element.prototype, 'closest')
+    target.dispatchEvent(new Event('scroll'))
+    expect(closest, 'a desktop scroll exits before searching for the phone week').not.toHaveBeenCalled()
+    closest.mockRestore()
+    target.remove()
+    Object.defineProperty(window, 'innerWidth', { value: oldWidth, configurable: true })
+  })
 })

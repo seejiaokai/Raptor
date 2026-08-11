@@ -16,7 +16,7 @@ import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import * as view from '../state/view'
-import { openScheduler, toggleWide, SBWIDE } from './board'
+import { openScheduler, toggleWide, SBWIDE, boardTab, closeScheduler, wireBoardSwipe } from './board'
 import { HOOKS } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -135,6 +135,92 @@ describe('swiping the board changes the day', () => {
     await act(async () => { openScheduler(DAYS.length - 1); notify() })
     await swipe(-90)
     expect(view.SBDAY).toBe(DAYS.length - 1)
+  })
+
+  it('keeps only one full-day preview while the carousel is settling', async () => {
+    const main = $('.sb-main')
+    const gesture = () => {
+      main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+    }
+    await act(async () => { gesture(); gesture(); gesture() })
+    expect(document.querySelectorAll('.sb-pane').length,
+      'rapid swipes must not stack several ~900-node boards').toBe(1)
+    await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+    expect(document.querySelectorAll('.sb-pane').length).toBe(0)
+    expect(view.SBDAY, 'only the first swipe commits').toBe(3)
+  })
+
+  it('does not let an old settle overwrite a newer day choice', async () => {
+    const main = $('.sb-main')
+    await act(async () => {
+      main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      boardTab(5)
+    })
+    await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+    expect(view.SBDAY, 'the later dot/day choice wins').toBe(5)
+    expect(document.querySelectorAll('.sb-pane').length).toBe(0)
+  })
+
+  it('treats tapping the current day during settle as a newer stay-here choice', async () => {
+    const main = $('.sb-main')
+    await act(async () => {
+      main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      boardTab(2)
+    })
+    await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+    expect(view.SBDAY, 'the explicit current-dot choice wins').toBe(2)
+    expect(document.querySelectorAll('.sb-pane').length).toBe(0)
+  })
+
+  it('does not reopen the board when it is closed during settle', async () => {
+    const main = $('.sb-main')
+    await act(async () => {
+      main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      closeScheduler()
+    })
+    await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+    expect(view.SBDAY, 'a finished old swipe cannot reopen a closed board').toBeNull()
+    expect(document.querySelectorAll('.sb-pane').length).toBe(0)
+  })
+
+  it('does not steer a board closed and reopened on the same day during settle', async () => {
+    const main = $('.sb-main')
+    await act(async () => {
+      main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      closeScheduler()
+      openScheduler(2)
+    })
+    await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+    expect(view.SBDAY, 'the reopened Wednesday is a new board lifecycle').toBe(2)
+    expect(document.querySelectorAll('.sb-pane').length).toBe(0)
+  })
+
+  it('removes the settling full-day pane when its wiring is cleaned up', async () => {
+    await act(async () => { openScheduler(2); notify() })
+    const host = document.createElement('div')
+    host.className = 'schedboard'
+    const main = document.createElement('div')
+    host.appendChild(main); document.body.appendChild(host)
+    ;(main as any).getBoundingClientRect = () => ({ left: 0, width: 390, right: 390, top: 70, bottom: 780, height: 710, x: 0, y: 70 })
+    ;(host as any).getBoundingClientRect = () => ({ left: 0, width: 390, right: 390, top: 0, bottom: 780, height: 780, x: 0, y: 0 })
+    const off = wireBoardSwipe(main)
+    main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+    main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+    main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+    expect(host.querySelectorAll('.sb-pane').length).toBe(1)
+    off()
+    expect(host.querySelectorAll('.sb-pane').length, 'cleanup owns the pane even after pointerup nulled the live reference').toBe(0)
+    host.remove()
   })
 })
 

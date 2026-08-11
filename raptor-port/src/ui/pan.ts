@@ -174,6 +174,10 @@ function onDocScroll(e: Event) {
 }
 /* the day dots (phone): light the dot nearest the middle of the view */
 function onDotsScroll(e: Event) {
+  /* The dots are phone-only. Bail before touching the event target so every
+     scroll from a desktop inner panel does not pay for a DOM walk toward a
+     hidden control. This listener is document-wide and runs once per tick. */
+  if (window.innerWidth > 820) return
   const wk = (e.target as HTMLElement).closest && (e.target as HTMLElement).closest('#vWeek') as HTMLElement | null
   if (!wk) return
   const dots = $('vDots'); if (!dots) return

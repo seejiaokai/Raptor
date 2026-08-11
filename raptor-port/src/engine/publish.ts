@@ -27,7 +27,7 @@ const renderStatus=()=>HOOKS.renderStatus();
                     Stamped by alIssue and by restoreDayVersion; read through
                     dayCurVer(), which self-heals when the stamped version's
                     snapshot has gone (unpublishAL, undo past the issue).      */
-export let SCHED:any={al:0, pending:{}, changes:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}};
+export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}};
 export function dayApproved(di:any){return !!SCHED.dayOK[di];}
 export function approvedDays(){return DAYS.map((_:any,i:any)=>i).filter(dayApproved);}
 export function dowShort(di:any){return String((DAYS[di]||{}).dow||('day '+di)).slice(0,3);}
@@ -67,6 +67,7 @@ export function setDayApproved(di:any,on:any){
        leaving those marks meant the day's first AL re-issued the whole day and
        claimed to have "changed" every field the schedulers had ever typed. */
     Object.keys(SCHED.pending).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.pending[k];});
+    Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.added[k];});
     SCHED.dayOK[di]=1; signClear(di);          // the signature is spent on the issue
     /* Original = the day as FIRST published. First publish wins: reopening voids
        the signature, not the history — a re-publish after reopen is a later
@@ -106,6 +107,86 @@ export function verLabel(ver:any){return ver==='live'?'Live':(ver==='orig'?'Orig
 export const AL_COLORS:any[]=['','#3BC6E8','#E5C24A','#3DE86B','#FFFFFF','#B388FF','#FF7FC4','#E5872B'];
 export function alColor(n:any){return AL_COLORS[n]||AL_COLORS[AL_COLORS.length-1];}
 export function pendCount(){return Object.keys(SCHED.pending).length;}
+/* A deletion has no live cell left to carry its amendment mark. Reusing the
+   deleted address would tint whatever row shifted into it, so removals use an
+   inert synthetic key instead: del:DAY.SEQ.KIND. The day stays first after
+   the prefix, which lets every existing day filter, snapshot and AL path
+   treat it like an ordinary key; SEQ is derived from live/history keys, so it
+   survives publish, unpublish, rollback and undo without extra counter state.
+   KIND is controlled vocabulary for the AL panel, never user-entered text. */
+export const DELETE_LABELS:any={line:'line',wave:'wave',note:'note',programme:'programme item',dutyblock:'duty block',duty:'duty row',sim:'sim row',ground:'ground item'};
+export function isDeleteKey(key:any){return /^del:\d+\.\d+\.[a-z]+$/.test(String(key));}
+export function deleteLabel(key:any){const k=String(key).split('.').pop()||'';return DELETE_LABELS[k]||'item';}
+export function deleteCount(keys:any){return (keys||[]).filter(isDeleteKey).length;}
+export function inputActionCount(keys:any){return (keys||[]).filter((k:any)=>/^inp:\d+\./.test(String(k))).length;}
+function syntheticKey(prefix:any,di:any,kind:any){di=+di;
+  const p=`${prefix}:${di}.`,keys=Object.keys(SCHED.pending||{}).concat(Object.keys(SCHED.changes||{}));
+  (SCHED.als||[]).forEach((a:any)=>keys.push(...(a.keys||[])));
+  let n=0;keys.forEach((k:any)=>{if(String(k).indexOf(p)!==0)return;const x=+String(k).slice(p.length).split('.')[0];if(isFinite(x)&&x>n)n=x;});
+  return `${p}${n+1}.${kind}`;}
+export function deletionKey(di:any,kind:any){kind=DELETE_LABELS[kind]?String(kind):'programme';return syntheticKey('del',di,kind);}
+export function trackStructuralAdd(key:any){if(!key)return '';SCHED.added=SCHED.added||{};SCHED.added[String(key)]=1;return String(key);}
+export function markStructuralAdd(key:any){trackStructuralAdd(key);markEdit(key);return String(key);}
+export function structuralAddExists(key:any){
+  const s=String(key),c=s.indexOf(':'),p=c<0?'':s.slice(0,c),a=(c<0?s:s.slice(c+1)).split('.'),di=+a[0],d=DAYS[di];
+  if(!d)return false;
+  if(p==='wl')return !!(d.waves||[])[+a[1]];
+  if(p==='ff'){const w=(d.waves||[])[+a[1]];return !!(w&&(w.formations||[])[+a[2]]);}
+  if(p==='fr'){const w=(d.waves||[])[+a[1]],f=w&&(w.formations||[])[+a[2]];return !!(f&&(f.aircraft||[])[+a[3]]);}
+  if(p==='dn')return +a[1]<(d.notes||[]).length;
+  if(p==='ap')return !!(d.allhands||[])[+a[1]];
+  if(p==='dl')return !!(d.dutywaves||[])[+a[1]];
+  if(p==='dr'){const b=(d.dutywaves||[])[+a[1]];return !!(b&&(b.rows||[])[+a[2]]);}
+  if(p==='sr')return !!(((d.sims||{})[String(a[1])]||[])[+a[2]]);
+  if(p==='g'||p==='gr')return !!(d.ground||[])[+a[1]];
+  return false;
+}
+/* Whether the structure being removed was present in the day that is
+   currently issued. Add -> delete before the next AL is a net no-op, not a
+   removal. SCHED.added carries each draft addition's structural key through
+   every reorder; issue clears it and unpublish restores it. The frozen issued
+   snapshot remains the fallback for legacy/session data without that marker.
+   Accepted Ground inputs also pass their stable source token. */
+export function deletionWasIssued(di:any,kind:any,...at:any[]){di=+di;
+  const added=SCHED.added||{};
+  const has=(...keys:any[])=>keys.some((k:any)=>!!added[k]);
+  if(kind==='line'&&has(`wl:${di}.${+at[0]}`,`ff:${di}.${+at[0]}.${+at[1]}.cs`,`fr:${di}.${+at[0]}.${+at[1]}.${+at[2]}`))return false;
+  if(kind==='wave'&&has(`wl:${di}.${+at[0]}`))return false;
+  if(kind==='note'&&has(`dn:${di}.${+at[0]}`))return false;
+  if(kind==='programme'&&has(`ap:${di}.${+at[0]}.prog`))return false;
+  if(kind==='dutyblock'&&has(`dl:${di}.${+at[0]}`))return false;
+  if(kind==='duty'&&has(`dl:${di}.${+at[0]}`,`dr:${di}.${+at[0]}.${+at[1]}.role`))return false;
+  if(kind==='sim'&&has(`sr:${di}.${String(at[0])}.${+at[1]}.label`))return false;
+  if(kind==='ground'&&has(`gr:${di}.${+at[0]}.prog`,`g:${di}.${+at[0]}`))return false;
+  if(!dayApproved(di))return true;
+  const ver=dayCurVer(di),snap=ver!=null?daySnapOf(di,ver):null,d=snap&&snap.d;
+  if(!d)return true;
+  if(kind==='line'){
+    const wave=(d.waves||[])[+at[0]],form=wave&&(wave.formations||[])[+at[1]];
+    return !!(form&&(form.aircraft||[])[+at[2]]);
+  }
+  if(kind==='wave')return !!(d.waves||[])[+at[0]];
+  if(kind==='note')return +at[0]<(d.notes||[]).length;
+  if(kind==='programme')return !!(d.allhands||[])[+at[0]];
+  if(kind==='dutyblock')return !!(d.dutywaves||[])[+at[0]];
+  if(kind==='duty'){
+    const block=(d.dutywaves||[])[+at[0]];
+    return !!(block&&(block.rows||[])[+at[1]]);
+  }
+  if(kind==='sim')return !!(((d.sims||{})[String(at[0])]||[])[+at[1]]);
+  if(kind==='ground'){
+    const rows=d.ground||[],src=at[1];
+    return src!=null?rows.some((r:any)=>r&&r.src===src):!!rows[+at[0]];
+  }
+  return true;
+}
+export function markDeletion(di:any,kind:any,wasIssued:any=true){if(!wasIssued)return '';const key=deletionKey(di,kind);markEdit(key);return key;}
+/* Filing a personal input under Unavailable changes the issued day but has no
+   programme row to tint. The permanent input ID makes one stable inert address per
+   input/day, so filing then unfiling before issue remains one changed detail
+   rather than two contradictory amendment items. Dots are escaped as well as
+   URI punctuation because keyDay relies on the first dot ending the day. */
+export function markInputFiling(di:any,token:any){const id=encodeURIComponent(String(token)).replace(/\./g,'%2E'),key=`inp:${+di}.${id}`;markEdit(key);return key;}
 /* record an edit.  `key` is the slot/field address that changed — that single
    item is what gets coloured when the amendment is published.
    `was`/`now` are the edit log's (editlog.ts), and optional for the same
@@ -163,10 +244,19 @@ export function publishAL(n:any){
    day, and SPEND those days' signatures — the next amendment on them is signed
    for on its own merits. The days stay published; only the sign-off resets. */
 export function alIssue(n:any,keys:any){
-  keys.forEach((k:any)=>{SCHED.changes[k]=n; delete SCHED.pending[k];});
   const days=uniqDays(keys);
+  const adds=Object.keys(SCHED.added||{}).filter((k:any)=>days.includes(keyDay(k)));
+  /* A discarded add mark can still be present in the live day. If some other
+     edit now issues that day, the snapshot issues the addition too, so put its
+     identity key back into this AL explicitly rather than losing ownership. */
+  adds.forEach((k:any)=>{if(!keys.includes(k))keys.push(k);});
+  const carried=(SCHED.als||[]).flatMap((a:any)=>a.structAdds||a.adds||[]);
+  const structAdds=[...new Set(carried.concat(adds))]
+    .filter((k:any)=>days.includes(keyDay(k))&&structuralAddExists(k));
+  keys.forEach((k:any)=>{SCHED.changes[k]=n; delete SCHED.pending[k];});
   const sign:any={}; days.forEach((di:any)=>{sign[di]=signNames(di);});
-  SCHED.als.push({n,keys,sign,days:days.slice(),n0:keys.length});
+  SCHED.als.push({n,keys,sign,days:days.slice(),n0:keys.length,adds,structAdds});
+  adds.forEach((k:any)=>delete SCHED.added[k]);
   /* freeze every covered day AFTER its marks are on — this is the document */
   const rec=SCHED.als[SCHED.als.length-1];
   rec.snap={}; days.forEach((di:any)=>{rec.snap[di]=daySnap(di);});
@@ -196,6 +286,13 @@ export function unpublishAL(n:any){
   n=+n; const ix=SCHED.als.findIndex((a:any)=>a.n===n); if(ix<0)return;
   const rec=SCHED.als.splice(ix,1)[0];
   rec.keys.forEach((k:any)=>{ if(SCHED.changes[k]===n){delete SCHED.changes[k]; SCHED.pending[k]=1;} });
+  const surviving=new Set((SCHED.als||[]).flatMap((a:any)=>a.structAdds||a.adds||[]).filter(structuralAddExists));
+  SCHED.added=SCHED.added||{};
+  /* The last surviving snapshot that carried a structural addition may not be
+     the AL that originally added it. When that final owner is unpublished,
+     the still-live row becomes draft again even if its field key was owned by
+     a different AL, so restore from structAdds rather than only rec.adds. */
+  (rec.structAdds||rec.adds||[]).forEach((k:any)=>{if(!surviving.has(k)&&structuralAddExists(k))SCHED.added[k]=1;});
   SCHED.al=SCHED.als.length?Math.max(...alUsed()):0;
   reflow(); histPush();
   toast(`AL${n} (${daysLabel(alDays(rec))}) unpublished · ${rec.keys.length} change${rec.keys.length>1?'s':''} back to pending`);

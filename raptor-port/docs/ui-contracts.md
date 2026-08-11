@@ -173,6 +173,12 @@ means issued, dotted means coming); the view-only page and draft-day
 edits keep the neutral dashed hint and no text-level mark. `data-aln`
 resolves its colour through the same `--alc` palette rules as `data-alc`.
 
+A removed row has no cell left to outline. It therefore appears in the
+Amendments panel as an inert pending item, with the panel also stating how
+many pending or issued items are removals. It never paints the row that moved
+up into the deleted address. Schedule CSV export contains the resulting live
+schedule, so the removed row is absent rather than exported as a phantom line.
+
 ## Version preview (edit week + board only)
 
 The day-head `<select data-dver>` (emitted only when `dayHTML` gets its
@@ -403,6 +409,18 @@ edit week now:
   loaded week with a toast rather than wrapping, and the day is swapped only
   AFTER the settle animation, so the incoming day is never repainted in
   flight.
+  **Only one neighbour may exist, including during settle.** A complete board
+  is close to the phone DOM ceiling; the first carousel build nulled its pane
+  reference as soon as the finger lifted but left that pane mounted for the
+  240ms animation. Another swipe in that window could therefore add another
+  whole day, and repeated swipes stacked thousands of nodes on mobile Safari.
+  The gesture is now locked until settle removes the pane. Its delayed commit
+  checks both the day and a monotonic board-navigation generation, so Close,
+  close-and-reopen on the same day, a dot scrub or another page change always
+  wins over the stale callback. The
+  pane is strictly contained to its viewport-sized paint box as well as being
+  overflow-clipped, so its off-screen board cannot enlarge the compositor
+  surface.
   **What it does NOT guard against is the part worth reading.** Excluding
   inputs, buttons and seats at pointerdown is the obvious defensive list and
   it is wrong here: the board is wall-to-wall controls, so it made the
@@ -666,8 +684,11 @@ carries `src`, a content key back to the input, so `unacceptInput()` removes the
 right row even after other rows shift around it; an index would rot.
 
 The push goes through `noteChange()` on the new row's key, so it is marked
-pending and reaches the next AL. Undo calls `markEdit()` with NO key — a delete
-must not re-mark the address it just removed.
+pending and reaches the next AL. Undoing a Ground promotion uses an inert
+deletion key rather than re-marking the address now occupied by a shifted row.
+Filing under Unavailable has no row key, so it uses one inert input-action key
+for every loaded day the input spans; unfiling does the same. These keys count
+and publish in the Amendments panel but paint no unrelated cell.
 
 ## Editing an input from the schedule (owner, 10 Aug 26)
 

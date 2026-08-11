@@ -19,6 +19,7 @@ import { rulesLoad } from '../engine/rules'
 import { mintInpIds } from '../engine/inputs'
 import { storesLoad } from '../engine'
 import { elogClear } from '../engine/editlog'
+import { markDeletion } from '../engine/publish'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit } from './history'
@@ -56,11 +57,12 @@ export function writeText(path: any, v: any) {
 }
 
 /* a structural delete. The caller does the splice + shiftKeys inside `fn`;
-   the epilogue is a bare markEdit() (history step, NO key — a delete must
-   never re-mark the address it just removed) and the usual revalidate.
-   afterSchedMutate() already opens with exactly that bare markEdit(). */
-export function writeDelete(fn: () => void) {
+   an inert del: tombstone makes the removal publishable without marking the
+   address now occupied by a shifted row. afterSchedMutate supplies the usual
+   revalidate/history epilogue. */
+export function writeDelete(fn: () => void, di?: number, kind: any = 'programme') {
   fn()
+  if (di != null) markDeletion(di, kind)
   afterSchedMutate()
 }
 

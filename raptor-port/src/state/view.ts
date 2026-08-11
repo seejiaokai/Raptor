@@ -24,6 +24,11 @@ const isPhone=()=>HOOKS.isPhone()
    afterSchedMutate read them. setBoardDay carries the reference's day-tab
    rule: changing the board day disarms a slot armed on another day. */
 export let SBDAY:any=null
+/* Monotonic board-navigation generation. A swipe settles asynchronously; the
+   day value alone cannot distinguish close -> reopen on the same day (ABA).
+   Every real open/close/day change advances this token so an older settle can
+   never steer a newer board instance. */
+export let BOARDREV=0
 export let CURPAGE:any='viewsched'
 /* the day the palette is looking at. The reference's #editToggle used to sit
    here as EDITON; it was removed on 9 Aug 26 (owner) — the board is reachable
@@ -110,6 +115,7 @@ export function setBoardDay(n:any){
      focus is not for the day being switched TO (WFOCUS.di!==n) — landing on
      the focused warning's own day must keep it lit. */
   if(SBDAY!=null&&n!==SBDAY&&WFOCUS&&WFOCUS.di!==n)WFOCUS=null;
+  BOARDREV++;
   SBDAY=n;
 }
 /* The board's full close, shared by setPage (below) and ui/board.ts's

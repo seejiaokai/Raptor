@@ -3,7 +3,7 @@ import { elogRows, elogGroups, elogWhen, ELOG } from '../engine/editlog'
 import type { ELogRow } from '../engine/editlog'
 import { esc, SBDAY } from '../state/view'
 import { notify } from '../state/store'
-import { HISTLIST, setHistList, HISTGROUP, setHistGroup, HISTOPEN, toggleHistOpen } from './pops'
+import { HISTLIST, setHistList, HISTGROUP, setHistGroup, HISTOPEN, toggleHistOpen, closeHistList } from './pops'
 import { jumpToChange } from './interactions'
 import { histJumpable } from './histbubble'
 import { useVersion } from './useStore'
@@ -102,7 +102,7 @@ export function HistoryModal() {
   useVersion()
   if (HISTLIST === false) return <div className="modal" id="histModal" hidden />
   const di = HISTLIST === 'all' ? null : HISTLIST
-  const close = () => { setHistList(false); setHistGroup(false); HISTOPEN.clear(); notify() }
+  const close = () => { closeHistList(); notify() }
   const day = SBDAY == null ? null : DAYS[SBDAY]
   const shown = HISTGROUP ? elogGroups(di).length : elogRows(di).length
   /* the body is delegated rather than per-row: it is injected as a string, so

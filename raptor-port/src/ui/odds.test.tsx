@@ -69,6 +69,16 @@ describe('the mobile drawer', () => {
     expect($('#drawer').classList.contains('open')).toBe(false)
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
+
+  it('logging out from the drawer does not reopen it for the next user', async () => {
+    await click($('#burger'))
+    expect($('#drawer').classList.contains('open')).toBe(true)
+    await click($('#drawerLogout'))
+    expect($('#shell'), 'the outgoing session has closed').toBeFalsy()
+
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    expect($('#drawer').classList.contains('open'), 'popup state is not carried across sessions').toBe(false)
+  })
 })
 
 describe('Manage users', () => {

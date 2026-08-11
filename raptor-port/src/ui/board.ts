@@ -10,7 +10,7 @@ import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
-import { markEdit, alAttr } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, trackStructuralAdd, alAttr } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
@@ -339,10 +339,10 @@ export function sortAllCommit() {
 
 /* A STRUCTURAL CHANGE — a line, wave, row or note added or removed — said
    once, to the scheduler and to the edit log, in the same words.
-   Those changes reach markEdit() with NO key on purpose (a delete must not
-   re-mark the address it just removed), so the log has no pair of values to
-   diff and nothing to hang a bubble on; the sentence the toast already says
-   is the record. Routing both through one call is what stops the two
+   Deletes use an inert del: tombstone for amendments rather than re-marking
+   the address they removed; the log still has no value pair or live cell to
+   hang a bubble on, so the sentence the toast already says is its record.
+   Routing both through one call is what stops the two
    drifting: a toast reworded here cannot leave the log saying the old thing.
    Returns the toast, so every `return toast(…)` site became `return act(…)`
    with no change to how any of them behave. */
@@ -440,16 +440,17 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.ldel != null) {
     const r = acRef(ds.ldel); if (!r || !r.a) return
     const [dI, gI] = String(ds.ldel).split('.').map(Number)
+    const issued = deletionWasIssued(dI, 'line', gI, r.li, r.ai)
     r.f.aircraft.splice(r.ai, 1)
     shiftAircraft(dI, gI, r.li, r.ai)
     if (!r.f.aircraft.length) { r.w.formations.splice(r.li, 1); shiftFormation(dI, gI, r.li) } else rollCx(r.f)
-    markEdit(); afterSchedMutate(); notify(); return act(dI, 'Line removed')
+    markDeletion(dI, 'line', issued); afterSchedMutate(); notify(); return act(dI, 'Line removed')
   }
   if (ds.lac != null) {
     const [di, gi, li] = ds.lac.split('.').map(Number)
     const f = DAYS[di].waves[gi].formations[li]
     f.aircraft.push({ p: '', w: '', area: '', rmks: '', opts: {} }); rollCx(f)
-    markEdit(`fr:${di}.${gi}.${li}.${f.aircraft.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Aircraft added')
+    markStructuralAdd(`fr:${di}.${gi}.${li}.${f.aircraft.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Aircraft added')
   }
   if (ds.gline != null) {
     const [di, gi] = ds.gline.split('.').map(Number)
@@ -459,11 +460,12 @@ export function boardMbtn(e: MouseEvent) {
        than an empty box, because only the empty one asks to be typed into. */
     const w = DAYS[di].waves[gi]
     w.formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
-    markEdit(`ff:${di}.${gi}.${w.formations.length - 1}.cs`); afterSchedMutate(); notify(); return act(di, 'Line added')
+    markStructuralAdd(`ff:${di}.${gi}.${w.formations.length - 1}.cs`); afterSchedMutate(); notify(); return act(di, 'Line added')
   }
   if (ds.gdel != null) {
     const [di, gi] = ds.gdel.split('.').map(Number)
     const gw = DAYS[di].waves[gi]
+    const issued = deletionWasIssued(di, 'wave', gi)
     DAYS[di].waves.splice(gi, 1); shiftWave(di, gi)
     /* An SC wave owns TWO duty blocks, not one, so this walks the list rather
        than finding a single index — highest first, because each splice
@@ -473,27 +475,29 @@ export function boardMbtn(e: MouseEvent) {
         DAYS[di].dutywaves.splice(j, 1);[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, j))
       })
     }
-    markEdit(); afterSchedMutate(); notify(); return act(di, 'Wave removed')
+    markDeletion(di, 'wave', issued); afterSchedMutate(); notify(); return act(di, 'Wave removed')
   }
   if (ds.nadd != null) {
     const d = DAYS[+ds.nadd]; d.notes = d.notes || []; d.notes.push('')
-    markEdit(`dn:${+ds.nadd}.${d.notes.length - 1}`); logAction(+ds.nadd, 'Note added'); afterSchedMutate(); notify(); return
+    markStructuralAdd(`dn:${+ds.nadd}.${d.notes.length - 1}`); logAction(+ds.nadd, 'Note added'); afterSchedMutate(); notify(); return
   }
   if (ds.ndel != null) {
     const [di, ni] = ds.ndel.split('.').map(Number)
+    const issued = deletionWasIssued(di, 'note', ni)
     DAYS[di].notes.splice(ni, 1); shiftKeys(`dn:${di}.`, 0, ni)
-    markEdit(); afterSchedMutate(); notify(); return act(di, 'Note removed')
+    markDeletion(di, 'note', issued); afterSchedMutate(); notify(); return act(di, 'Note removed')
   }
   if (ds.padd != null) {
     const d = DAYS[+ds.padd]; d.allhands = d.allhands || []
     d.allhands.push({ prog: '', sub: '', str: '', end: '', who: [] })
-    markEdit(`ap:${+ds.padd}.${d.allhands.length - 1}.prog`); logAction(+ds.padd, 'Programme item added'); afterSchedMutate(); notify(); return
+    markStructuralAdd(`ap:${+ds.padd}.${d.allhands.length - 1}.prog`); logAction(+ds.padd, 'Programme item added'); afterSchedMutate(); notify(); return
   }
   if (ds.pdel != null) {
     const [di, ri] = ds.pdel.split('.').map(Number)
+    const issued = deletionWasIssued(di, 'programme', ri)
     DAYS[di].allhands.splice(ri, 1)
     ;[`ap:${di}.`, `a:${di}.`].forEach(h => shiftKeys(h, 0, ri))
-    markEdit(); afterSchedMutate(); notify(); return act(di, 'Item removed')
+    markDeletion(di, 'programme', issued); afterSchedMutate(); notify(); return act(di, 'Item removed')
   }
   if (ds.pcx != null) { const [di, ri] = ds.pcx.split('.').map(Number); return askCx(DAYS[di].allhands[ri], `ap:${di}.${ri}.prog`, 'this item') }
   if (ds.pflag != null) {
@@ -503,8 +507,8 @@ export function boardMbtn(e: MouseEvent) {
   }
   /* ---- duty / sim / ground rows (the panels added Aug 26) ---------------
      Same shapes as the p* programme branches: adds mark the new row's name
-     key, deletes renumber the surviving keys and mark NOTHING (the delete
-     rule), CX goes through the reason dialog. */
+     key, deletes renumber the surviving keys and add an inert deletion
+     tombstone, CX goes through the reason dialog. */
   /* + BLOCK ASKS WHICH WAVE IT IS FOR (owner, 10 Aug 26). It used to push a
      bare block titled DUTY with one empty row, so every block was typed out
      by hand — the same three roles, every wave, every day. Naming the wave is
@@ -517,21 +521,23 @@ export function boardMbtn(e: MouseEvent) {
   }
   if (ds.dwdel != null) {
     const [di, wi] = ds.dwdel.split('.').map(Number)
+    const issued = deletionWasIssued(di, 'dutyblock', wi)
     DAYS[di].dutywaves.splice(wi, 1)
     ;[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, wi))
-    markEdit(); afterSchedMutate(); notify(); return act(di, 'Duty block removed')
+    markDeletion(di, 'dutyblock', issued); afterSchedMutate(); notify(); return act(di, 'Duty block removed')
   }
   if (ds.dradd != null) {
     const [di, wi] = ds.dradd.split('.').map(Number)
     const rows = DAYS[di].dutywaves[wi].rows
     rows.push({ role: '', id: '', str: '', end: '' })
-    markEdit(`dr:${di}.${wi}.${rows.length - 1}.role`); logAction(di, 'Duty row added'); afterSchedMutate(); notify(); return
+    markStructuralAdd(`dr:${di}.${wi}.${rows.length - 1}.role`); logAction(di, 'Duty row added'); afterSchedMutate(); notify(); return
   }
   if (ds.drdel != null) {
     const [di, wi, ri] = ds.drdel.split('.').map(Number)
+    const issued = deletionWasIssued(di, 'duty', wi, ri)
     DAYS[di].dutywaves[wi].rows.splice(ri, 1)
     ;[`d:${di}.${wi}.`, `dr:${di}.${wi}.`].forEach(h => shiftKeys(h, 0, ri))
-    markEdit(); afterSchedMutate(); notify(); return act(di, 'Duty row removed')
+    markDeletion(di, 'duty', issued); afterSchedMutate(); notify(); return act(di, 'Duty row removed')
   }
   if (ds.drcx != null) { const [di, wi, ri] = ds.drcx.split('.').map(Number); return askCx(DAYS[di].dutywaves[wi].rows[ri], `dr:${di}.${wi}.${ri}.role`, 'this duty') }
   if (ds.drflag != null) {
@@ -544,13 +550,14 @@ export function boardMbtn(e: MouseEvent) {
     const d = DAYS[+di]; d.sims = d.sims || {}
     const rows = (d.sims[kind] = d.sims[kind] || [])
     rows.push({ label: '', str: '', end: '' })
-    markEdit(`sr:${+di}.${kind}.${rows.length - 1}.label`); logAction(+di, 'Sim row added'); afterSchedMutate(); notify(); return
+    markStructuralAdd(`sr:${+di}.${kind}.${rows.length - 1}.label`); logAction(+di, 'Sim row added'); afterSchedMutate(); notify(); return
   }
   if (ds.srdel != null) {
     const [di, kind, ri] = ds.srdel.split('.')
+    const issued = deletionWasIssued(+di, 'sim', kind, +ri)
     DAYS[+di].sims[kind].splice(+ri, 1)
     ;[`s:${di}.${kind}.`, `sr:${di}.${kind}.`].forEach(h => shiftKeys(h, 0, +ri))
-    markEdit(); afterSchedMutate(); notify(); return act(+di, 'Sim row removed')
+    markDeletion(+di, 'sim', issued); afterSchedMutate(); notify(); return act(+di, 'Sim row removed')
   }
   if (ds.srcx != null) { const [di, kind, ri] = ds.srcx.split('.'); return askCx(DAYS[+di].sims[kind][+ri], `sr:${di}.${kind}.${ri}.label`, 'this sim') }
   if (ds.srflag != null) {
@@ -561,13 +568,15 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.gradd != null) {
     const d = DAYS[+ds.gradd]; d.ground = d.ground || []
     d.ground.push({ prog: '', str: '', end: '', who: '' })
-    markEdit(`gr:${+ds.gradd}.${d.ground.length - 1}.prog`); logAction(+ds.gradd, 'Ground item added'); afterSchedMutate(); notify(); return
+    markStructuralAdd(`gr:${+ds.gradd}.${d.ground.length - 1}.prog`); logAction(+ds.gradd, 'Ground item added'); afterSchedMutate(); notify(); return
   }
   if (ds.grdel != null) {
     const [di, ri] = ds.grdel.split('.').map(Number)
+    const row = DAYS[di].ground[ri]
+    const issued = deletionWasIssued(di, 'ground', ri, row && row.src)
     DAYS[di].ground.splice(ri, 1)
     ;[`g:${di}.`, `gr:${di}.`].forEach(h => shiftKeys(h, 0, ri))
-    markEdit(); afterSchedMutate(); notify(); return act(di, 'Ground item removed')
+    markDeletion(di, 'ground', issued); afterSchedMutate(); notify(); return act(di, 'Ground item removed')
   }
   if (ds.grcx != null) { const [di, ri] = ds.grcx.split('.').map(Number); return askCx(DAYS[di].ground[ri], `gr:${di}.${ri}.prog`, 'this item') }
   if (ds.grflag != null) {
@@ -724,7 +733,7 @@ export function addLine(di: number) {
   /* blank, same reason as the gline handler above */
   const w = d.waves[d.waves.length - 1]
   w.formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
-  markEdit(`ff:${di}.${d.waves.length - 1}.${w.formations.length - 1}.cs`)
+  markStructuralAdd(`ff:${di}.${d.waves.length - 1}.${w.formations.length - 1}.cs`)
   afterSchedMutate(); notify(); toast('Line added')
 }
 
@@ -739,7 +748,7 @@ export function addWave(di: number, kind: any) {
   d.waves = d.waves || []
   if (!kind) {
     d.waves.push({ label: 'WAVE ' + (d.waves.filter((w: any) => !isStandalone(w)).length + 1), night: false, intimes: [], traffic: [], formations: [{ cs: 'NEW', msn: '-', to: '12:00', ld: '13:00', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }] })
-    markEdit(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Wave added')
+    markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Wave added')
   }
   const w = makeStandalone(kind); if (!w) return
   d.waves.push(w)
@@ -750,8 +759,8 @@ export function addWave(di: number, kind: any) {
      overnight wave tells you a runner and a log cell are needed. Everything
      else, SC included, is filled from the `+ Block` picker via the same
      `waveDutyBlock`, so there is one shape per wave kind and not two. */
-  if (S.autoDuty) { d.dutywaves = d.dutywaves || []; d.dutywaves.push(waveDutyBlock(w)) }
-  markEdit(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
+  if (S.autoDuty) { d.dutywaves = d.dutywaves || []; d.dutywaves.push(waveDutyBlock(w)); trackStructuralAdd(`dl:${di}.${d.dutywaves.length - 1}`) }
+  markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
   toast(S.label + ' added — standalone, ' + (kind === 'avalon' ? 'checked for availability only' : S.all ? 'nothing on it is cross-checked' : 'SPARE is checked for availability and SC currency only'))
 }
 
@@ -808,7 +817,7 @@ export function blockMenu(anchor: HTMLElement, di: any) {
     d.dutywaves = d.dutywaves || []
     d.dutywaves.push(v === '' ? { label: 'DUTY', rows: [{ role: '', id: '', str: '', end: '' }] }
       : waveDutyBlock(waves[+v]))
-    markEdit(`dl:${di}.${d.dutywaves.length - 1}`); afterSchedMutate(); notify()
+    markStructuralAdd(`dl:${di}.${d.dutywaves.length - 1}`); afterSchedMutate(); notify()
     close(); e.stopPropagation()
   })
 }
@@ -998,6 +1007,8 @@ const EDGE_PULL = 0.32      // how much of the drag the ends give back
 export function wireBoardSwipe(el: HTMLElement) {
   let x0 = 0, y0 = 0, t0 = 0, lx = 0, lt = 0, vel = 0
   let live = false, lock = false, pane: HTMLElement | null = null, w = 1
+  let settleTimer: ReturnType<typeof setTimeout> | null = null
+  let settlingPane: HTMLElement | null = null
 
   /* the neighbour, drawn once the gesture is taken. Built from the same
      boardHTML the live board uses, so it IS that day, not a placeholder. */
@@ -1029,12 +1040,22 @@ export function wireBoardSwipe(el: HTMLElement) {
     if (pane) { pane.style.transition = e2; pane.style.transform = `translateX(${dx}px)` }
   }
   const clear = () => {
+    if (settleTimer != null) { clearTimeout(settleTimer); settleTimer = null }
     el.style.transition = ''; el.style.transform = ''
     if (pane) { pane.remove(); pane = null }
+    if (settlingPane) { settlingPane.remove(); settlingPane = null }
     live = false; lock = false
   }
 
   const onDown = (e: any) => {
+    /* One complete board is close to the phone DOM ceiling. During settle the
+       pane belongs to the timer below (and `pane` is deliberately nulled), so
+       accepting another finger immediately used to create a second full pane
+       beside it. Fast repeated swipes could stack several ~900-node days and
+       exhaust mobile Safari before their 240ms timers caught up. A carousel
+       cannot begin another drag while it is still settling anyway: hold the
+       gesture until the one preview has been removed and the day committed. */
+    if (settleTimer != null) return
     live = false; lock = false
     if (pane) { pane.remove(); pane = null }
     el.style.transition = ''; el.style.transform = ''
@@ -1088,14 +1109,20 @@ export function wireBoardSwipe(el: HTMLElement) {
          a drag out and back has a big velocity pointing home */
       || (Math.abs(dx) > SWIPE_FLICK_MIN && Math.abs(vel) > SWIPE_FLICK
           && (vel < 0 ? 1 : -1) === dir))
-    const di = view.SBDAY
+    const di = view.SBDAY, rev = view.BOARDREV
     if (!take || di == null) {
       /* home, and say why if the end of the week is the reason */
       put(0, SWIPE_MS)
       if (!pane && Math.abs(dx) > takeDist)
         toast(dir > 0 ? 'Last day of the week' : 'First day of the week')
       const p = pane; pane = null; live = false; lock = false
-      setTimeout(() => { el.style.transition = ''; el.style.transform = ''; if (p) p.remove() }, SWIPE_MS)
+      settlingPane = p
+      settleTimer = setTimeout(() => {
+        settleTimer = null
+        el.style.transition = ''; el.style.transform = ''
+        if (p) p.remove()
+        if (settlingPane === p) settlingPane = null
+      }, SWIPE_MS)
       return
     }
     /* run it the rest of the way, THEN swap the day underneath. Committing
@@ -1103,10 +1130,16 @@ export function wireBoardSwipe(el: HTMLElement) {
        the day it was already showing. */
     put(-dir * w, SWIPE_MS)
     const p = pane; pane = null; live = false; lock = false
-    setTimeout(() => {
+    settlingPane = p
+    settleTimer = setTimeout(() => {
+      settleTimer = null
       el.style.transition = ''; el.style.transform = ''
       if (p) p.remove()
-      boardTab(di + dir)
+      if (settlingPane === p) settlingPane = null
+      /* The dots, Close, logout or a page change may have moved the board
+         while this animation was finishing. Never let an old swipe overwrite
+         that newer choice (or reopen a board that has just been closed). */
+      if (view.BOARDREV === rev && view.SBDAY === di) boardTab(di + dir)
     }, SWIPE_MS)
   }
 

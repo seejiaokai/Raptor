@@ -61,14 +61,24 @@ export function collectEvents(){
            nobody has confirmed never goes silently unchecked. A standalone
            wave is a shift, not a sortie: it briefs nothing, and a value typed
            on one stays inert because every consumer gates on shift first. */
+        /* A clock printed before a small-hours T/O belongs to the PREVIOUS
+           evening. Blank briefs already went negative through subtraction,
+           but typed B and published in-times stayed at +22:10 / +21:30 and
+           were therefore read as nearly a day AFTER a 00:30 launch. Roll any
+           stated pre-flight clock later than T/O back one day, the same
+           timeline the default brief already uses. The roll is limited to a
+           T/O whose configured brief/report lead already crosses midnight;
+           a later clock typed against an ordinary daytime sortie remains a
+           visible bad time rather than silently becoming nearly 24h early. */
+        const preflight=(t:any,lead:any)=>t!=null&&toM-lead<0&&t>toM?t-1440:t;
         const brTyped=shiftLine?null:parseHM(f.br);
-        const briefM=shiftLine?null:(brTyped!=null?brTyped:toM-VCONF.briefLead);
+        const briefM=shiftLine?null:(brTyped!=null?preflight(brTyped,VCONF.briefLead):toM-VCONF.briefLead);
         const stepM=shiftLine?toM:toM-VCONF.step;               // sortie: step 1h pre-T/O
         const dekitM=shiftLine?ldM:ldM+VCONF.dekit;             // sortie: land + 30m dekit
         /* intime is the in-time the wave actually PUBLISHED (null when none is
            given); report falls back to the step time so the occupied window is
            still right. Crew rest needs the difference between the two. */
-        const intime=(im[f.cs]!=null)?im[f.cs]:null;
+        const intime=(im[f.cs]!=null)?preflight(im[f.cs],VCONF.reportLead):null;
         const report=(intime!=null)?intime:stepM;
         const fcps:any[]=[],acs:any[]=[],allCrew:any[]=[],spareCrew:any[]=[];
         f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;

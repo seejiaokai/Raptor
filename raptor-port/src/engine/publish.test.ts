@@ -5,8 +5,11 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { PEOPLE, isScheduler } from './people'
-import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, publishAL, publishALDay, unpublishAL, discardPending, alIssue, alCount, alDays, alUsed, nextAL, markEdit, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
+import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, publishAL, publishALDay, unpublishAL, discardPending, alIssue, alCount, alDays, alUsed, nextAL, markEdit, markStructuralAdd, markDeletion, deletionWasIssued, isDeleteKey, deleteCount, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
 import { noteChange } from './slots'
+import { keyDay, shiftKeys } from './keys'
+import { moveNote } from './reorder'
+import { restoreDayVersion } from './restore'
 
 const sign = (di: number) => {
   const g = signOf(di)
@@ -14,7 +17,7 @@ const sign = (di: number) => {
 }
 
 beforeEach(() => {
-  SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []
+  SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
 })
 
@@ -243,6 +246,107 @@ describe('an issued AL is history (tfin B53 #14)', () => {
     const rec = SCHED.als[0]; rec.keys = []
     expect(alCount(rec)).toBe(2)
     expect(alDays(rec).join(',')).toBe('0')
+  })
+})
+
+describe('structural-deletion tombstones', () => {
+  it('uses unique inert keys that keep the day parseable without naming a live row', () => {
+    const a = markDeletion(0, 'ground'), b = markDeletion(0, 'ground')
+    expect(a).not.toBe(b)
+    expect(isDeleteKey(a)).toBe(true)
+    expect(keyDay(a)).toBe(0)
+    expect(deleteCount(Object.keys(SCHED.pending))).toBe(2)
+    expect(a.startsWith('g:')).toBe(false)
+    expect(a.startsWith('gr:')).toBe(false)
+  })
+
+  it('publishes, snapshots and unpublishes a removal like any other AL item', () => {
+    sign(0); setDayApproved(0, 1)
+    const key = markDeletion(0, 'note')
+    expect(publishableKeys()).toEqual([key])
+    sign(0); publishALDay(0)
+    expect(SCHED.pending[key]).toBeUndefined()
+    expect(SCHED.changes[key]).toBe(1)
+    expect(SCHED.als[0].keys).toEqual([key])
+    expect(daySnapOf(0, 1).c[key]).toBe(1)
+    unpublishAL(1)
+    expect(SCHED.changes[key]).toBeUndefined()
+    expect(SCHED.pending[key]).toBe(1)
+  })
+
+  it('does not publish a false removal when a draft-only row is added, reordered, then deleted', () => {
+    sign(0); setDayApproved(0, 1)
+    const ni = DAYS[0].notes.length
+    DAYS[0].notes.push('temporary')
+    markStructuralAdd(`dn:0.${ni}`)
+    expect(moveNote(0, ni, 0)).toBe(true)
+    const issued = deletionWasIssued(0, 'note', 0)
+    DAYS[0].notes.splice(0, 1); shiftKeys('dn:0.', 0, 0)
+    markDeletion(0, 'note', issued)
+    expect(SCHED.pending).toEqual({})
+    expect(SCHED.added).toEqual({})
+  })
+
+  it('restores draft-add identity when the AL that issued it is unpublished', () => {
+    sign(0); setDayApproved(0, 1)
+    const ni = DAYS[0].notes.length
+    DAYS[0].notes.push('new issued note')
+    const key = markStructuralAdd(`dn:0.${ni}`)
+    sign(0); publishALDay(0)
+    expect(SCHED.added[key]).toBeUndefined()
+    unpublishAL(1)
+    expect(SCHED.added[key]).toBe(1)
+    expect(SCHED.pending[key]).toBe(1)
+  })
+
+  it('does not restore an old add marker while a later AL still owns that row', () => {
+    sign(0); setDayApproved(0, 1)
+    const ni = DAYS[0].notes.length
+    DAYS[0].notes.push('new note')
+    const key = markStructuralAdd(`dn:0.${ni}`)
+    sign(0); publishALDay(0)                  // AL1 adds it
+    DAYS[0].notes[ni] = 'new note, revised'; markEdit(key)
+    sign(0); publishALDay(0)                  // AL2 now owns the key
+    unpublishAL(1)
+    expect(SCHED.changes[key]).toBe(2)
+    expect(SCHED.added[key]).toBeUndefined()
+    expect(deletionWasIssued(0, 'note', ni)).toBe(true)
+  })
+
+  it('keeps structural ownership when the later AL changed a different field', () => {
+    sign(0); setDayApproved(0, 1)
+    const ri = DAYS[0].allhands.length
+    DAYS[0].allhands.push({ prog: 'NEW', sub: '', str: '', end: '', who: [] })
+    const addKey = markStructuralAdd(`ap:0.${ri}.prog`)
+    sign(0); publishALDay(0)                  // AL1 adds the row
+    DAYS[0].allhands[ri].sub = 'detail'; markEdit(`ap:0.${ri}.sub`)
+    sign(0); publishALDay(0)                  // AL2 owns the current row snapshot
+    unpublishAL(1)
+    expect(SCHED.pending[addKey]).toBe(1)     // field history returns, identity does not
+    expect(SCHED.added[addKey]).toBeUndefined()
+    expect(deletionWasIssued(0, 'programme', ri)).toBe(true)
+    unpublishAL(2)                            // the last snapshot carrying the row goes
+    expect(SCHED.added[addKey]).toBe(1)
+    for (let i = 0; i < ri; i++) {
+      expect(deletionWasIssued(0, 'programme', 0)).toBe(true)
+      DAYS[0].allhands.splice(0, 1); shiftKeys('ap:0.', 0, 0)
+    }
+    expect(SCHED.added['ap:0.0.prog']).toBe(1)
+    expect(deletionWasIssued(0, 'programme', 0), 'the draft row stays identifiable after shifting onto an Original address').toBe(false)
+  })
+
+  it('rollback clears draft-add identities that collide with restored issued rows', () => {
+    sign(0); setDayApproved(0, 1)
+    const ni = DAYS[0].notes.length - 1
+    const issued = deletionWasIssued(0, 'note', ni)
+    DAYS[0].notes.splice(ni, 1); shiftKeys('dn:0.', 0, ni); markDeletion(0, 'note', issued)
+    sign(0); publishALDay(0)
+    DAYS[0].notes.push('temporary replacement')
+    const key = markStructuralAdd(`dn:0.${ni}`)
+    expect(SCHED.added[key]).toBe(1)
+    expect(restoreDayVersion(0, 'orig')).not.toBe(false)
+    expect(SCHED.added[key]).toBeUndefined()
+    expect(deletionWasIssued(0, 'note', ni)).toBe(true)
   })
 })
 

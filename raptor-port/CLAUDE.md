@@ -307,8 +307,13 @@ index is always first after the prefix (`keyDay()` depends on it):
 writes go through `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet` →
 `noteChange(key)` → `afterSchedMutate()`. A write that skips it is
 invisible to the amendment machinery: not marked pending, absent from the
-next AL, never re-validated. Deletes call `markEdit()` with **no key** — a
-delete must not re-mark the address it just removed.
+next AL, never re-validated. Deletes renumber the live key space first, then
+call `markDeletion(di, kind)`: its inert `del:di.seq.kind` tombstone reaches
+the AL without re-marking the address now occupied by a shifted row. On an
+already-published day, compare the removed structure with the current issued
+snapshot and its remapped draft-add identity first: add, reorder, then delete
+before the AL is a net no-op, not a removal. The bare
+`markEdit()` after it remains only the render/history epilogue.
 
 **React owns chrome, strings own density.** The dense surfaces (week,
 board, palette) are built by verbatim HTML-string builders and swapped via

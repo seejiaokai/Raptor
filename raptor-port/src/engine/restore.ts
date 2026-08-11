@@ -99,6 +99,11 @@ export function restoreDayVersion(di:any,ver:any){
   Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.changes[k];});
   let dropped=0;
   Object.keys(SCHED.pending).forEach((k:any)=>{if(keyDay(k)===di){delete SCHED.pending[k];dropped++;}});
+  /* A rollback replaces the whole live day with issued content. Any draft-add
+     identities for that day belonged to rows just discarded; leaving them at
+     reused addresses can make a later deletion of an issued row look like a
+     draft no-op. */
+  Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.added[k];});
   Object.keys(snap.c||{}).forEach((k:any)=>{SCHED.changes[k]=snap.c[k];});
   SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=(ver==='orig')?'orig':+ver;
   return dropped;
