@@ -165,7 +165,7 @@ export function SchedBoard() {
               while previewing a frozen published version, same idiom as
               +Line/+Wave above. */}
           {open && HOOKS.editMode() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
-            title="Reorder every section on this day back into its own reading order — one confirm, one undo step"
+            title="Reorder every section on this day back into its own reading order, waves and duty blocks included — one confirm, one undo step"
             onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}>⇅ Sort all</button>}
           {/* + Line / + Wave — matched to Sort all's own gate (coordinator
               review, 9 Aug 26): these two carried no editMode() gate of
@@ -263,8 +263,9 @@ export function SortAllDialog() {
         <div className="airpop-head"><b id="sortAllTitle">Sort all — {d ? d.dow : ''}</b><button className="x" id="sortAllClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="airpop-body">
           Every section on {d ? d.dow : 'this day'} — flying, duties, sims, ground and the
-          overall programme — goes back into its own reading order. Unlike every other
-          control on this board, this acts on the WHOLE day at once, not one row; a
+          overall programme — goes back into its own reading order, and the flying waves
+          and duty blocks themselves move into take-off and start-time order. Unlike every
+          other control on this board, this acts on the WHOLE day at once, not one row; a
           single Undo reverses all of it together.
         </div>
         <div className="airpop-foot">

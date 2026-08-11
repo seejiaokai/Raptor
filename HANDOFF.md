@@ -128,6 +128,14 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
   actually about (ATT B, actioned-Fly) rather than at "no reason at all",
   because seeded men genuinely are busy at those hours; that is the confound to
   expect when adding a slot-hours test, not a sign the bar is wrong.
+- **`Sort all` reorders the waves and duty blocks themselves now (11 Aug 26),
+  and it does NOT renumber their labels.** A day built out of order and then
+  sorted can read `WAVE 2` above `WAVE 1`, because the label is free text the
+  scheduler may have replaced entirely and rewriting it would clobber every
+  hand-chosen name to fix a cosmetic mismatch. The owner was told at the time.
+  If it ever bites, the honest fix is renumbering ONLY labels still matching
+  the `WAVE <n>` default `+ Wave` mints — not a blanket rewrite. Rules:
+  `docs/engine-rules.md` §Sorting a board section.
 - **One per-tick DOM walk is left on the scroll path.** `onDotsScroll` in
   `ui/pan.ts` calls `closest('#vWeek')` on every scroll event before it can
   bail, and it is registered for the whole document, so it runs on desktop
@@ -396,7 +404,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`**. |
 | `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering (delete-time), and its bijective sibling `permuteKeys`/`moveKeys` for a reorder. |
 | `order.ts` | `groundOrder(rows, man)` — Ground Programme's render-time start-time sort, pulled out of `ui/html.ts` so `reorder.ts` can freeze a rendered order into the model without the engine importing from `ui/`. `man` (a day's `d.gman`) returns model order untouched. Also holds `DUTY_ORDER`. |
-| `reorder.ts` | The board's row movers: one function per list (`moveFormation`/`moveAircraft`/`moveDutyRow`/`moveSimRow`/`moveGroundRow`/`moveProgRow`/`moveNote`) plus `applyMove`, the one entry point the UI calls — parses `mv:` addresses and resolves a flying row's two meanings (resequence vs. carry the formation) by what it was dropped on. Exports `REORDERED_DI`, the stale-arm signal `state/view.ts` pops. |
+| `reorder.ts` | The board's row movers: one function per list (`moveFormation`/`moveAircraft`/`moveDutyRow`/`moveSimRow`/`moveGroundRow`/`moveProgRow`/`moveNote`) plus `applyMove`, the one entry point the UI calls — parses `mv:` addresses and resolves a flying row's two meanings (resequence vs. carry the formation) by what it was dropped on. Also every AUTO SORT: `sortWave`/`sortDutyBlock`/`sortSims`/`sortGround`/`sortProg` (rows inside one block), **`sortWaves`/`sortDutyBlocks` (the blocks themselves, by the earliest time in each — 11 Aug 26, Sort all only)**, and `sortDay`, which composes the lot inside-out. Exports `REORDERED_DI`, the stale-arm signal `state/view.ts` pops. |
 | `waves.ts` | WEEKS/CURWEEK, standalone waves (SC/AVALON/BB): `isStandalone`, `makeStandalone`, `saExempt`, plus the duty desk a wave brings — `waveDutyBlock` (the block `+ Block` fills in, one shape per wave kind), `DUTY_STD`/`DUTY_PICK` (the role vocabulary) and `saDutyIx` (every block a standalone wave owns, highest index first, for the delete path). |
 | `publish.ts` | SCHED, sign-offs (SIGN_ROLES), `setDayApproved`, `publishALDay`/`alIssue`/`unpublishAL`, `markEdit`, AL colours, per-day version snapshots (`daySnap`/`daySnapOf`/`dayVersions`), `dayCurVer` (the day-head chip). |
 | `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |

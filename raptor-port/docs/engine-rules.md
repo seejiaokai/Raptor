@@ -764,15 +764,49 @@ opposite move: throw the section's own reading order back at it. Every
 section but overall notes gets a sorter in `engine/reorder.ts` —
 `sortWave` (flying, by take-off — `parseHM(f.to)` — the jets INSIDE a
 formation are a position in the formation, never a time, so `sortWave`
-touches `w.formations` and nothing inside one), `sortDutyBlock` (by role,
-off `order.ts`'s `DUTY_ORDER` table, one call per duty BLOCK — `dw.rows`
-— never the whole day at once), `sortSims` (by start time, called once per
-`kind` so AMT and OFT sort independently of each other), `sortGround` and
-`sortProg` (both by start time). **Overall notes have no sorter at all** —
-prose in a chosen order has no natural key, and inventing one
-(alphabetical? first-typed?) would silently reorder someone's argument, so
-`sortDay` (below) walks waves, duty blocks, sims, ground and the programme
-and stops there.
+touches `w.formations` and nothing inside one), `sortDutyBlock` (by START
+TIME since 10 Aug 26, one call per duty BLOCK — `dw.rows` — never the
+whole day at once; it used to be role rank off `order.ts`'s `DUTY_ORDER`,
+which shuffled an SC PM desk above an AM one), `sortSims` (by start time,
+called once per `kind` so AMT and OFT sort independently of each other),
+`sortGround` and `sortProg` (both by start time). **Overall notes have no
+sorter at all** — prose in a chosen order has no natural key, and inventing
+one (alphabetical? first-typed?) would silently reorder someone's argument,
+so `sortDay` (below) walks waves, duty blocks, sims, ground and the
+programme and stops there.
+
+**Two of the sorters act on the LISTS OF BLOCKS rather than the rows
+inside one** (owner, 11 Aug 26). `sortWaves(di)` orders `d.waves` and
+`sortDutyBlocks(di)` orders `d.dutywaves`, each by the EARLIEST parseable
+time anywhere in the block — take-off for a wave, start for a duty block.
+Before this, building AVALON (19:00) and then SC (07:00) left the night
+wave printed above the morning one permanently, since a wave could only be
+moved by deleting and retyping it.
+
+- **The key is a MINIMUM, not the first row.** That is what makes the
+  inner and outer sorts independent, and it is the owner's own worked
+  example: a first wave of 0700/0900 and a second of 1000/0800 must come
+  out 0700/0900 then 0800/1000 — ranking on the first line typed would
+  read 1000 for the second wave and leave the pair as built.
+- **A block with no parseable time sinks to the bottom in model order** —
+  a BB wave (hours are the scheduler's to set), a wave whose last line was
+  just deleted, a duty block nobody has timed yet. Same fallback every
+  other sorter here uses for a time-less row.
+- **Standalone waves are sorted flat with the rest, not held to the end.**
+  SC, AVALON and BB sit outside the day's flying COUNT (`dayCount`), but
+  they are read down the day like anything else, so a 07:00 SC comes to
+  rest above an 08:00 ordinary wave.
+- **Labels are never renumbered.** `WAVE 1` is free text a scheduler may
+  have replaced entirely, so a day sorted into 07:00-then-08:00 can read
+  `WAVE 2` above `WAVE 1`. Rewriting them to match would clobber every
+  hand-chosen name to fix a cosmetic mismatch; the owner was told.
+- **Neither has a per-section Auto sort button.** They are day-level
+  operations with no one section to hang a `⇅` on, so `⇅ Sort all` is the
+  only thing that calls them.
+- **A duty block's `sa` marker is a string, not an index into `d.waves`**
+  (`saDutyIx`, `engine/waves.ts`), so a wave and the desk it brought can be
+  reordered independently without either losing the other — which is why
+  these are two separate sorters rather than one paired walk.
 
 **Every sorter is a stable sort of the row's own INDEX range**, never the
 rows themselves — `keySort(n, keyFn)` sorts `[0..n)` by `keyFn(i)`, and its
@@ -798,7 +832,13 @@ bijective sibling `shiftKeys` gained for reordering (see above) — over the
 identical key-space heads the matching mover in this file already touches
 (`sortWave` over `ff:`/`fr:`/`st:`/`ar:`/`at:` plus the bare address,
 `sortDutyBlock` over `d:`/`dr:`, `sortSims` over `s:`/`sr:`, `sortGround`
-and `sortProg` over their own pair). A sorter that skipped this would move
+and `sortProg` over their own pair). The two block-level sorters take the
+widest heads of all, and both borrow their list verbatim from the matching
+DELETE path so the two can never drift: `sortWaves` uses `shiftWave`'s nine
+(`wl:`/`ff:`/`fr:`/`st:`/`ar:`/`at:`/`it:`/`tr:` plus the bare seat
+address, all at position 0 — the wave index), and `sortDutyBlocks` uses the
+`d:`/`dr:`/`dl:` trio the board's block delete renumbers. A sorter that
+skipped this would move
 a row on screen while its amendment stayed addressed at the OLD index —
 silently re-labelling an old amendment onto whatever sortie now sits
 there. Like a move, a sorter marks the row now sitting at index 0 of the
@@ -820,8 +860,17 @@ the flag without moving a row is still something that happened, and saying
 nothing would hide it.
 
 **`sortDay(di)` is the primitive `⇅ Sort all` composes over**: every wave,
-every duty block, every sim kind, Ground, then the programme, in that
-order, returning whether ANY of them changed. `⇅ Sort all` itself
+then the waves themselves, every duty block, then the blocks themselves,
+every sim kind, Ground, then the programme, in that order, returning
+whether ANY of them changed. **Inside before outside is load-bearing** —
+each inner sorter permutes key heads pinned to a FIXED wave or block index
+(`ff:0.2.`, `dr:0.1.`), so it must run while those indices still name the
+block it was handed; sorting the outer lists first would leave every inner
+call remapping the key space of whatever had moved into that slot. The
+order on screen would come out the same either way (an outer key is a
+minimum over the whole block, which reordering inside it cannot change),
+so this is about amendment records staying attached to the right sortie.
+`⇅ Sort all` itself
 (`board.ts`'s `sortAllCommit`) wraps one call to `sortDay` in
 `HIST.lock = true` for the duration — `histPush` (`state/history.ts`)
 bails outright while the lock is held, so however many of the day's
@@ -832,16 +881,15 @@ one per section. An already-tidy day never needs the lock's protection at
 all: `sortDay` returns `false`, nothing inside it ever called `markEdit`,
 and the caller shows "Already in order" instead of pushing a no-op step.
 
-**A new duty row lands in role position at the moment the role is typed,
-not when the blank row is added.** `boardChange` (`board.ts`) commits every
-`data-bfld` edit through the ordinary text funnel; the instant that commit
-is a duty row's OWN role field (`dr:<di>.<wi>.<ri>.role`), it calls
-`sortDutyBlock(di, wi)` right there. A freshly added row starts with an
-empty role — there is nothing to sort BY until the scheduler types one —
-so sorting at add-time would either do nothing or sort by "no role yet",
-neither of which answers where the row belongs. Because `sortDutyBlock` is
-itself a no-op on an already-ordered block, typing a correction into an
-untouched list costs nothing extra.
+**NOTHING SORTS ITSELF** (owner, 10 Aug 26 — "prevent a situation when the
+scheduler types and the line jumps"). Typing a role into a blank duty cell
+used to call `sortDutyBlock` from `boardChange` (`board.ts`) and reposition
+the whole block under the typist; that call is gone, and no board list has
+another like it. `⇅ Auto sort` and `⇅ Sort all` are the only things that
+reorder anything here. The one exception predates the rule and stays: the
+Ground Programme renders in time order every draw (`order.ts`'s
+`groundOrder`), which was a separate owner request and avoids the problem
+anyway, since a time-less row sinks to where the model appended it.
 
 ## Who a row stores: ID vs CALLSIGN
 

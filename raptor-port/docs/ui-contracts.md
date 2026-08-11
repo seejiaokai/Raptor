@@ -748,7 +748,13 @@ idiom, not a browser `confirm()`: `SortAllDialog` reads the day straight
 off `SORTALL` so it can never name the wrong day even if the board has
 since switched tabs underneath it, and its body spells out that this
 control — unlike every other one on the board — acts on the whole day at
-once and that a single Undo reverses all of it together. Confirming calls
+once and that a single Undo reverses all of it together. **Its body also
+has to say that whole waves and duty blocks MOVE** (owner, 11 Aug 26): the
+per-section buttons only ever tidy rows inside one block, so a scheduler
+who has learned what `⇅ Auto sort` does would not otherwise expect the
+flying panel to reorder itself. That outer reordering has no `⇅` of its
+own anywhere — there is no one section to hang it on — so this dialog is
+the only place the behaviour is announced before it happens. Confirming calls
 `sortAllCommit()`, which is the one place `HIST.lock` brackets a whole run
 of sorters (`engine-rules.md` §Sorting a board section); cancelling or
 clicking outside the box just drops `SORTALL` back to null. An already-tidy
