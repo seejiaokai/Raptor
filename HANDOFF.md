@@ -16,8 +16,8 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 969 tests
-across 53 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
+**Every gate is green at this commit**, run first-hand: `npm test` 1008 tests
+across 54 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
 run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
 (neither of the last two in CI). Re-state these only after re-running them.
 
@@ -128,6 +128,30 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
   actually about (ATT B, actioned-Fly) rather than at "no reason at all",
   because seeded men genuinely are busy at those hours; that is the confound to
   expect when adding a slot-hours test, not a sign the bar is wrong.
+- **One per-tick DOM walk is left on the scroll path.** `onDotsScroll` in
+  `ui/pan.ts` calls `closest('#vWeek')` on every scroll event before it can
+  bail, and it is registered for the whole document, so it runs on desktop
+  where the phone day-dots are `display:none` — and `#vDots` is in the DOM on
+  every page, so a cheap `$('vDots')` test would not skip it either; the guard
+  wants to be the 820px viewport check `onDocScroll` already uses. It costs
+  nothing on the main page scroll (that targets `document`, which has no
+  `closest`, so it returns immediately) and only bites when an inner panel
+  scrolls — the crew palette, the board's four panels. Same shape as the
+  non-passive `wheel` walk fixed on 11 Aug 26 (see `git log`), which the owner
+  confirmed cured the Edge stutter; this one is smaller because a scroll
+  listener does not block the scroll. Reported to the owner, not taken.
+- **The input↔schedule sweep of 11 Aug 26 found seven test gaps it did not
+  close.** Ranked as it left them: no test drives `commitInputEdit`'s
+  `keep`/"moved outside the programmed week" branch (grep finds that toast
+  string only at its own definition); none constructs an input whose `endDate`
+  runs past the last loaded `DATES` entry; none asserts, either way, that two
+  overlapping inputs for one person raise nothing; none plants a genuine
+  `half:'am'`/`'pm'` record against a sortie's brief window through
+  `validate()`; none puts a TIMED tomorrow input inside a night sortie's
+  debrief window (the tail is pinned for `LEAVE_FLY`/`DNIF_FLY` only); none
+  reaches `halfOf`'s PM boundary through the in-place cells; and nothing guards
+  an accepted input being reassigned to a different person. All are
+  MISSING-TEST, not known-wrong-behaviour.
 - **`DT_SUM` still counts a man double-BOOKED among those "double turning".**
   The summary lists everyone with 2+ sorties, which is true of a man planned
   into two seats at once as much as of a genuine double-turn. Harmless beside
