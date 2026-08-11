@@ -347,6 +347,21 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   tail is unchecked until the app carries more than one week. The parity
   gate excises the `nx` entries and `sacrew` exactly as it excises `key`
   (port-only); `overnight.test.ts` pins them positively.
+- **AND THE TAIL RUNS BOTH WAYS (11 Aug 26).** The half above covers a window
+  running PAST minute 1440; the mirror is a window opening BEFORE minute 0,
+  and a small-hours take-off produces one with no overnight row involved —
+  `briefLead` (140), `step` (60) and `reportLead` (180) are all subtracted
+  from the T/O, so a 00:30 launch briefs 22:10 the previous evening and its
+  occupied window opens 23:30 the night before. `collectEvents` therefore also
+  appends YESTERDAY's inputs shifted −1440 (marked `pv`), by the same rules:
+  a record with no usable window stays uncheckable, a shifted all-day copy
+  still spans 1439 minutes so `timedInput` treats every copy alike, and an
+  ordinary daytime sortie can never match one because its window never goes
+  negative. `slotBar` carries the matching backward block (reason suffixed
+  "(yesterday)"), because the picker and the warning list are required not to
+  drift apart. Day 0 has no yesterday, exactly as the last day has no
+  tomorrow. Found by measuring both directions against the same shape: the
+  forward case flagged, the backward case was silent.
 - **A duty block is filled from the WAVE it serves** (`waveDutyBlock`, owner
   10 Aug 26). `+ Block` on the scheduler board asks which wave the block is
   for and fills it in: the title is `<wave name> duties`, and the roles are
@@ -461,7 +476,8 @@ in the validator through `day.input`'s shifted append (see §Validation, the
 midnight tail) and in `slotBar` through the same filter chain run over the
 next day's inputs, so neither gate is stricter than the other. The bar
 reason carries "(tomorrow)" so a scheduler can see which day the absence
-lives on.
+lives on, and "(yesterday)" for the backward half — a slot whose window
+opens before minute 0, which is what a small-hours take-off does.
 
 ## Accepting a personal input
 

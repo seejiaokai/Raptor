@@ -39,12 +39,14 @@ const stripKeys = (o: any): any => {
 }
 
 /* The port carries two port-only additions the reference has never had:
-   `day.sacrew` (AVALON's one check) and the shifted, `nx`-marked copies of
-   tomorrow's inputs appended to `day.input` (the midnight tail). Same idiom
-   as stripKeys above — excise from BOTH sides — and pinned positively in
-   overnight.test.ts ("positive pins for the parity excision"). */
+   `day.sacrew` (AVALON's one check) and the shifted copies of the NEIGHBOURING
+   days' inputs appended to `day.input` — `nx` for tomorrow's (a window running
+   past midnight) and `pv` for yesterday's (a small-hours take-off whose brief
+   and step run back before minute 0). Same idiom as stripKeys above — excise
+   from BOTH sides — and pinned positively in overnight.test.ts ("positive pins
+   for the parity excision"). */
 const noPortOnly = (days: any) => days.map(({ sacrew, ...d }: any) =>
-  ({ ...d, input: (d.input || []).filter((i: any) => !i.nx) }))
+  ({ ...d, input: (d.input || []).filter((i: any) => !i.nx && !i.pv) }))
 
 describe('engine parity with the reference', () => {
   it('the reference is the 5-day week this comparison is bounded to', () => {

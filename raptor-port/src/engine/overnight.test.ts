@@ -398,3 +398,95 @@ describe('slotBar agrees with the validator (picker parity)', () => {
     expect(bar2.endsWith('(tomorrow)')).toBe(false)
   })
 })
+
+/* THE TAIL RUNS BOTH WAYS (11 Aug 26). The block above pins the FORWARD half —
+   a window running past minute 1440 judging itself against tomorrow. This one
+   pins the mirror: a window that opens BEFORE minute 0. A small-hours take-off
+   does that on its own, with no overnight row involved, because the brief lead
+   (140), the step (60) and the report lead (180) are all subtracted from the
+   T/O — so a 00:30 launch briefs at 22:10 the previous evening. Before this,
+   yesterday's inputs were unreachable from today's day.input and the clash was
+   silent, while the identical case forwards flagged correctly. */
+describe('the midnight tail, backwards (a small-hours take-off)', () => {
+  /* Tuesday's first line, moved to a 00:30 launch; 'split' is idle all week. */
+  const smallHours = () => {
+    const f = DAYS[1].waves[0].formations[0]
+    f.to = '00:30'; f.ld = '02:00'; f.br = ''
+    f.aircraft[0].p = 'split'
+    return f
+  }
+
+  it('a YESTERDAY-evening meeting clashes with a 0030 take-off', () => {
+    smallHours()
+    /* 22:00–23:45. The occupied window opens at the STEP, 23:30 the night
+       before, so this genuinely overlaps it by 15 minutes. */
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: false, s: 1320, e: 1425, type: 'Meeting', remarks: 'evening before' })
+    const h = hits('INPUT_FLY', 'split')
+    expect(h.length, JSON.stringify(h)).toBeGreaterThan(0)
+    expect(h.some((x: any) => x.di === 1)).toBe(true)
+  })
+
+  /* the half-open boundary holds backwards exactly as it does forwards: a
+     meeting ending at 23:30 ABUTS a step of 23:30 and must stay quiet. This
+     caught a test of its own that was written one boundary out. */
+  it('a meeting ending exactly at the step time does not clash', () => {
+    smallHours()
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: false, s: 1260, e: 1410, type: 'Meeting', remarks: 'abuts the step' })
+    const h = hits('INPUT_FLY', 'split').filter((x: any) => x.di === 1)
+    expect(h.length, JSON.stringify(h)).toBe(0)
+  })
+
+  it('a YESTERDAY all-day leave clashes with a 0030 take-off', () => {
+    smallHours()
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: true, type: 'OL', remarks: '' })
+    const h = hits('LEAVE_FLY', 'split')
+    expect(h.length, JSON.stringify(h)).toBeGreaterThan(0)
+    expect(h.some((x: any) => x.di === 1)).toBe(true)
+  })
+
+  it('a yesterday-MORNING commitment does NOT reach a 0030 take-off', () => {
+    smallHours()
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: false, s: 540, e: 660, type: 'Meeting', remarks: 'morning before' })
+    const h = hits('INPUT_FLY', 'split').filter((x: any) => x.di === 1)
+    expect(h.length, JSON.stringify(h)).toBe(0)
+  })
+
+  it('an ORDINARY daytime sortie is untouched by the backward tail', () => {
+    const f = DAYS[1].waves[0].formations[0]      // left at its seeded daytime hours
+    f.aircraft[0].p = 'split'
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: true, type: 'OL', remarks: '' })
+    const h = hits('LEAVE_FLY', 'split').filter((x: any) => x.di === 1)
+    expect(h.length, JSON.stringify(h)).toBe(0)
+  })
+
+  it("collectEvents marks yesterday's shifted copies pv, in negative minutes", () => {
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: true, type: 'OL', remarks: '' })
+    const pv = collectEvents()[1].input.filter((i: any) => i.pv && i.id === 'split')
+    expect(pv.length).toBe(1)
+    expect(pv[0].s).toBe(-1440)
+    expect(pv[0].e).toBe(-1)
+    /* an all-day copy still spans exactly 1439 minutes, so validate's
+       timedInput filter treats it exactly as it treats the forward copy */
+    expect(pv[0].e - pv[0].s).toBe(1439)
+  })
+
+  it('day 0 has no yesterday, and does not crash reaching for one', () => {
+    expect(collectEvents()[0].input.some((i: any) => i.pv)).toBe(false)
+  })
+
+  it('the PICKER agrees with the warning list on a small-hours take-off', () => {
+    const f = smallHours()
+    f.aircraft[0].p = ''                                  // leave the seat open to ask about it
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: true, type: 'OL', remarks: '' })
+    const bar = slotBar('split', '1.0.0.0.p')
+    expect(bar, bar).toBeTruthy()
+    expect(bar.endsWith('(yesterday)')).toBe(true)
+  })
+
+  it('the picker does NOT say yesterday for an ordinary daytime seat', () => {
+    DAYS[1].waves[0].formations[0].aircraft[0].p = ''
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: true, type: 'OL', remarks: '' })
+    const bar = slotBar('split', '1.0.0.0.p')
+    expect(String(bar).endsWith('(yesterday)')).toBe(false)
+  })
+})

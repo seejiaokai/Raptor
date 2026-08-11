@@ -19,7 +19,12 @@ export function personBusy(d:any,id:any){
   (d.waves||[]).forEach((w:any)=>w.formations.forEach((f:any)=>{ if(f.cx)return; f.aircraft.forEach((a:any)=>{
     if(a.cx)return;
     if(a.p===id||a.w===id){const to=parseHM(f.to); let ld=parseHM(f.ld);
-      if(to!=null&&ld!=null){if(ld<to)ld+=1440; out.push([to-60,ld+30]);}}});}));
+      /* the step and dekit pads are VCONF's, not literals: both are editable on
+         the Logic tab (0–240), and slotRules/events.ts/validate.ts all read them
+         from there. Hardcoding 60/30 here matched only at the defaults, so
+         raising either rule left this strip offering a man the validator already
+         considered occupied. */
+      if(to!=null&&ld!=null){if(ld<to)ld+=1440; out.push([to-VCONF.step,ld+VCONF.dekit]);}}});}));
   /* both sim devices count, and a row's pax list counts as much as its p/w seats —
      an AMT box session with 8 aircrew makes all 8 of them busy for that window. */
   const sm=d.sims||{}; ['amt','oft'].forEach((k:any)=>(sm[k]||[]).forEach((o:any)=>{ if(o.cx)return;
@@ -273,6 +278,19 @@ export function slotBar(id:any,key:any,rules?:any){
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>awayAllDay(x)||overlap(r.slotStart,r.slotEnd,x.s+1440,x.e+1440));
     if(off2.length)return offWord(off2[0])+' (tomorrow)';
+    /* ...and the same tail BACKWARDS, for the same reason and by the same
+       chain (see events.ts's matching block). A slot whose window opens before
+       minute 0 — a small-hours take-off, whose step and brief run back into the
+       previous evening — has a tail belonging to YESTERDAY, shifted −1440 into
+       this slot's minute-space. Without this the picker offered a man who was
+       at a meeting the night before, and the warning list stayed silent too, so
+       the two agreed only by both being wrong. */
+    const pdv=kn&&r.slotStart<0&&r.di>0?DAYS[r.di-1]:null;
+    const off3=!pdv?[]:INPUTS.filter((x:any)=>isAway(x)&&x.person===id&&inputCoversDate(x,pdv.dt))
+      .filter((x:any)=>!(spareLike&&canSpare(x.type)))
+      .filter((x:any)=>!(canWork(x.type)&&!flying))
+      .filter((x:any)=>awayAllDay(x)||overlap(r.slotStart,r.slotEnd,x.s-1440,x.e-1440));
+    if(off3.length)return offWord(off3[0])+' (yesterday)';
   }
   return '';
 }

@@ -3,12 +3,13 @@
    the day sets the free-crew list is built from). */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { personCount, personWarnDays, dayOff, dayEngaged, dayStandby, availByWave, slotBar } from './avail'
+import { personCount, personWarnDays, dayOff, dayEngaged, dayStandby, availByWave, slotBar, personBusy } from './avail'
 import { makeStandalone } from './waves'
 import { setSlotVal, acceptInput, unacceptInput } from './slots'
 import { INPUTS } from './inputs'
 import { validate } from './validate'
 import { SCHED } from './publish'
+import { VCONF } from './rules'
 
 const DSNAP = JSON.stringify(DAYS)
 beforeEach(() => {
@@ -160,5 +161,37 @@ describe('a half-day absence frees the other half in the palette', () => {
     INPUTS.push({ person: free, date: d.dt, allday: false, s: 721, e: 1439, half: 'pm', type: 'LL', remarks: '', mod: '' })
     validate()
     expect(availByWave(d).anyWave.includes(free)).toBe(true)
+  })
+})
+
+/* The "available crew · by wave" strip is built from personBusy, and its step /
+   dekit pads used to be the literals 60 and 30 while every other consumer of a
+   sortie's occupied window (slotRules, events.ts, validate.ts) read VCONF. At
+   the shipped defaults the two agree, so the fault was dormant — it woke the
+   moment an admin edited either rule on the Logic tab, and the strip then
+   offered a man the warning list already considered occupied. */
+describe('personBusy follows the editable step / dekit rules', () => {
+  const flyWindow = () => {
+    const f = DAYS[0].waves[0].formations[0]
+    f.to = '12:00'; f.ld = '13:00'; f.aircraft[0].p = 'split'
+    return personBusy(DAYS[0], 'split')[0]
+  }
+
+  it('at the defaults the window is take-off − step to landing + dekit', () => {
+    const w = flyWindow()
+    expect(w[0]).toBe(720 - VCONF.step)
+    expect(w[1]).toBe(780 + VCONF.dekit)
+  })
+
+  it('raising the step rule widens the busy window by the same amount', () => {
+    const before = flyWindow()
+    const step0 = VCONF.step, dekit0 = VCONF.dekit
+    try {
+      VCONF.step = step0 + 90
+      VCONF.dekit = dekit0 + 15
+      const after = flyWindow()
+      expect(after[0]).toBe(before[0] - 90)
+      expect(after[1]).toBe(before[1] + 15)
+    } finally { VCONF.step = step0; VCONF.dekit = dekit0 }
   })
 })

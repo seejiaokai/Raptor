@@ -93,7 +93,10 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
   - **The loaded week's LAST day has no next day**, so its overnight tail is
     unchecked (nothing to shift in). Fixes itself the day the app carries
     more than one week of data — same missing piece as the first bullet in
-    this list.
+    this list. **The FIRST day is now the mirror of it**: the tail runs both
+    ways since 11 Aug 26 (see below), so day 0 has no yesterday to shift in
+    either, and a small-hours take-off on the Monday is unchecked against the
+    Sunday before. Same fix, same day.
   - **Exempt-line pucks ring from their OWN red rules only** (owner, 11 Aug
     26 — asked and answered twice, settled the same day): an SC spare or an
     AVALON seat rings for the availability check, a spare also for SC
@@ -114,6 +117,39 @@ run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
     11:40. Correct, and the owner was told; expect it to be reported as a bug
     at least once. The levers are the AM boundary or the step padding, never a
     picker rule that disagrees with the warning list.
+- **The crew picker does not know who is busy at THIS hour** (found by the
+  11 Aug 26 input-vs-schedule sweep; reported to the owner, who deferred it).
+  `slotBar` has no overlap check against the day's other commitments for any
+  key except a standalone SC shift, and `dayEngaged` — the only signal there
+  is — is whole-day and non-overlap-aware: it dims the puck and captions it
+  "already tasked today, but you can still plan him", which reads identically
+  for a man who is free at that hour and one who is mid-sortie. Reproducible
+  on the SEED data with no edits: arm Monday's OFT `EP-6` back seat (15:00–
+  16:30) and the picker offers five men committed across that window — one
+  airborne on `RU BFM`, three on duty desks — with no reason against any of
+  them; planting one raises `DOUBLE_BOOK` at once. Fixing it means deciding
+  whether the bar is hard or advisory, which is why it was not taken with the
+  other three: the palette is where a scheduler's habits live.
+- **A personal absence cannot cross midnight** (same sweep, same decision to
+  defer). Both entry paths refuse `e<=s` — `inputedit.tsx`'s `commitInputEdit`
+  and the Inputs page's add — so 22:00–02:00 is rejected as "end time must be
+  after start time", and `events.ts`'s `mapInp` is the one event build that
+  does NOT route its window through `win()`, so a record that got in some
+  other way is passed to `overlap()` inverted and silently matches nothing.
+  Every other row type rolls over midnight. Needs an owner decision on what an
+  overnight absence means before it is built.
+- **`inpKey` is a content key that is not guaranteed unique.** Two inputs
+  sharing person + date + type + start minute mint the same `src`, and
+  `acceptedDay`/`unacceptInput` both take the FIRST match — so unaccepting one
+  can remove the other's ground row. Narrow (it needs an identical start
+  minute) and unreached in practice; the cheap guard, if it ever bites, is to
+  refuse a second accept whose `src` is already on the day.
+- **The unarmed crew list strikes an ATT B man through** even though ATT B is
+  the one type that bars flying while leaving a desk, a sim seat or a ground
+  row open — `rosterPuck` falls back to `dayOff`/`isAway` when nothing is
+  armed, which cannot see the `canWork` carve-out that `slotBar` applies the
+  moment a slot IS armed. Reported, not fixed; nobody is on ATT B in the demo
+  data (see below), so it is invisible until someone sets it by hand.
 - **The activity types warn but do not bar.** Training, CSE, Meeting, Fly,
   Personal, Appointment and Other now reach the validator the moment they are
   typed, so planting a man through one raises a warning — but they are not in

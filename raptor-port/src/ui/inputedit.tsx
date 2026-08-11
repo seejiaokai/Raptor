@@ -120,7 +120,16 @@ export function commitInputEdit(r: any, draft: any) {
          otherwise its new start date */
       const keep = wasDi >= 0 && DATES[wasDi] && inputCoversDate(r, DATES[wasDi])
       const di = keep ? wasDi : DATES.indexOf(r.date)
-      if (di >= 0) acceptInput(di, r, wasAcc)
+      /* acceptInput REFUSES a leave / medical / overseas-duty type — those are
+         issued through the Unavailable block and never become a programme row.
+         So retyping an accepted Meeting to LL legitimately drops its row, and
+         the drop was silent: the un-accept above had already removed it, this
+         call returned false unread, and the save still reported success. The
+         row vanished from a published programme with nothing said. Say it. */
+      if (di >= 0) {
+        if (!acceptInput(di, r, wasAcc))
+          HOOKS.toast(`${r.type} does not go on the Ground Programme — its row has been removed`, 'warn')
+      }
       else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
     }
   })
