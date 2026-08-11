@@ -16,6 +16,14 @@ mean two different things, or a choice would materially change the result,
 ask follow-up questions until it wouldn't. Small, unambiguous asks clear
 that bar on their own — don't manufacture questions for them.
 
+**`/brainstorming` overrides this section, and usually should not.** That
+skill mandates a committed spec document and then a task-by-task
+implementation plan — the HEAVY path. For a list of concrete asks ("rename
+this, sort that"), skip it: ask the questions, then build. Invoking it on a
+15-item UI list on 10 Aug 26 cost ~15 minutes writing a spec the owner's own
+default says not to write. Reach for it when the SHAPE is genuinely unsettled,
+not when the ask is already a list.
+
 **Match the process to the risk — the owner chose MEDIUM as the default
 (owner, 7 Aug 26), after the stores-configuration feature took a full day
 under the heaviest one.** Medium is: understand the ask, build it, have one
@@ -67,9 +75,22 @@ barely more than one.
   his answer. One line, plainly, what happened. Do NOT notify for progress
   updates, for a quick reply he is clearly sitting there watching, or twice
   for the same piece of work.
-- **Ship it.** Once the gates are green, open a PR to `main` and merge so
-  it deploys — don't wait to be asked (unless a gate is red or the change
-  was called an experiment).
+- **Ship ONCE PER SESSION, at the end — not once per idea** (owner, 10 Aug
+  26, after a session that shipped three times). Build and verify everything
+  locally as you go, then make ONE PR carrying the lot. Still don't wait to be
+  asked: when the work is done and green, ship it without a prompt (unless a
+  gate is red, or the change was called an experiment, or the owner asks for
+  a piece sooner — he sometimes wants one thing on his phone now).
+  **Shipping is not how you test.** `npm run build && npx vite preview` is the
+  same bundle that deploys, base path and all, so every check — including
+  driving it in a browser and looking at it — happens before the PR. The
+  deployed page only adds a DELIVERY check (a stale cache, a path wrong as
+  served), which is real but rare.
+  MEASURED, which is why this rule changed: each shipment costs ~3 min of CI
+  plus 4–10 min of Pages rollout plus the live check — about 10 minutes of
+  pure waiting, three times over in one session. Batching is worth more
+  again on the build side: fifteen changes in one pass ran ~6 min each, where
+  a single change shipped alone took an hour and a half.
 - **Delegate frugally, by judgment.** The main session plans, reviews
   diffs and runs the gates first-hand. Scanning/exploration goes to
   Explore on **haiku**; multi-file or mechanical code-writing goes to
@@ -83,7 +104,9 @@ barely more than one.
   when checking one field. Never read `reference/` whole (6.6k lines) —
   `grep` it; same for any file over ~300 lines (Grep or offset/limit Reads).
   While iterating run only the affected test file
-  (`npx vitest run <file>`); the full four gates once, before the PR.
+  (`npx vitest run <file>`); the full gate set ONCE, before the PR — not
+  between the sub-changes of a batch. Four full passes is ~20 wasted minutes,
+  and that is a real reading from 10 Aug 26, not a caution.
   Trust this index instead of re-exploring. Prefer a fresh
   session per task; a long conversation re-sends itself every turn.
 
