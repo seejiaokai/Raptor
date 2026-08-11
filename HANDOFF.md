@@ -16,10 +16,12 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 940 tests
-across 52 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 64/64, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
-(neither of the last two in CI). Re-state these only after re-running them.
+**The four CI gates are green at this commit**, run first-hand: `npm test`
+962 tests across 53 files, `node reference/tfin.js` 728/0, `npm run build`
+clean, `npm run test:e2e` 64/64. The two local-only gates (`npm run
+probes:adapted`, `npm run perf`) are being re-run against this code as this
+line is written — the next commit restates them. Re-state any of these only
+after re-running them.
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
   DOM ceilings and two behavioural checks. The three per-node TIMING budgets
