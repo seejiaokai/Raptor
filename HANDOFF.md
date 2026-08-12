@@ -16,10 +16,16 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**Every gate is green at this commit**, run first-hand: `npm test` 1114 tests
-across 59 files, `node reference/tfin.js` 728/0, `npm run build` clean, `npm
-run test:e2e` 77/77, and `npm run probes:adapted` 6/6 plus `npm run perf` 4/0
-(neither of the last two in CI). Re-state these only after re-running them.
+**Every primary CI gate is green for merged `main` at `8eef4c3` (PR #165).**
+Run first-hand on the matching local tree: `npm test` 1144 tests across 60
+files, `node reference/tfin.js` 728/0, and `npm run build` clean. The complete
+GitHub Chromium geometry job also passed; the focused phone-carousel run was
+3/3. The deployed Pages build was then exercised at 390×780: Sunday outward,
+followed by eight rapid Saturday↔Sunday cycles, left zero preview panes, a
+stable 544 board nodes, and no browser warnings/errors. `probes:adapted` and
+`perf` were not re-run in this Windows checkout: the adapted runner could not
+resolve its direct `playwright` import even though the installed Playwright
+test runner worked. Re-state any of these only after re-running them.
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
   DOM ceilings and two behavioural checks. The three per-node TIMING budgets
@@ -477,7 +483,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 ### `raptor-port/src/state/` — the store
 | file | what it does |
 |---|---|
-| `store.ts` | `notify()`/subscribe/version; `wireStore()` maps HOOKS→notify (including the role-aware `editMode()`); **`resetSession()` — the ONE session-change path, used by every login and logout**; write helpers; `initStore()` boot (wires, **rulesLoad**, validate, history baseline). |
+| `store.ts` | `notify()`/subscribe/version plus the narrow `notifyBoard()`/`subscribeBoard()` lane used by day-only board navigation, so a swipe does not wake the seven-day edit week; `wireStore()` maps HOOKS→global notify (including the role-aware `editMode()`); **`resetSession()` — the ONE session-change path, used by every login and logout**; write helpers; `initStore()` boot (wires, **rulesLoad**, validate, history baseline). |
 | `view.ts` | UI state the engine reads: CURPAGE, SBDAY, ROSDAY, ARM, selection (SELID/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — clicking a puck lights every copy of that person), `afterSchedMutate()`, `focusWarn`, `setPage` (which sweeps body-level popups, closes the board, and captures the day being left), setters. Also `CARRYDAY`/`weekLeftDay`/`scrollWeekToDay` — the day carried between View-only and Edit Schedule; the two geometry helpers live here, not in `ui/pan.ts`, because `pan.ts` already imports this module and `setPage` is the one moment the outgoing week still has layout. Contract: `docs/ui-contracts.md` §The day carries across a page switch. |
 | `history.ts` | HIST snapshots, `histPush`/`histApply`, undo/redo bodies. |
 | `auth.ts` | SESSION, `setSession` (resets LGEDIT, the Logic tab's own edit mode), `canEditSched`, ME/`setMe`. |
@@ -489,8 +495,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `App.tsx` | Login vs Shell + board overlay (the board is a SIBLING of the shell so logout unmounts it). |
 | `Shell.tsx` | Topbar, nav, both schedule pages' chrome, global listeners (click/change/contextmenu/focusout/keydown, drag, pan), banner, memoized sections. |
 | `ViewWeek.tsx` / `EditWeek.tsx` | The week surfaces: build `dayHTML` per day, diff strings, swap only changed days, hold scroll; `EditRoster` palette. CURPAGE-gated. |
-| `SchedBoard.tsx` | The full-screen day board: panels with per-panel string diff; CxDialog (cancel-with-reason) and the Sort-all confirm, both wired to `HOOKS.closeBoardDialogs`. |
-| `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, per-section and whole-day sorts, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. |
+| `SchedBoard.tsx` | The full-screen day board: panels with per-panel string diff; subscribes to both the global store and the board-only view lane; CxDialog (cancel-with-reason) and the Sort-all confirm, both wired to `HOOKS.closeBoardDialogs`. |
+| `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, per-section and whole-day sorts, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. Its phone carousel uses one under-20-node destination summary rather than another dense board, locks ownership to the day/navigation generation at gesture lock, reconciles the final pointer-up side, and aborts `pointercancel` or any newer day choice. |
 | `rowdrag.ts` | The board row-reorder pointer machine — its own small machine, deliberately not `drag.ts` (which stays scoped to pucks): pointer events so a finger works, releases implicit pointer capture on the way down, writes the lifted row and the drop bar straight onto the DOM, delegated on the board wrap so it survives every panel repaint. |
 | `html.ts` | THE builder library: `dayHTML`, `puck`, `slotCell`, `signoffHTML`, day warnings, day-info panel, legend, cx/flag tags, and the derived `areaText`/`atimeText`. |
 | `board-html.ts` / `palette-html.ts` / `logic-html.ts` | Board panels (inputs bands, notes, programme, duties, sim rows, ground, personal-inputs group, sim notes), the aircrew palette, the Logic tab's rule text. |
@@ -528,6 +534,6 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split and the carousel motion are in `e2e/geometry.spec.ts`, which is the only place either resolves. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. |
-| `src/ui/boardswipe.test.tsx` | The phone board's one-row top bar and its day swipe (11 Aug 26) — what the gesture claims and, more usefully, what it deliberately does NOT guard against. The GEOMETRY of the same change (one row, the drawer clearing the bar) is in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
+| `src/ui/boardswipe.test.tsx` | The phone board's one-row top bar and day carousel — includes the reported Sunday edge/repeated Saturday↔Sunday sequence, bounded preview nodes/panes, same-finger edge reversal, iOS cancellation, stale settle/close/reopen, a dot choice while still held, and a final pointer-up that crosses without a last move. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
 | `.claude/skills/` (14 more) | `obra/superpowers` v6.2.0, MIT, vendored 7 Aug 26 — a plugin install lives in `~/.claude/plugins` on a local machine and never reaches a web session's fresh container, while repo-level skills ship with the clone. Cross-references de-namespaced; the upstream SessionStart hook is vendored at `.claude/hooks/` but **not** wired in. Provenance and the update recipe: `.claude/skills/SUPERPOWERS-VENDORED.md`. |
