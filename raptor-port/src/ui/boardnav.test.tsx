@@ -86,6 +86,32 @@ describe('the top bar carries the day, undo/redo and no + Line', () => {
     expect($('#sbDate').textContent).toBe(DAYS[2].dt)
   })
 
+  /* THE DAY NAME IS SPLIT SO A PHONE CAN DROP ITS TAIL (owner, 12 Aug 26 —
+     "Seems like the Wednesday blocked off the date"). `.sb-title` ellipses
+     under 820px, and the long day names were eating the date. jsdom loads no
+     stylesheet, so all this can prove is the SHAPE the CSS hangs off: three
+     letters outside the hidden label, the remainder inside it, and the whole
+     word still in the text so desktop and the accessible name are unchanged.
+     What it looks like painted is `e2e/geometry.spec.ts`. */
+  it('splits the day name so the phone reads three letters and desktop the whole word', () => {
+    const day = $('#sbDay')
+    const tail = day.querySelector('.bl') as HTMLElement
+    expect(tail, 'the tail is a .bl — the same class every control on this bar hides by').toBeTruthy()
+    expect(day.firstChild!.nodeValue, 'Wed, matching the day strip and dowShort').toBe('Wed')
+    expect(tail.textContent).toBe('nesday')
+    expect(day.textContent, 'and the full word survives for the surfaces with room').toBe(DAYS[2].dow)
+  })
+
+  /* Saturday and Sunday collide on three letters, so the DATE beside them is
+     the only thing separating them — which is the reason this fix exists */
+  it('keeps the date beside the short name on every day of the week', async () => {
+    for (const di of [0, 5, 6]) {
+      await act(async () => { boardTab(di); notify() })
+      expect($('#sbDay').firstChild!.nodeValue).toBe(DAYS[di].dow.slice(0, 3))
+      expect($('#sbDate').textContent, `${DAYS[di].dow} keeps its date`).toBe(DAYS[di].dt)
+    }
+  })
+
   it('has an undo and a redo button, disabled exactly as the shell pair is', async () => {
     const undo = $('#sbUndo') as HTMLButtonElement
     const redo = $('#sbRedo') as HTMLButtonElement

@@ -75,6 +75,17 @@ barely more than one.
   his answer. One line, plainly, what happened. Do NOT notify for progress
   updates, for a quick reply he is clearly sitting there watching, or twice
   for the same piece of work.
+  **"Done" MEANS LIVE, and the notification is the one at the END of that
+  chain** (owner, 12 Aug 26 — "ok let me know when it's live always and do
+  these steps automatically next time till it's live"). A green gate is not
+  done, a merged PR is not done, and neither is worth a notification of its
+  own. Carry it the whole way without being asked and without checking in at
+  each step: gates → PR → merge when green → wait for Pages → **load the real
+  page and look at the thing you changed** (the 7 Aug standing instruction,
+  §Build & verify) → then ONE notification saying it is live. The only reasons
+  to come back sooner are a red gate you cannot fix, a genuine question, or a
+  merge he has told you to hold. Waiting is not a reason: schedule a check-in
+  (`send_later`) and let it fire, rather than reporting "still building".
 - **Ship ONCE PER SESSION, at the end — not once per idea** (owner, 10 Aug
   26, after a session that shipped three times). Build and verify everything
   locally as you go, then make ONE PR carrying the lot. Still don't wait to be
@@ -451,6 +462,12 @@ the phone perf budget. Don't convert them to components.
   the only thing that says WHICH day is open. Gone with the swipe: the
   `.sb-pane` preview and `.sb-main`'s own `touch-action`, so the scroller is the
   browser's default again.
+  **THE DAY NAME ON THAT BAR IS THREE LETTERS ON A PHONE** (owner, 12 Aug 26 —
+  "Seems like the Wednesday blocked off the date"). The title box ellipses, so
+  the long day names were eating the date beside them. The word is SPLIT — `Wed`
+  plus a `.bl` tail — not shortened, so desktop still reads `Wednesday` off one
+  markup path, and three letters is what the dots and `dowShort` already use.
+  Don't "restore" the full word on the phone, and don't shorten the desktop one.
   `boardTab` is view-only: it must not validate, and its board-only notification
   lane must not wake the mounted EditWeek or EditRoster. Real mutations still use
   the global lane and repaint both.

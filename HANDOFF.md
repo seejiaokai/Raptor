@@ -16,21 +16,21 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**All six gates were green first-hand for the day-navigation pass of 12 Aug 26**,
-run in this container on the matching tree: `npm test` 1134 tests across 60 files,
-`node reference/tfin.js` 728/0, `npm run build` clean, and the full
-`npm run test:e2e` geometry job 79/79 in Chromium. The built bundle was then
-driven at 390×780 and at 1440px: the two day arrows step the week and stop
-disabled at both ends, the bar measures 75px on one line plus the day strip, a
-sideways drag across the board does nothing at all, and no console errors or 4xx
-appeared. **The DEPLOYED page was then driven the same way** (the standing
-instruction, owner 7 Aug 26) and behaved identically — six taps Monday to Sunday,
-both arrows disabling at the ends, the board really redrawing each day, no arrows
-at 1440px. `probes:adapted` (36 checks) and `perf`
-(4) were re-run first-hand in a Linux container on 12 Aug 26 and both passed;
-the resolution failure recorded here before that was a Windows-checkout problem
-with the adapted runner's direct `playwright` import, not a code fault. Re-state
-any of these only after re-running them.
+**All six gates were green first-hand for the short-day-name pass of 12 Aug 26**,
+run in this container on the matching tree: `npm test` 1136 tests across 60 files,
+`node reference/tfin.js` 728/0, `npm run build` clean, the full
+`npm run test:e2e` geometry job 81/81 in Chromium, `probes:adapted` 36/36 and
+`perf` 4/4. The built bundle was then driven at 390×844 and at 1500px: the phone
+bar reads `Wed Jul 15` with nothing clipped and still measures 75px on one line
+plus the day strip, the desktop bar still reads `Wednesday Jul 15 · scheduler
+board` at 49px, and no console errors, page errors or 4xx appeared on either.
+The day-navigation pass earlier the same day was green on the same six, and its
+deployed-page check (the standing instruction, owner 7 Aug 26) behaved
+identically to the preview — six taps Monday to Sunday, both arrows disabling at
+the ends, the board really redrawing each day, no arrows at 1440px. The
+`probes:adapted` resolution failure recorded here before 12 Aug 26 was a
+Windows-checkout problem with the adapted runner's direct `playwright` import,
+not a code fault. Re-state any of these only after re-running them.
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
   DOM ceilings and two behavioural checks. The three per-node TIMING budgets
@@ -550,6 +550,6 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split is in `e2e/geometry.spec.ts`, which is the only place it resolves (the day-carousel motion tests that used to sit beside it went with the swipe, 12 Aug 26). |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. |
-| `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
+| `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
 | `.claude/skills/` (14 more) | `obra/superpowers` v6.2.0, MIT, vendored 7 Aug 26 — a plugin install lives in `~/.claude/plugins` on a local machine and never reaches a web session's fresh container, while repo-level skills ship with the clone. Cross-references de-namespaced; the upstream SessionStart hook is vendored at `.claude/hooks/` but **not** wired in. Provenance and the update recipe: `.claude/skills/SUPERPOWERS-VENDORED.md`. |

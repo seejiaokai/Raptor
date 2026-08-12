@@ -2169,6 +2169,70 @@ test.describe('the phone board keeps its controls to one row', () => {
     expect(m.barH, 'the bar is a fraction of the screen it used to eat').toBeLessThan(82)
   })
 
+  /* THE DATE USED TO BE ELLIPSED OFF THE BAR (owner, 12 Aug 26 — "Seems like
+     the Wednesday blocked off the date"). `.sb-title` is nowrap + overflow
+     hidden + ellipsis on a phone, so the day name and the date compete for one
+     box and the longest names won: the bar read "Wednesday Jul…". The fix hides
+     the day name's tail with the same `.bl` class the buttons use, which only
+     CSS can do — jsdom paints nothing, so the DOM-shape half of this is in
+     `boardnav.test.tsx` and the half that MEASURES is here. Wednesday is the
+     worst case of the seven and the day in the owner's screenshot. */
+  test('the day and the date both fit the phone bar, on the longest day name', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(2))    // Wednesday
+    await page.waitForSelector('#sbDate')
+    const m = await page.evaluate(() => {
+      const t = document.querySelector('.sb-title') as HTMLElement
+      const day = document.querySelector('#sbDay') as HTMLElement
+      const date = document.querySelector('#sbDate') as HTMLElement
+      const tail = day.querySelector('.bl') as HTMLElement
+      const box = t.getBoundingClientRect(), dr = date.getBoundingClientRect()
+      return {
+        clipped: t.scrollWidth - t.clientWidth,
+        /* innerText, NOT textContent: the tail is display:none, and
+           textContent reads hidden nodes too — it says "Wednesday" whether the
+           fix works or not, which is exactly the assertion this test must not
+           make. innerText is what a reader sees. */
+        shown: day.innerText,
+        full: day.textContent,
+        tailPainted: tail.offsetParent !== null,
+        /* the date's own box has to sit inside the title's, not merely exist:
+           an ellipsed run still reports a rect that runs off the end */
+        dateInside: dr.width > 0 && Math.round(dr.right) <= Math.round(box.right),
+        dateText: date.textContent,
+      }
+    })
+    expect(m.tailPainted, 'the day name loses its tail under 820px').toBe(false)
+    expect(m.shown, 'so the bar reads Wed, matching the dots and the day strip').toBe('Wed')
+    expect(m.full, 'while the whole word is still in the markup for desktop').toBe('Wednesday')
+    expect(m.clipped, 'and nothing in the title is cut off any more').toBeLessThanOrEqual(0)
+    expect(m.dateInside, 'the date is painted inside the title, not past its edge').toBe(true)
+    expect(m.dateText, 'and it is the whole date').toBe('Jul 15')
+  })
+
+  /* and the desktop bar, which has the room, keeps the whole word */
+  test('the full day name comes back above 820px', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(2))
+    await page.waitForSelector('#sbDate')
+    const m = await page.evaluate(() => {
+      const t = document.querySelector('.sb-title') as HTMLElement
+      const day = document.querySelector('#sbDay') as HTMLElement
+      return {
+        text: (day.innerText || '').trim(),
+        tailPainted: (day.querySelector('.bl') as HTMLElement).offsetParent !== null,
+        clipped: t.scrollWidth - t.clientWidth,
+      }
+    })
+    expect(m.tailPainted, 'the tail paints again once there is width for it').toBe(true)
+    expect(m.text, 'a desktop still reads the day out in full').toBe('Wednesday')
+    expect(m.clipped, 'and it fits').toBeLessThanOrEqual(0)
+  })
+
   test('the day chips are dots, and tapping one still jumps to that day', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)
