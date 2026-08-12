@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, inpId, typeGroup, isLateInput, lateNote, inputCoversDate } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -57,25 +57,25 @@ const plusMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(
 export const DEFAULT_SPAN_MONTHS = 2
 const defaultRange = (now = new Date()) => ({ from: isoOf(now), to: isoOf(plusMonths(now, DEFAULT_SPAN_MONTHS)) })
 
-/* WHY the table's very first window isn't unconditionally today → +2 months
-   (owner, 12 Aug 26). That window exists to keep a real, multi-month input
-   list readable — but a window that opens on nothing reads as "my leave
-   vanished", not "narrow the dates". The app's one dataset is the demo week
-   in DATES (13–19 Jul 2026), so once the clock has moved past it — which it
-   has — today → +2 months opens on an empty table every single time, and the
-   owner has to know to find the date button and pick "all". So: if today
-   falls inside the loaded week, nothing changes here. Otherwise the initial
-   window anchors to the week itself — DATES' own first and last day — rather
-   than to a today that is not in the data yet. This is self-correcting, not
-   a special case to maintain: the day the app carries more than one week,
-   today is inside the data again and the ordinary default takes over on its
-   own. Reuses inputCoversDate (the engine's own date-range test) rather than
-   a second date parser, and never looks at INPUTS — only at DATES, which is
-   the app's own notion of "the loaded week". */
+/* THE TABLE OPENS ON TODAY → TWO WEEKS, AND ONLY ON THAT (owner, 12 Aug 26 —
+   "it is ok to show any inputs from the today's date to 2 weeks down the
+   road by default").
+   It briefly anchored to the loaded week whenever today fell outside it,
+   because with the demo week sitting in Jul 26 and the clock past it the
+   page opened EMPTY and read as "my leave vanished". The owner looked at
+   that and chose the simpler rule instead: the window is always relative to
+   today, full stop. **So the empty table is back whenever the data does not
+   reach the next fortnight, and it is deliberate** — a squadron running this
+   for real has inputs around today, which is the case being designed for,
+   and a window that silently jumps somewhere else is harder to reason about
+   than one that is always "the next two weeks". The empty state already
+   names the way out ("Change the dates, or pick 'All dates'").
+   Two WEEKS, not the two MONTHS the range button offers: this is the glance
+   a scheduler wants on opening, while `#inRangeDef` stays the wider sweep. */
+export const DEFAULT_SPAN_DAYS = 14
+const plusDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n)
 export function initialRange(now = new Date()) {
-  const today = MON[now.getMonth() + 1] + ' ' + now.getDate()
-  const inLoadedWeek = inputCoversDate({ date: DATES[0], endDate: DATES[DATES.length - 1] }, today)
-  return inLoadedWeek ? defaultRange(now) : { from: unfmt(DATES[0]), to: unfmt(DATES[DATES.length - 1]) }
+  return { from: isoOf(now), to: isoOf(plusDays(now, DEFAULT_SPAN_DAYS)) }
 }
 
 /* The sort key per column. Dates sort on the ISO date the label implies, with

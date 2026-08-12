@@ -652,36 +652,39 @@ describe('the date window', () => {
   })
 })
 
-/* The very first window the page opens on (owner, 12 Aug 26). The demo's
-   only data is the loaded week in DATES (13–19 Jul 2026); a clock past that
-   week must not open the page on an empty table — see InputsPage.tsx for the
-   full reasoning. initialRange is the pure computation the mount reads. */
+/* THE VERY FIRST WINDOW: today → two weeks, and nothing cleverer (owner,
+   12 Aug 26 — "it is ok to show any inputs from the today's date to 2 weeks
+   down the road by default"). It anchored to the loaded week for a few hours
+   in between; the owner replaced that with this. initialRange is the pure
+   computation the mount reads. */
 describe('initialRange — the window the page opens on', () => {
-  it('today inside the loaded week: the ordinary today → +2 months, unchanged', () => {
-    const now = new Date(2026, 6, 15)   // 15 Jul 2026 — inside 13–19 Jul
-    expect(initialRange(now)).toEqual({ from: '2026-07-15', to: '2026-09-15' })
+  it('is today → +14 days, wherever today falls', () => {
+    expect(initialRange(new Date(2026, 6, 15))).toEqual({ from: '2026-07-15', to: '2026-07-29' })
+    expect(initialRange(new Date(2026, 7, 12))).toEqual({ from: '2026-08-12', to: '2026-08-26' })
+    expect(initialRange(new Date(2026, 5, 1))).toEqual({ from: '2026-06-01', to: '2026-06-15' })
   })
 
-  it('the loaded week\'s own boundary days count as inside it', () => {
-    expect(initialRange(new Date(2026, 6, 13))).toEqual({ from: '2026-07-13', to: '2026-09-13' })
-    expect(initialRange(new Date(2026, 6, 19))).toEqual({ from: '2026-07-19', to: '2026-09-19' })
+  it('rolls over a month end, and a year end, without inventing a date', () => {
+    expect(initialRange(new Date(2026, 0, 25))).toEqual({ from: '2026-01-25', to: '2026-02-08' })
+    expect(initialRange(new Date(2026, 11, 24))).toEqual({ from: '2026-12-24', to: '2027-01-07' })
   })
 
-  it('today after the loaded week (the real situation, Aug 2026): anchors to the week itself', () => {
-    const now = new Date(2026, 7, 12)   // 12 Aug 2026 — the container's actual clock
-    expect(initialRange(now)).toEqual({ from: '2026-07-13', to: '2026-07-19' })
-  })
-
-  it('today before the loaded week also anchors to the week itself', () => {
-    const now = new Date(2026, 5, 1)    // 1 Jun 2026
-    expect(initialRange(now)).toEqual({ from: '2026-07-13', to: '2026-07-19' })
+  it('never anchors to the loaded week — that behaviour was reverted', () => {
+    /* Aug 2026 is past the demo week, and the window must NOT jump back to it.
+       DATES' labels are 'Jul 13'-style, so compare on the month the ISO
+       window lands in rather than reaching for the page's own unfmt. */
+    const r = initialRange(new Date(2026, 7, 12))
+    expect(DATES[0]).toMatch(/^Jul /)
+    expect(r.from.slice(0, 7), 'the window stays in August, where today is').toBe('2026-08')
+    expect(r.to.slice(0, 7)).toBe('2026-08')
   })
 })
 
-/* A render check, not just the pure function: a freshly-mounted page with the
-   clock past the loaded week must show the seeded rows, not the empty state
-   the owner reported ("all my leave has vanished"). Fake timers because the
-   default window is computed at mount, from `new Date()`. */
+/* A render check, not just the pure function. With the clock past the demo
+   week the table opens EMPTY — that is the owner's own choice (see
+   InputsPage.tsx), so it is pinned as intended behaviour rather than left to
+   be re-reported as a bug. Fake timers because the window is computed at
+   mount, from `new Date()`. */
 describe('the page as it first mounts, with different clocks', () => {
   const mountFresh = async () => {
     const h = document.createElement('div')
@@ -691,24 +694,25 @@ describe('the page as it first mounts, with different clocks', () => {
     return { h, root }
   }
 
-  it('today inside the loaded week: mounts exactly as before (today → +2 months)', async () => {
+  it('today inside the loaded week: the seeded rows are there', async () => {
     vi.useFakeTimers()
-    vi.setSystemTime(new Date(2026, 6, 15))
+    vi.setSystemTime(new Date(2026, 6, 13))
     const { h, root } = await mountFresh()
     expect(h.querySelectorAll('#inBody tr').length, 'the demo rows render').toBeGreaterThan(0)
-    expect(h.querySelector('#inRangeBtn')!.textContent).toContain('Jul 15')
+    expect(h.querySelector('#inRangeBtn')!.textContent).toContain('Jul 13')
     await act(async () => root.unmount())
     h.remove()
     vi.useRealTimers()
   })
 
-  it('today after the loaded week (Aug 2026): shows the seeded inputs, not the empty state', async () => {
+  it('today past the demo week: opens empty, deliberately, with the way out on screen', async () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date(2026, 7, 12))
     const { h, root } = await mountFresh()
-    expect(h.querySelectorAll('#inBody tr').length, 'the demo rows render').toBeGreaterThan(0)
-    expect(h.querySelector('#inEmpty')!.hasAttribute('hidden'), 'the empty state is not shown').toBe(true)
-    expect(h.querySelector('#inRangeBtn')!.textContent).toContain(DATES[0])
+    expect(h.querySelectorAll('#inBody tr').length, 'nothing falls in the next fortnight').toBe(0)
+    expect(h.querySelector('#inEmpty')!.hasAttribute('hidden'), 'so the empty state IS shown').toBe(false)
+    expect(h.querySelector('#inEmpty')!.textContent, 'and it names the way out').toMatch(/All dates/i)
+    expect(h.querySelector('#inRangeBtn')!.textContent, 'the window is anchored on today, not the demo week').toContain('Aug 12')
     await act(async () => root.unmount())
     h.remove()
     vi.useRealTimers()

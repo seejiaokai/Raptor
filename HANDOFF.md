@@ -394,17 +394,19 @@ only after re-running them.
   (Downchits ARE exempt — owner, 9 Aug 26 — so the commonest genuinely
   unavoidable late input is already covered. Leave and detachments are not.)
   Rules: `docs/engine-rules.md` §The late-input mark.
-- **The Inputs page's opening window is FIXED (12 Aug 26), and the fix is
-  self-cancelling.** It used to open on today → +2 months against a dataset
-  that is the week of 13 Jul 26, so with the clock past that week the table
-  opened EMPTY and read as "my inputs have vanished". `initialRange()`
-  (`InputsPage.tsx`) now anchors the FIRST window to the loaded week whenever
-  today falls outside it, and is otherwise the old default untouched. Nothing
-  else moved: the user's own later picks, "all dates", the calendar and the
-  filtering are as they were. **Expect this code to become dead** the day the
-  app carries more than one week — today will be inside the data again and the
-  ordinary default takes over on its own, which is the condition to delete it
-  under rather than a branch to maintain.
+- **The Inputs page opens on TODAY → TWO WEEKS, and its empty table on the
+  demo data is the owner's own choice** (owner, 12 Aug 26 — "it is ok to show
+  any inputs from the today's date to 2 weeks down the road by default").
+  **Do not re-fix this.** It opened on today → +2 months until that morning;
+  because the one dataset is the week of 13 Jul 26, a clock past that week
+  opened the table EMPTY and read as "my inputs have vanished". It was changed
+  to anchor to the loaded week when today fell outside it, the owner saw that
+  and asked for it reverted in favour of the simpler rule: the window is
+  always relative to today. So with the container clock in Aug 26 the page
+  opens empty again, ON PURPOSE — a squadron running this for real has inputs
+  around today, and the empty state already names the way out ("Change the
+  dates, or pick 'All dates'"). Pinned both ways in `inputs.test.tsx`,
+  including a test asserting the window does NOT jump to the demo week.
 - **`export.ts` writes store labels into the CSV unescaped.** Not an HTML
   sink — `csvText` quotes for CSV, not for a browser — but a store renamed
   to start with `=` is a spreadsheet-formula injection vector once that CSV
