@@ -137,23 +137,117 @@ describe('swiping the board changes the day', () => {
     expect(view.SBDAY).toBe(DAYS.length - 1)
   })
 
-  it('keeps one small preview while the carousel is settling', async () => {
+  /* THREE SWIPES WITH NO PAUSE BETWEEN THEM MOVE THREE DAYS (owner, 12 Aug 26 —
+     "sometimes it's unresponsive, I can't swipe").
+     This test used to assert the opposite — "only the first swipe commits" —
+     because a press arriving while the previous swipe was settling was thrown
+     away wholesale. That was measured on the real build at 80ms apart and it is
+     the reported fault: running through the week is the common way this surface
+     is used, not an edge case. What the refusal was really protecting is the
+     other half of this test and has not moved: never two ~900-node previews
+     alive at once. The press now FINISHES the pending settle (committing its
+     day and removing its pane) before the new gesture can make another. */
+  it('takes every swipe in a rapid run, and never stacks two previews', async () => {
     const main = $('.sb-main')
     const gesture = () => {
       main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
       main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      expect(document.querySelectorAll('.sb-pane').length,
+        'rapid swipes must not stack preview panes').toBe(1)
       main.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
     }
     await act(async () => { gesture(); gesture(); gesture() })
-    expect(document.querySelectorAll('.sb-pane').length,
-      'rapid swipes must not stack preview panes').toBe(1)
     const pane = document.querySelector('.sb-pane') as HTMLElement
     expect(pane.querySelectorAll('*').length,
       'a swipe must not allocate another ~900-node board').toBeLessThan(20)
-    expect(pane.dataset.day).toBe('3')
+    expect(pane.dataset.day, 'the third gesture is aimed at Saturday').toBe('5')
     await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
     expect(document.querySelectorAll('.sb-pane').length).toBe(0)
-    expect(view.SBDAY, 'only the first swipe commits').toBe(3)
+    expect(view.SBDAY, 'three swipes from Wednesday reach Saturday').toBe(5)
+  })
+
+  /* THE PRESS THAT LANDS ON NOTHING (owner, 12 Aug 26 — the same report).
+     Mid-settle the real board is a screen-width away and the preview is
+     pointer-events:none, so a finger hit-tests through to `.schedboard` itself.
+     Measured in Chromium: `document.elementFromPoint` in the middle of the
+     screen returns the host, not anything inside `.sb-main`. With the gesture
+     wired to the scroller that press was never seen at all — and because a
+     touch keeps implicit pointer capture on whatever it went down on, neither
+     was the drag that followed. */
+  it('starts a swipe from a press that lands on the board host, not the scroller', async () => {
+    const host = $('.schedboard')
+    await act(async () => {
+      host.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      host.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+      host.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 80, clientY: 400, pointerType: 'touch' } as any))
+    })
+    await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+    expect(view.SBDAY, 'the press the preview passes through still swipes').toBe(3)
+  })
+
+  /* ...but the widening stops at the board window. The bar's buttons are
+     pressed and its day dots are scrubbed by their own machine. */
+  it('does not swipe from the top bar', async () => {
+    const top = $('.sb-top')
+    await act(async () => {
+      top.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 30, pointerType: 'touch', buttons: 1 } as any))
+      top.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 80, clientY: 30, pointerType: 'touch' } as any))
+      top.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 80, clientY: 30, pointerType: 'touch' } as any))
+    })
+    await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+    expect(view.SBDAY, 'the bar is chrome over the board, not the board').toBe(2)
+    expect(document.querySelectorAll('.sb-pane').length).toBe(0)
+  })
+
+  /* THE PARKED AIRCREW HANDLE (owner, 12 Aug 26 — the other half of the same
+     report). A 30px sliver down the right edge over a band 55vh tall, which is
+     exactly where a leftward swipe starts. It was excluded outright, so those
+     swipes did nothing at all: measured at x=378 on the real build, the day
+     never changed however far the finger travelled. */
+  it('swipes from the parked aircrew handle, and neither scrolls nor opens it', async () => {
+    const main = $('.sb-main')
+    const tab = $('#schedBoard .sb-ros .ros-tab')
+    main.scrollTop = 500
+    document.body.classList.remove('ros-open')
+    try {
+      await act(async () => {
+        tab.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 378, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+        tab.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 258, clientY: 408, pointerType: 'touch' } as any))
+        tab.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: 258, clientY: 408, pointerType: 'touch' } as any))
+        /* the click the browser fires after any short touch — the trap this
+           handle already had once (see the drawer describe below) */
+        tab.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      })
+      await act(async () => { await new Promise(r => setTimeout(r, SETTLE)) })
+      expect(view.SBDAY, 'the right edge is where a leftward swipe begins').toBe(3)
+      expect(document.body.classList.contains('ros-open'),
+        'and the click after that drag must not slide the crew list out over it').toBe(false)
+      expect(main.scrollTop,
+        'the scroll forwarder stands down for the 8px of arc in a horizontal swipe').toBe(500)
+    } finally { document.body.classList.remove('ros-open') }
+  })
+
+  /* JUST THE DAY AND THE DATE (owner, 12 Aug 26 — "can u just show the date").
+     It carried six counts under the date — waves, aircraft, duties, sim rows,
+     ground items, personal inputs — each of them a walk of the day's structure
+     done on the frame where the finger crosses the lock threshold. */
+  it('names the incoming day with its date and nothing else', async () => {
+    const main = $('.sb-main')
+    await act(async () => {
+      main.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 200, clientY: 400, pointerType: 'touch', buttons: 1 } as any))
+      main.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 120, clientY: 400, pointerType: 'touch' } as any))
+    })
+    const pane = document.querySelector('.sb-pane') as HTMLElement
+    expect(pane.querySelector('.sb-peek-k')!.textContent, 'the day, in the app\'s own words').toBe(DAYS[3].dow)
+    expect(pane.querySelector('.sb-peek-date')!.textContent).toBe(DAYS[3].dt)
+    expect(pane.querySelector('.sb-peek-grid'), 'the six counts are gone').toBeFalsy()
+    expect(pane.querySelectorAll('*').length, 'three nodes, built mid-gesture').toBe(3)
+    /* and it rides the edge that arrives first, because a label centred in a
+       full-screen-wide pane is off screen for the whole drag */
+    expect(pane.classList.contains('from-r'), 'this one comes in from the right').toBe(true)
+    await act(async () => {
+      main.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, clientX: 120, clientY: 400, pointerType: 'touch' } as any))
+    })
   })
 
   it('does not let an old settle overwrite a newer day choice', async () => {

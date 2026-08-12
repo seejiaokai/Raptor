@@ -2572,6 +2572,47 @@ test.describe('the day carousel', () => {
     expect(await page.locator('.sb-pane').count()).toBe(0)
   })
 
+  /* A RUN THROUGH THE WEEK, AT THE SPEED A THUMB ACTUALLY MOVES (owner, 12 Aug
+     26 — "sometimes it's unresponsive, I can't swipe"). Only a real browser can
+     show this one, because the fault was in HIT TESTING, not in the gesture
+     logic: mid-settle the live board is a screen-width away and the preview is
+     pointer-events:none, so a finger landing anywhere on the board passes
+     through to `.schedboard` itself. Each press below is therefore dispatched to
+     whatever `elementFromPoint` returns, the way a touch lands — dispatching
+     straight at the scroller hides the whole bug. Measured before the fix: four
+     swipes 70ms apart moved ONE day. */
+  test('phone: four swipes 70ms apart move four days', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbHist')
+    const landedOn: string[] = []
+    for (let i = 0; i < 4; i++) {
+      landedOn.push(await page.evaluate(() => {
+        const t = document.elementFromPoint(200, 400) as HTMLElement
+        const ev = (k: string, x: number) => t.dispatchEvent(new PointerEvent(k, {
+          bubbles: true, clientX: x, clientY: 400, pointerType: 'touch', pointerId: 1,
+          buttons: k === 'pointerup' ? 0 : 1,
+        }))
+        ev('pointerdown', 200)
+        for (let s = 1; s <= 6; s++) ev('pointermove', 200 - 20 * s)
+        ev('pointerup', 80)
+        return t.className || t.tagName
+      }))
+      await page.waitForTimeout(70)
+      expect(await page.locator('.sb-pane').count(),
+        'never two previews, however fast the run').toBeLessThanOrEqual(1)
+    }
+    await page.waitForTimeout(500)
+    expect(await page.evaluate(() => (window as any).SBDAY),
+      `Monday to Friday in four swipes (pressed on: ${landedOn.join(', ')})`).toBe(4)
+    expect(await page.locator('.sb-pane').count()).toBe(0)
+    expect(await page.evaluate(() =>
+      getComputedStyle(document.querySelector('.sb-main') as HTMLElement).transform),
+      'and the board is left at rest').toBe('none')
+  })
+
   /* the seam that makes the whole thing possible without a non-passive
      listener: the browser keeps the vertical scroll, we take the horizontal */
   test('phone: the board scroller hands the sideways gesture over', async ({ page }) => {

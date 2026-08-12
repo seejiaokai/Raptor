@@ -1594,22 +1594,26 @@ body.sb-lock{overflow:hidden}
 /* THE DAY COMING IN. The first carousel put a second complete ~900-node board
    here. Even after overlapping panes were capped at one, rapid Saturday /
    Sunday swipes still made mobile Safari retain discarded render resources.
-   A small summary now identifies the destination while the one real board
-   tracks the finger. It is inert because the gesture owns it. */
+   The destination now names itself and does nothing else, while the one real
+   board tracks the finger. It is inert because the gesture owns it.
+   JUST THE DAY AND THE DATE (owner, 12 Aug 26): the counts of waves, aircraft,
+   duties, sims, ground items and inputs that used to sit under the date are
+   gone, and with them a grid to lay out mid-gesture. Reasoning: board.ts's
+   makePane. */
 .sb-pane{position:absolute;width:100%;overflow:hidden;pointer-events:none;
   background:var(--bg);z-index:1;will-change:transform;contain:strict}
 .sb-peek{position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding:28px;color:var(--ink-2);
+  align-items:center;justify-content:center;padding:22px;color:var(--ink-2);
   background:linear-gradient(rgba(59,198,232,.055),rgba(59,198,232,.015)),
     repeating-linear-gradient(180deg,transparent 0,transparent 66px,
       rgba(255,255,255,.025) 67px,rgba(255,255,255,.025) 68px)}
-.sb-peek-k{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
-.sb-peek-date{font-size:24px;font-weight:750;color:var(--ink);margin:6px 0 20px}
-.sb-peek-grid{width:min(300px,100%);display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.sb-peek-grid span{background:var(--panel);border:1px solid var(--edge);border-radius:9px;
-  padding:9px 10px;font-size:11px}
-.sb-peek-grid b{color:var(--ink);font-size:14px;margin-right:3px}
-.sb-peek-hint{margin-top:18px;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--ink-3)}
+/* the pane is a whole screen wide and slides in from one side, so its CENTRE is
+   off screen for the entire drag — the label goes against the edge that arrives
+   first instead (board.ts's makePane sets the class from the direction) */
+.sb-pane.from-r .sb-peek{align-items:flex-start;text-align:left}
+.sb-pane.from-l .sb-peek{align-items:flex-end;text-align:right}
+.sb-peek-k{font-size:12.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.sb-peek-date{font-size:24px;font-weight:750;color:var(--ink);margin:6px 0 0;white-space:nowrap}
 .schedboard[hidden]{display:none}
 .sb-top{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--edge);background:var(--panel);flex-wrap:wrap}
 .sb-title{font-weight:700;font-size:15px}

@@ -434,15 +434,28 @@ the phone perf budget. Don't convert them to components.
   tracking finger.
   **The swipe is a CAROUSEL since 11 Aug 26** (owner: "the same logic and
   mechanism as edit schedule ... full motion, feel and sensitivity"). The live
-  day tracks the finger, a small summary identifies the incoming day, and the
+  day tracks the finger, the incoming day names itself, and the
   release settles on distance or velocity. It is NOT the week's mechanism and cannot
   be: the week is a scroll-snap container holding all seven days, which here
-  would be ~6,300 nodes against a 960 ceiling. The summary is built only while
+  would be ~6,300 nodes against a 960 ceiling. The preview is built only while
   a finger is down and stays under 20 nodes; do not put a full board back in
   it. Re-evaluate direction after lock so a Sunday/Monday edge pull can reverse
   inward in the same gesture, reconcile the final pointer-up coordinate, abort
   if a newer day choice occurs while held, and treat `pointercancel` as an
   immediate abort.
+  **AMENDED 12 Aug 26, on "still slightly laggy" and "sometimes it's
+  unresponsive, I can't swipe" — four changes, each measured.** The preview
+  carries **just the day and the date** (the six section counts are gone, and do
+  not put them back), against the edge that arrives first because a centred label
+  on a full-width pane is off screen for the whole drag. The settle is timed by
+  the distance LEFT to travel, not a flat duration. A press during a settle
+  FINISHES it and starts its own gesture instead of being thrown away — the old
+  refusal made two swipes 80ms apart move one day — while the one-pane-at-a-time
+  rule it protected still holds. And the gesture LISTENS on `.schedboard`, not on
+  the scroller it moves: mid-settle the board is a screen away and the preview is
+  pointer-events:none, so a finger lands on the host, and implicit pointer
+  capture then sent the entire following drag to an element with no listener.
+  Reasoning for all four: `docs/ui-contracts.md`.
   `boardTab` is view-only: it must not validate, and its board-only notification
   lane must not wake the mounted EditWeek or EditRoster. Real mutations still
   use the global lane and repaint both. Do not "simplify" it back to a threshold jump, and
