@@ -43,6 +43,16 @@ export const HOOKS = {
      no-op headless; SchedBoard.tsx wires the real implementation once, on
      mount, the same way store.ts's wireStore() wires editMode/render*. */
   closeBoardDialogs: (): void => {},
+  /* VIEW STATE THAT ADDRESSES ROWS BY KEY has to ride the same renumbering
+     the amendment book and the edit log do (keys.ts). Today that is one
+     value — RMKOPEN, the single empty remarks box a phone user asked back —
+     and it lives in state/view.ts, which the engine cannot import; so the
+     remap arrives the same way editMode and whoami do. `move` is keys.ts's
+     own mapper: it returns the new key, the key unchanged, or null where
+     the row itself was deleted. Added 12 Aug 26 after the audit found a
+     ground splice under a revealed box stranding the reveal on whatever row
+     slid into its address. */
+  remapViewKeys: (_move: (k: any) => any): void => {},
 }
 
 /* tiny preference store — same guarded semantics as the reference's

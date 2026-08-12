@@ -149,6 +149,18 @@ export function wireStore() {
   HOOKS.renderEditWeek = () => notify()
   HOOKS.renderSchedule = () => notify()
   HOOKS.renderInputs = () => notify()
+  /* view state that addresses a row by key rides the same renumbering the
+     amendment book and the edit log do (engine/keys.ts). RMKOPEN is the one
+     such value today: the empty remarks box a phone user asked back, held by
+     its data-bfld path. A ground splice under it — unaccepting an input,
+     removing a promoted row — used to leave it naming whatever row slid into
+     that address, so the box appeared on a neighbour nobody asked about
+     (audit, 12 Aug 26). Null from `move` means the revealed row itself was
+     the one deleted, and the reveal goes with it. */
+  HOOKS.remapViewKeys = (move) => {
+    if (view.RMKOPEN == null) return
+    view.setRmkOpen(move(view.RMKOPEN) ?? null)
+  }
   /* the reference's isPhone() (matchMedia max-width:820px). It was never wired
      in the port, so the default `false` made every isPhone call site dead: a
      palette drag on a phone never parked the drawer — the drop could only land

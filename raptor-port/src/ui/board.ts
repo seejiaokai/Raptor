@@ -13,6 +13,7 @@ import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr } from '../engine/slots'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, trackStructuralAdd, alAttr } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
+import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
@@ -1163,6 +1164,11 @@ export function wireDayDots(el: HTMLElement) {
   }
   const onDown = (e: any) => {
     if (e.pointerType === 'mouse' && e.buttons !== 1) return
+    /* not while another finger is holding a puck (audit, 12 Aug 26). A scrub
+       repaints the board, which detaches the node the drag machine is
+       carrying, and its drop would then land against the day it never aimed
+       at. The strip simply does not take the gesture; the drag keeps it. */
+    if (touchDragBusy()) return
     live = true; moved = false; x0 = e.clientX; id = e.pointerId
   }
   const onMove = (e: any) => {

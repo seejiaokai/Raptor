@@ -170,12 +170,21 @@ export function awayAllDay(inp:any){return !!inp.allday||inp.s==null||inp.e==nul
    record that arrived any other way was passed to overlap() inverted, where it
    silently matched nothing. Every reader goes through here, or the picker and
    the warning list drift apart on the one shape neither of them can see.
-   Returns null for a record with no usable window — that is awayAllDay's
-   business, and it fails CLOSED there. */
+   A record with neither the all-day flag nor both times FAILS CLOSED here
+   too, as the WHOLE day (audit, 12 Aug 26). It used to return null, which
+   left the two halves of the same question disagreeing: awayAllDay called
+   such a man away and struck him out of the palette, while every validator
+   overlap against a null window was false, so planting him anyway raised
+   NOTHING — the one drift the picker and the warning list must never have.
+   [0,1439] is exactly 1439 wide, so validate.ts's timedInput filter reads it
+   as all-day, which is what awayAllDay already decided it was. No UI path can
+   mint such a record — both entry paths always write the flag or both times —
+   so this is the guard for whatever arrives from a restore, an import or a
+   probe, not a live bug being papered over. */
 export function inpWin(inp:any){
   if(!inp)return null;
   const s=inp.allday?0:inp.s, e=inp.allday?1439:inp.e;
-  if(s==null||e==null)return null;
+  if(s==null||e==null)return [0,1439];
   return [s,e<s?e+1440:e];
 }
 /* how an entry reads when it is the reason a slot is closed. The words come

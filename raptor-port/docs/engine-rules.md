@@ -31,6 +31,27 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   is deliberately limited to that small-hours boundary: a later clock typed
   against an ordinary daytime sortie remains visible as typed rather than
   silently becoming a nearly 24-hour lead.
+- **A brief cannot BE typed after its own take-off** (owner, 12 Aug 26 — "put
+  guard rails to deny such inputs", after the audit found what one does).
+  The window is brief → T/O, so a later brief inverts it and `overlap()` stops
+  matching anything inside the real brief slot: the line's `NO_BRIEF` check
+  went silently dark, which is the one failure mode a soft-bar app must not
+  have. The engine still does not reinterpret such a pair (the rule above
+  stands); instead `slots.ts`'s `txtSet` — the one write path both surfaces
+  share — closes both ways in:
+  - **Typing the brief after the take-off is REFUSED.** `txtSet` returns
+    false, which each caller already answers by reverting its own cell
+    (`boardChange`, `routeFocusOut`), and the reason is toasted. Refused
+    rather than warned because, unlike every other bar in this app, it is not
+    a planning decision anyone could mean — it is a typo.
+  - **Moving the TAKE-OFF earlier past an existing brief is ALLOWED**, and
+    the stranded brief is CLEARED — through `noteChange`, so the clear marks
+    pending and lists like any edit — with the reason toasted. The take-off
+    is the primary fact and must never be refused; the empty B box then falls
+    back to the suggested lead exactly as a blank B always has, and shows the
+    scheduler there is a brief to retype.
+  Neither fires where the roll above makes the clock legitimate (`toM <
+  VCONF.briefLead`), and neither touches a standalone wave's inert B.
 - Crew rest (VCONF.crewRest) runs off the last REST-BEARING commitment
   (sortie or shift), and anchors on the earlier of the published in-time and
   the leg's own brief. Breach = hard CR; nominal-inside-rest = adv TT.
@@ -443,7 +464,14 @@ flagged correctly and still swept the man out of the crew palette.
   shape, and reading it as a zero-length absence would free a man who is off
   for a week. Both ends are required, so a half-day with a blank end cannot
   shrink to an hour through `win()`'s open-ended default. **Thin records fail
-  closed.**
+  closed** — and since 12 Aug 26 (audit) `inpWin` fails closed the same way,
+  returning `[0,1439]` rather than null for such a record. The two used to
+  disagree, which broke the invariant this whole section exists to keep: the
+  palette struck the man out while every validator overlap against a null
+  window was false, so planting him anyway raised nothing. `[0,1439]` is
+  exactly 1439 wide, so `validate.ts`'s `timedInput` filter reads it as
+  all-day — which is what `awayAllDay` had already decided it was. No UI path
+  can mint such a record; the guard is for a restore, an import or a probe.
 - **`slotRules` reports the slot's own window**, `slotStart`/`slotEnd`, for
   every key in the grammar. Each is read off the same row `collectEvents`
   reads and padded the same way, so the picker and the warning list cannot

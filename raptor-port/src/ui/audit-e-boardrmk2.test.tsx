@@ -89,8 +89,8 @@ describe('reveal, type, then delete the text again', () => {
    shifts: the reveal does not follow the row it was asked for. Reported in
    the audit as a (cosmetic) finding, pinned here as current behaviour so a
    deliberate fix will show up as this test failing. */
-describe('a ground splice under a revealed row (probe — current behaviour)', () => {
-  it('unaccepting a lower row strands the reveal on the old index', async () => {
+describe('a ground splice under a revealed row (fixed 12 Aug 26)', () => {
+  it('unaccepting a lower row carries the reveal down with its row', async () => {
     const a: any = { person: 'bane', date: 'Jul 13', allday: true, s: 0, e: 1439, type: 'Meeting', remarks: '', mod: '' }
     const b: any = { person: 'stiff', date: 'Jul 13', allday: true, s: 0, e: 1439, type: 'Meeting', remarks: '', mod: '' }
     await act(async () => {
@@ -111,9 +111,10 @@ describe('a ground splice under a revealed row (probe — current behaviour)', (
     expect(bIn().classList.contains('empty'), 'revealed').toBe(false)
     /* now A (the lower-indexed row) is unaccepted — B shifts down one */
     await act(async () => { expect(unacceptInput(0, a)).toBe(true); afterSchedMutate(); notify() })
-    /* CURRENT behaviour: RMKOPEN still names the old index, so B's box is
-       hidden again — the reveal did not follow the row it was asked for */
-    expect(bIn().classList.contains('empty'), 'the reveal is lost to the shift (current behaviour)').toBe(true)
+    /* RMKOPEN rides the same shiftKeys renumbering the amendment book and
+       the edit log do (HOOKS.remapViewKeys), so the box stays on B */
+    expect(bIn().classList.contains('empty'), 'the reveal followed its row down').toBe(false)
+    expect(view.RMKOPEN, 'and it names B’s new address').toBe(`gr:0.${g.findIndex((r: any) => r.src === inpKey(b))}.rmks`)
     /* clean up */
     await act(async () => { unacceptInput(0, b); afterSchedMutate(); removeInput(a); removeInput(b); notify() })
   })

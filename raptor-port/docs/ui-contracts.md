@@ -458,6 +458,14 @@ edit week now:
   says WHICH of the seven days is open, which is the one job a pair of arrows
   cannot do. A tap still jumps straight to a day; press and slide still runs
   through the week.
+  **A scrub never starts under a finger already holding a puck** (audit,
+  12 Aug 26). A day change repaints the panels, which detaches the node
+  `drag.ts`'s touch machine is carrying, and its drop would then resolve
+  through `elementFromPoint` against the NEW day's markup — a plant on a day
+  nobody aimed at. `wireDayDots` asks `touchDragBusy()` and declines the
+  gesture; the drag keeps it. The reverse needs no guard, because a finger
+  landing on a puck mid-scrub is non-primary and `onPointerDown` already
+  refuses those.
   **A scrub needs a button down** (audit, 12 Aug 26). Capture is deferred to
   the first real move, so a mouse press that slipped off the strip early
   could release where the strip's up listener never hears it — `live` stayed
@@ -1863,6 +1871,14 @@ question from `findHistCell` returning null, and the two must stay apart: a
 missing key means either "the row was deleted since" (worth saying) or "never
 drawable here" (where "no longer on this day" is simply untrue). A new key
 family the board does not render wants a line in `NO_BOARD_CELL`.
+
+**A bubble never outlives the row it describes.** `histBubRecheck()` re-anchors
+it where its cell still exists and takes it down where the cell has gone. It
+runs on every scroll and resize — the board moves under a fixed bubble — and,
+since 12 Aug 26 (audit), on every panel REPAINT, called from `SchedBoard.tsx`
+after the string diff: a repaint replaces a panel's markup wholesale, so a row
+deleted from another surface used to leave a pinned bubble telling a deleted
+row's story from stale coordinates until some later scroll noticed.
 
 **PINNED beats every rule that would take the bubble away** — the desktop
 mouseout, the phone timeout. It goes on the next click anywhere that is not
