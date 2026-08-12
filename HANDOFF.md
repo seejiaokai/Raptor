@@ -321,8 +321,10 @@ only after re-running them.
     for a different reason: those three cells render on the WEEK only, and the
     bubble is wired to the board wrap. They are in the LIST.
     **And they cannot be JUMPED to either, which is the residual worth
-    knowing** (11 Aug 26). Those three plus `tr:` are the four families the
-    board never draws, so `histJumpable` (`histbubble.ts`) keeps their rows
+    knowing** (11 Aug 26). Those three plus `tr:` — and, since the 12 Aug 26
+    audit, `wl:` (the board draws the wave title as a `<select>`, which the
+    cell lookup cannot answer for) — are the five families the
+    board never draws as a cell, so `histJumpable` (`histbubble.ts`) keeps their rows
     out of the clickable set — they list, they just do not offer a jump. That
     guard exists because the two halves of this feature shipped separately and
     combined into a wrong answer: one made the four log a value at all, the
@@ -443,6 +445,31 @@ only after re-running them.
   escaped inside it — `CHIP_LABEL` legitimately holds `<`/`>`, and escaping
   those breaks the byte-exact reference parity. Two unescaped sinks were
   found on 6 Aug 26; assume more is possible.
+- **The 12 Aug 26 audit left five SUSPECTS documented rather than fixed**,
+  each judged not worth its change tonight; the ~200 `audit-*` tests it added
+  pin everything it checked, so none of these can regress silently into
+  something worse.
+  - **A "thin" input record splits the picker from the validator.** A record
+    with neither `allday` nor `s`/`e` reads as away to `awayAllDay`
+    (fail-closed) while `inpWin` gives the validator null and every overlap
+    is false (fail-open). No UI path can mint one — both entry paths always
+    write one or the other — so this only matters if a future import/restore
+    path arrives; the honest fix then is `mapInp` treating such a record as
+    whole-day.
+  - **A typed B later than a daytime T/O silently disables that line's brief
+    check** — the window inverts and `overlap()` can no longer see a meeting
+    sitting squarely in the real brief slot. Same family as the documented
+    "crew rest can be defeated by a typo"; the same cheap guards would cover
+    both if it ever bites.
+  - **A pinned History bubble can describe a deleted row for the moment
+    between a panel repaint and the next scroll/resize** — the bail runs on
+    scroll/resize only. Frame-scale in practice.
+  - **A second finger landing mid-puck-drag can still cross wires with a dot
+    scrub** (the drag machine hit-tests against a repainted board). Exotic
+    two-finger timing; the scrub itself now drops buttonless mouse gestures.
+  - **`RMKOPEN` (the empty-remarks reveal) is a model-index path**, so a
+    ground splice under a revealed, untouched box can strand the reveal or
+    land it on a neighbour row. Pure view state, no data risk.
 - **Two reference probes fail on the port by design.** `audit2 #8` and
   `audit` item 3 pin the OLD `Fly`/OFFER rules, which the owner changed in
   Aug 26. The probes still describe the reference correctly; they no longer
@@ -603,6 +630,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split is in `e2e/geometry.spec.ts`, which is the only place it resolves (the day-carousel motion tests that used to sit beside it went with the swipe, 12 Aug 26). |
 | `src/ui/boardrmk.test.tsx` | The empty remarks box and the `+` that reveals it (12 Aug 26) — which input carries `.empty`, that the reveal clears it for its OWN row only and focuses it, that typing one drops it unaided, and that asking for the box back writes NOTHING to the edit log or the pending set. jsdom cannot measure the 109px→79px row it buys; `e2e/geometry.spec.ts` does that. |
+| `src/**/audit-*.test.ts(x)` | The 12 Aug 26 adversarial audit sweep over PRs 148–174, six agents' worth (a=History/edit log, b=board nav, c=validation, d=sort/reorder, e=inputs) — ~200 tests that both closed every gap HANDOFF listed and pinned the audit's twelve fixes (log keys remapped with the key space, day-aware accept deferral, `deletionWasIssued` under reorder, the relink's preserved extras and covered-day re-file, the scrub/handle button guards, the day-step commit, the carry-day fix, the numeric time sort). Keep them: they are the regression armour for exactly the corners nothing else tests. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |

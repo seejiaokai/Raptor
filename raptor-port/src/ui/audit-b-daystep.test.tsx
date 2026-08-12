@@ -199,12 +199,11 @@ describe('dialogs across a day step', () => {
   })
 
   /* the stores popup is body-level and closed by its own click-away. An ARROW
-     click reaches document and closes it; a SCRUB's release click is eaten by
-     the strip (stopPropagation, capture), so the popup rides through a scrub
-     still pointed at the day that opened it. Pinned as-is: the write targets
-     the captured aircraft either way, but see the audit report — a day step
-     arguably belongs in HOOKS.closeBoardDialogs' remit. */
-  it('an arrow click closes the stores popup; a scrub leaves it standing over the new day', async () => {
+     click reaches document and closes it — and since 12 Aug 26 (audit) a
+     SCRUB closes it too: the strip eats the release click, so boardTab now
+     takes the popup (and a pinned History bubble) down itself rather than
+     leaving it standing over a day it does not describe. */
+  it('an arrow click closes the stores popup, and a scrub closes it too', async () => {
     const openPopup = async () => {
       const c = $('#sbBoard [data-stcfg]')
       expect(c, 'the board renders a stores C button in edit mode').toBeTruthy()
@@ -221,12 +220,7 @@ describe('dialogs across a day step', () => {
     layOutDots()
     await scrub(50, 110)                                     // 2 → 5, release eaten by the strip
     expect(view.SBDAY).toBe(5)
-    expect(document.querySelector('.stmenu'), 'the scrub’s eaten click never reached the click-away — current behaviour, see report').toBeTruthy()
-    document.querySelectorAll('.stmenu, .wavemenu').forEach(x => {
-      const off = (x as any)._offClick
-      if (off) document.removeEventListener('click', off)
-      x.remove()
-    })
+    expect(document.querySelector('.stmenu'), 'boardTab took the popup down with the day it described').toBe(null)
   })
 })
 

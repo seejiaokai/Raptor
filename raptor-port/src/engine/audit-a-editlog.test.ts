@@ -32,7 +32,7 @@ beforeEach(() => {
 afterEach(() => { HOOKS.whoami = who })
 
 describe('renumbering and the log (delete)', () => {
-  it('BUG: a delete renumbers SCHED but not the log — history detaches from its row', () => {
+  it('a delete renumbers the log with SCHED — history stays on its row (fixed 12 Aug 26)', () => {
     const rows = DAYS[0].dutywaves[0].rows
     const B = rows.length
     /* three fresh rows so nothing demo-seeded is touched; the middle one
@@ -56,14 +56,13 @@ describe('renumbering and the log (delete)', () => {
       expect(SCHED.pending[`d:0.0.${B}`]).toBe(1)
       expect(SCHED.pending[`d:0.0.${B + 1}`]).toBeUndefined()
 
-      /* BUG — the log did NOT follow. The row that holds the edit has no
-         history to its name, and the old address (now the row that was
-         BELOW the edit, never touched) still answers with the story. */
-      expect(elogFor(`d:0.0.${B}`), 'the edited row should own its history — it does not').toBeNull()
-      const stale = elogFor(`d:0.0.${B + 1}`)
-      expect(stale, 'the untouched neighbour now wears the history').toBeTruthy()
-      expect(stale!.to).toBe('Bane')
-      expect(slotVal(`d:0.0.${B + 1}`), 'while the row at that address holds nobody').toBe('')
+      /* the log followed (elogRemap, called from shiftKeys): the row that
+         holds the edit owns its history, the untouched neighbour has none */
+      const moved = elogFor(`d:0.0.${B}`)
+      expect(moved, 'the edited row owns its history').toBeTruthy()
+      expect(moved!.to).toBe('Bane')
+      expect(elogFor(`d:0.0.${B + 1}`), 'the untouched neighbour wears nothing').toBeNull()
+      expect(slotVal(`d:0.0.${B + 1}`)).toBe('')
     } finally {
       rows.splice(B, rows.length - B)               // net zero on the demo data
     }
@@ -71,7 +70,7 @@ describe('renumbering and the log (delete)', () => {
 })
 
 describe('renumbering and the log (reorder)', () => {
-  it('BUG: a reorder permutes SCHED but not the log — same divergence, no row lost', () => {
+  it('a reorder permutes the log with SCHED — no divergence, no row lost (fixed 12 Aug 26)', () => {
     const rows = DAYS[0].dutywaves[0].rows
     const B = rows.length
     rows.push(
@@ -85,12 +84,12 @@ describe('renumbering and the log (reorder)', () => {
       expect(rows[B + 1].id).toBe('bane')
       /* pending moved with him (permuteKeys is a bijection) … */
       expect(SCHED.pending[`d:0.0.${B + 1}`]).toBe(1)
-      /* … the log stayed behind (BUG) */
-      expect(elogFor(`d:0.0.${B + 1}`), 'his history should have moved with him').toBeNull()
-      const stale = elogFor(`d:0.0.${B}`)
-      expect(stale).toBeTruthy()
-      expect(stale!.to).toBe('Bane')
-      expect(slotVal(`d:0.0.${B}`), 'the address the log names now holds nobody').toBe('')
+      /* … and so did the log (elogRemap rides the same permutation) */
+      const moved = elogFor(`d:0.0.${B + 1}`)
+      expect(moved, 'his history moved with him').toBeTruthy()
+      expect(moved!.to).toBe('Bane')
+      expect(elogFor(`d:0.0.${B}`), 'nothing left at the old address').toBeNull()
+      expect(slotVal(`d:0.0.${B}`)).toBe('')
     } finally {
       rows.splice(B, rows.length - B)
     }

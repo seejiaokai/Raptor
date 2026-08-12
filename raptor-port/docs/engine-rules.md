@@ -119,7 +119,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   all-day `Fly` (owner report, 4 Aug 26) and GENERALISED on 10 Aug 26:
   `inputFlags` now defers to the promoted row only where that row carries
   real times, so every all-day promotion keeps its voice on the input and the
-  clash prints exactly once either way. `acceptInput` still refuses
+  clash prints exactly once either way. **And the deferral is per-DAY, not
+  per-input** (audit, 12 Aug 26): the promoted row lives on ONE day of a
+  multi-day span, so `events.ts`'s `inpShow` defers only on that day
+  (`acceptedDay`) — every other covered day keeps the input's own voice,
+  where before the accept switched off real `INPUT_FLY`/`NO_BRIEF` warnings
+  on days that had no row to carry the clash. A deferred input whose row
+  cannot be found at all stays visible rather than silently absent. `acceptInput` still refuses
   Unavailable-typed inputs outright — leave does not belong on the Ground
   Programme, and promoting one would make its row clash with its own source
   input.
@@ -965,7 +971,13 @@ through drag, nudge and Sort. Issue clears that identity; unpublish restores it.
 Therefore a row added after issue, reordered, and deleted again before its AL is
 a net no-op: its pending add key is removed and no false removal is published.
 The issued snapshot is the legacy fallback; accepted Ground inputs also carry
-their stable source token. A later AL keeps ownership if an older one is
+their stable source token. The fallback's positional lookup is index-based
+and a reorder makes live and snapshot indices diverge, so it carries one
+extra rule (audit, 12 Aug 26): a row that is NOT an outstanding draft add,
+whose index runs past the issued section's tail while the live section is
+longer than the issued one, IS issued — the surplus is exactly the draft
+adds, so an issued row a sort pushed past the snapshot's row count still
+publishes its removal instead of silently vanishing from the AL. A later AL keeps ownership if an older one is
 unpublished even when it changed a different field on the row: AL snapshots
 carry the live structural-add identities separately from field keys. Restoring
 a frozen day clears draft identities along with the
@@ -1061,6 +1073,15 @@ attribution); this is a per-key record with a name and a clock on it.
 rather than HIST's 60 because a row is a handful of short strings where a
 history snapshot is a whole serialised schedule.
 
+**The rows' keys move with the key space** (audit, 12 Aug 26). A delete or
+reorder renumbers every index-addressed key; `keys.ts` already rewrote
+pending/changes/ALs and now calls `elogRemap(move)` with the same remap, so
+a logged edit keeps naming the ROW it happened on, not the address it
+happened at — before this, the changes list jumped to whatever row had slid
+into the old address and pinned one man's history onto another. A key whose
+own row was deleted is dropped (the entry stays, as a plain unjumpable row —
+the deletion's own "what it held" sentence sits beside it).
+
 **Written at the two funnel choke points, and only when both values are
 handed over.** `noteChange(key, was, now)` (`slots.ts`) and
 `markEdit(key, was, now)` (`publish.ts`) each end in `logEdit`, which
@@ -1115,10 +1136,14 @@ internally unaccepts and re-accepts, and logging the engine call would put two
 contradictory lines against one edit. The gap is the input surfaces, which the
 changes list has never covered — it is a record of the SCHEDULE.
 
-**The five fields that write their own model must pass their values by hand.**
+**The fields that write their own model must pass their values by hand.**
 Stores chips, the bombs box, area, area time, in-times and traffic live
 outside the txt-key grammar: they assign to the model directly and call
-`markEdit(key)` themselves rather than going through `txtSet`. Every one of
+`markEdit(key)` themselves rather than going through `txtSet`. The board's
+wave-title `<select>` (`[data-wsel]`) is the same shape and was the last
+one found (audit, 12 Aug 26): it books under the week's `wl:` key, valued
+by the TITLES the control shows, so a retitle from the board logs and marks
+the amendment exactly as the week's cell does. Every one of
 them passed a key alone until 11 Aug 26, so changing a jet's stores or an
 airspace booking marked the cell as edited and then had nothing to say when
 History was asked what changed — while the cell still wore the `cursor:help`

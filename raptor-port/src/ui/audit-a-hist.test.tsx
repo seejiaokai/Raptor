@@ -71,16 +71,12 @@ beforeEach(async () => {
   await act(async () => { view.setHistMode(false); setHistList(false); setHistGroup(false); notify() })
 })
 
-describe('stale addresses after a delete (the renumbering hole)', () => {
-  /* engine/keys.ts's shiftKeys renumbers SCHED.pending/changes/als and never
-     touches ELOG.rows — audit-a-editlog.test.ts pins the engine half. This
-     is what a USER then sees: the changes list's own contract says "a key
-     whose row has since been deleted toasts rather than failing silently"
-     (docs/ui-contracts.md §History on the board), but when a row ABOVE the
-     edit is deleted the old address is re-occupied by the next row down, so
-     the jump neither toasts nor lands right — it pins the bubble, silently,
-     on a row nobody ever edited. */
-  it('BUG: the jump lands on the WRONG row, with no warning, after a row above is deleted', async () => {
+describe('the log moves with a renumbering delete (fixed 12 Aug 26)', () => {
+  /* engine/keys.ts's shiftKeys renumbers SCHED.pending/changes/als — and,
+     since the audit, ELOG.rows through elogRemap — so a delete above an
+     edited row slides the log's address down with the row. The jump lands
+     on the row that really holds the edit, and its hover still answers. */
+  it('the jump follows the edit to its new address after a row above is deleted', async () => {
     const rows = DAYS[0].dutywaves[0].rows
     const B = rows.length
     /* three fresh rows straight into the model (net zero by the end); the
@@ -106,28 +102,32 @@ describe('stale addresses after a delete (the renumbering hole)', () => {
     expect(slotVal(`d:0.0.${B + 1}`)).toBe('wolf')
 
     await openList()
-    const row = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === `d:0.0.${B + 1}`)
-    expect(row, 'the log row still carries its pre-renumber key').toBeTruthy()
+    /* both edits slid down one with their rows: Bane's B+1 → B, and the
+       bottom row's own Wolf edit B+2 → B+1 — so the address B+1 now
+       answers for WOLF's history, not Bane's */
+    const wolfRow = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === `d:0.0.${B + 1}`)
+    expect(wolfRow && wolfRow.textContent, 'the old address now carries the edit that truly lives there').toContain('Wolf')
+    const row = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === `d:0.0.${B}` && (r.textContent || '').includes('Bane'))
+    expect(row, 'and Bane’s log row moved down with his row').toBeTruthy()
 
     const said = await saidWhile(async () => { await click(row!); await settle() })
 
-    /* BUG — no toast, and the bubble pins Bane's story onto the bottom row,
-       which was never edited. The one honest outcome the contract names
-       (toast) and the one it promises (the right cell) both fail. */
-    expect(said.length, 'nothing warned').toBe(0)
-    expect(bub(), 'a bubble came up regardless').toBeTruthy()
+    expect(said.length, 'nothing to warn about').toBe(0)
+    expect(bub(), 'the bubble came up').toBeTruthy()
     expect(histBubPinned()).toBe(true)
     expect(bub()!.textContent).toContain('Bane')
-    const anchored = $(`#sbBoard [data-slot="d:0.0.${B + 1}"]`)
-    expect(anchored.textContent, "the row under the bubble is Wolf's, never edited to say Bane").toContain('Wolf')
-    expect(anchored.textContent).not.toContain('Bane')
+    const anchored = $(`#sbBoard [data-slot="d:0.0.${B}"]`)
+    expect(anchored.textContent, 'and it hangs on the row that really says Bane').toContain('Bane')
 
-    /* and the flip side: the row that truly holds the edit has NOTHING to
-       say — hovering it raises no bubble at all */
+    /* and the flip side holds too: the bottom row answers with its OWN
+       story (Wolf), never Bane's */
     hideHistBub()
     await act(async () => { view.setHistMode(true); notify() })
-    await hover($(`#sbBoard [data-slot="d:0.0.${B}"]`))
-    expect(bub(), 'the edited row lost its history').toBe(null)
+    await hover($(`#sbBoard [data-slot="d:0.0.${B + 1}"]`))
+    expect(bub(), 'the bottom row still answers').toBeTruthy()
+    expect(bub()!.textContent).toContain('Wolf')
+    expect(bub()!.textContent).not.toContain('Bane')
+    hideHistBub()
 
     /* net zero on the demo data — highest first, as the board itself does */
     await click($(`#sbBoard [data-drdel="0.0.${B + 1}"]`))
@@ -138,42 +138,34 @@ describe('stale addresses after a delete (the renumbering hole)', () => {
 describe('the wave label (wl:) and the jump', () => {
   /* the board edits a wave's title through the [data-wsel] <select>, which is
      none of the addressable cell attributes — so findHistCell can never
-     answer for a wl: key. The wl: FAMILY is missing from histJumpable's
-     NO_BOARD_CELL list, so a wl: row is offered as a button and the click
-     answers "no longer on this day" about a wave sitting right there on the
-     board — the exact untruth the guard exists to prevent
+     answer for a wl: key. Fixed 12 Aug 26 by the audit: wl joined
+     NO_BOARD_CELL, so the row LISTS (the edit is real) but is not a button —
+     the same answer ar:/at:/it:/tr: already give
      (docs/ui-contracts.md: "a new key family the board does not render wants
      a line in NO_BOARD_CELL"). */
-  it('BUG: a wl: row is a button, and clicking it tells an untruth', async () => {
+  it('a wl: row lists but is not a button — the board has no cell to jump to', async () => {
     const was = txtGet('wl:0.0')
     await act(async () => { txtSet('wl:0.0', 'AUDIT WAVE'); notify() })
     try {
       expect(elogFor('wl:0.0'), 'the week edit really logged').toBeTruthy()
       await openList()
-      const row = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === 'wl:0.0')
-      expect(row, 'offered as a jump though the board has no wl: cell').toBeTruthy()
-
-      const said = await saidWhile(async () => { await click(row!); await settle() })
-      expect(said.join(' '), 'and the jump calls a live wave gone').toContain('no longer')
-      expect(bub()).toBe(null)
-      expect(DAYS[0].waves[0], 'the wave is of course still there').toBeTruthy()
+      const hit = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === 'wl:0.0')
+      expect(hit, 'not offered as a jump — the board has no wl: cell').toBeFalsy()
+      const listed = $$('#histBody .hl-row').find(r => (r.textContent || '').includes('AUDIT WAVE'))
+      expect(listed, 'but the edit is in the list').toBeTruthy()
     } finally {
       await act(async () => { txtSet('wl:0.0', was); notify() })
     }
   })
 
-  /* the board's own wave-title control writes w.label/w.night directly —
-     no markEdit, no noteChange, so no pending mark and no log row. The same
-     edit made on the WEEK (the wl: contenteditable) logs. HANDOFF names
-     drag/Auto-sort as "the LAST schedule write with no line in the list";
-     this one is another, and it is silent on the amendment side too. */
-  it('BUG: retitling a wave from the board leaves no trace in the log at all', async () => {
+  /* the board's own wave-title control used to write w.label/w.night with
+     no markEdit at all — no pending mark, no log row, while the same edit
+     on the WEEK (the wl: contenteditable) logged. Fixed 12 Aug 26 (audit):
+     the handler books the retitle under the same wl: key, valued by the
+     TITLES the control shows. */
+  it('retitling a wave from the board logs, and marks the amendment', async () => {
     const w = DAYS[0].waves[0]
     const wasLabel = w.label, wasNight = w.night
-    /* the earlier wl: test wrote through txtSet, which legitimately marks
-       pending — freeze whatever is there so the assertion below reads the
-       DELTA this gesture makes, which must be none */
-    const hadPending = SCHED.pending['wl:0.0']
     const s = $('#sbBoard [data-wsel="0.0"]') as HTMLSelectElement
     expect(s, 'the board renders the wave-title select').toBeTruthy()
     try {
@@ -181,9 +173,10 @@ describe('the wave label (wl:) and the jump', () => {
       await act(async () => { s.dispatchEvent(new Event('change', { bubbles: true })) })
       expect(w.label, 'the model really changed').toBe('NIGHT WAVE')
       expect(w.night).toBe(true)
-      /* BUG — invisible to History AND to the amendment machinery */
-      expect(ELOG.rows.length, 'no line in the changes list').toBe(0)
-      expect(SCHED.pending['wl:0.0'], 'no pending mark either').toBe(hadPending)
+      const r = elogFor('wl:0.0')
+      expect(r, 'the retitle is in the changes list').toBeTruthy()
+      expect(r!.to).toBe('Night wave')
+      expect(SCHED.pending['wl:0.0'], 'and the amendment machinery saw it').toBeTruthy()
     } finally {
       w.label = wasLabel; w.night = wasNight
       await mutate()
@@ -238,22 +231,22 @@ describe('what a deletion sentence carries at the edges', () => {
     expect(r.lbl).not.toContain('"')
   })
 
-  /* board.ts's clip() slices at a UTF-16 code-unit boundary (t.slice(0,59)),
-     so a note built of astral characters — emoji — can be cut mid surrogate
-     pair, leaving a lone high surrogate in the sentence the toast and the
-     list both print (it renders as the replacement character). */
-  it('BUG: the 60-char clip can split a surrogate pair', async () => {
+  /* board.ts's clip() cuts by CODE POINTS (fixed 12 Aug 26 — a UTF-16
+     slice could halve a surrogate pair), so a note built of emoji clips to
+     whole characters and the sentence stays well-formed. */
+  it('the 60-char clip cuts whole characters, never half an emoji', async () => {
     const notes = DAYS[0].notes
     const ni = notes.length
-    notes.push('😀'.repeat(40))                    // 80 code units — must clip
+    notes.push('😀'.repeat(70))                    // 70 code points — must clip
     await mutate()
     await click($(`#sbBoard [data-ndel="0.${ni}"]`))
     const r = newest()!
     expect(r.lbl).toContain('Note removed')
     expect(r.lbl).toMatch(/…/)
-    /* a high surrogate NOT followed by a low one — a malformed string */
+    /* no high surrogate left without its low half — a well-formed string */
     expect(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/.test(r.lbl),
-      'the clipped sentence contains a lone surrogate').toBe(true)
+      'the clipped sentence contains a lone surrogate').toBe(false)
+    expect([...r.lbl].length, 'and it really clipped to the budget').toBeLessThan(80)
   })
 })
 

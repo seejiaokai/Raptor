@@ -303,18 +303,12 @@ describe('deletionWasIssued composes with the sort (the add→reorder→delete r
     expect(SCHED.added['wl:0.0']).toBe(1)
     /* deleting the DRAFT wave at its new address is a no-op for the AL … */
     expect(deletionWasIssued(0, 'wave', 0)).toBe(false)
-    /* … while deleting the ISSUED wave — now at index 1 — should be a real
-       removal.
-       ██ AUDIT-D FINDING (BUG) — pinning CURRENT behaviour, which is WRONG:
-       the snapshot fallback in publish.ts deletionWasIssued() looks the LIVE
-       index up in the ISSUED snapshot (`(d.waves||[])[+at[0]]`), and the
-       issued day only had one wave, so index 1 misses and the issued wave
-       reads as never-issued. Deleting it emits NO del: tombstone and the AL
-       never reports the removal of a wave the squadron holds a printed copy
-       of. Reachable whenever a draft add + any reorder (drag, nudge, Sort
-       all) pushes an issued row past the snapshot's row count. When this is
-       fixed, flip this expectation to true and delete this comment. */
-    expect(deletionWasIssued(0, 'wave', 1)).toBe(false)
+    /* … while deleting the ISSUED wave — now at index 1, PAST the one-wave
+       issued snapshot's tail — is a real removal (fixed 12 Aug 26): the
+       identity check already said this row is no draft add, and the live
+       section outruns the issued one by exactly the outstanding adds, so
+       the surplus row must be issued. */
+    expect(deletionWasIssued(0, 'wave', 1)).toBe(true)
     /* run the delete to the end, board-idiom: splice, shift, tombstone */
     const p0 = Object.keys(SCHED.pending).filter(k => k.startsWith('del:')).length
     const issued = deletionWasIssued(0, 'wave', 0)

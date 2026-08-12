@@ -55,7 +55,7 @@ describe('a repaint mid-drag leaves the drop armed with stale addresses', () => 
     expect(DAYS[0].allhands.map((r: any) => r.prog)).toEqual(['BRAVO', 'CHARLIE', 'ALPHA'])
   })
 
-  it('██ AUDIT-D FINDING (SUSPECT): a sort + repaint under the drag makes the drop move a row the user never touched', () => {
+  it('a sort + repaint under the drag refuses the drop — the guard reads isConnected (fixed 12 Aug 26)', () => {
     const grips = [...host.querySelectorAll('.sb-grip')]
     const rows = [...host.querySelectorAll('.sb-arow')]
     /* the user picks up ALPHA (model 0) and hovers CHARLIE (model 2) … */
@@ -69,18 +69,13 @@ describe('a repaint mid-drag leaves the drop armed with stale addresses', () => 
                         // drag machine never reads it — that is the gap
     expect(DAYS[0].allhands.map((r: any) => r.prog)).toEqual(['BRAVO', 'CHARLIE', 'ALPHA'])
     host.innerHTML = rowsHTML(['mv:p.0.0', 'mv:p.0.1', 'mv:p.0.2'])
-    /* the finger lifts: the drop fires with the PRE-sort addresses 0→2 and
-       applyMove applies them to the POST-sort model — BRAVO (now at 0) is
-       moved to the bottom. The user was holding ALPHA the whole time and
-       BRAVO moved: the drag equivalent of the armed-slot bug REORDERED_DI
-       exists to prevent, unguarded on this path.
-       If this assertion ever reads ['BRAVO','CHARLIE','ALPHA'] (unchanged),
-       the gap was closed — update this test to pin the guard instead. */
+    /* the finger lifts: the elements the drag holds are DETACHED (the
+       repaint swapped them out), so onUp's isConnected guard refuses the
+       whole drop — nothing moves, nothing is marked. The board the user
+       sees after the repaint is the truth and it is untouched. */
     up()
-    expect(DAYS[0].allhands.map((r: any) => r.prog)).toEqual(['CHARLIE', 'ALPHA', 'BRAVO'])
-    /* and the move marked BRAVO's new address as an amendment — a pending
-       mark on a row nobody meant to touch */
-    expect(SCHED.pending['ap:0.2.prog']).toBe(1)
+    expect(DAYS[0].allhands.map((r: any) => r.prog)).toEqual(['BRAVO', 'CHARLIE', 'ALPHA'])
+    expect(SCHED.pending['ap:0.2.prog']).toBeUndefined()
   })
 
   it('a drop landing on a row whose address vanished in the repaint is refused whole', () => {

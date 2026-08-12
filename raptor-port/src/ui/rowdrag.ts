@@ -57,7 +57,16 @@ export function wireRowDrag(el: HTMLElement) {
   const onUp = () => {
     const to = over?.dataset.move
     const src = from
+    /* mv: addresses are index-based and captured at pointerdown/-move; a
+       panel repaint mid-drag (innerHTML swap — e.g. a sort confirmed by
+       keyboard while a touch holds a row) detaches both elements but their
+       dataset survives, so the drop would fire STALE indices at a re-sorted
+       model and move a row nobody was holding (audit, 12 Aug 26). A detached
+       carry or target means the board changed under the drag: refuse, same
+       as REORDERED_DI does for an armed puck. */
+    const stale = (carry && !carry.isConnected) || (over && !over.isConnected)
     clear()
+    if (stale) return
     if (src && to && applyMove(src, to)) { view.afterSchedMutate(); notify() }
   }
 

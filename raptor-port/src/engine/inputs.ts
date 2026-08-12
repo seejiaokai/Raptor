@@ -242,7 +242,12 @@ export function inpLabel(inp:any){
    That defers only where the row can actually carry the clash. An ALL-DAY
    input makes a TIME-LESS ground row, and a time-less row never becomes an
    event (4 Aug 26), so it would flag nothing at all — it stays visible here
-   instead. A timed one defers to its row, which does the flagging properly. */
+   instead. A timed one defers to its row, which does the flagging properly.
+   PER-INPUT only: the row lives on ONE day of a multi-day span, so
+   events.ts's inpShow narrows this to that day (audit, 12 Aug 26) — every
+   other covered day keeps the input's voice. This function stays the
+   day-blind half because refwin.ts seeds the reference through it, where
+   no day context exists. */
 export function inputFlags(inp:any){return !(inp.acc==='g'&&!inp.allday);}
 /* inputs use machine-readable date + minute fields so the validator can reason about them.
    s/e are minutes-from-midnight; allday inputs cover the whole day. */
