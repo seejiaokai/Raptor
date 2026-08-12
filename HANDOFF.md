@@ -17,9 +17,9 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 ## The gates, and how they lie
 
 **All six gates were green first-hand for the swipe pass of 12 Aug 26**, run in
-this container on the matching tree: `npm test` 1148 tests across 60 files,
+this container on the matching tree: `npm test` 1149 tests across 60 files,
 `node reference/tfin.js` 728/0, `npm run build` clean, and the full
-`npm run test:e2e` geometry job 79/79 in Chromium. The built bundle was then
+`npm run test:e2e` geometry job 80/80 in Chromium. The built bundle was then
 driven at 390×780: six fast swipes forward stop correctly at Sunday, six back
 stop at Monday, a swipe from the right-edge aircrew handle changes the day
 without opening the drawer, a slow 24px read-drag and a 200px vertical scroll
@@ -56,7 +56,7 @@ any of these only after re-running them.
 - **jsdom cannot measure layout** — every rect Vitest reports is 0×0, so it
   can prove which class was emitted and nothing about what was painted.
   Geometry contracts are gated by `e2e/geometry.spec.ts` (the fourth CI
-  gate, 79 checks); wider visual work still wants the probe path
+  gate, 80 checks); wider visual work still wants the probe path
   (`npx vite preview --port 4173` + `probes/`).
 - **jsdom cannot HIT-TEST either, and that is a separate trap** (12 Aug 26). A
   pointer bug on the board hid there for a day: dispatching a synthetic
@@ -560,6 +560,6 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split and the carousel motion are in `e2e/geometry.spec.ts`, which is the only place either resolves. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. |
-| `src/ui/boardswipe.test.tsx` | The phone board's one-row top bar and day carousel — includes the reported Sunday edge/repeated Saturday↔Sunday sequence, bounded preview nodes/panes, same-finger edge reversal, iOS cancellation, stale settle/close/reopen, a dot choice while still held, a final pointer-up that crosses without a last move, and (12 Aug 26) a rapid run of three swipes moving three days, a press that lands on the host rather than the scroller, the top bar refusing to swipe, the preview carrying only day + date, and a swipe off the parked aircrew handle that neither scrolls the board nor opens the drawer. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
+| `src/ui/boardswipe.test.tsx` | The phone board's one-row top bar and day carousel — includes the reported Sunday edge/repeated Saturday↔Sunday sequence, bounded preview nodes/panes, same-finger edge reversal, iOS cancellation, stale settle/close/reopen, a dot choice while still held, a final pointer-up that crosses without a last move, and (12 Aug 26) a rapid run of three swipes moving three days, a press that lands on the host rather than the scroller, the top bar refusing to swipe, the preview carrying only day + date, a swipe off the parked aircrew handle that neither scrolls the board nor opens the drawer, and a desktop-width board refusing the gesture outright. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
 | `.claude/skills/` (14 more) | `obra/superpowers` v6.2.0, MIT, vendored 7 Aug 26 — a plugin install lives in `~/.claude/plugins` on a local machine and never reaches a web session's fresh container, while repo-level skills ship with the clone. Cross-references de-namespaced; the upstream SessionStart hook is vendored at `.claude/hooks/` but **not** wired in. Provenance and the update recipe: `.claude/skills/SUPERPOWERS-VENDORED.md`. |

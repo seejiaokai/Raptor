@@ -444,7 +444,12 @@ the phone perf budget. Don't convert them to components.
   if a newer day choice occurs while held, and treat `pointercancel` as an
   immediate abort.
   **AMENDED 12 Aug 26, on "still slightly laggy" and "sometimes it's
-  unresponsive, I can't swipe" — four changes, each measured.** The preview
+  unresponsive, I can't swipe" — four changes, each measured. And it is MOBILE
+  ONLY** (owner, same day): gated on `HOOKS.isPhone()`, the same
+  `(max-width:820px)` query the phone layout is drawn by, because `.sb-wide` is
+  an opt-in toggle and a desktop board was swiping too — where the seven day
+  chips are still on the bar and a stray mouse drag changing the day is pure
+  misfire. The preview
   carries **just the day and the date** (the six section counts are gone, and do
   not put them back), against the edge that arrives first because a centred label
   on a full-width pane is off screen for the whole drag. The settle is timed by

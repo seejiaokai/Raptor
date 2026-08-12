@@ -514,7 +514,20 @@ edit week now:
   scheduler aims at deliberately); `drag.ts`'s puck drag
   needs a deliberate HOLD and gives up the moment the finger travels, so a
   swipe can never arm it, and its `tdrag` body class is checked at pointerup
-  for one armed beforehand. `editingText()` is deliberately NOT consulted —
+  for one armed beforehand.
+  **It is PHONE-ONLY, gated on the same media query the layout is** (owner,
+  12 Aug 26 — "this is for mobile only"). `.sb-wide` was the only width bar
+  before that and it is an opt-in toggle, so a desktop board in the default
+  stacked layout swiped as well: a mouse drag across it — a text selection that
+  overshot, a slip while reading — changed the day, measured at 1440px as a 180px
+  drag moving Wednesday to Thursday. The gesture only ever existed because the
+  phone bar has no room for seven day chips; above 820px those chips are still
+  there, so it earns nothing and can only misfire. `HOOKS.isPhone()` is the same
+  `(max-width:820px)` query the phone board is drawn by, so the two cannot
+  disagree — verified on the real bundle at 390, 820, 900 and 1440px, switching
+  exactly at the breakpoint. `.sb-wide` stays excluded on top of that, because
+  there sideways IS panning across the day's columns.
+  `editingText()` is deliberately NOT consulted —
   it stays true for as long as a field is focused, including while the
   scheduler swipes away from it, so gating on it killed every swipe after
   the first tap.

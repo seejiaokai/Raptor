@@ -2613,6 +2613,30 @@ test.describe('the day carousel', () => {
       'and the board is left at rest').toBe('none')
   })
 
+  /* MOBILE ONLY (owner, 12 Aug 26 — "this is for mobile only"). The gesture
+     exists because the phone bar has no room for seven day chips; a desktop
+     board still has them, so a sideways mouse drag there is a misfire, not a
+     shortcut. Measured at 1440px before the gate: a 180px drag moved Wednesday
+     to Thursday. This runs in the DEFAULT desktop layout, not `.sb-wide` — that
+     one was already excluded and is covered in the vitest suite. */
+  test('desktop: a sideways drag across the board does not change the day', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(2))
+    await page.waitForSelector('#sbHist')
+    const box = (await page.locator('.sb-main').boundingBox())!
+    const cy = box.y + box.height / 2
+    await page.mouse.move(box.x + box.width * 0.6, cy)
+    await page.mouse.down()
+    for (let i = 1; i <= 6; i++) { await page.mouse.move(box.x + box.width * 0.6 - i * 30, cy); await page.waitForTimeout(20) }
+    await page.mouse.up()
+    await page.waitForTimeout(500)
+    expect(await page.evaluate(() => (window as any).SBDAY),
+      'the day chips are right there on a desktop bar').toBe(2)
+    expect(await page.locator('.sb-pane').count(), 'and no preview was built').toBe(0)
+  })
+
   /* the seam that makes the whole thing possible without a non-passive
      listener: the browser keeps the vertical scroll, we take the horizontal */
   test('phone: the board scroller hands the sideways gesture over', async ({ page }) => {

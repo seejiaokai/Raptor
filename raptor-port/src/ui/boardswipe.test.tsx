@@ -9,7 +9,7 @@
    Geometry — that the bar is ONE row, and that the open drawer clears it —
    is not testable here: jsdom reports every rect as 0x0. It is pinned in
    e2e/geometry.spec.ts, the gate that exists for exactly this. */
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
@@ -72,16 +72,26 @@ const layOutDots = () => {
   })
 }
 
+/* THE SWIPE IS PHONE-ONLY (owner, 12 Aug 26 — "this is for mobile only"), and
+   jsdom is 1024px wide with a matchMedia that answers no to everything — so the
+   whole gesture is switched off in here unless the phone query is stubbed. This
+   is the same stub histbubble.test.tsx and histlist.test.tsx use for the other
+   width-gated behaviour. The desktop side is asserted by putting it back. */
+let PHONE = true
+const realIsPhone = HOOKS.isPhone
 beforeAll(async () => {
   initStore()
+  HOOKS.isPhone = () => PHONE
   const host = document.createElement('div')
   document.body.appendChild(host)
   await act(async () => { createRoot(host).render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await act(async () => { view.setPage('editsched'); notify() })
 })
+afterAll(() => { HOOKS.isPhone = realIsPhone })
 
 beforeEach(async () => {
+  PHONE = true
   if (SBWIDE) { await act(async () => { toggleWide(); notify() }) }
   await act(async () => { openScheduler(2); notify() })      // Wednesday, middle of the week
 })
@@ -482,6 +492,20 @@ describe('a swipe may start on the controls the board is made of', () => {
     } finally {
       await act(async () => { toggleWide(); notify() })
     }
+  })
+
+  /* AND NOTHING AT ALL ABOVE 820px (owner, 12 Aug 26 — "this is for mobile
+     only"). `.sb-wide` above is an opt-in toggle, so it was never this bar: a
+     desktop board in the default stacked layout swiped too, and a mouse drag
+     across it — a text selection that overshot — changed the day. Measured at
+     1440px before the fix: a 180px drag moved Wednesday to Thursday. The gate is
+     the same media query the phone layout is drawn by, so the gesture and the
+     layout that needs it cannot disagree. */
+  it('does nothing on a desktop-width board, wide layout or not', async () => {
+    PHONE = false
+    await swipe(-120)
+    expect(view.SBDAY, 'above 820px the seven day chips are on the bar already').toBe(2)
+    expect(document.querySelectorAll('.sb-pane').length, 'and no preview was built').toBe(0)
   })
 })
 

@@ -926,8 +926,13 @@ export function boardTab(n: number) { view.setBoardDay(n); notifyBoard() }
    - **Horizontal has to beat vertical by 2×.** The board is a tall scroller;
      a thumb travelling down it wanders sideways, and a bare threshold turns
      ordinary reading into day changes.
-   - **Not in desktop layout.** `.sb-wide` makes the whole board a horizontal
-     scroller, where sideways IS panning across the day's columns.
+   - **Phone only, and `.sb-wide` off.** The gesture is gated on the same
+     `(max-width:820px)` query the phone layout is drawn by (owner, 12 Aug 26 —
+     "this is for mobile only"): above it the seven day chips are still on the
+     bar, so a swipe earns nothing and a stray mouse drag changing the day is
+     pure misfire. `.sb-wide` is excluded on top of that, because it makes the
+     whole board a horizontal scroller where sideways IS panning across the
+     day's columns.
 
    `editingText()` is deliberately NOT consulted. It asks "is a text cell
    focused", which is true for the whole time a scheduler has tapped into a
@@ -1180,6 +1185,17 @@ export function wireBoardSwipe(el: HTMLElement) {
     live = false; lock = false; originDay = null; originRev = null; paneDay = null
     if (pane) { pane.remove(); pane = null }
     rest()
+    /* MOBILE ONLY (owner, 12 Aug 26 — "this is for mobile only").
+       `SBWIDE` alone was not that bar: it is an opt-in toggle, so a desktop
+       board left in the default stacked layout still swiped, and a mouse drag
+       across it — a text selection that overshot, a slip while reading —
+       changed the day. Measured at 1440px: a 180px drag moved Wednesday to
+       Thursday. The gesture exists because the phone bar has no room for seven
+       day chips; above 820px those chips are still there, so there is nothing
+       for a swipe to earn. `HOOKS.isPhone()` is the SAME `(max-width:820px)`
+       query the phone layout is drawn by, so the gesture and the layout that
+       needs it can never disagree. */
+    if (!HOOKS.isPhone()) return
     if (SBWIDE) return
     if (e.pointerType === 'mouse' && e.buttons !== 1) return
     const t = e.target as HTMLElement
