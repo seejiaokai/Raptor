@@ -464,7 +464,14 @@ flagged correctly and still swept the man out of the crew palette.
   shape, and reading it as a zero-length absence would free a man who is off
   for a week. Both ends are required, so a half-day with a blank end cannot
   shrink to an hour through `win()`'s open-ended default. **Thin records fail
-  closed.**
+  closed** — and since 12 Aug 26 (audit) `inpWin` fails closed the same way,
+  returning `[0,1439]` rather than null for such a record. The two used to
+  disagree, which broke the invariant this whole section exists to keep: the
+  palette struck the man out while every validator overlap against a null
+  window was false, so planting him anyway raised nothing. `[0,1439]` is
+  exactly 1439 wide, so `validate.ts`'s `timedInput` filter reads it as
+  all-day — which is what `awayAllDay` had already decided it was. No UI path
+  can mint such a record; the guard is for a restore, an import or a probe.
 - **`slotRules` reports the slot's own window**, `slotStart`/`slotEnd`, for
   every key in the grammar. Each is read off the same row `collectEvents`
   reads and padded the same way, so the picker and the warning list cannot

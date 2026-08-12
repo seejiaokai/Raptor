@@ -60,6 +60,21 @@ function box() {
   return bub
 }
 
+/* RE-CHECK A BUBBLE THAT IS ALREADY UP: re-anchor it where its cell still
+   exists, take it down where the cell has gone. Called on every scroll and
+   resize (the board moves under a fixed bubble) and — since the audit,
+   12 Aug 26 — by SchedBoard.tsx after a panel repaint, because a repaint is
+   the other way an anchor can vanish: the panel's innerHTML is replaced
+   wholesale, so a row deleted from another surface left a pinned bubble
+   telling a deleted row's story from stale coordinates until the next
+   scroll happened to notice. Cheap enough to call unconditionally: it is a
+   boolean on a variable that is null unless a bubble is actually up. */
+export function histBubRecheck() {
+  if (!bub || !bub.isConnected) return
+  if (anchor && anchor.isConnected) place(bub, anchor)
+  else hideHistBub()
+}
+
 export function hideHistBub() {
   clearTimeout(hideT)
   if (anchor) { restoreTitle(anchor); anchor = null }
@@ -324,10 +339,7 @@ export function wireHistBubble(el: HTMLElement) {
      bubble belongs over its own cell wherever that cell has got to — and
      where the pointer has genuinely left the cell, the mouseout that follows
      is what clears it. */
-  const bail = () => {
-    if (bub && bub.isConnected && anchor && anchor.isConnected) place(bub, anchor)
-    else hideHistBub()
-  }
+  const bail = histBubRecheck
   /* ON THE DOCUMENT, capture — scroll events do not bubble, but they DO run
      capture listeners from the window down, so this one sees EVERY scroller.
      It was on the wrap, which meant it only ever saw the board panels' own

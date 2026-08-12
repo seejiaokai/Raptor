@@ -229,6 +229,16 @@ function tdClear() {
   if (TD.armed) { document.body.classList.remove('tdrag'); dndOff(); DRAG = null }
   TD = null
 }
+/* IS A FINGER ALREADY DRIVING A DRAG? Asked by the board's day-dot scrub
+   (board.ts's wireDayDots), which must not start a day change underneath a
+   puck someone is holding: a day change repaints the panels, which detaches
+   TD.src, and the drop then resolves through elementFromPoint against the
+   NEW day's markup — a plant on a day nobody aimed at. True from the moment
+   a finger lands on a draggable, not just once the hold has armed, because
+   the repaint hazard covers both windows. The reverse direction needs no
+   guard: a finger landing on a puck mid-scrub is non-primary, and
+   onPointerDown already refuses those. */
+export function touchDragBusy() { return !!TD }
 function tdScrollerFor(el: any) {
   let n = el
   while (n && n !== document.body && n !== document.documentElement) {

@@ -102,20 +102,20 @@ describe('times out of order', () => {
 })
 
 describe('a THIN record — no allday flag, no times', () => {
-  it('bars the picker (fails closed) but never warns (fails open) — the recorded drift', () => {
-    /* Both halves are individually documented — awayAllDay "fails closed" on
-       the availability side, "a record with no usable window stays uncheckable"
-       on the validator side — but together they break the repeated invariant
-       that the picker and the warning list cannot drift apart: the palette
-       strikes the man out while planting him raises NOTHING. Unreachable from
-       the two UI entry paths (both always write allday or s/e); a restored
-       store or a probe can mint one. Pinned as-is; reported as a finding. */
+  it('bars the picker AND warns — both halves fail closed (fixed 12 Aug 26)', () => {
+    /* This drift was the audit's finding: awayAllDay "fails closed" on the
+       availability side while inpWin returned null on the validator side, so
+       the palette struck the man out and planting him anyway raised NOTHING.
+       inpWin now returns the whole day for such a record, so the picker and
+       the warning list agree again. Still unreachable from the two UI entry
+       paths (both always write allday or s/e) — the guard is for a restore,
+       an import or a probe. Full coverage: audit-thinwin.test.ts. */
     INPUTS.push({ person: 'split', date: 'Jul 14', type: 'OL', remarks: '', mod: '' })
     DAYS[1].waves[0].formations[0].aircraft[0].p = 'split'
     expect(() => validate()).not.toThrow()
-    expect(hits('LEAVE_FLY', 'split')).toEqual([])          // validator: silent
+    expect(hits('LEAVE_FLY', 'split').length).toBeGreaterThan(0)   // validator: speaks
     const bar = (slotBar as any)('split', '1.0.0.0.p')
-    expect(bar, bar).toMatch(/overseas leave/)              // picker: barred
+    expect(bar, bar).toMatch(/overseas leave/)                     // picker: barred
   })
 })
 

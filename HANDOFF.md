@@ -445,41 +445,46 @@ only after re-running them.
   escaped inside it — `CHIP_LABEL` legitimately holds `<`/`>`, and escaping
   those breaks the byte-exact reference parity. Two unescaped sinks were
   found on 6 Aug 26; assume more is possible.
-- **The 12 Aug 26 audit left five SUSPECTS documented rather than fixed; the
-  owner then closed two of them the same day** (the brief-time guard rails and
-  the remarks reveal — both now built, see below). The three that remain are
-  each judged not worth their change; the `audit-*` tests pin everything the
-  sweep checked, so none can regress silently into something worse.
-  - **A "thin" input record splits the picker from the validator.** A record
-    with neither `allday` nor `s`/`e` reads as away to `awayAllDay`
-    (fail-closed) while `inpWin` gives the validator null and every overlap
-    is false (fail-open). No UI path can mint one — both entry paths always
-    write one or the other — so this only matters if a future import/restore
-    path arrives; the honest fix then is `mapInp` treating such a record as
-    whole-day.
-  - **A pinned History bubble can describe a deleted row for the moment
-    between a panel repaint and the next scroll/resize** — the bail runs on
-    scroll/resize only. Frame-scale in practice. The fix, if it is ever
-    wanted, is to bail on repaint as well as on scroll.
-  - **A second finger landing mid-puck-drag can still cross wires with a dot
-    scrub** (the drag machine hit-tests against a repainted board). Exotic
-    two-finger timing; the scrub itself now drops buttonless mouse gestures.
-    The fix is one flag shared between the two gesture machines so neither
-    starts while the other is in flight — deliberately not built blind,
-    because a wrong guard there breaks ordinary one-finger dragging.
-  - **CLOSED 12 Aug 26 — the brief-time guard rails** (owner: "u can put guard
-    rails to deny such inputs"). A brief typed after its own take-off inverted
-    the brief window and silently disabled that line's `NO_BRIEF` check.
-    `txtSet` now refuses that value, and clears a brief the take-off is moved
-    past; the engine's own "a bad time stays visible" semantics are unchanged,
-    so no UI path can produce the pair any more. Rules:
-    `docs/engine-rules.md` §the brief, third bullet.
-  - **CLOSED 12 Aug 26 — `RMKOPEN` rides the renumbering.** The empty-remarks
-    reveal is a model-index path and a ground splice under it stranded the
-    box on a neighbour row. `HOOKS.remapViewKeys` now carries it through
+- **The 12 Aug 26 audit raised five SUSPECTS beside its twelve bugs, and the
+  owner closed ALL FIVE the same day** ("fix all"). None is open; each is
+  listed here with what it now does, because the reasoning is what stops a
+  later session undoing one as an over-guard. Every one is pinned by tests.
+  - **CLOSED — the brief-time guard rails** (owner: "u can put guard rails to
+    deny such inputs"). A brief typed after its own take-off inverted the
+    brief window and silently disabled that line's `NO_BRIEF` check. `txtSet`
+    now refuses that value, and clears a brief the take-off is moved past;
+    the engine's own "a bad time stays visible" semantics are unchanged, so
+    no UI path can produce the pair any more. Rules: `docs/engine-rules.md`
+    §the brief, third bullet. Tests: `audit-c-briefguard.test.ts`.
+  - **CLOSED — `RMKOPEN` rides the renumbering.** The empty-remarks reveal is
+    a model-index path and a ground splice under it stranded the box on a
+    neighbour row. `HOOKS.remapViewKeys` now carries it through
     `shiftKeys`/`permuteKeys` with the amendment book and the edit log — the
     hook exists for key-addressed VIEW state, so a second such value wires
     into the same place rather than growing a second mechanism.
+  - **CLOSED — `inpWin` fails closed like `awayAllDay`.** A record with
+    neither `allday` nor `s`/`e` used to read as away to the picker and as
+    nothing at all to the validator, so the palette struck a man out while
+    planting him raised no warning. `inpWin` returns `[0,1439]` for such a
+    record now — 1439 wide, so `timedInput` reads it as all-day, which is
+    what the picker had already decided. Still unreachable from both UI entry
+    paths: this is the guard for a restore, an import or a probe. Tests:
+    `audit-thinwin.test.ts`.
+  - **CLOSED — the bubble is re-checked on every repaint.** `histBubRecheck()`
+    (`histbubble.ts`) re-anchors a live bubble or takes it down, and
+    `SchedBoard.tsx` calls it after the panel diff as well as on scroll and
+    resize — a repaint is the other way an anchor vanishes, and a pinned
+    bubble used to go on describing a deleted row until some later scroll
+    noticed.
+  - **CLOSED — the dot strip declines a scrub while a puck is held.**
+    `drag.ts` exports `touchDragBusy()` and `wireDayDots` asks it: a day
+    change repaints the panels, detaching the node the touch-drag machine
+    carries, and the drop would then resolve against the new day's markup.
+    True from the moment a finger lands on a draggable, not only once the
+    hold has armed, because the repaint hazard covers both windows. The
+    reverse direction needs no guard — a finger landing on a puck mid-scrub
+    is non-primary, which `onPointerDown` already refuses. Tests:
+    `audit-gesture-bubble.test.tsx`.
 - **Two reference probes fail on the port by design.** `audit2 #8` and
   `audit` item 3 pin the OLD `Fly`/OFFER rules, which the owner changed in
   Aug 26. The probes still describe the reference correctly; they no longer

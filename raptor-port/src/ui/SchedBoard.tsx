@@ -7,7 +7,7 @@ import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode } from '../state/view'
 import { closeHistList } from './pops'
-import { wireHistBubble, hideHistBub } from './histbubble'
+import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
 import { daySnapOf, dayVersions, verLabel, alColor } from '../engine/publish'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
@@ -206,6 +206,12 @@ export function SchedBoard() {
     }
     set(rosterRef.current!, 'roster', paletteHTML(paletteDay(), { head: false }))
     refreshHighlights()
+    /* a repaint replaces a panel's markup wholesale, so a bubble that is up
+       may have just lost the cell it hangs on — re-anchor it, or take it down
+       if the row has gone (audit, 12 Aug 26). Before this it only noticed on
+       the next scroll, so a pinned bubble could go on telling a deleted row's
+       story from stale coordinates. */
+    histBubRecheck()
   }, [version, boardVersion])
 
   const d = open ? DAYS[SBDAY] : null
