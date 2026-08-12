@@ -411,12 +411,14 @@ the phone perf budget. Don't convert them to components.
 - **A new flying line comes up blank** (owner, 10 Aug 26). `+ Line` used to
   copy the previous line's callsign, mission and times; a plausible wrong
   value reads as filled in when nobody filled it in.
-- **The phone board's top bar is ONE row, and the day is SWIPED** (owner,
-  11 Aug 26 — comp approved before build). The seven Mon–Sun chips are dots
+- **The phone board's top bar is ONE row, and the day is STEPPED BY ARROWS on
+  the day strip below it** (owner, 11 Aug 26 — comp approved before build; the
+  day was SWIPED until 12 Aug 26, see the amendment at the end of this entry).
+  The seven Mon–Sun chips are dots
   now, `+ Line` is gone from the bar (every wave header already has one),
   undo/redo are on it, and every label is icon-only under 820px. Do not add
-  a control back to this bar without taking one off: the whole point was
-  getting it from 166px to 70px on a 780px screen, and the geometry gate
+  a control back to this bar's FIRST LINE without taking one off: the whole point
+  was getting it from 166px to 70px on a 780px screen, and the geometry gate
   counts ROWS, not just overflow. Desktop is unchanged.
   **AMENDED 11 Aug 26, once, with a measurement.** History added an eighth
   button and took nothing off, and the bar still measures 70px — but only
@@ -432,40 +434,26 @@ the phone perf budget. Don't convert them to components.
   run through the week. Every dot keeps the same footprint whatever is
   selected; do not make the current one grow, it shifts the strip under a
   tracking finger.
-  **The swipe is a CAROUSEL since 11 Aug 26** (owner: "the same logic and
-  mechanism as edit schedule ... full motion, feel and sensitivity"). The live
-  day tracks the finger, the incoming day names itself, and the
-  release settles on distance or velocity. It is NOT the week's mechanism and cannot
-  be: the week is a scroll-snap container holding all seven days, which here
-  would be ~6,300 nodes against a 960 ceiling. The preview is built only while
-  a finger is down and stays under 20 nodes; do not put a full board back in
-  it. Re-evaluate direction after lock so a Sunday/Monday edge pull can reverse
-  inward in the same gesture, reconcile the final pointer-up coordinate, abort
-  if a newer day choice occurs while held, and treat `pointercancel` as an
-  immediate abort.
-  **AMENDED 12 Aug 26, on "still slightly laggy" and "sometimes it's
-  unresponsive, I can't swipe" — four changes, each measured. And it is MOBILE
-  ONLY** (owner, same day): gated on `HOOKS.isPhone()`, the same
-  `(max-width:820px)` query the phone layout is drawn by, because `.sb-wide` is
-  an opt-in toggle and a desktop board was swiping too — where the seven day
-  chips are still on the bar and a stray mouse drag changing the day is pure
-  misfire. The preview
-  carries **just the day and the date** (the six section counts are gone, and do
-  not put them back), against the edge that arrives first because a centred label
-  on a full-width pane is off screen for the whole drag. The settle is timed by
-  the distance LEFT to travel, not a flat duration. A press during a settle
-  FINISHES it and starts its own gesture instead of being thrown away — the old
-  refusal made two swipes 80ms apart move one day — while the one-pane-at-a-time
-  rule it protected still holds. And the gesture LISTENS on `.schedboard`, not on
-  the scroller it moves: mid-settle the board is a screen away and the preview is
-  pointer-events:none, so a finger lands on the host, and implicit pointer
-  capture then sent the entire following drag to an element with no listener.
-  Reasoning for all four: `docs/ui-contracts.md`.
+  **THE DAY IS STEPPED BY TWO ARROWS, AND THE SWIPE IS GONE** (owner, 12 Aug 26
+  — "remove the swipe for the mobile scheduler board too. Just put arrows at the
+  edges of the bar at the top to navigate left and right between days"). Do not
+  rebuild the swipe. It was itself an owner ask on 11 Aug and it ran through
+  three shapes in a day and a half — a jump on a distance threshold, a carousel
+  tracking the finger behind a preview pane, then that carousel with its
+  hit-testing, settle and animation reworked and a phone-only gate — each round
+  paying back what the last one cost. `#sbPrevDay`/`#sbNextDay` call
+  `boardDayStep(±1)` and are DISABLED at the week's ends (a gesture cannot show
+  that it is refusing; a button can). They flank the DAY STRIP rather than the
+  bar's first line, which has 6px of slack and would have had to give up the day
+  name; the bar went 70px → 75px and nothing came off line one. Above 820px they
+  are not drawn — a desktop bar already carries all seven days as chips, which is
+  why it never needed either control. The dots stay, still a scrub bar: they are
+  the only thing that says WHICH day is open. Gone with the swipe: the
+  `.sb-pane` preview and `.sb-main`'s own `touch-action`, so the scroller is the
+  browser's default again.
   `boardTab` is view-only: it must not validate, and its board-only notification
-  lane must not wake the mounted EditWeek or EditRoster. Real mutations still
-  use the global lane and repaint both. Do not "simplify" it back to a threshold jump, and
-  do not try to make `.sb-main` a snap track — the reasoning, and the three
-  gestures that would break, are in `docs/ui-contracts.md`.
+  lane must not wake the mounted EditWeek or EditRoster. Real mutations still use
+  the global lane and repaint both.
   Contract: `docs/ui-contracts.md` §The board on a phone is ONE window.
 - **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /

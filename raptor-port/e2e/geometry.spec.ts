@@ -2153,14 +2153,20 @@ test.describe('the phone board keeps its controls to one row', () => {
     expect(m.pageOverflow, 'and the board gains no sideways scrollbar').toBeLessThanOrEqual(0)
     expect(m.labelsHidden, 'the words come off the buttons on a phone').toBe(true)
     expect(m.smallest, 'the icons stay tappable').toBeGreaterThanOrEqual(28)
-    /* the whole bar, dots included: 70px measured, against the 166px of four
-       stacked rows it replaces. It was 58px before the dots became a SCRUB
-       bar (owner, 11 Aug 26) — a 9px row of dots cannot be grabbed and
+    /* the whole bar, dots and arrows included: 75px measured, against the 166px
+       of four stacked rows it replaces. It was 58px before the dots became a
+       SCRUB bar (owner, 11 Aug 26) — a 9px row of dots cannot be grabbed and
        tracked along, so the strip grew to 21px, and that 12px buys the drag.
-       The bound is 78 rather than 71 so an ordinary type or padding tweak
-       does not fail the gate, while a second row of 30px buttons (which
-       would put it past 100) still cannot fit under it. */
-    expect(m.barH, 'the bar is a fraction of the screen it used to eat').toBeLessThan(78)
+       It went 70 → 75 on 12 Aug 26, when the swipe was replaced by two arrows
+       on that same day row (owner: "just put arrows at the edges of the bar at
+       the top"): a 26px control against 16px dots is the 5px, and it is the
+       whole cost of the change, since the arrows took no width from the title or
+       the eight buttons on line one.
+       The bound is 82 rather than 76 so an ordinary type or padding tweak does
+       not fail the gate, while a second row of 30px buttons (which would put it
+       past 100) still cannot fit under it — which is the regression this number
+       has always been here to catch. */
+    expect(m.barH, 'the bar is a fraction of the screen it used to eat').toBeLessThan(82)
   })
 
   test('the day chips are dots, and tapping one still jumps to that day', async ({ page }) => {
@@ -2484,169 +2490,128 @@ test.describe('the way into the changes list follows the width', () => {
   }
 })
 
-test.describe('the day carousel', () => {
-  test('phone: the board follows the finger and the next day comes in with it', async ({ page }) => {
+/* ===================================================================
+   THE DAY IS STEPPED BY TWO ARROWS (owner, 12 Aug 26 — "remove the swipe for
+   the mobile scheduler board too. Just put arrows at the edges of the bar at
+   the top to navigate left and right between days").
+   This block replaces the day-carousel suite entirely: the swipe, its preview
+   pane and every measurement of its motion are gone. What a browser is still
+   needed for is WHERE the arrows are (jsdom has no layout, so it cannot tell an
+   arrow at the screen's edge from one in the middle of the bar), that they cost
+   the bar no second row, and that a drag across the board now does nothing.
+   =================================================================== */
+test.describe('the day arrows', () => {
+  test('phone: they sit at the two edges of the day row, and the bar stays one line', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)
     await go(page, 'editsched')
-    await page.evaluate(() => (window as any).openScheduler(0))
-    await page.waitForSelector('#sbHist')
-    /* Parked well down the day: the incoming summary stays viewport-fixed,
-       so it cannot become another many-thousand-pixel paint surface. */
-    await page.evaluate(() => { (document.querySelector('.sb-main') as HTMLElement).scrollTop = 700 })
-    await page.waitForTimeout(200)
-    const y0 = await page.evaluate(() => (document.querySelector('.sb-main') as HTMLElement).scrollTop)
+    await page.evaluate(() => (window as any).openScheduler(2))
+    await page.waitForSelector('#sbPrevDay')
 
-    const box = (await page.locator('.sb-main').boundingBox())!
-    const cy = box.y + box.height / 2
-    await page.mouse.move(box.x + 330, cy)
-    await page.mouse.down()
-    for (const x of [320, 290, 250, 210, 175]) { await page.mouse.move(box.x + x, cy); await page.waitForTimeout(30) }
-
-    const mid = await page.evaluate(() => {
-      const m = document.querySelector('.sb-main') as HTMLElement
-      const p = document.querySelector('.sb-pane') as HTMLElement
-      const dx = (el: Element) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41
+    const m = await page.evaluate(() => {
+      const top = document.querySelector('.sb-top') as HTMLElement
+      const prev = document.querySelector('#sbPrevDay') as HTMLElement
+      const next = document.querySelector('#sbNextDay') as HTMLElement
+      const dots = document.querySelector('#sbDays') as HTMLElement
+      const r = (e: HTMLElement) => e.getBoundingClientRect()
+      const acts = [...document.querySelectorAll('.sb-actions > .abtn, .sb-actions > select')] as HTMLElement[]
       return {
-        boardDx: p ? Math.round(dx(m)) : null,
-        paneDrawn: !!p,
-        paneDx: p ? Math.round(dx(p)) : null,
-        paneNodes: p ? p.querySelectorAll('*').length : 0,
-        paneDay: p?.dataset.day,
-        paneLabel: p?.querySelector('.sb-peek-k')?.textContent,
-        pe: p ? getComputedStyle(p).pointerEvents : null,
+        barH: Math.round(r(top).height),
+        prevLeft: Math.round(r(prev).left),
+        nextRight: Math.round(window.innerWidth - r(next).right),
+        prevW: Math.round(r(prev).width), prevH: Math.round(r(prev).height),
+        /* the arrows are on their OWN line, under the title and the buttons */
+        arrowsBelowActions: Math.round(r(prev).top) >= Math.round(r(acts[0]).bottom),
+        sameLine: Math.round(r(prev).top) === Math.round(r(next).top),
+        /* and the dots are still between them, not pushed off */
+        dotsBetween: Math.round(r(dots).left) >= Math.round(r(prev).right)
+          && Math.round(r(dots).right) <= Math.round(r(next).left),
+        overflow: top.scrollWidth - top.clientWidth,
+        pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       }
     })
-    expect(mid.paneDrawn, 'the destination comes in beside the live board').toBe(true)
-    expect(mid.paneNodes, 'the swipe must not allocate a second full board').toBeLessThan(20)
-    expect(mid.paneDay).toBe('1')
-    expect(mid.paneLabel).toContain('Tuesday')
-    expect(mid.boardDx, 'the board has moved with the finger').toBeLessThan(-100)
-    expect(mid.paneDx, 'and the incoming day moves exactly with it').toBe(mid.boardDx)
-    expect(mid.pe, 'nothing in the incoming day can take a tap').toBe('none')
-
-    await page.mouse.up()
-    await page.waitForTimeout(600)
-    const after = await page.evaluate(() => ({
-      day: (window as any).SBDAY,
-      pane: !!document.querySelector('.sb-pane'),
-      transform: getComputedStyle(document.querySelector('.sb-main') as HTMLElement).transform,
-      scroll: Math.round((document.querySelector('.sb-main') as HTMLElement).scrollTop),
-    }))
-    expect(after.day, 'it landed on the next day').toBe(1)
-    expect(after.pane, 'and the pane it was drawn on is gone').toBe(false)
-    expect(after.transform, 'with the board put back').toBe('none')
-    expect(after.scroll, 'and the vertical position held').toBe(y0)
+    expect(m.prevLeft, 'the previous arrow is against the left edge').toBeLessThanOrEqual(10)
+    expect(m.nextRight, 'and the next one against the right').toBeLessThanOrEqual(10)
+    expect(m.sameLine, 'both on the same line').toBe(true)
+    expect(m.arrowsBelowActions, 'on the day row, below the title and the buttons').toBe(true)
+    expect(m.dotsBetween, 'with the seven dots still between them').toBe(true)
+    expect(m.overflow, 'nothing is clipped or pushed off the bar').toBeLessThanOrEqual(0)
+    expect(m.pageOverflow, 'and the board gains no sideways scrollbar').toBeLessThanOrEqual(0)
+    /* a real target, not a hairline: 40x26 is a bigger area than the 30x30 the
+       action buttons get, and wider than tall because horizontal room is what
+       this row has and a thumb at the screen edge is more accurate sideways */
+    expect(m.prevW).toBeGreaterThanOrEqual(36)
+    expect(m.prevH).toBeGreaterThanOrEqual(24)
+    /* THE PRICE OF THE ARROWS, measured: the bar was 70px with the dots alone
+       and is 80px with a 26px control on that row. Still less than half the
+       166px of four stacked rows it replaced, and the bound stays under the
+       ~100px a second row of 30px buttons would cost, which is the regression
+       this number exists to catch. */
+    expect(m.barH, 'the arrows cost the bar 10px and no second row').toBeLessThan(86)
   })
 
-  test('phone: Sunday back-and-forth never allocates another dense board', async ({ page }) => {
-    await page.setViewportSize(PHONE)
-    await login(page)
-    await go(page, 'editsched')
-    await page.evaluate(() => (window as any).openScheduler(6))
-    await page.waitForSelector('#sbHist')
-    const swipe = async (dx: number) => {
-      const mid = await page.evaluate((travel) => {
-        const main = document.querySelector('.sb-main') as HTMLElement
-        const event = (kind: string, x: number) => main.dispatchEvent(new PointerEvent(kind, {
-          bubbles: true, clientX: x, clientY: 400, pointerType: 'touch', buttons: kind === 'pointerup' ? 0 : 1,
-        }))
-        event('pointerdown', 200); event('pointermove', 200 + travel)
-        const pane = document.querySelector('.sb-pane') as HTMLElement | null
-        const snap = { panes: document.querySelectorAll('.sb-pane').length, nodes: pane?.querySelectorAll('*').length || 0 }
-        event('pointerup', 200 + travel)
-        return snap
-      }, dx)
-      expect(mid.panes).toBeLessThanOrEqual(1)
-      expect(mid.nodes, 'the gesture preview stays tiny').toBeLessThan(20)
-      await page.waitForTimeout(280)
-    }
-    await swipe(-120)                    // outward at Sunday: rubber-band only
-    expect(await page.evaluate(() => (window as any).SBDAY)).toBe(6)
-    for (let i = 0; i < 6; i++) {
-      await swipe(120)
-      expect(await page.evaluate(() => (window as any).SBDAY)).toBe(5)
-      await swipe(-120)
-      expect(await page.evaluate(() => (window as any).SBDAY)).toBe(6)
-    }
-    expect(await page.locator('.sb-pane').count()).toBe(0)
-  })
-
-  /* A RUN THROUGH THE WEEK, AT THE SPEED A THUMB ACTUALLY MOVES (owner, 12 Aug
-     26 — "sometimes it's unresponsive, I can't swipe"). Only a real browser can
-     show this one, because the fault was in HIT TESTING, not in the gesture
-     logic: mid-settle the live board is a screen-width away and the preview is
-     pointer-events:none, so a finger landing anywhere on the board passes
-     through to `.schedboard` itself. Each press below is therefore dispatched to
-     whatever `elementFromPoint` returns, the way a touch lands — dispatching
-     straight at the scroller hides the whole bug. Measured before the fix: four
-     swipes 70ms apart moved ONE day. */
-  test('phone: four swipes 70ms apart move four days', async ({ page }) => {
+  test('phone: tapping them steps the day, and they stop at both ends of the week', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)
     await go(page, 'editsched')
     await page.evaluate(() => (window as any).openScheduler(0))
-    await page.waitForSelector('#sbHist')
-    const landedOn: string[] = []
-    for (let i = 0; i < 4; i++) {
-      landedOn.push(await page.evaluate(() => {
-        const t = document.elementFromPoint(200, 400) as HTMLElement
-        const ev = (k: string, x: number) => t.dispatchEvent(new PointerEvent(k, {
-          bubbles: true, clientX: x, clientY: 400, pointerType: 'touch', pointerId: 1,
-          buttons: k === 'pointerup' ? 0 : 1,
-        }))
-        ev('pointerdown', 200)
-        for (let s = 1; s <= 6; s++) ev('pointermove', 200 - 20 * s)
-        ev('pointerup', 80)
-        return t.className || t.tagName
-      }))
-      await page.waitForTimeout(70)
-      expect(await page.locator('.sb-pane').count(),
-        'never two previews, however fast the run').toBeLessThanOrEqual(1)
+    await page.waitForSelector('#sbPrevDay')
+    expect(await page.locator('#sbPrevDay').isDisabled(), 'Monday has no day before it').toBe(true)
+    for (let i = 1; i <= 6; i++) {
+      await page.click('#sbNextDay')
+      await page.waitForTimeout(120)
+      expect(await page.evaluate(() => (window as any).SBDAY)).toBe(i)
     }
-    await page.waitForTimeout(500)
-    expect(await page.evaluate(() => (window as any).SBDAY),
-      `Monday to Friday in four swipes (pressed on: ${landedOn.join(', ')})`).toBe(4)
-    expect(await page.locator('.sb-pane').count()).toBe(0)
+    expect(await page.locator('#sbNextDay').isDisabled(), 'and Sunday has none after it').toBe(true)
+    await page.click('#sbPrevDay')
+    await page.waitForTimeout(120)
+    expect(await page.evaluate(() => (window as any).SBDAY)).toBe(5)
+    /* the day really is redrawn, not just the title: every board address starts
+       with the day index */
     expect(await page.evaluate(() =>
-      getComputedStyle(document.querySelector('.sb-main') as HTMLElement).transform),
-      'and the board is left at rest').toBe('none')
+      document.querySelector('#sbBoard [data-slot]')!.getAttribute('data-slot')!.replace(/^[a-z]+:/, '').split('.')[0])).toBe('5')
   })
 
-  /* MOBILE ONLY (owner, 12 Aug 26 — "this is for mobile only"). The gesture
-     exists because the phone bar has no room for seven day chips; a desktop
-     board still has them, so a sideways mouse drag there is a misfire, not a
-     shortcut. Measured at 1440px before the gate: a 180px drag moved Wednesday
-     to Thursday. This runs in the DEFAULT desktop layout, not `.sb-wide` — that
-     one was already excluded and is covered in the vitest suite. */
-  test('desktop: a sideways drag across the board does not change the day', async ({ page }) => {
+  test('desktop: the arrows are not drawn, because all seven days are on the bar', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await login(page)
     await go(page, 'editsched')
     await page.evaluate(() => (window as any).openScheduler(2))
-    await page.waitForSelector('#sbHist')
-    const box = (await page.locator('.sb-main').boundingBox())!
-    const cy = box.y + box.height / 2
-    await page.mouse.move(box.x + box.width * 0.6, cy)
-    await page.mouse.down()
-    for (let i = 1; i <= 6; i++) { await page.mouse.move(box.x + box.width * 0.6 - i * 30, cy); await page.waitForTimeout(20) }
-    await page.mouse.up()
-    await page.waitForTimeout(500)
-    expect(await page.evaluate(() => (window as any).SBDAY),
-      'the day chips are right there on a desktop bar').toBe(2)
-    expect(await page.locator('.sb-pane').count(), 'and no preview was built').toBe(0)
+    await page.waitForSelector('#sbDays [data-sbtab]')
+    expect(await page.locator('#sbPrevDay').isVisible()).toBe(false)
+    expect(await page.evaluate(() => (document.querySelector('#sbDays') as HTMLElement).getBoundingClientRect().height > 0),
+      'and the chips are still there').toBe(true)
   })
 
-  /* the seam that makes the whole thing possible without a non-passive
-     listener: the browser keeps the vertical scroll, we take the horizontal */
-  test('phone: the board scroller hands the sideways gesture over', async ({ page }) => {
+  /* THE SWIPE IS GONE, on the surface it was built for (owner, 12 Aug 26). The
+     scroller is an ordinary one again: no `touch-action` of its own, no preview
+     pane, and a sideways drag leaves the day alone. */
+  test('phone: a sideways drag across the board does nothing at all', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)
     await go(page, 'editsched')
-    await page.evaluate(() => (window as any).openScheduler(0))
-    await page.waitForSelector('#sbHist')
-    const ta = await page.evaluate(() =>
-      getComputedStyle(document.querySelector('.sb-main') as HTMLElement).touchAction)
-    expect(ta).toContain('pan-y')
+    await page.evaluate(() => (window as any).openScheduler(2))
+    await page.waitForSelector('#sbPrevDay')
+    await page.evaluate(() => { (document.querySelector('.sb-main') as HTMLElement).scrollTop = 400 })
+    await page.waitForTimeout(150)
+    const y0 = await page.evaluate(() => (document.querySelector('.sb-main') as HTMLElement).scrollTop)
+
+    const box = (await page.locator('.sb-main').boundingBox())!
+    const cy = box.y + box.height / 2
+    await page.mouse.move(box.x + 340, cy)
+    await page.mouse.down()
+    for (const x of [300, 250, 200, 150, 90]) { await page.mouse.move(box.x + x, cy); await page.waitForTimeout(25) }
+    const mid = await page.evaluate(() => ({
+      pane: !!document.querySelector('.sb-pane'),
+      tx: getComputedStyle(document.querySelector('.sb-main') as HTMLElement).transform,
+    }))
+    await page.mouse.up()
+    await page.waitForTimeout(500)
+
+    expect(mid.pane, 'no preview is built mid-drag').toBe(false)
+    expect(mid.tx, 'and the board never moves with the finger').toBe('none')
+    expect(await page.evaluate(() => (window as any).SBDAY), 'the day is unchanged').toBe(2)
+    expect(await page.evaluate(() => (document.querySelector('.sb-main') as HTMLElement).scrollTop),
+      'and the vertical position it was left at held').toBe(y0)
   })
 })
