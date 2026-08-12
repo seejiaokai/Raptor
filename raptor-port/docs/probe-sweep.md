@@ -231,7 +231,7 @@ and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
 `probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 960**
-(measured 897), **week ≤ 5530** (measured 5078). Tripping one is not
+(measured 911), **week ≤ 5530** (measured 5078). Tripping one is not
 automatically a fault; it is a prompt to check the time and then raise the
 number deliberately, in the PR that adds the nodes, beside a fresh
 `npm run perf` showing the per-node cost held. The board has been raised
@@ -241,6 +241,18 @@ nudge buttons, the per-section Auto sort and Sort all (8 Aug 26),
 860 → 880 for the late-input mark (9 Aug 26), and 880 → 960 when the two
 input panels became editable ground-programme rows (10 Aug 26 — about six
 nodes a row, and a wide margin because that count moves with data).
+
+**897 → 911 on 12 Aug 26, and the ceiling did NOT move for it.** The `+`
+that reveals a hidden empty remarks box is one `<button>` per duty, sim and
+ground row (`sbRowCtl`), so it costs about one node a row and the measured
+count rose 14. That is what the 10 Aug margin was taken for; spending it is
+the intended use, not a reason to raise 960 again. **Note which way this
+number runs, though:** the box those buttons reveal is hidden with
+`display:none`, which removes it from LAYOUT and not from the DOM — the
+board got 30px shorter a row and 14 nodes heavier at the same time. A future
+change that trades pixels for nodes this way should expect the same, and
+should re-read this count rather than assuming a shorter board is a lighter
+one. 49 nodes of headroom remain.
 
 **That last raise took a wider margin than the others, on purpose.** The
 late-input badge is one `<span>` per late input drawn, so on the day this
