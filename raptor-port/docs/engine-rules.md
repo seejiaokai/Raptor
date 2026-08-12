@@ -555,6 +555,23 @@ only a ZERO-LENGTH window is refused on entry. The cost of the roll is that a
 transposed 09:00–08:00 becomes a 23-hour absence rather than an error, which
 is the same trade every other row type already makes.
 
+**A leave may cross the NEW YEAR** (owner, 12 Aug 26 — "Ok do it"). Dates are
+stored as `Mon D` labels, and the label leaves the LOADED week's year implicit
+so an ordinary date reads `Jul 14` with no clutter. A date in ANY OTHER year
+keeps its year in the label — `Jan 3 2027` — so a span running `Dec 28 → Jan 3`
+is stored, sorted and covered correctly. `dateOrd` reads the year back
+(`year*10000 + month*100 + day`, defaulting the year to `baseYear()`, which is
+CURWEEK's year), so the end sorts AFTER the start instead of behind it, and
+`inputCoversDate` covers every day between across the boundary. `fmt`/`unfmt`
+(ui/inputedit.tsx) are the one pair that attach and strip the year; the SEED
+`INPUTS` and `DATES` stay yearless, so the reference-parity push is untouched.
+Before this, a yearless `Jan 3` sorted as 103 behind `Dec 28` at 1228, so a
+new-year leave covered nothing, blocked nothing and vanished from the Inputs
+table — it was refused outright until the year went into the label. What is
+still refused at the write path is a GENUINELY backwards range (an end before
+its start in real time); the calendar cannot make one, but `commitInputEdit`
+guards it anyway, the same as every other malformed value.
+
 **Two sorties at once are a CONFLICT, not a turn** (owner, 11 Aug 26).
 Sortie-vs-sortie is excluded from the double-booking loop because two
 back-to-back legs overlap the moment the step and dekit pads are added, and

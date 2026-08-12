@@ -76,19 +76,35 @@ describe('an input time has to be a time', () => {
 })
 
 describe('a span has to run forwards', () => {
-  it('refuses a range that reads backwards — the new-year case', () => {
+  /* THE NEW-YEAR CASE NOW WORKS (owner, 12 Aug 26 — "Ok do it"). A leave typed
+     Dec 28 → Jan 3 keeps the year on the endpoint that leaves the loaded week,
+     so it stores forwards, sorts forwards and covers every day between. It used
+     to be refused because the yearless labels sorted 'Jan 3' behind 'Dec 28'. */
+  it('takes a range that runs into the new year, keeping the year on the far end', () => {
     const r = timed()
     const d: any = draftOf(r)
     d.start = '2026-12-28'; d.end = '2027-01-03'
-    expect(commitInputEdit(r, d), 'refused rather than silently covering nothing').toBe(false)
-    expect(said.join(' ')).toMatch(/end date must fall after/i)
+    expect(commitInputEdit(r, d), 'accepted, not refused').toBe(true)
+    expect(r.date).toBe('Dec 28')
+    expect(r.endDate, 'the far end carries its year so the span is unambiguous').toBe('Jan 3 2027')
   })
 
-  it('and the reason it cannot be stored: the labels carry no year', () => {
-    /* pinned so the guard is not "fixed" by removing it without also fixing
-       the representation — Dec 28 sorts AFTER Jan 3 */
-    expect(dateOrd('Dec 28')! > dateOrd('Jan 3')!).toBe(true)
-    expect(inputCoversDate({ date: 'Dec 28', endDate: 'Jan 3' }, 'Dec 30')).toBe(false)
+  it('and that stored shape sorts and covers correctly', () => {
+    /* pinned so the year in the label is never dropped again — with it, the
+       end sorts AFTER the start and the span covers the days across midnight */
+    expect(dateOrd('Jan 3 2027')! > dateOrd('Dec 28')!).toBe(true)
+    const span = { date: 'Dec 28', endDate: 'Jan 3 2027' }
+    expect(inputCoversDate(span, 'Dec 30')).toBe(true)
+    expect(inputCoversDate(span, 'Jan 1 2027')).toBe(true)
+    expect(inputCoversDate(span, 'Jan 5 2027')).toBe(false)
+  })
+
+  it('still refuses a genuinely backwards range', () => {
+    const r = timed()
+    const d: any = draftOf(r)
+    d.start = '2026-07-17'; d.end = '2026-07-13'
+    expect(commitInputEdit(r, d), 'an end before its start in real time').toBe(false)
+    expect(said.join(' ')).toMatch(/on or after the start/i)
   })
 
   it('takes an ordinary forward span, and a single day', () => {

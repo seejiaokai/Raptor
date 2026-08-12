@@ -1,0 +1,212 @@
+# Feature impact — the components a change touches, and how work flows
+
+The owner's standing ask (12 Aug 26): *"any addition or feature will affect
+multiple components… always ask yourself if this implementation will affect
+these components. And record how things flow generically, so we don't miss
+things out."*
+
+This file is that record. It is not a list of features — it is the **map you
+check a feature against before you build it and again before you call it done.**
+Two halves:
+
+1. **The surfaces** — every place a change can show up, and what feeds it.
+2. **The flows** — how a single edit travels from a keystroke to the screen,
+   so you can trace where any change ripples.
+
+Then a **checklist** to run per feature, and a **robustness** section naming
+which joints are single-funnel (safe to build on) and which are drift-seams
+(where two copies of one rule can fall out of step — the bugs that keep
+recurring in this app).
+
+**Keep this true in the same PR** (same rule as `HANDOFF.md`). A feature that
+adds a surface, a flow, or a new drift-seam adds a line here. Stale is worse
+than absent — the next session trusts it.
+
+---
+
+## 1. The surfaces — what a change can touch
+
+Every feature should be walked against this list out loud: *does it touch
+this one, and if so, is the touch wired or missing?* The owner named nine;
+the rest are the ones the code actually has.
+
+| Surface | What it is | Where it lives | Fed by |
+|---|---|---|---|
+| **Warnings** | The day's checks list, the puck rings, the board issue list | `validate.ts` → `WARN`/`REST`/`EVD`; drawn in `html.ts` (day warnings), `board.ts` (issue list), `highlights.ts` (rings) | every `validate()` run; re-read, never cached |
+| **Layout / geometry** | Row heights, column widths, board node count, overflow | `scheduler.css` (measured contracts), the string builders | gated by `e2e/geometry.spec.ts` + `perf-port.cjs` DOM ceilings |
+| **History (edit log)** | The changes list, newest first; the board bubble | `editlog.ts` (`ELOG`), `HistoryModal.tsx`, `histbubble.ts` | `markEdit`/`logEdit`/`logAction`, only when BOTH from/to values are passed |
+| **Undo / redo** | Step back/forward through snapshots | `state/history.ts` (`HIST`, `histPush`/`histApply`) | every mutation batch pushes one snapshot |
+| **Scheduler board** | The full-screen day board (desktop + phone) | `SchedBoard.tsx`, `board.ts`, `board-html.ts` | global store lane + board-only view lane (`SBDAY`) |
+| **Edit Schedule** | The editable seven-day week (`CURPAGE==='editsched'`) | `EditWeek.tsx`, `EditRoster` palette | writes go through the mutation funnel; gated by `editMode()` |
+| **View-only Schedule** | The read-only week (`CURPAGE==='viewsched'`, the default) | `ViewWeek.tsx` | same builders, no write controls; `editMode()` is false |
+| **Desktop mode** | Wide layout — must USE the width, not just stretch | `scheduler.css` (default rules, `min-width` / `>820px`) | CSS media queries; no separate "mode" state |
+| **Mobile mode** | Phone layout — top-to-bottom, reachable, one board window | `scheduler.css` `@media (max-width:820px)` / `480px`; `boardnav` | CSS + the phone board's arrows/dots; `sbWide` module-local |
+| **Qualifications** | The Quals grid; the qual ladder the validator reads | `QualsPage.tsx`; `people.ts` (`p.quals`, qual rules in `validate.ts`) | ticks are session-only; drive `QUAL`/`SC_QUAL`/`AAR_*` checks |
+| **Personal inputs** | Leave / medical / activity records | `INPUTS` in `inputs.ts`; `inputedit.tsx`; `InputsPage.tsx` | `INPUT_META` (the one table) decides every predicate |
+| **Availability / palette** | Who the crew strip offers, who is struck out | `avail.ts` (`slotBar`, `dayOff`), `palette-html.ts` | `isAway`/`inputCoversDate`/`inpWin` — MUST agree with the warning list |
+| **Publishing / AL** | Sign-off, amendments after a day is signed | `publish.ts`, `ALPanel.tsx` | inert amendment keys through the mutation funnel |
+| **Export (CSV)** | Schedule, inputs and LoX downloads | `export.ts` (`csvText`, `exportCSV`, `schedRows`); `InputsPage.tsx` | reads the model directly; formula-injection escaped at the sink |
+| **Roles / auth** | Admin vs member vs view-only; who may write | `auth.ts`, `state/session.test.ts` | checked at the PAGE and the WRITE path, never the nav |
+
+Two things are NOT on this list because the app does not have them yet, and a
+feature that seems to need them is a bigger change than it looks: **shared /
+persisted data** (localStorage only — two devices never see each other) and
+**a real per-person identity** (`HOOKS.whoami()` reads a hard-coded login, so
+history names an ACCOUNT, not a person). Both are the same server-shaped hole;
+`HANDOFF.md`'s first bullets carry it.
+
+---
+
+## 2. The flows — how one edit travels
+
+The owner's example, in his words: *"when an input is made or changed, it goes
+to the right area like unavailable, then through a warning check, then if an
+edit can be made it changes the input and updates the history."* That is Flow B
+below. Here are the flows that actually run, each ending at the surfaces it
+repaints.
+
+### Flow A — a schedule cell edit (a puck, a time, a note)
+```
+gesture (drag / type)
+  → the mutation funnel: slotVal / setSlotVal / fillSlot / txtGet / txtSet
+      (BYPASSING this funnel is always a bug — see Architecture rules in CLAUDE.md)
+  → noteChange(key)              marks the cell pending for the next AL
+  → afterSchedMutate()
+      → validate()               reassigns WARN / REST / EVD  → WARNINGS repaint
+      → histPush()               one undo snapshot            → UNDO/REDO
+      → markEdit() / logEdit()   only with both values        → HISTORY (edit log)
+  → notify()                     bumps the store version      → WEEK + BOARD repaint
+                                                              → HIGHLIGHTS re-decorate
+  → if the day is PUBLISHED: the pending key reaches the next AL → PUBLISHING/AL
+```
+Deletes renumber the live key space FIRST, then drop an inert `del:` tombstone
+(`markDeletion`) — see `docs/engine-rules.md` §Key renumbering.
+
+### Flow B — a personal input added or edited (the owner's example)
+```
+add form / row editor / week cell / board cell   (three editors, ONE list)
+  → commitInputEdit / setInpField / removeInput   (all in inputedit.tsx)
+  → writeInputsBatch()                            one undo step, re-validates
+      → the record lands in INPUTS; which BLOCK it draws in is decided by
+        isUnavail (leave/medical/OD) vs isPersonal (activities) — presentational
+      → validate()          every input now counts   → WARNINGS
+      → availability: isAway / inpWin / inputCoversDate
+                            → PALETTE strikes / offers the man
+      → histPush + markEdit                            → UNDO + HISTORY
+  → if a scheduler ACCEPTS it onto the day: acceptInput() promotes it to a
+    Ground or Unavailable row (`acceptedDay`, inert amendment keys)  → BOARD/WEEK
+```
+The trap this flow exists to prevent: the **palette and the warning list read
+the same input two different ways.** They must never disagree — a man struck
+out of the palette but raising no warning when planted anyway is the exact bug
+`inpWin`/`awayAllDay` were made to fail-closed against. Any change to how an
+input is read gets checked on BOTH.
+
+### Flow C — day navigation on the phone board (view-only, no mutation)
+```
+arrow / dot scrub  → boardDayStep(±1)  → SBDAY changes
+  → the BOARD-ONLY notification lane repaints just the board
+  → it must NOT validate and must NOT wake the mounted EditWeek/EditRoster
+```
+`boardTab` is view-only by contract. A "navigation" feature that quietly
+validates or writes has crossed from Flow C into Flow A and needs its guards.
+
+### Flow D — publish / amendment / rollback
+```
+sign off a day        → setDayApproved / SCHED
+edit a signed day     → the pending keys become an AL issue (alIssue)
+roll a day back        → restoreDayVersion   (ROLLBACK semantics — session-only)
+```
+Previews freeze schedule content but read live personal-inputs and day-info —
+a known limitation, `docs/engine-rules.md` §Version snapshots.
+
+**Every flow ends by repainting through `notify()` (or the board lane).** State
+that lives outside the funnel + `HOOKS.storeBackend` is invisible to undo, AL
+and re-validation — do not add any.
+
+---
+
+## 3. The per-feature checklist
+
+Run this before building and again before calling it done. Most answers are
+"no" — the value is in catching the one "yes" you would have missed.
+
+- **Warnings** — does it change what `validate()` sees, or add a check? If a
+  new rule: does it read off the same window the picker reads (below)?
+- **Availability / palette** — if it touches an input, a time or a qual, does
+  the palette still agree with the warning list? (The one invariant that
+  breaks most often.)
+- **Layout** — does it add DOM or change a measured size? Then re-measure the
+  perf ceiling and add/adjust an `e2e/geometry.spec.ts` check IN THE SAME PR.
+  Check BOTH desktop and phone — they are different code paths (media queries).
+- **History / edit log** — is this a new schedule write? Then it must reach
+  `markEdit` **with both from/to values** (a key with no values logs nothing),
+  and a new text-key family wants a line in `keyOf` and, if the board can't
+  draw it as a cell, in `NO_BOARD_CELL`.
+- **Undo / redo** — does the write go through a `write*Batch`? If not, undo
+  can't see it.
+- **Board vs Edit vs View-only** — does the change render on all three
+  surfaces it should, and stay OFF the ones it shouldn't (a view-only surface
+  must not gain a live control)?
+- **Desktop / mobile** — reachable and legible at 390px AND using the width at
+  desktop? Both are owner standing concerns.
+- **Qualifications** — does it read or change `p.quals` or the qual ladder?
+- **Roles** — is the gate on the PAGE and the WRITE path (`editMode()` /
+  `canEditSched`), never on the nav?
+- **Export** — does the new field belong in the CSV, and is any free text
+  escaped at the sink?
+- **Publishing / AL** — on a published day, does the change mark pending and
+  reach the AL correctly (add-then-delete before an AL is a no-op)?
+- **Persistence** — does the feature imply data surviving a reload? Only
+  `rules` and `stores` do today; everything else is session-only. Say so.
+- **Reference parity** — does it change the seed `INPUTS`, `DATES`, or an
+  engine body the reference computes? Then `refwin.ts` and `node reference/tfin.js`
+  are in scope. (Adding a NEW capability that leaves the seed alone is not.)
+
+---
+
+## 4. Robustness — the single funnels and the drift-seams
+
+**Where the wiring is robust** (one path, so it cannot fall out of step — build
+ON these, don't route around them):
+
+- **The mutation funnel** — every schedule write goes through five functions to
+  `noteChange` → `afterSchedMutate`. One place validation, history and AL hang
+  off.
+- **`validate()` is the only judge** — `WARN`/`REST`/`EVD` are reassigned every
+  run and re-read, never cached.
+- **`INPUT_META` is the one input table** — every predicate (`isLeave`,
+  `isAway`, `canSpare`, …) is a lookup, and the legend is generated from it, so
+  the rule and its explanation cannot disagree.
+- **`acceptInput` is the one promotion path**; `commitInputEdit` the one input
+  commit; `export.ts` the one exporter (schedule, inputs, LoX).
+- **Dates now carry a year when it is not the loaded week's** (12 Aug 26), so
+  `dateOrd`/`fmt`/`unfmt`/`inputCoversDate` all read one representation and a
+  span into the new year sorts and covers correctly. Before this there were two
+  readings of a yearless label and they disagreed across a year boundary.
+
+**Where the wiring is a drift-seam** (two copies of one truth that a change can
+split — these are where this app's recurring bugs come from; touch one side and
+check the other):
+
+- **Palette vs warning list.** `slotBar`/`avail.ts` and `validate.ts` read the
+  same input independently. They must give the same answer about who is
+  available. Failing closed (`inpWin`, `awayAllDay`) is how they are kept honest.
+- **Three editors over one list.** The Inputs page, the week cell and the board
+  cell all edit `INPUTS`; they are kept from drifting only because all three
+  funnel through `commitInputEdit`/`setInpField`. Add a fourth the same way.
+- **The history bubble is wired to the board wrap.** Cells that render only on
+  the WEEK (`ar:`/`at:`/`it:`) list in history but cannot show a bubble or be
+  jumped to — `NO_BOARD_CELL` records which. A new week-only cell inherits this.
+- **The reference push.** `refwin.ts` pushes the port's seed `INPUTS` into the
+  read-only original for parity. Change the seed's SHAPE and the reference must
+  be patched too — which is why new date-years live in USER data, not the seed.
+- **Desktop and phone are separate CSS paths.** A fix measured on one is
+  unproven on the other; the geometry gate checks both because a change often
+  lands on only one.
+- **`whoami()` / `whoAmI` names an account, not a person.** Any feature that
+  wants "who did this" inherits the prototype-auth limitation until a server
+  fills that hook.
+
+When you add a feature that creates a NEW drift-seam — two places that must now
+agree — name it here so the next session knows to check both.
