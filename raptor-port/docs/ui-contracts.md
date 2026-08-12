@@ -366,6 +366,23 @@ edit week now:
     and a min-width beats a width whichever rule wins the cascade.
   - **`today` is a dot, not a word** — it cost 46px of a 125px title and
     ellipsised the DATE, the one thing the owner asked the bar to keep.
+  - **The DAY NAME is cut to three letters, by splitting the word rather than
+    shortening it** (owner, 12 Aug 26 — "Seems like the Wednesday blocked off
+    the date. Maybe use short form days"). The dot above bought the date back
+    on Monday and lost it again on the long names: `.sb-title` is
+    `white-space:nowrap; overflow:hidden; text-overflow:ellipsis`, so
+    `Wednesday Jul 15` came out as `Wednesday Jul…`. `#sbDay` renders
+    `dow.slice(0,3)` plus a `.bl` holding the rest, which means the SAME class
+    every control on this bar hides by, one markup path, and a desktop that
+    still reads `Wednesday` — the fix is in CSS that already existed, not in a
+    second render. Three letters because that is what the day strip's dots and
+    `dowShort` already use, so the bar and the strip cannot disagree. Sat and
+    Sun collide at three letters, which is precisely why the date has to
+    survive beside them. Pinned twice: `boardnav.test.tsx` has the DOM shape
+    (jsdom paints nothing, and `textContent` reads the hidden tail, so a test
+    written against it passes either way — assert `firstChild`), and
+    `e2e/geometry.spec.ts` measures that nothing in the title is clipped at
+    390px and that the whole word comes back at 1500px.
   - Measured by `e2e/geometry.spec.ts`, which counts ROWS as well as
     overflow: both regressions above fitted the width perfectly and simply
     used a second line.

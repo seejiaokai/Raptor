@@ -451,6 +451,12 @@ the phone perf budget. Don't convert them to components.
   the only thing that says WHICH day is open. Gone with the swipe: the
   `.sb-pane` preview and `.sb-main`'s own `touch-action`, so the scroller is the
   browser's default again.
+  **THE DAY NAME ON THAT BAR IS THREE LETTERS ON A PHONE** (owner, 12 Aug 26 —
+  "Seems like the Wednesday blocked off the date"). The title box ellipses, so
+  the long day names were eating the date beside them. The word is SPLIT — `Wed`
+  plus a `.bl` tail — not shortened, so desktop still reads `Wednesday` off one
+  markup path, and three letters is what the dots and `dowShort` already use.
+  Don't "restore" the full word on the phone, and don't shorten the desktop one.
   `boardTab` is view-only: it must not validate, and its board-only notification
   lane must not wake the mounted EditWeek or EditRoster. Real mutations still use
   the global lane and repaint both.

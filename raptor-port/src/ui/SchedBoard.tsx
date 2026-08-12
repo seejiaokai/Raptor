@@ -226,7 +226,16 @@ export function SchedBoard() {
           path to maintain. */}
       <div className="sb-top" ref={topRef}>
         <div className="sb-title">
-          <b id="sbDay">{d ? d.dow : ''}</b> <span className="mono" id="sbDate">{d ? d.dt : ''}</span>
+          {/* THE DAY NAME IS CUT TO THREE LETTERS ON A PHONE (owner, 12 Aug 26 —
+              "Seems like the Wednesday blocked off the date. Maybe use short
+              form days"). `.sb-title` is nowrap + ellipsis under 820px, so the
+              longest day names ate the whole box and the date came out as
+              "Jul…". The word is SPLIT rather than shortened: the tail is a
+              `.bl`, the same label class every control on this bar uses, so
+              desktop still reads "Wednesday" and there is one markup path.
+              Three letters is what the day strip and `dowShort` already use —
+              "Wed", "Tue", "Thu" — so the bar and the dots agree. */}
+          <b id="sbDay">{d ? d.dow.slice(0, 3) : ''}<span className="bl">{d ? d.dow.slice(3) : ''}</span></b> <span className="mono" id="sbDate">{d ? d.dt : ''}</span>
           {d && d.today ? <i className="sb-today" title="today" /> : null}
           <span className="bl"> · scheduler board</span>
         </div>
