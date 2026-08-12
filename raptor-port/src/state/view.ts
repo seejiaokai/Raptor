@@ -30,6 +30,21 @@ export let SBDAY:any=null
    never steer a newer board instance. */
 export let BOARDREV=0
 export let CURPAGE:any='viewsched'
+/* ---- THE ONE REMARKS BOX ASKED OPEN (owner, 12 Aug 26 — measured) ---------
+   A phone hides an EMPTY remarks box on a duty/sim/ground row — see
+   board-html.ts's sbRmk — because 13 of the 25 such rows measured on a
+   Monday carried nothing in it, at ~30px apiece of a 109px four-line row.
+   Tapping the row's own "+" asks for exactly one of those boxes back, held
+   here by its data-bfld path rather than as a class set on the DOM by hand:
+   every board panel is re-hung by a string diff (SchedBoard.tsx's setHTML),
+   so a class the click handler set directly would be wiped the moment
+   anything else on the board repaints. A stale value is harmless — it just
+   shows an empty box, which is today's behaviour anyway — so it is cleared
+   only where the rest of the board's transient state already gets swept:
+   setBoardDay below (a real day change, including the close-to-null path
+   closeBoardState routes through it). */
+export let RMKOPEN:any=null
+export function setRmkOpen(k:any){ RMKOPEN=k }
 /* the day the palette is looking at. The reference's #editToggle used to sit
    here as EDITON; it was removed on 9 Aug 26 (owner) — the board is reachable
    only as admin → Edit Schedule, so intent to edit is implied by being there,
@@ -115,6 +130,11 @@ export function setBoardDay(n:any){
      focus is not for the day being switched TO (WFOCUS.di!==n) — landing on
      the focused warning's own day must keep it lit. */
   if(SBDAY!=null&&n!==SBDAY&&WFOCUS&&WFOCUS.di!==n)WFOCUS=null;
+  /* the revealed remarks box belongs to a row on the day being LEFT — carrying
+     it to whatever day is opening next would reveal an empty box nobody asked
+     for there, so any real day change (including closeBoardState's close to
+     null) drops it. */
+  if(SBDAY!=null&&n!==SBDAY)RMKOPEN=null;
   BOARDREV++;
   SBDAY=n;
 }

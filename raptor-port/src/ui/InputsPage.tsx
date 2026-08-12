@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, inpId, typeGroup, isLateInput, lateNote, inputCoversDate } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -55,9 +55,27 @@ const isoOf = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.
    not 31 Feb — which is the behaviour a "two months from now" window wants */
 const plusMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth() + n, d.getDate())
 export const DEFAULT_SPAN_MONTHS = 2
-const defaultRange = () => {
-  const now = new Date()
-  return { from: isoOf(now), to: isoOf(plusMonths(now, DEFAULT_SPAN_MONTHS)) }
+const defaultRange = (now = new Date()) => ({ from: isoOf(now), to: isoOf(plusMonths(now, DEFAULT_SPAN_MONTHS)) })
+
+/* WHY the table's very first window isn't unconditionally today → +2 months
+   (owner, 12 Aug 26). That window exists to keep a real, multi-month input
+   list readable — but a window that opens on nothing reads as "my leave
+   vanished", not "narrow the dates". The app's one dataset is the demo week
+   in DATES (13–19 Jul 2026), so once the clock has moved past it — which it
+   has — today → +2 months opens on an empty table every single time, and the
+   owner has to know to find the date button and pick "all". So: if today
+   falls inside the loaded week, nothing changes here. Otherwise the initial
+   window anchors to the week itself — DATES' own first and last day — rather
+   than to a today that is not in the data yet. This is self-correcting, not
+   a special case to maintain: the day the app carries more than one week,
+   today is inside the data again and the ordinary default takes over on its
+   own. Reuses inputCoversDate (the engine's own date-range test) rather than
+   a second date parser, and never looks at INPUTS — only at DATES, which is
+   the app's own notion of "the loaded week". */
+export function initialRange(now = new Date()) {
+  const today = MON[now.getMonth() + 1] + ' ' + now.getDate()
+  const inLoadedWeek = inputCoversDate({ date: DATES[0], endDate: DATES[DATES.length - 1] }, today)
+  return inLoadedWeek ? defaultRange(now) : { from: unfmt(DATES[0]), to: unfmt(DATES[DATES.length - 1]) }
 }
 
 /* The sort key per column. Dates sort on the ISO date the label implies, with
@@ -178,7 +196,7 @@ export function InputsPage() {
   const [fSearch, setFSearch] = useState('')
   const [editRow, setEditRow] = useState<any>(null)
   const [draft, setDraft] = useState<any>(null)
-  const [range, setRange] = useState(defaultRange)
+  const [range, setRange] = useState(initialRange)
   const [calOpen, setCalOpen] = useState(false)
   const [sort, setSort] = useState({ key: 'start', dir: 1 })
   /* Rows just added, newest first, and rows still flashing. Both hold the input

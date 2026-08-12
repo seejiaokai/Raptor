@@ -399,6 +399,23 @@ export function boardMbtn(e: MouseEvent) {
   if (!canEditSched() || !HOOKS.editMode()) return
   const t = (e.target as HTMLElement).closest('.mbtn') as HTMLElement | null; if (!t) return
   const ds = t.dataset
+  /* + on a duty/sim/ground row's control strip — reveal the one remarks box
+     a phone hides while it is empty (board-html.ts's sbRmk). This is pure UI
+     state, not a schedule write: nothing about the day changed, so it must
+     NOT go through afterSchedMutate/markEdit — that would mark the row
+     pending and drop a line into the edit log for a click that planted
+     nothing and moved nothing. notify() alone repaints the panel, which is
+     what makes RMKOPEN take effect (sbRmk reads it); the focus then has to
+     wait for THAT repaint to have actually replaced the input's outerHTML,
+     so it is deferred a macrotask out, same idiom textedit.ts's txtCommit
+     uses to run past the current call stack. */
+  if (ds.rmkadd != null) {
+    const path = ds.rmkadd
+    view.setRmkOpen(path)
+    notify()
+    setTimeout(() => (document.querySelector(`[data-bfld="${CSS.escape(path)}"]`) as HTMLElement | null)?.focus(), 0)
+    return
+  }
   /* ▲/▼ — the phone's reorder gesture. The target is read off the NEIGHBOURING
      ROW IN THE DOM rather than computed as index±1, because one list (Ground)
      renders time-sorted: "one place down" is a question about what the

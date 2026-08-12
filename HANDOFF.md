@@ -16,24 +16,33 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**All six gates were green first-hand for the zoom/history/bubble batch of
-12 Aug 26**, run in this container on the matching tree: `npm test` 1141 tests
-across 60 files, `node reference/tfin.js` 728/0, `npm run build` clean, the full
-`npm run test:e2e` geometry job 84/84 in Chromium, `probes:adapted` 36/36 and
-`perf` 4/4. The built bundle was then driven at 390×844: the bubble that the
-old `place()` parked at −192px now clamps to the top edge and hides only while
-its anchor is entirely off-screen (both states screenshotted and the new e2e
-test proven to FAIL on the old code first), a five-times-edited seat shows
-exactly three changes plus `⌄ all 5 changes`, and a deleted note logs
-`Note removed — "EP: AB BURN THROUGH ON TAKE OFF"`. The short-day-name pass
-earlier the same day was green on the same six, checked on the deployed page.
-The day-navigation pass earlier the same day was green on the same six, and its
-deployed-page check (the standing instruction, owner 7 Aug 26) behaved
-identically to the preview — six taps Monday to Sunday, both arrows disabling at
-the ends, the board really redrawing each day, no arrows at 1440px. The
-`probes:adapted` resolution failure recorded here before 12 Aug 26 was a
-Windows-checkout problem with the adapted runner's direct `playwright` import,
-not a code fault. Re-state any of these only after re-running them.
+**All six gates were green first-hand for the UI sweep of 12 Aug 26**, run in
+this container on the matching tree: `npm test` 1152 tests across 61 files,
+`node reference/tfin.js` 728/0, `npm run build` clean, the full
+`npm run test:e2e` geometry job 86/86 in Chromium, `probes:adapted` 36/36 and
+`perf` 4/4. Two of those went red first and both were real: the new
+empty-remarks e2e test waited for `.rmkin` to be VISIBLE, which is the one
+thing the feature guarantees it is not (Playwright's default `state` — use
+`attached` when asserting a thing is hidden); and `wrap-async` caught the
+phone's name-column reallocation being applied up to 820px, where it gave a
+TABLET so much name width that the probe's 61-character jam fit on one line.
+Scoped to 480px, which is why that bound exists.
+The built bundle was then driven at 390×844 and the four fixes measured there:
+a duty row 109px → 79px (and the whole board 7484px → 7084px), the programme
+row's two times back on one line under their own headings, the week's name
+column 97px → 111px against a 104px longest word, and the Inputs table opening
+on the loaded week instead of empty.
+
+Three earlier passes the same day were each green on the same six and each
+checked on the DEPLOYED page (the standing instruction, owner 7 Aug 26): the
+zoom/history/bubble batch (1141 tests, 84 geometry — the bubble that the old
+`place()` parked at −192px clamps to the top edge and hides only while its
+anchor is entirely off-screen, a five-times-edited seat shows three changes
+plus `⌄ all 5 changes`, a deleted note logs its own words); the short-day-name
+pass; and the day-navigation pass. The `probes:adapted` resolution failure
+recorded here before 12 Aug 26 was a Windows-checkout problem with the adapted
+runner's direct `playwright` import, not a code fault. Re-state any of these
+only after re-running them.
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
   DOM ceilings and two behavioural checks. The three per-node TIMING budgets
@@ -62,7 +71,7 @@ not a code fault. Re-state any of these only after re-running them.
 - **jsdom cannot measure layout** — every rect Vitest reports is 0×0, so it
   can prove which class was emitted and nothing about what was painted.
   Geometry contracts are gated by `e2e/geometry.spec.ts` (the fourth CI
-  gate, 79 checks); wider visual work still wants the probe path
+  gate, 86 checks); wider visual work still wants the probe path
   (`npx vite preview --port 4173` + `probes/`).
 - **jsdom cannot HIT-TEST either, and that is a separate trap** (12 Aug 26). A
   pointer bug on the board hid there for a day: dispatching a synthetic
@@ -78,6 +87,22 @@ not a code fault. Re-state any of these only after re-running them.
 
 ## Known issues / open work
 
+- **The phone week's programme NAME column is sized against its own longest
+  word, and that is a measured number, not a preference** (12 Aug 26). NAME
+  and PEOPLE were both `1fr` and split the row evenly at 97px, while the
+  widest people cell in the whole week uses 76px of its 97 — so 21px sat idle
+  beside a name column too narrow for its text, and `STANDARDISATION` (104px)
+  broke as `STANDARDISATIO / N MEETING`, which reads as a typo. PEOPLE is
+  pinned to one puck + 8px now and NAME takes the rest (111px measured).
+  **A longer word than 104px would break mid-word again** — the guard is
+  `hyphens:auto` (added the same day on the prose cells), which makes such a
+  break carry a visible hyphen instead. **That guard is UNVERIFIED here and
+  deliberately so**: this container's Chromium ships no hyphenation
+  dictionaries — measured, `hyphens:auto` and `hyphens:none` give byte-identical
+  heights — so it is a no-op in every local run and in CI, while iOS Safari and
+  desktop Chrome do honour it. Do not "fix" it by widening the column further
+  on the strength of a local screenshot; the local browser cannot show you the
+  hyphen either way.
 - **No shared data.** localStorage only — two devices never see each
   other's edits. The obvious next enhancement (needs a server or a sync
   backend; touches `engine/hooks.ts:storeBackend` and the mutation funnel).
@@ -369,13 +394,17 @@ not a code fault. Re-state any of these only after re-running them.
   (Downchits ARE exempt — owner, 9 Aug 26 — so the commonest genuinely
   unavoidable late input is already covered. Leave and detachments are not.)
   Rules: `docs/engine-rules.md` §The late-input mark.
-- **The Inputs page opens on a window that no longer contains the demo data.**
-  It defaults to today → +2 months, and the one dataset is the week of
-  13 Jul 26 — so with the container clock past that week the table opens
-  EMPTY until you clear the window (the date button → its "all" option). Not
-  caused by the late-input work but surfaced by it, since that page is where
-  the mark is most legible. It fixes itself the day the app carries more than
-  one week of data; until then it reads as "my inputs have vanished".
+- **The Inputs page's opening window is FIXED (12 Aug 26), and the fix is
+  self-cancelling.** It used to open on today → +2 months against a dataset
+  that is the week of 13 Jul 26, so with the clock past that week the table
+  opened EMPTY and read as "my inputs have vanished". `initialRange()`
+  (`InputsPage.tsx`) now anchors the FIRST window to the loaded week whenever
+  today falls outside it, and is otherwise the old default untouched. Nothing
+  else moved: the user's own later picks, "all dates", the calendar and the
+  filtering are as they were. **Expect this code to become dead** the day the
+  app carries more than one week — today will be inside the data again and the
+  ordinary default takes over on its own, which is the condition to delete it
+  under rather than a branch to maintain.
 - **`export.ts` writes store labels into the CSV unescaped.** Not an HTML
   sink — `csvText` quotes for CSV, not for a browser — but a store renamed
   to start with `=` is a spreadsheet-formula injection vector once that CSV
@@ -565,6 +594,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board, and where it deliberately does NOT — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both) plus `clickHere`, a click that does not scroll the target into view first (`page.click` does, which would defeat any test that parks the week on purpose). `playwright.config.ts` builds and serves the port itself. |
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split is in `e2e/geometry.spec.ts`, which is the only place it resolves (the day-carousel motion tests that used to sit beside it went with the swipe, 12 Aug 26). |
+| `src/ui/boardrmk.test.tsx` | The empty remarks box and the `+` that reveals it (12 Aug 26) — which input carries `.empty`, that the reveal clears it for its OWN row only and focuses it, that typing one drops it unaided, and that asking for the box back writes NOTHING to the edit log or the pending set. jsdom cannot measure the 109px→79px row it buys; `e2e/geometry.spec.ts` does that. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
