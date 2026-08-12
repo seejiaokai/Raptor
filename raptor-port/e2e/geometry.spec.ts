@@ -2431,6 +2431,124 @@ test.describe('the History bubble', () => {
     for (const over of ['.drawer', '.airpop', '.modal', '.wavemenu'])
       expect(z['.histbub'], `below ${over}, which can open over it`).toBeLessThan(z[over])
   })
+
+  /* PLACE() CLAMPS BOTH ENDS OF THE SCROLL, NOT JUST ONE. The re-anchor path
+     (`bail` in histbubble.ts) re-runs on every scroll the phone's single
+     scroller fires, and the old formula only ever clamped the BOTTOM of the
+     screen — an anchor scrolled above the top had nothing stopping `top`
+     from going negative. jsdom cannot scroll at all, so this is the only
+     place the fault, or the fix, is reachable. */
+  test('phone: an anchor at the top edge cannot push the bubble off-screen', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbHist')
+
+    const key = await page.evaluate(() => {
+      const w = window as any
+      const el = [...document.querySelectorAll('#sbBoard [data-slot]')]
+        .find(e => /\.[pw]$/.test((e as HTMLElement).dataset.slot || '') && w.slotVal((e as HTMLElement).dataset.slot))
+      const k = (el as HTMLElement).dataset.slot
+      w.setSlotVal(k, w.slotVal(k) === 'bane' ? 'stiff' : 'bane')
+      return k
+    })
+    await page.click('#sbHist')
+    await page.waitForTimeout(250)
+
+    /* PINNED, not hovered — a phone re-anchor only ever runs behind a pinned
+       bubble, since there is no pointer to leave in the first place. Pinning
+       through the changes list (the same `jumpToChange` path a real user
+       takes) is simpler than forcing four edits and a chevron tap just to
+       reach the pinned state this test actually needs. */
+    await page.click('#sbWarn .histln')
+    await page.waitForSelector('#histBody')
+    await page.click(`#histBody .hl-row.hit[data-hkey="${key}"]`)
+    await page.waitForTimeout(400)     // the jump's own smooth scroll settles
+    await expect(page.locator('.histbub')).toBeVisible()
+
+    const scrollCellTo = (top: number) => page.evaluate(({ key, top }) => {
+      const main = document.querySelector('.sb-main') as HTMLElement
+      const cell = document.querySelector(`#sbBoard [data-slot="${key}"]`) as HTMLElement
+      main.scrollTop += cell.getBoundingClientRect().top - top
+    }, { key, top })
+    const geom = () => page.evaluate(k => {
+      const b = document.querySelector('.histbub') as HTMLElement
+      const c = document.querySelector(`#sbBoard [data-slot="${k}"]`) as HTMLElement
+      const r = b.getBoundingClientRect(), cr = c.getBoundingClientRect()
+      return {
+        l: Math.round(r.left), t: Math.round(r.top), rr: Math.round(r.right), bb: Math.round(r.bottom),
+        vw: window.innerWidth, vh: window.innerHeight,
+        vis: getComputedStyle(b).visibility,
+        cellTop: Math.round(cr.top), cellBottom: Math.round(cr.bottom),
+      }
+    }, key)
+
+    /* the anchor straddling the top edge — a few px of it still on screen */
+    await scrollCellTo(-8)
+    await page.waitForTimeout(150)
+    let m = await geom()
+    expect(m.cellTop, 'the cell really is straddling the top').toBeLessThan(0)
+    expect(m.cellBottom, 'and still partly on screen').toBeGreaterThan(0)
+    expect(m.t, 'the bubble stays on screen, not pushed above it').toBeGreaterThanOrEqual(0)
+    expect(m.l, 'left edge too').toBeGreaterThanOrEqual(0)
+    expect(m.rr, 'and the right').toBeLessThanOrEqual(m.vw)
+    expect(m.bb, 'and the bottom').toBeLessThanOrEqual(m.vh)
+
+    /* scrolled further — the anchor is now entirely above the viewport, so
+       there is nothing true left for the bubble to point at */
+    await scrollCellTo(-300)
+    await page.waitForTimeout(150)
+    m = await geom()
+    expect(m.cellBottom, 'the cell is fully off the top now').toBeLessThan(0)
+    expect(m.vis, 'so the bubble hides itself — it is not torn down').toBe('hidden')
+
+    /* scrolled back — it returns on its own, with no new gesture */
+    await scrollCellTo(60)
+    await page.waitForTimeout(150)
+    m = await geom()
+    expect(m.cellTop, 'the cell is on screen again').toBeGreaterThanOrEqual(0)
+    expect(m.vis, 'and the bubble is visible again').toBe('visible')
+  })
+
+  /* COLLAPSED = LAST THREE ON A PHONE, WHOLE STORY ON DESKTOP HOVER. jsdom
+     proves which element and how many `li` (histbubble.test.tsx), not that a
+     hovering pointer at 1440px actually sees four of them with no chevron —
+     that is a real hover event and a real DOM read, both of which need a
+     browser. */
+  test('desktop: shows the whole story on hover, with no chevron', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbHist')
+
+    const key = await page.evaluate(() => {
+      const w = window as any
+      const el = [...document.querySelectorAll('#sbBoard [data-slot]')]
+        .find(e => /\.[pw]$/.test((e as HTMLElement).dataset.slot || ''))
+      const k = (el as HTMLElement).dataset.slot
+      const names = ['bane', 'stiff', 'slipway', 'dj', 'nact']
+      let i = 0
+      for (let c = 0; c < 4; c++) {
+        let v = names[i % names.length]
+        while (v === w.slotVal(k)) { i++; v = names[i % names.length] }
+        w.setSlotVal(k, v); i++
+      }
+      return k
+    })
+    await page.click('#sbHist')
+    await page.waitForTimeout(250)
+    await page.locator(`#sbBoard [data-slot="${key}"]`).first().hover()
+    await page.waitForTimeout(250)
+
+    const m = await page.evaluate(() => {
+      const b = document.querySelector('.histbub') as HTMLElement
+      return { lis: b ? b.querySelectorAll('.hb-all li').length : -1, more: !!b?.querySelector('[data-histmore]') }
+    })
+    expect(m.lis, 'four edits, all of them — a hovering pointer already has the whole story').toBe(4)
+    expect(m.more, 'no chevron on a desktop').toBe(false)
+  })
 })
 
 /* ===================================================================
@@ -2677,5 +2795,25 @@ test.describe('the day arrows', () => {
     expect(await page.evaluate(() => (window as any).SBDAY), 'the day is unchanged').toBe(2)
     expect(await page.evaluate(() => (document.querySelector('.sb-main') as HTMLElement).scrollTop),
       'and the vertical position it was left at held').toBe(y0)
+  })
+})
+
+/* ===================================================================
+   THE VIEWPORT META STAYS BARE OFF-APPLE (12 Aug 26). index.html carries an
+   inline script that appends `maximum-scale=1` ON APPLE TOUCH DEVICES ONLY —
+   iOS honours it for the focus auto-zoom (the thing the owner asked to stop)
+   while ignoring it for pinch zoom, but Android Chrome would lose pinch zoom
+   outright. iOS itself is not reachable from this container, so what CAN be
+   gated is the other half of the contract: in Chromium the script must not
+   fire, or Android users pay for an iOS fix.
+   =================================================================== */
+test.describe('the viewport meta', () => {
+  test('is untouched where the platform is not an Apple touch device', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await page.goto('/')
+    const content = await page.evaluate(() =>
+      (document.querySelector('meta[name=viewport]') as HTMLMetaElement).getAttribute('content'))
+    expect(content, 'no maximum-scale leaks onto non-iOS platforms').not.toContain('maximum-scale')
+    expect(content).toContain('width=device-width')
   })
 })

@@ -158,32 +158,33 @@ function show(el: HTMLElement) {
 function paint(key: string, row: ELogRow) {
   const b = box()
   const all = elogAllFor(key)
-  b.className = 'histbub' + (expanded ? ' open' : '')
-  if (expanded) {
-    /* oldest first — this is the story of how the detail got here, so the
-       last line is what it says now (elogAllFor's own comment) */
-    b.innerHTML = `<div class="hb-what">${esc(row.lbl)}</div>`
-      + `<ol class="hb-all">` + all.map(r =>
-        `<li><span class="hb-chg">${chgHTML(r)}</span>`
-        + `<span class="hb-who">${esc(r.who)} · ${esc(elogWhen(r.t))}</span></li>`).join('') + `</ol>`
-  } else {
-    b.innerHTML = `<div class="hb-what">${esc(row.lbl)}</div>`
-      + `<div class="hb-chg">${chgHTML(row)}</div>`
-      + `<div class="hb-who">${esc(row.who)} · ${esc(elogWhen(row.t))}</div>`
-    /* THE ONE TAPPABLE THING ON A PHONE (owner, 11 Aug 26 — "I change the
-       option to click on the bubble to expand the history"). It is a child
-       with pointer-events:auto inside a bubble that keeps pointer-events:none,
-       and that is the whole design: the bubble must never take the tap that
-       raised it, or History turns the board read-only (the contract in
-       docs/ui-contracts.md, pinned by the geometry gate). A 24px control the
-       finger has to aim at is a different thing from a 290px sheet lying over
-       the board. Only where there IS more history to show, and only on a
-       phone — a desktop pointer can rest on the cell, so the chevron would be
-       a control asking to be clicked for something hovering already gives. */
-    if (all.length > 1 && HOOKS.isPhone())
-      b.innerHTML += `<button class="hb-more" data-histmore aria-label="Show every change to this detail">`
-        + `⌄ ${all.length} changes</button>`
-  }
+  const phone = HOOKS.isPhone()
+  const showAll = expanded || !phone      // a desktop pointer is already resting on the cell — give it the whole story
+  /* oldest first, always — even truncated. The collapsed slice is the TAIL of
+     the same story elogAllFor tells (its own comment), not a re-sorted
+     newest-first feed: the last line is what the detail says now, and
+     expanding PREPENDS older lines above it rather than reordering under a
+     reader's thumb. */
+  const rows = showAll ? all : all.slice(-3)
+  b.className = 'histbub' + (rows.length > 1 ? ' open' : '')
+  b.innerHTML = `<div class="hb-what">${esc(row.lbl)}</div>`
+    + `<ol class="hb-all">` + rows.map(r =>
+      `<li><span class="hb-chg">${chgHTML(r)}</span>`
+      + `<span class="hb-who">${esc(r.who)} · ${esc(elogWhen(r.t))}</span></li>`).join('') + `</ol>`
+  /* THE ONE TAPPABLE THING ON A PHONE (owner, 11 Aug 26 — "I change the
+     option to click on the bubble to expand the history"). It is a child
+     with pointer-events:auto inside a bubble that keeps pointer-events:none,
+     and that is the whole design: the bubble must never take the tap that
+     raised it, or History turns the board read-only (the contract in
+     docs/ui-contracts.md, pinned by the geometry gate). A 24px control the
+     finger has to aim at is a different thing from a 290px sheet lying over
+     the board. Only where there IS more than the three already showing, and
+     only on a phone — a desktop pointer can rest on the cell, so the chevron
+     would be a control asking to be clicked for something hovering already
+     gives. */
+  if (!showAll && all.length > 3)
+    b.innerHTML += `<button class="hb-more" data-histmore aria-label="Show every change to this detail">`
+      + `⌄ all ${all.length} changes</button>`
   if (anchor) place(b, anchor)
 }
 
@@ -219,14 +220,26 @@ export function pinHistBubAt(el: HTMLElement) {
 
 /* Anchored above the cell where there is room, below where there is not —
    on a phone a tap also opens the keyboard, and a bubble drawn below a field
-   near the bottom of the screen would be behind it. Clamped to the viewport
-   on both axes so a cell at the far right of a wide board still reads. */
+   near the bottom of the screen would be behind it. Clamped into the VISIBLE
+   viewport on both edges of both axes so a cell at the far right of a wide
+   board, or scrolled above the top, still reads. */
 function place(b: HTMLDivElement, el: HTMLElement) {
   b.style.left = '0px'; b.style.top = '0px'      // measure unclamped first
   const r = el.getBoundingClientRect(), w = b.offsetWidth, h = b.offsetHeight
+  /* the VISUAL viewport where there is one — a phone keyboard shrinks and pans
+     it while position:fixed keeps meaning LAYOUT coordinates, which is how a
+     bubble ends up above the part of the page the user can actually see */
+  const vv = window.visualViewport
+  const vx = vv ? vv.offsetLeft : 0, vy = vv ? vv.offsetTop : 0
+  const vw = vv ? vv.width : window.innerWidth, vh = vv ? vv.height : window.innerHeight
+  /* an anchor entirely outside the viewport has nowhere truthful to point from —
+     HIDDEN, not torn down: a pinned jump scrolls its cell in AFTER pinning, and
+     every scroll re-runs this, so the bubble must come back on its own */
+  b.style.visibility = (r.bottom < vy || r.top > vy + vh) ? 'hidden' : ''
   const above = r.top - h - 8
-  b.style.left = Math.max(6, Math.min(window.innerWidth - w - 6, Math.round(r.left))) + 'px'
-  b.style.top = Math.round(above >= 6 ? above : Math.min(window.innerHeight - h - 6, r.bottom + 8)) + 'px'
+  const want = above >= vy + 6 ? above : r.bottom + 8
+  b.style.left = Math.round(Math.max(vx + 6, Math.min(vx + vw - w - 6, r.left))) + 'px'
+  b.style.top = Math.round(Math.max(vy + 6, Math.min(vy + vh - h - 6, want))) + 'px'
 }
 
 /* Wired on the board WRAP, not on #sbBoard: the personal-inputs panel is its
@@ -263,7 +276,7 @@ export function wireHistBubble(el: HTMLElement) {
        it is in the way of the next thing. Unless it has been pinned — see
        above — in which case the timer is the wrong tool entirely. */
     clearTimeout(hideT)
-    if (!pinned) hideT = setTimeout(hideHistBub, 4000)
+    if (!pinned) hideT = setTimeout(hideHistBub, 6000)   // three lines to read now, not one
   }
   /* CAPTURE, not bubble — and this is the whole reason the phone path works.
      boardArmClick calls stopPropagation() the moment it arms a slot
@@ -321,6 +334,13 @@ export function wireHistBubble(el: HTMLElement) {
      the DOM walk HANDOFF flags on `onDotsScroll`. */
   document.addEventListener('scroll', bail, true)
   window.addEventListener('resize', bail)
+  /* the visual viewport does NOT dispatch a document scroll event when a
+     phone keyboard pans or resizes it — layout scroll and visual-viewport
+     scroll are two separate signals, and a bubble re-anchored only on the
+     first of them would sit wherever the keyboard last left it. Guarded:
+     jsdom has no visualViewport at all. */
+  window.visualViewport?.addEventListener('resize', bail)
+  window.visualViewport?.addEventListener('scroll', bail)
   return () => {
     document.removeEventListener('click', docClick, true)
     el.removeEventListener('mouseover', over, true)
@@ -328,6 +348,8 @@ export function wireHistBubble(el: HTMLElement) {
     el.removeEventListener('click', tap, true)
     document.removeEventListener('scroll', bail, true)
     window.removeEventListener('resize', bail)
+    window.visualViewport?.removeEventListener('resize', bail)
+    window.visualViewport?.removeEventListener('scroll', bail)
     hideHistBub()
   }
 }

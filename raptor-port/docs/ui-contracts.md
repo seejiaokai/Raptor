@@ -1703,11 +1703,30 @@ rather than hides**: hiding was the first version and it broke the desktop
 hover outright, because bringing a cell into view scrolls the panel and that
 scroll lands after the mouseover it caused.
 
+**Clamped into the VISIBLE viewport, not just the layout one, on both
+edges.** `place()` reads `window.visualViewport` where the browser has one,
+because a phone keyboard shrinks and pans that viewport while
+`position:fixed` still means LAYOUT coordinates — without this the bubble
+could be correctly placed by CSS and still sit above the strip of page the
+keyboard has left visible. Both the top and the bottom are clamped: the
+re-anchor-on-scroll path above only ever clamped the bottom, so an anchor
+scrolled above the top of the screen sent the bubble off the top of it, with
+nothing to stop it — exactly the path a pinned jump from the changes list
+reaches, since it scrolls the cell in after the bubble is already up.
+
+**Hidden, not torn down, while its anchor is entirely off-screen.** An
+anchor with no part inside the viewport has nowhere truthful to point from,
+so `place()` sets `visibility:hidden` rather than leaving stale coordinates
+on screen. Every scroll re-runs `place()`, so the bubble comes back on its
+own the instant the anchor does — no new gesture needed, and nothing has to
+notice and re-raise it. Tearing it down instead would have broken the case
+that reaches this path directly.
+
 **It stacks UNDER every box that can open over the board** — `z-index:430`,
 above `.schedboard` (400, the only surface it anchors to) and below `.drawer`
 (440), `.airpop` (460), `.modal` (470) and the wave/stores/role menus (480).
-It shipped at 500, above the lot, and on a phone it stays up for four seconds
-after the tap that raised it — so tapping a detail and then opening any dialog
+It shipped at 500, above the lot, and on a phone it stays up for several
+seconds after the tap that raised it — so tapping a detail and then opening any dialog
 left the bubble sitting on top of that dialog. That was found once, with the
 changes list, and patched at that one call site with an explicit
 `hideHistBub()`; the other seven boxes still had it. **Fix the stacking, not
@@ -1796,17 +1815,29 @@ questions ("what just happened" against "how did this end up like this"). A
 detail changed once is a plain row, not a fold that reveals the line already
 on screen. Both the grouping and the day filter reset when the list closes.
 
+**Collapsed is the last THREE changes, not one — chronological, oldest
+first, the same order the expanded list keeps.** A collapsed bubble that
+only ever showed the newest edit hid the ones right before it; three is
+enough of the story to be useful without becoming the same 290px sheet the
+chevron exists to avoid. The collapsed slice is the TAIL of the story, not a
+re-sorted feed: the last line shown is always what the detail says now, and
+expanding prepends older lines above it rather than reordering under a
+reader's thumb. Desktop skips the collapsed view entirely — a pointer
+already resting on the cell has committed to reading it, so hovering shows
+the whole story straight away, under the same `.hb-all` scroll
+(`max-height:40vh`) a long history gets once expanded.
+
 **The phone expands the bubble with a control inside it** (`.hb-more`,
 `[data-histmore]`). The bubble itself stays `pointer-events:none` — that is
 the contract that keeps History from turning the board read-only, and it is
 still pinned by the geometry gate. The control is a CHILD with
 `pointer-events:auto`, so the thing that takes a tap is a 24px button you aim
-at rather than a 290px sheet lying over the board. Phone only, and only where
-there is more than one change: a desktop pointer can rest on the cell, so a
-click-to-expand would be asking for a click to get what hovering already
-gives. Its click is handled on the DOCUMENT in capture (`histbubble.ts`),
-because the bubble is body-level and the board wrap's own listeners can never
-see it.
+at rather than a 290px sheet lying over the board. Phone only, and only PAST
+THREE changes: with three already showing there is nothing hidden yet, and a
+desktop pointer already has the whole story from hovering, so a chevron
+there would be asking for a click to get what it already gives. Its click is
+handled on the DOCUMENT in capture (`histbubble.ts`), because the bubble is
+body-level and the board wrap's own listeners can never see it.
 
 **The clock carries the date** — `11/8 14:32`, always, not just once "today"
 has stopped being true. The rows are about SCHEDULE days, so a bare `14:32`

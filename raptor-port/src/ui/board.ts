@@ -3,13 +3,13 @@
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, nameToId } from '../engine/people'
 import { isStandalone, makeStandalone, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
-import { slotVal, txtGet, txtSet, acRef, rollCx } from '../engine/slots'
+import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr } from '../engine/slots'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, trackStructuralAdd, alAttr } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
@@ -348,6 +348,26 @@ export function sortAllCommit() {
    with no change to how any of them behave. */
 const act = (di: any, msg: string) => { logAction(di, msg); return toast(msg) }
 
+/* WHAT A DELETED ROW HELD, said once — the log and the toast are the same
+   string (act, above), so a description has to stay short. Free text is
+   clipped to ~60 chars with a trailing ellipsis; empty parts are dropped
+   rather than printed as bare commas, since a note or a duty row rarely
+   fills every field it could carry. */
+const clip = (s: any) => { const t = String(s ?? '').trim(); return t.length > 60 ? t.slice(0, 59) + '…' : t }
+const desc = (...parts: any[]) => { const p = parts.map(clip).filter(Boolean).join(', '); return p ? ' — ' + p : '' }
+/* a str/end pair as one clause, only when at least one side has something —
+   a wholly-blank row (times never filled in) must not print a bare dash */
+const timeSpan = (str: any, end: any) => (str || end) ? [str, end].filter(Boolean).join('–') : ''
+/* person ids/callsigns → callsigns, deleted rows' `who` (and its `.more`
+   overflow) collapsed to "Bane +3" once there is more than one, the same
+   shorthand the board itself has no room to spell out in full either */
+const whoText = (row: any) => {
+  const ids = [...whoArr(row), ...((row && row.more) || [])].map((v: any) => nameToId(v) || v).filter(Boolean)
+  if (!ids.length) return ''
+  const names = ids.map((id: any) => PEOPLE[id]?.cs || id)
+  return names.length > 1 ? `${names[0]} +${names.length - 1}` : names[0]
+}
+
 /* the board's delegated .mbtn click handler, verbatim bodies */
 export function boardMbtn(e: MouseEvent) {
   /* previewing a published version: the panels render no controls, but a stale
@@ -441,10 +461,13 @@ export function boardMbtn(e: MouseEvent) {
     const r = acRef(ds.ldel); if (!r || !r.a) return
     const [dI, gI] = String(ds.ldel).split('.').map(Number)
     const issued = deletionWasIssued(dI, 'line', gI, r.li, r.ai)
+    /* what the line HELD, read off r.f/r.a before the splice below empties
+       either — the formation may vanish with it if this was its last aircraft */
+    const said = 'Line removed' + desc([r.f.cs, r.f.msn].filter(Boolean).join(' · '), timeSpan(r.f.to, r.f.ld), [PEOPLE[r.a.p]?.cs, PEOPLE[r.a.w]?.cs].filter(Boolean).join('/'))
     r.f.aircraft.splice(r.ai, 1)
     shiftAircraft(dI, gI, r.li, r.ai)
     if (!r.f.aircraft.length) { r.w.formations.splice(r.li, 1); shiftFormation(dI, gI, r.li) } else rollCx(r.f)
-    markDeletion(dI, 'line', issued); afterSchedMutate(); notify(); return act(dI, 'Line removed')
+    markDeletion(dI, 'line', issued); afterSchedMutate(); notify(); return act(dI, said)
   }
   if (ds.lac != null) {
     const [di, gi, li] = ds.lac.split('.').map(Number)
@@ -466,6 +489,11 @@ export function boardMbtn(e: MouseEvent) {
     const [di, gi] = ds.gdel.split('.').map(Number)
     const gw = DAYS[di].waves[gi]
     const issued = deletionWasIssued(di, 'wave', gi)
+    /* the wave's own shape, read before the splice below removes it — how many
+       formations and aircraft it was carrying, not just its label */
+    const nf = gw ? gw.formations.length : 0
+    const na = gw ? gw.formations.reduce((n: number, f: any) => n + f.aircraft.length, 0) : 0
+    const said = 'Wave removed' + desc(gw && gw.label, nf ? `${nf} formation${nf > 1 ? 's' : ''} · ${na} aircraft` : '')
     DAYS[di].waves.splice(gi, 1); shiftWave(di, gi)
     /* An SC wave owns TWO duty blocks, not one, so this walks the list rather
        than finding a single index — highest first, because each splice
@@ -475,7 +503,7 @@ export function boardMbtn(e: MouseEvent) {
         DAYS[di].dutywaves.splice(j, 1);[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, j))
       })
     }
-    markDeletion(di, 'wave', issued); afterSchedMutate(); notify(); return act(di, 'Wave removed')
+    markDeletion(di, 'wave', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.nadd != null) {
     const d = DAYS[+ds.nadd]; d.notes = d.notes || []; d.notes.push('')
@@ -484,8 +512,14 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.ndel != null) {
     const [di, ni] = ds.ndel.split('.').map(Number)
     const issued = deletionWasIssued(di, 'note', ni)
+    /* the note's own words, quoted — the closing quote is only added when the
+       text fit whole. A note long enough to clip already ends in clip's own
+       ellipsis, and a quote mark stitched on after that would read as part of
+       the sentence rather than as the record trimming it. */
+    const raw = String(DAYS[di].notes[ni] ?? '').trim(), text = clip(raw)
+    const said = 'Note removed' + (text ? ` — "${text}${text === raw ? '"' : ''}` : '')
     DAYS[di].notes.splice(ni, 1); shiftKeys(`dn:${di}.`, 0, ni)
-    markDeletion(di, 'note', issued); afterSchedMutate(); notify(); return act(di, 'Note removed')
+    markDeletion(di, 'note', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.padd != null) {
     const d = DAYS[+ds.padd]; d.allhands = d.allhands || []
@@ -495,9 +529,12 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.pdel != null) {
     const [di, ri] = ds.pdel.split('.').map(Number)
     const issued = deletionWasIssued(di, 'programme', ri)
+    /* the item's own line, before the splice below takes it */
+    const x = DAYS[di].allhands[ri]
+    const said = 'Item removed' + desc([x.prog, x.sub].filter(Boolean).join(' · '), timeSpan(x.str, x.end), whoText(x))
     DAYS[di].allhands.splice(ri, 1)
     ;[`ap:${di}.`, `a:${di}.`].forEach(h => shiftKeys(h, 0, ri))
-    markDeletion(di, 'programme', issued); afterSchedMutate(); notify(); return act(di, 'Item removed')
+    markDeletion(di, 'programme', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.pcx != null) { const [di, ri] = ds.pcx.split('.').map(Number); return askCx(DAYS[di].allhands[ri], `ap:${di}.${ri}.prog`, 'this item') }
   if (ds.pflag != null) {
@@ -522,9 +559,12 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.dwdel != null) {
     const [di, wi] = ds.dwdel.split('.').map(Number)
     const issued = deletionWasIssued(di, 'dutyblock', wi)
+    /* the block's own label and row count, before the splice below empties it */
+    const dw = DAYS[di].dutywaves[wi], n = dw ? dw.rows.length : 0
+    const said = 'Duty block removed' + desc(dw && dw.label, n ? `${n} row${n > 1 ? 's' : ''}` : '')
     DAYS[di].dutywaves.splice(wi, 1)
     ;[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, wi))
-    markDeletion(di, 'dutyblock', issued); afterSchedMutate(); notify(); return act(di, 'Duty block removed')
+    markDeletion(di, 'dutyblock', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.dradd != null) {
     const [di, wi] = ds.dradd.split('.').map(Number)
@@ -535,9 +575,12 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.drdel != null) {
     const [di, wi, ri] = ds.drdel.split('.').map(Number)
     const issued = deletionWasIssued(di, 'duty', wi, ri)
+    /* the row's role, who was in it and its hours, before the splice below */
+    const row = DAYS[di].dutywaves[wi].rows[ri]
+    const said = 'Duty row removed' + desc(row.role, PEOPLE[row.id]?.cs || row.id, timeSpan(row.str, row.end))
     DAYS[di].dutywaves[wi].rows.splice(ri, 1)
     ;[`d:${di}.${wi}.`, `dr:${di}.${wi}.`].forEach(h => shiftKeys(h, 0, ri))
-    markDeletion(di, 'duty', issued); afterSchedMutate(); notify(); return act(di, 'Duty row removed')
+    markDeletion(di, 'duty', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.drcx != null) { const [di, wi, ri] = ds.drcx.split('.').map(Number); return askCx(DAYS[di].dutywaves[wi].rows[ri], `dr:${di}.${wi}.${ri}.role`, 'this duty') }
   if (ds.drflag != null) {
@@ -555,9 +598,12 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.srdel != null) {
     const [di, kind, ri] = ds.srdel.split('.')
     const issued = deletionWasIssued(+di, 'sim', kind, +ri)
+    /* the row's kind (AMT/OFT), label and hours, before the splice below */
+    const row = DAYS[+di].sims[kind][+ri]
+    const said = 'Sim row removed' + desc([kind.toUpperCase(), row.label].filter(Boolean).join(' · '), timeSpan(row.str, row.end))
     DAYS[+di].sims[kind].splice(+ri, 1)
     ;[`s:${di}.${kind}.`, `sr:${di}.${kind}.`].forEach(h => shiftKeys(h, 0, +ri))
-    markDeletion(+di, 'sim', issued); afterSchedMutate(); notify(); return act(+di, 'Sim row removed')
+    markDeletion(+di, 'sim', issued); afterSchedMutate(); notify(); return act(+di, said)
   }
   if (ds.srcx != null) { const [di, kind, ri] = ds.srcx.split('.'); return askCx(DAYS[+di].sims[kind][+ri], `sr:${di}.${kind}.${ri}.label`, 'this sim') }
   if (ds.srflag != null) {
@@ -574,9 +620,10 @@ export function boardMbtn(e: MouseEvent) {
     const [di, ri] = ds.grdel.split('.').map(Number)
     const row = DAYS[di].ground[ri]
     const issued = deletionWasIssued(di, 'ground', ri, row && row.src)
+    const said = 'Ground item removed' + desc(row && row.prog, row && timeSpan(row.str, row.end), row && whoText(row))
     DAYS[di].ground.splice(ri, 1)
     ;[`g:${di}.`, `gr:${di}.`].forEach(h => shiftKeys(h, 0, ri))
-    markDeletion(di, 'ground', issued); afterSchedMutate(); notify(); return act(di, 'Ground item removed')
+    markDeletion(di, 'ground', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.grcx != null) { const [di, ri] = ds.grcx.split('.').map(Number); return askCx(DAYS[di].ground[ri], `gr:${di}.${ri}.prog`, 'this item') }
   if (ds.grflag != null) {

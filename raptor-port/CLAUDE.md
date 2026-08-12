@@ -149,6 +149,16 @@ ship without waiting to be asked.
   accessible — labels, contrast, keyboard reach; real empty, loading, error
   and confirmation states on every new surface. No placeholder behaviour
   presented as working.
+- **UI quality is a standing decision axis on EVERY change** (owner, 12 Aug
+  26 — "see how I am also concerned about user interface… remember this when
+  making decisions"). On a phone: easy to view, spacious, smooth, logical
+  view and navigation, layout that reads top-to-bottom, reachable controls.
+  On a desktop: the same, plus actually USING the real estate — a wide
+  screen should make things more accessible, not just stretch them. Weigh
+  this axis when choosing a shape, say in the report how the choice serves
+  it, and when driving the built bundle (the live-view pass below), LOOK for
+  UI faults and improvement openings beyond the change being made — and
+  report them. As options, which is the next rule.
 - **Scope is the ask.** Improvements noticed en route are REPORTED as
   options, never built unasked. A rejected or rolled-back idea is recorded
   in §Stable decisions and never reintroduced silently.

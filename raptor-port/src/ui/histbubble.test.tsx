@@ -15,7 +15,7 @@ import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { SCHED } from '../engine/publish'
 import { setSlotVal, slotVal, txtSet } from '../engine/slots'
-import { elogClear } from '../engine/editlog'
+import { elogClear, elogAllFor } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
@@ -76,6 +76,24 @@ async function editedSeat() {
   await act(async () => { setSlotVal(key, slotVal(key) === 'bane' ? 'stiff' : 'bane'); notify() })
   /* the panels are re-hung by a string diff, so re-find rather than reuse */
   return $(`#sbBoard [data-slot="${key}"]`)
+}
+
+/* N distinct edits landed on one FCP seat, for the collapsed/expand boundary
+   tests below — a single edit (editedSeat above) can't reach the >3 case.
+   Cycles a pool of FCP-qualified names, skipping whichever one the seat
+   already holds so every step is a real change (a no-op write logs nothing
+   — logEdit's own guard). */
+const FCP_NAMES = ['bane', 'stiff', 'slipway', 'dj', 'nact', 'prowler', 'pump', 'slash', 'harpoon', 'snap']
+async function seedN(n: number) {
+  const key = $$('#sbBoard [data-slot]').find(e => /\.p$/.test(e.dataset.slot || ''))!.dataset.slot!
+  let i = 0
+  for (let c = 0; c < n; c++) {
+    let v = FCP_NAMES[i % FCP_NAMES.length]!
+    while (v === slotVal(key)) { i++; v = FCP_NAMES[i % FCP_NAMES.length]! }
+    await act(async () => { setSlotVal(key, v); notify() })
+    i++
+  }
+  return key
 }
 
 describe('the History toggle', () => {
@@ -188,6 +206,38 @@ describe('the bubble', () => {
     expect(bub()).toBeTruthy()
     await click($('#sbHist'))
     expect(bub()).toBe(null)
+  })
+
+  /* PHONE, COLLAPSED IS THE LAST THREE — chronological, not just the newest.
+     The middle li has to be edit #4, which is exactly what a slice(-3) proves
+     and a slice(-1)-then-grow (the old shape) cannot: the boundary values are
+     the ones a reorder or an off-by-one would get wrong silently. */
+  it('on a phone, five edits collapse to the last three, oldest to newest', async () => {
+    const key = await seedN(5)
+    const all = elogAllFor(key)
+    expect(all.length, 'five landed').toBe(5)
+    phone = true
+    await act(async () => { view.setHistMode(true); notify() })
+    await click($(`#sbBoard [data-slot="${key}"]`))
+    const b = bub()
+    expect(b, 'the bubble came up').toBeTruthy()
+    const lis = b!.querySelectorAll('.hb-all li')
+    expect(lis.length, 'the last three, not all five').toBe(3)
+    expect(lis[0]!.textContent, 'the oldest of the three shown is edit #3').toContain(all[2]!.to)
+    expect(lis[2]!.textContent, 'the newest is edit #5 — what it says now').toContain(all[4]!.to)
+    const more = b!.querySelector('[data-histmore]')
+    expect(more, 'more than three — offer the chevron').toBeTruthy()
+    expect(more!.textContent, 'and it names the true count').toContain('5')
+  })
+
+  it('on a desktop, four edits show as the whole story on hover, with no chevron', async () => {
+    const key = await seedN(4)
+    await act(async () => { view.setHistMode(true); notify() })
+    await hover($(`#sbBoard [data-slot="${key}"]`))
+    const b = bub()
+    expect(b, 'the bubble came up').toBeTruthy()
+    expect(b!.querySelectorAll('.hb-all li').length, 'all four, immediately — no collapsing on a desktop').toBe(4)
+    expect(b!.querySelector('[data-histmore]'), 'hovering already gave the whole story').toBeFalsy()
   })
 })
 

@@ -3,6 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- STOP iOS ZOOMING IN ON A TAPPED CELL (owner, 12 Aug 26 — "can u don't
+         zoom it to the text? Just keep it as the fullscreen mode on mobile").
+         iOS Safari auto-zooms any focused input whose font-size is under 16px,
+         and this app's dense cells run 8.5–11.5px BY DESIGN — the density is a
+         measured contract (scheduler.css), so the fonts cannot grow. Since
+         iOS 10, `maximum-scale=1` is IGNORED for pinch zoom (accessibility
+         keeps working) but still honoured for the focus auto-zoom — exactly
+         the split wanted here. It is added at runtime, and ONLY on Apple touch
+         devices, because Android Chrome does honour it and would lose pinch
+         zoom for nothing (Android never auto-zooms on focus). The platform
+         test is the standard pair: iPhones report their name in the platform
+         string; iPads have reported plain "MacIntel" since iPadOS 13, told
+         apart from real Macs by their touch points. Never add
+         user-scalable=no — that would fight the user, not the auto-zoom. -->
+    <script>
+      if (/iPad|iPhone|iPod/.test(navigator.platform)
+          || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1))
+        document.querySelector('meta[name=viewport]')
+          .setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1')
+    </script>
     <!-- Declaring an icon is also what stops the browser probing /favicon.ico
          and logging a 404 on every load. Vite rewrites this href against
          `base` ('./' — see vite.config.ts), so it resolves under the Pages
