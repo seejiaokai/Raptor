@@ -22,19 +22,15 @@ path, where the callers already revert their own cell on a false return.
 - The five suspects the audit left open, all closed — PR #176, merged,
   deploy green, verified on the live page (the brief guard was driven there
   and read back its own toast).
-- Guard rails on malformed input across every typed field — PR #177, **OPEN
-  at the time of writing**, gates green locally, not yet merged.
+- Guard rails on malformed input across every typed field — PR #177, merged
+  (`d5d98d7`), deploy green, verified on the live page: `1290` and `9999` both
+  bounce off a take-off that stays `12:40`, `0845` goes in, zero console
+  errors. This handoff commit and the probe-bridge sync rode in on it.
 
 ## Unfinished
-- **PR #177 is open.** All six gates were green locally before it was raised.
-  A `send_later` check-in was armed for 17:24 UTC to: read its check-runs,
-  merge if green, poll the deployed page for the new bundle hash from the
-  MERGED main build (not a local hash), drive the time guard live (`1290` and
-  `9999` into a board take-off — both must bounce and the cell keep its
-  value), then send the owner one notification. **If that check-in did not
-  fire, or fired before the gates finished, do this by hand.**
-- **This handoff commit and the probe-bridge/file-map fixes below ride on
-  #177.** They only reach `main` when it merges.
+Nothing is in flight: all three PRs merged, all six gates green, the deploy
+verified on the live page. The two items below are recorded because they were
+found, not because they are open.
 - Step 3 of the handoff skill found two things this session had made stale and
   they are fixed in the same commit, noted here because they were found, not
   because they are open: `src/probe-bridge.ts` was missing `hmOK` (new in
@@ -93,5 +89,6 @@ Run from `raptor-port/`, not the repo root; a fresh container needs `npm ci`.
   dropdown, deleting the last in-time, and `ruleParse` staying loose.
 
 ## Pick up here
-Confirm PR #177 merged and the deploy is live (see Unfinished), then ask the
-owner whether he wants year-aware dates built.
+Ask the owner whether he wants year-aware dates built (see Open questions) —
+it is the one thing this session found that a guard rail could only paper
+over, and it matters before the squadron runs a December.
