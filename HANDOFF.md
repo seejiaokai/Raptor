@@ -17,7 +17,7 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 ## The gates, and how they lie
 
 **All six gates were green first-hand for the UI sweep of 12 Aug 26**, run in
-this container on the matching tree: `npm test` 1152 tests across 61 files,
+this container on the matching tree: `npm test` 1151 tests across 61 files,
 `node reference/tfin.js` 728/0, `npm run build` clean, the full
 `npm run test:e2e` geometry job 86/86 in Chromium, `probes:adapted` 36/36 and
 `perf` 4/4. Two of those went red first and both were real: the new
@@ -27,11 +27,17 @@ thing the feature guarantees it is not (Playwright's default `state` — use
 phone's name-column reallocation being applied up to 820px, where it gave a
 TABLET so much name width that the probe's 61-character jam fit on one line.
 Scoped to 480px, which is why that bound exists.
-The built bundle was then driven at 390×844 and the four fixes measured there:
+The built bundle was then driven at 390×844 and the fixes measured there:
 a duty row 109px → 79px (and the whole board 7484px → 7084px), the programme
 row's two times back on one line under their own headings, the week's name
 column 97px → 111px against a 104px longest word, and the Inputs table opening
-on the loaded week instead of empty.
+on `Aug 12 → Aug 26`. **That last one shipped twice in one morning** — first
+anchoring to the loaded week, then, at the owner's word, reverted to a plain
+today → +2 weeks; the open-work list below carries which of the two is
+current and why. All four were re-checked on the DEPLOYED page.
+The board's measured DOM went 897 → 911 nodes in the same sweep (one `+` per
+c6r row) against an unmoved 960 ceiling — `docs/probe-sweep.md` records that
+a shorter board can still be a heavier one.
 
 Three earlier passes the same day were each green on the same six and each
 checked on the DEPLOYED page (the standing instruction, owner 7 Aug 26): the
