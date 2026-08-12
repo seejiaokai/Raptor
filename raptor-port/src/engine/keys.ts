@@ -1,6 +1,7 @@
 import { DAYS } from './data'
 import { SCHED } from './publish'
 import { elogRemap } from './editlog'
+import { HOOKS } from './hooks'
 /* ---- day bookkeeping ------------------------------------------------------
    Every amendment key starts with its day index, whatever the prefix:
      0.1.0.0.p   ar:0.1.0   at:0.1.0   st:0.1.0.0   it:0.1
@@ -38,6 +39,7 @@ export function shiftKeys(head:any,pos:any,ix:any){
   SCHED.added=remap(SCHED.added);
   (SCHED.als||[]).forEach((a:any)=>{a.keys=(a.keys||[]).map(move).filter(Boolean);a.adds=(a.adds||[]).map(move).filter(Boolean);a.structAdds=(a.structAdds||[]).map(move).filter(Boolean);});
   elogRemap(move);   // the edit log addresses rows by the same keys (editlog.ts)
+  HOOKS.remapViewKeys(move);   // and so does key-addressed view state (hooks.ts)
 }
 /* ---------------------------------------------------------------------------
    REORDERING A LIST RENUMBERS IT TOO — and unlike a delete, nothing may be lost
@@ -69,6 +71,7 @@ export function permuteKeys(head:any,pos:any,oldOf:any){
   SCHED.added=remap(SCHED.added);
   (SCHED.als||[]).forEach((a:any)=>{a.keys=(a.keys||[]).map(move);a.adds=(a.adds||[]).map(move);a.structAdds=(a.structAdds||[]).map(move);});
   elogRemap(move);   // the edit log addresses rows by the same keys (editlog.ts)
+  HOOKS.remapViewKeys(move);   // and so does key-addressed view state (hooks.ts)
 }
 /* one row moving to another position, `to` being its index AFTER removal —
    plain splice-out / splice-in, the same arithmetic the model array does. */

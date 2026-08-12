@@ -4,6 +4,8 @@ import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, trac
 import { parseHM, hhmm } from './time'
 import { DATES, inpId, inputCoversDate, isUnavail, inpLabel } from './inputs'
 import { shiftKeys } from './keys'
+import { VCONF } from './rules'
+import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
@@ -211,7 +213,54 @@ export function txtSet(path:any,v:any){
   if(TIME_TXT.test(String(path))){const m=parseHM(v);v=(m==null)?'':hhmm(m);}
   const was=String(r.o[r.k]==null?'':r.o[r.k]);
   if(was===v)return false;
-  r.o[r.k]=v; noteChange(path,was,v); return true;
+  /* A BRIEF LATER THAN ITS OWN TAKE-OFF IS REFUSED (owner, 12 Aug 26 — "u can
+     put guard rails to deny such inputs", after the audit found what one does).
+     The brief window runs brief..T/O, so a B typed after T/O inverts it and the
+     line's "no time for the flight brief" check goes silently dark — the one
+     failure mode a soft-bar app must not have, because every other bar here
+     still SAYS something. Refused rather than warned because, unlike every
+     other bar in this app, it is not a planning decision a scheduler might
+     mean: it is a typo. Both callers already revert the cell on a false return
+     (board.ts's boardChange, textedit.ts's routeFocusOut), so the bad value
+     never sits on screen looking saved.
+     NOT refused where events.ts's preflight roll makes it legitimate: a
+     small-hours T/O whose brief lead already crosses midnight briefs the
+     PREVIOUS evening, so 2210 against a 0030 launch is a real time. Same
+     condition, spelled the same way — toM < VCONF.briefLead.
+     A standalone wave is a shift, not a sortie: it briefs nothing and every
+     consumer gates on that first, so its inert B is left alone. */
+  if(r.k==='br'&&v&&String(path).indexOf('ff:')===0){
+    const a=String(path).slice(3).split('.');
+    const w=((DAYS[+a[0]]||{}).waves||[])[+a[1]];
+    const toM=parseHM(r.o.to),br=parseHM(v);
+    if(w&&!w.standalone&&toM!=null&&br!=null&&toM>=VCONF.briefLead&&br>toM){
+      HOOKS.toast(`The brief cannot be after the ${r.o.to} take-off`,'warn');
+      return false;
+    }
+  }
+  r.o[r.k]=v; noteChange(path,was,v);
+  /* THE OTHER WAY ROUND: the T/O moves EARLIER and strands a brief behind it.
+     The guard above closes the ordinary way in, but a scheduler who retimes a
+     sortie must not be refused — the take-off is the primary fact and the
+     stale brief is the thing that is now wrong. So the new T/O goes in and the
+     impossible brief is CLEARED, visibly, with the reason said: the line falls
+     back to the suggested lead (exactly what a blank B has always meant) and
+     the B box is empty on screen, so a scheduler can see there is a brief to
+     retype. Clearing it silently, or leaving it and computing something else
+     underneath, would both break the standing promise that a bad time stays a
+     VISIBLE bad time rather than being quietly reinterpreted. Through
+     noteChange so the clear is marked pending and logged like any other edit. */
+  if(r.k==='to'&&String(path).indexOf('ff:')===0&&r.o.br){
+    const a=String(path).slice(3).split('.');
+    const w=((DAYS[+a[0]]||{}).waves||[])[+a[1]];
+    const toM=parseHM(v),br=parseHM(r.o.br);
+    if(w&&!w.standalone&&toM!=null&&br!=null&&toM>=VCONF.briefLead&&br>toM){
+      const bwas=String(r.o.br);
+      r.o.br=''; noteChange(`ff:${a[0]}.${a[1]}.${a[2]}.br`,bwas,'');
+      HOOKS.toast(`The ${bwas} brief was after the new take-off, so it has been cleared`,'warn');
+    }
+  }
+  return true;
 }
 /* does the row an armed key addresses still exist? */
 export function armTargetExists(key:any){

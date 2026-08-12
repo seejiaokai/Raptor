@@ -31,6 +31,27 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   is deliberately limited to that small-hours boundary: a later clock typed
   against an ordinary daytime sortie remains visible as typed rather than
   silently becoming a nearly 24-hour lead.
+- **A brief cannot BE typed after its own take-off** (owner, 12 Aug 26 — "put
+  guard rails to deny such inputs", after the audit found what one does).
+  The window is brief → T/O, so a later brief inverts it and `overlap()` stops
+  matching anything inside the real brief slot: the line's `NO_BRIEF` check
+  went silently dark, which is the one failure mode a soft-bar app must not
+  have. The engine still does not reinterpret such a pair (the rule above
+  stands); instead `slots.ts`'s `txtSet` — the one write path both surfaces
+  share — closes both ways in:
+  - **Typing the brief after the take-off is REFUSED.** `txtSet` returns
+    false, which each caller already answers by reverting its own cell
+    (`boardChange`, `routeFocusOut`), and the reason is toasted. Refused
+    rather than warned because, unlike every other bar in this app, it is not
+    a planning decision anyone could mean — it is a typo.
+  - **Moving the TAKE-OFF earlier past an existing brief is ALLOWED**, and
+    the stranded brief is CLEARED — through `noteChange`, so the clear marks
+    pending and lists like any edit — with the reason toasted. The take-off
+    is the primary fact and must never be refused; the empty B box then falls
+    back to the suggested lead exactly as a blank B always has, and shows the
+    scheduler there is a brief to retype.
+  Neither fires where the roll above makes the clock legitimate (`toM <
+  VCONF.briefLead`), and neither touches a standalone wave's inert B.
 - Crew rest (VCONF.crewRest) runs off the last REST-BEARING commitment
   (sortie or shift), and anchors on the earlier of the published in-time and
   the leg's own brief. Breach = hard CR; nominal-inside-rest = adv TT.

@@ -445,10 +445,11 @@ only after re-running them.
   escaped inside it — `CHIP_LABEL` legitimately holds `<`/`>`, and escaping
   those breaks the byte-exact reference parity. Two unescaped sinks were
   found on 6 Aug 26; assume more is possible.
-- **The 12 Aug 26 audit left five SUSPECTS documented rather than fixed**,
-  each judged not worth its change tonight; the ~200 `audit-*` tests it added
-  pin everything it checked, so none of these can regress silently into
-  something worse.
+- **The 12 Aug 26 audit left five SUSPECTS documented rather than fixed; the
+  owner then closed two of them the same day** (the brief-time guard rails and
+  the remarks reveal — both now built, see below). The three that remain are
+  each judged not worth their change; the `audit-*` tests pin everything the
+  sweep checked, so none can regress silently into something worse.
   - **A "thin" input record splits the picker from the validator.** A record
     with neither `allday` nor `s`/`e` reads as away to `awayAllDay`
     (fail-closed) while `inpWin` gives the validator null and every overlap
@@ -456,20 +457,29 @@ only after re-running them.
     write one or the other — so this only matters if a future import/restore
     path arrives; the honest fix then is `mapInp` treating such a record as
     whole-day.
-  - **A typed B later than a daytime T/O silently disables that line's brief
-    check** — the window inverts and `overlap()` can no longer see a meeting
-    sitting squarely in the real brief slot. Same family as the documented
-    "crew rest can be defeated by a typo"; the same cheap guards would cover
-    both if it ever bites.
   - **A pinned History bubble can describe a deleted row for the moment
     between a panel repaint and the next scroll/resize** — the bail runs on
-    scroll/resize only. Frame-scale in practice.
+    scroll/resize only. Frame-scale in practice. The fix, if it is ever
+    wanted, is to bail on repaint as well as on scroll.
   - **A second finger landing mid-puck-drag can still cross wires with a dot
     scrub** (the drag machine hit-tests against a repainted board). Exotic
     two-finger timing; the scrub itself now drops buttonless mouse gestures.
-  - **`RMKOPEN` (the empty-remarks reveal) is a model-index path**, so a
-    ground splice under a revealed, untouched box can strand the reveal or
-    land it on a neighbour row. Pure view state, no data risk.
+    The fix is one flag shared between the two gesture machines so neither
+    starts while the other is in flight — deliberately not built blind,
+    because a wrong guard there breaks ordinary one-finger dragging.
+  - **CLOSED 12 Aug 26 — the brief-time guard rails** (owner: "u can put guard
+    rails to deny such inputs"). A brief typed after its own take-off inverted
+    the brief window and silently disabled that line's `NO_BRIEF` check.
+    `txtSet` now refuses that value, and clears a brief the take-off is moved
+    past; the engine's own "a bad time stays visible" semantics are unchanged,
+    so no UI path can produce the pair any more. Rules:
+    `docs/engine-rules.md` §the brief, third bullet.
+  - **CLOSED 12 Aug 26 — `RMKOPEN` rides the renumbering.** The empty-remarks
+    reveal is a model-index path and a ground splice under it stranded the
+    box on a neighbour row. `HOOKS.remapViewKeys` now carries it through
+    `shiftKeys`/`permuteKeys` with the amendment book and the edit log — the
+    hook exists for key-addressed VIEW state, so a second such value wires
+    into the same place rather than growing a second mechanism.
 - **Two reference probes fail on the port by design.** `audit2 #8` and
   `audit` item 3 pin the OLD `Fly`/OFFER rules, which the owner changed in
   Aug 26. The probes still describe the reference correctly; they no longer
@@ -572,7 +582,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `rules.ts` | VCONF/SHIFT_HARD editing, `ruleParse`/`ruleFmt`, `rulesSave`/`rulesLoad`/`rulesReset`. |
 | `insights.ts` | `computeInsights()` for the Insights modal. |
 | `stores.ts` | The squadron's stores list — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Persisted state, so it lives here. Nothing in `validate.ts` reads a store. |
-| `hooks.ts` | HOOKS — injectable callbacks (toast, repaints, histPush, storage, `closeBoardDialogs`) so verbatim bodies stay DOM-free headless; `storeBackend` is the injected localStorage (`main.tsx` plugs the real one in, null headless). |
+| `hooks.ts` | HOOKS — injectable callbacks (toast, repaints, histPush, storage, `closeBoardDialogs`, **`remapViewKeys`** — key-addressed VIEW state riding `keys.ts`'s renumbering, RMKOPEN today) so verbatim bodies stay DOM-free headless; `storeBackend` is the injected localStorage (`main.tsx` plugs the real one in, null headless). |
 | `editlog.ts` | The EDIT LOG (11 Aug 26) — `ELOG` (a 400-row ring buffer of `{t,who,di,key,lbl,from,to}`), `logEdit`/`logAction`, `elogRows`/`elogFor`/`elogWhen`/`elogClear`, and `keyLabel`, which turns a slot key into plain words. Written from `noteChange`/`markEdit` and only when both values are handed over. Session-only, and deliberately NOT in `histSnap()`. Rules: `docs/engine-rules.md` §The edit log. |
 | `index.ts` | The barrel — re-exports every module above. UI and probes import from `../engine`, so a new engine file wants a line here. |
 

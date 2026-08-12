@@ -83,9 +83,13 @@ describe('times out of order', () => {
 
   it('a typed B LATER than a daytime T/O silently disables that line\'s brief check', () => {
     /* documented: the brief is the time INDICATED, and a late clock typed on a
-       daytime sortie "remains a visible bad time". Pinned so the silence is a
-       decision on record, not a surprise: with a blank B the meeting flags,
-       with B=20:00 the same meeting is quiet. */
+       daytime sortie "remains a visible bad time" — the engine does not
+       reinterpret it. Pinned so the silence is a decision on record.
+       NOTE (12 Aug 26): this writes f.br on the MODEL. No UI path can produce
+       this pair any more — txtSet refuses a brief after the take-off and
+       clears one the take-off is moved past (audit-c-briefguard.test.ts) — so
+       what stays pinned here is the engine's own unchanged semantics, not a
+       reachable hole. */
     const f = DAYS[1].waves[0].formations[0]              // 08:40–10:05, default brief 06:20
     f.aircraft[0].p = 'split'
     INPUTS.push({ person: 'split', date: 'Jul 14', allday: false, s: 360, e: 450, type: 'Meeting', remarks: '', mod: '' })
