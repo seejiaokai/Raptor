@@ -16,13 +16,15 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**All six gates were green first-hand for the audit sweep of 12 Aug 26 and
-again for its five follow-up fixes**, run in this container on the matching
-tree: `npm test` 1339 tests across 85 files (the `audit-*` sweep included),
-`node reference/tfin.js` 728/0, `npm run build` clean, the full
-`npm run test:e2e` geometry job 86/86 in Chromium, `probes:adapted` 36/36 and
-`perf` 4/4. Both halves of the brief guard were then driven on the built
-bundle and read back their own toasts. Two of those went red first and both were real: the new
+**All six gates were green first-hand for the audit sweep of 12 Aug 26, for
+its five follow-up fixes, and again for the guard-rail sweep**, run in this
+container on the matching tree: `npm test` 1368 tests across 87 files (the
+`audit-*` sweep included), `node reference/tfin.js` 728/0, `npm run build`
+clean, the full `npm run test:e2e` geometry job 86/86 in Chromium,
+`probes:adapted` 36/36 and `perf` 4/4. The guards were then driven on the
+built bundle: `1290`, `9999` and `morning` all bounce off a take-off that
+stays `12:40` while a real `0845` goes in, a freshly added blank line renders
+no `NaN:NaN` anywhere, and the Inputs page holds zero sideways overflow. Two of those went red first and both were real: the new
 empty-remarks e2e test waited for `.rmkin` to be VISIBLE, which is the one
 thing the feature guarantees it is not (Playwright's default `state` — use
 `attached` when asserting a thing is hidden); and `wrap-async` caught the
