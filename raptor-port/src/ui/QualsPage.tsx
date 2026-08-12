@@ -248,12 +248,24 @@ export function QualsPage() {
 
   const addQual = () => {
     const h = newQual.trim(); if (!h) return
-    const k = qualKey(h)
+    /* A STANDARD HEADING RECOVERS ITS OWN KEY (audit, 12 Aug 26) — the same
+       problem, and the same answer, as `2 TKS`/`tk2` in the stores list.
+       qualKey strips to letters and digits and lower-cases, so `SC DAY` derives
+       `scday` while the real column is keyed `scDay`; four of the ten standard
+       headings do not round-trip that way. Re-adding one therefore minted a
+       LOOK-ALIKE column: a second heading reading `SC DAY` whose ticks write a
+       flag no rule reads, while the wired rule kept enforcing the original flag
+       that no longer had a column to edit it — and the removal toast's promise
+       that "add it back and the ticks return" was false for exactly those four.
+       Matching on the printed label first is what the remove/re-add path
+       promises, and it makes the duplicate check below correct as well. */
+    const std = DEFAULT_QUAL_COLS.find((c: any) => c.h.toLowerCase() === h.toLowerCase())
+    const k = std ? std.k : qualKey(h)
     if (!k) return HOOKS.toast('A qualification needs a letter or a number in its name')
     if (cols.some((c: any) => c.k === k)) return HOOKS.toast(`${h} is already on the LoX`)
     /* held by nobody until it is ticked, exactly as TF arrived — except where
        the flag is already on the roster, which is a column coming back */
-    setCols(cs => [...cs, { k, h: h.toUpperCase(), lav: true }])
+    setCols(cs => [...cs, std ? { ...std } : { k, h: h.toUpperCase(), lav: true }])
     setNewQual('')
     HOOKS.toast(`${h.toUpperCase()} added — tick the people who hold it`)
   }
@@ -407,6 +419,16 @@ export function QualsPage() {
 
   const addPerson = () => {
     const cs = addP.cs.trim(); if (!cs) return
+    /* TWO PEOPLE CANNOT SHARE A CALLSIGN (audit, 12 Aug 26). renameCallsign
+       has refused this since Aug — "every stored `who` string would be
+       ambiguous, ID_BY_CS can only point one way" — and adding never made the
+       same check, so the ADD path could do what the RENAME path forbids. It
+       was not cosmetic: ID_BY_CS was repointed at the new, empty person, so
+       every ground, programme and sim row that stores a callsign STRING
+       changed owner to someone with no schedule, and three real conflicts on
+       the seed week — a hard clash and two brief-window warnings — silently
+       left the checks panel. Same refusal, same words as the rename. */
+    if (ID_BY_CS[cs.toLowerCase()]) return HOOKS.toast(`${cs} is already taken — callsigns must be unique`)
     const id = 'p' + Date.now()
     /* the callsign IS the person here — it is what every puck prints and what
        ID_BY_CS resolves — so it is the only required field; initials are the
@@ -489,9 +511,9 @@ export function QualsPage() {
       </div>
       {admin && <div className="qadd" data-admin="">
         <span className="lab">Add person</span>
-        <input id="qCS" placeholder="Callsign" style={{ width: 110 }} value={addP.cs} onChange={e => setAddP({ ...addP, cs: e.target.value })} />
+        <input id="qCS" placeholder="Callsign" maxLength={14} style={{ width: 110 }} value={addP.cs} onChange={e => setAddP({ ...addP, cs: e.target.value })} />
         <input id="qInitials" placeholder="Initials" maxLength={12} style={{ width: 120 }} value={addP.initials} onChange={e => setAddP({ ...addP, initials: e.target.value })} />
-        <input id="qFlight" placeholder="Flight" style={{ width: 70 }} value={addP.flight} onChange={e => setAddP({ ...addP, flight: e.target.value })} />
+        <input id="qFlight" placeholder="Flight" maxLength={10} style={{ width: 70 }} value={addP.flight} onChange={e => setAddP({ ...addP, flight: e.target.value })} />
         <select id="qSeat" aria-label="Pilot or WSO" value={addP.seat}
           onChange={e => { const seat = e.target.value; setAddP({ ...addP, seat, level: catsFor(seat).includes(addP.level) ? addP.level : 'OCU' }) }}><option value="FCP">Pilot (FCP)</option><option value="RCP">WSO (RCP)</option></select>
         <select id="qLevel" aria-label="Cat" value={addP.level} onChange={e => setAddP({ ...addP, level: e.target.value })}>{catsFor(addP.seat).map(k => <option key={k}>{k}</option>)}</select>

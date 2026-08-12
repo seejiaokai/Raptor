@@ -100,6 +100,15 @@ export function renameStore(key: string, label: string): string | null {
   const lab = label.trim().toUpperCase()
   if (!lab) return 'A store needs a name'
   if (lab.length > MAX_LABEL) return `A store name is at most ${MAX_LABEL} characters`
+  /* TWO STORES CANNOT WEAR ONE NAME (audit, 12 Aug 26). addStore has always
+     refused a duplicate; renaming never made the same check, so the rename
+     path could do what the add path forbids — and unlike a schedule slip this
+     one PERSISTS: the pair is written to the stores key and comes back intact
+     on reload. What the scheduler then sees is two identically labelled chips
+     and two identical buttons in the C popup, with nothing to say which one
+     sets which flag on the jet. The key is what makes them different and the
+     key is exactly what the label stops showing. */
+  if (STORE_CFG.some(([k2, l2], j) => j !== i && l2 === lab)) return `${lab} is already the name of another store`
   STORE_CFG[i] = [key, lab]
   return null
 }

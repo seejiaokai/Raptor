@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { PEOPLE, nameToId, ID_BY_CS } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, trackStructuralAdd } from './publish'
-import { parseHM, hhmm } from './time'
+import { parseHM, hhmm, hmOK } from './time'
 import { DATES, inpId, inputCoversDate, isUnavail, inpLabel } from './inputs'
 import { shiftKeys } from './keys'
 import { VCONF } from './rules'
@@ -210,7 +210,23 @@ export function txtSet(path:any,v:any){
   const r=txtRef(path); if(!r||!r.o)return false;
   v=String(v==null?'':v).replace(/\s+/g,' ').trim();
   if(v==='—')v='';                                       // the empty-field placeholder
-  if(TIME_TXT.test(String(path))){const m=parseHM(v);v=(m==null)?'':hhmm(m);}
+  /* A TIME CELL TAKES A TIME, OR NOTHING (audit, 12 Aug 26). Until this, an
+     unreadable value was silently normalised to '' — so typing `morning` into
+     a take-off did not just fail, it CLEARED the take-off, and the line then
+     dropped out of the conflict engine altogether: on the seed Monday four
+     real warnings, including a hard clash, disappeared with it. And an
+     out-of-range value went in as arithmetic (`9999` → `100:39`), printing a
+     take-off no clock shows and a crew-rest line reading "-5h-5".
+     Refused rather than warned for the same reason as the brief guard below:
+     these are not planning decisions anyone could mean, they are typos, and
+     both callers already answer a false return by reverting their own cell.
+     Clearing a time to EMPTY stays legal — that is how a scheduler unsets it.
+     hmOK, not parseHM, is the question: parseHM is the shared loose reader
+     and stays loose (time.ts). */
+  if(TIME_TXT.test(String(path))){
+    if(v&&!hmOK(v)){HOOKS.toast(`${v} is not a time — try 0900 or 09:00`,'warn');return false;}
+    const m=parseHM(v);v=(m==null)?'':hhmm(m);
+  }
   const was=String(r.o[r.k]==null?'':r.o[r.k]);
   if(was===v)return false;
   /* A BRIEF LATER THAN ITS OWN TAKE-OFF IS REFUSED (owner, 12 Aug 26 — "u can

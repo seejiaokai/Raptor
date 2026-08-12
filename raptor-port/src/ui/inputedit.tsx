@@ -12,11 +12,11 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isUnavail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isUnavail, dateOrd } from '../engine/inputs'
 import { acceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { hhmm, parseHM } from '../engine/time'
+import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction } from '../engine/editlog'
 import { writeInputsBatch, notify } from '../state/store'
@@ -100,6 +100,14 @@ export function commitInputEdit(r: any, draft: any) {
   }
   const s = draft.allday ? 0 : parseHM(draft.sTime), e = draft.allday ? 1439 : parseHM(draft.eTime)
   if (!draft.allday && (s == null || e == null)) { HOOKS.toast('Give the input a start and end time, or tick All day', 'warn'); return false }
+  /* and they have to be times a clock can show. Without this an out-of-range
+     value reached the model through the DIALOG even after the cells were
+     guarded, and anything past 24:00 was refused only by accident — hhmm()
+     turned it into `100:39`, which failed the re-parse above and so complained
+     that no time had been given, when one had (audit, 12 Aug 26). */
+  if (!draft.allday && (!hmOK(draft.sTime) || !hmOK(draft.eTime))) {
+    HOOKS.toast('That is not a time — try 0900 or 09:00', 'warn'); return false
+  }
   /* An end EARLIER than the start crosses midnight — 22:00–02:00 is a real
      absence, and a duty row, a sim box and a night sortie have all rolled that
      way since the port (win() in time.ts). Personal inputs were the one row type
@@ -110,6 +118,24 @@ export function commitInputEdit(r: any, draft: any) {
      an error — the same trade every other row type on the board already makes. */
   if (!draft.allday && (e as number) === (s as number)) { HOOKS.toast('Give the input a start and end that are not the same time', 'warn'); return false }
   const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
+  /* A SPAN HAS TO RUN FORWARDS, and the labels cannot say otherwise. Dates are
+     stored as month-and-day with no year (`Dec 28`), and dateOrd reads them as
+     month*100+day — so a span into the new year reads BACKWARDS (1228 → 103)
+     and inputCoversDate is false for every day including its own start: the
+     leave covered nothing, blocked nothing and vanished from the Inputs table
+     entirely, because the table's window compares the same ordinals (audit,
+     12 Aug 26). A same-month-and-day span a year long lost its end date
+     silently for the same reason. Refused with the reason said, rather than
+     stored as something that quietly means nothing. The real fix is a YEAR in
+     the stored label, which touches DATES, fmt/unfmt, the CSV and the
+     calendar — a change of a different size, and the owner's call. */
+  if (endDate) {
+    const a = dateOrd(date), b = dateOrd(endDate)
+    if (a == null || b == null || b < a) {
+      HOOKS.toast('The end date must fall after the start date — a range running into the new year has to be filed as two inputs for now', 'warn')
+      return false
+    }
+  }
   writeInputsBatch(() => {
     /* An ACCEPTED input is linked to the row it created by `src`, a content
        key of person|date|type|s. Editing any of those silently broke the
@@ -135,7 +161,18 @@ export function commitInputEdit(r: any, draft: any) {
     if (wasAcc) unacceptInput(wasDi, r)
     r.person = draft.person; r.type = draft.type; r.allday = draft.allday
     r.s = s; r.e = e; r.date = date; r.remarks = String(draft.remarks || '').trim(); r.mod = 'now'
-    if (!draft.allday && draft.half) r.half = draft.half; else delete r.half
+    /* DERIVED from the times, never copied from the draft (audit, 12 Aug 26).
+       The in-place cells already derived it (halfOf), but the Inputs page's own
+       two time boxes did not: press AM, then type 08:00 over the start, and the
+       row kept a half:'am' label describing an 08:00–12:00 window — the week
+       and the palette then printed "local leave (LL) (AM)" for a window that is
+       not the morning. One derivation for all three editors is the only way the
+       label cannot drift from the hours it claims to describe.
+       hasHalf too, not just the hours: a type that has no halves (CSE) must
+       drop the label even when the times happen to land on one, or it would be
+       stranded on a record with no control left to change it. */
+    const half = (!draft.allday && hasHalf(draft.type) && s != null && e != null) ? halfOf(s as number, e as number) : ''
+    if (half) r.half = half; else delete r.half
     if (endDate) r.endDate = endDate; else delete r.endDate
     if (wasAcc) {
       /* put it back on the day it was on, if the edit still covers that day;
@@ -213,7 +250,13 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
     /* an unreadable time is a typo, not a clear — refuse it and let the cell
        heal back, the same way txtSet does for a schedule field */
     for (const k of ['str', 'end']) {
-      if (cur[k] && parseHM(cur[k]) == null) { HOOKS.toast('That is not a time — try 0900 or 09:00', 'warn'); return false }
+      /* hmOK, not parseHM: the format test alone let an OUT-OF-RANGE clock
+         through (audit, 12 Aug 26). `2570` parsed to 26:10 and the absence
+         then overlapped nothing on its own day — a man on leave lost every
+         warning he had and was offered for the very seat he was off for,
+         while the leave reappeared on the NEXT day through the midnight
+         tail. Same test the schedule cells use (engine/time.ts). */
+      if (cur[k] && !hmOK(cur[k])) { HOOKS.toast('That is not a time — try 0900 or 09:00', 'warn'); return false }
     }
     if (!cur[field]) { d.allday = true; d.half = '' }      // the cell just cleared
     else {
@@ -338,7 +381,7 @@ export function InputEditor() {
           </div>
           <label className="inped-f">
             <span className="inped-k">Remarks</span>
-            <input id="inpEditRmk" aria-label="Remarks" value={draft.remarks} autoComplete="off"
+            <input id="inpEditRmk" aria-label="Remarks" maxLength={200} value={draft.remarks} autoComplete="off"
               placeholder="e.g. medical appt, till 15 Jul"
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
               onKeyDown={e => { if (e.key === 'Enter') save() }} />

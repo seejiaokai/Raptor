@@ -8,6 +8,7 @@ import { dayCount } from '../engine/waves'
 import { validate, WARN, WCODE, wlbl } from '../engine/validate'
 import { computeInsights } from '../engine/insights'
 import { markEdit } from '../engine/publish'
+import { HOOKS } from '../engine/hooks'
 import { esc, afterSchedMutate } from '../state/view'
 import { SESSION } from '../state/auth'
 import { USERS, addUser, delUser } from '../state/users'
@@ -70,7 +71,9 @@ export function UserModal() {
   const close = () => { setUserModal(false); notify() }
   const add = () => {
     const name = nameRef.current!.value.trim(), role = roleRef.current!.value
-    if (!name) return
+    /* a silent no-op reads as a broken button (audit, 12 Aug 26): pressing Add
+       with an empty box did nothing at all and said nothing about why */
+    if (!name) return HOOKS.toast('A user needs a name')
     addUser(name, role); nameRef.current!.value = ''; notify()
   }
   return (
@@ -78,7 +81,7 @@ export function UserModal() {
       <div className="modal-box">
         <div className="modal-head"><b>Manage users</b><button className="x" id="userClose" onClick={close}>✕</button></div>
         <div className="modal-body">
-          <div className="mfield"><label>Callsign / name</label><input id="newName" ref={nameRef} placeholder="e.g. Viper" /></div>
+          <div className="mfield"><label>Callsign / name</label><input id="newName" ref={nameRef} placeholder="e.g. Viper" maxLength={24} /></div>
           <div className="mfield"><label>Role</label><select id="newRole" ref={roleRef} aria-label="Role for the new user"><option value="main">Squadron member (own inputs &amp; quals)</option><option value="admin">Scheduler / admin (edit)</option></select></div>
           <button className="abtn primary" id="userAdd" style={{ width: '100%' }} onClick={add}>Add user</button>
           <div className="userlist" id="userList" dangerouslySetInnerHTML={{
