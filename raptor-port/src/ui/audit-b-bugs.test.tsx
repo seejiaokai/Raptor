@@ -86,17 +86,22 @@ describe('B1 — closing the board via setPage must carry the board’s day', ()
   })
 })
 
-/* FINDING B2 — an uncommitted board text field is destroyed by a day scrub,
-   and the typed value vanishes.
-   Every data-bfld field on the board commits on the CHANGE event (board.ts
-   boardChange → txtSet), which fires only on blur. A touch scrub on the day
-   dots never blurs the field (the release's click is eaten by the strip), and
-   SchedBoard's panel effect guards on editingText() — which knows data-txt,
-   data-inp and contenteditable but NOT the board's own <input data-bfld>
-   grammar — so the day step re-hangs #sbBoard's innerHTML around the focused
-   input mid-edit. The element goes, its change event never fires, and the
-   typed value lands on NO day at all. (The arrows are safe on desktop only
-   because a mousedown blurs first; a touch scrub has no such step.) */
+/* FINDING B2 — a day scrub re-hangs #sbBoard around a focused, uncommitted
+   <input data-bfld>, and nothing in THIS APP commits it.
+   Every data-bfld field commits on the CHANGE event (board.ts boardChange →
+   txtSet), which fires on blur. SchedBoard's panel effect guards on
+   editingText() — which knows data-txt, data-inp and contenteditable but NOT
+   the board's own <input data-bfld> grammar — so a boardTab mid-edit replaces
+   the panel's innerHTML around the focused input.
+   Measured in real Chromium (audit pw3, 12 Aug 26): the input stays focused
+   through touchStart on the strip, and at the FIRST touchMove the repaint
+   tears it out — the value survives there only because Chromium happens to
+   fire change during that teardown while the input is still attached. jsdom
+   (like engines that do not fire change on programmatic removal) shows the
+   app's own behaviour: the element goes, change never reaches the delegated
+   listener, and the typed value lands on NO day at all. The app must not
+   lean on an engine teardown quirk for a scheduler's typed data — commit or
+   defer, but do not destroy. */
 describe('B2 — a typed value must survive a day scrub', () => {
   it('scrubbing 2 → 5 with an uncommitted remark commits it to the day being left', async () => {
     const inp = $('#sbBoard input[data-bfld^="fr:2."]') as HTMLInputElement
