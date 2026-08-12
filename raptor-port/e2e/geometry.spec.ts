@@ -2572,6 +2572,71 @@ test.describe('the day carousel', () => {
     expect(await page.locator('.sb-pane').count()).toBe(0)
   })
 
+  /* A RUN THROUGH THE WEEK, AT THE SPEED A THUMB ACTUALLY MOVES (owner, 12 Aug
+     26 — "sometimes it's unresponsive, I can't swipe"). Only a real browser can
+     show this one, because the fault was in HIT TESTING, not in the gesture
+     logic: mid-settle the live board is a screen-width away and the preview is
+     pointer-events:none, so a finger landing anywhere on the board passes
+     through to `.schedboard` itself. Each press below is therefore dispatched to
+     whatever `elementFromPoint` returns, the way a touch lands — dispatching
+     straight at the scroller hides the whole bug. Measured before the fix: four
+     swipes 70ms apart moved ONE day. */
+  test('phone: four swipes 70ms apart move four days', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbHist')
+    const landedOn: string[] = []
+    for (let i = 0; i < 4; i++) {
+      landedOn.push(await page.evaluate(() => {
+        const t = document.elementFromPoint(200, 400) as HTMLElement
+        const ev = (k: string, x: number) => t.dispatchEvent(new PointerEvent(k, {
+          bubbles: true, clientX: x, clientY: 400, pointerType: 'touch', pointerId: 1,
+          buttons: k === 'pointerup' ? 0 : 1,
+        }))
+        ev('pointerdown', 200)
+        for (let s = 1; s <= 6; s++) ev('pointermove', 200 - 20 * s)
+        ev('pointerup', 80)
+        return t.className || t.tagName
+      }))
+      await page.waitForTimeout(70)
+      expect(await page.locator('.sb-pane').count(),
+        'never two previews, however fast the run').toBeLessThanOrEqual(1)
+    }
+    await page.waitForTimeout(500)
+    expect(await page.evaluate(() => (window as any).SBDAY),
+      `Monday to Friday in four swipes (pressed on: ${landedOn.join(', ')})`).toBe(4)
+    expect(await page.locator('.sb-pane').count()).toBe(0)
+    expect(await page.evaluate(() =>
+      getComputedStyle(document.querySelector('.sb-main') as HTMLElement).transform),
+      'and the board is left at rest').toBe('none')
+  })
+
+  /* MOBILE ONLY (owner, 12 Aug 26 — "this is for mobile only"). The gesture
+     exists because the phone bar has no room for seven day chips; a desktop
+     board still has them, so a sideways mouse drag there is a misfire, not a
+     shortcut. Measured at 1440px before the gate: a 180px drag moved Wednesday
+     to Thursday. This runs in the DEFAULT desktop layout, not `.sb-wide` — that
+     one was already excluded and is covered in the vitest suite. */
+  test('desktop: a sideways drag across the board does not change the day', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(2))
+    await page.waitForSelector('#sbHist')
+    const box = (await page.locator('.sb-main').boundingBox())!
+    const cy = box.y + box.height / 2
+    await page.mouse.move(box.x + box.width * 0.6, cy)
+    await page.mouse.down()
+    for (let i = 1; i <= 6; i++) { await page.mouse.move(box.x + box.width * 0.6 - i * 30, cy); await page.waitForTimeout(20) }
+    await page.mouse.up()
+    await page.waitForTimeout(500)
+    expect(await page.evaluate(() => (window as any).SBDAY),
+      'the day chips are right there on a desktop bar').toBe(2)
+    expect(await page.locator('.sb-pane').count(), 'and no preview was built').toBe(0)
+  })
+
   /* the seam that makes the whole thing possible without a non-passive
      listener: the browser keeps the vertical scroll, we take the horizontal */
   test('phone: the board scroller hands the sideways gesture over', async ({ page }) => {

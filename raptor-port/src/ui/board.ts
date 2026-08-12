@@ -919,11 +919,20 @@ export function boardTab(n: number) { view.setBoardDay(n); notifyBoard() }
      "swiping randomly stops working". A tap travels ~0px, so the distance
      test below already separates tapping from swiping, and it does it on
      what the finger DID rather than on what it started over.
+     **The parked aircrew handle was on that defensive list until 12 Aug 26 and
+     is the worked example of the paragraph above** — a 30px sliver down the
+     right edge, refusing the leftward swipes that naturally start there. It is
+     allowed now and shares the finger by axis instead (see onDown).
    - **Horizontal has to beat vertical by 2×.** The board is a tall scroller;
      a thumb travelling down it wanders sideways, and a bare threshold turns
      ordinary reading into day changes.
-   - **Not in desktop layout.** `.sb-wide` makes the whole board a horizontal
-     scroller, where sideways IS panning across the day's columns.
+   - **Phone only, and `.sb-wide` off.** The gesture is gated on the same
+     `(max-width:820px)` query the phone layout is drawn by (owner, 12 Aug 26 —
+     "this is for mobile only"): above it the seven day chips are still on the
+     bar, so a swipe earns nothing and a stray mouse drag changing the day is
+     pure misfire. `.sb-wide` is excluded on top of that, because it makes the
+     whole board a horizontal scroller where sideways IS panning across the
+     day's columns.
 
    `editingText()` is deliberately NOT consulted. It asks "is a text cell
    focused", which is true for the whole time a scheduler has tapped into a
@@ -966,13 +975,14 @@ export function boardTab(n: number) { view.setBoardDay(n); notifyBoard() }
    board is 897 nodes against a 960 ceiling (probes/perf-port.cjs), so seven
    side by side is ~6,300 on the surface whose whole architecture exists to
    keep a phone fast. What IS copied is everything the scheduler can feel —
-   the live day tracks the finger 1:1, a small summary identifies the incoming
-   day, the ends rubber-band, and the release settles on distance OR velocity
-   rather than on one hard threshold.
+   the live day tracks the finger 1:1, the incoming day names itself, the ends
+   rubber-band, and the release settles on distance OR velocity rather than on
+   one hard threshold.
 
-   The summary is built only while a finger is down and thrown away on settle,
-   so the resting board is unchanged at 897 and a swipe adds fewer than 20
-   nodes. It is an absolutely
+   That name is the day and the date and nothing else (owner, 12 Aug 26 — see
+   makePane). It is built only while a finger is down and thrown away on settle,
+   so the resting board is unchanged at 897 and a swipe adds three nodes, well
+   inside the twenty the geometry gate allows it. It is an absolutely
    positioned pane inside `.schedboard`, NOT a restructure of `.sb-main`:
    that element is the phone's single scroller and carries overscroll
    containment, the parked-roster proxy scroll and the drawer, and wrapping it
@@ -1005,51 +1015,97 @@ const SWIPE_FLICK = 0.45    // px/ms that commits however short the drag was
    more sensitive of the two, and it is what keeps a short deliberate drag
    ("reading, not swiping") from flipping the day. */
 const SWIPE_FLICK_MIN = 35
-const SWIPE_MS = 240        // the settle animation
+/* THE SETTLE IS TIMED BY THE DISTANCE LEFT, NOT BY A FLAT 240ms (owner, 12 Aug
+   26 — "the swipe is still slightly laggy"). 240ms was the whole travel's
+   duration and every release paid it, so the further you dragged the SLOWER the
+   last of it went: a release 300px into a 390px screen animated the remaining
+   90px over the same 240ms, which is a quarter of a second of watching a board
+   creep the last fifth of the way. The day cannot commit until that animation
+   ends (committing mid-flight repaints the outgoing board), so the whole gesture
+   waits on it. Scaled by what is left to travel, the speed is the same wherever
+   the finger lets go, and the common case gets shorter rather than longer. */
+const SWIPE_MS = 190        // the settle animation, for a FULL screen of travel
+const SWIPE_MS_MIN = 90     // ...but never so short that the motion disappears
 const EDGE_PULL = 0.32      // how much of the drag the ends give back
 
+/* Module scope because the parked-aircrew forwarder at the bottom of this file
+   has to know: both machines listen on the board, and a horizontal drag that
+   starts on the handle belongs to the carousel, not to the scroll proxy. */
+let SWIPE_LOCKED = false
+
+/* Two frames, then finish. The incoming day is painted by a React effect that
+   runs after the store notification, not inside `boardTab` — so a preview taken
+   away in the same task as the commit uncovers the OLD day for a frame or two
+   while the panels rebuild behind it. Held one paint longer, the swap happens
+   under cover. */
+const holdOneFrame = (fn: () => void) => {
+  if (typeof requestAnimationFrame !== 'function') { setTimeout(fn, 0); return }
+  requestAnimationFrame(() => requestAnimationFrame(fn))
+}
+
+/* THE LISTENERS SIT ON `.schedboard`, THOUGH THE THING THAT MOVES IS `.sb-main`
+   (owner, 12 Aug 26 — the deepest of the "sometimes I can't swipe" faults, and
+   the one no amount of threshold tuning would have found).
+   While a swipe settles, the real board is translated a whole screen sideways
+   and the preview — which is `pointer-events:none`, deliberately, so nothing on
+   the incoming day can take a tap — covers the viewport. A finger landing in
+   that window therefore hit-tests through the preview to the ONLY thing left
+   under it: `.schedboard` itself. With the listeners on the scroller, that press
+   was not merely refused, it was never seen, and neither was the drag that
+   followed it: a touch gets implicit pointer capture on whatever it went down
+   on, so every later move for that finger goes to the same element. The whole
+   next swipe was addressed to a listener that did not exist.
+   One level up fixes both halves at once. `.sb-main` is `.schedboard`'s only
+   child besides the top bar, so everything a finger could reach on the board
+   still bubbles here unchanged, and the press that lands on nothing during a
+   settle now lands on this. The bar is excluded by hand in onDown, which is the
+   one region this widening would otherwise have added. */
 export function wireBoardSwipe(el: HTMLElement) {
+  const host = (el.closest('.schedboard') as HTMLElement | null) || el
   let x0 = 0, y0 = 0, t0 = 0, lx = 0, lt = 0, vel = 0
   let live = false, lock = false, pane: HTMLElement | null = null, w = 1
   let originDay: number | null = null, originRev: number | null = null, paneDay: number | null = null
-  let settleTimer: ReturnType<typeof setTimeout> | null = null
-  let settlingPane: HTMLElement | null = null
+  /* the running settle's finisher, or null between gestures — the one thing a
+     new pointerdown needs, and the reason it no longer has to refuse one. It
+     takes the one decision that differs between its two callers: a finger
+     landing wants the pending day COMMITTED early, while a board being torn
+     down wants it dropped (see clear). */
+  let finishSettle: ((commit: boolean) => void) | null = null
 
-  /* A lightweight destination, not another complete board. A live phone
-     board is close to 900 nodes; rebuilding one during every drag and then
-     again on commit exhausted mobile Safari during rapid back-and-forth
-     swipes. The real board still tracks the finger and renders the target
-     exactly once after settle. */
+  /* JUST THE DAY AND THE DATE (owner, 12 Aug 26 — "can u just show the date").
+     It began as a six-figure summary of the incoming day (waves, aircraft,
+     duties, sim rows, ground items, personal inputs) and that was work done in
+     the middle of a gesture: six walks of the day's structure plus a filter of
+     the whole INPUTS list, then a two-column grid to lay out, all on the frame
+     where the finger crosses the lock threshold. The owner asked for the date
+     alone, which is also the cheapest thing it could be — three nodes, no
+     counting, nothing to lay out. Do not put the counts back; a preview is
+     read for half a second while a thumb is moving.
+     It is still a LIGHTWEIGHT destination and never a second board: a live
+     phone board is close to 900 nodes, and rebuilding one during every drag
+     exhausted mobile Safari during rapid back-and-forth swipes. The real board
+     tracks the finger and renders the target exactly once after settle. */
   const makePane = (to: number, dir: number) => {
     const host = el.closest('.schedboard') as HTMLElement | null
     if (!host) return null
     const r = el.getBoundingClientRect()
     const d = DAYS[to]
-    const waves = (d.waves || []).length
-    const aircraft = (d.waves || []).reduce((n: number, w: any) => n
-      + (w.formations || []).reduce((m: number, f: any) => m + (f.aircraft || []).length, 0), 0)
-    const duties = (d.dutywaves || []).reduce((n: number, w: any) => n + (w.rows || []).length, 0)
-    const sims = Object.values(d.sims || {}).reduce((n: number, rows: any) => n + (rows || []).length, 0)
-    const ground = (d.ground || []).length
-    const inputs = INPUTS.filter((i: any) => inputCoversDate(i, d.dt)).length
     const p = document.createElement('div')
-    p.className = 'sb-pane'
+    /* THE LABEL RIDES THE LEADING EDGE, not the pane's centre (12 Aug 26, from
+       a screenshot of the drag). The pane is a full screen wide and enters from
+       one side, so centred content is off screen for the whole drag: at the 60px
+       that commits, the centre of a 390px pane is still 135px past the right
+       edge, and the date the owner asked for could only be read in the ~150ms of
+       full cover after the release. Anchored to whichever edge comes in first,
+       it is legible as soon as a thumb's width of the pane is showing. */
+    p.className = 'sb-pane ' + (dir > 0 ? 'from-r' : 'from-l')
     p.dataset.day = String(to)
     p.style.top = (r.top - host.getBoundingClientRect().top) + 'px'
     p.style.height = r.height + 'px'
     p.style.left = (dir > 0 ? r.width : -r.width) + 'px'
     p.innerHTML = `<div class="sb-peek">
-      <div class="sb-peek-k">${esc(d.dow)} scheduler board</div>
+      <div class="sb-peek-k">${esc(d.dow)}</div>
       <div class="sb-peek-date">${esc(d.dt)}</div>
-      <div class="sb-peek-grid">
-        <span><b>${waves}</b> wave${waves === 1 ? '' : 's'}</span>
-        <span><b>${aircraft}</b> aircraft</span>
-        <span><b>${duties}</b> dut${duties === 1 ? 'y' : 'ies'}</span>
-        <span><b>${sims}</b> sim row${sims === 1 ? '' : 's'}</span>
-        <span><b>${ground}</b> ground item${ground === 1 ? '' : 's'}</span>
-        <span><b>${inputs}</b> personal input${inputs === 1 ? '' : 's'}</span>
-      </div>
-      <div class="sb-peek-hint">Release to open</div>
     </div>`
     host.appendChild(p)
     return p
@@ -1059,33 +1115,108 @@ export function wireBoardSwipe(el: HTMLElement) {
     el.style.transition = e2; el.style.transform = `translateX(${dx}px)`
     if (pane) { pane.style.transition = e2; pane.style.transform = `translateX(${dx}px)` }
   }
+  /* `will-change` for the duration of the gesture and not one moment longer.
+     The board is the phone's single scroller carrying ~7,800px of content, and
+     moving it every frame without the hint leaves the browser free to repaint
+     that subtree instead of shifting a layer it already has. Promoting it
+     permanently is the thing to avoid — a resting board would hold the layer
+     for nothing — so it goes on at lock and comes off at rest. */
+  const rest = () => {
+    el.style.transition = ''; el.style.transform = ''; el.style.willChange = ''
+    SWIPE_LOCKED = false
+  }
   const clear = () => {
-    if (settleTimer != null) { clearTimeout(settleTimer); settleTimer = null }
-    el.style.transition = ''; el.style.transform = ''
+    /* abandon, never commit: this is the pointercancel and the unwiring path,
+       and a board being unmounted (or a gesture the system took away) must not
+       leave a day change behind it */
+    if (finishSettle) finishSettle(false)
+    rest()
     if (pane) { pane.remove(); pane = null }
-    if (settlingPane) { settlingPane.remove(); settlingPane = null }
     live = false; lock = false; originDay = null; originRev = null; paneDay = null
   }
 
+  /* ONE SETTLE, AND IT CAN BE CUT SHORT (owner, 12 Aug 26 — "sometimes it's
+     unresponsive, I can't swipe").
+     The rule used to be that a pointerdown arriving while a settle was running
+     was thrown away, so every swipe was followed by a dead window in which the
+     next one did nothing at all. Measured on the real build: two swipes 80ms
+     apart moved the board ONE day — the second gesture was never even started.
+     That is the reported fault, and on a surface where a scheduler runs through
+     the week it is the common case, not an edge one.
+     Refusing was never about the timer, though; it was about the PREVIEW. Two
+     panes of a ~900-node board could stack while their timers ran, which is
+     what exhausted mobile Safari during fast back-and-forth swipes. So the
+     press now FINISHES the settle instead of being dropped: the pane is gone
+     and the day committed before the new gesture can make a second one, which
+     is the same guarantee the refusal bought, without the dead window.
+     `done` is idempotent and self-deregistering, so the timer, the held frame
+     and an impatient finger can all reach for it. */
+  const startSettle = (to: number, remain: number, commit: (() => void) | null) => {
+    const ms = Math.max(SWIPE_MS_MIN, Math.round(SWIPE_MS * Math.min(1, remain / (w || 1))))
+    put(to, ms)
+    const p = pane
+    pane = null; live = false; lock = false
+    let timer: ReturnType<typeof setTimeout> | null = null
+    let fire = commit
+    let over = false
+    const done = (go: boolean) => {
+      if (over) return
+      over = true
+      if (timer != null) { clearTimeout(timer); timer = null }
+      if (finishSettle === done) finishSettle = null
+      if (go && fire) fire()
+      fire = null
+      if (p) p.remove()
+      rest()
+    }
+    finishSettle = done
+    timer = setTimeout(() => {
+      timer = null
+      /* the day lands with the animation, but the preview stays one paint
+         longer (holdOneFrame) so the rebuild happens under cover */
+      if (fire) { const f = fire; fire = null; f() }
+      holdOneFrame(() => done(true))
+    }, ms)
+  }
+
   const onDown = (e: any) => {
-    /* One complete board is close to the phone DOM ceiling. During settle the
-       pane belongs to the timer below (and `pane` is deliberately nulled), so
-       accepting another finger immediately used to create a second full pane
-       beside it. Fast repeated swipes could stack several ~900-node days and
-       exhaust mobile Safari before their 240ms timers caught up. A carousel
-       cannot begin another drag while it is still settling anyway: hold the
-       gesture until the one preview has been removed and the day committed. */
-    if (settleTimer != null) return
+    /* land the previous swipe NOW rather than refusing this one (startSettle) */
+    if (finishSettle) finishSettle(true)
     live = false; lock = false; originDay = null; originRev = null; paneDay = null
     if (pane) { pane.remove(); pane = null }
-    el.style.transition = ''; el.style.transform = ''
+    rest()
+    /* MOBILE ONLY (owner, 12 Aug 26 — "this is for mobile only").
+       `SBWIDE` alone was not that bar: it is an opt-in toggle, so a desktop
+       board left in the default stacked layout still swiped, and a mouse drag
+       across it — a text selection that overshot, a slip while reading —
+       changed the day. Measured at 1440px: a 180px drag moved Wednesday to
+       Thursday. The gesture exists because the phone bar has no room for seven
+       day chips; above 820px those chips are still there, so there is nothing
+       for a swipe to earn. `HOOKS.isPhone()` is the SAME `(max-width:820px)`
+       query the phone layout is drawn by, so the gesture and the layout that
+       needs it can never disagree. */
+    if (!HOOKS.isPhone()) return
     if (SBWIDE) return
     if (e.pointerType === 'mouse' && e.buttons !== 1) return
     const t = e.target as HTMLElement
     if (!t || !t.closest) return
-    /* the row grip owns its own drag, and the parked aircrew handle forwards
-       a scroll it would otherwise swallow (wireParkedRosScroll below) */
-    if (t.closest('.sb-grip') || t.closest('.sb-ros')) return
+    /* the bar is not the board: its buttons are pressed, its day dots are
+       scrubbed by their own machine, and the whole point of the widening above
+       was the board window, not the chrome over it */
+    if (t.closest('.sb-top')) return
+    /* the row grip owns its own drag */
+    if (t.closest('.sb-grip')) return
+    /* THE PARKED AIRCREW HANDLE IS NOT A NO-GO AREA (owner, 12 Aug 26 — the
+       other half of "sometimes I can't swipe"). It is a 30px sliver down the
+       right edge over a band 55vh tall — which is exactly where a leftward
+       swipe begins and where a thumb rests — and excluding it refused those
+       swipes outright: measured at x=378 on the real build, the day never
+       changed however far the finger travelled. Parked, the handle now splits
+       the gesture the same way the board does: the vertical is forwarded to the
+       board's scroll (wireParkedRosScroll below, which stands down once this
+       machine locks) and the horizontal is the carousel's. OPEN it is a
+       scrolling crew list that owns its own gesture, so that stays excluded. */
+    if (t.closest('.sb-ros') && document.body.classList.contains('ros-open')) return
     x0 = lx = e.clientX; y0 = e.clientY; t0 = lt = e.timeStamp || Date.now()
     vel = 0; live = true
   }
@@ -1105,6 +1236,8 @@ export function wireBoardSwipe(el: HTMLElement) {
       const di = view.SBDAY
       if (di == null) { live = false; return }
       lock = true
+      SWIPE_LOCKED = true
+      el.style.willChange = 'transform'
       originDay = di
       originRev = view.BOARDREV
       /* jsdom reports every rect as 0, and a 0 width would make the distance
@@ -1161,35 +1294,20 @@ export function wireBoardSwipe(el: HTMLElement) {
     const di = originDay, rev = originRev, target = paneDay
     if (!take || target == null) {
       /* home, and say why if the end of the week is the reason */
-      put(0, SWIPE_MS)
       if (!pane && Math.abs(dx) > takeDist)
         toast(dir > 0 ? 'Last day of the week' : 'First day of the week')
-      const p = pane; pane = null; live = false; lock = false
-      settlingPane = p
-      settleTimer = setTimeout(() => {
-        settleTimer = null
-        el.style.transition = ''; el.style.transform = ''
-        if (p) p.remove()
-        if (settlingPane === p) settlingPane = null
-      }, SWIPE_MS)
+      startSettle(0, Math.abs(dx), null)
       return
     }
     /* run it the rest of the way, THEN swap the day underneath. Committing
        first would repaint the board mid-flight and the animation would carry
        the day it was already showing. */
-    put(-dir * w, SWIPE_MS)
-    const p = pane; pane = null; live = false; lock = false
-    settlingPane = p
-    settleTimer = setTimeout(() => {
-      settleTimer = null
-      el.style.transition = ''; el.style.transform = ''
-      if (p) p.remove()
-      if (settlingPane === p) settlingPane = null
+    startSettle(-dir * w, Math.abs(w - Math.abs(dx)), () => {
       /* The dots, Close, logout or a page change may have moved the board
          while this animation was finishing. Never let an old swipe overwrite
          that newer choice (or reopen a board that has just been closed). */
       if (view.BOARDREV === rev && view.SBDAY === di) boardTab(target)
-    }, SWIPE_MS)
+    })
   }
 
   /* Safari uses pointercancel when native scrolling, a system gesture or an
@@ -1199,15 +1317,15 @@ export function wireBoardSwipe(el: HTMLElement) {
      and synchronously return the real board to rest. */
   const cancel = () => { if (live) clear() }
 
-  el.addEventListener('pointerdown', onDown, { passive: true })
-  el.addEventListener('pointermove', onMove, { passive: true })
-  el.addEventListener('pointerup', end, { passive: true })
-  el.addEventListener('pointercancel', cancel, { passive: true })
+  host.addEventListener('pointerdown', onDown, { passive: true })
+  host.addEventListener('pointermove', onMove, { passive: true })
+  host.addEventListener('pointerup', end, { passive: true })
+  host.addEventListener('pointercancel', cancel, { passive: true })
   return () => {
-    el.removeEventListener('pointerdown', onDown)
-    el.removeEventListener('pointermove', onMove)
-    el.removeEventListener('pointerup', end)
-    el.removeEventListener('pointercancel', cancel)
+    host.removeEventListener('pointerdown', onDown)
+    host.removeEventListener('pointermove', onMove)
+    host.removeEventListener('pointerup', end)
+    host.removeEventListener('pointercancel', cancel)
     clear()
   }
 }
@@ -1240,7 +1358,7 @@ export function wireBoardSwipe(el: HTMLElement) {
    --------------------------------------------------------------------------- */
 const ROS_TAP = 6           // px of travel still readable as a tap, not a scroll
 export function wireParkedRosScroll(main: HTMLElement) {
-  let y0 = 0, top0 = 0, live = false, moved = false, ros: HTMLElement | null = null
+  let x0 = 0, y0 = 0, top0 = 0, live = false, moved = false, ros: HTMLElement | null = null
   const onDown = (e: any) => {
     live = false; moved = false
     if (document.body.classList.contains('ros-open')) return
@@ -1248,11 +1366,19 @@ export function wireParkedRosScroll(main: HTMLElement) {
     if (!t || !t.closest) return
     const r = t.closest('.sb-ros') as HTMLElement | null
     if (!r) return
-    ros = r; y0 = e.clientY; top0 = main.scrollTop; live = true
+    ros = r; x0 = e.clientX; y0 = e.clientY; top0 = main.scrollTop; live = true
   }
   const onMove = (e: any) => {
     if (!live) return
-    if (Math.abs(e.clientY - y0) > ROS_TAP) moved = true
+    /* travel in EITHER axis, because a swipe from the handle is a gesture too
+       and the click it leaves behind must not open the drawer (see end) — the
+       vertical test alone let a horizontal swipe from this sliver change the
+       day AND slide the aircrew list out on top of it */
+    if (Math.abs(e.clientY - y0) > ROS_TAP || Math.abs(e.clientX - x0) > ROS_TAP) moved = true
+    /* the day carousel has this finger: it locked horizontal, so leave the
+       board's scroll position exactly where it was (wireBoardSwipe above is
+       wired first, so its lock is already set by the time this runs) */
+    if (SWIPE_LOCKED) return
     main.scrollTop = top0 - (e.clientY - y0)
   }
   /* A SCROLL MUST NOT OPEN THE DRAWER (owner, 11 Aug 26 — "after I move the
@@ -1276,15 +1402,23 @@ export function wireParkedRosScroll(main: HTMLElement) {
     el.addEventListener('click', eat, { capture: true, once: true })
     setTimeout(() => el.removeEventListener('click', eat, { capture: true } as any), 350)
   }
-  main.addEventListener('pointerdown', onDown, { passive: true })
-  main.addEventListener('pointermove', onMove, { passive: true })
-  main.addEventListener('pointerup', end, { passive: true })
-  main.addEventListener('pointercancel', end, { passive: true })
+  /* On `.schedboard`, for ORDER, not for reach: it still drives this `main`'s
+     scrollTop, and a press on the handle would bubble here either way. But the
+     carousel moved its own listeners up to the host (wireBoardSwipe), and a
+     handler on a child runs before one on the parent — so left on `.sb-main`
+     this would have read `SWIPE_LOCKED` one move stale and scrolled the board a
+     few px on the very move where the swipe was taken. Same element, and this
+     one is wired second (SchedBoard.tsx), so the lock is always already set. */
+  const on = (main.closest('.schedboard') as HTMLElement | null) || main
+  on.addEventListener('pointerdown', onDown, { passive: true })
+  on.addEventListener('pointermove', onMove, { passive: true })
+  on.addEventListener('pointerup', end, { passive: true })
+  on.addEventListener('pointercancel', end, { passive: true })
   return () => {
-    main.removeEventListener('pointerdown', onDown)
-    main.removeEventListener('pointermove', onMove)
-    main.removeEventListener('pointerup', end)
-    main.removeEventListener('pointercancel', end)
+    on.removeEventListener('pointerdown', onDown)
+    on.removeEventListener('pointermove', onMove)
+    on.removeEventListener('pointerup', end)
+    on.removeEventListener('pointercancel', end)
   }
 }
 /* ---------------------------------------------------------------------------

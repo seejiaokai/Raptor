@@ -369,8 +369,9 @@ edit week now:
   - Measured by `e2e/geometry.spec.ts`, which counts ROWS as well as
     overflow: both regressions above fitted the width perfectly and simply
     used a second line.
-- **The swipe is a CAROUSEL** (`wireBoardSwipe`, `board.ts`, wired to
-  `.sb-main`) — rewritten 11 Aug 26 on the owner's ask to make it "the same
+- **The swipe is a CAROUSEL** (`wireBoardSwipe`, `board.ts`; it MOVES `.sb-main`
+  but LISTENS on `.schedboard` — see the hit-testing paragraph below) —
+  rewritten 11 Aug 26 on the owner's ask to make it "the same
   logic and mechanism as edit schedule ... full motion, mechanism, feel and
   sensitivity".
   **What the week actually does, because it is not a gesture at all:**
@@ -381,24 +382,34 @@ edit week now:
   day of board is ~900 nodes against a 960 ceiling, so seven side by side is
   ~6,300 on the surface whose whole architecture exists to keep a phone fast.
   Everything the scheduler can FEEL is copied instead — the live day tracks
-  the finger 1:1, a small summary names the day coming in, the ends rubber-band
+  the finger 1:1, the day coming in names itself, the ends rubber-band
   at `EDGE_PULL`, and the release settles on distance OR velocity.
-  **The neighbour is a lightweight summary built only while a finger is
-  down** and thrown away on settle, so the resting board is unchanged at 897
-  nodes and the gesture adds fewer than 20. The first version built another
+  **The neighbour is the incoming day's NAME AND DATE, and nothing else**
+  (owner, 12 Aug 26 — "can u just show the date"), built only while a finger is
+  down and thrown away on settle, so the resting board is unchanged at 897
+  nodes and the gesture adds three. The first version built another
   complete ~900-node board here. Even after overlapping panes were capped at
   one, rapid Saturday/Sunday swipes still made mobile Safari retain enough
   discarded render resources to terminate the page: every drag built the
-  target once and the settle built it again as the live board. The gesture now
-  shows the destination's day, date and section counts; only the committed
-  live board builds the dense editor. It is an absolutely
+  target once and the settle built it again as the live board. It then carried
+  six section counts (waves, aircraft, duties, sim rows, ground items, personal
+  inputs) until the owner asked for the date alone — each count was a walk of the
+  day's structure, one of them a filter of the whole INPUTS list, performed on
+  the frame where the finger crosses the lock threshold, and a grid to lay out
+  besides. Do not put them back. It is an absolutely
   positioned `.sb-pane` inside `.schedboard`, NOT a track wrapped around
   `.sb-main`: that element is the phone's single scroller and carries
   overscroll containment, the parked-roster proxy scroll and the drawer, and
   wrapping it would have put all three back in play. A transform on a scroller
-  moves what you see and leaves its scrolling alone. The summary is fixed to
+  moves what you see and leaves its scrolling alone. The label is fixed to
   the visible pane rather than offset by `scrollTop`; making it as tall as the
   full board would recreate the paint-memory fault.
+  **The label rides the LEADING edge** (`.from-r`/`.from-l`, set from the
+  direction), because the pane is a full screen wide: centred, it sits 135px past
+  the edge of a 390px phone at the 60px that commits, so the date the owner asked
+  for could only be read in the fraction of a second of full cover after the
+  release. Against the edge that arrives first it is legible from about 70px of
+  drag, which is where the decision is actually made.
   **`touch-action:pan-y pinch-zoom` on `.sb-main` is the seam** that makes it
   work with no non-passive listener anywhere: the browser keeps the vertical
   scroll and stops claiming the horizontal, so nothing here calls
@@ -423,18 +434,58 @@ edit week now:
   release from the newly selected day: Saturday's stale left swipe would then
   become Sunday + 1, outside the loaded week.
   The day is swapped only AFTER the settle animation, so the incoming day is
-  never repainted in flight.
-  **Only one neighbour may exist, including during settle.** The first
-  carousel build nulled its pane reference as soon as the finger lifted but
-  left that full-board pane mounted for the 240ms animation. Another swipe in
-  that window could therefore add another whole day, and repeated swipes
-  stacked thousands of nodes on mobile Safari. The gesture is now locked until
-  settle removes its small summary pane. Its delayed commit
+  never repainted in flight — and the preview is then held ONE MORE PAINT
+  (`holdOneFrame`) before it is taken away, because the incoming day is drawn by
+  a React effect that runs after the store notification rather than inside
+  `boardTab`: dropped in the same task as the commit, the preview uncovers the
+  OLD day for a frame or two while the panels rebuild behind it. Measured after:
+  the new day is on screen at ~190ms and the preview lifts at ~230ms, so the old
+  one is never alone.
+  **The settle is timed by the distance LEFT to travel** (`SWIPE_MS` for a full
+  screen, floored at `SWIPE_MS_MIN`), not by a flat duration for every release.
+  A flat 240ms meant the further you dragged the slower the remainder went — 90px
+  crawling over a quarter of a second — and since nothing can commit until the
+  animation ends, the whole gesture waited on it (owner, 12 Aug 26: "still
+  slightly laggy"). `.sb-main` also gets `will-change:transform` for the duration
+  of a gesture and never outside one: promoting the phone's single scroller
+  permanently would hold a layer for a resting board, and not promoting it at all
+  leaves the browser free to repaint ~7,800px of content per frame.
+  **Only one neighbour may exist, including during settle — but a settle NEVER
+  refuses a new gesture** (owner, 12 Aug 26 — "sometimes it's unresponsive, I
+  can't swipe"). The first carousel build nulled its pane reference as soon as
+  the finger lifted but left that full-board pane mounted for the animation, so
+  another swipe in that window could add another whole day and repeated swipes
+  stacked thousands of nodes on mobile Safari. The answer was to ignore any press
+  that arrived during a settle, and that was too blunt: measured on the real
+  build, two swipes 80ms apart moved ONE day, and running through the week is
+  the ordinary way this surface is used. A press now FINISHES the pending settle
+  — committing its day and removing its pane synchronously — and then starts its
+  own gesture, which buys the same one-pane guarantee without the dead window.
+  Four swipes 70ms apart move four days (`e2e/geometry.spec.ts`). The finisher
+  takes one argument, and it matters: a finger landing commits the pending day,
+  while `pointercancel` and the unwiring path ABANDON it, so an unmounted board
+  never leaves a day change behind it. Its delayed commit
   checks both the day and a monotonic board-navigation generation, so Close,
   close-and-reopen on the same day, a dot scrub or another page change always
   wins over the stale callback. The
   pane is strictly contained to its viewport-sized paint box as well as being
   overflow-clipped, so it cannot enlarge the compositor surface.
+  **The listeners sit on `.schedboard`, one level above the element that moves,
+  and this was a FAULT not a preference** (owner, 12 Aug 26 — the deepest half
+  of the same report). While a swipe settles, the live board is a screen-width
+  away and the preview covering the viewport is `pointer-events:none`, so a
+  finger landing anywhere on the board hit-tests through to `.schedboard` itself
+  — confirmed with `elementFromPoint` mid-settle in Chromium. Wired to the
+  scroller, that press was not merely refused, it was never SEEN, and neither
+  was the drag behind it: a touch keeps implicit pointer capture on whatever it
+  went down on, so every later move went to the same unlistened element. The
+  whole next swipe was addressed to nothing. `.sb-main` is the host's only child
+  besides the bar, so everything a finger can reach still bubbles up unchanged;
+  the bar is the one region the widening adds and it is excluded by hand
+  (`.sb-top`), since its buttons are pressed and its dots are scrubbed by their
+  own machine. `wireParkedRosScroll` moved to the host too — same element, wired
+  second, so it reads the carousel's lock in the same event rather than one move
+  stale.
   **A day-only navigation does no schedule work.** `boardTab` changes view
   state and uses a board-only notification lane; it does not run the full-week
   rules engine or wake EditWeek/EditRoster behind the board. Their existing DOM
@@ -446,11 +497,37 @@ edit week now:
   it is wrong here: the board is wall-to-wall controls, so it made the
   gesture work once and then fail depending on what happened to sit under
   the thumb after the day changed — measured in a browser as Monday to
-  Tuesday working and Tuesday onward dead. Only `.sb-grip` is excluded
-  (`rowdrag.ts` claims a press there immediately); `drag.ts`'s puck drag
+  Tuesday working and Tuesday onward dead. **The parked aircrew handle was the
+  last survivor of that defensive list and went the same way on 12 Aug 26**: a
+  30px sliver down the right edge over a band 55vh tall, which is exactly where
+  a leftward swipe starts and where a thumb rests, and excluding it refused
+  those swipes outright (measured at x=378: the day never changed however far
+  the finger travelled). Parked, the handle now splits the finger by AXIS — the
+  vertical is forwarded to the board's scroll, the horizontal is the carousel's,
+  and `wireParkedRosScroll` stops driving `scrollTop` the moment the carousel
+  locks so an arced swipe cannot scroll the day it is leaving. It also counts
+  travel on BOTH axes when deciding to eat the click that follows, or a
+  horizontal swipe from the sliver would change the day and slide the crew list
+  out on top of it. OPEN, the drawer is still excluded: it holds a scrolling
+  list that owns its own gesture. Only `.sb-grip` is excluded unconditionally
+  (`rowdrag.ts` claims a press there immediately, and it is an 18px column a
+  scheduler aims at deliberately); `drag.ts`'s puck drag
   needs a deliberate HOLD and gives up the moment the finger travels, so a
   swipe can never arm it, and its `tdrag` body class is checked at pointerup
-  for one armed beforehand. `editingText()` is deliberately NOT consulted —
+  for one armed beforehand.
+  **It is PHONE-ONLY, gated on the same media query the layout is** (owner,
+  12 Aug 26 — "this is for mobile only"). `.sb-wide` was the only width bar
+  before that and it is an opt-in toggle, so a desktop board in the default
+  stacked layout swiped as well: a mouse drag across it — a text selection that
+  overshot, a slip while reading — changed the day, measured at 1440px as a 180px
+  drag moving Wednesday to Thursday. The gesture only ever existed because the
+  phone bar has no room for seven day chips; above 820px those chips are still
+  there, so it earns nothing and can only misfire. `HOOKS.isPhone()` is the same
+  `(max-width:820px)` query the phone board is drawn by, so the two cannot
+  disagree — verified on the real bundle at 390, 820, 900 and 1440px, switching
+  exactly at the breakpoint. `.sb-wide` stays excluded on top of that, because
+  there sideways IS panning across the day's columns.
+  `editingText()` is deliberately NOT consulted —
   it stays true for as long as a field is focused, including while the
   scheduler swipes away from it, so gating on it killed every swipe after
   the first tap.
