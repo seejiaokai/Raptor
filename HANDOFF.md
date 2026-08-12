@@ -16,14 +16,14 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**All six gates were green first-hand for the swipe pass of 12 Aug 26**, run in
-this container on the matching tree: `npm test` 1149 tests across 60 files,
+**All six gates were green first-hand for the day-navigation pass of 12 Aug 26**,
+run in this container on the matching tree: `npm test` 1134 tests across 60 files,
 `node reference/tfin.js` 728/0, `npm run build` clean, and the full
-`npm run test:e2e` geometry job 80/80 in Chromium. The built bundle was then
-driven at 390×780: six fast swipes forward stop correctly at Sunday, six back
-stop at Monday, a swipe from the right-edge aircrew handle changes the day
-without opening the drawer, a slow 24px read-drag and a 200px vertical scroll
-change nothing, and no console errors or 4xx appeared. `probes:adapted` (36 checks) and `perf`
+`npm run test:e2e` geometry job 79/79 in Chromium. The built bundle was then
+driven at 390×780 and at 1440px: the two day arrows step the week and stop
+disabled at both ends, the bar measures 75px on one line plus the day strip, a
+sideways drag across the board does nothing at all, and no console errors or 4xx
+appeared. `probes:adapted` (36 checks) and `perf`
 (4) were re-run first-hand in a Linux container on 12 Aug 26 and both passed;
 the resolution failure recorded here before that was a Windows-checkout problem
 with the adapted runner's direct `playwright` import, not a code fault. Re-state
@@ -56,18 +56,19 @@ any of these only after re-running them.
 - **jsdom cannot measure layout** — every rect Vitest reports is 0×0, so it
   can prove which class was emitted and nothing about what was painted.
   Geometry contracts are gated by `e2e/geometry.spec.ts` (the fourth CI
-  gate, 80 checks); wider visual work still wants the probe path
+  gate, 79 checks); wider visual work still wants the probe path
   (`npx vite preview --port 4173` + `probes/`).
 - **jsdom cannot HIT-TEST either, and that is a separate trap** (12 Aug 26). A
   pointer bug on the board hid there for a day: dispatching a synthetic
   pointerdown straight at the element you mean is not what a finger does, and a
   gesture wired to the wrong element passes every such test. The board swipe's
-  real fault was that mid-settle a finger lands on `.schedboard` (the live board
-  is a screen away and the preview is `pointer-events:none`), so the press went
+  real fault was that mid-settle a finger landed on `.schedboard` (the live board
+  was a screen away and the preview was `pointer-events:none`), so the press went
   to an element with no listener on it. **In a browser test, dispatch to
-  `document.elementFromPoint(x, y)`, not to the element you have in hand** — the
-  four-swipes test in `e2e/geometry.spec.ts` is the worked example, and it fails
-  on the old code only because of that one detail.
+  `document.elementFromPoint(x, y)`, not to the element you have in hand.** The
+  swipe itself was removed hours later, so the worked example is gone with it —
+  the lesson is not, and it applies to the row-drag and puck-drag machines that
+  are still there.
 
 ## Known issues / open work
 
@@ -294,20 +295,6 @@ any of these only after re-running them.
     `NO_BOARD_CELL` as well as in `keyOf`.** The honest fix, if it is ever
     wanted, is for the jump to leave the board for the week — nothing today
     does that, and it was not built blind.
-- **The board swipe's FEEL is unverified on a real phone, and two starting
-  places still refuse it.** The 12 Aug 26 pass fixed what could be measured —
-  the settle now scales with the travel left, the preview is three nodes, a press
-  during a settle lands the previous swipe instead of being dropped, and the
-  gesture listens where a mid-settle finger actually lands — all of it in this
-  container's Chromium at 390×780, where the whole board rebuild costs about
-  40ms. A phone will be slower and no phone is reachable from here, so if it
-  still reads as laggy the untried levers are, in order: commit the day BEFORE
-  the animation and render it behind the preview (the objection is that the
-  outgoing board would visibly change content mid-slide), and `SWIPE_MS` itself.
-  What still refuses a swipe by design: the row grip's 18px column (`rowdrag.ts`
-  claims a press there immediately, and it is aimed at deliberately) and the
-  AIRCREW drawer when it is OPEN. Both are in
-  `docs/ui-contracts.md` §The board on a phone is ONE window.
 - **The board's page lock is unverified on a real iPhone.** `body.sb-lock` is
   `overflow:hidden`, which locks the viewport by propagation from `body` (the
   root sets no overflow of its own) and was measured holding at both widths in
@@ -522,7 +509,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `Shell.tsx` | Topbar, nav, both schedule pages' chrome, global listeners (click/change/contextmenu/focusout/keydown, drag, pan), banner, memoized sections. |
 | `ViewWeek.tsx` / `EditWeek.tsx` | The week surfaces: build `dayHTML` per day, diff strings, swap only changed days, hold scroll; `EditRoster` palette. CURPAGE-gated. |
 | `SchedBoard.tsx` | The full-screen day board: panels with per-panel string diff; subscribes to both the global store and the board-only view lane; CxDialog (cancel-with-reason) and the Sort-all confirm, both wired to `HOOKS.closeBoardDialogs`. |
-| `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, per-section and whole-day sorts, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. Its phone carousel names the incoming day with the date alone rather than building another dense board, listens on `.schedboard` (not the scroller it moves — a mid-settle finger lands on the host), lets a new press FINISH the running settle instead of being refused, times that settle by the distance left to travel, locks ownership to the day/navigation generation at gesture lock, reconciles the final pointer-up side, and aborts `pointercancel` or any newer day choice. |
+| `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, per-section and whole-day sorts, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. Also `boardDayStep`, the day arrows' one call (12 Aug 26 — the swipe and its whole carousel are deleted; do not rebuild them, the tombstone comment in this file says why). |
 | `rowdrag.ts` | The board row-reorder pointer machine — its own small machine, deliberately not `drag.ts` (which stays scoped to pucks): pointer events so a finger works, releases implicit pointer capture on the way down, writes the lifted row and the drop bar straight onto the DOM, delegated on the board wrap so it survives every panel repaint. |
 | `html.ts` | THE builder library: `dayHTML`, `puck`, `slotCell`, `signoffHTML`, day warnings, day-info panel, legend, cx/flag tags, and the derived `areaText`/`atimeText`. |
 | `board-html.ts` / `palette-html.ts` / `logic-html.ts` | Board panels (inputs bands, notes, programme, duties, sim rows, ground, personal-inputs group, sim notes), the aircrew palette, the Logic tab's rule text. |
@@ -560,6 +547,6 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split and the carousel motion are in `e2e/geometry.spec.ts`, which is the only place either resolves. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. |
-| `src/ui/boardswipe.test.tsx` | The phone board's one-row top bar and day carousel — includes the reported Sunday edge/repeated Saturday↔Sunday sequence, bounded preview nodes/panes, same-finger edge reversal, iOS cancellation, stale settle/close/reopen, a dot choice while still held, a final pointer-up that crosses without a last move, and (12 Aug 26) a rapid run of three swipes moving three days, a press that lands on the host rather than the scroller, the top bar refusing to swipe, the preview carrying only day + date, a swipe off the parked aircrew handle that neither scrolls the board nor opens the drawer, and a desktop-width board refusing the gesture outright. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
+| `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
 | `.claude/skills/` (14 more) | `obra/superpowers` v6.2.0, MIT, vendored 7 Aug 26 — a plugin install lives in `~/.claude/plugins` on a local machine and never reaches a web session's fresh container, while repo-level skills ship with the clone. Cross-references de-namespaced; the upstream SessionStart hook is vendored at `.claude/hooks/` but **not** wired in. Provenance and the update recipe: `.claude/skills/SUPERPOWERS-VENDORED.md`. |

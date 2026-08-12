@@ -13,7 +13,7 @@ import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
-import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, wireBoardSwipe, wireDayDots, wireParkedRosScroll } from './board'
+import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, wireDayDots, wireParkedRosScroll } from './board'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
@@ -103,12 +103,6 @@ export function SchedBoard() {
     el.addEventListener('click', boardArmClick)
     el.addEventListener('change', boardChange)
     const offDrag = wireRowDrag(el)
-    /* the swipe rides on the SCROLLER, not #sbBoard: .sb-main is what a
-       finger actually travels over (the warnings strip and the inputs panel
-       are inside it too), and a swipe that only worked over the flying
-       panels would be a day change on one half of the screen and nothing on
-       the other */
-    const offSwipe = wireBoardSwipe(mainRef.current!)
     /* the dots are a scrub bar as well as seven tap targets (owner, 11 Aug
        26) — press and slide along them to run through the week */
     const offDots = wireDayDots(daysRef.current!)
@@ -126,7 +120,7 @@ export function SchedBoard() {
     const offHist = wireHistBubble(wrapRef.current!)
     return () => {
       el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
-      el.removeEventListener('change', boardChange); offDrag(); offSwipe(); offDots(); offRos(); offHist()
+      el.removeEventListener('change', boardChange); offDrag(); offDots(); offRos(); offHist()
     }
   }, [])
 
@@ -236,11 +230,38 @@ export function SchedBoard() {
           {d && d.today ? <i className="sb-today" title="today" /> : null}
           <span className="bl"> · scheduler board</span>
         </div>
-        {/* the same seven buttons on both surfaces — CSS makes them chips on a
-            desktop and dots on a phone, so there is one list, one click
-            handler, and a tap on a dot still jumps straight to that day */}
-        <div className="sb-days" id="sbDays" ref={daysRef}
-          onClick={e => { const t = (e.target as HTMLElement).closest('[data-sbtab]') as HTMLElement | null; if (t) boardTab(+t.dataset.sbtab!) }} />
+        {/* ARROWS AT THE EDGES, AND NO SWIPE (owner, 12 Aug 26 — "remove the
+            swipe for the mobile scheduler board too. Just put arrows at the
+            edges of the bar at the top to navigate left and right between
+            days.")
+            They flank the DAY STRIP rather than sitting at the two ends of the
+            bar's first line, and that is the only liberty taken with the ask:
+            the first line is the title plus eight 30px buttons and has 6px of
+            slack at 390px, so a pair of arrows there could only come out of the
+            day name — which is down to ~107px and is the one thing the bar must
+            keep (the 11 Aug rule: nothing joins this bar without something
+            leaving it). The day strip is the row that is ABOUT choosing a day,
+            it is 21px of mostly empty width, and arrows at its two ends put
+            them at the screen's edges under the thumbs, which is what was
+            asked for. `.sb-nav` is display:contents above 820px and the arrows
+            are hidden there, so the desktop bar is untouched — it still has all
+            seven days on it as chips, which is why it never needed a swipe or
+            an arrow in the first place.
+            The dots stay between them: they are the only thing that says WHICH
+            day of the seven you are on, and they are still a scrub bar. */}
+        <div className="sb-nav">
+          <button className="abtn sb-arrow" id="sbPrevDay" title="Previous day"
+            disabled={SBDAY == null || SBDAY <= 0}
+            onClick={() => boardDayStep(-1)}><span className="bi">‹</span><span className="bl"> Previous day</span></button>
+          {/* the same seven buttons on both surfaces — CSS makes them chips on a
+              desktop and dots on a phone, so there is one list, one click
+              handler, and a tap on a dot still jumps straight to that day */}
+          <div className="sb-days" id="sbDays" ref={daysRef}
+            onClick={e => { const t = (e.target as HTMLElement).closest('[data-sbtab]') as HTMLElement | null; if (t) boardTab(+t.dataset.sbtab!) }} />
+          <button className="abtn sb-arrow" id="sbNextDay" title="Next day"
+            disabled={SBDAY == null || SBDAY >= DAYS.length - 1}
+            onClick={() => boardDayStep(1)}><span className="bi">›</span><span className="bl"> Next day</span></button>
+        </div>
         <div className="sb-actions">
           <button className={'abtn sb-widebtn' + (SBWIDE ? ' on' : '')} id="sbWide"
             title={SBWIDE ? 'Back to the stacked phone layout' : 'Show the board in its full desktop layout'}
