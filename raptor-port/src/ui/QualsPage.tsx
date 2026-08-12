@@ -418,7 +418,8 @@ export function QualsPage() {
   }, [])
 
   const addPerson = () => {
-    const cs = addP.cs.trim(); if (!cs) return
+    const cs = addP.cs.trim()
+    if (!cs) return HOOKS.toast('A person needs a callsign')   // was a silent no-op
     /* TWO PEOPLE CANNOT SHARE A CALLSIGN (audit, 12 Aug 26). renameCallsign
        has refused this since Aug — "every stored `who` string would be
        ambiguous, ID_BY_CS can only point one way" — and adding never made the

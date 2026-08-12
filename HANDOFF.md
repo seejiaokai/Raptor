@@ -95,6 +95,32 @@ only after re-running them.
 
 ## Known issues / open work
 
+- **GUARD RAILS ON MALFORMED INPUT (owner, 12 Aug 26) — the line, and what is
+  deliberately still open.** Four surveys swept every typed field. The rule
+  applied: refuse MALFORMED data (not the kind of value the field holds, or
+  outside the range that kind can take), warn about DECISIONS (a clash, an
+  overnight absence, a late input). Refusals live at the WRITE path, where
+  every caller already reverts its own cell on a false return; `parseHM` stays
+  the loose shared reader and `hmOK` (`time.ts`) asks the range question
+  beside it. Rules: `docs/engine-rules.md`, the brief and availability
+  sections. What the sweep left ALONE, on purpose:
+  - **Long free text on the WEEK's prose cells** (flight remarks, day notes,
+    area) can still run a row to ~2000px. They are `contenteditable`, which
+    ignores `maxlength`, so the only guards available are truncating a paste
+    or refusing one — both worse than the disease. The board draws the same
+    fields as `<input>`s and stays 50px, so a value can look fine there and
+    tall on the week. Layout only; no gate is tripped.
+  - **A wave label typed long on the week** becomes an `<option>` in the
+    board's title `<select>` and can run past the panel (measured 2638px in a
+    930px box). Recovery is picking any real title. Same class as above.
+  - **Deleting the last in-time** removes the whole in-times block from the
+    DOM with no control to add one back — undo restores it, which is the
+    mitigation. The render is gated on `intimes.length`; ungating it is a
+    render change with geometry consequences, so it was not done blind.
+  - **`ruleParse` stays loose** — `6 monkeys` reads as 6, `0770` as 08:10 —
+    because every accepted value is echoed back FORMATTED in the field and the
+    toast, so the user sees exactly what was taken.
+
 - **The phone week's programme NAME column is sized against its own longest
   word, and that is a measured number, not a preference** (12 Aug 26). NAME
   and PEOPLE were both `1fr` and split the row evenly at 97px, while the
@@ -417,11 +443,15 @@ only after re-running them.
   around today, and the empty state already names the way out ("Change the
   dates, or pick 'All dates'"). Pinned both ways in `inputs.test.tsx`,
   including a test asserting the window does NOT jump to the demo week.
-- **`export.ts` writes store labels into the CSV unescaped.** Not an HTML
-  sink — `csvText` quotes for CSV, not for a browser — but a store renamed
-  to start with `=` is a spreadsheet-formula injection vector once that CSV
-  is opened in Excel/Sheets. Pre-existing risk surface, worse now that
-  labels are user-renamable. `export.ts:30` also still writes stores for a
+- **`export.ts` CLOSED the formula-injection hole on 12 Aug 26.** A cell whose
+  text begins `=` `+` `-` `@` (or a tab/CR) is written with a leading
+  apostrophe, which spreadsheets read as "the rest is text" and do not print —
+  so a store renamed to `=1+1` still READS as the squadron typed it and no
+  longer evaluates when the CSV is opened in Excel or Sheets. Quoting never
+  protected against this; both engines evaluate a quoted leading `=`. The
+  guard is at the DESTINATION rather than the entry field on purpose: there is
+  nothing malformed about naming something `-30`, and the same escape covers
+  remarks, callsigns and every other free-text column at once. `export.ts:30` also still writes stores for a
   standalone line if legacy `opts` survive there from before the
   SC/AVALON/BB gate went on both surfaces; the entry paths are closed, the
   CSV read path is not.

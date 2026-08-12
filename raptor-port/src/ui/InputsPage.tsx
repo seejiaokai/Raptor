@@ -385,7 +385,8 @@ export function InputsPage() {
             }}>
               {typeOptions()}
             </select></div>
-          <div className="ifield"><label>Repeat wks</label><input id="inRepeat" type="number" value={repeat} min={0} onChange={e => setRepeat(+e.target.value)} /></div>
+          <div className="ifield"><label>Repeat wks</label><input id="inRepeat" type="number" value={repeat} min={0} max={52}
+            onChange={e => setRepeat(Math.max(0, Math.min(52, Math.floor(+e.target.value || 0))))} /></div>
           <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder="e.g. medical appt" maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={add}>Add input</button></div>
         </div>

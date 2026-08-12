@@ -15,8 +15,25 @@ import { STORE_CFG } from '../engine'
    are set and the BOM is the one doing the work.
    Split out from exportCSV because the text is testable and the download is
    not — jsdom has no Blob URL machinery. */
+/* A CELL THAT OPENS WITH = + - @ IS A FORMULA TO A SPREADSHEET, not text
+   (audit, 12 Aug 26 — HANDOFF has listed this as an open risk since the store
+   labels became renamable, and the survey confirmed it is three clicks away
+   and PERSISTS: a store named `=1+1` comes back after a reload and rides into
+   every export). Quoting is not protection — Excel and Sheets both evaluate a
+   quoted leading `=` once the file is opened.
+   A leading apostrophe is the standard neutraliser: spreadsheets read it as
+   "treat the rest as text" and do not print it, so the cell still READS as the
+   squadron typed it. Prefixing beats refusing here, because unlike a bad clock
+   there is nothing malformed about naming something `-30` — the danger is in
+   the destination, so the fix belongs at the destination.
+   The tab and carriage return are in the set because both can carry a payload
+   past a naive importer. */
+const csvSafe = (v: any) => {
+  const s = String(v == null ? '' : v)
+  return /^[=+\-@\t\r]/.test(s) ? "'" + s : s
+}
 export function csvText(rows: any[][]) {
-  return '\uFEFF' + rows.map(r => r.map(c => `"${String(c == null ? '' : c).replace(/"/g, '""')}"`).join(',')).join('\r\n')
+  return '\uFEFF' + rows.map(r => r.map(c => `"${csvSafe(c).replace(/"/g, '""')}"`).join(',')).join('\r\n')
 }
 export function exportCSV(name: string, rows: any[][]) {
   const blob = new Blob([csvText(rows)], { type: 'text/csv;charset=utf-8' })

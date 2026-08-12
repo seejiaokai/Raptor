@@ -31,6 +31,24 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   is deliberately limited to that small-hours boundary: a later clock typed
   against an ordinary daytime sortie remains visible as typed rather than
   silently becoming a nearly 24-hour lead.
+- **A TIME CELL TAKES A TIME, OR NOTHING** (owner, 12 Aug 26 — "start and end
+  times must be numbers etc. if not reject the input"). `slots.ts`'s `txtSet`
+  refuses any value in the `TIME_TXT` family that `hmOK` (`time.ts`) does not
+  accept, and `inputedit.tsx` asks the same question of the input cells and the
+  dialog. Two things are refused, both malformed rather than merely unwise:
+  a MINUTE component of 60–99 (`1290` is a fat-finger for `1230`, and `parseHM`
+  rolled it to 13:30 — a time an hour later than the one typed, saved in
+  silence), and anything past `2400` (`9999` became `100:39`, which printed as
+  a take-off, produced a "32h05 work day" note contradicting its own printed
+  ends, and a crew-rest line reading "-5h-5"). An UNREADABLE value is refused
+  too, where it used to be normalised to empty — which did not merely fail, it
+  CLEARED the cell, and a line with no take-off leaves the conflict engine
+  entirely, taking its warnings with it. Clearing a time deliberately is still
+  legal; `2400` is still midnight.
+  **`parseHM` itself stays loose** — it is the shared reader, used by the Logic
+  tab and by two prose scrapers, and its semantics are pinned by tests and by
+  the reference. The range question belongs at the write path, which is where
+  the brief guard below already lives.
 - **A brief cannot BE typed after its own take-off** (owner, 12 Aug 26 — "put
   guard rails to deny such inputs", after the audit found what one does).
   The window is brief → T/O, so a later brief inverts it and `overlap()` stops
