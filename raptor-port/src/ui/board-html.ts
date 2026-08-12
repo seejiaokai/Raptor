@@ -7,7 +7,7 @@ import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
-import { esc } from '../state/view'
+import { esc, RMKOPEN } from '../state/view'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateRowCls, lateRowTitle } from './html'
 
 /* ---- reorder grip + nudge buttons (owner, 8 Aug 26) -----------------------
@@ -221,8 +221,21 @@ function sbMore(di:any,base:any,r:any,pv?:any){
 function sbTxt(cls:any,path:any,v:any,ph:any,pv:any,extra?:any){
   return `<input class="${cls}" data-bfld="${path}"${alAttr(path)}${pv?' disabled':''}${extra||''} value="${esc(v||'')}"${ph?` placeholder="${ph}"`:''}>`;
 }
-function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,mv?:any){
+/* a duty/sim/ground remarks input, marked EMPTY when it holds nothing — a
+   phone hides that box (scheduler.css), which is what turns an empty 30px
+   box into nothing on 13 of 25 such rows measured on a Monday. RMKOPEN is
+   the one exception: the row the "+" control below was just asked to open
+   stays un-empty (visible, blank) even before anything is typed into it, so
+   the reveal is not undone by the very repaint it triggers. */
+function sbRmk(path:any,v:any,pv:any){
+  return sbTxt('ain rmkin'+((String(v||'').trim()||RMKOPEN===path)?'':' empty'),path,v,'',pv);
+}
+function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,rmkPath?:any,mv?:any){
   return pv?'':`<span class="lctl">`+(mv||'')
+    /* rides the control strip the row already has, so revealing an empty
+       remarks box costs the row nothing new — no rmkPath (the row has no
+       remarks field at all, or a caller predating this) means no button. */
+    +(rmkPath?`<button class="mbtn rmkadd" data-rmkadd="${rmkPath}" title="Add a remark">+</button>`:'')
     +`<button class="mbtn${o.cx?' on':''}" data-${pre}cx="${addr}" title="${o.cx?'Restore '+what:'Cancel '+what+' (CX)'}">CX</button>`
     +`<button class="mbtn red${o.flag?' on':''}" data-${pre}flag="${addr}" title="${o.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
     +`<button class="mbtn del" data-${pre}del="${addr}" title="Remove ${what}">✕</button></span>`;
@@ -257,8 +270,8 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
         +sbTxt('ain',`${t}.role`,r.role,'',ro,ro?'':` data-rolepick="${di}.${wi}.${ri}"`)
         +sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}</div>`
-        +sbTxt('ain rmkin',`${t}.rmks`,r.rmks,'',ro)
-        +sbRowCtl(ro,r,`${di}.${wi}.${ri}`,'dr','this duty',sbNudge(`mv:d.${di}.${wi}.${ri}`,ro))+`</div>`;
+        +sbRmk(`${t}.rmks`,r.rmks,ro)
+        +sbRowCtl(ro,r,`${di}.${wi}.${ri}`,'dr','this duty',`${t}.rmks`,sbNudge(`mv:d.${di}.${wi}.${ri}`,ro))+`</div>`;
     });
   });
   return s+sbNote(d,di,'dtn','dutynotes','e.g. SDO swapped — Bane has the PHA at 1700, Pike covers the last hour.',ro)+`</div></div>`;
@@ -296,8 +309,8 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:s.${di}.${kind}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.label`,r.label,'EP SIM',ro)+sbTxt('atm',`${t}.str`,r.str,'0900',ro)+sbTxt('atm',`${t}.end`,r.end,'1100',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${txt+seats+sbMore(di,base,r,ro)}</div>`
-        +sbTxt('ain rmkin',`${t}.rmks`,r.rmks,'remarks',ro)
-        +sbRowCtl(ro,r,`${di}.${kind}.${ri}`,'sr','this sim',sbNudge(`mv:s.${di}.${kind}.${ri}`,ro))+`</div>`;
+        +sbRmk(`${t}.rmks`,r.rmks,ro)
+        +sbRowCtl(ro,r,`${di}.${kind}.${ri}`,'sr','this sim',`${t}.rmks`,sbNudge(`mv:s.${di}.${kind}.${ri}`,ro))+`</div>`;
     });
   });
   return s+sbNote(d,di,'sn','simnotes','e.g. OFT 2 u/s Thu PM — 4-ship EP profile pushed to next week. Divot still owes an AMT EP.',ro)+`</div></div>`;
@@ -316,8 +329,8 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
       s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'1400',ro)+sbTxt('atm',`${t}.end`,x.end,'1500',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}</div>`
-        +sbTxt('ain rmkin',`${t}.rmks`,x.rmks,'remarks',ro)
-        +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro))+`</div>`;
+        +sbRmk(`${t}.rmks`,x.rmks,ro)
+        +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',`${t}.rmks`,sbNudge(`mv:g.${di}.${ri}`,ro))+`</div>`;
     });
   }
   return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',ro)+`</div></div>`;

@@ -2,17 +2,18 @@
 /* The Inputs page — tfin's inputs assertions plus the B26/B48 model rules
    driven through the page: role-gated add/delete, the undo stack, and the
    week revalidating when an input lands. */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo } from '../state/store'
-import { INPUTS, INPUT_TYPES } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, DATES } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { acceptInput, inpKey, acceptedDay } from '../engine/slots'
 import { canEditSched } from '../state/auth'
 import { HIST } from '../state/history'
 import { validate } from '../engine/validate'
+import { InputsPage, initialRange } from './InputsPage'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -648,6 +649,69 @@ describe('the date window', () => {
     await showAllDates()
     expect($$('#inBody tr').length, 'the July demo rows are back').toBeGreaterThan(windowed)
     expect($('#inRangeBtn').textContent).toContain('All dates')
+  })
+})
+
+/* The very first window the page opens on (owner, 12 Aug 26). The demo's
+   only data is the loaded week in DATES (13–19 Jul 2026); a clock past that
+   week must not open the page on an empty table — see InputsPage.tsx for the
+   full reasoning. initialRange is the pure computation the mount reads. */
+describe('initialRange — the window the page opens on', () => {
+  it('today inside the loaded week: the ordinary today → +2 months, unchanged', () => {
+    const now = new Date(2026, 6, 15)   // 15 Jul 2026 — inside 13–19 Jul
+    expect(initialRange(now)).toEqual({ from: '2026-07-15', to: '2026-09-15' })
+  })
+
+  it('the loaded week\'s own boundary days count as inside it', () => {
+    expect(initialRange(new Date(2026, 6, 13))).toEqual({ from: '2026-07-13', to: '2026-09-13' })
+    expect(initialRange(new Date(2026, 6, 19))).toEqual({ from: '2026-07-19', to: '2026-09-19' })
+  })
+
+  it('today after the loaded week (the real situation, Aug 2026): anchors to the week itself', () => {
+    const now = new Date(2026, 7, 12)   // 12 Aug 2026 — the container's actual clock
+    expect(initialRange(now)).toEqual({ from: '2026-07-13', to: '2026-07-19' })
+  })
+
+  it('today before the loaded week also anchors to the week itself', () => {
+    const now = new Date(2026, 5, 1)    // 1 Jun 2026
+    expect(initialRange(now)).toEqual({ from: '2026-07-13', to: '2026-07-19' })
+  })
+})
+
+/* A render check, not just the pure function: a freshly-mounted page with the
+   clock past the loaded week must show the seeded rows, not the empty state
+   the owner reported ("all my leave has vanished"). Fake timers because the
+   default window is computed at mount, from `new Date()`. */
+describe('the page as it first mounts, with different clocks', () => {
+  const mountFresh = async () => {
+    const h = document.createElement('div')
+    document.body.appendChild(h)
+    const root = createRoot(h)
+    await act(async () => { root.render(<InputsPage />) })
+    return { h, root }
+  }
+
+  it('today inside the loaded week: mounts exactly as before (today → +2 months)', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 6, 15))
+    const { h, root } = await mountFresh()
+    expect(h.querySelectorAll('#inBody tr').length, 'the demo rows render').toBeGreaterThan(0)
+    expect(h.querySelector('#inRangeBtn')!.textContent).toContain('Jul 15')
+    await act(async () => root.unmount())
+    h.remove()
+    vi.useRealTimers()
+  })
+
+  it('today after the loaded week (Aug 2026): shows the seeded inputs, not the empty state', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 7, 12))
+    const { h, root } = await mountFresh()
+    expect(h.querySelectorAll('#inBody tr').length, 'the demo rows render').toBeGreaterThan(0)
+    expect(h.querySelector('#inEmpty')!.hasAttribute('hidden'), 'the empty state is not shown').toBe(true)
+    expect(h.querySelector('#inRangeBtn')!.textContent).toContain(DATES[0])
+    await act(async () => root.unmount())
+    h.remove()
+    vi.useRealTimers()
   })
 })
 

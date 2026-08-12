@@ -78,6 +78,22 @@ not a code fault. Re-state any of these only after re-running them.
 
 ## Known issues / open work
 
+- **The phone week's programme NAME column is sized against its own longest
+  word, and that is a measured number, not a preference** (12 Aug 26). NAME
+  and PEOPLE were both `1fr` and split the row evenly at 97px, while the
+  widest people cell in the whole week uses 76px of its 97 — so 21px sat idle
+  beside a name column too narrow for its text, and `STANDARDISATION` (104px)
+  broke as `STANDARDISATIO / N MEETING`, which reads as a typo. PEOPLE is
+  pinned to one puck + 8px now and NAME takes the rest (111px measured).
+  **A longer word than 104px would break mid-word again** — the guard is
+  `hyphens:auto` (added the same day on the prose cells), which makes such a
+  break carry a visible hyphen instead. **That guard is UNVERIFIED here and
+  deliberately so**: this container's Chromium ships no hyphenation
+  dictionaries — measured, `hyphens:auto` and `hyphens:none` give byte-identical
+  heights — so it is a no-op in every local run and in CI, while iOS Safari and
+  desktop Chrome do honour it. Do not "fix" it by widening the column further
+  on the strength of a local screenshot; the local browser cannot show you the
+  hyphen either way.
 - **No shared data.** localStorage only — two devices never see each
   other's edits. The obvious next enhancement (needs a server or a sync
   backend; touches `engine/hooks.ts:storeBackend` and the mutation funnel).
@@ -369,13 +385,17 @@ not a code fault. Re-state any of these only after re-running them.
   (Downchits ARE exempt — owner, 9 Aug 26 — so the commonest genuinely
   unavoidable late input is already covered. Leave and detachments are not.)
   Rules: `docs/engine-rules.md` §The late-input mark.
-- **The Inputs page opens on a window that no longer contains the demo data.**
-  It defaults to today → +2 months, and the one dataset is the week of
-  13 Jul 26 — so with the container clock past that week the table opens
-  EMPTY until you clear the window (the date button → its "all" option). Not
-  caused by the late-input work but surfaced by it, since that page is where
-  the mark is most legible. It fixes itself the day the app carries more than
-  one week of data; until then it reads as "my inputs have vanished".
+- **The Inputs page's opening window is FIXED (12 Aug 26), and the fix is
+  self-cancelling.** It used to open on today → +2 months against a dataset
+  that is the week of 13 Jul 26, so with the clock past that week the table
+  opened EMPTY and read as "my inputs have vanished". `initialRange()`
+  (`InputsPage.tsx`) now anchors the FIRST window to the loaded week whenever
+  today falls outside it, and is otherwise the old default untouched. Nothing
+  else moved: the user's own later picks, "all dates", the calendar and the
+  filtering are as they were. **Expect this code to become dead** the day the
+  app carries more than one week — today will be inside the data again and the
+  ordinary default takes over on its own, which is the condition to delete it
+  under rather than a branch to maintain.
 - **`export.ts` writes store labels into the CSV unescaped.** Not an HTML
   sink — `csvText` quotes for CSV, not for a browser — but a store renamed
   to start with `=` is a spreadsheet-formula injection vector once that CSV
