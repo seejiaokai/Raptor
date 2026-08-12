@@ -41,9 +41,10 @@ found, not because they are open.
 
 ## Branch state
 - Designated branch: `claude/handoff-documentation-64ib1p`
-- Its PR is **open, #177**. PRs #175 and #176 from earlier in this session
-  already merged, and the branch was reset from `origin/main` between each.
-- Once #177 merges, the next session must reset before starting new work:
+- **Every PR it carried is MERGED** — #175, #176, #177 (the work) and #178
+  (a correction to this file). The branch was reset from `origin/main`
+  between each.
+- **So the next session MUST reset it before starting new work:**
   `git fetch origin main && git checkout -B claude/handoff-documentation-64ib1p origin/main`
   Otherwise it stacks commits onto already-merged history.
 
