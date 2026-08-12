@@ -9,7 +9,7 @@ import { DAYS } from './engine/data'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
 import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd, isLateInput, lateNote, inputDueISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
-import { ELOG, elogRows, elogFor, elogWhen, elogClear, keyLabel } from './engine/editlog'
+import { ELOG, elogRows, elogFor, elogWhen, elogClear, elogRemap, keyLabel } from './engine/editlog'
 import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard, storesText } from './engine/stores'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
@@ -21,7 +21,7 @@ import { slotBar, dayEngaged, slotRules, dayOff, dayAway } from './engine/avail'
 import { isStandalone, makeStandalone, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE, dayCount, saExempt } from './engine/waves'
 import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays, permuteKeys, moveKeys } from './engine/keys'
 import { applyMove } from './engine/reorder'
-import { hhmm, parseHM, minus, overlap, hm24 } from './engine/time'
+import { hhmm, parseHM, hmOK, minus, overlap, hm24 } from './engine/time'
 import { HIST, histApply, histSnap, histPush } from './state/history'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
@@ -86,7 +86,7 @@ export function installProbeBridge() {
   w.keyDay = keyDay; w.shiftKeys = shiftKeys; w.shiftAircraft = shiftAircraft
   w.shiftFormation = shiftFormation; w.shiftWave = shiftWave; w.uniqDays = uniqDays
   w.permuteKeys = permuteKeys; w.moveKeys = moveKeys; w.applyMove = applyMove
-  w.hhmm = hhmm; w.parseHM = parseHM; w.minus = minus
+  w.hhmm = hhmm; w.parseHM = parseHM; w.hmOK = hmOK; w.minus = minus
   w.dayApproved = dayApproved; w.alColor = alColor; w.signMissing = signMissing; w.unpublishAL = unpublishAL
   w.isScheduler = isScheduler; w.isLead = isLead; w.isInstr = isInstr; w.isInstrPilot = isInstrPilot; w.isOcu = isOcu
   w.sanStatus = sanStatus; w.nameToId = nameToId
@@ -119,7 +119,7 @@ export function installProbeBridge() {
      splice), never reassigned, so a plain reference is enough — unlike
      STORE_CFG above, which needs a getter because storesLoad swaps it whole. */
   w.ELOG = ELOG; w.elogRows = elogRows; w.elogFor = elogFor; w.elogWhen = elogWhen
-  w.elogClear = elogClear; w.keyLabel = keyLabel
+  w.elogClear = elogClear; w.elogRemap = elogRemap; w.keyLabel = keyLabel
   w.alCount = alCount; w.alDays = alDays; w.pendDays = pendDays; w.pendCount = pendCount; w.approvedDays = approvedDays
   w.daySnapOf = daySnapOf; w.dayVersions = dayVersions; w.verLabel = verLabel; w.dayCurVer = dayCurVer
   w.restoreDayVersion = restoreDayVersion; w.dayKeys = dayKeys
