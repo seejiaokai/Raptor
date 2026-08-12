@@ -66,6 +66,11 @@ Four things make it work, and each is load-bearing:
   `SBDAY!=null`: `closeBoardState` also runs on logout and on leaving Edit
   Schedule, where a write would scroll the next week somewhere nobody asked
   for, and would clobber a carry a page hop had just set.
+  **And when `setPage` itself closes the board, the board's write WINS**
+  (audit, 12 Aug 26): the leave-a-week-page capture below it used to
+  overwrite the just-written carry with wherever the week UNDER the board
+  was parked — the surface the user was not looking at. `setPage` now skips
+  the geometry capture on exactly the switch that closed a board.
 - **`CARRYDAY` is consumed ONCE**, by whichever week paints next
   (`ViewWeek.tsx` / `EditWeek.tsx`, right after the `scrollLeft = sl` that
   holds scroll across an ordinary repaint). If it stuck, every later repaint
@@ -121,7 +126,9 @@ list anyone can pick from.
 
 Owner, Aug 5. Three things, all view-only — none of them touches the model:
 
-- **Window.** Opens on today → +`DEFAULT_SPAN_MONTHS` (2). Membership is
+- **Window.** Opens on today → +`DEFAULT_SPAN_DAYS` (14) — the owner's 12 Aug
+  26 rule; the `#inRangeDef` chip still restores the older, wider
+  today → +`DEFAULT_SPAN_MONTHS` (2) window it is labelled after. Membership is
   **overlap**, not "starts inside": a span that began before today and has not
   ended is still live and must stay on screen. `#inRangeBtn` drops the same
   two-click `RangeCal` the add form uses; `#inRangeDef` restores the default
@@ -451,6 +458,20 @@ edit week now:
   says WHICH of the seven days is open, which is the one job a pair of arrows
   cannot do. A tap still jumps straight to a day; press and slide still runs
   through the week.
+  **A scrub needs a button down** (audit, 12 Aug 26). Capture is deferred to
+  the first real move, so a mouse press that slipped off the strip early
+  could release where the strip's up listener never hears it — `live` stayed
+  armed and a bare HOVER then scrubbed the week. `wireDayDots`'s move
+  handler (and `wireParkedRosScroll`'s, the same hole on the drawer handle)
+  now drops the gesture the moment a mouse moves with no primary button
+  down. Touch is untouched — implicit capture already delivers its up.
+  **A day change commits and closes what belongs to the day being left**
+  (audit, 12 Aug 26; `boardTab`). A focused `data-bfld`/`data-ifld` input is
+  blurred — and its `change` said by hand where the engine does not fire it
+  on teardown (jsdom, historically WebKit) — so a half-typed value lands on
+  the day it was typed on instead of nowhere; the stores popup and a pinned
+  History bubble are taken down rather than left describing the old day
+  (the Sort-all confirm deliberately survives — it names its day).
 - **THE SWIPE IS GONE — do not rebuild it** (12 Aug 26). It was an owner ask on
   11 Aug and it went through three shapes in a day and a half: a jump when a
   distance threshold was crossed; then a carousel where the live board tracked
@@ -740,6 +761,18 @@ from Edit Schedule and from the schedule board, writing back to the Inputs
 page. The commit is the Inputs page's own — both call `commitInputEdit` /
 `removeInput` in `ui/inputedit.tsx`, so the accepted-row relink, the
 validation and the single undo step cannot drift between the two surfaces.
+
+Two audit fixes on the relink itself (12 Aug 26): **re-filing falls back to
+any covered loaded day** — an Unavailable-filed input whose span STARTS
+before the loaded week has no loaded start date, and the relink used to read
+that as "moved outside the programmed week" and silently unfile it on a mere
+remark edit; it now re-files onto the first loaded day the span still covers
+(mirroring `markInputDays`). And **what a scheduler added to the promoted
+ground row by hand — extra crew in `more`, the red flag, a CX — survives the
+relink**: the row is still regenerated from the input, but those three are
+captured before the unaccept and put back after the re-accept, instead of
+being silently discarded by any edit, including a member retouching their
+own remark.
 
 **The times and the remarks are ORDINARY CELLS** (owner, 10 Aug 26 — "edit the
 input directly like changing the start and end time... no need to open a new
@@ -1819,9 +1852,12 @@ button that would do nothing, and a key whose row has since been deleted
 toasts rather than failing silently.
 
 **A row is a button only where the board can SHOW that detail** — `histJumpable`
-(`histbubble.ts`). Four families are edited somewhere the board does not draw:
-`ar:`/`at:` (the area and area-time strip) and `it:` (in-times) render on the
-week only, and `tr:` (traffic) is typed into a modal with no cell anywhere.
+(`histbubble.ts`). Five families are edited somewhere the board cannot answer
+for: `ar:`/`at:` (the area and area-time strip) and `it:` (in-times) render on
+the week only, `tr:` (traffic) is typed into a modal with no cell anywhere,
+and `wl:` (the wave label — audit, 12 Aug 26) IS on the board but as the
+title of a `[data-wsel]` `<select>`, which is none of the cell attributes
+`findHistCell` reads, so its jump could only ever toast an untruth.
 They still LIST; they just offer no jump. This is deliberately a different
 question from `findHistCell` returning null, and the two must stay apart: a
 missing key means either "the row was deleted since" (worth saying) or "never

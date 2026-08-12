@@ -109,8 +109,12 @@ export function findHistCell(root: ParentNode, key: string): HTMLElement | null 
 
    Found on 11 Aug 26 by the handoff's own doc check, after the two changes
    that combined to create it shipped separately: one made these four log a
-   value at all, the next made list rows clickable. Neither was wrong alone. */
-const NO_BOARD_CELL = ['ar', 'at', 'it', 'tr']
+   value at all, the next made list rows clickable. Neither was wrong alone.
+   `wl` joined on 12 Aug 26 for a subtler reason than the four: the wave
+   label IS on the board — but as the title of a [data-wsel] <select>, which
+   is none of the cell attributes findHistCell can answer for, so a wl: jump
+   could only ever toast an untruth about a wave sitting in plain sight. */
+const NO_BOARD_CELL = ['ar', 'at', 'it', 'tr', 'wl']
 export function histJumpable(key: any) {
   const k = String(key || '')
   if (!k) return false

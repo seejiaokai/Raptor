@@ -80,12 +80,16 @@ export function initialRange(now = new Date()) {
 
 /* The sort key per column. Dates sort on the ISO date the label implies, with
    the minutes appended, so two inputs on the same day order by time of day.
+   The minutes run 0–1439, so they are padded to FOUR digits — the shared
+   two-digit pad() let '600' (10:00) sort before '65' (01:05), which put a
+   mid-morning input above a small-hours one (audit, 12 Aug 26).
    `mod` is 'now' for anything edited this session and a yyyy-mm-dd stamp
    otherwise — 'now' IS the most recent, so it sorts above every stamp. */
+const pad4 = (m: any) => String(m).padStart(4, '0')
 const SORTKEY: any = {
   name: (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person || '')).toLowerCase(),
-  start: (r: any) => unfmt(r.date) + pad(r.allday ? 0 : (r.s || 0)),
-  end: (r: any) => unfmt(r.endDate || r.date) + pad(r.allday ? 1439 : (r.e || 0)),
+  start: (r: any) => unfmt(r.date) + pad4(r.allday ? 0 : (r.s || 0)),
+  end: (r: any) => unfmt(r.endDate || r.date) + pad4(r.allday ? 1439 : (r.e || 0)),
   type: (r: any) => String(r.type || '').toLowerCase(),
   remarks: (r: any) => String(r.remarks || '').toLowerCase(),
   recur: (r: any) => String(r.recur || '').toLowerCase(),

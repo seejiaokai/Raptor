@@ -161,24 +161,35 @@ export function deletionWasIssued(di:any,kind:any,...at:any[]){di=+di;
   if(!dayApproved(di))return true;
   const ver=dayCurVer(di),snap=ver!=null?daySnapOf(di,ver):null,d=snap&&snap.d;
   if(!d)return true;
-  if(kind==='line'){
-    const wave=(d.waves||[])[+at[0]],form=wave&&(wave.formations||[])[+at[1]];
-    return !!(form&&(form.aircraft||[])[+at[2]]);
-  }
-  if(kind==='wave')return !!(d.waves||[])[+at[0]];
-  if(kind==='note')return +at[0]<(d.notes||[]).length;
-  if(kind==='programme')return !!(d.allhands||[])[+at[0]];
-  if(kind==='dutyblock')return !!(d.dutywaves||[])[+at[0]];
-  if(kind==='duty'){
-    const block=(d.dutywaves||[])[+at[0]];
-    return !!(block&&(block.rows||[])[+at[1]]);
-  }
-  if(kind==='sim')return !!(((d.sims||{})[String(at[0])]||[])[+at[1]]);
-  if(kind==='ground'){
-    const rows=d.ground||[],src=at[1];
-    return src!=null?rows.some((r:any)=>r&&r.src===src):!!rows[+at[0]];
-  }
-  return true;
+  if(kind==='ground'&&at[1]!=null)return (d.ground||[]).some((r:any)=>r&&r.src===at[1]);
+  /* The snapshot is indexed by the LIVE index, and a reorder makes the two
+     diverge: add a draft row, Sort all, and the issued rows can sit at
+     indices the shorter issued snapshot never had — so the lookup answered
+     "never issued" about a row the squadron holds a printed copy of, and
+     its removal reached no AL (audit, 12 Aug 26). The identity checks above
+     have already said this row is NOT one of the outstanding draft adds, so
+     when its index runs past the snapshot's tail while the live section is
+     longer than the issued one, the surplus is exactly those draft adds and
+     THIS row must be issued: say so. An in-range hit keeps the plain
+     positional answer, which is also the whole story for legacy/session
+     data that predates the identity markers. */
+  const sectOf=(day:any):any[]=>{
+    if(!day)return [];
+    if(kind==='wave')return day.waves||[];
+    if(kind==='line'){const w=(day.waves||[])[+at[0]],f=w&&(w.formations||[])[+at[1]];return (f&&f.aircraft)||[];}
+    if(kind==='note')return day.notes||[];
+    if(kind==='programme')return day.allhands||[];
+    if(kind==='dutyblock')return day.dutywaves||[];
+    if(kind==='duty'){const b=(day.dutywaves||[])[+at[0]];return (b&&b.rows)||[];}
+    if(kind==='sim')return ((day.sims||{})[String(at[0])])||[];
+    if(kind==='ground')return day.ground||[];
+    return [];
+  };
+  const ix=kind==='line'?+at[2]:(kind==='duty'||kind==='sim')?+at[1]:+at[0];
+  if(!isFinite(ix))return true;
+  const was=sectOf(d);
+  if(ix<was.length&&(kind==='note'||!!was[ix]))return true;
+  return sectOf(DAYS[di]).length>was.length;
 }
 export function markDeletion(di:any,kind:any,wasIssued:any=true){if(!wasIssued)return '';const key=deletionKey(di,kind);markEdit(key);return key;}
 /* Filing a personal input under Unavailable changes the issued day but has no

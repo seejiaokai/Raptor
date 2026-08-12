@@ -44,7 +44,7 @@ export function Login() {
           <div className="err" id="lerr">{err}</div>
           <button className="go" type="submit">Sign in</button>
           <div className="hint">
-            <b>a</b> / <b>a</b> · full edit &nbsp;·&nbsp; <b>user</b> / <b>user</b> · view only
+            <b>a</b> / <b>a</b> · full edit &nbsp;·&nbsp; <b>user</b> / <b>user</b> · member
           </div>
         </form>
 

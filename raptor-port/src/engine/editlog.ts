@@ -40,6 +40,23 @@ export const ELOG: { rows: ELogRow[]; cap: number } = { rows: [], cap: 400 }
 
 export function elogClear() { ELOG.rows.length = 0 }
 
+/* THE LOG'S ADDRESSES MOVE WITH THE KEY SPACE (audit, 12 Aug 26). A delete
+   or reorder renumbers every index-addressed key — keys.ts rewrites pending,
+   changes, added and the issued ALs, and until this hook it left ELOG alone,
+   so an old row kept its BIRTH key forever: the changes list then jumped to
+   whatever row had slid into that address and pinned one man's history onto
+   another, while the row that really held the edit answered hover with
+   nothing. keys.ts calls this with the same `move` it applies to the
+   amendment book, so the two can never drift again.
+   `move` returning null means the addressed row itself was deleted: the key
+   is dropped and the entry becomes a plain keyless row — still listed (what
+   was typed is still true), just no longer a jump, exactly like a
+   structural sentence. The deletion's own "what it held" line sits beside
+   it in the list. */
+export function elogRemap(move: (k: any) => any) {
+  ELOG.rows.forEach(r => { if (r.key) { const m = move(r.key); r.key = m == null ? '' : m } })
+}
+
 /* Which keys address a PERSON rather than text — a flying seat carries no
    prefix, and d:/s:/g:/a: are the duty, sim, ground and programme crews.
    Everything else in the grammar is a typed field. Parsing the key beats

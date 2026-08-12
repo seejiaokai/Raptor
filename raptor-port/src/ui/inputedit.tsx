@@ -13,7 +13,8 @@
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isUnavail } from '../engine/inputs'
-import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
+import { acceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
+import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -119,6 +120,18 @@ export function commitInputEdit(r: any, draft: any) {
     const wasAcc = r.acc
     /* the row may sit on any day the input spans, not its start date */
     const wasDi = wasAcc === 'g' ? acceptedDay(r) : -1
+    /* what a SCHEDULER added to the promoted row by hand — extra crew in
+       `more`, the red flag, a CX — is not derivable from the input, so the
+       unaccept/re-accept relink below used to regenerate the row bare and
+       silently discard it (audit, 12 Aug 26). Captured here, before the
+       unaccept removes the row (and before the edit can change inpKey),
+       and put back onto the regenerated row after the re-accept. */
+    let extras: any = null
+    if (wasDi >= 0) {
+      const oldRow = ((DAYS[wasDi] || {}).ground || []).find((g: any) => g.src === inpKey(r))
+      if (oldRow && (oldRow.more?.length || oldRow.flag || oldRow.cx))
+        extras = { more: oldRow.more, flag: oldRow.flag, cx: oldRow.cx }
+    }
     if (wasAcc) unacceptInput(wasDi, r)
     r.person = draft.person; r.type = draft.type; r.allday = draft.allday
     r.s = s; r.e = e; r.date = date; r.remarks = String(draft.remarks || '').trim(); r.mod = 'now'
@@ -126,9 +139,16 @@ export function commitInputEdit(r: any, draft: any) {
     if (endDate) r.endDate = endDate; else delete r.endDate
     if (wasAcc) {
       /* put it back on the day it was on, if the edit still covers that day;
-         otherwise its new start date */
+         otherwise its new start date — and if the START label is not itself
+         a loaded day, the first loaded day the span still covers. Without
+         that last fallback an Unavailable-filed input whose span BEGINS
+         before the loaded week (wasDi is always -1 for 'u' — acceptedDay
+         answers only 'g') was silently unfiled by any in-place edit, with
+         a false "moved outside the programmed week" toast, though no date
+         had moved (audit, 12 Aug 26). Mirrors markInputDays semantics. */
       const keep = wasDi >= 0 && DATES[wasDi] && inputCoversDate(r, DATES[wasDi])
-      const di = keep ? wasDi : DATES.indexOf(r.date)
+      const startDi = DATES.indexOf(r.date)
+      const di = keep ? wasDi : (startDi >= 0 ? startDi : DATES.findIndex(dt => inputCoversDate(r, dt)))
       /* acceptInput REFUSES a leave / medical / overseas-duty type — those are
          issued through the Unavailable block and never become a programme row.
          So retyping an accepted Meeting to LL legitimately drops its row, and
@@ -144,6 +164,14 @@ export function commitInputEdit(r: any, draft: any) {
           HOOKS.toast(isUnavail(r.type)
             ? `${r.type} does not go on the Ground Programme — its row has been removed`
             : 'An identical row is already on the Ground Programme — this one was not put back', 'warn')
+        else if (extras && wasAcc === 'g') {
+          const nr = ((DAYS[di] || {}).ground || []).find((g: any) => g.src === inpKey(r))
+          if (nr) {
+            if (extras.more?.length) nr.more = extras.more
+            if (extras.flag) nr.flag = extras.flag
+            if (extras.cx) nr.cx = extras.cx
+          }
+        }
       }
       else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
     }

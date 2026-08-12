@@ -4,7 +4,23 @@ import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
 import { toMin, parseHM, win } from './time'
 import { VCONF } from './rules'
 import { isStandalone, saExempt } from './waves'
-import { whoArr } from './slots'
+import { whoArr, acceptedDay } from './slots'
+/* THE ACCEPT DEFERRAL IS PER-DAY, NOT PER-INPUT (audit, 12 Aug 26).
+   inputFlags defers a timed accepted input to the ground row the accept
+   created — but that row lives on ONE day, while the input may cover
+   several. Filtering by inputFlags alone silenced the input on EVERY
+   covered day, so accepting a Tue–Thu meeting onto Wednesday switched off
+   real INPUT_FLY/NO_BRIEF warnings on Tuesday and Thursday, where no row
+   exists to carry the clash. The gate the carve-out promises — "a clash
+   surfaces exactly once, as DOUBLE_BOOK on the ROW" — only holds on the
+   row's own day, so that is the only day the deferral now applies to.
+   A deferred input whose row cannot be found at all stays VISIBLE: with no
+   row anywhere, hiding it here would silence the man's absence outright. */
+const inpShow=(inp:any,dt:any)=>{
+  if(inputFlags(inp))return true;                 // not a timed accepted input
+  const di=acceptedDay(inp);
+  return di<0||(DAYS[di]||{}).dt!==dt;            // defer only on the row's day
+};
 export function intimeMap(w:any){ const m:any={}; (w.intimes||[]).forEach((t:any)=>{ const tm=(t.match(/(\d{3,4})\s*H/)||[])[1]; const cs=(t.match(/\b([A-Z]{2})\s+IN\s+TIME/i)||[])[1]; if(tm&&cs)m[cs.toUpperCase()]=parseHM(tm); }); return m; }
 /* "BRIEF 30 PRIOR", "brief 30", "30 mins prior" — an OFT remark that names its
    own brief lead overrides VCONF.epBrief for that line only (owner, 5 Aug 26);
@@ -201,7 +217,7 @@ export function collectEvents(){
        window still comes through with null s/e and stays uncheckable. */
     const mapInp=(inp:any)=>{const w2=inpWin(inp);
       return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks};};
-    const input:any[]=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&inputFlags(inp)).map(mapInp);
+    const input:any[]=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&inpShow(inp,d.dt)).map(mapInp);
     /* THE MIDNIGHT TAIL (owner, 11 Aug 26 — "the default warning engine also checks
        in the same modality for all applicable rules based on timing"). A window that
        runs past midnight — a night sortie's landing and debrief, an overnight duty
@@ -215,7 +231,7 @@ export function collectEvents(){
        `nx` marks the entries as port-only for the parity excision (parity.test.ts)
        and the positive pin in the overnight suite. */
     const nd=DAYS[di+1];
-    if(nd)INPUTS.filter((inp:any)=>inputCoversDate(inp,nd.dt)&&inputFlags(inp)).forEach((inp:any)=>{
+    if(nd)INPUTS.filter((inp:any)=>inputCoversDate(inp,nd.dt)&&inpShow(inp,nd.dt)).forEach((inp:any)=>{
       const m=mapInp(inp); if(m.s==null||m.e==null)return;
       input.push({...m,s:m.s+1440,e:m.e+1440,nx:true});
     });
@@ -238,7 +254,7 @@ export function collectEvents(){
        goes negative — so this adds no warning to any day that did not earn one.
        `pv` marks them port-only for the parity excision, as `nx` does. */
     const pd=DAYS[di-1];
-    if(pd)INPUTS.filter((inp:any)=>inputCoversDate(inp,pd.dt)&&inputFlags(inp)).forEach((inp:any)=>{
+    if(pd)INPUTS.filter((inp:any)=>inputCoversDate(inp,pd.dt)&&inpShow(inp,pd.dt)).forEach((inp:any)=>{
       const m=mapInp(inp); if(m.s==null||m.e==null)return;
       input.push({...m,s:m.s-1440,e:m.e-1440,pv:true});
     });

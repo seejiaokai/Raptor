@@ -79,7 +79,7 @@ export function UserModal() {
         <div className="modal-head"><b>Manage users</b><button className="x" id="userClose" onClick={close}>✕</button></div>
         <div className="modal-body">
           <div className="mfield"><label>Callsign / name</label><input id="newName" ref={nameRef} placeholder="e.g. Viper" /></div>
-          <div className="mfield"><label>Role</label><select id="newRole" ref={roleRef} aria-label="Role for the new user"><option value="main">Squadron member (view only)</option><option value="admin">Scheduler / admin (edit)</option></select></div>
+          <div className="mfield"><label>Role</label><select id="newRole" ref={roleRef} aria-label="Role for the new user"><option value="main">Squadron member (own inputs &amp; quals)</option><option value="admin">Scheduler / admin (edit)</option></select></div>
           <button className="abtn primary" id="userAdd" style={{ width: '100%' }} onClick={add}>Add user</button>
           <div className="userlist" id="userList" dangerouslySetInnerHTML={{
             __html: USERS.map((u: any, i: number) =>

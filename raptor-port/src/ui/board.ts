@@ -12,6 +12,7 @@ import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr } from '../engine/slots'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, trackStructuralAdd, alAttr } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
+import { hideHistBub } from './histbubble'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
@@ -353,7 +354,7 @@ const act = (di: any, msg: string) => { logAction(di, msg); return toast(msg) }
    clipped to ~60 chars with a trailing ellipsis; empty parts are dropped
    rather than printed as bare commas, since a note or a duty row rarely
    fills every field it could carry. */
-const clip = (s: any) => { const t = String(s ?? '').trim(); return t.length > 60 ? t.slice(0, 59) + '…' : t }
+const clip = (s: any) => { const t = String(s ?? '').trim(); const cp = [...t]; return cp.length > 60 ? cp.slice(0, 59).join('') + '…' : t }
 const desc = (...parts: any[]) => { const p = parts.map(clip).filter(Boolean).join(', '); return p ? ' — ' + p : '' }
 /* a str/end pair as one clause, only when at least one side has something —
    a wholly-blank row (times never filled in) must not print a bare dash */
@@ -683,6 +684,14 @@ export function boardChange(e: Event) {
        on the next real repaint. */
     if (RO) { const [rdi, rgi] = s.dataset.wsel!.split('.'); const rw = DAYS[+rdi!]?.waves?.[+rgi!]; if (rw) s.value = labelToTitle(rw); return }
     const [di, gi] = s.dataset.wsel!.split('.'); const w = DAYS[+di!].waves[+gi!]
+    /* the retitle must reach the funnel's bookkeeping like the week's wl:
+       cell does — this handler writes the model itself, so until 12 Aug 26
+       (audit) picking a title here was invisible to the edit log AND to the
+       amendment marks: History had no line and a published day issued no
+       amendment for a renamed wave. The key is the same wl: the week uses;
+       the values are the TITLES (what this control shows), captured before
+       and after so a re-pick of the same title stays a refused no-op. */
+    const wasTitle = labelToTitle(w)
     /* PICKING SC OR AVALON LABELS THE WAVE, IT DOES NOT REBUILD IT (owner,
        10 Aug 26, asked and answered). Rebuilding into 4 or 8 MAIN/SPARE lines
        would be the tidier shape but it throws away whatever is already
@@ -699,6 +708,7 @@ export function boardChange(e: Event) {
       if (w.standalone) { delete w.standalone; delete w.kind; delete w.noconf }
       w.night = /night/i.test(s.value); w.label = titleToLabel(s.value)
     }
+    markEdit(`wl:${di}.${gi}`, wasTitle, labelToTitle(w))
     afterSchedMutate(); notify(); return
   }
   /* an INPUT's own fields (owner, 10 Aug 26). Separate from data-bfld because
@@ -949,7 +959,51 @@ export function toggleSbwarn() { SBWOPEN = !SBWOPEN }
 /* Day navigation changes no schedule data. Validation is already run by every
    mutation path; doing a full-week validate here made a rapid swipe pay the
    engine cost again before repainting the target day. */
-export function boardTab(n: number) { view.setBoardDay(n); notifyBoard() }
+/* Commit before the repaint. The board's own <input data-bfld> grammar
+   commits on `change` — i.e. on blur — and the panel repaint a day change
+   triggers tears a focused input out of the DOM. Chromium happens to fire
+   `change` during that teardown; WebKit historically does not, and iOS is
+   the primary phone target — so a value typed and then scrubbed away could
+   land on no day at all (audit, 12 Aug 26). Blurring HERE, while the input
+   is still attached and the old day is still current, turns that into an
+   ordinary commit to the day being left. textedit.ts's editingText() never
+   knew this grammar, so the repaint guard can't help — and widening it
+   would freeze the panels on the old day instead.
+   The stores popup and a pinned History bubble are body-level and survive a
+   panel swap on their own, so a day change must take them down itself or
+   they keep describing the day that was left (same audit). The popup's
+   document click listener unhooks through its own _offClick, same as
+   setPage's sweep. */
+export function boardTab(n: number) {
+  if (typeof document !== 'undefined') {
+    const ae = document.activeElement as any
+    if (ae && ae.dataset && (ae.dataset.bfld != null || ae.dataset.ifld != null)) {
+      const iv = ae.value
+      ae.blur()
+      /* a browser's blur fires `change` itself when the value moved — but
+         only some engines do (jsdom none, WebKit historically not on a
+         programmatic teardown), so if the model still disagrees with the
+         field after the blur, say `change` by hand. The compare keeps the
+         real-browser path from committing twice and a merely-focused,
+         untouched field from writing at all. */
+      let want = iv
+      if (ae.dataset.bfld != null) want = txtGet(ae.dataset.bfld)
+      else {
+        const [id, field] = ae.dataset.ifld.split('.')
+        const inp = inpById(id)
+        if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
+      }
+      if (iv !== want) ae.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+    document.querySelectorAll('.stmenu').forEach(x => {
+      const off = (x as any)._offClick
+      if (off) document.removeEventListener('click', off)
+      x.remove()
+    })
+    hideHistBub()
+  }
+  view.setBoardDay(n); notifyBoard()
+}
 
 /* ---------------------------------------------------------------------------
    THE DAY IS REACHED BY ARROWS, AND THE SWIPE IS GONE (owner, 12 Aug 26 —
@@ -1024,6 +1078,13 @@ export function wireParkedRosScroll(main: HTMLElement) {
   }
   const onMove = (e: any) => {
     if (!live) return
+    /* a mouse can release OUTSIDE `.sb-main` (the top bar is a sibling), and
+       the up listener here never hears it — so `live` was left armed and a
+       bare hover then scrolled the board with no button down (audit,
+       12 Aug 26). Touch is immune (implicit pointer capture delivers the up
+       regardless); for a mouse, no pressed primary button means the drag is
+       over, whatever we missed. */
+    if (e.pointerType === 'mouse' && e.buttons !== 1) { live = false; return }
     if (Math.abs(e.clientY - y0) > ROS_TAP) moved = true
     main.scrollTop = top0 - (e.clientY - y0)
   }
@@ -1106,6 +1167,12 @@ export function wireDayDots(el: HTMLElement) {
   }
   const onMove = (e: any) => {
     if (!live || (id != null && e.pointerId !== id)) return
+    /* capture is deferred until the gesture IS a scrub (below), so a mouse
+       press that slips off the strip before that can release where the up
+       listener never hears it — `live` was then left armed and a bare HOVER
+       scrubbed the week with no button down (audit, 12 Aug 26). Touch keeps
+       its implicit capture and never gets here unpressed. */
+    if (e.pointerType === 'mouse' && e.buttons !== 1) { live = false; return }
     if (!moved && Math.abs(e.clientX - x0) < DOTS_SLOP) return
     if (!moved) {
       moved = true

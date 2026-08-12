@@ -210,14 +210,21 @@ export function setPage(p:any){
      needs no clear, since nothing can have survived the last exit — and
      p!==CURPAGE is already computed above for the popup cleanup, so this
      reuses it rather than a second comparison. */
-  if(p!==CURPAGE&&p!=='editsched'&&SBDAY!=null)closeBoardState();
+  const closedBoard=p!==CURPAGE&&p!=='editsched'&&SBDAY!=null;
+  if(closedBoard)closeBoardState();
   /* CARRY THE DAY (owner, 9 Aug 26). Read the outgoing week's leftmost day
      while it is still on screen — one line later CURPAGE moves, React swaps
      which .page carries `on`, and display:none takes its layout away. The
      destination week picks CARRYDAY up on its next paint and clears it.
      Captured on leaving EITHER week page, not only on a straight view<->edit
-     hop, so a detour through Inputs still lands you back on your day. */
-  if(p!==CURPAGE&&typeof document!=='undefined'&&WEEK_EL[CURPAGE])
+     hop, so a detour through Inputs still lands you back on your day.
+     NOT when the line above just closed the board: closeBoardState wrote the
+     BOARD's day into CARRYDAY, and the board is the surface the user was
+     actually looking at — reading the week parked underneath it would
+     overwrite the carry with wherever that week happened to be left
+     (audit, 12 Aug 26; ui-contracts — "a board close is just another
+     producer"). */
+  if(!closedBoard&&p!==CURPAGE&&typeof document!=='undefined'&&WEEK_EL[CURPAGE])
     CARRYDAY=weekLeftDay(document.getElementById(WEEK_EL[CURPAGE]));
   CURPAGE=p;
 }
