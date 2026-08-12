@@ -17,6 +17,7 @@ import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
+import { logAction } from '../engine/editlog'
 import { writeInputsBatch, notify } from '../state/store'
 import { INPEDIT, setInpEdit } from './pops'
 import { useVersion } from './useStore'
@@ -201,10 +202,20 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
 export function removeInput(r: any) {
   const inx = INPUTS.indexOf(r)
   if (inx < 0) { HOOKS.toast('That input is no longer there', 'warn'); return false }
+  /* WHAT was deleted, and which day it logs against — captured before the
+     splice below, the same "read the row, then remove it" order every
+     deletion in board.ts follows. di follows interactions.ts:424's rule for
+     this same input machinery: the day it is actually live on when it has
+     one (accepted into that day's ground programme), else null — an input
+     that was never accepted has no day to pin the removal to. */
+  const di = r.acc ? acceptedDay(r) : -1
+  const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
+  const when = r.date + (r.endDate ? '–' + r.endDate : '')
   writeInputsBatch(() => {
     if (r.acc) unacceptInput(acceptedDay(r), r)
     INPUTS.splice(inx, 1)
   })
+  logAction(di >= 0 ? di : null, `Input removed — ${cs}, ${r.type}, ${when}`)
   return true
 }
 

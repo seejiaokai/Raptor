@@ -59,6 +59,24 @@ async function seed() {
   return { a, b }
 }
 
+/* N distinct edits to ONE seat — the collapsed/expand boundary tests below
+   need more history than seed()'s two changes give. idx picks which FCP
+   seat, so several boundary scenarios inside one test don't pile their
+   edits onto the same key. Cycles a name pool, skipping whichever the seat
+   already holds so every step is a genuine change. */
+const FCP_NAMES = ['bane', 'stiff', 'slipway', 'dj', 'nact', 'prowler', 'pump', 'slash', 'harpoon', 'snap']
+async function seedN(n: number, idx = 0) {
+  const key = $$('#sbBoard [data-slot]').map(e => e.dataset.slot!).filter(k => /\.p$/.test(k))[idx]!
+  let i = 0
+  for (let c = 0; c < n; c++) {
+    let v = FCP_NAMES[i % FCP_NAMES.length]!
+    while (v === slotVal(key)) { i++; v = FCP_NAMES[i % FCP_NAMES.length]! }
+    await act(async () => { setSlotVal(key, v); notify() })
+    i++
+  }
+  return key
+}
+
 beforeAll(async () => {
   initStore()
   HOOKS.isPhone = () => phone
@@ -286,36 +304,46 @@ describe('grouped by detail', () => {
 })
 
 describe('the phone expands the bubble by hand', () => {
+  /* the 3/4 boundary, pinned explicitly: collapsed already shows the last
+     THREE, so three changes leave nothing hidden and four is the first count
+     that does. Desktop never collapses at all, so the chevron is absent
+     there regardless of how much history there is. */
   it('offers a control only where there is more to show, and only on a phone', async () => {
-    const { a, b } = await seed()
     await act(async () => { view.setHistMode(true); notify() })
-
     phone = true
-    await click($(`#sbBoard [data-slot="${a}"]`))
-    expect(bub()!.querySelector('[data-histmore]'), 'two changes — offer it').toBeTruthy()
+
+    const k3 = await seedN(3, 0)
+    await click($(`#sbBoard [data-slot="${k3}"]`))
+    expect(bub()!.querySelector('[data-histmore]'), 'three — the collapsed view already shows all of them').toBeFalsy()
     hideHistBub()
-    await click($(`#sbBoard [data-slot="${b}"]`))
-    expect(bub()!.querySelector('[data-histmore]'), 'one change — nothing to expand to').toBeFalsy()
+
+    const k4 = await seedN(4, 1)
+    await click($(`#sbBoard [data-slot="${k4}"]`))
+    const more = bub()!.querySelector('[data-histmore]')
+    expect(more, 'four — one is hidden past the collapsed three, offer it').toBeTruthy()
+    expect(more!.textContent, 'and it names the true count').toContain('4')
 
     hideHistBub()
     phone = false
-    await hover($(`#sbBoard [data-slot="${a}"]`))
-    expect(bub()!.querySelector('[data-histmore]'), 'a desktop hovers instead').toBeFalsy()
+    const k5 = await seedN(5, 2)
+    await hover($(`#sbBoard [data-slot="${k5}"]`))
+    expect(bub()!.querySelector('[data-histmore]'), 'a desktop already shows the whole story').toBeFalsy()
   })
 
   /* the bubble is pointer-events:none so it can never take the tap that raised
      it; the control inside it is the ONE exception, and it is a child */
   it('tapping it expands to every change and pins the bubble past its timeout', async () => {
-    const { a } = await seed()
+    const key = await seedN(5)
     await act(async () => { view.setHistMode(true); notify() })
     phone = true
-    await click($(`#sbBoard [data-slot="${a}"]`))
+    await click($(`#sbBoard [data-slot="${key}"]`))
     expect(histBubExpanded()).toBe(false)
+    expect(bub()!.querySelectorAll('.hb-all li').length, 'collapsed to the last three').toBe(3)
 
     await click(bub()!.querySelector('[data-histmore]'))
     expect(histBubExpanded(), 'expanded').toBe(true)
-    expect(histBubPinned(), 'and pinned, so the 4s timeout cannot take it').toBe(true)
-    expect(bub()!.querySelectorAll('.hb-all li').length).toBe(2)
+    expect(histBubPinned(), 'and pinned, so the timeout cannot take it').toBe(true)
+    expect(bub()!.querySelectorAll('.hb-all li').length, 'now every one of the five').toBe(5)
 
     /* well past the timeout it would have had */
     await act(async () => { await new Promise(r => setTimeout(r, 60)) })

@@ -418,9 +418,13 @@ export function routeClick(e: MouseEvent) {
          logged; this path reaches markEdit with no key (there is no "before"
          for a row that did not exist), so it needs the sentence instead or the
          row appears in the schedule and nowhere in the changes list. */
+      /* the callsign rides along with the type — "an LL" says what happened,
+         "Bane's LL" says who it happened to, which is the thing the changes
+         list is actually for */
+      const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
       const said = dest === 'x' ? 'Accept undone'
-        : dest === 'u' ? `${inp.type} filed under Unavailable`
-        : `${inp.type} added to the ground programme`
+        : dest === 'u' ? `${cs}'s ${inp.type} filed under Unavailable`
+        : `${cs}'s ${inp.type} added to the ground programme`
       logAction(di, said)
       HOOKS.toast(said, 'ok')
       view.afterSchedMutate()

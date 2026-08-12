@@ -1084,6 +1084,20 @@ so the toast and the log say the same words. Sort all logs one line, not six:
 the sorters mark keys whose values never move, so `logEdit` is silent through
 all of it by construction. Undo and redo log themselves.
 
+**A deletion's sentence names what it deleted, an addition's does not.**
+`board.ts`'s `desc()` reads the row the moment before its splice and appends
+what it held — a formation's callsign and crew, a note's own words, a duty
+row's role and man — so `Note removed` reads `Note removed — "EP OF THE
+WEEK"` and the changes list stops asking the reader to remember. Free text is
+clipped to ~60 chars because `act()` hands the same sentence to the toast, and
+the toast stays one line. An addition says only "Line added": the row is
+still empty the moment it is logged, so there is nothing yet to describe.
+
+**A removed personal input logs its own line too** (`inputedit.tsx`'s
+`removeInput`), naming the man, the type and the date — the input surfaces
+are the one thing §Accepting/undoing above still leaves silent, and a deleted
+input is otherwise a row that vanishes with no trace in either list.
+
 **Three more ACTIONS carry a sentence for the same reason** (added 11 Aug 26,
 after a review found the list silently missing them). Each changes the
 schedule and reaches `markEdit` with no key, or with a key whose values it

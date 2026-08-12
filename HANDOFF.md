@@ -16,14 +16,17 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**All six gates were green first-hand for the short-day-name pass of 12 Aug 26**,
-run in this container on the matching tree: `npm test` 1136 tests across 60 files,
-`node reference/tfin.js` 728/0, `npm run build` clean, the full
-`npm run test:e2e` geometry job 81/81 in Chromium, `probes:adapted` 36/36 and
-`perf` 4/4. The built bundle was then driven at 390×844 and at 1500px: the phone
-bar reads `Wed Jul 15` with nothing clipped and still measures 75px on one line
-plus the day strip, the desktop bar still reads `Wednesday Jul 15 · scheduler
-board` at 49px, and no console errors, page errors or 4xx appeared on either.
+**All six gates were green first-hand for the zoom/history/bubble batch of
+12 Aug 26**, run in this container on the matching tree: `npm test` 1141 tests
+across 60 files, `node reference/tfin.js` 728/0, `npm run build` clean, the full
+`npm run test:e2e` geometry job 84/84 in Chromium, `probes:adapted` 36/36 and
+`perf` 4/4. The built bundle was then driven at 390×844: the bubble that the
+old `place()` parked at −192px now clamps to the top edge and hides only while
+its anchor is entirely off-screen (both states screenshotted and the new e2e
+test proven to FAIL on the old code first), a five-times-edited seat shows
+exactly three changes plus `⌄ all 5 changes`, and a deleted note logs
+`Note removed — "EP: AB BURN THROUGH ON TAKE OFF"`. The short-day-name pass
+earlier the same day was green on the same six, checked on the deployed page.
 The day-navigation pass earlier the same day was green on the same six, and its
 deployed-page check (the standing instruction, owner 7 Aug 26) behaved
 identically to the preview — six taps Monday to Sunday, both arrows disabling at
@@ -298,6 +301,19 @@ not a code fault. Re-state any of these only after re-running them.
     `NO_BOARD_CELL` as well as in `keyOf`.** The honest fix, if it is ever
     wanted, is for the jump to leave the board for the week — nothing today
     does that, and it was not built blind.
+- **The iOS focus-zoom fix is unverified on a real iPhone, like the page lock
+  below.** `index.html` appends `maximum-scale=1` to the viewport meta at
+  runtime on Apple touch devices only — iOS honours it for the auto-zoom on a
+  focused sub-16px input (the thing the owner asked to stop, 12 Aug 26) while
+  ignoring it for pinch zoom, and Android is deliberately left alone because
+  Chrome there WOULD lose pinch zoom. No iOS device is reachable from this
+  container; the half that is gateable — Chromium's meta stays bare — is in
+  `e2e/geometry.spec.ts` ("the viewport meta"). If the owner still sees the
+  zoom, the fallback is `font-size:16px` on the focused cell via a
+  transform-scale trick, which nobody has built. The `place()` half of the
+  same complaint (the bubble placed in layout coordinates while the keyboard
+  pans the visual viewport) is belt-and-braces fixed either way —
+  `histbubble.ts` reads `window.visualViewport` now.
 - **The board's page lock is unverified on a real iPhone.** `body.sb-lock` is
   `overflow:hidden`, which locks the viewport by propagation from `body` (the
   root sets no overflow of its own) and was measured holding at both widths in
@@ -549,7 +565,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board, and where it deliberately does NOT — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both) plus `clickHere`, a click that does not scroll the target into view first (`page.click` does, which would defeat any test that parks the week on purpose). `playwright.config.ts` builds and serves the port itself. |
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split is in `e2e/geometry.spec.ts`, which is the only place it resolves (the day-carousel motion tests that used to sit beside it went with the swipe, 12 Aug 26). |
-| `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. |
+| `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
 | `.claude/skills/` (14 more) | `obra/superpowers` v6.2.0, MIT, vendored 7 Aug 26 — a plugin install lives in `~/.claude/plugins` on a local machine and never reaches a web session's fresh container, while repo-level skills ship with the clone. Cross-references de-namespaced; the upstream SessionStart hook is vendored at `.claude/hooks/` but **not** wired in. Provenance and the update recipe: `.claude/skills/SUPERPOWERS-VENDORED.md`. |

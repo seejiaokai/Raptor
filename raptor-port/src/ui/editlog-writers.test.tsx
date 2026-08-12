@@ -22,7 +22,7 @@ import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { INPUTS, isUnavail } from '../engine/inputs'
-import { inpKey } from '../engine/slots'
+import { inpKey, setSlotVal } from '../engine/slots'
 import { ELOG, elogRows, elogFor, elogClear, keyLabel } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import { setAirKey } from './pops'
@@ -276,5 +276,70 @@ describe('the log still refuses what it always refused', () => {
     markEdit()                       // afterSchedMutate's bare epilogue
     markEdit('ff:0.0.0.cs')          // a structural mark after an add — no "before"
     expect(ELOG.rows.length, 'neither is a value change').toBe(0)
+  })
+})
+
+describe('deletions carry what they held (12 Aug 26)', () => {
+  it('a removed note carries its own words, clipped once they run long', async () => {
+    await goEdit()
+    await act(async () => { openScheduler(0) })
+    const notes = DAYS[0].notes
+    const ni = notes.length
+    const long = 'This note is deliberately typed long enough to run straight through the sixty character budget the toast allows it to spend'
+    notes.push(long)
+    await act(async () => { view.afterSchedMutate(); notify() })
+
+    await click($(`#sbBoard [data-ndel="0.${ni}"]`))
+
+    const row = newest()
+    expect(row, 'the deletion reached the log').toBeTruthy()
+    expect(row!.lbl).toContain('Note removed')
+    /* the toast says the same sentence, so a note this long has to clip —
+       the clipped words end in the ellipsis, not the whole sentence */
+    expect(row!.lbl, 'the clip leaves a trailing ellipsis').toMatch(/…$/)
+    expect(row!.lbl.length, 'shorter than the note it came from').toBeLessThan(long.length)
+  })
+
+  it('a removed duty row carries its role and its man', async () => {
+    await goEdit()
+    await act(async () => { openScheduler(0) })
+    const rows = DAYS[0].dutywaves[0].rows
+    const B = rows.length
+    await click($(`#sbBoard [data-dradd="0.0"]`))
+    rows[B].role = 'TEST ROLE'
+    setSlotVal(`d:0.0.${B}`, 'bane')
+    await act(async () => { view.afterSchedMutate(); notify() })
+
+    await click($(`#sbBoard [data-drdel="0.0.${B}"]`))
+
+    const row = newest()
+    expect(row, 'the deletion reached the log').toBeTruthy()
+    expect(row!.lbl).toContain('Duty row removed')
+    expect(row!.lbl).toContain('TEST ROLE')
+    expect(row!.lbl).toContain('Bane')
+  })
+
+  it('a removed flying line carries its callsign and its crew', async () => {
+    await goEdit()
+    await act(async () => { openScheduler(0) })
+    const d = DAYS[0]
+    const gi = d.waves.length - 1
+    const w = d.waves[gi]
+    /* a fresh single-aircraft line, deleted whole — net zero on the model,
+       so the test needs no teardown of its own */
+    await click($(`#sbBoard [data-gline="0.${gi}"]`))
+    const li = w.formations.length - 1
+    const f = w.formations[li]
+    f.cs = 'ZULU'; f.msn = 'TEST RUN'
+    setSlotVal(`0.${gi}.${li}.0.p`, 'bane')
+    await act(async () => { view.afterSchedMutate(); notify() })
+
+    await click(document.querySelector(`#sbBoard [data-ldel="0.${gi}.${li}.0"]`))
+
+    const row = newest()
+    expect(row, 'the deletion reached the log').toBeTruthy()
+    expect(row!.lbl).toContain('Line removed')
+    expect(row!.lbl).toContain('ZULU')
+    expect(row!.lbl).toContain('Bane')
   })
 })
