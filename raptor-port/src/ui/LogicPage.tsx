@@ -102,7 +102,14 @@ export function LogicPage() {
         if (SESSION.role !== 'admin') return
         const k = i.dataset.lgset!, spec = RULE_SPEC[k], v = ruleParse(k, i.value)
         if (v == null || v < spec.lo || v > spec.hi) {
+          /* put the LIVE value back, the way every other refusing path in the
+             app does (txtSet's callers, setInpField, the stores pen). The box
+             used to sit there still showing `abc` while the rule underneath
+             read 1h — the one refusal in the app that left its own bad value
+             on screen looking saved (audit, 12 Aug 26). The .bad flash still
+             marks which box was refused. */
           i.classList.add('bad')
+          i.value = ruleFmt(k, VCONF[k])
           return HOOKS.toast(`${spec.t} must be between ${ruleFmt(k, spec.lo)} and ${ruleFmt(k, spec.hi)}`, 'warn')
         }
         if (v === VCONF[k]) { i.classList.remove('bad'); return }

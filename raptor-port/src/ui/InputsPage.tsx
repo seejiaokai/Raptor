@@ -385,8 +385,9 @@ export function InputsPage() {
             }}>
               {typeOptions()}
             </select></div>
-          <div className="ifield"><label>Repeat wks</label><input id="inRepeat" type="number" value={repeat} min={0} onChange={e => setRepeat(+e.target.value)} /></div>
-          <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder="e.g. medical appt" value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
+          <div className="ifield"><label>Repeat wks</label><input id="inRepeat" type="number" value={repeat} min={0} max={52}
+            onChange={e => setRepeat(Math.max(0, Math.min(52, Math.floor(+e.target.value || 0))))} /></div>
+          <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder="e.g. medical appt" maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={add}>Add input</button></div>
         </div>
       </div>
@@ -478,7 +479,7 @@ export function InputsPage() {
                     }}>
                     {typeOptions()}
                   </select></td>
-                  <td><input aria-label="Remarks" data-ed="remarks" value={draft.remarks}
+                  <td><input aria-label="Remarks" data-ed="remarks" maxLength={200} value={draft.remarks}
                     onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
                   <td>{r.recur || ''}</td>
                   <td className="mono" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>

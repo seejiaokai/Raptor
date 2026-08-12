@@ -1179,7 +1179,15 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ifield.chk>input[type=checkbox]{width:18px;height:18px;min-width:18px;accent-color:var(--accent);margin:9px 0}
 .infilter{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.4)}
 .infilter select,.infilter input{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:7px 9px;border-radius:8px}
-.intbl{width:100%;border-collapse:collapse;font-size:12px}
+/* table-layout:fixed so ONE long remark cannot widen the whole page. A remark
+   is free text with no natural break, and the auto layout sized the column to
+   its longest cell: measured, an ordinary 120-character appointment note ran
+   the desktop table to 1862px inside a 1240px page, and a pathological one to
+   40,745px — the whole Inputs page scrolled sideways to show a note nobody
+   needed to read in full (audit, 12 Aug 26). Fixed layout plus the wrap below
+   keeps the row tall instead of the page wide. */
+.intbl{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.intbl td{overflow-wrap:anywhere}
 .intbl th,.intbl td{border-bottom:1px solid var(--edge);padding:9px 12px;text-align:left}
 .intbl thead th{background:var(--panel-2);color:var(--ink-2);font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;font-weight:700}
 .intbl tbody tr:hover{background:rgba(255,255,255,.02)}

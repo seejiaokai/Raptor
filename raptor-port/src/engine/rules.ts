@@ -122,7 +122,14 @@ export function rulesLoad(){
      is editable by hand, so it is treated as untrusted input. */
   Object.keys(r.v||{}).forEach((k:any)=>{const sp=RULE_SPEC[k], n=r.v[k];
     if(sp&&typeof n==='number'&&isFinite(n)&&n>=sp.lo&&n<=sp.hi)VCONF[k]=n;});
-  Object.keys(r.s||{}).forEach((k:any)=>{if(k in KIND_LABEL)SHIFT_HARD[k]=!!r.s[k];});}
+  /* hasOwnProperty, not `in`: `in` walks the prototype chain, so a stored blob
+     carrying "toString" or "constructor" as a key wrote those onto SHIFT_HARD
+     as real own properties (audit, 12 Aug 26). Grading was unaffected — only
+     the six real kinds are ever looked up — but the Logic page counted them
+     and told the squadron "10 kinds are hard" when four are, and any future
+     string coercion of SHIFT_HARD would have thrown. Only reachable by hand-
+     editing storage, which is exactly the input a LOAD path has to survive. */
+  Object.keys(r.s||{}).forEach((k:any)=>{if(Object.prototype.hasOwnProperty.call(KIND_LABEL,k))SHIFT_HARD[k]=!!r.s[k];});}
 export function rulesReset(){
   Object.keys(RULE_STD.v).forEach((k:any)=>VCONF[k]=RULE_STD.v[k]);
   Object.keys(RULE_STD.s).forEach((k:any)=>SHIFT_HARD[k]=RULE_STD.s[k]);

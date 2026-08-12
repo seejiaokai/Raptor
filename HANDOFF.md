@@ -16,13 +16,15 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 ## The gates, and how they lie
 
-**All six gates were green first-hand for the audit sweep of 12 Aug 26 and
-again for its five follow-up fixes**, run in this container on the matching
-tree: `npm test` 1339 tests across 85 files (the `audit-*` sweep included),
-`node reference/tfin.js` 728/0, `npm run build` clean, the full
-`npm run test:e2e` geometry job 86/86 in Chromium, `probes:adapted` 36/36 and
-`perf` 4/4. Both halves of the brief guard were then driven on the built
-bundle and read back their own toasts. Two of those went red first and both were real: the new
+**All six gates were green first-hand for the audit sweep of 12 Aug 26, for
+its five follow-up fixes, and again for the guard-rail sweep**, run in this
+container on the matching tree: `npm test` 1368 tests across 87 files (the
+`audit-*` sweep included), `node reference/tfin.js` 728/0, `npm run build`
+clean, the full `npm run test:e2e` geometry job 86/86 in Chromium,
+`probes:adapted` 36/36 and `perf` 4/4. The guards were then driven on the
+built bundle: `1290`, `9999` and `morning` all bounce off a take-off that
+stays `12:40` while a real `0845` goes in, a freshly added blank line renders
+no `NaN:NaN` anywhere, and the Inputs page holds zero sideways overflow. Two of those went red first and both were real: the new
 empty-remarks e2e test waited for `.rmkin` to be VISIBLE, which is the one
 thing the feature guarantees it is not (Playwright's default `state` — use
 `attached` when asserting a thing is hidden); and `wrap-async` caught the
@@ -94,6 +96,32 @@ only after re-running them.
   are still there.
 
 ## Known issues / open work
+
+- **GUARD RAILS ON MALFORMED INPUT (owner, 12 Aug 26) — the line, and what is
+  deliberately still open.** Four surveys swept every typed field. The rule
+  applied: refuse MALFORMED data (not the kind of value the field holds, or
+  outside the range that kind can take), warn about DECISIONS (a clash, an
+  overnight absence, a late input). Refusals live at the WRITE path, where
+  every caller already reverts its own cell on a false return; `parseHM` stays
+  the loose shared reader and `hmOK` (`time.ts`) asks the range question
+  beside it. Rules: `docs/engine-rules.md`, the brief and availability
+  sections. What the sweep left ALONE, on purpose:
+  - **Long free text on the WEEK's prose cells** (flight remarks, day notes,
+    area) can still run a row to ~2000px. They are `contenteditable`, which
+    ignores `maxlength`, so the only guards available are truncating a paste
+    or refusing one — both worse than the disease. The board draws the same
+    fields as `<input>`s and stays 50px, so a value can look fine there and
+    tall on the week. Layout only; no gate is tripped.
+  - **A wave label typed long on the week** becomes an `<option>` in the
+    board's title `<select>` and can run past the panel (measured 2638px in a
+    930px box). Recovery is picking any real title. Same class as above.
+  - **Deleting the last in-time** removes the whole in-times block from the
+    DOM with no control to add one back — undo restores it, which is the
+    mitigation. The render is gated on `intimes.length`; ungating it is a
+    render change with geometry consequences, so it was not done blind.
+  - **`ruleParse` stays loose** — `6 monkeys` reads as 6, `0770` as 08:10 —
+    because every accepted value is echoed back FORMATTED in the field and the
+    toast, so the user sees exactly what was taken.
 
 - **The phone week's programme NAME column is sized against its own longest
   word, and that is a measured number, not a preference** (12 Aug 26). NAME
@@ -417,11 +445,15 @@ only after re-running them.
   around today, and the empty state already names the way out ("Change the
   dates, or pick 'All dates'"). Pinned both ways in `inputs.test.tsx`,
   including a test asserting the window does NOT jump to the demo week.
-- **`export.ts` writes store labels into the CSV unescaped.** Not an HTML
-  sink — `csvText` quotes for CSV, not for a browser — but a store renamed
-  to start with `=` is a spreadsheet-formula injection vector once that CSV
-  is opened in Excel/Sheets. Pre-existing risk surface, worse now that
-  labels are user-renamable. `export.ts:30` also still writes stores for a
+- **`export.ts` CLOSED the formula-injection hole on 12 Aug 26.** A cell whose
+  text begins `=` `+` `-` `@` (or a tab/CR) is written with a leading
+  apostrophe, which spreadsheets read as "the rest is text" and do not print —
+  so a store renamed to `=1+1` still READS as the squadron typed it and no
+  longer evaluates when the CSV is opened in Excel or Sheets. Quoting never
+  protected against this; both engines evaluate a quoted leading `=`. The
+  guard is at the DESTINATION rather than the entry field on purpose: there is
+  nothing malformed about naming something `-30`, and the same escape covers
+  remarks, callsigns and every other free-text column at once. `export.ts:30` also still writes stores for a
   standalone line if legacy `opts` survive there from before the
   SC/AVALON/BB gate went on both surfaces; the entry paths are closed, the
   CSV read path is not.
@@ -647,7 +679,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split is in `e2e/geometry.spec.ts`, which is the only place it resolves (the day-carousel motion tests that used to sit beside it went with the swipe, 12 Aug 26). |
 | `src/ui/boardrmk.test.tsx` | The empty remarks box and the `+` that reveals it (12 Aug 26) — which input carries `.empty`, that the reveal clears it for its OWN row only and focuses it, that typing one drops it unaided, and that asking for the box back writes NOTHING to the edit log or the pending set. jsdom cannot measure the 109px→79px row it buys; `e2e/geometry.spec.ts` does that. |
-| `src/**/audit-*.test.ts(x)` | The 12 Aug 26 adversarial audit sweep over PRs 148–174, six agents' worth (a=History/edit log, b=board nav, c=validation, d=sort/reorder, e=inputs) — ~200 tests that both closed every gap HANDOFF listed and pinned the audit's twelve fixes (log keys remapped with the key space, day-aware accept deferral, `deletionWasIssued` under reorder, the relink's preserved extras and covered-day re-file, the scrub/handle button guards, the day-step commit, the carry-day fix, the numeric time sort). Keep them: they are the regression armour for exactly the corners nothing else tests. |
+| `src/**/audit-*.test.ts(x)` | Three sweeps of 12 Aug 26, all keepers — they are the regression armour for corners nothing else tests. **The adversarial audit** over PRs 148–174, six agents (a=History/edit log, b=board nav, c=validation, d=sort/reorder, e=inputs): closed every gap this file listed and pinned twelve fixes (log keys remapped with the key space, day-aware accept deferral, `deletionWasIssued` under reorder, the relink's preserved extras and covered-day re-file, the scrub/handle button guards, the day-step commit, the carry-day fix, the numeric time sort). **The five suspects** it raised and the owner then closed: `audit-c-briefguard` (brief vs take-off, both directions), `audit-thinwin` (`inpWin` failing closed), `audit-gesture-bubble` (repaint re-check, drag-vs-scrub). **The guard-rail sweep**: `audit-guards` (`hmOK`, `minus`, the time cells, store renames, the rules load path) and `audit-guards-inputs` (input times, spans, the derived AM/PM label, and what stays allowed because it is a decision). |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
