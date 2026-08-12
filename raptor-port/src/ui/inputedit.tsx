@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isUnavail, dateOrd } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isUnavail, dateOrd, baseYear } from '../engine/inputs'
 import { acceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -24,15 +24,27 @@ import { INPEDIT, setInpEdit } from './pops'
 import { useVersion } from './useStore'
 
 const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-/* the reference's date formatter, verbatim (yyyy-mm-dd → 'Jul 14') */
-export const fmt = (d: any) => { if (!d) return DATES[0]; const [, m, da] = d.split('-'); return MON[+m] + ' ' + String(+da) }
+/* yyyy-mm-dd → the stored label ('2026-07-14' → 'Jul 14'). The loaded week's
+   year is left implicit so an ordinary date reads 'Jul 14' with no clutter; a
+   date in ANY OTHER year keeps its year in the label ('2027-01-03' →
+   'Jan 3 2027') so a leave running into the new year sorts and covers correctly
+   (dateOrd/inputCoversDate read the year back) and the reader can see at a
+   glance it is not this year (owner, 12 Aug 26). */
+export const fmt = (d: any) => {
+  if (!d) return DATES[0]
+  const [y, m, da] = d.split('-')
+  const lbl = MON[+m] + ' ' + String(+da)
+  return +y === baseYear() ? lbl : lbl + ' ' + y
+}
 /* fmt's inverse — the model stores 'Jul 14' labels, the calendar speaks
-   yyyy-mm-dd. The demo week is 2026, which is the only year the labels imply. */
+   yyyy-mm-dd. A label carrying a trailing year ('Jan 3 2027') round-trips it;
+   a bare one belongs to the loaded week's year, exactly as fmt left it. */
 export const unfmt = (lbl: any) => {
   const p = String(lbl || '').trim().split(/\s+/)
   const mi = MON.indexOf(p[0])
   if (mi < 1 || !p[1]) return ''
-  return `2026-${String(mi).padStart(2, '0')}-${String(+p[1]).padStart(2, '0')}`
+  const y = p.length > 2 && isFinite(+p[2]) ? +p[2] : baseYear()
+  return `${y}-${String(mi).padStart(2, '0')}-${String(+p[1]).padStart(2, '0')}`
 }
 
 /* AM is 00:00–12:00 and PM is 12:01 to late, the squadron's own halves (the AM
@@ -118,21 +130,22 @@ export function commitInputEdit(r: any, draft: any) {
      an error — the same trade every other row type on the board already makes. */
   if (!draft.allday && (e as number) === (s as number)) { HOOKS.toast('Give the input a start and end that are not the same time', 'warn'); return false }
   const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
-  /* A SPAN HAS TO RUN FORWARDS, and the labels cannot say otherwise. Dates are
-     stored as month-and-day with no year (`Dec 28`), and dateOrd reads them as
-     month*100+day — so a span into the new year reads BACKWARDS (1228 → 103)
-     and inputCoversDate is false for every day including its own start: the
-     leave covered nothing, blocked nothing and vanished from the Inputs table
-     entirely, because the table's window compares the same ordinals (audit,
-     12 Aug 26). A same-month-and-day span a year long lost its end date
-     silently for the same reason. Refused with the reason said, rather than
-     stored as something that quietly means nothing. The real fix is a YEAR in
-     the stored label, which touches DATES, fmt/unfmt, the CSV and the
-     calendar — a change of a different size, and the owner's call. */
+  /* A SPAN HAS TO RUN FORWARDS. Dates now carry their year whenever it is not
+     the loaded week's (fmt above), so a leave into the new year — Dec 28 →
+     Jan 3 — stores its end as 'Jan 3 2027', dateOrd orders it AFTER the start,
+     and inputCoversDate covers every day between. This used to be refused
+     outright: the labels dropped the year, so a yearless 'Jan 3' sorted BEHIND
+     'Dec 28' and the leave covered nothing, blocked nothing and vanished from
+     the Inputs table; a same-month-and-day span a year long lost its end
+     silently the same way (owner, 12 Aug 26 — the fix he then asked for).
+     What is STILL refused is a genuinely backwards range — an end that falls
+     before its start in real time. The calendar cannot produce one (RangeCal
+     flips a reversed second click into the new start), but the write path
+     guards it anyway, the same as every other malformed value here. */
   if (endDate) {
     const a = dateOrd(date), b = dateOrd(endDate)
     if (a == null || b == null || b < a) {
-      HOOKS.toast('The end date must fall after the start date — a range running into the new year has to be filed as two inputs for now', 'warn')
+      HOOKS.toast('The end date has to fall on or after the start date', 'warn')
       return false
     }
   }

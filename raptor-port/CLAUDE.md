@@ -357,6 +357,15 @@ the phone perf budget. Don't convert them to components.
   creates) a known issue edits its list; a change that adds, removes or
   renames a file edits its file map. Stale is worse than absent — the next
   session trusts it.
+- **Walk every non-trivial change against `docs/feature-impact.md`** (owner,
+  12 Aug 26). Before building, and again before calling it done, ask which of
+  the surfaces there it touches — warnings, layout, history, the board, edit
+  vs view-only, desktop vs mobile, quals, availability, publishing, export,
+  roles — and whether the touch is wired or missing. That file also holds the
+  generic FLOWS (how one edit travels from a keystroke to the screen) and the
+  drift-seams where two copies of one rule fall out of step, which is where
+  this app's recurring bugs come from. **Keep it true in the same PR**: a
+  feature that adds a surface, a flow, or a new drift-seam adds a line there.
 
 ## Stable decisions (do not relitigate)
 
@@ -493,6 +502,7 @@ the phone perf budget. Don't convert them to components.
 |---|---|
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
+| **Which surfaces a feature touches + how one edit flows** | `docs/feature-impact.md` |
 | Open work, known gaps, the deploy traps, full file map | `../HANDOFF.md` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
 | What changed recently | `git log --oneline` (not duplicated here) |

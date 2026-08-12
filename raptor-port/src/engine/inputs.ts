@@ -285,15 +285,30 @@ export let INPUTS:any[]=[
 ];
 export const DATES=['Jul 13','Jul 14','Jul 15','Jul 16','Jul 17','Jul 18','Jul 19'];  // Mon..Sun index → date label
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-/* 'Jul 18' → 718, a sortable ordinal. Spans used to be compared through
-   DATES.indexOf, which returns -1 for any date outside the loaded week: a
-   detachment running Jul 15→24 then covered NO day at all and the man read as
-   available all week. Comparing the dates themselves clamps at both ends and
-   does not care whether an endpoint is in the week. */
+/* THE YEAR THE UNLABELLED DATES BELONG TO (owner, 12 Aug 26 — leave that runs
+   into the new year). The stored labels leave the LOADED week's year implicit
+   so an ordinary same-week date reads 'Jul 14' with no clutter; a date in any
+   OTHER year is stored WITH its year ('Jan 3 2027' — see fmt in
+   ui/inputedit.tsx), and dateOrd reads it back below. Derived from CURWEEK so
+   the convention tracks whatever week is loaded — there is only ever one, and
+   it falls back to the demo's 2026 if CURWEEK is unreadable. */
+export function baseYear(){const y=+String(weekStartISO()).slice(0,4);return isFinite(y)&&y?y:2026;}
+/* 'Jul 18' → 20260718, a sortable ordinal that ORDERS ACROSS YEARS. Spans used
+   to be compared through DATES.indexOf, which returns -1 for any date outside
+   the loaded week: a detachment running Jul 15→24 then covered NO day at all
+   and the man read as available all week. Comparing the dates themselves clamps
+   at both ends and does not care whether an endpoint is in the week.
+   The ordinal now leads with the YEAR (year*10000 + month*100 + day) so a leave
+   running Dec 28 → Jan 3 sorts FORWARDS: without the year 'Jan 3' read as 103,
+   BEHIND 'Dec 28' at 1228, so the span covered nothing (owner, 12 Aug 26). A
+   label may carry a trailing 4-digit year for a date outside baseYear()'s year;
+   without one it belongs to baseYear(). */
 export function dateOrd(lbl:any){
   const p=String(lbl==null?'':lbl).trim().split(/\s+/);
   const m=MONTHS.indexOf(p[0]), d=+p[1];
-  return (m<0||!isFinite(d))?null:(m+1)*100+d;
+  if(m<0||!isFinite(d))return null;
+  const y=p.length>2&&isFinite(+p[2])?+p[2]:baseYear();
+  return y*10000+(m+1)*100+d;
 }
 export function inputCoversDate(inp:any,dt:any){
   if(!inp.endDate)return inp.date===dt;
