@@ -386,6 +386,32 @@ edit week now:
   - Measured by `e2e/geometry.spec.ts`, which counts ROWS as well as
     overflow: both regressions above fitted the width perfectly and simply
     used a second line.
+- **AN EMPTY REMARKS BOX IS NOT DRAWN, AND THE ROW'S OWN "+" ASKS FOR IT
+  BACK** (owner, 12 Aug 26 — UI sweep, "easy to view, spacious"). A c6r row
+  (duty / sim / ground) ran 109px in FOUR stacked lines on a phone — role and
+  times, people, remarks, control strip — and 13 of the 25 such rows on Monday
+  carried nothing in the remarks line: ~30px apiece, 27% of the row, for an
+  empty box. Measured after: 79px a row, and 400px off the whole board.
+  - **`sbRmk` marks the box, CSS takes it away, and neither asks the
+    viewport.** The builder adds `.empty` when the value is blank; only
+    `scheduler.css` under 820px turns that into `display:none`. Rendering by
+    `HOOKS.isPhone()` instead would make the panel's string diff depend on
+    window size and not survive a resize — the same rule the grip and the ▲▼
+    nudges already follow (`board-html.ts`'s opening comment). `.sb-wide`
+    restates it back, because the desktop-layout-at-phone-width keeps every
+    column.
+  - **The reveal rides the control strip the row already has**, so an empty
+    row LOSES 30px and gains nothing. A sixth button on an existing line is
+    the cheap half of that trade; a fifth LINE would not have been.
+  - **`RMKOPEN` lives in `state/view.ts`, not on the DOM.** Every panel is
+    re-hung by a string diff, so a class the click handler set by hand would
+    be wiped by the next repaint — the box would close under the finger that
+    opened it. One key at a time, cleared on a real day change.
+  - **Revealing it is NOT a schedule write.** No `afterSchedMutate`, no
+    `markEdit`, nothing pending, no line in the changes list — a click that
+    planted nothing and moved nothing must not appear in the day's history.
+    `boardrmk.test.tsx` pins that explicitly, and the focus is deferred a
+    macrotask because it has to land after the repaint that reveals the box.
 - **The day is stepped by TWO ARROWS on the bar, and there is no swipe**
   (owner, 12 Aug 26 — "remove the swipe for the mobile scheduler board too. Just
   put arrows at the edges of the bar at the top to navigate left and right

@@ -245,6 +245,75 @@ test('the board\'s duty rows keep a readable ITEM column on a phone', async ({ p
   expect(m!.narrowest, 'and the item column is actually readable').toBeGreaterThan(80)
 })
 
+/* AN EMPTY REMARKS BOX COSTS A DUTY ROW NOTHING UNTIL IT IS ASKED FOR (owner,
+   12 Aug 26 — measured). A c6r row (duty/sim/ground) ran 109px in four
+   stacked lines on a phone, and 13 of the 25 such rows on a Monday carried an
+   EMPTY remarks box in the third line — ~30px apiece, 27% of the row, for
+   nothing. `.rmkin.empty{display:none}` (scheduler.css) is what takes it
+   away; the row's own "+" (`sbRowCtl`) is what asks for it back. Only a real
+   browser can prove the box actually costs zero pixels and comes back at
+   full height — jsdom reports every rect as 0×0. */
+test('phone: an empty remarks box costs a duty row nothing until it is asked for', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  const row = '#schedBoard .sb-panel.duty [data-move="mv:d.0.0.0"]'
+  /* ATTACHED, not visible — waiting for `visible` here would wait for the
+     very thing this test exists to prove is gone: an empty box IS the
+     hidden one. Playwright's default state is 'visible', so the unqualified
+     wait timed out at 30s against a working build. */
+  await page.waitForSelector(`${row} .rmkin`, { state: 'attached' })
+
+  const before = await page.evaluate((sel) => {
+    const r = document.querySelector(sel) as HTMLElement
+    const box = r.querySelector('.rmkin') as HTMLElement
+    const btn = r.querySelector('[data-rmkadd]') as HTMLElement
+    return {
+      rowH: r.getBoundingClientRect().height,
+      boxVisible: box.getBoundingClientRect().height > 0 && getComputedStyle(box).display !== 'none',
+      btnVisible: btn.getBoundingClientRect().height > 0 && getComputedStyle(btn).display !== 'none',
+    }
+  }, row)
+  expect(before.boxVisible, 'the empty box is drawn at zero size, not just hidden behind something').toBe(false)
+  expect(before.btnVisible, 'and the reveal control is there to ask for it back').toBe(true)
+
+  await page.click(`${row} [data-rmkadd]`)
+  await page.waitForFunction((sel) => {
+    const box = document.querySelector(`${sel} .rmkin`) as HTMLElement
+    return !!box && getComputedStyle(box).display !== 'none' && box.getBoundingClientRect().height > 0
+  }, row)
+
+  const after = await page.evaluate((sel) => {
+    const r = document.querySelector(sel) as HTMLElement
+    const box = r.querySelector('.rmkin') as HTMLElement
+    return { rowH: r.getBoundingClientRect().height, focused: document.activeElement === box }
+  }, row)
+  expect(after.focused, 'the revealed box is focused, ready to type into').toBe(true)
+  expect(after.rowH - before.rowH, 'the row grows back by roughly the box it was hiding').toBeGreaterThanOrEqual(20)
+})
+
+test('desktop: every remarks box stays put, empty or not, and the phone-only + never shows', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page)
+  await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#schedBoard .sb-arow.c6r .rmkin')
+
+  const m = await page.evaluate(() => {
+    const boxes = [...document.querySelectorAll('#schedBoard .sb-arow.c6r .rmkin')] as HTMLElement[]
+    const btns = [...document.querySelectorAll('#schedBoard .sb-arow.c6r [data-rmkadd]')] as HTMLElement[]
+    return {
+      total: boxes.length,
+      hiddenBoxes: boxes.filter(b => getComputedStyle(b).display === 'none').length,
+      shownBtns: btns.filter(b => getComputedStyle(b).display !== 'none').length,
+    }
+  })
+  expect(m.total, 'the seed day has c6r rows to check').toBeGreaterThan(0)
+  expect(m.hiddenBoxes, 'desktop has the width for every remarks box, empty or not').toBe(0)
+  expect(m.shownBtns, 'and never shows the phone-only reveal control').toBe(0)
+})
+
 /* A CALLSIGN THAT DOES NOT FIT MUST LOOK CUT (owner sweep, 6 Aug 26). The rule
    asked for an ellipsis and never got one — `text-overflow` is ignored on a
    flex container — so a long name was hard-clipped and "Wrangler" read as

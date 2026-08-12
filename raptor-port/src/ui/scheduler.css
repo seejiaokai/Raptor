@@ -1490,19 +1490,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .daydots{display:flex}
   /* Columnar lists (programme / duties / sims / ground / inputs) all render 1:1 too.
      Give START / END their own breathing room so the puck never butts against END. */
-  /* THE NAME COLUMN TAKES THE SLACK THE PEOPLE COLUMN WAS NOT USING (owner,
-     12 Aug 26 — "STANDARDISATIO / N MEETING" read as a typo, not a wrap).
-     Both tracks were `1fr`, so they split the row evenly at 97px each — but
-     MEASURED at 390px, the widest people cell in the whole week uses 76px of
-     its 97 (one puck; two never fit side by side here and already stack), so
-     21px sat idle beside a name column too narrow for its own text. The
-     longest single word in the programme is STANDARDISATION at 104px; every
-     other word is 78px or less. Pinning PEOPLE to one puck plus a hair takes
-     the name column to ~114px, which clears 104px with room to spare — so
-     nothing in this dataset breaks mid-word at all any more, rather than
-     breaking more tidily. The 11px gap still keeps the puck off END, which is
-     what the +14px here was really buying. */
-  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:minmax(0,1fr) 44px 44px calc(var(--puck-w) + 8px);gap:5px 11px}
+  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:minmax(0,1fr) 44px 44px minmax(calc(var(--puck-w) + 14px),1fr);gap:5px 11px}
   /* Duties / sims / ground / inputs on a phone: remarks sit to the RIGHT of the pucks
      here too, not on a strip below — same as the flying table, same as the desktop.
      The trick that pays for it is stacking START over END into one TIME column instead
@@ -1539,6 +1527,27 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    2 x 74 + 2px gap + 4px .acrow padding = 154, so at a 310px wave RMKS keeps
    310 - 154 - 100 = 56. Times drop to 8.5px here, where 'hh:mm' measures 26px and so
    still clears LD's 26px of content. */
+/* THE NAME COLUMN TAKES THE SLACK THE PEOPLE COLUMN WAS NOT USING (owner,
+   12 Aug 26 — "STANDARDISATIO / N MEETING" read as a typo, not a wrap).
+   NAME and PEOPLE were both `1fr` and split the row evenly at 97px each on a
+   390px phone — but MEASURED there, the widest people cell in the whole week
+   uses 76px of its 97 (one puck; two never fit side by side at this width and
+   already stack), so 21px sat idle beside a name column too narrow for its own
+   text. The longest single word in the programme is STANDARDISATION at 104px;
+   every other word is 78px or less. Pinning PEOPLE to one puck plus a hair
+   takes NAME to 111px, which clears 104px — so nothing in this dataset breaks
+   mid-word at all, rather than breaking more tidily.
+   PHONE ONLY, at 480px rather than the file's usual 820px, and that bound is
+   the probe's doing rather than a guess: `probes/adapted/wrap-async.cjs` jams
+   a 61-character string into this cell and asserts it WRAPS. Applied up to
+   820px, the reallocation gave NAME so much room on a tablet that the jam fit
+   on one line and the probe went red — not a broken layout (its overflow and
+   collide checks still passed) but a fair warning that a tablet was being
+   re-proportioned to fix a phone. A tablet's even split was never the
+   complaint, so it keeps it. */
+@media (max-width:480px){
+  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:minmax(0,1fr) 44px 44px calc(var(--puck-w) + 8px)}
+}
 @media (max-width:374px){
   .form,.cols.formcols{grid-template-columns:34px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
   .form .bto b,.form .bto span,.form .ld{font-size:8.5px}
@@ -2546,7 +2555,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      full-width strip under them, where a phone has the room to read it. The
      defaults stay 0 for prog rows only — c6r's own cells are placed by the
      block below and are untouched here. */
-     EVERY rule here is scoped `:not(.c6r)`, and that is load-bearing rather
+  /* EVERY rule here is scoped `:not(.c6r)`, and that is load-bearing rather
      than tidy: a c6r row's children are role, str, end, PEOPLE, remarks,
      controls, and its remarks box is an `.ain` like the programme row's
      detail box. Ordering by class alone therefore reached into the duty,
