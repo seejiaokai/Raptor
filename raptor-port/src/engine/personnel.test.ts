@@ -52,11 +52,12 @@ describe('the personnel category', () => {
 })
 
 describe('personnel seat eligibility (slotBar)', () => {
-  it('is barred from a front seat, flying or sim', () => {
-    expect(slotBar(PID, '0.0.0.0.p')).toMatch(/front seat/)
-    expect(slotBar(PID, 's:0.oft.0.p')).toMatch(/front seat/)
+  it('is barred from a JET front seat, but a sim seat is fine (owner, Aug 26)', () => {
+    expect(slotBar(PID, '0.0.0.0.p')).toMatch(/jet front seat/)   // a live jet front seat
+    expect(slotBar(PID, 's:0.oft.0.p')).toBe('')                  // a sim front seat is allowed
+    expect(slotBar(PID, 's:0.oft.0.w')).toBe('')                  // and a sim rear seat
   })
-  it('may take a rear seat, a duty desk and a ground row', () => {
+  it('may take a rear jet seat, either sim seat, a duty desk and a ground row', () => {
     expect(slotBar(PID, '0.0.0.0.w')).toBe('')     // rear cockpit — the incentive ride
     expect(slotBar(PID, 'd:0.0.0')).toBe('')       // a duty desk
     expect(slotBar(PID, 'g:0.0')).toBe('')         // a ground programme row
@@ -107,6 +108,26 @@ describe('a rear-seat ride raises the crew-pairing CP advisory', () => {
     /* reuses the existing CP chip, so the squadron reads one flag */
     expect(chipOf(0, PID)).toBe('CP')
     expect(sevOf(0, PID)).toBe('adv')
+  })
+})
+
+describe('a sim seat raises nothing for a personnel (owner, Aug 26)', () => {
+  it('either sim seat is accepted with no warning at all', () => {
+    setSlotVal('s:0.oft.0.p', PID)                 // day 0 OFT front seat
+    expect(forTorque().length).toBe(0)
+    setSlotVal('s:0.oft.0.p', '')
+    setSlotVal('s:0.oft.0.w', PID)                 // and the rear seat
+    expect(forTorque().length).toBe(0)
+  })
+})
+
+describe('a formation currency check never rings a ground-crew passenger', () => {
+  it('IRT with no IR examiner leaves the rear-seat personnel alone (owner, Aug 26)', () => {
+    setSlotVal('0.0.0.0.w', PID)                   // incentive ride in the rear
+    DAYS[0].waves[0].formations[0].msn = 'IRT'     // the sortie is an instrument rating test
+    const ws = forTorque()
+    expect(ws.some((w: any) => w.code === 'NO_IR')).toBe(false)
+    expect(ws.every((w: any) => w.code === 'PAX_CREW')).toBe(true)   // only the incentive-ride advisory
   })
 })
 

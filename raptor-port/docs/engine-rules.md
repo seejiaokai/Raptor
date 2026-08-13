@@ -485,14 +485,17 @@ in the seed schedule**, so none of the rules below fire on the reference's
 seed week — which is what keeps `refwin`/parity byte-exact, the `NO_IR`
 precedent.
 
-**Where they may be planned** — a REAR cockpit (an incentive ride) and ground
-work (duty desks, ground rows, sim slots). **Never a front seat**, flying or
-sim. The bar lives in two places, both keyed on `p.pers`:
-- `avail.ts` `slotBar` returns a reason for any front seat (`r.seat==='p'`) so
-  the palette strikes them there and offers them everywhere else.
-- `validate.ts` raises hard `QUAL` on a personnel in a flying or sim front
-  seat. (Their `'GND'` seat never trips the FCP/RCP seat checks, so these are
-  the whole story.)
+**Where they may be planned** — the REAR cockpit of a jet (an incentive ride),
+**either seat of a sim** (owner, Aug 26 — a sim is training, not a live jet, so
+the front-seat bar does not reach it), and ground work (duty desks, ground
+rows). **Never the FRONT seat of a jet.** The single bar lives in two places,
+both keyed on `p.pers`:
+- `avail.ts` `slotBar` returns a reason for a jet front seat (`r.seat==='p'` on
+  a non-`s:` key) so the palette strikes them there and offers them everywhere
+  else — rear jet seat, both sim seats, duty and ground.
+- `validate.ts` raises hard `QUAL` on a personnel in a jet front seat only.
+  (Their `'GND'` seat never trips the FCP/RCP seat checks, so this is the whole
+  story; a sim seat raises nothing.)
 
 **The rules that apply — and only these three:** the **conflict**
 (`DOUBLE_BOOK`), the **long working day** (`LONGDAY`) and the **7-day run**
@@ -503,9 +506,13 @@ so personnel get them for free (personnel are in `collectEvents`/`EVD` — only
 **Everything flying-specific is OFF for personnel**, each gated with
 `p.pers` in `validate.ts`: crew rest, the tight/double turn (`TURN`/`DT_SUM`),
 the combination matrix and OCU/IR pairing rules, AAR, SC/AVALON currency, and
-the flight and sim **brief/debrief** windows. `availByWave` and the Insights
-idle list also exclude them — they are not aircrew, so they never inflate a
-flying availability count.
+the flight and sim **brief/debrief** windows. The formation-wide currency
+rings — `OCU_NO_IP` and `NO_IR` (IRT with no IR examiner) — also drop a
+ground-crew passenger from the crew they ring: a rear-seat rider is excluded
+from `crewAll` and the per-aircraft IRT crew exactly as a `special` body is, so
+those hard flags never land on him. `availByWave` and the Insights idle list
+also exclude them — they are not aircrew, so they never inflate a flying
+availability count.
 
 **A rear-seat ride raises `PAX_CREW`** — a new advisory code that reuses the
 existing amber crew-pairing **`CP`** chip (owner's choice: an incentive ride is

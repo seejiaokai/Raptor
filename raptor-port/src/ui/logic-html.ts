@@ -140,7 +140,7 @@ export function lgRules(){
     {sev:'adv',code:'OCU_NO_IP',
      t:()=>`An <b>OCU formation with no instructor</b> (IW / IP / IR / FI) in it raises an Advisory.`},
     {sev:'adv',code:'PAX_CREW',
-     t:()=>`A <b>personnel (ground crew)</b> body in the <b>rear seat</b> — an incentive passenger — raises a <b>crew-pairing</b> Advisory: the ride is a non-standard pairing that needs approval. It reuses the <b>CP</b> flag.<span class="why">Ground crew hold no flying qualification and may ride a rear seat only. They carry just three checks — a conflict, a long working day and the seven-day run — plus this pairing advisory; every other flying rule (crew rest, the seat and combination rules, refuelling, SC currency) is off for them.</span>`},
+     t:()=>`A <b>personnel (ground crew)</b> body in the <b>rear seat</b> — an incentive passenger — raises a <b>crew-pairing</b> Advisory: the ride is a non-standard pairing that needs approval. It reuses the <b>CP</b> flag.<span class="why">Ground crew hold no flying qualification: they may ride the rear seat of a jet (never the front), and may sit either seat of a sim. They carry just three checks — a conflict, a long working day and the seven-day run — plus this pairing advisory; every other flying rule (crew rest, the seat and combination rules, refuelling, SC currency) is off for them.</span>`},
     {sev:'hard',code:'NO_IR',
      t:()=>`An <b>IRT</b> — an instrument rating test — needs an <b>IR</b> (instrument rating examiner) in the crew. IRT in a formation's <b>mission</b> wants an IR anywhere in that formation; IRT in one aircraft's <b>remarks</b> wants the IR in that aircraft.`},
     {sev:'hard',code:'AAR_QUAL',

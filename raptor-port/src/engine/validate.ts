@@ -520,7 +520,7 @@ export function validate(){
                AAR_QUAL, unchanged: nobody aboard could supervise him.
            Night versus day is already decided — ac.aar is 'DAAR' or 'NAAR'
            straight out of aarNeed, so the same call answers both. */
-        if(ac.aar&&p&&!isSpecial(ac.p)&&!aarOK(ac.p,ac.aar)){
+        if(ac.aar&&p&&!p.pers&&!isSpecial(ac.p)&&!aarOK(ac.p,ac.aar)){   // ground crew carry no AAR currency (owner, Aug 26); their jet-front-seat is already an illegal seat
           const teacher=!!(w&&w.seat==='FCP'&&isInstrPilot(w.q)&&!isSpecial(ac.w));
           const day=ac.aar==='NAAR'?'night':'day';
           if(teacher&&aarInstrOK(ac.w,ac.aar)){/* supervised — no warning */}
@@ -553,7 +553,12 @@ export function validate(){
          never raise warnings" and this line was the hole in that invariant.
          The warning itself still fires for the real crew that remains —
          only the sentinel stops being named/ringed/chipped. */
-      const crewAll=[...new Set(f.acs.reduce((a:any,x:any)=>a.concat([x.p,x.w]),[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id)))];
+      /* personnel (ground crew) are excluded here for the same reason specials
+         are: a ground-crew passenger holds no flying qualification, so the
+         formation-wide currency checks below (OCU-with-no-IP, IRT-with-no-IR)
+         must neither count him nor ring him — every flying rule is off for him
+         (owner, Aug 26). He can never supply the IP/IR they look for anyway. */
+      const crewAll=[...new Set(f.acs.reduce((a:any,x:any)=>a.concat([x.p,x.w]),[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id)&&!PEOPLE[id].pers))];
       const ocuAll=crewAll.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
       const anyIP=crewAll.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
       if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv');markChip(di,id,'CP');});add('adv','OCU_NO_IP',ocuAll,`OCU in ${f.label} with no IP`,f.key);}
@@ -568,7 +573,7 @@ export function validate(){
         crewAll.forEach((id:any)=>{markRing(di,id,'hard');markChip(di,id,'CPH');});
         add('hard','NO_IR',crewAll,`IRT in ${f.label} with no IR examiner`,f.key);}
       f.acs.forEach((ac:any)=>{ if(!/\bIRT\b/i.test(String(ac.rmks||'')))return;
-        const crew=[ac.p,ac.w].filter((id:any)=>id&&realP(id));
+        const crew=[ac.p,ac.w].filter((id:any)=>id&&realP(id)&&!PEOPLE[id].pers);   // ground crew carry no flying rule (owner, Aug 26)
         if(crew.length&&!crew.some(isIR)){crew.forEach((id:any)=>{markRing(di,id,'hard');markChip(di,id,'CPH');});
           add('hard','NO_IR',crew,`IRT remarks on ${f.label} with no IR examiner`,ac.key);}});
       /* SC currency — read off the shift as scheduled, both MAIN and SPARE.
@@ -615,7 +620,9 @@ export function validate(){
        front seat, and only an instructor pilot (IP / IR / FI) may occupy the
        back seat. */
     (day.simcrew||[]).forEach((s:any)=>{ const p=realP(s.p),w=realP(s.w);
-      if(p&&p.pers){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is ground crew — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      /* Personnel (ground crew) may sit EITHER sim seat (owner, Aug 26) — a sim
+         is training, not a live jet, so no seat/qual rule attaches to them here.
+         A WSO in a sim front seat is still illegal, as in a real jet. */
       if(p&&p.seat==='RCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is a WSO — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
       if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is CAT IW — a WSO category, cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
       if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,s.w,'Q');markRing(di,s.w,'hard');add('hard','QUAL',[s.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may take the back seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.w`);}

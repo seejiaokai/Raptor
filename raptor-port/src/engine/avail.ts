@@ -209,12 +209,14 @@ export function slotRules(key:any){
 export function slotBar(id:any,key:any,rules?:any){
   const p=PEOPLE[id]; if(!p||p.special)return '';
   const r=rules||slotRules(key);
-  /* Personnel (ground crew) may ride a REAR seat (an incentive ride) and do
-     ground work, but never a front seat — flying or sim. Their seat is 'GND',
-     so the FCP/RCP checks below never catch them; this is the whole front-seat
-     bar for them. Everything else (rear seat, duty, ground, sim-rear) falls
-     through to the normal input/busy checks. */
-  if(p.pers&&r.seat==='p')return 'ground crew — rear seat only, cannot fly front seat';
+  /* Personnel (ground crew) may ride a REAR jet seat (an incentive ride), sit
+     EITHER sim seat (owner, Aug 26 — a sim is training, not a live jet, so the
+     front-seat bar does not apply there) and do ground work, but never a real
+     JET front seat. Their seat is 'GND', so the FCP/RCP checks below never
+     catch them; this `s:` carve-out is the whole seat bar for them. Everything
+     else (rear jet seat, either sim seat, duty, ground) falls through to the
+     normal input/busy checks. */
+  if(p.pers&&r.seat==='p'&&!/^s:/.test(String(key)))return 'ground crew — cannot fly a jet front seat';
   if(r.seat==='p'&&p.seat==='RCP')return 'WSO — cannot fly front seat';
   if(r.seat==='w'&&p.seat==='FCP'&&!isInstrPilot(p.q))return 'pilot, not an instructor — only IP / IR / FI may fly rear seat';
   if(r.sc&&!scQualOK(id,r.sc))return `not ${r.sc==='day'?'SC DAY':'SC NIGHT'} current`;
