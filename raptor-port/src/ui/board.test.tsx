@@ -144,7 +144,7 @@ describe('the scheduler board (tfin board group)', () => {
   })
 
   it('+ Wave opens the kind menu: a flying wave and the three standalone kinds', async () => {
-    await click($('#sbAddGo'))
+    await click($('[data-wvadd]'))
     const menu = $('.wavemenu')
     expect(menu).toBeTruthy()
     const kinds = [...menu.querySelectorAll('[data-wmkind]')].map(b => (b as HTMLElement).dataset.wmkind)
@@ -173,7 +173,7 @@ describe('the scheduler board (tfin board group)', () => {
   it('an AVALON wave arrives complete WITH its duty block, and deleting it removes both', async () => {
     const d = DAYS[0]
     const nW = d.waves.length, nDW = (d.dutywaves || []).length
-    await click($('#sbAddGo'))
+    await click($('[data-wvadd]'))
     await click($('.wavemenu [data-wmkind="avalon"]'))
     expect(d.waves.length).toBe(nW + 1)
     expect(isStandalone(d.waves[d.waves.length - 1])).toBeTruthy()
@@ -189,7 +189,7 @@ describe('the scheduler board (tfin board group)', () => {
   it('an SC wave brings no duty block at all', async () => {
     const d = DAYS[0]
     const nW = d.waves.length, nDW = (d.dutywaves || []).length
-    await click($('#sbAddGo'))
+    await click($('[data-wvadd]'))
     await click($('.wavemenu [data-wmkind="sc"]'))
     expect(d.waves.length).toBe(nW + 1)
     expect((d.dutywaves || []).length).toBe(nDW)
@@ -233,7 +233,7 @@ describe('the scheduler board (tfin board group)', () => {
      'NIGHT WAVE' onto a wave that was still standalone/avalon underneath. */
   it('the Go dropdown names an AVALON wave AVALON, not Night wave', async () => {
     const d = DAYS[0]
-    await click($('#sbAddGo'))
+    await click($('[data-wvadd]'))
     await click($('.wavemenu [data-wmkind="avalon"]'))
     const gi = d.waves.length - 1
     const sel = $(`#sbBoard [data-wsel="0.${gi}"]`) as HTMLSelectElement
@@ -246,7 +246,7 @@ describe('the scheduler board (tfin board group)', () => {
      would throw away whatever is already planted (owner, asked and answered) */
   it('picking AVALON on an ordinary wave keeps its lines and crew', async () => {
     const d = DAYS[0]
-    await click($('#sbAddGo'))
+    await click($('[data-wvadd]'))
     await click($('.wavemenu [data-wmkind=""]'))
     const gi = d.waves.length - 1, w = d.waves[gi]
     w.formations[0].aircraft[0].p = 'mamba'
@@ -632,11 +632,12 @@ describe('Sort all gates on the edit-mode flag, not the role alone (finding #4)'
 describe('+ Wave is hidden on a read-only board, matching Sort all (round 3)', () => {
   it('the button is not rendered once editMode() goes false, even though the role is still admin', async () => {
     expect(document.querySelector('#sbAddLine'), '+ Line is gone from the top bar for good').toBeFalsy()
-    expect(document.querySelector('#sbAddGo'), 'sanity: visible in edit mode').toBeTruthy()
+    expect(document.querySelector('#sbAddGo'), '+ Wave left the top bar on 13 Aug 26 too').toBeFalsy()
+    expect(document.querySelector('[data-wvadd]'), 'sanity: the inline + Wave is present in edit mode').toBeTruthy()
     HOOKS.editMode = () => false
     try {
       await act(async () => { notify() })
-      expect(document.querySelector('#sbAddGo')).toBeFalsy()
+      expect(document.querySelector('[data-wvadd]')).toBeFalsy()
     } finally {
       HOOKS.editMode = () => true
       await act(async () => { notify() })
@@ -857,7 +858,10 @@ describe('board lifecycle', () => {
     expect(board.querySelectorAll('.mbtn,[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
     /* the live-checks panel is now the preview banner with the restore button */
     expect($('#schedBoard .dprev-bar .dprev-restore')).toBeTruthy()
-    expect(($('#sbAddGo') as HTMLButtonElement).disabled).toBe(true)
+    /* the inline "+ Wave" is a .mbtn INSIDE the board, so the `.mbtn ... === 0`
+       assertion above already proves it is absent on a frozen preview — where
+       the old top-bar #sbAddGo merely rendered disabled, the section control is
+       withheld entirely (mvRO), which is the stronger guarantee. */
     /* a write through a gated handler is refused outright */
     const before = slotVal('0.0.0.0.p')
     boardArmClick(new MouseEvent('click', { bubbles: true }))

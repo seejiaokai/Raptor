@@ -10,6 +10,7 @@ import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { storeBackend } from '../engine/hooks'
 import { STORE_CFG, storesReset } from '../engine/stores'
+import { waveMenu } from './board'
 import { SCHED } from '../engine/publish'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -225,7 +226,11 @@ describe('the pen edits the LIST, not the schedule', () => {
     expect(offFn, 'the box records its own outside-click handler for exactly this').toBeTypeOf('function')
     const removeSpy = vi.spyOn(document, 'removeEventListener')
     try {
-      await click($('#addGo'))
+      /* the desktop "#addGo" button was removed 13 Aug 26 (a wave is created
+         from the board's own inline "+ Wave" now), so the picker is opened by
+         calling waveMenu directly — the mechanism under test is waveMenu
+         unhooking the prior popup's listener, not which control launched it. */
+      await act(async () => { waveMenu(document.body, null) })
       expect(removeSpy, 'the wave picker unhooks the old popup\'s listener before discarding its node')
         .toHaveBeenCalledWith('click', offFn)
     } finally {
