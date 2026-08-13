@@ -2220,6 +2220,17 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
    Distinct from the prog grid (whose column 2 is Detail), so it carries its own
    modifier instead of bending the shared rule. */
 .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:18px 1.3fr 52px 52px minmax(96px,1.2fr) 1fr 92px}
+/* THE AMT BOX CREW — a fixed two-column FCP | RCP grid (owner, 13 Aug 26). Seats
+   pair left-to-right (FCP left, RCP right) and stack top-to-bottom, positions
+   1..n down; an emptied seat keeps its slot (the pax-hole rule) so the pairing
+   never reshuffles. Two puck-widths wide, which the People column already holds
+   — the 8-crew box laid out four-of-two here before this made it explicit. */
+.ppl.fcprcp{display:grid;grid-template-columns:var(--puck-w) var(--puck-w);gap:3px 6px;
+  align-content:start;justify-content:start}
+.ppl.fcprcp .hd{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.05em;font-size:8px;font-weight:700;color:var(--ink-3);line-height:1;margin-bottom:1px}
+.ppl.fcprcp .sb-slot.empty{width:var(--puck-w);height:var(--puck-h);border:1px dashed var(--edge-2);
+  border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:11px}
 /* THE "+" THAT REVEALS AN EMPTY REMARKS BOX IS PHONE-ONLY (owner, 12 Aug 26 —
    measured). Desktop always draws the remarks input, empty or not — the
    row has the width for it — so the button board-html.ts's sbRowCtl now

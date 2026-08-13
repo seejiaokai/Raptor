@@ -124,7 +124,7 @@ export function lgRules(){
     {sev:'adv',code:'SIM_BRIEF',set:['epBrief'],src:()=>`VCONF.epBrief ${VCONF.epBrief}`,
      t:()=>`An EP profile on the OFT briefs ${lgV(lgT(VCONF.epBrief))} before the box — unless its remarks name a lead (<b>BRIEF 30 PRIOR</b>, <b>30 mins prior</b>), which wins for that line; the AMT carries its <b>own BRIEF row</b>, and that row's time is the hard line.`},
     {sev:'adv',code:'SIM_DEBRIEF',set:['simDebrief','amtDebrief'],src:()=>`VCONF.simDebrief ${VCONF.simDebrief} · VCONF.amtDebrief ${VCONF.amtDebrief}`,
-     t:()=>`A sim debriefs for ${lgV(lgT(VCONF.simDebrief))} after the box, the AMT for ${lgV(lgT(VCONF.amtDebrief))} after its DEBRIEF row.`},
+     t:()=>`A sim debriefs for ${lgV(lgT(VCONF.simDebrief))} after the box. The AMT's debrief is its <b>DEBRIEF row's own start-to-end</b> when that row carries an end; left blank, it falls back to ${lgV(lgT(VCONF.amtDebrief))} after the debrief start.`},
    ]},
 
   {g:'Qualification and currency',

@@ -609,3 +609,29 @@ describe('the same man in two sorties at once', () => {
     expect(validate().sev[0]['split']).not.toBe('hard')
   })
 })
+
+describe('AMT debrief is a range (owner, 13 Aug 26)', () => {
+  const amtWin = (amt: any[]) => {
+    DAYS[0].sims = { amt, oft: [] }
+    const day: any = collectEvents()[0]
+    return (day.simwin || []).find((w: any) => w.label === 'AMT')
+  }
+  it('reads the DEBRIEF row end as the debrief close when it is filled', () => {
+    const w = amtWin([
+      { label: 'BRIEF', str: '1100', end: '' },
+      { label: 'BOX', str: '1130', end: '1230', pax: ['prowler', 'drill'] },
+      { label: 'DEBRIEF', str: '1230', end: '1315' },
+    ])
+    expect(w, 'the AMT window is built').toBeTruthy()
+    expect(w.ds).toBe(12 * 60 + 30)          // 1230 debrief start
+    expect(w.de).toBe(13 * 60 + 15)          // 1315 — the explicit end, NOT ds + amtDebrief
+  })
+  it('falls back to ds + amtDebrief when the DEBRIEF end is blank (the seed week is unchanged)', () => {
+    const w = amtWin([
+      { label: 'BRIEF', str: '1100', end: '' },
+      { label: 'BOX', str: '1130', end: '1230', pax: ['prowler', 'drill'] },
+      { label: 'DEBRIEF', str: '1230', end: '' },
+    ])
+    expect(w.de).toBe(12 * 60 + 30 + VCONF.amtDebrief)   // 1230 + 30
+  })
+})

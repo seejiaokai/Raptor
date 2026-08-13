@@ -287,8 +287,6 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
     s+=C6;
     rows.forEach((r:any,ri:any)=>{
       const base=`s:${di}.${kind}.${ri}`, t=`sr:${di}.${kind}.${ri}`;
-      /* same two row shapes as the week: a 2-seat crew (p/w) or a pax list */
-      const pax=Array.isArray(r.pax)?r.pax:null;
       /* A deleted pax HOLDS its index (slots.ts's pax branch splices nothing),
          so the hole must stay VISIBLE: render it as a droppable empty slot,
          not as nothing (owner, 8 Aug 26 — deleting one WSO from the AMT BOX
@@ -297,18 +295,46 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
          the flying line's seats, so boardArmClick's tap-to-arm and the drag
          machine's drop targeting cover it with no new wiring. ro (not pv
          alone, reviewer-found residual 9 Aug 26) — a frozen preview OR a
-         read-only board both keep rendering nothing here, a hole is only
-         ever droppable on a genuinely live board. */
-      const seats=pax?pax.map((id:any,pi:any)=>{
-        const k=`${base}.pax.${pi}`;
-        return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
-          :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);
-      }).join('')
-        :sbSeat(di,`${base}.p`,r.p,ro)+sbSeat(di,`${base}.w`,r.w,ro);
-      const txt=(!seats&&r.who)?`<span class="itxt">${esc(r.who)}</span>`:'';
+         read-only board both keep rendering nothing here.
+         AMT IS A THREE-ROW BLOCK (BRIEF / BOX / DEBRIEF) and the crew rides the
+         BOX row ONLY (owner, 13 Aug 26): BRIEF and DEBRIEF are times, so they
+         show no seats. On the box the crew reads FCP (left) / RCP (right),
+         paired top-to-bottom (positions 1..n down) on a fixed two-column grid
+         (.fcprcp) — so a removed puck leaves its own seat empty in place and the
+         pairing never reshuffles. Not capped: the grid grows a pair at a time.
+         OFT (and any other sim) keeps the plain wrap it always had. */
+      const isAmt=kind==='amt', isBriefR=/^\s*BRIEF/i.test(r.label||''), isDebR=/DEBRIEF/i.test(r.label||'');
+      let pplCell;
+      if(isAmt&&(isBriefR||isDebR)){
+        pplCell=`<div class="ppl"></div>`;
+      }else if(isAmt){
+        let cells;
+        if(Array.isArray(r.pax)){
+          /* pad to an even count (>=2) so every pair is complete — the trailing
+             slot of an odd crew is a droppable RCP, not a gap */
+          const n=Math.max(2,r.pax.length+(r.pax.length%2));
+          cells=Array.from({length:n},(_:any,pi:any)=>{const k=`${base}.pax.${pi}`, id=r.pax[pi];
+            return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
+              :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);}).join('');
+        }else{
+          cells=(PEOPLE[r.p]?sbSeat(di,`${base}.p`,r.p,ro):(ro?'':`<span class="sb-slot empty" data-slot="${base}.p" title="FCP — tap or drop a puck to fill">+</span>`))
+               +(PEOPLE[r.w]?sbSeat(di,`${base}.w`,r.w,ro):(ro?'':`<span class="sb-slot empty" data-slot="${base}.w" title="RCP — tap or drop a puck to fill">+</span>`));
+        }
+        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${sbMore(di,base,r,ro)}</div>`;
+      }else{
+        const pax=Array.isArray(r.pax)?r.pax:null;
+        const seats=pax?pax.map((id:any,pi:any)=>{
+          const k=`${base}.pax.${pi}`;
+          return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
+            :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);
+        }).join('')
+          :sbSeat(di,`${base}.p`,r.p,ro)+sbSeat(di,`${base}.w`,r.w,ro);
+        const txt=(!seats&&r.who)?`<span class="itxt">${esc(r.who)}</span>`:'';
+        pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${txt+seats+sbMore(di,base,r,ro)}</div>`;
+      }
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:s.${di}.${kind}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.label`,r.label,'EP SIM',ro)+sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
-        +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${txt+seats+sbMore(di,base,r,ro)}</div>`
+        +pplCell
         +sbRmk(`${t}.rmks`,r.rmks,ro)
         +sbRowCtl(ro,r,`${di}.${kind}.${ri}`,'sr','this sim',`${t}.rmks`,sbNudge(`mv:s.${di}.${kind}.${ri}`,ro))+`</div>`;
     });
