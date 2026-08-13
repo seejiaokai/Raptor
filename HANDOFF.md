@@ -18,12 +18,13 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 **All six gates were green first-hand for the audit sweep of 12 Aug 26, for
 its five follow-up fixes, again for the guard-rail sweep, the new-year date
-fix (13 Aug 26), and again for the Personnel ground-crew category (13 Aug
-26)**, run in this container on the matching tree:
-`npm test` 1385 tests across 88 files (the `audit-*` sweep included; the
-new-year fix flipped its `audit-guards-inputs` new-year case from refusal to
-acceptance, a net +1; the Personnel category added `personnel.test.ts` and
-the ground-crew additions to the quals/html tests, +16), `node
+fix (13 Aug 26), the Personnel ground-crew category (13 Aug 26), and again for
+the BOARD REDESIGN of 13 Aug 26 — the cleanup + inline `+ Wave`, the AMT
+FCP/RCP block with a debrief range, and the duty-template system**, run in this
+container on the matching tree:
+`npm test` 1406 tests across 90 files (the `audit-*` sweep included; the board
+redesign added `dutytpl.test.ts`, `DutyTplModal.test.tsx`, the AMT
+debrief-range + FCP/RCP tests, and re-pointed the wave-desk board tests), `node
 reference/tfin.js` 728/0, `npm run build` clean, the full `npm run test:e2e`
 geometry job 86/86 in Chromium, `probes:adapted` 36/36 and `perf` 4/4 (both
 DOM ceilings held, no raise). The guards were then driven on the
@@ -44,9 +45,11 @@ on `Aug 12 → Aug 26`. **That last one shipped twice in one morning** — first
 anchoring to the loaded week, then, at the owner's word, reverted to a plain
 today → +2 weeks; the open-work list below carries which of the two is
 current and why. All four were re-checked on the DEPLOYED page.
-The board's measured DOM went 897 → 911 nodes in the same sweep (one `+` per
-c6r row) against an unmoved 960 ceiling — `docs/probe-sweep.md` records that
-a shorter board can still be a heavier one.
+The board's measured DOM went 897 → 911 on the 12 Aug sweep, then to 923 with
+the board redesign (the inline `+ Wave` panel and the AMT FCP/RCP labels),
+against an unmoved 960 ceiling; the week measures 5099 under its 5530 ceiling.
+`docs/probe-sweep.md` carries the live figures, and records that a shorter
+board can still be a heavier one.
 
 Three earlier passes the same day were each green on the same six and each
 checked on the DEPLOYED page (the standing instruction, owner 7 Aug 26): the

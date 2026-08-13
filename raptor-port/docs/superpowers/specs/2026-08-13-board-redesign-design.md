@@ -1,7 +1,13 @@
 # Scheduler board redesign — design
 
 **Date:** 2026-08-13
-**Status:** Design, awaiting review
+**Status:** SHIPPED (PRs #185, #186, #187) — historical record. Two parts
+shipped differently than proposed below; the living contracts win:
+- **AMT** did NOT collapse to one Box row (§1.5). The owner kept the three rows
+  (Brief / Box / Debrief) and asked for an **FCP/RCP two-column box crew**
+  instead; the debrief-range is read off the DEBRIEF row's own end cell. See
+  `docs/engine-rules.md` §the duty block region and `docs/ui-contracts.md`.
+- **Duty templates** shipped as §Pass 2 describes. Waves are fully decoupled.
 **Surface:** The full-screen scheduler board (`src/ui/board.ts`, `board-html.ts`,
 `SchedBoard.tsx`), the week view (`html.ts`), the AMT/OFT sim engine
 (`engine/events.ts`, `validate.ts`, `rules.ts`) and the Rules tab
