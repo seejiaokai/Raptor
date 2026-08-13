@@ -95,6 +95,23 @@ export const PEOPLE:any={
   waldo:{cs:'Waldo',seat:'RCP',q:'D'},
   nick:{cs:'Nick',seat:'RCP',q:'OCU'},
   bullet:{cs:'Bullet',seat:'RCP',q:'OCU'},
+  /* ---- personnel (ground crew, non-flying) ----
+     Squadron ground crew who hold no flying qualification. `pers:true` is the
+     semantic flag every personnel branch reads; `seat:'GND'` (a third seat
+     value) keeps them out of the Pilots/WSOs seat logic and gives them their
+     own palette column and quals table; `q:''` means no CAT, so deriveQuals
+     grants them nothing. They may be planned into ground work and a REAR
+     cockpit (an incentive ride) only — never a front seat — and carry only the
+     conflict, long-workday and 7-day-run checks; every flying-specific rule
+     (crew rest, seat/qual, the pairing matrix, AAR, SC/AVALON currency) is off
+     for them. A rear-seat ride raises the crew-pairing CP advisory. `remarks`
+     is a per-person free-text note, editable on the Personnel quals table.
+     They are roster entries only — never placed in the seed schedule — so none
+     of this fires on the reference's seed week. See docs/engine-rules.md
+     §Personnel. */
+  torque:{cs:'Torque',seat:'GND',pers:true,q:'',initials:'TRQ',flight:'Maint',remarks:''},
+  spanner:{cs:'Spanner',seat:'GND',pers:true,q:'',initials:'SPN',flight:'Maint',remarks:''},
+  gizmo:{cs:'Gizmo',seat:'GND',pers:true,q:'',initials:'GZM',flight:'Line',remarks:''},
   /* ---- sentinel bodies: not real aircrew. `special` keeps them out of every
      validation / availability path; `archived` keeps them out of every roster
      column, quals table and view-as list. They still resolve through PEOPLE[id]
@@ -104,6 +121,10 @@ export const PEOPLE:any={
 
 /* derive LoX qualification flags from level (editable later) */
 export function deriveQuals(p:any){
+  /* Personnel (ground crew) hold no flying qualification: no CAT, so nothing
+     derives. Give them an empty quals object and stop before the ladder lookup
+     — QORDER[''] is undefined, which would poison every o>=1 flag. */
+  if(p.pers){p.quals={};return;}
   const q=p.q, o=QORDER[q];
   p.quals=Object.assign({
     sxo:!!p.sxo,
@@ -186,7 +207,7 @@ Object.keys(PEOPLE).forEach((id:any)=>{if(PEOPLE[id].quals&&PEOPLE[id].quals.sxo
 /* SC currency as it stands today: the experienced hands hold both, the rest hold
    day only, and OCU hold neither until they are signed off. Tick or untick on the
    Quals page — SC DAY / SC NIGHT. */
-Object.keys(PEOPLE).forEach((id:any)=>{const p=PEOPLE[id]; if(p.special||!p.quals)return;
+Object.keys(PEOPLE).forEach((id:any)=>{const p=PEOPLE[id]; if(p.special||p.pers||!p.quals)return;
   if(isOcu(p.q))return;
   p.quals.scDay=true;
   if(isInstr(p.q)||p.q==='A'||p.q==='B')p.quals.scNight=true;});
@@ -210,6 +231,10 @@ export const ID_BY_CS:any={}; Object.keys(PEOPLE).forEach((id:any)=>ID_BY_CS[PEO
 /* sentinel bodies (ALL AVAIL) occupy slots but are not people: no conflicts,
    no crew rest, no qual rules, never counted as busy or engaged. */
 export function isSpecial(id:any){return !!(PEOPLE[id]&&PEOPLE[id].special);}
+/* Personnel (ground crew): a real roster body with no flying qualification.
+   Unlike `special`, personnel stay in the roster, pickers and inputs — they
+   only drop out of the flying rules and the Pilots/WSOs seat logic. */
+export function isPersonnel(id:any){return !!(PEOPLE[id]&&PEOPLE[id].pers);}
 export function realP(id:any){const p=PEOPLE[id];return (p&&!p.special)?p:null;}
 export const SPECIALS=Object.keys(PEOPLE).filter((id:any)=>PEOPLE[id].special);
 export function nameToId(nm:any){return ID_BY_CS[(nm||'').toLowerCase().trim()];}

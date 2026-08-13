@@ -470,6 +470,54 @@ live-checks panel is `boardWarnHTML` in `ui/board.ts`; warning-box
 interaction is `ui/interactions.ts` + `state/view.ts` (`DWOPEN`, `WFOCUS`,
 `focusWarn`).
 
+## Personnel (ground crew, owner Aug 26)
+
+A **third person category** beside pilots (`seat:'FCP'`) and WSOs
+(`seat:'RCP'`): squadron ground crew who hold no flying qualification but need
+to be planned. A personnel record carries **`pers:true`** (the flag every
+branch reads), **`seat:'GND'`** (a third seat value that keeps them out of the
+Pilots/WSOs seat logic and gives them their own palette column and quals
+table), **`q:''`** (no CAT), and a **`remarks`** free-text note. `deriveQuals`
+short-circuits to `p.quals={}` for them and every boot currency pass skips
+them (`people.ts`), so no qualification is ever derived. `isPersonnel(id)`
+is the reader. They are seeded (`torque`/`spanner`/`gizmo`) but **never placed
+in the seed schedule**, so none of the rules below fire on the reference's
+seed week — which is what keeps `refwin`/parity byte-exact, the `NO_IR`
+precedent.
+
+**Where they may be planned** — a REAR cockpit (an incentive ride) and ground
+work (duty desks, ground rows, sim slots). **Never a front seat**, flying or
+sim. The bar lives in two places, both keyed on `p.pers`:
+- `avail.ts` `slotBar` returns a reason for any front seat (`r.seat==='p'`) so
+  the palette strikes them there and offers them everywhere else.
+- `validate.ts` raises hard `QUAL` on a personnel in a flying or sim front
+  seat. (Their `'GND'` seat never trips the FCP/RCP seat checks, so these are
+  the whole story.)
+
+**The rules that apply — and only these three:** the **conflict**
+(`DOUBLE_BOOK`), the **long working day** (`LONGDAY`) and the **7-day run**
+(`DAYS_RUN`). All three key off tasking + person id and are category-agnostic,
+so personnel get them for free (personnel are in `collectEvents`/`EVD` — only
+`special` bodies are skipped).
+
+**Everything flying-specific is OFF for personnel**, each gated with
+`p.pers` in `validate.ts`: crew rest, the tight/double turn (`TURN`/`DT_SUM`),
+the combination matrix and OCU/IR pairing rules, AAR, SC/AVALON currency, and
+the flight and sim **brief/debrief** windows. `availByWave` and the Insights
+idle list also exclude them — they are not aircrew, so they never inflate a
+flying availability count.
+
+**A rear-seat ride raises `PAX_CREW`** — a new advisory code that reuses the
+existing amber crew-pairing **`CP`** chip (owner's choice: an incentive ride is
+a non-standard pairing that needs approval, and it should read in the day's
+warning list). Only a WCODE string is new; the `CP` chip, `RANK` and
+`CHIP_LABEL` are unchanged. The Logic tab documents it.
+
+The puck is **white** (`.puck.pers`, `--pers`/`--pers-ink`/`--pers-line` in
+`scheduler.css`) with no CAT chip — just the callsign. The legend carries a
+`data-leg="pers"` swatch (port-only, excised from the parity byte-compare like
+the `CP`/`RUN` swatches). Pinned by `engine/personnel.test.ts`.
+
 ## Availability is time-aware (owner, 10 Aug 26)
 
 The validator has judged inputs by their hours since day one — `collectEvents`

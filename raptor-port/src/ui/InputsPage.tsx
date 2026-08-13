@@ -394,7 +394,7 @@ export function InputsPage() {
       <div className="infilter">
         <span className="lab">Filter</span>
         <select id="inFPerson" aria-label="Filter by person" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
-          <option value="all">Personnel</option>
+          <option value="all">Everyone</option>
           {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
         </select>
         <select id="inFType" aria-label="Filter by type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>

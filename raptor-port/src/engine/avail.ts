@@ -76,7 +76,10 @@ export function availByWave(d:any){
   const byWave=wins.map(()=>[] as any[]), anyWave:any[]=[];
   const bySort=(a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
   Object.keys(PEOPLE).forEach((id:any)=>{
-    if(PEOPLE[id].archived||off.has(id))return;
+    /* personnel (ground crew) are not aircrew — they never count toward a
+       wave's available-crew strip, even though they can be dropped into a rear
+       seat by hand. Keeping them out stops the flying counts reading high. */
+    if(PEOPLE[id].archived||PEOPLE[id].pers||off.has(id))return;
     /* AN ABSENCE OCCUPIES TIME EXACTLY AS A TASK DOES, so it is folded into
        the same busy list rather than checked on a second path — one overlap
        rule, not two that can drift.
@@ -206,6 +209,12 @@ export function slotRules(key:any){
 export function slotBar(id:any,key:any,rules?:any){
   const p=PEOPLE[id]; if(!p||p.special)return '';
   const r=rules||slotRules(key);
+  /* Personnel (ground crew) may ride a REAR seat (an incentive ride) and do
+     ground work, but never a front seat — flying or sim. Their seat is 'GND',
+     so the FCP/RCP checks below never catch them; this is the whole front-seat
+     bar for them. Everything else (rear seat, duty, ground, sim-rear) falls
+     through to the normal input/busy checks. */
+  if(p.pers&&r.seat==='p')return 'ground crew — rear seat only, cannot fly front seat';
   if(r.seat==='p'&&p.seat==='RCP')return 'WSO — cannot fly front seat';
   if(r.seat==='w'&&p.seat==='FCP'&&!isInstrPilot(p.q))return 'pilot, not an instructor — only IP / IR / FI may fly rear seat';
   if(r.sc&&!scQualOK(id,r.sc))return `not ${r.sc==='day'?'SC DAY':'SC NIGHT'} current`;

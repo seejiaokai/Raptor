@@ -207,6 +207,14 @@ check the other):
 - **`whoami()` / `whoAmI` names an account, not a person.** Any feature that
   wants "who did this" inherits the prototype-auth limitation until a server
   fills that hook.
+- **A person's category is read in many places (`p.pers` / `seat:'GND'`).**
+  Personnel (ground crew, Aug 26) must be handled the same at every joint: the
+  front-seat bar in BOTH `slotBar` (`avail.ts`) and `validate.ts`; the flying
+  exemptions in `validate.ts` (crew rest, turns, matrix, AAR, brief/debrief);
+  the puck (`html.ts`, white, no CAT chip); the palette column and the quals
+  table; the flying-count exclusions (`availByWave`, `insights.ts`). Add a rule
+  that iterates aircrew and ask whether a `pers` body belongs in it. They are
+  seeded but kept OUT of the seed schedule, which is what keeps parity clean.
 
 When you add a feature that creates a NEW drift-seam — two places that must now
 agree — name it here so the next session knows to check both.

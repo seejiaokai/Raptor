@@ -72,7 +72,7 @@ export function verSelHTML(di:any){
     +vs.map((v:any)=>`<option value="${v}"${String(v)===String(cur)?' selected':''}>${verLabel(v)}</option>`).join('')+`</select>`
 }
 export function legendHTML(){
-  return `<span><i style="background:var(--fcp)"></i>FCP (pilot)</span><span><i style="background:var(--rcp)"></i>RCP (WSO)</span>
+  return `<span><i style="background:var(--fcp)"></i>FCP (pilot)</span><span><i style="background:var(--rcp)"></i>RCP (WSO)</span><span data-leg="pers"><i style="background:var(--pers);box-shadow:inset 0 0 0 1px var(--pers-line)"></i>Personnel (ground crew)</span>
     <span style="margin-left:8px">Level:</span>
     <span><span class="qk" style="background:var(--q-ocu)">O</span>OCU</span>
     <span><span class="qk" style="background:var(--q-d)">D</span>D</span>
@@ -111,7 +111,7 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
   if(p.special){   // sentinel puck: canonical size, no seat/qual/SANS decoration
     return `<span class="puck allavail${sm?' sm':''}" tabindex="0" data-person="${id}" title="${esc(p.cs)}"><span class="nm">${esc(p.cs)}</span></span>`;
   }
-  const cls=['puck']; if(p.seat==='RCP')cls.push('r'); if(sm)cls.push('sm');
+  const cls=['puck']; if(p.seat==='RCP')cls.push('r'); if(p.pers)cls.push('pers'); if(sm)cls.push('sm');
   if(warn){cls.push('warn'); if(warn==='hard')cls.push('hard'); else if(warn==='note')cls.push('note');}
   /* conflict / crew rest / qual / missed brief → red box. `dash` swaps the
      stroke without touching the colour: a crew-rest breach a scheduler
@@ -138,8 +138,10 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
     cls.push(dash&&flag==='CR'?'boxdash':'boxred');
   if(trace)cls.push('boxdot');
   if(p.san)cls.push('san');                         // SANS → purple right-edge line
+  /* Personnel (ground crew) hold no CAT, so no qualification chip — a white
+     puck with just the callsign. Every other person keeps their CAT chip. */
   const chipTxt=QCHIP[p.q], chipCls=QCLASS[p.q];
-  const qchip=`<span class="role ${chipCls}">${chipTxt}</span>`;
+  const qchip=p.q?`<span class="role ${chipCls}">${chipTxt}</span>`:'';
   /* The trace speaks in the reader's terms — the day it breaks and the time
      this man had to be gone by — rather than the generic threshold label a CR
      chip carries on the day of the breach itself. Only when the trace OWNS the
@@ -160,7 +162,7 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
      (<12h)" that CHIP_LABEL prints on the day of the breach would sit here
      next to the trace's own sentence and caption a breach this day does not
      have. Any other flag keeps its label and the trace appends to it. */
-  const ttl=esc(p.cs)+' · '+LEVELNAME[p.q]+(p.sxo?' · SXO':'')+(p.san?' · SANS':'')
+  const ttl=esc(p.cs)+' · '+(p.pers?'Personnel · ground crew':LEVELNAME[p.q])+(p.sxo?' · SXO':'')+(p.san?' · SANS':'')
     +(flag&&!trFlag?' · '+wlbl(CHIP_LABEL[flag]||flag):'')+(trace?' · '+trLbl:'');
   return `<span class="${cls.join(' ')}" tabindex="0" data-person="${id}" title="${ttl}">${lchip}<span class="nm">${esc(p.cs)}</span>${qchip}</span>`;
 }

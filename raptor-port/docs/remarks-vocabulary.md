@@ -136,3 +136,6 @@ Worth stating, because these look like they might be:
   against the deadline on the Rules tab. Nothing in the text affects it.
 - **Initials, flight, area, traffic and the scheduler's notes** are read by
   nobody. Write what you like.
+- **A personnel (ground crew) member's Remarks** on the Quals page — the same:
+  a free-text note read by no rule. The category itself is set by choosing
+  `Personnel (ground crew)` when the body is added, not by anything typed.

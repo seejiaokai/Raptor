@@ -165,6 +165,28 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
     `<th>Remarks</th><th></th></tr></thead>`
   const rows = ids.map(id => {
     const p = PEOPLE[id]
+    /* Personnel (ground crew) hold no CAT and no qualifications, so every column
+       from CAT rightward is blank; their Remarks cell is a free-text note they
+       own — editable in edit mode — where aircrew show their CAT description.
+       Callsign / initials / flight edit exactly as an aircrew row does. Keyed on
+       p.pers, not the seat view, so a personnel row reads the same under the
+       Personnel view and under All. */
+    if (p.pers) {
+      const cs = qEditing
+        ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
+        : esc(p.cs)
+      const init = qEditing
+        ? `<input class="qinit" data-init="${id}" value="${esc(p.initials || '')}" maxlength="12" aria-label="Initials for ${esc(p.cs)}" />`
+        : esc(p.initials || '')
+      const flt = qEditing
+        ? `<input class="qinit qflt" data-flt="${id}" value="${esc(p.flight || '')}" maxlength="10" aria-label="Flight for ${esc(p.cs)}" />`
+        : esc(p.flight || '')
+      const rmk = qEditing
+        ? `<input class="qinit qrmk" data-prmk="${id}" value="${esc(p.remarks || '')}" maxlength="80" aria-label="Remarks for ${esc(p.cs)}" />`
+        : esc(p.remarks || '')
+      const blanks = cols.map(() => `<td class="qcell na"></td>`).join('')
+      return `<tr class="persrow"><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td class="qcell na"></td>${blanks}<td class="qprmk" style="text-align:left">${rmk}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
+    }
     const lvl = qEditing
       ? `<select class="qlvlsel" data-lvl="${id}" aria-label="CAT for ${esc(p.cs)}">${catsFor(p.seat).map(k => `<option ${k === p.q ? 'selected' : ''}>${k}</option>`).join('')}</select>`
       : `<span class="lvl"><span class="qmini" style="background:${QCOLOR[p.q]};${(p.q === 'C' || p.q === 'B') ? 'color:#04222b' : ''}">${QCHIP[p.q]}</span>${p.q}</span>`
@@ -203,7 +225,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
       : esc(p.flight || '')
     return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
   }).join('')
-  const grp = qSeatView === 'FCP' ? 'Assigned pilots' : qSeatView === 'RCP' ? 'Assigned WSOs' : 'Assigned aircrew'
+  const grp = qSeatView === 'FCP' ? 'Assigned pilots' : qSeatView === 'RCP' ? 'Assigned WSOs' : qSeatView === 'GND' ? 'Personnel (ground crew)' : 'Assigned aircrew'
   return head + `<tbody><tr class="grp"><td colspan="${5 + cols.length + 1}">${grp} · ${ids.length}</td></tr>${rows}</tbody>`
 }
 
@@ -355,6 +377,11 @@ export function QualsPage() {
          two flights in the table even though they sort together */
       const flt = (e.target as HTMLElement).closest('[data-flt]') as HTMLInputElement | null
       if (flt) { PEOPLE[flt.dataset.flt!].flight = flt.value.trim().toUpperCase(); notify(); return }
+      /* a personnel (ground crew) row's Remarks is free-text prose the person
+         owns — kept as typed (only trimmed), unlike the identity fields above.
+         Nothing in the engine reads it, so a plain re-render is enough. */
+      const prmk = (e.target as HTMLElement).closest('[data-prmk]') as HTMLInputElement | null
+      if (prmk) { PEOPLE[prmk.dataset.prmk!].remarks = prmk.value.trim(); notify(); return }
       const cs = (e.target as HTMLElement).closest('[data-cs]') as HTMLInputElement | null
       if (cs) {
         const id = cs.dataset.cs!, was = PEOPLE[id].cs, want = cs.value.trim()
@@ -434,7 +461,11 @@ export function QualsPage() {
     /* the callsign IS the person here — it is what every puck prints and what
        ID_BY_CS resolves — so it is the only required field; initials are the
        administrative record beside it (owner, Aug 26, replacing first/last). */
-    PEOPLE[id] = { cs, initials: addP.initials.trim().toUpperCase(), seat: addP.seat, q: addP.level, flight: addP.flight.trim() || '-' }
+    /* Personnel (ground crew) carry no CAT — pers:true and an empty q, so
+       deriveQuals grants them nothing and they land in the Personnel table. */
+    PEOPLE[id] = addP.seat === 'GND'
+      ? { cs, initials: addP.initials.trim().toUpperCase(), seat: 'GND', pers: true, q: '', flight: addP.flight.trim() || '-', remarks: '' }
+      : { cs, initials: addP.initials.trim().toUpperCase(), seat: addP.seat, q: addP.level, flight: addP.flight.trim() || '-' }
     deriveQuals(PEOPLE[id]); ID_BY_CS[cs.toLowerCase()] = id
     setAddP({ initials: '', cs: '', flight: '', seat: addP.seat, level: addP.level })
     /* ALL already shows them, so only a seat-specific view has to follow the
@@ -453,10 +484,11 @@ export function QualsPage() {
     const rows: any[][] = [head]
     qualsIds(qSeatView, qSort, qSearch).forEach(id => {
       const p = PEOPLE[id]
-      rows.push([p.cs, p.initials || '', p.flight, ...(all ? [p.seat === 'FCP' ? 'Pilot' : 'WSO'] : []), p.q,
+      rows.push([p.cs, p.initials || '', p.flight, ...(all ? [p.seat === 'FCP' ? 'Pilot' : p.pers ? 'Personnel' : 'WSO'] : []), p.pers ? '' : p.q,
         /* I, not Y, for the instructor mark — the CSV is what gets printed and
-           passed around, so it has to carry the same three states the screen does */
-        ...cols.map(c => qualNA(p, c) ? '–' : p.quals[c.k] === 'I' ? 'I' : p.quals[c.k] ? 'Y' : '')])
+           passed around, so it has to carry the same three states the screen does.
+           Personnel hold no qualifications, so every qual column is blank. */
+        ...cols.map(c => p.pers ? '' : qualNA(p, c) ? '–' : p.quals[c.k] === 'I' ? 'I' : p.quals[c.k] ? 'Y' : '')])
     })
     exportCSV(`142SQN-LoX-${qSeatView}.csv`, rows)
   }
@@ -488,6 +520,7 @@ export function QualsPage() {
         <span className="lab">View</span>
         <button className={'fchip' + (qSeatView === 'FCP' ? ' on' : '')} id="qViewP" onClick={() => setSeat('FCP')}>Pilots</button>
         <button className={'fchip' + (qSeatView === 'RCP' ? ' on' : '')} id="qViewW" onClick={() => setSeat('RCP')}>WSOs</button>
+        <button className={'fchip' + (qSeatView === 'GND' ? ' on' : '')} id="qViewG" onClick={() => setSeat('GND')}>Personnel</button>
         <button className={'fchip' + (qSeatView === 'ALL' ? ' on' : '')} id="qViewA" onClick={() => setSeat('ALL')}>All</button>
         <div className="grow"></div>
         <div className="searchbox">🔍<input id="qFilter" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
@@ -515,9 +548,10 @@ export function QualsPage() {
         <input id="qCS" placeholder="Callsign" maxLength={14} style={{ width: 110 }} value={addP.cs} onChange={e => setAddP({ ...addP, cs: e.target.value })} />
         <input id="qInitials" placeholder="Initials" maxLength={12} style={{ width: 120 }} value={addP.initials} onChange={e => setAddP({ ...addP, initials: e.target.value })} />
         <input id="qFlight" placeholder="Flight" maxLength={10} style={{ width: 70 }} value={addP.flight} onChange={e => setAddP({ ...addP, flight: e.target.value })} />
-        <select id="qSeat" aria-label="Pilot or WSO" value={addP.seat}
-          onChange={e => { const seat = e.target.value; setAddP({ ...addP, seat, level: catsFor(seat).includes(addP.level) ? addP.level : 'OCU' }) }}><option value="FCP">Pilot (FCP)</option><option value="RCP">WSO (RCP)</option></select>
-        <select id="qLevel" aria-label="Cat" value={addP.level} onChange={e => setAddP({ ...addP, level: e.target.value })}>{catsFor(addP.seat).map(k => <option key={k}>{k}</option>)}</select>
+        <select id="qSeat" aria-label="Pilot, WSO or personnel" value={addP.seat}
+          onChange={e => { const seat = e.target.value; setAddP({ ...addP, seat, level: seat === 'GND' ? addP.level : catsFor(seat).includes(addP.level) ? addP.level : 'OCU' }) }}><option value="FCP">Pilot (FCP)</option><option value="RCP">WSO (RCP)</option><option value="GND">Personnel (ground crew)</option></select>
+        {/* personnel hold no CAT, so the level picker is hidden for them */}
+        {addP.seat !== 'GND' && <select id="qLevel" aria-label="Cat" value={addP.level} onChange={e => setAddP({ ...addP, level: e.target.value })}>{catsFor(addP.seat).map(k => <option key={k}>{k}</option>)}</select>}
         <button className="abtn primary" id="qAddPerson" onClick={addPerson}>Add</button>
       </div>}
       <div className="qwrap">

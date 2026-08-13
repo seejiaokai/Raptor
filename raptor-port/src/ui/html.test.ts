@@ -232,8 +232,20 @@ describe('view-week markup parity with the reference', () => {
   const noBriefKey = (s: string) => s.replace(
     /\n\s*<span><span class="qk"[^>]*>B<\/span>no (?:flight|sim) brief<\/span>/g, '')
 
+  /* Personnel (ground crew, owner Aug 26): a category the reference does not
+     have, so its seat swatch is port-only — excised from both sides (a no-op on
+     the reference) and pinned positively just below. */
+  const noPers = (s: string) => s.replace(
+    /<span data-leg="pers">.*?<\/span>/, '')
+
   it('the legend is byte-identical', () => {
-    expect(noBriefKey(noCP(noRunKey(legendHTML())))).toBe(noBriefKey(noCP(noRunKey(w.eval('legendHTML()')))))
+    expect(noPers(noBriefKey(noCP(noRunKey(legendHTML()))))).toBe(noPers(noBriefKey(noCP(noRunKey(w.eval('legendHTML()'))))))
+  })
+
+  it('the legend names the Personnel category', () => {
+    const l = legendHTML()
+    expect(l).toContain('data-leg="pers"')
+    expect(l).toContain('Personnel (ground crew)')
   })
 
   /* The chip shipped on 5 Aug 26 and the legend was never told about it, so

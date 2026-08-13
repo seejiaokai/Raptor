@@ -14,6 +14,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   CREW_TIGHT:'Tight turning — crew rest',LONGDAY:'Long work day',DT_SUM:'Double turning',
   DAYS_RUN:'No break day — too many days in a row',
   SC_QUAL:'SC currency — wrong shift',AAR_QUAL:'AAR currency — not qualified',AAR_INSTR:'AAR — back seat not cleared to instruct',NO_IR:'IRT without an IR examiner',
+  PAX_CREW:'Incentive passenger — crew pairing needs approval',
   SHIFT_SOFT:'On shift — also down for a ground event'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
@@ -121,6 +122,11 @@ export function validate(){
     const byP:any={}; day.fly.filter((e:any)=>!e.shift).forEach((e:any)=>{(byP[e.id]=byP[e.id]||[]).push(e);});
     // DT (2+ sorties) + TT (tight turn = next in-time within 20-min of previous land)
     Object.keys(byP).forEach((id:any)=>{
+      /* Personnel (ground crew) carry only the conflict, long-day and 7-day
+         checks — turning an aircraft is not their concern, so a passenger who
+         rides two rear seats in a day raises no DT/TT. A genuine overlap is
+         still caught below as a hard conflict. */
+      if(PEOPLE[id]&&PEOPLE[id].pers)return;
       const es=byP[id].slice().sort((a:any,b:any)=>a.to-b.to);
       if(es.length>=2)markChip(di,id,'DT');
       for(let i=0;i<es.length-1;i++){ const turn=es[i+1].to-es[i].ld;   // land → next T/O; need 30m dekit + 60m step = 90m
@@ -269,6 +275,9 @@ export function validate(){
        and all-day inputs are already caught above.                            */
     const timedInput=day.input.filter((i:any)=>i.e-i.s<1439);
     Object.keys(byE).forEach((id:any)=>{
+      /* personnel (ground crew) carry only conflict, long-day and the 7-day run
+         — an incentive passenger has no flight brief of his own to lose */
+      if(PEOPLE[id]&&PEOPLE[id].pers)return;
       const legs=byE[id].filter((e:any)=>e.kind==='fly'), others=byE[id].filter((e:any)=>e.kind!=='fly');
       legs.forEach((lg:any)=>{
         const bs=lg.brief, de=lg.ld+VCONF.debrief;   // brief time is the hardline, not T/O − 3h
@@ -287,6 +296,7 @@ export function validate(){
        its own BRIEF row, so that row's time IS the hard line — nothing is added
        in front of it.                                                          */
     (day.simwin||[]).forEach((sw:any)=>sw.ids.forEach((id:any)=>{
+      if(PEOPLE[id]&&PEOPLE[id].pers)return;       // ground crew — no sim brief of their own to lose
       const mine=(byE[id]||[]);
       const hits=(s:any,e:any)=>mine.filter((o:any)=>overlap(s,e,o.s,o.e)).map((o:any)=>o.label)
         .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>i.type));
@@ -303,7 +313,7 @@ export function validate(){
        bodies are flying twice. Amber, not red (owner, 4 Aug 26): double
        turning is routine and planned, so the summary now matches the amber DT
        chips instead of shouting over them.                                     */
-    const dts=Object.keys(byP).filter((id:any)=>byP[id].length>=2);
+    const dts=Object.keys(byP).filter((id:any)=>byP[id].length>=2&&!(PEOPLE[id]&&PEOPLE[id].pers));
     if(dts.length)add('adv','DT_SUM',dts,`${dts.length} ${dts.length===1?'person is':'people are'} double turning: ${dts.map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ')}`);
     /* ---- long work day --------------------------------------------------
        Report (T/O − 3h, or the published in-time) through land + 2h, or plain
@@ -393,6 +403,9 @@ export function validate(){
       const briefOf=(e:any)=>e.brief!=null?e.brief:e.to-VCONF.briefLead;
       const insOf=(e:any)=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,briefOf(e));
       Object.keys(byR).forEach((id:any)=>{
+        /* Personnel (ground crew) hold no crew-rest rule — an incentive ride
+           does not put a ground-crewman on a 12-hour flying clock. */
+        if(PEOPLE[id]&&PEOPLE[id].pers)return;
         /* Crew rest runs off the last REST-BEARING commitment — a sortie or a
            shift — not off a late desk duty. Taking the max of both meant an
            18:00–23:59 SXO row raised a hard breach for a man who landed at 10:00,
@@ -478,6 +491,14 @@ export function validate(){
           else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');markChip(di,ac.p,'CPH');markChip(di,ac.w,'CPH');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${f.label})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${f.label})`,ac.key);}
           else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${f.label} — CO approval required`,ac.key);}
         }
+        /* Personnel (ground crew) in a FRONT seat is illegal — they hold no
+           flying qualification and may ride a rear seat only. In the REAR seat
+           they raise the crew-pairing CP advisory instead: an incentive ride is
+           a non-standard pairing that needs approval (owner, Aug 26). The seat
+           and combination checks below key on FCP/RCP and never catch a 'GND'
+           seat, so these two lines are the whole story for personnel. */
+        if(p&&p.pers){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is ground crew — cannot fly a front seat (${f.label})`,ac.key+'.p');}
+        if(w&&w.pers){markChip(di,ac.w,'CP');markRing(di,ac.w,'adv');add('adv','PAX_CREW',[ac.w],`${w.cs} is riding the rear seat of ${f.label} as an incentive passenger — this crew pairing needs approval`,ac.key+'.w');}
         // Q — seat qualification: a WSO can't fly FCP; only an instructor pilot (IP / IR / FI) may fly RCP
         if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${f.label})`,ac.key+'.p');}
         /* belt and braces: CAT IW is a WSO-only category, so an IW record whose
@@ -594,6 +615,7 @@ export function validate(){
        front seat, and only an instructor pilot (IP / IR / FI) may occupy the
        back seat. */
     (day.simcrew||[]).forEach((s:any)=>{ const p=realP(s.p),w=realP(s.w);
+      if(p&&p.pers){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is ground crew — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
       if(p&&p.seat==='RCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is a WSO — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
       if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is CAT IW — a WSO category, cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
       if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,s.w,'Q');markRing(di,s.w,'hard');add('hard','QUAL',[s.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may take the back seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.w`);}
