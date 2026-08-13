@@ -163,9 +163,12 @@ describe('the Inputs page (tfin)', () => {
     expect($('#inTypePop'), 'closes on a press outside').toBeFalsy()
   })
 
-  it('the person filter is called Personnel, not All flights', () => {
+  /* The "all people" option used to read "Personnel"; that word now names the
+     ground-crew CATEGORY, so the filter's all-option is "Everyone" to keep the
+     two apart. */
+  it('the person filter all-option is Everyone, not a category name', () => {
     const first = ($('#inFPerson') as unknown as HTMLSelectElement).options[0]!
-    expect(first.textContent).toBe('Personnel')
+    expect(first.textContent).toBe('Everyone')
   })
 
   it('an admin add lands in INPUTS, the table, and the undo stack', async () => {

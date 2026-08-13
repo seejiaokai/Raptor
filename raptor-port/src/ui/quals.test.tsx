@@ -307,6 +307,24 @@ describe('the callsign / initials columns', () => {
     PEOPLE[id].initials = ''
     await act(async () => notify())
   })
+
+  /* a personnel (ground crew) row's Remarks cell is a free-text note they own,
+     editable by text in edit mode (owner, Aug 26). The mount is shared across
+     tests, so enter edit mode only if needed and restore the default view. */
+  it('edit mode lets a personnel remark be typed', async () => {
+    if (!$('#qtbl select.qlvlsel')) await click($('#qEdit'))
+    await click($('#qViewG'))
+    const box = $('#qtbl input.qrmk[data-prmk]') as HTMLInputElement
+    expect(box, 'the Personnel view renders an editable remarks input').toBeTruthy()
+    const id = box.dataset.prmk!
+    await act(async () => {
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+      setter.call(box, 'on course till Fri'); box.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    expect(PEOPLE[id].remarks).toBe('on course till Fri')
+    PEOPLE[id].remarks = ''
+    await click($('#qViewP'))
+  })
 })
 
 /* the callsign is editable in edit mode and the rename reaches the schedule —
@@ -459,10 +477,10 @@ describe('sorting by clicking a heading', () => {
     await click($('#qViewP'))
   })
 
-  it('the Sort chips are gone, and View carries the three seat choices', () => {
+  it('the Sort chips are gone, and View carries the seat choices plus Personnel', () => {
     expect($$('.qbar .lab').map(x => x.textContent)).toContain('View')
     expect($$('.qbar .lab').map(x => x.textContent)).not.toContain('Sort')
-    expect($$('.qbar .fchip').map(x => x.textContent)).toEqual(['Pilots', 'WSOs', 'All'])
+    expect($$('.qbar .fchip').map(x => x.textContent)).toEqual(['Pilots', 'WSOs', 'Personnel', 'All'])
     for (const k of ['cs', 'initials', 'flight', 'cat', 'tf']) expect(th(k), k).toBeTruthy()
   })
 
@@ -576,15 +594,33 @@ describe('sorting by clicking a heading', () => {
 
 /* ---- View: Pilots / WSOs / All (owner, 5 Aug 26) ------------------------- */
 describe('the View chips', () => {
-  it('All shows the pilots and the WSOs together', async () => {
+  it('All shows the pilots, the WSOs and the personnel together', async () => {
     await click($('#qViewP')); const pilots = callsigns().length
     await click($('#qViewW')); const wsos = callsigns().length
+    await click($('#qViewG')); const pers = callsigns().length
     await click($('#qViewA'))
-    expect(callsigns().length).toBe(pilots + wsos)
+    expect(callsigns().length).toBe(pilots + wsos + pers)
     expect(callsigns()).toContain('Bane')      // a pilot
     expect(callsigns()).toContain('Freak')     // a WSO
+    expect(callsigns()).toContain('Torque')    // ground crew
     expect($('#qtbl tbody tr.grp').textContent).toContain('Assigned aircrew')
     expect($('#qViewA').className).toContain('on')
+  })
+
+  /* Personnel (ground crew, owner Aug 26) get their own view: only ground
+     crew, their CAT and every qualification column blank, and a free-text
+     Remarks cell they can edit. */
+  it('the Personnel view shows only ground crew, with no CAT or quals', async () => {
+    await click($('#qViewG'))
+    expect(callsigns()).toContain('Torque')
+    expect(callsigns()).not.toContain('Bane')   // no pilots
+    expect(callsigns()).not.toContain('Freak')  // no WSOs
+    expect($('#qtbl tbody tr.grp').textContent).toContain('Personnel (ground crew)')
+    /* a personnel row carries no CAT chip and no qualification ticks */
+    const row = $('#qtbl tbody tr.persrow')!
+    expect(row.querySelector('.qmini')).toBeFalsy()
+    expect(row.querySelector('.qchk')).toBeFalsy()
+    await click($('#qViewP'))
   })
 
   it('and the seat views still show only their own seat', async () => {

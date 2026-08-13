@@ -16,6 +16,9 @@
   --flight:#3BC6E8;
   /* seat colours (kept from the working file) */
   --fcp:#6E6A2E; --fcp-ink:#FBFAF0; --rcp:#1F6E52; --rcp-ink:#EAFBF3;
+  /* personnel (ground crew) puck: white, dark ink, a muted line so it reads as
+     a defined chip against the dark board — they hold no seat colour */
+  --pers:#FFFFFF; --pers-ink:#18202C; --pers-line:#7C8AA0;
   /* qual-ladder chip colours: OCU→D→C→B→A cool→hot, instructors share slate */
   --q-ocu:#8A6ED0; --q-d:#3B7DF0; --q-c:#3BC6E8; --q-b:#E5A83B; --q-a:#F0555F; --q-ins:#A64DE8;
   /* highlight states */
@@ -652,6 +655,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .puck .role{display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;min-width:var(--puck-h);padding:0 2px;color:#fff}
 .puck{background:var(--fcp);color:var(--fcp-ink)}
 .puck.r{background:var(--rcp);color:var(--rcp-ink)}
+.puck.pers{background:var(--pers);color:var(--pers-ink);border-color:var(--pers-line)}
 /* qual chip colours */
 .puck .role.q-ocu{background:var(--q-ocu);color:#fff}
 .puck .role.q-d{background:var(--q-d);color:#fff}

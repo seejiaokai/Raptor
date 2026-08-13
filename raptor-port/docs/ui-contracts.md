@@ -1668,10 +1668,30 @@ struck-out AAR cell — a WSO, who holds no AAR at all — counts as not held an
 stays with the unticked rather than being lifted with the ticks. Callsign
 breaks every tie, so equal rows keep a stable order.
 
-`View` beside Export chooses **Pilots / WSOs / All**; All lists both under an
-`Assigned aircrew` group head. The CSV export follows the screen — same view,
-same filter, same sort — and the All export alone carries a `Seat` column,
-since mixed rows no longer say which is which.
+`View` beside Export chooses **Pilots / WSOs / Personnel / All**; All lists
+them all under an `Assigned aircrew` group head. The CSV export follows the
+screen — same view, same filter, same sort — and the All export alone carries a
+`Seat` column, since mixed rows no longer say which is which (personnel read
+`Personnel` there).
+
+**Personnel (ground crew) get their own table (owner, Aug 26).** Under the
+`Personnel` view — and, keyed on `p.pers`, in any view they appear in — a
+personnel row draws its callsign, initials and flight exactly as an aircrew row
+does, then leaves **every column from CAT rightward blank** (no CAT chip, no
+qualification ticks: they hold none), and its **Remarks cell is an editable
+free-text `<input>`** bound to `PEOPLE[id].remarks` — the one place person-level
+remarks exist. It commits on change (blur/Enter), like the initials and flight
+beside it, and no rule reads it, so it only re-renders. `Add person` offers a
+**Personnel (ground crew)** seat option; picking it hides the CAT select and
+mints a `pers:true, q:''` record. The group head reads `Personnel (ground
+crew)`. Pinned by `ui/quals.test.tsx`.
+
+**The palette carries a third column, `Personnel`, shown only when the squadron
+has some** (`palette-html.ts`) — a squadron with no ground crew never sees an
+empty column. A personnel puck is **white** (`.puck.pers`) with no CAT chip. It
+is struck the moment a FRONT seat is armed (via `slotBar`) and offered for a
+rear seat, a duty desk, a ground row or a sim. Rules: `docs/engine-rules.md`
+§Personnel.
 
 **Every CSV opens as UTF-8 because `csvText()` writes a BOM** (owner, 5 Aug
 26). Excel does not sniff a `.csv`: with no byte-order mark it decodes the

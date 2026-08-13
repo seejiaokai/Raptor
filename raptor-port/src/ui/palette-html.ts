@@ -100,8 +100,13 @@ export function paletteHTML(di:any,opts?:any){
       +`</div>`;};
   const head=o.head===false?'':`<div class="er-h">${ARM?'Tap a name to plan':'Aircrew'}`
     +(d.dow?` · <span class="mono" style="color:var(--ink-3)">${esc(d.dow)}</span>`:'')+`</div>`;
+  /* Personnel (ground crew) get their own column, shown only when the squadron
+     actually has some — a squadron with no ground crew never sees an empty
+     third column. They can be dropped into a rear seat, a duty desk, a ground
+     row or a sim; slotBar strikes them the moment a FRONT seat is armed. */
+  const hasPers=sel('GND',false).length>0;
   return head+armStripHTML()+specialRowHTML(di)
-    +`<div class="rcols">${col('Pilots','FCP')}${col('WSOs','RCP')}</div>`;
+    +`<div class="rcols">${col('Pilots','FCP')}${col('WSOs','RCP')}${hasPers?col('Personnel','GND'):''}</div>`;
 }
 export function specialRowHTML(di:any){
   if(!SPECIALS.length)return '';

@@ -21,7 +21,7 @@ export function computeInsights(){
     dayStats.push({dow:d.dow,ac:ds,forms:df,warns:dw.length,hard:dw.filter((x:any)=>x.sev==='hard').length});
   });
   const flyers=Object.keys(fc).map((id:any)=>({id,n:fc[id]})).sort((a:any,b:any)=>b.n-a.n||PEOPLE[a.id].cs.localeCompare(PEOPLE[b.id].cs));
-  const idle=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].archived&&!fc[id]).sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
+  const idle=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].archived&&!PEOPLE[id].pers&&!fc[id]).sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
   const byType:any={}; WARN.all.forEach((w:any)=>byType[w.code]=(byType[w.code]||0)+1);
   return {sorties,forms,flyers,idle,byType,dayStats};
 }
