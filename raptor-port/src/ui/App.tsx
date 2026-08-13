@@ -5,6 +5,7 @@ import { Shell } from './Shell'
 import { SchedBoard, CxDialog, SortAllDialog } from './SchedBoard'
 import { InputEditor } from './inputedit'
 import { HistoryModal } from './HistoryModal'
+import { DutyTplModal } from './DutyTplModal'
 
 export function App() {
   useVersion()
@@ -13,5 +14,5 @@ export function App() {
      BOARD for the same reason the board is one of the shell: it opens from
      the board's own bar and must paint over it, and the board is a
      full-screen modal that a child dialog would be trapped inside. */
-  return SESSION ? <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><HistoryModal /><InputEditor /></> : <Login />
+  return SESSION ? <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><HistoryModal /><InputEditor /><DutyTplModal /></> : <Login />
 }

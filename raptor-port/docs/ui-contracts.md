@@ -1455,6 +1455,22 @@ day-isolation assertion in `probes/perf-port.cjs` names that exemption
 precisely — any OTHER day changing is still the bug that probe was written
 for.
 
+## Duty templates (owner, 13 Aug 26)
+
+`+ Block` under Duties opens the TEMPLATE picker — a `.wavemenu` popup listing
+the saved templates (`DUTYTPL_CFG`), an "Empty block", and a ✎ that opens the
+editor. No wave is consulted (that coupling is gone); picking a template copies
+its rows onto the day as a plain block (`board.ts`'s `blockMenu`, minting
+through `blockFromTpl`). The editor is `ui/DutyTplModal.tsx` — a `.modal`
+opened by `TPLEDIT` (`pops.ts`), mirroring `UserModal`: tabs per template + New,
+an editable title, and one `.trow` per role with a `DUTY_PICK` datalist,
+start/end, ▲▼ reorder and delete; Reset / Delete / Done in the foot. Every edit
+runs the matching `engine/dutytpl.ts` mutator → `dutyTplSave()` → `notify()`,
+so it persists per-device like the stores list. The library is never left
+empty — deleting the last template re-seeds one. Storage and the plain-block
+rule: `docs/engine-rules.md` §the duty block. This surface replaced the old
+wave-driven desk.
+
 ## Stores configuration (owner, 7 Aug 26)
 
 Under Remarks, each flying line carries an additive config set — **NAV · N/C

@@ -17,7 +17,7 @@ import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { rulesLoad } from '../engine/rules'
 import { mintInpIds } from '../engine/inputs'
-import { storesLoad } from '../engine'
+import { storesLoad, dutyTplLoad } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion } from '../engine/publish'
 import { afterSchedMutate } from './view'
@@ -193,6 +193,7 @@ export function initStore() {
   wireStore()
   rulesLoad()
   storesLoad()
+  dutyTplLoad()
   /* before histInit, so the FIRST snapshot already carries every input's
      address — see mintInpIds in engine/inputs.ts for why an id minted later
      than the snapshot it should be in is worse than no id at all */

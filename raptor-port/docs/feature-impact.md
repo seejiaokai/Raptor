@@ -201,6 +201,16 @@ check the other):
 - **The reference push.** `refwin.ts` pushes the port's seed `INPUTS` into the
   read-only original for parity. Change the seed's SHAPE and the reference must
   be patched too — which is why new date-years live in USER data, not the seed.
+- **Duties are decoupled from waves (13 Aug 26).** A duty desk is minted from a
+  template (`dutytpl.ts`), not built from a wave, and nothing links the two —
+  a removed seam. The template library is a new persisted-config surface beside
+  the stores list; a change to its seed shapes or its load/save path is
+  per-device state, so treat it exactly like stores.
+- **AMT brief/box/debrief is label-driven.** `events.ts` splits an AMT block by
+  matching `/^BRIEF/` and `/DEBRIEF/` on the row labels a scheduler types, so the
+  row LABELS and the engine's window maths are two copies of one truth — a
+  renamed AMT row silently changes which window it feeds. (The debrief END is
+  read off its own cell since 13 Aug 26; the three-way SPLIT is still by label.)
 - **Desktop and phone are separate CSS paths.** A fix measured on one is
   unproven on the other; the geometry gate checks both because a change often
   lands on only one.
