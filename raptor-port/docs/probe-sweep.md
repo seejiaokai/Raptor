@@ -231,7 +231,8 @@ and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
 `probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 960**
-(measured 911), **week ≤ 5530** (measured 5078). Tripping one is not
+(measured 923, after the 13 Aug board redesign), **week ≤ 5530** (measured
+5099). Tripping one is not
 automatically a fault; it is a prompt to check the time and then raise the
 number deliberately, in the PR that adds the nodes, beside a fresh
 `npm run perf` showing the per-node cost held. The board has been raised
@@ -252,7 +253,9 @@ number runs, though:** the box those buttons reveal is hidden with
 board got 30px shorter a row and 14 nodes heavier at the same time. A future
 change that trades pixels for nodes this way should expect the same, and
 should re-read this count rather than assuming a shorter board is a lighter
-one. 49 nodes of headroom remain.
+one. The 13 Aug board redesign then took it 911 → 923 (the inline `+ Wave`
+panel header and the AMT FCP/RCP column labels), still without moving the
+ceiling; 37 nodes of headroom remain.
 
 **That last raise took a wider margin than the others, on purpose.** The
 late-input badge is one `<span>` per late input drawn, so on the day this
