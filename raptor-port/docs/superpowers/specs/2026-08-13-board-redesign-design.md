@@ -110,6 +110,16 @@ row's own time, and computes debrief as `debriefStart + VCONF.amtDebrief`.
 The **Box** is the row that stays (carries People and the existing Remarks
 column). Brief is a single time; Box and Debrief are ranges. OFT is unchanged.
 
+**Change — all three surfaces.** AMT renders in two places off the one row
+model: the scheduler board (`board-html.ts`, `sbSimRowsPanel`) and the week
+view (`html.ts`, the Sims section, which serves **both** Edit Schedule and View
+Schedule via its `ed` flag). The structured brief/box/debrief shape must render
+consistently on **all three** — scheduler board, Edit Schedule, and View
+Schedule — not the board alone. In View Schedule (read-only) the three times
+show as resolved values; in Edit Schedule and on the board they are editable
+fields. Both `sbSimRowsPanel` and the week's `blk('AMT',…)` builder read the new
+fields.
+
 **Change — engine read.** `collectEvents`' AMT branch reads the three windows
 directly from the fields instead of label regexes:
 - brief window `[brief, box.str]` (crew engaged from brief until the box opens),
@@ -271,7 +281,10 @@ independent copies and are untouched).
 - **Pass 1.5** — new `engine`-level tests assert the three AMT windows are read
   from the structured fields and that `SIM_BRIEF`/`SIM_DEBRIEF` fire correctly;
   the `refwin.ts` patch is exercised by the parity suite; `tfin.js` stays green.
-  Rules-tab test updated for the removed `amtDebrief` row.
+  Rules-tab test updated for the removed `amtDebrief` row. Rendering is pinned on
+  **all three surfaces** — the board (`board-html.ts`) and the week view
+  (`html.ts`) in both Edit and View modes — so the structured shape shows
+  everywhere AMT appears, not just the board.
 - **Pass 2** — `dutytpl.test.ts` mirrors `stores`' persistence tests
   (add/rename/delete/move/save/load/reset, seed integrity). UI tests: `+ Block`
   lists templates and no longer requires a wave; placing a template copies it;
