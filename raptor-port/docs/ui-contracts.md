@@ -358,7 +358,16 @@ edit week now:
     meant (`addLine` appends to the day's LAST wave, a coin flip on a
     two-wave day). `addLine` itself stays: it is the probe bridge's
     `window.addLine`, which `sa-async.cjs` calls before any UI exists.
-    `+ Wave` stays too — nothing else can create a wave.
+  - **`+ Wave` ALSO left the bar (13 Aug 26).** For the same reason `+ Line`
+    did — a top-bar control belongs beside the section it acts on. It is now a
+    section-level add button INSIDE the board, between Common Programme and the
+    flying waves (`board.ts`'s `data-wvadd`, opening the same `waveMenu` kind
+    picker), matching the `+ Block` / `+ Item` / `+ Row` idiom. The desktop
+    edit-week page's `+ Add wave` (`#addGo`, `Shell.tsx`) went with it — the
+    board is where a wave is created now, and it is reachable on desktop too.
+    Withheld on `mvRO` (a frozen preview or a read-only board), which is what
+    the old top-bar button's `disabled={DPREV.has(SBDAY)}` did. `addWave` itself
+    stays as `window.addWave` for the probe bridge.
   - **Undo and redo joined it.** The board is a full-screen modal over the
     shell, so the shell's own pair is unreachable while it is open; every
     board edit had to be undone after closing it. Same two calls and the

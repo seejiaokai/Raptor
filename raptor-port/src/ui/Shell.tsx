@@ -12,7 +12,6 @@ import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { resetSession, notify, setPage } from '../state/store'
 import { HLSET, setSearch, openWarns, CURPAGE, setDayPreview } from '../state/view'
-import { waveMenu } from './board'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
 import { signOf } from '../engine/publish'
@@ -256,7 +255,10 @@ export function Shell() {
             <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}>↶ Undo</button>
             <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}>↷ Redo</button>
             <span className="div"></span>
-            <button className="abtn" id="addGo" onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, null) }}>+ Add wave</button>
+            {/* + Add wave removed here (owner, 13 Aug 26) — a wave is created
+                from the board's own inline "+ Wave", between Common Programme
+                and the flying waves, and nowhere else. The board is reachable
+                on desktop, so this page needs no separate control. */}
             <button className="abtn" id="throwPucks" onClick={() => HOOKS.toast('Auto-throw uses the Quals rules to seat crews (stub in prototype).')}>Throw pucks (auto)</button>
             <button className="abtn" id="exportSched" onClick={() => exportCSV('142SQN-schedule.csv', schedRows())}>Export to Excel</button>
             <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"

@@ -13,7 +13,7 @@ import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
-import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, waveMenu, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, wireDayDots, wireParkedRosScroll } from './board'
+import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, wireDayDots, wireParkedRosScroll } from './board'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
@@ -343,22 +343,16 @@ export function SchedBoard() {
           {open && HOOKS.editMode() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
             title="Reorder every section on this day back into its own reading order, waves and duty blocks included — one confirm, one undo step"
             onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi">⇅</span><span className="bl"> Sort all</span></button>}
-          {/* + Wave — matched to Sort all's own gate (coordinator review, 9
-              Aug 26): it carried no editMode() gate of its own here, so it
-              still rendered enabled on a read-only board (a session that may
-              not edit it, board still open on its own page) — genuinely inert
-              because addWave already refuses underneath (board.ts), but that
-              is exactly the shape Sort all was fixed for three lines above.
-              Hidden, not merely disabled, same as Sort all.
-              `+ LINE IS GONE FROM HERE` (owner, 11 Aug 26 — "there will be no
-              +line at the top, because each section I can already add rows").
-              It was the only control on this bar that duplicated one already
-              sitting inside the section it acts on: every wave header carries
-              its own `+ Line`, next to the wave it adds to, where the top-bar
-              copy had to guess (`addLine` appends to the LAST wave of the day,
-              which on a two-wave day is a coin flip). `+ Wave` stays because
-              nothing else on the board can create a wave. */}
-          {open && HOOKS.editMode() && <button className="abtn" id="sbAddGo" disabled={DPREV.has(SBDAY)} onClick={e => { e.stopPropagation(); waveMenu(e.currentTarget as HTMLElement, SBDAY) }}><span className="bi">+</span><span className="bl"> Wave</span></button>}
+          {/* + WAVE IS GONE FROM THIS BAR (owner, 13 Aug 26 — "put an add wave
+              between common programme and duties, then remove the wave at the
+              top bar for desktop and phone"). It is now a section-level control
+              inside the board itself, between Common Programme and the flying
+              waves (board.ts's `data-wvadd`), matching the "+ Block" / "+ Item"
+              idiom every other section already has. `+ Line` left this bar on
+              11 Aug 26 for the same reason — a top-bar copy of a control that
+              belongs beside the section it acts on. The desktop edit-week page's
+              "+ Add wave" (#addGo) went with it; the board is the one place a
+              wave is created now, and it is reachable on desktop too. */}
           <button className="abtn primary" id="sbDone" onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}><span className="bi">✓</span><span className="bl"> Done</span></button>
           <button className="abtn ghost" id="sbClose" onClick={closeScheduler}><span className="bi">✕</span><span className="bl"> Close</span></button>
         </div>

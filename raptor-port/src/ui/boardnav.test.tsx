@@ -123,9 +123,11 @@ describe('the top bar carries the day, undo/redo and no + Line', () => {
     expect(redo.disabled).toBe(true)
   })
 
-  it('no longer carries + Line, and still carries + Wave', () => {
+  it('carries neither + Line nor + Wave — both left the bar; + Wave is now inline on the board', () => {
     expect(document.querySelector('#sbAddLine'), '+ Line left the bar on 11 Aug 26').toBeFalsy()
-    expect(document.querySelector('#sbAddGo'), '+ Wave is the only way to create a wave, so it stays').toBeTruthy()
+    expect(document.querySelector('#sbAddGo'), '+ Wave left the bar on 13 Aug 26 — it is a section control now').toBeFalsy()
+    /* it moved into the board, between Common Programme and the flying waves */
+    expect(document.querySelector('#sbBoard [data-wvadd]'), 'the wave-add control is inline on the board').toBeTruthy()
   })
 
   /* the chips became dots in CSS, not in the DOM — same seven elements and

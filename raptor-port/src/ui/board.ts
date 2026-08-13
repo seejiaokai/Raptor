@@ -172,7 +172,17 @@ export function boardHTML(di: number, pv?: boolean) {
     }))
     fly += `</div>`
   })
-  b += fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet — use “+ Wave”.</div>`
+  /* + Wave LIVES HERE NOW (owner, 13 Aug 26 — "put an add wave between common
+     programme and duties, then remove the wave at the top bar for desktop and
+     phone"). It is a section-level add control, the same idiom as the
+     "+ Block" / "+ Item" / "+ Row" every other section already carries, sitting
+     between Common Programme (above) and the flying waves (below). The board
+     top-bar button (#sbAddGo) and the desktop edit-week page button (#addGo)
+     are both gone; this inline control is the only way to create a wave.
+     Withheld on mvRO (a frozen preview or a read-only board), which is what the
+     top-bar button's `disabled={DPREV.has(SBDAY)}` guard used to do. */
+  const wvHead = mvRO ? '' : `<div class="sb-panel wv"><div class="sb-ph">Flying waves <span class="sub">go times, formations, crews</span><span class="gctl"><button class="mbtn add" data-wvadd="${di}" title="Add a flying wave">+ Wave</button></span></div></div>`
+  b += wvHead + (fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet${mvRO ? '' : ' — “+ Wave” above adds the first'}.</div>`)
   /* the four sections the board was missing (owner request, Aug 26): same
      order as the week day, with the sim planning notes staying last */
   /* the sim note used to be a panel of its own at the very bottom; it now sits
@@ -571,6 +581,12 @@ export function boardMbtn(e: MouseEvent) {
      the one thing that decides all of it: the title, and which desk it needs
      (engine/waves.ts's waveDutyBlock). "Empty block" keeps the old behaviour
      for anything that is not a wave's desk at all. */
+  if (ds.wvadd != null) {
+    /* the inline "+ Wave" between Common Programme and the flying waves
+       (board.ts's boardHTML) — opens the same kind picker the top-bar button
+       used to, anchored on itself and scoped to the board's own day. */
+    return waveMenu(t, +ds.wvadd)
+  }
   if (ds.dwadd != null) {
     const di = +ds.dwadd
     return blockMenu(t, di)
