@@ -65,11 +65,11 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
       const x = (DAYS[0].dutywaves || []).find(y => y.sa === 'avalon')
       return x ? JSON.stringify({ label: x.label, noconf: x.noconf, roles: x.rows.map(r => r.role), t: x.rows[0].str + '-' + x.rows[0].end }) : 'MISSING'
     })
-    /* titled after its wave and spelled the owner's way since 10 Aug 26;
-       AVALON is also now the ONLY wave that brings a desk up automatically —
-       SC's comes from + Block. */
-    T('shape · AVALON brings its own duty block', dw,
-      '{"label":"AVALON duties","noconf":true,"roles":["SXO","OPS O","RUNNER","LOG CELL"],"t":"1900-0700"}')
+    /* AVALON NO LONGER BRINGS A DESK (owner, 13 Aug 26 — duties are decoupled
+       from waves). No wave auto-creates a duty block now; every desk is placed
+       from the + Block TEMPLATE picker. So adding the AVALON wave via addWave
+       leaves the dutywaves list with no avalon-marked desk. */
+    T('shape · AVALON no longer auto-creates a duty block', dw, 'MISSING')
   }
 
   /* ---- the exempt seats are invisible to the engine ---------------------- */
