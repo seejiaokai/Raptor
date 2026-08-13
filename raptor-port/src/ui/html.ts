@@ -542,7 +542,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     const hasNotes=!!(d.notes&&d.notes.length), hasAH=!!(d.allhands&&d.allhands.length);
     if(hasNotes||hasAH||ed){
       h+=`<div class="allhands sec sec-prog"><div class="ah-h">Common Programme</div>`;
-      (d.notes||[]).forEach((n:any,ni:any)=>h+=ted(`dn:${di}.${ni}`,n,ed,'ah-note','div'));
+      (d.notes||[]).forEach((n:any,ni:any)=>h+=ted(`dn:${di}.${ni}`,n,ed,'ah-note','div','e.g. EP, ORDERS, NO FLY, SQN OIL'));
       if(hasAH){
         h+=`<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span></div>`;
         d.allhands.forEach((x:any,ri:any)=>{
@@ -625,7 +625,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
             ? `<div class="fcell bto" style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`
-            : `<div class="fcell bto" style="${spans}">${brSug}${ted(fp+'.br',brShown,ed,'','b')}${ted(fp+'.to',f.to,ed,'','span')}</div>`}
+            : `<div class="fcell bto" style="${spans}">${brSug}${ted(fp+'.br',brShown,ed,'','b','Brief')}${ted(fp+'.to',f.to,ed,'','span')}</div>`}
           <div class="fcell ld" style="${spans}">${ted(fp+'.ld',f.ld,ed,'ntx')}</div>`;
         f.aircraft.forEach((a:any,ai:any)=>{
           const key=`${di}.${gi}.${li}.${ai}`, o=a.opts||{};
@@ -839,7 +839,7 @@ export function inpTimeCells(inp:any,ed:any){
      twice down the column — and on either width the pair only needs telling
      once. */
   const cell=(f:any,c:any)=>`<span class="t t-${c} txed inpt" contenteditable="true" spellcheck="false" `
-    +`data-inp="${esc(inpId(inp))}.${f}"${f==='str'?' data-ph="all day"':''}>${esc(inpTimeText(inp,f))}</span>`;
+    +`data-inp="${esc(inpId(inp))}.${f}"${f==='str'?' data-ph="All Day"':''}>${esc(inpTimeText(inp,f))}</span>`;
   return cell('str','s')+cell('end','e');
 }
 export function inpRmkCell(inp:any,ed:any){

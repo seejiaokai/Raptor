@@ -808,7 +808,11 @@ was built first and was unusable: the first clear defaulted the other end, so
 the pair was never blank at once and all-day was a one-way trip. The AM/PM
 label is DERIVED on commit — a window that lands exactly on a half gets it,
 anything else drops it — so a printed "(AM)" can never describe a window that
-is no longer a half.
+is no longer a half. The empty START cell's faded hint reads **"All Day"**
+(owner, Aug 26 — `data-ph`/`placeholder`); the *rendered* value when a row is
+actually all-day stays lowercase "all day" (view-mode span, read-only board
+rows, CSV) so reference and export byte-parity are untouched — a deliberate,
+narrow inconsistency, not an oversight.
 
 **Every input carries `iid`**, minted at creation (`mintInpIds` at boot,
 `add()` on the Inputs page) and never changed. The cells cannot be addressed
@@ -826,6 +830,20 @@ height at one width or the other (an extra grid child wraps onto its own line;
 an absolute button with the remark padded clear of it, and a 20px track of its
 own, both make a remark one word off the boundary wrap — measured at 27px to
 39px on "Medically down till 17 Jul").
+
+**The type menu spells its codes out, but stores the code (owner, Aug 26).**
+`typeOptions`/`typeLabel` (`inputedit.tsx`) render each `<option>` as
+`CODE — words` ("LL — local leave", "ATT B — downchit"), skipping the words
+when the code already IS a word (Training, Meeting, Personal, Appointment,
+Other). The option carries an explicit **`value={code}`** — this is the one
+real coupling in the whole faded-text pass: with no value an `<option>`'s value
+is its visible text, so putting the words in the text without it would write
+"LL — local leave" into `inp.type` and break every `INPUT_META` lookup (colour,
+availability, validation). Pinned by `inputs.test.tsx` ("the type options show
+the words but store the code"). The spelled-out words come from
+`INPUT_META[code].name`, so renaming a type there (ATT B/ATT C → "downchit"…,
+Aug 26) moves the dropdown, the "?" legend and the slot-closed reason
+(`offWord`) together — the code is never touched.
 
 `e2e/geometry.spec.ts` §editing an input from the schedule holds both halves:
 the Unavailable rows on the edit week against the same rows on View-only (a
@@ -873,6 +891,16 @@ on keys `pn:` / `dtn:` / `sn:` / `gn:`. `blkNoteHTML` returns `''` whenever
 writing additionally needs `canEditSched()`. The Duties and Ground sections
 render on `|| ed` so an empty section still offers its box rather than
 stranding text already in the model.
+
+**The board's note box grows with its text (owner, Aug 26).** `.sb-nbox` opens
+at one line (`min-height:34px`) and its height is set in JS — `growNote`/
+`growAllNotes` in `SchedBoard.tsx`, run on `input` while typing and swept once
+after every panel repaint. It is NOT CSS: the panel is rebuilt by an innerHTML
+string-diff, so a typed-in height is thrown away on the repaint that follows a
+commit, and `field-sizing:content` is not honoured by iOS Safari. Height is
+visual only; the text still flows through the `pn:/dtn:/sn:/gn:` funnel keys.
+The week's equivalent is a contenteditable `.blknote` and already grows on its
+own. jsdom cannot measure it — geometry is a live-preview check.
 
 ## Drag / arm-and-plant (hard-won — test on touch)
 
@@ -1310,6 +1338,13 @@ so accepting is an ordinary edit — pending mark, next AL, undoable. It is
 never applied silently: the model stays blank until somebody decides, and a
 blank line is still validated against that same suggested time. Standalone
 waves have no B at all — they are shifts and brief nothing.
+
+An empty B box carries a faded **"Brief"** hint (owner, Aug 26 — board
+`placeholder`, week `data-ph`), the only faded label on the flying line; the
+take-off and land boxes stay blank, and the Common/Ground programme boxes and
+every start/end time box lost their faded examples in the same pass (the words
+read as content on a busy board). On the week the hint shows only when the
+computed brief is genuinely empty, since `brShown` otherwise fills the cell.
 
 Two measured contracts moved with it: `.acrow`'s `min-height` grew to
 `--puck-h + 20px` for the third line in the B/TO stack, and the board's

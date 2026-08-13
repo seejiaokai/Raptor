@@ -204,6 +204,11 @@ check the other):
 - **Desktop and phone are separate CSS paths.** A fix measured on one is
   unproven on the other; the geometry gate checks both because a change often
   lands on only one.
+- **A type's displayed WORDS vs its stored CODE.** The type dropdown spells the
+  code out (`typeLabel`, from `INPUT_META[code].name`) but must keep the
+  `<option>` `value` = the bare code, because the code is what is written to
+  `inp.type` and looked up everywhere. Change the visible label only through
+  `.name`; never let it leak into the stored value. Pinned by `inputs.test.tsx`.
 - **`whoami()` / `whoAmI` names an account, not a person.** Any feature that
   wants "who did this" inherits the prototype-auth limitation until a server
   fills that hook.

@@ -72,7 +72,7 @@ export const INPUT_META:any={
   'LL':         {name:'local leave',              grp:'leave', work:false, local:true,  ground:false, half:true},
   'OL':         {name:'overseas leave',           grp:'leave', work:false, local:false, ground:false, half:true},
   'OIL':        {name:'off in lieu',              grp:'leave', work:false, local:true,  ground:false, half:true},
-  'OFF':        {name:'off — no leave counter',   grp:'leave', work:false, local:true,  ground:false, half:true},
+  'OFF':        {name:'no leave counter',         grp:'leave', work:false, local:true,  ground:false, half:true},
   'CCL':        {name:'childcare leave',          grp:'leave', work:false, local:true,  ground:false, half:true},
   'PL':         {name:'paternity leave',          grp:'leave', work:false, local:true,  ground:false, half:true},
   'FCL':        {name:'family care leave',        grp:'leave', work:false, local:true,  ground:false, half:true},
@@ -81,8 +81,8 @@ export const INPUT_META:any={
      the ONLY type in the app that separates "cannot fly" from "cannot work". */
   'HL':         {name:'hospitalisation leave',    grp:'med',   work:false, local:true,  ground:false, half:true},
   'OML':        {name:'ordinary medical leave',   grp:'med',   work:false, local:true,  ground:false, half:true},
-  'ATT C':      {name:'medically down — cannot report to work', grp:'med', work:false, local:true, ground:false, half:true},
-  'ATT B':      {name:'medically down — no flying, may still work', grp:'med', work:true, local:true, ground:false, half:true},
+  'ATT C':      {name:'downchit, stay home',      grp:'med', work:false, local:true, ground:false, half:true},
+  'ATT B':      {name:'downchit',                 grp:'med', work:true, local:true, ground:false, half:true},
   /* activity — a real commitment, but local and droppable, so he may stand by.
      These are the types a scheduler may lift onto the Ground Programme. */
   'Training':   {name:'training',                 grp:'act',   work:false, local:true,  ground:true,  half:false},

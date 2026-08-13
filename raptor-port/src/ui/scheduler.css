@@ -2234,9 +2234,16 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   font-size:11px;padding:5px 6px;max-width:240px;box-sizing:border-box}
 .sb-psub .ain:focus{outline:none;border-color:var(--accent)}
 .sb-psub .gctl{margin-left:auto;display:flex;gap:5px}
+/* starts at one line and grows with its text (owner, Aug 26). The height is
+   driven by JS (autoGrowNote in board.ts, run on input and after every panel
+   repaint) because the panel is rebuilt by innerHTML string-diff — element
+   height would otherwise reset on the repaint that follows a commit; and
+   `field-sizing:content` is not honoured by iOS Safari. overflow:hidden keeps a
+   scrollbar from flashing while the box is being sized; resize:vertical still
+   lets a scheduler drag it taller by hand. */
 .sb-nbox{background:var(--bg);border:1px solid var(--edge);border-radius:8px;color:#F2D699;
   font-size:11.5px;line-height:1.5;padding:7px 9px;width:100%;box-sizing:border-box;
-  min-height:58px;resize:vertical;font-family:inherit}
+  min-height:34px;overflow:hidden;resize:vertical;font-family:inherit}
 .sb-nbox:focus{outline:none;border-color:var(--accent);color:var(--ink)}
 /* the per-section scheduler note, at the foot of its own board panel */
 .sb-note{margin-top:9px;padding-top:8px;border-top:1px solid var(--edge)}
