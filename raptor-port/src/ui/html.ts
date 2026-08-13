@@ -12,7 +12,7 @@ import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../eng
 import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -246,7 +246,15 @@ export function blkNoteHTML(di:any,d:any,ed:any,key:any,field:any){
       : `<div class="blknote"${a}>${esc(v)}</div>`);
 }
 /* Available-crew block: active aircrew by wave, then SANS grouped separately (they run to
-   different currency requirements — see sanStatus()). Rendered at the bottom of the day. */
+   different currency requirements — see sanStatus()). Rendered at the bottom of the day.
+   COLLAPSED to its one-line summary by default (owner, 13 Aug 26 — "the window
+   is pretty big"); the header toggles per day through AVOPEN. Expanded, a wave
+   line counts EVERYONE who can fly it — its own leftovers PLUS the all-day
+   crew, who are by construction free for every wave — because the old
+   leftovers-only count printed "— none free —" over a wave 22 people could
+   fly, and the owner read that as a bug (13 Aug 26; it was the panel lying,
+   not the engine). The grids still list each man once: the wave rows keep
+   only the partially-free, the all-day crew keep their own group. */
 export function availHTML(d:any,di:any,ed:any){
   const A=availByWave(d);
   /* in edit mode an available puck is a drag source — drag it straight onto a line,
@@ -255,19 +263,28 @@ export function availHTML(d:any,di:any,ed:any){
   const active=(ids:any)=>ids.filter((id:any)=>!PEOPLE[id].san), sans=(ids:any)=>ids.filter((id:any)=>PEOPLE[id].san);
   const grid=(ids:any)=>ids.length?`<div class="ap-grid">`+ids.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   const bandTxt=(w:any)=>{const a=w.s>0?hhmm(w.s):'AM', b=w.e<1440?hhmm(w.e):'end';return `${a}–${b}`;};
-  let h=`<div class="availpuck sec sec-avail"><div class="ap-h"><span>Available crew</span><span class="n">by wave</span></div>`;
+  const sansAll:any[]=[]; A.wins.forEach((w:any,i:any)=>sans(A.byWave[i]).forEach((id:any)=>{if(!sansAll.includes(id))sansAll.push(id);}));
+  sans(A.anyWave).forEach((id:any)=>{if(!sansAll.includes(id))sansAll.push(id);});
+  const allA=active(A.anyWave);
+  if(!AVOPEN.has(di)){
+    const parts=[`${allA.length} all day`];
+    A.wins.forEach((w:any,i:any)=>{const n=active(A.byWave[i]).length;
+      if(n)parts.push(`+${n} ${w.night?'night':(ORD[i]||(i+1)+'th')+' wave'}`);});
+    parts.push(`${sansAll.length} SANS`);
+    return `<div class="availpuck sec sec-avail"><div class="ap-h" data-avtog="${di}">`
+      +`<span>Available crew</span><span class="n">${parts.join(' · ')} ⌄</span></div></div>`;
+  }
+  let h=`<div class="availpuck sec sec-avail"><div class="ap-h" data-avtog="${di}">`
+    +`<span>Available crew</span><span class="n">by wave · close ⌃</span></div>`;
   if(A.wins.length){
-    A.wins.forEach((w:any,i:any)=>{const ids=active(A.byWave[i]);
-      h+=`<div class="ap-grp">${ORD[i]||(i+1)+'th'} wave${w.night?' · night':''} <span style="color:var(--ink-3);font-weight:500">${bandTxt(w)}</span> · ${ids.length}</div>`+grid(ids);});
-    const allA=active(A.anyWave);
+    A.wins.forEach((w:any,i:any)=>{const ids=active(A.byWave[i]), total=ids.length+allA.length;
+      h+=`<div class="ap-grp">${ORD[i]||(i+1)+'th'} wave${w.night?' · night':''} <span style="color:var(--ink-3);font-weight:500">${bandTxt(w)}</span> · ${total} can fly</div>`;
+      h+=ids.length?grid(ids):(total?`<div class="ap-empty">all of them are under Available all day ↓</div>`:`<div class="ap-empty">— none free —</div>`);});
     h+=`<div class="ap-grp">Available all day · ${allA.length}</div>`+grid(allA);
   } else {
-    const allA=active(A.anyWave);
     h+=`<div class="ap-grp">Available all day · ${allA.length}</div>`+(allA.length?grid(allA):`<div class="ap-empty">Everyone is on the programme.</div>`);
   }
   // SANS grouped together (separate currency requirements)
-  const sansAll:any[]=[]; A.wins.forEach((w:any,i:any)=>sans(A.byWave[i]).forEach((id:any)=>{if(!sansAll.includes(id))sansAll.push(id);}));
-  sans(A.anyWave).forEach((id:any)=>{if(!sansAll.includes(id))sansAll.push(id);});
   h+=`<div class="ap-grp sans-grp">SANS available <span style="color:var(--ink-3);font-weight:500">· staff-assigned / NS</span> · ${sansAll.length}</div>`;
   h+= sansAll.length?`<div class="ap-grid">`+sansAll.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   return h+`</div>`;

@@ -6,7 +6,7 @@
 import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/slots'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
 import { restoreDayVersion } from '../engine/restore'
 import { HOOKS } from '../engine/hooks'
@@ -472,13 +472,23 @@ export function routeClick(e: MouseEvent) {
   if (t.closest('[data-disarm]')) { view.disarmSlot(); notify(); e.stopPropagation(); return }
 
   /* a tap on a palette name: plant it if something is armed, otherwise fall
-     through to the ordinary select-this-person-in-blue behaviour */
+     through to the ordinary select-this-person-in-blue behaviour. A darkened
+     name plants too (owner, 13 Aug 26): its reason is printed on the list
+     before the tap, and placeArmed repeats it as the warn toast after. */
   const rp = t.closest('.rpuck[data-person]') as HTMLElement | null
   if (rp && view.ARM) {
     e.stopPropagation()
-    if (rp.classList.contains('no')) { HOOKS.toast(`${PEOPLE[rp.dataset.person!].cs} — ${rp.dataset.why || 'not eligible here'}`, 'warn'); return }
     view.placeArmed(rp.dataset.person)
     notify(); return
+  }
+
+  /* the Available-crew panel folds and unfolds per day (owner, 13 Aug 26 —
+     collapsed one-liner is the default). Edit page only, like the panel. */
+  const avt = t.closest('[data-avtog]') as HTMLElement | null
+  if (avt) {
+    e.stopPropagation()
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    view.toggleAvail(+avt.dataset.avtog!); notify(); return
   }
 
   /* per-day publish toggle — edit page only; the view page renders .dbeak.ro
@@ -541,11 +551,17 @@ export function routeClick(e: MouseEvent) {
      let through the emptiness guard: arm an empty cell, then fill its row by
      drag instead of a palette tap, and the guard used to make the ring
      untouchable — armSlot's own tap-again-to-put-down could never run, and a
-     phone (no Escape key, no blank space to tap) wore the ring forever. */
+     phone (no Escape key, no blank space to tap) wore the ring forever.
+     A PLACEHOLDER-filled slot arms exactly like an empty one (owner, 13 Aug
+     26): a placeholder means "someone still needed here", so tapping it goes
+     straight to finding that someone — the palette tap then replaces the
+     placeholder. Only a REAL person's puck falls through to selection. */
   const slot = t.closest('.seat[data-slot],[data-fill]') as HTMLElement | null
-  if (slot && HOOKS.editMode() && !t.closest('.puck[data-person]')) {
+  const slotPuck = t.closest('.puck[data-person]') as HTMLElement | null
+  if (slot && HOOKS.editMode() && (!slotPuck || isSpecial(slotPuck.dataset.person))) {
     const key = slot.dataset.slot || slot.dataset.fill
-    if (key && (view.armedKey() === key || !slotVal(String(key).replace(/\.\+$/, '')))) {
+    const base = String(key).replace(/\.\+$/, '')
+    if (key && (view.armedKey() === key || !slotVal(base) || isSpecial(slotVal(base)))) {
       view.armSlot(key, slot); notify(); e.stopPropagation(); return
     }
   }

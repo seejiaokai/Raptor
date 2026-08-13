@@ -18,16 +18,24 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 **All six gates were green first-hand for the audit sweep of 12 Aug 26, for
 its five follow-up fixes, again for the guard-rail sweep, the new-year date
-fix (13 Aug 26), the Personnel ground-crew category (13 Aug 26), and again for
+fix (13 Aug 26), the Personnel ground-crew category (13 Aug 26), again for
 the BOARD REDESIGN of 13 Aug 26 — the cleanup + inline `+ Wave`, the AMT
-FCP/RCP block with a debrief range, and the duty-template system**, run in this
-container on the matching tree:
-`npm test` 1406 tests across 90 files (the `audit-*` sweep included; the board
-redesign added `dutytpl.test.ts`, `DutyTplModal.test.tsx`, the AMT
-debrief-range + FCP/RCP tests, and re-pointed the wave-desk board tests), `node
-reference/tfin.js` 728/0, `npm run build` clean, the full `npm run test:e2e`
-geometry job 86/86 in Chromium, `probes:adapted` 36/36 and `perf` 4/4 (both
-DOM ceilings held, no raise). The guards were then driven on the
+FCP/RCP block with a debrief range, and the duty-template system — and again
+for the CREW-FINDING build later the same day (the tap that plants with the
+warning after, placeholder-arms-the-slot, the green eligibility rings, and
+the Available-crew panel folded to one line with honest wave counts)**, run
+in this container on the matching tree:
+`npm test` 1415 tests across 91 files (the crew-finding build added
+`selrings.test.tsx` and re-pointed the arm-and-plant, darkened-name and
+avail-grid tests at the new behaviour), `node
+reference/tfin.js` 728/0 (the engine is untouched by the crew-finding build),
+`npm run build` clean, the full `npm run test:e2e`
+geometry job 88/88 in Chromium (two added: the ring paints are distinct and
+move nothing; the folded panel opens and closes), `probes:adapted` 36/36 and
+`perf` 4/4 — **the week DOM ceiling was LOWERED 5530 → 4000** against a 3621
+measure, because the folded panel's saving is real headroom and a slack
+ceiling would have passed a change that silently re-expanded every panel
+(the argued comment is in `probes/perf-port.cjs`). The guards were then driven on the
 built bundle: `1290`, `9999` and `morning` all bounce off a take-off that
 stays `12:40` while a real `0845` goes in, a freshly added blank line renders
 no `NaN:NaN` anywhere, and the Inputs page holds zero sideways overflow. Two of those went red first and both were real: the new
@@ -47,7 +55,8 @@ today → +2 weeks; the open-work list below carries which of the two is
 current and why. All four were re-checked on the DEPLOYED page.
 The board's measured DOM went 897 → 911 on the 12 Aug sweep, then to 923 with
 the board redesign (the inline `+ Wave` panel and the AMT FCP/RCP labels),
-against an unmoved 960 ceiling; the week measures 5099 under its 5530 ceiling.
+against an unmoved 960 ceiling; the week measures 3621 under the 4000 ceiling
+the crew-finding build set (the Available-crew panels boot folded now).
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
 board can still be a heavier one.
 
@@ -105,6 +114,27 @@ only after re-running them.
 
 ## Known issues / open work
 
+- **The CREW-FINDING build (13 Aug 26) shipped four pieces and left two
+  REPORTED-NOT-BUILT options beside one deliberately dropped shape.** Shipped
+  (contracts in `docs/ui-contracts.md` §Drag / arm-and-plant, §Selection
+  highlight, §The Available-crew panel folds): a palette tap always plants
+  with the reason toasted after (drag and tap agree now — the owner's
+  "everything plants, warning after"); a placeholder-filled slot arms like an
+  empty one; a selected person's takeable slots ring green (empty bright,
+  filled dimmed — `slotBar` itself is the judge, see
+  `docs/feature-impact.md`); and the Available-crew panel boots folded with
+  honest wave counts. What was NOT built:
+  - **The second-tap replace flow** (tap a selected person again on his seat
+    to arm it) was designed, comped, and then DROPPED at the owner's own
+    question ("is the 2nd tap excessive?") before build. The fallout flow is:
+    delete the person and click the emptied seat, click a placeholder, or
+    drag the replacement straight onto the seat. **Do not rebuild it
+    unasked.**
+  - **A "find replacement" button on a warning row** (e.g. LEAVE_FLY on a
+    planned man, jumping straight to the armed picker) — reported as the
+    future option if the owner ever wants a more visible entry point; it
+    only covers seats that currently warn, which is why it was not the
+    primary shape.
 - **GUARD RAILS ON MALFORMED INPUT (owner, 12 Aug 26) — the line, and what is
   deliberately still open.** Four surveys swept every typed field. The rule
   applied: refuse MALFORMED data (not the kind of value the field holds, or
@@ -703,6 +733,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split is in `e2e/geometry.spec.ts`, which is the only place it resolves (the day-carousel motion tests that used to sit beside it went with the swipe, 12 Aug 26). |
 | `src/ui/boardrmk.test.tsx` | The empty remarks box and the `+` that reveals it (12 Aug 26) — which input carries `.empty`, that the reveal clears it for its OWN row only and focuses it, that typing one drops it unaided, and that asking for the box back writes NOTHING to the edit log or the pending set. jsdom cannot measure the 109px→79px row it buys; `e2e/geometry.spec.ts` does that. |
 | `src/**/audit-*.test.ts(x)` | Three sweeps of 12 Aug 26, all keepers — they are the regression armour for corners nothing else tests. **The adversarial audit** over PRs 148–174, six agents (a=History/edit log, b=board nav, c=validation, d=sort/reorder, e=inputs): closed every gap this file listed and pinned twelve fixes (log keys remapped with the key space, day-aware accept deferral, `deletionWasIssued` under reorder, the relink's preserved extras and covered-day re-file, the scrub/handle button guards, the day-step commit, the carry-day fix, the numeric time sort). **The five suspects** it raised and the owner then closed: `audit-c-briefguard` (brief vs take-off, both directions), `audit-thinwin` (`inpWin` failing closed), `audit-gesture-bubble` (repaint re-check, drag-vs-scrub). **The guard-rail sweep**: `audit-guards` (`hmOK`, `minus`, the time cells, store renames, the rules load path) and `audit-guards-inputs` (input times, spans, the derived AM/PM label, and what stays allowed because it is a decision). |
+| `src/ui/selrings.test.tsx` | The green eligibility rings (13 Aug 26) — the DOM agrees with `slotBar` on EVERY edit-week slot (the mirror test that keeps the rings from ever becoming a second copy of the rule), a mutation re-rings on the next paint (WARN-identity invalidation), rings clear with the selection, view-only and a selected placeholder never ring. The paints themselves (bright/dim/armed distinct, zero layout shift) are in `e2e/geometry.spec.ts`, because jsdom measures every rect 0×0. |
 | `src/engine/personnel.test.ts` | The ground-crew category (Aug 26) — that a personnel derives empty quals and the boot grants nothing, `slotBar` bars a front seat and allows rear/duty/ground, and validate raises `QUAL` in a front seat, the `PAX_CREW`/`CP` advisory in a rear seat, and `DOUBLE_BOOK`/`LONGDAY`/`DAYS_RUN` while crew rest, turns, the matrix, AAR and the brief/debrief windows stay OFF. Plus the parity guards (`PAX_CREW` has a WCODE, and fires nowhere on the seed). |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |

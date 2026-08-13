@@ -10,6 +10,8 @@ import { initStore, setSession, notify, writeSlot, setPage } from '../state/stor
 import { SCHED, dayApproved } from '../engine/publish'
 import { slotVal } from '../engine/slots'
 import { isScheduler, PEOPLE } from '../engine/people'
+import { availByWave } from '../engine/avail'
+import { DAYS } from '../engine/data'
 import { armedKey } from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -123,19 +125,29 @@ describe('the edit page (tfin)', () => {
     await click($('#undoBtn'))
   })
 
-  it('arm-and-plant: an empty slot arms, the palette plants, darkened names refuse', async () => {
+  it('arm-and-plant: an empty slot arms, reasons print on the list, every tap plants', async () => {
     const key = '0.0.0.0.p'
     const before = slotVal(key)
     await act(async () => { writeSlot(key, '') })
     await click($(`#eWeek .seat[data-slot="${key}"], #eWeek .empty-slot[data-slot="${key}"]`))
     expect(armedKey()).toBe(key)
     expect(/Planning/.test($('#eRoster .ros-arm')!.textContent!)).toBe(true)
-    /* a darkened name (a WSO on a front seat) does not plant */
+    /* a darkened name says WHY on the list itself while a slot is armed
+       (13 Aug 26 — a phone has no hover, and the rule is the scheduler sees
+       the problem BEFORE the tap). Every WSO shares the front-seat reason,
+       so it reads ONCE under that column's header rather than fifteen times */
+    const wsoCol = $$('#eRoster .rcol').find(c => /WSO/i.test(c.querySelector('.rh')!.textContent!))!
+    expect(wsoCol.querySelector(':scope > .rwhy')!.textContent).toMatch(/front seat/)
     const bad = $$('#eRoster .rpuck.no').find(x => PEOPLE[x.dataset.person!]?.seat === 'RCP')!
+    expect(bad.classList.contains('haswhy')).toBe(false)   // the column already said it
+    /* ...and the tap PLANTS anyway (owner, 13 Aug 26 — "everything plants,
+       warning after"), putting the slot down exactly like an eligible tap */
     await click(bad)
-    expect(slotVal(key)).toBe('')
-    expect(armedKey()).toBe(key)                   // still armed after a refusal
-    /* a name still showing plants on the first tap */
+    expect(slotVal(key)).toBe(bad.dataset.person)
+    expect(armedKey()).toBe('')
+    /* an eligible name plants the same way */
+    await act(async () => { writeSlot(key, '') })
+    await click($(`#eWeek .seat[data-slot="${key}"], #eWeek .empty-slot[data-slot="${key}"]`))
     const good = $$('#eRoster .rpuck:not(.no)').find(x => !PEOPLE[x.dataset.person!]?.special)!
     await click(good)
     expect(slotVal(key)).toBe(good.dataset.person)
@@ -241,5 +253,29 @@ describe('the edit page (tfin)', () => {
       SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}; SCHED.cur = {}
       notify()
     })
+  })
+})
+
+/* The Available-crew panel folds to one line by default (owner, 13 Aug 26 —
+   "the window is pretty big"), and its expanded wave lines count everyone who
+   can fly the wave — the all-day crew included — because the old
+   leftovers-only count printed "— none free —" over a wave 22 people could
+   fly, which the owner read as a bug. */
+describe('the Available-crew panel folds (owner, 13 Aug 26)', () => {
+  it('collapsed to one line by default; expanded counts everyone who can fly', async () => {
+    const day = () => $(`#eWeek .day[data-day="0"]`)
+    expect(day().querySelector('.availpuck .ap-grid')).toBeFalsy()
+    const head = () => day().querySelector('.ap-h[data-avtog="0"]') as HTMLElement
+    expect(head()).toBeTruthy()
+    expect(head().textContent).toMatch(/all day/)
+    await click(head())
+    expect(day().querySelectorAll('.availpuck .ap-grid').length).toBeGreaterThan(0)
+    const A = availByWave(DAYS[0])
+    const act0 = (ids: any[]) => ids.filter(id => !PEOPLE[id].san)
+    const total = act0(A.byWave[0]).length + act0(A.anyWave).length
+    const grp = [...day().querySelectorAll('.availpuck .ap-grp')].find(g => /wave/i.test(g.textContent!))!
+    expect(grp.textContent).toContain(`· ${total} can fly`)
+    await click(head())
+    expect(day().querySelector('.availpuck .ap-grid')).toBeFalsy()
   })
 })

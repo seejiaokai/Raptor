@@ -1,9 +1,13 @@
 /* The highlight pass and warning-focus scroll — DOM code, verbatim from
    the reference. Runs after every week render; the markup it decorates is
    the verbatim dayHTML output, so the selectors line up exactly. */
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, isSpecial } from '../engine/people'
 import { HLSET, SEARCH, SELID, WFOCUS, ARM, warnFocusMap, personMatchesHL, CURPAGE, SBDAY } from '../state/view'
 import { ME } from '../state/auth'
+import { slotBar } from '../engine/avail'
+import { slotVal } from '../engine/slots'
+import { WARN } from '../engine/validate'
+import { HOOKS } from '../engine/hooks'
 import { hsSet, hsSync } from './pan'
 
 /* A ONE-SHOT callback run at the end of the next highlight pass — i.e. in the
@@ -71,6 +75,7 @@ export function refreshHighlights(){
     if(focusActive&&!isFocus)el.classList.add('dim');
   });
   paintArm();      // every render rebuilds the slots, so the ring is re-hung here
+  paintSelRings(); // after paintArm, so an armed element can keep its own ring
   /* the queued hold, after the classes so it measures the final layout */
   if(PENDING_HOLD){const f=PENDING_HOLD; PENDING_HOLD=null; try{f()}catch(_){}}
 }
@@ -79,6 +84,43 @@ export function paintArm(){
   if(!ARM)return;
   document.querySelectorAll('[data-slot],[data-fill]').forEach((el:any)=>{
     if((el.dataset.slot||el.dataset.fill)===ARM.key)el.classList.add('armed');});
+}
+/* WHERE CAN THE SELECTED MAN GO (owner, 13 Aug 26). The blue click also rings
+   every slot he could take: bright green on an empty slot, dimmed green with a
+   soft tint where he would take over from the man in it, nothing where he
+   cannot go — so availability reads BEFORE any tap, which is the owner's
+   standing rule. GREEN IS ELIGIBILITY, NEVER A SEVERITY: red/amber/grey stay
+   the warning tiers, the armed ring stays the only dashed one, and an armed
+   element keeps its own ring untouched. The judge is slotBar itself — the same
+   oracle the palette and the drop warning read, so the three cannot drift.
+   Edit mode only; never for a placeholder (nothing bars a placeholder, so
+   every slot would light and the paint would mean nothing). Answers are
+   memoised against the selection and WARN's identity: every schedule mutation
+   funnels through validate(), which reassigns WARN, so the cache invalidates
+   exactly when an answer could change and an ordinary repaint pays only for
+   hanging classes. */
+let SELRINGS:any=null
+export function paintSelRings(){
+  document.querySelectorAll('.oktake,.oktake-f').forEach((el:any)=>el.classList.remove('oktake','oktake-f'));
+  const id=SELID;
+  if(!id||!HOOKS.editMode()||isSpecial(id))return;
+  if(!SELRINGS||SELRINGS.id!==id||SELRINGS.warn!==WARN)SELRINGS={id,warn:WARN,map:new Map()};
+  document.querySelectorAll('[data-slot],[data-fill]').forEach((el:any)=>{
+    if(el.classList.contains('armed'))return;
+    const raw=el.dataset.slot||el.dataset.fill; if(!raw)return;
+    let why=SELRINGS.map.get(raw);
+    if(why===undefined){try{why=slotBar(id,raw)}catch(_){why='?'} SELRINGS.map.set(raw,why);}
+    if(why)return;
+    /* an append target is by nature an empty spot; a data-slot may hold the
+       man himself (noise — skip) or someone he could take over from.
+       Guarded: a repaint can hold DOM a beat staler than the model (a row
+       just deleted), and slotVal — unlike slotRules — throws on a key whose
+       row is gone. A stale element gets no ring rather than a crash. */
+    let occ='';
+    if(el.dataset.slot){try{occ=slotVal(String(raw).replace(/\.\+$/,''))}catch(_){return}}
+    if(occ===id)return;
+    el.classList.add(occ?'oktake-f':'oktake');
+  });
 }
 /* The element carrying the warning's anchor key — the seat (or append cell) of
    the LINE that caused the flag. Segment-safe prefix match: a full key matches

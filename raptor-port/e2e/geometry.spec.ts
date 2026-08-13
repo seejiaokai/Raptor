@@ -2886,3 +2886,122 @@ test.describe('the viewport meta', () => {
     expect(content).toContain('width=device-width')
   })
 })
+
+/* The green eligibility rings (owner approved the comp, 13 Aug 26): with a
+   person selected, an empty slot he could take rings bright green with a
+   glow, a filled one he could take dims with a tint, and neither is
+   confusable with the armed dashed ring. jsdom already pins WHICH classes
+   are hung and that they agree with slotBar (selrings.test.tsx); only a real
+   browser can prove the paints differ and that a ring moves no layout. */
+test.describe('the green eligibility rings', () => {
+  test('empty vs filled vs armed are distinct paints, and rings move nothing', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'editsched')
+
+    /* empty one rear seat through the funnel, then pick the selection FROM THE
+       ORACLE: a real WSO slotBar clears for the emptied seat AND for some
+       still-filled seat held by someone else — so an empty ring and a filled
+       ring both exist by construction, whatever the seed's tasking looks like */
+    const pick = await page.evaluate(() => {
+      const w = window as any
+      const seat = [...document.querySelectorAll('#eWeek .seat[data-slot$=".w"]')]
+        .find(s => s.querySelector('.puck[data-person]')) as HTMLElement | undefined
+      if (!seat) return null
+      const k = seat.dataset.slot!
+      w.setSlotVal(k, ''); w.afterSchedMutate()
+      const seats = [...document.querySelectorAll('#eWeek .seat[data-slot]')] as HTMLElement[]
+      for (const id of Object.keys(w.PEOPLE)) {
+        const p = w.PEOPLE[id]
+        if (p.special || p.pers || p.archived || p.seat !== 'RCP') continue
+        if (w.slotBar(id, k)) continue
+        const filled = seats.some(s => {
+          const sk = s.dataset.slot!
+          const occ = (() => { try { return w.slotVal(sk) } catch { return '' } })()
+          return occ && occ !== id && !w.slotBar(id, sk)
+        })
+        if (filled) return { k, id }
+      }
+      return null
+    })
+    test.skip(!pick, 'no WSO clears both an empty and a filled seat in the seed')
+    const key = pick!.k
+    await page.waitForTimeout(300)
+
+    /* the seat's box before any ring is up */
+    const before = await page.evaluate((k) => {
+      const b = (document.querySelector(`#eWeek [data-slot="${k}"]`) as HTMLElement).getBoundingClientRect()
+      return { w: +b.width.toFixed(1), h: +b.height.toFixed(1) }
+    }, key)
+
+    await page.evaluate((id) => (window as any).selectPerson(id), pick!.id)
+    await page.waitForTimeout(300)
+
+    const r = await page.evaluate((k) => {
+      const read = (el: HTMLElement | null) => {
+        if (!el) return null
+        const cs = getComputedStyle(el), b = el.getBoundingClientRect()
+        return { style: cs.outlineStyle, color: cs.outlineColor, shadow: cs.boxShadow,
+          bg: cs.backgroundColor, w: +b.width.toFixed(1), h: +b.height.toFixed(1) }
+      }
+      return {
+        empty: read(document.querySelector(`#eWeek [data-slot="${k}"].oktake`) as HTMLElement),
+        filled: read(document.querySelector('#eWeek .seat.oktake-f') as HTMLElement),
+      }
+    }, key)
+
+    expect(r.empty, 'the emptied rear seat rings as an empty spot').not.toBeNull()
+    expect(r.filled, 'some filled seat rings as takeable').not.toBeNull()
+    /* both greens are SOLID — dashed stays the armed ring's identity */
+    expect(r.empty!.style).toBe('solid')
+    expect(r.filled!.style).toBe('solid')
+    /* bright + glow vs dimmed + tint: the empty ring glows (a box-shadow),
+       the filled one does not and carries the tint instead */
+    expect(r.empty!.shadow, 'the empty ring glows').toContain('px')
+    expect(r.filled!.shadow, 'the filled ring does not glow').toBe('none')
+    expect(r.filled!.bg, 'the filled slot carries the green tint').toContain('rgba(87, 201, 122')
+    /* and the ringed seat still measures exactly what it did bare */
+    expect({ w: r.empty!.w, h: r.empty!.h }, 'the ring moved nothing').toEqual(before)
+
+    /* arm the same emptied seat: the armed ring must win and stay dashed */
+    await clickHere(page, `#eWeek [data-slot="${key}"]`)
+    await page.waitForTimeout(200)
+    const armed = await page.evaluate((k) => {
+      const el = document.querySelector(`#eWeek [data-slot="${k}"]`) as HTMLElement
+      const cs = getComputedStyle(el)
+      return { style: cs.outlineStyle, ok: el.classList.contains('oktake') }
+    }, key)
+    expect(armed.style, 'the armed ring stays dashed').toBe('dashed')
+    expect(armed.ok, 'and the green ring stands down for it').toBe(false)
+  })
+})
+
+/* The Available-crew panel folds to ONE line by default (owner, 13 Aug 26 —
+   "the window is pretty big"), and the header line is the whole control. */
+test.describe('the Available-crew panel folds', () => {
+  test('one line closed, opens on tap, closes back — and it stays short', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'editsched')
+    const closed = await page.evaluate(() => {
+      const p = document.querySelector('#eWeek .day[data-day="0"] .availpuck') as HTMLElement
+      return p ? { h: p.getBoundingClientRect().height, grids: p.querySelectorAll('.ap-grid').length } : null
+    })
+    expect(closed, 'the panel renders').not.toBeNull()
+    expect(closed!.grids, 'no puck grid while closed').toBe(0)
+    expect(closed!.h, 'closed it really is one line').toBeLessThan(40)
+    await clickHere(page, '#eWeek .day[data-day="0"] .ap-h[data-avtog]')
+    await page.waitForTimeout(300)
+    const open = await page.evaluate(() => {
+      const p = document.querySelector('#eWeek .day[data-day="0"] .availpuck') as HTMLElement
+      return { h: p.getBoundingClientRect().height, grids: p.querySelectorAll('.ap-grid').length }
+    })
+    expect(open.grids, 'open, the grids are back').toBeGreaterThan(0)
+    expect(open.h, 'and the panel really grew').toBeGreaterThan(closed!.h * 2)
+    await clickHere(page, '#eWeek .day[data-day="0"] .ap-h[data-avtog]')
+    await page.waitForTimeout(200)
+    const again = await page.evaluate(() =>
+      (document.querySelector('#eWeek .day[data-day="0"] .availpuck') as HTMLElement).getBoundingClientRect().height)
+    expect(again, 'closed again').toBeLessThan(40)
+  })
+})

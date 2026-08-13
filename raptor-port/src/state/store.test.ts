@@ -6,6 +6,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { SCHED, signOf, dayApproved, setDayApproved, publishALDay, unpublishAL, daySnapOf, dayCurVer } from '../engine/publish'
 import { restoreDayVersion } from '../engine/restore'
+import { HOOKS } from '../engine/hooks'
 import { slotVal, txtGet } from '../engine/slots'
 import { shiftKeys } from '../engine/keys'
 import { moveDutyRow, applyMove, sortDutyBlock } from '../engine/reorder'
@@ -214,14 +215,31 @@ describe('arm and plant, model half (tfin U, through the store)', () => {
     expect(armedKey()).toBe('')
   })
 
-  it('a darkened name does not plant, and the slot stays armed after a refusal', () => {
+  it('a darkened name plants anyway, and its reason arrives as the warn toast (owner, 13 Aug 26)', () => {
     writeSlot('0.0.0.0.p', '')
     armSlot('0.0.0.0.p')
-    const wso = 'wolf'                          // a WSO on a front seat
-    expect(placeArmed(wso)).toBe(false)
-    expect(slotVal('0.0.0.0.p')).toBe('')
-    expect(armedKey()).toBe('0.0.0.0.p')
+    const said: any[] = []
+    const t0 = HOOKS.toast
+    HOOKS.toast = (m: any, k?: any) => { said.push([String(m), k]) }
+    try {
+      const wso = 'wolf'                        // a WSO on a front seat
+      expect(placeArmed(wso)).toBe(true)
+      expect(slotVal('0.0.0.0.p')).toBe('wolf')
+      expect(armedKey()).toBe('')               // planting puts the slot down
+      const warn = said.find(([, k]) => k === 'warn')
+      expect(warn && /front seat/.test(warn[0])).toBeTruthy()
+    } finally { HOOKS.toast = t0 }
+    writeSlot('0.0.0.0.p', '')
+  })
+
+  it("re-planting the seat's own occupant refuses instead of toasting planned", () => {
+    writeSlot('0.0.0.0.p', 'casper')
+    armSlot('0.0.0.0.p')
+    expect(placeArmed('casper')).toBe(false)
+    expect(slotVal('0.0.0.0.p')).toBe('casper')
+    expect(armedKey()).toBe('0.0.0.0.p')        // the arm survives the no-op
     disarmSlot()
+    writeSlot('0.0.0.0.p', '')
   })
 
   it('a name still showing plants on the first tap, and planting puts the slot down', () => {

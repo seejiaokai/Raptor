@@ -1609,3 +1609,22 @@ describe('edit mode itself is completely unaffected by any of the above', () => 
     expect(HOOKS.editMode()).toBe(true)
   })
 })
+
+/* The board twin of the week's placeholder shortcut (owner, 13 Aug 26): a
+   placeholder's puck arms its seat through the board's own click handler,
+   where a real person's puck still returns early to selection. */
+describe('a placeholder on the board arms its seat (13 Aug 26)', () => {
+  it('clicking the placeholder puck arms; disarm and restore leave no trace', async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); notify() })
+    const seat = document.querySelector('#sbBoard .seat[data-slot]') as HTMLElement
+    expect(seat).toBeTruthy()
+    const key = seat.dataset.slot!
+    const before = slotVal(key)
+    setSlotVal(key, 'allavail'); await act(async () => { afterSchedMutate(); notify() })
+    const puck = document.querySelector(`#sbBoard .seat[data-slot="${key}"] .puck[data-person="allavail"]`)
+    await click(puck)
+    expect(view.armedKey()).toBe(key)
+    await act(async () => { view.armDrop(); notify() })
+    setSlotVal(key, before || ''); await act(async () => { afterSchedMutate(); notify() })
+  })
+})

@@ -279,8 +279,18 @@ async function trial(b, measureSize) {
      bigger, not more expensive to draw.
      The week is NOT raised: same change, +13 nodes across seven days
      (5078 against 5530), because a week row swaps its spans for cells rather
-     than gaining a column. */
-  const DOM_CEILING = { week: 5530, board: 960 }
+     than gaining a column.
+     LOWERED to 4000 on 13 Aug 26, from 5530, with a measurement: the
+     Available-crew panel now boots COLLAPSED to a one-line summary (owner ask
+     the same day) and the default week render fell 5099 → 3621 nodes. This
+     probe measures that default; a scheduler who expands a day's panel puts
+     its pucks back deliberately, which is data-driven growth the ceiling is
+     not judging. 4000 leaves ~10% headroom over the reading — the same
+     order the old ceiling held over its own — because a slack ceiling
+     catches nothing: the 5530 bar would have passed a change that silently
+     re-expanded every panel, which is precisely the regression this number
+     now guards. */
+  const DOM_CEILING = { week: 4000, board: 960 }
   for (const [surface, s] of Object.entries(size)) {
     const cap = DOM_CEILING[surface]
     T(`perf · the ${surface} stays under its recorded DOM ceiling (${cap})`,

@@ -25,7 +25,7 @@ const groundedOnly=(id:any,di:any)=>{
   const away=INPUTS.filter((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id&&inputCoversDate(i,d.dt));
   return away.length>0&&away.every((i:any)=>canWork(i.type));
 };
-export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rules:any){
+export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rules:any,hideWhy?:any){
   const grounded=!armKey&&!!(off&&off.has(id))&&groundedOnly(id,di);
   const why=armKey?slotBar(id,armKey,rules):((off&&off.has(id)&&!grounded)?offReason(id,di):'');
   const standby=!!(sby&&sby.has(id));
@@ -35,9 +35,17 @@ export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rule
     :(eng&&eng.has(id))?`${PEOPLE[id].cs} — already tasked today, but you can still plan him`
     :standby?`${PEOPLE[id].cs} — SC spare, standing by and free for anything else`
     :PEOPLE[id].cs;
-  return `<span class="rpuck ${cls}" draggable="true" data-person="${id}"`
+  /* WHILE A SLOT IS ARMED the reason is PRINTED under a crossed-out name, not
+     only carried on the title — a phone has no hover, and the owner's rule
+     (13 Aug 26) is that the scheduler sees the problem BEFORE the tap, never
+     by planting. Armed only: the everyday palette keeps its density. hideWhy
+     is the column speaking instead: where every barred name in a column
+     shares one reason, paletteHTML prints it once under the header, or a
+     front-seat arm would print "WSO — cannot fly front seat" fifteen times. */
+  const showWhy=!!(armKey&&why&&!hideWhy);
+  return `<span class="rpuck ${cls}${showWhy?' haswhy':''}" draggable="true" data-person="${id}"`
     +(why?` data-why="${esc(why)}"`:'')+` title="${esc(note)}"`
-    +`>${puck(id,sevOf(di,id),true,chipOf(di,id))}</span>`;
+    +`>${puck(id,sevOf(di,id),true,chipOf(di,id))}${showWhy?`<span class="rwhy">${esc(why)}</span>`:''}</span>`;
 }
 /* Why this man's DAY is closed. Only ever asked about someone dayOff() has
    already named, so it must look at the same absences dayOff does — whole-day
@@ -92,11 +100,20 @@ export function paletteHTML(di:any,opts?:any){
   const sel=(seat:any,san:any)=>Object.keys(PEOPLE).filter((id:any)=>ok(id)&&PEOPLE[id].seat===seat&&!!PEOPLE[id].san===san).sort(bySort);
   const col=(title:any,seat:any)=>{
     const act=sel(seat,false), sn=sel(seat,true);
-    const free=act.concat(sn).filter((id:any)=>!rank(id)).length;
+    const all=act.concat(sn), free=all.filter((id:any)=>!rank(id)).length;
+    /* one reason shared by EVERY barred name in the column reads ONCE, under
+       the header — a front-seat arm bars every WSO for the same structural
+       reason, and repeating it per name tripled the drawer's height */
+    let colWhy='';
+    if(armKey){
+      const whys=all.map((id:any)=>slotBar(id,armKey,arules)).filter(Boolean);
+      if(whys.length>=2&&whys.every((w:any)=>w===whys[0]))colWhy=whys[0];
+    }
     return `<div class="rcol"><div class="rh">${title} · ${free} free</div>`
-      +act.map((id:any)=>rosterPuck(id,di,armKey,eng,off,sby,arules)).join('')
+      +(colWhy?`<div class="rwhy">${esc(colWhy)}</div>`:'')
+      +act.map((id:any)=>rosterPuck(id,di,armKey,eng,off,sby,arules,!!colWhy)).join('')
       +(sn.length?`<div class="rh sans">SANS · ${sn.length}</div>`
-        +sn.map((id:any)=>rosterPuck(id,di,armKey,eng,off,sby,arules)).join(''):'')
+        +sn.map((id:any)=>rosterPuck(id,di,armKey,eng,off,sby,arules,!!colWhy)).join(''):'')
       +`</div>`;};
   const head=o.head===false?'':`<div class="er-h">${ARM?'Tap a name to plan':'Aircrew'}`
     +(d.dow?` · <span class="mono" style="color:var(--ink-3)">${esc(d.dow)}</span>`:'')+`</div>`;

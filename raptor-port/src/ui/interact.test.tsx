@@ -7,7 +7,8 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify, undo } from '../state/store'
+import { initStore, setSession, notify, undo, writeSlot } from '../state/store'
+import { slotVal } from '../engine/slots'
 import { validate, WARN } from '../engine/validate'
 import { personWarnDays } from '../engine/avail'
 import { isSpecial } from '../engine/people'
@@ -731,5 +732,40 @@ describe('Sort all — every section, one confirm, one undo step (owner, 8 Aug 2
     const di = 0
     mountBoard(di)
     expect($('#sbSortAll')).toBeFalsy()
+  })
+})
+
+/* A placeholder in a slot means "someone still needed here" (owner, 13 Aug
+   26), so its puck is a shortcut to finding that someone: clicking it arms
+   the seat instead of selecting the sentinel, and the narrowed palette then
+   replaces it. A REAL person's puck keeps ordinary blue selection. */
+describe('a placeholder in a slot is a shortcut to finding crew (13 Aug 26)', () => {
+  beforeAll(async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    if (view.CURPAGE !== 'editsched') clickSync($('.nav a[data-page="editsched"]'))
+    await act(async () => { view.selDrop(); view.armDrop(); notify() })
+  })
+
+  it('clicking the placeholder puck arms its seat, and never selects it', async () => {
+    const key = '0.0.0.0.p'
+    const before = slotVal(key)
+    await act(async () => { writeSlot(key, 'allavail') })
+    await click($(`#eWeek .seat[data-slot="${key}"] .puck[data-person="allavail"]`))
+    expect(view.armedKey()).toBe(key)
+    expect(view.SELID).toBe(null)
+    /* tapping the armed seat again still puts the ring down */
+    await click($(`#eWeek .seat[data-slot="${key}"]`))
+    expect(view.armedKey()).toBe('')
+    await act(async () => { writeSlot(key, before) })
+  })
+
+  it("a real person's puck still selects, never arms", async () => {
+    const key = '0.0.0.0.p'
+    const before = slotVal(key)
+    await act(async () => { writeSlot(key, 'bane') })
+    await click($(`#eWeek .seat[data-slot="${key}"] .puck[data-person="bane"]`))
+    expect(view.armedKey()).toBe('')
+    expect(view.SELID).toBe('bane')
+    await act(async () => { view.selDrop(); writeSlot(key, before); notify() })
   })
 })

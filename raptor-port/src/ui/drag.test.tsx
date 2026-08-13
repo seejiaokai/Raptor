@@ -9,7 +9,7 @@ import { App } from './App'
 import { initStore, wireStore, setSession, notify } from '../state/store'
 import { slotVal, setSlotVal, rowCrew, fillSlot } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
-import { afterSchedMutate, armedKey } from '../state/view'
+import { afterSchedMutate, armedKey, AVOPEN } from '../state/view'
 import { dragFrom, applyDrop, setDrag } from './drag'
 import { openScheduler, closeScheduler } from './board'
 import { DAYS } from '../engine/data'
@@ -50,13 +50,17 @@ beforeAll(async () => {
 })
 
 describe('generic drag & drop across the whole edit board (tfin)', () => {
-  it('duty / sim / ground / programme cells are droppable, crew are drag sources', () => {
+  it('duty / sim / ground / programme cells are droppable, crew are drag sources', async () => {
     const fills = (pre: string) => $$(`#eWeek [data-fill^="${pre}"]`)
     expect(fills('d:').length).toBeGreaterThanOrEqual(3)
     expect(fills('s:').length).toBeGreaterThanOrEqual(2)
     expect(fills('g:').length).toBeGreaterThanOrEqual(3)
     expect(fills('a:').length).toBeGreaterThanOrEqual(3)
+    /* the Available-crew panel collapses to one line by default (13 Aug 26);
+       its pucks are drag sources only while a day's panel is expanded */
+    await act(async () => { DAYS.forEach((_, i) => AVOPEN.add(i)); notify() })
     expect($$('#eWeek .availpuck [data-person][draggable="true"]').length).toBeGreaterThan(10)
+    await act(async () => { AVOPEN.clear(); notify() })
   })
 
   it('roster puck -> duty seat', async () => {
