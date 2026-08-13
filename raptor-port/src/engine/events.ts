@@ -167,12 +167,18 @@ export function collectEvents(){
       const boxStart=box.reduce((m:any,r:any)=>{const t=parseHM(r.str);return t!=null&&(m==null||t<m)?t:m;},null);
       const boxEnd=box.reduce((m:any,r:any)=>{const t=parseHM(r.end)!=null?parseHM(r.end):parseHM(r.str);return t!=null&&(m==null||t>m)?t:m;},null);
       const ds=dr?parseHM(dr.str):boxEnd;
-      /* the AMT block anchors on its BRIEF row if it has one, else the first
-         box row; indexOf against the MODEL array recovers the true ri because
-         `rows` was filtered (cx dropped) */
+      /* DEBRIEF is a RANGE now (owner, 13 Aug 26): if the DEBRIEF row carries its
+         own end, that is the debrief window's close — a real start-to-end span,
+         read straight off the cell. Only when the end is BLANK does it fall back
+         to the old ds+VCONF.amtDebrief length, so the seed week (every DEBRIEF
+         end empty) is byte-for-byte unchanged and the reference parity holds.
+         The AMT block still anchors its BRIEF window on the BRIEF row and its
+         box on the box rows; indexOf against the MODEL array recovers the true
+         ri because `rows` was filtered (cx dropped). */
+      const de=dr&&parseHM(dr.end)!=null?parseHM(dr.end):(ds!=null?ds+VCONF.amtDebrief:null);
       simwin.push({ids,label:'AMT',
         bs:bs!=null?bs:null, be:bs!=null?(boxStart!=null?boxStart:bs):null,
-        ds:ds!=null?ds:null, de:ds!=null?ds+VCONF.amtDebrief:null,key:'s:'+di+'.amt.'+d.sims.amt.indexOf(br||box[0])}); })();
+        ds:ds!=null?ds:null, de,key:'s:'+di+'.amt.'+d.sims.amt.indexOf(br||box[0])}); })();
     /* every body on a row counts, not just the one in its primary seat: the
        extras dropped underneath (row.more) were invisible to the engine, so a
        man added to a duty could fly straight through it unflagged. */

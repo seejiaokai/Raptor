@@ -897,6 +897,26 @@ describe('board lifecycle', () => {
     await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
   })
 
+  /* The AMT box crew reads FCP (left) / RCP (right), paired down, on a fixed
+     two-column grid; Brief and Debrief are times only (owner, 13 Aug 26). */
+  it('the AMT BOX crew is a two-column FCP/RCP grid, and Brief/Debrief carry no crew', async () => {
+    await act(async () => { openScheduler(0) })
+    const cell = $('#sbBoard .sb-panel.simr .ppl.fcprcp')
+    expect(cell, 'the box people cell is the fixed two-column grid').toBeTruthy()
+    expect([...cell.querySelectorAll('.hd')].map((h: any) => h.textContent),
+      'FCP left, RCP right').toEqual(['FCP', 'RCP'])
+    expect(cell.querySelectorAll('.seat').length, 'the seed box seats its eight pax').toBe(8)
+    const amtRows = [...document.querySelectorAll('#sbBoard .sb-panel.simr .sb-arow.c6r')]
+      .filter(r => /BRIEF|DEBRIEF/i.test((r.querySelector('.ain') as HTMLInputElement)?.value || ''))
+    expect(amtRows.length, 'the brief and debrief rows are present').toBe(2)
+    amtRows.forEach(r => {
+      expect(r.querySelector('.fcprcp'), 'no FCP/RCP crew on a brief/debrief row').toBeFalsy()
+      expect(r.querySelector('.seat,.sb-slot.empty'), 'no seats on a brief/debrief row').toBeFalsy()
+      expect(r.querySelector('[data-fill]'), 'no drop target on a brief/debrief row').toBeFalsy()
+    })
+    await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
+  })
+
   /* The point of planting is seeing the puck land, and the auto-opened
      drawer covered it (owner critique, 8 Aug 26): a successful fill now
      parks the drawer. Only success parks — an aborted gesture leaves it. */
