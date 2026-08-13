@@ -416,36 +416,27 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   drift apart. Day 0 has no yesterday, exactly as the last day has no
   tomorrow. Found by measuring both directions against the same shape: the
   forward case flagged, the backward case was silent.
-- **A duty block is filled from the WAVE it serves** (`waveDutyBlock`, owner
-  10 Aug 26). `+ Block` on the scheduler board asks which wave the block is
-  for and fills it in: the title is `<wave name> duties`, and the roles are
-  the wave's own desk —
-
-  | wave | roles | times |
-  |---|---|---|
-  | ordinary (1st, 2nd, …) and BB | SDO, SXO, OPS O | blank |
-  | SC | SXO AM, OPS O AM, SXO PM, OPS O PM | blank |
-  | AVALON | SXO, OPS O, RUNNER, LOG CELL | 1900–0700 |
-
-  SC is the exception the owner named by hand: it hands over at 13:00, so ONE
-  block carries both shifts with the shift in the role name, rather than two
-  blocks or one desk pretending to cover 07:00–19:00. Times are stamped only
-  where the wave has fixed hours to give; everything else is a blank cell to
-  type into. The vocabulary is the owner's — `OPS O` and `LOG CELL`, spaced —
-  and `DUTY_ORDER` ranks those spellings identically to `OPS-O`/`LOGCELL`, so
-  nothing downstream can tell them apart. The free-block pick-list is
-  `DUTY_PICK`, which IS `DUTY_ORDER`'s keys, so what a scheduler can pick and
-  what Auto sort understands cannot drift.
-  A block's `noconf` mirrors its WAVE's exemption: AVALON and BB sit outside
-  the conflict engine whole, so their desks do too, while an SC or ordinary
-  desk is checked like any other duty row. Since 11 Aug 26 an AVALON desk,
-  though `noconf`, still carries the wave's one check — see AVALON's one
-  check above.
-- **AVALON is the only wave that brings its desk up automatically**
-  (`SAWAVE.avalon.autoDuty`). SC did too for one morning on 10 Aug 26 and the
-  owner moved it to `+ Block` the same day: an SC desk is a choice, an AVALON
-  one is not, because nothing else about an overnight wave says a runner and a
-  log cell are needed.
+- **A duty block is minted from a TEMPLATE, not a wave** (owner, 13 Aug 26 —
+  supersedes the 10 Aug wave-driven desk). `+ Block` on the scheduler board
+  lists the saved templates (`engine/dutytpl.ts`) directly — no wave has to
+  exist — and picking one copies its rows onto the day through `blockFromTpl`,
+  which produces a PLAIN block `{label,rows:[{role,id:'',str,end}]}` with no
+  `sa`/`noconf` marker. The seed library holds the shapes desks came in as:
+  Standard (SDO/SXO/OPS O, blank hours), SC Shift (SXO AM, OPS O AM, SXO PM,
+  OPS O PM), and AVALON (SXO, OPS O, RUNNER, LOG CELL, 1900–0700). A scheduler
+  edits the library in the template editor (`ui/DutyTplModal.tsx`); it persists
+  like the stores list. The role vocabulary is the owner's — `OPS O`, `LOG
+  CELL`, spaced — and `DUTY_PICK` (the editor's datalist) IS `DUTY_ORDER`'s
+  keys, so what a scheduler can pick and what Auto sort understands cannot drift.
+- **A template desk is conflict-checked like any other duty row** (owner,
+  13 Aug 26). The wave→duty coupling is gone: no wave auto-creates a desk
+  (`SAWAVE.autoDuty` removed from the add path), deleting a wave leaves any desk
+  alone (the wave-delete → `saDutyIx` walk removed), and a template block
+  carries no `noconf`, so the AVALON/BB desk exemption went with the
+  auto-create. The seed week has no exempt desk, so reference parity is
+  untouched. `events.ts` still honours a `noconf`/`sa==='avalon'` desk if one
+  reaches it from an old AL snapshot, but no UI path mints one now. Do not
+  re-add the coupling (`CLAUDE.md` §Stable decisions).
 - Chip ranking `RANK` (highest wins): LD<DT<TT<A<SD<SB<DB<NB<CR<RUN<C<Q.
   Glyphs shorten: CR→R, RUN→7, NB/SB→B, DB/SD→D, LD→L. `A` = on shift AND down for
   a ground event/programme.
@@ -789,11 +780,10 @@ corrupted or hand-edited storage blob.
 
 `shiftKeys(head,pos,ix)` renumbers keys when a row is deleted, over
 `SCHED.pending`, `SCHED.changes` and every AL's live `keys`.
-`shiftAircraft`/`shiftFormation`/`shiftWave` compose it. Deleting a
-standalone wave also removes its duty block(s) (`d:`/`dr:`/`dl:` keys):
-`saDutyIx` returns every index the wave owns, HIGHEST FIRST, because each
-splice renumbers what follows it. It matches on the block's `sa` marker
-rather than its label, so a RENAMED block is still removed with its wave.
+`shiftAircraft`/`shiftFormation`/`shiftWave` compose it. Deleting a wave no
+longer touches any duty block (owner, 13 Aug 26 — duties are decoupled from
+waves; see §the duty block, and `CLAUDE.md` §Stable decisions). `saDutyIx`
+survives in `waves.ts` but the wave-delete path no longer calls it.
 
 ## Reordering a board list
 

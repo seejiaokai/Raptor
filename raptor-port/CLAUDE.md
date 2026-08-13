@@ -435,9 +435,18 @@ the phone perf budget. Don't convert them to components.
   remark is typed** (owner, 10 Aug 26). It was a permanent chip; the owner was
   shown the trade-off — a line carrying a remark no longer says whether it is
   main or spare — and chose ghost text anyway. Don't "fix" the disappearance.
-- **An SC wave creates no duty block; AVALON does** (owner, 10 Aug 26). SC
-  auto-created its desk for one morning and the owner moved it to `+ Block`
-  the same day. Everything but AVALON gets its desk from the picker.
+- **Duties are decoupled from waves** (owner, 13 Aug 26 — supersedes the 10 Aug
+  "AVALON auto-creates its desk; SC does not"). No wave auto-creates a duty desk,
+  AVALON included, and deleting a wave leaves any duty block alone. Every desk
+  now comes from the `+ Block` template picker: it lists the saved templates
+  (`engine/dutytpl.ts`, persisted like the stores list) and copies a chosen
+  template's rows onto the day as a PLAIN block — no `sa`/`noconf` marker, so a
+  template desk is conflict-checked like any other duty row (the AVALON/BB desk
+  exemption went with the auto-create). The seed week carries no exempt desk, so
+  reference parity is untouched. Editor: `ui/DutyTplModal.tsx`. **Do not re-add
+  `SAWAVE.autoDuty` or the wave-delete → `saDutyIx` linkage** — both were removed
+  deliberately; `waveDutyBlock`/`saDutyIx` remain in `waves.ts` only for any AL
+  snapshot still holding an old-style desk.
 - **A new flying line comes up blank** (owner, 10 Aug 26). `+ Line` used to
   copy the previous line's callsign, mission and times; a plausible wrong
   value reads as filled in when nobody filled it in.

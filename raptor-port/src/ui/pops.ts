@@ -10,6 +10,11 @@ export function setAirKey(k: string | null) { AIRKEY = k }
 /* the Manage-users modal */
 export let USERM = false
 export function setUserModal(on: boolean) { USERM = on }
+/* the Duty-templates editor (owner, 13 Aug 26) — opened from the "+ Block"
+   picker's pencil. A plain on/off flag; the component keeps its own selected
+   template locally, because that is ephemeral view state, not schedule state. */
+export let TPLEDIT = false
+export function setTplEdit(on: boolean) { TPLEDIT = on }
 /* The one personal input being edited from the week or the board (owner,
    10 Aug 26). The INPUT OBJECT, never its index or its content key: undo is
    still live under the modal and renumbers INPUTS, and the key is built from

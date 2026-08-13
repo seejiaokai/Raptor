@@ -13,6 +13,7 @@ import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { slotVal, setSlotVal, txtGet } from '../engine/slots'
 import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
+import { DUTYTPL_CFG } from '../engine/dutytpl'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { cxText } from './html'
@@ -170,22 +171,21 @@ describe('the scheduler board (tfin board group)', () => {
     expect(added, 'adding then deleting before issue is a net no-op').toEqual([])
   })
 
-  it('an AVALON wave arrives complete WITH its duty block, and deleting it removes both', async () => {
+  it('an AVALON wave brings no duty block, and deleting a wave leaves the duty blocks (decoupled)', async () => {
     const d = DAYS[0]
     const nW = d.waves.length, nDW = (d.dutywaves || []).length
     await click($('[data-wvadd]'))
     await click($('.wavemenu [data-wmkind="avalon"]'))
     expect(d.waves.length).toBe(nW + 1)
     expect(isStandalone(d.waves[d.waves.length - 1])).toBeTruthy()
-    expect(d.dutywaves.length).toBe(nDW + 1)
+    expect((d.dutywaves || []).length, 'AVALON no longer brings a desk with it').toBe(nDW)
     await click($(`#sbBoard [data-gdel="0.${d.waves.length - 1}"]`))
     expect(d.waves.length).toBe(nW)
-    expect(d.dutywaves.length).toBe(nDW)
+    expect((d.dutywaves || []).length, 'deleting a wave leaves the day’s duty blocks untouched').toBe(nDW)
   })
 
-  /* An SC wave auto-created its duty blocks for one morning (10 Aug 26); the
-     owner moved that to + Block the same day. AVALON is the only wave that
-     still brings a desk with it, so SC must now bring NOTHING. */
+  /* Duties are decoupled from waves now (owner, 13 Aug 26), so no wave — SC or
+     AVALON — auto-creates a desk. Both come only from the + Block templates. */
   it('an SC wave brings no duty block at all', async () => {
     const d = DAYS[0]
     const nW = d.waves.length, nDW = (d.dutywaves || []).length
@@ -197,19 +197,21 @@ describe('the scheduler board (tfin board group)', () => {
     expect(d.waves.length).toBe(nW)
   })
 
-  /* + Block asks which wave the block is for, and fills the desk in */
-  it('+ Block offers the day’s waves, and picking one fills its desk', async () => {
+  /* + Block lists the saved TEMPLATES now, not the day's waves (owner, 13 Aug
+     26), and picking one COPIES its rows onto the day as a plain block. */
+  it('+ Block offers the duty templates, and picking one copies its rows as a plain block', async () => {
     const d = DAYS[0]
     const nDW = (d.dutywaves || []).length
     await click($('#sbBoard [data-dwadd="0"]'))
-    const pick = $$('.wavemenu [data-blkw]')
-    expect(pick.length, 'a button per wave, plus Empty block').toBe(d.waves.length + 1)
-    await click(pick[0])
+    const pick = $$('.wavemenu [data-blktpl]')
+    expect(pick.length, 'a button per template, plus Empty block').toBe(DUTYTPL_CFG.length + 1)
+    await click(pick[0])   // the first template — Standard
     expect(d.dutywaves.length).toBe(nDW + 1)
     const b = d.dutywaves[d.dutywaves.length - 1]
-    expect(b.label).toBe(`${d.waves[0].label} duties`)
+    expect(b.label).toBe('Standard')
     expect(b.rows.map((r: any) => r.role)).toEqual(['SDO', 'SXO', 'OPS O'])
-    expect(b.rows.every((r: any) => r.str === '' && r.end === '')).toBe(true)
+    expect(b.sa, 'a template block is plain — no sa/noconf marker').toBeUndefined()
+    expect(b.noconf).toBeUndefined()
     const key = `dl:0.${d.dutywaves.length - 1}`
     d.dutywaves.pop()
     delete SCHED.pending[key]; delete SCHED.added[key]
@@ -219,7 +221,7 @@ describe('the scheduler board (tfin board group)', () => {
     const d = DAYS[0]
     const nDW = (d.dutywaves || []).length
     await click($('#sbBoard [data-dwadd="0"]'))
-    await click($('.wavemenu [data-blkw=""]'))
+    await click($('.wavemenu [data-blktpl=""]'))
     expect(d.dutywaves.length).toBe(nDW + 1)
     expect(d.dutywaves[d.dutywaves.length - 1].rows.map((r: any) => r.role)).toEqual([''])
     const key = `dl:0.${d.dutywaves.length - 1}`

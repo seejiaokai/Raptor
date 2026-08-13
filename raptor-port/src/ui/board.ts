@@ -4,13 +4,13 @@
 import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
 import { PEOPLE, nameToId } from '../engine/people'
-import { isStandalone, makeStandalone, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE } from '../engine/waves'
+import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, trackStructuralAdd, alAttr } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
@@ -19,7 +19,8 @@ import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sor
 import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView } from './html'
 import { setInpField } from './inputedit'
-import { STORE_CFG } from '../engine'
+import { STORE_CFG, DUTYTPL_CFG, blockFromTpl } from '../engine'
+import { setTplEdit } from './pops'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -524,14 +525,10 @@ export function boardMbtn(e: MouseEvent) {
     const na = gw ? gw.formations.reduce((n: number, f: any) => n + f.aircraft.length, 0) : 0
     const said = 'Wave removed' + desc(gw && gw.label, nf ? `${nf} formation${nf > 1 ? 's' : ''} · ${na} aircraft` : '')
     DAYS[di].waves.splice(gi, 1); shiftWave(di, gi)
-    /* An SC wave owns TWO duty blocks, not one, so this walks the list rather
-       than finding a single index — highest first, because each splice
-       renumbers everything after it and shiftKeys has to see the same order. */
-    if (gw && isStandalone(gw) && Array.isArray(DAYS[di].dutywaves)) {
-      saDutyIx(DAYS[di], gw).forEach((j: number) => {
-        DAYS[di].dutywaves.splice(j, 1);[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, j))
-      })
-    }
+    /* DELETING A WAVE LEAVES THE DUTY BLOCKS ALONE (owner, 13 Aug 26 — duties
+       are decoupled from waves). A desk is placed from a template now and owned
+       by nothing on the flying side, so a wave's removal no longer walks the
+       dutywaves list to take any desk down with it. */
     markDeletion(di, 'wave', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.nadd != null) {
@@ -575,12 +572,9 @@ export function boardMbtn(e: MouseEvent) {
      Same shapes as the p* programme branches: adds mark the new row's name
      key, deletes renumber the surviving keys and add an inert deletion
      tombstone, CX goes through the reason dialog. */
-  /* + BLOCK ASKS WHICH WAVE IT IS FOR (owner, 10 Aug 26). It used to push a
-     bare block titled DUTY with one empty row, so every block was typed out
-     by hand — the same three roles, every wave, every day. Naming the wave is
-     the one thing that decides all of it: the title, and which desk it needs
-     (engine/waves.ts's waveDutyBlock). "Empty block" keeps the old behaviour
-     for anything that is not a wave's desk at all. */
+  /* + BLOCK OPENS THE TEMPLATE PICKER (owner, 13 Aug 26). It lists the saved
+     duty templates directly — no wave needed — and picking one copies its rows
+     onto the day; the pencil opens the editor. See blockMenu below. */
   if (ds.wvadd != null) {
     /* the inline "+ Wave" between Common Programme and the flying waves
        (board.ts's boardHTML) — opens the same kind picker the top-bar button
@@ -844,13 +838,11 @@ export function addWave(di: number, kind: any) {
   const w = makeStandalone(kind); if (!w) return
   d.waves.push(w)
   const S = SAWAVE[kind]
-  /* AVALON alone brings its desk up with the wave. SC used to as well for one
-     afternoon (10 Aug 26) and the owner moved it to `+ Block` the same day —
-     an SC desk is a choice, an AVALON one is not, because nothing else on an
-     overnight wave tells you a runner and a log cell are needed. Everything
-     else, SC included, is filled from the `+ Block` picker via the same
-     `waveDutyBlock`, so there is one shape per wave kind and not two. */
-  if (S.autoDuty) { d.dutywaves = d.dutywaves || []; d.dutywaves.push(waveDutyBlock(w)); trackStructuralAdd(`dl:${di}.${d.dutywaves.length - 1}`) }
+  /* NO WAVE AUTO-CREATES A DESK ANY MORE (owner, 13 Aug 26 — duties are
+     decoupled from waves; "I do not need a wave to trigger the selection").
+     AVALON used to bring its desk up with the wave; now every desk, AVALON's
+     included, is added from the "+ Block" template picker like any other.
+     Adding a wave creates only the wave. */
   markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
   toast(S.label + ' added — standalone, ' + (kind === 'avalon' ? 'checked for availability only' : S.all ? 'nothing on it is cross-checked' : 'SPARE is checked for availability and SC currency only'))
 }
@@ -887,27 +879,27 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
   setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
   return box
 }
-/* + BLOCK's picker: every wave on the day, plus a bare block. Picking a wave
-   fills the block from engine/waves.ts's waveDutyBlock, so the shapes live
-   with the waves they belong to and the UI only places the result. */
+/* + BLOCK's picker (owner, 13 Aug 26): the saved duty TEMPLATES, straight up \u2014
+   no wave has to exist first, and none is consulted. Picking one copies its
+   rows onto the day through blockFromTpl (a plain block, conflict-checked like
+   any other duty row). "Empty block" keeps the bare one-row block, and the
+   pencil opens the template editor. The old wave-driven desk is retired with
+   the wave->duty coupling \u2014 see addWave and the wave-delete path. */
 export function blockMenu(anchor: HTMLElement, di: any) {
   if (!canEditSched() || !HOOKS.editMode()) return
   const d = DAYS[di]; if (!d) return
-  const waves = (d.waves || [])
-  const html = `<h5>Duties for</h5><div class="wm-row">`
-    + (waves.length
-      ? waves.map((w: any, gi: number) => `<button class="wm${isStandalone(w) ? ' sa' : ''}" data-blkw="${gi}">${esc(w.label || `Wave ${gi + 1}`)}</button>`).join('')
-      : '')
-    + `<button class="wm" data-blkw="">Empty block</button></div>`
-    + `<div class="wm-note">${waves.length
-      ? 'Picking a wave titles the block after it and fills in that wave\u2019s desk \u2014 times and names stay yours to set.'
-      : 'No waves on this day yet \u2014 add one and it will be offered here.'}</div>`
+  const html = `<h5>Add a duty block</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+    + DUTYTPL_CFG.map((t: any) => `<button class="wm" data-blktpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${t.rows.length} role${t.rows.length === 1 ? '' : 's'}</span></button>`).join('')
+    + `<button class="wm" data-blktpl="">Empty block</button></div>`
+    + `<div class="wm-note"><button class="wm-edit" data-blkedit="1">\u270e Edit templates</button></div>`
   popMenu(anchor, html, (e, close) => {
-    const b = e.target.closest('[data-blkw]'); if (!b) return
-    const v = b.dataset.blkw
+    if (e.target.closest('[data-blkedit]')) { close(); setTplEdit(true); notify(); e.stopPropagation(); return }
+    const b = e.target.closest('[data-blktpl]'); if (!b) return
+    const id = b.dataset.blktpl
+    const blk = id === '' ? { label: 'DUTY', rows: [{ role: '', id: '', str: '', end: '' }] } : blockFromTpl(id)
+    if (!blk) { close(); return }
     d.dutywaves = d.dutywaves || []
-    d.dutywaves.push(v === '' ? { label: 'DUTY', rows: [{ role: '', id: '', str: '', end: '' }] }
-      : waveDutyBlock(waves[+v]))
+    d.dutywaves.push(blk)
     markStructuralAdd(`dl:${di}.${d.dutywaves.length - 1}`); afterSchedMutate(); notify()
     close(); e.stopPropagation()
   })
