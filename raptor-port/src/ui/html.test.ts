@@ -153,9 +153,19 @@ const noTrace = (s: string) => s
   .replace(/<div class="witem hard wtr[^"]*"[^>]*>[\s\S]*?<\/span><\/div>/g, '')
   .replace(/<div class="dwtrace"><\/div>/g, '')
 
+/* Divergence #10 (owner, Aug 26): several cells now carry a faded example via
+   data-ph (the overall-note hint "e.g. EP, ORDERS, NO FLY, SQN OIL", the flying
+   line's "Brief", the input row's "All Day") that the reference has no concept
+   of; ted() emits data-ph on the view branch too, so it shows up in both modes.
+   It is decoration painted by CSS — excise the attribute from both sides (the
+   reference carries none) so the surrounding markup stays byte-compared. The
+   note hint is pinned positively below; the brief cell and the input rows are
+   already excised by noBrief/noInpGrp. */
+const noPh = (s: string) => s.replace(/ data-ph="[^"]*"/g, '')
+
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))))
+    const V = (s: string) => noPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di).toBe(V(ref))
@@ -192,11 +202,18 @@ describe('view-week markup parity with the reference', () => {
        port's first input group precedes it, the reference's strip is the cut's
        own start), so it is not byte-compared here; the pins below assert the
        port keeps it in edit mode. */
-    const E = (s: string) => noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))))
+    const E = (s: string) => noPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s)))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
     })
+  })
+
+  /* the faded example on the overall/day-note cell (owner, Aug 26) — excised
+     from the parity compare above, pinned positively here. */
+  it('a day-note cell carries the faded example hint', () => {
+    const withNote = DAYS.map((_: any, di: number) => dayHTML(di, true)).find(h => h.includes('class="ah-note"'))
+    expect(withNote).toContain('data-ph="e.g. EP, ORDERS, NO FLY, SQN OIL"')
   })
 
   it('the sign-off pill: label + visible value + the full-pill select', () => {

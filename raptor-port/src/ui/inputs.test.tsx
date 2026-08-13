@@ -77,6 +77,22 @@ describe('the Inputs page (tfin)', () => {
     expect(opts).toContain('OD')
   })
 
+  /* The dropdown spells the abbreviations out ("LL — local leave") but the
+     stored VALUE stays the bare code — the option has an explicit value={code},
+     because with none the option's value is its text and every INPUT_META lookup
+     (colour, availability, validation) would break on the spelled-out string.
+     This guards that coupling so a future edit cannot reintroduce it. */
+  it('the type options show the words but store the code', () => {
+    const options = [...($('#inType') as unknown as HTMLSelectElement).options]
+    for (const o of options) expect(INPUT_TYPES, o.textContent || '').toContain(o.value)
+    const byVal = (v: string) => options.find(o => o.value === v)!
+    expect(byVal('LL').textContent).toBe('LL — local leave')
+    expect(byVal('ATT B').textContent).toBe('ATT B — downchit')
+    expect(byVal('ATT C').textContent).toBe('ATT C — downchit, stay home')
+    /* a type that is already a word is not doubled ("Training", not "Training — training") */
+    expect(byVal('Training').textContent).toBe('Training')
+  })
+
   /* All day owns the whole window, so the two time fields go out of play. They
      were always `disabled`; the `dim` class is what makes that visible, so the
      field is not aimed at first and ignored second (owner, Aug 5). */

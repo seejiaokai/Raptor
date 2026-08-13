@@ -18,15 +18,18 @@ belongs in `git log`. Keeping post-mortems here buries the open list.
 
 **All six gates were green first-hand for the audit sweep of 12 Aug 26, for
 its five follow-up fixes, again for the guard-rail sweep, the new-year date
-fix (13 Aug 26), and again for the Personnel ground-crew category (13 Aug
-26)**, run in this container on the matching tree:
-`npm test` 1385 tests across 88 files (the `audit-*` sweep included; the
+fix (13 Aug 26), the Personnel ground-crew category (13 Aug 26), and again for
+the faded-text / self-explanatory copy pass (Aug 26)**, run in this container
+on the matching tree:
+`npm test` 1387 tests across 88 files (the `audit-*` sweep included; the
 new-year fix flipped its `audit-guards-inputs` new-year case from refusal to
 acceptance, a net +1; the Personnel category added `personnel.test.ts` and
-the ground-crew additions to the quals/html tests, +16), `node
+the ground-crew additions to the quals/html tests, +16; the copy pass added a
+type-option value=code guard and a day-note-hint pin, +2), `node
 reference/tfin.js` 728/0, `npm run build` clean, the full `npm run test:e2e`
 geometry job 86/86 in Chromium, `probes:adapted` 36/36 and `perf` 4/4 (both
-DOM ceilings held, no raise). The guards were then driven on the
+DOM ceilings held, no raise; the board measured 914 nodes against its 960
+ceiling). The guards were then driven on the
 built bundle: `1290`, `9999` and `morning` all bounce off a take-off that
 stays `12:40` while a real `0845` goes in, a freshly added blank line renders
 no `NaN:NaN` anywhere, and the Inputs page holds zero sideways overflow. Two of those went red first and both were real: the new

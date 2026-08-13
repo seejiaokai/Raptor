@@ -87,9 +87,20 @@ export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPic
    dropdown is cut into the same three groups the legend uses, generated from
    INPUT_META — the list you pick from, the explanation you read and the rule
    the engine applies are one thing. */
+/* The dropdown spells the code out ("LL — local leave") so a reader who does
+   not know the abbreviation still can (owner, Aug 26). CRITICAL: the option
+   carries an explicit value={t} (the code), because with no value the option's
+   VALUE is its text — so putting the words in the text without this would write
+   "LL — local leave" into inp.type and break every INPUT_META lookup. The word
+   is skipped when the code already IS the word (Training, Meeting, Personal,
+   Appointment, Other), the same test the "?" legend's typeName makes. */
+export const typeLabel = (t: string) => {
+  const n = ((inpMeta(t) || {}).name || '')
+  return n && n.toLowerCase() !== t.toLowerCase() ? `${t} — ${n}` : t
+}
 export const typeOptions = () => TYPE_GROUPS.map((g: any) =>
   <optgroup key={g.k} label={g.t}>
-    {INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k).map((t: string) => <option key={t}>{t}</option>)}
+    {INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k).map((t: string) => <option key={t} value={t}>{typeLabel(t)}</option>)}
   </optgroup>)
 
 /* The draft is held apart from the model so Cancel is a real cancel. */

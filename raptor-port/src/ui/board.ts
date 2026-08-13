@@ -142,7 +142,7 @@ export function boardHTML(di: number, pv?: boolean) {
         ${sbGrip(mvRO)}
         <input class="lin" data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis} value="${esc(f.cs)}">
         <input class="msn" data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis} value="${esc(f.msn)}">
-        <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(f.br || '')}"></div>
+        <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(f.br || '')}" placeholder="Brief"></div>
         <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(f.to)}">
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
         ${sbSlot(di, key + '.p', 'p', a.p, stoRO)}
@@ -172,7 +172,7 @@ export function boardHTML(di: number, pv?: boolean) {
     }))
     fly += `</div>`
   })
-  b += fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet — use “+ Wave”.</div>`
+  b += fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet — tap the + in the top bar to add one.</div>`
   /* the four sections the board was missing (owner request, Aug 26): same
      order as the week day, with the sim planning notes staying last */
   /* the sim note used to be a panel of its own at the very bottom; it now sits

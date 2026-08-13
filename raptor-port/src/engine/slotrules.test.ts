@@ -80,9 +80,9 @@ describe('who may be planned into a slot (tfin U)', () => {
 
   it('the bar checks leave and downchit for that day', () => {
     /* sufa is ATT C Jul 13–17; a duty key on Monday must report it, in the
-       words the type legend uses — ATT C cannot report to work at all, so a
-       duty post is barred as surely as a jet is */
-    expect(slotBar('sufa', 'd:0.0.0')).toContain('medically down')
+       words the type legend uses — ATT C is a downchit that cannot report to
+       work at all, so a duty post is barred as surely as a jet is */
+    expect(slotBar('sufa', 'd:0.0.0')).toContain('downchit')
     expect(slotBar('sufa', 'd:0.0.0')).toContain('ATT C')
     expect(slotBar('sufa', 'd:0.0.0')).toContain('Medically down till 17 Jul')
   })
@@ -194,19 +194,19 @@ describe('slotStart / slotEnd, and half-day absences', () => {
   it('ATT B closes the jet and leaves the duty post, the sim and the ground row open', () => {
     INPUTS.push({ person: 'nasty', date: 'Jul 13', allday: true, type: 'ATT B', remarks: '', mod: '' })
     validate()
-    expect(slotBar('nasty', '0.0.0.0.w')).toContain('medically down')
+    expect(slotBar('nasty', '0.0.0.0.w')).toContain('downchit')
     /* asserted as "not the ATT B reason" rather than "no reason at all": the
        picker knows who is busy AT THIS HOUR since 11 Aug 26, and nasty is in a
        sim box that overlaps the duty post. That is a true and unrelated reason;
        what this test is about is that ATT B does not close these three. */
     for (const k of ['d:0.0.0', 's:0.oft.0.w', 'g:0.0'])
-      expect(slotBar('nasty', k), k).not.toContain('medically down')
+      expect(slotBar('nasty', k), k).not.toContain('downchit')
     /* ATT C is the control: it closes the desk as well, or the two codes would
        be indistinguishable */
     INPUTS.pop()
     INPUTS.push({ person: 'nasty', date: 'Jul 13', allday: true, type: 'ATT C', remarks: '', mod: '' })
     validate()
-    expect(slotBar('nasty', 'd:0.0.0')).toContain('medically down')
+    expect(slotBar('nasty', 'd:0.0.0')).toContain('downchit')
   })
 
   /* the spare rule, through the picker rather than the warning list */

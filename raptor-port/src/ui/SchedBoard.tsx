@@ -21,6 +21,28 @@ import { useBoardVersion, useVersion } from './useStore'
 import { HIST } from '../state/history'
 import { undo, redo } from '../state/store'
 
+/* the scheduler-note boxes (.sb-nbox) open at one line and grow with their text
+   (owner, Aug 26). Height is set here, not in CSS: the panel is rebuilt by an
+   innerHTML string-diff, so a textarea's typed-in height is thrown away on the
+   repaint that follows every commit, and `field-sizing:content` is not honoured
+   by iOS Safari. So it is driven two ways — an `input` listener while typing
+   (the panel does not repaint mid-edit, so the element survives) and a sweep
+   after each repaint below. The +2 is the 1px top/bottom border: box-sizing is
+   border-box, whose height includes the border while scrollHeight does not, so
+   without it the last line clips under the (overflow:hidden) edge. */
+function growNote(el: HTMLTextAreaElement) {
+  el.style.height = 'auto'
+  el.style.height = (el.scrollHeight + 2) + 'px'
+}
+function growAllNotes(root: HTMLElement | null) {
+  if (!root) return
+  root.querySelectorAll<HTMLTextAreaElement>('.sb-nbox').forEach(growNote)
+}
+function boardNoteInput(e: Event) {
+  const t = e.target as HTMLElement
+  if (t && t.classList && t.classList.contains('sb-nbox')) growNote(t as HTMLTextAreaElement)
+}
+
 export function SchedBoard() {
   const version = useVersion()
   const boardVersion = useBoardVersion()
@@ -102,6 +124,7 @@ export function SchedBoard() {
     el.addEventListener('click', boardMbtn)
     el.addEventListener('click', boardArmClick)
     el.addEventListener('change', boardChange)
+    el.addEventListener('input', boardNoteInput)
     const offDrag = wireRowDrag(el)
     /* the dots are a scrub bar as well as seven tap targets (owner, 11 Aug
        26) — press and slide along them to run through the week */
@@ -120,7 +143,8 @@ export function SchedBoard() {
     const offHist = wireHistBubble(wrapRef.current!)
     return () => {
       el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
-      el.removeEventListener('change', boardChange); offDrag(); offDots(); offRos(); offHist()
+      el.removeEventListener('change', boardChange); el.removeEventListener('input', boardNoteInput)
+      offDrag(); offDots(); offRos(); offHist()
     }
   }, [])
 
@@ -206,6 +230,9 @@ export function SchedBoard() {
     }
     set(rosterRef.current!, 'roster', paletteHTML(paletteDay(), { head: false }))
     refreshHighlights()
+    /* size each scheduler-note box to its content now the panels are hung —
+       the repaint replaced their markup, so any grown height was just reset */
+    growAllNotes(boardRef.current)
     /* a repaint replaces a panel's markup wholesale, so a bubble that is up
        may have just lost the cell it hangs on — re-anchor it, or take it down
        if the row has gone (audit, 12 Aug 26). Before this it only noticed on
