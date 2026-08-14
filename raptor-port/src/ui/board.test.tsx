@@ -76,14 +76,18 @@ describe('the scheduler board (tfin board group)', () => {
     expect($$('#sbBoard .sb-wtitle').length).toBeGreaterThanOrEqual(1)
   })
 
-  it("the board shows the open day's strip, inside the scrolling board", () => {
+  it("the board shows the open day's strip, above the checks in the scrolling column", () => {
     const el = $('#sbSignBar')
     expect(el).toBeTruthy()
     expect(el.querySelectorAll('select[data-sign]').length).toBe(4)
     expect(el.closest('.sb-top')).toBeFalsy()
-    expect(el.closest('#sbBoard')).toBeTruthy()
-    /* B27 — the strip is the board's FIRST child so it scrolls with the day */
-    expect($('#sbBoard').firstElementChild).toBe(el)
+    /* the sign-off moved to its own #sbSign element so the Live Checks bar can
+       sit directly below it (owner, 14 Aug 26); it still scrolls with the day
+       (in .sb-boardwrap), not on the fixed top bar */
+    expect(el.closest('#sbSign')).toBeTruthy()
+    expect($('#sbSign').firstElementChild).toBe(el)
+    const sign = $('#sbSign'), warn = $('#sbWarn')
+    expect(sign.compareDocumentPosition(warn) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('board inputs panel, banded by time of day', () => {
@@ -1626,5 +1630,55 @@ describe('a placeholder on the board arms its seat (13 Aug 26)', () => {
     expect(view.armedKey()).toBe(key)
     await act(async () => { view.armDrop(); notify() })
     setSlotVal(key, before || ''); await act(async () => { afterSchedMutate(); notify() })
+  })
+})
+
+/* The board becomes the full editor (owner, 14 Aug 26 — in-time, area,
+   traffic, remarks that had been week-only, and a Live Checks panel styled
+   like the edit week's). jsdom pins the markup and the commit; e2e pins the
+   layout (checks below sign-off, the empty-cell box) since every rect is 0x0. */
+describe('the board carries the week-only editable fields (14 Aug 26)', () => {
+  beforeAll(async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); notify() })
+  })
+  it('renders an editable in-time block, area strip and Traffic button per wave', () => {
+    expect($('#sbBoard .intimes[data-intimes]'), 'the IN TIME lines are editable here now').toBeTruthy()
+    expect($('#sbBoard .sb-area .areacell[data-area]'), 'the area strip is drawn').toBeTruthy()
+    expect($('#sbBoard .sb-area .timecell[data-atime]'), 'with its airspace window').toBeTruthy()
+    expect($('#sbBoard .sb-go-h .airbtn[data-air]'), 'and a Traffic button').toBeTruthy()
+  })
+  it('the area cell shows the derived value, not blank, so a click-through does not freeze it', () => {
+    const cell = $('#sbBoard .areacell[data-area]')
+    expect(cell.textContent!.trim().length, 'the derived area code is shown').toBeGreaterThan(0)
+  })
+  it('in-time edits commit through the funnel', async () => {
+    const it = $('#sbBoard .intimes[data-intimes]')
+    const [di, gi] = it.dataset.intimes!.split('|')
+    const w = DAYS[+di].waves[+gi]
+    const before = (w.intimes || []).join('|')
+    await act(async () => {
+      it.querySelector('span')!.textContent = '0001H: TEST IN TIME'
+      it.dispatchEvent(new Event('focusout', { bubbles: true }))
+    })
+    expect((w.intimes || []).join('|'), 'the model took the typed line').not.toBe(before)
+    expect((w.intimes || [])[0]).toContain('TEST IN TIME')
+  })
+  it('the remarks reveal reads R, not +', () => {
+    const r = $('#sbBoard .rmkadd[data-rmkadd]')
+    expect(r, 'a row offers the remarks reveal').toBeTruthy()
+    expect(r.textContent!.trim()).toBe('R')
+  })
+  it('the Live Checks header reads "issues" and colours by worst severity', () => {
+    const wh = $('#sbWarn .wh')
+    expect(wh.textContent, 'the label is issues, not Live checks').toMatch(/\d+ issues?|No conflicts/)
+    expect(/wh (hard|adv|note|ok)/.test(wh.className), 'the bar carries a severity class').toBe(true)
+  })
+  it('the checks panel is a sibling of the sign-off in the board column, below it', () => {
+    const sign = $('#sbSign'), warn = $('#sbWarn')
+    expect(sign, 'sign-off is its own element').toBeTruthy()
+    expect(warn, 'and the checks panel is present').toBeTruthy()
+    /* DOM order sign → warn; the phone CSS flattens the column so the bar
+       lands directly under the sign-off (measured in e2e) */
+    expect(sign.compareDocumentPosition(warn) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 })

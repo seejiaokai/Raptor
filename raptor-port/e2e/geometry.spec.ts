@@ -1322,17 +1322,21 @@ test('board at 390px: the armed aircrew columns never overlap their neighbour', 
    and arming a slot pulls the drawer open by itself (the week's own
    gesture). All geometry — jsdom can pin the classes (odds.test.tsx) but
    not that anything actually sits, slides or stays on screen. */
-test('the phone board is one window: warnings on top, aircrew in an edge drawer', async ({ page }) => {
+test('the phone board is one window: sign-off, then checks, then panels, aircrew in an edge drawer', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 780 })
   await login(page); await go(page, 'editsched')
   await page.click('.sb-open')
   /* the strip opens FOLDED since the same-day critique (its rows hide until
      the header is tapped — pinned both ways by the fold test), so the
-     on-top contract is asserted on the header line */
+     order contract is asserted on the header line */
   await expect(page.locator('#schedBoard .sb-warn .wh').first()).toBeVisible()
+  /* sign-off first, the Live Checks bar directly below it, then the board
+     panels (owner, 14 Aug 26 — "put it right below sign off section") */
+  const sign = await page.locator('#sbSign').boundingBox()
   const warn = await page.locator('#schedBoard .sb-warn').boundingBox()
   const panel = await page.locator('#sbBoard .sb-panel').first().boundingBox()
-  expect(warn!.y, 'live checks ride above the first panel').toBeLessThan(panel!.y)
+  expect(warn!.y, 'the checks bar sits below the sign-off').toBeGreaterThan(sign!.y)
+  expect(warn!.y, 'and above the first board panel').toBeLessThan(panel!.y)
   expect(await page.locator('#sbGrip').count(), 'the resize grip is gone').toBe(0)
   const parked = await page.locator('#schedBoard .sb-ros').boundingBox()
   expect(parked!.x, 'drawer parked: only the 30px handle on screen').toBeGreaterThanOrEqual(358)
@@ -2845,10 +2849,10 @@ test.describe('the way into the changes list follows the width', () => {
           return getComputedStyle(e).display === 'none' ? 'hidden'
             : (r.width > 0 && r.height > 0 ? 'shown' : 'zero')
         }
-        const t = document.querySelector('#sbBoard .histln-top') as HTMLElement
+        const t = document.querySelector('#sbSign .histln-top') as HTMLElement
         const sign = document.querySelector('#sbSignBar') as HTMLElement
         return {
-          top: vis('#sbBoard .histln-top'), panel: vis('#sbWarn .histln'),
+          top: vis('#sbSign .histln-top'), panel: vis('#sbWarn .histln'),
           /* the ask was ABOVE the sign-off section, so measure it */
           topAboveSign: !!(t && sign) && Math.round(t.getBoundingClientRect().bottom)
             <= Math.round(sign.getBoundingClientRect().top) + 1,

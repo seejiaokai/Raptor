@@ -1767,8 +1767,24 @@ body.sb-lock{overflow:hidden}
    styling (hidden on desktop, shown + accent-flipped on a phone) and the
    delegated .ros-tab toggle in interactions.ts apply to it verbatim. */
 .sb-ros,.sb-ros .ros-body{display:contents}
+/* The sign-off moved to its own #sbSign element so the phone can slot the Live
+   Checks bar directly below it (owner, 14 Aug 26). #sbSign heads the board
+   column on every width; it was inside #sbBoard before and drew its 14px inset
+   from that padding, so it carries the inset itself now. On DESKTOP the
+   warnings stay in the side column (below); the phone block flattens the
+   column and reorders them under the sign-off. */
+.sb-sign{padding:12px 14px 0}
 .sb-warn{max-height:38%;overflow:auto;padding:10px 12px;border-bottom:1px solid var(--edge)}
-.sb-warn .wh{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.09em;font-size:10px;font-weight:700;color:var(--ink-3);margin-bottom:6px}
+/* the collapsed header is now an "issues" bar coloured by worst severity, the
+   same shape and palette as the week's .daywarn (owner, 14 Aug 26) */
+.sb-warn .wh{display:flex;align-items:center;gap:5px;font-family:'Inter Tight',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.01em;color:var(--ink-2);padding:7px 11px;border-radius:9px;border:1px solid var(--edge);background:var(--panel-2)}
+.sb-warn .wh b{font-weight:800}
+.sb-warn .wh .dwcue{color:inherit;opacity:.72;font-weight:500}
+.sb-warn .wh.hard{background:rgba(240,85,95,.12);border-color:rgba(240,85,95,.4);color:#FBB4B9}
+.sb-warn .wh.adv{background:rgba(229,168,59,.10);border-color:rgba(229,168,59,.35);color:#F2D69B}
+.sb-warn .wh.note{background:rgba(138,150,163,.10);border-color:rgba(138,150,163,.35);color:#C4CCD5}
+.sb-warn .wh.ok{background:rgba(87,201,122,.08);border-color:rgba(87,201,122,.3);color:var(--ok)}
+.sbwrap.open .wh{margin-bottom:6px}
 /* the phone fold's caret — desktop never shows it (the side list is always
    open there and the header is inert) */
 .sbw-car{display:none;margin-right:4px;color:var(--ink-3)}
@@ -1807,6 +1823,11 @@ body.sb-lock{overflow:hidden}
 .sb-lcols{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:9px;font-weight:700;color:var(--ink-3);border-bottom:1px solid var(--edge)}
 .sb-line{border-top:1px solid rgba(255,255,255,.03)}
 .sb-line:first-of-type{border-top:none}
+/* the board's AREA strip (owner, 14 Aug 26) — the same area/airspace cells the
+   week draws (.form-area), but a plain flex strip here since the board's flying
+   lines are not the week's grid. .fa-lb/.areacell/.timecell are shared. */
+.sb-area{display:flex;align-items:baseline;gap:8px;padding:4px 11px;border-top:1px solid rgba(59,198,232,.18);background:rgba(59,198,232,.045)}
+.schedboard .areacell:empty::before,.schedboard .timecell:empty::before{content:'—';color:var(--ink-3);font-weight:600}
 .sb-line .lin,.sb-line .msn,.sb-line .tm{background:var(--bg);border:1px solid var(--edge);border-radius:6px;color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 6px;width:100%;box-sizing:border-box}
 .sb-line .nts{background:var(--bg);border:1px solid var(--edge);border-radius:6px;color:var(--ink-2);font-size:11px;padding:5px 7px;width:100%;box-sizing:border-box}
 .sb-slot{min-height:26px;border:1px dashed transparent;border-radius:6px;display:flex;align-items:center}
@@ -1991,6 +2012,20 @@ body.tdrag *{-webkit-touch-callout:none}
 .ppl,.availpuck .ap-grid{min-height:var(--puck-h)}
 body.dnd [data-fill]{outline:1px dashed rgba(59,198,232,.38);outline-offset:2px;border-radius:5px}
 body.dnd [data-fill]:empty::after{content:'drop here';color:rgba(59,198,232,.5);font-size:9px;font-weight:700;letter-spacing:.04em}
+/* STANDING empty-cell hint (owner, 14 Aug 26): an empty People cell shows a
+   grey dotted rounded box even without a drag in progress, so a scheduler sees
+   where to tap or drop — matching the empty flying seats. The accent drag rule
+   above still takes over the moment a drag starts. Edit surfaces only — a
+   view-only week or a frozen preview never invites a drop. */
+.page.editing [data-fill]:empty,.schedboard [data-fill]:empty{outline:1px dashed var(--edge-2);outline-offset:2px;border-radius:5px;min-height:var(--puck-h);box-sizing:border-box}
+.page.editing [data-fill]:empty::after,.schedboard [data-fill]:empty::after{content:'+ tap or drop';color:var(--ink-3);font-size:9px;font-weight:600;letter-spacing:.03em;opacity:.7;padding-left:4px}
+.schedboard .pv-frozen [data-fill]:empty{outline:none}
+.schedboard .pv-frozen [data-fill]:empty::after{content:none}
+/* The week's empty People cells already carry the .addz "+ add" strip (lCell),
+   which was only bordered mid-drag. Show it standing when the cell holds no
+   crew, matching the board's hint. :not(:has(.puck)) = no one planted;
+   :not(:has(.itxt)) leaves an "ALL"/free-text cell alone. */
+.page.editing .ppl[data-fill]:not(:has(.puck)):not(:has(.itxt)) .addz{border-color:var(--edge-2);color:var(--ink-3);opacity:.9}
 [data-fill].dragover{outline:2px solid var(--accent)!important;outline-offset:2px;background:rgba(59,198,232,.08)}
 .availpuck.dragover,.eroster.dragover{outline:2px solid var(--accent);outline-offset:-2px;border-radius:10px}
 /* the position:relative only anchors the "drop to unassign" badge — but at
@@ -2363,8 +2398,15 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      panels' own padding cleared exactly 26 — without this the handle's band
      covers the last 4px of every full-width input (measured; the tap-landing
      e2e test is the contract) */
-  .sb-boardwrap{flex:0 0 auto;min-height:0;padding-right:4px}
-  .sb-board{flex:none;overflow:visible}
+  /* FLATTEN the board column on a phone so #sbSign, #sbWarn and #sbBoard become
+     siblings of the one scroller and can be ordered independently: sign-off,
+     the Live Checks bar directly below it, then the panels (owner, 14 Aug 26).
+     The 4px right gap that kept the parked drawer off the last of every input
+     (the tap-landing contract) moves onto #sbBoard, since the wrap has no box
+     of its own now. */
+  .sb-boardwrap{display:contents}
+  .sb-sign{order:-2}
+  .sb-board{flex:none;overflow:visible;padding-right:18px}
   /* ONE WINDOW (owner, 8 Aug 26 — comp approved; replaces the bottom-pinned
      Live-checks + roster sheet and its resize grip). The side column
      dissolves; its two occupants go where the edit week puts theirs: the
@@ -2378,7 +2420,11 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      mis-tapped warning rows). Collapsed shows the header line (plus the ✓
      line on a quiet day); open shows every row and the one board scroller
      does the scrolling. */
-  .sb-warn{order:-1;flex:0 0 auto;max-height:none;overflow:visible;background:var(--panel)}
+  /* the warnings come from the side column (display:contents flattens it too),
+     ordered to sit just below the sign-off and above the board — order:-1
+     against a flattened board column, with #sbSign at -2 (owner, 14 Aug 26).
+     Still folds instead of scrolling within; transparent, its own inset. */
+  .sb-warn{order:-1;flex:0 0 auto;max-height:none;overflow:visible;padding:0 14px 12px;background:transparent;border-bottom:none}
   .sb-warn .wh[data-sbwtog]{cursor:pointer}
   .sb-warn .sbw-car{display:inline}
   .sb-warn .sbwrap:not(.open) .wln{display:none}

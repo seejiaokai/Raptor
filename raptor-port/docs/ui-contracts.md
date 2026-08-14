@@ -317,12 +317,24 @@ zones — the panels, then a bottom-pinned sheet holding `Live checks` and the
 roster, split by a drag-grip (the B25 machine, now deleted). It matches the
 edit week now:
 
-- **The warnings ride at the top of the one scroller.** `.sb-side` is
-  `display:contents` on a phone, so `.sb-warn` becomes a flex item of
-  `.sb-main` and `order:-1` puts it above the panels; it scrolls away with
-  the content, exactly as the week's issue strips do. `flex:0 0 auto` is
-  load-bearing — an `overflow:auto` child's automatic minimum is 0, so a
-  shrinkable strip collapses to its header line.
+- **Sign-off, then the Live Checks bar directly below it, then the panels**
+  (owner, 14 Aug 26 — "put it right below sign off section"; before this the
+  warnings rode at the very top, above the sign-off). The sign-off is its own
+  `#sbSign` element (`boardSignHTML`) heading the board column; on a phone
+  `.sb-boardwrap` is `display:contents`, so `#sbSign`, `#sbWarn` and `#sbBoard`
+  flatten into the one scroller and `order:-2`/`order:-1` drop the sign-off and
+  the checks bar above the panels. `.sb-warn` still `flex:0 0 auto` (an
+  `overflow:auto` child's automatic minimum is 0, so a shrinkable strip
+  collapses to its header). The 4px right gap that keeps the parked drawer off
+  the last of every input moved from `.sb-boardwrap` onto `#sbBoard` (it has no
+  box while flattened). **On DESKTOP nothing moves**: `.sb-warn` stays in the
+  320px side column beside the board, so the always-open list never pushes the
+  flying block down — only `#sbSign` is new there, heading the board column.
+- **The Live Checks header is an "issues" bar coloured by worst severity**
+  (owner, 14 Aug 26 — "title it issues instead of live and have colours on the
+  bar depending on warning or advisory"). `boardWarnHTML` reads
+  "⚠ N issues · N warning · tap to review" and the `.wh` bar wears `hard`/`adv`/
+  `note`/`ok`, the same palette as the week's `.daywarn`.
 - **The top bar is ONE row, and the day is reached by SWIPING** (owner,
   11 Aug 26 — comp approved before build). It used to be four stacked rows
   and 166px of a 780px screen: the title, the seven Mon–Sun chips, then six
@@ -630,10 +642,45 @@ edit week now:
 
 Pinned in `odds.test.tsx` (tab, shared toggle, parks on close) and
 `board.test.tsx` (park-after-fill, the fold's state machine), and measured
-in `e2e/geometry.spec.ts` (strip above the first panel, the parked handle
-a centred band whose taps never steal from Close / the day chips / input
-ends, the fold opening and closing, the drawer parking on a fill, seats
-clear of every input and of each other).
+in `e2e/geometry.spec.ts` (the checks bar below the sign-off and above the
+first panel, the parked handle a centred band whose taps never steal from
+Close / the day chips / input ends, the fold opening and closing, the drawer
+parking on a fill, seats clear of every input and of each other).
+
+## The board edits everything the week does (owner, 14 Aug 26)
+
+"The scheduler board mode should be the most editable platform." The board
+already drew and edited most fields; these were week-only and are now on the
+board too, reusing the week's own markup and the global handlers that already
+reach the board (`routeFocusOut` commits its contenteditable, `routeClick`
+routes `data-air`):
+
+- **In-time** — the wave's IN TIME + WX/NOTAMS lines are an editable
+  `.intimes` block (`data-intimes`, key `it:`) under the wave header, exactly
+  as on the week (`intimesInner`). The board still prints the derived in-time
+  number in the header beside it.
+- **Area + area-time** — a `.sb-area` strip after each formation's aircraft,
+  two contenteditable cells (`data-area` key `ar:`, `data-atime` key `at:`).
+  Both render `areaText(f)`/`atimeText(f)` — the derived value, NOT `''` — so a
+  click-through does not freeze the cell (the same trap `textedit.ts` documents
+  for the week). `.sb-area` is not a `.sb-line[data-move]`, so the row-drag
+  machine steps over it.
+- **Traffic** — a `data-air` button in the wave header for non-standalone
+  waves; the existing `setAirKey → AirPop` modal is surface-independent.
+- **Remarks reveal reads `R`, not `+`** — the `data-rmkadd` control that shows
+  an empty remarks box (still folded away empty on a phone to save row height —
+  that measured saving stands) now reads `R` so it obviously means remarks.
+
+## Empty cells show a standing "add here" box (owner, 14 Aug 26)
+
+An empty People cell (`[data-fill]` with no crew) shows a grey dotted rounded
+box even without a drag in progress, so a scheduler sees where to tap or drop —
+matching the empty flying seats. On the board it is `[data-fill]:empty` (an
+empty cell is truly empty — `sbMore` renders nothing for a crewless row); on
+the week the cell already carries the `.addz` "+ add" strip, so that strip is
+bordered standing when the cell holds no puck (`:not(:has(.puck)):not(:has(.itxt))`).
+Edit surfaces only (`.page.editing` / `.schedboard`, never a `.pv-frozen`
+preview). The accent drag affordance still takes over the moment a drag starts.
 
 ## The late-input mark on screen (owner, 9 Aug 26)
 

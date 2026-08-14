@@ -235,7 +235,7 @@ function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,rmkPath?:any,mv?:any){
     /* rides the control strip the row already has, so revealing an empty
        remarks box costs the row nothing new — no rmkPath (the row has no
        remarks field at all, or a caller predating this) means no button. */
-    +(rmkPath?`<button class="mbtn rmkadd" data-rmkadd="${rmkPath}" title="Add a remark">+</button>`:'')
+    +(rmkPath?`<button class="mbtn rmkadd" data-rmkadd="${rmkPath}" title="Add a remark">R</button>`:'')
     +`<button class="mbtn${o.cx?' on':''}" data-${pre}cx="${addr}" title="${o.cx?'Restore '+what:'Cancel '+what+' (CX)'}">CX</button>`
     +`<button class="mbtn red${o.flag?' on':''}" data-${pre}flag="${addr}" title="${o.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
     +`<button class="mbtn del" data-${pre}del="${addr}" title="Remove ${what}">✕</button></span>`;

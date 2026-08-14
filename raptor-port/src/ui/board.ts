@@ -17,7 +17,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl } from '../engine'
 import { setTplEdit } from './pops'
@@ -60,9 +60,11 @@ export function boardHTML(di: number, pv?: boolean) {
      nothing does until an edit lands. It costs one node against 63 of
      headroom, which is the cheaper side of that trade.
      Not on a frozen preview: nothing else on that surface is live either. */
-  let b = (pv ? '' : histLineHTML('histln-top'))
-    + (pv ? '' : `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`)
-    + sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
+  /* The sign-off bar (and the desktop history entry above it) moved to their
+     own #sbSign element (boardSignHTML below) so the Live Checks panel can sit
+     right BELOW the sign-off (owner, 14 Aug 26 — "put it right below sign off
+     section"). #sbBoard now starts with the notes panel. */
+  let b = sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
     /* SC / AVALON / BB carry no store config on the week (html.ts's `sa`
@@ -88,12 +90,25 @@ export function boardHTML(di: number, pv?: boolean) {
     fly += `<div class="sb-go"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
       + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${mvRO ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
       + `${w.night ? '<span class="night">· night</span>' : ''}`
+      /* Traffic edits the wave's airspace bookings, the same field the week's
+         Traffic button opens (html.ts). Standalone lines carry none. The
+         data-air click is handled globally (interactions.ts setAirKey → AirPop),
+         which already reaches the board, so no board-side wiring is needed. */
+      + `${sa || mvRO ? '' : `<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}`
       + `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`
       + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
+    /* The IN TIME + WX/NOTAMS lines edit exactly as the week's do (html.ts):
+       an editable .intimes block committing `it:` through the global
+       routeFocusOut (textedit.ts), which already reaches the board's
+       contenteditable cells. The board only showed the derived in-time number
+       before; this makes the published lines themselves editable here too
+       (owner, 14 Aug 26 — the board should edit everything the week can). */
+    if (w.intimes && w.intimes.length)
+      fly += `<div class="intimes"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `contenteditable="true" spellcheck="false" data-intimes="${di}|${gi}"`}>${intimesInner(w)}</div>`
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
-    w.formations.forEach((f: any, li: number) => f.aircraft.forEach((a: any, ai: number) => {
+    w.formations.forEach((f: any, li: number) => { f.aircraft.forEach((a: any, ai: number) => {
       const key = `${di}.${gi}.${li}.${ai}`, fp = `ff:${di}.${gi}.${li}`
       const cxOn = !!(a.cx || f.cx)
       /* stoRO, not pv alone — this was the last of the read-only gap left
@@ -170,7 +185,22 @@ export function boardHTML(di: number, pv?: boolean) {
           <button class="mbtn del" data-ldel="${key}" title="Remove this line">✕</button>
         </span>`}
       </div>`
-    }))
+    })
+    /* AREA strip right after THIS formation's aircraft — the same two
+       derived-or-typed cells the week draws (html.ts form-area): area codes and
+       the airspace window. Shown whenever there is something to show, or always
+       in edit mode so it can be filled in. areaText/atimeText — NOT '' — is what
+       the cell SHOWS (derived off the aircraft until typed over), so
+       routeFocusOut compares against the same value and a click-through does not
+       freeze the cell (textedit.ts). It is not a .sb-line[data-move], so the
+       row-drag machine steps right over it. */
+    if (!sa) {
+      const areaTxt = areaText(f), timeTxt = atimeText(f)
+      if (!(mvRO && !areaTxt && !timeTxt))
+        fly += `<div class="sb-area"><span class="fa-lb">AREA</span>`
+          + `<span class="areacell"${alAttr(`ar:${di}.${gi}.${li}`)} ${mvRO ? '' : `contenteditable="true" spellcheck="false" data-area="${di}.${gi}.${li}"`}>${esc(areaTxt)}</span>`
+          + `<span class="timecell"${alAttr(`at:${di}.${gi}.${li}`)} ${mvRO ? '' : `contenteditable="true" spellcheck="false" data-atime="${di}.${gi}.${li}"`}>${esc(timeTxt)}</span></div>`
+    } })
     fly += `</div>`
   })
   /* + Wave LIVES HERE NOW (owner, 13 Aug 26 — "put an add wave between common
@@ -195,6 +225,17 @@ export function boardHTML(di: number, pv?: boolean) {
   return b
 }
 
+/* The day's sign-off bar as its own element, so the Live Checks panel can sit
+   directly below it (owner, 14 Aug 26). Empty on a frozen preview, exactly as
+   it was inline — a past version's signatures live on the AL record. */
+export function boardSignHTML(di: number, pv?: boolean) {
+  if (pv) return ''
+  /* the desktop "view all changes" entry heads this element, above the
+     sign-off bar, exactly as it did when both lived at the top of #sbBoard */
+  return histLineHTML('histln-top')
+    + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`
+}
+
 export function boardWarnHTML(di: number) {
   const d = DAYS[di]
   const dw = (WARN.byDay[di] && WARN.byDay[di].warns) || []
@@ -203,10 +244,21 @@ export function boardWarnHTML(di: number) {
      scroller). Desktop hides the caret and its toggle branch is
      isPhone()-gated, so the header stays inert there and the rows always
      show. The ⚠ prints only when there is something to warn about. */
+  /* The collapsed header reads and colours like the edit week's .daywarn bar
+     (owner, 14 Aug 26 — "title it issues instead of live and have colours on
+     the bar depending on warning or advisory"): "N issues · N warning · tap to
+     review", the bar tinted red when anything is hard, amber when the worst is
+     an advisory, grey for notes only. worst/nh are computed the same way
+     dayWarnHTML does. */
+  const worst = dw.some((w: any) => w.sev === 'hard') ? 'hard' : dw.some((w: any) => w.sev === 'adv') ? 'adv' : 'note'
+  const nh = dw.filter((w: any) => w.sev === 'hard').length
   let wh = `<div class="sbwrap${SBWOPEN ? ' open' : ''}">`
-    + `<div class="wh" data-sbwtog title="Show / hide the day's checks">`
+    + `<div class="wh${dw.length ? ' ' + worst : ' ok'}" data-sbwtog title="Show / hide the day's checks">`
     + `<span class="sbw-car">${SBWOPEN ? '▾' : '▸'}</span>`
-    + `${dw.length ? '⚠ ' : ''}Live checks · ${dw.length} for ${esc(d.dow)}</div>`
+    + (dw.length
+      ? `<b>⚠ ${dw.length} issue${dw.length > 1 ? 's' : ''}</b>${nh ? ` · ${nh} warning` : ''} · <span class="dwcue">${SBWOPEN ? 'tap to collapse' : 'tap to review'}</span>`
+      : `No conflicts flagged for ${esc(d.dow)} ✓`)
+    + `</div>`
   if (dw.length) {
     /* Iterate WARN's own array, unsorted: validate() has already ordered it by
        SORD (hard, adv, note), so the local hard-first sort this used to do was a
