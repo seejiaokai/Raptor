@@ -2394,9 +2394,17 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      tap extension sat over the ends of full-width inputs. The parked aside
      IS the handle now, so nothing visible or invisible covers anything
      else; OPEN restates full height as it slides out. */
+  /* The board palette's columns are pinned to one puck wide here, exactly like
+     the edit week (.edit-board .eroster .rcol), NOT the desktop board's flex:1
+     spread. The base rule shares the width equally, which squeezes each column
+     below --puck-w in this narrow drawer while the pucks stay a hard 74px, so
+     every puck spilled 15px into its neighbour (owner, 14 Aug 26 — "the
+     alignment overlaps each other" on the board while the edit week was fine).
+     Desktop keeps flex:1 so its 320px side has no empty gutter. */
+  .schedboard .sb-roster .rcol{flex:0 0 var(--puck-w);width:var(--puck-w)}
   .schedboard .sb-ros{position:fixed;right:0;top:50%;bottom:auto;
     height:clamp(180px,55vh,440px);z-index:120;display:flex;align-items:stretch;
-    width:max-content;max-width:64vw;padding:8px 0 12px 0;
+    width:max-content;max-width:78vw;padding:8px 0 12px 0;
     border:1px solid var(--edge);border-right:none;border-radius:12px 0 0 12px;
     background:rgba(11,13,16,.965);backdrop-filter:blur(8px);
     box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);
@@ -2441,10 +2449,18 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
      The 62px fallback is the current bar plus its dots, so a first paint
      before the observer fires still clears the bar rather than starting at
      zero.
-     max-width came down from 78vw to 64vw in the same pass (owner: "the
-     aircrew tab can be a bit thinner") — two 74px puck columns and their
-     gaps need 165px, so 64vw is 250px at 390px wide and still fits both
-     columns with room to spare, while giving the board back 55px. */
+     max-width was 64vw when this palette had TWO puck columns (Pilots + WSOs,
+     165px), sized down from 78vw on the owner's "a bit thinner" ask. The
+     Personnel ground-crew column (Aug 26) makes it THREE: three 74px columns
+     and their gaps (~238px), the .sb-roster padding (24px) and the 30px vertical
+     AIRCREW tab need ~292px of width
+     — 64vw (250px at 390px) could not hold them, so the flex columns squeezed
+     below puck width and every puck overhung its column (owner, 14 Aug 26). The
+     cap is back to 78vw (304px), matching the edit week's drawer, so three
+     columns and the tab fit. `width:max-content` keeps the drawer only as wide
+     as the columns actually present, so a squadron with no ground crew still
+     gets the thin ~54vw two-column drawer — the cap only binds when the third
+     column is there. */
   body.ros-open .schedboard .sb-ros{top:var(--sb-topH,62px);bottom:0;height:auto;transform:translateX(0)}
   /* flex:1 + min-height:0, NOT max-height:100vh — on iOS Safari 100vh is
      the LARGEST viewport (toolbars collapsed), so a 100vh cap never binds
