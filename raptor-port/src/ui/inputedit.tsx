@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isUnavail, dateOrd, baseYear } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isUnavail, isSansAvail, dateOrd, baseYear } from '../engine/inputs'
 import { acceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -98,6 +98,8 @@ export const draftOf = (r: any) => ({
   start: unfmt(r.date), end: r.endDate ? unfmt(r.endDate) : '',
   sTime: r.allday ? '06:00' : hhmm(r.s), eTime: r.allday ? '18:00' : hhmm(r.e),
   remarks: r.remarks || '',
+  // SANS Availability's own Fly/AMT/OFT payload — a plain object, not derived from s/e/half
+  sans: r.sans ? { ...r.sans } : null,
 })
 
 /* Commit a draft onto its row. Returns false and toasts when it will not go —
@@ -149,6 +151,14 @@ export function commitInputEdit(r: any, draft: any) {
       return false
     }
   }
+  /* SANS AVAILABILITY IS RESTRICTED TO SANS AIRCREW, AND NEEDS AT LEAST ONE
+     BOX TICKED (owner, 14 Aug 26) — an unrestricted or empty record would be
+     a type that means nothing, so both are refused here, the one place every
+     editor's commit passes through. */
+  if (isSansAvail(draft.type)) {
+    if (!PEOPLE[draft.person]?.san) { HOOKS.toast('SANS Availability is for SANS aircrew only', 'warn'); return false }
+    if (!draft.sans || !Object.keys(draft.sans).length) { HOOKS.toast('Tick at least one of Fly / AMT / OFT', 'warn'); return false }
+  }
   writeInputsBatch(() => {
     /* An ACCEPTED input is linked to the row it created by `src`, a content
        key of person|date|type|s. Editing any of those silently broke the
@@ -174,6 +184,12 @@ export function commitInputEdit(r: any, draft: any) {
     if (wasAcc) unacceptInput(wasDi, r)
     r.person = draft.person; r.type = draft.type; r.allday = draft.allday
     r.s = s; r.e = e; r.date = date; r.remarks = String(draft.remarks || '').trim(); r.mod = 'now'
+    if (draft.sans && Object.keys(draft.sans).length) r.sans = { ...draft.sans }; else delete r.sans
+    /* SANS Availability carries no s/e/half of its own — the record's Fly/AMT/
+       OFT windows are the finer control, and allday is forced true so the two
+       time cells this row draws stay blank (see inpTimeCells: `all day` is
+       what an absent time pair prints, exactly what this type needs to say). */
+    if (isSansAvail(draft.type)) { r.allday = true; delete r.s; delete r.e; delete r.half }
     /* DERIVED from the times, never copied from the draft (audit, 12 Aug 26).
        The in-place cells already derived it (halfOf), but the Inputs page's own
        two time boxes did not: press AM, then type 08:00 over the start, and the

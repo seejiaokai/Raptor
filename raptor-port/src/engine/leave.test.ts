@@ -3,7 +3,7 @@
    assertions are kept intact below; everything after them pins the axes the
    new table added. */
 import { describe, expect, it } from 'vitest'
-import { LEAVE_TYPES, INPUT_TYPES, INPUT_META, inpMeta, canSpare, canWork, awayAllDay, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, offWord, inputCoversDate } from './inputs'
+import { LEAVE_TYPES, INPUT_TYPES, INPUT_META, inpMeta, canSpare, canWork, awayAllDay, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isSansAvail, offWord, inputCoversDate } from './inputs'
 import { validate } from './validate'
 
 describe('leave is LL / OL / OIL (tfin B42)', () => {
@@ -65,7 +65,7 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
       const m = inpMeta(t)
       expect(m, t).toBeTruthy()
       expect(typeof m.name === 'string' && m.name.length > 0, t).toBe(true)
-      expect(['leave', 'med', 'duty', 'act'], t).toContain(m.grp)
+      expect(['leave', 'med', 'duty', 'act', 'sans'], t).toContain(m.grp)
     }
     /* the owner's order: the new types sit below OIL */
     expect(INPUT_TYPES.slice(3, 12)).toEqual(
@@ -130,6 +130,19 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
     const inp = { date: 'Jul 13', endDate: 'Jul 17', allday: true }
     expect(inputCoversDate(inp, 'Jul 13') && inputCoversDate(inp, 'Jul 15') && inputCoversDate(inp, 'Jul 17')).toBe(true)
     expect(inputCoversDate({ date: 'Jul 14' }, 'Jul 15')).toBe(false)
+  })
+
+  /* SANS AVAILABILITY (owner, 14 Aug 26) — an OFFER, not an absence, but it
+     still sits in the isUnavail group (no Accept controls, not a Ground
+     Programme candidate) and still may spare, exactly like any other local
+     commitment. See sansGate in avail.ts for what actually judges it against
+     a flying/OFT/AMT slot. */
+  it('SANS Availability is unavail but not personal, may spare, may not work', () => {
+    expect(isUnavail('SANS Availability')).toBe(true)
+    expect(isPersonal('SANS Availability')).toBe(false)
+    expect(isSansAvail('SANS Availability')).toBe(true)
+    expect(canSpare('SANS Availability')).toBe(true)
+    expect(canWork('SANS Availability')).toBe(false)
   })
 
   it('the roster really does carry leave to test against', () => {

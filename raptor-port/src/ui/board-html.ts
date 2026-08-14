@@ -1,6 +1,6 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail } from '../engine/inputs'
+import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail } from '../engine/inputs'
 import { PEOPLE, nameToId } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
@@ -443,7 +443,8 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
    ACCEPTS them, so this panel carries no Accept control; its rows are as
    editable as the ones above since the owner asked for both (10 Aug 26). */
 export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
-  const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isUnavail(inp.type)||inp.acc==='u');
+  // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this panel
+  const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type));
   let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable <span class="sub">leave, medical and overseas duty${ro?'':' — times and remarks type in place, clear a time for all day'}</span></div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nil — everybody is available today.</div>`;
   else if(!ro)s+=C6;

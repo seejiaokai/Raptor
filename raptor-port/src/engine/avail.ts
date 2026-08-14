@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin } from './inputs'
+import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
@@ -207,6 +207,27 @@ export function slotRules(key:any){
     }
   }
   return out;
+}
+/* THE SANS AVAILABILITY GATE (owner, 14 Aug 26) — one function judges a SANS
+   member against his filed record for a flying/OFT/AMT slot, and every
+   consumer (slotBar's grey-out, the validator's advisory, the test suite)
+   calls THIS, not the record directly, so the rule cannot drift between them.
+     'na'          — not a SANS person; the caller has nothing to ask about
+     'none'        — SANS but no record filed for this day at all
+     'not-offered' — a record exists but this event's box is unticked
+     'ok'          — offered all day, or the slot falls inside the offered window
+     'window'      — offered, but only for a narrower window than the slot
+   s/e are the SLOT's own minutes-from-midnight, exactly as slotRules already
+   computes them. */
+const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
+export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
+export function sansGate(id:any,dt:any,domain:any,s:any,e:any){
+  const p=PEOPLE[id]; if(!p||!p.san)return {status:'na'};
+  const rec=sansAvailOn(id,dt); if(!rec)return {status:'none'};
+  const off=rec[SANS_KEY[domain]];
+  if(off==null)return {status:'not-offered'};
+  if(off===true||(off.s<=s&&off.e>=e))return {status:'ok'};
+  return {status:'window',off};
 }
 /* '' when they may be planned here, otherwise the reason they may not */
 export function slotBar(id:any,key:any,rules?:any){
