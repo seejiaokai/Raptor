@@ -139,7 +139,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   reference for parity.
 - There are no OFFERS any more (owner decision, Aug 26). `Office`,
   `Available fly` and `Available duty` were removed as types and `isOffer` is
-  gone with them. `Fly` gets no exemption: filed under Unavailable it raises
+  gone with them. `Fly with` (named `Fly` until the owner renamed it, 14 Aug 26) gets no exemption: filed under Unavailable it raises
   `INPUT_FLY` and eats brief/debrief windows exactly as a `Meeting` does,
   using only its stated times — no brief/debrief padding is added to any
   input (padding is sortie-side: step→dekit).
@@ -177,11 +177,11 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   ordinary personal types stay quiet against `kind==='shift'` (the accepted
   row's `SHIFT_SOFT` is the designed voice there); leave, downchits and
   detachments still hard-flag a shift.
-- **An actioned `Fly` is AWAY** (owner, Aug 26: a Fly means flying with
+- **An actioned `Fly with` is AWAY** (owner, Aug 26: it means flying with
   another squadron). `isAway(inp)` = `isOffType(type) || (isFly(type) &&
   acc)` — it feeds `dayOff` (the Available-crew strip and the palette fade),
   `slotBar` (reason: "flying with another squadron") and the palette's
-  `offReason`. Whole-day, either destination. An actioned Fly is local, so
+  `offReason`. Whole-day, either destination. An actioned `Fly with` is local, so
   since 10 Aug 26 it does NOT bar a standalone spare — `canSpare` decides
   that now, not leave-ness.
 - **`INPUT_META` is the single source for every input type** (owner,
@@ -208,7 +208,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   carve-out, because HL/OML/ATT B/ATT C keep the man on the island but not fit
   to walk. Written against "a standalone spare" so the **AVALON rule the owner
   reserved** (10 Aug 26 — do NOT infer it) drops in without re-cutting.
-- `isAway` = `isUnavail` + an actioned `Fly`. Widened from `isOffType` on
+- `isAway` = `isUnavail` + an actioned `Fly with`. Widened from `isOffType` on
   10 Aug 26: `Detachment` sat in `isUnavail` but never in `isAway`, so a
   detached man was neither hidden from the palette nor barred — he only raised
   a warning once you had already planted him. OD may not be planned for
@@ -216,7 +216,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - The input types still split two ways, but the split is **presentational
   only** since 10 Aug 26 — it decides which block a row is drawn in and
   nothing else. `isUnavail` = leave + medical + OD; `isPersonal` = the
-  activity types (Training, CSE, Meeting, Fly, Personal, Appointment, Other),
+  activity types (Training, CSE, Meeting, Fly with, Personal, Appointment, Other),
   which are also exactly the types a scheduler may lift onto the Ground
   Programme (`ground` in the table). Together they partition `INPUT_TYPES` —
   a test pins that nothing falls between them, and a second pins that
@@ -660,18 +660,27 @@ controls" callers are exactly right for an offer too — see §Accepting a
 personal input below) and stays out of `isPersonal` (it is not a Ground
 Programme candidate). `local:true, ground:false` so it behaves like an
 on-island commitment for `canSpare`/the Ground button; `work:false` because
-filing this says nothing about a non-flying tasking; `half:false` — the
-record's own Fly/AMT/OFT windows are the finer control, an AM/PM split would
-only confuse the two.
+filing this says nothing about a non-flying tasking; `half:true` since the
+14 Aug 26 rework — the record rides the standard All day / AM / PM / Custom
+template like any leave input (it shipped hours earlier with three per-event
+windows, which the owner could not clear on a phone; see the rework note
+below).
 
-**Record shape** (`inputs.ts`): `sans: { f?: {s,e}|true, o?: {s,e}|true, a?:
-{s,e}|true }` — `f`/`o`/`a` for Fly/OFT/AMT (`SANS_KEY` in `avail.ts`), `true`
-meaning ALL DAY for that event, absent meaning NOT OFFERED, `{s,e}`
-minutes-from-midnight for a narrower window. The record keeps `allday:true`
-and carries **no** top-level `s`/`e`/`half` — `commitInputEdit` forces this on
-write. `sansAvailOn(id,dt)` is the one place that finds the record covering a
-day; `sansBadge(id,dt)` builds the minimal string a badge prints
-(`F 08:00–12:00 · O · A`, fixed f/o/a order, `hm24`) — both live in
+**Record shape** (`inputs.ts`; REWORKED 14 Aug 26, same day it shipped —
+owner: one timing, the standard template, and per-event time fields a phone
+could not clear): an ordinary INPUTS row whose OWN standard
+`allday`/`half`/`s`/`e` fields carry **one** offered window, with `sans`
+reduced to flags — `{ f?: true, o?: true, a?: true }`, `f`/`o`/`a` for
+Fly/OFT/AMT (`SANS_KEY` in `avail.ts`), absent meaning NOT OFFERED. The one
+window applies to every ticked event. No migration for the old per-event
+`{s,e}` shape: inputs are session-only and the seed carries zero SANS
+records. `sansAvailOn(id,dt)` is the one place that finds the record covering
+a day and returns the WHOLE row; `sansWindow(rec)` reads the window off it
+(`allday`→[0,1439], `am`→[0,720], `pm`→[721,1439] — the same halves
+`HALF_AM`/`HALF_PM` write — and a thin record reads whole-day, the same
+answer `inpWin` gives a thin absence); `sansLetters(rec)` prints the ticked
+events (`F/O/A`, fixed f/o/a order); `sansBadge(id,dt)` is letters plus the
+window (`F/O/A`, `F/O · AM`, `A · 08:00–12:00`). All four live in
 `inputs.ts`, not `html.ts`, because `palette-html.ts` imports from `html.ts`
 and an html-side helper would cycle.
 
@@ -684,10 +693,10 @@ Five statuses:
 - `'na'` — not a SANS person at all; nothing to ask.
 - `'none'` — SANS, but no record filed for the day.
 - `'not-offered'` — a record exists but this event's box is unticked.
-- `'ok'` — offered all day (`true`), or the slot falls inside the offered
-  window.
+- `'ok'` — the record's one window (all day included) covers the slot.
 - `'window'` — offered, but only a window narrower than the slot; the gate
-  carries the offered window back as `.off`.
+  carries the offered window back as `.off` (`{s,e}` read from `sansWindow`,
+  the same whichever event asked — one window serves all three).
 
 **`slotBar` (`avail.ts`)** asks `sansGate` right after the four personal-input
 absence checks and before the "already busy at this hour" check — an absence
@@ -702,8 +711,9 @@ for everything else — a duty post, a ground row, a programme item is
 **never** SANS-greyed, uniformly across every jet seat including AVALON's
 (harmless: the persistent advisory below mirrors `day.fly`, which already
 excludes AVALON). The three printed reasons: `SANS — no availability filed
-for today`, `SANS — not offering Fly` (or OFT/AMT), `SANS — Fly offered
-08:00–12:00 only`. Nothing else in `slotBar` needed to change — the palette's
+for today`, `SANS — not offering Fly` (or OFT/AMT), `SANS — available
+08:00–12:00 only` (domain-free since the one-window rework — the window is
+the record's, not the event's). Nothing else in `slotBar` needed to change — the palette's
 strike, the printed reason (`.no.haswhy`/`.rwhy`), the green eligibility
 rings and both toasts all read `slotBar`, so grey-out was free the moment
 this one function judged right.
@@ -738,24 +748,33 @@ truthy, seed raises zero).
 through one function.** `sansRefusal(person,sans)` (`inputedit.tsx`) is what
 `commitInputEdit` and the add form's own `add()` (`InputsPage.tsx`) both call
 before any write — a non-SANS person is refused with "SANS Availability is
-for SANS aircrew only", an empty tick set with "Tick at least one of Fly /
-AMT / OFT", and a box ticked with only one of its two times filled in with a
-give-both-or-leave-both-blank message. `commitInputEdit` returns `false` on a
-refusal, so the editor stays open with the typing still in it (house
-convention). All three editors — the add form, the in-table row editor and
-the modal — share one `SansPicker` component (`inputedit.tsx`, Fly/AMT/OFT
-tick-and-time rows) for the sub-form.
+for SANS aircrew only" (the owner reconfirmed the restriction on the rework
+day: "only SANS can input the availability"), and an empty tick set with
+"Tick at least one of Fly / AMT / OFT". The old per-event
+give-both-times-or-neither refusal is gone with the per-event windows — the
+one window's own validation rides the STANDARD path every half-capable type
+already uses. `commitInputEdit` returns `false` on a refusal, so the editor
+stays open with the typing still in it (house convention). All three editors
+— the add form, the in-table row editor and the modal — share one
+`SansPicker` component (`inputedit.tsx`, a plain Fly/AMT/OFT checkbox row
+since the rework — the window controls are the standard SpanPicker + time
+fields, not SANS-special).
 
 **Amends the Aug-26 "offers deleted" decision** (search this file for
 "Available fly" — the note sits under §Validation). `Available fly` and
 `Available duty` were removed as input types because an offer that clashed
 and ate brief/debrief time exactly like any other commitment was not the
 shape anyone wanted, and "there are no offers any more" was recorded as
-settled. SANS Availability is not that shape: it carries no top-level `s`/`e`,
-never enters `day.input` at all (`events.ts`'s `inpShow` returns `false` for
-it immediately — the one choke every `day.input` construction site funnels
-through), and is read ONLY by `sansGate`, never by the general clash/brief
-machinery the deleted offer types once shared with every other commitment.
+settled. SANS Availability is not that shape: it never enters `day.input` at
+all (`events.ts`'s `inpShow` returns `false` for it immediately — the one
+choke every `day.input` construction site funnels through), and is read ONLY
+by `sansGate`, never by the general clash/brief machinery the deleted offer
+types once shared with every other commitment. Since the one-window rework
+the record DOES carry ordinary top-level `s`/`e`/`half` — which is exactly
+the shape that machinery reads on every other type — so the exclusion is
+type-based, not shape-based, and `sansavail.test.ts`'s leak-guard block pins
+it: a timed offer never reads as a timed absence (`isAway` false, absent
+from `day.input`, no hard clash raised).
 **Amended 14 Aug 26 — SANS-scoped offers reinstated by owner decision as this
 type.** Record it here so the two decisions read as sequential, not
 contradictory.
