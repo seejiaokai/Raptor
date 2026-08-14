@@ -15,13 +15,11 @@ import { writeInputs, notify } from '../state/store'
 import {
   fmt, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansFlags,
+  rosterOptions as people,
 } from './inputedit'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
 import { RangeCal } from './RangeCal'
-
-const people = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
-  .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 
 const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -84,12 +82,19 @@ export function initialRange(now = new Date()) {
    two-digit pad() let '600' (10:00) sort before '65' (01:05), which put a
    mid-morning input above a small-hours one (audit, 12 Aug 26).
    `mod` is 'now' for anything edited this session and a yyyy-mm-dd stamp
-   otherwise — 'now' IS the most recent, so it sorts above every stamp. */
+   otherwise — 'now' IS the most recent, so it sorts above every stamp.
+   `?? 0`, not `|| 0` (found seeding the demo SANS records, 14 Aug 26): a
+   timed row that genuinely starts AT midnight (an AM-half preset — s:0)
+   has a real, meaningful minute value of 0, and `0 || 0` reads the same as
+   a missing value, so it collapsed onto the exact same sort key as an
+   all-day row on the same date — indistinguishable, and the sort's own
+   tie-break (this same key, see below) could then no longer tell them
+   apart. `??` only falls back to 0 for a genuinely absent s/e. */
 const pad4 = (m: any) => String(m).padStart(4, '0')
 const SORTKEY: any = {
   name: (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person || '')).toLowerCase(),
-  start: (r: any) => unfmt(r.date) + pad4(r.allday ? 0 : (r.s || 0)),
-  end: (r: any) => unfmt(r.endDate || r.date) + pad4(r.allday ? 1439 : (r.e || 0)),
+  start: (r: any) => unfmt(r.date) + pad4(r.allday ? 0 : (r.s ?? 0)),
+  end: (r: any) => unfmt(r.endDate || r.date) + pad4(r.allday ? 1439 : (r.e ?? 0)),
   type: (r: any) => String(r.type || '').toLowerCase(),
   remarks: (r: any) => String(r.remarks || '').toLowerCase(),
   recur: (r: any) => String(r.recur || '').toLowerCase(),
@@ -338,9 +343,25 @@ export function InputsPage() {
     const key = SORTKEY[sort.key] || SORTKEY.start
     const cmp = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
     /* start date is the tie-break on every other column, so two rows that
-       match on the sorted column still come out in a stable, useful order */
+       match on the sorted column still come out in a stable, useful order —
+       deliberately NOT multiplied by sort.dir, so that secondary order reads
+       the same (earliest first) whichever way the primary column is sorted.
+       A FINAL index tiebreak, found seeding the demo SANS records (14 Aug
+       26): sorting BY 'start' (or 'end') itself makes that "secondary"
+       check a no-op — same key as the primary, by construction — so ties
+       fell through to Array.sort's native stability, which keeps the
+       PRE-SORT array order in both directions alike. Two rows sharing an
+       exact key usually show identical text (several "all day" rows on one
+       date), where that is invisible; it stopped being invisible the moment
+       one tied row had its OWN distinct label (a half-day AM offer, minute
+       0, keying identically to "all day" on the same date) — a second click
+       no longer inverted the visible list. Breaking the remaining tie on
+       each row's ORIGINAL position, WITH sort.dir this time, guarantees a
+       genuine reversal regardless of what ties on the sorted column itself. */
+    const idx = new Map(rows.map((r: any, i: number) => [r, i]))
     rows.sort((a: any, b: any) =>
-      cmp(key(a), key(b)) * sort.dir || cmp(SORTKEY.start(a), SORTKEY.start(b)))
+      cmp(key(a), key(b)) * sort.dir || cmp(SORTKEY.start(a), SORTKEY.start(b))
+      || (idx.get(a)! - idx.get(b)!) * sort.dir)
   }
   /* the pinned rows go on top, ahead of everything the sort just decided, and
      they are removed from the body of the list so a pin never shows twice.

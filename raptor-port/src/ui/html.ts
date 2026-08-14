@@ -886,8 +886,18 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       if(!rows.length)return s+`<div class="pl-nil">Nil</div></div>`;
       s+=plCols();
       rows.forEach((inp:any)=>{
+        /* Unavailable's own puck is a plant/drop target too, so a scheduler can
+           tap-arm-then-plant or drag a different name straight onto it — "even
+           down to changing the puck" (owner, 14 Aug 26). `acc` here means "this
+           is the Personal Inputs group" (it draws the Accept control below), so
+           `!acc` is Unavailable — Personal Inputs stays display-only, exactly as
+           today, because accepting/declining is its own control already.
+           data-inpseat carries the INPUT's iid, not a schedule key: interactions.ts
+           and drag.ts read it and call reassignInput (inputedit.tsx), which is the
+           SAME relink commitInputEdit already does — never a second write path. */
+        const seatable=!acc&&ed;
         const pk=PEOPLE[inp.person]
-          ? `<span class="seat">${puck(inp.person,sev(di,inp.person),true,chip(di,inp.person))}</span>`
+          ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sev(di,inp.person),true,chip(di,inp.person))}</span>`
           : `<span class="itxt">${esc(inp.person)}</span>`;
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */

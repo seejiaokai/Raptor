@@ -18,6 +18,7 @@ import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, stor
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
+import { reassignInput } from './inputedit'
 import { openScheduler, toggleSbwarn, boardTab } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { setCurWeek } from '../engine/waves'
@@ -509,10 +510,25 @@ export function routeClick(e: MouseEvent) {
   /* a tap on a palette name: plant it if something is armed, otherwise fall
      through to the ordinary select-this-person-in-blue behaviour. A darkened
      name plants too (owner, 13 Aug 26): its reason is printed on the list
-     before the tap, and placeArmed repeats it as the warn toast after. */
+     before the tap, and placeArmed repeats it as the warn toast after.
+
+     An 'iu:' key is the Unavailable-reassign arm, not a schedule slot —
+     placeArmed's fillSlot/setSlotVal would not know what to do with it (and
+     would apply the seat-eligibility bar the owner explicitly said this edit
+     must NOT carry). reassignInput is commitInputEdit's relink under a new
+     name (inputedit.tsx), so it does its own disarm/notify — see reassignInput's
+     own doc comment for why afterSchedMutate is not called again here: that
+     would push a second history step onto the SAME action. */
   const rp = t.closest('.rpuck[data-person]') as HTMLElement | null
   if (rp && view.ARM) {
     e.stopPropagation()
+    const armKey = view.ARM.key
+    if (String(armKey).indexOf('iu:') === 0) {
+      const iid = String(armKey).slice(3)
+      view.disarmSlot()
+      reassignInput(iid, rp.dataset.person)
+      notify(); return
+    }
     view.placeArmed(rp.dataset.person)
     notify(); return
   }
@@ -590,13 +606,23 @@ export function routeClick(e: MouseEvent) {
      A PLACEHOLDER-filled slot arms exactly like an empty one (owner, 13 Aug
      26): a placeholder means "someone still needed here", so tapping it goes
      straight to finding that someone — the palette tap then replaces the
-     placeholder. Only a REAL person's puck falls through to selection. */
-  const slot = t.closest('.seat[data-slot],[data-fill]') as HTMLElement | null
+     placeholder. Only a REAL person's puck falls through to selection.
+
+     An Unavailable row's seat (data-inpseat) is the one exception to "a real
+     puck blocks arming": it is ALWAYS occupied — that is the whole point of
+     the row — so waiting for it to go empty would mean it could never arm at
+     all, and "even down to changing the puck" (owner, 14 Aug 26) needs it to.
+     Its key is 'iu:<iid>' (engine/keys.ts's keyDay still parses a day out of
+     it — there is none, so it reads -1, same as any other dayless text key)
+     rather than the funnel grammar slotVal/isSpecial understand, so it skips
+     both of those reads and always offers to arm. */
+  const slot = t.closest('.seat[data-slot],[data-fill],[data-inpseat]') as HTMLElement | null
   const slotPuck = t.closest('.puck[data-person]') as HTMLElement | null
-  if (slot && HOOKS.editMode() && (!slotPuck || isSpecial(slotPuck.dataset.person))) {
-    const key = slot.dataset.slot || slot.dataset.fill
+  const inpSeat = slot?.dataset.inpseat
+  if (slot && HOOKS.editMode() && (inpSeat || !slotPuck || isSpecial(slotPuck.dataset.person))) {
+    const key = inpSeat ? `iu:${inpSeat}` : (slot.dataset.slot || slot.dataset.fill)
     const base = String(key).replace(/\.\+$/, '')
-    if (key && (view.armedKey() === key || !slotVal(base) || isSpecial(slotVal(base)))) {
+    if (key && (inpSeat || view.armedKey() === key || !slotVal(base) || isSpecial(slotVal(base)))) {
       view.armSlot(key, slot); notify(); e.stopPropagation(); return
     }
   }

@@ -11,6 +11,7 @@ import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { notify } from '../state/store'
 import { canEditSched } from '../state/auth'
+import { reassignInput } from './inputedit'
 
 const editMode = () => HOOKS.editMode()
 
@@ -22,7 +23,11 @@ export let DRAG: any = null                     // {kind:'slot',key} | {kind:'ro
    (the reference's DRAG was a window global, assignable from anywhere) */
 export function setDrag(v: any) { DRAG = v }
 
-const DROP_SEL = '.sb-slot,.seat[data-slot],[data-fill]'
+/* [data-inpseat] (an Unavailable row's person cell) is a drop target too —
+   see applyDrop's own branch for why it is handled apart from the seat/fill
+   cases just below it rather than folded in: it is a data edit to an INPUT,
+   never a schedule seat, so it must not run through setSlotVal/fillSlot. */
+const DROP_SEL = '.sb-slot,.seat[data-slot],[data-fill],[data-inpseat]'
 const BIN_SEL = '.sb-roster,.eroster,.availpuck'
 
 /* On a phone the aircrew drawer covers half the screen, so a name picked up
@@ -109,6 +114,28 @@ export function applyDrop(el: any, x: any, y: any) {
      started the drag. */
   if (!canEditSched() || !editMode()) { DRAG = null; dndOff(); return false }
   if (!DRAG || !el || !el.closest) { DRAG = null; dndOff(); return false }
+  /* An Unavailable row's seat, dropped on from either a roster puck or an
+     already-planted one — checked BEFORE slotEl/cell below, which only know
+     the schedule's data-slot/data-fill grammar and would otherwise treat this
+     drop as "landed nowhere" and fall through to whatever the source seat's
+     own empty-drop rule is. No eligibility bar and no seat vacated on the
+     source end: reassignInput is a DATA EDIT to the input record, not a move
+     of a schedule assignment, so a name dragged off a flying seat stays in
+     that seat AND becomes unavailable — the two are independent facts. */
+  const inpEl = el.closest('[data-inpseat]')
+  if (inpEl) {
+    const iid = (inpEl as HTMLElement).dataset.inpseat!
+    const pid = DRAG.kind === 'roster' ? DRAG.id : slotVal(DRAG.key)
+    if (!pid || !PEOPLE[pid]) { DRAG = null; dndOff(); return false }
+    reassignInput(iid, pid)
+    /* mirrors done()'s own arm put-down and drawer-park below, without ALSO
+       calling afterSchedMutate() — reassignInput's commitInputEdit already
+       ran the input funnel's full epilogue (validate, notify, ONE history
+       step) and a second call here would push a second step for the one drop. */
+    if (view.armedKey() === `iu:${iid}`) view.disarmSlot()
+    ROS_REOPEN = false
+    DRAG = null; dndOff(); notify(); return true
+  }
   let slotEl = el.closest('.sb-slot,.seat[data-slot]')
   /* A PALETTE drop anywhere on a list row means THAT ROW. The .ppl cell is only a
      third of a row tall on a phone, so better than eight in ten pixels of a duty /
@@ -207,7 +234,7 @@ function onDragLeave(e: DragEvent) { const t = (e.target as HTMLElement).closest
 function onDrop(e: DragEvent) {
   if (!DRAG) return
   const t = e.target as HTMLElement
-  if (DRAG.kind === 'slot' || (t.closest && (t.closest('.sb-slot,.seat[data-slot]') || t.closest('[data-fill]')))) e.preventDefault()
+  if (DRAG.kind === 'slot' || (t.closest && (t.closest('.sb-slot,.seat[data-slot]') || t.closest('[data-fill]') || t.closest('[data-inpseat]')))) e.preventDefault()
   applyDrop(t, e.clientX, e.clientY)
 }
 function onDragEnd() { dndOff(); DRAG = null }

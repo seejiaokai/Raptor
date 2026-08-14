@@ -15,13 +15,21 @@ import { useEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isUnavail, isSansAvail, dateOrd, baseYear } from '../engine/inputs'
 import { acceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction } from '../engine/editlog'
 import { writeInputsBatch, notify } from '../state/store'
+import { canEditSched } from '../state/auth'
 import { INPEDIT, setInpEdit } from './pops'
 import { useVersion } from './useStore'
+
+/* THE ROSTER LIST, one place — the Inputs page's add form, its own row
+   editor and this dialog's new Person field must never disagree on who is
+   offered or in what order, so all three call this rather than each sorting
+   PEOPLE their own way. */
+export const rosterOptions = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
+  .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 
 const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 /* yyyy-mm-dd → the stored label ('2026-07-14' → 'Jul 14'). The loaded week's
@@ -299,6 +307,34 @@ export function commitInputEdit(r: any, draft: any) {
   return true
 }
 
+/* ---- CHANGING THE PUCK (owner, 14 Aug 26 — "allow Unavailable to be
+   editable too... even down to changing the puck") ---------------------
+   The Unavailable row's person cell plants and drops like any other seat
+   (interactions.ts's tap-arm-then-plant, drag.ts's applyDrop) — both call
+   this ONE function rather than poking `r.person` themselves, so the
+   accepted-row relink above runs exactly once, the same way for a tap, a
+   drag or the dialog's own Person field below. No eligibility bar: this is
+   a data edit to who is unavailable, not a seat assignment, so any roster
+   member (including one already filed unavailable elsewhere, or flying) is
+   a legal target. */
+export function reassignInput(iid: any, personId: any) {
+  const r = INPUTS.find((i: any) => i.iid === iid)
+  if (!r) { HOOKS.toast('That input is no longer there — nothing was changed', 'warn'); return false }
+  /* the roster PALETTE (unlike rosterOptions() above) still carries the
+     SPECIALS — sentinel placeholders like ALL AVAIL, never real aircrew — so
+     a drag or an armed tap can reach here with one even though the dialog's
+     own Person field can never offer it. "Unavailable" describes a real
+     person's day; a placeholder has no day to describe. */
+  if (!PEOPLE[personId] || isSpecial(personId)) return false
+  if (r.person === personId) return false           // dropped back on themselves — nothing to say
+  const was = PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person || '')
+  const draft = draftOf(r)
+  draft.person = personId
+  if (!commitInputEdit(r, draft)) return false
+  HOOKS.toast(`${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
+  return true
+}
+
 /* ---- ONE FIELD, TYPED IN PLACE (owner, 10 Aug 26) ------------------------
    "Instead of pressing a type to edit... edit the input directly like changing
    the start and end time... The remarks can be edited as well... in the same
@@ -385,11 +421,14 @@ export function removeInput(r: any) {
    the modal, and both renumber INPUTS and rewrite the content key an accept
    button would have carried.
 
-   PERSON AND DATES ARE NOT HERE. What the owner asked for is times, type,
-   remarks and delete — and those four all keep the row on the day you opened
-   it from. Moving it to another man or another date makes it vanish from the
-   surface you are looking at, which is the Inputs page's job; the footer says
-   so rather than leaving it to be discovered. */
+   DATES ARE STILL NOT HERE — moving the span makes the row vanish from the
+   day you opened it from, which is the Inputs page's job, and the footer
+   says so. PERSON now IS here (owner, 14 Aug 26 — "allow Unavailable to be
+   editable too... even down to changing the puck"), but only for a
+   scheduler: reassigning changes WHOSE row this is, not which day it sits
+   on, so it stays inside what this dialog already keeps in view — unlike a
+   date move, the row you are looking at is still the row you are looking
+   at afterwards, just under a different name. */
 export function InputEditor() {
   useVersion()
   const r = INPEDIT
@@ -429,6 +468,20 @@ export function InputEditor() {
           <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
         </div>
         {draft && <div className="airpop-body inped-body">
+          {/* SCHEDULER ONLY (owner, 14 Aug 26 — "allow Unavailable to be
+              editable too... even down to changing the puck"). A member
+              opening their own input never reaches this dialog at all today
+              (the buttons that open it only render in an admin's edit mode),
+              but the gate is repeated here anyway rather than trusted to
+              that — canEditSched() is the same check every other
+              admin-only control in this dialog's callers already uses. */}
+          {canEditSched() && <label className="inped-f">
+            <span className="inped-k">Person</span>
+            <select id="inpEditPerson" aria-label="Person" value={draft.person}
+              onChange={e => setDraft({ ...draft, person: e.target.value })}>
+              {rosterOptions().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+            </select>
+          </label>}
           <label className="inped-f">
             <span className="inped-k">Type</span>
             <select id="inpEditType" aria-label="Type" value={draft.type}
@@ -485,7 +538,9 @@ export function InputEditor() {
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
               onKeyDown={e => { if (e.key === 'Enter') save() }} />
           </label>
-          <div className="inped-hint">The person and the dates are changed on the Inputs page.</div>
+          <div className="inped-hint">{canEditSched()
+            ? 'The dates are changed on the Inputs page.'
+            : 'The person and the dates are changed on the Inputs page.'}</div>
         </div>}
         <div className="airpop-foot">
           <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>

@@ -1,4 +1,5 @@
 import { DAYS } from '../engine/data'
+import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
@@ -470,6 +471,13 @@ export function slotTitle(key:any){
     const f=(((DAYS[+a[0]]||{}).waves||[])[+a[1]]||{formations:[]}).formations[+a[2]]||{};
     return `${a[4]==='p'?'FCP':'RCP'} · <span class="mono" style="color:var(--ink-3)">${esc(f.cs||'')} ${esc(f.msn||'')}</span>`;}
   const p=k.slice(0,k.indexOf(':')), a=k.slice(k.indexOf(':')+1).split('.');
+  /* the reassign-a-puck arm (inputedit.tsx's reassignInput) — 'iu:<iid>',
+     no day component, since one input can be filed on several loaded days at
+     once and none of them is more "its" day than another */
+  if(p==='iu'){
+    const inp=INPUTS.find((i:any)=>i.iid===a[0]);
+    return inp?`Unavailable · <span class="mono" style="color:var(--ink-3)">${esc(PEOPLE[inp.person]?PEOPLE[inp.person].cs:String(inp.person))}</span>`:'Unavailable';
+  }
   const d=DAYS[+a[0]]||{};
   try{
     if(p==='d')return `Duty · <span class="mono" style="color:var(--ink-3)">${esc(d.dutywaves[+a[1]].rows[+a[2]].role)}</span>`;
