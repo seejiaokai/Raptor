@@ -1,6 +1,6 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail } from '../engine/inputs'
+import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, sansBadge } from '../engine/inputs'
 import { PEOPLE, nameToId } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
@@ -80,7 +80,7 @@ export const SB_BANDS=[
 export function inTypeCls(t:any){
   const m=inpMeta(t);
   if(!m)return 'ty-gp';
-  return m.grp==='med'?'ty-dn':m.grp==='leave'?'ty-lv':m.grp==='duty'?'ty-dt':'ty-gp';
+  return m.grp==='med'?'ty-dn':m.grp==='leave'?'ty-lv':m.grp==='duty'?'ty-dt':m.grp==='sans'?'ty-sn':'ty-gp';
 }
 /* The remarks cell shared by the board's two input surfaces — the inputs bands
    and the Personal Inputs panel. The LATE badge leads it (owner, 9 Aug 26 —
@@ -88,9 +88,17 @@ export function inTypeCls(t:any){
    ellipsis, so anything that must survive a long remark has to come first.
    The em dash is the placeholder for "nothing written", and it is dropped when
    the badge is there — "LATE —" would read as a remark that says nothing. */
-function sbiRmk(inp:any){
+/* dt (optional): only ever passed for a SANS row, from sbInpRow's read-only
+   branch below — sbInputsHTML's own call omits it, so that surface is
+   unchanged. The badge prefixes the same way lateTag does, one span nested
+   inside this cell rather than a new sibling, because sbi-rm is a grid CHILD
+   in both callers and adding a sibling there would misregister every column
+   after it (the c6r register lesson, see sbInpRow). */
+function sbiRmk(inp:any,dt?:any){
   const lt=lateTag(inp), v=inp.remarks||'';
-  return `<span class="sbi-rm" title="${esc(v)}">${lt}${esc(v)||(lt?'':'—')}</span>`;
+  const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';
+  const sbt=sb?`<span class="sansb" title="SANS availability">${esc(sb)}</span>`:'';
+  return `<span class="sbi-rm" title="${esc(v)}">${lt}${sbt}${esc(v)||(lt||sbt?'':'—')}</span>`;
 }
 export function sbInputsHTML(d:any,di:any){
   const rows=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt));
@@ -394,8 +402,19 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
    compact `.sbi-row`, which is also what the read-only bands panel below
    draws — nothing is gained by showing a scheduler's fields to someone who
    cannot use them, and the two panels stay legible at a glance. */
-function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any){
+/* dt (6th param): only ever passed by sbSansPanel, and only ever non-empty
+   for a SANS row. BOTH row shapes below are strict grids with a fixed child
+   count the phone/wide breakpoints key off by POSITION (see the c6r register
+   comment further down) — the badge must nest INSIDE an existing child, never
+   ride as a new sibling, or every track after it misregisters exactly the
+   way the grip once did. The read-only shape's remarks IS a span (sbiRmk),
+   so it nests there, lateTag-style. The editable shape's remarks is a bare
+   `<input>` — nothing can nest inside a value — so there it rides in the
+   PEOPLE cell instead, beside the puck. */
+function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
   const RO=ro??pv;
+  const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';
+  const sbt=sb?`<span class="sansb" title="SANS availability">${esc(sb)}</span>`:'';
   const pk=PEOPLE[inp.person]
     ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
     : `<span class="itxt">${esc(inp.person)}</span>`;
@@ -403,7 +422,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
       +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
-      +sbiRmk(inp)+`</div>`;
+      +sbiRmk(inp,dt)+`</div>`;
   }
   const id=inpId(inp);
   const fld=(cls:any,f:any,v:any,ph:any)=>`<input class="${cls}" data-ifld="${esc(id)}.${f}" value="${esc(v||'')}" placeholder="${ph}">`;
@@ -418,7 +437,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any){
     +sbGrip(true)
     +inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`)
     +fld('atm','str',inpTimeText(inp,'str'),'all day')+fld('atm','end',inpTimeText(inp,'end'),'')
-    +`<div class="ppl">${pk}</div>`
+    +`<div class="ppl">${pk}${sbt}</div>`
     +fld('ain rmkin','rmks',inp.remarks||'','remarks')
     +`<span class="lctl">${acc?accCtl(di,inp):''}</span></div>`;
 }
@@ -449,6 +468,20 @@ export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   if(!rows.length)s+=`<div class="sb-empty">Nil — everybody is available today.</div>`;
   else if(!ro)s+=C6;
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,ro,ro); });
+  return s+`</div></div>`;
+}
+/* SANS AVAILABILITY (owner, 14 Aug 26) — a POSITIVE record, so it earns its
+   own panel rather than sitting inside Unavailable (isUnavail is true for it,
+   which is what buys the no-Accept-controls shape above for free, but it is
+   an offer, not an absence — see the guard in sbUnavailPanel). Modeled on
+   that panel: same row builder, same read-only handling; the only new thing
+   is threading d.dt into sbInpRow so it can find each row's own badge. */
+export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
+  const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isSansAvail(inp.type));
+  let s=`<div class="sb-panel sansav"><div class="sb-ph">SANS Availability <span class="sub">what SANS aircrew are offering${ro?'':' — times and remarks type in place, clear a time for all day'}</span></div><div class="sb-pb">`;
+  if(!rows.length)s+=`<div class="sb-empty">No SANS availability filed for this day.</div>`;
+  else if(!ro)s+=C6;
+  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,ro,ro,d.dt); });
   return s+`</div></div>`;
 }
 /* the board never carried the amendment marks the week view had — added with

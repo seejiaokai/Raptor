@@ -83,6 +83,72 @@ export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPic
   </div>
 }
 
+/* THE SANS SUB-FORM (owner, 14 Aug 26) — the only place a record's Fly/AMT/
+   OFT payload is typed, shared by the add form, the in-table row editor and
+   this file's own modal (the same three surfaces SpanPicker already serves).
+   Fly / AMT / OFT, in that display order — SANS_KEY in avail.ts maps them to
+   f/o/a, which is a lookup order, not a reading order.
+   A row's time pair is BLANK when it is not offering a window of its own —
+   "checked, no times" IS all day (true in the record), so there is no third
+   control to keep in step with the two boxes, the same reasoning the all-day
+   cells elsewhere in this file already lean on. Mirrors the add form's
+   dim-when-disabled pattern (InputsPage.tsx) for the faded pair before a row
+   is ticked.
+   While a box is ticked with only ONE of its two times filled in, `sans[k]`
+   holds `{s,e}` with a null half — a real, if incomplete, draft value rather
+   than silently keeping the last valid one. commitInputEdit (below, via
+   sansRefusal) is what refuses to save it; the picker's job is only to show
+   what was actually typed. */
+const SANS_ROWS: Array<[string, string]> = [['f', 'Fly'], ['a', 'AMT'], ['o', 'OFT']]
+export function SansPicker({ id, sans, onChange }: { id: string, sans: any, onChange: (next: any) => void }) {
+  const set = (k: string, v: any) => {
+    const next = { ...(sans || {}) }
+    if (v == null) delete next[k]; else next[k] = v
+    onChange(next)
+  }
+  /* both blank → all day (true); either filled → a window, converted to
+     minutes right here so every consumer downstream of the draft (commit,
+     the badge, sansGate) only ever sees the record's own shape */
+  const setTime = (k: string, sStr: string, eStr: string) =>
+    set(k, (!sStr && !eStr) ? true : { s: sStr ? parseHM(sStr) : null, e: eStr ? parseHM(eStr) : null })
+  return <div className="sanspick" id={id} role="group" aria-label="SANS availability">
+    {SANS_ROWS.map(([k, label]) => {
+      const v = sans ? sans[k] : undefined
+      const on = v !== undefined
+      const timed = on && v !== true
+      const sTime = timed && v.s != null ? hhmm(v.s) : ''
+      const eTime = timed && v.e != null ? hhmm(v.e) : ''
+      return <div className="sanspick-row" key={k}>
+        <label className="sanspick-ck"><input type="checkbox" checked={on}
+          onChange={e => set(k, e.target.checked ? true : null)} /> {label}</label>
+        <span className={'sanspick-t' + (on ? '' : ' dim')}>
+          <input type="time" aria-label={label + ' start time'} disabled={!on} value={sTime}
+            onChange={e => setTime(k, e.target.value, eTime)} />
+          <input type="time" aria-label={label + ' end time'} disabled={!on} value={eTime}
+            onChange={e => setTime(k, sTime, e.target.value)} />
+        </span>
+      </div>
+    })}
+  </div>
+}
+/* THE SANS PAYLOAD REFUSALS — one function, so the add form, the in-table
+   editor and this modal (via commitInputEdit) can never disagree on the
+   wording. Three checks: restricted to SANS aircrew, at least one box
+   ticked, and no half-filled window (the picker above can produce one while
+   the typist is mid-edit; it must not reach the model). Returns '' when the
+   payload is fine to save. */
+const SANS_KEY_LABEL: any = { f: 'Fly', a: 'AMT', o: 'OFT' }
+export function sansRefusal(person: any, sans: any): string {
+  if (!PEOPLE[person]?.san) return 'SANS Availability is for SANS aircrew only'
+  if (!sans || !Object.keys(sans).length) return 'Tick at least one of Fly / AMT / OFT'
+  for (const k of Object.keys(sans)) {
+    const v = sans[k]
+    if (v !== true && (!v || v.s == null || v.e == null))
+      return `Give ${SANS_KEY_LABEL[k] || k} both a start and an end time, or leave both blank for all day`
+  }
+  return ''
+}
+
 /* THE TYPE CONTROLS. Twenty types is too many for a flat list, so every
    dropdown is cut into the same three groups the legend uses, generated from
    INPUT_META — the list you pick from, the explanation you read and the rule
@@ -156,8 +222,8 @@ export function commitInputEdit(r: any, draft: any) {
      a type that means nothing, so both are refused here, the one place every
      editor's commit passes through. */
   if (isSansAvail(draft.type)) {
-    if (!PEOPLE[draft.person]?.san) { HOOKS.toast('SANS Availability is for SANS aircrew only', 'warn'); return false }
-    if (!draft.sans || !Object.keys(draft.sans).length) { HOOKS.toast('Tick at least one of Fly / AMT / OFT', 'warn'); return false }
+    const why = sansRefusal(draft.person, draft.sans)
+    if (why) { HOOKS.toast(why, 'warn'); return false }
   }
   writeInputsBatch(() => {
     /* An ACCEPTED input is linked to the row it created by `src`, a content
@@ -381,32 +447,43 @@ export function InputEditor() {
               onChange={e => {
                 const t = e.target.value
                 /* a type with no halves cannot keep a half label — it would
-                   read "(AM)" on a row the picker can no longer express */
-                setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }) })
+                   read "(AM)" on a row the picker can no longer express.
+                   Switching TO SANS Availability seeds an empty payload for
+                   the picker below to fill; switching AWAY drops it — a
+                   record for a different type carrying a stale sans object
+                   would be dead weight nothing reads. */
+                setDraft({
+                  ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }),
+                  sans: isSansAvail(t) ? (draft.sans || {}) : null,
+                })
               }}>{typeOptions()}</select>
           </label>
           <div className="inped-f">
-            <span className="inped-k">When</span>
-            <div className="inped-when">
-              {hasHalf(draft.type)
-                ? <SpanPicker id="inpEditSpan" span={span} onPick={m => {
-                  const f = spanFields(m)
-                  setDraft({
-                    ...draft, allday: f.allday, half: f.half,
-                    /* Custom keeps whatever is already in the boxes — the
-                       point of it is to adjust the times you can see */
-                    ...(m === 'custom' ? {} : { sTime: f.sTime, eTime: f.eTime }),
-                  })
-                }} />
-                : <label className="inped-ad"><input type="checkbox" id="inpEditAllday" checked={draft.allday}
-                  onChange={e => setDraft({ ...draft, allday: e.target.checked, half: '' })} /> all day</label>}
-              <span className="inped-t" hidden={draft.allday}>
-                <input type="time" id="inpEditStart" aria-label="Start time" value={draft.sTime}
-                  onChange={e => setDraft({ ...draft, sTime: e.target.value, half: '' })} />
-                <input type="time" id="inpEditEnd" aria-label="End time" value={draft.eTime}
-                  onChange={e => setDraft({ ...draft, eTime: e.target.value, half: '' })} />
-              </span>
-            </div>
+            <span className="inped-k">{isSansAvail(draft.type) ? 'Availability' : 'When'}</span>
+            {isSansAvail(draft.type)
+              /* not an absence — no all-day/time controls, just what he is
+                 offering (see SansPicker above) */
+              ? <SansPicker id="inpEditSans" sans={draft.sans} onChange={sans => setDraft({ ...draft, sans })} />
+              : <div className="inped-when">
+                {hasHalf(draft.type)
+                  ? <SpanPicker id="inpEditSpan" span={span} onPick={m => {
+                    const f = spanFields(m)
+                    setDraft({
+                      ...draft, allday: f.allday, half: f.half,
+                      /* Custom keeps whatever is already in the boxes — the
+                         point of it is to adjust the times you can see */
+                      ...(m === 'custom' ? {} : { sTime: f.sTime, eTime: f.eTime }),
+                    })
+                  }} />
+                  : <label className="inped-ad"><input type="checkbox" id="inpEditAllday" checked={draft.allday}
+                    onChange={e => setDraft({ ...draft, allday: e.target.checked, half: '' })} /> all day</label>}
+                <span className="inped-t" hidden={draft.allday}>
+                  <input type="time" id="inpEditStart" aria-label="Start time" value={draft.sTime}
+                    onChange={e => setDraft({ ...draft, sTime: e.target.value, half: '' })} />
+                  <input type="time" id="inpEditEnd" aria-label="End time" value={draft.eTime}
+                    onChange={e => setDraft({ ...draft, eTime: e.target.value, half: '' })} />
+                </span>
+              </div>}
           </div>
           <label className="inped-f">
             <span className="inped-k">Remarks</span>
