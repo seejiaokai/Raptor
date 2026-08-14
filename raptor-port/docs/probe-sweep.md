@@ -31,7 +31,8 @@ sign sim tdrag warn zdup2` — same output / same pass counts, and
 above). The one gap is deliberate: **#8 "an offer adds nothing, a meeting still
 does"** pins the old OFFER exemption, where `Available fly` / `Available duty` /
 `Fly` clashed with nothing. Those first two types were removed and `Fly` became
-an ordinary commitment (owner decision, Aug 26), so the port now raises 3
+an ordinary commitment (owner decision, Aug 26; the type itself was renamed
+`Fly with` on 14 Aug 26 — grep for that in the port), so the port now raises 3
 warnings where the probe wants 0. The probe still describes the reference
 correctly; it no longer describes the port. The replacement assertion lives in
 `src/engine/validate.test.ts` ("Fly eats brief/debrief time exactly as a meeting
