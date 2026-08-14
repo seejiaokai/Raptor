@@ -286,7 +286,17 @@ export function availHTML(d:any,di:any,ed:any){
   }
   // SANS grouped together (separate currency requirements)
   h+=`<div class="ap-grp sans-grp">SANS available <span style="color:var(--ink-3);font-weight:500">· staff-assigned / NS</span> · ${sansAll.length}</div>`;
-  h+= sansAll.length?`<div class="ap-grid">`+sansAll.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
+  /* the SANS badge (owner, 14 Aug 26) rides beside the puck here too — same
+     minimal string sansBadge builds for the palette and the week/board
+     groups, so a SANS body's filed hours read the same on every surface.
+     Expanded grid only: the collapsed "N SANS" line above stays a bare
+     count, same as it always was. */
+  /* wrapped in ONE flex item, not two loose siblings — .ap-grid itself wraps
+     with flex-wrap, so an unwrapped badge would compete for its own place in
+     that wrap and could land beside a DIFFERENT puck than the one it names. */
+  const sansPk=(id:any)=>{const badge=sansBadge(id,d.dt);
+    return `<span class="ap-sans-item">${pk(id)}${badge?`<span class="ap-sans-b">${esc(badge)}</span>`:''}</span>`;};
+  h+= sansAll.length?`<div class="ap-grid">`+sansAll.map(sansPk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   return h+`</div>`;
 }
 export function storesView(o:any){

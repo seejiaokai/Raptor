@@ -4,6 +4,7 @@ import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
 import { collectEvents } from './events'
 import { HOOKS } from './hooks'
+import { sansGate, SANS_LABEL } from './avail'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -15,7 +16,8 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   DAYS_RUN:'No break day — too many days in a row',
   SC_QUAL:'SC currency — wrong shift',AAR_QUAL:'AAR currency — not qualified',AAR_INSTR:'AAR — back seat not cleared to instruct',NO_IR:'IRT without an IR examiner',
   PAX_CREW:'Incentive passenger — crew pairing needs approval',
-  SHIFT_SOFT:'On shift — also down for a ground event'};
+  SHIFT_SOFT:'On shift — also down for a ground event',
+  SANS_AVAIL:'SANS availability — planned outside the availability filed'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
    at 9px on a phone, so the glyphs are short: R for crew rest, B for either
@@ -610,6 +612,41 @@ export function validate(){
               `${inp.type} but standing SC SPARE — ${dn?'medically down':'overseas'}`
               +`, ${f.label}${why}`,f.key); }); });
       }
+    });
+    /* SANS AVAILABILITY (owner, 14 Aug 26) — a SANS body planted into a
+       flying / OFT / AMT slot outside what he actually filed raises a
+       persistent amber Advisory, reusing the CP flag (the PAX_CREW
+       precedent — no new chip). Checks are built from day.fly (domain
+       'fly', the sortie's own step→dekit window — the same window slotBar
+       judges a flying seat against, AVALON excluded because saExempt
+       formations never reach day.fly at all) plus day.events' sim entries
+       whose key names the device (`s:di.amt.ri` / `s:di.oft.ri` — domain is
+       the captured word, window is the event's own s→e). A duty, ground or
+       programme event carries no matching key, so it never reaches
+       sansGate — "any ground event can also be planned" is the owner's rule
+       for slotBar too, and the two must not drift apart.
+       ONLY 'not-offered' and 'window' raise. 'none' — nothing filed at all —
+       is DELIBERATELY silent here: the owner's own example only ever
+       describes planting AGAINST a filed record ("indicates A and O…
+       planned for F"), and firing on a bare no-record would put this
+       Advisory on every seeded SANS flyer the demo week already carries
+       (romeo, vinci and krait fly; waldo rides OFT as pax) — seed INPUTS
+       carry zero SANS records, so that would break reference parity for a
+       rule nobody asked to cover. No-record still reads to the scheduler —
+       the palette greys the puck and prints the reason, and the toast on
+       planting says the same — it simply never becomes a persistent
+       Advisory. 'ok' and 'na' are not a problem and need no comment. */
+    const sansChecks:any[]=[];
+    day.fly.forEach((e:any)=>sansChecks.push({id:e.id,domain:'fly',s:e.step,en:e.dekit,label:e.label,key:e.key}));
+    day.events.forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\./.exec(String(e.key||'')); if(!m)return;
+      sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key}); });
+    sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!p.san)return;
+      const g=sansGate(c.id,day.dt,c.domain,c.s,c.en);
+      if(g.status!=='not-offered'&&g.status!=='window')return;
+      markRing(di,c.id,'adv');markChip(di,c.id,'CP');
+      const reason=g.status==='not-offered'?`not offering ${SANS_LABEL[c.domain]} today`
+        :`${SANS_LABEL[c.domain]} offered ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
+      add('adv','SANS_AVAIL',[c.id],`${p.cs} planned for ${c.label} — ${reason}`,c.key);
     });
     /* Q (sims) — the sim box guards its FRONT seat like the jet (ground crew,
        a WSO, an IW-in-FCP record — none may occupy it). The REAR seat has no

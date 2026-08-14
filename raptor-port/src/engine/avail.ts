@@ -137,7 +137,7 @@ export function slotRules(key:any){
   /* an append target and an overflow body both sit on the row they hang off,
      so they carry its hours — strip both before looking the row up */
   const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
-  const out:any={seat:null,sim:false,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,avJet:false,avDuty:false};
+  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,avJet:false,avDuty:false};
   out.di=keyDay(k);
   /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
      shift carried a window before, which is the whole reason a personal input
@@ -171,6 +171,10 @@ export function slotRules(key:any){
     out.sim=true;
     const a=k.slice(2).split('.');
     if(a.length===4&&(a[3]==='p'||a[3]==='w'))out.seat=a[3];
+    /* which sim device — read straight off the key, the same way a[3] reads
+       the seat, so slotBar can ask sansGate for the right SANS domain (`amt'
+       or 'oft') without re-parsing the key a second time. */
+    out.simKind=a[0]==='amt'||a[0]==='oft'?a[0]:null;
   }
   if(k.indexOf(':')<0){                                  // a flying seat
     const a=k.split('.');
@@ -347,6 +351,28 @@ export function slotBar(id:any,key:any,rules?:any){
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>{const w2=inpWin(x); return !!w2&&w2[1]>1440&&inpHits(x,-1440);});
     if(off4.length)return offWord(off4[0])+' (overnight)';
+  }
+  /* THE SANS AVAILABILITY GATE, PICKER SIDE (owner, 14 Aug 26). Absences
+     outrank this — a SANS man on leave reads as on-leave, not as "no record
+     filed" — so it sits AFTER the four absence blocks above and BEFORE the
+     ordinary busy-at-this-hour check below: an offer that doesn't cover this
+     slot is a closer reason than "already on something else today".
+     `domain` is which offer this SLOT needs judging against: a sim key
+     carries its own kind (simKind, from slotRules' `s:` branch); an
+     unprefixed key is a flying seat; every other kind — duty, ground,
+     programme — is null, and null never gates (owner's rule: "any ground
+     event can also be planned"). Only a SANS person (p.san) is judged at
+     all — sansGate itself would return 'na' for anyone else, but checking
+     here first skips the lookup for the other fifty-odd names.
+     The three printed reasons are the same three the validator's SANS_AVAIL
+     advisory and the palette's badge agree on — one function, sansGate,
+     decides all of it, and this is its only call site inside slotBar. */
+  const domain=r.sim?r.simKind:(String(key).indexOf(':')<0?'fly':null);
+  if(domain&&p.san&&r.di>=0&&DAYS[r.di]&&r.slotStart!=null&&r.slotEnd!=null){
+    const g=sansGate(id,DAYS[r.di].dt,domain,r.slotStart,r.slotEnd);
+    if(g.status==='none')return 'SANS — no availability filed for today';
+    if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
+    if(g.status==='window')return `SANS — ${SANS_LABEL[domain]} offered ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
   }
   /* IS HE ALREADY BUSY AT THIS HOUR?
      The SC block above asks exactly this, for a shift. Every other slot asked
