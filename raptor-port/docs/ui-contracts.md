@@ -1269,6 +1269,31 @@ rings would mean nothing). Pinned in `ui/selrings.test.tsx` (the DOM agrees
 with slotBar on every slot) and `e2e/geometry.spec.ts` (the paints are
 distinct and move nothing).
 
+**A freshly added row / line / wave / block wears a blue box for ~6s (owner,
+14 Aug 26 — "everytime I add a new row block or wave there will be a blue box
+around the new thing added for around 6 seconds").** Every board add funnels
+through `markStructuralAdd` (`publish.ts`), which fires `HOOKS.flashAdded`;
+`state/view.ts` holds the add's own funnel key in `FRESHADD` on a 6s timer
+(one per flash, so a second add does not cut the first short), and
+`paintFreshAdds` (`highlights.ts`) hangs `.sb-fresh` after every board render —
+NOT baked into the builder string, for the same reason `paintArm` is not: the
+board diffs each panel to decide whether to re-hang it, so a class in the
+markup would force a re-hang on every keystroke and an unrelated edit would
+drop the box. The paint is a STATIC box-shadow in `#1E86FF` (the selection
+blue), never an animation, because the pass clears and re-adds the class on
+every repaint and an animated one would replay and flicker. A row/line/note
+matches on its `data-bfld` key climbed to its container (`.sb-arow` /
+`.sb-line` / `.sb-nrow`); a wave has no `data-bfld` on the board, so its
+`data-wsel` header stands in and the whole `.sb-go` boxes, with the inner
+first line deduped out (an outer target always beats one it contains); a duty
+`+ Block` records only its `dl:` header key, so its loose sibling rows are
+boxed by hand up to the next block. Board-only (adds happen there), off a
+frozen preview, inset + soft glow so it never shifts a neighbour or is clipped.
+A key renumbered by a delete inside the window just stops matching and the box
+drops a beat early — cosmetic, so it is deliberately NOT wired through
+`remapViewKeys` the way `RMKOPEN` is. Pinned in `ui/board.test.tsx`; the paint
+itself is left to the eye on the live bundle (jsdom measures every rect 0×0).
+
 **Selection is the blue fill and nothing else (owner, 7 Aug 26).** `.puck.sel`
 used to add a 2px `#BFE0FF` ring + glow with `!important`, which read as a
 white halo AND buried the red/amber severity ring the selected puck was

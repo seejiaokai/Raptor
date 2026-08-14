@@ -3,7 +3,7 @@
    render", "sched roster render", "sched wave title select", "sched
    setSlotVal", "the board shows the open day's strip", "board inputs panel")
    and the R group (CX carries a reason, B28), driven through the React app. */
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
@@ -1769,5 +1769,58 @@ describe('the AMT + Block button (14 Aug 26)', () => {
     const grid = $(`#sbBoard [data-fill="s:1.amt.${rows.length - 2}.+"]`)
     expect(grid.classList.contains('fcprcp'), 'the BOX renders the FCP/RCP grid').toBe(true)
     expect(grid.querySelectorAll('.sb-slot.empty').length, 'with its first droppable pair').toBe(2)
+  })
+})
+
+/* THE JUST-ADDED BLUE BOX (owner, 14 Aug 26 — "everytime I add a new row block
+   or wave there will be a blue box around the new thing for around 6 seconds").
+   jsdom cannot see the box-shadow (every rect is 0×0), but it CAN prove which
+   element the decoration pass boxes, which is the whole logic here — the paint
+   itself is left to the eye on the live bundle. The class is hung by
+   highlights.ts's paintFreshAdds, re-run after every board repaint, off the
+   FRESHADD keys markStructuralAdd fed in. */
+describe('the just-added blue box (14 Aug 26)', () => {
+  beforeAll(async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); notify() })
+  })
+  /* the flash is module state with a real 6s timer, so wipe it between cases —
+     a box left over from the previous add would fail the "exactly one" counts */
+  beforeEach(async () => { await act(async () => { view.FRESHADD.clear(); notify() }) })
+
+  it('a new sim row boxes its own row and nothing else', async () => {
+    const before = $$('#sbBoard .sb-panel.simr .sb-arow').length
+    await click($('#sbBoard [data-sradd="0.oft"]'))
+    expect($$('#sbBoard .sb-panel.simr .sb-arow').length).toBe(before + 1)
+    const fresh = $$('#sbBoard .sb-arow.sb-fresh')
+    expect(fresh.length, 'exactly the one new row wears the box').toBe(1)
+  })
+
+  it('a new wave boxes the whole wave, with no second box inside it', async () => {
+    const before = DAYS[0].waves.length
+    await click($('[data-wvadd]'))
+    await click($('.wavemenu [data-wmkind=""]'))
+    expect(DAYS[0].waves.length).toBe(before + 1)
+    const go = $$('#sbBoard .sb-go.sb-fresh')
+    expect(go.length, 'the whole wave is boxed').toBe(1)
+    expect(go[0].querySelector('.sb-line.sb-fresh'), 'and its own first line is not boxed twice').toBeFalsy()
+  })
+
+  it('the AMT + Block boxes all three new rows', async () => {
+    await click($('#sbBoard [data-sblkadd]'))
+    expect($$('#sbBoard .sb-panel.simr .sb-arow.sb-fresh').length, 'BRIEF, BOX and DEBRIEF each boxed').toBe(3)
+  })
+
+  it('the key clears itself after the ~6s window', () => {
+    /* fake timers + stubbed render hooks: prove the timer drops the key without
+       waiting six real seconds or churning React outside act */
+    vi.useFakeTimers()
+    const rs = HOOKS.renderScheduler, re = HOOKS.renderEditWeek
+    HOOKS.renderScheduler = () => {}; HOOKS.renderEditWeek = () => {}
+    try {
+      view.flashAdded('sr:0.oft.0.label')
+      expect(view.FRESHADD.has('sr:0.oft.0.label')).toBe(true)
+      vi.advanceTimersByTime(view.FRESH_MS + 20)
+      expect(view.FRESHADD.has('sr:0.oft.0.label'), 'gone after the window').toBe(false)
+    } finally { HOOKS.renderScheduler = rs; HOOKS.renderEditWeek = re; vi.useRealTimers() }
   })
 })

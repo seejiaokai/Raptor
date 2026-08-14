@@ -162,6 +162,9 @@ export function wireStore() {
     if (view.RMKOPEN == null) return
     view.setRmkOpen(move(view.RMKOPEN) ?? null)
   }
+  /* the just-added blue box (owner, 14 Aug 26): markStructuralAdd hands every
+     add's key here, view.ts holds it for ~6s, highlights.ts hangs the box */
+  HOOKS.flashAdded = (key) => view.flashAdded(key)
   /* the reference's isPhone() (matchMedia max-width:820px). It was never wired
      in the port, so the default `false` made every isPhone call site dead: a
      palette drag on a phone never parked the drawer — the drop could only land

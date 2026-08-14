@@ -66,9 +66,22 @@ one tap on the AMT header mints the whole BRIEF / BOX / DEBRIEF trio, times
 blank per the new-line rule, the BOX carrying `pax:[]` so its FCP/RCP grid
 offers its first empty pair at once; board-only, three structural adds, the
 OFT header untouched — contract in `docs/ui-contracts.md`, the `+ Block`
-paragraph under §The OFT takes instructors)**, run in
+paragraph under §The OFT takes instructors), and once more for the JUST-ADDED
+BLUE BOX (14 Aug 26 — "a blue box around the new thing added for around 6
+seconds": every board add — row, line, note, wave, duty/AMT block — flashes
+`.sb-fresh` (selection blue) for 6s. `markStructuralAdd` (`publish.ts`, the
+one choke every add funnels through) fires `HOOKS.flashAdded`; `state/view.ts`
+holds the key in `FRESHADD` on a 6s timer; `highlights.ts` `paintFreshAdds`
+hangs the box post-render like `paintArm`, so an unrelated edit inside the
+window cannot wipe it, and a static box-shadow — never an animation — so the
+clear-and-re-add on every repaint does not flicker. A wave boxes its whole
+`.sb-go` and dedups its own inner line; a duty `+ Block` boxes its header and
+sibling rows. Contract: `docs/ui-contracts.md`)**, run in
 this container on the matching tree:
-`npm test` 1433 tests across 91 files (the AMT + Block added two to
+`npm test` 1437 tests across 91 files (the blue box added four to
+`board.test.tsx` — a sim row boxes only itself, a wave boxes the whole wave
+with no inner box, the AMT block boxes its three rows, the key clears after
+the window; the AMT + Block added two to
 `board.test.tsx` — the button sits on the AMT header alone, and one tap
 mints the three blank rows with the BOX grid ready; the sim-rear-seat change added four —
 the OFT/AMT rear seat raises no QUAL and clears `slotBar` while the jet rear

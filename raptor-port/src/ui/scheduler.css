@@ -2349,6 +2349,16 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
    emits on every c6r row (duty/sim/ground) never shows here at all. */
 .mbtn.rmkadd{display:none}
 /* a duty-block / AMT / OFT sub-head inside a panel body */
+/* A freshly added row / line / wave / block wears a blue box for ~6s (owner,
+   14 Aug 26 — "a blue box around the new thing added for around 6 seconds").
+   Selection blue #1E86FF, the app's one blue. STATIC, never animated: the
+   highlight pass clears and re-adds this class on every board repaint, so an
+   animation would replay and flicker on each unrelated edit (see highlights.ts
+   paintFreshAdds). Inset border so it never shifts a neighbour or is clipped —
+   .sb-go carries overflow:hidden — plus a soft outer glow, the only part that
+   can clip and it degrades cleanly. z-index lifts the box over the next row's
+   top border. */
+.sb-fresh{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5);border-radius:6px;position:relative;z-index:4}
 .sb-psub{display:flex;align-items:center;gap:7px;margin:8px 0 3px;padding-top:7px;border-top:1px solid var(--edge)}
 .sb-psub:first-child{border-top:none;margin-top:0;padding-top:0}
 .sb-psub .ntx{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;

@@ -383,6 +383,31 @@ export function warnFocusMap(){
     if(ids.size)m.set(di,{ids,sev});});
   return m.size?{map:m,echo:null,sev:null}:null;
 }
+/* ---- FRESHLY ADDED FLASH (owner, 14 Aug 26) -------------------------------
+   Every new row / line / wave / block wears a blue box for ~6s so a scheduler
+   sees exactly what their tap created. Transient view state in the RMKOPEN /
+   ARM family: never persisted, never in a history snapshot, swept on a session
+   change. The box is HUNG post-render by highlights.ts's paintFreshAdds on
+   every board repaint (so an unrelated edit inside the window cannot wipe it),
+   and the keys held here are the SAME funnel keys markStructuralAdd records —
+   fed in through HOOKS.flashAdded — so the two can never drift. Each flash
+   schedules its OWN removal, so adding a second thing three seconds later does
+   not cut the first one's box short. A key renumbered by a delete inside the
+   window simply stops matching an element and the box drops a beat early —
+   cosmetic only, so it is not wired through remapViewKeys the way RMKOPEN is. */
+export const FRESHADD=new Set<string>()
+export const FRESH_MS=6000
+export function flashAdded(key:any){
+  if(!key)return
+  const k=String(key); FRESHADD.add(k)
+  setTimeout(()=>{
+    FRESHADD.delete(k)
+    /* repaint so the box comes off — the board it lives on, and the week
+       behind it, exactly the surfaces afterSchedMutate paints */
+    if(SBDAY!=null)renderScheduler()
+    if(CURPAGE==='editsched')renderEditWeek()
+  },FRESH_MS)
+}
 export let ARM:any=null;                                   // {key, di, title} or null
 export function armedKey(){return ARM?ARM.key:'';}
 export function armSlot(key:any,el?:any){
