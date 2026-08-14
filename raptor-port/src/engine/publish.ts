@@ -126,7 +126,7 @@ function syntheticKey(prefix:any,di:any,kind:any){di=+di;
   return `${p}${n+1}.${kind}`;}
 export function deletionKey(di:any,kind:any){kind=DELETE_LABELS[kind]?String(kind):'programme';return syntheticKey('del',di,kind);}
 export function trackStructuralAdd(key:any){if(!key)return '';SCHED.added=SCHED.added||{};SCHED.added[String(key)]=1;return String(key);}
-export function markStructuralAdd(key:any){trackStructuralAdd(key);markEdit(key);return String(key);}
+export function markStructuralAdd(key:any){trackStructuralAdd(key);markEdit(key);HOOKS.flashAdded(key);return String(key);}
 export function structuralAddExists(key:any){
   const s=String(key),c=s.indexOf(':'),p=c<0?'':s.slice(0,c),a=(c<0?s:s.slice(c+1)).split('.'),di=+a[0],d=DAYS[di];
   if(!d)return false;

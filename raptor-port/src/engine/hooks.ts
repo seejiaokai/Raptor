@@ -53,6 +53,14 @@ export const HOOKS = {
      ground splice under a revealed box stranding the reveal on whatever row
      slid into its address. */
   remapViewKeys: (_move: (k: any) => any): void => {},
+  /* A newly ADDED row / line / wave / block flashes a blue box for ~6s so a
+     scheduler sees exactly what their tap created (owner, 14 Aug 26). Fired
+     from markStructuralAdd (publish.ts) — the one choke EVERY board add already
+     funnels through, and nothing else calls — so a future add site is covered
+     with no extra wiring and a restore / AL replay (which never calls it) does
+     not flash. Purely a UI affordance: no-op headless, wired to
+     state/view.ts's flashAdded by store.ts. */
+  flashAdded: (_key: any): void => {},
 }
 
 /* tiny preference store — same guarded semantics as the reference's

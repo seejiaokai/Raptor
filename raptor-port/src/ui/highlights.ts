@@ -2,7 +2,7 @@
    the reference. Runs after every week render; the markup it decorates is
    the verbatim dayHTML output, so the selectors line up exactly. */
 import { PEOPLE, isSpecial } from '../engine/people'
-import { HLSET, SEARCH, SELID, WFOCUS, ARM, warnFocusMap, personMatchesHL, CURPAGE, SBDAY } from '../state/view'
+import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, warnFocusMap, personMatchesHL, CURPAGE, SBDAY } from '../state/view'
 import { ME } from '../state/auth'
 import { slotBar } from '../engine/avail'
 import { slotVal } from '../engine/slots'
@@ -76,6 +76,7 @@ export function refreshHighlights(){
   });
   paintArm();      // every render rebuilds the slots, so the ring is re-hung here
   paintSelRings(); // after paintArm, so an armed element can keep its own ring
+  paintFreshAdds();// the ~6s blue box on a just-added row / line / wave / block
   /* the queued hold, after the classes so it measures the final layout */
   if(PENDING_HOLD){const f=PENDING_HOLD; PENDING_HOLD=null; try{f()}catch(_){}}
 }
@@ -84,6 +85,49 @@ export function paintArm(){
   if(!ARM)return;
   document.querySelectorAll('[data-slot],[data-fill]').forEach((el:any)=>{
     if((el.dataset.slot||el.dataset.fill)===ARM.key)el.classList.add('armed');});
+}
+/* THE JUST-ADDED BLUE BOX (owner, 14 Aug 26 — "everytime I add a new row block
+   or wave there will be a blue box around the new thing for around 6 seconds").
+   Hung post-render like paintArm rather than baked into the string: SchedBoard
+   diffs each panel to decide whether to re-hang it, so a class put in the
+   markup would force a re-hang on every keystroke AND an unrelated edit would
+   drop it — this survives both, because view.ts keeps the key and this pass
+   re-applies the class after any repaint. A STATIC box-shadow, never an
+   animation: this clears and re-adds .sb-fresh on every refreshHighlights, so
+   an animated one would replay and flicker on each unrelated repaint.
+   Board only, and the boardwrap excludes the palette and a frozen preview
+   (which is read-only and carries no add anyway). FRESHADD holds the exact
+   funnel keys markStructuralAdd recorded — a row/line/note field's data-bfld,
+   climbed to its row container; a wave has no data-bfld on the board, so its
+   header <select data-wsel> stands in and the whole .sb-go boxes. The outer
+   box (the wave) wins over any inner one (its own first line) so a wave never
+   draws a second box inside itself. */
+export function paintFreshAdds(){
+  document.querySelectorAll('.sb-fresh').forEach((el:any)=>el.classList.remove('sb-fresh'));
+  if(!FRESHADD.size)return;
+  const wrap=document.querySelector('#schedBoard .sb-boardwrap:not(.pv-frozen)');
+  if(!wrap)return;
+  const targets=new Set<any>();
+  FRESHADD.forEach((k:any)=>{ if(String(k).slice(0,3)==='wl:'){
+    const h=wrap.querySelector(`[data-wsel="${String(k).slice(3)}"]`);
+    const go=h&&h.closest('.sb-go'); if(go)targets.add(go); } });
+  wrap.querySelectorAll('[data-bfld]').forEach((el:any)=>{
+    if(!FRESHADD.has(el.dataset.bfld))return;
+    const box=el.closest('.sb-line,.sb-arow,.sb-nrow,.sb-psub'); if(box)targets.add(box);
+  });
+  const list=[...targets];
+  list.forEach((el:any)=>{
+    if(list.some((o:any)=>o!==el&&o.contains(el)))return;
+    el.classList.add('sb-fresh');
+    /* a duty + Block records only its header key (dl:) — its template rows are
+       loose .sb-arow SIBLINGS, not children, and are not separately tracked —
+       so box them too, up to the next block, so the whole new block reads as
+       one. Only .sb-psub reaches here (nothing else maps to it), so this never
+       widens a plain row's box. */
+    if(el.classList.contains('sb-psub'))
+      for(let s=el.nextElementSibling;s&&!s.classList.contains('sb-psub');s=s.nextElementSibling)
+        if(s.classList.contains('sb-arow'))s.classList.add('sb-fresh');
+  });
 }
 /* WHERE CAN THE SELECTED MAN GO (owner, 13 Aug 26). The blue click also rings
    every slot he could take: bright green on an empty slot, dimmed green with a
