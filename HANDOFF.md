@@ -98,11 +98,15 @@ anchoring to the loaded week, then, at the owner's word, reverted to a plain
 today → +2 weeks; the open-work list below carries which of the two is
 current and why. All four were re-checked on the DEPLOYED page.
 The board's measured DOM went 897 → 911 on the 12 Aug sweep, then to 923 with
-the board redesign (the inline `+ Wave` panel and the AMT FCP/RCP labels),
-against an unmoved 960 ceiling; the week measures 3621 under the 4000 ceiling
+the board redesign (the inline `+ Wave` panel and the AMT FCP/RCP labels), then
+DOWN to 829 with the 14 Aug board-full-editor batch — not because it got
+lighter but because the sign-off moved out of the measured `#sbBoard` into its
+own `#sbSign` element — against an unmoved 960 ceiling; the week measures 3621
+under the 4000 ceiling
 the crew-finding build set (the Available-crew panels boot folded now).
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
-board can still be a heavier one.
+board can still be a heavier one — and now that a heavier board can read
+lighter when the measure's boundary moves.
 
 Three earlier passes the same day were each green on the same six and each
 checked on the DEPLOYED page (the standing instruction, owner 7 Aug 26): the
