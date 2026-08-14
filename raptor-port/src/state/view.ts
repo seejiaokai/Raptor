@@ -323,6 +323,13 @@ export const DWOPEN=new Set();         // day indices whose issue box is expande
    reload and takes no part in undo. Same in-place-mutation pattern as DWOPEN
    (ESM cannot reassign across modules). */
 export const DPREV=new Map()
+/* which days' Available-crew panel is EXPANDED — collapsed to its one-line
+   summary is the default (owner, 13 Aug 26: "the window is pretty big").
+   Session view state in the DWOPEN pattern: in-place mutation because ESM
+   cannot reassign across modules, cleared on a session change, never
+   persisted and never in a history snapshot. */
+export const AVOPEN=new Set()
+export function toggleAvail(di:any){ if(AVOPEN.has(+di))AVOPEN.delete(+di); else AVOPEN.add(+di) }
 export function setDayPreview(di:any,ver:any){ if(ver==null||ver==='live')DPREV.delete(+di); else DPREV.set(+di,ver) }
 /* drop any preview whose snapshot no longer exists — undo across a publish,
    unpublishAL, a week switch: without this the day would render the live model
@@ -394,17 +401,28 @@ export function disarmSlot(){ if(!ARM)return; ARM=null; paintArm(); renderRoster
 /* place a name from the palette into whatever is armed */
 export function placeArmed(id:any){
   if(!ARM||!id)return false;
-  const why=slotBar(id,String(ARM.key).replace(/\.\+$/,''));
-  if(why){toast(`${PEOPLE[id].cs} — ${why}`,'warn');return false;}   // darkened names do not plant
-  const key=ARM.key;
+  const key=ARM.key, base=String(key).replace(/\.\+$/,'');
+  /* the one refusal left: re-planting the seat's own occupant would write
+     nothing and still toast "planned". Reachable since a placeholder-filled
+     slot arms (13 Aug 26) — tap the placeholder in the slot, then tap the
+     same placeholder on the palette's row. */
+  if(!/\.\+$/.test(key)&&slotVal(base)===id){toast(`${PEOPLE[id].cs} — already in that seat`);return false;}
+  /* A DARKENED NAME PLANTS TOO (owner, 13 Aug 26 — "everything plants,
+     warning after"). The tap used to refuse where a drag warned-and-allowed,
+     so the two ways of planting the same man disagreed. The reason is on the
+     list BEFORE the tap (the strike, and the printed reason line while
+     armed); planting repeats it as the warn toast after the write — the same
+     validate-then-ask shape as drag.ts's barDrop — and the validator rings
+     the puck the same instant. */
   if(/\.\+$/.test(key))fillSlot(key,id); else setSlotVal(key,id);
   armDrop();
   /* a successful fill PARKS the drawer (owner, 8 Aug 26): the point of
-     planting is seeing the puck land, and the open drawer covers it.
-     Refusals return above, so an aborted pick keeps the drawer out. */
+     planting is seeing the puck land, and the open drawer covers it. */
   if(isPhone())document.body.classList.remove('ros-open');
   afterSchedMutate(); paintArm();
-  toast(`${PEOPLE[id].cs} planned`);
+  const why=slotBar(id,base);
+  if(why)toast(`${PEOPLE[id].cs} — ${why}`,'warn');
+  else toast(`${PEOPLE[id].cs} planned`);
   return true;
 }
 /* what a slot is called, for the picker's title.

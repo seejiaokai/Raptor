@@ -388,9 +388,33 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .rpuck.no::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:1px;
   background:var(--ink-3);transform:translateY(-.5px);pointer-events:none}
 .rpuck.no,.rpuck.no:active{cursor:not-allowed}
+/* An ARMED list prints the reason under a crossed-out name (owner, 13 Aug 26
+   — a phone has no hover, and the rule is the scheduler sees the problem
+   BEFORE the tap, never by planting). The entry becomes a little column: the
+   strike is pinned to the puck's own height, the whole-entry fade is lifted
+   so the words stay legible, and the puck alone keeps the dimming. The tap
+   still plants (the reason then repeats as the warn toast), so the
+   not-allowed cursor comes off with the refusal it used to describe. */
+.rpuck.no.haswhy{opacity:1;flex-direction:column;align-items:stretch;gap:1px}
+.rpuck.no.haswhy .puck{opacity:.45}
+.rpuck.no.haswhy::after{top:calc(var(--puck-h)/2)}
+.rpuck.no.haswhy,.rpuck.no.haswhy:active{cursor:pointer}
+/* the reason line lives under a single name OR once under a column header,
+   whichever paletteHTML decided — same look either way */
+.eroster .rwhy{font-size:8.5px;color:var(--ink-2);opacity:.75;line-height:1.2;padding:0 1px 1px}
 /* the slot waiting for a name */
 .seat.armed,.sb-slot.armed,[data-fill].armed{outline:2px dashed var(--accent);outline-offset:-2px;
   border-radius:7px;background:rgba(59,198,232,.10)}
+/* GREEN IS ELIGIBILITY, never a severity (comp approved by the owner, 13 Aug
+   26): with a person selected, a slot he could take rings solid green —
+   bright with a glow when EMPTY, dimmed with a soft tint where he would take
+   over from the man in it. Solid on purpose: the armed ring owns dashed, and
+   red/amber/grey stay the warning tiers. Outline + shadow only — no nodes,
+   no layout, so the "screen holds still" contract is untouched. */
+.oktake{outline:2px solid var(--ok);outline-offset:1px;border-radius:4px;
+  box-shadow:0 0 8px 1px rgba(87,201,122,.75)}
+.oktake-f{outline:2px solid rgba(87,201,122,.55);outline-offset:1px;border-radius:4px;
+  background:rgba(87,201,122,.14)}
 .eroster .ros-arm,.sb-roster .ros-arm{display:flex;align-items:center;gap:7px;margin:0 0 7px;padding:5px 7px;
   border:1px solid var(--accent);border-radius:8px;background:rgba(59,198,232,.12);
   font-size:10.5px;line-height:1.35;color:var(--ink)}
@@ -718,7 +742,11 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .allhands .ah-row:last-child{padding-bottom:6px}
 /* All-available pucks */
 .availpuck{margin:8px 10px;border:1px solid var(--edge);border-radius:10px;background:rgba(87,201,122,.05);overflow:hidden}
-.availpuck .ap-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:10px;font-weight:700;color:var(--ok);padding:5px 10px;border-bottom:1px solid var(--edge);display:flex;justify-content:space-between;align-items:center}
+.availpuck .ap-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:10px;font-weight:700;color:var(--ok);padding:5px 10px;border-bottom:1px solid var(--edge);display:flex;justify-content:space-between;align-items:center;gap:10px}
+/* the header is the fold/unfold control (owner, 13 Aug 26); collapsed, the
+   panel is just this line, so its border-bottom would draw a stray rule */
+.availpuck .ap-h[data-avtog]{cursor:pointer}
+.availpuck .ap-h:last-child{border-bottom:none}
 .availpuck .ap-h .n{color:var(--ink-3);font-weight:600;font-size:9px}
 .availpuck .ap-grp{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:9px;font-weight:700;color:var(--ink-3);padding:6px 10px 2px}
 .availpuck .ap-grp.sans-grp{color:var(--san);border-top:1px solid var(--edge);margin-top:4px;padding-top:8px}

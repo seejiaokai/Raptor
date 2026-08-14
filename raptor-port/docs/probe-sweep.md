@@ -231,8 +231,10 @@ and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
 `probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 960**
-(measured 923, after the 13 Aug board redesign), **week ≤ 5530** (measured
-5099). Tripping one is not
+(measured 923, after the 13 Aug board redesign), **week ≤ 4000** (measured
+3621 — LOWERED from 5530 on 13 Aug 26 when the Available-crew panels started
+booting folded; the argued comment sits on the ceiling itself in
+`perf-port.cjs`). Tripping one is not
 automatically a fault; it is a prompt to check the time and then raise the
 number deliberately, in the PR that adds the nodes, beside a fresh
 `npm run perf` showing the per-node cost held. The board has been raised

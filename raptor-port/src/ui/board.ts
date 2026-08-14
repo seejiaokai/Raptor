@@ -3,7 +3,7 @@
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
-import { PEOPLE, nameToId } from '../engine/people'
+import { PEOPLE, nameToId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
@@ -779,13 +779,17 @@ export function boardArmClick(e: MouseEvent) {
      it, and clicking straight past it goes on editing the text. */
   const rp = t.closest('[data-rolepick]') as HTMLElement | null
   if (rp) { rolePickMenu(rp, rp.dataset.rolepick!); return }
-  if (t.closest('.puck[data-person]')) return
+  /* a PLACEHOLDER's puck arms its slot like an empty one (owner, 13 Aug 26 —
+     "someone still needed here" goes straight to finding that someone); only
+     a real person's puck falls through to selection */
+  const bpk = t.closest('.puck[data-person]') as HTMLElement | null
+  if (bpk && !isSpecial(bpk.dataset.person)) return
   const empty = t.closest('.sb-slot.empty[data-slot]') as HTMLElement | null
   if (empty) { view.armSlot(empty.dataset.slot, empty); notify(); e.stopPropagation(); return }
   const seat = t.closest('.seat[data-slot]') as HTMLElement | null
   /* same armed-element escape as routeClick: a seat armed while empty, then
      filled by drag, must still answer the put-me-down tap */
-  if (seat && (view.armedKey() === seat.dataset.slot || !slotVal(seat.dataset.slot!))) { view.armSlot(seat.dataset.slot, seat); notify(); e.stopPropagation(); return }
+  if (seat && (view.armedKey() === seat.dataset.slot || !slotVal(seat.dataset.slot!) || isSpecial(slotVal(seat.dataset.slot!)))) { view.armSlot(seat.dataset.slot, seat); notify(); e.stopPropagation(); return }
   const cell = t.closest('[data-fill]') as HTMLElement | null
   if (cell && !seat) { view.armSlot(cell.dataset.fill, cell); notify(); e.stopPropagation() }
 }

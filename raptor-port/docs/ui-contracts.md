@@ -902,8 +902,34 @@ stranding text already in the model.
   the reference only unassigned on the roster panel.)
 - A drop outside the window never deletes. Self-drop says "Already in that
   seat".
-- Arm-and-plant: empty slot arms, palette tap plants, darkened names refuse
-  with a toast, changing board day disarms.
+- Arm-and-plant (rewritten 13 Aug 26, owner): an empty OR PLACEHOLDER-FILLED
+  slot arms — a placeholder means "someone still needed here", so its puck
+  goes straight to finding them, while a real person's puck still selects.
+  A palette tap ALWAYS plants: a darkened name plants too, its reason toasted
+  after, mirroring drag ("everything plants, warning after") — the one
+  refusal left is the seat's own occupant ("Already in that seat"). Changing
+  board day disarms. While armed, a darkened name PRINTS its reason on the
+  list itself, because a phone has no hover and the owner's rule is that the
+  scheduler sees the problem BEFORE the tap: under the name (`.rwhy`), or
+  ONCE under a column header when every barred name in that column shares
+  one reason (a front-seat arm bars every WSO identically, and fifteen
+  copies of one sentence tripled the drawer).
+
+## The Available-crew panel folds (owner, 13 Aug 26)
+
+The edit week's per-day Available-crew block boots COLLAPSED to its header
+line — "Available crew · N all day · +N night · N SANS ⌄" — and the header
+(`data-avtog`) toggles it per day (`AVOPEN` in `state/view.ts`, session view
+state in the DWOPEN pattern, cleared on a session change). Expanded, the
+grouping is unchanged but a wave line counts EVERYONE who can fly that wave —
+its own partially-free leftovers PLUS the all-day crew — because the old
+leftovers-only count printed "— none free —" over a wave 22 people could fly,
+which the owner read as a bug (the panel was lying, not the engine). The
+collapsed root keeps `.availpuck`, so drop-to-unassign still works closed.
+The default week render fell 5099 → 3621 nodes with the fold, and the perf
+gate's week ceiling was LOWERED to 4000 to pin the win (`probes/perf-port.cjs`
+carries the argued comment). Gated in `e2e/geometry.spec.ts` ("the
+Available-crew panel folds") and `ui/editweek.test.tsx`.
 
 ## Reordering rows on the board
 
@@ -1036,6 +1062,11 @@ dialog closing silently.
 including the rings." Red means the rule is raised **hard**; amber means
 **adv**; grey means **note**. Nothing else may decide it.
 
+**And GREEN is none of them (13 Aug 26):** a green ring on a SLOT is
+eligibility — "the selected person can be planned here" (`.oktake` /
+`.oktake-f`, §Selection highlight) — never a tier. No severity may ever
+paint green, and the eligibility rings may never borrow red, amber or grey.
+
 Four places had drifted apart and now have to agree — change one, change all:
 
 - **the ring** — `.puck.warn` / `.warn.hard` / `.warn.note`, driven by
@@ -1108,6 +1139,23 @@ re-found by week, day, name and position, never by identity. Off the week
 (board, palettes) the delta is zero and it is a no-op. jsdom reports every
 rect 0×0, so vitest sees a zero delta by construction — the hold is gated in
 `e2e/geometry.spec.ts` ("selecting a puck holds the screen still").
+
+**Selection also rings where the man could GO (owner, 13 Aug 26).** In edit
+mode, `paintSelRings` (`highlights.ts`) rings every slot the selected person
+could take, judged by `slotBar` — the palette's and the drop warning's own
+oracle, so the three cannot disagree: solid bright green with a glow
+(`.oktake`) on an empty slot, dimmed green with a tint (`.oktake-f`) where he
+would take over from someone, nothing where a reason bars him, and his own
+seats stay bare. Green is eligibility, never a severity (§Flag colour IS the
+tier), and SOLID on purpose — dashed stays the armed ring's identity, and an
+armed element keeps its own ring. Answers are memoised per selection against
+WARN's identity (every mutation revalidates, so the memo cannot go stale);
+the rings are outline-only — no nodes, no layout, so the hold-still contract
+below is untouched — and the paint is edit-mode only: view-only never rings,
+and neither does a selected placeholder (nothing bars a placeholder, so its
+rings would mean nothing). Pinned in `ui/selrings.test.tsx` (the DOM agrees
+with slotBar on every slot) and `e2e/geometry.spec.ts` (the paints are
+distinct and move nothing).
 
 **Selection is the blue fill and nothing else (owner, 7 Aug 26).** `.puck.sel`
 used to add a 2px `#BFE0FF` ring + glow with `!important`, which read as a

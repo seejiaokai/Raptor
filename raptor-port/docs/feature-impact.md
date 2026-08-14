@@ -43,7 +43,7 @@ the rest are the ones the code actually has.
 | **Mobile mode** | Phone layout — top-to-bottom, reachable, one board window | `scheduler.css` `@media (max-width:820px)` / `480px`; `boardnav` | CSS + the phone board's arrows/dots; `sbWide` module-local |
 | **Qualifications** | The Quals grid; the qual ladder the validator reads | `QualsPage.tsx`; `people.ts` (`p.quals`, qual rules in `validate.ts`) | ticks are session-only; drive `QUAL`/`SC_QUAL`/`AAR_*` checks |
 | **Personal inputs** | Leave / medical / activity records | `INPUTS` in `inputs.ts`; `inputedit.tsx`; `InputsPage.tsx` | `INPUT_META` (the one table) decides every predicate |
-| **Availability / palette** | Who the crew strip offers, who is struck out | `avail.ts` (`slotBar`, `dayOff`), `palette-html.ts` | `isAway`/`inputCoversDate`/`inpWin` — MUST agree with the warning list |
+| **Availability / palette** | Who the crew strip offers, who is struck out, the armed reason lines, the green eligibility rings, the folded Available-crew panel | `avail.ts` (`slotBar`, `dayOff`), `palette-html.ts`, `highlights.ts` (`paintSelRings`), `html.ts` (`availHTML` + `AVOPEN`) | `isAway`/`inputCoversDate`/`inpWin` — MUST agree with the warning list; the rings read `slotBar` itself, never a copy |
 | **Publishing / AL** | Sign-off, amendments after a day is signed | `publish.ts`, `ALPanel.tsx` | inert amendment keys through the mutation funnel |
 | **Export (CSV)** | Schedule, inputs and LoX downloads | `export.ts` (`csvText`, `exportCSV`, `schedRows`); `InputsPage.tsx` | reads the model directly; formula-injection escaped at the sink |
 | **Roles / auth** | Admin vs member vs view-only; who may write | `auth.ts`, `state/session.test.ts` | checked at the PAGE and the WRITE path, never the nav |
@@ -192,6 +192,12 @@ check the other):
 - **Palette vs warning list.** `slotBar`/`avail.ts` and `validate.ts` read the
   same input independently. They must give the same answer about who is
   available. Failing closed (`inpWin`, `awayAllDay`) is how they are kept honest.
+  Since 13 Aug 26 the GREEN ELIGIBILITY RINGS (`paintSelRings`, highlights.ts)
+  are a third reader of the same question — deliberately NOT a third copy: they
+  call `slotBar` itself per slot, memoised against WARN's identity, so they can
+  only ever disagree with the palette by a stale repaint, never by a diverged
+  rule. Keep it that way: a ring rule that does not go through `slotBar` is a
+  new drift-seam. (`selrings.test.tsx` pins DOM-agrees-with-slotBar directly.)
 - **Three editors over one list.** The Inputs page, the week cell and the board
   cell all edit `INPUTS`; they are kept from drifting only because all three
   funnel through `commitInputEdit`/`setInpField`. Add a fourth the same way.
