@@ -173,8 +173,14 @@ export function slotRules(key:any){
     if(a.length===4&&(a[3]==='p'||a[3]==='w'))out.seat=a[3];
     /* which sim device — read straight off the key, the same way a[3] reads
        the seat, so slotBar can ask sansGate for the right SANS domain (`amt'
-       or 'oft') without re-parsing the key a second time. */
-    out.simKind=a[0]==='amt'||a[0]==='oft'?a[0]:null;
+       or 'oft') without re-parsing the key a second time. a[0] is the DAY
+       index (`s:di.kind.ri…`, see keys.ts's grammar in CLAUDE.md) — a[1] is
+       the kind. Bug found writing sansavail.test.ts (14 Aug 26): this read
+       a[0], which is always a numeric day index and never 'amt'/'oft', so
+       simKind was silently null for every sim key and the whole SANS OFT/AMT
+       gate — slotBar's grey-out AND the validator's advisory — never fired
+       for a sim seat. Only the flying-seat domain ever worked. */
+    out.simKind=a[1]==='amt'||a[1]==='oft'?a[1]:null;
   }
   if(k.indexOf(':')<0){                                  // a flying seat
     const a=k.split('.');

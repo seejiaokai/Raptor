@@ -1025,6 +1025,62 @@ stranding text already in the model.
   every struck entry draws as a 74×74 slab (found on a real phone, 14 Aug
   26; gated in `e2e/geometry.spec.ts`, jsdom cannot see it).
 
+## SANS Availability, on screen (owner, 14 Aug 26)
+
+Four surfaces read the same three engine functions (`sansGate`/`sansAvailOn`/
+`sansBadge`, `avail.ts`/`inputs.ts`) — see `docs/feature-impact.md` for the
+drift-seam note. No UI wiring was needed for the grey-out itself; it comes
+free because every puck-drawer already reads `slotBar`.
+
+- **The palette section — `.rall.rsans` (`palette-html.ts`, `sansAvailHTML`).**
+  The old per-column SANS sub-bands (a `.rh.sans` band under each seat column)
+  are gone; every SANS member, pilot or WSO, lists in ONE full-width band
+  below the three seat columns instead, callsign-sorted. Grey-out is
+  automatic — `sansAvailHTML` calls `rosterPuck`, which already reads
+  `slotBar` — so this function only draws the row and the badge.
+  **The badge (`F 08:00–12:00 · O · A`, `.rsans-b`) is a SIBLING of the puck
+  (`.rpuck`), never nested inside it** — `<div class="rsans-row">
+  {rosterPuck} <span class="rsans-b">…</span></div>`. Nesting it would fall
+  into the flex-basis trap the arm-and-plant section above documents: a
+  struck `.rpuck.no.haswhy` is itself a flex CONTAINER whose basis governs its
+  own puck's height, and folding a badge inside it would compete for that
+  basis instead of sitting beside it. Each row prints its OWN reason
+  (`rosterPuck`'s `hideWhy` param is left off, unlike the seat columns'
+  shared `colWhy`) — eleven SANS people can each be barred for a different
+  record or none at all, so a deduped shared reason would be wrong here.
+- **Armed grey-out is `slotBar`, and only `slotBar`.** Nothing in the palette
+  code asks `sansGate` directly — arming a flying/OFT/AMT slot greys a
+  record-less or under-offering SANS entry with its own printed reason
+  (`.no.haswhy` + `.rwhy`, the same mechanism every other bar in the palette
+  uses); arming a duty/ground/programme slot leaves every SANS entry
+  ungreyed, because `slotBar`'s own domain read returns `null` there — see
+  §Availability is time-aware in `engine-rules.md`. Pinned in
+  `ui/palette.test.ts`.
+- **The week's own group (`html.ts`, `inGrp`)** — a new "SANS Availability"
+  band between Personal Inputs and Unavailable, edit-week only (`if(ed)`),
+  built with the same `inGrp` helper every other group uses. The falsy 5th
+  argument is what omits Accept controls — `grp:'sans'` is `isUnavail`, so it
+  would otherwise have shown one, but an offer is not something a scheduler
+  "accepts". `sansBadge` prefixes the remarks cell for each SANS row, the
+  same idiom the late-input mark uses (`inpRmkCell`). `isPersonal` being false
+  keeps SANS rows out of Personal Inputs, and `events.ts`'s `inpShow` guard
+  keeps them out of `day.input` entirely, so no row ever double-lists.
+- **The board's own panel, `sbSansPanel` (`board-html.ts`), modeled on
+  `sbUnavailPanel`.** Same row builder (`sbInpRow`) and read-only handling;
+  the only difference is threading the day's date through so each row can
+  find its own badge. Wired in beside the other two input panels
+  (`board.ts`). `sbUnavailPanel` itself carries an explicit `!isSansAvail(...)`
+  guard so a SANS row is never drawn twice.
+  `sbInputsHTML`'s bands view gets its own `ty-sn` chip colour (`inTypeCls`)
+  so a SANS row is not just generic grey there.
+- **The Available-crew panel (`html.ts` `availHTML`) — expanded view only.**
+  The collapsed "N SANS" count is a bare number, unchanged. Expanded, each
+  SANS puck in the `SANS available` group gets the same badge, wrapped in ONE
+  flex item (`.ap-sans-item`) rather than two loose siblings — `.ap-grid`
+  itself wraps with `flex-wrap`, so an unwrapped badge would compete for its
+  own place in that wrap and could land beside a DIFFERENT puck than the one
+  it names.
+
 ## The Available-crew panel folds (owner, 13 Aug 26)
 
 The edit week's per-day Available-crew block boots COLLAPSED to its header

@@ -224,6 +224,15 @@ check the other):
 - **`whoami()` / `whoAmI` names an account, not a person.** Any feature that
   wants "who did this" inherits the prototype-auth limitation until a server
   fills that hook.
+- **SANS availability — one gate, three surfaces (14 Aug 26).** `sansGate`
+  (`avail.ts`, backed by `sansAvailOn`/`sansBadge` in `inputs.ts`) is read by
+  `slotBar` (the palette grey-out + both plant/drag toasts), by `validate()`
+  (the `SANS_AVAIL` advisory), and by three independent badge surfaces — the
+  palette's `.rall.rsans` band, the week/board's own "SANS Availability"
+  group, and the Available-crew panel's expanded SANS grid. Change what a
+  status means, or add a fourth domain, and check all three; a badge or a
+  grey-out reader that stops calling `sansGate`/`sansBadge` and starts reading
+  the record itself is a new drift-seam the moment it happens.
 - **A person's category is read in many places (`p.pers` / `seat:'GND'`).**
   Personnel (ground crew, Aug 26) must be handled the same at every joint: the
   front-seat bar in BOTH `slotBar` (`avail.ts`) and `validate.ts`; the flying

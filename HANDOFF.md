@@ -138,6 +138,16 @@ lighter but because the sign-off moved out of the measured `#sbBoard` into its
 own `#sbSign` element — against an unmoved 960 ceiling; the week measures 3621
 under the 4000 ceiling
 the crew-finding build set (the Available-crew panels boot folded now).
+**SANS AVAILABILITY (14 Aug 26) — engine, forms and display groups done and
+unit-gated, browser gates pending at time of writing.** `npm test` 1476
+across 92 files (`sansavail.test.ts` is new — `sansGate`'s five statuses,
+`slotBar`'s grey-out on a flying/OFT/AMT seat and the duty/ground carve-out,
+the `SANS_AVAIL` advisory firing only against a filed record, the parity-guard
+pair; `slotrules.test.ts` pins `simKind`; `palette.test.ts` and
+`inputs.test.tsx` cover the `.rall.rsans` band and the add form's sub-form).
+`node reference/tfin.js` 728/0, `npm run build` clean. **`npm run test:e2e`,
+`probes:adapted`, `perf` and the deployed-page check have NOT run yet for
+this build** — gates re-run pending, next in the session.
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
 board can still be a heavier one — and now that a heavier board can read
 lighter when the measure's boundary moves.
@@ -196,6 +206,17 @@ only after re-running them.
 
 ## Known issues / open work
 
+- **SANS AVAILABILITY (14 Aug 26) — gates re-run pending.** Engine, forms,
+  the palette section, week/board groups and the advisory are built and unit-
+  tested (`docs/engine-rules.md` §SANS availability, `docs/ui-contracts.md`
+  §SANS Availability, on screen). Two things worth restating so they are not
+  read as bugs: the `SANS_AVAIL` advisory is DELIBERATELY silent when nothing
+  is filed at all — the palette grey + toast still say so, but nothing
+  persists in the day's warning list (the seed-parity reasoning is in
+  `engine-rules.md`); and a filed record is session-only, like every input in
+  this app — nothing here changed the storage story. **`npm run test:e2e`,
+  `probes:adapted`, `perf` and the deployed-page check have not run for this
+  build yet** — the orchestrator runs them next in this session.
 - **The CREW-FINDING build (13 Aug 26) shipped four pieces and left two
   REPORTED-NOT-BUILT options beside one deliberately dropped shape.** Shipped
   (contracts in `docs/ui-contracts.md` §Drag / arm-and-plant, §Selection
@@ -817,6 +838,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/**/audit-*.test.ts(x)` | Three sweeps of 12 Aug 26, all keepers — they are the regression armour for corners nothing else tests. **The adversarial audit** over PRs 148–174, six agents (a=History/edit log, b=board nav, c=validation, d=sort/reorder, e=inputs): closed every gap this file listed and pinned twelve fixes (log keys remapped with the key space, day-aware accept deferral, `deletionWasIssued` under reorder, the relink's preserved extras and covered-day re-file, the scrub/handle button guards, the day-step commit, the carry-day fix, the numeric time sort). **The five suspects** it raised and the owner then closed: `audit-c-briefguard` (brief vs take-off, both directions), `audit-thinwin` (`inpWin` failing closed), `audit-gesture-bubble` (repaint re-check, drag-vs-scrub). **The guard-rail sweep**: `audit-guards` (`hmOK`, `minus`, the time cells, store renames, the rules load path) and `audit-guards-inputs` (input times, spans, the derived AM/PM label, and what stays allowed because it is a decision). |
 | `src/ui/selrings.test.tsx` | The green eligibility rings (13 Aug 26) — the DOM agrees with `slotBar` on EVERY edit-week slot (the mirror test that keeps the rings from ever becoming a second copy of the rule), a mutation re-rings on the next paint (WARN-identity invalidation), rings clear with the selection, view-only and a selected placeholder never ring. The paints themselves (bright/dim/armed distinct, zero layout shift) are in `e2e/geometry.spec.ts`, because jsdom measures every rect 0×0. |
 | `src/engine/personnel.test.ts` | The ground-crew category (Aug 26) — that a personnel derives empty quals and the boot grants nothing, `slotBar` bars a front seat and allows rear/duty/ground, and validate raises `QUAL` in a front seat, the `PAX_CREW`/`CP` advisory in a rear seat, and `DOUBLE_BOOK`/`LONGDAY`/`DAYS_RUN` while crew rest, turns, the matrix, AAR and the brief/debrief windows stay OFF. Plus the parity guards (`PAX_CREW` has a WCODE, and fires nowhere on the seed). |
+| `src/engine/sansavail.test.ts` | SANS Availability (14 Aug 26) — `sansGate`'s five statuses; `slotBar`'s grey-out on a flying/OFT/AMT seat (no record, not offered, a narrower window, ok) and the duty/ground carve-out; `validate()`'s `SANS_AVAIL` advisory firing only against a FILED record (offering only some events, a narrow window) and staying silent on a bare no-record plant; the parity-guard pair (`WCODE.SANS_AVAIL` truthy, seed raises zero). |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |

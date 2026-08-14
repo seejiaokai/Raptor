@@ -116,6 +116,21 @@ describe('who may be planned into a slot (tfin U)', () => {
     expect(slotRules('0.0.0.0.w').sim).toBe(false)
   })
 
+  /* simKind is what lets slotBar (and the validator) ask sansGate for the
+     right SANS domain without re-parsing the key a second time — `a[1]` in
+     the key grammar `s:di.kind.ri[.seat]`, NOT `a[0]` (the day index). A
+     regression here silently disables the whole SANS OFT/AMT gate while the
+     flying-seat domain keeps working, which is why it is worth its own row. */
+  it('simKind decodes amt/oft off a sim key, and stays null everywhere else', () => {
+    expect(slotRules('s:0.oft.0.p').simKind).toBe('oft')
+    expect(slotRules('s:0.amt.1.pax.3').simKind).toBe('amt')
+    expect(slotRules('s:0.oft.0').simKind).toBe('oft')       // no seat suffix — a pax/who key
+    expect(slotRules('0.0.0.0.p').simKind).toBe(null)        // a flying seat
+    expect(slotRules('d:0.0.0').simKind).toBe(null)          // a duty key
+    expect(slotRules('g:0.0').simKind).toBe(null)             // a ground key
+    expect(slotRules('a:0.0').simKind).toBe(null)              // a programme key never reaches the `s:` branch
+  })
+
   it('a duty slot has no seat rule but still darkens leave', () => {
     const key = 'd:0.0.0'
     expect(slotRules(key).seat).toBe(null)

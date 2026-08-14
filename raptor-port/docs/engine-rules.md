@@ -648,6 +648,118 @@ second row carrying an existing key would make the link ambiguous. The caller
 reports which refusal it was — the type is never accepted, or the key is
 taken — because saying the wrong one is its own bug.
 
+## SANS Availability (owner, 14 Aug 26)
+
+SANS aircrew (`p.san`, the 11 seeded `SANS_IDS`) can file POSITIVE
+availability — "I can fly / sit an OFT / sit an AMT, optionally only within
+these hours" — through a new input type, `'SANS Availability'`
+(`INPUT_META`, `grp:'sans'`, appended after `Other` so the order every
+existing pin walks does not move). `grp:'sans'` earns the type two things for
+free: it stays inside `isUnavail` (the Accept-refusal and "no Accept
+controls" callers are exactly right for an offer too — see §Accepting a
+personal input below) and stays out of `isPersonal` (it is not a Ground
+Programme candidate). `local:true, ground:false` so it behaves like an
+on-island commitment for `canSpare`/the Ground button; `work:false` because
+filing this says nothing about a non-flying tasking; `half:false` — the
+record's own Fly/AMT/OFT windows are the finer control, an AM/PM split would
+only confuse the two.
+
+**Record shape** (`inputs.ts`): `sans: { f?: {s,e}|true, o?: {s,e}|true, a?:
+{s,e}|true }` — `f`/`o`/`a` for Fly/OFT/AMT (`SANS_KEY` in `avail.ts`), `true`
+meaning ALL DAY for that event, absent meaning NOT OFFERED, `{s,e}`
+minutes-from-midnight for a narrower window. The record keeps `allday:true`
+and carries **no** top-level `s`/`e`/`half` — `commitInputEdit` forces this on
+write. `sansAvailOn(id,dt)` is the one place that finds the record covering a
+day; `sansBadge(id,dt)` builds the minimal string a badge prints
+(`F 08:00–12:00 · O · A`, fixed f/o/a order, `hm24`) — both live in
+`inputs.ts`, not `html.ts`, because `palette-html.ts` imports from `html.ts`
+and an html-side helper would cycle.
+
+**`sansGate(id,dt,domain,s,e)` (`avail.ts`) is the one judge** every
+consumer — `slotBar`'s grey-out, the validator's advisory, every badge caller
+— asks, so the rule cannot drift between a picker that agrees with itself and
+a warning list that doesn't. `domain` is `'fly'|'oft'|'amt'`; `s`/`e` are the
+SLOT's own minutes-from-midnight, exactly what `slotRules` already computes.
+Five statuses:
+- `'na'` — not a SANS person at all; nothing to ask.
+- `'none'` — SANS, but no record filed for the day.
+- `'not-offered'` — a record exists but this event's box is unticked.
+- `'ok'` — offered all day (`true`), or the slot falls inside the offered
+  window.
+- `'window'` — offered, but only a window narrower than the slot; the gate
+  carries the offered window back as `.off`.
+
+**`slotBar` (`avail.ts`)** asks `sansGate` right after the four personal-input
+absence checks and before the "already busy at this hour" check — an absence
+outranks an offer question, and an offer question outranks a mere clash
+elsewhere in the day. `domain` is read off the key: `r.simKind` for a sim seat
+(`slotRules`' `s:` branch decodes it off `s:di.kind.ri[.seat]` — the kind sits
+at `a[1]`, **not** `a[0]`, which is the day index; a bug that shipped this way
+was caught writing `sansavail.test.ts` and is fixed with a comment at the
+call site, see §Availability is time-aware for the "checked, not assumed"
+standard this held itself to), `'fly'` for an unprefixed flying seat, `null`
+for everything else — a duty post, a ground row, a programme item is
+**never** SANS-greyed, uniformly across every jet seat including AVALON's
+(harmless: the persistent advisory below mirrors `day.fly`, which already
+excludes AVALON). The three printed reasons: `SANS — no availability filed
+for today`, `SANS — not offering Fly` (or OFT/AMT), `SANS — Fly offered
+08:00–12:00 only`. Nothing else in `slotBar` needed to change — the palette's
+strike, the printed reason (`.no.haswhy`/`.rwhy`), the green eligibility
+rings and both toasts all read `slotBar`, so grey-out was free the moment
+this one function judged right.
+
+**The `SANS_AVAIL` advisory (`validate.ts`) — amber, reuses the `CP` chip**
+(the `PAX_CREW` precedent — no new chip, no legend byte-compare risk). Built
+per day from two check lists: `day.fly` (domain `'fly'`, window
+`e.step→e.dekit` — the same padded window `slotBar` judges a flying seat
+against) and `day.events`' sim entries whose key matches
+`^s:\d+\.(amt|oft)\.` (domain is the captured word, window is the event's own
+`s→e`). For each SANS person on each check, `sansGate` decides; **only
+`'not-offered'` and `'window'` raise** `add('adv','SANS_AVAIL',...)` +
+`markRing(di,id,'adv')` + `markChip(di,id,'CP')`.
+
+**`'none' is DELIBERATELY silent here — the scoping decision, and why it is
+correct** (owner, 14 Aug 26). The owner's own example only ever describes
+planting AGAINST a filed record ("indicates A and O… planned for F →
+advisory"): a bare no-record is not that case. And practically: the seed
+week's demo already has SANS aircrew flying — `romeo`, `vinci` and `krait`
+fly, `waldo` rides an OFT box as pax — while seed `INPUTS` carries zero SANS
+records. Firing on `'none'` would put this advisory on every one of them,
+which is not what was asked for and would need a `refwin.ts` patch to keep
+`node reference/tfin.js` at 728/0 for a rule nobody asked the reference to
+carry (the port-only-rule precedent already used elsewhere, `refwin.ts:168-
+170`). No-record still reads to the scheduler through the palette (grey +
+printed reason) and the plant toast — it just never becomes a PERSISTENT
+entry in the day's warning list. `sansavail.test.ts` pins both the "fires" and
+the "doesn't fire" halves, plus the parity-guard pair (`WCODE.SANS_AVAIL`
+truthy, seed raises zero).
+
+**The type is restricted to SANS aircrew, and all three editors refuse
+through one function.** `sansRefusal(person,sans)` (`inputedit.tsx`) is what
+`commitInputEdit` and the add form's own `add()` (`InputsPage.tsx`) both call
+before any write — a non-SANS person is refused with "SANS Availability is
+for SANS aircrew only", an empty tick set with "Tick at least one of Fly /
+AMT / OFT", and a box ticked with only one of its two times filled in with a
+give-both-or-leave-both-blank message. `commitInputEdit` returns `false` on a
+refusal, so the editor stays open with the typing still in it (house
+convention). All three editors — the add form, the in-table row editor and
+the modal — share one `SansPicker` component (`inputedit.tsx`, Fly/AMT/OFT
+tick-and-time rows) for the sub-form.
+
+**Amends the Aug-26 "offers deleted" decision** (search this file for
+"Available fly" — the note sits under §Validation). `Available fly` and
+`Available duty` were removed as input types because an offer that clashed
+and ate brief/debrief time exactly like any other commitment was not the
+shape anyone wanted, and "there are no offers any more" was recorded as
+settled. SANS Availability is not that shape: it carries no top-level `s`/`e`,
+never enters `day.input` at all (`events.ts`'s `inpShow` returns `false` for
+it immediately — the one choke every `day.input` construction site funnels
+through), and is read ONLY by `sansGate`, never by the general clash/brief
+machinery the deleted offer types once shared with every other commitment.
+**Amended 14 Aug 26 — SANS-scoped offers reinstated by owner decision as this
+type.** Record it here so the two decisions read as sequential, not
+contradictory.
+
 ## Accepting a personal input
 
 A personal input is aircrew-submitted and is NOT part of the issued programme
