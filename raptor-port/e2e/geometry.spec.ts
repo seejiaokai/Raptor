@@ -1276,6 +1276,44 @@ test('board at 390px: Live checks folds to one line, and a fill parks the drawer
   expect(after.seatVisible, 'and the planted puck is on screen').toBe(true)
 })
 
+/* THE BOARD PALETTE COLUMNS DO NOT OVERLAP (owner, 14 Aug 26 — "scheduler
+   board mode the alignment overlaps each other. But edit schedule mode is
+   ok"). The board drawer's columns are `flex:1`; with the Personnel column
+   added the three columns squeezed below the fixed 74px puck width, so every
+   puck (and its struck-name reason line) spilled 15px into the next column.
+   Only a real browser can see it: jsdom measures every rect 0×0. Pinned here
+   at 390px, armed, where the drawer holds struck entries with reasons. */
+test('board at 390px: the armed aircrew columns never overlap their neighbour', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  /* arm a programme append cell — Monday's seed crews every flying seat, and a
+     programme slot bars enough names that struck reason lines are drawn */
+  await page.evaluate(() => (document.querySelector('#sbBoard [data-fill^="a:"]') as HTMLElement).click())
+  await page.waitForTimeout(400)
+  const r = await page.evaluate(() => {
+    const ros = document.querySelector('#sbRoster')!
+    const cols = [...ros.querySelectorAll('.rcol')].map(c => c.getBoundingClientRect())
+    // every puck AND reason line must stay within its own column's right edge
+    let spills = 0
+    ros.querySelectorAll('.rcol').forEach(c => {
+      const cr = c.getBoundingClientRect()
+      c.querySelectorAll('.puck, .rwhy').forEach(el => { if (el.getBoundingClientRect().right > cr.right + 0.5) spills++ })
+    })
+    // and no two adjacent columns overlap, and the last stays on screen
+    let colOverlap = 0
+    for (let i = 1; i < cols.length; i++) if (cols[i].left < cols[i - 1].right - 0.5) colOverlap++
+    return { nCols: cols.length, spills, colOverlap,
+             lastRight: cols.length ? Math.round(cols[cols.length - 1].right) : 0,
+             haswhy: ros.querySelectorAll('.rpuck.no.haswhy').length }
+  })
+  expect(r.haswhy, 'the arm drew struck entries with reason lines').toBeGreaterThan(0)
+  expect(r.nCols, 'Pilots, WSOs and Personnel all drawn').toBe(3)
+  expect(r.spills, 'no puck or reason line spills past its column').toBe(0)
+  expect(r.colOverlap, 'no column overlaps its neighbour').toBe(0)
+  expect(r.lastRight, 'the last column stays on screen').toBeLessThanOrEqual(390)
+})
+
 /* THE PHONE BOARD IS ONE WINDOW (owner, 8 Aug 26 — comp approved before
    build). It used to be three stacked zones: panels, then a bottom-pinned
    Live-checks + roster sheet, split by a resize grip. Now it matches the
@@ -2452,6 +2490,7 @@ test.describe('the phone board keeps its controls to one row', () => {
       const r = ros.getBoundingClientRect(), t = top.getBoundingClientRect()
       return {
         drawerTop: Math.round(r.top), barBottom: Math.round(t.bottom),
+        left: Math.round(r.left), right: Math.round(r.right),
         width: Math.round(r.width), vw: window.innerWidth,
         scrollable: body.scrollHeight > body.clientHeight,
         canScroll: getComputedStyle(body).overflowY,
@@ -2459,8 +2498,13 @@ test.describe('the phone board keeps its controls to one row', () => {
     })
     expect(m.drawerTop, 'the drawer clears the bar instead of painting over it')
       .toBeGreaterThanOrEqual(m.barBottom - 1)
-    expect(m.width / m.vw, 'and it is thinner than it was — 64% of the width, not 78%')
-      .toBeLessThanOrEqual(0.66)
+    /* It sizes to the columns it holds (`width:max-content`) and is capped at
+       78vw — the seed has ground crew, so three 74px columns plus the tab
+       need ~76% here. A squadron with no Personnel column falls back to the
+       thin two-column drawer. Both stay within the cap and on screen. */
+    expect(m.width / m.vw, 'the drawer is no wider than its 78vw cap')
+      .toBeLessThanOrEqual(0.78)
+    expect(m.right, 'and its whole width is on screen').toBeLessThanOrEqual(m.vw + 1)
     expect(m.canScroll, 'the crew list scrolls on its own').toBe('auto')
   })
 })

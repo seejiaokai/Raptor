@@ -570,12 +570,22 @@ edit week now:
   **The top bar is a sibling of the scroller, so no drag anywhere on it
   scrolls the board** — the dots included. That is ordinary fixed-header
   behaviour, not a fault, and it is why `.sb-days` can take
-  `touch-action:none` for its scrub without costing a scroll. **Open, it now starts BELOW the top bar and is thinner** (owner,
+  `touch-action:none` for its scrub without costing a scroll. **Open, it now starts BELOW the top bar** (owner,
   11 Aug 26): it used to be `top:0`, painting over the day, the undo pair
   and ✕ Close — the controls a scheduler reaches for while the palette is
-  open — and `max-width` came down from 78vw to 64vw, which still clears the
-  165px two puck columns need and gives the board back 55px. The offset is
+  open. The offset is
   `--sb-topH`, published by a ResizeObserver on the bar in `SchedBoard.tsx`.
+  **Its columns are pinned to one puck wide and the drawer sizes to fit them**
+  (owner, 14 Aug 26 — "the alignment overlaps each other" on the board while the
+  edit week was fine). The board's base `.sb-roster .rcol{flex:1}` shares the
+  drawer width equally, which on a phone squeezed each column below the fixed
+  74px puck, so every puck and every struck-name reason line overhung its
+  column — visible once the Personnel ground-crew column (Aug 26) made it three.
+  The phone board now uses `.sb-roster .rcol{flex:0 0 var(--puck-w)}` like the
+  edit week, and `width:max-content` with `max-width:78vw` (was 64vw, which fit
+  only two columns): the drawer is as thin as the columns present — ~54vw for
+  two, ~76vw for three — never wider than the cap, always on screen. Desktop
+  keeps `flex:1` so its 320px side has no gutter.
   Two simpler answers are wrong and were both measured: anchoring the drawer
   to `.sb-main` with `position:absolute` looks right (it IS the box below
   the bar) but `.sb-main` is the phone board's SCROLLER, so the drawer
