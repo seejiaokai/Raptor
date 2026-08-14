@@ -231,7 +231,8 @@ and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
 `probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 960**
-(measured 923, after the 13 Aug board redesign), **week ≤ 4000** (measured
+(measured 829, after the 14 Aug board-full-editor batch — see the boundary
+note below), **week ≤ 4000** (measured
 3621 — LOWERED from 5530 on 13 Aug 26 when the Available-crew panels started
 booting folded; the argued comment sits on the ceiling itself in
 `perf-port.cjs`). Tripping one is not
@@ -257,7 +258,13 @@ change that trades pixels for nodes this way should expect the same, and
 should re-read this count rather than assuming a shorter board is a lighter
 one. The 13 Aug board redesign then took it 911 → 923 (the inline `+ Wave`
 panel header and the AMT FCP/RCP column labels), still without moving the
-ceiling; 37 nodes of headroom remain.
+ceiling. The 14 Aug board-full-editor batch took it 923 → 829 DOWN, despite
+adding the in-time blocks, area strips, Traffic buttons and the OFT seat
+grid: the sign-off bar moved OUT of the measured `#sbBoard` into its own
+`#sbSign` element (so the checks panel could sit below it), and its nodes
+left the count with it — the same lesson in the other direction, a heavier
+board reading lighter because the measure's boundary moved, not because the
+content shrank. 131 nodes of headroom remain.
 
 **That last raise took a wider margin than the others, on purpose.** The
 late-input badge is one `<span>` per late input drawn, so on the day this
