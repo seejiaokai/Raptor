@@ -759,6 +759,57 @@ test.describe('clicking a warning brings the puck into view', () => {
     expect(m!.insideY, 'the puck is inside the page viewport vertically').toBe(true)
   })
 
+  /* THE DISMISS HOLD (owner, 14 Aug 26 — "when I click on an empty space… my
+     view snaps to some random area. hold my view steady"). Clicking a warning
+     snaps the view DOWN to the guilty puck, which leaves the expanded box off
+     the top of the screen. Tapping blank to dismiss it collapses the box, and
+     because the day repaints by an outerHTML swap the browser's own scroll
+     anchoring cannot survive the replaced node — so the height removed above
+     the viewport used to fling the whole view up (measured −1103px on a phone,
+     the puck clean off the top). holdViewStill undoes the shift in the same
+     task as the swap. jsdom cannot see it: every rect is 0×0, so the delta is
+     zero there by construction and the hold is only real in a browser. */
+  test('a blank tap that dismisses a warning box holds the view where it snapped', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'viewsched')
+
+    const di = 0                       // day 0 carries hard warnings in the seed
+    await page.click(`#vWeek .day[data-day="${di}"] .daywarn[data-daywarn]`)
+    await page.waitForSelector(`#vWeek .day[data-day="${di}"] .dwlist .witem[data-wdi]`)
+    /* click a warning: the view snaps down to the guilty puck, putting the box
+       off the top of the screen — the exact setup the jump needed */
+    await page.click(`#vWeek .day[data-day="${di}"] .dwlist .witem[data-wdi]`)
+    await settleWeek(page, '#vWeek')
+
+    const before = await page.evaluate((d) => {
+      const puck = document.querySelector(`#vWeek .day[data-day="${d}"] .puck.wfoc:not(.echo)`) as HTMLElement
+      if (!puck) return null
+      const day = document.querySelector(`#vWeek .day[data-day="${d}"]`) as HTMLElement
+      const id = puck.dataset.person!
+      const ix = [...day.querySelectorAll(`.puck[data-person="${id}"]`)].indexOf(puck)
+      return { id, ix, top: Math.round(puck.getBoundingClientRect().top) }
+    }, di)
+    expect(before, 'a warning focused a puck on screen').not.toBeNull()
+
+    /* tap blank: dispatch on the day body itself (inside the page, on nothing
+       interactive) so it takes the blank-clear path. clickHere, so Playwright
+       does not scroll it into view first and hand the app a position it never
+       reached — the very thing under test. */
+    expect(await clickHere(page, `#vWeek .day[data-day="${di}"] .day-body`)).toBe(true)
+    await settleWeek(page, '#vWeek')
+
+    const after = await page.evaluate(([d, id, ix]) => {
+      const boxOpen = !!document.querySelector(`#vWeek .day[data-day="${d}"] .witem[data-wdi]`)
+      const puck = [...document.querySelectorAll(`#vWeek .day[data-day="${d}"] .puck[data-person="${id}"]`)][ix as number] as HTMLElement
+      return { collapsed: !boxOpen, top: puck ? Math.round(puck.getBoundingClientRect().top) : null }
+    }, [di, before!.id, before!.ix] as const)
+
+    expect(after.collapsed, 'the blank tap dismissed the warning box').toBe(true)
+    expect(after.top, 'the puck the reader was looking at is still on the page').not.toBeNull()
+    expect(Math.abs(after.top! - before!.top), 'the view held steady — the puck did not leap').toBeLessThanOrEqual(2)
+  })
+
   test('a chip click selects like the puck body, and the selection styling is blue-only', async ({ page }) => {
     /* Owner, 7 Aug 26: the chip is no longer a navigation surface — it selects
        the person like the puck around it — and selection is the blue fill

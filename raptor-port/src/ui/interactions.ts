@@ -13,7 +13,7 @@ import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify } from '../state/store'
-import { scrollToWarnFocus, queueHold } from './highlights'
+import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
@@ -108,6 +108,41 @@ function holdPuckStill(pk: HTMLElement) {
     const delta = again.getBoundingClientRect().top - top
     if (Math.abs(delta) > 1) window.scrollBy(0, delta)
   }
+}
+
+/* HOLD THE SCREEN STILL WHEN A BLANK TAP COLLAPSES AN OPEN BOX. A blank-space
+   click drops the selection and every expanded day-warning box at once. When a
+   box sits ABOVE the viewport — you clicked a warning, the view snapped DOWN to
+   the guilty puck, then you tapped blank to dismiss it — collapsing it takes
+   its height out of the page above what you are reading, and because the day is
+   repainted by an outerHTML swap the browser's own scroll anchoring cannot
+   survive the replaced node, so the whole view leaps up to some unrelated part
+   of the day (measured: −1103px on a phone, the focused puck flung clean off
+   the top). This is the same jump holdPuckStill fixes for selection, and the
+   same cure: anchor on a puck the reader is looking at and undo the shift at
+   the end of the render's highlight pass (queueHold — the same task as the
+   swap, before the browser paints, so the leap is never shown).
+   The anchor is picked from the days whose box is actually collapsing (DWOPEN
+   at capture time — selection fills it with the person's flagged days too), and
+   only among pucks fully on screen: a puck in a day scrolled off to the SIDE
+   has a valid vertical top but never moves when THIS day shortens, so anchoring
+   it would measure a zero shift and leave the real jump uncorrected — which is
+   exactly the bug the phone showed. Nothing on screen from those days (or an
+   empty set) yields a no-op, which is every blank tap that moves no layout. */
+function holdViewStill(days: any[]) {
+  const week = document.getElementById(warnWeekId())
+  if (!week) return () => {}
+  let anchor: HTMLElement | null = null, bestTop = Infinity
+  for (const di of days) {
+    const day = week.querySelector(`.day[data-day="${di}"]`)
+    if (!day) continue
+    day.querySelectorAll('.puck[data-person]').forEach((p: any) => {
+      const r = p.getBoundingClientRect()
+      const onScreen = r.top >= 0 && r.top < window.innerHeight && r.left < window.innerWidth && r.right > 0
+      if (onScreen && r.top < bestTop) { bestTop = r.top; anchor = p }
+    })
+  }
+  return anchor ? holdPuckStill(anchor) : () => {}
 }
 
 /* The stores popup — a body-level box anchored to the C button, built the
@@ -715,7 +750,15 @@ export function routeClick(e: MouseEvent) {
     + '.sb-top,.sb-sign,.signoff,.hscroll,.week-nav')) {
     let any = false
     if (view.ARM) { view.disarmSlot(); any = true }
-    if (view.SELID || view.WFOCUS || view.PFOCUS || view.DWOPEN.size) { view.selDrop(); any = true }
+    if (view.SELID || view.WFOCUS || view.PFOCUS || view.DWOPEN.size) {
+      /* an expanded warning box (DWOPEN) or a selection's issue boxes (SELID)
+         is about to close above the reader — hold the view before it does.
+         Not on the board: its warning list scrolls in its own capped panel, so
+         nothing above the viewport moves, and the week behind the overlay must
+         not be scrolled from under it. */
+      if (view.DWOPEN.size && !t.closest('#schedBoard')) queueHold(holdViewStill([...view.DWOPEN]))
+      view.selDrop(); any = true
+    }
     /* ...and the HIGHLIGHT chips and the search with them (owner, 10 Aug 26 —
        "every puck should be deselected"). These light pucks exactly as a
        selection does, but they used to survive a blank click, so a man could

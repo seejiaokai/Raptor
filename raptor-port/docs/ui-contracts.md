@@ -1340,6 +1340,34 @@ A stale row scrolls nowhere. `WARN` is reassigned wholesale by every
 `view.WFOCUS` against the clicked `di`/`ix` before scrolling — without that,
 the week flies off to whatever was focused before.
 
+**Dismissing a warning box HOLDS the view where it snapped** (owner, 14 Aug
+26 — "when I click on an empty space… my view snaps to some random area. hold
+my view steady"). Clicking a warning snaps the view DOWN to the guilty puck,
+which leaves the day's expanded warning box off the top of the screen. A
+blank-space tap collapses that box (`selDrop` clears `DWOPEN`), and because a
+day repaints by an `outerHTML` swap the browser's own scroll anchoring cannot
+survive the replaced node — so the height removed above the viewport used to
+fling the whole page up (measured −1103px on a phone, the puck clean off the
+top). `interactions.ts`'s blank-clear now queues `holdViewStill` before the
+collapse, the same `queueHold` machinery that holds a puck still on selection:
+it anchors on a puck the reader is looking at and undoes the shift at the end
+of the render's highlight pass, in the same task as the swap, before the
+browser paints. Two details are load-bearing:
+
+- The anchor is drawn only from the **days actually collapsing** (`DWOPEN` at
+  capture time — a person-selection fills it with that person's flagged days
+  too) and only from pucks **fully on screen** (both axes). A puck in a day
+  scrolled off to the SIDE has a valid vertical top but never moves when THIS
+  day shortens, so anchoring it would measure a zero shift and leave the real
+  jump uncorrected — which is exactly how the phone first failed.
+- The board is excluded: its warning list scrolls inside its own capped
+  panel, so nothing above the viewport moves, and holding the week behind the
+  overlay would scroll it out from under the board.
+
+Gated in `e2e/geometry.spec.ts` (the puck the warning focused stays put across
+the dismiss); jsdom reports every rect 0×0, so the delta is zero there by
+construction and only a browser can see the hold.
+
 **Switching the board's day tab clears a stale focus** (owner, 5 Aug 26).
 `setBoardDay` already disarms a slot armed on another day; it now also drops
 `WFOCUS` under the same conditions — the board was already open, the day is
