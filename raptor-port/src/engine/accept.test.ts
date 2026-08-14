@@ -65,7 +65,7 @@ describe('accepting a personal input', () => {
   })
 
   it('an all-day input becomes an all-day row, not 00:00–00:00', () => {
-    const inp = findInp('Fly')!
+    const inp = findInp('Fly with')!
     expect(inp.allday).toBe(true)
     acceptInput(0, inp, 'g')
     const row = DAYS[0].ground[DAYS[0].ground.length - 1]
@@ -242,7 +242,7 @@ describe('the validator gate on personal inputs', () => {
      all-day promotion keeps its voice on the input, and the time-less row adds
      nothing on top, so the clash prints exactly once either way. */
   it('an all-day Fly accepted to Ground still flags the planted sortie, exactly once', () => {
-    const inp = findInp('Fly')!                        // bruise, all-day, flies Jul 13 in the seed
+    const inp = findInp('Fly with')!                        // bruise, all-day, flies Jul 13 in the seed
     const hits = () => validate().all
       .filter((x: any) => x.code === 'INPUT_FLY' && (x.who || []).indexOf('bruise') >= 0)
     expect(hits().length).toBeGreaterThan(0)           // counts from the moment it is typed

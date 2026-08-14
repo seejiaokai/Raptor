@@ -7,7 +7,7 @@
    the existing API reachable — and it weighs a few hundred bytes. */
 import { DAYS } from './engine/data'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, isPersonnel, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
-import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, isSansAvail, sansAvailOn, sansBadge, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd, baseYear, isLateInput, lateNote, inputDueISO, weekStartISO, inputStampISO } from './engine/inputs'
+import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, isSansAvail, sansAvailOn, sansWindow, sansLetters, sansBadge, inputFlags, inputCoversDate, inpLabel, isOther, dateOrd, baseYear, isLateInput, lateNote, inputDueISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { ELOG, elogRows, elogFor, elogWhen, elogClear, elogRemap, keyLabel } from './engine/editlog'
 import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard, storesText } from './engine/stores'
@@ -108,6 +108,7 @@ export function installProbeBridge() {
   /* SANS AVAILABILITY (owner, 14 Aug 26) — the one gate every consumer calls */
   w.isSansAvail = isSansAvail; w.sansAvailOn = sansAvailOn; w.sansBadge = sansBadge
   w.sansGate = sansGate; w.SANS_LABEL = SANS_LABEL
+  w.sansWindow = sansWindow; w.sansLetters = sansLetters
   /* the 10 Aug 26 type table and everything derived from it */
   w.INPUT_META = INPUT_META; w.TYPE_GROUPS = TYPE_GROUPS; w.inpMeta = inpMeta; w.inpType = inpType
   w.canSpare = canSpare; w.canWork = canWork; w.awayAllDay = awayAllDay; w.inpWin = inpWin

@@ -70,7 +70,7 @@ describe('the week', () => {
     expect(isLateInput(onTime())).toBe(false)
     const e = dayHTML(0, true)
     const row = e.slice(e.indexOf('sec-inp'), e.indexOf('sec-unav'))
-    expect(row).toContain('Fly')
+    expect(row).toContain('Fly with')
     /* the block carries exactly ONE mark — yeti's appointment, the next test —
        so bruise's row being clean is the same as that count not moving. Slicing
        around the type label was the old shape of this and it stopped meaning

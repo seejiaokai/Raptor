@@ -486,11 +486,11 @@ describe('the scheduler-side controls', () => {
   })
 
   it('an input filed under Unavailable moves blocks', () => {
-    const inp: any = INPUTS.find((i: any) => i.type === 'Fly' && i.date === 'Jul 13')
+    const inp: any = INPUTS.find((i: any) => i.type === 'Fly with' && i.date === 'Jul 13')
     acceptInput(0, inp, 'u')
     const e = dayHTML(0, true)
-    expect(e.slice(e.indexOf('sec-inp'), e.indexOf('sec-unav'))).not.toContain('>Fly<')
-    expect(e.slice(e.indexOf('sec-unav'))).toContain('>Fly<')
+    expect(e.slice(e.indexOf('sec-inp'), e.indexOf('sec-unav'))).not.toContain('>Fly with<')
+    expect(e.slice(e.indexOf('sec-unav'))).toContain('>Fly with<')
     unacceptInput(0, inp)
   })
 

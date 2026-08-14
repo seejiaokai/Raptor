@@ -199,7 +199,7 @@ export function validate(){
     day.fly.forEach((e:any)=>day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
       if(overlap(e.step,e.dekit,inp.s,inp.e)){
         /* the offer exemption is gone with the "Available *" types (owner
-           decision, Aug 26). "Fly" is now an ordinary commitment: a man who
+           decision, Aug 26). "Fly with" is now an ordinary commitment: a man who
            says he is flying elsewhere is not available for this sortie, so it
            clashes exactly like a Meeting or an Appointment does. */
         markChip(di,e.id,'C'); markRing(di,e.id,'hard');
@@ -645,7 +645,7 @@ export function validate(){
       if(g.status!=='not-offered'&&g.status!=='window')return;
       markRing(di,c.id,'adv');markChip(di,c.id,'CP');
       const reason=g.status==='not-offered'?`not offering ${SANS_LABEL[c.domain]} today`
-        :`${SANS_LABEL[c.domain]} offered ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
+        :`available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
       add('adv','SANS_AVAIL',[c.id],`${p.cs} planned for ${c.label} — ${reason}`,c.key);
     });
     /* Q (sims) — the sim box guards its FRONT seat like the jet (ground crew,
