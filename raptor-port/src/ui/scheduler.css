@@ -396,7 +396,13 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    still plants (the reason then repeats as the warn toast), so the
    not-allowed cursor comes off with the refusal it used to describe. */
 .rpuck.no.haswhy{opacity:1;flex-direction:column;align-items:stretch;gap:1px}
-.rpuck.no.haswhy .puck{opacity:.45}
+/* the shared `.rpuck .puck` rule pins flex:0 0 var(--puck-w) for the ROW
+   containers every other entry lives in. THIS entry is a COLUMN, where
+   flex-basis governs the main axis — HEIGHT — and beats the height rule, so
+   the puck drew as a 74x74 grey slab (owner, 14 Aug 26). In a column the
+   basis must be the puck's height; width still comes from align-items:
+   stretch against the puck-wide column, clamped by the shared max-width. */
+.rpuck.no.haswhy .puck{opacity:.45;flex:0 0 var(--puck-h)!important}
 .rpuck.no.haswhy::after{top:calc(var(--puck-h)/2)}
 .rpuck.no.haswhy,.rpuck.no.haswhy:active{cursor:pointer}
 /* the reason line lives under a single name OR once under a column header,

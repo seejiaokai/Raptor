@@ -48,6 +48,33 @@ test.describe('the puck is one fixed size everywhere', () => {
       expect(pal.length, 'the palette drew some pucks to measure').toBeGreaterThan(0)
       expect([...new Set(pal)], 'palette pucks are the same width as week pucks').toEqual([want.w])
     })
+
+    test(`the ARMED palette's struck entries keep the puck 74x15 on ${name}`, async ({ page }) => {
+      /* .rpuck.no.haswhy is a COLUMN flex container (reason printed under the
+         name), and the shared `.rpuck .puck` rule pins flex-basis to --puck-w
+         — which in a column governs HEIGHT, so every struck entry drew a
+         74x74 grey slab (owner, 14 Aug 26). Only a real layout engine can see
+         it: jsdom proves which class was emitted, not what it painted. */
+      await page.setViewportSize(viewport)
+      await login(page)
+      await go(page, 'editsched')
+      /* arm through a programme row's append cell — Monday's seed has every
+         flying seat crewed, and this arm bars enough names to draw .haswhy */
+      await page.evaluate(() => {
+        (document.querySelector('#eWeek [data-fill^="a:0"]') as HTMLElement).click()
+      })
+      await expect(page.locator('#eRoster .ros-arm')).toBeVisible()
+      const struck = page.locator('#eRoster .rpuck.no.haswhy')
+      expect(await struck.count(), 'this arm drew struck entries with reasons').toBeGreaterThan(0)
+      const want = await puckSize(page)
+      const odd = await page.evaluate(([w, h]) => [...document.querySelectorAll('#eRoster .rpuck .puck')]
+        .map(el => { const r = el.getBoundingClientRect(); return { w: +r.width.toFixed(1), h: +r.height.toFixed(1) } })
+        .filter(r => r.w !== w || r.h !== h).slice(0, 4), [want.w, want.h] as const)
+      expect(odd, 'every armed-palette puck is exactly --puck-w x --puck-h').toEqual([])
+      /* and the armed list carries no day-wide fade — a name is either normal
+         (plannable) or struck with its reason (owner, 14 Aug 26) */
+      expect(await page.locator('#eRoster .rpuck.busy, #eRoster .rpuck.standby').count()).toBe(0)
+    })
   }
 
   test('the seat column of the form grid is derived from --puck-w', async ({ page }) => {
