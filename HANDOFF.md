@@ -73,10 +73,12 @@ seconds": every board add — row, line, note, wave, duty/AMT block — flashes
 one choke every add funnels through) fires `HOOKS.flashAdded`; `state/view.ts`
 holds the key in `FRESHADD` on a 6s timer; `highlights.ts` `paintFreshAdds`
 hangs the box post-render like `paintArm`, so an unrelated edit inside the
-window cannot wipe it, and a static box-shadow — never an animation — so the
-clear-and-re-add on every repaint does not flicker. A wave boxes its whole
-`.sb-go` and dedups its own inner line; a duty `+ Block` boxes its header and
-sibling rows. Contract: `docs/ui-contracts.md`)**, run in
+window cannot wipe it, and a STEADY static box-shadow — never an animation —
+so the clear-and-re-add on every repaint does not flicker; only the dismissal
+fades (`.sb-fresh-out`, a CSS animation for the last ~0.55s via a second timer
+into `FRESHOUT`, dropped under `prefers-reduced-motion`). A wave boxes its
+whole `.sb-go` and dedups its own inner line; a duty `+ Block` boxes its header
+and sibling rows. Contract: `docs/ui-contracts.md`)**, run in
 this container on the matching tree:
 `npm test` 1437 tests across 91 files (the blue box added four to
 `board.test.tsx` — a sim row boxes only itself, a wave boxes the whole wave

@@ -1279,9 +1279,14 @@ through `markStructuralAdd` (`publish.ts`), which fires `HOOKS.flashAdded`;
 NOT baked into the builder string, for the same reason `paintArm` is not: the
 board diffs each panel to decide whether to re-hang it, so a class in the
 markup would force a re-hang on every keystroke and an unrelated edit would
-drop the box. The paint is a STATIC box-shadow in `#1E86FF` (the selection
+drop the box. The STEADY box is a static box-shadow in `#1E86FF` (the selection
 blue), never an animation, because the pass clears and re-adds the class on
-every repaint and an animated one would replay and flicker. A row/line/note
+every repaint and an animated hold would replay and flicker; only the
+DISMISSAL fades — `.sb-fresh-out` is added for the last `FRESH_FADE_MS` (a
+second timer in `view.ts` moves the key into `FRESHOUT`), so the one window a
+repaint could restart the fade is that ~0.55s tail, where a re-fade is
+invisible, and `prefers-reduced-motion` drops it to a plain hold-then-remove.
+A row/line/note
 matches on its `data-bfld` key climbed to its container (`.sb-arow` /
 `.sb-line` / `.sb-nrow`); a wave has no `data-bfld` on the board, so its
 `data-wsel` header stands in and the whole `.sb-go` boxes, with the inner

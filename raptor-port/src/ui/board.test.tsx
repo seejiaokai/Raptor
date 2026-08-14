@@ -1810,8 +1810,8 @@ describe('the just-added blue box (14 Aug 26)', () => {
     expect($$('#sbBoard .sb-panel.simr .sb-arow.sb-fresh').length, 'BRIEF, BOX and DEBRIEF each boxed').toBe(3)
   })
 
-  it('the key clears itself after the ~6s window', () => {
-    /* fake timers + stubbed render hooks: prove the timer drops the key without
+  it('the box holds, enters its fade, then clears after the ~6s window', () => {
+    /* fake timers + stubbed render hooks: prove the two-phase timer without
        waiting six real seconds or churning React outside act */
     vi.useFakeTimers()
     const rs = HOOKS.renderScheduler, re = HOOKS.renderEditWeek
@@ -1819,8 +1819,13 @@ describe('the just-added blue box (14 Aug 26)', () => {
     try {
       view.flashAdded('sr:0.oft.0.label')
       expect(view.FRESHADD.has('sr:0.oft.0.label')).toBe(true)
-      vi.advanceTimersByTime(view.FRESH_MS + 20)
+      expect(view.FRESHOUT.has('sr:0.oft.0.label'), 'steady, not fading yet').toBe(false)
+      vi.advanceTimersByTime(view.FRESH_MS - view.FRESH_FADE_MS + 10)
+      expect(view.FRESHOUT.has('sr:0.oft.0.label'), 'fading in the last stretch').toBe(true)
+      expect(view.FRESHADD.has('sr:0.oft.0.label'), 'still boxed while it fades').toBe(true)
+      vi.advanceTimersByTime(view.FRESH_FADE_MS + 20)
       expect(view.FRESHADD.has('sr:0.oft.0.label'), 'gone after the window').toBe(false)
+      expect(view.FRESHOUT.has('sr:0.oft.0.label')).toBe(false)
     } finally { HOOKS.renderScheduler = rs; HOOKS.renderEditWeek = re; vi.useRealTimers() }
   })
 })

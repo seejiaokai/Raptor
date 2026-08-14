@@ -2,7 +2,7 @@
    the reference. Runs after every week render; the markup it decorates is
    the verbatim dayHTML output, so the selectors line up exactly. */
 import { PEOPLE, isSpecial } from '../engine/people'
-import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, warnFocusMap, personMatchesHL, CURPAGE, SBDAY } from '../state/view'
+import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, FRESHOUT, warnFocusMap, personMatchesHL, CURPAGE, SBDAY } from '../state/view'
 import { ME } from '../state/auth'
 import { slotBar } from '../engine/avail'
 import { slotVal } from '../engine/slots'
@@ -103,22 +103,27 @@ export function paintArm(){
    box (the wave) wins over any inner one (its own first line) so a wave never
    draws a second box inside itself. */
 export function paintFreshAdds(){
-  document.querySelectorAll('.sb-fresh').forEach((el:any)=>el.classList.remove('sb-fresh'));
+  document.querySelectorAll('.sb-fresh,.sb-fresh-out').forEach((el:any)=>el.classList.remove('sb-fresh','sb-fresh-out'));
   if(!FRESHADD.size)return;
   const wrap=document.querySelector('#schedBoard .sb-boardwrap:not(.pv-frozen)');
   if(!wrap)return;
-  const targets=new Set<any>();
+  /* element -> the fresh key that boxed it, so the fade phase (FRESHOUT) can be
+     read off the same key; all keys of one add share timing, so a target is
+     never half-steady half-fading */
+  const targets=new Map<any,any>();
   FRESHADD.forEach((k:any)=>{ if(String(k).slice(0,3)==='wl:'){
     const h=wrap.querySelector(`[data-wsel="${String(k).slice(3)}"]`);
-    const go=h&&h.closest('.sb-go'); if(go)targets.add(go); } });
+    const go=h&&h.closest('.sb-go'); if(go&&!targets.has(go))targets.set(go,k); } });
   wrap.querySelectorAll('[data-bfld]').forEach((el:any)=>{
-    if(!FRESHADD.has(el.dataset.bfld))return;
-    const box=el.closest('.sb-line,.sb-arow,.sb-nrow,.sb-psub'); if(box)targets.add(box);
+    const k=el.dataset.bfld; if(!FRESHADD.has(k))return;
+    const box=el.closest('.sb-line,.sb-arow,.sb-nrow,.sb-psub'); if(box&&!targets.has(box))targets.set(box,k);
   });
-  const list=[...targets];
+  const list=[...targets.keys()];
   list.forEach((el:any)=>{
     if(list.some((o:any)=>o!==el&&o.contains(el)))return;
-    el.classList.add('sb-fresh');
+    const fading=FRESHOUT.has(targets.get(el));
+    const put=(x:any)=>{ x.classList.add('sb-fresh'); if(fading)x.classList.add('sb-fresh-out'); };
+    put(el);
     /* a duty + Block records only its header key (dl:) — its template rows are
        loose .sb-arow SIBLINGS, not children, and are not separately tracked —
        so box them too, up to the next block, so the whole new block reads as
@@ -126,7 +131,7 @@ export function paintFreshAdds(){
        widens a plain row's box. */
     if(el.classList.contains('sb-psub'))
       for(let s=el.nextElementSibling;s&&!s.classList.contains('sb-psub');s=s.nextElementSibling)
-        if(s.classList.contains('sb-arow'))s.classList.add('sb-fresh');
+        if(s.classList.contains('sb-arow'))put(s);
   });
 }
 /* WHERE CAN THE SELECTED MAN GO (owner, 13 Aug 26). The blue click also rings

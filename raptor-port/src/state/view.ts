@@ -396,17 +396,24 @@ export function warnFocusMap(){
    window simply stops matching an element and the box drops a beat early —
    cosmetic only, so it is not wired through remapViewKeys the way RMKOPEN is. */
 export const FRESHADD=new Set<string>()
+/* the keys in their final FADE-OUT stretch (owner, 14 Aug 26 — "yes fade").
+   A separate set, not a flag on FRESHADD, so paintFreshAdds can add the steady
+   box (.sb-fresh, static, no flicker on repaint) to every fresh key and the
+   fade class (.sb-fresh-out, a CSS animation to transparent) only to those in
+   their last stretch — the steady hold never animates, only the dismissal. */
+export const FRESHOUT=new Set<string>()
 export const FRESH_MS=6000
+export const FRESH_FADE_MS=550
 export function flashAdded(key:any){
   if(!key)return
   const k=String(key); FRESHADD.add(k)
-  setTimeout(()=>{
-    FRESHADD.delete(k)
-    /* repaint so the box comes off — the board it lives on, and the week
-       behind it, exactly the surfaces afterSchedMutate paints */
-    if(SBDAY!=null)renderScheduler()
-    if(CURPAGE==='editsched')renderEditWeek()
-  },FRESH_MS)
+  /* repaint the board the box lives on and the week behind it — the same
+     surfaces afterSchedMutate paints */
+  const repaint=()=>{ if(SBDAY!=null)renderScheduler(); if(CURPAGE==='editsched')renderEditWeek() }
+  /* enter the fade for the last FRESH_FADE_MS, then remove entirely — two
+     timers so the steady box holds static and only the tail animates out */
+  setTimeout(()=>{ if(FRESHADD.has(k)){ FRESHOUT.add(k); repaint() } },FRESH_MS-FRESH_FADE_MS)
+  setTimeout(()=>{ FRESHADD.delete(k); FRESHOUT.delete(k); repaint() },FRESH_MS)
 }
 export let ARM:any=null;                                   // {key, di, title} or null
 export function armedKey(){return ARM?ARM.key:'';}
