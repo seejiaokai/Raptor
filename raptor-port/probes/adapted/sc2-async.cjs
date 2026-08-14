@@ -134,7 +134,13 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     T('4 · the arm strip names the shift', /SC DAY current only/.test(r.strip) ? 'named' : r.strip, 'named')
   }
 
-  /* ---- 5 · an ordinary flying seat still fades the day the old way ------- */
+  /* ---- 5 · an ordinary armed seat fades nobody either --------------------
+     This probe used to pin the OPPOSITE — the no-fade rule was scoped to SC
+     slots when it shipped (12 Aug 26), and an ordinary seat kept the day-wide
+     grey. The owner generalised it on 14 Aug 26 ("no grey out when I click on
+     an event to be filled"): ANY armed slot switches the fade off, `.no`
+     alone says who cannot take the slot. Unarmed keeps its fades, which
+     src/ui/palette.test.ts pins. */
   await arm(S.fkey)
   {
     const r = await p.evaluate(() => {
@@ -142,7 +148,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
       return { shown: pal.length, busy: pal.filter(e => e.classList.contains('busy')).length }
     })
     console.log(`   5 · ordinary flying seat armed: ${r.shown} shown · busy ${r.busy}`)
-    T('5 · an ordinary seat still fades the men already flying', r.busy > 0 ? 'faded' : 'nobody faded', 'faded')
+    T('5 · an ordinary armed seat fades nobody day-wide either', r.busy, 0)
   }
 
   /* ---- 6 · a NIGHT shift lists only SC NIGHT holders --------------------- */

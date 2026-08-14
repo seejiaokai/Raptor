@@ -73,18 +73,21 @@ export function paletteHTML(di:any,opts?:any){
   const armKey=ARM?String(ARM.key).replace(/\.\+$/,''):'';
   const eng0=d.dow?dayEngaged(d):new Set(), off=d.dow?dayOff(d):new Set();
   const sby0=d.dow?dayStandby(d):new Set();
-  /* AN ARMED SC SLOT CHANGES WHAT THE PALETTE IS SAYING.
+  /* AN ARMED SLOT CHANGES WHAT THE PALETTE IS SAYING.
      Ordinarily the pucks are faded by whether the man is tasked anywhere on the
-     day. That is the wrong question for a shift: he can be on the other half of
-     the day and still be perfectly plannable here, and the fade read as "not
-     available". So with an SC slot armed the day-wide fade is switched off
-     entirely — `.no` alone carries the meaning — and the list is cut down to the
-     crew who actually hold the currency for that shift. Anyone left showing
-     normally can be planned; anyone struck through cannot, and says why.
-     Scoped to SC: an ordinary flying seat still behaves exactly as before. */
+     day. That is the wrong question once a slot is armed: the scheduler is
+     asking "who can take THIS slot", a man tasked elsewhere on the day can
+     still be perfectly plannable here, and the grey fade read as "not
+     available" (owner, 14 Aug 26 — "no grey out when I click on an event to be
+     filled"; this rule was born SC-only on 12 Aug for exactly the same
+     misreading, and the owner's ask generalises it). So with any slot armed the
+     day-wide fade is switched off entirely — `.no` alone carries the meaning:
+     anyone showing normally can be planned, anyone struck through cannot, and
+     says why. An SC slot additionally cuts the list to the crew holding that
+     shift's currency. The everyday, unarmed palette keeps its fades. */
   const arules=armKey?slotRules(armKey):null;
   const scArm=!!(arules&&arules.sc);
-  const eng=scArm?new Set():eng0, sby=scArm?new Set():sby0;
+  const eng=armKey?new Set():eng0, sby=armKey?new Set():sby0;
   const ok=(id:any)=>!PEOPLE[id].archived&&(!scArm||scQualOK(id,arules.sc));
   /* rank 2 = cannot be planned here, 1 = tasked but plannable, 0 = free. The
      off set (leave / downchit) is drawn struck-through but used to be ranked 0,

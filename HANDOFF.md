@@ -23,19 +23,27 @@ the BOARD REDESIGN of 13 Aug 26 — the cleanup + inline `+ Wave`, the AMT
 FCP/RCP block with a debrief range, and the duty-template system — and again
 for the CREW-FINDING build later the same day (the tap that plants with the
 warning after, placeholder-arms-the-slot, the green eligibility rings, and
-the Available-crew panel folded to one line with honest wave counts), and
-once more for the WARNING-DISMISS HOLD (14 Aug 26 — a blank tap that closes a
+the Available-crew panel folded to one line with honest wave counts), once more for the WARNING-DISMISS HOLD (14 Aug 26 — a blank tap that closes a
 warning box no longer flings the view up the outerHTML-swapped day it collapsed
-above)**, run in this container on the matching tree:
+above), and again for the ARMED-PALETTE pass (14 Aug 26 — any armed slot now
+switches the day-wide grey fade off, not just an SC shift, and the struck
+entries' 74×74 grey slabs are back to 74×15 pucks: a flex-basis meant for row
+containers was governing HEIGHT in the haswhy column, see
+`docs/ui-contracts.md` §Drag / arm-and-plant)**, run in this container on the
+matching tree:
 `npm test` 1415 tests across 91 files (the crew-finding build added
 `selrings.test.tsx` and re-pointed the arm-and-plant, darkened-name and
-avail-grid tests at the new behaviour), `node
+avail-grid tests at the new behaviour; the armed-palette pass pinned
+no-fade-while-armed inside the arm-and-plant test), `node
 reference/tfin.js` 728/0 (the engine is untouched by the crew-finding build),
 `npm run build` clean, the full `npm run test:e2e`
-geometry job 89/89 in Chromium (the crew-finding build added two — the ring
-paints are distinct and move nothing, the folded panel opens and closes — and
-the dismiss-hold build a third, the focused puck holding still across a blank
-tap that closes its warning box), `probes:adapted` 36/36 and
+geometry job 91/91 in Chromium (the crew-finding build added two — the ring
+paints are distinct and move nothing, the folded panel opens and closes — the
+dismiss-hold build a third, the focused puck holding still across a blank
+tap that closes its warning box, and the armed-palette pass two more, the
+armed palette's pucks all measuring 74×15 at both widths), `probes:adapted`
+all six probes green (the armed-palette pass re-pointed `sc2` #5, which
+pinned the fade the owner removed) and
 `perf` 4/4 — **the week DOM ceiling was LOWERED 5530 → 4000** against a 3621
 measure, because the folded panel's saving is real headroom and a slack
 ceiling would have passed a change that silently re-expanded every panel

@@ -914,6 +914,17 @@ stranding text already in the model.
   ONCE under a column header when every barred name in that column shares
   one reason (a front-seat arm bars every WSO identically, and fifteen
   copies of one sentence tripled the drawer).
+- While armed there is NO day-wide fade (owner, 14 Aug 26 — "no grey out
+  when I click on an event to be filled"): `paletteHTML` empties the
+  engaged/standby sets for any armed slot, so a name is either normal
+  (plannable here) or struck through with its reason, and the column's
+  "N free" counts everyone plannable. Born SC-only on 12 Aug for the same
+  misreading; the owner's ask generalised it. Unarmed keeps its fades.
+  A struck entry with its reason printed (`.rpuck.no.haswhy`) is a COLUMN
+  flex container, so the shared `flex:0 0 var(--puck-w)` basis would govern
+  its puck's HEIGHT — the haswhy rule re-pins the basis to `--puck-h` or
+  every struck entry draws as a 74×74 slab (found on a real phone, 14 Aug
+  26; gated in `e2e/geometry.spec.ts`, jsdom cannot see it).
 
 ## The Available-crew panel folds (owner, 13 Aug 26)
 

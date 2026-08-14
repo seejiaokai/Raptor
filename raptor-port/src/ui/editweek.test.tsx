@@ -140,6 +140,11 @@ describe('the edit page (tfin)', () => {
     expect(wsoCol.querySelector(':scope > .rwhy')!.textContent).toMatch(/front seat/)
     const bad = $$('#eRoster .rpuck.no').find(x => PEOPLE[x.dataset.person!]?.seat === 'RCP')!
     expect(bad.classList.contains('haswhy')).toBe(false)   // the column already said it
+    /* while armed the day-wide fade is OFF (owner, 14 Aug 26): grey read as
+       "not available" when the question is "who can take THIS slot" — a name
+       is either normal (plannable) or struck through with its reason */
+    expect($$('#eRoster .rpuck.busy').length).toBe(0)
+    expect($$('#eRoster .rpuck.standby').length).toBe(0)
     /* ...and the tap PLANTS anyway (owner, 13 Aug 26 — "everything plants,
        warning after"), putting the slot down exactly like an eligible tap */
     await click(bad)
