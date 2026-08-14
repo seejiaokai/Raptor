@@ -103,8 +103,11 @@ describe('the two ways in', () => {
     expect($('.histln-top'), 'nothing while History is off').toBeFalsy()
     await act(async () => { view.setHistMode(true); notify() })
 
-    const top = $('#sbBoard .histln-top')
-    expect(top, 'the desktop entry is inside the board').toBeTruthy()
+    /* the desktop entry heads the #sbSign element, above the sign-off bar
+       (both moved out of #sbBoard so the checks bar can sit under the sign-off
+       — owner, 14 Aug 26) */
+    const top = $('#sbSign .histln-top')
+    expect(top, 'the desktop entry heads the sign element').toBeTruthy()
     const sign = $('#sbSignBar')
     expect(sign, 'and the sign-off bar is still there').toBeTruthy()
     /* ABOVE it, which was the whole ask */
@@ -117,9 +120,9 @@ describe('the two ways in', () => {
   it('both carry the same count, and both open the list', async () => {
     await act(async () => { view.setHistMode(true); notify() })
     await seed()
-    expect($('#sbBoard .histln-top').textContent).toContain('3 changes')
+    expect($('#sbSign .histln-top').textContent).toContain('3 changes')
     expect($('#sbWarn .histln').textContent).toContain('3 changes')
-    await click($('#sbBoard .histln-top'))
+    await click($('#sbSign .histln-top'))
     expect($('#histModal').hasAttribute('hidden')).toBe(false)
   })
 })

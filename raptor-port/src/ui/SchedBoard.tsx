@@ -13,7 +13,7 @@ import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
-import { boardHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, wireDayDots, wireParkedRosScroll } from './board'
+import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, wireDayDots, wireParkedRosScroll } from './board'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
@@ -25,6 +25,7 @@ export function SchedBoard() {
   const version = useVersion()
   const boardVersion = useBoardVersion()
   const boardRef = useRef<HTMLDivElement>(null)
+  const signRef = useRef<HTMLDivElement>(null)
   const rosterRef = useRef<HTMLDivElement>(null)
   const daysRef = useRef<HTMLDivElement>(null)
   const warnRef = useRef<HTMLDivElement>(null)
@@ -191,6 +192,7 @@ export function SchedBoard() {
     if (DPREV.has(di)) {
       const ver = DPREV.get(di)
       withDaySnap(di, ver, () => {
+        set(signRef.current!, 'sign', boardSignHTML(di, true))
         set(boardRef.current!, 'board', '<div class="pv-frozen">' + boardHTML(di, true) + '</div>')
         set(inputsRef.current!, 'inputs', sbInputsHTML(DAYS[di], di))
       })
@@ -200,6 +202,7 @@ export function SchedBoard() {
         `<div class="dprev-bar"${ver !== 'orig' ? ` style="--alc:${alColor(+ver)}"` : ''}>Viewing <b>${verLabel(ver)}</b> as issued — read-only`
         + `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${ver}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button></div>`)
     } else {
+      set(signRef.current!, 'sign', boardSignHTML(di))
       set(boardRef.current!, 'board', boardHTML(di))
       set(warnRef.current!, 'warn', boardWarnHTML(di))
       set(inputsRef.current!, 'inputs', sbInputsHTML(DAYS[di], di))
@@ -359,6 +362,13 @@ export function SchedBoard() {
       </div>
       <div className="sb-main" ref={mainRef}>
         <div className={'sb-boardwrap' + (HISTMODE ? ' hist-on' : '')} ref={wrapRef}>
+          {/* the sign-off heads the board column. On a PHONE .sb-boardwrap goes
+              display:contents (see scheduler.css), so #sbSign, #sbWarn and
+              #sbBoard become siblings of one scroller and fall in order:
+              sign-off, then the Live Checks bar directly below it, then the
+              panels (owner, 14 Aug 26). On DESKTOP the warnings stay in the
+              side column and only the sign-off heads this column. */}
+          <div className="sb-sign" id="sbSign" ref={signRef} />
           <div className="sb-board" id="sbBoard" ref={boardRef} />
           <div className="sb-inputs" id="sbInputs" ref={inputsRef} />
         </div>

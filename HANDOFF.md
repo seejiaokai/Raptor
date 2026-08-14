@@ -35,9 +35,23 @@ drawer's three columns overlapped, because its base `flex:1` shared the width
 equally and squeezed each below the fixed 74px puck once the Personnel column
 made it three; the board now pins columns to one puck like the edit week and
 the drawer widened 64vw→78vw to fit them, see `docs/ui-contracts.md` §The board
-on a phone is ONE window)**, run in this container on the
-matching tree:
-`npm test` 1415 tests across 91 files (the crew-finding build added
+on a phone is ONE window), and once more for the BOARD-FULL-EDITOR batch
+(14 Aug 26 — the scheduler board now edits the in-time, area/area-time and
+Traffic that had been week-only, its Live Checks panel sits BELOW the sign-off
+and reads "N issues · N warning" coloured by severity like the week's,
+empty People cells show a standing grey dotted "add here" box on both surfaces,
+the board remarks reveal reads `R` not `+` and its box carries a faded
+"Remarks" placeholder, FCP and RCP sit side by side on the phone board (a
+`.sb-seatpair` wrapper — display:contents on desktop, a 2-col grid on a phone)
+to save vertical space, and the Live Checks panel is its own #sbSign +
+below-sign-off arrangement with the phone flattening the board column,
+DESKTOP untouched — see `docs/ui-contracts.md` §The board edits everything the
+week does, §Empty cells, and §The board on a phone is ONE window)**, run in
+this container on the matching tree:
+`npm test` 1423 tests across 91 files (the board-full-editor batch added eight to
+`board.test.tsx` — the new editable fields render and commit, the checks bar's
+label and severity class, the sign/checks order, the seat pair and the Remarks
+placeholder; the crew-finding build added
 `selrings.test.tsx` and re-pointed the arm-and-plant, darkened-name and
 avail-grid tests at the new behaviour; the armed-palette pass pinned
 no-fade-while-armed inside the arm-and-plant test), `node
@@ -135,6 +149,19 @@ only after re-running them.
 
 ## Known issues / open work
 
+- **OFT sim rows should hold MORE THAN 2 pucks, like the AMT box — DEFERRED,
+  pending a clean isolated change (owner, 14 Aug 26).** The owner asked for OFT
+  to grow beyond a 2-seat crew "same layout as the AMT" (fixed `.fcprcp` grid,
+  empty-in-place holes, remove-one-leaves-the-rest). The data model already
+  allows it (an OFT row can carry a `pax[]` array — the Wed seed has one), and
+  the AMT box branch in `board-html.ts` `sbSimRowsPanel` is the exact rendering
+  to reuse. It was held out of the 14 Aug BOARD-FULL-EDITOR batch because
+  making OFT grow past 2 means routing it onto the pax model in the `slots.ts`
+  mutation funnel (a p/w row converting to pax on the 3rd add), which is engine
+  work that wants its own change and its own tests rather than riding a
+  UI-markup batch. The other six board asks from that day shipped; this is the
+  one left. NOT the flying line — the owner corrected an early misread: flying
+  lines stay a fixed pair, only OFT grows.
 - **The CREW-FINDING build (13 Aug 26) shipped four pieces and left two
   REPORTED-NOT-BUILT options beside one deliberately dropped shape.** Shipped
   (contracts in `docs/ui-contracts.md` §Drag / arm-and-plant, §Selection
@@ -713,7 +740,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `Shell.tsx` | Topbar, nav, both schedule pages' chrome, global listeners (click/change/contextmenu/focusout/keydown, drag, pan), banner, memoized sections. |
 | `ViewWeek.tsx` / `EditWeek.tsx` | The week surfaces: build `dayHTML` per day, diff strings, swap only changed days, hold scroll; `EditRoster` palette. CURPAGE-gated. |
 | `SchedBoard.tsx` | The full-screen day board: panels with per-panel string diff; subscribes to both the global store and the board-only view lane; CxDialog (cancel-with-reason) and the Sort-all confirm, both wired to `HOOKS.closeBoardDialogs`. |
-| `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, per-section and whole-day sorts, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. Also `boardDayStep`, the day arrows' one call (12 Aug 26 — the swipe and its whole carousel are deleted; do not rebuild them, the tombstone comment in this file says why). |
+| `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, per-section and whole-day sorts, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. `boardHTML` now renders the in-time block, per-formation area strip and Traffic button (14 Aug 26 — week-only before); `boardSignHTML` is the sign-off as its own `#sbSign` element (so the checks bar can sit below it); `boardWarnHTML` reads the "N issues · N warning" severity-coloured bar. Also `boardDayStep`, the day arrows' one call (12 Aug 26 — the swipe and its whole carousel are deleted; do not rebuild them, the tombstone comment in this file says why). |
 | `rowdrag.ts` | The board row-reorder pointer machine — its own small machine, deliberately not `drag.ts` (which stays scoped to pucks): pointer events so a finger works, releases implicit pointer capture on the way down, writes the lifted row and the drop bar straight onto the DOM, delegated on the board wrap so it survives every panel repaint. |
 | `html.ts` | THE builder library: `dayHTML`, `puck`, `slotCell`, `signoffHTML`, day warnings, day-info panel, legend, cx/flag tags, and the derived `areaText`/`atimeText`. |
 | `board-html.ts` / `palette-html.ts` / `logic-html.ts` | Board panels (inputs bands, notes, programme, duties, sim rows, ground, personal-inputs group, sim notes), the aircrew palette, the Logic tab's rule text. |

@@ -228,14 +228,16 @@ function sbTxt(cls:any,path:any,v:any,ph:any,pv:any,extra?:any){
    stays un-empty (visible, blank) even before anything is typed into it, so
    the reveal is not undone by the very repaint it triggers. */
 function sbRmk(path:any,v:any,pv:any){
-  return sbTxt('ain rmkin'+((String(v||'').trim()||RMKOPEN===path)?'':' empty'),path,v,'',pv);
+  /* faded "Remarks" placeholder so a revealed-but-empty box says what it is
+     (owner, 14 Aug 26) */
+  return sbTxt('ain rmkin'+((String(v||'').trim()||RMKOPEN===path)?'':' empty'),path,v,'Remarks',pv);
 }
 function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,rmkPath?:any,mv?:any){
   return pv?'':`<span class="lctl">`+(mv||'')
     /* rides the control strip the row already has, so revealing an empty
        remarks box costs the row nothing new — no rmkPath (the row has no
        remarks field at all, or a caller predating this) means no button. */
-    +(rmkPath?`<button class="mbtn rmkadd" data-rmkadd="${rmkPath}" title="Add a remark">+</button>`:'')
+    +(rmkPath?`<button class="mbtn rmkadd" data-rmkadd="${rmkPath}" title="Add a remark">R</button>`:'')
     +`<button class="mbtn${o.cx?' on':''}" data-${pre}cx="${addr}" title="${o.cx?'Restore '+what:'Cancel '+what+' (CX)'}">CX</button>`
     +`<button class="mbtn red${o.flag?' on':''}" data-${pre}flag="${addr}" title="${o.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
     +`<button class="mbtn del" data-${pre}del="${addr}" title="Remove ${what}">✕</button></span>`;
