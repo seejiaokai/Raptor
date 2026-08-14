@@ -1116,11 +1116,12 @@ test('board: the flying line keeps its grid-item count with stores present', asy
      test needs. */
   await page.waitForSelector('#schedBoard .sb-line')
   const n = await page.$eval('#schedBoard .sb-line', el => el.children.length)
-  /* ten, not nine, since the reorder grip landed (8 Aug 26): the grip is
-     .sb-line's first child on every viewport — display:none on a phone
-     hides it from layout, not from the DOM — so the count this test pins
-     went from nine to ten everywhere, not just on desktop. */
-  expect(n, 'ten grid items — the grip plus the original nine, .sb-rcell still exactly one').toBe(10)
+  /* nine DOM children since the FCP/RCP seats wrap in one .sb-seatpair (owner,
+     14 Aug 26 — display:contents on desktop so the grid still counts the two
+     seats; a 2-col grid on a phone so they sit side by side). Before that it
+     was ten (the reorder grip from 8 Aug plus nine); the pair folds two of
+     those ten into one child, leaving nine, with the grid still seeing ten. */
+  expect(n, 'nine DOM children — the two seats share .sb-seatpair, .sb-rcell still exactly one').toBe(9)
 })
 
 test('board at 390px: the remarks cell drops to its own full-width strip', async ({ page }) => {
@@ -1186,10 +1187,16 @@ test('board at 390px: the seats sit clear of the time boxes and of each other', 
       const inputs = [...line.querySelectorAll('input')].map(i => i.getBoundingClientRect())
       if (slots.length === 2 && hit(slots[0]!, slots[1]!)) bad.push(`line ${li}: seats overlap`)
       slots.forEach((s, si) => inputs.forEach(r => { if (hit(s, r)) bad.push(`line ${li} slot ${si}: overlaps an input`) }))
+      /* FCP and RCP share ONE row now, side by side (owner, 14 Aug 26 — save
+         vertical space): same top, FCP left of RCP */
+      if (slots.length === 2) {
+        if (Math.abs(slots[0]!.top - slots[1]!.top) > 2) bad.push(`line ${li}: seats not on the same row`)
+        if (slots[0]!.left >= slots[1]!.left) bad.push(`line ${li}: FCP is not left of RCP`)
+      }
     })
     return bad
   })
-  expect(geo, 'no seat overlaps a seat or an input on any line').toEqual([])
+  expect(geo, 'the two seats share a row side by side, clear of each other and every input').toEqual([])
 })
 
 /* A DELETED PAX LEAVES ITS SLOT ON SCREEN (owner, 8 Aug 26). The engine
@@ -1581,13 +1588,16 @@ test('the board\'s flying line is single-row in .sb-wide at phone width, and sta
       const line = document.querySelector('#schedBoard .sb-line') as HTMLElement
       return { children: line.children.length, height: Math.round(line.getBoundingClientRect().height) }
     })
-    expect(m.children, `${c.label}: ten grid items — the grip plus .sb-rcell still exactly one`).toBe(10)
+    /* nine, not ten, since the FCP/RCP seats now share one .sb-seatpair child
+       (owner, 14 Aug 26) — display:contents on desktop keeps the grid at ten
+       items, a 2-col grid on a phone sits the seats side by side */
+    expect(m.children, `${c.label}: nine DOM children — seats share .sb-seatpair, .sb-rcell still exactly one`).toBe(9)
     if (c.singleRow) {
       expect(m.height, `${c.label}: single row, not exploded into three`).toBeLessThan(90)
     } else {
-      /* the deliberate phone-stacked layout — pinned as multi-row on
-         purpose, so a future change can't collapse it to single-row and
-         quietly break the mobile reading order without anyone noticing */
+      /* the deliberate phone layout is still multi-row (CS/times, brief,
+         seat pair, remarks, controls) — the seat pair sits on one row now
+         rather than two, but the line is not collapsed to a single row */
       expect(m.height, `${c.label}: the deliberate mobile stack, not collapsed to one row`).toBeGreaterThan(90)
     }
   }

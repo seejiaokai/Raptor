@@ -228,7 +228,9 @@ function sbTxt(cls:any,path:any,v:any,ph:any,pv:any,extra?:any){
    stays un-empty (visible, blank) even before anything is typed into it, so
    the reveal is not undone by the very repaint it triggers. */
 function sbRmk(path:any,v:any,pv:any){
-  return sbTxt('ain rmkin'+((String(v||'').trim()||RMKOPEN===path)?'':' empty'),path,v,'',pv);
+  /* faded "Remarks" placeholder so a revealed-but-empty box says what it is
+     (owner, 14 Aug 26) */
+  return sbTxt('ain rmkin'+((String(v||'').trim()||RMKOPEN===path)?'':' empty'),path,v,'Remarks',pv);
 }
 function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,rmkPath?:any,mv?:any){
   return pv?'':`<span class="lctl">`+(mv||'')

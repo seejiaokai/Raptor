@@ -161,8 +161,7 @@ export function boardHTML(di: number, pv?: boolean) {
         <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(f.br || '')}"></div>
         <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(f.to)}">
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
-        ${sbSlot(di, key + '.p', 'p', a.p, stoRO)}
-        ${sbSlot(di, key + '.w', 'w', a.w, stoRO)}
+        <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}"${sa ? ` placeholder="${esc(a.role || (a.spare ? 'SPARE' : 'MAIN'))}"` : ''}>
           ${sa ? '' : (stoRO

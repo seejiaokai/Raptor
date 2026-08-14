@@ -1682,3 +1682,21 @@ describe('the board carries the week-only editable fields (14 Aug 26)', () => {
     expect(sign.compareDocumentPosition(warn) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 })
+
+/* FCP/RCP side by side + the Remarks placeholder (owner, 14 Aug 26). jsdom
+   pins the markup; the side-by-side geometry is measured in e2e (0x0 here). */
+describe('flying-line seat pair and the Remarks placeholder (14 Aug 26)', () => {
+  beforeAll(async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); notify() })
+  })
+  it('FCP and RCP share a .sb-seatpair wrapper', () => {
+    const pair = $('#sbBoard .sb-line .sb-seatpair')
+    expect(pair, 'the two seats are wrapped so CSS can lay them side by side').toBeTruthy()
+    expect(pair.querySelectorAll('.sb-slot').length, 'holding exactly the two seats').toBe(2)
+  })
+  it('a remarks box carries the faded "Remarks" placeholder', () => {
+    const r = $('#sbBoard .rmkin')
+    expect(r, 'a duty/sim/ground remarks input is present').toBeTruthy()
+    expect(r.getAttribute('placeholder'), 'so a revealed-but-empty box says what it is').toBe('Remarks')
+  })
+})

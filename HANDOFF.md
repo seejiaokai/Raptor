@@ -40,14 +40,18 @@ on a phone is ONE window), and once more for the BOARD-FULL-EDITOR batch
 Traffic that had been week-only, its Live Checks panel sits BELOW the sign-off
 and reads "N issues · N warning" coloured by severity like the week's,
 empty People cells show a standing grey dotted "add here" box on both surfaces,
-and the board remarks reveal reads `R` not `+`; the sign-off is its own #sbSign
-element and the phone flattens the board column to slot the checks under it,
+the board remarks reveal reads `R` not `+` and its box carries a faded
+"Remarks" placeholder, FCP and RCP sit side by side on the phone board (a
+`.sb-seatpair` wrapper — display:contents on desktop, a 2-col grid on a phone)
+to save vertical space, and the Live Checks panel is its own #sbSign +
+below-sign-off arrangement with the phone flattening the board column,
 DESKTOP untouched — see `docs/ui-contracts.md` §The board edits everything the
 week does, §Empty cells, and §The board on a phone is ONE window)**, run in
 this container on the matching tree:
-`npm test` 1421 tests across 91 files (the board-full-editor batch added six to
+`npm test` 1423 tests across 91 files (the board-full-editor batch added eight to
 `board.test.tsx` — the new editable fields render and commit, the checks bar's
-label and severity class, the sign/checks order; the crew-finding build added
+label and severity class, the sign/checks order, the seat pair and the Remarks
+placeholder; the crew-finding build added
 `selrings.test.tsx` and re-pointed the arm-and-plant, darkened-name and
 avail-grid tests at the new behaviour; the armed-palette pass pinned
 no-fade-while-armed inside the arm-and-plant test), `node

@@ -669,7 +669,18 @@ routes `data-air`):
   waves; the existing `setAirKey → AirPop` modal is surface-independent.
 - **Remarks reveal reads `R`, not `+`** — the `data-rmkadd` control that shows
   an empty remarks box (still folded away empty on a phone to save row height —
-  that measured saving stands) now reads `R` so it obviously means remarks.
+  that measured saving stands) now reads `R` so it obviously means remarks. The
+  box itself carries a faded `Remarks` placeholder (`sbRmk`) so a revealed-but-
+  empty one says what it is.
+- **FCP and RCP sit side by side on the phone board** (owner, 14 Aug 26 — "FCP
+  on the left RCP on the right in 1 row" to save vertical space). The two seats
+  wrap in `.sb-seatpair`, which is `display:contents` on desktop (the seats stay
+  their own FCP/RCP grid columns, unchanged, and `.schedboard.sb-wide` restates
+  that so a desktop board at a phone width keeps its columns too) and a
+  full-width 2-column grid inside the `max-width:820px` block, so a phone lays
+  them on one row instead of stacking each full-width. The line is one DOM child
+  shorter (nine, not ten) but the grid still counts ten items — pinned in
+  `board-stores.test.tsx` and `e2e/geometry.spec.ts`.
 
 ## Empty cells show a standing "add here" box (owner, 14 Aug 26)
 

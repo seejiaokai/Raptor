@@ -1823,6 +1823,12 @@ body.sb-lock{overflow:hidden}
 .sb-lcols{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:9px;font-weight:700;color:var(--ink-3);border-bottom:1px solid var(--edge)}
 .sb-line{border-top:1px solid rgba(255,255,255,.03)}
 .sb-line:first-of-type{border-top:none}
+/* FCP and RCP wrap in .sb-seatpair. On desktop it is display:contents, so the
+   two seats stay direct grid children and fall in their own FCP/RCP columns
+   exactly as before. On a phone the wrapper becomes a 2-column grid so the
+   seats sit side by side instead of stacking full-width (owner, 14 Aug 26 —
+   "FCP on the left RCP on the right in 1 row" to save vertical space). */
+.sb-seatpair{display:contents}
 /* the board's AREA strip (owner, 14 Aug 26) — the same area/airspace cells the
    week draws (.form-area), but a plain flex strip here since the board's flying
    lines are not the week's grid. .fa-lb/.areacell/.timecell are shared. */
@@ -2700,7 +2706,9 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
   .sb-nrow{grid-template-columns:22px 1fr 74px}
   .sb-lcols,.sb-line{grid-template-columns:54px 1fr 52px 52px;font-size:10px}
   .sb-line .sb-bcell{grid-column:1 / -1;grid-row:2}
-  .sb-line .sb-slot{grid-column:1 / -1}
+  /* FCP | RCP share ONE full-width row, side by side, instead of each seat
+     spanning the row on its own (owner, 14 Aug 26) */
+  .sb-line .sb-seatpair{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:center}
   .sb-line .sb-rcell{grid-column:1 / -1}
   .sb-lcols>:nth-child(4),.sb-lcols>:nth-child(7),.sb-lcols>:nth-child(8),
   .sb-lcols>:nth-child(9),.sb-lcols>:nth-child(10){display:none}
@@ -2815,6 +2823,12 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .schedboard.sb-wide .sb-nrow{grid-template-columns:18px 22px 1fr 62px}
 .schedboard.sb-wide .sb-lcols>:nth-child(1),.schedboard.sb-wide .sb-acols>:nth-child(1){display:revert}
 .schedboard.sb-wide .sb-lcols,.schedboard.sb-wide .sb-line{grid-template-columns:18px 64px 74px 54px 54px 54px 1fr 1fr 92px 92px;font-size:11.5px}
+/* the desktop board keeps FCP/RCP as their own grid columns even at a phone
+   width — the seat pair stays display:contents so the phone's full-width
+   2-col rule (in the max-width:820 block) never applies here (owner, 14 Aug
+   26); higher specificity than `.sb-line .sb-seatpair` wins regardless of the
+   media query. */
+.schedboard.sb-wide .sb-seatpair{display:contents}
 .schedboard.sb-wide .sb-lcols>:nth-child(4),.schedboard.sb-wide .sb-lcols>:nth-child(7),
 .schedboard.sb-wide .sb-lcols>:nth-child(8),.schedboard.sb-wide .sb-lcols>:nth-child(9),
 .schedboard.sb-wide .sb-lcols>:nth-child(10){display:revert}
