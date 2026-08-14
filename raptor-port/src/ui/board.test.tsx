@@ -1745,3 +1745,29 @@ describe('the OFT seat grid and its extras (14 Aug 26)', () => {
     expect(who!.closest('.fcprcp'), 'and is not forced into the seat grid').toBeFalsy()
   })
 })
+
+/* + BLOCK ON THE AMT (owner, 14 Aug 26 — "add an AMT block that shows what it
+   shows now. Like brief box and debrief. All 3 together"). One tap mints the
+   three-row shape: BRIEF and DEBRIEF as time-only rows, the BOX carrying the
+   FCP/RCP grid with its first empty droppable pair. Times stay blank — a new
+   line comes up blank, a plausible wrong time reads as filled in. */
+describe('the AMT + Block button (14 Aug 26)', () => {
+  beforeAll(async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(1); notify() })
+  })
+  it('the button sits on the AMT header only — the OFT keeps + Row alone', () => {
+    expect($('#sbBoard [data-sblkadd]'), 'the AMT header offers + Block').toBeTruthy()
+    expect($$('#sbBoard [data-sblkadd]').length, 'and no other header does').toBe(1)
+  })
+  it('one tap adds BRIEF, BOX and DEBRIEF together — times blank, BOX grid ready', async () => {
+    const before = DAYS[1].sims.amt.length
+    await click($('#sbBoard [data-sblkadd]'))
+    const rows = DAYS[1].sims.amt
+    expect(rows.length, 'three rows in one tap').toBe(before + 3)
+    expect(rows.slice(-3).map((r: any) => r.label)).toEqual(['BRIEF', 'BOX', 'DEBRIEF'])
+    expect(rows.slice(-3).every((r: any) => !r.str && !r.end), 'a new block comes up blank').toBe(true)
+    const grid = $(`#sbBoard [data-fill="s:1.amt.${rows.length - 2}.+"]`)
+    expect(grid.classList.contains('fcprcp'), 'the BOX renders the FCP/RCP grid').toBe(true)
+    expect(grid.querySelectorAll('.sb-slot.empty').length, 'with its first droppable pair').toBe(2)
+  })
+})

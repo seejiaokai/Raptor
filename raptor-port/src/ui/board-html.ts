@@ -284,7 +284,7 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
   [['AMT','amt'],['OFT','oft']].forEach(([title,kind]:any)=>{
     const rows=sims[kind]||[];
     s+=`<div class="sb-psub"><span class="ntx">${title}</span>`
-      +(ro?'':`<span class="gctl">${sbSortBtn(`s.${di}.${kind}`,ro)}<button class="mbtn add" data-sradd="${di}.${kind}" title="Add a ${title} row">+ Row</button></span>`)+`</div>`;
+      +(ro?'':`<span class="gctl">${sbSortBtn(`s.${di}.${kind}`,ro)}${kind==='amt'?`<button class="mbtn add" data-sblkadd="${di}" title="Add an AMT block — BRIEF, BOX and DEBRIEF together">+ Block</button>`:''}<button class="mbtn add" data-sradd="${di}.${kind}" title="Add a ${title} row">+ Row</button></span>`)+`</div>`;
     if(!rows.length){s+=`<div class="sb-empty">No ${title} rows.</div>`;return;}
     s+=C6;
     rows.forEach((r:any,ri:any)=>{

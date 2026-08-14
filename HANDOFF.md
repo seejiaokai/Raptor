@@ -61,9 +61,16 @@ the jet, whose IP/IR/FI rule stands untouched, as do every sim FRONT-seat
 rule); the reference's copied rule is excised by `refwin.ts:resim()` — it
 fires nowhere on the seed, every seeded sim rear seat holds an IP or a WSO,
 so parity was byte-equal either way; rules in `docs/engine-rules.md`, the
-CAT-ladder bullet)**, run in
+CAT-ladder bullet), and once more for the AMT + BLOCK button (14 Aug 26 —
+one tap on the AMT header mints the whole BRIEF / BOX / DEBRIEF trio, times
+blank per the new-line rule, the BOX carrying `pax:[]` so its FCP/RCP grid
+offers its first empty pair at once; board-only, three structural adds, the
+OFT header untouched — contract in `docs/ui-contracts.md`, the `+ Block`
+paragraph under §The OFT takes instructors)**, run in
 this container on the matching tree:
-`npm test` 1431 tests across 91 files (the sim-rear-seat change added four —
+`npm test` 1433 tests across 91 files (the AMT + Block added two to
+`board.test.tsx` — the button sits on the AMT header alone, and one tap
+mints the three blank rows with the BOX grid ready; the sim-rear-seat change added four —
 the OFT/AMT rear seat raises no QUAL and clears `slotBar` while the jet rear
 and sim front seats keep their rules; the board-full-editor batch added eight to
 `board.test.tsx` — the new editable fields render and commit, the checks bar's
