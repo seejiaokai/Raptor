@@ -23,15 +23,19 @@ the BOARD REDESIGN of 13 Aug 26 — the cleanup + inline `+ Wave`, the AMT
 FCP/RCP block with a debrief range, and the duty-template system — and again
 for the CREW-FINDING build later the same day (the tap that plants with the
 warning after, placeholder-arms-the-slot, the green eligibility rings, and
-the Available-crew panel folded to one line with honest wave counts)**, run
-in this container on the matching tree:
+the Available-crew panel folded to one line with honest wave counts), and
+once more for the WARNING-DISMISS HOLD (14 Aug 26 — a blank tap that closes a
+warning box no longer flings the view up the outerHTML-swapped day it collapsed
+above)**, run in this container on the matching tree:
 `npm test` 1415 tests across 91 files (the crew-finding build added
 `selrings.test.tsx` and re-pointed the arm-and-plant, darkened-name and
 avail-grid tests at the new behaviour), `node
 reference/tfin.js` 728/0 (the engine is untouched by the crew-finding build),
 `npm run build` clean, the full `npm run test:e2e`
-geometry job 88/88 in Chromium (two added: the ring paints are distinct and
-move nothing; the folded panel opens and closes), `probes:adapted` 36/36 and
+geometry job 89/89 in Chromium (the crew-finding build added two — the ring
+paints are distinct and move nothing, the folded panel opens and closes — and
+the dismiss-hold build a third, the focused puck holding still across a blank
+tap that closes its warning box), `probes:adapted` 36/36 and
 `perf` 4/4 — **the week DOM ceiling was LOWERED 5530 → 4000** against a 3621
 measure, because the folded panel's saving is real headroom and a slack
 ceiling would have passed a change that silently re-expanded every panel
