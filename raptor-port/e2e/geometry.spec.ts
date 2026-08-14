@@ -80,11 +80,11 @@ test.describe('the puck is one fixed size everywhere', () => {
   for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
     test(`the SANS Availability palette section holds its geometry on ${name}`, async ({ page }) => {
       /* The .rall.rsans band (14 Aug 26) lists every SANS member with an
-         F/O/A badge as a SIBLING of the .rpuck — never nested inside it,
-         because .rpuck.no.haswhy is a flex COLUMN and a nested child would
-         ride the 74x74 flex-basis trap the armed-palette test above pins.
-         jsdom proves the markup shape; only a real layout engine can prove
-         the badge does not distort the puck or run the row sideways. */
+         F/O/A-style badge as a SIBLING of the .rpuck — never nested inside
+         it, because .rpuck.no.haswhy is a flex COLUMN and a nested child
+         would ride the 74x74 flex-basis trap the armed-palette test above
+         pins. jsdom proves the markup shape; only a real layout engine can
+         prove the badge does not distort the puck or run the row sideways. */
       await page.setViewportSize(viewport)
       await login(page)
       await go(page, 'editsched')
@@ -95,17 +95,34 @@ test.describe('the puck is one fixed size everywhere', () => {
       expect(await page.locator('#eRoster .rcol .rh.sans').count()).toBe(0)
       expect(await page.locator('#eRoster .rall.rsans .rpuck .puck').count()).toBeGreaterThan(0)
 
-      /* file a record through the probe bridge — the badge must appear
-         beside the puck without touching its size or overflowing the row */
+      /* RECORD-LESS SANS ARE STRUCK BY DEFAULT, WITH NOTHING ARMED (owner bug
+         report, 14 Aug 26) — the seed week files no SANS record for Monday,
+         so every one of the eleven SANS bodies here should already read
+         .rpuck.no with no slot armed at all: the title carries the reason,
+         and no .rwhy is printed (that is an ARMED-only affordance — a phone
+         has no hover, but there is also no slot yet to be refused from). */
+      const unarmedStruck = page.locator('#eRoster .rall.rsans .rpuck.no')
+      expect(await unarmedStruck.count(), 'record-less SANS strike with nothing armed').toBeGreaterThan(0)
+      expect(await page.locator('#eRoster .rall.rsans .rpuck.no .rwhy').count(), 'no printed reason while unarmed').toBe(0)
+      expect(await unarmedStruck.first().getAttribute('title') || '')
+        .toContain('SANS — no availability filed for today')
+
+      /* file a record through the probe bridge — NEW shape (owner rework, 14
+         Aug 26): one offered window on the row's own allday/s/e fields, and
+         `sans` reduced to which events are ticked. The letters+window badge
+         must appear beside the puck, filing it must clear the unarmed
+         strike, and none of it may touch the puck's size or overflow the row. */
       await page.evaluate(() => {
         const w = window as any
-        w.INPUTS.unshift({ person: 'vinci', date: 'Jul 13', allday: true,
-          type: 'SANS Availability', sans: { f: { s: 480, e: 720 }, o: true },
+        w.INPUTS.unshift({ person: 'vinci', date: 'Jul 13', allday: false, s: 480, e: 720,
+          type: 'SANS Availability', sans: { f: true, o: true },
           iid: 'e2e-sans', mod: 'now' })
         w.afterSchedMutate(); w.renderEditWeek()
       })
       const badge = page.locator('#eRoster .rsans-row:has([data-person="vinci"]) .rsans-b')
-      await expect(badge).toHaveText('F 08:00–12:00 · O')
+      await expect(badge).toHaveText('F/O · 08:00–12:00')
+      const vinciCls = await page.locator('#eRoster .rall.rsans .rpuck[data-person="vinci"]').getAttribute('class')
+      expect(vinciCls || '', 'filing a record clears the unarmed strike').not.toMatch(/\bno\b/)
       const geo = await page.evaluate(([w, h]) => {
         const row = document.querySelector('#eRoster .rsans-row [data-person="vinci"]')!.closest('.rsans-row') as HTMLElement
         const puck = row.querySelector('.puck')!.getBoundingClientRect()
@@ -117,6 +134,19 @@ test.describe('the puck is one fixed size everywhere', () => {
       expect(geo.ph).toBe(want.h)
       expect(geo.besides, 'the badge sits beside the puck, not on it').toBe(true)
       expect(geo.spill, 'the row does not run sideways').toBeLessThanOrEqual(0)
+
+      /* widen the offer to ALL DAY before arming — the ONE window covers
+         every ticked event now (rework, 14 Aug 26), so the 08:00–12:00
+         window the badge check above used would legitimately print
+         "available … only" against an OFT box running outside it; "covering"
+         means the record's window covers the slot, not the old per-event
+         all-day flag */
+      await page.evaluate(() => {
+        const w = window as any
+        const rec = w.INPUTS.find((x: any) => x.iid === 'e2e-sans')
+        rec.allday = true; delete rec.s; delete rec.e
+        w.afterSchedMutate(); w.renderEditWeek()
+      })
 
       /* arm an OFT row through its append cell (the week draws no empty sim
          seat cell — a missing crewman simply is not there, so the append cell
@@ -140,6 +170,36 @@ test.describe('the puck is one fixed size everywhere', () => {
         .map(el => { const r = el.getBoundingClientRect(); return { w: +r.width.toFixed(1), h: +r.height.toFixed(1) } })
         .filter(r => r.w !== w || r.h !== h).slice(0, 4), [want.w, want.h] as const)
       expect(odd, 'every SANS-section puck is exactly --puck-w x --puck-h while armed').toEqual([])
+    })
+
+    test(`the SANS Availability card grid holds its geometry on ${name}`, async ({ page }) => {
+      /* The week's SANS group (owner rework, 14 Aug 26) draws a compact CSS
+         grid of cards instead of a row per record — the point is 26 filed
+         offers reading as 2-3 rows of cards, not 26 full-width rows.
+         auto-fill decides the column count at any width, so read it straight
+         off the computed style rather than re-deriving it from card rects. */
+      await page.setViewportSize(viewport)
+      await login(page)
+      await go(page, 'editsched')
+      await page.evaluate(() => {
+        const w = window as any, dt = 'Jul 13'
+        const recs = [
+          { person: 'ipman', date: dt, allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now' },
+          { person: 'romeo', date: dt, allday: true, type: 'SANS Availability', sans: { o: true }, mod: 'now' },
+          { person: 'nick', date: dt, allday: false, half: 'am', type: 'SANS Availability', sans: { a: true }, mod: 'now' },
+          { person: 'waldo', date: dt, allday: false, half: 'pm', type: 'SANS Availability', sans: { f: true, o: true }, mod: 'now' },
+        ]
+        recs.forEach((r: any) => w.INPUTS.unshift(r))
+        w.afterSchedMutate(); w.renderEditWeek()
+      })
+      const grid = page.locator('#eWeek .sec-sans .sanscards').first()
+      await expect(grid).toBeVisible()
+      expect(await grid.locator('.sanscard').count()).toBeGreaterThanOrEqual(4)
+      const cols = await grid.evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length)
+      expect(cols, `${name}: at least ${name === 'desktop' ? 3 : 2} SANS cards to a row`)
+        .toBeGreaterThanOrEqual(name === 'desktop' ? 3 : 2)
+      const pageOver = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+      expect(pageOver, 'the SANS card grid causes no horizontal document overflow').toBeLessThanOrEqual(0)
     })
   }
 

@@ -163,6 +163,38 @@ OFT and the one with a covering offer left plannable, and planting him on an
 AMT he did not offer raised exactly one amber "not offering AMT today"
 Advisory — zero console errors. Deployed-page check happens at merge, as
 ever.
+**SANS ONE-WINDOW REWORK + FLY-WITH RENAME (14 Aug 26, same day as the
+feature shipped) — all six gates green first-hand on the matching tree.**
+The owner's phone feedback rebuilt the record: ONE window on the standard
+All day / AM / PM / Custom template (the per-event time pairs could not be
+cleared on a phone and are deleted), `sans` reduced to F/O/A flags, the
+activity type `Fly` renamed `Fly with`, record-less SANS struck on the
+palette BY DEFAULT (unarmed — armed was already `slotBar`'s job), the week
+group and board panel replaced by ONE shared card grid (puck · letters ·
+window · remarks, click opens the input-edit dialog, timed-by-start then
+combo-grouped), and the Available-crew panel's SANS tail deleted (its
+folded count now reads "N SANS offering"). `npm test` 1502 across 93 files
+(`sanscards.test.tsx` new — 12 card-grid tests; `sansavail.test.ts`
+rewritten to the new shape with a LEAK-GUARD block pinning that a timed
+offer never reads as a timed absence; `palette.test.ts` +4 for the default
+strike and remarks; `inputs.test.tsx` re-pointed at checkboxes + span
+picker; six files re-pointed for the `Fly with` string). `node
+reference/tfin.js` 728/0 — the rename needed NO new refwin patch: the
+reference's own `^Fly$` offer regexes simply stop matching, which is the
+commitment semantics both engines already share. `npm run build` clean,
+`npm run test:e2e` 96/96 (the SANS geometry test re-pointed: a covering
+offer now means the record's one window covers the slot, and it checks the
+unarmed default strike; a card-grid geometry test added), `probes:adapted`
+6/6, `perf` 4/4 — week 3621 under 4000, board 835 under 960, both
+unmoved. The built bundle was driven at 390×844 and 1500px: a record filed
+through the REAL form (calendar walked back to Jul 26, F+O ticked, Custom
+08:00–12:00), the phone bug dead (one tap on All day clears the timing),
+the non-SANS refusal toast, 10/11 record-less SANS struck with nothing
+armed, the cards ordered vinci(08:00)→ipman(PM)→krait(all day) at 2
+columns on the phone and 3 on desktop, a card click opening the dialog
+with ticks + span picker, the board panel carrying the same three cards,
+"Fly with" in the type dropdown — zero console/page/network errors.
+Deployed-page check at merge, as ever.
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
 board can still be a heavier one — and now that a heavier board can read
 lighter when the measure's boundary moves.
@@ -221,22 +253,29 @@ only after re-running them.
 
 ## Known issues / open work
 
-- **SANS AVAILABILITY shipped (14 Aug 26)** — the input type with the
-  Fly/AMT/OFT sub-form, the palette's one `.rall.rsans` section (the
-  per-column SANS sub-bands are gone), the week/board groups, the slotBar
-  grey-out and the `SANS_AVAIL` advisory (`docs/engine-rules.md` §SANS
-  availability, `docs/ui-contracts.md` §SANS Availability, on screen). Two
-  things worth restating so they are not read as bugs: the `SANS_AVAIL`
-  advisory is DELIBERATELY silent when nothing is filed at all — the palette
-  grey + toast still say so, but nothing persists in the day's warning list
-  (the seed-parity reasoning is in `engine-rules.md`, and the owner's own
-  example only ever described planting against a FILED record); and a filed
-  record is session-only, like every input in this app — nothing here changed
-  the storage story. Also deliberate: filing one late earns the LATE badge
-  like any leave input (downchits stay the only exemption), and the
-  restriction to SANS aircrew is enforced at every editor's commit
-  (`sansRefusal`), not in the type dropdown, so the type is visible to all
-  and refused with a plain toast.
+- **SANS AVAILABILITY shipped (14 Aug 26) and was REWORKED the same day on
+  the owner's phone feedback** — ONE window on the standard All day / AM /
+  PM / Custom template (the per-event Fly/AMT/OFT time pairs are deleted;
+  they could not be cleared on a phone), `sans` is flags-only, record-less
+  SANS are struck on the palette by default, the week/board draw one shared
+  card grid (click a card to edit in the dialog), and the Available-crew
+  panel's SANS tail is gone — its folded count reads "N SANS offering"
+  (`docs/engine-rules.md` §SANS availability, `docs/ui-contracts.md` §SANS
+  Availability, on screen). Things worth restating so they are not read as
+  bugs: the `SANS_AVAIL` advisory is DELIBERATELY silent when nothing is
+  filed at all — the palette strike + toast still say so, but nothing
+  persists in the day's warning list (the seed-parity reasoning is in
+  `engine-rules.md`); a filed record is session-only, like every input in
+  this app; filing one late earns the LATE badge like any leave input
+  (downchits stay the only exemption); the restriction to SANS aircrew
+  STAYS (owner reconfirmed at the rework: "only SANS can input the
+  availability") and is enforced at every editor's commit (`sansRefusal`),
+  not in the type dropdown; and the week card grid deliberately dropped the
+  in-place time/remarks cells — they were DEAD for SANS under the old
+  force-allday override anyway, and the dialog a card opens carries every
+  field. The activity type `Fly` is `Fly with` now (owner, same batch) —
+  `isFly`'s regex moved with it, and the reference needed no patch because
+  its `^Fly$` regexes not matching IS the shared commitment semantics.
 - **The CREW-FINDING build (13 Aug 26) shipped four pieces and left two
   REPORTED-NOT-BUILT options beside one deliberately dropped shape.** Shipped
   (contracts in `docs/ui-contracts.md` §Drag / arm-and-plant, §Selection
@@ -858,7 +897,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/**/audit-*.test.ts(x)` | Three sweeps of 12 Aug 26, all keepers — they are the regression armour for corners nothing else tests. **The adversarial audit** over PRs 148–174, six agents (a=History/edit log, b=board nav, c=validation, d=sort/reorder, e=inputs): closed every gap this file listed and pinned twelve fixes (log keys remapped with the key space, day-aware accept deferral, `deletionWasIssued` under reorder, the relink's preserved extras and covered-day re-file, the scrub/handle button guards, the day-step commit, the carry-day fix, the numeric time sort). **The five suspects** it raised and the owner then closed: `audit-c-briefguard` (brief vs take-off, both directions), `audit-thinwin` (`inpWin` failing closed), `audit-gesture-bubble` (repaint re-check, drag-vs-scrub). **The guard-rail sweep**: `audit-guards` (`hmOK`, `minus`, the time cells, store renames, the rules load path) and `audit-guards-inputs` (input times, spans, the derived AM/PM label, and what stays allowed because it is a decision). |
 | `src/ui/selrings.test.tsx` | The green eligibility rings (13 Aug 26) — the DOM agrees with `slotBar` on EVERY edit-week slot (the mirror test that keeps the rings from ever becoming a second copy of the rule), a mutation re-rings on the next paint (WARN-identity invalidation), rings clear with the selection, view-only and a selected placeholder never ring. The paints themselves (bright/dim/armed distinct, zero layout shift) are in `e2e/geometry.spec.ts`, because jsdom measures every rect 0×0. |
 | `src/engine/personnel.test.ts` | The ground-crew category (Aug 26) — that a personnel derives empty quals and the boot grants nothing, `slotBar` bars a front seat and allows rear/duty/ground, and validate raises `QUAL` in a front seat, the `PAX_CREW`/`CP` advisory in a rear seat, and `DOUBLE_BOOK`/`LONGDAY`/`DAYS_RUN` while crew rest, turns, the matrix, AAR and the brief/debrief windows stay OFF. Plus the parity guards (`PAX_CREW` has a WCODE, and fires nowhere on the seed). |
-| `src/engine/sansavail.test.ts` | SANS Availability (14 Aug 26) — `sansGate`'s five statuses; `slotBar`'s grey-out on a flying/OFT/AMT seat (no record, not offered, a narrower window, ok) and the duty/ground carve-out; `validate()`'s `SANS_AVAIL` advisory firing only against a FILED record (offering only some events, a narrow window) and staying silent on a bare no-record plant; the parity-guard pair (`WCODE.SANS_AVAIL` truthy, seed raises zero). |
+| `src/engine/sansavail.test.ts` | SANS Availability (14 Aug 26; rewritten for the one-window rework the same day) — `sansGate`'s five statuses against the flags + standard-window shape, one window serving every ticked event, the AM/PM presets; `sansWindow`/`sansLetters`/`sansBadge`; `slotBar`'s grey-out on a flying/OFT/AMT seat and the duty/ground carve-out; the `SANS_AVAIL` advisory (fires on not-offered/window, silent on no-record); the LEAK GUARD (a timed offer never reads as a timed absence — `isAway`, `day.input`, no hard clash); the parity-guard pair. |
+| `src/ui/sanscards.test.tsx` | The SANS card grid (14 Aug 26) — the shared builder renders the same cards on the week group and the board panel, the order (bounded windows by start, then the fixed F/O/A→…→A combo order), a card's `data-inpedit` address matching `inpKey`, read-only cards carrying none, the board's empty state, the view-only week rendering nothing. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |

@@ -2,7 +2,7 @@
    the placeholder row, verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
-import { INPUTS, isAway, inputCoversDate, offWord, awayAllDay, canWork, sansBadge } from '../engine/inputs'
+import { INPUTS, isAway, inputCoversDate, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
 import { hm24 } from '../engine/time'
 import { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
 import { sevOf, chipOf } from '../engine/validate'
@@ -27,7 +27,20 @@ const groundedOnly=(id:any,di:any)=>{
 };
 export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rules:any,hideWhy?:any){
   const grounded=!armKey&&!!(off&&off.has(id))&&groundedOnly(id,di);
-  const why=armKey?slotBar(id,armKey,rules):((off&&off.has(id)&&!grounded)?offReason(id,di):'');
+  /* RECORD-LESS SANS ARE STRUCK BY DEFAULT (owner bug report, 14 Aug 26) — with
+     nothing armed there is no slot to ask slotBar about, so a SANS man who has
+     filed nothing for the day used to read as ordinarily available; only
+     arming a seat ever asked the SANS gate anything (see slotBar's own SANS
+     block in avail.ts). Checked AFTER the off/grounded reason so a real
+     absence keeps outranking "no record filed", the same order sansGate
+     itself applies against the absence checks in slotBar. Uses the exact
+     words slotBar prints for the 'none' status, one vocabulary either way.
+     `p.special` placeholders never reach rosterPuck (specialRowHTML draws
+     them separately) and a non-SANS man never has `.san`, so both are
+     untouched by construction, not by an extra guard here. */
+  const why=armKey?slotBar(id,armKey,rules)
+    :((off&&off.has(id)&&!grounded)?offReason(id,di)
+      :((PEOPLE[id].san&&di>=0&&DAYS[di]&&!sansAvailOn(id,DAYS[di].dt))?'SANS — no availability filed for today':''));
   const standby=!!(sby&&sby.has(id));
   const cls=why?'no':((grounded||(eng&&eng.has(id)))?'busy':(standby?'standby':''));
   const note=why?`${PEOPLE[id].cs} — ${why}`
@@ -161,8 +174,16 @@ export function sansAvailHTML(di:any,armKey:any,eng:any,off:any,sby:any,arules:a
   return `<div class="rall rsans"><div class="rh2">SANS Availability</div>`
     +ids.map((id:any)=>{
       const badge=sansBadge(id,d.dt);
+      /* the record's own remarks, ellipsized (owner, 14 Aug 26) — a sibling of
+         the badge, same reasoning as .rsans-b's own comment: never nested
+         inside .rpuck, or a struck .rpuck.no.haswhy column would fight it for
+         the puck's own flex-basis. Nothing at all when there is no record or
+         the record carries no remarks — an empty span would still cost the
+         row a gap nobody asked for. */
+      const rec=sansAvailOn(id,d.dt), rmk=rec&&String(rec.remarks||'').trim();
       return `<div class="rsans-row">${rosterPuck(id,di,armKey,eng,off,sby,arules)}`
-        +(badge?`<span class="rsans-b">${esc(badge)}</span>`:'')+`</div>`;
+        +(badge?`<span class="rsans-b">${esc(badge)}</span>`:'')
+        +(rmk?`<span class="rsans-r" title="${esc(rmk)}">${esc(rmk)}</span>`:'')+`</div>`;
     }).join('')+`</div>`;
 }
 

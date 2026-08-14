@@ -233,7 +233,7 @@ export function slotRules(key:any){
    half / s / e fields), so `off` is that same window whichever event asked. */
 const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
 export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
-export function sansGate(id:any,dt:any,domain:any,s:any,e:any){
+export function sansGate(id:any,dt:any,domain:any,s:any,e:any):any{
   const p=PEOPLE[id]; if(!p||!p.san)return {status:'na'};
   const rec=sansAvailOn(id,dt); if(!rec)return {status:'none'};
   if(!(rec.sans&&rec.sans[SANS_KEY[domain]]))return {status:'not-offered'};

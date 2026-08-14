@@ -102,6 +102,45 @@ describe('the SANS Availability palette section', () => {
     expect(rowFor(html, 'yeti')).not.toContain('rsans-b')
   })
 
+  /* RECORD-LESS SANS ARE STRUCK BY DEFAULT (owner bug report, 14 Aug 26) — with
+     nothing armed, a SANS man who filed nothing used to read as ordinarily
+     available; only arming a slot ever asked the SANS gate anything. 'ipman'
+     carries no record in the seed week, same as the armed tests below rely on. */
+  it('an unarmed, record-less SANS puck is struck by default, reason in the title', () => {
+    const html = unarmed('ipman')
+    expect(html).toContain('rpuck no')
+    expect(html).toContain('SANS — no availability filed for today')
+    /* nothing is armed, so showWhy stays off — the reason lands in the title
+       only, never printed under the name (that is an ARMED-only affordance) */
+    expect(html).not.toContain('haswhy')
+    expect(html).not.toContain('rwhy')
+  })
+
+  it('filing a record removes the unarmed strike', () => {
+    INPUTS.push({ person: 'ipman', date: DAYS[0].dt, allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now' })
+    const html = unarmed('ipman')
+    expect(html).not.toContain('rpuck no')
+  })
+
+  it('a real absence still outranks "no record filed" — a SANS man on leave reads as on-leave', () => {
+    INPUTS.push({ person: 'ipman', date: DAYS[0].dt, allday: true, type: 'LL', remarks: '', mod: '' })
+    const html = unarmed('ipman')
+    expect(html).toContain('rpuck no')
+    expect(html).toContain('leave')
+    expect(html).not.toContain('SANS — no availability filed for today')
+  })
+
+  it('the .rsans-r remarks span renders when the record carries remarks, and not otherwise', () => {
+    INPUTS.push({ person: 'ipman', date: DAYS[0].dt, allday: true, type: 'SANS Availability', sans: { f: true }, remarks: 'keen for anything', mod: 'now' })
+    // a record with no remarks at all — no empty span either
+    INPUTS.push({ person: 'krait', date: DAYS[0].dt, allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now' })
+    const html = paletteHTML(0)
+    const ipmanRow = rowFor(html, 'ipman')!
+    expect(ipmanRow).toContain('rsans-r')
+    expect(ipmanRow).toContain('keen for anything')
+    expect(rowFor(html, 'krait')).not.toContain('rsans-r')
+  })
+
   it('the old per-column SANS sub-bands are gone — no SANS name inside a seat column', () => {
     const html = paletteHTML(0)
     /* one "SANS Availability" heading — the full-width band, never a
