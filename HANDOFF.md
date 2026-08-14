@@ -138,16 +138,26 @@ lighter but because the sign-off moved out of the measured `#sbBoard` into its
 own `#sbSign` element — against an unmoved 960 ceiling; the week measures 3621
 under the 4000 ceiling
 the crew-finding build set (the Available-crew panels boot folded now).
-**SANS AVAILABILITY (14 Aug 26) — engine, forms and display groups done and
-unit-gated, browser gates pending at time of writing.** `npm test` 1476
+**SANS AVAILABILITY (14 Aug 26) — all six gates green first-hand on the
+matching tree.** `npm test` 1476
 across 92 files (`sansavail.test.ts` is new — `sansGate`'s five statuses,
 `slotBar`'s grey-out on a flying/OFT/AMT seat and the duty/ground carve-out,
 the `SANS_AVAIL` advisory firing only against a filed record, the parity-guard
 pair; `slotrules.test.ts` pins `simKind`; `palette.test.ts` and
 `inputs.test.tsx` cover the `.rall.rsans` band and the add form's sub-form).
-`node reference/tfin.js` 728/0, `npm run build` clean. **`npm run test:e2e`,
-`probes:adapted`, `perf` and the deployed-page check have NOT run yet for
-this build** — gates re-run pending, next in the session.
+`node reference/tfin.js` 728/0, `npm run build` clean, `npm run test:e2e`
+94/94 (two new: the `.rall.rsans` section holds puck geometry with the badge
+beside — not inside — the puck at both widths, and the armed-OFT strike prints
+its SANS reasons without the 74×74 slab regression), `probes:adapted` 6/6,
+`perf` 4/4 (week 3621 under 4000, board 835 under 960 — both unmoved: the new
+week group renders only when a record exists and the seed carries none). The
+built bundle was then driven at 1500px: the record filed through the REAL add
+form (calendar + checkboxes), the badge on the palette section and the week
+group, ten record-less SANS struck with the printed reason while armed on an
+OFT and the one with a covering offer left plannable, and planting him on an
+AMT he did not offer raised exactly one amber "not offering AMT today"
+Advisory — zero console errors. Deployed-page check happens at merge, as
+ever.
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
 board can still be a heavier one — and now that a heavier board can read
 lighter when the measure's boundary moves.
@@ -206,17 +216,22 @@ only after re-running them.
 
 ## Known issues / open work
 
-- **SANS AVAILABILITY (14 Aug 26) — gates re-run pending.** Engine, forms,
-  the palette section, week/board groups and the advisory are built and unit-
-  tested (`docs/engine-rules.md` §SANS availability, `docs/ui-contracts.md`
-  §SANS Availability, on screen). Two things worth restating so they are not
-  read as bugs: the `SANS_AVAIL` advisory is DELIBERATELY silent when nothing
-  is filed at all — the palette grey + toast still say so, but nothing
-  persists in the day's warning list (the seed-parity reasoning is in
-  `engine-rules.md`); and a filed record is session-only, like every input in
-  this app — nothing here changed the storage story. **`npm run test:e2e`,
-  `probes:adapted`, `perf` and the deployed-page check have not run for this
-  build yet** — the orchestrator runs them next in this session.
+- **SANS AVAILABILITY shipped (14 Aug 26)** — the input type with the
+  Fly/AMT/OFT sub-form, the palette's one `.rall.rsans` section (the
+  per-column SANS sub-bands are gone), the week/board groups, the slotBar
+  grey-out and the `SANS_AVAIL` advisory (`docs/engine-rules.md` §SANS
+  availability, `docs/ui-contracts.md` §SANS Availability, on screen). Two
+  things worth restating so they are not read as bugs: the `SANS_AVAIL`
+  advisory is DELIBERATELY silent when nothing is filed at all — the palette
+  grey + toast still say so, but nothing persists in the day's warning list
+  (the seed-parity reasoning is in `engine-rules.md`, and the owner's own
+  example only ever described planting against a FILED record); and a filed
+  record is session-only, like every input in this app — nothing here changed
+  the storage story. Also deliberate: filing one late earns the LATE badge
+  like any leave input (downchits stay the only exemption), and the
+  restriction to SANS aircrew is enforced at every editor's commit
+  (`sansRefusal`), not in the type dropdown, so the type is visible to all
+  and refused with a plain toast.
 - **The CREW-FINDING build (13 Aug 26) shipped four pieces and left two
   REPORTED-NOT-BUILT options beside one deliberately dropped shape.** Shipped
   (contracts in `docs/ui-contracts.md` §Drag / arm-and-plant, §Selection
