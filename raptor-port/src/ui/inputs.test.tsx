@@ -297,9 +297,14 @@ describe('the Inputs page (tfin)', () => {
   })
 })
 
-/* SANS AVAILABILITY, the add form's own sub-form (owner, 14 Aug 26) —
-   SansPicker in place of the all-day/time controls, and the two refusals
-   (person, empty tick set) sansRefusal enforces for all three editors. */
+/* SANS AVAILABILITY, the add form's own sub-form (owner, 14 Aug 26; reworked
+   flags-only the same day — the owner's own phone bug: a per-event
+   <input type=time> pair could not be cleared with one tap). SansPicker is
+   now three checkboxes and nothing else, sitting ABOVE the standard How-long
+   control rather than replacing it — SANS is a normal timed input with one
+   extra field, riding the same SpanPicker/time-field machinery every other
+   half-day type uses. The two refusals (person, empty tick set) are still
+   sansRefusal's, shared by all three editors. */
 describe('the SANS Availability sub-form on the add form', () => {
   const setV = async (el: any, v: string) => act(async () => {
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
@@ -311,10 +316,10 @@ describe('the SANS Availability sub-form on the add form', () => {
     setter.call(sel, v)
     sel.dispatchEvent(new Event('change', { bubbles: true }))
   })
-  /* the sans checkbox rows carry no id — found by their own label text,
-     in SANS_ROWS' own Fly / AMT / OFT display order */
-  const sansRow = (label: string) => $$('#inSans .sanspick-row').find(r => r.textContent?.includes(label))!
-  const sansCk = (label: string) => sansRow(label).querySelector('input[type="checkbox"]') as HTMLInputElement
+  /* the sans checkboxes carry no id — found by their own label text, in
+     SANS_ROWS' own Fly / AMT / OFT display order */
+  const sansCk = (label: string) =>
+    $$('#inSans .sanspick-ck').find(l => l.textContent?.includes(label))!.querySelector('input[type="checkbox"]') as HTMLInputElement
   const originalPerson = () => ($('#inPerson') as unknown as HTMLSelectElement).value
   const toasts: string[] = []
   const withToast = async (fn: () => Promise<void>) => {
@@ -324,16 +329,25 @@ describe('the SANS Availability sub-form on the add form', () => {
     try { await fn() } finally { HOOKS.toast = orig }
   }
 
-  it('SansPicker renders on selecting the type, and hides the all-day/time controls', async () => {
+  it('SansPicker mounts on selecting the type, alongside the standard span picker and time fields', async () => {
     const before = originalPerson()
     expect($('#inSans')).toBeFalsy()
     await setType('SANS Availability')
     expect($('#inSans'), 'the picker mounts').toBeTruthy()
-    expect($$('#inSans .sanspick-row').length).toBe(3)
-    for (const label of ['Fly', 'AMT', 'OFT']) expect(sansRow(label)).toBeTruthy()
-    /* SANS carries no s/e/half of its own — the ordinary time fields go */
-    expect($('#inStartT')).toBeFalsy()
-    expect($('#inAllday')).toBeFalsy()
+    /* exactly 3 checkboxes, in Fly / AMT / OFT order */
+    const rows = $$('#inSans .sanspick-ck')
+    expect(rows.length).toBe(3)
+    expect(rows.map(r => r.textContent?.trim())).toEqual(['Fly', 'AMT', 'OFT'])
+    /* the owner's phone bug is what this pins: no per-event time pair any
+       more, anywhere inside the picker */
+    expect($$('#inSans input[type="time"]').length).toBe(0)
+    /* INPUT_META gives SANS half:true now, so it gets the SAME span picker
+       and time fields as leave and medical — not a swapped-out control */
+    expect($('#inSpan'), 'the standard span picker is offered too').toBeTruthy()
+    expect($('.spanpick')).toBeTruthy()
+    expect($('#inStartT'), 'the standard start time field is present').toBeTruthy()
+    expect($('#inEndT'), 'the standard end time field is present').toBeTruthy()
+    expect($('#inAllday'), 'a half-day type never gets the plain tick').toBeFalsy()
     await setType('LL')                        // back to an ordinary type for later tests
     expect($('#inSans')).toBeFalsy()
     await setPerson(before)
@@ -363,14 +377,20 @@ describe('the SANS Availability sub-form on the add form', () => {
     await setType('LL')
   })
 
-  it('commits the ticked Fly/AMT/OFT payload, all-day, no s/e/half', async () => {
+  /* All day is the form's default span, so the ticked flags alone decide
+     whether Add goes through; the record rides the same all-day shape
+     (s:0, e:1439) every other type gets — SANS carries no window of its
+     own outside allday/half/s/e any more. */
+  it('ticking Fly + OFT under the default All day commits sans flags only', async () => {
     await setType('SANS Availability')
     const sansId = Object.keys(PEOPLE).find(id => PEOPLE[id].san)!
     await setPerson(sansId)
     await click(sansCk('Fly'))
-    await setV(sansRow('Fly').querySelectorAll('input[type="time"]')[0], '08:00')
-    await setV(sansRow('Fly').querySelectorAll('input[type="time"]')[1], '12:00')
-    await click(sansCk('OFT'))                   // ticked, times left blank — all day for OFT
+    await click(sansCk('OFT'))
+    /* twice, so the pick lands on Jul 13 whatever range the form was left in
+       — two clicks on one day always end with that day as the start */
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    await click($('#inCal [data-cal="2026-07-13"]'))
     const n = INPUTS.length
     await click($('#inAdd'))
     expect(INPUTS.length).toBe(n + 1)
@@ -378,11 +398,53 @@ describe('the SANS Availability sub-form on the add form', () => {
     expect(r.person).toBe(sansId)
     expect(r.type).toBe('SANS Availability')
     expect(r.allday).toBe(true)
-    expect(r.s).toBeUndefined()
-    expect(r.e).toBeUndefined()
     expect(r.half).toBeUndefined()
-    expect(r.sans).toEqual({ f: { s: 480, e: 720 }, o: true })
+    /* sans values are true flags, never the old {s,e} object shape */
+    expect(r.sans).toEqual({ f: true, o: true })
     await act(async () => { undo() })
+    await setType('LL')
+  })
+
+  it('picking AM commits allday:false, half:\'am\', and the ticked flags', async () => {
+    await setType('SANS Availability')
+    const sansId = Object.keys(PEOPLE).find(id => PEOPLE[id].san)!
+    await setPerson(sansId)
+    await click(sansCk('AMT'))
+    await click($('#inSpan [data-span="am"]'))
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    const n = INPUTS.length
+    await click($('#inAdd'))
+    expect(INPUTS.length).toBe(n + 1)
+    const r = INPUTS[0] as any
+    expect(r.allday).toBe(false)
+    expect(r.half).toBe('am')
+    expect(r.sans).toEqual({ a: true })
+    await act(async () => { undo() })
+    await click($('#inSpan [data-span="all"]'))
+    await setType('LL')
+  })
+
+  it('picking Custom and typing 08:00–12:00 commits s:480, e:720', async () => {
+    await setType('SANS Availability')
+    const sansId = Object.keys(PEOPLE).find(id => PEOPLE[id].san)!
+    await setPerson(sansId)
+    await click(sansCk('Fly'))
+    await click($('#inSpan [data-span="custom"]'))
+    await setV($('#inStartT'), '08:00')
+    await setV($('#inEndT'), '12:00')
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    const n = INPUTS.length
+    await click($('#inAdd'))
+    expect(INPUTS.length).toBe(n + 1)
+    const r = INPUTS[0] as any
+    expect(r.allday).toBe(false)
+    expect(r.s).toBe(480)
+    expect(r.e).toBe(720)
+    expect(r.sans).toEqual({ f: true })
+    await act(async () => { undo() })
+    await click($('#inSpan [data-span="all"]'))
     await setType('LL')
   })
 

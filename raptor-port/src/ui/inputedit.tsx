@@ -83,69 +83,55 @@ export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPic
   </div>
 }
 
-/* THE SANS SUB-FORM (owner, 14 Aug 26) — the only place a record's Fly/AMT/
-   OFT payload is typed, shared by the add form, the in-table row editor and
-   this file's own modal (the same three surfaces SpanPicker already serves).
-   Fly / AMT / OFT, in that display order — SANS_KEY in avail.ts maps them to
-   f/o/a, which is a lookup order, not a reading order.
-   A row's time pair is BLANK when it is not offering a window of its own —
-   "checked, no times" IS all day (true in the record), so there is no third
-   control to keep in step with the two boxes, the same reasoning the all-day
-   cells elsewhere in this file already lean on. Mirrors the add form's
-   dim-when-disabled pattern (InputsPage.tsx) for the faded pair before a row
-   is ticked.
-   While a box is ticked with only ONE of its two times filled in, `sans[k]`
-   holds `{s,e}` with a null half — a real, if incomplete, draft value rather
-   than silently keeping the last valid one. commitInputEdit (below, via
-   sansRefusal) is what refuses to save it; the picker's job is only to show
-   what was actually typed. */
+/* THE SANS SUB-FORM (owner, 14 Aug 26; reworked the same day) — the only
+   place a record's Fly/AMT/OFT flags are typed, shared by the add form, the
+   in-table row editor and this file's own modal (the same three surfaces
+   SpanPicker already serves). Fly / AMT / OFT, in that display order —
+   SANS_KEY in avail.ts maps them to f/o/a, which is a lookup order, not a
+   reading order.
+   It is FLAGS ONLY now, three checkboxes and nothing else — the owner's own
+   phone bug (14 Aug 26): a per-event `<input type=time>` pair could not be
+   cleared with one tap, only typed over one digit at a time, and there was
+   no way back to "no time stated" short of retyping both ends blank one
+   after another. SANS Availability carries its ONE window in the record's
+   own standard allday/half/s/e fields now, exactly like a leave input, so
+   clearing a timing is the same one tap "All day" already gives every other
+   type — SpanPicker draws it, not this picker. */
 const SANS_ROWS: Array<[string, string]> = [['f', 'Fly'], ['a', 'AMT'], ['o', 'OFT']]
 export function SansPicker({ id, sans, onChange }: { id: string, sans: any, onChange: (next: any) => void }) {
-  const set = (k: string, v: any) => {
+  const set = (k: string, checked: boolean) => {
     const next = { ...(sans || {}) }
-    if (v == null) delete next[k]; else next[k] = v
+    if (checked) next[k] = true; else delete next[k]
     onChange(next)
   }
-  /* both blank → all day (true); either filled → a window, converted to
-     minutes right here so every consumer downstream of the draft (commit,
-     the badge, sansGate) only ever sees the record's own shape */
-  const setTime = (k: string, sStr: string, eStr: string) =>
-    set(k, (!sStr && !eStr) ? true : { s: sStr ? parseHM(sStr) : null, e: eStr ? parseHM(eStr) : null })
   return <div className="sanspick" id={id} role="group" aria-label="SANS availability">
-    {SANS_ROWS.map(([k, label]) => {
-      const v = sans ? sans[k] : undefined
-      const on = v !== undefined
-      const timed = on && v !== true
-      const sTime = timed && v.s != null ? hhmm(v.s) : ''
-      const eTime = timed && v.e != null ? hhmm(v.e) : ''
-      return <div className="sanspick-row" key={k}>
-        <label className="sanspick-ck"><input type="checkbox" checked={on}
-          onChange={e => set(k, e.target.checked ? true : null)} /> {label}</label>
-        <span className={'sanspick-t' + (on ? '' : ' dim')}>
-          <input type="time" aria-label={label + ' start time'} disabled={!on} value={sTime}
-            onChange={e => setTime(k, e.target.value, eTime)} />
-          <input type="time" aria-label={label + ' end time'} disabled={!on} value={eTime}
-            onChange={e => setTime(k, sTime, e.target.value)} />
-        </span>
-      </div>
-    })}
+    {SANS_ROWS.map(([k, label]) => (
+      <label className="sanspick-ck" key={k}>
+        <input type="checkbox" checked={!!(sans && sans[k])}
+          onChange={e => set(k, e.target.checked)} /> {label}
+      </label>
+    ))}
   </div>
+}
+/* Flags only — every ticked key becomes `true`; anything falsy, including a
+   legacy `{s,e}` value shape from before the 14 Aug rework, is dropped.
+   Shared so the add form and commitInputEdit can never normalise a payload
+   two different ways. */
+export const sansFlags = (sans: any): any => {
+  const flags: any = {}
+  for (const k of Object.keys(sans || {})) if (sans[k]) flags[k] = true
+  return flags
 }
 /* THE SANS PAYLOAD REFUSALS — one function, so the add form, the in-table
    editor and this modal (via commitInputEdit) can never disagree on the
-   wording. Three checks: restricted to SANS aircrew, at least one box
-   ticked, and no half-filled window (the picker above can produce one while
-   the typist is mid-edit; it must not reach the model). Returns '' when the
-   payload is fine to save. */
-const SANS_KEY_LABEL: any = { f: 'Fly', a: 'AMT', o: 'OFT' }
+   wording. Two checks now the payload is flags-only: restricted to SANS
+   aircrew, and at least one box ticked. The record's one window rides the
+   SAME span/time validation every other half-day type goes through — there
+   is no third check here for it any more. Returns '' when the payload is
+   fine to save. */
 export function sansRefusal(person: any, sans: any): string {
   if (!PEOPLE[person]?.san) return 'SANS Availability is for SANS aircrew only'
-  if (!sans || !Object.keys(sans).length) return 'Tick at least one of Fly / AMT / OFT'
-  for (const k of Object.keys(sans)) {
-    const v = sans[k]
-    if (v !== true && (!v || v.s == null || v.e == null))
-      return `Give ${SANS_KEY_LABEL[k] || k} both a start and an end time, or leave both blank for all day`
-  }
+  if (!sans || !Object.keys(sans).some(k => sans[k])) return 'Tick at least one of Fly / AMT / OFT'
   return ''
 }
 
@@ -250,12 +236,14 @@ export function commitInputEdit(r: any, draft: any) {
     if (wasAcc) unacceptInput(wasDi, r)
     r.person = draft.person; r.type = draft.type; r.allday = draft.allday
     r.s = s; r.e = e; r.date = date; r.remarks = String(draft.remarks || '').trim(); r.mod = 'now'
-    if (draft.sans && Object.keys(draft.sans).length) r.sans = { ...draft.sans }; else delete r.sans
-    /* SANS Availability carries no s/e/half of its own — the record's Fly/AMT/
-       OFT windows are the finer control, and allday is forced true so the two
-       time cells this row draws stay blank (see inpTimeCells: `all day` is
-       what an absent time pair prints, exactly what this type needs to say). */
-    if (isSansAvail(draft.type)) { r.allday = true; delete r.s; delete r.e; delete r.half }
+    /* SANS Availability used to force allday:true and carry per-event windows
+       of its own in `sans` — that is what made a per-event time pair
+       impossible to clear on a phone (see SansPicker above). It is a normal
+       timed input now: r.allday/s/e/half just above ARE its one window,
+       exactly like a leave input, and `sans` here is normalised to flags
+       only — which events are offered, never a shape of its own. */
+    const flags = sansFlags(draft.sans)
+    if (Object.keys(flags).length) r.sans = flags; else delete r.sans
     /* DERIVED from the times, never copied from the draft (audit, 12 Aug 26).
        The in-place cells already derived it (halfOf), but the Inputs page's own
        two time boxes did not: press AM, then type 08:00 over the start, and the
@@ -458,32 +446,37 @@ export function InputEditor() {
                 })
               }}>{typeOptions()}</select>
           </label>
+          {/* the F/O/A ticks sit ABOVE the standard timing controls now, not
+              in place of them (owner rework, 14 Aug 26) — SANS Availability
+              is a normal timed input with one extra field, and its single
+              window is the SAME 'When' block below every other half-day
+              type already uses (hasHalf('SANS Availability') is true). */}
+          {isSansAvail(draft.type) && <div className="inped-f">
+            <span className="inped-k">Availability</span>
+            <SansPicker id="inpEditSans" sans={draft.sans} onChange={sans => setDraft({ ...draft, sans })} />
+          </div>}
           <div className="inped-f">
-            <span className="inped-k">{isSansAvail(draft.type) ? 'Availability' : 'When'}</span>
-            {isSansAvail(draft.type)
-              /* not an absence — no all-day/time controls, just what he is
-                 offering (see SansPicker above) */
-              ? <SansPicker id="inpEditSans" sans={draft.sans} onChange={sans => setDraft({ ...draft, sans })} />
-              : <div className="inped-when">
-                {hasHalf(draft.type)
-                  ? <SpanPicker id="inpEditSpan" span={span} onPick={m => {
-                    const f = spanFields(m)
-                    setDraft({
-                      ...draft, allday: f.allday, half: f.half,
-                      /* Custom keeps whatever is already in the boxes — the
-                         point of it is to adjust the times you can see */
-                      ...(m === 'custom' ? {} : { sTime: f.sTime, eTime: f.eTime }),
-                    })
-                  }} />
-                  : <label className="inped-ad"><input type="checkbox" id="inpEditAllday" checked={draft.allday}
-                    onChange={e => setDraft({ ...draft, allday: e.target.checked, half: '' })} /> all day</label>}
-                <span className="inped-t" hidden={draft.allday}>
-                  <input type="time" id="inpEditStart" aria-label="Start time" value={draft.sTime}
-                    onChange={e => setDraft({ ...draft, sTime: e.target.value, half: '' })} />
-                  <input type="time" id="inpEditEnd" aria-label="End time" value={draft.eTime}
-                    onChange={e => setDraft({ ...draft, eTime: e.target.value, half: '' })} />
-                </span>
-              </div>}
+            <span className="inped-k">When</span>
+            <div className="inped-when">
+              {hasHalf(draft.type)
+                ? <SpanPicker id="inpEditSpan" span={span} onPick={m => {
+                  const f = spanFields(m)
+                  setDraft({
+                    ...draft, allday: f.allday, half: f.half,
+                    /* Custom keeps whatever is already in the boxes — the
+                       point of it is to adjust the times you can see */
+                    ...(m === 'custom' ? {} : { sTime: f.sTime, eTime: f.eTime }),
+                  })
+                }} />
+                : <label className="inped-ad"><input type="checkbox" id="inpEditAllday" checked={draft.allday}
+                  onChange={e => setDraft({ ...draft, allday: e.target.checked, half: '' })} /> all day</label>}
+              <span className="inped-t" hidden={draft.allday}>
+                <input type="time" id="inpEditStart" aria-label="Start time" value={draft.sTime}
+                  onChange={e => setDraft({ ...draft, sTime: e.target.value, half: '' })} />
+                <input type="time" id="inpEditEnd" aria-label="End time" value={draft.eTime}
+                  onChange={e => setDraft({ ...draft, eTime: e.target.value, half: '' })} />
+              </span>
+            </div>
           </div>
           <label className="inped-f">
             <span className="inped-k">Remarks</span>
