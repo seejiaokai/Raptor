@@ -1,6 +1,6 @@
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME } from '../engine/people'
-import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, sansBadge, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
@@ -286,7 +286,17 @@ export function availHTML(d:any,di:any,ed:any){
   }
   // SANS grouped together (separate currency requirements)
   h+=`<div class="ap-grp sans-grp">SANS available <span style="color:var(--ink-3);font-weight:500">· staff-assigned / NS</span> · ${sansAll.length}</div>`;
-  h+= sansAll.length?`<div class="ap-grid">`+sansAll.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
+  /* the SANS badge (owner, 14 Aug 26) rides beside the puck here too — same
+     minimal string sansBadge builds for the palette and the week/board
+     groups, so a SANS body's filed hours read the same on every surface.
+     Expanded grid only: the collapsed "N SANS" line above stays a bare
+     count, same as it always was. */
+  /* wrapped in ONE flex item, not two loose siblings — .ap-grid itself wraps
+     with flex-wrap, so an unwrapped badge would compete for its own place in
+     that wrap and could land beside a DIFFERENT puck than the one it names. */
+  const sansPk=(id:any)=>{const badge=sansBadge(id,d.dt);
+    return `<span class="ap-sans-item">${pk(id)}${badge?`<span class="ap-sans-b">${esc(badge)}</span>`:''}</span>`;};
+  h+= sansAll.length?`<div class="ap-grid">`+sansAll.map(sansPk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   return h+`</div>`;
 }
 export function storesView(o:any){
@@ -805,13 +815,21 @@ export function dayHTML(di:any,ed:any,vsel?:any){
            carries the type and every block lines up on the same five columns */
         s+=`<div class="pl-row${acc&&inp.acc?' accd':''}">`
           +`<span class="nm">${inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${inpTimeCells(inp,ed)}`
-          +`<div class="ppl one">${pk}</div>${inpRmkCell(inp,ed)}`
+          +`<div class="ppl one">${pk}</div>${inpRmkCell(inp,ed,d.dt)}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
     if(ed)h+=inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true);
     // ---- available crew (computed, not an input type) stays scheduler-side ----
     if(ed)h+=availHTML(d,di,ed);
-    h+=inGrp('Unavailable',(inp:any)=>isUnavail(inp.type)||inp.acc==='u','sec-unav',true);
+    /* SANS AVAILABILITY IS ITS OWN GROUP (owner, 14 Aug 26) — isUnavail is true
+       for it (see the comment on that predicate), which is what buys it "no
+       Accept controls" for free at the falsy 5th param below, but it is a
+       POSITIVE record, not an absence, so it does not belong inside Unavailable
+       — the guard on that call keeps it out. Scheduler-side only, like Personal
+       Inputs: a member files it on the Inputs page, a scheduler reads it here. */
+    if(ed)h+=inGrp('SANS Availability',(inp:any)=>isSansAvail(inp.type),'sec-sans',false,false);
+    // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this block
+    h+=inGrp('Unavailable',(inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type),'sec-unav',true);
     h+=`</div>`; // /day-body
     return h+`</section>`;
 }
@@ -859,11 +877,18 @@ export function inpTimeCells(inp:any,ed:any){
     +`data-inp="${esc(inpId(inp))}.${f}"${f==='str'?' data-ph="all day"':''}>${esc(inpTimeText(inp,f))}</span>`;
   return cell('str','s')+cell('end','e');
 }
-export function inpRmkCell(inp:any,ed:any){
+/* dt (day's date label, only ever in scope where this cell is built) is what
+   sansBadge needs to find the record covering THIS day — a span input's badge
+   must read the same on every day it covers, not just its start date. Same
+   prefix idiom as lateTag just above: printed ahead of the free text, never
+   nested inside it, so it survives the contenteditable span untouched. */
+export function inpRmkCell(inp:any,ed:any,dt?:any){
   const lt=lateTag(inp), lc=lt?' has-late':'';
+  const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';
+  const sbt=sb?`<span class="sansb" title="SANS availability">${esc(sb)}</span>`:'';
   const v=inp.remarks||'';
-  if(!ed||!canEditSched())return `<span class="rmk${v?'':' rk-e'}${lc}">${lt}<span class="ntx">${esc(v)}</span></span>`;
-  return `<span class="rmk${lc}">${lt}<span class="ntx txed inpt" contenteditable="true" spellcheck="false" `
+  if(!ed||!canEditSched())return `<span class="rmk${v?'':' rk-e'}${lc}">${lt}${sbt}<span class="ntx">${esc(v)}</span></span>`;
+  return `<span class="rmk${lc}">${lt}${sbt}<span class="ntx txed inpt" contenteditable="true" spellcheck="false" `
     +`data-inp="${esc(inpId(inp))}.rmks" data-ph="remarks">${esc(v)}</span></span>`;
 }
 export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){

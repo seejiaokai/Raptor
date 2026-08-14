@@ -2,7 +2,7 @@
    the placeholder row, verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
-import { INPUTS, isAway, inputCoversDate, offWord, awayAllDay, canWork } from '../engine/inputs'
+import { INPUTS, isAway, inputCoversDate, offWord, awayAllDay, canWork, sansBadge } from '../engine/inputs'
 import { hm24 } from '../engine/time'
 import { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
 import { sevOf, chipOf } from '../engine/validate'
@@ -100,23 +100,23 @@ export function paletteHTML(di:any,opts?:any){
   const rank=(id:any)=>(armKey?(slotBar(id,armKey,arules)?2:0)
                        :((off&&off.has(id))?(groundedOnly(id,di)?1:2):0))||(eng.has(id)?1:0);
   const bySort=(a:any,b:any)=>rank(a)-rank(b)||PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
-  const sel=(seat:any,san:any)=>Object.keys(PEOPLE).filter((id:any)=>ok(id)&&PEOPLE[id].seat===seat&&!!PEOPLE[id].san===san).sort(bySort);
+  /* SANS members are no longer split into a per-column sub-band (owner, 14 Aug
+     26) — they move into ONE full-width section below, sansAvailHTML, so
+     every column here lists non-SANS crew only. */
+  const sel=(seat:any)=>Object.keys(PEOPLE).filter((id:any)=>ok(id)&&PEOPLE[id].seat===seat&&!PEOPLE[id].san).sort(bySort);
   const col=(title:any,seat:any)=>{
-    const act=sel(seat,false), sn=sel(seat,true);
-    const all=act.concat(sn), free=all.filter((id:any)=>!rank(id)).length;
+    const act=sel(seat), free=act.filter((id:any)=>!rank(id)).length;
     /* one reason shared by EVERY barred name in the column reads ONCE, under
        the header — a front-seat arm bars every WSO for the same structural
        reason, and repeating it per name tripled the drawer's height */
     let colWhy='';
     if(armKey){
-      const whys=all.map((id:any)=>slotBar(id,armKey,arules)).filter(Boolean);
+      const whys=act.map((id:any)=>slotBar(id,armKey,arules)).filter(Boolean);
       if(whys.length>=2&&whys.every((w:any)=>w===whys[0]))colWhy=whys[0];
     }
     return `<div class="rcol"><div class="rh">${title} · ${free} free</div>`
       +(colWhy?`<div class="rwhy">${esc(colWhy)}</div>`:'')
       +act.map((id:any)=>rosterPuck(id,di,armKey,eng,off,sby,arules,!!colWhy)).join('')
-      +(sn.length?`<div class="rh sans">SANS · ${sn.length}</div>`
-        +sn.map((id:any)=>rosterPuck(id,di,armKey,eng,off,sby,arules,!!colWhy)).join(''):'')
       +`</div>`;};
   const head=o.head===false?'':`<div class="er-h">${ARM?'Tap a name to plan':'Aircrew'}`
     +(d.dow?` · <span class="mono" style="color:var(--ink-3)">${esc(d.dow)}</span>`:'')+`</div>`;
@@ -124,15 +124,46 @@ export function paletteHTML(di:any,opts?:any){
      actually has some — a squadron with no ground crew never sees an empty
      third column. They can be dropped into a rear seat, a duty desk, a ground
      row or a sim; slotBar strikes them the moment a FRONT seat is armed. */
-  const hasPers=sel('GND',false).length>0;
+  const hasPers=sel('GND').length>0;
   return head+armStripHTML()+specialRowHTML(di)
-    +`<div class="rcols">${col('Pilots','FCP')}${col('WSOs','RCP')}${hasPers?col('Personnel','GND'):''}</div>`;
+    +`<div class="rcols">${col('Pilots','FCP')}${col('WSOs','RCP')}${hasPers?col('Personnel','GND'):''}</div>`
+    +sansAvailHTML(di,armKey,eng,off,sby,arules);
 }
 export function specialRowHTML(di:any){
   if(!SPECIALS.length)return '';
   return `<div class="rall"><div class="rh2">Placeholders · drag in</div>`
     +SPECIALS.map((id:any)=>`<span class="rpuck" draggable="true" data-person="${id}" title="${esc(PEOPLE[id].cs)} — a placeholder, never validated">${puck(id,null,true,null)}</span>`).join('')
     +`</div>`;
+}
+/* SANS AVAILABILITY, ONE FULL-WIDTH SECTION (owner, 14 Aug 26) — every SANS
+   member used to sit in a sub-band under his own seat column; that band is
+   gone (see col() above) and every SANS body, pilot or WSO, now lists here
+   instead, callsign-sorted, whichever column he'd otherwise have been in.
+   Grey-out is automatic — rosterPuck already reads slotBar, which already
+   carries the SANS gate (avail.ts) — this function only has to draw the row
+   and the badge, not decide who is barred.
+   `ok()` is the SAME archived/SC-currency filter paletteHTML's own columns
+   apply, recomputed here rather than threaded through as a parameter: this
+   is a standalone exported function (palette.test.ts and board-html.ts both
+   call it directly), and arules already carries everything ok() needs. */
+export function sansAvailHTML(di:any,armKey:any,eng:any,off:any,sby:any,arules:any){
+  const scArm=!!(arules&&arules.sc);
+  const ok=(id:any)=>!PEOPLE[id].archived&&(!scArm||scQualOK(id,arules.sc));
+  const ids=Object.keys(PEOPLE).filter((id:any)=>ok(id)&&PEOPLE[id].san)
+    .sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
+  if(!ids.length)return '';
+  const d=DAYS[di]||{};
+  /* each row prints its OWN reason (rosterPuck's hideWhy left off, unlike
+     col()'s colWhy dedup) — a shared reason only makes sense where a whole
+     column is barred for one structural cause (e.g. every WSO); here eleven
+     different people can each be barred for a different SANS record, or none
+     at all, and folding those into one line would just be wrong. */
+  return `<div class="rall rsans"><div class="rh2">SANS Availability</div>`
+    +ids.map((id:any)=>{
+      const badge=sansBadge(id,d.dt);
+      return `<div class="rsans-row">${rosterPuck(id,di,armKey,eng,off,sby,arules)}`
+        +(badge?`<span class="rsans-b">${esc(badge)}</span>`:'')+`</div>`;
+    }).join('')+`</div>`;
 }
 
 /* ---- week horizontal-scroll arrows ---- */

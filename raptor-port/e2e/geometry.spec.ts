@@ -77,6 +77,72 @@ test.describe('the puck is one fixed size everywhere', () => {
     })
   }
 
+  for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
+    test(`the SANS Availability palette section holds its geometry on ${name}`, async ({ page }) => {
+      /* The .rall.rsans band (14 Aug 26) lists every SANS member with an
+         F/O/A badge as a SIBLING of the .rpuck — never nested inside it,
+         because .rpuck.no.haswhy is a flex COLUMN and a nested child would
+         ride the 74x74 flex-basis trap the armed-palette test above pins.
+         jsdom proves the markup shape; only a real layout engine can prove
+         the badge does not distort the puck or run the row sideways. */
+      await page.setViewportSize(viewport)
+      await login(page)
+      await go(page, 'editsched')
+      const want = await puckSize(page)
+
+      /* the section exists, the old per-column sub-bands are gone */
+      await expect(page.locator('#eRoster .rall.rsans')).toHaveCount(1)
+      expect(await page.locator('#eRoster .rcol .rh.sans').count()).toBe(0)
+      expect(await page.locator('#eRoster .rall.rsans .rpuck .puck').count()).toBeGreaterThan(0)
+
+      /* file a record through the probe bridge — the badge must appear
+         beside the puck without touching its size or overflowing the row */
+      await page.evaluate(() => {
+        const w = window as any
+        w.INPUTS.unshift({ person: 'vinci', date: 'Jul 13', allday: true,
+          type: 'SANS Availability', sans: { f: { s: 480, e: 720 }, o: true },
+          iid: 'e2e-sans', mod: 'now' })
+        w.afterSchedMutate(); w.renderEditWeek()
+      })
+      const badge = page.locator('#eRoster .rsans-row:has([data-person="vinci"]) .rsans-b')
+      await expect(badge).toHaveText('F 08:00–12:00 · O')
+      const geo = await page.evaluate(([w, h]) => {
+        const row = document.querySelector('#eRoster .rsans-row [data-person="vinci"]')!.closest('.rsans-row') as HTMLElement
+        const puck = row.querySelector('.puck')!.getBoundingClientRect()
+        const b = row.querySelector('.rsans-b')!.getBoundingClientRect()
+        return { pw: +puck.width.toFixed(1), ph: +puck.height.toFixed(1),
+          besides: b.left >= puck.right, spill: row.scrollWidth - row.clientWidth }
+      }, [want.w, want.h] as const)
+      expect(geo.pw, 'the badge does not resize the puck').toBe(want.w)
+      expect(geo.ph).toBe(want.h)
+      expect(geo.besides, 'the badge sits beside the puck, not on it').toBe(true)
+      expect(geo.spill, 'the row does not run sideways').toBeLessThanOrEqual(0)
+
+      /* arm an OFT row through its append cell (the week draws no empty sim
+         seat cell — a missing crewman simply is not there, so the append cell
+         is the armable address, same as the armed-palette test above uses
+         a:0): record-less SANS entries strike with a printed SANS reason, the
+         record covering OFT does not, and every puck in the section keeps its
+         size through the .haswhy column swap */
+      await page.evaluate(() => {
+        (document.querySelector('#eWeek [data-fill="s:0.oft.3.+"]') as HTMLElement).click()
+      })
+      await expect(page.locator('#eRoster .ros-arm')).toBeVisible()
+      const struck = page.locator('#eRoster .rall.rsans .rpuck.no.haswhy')
+      expect(await struck.count(), 'record-less SANS entries strike').toBeGreaterThan(0)
+      expect((await struck.first().locator('.rwhy').textContent()) || '').toMatch(/^SANS/)
+      const vinciWhy = await page.evaluate(() => {
+        const rp = document.querySelector('#eRoster .rall.rsans .rpuck[data-person="vinci"]') as HTMLElement
+        return (rp.querySelector('.rwhy')?.textContent) || ''
+      })
+      expect(vinciWhy, 'an offer covering OFT raises no SANS reason').not.toMatch(/^SANS/)
+      const odd = await page.evaluate(([w, h]) => [...document.querySelectorAll('#eRoster .rall.rsans .rpuck .puck')]
+        .map(el => { const r = el.getBoundingClientRect(); return { w: +r.width.toFixed(1), h: +r.height.toFixed(1) } })
+        .filter(r => r.w !== w || r.h !== h).slice(0, 4), [want.w, want.h] as const)
+      expect(odd, 'every SANS-section puck is exactly --puck-w x --puck-h while armed').toEqual([])
+    })
+  }
+
   test('the seat column of the form grid is derived from --puck-w', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)

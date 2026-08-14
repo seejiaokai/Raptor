@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -14,7 +14,7 @@ import { writeInputs, notify } from '../state/store'
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
   fmt, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
-  draftOf, commitInputEdit, removeInput,
+  draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal,
 } from './inputedit'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
@@ -121,6 +121,9 @@ const inWindow = (r: any, from: string, to: string) => {
    rather than a modal: it is a reference card, not a task. */
 function typeRule(t: string) {
   const m = inpMeta(t); if (!m) return ''
+  /* not an absence — the other three branches all describe a man who is
+     unavailable in one way or another, which SANS Availability is not */
+  if (m.grp === 'sans') return 'not an absence — the boxes ticked say which events he is available for, and when'
   if (m.work) return 'no flying — may still stand a duty, sit a sim or take a ground slot'
   if (!m.local) return 'out of reach — cannot be planned for anything, an SC spare included'
   if (m.grp === 'med') return 'cannot be planned, and cannot stand an SC spare'
@@ -195,6 +198,9 @@ export function InputsPage() {
   const [eTime, setETime] = useState('18:00')
   const [repeat, setRepeat] = useState(0)
   const [remarks, setRemarks] = useState('')
+  /* SANS Availability's own Fly/AMT/OFT payload — see SansPicker/sansRefusal
+     in ui/inputedit.tsx. Only read by add() when `type` is the SANS type. */
+  const [sans, setSans] = useState<any>(null)
   const [fPerson, setFPerson] = useState('all')
   const [fType, setFType] = useState('all')
   const [fSearch, setFSearch] = useState('')
@@ -255,23 +261,38 @@ export function InputsPage() {
        click anyway and quietly dating it Monday was a trap */
     if (!start) return HOOKS.toast('Pick a start date on the calendar first', 'warn')
     const date = fmt(start), endDate = end && fmt(end) !== date ? fmt(end) : undefined
-    /* timing is the owner's ask (Aug 26): the validator reasons in minutes, so
-       a timed input carries the times the aircrew actually stated — no more
-       silent 06:00–18:00. The overlap math assumes s < e within one day. */
-    const s = allday ? 0 : parseHM(sTime), e = allday ? 1439 : parseHM(eTime)
-    if (!allday && (s == null || e == null)) return HOOKS.toast('Give the input a start and end time, or tick All day', 'warn')
-    /* an end earlier than the start crosses midnight, as it does on every other
-       row type — see commitInputEdit for the reasoning. Only equal times are
-       refused, being a zero-length absence. */
-    if (!allday && (e as number) === (s as number)) return HOOKS.toast('Give the input a start and end that are not the same time', 'warn')
-    writeInputs(() => INPUTS.unshift(withId({
-      person, date, endDate, allday, s, e,
-      /* only carried when it is one — an absence typed as an exact range is
-         not a half-day and must not read as one */
-      ...(!allday && half ? { half } : {}),
-      type, remarks: remarks.trim(),
-      recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
-    })))
+    /* SANS AVAILABILITY IS NOT A TIMED ABSENCE (owner, 14 Aug 26) — it carries
+       no s/e/half of its own, only the SansPicker's Fly/AMT/OFT payload, so it
+       skips the whole allday/half machinery below. Same two refusals
+       commitInputEdit enforces, through the one shared check (sansRefusal) so
+       the wording can never drift between the three editors. */
+    if (isSansAvail(type)) {
+      const why = sansRefusal(person, sans)
+      if (why) return HOOKS.toast(why, 'warn')
+      writeInputs(() => INPUTS.unshift(withId({
+        person, date, endDate, allday: true, sans: { ...sans },
+        type, remarks: remarks.trim(),
+        recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
+      })))
+    } else {
+      /* timing is the owner's ask (Aug 26): the validator reasons in minutes, so
+         a timed input carries the times the aircrew actually stated — no more
+         silent 06:00–18:00. The overlap math assumes s < e within one day. */
+      const s = allday ? 0 : parseHM(sTime), e = allday ? 1439 : parseHM(eTime)
+      if (!allday && (s == null || e == null)) return HOOKS.toast('Give the input a start and end time, or tick All day', 'warn')
+      /* an end earlier than the start crosses midnight, as it does on every other
+         row type — see commitInputEdit for the reasoning. Only equal times are
+         refused, being a zero-length absence. */
+      if (!allday && (e as number) === (s as number)) return HOOKS.toast('Give the input a start and end that are not the same time', 'warn')
+      writeInputs(() => INPUTS.unshift(withId({
+        person, date, endDate, allday, s, e,
+        /* only carried when it is one — an absence typed as an exact range is
+           not a half-day and must not read as one */
+        ...(!allday && half ? { half } : {}),
+        type, remarks: remarks.trim(),
+        recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
+      })))
+    }
     /* the row INPUTS.unshift just made — pin it to the top of the table and
        light it, so the add is visible even from a view that would filter it
        out. The flash comes off on a timer; the pin waits for the user. */
@@ -357,22 +378,31 @@ export function InputsPage() {
               onPick={(s2, e2) => { setStart(s2); setEnd(e2); setRemarks(r => withTill(r, s2, e2)) }} />
             <div className="rc-read" id="inDates">{start ? (fmt(start) + (end ? ' → ' + fmt(end) : '')) : 'pick a start date'}</div>
           </div>
-          {/* Leave and medical get the four-way span picker; everything else
-              keeps the plain tick, because those types take an exact range and
-              a half-day would be coarser than what they already say. */}
-          {hasHalf(type)
-            ? <div className="ifield span"><label>How long</label>
-              <SpanPicker id="inSpan" span={spanOf(allday, half)} onPick={m => {
-                const f = spanFields(m)
-                setAllday(f.allday); setHalf(f.half)
-                if (f.sTime) { setSTime(f.sTime); setETime(f.eTime) }
-              }} /></div>
-            : <div className="ifield chk"><label>All day</label><input id="inAllday" type="checkbox" checked={allday} onChange={e => setAllday(e.target.checked)} /></div>}
+          {/* SANS Availability is not a timed absence — it gets the Fly/AMT/OFT
+              picker in place of the all-day/time controls every other type
+              uses. Leave and medical then get the four-way span picker;
+              everything else keeps the plain tick, because those types take
+              an exact range and a half-day would be coarser than what they
+              already say. */}
+          {isSansAvail(type)
+            ? <div className="ifield sans"><label>SANS availability</label>
+              <SansPicker id="inSans" sans={sans} onChange={setSans} /></div>
+            : hasHalf(type)
+              ? <div className="ifield span"><label>How long</label>
+                <SpanPicker id="inSpan" span={spanOf(allday, half)} onPick={m => {
+                  const f = spanFields(m)
+                  setAllday(f.allday); setHalf(f.half)
+                  if (f.sTime) { setSTime(f.sTime); setETime(f.eTime) }
+                }} /></div>
+              : <div className="ifield chk"><label>All day</label><input id="inAllday" type="checkbox" checked={allday} onChange={e => setAllday(e.target.checked)} /></div>}
           {/* All day owns the whole window, so the two time fields fade to say
               so. They were already `disabled`, but a disabled control that
-              still looks live invites the click it cannot accept. */}
-          <div className={'ifield' + (allday ? ' dim' : '')}><label>Start time</label><input id="inStartT" type="time" value={sTime} disabled={allday} onChange={e => setSTime(e.target.value)} /></div>
-          <div className={'ifield' + (allday ? ' dim' : '')}><label>End time</label><input id="inEndT" type="time" value={eTime} disabled={allday} onChange={e => setETime(e.target.value)} /></div>
+              still looks live invites the click it cannot accept. Hidden
+              outright for SANS — its own picker carries its own times. */}
+          {!isSansAvail(type) && <>
+            <div className={'ifield' + (allday ? ' dim' : '')}><label>Start time</label><input id="inStartT" type="time" value={sTime} disabled={allday} onChange={e => setSTime(e.target.value)} /></div>
+            <div className={'ifield' + (allday ? ' dim' : '')}><label>End time</label><input id="inEndT" type="time" value={eTime} disabled={allday} onChange={e => setETime(e.target.value)} /></div>
+          </>}
           <div className="ifield"><label className="withhelp">Type <TypeLegend /></label>
             <select id="inType" aria-label="Input type" value={type} onChange={e => {
               const t = e.target.value
@@ -382,6 +412,9 @@ export function InputsPage() {
                  'am' on the record, and the row would claim a half nobody
                  could see or change. */
               if (!hasHalf(t) && half) setHalf('')
+              /* same reasoning for the SANS payload: seed an empty one when
+                 switching in, drop it when switching out */
+              setSans(isSansAvail(t) ? (sans || {}) : null)
             }}>
               {typeOptions()}
             </select></div>
@@ -453,29 +486,34 @@ export function InputsPage() {
                     <RangeCal idPrefix="ined" start={draft.start} end={draft.end}
                       onPick={(s2, e2) => setDraft({ ...draft, start: s2, end: e2, remarks: withTill(draft.remarks, s2, e2) })} />
                     <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
-                    {/* same split as the add form: the span picker where the
-                        type offers halves, the plain tick everywhere else */}
-                    {hasHalf(draft.type)
-                      ? <SpanPicker id="inedSpan" span={spanOf(draft.allday, draft.half)} onPick={m => {
-                        const f = spanFields(m)
-                        setDraft({
-                          ...draft, allday: f.allday, half: f.half,
-                          ...(f.sTime ? { sTime: f.sTime, eTime: f.eTime } : {}),
-                        })
-                      }} />
-                      : <label className="ined-ad"><input type="checkbox" data-ed="allday" checked={draft.allday}
-                        onChange={e => setDraft({ ...draft, allday: e.target.checked })} /> all day</label>}
-                    <span className="ined-t" hidden={draft.allday}>
-                      <input type="time" aria-label="Start time" data-ed="stime" value={draft.sTime}
-                        onChange={e => setDraft({ ...draft, sTime: e.target.value })} />
-                      <input type="time" aria-label="End time" data-ed="etime" value={draft.eTime}
-                        onChange={e => setDraft({ ...draft, eTime: e.target.value })} />
-                    </span>
+                    {/* same split as the add form: SANS gets its own picker,
+                        then the span picker where the type offers halves,
+                        the plain tick everywhere else */}
+                    {isSansAvail(draft.type)
+                      ? <SansPicker id="inedSans" sans={draft.sans} onChange={sans => setDraft({ ...draft, sans })} />
+                      : <>
+                        {hasHalf(draft.type)
+                          ? <SpanPicker id="inedSpan" span={spanOf(draft.allday, draft.half)} onPick={m => {
+                            const f = spanFields(m)
+                            setDraft({
+                              ...draft, allday: f.allday, half: f.half,
+                              ...(f.sTime ? { sTime: f.sTime, eTime: f.eTime } : {}),
+                            })
+                          }} />
+                          : <label className="ined-ad"><input type="checkbox" data-ed="allday" checked={draft.allday}
+                            onChange={e => setDraft({ ...draft, allday: e.target.checked })} /> all day</label>}
+                        <span className="ined-t" hidden={draft.allday}>
+                          <input type="time" aria-label="Start time" data-ed="stime" value={draft.sTime}
+                            onChange={e => setDraft({ ...draft, sTime: e.target.value })} />
+                          <input type="time" aria-label="End time" data-ed="etime" value={draft.eTime}
+                            onChange={e => setDraft({ ...draft, eTime: e.target.value })} />
+                        </span>
+                      </>}
                   </td>
                   <td><select aria-label="Type" data-ed="type" value={draft.type}
                     onChange={e => {
                       const t = e.target.value
-                      setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }) })
+                      setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }), sans: isSansAvail(t) ? (draft.sans || {}) : null })
                     }}>
                     {typeOptions()}
                   </select></td>

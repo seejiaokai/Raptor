@@ -14,6 +14,8 @@ import { canEditSched } from '../state/auth'
 import { HIST } from '../state/history'
 import { validate } from '../engine/validate'
 import { InputsPage, initialRange } from './InputsPage'
+import { PEOPLE } from '../engine/people'
+import { HOOKS } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -292,6 +294,102 @@ describe('the Inputs page (tfin)', () => {
     const after = validate().all.filter((x: any) => x.code === 'DNIF_FLY').length
     expect(after).toBeGreaterThan(before)
     await act(async () => { undo() })
+  })
+})
+
+/* SANS AVAILABILITY, the add form's own sub-form (owner, 14 Aug 26) —
+   SansPicker in place of the all-day/time controls, and the two refusals
+   (person, empty tick set) sansRefusal enforces for all three editors. */
+describe('the SANS Availability sub-form on the add form', () => {
+  const setV = async (el: any, v: string) => act(async () => {
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+    setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  const setPerson = async (v: string) => act(async () => {
+    const sel = $('#inPerson') as unknown as HTMLSelectElement
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
+    setter.call(sel, v)
+    sel.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  /* the sans checkbox rows carry no id — found by their own label text,
+     in SANS_ROWS' own Fly / AMT / OFT display order */
+  const sansRow = (label: string) => $$('#inSans .sanspick-row').find(r => r.textContent?.includes(label))!
+  const sansCk = (label: string) => sansRow(label).querySelector('input[type="checkbox"]') as HTMLInputElement
+  const originalPerson = () => ($('#inPerson') as unknown as HTMLSelectElement).value
+  const toasts: string[] = []
+  const withToast = async (fn: () => Promise<void>) => {
+    toasts.length = 0
+    const orig = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    try { await fn() } finally { HOOKS.toast = orig }
+  }
+
+  it('SansPicker renders on selecting the type, and hides the all-day/time controls', async () => {
+    const before = originalPerson()
+    expect($('#inSans')).toBeFalsy()
+    await setType('SANS Availability')
+    expect($('#inSans'), 'the picker mounts').toBeTruthy()
+    expect($$('#inSans .sanspick-row').length).toBe(3)
+    for (const label of ['Fly', 'AMT', 'OFT']) expect(sansRow(label)).toBeTruthy()
+    /* SANS carries no s/e/half of its own — the ordinary time fields go */
+    expect($('#inStartT')).toBeFalsy()
+    expect($('#inAllday')).toBeFalsy()
+    await setType('LL')                        // back to an ordinary type for later tests
+    expect($('#inSans')).toBeFalsy()
+    await setPerson(before)
+  })
+
+  it('refuses a non-SANS person, and leaves INPUTS untouched', async () => {
+    await setType('SANS Availability')
+    const nonSans = Object.keys(PEOPLE).find(id => !PEOPLE[id].san && !PEOPLE[id].archived)!
+    expect(PEOPLE[nonSans].san).toBeFalsy()
+    await setPerson(nonSans)
+    await click(sansCk('Fly'))
+    const n = INPUTS.length
+    await withToast(async () => { await click($('#inAdd')) })
+    expect(INPUTS.length, 'nothing was added').toBe(n)
+    expect(toasts.some(t => /SANS aircrew only/.test(t)), toasts.join(' | ')).toBe(true)
+    await setType('LL')
+  })
+
+  it('refuses an empty tick set', async () => {
+    await setType('SANS Availability')
+    const sansId = Object.keys(PEOPLE).find(id => PEOPLE[id].san)!
+    await setPerson(sansId)
+    const n = INPUTS.length
+    await withToast(async () => { await click($('#inAdd')) })
+    expect(INPUTS.length, 'nothing was added').toBe(n)
+    expect(toasts.some(t => /Tick at least one/.test(t)), toasts.join(' | ')).toBe(true)
+    await setType('LL')
+  })
+
+  it('commits the ticked Fly/AMT/OFT payload, all-day, no s/e/half', async () => {
+    await setType('SANS Availability')
+    const sansId = Object.keys(PEOPLE).find(id => PEOPLE[id].san)!
+    await setPerson(sansId)
+    await click(sansCk('Fly'))
+    await setV(sansRow('Fly').querySelectorAll('input[type="time"]')[0], '08:00')
+    await setV(sansRow('Fly').querySelectorAll('input[type="time"]')[1], '12:00')
+    await click(sansCk('OFT'))                   // ticked, times left blank — all day for OFT
+    const n = INPUTS.length
+    await click($('#inAdd'))
+    expect(INPUTS.length).toBe(n + 1)
+    const r = INPUTS[0] as any
+    expect(r.person).toBe(sansId)
+    expect(r.type).toBe('SANS Availability')
+    expect(r.allday).toBe(true)
+    expect(r.s).toBeUndefined()
+    expect(r.e).toBeUndefined()
+    expect(r.half).toBeUndefined()
+    expect(r.sans).toEqual({ f: { s: 480, e: 720 }, o: true })
+    await act(async () => { undo() })
+    await setType('LL')
+  })
+
+  it('the type legend carries the SANS "not an absence" sentence', async () => {
+    await click($('#inTypeHelp'))
+    expect($('#inTypePop')!.textContent).toContain('not an absence')
+    await act(async () => { document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })) })
   })
 })
 

@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin } from './inputs'
+import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
@@ -137,7 +137,7 @@ export function slotRules(key:any){
   /* an append target and an overflow body both sit on the row they hang off,
      so they carry its hours — strip both before looking the row up */
   const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
-  const out:any={seat:null,sim:false,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,avJet:false,avDuty:false};
+  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,avJet:false,avDuty:false};
   out.di=keyDay(k);
   /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
      shift carried a window before, which is the whole reason a personal input
@@ -171,6 +171,16 @@ export function slotRules(key:any){
     out.sim=true;
     const a=k.slice(2).split('.');
     if(a.length===4&&(a[3]==='p'||a[3]==='w'))out.seat=a[3];
+    /* which sim device — read straight off the key, the same way a[3] reads
+       the seat, so slotBar can ask sansGate for the right SANS domain (`amt'
+       or 'oft') without re-parsing the key a second time. a[0] is the DAY
+       index (`s:di.kind.ri…`, see keys.ts's grammar in CLAUDE.md) — a[1] is
+       the kind. Bug found writing sansavail.test.ts (14 Aug 26): this read
+       a[0], which is always a numeric day index and never 'amt'/'oft', so
+       simKind was silently null for every sim key and the whole SANS OFT/AMT
+       gate — slotBar's grey-out AND the validator's advisory — never fired
+       for a sim seat. Only the flying-seat domain ever worked. */
+    out.simKind=a[1]==='amt'||a[1]==='oft'?a[1]:null;
   }
   if(k.indexOf(':')<0){                                  // a flying seat
     const a=k.split('.');
@@ -207,6 +217,27 @@ export function slotRules(key:any){
     }
   }
   return out;
+}
+/* THE SANS AVAILABILITY GATE (owner, 14 Aug 26) — one function judges a SANS
+   member against his filed record for a flying/OFT/AMT slot, and every
+   consumer (slotBar's grey-out, the validator's advisory, the test suite)
+   calls THIS, not the record directly, so the rule cannot drift between them.
+     'na'          — not a SANS person; the caller has nothing to ask about
+     'none'        — SANS but no record filed for this day at all
+     'not-offered' — a record exists but this event's box is unticked
+     'ok'          — offered all day, or the slot falls inside the offered window
+     'window'      — offered, but only for a narrower window than the slot
+   s/e are the SLOT's own minutes-from-midnight, exactly as slotRules already
+   computes them. */
+const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
+export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
+export function sansGate(id:any,dt:any,domain:any,s:any,e:any){
+  const p=PEOPLE[id]; if(!p||!p.san)return {status:'na'};
+  const rec=sansAvailOn(id,dt); if(!rec)return {status:'none'};
+  const off=rec[SANS_KEY[domain]];
+  if(off==null)return {status:'not-offered'};
+  if(off===true||(off.s<=s&&off.e>=e))return {status:'ok'};
+  return {status:'window',off};
 }
 /* '' when they may be planned here, otherwise the reason they may not */
 export function slotBar(id:any,key:any,rules?:any){
@@ -326,6 +357,28 @@ export function slotBar(id:any,key:any,rules?:any){
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>{const w2=inpWin(x); return !!w2&&w2[1]>1440&&inpHits(x,-1440);});
     if(off4.length)return offWord(off4[0])+' (overnight)';
+  }
+  /* THE SANS AVAILABILITY GATE, PICKER SIDE (owner, 14 Aug 26). Absences
+     outrank this — a SANS man on leave reads as on-leave, not as "no record
+     filed" — so it sits AFTER the four absence blocks above and BEFORE the
+     ordinary busy-at-this-hour check below: an offer that doesn't cover this
+     slot is a closer reason than "already on something else today".
+     `domain` is which offer this SLOT needs judging against: a sim key
+     carries its own kind (simKind, from slotRules' `s:` branch); an
+     unprefixed key is a flying seat; every other kind — duty, ground,
+     programme — is null, and null never gates (owner's rule: "any ground
+     event can also be planned"). Only a SANS person (p.san) is judged at
+     all — sansGate itself would return 'na' for anyone else, but checking
+     here first skips the lookup for the other fifty-odd names.
+     The three printed reasons are the same three the validator's SANS_AVAIL
+     advisory and the palette's badge agree on — one function, sansGate,
+     decides all of it, and this is its only call site inside slotBar. */
+  const domain=r.sim?r.simKind:(String(key).indexOf(':')<0?'fly':null);
+  if(domain&&p.san&&r.di>=0&&DAYS[r.di]&&r.slotStart!=null&&r.slotEnd!=null){
+    const g=sansGate(id,DAYS[r.di].dt,domain,r.slotStart,r.slotEnd);
+    if(g.status==='none')return 'SANS — no availability filed for today';
+    if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
+    if(g.status==='window')return `SANS — ${SANS_LABEL[domain]} offered ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
   }
   /* IS HE ALREADY BUSY AT THIS HOUR?
      The SC block above asks exactly this, for a shift. Every other slot asked

@@ -26,7 +26,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
 import { notify, notifyBoard } from '../state/store'
-import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn } from './board-html'
+import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -220,7 +220,7 @@ export function boardHTML(di: number, pv?: boolean) {
   b += sbDutyPanel(d, di, pv, mvRO) + sbSimRowsPanel(d, di, pv, mvRO) + sbGroundPanel(d, di, pv, mvRO)
   /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
   const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
-  b += sbInputsGroupPanel(d, di, pv, dayInp, mvRO) + sbUnavailPanel(d, di, dayInp, mvRO)
+  b += sbInputsGroupPanel(d, di, pv, dayInp, mvRO) + sbSansPanel(d, di, dayInp, mvRO) + sbUnavailPanel(d, di, dayInp, mvRO)
   return b
 }
 

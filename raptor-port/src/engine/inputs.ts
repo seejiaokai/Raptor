@@ -1,5 +1,5 @@
 import { VCONF } from './rules'
-import { hhmm } from './time'
+import { hhmm, hm24 } from './time'
 import { CURWEEK } from './waves'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
    and remarks in place, on the week and on the board).
@@ -95,6 +95,18 @@ export const INPUT_META:any={
      cannot be planned for anything at all, an SC spare included. */
   'OD':         {name:'overseas duty',            grp:'duty',  work:false, local:false, ground:false, half:false},
   'Other':      {name:'other',                    grp:'act',   work:false, local:true,  ground:true,  half:false},
+  /* SANS AVAILABILITY (owner, 14 Aug 26) — SANS aircrew filing POSITIVE
+     availability for Fly / AMT / OFT, not an absence. grp:'sans' keeps it
+     out of isPersonal (it is not a Ground Programme candidate) and inside
+     isUnavail (see the comment there — that predicate's name is now stale
+     but its callers, the Accept refusal and "no Accept controls" chief among
+     them, are exactly right for this type too). local:true, ground:false so
+     it behaves like an on-island commitment for canSpare/the Ground button;
+     work:false because filing this says nothing about a non-flying tasking.
+     half:false — the record's own Fly/AMT/OFT windows are the finer control,
+     an AM/PM split would only confuse the two. See isSansAvail/sansAvailOn/
+     sansBadge below and sansGate in avail.ts. */
+  'SANS Availability':{name:'SANS availability',  grp:'sans',  work:false, local:true,  ground:false, half:false},
 };
 /* Looked up case-insensitively and trimmed, because the predicates this
    replaced were regexes with /i and the suite pins that (`isLeave(' oil ')`).
@@ -152,7 +164,13 @@ export function canWork(t:any){const m=inpMeta(t); return !!m&&!!m.work;}
    list (every input counts now — see inputFlags) but they do not strike him
    out of the palette, which is exactly how an actioned personal input has
    always behaved. Widening that too would be a change nobody asked for. */
-export function isAway(inp:any){return isUnavail(inp.type)||(isFly(inp.type)&&!!inp.acc);}
+/* SANS AVAILABILITY IS UNAVAIL BUT NOT AWAY (owner, 14 Aug 26) — it is a
+   POSITIVE record (what he IS offering), so it must not strike him out of
+   the palette or close a slot the way leave/medical/OD do; sansGate in
+   avail.ts is what actually judges a flying/OFT/AMT seat against it. isUnavail
+   itself is left alone (see its own comment) — the offer semantics live here,
+   as an explicit carve-out at the one call site that decides "away". */
+export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type))||(isFly(inp.type)&&!!inp.acc);}
 /* DOES THIS ABSENCE CLOSE THE WHOLE DAY, or only some hours (owner, 10 Aug 26 —
    AM / PM half-days)? It does when it says so, AND when it carries no usable
    window at all: {person:'pike', type:'OD'} with neither allday nor s/e is a
@@ -207,7 +225,12 @@ export function offWord(inp:any){const m=inpMeta(inp.type);
    DERIVED from INPUT_META, in its declaration order, so the list a scheduler
    picks from and the rules the engine applies cannot disagree about which
    types exist. "Downchit" and "Detachment" were removed on 10 Aug 26 —
-   OML / ATT B / ATT C carry the medical meaning now, and OD the overseas one. */
+   OML / ATT B / ATT C carry the medical meaning now, and OD the overseas one.
+   AMENDMENT (owner, 14 Aug 26): SANS-scoped offers were reinstated as the
+   'SANS Availability' type — restricted to SANS aircrew, and read only by
+   sansGate (avail.ts), not by the general clash/brief machinery the deleted
+   offer types once shared with every other commitment. See
+   docs/engine-rules.md §SANS availability. */
 export const INPUT_TYPES=Object.keys(INPUT_META);
 /* the three groups the type dropdown and the legend are cut into */
 export const TYPE_GROUPS:any=[
@@ -227,6 +250,8 @@ export function typeGroup(t:any){const m=inpMeta(t); return !m?'other':m.grp==='
    inputFlags, and it no longer discriminates. */
 export function isUnavail(t:any){const m=inpMeta(t); return !!m&&m.grp!=='act';}
 export function isPersonal(t:any){const m=inpMeta(t); return !!m&&m.grp==='act';}
+/* the SANS availability type — see the INPUT_META entry's comment */
+export function isSansAvail(t:any){const m=inpMeta(t); return !!m&&m.grp==='sans';}
 export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim());}
 /* "Other" is the catch-all: the TYPE says nothing, so what the person actually
    typed is the name of the thing (owner, Aug 26). Everywhere an input is
@@ -315,6 +340,27 @@ export function inputCoversDate(inp:any,dt:any){
   const t=dateOrd(dt), a=dateOrd(inp.date), b=dateOrd(inp.endDate);
   if(t==null||a==null||b==null)return false;
   return t>=a&&t<=b;
+}
+/* THE SANS RECORD COVERING one person on one day, or null — the single place
+   that finds it, so sansGate (avail.ts), the badge below and the palette /
+   week / board readers all see the same record. Record shape:
+   {f?:{s,e}|true, o?:{s,e}|true, a?:{s,e}|true} — true means all day for that
+   event, absent means not offered. */
+export function sansAvailOn(id:any,dt:any){
+  const rec=INPUTS.find((x:any)=>x.person===id&&isSansAvail(x.type)&&inputCoversDate(x,dt));
+  return (rec&&rec.sans)||null;
+}
+/* the minimal badge beside a SANS member's name — "F 08:00–12:00 · O · A".
+   Fixed f,o,a order regardless of the order the boxes were ticked in, so the
+   same person reads the same way on the palette, the week group and the
+   board panel. '' when no record is filed — every caller already treats an
+   empty badge as "nothing to print" (see e.g. sbSansPanel/sansAvailHTML). */
+const SANS_ABBR:any={f:'F',o:'O',a:'A'};
+export function sansBadge(id:any,dt:any){
+  const rec=sansAvailOn(id,dt); if(!rec)return '';
+  return ['f','o','a'].filter((k:any)=>rec[k]!=null)
+    .map((k:any)=>{const v=rec[k]; return v===true?SANS_ABBR[k]:`${SANS_ABBR[k]} ${hm24(v.s)}–${hm24(v.e)}`;})
+    .join(' · ');
 }
 /* ---- LATE INPUTS (owner, 9 Aug 26) ---------------------------------------
    The squadron wants members' inputs in before the week is planned, and wants

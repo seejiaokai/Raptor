@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, inputFlags, inpWin } from './inputs'
+import { INPUTS, inputCoversDate, inputFlags, inpWin, isSansAvail } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
 import { toMin, parseHM, win } from './time'
 import { VCONF } from './rules'
@@ -17,6 +17,13 @@ import { whoArr, acceptedDay } from './slots'
    A deferred input whose row cannot be found at all stays VISIBLE: with no
    row anywhere, hiding it here would silence the man's absence outright. */
 const inpShow=(inp:any,dt:any)=>{
+  /* SANS AVAILABILITY IS AN OFFER, NOT A COMMITMENT — it must never reach
+     day.input (brief/debrief clashes, INPUT_FLY, the midnight-tail machinery
+     all read that array). sansGate (avail.ts) is the only thing that judges
+     it, against a slot, not against the day (owner, 14 Aug 26). All three
+     construction sites funnel through here, so this one line keeps it out
+     everywhere at once. */
+  if(isSansAvail(inp.type))return false;
   if(inputFlags(inp))return true;                 // not a timed accepted input
   const di=acceptedDay(inp);
   return di<0||(DAYS[di]||{}).dt!==dt;            // defer only on the row's day
