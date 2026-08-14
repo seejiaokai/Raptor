@@ -675,6 +675,20 @@ export function boardMbtn(e: MouseEvent) {
     rows.push({ label: '', str: '', end: '' })
     markStructuralAdd(`sr:${+di}.${kind}.${rows.length - 1}.label`); logAction(+di, 'Sim row added'); afterSchedMutate(); notify(); return
   }
+  /* + Block (AMT) — the whole three-row shape in one tap (owner, 14 Aug 26:
+     "add an AMT block that shows what it shows now. Like brief box and
+     debrief. All 3 together"). Times stay BLANK — a new line comes up blank,
+     a plausible wrong time reads as filled in — and the BOX carries pax:[] so
+     the FCP/RCP grid renders its first empty droppable pair. Three structural
+     adds, so the AL treats them exactly like three + Row taps. */
+  if (ds.sblkadd != null) {
+    const di = +ds.sblkadd
+    const d = DAYS[di]; d.sims = d.sims || {}
+    const rows = (d.sims.amt = d.sims.amt || [])
+    rows.push({ label: 'BRIEF', str: '', end: '' }, { label: 'BOX', str: '', end: '', pax: [] }, { label: 'DEBRIEF', str: '', end: '' })
+    for (let i = rows.length - 3; i < rows.length; i++) markStructuralAdd(`sr:${di}.amt.${i}.label`)
+    logAction(di, 'AMT block added (BRIEF / BOX / DEBRIEF)'); afterSchedMutate(); notify(); return
+  }
   if (ds.srdel != null) {
     const [di, kind, ri] = ds.srdel.split('.')
     const issued = deletionWasIssued(+di, 'sim', kind, +ri)

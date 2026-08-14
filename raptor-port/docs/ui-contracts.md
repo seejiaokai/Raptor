@@ -295,6 +295,18 @@ model — seat rules for the two seats, clash/rest checks alone for the rest.
 A who-text row ("SIMS (149)") keeps its plain text and never gets the grid.
 The WEEK stays reference-shaped as above. Pinned in `board.test.tsx`.
 
+**`+ Block` on the AMT header mints the whole three-row shape in one tap
+(owner, 14 Aug 26 — "add an AMT block that shows what it shows now. Like
+brief box and debrief. All 3 together").** It sits beside the AMT's own
+`+ Row` (`data-sblkadd`, board only — the week has no sim add controls) and
+appends BRIEF, BOX and DEBRIEF together: BRIEF and DEBRIEF as time-only
+rows (their labels are what `board-html.ts` keys the seatless rendering
+on), the BOX with `pax:[]` so the FCP/RCP grid renders its first empty
+droppable pair at once. Times come up BLANK — the new-line rule, a
+plausible wrong time reads as filled in. Three structural adds, so the AL
+and the edit log treat it exactly like three `+ Row` taps; the OFT header
+is unchanged. Pinned in `board.test.tsx`.
+
 **Leaving Edit Schedule CLOSES the board — it does not hide it.**
 `state/view.ts`'s `setPage` calls `closeBoardState()` the moment the page
 stops being `'editsched'`: `SBDAY` goes null (which disarms `ARM` for free,
@@ -1111,7 +1123,9 @@ stale or forged address reaching `applyMove` cannot corrupt the model.
 adds a row to it — never in a shared toolbar.** `sbSortBtn(addr, ro)`
 (`board-html.ts`) is called once per section: inside each wave's `.gctl`
 next to `+ Line`, inside each duty block's sub-header next to `+ Row`,
-inside the AMT and OFT sim sub-headers each next to their own `+ Row`,
+inside the AMT and OFT sim sub-headers each next to their own `+ Row`
+(the AMT's also carries `+ Block` — the three-row mint, see §The OFT takes
+instructors / the `+ Block` paragraph under it),
 and in the Ground and overall-programme panel heads next to `+ Item`.
 Overall notes' header carries only `+ Note` — no sort button — the same
 `ro`-gated absence the grip and the nudge buttons use, so a preview or a
