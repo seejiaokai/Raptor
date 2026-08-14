@@ -281,7 +281,9 @@ as nothing; the board is the planning surface this serves. Pinned in
 instructing that session or observers. So it doesn't really affect the
 rules").** An OFT (or any non-AMT sim) crew row now renders the AMT's
 `.fcprcp` seat grid on the board: the two REAL seats first — `p`/`w`, where
-the seat-qual rules stay anchored, an empty one a droppable `+` (it used to
+the FRONT seat-qual rules stay anchored (the sim rear seat needs no
+instructor since 14 Aug 26 — `engine-rules.md`, the CAT-ladder bullet), an
+empty one a droppable `+` (it used to
 render as nothing, leaving no way to see or tap it) — and any extras from
 `more[]` paired below, padded to an even count. A removed extra HOLDS its
 index (`slots.ts` writes `''` and trims trailing blanks only) and renders as

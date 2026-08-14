@@ -253,6 +253,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Parity stays byte-exact via `refwin.ts:remap()` (retier's sibling), which
   migrates the in-memory reference's ladder tables, `isInstr`, puck builder,
   PEOPLE literals and legend to this world before boot.
+  **The rear-seat privilege is the JET's rule only** (owner, 14 Aug 26 —
+  "oft doesn't need an instructor to be in the RCP, likewise for amt"). A
+  sim's rear seat takes any pilot: the engine's Q (sims) block guards the
+  FRONT seat alone, and `slotBar` scopes its instructor bar with
+  `slotRules().sim`. The sim's front-seat rules (no WSO, no IW-in-FCP, no
+  ground crew) are unchanged. The reference still carries the old copied
+  rule; `refwin.ts:resim()` excises it from the in-memory copy — it fires
+  nowhere on the seed either way (every seeded sim rear seat holds an IP or
+  a WSO).
 - **The combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26)** grades a
   crewed aircraft — the jet only, not the sim box — whenever the front seat
   is a CAT A–D or OCU pilot AND the back seat is a CAT A–D or OCU WSO. An

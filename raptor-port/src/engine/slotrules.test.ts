@@ -45,6 +45,20 @@ describe('who may be planned into a slot (tfin U)', () => {
     expect(/pilot, not an instructor/.test(slotBar('dice', key))).toBe(false)    // IR
   })
 
+  it('a SIM rear seat needs no instructor — OFT and AMT alike (owner, 14 Aug 26)', () => {
+    /* asserted as "not the seat reason" over every plain pilot rather than ''
+       for one of them: seeded men genuinely are busy at these hours, and a
+       true busy-bar must not make this test lie about the seat rule */
+    const plain = ids.filter(id => PEOPLE[id].seat === 'FCP' && !isInstrPilot(PEOPLE[id].q))
+    expect(plain.length).toBeGreaterThan(0)
+    for (const k of ['s:0.oft.0.w', 's:0.amt.0.w'])
+      expect(plain.every(id => !/not an instructor/.test(slotBar(id, k))), k).toBe(true)
+    /* the JET rear seat keeps the rule — the test above pins it — and the
+       sim's FRONT seat still turns a WSO away */
+    const wso = ids.find(id => PEOPLE[id].seat === 'RCP')!
+    expect(slotBar(wso, 's:0.oft.0.p')).toContain('WSO')
+  })
+
   it('an SC day shift demands SC DAY, and pushing the crew change past 19:00 demands SC NIGHT', () => {
     DAYS[4].waves.push(makeStandalone('sc'))       // Friday carries no flying
     validate()
@@ -97,6 +111,9 @@ describe('who may be planned into a slot (tfin U)', () => {
     expect(slotRules('s:0.oft.0.p').seat).toBe('p')
     expect(slotRules('s:0.oft.0.w').seat).toBe('w')
     expect(slotRules('s:0.amt.1.pax.3').seat).toBe(null)   // a body in the room, not a seat
+    /* the sim flag is what scopes the rear-seat instructor bar to the JET */
+    expect(slotRules('s:0.oft.0.w').sim).toBe(true)
+    expect(slotRules('0.0.0.0.w').sim).toBe(false)
   })
 
   it('a duty slot has no seat rule but still darkens leave', () => {

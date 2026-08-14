@@ -53,9 +53,19 @@ anchored on `p`/`w` as ever, empty seats droppable now, and instructors/
 observers riding `more[]` paired below with held, droppable holes; the ENGINE
 is untouched — extras were already time-only commitments, the owner's stated
 model — see `docs/ui-contracts.md` §A deleted sim pax / the OFT paragraph
-under it)**, run in
+under it), and once more for the SIM-REAR-SEAT rule change (14 Aug 26 — the
+owner's "oft doesn't need an instructor to be in the RCP, likewise for amt":
+a sim's rear seat now takes any pilot, in the engine's Q (sims) block and in
+`slotBar` alike (a new `slotRules().sim` flag scopes the instructor bar to
+the jet, whose IP/IR/FI rule stands untouched, as do every sim FRONT-seat
+rule); the reference's copied rule is excised by `refwin.ts:resim()` — it
+fires nowhere on the seed, every seeded sim rear seat holds an IP or a WSO,
+so parity was byte-equal either way; rules in `docs/engine-rules.md`, the
+CAT-ladder bullet)**, run in
 this container on the matching tree:
-`npm test` 1427 tests across 91 files (the board-full-editor batch added eight to
+`npm test` 1431 tests across 91 files (the sim-rear-seat change added four —
+the OFT/AMT rear seat raises no QUAL and clears `slotBar` while the jet rear
+and sim front seats keep their rules; the board-full-editor batch added eight to
 `board.test.tsx` — the new editable fields render and commit, the checks bar's
 label and severity class, the sign/checks order, the seat pair and the Remarks
 placeholder — and the OFT grid four more: the grid renders, an empty OFT seat
@@ -64,7 +74,9 @@ the crew-finding build added
 `selrings.test.tsx` and re-pointed the arm-and-plant, darkened-name and
 avail-grid tests at the new behaviour; the armed-palette pass pinned
 no-fade-while-armed inside the arm-and-plant test), `node
-reference/tfin.js` 728/0 (the engine is untouched by the crew-finding build),
+reference/tfin.js` 728/0 (the reference file itself is read-only and
+untouched; the sim-rear-seat divergence lives in the port and the refwin
+patch),
 `npm run build` clean, the full `npm run test:e2e`
 geometry job 92/92 in Chromium (the crew-finding build added two — the ring
 paints are distinct and move nothing, the folded panel opens and closes — the
@@ -767,7 +779,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `probes/run.cjs` | Runs any reference probe against the reference build or the port. |
 | `probes/perf-port.cjs` | The perf gate (`npm run perf`) — measures BOTH builds at once, round for round. Asserts a DOM ceiling per surface plus two behavioural checks; PRINTS the per-node timings without asserting them (10 Aug 26 — see §The gates, and how they lie). |
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
-| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it and patches the in-memory reference for every deliberate divergence (`retier`, `remap`, `rematrix`, `reinput`, `redn`, `relead`, `rebrief`, `rering`, `reduty`) so both engines compute from identical data. Each patch is explained beside the rule it serves in `docs/engine-rules.md`. NOT a test file. |
+| `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it and patches the in-memory reference for every deliberate divergence (`retier`, `remap`, `resim`, `rematrix`, `reinput`, `redn`, `relead`, `rebrief`, `rering`, `reduty`) so both engines compute from identical data. Each patch is explained beside the rule it serves in `docs/engine-rules.md`. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table, and the performance gate's reasoning. |
 | `docs/feature-impact.md` | The surfaces any change can touch (warnings, layout, history, board, edit/view-only, desktop/mobile, quals, availability, publishing, export, roles), the generic FLOWS one edit travels, and the drift-seams where two copies of a rule fall out of step (owner, 12 Aug 26). Walk every non-trivial change against it, and keep it true in the same PR. |
 | `docs/remarks-vocabulary.md` | Every piece of text a scheduler can TYPE that turns a rule on — the seat tags, AAR, late show, IRT, the sim brief lead — plus the things that look like text triggers and are not. Written in a user guide's voice, for the guide the owner wants (10 Aug 26). A new text trigger belongs here as well as in `engine-rules.md`. |
