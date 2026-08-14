@@ -1,18 +1,23 @@
-/* SANS AVAILABILITY (owner, 14 Aug 26) — the gate (`sansGate`), the picker's
-   grey-out (`slotBar`) and the validator's advisory (`SANS_AVAIL`) are all
-   judged through the ONE function `sansGate` in avail.ts; this file pins
-   that they agree, and pins the deliberate scoping (a bare no-record never
-   raises a persistent advisory, only the palette's grey + toast) that keeps
-   reference parity untouched — see docs/engine-rules.md §SANS availability. */
+/* SANS AVAILABILITY (owner, 14 Aug 26; REWORKED the same day) — the gate
+   (`sansGate`), the picker's grey-out (`slotBar`) and the validator's advisory
+   (`SANS_AVAIL`) are all judged through the ONE function `sansGate` in
+   avail.ts; this file pins that they agree, and pins the deliberate scoping
+   (a bare no-record never raises a persistent advisory, only the palette's
+   grey + toast) that keeps reference parity untouched — see
+   docs/engine-rules.md §SANS availability.
+   The rework: a record carries ONE window (the row's own standard allday /
+   half / s / e, read by sansWindow) shared by every ticked event, and `sans`
+   is flags-only ({f/o/a: true}). The old per-event {s,e} windows are gone. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { INPUTS, inpId } from './inputs'
+import { INPUTS, inpId, isAway, sansWindow, sansLetters, sansBadge } from './inputs'
 import { PEOPLE } from './people'
 import { hm24 } from './time'
 import { validate, WCODE, chipOf, sevOf } from './validate'
-import { slotBar, slotRules, sansGate, SANS_LABEL } from './avail'
+import { slotBar, slotRules, sansGate } from './avail'
 import { setSlotVal } from './slots'
 import { SCHED } from './publish'
+import { collectEvents } from './events'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -23,14 +28,15 @@ beforeEach(() => {
   validate()
 })
 
-/* files a SANS record — the caller passes the person, the day it covers and
-   the sans payload; `withId`/`inpId` mint the row's own address the way
-   every add path does (InputsPage.tsx's `withId`), which is what the shape
-   section of the plan calls for even though nothing here needs to re-find
-   the row by it */
-const fileSans = (person: string, sans: any, date = 'Jul 13') => {
-  const r: any = { person, date, endDate: undefined, allday: true,
+/* files a SANS record the way the reworked editors write one: `sans` is the
+   flag set, `when` is the one shared window — omitted = all day, {half} = the
+   AM/PM preset, {s,e} = a custom window. `withId`/`inpId` mint the row's own
+   address the way every add path does (InputsPage.tsx's `withId`). */
+const fileSans = (person: string, sans: any, when: any = null, date = 'Jul 13') => {
+  const r: any = { person, date, endDate: undefined, allday: !when,
     type: 'SANS Availability', sans, mod: 'now' }
+  if (when && when.half) { r.half = when.half }
+  else if (when) { r.s = when.s; r.e = when.e }
   inpId(r)
   INPUTS.push(r)
   return r
@@ -53,21 +59,71 @@ describe('sansGate — the one judge (avail.ts)', () => {
     expect(sansGate('krait', 'Jul 13', 'fly', S, E).status).toBe('not-offered')
   })
 
-  it("'ok' — offered all day (true)", () => {
+  it("'ok' — offered all day", () => {
     fileSans('krait', { f: true })
     expect(sansGate('krait', 'Jul 13', 'fly', S, E).status).toBe('ok')
   })
 
-  it("'ok' — offered a window that COVERS the slot", () => {
-    fileSans('krait', { f: { s: 400, e: 700 } })
+  it("'ok' — the record's one window COVERS the slot", () => {
+    fileSans('krait', { f: true }, { s: 400, e: 700 })
     expect(sansGate('krait', 'Jul 13', 'fly', S, E).status).toBe('ok')
   })
 
   it("'window' — offered, but a narrower window than the slot", () => {
-    fileSans('krait', { f: { s: 500, e: 550 } })
+    fileSans('krait', { f: true }, { s: 500, e: 550 })
     const g = sansGate('krait', 'Jul 13', 'fly', S, E)
     expect(g.status).toBe('window')
     expect(g.off).toEqual({ s: 500, e: 550 })
+  })
+
+  it('ONE window serves every ticked event — the same record answers fly and amt alike', () => {
+    fileSans('krait', { f: true, a: true }, { s: 500, e: 550 })
+    expect(sansGate('krait', 'Jul 13', 'fly', S, E).status).toBe('window')
+    expect(sansGate('krait', 'Jul 13', 'amt', S, E).status).toBe('window')
+    expect(sansGate('krait', 'Jul 13', 'amt', 510, 540).status).toBe('ok')
+    expect(sansGate('krait', 'Jul 13', 'oft', S, E).status).toBe('not-offered')
+  })
+
+  it('the AM preset is the standard half — 00:00–12:00', () => {
+    fileSans('krait', { f: true }, { half: 'am' })
+    expect(sansGate('krait', 'Jul 13', 'fly', 480, 700).status).toBe('ok')
+    const g = sansGate('krait', 'Jul 13', 'fly', 480, 780)
+    expect(g.status).toBe('window')
+    expect(g.off).toEqual({ s: 0, e: 720 })
+  })
+
+  it('the PM preset is the standard half — 12:01 onwards', () => {
+    fileSans('krait', { f: true }, { half: 'pm' })
+    expect(sansGate('krait', 'Jul 13', 'fly', 780, 900).status).toBe('ok')
+    expect(sansGate('krait', 'Jul 13', 'fly', 480, 700).status).toBe('window')
+  })
+})
+
+describe('sansWindow / sansLetters / sansBadge — the record readers', () => {
+  it('sansWindow reads the four shapes, failing open like inpWin fails closed', () => {
+    expect(sansWindow({ allday: true })).toEqual([0, 1439])
+    expect(sansWindow({ allday: false, half: 'am' })).toEqual([0, 720])
+    expect(sansWindow({ allday: false, half: 'pm' })).toEqual([721, 1439])
+    expect(sansWindow({ allday: false, s: 480, e: 720 })).toEqual([480, 720])
+    expect(sansWindow({ allday: false }), 'a thin record reads whole-day').toEqual([0, 1439])
+    expect(sansWindow(null)).toEqual([0, 1439])
+  })
+  it('sansLetters prints ticked events in fixed f/o/a order, slash-joined', () => {
+    expect(sansLetters({ sans: { a: true, f: true } })).toBe('F/A')
+    expect(sansLetters({ sans: { o: true } })).toBe('O')
+    expect(sansLetters({ sans: {} })).toBe('')
+    expect(sansLetters(null)).toBe('')
+  })
+  it('sansBadge is letters plus the one window', () => {
+    fileSans('krait', { f: true, o: true, a: true })
+    expect(sansBadge('krait', 'Jul 13')).toBe('F/O/A')
+    INPUTS.pop()
+    fileSans('krait', { f: true, o: true }, { half: 'am' })
+    expect(sansBadge('krait', 'Jul 13')).toBe('F/O · AM')
+    INPUTS.pop()
+    fileSans('krait', { a: true }, { s: 480, e: 720 })
+    expect(sansBadge('krait', 'Jul 13')).toBe('A · 08:00–12:00')
+    expect(sansBadge('krait', 'Jul 14'), 'no record, no badge').toBe('')
   })
 })
 
@@ -89,13 +145,13 @@ describe('slotBar — the SANS gate, picker side (avail.ts)', () => {
     fileSans(FLY_ID, { o: true })
     expect(slotBar(FLY_ID, FLY_KEY)).toBe('SANS — not offering Fly')
   })
-  it('a flying seat: Fly offered a window narrower than the sortie', () => {
+  it('a flying seat: the window is narrower than the sortie', () => {
     const r = slotRules(FLY_KEY)
-    fileSans(FLY_ID, { f: { s: r.slotStart, e: r.slotStart + 30 } })
+    fileSans(FLY_ID, { f: true }, { s: r.slotStart, e: r.slotStart + 30 })
     const why = slotBar(FLY_ID, FLY_KEY)
-    expect(why).toBe(`SANS — Fly offered ${hm24(r.slotStart)}–${hm24(r.slotStart + 30)} only`)
+    expect(why).toBe(`SANS — available ${hm24(r.slotStart)}–${hm24(r.slotStart + 30)} only`)
   })
-  it('a flying seat: Fly offered all day — no SANS reason', () => {
+  it('a flying seat: offered all day — no SANS reason', () => {
     fileSans(FLY_ID, { f: true })
     expect(slotBar(FLY_ID, FLY_KEY)).not.toMatch(/^SANS/)
   })
@@ -107,17 +163,17 @@ describe('slotBar — the SANS gate, picker side (avail.ts)', () => {
     expect(slotBar(OFT_ID, OFT_KEY)).toBe('SANS — no availability filed for today')
   })
   it('an OFT seat: record filed, OFT not ticked', () => {
-    fileSans(OFT_ID, { a: true }, OFT_DATE)
+    fileSans(OFT_ID, { a: true }, null, OFT_DATE)
     expect(slotBar(OFT_ID, OFT_KEY)).toBe('SANS — not offering OFT')
   })
-  it('an OFT seat: OFT offered a window narrower than the box', () => {
+  it('an OFT seat: the window is narrower than the box', () => {
     const r = slotRules(OFT_KEY)
-    fileSans(OFT_ID, { o: { s: r.slotStart, e: r.slotStart + 30 } }, OFT_DATE)
+    fileSans(OFT_ID, { o: true }, { s: r.slotStart, e: r.slotStart + 30 }, OFT_DATE)
     expect(slotBar(OFT_ID, OFT_KEY))
-      .toBe(`SANS — OFT offered ${hm24(r.slotStart)}–${hm24(r.slotStart + 30)} only`)
+      .toBe(`SANS — available ${hm24(r.slotStart)}–${hm24(r.slotStart + 30)} only`)
   })
-  it('an OFT seat: OFT offered all day — no SANS reason', () => {
-    fileSans(OFT_ID, { o: true }, OFT_DATE)
+  it('an OFT seat: offered all day — no SANS reason', () => {
+    fileSans(OFT_ID, { o: true }, null, OFT_DATE)
     expect(slotBar(OFT_ID, OFT_KEY)).not.toMatch(/^SANS/)
   })
 
@@ -131,13 +187,13 @@ describe('slotBar — the SANS gate, picker side (avail.ts)', () => {
     fileSans(AMT_ID, { f: true })
     expect(slotBar(AMT_ID, AMT_KEY)).toBe('SANS — not offering AMT')
   })
-  it('an AMT seat: AMT offered a window narrower than the box', () => {
+  it('an AMT seat: the window is narrower than the box', () => {
     const r = slotRules(AMT_KEY)
-    fileSans(AMT_ID, { a: { s: r.slotStart, e: r.slotStart + 30 } })
+    fileSans(AMT_ID, { a: true }, { s: r.slotStart, e: r.slotStart + 30 })
     expect(slotBar(AMT_ID, AMT_KEY))
-      .toBe(`SANS — AMT offered ${hm24(r.slotStart)}–${hm24(r.slotStart + 30)} only`)
+      .toBe(`SANS — available ${hm24(r.slotStart)}–${hm24(r.slotStart + 30)} only`)
   })
-  it('an AMT seat: AMT offered all day — no SANS reason', () => {
+  it('an AMT seat: offered all day — no SANS reason', () => {
     fileSans(AMT_ID, { a: true })
     expect(slotBar(AMT_ID, AMT_KEY)).not.toMatch(/^SANS/)
   })
@@ -180,17 +236,17 @@ describe('validate() — the SANS_AVAIL advisory', () => {
     expect(chipOf(0, FLY_ID)).toBe('CP')
   })
 
-  it('Fly offered a window narrower than the sortie: "offered … only"', () => {
+  it('a window narrower than the sortie: "available … only"', () => {
     setSlotVal(FLY_KEY, FLY_ID)
     const r = slotRules(FLY_KEY)
-    fileSans(FLY_ID, { f: { s: r.slotStart, e: r.slotStart + 30 } })
+    fileSans(FLY_ID, { f: true }, { s: r.slotStart, e: r.slotStart + 30 })
     const hits = sansAvail(FLY_ID)
     expect(hits.length).toBe(1)
-    expect(hits[0].msg).toContain('Fly offered')
+    expect(hits[0].msg).toContain('available')
     expect(hits[0].msg).toContain('only')
   })
 
-  it('Fly offered all day (true) — no SANS_AVAIL', () => {
+  it('offered all day — no SANS_AVAIL', () => {
     setSlotVal(FLY_KEY, FLY_ID)
     fileSans(FLY_ID, { f: true })
     expect(sansAvail(FLY_ID)).toEqual([])
@@ -206,11 +262,38 @@ describe('validate() — the SANS_AVAIL advisory', () => {
   const OFT_KEY = 's:2.oft.0.p', OFT_ID = 'ipman', OFT_DATE = 'Jul 15'
   it('a SANS pilot planted into an OFT seat, offering only Fly: "not offering OFT"', () => {
     setSlotVal(OFT_KEY, OFT_ID)
-    fileSans(OFT_ID, { f: true }, OFT_DATE)
+    fileSans(OFT_ID, { f: true }, null, OFT_DATE)
     const hits = sansAvail(OFT_ID)
     expect(hits.length).toBe(1)
     expect(hits[0].sev).toBe('adv')
     expect(hits[0].msg).toContain('not offering OFT')
+  })
+})
+
+/* ---------------------------------------------------------------------------
+   THE LEAK GUARD (rework, 14 Aug 26). The record carries the row's own
+   standard s/e/half now, which is exactly the shape the absence and clash
+   machinery reads on every OTHER type — so pin that the type-based routing
+   still keeps a SANS record out of all of it: it is an OFFER, and a timed
+   offer must not read as a timed absence anywhere.
+   --------------------------------------------------------------------------- */
+describe('a timed SANS record never leaks into the absence/clash machinery', () => {
+  it('isAway stays false however the window is written', () => {
+    expect(isAway({ type: 'SANS Availability', allday: true })).toBe(false)
+    expect(isAway({ type: 'SANS Availability', allday: false, s: 480, e: 720 })).toBe(false)
+  })
+  it('never enters day.input — the brief/clash machinery cannot see it', () => {
+    fileSans('ipman', { f: true }, { s: 0, e: 1439 })
+    const day: any = collectEvents()[0]
+    expect(day.input.filter((x: any) => x.id === 'ipman')).toEqual([])
+  })
+  it('a narrow window overlapping a planted sortie raises the SANS advisory and NO input clash', () => {
+    setSlotVal('0.0.0.0.p', 'ipman')
+    const r = slotRules('0.0.0.0.p')
+    fileSans('ipman', { f: true }, { s: r.slotStart, e: r.slotStart + 30 })
+    const mine = validate().all.filter((w: any) => (w.who || []).includes('ipman'))
+    expect(mine.some((w: any) => w.code === 'SANS_AVAIL')).toBe(true)
+    expect(mine.filter((w: any) => w.sev === 'hard')).toEqual([])
   })
 })
 

@@ -67,7 +67,7 @@ describe('selection counting and day sets (tfin W / B38)', () => {
    reason. Un-actioned it is still just a request, matching the validator
    gate; the two gates must not drift apart. */
 describe('an actioned Fly reads as away', () => {
-  const fly = () => INPUTS.find((i: any) => i.type === 'Fly' && i.person === 'bruise')!
+  const fly = () => INPUTS.find((i: any) => i.type === 'Fly with' && i.person === 'bruise')!
 
   it('un-actioned free · actioned off/barred · undo frees again', () => {
     const inp = fly(), d = DAYS[0]

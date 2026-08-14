@@ -8,7 +8,7 @@ import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, RMKOPEN } from '../state/view'
-import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateRowCls, lateRowTitle } from './html'
+import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateRowCls, lateRowTitle, sansCardsHTML } from './html'
 
 /* ---- reorder grip + nudge buttons (owner, 8 Aug 26) -----------------------
    A grip at the far left on desktop, ▲/▼ in the row's own control cluster on a
@@ -402,15 +402,17 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
    compact `.sbi-row`, which is also what the read-only bands panel below
    draws — nothing is gained by showing a scheduler's fields to someone who
    cannot use them, and the two panels stay legible at a glance. */
-/* dt (6th param): only ever passed by sbSansPanel, and only ever non-empty
-   for a SANS row. BOTH row shapes below are strict grids with a fixed child
-   count the phone/wide breakpoints key off by POSITION (see the c6r register
-   comment further down) — the badge must nest INSIDE an existing child, never
-   ride as a new sibling, or every track after it misregisters exactly the
-   way the grip once did. The read-only shape's remarks IS a span (sbiRmk),
-   so it nests there, lateTag-style. The editable shape's remarks is a bare
-   `<input>` — nothing can nest inside a value — so there it rides in the
-   PEOPLE cell instead, beside the puck. */
+/* dt (6th param): NO LIVE CALLER any more (owner rework, 14 Aug 26) — SANS
+   Availability rows used to draw through this function too, the one caller
+   that ever passed dt, and it is what the sansBadge line just below reads.
+   sbSansPanel now draws a card grid instead (sansCardsHTML in ui/html.ts),
+   so a SANS-typed input never reaches sbInpRow any more — sbUnavailPanel and
+   sbInputsGroupPanel both filter it out on the way in. Left in the signature
+   rather than stripped: a badge nested INSIDE an existing grid child (never
+   a new sibling, or every track after it misregisters the way the grip once
+   did — see the c6r register comment further down) is a real, fiddly shape
+   to re-derive, and the two rows below already carry it correctly for
+   whichever future row type needs a badge like this again. */
 function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
   const RO=ro??pv;
   const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';
@@ -470,18 +472,22 @@ export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,ro,ro); });
   return s+`</div></div>`;
 }
-/* SANS AVAILABILITY (owner, 14 Aug 26) — a POSITIVE record, so it earns its
-   own panel rather than sitting inside Unavailable (isUnavail is true for it,
-   which is what buys the no-Accept-controls shape above for free, but it is
-   an offer, not an absence — see the guard in sbUnavailPanel). Modeled on
-   that panel: same row builder, same read-only handling; the only new thing
-   is threading d.dt into sbInpRow so it can find each row's own badge. */
+/* SANS AVAILABILITY (owner, 14 Aug 26; card grid rework same day) — a
+   POSITIVE record, so it earns its own panel rather than sitting inside
+   Unavailable (isUnavail is true for it, which is what bought the
+   no-Accept-controls shape above for free when this drew ordinary rows, but
+   it is an offer, not an absence — see the guard in sbUnavailPanel).
+   No longer modeled on that panel's row builder: sansCardsHTML (ui/html.ts)
+   is the ONE grid the week's SANS group draws too, so a scheduler reads the
+   identical cards whichever surface they open — no C6 header, no
+   per-record row, just the grid or the empty state. The old subtitle ("times
+   and remarks type in place, clear a time for all day") described the row
+   shape this panel no longer draws; a card opens the input-edit dialog
+   instead, so the hint now points at that. */
 export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isSansAvail(inp.type));
-  let s=`<div class="sb-panel sansav"><div class="sb-ph">SANS Availability <span class="sub">what SANS aircrew are offering${ro?'':' — times and remarks type in place, clear a time for all day'}</span></div><div class="sb-pb">`;
-  if(!rows.length)s+=`<div class="sb-empty">No SANS availability filed for this day.</div>`;
-  else if(!ro)s+=C6;
-  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,ro,ro,d.dt); });
+  let s=`<div class="sb-panel sansav"><div class="sb-ph">SANS Availability <span class="sub">what SANS aircrew are offering${ro?'':' — press a card to edit'}</span></div><div class="sb-pb">`;
+  s+=rows.length?sansCardsHTML(rows,di,ro):`<div class="sb-empty">No SANS availability filed for this day.</div>`;
   return s+`</div></div>`;
 }
 /* the board never carried the amendment marks the week view had — added with

@@ -1,6 +1,6 @@
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME } from '../engine/people'
-import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, sansBadge, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
@@ -260,17 +260,23 @@ export function availHTML(d:any,di:any,ed:any){
   /* in edit mode an available puck is a drag source — drag it straight onto a line,
      a duty, a sim or a programme item */
   const pk=(id:any)=>`<span class="seat"${ed?` draggable="true" data-person="${id}"`:''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;
-  const active=(ids:any)=>ids.filter((id:any)=>!PEOPLE[id].san), sans=(ids:any)=>ids.filter((id:any)=>PEOPLE[id].san);
+  const active=(ids:any)=>ids.filter((id:any)=>!PEOPLE[id].san);
   const grid=(ids:any)=>ids.length?`<div class="ap-grid">`+ids.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   const bandTxt=(w:any)=>{const a=w.s>0?hhmm(w.s):'AM', b=w.e<1440?hhmm(w.e):'end';return `${a}–${b}`;};
-  const sansAll:any[]=[]; A.wins.forEach((w:any,i:any)=>sans(A.byWave[i]).forEach((id:any)=>{if(!sansAll.includes(id))sansAll.push(id);}));
-  sans(A.anyWave).forEach((id:any)=>{if(!sansAll.includes(id))sansAll.push(id);});
+  /* SANS AVAILABILITY LEFT THIS PANEL ENTIRELY (owner, 14 Aug 26) — it used to
+     list every SANS body availByWave found free, which is the wrong
+     question: it never asked what a SANS man had actually OFFERED, only
+     whether nothing else was on his day. SANS crew now read from their own
+     filed records in the card grid below the input blocks (sansCardsHTML),
+     so this panel keeps a single count — how many SANS are offering
+     ANYTHING today — as a pointer to that grid, not a second listing of it. */
+  const sansOffering=Object.keys(PEOPLE).filter((id:any)=>PEOPLE[id].san&&!PEOPLE[id].archived&&sansAvailOn(id,d.dt)).length;
   const allA=active(A.anyWave);
   if(!AVOPEN.has(di)){
     const parts=[`${allA.length} all day`];
     A.wins.forEach((w:any,i:any)=>{const n=active(A.byWave[i]).length;
       if(n)parts.push(`+${n} ${w.night?'night':(ORD[i]||(i+1)+'th')+' wave'}`);});
-    parts.push(`${sansAll.length} SANS`);
+    parts.push(`${sansOffering} SANS offering`);
     return `<div class="availpuck sec sec-avail"><div class="ap-h" data-avtog="${di}">`
       +`<span>Available crew</span><span class="n">${parts.join(' · ')} ⌄</span></div></div>`;
   }
@@ -284,20 +290,79 @@ export function availHTML(d:any,di:any,ed:any){
   } else {
     h+=`<div class="ap-grp">Available all day · ${allA.length}</div>`+(allA.length?grid(allA):`<div class="ap-empty">Everyone is on the programme.</div>`);
   }
-  // SANS grouped together (separate currency requirements)
-  h+=`<div class="ap-grp sans-grp">SANS available <span style="color:var(--ink-3);font-weight:500">· staff-assigned / NS</span> · ${sansAll.length}</div>`;
-  /* the SANS badge (owner, 14 Aug 26) rides beside the puck here too — same
-     minimal string sansBadge builds for the palette and the week/board
-     groups, so a SANS body's filed hours read the same on every surface.
-     Expanded grid only: the collapsed "N SANS" line above stays a bare
-     count, same as it always was. */
-  /* wrapped in ONE flex item, not two loose siblings — .ap-grid itself wraps
-     with flex-wrap, so an unwrapped badge would compete for its own place in
-     that wrap and could land beside a DIFFERENT puck than the one it names. */
-  const sansPk=(id:any)=>{const badge=sansBadge(id,d.dt);
-    return `<span class="ap-sans-item">${pk(id)}${badge?`<span class="ap-sans-b">${esc(badge)}</span>`:''}</span>`;};
-  h+= sansAll.length?`<div class="ap-grid">`+sansAll.map(sansPk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   return h+`</div>`;
+}
+/* ---- SANS AVAILABILITY, ONE CARD GRID (owner rework, 14 Aug 26) ----------
+   The old per-record ROW — a full-width strip of typeable time/remarks
+   cells — made sense when the owner had a handful of SANS filing hours; with
+   26 in real use, 26 full-width rows is the wrong shape. One shared builder
+   now backs BOTH the week's SANS group (sansSectionHTML below) and the
+   board's SANS panel (sbSansPanel, ui/board-html.ts) so a scheduler reads
+   the identical grid wherever they open it — sansCardsHTML is exported for
+   exactly that second caller. A card is: the puck, the record's own window
+   as plain text, the offered-event letters (--san purple, the .sansb
+   family), and the remarks, ellipsized. The whole card is the click target —
+   it carries the SAME data-inpedit address inpEditLabel already builds
+   (inpKey(inp)), so the delegated click router in interactions.ts needs no
+   new wiring to open the input-edit dialog from it. `ro` (a read-only board)
+   withholds that attribute and draws a plain, unclickable div instead of a
+   button — the same editable/read-only split every other input row already
+   makes (see inpEditLabel itself). */
+const SANS_COMBO_ORDER=['F/O/A','F/O','F/A','O/A','F','O','A'];
+function sansCardTime(rec:any){
+  if(rec.allday)return 'all day';
+  if(rec.half==='am')return 'AM';
+  if(rec.half==='pm')return 'PM';
+  if(rec.s!=null&&rec.e!=null)return `${hm24(rec.s)}–${hm24(rec.e)}`;
+  return 'all day';                    // a thin record fails open, same as sansWindow
+}
+/* ORDER (owner spec, 14 Aug 26): a bounded window (not all-day) first,
+   earliest start first — sansWindow already answers "AM sorts as 0, PM as
+   721" for the two half-day cases, so this needs no separate am/pm case of
+   its own. All-day records follow, grouped by which events they offer, in
+   ONE fixed combo order: sansLetters always prints f/o/a in that order, so
+   the seven possible combinations ARE the seven strings in SANS_COMBO_ORDER
+   — no group headers, because the letters already printed on each card say
+   which group it is in. Array.prototype.sort is stable (ES2019+), so
+   records that tie on both keys keep whatever order the caller handed in. */
+export function sansCardsHTML(rows:any[],di:any,ro?:any){
+  if(!rows||!rows.length)return '';
+  const ordered=rows.slice().sort((a:any,b:any)=>{
+    const at=!a.allday, bt=!b.allday;
+    if(at!==bt)return at?-1:1;
+    if(at)return sansWindow(a)[0]-sansWindow(b)[0];
+    const ai=SANS_COMBO_ORDER.indexOf(sansLetters(a)), bi=SANS_COMBO_ORDER.indexOf(sansLetters(b));
+    return (ai<0?SANS_COMBO_ORDER.length:ai)-(bi<0?SANS_COMBO_ORDER.length:bi);
+  });
+  return `<div class="sanscards">`+ordered.map((inp:any)=>{
+    const pk=PEOPLE[inp.person]
+      ? puck(inp.person,sev(di,inp.person),true,chip(di,inp.person))
+      : `<span class="itxt">${esc(inp.person)}</span>`;
+    const letters=sansLetters(inp);
+    const rmk=String(inp.remarks||'').trim();
+    const inner=`<span class="sanscard-top">${pk}${letters?`<span class="sanscard-l">${esc(letters)}</span>`:''}</span>`
+      +`<span class="sanscard-t">${esc(sansCardTime(inp))}</span>`
+      +(rmk?`<span class="sanscard-r" title="${esc(rmk)}">${esc(rmk)}</span>`:'');
+    return ro
+      ? `<div class="sanscard">${inner}</div>`
+      : `<button class="sanscard" data-inpedit="${esc(inpKey(inp))}" title="Edit this input — times, type, remarks or delete">${inner}</button>`;
+  }).join('')+`</div>`;
+}
+/* the week's own wrapper — same `.sub.plist.one.sec.sec-sans` shape (and the
+   same purple left-bar contract) every other input group under dayHTML
+   wears, scheduler-side only like Personal Inputs: a member files this on
+   the Inputs page, a scheduler reads it here. Unlike the board's panel
+   (always drawn, empty state and all — see sbSansPanel) this keeps inGrp's
+   old convention of printing NOTHING when there is nothing to show: the week
+   is the day's working surface, not a squadron-wide list that owes an
+   explicit "nil" every single day. */
+export function sansSectionHTML(d:any,di:any,ed:any){
+  if(!ed)return '';
+  const rows=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&isSansAvail(inp.type));
+  if(!rows.length)return '';
+  return `<div class="sub plist one sec sec-sans"><div class="sub-h">SANS Availability`
+    +`<span class="pl-hint">press a card to edit</span></div>`
+    +sansCardsHTML(rows,di,false)+`</div>`;
 }
 export function storesView(o:any){
   o=o||{};
@@ -821,13 +886,12 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     if(ed)h+=inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true);
     // ---- available crew (computed, not an input type) stays scheduler-side ----
     if(ed)h+=availHTML(d,di,ed);
-    /* SANS AVAILABILITY IS ITS OWN GROUP (owner, 14 Aug 26) — isUnavail is true
-       for it (see the comment on that predicate), which is what buys it "no
-       Accept controls" for free at the falsy 5th param below, but it is a
-       POSITIVE record, not an absence, so it does not belong inside Unavailable
-       — the guard on that call keeps it out. Scheduler-side only, like Personal
-       Inputs: a member files it on the Inputs page, a scheduler reads it here. */
-    if(ed)h+=inGrp('SANS Availability',(inp:any)=>isSansAvail(inp.type),'sec-sans',false,false);
+    /* SANS AVAILABILITY IS ITS OWN GROUP, drawn as a card grid rather than
+       through inGrp's row builder (owner rework, 14 Aug 26 — see
+       sansSectionHTML/sansCardsHTML above for why). Scheduler-side only, like
+       Personal Inputs: a member files it on the Inputs page, a scheduler
+       reads it here. */
+    h+=sansSectionHTML(d,di,ed);
     // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this block
     h+=inGrp('Unavailable',(inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type),'sec-unav',true);
     h+=`</div>`; // /day-body

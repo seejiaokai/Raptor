@@ -88,7 +88,10 @@ export const INPUT_META:any={
   'Training':   {name:'training',                 grp:'act',   work:false, local:true,  ground:true,  half:false},
   'CSE':        {name:'course',                   grp:'act',   work:false, local:true,  ground:true,  half:false},
   'Meeting':    {name:'meeting',                  grp:'act',   work:false, local:true,  ground:true,  half:false},
-  'Fly':        {name:'flying with another squadron', grp:'act', work:false, local:true, ground:true, half:false},
+  /* renamed from 'Fly' (owner, 14 Aug 26) — reads better in the dropdown, and
+     the reference's own `^Fly$` offer regexes simply stop matching, which is
+     the commitment semantics both engines already agree on */
+  'Fly with':   {name:'flying with another squadron', grp:'act', work:false, local:true, ground:true, half:false},
   'Personal':   {name:'personal',                 grp:'act',   work:false, local:true,  ground:true,  half:false},
   'Appointment':{name:'appointment',              grp:'act',   work:false, local:true,  ground:true,  half:false},
   /* overseas duty — replaces Detachment (owner, 10 Aug 26). Out of reach:
@@ -103,10 +106,12 @@ export const INPUT_META:any={
      them, are exactly right for this type too). local:true, ground:false so
      it behaves like an on-island commitment for canSpare/the Ground button;
      work:false because filing this says nothing about a non-flying tasking.
-     half:false — the record's own Fly/AMT/OFT windows are the finer control,
-     an AM/PM split would only confuse the two. See isSansAvail/sansAvailOn/
-     sansBadge below and sansGate in avail.ts. */
-  'SANS Availability':{name:'SANS availability',  grp:'sans',  work:false, local:true,  ground:false, half:false},
+     half:true (owner, 14 Aug 26 — reworked from three per-event windows): the
+     record carries ONE window through the standard All day / AM / PM / Custom
+     template like any leave input, and `sans` is reduced to which events are
+     offered ({f/o/a: true}). See isSansAvail/sansAvailOn/sansWindow/sansBadge
+     below and sansGate in avail.ts. */
+  'SANS Availability':{name:'SANS availability',  grp:'sans',  work:false, local:true,  ground:false, half:true},
 };
 /* Looked up case-insensitively and trimmed, because the predicates this
    replaced were regexes with /i and the suite pins that (`isLeave(' oil ')`).
@@ -143,7 +148,7 @@ export function isLocalLeave(t:any){const m=inpMeta(t); return !!m&&m.grp==='lea
    for. See the late-input block below. */
 export function isDownchit(t:any){const m=inpMeta(t); return !!m&&m.grp==='med';}
 export function isOffType(t:any){return isLeave(t)||isDownchit(t);}
-export function isFly(t:any){return /^Fly$/i.test(String(t==null?'':t).trim());}
+export function isFly(t:any){return /^Fly with$/i.test(String(t==null?'':t).trim());}
 /* may a NON-FLYING tasking still be given inside this input's hours? */
 export function canWork(t:any){const m=inpMeta(t); return !!m&&!!m.work;}
 /* AWAY for availability (owner, Aug 26): leave and downchits close the day on
@@ -220,7 +225,7 @@ export function offWord(inp:any){const m=inpMeta(inp.type);
    The first was a desk marker nobody read off the programme; the other two were
    OFFERS — a man saying what he WANTED rather than where he had to be. With them
    gone the offer concept goes with them: every remaining non-leave type is a real
-   commitment, "Fly" included, so it clashes and consumes brief/debrief time
+   commitment, "Fly with" included, so it clashes and consumes brief/debrief time
    exactly like an Appointment does.
    DERIVED from INPUT_META, in its declaration order, so the list a scheduler
    picks from and the rules the engine applies cannot disagree about which
@@ -303,7 +308,7 @@ export let INPUTS:any[]=[
   {person:'nasty', date:'Jul 14', allday:true,               type:'LL',          remarks:'Local leave',  mod:'2026-06-30'},
   {person:'shrek', date:'Jul 14', allday:true,               type:'OIL',         remarks:'OIL — CO approved, post-detachment',mod:'2026-07-02'},
   {person:'sufa',  date:'Jul 13', endDate:'Jul 17', allday:true, type:'ATT C',   remarks:'Medically down till 17 Jul', mod:'2026-07-12'},
-  {person:'bruise',date:'Jul 13', allday:true,               type:'Fly',         remarks:'Keen for any wave',mod:'2026-06-20'},
+  {person:'bruise',date:'Jul 13', allday:true,               type:'Fly with',    remarks:'Keen for any wave',mod:'2026-06-20'},
   {person:'vinci', date:'Jul 13', allday:false, s:540, e:1020,type:'Meeting',     remarks:'Desk / staff work',mod:'2026-06-26'},
   {person:'pike',  date:'Jul 15', endDate:'Jul 17', allday:true, type:'OD',       remarks:'Overseas duty — exercise, off island',mod:'2026-06-18'},
   {person:'yeti',  date:'Jul 13', allday:false, s:600, e:660, type:'Appointment', remarks:'HSP blood panel',mod:'2026-07-06'},
@@ -343,24 +348,43 @@ export function inputCoversDate(inp:any,dt:any){
 }
 /* THE SANS RECORD COVERING one person on one day, or null — the single place
    that finds it, so sansGate (avail.ts), the badge below and the palette /
-   week / board readers all see the same record. Record shape:
-   {f?:{s,e}|true, o?:{s,e}|true, a?:{s,e}|true} — true means all day for that
-   event, absent means not offered. */
+   week / board readers all see the same record. Returns the WHOLE input row
+   (owner rework, 14 Aug 26 — it used to return just the `sans` payload): the
+   offered events are flags in `rec.sans` ({f?:true, o?:true, a?:true}, absent
+   = not offered) and the ONE shared window lives in the row's own standard
+   allday / half / s / e fields, read through sansWindow below. */
 export function sansAvailOn(id:any,dt:any){
-  const rec=INPUTS.find((x:any)=>x.person===id&&isSansAvail(x.type)&&inputCoversDate(x,dt));
-  return (rec&&rec.sans)||null;
+  return INPUTS.find((x:any)=>x.person===id&&isSansAvail(x.type)&&inputCoversDate(x,dt))||null;
 }
-/* the minimal badge beside a SANS member's name — "F 08:00–12:00 · O · A".
-   Fixed f,o,a order regardless of the order the boxes were ticked in, so the
-   same person reads the same way on the palette, the week group and the
-   board panel. '' when no record is filed — every caller already treats an
-   empty badge as "nothing to print" (see e.g. sbSansPanel/sansAvailHTML). */
+/* the record's one offered window in minutes, [s,e]. AM/PM are the same
+   halves the standard template writes (HALF_AM/HALF_PM in ui/inputedit.tsx —
+   00:00–12:00 / 12:01–23:59); a malformed record with neither flag nor both
+   times fails OPEN to the whole day, the same call inpWin makes for a thin
+   absence — the two readers must not disagree about what a broken row means. */
+export function sansWindow(rec:any){
+  if(!rec||rec.allday)return [0,1439];
+  if(rec.half==='am')return [0,720];
+  if(rec.half==='pm')return [721,1439];
+  if(rec.s==null||rec.e==null)return [0,1439];
+  return [rec.s,rec.e];
+}
+/* which events the record offers, as the scheduler reads them — "F/O/A",
+   "F/O", "A"… Fixed f,o,a order regardless of tick order, so the same person
+   reads the same way on the palette, the week group and the board panel. */
 const SANS_ABBR:any={f:'F',o:'O',a:'A'};
+export function sansLetters(rec:any){
+  const ev=(rec&&rec.sans)||{};
+  return ['f','o','a'].filter((k:any)=>ev[k]).map((k:any)=>SANS_ABBR[k]).join('/');
+}
+/* the badge beside a SANS member's name — letters plus the one window:
+   "F/O/A" (all day), "F/O · AM", "A · 08:00–12:00". '' when no record is
+   filed — every caller already treats an empty badge as "nothing to print"
+   (see e.g. sbSansPanel/sansAvailHTML). */
 export function sansBadge(id:any,dt:any){
   const rec=sansAvailOn(id,dt); if(!rec)return '';
-  return ['f','o','a'].filter((k:any)=>rec[k]!=null)
-    .map((k:any)=>{const v=rec[k]; return v===true?SANS_ABBR[k]:`${SANS_ABBR[k]} ${hm24(v.s)}–${hm24(v.e)}`;})
-    .join(' · ');
+  const w=rec.allday?'':rec.half==='am'?' · AM':rec.half==='pm'?' · PM'
+    :(rec.s!=null&&rec.e!=null?` · ${hm24(rec.s)}–${hm24(rec.e)}`:'');
+  return sansLetters(rec)+w;
 }
 /* ---- LATE INPUTS (owner, 9 Aug 26) ---------------------------------------
    The squadron wants members' inputs in before the week is planned, and wants

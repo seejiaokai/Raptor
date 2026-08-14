@@ -166,13 +166,13 @@ describe('personal inputs count from the moment they are typed (owner, 10 Aug 26
     /* THE REVERSAL: both of these were `toBe(base)` before 10 Aug 26. An input
        is a commitment the moment it is typed, so it eats the brief window
        without anyone actioning it. */
-    const flyRaw = n('Fly'), meetRaw = n('Meeting')
+    const flyRaw = n('Fly with'), meetRaw = n('Meeting')
     expect(flyRaw).toBeGreaterThan(base)
     expect(meetRaw).toBeGreaterThan(base)
     /* Fly still gets no offer exemption — it costs exactly what a Meeting
        costs, which is the half of this assertion that did not change */
     expect(flyRaw).toBe(meetRaw)
-    const fly = n('Fly', 'u'), meeting = n('Meeting', 'u')
+    const fly = n('Fly with', 'u'), meeting = n('Meeting', 'u')
     validate()
     expect(fly).toBeGreaterThan(base)
     expect(fly).toBe(meeting)

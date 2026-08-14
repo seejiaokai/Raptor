@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn } from './inputs'
+import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
@@ -228,16 +228,18 @@ export function slotRules(key:any){
      'ok'          — offered all day, or the slot falls inside the offered window
      'window'      — offered, but only for a narrower window than the slot
    s/e are the SLOT's own minutes-from-midnight, exactly as slotRules already
-   computes them. */
+   computes them. The record carries ONE window for every ticked event (owner
+   rework, 14 Aug 26 — sansWindow reads it off the row's standard allday /
+   half / s / e fields), so `off` is that same window whichever event asked. */
 const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
 export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
-export function sansGate(id:any,dt:any,domain:any,s:any,e:any){
+export function sansGate(id:any,dt:any,domain:any,s:any,e:any):any{
   const p=PEOPLE[id]; if(!p||!p.san)return {status:'na'};
   const rec=sansAvailOn(id,dt); if(!rec)return {status:'none'};
-  const off=rec[SANS_KEY[domain]];
-  if(off==null)return {status:'not-offered'};
-  if(off===true||(off.s<=s&&off.e>=e))return {status:'ok'};
-  return {status:'window',off};
+  if(!(rec.sans&&rec.sans[SANS_KEY[domain]]))return {status:'not-offered'};
+  const w=sansWindow(rec);
+  if(w[0]<=s&&w[1]>=e)return {status:'ok'};
+  return {status:'window',off:{s:w[0],e:w[1]}};
 }
 /* '' when they may be planned here, otherwise the reason they may not */
 export function slotBar(id:any,key:any,rules?:any){
@@ -378,7 +380,7 @@ export function slotBar(id:any,key:any,rules?:any){
     const g=sansGate(id,DAYS[r.di].dt,domain,r.slotStart,r.slotEnd);
     if(g.status==='none')return 'SANS — no availability filed for today';
     if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
-    if(g.status==='window')return `SANS — ${SANS_LABEL[domain]} offered ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
+    if(g.status==='window')return `SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
   }
   /* IS HE ALREADY BUSY AT THIS HOUR?
      The SC block above asks exactly this, for a shift. Every other slot asked
