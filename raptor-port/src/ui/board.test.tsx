@@ -1700,3 +1700,48 @@ describe('flying-line seat pair and the Remarks placeholder (14 Aug 26)', () => 
     expect(r.getAttribute('placeholder'), 'so a revealed-but-empty box says what it is').toBe('Remarks')
   })
 })
+
+/* THE OFT TAKES INSTRUCTORS AND OBSERVERS (owner, 14 Aug 26 — "the OFT can
+   only sit 2 people... anything additional are the instructors instructing
+   that session or observers. So it doesn't really affect the rules"). The two
+   REAL seats stay p/w — the seat-qual rules anchor there, untouched — and
+   extras ride more[] on the AMT's own grid contract: paired below the seats,
+   a removed extra HOLDS its index and renders as a droppable hole in place. */
+describe('the OFT seat grid and its extras (14 Aug 26)', () => {
+  const cell = () => $('#sbBoard [data-fill="s:0.oft.0.+"]')
+  beforeAll(async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); notify() })
+  })
+  it('an OFT crew row renders the AMT seat grid, FCP and RCP named', () => {
+    expect(cell().classList.contains('fcprcp'), 'the .fcprcp grid, like the AMT box').toBe(true)
+    expect([...cell().querySelectorAll('.hd')].map(h => h.textContent)).toEqual(['FCP', 'RCP'])
+  })
+  it('an empty OFT seat is a droppable slot now, not nothing', async () => {
+    /* Monday's EP-6 has a pilot and no WSO — before this build the empty seat
+       rendered as nothing at all, so there was no way to see or tap it */
+    const ep6 = $$('#sbBoard .sb-panel.simr .sb-arow').find(r =>
+      (r.querySelector('.ain') as HTMLInputElement)?.value === 'EP-6')!
+    expect(ep6, 'the seeded EP-6 row exists').toBeTruthy()
+    expect(ep6.querySelector('.sb-slot.empty[data-slot$=".w"]'), 'its empty RCP offers itself').toBeTruthy()
+  })
+  it('a 3rd and 4th body append as extras, and a removed extra leaves its hole in place', async () => {
+    const { fillSlot } = await import('../engine/slots')
+    await act(async () => { fillSlot('s:0.oft.0.+', 'wolf'); fillSlot('s:0.oft.0.+', 'rocky'); afterSchedMutate(); notify() })
+    expect(DAYS[0].sims.oft[0].more).toEqual(['wolf', 'rocky'])
+    expect(cell().querySelector('[data-slot="s:0.oft.0.x0"] .puck'), 'the instructor renders in the grid').toBeTruthy()
+    /* remove the FIRST extra: the index is held (slots.ts trims trailing
+       blanks only), the hole renders as a droppable slot, the 4th body stays */
+    await act(async () => { setSlotVal('s:0.oft.0.x0', ''); afterSchedMutate(); notify() })
+    expect(DAYS[0].sims.oft[0].more).toEqual(['', 'rocky'])
+    expect(cell().querySelector('.sb-slot.empty[data-slot="s:0.oft.0.x0"]'), 'the hole is a droppable slot in place').toBeTruthy()
+    expect(cell().querySelector('[data-slot="s:0.oft.0.x1"] .puck'), 'and the other extra never moved key').toBeTruthy()
+    /* clean up: blank the trailing extra too, which trims the whole tail */
+    await act(async () => { setSlotVal('s:0.oft.0.x1', ''); afterSchedMutate(); notify() })
+    expect(DAYS[0].sims.oft[0].more || []).toEqual([])
+  })
+  it('a who-text row (SIMS (149)) keeps its plain text, no seat grid', () => {
+    const who = $$('#sbBoard .sb-panel.simr .ppl .itxt').find(t => /149/.test(t.textContent!))
+    expect(who, 'the 149 slot still reads as text').toBeTruthy()
+    expect(who!.closest('.fcprcp'), 'and is not forced into the seat grid').toBeFalsy()
+  })
+})

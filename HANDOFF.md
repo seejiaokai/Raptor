@@ -46,12 +46,21 @@ the board remarks reveal reads `R` not `+` and its box carries a faded
 to save vertical space, and the Live Checks panel is its own #sbSign +
 below-sign-off arrangement with the phone flattening the board column,
 DESKTOP untouched — see `docs/ui-contracts.md` §The board edits everything the
-week does, §Empty cells, and §The board on a phone is ONE window)**, run in
+week does, §Empty cells, and §The board on a phone is ONE window), and once
+more for the OFT SEAT GRID (14 Aug 26 — an OFT crew row renders the AMT's
+`.fcprcp` grid on the board: the two real seats with the seat-qual rules
+anchored on `p`/`w` as ever, empty seats droppable now, and instructors/
+observers riding `more[]` paired below with held, droppable holes; the ENGINE
+is untouched — extras were already time-only commitments, the owner's stated
+model — see `docs/ui-contracts.md` §A deleted sim pax / the OFT paragraph
+under it)**, run in
 this container on the matching tree:
-`npm test` 1423 tests across 91 files (the board-full-editor batch added eight to
+`npm test` 1427 tests across 91 files (the board-full-editor batch added eight to
 `board.test.tsx` — the new editable fields render and commit, the checks bar's
 label and severity class, the sign/checks order, the seat pair and the Remarks
-placeholder; the crew-finding build added
+placeholder — and the OFT grid four more: the grid renders, an empty OFT seat
+offers itself, extras append and hold their holes, a who-text row stays plain;
+the crew-finding build added
 `selrings.test.tsx` and re-pointed the arm-and-plant, darkened-name and
 avail-grid tests at the new behaviour; the armed-palette pass pinned
 no-fade-while-armed inside the arm-and-plant test), `node
@@ -149,19 +158,6 @@ only after re-running them.
 
 ## Known issues / open work
 
-- **OFT sim rows should hold MORE THAN 2 pucks, like the AMT box — DEFERRED,
-  pending a clean isolated change (owner, 14 Aug 26).** The owner asked for OFT
-  to grow beyond a 2-seat crew "same layout as the AMT" (fixed `.fcprcp` grid,
-  empty-in-place holes, remove-one-leaves-the-rest). The data model already
-  allows it (an OFT row can carry a `pax[]` array — the Wed seed has one), and
-  the AMT box branch in `board-html.ts` `sbSimRowsPanel` is the exact rendering
-  to reuse. It was held out of the 14 Aug BOARD-FULL-EDITOR batch because
-  making OFT grow past 2 means routing it onto the pax model in the `slots.ts`
-  mutation funnel (a p/w row converting to pax on the 3rd add), which is engine
-  work that wants its own change and its own tests rather than riding a
-  UI-markup batch. The other six board asks from that day shipped; this is the
-  one left. NOT the flying line — the owner corrected an early misread: flying
-  lines stay a fixed pair, only OFT grows.
 - **The CREW-FINDING build (13 Aug 26) shipped four pieces and left two
   REPORTED-NOT-BUILT options beside one deliberately dropped shape.** Shipped
   (contracts in `docs/ui-contracts.md` §Drag / arm-and-plant, §Selection

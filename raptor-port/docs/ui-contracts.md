@@ -276,6 +276,23 @@ are untouched — they stay reference-shaped, so a hole there still renders
 as nothing; the board is the planning surface this serves. Pinned in
 `board.test.tsx`, measured in place in `e2e/geometry.spec.ts`.
 
+**The OFT takes instructors and observers on the same grid (owner, 14 Aug
+26 — "the OFT can only sit 2 people… anything additional are the instructors
+instructing that session or observers. So it doesn't really affect the
+rules").** An OFT (or any non-AMT sim) crew row now renders the AMT's
+`.fcprcp` seat grid on the board: the two REAL seats first — `p`/`w`, where
+the seat-qual rules stay anchored, an empty one a droppable `+` (it used to
+render as nothing, leaving no way to see or tap it) — and any extras from
+`more[]` paired below, padded to an even count. A removed extra HOLDS its
+index (`slots.ts` writes `''` and trims trailing blanks only) and renders as
+a droppable hole in place, so the others never reshuffle — the AMT's own
+contract, which extras used to break by collapsing (`sbMore` skips empty
+ids). The ENGINE is untouched: extras were already collected as time-only
+commitments (`events.ts` concats `s.more`), which is exactly the owner's
+model — seat rules for the two seats, clash/rest checks alone for the rest.
+A who-text row ("SIMS (149)") keeps its plain text and never gets the grid.
+The WEEK stays reference-shaped as above. Pinned in `board.test.tsx`.
+
 **Leaving Edit Schedule CLOSES the board — it does not hide it.**
 `state/view.ts`'s `setPage` calls `closeBoardState()` the moment the page
 stops being `'editsched'`: `SBDAY` goes null (which disarms `ARM` for free,
