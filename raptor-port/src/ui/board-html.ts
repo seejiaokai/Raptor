@@ -306,33 +306,50 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
          pairing never reshuffles. Not capped: the grid grows a pair at a time.
          OFT (and any other sim) keeps the plain wrap it always had. */
       const isAmt=kind==='amt', isBriefR=/^\s*BRIEF/i.test(r.label||''), isDebR=/DEBRIEF/i.test(r.label||'');
+      /* a who-only row ("SIMS (149)", "ALL PILOTS") keeps its free text; the
+         moment a real body sits in a seat the text yields, as it always has */
+      const whoOnly=!!String(r.who||'').trim()&&!PEOPLE[r.p]&&!PEOPLE[r.w];
       let pplCell;
       if(isAmt&&(isBriefR||isDebR)){
         pplCell=`<div class="ppl"></div>`;
-      }else if(isAmt){
-        let cells;
-        if(Array.isArray(r.pax)){
+      }else if(Array.isArray(r.pax)){
+        if(isAmt){
           /* pad to an even count (>=2) so every pair is complete — the trailing
              slot of an odd crew is a droppable RCP, not a gap */
           const n=Math.max(2,r.pax.length+(r.pax.length%2));
-          cells=Array.from({length:n},(_:any,pi:any)=>{const k=`${base}.pax.${pi}`, id=r.pax[pi];
+          const cells=Array.from({length:n},(_:any,pi:any)=>{const k=`${base}.pax.${pi}`, id=r.pax[pi];
             return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
               :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);}).join('');
+          pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${sbMore(di,base,r,ro)}</div>`;
         }else{
-          cells=(PEOPLE[r.p]?sbSeat(di,`${base}.p`,r.p,ro):(ro?'':`<span class="sb-slot empty" data-slot="${base}.p" title="FCP — tap or drop a puck to fill">+</span>`))
-               +(PEOPLE[r.w]?sbSeat(di,`${base}.w`,r.w,ro):(ro?'':`<span class="sb-slot empty" data-slot="${base}.w" title="RCP — tap or drop a puck to fill">+</span>`));
+          const seats=r.pax.map((id:any,pi:any)=>{
+            const k=`${base}.pax.${pi}`;
+            return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
+              :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);
+          }).join('');
+          pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${seats+sbMore(di,base,r,ro)}</div>`;
         }
-        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${sbMore(di,base,r,ro)}</div>`;
+      }else if(!whoOnly){
+        /* THE SEAT GRID NOW COVERS THE OFT TOO (owner, 14 Aug 26 — "the OFT
+           can only sit 2 people... anything additional are the instructors or
+           observers"). The two REAL seats render first — FCP | RCP, empty ones
+           droppable, and the seat-qual rules stay anchored on p/w exactly as
+           before. Instructors/observers ride `more[]`, paired below on the
+           same grid; a removed extra HOLDS its index (slots.ts trims trailing
+           blanks only), so the hole renders as a droppable slot in place and
+           the others never reshuffle — the AMT's own contract, which extras
+           used to break by collapsing (sbMore skips empty ids). The engine
+           checks extras for time clashes only, which is the whole point. */
+        const seatCell=(k:any,id:any,lbl:any)=>PEOPLE[id]?sbSeat(di,k,id,ro)
+          :(ro?'':`<span class="sb-slot empty" data-slot="${k}" title="${lbl} — tap or drop a puck to fill">+</span>`);
+        let cells=seatCell(`${base}.p`,r.p,'FCP')+seatCell(`${base}.w`,r.w,'RCP');
+        const more=r.more||[], n=more.length+(more.length%2);
+        for(let i=0;i<n;i++){const id=more[i];
+          cells+=(id&&PEOPLE[id])?sbSeat(di,`${base}.x${i}`,id,ro)
+            :(ro?'':`<span class="sb-slot empty pax" data-slot="${base}.x${i}" title="Instructor / observer — tap or drop a puck to fill">+</span>`);}
+        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}</div>`;
       }else{
-        const pax=Array.isArray(r.pax)?r.pax:null;
-        const seats=pax?pax.map((id:any,pi:any)=>{
-          const k=`${base}.pax.${pi}`;
-          return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
-            :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);
-        }).join('')
-          :sbSeat(di,`${base}.p`,r.p,ro)+sbSeat(di,`${base}.w`,r.w,ro);
-        const txt=(!seats&&r.who)?`<span class="itxt">${esc(r.who)}</span>`:'';
-        pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${txt+seats+sbMore(di,base,r,ro)}</div>`;
+        pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}</div>`;
       }
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:s.${di}.${kind}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.label`,r.label,'EP SIM',ro)+sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
