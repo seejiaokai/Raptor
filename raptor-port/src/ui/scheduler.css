@@ -445,12 +445,15 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    flex-basis fallback — the chips must never push the date off the row. */
 .day-head{flex-wrap:wrap;row-gap:7px}
 .day-head .dstat{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:8px}
-.day-head .dal{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
+/* .dal/.dpend also drawn by the board's sign-off panel (board.ts's
+   boardSignHTML, via html.ts's shared dayStatHTML) — same chips, so the
+   selector list grows instead of a second copy of the rule. */
+.day-head .dal,.sb-pub .dal{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
   letter-spacing:.06em;color:#08131b;background:var(--alc,var(--accent));padding:1px 6px;border-radius:5px}
 /* a day rolled back to the Original — grey on purpose: the bare .dal fallback
    is --accent, which is AL1's cyan, and ORIG must never read as AL1 */
-.day-head .dal.orig{background:var(--ink-3)}
-.day-head .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
+.day-head .dal.orig,.sb-pub .dal.orig{background:var(--ink-3)}
+.day-head .dpend,.sb-pub .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
   border:1px solid rgba(229,194,74,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
 /* PUBLISH DAY is the primary action on a day, so it wears the same blue as the
    banner buttons rather than looking like one more grey chip. Published flips it
@@ -903,6 +906,13 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 }
 #sbSignBar{margin:0 0 10px}
 .signoff.board-sign{position:static}
+/* the publish strip (version chip, pending count, ⓘ, Publish day / AL) as its
+   own row under the sign-off names, so a narrow board (phone width, same
+   ~364px the day column wraps at) never squeezes the Publish button against
+   a name pill — .signoff itself already flex-wraps, but a shared row let a
+   long-titled Publish AL button crowd the last sign-off pill onto a half
+   line rather than wrapping cleanly under it. */
+.sb-pub{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:0 0 100%;margin-top:4px}
 /* the per-day strip, in the day's own header. Four names, two rows on a phone,
    and the day's Publish button stays locked until all four carry one. */
 .signoff.day-sign{margin:8px 10px 0;padding:6px 8px;gap:4px;background:var(--panel-2);border-color:var(--edge)}

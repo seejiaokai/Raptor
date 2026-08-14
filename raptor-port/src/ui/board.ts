@@ -17,7 +17,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl } from '../engine'
 import { setTplEdit } from './pops'
@@ -231,8 +231,20 @@ export function boardSignHTML(di: number, pv?: boolean) {
   if (pv) return ''
   /* the desktop "view all changes" entry heads this element, above the
      sign-off bar, exactly as it did when both lived at the top of #sbBoard */
+  /* Publish controls, "same as edit schedule" (owner ask): dayStatHTML is the
+     week day head's own version chip / pending count / ⓘ / Publish day /
+     Publish AL strip (html.ts), shared verbatim so a scheduler working the
+     full-screen board never has to back out to the week to publish. Gated on
+     HOOKS.editMode() alone — pv is already ruled out above, so that's the one
+     term left of the stoRO/mvRO gate every other write control on this board
+     uses; dayStatHTML itself renders the read-only stamp instead of a button
+     when ed is false, same as the week's view-only page does. Placed inside
+     #sbSignBar, right after the sign-off names, so signing and publishing
+     read as one block instead of two disconnected panels. */
+  const ed = HOOKS.editMode()
   return histLineHTML('histln-top')
-    + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`
+    + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}`
+    + `<div class="sb-pub">${dayStatHTML(di, ed)}</div></div>`
 }
 
 export function boardWarnHTML(di: number) {

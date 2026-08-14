@@ -9,7 +9,7 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, HIST } from '../state/store'
 import { DAYS } from '../engine/data'
-import { SCHED, signOf, setDayApproved } from '../engine/publish'
+import { SCHED, signOf, setDayApproved, dayApproved } from '../engine/publish'
 import { slotVal, setSlotVal, txtGet } from '../engine/slots'
 import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
@@ -1827,5 +1827,81 @@ describe('the just-added blue box (14 Aug 26)', () => {
       expect(view.FRESHADD.has('sr:0.oft.0.label'), 'gone after the window').toBe(false)
       expect(view.FRESHOUT.has('sr:0.oft.0.label')).toBe(false)
     } finally { HOOKS.renderScheduler = rs; HOOKS.renderEditWeek = re; vi.useRealTimers() }
+  })
+})
+
+/* THE EDIT WEEK'S PUBLISH CONTROLS ON THE BOARD, "same as edit schedule"
+   (owner ask). html.ts's dayStatHTML is now the ONE builder for the version
+   chip / pending-count chip / ⓘ / Publish day / Publish AL strip — the week
+   day head calls it (html.test.ts proves that output stayed byte-identical)
+   and boardSignHTML (board.ts) calls the very same function, so a scheduler
+   working the full-screen board never has to back out to the week to sign
+   and publish a day. */
+describe('the board carries the edit week\'s publish controls (owner ask)', () => {
+  beforeAll(async () => {
+    /* self-contained rather than trusting file order: an earlier block in
+       this file (the "previewing a version" test) already wipes SCHED's
+       approval state wholesale and nothing since restamps it, but a clean
+       slate stated here is what makes this block correct on its own. */
+    await act(async () => {
+      setSession({ user: 'a', role: 'admin' }); view.setPage('editsched')
+      SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}
+      openScheduler(0); notify()
+    })
+  })
+
+  it('renders the Publish day button for the open day, locked while unsigned', () => {
+    const beak = $('#sbSignBar [data-beak="0"]')
+    expect(beak, 'the board sign area carries the same Publish day button the week head does').toBeTruthy()
+    expect(beak.hasAttribute('disabled'), 'locked until the four sign-offs are in').toBe(true)
+    expect(beak.classList.contains('locked')).toBe(true)
+    expect(beak.textContent).toBe('Publish day')
+  })
+
+  it('enables once the day is fully signed', async () => {
+    await act(async () => {
+      const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+      notify()
+    })
+    const beak = $('#sbSignBar [data-beak="0"]')
+    expect(beak.hasAttribute('disabled'), 'signed — the button is live now').toBe(false)
+    expect(beak.classList.contains('locked')).toBe(false)
+  })
+
+  it('publishing flips it to ✓ Published; a pending edit after that shows the pending chip and Publish AL', async () => {
+    await click($('#sbSignBar [data-beak="0"]'))
+    expect(dayApproved(0)).toBe(true)
+    const beak = $('#sbSignBar [data-beak="0"]')
+    expect(beak.textContent).toBe('✓ Published')
+    expect(beak.classList.contains('ok')).toBe(true)
+    expect($('#sbSignBar [data-alpub="0"]'), 'no pending edits yet — no AL button').toBeFalsy()
+
+    /* a pending edit through the ordinary mutation funnel, same "+ Line"
+       path the earlier "board mutation handlers" block already exercises */
+    const d = DAYS[0]
+    const gi = d.waves.length - 1
+    await click($(`#sbBoard [data-gline="0.${gi}"]`))
+    const key = `ff:0.${gi}.${d.waves[gi].formations.length - 1}.cs`
+    expect(SCHED.pending[key], 'the new line is pending, same funnel as the week').toBeTruthy()
+
+    expect($('#sbSignBar .dpend'), 'the pending-count chip appears once the published day carries an edit').toBeTruthy()
+    expect($('#sbSignBar [data-alpub="0"]'), 'a published day with a pending edit gets the Publish AL button').toBeTruthy()
+
+    // put the line back
+    d.waves[gi].formations.pop()
+    delete SCHED.pending[key]; delete SCHED.added[key]
+    await act(async () => { afterSchedMutate(); notify() })
+  })
+
+  it('a frozen version preview renders no Publish day / Publish AL controls', async () => {
+    await act(async () => { view.setDayPreview(0, 'orig'); notify() })
+    expect($('#sbSignBar'), 'boardSignHTML(di, true) still returns nothing on a frozen preview').toBeFalsy()
+    expect($$('#sbSign [data-beak]').length).toBe(0)
+    expect($$('#sbSign [data-alpub]').length).toBe(0)
+    await act(async () => {
+      view.setDayPreview(0, null)
+      SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}
+      notify()
+    })
   })
 })

@@ -576,14 +576,19 @@ export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateIn
 /* vsel: emit the per-day version dropdown. Only EditWeek (and the preview
    path) passes it, so the view-only page never grows the control — read-only
    users see issued schedules, not the version machinery. */
-export function dayHTML(di:any,ed:any,vsel?:any){
-  const d=DAYS[di];
-    /* ---- per-day approval strip -------------------------------------------
-       Each day carries its own publish state, ONE version chip (the version the
-       day is currently showing — not the AL history, which lives in the ⓘ
-       panel) and its own pending-edit count. In edit mode the publish is a
-       button; in view mode it is a read-only stamp, because clicking a day in
-       the view-only page must never lead into editing.                        */
+/* ---- per-day approval strip -------------------------------------------
+   Each day carries its own publish state, ONE version chip (the version the
+   day is currently showing — not the AL history, which lives in the ⓘ
+   panel) and its own pending-edit count. In edit mode the publish is a
+   button; in view mode it is a read-only stamp, because clicking a day in
+   the view-only page must never lead into editing.
+   Shared by the week (dayHTML, below) and the scheduler board's sign-off
+   panel (board.ts's boardSignHTML) — "same as edit schedule" means literally
+   the same markup, not a second copy that can drift. Deliberately excludes
+   verSelHTML: the week passes it only via its own `vsel` param (never on the
+   view-only page), and the board has no equivalent slot for it today. */
+export function dayStatHTML(di:any,ed:any){
+    const d=DAYS[di];
     const ok=dayApproved(di), dals=dayALs(di), dp=dayPendCount(di);
     /* the chip appears once amendments exist: a published day with no ALs
        anywhere keeps the clean "✓ Published" look, but a day rolled back to
@@ -613,6 +618,14 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a
        read-only panel — clicking a day in view mode must never lead into editing. */
     const infoChip=`<button class="dinfobtn" data-dayinfo="${di}" title="${d.dow} — approval, AL versions, advisories">i</button>`;
+    return `${alChips}${pendChip}${infoChip}${beak}${alpub}`;
+}
+export function dayHTML(di:any,ed:any,vsel?:any){
+  const d=DAYS[di];
+    /* dayStatHTML (above) recomputes this same lookup for its own chips; kept
+       here too because the <section> class needs it and dayApproved is a bare
+       SCHED.dayOK[di] read, not worth threading through as a return value. */
+    const ok=dayApproved(di);
     /* preview banner: the tint is the version's own colour, so "which AL am I
        looking at" reads the same way the marks do */
     const pvBar=PV
@@ -624,7 +637,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         ? `<span class="dow sb-open" data-sbday="${di}" title="Open scheduler board">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
-      <span class="dstat">${vsel?verSelHTML(di):''}${alChips}${pendChip}${infoChip}${beak}${alpub}</span></div>`
+      <span class="dstat">${vsel?verSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
       +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}</div>`:'')
       +`<div class="day-body">`;
