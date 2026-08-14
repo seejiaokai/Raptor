@@ -231,8 +231,10 @@ and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
 `probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 960**
-(measured 829, after the 14 Aug board-full-editor batch — see the boundary
-note below), **week ≤ 4000** (measured
+(measured 835: 829 after the 14 Aug board-full-editor batch — see the
+boundary note below — plus six for SANS Availability's board panel, which
+draws its header and its empty-state line on every day, records or not),
+**week ≤ 4000** (measured
 3621 — LOWERED from 5530 on 13 Aug 26 when the Available-crew panels started
 booting folded; the argued comment sits on the ceiling itself in
 `perf-port.cjs`). Tripping one is not

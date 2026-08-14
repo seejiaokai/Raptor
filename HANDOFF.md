@@ -80,7 +80,7 @@ into `FRESHOUT`, dropped under `prefers-reduced-motion`). A wave boxes its
 whole `.sb-go` and dedups its own inner line; a duty `+ Block` boxes its header
 and sibling rows. Contract: `docs/ui-contracts.md`)**, run in
 this container on the matching tree:
-`npm test` 1437 tests across 91 files (the blue box added four to
+`npm test` 1476 tests across 92 files (the blue box added four to
 `board.test.tsx` — a sim row boxes only itself, a wave boxes the whole wave
 with no inner box, the AMT block boxes its three rows, the key clears after
 the window; the AMT + Block added two to
@@ -149,8 +149,13 @@ pair; `slotrules.test.ts` pins `simKind`; `palette.test.ts` and
 94/94 (two new: the `.rall.rsans` section holds puck geometry with the badge
 beside — not inside — the puck at both widths, and the armed-OFT strike prints
 its SANS reasons without the 74×74 slab regression), `probes:adapted` 6/6,
-`perf` 4/4 (week 3621 under 4000, board 835 under 960 — both unmoved: the new
-week group renders only when a record exists and the seed carries none). The
+`perf` 4/4 — both CEILINGS unmoved, but the board MEASURE is not: it went
+829 → 835, because `sbSansPanel` draws its header and its "No SANS
+availability filed for this day." empty state on EVERY day, while the week's
+new group is a conditional `inGrp` that renders nothing when no record
+exists, so the week measure holds at 3621. Six nodes out of the 960 ceiling's
+margin, and the direction is the point: this build made the board heavier
+while the seed gained no data at all. The
 built bundle was then driven at 1500px: the record filed through the REAL add
 form (calendar + checkboxes), the badge on the palette section and the week
 group, ten record-less SANS struck with the printed reason while armed on an
