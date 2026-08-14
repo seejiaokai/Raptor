@@ -137,7 +137,7 @@ export function slotRules(key:any){
   /* an append target and an overflow body both sit on the row they hang off,
      so they carry its hours — strip both before looking the row up */
   const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
-  const out:any={seat:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,avJet:false,avDuty:false};
+  const out:any={seat:null,sim:false,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,avJet:false,avDuty:false};
   out.di=keyDay(k);
   /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
      shift carried a window before, which is the whole reason a personal input
@@ -160,12 +160,15 @@ export function slotRules(key:any){
     const w2=r&&win(parseHM(r.str),parseHM(r.end),kk==='s'?90:undefined);
     if(w2){out.slotStart=w2[0]; out.slotEnd=w2[1];}
   }
-  /* a SIM box has the same two seats as the jet — front pilot, rear IP — and the
-     engine checks them (day.simcrew). The picker used to skip the seat rules for
+  /* a SIM box has the same two seats as the jet and the engine checks its
+     FRONT one (day.simcrew). The picker used to skip the seat rules for
      any key carrying a ':' prefix, so it happily planted a WSO into a sim front
      seat and the engine then raised a hard warning about it. `s:di.kind.ri.p|w`
-     — but not `s:di.kind.ri.pax.N`, which is a body in the room, not a seat. */
+     — but not `s:di.kind.ri.pax.N`, which is a body in the room, not a seat.
+     `sim` is what lets slotBar leave the sim's REAR seat open: an OFT or AMT
+     session needs no instructor in the back (owner, 14 Aug 26). */
   if(/^s:/.test(k)){
+    out.sim=true;
     const a=k.slice(2).split('.');
     if(a.length===4&&(a[3]==='p'||a[3]==='w'))out.seat=a[3];
   }
@@ -216,7 +219,9 @@ export function slotBar(id:any,key:any,rules?:any){
      through to the normal input/busy checks. */
   if(p.pers&&r.seat==='p')return 'ground crew — rear seat only, cannot fly front seat';
   if(r.seat==='p'&&p.seat==='RCP')return 'WSO — cannot fly front seat';
-  if(r.seat==='w'&&p.seat==='FCP'&&!isInstrPilot(p.q))return 'pilot, not an instructor — only IP / IR / FI may fly rear seat';
+  /* the instructor rule is the JET's rear seat only — a sim's rear seat is
+     open to any pilot (owner, 14 Aug 26), matching the engine's Q (sims) */
+  if(r.seat==='w'&&!r.sim&&p.seat==='FCP'&&!isInstrPilot(p.q))return 'pilot, not an instructor — only IP / IR / FI may fly rear seat';
   if(r.sc&&!scQualOK(id,r.sc))return `not ${r.sc==='day'?'SC DAY':'SC NIGHT'} current`;
   /* SC is treated as flying for crew rest: 12h clear of yesterday or he cannot
      be planned onto the shift at all. Read off the map validate() builds. */

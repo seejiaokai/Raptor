@@ -130,7 +130,7 @@ export function lgRules(){
   {g:'Qualification and currency',
    rows:[
     {sev:'hard',code:'QUAL',
-     t:()=>`<b>Seat rules.</b> A WSO cannot fly the front seat. Only an instructor pilot — <b>IP, IR or FI</b> — may fly the rear seat; <b>IW</b> is a WSO-only category and sits RCP only. A pilot <b>FI</b> follows the IP rules, a WSO FI the IW rules. The same rules apply to the front and rear seats of a sim.`},
+     t:()=>`<b>Seat rules.</b> A WSO cannot fly the front seat. Only an instructor pilot — <b>IP, IR or FI</b> — may fly the rear seat; <b>IW</b> is a WSO-only category and sits RCP only. A pilot <b>FI</b> follows the IP rules, a WSO FI the IW rules. A sim's front seat follows the same rule; its <b>rear seat is open to any pilot</b> — an OFT or AMT session does not need an instructor in the back.`},
     {sev:'hard',code:'ILLEGAL_CREW',
      t:()=>`<b>The combination matrix</b> (F-15SG Table 1.5-2). An <b>OCU pilot</b> may not fly with a <b>CAT A–D WSO</b>, and an <b>OCU WSO</b> may not fly with a <b>CAT A–D pilot</b> — not authorised combinations, a Warning.<span class="why">An instructor in either seat clears the matrix: an instructor pilot (IP / IR / FI) flies with anyone, an instructor WSO with any front seat.</span>`},
     {sev:'adv',code:'CREW_SOLO',

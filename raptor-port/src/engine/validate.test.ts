@@ -400,6 +400,34 @@ describe('CAT IW is a WSO category (data-inconsistency guard)', () => {
   })
 })
 
+/* ---- the sim rear seat needs no instructor (owner, 14 Aug 26) -------------
+   "oft doesn't need an instructor to be in the RCP, likewise for amt". The
+   jet's IP/IR/FI rear-seat rule used to be copied onto the sim box; only the
+   jet keeps it now, and the sim's FRONT seat rules are untouched. */
+describe('a sim rear seat takes any pilot', () => {
+  it('a plain pilot in an OFT or AMT rear seat raises no QUAL', () => {
+    /* ignite is CAT C — a pilot with no instructor category at all */
+    DAYS[0].sims.oft[0].w = 'ignite'
+    DAYS[0].sims.amt[0].w = 'ignite'
+    validate()
+    expect(WARN.all.filter((x: any) => x.code === 'QUAL' && (x.who || []).includes('ignite'))).toEqual([])
+  })
+
+  it('the same pilot in the JET rear seat is still flagged', () => {
+    setSlotVal('0.0.0.0.w', 'ignite')
+    const hits = validate().all.filter((x: any) => x.code === 'QUAL' && (x.who || []).includes('ignite'))
+    expect(hits.length).toBeGreaterThan(0)
+    expect(hits[0].msg).toContain('only IP / IR / FI may fly RCP')
+  })
+
+  it('a WSO in a sim FRONT seat is still flagged', () => {
+    DAYS[0].sims.oft[0].p = 'rocky'
+    const hits = validate().all.filter((x: any) => x.code === 'QUAL' && (x.who || []).includes('rocky'))
+    expect(hits.length).toBeGreaterThan(0)
+    expect(hits[0].msg).toContain('cannot take the front seat')
+  })
+})
+
 /* ---- the crew-pairing chip (renamed from CC, owner ask 5 Aug 26) ----------
    The pairing rules used to ring the puck and caption nothing, which left
    them the one warning family with nowhere to click. They now all mark a

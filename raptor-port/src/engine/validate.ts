@@ -611,14 +611,15 @@ export function validate(){
               +`, ${f.label}${why}`,f.key); }); });
       }
     });
-    /* Q (sims) — the sim box is seated like the jet: a WSO cannot occupy the
-       front seat, and only an instructor pilot (IP / IR / FI) may occupy the
-       back seat. */
-    (day.simcrew||[]).forEach((s:any)=>{ const p=realP(s.p),w=realP(s.w);
+    /* Q (sims) — the sim box guards its FRONT seat like the jet (ground crew,
+       a WSO, an IW-in-FCP record — none may occupy it). The REAR seat has no
+       seat rule at all: an OFT or AMT session does not need an instructor in
+       the back (owner, 14 Aug 26 — the jet's IP/IR/FI rear-seat rule used to
+       be copied here, and only the jet keeps it). */
+    (day.simcrew||[]).forEach((s:any)=>{ const p=realP(s.p);
       if(p&&p.pers){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is ground crew — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
       if(p&&p.seat==='RCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is a WSO — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
       if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q');markRing(di,s.p,'hard');add('hard','QUAL',[s.p],`${p.cs} is CAT IW — a WSO category, cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
-      if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,s.w,'Q');markRing(di,s.w,'hard');add('hard','QUAL',[s.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may take the back seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.w`);}
     });
     const SORD:any={hard:0,adv:1,note:2};
     ws.sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));

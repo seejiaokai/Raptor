@@ -26,7 +26,7 @@ import { INPUTS, inputFlags } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 
 export async function refWindow(): Promise<any> {
-  const html = relabel(reinput(redn(rering(rebrief(relead(rematrix(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))))))))
+  const html = relabel(reinput(redn(rering(rebrief(relead(rematrix(resim(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -161,8 +161,10 @@ function retier(html: string): string {
        migration every read of it (`p.ip||isInstr(p.q)` in hasIP/anyIP and the
        boot seeding) is true exactly when the patched isInstr is true, and
        quals.instr is compared nowhere
-     · the two QUAL message literals and the legend swatch take the port's
-       wording, so IF they render they render identically
+     · the jet's QUAL message literal and the legend swatch take the port's
+       wording, so IF they render they render identically (the sim back-seat
+       literal used to be reworded here too — resim below removes its whole
+       check instead, since 14 Aug 26)
    The port-only rules (NO_IR, the IW-in-FCP guard) fire nowhere on the seed,
    so WARN stays byte-equal without patching them in. Multi-hit swaps carry
    their expected count; a drifted count throws, same as retier. */
@@ -185,8 +187,6 @@ function remap(html: string): string {
     ["LEVELNAME[p.q]+(p.ip?' · IP':'')+", "LEVELNAME[p.q]+"],
     ["is a pilot, not IP — only IP may fly RCP (",
      "is a pilot, not an instructor — only IP / IR / FI may fly RCP ("],
-    ["is a pilot, not IP — only IP may take the back seat (",
-     "is a pilot, not an instructor — only IP / IR / FI may take the back seat ("],
     [`<span><span class="qk" style="background:var(--q-ins)">I</span>IP / instr</span>`,
      `<span><span class="qk" style="background:var(--q-ins)">IW</span>IWSO</span>\n    <span><span class="qk" style="background:var(--q-ins)">IP</span>IP</span>\n    <span><span class="qk" style="background:var(--q-ins)">IR</span>IR exmr</span>\n    <span><span class="qk" style="background:var(--q-ins)">FI</span>FWI</span>`],
     ["seat:'FCP',q:'I',ip:true", "seat:'FCP',q:'IP',ip:true", 8],
@@ -200,6 +200,19 @@ function remap(html: string): string {
     html = html.split(from).join(to)
   }
   return html
+}
+
+/* The sim's rear seat lost its instructor rule (owner, 14 Aug 26 — "oft
+   doesn't need an instructor to be in the RCP, likewise for amt"). The port's
+   check is deleted from validate(), so the reference's is excised from the
+   in-memory copy too — the parity idiom, both sides — though it fires nowhere
+   on the seed anyway (every seeded sim rear seat holds an IP or a WSO), so
+   WARN was byte-equal either way. The jet's rear-seat rule stands on both. */
+function resim(html: string): string {
+  const from = "if(w&&w.seat==='FCP'&&!(w.ip||isInstr(w.q))){markChip(di,s.w,'Q');markRing(di,s.w,'hard');add('hard','QUAL',[s.w],`${w.cs} is a pilot, not IP — only IP may take the back seat (${s.label})`);}"
+  const n = html.split(from).length - 1
+  if (n !== 1) throw new Error(`refwin resim: expected 1 match, got ${n}`)
+  return html.split(from).join('')
 }
 
 /* Fourth structural divergence, closed the same way. The port grades every
