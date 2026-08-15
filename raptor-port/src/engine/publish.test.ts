@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { PEOPLE, isScheduler } from './people'
 import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, publishAL, publishALDay, unpublishAL, discardPending, alIssue, alCount, alDays, alUsed, nextAL, markEdit, markStructuralAdd, markDeletion, deletionWasIssued, isDeleteKey, deleteCount, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
-import { noteChange } from './slots'
+import { noteChange, txtSet, txtGet } from './slots'
 import { keyDay, shiftKeys } from './keys'
 import { moveNote } from './reorder'
 import { restoreDayVersion } from './restore'
@@ -351,16 +351,20 @@ describe('structural-deletion tombstones', () => {
 })
 
 describe('per-day version snapshots', () => {
-  it('publishing a day stamps the Original once — first publish wins', () => {
+  it('first publish stamps the Original; a reopen+republish re-issues it (owner, 15 Aug 26)', () => {
     const note0 = DAYS[0].notes[0]
     sign(0); setDayApproved(0, 1)
     expect(daySnapOf(0, 'orig')).toBeTruthy()
     expect(daySnapOf(0, 'orig').d.notes[0]).toBe(note0)
-    /* reopen, change the model, republish — the Original must not move */
+    /* reopen, change the model, republish — the Original now CATCHES UP to the
+       re-issued content (was: frozen). A deliberate reopen+republish is a
+       re-issue, and the view page must show what was just published; the
+       ordinary amendment flow, which never reopens, still leaves the Original
+       frozen (its own test below). */
     setDayApproved(0, 0)
     DAYS[0].notes[0] = 'CHANGED AFTER REOPEN'
     sign(0); setDayApproved(0, 1)
-    expect(daySnapOf(0, 'orig').d.notes[0]).toBe(note0)
+    expect(daySnapOf(0, 'orig').d.notes[0]).toBe('CHANGED AFTER REOPEN')
     DAYS[0].notes[0] = note0
   })
 
@@ -431,5 +435,46 @@ describe('dayCurVer — the version a day is currently showing', () => {
     expect(dayCurVer(0)).toBe(1)
     unpublishAL(1)
     expect(dayCurVer(0)).toBe('orig')
+  })
+})
+
+/* RE-PUBLISHING A REOPENED DAY refreshes what the view page shows (owner,
+   15 Aug 26). Reopen keeps the version history, but the frozen snapshot the
+   view page reads was captured before the reopen — so without this, a viewer
+   keeps seeing pre-reopen content after the scheduler re-publishes. Pins the
+   content refresh AND that the ordinary amendment flow never rewrites the
+   Original. */
+describe('re-publishing a reopened day re-issues the current version in place', () => {
+  const D0 = JSON.parse(JSON.stringify(DAYS[0]))
+  beforeEach(() => { DAYS[0] = JSON.parse(JSON.stringify(D0)) })
+  const issuedNote = (di: number) => { const cv = dayCurVer(di); const s = cv != null ? daySnapOf(di, cv) : null; return s ? s.d.notes[0] : '(none)' }
+
+  it('a day at the Original: reopen, hand-edit, re-publish — the issued view catches up', () => {
+    sign(0); setDayApproved(0, 1)                 // first publish → Original
+    setDayApproved(0, 0)                          // reopen
+    txtSet('dn:0.0', 'NEW BY HAND')
+    sign(0); setDayApproved(0, 1)                 // Publish day again
+    expect(dayCurVer(0)).toBe('orig')             // same version label
+    expect(issuedNote(0)).toBe('NEW BY HAND')     // but the document caught up
+    expect(issuedNote(0)).toBe(txtGet('dn:0.0'))  // issued == live, no split
+  })
+
+  it('a day at AL1: reopen, edit, re-publish — AL1’s document catches up', () => {
+    sign(0); setDayApproved(0, 1)
+    txtSet('dn:0.0', 'AMENDED'); sign(0); publishALDay(0)   // AL1
+    expect(dayCurVer(0)).toBe(1)
+    setDayApproved(0, 0)                          // reopen
+    txtSet('dn:0.0', 'NEW AFTER REOPEN')
+    sign(0); setDayApproved(0, 1)                 // Publish day again
+    expect(dayCurVer(0)).toBe(1)
+    expect(issuedNote(0)).toBe('NEW AFTER REOPEN')
+  })
+
+  it('the ordinary amendment flow (no reopen) never rewrites the Original', () => {
+    const orig = D0.notes[0]
+    sign(0); setDayApproved(0, 1)                 // Original = seed note
+    txtSet('dn:0.0', 'AMENDED'); sign(0); publishALDay(0)   // AL1 — no reopen
+    expect(daySnapOf(0, 'orig').d.notes[0]).toBe(orig)      // Original frozen as first issued
+    expect(daySnapOf(0, 1).d.notes[0]).toBe('AMENDED')
   })
 })

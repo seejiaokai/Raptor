@@ -163,6 +163,17 @@ describe('reassignInput — the shared write both the dialog and the puck use', 
     expect(inp.person).toBe('bane')
     scrap(inp)
   })
+
+  it('refuses a reassign for a non-scheduler — the write-path role backstop', () => {
+    const inp: any = plant({ person: 'bane', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'role backstop', mod: '' })
+    expect(acceptInput(0, inp, 'u')).toBe(true)
+    afterSchedMutate()
+    setSession({ user: 'user', role: 'member' })   // a member may edit their own inputs, not reassign whose day this is
+    expect(reassignInput(inp.iid, 'stiff')).toBe(false)
+    expect(inp.person).toBe('bane')                // unchanged
+    setSession({ user: 'a', role: 'admin' })
+    scrap(inp)
+  })
 })
 
 /* THE LATENT-BUG PIN (task brief, 14 Aug 26). Read against the CURRENT code

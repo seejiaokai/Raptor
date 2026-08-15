@@ -1258,12 +1258,32 @@ draft rows it discards, so reused addresses cannot suppress a real removal.
 `daySnap(di)` = `{d: deep clone of DAYS[di], c: that day's slice of
 SCHED.changes}` — the day "as issued, wearing its marks". Stamped at the
 two issue moments: `setDayApproved(di, true)` → `SCHED.orig[di]`
-(**first publish wins**; a re-publish after reopen is a later state, not a
-new Original) and `alIssue` → `rec.snap[di]` per covered day. Snapshots
-live on the AL record / `SCHED.orig`, so they ride `histSnap` (`a` / `o`)
-and `unpublishAL` with the state they belong to. `daySnapOf(di, ver)`
-(`'orig'` | AL number) and `dayVersions(di)` derive options from live
-records — orphan-safe by construction. Session-only, like the AL list.
+(**first publish stamps the Original**) and `alIssue` → `rec.snap[di]` per
+covered day. Snapshots live on the AL record / `SCHED.orig`, so they ride
+`histSnap` (`a` / `o`) and `unpublishAL` with the state they belong to.
+`daySnapOf(di, ver)` (`'orig'` | AL number) and `dayVersions(di)` derive
+options from live records — orphan-safe by construction. Session-only, like
+the AL list.
+
+**Re-publishing a reopened day re-issues the current version in place**
+(owner, 15 Aug 26). `setDayApproved(di, true)` on a day that already has a
+`SCHED.orig[di]` (i.e. you came back through **reopen**) does NOT stamp a
+new Original — it calls `reissueReopened(di)`, which refreshes the snapshot
+`dayCurVer(di)` resolves to (`SCHED.orig[di]` when the day is at the
+Original, `rec.snap[di]` when it is at an AL) with a fresh `daySnap`. The
+view page reads the issued document through `daySnapOf(dayCurVer)`, so
+without this a viewer would keep seeing the pre-reopen content while the
+scheduler's live view moved on — reproduced with a plain note edit as much
+as with a whole-day template swap. The version LABEL is unchanged (a
+reopen+republish is a deliberate re-issue of that version, not a fresh AL
+number appearing unasked). This is the ONE case where the Original is not
+frozen forever: an explicit reopen+republish of a never-amended day
+re-issues its Original — the earlier "never restamp, a rewrite could
+masquerade as the Original" guard is overridden here because the re-issue is
+deliberate. The **ordinary amendment flow — edit a published day, then
+Publish AL, without reopening — never comes through `setDayApproved(true)`
+a second time**, so it still freezes the Original the moment it is first
+issued. Pinned in `publish.test.ts`.
 
 **The current version.** `SCHED.cur = {di: 'orig'|n}` — which version each
 day is showing. Stamped only by `alIssue` (cur = n for covered days) and
@@ -1337,16 +1357,24 @@ holds, with no AL trail. A template replaces the DRAFT, not the record.
 **Applying mirrors `restoreDayVersion`'s direct-write shape** (§Version
 snapshots / restore above, `engine/restore.ts:90-110`): build the new day
 object, write `DAYS[di]` straight (keeping the live `dow`/`dt`/`today`/
-`wc`), then retire the day's `SCHED.pending`/`SCHED.added` marks the same
-two loops `restoreDayVersion` runs for the version it rolls back to — the
-swap does not try to line up old and new row indices, so a stale address
-may now name a different row entirely rather than the one it used to.
-`SCHED.changes` is deliberately left alone: `applyDayTpl` only ever runs on
-a draft day (the refusal above), so any changes-marks still on it are
-already-published history from before the day was reopened, the same kind
-an ordinary edit after a reopen leaves in place. No `histPush`/reflow
-inside the engine call — the caller's `afterSchedMutate()` is the one undo
-step, the same contract `restoreDayVersion` carries.
+`wc`), then retire the day's WHOLE mark state — `SCHED.pending`,
+`SCHED.added` AND `SCHED.changes` — the same three slices
+`restoreDayVersion` wipes before installing the restored version's own
+marks. The swap does not try to line up old and new row indices, so a stale
+address may now name a different row entirely rather than the one it used
+to. **`SCHED.changes` MUST be cleared too**, and this is a corner an earlier
+build missed: a template swap marks NOTHING pending (unlike an ordinary
+edit, which marks the one field it touches and so clears that field's
+changes-mark through `markEdit`). Reopening a published day keeps its issued
+AL changes-marks (it voids the signature, not the history), so left in
+place every AL tint the day wore before it was reopened would survive onto
+the template's brand-new, unrelated rows — cells reading "changed in AL2"
+that AL2 never saw. A template has no issued marks of its own to reinstall
+(it is a clean plan, never an AL), so `applyDayTpl` just clears and installs
+nothing. Pinned by `daytpl.test.ts` (publish → AL1 tints a note → reopen →
+apply → the tint is gone). No `histPush`/reflow inside the engine call —
+the caller's `afterSchedMutate()` is the one undo step, the same contract
+`restoreDayVersion` carries.
 
 **Persistence mirrors `dutytpl`/`stores`**: a `daytpl` storage key, an
 incrementing `'dt'+N` id past a module `SEQ`, untrusted-load sanitised

@@ -318,6 +318,14 @@ export function commitInputEdit(r: any, draft: any) {
    member (including one already filed unavailable elsewhere, or flying) is
    a legal target. */
 export function reassignInput(iid: any, personId: any) {
+  /* write-path role backstop (CLAUDE.md: role checks at the write path, not
+     only the render). Reassigning WHOSE day an Unavailable row is, is a
+     scheduler action — the dialog's Person field and the iu: arm/drop targets
+     are already canEditSched()-gated, but this is the one write path and must
+     not depend on every future caller remembering to gate first. Distinct from
+     commitInputEdit, which a member may legitimately reach to edit their OWN
+     input's times/remarks. */
+  if (!canEditSched()) return false
   const r = INPUTS.find((i: any) => i.iid === iid)
   if (!r) { HOOKS.toast('That input is no longer there — nothing was changed', 'warn'); return false }
   /* the roster PALETTE (unlike rosterOptions() above) still carries the

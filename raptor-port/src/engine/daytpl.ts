@@ -208,18 +208,24 @@ export function applyDayTpl(di: number, id: string): boolean {
     simnotes: t.d.simnotes, prognotes: t.d.prognotes, dutynotes: t.d.dutynotes, grndnotes: t.d.grndnotes,
   }
   DAYS[di] = nd
-  /* Every address the old day's draft edits pointed at may now name something
-     else entirely (the swap does not try to line up old and new row indices),
-     so those marks are retired rather than left mislabelling whatever row
-     ended up at the same address — same reasoning, same two loops,
-     restoreDayVersion carries for the version it rolls back to. SCHED.changes
-     (which AL a key was published under) is left alone: applyDayTpl only ever
-     runs on a draft day (the refusal above), so any changes-marks still on it
-     are already-published history from before it was reopened, exactly the
-     kind an ordinary edit after a reopen leaves in place until that specific
-     field is next touched — a template swap is not special-cased over that. */
+  /* Every address the old day's marks pointed at may now name something else
+     entirely (the swap does not try to line up old and new row indices), so
+     the day's WHOLE mark state is retired — pending, added AND changes — the
+     same three slices restoreDayVersion wipes (restore.ts:96-106) before it
+     installs the restored version's own marks. A template has no issued marks
+     of its own to reinstall (it is a clean plan, never an AL), so applyDayTpl
+     just clears and installs nothing.
+     The changes slice MUST go too, and this is the corner an earlier build
+     missed: a template swap marks NOTHING pending (unlike an ordinary edit,
+     which marks the one field it touched and so clears that field's changes
+     mark on the way through markEdit). Left in place, every AL tint the day
+     wore before it was reopened would survive onto the template's brand-new,
+     unrelated rows — cells reading "changed in AL2" that AL2 never saw. The
+     failure was: publish → AL1 tints a note → reopen → apply a template whose
+     note differs → the new note still rendered in AL1 cyan (daytpl.test.ts). */
   Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.pending[k] })
   Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
+  Object.keys(SCHED.changes).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.changes[k] })
   return true
 }
 
@@ -263,6 +269,17 @@ function sanitiseBlob(raw: any): DayTplBlob {
 
 export function dayTplLoad() {
   const raw = store.get('daytpl', null)
+  /* Advance SEQ past every literal 'dtN' id in the RAW blob BEFORE minting any
+     replacement id — a hand-edited file can carry an id-less entry sitting
+     ahead of an entry that literally reads 'dt1', and minting inside the loop
+     with SEQ still at 0 would hand the id-less one 'dt1' too, colliding the two
+     (delTpl/renameTpl/applyDayTpl all find by id and could then only ever reach
+     the first). The post-loop pass alone cannot prevent that — it runs after
+     the collision is already minted. */
+  if (Array.isArray(raw)) raw.forEach((t: any) => {
+    const m = t && typeof t.id === 'string' ? /^dt(\d+)$/.exec(t.id) : null
+    if (m) SEQ = Math.max(SEQ, +m[1]!)
+  })
   const out: DayTpl[] = []
   if (Array.isArray(raw)) for (const t of raw) {
     if (out.length >= MAX_DAYTPL) break
@@ -272,8 +289,6 @@ export function dayTplLoad() {
     out.push({ id, title, d: sanitiseBlob((t as any).d) })
   }
   DAYTPL_CFG = out
-  /* keep newId ahead of every restored 'dtN' so a later add cannot reuse one */
-  DAYTPL_CFG.forEach(t => { const m = /^dt(\d+)$/.exec(t.id); if (m) SEQ = Math.max(SEQ, +m[1]!) })
 }
 
 export function dayTplReset() {

@@ -13,7 +13,7 @@ import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, s
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, VWORK } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, VWORK, CURPAGE } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -671,7 +671,15 @@ export function dayStatHTML(di:any,ed:any){
        same swap for the same reason: live-but-unissued content must not
        read as the issued schedule. */
     const pvDraft=PV&&isDraftVer(PVV);
-    const workView=!ed&&!PV&&ok&&VWORK.has(+di);
+    /* VWORK is the VIEW PAGE's issued/working choice, so `workView` must be
+       scoped to it — CURPAGE==='viewsched'. dayStatHTML is shared: the board's
+       sign strip calls it too (board.ts boardSignHTML), and while the board is
+       always opened by a scheduler (editMode() true, so !ed is false there
+       today), a read-only board render must never wear the view page's
+       "Working draft" stamp or lose its AL chip on the strength of a choice
+       made on another surface. The bare !ed means "read-only render", which is
+       not the same as "the view page". */
+    const workView=!ed&&!PV&&ok&&VWORK.has(+di)&&CURPAGE==='viewsched';
     /* the chip appears once amendments exist: a published day with no ALs
        anywhere keeps the clean "✓ Published" look, but a day rolled back to
        the Original while ALs sit in the dropdown must say so — silence there
@@ -737,7 +745,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     const pvBar=(PV&&!PVQ)
       ? `<div class="dprev-bar"${(PVV!=='orig'&&!pvDraft)?` style="--alc:${alColor(+PVV)}"`:''}>Viewing <b>${esc(draftVerLabel(di,PVV))}</b>${pvDraft?' — a draft, read-only':' as issued — read-only'}`
         +(pvDraft?'':`<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${PVV}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button>`)+`</div>`
-      : (!ed&&!PV&&ok&&VWORK.has(+di))
+      : (!ed&&!PV&&ok&&VWORK.has(+di)&&CURPAGE==='viewsched')
       ? `<div class="dprev-bar work">Viewing <b>Working draft</b> — not issued · the issued schedule is ${esc(verLabel(dayCurVer(di)))}</div>`
       : '';
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">

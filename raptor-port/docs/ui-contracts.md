@@ -1009,7 +1009,12 @@ one input can cover several loaded days and none of them is more "its" day
 than another). Tap it to arm, then tap a roster name; or drag a name — from
 the palette, or off another seat — straight onto it. Both routes end at
 the one `reassignInput(iid, personId)` (`inputedit.tsx`), built on
-`commitInputEdit`'s own relink, never a second write path. An `iu:` seat
+`commitInputEdit`'s own relink, never a second write path. That one write
+path carries its OWN `canEditSched()` backstop (not only the arm/drop/select
+gates that reach it), so reassigning WHOSE day this is stays a scheduler
+action even if a future caller forgets to gate first — distinct from
+`commitInputEdit`, which a member may reach to edit their own input's
+times/remarks. An `iu:` seat
 always offers to arm, unlike a flying seat (which only arms once its own
 puck is gone or is a placeholder): the row is ALWAYS occupied, so waiting
 for it to empty would mean it could never arm at all. No eligibility bar
@@ -1983,7 +1988,13 @@ and all) under `.dprev-bar.work` ("Viewing **Working draft** — not issued ·
 the issued schedule is `<verLabel>`") with the ✓ Published stamp swapped
 for a dashed amber `Working draft` stamp (`.dbeak.ro.work` — the pending
 marks' own colour family, the "not the issued document" grammar) and the AL
-chip suppressed. Because the live `DAYS[di]` IS the selected draft's
+chip suppressed. **That working stamp is scoped to the view page**
+(`CURPAGE==='viewsched'`) inside the shared `dayStatHTML`/`dayHTML`
+builders: `VWORK` is a view-page choice, so a read-only render on any OTHER
+surface — the board's sign strip shares `dayStatHTML` — must never inherit
+it. The bare "read-only render" (`!ed`) is not the same as "the view page",
+which is why the check is explicit. Because the live `DAYS[di]` IS the
+selected draft's
 working copy, a scheduler's draft switch shows up in the working view at
 once with no extra wiring — only the issued default holds still.
 Honest consequence, accepted: the week banner's "N unpublished edits" count
