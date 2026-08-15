@@ -1413,10 +1413,21 @@ only, no `value` prop), so their DOM value is wiped by hand — clearing just
 the state would leave a box reading "bane" with nothing lit, which is worse
 than not clearing at all. The chips redraw themselves from `HLSET`.
 
-The **exclusion list decides what counts as blank** and is the reference's,
-verbatim: `.fchip` and every form control are on it, so clicking a chip or
-into the search box is not a blank click and does not wipe what you just did.
-Pinned in `ui/interact.test.tsx`, both against a control.
+**The scope is the whole app shell, not just the page bodies** (owner, 15 Aug
+26 — a blank click "beside the edit schedule date or above" left the pucks
+lit). The reference scoped the clear to `#page-viewsched,#page-editsched,#schedBoard`,
+so a click on the topbar, the title row's gutters or the shell's own margins
+fell outside it and the selection survived. It is `#shell,#schedBoard` now
+(`#shell` wraps the topbar and every page; the board is its own overlay
+sibling), so any blank area clears.
+
+The **exclusion list decides what counts as blank** — the reference's, plus
+`.modal` / `.drawer` for the overlays that now sit inside the widened scope, so
+a click inside a dialog or the phone drawer does not reach through and clear.
+`.fchip` and every form control are on it, so clicking a chip or into the
+search box is not a blank click and does not wipe what you just did. Pinned in
+`ui/interact.test.tsx`: a topbar and a shell-gutter click clear, a modal click
+does not, and the search/chip controls stay excluded.
 
 Clicking a puck — **anywhere on it, flag chip included** (owner, 7 Aug 26) —
 selects the **person**: every copy of that name lights blue (`.sel`, matched

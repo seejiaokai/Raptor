@@ -107,6 +107,32 @@ describe('puck selection (tfin B14)', () => {
     expect($$('#vWeek .puck.sel').length).toBe(0)
   })
 
+  /* owner, 15 Aug 26: a blank click "beside the edit schedule date or above"
+     left the pucks lit — the clear was scoped to the page bodies, so the
+     topbar and the shell's own gutters fell outside it. Now the whole shell
+     clears. */
+  it('clicking the topbar or any shell gutter also un-clicks everybody', async () => {
+    await click($('#vWeek .puck[data-person="bane"]'))
+    expect($$('#vWeek .puck.sel').length).toBeGreaterThan(0)
+    await click($('.topbar'))
+    expect($$('#vWeek .puck.sel').length, 'a blank topbar click clears').toBe(0)
+    await click($('#vWeek .puck[data-person="bane"]'))
+    expect($$('#vWeek .puck.sel').length).toBeGreaterThan(0)
+    await click($('#shell'))
+    expect($$('#vWeek .puck.sel').length, 'a shell-gutter click clears').toBe(0)
+  })
+
+  /* but the overlays that now sit inside the widened scope stay excluded — a
+     click inside a modal must not reach through and clear the selection. */
+  it('but a click inside a modal does NOT clear the selection', async () => {
+    await click($('#vWeek .puck[data-person="bane"]'))
+    expect($$('#vWeek .puck.sel').length).toBeGreaterThan(0)
+    await click($('#insightBtn'))                       // a button — selection survives
+    await click($('#insightModal .modal-body') || $('#insightModal'))
+    expect($$('#vWeek .puck.sel').length, 'the modal is excluded from blank-clear').toBeGreaterThan(0)
+    await click($('#insightClose'))                     // tidy: close the modal
+  })
+
   it('and the HIGHLIGHT chips go with it', async () => {
     /* owner, 10 Aug 26: "every puck should be deselected". A chip lights
        pucks exactly as a selection does, but it used to survive a blank
