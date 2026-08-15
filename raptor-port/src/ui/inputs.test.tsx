@@ -1005,16 +1005,91 @@ describe('a new input announces itself', () => {
     expect(INPUTS.length).toBe(n)
   })
 
+  /* re-pointed 15 Aug 26 — FLASH_MS moved from 1500 to 6000 to match the
+     board's own .sb-fresh timing (harmonize the flash, owner audit), so the
+     settle wait moves with it. A real wait, past vitest's 5000ms default, so
+     the timeout is raised for this one test rather than switching the whole
+     suite to fake timers. */
   it('flashes once and settles back', async () => {
     const n = INPUTS.length
     await addOne('FLASHES ONCE')
     const lit = $$('#inBody tr').find(tr => (tr.textContent || '').includes('FLASHES ONCE'))!
     expect(lit.className, 'lit on arrival').toContain('innew')
     expect($$('#inBody tr.innew').length, 'and it is the only one').toBe(1)
-    await act(async () => { await new Promise(r => setTimeout(r, 1700)) })
+    await act(async () => { await new Promise(r => setTimeout(r, 6200)) })
     expect($$('#inBody tr.innew').length, 'settled').toBe(0)
     await act(async () => { undo() })
     await reset()
     expect(INPUTS.length).toBe(n)
+  }, 10000)
+
+  /* the owner's phone complaint, literally: "once an input is made, the view
+     will snap to the input u just made" — it did not. The row carries a
+     stable data-iid (the same identity the pin/flash lists already use) and
+     add() scrolls it into view once React has painted it. */
+  it('scrolls the just-added row into view, by its stable iid', async () => {
+    const n = INPUTS.length
+    const calls: any[] = []
+    const orig = (Element.prototype as any).scrollIntoView
+    ;(Element.prototype as any).scrollIntoView = function (opts: any) { calls.push({ el: this, opts }) }
+    try {
+      await addOne('SCROLLS INTO VIEW')
+    } finally {
+      (Element.prototype as any).scrollIntoView = orig
+    }
+    const lit = $$('#inBody tr').find(tr => (tr.textContent || '').includes('SCROLLS INTO VIEW'))!
+    expect(lit.getAttribute('data-iid'), 'the row carries the iid the scroll looked it up by').toBeTruthy()
+    expect(calls.length, 'scrolled exactly once').toBe(1)
+    expect(calls[0].el, 'scrolled the new row itself').toBe(lit)
+    expect(calls[0].opts).toEqual({ block: 'nearest', behavior: 'smooth' })
+    await act(async () => { undo() })
+    await reset()
+    expect(INPUTS.length).toBe(n)
+  })
+})
+
+/* owner audit, 15 Aug 26 — this page's own inline ✓ (save) and ✕ (delete) ran
+   commitInputEdit/removeInput silently; the SAME functions already toast when
+   the board's own input dialog calls them (inputedit.tsx), so this page was
+   the one place the identical action said nothing. The CSV export toast
+   answers a different silence — a phone browser that shows no download UI at
+   all for the file it just saved. */
+describe('success toasts (owner audit — a tap with no feedback)', () => {
+  const toasts: string[] = []
+  const withToast = async (fn: () => Promise<void>) => {
+    toasts.length = 0
+    const orig = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    try { await fn() } finally { HOOKS.toast = orig }
+  }
+
+  it('saving and deleting the inline row editor both say so', async () => {
+    const n = INPUTS.length
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    await click($('#inCal [data-cal="2026-07-13"]'))
+    await click($('#inAdd'))
+    await withToast(async () => {
+      await click(rowFor(0).querySelector('[data-edit]'))
+      await click($('#inBody tr.ined [data-save]'))
+    })
+    expect(toasts, 'the ✓ says the same words the dialog\'s own ✓ does').toContain('Input updated')
+    await withToast(async () => {
+      await click(rowFor(0).querySelector('.rmx'))
+    })
+    expect(toasts, 'and the ✕ says the same words the dialog\'s own delete does').toContain('Input deleted')
+    expect(INPUTS.length, 'the add and the delete cancel out').toBe(n)
+  })
+
+  it('the CSV export says it downloaded — a phone shows no download UI of its own', async () => {
+    /* jsdom implements neither Blob URLs nor the anchor download it drives —
+       exportCSV (ui/export.ts) is untestable past this point by design (its
+       own doc comment), so only the createObjectURL call is stubbed, the
+       minimum this button's own click handler needs to run to completion */
+    const orig = (URL as any).createObjectURL
+    ;(URL as any).createObjectURL = () => 'blob:x'
+    try {
+      await withToast(async () => { await click($('#inExport')) })
+    } finally { (URL as any).createObjectURL = orig }
+    expect(toasts).toContain('CSV downloaded')
   })
 })

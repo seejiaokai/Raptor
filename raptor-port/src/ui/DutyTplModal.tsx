@@ -12,6 +12,7 @@ import {
 } from '../engine/dutytpl'
 import { TPLEDIT, setTplEdit } from './pops'
 import { useVersion } from './useStore'
+import { HOOKS } from '../engine/hooks'
 
 export function DutyTplModal() {
   useVersion()
@@ -69,18 +70,25 @@ export function DutyTplModal() {
             <button className="addrow" onClick={() => { addTplRow(tpl.id); save() }}>+ Add role</button>}
         </div>
         <div className="modal-foot">
+          {/* the two DESTRUCTIVE actions on this modal toast (owner audit — this
+             whole editor had zero); the per-row edits above stay silent on
+             purpose, the same line the rest of the app draws (§5 of the audit:
+             don't toast a keystroke) */}
           <button className="abtn danger" style={{ marginRight: 'auto' }} onClick={() => {
             dutyTplReset()
             setSel(DUTYTPL_CFG[0]!.id)
             notify()
+            HOOKS.toast('Duty templates reset to defaults', 'ok')
           }}>Reset to defaults</button>
           <button className="abtn danger" onClick={() => {
+            const title = tpl.title || 'Untitled'
             delTpl(tpl.id)
             /* the library is never left empty — the last delete re-seeds one
                so a later render always has a first template to fall back to */
             if (!DUTYTPL_CFG.length) addTpl()
             setSel(DUTYTPL_CFG[0]!.id)
             save()
+            HOOKS.toast(`"${title}" template deleted`, 'ok')
           }}>Delete template</button>
           <button className="abtn primary" onClick={close}>Done</button>
         </div>

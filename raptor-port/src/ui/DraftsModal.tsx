@@ -88,6 +88,7 @@ export function DraftsModal() {
             title={isLive ? 'This draft is the live day — switch to another draft first' : 'Delete this draft'}
             onClick={() => {
               if (!t || !draftDelete(di, t.id)) return
+              const name = t.name
               /* deletion rides the undo stack like the rename above; any frozen
                  preview of the deleted draft falls out through prunePreviews'
                  daySnapOf test on the next paint */
@@ -95,6 +96,9 @@ export function DraftsModal() {
               setSel(dayDrafts(di)[0] ? dayDrafts(di)[0].id : null)
               setNm(null)
               notify()
+              /* the menu's own create/select actions already toast (board.ts's
+                 draftDup/switchDraft) — deleting was the one silent one left */
+              HOOKS.toast(`"${name}" draft deleted`, 'ok')
             }}>Delete draft</button>
           <button className="abtn" disabled={!t || isLive}
             title={isLive ? 'Already the live day' : 'Make this draft the live day'}

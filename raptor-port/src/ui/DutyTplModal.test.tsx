@@ -9,7 +9,7 @@ import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { DutyTplModal } from './DutyTplModal'
-import { storeBackend } from '../engine/hooks'
+import { storeBackend, HOOKS } from '../engine/hooks'
 import { DUTYTPL_CFG, dutyTplReset } from '../engine/dutytpl'
 import { notify } from '../state/store'
 import { setTplEdit } from './pops'
@@ -107,13 +107,19 @@ describe('rows', () => {
 })
 
 describe('Delete template', () => {
-  it('removes the selected template and selects another', async () => {
+  it('removes the selected template and selects another, and says so', async () => {
     await click($$('.tpl-tab:not(.new)')[1]!)   // select SC Shift
     expect(DUTYTPL_CFG.length).toBe(3)
-    await click($('.abtn.danger:not([style*="margin"])')!)
+    /* owner audit, 15 Aug 26 — this whole modal had zero toasts; the two
+       destructive actions (this one and Reset below) now say what happened */
+    const toasts: string[] = []
+    const orig = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    try { await click($('.abtn.danger:not([style*="margin"])')!) } finally { HOOKS.toast = orig }
     expect(DUTYTPL_CFG.length).toBe(2)
     expect(DUTYTPL_CFG.some(t => t.title === 'SC Shift')).toBe(false)
     expect($$('.tpl-tab.on').length).toBe(1)
+    expect(toasts).toContain('"SC Shift" template deleted')
   })
 
   it('deleting down to the last template re-adds one — the library is never empty', async () => {
@@ -127,11 +133,15 @@ describe('Delete template', () => {
 })
 
 describe('Reset to defaults', () => {
-  it('restores the three seeded templates and selects the first', async () => {
+  it('restores the three seeded templates, selects the first, and says so', async () => {
     await click($$('.tpl-tab.new')[0]!)   // muddy the library first
     expect(DUTYTPL_CFG.length).toBe(4)
-    await click($('.abtn.danger[style*="margin"]'))
+    const toasts: string[] = []
+    const orig = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    try { await click($('.abtn.danger[style*="margin"]')) } finally { HOOKS.toast = orig }
     expect(DUTYTPL_CFG.map(t => t.title)).toEqual(['Standard', 'SC Shift', 'AVALON'])
     expect($$('.tpl-tab.on')[0]!.textContent).toBe('Standard')
+    expect(toasts).toContain('Duty templates reset to defaults')
   })
 })

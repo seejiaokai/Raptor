@@ -233,6 +233,24 @@ a{color:var(--accent)}
 .burger{display:none;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);width:36px;height:34px;border-radius:9px;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:3px}
 .burger span{width:16px;height:2px;background:var(--ink);border-radius:2px}
 
+/* PRESS STATE, universal (owner — "when I click add input, the button
+   doesn't flash, so I don't know if I added an input on the mobile").
+   Every button in this file had a :hover rule and no :active — hover never
+   fires on a touch tap, so a phone got no feedback at all. One shared
+   treatment for every tap target below: a touch of darken plus a small
+   settle-down scale, defined ONCE so it reads as one app-wide behaviour
+   rather than a pile of per-button rules. `--press-scale` (not a second
+   copy of the selector list) is how prefers-reduced-motion drops the
+   transform. `transform:scale()` never reflows, so no measured contract
+   in this file moves. */
+:root{--press-scale:.97}
+@media (prefers-reduced-motion:reduce){:root{--press-scale:1}}
+.abtn:active,.fchip:active,.pillbtn:active,.rok:active,.rmx:active,
+.inact .red:active,.mbtn:active,.dbeak:active,.wm:active,.dinfobtn:active,
+.so-clear:active,.nav a:active,.login .go:active,.sb-slot.empty:active{
+  filter:brightness(.88);transform:scale(var(--press-scale))
+}
+
 .pillbtn{border:1px solid transparent;background:none;cursor:pointer;color:inherit;display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;font-size:12px;font-weight:600}
 .pillbtn .dot{width:7px;height:7px;border-radius:50%}
 .pillbtn.hard{border-color:rgba(240,85,95,.4);color:#FBB4B9;background:rgba(240,85,95,.08)}
@@ -1311,19 +1329,24 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .rc-d.s,.rc-d.e{background:var(--accent);color:#04222b;font-weight:800}
 .rc-x{padding:3px 0}
 .rc-read{font-size:9.5px;color:var(--ink-3);margin-top:4px;letter-spacing:.02em}
-/* A row that has just been added lights up and fades back out (owner, Aug 5) —
-   the click that added it happens at the top of the page, the row lands in a
-   table that may be scrolled and re-sorted, and this is what carries the eye
-   from one to the other. It animates on the CELLS, not the row: a <tr>'s own
-   background sits under its cells' and the fade would be invisible. It ends on
-   fully transparent so the row settles back to the table's own colour and the
-   hover rule still works afterwards. */
+/* A row that has just been added lights up and HOLDS before fading (owner,
+   Aug 5 for the flash; harmonized 15 Aug 26 to match the board's .sb-fresh
+   timing — a steady box that only fades in its last stretch reads as "still
+   new" for as long as it takes a phone user to look up from the form and
+   find it, where the old whole-lifetime fade was already half-gone by then.
+   Same selection blue #1E86FF, same shape: hold for the first
+   90.83% (5450ms of 6000ms — .sb-fresh's FRESH_MS/FRESH_FADE_MS split in
+   state/view.ts), fade over the last 550ms. It animates on the CELLS, not
+   the row: a <tr>'s own box-shadow sits under its cells' and would be
+   clipped by them. It ends on fully transparent so the row settles back to
+   the table's own colour and the hover rule still works afterwards.
+   InputsPage's FLASH_MS mirrors this 6000ms so the class comes off the row
+   right as the animation finishes, not mid-hold. */
 @keyframes inflash{
-  0%{background:rgba(59,198,232,.28)}
-  40%{background:rgba(59,198,232,.22)}
-  100%{background:rgba(59,198,232,0)}
+  0%,90.83%{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5)}
+  100%{box-shadow:inset 0 0 0 2px rgba(30,134,255,0),0 0 9px rgba(30,134,255,0)}
 }
-.innew>td{animation:inflash 1.5s ease-out 1}
+.innew>td{animation:inflash 6s ease-out 1;position:relative}
 /* a flash is decoration; for anyone who has asked for less motion the row is
    simply already settled */
 @media (prefers-reduced-motion:reduce){.innew>td{animation:none}}

@@ -20,6 +20,7 @@ import {
 } from '../engine/daytpl'
 import { DAYTPLEDIT, setDayTplEdit } from './pops'
 import { useVersion } from './useStore'
+import { HOOKS } from '../engine/hooks'
 
 export function DayTplModal() {
   useVersion()
@@ -64,16 +65,22 @@ export function DayTplModal() {
               </div>}
         </div>
         <div className="modal-foot">
+          {/* the two destructive actions toast (owner audit — this modal had
+             none); the picker menu's own create actions (Save this day as a
+             template, Duplicate) already do, in board.ts */}
           <button className="abtn danger" style={{ marginRight: 'auto' }} disabled={!DAYTPL_CFG.length} onClick={() => {
             dayTplReset()
             setSel(null)
             notify()
+            HOOKS.toast('All day templates deleted', 'ok')
           }}>Reset — delete all</button>
           <button className="abtn danger" disabled={!tpl} onClick={() => {
             if (!tpl) return
+            const title = tpl.title || 'Untitled'
             delDayTpl(tpl.id)
             setSel(DAYTPL_CFG[0] ? DAYTPL_CFG[0].id : null)
             save()
+            HOOKS.toast(`"${title}" template deleted`, 'ok')
           }}>Delete template</button>
           <button className="abtn primary" onClick={close}>Done</button>
         </div>

@@ -201,26 +201,37 @@ describe('the manage modal (DayTplModal)', () => {
     await click($('#daytplClose'))
   })
 
-  it('Delete removes the selected template', async () => {
+  it('Delete removes the selected template, and says so', async () => {
     await resetLib()
     await click($('#sbBoard [data-daytpladd="0"]'))
     await click($('.wavemenu [data-daytplsave]'))
     expect(DAYTPL_CFG.length).toBe(1)
-    await click($('#daytplModal .abtn.danger:not([style*="margin"])'))
+    const title = DAYTPL_CFG[0]!.title
+    /* owner audit, 15 Aug 26 — the picker menu's own Save/Duplicate already
+       toast (above); this manage modal's two destructive actions did not */
+    const toasts: string[] = []
+    const real = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    try { await click($('#daytplModal .abtn.danger:not([style*="margin"])')) } finally { HOOKS.toast = real }
     expect(DAYTPL_CFG.length).toBe(0)
     expect($('#daytplModal .modal-body')!.textContent).toContain('No day templates saved yet')
+    expect(toasts).toContain(`"${title}" template deleted`)
     await click($('#daytplClose'))
   })
 
-  it('Reset wipes the whole library', async () => {
+  it('Reset wipes the whole library, and says so', async () => {
     await resetLib()
     await click($('#sbBoard [data-daytpladd="0"]'))
     await click($('.wavemenu [data-daytplsave]'))
     await click($('#eWeek [data-daytplopen="0"]'))
     await click($('.wavemenu [data-daytplsave]'))
     expect(DAYTPL_CFG.length).toBe(2)
-    await click($('#daytplModal .abtn.danger[style*="margin"]'))
+    const toasts: string[] = []
+    const real = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    try { await click($('#daytplModal .abtn.danger[style*="margin"]')) } finally { HOOKS.toast = real }
     expect(DAYTPL_CFG.length).toBe(0)
+    expect(toasts).toContain('All day templates deleted')
     await click($('#daytplClose'))
   })
 

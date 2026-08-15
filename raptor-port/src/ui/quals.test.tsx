@@ -9,6 +9,7 @@ import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { validate, WARN } from '../engine/validate'
 import { PEOPLE, isScheduler, isInstr, isInstrPilot, deriveQuals, ID_BY_CS, QCHIP, QCOLOR, QORDER, LEVELNAME } from '../engine/people'
+import { HOOKS } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -280,7 +281,13 @@ describe('the callsign / initials columns', () => {
     expect($('#qFirst')).toBeFalsy()
     await setV($('#qCS') as HTMLElement, 'Tester')
     await setV($('#qInitials') as HTMLElement, 'tkl')
-    await click($('#qAddPerson'))
+    /* owner audit, 15 Aug 26 — the two refusals (blank callsign, taken
+       callsign) already toasted; a successful add was the one silent branch */
+    const toasts: string[] = []
+    const origToast = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    try { await click($('#qAddPerson')) } finally { HOOKS.toast = origToast }
+    expect(toasts).toContain('Tester added')
     const id = Object.keys(PEOPLE).find(k => PEOPLE[k].cs === 'Tester')!
     expect(id, 'the person was added').toBeTruthy()
     expect(PEOPLE[id].initials).toBe('TKL')          // stored upper-case

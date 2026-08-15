@@ -101,10 +101,13 @@ const SORTKEY: any = {
   mod: (r: any) => (r.mod === 'now' ? '9999-99-99' : String(r.mod || '')),
 }
 
-/* How long a just-added row stays lit (owner, Aug 5). Long enough to catch the
-   eye after the click that caused it, short enough that it is over before the
-   user reads the row it landed on. */
-const FLASH_MS = 1500
+/* How long a just-added row stays lit — harmonized 15 Aug 26 to the board's
+   .sb-fresh timing (FRESH_MS in state/view.ts) so a fresh row reads the same
+   way everywhere in the app: a steady box that holds most of this, fading
+   only in its last 550ms (see @keyframes inflash in scheduler.css). Long
+   enough to still be lit by the time a phone user looks up from the form
+   this page's own scroll-into-view now carries them to. */
+const FLASH_MS = 6000
 
 /* Does this input have any day inside the window? OVERLAP, not "starts
    inside": a downchit that began last week and runs through next month is
@@ -222,6 +225,24 @@ export function InputsPage() {
   const timers = useRef<any[]>([])
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
 
+  /* SCROLL THE NEW ROW INTO VIEW (owner — "once an input is made, the view
+     will snap to the input u just made"). The row already pins to the top
+     and flashes, but on a phone the user is still looking at the form below
+     the fold, not at the table. add() can only SCHEDULE the scroll — the new
+     <tr> commits to the DOM after this render, on the same clock the pin/
+     flash lists already ride — so the lookup runs from an effect keyed off
+     the iid add() just set, which fires once React has painted it. */
+  const [justAddedIid, setJustAddedIid] = useState<string | null>(null)
+  useEffect(() => {
+    if (!justAddedIid) return
+    const el = document.querySelector(`[data-iid="${justAddedIid}"]`)
+    /* GUARDED exactly like interactions.ts:72-79 — jsdom implements no
+       scrolling at all, so scrollIntoView is simply absent on its elements;
+       unguarded it throws out of this effect where no test assertion sees it. */
+    if (el && typeof (el as any).scrollIntoView === 'function')
+      (el as any).scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }, [justAddedIid])
+
   /* A just-added input rides at the top of the table whatever the filters, the
      window and the sort say (owner, Aug 5). Adding something and watching it
      vanish because it falls outside today's view reads as "it didn't save" —
@@ -303,6 +324,7 @@ export function InputsPage() {
     const row = INPUTS[0]
     setPinned(p => [row, ...p])
     setFlash(f => [row, ...f])
+    setJustAddedIid(row.iid)
     timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
     /* the dates stay on the form after an add, so the tail that describes them
        stays too — only what the typist wrote is cleared */
@@ -321,14 +343,21 @@ export function InputsPage() {
     setEditRow(r)
     setDraft(draftOf(r))
   }
+  /* SAID, not just done (owner audit — a tap with no feedback reads as "did
+     it register?"). The board's own input dialog (inputedit.tsx) already
+     toasts these two same words for the identical commit/removeInput calls;
+     this page's own inline ✓/✕ ran the same functions silently. */
   const saveEdit = () => {
-    if (commitInputEdit(editRow, draft)) { setEditRow(null); setDraft(null) }
+    if (commitInputEdit(editRow, draft)) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
     else if (editRow && INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
   }
 
   const del = (inx: number) => {
     const r = INPUTS[inx]
-    if (removeInput(r) && editRow === r) { setEditRow(null); setDraft(null) }
+    if (removeInput(r)) {
+      if (editRow === r) { setEditRow(null); setDraft(null) }
+      HOOKS.toast('Input deleted', 'ok')
+    }
   }
 
   let rows = INPUTS.slice()
@@ -478,6 +507,10 @@ export function InputsPage() {
           const out: any[][] = [['Name', 'Date', 'Start', 'End', 'Type', 'Remarks']]
           INPUTS.forEach((r: any) => out.push([PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person, r.date, r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, r.remarks]))
           exportCSV('142SQN-inputs.csv', out)
+          /* a phone browser often shows nothing at all when a download lands —
+             no bar, no tray notification the user is looking at — so the tap
+             otherwise reads as dead (owner audit) */
+          HOOKS.toast('CSV downloaded', 'ok')
         }}>Export to Excel</button>
       </div>
       <div className="inwrap">
@@ -494,7 +527,7 @@ export function InputsPage() {
               const en = (r.endDate || r.date) + (r.allday ? '' : ' ' + hhmm(r.e))
               const inx = INPUTS.indexOf(r)
               if (editRow === r && draft) return (
-                <tr key={inx} className="ined">
+                <tr key={inx} className="ined" data-iid={r.iid}>
                   <td><select aria-label="Person" data-ed="person" value={draft.person}
                     onChange={e => setDraft({ ...draft, person: e.target.value })}>
                     {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
@@ -546,7 +579,7 @@ export function InputsPage() {
                 </tr>
               )
               return (
-                <tr key={inx} className={flash.indexOf(r) >= 0 ? 'innew' : undefined}>
+                <tr key={inx} className={flash.indexOf(r) >= 0 ? 'innew' : undefined} data-iid={r.iid}>
                   <td>{cs}</td><td>{st}</td><td>{en}</td>
                   <td><span className="intag">{r.type}</span></td>
                   {/* the mark reads in Remarks, not beside the type (owner,

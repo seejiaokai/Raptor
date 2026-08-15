@@ -274,11 +274,14 @@ describe('the manage modal (DraftsModal)', () => {
     await click($$('#draftsModal .tpl-tab')[1]!)
     expect(del().disabled).toBe(true)
     expect(del().title).toContain('switch to another draft first')
-    /* back to the stored one and delete it */
+    /* back to the stored one and delete it — owner audit, 15 Aug 26: the
+       menu's own create/select actions already toast (draftDup/switchDraft
+       in board.ts); this modal's own delete did not */
     await click($$('#draftsModal .tpl-tab')[0]!)
-    await click(del())
+    const toasts = await withToasts(async () => { await click(del()) })
     expect(dayDrafts(0).length).toBe(1)
     expect(dayDrafts(0)[0].name).toBe('Draft 2')       // the live one survives
+    expect(toasts).toContain('"Wet weather" draft deleted')
   })
 
   it('Select makes the open draft the live day', async () => {
