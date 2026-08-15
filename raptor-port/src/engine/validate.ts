@@ -323,7 +323,9 @@ export function validate(){
        grey note stating the actual hours. Personal inputs are left out — an
        all-day input would read as a 24-hour work day.                          */
     Object.keys(byE).forEach((id:any)=>{
-      let s:any=null,e:any=null;
+      /* ef keeps the FLY event that set the day's END (null when a non-flying
+         commitment did), so the note can name the debrief pad baked into it. */
+      let s:any=null,e:any=null,ef:any=null;
       byE[id].forEach((o:any)=>{
         /* the published in-time IS the report time when there is one; only fall
            back to T/O − 3h when the wave published none. Taking the min() of the
@@ -332,12 +334,19 @@ export function validate(){
         const os=o.kind==='fly'?(o.report!=null?o.report:o.to-VCONF.reportLead):o.s;
         const oe=o.kind==='fly'?o.ld+VCONF.debrief:o.e;
         if(os!=null&&(s==null||os<s))s=os;
-        if(oe!=null&&(e==null||oe>e))e=oe;
+        if(oe!=null&&(e==null||oe>e)){e=oe;ef=o.kind==='fly'?o:null;}
       });
       if(s==null||e==null)return;
       const span=e-s;
       if(span>VCONF.longDay){markChip(di,id,'LD');markRing(di,id,'note');
-        add('note','LONGDAY',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} has a long work day: ${dur(span)} (${hm24(s)} → ${hm24(e)})`);}
+        /* NAME THE DEBRIEF ASSUMPTION (owner, 15 Aug 26 — the same "state the
+           assumption" as crew rest). When a sortie closes the day, its end is
+           the landing plus the assumed 2h debrief pad, so the note prints the
+           real landing and flags the pad — a scheduler who knows this crew
+           leaves fast can discount it. A non-flying finish is a fixed clock
+           time with nothing to assume, so it stays bare. */
+        const back=ef?`${hm24(e)} (last landing ${hm24(ef.ld)} + ${lgT(VCONF.debrief)} debrief assumed)`:`${hm24(e)}`;
+        add('note','LONGDAY',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} has a long work day: ${dur(span)}, ${hm24(s)} → ${back}`);}
     });
     /* the run breaks its limit ON this day, which is the day the scheduler has
        to clear — so that is where the flag lands */

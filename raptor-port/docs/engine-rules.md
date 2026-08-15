@@ -86,6 +86,20 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   plain `ended HH:MM`. The tail is a port-authored string parity compares, so
   `refwin.ts:rebrief()` tracks the same landing and prints the identical
   branch on the reference; pinned in `crewrest-ui.test.ts`.
+  **The tight-turning advisory (`CREW_TIGHT`) reuses that same tail**, so it
+  states the debrief assumption for free alongside the "3h report / inside 12h"
+  it already named.
+- **The long-work-day note names the debrief pad on its END the same way**
+  (owner, 15 Aug 26 — "every timing warning"). When a sortie closes the day
+  its end is `land + VCONF.debrief`, so the note reads `has a long work day:
+  Nh, HH:MM → HH:MM (last landing HH:MM + Nh debrief assumed)` — the flagged
+  hours, then the real landing and the pad flagged as an assumption. A
+  non-flying finish (a duty, a ground event) is a fixed clock time with
+  nothing to assume, so the end stays bare. The START is left plain: for a
+  sortie it is the published report/step time (`report = in-time ?? step`,
+  never the dead `T/O − 3h` fallback), not an overridable assumption. This is
+  a port/reference divergence parity compares, mirrored in
+  `refwin.ts:rebrief()`; pinned in `longday-msg.test.ts`.
 - **A turn chips but never rings (owner, 7 Aug 26).** All three turn rules —
   `TURN` and `DT_SUM` on the day, `CREW_TIGHT` overnight — mark the puck with
   a chip alone. `CREW_TIGHT` used to ring amber as well, so the same `TT`

@@ -460,6 +460,15 @@ function rebrief(html: string): string {
     ["fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,",
      "fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,"
      + "lateShow:!shiftLine&&/\\b(?:late\\s*show|show\\s*(?:at|@)\\s*brief|brief\\s*show)\\b/i.test(String(a.rmks||'')),"],
+    /* The long-work-day note names the debrief pad on its end (owner, 15 Aug
+       26): a sortie closes the day at land + the assumed 2h debrief. Parity
+       compares the message, so the reference tracks the bounding fly event
+       (ef) and prints the identical string. */
+    ["if(oe!=null&&(e==null||oe>e))e=oe;", "if(oe!=null&&(e==null||oe>e)){e=oe;ef=o.kind==='fly'?o:null;}"],
+    ["let s=null,e=null;", "let s=null,e=null,ef=null;"],
+    ["add('note','LONGDAY',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} has a long work day: ${dur(span)} (${hm24(s)} → ${hm24(e)})`);}",
+     "const back=ef?`${hm24(e)} (last landing ${hm24(ef.ld)} + ${lgT(VCONF.debrief)} debrief assumed)`:`${hm24(e)}`;"
+     + "add('note','LONGDAY',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} has a long work day: ${dur(span)}, ${hm24(s)} → ${back}`);}"],
   ]
   for (const [from, to] of swaps) {
     const n = html.split(from).length - 1
