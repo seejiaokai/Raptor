@@ -371,13 +371,19 @@ export function validate(){
          the sortie to move. So the winning event's own slot-key is kept beside
          its minute count (`slot` on a flying/shift event, `key` on the others)
          and travels on the trace — see markTrace below. */
-      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={};
+      /* prevFlyLd carries the raw LANDING of the winning rest-end so the tail
+         can spell out its own arithmetic (owner, 15 Aug 26 — "at least they
+         know the assumption"): a sortie ends at land + debrief, and a
+         scheduler who knows this crew walks off the jet fast can read that the
+         2h is an assumption, not a fact. Null when the winning end is a SHIFT,
+         which ends at its written time with no debrief tail to assume. */
+      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={};
       ev[idx-1].events.forEach((e:any)=>{
         const rests=(e.kind==='fly'||e.kind==='shift');
         const end=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift ends when it ends
         if(end==null)return;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key;}
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}
       });
       /* when rest expires today, for everyone who flew or stood a shift
          yesterday — the palette reads this to keep an SC slot closed to anyone
@@ -424,7 +430,15 @@ export function validate(){
         const nominal=Math.min.apply(null,legs.map(nomOf));
         const instructed=Math.min.apply(null,legs.map(insOf));
         const onShift=legs.some((e:any)=>e.shift);
-        const tail=`${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
+        /* SPELL OUT THE ASSUMPTION when a sortie set the rest-end: show the
+           real landing, name the debrief pad as an assumption, then the
+           derived end and the 12h clearance — so the reader can override it in
+           their head for a crew that leaves quickly. A shift (prevFlyLd null)
+           has no debrief to assume, so it keeps the plain "ended". */
+        const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;
+        const tail=landed!=null
+          ? `${ev[idx-1].dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`
+          : `${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
         if(pfly[id]&&instructed<earliest){
           const bl=legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m);   // the leg told to report earliest is the breach
           /* The LEAVE-BY: the latest the previous day could have ended for this

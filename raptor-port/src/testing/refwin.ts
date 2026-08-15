@@ -419,6 +419,18 @@ function rebrief(html: string): string {
     ["const insOf=e=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,e.to-VCONF.briefLead);",
      "const _bo=e=>e.brief!=null?e.brief:e.to-VCONF.briefLead;"
      + "const insOf=e=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,_bo(e));"],
+    /* The crew-rest tail spells out the debrief assumption (owner, 15 Aug 26):
+       track the winning rest-end's raw landing (null for a shift) and, when a
+       sortie set it, print "landed HH:MM, +Nh debrief assumed → ended HH:MM".
+       Parity compares the message, so the reference tracks and prints the same. */
+    ["const prevEnd={}, prevFlyEnd={};", "const prevEnd={}, prevFlyEnd={}, prevFlyLd={};"],
+    ["if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id]))prevFlyEnd[e.id]=end;",
+     "if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end;prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}"],
+    ["const tail=`${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;",
+     "const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;"
+     + "const tail=landed!=null"
+     + "?`${ev[idx-1].dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`"
+     + ":`${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;"],
     /* The crew-rest breach itself (owner, 6 Aug 26): the port names the
        LEAVE-BY time in the message and carries prevDi/leaveBy/dashed on the
        warning, so the previous day can be traced from a click. The reference

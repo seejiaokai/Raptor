@@ -74,6 +74,18 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (sortie or shift), and anchors on the earlier of the published in-time and
   the leg's own brief. Breach = hard CR; nominal-inside-rest = adv TT.
   Exactly `crewRest` is legal — the breach is strictly less (owner, 6 Aug 26).
+- **A sortie-caused breach spells out the debrief assumption** (owner, 15 Aug
+  26 — "state why it would flag… the assumption that the crew will debrief 2
+  hours after landing… because actually they can leave quickly after
+  landing"). A sortie ends for rest at land + `VCONF.debrief`, so when a
+  sortie set the binding rest-end the message reads `landed HH:MM,
+  +Nh debrief assumed → ended HH:MM → crew rest clear at HH:MM` — the real
+  landing, the pad named as an assumption, then the derived end and the 12h
+  clearance, so a scheduler who knows this crew walks off fast can discount it.
+  A **shift** ends at its written time with no debrief tail, so it keeps the
+  plain `ended HH:MM`. The tail is a port-authored string parity compares, so
+  `refwin.ts:rebrief()` tracks the same landing and prints the identical
+  branch on the reference; pinned in `crewrest-ui.test.ts`.
 - **A turn chips but never rings (owner, 7 Aug 26).** All three turn rules —
   `TURN` and `DT_SUM` on the day, `CREW_TIGHT` overnight — mark the puck with
   a chip alone. `CREW_TIGHT` used to ring amber as well, so the same `TT`
