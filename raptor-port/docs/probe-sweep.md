@@ -232,13 +232,15 @@ and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
 `probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 960**
-(measured 835: 829 after the 14 Aug board-full-editor batch — see the
-boundary note below — plus six for SANS Availability's board panel, which
-draws its header and its empty-state line on every day, records or not),
-**week ≤ 4000** (measured
-3621 — LOWERED from 5530 on 13 Aug 26 when the Available-crew panels started
-booting folded; the argued comment sits on the ceiling itself in
-`perf-port.cjs`). Tripping one is not
+(measured 855: 829 after the 14 Aug board-full-editor batch — see the
+boundary note below — then to 835 for SANS Availability's board panel, then
+to 855 on the 15 Aug six-feature batch, the board publish strip and the
+Templates & drafts panel header), **week ≤ 4000** (measured
+3702 — 3621 after the Available-crew panels started booting folded on 13 Aug
+26, LOWERED then from 5530; the 15 Aug batch took it to 3702, the six seeded
+SANS cards and the day-head draft chip. The argued comment sits on the
+ceiling itself in `perf-port.cjs`). Both ceilings held across the 15 Aug
+batch — the growth is real feature nodes inside the headroom, not a raise. Tripping one is not
 automatically a fault; it is a prompt to check the time and then raise the
 number deliberately, in the PR that adds the nodes, beside a fresh
 `npm run perf` showing the per-node cost held. The board has been raised
