@@ -1329,10 +1329,16 @@ the accepted-input token is an identity reference to a specific personal
 input, exactly like a crewed seat, not part of the row's shape.
 
 **`applyDayTpl(di, id)` refuses a published day** (`dayApproved(di)` is
-`true` → returns `false`, caller toasts "Reopen the day first") — the same
-reasoning `draftDup`/`draftSelect` carry below: a whole-day swap under an
-issued document would let the day silently diverge from what the squadron
-holds, with no AL trail. A template replaces the DRAFT, not the record.
+`true` → returns `false`, caller toasts "Reopen the day first"): a
+whole-day swap under an issued document would let the day silently diverge
+from what the squadron holds, with no AL trail. A template replaces the
+DRAFT, not the record. **`draftDup`/`draftSelect` used to share this
+refusal and no longer do (15 Aug 26)** — a draft switch on a published day
+runs `rebaseDayPending` (§Drafts below), which re-marks the day against the
+issued snapshot and so closes the silent-divergence hole the refusal exists
+for. A template apply has no such rebase, which is why this guard stays; if
+it is ever wanted on published days, reuse the rebase rather than just
+dropping the guard.
 
 **Applying mirrors `restoreDayVersion`'s direct-write shape** (§Version
 snapshots / restore above, `engine/restore.ts:90-110`): build the new day
