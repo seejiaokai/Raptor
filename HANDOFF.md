@@ -254,6 +254,20 @@ pending"; AL1 published and the viewer's issued face moving to
 "AL1 — as issued" with the amended note in AL1 cyan; zero sideways overflow
 at 390px on both faces — zero console, page or network errors throughout.
 Deployed-page check at merge, as ever.
+**TWO BUG-TEST SWEEPS (15 Aug 26, after the batches above) — all six gates
+green first-hand.** The 15-Aug-batch sweep (PR #209 — the day-template
+stale-tint fix, the reopen→re-publish `reissueReopened` fix, three hardening
+fixes) and the SANS-Availability sweep (PR #210 — the midnight/overnight
+window fix in `sansGate`/`sansWindow`, the LoX SANS tick wired to `p.san`, the
+duplicate-record `sansOverlapRefusal`, the SANS `slotBar` spare carve-out).
+`npm test` **1628** across 99 files (+12 over the 1616 above: `daytpl` +2,
+`publish` +3, `unavailedit` +1, `html` +1 assertion, `sansavail` +4,
+`quals` +1, `inputedit` +2 — all in EXISTING test files, no new file), `node
+reference/tfin.js` 728/0, `npm run build` clean, `npm run test:e2e` 96/96,
+`probes:adapted` 6/6, `perf` 4/4 — **week DOM 3702 and board 855, both
+ceilings AND both measures unmoved**: every fix was logic (window math, a
+role flag, a write-path refusal, a picker carve-out), none added DOM. Both
+merged and verified on the deployed page.
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
 board can still be a heavier one — and now that a heavier board can read
 lighter when the measure's boundary moves.
@@ -333,6 +347,16 @@ only after re-running them.
   - **`VWORK` is session view state** — a viewer's issued/working choice
     resets on login/logout like every other view choice; the issued
     default is the zero-state, which is the point.
+  - **OPEN owner question — reword the "Restore this version" button?**
+    (owner, 15 Aug 26, asked at the end of the clarity-rework session and NOT
+    yet answered: "What does restore this version to original mean".) Restore
+    DISCARDS the day's unpublished edits and returns to the issued copy, while
+    the newly-allowed draft switch KEEPS the differences for the next AL — two
+    opposite outcomes whose labels do not say which is which. Proposed but NOT
+    built (do not build unasked — §Product bar): button "Make this the live
+    schedule — discards unpublished edits" plus a matching banner line
+    (`html.ts` `pvBar`, board mirror in `SchedBoard.tsx`), and its
+    `ui-contracts.md` line. A small copy change if he wants it.
 - **WHOLE-DAY TEMPLATES AND PER-DAY DRAFTS shipped (15 Aug 26)** —
   `engine/daytpl.ts` / `engine/drafts.ts`, `DayTplModal.tsx` /
   `DraftsModal.tsx`, one Templates/Drafts button pair reached from both the
