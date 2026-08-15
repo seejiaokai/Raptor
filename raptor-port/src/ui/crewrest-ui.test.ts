@@ -102,6 +102,22 @@ describe('the crew-rest ring', () => {
   })
 })
 
+/* THE MESSAGE STATES ITS DEBRIEF ASSUMPTION (owner, 15 Aug 26 — "state why it
+   would flag… the assumption that the crew will debrief 2 hours after landing…
+   because actually they can leave quickly after landing"). A sortie's rest
+   clock does not start at the landing; it starts VCONF.debrief later. That pad
+   is a default, so the breach spells it out — landing, pad, derived end — and a
+   scheduler who knows this crew walks off fast can discount it themselves. */
+describe('the breach message spells out the debrief assumption', () => {
+  it('a sortie breach names the real landing, the +2h pad, and the derived end', () => {
+    const ix = build('01:30', '2A: BFM-5')          // lands 23:30, +2h → ends 01:30
+    const msg = WARN.byDay[1].warns[ix].msg
+    expect(msg, 'the real landing, not just the derived end').toContain('landed 23:30')
+    expect(msg, 'the pad named as an assumption the reader can override').toContain('+2h debrief assumed')
+    expect(msg, 'and the derived end the 12h clock actually runs from').toContain('ended 01:30')
+  })
+})
+
 /* THE TRACE IS A STANDING MARK (owner, 6 Aug 26). It used to appear only while
    the warning was focused, which meant the reader had to already know about
    the breach to be shown its cause. It is model state now — validate() files
