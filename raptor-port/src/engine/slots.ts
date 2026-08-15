@@ -1,8 +1,8 @@
 import { DAYS } from './data'
 import { PEOPLE, nameToId, ID_BY_CS } from './people'
-import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, trackStructuralAdd } from './publish'
+import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
-import { DATES, inpId, inputCoversDate, isUnavail, inpLabel } from './inputs'
+import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, inpLabel } from './inputs'
 import { shiftKeys } from './keys'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
@@ -286,6 +286,11 @@ export function armTargetExists(key:any){
       const f=(((DAYS[+a[0]]||{}).waves||[])[+a[1]]||{}).formations;
       const fm=f&&f[+a[2]];
       return !!(fm&&(fm.aircraft||[])[+a[3]]);}
+    /* an Unavailable-row arm (see inputedit.tsx's reassignInput) addresses an
+       INPUT by iid, not a schedule row — rowRef knows nothing of that grammar,
+       so it is answered here directly: the arm is live exactly as long as the
+       input record it names still exists. */
+    if(k.indexOf('iu:')===0)return INPUTS.some((i:any)=>i.iid===k.slice(3));
     return rowRef(k.slice(0,k.indexOf(':')),k.slice(k.indexOf(':')+1).split('.'))!=null;
   }catch(_){ return false; }}
 /* ---- board line / wave / panel controls --------------------------------
@@ -348,7 +353,14 @@ export function acceptInput(di:any,inp:any,dest:any){
                  who:PEOPLE[inp.person]?PEOPLE[inp.person].cs:inp.person,
                  rmks:inp.remarks||'', src:key});
   inp.acc='g';
-  trackStructuralAdd(`g:${di}.${ri}`); noteChange(`g:${di}.${ri}`);
+  /* markStructuralAdd, not trackStructuralAdd+noteChange (owner audit, 15 Aug
+     26 — every OTHER new ground row gets a ~6s blue box, an accepted input's
+     did not). The key is the row's first FIELD (gr:di.ri.prog), matching
+     board.ts's own "+ Item" call exactly: that is what the row's <input>
+     wears as data-bfld for paintFreshAdds to find, where the bare g:di.ri
+     row address matches no element at all. deletionWasIssued's ground check
+     already ORs both forms, so nothing that read the old key breaks. */
+  markStructuralAdd(`gr:${di}.${ri}.prog`);
   return true;
 }
 /* Which day carries the row this input was accepted onto, or -1. The row does

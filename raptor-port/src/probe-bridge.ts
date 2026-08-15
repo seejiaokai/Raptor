@@ -11,8 +11,10 @@ import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, 
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { ELOG, elogRows, elogFor, elogWhen, elogClear, elogRemap, keyLabel } from './engine/editlog'
 import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard, storesText } from './engine/stores'
+import { DAYTPL_CFG, DAYTPL_STD, tplFromDay, addDayTpl, delDayTpl, renameDayTpl, moveDayTpl, applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, dayTplAreStandard } from './engine/daytpl'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
+import { dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete, draftVerLabel, isDraftVer } from './engine/drafts'
 import * as V from './engine/validate'
 import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayEvents, traceOf, traceLeads, traceIx } from './engine/validate'
 import { collectEvents } from './engine/events'
@@ -119,6 +121,15 @@ export function installProbeBridge() {
   w.STORE_STD = STORE_STD; w.storeKey = storeKey; w.storesAreStandard = storesAreStandard; w.storesText = storesText
   w.addStore = addStore; w.delStore = delStore; w.renameStore = renameStore; w.moveStore = moveStore
   w.storesSave = storesSave; w.storesLoad = storesLoad; w.storesReset = storesReset
+  /* whole-day schedule templates (owner, 15 Aug 26). DAYTPL_CFG is a `let`
+     reassigned whole by dayTplLoad/dayTplReset — same reason STORE_CFG above
+     is a getter, not a plain reference: a probe reading a bare snapshot could
+     hold a stale array after either call swaps it out. */
+  Object.defineProperty(w, 'DAYTPL_CFG', { get: () => DAYTPL_CFG, configurable: true })
+  w.DAYTPL_STD = DAYTPL_STD; w.tplFromDay = tplFromDay
+  w.addDayTpl = addDayTpl; w.delDayTpl = delDayTpl; w.renameDayTpl = renameDayTpl; w.moveDayTpl = moveDayTpl
+  w.applyDayTpl = applyDayTpl; w.dayTplSave = dayTplSave; w.dayTplLoad = dayTplLoad; w.dayTplReset = dayTplReset
+  w.dayTplAreStandard = dayTplAreStandard
   /* the edit log. ELOG is a const object mutated in place (rows.push /
      splice), never reassigned, so a plain reference is enough — unlike
      STORE_CFG above, which needs a getter because storesLoad swaps it whole. */
@@ -127,6 +138,10 @@ export function installProbeBridge() {
   w.alCount = alCount; w.alDays = alDays; w.pendDays = pendDays; w.pendCount = pendCount; w.approvedDays = approvedDays
   w.daySnapOf = daySnapOf; w.dayVersions = dayVersions; w.verLabel = verLabel; w.dayCurVer = dayCurVer
   w.restoreDayVersion = restoreDayVersion; w.dayKeys = dayKeys
+  /* per-day alternate drafts (owner, 15 Aug 26) — engine/drafts.ts */
+  w.dayDrafts = dayDrafts; w.curDraftId = curDraftId; w.draftDup = draftDup
+  w.draftSelect = draftSelect; w.draftRename = draftRename; w.draftDelete = draftDelete
+  w.draftVerLabel = draftVerLabel; w.isDraftVer = isDraftVer
   w.setDayPreview = (di: any, v: any) => { view.setDayPreview(di, v); notify() }
   w.renderInputs = () => notify()
   w.renderStatus = () => notify()

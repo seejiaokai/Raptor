@@ -779,6 +779,26 @@ from `day.input`, no hard clash raised).
 type.** Record it here so the two decisions read as sequential, not
 contradictory.
 
+**The demo seeds six SANS Availability records at boot, and it is
+PARITY-INVISIBLE by construction** (`state/demoseed.ts`, 14 Aug 26). A fresh
+clone otherwise showed the SANS card grid, the palette badges and the
+"N SANS offering" pointer all empty — nobody had filed a record — so
+`seedDemoSans()` pushes six (`nick` PM, `romeo` all-day, `vinci` a two-day
+span, `waldo` AM offering an OFT, `krait` all-day, `bullet` F+O+A with no
+commitment anywhere in the seed week to judge against) at BOOT, inside
+`initStore`, rather than into the `INPUTS` array `engine/inputs.ts` seeds.
+That is the whole trick: `refwin.ts`, `parity.test.ts`, `html.test.ts` and
+every one of the ~40 snapshot-reset tests read `INPUTS` PRISTINE — none of
+them call `initStore()`, and a snapshot reset restores the array from its
+own pre-boot JSON — so none of them ever sees these rows; only the real
+built app, which does call `initStore()`, does. Each window covers the
+person's own padded seed commitment (the same padded window `sansGate`
+judges a slot against) so `validate()` raises no `SANS_AVAIL` against its
+own seed, and every `mod` stamp sits on or before the week's input deadline
+so none wears the LATE mark. `seedDemoSans()` is idempotent — guarded per
+person+date pair, the same identity `sansAvailOn` keys on — because
+`stores-boot.test.ts` boots `initStore()` twice.
+
 ## Accepting a personal input
 
 A personal input is aircrew-submitted and is NOT part of the issued programme
@@ -788,8 +808,17 @@ funnel:
 - `dest='g'` pushes a real row onto `DAYS[di].ground` built from the input
   (the TYPE as the title, the remarks in the row's `rmks` cell, the CALLSIGN
   in `who` like every other ground write, `hhmm(s)`/`hhmm(e)`, blank for
-  all-day) and calls `noteChange()` on its key, so it is pending and reaches
-  the next AL. The row carries `src` — a content key back to the input.
+  all-day). Since 15 Aug 26 it marks through `markStructuralAdd` — not the
+  bare `trackStructuralAdd`+`noteChange` pair the promotion used before —
+  so it is pending, reaches the next AL, AND wears the same ~6s blue box
+  every other fresh board row gets (owner audit: every other new row got
+  one, an accepted input's did not; `docs/ui-contracts.md` §Selection
+  highlight). The key is the row's first FIELD, `gr:di.ri.prog` — matching
+  what `board.ts`'s own "+ Item" mints, and the address `paintFreshAdds` can
+  actually find an element for, where the bare `g:di.ri` row address
+  matches none; `deletionWasIssued`'s ground check already ORs both key
+  forms, so nothing that read the old key broke. The row carries `src` — a
+  content key back to the input.
 - `dest='u'` only sets `acc='u'`, moving it into the Unavailable block; no row
   is created. Because there is no live row key to tint, it marks one inert
   `inp:di.input-id` amendment key for every loaded day the input covers.
@@ -1271,6 +1300,134 @@ The `dayKeys` walker stays although the rollback no longer diffs — it is
 the executable documentation of the slot-key grammar and probe-bridge
 exports it.
 
+## Day templates (`engine/daytpl.ts`, owner ask, 15 Aug 26)
+
+A whole-day master template: `{id, title, d}` — `dutytpl.ts`'s single duty
+block, one level up. `d` (`DayTplBlob`) is an explicit ALLOWLIST of
+`DAYS[di]`'s sections — `notes`/`allhands`/`waves`/`sims`/`dutywaves`/
+`ground`, plus each section's own note field — never the day's calendar
+identity. `dow`/`dt`/`today` stay off the blob on purpose: a template is
+reusable across days, and baking in "Monday, Jul 13" would make every apply
+silently rewrite the target day's own date. `wc` stays off it too, for a
+different reason — it is not derived, but it is an authored per-day label
+seeded once per day exactly like `dow`/`dt`, not a property of the
+structure a template captures, so it stays with the day being edited.
+
+**Crew blanked, cx/flag stripped.** `mintBlob` deep-clones the six sections
+first, then walks the clone: every person reference is blanked (a flying
+seat's `p`/`w` → `''`, a duty/ground row's `who` → `''`, a sim's `pax` →
+`[]`, every `more` array → an array of `''`), and every `cx`/`cxr`/`flag`
+mark is deleted wherever it can sit — allhands, formations, aircraft, sims,
+duty rows, ground rows. A template is a clean plan offered for a FUTURE
+day, not a record of one day's cancellations; carrying a cancellation
+forward would seat a new day pre-cancelled for a reason that belongs to the
+day the template was captured from. A ground row's `src` is stripped too —
+the accepted-input token is an identity reference to a specific personal
+input, exactly like a crewed seat, not part of the row's shape.
+
+**`applyDayTpl(di, id)` refuses a published day** (`dayApproved(di)` is
+`true` → returns `false`, caller toasts "Reopen the day first") — the same
+reasoning `draftDup`/`draftSelect` carry below: a whole-day swap under an
+issued document would let the day silently diverge from what the squadron
+holds, with no AL trail. A template replaces the DRAFT, not the record.
+
+**Applying mirrors `restoreDayVersion`'s direct-write shape** (§Version
+snapshots / restore above, `engine/restore.ts:90-110`): build the new day
+object, write `DAYS[di]` straight (keeping the live `dow`/`dt`/`today`/
+`wc`), then retire the day's `SCHED.pending`/`SCHED.added` marks the same
+two loops `restoreDayVersion` runs for the version it rolls back to — the
+swap does not try to line up old and new row indices, so a stale address
+may now name a different row entirely rather than the one it used to.
+`SCHED.changes` is deliberately left alone: `applyDayTpl` only ever runs on
+a draft day (the refusal above), so any changes-marks still on it are
+already-published history from before the day was reopened, the same kind
+an ordinary edit after a reopen leaves in place. No `histPush`/reflow
+inside the engine call — the caller's `afterSchedMutate()` is the one undo
+step, the same contract `restoreDayVersion` carries.
+
+**Persistence mirrors `dutytpl`/`stores`**: a `daytpl` storage key, an
+incrementing `'dt'+N` id past a module `SEQ`, untrusted-load sanitised
+field by field (`sanitiseBlob` — a template missing its `d` blob entirely
+is dropped, and every allowlisted field of `d` is type-checked or replaced
+with an empty one). The standard set is deliberately EMPTY (unlike
+`dutytpl`'s three seeded desks): a whole day is too specific to the
+squadron's own programme to guess at, so the library opens with nothing and
+every entry is one the owner captured off a real day of his own; an
+unedited library writes `null`, the same "nothing persisted" idiom
+`dutytpl`/`stores` use for their own seed.
+
+## Drafts — per-day alternate schedules (`engine/drafts.ts`, owner ask, 15 Aug 26)
+
+**The stow model.** A draft is an alternate CONTENT blob for one day, made
+before that day is published. `SCHED.drafts = {di: [{id, name, d}]}` holds
+each day's blobs, `SCHED.curDraft = {di: id}` which entry the live day
+currently IS — there is no shadow copy being edited somewhere else.
+**The live `DAYS[di]` IS the selected draft's working copy.** Switching
+drafts stows the live day back into the selected entry's own blob
+(`clone(DAYS[di])`), then loads the OTHER blob in as the live day. `d` is a
+deep clone of the WHOLE day object (`daySnap`'s JSON idiom) — content only,
+never a changes slice, because a draft is pre-publish by definition and
+carries no issued marks.
+
+`draftDup(di)` — the FIRST call on a day stows the live day as "Draft 1"
+and mints "Draft 2" as a copy of it, selected: one tap turns "the schedule"
+into two named alternatives. Every later call stows the currently-selected
+entry and mints "Draft N" (highest existing "Draft N" name + 1) as a fresh
+copy of live, selected. `draftSelect(di, id)` stows the outgoing live day
+into its own entry, installs a CLONE of the target blob as `DAYS[di]`
+(never the blob itself — editing the live day must never reach back into
+the stowed copy), restamps `.today` from the live day (tracks the calendar,
+not the document — the `restoreDayVersion` precedent again), and retires
+the day's `SCHED.pending`/`SCHED.added` marks the same way `applyDayTpl`
+does above — each draft's own edits were recorded while IT was live and
+stop meaning anything the moment it is not.
+
+**Refusal rules.** `draftDup` and `draftSelect` both refuse a published day
+— the same reasoning as `applyDayTpl`: reopen first. `draftSelect` also
+refuses the already-selected id (nothing to do, and "stow then reload
+yourself" would clobber live edits with a stale stow). `draftDelete`
+refuses the SELECTED entry only — the selected draft IS the live day, and
+deleting the thing being edited from underneath itself is exactly the
+ambiguity the refusal exists to prevent; a list holding one entry is legal,
+it just leaves the selected plan as the only named one. `draftRename`
+refuses an empty name and a duplicate name within the day (trimmed, 1..24
+chars via `MAX_DRAFT_NAME`) — two drafts answering to one name would make
+the switch toast, the version labels and the picker all ambiguous at once.
+
+**Undo semantics.** Neither `draftDup` nor `draftSelect` calls `histPush`
+or reflows — the UI caller's `afterSchedMutate()` is the single undo step,
+the `restoreDayVersion`/`applyDayTpl` contract again. Because
+`SCHED.drafts`/`SCHED.curDraft` ride `histSnap` (`dr`/`cd`, §History
+below), a duplicate or a switch is one ordinary undo step and undoing past
+it brings the blobs back too. `draftRename`/`draftDelete` are called from
+`DraftsModal.tsx`, outside the engine's own write path, and push their own
+explicit `HOOKS.histPush()` — renaming/deleting a draft is schedule
+bookkeeping the undo stack should carry the same way.
+
+**Publish unchanged.** `setDayApproved` needed ZERO change: it publishes
+whatever is live, which is by construction the selected draft. There is no
+second "which draft ships" decision anywhere in the publish path.
+
+**The `'d:<id>'` version shape.** `daySnapOf(di, ver)` (`publish.ts`) grew
+one resolution branch: a `ver` of the form `'d:<id>'` resolves to
+`{d: t.d, c: {}}` for the day's own draft carrying that id — the empty
+changes slice is the truth, since a draft has no issued marks. That is what
+lets the whole preview machinery (`withDaySnap`, `dayPreviewHTML`, `DPREV`,
+`prunePreviews`) work on a draft with no second code path. `isDraftVer(ver)`
+tests the `'d:'` prefix; `draftVerLabel(di, ver)` is the one label reader —
+a draft version names its draft, everything else falls through to
+`verLabel` — so nowhere else derives a draft's display name independently.
+A draft's preview carries no Restore button: restoring is the
+published-version rollback, and making a draft live is the Drafts menu's
+job (`draftSelect`, surfaced as `board.ts`'s `switchDraft`) — a second path
+here would be a second write path to keep in step with it. `prunePreviews`
+drops a `'d:'` preview both when its draft no longer exists (deleted, or
+undone away) AND when its draft IS now the selected one — an undo can
+restore that selection under an open preview, which would otherwise freeze
+a stale stowed blob while the live day already is that draft.
+
+`SCHED.drafts`/`SCHED.curDraft` are session-only, exactly like the AL list.
+
 ## Auth / roles
 
 `a/a` = admin, `user/user` = member. `canEditSched()` = session AND admin.
@@ -1299,9 +1456,12 @@ is the scheduler's (`interactions.ts`, `canEditSched()`).
 ## History
 
 `histSnap()` serialises `{DAYS, INPUTS, changes, pending, als, al, dayOK,
-sign, orig, cur}` (`o`/`cv` fields); undo/redo restores wholesale.
-Publishing is its own undo step, and so is a rollback. Undo is refused
-while focus is in an editable field.
+sign, orig, cur, drafts, curDraft}` (`o`/`cv`/`dr`/`cd` fields); undo/redo
+restores wholesale. Publishing is its own undo step, and so is a rollback.
+`drafts`/`curDraft` (§Drafts above) ride the same snapshot for the same
+reason the AL records do — a duplicate or a draft switch is one ordinary
+undo step, and undoing past it brings the stowed blobs back too. Undo is
+refused while focus is in an editable field.
 
 ## The edit log (`engine/editlog.ts`, owner, 11 Aug 26)
 

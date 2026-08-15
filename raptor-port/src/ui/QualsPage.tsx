@@ -471,6 +471,10 @@ export function QualsPage() {
     /* ALL already shows them, so only a seat-specific view has to follow the
        person who was just added into the view they landed in */
     if (qSeatView !== 'ALL' && PEOPLE[id].seat !== qSeatView) setSeat(PEOPLE[id].seat)
+    /* the two refusals above already speak; the success path was the one
+       silent branch — a tap that adds a whole person to the roster with
+       nothing said (owner audit) */
+    HOOKS.toast(`${cs} added`, 'ok')
     notify()
   }
 
@@ -491,6 +495,9 @@ export function QualsPage() {
         ...cols.map(c => p.pers ? '' : qualNA(p, c) ? '–' : p.quals[c.k] === 'I' ? 'I' : p.quals[c.k] ? 'Y' : '')])
     })
     exportCSV(`142SQN-LoX-${qSeatView}.csv`, rows)
+    /* same reason as the Inputs page's export: a phone shows nothing when a
+       download lands, so the tap otherwise reads as dead */
+    HOOKS.toast('CSV downloaded', 'ok')
   }
 
   return (

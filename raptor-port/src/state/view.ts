@@ -1,4 +1,5 @@
 import { DAYS } from '../engine/data'
+import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
@@ -6,6 +7,7 @@ import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, personWarnDays } from '../engine/avail'
 import { validate, WARN } from '../engine/validate'
 import { markEdit, daySnapOf } from '../engine/publish'
+import { curDraftId } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from './auth'
@@ -333,8 +335,16 @@ export function toggleAvail(di:any){ if(AVOPEN.has(+di))AVOPEN.delete(+di); else
 export function setDayPreview(di:any,ver:any){ if(ver==null||ver==='live')DPREV.delete(+di); else DPREV.set(+di,ver) }
 /* drop any preview whose snapshot no longer exists — undo across a publish,
    unpublishAL, a week switch: without this the day would render the live model
-   while its header claims to show history */
-export function prunePreviews(){ for(const [di,ver] of [...DPREV]){ if(!daySnapOf(di,ver))DPREV.delete(di) } }
+   while its header claims to show history. daySnapOf resolves 'd:<id>' draft
+   vers too (engine/publish.ts), so a deleted or undone-away draft's preview
+   falls out through the same test — plus one draft-only case: a 'd:' preview
+   of the day's now-SELECTED draft (an undo can restore that selection under
+   an open preview) would freeze the stale stowed blob while the live day IS
+   that draft, so it drops as well. */
+export function prunePreviews(){ for(const [di,ver] of [...DPREV]){
+  if(!daySnapOf(di,ver)){DPREV.delete(di);continue}
+  if(typeof ver==='string'&&ver.slice(0,2)==='d:'&&ver==='d:'+curDraftId(di))DPREV.delete(di)
+} }
 /* {di,ix,ids:[…],sev,key,code,prevDi,leaveBy} — key = the causing line's
    slot-key, if the warning carries one. The cross-day crew-rest row adds
    panDi/panKey: land on THAT day and THAT line instead, the one case where the
@@ -470,6 +480,13 @@ export function slotTitle(key:any){
     const f=(((DAYS[+a[0]]||{}).waves||[])[+a[1]]||{formations:[]}).formations[+a[2]]||{};
     return `${a[4]==='p'?'FCP':'RCP'} · <span class="mono" style="color:var(--ink-3)">${esc(f.cs||'')} ${esc(f.msn||'')}</span>`;}
   const p=k.slice(0,k.indexOf(':')), a=k.slice(k.indexOf(':')+1).split('.');
+  /* the reassign-a-puck arm (inputedit.tsx's reassignInput) — 'iu:<iid>',
+     no day component, since one input can be filed on several loaded days at
+     once and none of them is more "its" day than another */
+  if(p==='iu'){
+    const inp=INPUTS.find((i:any)=>i.iid===a[0]);
+    return inp?`Unavailable · <span class="mono" style="color:var(--ink-3)">${esc(PEOPLE[inp.person]?PEOPLE[inp.person].cs:String(inp.person))}</span>`:'Unavailable';
+  }
   const d=DAYS[+a[0]]||{};
   try{
     if(p==='d')return `Duty · <span class="mono" style="color:var(--ink-3)">${esc(d.dutywaves[+a[1]].rows[+a[2]].role)}</span>`;

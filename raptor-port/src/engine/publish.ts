@@ -89,6 +89,16 @@ export function daySnap(di:any){di=+di;
   return {d:JSON.parse(JSON.stringify(DAYS[di])),c};}
 export function daySnapOf(di:any,ver:any){di=+di;
   if(ver==='orig')return (SCHED.orig||{})[di]||null;
+  /* 'd:<id>' — a pre-publish DRAFT blob (engine/drafts.ts; SCHED.drafts rides
+     this object so it undoes with everything else). Resolved here so the whole
+     preview machinery — withDaySnap, dayPreviewHTML, DPREV, prunePreviews —
+     works on a draft with no second code path; the empty changes slice is the
+     truth, a draft has no issued marks by definition. Resolving to null once
+     the draft is deleted (or undone away) is what lets prunePreviews drop a
+     stale draft preview exactly like a stale AL one. */
+  if(typeof ver==='string'&&ver.slice(0,2)==='d:'){
+    const t=(((SCHED.drafts||{})[di])||[]).find((x:any)=>'d:'+x.id===ver);
+    return t?{d:t.d,c:{}}:null;}
   const r=SCHED.als.find((a:any)=>a.n===+ver);
   return (r&&r.snap&&r.snap[di])||null;}   // records from before snapshots carry none
 export function dayVersions(di:any){di=+di;

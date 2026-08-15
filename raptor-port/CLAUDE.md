@@ -318,6 +318,11 @@ index is always first after the prefix (`keyDay()` depends on it):
   aircraft, seat `p` (FCP) or `w` (RCP).
 - Duty `d:di.dwi.ri` · Sim `s:di.kind.ri` · Ground `g:di.ri` ·
   Programme `a:di.ri` · `.+` appends · `.xN` is overflow `row.more[N]`.
+- `iu:<iid>` — an Unavailable row's person-reassign arm/drop target. The
+  input's own id, no day component (one input can cover several loaded
+  days, and none is more "its" day than another); addresses `INPUTS`, not a
+  schedule row, so it never runs through `slotVal`/`setSlotVal`/`fillSlot` —
+  `reassignInput` (`ui/inputedit.tsx`) is its one write path.
 - Text keys: `dn:` day note · scheduler notes `pn:` programme, `dtn:` duties,
   `sn:` sims, `gn:` ground · `ap:` programme · `wl:`
   wave label · `ff:` formation · `fr:` flight remarks · `it:` in-times ·

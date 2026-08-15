@@ -46,6 +46,7 @@ the rest are the ones the code actually has.
 | **Availability / palette** | Who the crew strip offers, who is struck out, the armed reason lines, the green eligibility rings, the folded Available-crew panel | `avail.ts` (`slotBar`, `dayOff`), `palette-html.ts`, `highlights.ts` (`paintSelRings`), `html.ts` (`availHTML` + `AVOPEN`) | `isAway`/`inputCoversDate`/`inpWin` — MUST agree with the warning list; the rings read `slotBar` itself, never a copy |
 | **Post-render decoration** | Selection/search/warning classes, the armed ring, the green eligibility rings, and the ~6s just-added blue box | `highlights.ts` (`refreshHighlights` → `paintArm`/`paintSelRings`/`paintFreshAdds`) | hung AFTER the string diff, off view state (`SELID`/`ARM`/`FRESHADD`), never baked into the builder string — so a class survives an unrelated repaint; a new one adds a paint function here, never a class in the markup |
 | **Publishing / AL** | Sign-off, amendments after a day is signed | `publish.ts`, `ALPanel.tsx` | inert amendment keys through the mutation funnel |
+| **Day templates / Drafts** | Whole-day master templates; per-day alternate schedules, one of which is always the live day | `engine/daytpl.ts`, `engine/drafts.ts`; `DayTplModal.tsx`, `DraftsModal.tsx`; the board's + week's Templates/Drafts buttons (`board.ts`'s `dayTplMenu`/`draftsMenu`) | direct-write to `DAYS[di]`, refuses a published day, one undo step via the caller's `afterSchedMutate()` — the `restoreDayVersion` shape, not the ordinary funnel |
 | **Export (CSV)** | Schedule, inputs and LoX downloads | `export.ts` (`csvText`, `exportCSV`, `schedRows`); `InputsPage.tsx` | reads the model directly; formula-injection escaped at the sink |
 | **Roles / auth** | Admin vs member vs view-only; who may write | `auth.ts`, `state/session.test.ts` | checked at the PAGE and the WRITE path, never the nav |
 
@@ -114,12 +115,16 @@ validates or writes has crossed from Flow C into Flow A and needs its guards.
 
 ### Flow D — publish / amendment / rollback
 ```
-sign off a day        → setDayApproved / SCHED
-edit a signed day     → the pending keys become an AL issue (alIssue)
-roll a day back        → restoreDayVersion   (ROLLBACK semantics — session-only)
+sign off a day          → setDayApproved / SCHED
+edit a signed day       → the pending keys become an AL issue (alIssue)
+roll a day back          → restoreDayVersion   (ROLLBACK semantics — session-only)
+apply a day template     → applyDayTpl          (same direct-write + refuse-on-published shape)
+duplicate / switch a draft → draftDup / draftSelect (same shape; the live day IS the selected draft)
 ```
 Previews freeze schedule content but read live personal-inputs and day-info —
-a known limitation, `docs/engine-rules.md` §Version snapshots.
+a known limitation, `docs/engine-rules.md` §Version snapshots. Day templates
+and drafts inherit the same limitation for the same reason — both preview
+through `daySnapOf`/`withDaySnap`, never a second path.
 
 **Every flow ends by repainting through `notify()` (or the board lane).** State
 that lives outside the funnel + `HOOKS.storeBackend` is invisible to undo, AL
@@ -181,6 +186,18 @@ ON these, don't route around them):
   the rule and its explanation cannot disagree.
 - **`acceptInput` is the one promotion path**; `commitInputEdit` the one input
   commit; `export.ts` the one exporter (schedule, inputs, LoX).
+- **`dayStatHTML` (`html.ts`) is the one publish-strip builder** (15 Aug 26)
+  — the week's day-head and the board's sign-off panel both call it for the
+  version chip, pending count, ⓘ and Publish controls, so "the board should
+  edit everything the week does" cannot drift into two copies of that strip.
+- **`rosterOptions` (`inputedit.tsx`) is the one roster list** (14 Aug 26) —
+  the Inputs page's add form, its row editor and the schedule's
+  Unavailable-reassign dialog all call it, so the three can never disagree
+  on who is offered or in what order.
+- **`draftVerLabel`/`daySnapOf` are the one version-label/resolve path**
+  (15 Aug 26) — a `'d:<id>'` draft version and an AL/ORIG version both
+  label and resolve through these two, so a new preview consumer (a picker,
+  a banner) never needs a second branch for "is this a draft".
 - **Dates now carry a year when it is not the loaded week's** (12 Aug 26), so
   `dateOrd`/`fmt`/`unfmt`/`inputCoversDate` all read one representation and a
   span into the new year sorts and covers correctly. Before this there were two
@@ -248,6 +265,17 @@ check the other):
   table; the flying-count exclusions (`availByWave`, `insights.ts`). Add a rule
   that iterates aircrew and ask whether a `pers` body belongs in it. They are
   seeded but kept OUT of the seed schedule, which is what keeps parity clean.
+
+- **A draft's stow can lag the live day (15 Aug 26).** `SCHED.drafts[di]`
+  holds each entry's own blob; the live `DAYS[di]` is only the SELECTED
+  entry's working copy, and every OTHER entry's blob is refreshed solely by
+  `draftDup`/`draftSelect`'s own stow step — nothing keeps a non-selected
+  draft's stored blob live-synced to anything. A future whole-day writer
+  that assigns `DAYS[di]` directly, bypassing `draftDup`/`draftSelect`
+  (a bulk import, a second template-apply path), leaves the OTHER drafts'
+  blobs describing a day that has already moved on, silently, until the
+  next switch reads one back in. Any new whole-day writer has to decide
+  whether it stows first or accepts that staleness.
 
 When you add a feature that creates a NEW drift-seam — two places that must now
 agree — name it here so the next session knows to check both.

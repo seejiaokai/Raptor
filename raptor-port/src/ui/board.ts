@@ -10,17 +10,18 @@ import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML } from './html'
 import { setInpField } from './inputedit'
-import { STORE_CFG, DUTYTPL_CFG, blockFromTpl } from '../engine'
-import { setTplEdit } from './pops'
+import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary } from '../engine'
+import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
+import { setTplEdit, setDayTplEdit, setDraftsEdit } from './pops'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -64,7 +65,21 @@ export function boardHTML(di: number, pv?: boolean) {
      own #sbSign element (boardSignHTML below) so the Live Checks panel can sit
      right BELOW the sign-off (owner, 14 Aug 26 — "put it right below sign off
      section"). #sbBoard now starts with the notes panel. */
-  let b = sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
+  /* DAY TEMPLATES (owner ask, 15 Aug 26): a labelled button at the very top of
+     the board's own content, ahead of every section — NOT on the top bar's
+     first line, which stays frozen (CLAUDE.md §phone board: nothing joins it
+     without something else leaving). It is the same "section-level control"
+     idiom + Wave uses below for the same reason: a control that can replace
+     the WHOLE day belongs at the top of the day's own content, not squeezed
+     onto an already-full 30px bar. Withheld on mvRO like every other write
+     control on this board. */
+  /* DRAFTS sits beside it (owner ask, 15 Aug 26) — same panel, same reasons:
+     a control that swaps the WHOLE day belongs at the top of the day's own
+     content. Handled by boardMbtn's data-draftsadd branch (the week's copy
+     of this button is data-draftsopen through routeClick — split attributes,
+     same double-handling reason as data-daytpladd/data-daytplopen). */
+  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates &amp; drafts <span class="sub">save or apply this day's structure · plan alternatives</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button><button class="mbtn add" data-draftsadd="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span></div></div>`
+  let b = dayTplHead + sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
     /* SC / AVALON / BB carry no store config on the week (html.ts's `sa`
@@ -231,8 +246,20 @@ export function boardSignHTML(di: number, pv?: boolean) {
   if (pv) return ''
   /* the desktop "view all changes" entry heads this element, above the
      sign-off bar, exactly as it did when both lived at the top of #sbBoard */
+  /* Publish controls, "same as edit schedule" (owner ask): dayStatHTML is the
+     week day head's own version chip / pending count / ⓘ / Publish day /
+     Publish AL strip (html.ts), shared verbatim so a scheduler working the
+     full-screen board never has to back out to the week to publish. Gated on
+     HOOKS.editMode() alone — pv is already ruled out above, so that's the one
+     term left of the stoRO/mvRO gate every other write control on this board
+     uses; dayStatHTML itself renders the read-only stamp instead of a button
+     when ed is false, same as the week's view-only page does. Placed inside
+     #sbSignBar, right after the sign-off names, so signing and publishing
+     read as one block instead of two disconnected panels. */
+  const ed = HOOKS.editMode()
   return histLineHTML('histln-top')
-    + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}</div>`
+    + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}`
+    + `<div class="sb-pub">${dayStatHTML(di, ed)}</div></div>`
 }
 
 export function boardWarnHTML(di: number) {
@@ -636,6 +663,16 @@ export function boardMbtn(e: MouseEvent) {
     const di = +ds.dwadd
     return blockMenu(t, di)
   }
+  /* the board's own "Templates" button, at the top of the board content —
+     see dayTplMenu above and the boardHTML comment on where the button lives. */
+  if (ds.daytpladd != null) {
+    const di = +ds.daytpladd
+    return dayTplMenu(t, di)
+  }
+  /* the board's own "Drafts" button, beside Templates — see draftsMenu below */
+  if (ds.draftsadd != null) {
+    return draftsMenu(t, +ds.draftsadd)
+  }
   if (ds.dwdel != null) {
     const [di, wi] = ds.dwdel.split('.').map(Number)
     const issued = deletionWasIssued(di, 'dutyblock', wi)
@@ -971,6 +1008,141 @@ export function blockMenu(anchor: HTMLElement, di: any) {
     d.dutywaves.push(blk)
     markStructuralAdd(`dl:${di}.${d.dutywaves.length - 1}`); afterSchedMutate(); notify()
     close(); e.stopPropagation()
+  })
+}
+/* THE DAY-TEMPLATES PICKER (owner, 15 Aug 26) — the same popMenu idiom as
+   blockMenu above, one level up: a whole DAY's structure instead of one duty
+   block. Lists the saved templates (tap = apply), "Save this day as a
+   template" (mints one off the day the picker was opened from), then a
+   pencil into the manage modal. One function serves BOTH entry points — the
+   board's own "Templates" control (below) and the edit week's day-sign strip
+   (routeClick in interactions.ts) — so there is exactly one picker to keep
+   in step with the engine, not two drifting copies of the same list. */
+export function dayTplMenu(anchor: HTMLElement, di: any) {
+  if (!canEditSched() || !HOOKS.editMode()) return
+  di = +di
+  const d = DAYS[di]; if (!d) return
+  const html = `<h5>Day templates — ${esc(d.dow)}</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+    + (DAYTPL_CFG.length
+      ? DAYTPL_CFG.map((t: any) => `<button class="wm" data-daytplpick="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${esc(dayTplSummary(t))}</span></button>`).join('')
+      : `<div class="wm-note">No saved templates yet — save this day to start the library.</div>`)
+    + `</div><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+    + `<button class="wm" data-daytplsave="1">+ Save this day as a template</button></div>`
+    + `<div class="wm-note"><button class="wm-edit" data-daytpledit="1">✎ Manage templates</button></div>`
+  popMenu(anchor, html, (e, close) => {
+    if (e.target.closest('[data-daytpledit]')) { close(); setDayTplEdit(true); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-daytplsave]')) {
+      close()
+      const t = addDayTpl(di)
+      if (!t) { toast('Template library is full — delete one before saving another'); e.stopPropagation(); return }
+      dayTplSave()
+      /* opens the manage modal PRE-SELECTED on what was just captured, so the
+         owner can rename it off the default "Template N" straight away
+         instead of having to find it among however many already exist */
+      setDayTplEdit(t.id); notify()
+      toast(`Saved as "${t.title}"`)
+      e.stopPropagation(); return
+    }
+    const b = e.target.closest('[data-daytplpick]'); if (!b) return
+    const id = b.dataset.daytplpick
+    close()
+    /* the refusal reads "Reopen the day first" rather than explaining WHY —
+       dayStatHTML's own Publish/Reopen button already uses "Reopen <day>",
+       so this names the same action the scheduler would actually take */
+    if (dayApproved(di)) { toast('Reopen the day first'); e.stopPropagation(); return }
+    const t = DAYTPL_CFG.find((x: any) => x.id === id)
+    if (applyDayTpl(di, id)) {
+      /* one undo step for the whole swap (afterSchedMutate's own markEdit()
+         call carries no key, so nothing is marked pending by it — applyDayTpl
+         already did the real work) — same contract restoreDayVersion's own
+         caller uses. No markStructuralAdd / flashAdded here: that mechanism
+         is keyed to ONE funnel address, and a whole-day replace has no single
+         address to hang a blue box on — see the board button's own comment
+         for the rest of that decision. A named toast carries the news instead. */
+      afterSchedMutate(); notify()
+      toast(`Applied "${t ? t.title : 'template'}" to ${d.dow}`)
+      logAction(di, `Day template "${t ? t.title : 'template'}" applied`)
+    }
+    e.stopPropagation()
+  })
+}
+/* MAKE ANOTHER DRAFT THE LIVE DAY — the one write path both the drafts menu
+   (below) and DraftsModal.tsx share, so switching behaves identically from
+   either door. draftSelect stows the outgoing live day into its own entry
+   first, so nothing is lost by switching away and back; the engine refuses a
+   published day (toast names the same Reopen action the publish button
+   carries, like applyDayTpl's refusal) and the already-selected id (toasted as
+   already-live rather than silence). The caller's afterSchedMutate() is the
+   single undo step — the restore/applyDayTpl contract draftSelect documents.
+   Any frozen preview on this day is dropped: the scheduler just chose a live
+   document, and a banner claiming to show a stowed copy of it would lie. */
+export function switchDraft(di: any, id: any) {
+  if (!canEditSched() || !HOOKS.editMode()) return false
+  di = +di
+  const d = DAYS[di]; if (!d) return false
+  const t = dayDrafts(di).find((x: any) => x.id === id)
+  if (!t) return false
+  if (id === curDraftId(di)) { toast(`"${t.name}" is already the live ${d.dow}`); return false }
+  if (dayApproved(di)) { toast('Reopen the day first'); return false }
+  if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the swap may remove the armed row
+  if (!draftSelect(di, id)) return false
+  view.setDayPreview(di, null)
+  afterSchedMutate(); notify()
+  /* a whole-day swap passes no key through the funnel — the sentence is the
+     record, exactly as it is for a rollback or an applied template */
+  const said = `Switched to "${t.name}" — this is now the live ${d.dow}`
+  logAction(di, said)
+  toast(said)
+  return true
+}
+/* THE DRAFTS MENU (owner, 15 Aug 26) — the same popMenu idiom as dayTplMenu
+   above, serving BOTH entry points (the board's "Drafts" control and the edit
+   week's day-sign strip, via routeClick's data-draftsopen): one row per draft
+   — tap the name to switch, its own pencil into the manage modal pre-selected
+   on it, the selected one marked — then "Duplicate this day → new draft", then
+   the manage pencil. Duplicating toasts the new name rather than flashing
+   anything blue: there is no single funnel key for a whole-day copy to hang a
+   flash on, the same reasoning dayTplMenu records for applying a template. */
+export function draftsMenu(anchor: HTMLElement, di: any) {
+  if (!canEditSched() || !HOOKS.editMode()) return
+  di = +di
+  const d = DAYS[di]; if (!d) return
+  const list = dayDrafts(di), selId = curDraftId(di)
+  const html = `<h5>Drafts — ${esc(d.dow)}</h5>`
+    + (list.length
+      ? `<div class="wm-row" style="flex-direction:column;align-items:stretch">`
+        + list.map((t: any) => `<div style="display:flex;gap:4px;align-items:stretch">`
+          + `<button class="wm${t.id === selId ? ' sa' : ''}" style="flex:1" data-draftsel="${esc(t.id)}">${esc(t.name)}${t.id === selId ? ' ●' : ''}`
+          + `<span class="wm-sub">${t.id === selId ? 'live now — this is what publishes' : 'tap to make it the live day'}</span></button>`
+          + `<button class="wm-edit" data-draftedit="${esc(t.id)}" title="Rename or delete ${esc(t.name)}">✎</button></div>`).join('')
+        + `</div>`
+      : `<div class="wm-note">No drafts yet — duplicate this day to plan an alternative over it.</div>`)
+    + `<div class="wm-row" style="flex-direction:column;align-items:stretch">`
+    + `<button class="wm" data-draftdup="1">+ Duplicate this day → new draft</button></div>`
+    + `<div class="wm-note"><button class="wm-edit" data-draftmanage="1">✎ Manage drafts</button></div>`
+  popMenu(anchor, html, (e, close) => {
+    const pencil = e.target.closest('[data-draftedit]')
+    if (pencil) { close(); setDraftsEdit({ di, id: pencil.dataset.draftedit }); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-draftmanage]')) { close(); setDraftsEdit({ di }); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-draftdup]')) {
+      close()
+      /* same wording as the publish machinery's own refusals — a published
+         day's drafts wait for the reopen, see draftDup's comment */
+      if (dayApproved(di)) { toast('Reopen the day first'); e.stopPropagation(); return }
+      const t = draftDup(di)
+      if (t) {
+        /* one undo step for the whole duplicate — histSnap carries the blobs */
+        afterSchedMutate(); notify()
+        const said = `${d.dow} duplicated — "${t.name}" is now the live day, edit over it`
+        logAction(di, `Draft "${t.name}" created — a copy of the day as it stood`)
+        toast(said)
+      }
+      e.stopPropagation(); return
+    }
+    const b = e.target.closest('[data-draftsel]'); if (!b) return
+    close()
+    switchDraft(di, b.dataset.draftsel)
+    e.stopPropagation()
   })
 }
 /* The duty ROLE cell's pick-list (owner, 10 Aug 26). A block that belongs to

@@ -7,8 +7,10 @@
    surfaces. */
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
-import { CARRYDAY, CURPAGE, setCarryDay, scrollWeekToDay } from '../state/view'
-import { dayHTML } from './html'
+import { CARRYDAY, CURPAGE, DPREV, setCarryDay, scrollWeekToDay } from '../state/view'
+import { daySnapOf } from '../engine/publish'
+import { isDraftVer } from '../engine/drafts'
+import { dayHTML, withDaySnap } from './html'
 import { refreshHighlights } from './highlights'
 import { useVersion } from './useStore'
 
@@ -25,7 +27,22 @@ export function ViewWeek() {
        against exactly what is on screen. */
     if (CURPAGE !== 'viewsched') return
     const root = ref.current!
-    const html = DAYS.map((_: any, di: number) => dayHTML(di, false))
+    /* DRAFT previews reach the view page too (owner, 15 Aug 26 — "on view
+       schedule mode, you can also view the different drafts"): a 'd:<id>'
+       DPREV entry renders through the same withDaySnap freeze the edit
+       surfaces use, banner and all, with the day's own compact drafts select
+       (dayHTML's view branch) still on its head to switch back. ONLY draft
+       vers: the view page deliberately never grew the ORIG/AL version
+       machinery, so a preview left armed on the edit page stays the edit
+       page's business and this week keeps rendering live for it. Same lazy
+       orphan prune as EditWeek — a deleted or undone-away draft renders the
+       live day, not a ghost. */
+    const html = DAYS.map((_: any, di: number) => {
+      const ver = DPREV.get(di)
+      if (!isDraftVer(ver)) return dayHTML(di, false)
+      if (!daySnapOf(di, ver)) { DPREV.delete(di); return dayHTML(di, false) }
+      return withDaySnap(di, ver, () => dayHTML(di, false))
+    })
     const p = prev.current
     /* both paths hold the week's scroll position (B54) */
     const sl = root.scrollLeft

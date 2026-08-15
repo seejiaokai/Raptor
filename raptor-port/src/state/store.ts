@@ -17,7 +17,8 @@ import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { rulesLoad } from '../engine/rules'
 import { mintInpIds } from '../engine/inputs'
-import { storesLoad, dutyTplLoad } from '../engine'
+import { seedDemoSans } from './demoseed'
+import { storesLoad, dutyTplLoad, dayTplLoad } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion } from '../engine/publish'
 import { afterSchedMutate } from './view'
@@ -198,6 +199,11 @@ export function initStore() {
   rulesLoad()
   storesLoad()
   dutyTplLoad()
+  dayTplLoad()
+  /* demo-only SANS Availability rows (see state/demoseed.ts for why this
+     lives here and not in engine/inputs.ts's INPUTS array) — pushed before
+     mintInpIds so they mint an iid exactly like every other seed row */
+  seedDemoSans()
   /* before histInit, so the FIRST snapshot already carries every input's
      address — see mintInpIds in engine/inputs.ts for why an id minted later
      than the snapshot it should be in is worse than no id at all */

@@ -233,6 +233,24 @@ a{color:var(--accent)}
 .burger{display:none;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);width:36px;height:34px;border-radius:9px;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:3px}
 .burger span{width:16px;height:2px;background:var(--ink);border-radius:2px}
 
+/* PRESS STATE, universal (owner — "when I click add input, the button
+   doesn't flash, so I don't know if I added an input on the mobile").
+   Every button in this file had a :hover rule and no :active — hover never
+   fires on a touch tap, so a phone got no feedback at all. One shared
+   treatment for every tap target below: a touch of darken plus a small
+   settle-down scale, defined ONCE so it reads as one app-wide behaviour
+   rather than a pile of per-button rules. `--press-scale` (not a second
+   copy of the selector list) is how prefers-reduced-motion drops the
+   transform. `transform:scale()` never reflows, so no measured contract
+   in this file moves. */
+:root{--press-scale:.97}
+@media (prefers-reduced-motion:reduce){:root{--press-scale:1}}
+.abtn:active,.fchip:active,.pillbtn:active,.rok:active,.rmx:active,
+.inact .red:active,.mbtn:active,.dbeak:active,.wm:active,.dinfobtn:active,
+.so-clear:active,.nav a:active,.login .go:active,.sb-slot.empty:active{
+  filter:brightness(.88);transform:scale(var(--press-scale))
+}
+
 .pillbtn{border:1px solid transparent;background:none;cursor:pointer;color:inherit;display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;font-size:12px;font-weight:600}
 .pillbtn .dot{width:7px;height:7px;border-radius:50%}
 .pillbtn.hard{border-color:rgba(240,85,95,.4);color:#FBB4B9;background:rgba(240,85,95,.08)}
@@ -445,13 +463,21 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    flex-basis fallback — the chips must never push the date off the row. */
 .day-head{flex-wrap:wrap;row-gap:7px}
 .day-head .dstat{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:8px}
-.day-head .dal{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
+/* .dal/.dpend also drawn by the board's sign-off panel (board.ts's
+   boardSignHTML, via html.ts's shared dayStatHTML) — same chips, so the
+   selector list grows instead of a second copy of the rule. */
+.day-head .dal,.sb-pub .dal{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
   letter-spacing:.06em;color:#08131b;background:var(--alc,var(--accent));padding:1px 6px;border-radius:5px}
 /* a day rolled back to the Original — grey on purpose: the bare .dal fallback
    is --accent, which is AL1's cyan, and ORIG must never read as AL1 */
-.day-head .dal.orig{background:var(--ink-3)}
-.day-head .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
+.day-head .dal.orig,.sb-pub .dal.orig{background:var(--ink-3)}
+.day-head .dpend,.sb-pub .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
   border:1px solid rgba(229,194,74,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
+/* which DRAFT the live day is (engine/drafts.ts) — the .dpend pill shape in
+   the app's accent so it reads as status, never as the amber pending count or
+   an AL colour; shared by the board's sign-off panel like its two siblings */
+.day-head .ddraft,.sb-pub .ddraft{font-size:10px;font-weight:700;color:var(--accent);background:rgba(59,198,232,.1);
+  border:1px solid rgba(59,198,232,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
 /* PUBLISH DAY is the primary action on a day, so it wears the same blue as the
    banner buttons rather than looking like one more grey chip. Published flips it
    green (and it is then the reopen control); unsigned darkens it — see the
@@ -903,6 +929,13 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 }
 #sbSignBar{margin:0 0 10px}
 .signoff.board-sign{position:static}
+/* the publish strip (version chip, pending count, ⓘ, Publish day / AL) as its
+   own row under the sign-off names, so a narrow board (phone width, same
+   ~364px the day column wraps at) never squeezes the Publish button against
+   a name pill — .signoff itself already flex-wraps, but a shared row let a
+   long-titled Publish AL button crowd the last sign-off pill onto a half
+   line rather than wrapping cleanly under it. */
+.sb-pub{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:0 0 100%;margin-top:4px}
 /* the per-day strip, in the day's own header. Four names, two rows on a phone,
    and the day's Publish button stays locked until all four carry one. */
 .signoff.day-sign{margin:8px 10px 0;padding:6px 8px;gap:4px;background:var(--panel-2);border-color:var(--edge)}
@@ -1296,19 +1329,24 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .rc-d.s,.rc-d.e{background:var(--accent);color:#04222b;font-weight:800}
 .rc-x{padding:3px 0}
 .rc-read{font-size:9.5px;color:var(--ink-3);margin-top:4px;letter-spacing:.02em}
-/* A row that has just been added lights up and fades back out (owner, Aug 5) —
-   the click that added it happens at the top of the page, the row lands in a
-   table that may be scrolled and re-sorted, and this is what carries the eye
-   from one to the other. It animates on the CELLS, not the row: a <tr>'s own
-   background sits under its cells' and the fade would be invisible. It ends on
-   fully transparent so the row settles back to the table's own colour and the
-   hover rule still works afterwards. */
+/* A row that has just been added lights up and HOLDS before fading (owner,
+   Aug 5 for the flash; harmonized 15 Aug 26 to match the board's .sb-fresh
+   timing — a steady box that only fades in its last stretch reads as "still
+   new" for as long as it takes a phone user to look up from the form and
+   find it, where the old whole-lifetime fade was already half-gone by then.
+   Same selection blue #1E86FF, same shape: hold for the first
+   90.83% (5450ms of 6000ms — .sb-fresh's FRESH_MS/FRESH_FADE_MS split in
+   state/view.ts), fade over the last 550ms. It animates on the CELLS, not
+   the row: a <tr>'s own box-shadow sits under its cells' and would be
+   clipped by them. It ends on fully transparent so the row settles back to
+   the table's own colour and the hover rule still works afterwards.
+   InputsPage's FLASH_MS mirrors this 6000ms so the class comes off the row
+   right as the animation finishes, not mid-hold. */
 @keyframes inflash{
-  0%{background:rgba(59,198,232,.28)}
-  40%{background:rgba(59,198,232,.22)}
-  100%{background:rgba(59,198,232,0)}
+  0%,90.83%{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5)}
+  100%{box-shadow:inset 0 0 0 2px rgba(30,134,255,0),0 0 9px rgba(30,134,255,0)}
 }
-.innew>td{animation:inflash 1.5s ease-out 1}
+.innew>td{animation:inflash 6s ease-out 1;position:relative}
 /* a flash is decoration; for anyone who has asked for less motion the row is
    simply already settled */
 @media (prefers-reduced-motion:reduce){.innew>td{animation:none}}

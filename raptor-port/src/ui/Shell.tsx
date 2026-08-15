@@ -83,7 +83,9 @@ export function Shell() {
       const dv = (e.target as HTMLElement).closest('select[data-dver]') as HTMLSelectElement | null
       if (dv) {
         const v = dv.value
-        setDayPreview(+dv.dataset.dver!, v === 'live' ? null : (v === 'orig' ? 'orig' : +v))
+        /* 'd:<id>' is a draft preview (engine/drafts.ts) — kept as the string,
+           which daySnapOf resolves like any other version */
+        setDayPreview(+dv.dataset.dver!, v === 'live' ? null : (v === 'orig' || v.slice(0, 2) === 'd:' ? v : +v))
         notify(); return
       }
       const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null
@@ -260,7 +262,12 @@ export function Shell() {
                 and the flying waves, and nowhere else. The board is reachable
                 on desktop, so this page needs no separate control. */}
             <button className="abtn" id="throwPucks" onClick={() => HOOKS.toast('Auto-throw uses the Quals rules to seat crews (stub in prototype).')}>Throw pucks (auto)</button>
-            <button className="abtn" id="exportSched" onClick={() => exportCSV('142SQN-schedule.csv', schedRows())}>Export to Excel</button>
+            <button className="abtn" id="exportSched" onClick={() => {
+              exportCSV('142SQN-schedule.csv', schedRows())
+              /* same reason as the Inputs page's export: a phone shows nothing
+                 when a download lands, so the tap otherwise reads as dead */
+              HOOKS.toast('CSV downloaded', 'ok')
+            }}>Export to Excel</button>
             <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
           </div>

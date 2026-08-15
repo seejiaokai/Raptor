@@ -18,7 +18,8 @@ import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, stor
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
-import { openScheduler, toggleSbwarn, boardTab } from './board'
+import { reassignInput } from './inputedit'
+import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, draftsMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
@@ -509,10 +510,25 @@ export function routeClick(e: MouseEvent) {
   /* a tap on a palette name: plant it if something is armed, otherwise fall
      through to the ordinary select-this-person-in-blue behaviour. A darkened
      name plants too (owner, 13 Aug 26): its reason is printed on the list
-     before the tap, and placeArmed repeats it as the warn toast after. */
+     before the tap, and placeArmed repeats it as the warn toast after.
+
+     An 'iu:' key is the Unavailable-reassign arm, not a schedule slot —
+     placeArmed's fillSlot/setSlotVal would not know what to do with it (and
+     would apply the seat-eligibility bar the owner explicitly said this edit
+     must NOT carry). reassignInput is commitInputEdit's relink under a new
+     name (inputedit.tsx), so it does its own disarm/notify — see reassignInput's
+     own doc comment for why afterSchedMutate is not called again here: that
+     would push a second history step onto the SAME action. */
   const rp = t.closest('.rpuck[data-person]') as HTMLElement | null
   if (rp && view.ARM) {
     e.stopPropagation()
+    const armKey = view.ARM.key
+    if (String(armKey).indexOf('iu:') === 0) {
+      const iid = String(armKey).slice(3)
+      view.disarmSlot()
+      reassignInput(iid, rp.dataset.person)
+      notify(); return
+    }
     view.placeArmed(rp.dataset.person)
     notify(); return
   }
@@ -549,6 +565,11 @@ export function routeClick(e: MouseEvent) {
   if (rst) {
     e.stopPropagation()
     if (!canEditSched() || !(view.CURPAGE === 'editsched' || view.SBDAY != null)) return
+    /* never for a draft ('d:<id>') — the banner renders no restore button for
+       one, but a stale element must not roll a stowed draft blob over the live
+       day either: making a draft live is the Drafts menu's job (draftSelect),
+       which stows the outgoing day first; a restore here would not */
+    if (String(rst.dataset.rver || '').slice(0, 2) === 'd:') return
     const di = +rst.dataset.restore!
     const ver = rst.dataset.rver === 'orig' ? 'orig' : +rst.dataset.rver!
     /* already the current version with nothing pending — close the preview
@@ -574,6 +595,37 @@ export function routeClick(e: MouseEvent) {
     notify(); return
   }
 
+  /* the edit week's own entry into day templates (owner, 15 Aug 26) — the
+     day-sign strip's "Templates" button (html.ts). Opens the exact same
+     picker the board's own "Templates" control does (board.ts's dayTplMenu,
+     exported for this one call site) so applying/saving a template behaves
+     identically from either surface — there is one picker, not two that could
+     drift. Different data attribute from the board's own data-daytpladd
+     deliberately: the board's button is handled by boardMbtn (scoped to
+     #sbBoard, requires `.mbtn`), which this button is not part of, so a
+     shared attribute name would either need both handlers to agree on a
+     class it doesn't carry or risk one click opening the menu twice. */
+  const dtOpen = t.closest('[data-daytplopen]') as HTMLElement | null
+  if (dtOpen) {
+    e.stopPropagation()
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    dayTplMenu(dtOpen, +dtOpen.dataset.daytplopen!)
+    return
+  }
+
+  /* the edit week's "Drafts" button (owner, 15 Aug 26) — same one-menu-two-
+     doors shape as Templates just above: board.ts's draftsMenu is the single
+     builder, and the board's own copy of the button uses a different data
+     attribute (data-draftsadd, via boardMbtn) for the same
+     double-handling reason data-daytplopen/data-daytpladd are split. */
+  const drOpen = t.closest('[data-draftsopen]') as HTMLElement | null
+  if (drOpen) {
+    e.stopPropagation()
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    draftsMenu(drOpen, +drOpen.dataset.draftsopen!)
+    return
+  }
+
   /* clear a day's sign-off */
   const sc = t.closest('[data-signclear]') as HTMLElement | null
   if (sc) {
@@ -590,13 +642,23 @@ export function routeClick(e: MouseEvent) {
      A PLACEHOLDER-filled slot arms exactly like an empty one (owner, 13 Aug
      26): a placeholder means "someone still needed here", so tapping it goes
      straight to finding that someone — the palette tap then replaces the
-     placeholder. Only a REAL person's puck falls through to selection. */
-  const slot = t.closest('.seat[data-slot],[data-fill]') as HTMLElement | null
+     placeholder. Only a REAL person's puck falls through to selection.
+
+     An Unavailable row's seat (data-inpseat) is the one exception to "a real
+     puck blocks arming": it is ALWAYS occupied — that is the whole point of
+     the row — so waiting for it to go empty would mean it could never arm at
+     all, and "even down to changing the puck" (owner, 14 Aug 26) needs it to.
+     Its key is 'iu:<iid>' (engine/keys.ts's keyDay still parses a day out of
+     it — there is none, so it reads -1, same as any other dayless text key)
+     rather than the funnel grammar slotVal/isSpecial understand, so it skips
+     both of those reads and always offers to arm. */
+  const slot = t.closest('.seat[data-slot],[data-fill],[data-inpseat]') as HTMLElement | null
   const slotPuck = t.closest('.puck[data-person]') as HTMLElement | null
-  if (slot && HOOKS.editMode() && (!slotPuck || isSpecial(slotPuck.dataset.person))) {
-    const key = slot.dataset.slot || slot.dataset.fill
+  const inpSeat = slot?.dataset.inpseat
+  if (slot && HOOKS.editMode() && (inpSeat || !slotPuck || isSpecial(slotPuck.dataset.person))) {
+    const key = inpSeat ? `iu:${inpSeat}` : (slot.dataset.slot || slot.dataset.fill)
     const base = String(key).replace(/\.\+$/, '')
-    if (key && (view.armedKey() === key || !slotVal(base) || isSpecial(slotVal(base)))) {
+    if (key && (inpSeat || view.armedKey() === key || !slotVal(base) || isSpecial(slotVal(base)))) {
       view.armSlot(key, slot); notify(); e.stopPropagation(); return
     }
   }

@@ -195,6 +195,32 @@ columns on the phone and 3 on desktop, a card click opening the dialog
 with ticks + span picker, the board panel carrying the same three cards,
 "Fly with" in the type dropdown — zero console/page/network errors.
 Deployed-page check at merge, as ever.
+**THE SIX-FEATURE BATCH (15 Aug 26 — board publish controls · Unavailable
+editable down to the puck · whole-day master templates · per-day drafts ·
+the demo SANS seed · the app-wide tap-feedback pass) — all six gates green
+first-hand on the matching tree.** `npm test` 1600 across 99 files
+(`daytpl.test.ts` 20, `drafts.test.ts` 16, `demosans.test.ts` 5,
+`daytplui.test.tsx` 15, `draftsui.test.tsx` 18, `unavailedit.test.tsx` 16
+are new; `inputs.test.tsx` re-pointed at the steady flash timing and the
+sort fix, `accept.test.ts` at `markStructuralAdd`), `node reference/tfin.js`
+728/0 (the SANS seed is boot-time in `state/demoseed.ts`, so every parity
+fixture reads the INPUTS array pristine — divergence-free by construction),
+`npm run build` clean, `npm run test:e2e` 96/96, `probes:adapted` 6/6,
+`perf` 4/4 — **week DOM 3702 under the unmoved 4000 ceiling** (3621 → 3702:
+the six seeded SANS cards and the day-head draft chip are the growth, and
+the crew-finding headroom absorbs it), **board 855 under the unmoved 960**
+(835 → 855: the publish strip and the Templates & drafts panel header).
+The built bundle was then driven at 1500px and 390×844: desktop — the board's
+publish strip live (sign, publish, version/pending chips), a day duplicated
+into two drafts and switched with the toast, save-as-template opening the
+manage modal pre-selected, 14 Unavailable person targets armed/droppable,
+24 input-edit cards with the SANS seed visible; phone — the board opens with
+Templates/Drafts/publish all present at 0px sideways overflow, an Add input
+with no date picked refuses with its toast (feedback working as designed),
+and with a date picked the new row lands FLASHING AND INSIDE THE VIEWPORT —
+the owner's original complaint, proven on the real bundle. Zero console,
+page or network errors across every drive. Deployed-page check at merge, as
+ever.
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
 board can still be a heavier one — and now that a heavier board can read
 lighter when the measure's boundary moves.
@@ -253,6 +279,36 @@ only after re-running them.
 
 ## Known issues / open work
 
+- **WHOLE-DAY TEMPLATES AND PER-DAY DRAFTS shipped (15 Aug 26)** —
+  `engine/daytpl.ts` / `engine/drafts.ts`, `DayTplModal.tsx` /
+  `DraftsModal.tsx`, one Templates/Drafts button pair reached from both the
+  board's own content and the week's sign-off strip (`docs/engine-rules.md`
+  §Day templates, §Drafts; `docs/ui-contracts.md` §Day templates and
+  Drafts). What is deliberately left open:
+  - **A template captures STRUCTURE, never crew** — `tplFromDay` blanks
+    every person reference, the same precedent `blockFromTpl` (duty
+    templates, 13 Aug 26) already set; a scheduler still crews the day by
+    hand after applying one. A sim row's `pax` list blanks to EMPTY, not to
+    a placeholder — there is no "still needs someone" marker on a sim seat
+    the way a flying seat's placeholder gives one.
+  - **Applying a template and duplicating/switching a draft both refuse a
+    published day, by design** — "Reopen the day first," the same
+    reopen-first rule `restoreDayVersion` already established: a whole-day
+    swap under an issued document would diverge silently with no AL trail.
+  - **Templates, drafts, and the SANS demo seed below are session /
+    localStorage-only, like everything else this app persists that way** —
+    see the "No shared data" bullet further down.
+- **FEEDBACK: press states, snap-to-new-input, the steady flash shipped
+  (15 Aug 26)** — one grouped `:active` rule covers every button class in
+  `scheduler.css` (`docs/ui-contracts.md` §Feedback: every tap answers).
+  **The press-state CSS itself is UNTESTABLE in jsdom** (no layout engine,
+  no `:active` simulation worth trusting) and is gated only by eye on the
+  live bundle plus `e2e/geometry.spec.ts`'s existing checks — there is no
+  vitest assertion that a button actually darkens or settles on tap, and
+  none is planned; do not read the green unit-test gate as proof of this
+  feature. The Export-to-Excel button on the Shell topbar now toasts
+  "CSV downloaded" on every export, matching the Inputs/Quals pages' own
+  exports from the same batch.
 - **SANS AVAILABILITY shipped (14 Aug 26) and was REWORKED the same day on
   the owner's phone feedback** — ONE window on the standard All day / AM /
   PM / Custom template (the per-event Fly/AMT/OFT time pairs are deleted;
@@ -834,6 +890,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `insights.ts` | `computeInsights()` for the Insights modal. |
 | `stores.ts` | The squadron's stores list — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Persisted state, so it lives here. Nothing in `validate.ts` reads a store. |
 | `dutytpl.ts` | The squadron's **duty-block templates** (13 Aug 26) — mutable `DUTYTPL_CFG`, frozen `DUTYTPL_STD` (Standard / SC Shift / AVALON), `addTpl`/`delTpl`/`renameTpl`/`moveTpl` and the per-row `addTplRow`/`delTplRow`/`setTplRow`/`moveTplRow`, `blockFromTpl` (mints a PLAIN `{label,rows}` duty block — no `sa`/`noconf`), and `dutyTplSave`/`dutyTplLoad`/`dutyTplReset` against its own `dutytpl` key. Persisted state, exactly like stores; nothing in `validate.ts` reads a template. Loaded at boot in `initStore`. This is what `+ Block` offers now — waves no longer create desks (§Stable decisions). |
+| `daytpl.ts` | **Whole-day master templates** (15 Aug 26) — one level up from `dutytpl.ts`: mutable `DAYTPL_CFG`, frozen EMPTY `DAYTPL_STD` (unlike `dutytpl`'s three seeded desks — a whole day is too squadron-specific to guess at), `tplFromDay`/`addDayTpl`/`delDayTpl`/`renameDayTpl`/`moveDayTpl`, `applyDayTpl` (refuses a published day; direct-write shape mirroring `restoreDayVersion`, retiring the day's pending/added marks), `dayTplSave`/`dayTplLoad`/`dayTplReset` against its own `daytpl` key. A template's `d` blob (`DayTplBlob`) allowlists the day's STRUCTURE only — `notes`/`allhands`/`waves`/`sims`/`dutywaves`/`ground` + section notes, never `dow`/`dt`/`today`/`wc` — with every person reference blanked and every `cx`/`cxr`/`flag` mark stripped. Loaded at boot in `initStore`. Rules: `docs/engine-rules.md` §Day templates. |
+| `drafts.ts` | **Per-day alternate drafts** (15 Aug 26) — state rides `SCHED.drafts`/`SCHED.curDraft` (`publish.ts`) rather than a module of its own, so it serialises with undo like the AL records. `dayDrafts`/`curDraftId`, `draftDup`/`draftSelect` (both refuse a published day; the live `DAYS[di]` IS the selected draft's working copy, and switching stows the outgoing entry first), `draftRename`/`draftDelete` (refuses the selected entry), `isDraftVer`/`draftVerLabel` — the `'d:<id>'` version-string shape `publish.ts`'s `daySnapOf` resolves for a draft preview. Publishing needed no change: `setDayApproved` publishes whatever is live. Session-only, like the AL list. Rules: `docs/engine-rules.md` §Drafts. |
 | `hooks.ts` | HOOKS — injectable callbacks (toast, repaints, histPush, storage, `closeBoardDialogs`, **`remapViewKeys`** — key-addressed VIEW state riding `keys.ts`'s renumbering, RMKOPEN today) so verbatim bodies stay DOM-free headless; `storeBackend` is the injected localStorage (`main.tsx` plugs the real one in, null headless). |
 | `editlog.ts` | The EDIT LOG (11 Aug 26) — `ELOG` (a 400-row ring buffer of `{t,who,di,key,lbl,from,to}`), `logEdit`/`logAction`, `elogRows`/`elogFor`/`elogWhen`/`elogClear`, and `keyLabel`, which turns a slot key into plain words. Written from `noteChange`/`markEdit` and only when both values are handed over. Session-only, and deliberately NOT in `histSnap()`. Rules: `docs/engine-rules.md` §The edit log. |
 | `index.ts` | The barrel — re-exports every module above. UI and probes import from `../engine`, so a new engine file wants a line here. |
@@ -842,6 +900,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | file | what it does |
 |---|---|
 | `store.ts` | `notify()`/subscribe/version plus the narrow `notifyBoard()`/`subscribeBoard()` lane used by day-only board navigation, so a swipe does not wake the seven-day edit week; `wireStore()` maps HOOKS→global notify (including the role-aware `editMode()`); **`resetSession()` — the ONE session-change path, used by every login and logout**; write helpers; `initStore()` boot (wires, **rulesLoad**, validate, history baseline). |
+| `demoseed.ts` | **Demo-only SANS Availability seed** (14 Aug 26) — `seedDemoSans()` pushes six records straight into `INPUTS`, called from `initStore()` at BOOT, deliberately NOT part of `engine/inputs.ts`'s seed array: every parity gate and the ~40 snapshot-reset tests read `INPUTS` pristine (none call `initStore()`), so they stay blind to these rows by construction while a real built app still sees them. Idempotent (guarded per person+date, `stores-boot.test.ts` boots twice). Rules: `docs/engine-rules.md` §SANS Availability. |
 | `view.ts` | UI state the engine reads: CURPAGE, SBDAY, ROSDAY, ARM, selection (SELID/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — clicking a puck lights every copy of that person), `afterSchedMutate()`, `focusWarn`, `setPage` (which sweeps body-level popups, closes the board, and captures the day being left), setters. Also `CARRYDAY`/`weekLeftDay`/`scrollWeekToDay` — the day carried between View-only and Edit Schedule; the two geometry helpers live here, not in `ui/pan.ts`, because `pan.ts` already imports this module and `setPage` is the one moment the outgoing week still has layout. Contract: `docs/ui-contracts.md` §The day carries across a page switch. |
 | `history.ts` | HIST snapshots, `histPush`/`histApply`, undo/redo bodies. |
 | `auth.ts` | SESSION, `setSession` (resets LGEDIT, the Logic tab's own edit mode), `canEditSched`, ME/`setMe`. |
@@ -867,6 +926,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `HistoryModal.tsx` | The changes list — every edit newest first, whole week with a filter for the open day, opened from the checks panel's `[data-histopen]` line. String-built body in the ordinary `.modal` idiom. |
 | `Modals.tsx` | DayPop (read-only day details), Insights, Manage-users, Airspace/traffic popup. |
 | `DutyTplModal.tsx` | The **duty-template editor** (13 Aug 26) — opened from the `+ Block` picker's pencil (`TPLEDIT` in `pops.ts`). Tabs per template + New, an editable title, rows with role (a `DUTY_PICK` datalist) / start / end / ▲▼ reorder / delete, + Add role, and Reset / Delete / Done. Mirrors `UserModal`; drives `engine/dutytpl.ts` and persists on every edit. |
+| `DayTplModal.tsx` | The **day-template library editor** (15 Aug 26) — opened from the Templates picker's pencil, on either surface (`DAYTPLEDIT` in `pops.ts`, a `false\|true\|string` open-pre-selected flag). Tabs per template, an editable title, a read-only structure summary; deliberately no row editor (a day template's content is edited on the board/week themselves, which already own that surface) and no "+ New" (a template is always recaptured off a real day, never started blank). Reset / Delete / Done, all toasting. |
+| `DraftsModal.tsx` | The **drafts manager** (15 Aug 26) — opened from the Drafts picker's pencils (`DRAFTSEDIT` in `pops.ts`, carrying the day since drafts are per-day), scoped to the one day whose menu opened it. Tabs per draft (selected one marked ●), a name field that commits on blur/Enter (`draftRename` refuses empty/duplicate names, and refusing mid-keystroke would fight the typist), Select (make it live) / Delete (disabled on the selected entry, with a title saying why) / Done. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Contract: `docs/ui-contracts.md` §The Inputs table's view state. |
 | `inputedit.tsx` | Editing ONE personal input, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, `commitInputEdit` (including the accepted-row relink), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule) and `InputEditor` itself. Three editors over one list is how they drift apart. |
 | `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
@@ -901,5 +962,11 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/ui/sanscards.test.tsx` | The SANS card grid (14 Aug 26) — the shared builder renders the same cards on the week group and the board panel, the order (bounded windows by start, then the fixed F/O/A→…→A combo order), a card's `data-inpedit` address matching `inpKey`, read-only cards carrying none, the board's empty state, the view-only week rendering nothing. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
+| `src/state/demosans.test.ts` | The demo SANS seed (14 Aug 26) — shape, idempotency (`initStore()` boots twice against the same `INPUTS` array), the zero-`SANS_AVAIL`-warning proof against every seed record's own padded commitment, and the rendered card grid. |
+| `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
+| `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |
+| `src/ui/daytplui.test.tsx` | Day templates' UI half (15 Aug 26, 15 tests) — the `dayTplMenu` picker reached from both the board's button and the week's sign-off strip, `DayTplModal.tsx`'s tabs/rename/delete/reset, and the published-day "Reopen the day first" refusal toast. |
+| `src/engine/drafts.test.ts` | Per-day drafts' engine half (15 Aug 26, 16 tests) — the stow model (`draftDup`/`draftSelect`, the live day IS the selected draft), the refusal rules (published day, already-selected id, the selected entry on delete, empty/duplicate names on rename), and the `'d:<id>'` shape `daySnapOf` resolves. |
+| `src/ui/draftsui.test.tsx` | Drafts' UI half (15 Aug 26, 18 tests) — the `draftsMenu` picker on both surfaces, `DraftsModal.tsx`'s blur/Enter-commit rename and delete/select gating, and the view-only week's drafts-only picker (rendered only when a day has drafts; AL/ORIG previews never reach it). |
 | `.claude/skills/session-handoff/SKILL.md` | The `/session-handoff` skill — decides whether `docs/session-state.md` is warranted, writes or deletes it, and checks this file was kept true against the session's own diff. Repo-level, so it ships with the clone the next session gets. |
 | `.claude/skills/` (14 more) | `obra/superpowers` v6.2.0, MIT, vendored 7 Aug 26 — a plugin install lives in `~/.claude/plugins` on a local machine and never reaches a web session's fresh container, while repo-level skills ship with the clone. Cross-references de-namespaced; the upstream SessionStart hook is vendored at `.claude/hooks/` but **not** wired in. Provenance and the update recipe: `.claude/skills/SUPERPOWERS-VENDORED.md`. |

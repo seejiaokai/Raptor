@@ -85,6 +85,14 @@ export function paintArm(){
   if(!ARM)return;
   document.querySelectorAll('[data-slot],[data-fill]').forEach((el:any)=>{
     if((el.dataset.slot||el.dataset.fill)===ARM.key)el.classList.add('armed');});
+  /* the Unavailable-row reassign target (ARM.key 'iu:<iid>') is not a
+     data-slot/data-fill key at all — see engine/keys.ts/reassignInput — so it
+     gets its own pass rather than folding it into the loop above, which reads
+     ARM.key for a grammar this attribute was never meant to speak. The SAME
+     iid renders on every day a multi-day filing covers, so all of them ring
+     together — there is no single "its" day to prefer. */
+  document.querySelectorAll('[data-inpseat]').forEach((el:any)=>{
+    if('iu:'+el.dataset.inpseat===ARM.key)el.classList.add('armed');});
 }
 /* THE JUST-ADDED BLUE BOX (owner, 14 Aug 26 — "everytime I add a new row block
    or wave there will be a blue box around the new thing for around 6 seconds").

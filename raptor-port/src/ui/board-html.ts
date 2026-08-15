@@ -417,8 +417,15 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
   const RO=ro??pv;
   const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';
   const sbt=sb?`<span class="sansb" title="SANS availability">${esc(sb)}</span>`:'';
+  /* the board's half of "even down to changing the puck" — see html.ts's
+     inGrp for the week's twin and the full reasoning. `acc` true is the
+     Personal Inputs panel (its own Accept control decides that row's fate
+     already); `!acc` is Unavailable, the only panel this seat address opens
+     on, and only when the row is actually live (not a read-only/preview
+     board). */
+  const seatable=!acc&&!RO;
   const pk=PEOPLE[inp.person]
-    ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
+    ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
     : `<span class="itxt">${esc(inp.person)}</span>`;
   if(RO){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;

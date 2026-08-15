@@ -15,6 +15,24 @@ export function setUserModal(on: boolean) { USERM = on }
    template locally, because that is ephemeral view state, not schedule state. */
 export let TPLEDIT = false
 export function setTplEdit(on: boolean) { TPLEDIT = on }
+/* The Day-templates editor (owner, 15 Aug 26) — opened from the day-templates
+   picker's pencil, on either entry point (the board or the edit week's
+   sign-off strip), or straight after "Save this day as a template" so the
+   owner can rename what he just captured without a second tap to find it.
+   `false` closed, `true` open on whatever the modal already had selected (or
+   its first template), a string open PRE-SELECTED on that template's id — the
+   filter-is-the-open-state idiom HISTLIST already uses above, so there is no
+   second flag tracking "which one to select on open" that could fall out of
+   step with this one. */
+export let DAYTPLEDIT: false | true | string = false
+export function setDayTplEdit(v: false | true | string) { DAYTPLEDIT = v }
+/* The Drafts manage modal (owner, 15 Aug 26) — opened from the drafts menu's
+   pencils, on either surface. Unlike DAYTPLEDIT it must carry the DAY: drafts
+   are per-day, so the modal is scoped to the day whose menu opened it. `id`
+   optionally pre-selects one draft (a row's own pencil), the same open-
+   pre-selected idiom DAYTPLEDIT's string form carries. */
+export let DRAFTSEDIT: null | { di: number, id?: string } = null
+export function setDraftsEdit(v: null | { di: number, id?: string }) { DRAFTSEDIT = v }
 /* The one personal input being edited from the week or the board (owner,
    10 Aug 26). The INPUT OBJECT, never its index or its content key: undo is
    still live under the modal and renumbers INPUTS, and the key is built from

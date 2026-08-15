@@ -12,6 +12,7 @@ import { dayKeys } from './restore'
 import { SCHED, signOf, setDayApproved, publishALDay } from './publish'
 import { makeStandalone } from './waves'
 import { validate } from './validate'
+import { HOOKS } from './hooks'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -45,6 +46,26 @@ describe('accepting a personal input', () => {
     expect(inp.acc).toBe('g')
   })
 
+  /* owner audit, 15 Aug 26 — every OTHER new ground row gets the ~6s blue box
+     (markStructuralAdd fires HOOKS.flashAdded); an accepted input used to
+     call trackStructuralAdd directly and never fired it. The key has to be
+     the row's first FIELD (gr:di.ri.prog), the same one board.ts's own
+     "+ Item" flashes — that is what the row's <input> wears as data-bfld;
+     the bare g:di.ri row address matches no element for paintFreshAdds to
+     find. */
+  it('fires the same flash every board add fires, on the row\'s first field', () => {
+    const flashed: any[] = []
+    const orig = HOOKS.flashAdded
+    HOOKS.flashAdded = (k: any) => flashed.push(k)
+    try {
+      const inp = findInp('Meeting')!
+      const ri = DAYS[0].ground.length
+      expect(acceptInput(0, inp, 'g')).toBe(true)
+      expect(flashed).toEqual([`gr:0.${ri}.prog`])
+      expect(SCHED.added[`gr:0.${ri}.prog`]).toBe(1)
+    } finally { HOOKS.flashAdded = orig }
+  })
+
   /* regression: id and callsign diverge for some people ('haowen' → 'Hao Wen').
      Storing the id made the row render as free text and never validate. */
   it('stores the callsign even when it differs from the id', () => {
@@ -57,11 +78,16 @@ describe('accepting a personal input', () => {
   })
 
   /* a write that skipped the funnel would be invisible to the amendment
-     machinery — not pending, absent from the next AL, never re-validated */
+     machinery — not pending, absent from the next AL, never re-validated.
+     The key moved from the bare g:di.ri row address to gr:di.ri.prog (15
+     Aug 26, alongside the flashAdded fix above) — the same field key
+     board.ts's own "+ Item" marks pending on, which is also what lets the
+     AL-amended tint (alAttr) reach the row's own prog field now. */
   it('marks the new row pending so it reaches the next AL', () => {
     const inp = findInp('Meeting')!
+    const ri = DAYS[0].ground.length
     acceptInput(0, inp, 'g')
-    expect(SCHED.pending[`g:0.${DAYS[0].ground.length - 1}`]).toBe(1)
+    expect(SCHED.pending[`gr:0.${ri}.prog`]).toBe(1)
   })
 
   it('an all-day input becomes an all-day row, not 00:00–00:00', () => {
