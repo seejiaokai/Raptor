@@ -78,7 +78,10 @@ session needs the pointer — never as the reason the file exists.
    local machine and wrong for us: the next session cannot read this chat but
    can read git, so git is the reliable half of the handoff.)
 3. **GitHub** — PR numbers and whether they merged, whether the Pages deploy
-   went green, any PR left under watch.
+   went green, any PR left under watch. Two channels exist since 15 Aug 26
+   (`CLAUDE.md` §Build & verify): the ungated **Vercel** per-branch preview for
+   fast cross-device review, and **GitHub Pages** as the official gated site.
+   "Deploy went green" still means Pages — a preview is not a ship.
 4. **Plan file**, if one drove the session (`/root/.claude/plans/*.md`).
 
 Nothing further — no broad Glob sweeps, no filesystem audit. If you did not

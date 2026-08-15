@@ -904,6 +904,23 @@ only after re-running them.
 
 ## Deploy — the traps, all still live
 
+**Two channels since 15 Aug 26 — Vercel for speed, Pages for the official
+site.** The owner's dev loop felt like ~20 min per change; the fix was to stop
+routing every look through the gated Pages deploy.
+- **Vercel** builds `raptor-port` from the root `vercel.json` and gives every
+  branch/PR its own live URL in ~1 min, ungated — the fast per-branch preview
+  the owner taps himself and the one to drive while iterating. Not a gate: a
+  red preview is still just a preview. The owner connects it once in the Vercel
+  dashboard (Import the repo; `vercel.json` carries the build settings so no
+  dashboard config is needed). Contract: `CLAUDE.md` §Build & verify.
+- **GitHub Pages** stays the OFFICIAL, gated site, published on merge to main
+  only — the "done means live" endpoint. Paid once per session, not per change.
+- **CI was sped up the same day**: the Playwright browser download is cached
+  (`actions/cache` keyed on the lockfile) and the geometry suite runs one
+  worker per core (`playwright.config.ts` `workers: '100%'` in CI, ~1.7min →
+  ~1.2min locally at 4 cores), so the build job's checking wait is ~2–3 min,
+  not ~5.
+
 GitHub Pages must stay enabled (Settings → Pages → Source: GitHub Actions).
 The workflow refuses to publish on any red test. The four gates also run on
 every **pull request** into main, so a red PR is caught before merge; a PR
@@ -1059,7 +1076,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the four gates. |
 | `index.html` + `public/favicon.svg` | The Vite entry page and the **only** thing in `public/`. The favicon is the talon from `Login.tsx`/`Shell.tsx`, copied because a browser fetches it standalone before any bundle runs — edit the claw path in all three or the tab and the page disagree. It differs from the components on purpose: a tile and a same-colour stroke, because a tab paints it at 16px where bare thin claws vanish. `href="/favicon.svg"` in the page is rewritten to `./favicon.svg` by `base:'./'`, which is what makes it resolve under the Pages sub-path. |
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board, and where it deliberately does NOT — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both) plus `clickHere`, a click that does not scroll the target into view first (`page.click` does, which would defeat any test that parks the week on purpose). `playwright.config.ts` builds and serves the port itself. |
-| `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. |
+| `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. Browser download cached, geometry suite one-worker-per-core (15 Aug 26). |
+| `vercel.json` (repo root) | The ungated fast-preview channel (15 Aug 26): builds `raptor-port` and serves every branch/PR its own Vercel URL in ~1 min, for the owner to tap mid-session and for iterating drives. Pages stays the official gated site. See §Deploy and `CLAUDE.md` §Build & verify. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split is in `e2e/geometry.spec.ts`, which is the only place it resolves (the day-carousel motion tests that used to sit beside it went with the swipe, 12 Aug 26). |
 | `src/ui/boardrmk.test.tsx` | The empty remarks box and the `+` that reveals it (12 Aug 26) — which input carries `.empty`, that the reveal clears it for its OWN row only and focuses it, that typing one drops it unaided, and that asking for the box back writes NOTHING to the edit log or the pending set. jsdom cannot measure the 109px→79px row it buys; `e2e/geometry.spec.ts` does that. |
 | `src/**/audit-*.test.ts(x)` | Three sweeps of 12 Aug 26, all keepers — they are the regression armour for corners nothing else tests. **The adversarial audit** over PRs 148–174, six agents (a=History/edit log, b=board nav, c=validation, d=sort/reorder, e=inputs): closed every gap this file listed and pinned twelve fixes (log keys remapped with the key space, day-aware accept deferral, `deletionWasIssued` under reorder, the relink's preserved extras and covered-day re-file, the scrub/handle button guards, the day-step commit, the carry-day fix, the numeric time sort). **The five suspects** it raised and the owner then closed: `audit-c-briefguard` (brief vs take-off, both directions), `audit-thinwin` (`inpWin` failing closed), `audit-gesture-bubble` (repaint re-check, drag-vs-scrub). **The guard-rail sweep**: `audit-guards` (`hmOK`, `minus`, the time cells, store renames, the rules load path) and `audit-guards-inputs` (input times, spans, the derived AM/PM label, and what stays allowed because it is a decision). |

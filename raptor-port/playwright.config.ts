@@ -21,6 +21,11 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
+  /* One worker per core in CI (the default is half the cores, so a 4-core
+     runner sat at 2). The 96 geometry tests are independent and hit one shared
+     preview server, so saturating the cores roughly halves the suite's wall
+     time. Local runs keep Playwright's own default. */
+  workers: process.env.CI ? '100%' : undefined,
   reporter: process.env.CI ? 'list' : 'line',
   use: {
     ...devices['Desktop Chrome'],

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd raptor-port && npm ci",
+  "buildCommand": "cd raptor-port && npm run build",
+  "outputDirectory": "raptor-port/dist"
+}

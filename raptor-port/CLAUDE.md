@@ -302,6 +302,28 @@ element in question and LOOK at it.
 Push to `main` → `.github/workflows/deploy.yml` reruns the gates and
 publishes to **https://seejiaokai.github.io/Raptor/**. Nothing deploys red.
 
+**Two deploy channels, different jobs** (owner, 15 Aug 26 — the GitHub round
+trip felt like ~20 min per change and was unsustainable):
+
+- **Vercel is the FAST per-branch preview** — `vercel.json` at the repo root
+  builds `raptor-port` and every push to any branch/PR gets its own live URL
+  in ~1 min, no test gate in the way. This is the channel the owner taps on
+  his phone/laptop to review a change mid-session, and the one to point a
+  browser drive at while iterating (same recipe as the deployed page — it is
+  a real hosted build, base path and all). It is NOT gated, so a red preview
+  is still just a preview; correctness still rides the four gates below.
+- **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
+  only on merge to `main`. Slower (gates + a Pages rollout of 2–10 min, the
+  latter outside our control), so it is paid ONCE per session at the end, not
+  per change. The "done means live" chain still ends here.
+
+So the loop is: iterate against the local `vite preview` (instant, what you
+drive), let the owner eyeball the Vercel preview when he wants to tap it
+himself, and ship to Pages once at the end. The CI gate itself was sped up
+15 Aug 26 (the browser download is cached and the geometry suite runs one
+worker per core — deploy.yml + playwright.config.ts), so the checking wait is
+~2–3 min, not ~5.
+
 ## Architecture rules (apply to nearly every task)
 
 **The store.** `notify()` bumps a version; components subscribe via
