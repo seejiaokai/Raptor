@@ -37,7 +37,11 @@ export function panDays(dir: number) {
   const at = w.scrollLeft / st
   const cur = dir > 0 ? Math.floor(at + 0.02) : Math.ceil(at - 0.02)
   const tgt = Math.max(0, Math.min(n - 1, cur + dir)) * st
-  w.scrollTo({ left: Math.min(tgt, Math.max(0, w.scrollWidth - w.clientWidth)), behavior: 'smooth' })
+  const dest = Math.min(tgt, Math.max(0, w.scrollWidth - w.clientWidth))
+  /* pressing › while already jammed at the right end fires no scroll event, so
+     the hint would never surface from onDocScroll — trigger it here too. */
+  if (dir > 0 && dest <= w.scrollLeft + 1) maybeCrewHint(w)
+  w.scrollTo({ left: dest, behavior: 'smooth' })
 }
 
 /* ---- sticky bottom horizontal scroll bar (desktop) ----
@@ -105,6 +109,50 @@ function hsLabel() {
   lbl.textContent = `day ${a}–${b} of ${days}`
 }
 
+/* THE CREW-PANEL EDGE HINT (owner, 15 Aug 26). The aircrew panel follows the
+   left-most day in view, but on a wide screen the last days of the week can
+   never reach the left edge — Sunday is the final day and clamps the scroll, so
+   a slice of an earlier day stays pinned to the left and the panel follows THAT
+   day, not the ones the scheduler is looking at. The day name is a button now
+   and the panel header carries ‹ › arrows; this teaches that the first time a
+   scheduler scrolls hard against the right edge with days still unreachable. */
+let crewHintDone = false
+let HINT_T: any = 0
+function crewHintEl() {
+  let el = $('crewHint')
+  if (!el) {
+    el = document.createElement('div')
+    el.id = 'crewHint'; el.className = 'crew-hint'
+    el.innerHTML = `<b>That's as far right as the week scrolls.</b> To load a later day's crew here, click that day's <b>name</b> — or use the ‹ › arrows on this panel.`
+      + `<button class="crew-hint-x" data-crewhintx title="Got it">✕</button>`
+    document.body.appendChild(el)
+    el.querySelector('[data-crewhintx]')!.addEventListener('click', ev => { ev.stopPropagation(); crewHintDone = true; hideCrewHint() })
+  }
+  return el
+}
+export function hideCrewHint() { const el = $('crewHint'); if (el) el.classList.remove('on'); clearTimeout(HINT_T) }
+/* Show once per session, and only when it is actually true: a wide screen, real
+   overflow, the week jammed against its right end, and a day past the current
+   left day still sitting unreachable in view. Anchored to the panel's top so it
+   sits over the thing it is talking about. */
+function maybeCrewHint(w: any) {
+  /* edit page only: the day-name picker and the panel arrows are a scheduler's
+     controls, and the view week's day names open the read-only details panel. */
+  if (crewHintDone || view.ARM || view.CURPAGE !== 'editsched' || window.innerWidth <= 820) return
+  const over = w.scrollWidth - w.clientWidth
+  if (over <= 12 || w.scrollLeft < over - 1) return
+  const left = view.weekLeftDay(w)
+  const last = w.querySelectorAll('.day[data-day]').length - 1
+  if (left == null || left >= last) return
+  const el = crewHintEl(); const ros = $('eRoster')
+  /* sit just BELOW the panel's own header so the ‹ › arrows it points at stay
+     visible — a hint that covered the control it describes would be self-defeating. */
+  const r = (ros || w).getBoundingClientRect()
+  el.style.top = Math.round(r.top + 42) + 'px'
+  el.classList.add('on'); crewHintDone = true
+  clearTimeout(HINT_T); HINT_T = setTimeout(hideCrewHint, 9000)
+}
+
 /* the palette shows one day's availability. Panning the week changes which day
    you are looking at, so the palette walks along with it — debounced, because a
    scroll fires on every frame and rebuilding 60 pucks per frame is wasteful. */
@@ -118,8 +166,23 @@ function weekDay() {
   return d == null ? view.ROSDAY : d
 }
 let ROSDAY_T: any = 0
+/* AN EXPLICIT DAY PICK WINS OVER THE SCROLL-FOLLOW (owner, 15 Aug 26). Clicking
+   a day name or a panel arrow points the palette at a day the wide-screen week
+   may not be able to scroll to the left edge — so the scroll-follow must not
+   then drag it back to whatever sits at the edge. Two ways it could: a follow
+   already queued from the scroll just before the pick, and one that fires from
+   the scroll the pick itself settles into. So the pick CANCELS the pending
+   follow and suppresses any new one for a short window; after it lapses, an
+   ordinary scroll takes the palette over again, exactly as before. */
+let ROSPIN_T: any = 0
+export function pickRosDay(di: number) {
+  clearTimeout(ROSDAY_T)
+  clearTimeout(ROSPIN_T); ROSPIN_T = setTimeout(() => { ROSPIN_T = 0 }, 500)
+  if (view.ROSDAY !== di) { view.setRosDay(di); notify() }
+  hideCrewHint()
+}
 export function rosDayFollow() {
-  if (view.ARM) return                       // an armed slot pins the palette to ITS day
+  if (view.ARM || ROSPIN_T) return           // an armed slot, or a just-made pick, pins the palette
   clearTimeout(ROSDAY_T)
   ROSDAY_T = setTimeout(() => { const d = weekDay(); if (d !== view.ROSDAY) { view.setRosDay(d); notify() } }, 110)
 }
@@ -154,6 +217,10 @@ function onDocScroll(e: Event) {
   /* a week panned → mirror to the proxy, follow with the palette */
   if (w.classList.contains('week')) {
     hsLabel(); rosDayFollow()
+    /* teach the crew-day controls when the scroll jams against the right end
+       with later days still unreachable; drop the hint once it scrolls away. */
+    const over = w.scrollLeft >= (w.scrollWidth - w.clientWidth) - 1
+    if (over) maybeCrewHint(w); else hideCrewHint()
     const trk = $('hsTrack'); if (!trk) return
     const tmax = trk.scrollWidth - trk.clientWidth, wmax = w.scrollWidth - w.clientWidth
     hsSet(trk, wmax > 0 ? (w.scrollLeft / wmax) * tmax : 0)

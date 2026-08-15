@@ -229,6 +229,13 @@ check the other):
 - **Three editors over one list.** The Inputs page, the week cell and the board
   cell all edit `INPUTS`; they are kept from drifting only because all three
   funnel through `commitInputEdit`/`setInpField`. Add a fourth the same way.
+- **The edit-week day-head diverges from the reference (15 Aug 26).** The day
+  NAME is a crew-day picker (`.dow.crewday`) while the reference's whole day-head
+  opened the board; the two are held in sync by `html.test.ts`'s `normDow`, which
+  maps the port's `.dow` back to the reference's before the byte-compare. Change
+  the port's `.dow` markup and `normDow` must move with it, or the parity gate
+  fails on a difference that is deliberate. (The `.dt` date is byte-identical to
+  the reference and needs no idiom.)
 - **The history bubble is wired to the board wrap.** Cells that render only on
   the WEEK (`ar:`/`at:`/`it:`) list in history but cannot show a bubble or be
   jumped to — `NO_BOARD_CELL` records which. A new week-only cell inherits this.

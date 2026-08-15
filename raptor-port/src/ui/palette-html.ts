@@ -131,8 +131,23 @@ export function paletteHTML(di:any,opts?:any){
       +(colWhy?`<div class="rwhy">${esc(colWhy)}</div>`:'')
       +act.map((id:any)=>rosterPuck(id,di,armKey,eng,off,sby,arules,!!colWhy)).join('')
       +`</div>`;};
+  /* THE PANEL'S OWN DAY PICKER (owner, 15 Aug 26). The palette follows the
+     left-most day in view, but on a wide screen the last days of the week can
+     never reach the left edge (Sunday is the final day and clamps the scroll),
+     so their crew was unreachable by scrolling alone. The ‹ › arrows step the
+     crew day directly — clamped to the week — reaching every day at any width.
+     Only when NOT armed: an armed slot pins the palette to ITS day, and letting
+     the arrows walk off it mid-plan would be a lie about which slot is live. */
+  const lastDay=DAYS.length-1;
+  const dayLbl=d.dow
+    ? (ARM
+      ? `<span class="mono" style="color:var(--ink-3)">${esc(d.dow)}</span>`
+      : `<button class="er-daynav" data-crewstep="-1" title="Previous day"${di<=0?' disabled':''}>‹</button>`
+        +`<span class="mono er-dayname" style="color:var(--ink-3)">${esc(d.dow)}</span>`
+        +`<button class="er-daynav" data-crewstep="1" title="Next day"${di>=lastDay?' disabled':''}>›</button>`)
+    : '';
   const head=o.head===false?'':`<div class="er-h">${ARM?'Tap a name to plan':'Aircrew'}`
-    +(d.dow?` · <span class="mono" style="color:var(--ink-3)">${esc(d.dow)}</span>`:'')+`</div>`;
+    +(d.dow?` · ${dayLbl}`:'')+`</div>`;
   /* Personnel (ground crew) get their own column, shown only when the squadron
      actually has some — a squadron with no ground crew never sees an empty
      third column. They can be dropped into a rear seat, a duty desk, a ground

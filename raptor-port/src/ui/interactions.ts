@@ -21,6 +21,7 @@ import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList
 import { reassignInput } from './inputedit'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, draftsMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
+import { pickRosDay } from './pan'
 import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
 
@@ -729,6 +730,29 @@ export function routeClick(e: MouseEvent) {
   /* the Traffic button on a wave → the airspace popup */
   const air = t.closest('[data-air]') as HTMLElement | null
   if (air) { setAirKey(air.dataset.air!); notify(); return }
+
+  /* THE DAY NAME on the EDIT week loads that day's crew into the aircrew panel
+     (owner, 15 Aug 26). The panel used to follow only the left-most scrolled
+     day, so on a wide screen the last days of the week could never reach the
+     left edge and their crew was unreachable. Clicking the day NAME points the
+     panel at it directly; the DATE beside it still opens the board (the .dt
+     kept sb-open). Edit-page gated, like the board open just below. Hide the
+     edge hint if it was up — the scheduler just learned the gesture. */
+  const cd = t.closest('[data-crewday]') as HTMLElement | null
+  if (cd && canEditSched() && view.CURPAGE === 'editsched') {
+    pickRosDay(+cd.dataset.crewday!)
+    e.stopPropagation(); return
+  }
+  /* the ‹ › arrows on the panel header step the crew day the same way, so a day
+     that cannot be scrolled to the left edge is still reachable. Clamped to the
+     week; stepping from ROSDAY, which is the palette's day whenever it is drawn
+     (the arrows render only when no slot is armed). */
+  const cstep = t.closest('[data-crewstep]') as HTMLElement | null
+  if (cstep && canEditSched() && view.CURPAGE === 'editsched') {
+    const n = DAYS.length || 1
+    pickRosDay(Math.max(0, Math.min(n - 1, view.ROSDAY + (+cstep.dataset.crewstep!))))
+    e.stopPropagation(); return
+  }
 
   /* a day head on the EDIT week opens the scheduler board (edit-page gated) */
   const sbo = t.closest('.sb-open[data-sbday]') as HTMLElement | null

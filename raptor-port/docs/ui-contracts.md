@@ -50,6 +50,42 @@ with 8px of slack so a sliver does not count. `pan.ts`'s palette follow reads
 through the same function — shared, not copied, so the two can never disagree
 about which day you are on.
 
+## The aircrew panel's day is pickable, not only scrolled to
+
+The aircrew panel (`EditRoster`) shows ONE day's crew — `paletteDay()` =
+`ARM.di` when a slot is armed, else `ROSDAY`. `ROSDAY` follows the scroll
+through `rosDayFollow` (the `weekLeftDay` reading above). But **the left-most
+day is not always reachable**: on a wide screen several day boxes share the
+viewport, and the last days of the week can never be scrolled to the left edge
+— Sunday is the final day and clamps the scroll, so a slice of an earlier day
+stays pinned to the left and the panel follows THAT day, not the ones being
+looked at. So the day is also PICKABLE (owner, 15 Aug 26):
+
+- **The day NAME is a crew-day button** (`html.ts`, edit week only —
+  `.dow.crewday[data-crewday]`; the DATE `.dt` keeps `sb-open`/`data-sbday` and
+  still opens the scheduler board). Clicking it points the panel at that day.
+  This is a deliberate divergence from the reference, whose whole day-head
+  opened the board; `html.test.ts`'s `normDow` maps the port's `.dow` back to
+  the reference's before the byte-compare, and the split is pinned positively
+  beside it.
+- **The panel header carries ‹ › arrows** (`palette-html.ts`,
+  `.er-daynav[data-crewstep]`), disabled at the week's two ends, so a day the
+  week cannot scroll to is still reachable. Drawn only when NOT armed (an armed
+  slot pins the panel to its own day). Absent on the board, which passes
+  `{head:false}` — the header, and so the arrows, render on the edit week alone.
+- **An explicit pick WINS over the scroll-follow** (`pan.ts:pickRosDay`). Both
+  the click and the arrows route through it: it cancels any queued follow and
+  suppresses a new one for ~0.5s, so the scroll the pick settles into cannot
+  drag the panel back to the edge. After the window lapses an ordinary scroll
+  takes over again — scrolling still sets the day, a pick just outlasts the
+  settle.
+- **An edge hint teaches the gesture** (`pan.ts:maybeCrewHint`, `.crew-hint`).
+  Once per session, edit page and wide screen only, when the week is jammed
+  against its right end with a day past the current one still unreachable, a
+  dismissible bubble points at the day names and the arrows. It sits BELOW the
+  panel header so it never covers the arrows it describes. Geometry-only, so it
+  is gated in `e2e/geometry.spec.ts` (jsdom has no scroll clamp), not in jsdom.
+
 Four things make it work, and each is load-bearing:
 
 - **The reading is taken in `setPage`, before `CURPAGE` moves.** One line later

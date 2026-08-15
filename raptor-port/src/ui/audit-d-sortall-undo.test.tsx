@@ -42,7 +42,7 @@ beforeAll(async () => {
   await act(async () => { createRoot(host).render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
-  await click($('#eWeek .day[data-day="0"] .dow.sb-open'))
+  await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
   expect(view.SBDAY).toBe(0)
 })
 

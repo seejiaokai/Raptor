@@ -76,7 +76,7 @@ beforeAll(async () => {
 describe('the two entry points', () => {
   it('a Drafts control sits beside Templates on the board, edit mode only', async () => {
     await resetDrafts()
-    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     expect($('#sbBoard [data-draftsadd="0"]')).toBeTruthy()
     const real = HOOKS.editMode
     HOOKS.editMode = () => false
@@ -201,7 +201,7 @@ describe('the edit select and the frozen draft preview', () => {
   })
 
   it('the board select carries the draft entries too', async () => {
-    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     const sel = $('#schedBoard select.dver') as unknown as HTMLSelectElement
     expect(sel).toBeTruthy()
     const vals = [...sel.options].map(o => o.value)

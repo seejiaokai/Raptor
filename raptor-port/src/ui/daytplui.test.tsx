@@ -54,7 +54,7 @@ const resetLib = async () => { dayTplReset(); await act(async () => { notify() }
 describe('the board entry point', () => {
   it('a Templates control sits at the top of the board content, in edit mode', async () => {
     await resetLib()
-    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     expect($('#sbBoard [data-daytpladd="0"]')).toBeTruthy()
   })
 
@@ -130,7 +130,7 @@ describe('the picker (dayTplMenu, opened from either entry point)', () => {
     const real = HOOKS.toast
     HOOKS.toast = (m: any) => { toasts.push(String(m)) }
     try {
-      await click($('#eWeek .day[data-day="1"] .dow.sb-open'))
+      await click($('#eWeek .day[data-day="1"] .dt.sb-open'))
       await click($('#sbBoard [data-daytpladd="1"]'))
       await click($('.wavemenu [data-daytplpick]'))
       expect(DAYS[1].waves[0].formations[0].cs).toBe(DAYS[0].waves[0].formations[0].cs)
@@ -143,7 +143,7 @@ describe('the picker (dayTplMenu, opened from either entry point)', () => {
 
   it('refuses a published day, with the reopen toast, and changes nothing', async () => {
     await resetLib()
-    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     await click($('#sbBoard [data-daytpladd="0"]'))
     await click($('.wavemenu [data-daytplsave]'))
     await click($('#daytplClose'))
@@ -156,7 +156,7 @@ describe('the picker (dayTplMenu, opened from either entry point)', () => {
     const real = HOOKS.toast
     HOOKS.toast = (m: any) => { toasts.push(String(m)) }
     try {
-      await click($('#eWeek .day[data-day="2"] .dow.sb-open'))
+      await click($('#eWeek .day[data-day="2"] .dt.sb-open'))
       await click($('#sbBoard [data-daytpladd="2"]'))
       await click($('.wavemenu [data-daytplpick]'))
       expect(toasts).toEqual(['Reopen the day first'])
@@ -169,7 +169,7 @@ describe('the picker (dayTplMenu, opened from either entry point)', () => {
 
   it('the week’s own Templates button opens the identical picker', async () => {
     await resetLib()
-    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     await click($('#sbBoard [data-daytpladd="0"]'))
     await click($('.wavemenu [data-daytplsave]'))
     await click($('#daytplClose'))
