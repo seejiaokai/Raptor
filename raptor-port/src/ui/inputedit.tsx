@@ -143,6 +143,27 @@ export function sansRefusal(person: any, sans: any): string {
   return ''
 }
 
+/* ONE SANS RECORD PER DAY (bug-test fix). SANS Availability is one window per
+   record: two records covering the same person on the same day break silently —
+   sansGate/sansAvailOn (engine/inputs.ts) read only the FIRST, the card grid
+   draws BOTH, and because inpKey is `person|date|type|s` two same-day records
+   share an edit address, so clicking one card can edit — or delete — the other
+   (engine/slots.ts inpKey). So refuse a new/edited record whose date RANGE
+   overlaps an existing SANS record for the same person; `except` is the row
+   being edited, which never clashes with itself. To offer two windows on one
+   day the member ticks both events on the one record — the feature's own model.
+   Returns '' when clear. */
+export function sansOverlapRefusal(person: any, date: any, endDate: any, except: any): string {
+  const na = dateOrd(date), nb = dateOrd(endDate || date)
+  if (na == null || nb == null) return ''
+  const clash = INPUTS.some((x: any) => {
+    if (x === except || x.person !== person || !isSansAvail(x.type)) return false
+    const a = dateOrd(x.date), b = dateOrd(x.endDate || x.date)
+    return a != null && b != null && na <= b && a <= nb
+  })
+  return clash ? 'A SANS availability is already filed for one of these days — edit that entry instead of adding another' : ''
+}
+
 /* THE TYPE CONTROLS. Twenty types is too many for a flat list, so every
    dropdown is cut into the same three groups the legend uses, generated from
    INPUT_META — the list you pick from, the explanation you read and the rule
@@ -218,6 +239,8 @@ export function commitInputEdit(r: any, draft: any) {
   if (isSansAvail(draft.type)) {
     const why = sansRefusal(draft.person, draft.sans)
     if (why) { HOOKS.toast(why, 'warn'); return false }
+    const dup = sansOverlapRefusal(draft.person, date, endDate, r)
+    if (dup) { HOOKS.toast(dup, 'warn'); return false }
   }
   writeInputsBatch(() => {
     /* An ACCEPTED input is linked to the row it created by `src`, a content
