@@ -324,6 +324,10 @@ himself, and ship to Pages once at the end. The CI gate itself was sped up
 workers with one CI retry — NOT all cores; '100%' starved the preview server
 and flaked a carry-day test on its first main run, see playwright.config.ts —
 deploy.yml + playwright.config.ts), so the checking wait is ~2–3 min, not ~5.
+**Docs-only changes skip the gates entirely** (`paths-ignore` in deploy.yml:
+`**.md` + `.claude/**` — verified nothing there reaches the bundle), so a
+handoff PR has NO checks to wait for: push, merge at once, done. A PR mixing
+code and docs still runs everything.
 
 ## Architecture rules (apply to nearly every task)
 

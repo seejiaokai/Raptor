@@ -923,6 +923,12 @@ routing every look through the gated Pages deploy.
   ~30% win (~1.7min → ~1.2min at 4 cores) with headroom, and the retry
   absorbs a residual flake visibly (the reporter logs retried passes). So the
   build job's checking wait is ~2–3 min, not ~5.
+- **Docs-only PRs and pushes skip the workflow entirely** (`paths-ignore`:
+  `**.md` + `.claude/**`, added the same day — nothing under those patterns
+  is imported into the bundle, verified by grep). A session-handoff commit
+  therefore has NO checks and merges immediately; do not sit waiting for a
+  "build" check that will never appear on such a PR. A mixed code+docs PR
+  still runs the full gates.
 
 GitHub Pages must stay enabled (Settings → Pages → Source: GitHub Actions).
 The workflow refuses to publish on any red test. The four gates also run on

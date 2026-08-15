@@ -42,6 +42,10 @@ that never landed. So the handoff commit gets the same treatment as any
 other: PR, checks, merge. Do not end the session on "pushed" — end it on
 merged, and if the PR cannot be merged, say so in chat, because the file the
 next session reads will then be the PREVIOUS session's.
+**A docs-only handoff PR has NO checks** (15 Aug 26 — `deploy.yml`
+`paths-ignore` skips the workflow when every changed file is `**.md` or
+`.claude/**`): push it and merge it at once; do not wait for a "build" check
+that will never appear. Only a handoff riding a code change runs the gates.
 
 "Unfinished" means any of: an open or unmerged PR, a gate that is red or was
 never run, a half-applied edit, a question the owner never answered, a
