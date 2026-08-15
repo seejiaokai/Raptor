@@ -10,7 +10,7 @@ import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
@@ -19,8 +19,8 @@ import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sor
 import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML } from './html'
 import { setInpField } from './inputedit'
-import { STORE_CFG, DUTYTPL_CFG, blockFromTpl } from '../engine'
-import { setTplEdit } from './pops'
+import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary } from '../engine'
+import { setTplEdit, setDayTplEdit } from './pops'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -64,7 +64,16 @@ export function boardHTML(di: number, pv?: boolean) {
      own #sbSign element (boardSignHTML below) so the Live Checks panel can sit
      right BELOW the sign-off (owner, 14 Aug 26 — "put it right below sign off
      section"). #sbBoard now starts with the notes panel. */
-  let b = sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
+  /* DAY TEMPLATES (owner ask, 15 Aug 26): a labelled button at the very top of
+     the board's own content, ahead of every section — NOT on the top bar's
+     first line, which stays frozen (CLAUDE.md §phone board: nothing joins it
+     without something else leaving). It is the same "section-level control"
+     idiom + Wave uses below for the same reason: a control that can replace
+     the WHOLE day belongs at the top of the day's own content, not squeezed
+     onto an already-full 30px bar. Withheld on mvRO like every other write
+     control on this board. */
+  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Day templates <span class="sub">save or apply this whole day's structure</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button></span></div></div>`
+  let b = dayTplHead + sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
     /* SC / AVALON / BB carry no store config on the week (html.ts's `sa`
@@ -648,6 +657,12 @@ export function boardMbtn(e: MouseEvent) {
     const di = +ds.dwadd
     return blockMenu(t, di)
   }
+  /* the board's own "Templates" button, at the top of the board content —
+     see dayTplMenu above and the boardHTML comment on where the button lives. */
+  if (ds.daytpladd != null) {
+    const di = +ds.daytpladd
+    return dayTplMenu(t, di)
+  }
   if (ds.dwdel != null) {
     const [di, wi] = ds.dwdel.split('.').map(Number)
     const issued = deletionWasIssued(di, 'dutyblock', wi)
@@ -983,6 +998,62 @@ export function blockMenu(anchor: HTMLElement, di: any) {
     d.dutywaves.push(blk)
     markStructuralAdd(`dl:${di}.${d.dutywaves.length - 1}`); afterSchedMutate(); notify()
     close(); e.stopPropagation()
+  })
+}
+/* THE DAY-TEMPLATES PICKER (owner, 15 Aug 26) — the same popMenu idiom as
+   blockMenu above, one level up: a whole DAY's structure instead of one duty
+   block. Lists the saved templates (tap = apply), "Save this day as a
+   template" (mints one off the day the picker was opened from), then a
+   pencil into the manage modal. One function serves BOTH entry points — the
+   board's own "Templates" control (below) and the edit week's day-sign strip
+   (routeClick in interactions.ts) — so there is exactly one picker to keep
+   in step with the engine, not two drifting copies of the same list. */
+export function dayTplMenu(anchor: HTMLElement, di: any) {
+  if (!canEditSched() || !HOOKS.editMode()) return
+  di = +di
+  const d = DAYS[di]; if (!d) return
+  const html = `<h5>Day templates — ${esc(d.dow)}</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+    + (DAYTPL_CFG.length
+      ? DAYTPL_CFG.map((t: any) => `<button class="wm" data-daytplpick="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${esc(dayTplSummary(t))}</span></button>`).join('')
+      : `<div class="wm-note">No saved templates yet — save this day to start the library.</div>`)
+    + `</div><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+    + `<button class="wm" data-daytplsave="1">+ Save this day as a template</button></div>`
+    + `<div class="wm-note"><button class="wm-edit" data-daytpledit="1">✎ Manage templates</button></div>`
+  popMenu(anchor, html, (e, close) => {
+    if (e.target.closest('[data-daytpledit]')) { close(); setDayTplEdit(true); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-daytplsave]')) {
+      close()
+      const t = addDayTpl(di)
+      if (!t) { toast('Template library is full — delete one before saving another'); e.stopPropagation(); return }
+      dayTplSave()
+      /* opens the manage modal PRE-SELECTED on what was just captured, so the
+         owner can rename it off the default "Template N" straight away
+         instead of having to find it among however many already exist */
+      setDayTplEdit(t.id); notify()
+      toast(`Saved as "${t.title}"`)
+      e.stopPropagation(); return
+    }
+    const b = e.target.closest('[data-daytplpick]'); if (!b) return
+    const id = b.dataset.daytplpick
+    close()
+    /* the refusal reads "Reopen the day first" rather than explaining WHY —
+       dayStatHTML's own Publish/Reopen button already uses "Reopen <day>",
+       so this names the same action the scheduler would actually take */
+    if (dayApproved(di)) { toast('Reopen the day first'); e.stopPropagation(); return }
+    const t = DAYTPL_CFG.find((x: any) => x.id === id)
+    if (applyDayTpl(di, id)) {
+      /* one undo step for the whole swap (afterSchedMutate's own markEdit()
+         call carries no key, so nothing is marked pending by it — applyDayTpl
+         already did the real work) — same contract restoreDayVersion's own
+         caller uses. No markStructuralAdd / flashAdded here: that mechanism
+         is keyed to ONE funnel address, and a whole-day replace has no single
+         address to hang a blue box on — see the board button's own comment
+         for the rest of that decision. A named toast carries the news instead. */
+      afterSchedMutate(); notify()
+      toast(`Applied "${t ? t.title : 'template'}" to ${d.dow}`)
+      logAction(di, `Day template "${t ? t.title : 'template'}" applied`)
+    }
+    e.stopPropagation()
   })
 }
 /* The duty ROLE cell's pick-list (owner, 10 Aug 26). A block that belongs to

@@ -639,7 +639,18 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${vsel?verSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
-      +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}</div>`:'')
+      /* THE WEEK'S ENTRY into day templates (owner ask, 15 Aug 26) rides inside
+         this strip, not the day-head above it: day-head (dow/dt/badge/dstat) is
+         still byte-compared against the reference verbatim (html.test.ts has no
+         divergence idiom for it), but this whole signoff.day-sign block already
+         is — html.test.ts's noSign excises it wholesale, edit-mode only, because
+         signoffHTML itself nests no <div> so the excision's lazy match runs to
+         THIS wrapper's own close. The new button is a bare <button> for exactly
+         that reason: adding a <div> here would end the excision early and drag
+         real markup back under comparison. Opens the same picker the board's own
+         "Templates" control does (board.ts's dayTplMenu) — one picker, reached
+         from either surface, via routeClick's data-daytplopen (interactions.ts). */
+      +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}<button class="dbeak" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button></div>`:'')
       +`<div class="day-body">`;
     /* warnings are live-model state — a snapshot is never validated */
     if(!PV)h+=dayWarnHTML(di);

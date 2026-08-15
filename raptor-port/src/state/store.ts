@@ -18,7 +18,7 @@ import { validate } from '../engine/validate'
 import { rulesLoad } from '../engine/rules'
 import { mintInpIds } from '../engine/inputs'
 import { seedDemoSans } from './demoseed'
-import { storesLoad, dutyTplLoad } from '../engine'
+import { storesLoad, dutyTplLoad, dayTplLoad } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion } from '../engine/publish'
 import { afterSchedMutate } from './view'
@@ -199,6 +199,7 @@ export function initStore() {
   rulesLoad()
   storesLoad()
   dutyTplLoad()
+  dayTplLoad()
   /* demo-only SANS Availability rows (see state/demoseed.ts for why this
      lives here and not in engine/inputs.ts's INPUTS array) — pushed before
      mintInpIds so they mint an iid exactly like every other seed row */

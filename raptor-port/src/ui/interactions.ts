@@ -19,7 +19,7 @@ import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
 import { reassignInput } from './inputedit'
-import { openScheduler, toggleSbwarn, boardTab } from './board'
+import { openScheduler, toggleSbwarn, boardTab, dayTplMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
@@ -588,6 +588,24 @@ export function routeClick(e: MouseEvent) {
     logAction(di, said)
     HOOKS.toast(said)
     notify(); return
+  }
+
+  /* the edit week's own entry into day templates (owner, 15 Aug 26) — the
+     day-sign strip's "Templates" button (html.ts). Opens the exact same
+     picker the board's own "Templates" control does (board.ts's dayTplMenu,
+     exported for this one call site) so applying/saving a template behaves
+     identically from either surface — there is one picker, not two that could
+     drift. Different data attribute from the board's own data-daytpladd
+     deliberately: the board's button is handled by boardMbtn (scoped to
+     #sbBoard, requires `.mbtn`), which this button is not part of, so a
+     shared attribute name would either need both handlers to agree on a
+     class it doesn't carry or risk one click opening the menu twice. */
+  const dtOpen = t.closest('[data-daytplopen]') as HTMLElement | null
+  if (dtOpen) {
+    e.stopPropagation()
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    dayTplMenu(dtOpen, +dtOpen.dataset.daytplopen!)
+    return
   }
 
   /* clear a day's sign-off */
