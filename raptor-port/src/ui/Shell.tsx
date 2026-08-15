@@ -83,7 +83,9 @@ export function Shell() {
       const dv = (e.target as HTMLElement).closest('select[data-dver]') as HTMLSelectElement | null
       if (dv) {
         const v = dv.value
-        setDayPreview(+dv.dataset.dver!, v === 'live' ? null : (v === 'orig' ? 'orig' : +v))
+        /* 'd:<id>' is a draft preview (engine/drafts.ts) — kept as the string,
+           which daySnapOf resolves like any other version */
+        setDayPreview(+dv.dataset.dver!, v === 'live' ? null : (v === 'orig' || v.slice(0, 2) === 'd:' ? v : +v))
         notify(); return
       }
       const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null

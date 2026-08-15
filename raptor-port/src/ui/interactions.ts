@@ -19,7 +19,7 @@ import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
 import { reassignInput } from './inputedit'
-import { openScheduler, toggleSbwarn, boardTab, dayTplMenu } from './board'
+import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, draftsMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { setCurWeek } from '../engine/waves'
 import { WARN } from '../engine/validate'
@@ -565,6 +565,11 @@ export function routeClick(e: MouseEvent) {
   if (rst) {
     e.stopPropagation()
     if (!canEditSched() || !(view.CURPAGE === 'editsched' || view.SBDAY != null)) return
+    /* never for a draft ('d:<id>') — the banner renders no restore button for
+       one, but a stale element must not roll a stowed draft blob over the live
+       day either: making a draft live is the Drafts menu's job (draftSelect),
+       which stows the outgoing day first; a restore here would not */
+    if (String(rst.dataset.rver || '').slice(0, 2) === 'd:') return
     const di = +rst.dataset.restore!
     const ver = rst.dataset.rver === 'orig' ? 'orig' : +rst.dataset.rver!
     /* already the current version with nothing pending — close the preview
@@ -605,6 +610,19 @@ export function routeClick(e: MouseEvent) {
     e.stopPropagation()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
     dayTplMenu(dtOpen, +dtOpen.dataset.daytplopen!)
+    return
+  }
+
+  /* the edit week's "Drafts" button (owner, 15 Aug 26) — same one-menu-two-
+     doors shape as Templates just above: board.ts's draftsMenu is the single
+     builder, and the board's own copy of the button uses a different data
+     attribute (data-draftsadd, via boardMbtn) for the same
+     double-handling reason data-daytplopen/data-daytpladd are split. */
+  const drOpen = t.closest('[data-draftsopen]') as HTMLElement | null
+  if (drOpen) {
+    e.stopPropagation()
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    draftsMenu(drOpen, +drOpen.dataset.draftsopen!)
     return
   }
 

@@ -20,7 +20,8 @@ import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary } from '../engine'
-import { setTplEdit, setDayTplEdit } from './pops'
+import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
+import { setTplEdit, setDayTplEdit, setDraftsEdit } from './pops'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -72,7 +73,12 @@ export function boardHTML(di: number, pv?: boolean) {
      the WHOLE day belongs at the top of the day's own content, not squeezed
      onto an already-full 30px bar. Withheld on mvRO like every other write
      control on this board. */
-  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Day templates <span class="sub">save or apply this whole day's structure</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button></span></div></div>`
+  /* DRAFTS sits beside it (owner ask, 15 Aug 26) — same panel, same reasons:
+     a control that swaps the WHOLE day belongs at the top of the day's own
+     content. Handled by boardMbtn's data-draftsadd branch (the week's copy
+     of this button is data-draftsopen through routeClick — split attributes,
+     same double-handling reason as data-daytpladd/data-daytplopen). */
+  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates &amp; drafts <span class="sub">save or apply this day's structure · plan alternatives</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button><button class="mbtn add" data-draftsadd="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span></div></div>`
   let b = dayTplHead + sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
@@ -663,6 +669,10 @@ export function boardMbtn(e: MouseEvent) {
     const di = +ds.daytpladd
     return dayTplMenu(t, di)
   }
+  /* the board's own "Drafts" button, beside Templates — see draftsMenu below */
+  if (ds.draftsadd != null) {
+    return draftsMenu(t, +ds.draftsadd)
+  }
   if (ds.dwdel != null) {
     const [di, wi] = ds.dwdel.split('.').map(Number)
     const issued = deletionWasIssued(di, 'dutyblock', wi)
@@ -1053,6 +1063,85 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
       toast(`Applied "${t ? t.title : 'template'}" to ${d.dow}`)
       logAction(di, `Day template "${t ? t.title : 'template'}" applied`)
     }
+    e.stopPropagation()
+  })
+}
+/* MAKE ANOTHER DRAFT THE LIVE DAY — the one write path both the drafts menu
+   (below) and DraftsModal.tsx share, so switching behaves identically from
+   either door. draftSelect stows the outgoing live day into its own entry
+   first, so nothing is lost by switching away and back; the engine refuses a
+   published day (toast names the same Reopen action the publish button
+   carries, like applyDayTpl's refusal) and the already-selected id (toasted as
+   already-live rather than silence). The caller's afterSchedMutate() is the
+   single undo step — the restore/applyDayTpl contract draftSelect documents.
+   Any frozen preview on this day is dropped: the scheduler just chose a live
+   document, and a banner claiming to show a stowed copy of it would lie. */
+export function switchDraft(di: any, id: any) {
+  if (!canEditSched() || !HOOKS.editMode()) return false
+  di = +di
+  const d = DAYS[di]; if (!d) return false
+  const t = dayDrafts(di).find((x: any) => x.id === id)
+  if (!t) return false
+  if (id === curDraftId(di)) { toast(`"${t.name}" is already the live ${d.dow}`); return false }
+  if (dayApproved(di)) { toast('Reopen the day first'); return false }
+  if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the swap may remove the armed row
+  if (!draftSelect(di, id)) return false
+  view.setDayPreview(di, null)
+  afterSchedMutate(); notify()
+  /* a whole-day swap passes no key through the funnel — the sentence is the
+     record, exactly as it is for a rollback or an applied template */
+  const said = `Switched to "${t.name}" — this is now the live ${d.dow}`
+  logAction(di, said)
+  toast(said)
+  return true
+}
+/* THE DRAFTS MENU (owner, 15 Aug 26) — the same popMenu idiom as dayTplMenu
+   above, serving BOTH entry points (the board's "Drafts" control and the edit
+   week's day-sign strip, via routeClick's data-draftsopen): one row per draft
+   — tap the name to switch, its own pencil into the manage modal pre-selected
+   on it, the selected one marked — then "Duplicate this day → new draft", then
+   the manage pencil. Duplicating toasts the new name rather than flashing
+   anything blue: there is no single funnel key for a whole-day copy to hang a
+   flash on, the same reasoning dayTplMenu records for applying a template. */
+export function draftsMenu(anchor: HTMLElement, di: any) {
+  if (!canEditSched() || !HOOKS.editMode()) return
+  di = +di
+  const d = DAYS[di]; if (!d) return
+  const list = dayDrafts(di), selId = curDraftId(di)
+  const html = `<h5>Drafts — ${esc(d.dow)}</h5>`
+    + (list.length
+      ? `<div class="wm-row" style="flex-direction:column;align-items:stretch">`
+        + list.map((t: any) => `<div style="display:flex;gap:4px;align-items:stretch">`
+          + `<button class="wm${t.id === selId ? ' sa' : ''}" style="flex:1" data-draftsel="${esc(t.id)}">${esc(t.name)}${t.id === selId ? ' ●' : ''}`
+          + `<span class="wm-sub">${t.id === selId ? 'live now — this is what publishes' : 'tap to make it the live day'}</span></button>`
+          + `<button class="wm-edit" data-draftedit="${esc(t.id)}" title="Rename or delete ${esc(t.name)}">✎</button></div>`).join('')
+        + `</div>`
+      : `<div class="wm-note">No drafts yet — duplicate this day to plan an alternative over it.</div>`)
+    + `<div class="wm-row" style="flex-direction:column;align-items:stretch">`
+    + `<button class="wm" data-draftdup="1">+ Duplicate this day → new draft</button></div>`
+    + `<div class="wm-note"><button class="wm-edit" data-draftmanage="1">✎ Manage drafts</button></div>`
+  popMenu(anchor, html, (e, close) => {
+    const pencil = e.target.closest('[data-draftedit]')
+    if (pencil) { close(); setDraftsEdit({ di, id: pencil.dataset.draftedit }); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-draftmanage]')) { close(); setDraftsEdit({ di }); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-draftdup]')) {
+      close()
+      /* same wording as the publish machinery's own refusals — a published
+         day's drafts wait for the reopen, see draftDup's comment */
+      if (dayApproved(di)) { toast('Reopen the day first'); e.stopPropagation(); return }
+      const t = draftDup(di)
+      if (t) {
+        /* one undo step for the whole duplicate — histSnap carries the blobs */
+        afterSchedMutate(); notify()
+        const said = `${d.dow} duplicated — "${t.name}" is now the live day, edit over it`
+        logAction(di, `Draft "${t.name}" created — a copy of the day as it stood`)
+        toast(said)
+      }
+      e.stopPropagation(); return
+    }
+    const b = e.target.closest('[data-draftsel]'); if (!b) return
+    close()
+    switchDraft(di, b.dataset.draftsel)
     e.stopPropagation()
   })
 }

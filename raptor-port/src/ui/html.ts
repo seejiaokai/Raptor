@@ -10,6 +10,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../e
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
+import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
 import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN } from '../state/view'
@@ -66,10 +67,39 @@ export function dayPreviewHTML(di:any,ver:any,edFallback:any){
 }
 export function verSelHTML(di:any){
   const vs=dayVersions(di)
-  if(vs.length<2)return ''
+  /* the day's OTHER drafts join the published versions (owner, 15 Aug 26).
+     Only the non-selected ones: the selected draft IS the live day, and a
+     'd:' entry for it would freeze its stale stowed blob — Live is that
+     draft, and says so by name. */
+  const others=dayDrafts(di).filter((t:any)=>t.id!==curDraftId(di))
+  if(vs.length<2&&!others.length)return ''
   const cur=DPREV.has(di)?DPREV.get(di):'live'
+  const lbl=(v:any)=>{if(v!=='live')return verLabel(v)
+    const sel=dayDrafts(di).find((t:any)=>t.id===curDraftId(di))
+    return sel?`Live · ${esc(sel.name)}`:'Live'}
   return `<select class="dver" data-dver="${di}" title="View this day as it was issued — pick a version">`
-    +vs.map((v:any)=>`<option value="${v}"${String(v)===String(cur)?' selected':''}>${verLabel(v)}</option>`).join('')+`</select>`
+    +vs.map((v:any)=>`<option value="${v}"${String(v)===String(cur)?' selected':''}>${lbl(v)}</option>`).join('')
+    +others.map((t:any)=>`<option value="d:${esc(t.id)}"${'d:'+t.id===String(cur)?' selected':''}>${esc(t.name)}</option>`).join('')
+    +`</select>`
+}
+/* THE VIEW-ONLY WEEK'S DRAFT PICKER (owner, 15 Aug 26 — "on view schedule
+   mode, you can also view the different drafts"). The view page deliberately
+   never grew the version machinery — issued schedules only — and it still
+   hasn't: this select lists ONLY the day's drafts, never ORIG/ALn, and only
+   exists once drafts do. The selected draft reads as value 'live' (marked ●)
+   because the live day IS it; the rest go through the same DPREV/'d:' frozen
+   preview the edit surfaces use, read-only banner and all. Same data-dver
+   attribute, so Shell.tsx's one document change listener routes it with no
+   new wiring. */
+export function viewDraftSelHTML(di:any){
+  const drs=dayDrafts(di)
+  if(!drs.length)return ''
+  const selId=curDraftId(di)
+  const cur=DPREV.has(di)?String(DPREV.get(di)):'live'
+  return `<select class="dver" data-dver="${di}" title="This day has alternate drafts — pick one to view">`
+    +drs.map((t:any)=>{const v=t.id===selId?'live':'d:'+t.id
+      return `<option value="${esc(v)}"${v===cur?' selected':''}>${esc(t.name)}${t.id===selId?' ●':''}</option>`}).join('')
+    +`</select>`
 }
 export function legendHTML(){
   return `<span><i style="background:var(--fcp)"></i>FCP (pilot)</span><span><i style="background:var(--rcp)"></i>RCP (WSO)</span><span data-leg="pers"><i style="background:var(--pers);box-shadow:inset 0 0 0 1px var(--pers-line)"></i>Personnel (ground crew)</span>
@@ -618,7 +648,16 @@ export function dayStatHTML(di:any,ed:any){
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a
        read-only panel — clicking a day in view mode must never lead into editing. */
     const infoChip=`<button class="dinfobtn" data-dayinfo="${di}" title="${d.dow} — approval, AL versions, advisories">i</button>`;
-    return `${alChips}${pendChip}${infoChip}${beak}${alpub}`;
+    /* WHICH DRAFT IS LIVE (owner, 15 Aug 26): once a day has alternate drafts,
+       the edit surfaces say which one the schedule IS — beside the pending
+       chip, in the strip the board's sign-off panel shares, so both surfaces
+       read it off one builder. Edit-side only (`ed`): the view page's own
+       draft select already names the selected one. Empty until drafts exist,
+       which is also what keeps the seed week's byte-parity untouched. Its own
+       .ddraft class, never .dal — the "one version chip" pins count those. */
+    const selDraft=ed?dayDrafts(di).find((t:any)=>t.id===curDraftId(di)):null;
+    const draftChip=selDraft?`<span class="ddraft" title="${d.dow} has ${dayDrafts(di).length} drafts — ${esc(selDraft.name)} is the live one, and is what publishes">${esc(selDraft.name)}</span>`:'';
+    return `${alChips}${draftChip}${pendChip}${infoChip}${beak}${alpub}`;
 }
 export function dayHTML(di:any,ed:any,vsel?:any){
   const d=DAYS[di];
@@ -627,17 +666,23 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        SCHED.dayOK[di] read, not worth threading through as a return value. */
     const ok=dayApproved(di);
     /* preview banner: the tint is the version's own colour, so "which AL am I
-       looking at" reads the same way the marks do */
+       looking at" reads the same way the marks do.
+       A DRAFT preview (ver 'd:<id>') carries the draft's name, no AL tint (a
+       draft was never issued, so no colour belongs to it) and NO restore
+       button: restoring is the published-version rollback, and making a draft
+       live is the Drafts menu's job — a second path here would be a second
+       write path to keep in step with it. */
+    const pvDraft=isDraftVer(PVV);
     const pvBar=PV
-      ? `<div class="dprev-bar"${PVV!=='orig'?` style="--alc:${alColor(+PVV)}"`:''}>Viewing <b>${verLabel(PVV)}</b> as issued — read-only`
-        +`<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${PVV}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button></div>`
+      ? `<div class="dprev-bar"${(PVV!=='orig'&&!pvDraft)?` style="--alc:${alColor(+PVV)}"`:''}>Viewing <b>${esc(draftVerLabel(di,PVV))}</b>${pvDraft?' — a draft, read-only':' as issued — read-only'}`
+        +(pvDraft?'':`<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${PVV}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button>`)+`</div>`
       : '';
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?' preview':''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow sb-open" data-sbday="${di}" title="Open scheduler board">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
-      <span class="dstat">${vsel?verSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
+      <span class="dstat">${vsel?verSelHTML(di):(ed?'':viewDraftSelHTML(di))}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
       /* THE WEEK'S ENTRY into day templates (owner ask, 15 Aug 26) rides inside
          this strip, not the day-head above it: day-head (dow/dt/badge/dstat) is
@@ -650,7 +695,12 @@ export function dayHTML(di:any,ed:any,vsel?:any){
          real markup back under comparison. Opens the same picker the board's own
          "Templates" control does (board.ts's dayTplMenu) — one picker, reached
          from either surface, via routeClick's data-daytplopen (interactions.ts). */
-      +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}<button class="dbeak" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button></div>`:'')
+      /* "Drafts" rides in the same excised strip, for the same reason, as the
+         Templates button beside it — a bare <button>, no nested <div>, so the
+         noSign excision's lazy match still runs to this wrapper's own close.
+         Opens the one drafts menu board.ts's draftsMenu builds (routeClick's
+         data-draftsopen), the same one-picker-two-doors shape as Templates. */
+      +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}<button class="dbeak" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button><button class="dbeak" data-draftsopen="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></div>`:'')
       +`<div class="day-body">`;
     /* warnings are live-model state — a snapshot is never validated */
     if(!PV)h+=dayWarnHTML(di);

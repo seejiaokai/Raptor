@@ -209,7 +209,12 @@ describe('the edit page (tfin)', () => {
     expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
     expect(day().querySelector('.dprev-bar')).toBeTruthy()
     expect(slotVal(key)).toBe('casper')        // the MODEL is untouched by previewing
-    expect($$('#vWeek select[data-dver]').length).toBe(0)   // view page never gets it
+    /* RE-POINTED (15 Aug 26): the view page never gets the ORIG/AL version
+       machinery — this day has published versions and NO drafts, so it shows
+       no select at all. Once a day has DRAFTS the view page grows a compact
+       drafts-only picker (never AL/ORIG entries) — pinned in
+       draftsui.test.tsx's view-only block. */
+    expect($$('#vWeek select[data-dver]').length).toBe(0)
     await click(day().querySelector('.dprev-restore'))
     expect(day().className).not.toContain('preview')
     expect(slotVal(key)).toBe(before)          // the rollback reverted the seat

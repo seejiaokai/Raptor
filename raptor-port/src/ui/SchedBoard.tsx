@@ -5,10 +5,11 @@
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode } from '../state/view'
+import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode, esc } from '../state/view'
 import { closeHistList } from './pops'
 import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
 import { daySnapOf, dayVersions, verLabel, alColor } from '../engine/publish'
+import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
@@ -197,10 +198,13 @@ export function SchedBoard() {
         set(inputsRef.current!, 'inputs', sbInputsHTML(DAYS[di], di))
       })
       /* the live-checks panel becomes the preview banner — a past version is
-         never validated, so live warnings against it would be nonsense */
+         never validated, so live warnings against it would be nonsense.
+         A draft preview ('d:<id>') gets the draft's name, no AL tint and NO
+         restore button — making a draft live is the Drafts menu's job
+         (board.ts's switchDraft), same as the week's banner in html.ts. */
       set(warnRef.current!, 'warn',
-        `<div class="dprev-bar"${ver !== 'orig' ? ` style="--alc:${alColor(+ver)}"` : ''}>Viewing <b>${verLabel(ver)}</b> as issued — read-only`
-        + `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${ver}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button></div>`)
+        `<div class="dprev-bar"${ver !== 'orig' && !isDraftVer(ver) ? ` style="--alc:${alColor(+ver)}"` : ''}>Viewing <b>${esc(draftVerLabel(di, ver))}</b>${isDraftVer(ver) ? ' — a draft, read-only' : ' as issued — read-only'}`
+        + (isDraftVer(ver) ? '' : `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${ver}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button>`) + `</div>`)
     } else {
       set(signRef.current!, 'sign', boardSignHTML(di))
       set(boardRef.current!, 'board', boardHTML(di))
@@ -323,11 +327,22 @@ export function SchedBoard() {
             title={HISTMODE ? 'Stop showing who changed each detail' : 'Show who changed each detail, and when — hover it, or tap it on a phone'}
             onClick={() => { toggleHistMode(); hideHistBub(); notify() }}>
             <span className="bi">🕘</span><span className="bl"> History</span></button>
-          {open && dayVersions(SBDAY).length > 1
+          {/* the day's OTHER drafts join the published versions (owner, 15 Aug
+              26) — same shape as the week's verSelHTML: never the selected one
+              (Live IS it, and names it), 'd:<id>' values ride DPREV like any
+              other frozen preview, and the select now also appears on a day
+              that has drafts but no published versions yet. */}
+          {open && (dayVersions(SBDAY).length > 1 || dayDrafts(SBDAY).some((t: any) => t.id !== curDraftId(SBDAY)))
             ? <select className="dver" aria-label="View this day as it was issued"
                 value={String(DPREV.get(SBDAY) ?? 'live')}
-                onChange={e => { const v = e.target.value; setDayPreview(SBDAY, v === 'live' ? null : (v === 'orig' ? 'orig' : +v)); notify() }}>
-                {dayVersions(SBDAY).map((v: any) => <option key={String(v)} value={String(v)}>{verLabel(v)}</option>)}
+                onChange={e => { const v = e.target.value; setDayPreview(SBDAY, v === 'live' ? null : (v === 'orig' || v.slice(0, 2) === 'd:' ? v : +v)); notify() }}>
+                {dayVersions(SBDAY).map((v: any) => <option key={String(v)} value={String(v)}>{
+                  v === 'live' && curDraftId(SBDAY) != null
+                    ? 'Live · ' + (dayDrafts(SBDAY).find((t: any) => t.id === curDraftId(SBDAY))?.name ?? 'draft')
+                    : verLabel(v)
+                }</option>)}
+                {dayDrafts(SBDAY).filter((t: any) => t.id !== curDraftId(SBDAY)).map((t: any) =>
+                  <option key={'d:' + t.id} value={'d:' + t.id}>{t.name}</option>)}
               </select>
             : null}
           {/* Sort all — every section on this day at once, not one row like

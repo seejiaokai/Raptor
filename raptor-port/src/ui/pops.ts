@@ -26,6 +26,13 @@ export function setTplEdit(on: boolean) { TPLEDIT = on }
    step with this one. */
 export let DAYTPLEDIT: false | true | string = false
 export function setDayTplEdit(v: false | true | string) { DAYTPLEDIT = v }
+/* The Drafts manage modal (owner, 15 Aug 26) — opened from the drafts menu's
+   pencils, on either surface. Unlike DAYTPLEDIT it must carry the DAY: drafts
+   are per-day, so the modal is scoped to the day whose menu opened it. `id`
+   optionally pre-selects one draft (a row's own pencil), the same open-
+   pre-selected idiom DAYTPLEDIT's string form carries. */
+export let DRAFTSEDIT: null | { di: number, id?: string } = null
+export function setDraftsEdit(v: null | { di: number, id?: string }) { DRAFTSEDIT = v }
 /* The one personal input being edited from the week or the board (owner,
    10 Aug 26). The INPUT OBJECT, never its index or its content key: undo is
    still live under the modal and renumbers INPUTS, and the key is built from

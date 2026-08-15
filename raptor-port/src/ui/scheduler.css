@@ -455,6 +455,11 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .day-head .dal.orig,.sb-pub .dal.orig{background:var(--ink-3)}
 .day-head .dpend,.sb-pub .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
   border:1px solid rgba(229,194,74,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
+/* which DRAFT the live day is (engine/drafts.ts) — the .dpend pill shape in
+   the app's accent so it reads as status, never as the amber pending count or
+   an AL colour; shared by the board's sign-off panel like its two siblings */
+.day-head .ddraft,.sb-pub .ddraft{font-size:10px;font-weight:700;color:var(--accent);background:rgba(59,198,232,.1);
+  border:1px solid rgba(59,198,232,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
 /* PUBLISH DAY is the primary action on a day, so it wears the same blue as the
    banner buttons rather than looking like one more grey chip. Published flips it
    green (and it is then the reopen control); unsigned darkens it — see the
