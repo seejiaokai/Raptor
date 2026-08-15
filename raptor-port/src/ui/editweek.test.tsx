@@ -12,7 +12,7 @@ import { slotVal } from '../engine/slots'
 import { isScheduler, PEOPLE } from '../engine/people'
 import { availByWave } from '../engine/avail'
 import { DAYS } from '../engine/data'
-import { armedKey } from '../state/view'
+import { armedKey, ROSDAY, setRosDay } from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -287,5 +287,45 @@ describe('the Available-crew panel folds (owner, 13 Aug 26)', () => {
     expect(grp.textContent).toContain(`· ${total} can fly`)
     await click(head())
     expect(day().querySelector('.availpuck .ap-grid')).toBeFalsy()
+  })
+})
+
+/* THE CREW-DAY PICKER (owner, 15 Aug 26) — the day name loads that day into the
+   aircrew panel, the date still opens the board, and the panel's own ‹ › arrows
+   step the crew day so a day the wide-screen week cannot scroll to the left edge
+   is still reachable. */
+describe('the crew-day picker', () => {
+  const rosHead = () => $('#eRoster .er-h')?.textContent || ''
+  it('starts on the first day, name carries the crew-day address, date the board', async () => {
+    setRosDay(0); await act(async () => { notify() })
+    expect(rosHead()).toContain(DAYS[0].dow)
+    const dow = $(`#eWeek .day[data-day="3"] .dow`)
+    const dt = $(`#eWeek .day[data-day="3"] .dt`)
+    expect(dow.getAttribute('data-crewday')).toBe('3')
+    expect(dow.classList.contains('sb-open')).toBe(false)
+    expect(dt.classList.contains('sb-open')).toBe(true)
+    expect(dt.getAttribute('data-sbday')).toBe('3')
+  })
+
+  it('clicking a day name loads that day into the panel', async () => {
+    await click($(`#eWeek .day[data-day="5"] .dow[data-crewday]`))
+    expect(ROSDAY).toBe(5)
+    expect(rosHead()).toContain(DAYS[5].dow)
+  })
+
+  it('the ‹ › arrows step the crew day and clamp at the week ends', async () => {
+    setRosDay(0); await act(async () => { notify() })
+    const nav = (d: string) => $(`#eRoster .er-h .er-daynav[data-crewstep="${d}"]`) as HTMLButtonElement
+    expect(nav('-1').disabled).toBe(true)         // at Monday, previous is dead
+    expect(nav('1').disabled).toBe(false)
+    await click(nav('1'))
+    expect(ROSDAY).toBe(1)
+    expect(rosHead()).toContain(DAYS[1].dow)
+    // walk to the last day; the next arrow then goes dead
+    setRosDay(DAYS.length - 1); await act(async () => { notify() })
+    expect(nav('1').disabled).toBe(true)
+    expect(nav('-1').disabled).toBe(false)
+    await click(nav('-1'))
+    expect(ROSDAY).toBe(DAYS.length - 2)
   })
 })

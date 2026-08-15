@@ -193,11 +193,34 @@ describe('view-week markup parity with the reference', () => {
        port's first input group precedes it, the reference's strip is the cut's
        own start), so it is not byte-compared here; the pins below assert the
        port keeps it in edit mode. */
-    const E = (s: string) => noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))))
+    /* Divergence (owner, 15 Aug 26): the edit week's day NAME is a crew-day
+       picker now (it loads that day into the aircrew panel), while the reference
+       kept the whole day-head opening the board. Only the .dow span changed —
+       .dt still opens the board, byte-for-byte with the reference — so map the
+       port's new dow markup back to the reference's before the compare. A no-op
+       on the reference (its dow has no data-crewday), and the behaviour itself
+       is pinned positively just below. */
+    const normDow = (s: string) => s.replace(
+      /<span class="dow crewday" data-crewday="(\d+)" title="Show this day's crew in the aircrew panel">/g,
+      '<span class="dow sb-open" data-sbday="$1" title="Open scheduler board">')
+    const E = (s: string) => normDow(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s)))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
     })
+  })
+
+  /* the positive half of the day-name divergence above: edit mode makes the
+     day NAME a crew-day picker and keeps the DATE opening the board; view mode
+     is untouched (both spans still open the read-only day-details panel). */
+  it('the edit-week day name picks the crew day, the date opens the board', () => {
+    const ed = dayHTML(3, true)
+    expect(ed).toContain('<span class="dow crewday" data-crewday="3"')
+    expect(ed).toContain('<span class="dt sb-open" data-sbday="3"')
+    expect(ed).not.toContain('<span class="dow sb-open"')   // the name no longer opens the board
+    const vw = dayHTML(3, false)
+    expect(vw).toContain('<span class="dow di-open" data-dayinfo="3"')
+    expect(vw).not.toContain('data-crewday')                // view-only has no crew panel
   })
 
   it('the sign-off pill: label + visible value + the full-pill select', () => {

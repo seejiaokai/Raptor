@@ -90,7 +90,7 @@ describe('the control — which surfaces carry it, and who may press it', () => 
   })
 
   it('the board carries it on both input panels', async () => {
-    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     expect($$('#schedBoard .pinp [data-inpedit]').length).toBeGreaterThan(0)
     expect($$('#schedBoard .unav [data-inpedit]').length).toBeGreaterThan(0)
     await click($('#sbClose'))

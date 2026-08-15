@@ -41,7 +41,7 @@ const clickAttr = (sel: string) => clickSync($(sel))
    after setSession(), the stale-element scenario canEditSched() guards */
 const mountBoard = (di: number) => {
   if (view.CURPAGE !== 'editsched') clickSync($('.nav a[data-page="editsched"]'))
-  if (view.SBDAY !== di) clickSync($(`#eWeek .day[data-day="${di}"] .dow.sb-open`))
+  if (view.SBDAY !== di) clickSync($(`#eWeek .day[data-day="${di}"] .dt.sb-open`))
 }
 
 beforeAll(async () => {

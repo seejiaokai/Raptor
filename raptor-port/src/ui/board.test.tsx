@@ -59,7 +59,7 @@ beforeAll(async () => {
 
 describe('the scheduler board (tfin board group)', () => {
   it('a day head on the edit week opens the board', async () => {
-    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     expect(SBDAY).toBe(0)
     expect(($('#schedBoard') as any).hidden).toBe(false)
   })
@@ -1087,7 +1087,7 @@ describe('the board closes when the page moves away from Edit Schedule (part 1)'
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
     expect(SBDAY, 'nothing to resume — it was cleared on the way out').toBe(null)
     expect(($('#schedBoard') as any).hidden).toBe(true)
-    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))   // leave the suite as later blocks expect
     expect(($('#schedBoard') as any).hidden).toBe(false)
   })
 
@@ -1203,7 +1203,7 @@ describe('page-leave cleanup — closeBoardState (reviewer-found stale state, 9 
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
     expect(document.body.classList.contains('ros-open'), 'parked on the way out, not left for the next visit').toBe(false)
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
-    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))   // leave the suite as later blocks expect
   })
 
   it('a slot armed on the board is disarmed when the page leaves Edit Schedule', async () => {
@@ -1219,7 +1219,7 @@ describe('page-leave cleanup — closeBoardState (reviewer-found stale state, 9 
       view.armDrop()
       await act(async () => { setSlotVal(key, before); afterSchedMutate() })
       await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
-      await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
+      await click($('#eWeek .day[data-day="0"] .dt.sb-open'))   // leave the suite as later blocks expect
     }
   })
 
@@ -1241,7 +1241,7 @@ describe('page-leave cleanup — closeBoardState (reviewer-found stale state, 9 
       expect(CXT, 'dropped on the way out, not left painting over the next page').toBeNull()
     } finally {
       await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
-      await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
+      await click($('#eWeek .day[data-day="0"] .dt.sb-open'))   // leave the suite as later blocks expect
     }
   })
 
@@ -1254,7 +1254,7 @@ describe('page-leave cleanup — closeBoardState (reviewer-found stale state, 9 
       expect(SORTALL, 'dropped on the way out').toBeNull()
     } finally {
       await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
-      await click($('#eWeek .day[data-day="0"] .dow.sb-open'))   // leave the suite as later blocks expect
+      await click($('#eWeek .day[data-day="0"] .dt.sb-open'))   // leave the suite as later blocks expect
     }
   })
 })

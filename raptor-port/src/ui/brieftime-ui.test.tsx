@@ -139,7 +139,7 @@ describe('a member session cannot indicate a brief', () => {
 
 describe('B on the scheduler board', () => {
   it('the B input exists and a change writes through the funnel', async () => {
-    await click($('#eWeek .day[data-day="0"] .dow.sb-open'))
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     const inp = document.querySelector('#sbBoard input[data-bfld^="ff:"][data-bfld$=".br"]') as HTMLInputElement
     expect(inp, 'a B input renders on the board').toBeTruthy()
     const key = inp.dataset.bfld!, before = inp.value

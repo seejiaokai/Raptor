@@ -3267,3 +3267,89 @@ test.describe('the Available-crew panel folds', () => {
     expect(again, 'closed again').toBeLessThan(40)
   })
 })
+
+/* ===================================================================
+   THE CREW-DAY PICKER (owner, 15 Aug 26). The aircrew panel follows the
+   left-most day in view, but on a wide screen the last days of the week can
+   never reach the left edge (Sunday is the final day and clamps the scroll), so
+   their crew was unreachable by scrolling. The day NAME is a picker now, the
+   panel carries ‹ › arrows, and an edge hint teaches the gesture. jsdom cannot
+   see any of it — every rect is 0×0 and there is no real scroll clamp — so the
+   reachability and the hint are gated here, in a real browser at a wide width.
+   =================================================================== */
+test.describe('the crew-day picker', () => {
+  const WIDE = { width: 1900, height: 900 }
+
+  test('desktop: the last day is unreachable by scroll but reachable by its name', async ({ page }) => {
+    await page.setViewportSize(WIDE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eRoster .er-h .er-daynav')
+
+    // the panel header carries exactly two stepper arrows
+    const navs = await page.$$('#eRoster .er-h .er-daynav')
+    expect(navs.length).toBe(2)
+
+    // scroll the week hard against its right end, let the follow settle
+    const atMax = await page.evaluate(() => {
+      const w = document.getElementById('eWeek')!
+      w.scrollLeft = w.scrollWidth
+      return { last: w.querySelectorAll('.day[data-day]').length - 1 }
+    })
+    await page.waitForTimeout(300)
+    // the panel is NOT on the last day — that is the bug this feature fixes
+    const leftOfMax = await page.evaluate(() => {
+      const w = document.getElementById('eWeek')!, wr = w.getBoundingClientRect()
+      const days = [...w.querySelectorAll('.day[data-day]')] as HTMLElement[]
+      const hit = days.find(d => d.getBoundingClientRect().right > wr.left + 8) || days[0]
+      return +hit.dataset.day!
+    })
+    expect(leftOfMax).toBeLessThan(atMax.last)   // the last day can't be scrolled to the edge
+
+    // clicking the LAST day's name loads it into the panel anyway
+    const lastDow = await page.evaluate((d) =>
+      document.querySelector(`#eWeek .day[data-day="${d}"] .dow`)!.textContent, atMax.last)
+    await clickHere(page, `#eWeek .day[data-day="${atMax.last}"] .dow[data-crewday]`)
+    await page.waitForTimeout(250)
+    const head = await page.evaluate(() => document.querySelector('#eRoster .er-h')!.textContent)
+    expect(head).toContain(lastDow!)
+  })
+
+  test('desktop: the edge hint appears when the week jams against its right end', async ({ page }) => {
+    await page.setViewportSize(WIDE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eWeek .day[data-day]')
+    // jam right and fire a scroll so the follow/edge logic runs
+    await page.evaluate(() => {
+      const w = document.getElementById('eWeek')!
+      w.style.scrollBehavior = 'auto'; w.scrollLeft = w.scrollWidth
+      w.dispatchEvent(new Event('scroll', { bubbles: true }))
+    })
+    await page.waitForTimeout(300)
+    const hint = await page.evaluate(() => {
+      const h = document.getElementById('crewHint')
+      return h ? { on: h.classList.contains('on'), text: h.textContent } : null
+    })
+    expect(hint, 'the hint element exists and is shown').not.toBeNull()
+    expect(hint!.on).toBe(true)
+    expect(hint!.text).toMatch(/day's name|arrows/)
+  })
+
+  test('desktop: the panel arrows clamp at the weeks ends', async ({ page }) => {
+    await page.setViewportSize(WIDE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eRoster .er-h .er-daynav')
+    // walk to Monday: the previous arrow goes dead, the next is live
+    await clickHere(page, '#eWeek .day[data-day="0"] .dow[data-crewday]')
+    await page.waitForTimeout(200)
+    const ends = await page.evaluate(() => {
+      const prev = document.querySelector('#eRoster .er-h .er-daynav[data-crewstep="-1"]') as HTMLButtonElement
+      const next = document.querySelector('#eRoster .er-h .er-daynav[data-crewstep="1"]') as HTMLButtonElement
+      return { prevDisabled: prev.disabled, nextDisabled: next.disabled }
+    })
+    expect(ends.prevDisabled).toBe(true)
+    expect(ends.nextDisabled).toBe(false)
+  })
+})
