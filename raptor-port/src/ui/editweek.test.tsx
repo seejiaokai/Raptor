@@ -69,6 +69,17 @@ describe('the edit page (tfin)', () => {
     expect($$('#vWeek .signoff').length).toBe(0)
   })
 
+  it('the legend collapses behind a summary, closed by default, on both weeks', () => {
+    for (const id of ['#eLegendBox', '#vLegendBox']) {
+      const box = $(id) as HTMLDetailsElement
+      expect(box, `${id} exists`).toBeTruthy()
+      expect(box.tagName).toBe('DETAILS')
+      expect(box.open, `${id} starts closed`).toBe(false)
+      expect(box.querySelector('summary.legend-sum')).toBeTruthy()
+      expect(box.querySelector('.legend .qk')).toBeTruthy()   // the key still lives inside
+    }
+  })
+
   it('publish day is locked while unsigned, and cannot be clicked through', async () => {
     expect(dayBtn(0).disabled).toBe(true)
     await click(dayBtn(0))

@@ -246,7 +246,10 @@ export function Shell() {
         <div className="title"><h1 id="vTitle">{DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</h1><span className="sub mono" id="vSub">142 SQN · week of 13 Jul 26 · all times local</span></div>
         <div className={'schedbanner ' + b.cls + (rulesOffCount() ? ' rules-off' : '')} id="vBanner"
           style={{ ['--al' as any]: b.col }} dangerouslySetInnerHTML={{ __html: b.html }} />
-        <div className="legend" id="vLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
+        <details className="legendbox" id="vLegendBox">
+          <summary className="legend-sum">Legend — colours &amp; flags</summary>
+          <div className="legend" id="vLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
+        </details>
         <ViewWeek />
         <div className="daydots" id="vDots" dangerouslySetInnerHTML={{
           __html: DAYS.map((d: any, i: number) => `<button data-day="${i}" class="${i === 0 ? 'on' : ''}" title="${d.dow}"></button>`).join('')
@@ -284,7 +287,10 @@ export function Shell() {
           <div className={'schedbanner ' + b.cls} id="eBanner" style={{ ['--al' as any]: b.col }}
             dangerouslySetInnerHTML={{ __html: b.html }} />
           <ALPanel />
-          <div className="legend" id="eLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
+          <details className="legendbox" id="eLegendBox">
+            <summary className="legend-sum">Legend — colours &amp; flags</summary>
+            <div className="legend" id="eLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
+          </details>
           <div className="edit-board">
             <EditWeek />
             <EditRoster />

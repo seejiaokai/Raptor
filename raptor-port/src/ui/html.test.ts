@@ -262,8 +262,29 @@ describe('view-week markup parity with the reference', () => {
   const noPers = (s: string) => s.replace(
     /<span data-leg="pers">.*?<\/span>/, '')
 
-  it('the legend is byte-identical', () => {
-    expect(noPers(noBriefKey(noCP(noRunKey(legendHTML()))))).toBe(noPers(noBriefKey(noCP(noRunKey(w.eval('legendHTML()'))))))
+  /* The legend's FLAGS are now ordered by severity (red hard → amber advisory →
+     grey note) rather than the reference's order, and the whole legend collapses
+     behind a summary on screen (owner, 15 Aug 26). So it is no longer byte- or
+     order-identical to the reference — but it must still carry the SAME set of
+     items (nothing dropped, added or recoloured beyond the known port-only
+     divergences the normalizers strip). Compare the multiset of leaf texts,
+     order-independent; the colour-per-tier and every-chip-has-a-row tests below
+     still pin correctness, and the new order is pinned just under this. */
+  it('the legend carries the reference item set, order aside', () => {
+    const leaves = (s: string) => (s.match(/>([^<>]+)</g) || []).map(x => x.slice(1, -1).trim()).filter(Boolean).sort()
+    const N = (s: string) => noPers(noBriefKey(noCP(noRunKey(s))))
+    expect(leaves(N(legendHTML()))).toEqual(leaves(N(w.eval('legendHTML()'))))
+  })
+
+  it('the flags read by severity — red hard, then amber advisory, then grey', () => {
+    const l = legendHTML()
+    const reds = ['conflict', 'crew pairing — not authorised', 'crew rest', 'no break day', 'qual / illegal seat']
+    const ambers = ['double turn', 'tight turn', 'advisory — shift + ground', 'crew pairing — needs approval', 'no flight debrief', 'no sim debrief']
+    const lastRed = Math.max(...reds.map(x => l.indexOf(x)))
+    const firstAmber = Math.min(...ambers.map(x => l.indexOf(x)))
+    expect(reds.every(x => l.indexOf(x) > -1) && ambers.every(x => l.indexOf(x) > -1)).toBe(true)
+    expect(lastRed, 'every red flag precedes every amber flag').toBeLessThan(firstAmber)
+    expect(firstAmber, 'and the amber flags precede the grey long-work-day note').toBeLessThan(l.indexOf('long work day'))
   })
 
   it('the legend names the Personnel category', () => {

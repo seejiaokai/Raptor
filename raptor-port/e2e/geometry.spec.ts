@@ -3353,3 +3353,48 @@ test.describe('the crew-day picker', () => {
     expect(ends.nextDisabled).toBe(false)
   })
 })
+
+/* ===================================================================
+   The mobile Quals freeze + the collapsible legend (owner, 15 Aug 26).
+   Both are geometry: jsdom has no sticky positioning and no display:none
+   layout, so the frozen column and the closed-by-default legend are gated
+   here on the real build. =================================================== */
+test.describe('the frozen callsign column', () => {
+  test('phone: the callsign stays at the left edge when the Quals table scrolls sideways', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'quals')
+    await page.waitForSelector('#qtbl td.qname')
+    const m = await page.evaluate(() => {
+      const wrap = document.querySelector('.qwrap') as HTMLElement
+      const name = document.querySelector('#qtbl td.qname') as HTMLElement
+      const other = document.querySelector('#qtbl td.qcell') as HTMLElement
+      const nameBefore = name.getBoundingClientRect().left
+      const otherBefore = other.getBoundingClientRect().left
+      wrap.scrollLeft = 400
+      return {
+        scrolled: wrap.scrollLeft,
+        nameMoved: Math.round(name.getBoundingClientRect().left - nameBefore),
+        otherMoved: Math.round(other.getBoundingClientRect().left - otherBefore),
+      }
+    })
+    expect(m.scrolled, 'the table really scrolled sideways').toBeGreaterThan(200)
+    expect(Math.abs(m.nameMoved), 'the callsign column stays put while the table scrolls').toBeLessThan(3)
+    expect(m.otherMoved, 'a normal cell scrolled away with the table').toBeLessThan(-200)
+  })
+})
+
+test.describe('the collapsible legend', () => {
+  test('phone: the legend is closed by default and opens on click', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eLegendBox summary.legend-sum')
+    const closed = await page.evaluate(() => (document.querySelector('#eLegend') as HTMLElement).offsetHeight)
+    expect(closed, 'the key is hidden until asked for').toBe(0)
+    await page.click('#eLegendBox summary.legend-sum')
+    await page.waitForTimeout(150)
+    const open = await page.evaluate(() => (document.querySelector('#eLegend') as HTMLElement).offsetHeight)
+    expect(open, 'clicking the summary reveals the key').toBeGreaterThan(0)
+  })
+})

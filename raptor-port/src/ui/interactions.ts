@@ -827,13 +827,20 @@ export function routeClick(e: MouseEvent) {
   const stCfg = t.closest('[data-stcfg]') as HTMLElement | null
   if (stCfg && HOOKS.editMode()) { openStoresMenu(stCfg, stCfg.dataset.stcfg!); e.stopPropagation(); return }
 
-  /* Clicking any blank part of a schedule surface un-clicks everything —
-     the exclusion list is the reference's, verbatim */
-  const pg = t.closest('#page-viewsched,#page-editsched,#schedBoard')
+  /* Clicking ANY blank area un-clicks everything (owner, 15 Aug 26 — a blank
+     click "beside the edit schedule date or above" left the pucks lit). The
+     reference scoped this to the three page bodies, so a click on the topbar,
+     the title row's gutters or the shell's own margins fell outside it and the
+     selection survived. The scope is the whole app shell now (`#shell` wraps
+     the topbar and every page; the board `#schedBoard` is its own overlay
+     sibling), and the exclusion list — the reference's, plus `.modal`/`.drawer`
+     for the overlays that now sit inside the widened scope — still protects
+     every interactive control. */
+  const pg = t.closest('#shell,#schedBoard')
   if (pg && !t.closest('a,button,input,select,textarea,[contenteditable="true"],'
     + '.fchip,.puck,.seat,.rpuck,.ros-tab,.ros-arm,.sb-slot,[data-fill],[data-slot],'
     + '.dwbox,.pillbtn,.day-head,.sb-open,.dinfobtn,.airpop,.schedbanner,.alpanel,'
-    + '.sb-top,.sb-sign,.signoff,.hscroll,.week-nav')) {
+    + '.sb-top,.sb-sign,.signoff,.hscroll,.week-nav,.modal,.drawer')) {
     let any = false
     if (view.ARM) { view.disarmSlot(); any = true }
     if (view.SELID || view.WFOCUS || view.PFOCUS || view.DWOPEN.size) {

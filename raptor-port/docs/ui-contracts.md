@@ -1364,6 +1364,39 @@ reference, which is why the positive pin carries the real assertion. Careful:
 there is already a module-level `noBrief` for the brief-time CELL; shadowing
 it silently breaks the day-parity tests on an unrelated `class=""`.
 
+## The legend collapses, and its flags read by severity (owner, 15 Aug 26)
+
+The key at the top of each week (`html.ts legendHTML()`, rendered in
+`Shell.tsx` as `#vLegendBox` / `#eLegendBox`) is a native `<details>`,
+**closed by default** — on a phone the ~20-row key used to render before the
+first day's schedule. The summary is one `.legend-sum` chip; no JS, so the
+toggle stays keyboard-operable. Note `.legend{display:flex}` overrides the UA
+rule that hides a closed `<details>`'s body, so `.legendbox:not([open]) .legend`
+must hide it explicitly — without that line the collapse is inert.
+
+The FLAGS inside now read top-down by **severity** — red (hard) first, then
+amber (adv), then grey (note) — instead of the reference's order; the LEVELS
+stay in the CAT ladder (`OCU→D→C→B→A→IW→IP→IR→FI`). This is a deliberate
+divergence, so the legend is no longer byte- or order-identical to the
+reference: `html.test.ts` compares the **multiset of leaf texts**
+(order-independent) to prove nothing was dropped/added/recoloured, and a
+separate test pins the severity order. The colour-per-tier and
+every-chip-has-a-row tests (above) still carry correctness. A new flag row
+slots into its severity group and needs no test change beyond those.
+
+## The Quals callsign column is frozen (owner, 15 Aug 26)
+
+On a phone the Quals table is wider than the screen (`min-width:1050px`) and
+scrolls sideways inside `.qwrap`; the CALLSIGN column is `position:sticky;
+left:0` (the `td.qname` and the `th[data-sort="cs"]` corner), so the identity
+column stays put while the currencies scroll under it — otherwise a phone user
+read rows of unlabelled ticks. Two things it depends on: the 20px page gutter
+is a **margin** on `.qwrap`, not padding, or the frozen cell sticks at the
+padding edge and scrolled cells show through the gap to its left; and a
+right-edge `box-shadow` marks the freeze boundary so a half-scrolled column
+reads as content passing under a pinned column, not a stray fragment. Gated in
+`e2e/geometry.spec.ts` (jsdom has no sticky), not jsdom.
+
 ## Selection highlight (`ui/highlights.ts`)
 
 **A click on blank schedule clears EVERYTHING that lights a puck** (owner,
@@ -1380,10 +1413,21 @@ only, no `value` prop), so their DOM value is wiped by hand — clearing just
 the state would leave a box reading "bane" with nothing lit, which is worse
 than not clearing at all. The chips redraw themselves from `HLSET`.
 
-The **exclusion list decides what counts as blank** and is the reference's,
-verbatim: `.fchip` and every form control are on it, so clicking a chip or
-into the search box is not a blank click and does not wipe what you just did.
-Pinned in `ui/interact.test.tsx`, both against a control.
+**The scope is the whole app shell, not just the page bodies** (owner, 15 Aug
+26 — a blank click "beside the edit schedule date or above" left the pucks
+lit). The reference scoped the clear to `#page-viewsched,#page-editsched,#schedBoard`,
+so a click on the topbar, the title row's gutters or the shell's own margins
+fell outside it and the selection survived. It is `#shell,#schedBoard` now
+(`#shell` wraps the topbar and every page; the board is its own overlay
+sibling), so any blank area clears.
+
+The **exclusion list decides what counts as blank** — the reference's, plus
+`.modal` / `.drawer` for the overlays that now sit inside the widened scope, so
+a click inside a dialog or the phone drawer does not reach through and clear.
+`.fchip` and every form control are on it, so clicking a chip or into the
+search box is not a blank click and does not wipe what you just did. Pinned in
+`ui/interact.test.tsx`: a topbar and a shell-gutter click clear, a modal click
+does not, and the search/chip controls stay excluded.
 
 Clicking a puck — **anywhere on it, flag chip included** (owner, 7 Aug 26) —
 selects the **person**: every copy of that name lights blue (`.sel`, matched
