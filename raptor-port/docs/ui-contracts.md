@@ -217,8 +217,10 @@ data inside a preview — inputs are not part of the issued document.
 
 ## The day-head version chip
 
-One `.dal` chip per day = `dayCurVer(di)`, everywhere (view page, edit
-week; the board has no chips). `data-alc` tints it; `ORIG` is `.dal.orig`,
+One `.dal` chip per day = `dayCurVer(di)`, everywhere (view page, edit week,
+and — since `dayStatHTML` became the board's own publish-strip builder too,
+14 Aug 26 — the board's sign-off panel, under `.sb-pub .dal`). `data-alc`
+tints it; `ORIG` is `.dal.orig`,
 grey by design — the bare `.dal` fallback colour is `--accent`, which is
 AL1's cyan, and ORIG must never read as AL1. No chip on a published day no
 AL ever touched. The full "which ALs amended this day" history lives only
@@ -712,6 +714,21 @@ routes `data-air`):
   them on one row instead of stacking each full-width. The line is one DOM child
   shorter (nine, not ten) but the grid still counts ten items — pinned in
   `board-stores.test.tsx` and `e2e/geometry.spec.ts`.
+- **The publish strip** — version chip, pending count, ⓘ, Publish day, Publish
+  AL (14 Aug 26, "the board's sign-off panel now carries the same… controls the
+  week day head does"). `html.ts`'s `dayStatHTML(di, ed)` is the ONE builder
+  both surfaces call — the week's `dayHTML` (inside its `.dstat` span) and
+  `board.ts`'s `boardSignHTML` (its own `.sb-pub` row, right after the sign-off
+  names, inside `#sbSignBar`) — so "same as edit schedule" means literally the
+  same markup, never a second copy that can drift; `html.test.ts` pins the
+  week's own emitted markup byte-unchanged. Gated on `HOOKS.editMode()` alone
+  on the board (`pv` is already ruled out by `boardSignHTML`'s own early
+  return) — `dayStatHTML` itself draws the read-only stamp instead of a button
+  when `ed` is false, the same as the week's view-only page. The frozen
+  version preview renders no publish controls on either surface. `.sb-pub` is
+  its own flex row (`flex:0 0 100%`) under the sign-off names rather than
+  folded into `.signoff` itself, so a long Publish-AL button on a narrow board
+  never crowds the last sign-off pill onto half a line.
 
 ## Empty cells show a standing "add here" box (owner, 14 Aug 26)
 
@@ -968,10 +985,37 @@ truncation happens inside the field's own shadow DOM, so `scrollWidth` reads
 `e2e/geometry.spec.ts`. (The Inputs page's own pair get away with 78px
 because they stretch to the form column; this dialog sizes its own.)
 
-**Person and dates are NOT in it**, and the footer says so. The four fields
-the owner asked for all keep the row on the day it was opened from; moving it
-to another man or another date makes it vanish from the surface being looked
-at, which is the Inputs page's job.
+**Dates are still NOT in it**, and the footer says so — moving the span
+makes the row vanish from the surface being looked at, which is the Inputs
+page's job. **Person now IS, for a scheduler** (owner, 14 Aug 26 — "allow
+Unavailable to be editable too… even down to changing the puck"): a
+`canEditSched()`-gated `<select>` sits above the Type field, offering
+`rosterOptions()` — the same sorted-by-callsign roster list the Inputs
+page's add form and row editor now call too, so all three can never
+disagree on who is offered or in what order. Reassigning changes WHOSE row
+this is, not which day it sits on, so it stays inside what the dialog
+already keeps in view, unlike a date move — the row you are looking at is
+still the row you are looking at afterwards, just under a different name.
+The footer reads "The dates are changed on the Inputs page" for a
+scheduler, and the old two-field sentence for anyone else.
+
+**The Unavailable row's person cell is a plant/drop target too, on the week
+and the board** — `iu:<iid>` (the input's own id, no day component, since
+one input can cover several loaded days and none of them is more "its" day
+than another). Tap it to arm, then tap a roster name; or drag a name — from
+the palette, or off another seat — straight onto it. Both routes end at
+the one `reassignInput(iid, personId)` (`inputedit.tsx`), built on
+`commitInputEdit`'s own relink, never a second write path. An `iu:` seat
+always offers to arm, unlike a flying seat (which only arms once its own
+puck is gone or is a placeholder): the row is ALWAYS occupied, so waiting
+for it to empty would mean it could never arm at all. No eligibility bar
+either — this is a data edit to who is unavailable, not a seat assignment,
+so any roster member, including one already unavailable elsewhere or
+flying, is a legal target, and a name dragged onto it stays wherever else
+it was planted too (the two facts are independent). Reassigning does not
+call `afterSchedMutate()` a second time — `reassignInput`'s own
+`commitInputEdit` already ran the input funnel's full epilogue (validate,
+notify, one history step); the drop/tap handlers only disarm and repaint.
 
 ## Scheduler notes (edit week + board only)
 
@@ -1394,6 +1438,64 @@ highlight chip is active it yields — your puck dims with the rest instead of
 staying lit (owner, Aug 26) — so selecting someone else never leaves your own
 name glowing. Clicking blank space clears everything (`selDrop`).
 
+## Feedback: every tap answers (owner, 15 Aug 26)
+
+The owner's phone complaint: "when I click add input the button doesn't
+flash… I'm not looking at the line that appeared below." Root cause was
+app-wide, not local to one control — every button in `scheduler.css` had a
+`:hover` rule and no `:active`, and hover never fires on a touch tap, so a
+phone got no feedback for any press at all.
+
+**Press states are ONE grouped rule, not one per button class.**
+`:root{--press-scale:.97}` (dropped to `1` under
+`prefers-reduced-motion:reduce`, which is how the rule sheds the shrink and
+keeps the darken) feeds a single selector list —
+`.abtn,.fchip,.pillbtn,.rok,.rmx,.inact .red,.mbtn,.dbeak,.wm,.dinfobtn,
+.so-clear,.nav a,.login .go,.sb-slot.empty` — each `:active`ing to
+`filter:brightness(.88);transform:scale(var(--press-scale))`. Defined once
+so it reads as one app-wide behaviour rather than a pile of per-button
+rules, and `transform:scale()` on purpose: it never reflows, so no measured
+layout contract in this file moves when a button is pressed.
+
+**The just-added row's flash is now the SAME steady shape everywhere it
+appears — the board's `.sb-fresh` box (see §Selection highlight above) and
+the Inputs table's `.innew` are ONE timing, not two.** The old `.innew`
+keyframe faded across its whole 1.5s lifetime, which read as half-gone by
+the time a phone user looked up from the form below the fold; it is now a
+steady `box-shadow` inset in the selection blue (`#1E86FF`) that HOLDS for
+90.83% of a 6000ms run (5450ms — the exact split `FRESH_MS`/`FRESH_FADE_MS`
+in `state/view.ts` use for `.sb-fresh`) and fades only in the last 550ms.
+The Inputs page's own `FLASH_MS` was raised to match (1500 → 6000) for the
+same reason. It animates on the `<td>` cells, not the `<tr>`, because a
+row's own box-shadow sits under its cells' and would be clipped by them.
+
+**Adding an input snaps the view to it** (owner — "once an input is made,
+the view will snap to the input u just made"). The row already pinned to
+the top and flashed, but on a phone the user is still looking at the form,
+below the fold, not at the table. `add()` sets a `justAddedIid` state; an
+effect keyed on it runs `scrollIntoView({block:'nearest',
+behavior:'smooth'})` on the `[data-iid]` match once React has painted the
+new `<tr>` — it can only be scheduled, not run inline, because the row
+commits to the DOM after the triggering render. Guarded exactly like
+`interactions.ts`'s own `scrollIntoView` calls: jsdom implements no
+scrolling at all, so the call is simply absent on its elements, and an
+unguarded call throws out of the effect where no test assertion sees it.
+
+**An accepted Personal Input's new ground row now flashes too.**
+`acceptInput` marks it through `markStructuralAdd` rather than the bare
+`trackStructuralAdd`+`noteChange` pair every other structural add left
+behind on 15 Aug 26 — see `docs/engine-rules.md` §Accepting a personal
+input for the key change (`g:di.ri` → `gr:di.ri.prog`) this needed.
+
+**Silent actions now toast.** A tap that changes something and says nothing
+back reads as "did it register?" — closed on the Inputs page (save, delete,
+CSV export), the Quals page (add-person, CSV export), the schedule export
+("Export to Excel" on the Shell topbar), and the template/draft editors'
+destructive actions (`DayTplModal`/`DraftsModal` — Reset, Delete). A phone
+browser often shows nothing at all when a CSV download lands — no bar, no
+tray notification the user is looking at — which is what makes the export
+toasts load-bearing rather than decorative.
+
 ## Jumping from a warning to the puck that caused it
 
 Four surfaces flag aircrew; the three LISTS navigate, and the chip — since
@@ -1759,6 +1861,85 @@ so it persists per-device like the stores list. The library is never left
 empty — deleting the last template re-seeds one. Storage and the plain-block
 rule: `docs/engine-rules.md` §the duty block. This surface replaced the old
 wave-driven desk.
+
+## Day templates and Drafts — the whole-day controls (owner, 15 Aug 26)
+
+Both live in the SAME two places on both surfaces, for the same reason: a
+whole-day master template is a level up from the duty desk above, and a
+draft is an alternative to the whole day, so neither belongs squeezed into
+an already-crowded control bar.
+
+**On the board**, a labelled `.sb-panel` — "Templates & drafts", two
+buttons — sits at the VERY TOP of the board's own content, ahead of every
+section, not on the top bar's first line (`CLAUDE.md` §Stable decisions:
+that line is frozen — nothing joins it without something else leaving). A
+control that can replace the WHOLE day belongs at the top of the day's own
+content, the same reasoning the section-level `+ Wave`/`+ Block` controls
+already follow, rather than squeezed onto an already-full 30px bar.
+Withheld on `mvRO` like every other write control on this board.
+
+**On the week**, both buttons ride inside the day's own sign-off strip
+(`<div class="signoff day-sign" data-signbar="${di}">`) — and that placement
+is deliberate, not incidental: that strip is ALREADY excised wholesale from
+`html.test.ts`'s edit-mode byte-parity assertion (the same excision the
+sign-off pills themselves rely on, §Sign-off pills above), so adding a bare
+`<button>` inside it costs nothing against the reference comparison and
+keeps that gate honest rather than weakening it to make room. A control
+placed anywhere else on the day-head would have needed the byte-compare
+loosened for real markup, which is the one thing that gate exists to catch.
+
+**One picker per feature, reached from either door.** `board.ts`'s
+`dayTplMenu`/`draftsMenu` are the SINGLE builders; the board's own buttons
+(`data-daytpladd`/`data-draftsadd`, routed through `boardMbtn`) and the
+week's strip buttons (`data-daytplopen`/`data-draftsopen`, routed through
+`interactions.ts`'s `routeClick`) both open the identical popup — different
+data attributes only because the two handlers are scoped differently
+(`boardMbtn` requires `.mbtn` inside `#sbBoard`; `routeClick` is global), so
+a shared attribute name would risk one click opening the menu twice. Neither
+menu renders unless `canEditSched() && HOOKS.editMode()`.
+
+**Day templates**: the picker lists the saved library (tap = apply, with the
+day's read-only structure summary — waves/duty blocks/ground rows/sims
+counts — under each name), "+ Save this day as a template", then a ✎ into
+`DayTplModal.tsx`. Applying a template on a published day toasts "Reopen the
+day first" rather than silently refusing; applying elsewhere is one whole-day
+swap logged as one sentence — there is no single funnel key for a whole-day
+replace to hang the usual blue box on, so a named toast carries the news
+instead (`docs/engine-rules.md` §Day templates). `DayTplModal.tsx` manages
+the library only — rename, delete, Reset — never a row editor: a day
+template's content is a whole day's worth of waves, duties, sims and ground
+rows, which already has its own editor (the board / the week themselves), so
+a second, narrower copy of those surfaces here would only drift from them.
+
+**Drafts**: the picker lists the day's drafts (tap a non-selected one to
+switch, the selected one marked ●), "+ Duplicate this day → new draft", then
+a ✎ per row into `DraftsModal.tsx` (scoped to the one day whose menu opened
+it, unlike the template library's global one). `DraftsModal.tsx`'s name
+field commits on blur/Enter, not per keystroke — `draftRename` refuses empty
+and duplicate names, and refusing mid-keystroke would fight the typist — and
+its Delete/Select buttons disable on the selected draft with a title
+explaining why. Duplicating and switching both toast a named sentence for
+the same no-single-key reason templates do.
+
+**The day-head strip names which draft is live** (edit surfaces only —
+`.ddraft`, next to the version chip, own colour so the "one version chip"
+pin does not count it): once a day has drafts, `dayStatHTML` says "`<name>`
+is the live one, and is what publishes" — the view page's own picker below
+already names the selected one, so this chip is `ed`-only.
+
+**The view-only week's drafts-only picker** — "on view schedule mode, you
+can also view the different drafts" — is a SEPARATE, narrower select
+(`viewDraftSelHTML`, reusing the day-head's `data-dver` attribute so Shell's
+one document-level change listener routes it with no new wiring) from the
+edit surfaces' version dropdown. It lists ONLY the day's drafts, and renders
+ONLY when the day has any — the view page deliberately never grew the
+ORIG/AL version machinery, and still hasn't: **AL and ORIG previews still
+never render there.** The selected draft prints with a trailing ● and reads
+as value `'live'` (the live day IS it); every other entry rides the same
+`'d:<id>'` frozen preview — read-only banner, no Restore button — the edit
+surfaces use. On the edit week and the board, the day's other (non-selected)
+drafts join the ordinary version `<select>` the same way, listed beside
+`'Live · <name>'` rather than a bare `'Live'` once a draft is selected.
 
 ## Stores configuration (owner, 7 Aug 26)
 
