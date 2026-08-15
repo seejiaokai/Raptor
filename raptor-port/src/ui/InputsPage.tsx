@@ -14,7 +14,7 @@ import { writeInputs, notify } from '../state/store'
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
   fmt, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
-  draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansFlags,
+  draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   rosterOptions as people,
 } from './inputedit'
 import { useVersion } from './useStore'
@@ -298,6 +298,8 @@ export function InputsPage() {
     if (isSansAvail(type)) {
       const why = sansRefusal(person, sans)
       if (why) return HOOKS.toast(why, 'warn')
+      const dup = sansOverlapRefusal(person, date, endDate, null)
+      if (dup) return HOOKS.toast(dup, 'warn')
     }
     /* timing is the owner's ask (Aug 26): the validator reasons in minutes, so
        a timed input carries the times the aircrew actually stated — no more

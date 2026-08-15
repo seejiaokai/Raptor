@@ -678,7 +678,11 @@ records. `sansAvailOn(id,dt)` is the one place that finds the record covering
 a day and returns the WHOLE row; `sansWindow(rec)` reads the window off it
 (`allday`→[0,1439], `am`→[0,720], `pm`→[721,1439] — the same halves
 `HALF_AM`/`HALF_PM` write — and a thin record reads whole-day, the same
-answer `inpWin` gives a thin absence); `sansLetters(rec)` prints the ticked
+answer `inpWin` gives a thin absence). A custom window with **end before
+start** is an overnight offer (22:00–02:00), a shape the write path permits
+for every half-day type: `sansWindow` **rolls it** the way `inpWin` does
+(`e<s → e+1440`, so [1320,120]→[1320,1560]) — before that fix `sansGate`
+could never read a night slot as covered. `sansLetters(rec)` prints the ticked
 events (`F/O/A`, fixed f/o/a order); `sansBadge(id,dt)` is letters plus the
 window (`F/O/A`, `F/O · AM`, `A · 08:00–12:00`). All four live in
 `inputs.ts`, not `html.ts`, because `palette-html.ts` imports from `html.ts`
@@ -693,7 +697,14 @@ Five statuses:
 - `'na'` — not a SANS person at all; nothing to ask.
 - `'none'` — SANS, but no record filed for the day.
 - `'not-offered'` — a record exists but this event's box is unticked.
-- `'ok'` — the record's one window (all day included) covers the slot.
+- `'ok'` — the record's one window covers the slot. **An all-day offer
+  short-circuits to `'ok'`**, so it covers a slot whose window crosses
+  midnight — a night sortie landing after 00:00 (`slotEnd>1439`), an SC
+  night shift (…07:00), a small-hours take-off (`slotStart<0`). Without that
+  short-circuit the day-bounded `[0,1439]` window failed containment against
+  those and wrongly read "available 00:00–23:59 only", on the picker AND as a
+  persistent advisory. A half/custom offer that genuinely does not reach past
+  midnight still reads `'window'`.
 - `'window'` — offered, but only a window narrower than the slot; the gate
   carries the offered window back as `.off` (`{s,e}` read from `sansWindow`,
   the same whichever event asked — one window serves all three).
@@ -708,9 +719,13 @@ was caught writing `sansavail.test.ts` and is fixed with a comment at the
 call site, see §Availability is time-aware for the "checked, not assumed"
 standard this held itself to), `'fly'` for an unprefixed flying seat, `null`
 for everything else — a duty post, a ground row, a programme item is
-**never** SANS-greyed, uniformly across every jet seat including AVALON's
-(harmless: the persistent advisory below mirrors `day.fly`, which already
-excludes AVALON). The three printed reasons: `SANS — no availability filed
+**never** SANS-greyed. **A spare-like seat is carved out too** (`!spareLike0(r)`
+on the gate, the same flag the four absence blocks and the busy-at-this-hour
+check already use): an SC SPARE aircraft and a whole AVALON/BB wave never
+reach `day.fly`/`day.events` (`saExempt` / the standalone skip), so the
+advisory below never raises against them — before the carve-out `slotBar`
+greyed them while the warning list stayed silent, the exact picker-vs-validator
+drift this gate exists to avoid. The three printed reasons: `SANS — no availability filed
 for today`, `SANS — not offering Fly` (or OFT/AMT), `SANS — available
 08:00–12:00 only` (domain-free since the one-window rework — the window is
 the record's, not the event's). Nothing else in `slotBar` needed to change — the palette's
@@ -750,7 +765,18 @@ through one function.** `sansRefusal(person,sans)` (`inputedit.tsx`) is what
 before any write — a non-SANS person is refused with "SANS Availability is
 for SANS aircrew only" (the owner reconfirmed the restriction on the rework
 day: "only SANS can input the availability"), and an empty tick set with
-"Tick at least one of Fly / AMT / OFT". The old per-event
+"Tick at least one of Fly / AMT / OFT". **Who counts as SANS is `PEOPLE[id].san`**
+— set at boot from `SANS_IDS` (`people.ts`) and, since the bug-test fix,
+editable on the Quals page: the `san` column's tick writes `p.san` directly
+(not just the one-way-derived `p.quals.san`, which no gate reads — before the
+fix the tick was a no-op), session-only like every qual tick. **A second
+guard, `sansOverlapRefusal(person,date,endDate,except)`, refuses a record whose
+date range overlaps an existing SANS record for the same person** (`except` is
+the row being edited): SANS is one window per record, and two records on one
+day break silently — `sansAvailOn` reads only the first, the card grid draws
+both, and their shared `inpKey` (`person|date|type|s`) lets a card click edit
+or delete the wrong one. To offer two windows the member ticks both events on
+the one record. The old per-event
 give-both-times-or-neither refusal is gone with the per-event windows — the
 one window's own validation rides the STANDARD path every half-capable type
 already uses. `commitInputEdit` returns `false` on a refusal, so the editor

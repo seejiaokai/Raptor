@@ -366,7 +366,12 @@ export function sansWindow(rec:any){
   if(rec.half==='am')return [0,720];
   if(rec.half==='pm')return [721,1439];
   if(rec.s==null||rec.e==null)return [0,1439];
-  return [rec.s,rec.e];
+  /* roll an overnight offer the way inpWin does (inputs.ts, its own comment):
+     the write path permits e<s for every half-day type, SANS included, so an
+     offer typed 22:00–02:00 stores [1320,120]; left un-rolled, sansGate's
+     containment could never read a night slot as covered. The two readers must
+     not disagree about what an overnight row means. */
+  return [rec.s,rec.e<rec.s?rec.e+1440:rec.e];
 }
 /* which events the record offers, as the scheduler reads them — "F/O/A",
    "F/O", "A"… Fixed f,o,a order regardless of tick order, so the same person

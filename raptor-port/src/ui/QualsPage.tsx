@@ -344,6 +344,16 @@ export function QualsPage() {
         /* SC night is signed off after SC day, exactly as NAAR is after DAAR */
         if (k === 'scNight' && next && !p.quals.scDay) { notify(); return HOOKS.toast(`${p.cs} needs SC DAY before SC NIGHT can be ticked`) }
         p.quals[k] = next
+        /* SANS membership is read everywhere off PEOPLE[id].san, never
+           p.quals.san — deriveQuals copies ONE WAY, p.san → quals.san, so the
+           tick above set only the derived copy and did nothing to who can file
+           availability, who the palette strikes, or who sansGate judges (owner,
+           15 Aug 26 — the tick was a no-op). Wire it through to p.san so it
+           actually grants/removes SANS, and mint the currency counters the boot
+           SANS loop gives a member so sanStatus has its numbers. Session-only,
+           like every qual tick — PEOPLE is rebuilt from source and SANS_IDS
+           re-applied at boot. */
+        if (k === 'san') { p.san = !!next; if (next) p.sanQ = p.sanQ || { flown: 0, carry: 0, missedQtrs: 0 } }
         if (k === 'daar' && !next && p.quals.naar) { p.quals.naar = false; HOOKS.toast(`${p.cs} — NAAR removed too, it cannot stand without DAAR`) }
         /* DEMOTED, not removed: withdrawing the day instructor mark costs him
            the night one as well, but he keeps night currency itself. */

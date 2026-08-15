@@ -9,6 +9,7 @@ import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { validate, WARN } from '../engine/validate'
 import { PEOPLE, isScheduler, isInstr, isInstrPilot, deriveQuals, ID_BY_CS, QCHIP, QCOLOR, QORDER, LEVELNAME } from '../engine/people'
+import { sansGate } from '../engine/avail'
 import { HOOKS } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -68,6 +69,23 @@ describe('the Quals page (tfin)', () => {
     expect(isScheduler(id)).toBe(true)
     await click($(`#qtbl td[data-q="${id}|sched"]`))
     expect(isScheduler(id)).toBe(false)
+  })
+
+  /* the SANS tick grants REAL status: p.san, the flag every availability
+     surface reads — not just the derived p.quals.san copy (bug-test fix). Prove
+     it functionally: sansGate returns 'na' for a non-SANS person and 'none'
+     (SANS, nothing filed) once the tick takes. Edit mode is already on from the
+     Scheduler test above, the same way the AAR/SC tests below rely on it. */
+  it('ticking SANS grants real SANS status (p.san), and unticking removes it', async () => {
+    const id = Object.keys(PEOPLE).find(i => !PEOPLE[i].san && !PEOPLE[i].archived && !PEOPLE[i].special && PEOPLE[i].seat)!
+    expect(id).toBeTruthy()
+    expect(sansGate(id, 'Jul 13', 'fly', 480, 600).status).toBe('na')     // not SANS yet
+    await click($(`#qtbl td[data-q="${id}|san"]`))
+    expect(PEOPLE[id].san).toBe(true)
+    expect(sansGate(id, 'Jul 13', 'fly', 480, 600).status).toBe('none')   // now judged as SANS
+    await click($(`#qtbl td[data-q="${id}|san"]`))
+    expect(PEOPLE[id].san).toBe(false)
+    expect(sansGate(id, 'Jul 13', 'fly', 480, 600).status).toBe('na')     // removed again
   })
 
   it('NAAR cannot be ticked before DAAR, and removing DAAR removes NAAR', async () => {

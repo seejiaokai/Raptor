@@ -237,6 +237,14 @@ export function sansGate(id:any,dt:any,domain:any,s:any,e:any):any{
   const p=PEOPLE[id]; if(!p||!p.san)return {status:'na'};
   const rec=sansAvailOn(id,dt); if(!rec)return {status:'none'};
   if(!(rec.sans&&rec.sans[SANS_KEY[domain]]))return {status:'not-offered'};
+  /* an ALL-DAY offer covers every slot on the day, INCLUDING one whose window
+     crosses midnight — a night sortie landing after 00:00 (slotEnd>1439), an
+     SC night shift (…07:00), a small-hours take-off (slotStart<0). The day-
+     bounded [0,1439] window would fail containment against those and wrongly
+     read "available 00:00–23:59 only"; short-circuit to ok, matching the four
+     midnight-tail blocks slotBar already carries for absences. A half/custom
+     offer that genuinely does not reach past midnight still reads 'window'. */
+  if(rec.allday)return {status:'ok'};
   const w=sansWindow(rec);
   if(w[0]<=s&&w[1]>=e)return {status:'ok'};
   return {status:'window',off:{s:w[0],e:w[1]}};
@@ -375,8 +383,14 @@ export function slotBar(id:any,key:any,rules?:any){
      The three printed reasons are the same three the validator's SANS_AVAIL
      advisory and the palette's badge agree on — one function, sansGate,
      decides all of it, and this is its only call site inside slotBar. */
+  /* spare-like seats are carved out, the same as the four absence blocks above
+     (spareLike there) and the busy-at-this-hour block below (spareLike0): an SC
+     SPARE aircraft and a whole AVALON/BB wave never reach day.fly/day.events
+     (events.ts saExempt / the standalone skip), so the VALIDATOR raises no
+     SANS_AVAIL against them — greying them on the picker would be the picker
+     saying what the warning list will not, the drift-seam this gate must avoid. */
   const domain=r.sim?r.simKind:(String(key).indexOf(':')<0?'fly':null);
-  if(domain&&p.san&&r.di>=0&&DAYS[r.di]&&r.slotStart!=null&&r.slotEnd!=null){
+  if(domain&&p.san&&r.di>=0&&DAYS[r.di]&&r.slotStart!=null&&r.slotEnd!=null&&!spareLike0(r)){
     const g=sansGate(id,DAYS[r.di].dt,domain,r.slotStart,r.slotEnd);
     if(g.status==='none')return 'SANS — no availability filed for today';
     if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;

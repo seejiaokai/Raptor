@@ -97,6 +97,27 @@ describe('sansGate — the one judge (avail.ts)', () => {
     expect(sansGate('krait', 'Jul 13', 'fly', 780, 900).status).toBe('ok')
     expect(sansGate('krait', 'Jul 13', 'fly', 480, 700).status).toBe('window')
   })
+
+  /* MIDNIGHT-CROSSING SLOTS (bug-test fix). A slot window legitimately runs
+     past 1440 (a night sortie landing after 00:00, an SC night shift …07:00)
+     or before 0 (a small-hours take-off). An ALL-DAY offer must still read 'ok'
+     against those — before the fix the day-bounded [0,1439] window failed
+     containment and printed "available 00:00–23:59 only". */
+  it("'ok' — an all-day offer covers a slot that crosses midnight", () => {
+    fileSans('krait', { f: true })                               // all day
+    expect(sansGate('krait', 'Jul 13', 'fly', 1140, 1860).status).toBe('ok')  // 19:00→07:00
+    expect(sansGate('krait', 'Jul 13', 'fly', -30, 90).status).toBe('ok')     // 23:30→01:30
+  })
+
+  /* An OVERNIGHT custom offer (end-before-start, a legal shape the write path
+     permits) must cover a night slot inside it. Before the fix sansWindow left
+     [1320,120] un-rolled and the slot could never read 'ok'. */
+  it("'ok' — an overnight custom offer 22:00–02:00 covers a night slot inside it", () => {
+    fileSans('krait', { f: true }, { s: 1320, e: 120 })          // 22:00 → 02:00
+    expect(sansGate('krait', 'Jul 13', 'fly', 1350, 1400).status).toBe('ok')  // 22:30→23:20
+    expect(sansGate('krait', 'Jul 13', 'fly', 1350, 1500).status).toBe('ok')  // 22:30→01:00, inside the rolled window
+    expect(sansGate('krait', 'Jul 13', 'fly', 600, 700).status).toBe('window') // a daytime slot is NOT covered
+  })
 })
 
 describe('sansWindow / sansLetters / sansBadge — the record readers', () => {
@@ -107,6 +128,8 @@ describe('sansWindow / sansLetters / sansBadge — the record readers', () => {
     expect(sansWindow({ allday: false, s: 480, e: 720 })).toEqual([480, 720])
     expect(sansWindow({ allday: false }), 'a thin record reads whole-day').toEqual([0, 1439])
     expect(sansWindow(null)).toEqual([0, 1439])
+    // an overnight offer rolls its end past midnight, the way inpWin does
+    expect(sansWindow({ allday: false, s: 1320, e: 120 }), '22:00–02:00 rolls to [1320,1560]').toEqual([1320, 1560])
   })
   it('sansLetters prints ticked events in fixed f/o/a order, slash-joined', () => {
     expect(sansLetters({ sans: { a: true, f: true } })).toBe('F/A')
@@ -154,6 +177,15 @@ describe('slotBar — the SANS gate, picker side (avail.ts)', () => {
   it('a flying seat: offered all day — no SANS reason', () => {
     fileSans(FLY_ID, { f: true })
     expect(slotBar(FLY_ID, FLY_KEY)).not.toMatch(/^SANS/)
+  })
+  /* a SPARE / AVALON seat is carved out (bug-test fix): those seats never reach
+     the validator's SANS check (saExempt / standalone), so the picker must not
+     grey them either — the drift-seam the four absence blocks already avoid. */
+  it('a spare-like (AVALON) seat: NOT greyed for SANS, even with a non-offering record', () => {
+    fileSans(FLY_ID, { o: true })                        // record filed, Fly not offered
+    expect(slotBar(FLY_ID, FLY_KEY)).toBe('SANS — not offering Fly')   // a normal seat greys
+    const spare = { ...slotRules(FLY_KEY), avJet: true }
+    expect(slotBar(FLY_ID, FLY_KEY, spare)).not.toMatch(/^SANS/)       // the AVALON seat does not
   })
 
   /* waldo (SANS, RCP) already rides this OFT box as pax in the seed, on

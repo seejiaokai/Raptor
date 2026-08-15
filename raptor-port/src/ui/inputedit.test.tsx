@@ -15,7 +15,7 @@ import { DAYS } from '../engine/data'
 import { acceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { inpId } from '../engine/inputs'
 import { INPEDIT, setInpEdit } from './pops'
-import { HALF_AM, commitInputEdit, unfmt } from './inputedit'
+import { HALF_AM, commitInputEdit, unfmt, sansOverlapRefusal } from './inputedit'
 import { HOOKS } from '../engine/hooks'
 import { DATES } from '../engine/inputs'
 
@@ -360,5 +360,33 @@ describe('retyping an accepted input into a never-accepted type', () => {
     expect((DAYS[0].ground || []).filter((g: any) => g.src === inpKey(r)).length).toBe(1)
     expect(r.acc).toBe('g')
     expect(said.some(m => /does not go on the Ground Programme/.test(m))).toBe(false)
+  })
+})
+
+/* ONE SANS RECORD PER DAY — the overlap guard that stops two records colliding
+   on one person+day (they'd share an inpKey and clicking one card could edit or
+   delete the other). Pure logic over INPUTS, tested directly. */
+describe('sansOverlapRefusal', () => {
+  const SNAP = JSON.stringify(INPUTS)
+  const restore = () => { INPUTS.length = 0; JSON.parse(SNAP).forEach((i: any) => INPUTS.push(i)) }
+  const mk = (person: string, date: string, endDate?: string) => {
+    const r: any = { person, date, endDate, type: 'SANS Availability', allday: true, sans: { f: true } }
+    inpId(r); INPUTS.push(r); return r
+  }
+  it('refuses a second SANS record on a day one already covers; allows a clear day and excludes the row being edited', () => {
+    INPUTS.length = 0
+    const first = mk('krait', 'Jul 13')
+    expect(sansOverlapRefusal('krait', 'Jul 13', undefined, null)).toMatch(/already filed/)   // same day → refused
+    expect(sansOverlapRefusal('krait', 'Jul 14', undefined, null)).toBe('')                   // a clear day → fine
+    expect(sansOverlapRefusal('romeo', 'Jul 13', undefined, null)).toBe('')                   // a different person → fine
+    expect(sansOverlapRefusal('krait', 'Jul 13', undefined, first)).toBe('')                  // editing itself → fine
+    restore()
+  })
+  it('a span record blocks a single day inside it, and vice versa', () => {
+    INPUTS.length = 0
+    mk('krait', 'Jul 13', 'Jul 17')                                                           // a Mon–Fri span
+    expect(sansOverlapRefusal('krait', 'Jul 15', undefined, null)).toMatch(/already filed/)   // a day inside it → refused
+    expect(sansOverlapRefusal('krait', 'Jul 20', 'Jul 22', null)).toBe('')                    // a later span → fine
+    restore()
   })
 })
