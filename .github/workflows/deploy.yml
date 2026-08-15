@@ -5,11 +5,23 @@
 # One-time setup in the repo: Settings → Pages → Source: "GitHub Actions".
 name: Deploy to GitHub Pages
 
+# Docs-only changes skip the whole workflow (15 Aug 26): nothing under these
+# patterns reaches the built bundle (verified — no .md/.claude file is
+# imported anywhere in src/), so a session-handoff or HANDOFF.md edit merges
+# without a 5-minute gate and without a pointless Pages redeploy. The skip
+# fires only when EVERY changed file matches; a PR mixing code and docs still
+# runs the full gates.
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '.claude/**'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '.claude/**'
   workflow_dispatch:
 
 permissions:

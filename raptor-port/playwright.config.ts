@@ -20,12 +20,18 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 0,
-  /* One worker per core in CI (the default is half the cores, so a 4-core
-     runner sat at 2). The 96 geometry tests are independent and hit one shared
-     preview server, so saturating the cores roughly halves the suite's wall
-     time. Local runs keep Playwright's own default. */
-  workers: process.env.CI ? '100%' : undefined,
+  /* One CI retry — added 15 Aug 26 with the worker bump below, after the
+     first all-cores run on main failed on a single timing-sensitive carry-day
+     test that passes everywhere else. A retried pass is logged by the
+     reporter, so flakiness stays visible instead of silently absorbed. Local
+     runs keep retries at 0: on a dev box a flake should fail loudly. */
+  retries: process.env.CI ? 1 : 0,
+  /* More workers in CI, but NOT all cores (tried '100%' first, 15 Aug 26):
+     the default half-cores left a 4-core runner at 2, but saturating all 4
+     starved the shared vite preview server and flaked the test above on the
+     very first main run. Three keeps most of the ~30% win with headroom for
+     the server. Local runs keep Playwright's own default. */
+  workers: process.env.CI ? 3 : undefined,
   reporter: process.env.CI ? 'list' : 'line',
   use: {
     ...devices['Desktop Chrome'],

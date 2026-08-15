@@ -320,9 +320,14 @@ trip felt like ~20 min per change and was unsustainable):
 So the loop is: iterate against the local `vite preview` (instant, what you
 drive), let the owner eyeball the Vercel preview when he wants to tap it
 himself, and ship to Pages once at the end. The CI gate itself was sped up
-15 Aug 26 (the browser download is cached and the geometry suite runs one
-worker per core — deploy.yml + playwright.config.ts), so the checking wait is
-~2–3 min, not ~5.
+15 Aug 26 (the browser download is cached and the geometry suite runs 3
+workers with one CI retry — NOT all cores; '100%' starved the preview server
+and flaked a carry-day test on its first main run, see playwright.config.ts —
+deploy.yml + playwright.config.ts), so the checking wait is ~2–3 min, not ~5.
+**Docs-only changes skip the gates entirely** (`paths-ignore` in deploy.yml:
+`**.md` + `.claude/**` — verified nothing there reaches the bundle), so a
+handoff PR has NO checks to wait for: push, merge at once, done. A PR mixing
+code and docs still runs everything.
 
 ## Architecture rules (apply to nearly every task)
 
