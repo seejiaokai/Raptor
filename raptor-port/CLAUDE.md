@@ -414,6 +414,16 @@ the phone perf budget. Don't convert them to components.
 
 ## Stable decisions (do not relitigate)
 
+- **Do NOT watch PRs** (owner, 15 Aug 26). The harness auto-watches a PR you
+  open and injects every GitHub update — CI, review comments, and the Vercel
+  preview bot — as raw `<wake>`/`<event>` blocks, which cluttered the owner's
+  phone. It earns little here: the gates are run and the live page is checked
+  BEFORE the PR opens, and the owner leaves no review comments. So immediately
+  after opening any PR, call `unsubscribe_pr_activity` for it, and never leave
+  one under watch. This does NOT change the ship-to-live duty — carry the PR to
+  merged and verified on the deployed page as always (§How to work here); just
+  do it without the watch subscription. If the owner ever asks you to babysit a
+  specific PR, that explicit ask overrides this for that PR only.
 - `reference/` is **read-only** — the spec for existing behaviour. New
   features go beyond it but must not break it.
 - The engine was historically generated from the original; that generator
