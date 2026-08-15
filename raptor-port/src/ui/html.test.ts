@@ -13,7 +13,7 @@ import { restoreDayVersion } from '../engine/restore'
 import { dayDrafts, draftDup } from '../engine/drafts'
 import { txtSet, txtGet } from '../engine/slots'
 import { parseHM } from '../engine/time'
-import { setDayPreview, DPREV, VWORK } from '../state/view'
+import { setDayPreview, DPREV, VWORK, setPage } from '../state/view'
 import { setSession } from '../state/auth'
 import { acceptInput, unacceptInput } from '../engine/slots'
 
@@ -468,6 +468,15 @@ describe('version dropdown and preview build', () => {
     expect(wk).toContain('EVEN LATER')
     expect(wk).not.toContain('✓ Published')
     expect(wk).not.toContain('class="dal')
+    /* the SAME VWORK choice must NOT bleed onto another surface's read-only
+       render: on the board's page context (editsched) the working stamp is
+       gone and the AL chip is back — VWORK is a view-page choice, not "any
+       read-only render". */
+    setPage('editsched')
+    const board = dayHTML(0, false)
+    expect(board).not.toContain('dprev-bar work')
+    expect(board).toContain('class="dal')
+    setPage('viewsched')
     VWORK.delete(0)
     SCHED.drafts = {}; SCHED.curDraft = {}
   })

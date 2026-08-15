@@ -354,6 +354,30 @@ only after re-running them.
     §Drafts), which closes the very hole the refusal existed for. If the
     template flow is ever wanted on published days too, the rebase is the
     piece to reuse — do not just drop the guard.
+  - **Applying a template on a REOPENED (previously-published) day no longer
+    leaves stale AL tints (fixed, bug-test sweep 15 Aug 26).** `applyDayTpl`
+    now clears the day's `SCHED.changes` slice alongside pending/added, the
+    same three-slice wipe `restoreDayVersion` does — before this, a template
+    swap (which marks nothing pending) left every AL colour the day wore
+    before it was reopened stuck onto the template's brand-new rows. Rules:
+    `docs/engine-rules.md` §Day templates; pinned in `daytpl.test.ts`.
+  - **Re-publishing a REOPENED day now refreshes what viewers see (fixed,
+    owner 15 Aug 26).** Before: reopen a published day, change it by ANY
+    means (a hand edit or a template), sign, Publish day — `setDayApproved`
+    re-approved but never refreshed the version's frozen snapshot, so the
+    view page's issued default (`dayIssuedHTML` → `daySnapOf(dayCurVer)`)
+    kept showing the pre-reopen document while the scheduler's live view had
+    moved on, with no pending marker to flag the split (a plain note edit did
+    it as much as a template swap). Now `setDayApproved`'s re-publish branch
+    calls `reissueReopened`, which re-issues the CURRENT version in place —
+    refreshing the snapshot `dayCurVer` resolves to, so the issued view
+    catches up. The version LABEL is unchanged (no surprise AL number). This
+    revises the old "first-publish-wins, never restamp the Original" rule for
+    the reopen case only: a never-amended day re-issues its Original, an
+    amended day re-issues its current AL; the ORDINARY amendment flow (edit a
+    published day, Publish AL — no reopen) still freezes the Original the
+    moment it is first issued. Rules: `docs/engine-rules.md` §Version
+    snapshots / restore; pinned in `publish.test.ts`.
   - **Templates, drafts, and the SANS demo seed below are session /
     localStorage-only, like everything else this app persists that way** —
     see the "No shared data" bullet further down.

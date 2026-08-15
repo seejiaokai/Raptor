@@ -69,14 +69,46 @@ export function setDayApproved(di:any,on:any){
     Object.keys(SCHED.pending).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.pending[k];});
     Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.added[k];});
     SCHED.dayOK[di]=1; signClear(di);          // the signature is spent on the issue
-    /* Original = the day as FIRST published. First publish wins: reopening voids
-       the signature, not the history — a re-publish after reopen is a later
-       state, and restamping would let a rewrite masquerade as the Original. */
+    /* Original = the day as FIRST published. A FIRST publish stamps it; a
+       re-publish (orig already there → we came back through reopen) re-issues
+       the current version in place instead, see reissueReopened. */
     SCHED.orig=SCHED.orig||{};
-    if(!SCHED.orig[di])SCHED.orig[di]=daySnap(di);}
+    if(!SCHED.orig[di])SCHED.orig[di]=daySnap(di);
+    else reissueReopened(di);}
   else {delete SCHED.dayOK[di]; signClear(di);} // reopening voids it — resign to reissue
   reflow(); histPush();
   toast(on?`${DAYS[di].dow} published — APPROVED`:`${DAYS[di].dow} reopened to draft`);
+}
+/* RE-PUBLISHING A REOPENED DAY (owner, 15 Aug 26 — "when I reopen a day,
+   change it and publish it again, everyone should see the new version").
+   Reopening a published day keeps its version history (it voids the signature,
+   not the record), so a day re-published after reopen is still "at" whichever
+   version it was — but that version's frozen snapshot, the document the view
+   page reads through dayIssuedHTML → daySnapOf, was captured BEFORE the reopen
+   and no longer matches the live day. Left alone, viewers keep seeing the
+   pre-reopen content while the scheduler's live view has moved on, with no
+   pending marker to flag the split — it reproduced with a plain note edit as
+   much as with a whole-day template swap.
+   The fix re-issues the CURRENT version in place: refresh the snapshot
+   dayCurVer points at to the day as it now stands. The version LABEL does not
+   change — a reopen+republish is a deliberate re-issue of that version, not a
+   fresh amendment number appearing unasked. Whatever the day is currently at
+   is what gets refreshed: a never-amended day (cur='orig') re-issues its
+   Original, an amended day (cur=ALn) re-issues that AL. This is the deliberate
+   part the earlier "first-publish-wins, never restamp" rule ruled out, and the
+   owner chose it: an EXPLICIT reopen+republish is a re-issue, not the accidental
+   rewrite that rule guarded against — and the ordinary amendment flow (edit a
+   published day, Publish AL) never comes through here at all, so a normal
+   Original is still frozen the moment it is first issued. daySnap re-reads
+   DAYS[di] and the day's live changes slice, so content and marks are both
+   current. Runs only on a re-publish — the caller's `else`, orig already
+   existed. */
+function reissueReopened(di:any){di=+di;
+  const cv=dayCurVer(di);
+  if(cv==='orig'){SCHED.orig=SCHED.orig||{}; SCHED.orig[di]=daySnap(di); return;}
+  if(cv==null)return;
+  const rec=(SCHED.als||[]).find((a:any)=>a.n===cv);
+  if(rec){rec.snap=rec.snap||{}; rec.snap[di]=daySnap(di);}
 }
 /* ---- per-day version snapshots -------------------------------------------
    A snapshot is the frozen day plus ITS slice of the changes map, taken at the

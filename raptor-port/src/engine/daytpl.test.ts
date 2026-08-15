@@ -5,7 +5,8 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { storeBackend } from './hooks'
 import { DAYS } from './data'
-import { SCHED, signOf, setDayApproved, dayApproved } from './publish'
+import { SCHED, signOf, setDayApproved, dayApproved, publishALDay } from './publish'
+import { txtSet } from './slots'
 import {
   DAYTPL_STD, DAYTPL_CFG, dayTplAreStandard,
   tplFromDay, addDayTpl, delDayTpl, renameDayTpl, moveDayTpl,
@@ -186,6 +187,25 @@ describe('applyDayTpl', () => {
     expect(SCHED.added['wl:0.0']).toBeUndefined()
   })
 
+  /* the corner an earlier build missed: applying a template to a day that was
+     PUBLISHED and then REOPENED must clear the day's issued AL changes-marks
+     too, not just pending/added. Reopen keeps those marks (it voids the
+     signature, not the history), and a template swap marks NOTHING pending —
+     so a surviving mark would render the template's brand-new rows in a past
+     AL's colour. restoreDayVersion wipes all three slices for the same reason;
+     applyDayTpl now mirrors it. */
+  it('drops the day’s issued AL changes-marks — no stale AL tint on template content', () => {
+    sign(0); setDayApproved(0, 1)             // publish Monday
+    txtSet('dn:0.0', 'AMENDED NOTE')          // amend a note
+    sign(0); publishALDay(0)                  // issue AL1 → changes['dn:0.0']=1
+    expect(SCHED.changes['dn:0.0']).toBe(1)
+    setDayApproved(0, 0)                       // reopen to draft — keeps the AL1 mark
+    expect(SCHED.changes['dn:0.0']).toBe(1)
+    const t = addDayTpl(0)!                    // capture + apply a template on the reopened day
+    expect(applyDayTpl(0, t.id)).toBe(true)
+    expect(SCHED.changes['dn:0.0']).toBeUndefined()   // the AL1 tint is gone
+  })
+
   it('does not push history or reflow itself — the caller owns that step', () => {
     let pushed = 0
     const orig = SCHED.al   // sanity: no publish machinery touched
@@ -232,6 +252,19 @@ describe('persistence, like dutytpl', () => {
       notes: [], allhands: [], waves: [], sims: {}, dutywaves: [], ground: [],
       simnotes: '', prognotes: '', dutynotes: '', grndnotes: '',
     })
+  })
+
+  it('an id-less entry ahead of a literal dtN id does not collide with it', () => {
+    /* a hand-edited file: an entry with no id sits BEFORE one that reads 'dt1'.
+       Minting must skip 'dt1' rather than reuse it, so both stay addressable. */
+    mem['sqn142_daytpl'] = JSON.stringify([
+      { title: 'no id', d: {} },
+      { id: 'dt1', title: 'literal dt1', d: {} },
+    ])
+    dayTplLoad()
+    const ids = DAYTPL_CFG.map(t => t.id)
+    expect(new Set(ids).size).toBe(2)          // no duplicate id
+    expect(ids).toContain('dt1')               // the literal one is preserved
   })
 
   it('a non-array blob resets to empty', () => {
