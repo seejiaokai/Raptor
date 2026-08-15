@@ -268,6 +268,19 @@ reference/tfin.js` 728/0, `npm run build` clean, `npm run test:e2e` 96/96,
 ceilings AND both measures unmoved**: every fix was logic (window math, a
 role flag, a write-path refusal, a picker carve-out), none added DOM. Both
 merged and verified on the deployed page.
+**THE TIMING-WARNING ASSUMPTIONS (15 Aug 26, PR #212 — the crew-rest breach
+prints `landed HH:MM, +2h debrief assumed → ended HH:MM`, the long-work-day
+note prints `(last landing HH:MM + Nh debrief assumed)` on a flying end;
+`CREW_TIGHT` shares the crew-rest tail; rules in `docs/engine-rules.md` §crew
+rest) — all six gates green first-hand.** `npm test` **1631** across **100**
+files (`longday-msg.test.ts` new — flying end names the pad, non-flying end
+stays bare; `crewrest-ui.test.ts` +1 describe), `node reference/tfin.js`
+728/0 (both tails are parity-compared strings, mirrored in
+`refwin.ts:rebrief()`), `npm run build` clean, `npm run test:e2e` 96/96,
+`probes:adapted` 6/6, `perf` 4/4 — week 3702 / board 855, ceilings and
+measures all unmoved (message-only). Verified on the deployed page. The two
+workflow PRs the same day (#213, #214 — see §Deploy) changed no app source;
+CI re-ran the four gates green on main for both.
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
 board can still be a heavier one — and now that a heavier board can read
 lighter when the measure's boundary moves.
@@ -929,6 +942,12 @@ routing every look through the gated Pages deploy.
   therefore has NO checks and merges immediately; do not sit waiting for a
   "build" check that will never appear on such a PR. A mixed code+docs PR
   still runs the full gates.
+- **Known cosmetic warning, deliberately deferred (15 Aug 26):** the runner
+  logs "actions/checkout@v4, setup-node@v4, cache@v4 target Node 20, forced
+  onto Node 24". A warning, not a failure — every run passes with it. Bump
+  the action majors on a quiet day, NOT bundled into another workflow change:
+  the one workflow edit this repo shipped broke main's deploy on its first
+  run (the workers flake), so workflow changes go one at a time.
 
 GitHub Pages must stay enabled (Settings → Pages → Source: GitHub Actions).
 The workflow refuses to publish on any red test. The four gates also run on
@@ -1092,6 +1111,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/**/audit-*.test.ts(x)` | Three sweeps of 12 Aug 26, all keepers — they are the regression armour for corners nothing else tests. **The adversarial audit** over PRs 148–174, six agents (a=History/edit log, b=board nav, c=validation, d=sort/reorder, e=inputs): closed every gap this file listed and pinned twelve fixes (log keys remapped with the key space, day-aware accept deferral, `deletionWasIssued` under reorder, the relink's preserved extras and covered-day re-file, the scrub/handle button guards, the day-step commit, the carry-day fix, the numeric time sort). **The five suspects** it raised and the owner then closed: `audit-c-briefguard` (brief vs take-off, both directions), `audit-thinwin` (`inpWin` failing closed), `audit-gesture-bubble` (repaint re-check, drag-vs-scrub). **The guard-rail sweep**: `audit-guards` (`hmOK`, `minus`, the time cells, store renames, the rules load path) and `audit-guards-inputs` (input times, spans, the derived AM/PM label, and what stays allowed because it is a decision). |
 | `src/ui/selrings.test.tsx` | The green eligibility rings (13 Aug 26) — the DOM agrees with `slotBar` on EVERY edit-week slot (the mirror test that keeps the rings from ever becoming a second copy of the rule), a mutation re-rings on the next paint (WARN-identity invalidation), rings clear with the selection, view-only and a selected placeholder never ring. The paints themselves (bright/dim/armed distinct, zero layout shift) are in `e2e/geometry.spec.ts`, because jsdom measures every rect 0×0. |
 | `src/engine/personnel.test.ts` | The ground-crew category (Aug 26) — that a personnel derives empty quals and the boot grants nothing, `slotBar` bars a front seat and allows rear/duty/ground, and validate raises `QUAL` in a front seat, the `PAX_CREW`/`CP` advisory in a rear seat, and `DOUBLE_BOOK`/`LONGDAY`/`DAYS_RUN` while crew rest, turns, the matrix, AAR and the brief/debrief windows stay OFF. Plus the parity guards (`PAX_CREW` has a WCODE, and fires nowhere on the seed). |
+| `src/engine/longday-msg.test.ts` | The long-work-day note's assumption wording (15 Aug 26) — a flying end prints the real landing + the `debrief assumed` pad, a non-flying end stays a bare clock time. The crew-rest tail's twin assertions live in `crewrest-ui.test.ts`. |
 | `src/engine/sansavail.test.ts` | SANS Availability (14 Aug 26; rewritten for the one-window rework the same day) — `sansGate`'s five statuses against the flags + standard-window shape, one window serving every ticked event, the AM/PM presets; `sansWindow`/`sansLetters`/`sansBadge`; `slotBar`'s grey-out on a flying/OFT/AMT seat and the duty/ground carve-out; the `SANS_AVAIL` advisory (fires on not-offered/window, silent on no-record); the LEAK GUARD (a timed offer never reads as a timed absence — `isAway`, `day.input`, no hard clash); the parity-guard pair. |
 | `src/ui/sanscards.test.tsx` | The SANS card grid (14 Aug 26) — the shared builder renders the same cards on the week group and the board panel, the order (bounded windows by start, then the fixed F/O/A→…→A combo order), a card's `data-inpedit` address matching `inpKey`, read-only cards carrying none, the board's empty state, the view-only week rendering nothing. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
