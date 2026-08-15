@@ -121,6 +121,19 @@ barely more than one.
   Trust this index instead of re-exploring. Prefer a fresh
   session per task; a long conversation re-sends itself every turn.
 
+**Task-observer activation (owner, 15 Aug 26).** At the start of any
+task-oriented session — any interaction where you will use tools and produce
+deliverables — invoke the `task-observer` skill before beginning work, so
+skill-improvement opportunities are captured throughout the session. When
+loading any skill, also check the observation log for OPEN observations tagged
+to it and apply their insights even if the skill file has not been updated yet.
+A vendored `SessionStart` hook (`.claude/hooks/task-observer-session-start.sh`,
+wired in `.claude/settings.json`) is the enforceable half of this; this line is
+the structural half that survives compaction. This repo's web sessions are
+ephemeral, so the observation log does not persist on its own — use the skill's
+handoff-doc mode, or commit the log into the repo if it should last. Provenance
+and opt-out: `.claude/skills/TASK-OBSERVER-VENDORED.md`.
+
 ## Product bar & ideation (owner, 7 Aug 26)
 
 Distilled from the owner's product-standards brief; this section IS the
