@@ -157,15 +157,15 @@ export function legendHTML(){
     <span style="margin-left:8px"><span class="qk" style="background:var(--me)">▮</span>you</span>
     <span><span class="qk" style="background:#1E86FF">▮</span>selected</span>
     <span style="margin-left:8px">Flags:</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">DT</span>double turn</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">TT</span>tight turn</span>
     <span><span class="qk" style="background:#F0555F">C</span>conflict</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">A</span>advisory — shift + ground</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">CP</span>crew pairing — needs approval</span>
     <span><span class="qk" style="background:#F0555F">CP</span>crew pairing — not authorised</span>
     <span><span class="qk" style="background:#F0555F">R</span>crew rest</span>
     <span><span class="qk" style="background:#F0555F">7</span>no break day</span>
     <span><span class="qk" style="background:#F0555F">Q</span>qual / illegal seat</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">DT</span>double turn</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">TT</span>tight turn</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">A</span>advisory — shift + ground</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">CP</span>crew pairing — needs approval</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>no flight brief</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>no sim brief</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>no flight debrief</span>

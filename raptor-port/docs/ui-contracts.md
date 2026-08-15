@@ -1364,6 +1364,39 @@ reference, which is why the positive pin carries the real assertion. Careful:
 there is already a module-level `noBrief` for the brief-time CELL; shadowing
 it silently breaks the day-parity tests on an unrelated `class=""`.
 
+## The legend collapses, and its flags read by severity (owner, 15 Aug 26)
+
+The key at the top of each week (`html.ts legendHTML()`, rendered in
+`Shell.tsx` as `#vLegendBox` / `#eLegendBox`) is a native `<details>`,
+**closed by default** — on a phone the ~20-row key used to render before the
+first day's schedule. The summary is one `.legend-sum` chip; no JS, so the
+toggle stays keyboard-operable. Note `.legend{display:flex}` overrides the UA
+rule that hides a closed `<details>`'s body, so `.legendbox:not([open]) .legend`
+must hide it explicitly — without that line the collapse is inert.
+
+The FLAGS inside now read top-down by **severity** — red (hard) first, then
+amber (adv), then grey (note) — instead of the reference's order; the LEVELS
+stay in the CAT ladder (`OCU→D→C→B→A→IW→IP→IR→FI`). This is a deliberate
+divergence, so the legend is no longer byte- or order-identical to the
+reference: `html.test.ts` compares the **multiset of leaf texts**
+(order-independent) to prove nothing was dropped/added/recoloured, and a
+separate test pins the severity order. The colour-per-tier and
+every-chip-has-a-row tests (above) still carry correctness. A new flag row
+slots into its severity group and needs no test change beyond those.
+
+## The Quals callsign column is frozen (owner, 15 Aug 26)
+
+On a phone the Quals table is wider than the screen (`min-width:1050px`) and
+scrolls sideways inside `.qwrap`; the CALLSIGN column is `position:sticky;
+left:0` (the `td.qname` and the `th[data-sort="cs"]` corner), so the identity
+column stays put while the currencies scroll under it — otherwise a phone user
+read rows of unlabelled ticks. Two things it depends on: the 20px page gutter
+is a **margin** on `.qwrap`, not padding, or the frozen cell sticks at the
+padding edge and scrolled cells show through the gap to its left; and a
+right-edge `box-shadow` marks the freeze boundary so a half-scrolled column
+reads as content passing under a pinned column, not a stray fragment. Gated in
+`e2e/geometry.spec.ts` (jsdom has no sticky), not jsdom.
+
 ## Selection highlight (`ui/highlights.ts`)
 
 **A click on blank schedule clears EVERYTHING that lights a puck** (owner,
