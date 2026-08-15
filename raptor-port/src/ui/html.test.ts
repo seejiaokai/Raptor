@@ -7,12 +7,13 @@ import { refWindow } from '../testing/refwin'
 import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, isUnavail } from '../engine/inputs'
 import { validate, CHIP_LABEL, chipText } from '../engine/validate'
-import { dayHTML, dayPreviewHTML, withDaySnap, legendHTML } from './html'
+import { dayHTML, dayPreviewHTML, dayIssuedHTML, withDaySnap, legendHTML } from './html'
 import { SCHED, signOf, setDayApproved, alIssue } from '../engine/publish'
 import { restoreDayVersion } from '../engine/restore'
+import { dayDrafts, draftDup } from '../engine/drafts'
 import { txtSet, txtGet } from '../engine/slots'
 import { parseHM } from '../engine/time'
-import { setDayPreview, DPREV } from '../state/view'
+import { setDayPreview, DPREV, VWORK } from '../state/view'
 import { setSession } from '../state/auth'
 import { acceptInput, unacceptInput } from '../engine/slots'
 
@@ -434,6 +435,41 @@ describe('version dropdown and preview build', () => {
     const al1 = dayPreviewHTML(0, 1, true)
     expect(al1).toContain('LIVE CHANGE')
     expect(al1).toContain('data-alc="1"')     // the mark it wore as issued
+  })
+
+  it('a draft preview never wears the published day\'s clothes; the issued default is quiet', () => {
+    /* state: day 0 published at AL1 with a live pending edit ("EVEN LATER").
+       A d: preview on a published day (edit week) must not read as the
+       published schedule (owner, 15 Aug 26 — "when I toggle to draft 1, it
+       shouldn't say published"): plain Draft stamp, no AL chip. */
+    draftDup(0)                                   // legal on a published day now
+    const dv = 'd:' + dayDrafts(0)[0].id
+    const h = dayPreviewHTML(0, dv, true)
+    expect(h).toContain('a draft, read-only')
+    expect(h).not.toContain('✓ Published')
+    expect(h).not.toContain('class="dal')
+    expect(h).toContain('A stored draft — not the issued schedule')
+    /* the view page's issued DEFAULT — the same freeze with no preview
+       dressing: no banner, no Restore, class `issued`, pending invisible */
+    const issued = dayIssuedHTML(0)
+    expect(issued).toContain(' issued"')
+    expect(issued).not.toContain(' preview"')
+    expect(issued).not.toContain('dprev-bar')
+    expect(issued).not.toContain('data-restore')
+    expect(issued).not.toContain('EVEN LATER')
+    expect(issued).toContain('LIVE CHANGE')       // the AL1 document is what shows
+    expect(issued).toContain('data-vwork="0"')
+    expect(issued).toContain('AL1 — as issued')
+    expect(issued).toContain('Working draft — not issued')
+    /* the working choice: a live view-page render wearing the banner + stamp */
+    VWORK.add(0)
+    const wk = dayHTML(0, false)
+    expect(wk).toContain('dprev-bar work')
+    expect(wk).toContain('EVEN LATER')
+    expect(wk).not.toContain('✓ Published')
+    expect(wk).not.toContain('class="dal')
+    VWORK.delete(0)
+    SCHED.drafts = {}; SCHED.curDraft = {}
   })
 
   it('withDaySnap restores the globals after the build — and after a throw', () => {

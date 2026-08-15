@@ -5,8 +5,12 @@
    histSnap/histApply serialize SCHED.drafts/SCHED.curDraft explicitly. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { SCHED, signOf, setDayApproved, dayApproved, daySnapOf } from './publish'
+import {
+  SCHED, signOf, setDayApproved, dayApproved, daySnapOf, dayCurVer,
+  publishALDay, unpublishAL, deleteCount, deletionWasIssued,
+} from './publish'
 import { txtSet, txtGet } from './slots'
+import { keyDay } from './keys'
 import {
   dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete,
   draftVerLabel, isDraftVer, MAX_DRAFT_NAME,
@@ -71,11 +75,18 @@ describe('duplicating a day', () => {
     expect(t!.name).toBe('Draft 4')                 // 3 is the highest left, not the count
   })
 
-  it('refuses a published day — drafts are pre-publish by definition', () => {
+  it('a published day duplicates too, and its pending marks ride along untouched', () => {
+    /* dup changes no content — live is stowed and an identical copy selected —
+       so whatever was already pending toward the next AL stays exactly as it
+       was (15 Aug 26; the old refusal moved to the rebase in draftSelect) */
     sign(0); setDayApproved(0, 1)
     expect(dayApproved(0)).toBe(true)
-    expect(draftDup(0)).toBeNull()
-    expect(dayDrafts(0)).toEqual([])
+    txtSet('dn:0.0', 'AMEND ME')
+    expect(SCHED.pending['dn:0.0']).toBe(1)
+    const t = draftDup(0)
+    expect(t!.name).toBe('Draft 2')
+    expect(dayDrafts(0).length).toBe(2)
+    expect(SCHED.pending['dn:0.0']).toBe(1)
   })
 })
 
@@ -117,14 +128,156 @@ describe('switching drafts', () => {
     expect(SCHED.added['wl:1.9']).toBe(1)
   })
 
-  it('refuses an unknown id, the already-selected id, and a published day', () => {
+  it('refuses an unknown id and the already-selected id', () => {
     draftDup(0)
-    const [d1, d2] = dayDrafts(0)
+    const [, d2] = dayDrafts(0)
     expect(draftSelect(0, 'nope')).toBe(false)
     expect(draftSelect(0, d2.id)).toBe(false)       // already live
-    sign(0); setDayApproved(0, 1)
-    expect(draftSelect(0, d1.id)).toBe(false)
     expect(txtGet('dn:0.0')).toBe(D0.notes[0])      // nothing moved
+  })
+})
+
+/* SWITCHING DRAFTS ON A PUBLISHED DAY (owner, 15 Aug 26 — "change to draft 1
+   to publish as AL1 but make some edits prior"). The old "Reopen the day
+   first" refusal is gone: the issued snapshots are immutable, so nothing the
+   squadron holds can change under a switch — what CHANGES is the live working
+   copy, and the rebase recomputes the day's pending set as the true diff
+   between it and the issued document, so the next AL carries exactly what a
+   hand-edit to the same result would have carried. */
+describe('switching drafts on a PUBLISHED day — the pending rebase', () => {
+  const dayPend = () => Object.keys(SCHED.pending).filter((k: any) => keyDay(k) === 0).sort()
+  const pub = () => { sign(0); setDayApproved(0, 1) }
+
+  it('switching to a draft that matches the issued day leaves zero pending', () => {
+    pub()
+    draftDup(0)                                     // Draft 1 = issued content, Draft 2 live
+    const [d1] = dayDrafts(0)
+    txtSet('dn:0.0', 'PLAN B')                      // diverge Draft 2
+    expect(dayPend()).toEqual(['dn:0.0'])
+    expect(draftSelect(0, d1.id)).toBe(true)
+    expect(dayPend()).toEqual([])                   // Draft 1 IS the issued day
+    expect(txtGet('dn:0.0')).toBe(D0.notes[0])
+  })
+
+  it('switching back to the edited draft re-marks exactly the differences', () => {
+    pub()
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    txtSet('dn:0.0', 'PLAN B')
+    draftSelect(0, d1.id)
+    draftSelect(0, d2.id)
+    expect(dayPend()).toEqual(['dn:0.0'])
+    expect(SCHED.changes['dn:0.0']).toBeUndefined()
+    expect(txtGet('dn:0.0')).toBe('PLAN B')
+  })
+
+  it('a cell matching the issued day keeps its AL tint; only divergence goes pending', () => {
+    pub()
+    txtSet('dn:0.0', 'AMENDED NOTE')
+    sign(0)                                         // publish spent the first signature
+    publishALDay(0)                                 // AL1 — changes['dn:0.0']=1
+    expect(SCHED.changes['dn:0.0']).toBe(1)
+    draftDup(0)                                     // both drafts carry the AL1 content
+    const [d1, d2] = dayDrafts(0)
+    txtSet('dn:0.1', 'SECOND NOTE B')               // diverge a DIFFERENT cell on Draft 2
+    draftSelect(0, d1.id)                           // Draft 1 == AL1 content exactly
+    expect(dayPend()).toEqual([])
+    expect(SCHED.changes['dn:0.0']).toBe(1)         // the matching cell wears its issued mark
+    draftSelect(0, d2.id)
+    expect(dayPend()).toEqual(['dn:0.1'])
+    expect(SCHED.changes['dn:0.0']).toBe(1)         // Draft 2 carries the AL1 note too — still matching
+    expect(SCHED.changes['dn:0.1']).toBeUndefined()
+  })
+
+  it('an extra row goes pending AND carries a draft-add identity', () => {
+    pub()
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    DAYS[0].notes.push('NEW NOTE')                  // structural add while Draft 2 is live
+    draftSelect(0, d1.id)
+    expect(dayPend()).toEqual([])
+    expect(SCHED.added['dn:0.2']).toBeUndefined()
+    draftSelect(0, d2.id)
+    expect(dayPend()).toEqual(['dn:0.2'])
+    expect(SCHED.added['dn:0.2']).toBe(1)
+    /* add-then-delete before the AL stays a net no-op, exactly like a hand add */
+    expect(deletionWasIssued(0, 'note', 2)).toBe(false)
+  })
+
+  it('a missing row mints one inert deletion tombstone, not a field-by-field trail', () => {
+    pub()
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    DAYS[0].notes.splice(1, 1)                      // Draft 2 drops the last note
+    draftSelect(0, d1.id)
+    expect(dayPend()).toEqual([])
+    draftSelect(0, d2.id)
+    expect(dayPend()).toEqual(['del:0.1.note'])
+    expect(deleteCount(dayPend())).toBe(1)
+  })
+
+  it('a shrunk who list marks the emptied hole on the surviving row', () => {
+    DAYS[0].allhands[1].who = ['nact', 'xtra']      // grow the roster BEFORE publish
+    pub()
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    DAYS[0].allhands[1].who = ['nact']              // Draft 2 drops the extra body
+    draftSelect(0, d1.id)
+    expect(dayPend()).toEqual([])
+    draftSelect(0, d2.id)
+    expect(dayPend()).toEqual(['a:0.1.1'])          // the hole, on a row that survives
+  })
+
+  it('an A→B→A round trip ends clean — no pending, no added, no tombstones', () => {
+    pub()
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    txtSet('dn:0.0', 'PLAN B')
+    DAYS[0].notes.push('EXTRA')
+    draftSelect(0, d1.id)
+    draftSelect(0, d2.id)
+    draftSelect(0, d1.id)
+    expect(dayPend()).toEqual([])
+    expect(Object.keys(SCHED.added)).toEqual([])
+  })
+
+  it('an inp: pending key survives the rebase — it addresses INPUTS, not the day blob', () => {
+    pub()
+    draftDup(0)
+    const [d1] = dayDrafts(0)
+    SCHED.pending['inp:0.leave%2Dabc'] = 1
+    draftSelect(0, d1.id)
+    expect(SCHED.pending['inp:0.leave%2Dabc']).toBe(1)
+    expect(dayPend()).toEqual(['inp:0.leave%2Dabc'])
+  })
+
+  it('publishing the diff issues it as the AL, and unpublishing returns it to pending', () => {
+    pub()
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    txtSet('dn:0.0', 'PLAN B')
+    draftSelect(0, d1.id)
+    draftSelect(0, d2.id)                           // pending = the rebase's diff
+    sign(0)
+    publishALDay(0)
+    expect(SCHED.changes['dn:0.0']).toBe(1)
+    expect(dayPend()).toEqual([])
+    expect(dayCurVer(0)).toBe(1)
+    expect(daySnapOf(0, 1).d.notes[0]).toBe('PLAN B')
+    unpublishAL(1)
+    expect(dayPend()).toEqual(['dn:0.0'])
+    expect(dayCurVer(0)).toBe('orig')
+  })
+
+  it('other days\' pending and added keys are untouched by the rebase', () => {
+    pub()
+    draftDup(0)
+    const [d1] = dayDrafts(0)
+    SCHED.pending['dn:1.0'] = 1
+    SCHED.added['wl:1.9'] = 1
+    draftSelect(0, d1.id)
+    expect(SCHED.pending['dn:1.0']).toBe(1)
+    expect(SCHED.added['wl:1.9']).toBe(1)
   })
 })
 

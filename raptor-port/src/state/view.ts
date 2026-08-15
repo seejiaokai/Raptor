@@ -325,6 +325,18 @@ export const DWOPEN=new Set();         // day indices whose issue box is expande
    reload and takes no part in undo. Same in-place-mutation pattern as DWOPEN
    (ESM cannot reassign across modules). */
 export const DPREV=new Map()
+/* which PUBLISHED days the VIEW page is showing the live WORKING COPY for,
+   instead of its default — the frozen issued snapshot (owner, 15 Aug 26: a
+   viewer must never mistake the scheduler's in-progress edits for the issued
+   schedule, so issued is what renders until they explicitly ask). A Set, not
+   a default stored anywhere: no entry IS the issued default, so a fresh
+   session opens on the issued document with zero stored state. Deliberately
+   separate from DPREV — the edit page's previews must never bleed into the
+   view page (pinned in draftsui.test.tsx) and vice versa. Never pruned: an
+   entry on a day that gets reopened is inert (unpublished days render live
+   regardless), and it becomes meaningful again if the day is re-published. */
+export const VWORK=new Set()
+export function toggleViewWork(di:any,on:any){ if(on)VWORK.add(+di); else VWORK.delete(+di) }
 /* which days' Available-crew panel is EXPANDED — collapsed to its one-line
    summary is the default (owner, 13 Aug 26: "the window is pretty big").
    Session view state in the DWOPEN pattern: in-place mutation because ESM

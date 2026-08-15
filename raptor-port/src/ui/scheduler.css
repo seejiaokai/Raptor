@@ -498,6 +498,15 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
   background:rgba(0,0,0,.25)}
 .dprev-bar b{color:var(--alc,var(--ink))}
 .dprev-bar .dprev-restore{margin-left:auto;font-size:10.5px;padding:3px 9px}
+/* the view page's WORKING-DRAFT face (owner, 15 Aug 26): the pending marks'
+   own amber, dashed — the "not the issued document" grammar — so live but
+   unissued content can never read as the published schedule. Its sibling
+   .day.issued (the same page's frozen DEFAULT) deliberately has no rule at
+   all: it is the page's normal answer, not a preview the viewer chose, so
+   it must not wear the preview outline or any dimming. */
+.dprev-bar.work{border-style:dashed;border-color:rgba(229,194,74,.55)}
+.dprev-bar.work b{color:#F2D699}
+.dbeak.ro.work{color:#F2D699;background:rgba(229,194,74,.12);border-color:rgba(229,194,74,.5);border-style:dashed}
 /* board fields frozen by a preview: visibly dimmed, not just unresponsive */
 #schedBoard .pv-frozen input[disabled],#schedBoard .pv-frozen textarea[disabled],#schedBoard .pv-frozen select[disabled]{opacity:.55}
 .dbeak:hover{filter:brightness(1.07)}

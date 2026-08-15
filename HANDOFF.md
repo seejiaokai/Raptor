@@ -221,6 +221,39 @@ and with a date picked the new row lands FLASHING AND INSIDE THE VIEWPORT —
 the owner's original complaint, proven on the real bundle. Zero console,
 page or network errors across every drive. Deployed-page check at merge, as
 ever.
+**THE PUBLISH/DRAFTS CLARITY REWORK (15 Aug 26 — the owner's "I'm a bit
+confused" message: the view page now defaults a PUBLISHED day to the frozen
+ISSUED document with an issued/working picker, stored drafts are hidden from
+viewers once a day is published, a draft preview never wears the ✓ Published
+stamp, and the scheduler can switch/duplicate drafts ON a published day — the
+switch rebases the day's pending set as the true diff against the issued
+snapshot, so "publish Draft 2, then edit Draft 1 and publish it as AL1"
+finally works) — all six gates green first-hand on the matching tree.**
+`npm test` 1616 across 99 files (`drafts.test.ts` +10 — the rebase describe:
+value diff, AL-tint reinstall, add identity, deletion tombstone, who-hole,
+A→B→A clean round-trip, `inp:` preservation, issue/unpublish round-trip —
+with the two old refusal tests re-pointed at the success path;
+`draftsui.test.tsx` +5 — the published-day view describe: issued default
+frozen against a live edit, the working toggle's banner/stamp, drafts hidden,
+leftover `d:` preview ignored, a scheduler's switch carrying straight into
+the viewer's working view; `html.test.ts` +1 — the draft-preview stamp and
+the quiet issued render; `session.test.ts` pins `VWORK` clearing). `node
+reference/tfin.js` 728/0 (the seed has no published days or drafts, so every
+new branch is inert under the byte compare), `npm run build` clean,
+`npm run test:e2e` 96/96, `probes:adapted` 6/6, `perf` 4/4 — **week 3702 and
+board 855, both ceilings unmoved and both measures unmoved**: every new
+control renders only on a published day, which the seed never has. The built
+bundle was then driven at 1500px and 390×844 through the owner's own
+scenario: Monday signed and published, the view page opening on
+"Original — as issued" with the ✓ Published stamp and NO banner; a
+note edited after publish invisible on that face and visible under
+"Working draft — not issued" with the amber dashed banner + stamp; the
+drafts menu on the published day carrying its new note and duplicating
+without refusal; the switch to Draft 1 toasting "1 difference from Original
+pending"; AL1 published and the viewer's issued face moving to
+"AL1 — as issued" with the amended note in AL1 cyan; zero sideways overflow
+at 390px on both faces — zero console, page or network errors throughout.
+Deployed-page check at merge, as ever.
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
 board can still be a heavier one — and now that a heavier board can read
 lighter when the measure's boundary moves.
@@ -279,6 +312,27 @@ only after re-running them.
 
 ## Known issues / open work
 
+- **THE PUBLISH/DRAFTS CLARITY REWORK shipped (15 Aug 26, second batch of
+  the day)** — the view page's issued default (`dayIssuedHTML` + `VWORK` +
+  `viewVerSelHTML`, contracts in `docs/ui-contracts.md` §the view-only
+  week's picker), the published-day draft switch with the pending rebase
+  (`engine/drafts.ts:rebaseDayPending`, rules in `docs/engine-rules.md`
+  §Drafts), and the draft-preview/working stamps. Deliberately open, so
+  none of it is read back as a bug:
+  - **The issued face shows NO warnings list** — warnings are live-model
+    state and a snapshot is never validated (the standing preview rule);
+    the ⓘ panel stays the viewer's live route. A viewer comparing Monday
+    (published, quiet) with Tuesday (live, warning box) is seeing design,
+    not a fault.
+  - **The week banner's "N unpublished edits" counts a divergent draft's
+    rebased diff**, on the viewer-facing banner too — honest, but a big
+    alternative can read alarming. Noted in ui-contracts; no damping built.
+  - **Export-to-Excel exports the live model** — the working copy, not the
+    issued document. Pre-existing semantics, newly reachable now a
+    divergent draft can be live on a published day.
+  - **`VWORK` is session view state** — a viewer's issued/working choice
+    resets on login/logout like every other view choice; the issued
+    default is the zero-state, which is the point.
 - **WHOLE-DAY TEMPLATES AND PER-DAY DRAFTS shipped (15 Aug 26)** —
   `engine/daytpl.ts` / `engine/drafts.ts`, `DayTplModal.tsx` /
   `DraftsModal.tsx`, one Templates/Drafts button pair reached from both the
@@ -291,10 +345,15 @@ only after re-running them.
     hand after applying one. A sim row's `pax` list blanks to EMPTY, not to
     a placeholder — there is no "still needs someone" marker on a sim seat
     the way a flying seat's placeholder gives one.
-  - **Applying a template and duplicating/switching a draft both refuse a
-    published day, by design** — "Reopen the day first," the same
-    reopen-first rule `restoreDayVersion` already established: a whole-day
+  - **Applying a template still refuses a published day, by design** —
+    "Reopen the day first": a template apply has no rebase, so a whole-day
     swap under an issued document would diverge silently with no AL trail.
+    **Drafts no longer share that refusal (15 Aug 26)** — switching a draft
+    on a published day rebases the day's pending set as the diff against
+    the issued snapshot (`rebaseDayPending`, `docs/engine-rules.md`
+    §Drafts), which closes the very hole the refusal existed for. If the
+    template flow is ever wanted on published days too, the rebase is the
+    piece to reuse — do not just drop the guard.
   - **Templates, drafts, and the SANS demo seed below are session /
     localStorage-only, like everything else this app persists that way** —
     see the "No shared data" bullet further down.

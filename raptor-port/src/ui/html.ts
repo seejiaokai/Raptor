@@ -13,7 +13,7 @@ import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, s
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, VWORK } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -30,7 +30,14 @@ const editMode=()=>HOOKS.editMode()
    those keys address the LIVE model, so acting on them from an old rendering
    would edit today's schedule while showing yesterday's).
    ===================================================================== */
-let PV=false, PVV:any=null
+/* PVQ — the QUIET flavour of PV (owner, 15 Aug 26): the view page's issued
+   DEFAULT for a published day renders through the same withDaySnap freeze,
+   but it is not a "preview" the viewer chose — it IS that page's normal
+   answer. So under PV&&PVQ the banner and Restore button are withheld (the
+   day head's own "✓ Published" stamp + version chip + picker are the
+   labelling) and the section class reads `issued`, not `preview`, so the
+   preview dimming and its CSS never apply to the page's default face. */
+let PV=false, PVV:any=null, PVQ=false
 const sev=(di:any,id:any)=>PV?null:sevOf(di,id)
 /* THE PREVIOUS-DAY TRACE (owner, 6 Aug 26; made a standing mark 6 Aug 26).
    A crew-rest breach is raised on the day the man is told to report, but the
@@ -64,6 +71,18 @@ export function withDaySnap(di:any,ver:any,fn:any){
 }
 export function dayPreviewHTML(di:any,ver:any,edFallback:any){
   return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false,true):dayHTML(di,edFallback,true))
+}
+/* the VIEW page's default render for a PUBLISHED day (owner, 15 Aug 26): the
+   frozen issued document, not the live working copy — a scheduler's
+   in-progress edits stay invisible to viewers until the next AL goes out.
+   Quiet mode (PVQ above): no preview banner, no Restore, class `issued`.
+   Falls back to the live render if the day somehow has no snapshot. */
+export function dayIssuedHTML(di:any){
+  const ver=dayCurVer(di)
+  if(ver==null)return dayHTML(di,false)
+  PVQ=true
+  try{ return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false):dayHTML(di,false)) }
+  finally{ PVQ=false }
 }
 export function verSelHTML(di:any){
   const vs=dayVersions(di)
@@ -99,6 +118,28 @@ export function viewDraftSelHTML(di:any){
   return `<select class="dver" data-dver="${di}" title="This day has alternate drafts — pick one to view">`
     +drs.map((t:any)=>{const v=t.id===selId?'live':'d:'+t.id
       return `<option value="${esc(v)}"${v===cur?' selected':''}>${esc(t.name)}${t.id===selId?' ●':''}</option>`}).join('')
+    +`</select>`
+}
+/* THE VIEW PAGE'S ONE VERSION CONTROL (owner, 15 Aug 26). Once a day is
+   PUBLISHED the drafts-only picker above is withdrawn — stored alternatives
+   are the scheduler's business once a document is out — and the viewer gets
+   exactly two entries instead: the issued document (the default; the frozen
+   snapshot dayIssuedHTML renders) and the live working copy the scheduler is
+   editing toward the next AL, labelled so it can never be mistaken for the
+   issued schedule. data-vwork, not data-dver: the choice is VWORK view
+   state, per-day, and Shell.tsx's change listener routes it separately —
+   deliberately NOT the DPREV machinery, so an edit-page preview can never
+   bleed into the view page or vice versa. An UNPUBLISHED day keeps the
+   drafts-only picker unchanged. */
+export function viewVerSelHTML(di:any){
+  di=+di
+  if(!dayApproved(di))return viewDraftSelHTML(di)
+  const cv=dayCurVer(di)
+  if(cv==null)return ''   // published with no snapshot — probe/import state, nothing to offer
+  const work=VWORK.has(di)
+  return `<select class="dver" data-vwork="${di}" title="This day is published — view the issued schedule or the working draft">`
+    +`<option value="issued"${work?'':' selected'}>${esc(verLabel(cv))} — as issued</option>`
+    +`<option value="working"${work?' selected':''}>Working draft — not issued</option>`
     +`</select>`
 }
 export function legendHTML(){
@@ -620,19 +661,34 @@ export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateIn
 export function dayStatHTML(di:any,ed:any){
     const d=DAYS[di];
     const ok=dayApproved(di), dals=dayALs(di), dp=dayPendCount(di);
+    /* a DRAFT preview must never wear the published day's clothes (owner,
+       15 Aug 26 — "when I toggle to draft 1, it shouldn't say published"):
+       under a d: preview the ✓ Published stamp and the AL chip are replaced
+       by a plain Draft stamp, on every surface alike. An AL/ORIG preview
+       keeps them — its banner names the previewed version while the chip
+       names the live one, the deliberate "live is at AL2, you're viewing
+       AL1" reading. The view page's WORKING-COPY choice (VWORK) does the
+       same swap for the same reason: live-but-unissued content must not
+       read as the issued schedule. */
+    const pvDraft=PV&&isDraftVer(PVV);
+    const workView=!ed&&!PV&&ok&&VWORK.has(+di);
     /* the chip appears once amendments exist: a published day with no ALs
        anywhere keeps the clean "✓ Published" look, but a day rolled back to
        the Original while ALs sit in the dropdown must say so — silence there
        would look identical to "never amended". Grey ORIG, never AL1's cyan. */
     const cv=dayCurVer(di);
-    const alChips=(ok&&cv!=null&&(cv!=='orig'||dals.length))
+    const alChips=(ok&&!pvDraft&&!workView&&cv!=null&&(cv!=='orig'||dals.length))
       ? (cv==='orig'
         ? `<span class="dal orig" title="${DAYS[di].dow} is currently at the Original — as first published">ORIG</span>`
         : `<span class="dal" data-alc="${cv}" title="${DAYS[di].dow} is currently at AL${cv}">AL${cv}</span>`)
       : '';
     const pendChip=dp?`<span class="dpend" title="${dp} unpublished edit${dp>1?'s':''} on this day${ok?'':' — publish the day before publishing an AL'}">${dp}&nbsp;pending</span>`:'';
     const sgOK=daySigned(di);
-    const beak=ed
+    const beak=pvDraft
+      ? `<span class="dbeak ro" title="A stored draft — not the issued schedule">Draft</span>`
+      : workView
+      ? `<span class="dbeak ro work" title="${d.dow} is published, but this is the working draft — not what was issued">Working draft</span>`
+      : ed
       ? `<button class="dbeak ${ok?'ok':''}${(!ok&&!sgOK)?' locked':''}" data-beak="${di}"${(!ok&&!sgOK)?' disabled':''} title="${ok?'Reopen '+d.dow+' to draft':(sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow)}">${ok?'✓ Published':'Publish day'}</button>`
       : `<span class="dbeak ro ${ok?'ok':''}" title="${ok?d.dow+' has been published':d.dow+' is still draft'}">${ok?'✓ Published':'Draft'}</span>`;
     /* per-day AL publish — lives beside the day's own publish button, only on a
@@ -673,16 +729,23 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        live is the Drafts menu's job — a second path here would be a second
        write path to keep in step with it. */
     const pvDraft=isDraftVer(PVV);
-    const pvBar=PV
+    /* PVQ: the view page's issued DEFAULT — same freeze, no banner and no
+       Restore (never a write control on the view page); the day head's own
+       stamp/chip/picker carry the labelling. The WORKING-copy choice is the
+       mirror image: a live render that wears a banner precisely because it
+       is NOT the issued document this page defaults to. */
+    const pvBar=(PV&&!PVQ)
       ? `<div class="dprev-bar"${(PVV!=='orig'&&!pvDraft)?` style="--alc:${alColor(+PVV)}"`:''}>Viewing <b>${esc(draftVerLabel(di,PVV))}</b>${pvDraft?' — a draft, read-only':' as issued — read-only'}`
         +(pvDraft?'':`<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${PVV}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button>`)+`</div>`
+      : (!ed&&!PV&&ok&&VWORK.has(+di))
+      ? `<div class="dprev-bar work">Viewing <b>Working draft</b> — not issued · the issued schedule is ${esc(verLabel(dayCurVer(di)))}</div>`
       : '';
-    let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?' preview':''}" data-day="${di}">
+    let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow sb-open" data-sbday="${di}" title="Open scheduler board">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
-      <span class="dstat">${vsel?verSelHTML(di):(ed?'':viewDraftSelHTML(di))}${dayStatHTML(di,ed)}</span></div>`
+      <span class="dstat">${vsel?verSelHTML(di):(ed?'':viewVerSelHTML(di))}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
       /* THE WEEK'S ENTRY into day templates (owner ask, 15 Aug 26) rides inside
          this strip, not the day-head above it: day-head (dow/dt/badge/dstat) is

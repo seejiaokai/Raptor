@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react'
 import { notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
+import { dayApproved } from '../engine/publish'
 import { dayDrafts, curDraftId, draftRename, draftDelete, MAX_DRAFT_NAME } from '../engine/drafts'
 import { switchDraft } from './board'
 import { DRAFTSEDIT, setDraftsEdit } from './pops'
@@ -73,9 +74,17 @@ export function DraftsModal() {
                   onBlur={commitName}
                   onKeyDown={e => { if (e.key === 'Enter') commitName() }} />
                 <div className="wm-note" style={{ padding: '6px 0' }}>
-                  {isLive
-                    ? `"${t!.name}" is the live ${d ? d.dow : 'day'} — publishing the day publishes it.`
-                    : `A stored alternative — Select makes it the live ${d ? d.dow : 'day'}. The selected draft is what publishes.`}
+                  {/* the note changes register once the day is published (owner,
+                      15 Aug 26): the live draft is no longer "what publishes" —
+                      the day already went out — it is what the next AL's
+                      differences are measured from */}
+                  {dayApproved(di)
+                    ? (isLive
+                      ? `"${t!.name}" is the live ${d ? d.dow : 'day'} — its differences from the issued schedule go out as the next AL.`
+                      : `A stored alternative — Select makes it the live ${d ? d.dow : 'day'}; its differences from the issued schedule become pending.`)
+                    : (isLive
+                      ? `"${t!.name}" is the live ${d ? d.dow : 'day'} — publishing the day publishes it.`
+                      : `A stored alternative — Select makes it the live ${d ? d.dow : 'day'}. The selected draft is what publishes.`)}
                 </div>
               </>
             : <div className="sb-empty" style={{ padding: '14px 0' }}>

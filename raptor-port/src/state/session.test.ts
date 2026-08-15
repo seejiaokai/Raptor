@@ -60,6 +60,7 @@ describe('resetSession clears the view for the next session (state/store.ts)', (
     view.setSearch('cas')
     view.HLSET.add('A')
     view.armSlot('0.0.0.0.p')
+    view.VWORK.add(0)                         // a working-copy choice on the view page
     expect(view.ARM).toBeTruthy()             // sanity: the admin session did arm it
 
     resetSession(null)                            // logout
@@ -72,6 +73,7 @@ describe('resetSession clears the view for the next session (state/store.ts)', (
     expect(view.SEARCH).toBe('')
     expect(view.ARM).toBe(null)
     expect(view.SBDAY).toBe(null)
+    expect(view.VWORK.size).toBe(0)           // the next session opens on the issued default
   })
 })
 

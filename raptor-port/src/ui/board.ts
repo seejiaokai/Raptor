@@ -10,7 +10,7 @@ import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, verLabel, nextAL } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
@@ -1069,13 +1069,17 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
 /* MAKE ANOTHER DRAFT THE LIVE DAY — the one write path both the drafts menu
    (below) and DraftsModal.tsx share, so switching behaves identically from
    either door. draftSelect stows the outgoing live day into its own entry
-   first, so nothing is lost by switching away and back; the engine refuses a
-   published day (toast names the same Reopen action the publish button
-   carries, like applyDayTpl's refusal) and the already-selected id (toasted as
-   already-live rather than silence). The caller's afterSchedMutate() is the
-   single undo step — the restore/applyDayTpl contract draftSelect documents.
-   Any frozen preview on this day is dropped: the scheduler just chose a live
-   document, and a banner claiming to show a stowed copy of it would lie. */
+   first, so nothing is lost by switching away and back; the engine refuses
+   the already-selected id (toasted as already-live rather than silence).
+   A PUBLISHED day switches too (owner, 15 Aug 26 — the old "Reopen the day
+   first" refusal is gone): the issued snapshots are frozen, so nothing the
+   squadron holds moves; draftSelect's rebase re-marks the day's pending set
+   as the true diff against the issued document, and the toast says what that
+   came to — the sentence a scheduler needs to know whether an AL is now due.
+   The caller's afterSchedMutate() is the single undo step — the
+   restore/applyDayTpl contract draftSelect documents. Any frozen preview on
+   this day is dropped: the scheduler just chose a live document, and a
+   banner claiming to show a stowed copy of it would lie. */
 export function switchDraft(di: any, id: any) {
   if (!canEditSched() || !HOOKS.editMode()) return false
   di = +di
@@ -1083,14 +1087,19 @@ export function switchDraft(di: any, id: any) {
   const t = dayDrafts(di).find((x: any) => x.id === id)
   if (!t) return false
   if (id === curDraftId(di)) { toast(`"${t.name}" is already the live ${d.dow}`); return false }
-  if (dayApproved(di)) { toast('Reopen the day first'); return false }
+  const pub = dayApproved(di), cv = pub ? dayCurVer(di) : null
   if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the swap may remove the armed row
   if (!draftSelect(di, id)) return false
   view.setDayPreview(di, null)
   afterSchedMutate(); notify()
   /* a whole-day swap passes no key through the funnel — the sentence is the
      record, exactly as it is for a rollback or an applied template */
-  const said = `Switched to "${t.name}" — this is now the live ${d.dow}`
+  let said = `Switched to "${t.name}" — this is now the live ${d.dow}`
+  if (pub && cv != null) {
+    const n = dayPendCount(di)
+    said += n ? ` · ${n} difference${n > 1 ? 's' : ''} from ${verLabel(cv)} pending`
+      : ` · matches ${verLabel(cv)} — nothing pending`
+  }
   logAction(di, said)
   toast(said)
   return true
@@ -1108,12 +1117,21 @@ export function draftsMenu(anchor: HTMLElement, di: any) {
   di = +di
   const d = DAYS[di]; if (!d) return
   const list = dayDrafts(di), selId = curDraftId(di)
+  /* on a PUBLISHED day the sublabels change register (owner, 15 Aug 26): the
+     selected draft is no longer "what publishes" — the day already went out —
+     it is what the next AL's differences are measured against, and a note
+     says so once for the whole menu rather than per row */
+  const pub = dayApproved(di), cv = pub ? dayCurVer(di) : null
+  const liveSub = (pub && cv != null)
+    ? `live now — differences from ${esc(verLabel(cv))} go out as AL${nextAL()}`
+    : 'live now — this is what publishes'
   const html = `<h5>Drafts — ${esc(d.dow)}</h5>`
+    + (pub ? `<div class="wm-note">This day is published — the issued ALs don't change. Switching drafts marks the differences as pending.</div>` : '')
     + (list.length
       ? `<div class="wm-row" style="flex-direction:column;align-items:stretch">`
         + list.map((t: any) => `<div style="display:flex;gap:4px;align-items:stretch">`
           + `<button class="wm${t.id === selId ? ' sa' : ''}" style="flex:1" data-draftsel="${esc(t.id)}">${esc(t.name)}${t.id === selId ? ' ●' : ''}`
-          + `<span class="wm-sub">${t.id === selId ? 'live now — this is what publishes' : 'tap to make it the live day'}</span></button>`
+          + `<span class="wm-sub">${t.id === selId ? liveSub : 'tap to make it the live day'}</span></button>`
           + `<button class="wm-edit" data-draftedit="${esc(t.id)}" title="Rename or delete ${esc(t.name)}">✎</button></div>`).join('')
         + `</div>`
       : `<div class="wm-note">No drafts yet — duplicate this day to plan an alternative over it.</div>`)
@@ -1126,9 +1144,6 @@ export function draftsMenu(anchor: HTMLElement, di: any) {
     if (e.target.closest('[data-draftmanage]')) { close(); setDraftsEdit({ di }); notify(); e.stopPropagation(); return }
     if (e.target.closest('[data-draftdup]')) {
       close()
-      /* same wording as the publish machinery's own refusals — a published
-         day's drafts wait for the reopen, see draftDup's comment */
-      if (dayApproved(di)) { toast('Reopen the day first'); e.stopPropagation(); return }
       const t = draftDup(di)
       if (t) {
         /* one undo step for the whole duplicate — histSnap carries the blobs */

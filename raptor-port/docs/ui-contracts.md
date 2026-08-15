@@ -208,10 +208,14 @@ lazily (EditWeek/SchedBoard), on `histApply`, and on week switch. The
 `data-restore` button routes through `routeClick` → `restoreDayVersion` —
 a ROLLBACK: the version becomes live at once, discarding the day's pending
 edits (see engine-rules.md). Restoring the version the day is already at
-with nothing pending is a no-op toast, no history step. Under a preview
-the day-head chip still names the LIVE current version while the banner
-names the previewed one — deliberate ("live is at AL2, you're viewing
-AL1").
+with nothing pending is a no-op toast, no history step. Under an ORIG/AL
+preview the day-head chip still names the LIVE current version while the
+banner names the previewed one — deliberate ("live is at AL2, you're
+viewing AL1"). **A `d:` DRAFT preview is the exception (owner, 15 Aug 26 —
+"when I toggle to draft 1, it shouldn't say published"): its day head
+suppresses the AL chip and swaps the ✓ Published stamp for a plain `Draft`
+stamp** (title "A stored draft — not the issued schedule") — a stored
+alternative must never wear the issued document's clothes, on any surface.
 Known limitation: personal-INPUTS sections and the day-info pop show LIVE
 data inside a preview — inputs are not part of the issued document.
 
@@ -1927,17 +1931,66 @@ pin does not count it): once a day has drafts, `dayStatHTML` says "`<name>`
 is the live one, and is what publishes" — the view page's own picker below
 already names the selected one, so this chip is `ed`-only.
 
-**The view-only week's drafts-only picker** — "on view schedule mode, you
-can also view the different drafts" — is a SEPARATE, narrower select
-(`viewDraftSelHTML`, reusing the day-head's `data-dver` attribute so Shell's
-one document-level change listener routes it with no new wiring) from the
-edit surfaces' version dropdown. It lists ONLY the day's drafts, and renders
-ONLY when the day has any — the view page deliberately never grew the
-ORIG/AL version machinery, and still hasn't: **AL and ORIG previews still
-never render there.** The selected draft prints with a trailing ● and reads
-as value `'live'` (the live day IS it); every other entry rides the same
-`'d:<id>'` frozen preview — read-only banner, no Restore button — the edit
-surfaces use. On the edit week and the board, the day's other (non-selected)
+**Drafts on a published day (owner, 15 Aug 26 — the reopen-first refusal
+is gone).** The menu's rows and Duplicate all WORK on a published day now:
+`switchDraft` lets `draftSelect`'s rebase re-mark the day's pending set as
+the true diff against the issued document (engine-rules §Drafts), and its
+toast reports what that came to — "Switched to "X" — this is now the live
+Wed · 2 differences from AL1 pending" / "· matches AL1 — nothing pending".
+The menu carries a one-line note on a published day ("This day is published
+— the issued ALs don't change. Switching drafts marks the differences as
+pending."), the selected row's sublabel reads "live now — differences from
+`<verLabel>` go out as AL`<next>`" instead of "this is what publishes", and
+`DraftsModal.tsx`'s note switches register the same way. `applyDayTpl`'s
+"Reopen the day first" refusal stays — templates have no rebase.
+
+**The view-only week's picker** (`viewVerSelHTML`) branches on publish
+state, and that test lives in it AND in ViewWeek's render branch — a
+drift-seam, see `docs/feature-impact.md`:
+
+- **Unpublished day: the drafts-only picker**, unchanged — "on view
+  schedule mode, you can also view the different drafts". It lists ONLY the
+  day's drafts, and renders ONLY when the day has any (reusing `data-dver`
+  so Shell's one change listener routes it with no new wiring). The
+  selected draft prints with a trailing ● and reads as value `'live'` (the
+  live day IS it); every other entry rides the same `'d:<id>'` frozen
+  preview — read-only banner, no Restore button — the edit surfaces use.
+- **Published day: the issued/working picker** (owner, 15 Aug 26 — "the
+  user can choose to see the published version, which doesn't change if
+  there's edit from the scheduler … but it needs to state clearly what
+  they are viewing"). Exactly two options under its own `data-vwork`
+  attribute: "`<verLabel>` — as issued" (the default) and "Working draft —
+  not issued". The choice is `VWORK` view state (state/view.ts, a Set of
+  day indices, cleared by `resetSession`) — deliberately NOT `DPREV`, so
+  an edit-page preview can never bleed into the view page or vice versa.
+  Stored alternative drafts are HIDDEN from viewers once a day is
+  published: the drafts-only picker never renders there, and a leftover
+  `d:` DPREV entry on an approved day is ignored (not deleted — the edit
+  page may own it).
+
+**The view page's issued DEFAULT** renders through `dayIssuedHTML` — the
+same `withDaySnap` freeze in QUIET mode (`PVQ`): no `.dprev-bar`, no
+Restore button (never a write control on the view page), section class
+`issued` instead of `preview` (no preview outline or dimming — this is the
+page's normal answer, not a preview the viewer chose). The day head's own
+✓ Published stamp + version chip + picker are the labelling. No warnings
+list renders on the issued face — warnings are live-model state and a
+snapshot is never validated, the standing preview rule; the ⓘ panel stays
+the live route. No `data-alp` pending paints either — the swap empties
+pending, so the scheduler's in-progress edits are invisible here until the
+next AL is published. **The working choice** renders the LIVE day (warnings
+and all) under `.dprev-bar.work` ("Viewing **Working draft** — not issued ·
+the issued schedule is `<verLabel>`") with the ✓ Published stamp swapped
+for a dashed amber `Working draft` stamp (`.dbeak.ro.work` — the pending
+marks' own colour family, the "not the issued document" grammar) and the AL
+chip suppressed. Because the live `DAYS[di]` IS the selected draft's
+working copy, a scheduler's draft switch shows up in the working view at
+once with no extra wiring — only the issued default holds still.
+Honest consequence, accepted: the week banner's "N unpublished edits" count
+includes a divergent draft's rebased diff, and Export-to-Excel exports the
+live model — the working copy, not the issued document — as it always has.
+
+On the edit week and the board, the day's other (non-selected)
 drafts join the ordinary version `<select>` the same way, listed beside
 `'Live · <name>'` rather than a bare `'Live'` once a draft is selected.
 
