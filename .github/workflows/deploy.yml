@@ -50,6 +50,15 @@ jobs:
       # 74x15, free text wraps instead of overflowing, one day box per pan
       # click) can only be checked in a real browser. The runner has no
       # browser of its own; the dev container's Chromium is not here.
+      # Cache the downloaded browser between runs, keyed on the lockfile so a
+      # Playwright bump busts it. On a hit the ~20s Chromium download is
+      # skipped; `--with-deps` still runs (the apt step is quick) so the OS
+      # libraries are present on every fresh runner.
+      - name: Cache Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('raptor-port/package-lock.json') }}
       - name: Install Chromium
         working-directory: raptor-port
         run: npx playwright install --with-deps chromium
