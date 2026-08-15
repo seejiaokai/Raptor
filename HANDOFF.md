@@ -284,6 +284,21 @@ CI re-ran the four gates green on main for both.
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
 board can still be a heavier one — and now that a heavier board can read
 lighter when the measure's boundary moves.
+**THE AIRCREW-PANEL DAY PICKER (15 Aug 26, PR #219) and the UI-REVIEW BATCH
+(PR #220 — the frozen Quals callsign, the collapsible severity-ordered legend,
+and the blank-click deselect widened to the whole shell) — all six gates green
+first-hand and each verified on the deployed page.** `npm test` **1639** across
+100 files (the day-picker added editweek/html/geometry tests; the batch added
+editweek/html/interact/geometry — the legend's byte-identical parity check
+became an order-independent multiset-of-leaves compare, since its flags now
+diverge from the reference's order), `node reference/tfin.js` 728/0, `npm run
+build` clean, `npm run test:e2e` **101/101**, `probes:adapted` 6/6, `perf` 4/4
+— **week 3702 / board 855, ceilings AND measures unmoved** (the day picker's
+arrows live in the palette header the board draws with `head:false`; the
+collapsed legend still renders its nodes inside a closed `<details>`; every
+other change was CSS/behaviour). Contracts: `docs/ui-contracts.md` §The aircrew
+panel's day is pickable, §The legend collapses…, §The Quals callsign column is
+frozen, §Selection highlight.
 
 Three earlier passes the same day were each green on the same six and each
 checked on the DEPLOYED page (the standing instruction, owner 7 Aug 26): the
@@ -339,6 +354,18 @@ only after re-running them.
 
 ## Known issues / open work
 
+- **A design critique ran on 15 Aug 26 (`/impeccable critique`); its snapshot
+  is in `raptor-port/.impeccable/critique/`.** The owner actioned the two
+  mobile items (frozen Quals callsign, collapsible legend) and the "click any
+  blank area to deselect" bug. **Left un-actioned, worth surfacing to the owner:**
+  a **P0 accessibility bug** — the five top-nav items (`Shell.tsx`) are `<a>`
+  with no `href`/role, so a keyboard user cannot Tab to them (fix: make them
+  real buttons); a **P1** — the "CP" flag is amber for "needs approval" and red
+  for "not authorised", a safety-relevant distinction told by colour alone, and
+  several qualification badges fall under the 4.5:1 AA contrast floor; and the
+  owner's own **"make the Insights panel consistent"** question (see
+  `docs/session-state.md`). The "Throw pucks (auto)" dead button is a known
+  deliberate stub (one dataset bullet below), flagged by the review but not new.
 - **THE PUBLISH/DRAFTS CLARITY REWORK shipped (15 Aug 26, second batch of
   the day)** — the view page's issued default (`dayIssuedHTML` + `VWORK` +
   `viewVerSelHTML`, contracts in `docs/ui-contracts.md` §the view-only
