@@ -1,5 +1,6 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved, verLabel } from './publish'
+import { SCHED, dayApproved, verLabel, dayCurVer, daySnapOf, deletionKey, trackStructuralAdd } from './publish'
+import { dayKeys } from './restore'
 import { keyDay } from './keys'
 
 /* PER-DAY ALTERNATE DRAFTS (owner ask, 15 Aug 26 — "allow me to duplicate the
@@ -84,17 +85,16 @@ const nextNum = (list: any[]) => {
    alternatives, which is the owner's own phrasing of the feature. Later
    calls: stow live into the selected entry, mint "Draft N" as a copy of live,
    select it.
-   REFUSES on a published day (returns null; the caller toasts "Reopen the day
-   first") — the same refusal, for the same reason, as applyDayTpl: a draft is
-   an alternative to a plan still being made, and minting/switching under a
-   live issued document would let the day silently diverge from what the
-   squadron holds with no pending mark and no AL trail. The reopen-first flow
-   keeps the amendment machinery the only path that changes a published day.
+   A PUBLISHED day duplicates too (owner, 15 Aug 26 — the original refusal is
+   gone; see rebaseDayPending below for why switching became safe). A dup
+   changes no content at all — live is stowed and an identical copy selected —
+   so the day's pending marks are left exactly as they were: whatever was
+   already heading for the next AL still is.
    No histPush/reflow here — the UI caller's afterSchedMutate() owns the one
    undo step, the same contract restoreDayVersion and applyDayTpl carry. */
 export function draftDup(di: any) {
   di = +di
-  if (!DAYS[di] || dayApproved(di)) return null
+  if (!DAYS[di]) return null
   SCHED.drafts = SCHED.drafts || {}
   SCHED.curDraft = SCHED.curDraft || {}
   const list = SCHED.drafts[di] = SCHED.drafts[di] || []
@@ -117,21 +117,29 @@ export function draftDup(di: any) {
    entry, install a CLONE of the target blob as DAYS[di] (a clone, so editing
    the live day never reaches back into the stowed copy), re-stamping `.today`
    from the live day — 'today' tracks the calendar, not the document (the
-   restoreDayVersion precedent, engine/restore.ts:90-110). The day's own
-   SCHED.pending/SCHED.added keys are retired the same way restoreDayVersion
-   retires them: the swap does not line up old and new row indices, so a stale
-   address may now point at a different row entirely — each draft's edits were
-   recorded while IT was live and stop meaning anything the moment it is not.
-   (Draft days carry no changes-marks worth special-casing — the published-day
-   refusal below keeps it that way, same reasoning as applyDayTpl's.)
+   restoreDayVersion precedent, engine/restore.ts:90-110).
+   On an UNPUBLISHED day the day's own SCHED.pending/SCHED.added keys are
+   retired the same way restoreDayVersion retires them: the swap does not line
+   up old and new row indices, so a stale address may now point at a different
+   row entirely — each draft's edits were recorded while IT was live and stop
+   meaning anything the moment it is not. Retiring costs nothing there: a
+   draft day's pending marks never reach an AL anyway (publishableKeys skips
+   unpublished days), and first publish spends them wholesale.
+   On a PUBLISHED day (owner, 15 Aug 26 — "change to draft 1 to publish as
+   AL1") the marks are NOT retired but REBASED: rebaseDayPending recomputes
+   the whole day's pending set as the true diff between the new live content
+   and the issued snapshot, so the next AL carries exactly what hand-editing
+   to the same result would have carried. That is what retired the old
+   "Reopen the day first" refusal — the divergence it existed to prevent is
+   no longer silent.
    Deliberately NO histPush and NO reflow — the UI caller's afterSchedMutate()
    is the single undo step, exactly the restore/applyDayTpl contract.
-   Refuses (returns false): unknown id, already-selected id (nothing to do,
-   and "stow then reload yourself" must not clobber live edits with a stale
-   stow), or a published day (see draftDup above). */
+   Refuses (returns false): unknown id, or the already-selected id (nothing to
+   do, and "stow then reload yourself" must not clobber live edits with a
+   stale stow). */
 export function draftSelect(di: any, id: any) {
   di = +di
-  if (!DAYS[di] || dayApproved(di)) return false
+  if (!DAYS[di]) return false
   const list = dayDrafts(di)
   const t = list.find((x: any) => x.id === id)
   if (!t) return false
@@ -144,11 +152,126 @@ export function draftSelect(di: any, id: any) {
   const nd = clone(t.d)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
-  Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.pending[k] })
-  Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
+  if (dayApproved(di)) {
+    rebaseDayPending(di)
+  } else {
+    Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.pending[k] })
+    Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
+  }
   SCHED.curDraft = SCHED.curDraft || {}
   SCHED.curDraft[di] = id
   return true
+}
+
+/* ---- the published-day pending rebase (owner, 15 Aug 26) ------------------
+   After a wholesale content swap on a published day, per-key pending marks
+   recorded against the OLD content stop meaning anything — but wiping them
+   (the unpublished-day treatment) would let the live day diverge from the
+   issued document with no pending mark and no AL trail, which is exactly why
+   switching used to be refused. So instead: recompute the day's whole mark
+   state from scratch against the issued snapshot, using dayKeys (restore.ts)
+   — the slot-key walker kept as "executable documentation" is load-bearing
+   again. The result is indistinguishable from having hand-edited the live day
+   into the draft's shape:
+     · a key whose value differs from the issued one  → pending
+     · a key matching the issued day                  → wears its issued
+       changes-mark again (the restoreDayVersion idiom), so AL tints survive
+     · an issued sub-value gone from a SURVIVING row (a who[] hole, a shrunk
+       more[]) → pending — the address is stable and the AL carries the clear
+     · an issued row/structure gone entirely → one inert del: tombstone per
+       row, exactly the granularity the board's own delete buttons mint —
+       never via markDeletion/markEdit, whose histPush would shred the
+       caller's one-undo-step contract
+     · a structure beyond the issued count → a draft-add identity key in
+       SCHED.added (the markStructuralAdd vocabulary), so deletionWasIssued
+       still answers "add-then-delete is a no-op" and alIssue/unpublishAL
+       carry the adds unchanged
+     · inp: pending keys are PRESERVED — an input filing addresses INPUTS,
+       not the day blob; dayKeys cannot re-derive it and dropping it would
+       silently lose a real amendment item
+   Positional honesty is accepted: the whole marks machinery is positional, so
+   a draft that inserted a row at the front reads as "everything after differs
+   plus one row added" — the same thing hand-editing to that result reads as.
+   No histPush/reflow here either — this runs inside draftSelect's step. */
+export function rebaseDayPending(di: any) {
+  di = +di
+  const ver = dayCurVer(di)
+  const snap = ver != null ? daySnapOf(di, ver) : null
+  if (!snap) {
+    /* unreachable on an approved day (first publish stamps SCHED.orig) —
+       guard for probe/import states with the plain unpublished wipe */
+    Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.pending[k] })
+    Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
+    return
+  }
+  const now = dayKeys(DAYS[di], di)
+  const was = dayKeys(snap.d, di)
+  Object.keys(SCHED.pending).forEach((k: any) => {
+    if (keyDay(k) === di && !/^inp:/.test(String(k))) delete SCHED.pending[k]
+  })
+  Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
+  Object.keys(SCHED.changes).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.changes[k] })
+  Object.keys(snap.c || {}).forEach((k: any) => { SCHED.changes[k] = snap.c[k] })
+  /* markEdit's invariant: a pending key never also wears a changes-mark —
+     only the preserved inp: keys can collide here */
+  Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.changes[k] })
+  const pend = (k: any) => { SCHED.pending[k] = 1; delete SCHED.changes[k] }
+  now.forEach((v: any, k: any) => { if (!was.has(k) || was.get(k) !== v) pend(k) })
+  was.forEach((_v: any, k: any) => {
+    if (now.has(k)) return
+    const rk = rowKeyOf(String(k))
+    if (rk && now.has(rk)) pend(k)
+  })
+  /* section-by-section structural diff — tombstones for shrink, add
+     identities for growth, at the board delete/add handlers' granularity */
+  const wasD = snap.d, nowD = DAYS[di]
+  const tomb = (kind: string, n: number) => { for (let i = 0; i < n; i++) pend(deletionKey(di, kind)) }
+  const lenDiff = (kind: string, wasLen: number, nowLen: number, addKey: (i: number) => string) => {
+    if (wasLen > nowLen) tomb(kind, wasLen - nowLen)
+    for (let i = wasLen; i < nowLen; i++) trackStructuralAdd(addKey(i))
+  }
+  lenDiff('wave', (wasD.waves || []).length, (nowD.waves || []).length, i => `wl:${di}.${i}`)
+  const wn = Math.min((wasD.waves || []).length, (nowD.waves || []).length)
+  for (let gi = 0; gi < wn; gi++) {
+    const wf = (wasD.waves[gi].formations || []), nf = (nowD.waves[gi].formations || [])
+    const fn = Math.min(wf.length, nf.length)
+    for (let li = 0; li < fn; li++)
+      lenDiff('line', (wf[li].aircraft || []).length, (nf[li].aircraft || []).length, ai => `fr:${di}.${gi}.${li}.${ai}`)
+    /* a formation gone whole: its aircraft are line removals (no 'formation'
+       tombstone kind exists); a formation added whole: one ff: identity, its
+       aircraft covered by the ancestor check deletionWasIssued already does */
+    for (let li = nf.length; li < wf.length; li++) tomb('line', (wf[li].aircraft || []).length)
+    for (let li = wf.length; li < nf.length; li++) trackStructuralAdd(`ff:${di}.${gi}.${li}.cs`)
+  }
+  /* a wave added whole mirrors the board's + Wave: wl: plus ff: per formation */
+  for (let gi = (wasD.waves || []).length; gi < (nowD.waves || []).length; gi++)
+    ((nowD.waves[gi].formations || []) as any[]).forEach((_f: any, li: number) => trackStructuralAdd(`ff:${di}.${gi}.${li}.cs`))
+  lenDiff('note', (wasD.notes || []).length, (nowD.notes || []).length, i => `dn:${di}.${i}`)
+  lenDiff('programme', (wasD.allhands || []).length, (nowD.allhands || []).length, i => `ap:${di}.${i}.prog`)
+  lenDiff('dutyblock', (wasD.dutywaves || []).length, (nowD.dutywaves || []).length, i => `dl:${di}.${i}`)
+  const bn = Math.min((wasD.dutywaves || []).length, (nowD.dutywaves || []).length)
+  for (let wi = 0; wi < bn; wi++)
+    lenDiff('duty', (wasD.dutywaves[wi].rows || []).length, (nowD.dutywaves[wi].rows || []).length, ri => `dr:${di}.${wi}.${ri}.role`)
+  const kinds = new Set([...Object.keys(wasD.sims || {}), ...Object.keys(nowD.sims || {})])
+  kinds.forEach((kind: any) => {
+    lenDiff('sim', ((wasD.sims || {})[kind] || []).length, ((nowD.sims || {})[kind] || []).length, ri => `sr:${di}.${kind}.${ri}.label`)
+  })
+  lenDiff('ground', (wasD.ground || []).length, (nowD.ground || []).length, i => `gr:${di}.${i}.prog`)
+}
+
+/* the key whose presence in the live walk means a was-only key's ROW is still
+   there — only the variable-length sub-arrays (who[], more[], pax[]) can lose
+   a key while their row survives; everything else vanishes only with its row,
+   which the tombstones own. null = structural, not this function's business. */
+const rowKeyOf = (k: string) => {
+  const c = k.indexOf(':'); const p = c < 0 ? '' : k.slice(0, c)
+  const a = (c < 0 ? k : k.slice(c + 1)).split('.')
+  if (!p) return `fr:${a[0]}.${a[1]}.${a[2]}.${a[3]}`
+  if (p === 'a') return `ap:${a[0]}.${a[1]}.prog`
+  if (p === 'd') return `dr:${a[0]}.${a[1]}.${a[2]}.role`
+  if (p === 's') return `sr:${a[0]}.${a[1]}.${a[2]}.label`
+  if (p === 'g') return `gr:${a[0]}.${a[1]}.prog`
+  return null
 }
 
 /* rename: trimmed, 1..24 chars, and never a duplicate within the day — two

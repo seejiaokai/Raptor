@@ -1296,9 +1296,12 @@ day return to pending (self-describing on screen: fallback chip plus a
 pending count, one undo away). Unpublishing a LATER AL does not re-pend a
 rolled-back day: the rollback already overwrote its `changes` slice.
 
-The `dayKeys` walker stays although the rollback no longer diffs — it is
-the executable documentation of the slot-key grammar and probe-bridge
-exports it.
+The `dayKeys` walker is LOAD-BEARING again since 15 Aug 26: the rollback no
+longer diffs, but `rebaseDayPending` (§Drafts below) diffs the live day
+against the issued snapshot with it whenever a draft is switched in on a
+published day. It remains the executable documentation of the slot-key
+grammar, its tests pin every prefix, and probe-bridge exports it — a new
+day field now needs a `dayKeys` line or the rebase will be blind to it.
 
 ## Day templates (`engine/daytpl.ts`, owner ask, 15 Aug 26)
 
@@ -1377,15 +1380,57 @@ copy of live, selected. `draftSelect(di, id)` stows the outgoing live day
 into its own entry, installs a CLONE of the target blob as `DAYS[di]`
 (never the blob itself — editing the live day must never reach back into
 the stowed copy), restamps `.today` from the live day (tracks the calendar,
-not the document — the `restoreDayVersion` precedent again), and retires
-the day's `SCHED.pending`/`SCHED.added` marks the same way `applyDayTpl`
-does above — each draft's own edits were recorded while IT was live and
-stop meaning anything the moment it is not.
+not the document — the `restoreDayVersion` precedent again), and on an
+UNPUBLISHED day retires the day's `SCHED.pending`/`SCHED.added` marks the
+same way `applyDayTpl` does above — each draft's own edits were recorded
+while IT was live and stop meaning anything the moment it is not, and a
+draft day's marks never reach an AL anyway.
 
-**Refusal rules.** `draftDup` and `draftSelect` both refuse a published day
-— the same reasoning as `applyDayTpl`: reopen first. `draftSelect` also
-refuses the already-selected id (nothing to do, and "stow then reload
-yourself" would clobber live edits with a stale stow). `draftDelete`
+**A PUBLISHED day switches and duplicates too (owner, 15 Aug 26 — "change
+to draft 1 to publish as AL1 but make some edits prior"), and the marks are
+REBASED, not retired.** The original reopen-first refusal existed because a
+wholesale swap under an issued document would diverge silently — the wipe
+left no pending mark and no AL trail. `rebaseDayPending(di)` closes exactly
+that hole, so the refusal is gone: after `draftSelect` installs the new
+blob on a published day, it recomputes the day's whole mark state from
+scratch against the issued snapshot (`daySnapOf(di, dayCurVer(di))`), using
+`dayKeys` (§Version snapshots below — the walker kept as "executable
+documentation" is load-bearing again). The result is indistinguishable from
+hand-editing the live day into the draft's shape:
+
+- a key whose value differs from the issued one → `SCHED.pending`;
+- a key matching the issued day → wears its issued `changes` mark again
+  (the `restoreDayVersion` reinstall idiom), so AL tints survive the swap;
+- an issued sub-value gone from a SURVIVING row (a `who[]` hole, a shrunk
+  `more[]`/`pax[]`) → pending — the address is stable, `slotVal` answers
+  `''`, and the AL carries the clear;
+- an issued row/structure gone entirely → one inert `del:` tombstone per
+  row via `deletionKey`, the same granularity the board's own delete
+  buttons mint (never via `markDeletion`/`markEdit`, whose `histPush`
+  would shred the one-undo-step contract);
+- a structure beyond the issued count → a draft-add identity key in
+  `SCHED.added` (the `markStructuralAdd` vocabulary: `wl:`/`ff:`/`fr:`/
+  `dn:`/`ap:.prog`/`dl:`/`dr:.role`/`sr:.label`/`gr:.prog`), so
+  `deletionWasIssued` still answers "add-then-delete is a no-op" and
+  `alIssue`/`unpublishAL` carry the adds unchanged;
+- `inp:` pending keys are PRESERVED — an input filing addresses `INPUTS`,
+  not the day blob; `dayKeys` cannot re-derive it and dropping it would
+  silently lose a real amendment item.
+
+Positional honesty is accepted: the whole marks machinery is positional,
+so a draft that inserted a row at the front reads as "everything after
+differs plus one row added" — the same thing hand-editing to that result
+reads as. An A→B→A switch round-trip ends clean (zero pending). `Publish
+AL<n>` then issues exactly the rebased set with no publish-path change,
+and the issued snapshots never move under any of this — which is the whole
+reason the switch became safe. `draftDup` on a published day needs NO
+rebase: a dup changes no content (live is stowed and an identical copy
+selected), so whatever was already pending stays exactly as it was.
+
+**Refusal rules.** `draftSelect` refuses the already-selected id (nothing
+to do, and "stow then reload yourself" would clobber live edits with a
+stale stow). `applyDayTpl` still refuses a published day — a template
+apply has no rebase and keeps the reopen-first flow. `draftDelete`
 refuses the SELECTED entry only — the selected draft IS the live day, and
 deleting the thing being edited from underneath itself is exactly the
 ambiguity the refusal exists to prevent; a list holding one entry is legal,

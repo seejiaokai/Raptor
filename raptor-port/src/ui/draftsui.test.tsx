@@ -12,10 +12,10 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, setPage } from '../state/store'
 import { DAYS } from '../engine/data'
-import { SCHED, signOf, setDayApproved } from '../engine/publish'
-import { dayDrafts, curDraftId, draftDup } from '../engine/drafts'
+import { SCHED, signOf, setDayApproved, dayPendCount } from '../engine/publish'
+import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
 import { txtSet, txtGet } from '../engine/slots'
-import { DPREV, setDayPreview } from '../state/view'
+import { DPREV, VWORK, setDayPreview } from '../state/view'
 import { HOOKS } from '../engine/hooks'
 import { boardHTML } from './board'
 
@@ -138,17 +138,36 @@ describe('the menu (draftsMenu) — duplicate and switch', () => {
     document.body.click()
   })
 
-  it('a published day refuses Duplicate with the reopen toast', async () => {
+  it('a published day duplicates and switches now — the diff goes pending toward the next AL', async () => {
+    /* the reopen-first refusal is gone (owner, 15 Aug 26): the issued
+       snapshots are frozen, and draftSelect's rebase keeps the AL trail
+       honest, so the menu works on a published day and its toasts report
+       what the switch's diff came to */
     const g = signOf(2)
     g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
     await act(async () => { setDayApproved(2, 1); notify() })
     const toasts = await withToasts(async () => {
       await click($('#eWeek [data-draftsopen="2"]'))
+      expect($('.wavemenu').textContent).toContain("the issued ALs don't change")
       await click($('.wavemenu [data-draftdup]'))
     })
-    expect(toasts).toEqual(['Reopen the day first'])
-    expect(dayDrafts(2)).toEqual([])
-    await act(async () => { setDayApproved(2, 0); notify() })
+    expect(dayDrafts(2).length).toBe(2)
+    expect(toasts.some(t => t.includes('"Draft 2" is now the live day'))).toBe(true)
+    /* diverge Draft 2, then switch to Draft 1 (== issued) and back */
+    await act(async () => { txtSet('dn:2.0', 'PLAN B NOTE'); notify() })
+    const t2 = await withToasts(async () => {
+      await click($('#eWeek [data-draftsopen="2"]'))
+      await click($$('.wavemenu [data-draftsel]')[0]!)
+    })
+    expect(t2.some(t => t.includes('matches Original — nothing pending'))).toBe(true)
+    expect(dayPendCount(2)).toBe(0)
+    const t3 = await withToasts(async () => {
+      await click($('#eWeek [data-draftsopen="2"]'))
+      await click($$('.wavemenu [data-draftsel]')[1]!)
+    })
+    expect(t3.some(t => t.includes('1 difference from Original pending'))).toBe(true)
+    expect(dayPendCount(2)).toBe(1)
+    await act(async () => { setDayApproved(2, 0); SCHED.pending = {}; notify() })
   })
 })
 
@@ -237,6 +256,91 @@ describe('the view-only week', () => {
     await act(async () => { notify() })
     expect($(`#vWeek .day[data-day="1"] .dprev-bar`)).toBeFalsy()
     setDayPreview(1, null)
+    await act(async () => { setPage('editsched'); notify() })
+  })
+})
+
+/* THE VIEW PAGE ON A PUBLISHED DAY (owner, 15 Aug 26 — "the person viewing
+   should see the published version, which doesn't change if there's edit from
+   the scheduler … but it needs to state clearly what they are viewing"). */
+describe('the view-only week — published days', () => {
+  const pub = async (di: number) => {
+    const g = signOf(di)
+    g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    await act(async () => { setDayApproved(di, 1); notify() })
+  }
+
+  it('defaults to the ISSUED document — frozen against the scheduler\'s live edits', async () => {
+    await resetDrafts()
+    await pub(0)
+    await act(async () => { setPage('viewsched'); notify() })
+    /* a scheduler keeps editing after publish — the viewer must not see it */
+    await act(async () => { txtSet('dn:0.0', 'SCHEDULER WIP'); notify() })
+    const day = () => $('#vWeek .day[data-day="0"]')
+    expect(day().className).toContain('issued')
+    expect(day().className).not.toContain('preview')      // the default is not dressed as a preview
+    expect(day().textContent).not.toContain('SCHEDULER WIP')
+    expect(day().querySelector('.dprev-bar')).toBeFalsy() // no banner — the head chips are the labelling
+    expect(day().querySelector('[data-restore]')).toBeFalsy()
+    expect(day().querySelector('[data-alp]')).toBeFalsy() // no pending paints on the issued face
+    expect(day().textContent).toContain('✓ Published')
+    const sel = day().querySelector('select[data-vwork="0"]') as HTMLSelectElement
+    expect(sel, 'the issued/working picker').toBeTruthy()
+    expect([...sel.options].map(o => [o.value, o.text])).toEqual([
+      ['issued', 'Original — as issued'],
+      ['working', 'Working draft — not issued'],
+    ])
+  })
+
+  it('the working choice shows the live copy under a banner and a Working-draft stamp', async () => {
+    await pick($('#vWeek select[data-vwork="0"]') as unknown as HTMLSelectElement, 'working')
+    const day = () => $('#vWeek .day[data-day="0"]')
+    expect(day().textContent).toContain('SCHEDULER WIP')
+    const bar = day().querySelector('.dprev-bar.work')!
+    expect(bar.textContent).toContain('Working draft')
+    expect(bar.textContent).toContain('the issued schedule is Original')
+    expect(day().querySelector('.dbeak.ro.work')!.textContent).toBe('Working draft')
+    expect(day().textContent).not.toContain('✓ Published')
+    /* and back to the issued default */
+    await pick($('#vWeek select[data-vwork="0"]') as unknown as HTMLSelectElement, 'issued')
+    expect(day().textContent).not.toContain('SCHEDULER WIP')
+    expect(day().className).toContain('issued')
+  })
+
+  it('stored drafts are hidden from viewers once the day is published', async () => {
+    /* drafts can be minted on a published day now — but they are the
+       scheduler's business: the viewer keeps the two-option picker only */
+    await act(async () => { draftDup(0); notify() })
+    const day = $('#vWeek .day[data-day="0"]')
+    const sel = day.querySelector('select[data-vwork="0"]') as HTMLSelectElement
+    expect(sel).toBeTruthy()
+    expect([...sel.options].map(o => o.value)).toEqual(['issued', 'working'])
+    expect(day.querySelector('select[data-dver]')).toBeFalsy()
+  })
+
+  it('a leftover d: draft preview on a published day renders the issued default', async () => {
+    setDayPreview(0, 'd:' + dayDrafts(0)[0].id)
+    await act(async () => { notify() })
+    const day = $('#vWeek .day[data-day="0"]')
+    expect(day.className).toContain('issued')
+    expect(day.querySelector('.dprev-bar')).toBeFalsy()
+    setDayPreview(0, null)
+  })
+
+  it('a scheduler\'s draft switch carries straight into the viewer\'s working view', async () => {
+    /* Draft 2 is live (the dup above); diverge it, then make Draft 1 live —
+       the working view follows the switch at once, the issued face never moves */
+    await pick($('#vWeek select[data-vwork="0"]') as unknown as HTMLSelectElement, 'working')
+    await act(async () => { txtSet('dn:0.0', 'DRAFT 2 WIP'); notify() })
+    const day = () => $('#vWeek .day[data-day="0"]')
+    expect(day().textContent).toContain('DRAFT 2 WIP')
+    await act(async () => { draftSelect(0, dayDrafts(0)[0].id); notify() })
+    expect(day().textContent).not.toContain('DRAFT 2 WIP')
+    expect(day().textContent).toContain('SCHEDULER WIP')   // Draft 1 stowed the pre-dup live day
+    await pick($('#vWeek select[data-vwork="0"]') as unknown as HTMLSelectElement, 'issued')
+    expect(day().textContent).not.toContain('SCHEDULER WIP')
+    /* leave the state as the later describes expect it */
+    await act(async () => { setDayApproved(0, 0); SCHED.pending = {}; VWORK.clear(); notify() })
     await act(async () => { setPage('editsched'); notify() })
   })
 })

@@ -7,10 +7,10 @@
    surfaces. */
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
-import { CARRYDAY, CURPAGE, DPREV, setCarryDay, scrollWeekToDay } from '../state/view'
-import { daySnapOf } from '../engine/publish'
+import { CARRYDAY, CURPAGE, DPREV, VWORK, setCarryDay, scrollWeekToDay } from '../state/view'
+import { daySnapOf, dayApproved } from '../engine/publish'
 import { isDraftVer } from '../engine/drafts'
-import { dayHTML, withDaySnap } from './html'
+import { dayHTML, dayIssuedHTML, withDaySnap } from './html'
 import { refreshHighlights } from './highlights'
 import { useVersion } from './useStore'
 
@@ -27,17 +27,25 @@ export function ViewWeek() {
        against exactly what is on screen. */
     if (CURPAGE !== 'viewsched') return
     const root = ref.current!
-    /* DRAFT previews reach the view page too (owner, 15 Aug 26 — "on view
-       schedule mode, you can also view the different drafts"): a 'd:<id>'
-       DPREV entry renders through the same withDaySnap freeze the edit
-       surfaces use, banner and all, with the day's own compact drafts select
-       (dayHTML's view branch) still on its head to switch back. ONLY draft
-       vers: the view page deliberately never grew the ORIG/AL version
-       machinery, so a preview left armed on the edit page stays the edit
-       page's business and this week keeps rendering live for it. Same lazy
-       orphan prune as EditWeek — a deleted or undone-away draft renders the
-       live day, not a ghost. */
+    /* WHAT EACH DAY RENDERS (owner, 15 Aug 26 — reworked the same day it
+       shipped, on the publish confusion):
+       · A PUBLISHED day defaults to the ISSUED document — the frozen
+         snapshot, so a scheduler's in-progress edits are invisible here
+         until the next AL is published. The viewer's one way off that
+         default is the day head's own picker (VWORK), which swaps in the
+         live working copy under a banner + "Working draft" stamp that say
+         exactly what it is. Stored alternative drafts are hidden once a day
+         is published, so a d: preview left in DPREV is IGNORED (not
+         deleted — the edit page may own it) and the issued default renders.
+       · An UNPUBLISHED day renders live, with the drafts-only picker: a
+         'd:<id>' DPREV entry renders through the same withDaySnap freeze
+         the edit surfaces use, banner and all. ONLY draft vers: the view
+         page never grew the ORIG/AL preview machinery, so a preview left
+         armed on the edit page stays the edit page's business. Same lazy
+         orphan prune as EditWeek — a deleted or undone-away draft renders
+         the live day, not a ghost. */
     const html = DAYS.map((_: any, di: number) => {
+      if (dayApproved(di)) return VWORK.has(di) ? dayHTML(di, false) : dayIssuedHTML(di)
       const ver = DPREV.get(di)
       if (!isDraftVer(ver)) return dayHTML(di, false)
       if (!daySnapOf(di, ver)) { DPREV.delete(di); return dayHTML(di, false) }

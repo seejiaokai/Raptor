@@ -11,7 +11,7 @@ import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pen
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { resetSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, openWarns, CURPAGE, setDayPreview } from '../state/view'
+import { HLSET, setSearch, openWarns, CURPAGE, setDayPreview, toggleViewWork } from '../state/view'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
 import { signOf } from '../engine/publish'
@@ -86,6 +86,15 @@ export function Shell() {
         /* 'd:<id>' is a draft preview (engine/drafts.ts) — kept as the string,
            which daySnapOf resolves like any other version */
         setDayPreview(+dv.dataset.dver!, v === 'live' ? null : (v === 'orig' || v.slice(0, 2) === 'd:' ? v : +v))
+        notify(); return
+      }
+      /* the view page's issued-vs-working picker on a PUBLISHED day (owner,
+         15 Aug 26) — its own attribute and its own VWORK state, never DPREV,
+         so the edit page's previews and the view page's choice cannot cross.
+         Same no-histPush reasoning: choosing what to look at is not an edit. */
+      const vw = (e.target as HTMLElement).closest('select[data-vwork]') as HTMLSelectElement | null
+      if (vw) {
+        toggleViewWork(+vw.dataset.vwork!, vw.value === 'working')
         notify(); return
       }
       const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null

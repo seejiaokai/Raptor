@@ -113,6 +113,7 @@ export function resetSession(s: any) {
   view.clearOtherHL()             // HLSET, SEARCH (and SELID again — harmless)
   view.armDrop()                  // ARM (belt-and-braces: setBoardDay only disarms if ARM was already set)
   view.DPREV.clear()              // day-preview map — same in-place-mutation pattern as DWOPEN/HLSET
+  view.VWORK.clear()              // view-page working-copy choices — back to the issued default
   view.AVOPEN.clear()             // Available-crew panels fold back to their one-line default
   /* the carried day too: setPage above captures whatever week the OUTGOING
      session was parked on, and a new session must open on the week's own

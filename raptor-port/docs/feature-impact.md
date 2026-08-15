@@ -46,7 +46,7 @@ the rest are the ones the code actually has.
 | **Availability / palette** | Who the crew strip offers, who is struck out, the armed reason lines, the green eligibility rings, the folded Available-crew panel | `avail.ts` (`slotBar`, `dayOff`), `palette-html.ts`, `highlights.ts` (`paintSelRings`), `html.ts` (`availHTML` + `AVOPEN`) | `isAway`/`inputCoversDate`/`inpWin` — MUST agree with the warning list; the rings read `slotBar` itself, never a copy |
 | **Post-render decoration** | Selection/search/warning classes, the armed ring, the green eligibility rings, and the ~6s just-added blue box | `highlights.ts` (`refreshHighlights` → `paintArm`/`paintSelRings`/`paintFreshAdds`) | hung AFTER the string diff, off view state (`SELID`/`ARM`/`FRESHADD`), never baked into the builder string — so a class survives an unrelated repaint; a new one adds a paint function here, never a class in the markup |
 | **Publishing / AL** | Sign-off, amendments after a day is signed | `publish.ts`, `ALPanel.tsx` | inert amendment keys through the mutation funnel |
-| **Day templates / Drafts** | Whole-day master templates; per-day alternate schedules, one of which is always the live day | `engine/daytpl.ts`, `engine/drafts.ts`; `DayTplModal.tsx`, `DraftsModal.tsx`; the board's + week's Templates/Drafts buttons (`board.ts`'s `dayTplMenu`/`draftsMenu`) | direct-write to `DAYS[di]`, refuses a published day, one undo step via the caller's `afterSchedMutate()` — the `restoreDayVersion` shape, not the ordinary funnel |
+| **Day templates / Drafts** | Whole-day master templates; per-day alternate schedules, one of which is always the live day | `engine/daytpl.ts`, `engine/drafts.ts`; `DayTplModal.tsx`, `DraftsModal.tsx`; the board's + week's Templates/Drafts buttons (`board.ts`'s `dayTplMenu`/`draftsMenu`) | direct-write to `DAYS[di]`, one undo step via the caller's `afterSchedMutate()` — the `restoreDayVersion` shape, not the ordinary funnel. Templates refuse a published day; drafts DON'T (15 Aug 26) — a switch there rebases the day's pending set against the issued snapshot (`rebaseDayPending`, engine-rules §Drafts) |
 | **Export (CSV)** | Schedule, inputs and LoX downloads | `export.ts` (`csvText`, `exportCSV`, `schedRows`); `InputsPage.tsx` | reads the model directly; formula-injection escaped at the sink |
 | **Roles / auth** | Admin vs member vs view-only; who may write | `auth.ts`, `state/session.test.ts` | checked at the PAGE and the WRITE path, never the nav |
 
@@ -119,12 +119,16 @@ sign off a day          → setDayApproved / SCHED
 edit a signed day       → the pending keys become an AL issue (alIssue)
 roll a day back          → restoreDayVersion   (ROLLBACK semantics — session-only)
 apply a day template     → applyDayTpl          (same direct-write + refuse-on-published shape)
-duplicate / switch a draft → draftDup / draftSelect (same shape; the live day IS the selected draft)
+duplicate / switch a draft → draftDup / draftSelect (same shape; the live day IS the selected draft;
+                            on a PUBLISHED day the switch ends in rebaseDayPending — the diff vs
+                            the issued snapshot becomes the pending set the next AL issues)
 ```
 Previews freeze schedule content but read live personal-inputs and day-info —
 a known limitation, `docs/engine-rules.md` §Version snapshots. Day templates
 and drafts inherit the same limitation for the same reason — both preview
-through `daySnapOf`/`withDaySnap`, never a second path.
+through `daySnapOf`/`withDaySnap`, never a second path. The view page's
+issued DEFAULT for a published day (`dayIssuedHTML`, 15 Aug 26) is the same
+freeze again in quiet mode — one more consumer, still no second path.
 
 **Every flow ends by repainting through `notify()` (or the board lane).** State
 that lives outside the funnel + `HOOKS.storeBackend` is invisible to undo, AL
@@ -198,6 +202,12 @@ ON these, don't route around them):
   (15 Aug 26) — a `'d:<id>'` draft version and an AL/ORIG version both
   label and resolve through these two, so a new preview consumer (a picker,
   a banner) never needs a second branch for "is this a draft".
+- **`dayApproved(di)` decides the view page's whole shape twice** (15 Aug
+  26) — `viewVerSelHTML` picks WHICH picker a day gets (drafts-only vs
+  issued/working) and `ViewWeek.tsx`'s render branch picks WHAT the day
+  shows (live/draft-preview vs `dayIssuedHTML`/working). Two copies of one
+  publish-state test, in two files: a change to either must walk the other,
+  or a day can render one answer under the other one's picker.
 - **Dates now carry a year when it is not the loaded week's** (12 Aug 26), so
   `dateOrd`/`fmt`/`unfmt`/`inputCoversDate` all read one representation and a
   span into the new year sorts and covers correctly. Before this there were two
