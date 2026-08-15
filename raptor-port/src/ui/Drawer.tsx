@@ -25,10 +25,16 @@ export function Drawer() {
       onClick={e => { if ((e.target as HTMLElement).id === 'drawer') close() }}>
       <div className="drawer-panel">
         <h4>Menu</h4>
+        {/* role="button" + tabIndex + Enter/Space, same reason as the topbar nav
+            in Shell.tsx (design critique, 15 Aug 26 — a hrefless <a> is not in the
+            tab order and has no button role, so a keyboard user could not reach
+            these). Tag stays <a> so `#drawerNav a[data-page]` selectors hold. */}
         <nav className="drawer-nav" id="drawerNav">
-          {items.filter(i => i[2]).map(([p, label]) =>
-            <a key={p} data-page={p} className={p === CURPAGE ? 'on' : ''}
-              onClick={() => { setPage(p); setDrawer(false); notify() }}>{label}</a>)}
+          {items.filter(i => i[2]).map(([p, label]) => {
+            const go = () => { setPage(p); setDrawer(false); notify() }
+            return <a key={p} data-page={p} role="button" tabIndex={0} className={p === CURPAGE ? 'on' : ''}
+              onClick={go} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } }}>{label}</a>
+          })}
         </nav>
         <h4>View as</h4>
         <div className="drawer-row" id="drawerViewAs">

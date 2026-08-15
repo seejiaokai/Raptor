@@ -2,7 +2,7 @@
    reference (#shell, .topbar, .page sections). Only the view-only schedule
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { WARN } from '../engine/validate'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -174,6 +174,19 @@ export function Shell() {
   const b = banner()
   const admin = SESSION && SESSION.role === 'admin'
   const nav = (p: string) => { setPage(p); notify() }
+  /* The five page tabs are <a>s with no href — visually a nav, but the reference
+     built them as links, so a keyboard user could not Tab to them and could not
+     switch pages at all (design critique, 15 Aug 26 — a P0: "someone navigating
+     without a mouse literally cannot switch pages"). role="button" + tabIndex
+     puts each one in the tab order and has it announced as a button; onKeyDown
+     answers Enter and Space, the two keys a real button fires on. The tag stays
+     <a> so the ~15 tests and probe-bridge that select `.nav a[data-page]`, and
+     the `.nav a` stylesheet, are untouched — the fix is behaviour, not markup.
+     A hidden tab (`hidden={!admin}`) is display:none, so it stays out of the tab
+     order regardless of tabIndex. */
+  const navKey = (p: string) => (e: ReactKeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nav(p) }
+  }
   const people = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
     .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
   /* memoized chrome: a store tick that changes nothing in the topbar or a
@@ -193,11 +206,11 @@ export function Shell() {
           <span className="tx"><span className="k">142 SQN · Flying Programme</span><span className="v">RAPTOR</span></span>
         </div>
         <nav className="nav" id="topnav">
-          <a data-page="editsched" data-admin="" hidden={!admin} className={page === 'editsched' ? 'on' : ''} onClick={() => nav('editsched')}>Edit Schedule</a>
-          <a data-page="viewsched" className={page === 'viewsched' ? 'on' : ''} onClick={() => nav('viewsched')}>View-only Sched</a>
-          <a data-page="inputs" className={page === 'inputs' ? 'on' : ''} onClick={() => nav('inputs')}>Inputs</a>
-          <a data-page="quals" className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')}>Quals</a>
-          <a data-page="logic" className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')}>Logic</a>
+          <a data-page="editsched" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'editsched' ? 'on' : ''} onClick={() => nav('editsched')} onKeyDown={navKey('editsched')}>Edit Schedule</a>
+          <a data-page="viewsched" role="button" tabIndex={0} className={page === 'viewsched' ? 'on' : ''} onClick={() => nav('viewsched')} onKeyDown={navKey('viewsched')}>View-only Sched</a>
+          <a data-page="inputs" role="button" tabIndex={0} className={page === 'inputs' ? 'on' : ''} onClick={() => nav('inputs')} onKeyDown={navKey('inputs')}>Inputs</a>
+          <a data-page="quals" role="button" tabIndex={0} className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')} onKeyDown={navKey('quals')}>Quals</a>
+          <a data-page="logic" role="button" tabIndex={0} className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')} onKeyDown={navKey('logic')}>Logic</a>
         </nav>
         <div className="spring">
           <div className="acct">
