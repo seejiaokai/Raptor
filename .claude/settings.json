@@ -1,6 +1,21 @@
 {
-  "description": "Impeccable design detector: immediate-tier checks after Edit/Write/MultiEdit on UI files, full-rule deep pass on Stop.",
+  "description": "Impeccable design detector (PostToolUse on UI edits + Stop deep pass) and task-observer SessionStart activation.",
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "async": false,
+            "command": "[ -f \"$CLAUDE_PROJECT_DIR/.claude/hooks/task-observer-session-start.sh\" ] && bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/task-observer-session-start.sh\" || exit 0",
+            "timeout": 5,
+            "statusMessage": "Activating task-observer"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit",
