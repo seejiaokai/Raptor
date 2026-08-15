@@ -164,6 +164,44 @@ describe('puck selection (tfin B14)', () => {
   })
 })
 
+/* owner, 15 Aug 26 (phone): on the Edit Schedule week, tapping the blank
+   right-hand side of the DRAFT banner, the day header or the sign-off strip
+   did NOT clear a selected puck — those three layout containers were excluded
+   from the blank-clear as whole blocks, so their mostly-empty width was dead
+   zone. They now clear; the real controls inside them still don't. */
+describe('blank areas of the week chrome clear the selection', () => {
+  const selBane = async () => {
+    if (view.CURPAGE !== 'editsched') clickSync($('.nav a[data-page="editsched"]'))
+    await click($('#eWeek .puck[data-person="bane"]'))
+    expect($$('#eWeek .puck.sel').length, 'bane is lit on the edit week').toBeGreaterThan(0)
+  }
+  it('a blank click on the DRAFT banner clears', async () => {
+    await selBane()
+    await click($('#eBanner'))
+    expect($$('#eWeek .puck.sel').length, 'the banner clears').toBe(0)
+  })
+  it('a blank click on the day header clears', async () => {
+    await selBane()
+    await click($('#eWeek .day[data-day="0"] .day-head'))
+    expect($$('#eWeek .puck.sel').length, 'the day head clears').toBe(0)
+  })
+  it('a blank click on the sign-off strip clears', async () => {
+    await selBane()
+    await click($('#eWeek .day[data-day="0"] .signoff'))
+    expect($$('#eWeek .puck.sel').length, 'the sign-off strip clears').toBe(0)
+  })
+  it('but the day name (picks the crew day) and a sign-off pill do NOT clear', async () => {
+    await selBane()
+    await click($('#eWeek .day[data-day="0"] .day-head [data-crewday]'))
+    expect($$('#eWeek .puck.sel').length, 'the day name survives').toBeGreaterThan(0)
+    await click($('#eWeek .day[data-day="0"] .signoff .sgn'))
+    expect($$('#eWeek .puck.sel').length, 'a sign-off pill survives').toBeGreaterThan(0)
+    /* leave the app back on the view week for the blocks below */
+    clickSync($('.nav a[data-page="viewsched"]'))
+    await click($('#vWeek'))
+  })
+})
+
 describe('warning strips (tfin B14)', () => {
   it('strips start collapsed', () => {
     expect($$('#vWeek .dwlist').length).toBe(0)

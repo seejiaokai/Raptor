@@ -835,12 +835,27 @@ export function routeClick(e: MouseEvent) {
      the topbar and every page; the board `#schedBoard` is its own overlay
      sibling), and the exclusion list — the reference's, plus `.modal`/`.drawer`
      for the overlays that now sit inside the widened scope — still protects
-     every interactive control. */
+     every interactive control.
+     THREE LAYOUT CONTAINERS LEFT THE LIST (owner, 15 Aug 26 — he circled the
+     blank right-hand halves of the DRAFT banner, the day header and the
+     sign-off strip and said a tap there still didn't clear). `.schedbanner`,
+     `.day-head` and `.signoff` are mostly empty width wrapping a few controls,
+     so excluding the whole container turned each into a large dead zone. They
+     are gone; the real controls inside them are protected on their own — the
+     day name in edit mode (`[data-crewday]`, picks the crew day) and in view
+     mode (`[data-dayinfo]`, opens day details), the edit-mode date (`.sb-open`,
+     already listed), every sign-off pill (`.sgn` — its `<select>` is stretched
+     over the whole label, so the tap target is usually the select, but the
+     label's own padding is guarded here too), and the buttons/selects the base
+     list already covers. The board is untouched: its own sign-off sits inside
+     `.sb-sign` and its bar inside `.sb-top`, both still listed, and it draws no
+     `.day-head` or `.schedbanner` at all. */
   const pg = t.closest('#shell,#schedBoard')
   if (pg && !t.closest('a,button,input,select,textarea,[contenteditable="true"],'
     + '.fchip,.puck,.seat,.rpuck,.ros-tab,.ros-arm,.sb-slot,[data-fill],[data-slot],'
-    + '.dwbox,.pillbtn,.day-head,.sb-open,.dinfobtn,.airpop,.schedbanner,.alpanel,'
-    + '.sb-top,.sb-sign,.signoff,.hscroll,.week-nav,.modal,.drawer')) {
+    + '.dwbox,.pillbtn,.sb-open,.dinfobtn,.airpop,.alpanel,'
+    + '.sb-top,.sb-sign,.hscroll,.week-nav,.modal,.drawer,'
+    + '[data-crewday],[data-dayinfo],.sgn')) {
     let any = false
     if (view.ARM) { view.disarmSlot(); any = true }
     if (view.SELID || view.WFOCUS || view.PFOCUS || view.DWOPEN.size) {

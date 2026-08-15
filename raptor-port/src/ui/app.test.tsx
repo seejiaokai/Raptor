@@ -49,6 +49,22 @@ describe('the app shell', () => {
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 
+  /* design critique, 15 Aug 26 (a P0): the five page tabs were hrefless <a>s,
+     so a keyboard user could not Tab to them or switch pages. They carry a
+     button role, sit in the tab order, and answer Enter and Space now. */
+  it('the page tabs are keyboard-reachable and activate on Enter / Space', async () => {
+    const tab = (p: string) => host.querySelector(`a[data-page="${p}"]`) as HTMLElement
+    const inputs = tab('inputs')
+    expect(inputs.getAttribute('role'), 'announced as a button').toBe('button')
+    expect(inputs.tabIndex, 'in the tab order').toBe(0)
+    await act(async () => { inputs.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })) })
+    expect(host.querySelector('#page-inputs.on'), 'Enter switched to Inputs').toBeTruthy()
+    await act(async () => { tab('quals').dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true })) })
+    expect(host.querySelector('#page-quals.on'), 'Space switched to Quals').toBeTruthy()
+    await act(async () => { tab('viewsched').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })) })
+    expect(host.querySelector('#page-viewsched.on'), 'and back to View-only').toBeTruthy()
+  })
+
   it('logout returns to the login page', async () => {
     await act(async () => { setSession(null); notify() })
     expect(host.querySelector('#login')).toBeTruthy()

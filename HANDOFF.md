@@ -357,15 +357,39 @@ only after re-running them.
 - **A design critique ran on 15 Aug 26 (`/impeccable critique`); its snapshot
   is in `raptor-port/.impeccable/critique/`.** The owner actioned the two
   mobile items (frozen Quals callsign, collapsible legend) and the "click any
-  blank area to deselect" bug. **Left un-actioned, worth surfacing to the owner:**
-  a **P0 accessibility bug** — the five top-nav items (`Shell.tsx`) are `<a>`
-  with no `href`/role, so a keyboard user cannot Tab to them (fix: make them
-  real buttons); a **P1** — the "CP" flag is amber for "needs approval" and red
-  for "not authorised", a safety-relevant distinction told by colour alone, and
-  several qualification badges fall under the 4.5:1 AA contrast floor; and the
-  owner's own **"make the Insights panel consistent"** question (see
-  `docs/session-state.md`). The "Throw pucks (auto)" dead button is a known
-  deliberate stub (one dataset bullet below), flagged by the review but not new.
+  blank area to deselect" bug. **The P0 keyboard bug is now CLOSED (15 Aug 26):**
+  the five top-nav items and the phone drawer's nav were hrefless `<a>`s a
+  keyboard user could not Tab to; they carry `role="button"`, `tabIndex=0` and
+  an Enter/Space `onKeyDown` now (`Shell.tsx` `navKey`, `Drawer.tsx`). The tag
+  stays `<a>` on purpose — ~15 tests, `probe-bridge.ts` and the `.nav a`
+  stylesheet all key off it — so the fix is behaviour, not markup; pinned in
+  `app.test.tsx`. **Still open, worth surfacing to the owner:** the **P1** —
+  the "CP" flag is amber for "needs approval" and red for "not authorised", a
+  safety distinction told by colour alone (both chips print the same "CP" —
+  `CHIP_TEXT.CP` = `CHIP_TEXT.CPH` = 'CP', `validate.ts`), and five
+  qualification badges (`QCOLOR` A/D/OCU/instr/SANS, white text) measure
+  3.4–4.3:1, under the 4.5:1 AA floor. Before/after examples were comped and
+  shown to the owner (a shape/glyph on each CP state; a one-shade-deeper fill
+  that clears 4.5:1 — A `#ca4750`, D `#3673dd`, OCU `#7f65bf`, instr `#9f4adf`,
+  SANS `#a748dc`); NOT built, awaiting his pick. Also open: the owner's own
+  **"make the Insights panel consistent"** question (see
+  `docs/session-state.md`), and his **Quals add-person layout** question —
+  he finds the always-open Add-person form above the table heavy and wants the
+  Pilots/WSOs/Personnel/All filter promoted there instead; a "now vs proposed"
+  comp (View as a segmented control above the table, Add person folded behind a
+  "+ Add person" button) was shown, NOT built. The "Throw pucks (auto)" dead
+  button is a known deliberate stub (one dataset bullet below), flagged by the
+  review but not new.
+- **The week-chrome blank-click deselect was widened again (15 Aug 26).** PR
+  #220 took the blank-click "clear the selection" scope to the whole `#shell`;
+  the owner then reported (phone) that tapping the blank right-hand side of the
+  DRAFT banner, the day header or the sign-off strip on the Edit Schedule week
+  still didn't clear. Those three layout containers (`.schedbanner`,
+  `.day-head`, `.signoff`) were excluded as whole blocks, so their empty width
+  was dead zone; they left the exclusion list and their real controls are
+  protected on their own (`interactions.ts`, pinned in `interact.test.tsx`).
+  The board is untouched — its sign-off sits inside `.sb-sign` and its bar
+  inside `.sb-top`, both still excluded.
 - **THE PUBLISH/DRAFTS CLARITY REWORK shipped (15 Aug 26, second batch of
   the day)** — the view page's issued default (`dayIssuedHTML` + `VWORK` +
   `viewVerSelHTML`, contracts in `docs/ui-contracts.md` §the view-only
