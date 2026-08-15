@@ -195,6 +195,32 @@ columns on the phone and 3 on desktop, a card click opening the dialog
 with ticks + span picker, the board panel carrying the same three cards,
 "Fly with" in the type dropdown — zero console/page/network errors.
 Deployed-page check at merge, as ever.
+**THE SIX-FEATURE BATCH (15 Aug 26 — board publish controls · Unavailable
+editable down to the puck · whole-day master templates · per-day drafts ·
+the demo SANS seed · the app-wide tap-feedback pass) — all six gates green
+first-hand on the matching tree.** `npm test` 1600 across 99 files
+(`daytpl.test.ts` 20, `drafts.test.ts` 16, `demosans.test.ts` 5,
+`daytplui.test.tsx` 15, `draftsui.test.tsx` 18, `unavailedit.test.tsx` 16
+are new; `inputs.test.tsx` re-pointed at the steady flash timing and the
+sort fix, `accept.test.ts` at `markStructuralAdd`), `node reference/tfin.js`
+728/0 (the SANS seed is boot-time in `state/demoseed.ts`, so every parity
+fixture reads the INPUTS array pristine — divergence-free by construction),
+`npm run build` clean, `npm run test:e2e` 96/96, `probes:adapted` 6/6,
+`perf` 4/4 — **week DOM 3702 under the unmoved 4000 ceiling** (3621 → 3702:
+the six seeded SANS cards and the day-head draft chip are the growth, and
+the crew-finding headroom absorbs it), **board 855 under the unmoved 960**
+(835 → 855: the publish strip and the Templates & drafts panel header).
+The built bundle was then driven at 1500px and 390×844: desktop — the board's
+publish strip live (sign, publish, version/pending chips), a day duplicated
+into two drafts and switched with the toast, save-as-template opening the
+manage modal pre-selected, 14 Unavailable person targets armed/droppable,
+24 input-edit cards with the SANS seed visible; phone — the board opens with
+Templates/Drafts/publish all present at 0px sideways overflow, an Add input
+with no date picked refuses with its toast (feedback working as designed),
+and with a date picked the new row lands FLASHING AND INSIDE THE VIEWPORT —
+the owner's original complaint, proven on the real bundle. Zero console,
+page or network errors across every drive. Deployed-page check at merge, as
+ever.
 `docs/probe-sweep.md` carries the live figures, and records that a shorter
 board can still be a heavier one — and now that a heavier board can read
 lighter when the measure's boundary moves.
