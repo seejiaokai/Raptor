@@ -2954,6 +2954,18 @@ button.sanscard:hover{border-color:var(--accent)}
   .sb-lcols>:nth-child(7),.sb-lcols>:nth-child(8),
   .sb-lcols>:nth-child(9),.sb-lcols>:nth-child(10){display:none}
   .sb-line .lctl{grid-column:1 / -1;justify-content:flex-start;margin-top:2px}
+  /* THE FIVE INPUT BOXES SHARE ONE BASELINE (owner, 16 Aug 26 — "make the boxes
+     aligned … every box lowers to cater for the brief blue timing"). The B cell
+     stacks the blue suggested brief time ABOVE its input; on a phone the seat
+     pucks drop to their own row, so this first row's height is set by that taller
+     B cell, and a centre-aligned row floated the plain CS/MSN/TO/LD boxes half a
+     line above the brief box. Bottom-align the five boxes so they sit on one line
+     and the blue time takes the freed space directly above the brief box. Scoped
+     to the boxes (not the row) so the seat pair's align-self:start and the remarks
+     cell are untouched, and to :not(.sb-wide) so the tablet/desktop layout — where
+     the pucks share this row — keeps its centred alignment. */
+  .schedboard:not(.sb-wide) .sb-line>.lin,.schedboard:not(.sb-wide) .sb-line>.msn,
+  .schedboard:not(.sb-wide) .sb-line>.tm,.schedboard:not(.sb-wide) .sb-line>.sb-bcell{align-self:end}
   .sb-acols,.sb-arow{grid-template-columns:1fr 46px 46px;gap:6px}
   .sb-acols>:nth-child(3),.sb-acols>:nth-child(6),.sb-acols>:nth-child(7){display:none}
   .sb-arow .ppl,.sb-arow .lctl{grid-column:1 / -1}

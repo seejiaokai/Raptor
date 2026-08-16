@@ -3443,3 +3443,44 @@ test.describe('the collapsible legend', () => {
     expect(open, 'clicking the summary reveals the key').toBeGreaterThan(0)
   })
 })
+
+/* THE FLYING LINE'S BOXES SIT ON ONE BASELINE ON A PHONE (owner, 16 Aug 26 —
+   "make the boxes aligned … every box lowers to cater for the brief blue
+   timing"). The B cell stacks the blue suggested brief time above its input,
+   and on a phone the seat pucks drop to their own row, so this first row's
+   height is set by that taller B cell. A centred row floated CS/MSN/TO/LD half
+   a line above the brief box; the fix bottom-aligns the five boxes so they
+   share one line, the blue time taking the freed space directly above the
+   brief box. jsdom cannot see it — the alignment only exists once the
+   stylesheet lays the grid out. */
+test('the flying line keeps its five boxes on one baseline on a phone', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(1))
+  await page.waitForSelector('#schedBoard .sb-line .bsug')
+
+  const m = await page.evaluate(() => {
+    const line = [...document.querySelectorAll('#schedBoard .sb-line')]
+      .find(l => l.querySelector('.bsug'))
+    if (!line) return null
+    const bottom = (el: Element | null) => el ? el.getBoundingClientRect().bottom : NaN
+    const cs = line.querySelector('.lin'), msn = line.querySelector('.msn')
+    const tms = [...line.querySelectorAll(':scope > .tm')] // TO, LD
+    const brief = line.querySelector('.sb-bcell .tm')
+    const bsug = line.querySelector('.bsug')
+    const bots = [cs, msn, tms[0], tms[1], brief].map(bottom)
+    return {
+      spread: Math.max(...bots) - Math.min(...bots),
+      briefBottom: bottom(brief),
+      bsugBottom: bottom(bsug),
+    }
+  })
+  test.skip(!m, 'no brief-suggestion line on the seed board')
+
+  /* every box shares one bottom edge (sub-pixel rounding only) */
+  expect(m!.spread, 'the five boxes sit on one baseline').toBeLessThan(1.5)
+  /* and the blue time sits ABOVE the brief box, not beside or below it */
+  expect(m!.bsugBottom, 'the blue brief time rides above the brief box')
+    .toBeLessThan(m!.briefBottom - 4)
+})

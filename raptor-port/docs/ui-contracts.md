@@ -764,7 +764,17 @@ edit week now:
   `grid-column:auto` (rcell) resets fully undo it on a tablet. Every cell's
   DOM order already matches its visual order, so no `order` hack is needed.
   The FCP/RCP header labels hide at phone width; `.sb-wide` restates the wide
-  desktop grid back.
+  desktop grid back. **Row 1's five boxes share ONE bottom baseline** (owner,
+  16 Aug 26 — "make the boxes aligned … every box lowers to cater for the brief
+  blue timing"). The B cell stacks the blue suggested brief time above its
+  input, and with the seat pucks on their own row it is the tallest thing on
+  row 1, so a centred row floated the plain `CS/MSN/TO/LD` boxes half a line
+  above the brief box. `align-self:end` on the five boxes — scoped to
+  `.schedboard:not(.sb-wide)` so the tablet/desktop layout, where the pucks
+  share this row, keeps its centred alignment — drops them onto one line and
+  leaves the blue time in the space directly above the brief box. Pinned by the
+  geometry test "the flying line keeps its five boxes on one baseline on a
+  phone".
 - **The drawer body scrolls the iOS way**: `flex:1` + `min-height:0` rather
   than `max-height:100vh` (iOS's 100vh is the largest viewport — toolbars
   collapsed — so a 100vh cap never binds while the bars are up and the
