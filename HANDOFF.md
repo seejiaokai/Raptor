@@ -363,21 +363,37 @@ only after re-running them.
   an Enter/Space `onKeyDown` now (`Shell.tsx` `navKey`, `Drawer.tsx`). The tag
   stays `<a>` on purpose — ~15 tests, `probe-bridge.ts` and the `.nav a`
   stylesheet all key off it — so the fix is behaviour, not markup; pinned in
-  `app.test.tsx`. **Still open, worth surfacing to the owner:** the **P1** —
-  the "CP" flag is amber for "needs approval" and red for "not authorised", a
-  safety distinction told by colour alone (both chips print the same "CP" —
-  `CHIP_TEXT.CP` = `CHIP_TEXT.CPH` = 'CP', `validate.ts`), and five
-  qualification badges (`QCOLOR` A/D/OCU/instr/SANS, white text) measure
-  3.4–4.3:1, under the 4.5:1 AA floor. Before/after examples were comped and
-  shown to the owner (a shape/glyph on each CP state; a one-shade-deeper fill
-  that clears 4.5:1 — A `#ca4750`, D `#3673dd`, OCU `#7f65bf`, instr `#9f4adf`,
-  SANS `#a748dc`); NOT built, awaiting his pick. Also open: the owner's own
+  `app.test.tsx`. **The P1 is now HALF actioned (owner, 16 Aug 26,
+  after seeing before/after comps):** the **CAT badge contrast** is FIXED — the
+  four white-text ladder fills were deepened one shade to clear 4.5:1 (A
+  `#F0555F`→`#CA4750`, D `#3B7DF0`→`#3673DD`, OCU `#8A6ED0`→`#7F65BF`, instr
+  `#A64DE8`→`#9F4ADF`; C and B keep pale fills, they carry dark text and already
+  pass). The value lives in THREE places kept in lockstep — `engine/people.ts`
+  `QCOLOR` (the Quals `qmini`), `scheduler.css` `--q-*` (the puck `.role` chips
+  and legend swatches), and `refwin.ts`'s remap (so the reference renders the
+  same colours and parity holds); a contrast test in `quals.test.tsx` pins the
+  4.5:1 floor. **The CP-flag half was DECLINED (owner, 16 Aug 26 — "do not fix
+  the CP"):** the amber-vs-red "CP"/"CPH" safety distinction stays colour-only;
+  the shape/glyph idea (CP? / CP✕) was comped and rejected — do not re-propose
+  it. SANS (`--san`) was out of scope (not a CAT, and not a white-text badge in
+  the app). **A frozen-column bleed was also fixed (owner, 16 Aug 26):** on the
+  Quals table, scrolling sideways showed a wide CAT badge (OCU/instructor)
+  emerging right against the frozen callsign column, reading as a bleed — a
+  cell's own `box-shadow` does NOT paint over sibling cells under
+  `border-collapse:collapse`, so the fix is a `::after` seal (a child of the
+  z-index:1 sticky cell, which DOES paint above the z-0 scrolling cells),
+  gated on a `.xscroll` class QualsPage toggles only while scrolled (unscrolled
+  it would dim the next column's leading edge). Pinned in `quals.test.tsx`; the
+  paint itself is eye-verified (jsdom cannot). Also open: the owner's own
   **"make the Insights panel consistent"** question (see
-  `docs/session-state.md`), and his **Quals add-person layout** question —
-  he finds the always-open Add-person form above the table heavy and wants the
-  Pilots/WSOs/Personnel/All filter promoted there instead; a "now vs proposed"
-  comp (View as a segmented control above the table, Add person folded behind a
-  "+ Add person" button) was shown, NOT built. The "Throw pucks (auto)" dead
+  `docs/session-state.md`). His **Quals add-person layout** question is now
+  CLOSED (owner, 15 Aug 26): the Pilots/WSOs/Personnel/All filter left the top
+  toolbar for a segmented control (`.segview`) in a new `.qtablehead` strip
+  directly above the table, and the Add-person form folds behind a "+ Add
+  person" toggle (`showAdd` in `QualsPage.tsx`); Enable editing and Export
+  stayed in the toolbar at the owner's word. The four seat buttons keep their
+  `#qViewP/W/G/A` ids, so every caller and test is unchanged; pinned in
+  `quals.test.tsx`. The "Throw pucks (auto)" dead
   button is a known deliberate stub (one dataset bullet below), flagged by the
   review but not new.
 - **The week-chrome blank-click deselect was widened again (15 Aug 26).** PR

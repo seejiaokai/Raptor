@@ -294,7 +294,19 @@ describe('the callsign / initials columns', () => {
     expect($$('#qtbl tbody tr:not(.grp) td.qinitc').length).toBe($$('#qtbl tbody tr:not(.grp)').length)
   })
 
+  it('the Add person form folds behind a button and toggles open (owner, 15 Aug 26)', async () => {
+    expect($('#qCS'), 'closed by default — no open form above the table').toBeFalsy()
+    expect($('#qAddToggle'), 'the admin sees the toggle').toBeTruthy()
+    await click($('#qAddToggle'))
+    expect($('#qCS'), 'opens on click').toBeTruthy()
+    await click($('#qAddToggle'))
+    expect($('#qCS'), 'and closes again').toBeFalsy()
+  })
+
   it('Add person takes callsign + initials + pilot/WSO + cat, with no name fields', async () => {
+    /* the form folds behind the "+ Add person" button now (owner, 15 Aug 26) */
+    expect($('#qCS'), 'the form is closed until the toggle is pressed').toBeFalsy()
+    await click($('#qAddToggle'))
     expect($('#qLast')).toBeFalsy()
     expect($('#qFirst')).toBeFalsy()
     await setV($('#qCS') as HTMLElement, 'Tester')
@@ -410,6 +422,38 @@ describe('the CAT column', () => {
     expect(Object.keys(PEOPLE).filter(id => 'ip' in PEOPLE[id])).toEqual([])
   })
 
+  /* the CAT badges read at AA (owner, 15 Aug 26 — the badge-readability fix).
+     The white-text fills were deepened to clear the 4.5:1 floor; C and B carry
+     dark text and pass on their pale fills. Pin the CONTRAST, not the exact hex
+     — a future colour tweak is fine as long as it stays readable. */
+  it('every CAT badge meets the 4.5:1 contrast floor for its own text colour', () => {
+    const lin = (c: number) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4 }
+    const L = (h: string) => { const n = parseInt(h.slice(1), 16); return 0.2126 * lin(n >> 16 & 255) + 0.7152 * lin(n >> 8 & 255) + 0.0722 * lin(n & 255) }
+    const ratio = (a: string, b: string) => { const [x, y] = [L(a), L(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05) }
+    /* QualsPage's qmini gives C and B a dark letter (#04222b), every other CAT white */
+    const ink = (k: string) => (k === 'C' || k === 'B') ? '#04222b' : '#ffffff'
+    for (const k of Object.keys(QCOLOR)) {
+      expect(ratio(QCOLOR[k], ink(k)), `${k} badge (${QCOLOR[k]})`).toBeGreaterThanOrEqual(4.5)
+    }
+  })
+
+  /* the frozen callsign column's edge-seal is scroll-gated (owner, 16 Aug 26 —
+     a wide CAT badge bled against the callsign while scrolling sideways; the
+     seal fixes it, but must stay OFF at rest or it dims the next column's
+     leading edge). jsdom cannot paint, so this pins the gating logic only; the
+     seal's actual coverage is verified in the browser. */
+  it('the frozen-column seal arms on horizontal scroll and disarms at the left edge', () => {
+    const wrap = ($('#qtbl').parentElement) as HTMLElement
+    expect(wrap.classList.contains('qwrap')).toBe(true)
+    expect(wrap.classList.contains('xscroll'), 'off at rest').toBe(false)
+    Object.defineProperty(wrap, 'scrollLeft', { value: 120, configurable: true })
+    wrap.dispatchEvent(new Event('scroll'))
+    expect(wrap.classList.contains('xscroll'), 'on once scrolled sideways').toBe(true)
+    Object.defineProperty(wrap, 'scrollLeft', { value: 0, configurable: true })
+    wrap.dispatchEvent(new Event('scroll'))
+    expect(wrap.classList.contains('xscroll'), 'off again back at the left edge').toBe(false)
+  })
+
   it('the CAT dropdown is seat-filtered: no IW for a pilot, no IP/IR for a WSO', async () => {
     /* the table opens on the pilots; the first row dropdown belongs to an FCP */
     if (!$('#qtbl select.qlvlsel')) await click($('#qEdit'))
@@ -502,10 +546,15 @@ describe('sorting by clicking a heading', () => {
     await click($('#qViewP'))
   })
 
-  it('the Sort chips are gone, and View carries the seat choices plus Personnel', () => {
-    expect($$('.qbar .lab').map(x => x.textContent)).toContain('View')
-    expect($$('.qbar .lab').map(x => x.textContent)).not.toContain('Sort')
-    expect($$('.qbar .fchip').map(x => x.textContent)).toEqual(['Pilots', 'WSOs', 'Personnel', 'All'])
+  it('the seat view is a segmented control above the table, and the toolbar keeps Enable editing + Export', () => {
+    /* owner, 15 Aug 26: the view switch moved out of the toolbar to a strip
+       directly above the table; Enable editing and Export stayed up top. */
+    expect($$('.segview button').map(x => x.textContent)).toEqual(['Pilots', 'WSOs', 'Personnel', 'All'])
+    expect($('.qtablehead .segview'), 'the seat view heads the table now').toBeTruthy()
+    expect($$('.qbar .fchip').length, 'no seat chips left in the toolbar').toBe(0)
+    expect($('#qEdit') || $('#qSave'), 'Enable editing stays in the toolbar').toBeTruthy()
+    expect($('#qExport'), 'Export stays in the toolbar').toBeTruthy()
+    expect($$('.qbar .lab, .qtablehead .seglab').map(x => x.textContent)).not.toContain('Sort')
     for (const k of ['cs', 'initials', 'flight', 'cat', 'tf']) expect(th(k), k).toBeTruthy()
   })
 

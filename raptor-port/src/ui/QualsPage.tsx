@@ -242,6 +242,12 @@ export function QualsPage() {
   /* the column whose ✕ has been pressed once — see WIRED above */
   const [armDel, setArmDel] = useState('')
   const [addP, setAddP] = useState({ initials: '', cs: '', flight: '', seat: 'FCP', level: 'OCU' })
+  /* Add person folds behind a button now (owner, 15 Aug 26): the seat-view
+     switch is the everyday control, so it moves out of the toolbar to sit
+     above the table, and the occasional add-person form opens on demand
+     instead of taking an open row on every visit. Admin-only, so a member
+     never sees the toggle or the form. */
+  const [showAdd, setShowAdd] = useState(false)
   const tblRef = useRef<HTMLTableElement>(null)
   const admin = !!SESSION && SESSION.role === 'admin'
 
@@ -447,10 +453,20 @@ export function QualsPage() {
        table must still end the drag rather than leave it armed */
     document.addEventListener('pointerup', onUp)
     document.addEventListener('pointercancel', onUp)
+    /* mark the scroll wrap once the table is scrolled sideways, so the frozen
+       callsign column's edge-seal (scheduler.css .qwrap.xscroll …::after) only
+       shows then — unscrolled it must not dim the next column's leading edge
+       (owner, 16 Aug 26). The wrap is stable across the table's innerHTML
+       rebuilds, so this listener survives them. */
+    const wrap = tbl.parentElement as HTMLElement
+    const onXScroll = () => wrap.classList.toggle('xscroll', wrap.scrollLeft > 0)
+    wrap.addEventListener('scroll', onXScroll, { passive: true })
+    onXScroll()
     return () => {
       tbl.removeEventListener('click', onClick); tbl.removeEventListener('change', onChange)
       tbl.removeEventListener('pointerdown', onDown); tbl.removeEventListener('pointermove', onMove)
       document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onUp)
+      wrap.removeEventListener('scroll', onXScroll)
     }
   }, [])
 
@@ -530,15 +546,8 @@ export function QualsPage() {
             onClick={() => { setQualsEdit(v => !v); setArmDel('') }}>{qualsEdit ? '✕ Edit quals' : 'Edit quals'}</button>}
         <input className="datef" id="qDate" defaultValue="23/06/2026" style={{ maxWidth: 120 }} />
         <button className="abtn" id="qExport" onClick={doExport}>Export to Excel</button>
-        <span className="div" style={{ width: 1, height: 22, background: 'var(--edge)' }}></span>
-        {/* View sits beside Export because the two answer the same question —
-            which people am I looking at, and which people come out. The Sort
-            chips that used to follow are gone: the headings sort now. */}
-        <span className="lab">View</span>
-        <button className={'fchip' + (qSeatView === 'FCP' ? ' on' : '')} id="qViewP" onClick={() => setSeat('FCP')}>Pilots</button>
-        <button className={'fchip' + (qSeatView === 'RCP' ? ' on' : '')} id="qViewW" onClick={() => setSeat('RCP')}>WSOs</button>
-        <button className={'fchip' + (qSeatView === 'GND' ? ' on' : '')} id="qViewG" onClick={() => setSeat('GND')}>Personnel</button>
-        <button className={'fchip' + (qSeatView === 'ALL' ? ' on' : '')} id="qViewA" onClick={() => setSeat('ALL')}>All</button>
+        {/* Enable editing and Export stay up here (owner, 15 Aug 26); the View
+            switch moved down to sit directly above the table it filters. */}
         <div className="grow"></div>
         <div className="searchbox">🔍<input id="qFilter" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
       </div>
@@ -560,8 +569,24 @@ export function QualsPage() {
         A check (✓) means the person holds that qualification. In edit mode, click a cell to toggle it, or the red ✕ to archive someone.
         <a id="qAddQual" onClick={() => HOOKS.toast('Shortcut to the Admin page (Django-style backend in the full build).')}> Add qualifications</a> · <a id="qUses">Set which quals your squadron uses</a> · <a id="qAdminLink">Admin page</a>
       </div>
-      {admin && <div className="qadd" data-admin="">
-        <span className="lab">Add person</span>
+      {/* the seat view + Add person, right above the table (owner, 15 Aug 26).
+          The four seat buttons keep their ids so every caller and test that
+          reaches them by #qViewP etc is unchanged; they read as one segmented
+          control here rather than loose chips in the toolbar. Add person is
+          admin-only and folds behind its own button. */}
+      <div className="qtablehead">
+        <span className="seglab">Viewing</span>
+        <div className="segview" role="group" aria-label="Which people to show">
+          <button id="qViewP" className={qSeatView === 'FCP' ? 'on' : ''} aria-pressed={qSeatView === 'FCP'} onClick={() => setSeat('FCP')}>Pilots</button>
+          <button id="qViewW" className={qSeatView === 'RCP' ? 'on' : ''} aria-pressed={qSeatView === 'RCP'} onClick={() => setSeat('RCP')}>WSOs</button>
+          <button id="qViewG" className={qSeatView === 'GND' ? 'on' : ''} aria-pressed={qSeatView === 'GND'} onClick={() => setSeat('GND')}>Personnel</button>
+          <button id="qViewA" className={qSeatView === 'ALL' ? 'on' : ''} aria-pressed={qSeatView === 'ALL'} onClick={() => setSeat('ALL')}>All</button>
+        </div>
+        <div className="grow"></div>
+        {admin && <button className="abtn" id="qAddToggle" aria-expanded={showAdd}
+          onClick={() => setShowAdd(v => !v)}>{showAdd ? '✕ Close' : '+ Add person'}</button>}
+      </div>
+      {admin && showAdd && <div className="qadd qadd-person" data-admin="">
         <input id="qCS" placeholder="Callsign" maxLength={14} style={{ width: 110 }} value={addP.cs} onChange={e => setAddP({ ...addP, cs: e.target.value })} />
         <input id="qInitials" placeholder="Initials" maxLength={12} style={{ width: 120 }} value={addP.initials} onChange={e => setAddP({ ...addP, initials: e.target.value })} />
         <input id="qFlight" placeholder="Flight" maxLength={10} style={{ width: 70 }} value={addP.flight} onChange={e => setAddP({ ...addP, flight: e.target.value })} />
