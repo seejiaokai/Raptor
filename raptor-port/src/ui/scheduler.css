@@ -2636,7 +2636,17 @@ button.sanscard:hover{border-color:var(--accent)}
      of its own now. */
   .sb-boardwrap{display:contents}
   .sb-sign{order:-2}
-  .sb-board{flex:none;overflow:visible;padding-right:18px}
+  /* CLEAR THE PARKED AIRCREW TAB (owner, 16 Aug 26). The parked drawer is a
+     30px sliver pinned over the right edge (.sb-ros, below); an 18px gutter
+     only kept it off the input tap-zone, so panel headers, the +Note/+Item
+     buttons and the sign-off summary's tail still slid under the blue tab in
+     its ~55vh band. A 30px right gutter matches the tab's width so nothing
+     hides behind it, tab present or not. The gutter goes on all THREE scroller
+     children the tab floats over — the sign-off and the Live Checks bar are
+     their own elements now (order:-2/-1), not inside .sb-board, so padding it
+     alone left their full-width rows still reaching under the tab. */
+  .sb-board{flex:none;overflow:visible;padding-right:30px}
+  .sb-sign{padding-right:30px}
   /* ONE WINDOW (owner, 8 Aug 26 — comp approved; replaces the bottom-pinned
      Live-checks + roster sheet and its resize grip). The side column
      dissolves; its two occupants go where the edit week puts theirs: the
@@ -2654,7 +2664,7 @@ button.sanscard:hover{border-color:var(--accent)}
      ordered to sit just below the sign-off and above the board — order:-1
      against a flattened board column, with #sbSign at -2 (owner, 14 Aug 26).
      Still folds instead of scrolling within; transparent, its own inset. */
-  .sb-warn{order:-1;flex:0 0 auto;max-height:none;overflow:visible;padding:0 14px 12px;background:transparent;border-bottom:none}
+  .sb-warn{order:-1;flex:0 0 auto;max-height:none;overflow:visible;padding:0 30px 12px;background:transparent;border-bottom:none}
   .sb-warn .wh[data-sbwtog]{cursor:pointer}
   .sb-warn .sbw-car{display:inline}
   .sb-warn .sbwrap:not(.open) .wln{display:none}

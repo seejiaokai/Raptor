@@ -958,7 +958,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
           h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w))}</span></div>
-              <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${ted(`fr:${key}`,a.rmks,ed,'ntx',null,sa?(a.role||(a.spare?'SPARE':'MAIN')):null)}${sa?'':stores}</div>`;
+              <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${ted(`fr:${key}`,a.rmks,ed,'ntx',null,sa?(a.role||(a.spare?'SPARE':'MAIN')):(ed?'Remarks':null))}${sa?'':stores}</div>`;
         });
         /* AREA strip: full-width row under this formation's aircraft. Rendered whenever
            there is something to show, or always in edit mode so it can be filled in. */

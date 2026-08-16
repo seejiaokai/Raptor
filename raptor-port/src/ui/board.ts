@@ -282,7 +282,7 @@ export function boardWarnHTML(di: number) {
     + `<div class="wh${dw.length ? ' ' + worst : ' ok'}" data-sbwtog title="Show / hide the day's checks">`
     + `<span class="sbw-car">${SBWOPEN ? '▾' : '▸'}</span>`
     + (dw.length
-      ? `<b>⚠ ${dw.length} issue${dw.length > 1 ? 's' : ''}</b>${nh ? ` · ${nh} warning` : ''} · <span class="dwcue">${SBWOPEN ? 'tap to collapse' : 'tap to review'}</span>`
+      ? `<b>⚠ ${dw.length} issue${dw.length > 1 ? 's' : ''}</b>${nh ? ` · ${nh} warning${nh > 1 ? 's' : ''}` : ''} · <span class="dwcue">${SBWOPEN ? 'tap to collapse' : 'tap to review'}</span>`
       : `No conflicts flagged for ${esc(d.dow)} ✓`)
     + `</div>`
   if (dw.length) {
@@ -835,7 +835,7 @@ export function boardChange(e: Event) {
     const [id, field] = inf.dataset.ifld!.split('.')
     const inp = inpById(id)
     if (!inp) return notify()                    // deleted or undone underneath it
-    const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field) }
+    const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field).replace(':', '') }
     if (RO) return back()
     if (setInpField(inp, field as any, inf.value)) notify()
     else back()
@@ -1256,7 +1256,7 @@ export function boardTab(n: number) {
       else {
         const [id, field] = ae.dataset.ifld.split('.')
         const inp = inpById(id)
-        if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
+        if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field).replace(':', '')
       }
       if (iv !== want) ae.dispatchEvent(new Event('change', { bubbles: true }))
     }

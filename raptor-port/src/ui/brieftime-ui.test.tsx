@@ -200,3 +200,17 @@ describe('the view week shows a brief time, read-only', () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
   })
 })
+
+/* THE FLYING-LINE REMARKS BOX SAYS WHAT IT IS (owner, 16 Aug 26). The board's
+   flying line gained a faded "Remarks" placeholder; the week's edit view now
+   matches, so an empty remarks box reads the same on both surfaces. A
+   standalone line keeps its MAIN/SPARE ghost text (a Stable decision), so the
+   placeholder is emitted only on a formation line. */
+describe('the edit week flying-line remarks placeholder', () => {
+  it('a formation line carries a faded "Remarks" placeholder', async () => {
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    await settle()
+    const withRemarks = $$('#eWeek .rmkcell .ntx[data-ph="Remarks"]')
+    expect(withRemarks.length, 'the week flying line offers the Remarks placeholder').toBeGreaterThan(0)
+  })
+})

@@ -10,6 +10,17 @@ import { groundOrder } from '../engine/order'
 import { esc, RMKOPEN } from '../state/view'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateRowCls, lateRowTitle, sansCardsHTML } from './html'
 
+/* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
+   arrive as minutes and format with a colon (hhmm → "09:00"), but every
+   scheduler-typed time on this board — brief, take-off, land, duty and ground
+   start/end — reads 4-digit ("0900"). Printing the input rows the board's way
+   keeps one screen on one clock. The edit box still ACCEPTS either form
+   (setInpField's hmOK), so typing is unchanged; only the printed value differs.
+   Scoped to the board — the week's input rows and the aircrew Inputs page keep
+   their own colon format (both a different surface, neither the ask). */
+const hm4 = (m: any) => hhmm(m).replace(':', '')
+const inpHM = (inp: any, field: any) => inpTimeText(inp, field).replace(':', '')
+
 /* ---- reorder grip + nudge buttons (owner, 8 Aug 26) -----------------------
    A grip at the far left on desktop, ▲/▼ in the row's own control cluster on a
    phone, where a tall multi-strip flying block and a scrolling finger make a
@@ -110,7 +121,7 @@ export function sbInputsHTML(d:any,di:any){
       ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
       : `<span class="itxt">${esc(inp.person)}</span>`;
     const t=inp.allday?(inp.endDate?`all day · till ${esc(inp.endDate)}`:'all day')
-                      :`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
+                      :`${hm4(inp.s)} – ${hm4(inp.e)}`;
     return `<div class="sbi-row"><span class="sbi-t">${t}</span>${pk}`
       +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`
       +sbiRmk(inp)+`</div>`;
@@ -428,7 +439,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
     ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
     : `<span class="itxt">${esc(inp.person)}</span>`;
   if(RO){
-    const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
+    const t=inp.allday?'all day':`${hm4(inp.s)} – ${hm4(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
       +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
       +sbiRmk(inp,dt)+`</div>`;
@@ -445,7 +456,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
   return `<div class="sb-arow c6r inprow${acc&&inp.acc?' accd':''}${lateRowCls(inp)}"${lateRowTitle(inp)}>`
     +sbGrip(true)
     +inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`)
-    +fld('atm','str',inpTimeText(inp,'str'),'all day')+fld('atm','end',inpTimeText(inp,'end'),'')
+    +fld('atm','str',inpHM(inp,'str'),'all day')+fld('atm','end',inpHM(inp,'end'),'')
     +`<div class="ppl">${pk}${sbt}</div>`
     +fld('ain rmkin','rmks',inp.remarks||'','remarks')
     +`<span class="lctl">${acc?accCtl(di,inp):''}</span></div>`;

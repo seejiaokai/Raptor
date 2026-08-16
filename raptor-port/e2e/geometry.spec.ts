@@ -3484,3 +3484,33 @@ test('the flying line keeps its five boxes on one baseline on a phone', async ({
   expect(m!.bsugBottom, 'the blue brief time rides above the brief box')
     .toBeLessThan(m!.briefBottom - 4)
 })
+
+/* NOTHING ON THE BOARD HIDES UNDER THE PARKED AIRCREW TAB (owner, 16 Aug 26).
+   The parked aircrew drawer is a ~30px sliver pinned over the right edge in a
+   ~55vh band; an 18px gutter only kept it off the input tap-zone, so panel
+   headers, the +Note/+Item buttons and the sign-off summary still slid under
+   the blue tab. A 30px right gutter on the three scroller children clears it.
+   jsdom cannot see it — the tab is positioned and the gutter is a phone rule. */
+test('the phone board clears its parked aircrew tab', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#schedBoard .sb-line')
+  await page.waitForTimeout(300)
+
+  const m = await page.evaluate(() => {
+    const tab = document.querySelector('#rosTab')!.getBoundingClientRect()
+    let maxRight = 0
+    // the full-width chrome the tab used to cover: panel headers, row/section
+    // buttons, and everything in the sign-off and checks strips
+    const sel = '#schedBoard .sb-ph, #schedBoard .mbtn, #schedBoard .sb-sign *, #schedBoard .sb-warn *'
+    for (const e of document.querySelectorAll(sel)) {
+      const b = e.getBoundingClientRect()
+      if (b.width > 0 && b.top < tab.bottom && b.bottom > tab.top) maxRight = Math.max(maxRight, b.right)
+    }
+    return { tabLeft: Math.round(tab.left), contentRight: Math.round(maxRight) }
+  })
+  /* no board chrome reaches past the tab's left edge (sub-pixel slack only) */
+  expect(m.contentRight, 'board content stops at or before the aircrew tab').toBeLessThanOrEqual(m.tabLeft + 1)
+})

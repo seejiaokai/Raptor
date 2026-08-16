@@ -581,6 +581,27 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(p.querySelectorAll('[data-ifld]').length).toBeGreaterThan(0)
     expect(p.querySelectorAll('[data-slot],[data-fill],[draggable="true"],.mbtn,[data-txt],[data-bfld]').length).toBe(0)
   })
+
+  /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
+     format with a colon everywhere else (hhmm → "09:00"), but the board prints
+     them 4-digit to match its own scheduler-typed times. The edit box still
+     accepts either form; this pins the DISPLAY only. */
+  it('a board personal-input time reads 4-digit, never with a colon', () => {
+    const times = [...document.querySelectorAll('#sbBoard .sb-panel.pinp input.atm, #sbBoard .sb-panel.unav input.atm')]
+      .map(e => (e as HTMLInputElement).value).filter(Boolean)
+    expect(times.length, 'the seed day carries a timed personal input').toBeGreaterThan(0)
+    expect(times.every(v => /^\d{3,4}$/.test(v)), `every board input time is 4-digit military: ${times.join(',')}`).toBe(true)
+  })
+
+  /* "N warning" pluralizes with its count, the same way "N issue" already did
+     (owner, 16 Aug 26 — the bar read "6 warning"). */
+  it('the checks bar pluralizes "warning" by count', () => {
+    const wh = document.querySelector('#sbWarn .wh')
+    const m = wh && wh.textContent!.match(/(\d+)\s+(warnings?)\b/)
+    expect(m, 'the seed day 0 shows a warning count on the checks bar').toBeTruthy()
+    const n = Number(m![1])
+    expect(m![2] === 'warnings', `"${m![0]}" plural must match count ${n}`).toBe(n > 1)
+  })
 })
 
 /* finding #4 (whole-branch review, 9 Aug 26): Sort all gated on the role
