@@ -152,18 +152,14 @@ export function wireStore() {
   HOOKS.renderEditWeek = () => notify()
   HOOKS.renderSchedule = () => notify()
   HOOKS.renderInputs = () => notify()
-  /* view state that addresses a row by key rides the same renumbering the
-     amendment book and the edit log do (engine/keys.ts). RMKOPEN is the one
-     such value today: the empty remarks box a phone user asked back, held by
-     its data-bfld path. A ground splice under it — unaccepting an input,
-     removing a promoted row — used to leave it naming whatever row slid into
-     that address, so the box appeared on a neighbour nobody asked about
-     (audit, 12 Aug 26). Null from `move` means the revealed row itself was
-     the one deleted, and the reveal goes with it. */
-  HOOKS.remapViewKeys = (move) => {
-    if (view.RMKOPEN == null) return
-    view.setRmkOpen(move(view.RMKOPEN) ?? null)
-  }
+  /* view state that addresses a row by key would ride the same renumbering the
+     amendment book and the edit log do (engine/keys.ts). RMKOPEN — the one
+     empty remarks box a phone user asked back — used to be that value, but the
+     board now shows every remarks box at all times (owner, 16 Aug 26), so it
+     is gone and no transient view state addresses a board row by key today.
+     The hook stays wired (keys.ts still calls it) as a no-op; restore this
+     body the moment a new key-addressed view value appears. */
+  HOOKS.remapViewKeys = (_move) => {}
   /* the just-added blue box (owner, 14 Aug 26): markStructuralAdd hands every
      add's key here, view.ts holds it for ~6s, highlights.ts hangs the box */
   HOOKS.flashAdded = (key) => view.flashAdded(key)

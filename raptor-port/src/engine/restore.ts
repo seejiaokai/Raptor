@@ -53,6 +53,7 @@ export function dayKeys(d:any,di:any){
   (d.allhands||[]).forEach((r:any,ri:any)=>{
     m.set(`ap:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+S(r.cxr)+'␟'+(r.flag?1:0));
     m.set(`ap:${di}.${ri}.sub`,S(r.sub)); m.set(`ap:${di}.${ri}.str`,T(r.str)); m.set(`ap:${di}.${ri}.end`,T(r.end));
+    m.set(`ap:${di}.${ri}.rmks`,S(r.rmks));
     const who=Array.isArray(r.who)?r.who:(r.who?[r.who]:[]);
     who.forEach((nm:any,k:any)=>m.set(`a:${di}.${ri}.${k}`,P(nm)));
   });

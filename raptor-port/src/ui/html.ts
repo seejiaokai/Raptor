@@ -831,7 +831,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=`<div class="allhands sec sec-prog"><div class="ah-h">Common Programme</div>`;
       (d.notes||[]).forEach((n:any,ni:any)=>h+=ted(`dn:${di}.${ni}`,n,ed,'ah-note','div'));
       if(hasAH){
-        h+=`<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span></div>`;
+        h+=`<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span></div>`;
         d.allhands.forEach((x:any,ri:any)=>{
           const arr=whoArr(x);
           /* A BLANKED ENTRY IS A HOLE, NOT FREE TEXT. setSlotVal's 'a:' branch holds
@@ -846,7 +846,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           const ppl=lCell(inner,`a:${di}.${ri}.+`,ed,arr.length===1?'one':'');
           const sub=(x.sub||ed)?ted(`ap:${di}.${ri}.sub`,x.sub,ed,'sub'):'';
           h+=`<div class="ah-row${rowCls(x)}"><span class="nm">${cxTag(x)}${flagTag(x)}${ted(`ap:${di}.${ri}.prog`,x.prog,ed,'ntx')}${sub}</span>`
-            +`${ted(`ap:${di}.${ri}.str`,x.str,ed,'t')}${ted(`ap:${di}.${ri}.end`,x.end,ed,'t')}${ppl}</div>`;
+            +`${ted(`ap:${di}.${ri}.str`,x.str,ed,'t')}${ted(`ap:${di}.${ri}.end`,x.end,ed,'t')}${ppl}${plRmk(`ap:${di}.${ri}`,ed,x,undefined)}</div>`;
         });
       }
       if(ed&&!hasNotes&&!hasAH)h+=`<div class="ah-empty">Nothing squadron-wide yet — add notes and programme items from the scheduler board.</div>`;

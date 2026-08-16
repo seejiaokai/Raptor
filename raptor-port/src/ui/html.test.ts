@@ -160,10 +160,21 @@ const noTrace = (s: string) => s
    never emits it — so lift it off the port's EDIT markup before the compare.
    Pinned positively in brieftime-ui.test.tsx. */
 const noRmkPh = (s: string) => s.replace(/ data-ph="Remarks"/g, '')
+/* COMMON PROGRAMME GREW A REMARKS COLUMN (owner, 16 Aug 26) — the reference has
+   none, so it is a deliberate port-only divergence, lifted off before the
+   compare. Two additions: the `<span>Rmks</span>` heading in .ah-cols (the only
+   class-less Rmks span; the flying line's is RMKS and the duty list's carries
+   .h-rk), and a `.rmk` cell on every .ah-row. Every seed programme row is empty,
+   so its cell is the `rk-e` empty form; the duty/sim/ground lists (.pl-row) emit
+   the identical empty cell in BOTH documents, so stripping it cancels there and
+   only removes the port's new programme cells. Pinned positively in board.test.tsx. */
+const noAhRmk = (s: string) => s
+  .replace(/<span>Rmks<\/span>/g, '')
+  .replace(/<span class="rmk rk-e"><\/span>/g, '')
 
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))))
+    const V = (s: string) => noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di).toBe(V(ref))
@@ -210,7 +221,7 @@ describe('view-week markup parity with the reference', () => {
     const normDow = (s: string) => s.replace(
       /<span class="dow crewday" data-crewday="(\d+)" title="Show this day's crew in the aircrew panel">/g,
       '<span class="dow sb-open" data-sbday="$1" title="Open scheduler board">')
-    const E = (s: string) => normDow(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))))))
+    const E = (s: string) => normDow(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s)))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
