@@ -47,16 +47,6 @@ export let CURPAGE:any='viewsched'
    closeBoardState routes through it). */
 export let RMKOPEN:any=null
 export function setRmkOpen(k:any){ RMKOPEN=k }
-/* CTLOPEN — the one board row whose control strip (▲▼/CX/■/✕) is REVEALED on a
-   phone (owner, 16 Aug 26). Every row hides its strip behind a single ⋯ button
-   so a day of rows reads clean; tapping ⋯ names that row here and the strip
-   unfolds, closing any other. Held by the row's address, one at a time, exactly
-   like RMKOPEN — swept on a day change below and remapped through
-   HOOKS.remapViewKeys (store.ts) so a delete/reorder under an open strip carries
-   it to the row's new address instead of stranding it on a shifted neighbour.
-   Desktop never reads it: the strip is always shown and the ⋯ hidden there. */
-export let CTLOPEN:any=null
-export function setCtlOpen(k:any){ CTLOPEN=k }
 /* the day the palette is looking at. The reference's #editToggle used to sit
    here as EDITON; it was removed on 9 Aug 26 (owner) — the board is reachable
    only as admin → Edit Schedule, so intent to edit is implied by being there,
@@ -146,7 +136,7 @@ export function setBoardDay(n:any){
      it to whatever day is opening next would reveal an empty box nobody asked
      for there, so any real day change (including closeBoardState's close to
      null) drops it. */
-  if(SBDAY!=null&&n!==SBDAY){RMKOPEN=null;CTLOPEN=null;}
+  if(SBDAY!=null&&n!==SBDAY)RMKOPEN=null;
   BOARDREV++;
   SBDAY=n;
 }
