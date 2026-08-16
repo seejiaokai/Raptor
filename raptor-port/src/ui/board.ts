@@ -178,7 +178,7 @@ export function boardHTML(di: number, pv?: boolean) {
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
-          <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}"${sa ? ` placeholder="${esc(a.role || (a.spare ? 'SPARE' : 'MAIN'))}"` : ''}>
+          <input class="nts" data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis} value="${esc(a.rmks || '')}" placeholder="${sa ? esc(a.role || (a.spare ? 'SPARE' : 'MAIN')) : 'Remarks'}">
           ${sa ? '' : (stoRO
             ? storesView(a.opts)
             : `<span class="stores">`

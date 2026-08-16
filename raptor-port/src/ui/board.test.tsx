@@ -1699,6 +1699,15 @@ describe('flying-line seat pair and the Remarks placeholder (14 Aug 26)', () => 
     expect(r, 'a duty/sim/ground remarks input is present').toBeTruthy()
     expect(r.getAttribute('placeholder'), 'so a revealed-but-empty box says what it is').toBe('Remarks')
   })
+  /* The flying line's OWN remarks box (.nts) now says what it is too when empty
+     (owner, 16 Aug 26 — a faded "remarks" in the flying-line remarks box). A
+     standalone line keeps its MAIN/SPARE ghost text (a Stable decision), so the
+     placeholder is "Remarks" only on a formation line. */
+  it('a flying-line remarks box carries the faded "Remarks" placeholder', () => {
+    const withRemarks = $$('#sbBoard .sb-line .nts')
+      .filter(n => n.getAttribute('placeholder') === 'Remarks')
+    expect(withRemarks.length, 'a formation line offers the Remarks placeholder').toBeGreaterThan(0)
+  })
 })
 
 /* THE OFT TAKES INSTRUCTORS AND OBSERVERS (owner, 14 Aug 26 — "the OFT can

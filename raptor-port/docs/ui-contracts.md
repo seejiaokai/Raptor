@@ -764,7 +764,17 @@ edit week now:
   `grid-column:auto` (rcell) resets fully undo it on a tablet. Every cell's
   DOM order already matches its visual order, so no `order` hack is needed.
   The FCP/RCP header labels hide at phone width; `.sb-wide` restates the wide
-  desktop grid back.
+  desktop grid back. **Row 1's five boxes share ONE bottom baseline** (owner,
+  16 Aug 26 — "make the boxes aligned … every box lowers to cater for the brief
+  blue timing"). The B cell stacks the blue suggested brief time above its
+  input, and with the seat pucks on their own row it is the tallest thing on
+  row 1, so a centred row floated the plain `CS/MSN/TO/LD` boxes half a line
+  above the brief box. `align-self:end` on the five boxes — scoped to
+  `.schedboard:not(.sb-wide)` so the tablet/desktop layout, where the pucks
+  share this row, keeps its centred alignment — drops them onto one line and
+  leaves the blue time in the space directly above the brief box. Pinned by the
+  geometry test "the flying line keeps its five boxes on one baseline on a
+  phone".
 - **The drawer body scrolls the iOS way**: `flex:1` + `min-height:0` rather
   than `max-height:100vh` (iOS's 100vh is the largest viewport — toolbars
   collapsed — so a 100vh cap never binds while the bars are up and the
@@ -805,7 +815,12 @@ routes `data-air`):
   an empty remarks box (still folded away empty on a phone to save row height —
   that measured saving stands) now reads `R` so it obviously means remarks. The
   box itself carries a faded `Remarks` placeholder (`sbRmk`) so a revealed-but-
-  empty one says what it is.
+  empty one says what it is. **The flying line's own always-visible remarks box
+  (`.nts` in `board.ts`) carries the same faded `Remarks` placeholder** (owner,
+  16 Aug 26) — so an empty one reads the same way. A STANDALONE line keeps its
+  MAIN/SPARE ghost text instead (the Stable decision in `CLAUDE.md`), so the
+  `Remarks` placeholder is emitted only on a formation line, never in place of
+  that ghost.
 - **FCP and RCP sit side by side on the phone board** (owner, 14 Aug 26 — "FCP
   on the left RCP on the right in 1 row" to save vertical space). The two seats
   wrap in `.sb-seatpair`, which is `display:contents` on desktop (the seats stay
