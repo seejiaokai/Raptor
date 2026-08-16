@@ -44,14 +44,12 @@ export const HOOKS = {
      mount, the same way store.ts's wireStore() wires editMode/render*. */
   closeBoardDialogs: (): void => {},
   /* VIEW STATE THAT ADDRESSES ROWS BY KEY has to ride the same renumbering
-     the amendment book and the edit log do (keys.ts). Today that is one
-     value — RMKOPEN, the single empty remarks box a phone user asked back —
-     and it lives in state/view.ts, which the engine cannot import; so the
-     remap arrives the same way editMode and whoami do. `move` is keys.ts's
-     own mapper: it returns the new key, the key unchanged, or null where
-     the row itself was deleted. Added 12 Aug 26 after the audit found a
-     ground splice under a revealed box stranding the reveal on whatever row
-     slid into its address. */
+     the amendment book and the edit log do (keys.ts). This was RMKOPEN — the
+     single empty remarks box a phone user asked back — until the owner made
+     every remarks box show at all times (16 Aug 26), which retired it. No
+     transient view state addresses a board row by key now, so store.ts wires
+     this to a no-op; `move` (keys.ts's own mapper — new key, unchanged, or
+     null where the row was deleted) is ready again the day one returns. */
   remapViewKeys: (_move: (k: any) => any): void => {},
   /* A newly ADDED row / line / wave / block flashes a blue box for ~6s so a
      scheduler sees exactly what their tap created (owner, 14 Aug 26). Fired

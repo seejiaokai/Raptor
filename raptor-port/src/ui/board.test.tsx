@@ -3,7 +3,7 @@
    render", "sched roster render", "sched wave title select", "sched
    setSlotVal", "the board shows the open day's strip", "board inputs panel")
    and the R group (CX carries a reason, B28), driven through the React app. */
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
@@ -1684,10 +1684,10 @@ describe('the board carries the week-only editable fields (14 Aug 26)', () => {
     expect((w.intimes || []).join('|'), 'the model took the typed line').not.toBe(before)
     expect((w.intimes || [])[0]).toContain('TEST IN TIME')
   })
-  it('the remarks reveal reads R, not +', () => {
-    const r = $('#sbBoard .rmkadd[data-rmkadd]')
-    expect(r, 'a row offers the remarks reveal').toBeTruthy()
-    expect(r.textContent!.trim()).toBe('R')
+  it('every remarks box is drawn at all times — no reveal button (owner, 16 Aug 26)', () => {
+    expect($$('#sbBoard [data-rmkadd]').length, 'the R reveal is gone').toBe(0)
+    expect($$('#sbBoard .rmkin').length, 'remarks boxes are drawn directly').toBeGreaterThan(0)
+    expect($$('#sbBoard .rmkin.empty').length, 'and never hidden while empty').toBe(0)
   })
   it('the Live Checks header reads "issues" and colours by worst severity', () => {
     const wh = $('#sbWarn .wh')
@@ -1728,6 +1728,42 @@ describe('flying-line seat pair and the Remarks placeholder (14 Aug 26)', () => 
     const withRemarks = $$('#sbBoard .sb-line .nts')
       .filter(n => n.getAttribute('placeholder') === 'Remarks')
     expect(withRemarks.length, 'a formation line offers the Remarks placeholder').toBeGreaterThan(0)
+  })
+})
+
+/* COMMON PROGRAMME GREW A REMARKS BOX (owner, 16 Aug 26). It was the one board
+   section without one; now it carries a remarks input beside the pucks like the
+   duty / sim / ground rows, bound through the ordinary ap:di.ri.rmks funnel key
+   and snapshotted for the AL (restore.ts). */
+describe('Common Programme remarks (16 Aug 26)', () => {
+  /* the 'typing commits' test writes a remark into the shared DAYS fixture; put
+     allhands[0].rmks back to its seed value afterwards so a later describe never
+     opens the board to a remark this one left behind */
+  const rmks0 = DAYS[0].allhands[0].rmks
+  beforeAll(async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); notify() })
+  })
+  afterAll(async () => {
+    await act(async () => { DAYS[0].allhands[0].rmks = rmks0; notify() })
+  })
+  const progRow = (ri: number) => $(`#sbBoard .sb-panel.prog .sb-arow.cprog[data-move="mv:p.0.${ri}"]`)
+  it('a programme row renders a remarks input bound to ap:di.ri.rmks', () => {
+    const row = progRow(0)
+    expect(row, 'a Common Programme row is present').toBeTruthy()
+    const rmk = row.querySelector('.rmkin') as HTMLInputElement
+    expect(rmk, 'it carries a remarks box').toBeTruthy()
+    expect(rmk.dataset.bfld).toBe('ap:0.0.rmks')
+    expect(rmk.getAttribute('placeholder')).toBe('Remarks')
+  })
+  it('the header carries a Rmks column', () => {
+    const cols = $('#sbBoard .sb-panel.prog .sb-acols.cprog')
+    expect(cols, 'the programme header exists').toBeTruthy()
+    expect(cols.textContent).toContain('Rmks')
+  })
+  it('typing a programme remark commits to the model', async () => {
+    const rmk = progRow(0).querySelector('.rmkin') as HTMLInputElement
+    await change(rmk, 'Bring the CFG brief pack')
+    expect(DAYS[0].allhands[0].rmks).toBe('Bring the CFG brief pack')
   })
 })
 

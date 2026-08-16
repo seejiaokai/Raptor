@@ -1,23 +1,18 @@
 // @vitest-environment jsdom
-/* THE ONE REMARKS BOX ASKED OPEN (owner, 12 Aug 26 — measured).
+/* EVERY REMARKS BOX SHOWS AT ALL TIMES (owner, 16 Aug 26).
 
-   On a phone a c6r row (duty/sim/ground) ran 109px in four stacked lines —
-   role+times, people, remarks, control strip — and 13 of the 25 such rows on
-   a Monday carried an EMPTY remarks box in that third line: ~30px apiece,
-   27% of the row, for nothing. board-html.ts's sbRmk now marks that input
-   `.rmkin.empty` whenever it holds nothing (scheduler.css hides it under
-   820px), and sbRowCtl rides a "+" onto the row's own control strip to ask
-   for it back — state/view.ts's RMKOPEN holds which ONE row asked, since
-   the panel is a re-hung string and a class set by hand would be wiped by
-   the next repaint.
+   The phone board used to HIDE an empty remarks box on a duty/sim/ground row
+   and reveal one at a time behind a "+" on the row's control strip (RMKOPEN).
+   The owner asked for every remarks box to sit beside the pucks on their own
+   row instead — where an empty one costs no extra line — so the reveal, its
+   "+" button and the RMKOPEN state are all gone: the box is drawn on every row
+   at all times, empty or not, on both surfaces and at every width.
 
-   jsdom has no layout engine, so what this file CAN prove is the markup and
-   the wiring: which input carries `.empty`, that the "+" clears it for its
-   OWN row only, that a row already carrying a remark never had it, that
-   typing one drops it on its own, and — the "pure UI state" contract this
-   whole feature turns on — that asking for the box back is not a schedule
-   write: no edit-log row, nothing marked pending. What it looks like painted
-   is `e2e/geometry.spec.ts`. */
+   jsdom has no layout engine, so what this file proves is the markup and the
+   wiring: that every c6r row carries a `.rmkin` input with no `.empty` class,
+   that no `.rmkadd` "+" button is emitted anywhere, and that typing a remark
+   commits it through the funnel. What it looks like painted (the box riding
+   the pucks' row, aligned under Start) is `e2e/geometry.spec.ts`. */
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -25,9 +20,8 @@ import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
-import { ELOG, elogClear } from '../engine/editlog'
+import { elogClear } from '../engine/editlog'
 import { openScheduler } from './board'
-import * as view from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -43,9 +37,6 @@ const change = async (el: Element, value: string) => {
     el.dispatchEvent(new Event('change', { bubbles: true }))
   })
 }
-/* the rmkadd handler defers its focus a macrotask out (same idiom as
-   textedit.ts's txtCommit) — this waits past it */
-const settle = async () => { await act(async () => { await new Promise(r => setTimeout(r, 5)) }) }
 
 beforeAll(async () => {
   initStore()
@@ -58,10 +49,8 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   /* every duty row on DAYS[0] starts with no rmks in the fixture data, so
-     each test clears whatever the last one wrote back to blank and drops
-     any reveal before opening the board fresh */
+     each test clears whatever the last one wrote back to blank */
   DAYS[0].dutywaves[0].rows.forEach((r: any) => { delete r.rmks })
-  view.setRmkOpen(null)
   elogClear()
   SCHED.pending = {}
   await act(async () => { openScheduler(0); notify() })
@@ -69,48 +58,34 @@ beforeEach(async () => {
 
 const dutyRow = (ri: number) => $(`#sbBoard .sb-panel.duty .sb-arow.c6r[data-move="mv:d.0.0.${ri}"]`)
 const rmkIn = (ri: number) => dutyRow(ri).querySelector('.rmkin') as HTMLInputElement
-const rmkAdd = (ri: number) => dutyRow(ri).querySelector('[data-rmkadd]') as HTMLButtonElement
 
-describe('an empty duty remarks box, and the + that reveals it', () => {
-  it('an empty remarks input carries .empty, and its row carries a + button', () => {
-    expect(DAYS[0].dutywaves[0].rows.length, 'the fixture needs at least two rows for the next test').toBeGreaterThanOrEqual(2)
-    const inp = rmkIn(0)
-    expect(inp.classList.contains('empty')).toBe(true)
-    const btn = rmkAdd(0)
-    expect(btn).toBeTruthy()
-    expect(btn.dataset.rmkadd).toBe('dr:0.0.0.rmks')
+describe('the remarks box is always drawn, and the + reveal is gone', () => {
+  it('an empty duty row still renders its remarks input, with no .empty class', () => {
+    expect(DAYS[0].dutywaves[0].rows.length, 'the fixture needs at least two rows').toBeGreaterThanOrEqual(2)
+    expect(rmkIn(0), 'the box is drawn even when empty').toBeTruthy()
+    expect(rmkIn(0).classList.contains('empty'), 'and never carries the retired .empty hide').toBe(false)
+    expect(rmkIn(0).getAttribute('placeholder'), 'a faded Remarks placeholder says what it is').toBe('Remarks')
+    expect(rmkIn(0).dataset.bfld).toBe('dr:0.0.0.rmks')
   })
 
-  it('clicking + clears .empty on that row only, and focuses its input', async () => {
-    expect(rmkIn(0).classList.contains('empty')).toBe(true)
-    expect(rmkIn(1).classList.contains('empty')).toBe(true)
-    await click(rmkAdd(0))
-    await settle()
-    expect(rmkIn(0).classList.contains('empty'), 'the asked-for row is revealed').toBe(false)
-    expect(rmkIn(1).classList.contains('empty'), 'every other row keeps its empty box hidden').toBe(true)
-    expect(document.activeElement, 'focus lands on the revealed input, after the repaint').toBe(rmkIn(0))
+  it('every remarks box on the board carries no .empty and there is no + button anywhere', () => {
+    const boxes = $$('#sbBoard .rmkin')
+    expect(boxes.length, 'the board draws remarks boxes').toBeGreaterThan(0)
+    expect(boxes.every(b => !b.classList.contains('empty')), 'none are marked empty-hidden').toBe(true)
+    expect($$('#sbBoard [data-rmkadd]').length, 'the reveal + is gone').toBe(0)
+    expect($$('#sbBoard .rmkadd').length, 'no rmkadd button class either').toBe(0)
   })
 
-  it('a row with a remark never carries .empty', async () => {
+  it('a row with a remark shows it in the box', async () => {
     DAYS[0].dutywaves[0].rows[0].rmks = 'Covering the late brief'
     await act(async () => { notify() })
+    expect(rmkIn(0).value).toBe('Covering the late brief')
     expect(rmkIn(0).classList.contains('empty')).toBe(false)
   })
 
-  it('typing a remark drops .empty on its own repaint, no + needed', async () => {
-    expect(rmkIn(0).classList.contains('empty')).toBe(true)
+  it('typing a remark commits through the funnel', async () => {
     await change(rmkIn(0), 'Standing in for Bane')
-    expect(rmkIn(0).classList.contains('empty'), 'the funnel commit already re-hung the panel').toBe(false)
     expect(DAYS[0].dutywaves[0].rows[0].rmks).toBe('Standing in for Bane')
-  })
-
-  it('is pure UI state — no edit-log row, nothing marked pending', async () => {
-    expect(ELOG.rows.length, 'a clean slate to measure from').toBe(0)
-    const pendingBefore = Object.keys(SCHED.pending).length
-    await click(rmkAdd(0))
-    await settle()
-    expect(ELOG.rows.length, 'revealing an empty box writes nothing to the changes list').toBe(0)
-    expect(Object.keys(SCHED.pending).length, 'and marks nothing pending').toBe(pendingBefore)
-    expect(SCHED.pending['dr:0.0.0.rmks']).toBeFalsy()
+    expect(rmkIn(0).classList.contains('empty')).toBe(false)
   })
 })

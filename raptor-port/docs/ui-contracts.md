@@ -552,32 +552,34 @@ edit week now:
   - Measured by `e2e/geometry.spec.ts`, which counts ROWS as well as
     overflow: both regressions above fitted the width perfectly and simply
     used a second line.
-- **AN EMPTY REMARKS BOX IS NOT DRAWN, AND THE ROW'S OWN "+" ASKS FOR IT
-  BACK** (owner, 12 Aug 26 — UI sweep, "easy to view, spacious"). A c6r row
-  (duty / sim / ground) ran 109px in FOUR stacked lines on a phone — role and
-  times, people, remarks, control strip — and 13 of the 25 such rows on Monday
-  carried nothing in the remarks line: ~30px apiece, 27% of the row, for an
-  empty box. Measured after: 79px a row, and 400px off the whole board.
-  - **`sbRmk` marks the box, CSS takes it away, and neither asks the
-    viewport.** The builder adds `.empty` when the value is blank; only
-    `scheduler.css` under 820px turns that into `display:none`. Rendering by
-    `HOOKS.isPhone()` instead would make the panel's string diff depend on
-    window size and not survive a resize — the same rule the grip and the ▲▼
-    nudges already follow (`board-html.ts`'s opening comment). `.sb-wide`
-    restates it back, because the desktop-layout-at-phone-width keeps every
-    column.
-  - **The reveal rides the control strip the row already has**, so an empty
-    row LOSES 30px and gains nothing. A sixth button on an existing line is
-    the cheap half of that trade; a fifth LINE would not have been.
-  - **`RMKOPEN` lives in `state/view.ts`, not on the DOM.** Every panel is
-    re-hung by a string diff, so a class the click handler set by hand would
-    be wiped by the next repaint — the box would close under the finger that
-    opened it. One key at a time, cleared on a real day change.
-  - **Revealing it is NOT a schedule write.** No `afterSchedMutate`, no
-    `markEdit`, nothing pending, no line in the changes list — a click that
-    planted nothing and moved nothing must not appear in the day's history.
-    `boardrmk.test.tsx` pins that explicitly, and the focus is deferred a
-    macrotask because it has to land after the repaint that reveals the box.
+- **EVERY REMARKS BOX RIDES THE PUCKS' ROW, AT ALL TIMES** (owner, 16 Aug 26 —
+  "beside the pucks on the right, same row, aligned with the B"). This SUPERSEDES
+  the 12 Aug "empty box is not drawn, the row's own + asks for it back" contract:
+  the `.empty` hide, its `data-rmkadd` "+" reveal, and the `RMKOPEN` view state
+  are all GONE. On a phone the pucks pack into the left (Role/Item) track and the
+  remarks box fills the two time tracks on its RIGHT, on the SAME grid row —
+  aligned under Start, the flying line's shape (`.sb-line .sb-rcell`). It is the
+  row the reveal used to save: a box that shares the pucks' line costs no extra
+  height, so hiding it bought nothing worth the "+".
+  - **Applies to every board section that carries remarks** — duties, sims
+    (AMT / OFT), ground (`.sb-arow.c6r`) and, new in this pass, Common Programme
+    (`.sb-arow.cprog`) and the promoted Personal-Inputs / Unavailable input rows.
+    `board-html.ts`'s `sbRmk` always emits a plain `.rmkin` with a faded
+    `Remarks` placeholder — no `.empty`, no per-row state.
+  - **The phone TEMPLATE must be restated for each two-class row modifier.**
+    `.sb-arow.c6r` and `.sb-arow.cprog` each outrank the one-class phone base
+    grid, and a media query adds no specificity, so the desktop template wins at
+    390px and crushes the row unless the phone block restates the three-track
+    grid AND places `.ppl` at `grid-column:1/2`, `.rmkin` at `2/-1`. `.sb-wide`
+    (desktop-at-phone-width) resets both back to `auto` so every column stands on
+    its own there. Missing either restatement reproduces the old c6r register bug.
+  - **Common Programme grew a persisted `rmks` field.** It writes through the
+    ordinary `ap:di.ri.rmks` funnel key (generic in `slots.ts`), is snapshotted
+    for the AL in `restore.ts` (the one enumerated add — reorder globs it for
+    free), and shows in the week view too (`.ah-row` grew a fifth `Rmks` cell via
+    `plRmk`; empty read-only cells stay hidden on a phone). Export is flying-only
+    and untouched. Pinned in `board.test.tsx`, `boardrmk.test.tsx`,
+    `restore.test.ts` and `e2e/geometry.spec.ts`.
 - **The day is stepped by TWO ARROWS on the bar, and there is no swipe**
   (owner, 12 Aug 26 — "remove the swipe for the mobile scheduler board too. Just
   put arrows at the edges of the bar at the top to navigate left and right
@@ -824,12 +826,12 @@ routes `data-air`):
   machine steps over it.
 - **Traffic** — a `data-air` button in the wave header for non-standalone
   waves; the existing `setAirKey → AirPop` modal is surface-independent.
-- **Remarks reveal reads `R`, not `+`** — the `data-rmkadd` control that shows
-  an empty remarks box (still folded away empty on a phone to save row height —
-  that measured saving stands) now reads `R` so it obviously means remarks. The
-  box itself carries a faded `Remarks` placeholder (`sbRmk`) so a revealed-but-
-  empty one says what it is. **The flying line's own always-visible remarks box
-  (`.nts` in `board.ts`) carries the same faded `Remarks` placeholder** (owner,
+- **Remarks are always drawn beside the pucks** — the `data-rmkadd` "R" reveal
+  is gone (owner, 16 Aug 26; see the "every remarks box rides the pucks' row"
+  contract above). `sbRmk` emits a plain `.rmkin` with a faded `Remarks`
+  placeholder on every c6r / cprog / input row, empty or not. **The flying line's
+  own always-visible remarks box (`.nts` in `board.ts`) carries the same faded
+  `Remarks` placeholder** (owner,
   16 Aug 26) — so an empty one reads the same way. A STANDALONE line keeps its
   MAIN/SPARE ghost text instead (the Stable decision in `CLAUDE.md`), so the
   `Remarks` placeholder is emitted only on a formation line, never in place of
@@ -1593,7 +1595,9 @@ boxed by hand up to the next block. Board-only (adds happen there), off a
 frozen preview, inset + soft glow so it never shifts a neighbour or is clipped.
 A key renumbered by a delete inside the window just stops matching and the box
 drops a beat early — cosmetic, so it is deliberately NOT wired through
-`remapViewKeys` the way `RMKOPEN` is. Pinned in `ui/board.test.tsx`; the paint
+`remapViewKeys` (which is a no-op now that `RMKOPEN`, its one-time only client,
+is retired — see the "every remarks box rides the pucks' row" contract). Pinned
+in `ui/board.test.tsx`; the paint
 itself is left to the eye on the live bundle (jsdom measures every rect 0×0).
 
 **Selection is the blue fill and nothing else (owner, 7 Aug 26).** `.puck.sel`

@@ -271,6 +271,14 @@ left the count with it — the same lesson in the other direction, a heavier
 board reading lighter because the measure's boundary moved, not because the
 content shrank. 131 nodes of headroom remain.
 
+**16 Aug 26: the remarks "+" reveal was removed and every remarks box now
+draws at all times, beside the pucks** (owner). This dropped the one `<button>`
+a c6r row the 12 Aug note added, and added a remarks `<input>` to every Common
+Programme row (`.sb-arow.cprog`, previously the one board row with none), so the
+count moved to 844 — still under 960, with the ceiling unmoved. The week gate
+also gained a `.rmk` cell per Common Programme row (its new `Rmks` column): 3621
+→ 3743 against the 4000 ceiling, again unmoved.
+
 **That last raise took a wider margin than the others, on purpose.** The
 late-input badge is one `<span>` per late input drawn, so on the day this
 gate opens the count reads 859 with the mark off and 862 as the seed stands,

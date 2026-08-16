@@ -7,7 +7,7 @@ import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
-import { esc, RMKOPEN } from '../state/view'
+import { esc } from '../state/view'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateRowCls, lateRowTitle, sansCardsHTML } from './html'
 
 /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
@@ -170,7 +170,7 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
     +(ro?'':`<span class="gctl">${sbSortBtn(`p.${di}`,ro)}<button class="mbtn add" data-padd="${di}" title="Add a squadron-wide item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like.</div>`;
   else{
-    s+=`<div class="sb-acols"><span></span><span>Item</span><span>Detail</span><span>Start</span><span>End</span><span>People</span><span></span></div>`;
+    s+=`<div class="sb-acols cprog"><span></span><span>Item</span><span>Detail</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
     rows.forEach((x:any,ri:any)=>{
       const arr=whoArr(x);
       /* same hole guard as the week view — an empty .itxt shifts every later puck.
@@ -180,12 +180,13 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
       const inner=arr.map((nm:any,k:any)=>{const id=nameToId(nm);
         if(id&&PEOPLE[id])return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' draggable="true"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id))}</span>`;
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
-      s+=`<div class="sb-arow${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
+      s+=`<div class="sb-arow cprog${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +`<input class="ain" data-bfld="ap:${di}.${ri}.prog"${alAttr(`ap:${di}.${ri}.prog`)}${ro?' disabled':''} value="${esc(x.prog||'')}">`
         +`<input class="ain" data-bfld="ap:${di}.${ri}.sub"${alAttr(`ap:${di}.${ri}.sub`)}${ro?' disabled':''} value="${esc(x.sub||'')}" placeholder="detail / location">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)}${ro?' disabled':''} value="${esc(x.str||'')}">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.end"${alAttr(`ap:${di}.${ri}.end`)}${ro?' disabled':''} value="${esc(x.end||'')}">`
         +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner||'<span class="itxt">all</span>'}</div>`
+        +sbRmk(`ap:${di}.${ri}.rmks`,x.rmks,ro)
         +(ro?'':`<span class="lctl">`+sbNudge(`mv:p.${di}.${ri}`,ro)
         +`<button class="mbtn${x.cx?' on':''}" data-pcx="${di}.${ri}" title="${x.cx?'Restore this item':'Cancel this item (CX)'}">CX</button>`
         +`<button class="mbtn red${x.flag?' on':''}" data-pflag="${di}.${ri}" title="${x.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
@@ -240,23 +241,18 @@ function sbMore(di:any,base:any,r:any,pv?:any){
 function sbTxt(cls:any,path:any,v:any,ph:any,pv:any,extra?:any){
   return `<input class="${cls}" data-bfld="${path}"${alAttr(path)}${pv?' disabled':''}${extra||''} value="${esc(v||'')}"${ph?` placeholder="${ph}"`:''}>`;
 }
-/* a duty/sim/ground remarks input, marked EMPTY when it holds nothing — a
-   phone hides that box (scheduler.css), which is what turns an empty 30px
-   box into nothing on 13 of 25 such rows measured on a Monday. RMKOPEN is
-   the one exception: the row the "+" control below was just asked to open
-   stays un-empty (visible, blank) even before anything is typed into it, so
-   the reveal is not undone by the very repaint it triggers. */
+/* a duty / sim / ground / programme remarks input, shown at ALL times now
+   (owner, 16 Aug 26). It used to be hidden while empty on a phone with a "+"
+   on the row's control strip to reveal one at a time (the RMKOPEN machinery,
+   now retired) — but the owner asked every box to sit beside the pucks on
+   their own row instead, where an empty one costs no extra line, so there is
+   nothing to hide or reveal. The faded "Remarks" placeholder says what the
+   empty box is. */
 function sbRmk(path:any,v:any,pv:any){
-  /* faded "Remarks" placeholder so a revealed-but-empty box says what it is
-     (owner, 14 Aug 26) */
-  return sbTxt('ain rmkin'+((String(v||'').trim()||RMKOPEN===path)?'':' empty'),path,v,'Remarks',pv);
+  return sbTxt('ain rmkin',path,v,'Remarks',pv);
 }
-function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,rmkPath?:any,mv?:any){
+function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,mv?:any){
   return pv?'':`<span class="lctl">`+(mv||'')
-    /* rides the control strip the row already has, so revealing an empty
-       remarks box costs the row nothing new — no rmkPath (the row has no
-       remarks field at all, or a caller predating this) means no button. */
-    +(rmkPath?`<button class="mbtn rmkadd" data-rmkadd="${rmkPath}" title="Add a remark">R</button>`:'')
     +`<button class="mbtn${o.cx?' on':''}" data-${pre}cx="${addr}" title="${o.cx?'Restore '+what:'Cancel '+what+' (CX)'}">CX</button>`
     +`<button class="mbtn red${o.flag?' on':''}" data-${pre}flag="${addr}" title="${o.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
     +`<button class="mbtn del" data-${pre}del="${addr}" title="Remove ${what}">✕</button></span>`;
@@ -292,7 +288,7 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
         +sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}</div>`
         +sbRmk(`${t}.rmks`,r.rmks,ro)
-        +sbRowCtl(ro,r,`${di}.${wi}.${ri}`,'dr','this duty',`${t}.rmks`,sbNudge(`mv:d.${di}.${wi}.${ri}`,ro))+`</div>`;
+        +sbRowCtl(ro,r,`${di}.${wi}.${ri}`,'dr','this duty',sbNudge(`mv:d.${di}.${wi}.${ri}`,ro))+`</div>`;
     });
   });
   return s+sbNote(d,di,'dtn','dutynotes','e.g. SDO swapped — Bane has the PHA at 1700, Pike covers the last hour.',ro)+`</div></div>`;
@@ -374,7 +370,7 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
         +sbTxt('ain',`${t}.label`,r.label,'EP SIM',ro)+sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
         +pplCell
         +sbRmk(`${t}.rmks`,r.rmks,ro)
-        +sbRowCtl(ro,r,`${di}.${kind}.${ri}`,'sr','this sim',`${t}.rmks`,sbNudge(`mv:s.${di}.${kind}.${ri}`,ro))+`</div>`;
+        +sbRowCtl(ro,r,`${di}.${kind}.${ri}`,'sr','this sim',sbNudge(`mv:s.${di}.${kind}.${ri}`,ro))+`</div>`;
     });
   });
   return s+sbNote(d,di,'sn','simnotes','e.g. OFT 2 u/s Thu PM — 4-ship EP profile pushed to next week. Divot still owes an AMT EP.',ro)+`</div></div>`;
@@ -394,7 +390,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
         +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}</div>`
         +sbRmk(`${t}.rmks`,x.rmks,ro)
-        +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',`${t}.rmks`,sbNudge(`mv:g.${di}.${ri}`,ro))+`</div>`;
+        +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro))+`</div>`;
     });
   }
   return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',ro)+`</div></div>`;
