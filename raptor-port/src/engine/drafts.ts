@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved, verLabel, dayCurVer, daySnapOf, deletionKey, trackStructuralAdd } from './publish'
+import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, trackStructuralAdd } from './publish'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
 
@@ -302,4 +302,62 @@ export function draftDelete(di: any, id: any) {
   if (i < 0) return false
   list.splice(i, 1)
   return true
+}
+
+/* LOAD A PUBLISHED VERSION ONTO THE WORKING COPY (owner, 16 Aug 26 — "the
+   view only schedule should still see AL1, it shouldn't go to Original without
+   me publishing the working copy"). This is what "Load onto working copy" does
+   now — NOT the old rollback. It installs the version's content as the live
+   working day and rebases the day's pending set as the true diff against the
+   STILL-ISSUED document, exactly as draftSelect does when you switch drafts on
+   a published day. It deliberately does NOT touch SCHED.cur: the issued version
+   the view page shows is unchanged, so nothing reaches viewers until a new AL
+   is published — publishing the loaded-then-edited copy becomes the next AL.
+   The single undo step is the UI caller's afterSchedMutate(), the same contract
+   draftSelect and restoreDayVersion carry. Refuses (false) an unknown version. */
+export function loadVersionToWorkingCopy(di: any, ver: any) {
+  di = +di
+  const snap = daySnapOf(di, ver)
+  if (!snap) return false
+  const nd = clone(snap.d)
+  nd.today = !!(DAYS[di] && DAYS[di].today)
+  DAYS[di] = nd
+  if (dayApproved(di)) {
+    rebaseDayPending(di)
+  } else {
+    Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.pending[k] })
+    Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
+  }
+  return true
+}
+
+/* CLEAR AN UNDONE EDIT'S MARK (owner, 16 Aug 26 — "if original was 0830, I
+   change to 0835 you show an edit dotted line, but when I switch back to 0830
+   it shouldn't register as a change"). A pending mark means "different from the
+   issued document", NOT "this field was touched". noteChange (engine/slots.ts)
+   still raises the mark on every edit — it runs BEFORE the new value lands, so
+   it cannot tell whether the edit restored the issued value — and this sweep,
+   run from afterSchedMutate AFTER the write, drops any pending FIELD key whose
+   live value now equals the issued snapshot's, restoring the AL tint that field
+   carried when it was issued (snap.c). It only ever REMOVES a stale mark, never
+   adds one, so it can never hide a real change; and it touches only keys dayKeys
+   produces, leaving del:/inp:/structural-add marks (never in dayKeys) alone.
+   Bounded to the published days and their own pending field keys. */
+export function reconcileIssuedMarks() {
+  approvedDays().forEach((di: any) => {
+    const pend = Object.keys(SCHED.pending).filter((k: any) => keyDay(k) === di)
+    if (!pend.length) return                              // nothing to reconcile — skip the walk
+    const ver = dayCurVer(di), snap = ver != null ? daySnapOf(di, ver) : null
+    if (!snap) return
+    const iss = dayKeys(snap.d, di)
+    let live: any = null
+    pend.forEach((k: any) => {
+      if (!iss.has(k)) return                             // del:/inp:/structural — not a field diff
+      if (!live) live = dayKeys(DAYS[di], di)
+      if (live.get(k) === iss.get(k)) {
+        delete SCHED.pending[k]
+        if (snap.c && snap.c[k] != null) SCHED.changes[k] = snap.c[k]
+      }
+    })
+  })
 }

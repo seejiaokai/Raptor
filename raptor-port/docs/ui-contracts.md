@@ -254,15 +254,25 @@ one-row phone bar. The reworded banner: an **issued** preview offers **"Load
 onto working copy"** (`data-restore`, was "Restore this version"); a **draft**
 preview offers **"Switch to this plan"** (`data-draftgo` → `draftSelect`,
 edit-surface-only — gated on `vsel`, since a preview always renders `ed=false`).
-The `data-restore` button routes through `routeClick` → `restoreDayVersion` —
-a ROLLBACK: the version becomes live at once, discarding the day's pending
-edits (see engine-rules.md). Because it discards, **with unpublished edits on
-the day it takes a confirming second tap**: the first arms `RESTARM`
-(state/view.ts), the button becomes amber "Discard N edits — confirm" beside a
-"Keep editing" cancel (`data-restcancel`), and any navigation clears the arm
-(the clear lives in `setDayPreview`). This is the one deliberate confirm in the
-app. Restoring the version the day is already at with nothing pending is a
-no-op toast, no history step. Under an ORIG/AL
+The `data-restore` button routes through `routeClick` →
+`loadVersionToWorkingCopy` (`engine/drafts.ts`) — **NOT a rollback** (owner, 16
+Aug 26 — "the view only schedule should still see AL1, it shouldn't go to
+Original without me publishing"). It installs the version's content on the
+working copy and rebases the pending set as the diff vs the still-issued
+document, **without touching `SCHED.cur`** — so `dayIssuedHTML`/the view page
+keep showing the issued AL until a new AL is published; the loaded-then-edited
+copy becomes that AL. Same shape as `draftSelect`'s published-day path.
+`restoreDayVersion` (the old instant rollback that DID set `SCHED.cur`) stays in
+`engine/restore.ts` for probe-bridge only — nothing in the app calls it now.
+Because loading replaces the working-copy edits, **with unpublished edits on the
+day it takes a confirming second tap**: the first arms `RESTARM` (state/view.ts),
+the button becomes amber "Discard N edits — confirm" beside a "Keep editing"
+cancel (`data-restcancel`), and any navigation clears the arm (the clear lives in
+`setDayPreview`). This is the one deliberate confirm in the app. Loading the
+version the day is already issued at with nothing pending is a no-op toast, no
+history step. Under an ORIG/AL
+preview the day-head chip still names the LIVE current version while the
+banner names the previewed one — deliberate ("live is at AL2, you're Under an ORIG/AL
 preview the day-head chip still names the LIVE current version while the
 banner names the previewed one — deliberate ("live is at AL2, you're
 viewing AL1"). **A `d:` DRAFT preview is the exception (owner, 15 Aug 26 —
@@ -273,16 +283,30 @@ alternative must never wear the issued document's clothes, on any surface.
 Known limitation: personal-INPUTS sections and the day-info pop show LIVE
 data inside a preview — inputs are not part of the issued document.
 
-## The day-head version chip
+## The day-head version chip — now INSIDE the published stamp
 
 One `.dal` chip per day = `dayCurVer(di)`, everywhere (view page, edit week,
 and — since `dayStatHTML` became the board's own publish-strip builder too,
-14 Aug 26 — the board's sign-off panel, under `.sb-pub .dal`). `data-alc`
-tints it; `ORIG` is `.dal.orig`,
-grey by design — the bare `.dal` fallback colour is `--accent`, which is
-AL1's cyan, and ORIG must never read as AL1. No chip on a published day no
-AL ever touched. The full "which ALs amended this day" history lives only
-in the ⓘ day-info panel.
+14 Aug 26 — the board's sign-off panel). `data-alc` tints it; `ORIG` is
+`.dal.orig`, grey by design — the bare `.dal` fallback colour is `--accent`,
+which is AL1's cyan, and ORIG must never read as AL1.
+**Since 16 Aug 26 the tag rides INSIDE the ✓ Published stamp** — "✓ Published ·
+AL1" / "· ORIG" (`.dbeak .dal`) — and it shows on EVERY published day, ORIG
+included (owner: "published… what? Original Published makes sense"). This
+replaced the old standalone chip, which hid ORIG on a day no AL ever touched;
+that "clean look" was the very thing that read as "published nothing". The
+full "which ALs amended this day" history still lives only in the ⓘ day-info
+panel.
+
+**A pending mark means "differs from the issued document", not "was touched".**
+`noteChange` raises the mark on every edit (it runs before the value lands, so
+it cannot tell), and `reconcileIssuedMarks` (`engine/drafts.ts`, called from
+`afterSchedMutate` after the write) drops any pending FIELD key whose live value
+again equals the issued snapshot's, restoring the AL tint that field carried
+when issued. So editing 08:30→08:35 dots the cell and 08:35→08:30 clears it. It
+only ever REMOVES a stale mark (never adds one, so it cannot hide a real
+change), and touches only keys `dayKeys` produces — `del:`/`inp:`/structural-add
+marks are left alone.
 
 ## Sign-off pills (iOS tap contract)
 

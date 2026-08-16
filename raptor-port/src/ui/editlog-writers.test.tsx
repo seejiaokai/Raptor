@@ -219,7 +219,7 @@ describe('the three actions that carried no key at all', () => {
     await act(async () => { cxCommit(false, '') })   // leave the demo day alone
   })
 
-  it('rolling a day back to a published version is a line in the list', async () => {
+  it('loading a version onto the working copy is a line in the list', async () => {
     await goEdit()
     const di = 2
     SCHED.orig = SCHED.orig || {}
@@ -238,10 +238,10 @@ describe('the three actions that carried no key at all', () => {
     expect(rst2!.textContent, 'first tap arms the confirm').toContain('Discard')
     await click(rst2!)
 
-    expect(DAYS[di].waves[0].formations[0].cs, 'the day really rolled back').toBe(wasCs)
+    expect(DAYS[di].waves[0].formations[0].cs, 'the working copy took the loaded content').toBe(wasCs)
     const row = newest()
     expect(row, 'and it reached the list').toBeTruthy()
-    expect(row!.lbl).toContain('rolled back')
+    expect(row!.lbl).toContain('loaded onto the working copy')
     expect(row!.di).toBe(di)
   })
 })

@@ -434,16 +434,30 @@ only after re-running them.
     already sent out. A persistent **Live-copy** button sits in the cluster: a
     green "you are here" on the working copy, an active **← Back to live copy**
     while previewing (data-golive). **"Restore this version" → "Load onto
-    working copy"** (the word read like "publish it"); because loading discards
-    the day's unpublished edits, when there are any it now takes a confirming
-    second tap (`RESTARM` in `state/view.ts`, "Discard N edits — confirm" /
-    "Keep editing") — the one deliberate confirm in the app. A **draft**
-    preview offers **"Switch to this plan"** (data-draftgo → `draftSelect`),
-    the edit-surface-only counterpart that KEEPS the differences. A
-    **"Publishes: <plan>"** chip names the live plan. Both surfaces in
-    lockstep: `html.ts` `verSelHTML` + `pvBar`, board mirror in
-    `SchedBoard.tsx`. Pinned in `draftsui.test.tsx` / `editweek.test.tsx` /
-    `editlog-writers.test.tsx`; `docs/ui-contracts.md` §The version cluster.
+    working copy"**, and its meaning changed with it (owner, 16 Aug 26 — "the
+    view only schedule should still see AL1, it shouldn't go to Original without
+    me publishing"): it is **no longer the instant rollback**. `data-restore` now
+    calls `loadVersionToWorkingCopy` (`engine/drafts.ts`), which installs the
+    version's content on the working copy and rebases the pending set as the diff
+    vs the STILL-ISSUED document — deliberately NOT touching `SCHED.cur`, so
+    viewers keep seeing the issued AL until a new AL is published. A **draft**
+    preview offers **"Switch to this plan"** (data-draftgo → `draftSelect`), now
+    the same shape. Loading replaces the working-copy edits, so with any pending
+    it takes a confirming second tap (`RESTARM`, "Discard N edits — confirm" /
+    "Keep editing"). `restoreDayVersion` stays in `engine/restore.ts` for
+    probe-bridge only; nothing in the app calls it now.
+    **The published stamp names the issued version** — "✓ Published · ORIG /
+    · AL1", the version as its coloured `.dal` tag INSIDE the beak, always
+    (replaces the old standalone chip that hid ORIG when un-amended; `dayStatHTML`).
+    **An undone edit clears its own mark** — `reconcileIssuedMarks` runs from
+    `afterSchedMutate` after the write and drops any pending FIELD key whose live
+    value again matches the issued snapshot (restoring its AL tint); a pending
+    mark now means "differs from what's issued", not "was touched". It only ever
+    REMOVES a stale mark. A **"Publishes: <plan>"** chip names the live plan.
+    Both surfaces in lockstep: `html.ts` `verSelHTML`/`pvBar`/`dayStatHTML`, board
+    mirror in `SchedBoard.tsx`. Pinned in `drafts.test.tsx` (load + reconcile) /
+    `draftsui.test.tsx` / `editweek.test.tsx` / `editlog-writers.test.tsx`;
+    `docs/ui-contracts.md` §The version cluster.
 - **WHOLE-DAY TEMPLATES AND PER-DAY DRAFTS shipped (15 Aug 26)** —
   `engine/daytpl.ts` / `engine/drafts.ts`, `DayTplModal.tsx` /
   `DraftsModal.tsx`, one Templates/Drafts button pair reached from both the

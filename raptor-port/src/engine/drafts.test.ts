@@ -14,6 +14,7 @@ import { keyDay } from './keys'
 import {
   dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete,
   draftVerLabel, isDraftVer, MAX_DRAFT_NAME,
+  loadVersionToWorkingCopy, reconcileIssuedMarks,
 } from './drafts'
 import { HIST, histInit, histApply, histPush, histSnap } from '../state/history'
 
@@ -376,5 +377,48 @@ describe('undo carries the drafts', () => {
     expect(JSON.stringify(DAYS[0])).toBe(JSON.stringify(D0))
     histApply(1)                                    // redo brings both drafts back
     expect(dayDrafts(0).map((x: any) => x.name)).toEqual(['Draft 1', 'Draft 2'])
+  })
+})
+
+describe('loadVersionToWorkingCopy — an issued version onto the working copy (owner, 16 Aug 26)', () => {
+  it('loads the content but leaves the issued version (viewers) unchanged', () => {
+    const key = 'dn:0.0'
+    const orig = txtGet(key)
+    sign(0); setDayApproved(0, 1)                    // issued at the Original
+    txtSet(key, 'AMENDED'); sign(0); publishALDay(0) // now issued at AL1
+    expect(dayCurVer(0)).toBe(1)
+    txtSet(key, 'IN PROGRESS')                       // a working-copy edit
+    const ok = loadVersionToWorkingCopy(0, 'orig')   // bring the Original back
+    expect(ok).toBe(true)
+    expect(txtGet(key), 'the working copy took the Original content').toBe(orig)
+    expect(dayCurVer(0), 'the issued version stays AL1 — viewers are untouched').toBe(1)
+    /* the working copy now differs from AL1, so it carries a pending mark that a
+       future AL2 would issue */
+    expect(SCHED.pending[key], 'the difference from AL1 shows as pending').toBe(1)
+  })
+})
+
+describe('reconcileIssuedMarks — an undone edit clears its own mark (owner, 16 Aug 26)', () => {
+  it('editing a field away from the issued value marks it; editing it back clears the mark', () => {
+    const key = 'dn:0.0'
+    const issued = txtGet(key)
+    sign(0); setDayApproved(0, 1)                    // issued at the Original
+    txtSet(key, issued + ' CHANGED'); reconcileIssuedMarks()
+    expect(SCHED.pending[key], 'a real change stays marked').toBe(1)
+    txtSet(key, issued); reconcileIssuedMarks()
+    expect(SCHED.pending[key], 'restoring the issued value clears the mark').toBeUndefined()
+  })
+
+  it('restoring a value that was issued at AL1 brings the AL1 tint back, not a pending mark', () => {
+    const key = 'dn:0.0'
+    sign(0); setDayApproved(0, 1)
+    txtSet(key, 'AMENDED AT AL1'); sign(0); publishALDay(0)   // AL1 issues it; changes[key]=1
+    expect(SCHED.changes[key]).toBe(1)
+    txtSet(key, 'WORKING EDIT'); reconcileIssuedMarks()       // move away from AL1
+    expect(SCHED.pending[key]).toBe(1)
+    expect(SCHED.changes[key], 'the tint is dropped while it differs').toBeUndefined()
+    txtSet(key, 'AMENDED AT AL1'); reconcileIssuedMarks()     // back to what AL1 issued
+    expect(SCHED.pending[key], 'no longer a pending change').toBeUndefined()
+    expect(SCHED.changes[key], 'the AL1 tint is restored').toBe(1)
   })
 })

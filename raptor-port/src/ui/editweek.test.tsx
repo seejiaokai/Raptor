@@ -245,32 +245,37 @@ describe('the edit page (tfin)', () => {
     })
   })
 
-  /* the chip lifecycle end-to-end: AL1 chip on issue → grey ORIG after a
-     rollback to the Original → a fresh edit previews as the next AL (AL2) */
-  it('the day head chip follows the current version through a rollback', async () => {
+  /* the stamp names the issued version (owner, 16 Aug 26): ORIG once published
+     → AL1 after issue → and loading the Original onto the working copy LEAVES
+     the issued version at AL1 (viewers are unaffected until a new AL) while the
+     working copy shows the difference as pending; a fresh edit still previews
+     as AL2. */
+  it('the published stamp names the issued version, and a load leaves viewers on it', async () => {
     await signDay(0)
-    await click(dayBtn(0))                     // publish → no chip yet (no ALs)
-    expect($(`#eWeek .day[data-day="0"] .dal`)).toBeNull()
+    await click(dayBtn(0))                     // publish → issued at the Original
+    const chip = () => $(`#eWeek .day[data-day="0"] .dal`)
+    expect(chip(), 'the stamp names Original once published').toBeTruthy()
+    expect(chip()!.textContent).toBe('ORIG')
+    expect(chip()!.classList.contains('orig'), 'grey ORIG tag').toBe(true)
     const key = '0.0.0.0.p'
     await act(async () => { writeSlot(key, 'casper') })
     await signDay(0)
     await click($(`#eWeek button[data-alpub="0"]`))         // AL1 goes out
-    const chip = () => $(`#eWeek .day[data-day="0"] .dal`)
-    expect(chip(), 'chip after AL1').toBeTruthy()
-    expect(chip()!.textContent).toBe('AL1')
+    expect(chip()!.textContent, 'stamp names AL1 after issue').toBe('AL1')
     expect($$(`#eWeek .day[data-day="0"] .dal`).length).toBe(1)
-    /* roll back to the Original through the real preview surface */
+    /* load the Original onto the working copy — the issued version stays AL1
+       (owner, 16 Aug 26), so the stamp still reads AL1 and the working copy now
+       differs from AL1, which shows as pending */
     const sel = $(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement
     await act(async () => {
       sel.value = 'orig'
       sel.dispatchEvent(new Event('change', { bubbles: true }))
     })
     await click($(`#eWeek .day[data-day="0"] .dprev-restore`))
-    expect(chip()!.classList.contains('orig'), 'grey ORIG chip').toBe(true)
-    expect(chip()!.textContent).toBe('ORIG')
-    expect(Object.keys(SCHED.pending)).toEqual([])          // rollback pends nothing
-    /* a NEW edit after the rollback previews as the next AL */
-    await act(async () => { writeSlot(key, 'casper') })
+    expect(chip()!.textContent, 'issued version unchanged by a load').toBe('AL1')
+    expect(Object.keys(SCHED.pending).length, 'the loaded copy reads as pending vs AL1').toBeGreaterThan(0)
+    /* a NEW edit still previews as the next AL */
+    await act(async () => { writeSlot(key, 'shrek') })
     const seat = $(`#eWeek .seat[data-slot="${key}"]`)
     expect(seat!.getAttribute('data-aln')).toBe('2')
     /* put the file's shared state back */
