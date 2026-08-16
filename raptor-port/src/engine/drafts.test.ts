@@ -9,8 +9,9 @@ import {
   SCHED, signOf, setDayApproved, dayApproved, daySnapOf, dayCurVer,
   publishALDay, unpublishAL, deleteCount, deletionWasIssued,
 } from './publish'
-import { txtSet, txtGet } from './slots'
+import { txtSet, txtGet, setSlotVal, fillSlot } from './slots'
 import { keyDay } from './keys'
+import { dayKeys } from './restore'
 import {
   dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete,
   draftVerLabel, isDraftVer, MAX_DRAFT_NAME,
@@ -420,5 +421,60 @@ describe('reconcileIssuedMarks — an undone edit clears its own mark (owner, 16
     txtSet(key, 'AMENDED AT AL1'); reconcileIssuedMarks()     // back to what AL1 issued
     expect(SCHED.pending[key], 'no longer a pending change').toBeUndefined()
     expect(SCHED.changes[key], 'the AL1 tint is restored').toBe(1)
+  })
+})
+
+/* A MARK STRANDED AT AN ADDRESS IN NEITHER DOCUMENT (owner, 16 Aug 26 — "swap
+   the pucks and swap it back… it shouldn't register as a change"). A drop onto
+   an OCCUPIED row (ui/drag.ts's cell branch, via fillSlot) parks the dropped
+   man at the row's more[] overflow address — 'd:0.0.0.x0' on day 0's SDO row,
+   which already holds mamba — an address the issued day never had. Dragging
+   him back off (setSlotVal to '') trims the entry away again, so the address
+   is gone from BOTH the issued snapshot and the live day. Before the fix that
+   left a phantom pending mark nothing could ever clear: the day read edited
+   and would have minted an AL over a net no-op. */
+describe('reconcileIssuedMarks — a mark stranded at an address in neither document (owner, 16 Aug 26)', () => {
+  const pub = () => { sign(0); setDayApproved(0, 1) }
+  const dayPend = () => Object.keys(SCHED.pending).filter((k: any) => keyDay(k) === 0).sort()
+
+  it('the owner\'s gesture: drop onto an occupied row, then drag the man back off — no phantom mark survives', () => {
+    pub()
+    const key = 'd:0.0.0.x0'
+    fillSlot('d:0.0.0.+', 'razer')                  // SDO row already holds mamba — parks razer at .x0
+    reconcileIssuedMarks()
+    expect(SCHED.pending[key], 'mid-flight this is a genuine add').toBe(1)
+    setSlotVal(key, '')                             // drag him back off — the trailing trim deletes the entry
+    reconcileIssuedMarks()
+    expect(SCHED.pending[key], 'the phantom mark clears — the address is gone from both documents').toBeUndefined()
+    expect(dayPend(), 'the day reads unedited — publishing would not mint an AL').toEqual([])
+  })
+
+  it('a genuine add — no revert — keeps its mark', () => {
+    pub()
+    fillSlot('d:0.0.0.+', 'razer')
+    reconcileIssuedMarks()
+    expect(SCHED.pending['d:0.0.0.x0'], 'live-only = a genuine add, not a phantom').toBe(1)
+  })
+
+  it('a del: tombstone and an inp: key are inert marks — reconcile never touches them by name', () => {
+    pub()
+    SCHED.pending['del:0.1.note'] = 1
+    SCHED.pending['inp:0.leave%2Dabc'] = 1
+    reconcileIssuedMarks()
+    expect(SCHED.pending['del:0.1.note'], 'a deletion tombstone survives').toBe(1)
+    expect(SCHED.pending['inp:0.leave%2Dabc'], 'an input-filing mark survives — it addresses INPUTS, not the day').toBe(1)
+  })
+
+  it('id-vs-callsign round trip: the same person back in a different spelling still clears the mark', () => {
+    /* MET + NOTAM BRIEF's who[0] — the seed holds the id form ('nact') */
+    const key = 'a:0.1.0'
+    expect(dayKeys(DAYS[0], 0).get(key), 'the fresh seed holds the id spelling').toBe('nact')
+    pub()
+    setSlotVal(key, 'razer')                         // overwrite — a genuine change
+    reconcileIssuedMarks()
+    expect(SCHED.pending[key]).toBe(1)
+    setSlotVal(key, 'nact')                          // back to the same man — setSlotVal stores his callsign 'Nact'
+    reconcileIssuedMarks()
+    expect(SCHED.pending[key], 'canonical compare: callsign live vs id issued still match').toBeUndefined()
   })
 })

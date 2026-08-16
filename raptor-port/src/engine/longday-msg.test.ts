@@ -9,6 +9,7 @@ import { DAYS } from './data'
 import { INPUTS } from './inputs'
 import { validate, WARN } from './validate'
 import { isStandalone } from './waves'
+import { VCONF } from './rules'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -43,5 +44,23 @@ describe('the long-work-day note names the debrief assumption on a flying end', 
     expect(g, 'torque files a 14h ground day').toBeTruthy()
     expect(g.msg, 'the hours are stated plainly').toMatch(/05:00 → 19:00/)
     expect(g.msg, 'with no debrief clause on a non-flying end').not.toContain('debrief assumed')
+  })
+
+  it('the pad follows VCONF.debrief, not a hardcoded "2h" — a smaller pad reprints the note', () => {
+    /* the note text is built from lgT(VCONF.debrief) (validate.ts), not the
+       literal string "2h" — no existing test moves VCONF.debrief off its
+       default, so a regression that hardcoded "2h" back in would pass every
+       other test in this file and go unnoticed */
+    const was = VCONF.debrief
+    try {
+      VCONF.debrief = 90                                  // 1h30 instead of the default 2h
+      validate()
+      const wolf = longdays().map((w: any) => w.msg).find((m: string) => /^Wolf /.test(m))!
+      expect(wolf, 'Wolf still files a long day at the smaller pad').toBeTruthy()
+      expect(wolf, 'the real landing is still named').toContain('last landing 16:05')
+      expect(wolf, 'the smaller pad is named as the assumption').toContain('+ 1h30 debrief assumed')
+      expect(wolf, 'the default 2h wording is gone').not.toContain('+ 2h debrief assumed')
+      expect(wolf, 'the end reflects landing + the smaller pad').toMatch(/05:00 → 17:35/)
+    } finally { VCONF.debrief = was }
   })
 })
