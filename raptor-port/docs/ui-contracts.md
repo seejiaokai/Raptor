@@ -240,11 +240,29 @@ targets, no sign-off bar) inside `.pv-frozen`, and its live-checks panel
 becomes the preview banner. Belt-and-braces gates on stale markup:
 `armSlot`, `boardChange`/`boardMbtn`/`boardArmClick`, `dragFrom`
 (`.preview`/`.pv-frozen`), Shell's contextmenu clear. Previews are pruned
-lazily (EditWeek/SchedBoard), on `histApply`, and on week switch. The
-`data-restore` button routes through `routeClick` → `restoreDayVersion` —
+lazily (EditWeek/SchedBoard), on `histApply`, and on week switch.
+**The version cluster (redesigned, owner 16 Aug 26 — "I feel confused").**
+`verSelHTML` (edit week) and the board's React `.dver` both split the one
+dropdown into two `<optgroup>`s — **Your plans** (the live entry + the other
+drafts) and **Issued · read-only** (Original/ALn) — so a plan is never read as
+a document already issued. A persistent **Live-copy** control leads the
+cluster: a static green `.livebtn.on` "you are here" on the working copy, an
+active `.livebtn.back` **← Back to live copy** while previewing (`data-golive`
+→ `setDayPreview(di,null)`, pure view state, no gate). The board carries the
+same home button inside its preview banner (`.dprev-back`) rather than on its
+one-row phone bar. The reworded banner: an **issued** preview offers **"Load
+onto working copy"** (`data-restore`, was "Restore this version"); a **draft**
+preview offers **"Switch to this plan"** (`data-draftgo` → `draftSelect`,
+edit-surface-only — gated on `vsel`, since a preview always renders `ed=false`).
+The `data-restore` button routes through `routeClick` → `restoreDayVersion` —
 a ROLLBACK: the version becomes live at once, discarding the day's pending
-edits (see engine-rules.md). Restoring the version the day is already at
-with nothing pending is a no-op toast, no history step. Under an ORIG/AL
+edits (see engine-rules.md). Because it discards, **with unpublished edits on
+the day it takes a confirming second tap**: the first arms `RESTARM`
+(state/view.ts), the button becomes amber "Discard N edits — confirm" beside a
+"Keep editing" cancel (`data-restcancel`), and any navigation clears the arm
+(the clear lives in `setDayPreview`). This is the one deliberate confirm in the
+app. Restoring the version the day is already at with nothing pending is a
+no-op toast, no history step. Under an ORIG/AL
 preview the day-head chip still names the LIVE current version while the
 banner names the previewed one — deliberate ("live is at AL2, you're
 viewing AL1"). **A `d:` DRAFT preview is the exception (owner, 15 Aug 26 —

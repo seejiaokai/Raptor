@@ -13,7 +13,7 @@ import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, s
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, VWORK, CURPAGE } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, VWORK, CURPAGE, restArmed } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -84,22 +84,48 @@ export function dayIssuedHTML(di:any){
   try{ return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false):dayHTML(di,false)) }
   finally{ PVQ=false }
 }
+/* THE DAY'S VERSION CONTROL, REDESIGNED (owner, 16 Aug 26 — "I feel
+   confused"). The single mixed dropdown jammed two unlike things together —
+   the drafts you are weighing (only one is live, and the live one publishes)
+   and the issued documents (Original, ALn — frozen, never change). It now
+   reads as two things:
+     · a persistent Live-copy button — green "you are here" when you are on
+       the working copy, an active "← Back to live copy" when you have been
+       looking at an old version. It NEVER publishes; it only takes you home.
+     · one dropdown split into two labelled groups — "Your plans" and
+       "Issued · read-only" — so a plan can never be mistaken for a document
+       already sent out.
+   Same data-dver attribute and the same option values ('live' / 'd:<id>' /
+   'orig' / n), so Shell.tsx's one change listener routes it unchanged. Still
+   empty when there is nothing to navigate (the seed week), which is what keeps
+   the byte-parity day head untouched. */
 export function verSelHTML(di:any){
   const vs=dayVersions(di)
-  /* the day's OTHER drafts join the published versions (owner, 15 Aug 26).
-     Only the non-selected ones: the selected draft IS the live day, and a
-     'd:' entry for it would freeze its stale stowed blob — Live is that
-     draft, and says so by name. */
+  /* the day's OTHER drafts join the picker (owner, 15 Aug 26). Only the
+     non-selected ones: the selected draft IS the live day, and a 'd:' entry
+     for it would freeze its stale stowed blob — Live is that draft, by name. */
   const others=dayDrafts(di).filter((t:any)=>t.id!==curDraftId(di))
   if(vs.length<2&&!others.length)return ''
-  const cur=DPREV.has(di)?DPREV.get(di):'live'
-  const lbl=(v:any)=>{if(v!=='live')return verLabel(v)
-    const sel=dayDrafts(di).find((t:any)=>t.id===curDraftId(di))
-    return sel?`Live · ${esc(sel.name)}`:'Live'}
-  return `<select class="dver" data-dver="${di}" title="View this day as it was issued — pick a version">`
-    +vs.map((v:any)=>`<option value="${v}"${String(v)===String(cur)?' selected':''}>${lbl(v)}</option>`).join('')
-    +others.map((t:any)=>`<option value="d:${esc(t.id)}"${'d:'+t.id===String(cur)?' selected':''}>${esc(t.name)}</option>`).join('')
-    +`</select>`
+  const cur=DPREV.has(di)?String(DPREV.get(di)):'live'
+  const previewing=DPREV.has(di)
+  const sel=dayDrafts(di).find((t:any)=>t.id===curDraftId(di))
+  const liveOpt=sel?`${esc(sel.name)} · live`:'Live working copy'
+  /* the home button — a static green marker on live, an active control while
+     previewing. data-golive routes through routeClick (interactions.ts). */
+  const live=previewing
+    ? `<button class="livebtn back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`
+    : `<span class="livebtn on" title="You’re on your live working copy — this is what publishes"><span class="dot"></span>Live copy</span>`
+  const plans=`<option value="live"${cur==='live'?' selected':''}>${liveOpt}</option>`
+    +others.map((t:any)=>`<option value="d:${esc(t.id)}"${'d:'+t.id===cur?' selected':''}>${esc(t.name)}</option>`).join('')
+  const issuedVers=vs.filter((v:any)=>v!=='live')
+  const issued=issuedVers.length
+    ? `<optgroup label="Issued · read-only">`
+      +issuedVers.map((v:any)=>`<option value="${v}"${String(v)===cur?' selected':''}>${verLabel(v)}</option>`).join('')
+      +`</optgroup>`
+    : ''
+  return live+`<select class="dver" data-dver="${di}" title="Switch between your plans, or look back at an issued version">`
+    +`<optgroup label="${others.length?'Your plans':'Working copy'}">${plans}</optgroup>`
+    +issued+`</select>`
 }
 /* THE VIEW-ONLY WEEK'S DRAFT PICKER (owner, 15 Aug 26 — "on view schedule
    mode, you can also view the different drafts"). The view page deliberately
@@ -720,7 +746,7 @@ export function dayStatHTML(di:any,ed:any){
        which is also what keeps the seed week's byte-parity untouched. Its own
        .ddraft class, never .dal — the "one version chip" pins count those. */
     const selDraft=ed?dayDrafts(di).find((t:any)=>t.id===curDraftId(di)):null;
-    const draftChip=selDraft?`<span class="ddraft" title="${d.dow} has ${dayDrafts(di).length} drafts — ${esc(selDraft.name)} is the live one, and is what publishes">${esc(selDraft.name)}</span>`:'';
+    const draftChip=selDraft?`<span class="ddraft" title="${d.dow} has ${dayDrafts(di).length} plans — ${esc(selDraft.name)} is the live one, and is what publishes"><span class="k">Publishes</span> ${esc(selDraft.name)}</span>`:'';
     return `${alChips}${draftChip}${pendChip}${infoChip}${beak}${alpub}`;
 }
 export function dayHTML(di:any,ed:any,vsel?:any){
@@ -742,9 +768,27 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        stamp/chip/picker carry the labelling. The WORKING-copy choice is the
        mirror image: a live render that wears a banner precisely because it
        is NOT the issued document this page defaults to. */
+    /* the reworded banner (owner, 16 Aug 26). A DRAFT preview offers "Switch
+       to this plan" (edit surfaces only — a viewer cannot switch drafts); an
+       ISSUED preview offers "Load onto working copy" (was "Restore this
+       version" — the word read like "publish it"). Loading discards the day's
+       unpublished edits, so when there are any it takes a confirming second
+       tap: restArmed drives the two-state button. */
+    const armed=restArmed(di,PVV), pend=dayPendCount(di);
     const pvBar=(PV&&!PVQ)
-      ? `<div class="dprev-bar"${(PVV!=='orig'&&!pvDraft)?` style="--alc:${alColor(+PVV)}"`:''}>Viewing <b>${esc(draftVerLabel(di,PVV))}</b>${pvDraft?' — a draft, read-only':' as issued — read-only'}`
-        +(pvDraft?'':`<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${PVV}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button>`)+`</div>`
+      ? `<div class="dprev-bar"${(PVV!=='orig'&&!pvDraft)?` style="--alc:${alColor(+PVV)}"`:''}>`
+        +(pvDraft
+          /* the Switch action is EDIT-SURFACE only. A preview always renders
+             with ed=false (it is read-only), so the edit-week signal is `vsel`
+             — the param that also emits the version dropdown — not `ed`, which
+             would hide the button on the very surface it belongs to. */
+          ? `👁 Viewing plan <b>${esc(draftVerLabel(di,PVV))}</b> — read-only${vsel?'. Switch to it to make it your working copy.':''}`
+            +(vsel?`<button class="dbeak dprev-switch" data-draftgo="${di}" data-draftid="${esc(String(PVV).slice(2))}" title="Make this plan your live working copy — your current one is stowed under its own name">Switch to this plan</button>`:'')
+          : `👁 Viewing the issued <b>${esc(draftVerLabel(di,PVV))}</b> — read-only. This is what was sent out; it never changes.`
+            +(armed
+              ? `<button class="dbeak dprev-restore warn" data-restore="${di}" data-rver="${PVV}" title="This discards your ${pend} unpublished edit${pend===1?'':'s'} on the working copy — the issued versions stay unchanged">Discard ${pend} edit${pend===1?'':'s'} &amp; load — confirm</button><button class="dbeak ro dprev-cancel" data-restcancel="${di}" title="Keep your current working copy">Keep editing</button>`
+              : `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${PVV}" title="Load this issued version onto your working copy to edit — nothing is published until you Publish AL, and the issued versions stay unchanged">Load onto working copy</button>`))
+        +`</div>`
       : (!ed&&!PV&&ok&&VWORK.has(+di)&&CURPAGE==='viewsched')
       ? `<div class="dprev-bar work">Viewing <b>Working draft</b> — not issued · the issued schedule is ${esc(verLabel(dayCurVer(di)))}</div>`
       : '';

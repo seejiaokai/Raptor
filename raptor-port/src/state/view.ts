@@ -344,7 +344,17 @@ export function toggleViewWork(di:any,on:any){ if(on)VWORK.add(+di); else VWORK.
    persisted and never in a history snapshot. */
 export const AVOPEN=new Set()
 export function toggleAvail(di:any){ if(AVOPEN.has(+di))AVOPEN.delete(+di); else AVOPEN.add(+di) }
-export function setDayPreview(di:any,ver:any){ if(ver==null||ver==='live')DPREV.delete(+di); else DPREV.set(+di,ver) }
+/* RESTARM — the one deliberate confirm in the app (owner, 16 Aug 26). "Load
+   onto working copy" (the reworded restore) discards any unpublished edits on
+   the day, so when there ARE some it takes two taps: the first arms this flag,
+   the second (on the same version) does the load. Any navigation cancels it —
+   which is exactly why the clear lives in setDayPreview, the one call every
+   version change routes through (dropdown change, Back to live, the load
+   itself). {di,ver} while armed, null otherwise. Session-only, no undo. */
+export let RESTARM:any=null
+export function setRestArm(di:any,ver:any){ RESTARM = di==null?null:{di:+di,ver} }
+export function restArmed(di:any,ver:any){ return !!RESTARM && RESTARM.di===+di && String(RESTARM.ver)===String(ver) }
+export function setDayPreview(di:any,ver:any){ RESTARM=null; if(ver==null||ver==='live')DPREV.delete(+di); else DPREV.set(+di,ver) }
 /* drop any preview whose snapshot no longer exists — undo across a publish,
    unpublishAL, a week switch: without this the day would render the live model
    while its header claims to show history. daySnapOf resolves 'd:<id>' draft

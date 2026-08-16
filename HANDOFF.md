@@ -427,16 +427,23 @@ only after re-running them.
   - **`VWORK` is session view state** — a viewer's issued/working choice
     resets on login/logout like every other view choice; the issued
     default is the zero-state, which is the point.
-  - **OPEN owner question — reword the "Restore this version" button?**
-    (owner, 15 Aug 26, asked at the end of the clarity-rework session and NOT
-    yet answered: "What does restore this version to original mean".) Restore
-    DISCARDS the day's unpublished edits and returns to the issued copy, while
-    the newly-allowed draft switch KEEPS the differences for the next AL — two
-    opposite outcomes whose labels do not say which is which. Proposed but NOT
-    built (do not build unasked — §Product bar): button "Make this the live
-    schedule — discards unpublished edits" plus a matching banner line
-    (`html.ts` `pvBar`, board mirror in `SchedBoard.tsx`), and its
-    `ui-contracts.md` line. A small copy change if he wants it.
+  - **RESOLVED — the version cluster was redesigned (owner, 16 Aug 26, "I
+    feel confused").** The single mixed dropdown split into two labelled
+    groups — **Your plans** (drafts; the live one publishes) and **Issued ·
+    read-only** (Original/ALn, frozen) — so a plan can never read as a document
+    already sent out. A persistent **Live-copy** button sits in the cluster: a
+    green "you are here" on the working copy, an active **← Back to live copy**
+    while previewing (data-golive). **"Restore this version" → "Load onto
+    working copy"** (the word read like "publish it"); because loading discards
+    the day's unpublished edits, when there are any it now takes a confirming
+    second tap (`RESTARM` in `state/view.ts`, "Discard N edits — confirm" /
+    "Keep editing") — the one deliberate confirm in the app. A **draft**
+    preview offers **"Switch to this plan"** (data-draftgo → `draftSelect`),
+    the edit-surface-only counterpart that KEEPS the differences. A
+    **"Publishes: <plan>"** chip names the live plan. Both surfaces in
+    lockstep: `html.ts` `verSelHTML` + `pvBar`, board mirror in
+    `SchedBoard.tsx`. Pinned in `draftsui.test.tsx` / `editweek.test.tsx` /
+    `editlog-writers.test.tsx`; `docs/ui-contracts.md` §The version cluster.
 - **WHOLE-DAY TEMPLATES AND PER-DAY DRAFTS shipped (15 Aug 26)** —
   `engine/daytpl.ts` / `engine/drafts.ts`, `DayTplModal.tsx` /
   `DraftsModal.tsx`, one Templates/Drafts button pair reached from both the

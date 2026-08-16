@@ -5,10 +5,10 @@
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode, esc } from '../state/view'
+import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode, esc, restArmed } from '../state/view'
 import { closeHistList } from './pops'
 import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
-import { daySnapOf, dayVersions, verLabel, alColor } from '../engine/publish'
+import { daySnapOf, dayVersions, verLabel, alColor, dayPendCount } from '../engine/publish'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
@@ -199,12 +199,24 @@ export function SchedBoard() {
       })
       /* the live-checks panel becomes the preview banner — a past version is
          never validated, so live warnings against it would be nonsense.
-         A draft preview ('d:<id>') gets the draft's name, no AL tint and NO
-         restore button — making a draft live is the Drafts menu's job
-         (board.ts's switchDraft), same as the week's banner in html.ts. */
+         Reworded to match the week's html.ts banner in lockstep (owner, 16 Aug
+         26): a DRAFT preview offers "Switch to this plan" (draftSelect via
+         data-draftgo); an ISSUED preview offers "Load onto working copy" (the
+         reworded restore), a two-tap confirm when the day carries unpublished
+         edits (restArmed). Both carry a "← Back to live copy" home button, the
+         board's equivalent of the week head's Live-copy control. */
+      const pvd = isDraftVer(ver), armed = restArmed(di, ver), pend = dayPendCount(di)
       set(warnRef.current!, 'warn',
-        `<div class="dprev-bar"${ver !== 'orig' && !isDraftVer(ver) ? ` style="--alc:${alColor(+ver)}"` : ''}>Viewing <b>${esc(draftVerLabel(di, ver))}</b>${isDraftVer(ver) ? ' — a draft, read-only' : ' as issued — read-only'}`
-        + (isDraftVer(ver) ? '' : `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${ver}" title="Make this version the live schedule now — later ALs stay available in the dropdown">Restore this version</button>`) + `</div>`)
+        `<div class="dprev-bar"${ver !== 'orig' && !pvd ? ` style="--alc:${alColor(+ver)}"` : ''}>`
+        + `<button class="dbeak dprev-back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`
+        + (pvd
+          ? `👁 Viewing plan <b>${esc(draftVerLabel(di, ver))}</b> — read-only. Switch to it to make it your working copy.`
+            + `<button class="dbeak dprev-switch" data-draftgo="${di}" data-draftid="${esc(String(ver).slice(2))}" title="Make this plan your live working copy — your current one is stowed under its own name">Switch to this plan</button>`
+          : `👁 Viewing the issued <b>${esc(draftVerLabel(di, ver))}</b> — read-only. This is what was sent out; it never changes.`
+            + (armed
+              ? `<button class="dbeak dprev-restore warn" data-restore="${di}" data-rver="${ver}" title="This discards your ${pend} unpublished edit${pend === 1 ? '' : 's'} on the working copy — the issued versions stay unchanged">Discard ${pend} edit${pend === 1 ? '' : 's'} &amp; load — confirm</button><button class="dbeak ro dprev-cancel" data-restcancel="${di}" title="Keep your current working copy">Keep editing</button>`
+              : `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${ver}" title="Load this issued version onto your working copy to edit — nothing is published until you Publish AL, and the issued versions stay unchanged">Load onto working copy</button>`))
+        + `</div>`)
     } else {
       set(signRef.current!, 'sign', boardSignHTML(di))
       set(boardRef.current!, 'board', boardHTML(di))
@@ -333,17 +345,28 @@ export function SchedBoard() {
               other frozen preview, and the select now also appears on a day
               that has drafts but no published versions yet. */}
           {open && (dayVersions(SBDAY).length > 1 || dayDrafts(SBDAY).some((t: any) => t.id !== curDraftId(SBDAY)))
-            ? <select className="dver" aria-label="View this day as it was issued"
-                value={String(DPREV.get(SBDAY) ?? 'live')}
-                onChange={e => { const v = e.target.value; setDayPreview(SBDAY, v === 'live' ? null : (v === 'orig' || v.slice(0, 2) === 'd:' ? v : +v)); notify() }}>
-                {dayVersions(SBDAY).map((v: any) => <option key={String(v)} value={String(v)}>{
-                  v === 'live' && curDraftId(SBDAY) != null
-                    ? 'Live · ' + (dayDrafts(SBDAY).find((t: any) => t.id === curDraftId(SBDAY))?.name ?? 'draft')
-                    : verLabel(v)
-                }</option>)}
-                {dayDrafts(SBDAY).filter((t: any) => t.id !== curDraftId(SBDAY)).map((t: any) =>
-                  <option key={'d:' + t.id} value={'d:' + t.id}>{t.name}</option>)}
-              </select>
+            ? (() => {
+                /* grouped in lockstep with the week's verSelHTML (owner, 16 Aug
+                   26): your plans (live + the other drafts) above, the issued
+                   documents below, so a plan is never mistaken for a document
+                   already sent out. */
+                const sel = dayDrafts(SBDAY).find((t: any) => t.id === curDraftId(SBDAY))
+                const others = dayDrafts(SBDAY).filter((t: any) => t.id !== curDraftId(SBDAY))
+                const issued = dayVersions(SBDAY).filter((v: any) => v !== 'live')
+                return <select className="dver" aria-label="Switch between your plans, or look back at an issued version"
+                  value={String(DPREV.get(SBDAY) ?? 'live')}
+                  onChange={e => { const v = e.target.value; setDayPreview(SBDAY, v === 'live' ? null : (v === 'orig' || v.slice(0, 2) === 'd:' ? v : +v)); notify() }}>
+                  <optgroup label={others.length ? 'Your plans' : 'Working copy'}>
+                    <option value="live">{sel ? sel.name + ' · live' : 'Live working copy'}</option>
+                    {others.map((t: any) => <option key={'d:' + t.id} value={'d:' + t.id}>{t.name}</option>)}
+                  </optgroup>
+                  {issued.length
+                    ? <optgroup label="Issued · read-only">
+                        {issued.map((v: any) => <option key={String(v)} value={String(v)}>{verLabel(v)}</option>)}
+                      </optgroup>
+                    : null}
+                </select>
+              })()
             : null}
           {/* Sort all — every section on this day at once, not one row like
               every other control here. Gated on HOOKS.editMode() — the same

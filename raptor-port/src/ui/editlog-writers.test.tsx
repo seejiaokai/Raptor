@@ -230,8 +230,13 @@ describe('the three actions that carried no key at all', () => {
 
     await act(async () => { view.setDayPreview(di, 'orig'); notify() })
     const rst = $$('button[data-restore]').find(b => b.dataset.restore === String(di))
-    expect(rst, 'the preview offers Restore this version').toBeTruthy()
+    expect(rst, 'the preview offers Load onto working copy').toBeTruthy()
+    /* a pending edit is on the day, so the load confirms: first tap arms, the
+       second (re-queried after the repaint) loads (owner, 16 Aug 26) */
     await click(rst!)
+    const rst2 = $$('button[data-restore]').find(b => b.dataset.restore === String(di))
+    expect(rst2!.textContent, 'first tap arms the confirm').toContain('Discard')
+    await click(rst2!)
 
     expect(DAYS[di].waves[0].formations[0].cs, 'the day really rolled back').toBe(wasCs)
     const row = newest()

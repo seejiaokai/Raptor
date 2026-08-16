@@ -226,6 +226,12 @@ describe('the edit page (tfin)', () => {
        drafts-only picker (never AL/ORIG entries) — pinned in
        draftsui.test.tsx's view-only block. */
     expect($$('#vWeek select[data-dver]').length).toBe(0)
+    /* with a pending edit on the day, "Load onto working copy" now confirms
+       (owner, 16 Aug 26): the first tap arms, the second loads. */
+    await click(day().querySelector('.dprev-restore'))
+    expect(day().className).toContain('preview')             // still previewing after arm
+    expect(slotVal(key)).toBe('casper')                      // not loaded yet
+    expect(day().querySelector('.dprev-restore')!.textContent).toContain('Discard')
     await click(day().querySelector('.dprev-restore'))
     expect(day().className).not.toContain('preview')
     expect(slotVal(key)).toBe(before)          // the rollback reverted the seat
