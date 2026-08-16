@@ -748,13 +748,19 @@ edit week now:
 - **Desktop (>820px) and `.sb-wide` are unchanged** — the side column
   restates `display:flex` and melts the drawer wrapper back to
   `display:contents`, tab hidden.
-- **A flying line's seats are full-width strips, below the times (fix,
-  8 Aug 26 — they used to overlap).** Grid auto-flow is sequential, so when
-  the full-width B cell (child 3) broke to its own row, TO/LD slid into the
-  name tracks and the two 74px seats into the 46px time tracks, pucks
-  painting over each other. The B cell is pinned to `grid-row:2` (taking it
-  out of the flow) and each `.sb-slot` spans the row — which is also a
-  finger-sized drop target. The FCP/RCP header labels hide at phone width;
+- **A flying line reads `CS | MSN | B | TO | LD` on row 1, then the seats,
+  remarks and controls as full-width strips below** (seats-strip fix 8 Aug
+  26; the brief folded onto row 1 owner 16 Aug 26 — "arrange the board like
+  the edit schedule: brief then TO then LD… now u will be able to shorten 1
+  row"). The phone grid is five tracks `48px minmax(0,1fr) 46px 46px 46px`;
+  MSN is the only flexible one (a mission is ~5 chars, so it yields the width
+  the brief needs), and the three time tracks are fixed and equal so B/TO/LD
+  align. The brief's DOM order (child 3, between MSN and TO) already matches
+  this visual order, so no `order` hack is needed — it just stops being
+  pulled to its own row. The seats still drop to a full-width strip: grid
+  auto-flow is sequential, so each `.sb-slot` spans the row (also a
+  finger-sized drop target) rather than sliding into a 46px time track and
+  painting over its neighbour. The FCP/RCP header labels hide at phone width;
   `.sb-wide` restates all of it back.
 - **The drawer body scrolls the iOS way**: `flex:1` + `min-height:0` rather
   than `max-height:100vh` (iOS's 100vh is the largest viewport — toolbars

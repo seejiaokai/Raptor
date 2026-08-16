@@ -2928,13 +2928,22 @@ button.sanscard:hover{border-color:var(--accent)}
      ▲ ▼ ✕ at .mbtn.nudge's own size plus the .lctl gap, with a few px to
      spare. */
   .sb-nrow{grid-template-columns:22px 1fr 74px}
-  .sb-lcols,.sb-line{grid-template-columns:54px 1fr 52px 52px;font-size:10px}
-  .sb-line .sb-bcell{grid-column:1 / -1;grid-row:2}
+  /* The brief sits INLINE between MSN and TO on the phone now (owner, 16 Aug
+     26 — "arrange the board like the edit schedule: brief then TO then LD"),
+     the same order the desktop board and the week already carry. It used to
+     drop to its own full-width row (the standalone "10:20" line), costing every
+     flying line a whole extra row; folding it back onto row 1 shortens the line
+     by exactly that row. Five tracks now — CS | MSN | B | TO | LD — with MSN the
+     only flexible one (a mission is ~5 chars, so it yields the width the brief
+     column needs); the three time tracks are fixed and equal so B/TO/LD line up
+     as a block. The B HEADER is no longer hidden (it was in the nth-child list
+     below), so the row still matches its own headings. */
+  .sb-lcols,.sb-line{grid-template-columns:48px minmax(0,1fr) 46px 46px 46px;font-size:10px}
   /* FCP | RCP share ONE full-width row, side by side, instead of each seat
      spanning the row on its own (owner, 14 Aug 26) */
   .sb-line .sb-seatpair{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:center}
   .sb-line .sb-rcell{grid-column:1 / -1}
-  .sb-lcols>:nth-child(4),.sb-lcols>:nth-child(7),.sb-lcols>:nth-child(8),
+  .sb-lcols>:nth-child(7),.sb-lcols>:nth-child(8),
   .sb-lcols>:nth-child(9),.sb-lcols>:nth-child(10){display:none}
   .sb-line .lctl{grid-column:1 / -1;justify-content:flex-start;margin-top:2px}
   .sb-acols,.sb-arow{grid-template-columns:1fr 46px 46px;gap:6px}
