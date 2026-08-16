@@ -312,7 +312,7 @@ publishing system — lifecycle, edit-after-publish, revert families, structural
 round trips, drafts-on-published-day rebase, load-onto-working-copy, reopen →
 re-publish, unpublish, week-vs-board agreement — which is what FOUND the time
 respelling case) — all six gates green first-hand on the matching tree.**
-`npm test` **1687** across **102** files (pubsweep new; drafts/restore/
+`npm test` **1687** across **101** files (pubsweep new; drafts/restore/
 longday-msg extended — the debrief test pins that the "+ Nh debrief assumed"
 tail follows a CHANGED `VCONF.debrief`, which no test moved off its default
 before), `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
@@ -322,6 +322,19 @@ driven at 1500px and 390×844: Monday signed and published through the real
 controls, a duty start edited 0700→0730 (1 pending) and typed back (pending
 gone — the owner's scenario, live), the fresh box's computed shadow inset-only
 and the ring even on the phone board — zero console, page or network errors.
+**Two more batches shipped the same day, each green first-hand and verified on
+the deployed page. DUTY-TEMPLATE TIME GUARDS (PR #229)** — the duty-template
+editor took `2500` as a start (a surface the 12 Aug guard-rail sweep predated,
+templates shipped 13 Aug); the editor now refuses a malformed time on commit
+(toast + revert) and `tplTime` (`engine/dutytpl.ts`) folds it at `blockFromTpl`
+and `dutyTplLoad` so a stale value never mints into a day; `npm test` **1693**
+across 101 files (dutytpl / DutyTplModal extended, +6). **THE PHONE FLYING-LINE
+COMPACTION (PR #230, CSS-only)** — the board flying line now reads
+`CS | MSN | B | TO | LD` with the brief inline, and the two seat pucks pack left
+with the remarks cell lifted beside them, taking a phone flying line from five
+stacked strips to three; `test:e2e` **102/102** (two geometry tests added/
+re-pointed), week 3702 / board 855 unmoved (no DOM added). Contracts:
+`docs/engine-rules.md` §duty block, `docs/ui-contracts.md` §The board on a phone.
 Three earlier passes the same day were each green on the same six and each
 checked on the DEPLOYED page (the standing instruction, owner 7 Aug 26): the
 zoom/history/bubble batch (1141 tests, 84 geometry — the bubble that the old
