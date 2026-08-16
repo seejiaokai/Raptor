@@ -376,7 +376,15 @@ only after re-running them.
   the CP"):** the amber-vs-red "CP"/"CPH" safety distinction stays colour-only;
   the shape/glyph idea (CP? / CP✕) was comped and rejected — do not re-propose
   it. SANS (`--san`) was out of scope (not a CAT, and not a white-text badge in
-  the app). Also open: the owner's own
+  the app). **A frozen-column bleed was also fixed (owner, 16 Aug 26):** on the
+  Quals table, scrolling sideways showed a wide CAT badge (OCU/instructor)
+  emerging right against the frozen callsign column, reading as a bleed — a
+  cell's own `box-shadow` does NOT paint over sibling cells under
+  `border-collapse:collapse`, so the fix is a `::after` seal (a child of the
+  z-index:1 sticky cell, which DOES paint above the z-0 scrolling cells),
+  gated on a `.xscroll` class QualsPage toggles only while scrolled (unscrolled
+  it would dim the next column's leading edge). Pinned in `quals.test.tsx`; the
+  paint itself is eye-verified (jsdom cannot). Also open: the owner's own
   **"make the Insights panel consistent"** question (see
   `docs/session-state.md`). His **Quals add-person layout** question is now
   CLOSED (owner, 15 Aug 26): the Pilots/WSOs/Personnel/All filter left the top

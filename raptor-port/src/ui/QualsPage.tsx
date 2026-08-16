@@ -453,10 +453,20 @@ export function QualsPage() {
        table must still end the drag rather than leave it armed */
     document.addEventListener('pointerup', onUp)
     document.addEventListener('pointercancel', onUp)
+    /* mark the scroll wrap once the table is scrolled sideways, so the frozen
+       callsign column's edge-seal (scheduler.css .qwrap.xscroll …::after) only
+       shows then — unscrolled it must not dim the next column's leading edge
+       (owner, 16 Aug 26). The wrap is stable across the table's innerHTML
+       rebuilds, so this listener survives them. */
+    const wrap = tbl.parentElement as HTMLElement
+    const onXScroll = () => wrap.classList.toggle('xscroll', wrap.scrollLeft > 0)
+    wrap.addEventListener('scroll', onXScroll, { passive: true })
+    onXScroll()
     return () => {
       tbl.removeEventListener('click', onClick); tbl.removeEventListener('change', onChange)
       tbl.removeEventListener('pointerdown', onDown); tbl.removeEventListener('pointermove', onMove)
       document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onUp)
+      wrap.removeEventListener('scroll', onXScroll)
     }
   }, [])
 

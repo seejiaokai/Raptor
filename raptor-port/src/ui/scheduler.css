@@ -1223,8 +1223,24 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    column slid away, leaving rows of unlabelled ticks. Sticky needs an opaque
    background so the scrolling cells pass UNDER it; the header corner sits above
    both the sticky row (top) and the other headers (left). */
-.qtbl td.qname{position:sticky;left:0;z-index:1;background:var(--bg);box-shadow:6px 0 8px -6px rgba(0,0,0,.55)}
-.qtbl thead th[data-sort="cs"]{position:sticky;left:0;top:0;z-index:3;box-shadow:6px 0 8px -6px rgba(0,0,0,.55)}
+/* the frozen column's right edge is SEALED by a pseudo-element, not a box-shadow
+   (owner, 16 Aug 26 — a wide CAT badge, OCU/instructor, showed emerging right up
+   against the callsign as the narrower initials/flight columns scrolled under
+   it). In a `border-collapse` table a cell's own box-shadow does NOT reliably
+   paint over its sibling cells, so the emerging badge stayed visible; a
+   positioned ::after that is a CHILD of the z-index:1 sticky cell paints inside
+   that cell's stacking context, cleanly above the z-0 scrolling cells. It runs
+   3px of the cell's own opaque colour (hiding the badge's leading edge) then
+   fades over 9px as a soft depth cue. Body cell is --bg, header --panel-2. */
+.qtbl td.qname{position:sticky;left:0;z-index:1;background:var(--bg)}
+.qtbl thead th[data-sort="cs"]{position:sticky;left:0;top:0;z-index:3;background:var(--panel-2)}
+.qtbl td.qname::after,.qtbl thead th[data-sort="cs"]::after{content:'';position:absolute;top:0;bottom:0;left:100%;width:16px;pointer-events:none;opacity:0;transition:opacity .12s}
+/* the seal only appears once the table is actually scrolled sideways (the
+   .qwrap gets .xscroll from QualsPage) — unscrolled it would dim the leading
+   edge of the next column (the "I" of INITIALS) for no reason. */
+.qwrap.xscroll .qtbl td.qname::after,.qwrap.xscroll .qtbl thead th[data-sort="cs"]::after{opacity:1}
+.qtbl td.qname::after{background:linear-gradient(to right,var(--bg) 0 6px,rgba(11,13,16,0) 16px)}
+.qtbl thead th[data-sort="cs"]::after{background:linear-gradient(to right,var(--panel-2) 0 6px,rgba(26,31,38,0) 16px)}
 .qtbl .qname{text-align:left;font-weight:600;color:var(--accent);cursor:pointer}
 .qtbl .qname:hover{text-decoration:underline}
 .qtbl tbody tr:hover{background:rgba(255,255,255,.02)}

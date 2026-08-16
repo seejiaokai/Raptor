@@ -437,6 +437,23 @@ describe('the CAT column', () => {
     }
   })
 
+  /* the frozen callsign column's edge-seal is scroll-gated (owner, 16 Aug 26 —
+     a wide CAT badge bled against the callsign while scrolling sideways; the
+     seal fixes it, but must stay OFF at rest or it dims the next column's
+     leading edge). jsdom cannot paint, so this pins the gating logic only; the
+     seal's actual coverage is verified in the browser. */
+  it('the frozen-column seal arms on horizontal scroll and disarms at the left edge', () => {
+    const wrap = ($('#qtbl').parentElement) as HTMLElement
+    expect(wrap.classList.contains('qwrap')).toBe(true)
+    expect(wrap.classList.contains('xscroll'), 'off at rest').toBe(false)
+    Object.defineProperty(wrap, 'scrollLeft', { value: 120, configurable: true })
+    wrap.dispatchEvent(new Event('scroll'))
+    expect(wrap.classList.contains('xscroll'), 'on once scrolled sideways').toBe(true)
+    Object.defineProperty(wrap, 'scrollLeft', { value: 0, configurable: true })
+    wrap.dispatchEvent(new Event('scroll'))
+    expect(wrap.classList.contains('xscroll'), 'off again back at the left edge').toBe(false)
+  })
+
   it('the CAT dropdown is seat-filtered: no IW for a pilot, no IP/IR for a WSO', async () => {
     /* the table opens on the pilots; the first row dropdown belongs to an FCP */
     if (!$('#qtbl select.qlvlsel')) await click($('#qEdit'))
