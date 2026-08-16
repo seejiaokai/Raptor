@@ -3,7 +3,7 @@
    render", "sched roster render", "sched wave title select", "sched
    setSlotVal", "the board shows the open day's strip", "board inputs panel")
    and the R group (CX carries a reason, B28), driven through the React app. */
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
@@ -1736,8 +1736,15 @@ describe('flying-line seat pair and the Remarks placeholder (14 Aug 26)', () => 
    duty / sim / ground rows, bound through the ordinary ap:di.ri.rmks funnel key
    and snapshotted for the AL (restore.ts). */
 describe('Common Programme remarks (16 Aug 26)', () => {
+  /* the 'typing commits' test writes a remark into the shared DAYS fixture; put
+     allhands[0].rmks back to its seed value afterwards so a later describe never
+     opens the board to a remark this one left behind */
+  const rmks0 = DAYS[0].allhands[0].rmks
   beforeAll(async () => {
     await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); notify() })
+  })
+  afterAll(async () => {
+    await act(async () => { DAYS[0].allhands[0].rmks = rmks0; notify() })
   })
   const progRow = (ri: number) => $(`#sbBoard .sb-panel.prog .sb-arow.cprog[data-move="mv:p.0.${ri}"]`)
   it('a programme row renders a remarks input bound to ap:di.ri.rmks', () => {
