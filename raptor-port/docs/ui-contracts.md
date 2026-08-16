@@ -468,23 +468,10 @@ edit week now:
   `.sb-warn` stays in the
   320px side column beside the board, so the always-open list never pushes the
   flying block down — only `#sbSign` is new there, heading the board column.
-- **Each row's control strip collapses behind a ⋯ on a phone** (owner, 16 Aug
-  26). A flying/duty/sim/ground row hides its `▲▼/CX/■/✕` strip behind one ⋯ so
-  a day of rows reads clean; tapping it names that row in `state/view.ts`'s
-  `CTLOPEN` (held one at a time like `RMKOPEN`, swept on a day change and
-  remapped through `HOOKS.remapViewKeys`) and its `.lctl` unfolds — closing any
-  other. Closed, `.lctl` leaves the row flow (`position:absolute`, bottom-right)
-  so its whole row is reclaimed; open, it drops back to a full-width row. The ⋯
-  lives inside `.lctl` (`board.ts`'s flying line, `board-html.ts`'s `sbRowCtl`
-  for the c6r panels); the collapse is CSS scoped by `:has(.ctlmore)`, so the
-  note, programme and input strips — which carry no toggle — keep their controls
-  always shown. **DESKTOP and `.sb-wide` opt out**: the whole strip shows and the
-  ⋯ is hidden.
 - **The Live Checks header is an "issues" bar coloured by worst severity**
   (owner, 14 Aug 26 — "title it issues instead of live and have colours on the
   bar depending on warning or advisory"). `boardWarnHTML` reads
-  "⚠ N issues · N warnings · tap to review" (each count pluralized with its
-  number, owner 16 Aug 26) and the `.wh` bar wears `hard`/`adv`/
+  "⚠ N issues · N warning · tap to review" and the `.wh` bar wears `hard`/`adv`/
   `note`/`ok`, the same palette as the week's `.daywarn`.
 - **The top bar is ONE row, and the day is reached by SWIPING** (owner,
   11 Aug 26 — comp approved before build). It used to be four stacked rows

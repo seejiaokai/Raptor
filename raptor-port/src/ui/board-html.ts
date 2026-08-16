@@ -7,7 +7,7 @@ import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
-import { esc, RMKOPEN, CTLOPEN } from '../state/view'
+import { esc, RMKOPEN } from '../state/view'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateRowCls, lateRowTitle, sansCardsHTML } from './html'
 
 /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
@@ -252,10 +252,7 @@ function sbRmk(path:any,v:any,pv:any){
   return sbTxt('ain rmkin'+((String(v||'').trim()||RMKOPEN===path)?'':' empty'),path,v,'Remarks',pv);
 }
 function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,rmkPath?:any,mv?:any){
-  return pv?'':`<span class="lctl${CTLOPEN===addr?' open':''}">`
-    /* ⋯ collapses the strip on a phone (owner, 16 Aug 26) — see the flying
-       line's twin in board.ts and the CTLOPEN note in state/view.ts. */
-    +`<button class="mbtn ctlmore" data-ctlmore="${addr}" title="Row actions">⋯</button>`+(mv||'')
+  return pv?'':`<span class="lctl">`+(mv||'')
     /* rides the control strip the row already has, so revealing an empty
        remarks box costs the row nothing new — no rmkPath (the row has no
        remarks field at all, or a caller predating this) means no button. */

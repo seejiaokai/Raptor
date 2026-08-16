@@ -559,6 +559,15 @@ the phone perf budget. Don't convert them to components.
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add
   drop targets to `drag.ts` for it; that machine stays scoped to pucks.
+- **No ⋯ collapse of the phone row control strips** (owner, 16 Aug 26 — built,
+  shipped and rolled back the same day). Every flying/duty/sim/ground row's
+  `▲▼/CX/■/✕` strip was tucked behind one ⋯ (a `CTLOPEN` view state, one row
+  open at a time); the owner asked to undo it. The full implementation is one
+  `git revert` away (the "collapse each row's control strip behind a ⋯" commit),
+  so don't rebuild it from scratch or re-propose it unprompted. The row strips
+  stay always-visible on a phone. The four sibling touches from that batch —
+  the aircrew-tab gutter, board 4-digit input times, plural warnings, and the
+  week's faded `Remarks` placeholder — STAND; only the ⋯ collapse was undone.
 
 ## Where things live
 
