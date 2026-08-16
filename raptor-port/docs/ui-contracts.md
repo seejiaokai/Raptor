@@ -748,14 +748,23 @@ edit week now:
 - **Desktop (>820px) and `.sb-wide` are unchanged** — the side column
   restates `display:flex` and melts the drawer wrapper back to
   `display:contents`, tab hidden.
-- **A flying line's seats are full-width strips, below the times (fix,
-  8 Aug 26 — they used to overlap).** Grid auto-flow is sequential, so when
-  the full-width B cell (child 3) broke to its own row, TO/LD slid into the
-  name tracks and the two 74px seats into the 46px time tracks, pucks
-  painting over each other. The B cell is pinned to `grid-row:2` (taking it
-  out of the flow) and each `.sb-slot` spans the row — which is also a
-  finger-sized drop target. The FCP/RCP header labels hide at phone width;
-  `.sb-wide` restates all of it back.
+- **A phone flying line is three strips: `CS | MSN | B | TO | LD`, then
+  `[FCP RCP] [remarks]`, then the controls** (seats-strip fix 8 Aug 26; brief
+  folded onto row 1 and the remarks lifted beside the pucks, owner 16 Aug 26 —
+  "arrange the board like the edit schedule: brief then TO then LD"; "the 2
+  pucks side by side and the remarks row will go up to the right of the
+  pucks"). Row 1 is five tracks `48px minmax(0,1fr) 46px 46px 46px` — MSN the
+  only flexible one (a mission is ~5 chars, so it yields the width the brief
+  and the three fixed, equal time tracks need). Row 2: the seat pair spans the
+  two left tracks as a fixed `74px 74px` pair (a puck is 74px, so the two pack
+  tight and stop wasting the ~180px of empty right half they used to), and the
+  `.sb-rcell` remarks+stores cell takes the three time tracks on the right;
+  both are placed by grid-column span with NO explicit grid-row, so auto-flow
+  lands them on one row and `.sb-wide`'s `display:contents` (seat pair) and
+  `grid-column:auto` (rcell) resets fully undo it on a tablet. Every cell's
+  DOM order already matches its visual order, so no `order` hack is needed.
+  The FCP/RCP header labels hide at phone width; `.sb-wide` restates the wide
+  desktop grid back.
 - **The drawer body scrolls the iOS way**: `flex:1` + `min-height:0` rather
   than `max-height:100vh` (iOS's 100vh is the largest viewport — toolbars
   collapsed — so a 100vh cap never binds while the bars are up and the

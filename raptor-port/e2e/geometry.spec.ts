@@ -1250,13 +1250,19 @@ test('board: the flying line keeps its grid-item count with stores present', asy
   expect(n, 'nine DOM children — the two seats share .sb-seatpair, .sb-rcell still exactly one').toBe(9)
 })
 
-test('board at 390px: the remarks cell drops to its own full-width strip', async ({ page }) => {
+test('board at 390px: the remarks cell rides beside the seat pucks, and its config button stays reachable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 780 })
   await login(page); await go(page, 'editsched')
   await page.click('.sb-open')
-  const line = await page.locator('#schedBoard .sb-line').first().boundingBox()
+  /* the remarks cell used to drop to its own full-width strip below the
+     pucks; it now sits to the RIGHT of the packed seat pair on the same row
+     (owner, 16 Aug 26 — "the remarks row will go up to the right of the
+     pucks"), so it takes the right portion of the line, not the whole width */
+  const sp = await page.locator('#schedBoard .sb-line .sb-seatpair').first().boundingBox()
   const cell = await page.locator('#schedBoard .sb-line .sb-rcell').first().boundingBox()
-  expect(cell!.width, 'full width, like .nts was').toBeGreaterThan(line!.width - 30)
+  expect(cell!.x, 'the remarks cell starts to the right of the seat pair').toBeGreaterThan(sp!.x + sp!.width - 4)
+  expect(Math.abs(cell!.y - sp!.y), 'and shares the pucks row, not a strip below').toBeLessThan(24)
+  expect(cell!.width, 'still wide enough to read a mission remark').toBeGreaterThan(120)
   const cfg = await page.locator('#schedBoard .sb-line .stcfg').first().boundingBox()
   /* NOT the same failure shape as .sb-arow.c6r's ITEM column: that input
      lived in a grid track fighting a competing template and could be
@@ -1295,12 +1301,13 @@ test('board at 390px: an eight-pax sim row stacks its pucks two per row', async 
 })
 
 /* THE SEATS SAT IN THE TIME TRACKS AND OVERLAPPED (owner, from the deployed
-   site, 8 Aug 26). Grid auto-flow is sequential: when the full-width B cell
-   (child 3) broke to its own row, TO/LD slid into the 54/60px name tracks
-   and the two 74px seats into the 46px time tracks — pucks painting over
-   each other and over the "+ RCP" dashed box. The B cell is pinned to row 2
-   now and each seat takes a full-width strip. Only a browser can see any of
-   this — the class list never changed. */
+   site, 8 Aug 26). Grid auto-flow is sequential: an earlier layout let the
+   two 74px seats slide into the 46px time tracks — pucks painting over each
+   other and over the "+ RCP" dashed box. The seats now pack side by side in
+   their own two 74px tracks on the left, with the brief on row 1 and the
+   remarks cell to their right (owner 16 Aug 26); this still asserts no puck
+   overlaps a neighbour or a time box. Only a browser can see any of this —
+   the class list never changed. */
 test('board at 390px: the seats sit clear of the time boxes and of each other', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 780 })
   await login(page); await go(page, 'editsched')
@@ -1683,10 +1690,11 @@ test('typing a rename then clicking a different row\'s control does not eat the 
    Checked across all four combinations a scheduler can actually reach:
    1400px normal and 1400px .sb-wide are both outside the phone media query
    and were never at risk; 390px stacked is the DELIBERATE phone layout
-   (scheduler.css's own comment: B and the remarks cell drop to their own
-   full-width strip on purpose, because there is no room for a 9th column) —
-   asserting it single-row would be asserting against a documented, reviewed
-   design choice, not a bug. 390px .sb-wide is the one combination that
+   (scheduler.css's own comment: the seat pair, the remarks cell and the
+   controls drop to their own full-width strips on purpose, because there is
+   no room for all nine columns — the brief B now rides row 1 inline between
+   MSN and TO, owner 16 Aug 26) — asserting it single-row would be asserting
+   against a documented, reviewed design choice, not a bug. 390px .sb-wide is the one combination that
    shipped broken, and is the only one of the four the grid-child count
    alone could not have caught: it stayed 9 in every combination, bug or no
    bug — "three of four passing" is what let it through. (8 Aug 26: the
@@ -1721,12 +1729,48 @@ test('the board\'s flying line is single-row in .sb-wide at phone width, and sta
     if (c.singleRow) {
       expect(m.height, `${c.label}: single row, not exploded into three`).toBeLessThan(90)
     } else {
-      /* the deliberate phone layout is still multi-row (CS/times, brief,
-         seat pair, remarks, controls) — the seat pair sits on one row now
-         rather than two, but the line is not collapsed to a single row */
+      /* the deliberate phone layout is still multi-row (CS/MSN/B/TO/LD on
+         row 1, then seat pair, remarks, controls) — the brief folded back
+         onto row 1 (owner, 16 Aug 26) and the seat pair sits on one row, but
+         the line is not collapsed to a single row */
       expect(m.height, `${c.label}: the deliberate mobile stack, not collapsed to one row`).toBeGreaterThan(90)
     }
   }
+})
+
+/* THE BRIEF RIDES ROW 1 ON THE PHONE (owner, 16 Aug 26 — "arrange the board
+   like the edit schedule: brief then TO then LD… put brief after msn and
+   before TO. Now u will be able to shorten 1 row"). The brief cell used to drop
+   to its own full-width strip below CS/MSN/TO/LD; it now sits inline as the
+   third column, so the row reads CS | MSN | B | TO | LD like the week and the
+   desktop board, and the flying line is one strip shorter. Pinned by geometry
+   because jsdom cannot see which grid row a cell lands on. */
+test('the board flying line carries the brief inline between MSN and TO at phone width', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await login(page); await go(page, 'editsched')
+  await page.click('.sb-open')
+  await page.waitForSelector('#schedBoard .sb-line')
+  const m = await page.evaluate(() => {
+    const head = document.querySelector('#schedBoard .sb-lcols') as HTMLElement
+    const heads = [...head.children].filter(c => getComputedStyle(c).display !== 'none').map(c => c.textContent)
+    const line = document.querySelector('#schedBoard .sb-line') as HTMLElement
+    const cs = line.querySelector('.lin') as HTMLElement
+    const bcell = line.querySelector('.sb-bcell') as HTMLElement
+    const y = (el: HTMLElement) => Math.round(el.getBoundingClientRect().top)
+    const cx = (el: HTMLElement) => Math.round(el.getBoundingClientRect().left)
+    const msn = line.querySelector('.msn') as HTMLElement
+    // the two visible time inputs after the brief input are TO then LD
+    const times = [...line.querySelectorAll('.tm')] as HTMLElement[]
+    const to = times[1], ld = times[2]   // times[0] is the brief's own .tm input
+    return {
+      heads,
+      briefInlineWithCs: Math.abs(y(bcell) - y(cs)) < 12,
+      order: cx(msn) < cx(bcell) && cx(bcell) < cx(to) && cx(to) < cx(ld),
+    }
+  })
+  expect(m.heads, 'the header reads CS MSN B TO LD').toEqual(['CS', 'MSN', 'B', 'TO', 'LD'])
+  expect(m.briefInlineWithCs, 'the brief cell shares row 1 with the callsign, not a strip below it').toBe(true)
+  expect(m.order, 'columns run MSN → B → TO → LD left to right').toBe(true)
 })
 
 test('the grip shows on desktop and the nudge buttons on a phone', async ({ page }) => {
@@ -1792,11 +1836,12 @@ test('the phone board keeps its column layout after the grip is added', async ({
   expect(m.item).toBeGreaterThan(150)
   /* the labels that survive the nth-child hide, in DOM order, must be
      exactly the ones the phone body columns still show — Role/Start/End
-     for the duty panel, CS/MSN/TO/LD for the flying line — or a header
-     is sitting over the wrong body column even though the cell COUNT
-     still happens to match the track count. */
+     for the duty panel, CS/MSN/B/TO/LD for the flying line (the brief B
+     rides row 1 inline now, owner 16 Aug 26) — or a header is sitting over
+     the wrong body column even though the cell COUNT still happens to match
+     the track count. */
   expect(m.c6rLabels).toEqual(['Role', 'Start', 'End'])
-  expect(m.flyLabels).toEqual(['CS', 'MSN', 'TO', 'LD'])
+  expect(m.flyLabels).toEqual(['CS', 'MSN', 'B', 'TO', 'LD'])
 })
 
 /* THE NOTES ROW WAS THE ONE TEMPLATE NEVER RESTATED ON A PHONE (fix round
