@@ -338,7 +338,14 @@ by a test; pv-suppressed) · overall notes · overall programme · flying waves
 · **Duties** (`.sb-panel.duty`) · **Sims** (`.simr`, AMT/OFT rows, its
 planning note inside the panel) · **Ground Programme · scheduler** (`.grnd`)
 · **Personal Inputs** (`.pinp`, with the accept controls) · **Unavailable**
-(`.unav`). The duty/sim/ground panels (added Aug 26) share the `c6r` grid
+(`.unav`). **Input times read 4-digit on the board** (owner, 16 Aug 26): the
+aircrew's submitted times are minutes and format with a colon everywhere else
+(`hhmm` → `09:00`), but the board's own scheduler-typed times are 4-digit, so
+`board-html.ts`'s `hm4`/`inpHM` strip the colon for the `.pinp`/`.unav`/`.sansav`
+rows (and the inputs summary) — display only; `setInpField`'s `hmOK` still
+accepts either form when typing, and the board revert/compare (`board.ts`) strip
+to match. The week's input rows and the aircrew Inputs page keep colon.
+The duty/sim/ground panels (added Aug 26) share the `c6r` grid
 (Item | Start | End | People | Rmks | ctl — **Duties says ROLE** where the
 other two say Item, its own `C6_DUTY` header, owner 10 Aug 26: a duty row
 names a job) and speak the ordinary grammar —
@@ -450,15 +457,34 @@ edit week now:
   flatten into the one scroller and `order:-2`/`order:-1` drop the sign-off and
   the checks bar above the panels. `.sb-warn` still `flex:0 0 auto` (an
   `overflow:auto` child's automatic minimum is 0, so a shrinkable strip
-  collapses to its header). The 4px right gap that keeps the parked drawer off
-  the last of every input moved from `.sb-boardwrap` onto `#sbBoard` (it has no
-  box while flattened). **On DESKTOP nothing moves**: `.sb-warn` stays in the
+  collapses to its header). **A 30px right gutter keeps the parked aircrew tab
+  off the board** (owner, 16 Aug 26): the tab is a 30px sliver pinned over the
+  right edge in a ~55vh band, and the old 18px gutter only cleared the input
+  tap-zone, so panel headers, the `+Note`/`+Item` buttons and the sign-off
+  summary's tail still slid under it. The gutter goes on all THREE flattened
+  scroller children — `#sbBoard`, `#sbSign` and `#sbWarn` — because the sign-off
+  and the checks bar are their own boxes now (padding `#sbBoard` alone left
+  their full-width rows reaching under the tab). **On DESKTOP nothing moves**:
+  `.sb-warn` stays in the
   320px side column beside the board, so the always-open list never pushes the
   flying block down — only `#sbSign` is new there, heading the board column.
+- **Each row's control strip collapses behind a ⋯ on a phone** (owner, 16 Aug
+  26). A flying/duty/sim/ground row hides its `▲▼/CX/■/✕` strip behind one ⋯ so
+  a day of rows reads clean; tapping it names that row in `state/view.ts`'s
+  `CTLOPEN` (held one at a time like `RMKOPEN`, swept on a day change and
+  remapped through `HOOKS.remapViewKeys`) and its `.lctl` unfolds — closing any
+  other. Closed, `.lctl` leaves the row flow (`position:absolute`, bottom-right)
+  so its whole row is reclaimed; open, it drops back to a full-width row. The ⋯
+  lives inside `.lctl` (`board.ts`'s flying line, `board-html.ts`'s `sbRowCtl`
+  for the c6r panels); the collapse is CSS scoped by `:has(.ctlmore)`, so the
+  note, programme and input strips — which carry no toggle — keep their controls
+  always shown. **DESKTOP and `.sb-wide` opt out**: the whole strip shows and the
+  ⋯ is hidden.
 - **The Live Checks header is an "issues" bar coloured by worst severity**
   (owner, 14 Aug 26 — "title it issues instead of live and have colours on the
   bar depending on warning or advisory"). `boardWarnHTML` reads
-  "⚠ N issues · N warning · tap to review" and the `.wh` bar wears `hard`/`adv`/
+  "⚠ N issues · N warnings · tap to review" (each count pluralized with its
+  number, owner 16 Aug 26) and the `.wh` bar wears `hard`/`adv`/
   `note`/`ok`, the same palette as the week's `.daywarn`.
 - **The top bar is ONE row, and the day is reached by SWIPING** (owner,
   11 Aug 26 — comp approved before build). It used to be four stacked rows
@@ -820,7 +846,11 @@ routes `data-air`):
   16 Aug 26) — so an empty one reads the same way. A STANDALONE line keeps its
   MAIN/SPARE ghost text instead (the Stable decision in `CLAUDE.md`), so the
   `Remarks` placeholder is emitted only on a formation line, never in place of
-  that ghost.
+  that ghost. **The edit week's flying line matches** (`html.ts`'s `ted` call,
+  same day): its remarks box shows the faded `Remarks` too — but EDIT MODE ONLY,
+  since a read-only view page has nothing to type into it, and it is registered
+  as a deliberate divergence in `html.test.ts` (`noRmkPh`) so the reference
+  byte-parity guard still holds.
 - **FCP and RCP sit side by side on the phone board** (owner, 14 Aug 26 — "FCP
   on the left RCP on the right in 1 row" to save vertical space). The two seats
   wrap in `.sb-seatpair`, which is `display:contents` on desktop (the seats stay

@@ -418,6 +418,12 @@ test('phone: an empty remarks box costs a duty row nothing until it is asked for
      wait timed out at 30s against a working build. */
   await page.waitForSelector(`${row} .rmkin`, { state: 'attached' })
 
+  /* the R (add-remark) control now lives behind the row's ⋯ toggle (owner,
+     16 Aug 26 — the phone strip collapses); open the strip so the reveal
+     control is reachable, exactly as a scheduler would before tapping it. */
+  await page.click(`${row} .lctl .ctlmore`)
+  await page.waitForTimeout(150)
+
   const before = await page.evaluate((sel) => {
     const r = document.querySelector(sel) as HTMLElement
     const box = r.querySelector('.rmkin') as HTMLElement
@@ -1788,13 +1794,26 @@ test('the grip shows on desktop and the nudge buttons on a phone', async ({ page
   expect(Math.round(wide.w)).toBe(18)
 
   await page.setViewportSize({ width: 390, height: 780 })
-  const narrow = await page.evaluate(() => {
+  await page.waitForTimeout(150)
+  /* on a phone the strip collapses behind a ⋯ (owner, 16 Aug 26), so the grip
+     is gone, the ⋯ shows, and the nudge is hidden UNTIL the ⋯ opens the strip. */
+  const closed = await page.evaluate(() => {
     const g = document.querySelector('#sbBoard .sb-line .sb-grip') as HTMLElement
     const n = document.querySelector('#sbBoard .sb-line .mbtn.nudge') as HTMLElement
-    return { grip: getComputedStyle(g).display, nudge: getComputedStyle(n).display }
+    const m = document.querySelector('#sbBoard .sb-line .mbtn.ctlmore') as HTMLElement
+    return { grip: getComputedStyle(g).display, nudge: getComputedStyle(n).display, more: getComputedStyle(m).display }
   })
-  expect(narrow.grip).toBe('none')
-  expect(narrow.nudge).not.toBe('none')
+  expect(closed.grip).toBe('none')
+  expect(closed.more, 'the ⋯ toggle shows on a phone').not.toBe('none')
+  expect(closed.nudge, 'the nudge is hidden until the ⋯ opens the strip').toBe('none')
+
+  await page.click('#sbBoard .sb-line .lctl .ctlmore')
+  await page.waitForTimeout(150)
+  const open = await page.evaluate(() => {
+    const n = document.querySelector('#sbBoard .sb-line .lctl.open .mbtn.nudge') as HTMLElement
+    return { nudge: n ? getComputedStyle(n).display : 'missing' }
+  })
+  expect(open.nudge, 'the nudge shows once the strip is open').not.toBe('none')
 })
 
 /* the nth-child re-index is the breakage-prone half of this change and jsdom
@@ -3483,4 +3502,64 @@ test('the flying line keeps its five boxes on one baseline on a phone', async ({
   /* and the blue time sits ABOVE the brief box, not beside or below it */
   expect(m!.bsugBottom, 'the blue brief time rides above the brief box')
     .toBeLessThan(m!.briefBottom - 4)
+})
+
+/* NOTHING ON THE BOARD HIDES UNDER THE PARKED AIRCREW TAB (owner, 16 Aug 26).
+   The parked aircrew drawer is a ~30px sliver pinned over the right edge in a
+   ~55vh band; an 18px gutter only kept it off the input tap-zone, so panel
+   headers, the +Note/+Item buttons and the sign-off summary still slid under
+   the blue tab. A 30px right gutter on the three scroller children clears it.
+   jsdom cannot see it — the tab is positioned and the gutter is a phone rule. */
+test('the phone board clears its parked aircrew tab', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#schedBoard .sb-line')
+  await page.waitForTimeout(300)
+
+  const m = await page.evaluate(() => {
+    const tab = document.querySelector('#rosTab')!.getBoundingClientRect()
+    let maxRight = 0
+    // the full-width chrome the tab used to cover: panel headers, row/section
+    // buttons, and everything in the sign-off and checks strips
+    const sel = '#schedBoard .sb-ph, #schedBoard .mbtn, #schedBoard .sb-sign *, #schedBoard .sb-warn *'
+    for (const e of document.querySelectorAll(sel)) {
+      const b = e.getBoundingClientRect()
+      if (b.width > 0 && b.top < tab.bottom && b.bottom > tab.top) maxRight = Math.max(maxRight, b.right)
+    }
+    return { tabLeft: Math.round(tab.left), contentRight: Math.round(maxRight) }
+  })
+  /* no board chrome reaches past the tab's left edge (sub-pixel slack only) */
+  expect(m.contentRight, 'board content stops at or before the aircrew tab').toBeLessThanOrEqual(m.tabLeft + 1)
+})
+
+/* THE ⋯ ROW-ACTION TOGGLE COLLAPSES THE STRIP ON A PHONE (owner, 16 Aug 26).
+   Each flying/duty/sim/ground row hides its ▲▼/CX/■/✕ behind one ⋯; the strip
+   leaves the row flow when closed and drops back as a row when opened. jsdom
+   can't see the CSS collapse, so this measures visibility in a real browser. */
+test('the phone board collapses each row strip behind a ⋯', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#schedBoard .sb-line .lctl .ctlmore')
+  await page.waitForTimeout(300)
+
+  const strip = '#schedBoard .sb-line .lctl'
+  const closed = await page.evaluate((sel) => {
+    const s = document.querySelector(sel)!
+    const vis = [...s.querySelectorAll('.mbtn')].filter(b => (b as HTMLElement).offsetParent !== null)
+    return { total: s.querySelectorAll('.mbtn').length, visible: vis.map(b => b.textContent) }
+  }, strip)
+  expect(closed.total, 'the strip holds the full set of buttons').toBeGreaterThan(1)
+  expect(closed.visible, 'closed, only the ⋯ shows').toEqual(['⋯'])
+
+  await page.click(`${strip} .ctlmore`)
+  await page.waitForTimeout(200)
+  const open = await page.evaluate((sel) => {
+    const s = document.querySelector(`${sel}.open`) || document.querySelector(sel)!
+    return [...s.querySelectorAll('.mbtn')].filter(b => (b as HTMLElement).offsetParent !== null).length
+  }, strip)
+  expect(open, 'open, the whole strip is revealed').toBe(closed.total)
 })

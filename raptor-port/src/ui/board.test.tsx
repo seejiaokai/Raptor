@@ -581,6 +581,27 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(p.querySelectorAll('[data-ifld]').length).toBeGreaterThan(0)
     expect(p.querySelectorAll('[data-slot],[data-fill],[draggable="true"],.mbtn,[data-txt],[data-bfld]').length).toBe(0)
   })
+
+  /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
+     format with a colon everywhere else (hhmm → "09:00"), but the board prints
+     them 4-digit to match its own scheduler-typed times. The edit box still
+     accepts either form; this pins the DISPLAY only. */
+  it('a board personal-input time reads 4-digit, never with a colon', () => {
+    const times = [...document.querySelectorAll('#sbBoard .sb-panel.pinp input.atm, #sbBoard .sb-panel.unav input.atm')]
+      .map(e => (e as HTMLInputElement).value).filter(Boolean)
+    expect(times.length, 'the seed day carries a timed personal input').toBeGreaterThan(0)
+    expect(times.every(v => /^\d{3,4}$/.test(v)), `every board input time is 4-digit military: ${times.join(',')}`).toBe(true)
+  })
+
+  /* "N warning" pluralizes with its count, the same way "N issue" already did
+     (owner, 16 Aug 26 — the bar read "6 warning"). */
+  it('the checks bar pluralizes "warning" by count', () => {
+    const wh = document.querySelector('#sbWarn .wh')
+    const m = wh && wh.textContent!.match(/(\d+)\s+(warnings?)\b/)
+    expect(m, 'the seed day 0 shows a warning count on the checks bar').toBeTruthy()
+    const n = Number(m![1])
+    expect(m![2] === 'warnings', `"${m![0]}" plural must match count ${n}`).toBe(n > 1)
+  })
 })
 
 /* finding #4 (whole-branch review, 9 Aug 26): Sort all gated on the role
@@ -1913,5 +1934,45 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
       SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}
       notify()
     })
+  })
+})
+
+/* THE ⋯ PER-ROW CONTROL TOGGLE (owner, 16 Aug 26). Every flying/duty/sim/ground
+   row hides its ▲▼/CX/■/✕ strip behind one ⋯ on a phone so a day reads clean;
+   tapping it names that row in CTLOPEN and its strip unfolds, one at a time. The
+   collapse itself is CSS (jsdom can't see it); this pins the markup and state:
+   each such strip carries a ⋯, the toggle moves CTLOPEN and the .open class, and
+   the note/input strips that carry no toggle are untouched. */
+describe('the ⋯ per-row control toggle', () => {
+  beforeAll(async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); view.setCtlOpen(null); notify() })
+  })
+  it('every flying and duty strip carries a ⋯ and starts closed', () => {
+    const strips = $$('#sbBoard .sb-line .lctl, #sbBoard .sb-panel.duty .lctl')
+    expect(strips.length, 'the board has control strips').toBeGreaterThan(0)
+    strips.forEach(s => expect(s.querySelector('.ctlmore'), 'each strip carries a ⋯ toggle').toBeTruthy())
+    expect($('#sbBoard .lctl.open'), 'nothing is open until a ⋯ is tapped').toBeFalsy()
+  })
+  it('tapping ⋯ opens that row alone; another tap moves it; tapping the open one closes it', async () => {
+    const mores = $$('#sbBoard .sb-line .lctl .ctlmore')
+    expect(mores.length, 'more than one flying row to move between').toBeGreaterThan(1)
+    const key0 = (mores[0] as HTMLElement).dataset.ctlmore
+    await click(mores[0])
+    expect(view.CTLOPEN, 'the tapped row is now the open one').toBe(key0)
+    expect($$('#sbBoard .lctl.open').length, 'exactly one strip is open').toBe(1)
+
+    const other = $$('#sbBoard .sb-line .lctl .ctlmore').find(m => (m as HTMLElement).dataset.ctlmore !== key0)!
+    const keyOther = (other as HTMLElement).dataset.ctlmore
+    await click(other)
+    expect(view.CTLOPEN, 'the open state moves to the newly tapped row').toBe(keyOther)
+    expect($$('#sbBoard .lctl.open').length, 'still exactly one').toBe(1)
+
+    await click($('#sbBoard .lctl.open .ctlmore'))
+    expect(view.CTLOPEN, 'tapping the open row closes it').toBeNull()
+    await act(async () => { view.setCtlOpen(null); notify() })
+  })
+  it('an input strip carries no ⋯ (its Accept controls always show)', () => {
+    const inpStrip = $('#sbBoard .sb-panel.pinp .lctl')
+    if (inpStrip) expect(inpStrip.querySelector('.ctlmore'), 'input rows keep their controls, no ⋯').toBeFalsy()
   })
 })

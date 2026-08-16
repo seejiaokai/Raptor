@@ -154,6 +154,13 @@ const noTrace = (s: string) => s
   .replace(/<div class="witem hard wtr[^"]*"[^>]*>[\s\S]*?<\/span><\/div>/g, '')
   .replace(/<div class="dwtrace"><\/div>/g, '')
 
+/* Divergence (owner, 16 Aug 26): the edit week's flying-line remarks box now
+   carries a faded "Remarks" placeholder (data-ph), matching the board. The
+   reference has no such concept, and it is edit-mode only — the read-only view
+   never emits it — so lift it off the port's EDIT markup before the compare.
+   Pinned positively in brieftime-ui.test.tsx. */
+const noRmkPh = (s: string) => s.replace(/ data-ph="Remarks"/g, '')
+
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
     const V = (s: string) => noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))))
@@ -203,7 +210,7 @@ describe('view-week markup parity with the reference', () => {
     const normDow = (s: string) => s.replace(
       /<span class="dow crewday" data-crewday="(\d+)" title="Show this day's crew in the aircrew panel">/g,
       '<span class="dow sb-open" data-sbday="$1" title="Open scheduler board">')
-    const E = (s: string) => normDow(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s)))))))))
+    const E = (s: string) => normDow(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
