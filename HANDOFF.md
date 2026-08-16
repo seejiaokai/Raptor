@@ -596,7 +596,16 @@ only after re-running them.
   every caller already reverts its own cell on a false return; `parseHM` stays
   the loose shared reader and `hmOK` (`time.ts`) asks the range question
   beside it. Rules: `docs/engine-rules.md`, the brief and availability
-  sections. What the sweep left ALONE, on purpose:
+  sections. **The DUTY-TEMPLATE editor was a surface this 12 Aug sweep
+  predated** (templates shipped 13 Aug) and it went unguarded until the owner
+  found it 16 Aug 26 — its start/end cells took `2500`. Now closed to the same
+  line: the editor refuses a malformed time on commit (toast + revert,
+  `ui/DutyTplModal.tsx`), and `tplTime` (`engine/dutytpl.ts`) is the silent net
+  at `blockFromTpl` and `dutyTplLoad` so a stale value never mints into a day.
+  Rules: `docs/engine-rules.md` §duty block; pinned in `dutytpl.test.ts` and
+  `DutyTplModal.test.tsx`. **A NEW typed field on a surface added after 12 Aug
+  wants this same check — the sweep cannot cover what did not exist yet.** What
+  the original sweep left ALONE, on purpose:
   - **Long free text on the WEEK's prose cells** (flight remarks, day notes,
     area) can still run a row to ~2000px. They are `contenteditable`, which
     ignores `maxlength`, so the only guards available are truncating a paste

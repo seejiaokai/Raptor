@@ -1,4 +1,24 @@
 import { store } from './hooks'
+import { parseHM, hmOK } from './time'
+
+/* A duty time is a clock time or nothing — the same question txtSet asks of a
+   schedule time cell (slots.ts). A malformed value ('2500', 'morning') drops to
+   '' (a duty role with no start is legal — many seeded rows carry blank times);
+   a valid one is canonicalised to the compact HHMM the whole model stores duty,
+   sim and ground times in (`0700`, not `07:00` — see data.ts and DUTYTPL_STD),
+   so `700`/`7:00`/`07:00` all land as `0700` and a minted block reads like a
+   seeded one. Kept here as one helper so the two places a template's time
+   crosses out of the editor — minted into a real day (blockFromTpl) and
+   reloaded from untrusted storage (dutyTplLoad) — fold the same way, and
+   neither can carry a nonsense time into the schedule. The editor itself
+   refuses on commit with a toast (DutyTplModal); this is the silent net under
+   it. */
+export function tplTime(v: any): string {
+  const s = String(v == null ? '' : v).trim()
+  const m = s && hmOK(s) ? parseHM(s) : null
+  if (m == null) return ''
+  return String(Math.floor(m / 60)).padStart(2, '0') + String(m % 60).padStart(2, '0')
+}
 
 /* THE SQUADRON'S DUTY-BLOCK TEMPLATES (owner, 13 Aug 26). "+ Block" offers
    these directly now — a wave no longer has to exist first, and no wave
@@ -127,7 +147,7 @@ export function moveTplRow(id: string, from: number, to: number): boolean {
 export function blockFromTpl(id: string): any | null {
   const t = DUTYTPL_CFG.find(t => t.id === id)
   if (!t) return null
-  return { label: t.title, rows: t.rows.map(r => ({ role: r.role, id: '', str: r.str, end: r.end })) }
+  return { label: t.title, rows: t.rows.map(r => ({ role: r.role, id: '', str: tplTime(r.str), end: tplTime(r.end) })) }
 }
 
 /* An ordered, renameable list IS its order, titles and rows, so — as with the
@@ -156,8 +176,8 @@ export function dutyTplLoad() {
       if (!r || typeof r !== 'object') continue
       rows.push({
         role: typeof r.role === 'string' ? r.role.slice(0, MAX_ROLE) : '',
-        str: typeof r.str === 'string' ? r.str : '',
-        end: typeof r.end === 'string' ? r.end : '',
+        str: tplTime(r.str),
+        end: tplTime(r.end),
       })
     }
     out.push({ id, title, rows })
