@@ -21,7 +21,8 @@ import { VCONF } from './rules'
 /* ---- qual system ---- */
 export const QCHIP:any={OCU:'O',D:'D',C:'C',B:'B',A:'A',IW:'IW',IP:'IP',IR:'IR',FI:'FI'};        // chip text — letters, not ship numbers
 export const QCLASS:any={OCU:'q-ocu',D:'q-d',C:'q-c',B:'q-b',A:'q-a',IW:'q-ins',IP:'q-ins',IR:'q-ins',FI:'q-ins'};
-export const QCOLOR:any={OCU:'#8A6ED0',D:'#3B7DF0',C:'#3BC6E8',B:'#E5A83B',A:'#F0555F',IW:'#A64DE8',IP:'#A64DE8',IR:'#A64DE8',FI:'#A64DE8'};
+// white-text CAT chips deepened to clear the 4.5:1 AA floor (owner, 15 Aug 26); C/B keep pale fills (dark text, already pass). Mirror in scheduler.css --q-* and refwin.ts remap.
+export const QCOLOR:any={OCU:'#7F65BF',D:'#3673DD',C:'#3BC6E8',B:'#E5A83B',A:'#CA4750',IW:'#9F4ADF',IP:'#9F4ADF',IR:'#9F4ADF',FI:'#9F4ADF'};
 export const LEVELNAME:any={OCU:'OCU (ab-initio)',D:'D · wingman',C:'C · ops wingman',B:'B · 2-ship FL',A:'A · 4-ship FL',IW:'IW · instructor WSO',IP:'IP · instructor pilot',IR:'IR · instrument rating exmr',FI:'FI · fighter wing instructor'};
 export const isLead=(q:any)=>q==='A'||q==='B';
 export const isInstr=(q:any)=>q==='IW'||q==='IP'||q==='IR'||q==='FI';

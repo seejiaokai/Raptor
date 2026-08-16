@@ -422,6 +422,21 @@ describe('the CAT column', () => {
     expect(Object.keys(PEOPLE).filter(id => 'ip' in PEOPLE[id])).toEqual([])
   })
 
+  /* the CAT badges read at AA (owner, 15 Aug 26 — the badge-readability fix).
+     The white-text fills were deepened to clear the 4.5:1 floor; C and B carry
+     dark text and pass on their pale fills. Pin the CONTRAST, not the exact hex
+     — a future colour tweak is fine as long as it stays readable. */
+  it('every CAT badge meets the 4.5:1 contrast floor for its own text colour', () => {
+    const lin = (c: number) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4 }
+    const L = (h: string) => { const n = parseInt(h.slice(1), 16); return 0.2126 * lin(n >> 16 & 255) + 0.7152 * lin(n >> 8 & 255) + 0.0722 * lin(n & 255) }
+    const ratio = (a: string, b: string) => { const [x, y] = [L(a), L(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05) }
+    /* QualsPage's qmini gives C and B a dark letter (#04222b), every other CAT white */
+    const ink = (k: string) => (k === 'C' || k === 'B') ? '#04222b' : '#ffffff'
+    for (const k of Object.keys(QCOLOR)) {
+      expect(ratio(QCOLOR[k], ink(k)), `${k} badge (${QCOLOR[k]})`).toBeGreaterThanOrEqual(4.5)
+    }
+  })
+
   it('the CAT dropdown is seat-filtered: no IW for a pilot, no IP/IR for a WSO', async () => {
     /* the table opens on the pilots; the first row dropdown belongs to an FCP */
     if (!$('#qtbl select.qlvlsel')) await click($('#qEdit'))

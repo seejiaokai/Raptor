@@ -363,15 +363,20 @@ only after re-running them.
   an Enter/Space `onKeyDown` now (`Shell.tsx` `navKey`, `Drawer.tsx`). The tag
   stays `<a>` on purpose — ~15 tests, `probe-bridge.ts` and the `.nav a`
   stylesheet all key off it — so the fix is behaviour, not markup; pinned in
-  `app.test.tsx`. **Still open, worth surfacing to the owner:** the **P1** —
-  the "CP" flag is amber for "needs approval" and red for "not authorised", a
-  safety distinction told by colour alone (both chips print the same "CP" —
-  `CHIP_TEXT.CP` = `CHIP_TEXT.CPH` = 'CP', `validate.ts`), and five
-  qualification badges (`QCOLOR` A/D/OCU/instr/SANS, white text) measure
-  3.4–4.3:1, under the 4.5:1 AA floor. Before/after examples were comped and
-  shown to the owner (a shape/glyph on each CP state; a one-shade-deeper fill
-  that clears 4.5:1 — A `#ca4750`, D `#3673dd`, OCU `#7f65bf`, instr `#9f4adf`,
-  SANS `#a748dc`); NOT built, awaiting his pick. Also open: the owner's own
+  `app.test.tsx`. **The P1 is now HALF actioned (owner, 16 Aug 26,
+  after seeing before/after comps):** the **CAT badge contrast** is FIXED — the
+  four white-text ladder fills were deepened one shade to clear 4.5:1 (A
+  `#F0555F`→`#CA4750`, D `#3B7DF0`→`#3673DD`, OCU `#8A6ED0`→`#7F65BF`, instr
+  `#A64DE8`→`#9F4ADF`; C and B keep pale fills, they carry dark text and already
+  pass). The value lives in THREE places kept in lockstep — `engine/people.ts`
+  `QCOLOR` (the Quals `qmini`), `scheduler.css` `--q-*` (the puck `.role` chips
+  and legend swatches), and `refwin.ts`'s remap (so the reference renders the
+  same colours and parity holds); a contrast test in `quals.test.tsx` pins the
+  4.5:1 floor. **The CP-flag half was DECLINED (owner, 16 Aug 26 — "do not fix
+  the CP"):** the amber-vs-red "CP"/"CPH" safety distinction stays colour-only;
+  the shape/glyph idea (CP? / CP✕) was comped and rejected — do not re-propose
+  it. SANS (`--san`) was out of scope (not a CAT, and not a white-text badge in
+  the app). Also open: the owner's own
   **"make the Insights panel consistent"** question (see
   `docs/session-state.md`). His **Quals add-person layout** question is now
   CLOSED (owner, 15 Aug 26): the Pilots/WSOs/Personnel/All filter left the top

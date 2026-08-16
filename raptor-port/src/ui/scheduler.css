@@ -19,8 +19,12 @@
   /* personnel (ground crew) puck: white, dark ink, a muted line so it reads as
      a defined chip against the dark board — they hold no seat colour */
   --pers:#FFFFFF; --pers-ink:#18202C; --pers-line:#7C8AA0;
-  /* qual-ladder chip colours: OCU→D→C→B→A cool→hot, instructors share slate */
-  --q-ocu:#8A6ED0; --q-d:#3B7DF0; --q-c:#3BC6E8; --q-b:#E5A83B; --q-a:#F0555F; --q-ins:#A64DE8;
+  /* qual-ladder chip colours: OCU→D→C→B→A cool→hot, instructors share slate.
+     The white-text fills (OCU/D/A/ins) were deepened one shade to clear the
+     4.5:1 AA contrast floor (owner, 15 Aug 26); C and B keep their pale fills
+     because they carry DARK text. Kept in lockstep with engine/people.ts QCOLOR
+     (the Quals table reads that) and refwin.ts's remap. */
+  --q-ocu:#7F65BF; --q-d:#3673DD; --q-c:#3BC6E8; --q-b:#E5A83B; --q-a:#CA4750; --q-ins:#9F4ADF;
   /* highlight states */
   --me:#9B2FAE;
   --r:16px;

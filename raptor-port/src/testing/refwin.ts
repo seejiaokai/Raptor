@@ -174,8 +174,11 @@ function remap(html: string): string {
      "{OCU:'O',D:'D',C:'C',B:'B',A:'A',IW:'IW',IP:'IP',IR:'IR',FI:'FI'}"],
     ["{OCU:'q-ocu',D:'q-d',C:'q-c',B:'q-b',A:'q-a',I:'q-ins',CI:'q-ins',IR:'q-ins'}",
      "{OCU:'q-ocu',D:'q-d',C:'q-c',B:'q-b',A:'q-a',IW:'q-ins',IP:'q-ins',IR:'q-ins',FI:'q-ins'}"],
+    /* the `to` carries the port's DEEPENED white-text CAT fills (owner, 15 Aug
+       26 badge-contrast fix) so the reference renders the same qmini colours;
+       C and B are unchanged. The `from` stays the reference file's original. */
     ["{OCU:'#8A6ED0',D:'#3B7DF0',C:'#3BC6E8',B:'#E5A83B',A:'#F0555F',I:'#A64DE8',CI:'#A64DE8',IR:'#A64DE8'}",
-     "{OCU:'#8A6ED0',D:'#3B7DF0',C:'#3BC6E8',B:'#E5A83B',A:'#F0555F',IW:'#A64DE8',IP:'#A64DE8',IR:'#A64DE8',FI:'#A64DE8'}"],
+     "{OCU:'#7F65BF',D:'#3673DD',C:'#3BC6E8',B:'#E5A83B',A:'#CA4750',IW:'#9F4ADF',IP:'#9F4ADF',IR:'#9F4ADF',FI:'#9F4ADF'}"],
     ["{OCU:'OCU (ab-initio)',D:'D · wingman',C:'C · ops wingman',B:'B · 2-ship FL',A:'A · 4-ship FL',I:'I · instructor',CI:'CI · C-cat instr',IR:'IR · instr rating exmr'}",
      "{OCU:'OCU (ab-initio)',D:'D · wingman',C:'C · ops wingman',B:'B · 2-ship FL',A:'A · 4-ship FL',IW:'IW · instructor WSO',IP:'IP · instructor pilot',IR:'IR · instrument rating exmr',FI:'FI · fighter wing instructor'}"],
     ["const isInstr=q=>q==='I'||q==='CI'||q==='IR';",
