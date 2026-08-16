@@ -748,20 +748,23 @@ edit week now:
 - **Desktop (>820px) and `.sb-wide` are unchanged** — the side column
   restates `display:flex` and melts the drawer wrapper back to
   `display:contents`, tab hidden.
-- **A flying line reads `CS | MSN | B | TO | LD` on row 1, then the seats,
-  remarks and controls as full-width strips below** (seats-strip fix 8 Aug
-  26; the brief folded onto row 1 owner 16 Aug 26 — "arrange the board like
-  the edit schedule: brief then TO then LD… now u will be able to shorten 1
-  row"). The phone grid is five tracks `48px minmax(0,1fr) 46px 46px 46px`;
-  MSN is the only flexible one (a mission is ~5 chars, so it yields the width
-  the brief needs), and the three time tracks are fixed and equal so B/TO/LD
-  align. The brief's DOM order (child 3, between MSN and TO) already matches
-  this visual order, so no `order` hack is needed — it just stops being
-  pulled to its own row. The seats still drop to a full-width strip: grid
-  auto-flow is sequential, so each `.sb-slot` spans the row (also a
-  finger-sized drop target) rather than sliding into a 46px time track and
-  painting over its neighbour. The FCP/RCP header labels hide at phone width;
-  `.sb-wide` restates all of it back.
+- **A phone flying line is three strips: `CS | MSN | B | TO | LD`, then
+  `[FCP RCP] [remarks]`, then the controls** (seats-strip fix 8 Aug 26; brief
+  folded onto row 1 and the remarks lifted beside the pucks, owner 16 Aug 26 —
+  "arrange the board like the edit schedule: brief then TO then LD"; "the 2
+  pucks side by side and the remarks row will go up to the right of the
+  pucks"). Row 1 is five tracks `48px minmax(0,1fr) 46px 46px 46px` — MSN the
+  only flexible one (a mission is ~5 chars, so it yields the width the brief
+  and the three fixed, equal time tracks need). Row 2: the seat pair spans the
+  two left tracks as a fixed `74px 74px` pair (a puck is 74px, so the two pack
+  tight and stop wasting the ~180px of empty right half they used to), and the
+  `.sb-rcell` remarks+stores cell takes the three time tracks on the right;
+  both are placed by grid-column span with NO explicit grid-row, so auto-flow
+  lands them on one row and `.sb-wide`'s `display:contents` (seat pair) and
+  `grid-column:auto` (rcell) resets fully undo it on a tablet. Every cell's
+  DOM order already matches its visual order, so no `order` hack is needed.
+  The FCP/RCP header labels hide at phone width; `.sb-wide` restates the wide
+  desktop grid back.
 - **The drawer body scrolls the iOS way**: `flex:1` + `min-height:0` rather
   than `max-height:100vh` (iOS's 100vh is the largest viewport — toolbars
   collapsed — so a 100vh cap never binds while the bars are up and the
