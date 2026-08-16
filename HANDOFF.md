@@ -335,6 +335,54 @@ with the remarks cell lifted beside them, taking a phone flying line from five
 stacked strips to three; `test:e2e` **102/102** (two geometry tests added/
 re-pointed), week 3702 / board 855 unmoved (no DOM added). Contracts:
 `docs/engine-rules.md` §duty block, `docs/ui-contracts.md` §The board on a phone.
+**THE LEAVE WAR MERGE (16 Aug 26 — the standalone leave-war repo vendored
+into raptor-port as the sixth tab, owner: "put leave war onto Raptor") — all
+six gates green first-hand on the matching tree.** The whole app —
+engine/state/ui and its 30 test files — lives under `src/leavewar/` with a
+one-component seam (`LeaveWarPage.tsx`); its five stylesheets are scoped
+under `#page-leavewar` by native CSS nesting (theme.css is DELETED — its
+tokens/globals were byte-copies of scheduler.css, the one token Raptor lacks,
+`--sim`, was unused); its store boots ONCE from `main.tsx` (never from the
+page component — its `initStore` clears subscribers and the section unmounts
+per tab switch); its on-screen member/admin toggle is GONE — the role rides
+the Raptor login (`resetSession` → leavewar `setRole`, the ONE writer, no
+longer persisted) — and its `leavewar:`-prefixed localStorage stays its own
+seam, deliberately NOT `HOOKS.storeBackend`. `npm test` **2305** across
+**130** files — TWO VITEST PROJECTS now (`raptor` 1696/100 exactly as
+before; `leavewar` 609/30 under jsdom + `TZ:'Pacific/Midway'` + a 20s
+timeout the year-wide matrix needs, a separate worker pool so the TZ cannot
+bleed into Raptor's real-clock date tests). `node reference/tfin.js` 728/0
+(no engine/seed file touched — the vendored tree is purely additive). `npm
+run build` clean — zero TypeScript fixes needed, the vendored code compiled
+under Raptor's stricter config as spot-reads predicted. `npm run test:e2e`
+**236 passed / 6 touch-only skips** across THREE PLAYWRIGHT PROJECTS —
+`raptor` (geometry.spec.ts, 102, untouched), `lw-phone` (iPhone 13 forced
+to chromium) and `lw-desktop` (1440×900) both running the vendored
+69-test `leavewar.spec.ts`, adapted only at the boundary: every test opens
+through `openLeaveWar()` (login as member — the standalone default — then
+the tab), the 15 role-toggle clicks became `w.lwSetRole` bridge calls (14
+→admin, 1 →member, audited one by one), `.topbar`/`.wk.on` selectors
+scoped (both apps draw those classes), and the whole-document DOM band
+scoped to `#page-leavewar` (Raptor's shell is not that test's business).
+Two REAL faults surfaced and were fixed in the app, not the tests:
+Raptor's global `.topbar{position:sticky}` leaked INTO the Leave War
+topbar, defeating its deliberate scrolls-away design (an explicit
+`position:static` in the scoped block — cascade resolves per PROPERTY, so
+scoping only shields properties a rule actually sets); and the tab
+inherited the window's stale scroll from the previous page, opening with
+its date header off-screen (`LeaveWarPage` scrolls to top on mount).
+`probes:adapted` 6/6, `perf` 4/4 — **week 3743 / board 844, both ceilings
+unmoved, and the measures are NOT this change's**: base tree and merged
+tree measure byte-identical (proven by stash/measure/restore), the deltas
+vs the 3702/855 recorded above are the remarks-box batch (#235) this
+branch sits on, and the Leave War page is invisible to both measured
+selectors — its ~10,400-node year matrix has NO perf ceiling of its own
+(open-work bullet below). The built bundle was driven at 390×844 and
+1440×900, both logins: every tab at zero sideways overflow, a member bid
+LL through the real picker (cell reads LL), an admin closed bidding and
+opened the decide sheet (Acknowledge/Approve/Refuse), Raptor's own pages
+pixel-normal (no leak-out) — zero console, page or network errors.
+Deployed-page check at merge, as ever.
 Three earlier passes the same day were each green on the same six and each
 checked on the DEPLOYED page (the standing instruction, owner 7 Aug 26): the
 zoom/history/bubble batch (1141 tests, 84 geometry — the bubble that the old
@@ -389,7 +437,26 @@ only after re-running them.
 
 ## Known issues / open work
 
-- **A design critique ran on 15 Aug 26 (`/impeccable critique`); its snapshot
+- **LEAVE WAR is merged as the sixth tab (16 Aug 26); the SYNC is designed,
+  not built.** The owner's full vision — approved leave in Leave War
+  auto-creates the schedule input and vice versa, counters draw down, and
+  weekend/public-holiday duty (SC lines AND duty rows, from the timings as
+  written, thresholds editable on the Logic page) auto-credits OIL into
+  Leave War's FS/HS categories — is specced wire by wire in
+  `raptor-port/docs/superpowers/specs/leavewar-sync.md`; each wire is a
+  separately shippable batch, roster unification first. What is open around
+  the merge itself: the Leave War page's ~10,400-node year matrix is
+  OUTSIDE the perf gate (the ceilings measure `#eWeek`/`#sbBoard` only; its
+  own e2e DOM band in `leavewar.spec.ts` is the guard it has); the vendored
+  app's own limitations travel in `raptor-port/docs/leavewar/known-gaps.md`
+  (read its merge preamble — its claims about Raptor are stale, and its
+  role-toggle entry is superseded); its localStorage keys are still
+  `leavewar:`-prefixed and its INPUTS-equivalent persists while Raptor's
+  INPUTS do not, which is the same server-shaped hole as the first bullet
+  below wearing yet another hat; and the page's own topbar still draws the
+  standalone "142 SQN / LEAVE WAR" mark plus a decorative "Leave war" nav
+  pill under Raptor's topbar — reported to the owner as a cosmetic
+  follow-up option, deliberately not built unasked.
   is in `raptor-port/.impeccable/critique/`.** The owner actioned the two
   mobile items (frozen Quals callsign, collapsible legend) and the "click any
   blank area to deselect" bug. **The P0 keyboard bug is now CLOSED (15 Aug 26):**
@@ -1223,7 +1290,16 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer, login. |
 | `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. |
 | `scheduler.css` | The ported stylesheet — it carries MEASURED contracts, not preferences. |
-| `../probe-bridge.ts` | Window bridge for the browser probes. It deliberately mirrors the WHOLE engine API, not just what a probe uses today — keep it in sync when adding engine API. |
+| `../probe-bridge.ts` | Window bridge for the browser probes. It deliberately mirrors the WHOLE engine API, not just what a probe uses today — keep it in sync when adding engine API. Since the merge it also carries `w.lwSetRole`, the Leave War e2e suite's mid-test role switch (same precedent as `w.setPage`). |
+
+### `raptor-port/src/leavewar/` — the Leave War tab (a second app, vendored 16 Aug 26)
+| file | what it does |
+|---|---|
+| `LeaveWarPage.tsx` | The ONE seam: renders the standalone app's Topbar/StageBar/Matrix inside `#page-leavewar`, scrolls the window to top on mount (Raptor keeps scroll across tab switches). Boot is NOT here — `main.tsx` calls its `initStore` once. |
+| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + M/CSE/OD markers + FS/HS SC-duty, portions `*X`/`X*`), `counters.ts` (derived balances, ledger), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`), `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
+| `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. |
+| `state/storage.ts` | The `leavewar:`-prefixed localStorage seam (`memoryBackend` headless) — deliberately NOT `HOOKS.storeBackend`; the future shared backend replaces both together. |
+| `ui/` | Matrix (the 365-column grid), Chrome (its topbar + stage strip; the role toggle is deleted — see the comment there), the seven sheets, RangePicker. All five stylesheets scoped under `#page-leavewar` (theme.css deleted as pure duplication); cascade note at the top of each file. |
 
 ### Tooling
 | file | what it does |
@@ -1235,6 +1311,9 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `docs/probe-sweep.md` | The full probe → reference → port results table, and the performance gate's reasoning. |
 | `docs/feature-impact.md` | The surfaces any change can touch (warnings, layout, history, board, edit/view-only, desktop/mobile, quals, availability, publishing, export, roles), the generic FLOWS one edit travels, and the drift-seams where two copies of a rule fall out of step (owner, 12 Aug 26). Walk every non-trivial change against it, and keep it true in the same PR. |
 | `docs/remarks-vocabulary.md` | Every piece of text a scheduler can TYPE that turns a rule on — the seat tags, AAR, late show, IRT, the sim brief lead — plus the things that look like text triggers and are not. Written in a user guide's voice, for the guide the owner wants (10 Aug 26). A new text trigger belongs here as well as in `engine-rules.md`. |
+| `docs/superpowers/specs/leavewar-sync.md` | The Leave War ⇄ Raptor sync DESIGN (16 Aug 26, spec only): wire 0 roster unification, wires 1–2 approved-leave⇄input both ways on the existing `ingestFromRaptor`/`outboundToRaptor` primitives, wire 3 counters (derived — the wire IS the decrement), wire 4 the owner's OIL rule (SC lines + duty rows from written timings, VCONF-editable thresholds, FS/HS credits). Build sync work FROM this file. |
+| `docs/leavewar/known-gaps.md` | The vendored app's own limitations, carried over WITH a merge preamble that names what is superseded (the role toggle) and what is stale (its claims about Raptor). |
+| `e2e/leavewar.spec.ts` | The vendored 69-test Leave War geometry/behaviour suite, run at two viewports (`lw-phone`/`lw-desktop` playwright projects). Boundary adaptations only (openLeaveWar login, `w.lwSetRole`, scoped selectors, the `#page-leavewar` DOM band) — its assertions are the standalone app's own, and its DOM band is the Leave War page's only size gate. |
 | `docs/session-state.md` | The last session's leftovers — **often absent, and absent is meaningful**: it exists only while something is genuinely pending, and the session that clears the last item deletes it. This file holds the durable state; that one holds what a session could not finish. Written by `.claude/skills/session-handoff`. |
 | `docs/superpowers/specs/` + `plans/` | Design specs and task-by-task plans from brainstormed features (the vendored superpowers flow). Historical records of WHY a shipped shape was chosen — the living contracts stay in `engine-rules.md` / `ui-contracts.md`. |
 | `PORTING.md` | **Historical** — the phase plan the port was built from. Nothing left to run; kept only because `probe-sweep.md` and `perf-port.cjs` cite its decisions (dropped probes, original timing budgets). |

@@ -25,6 +25,7 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS } from './auth'
+import { setRole as lwSetRole } from '../leavewar/state/store'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -121,6 +122,13 @@ export function resetSession(s: any) {
      scrolls to and a stale carry would immediately undo. */
   view.setCarryDay(null)
   view.setHistMode(false)         // the board's History toggle is a per-session view mode
+  /* the Leave War page's role rides the Raptor session: an admin login is a
+     Leave War admin, everyone else (and a logout) is a member. This is the
+     ONE production writer of that role — the standalone app's own toggle was
+     removed at the merge (see leavewar/ui/Chrome.tsx), and the leavewar
+     store neither persists nor re-reads it, so nothing can disagree with
+     the session that is actually looking at the page. */
+  lwSetRole(s && s.role === 'admin' ? 'admin' : 'member')
   /* and the log itself goes. It is stamped with WHO made each change, so
      carrying it across a logout would show the incoming user a list of
      someone else's work under their own board — and the schedule those

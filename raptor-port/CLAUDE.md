@@ -386,6 +386,16 @@ board, palette) are built by verbatim HTML-string builders and swapped via
 innerHTML with string-diffing — that is what preserves scroll, carets and
 the phone perf budget. Don't convert them to components.
 
+**The Leave War tab is a SECOND app with a SECOND store** (vendored 16 Aug
+26, `src/leavewar/`). It keeps its own store/notify/useVersion, its own
+`leavewar:`-prefixed localStorage (via its `state/storage.ts` seam — NOT
+`HOOKS.storeBackend`), and its own vitest project (fixed TZ + jsdom + 20s
+timeout — see vite.config.ts). Three seams cross the boundary, and only
+three: `main.tsx` boots it once (`lwInitStore`), `resetSession` derives its
+role from the Raptor login (the ONE writer), and `probe-bridge.ts` exposes
+`w.lwSetRole` for its e2e suite. Don't add a fourth casually, and never
+call its `initStore` from a component — it clears the store's subscribers.
+
 ## Coding conventions
 
 - **`src/engine/` bodies are verbatim ports.** Compressed one-line style,
@@ -583,3 +593,4 @@ the phone perf budget. Don't convert them to components.
 | The rules engine | `src/engine/` — `validate.ts` is the heart |
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |
+| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written ONLY by `resetSession`; CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |

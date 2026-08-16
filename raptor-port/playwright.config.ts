@@ -38,6 +38,18 @@ export default defineConfig({
     baseURL: process.env.PORT_URL || 'http://localhost:4173/',
     launchOptions,
   },
+  /* Three projects since the Leave War merge (16 Aug 26). `raptor` is the
+     original geometry gate, unchanged — it sets its own viewports per test.
+     The vendored Leave War suite kept the two-viewport split its standalone
+     repo ran (its geometry contracts — frozen columns, sheet anchoring, tap
+     targets — differ by form factor): `lw-phone` is iPhone 13 emulation
+     FORCED to chromium (the image ships no WebKit; viewport/touch/UA
+     emulation is unaffected), `lw-desktop` is a plain 1440×900 window. */
+  projects: [
+    { name: 'raptor', testMatch: /geometry\.spec\.ts/ },
+    { name: 'lw-phone', testMatch: /leavewar\.spec\.ts/, use: { ...devices['iPhone 13'], browserName: 'chromium' } },
+    { name: 'lw-desktop', testMatch: /leavewar\.spec\.ts/, use: { viewport: { width: 1440, height: 900 } } },
+  ],
   /* a preview of the real production build, not the dev server: the CSS that
      carries the contracts is the built one */
   webServer: {
