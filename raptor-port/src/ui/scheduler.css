@@ -2560,13 +2560,17 @@ button.sanscard:hover{border-color:var(--accent)}
    (see highlights.ts paintFreshAdds). Only the DISMISSAL animates — .sb-fresh-out
    is added just for the final FRESH_FADE_MS (state/view.ts), so the one place a
    repaint could restart the fade is during that ~0.55s tail, where a re-fade is
-   invisible. Inset border so it never shifts a neighbour or is clipped —
-   .sb-go carries overflow:hidden — plus a soft outer glow, the only part that
-   can clip and it degrades cleanly. z-index lifts the box over the next row's
-   top border. */
-.sb-fresh{box-shadow:inset 0 0 0 2px #1E86FF,0 0 9px rgba(30,134,255,.5);border-radius:6px;position:relative;z-index:4}
+   invisible. Inset border ONLY, so it never shifts a neighbour and nothing of
+   it can be cut: the box originally carried a soft outer glow too, and on a
+   phone the glow was swallowed on some sides (an overflow:hidden ancestor
+   discards a descendant's outer shadow) while the parked aircrew drawer's
+   opaque 30px sliver (z 120) covered its right edge — so the ring read as
+   UNEVEN on exactly one side (owner, 16 Aug 26). The .armed and .oktake rings
+   already solved this the same way: draw nothing outside the border box.
+   z-index lifts the box over the next row's top border. */
+.sb-fresh{box-shadow:inset 0 0 0 2px #1E86FF;border-radius:6px;position:relative;z-index:4}
 .sb-fresh-out{animation:sbFreshOut .55s ease forwards}
-@keyframes sbFreshOut{to{box-shadow:inset 0 0 0 2px rgba(30,134,255,0),0 0 9px rgba(30,134,255,0)}}
+@keyframes sbFreshOut{to{box-shadow:inset 0 0 0 2px rgba(30,134,255,0)}}
 /* reduced-motion: no fade — the box simply holds, then is removed at 6s */
 @media (prefers-reduced-motion:reduce){.sb-fresh-out{animation:none}}
 .sb-psub{display:flex;align-items:center;gap:7px;margin:8px 0 3px;padding-top:7px;border-top:1px solid var(--edge)}

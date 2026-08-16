@@ -305,8 +305,18 @@ it cannot tell), and `reconcileIssuedMarks` (`engine/drafts.ts`, called from
 again equals the issued snapshot's, restoring the AL tint that field carried
 when issued. So editing 08:30→08:35 dots the cell and 08:35→08:30 clears it. It
 only ever REMOVES a stale mark (never adds one, so it cannot hide a real
-change), and touches only keys `dayKeys` produces — `del:`/`inp:`/structural-add
-marks are left alone.
+change); `del:`/`inp:` marks are left alone by name. Three refinements (16 Aug
+26, the owner's "swap the pucks and swap it back… it shouldn't register"):
+a pending field key present in NEITHER the live nor the issued walk is dropped
+too — a drop onto an occupied row parks a man at an overflow/append address
+the issued day never had, and dragging him back off trims it from both
+documents, which used to leave a phantom mark that minted an AL over a net
+no-op (a key in live only, a genuine add, keeps its mark); and `dayKeys`
+compares PERSON cells canonically (`nameToId(v) || v` — the seed holds ids
+where an app write stores callsigns) and TIME cells canonically
+(`parseHM → hhmm` — the seed holds `0700` where `txtSet` writes `07:00`), so
+putting back the very value the issued document displays clears the mark in
+every spelling. Unparsable text passes through raw.
 
 ## Sign-off pills (iOS tap contract)
 

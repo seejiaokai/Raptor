@@ -300,6 +300,28 @@ other change was CSS/behaviour). Contracts: `docs/ui-contracts.md` §The aircrew
 panel's day is pickable, §The legend collapses…, §The Quals callsign column is
 frozen, §Selection highlight.
 
+**THE REVERT-CLEANLY BATCH (16 Aug 26 — the owner's "swap the pucks and swap
+it back… it shouldn't register as a change": `reconcileIssuedMarks` drops a
+pending field key present in NEITHER the live nor the issued walk, and
+`dayKeys` compares person cells (`nameToId`) and time cells (`parseHM→hhmm`)
+canonically, closing three ways a net no-op round trip on a published day kept
+reading as an edit and minting an AL; the fresh-add blue box is inset-only so
+the phone's parked-drawer sliver and overflow clipping can no longer cut it
+unevenly; plus `pubsweep.test.tsx`, a 28-test cross-surface sweep of the whole
+publishing system — lifecycle, edit-after-publish, revert families, structural
+round trips, drafts-on-published-day rebase, load-onto-working-copy, reopen →
+re-publish, unpublish, week-vs-board agreement — which is what FOUND the time
+respelling case) — all six gates green first-hand on the matching tree.**
+`npm test` **1687** across **102** files (pubsweep new; drafts/restore/
+longday-msg extended — the debrief test pins that the "+ Nh debrief assumed"
+tail follows a CHANGED `VCONF.debrief`, which no test moved off its default
+before), `node reference/tfin.js` 728/0, `npm run build` clean, `npm run
+test:e2e` 101/101, `probes:adapted` 6/6, `perf` 4/4 — week 3702 / board 855,
+ceilings AND measures unmoved (logic + an inset shadow). The built bundle was
+driven at 1500px and 390×844: Monday signed and published through the real
+controls, a duty start edited 0700→0730 (1 pending) and typed back (pending
+gone — the owner's scenario, live), the fresh box's computed shadow inset-only
+and the ring even on the phone board — zero console, page or network errors.
 Three earlier passes the same day were each green on the same six and each
 checked on the DEPLOYED page (the standing instruction, owner 7 Aug 26): the
 zoom/history/bubble batch (1141 tests, 84 geometry — the bubble that the old
@@ -453,7 +475,12 @@ only after re-running them.
     `afterSchedMutate` after the write and drops any pending FIELD key whose live
     value again matches the issued snapshot (restoring its AL tint); a pending
     mark now means "differs from what's issued", not "was touched". It only ever
-    REMOVES a stale mark. A **"Publishes: <plan>"** chip names the live plan.
+    REMOVES a stale mark. **Hardened 16 Aug 26** (owner: "swap the pucks and
+    swap it back… it shouldn't register"): a pending key in NEITHER document is
+    dropped too (a drop onto an occupied row transits an overflow address the
+    issued day never had), and `dayKeys` folds person (id vs callsign) and time
+    (`0700` vs `07:00`) spellings to one canonical form before comparing —
+    contract in `docs/ui-contracts.md`, seam in `docs/feature-impact.md`. A **"Publishes: <plan>"** chip names the live plan.
     Both surfaces in lockstep: `html.ts` `verSelHTML`/`pvBar`/`dayStatHTML`, board
     mirror in `SchedBoard.tsx`. Pinned in `drafts.test.tsx` (load + reconcile) /
     `draftsui.test.tsx` / `editweek.test.tsx` / `editlog-writers.test.tsx`;
@@ -1205,6 +1232,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `src/state/demosans.test.ts` | The demo SANS seed (14 Aug 26) — shape, idempotency (`initStore()` boots twice against the same `INPUTS` array), the zero-`SANS_AVAIL`-warning proof against every seed record's own padded commitment, and the rendered card grid. |
+| `src/ui/pubsweep.test.tsx` | The comprehensive publishing sweep (16 Aug 26, 28 tests) — scenario by scenario, asserting what the edit week, the board's publish strip and the view page each show: lifecycle, edit-after-publish, edit-and-revert across key families, structural round trips netting out, drafts-on-published-day rebase (including rebase-against-current-AL), load-onto-working-copy leaving `SCHED.cur` alone, reopen → re-publish, unpublish, and week-vs-board deep-equal agreement. Finding a live bug (the time-respelling pending mark) is what this file is FOR — keep extending it when publishing behaviour changes. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |
 | `src/ui/daytplui.test.tsx` | Day templates' UI half (15 Aug 26, 15 tests) — the `dayTplMenu` picker reached from both the board's button and the week's sign-off strip, `DayTplModal.tsx`'s tabs/rename/delete/reset, and the published-day "Reopen the day first" refusal toast. |
