@@ -3,13 +3,14 @@
    a store-subscribed component that returns a hidden shell when closed, and
    the real modal otherwise. The SELECTED template is local view state, not
    schedule state — same reasoning pops.ts gives for TPLEDIT itself. */
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { notify } from '../state/store'
 import { DUTY_PICK } from '../engine/waves'
 import {
   DUTYTPL_CFG, MAX_ROWS, addTpl, delTpl, renameTpl, addTplRow, delTplRow,
-  setTplRow, moveTplRow, dutyTplSave, dutyTplReset,
+  setTplRow, moveTplRow, dutyTplSave, dutyTplReset, tplTime,
 } from '../engine/dutytpl'
+import { hmOK } from '../engine/time'
 import { TPLEDIT, setTplEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
@@ -17,6 +18,9 @@ import { HOOKS } from '../engine/hooks'
 export function DutyTplModal() {
   useVersion()
   const [sel, setSel] = useState<string | null>(null)
+  /* the value a time cell held when it was focused, so a rejected commit can
+     put it back rather than clear it (only one cell is focused at a time) */
+  const timeBuf = useRef('')
   if (!TPLEDIT) return <div className="modal" id="tplModal" hidden />
 
   /* the selected id can go stale — a delete elsewhere, or the modal opening
@@ -26,6 +30,25 @@ export function DutyTplModal() {
 
   const close = () => { setTplEdit(false); notify() }
   const save = () => { dutyTplSave(); notify() }
+
+  /* A time cell takes a clock time or nothing, the same rule txtSet enforces on
+     the schedule (owner, 16 Aug 26 — "no guard rails on duty templates
+     timings"). Validated on COMMIT (blur), not per keystroke: onChange writes
+     the raw value so the controlled input reflects typing, and this refuses a
+     malformed one only once the field is left — a toast on a rejected commit,
+     never on a keystroke (the audit's §5 line the rest of this modal holds).
+     A bad value reverts to what the cell held on focus; a good one normalises
+     0700 → 07:00. */
+  const commitTime = (id: string, ri: number, field: 'str' | 'end', raw: string) => {
+    const v = raw.trim()
+    if (v && !hmOK(v)) {
+      HOOKS.toast(`${v} is not a time — try 0900 or 09:00`, 'warn')
+      setTplRow(id, ri, field, timeBuf.current)
+    } else {
+      setTplRow(id, ri, field, tplTime(v))
+    }
+    save()
+  }
 
   return (
     <div className="modal" id="tplModal" onClick={e => { if ((e.target as HTMLElement).id === 'tplModal') close() }}>
@@ -56,10 +79,14 @@ export function DutyTplModal() {
               </span>
               <input list="dutyRoles" value={row.role}
                 onChange={e => { setTplRow(tpl.id, ri, 'role', e.target.value); save() }} />
-              <input className="tm" value={row.str}
-                onChange={e => { setTplRow(tpl.id, ri, 'str', e.target.value); save() }} />
-              <input className="tm" value={row.end}
-                onChange={e => { setTplRow(tpl.id, ri, 'end', e.target.value); save() }} />
+              <input className="tm" value={row.str} inputMode="numeric" placeholder="0700"
+                onFocus={e => { timeBuf.current = e.target.value }}
+                onChange={e => { setTplRow(tpl.id, ri, 'str', e.target.value); save() }}
+                onBlur={e => commitTime(tpl.id, ri, 'str', e.target.value)} />
+              <input className="tm" value={row.end} inputMode="numeric" placeholder="1300"
+                onFocus={e => { timeBuf.current = e.target.value }}
+                onChange={e => { setTplRow(tpl.id, ri, 'end', e.target.value); save() }}
+                onBlur={e => commitTime(tpl.id, ri, 'end', e.target.value)} />
               <button className="del" onClick={() => { delTplRow(tpl.id, ri); save() }}>✕</button>
             </div>
           ))}

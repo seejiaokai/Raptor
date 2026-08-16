@@ -33,6 +33,11 @@ const type = async (el: Element, value: string) => {
     el.dispatchEvent(new Event('input', { bubbles: true }))
   })
 }
+/* React delegates onFocus/onBlur through focusin/focusout at the root */
+const focusIn = async (el: Element) =>
+  await act(async () => { el.dispatchEvent(new FocusEvent('focusin', { bubbles: true })) })
+const focusOut = async (el: Element) =>
+  await act(async () => { el.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
 
 const mem: Record<string, string> = {}
 
@@ -103,6 +108,52 @@ describe('rows', () => {
     await click($$('.trow .del')[0]!)
     expect(DUTYTPL_CFG[0]!.rows.length).toBe(before - 1)
     expect($$('.trow').length).toBe(before - 1)
+  })
+})
+
+/* GUARD RAILS ON THE TIME CELLS (owner, 16 Aug 26 — "no guard rails on duty
+   templates timings"). A time cell takes a clock time or nothing, refused on
+   COMMIT (blur), not per keystroke — the same line txtSet draws on the
+   schedule. Typing is free; leaving a malformed value reverts it and toasts. */
+describe('time-cell guard rails', () => {
+  const withToasts = async (fn: () => Promise<void>) => {
+    const toasts: string[] = []
+    const orig = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    try { await fn() } finally { HOOKS.toast = orig }
+    return toasts
+  }
+
+  it('a malformed time is refused on blur, reverts to what was there, and toasts', async () => {
+    await click($$('.tpl-tab:not(.new)')[1]!)     // SC Shift — first row is SXO AM 0700/1300
+    const strIn = $$('.trow .tm')[0]!              // the row's start cell
+    expect((strIn as HTMLInputElement).value).toBe('0700')
+    const toasts = await withToasts(async () => {
+      await focusIn(strIn)                          // captures 0700
+      await type(strIn, '2500')                     // types freely — not refused mid-keystroke
+      expect(DUTYTPL_CFG[1]!.rows[0]!.str).toBe('2500')   // raw value while editing
+      await focusOut(strIn)                          // commit — refused
+    })
+    expect(DUTYTPL_CFG[1]!.rows[0]!.str).toBe('0700')     // reverted
+    expect(toasts.some(t => t.includes('is not a time'))).toBe(true)
+  })
+
+  it('a valid time is canonicalised to compact HHMM on blur', async () => {
+    await click($$('.tpl-tab:not(.new)')[1]!)
+    const endIn = $$('.trow .tm')[1]!              // the row's end cell
+    await focusIn(endIn)
+    await type(endIn, '7:00')
+    await focusOut(endIn)
+    expect(DUTYTPL_CFG[1]!.rows[0]!.end).toBe('0700')
+  })
+
+  it('clearing a time to empty stays legal — that is how a row is left open', async () => {
+    await click($$('.tpl-tab:not(.new)')[1]!)
+    const strIn = $$('.trow .tm')[0]!
+    await focusIn(strIn)
+    await type(strIn, '')
+    await focusOut(strIn)
+    expect(DUTYTPL_CFG[1]!.rows[0]!.str).toBe('')
   })
 })
 

@@ -463,6 +463,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   like the stores list. The role vocabulary is the owner's — `OPS O`, `LOG
   CELL`, spaced — and `DUTY_PICK` (the editor's datalist) IS `DUTY_ORDER`'s
   keys, so what a scheduler can pick and what Auto sort understands cannot drift.
+  **A template time is a clock time or nothing** (owner, 16 Aug 26 — "no guard
+  rails on duty templates timings": the editor took `2500` as a start). The
+  editor refuses a malformed value on COMMIT (blur), not per keystroke — a toast
+  and a revert to what the cell held, the same `hmOK` rule `txtSet` enforces on
+  the schedule — and `tplTime` (`dutytpl.ts`) is the silent net under it at the
+  two points a template time crosses into the schedule, `blockFromTpl` (minting
+  a day) and `dutyTplLoad` (untrusted storage): a malformed value drops to `''`
+  (a blank duty time is legal), a valid one canonicalises to the compact `HHMM`
+  the model stores (`0700`, not `07:00`), so a stale value from a pre-guard
+  session can never reach a day.
 - **A template desk is conflict-checked like any other duty row** (owner,
   13 Aug 26). The wave→duty coupling is gone: no wave auto-creates a desk
   (`SAWAVE.autoDuty` removed from the add path), deleting a wave leaves any desk

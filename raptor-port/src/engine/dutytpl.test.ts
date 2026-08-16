@@ -4,7 +4,7 @@ import {
   DUTYTPL_STD, DUTYTPL_CFG, tplAreStandard,
   addTpl, delTpl, renameTpl, moveTpl,
   addTplRow, delTplRow, setTplRow, moveTplRow,
-  blockFromTpl, dutyTplSave, dutyTplLoad, dutyTplReset,
+  blockFromTpl, dutyTplSave, dutyTplLoad, dutyTplReset, tplTime,
 } from './dutytpl'
 
 /* storeBackend.impl is null headless — wire a fake, never real localStorage */
@@ -82,6 +82,32 @@ describe('minting a block from a template', () => {
   it('returns null for an unknown id', () => {
     expect(blockFromTpl('nope')).toBeNull()
   })
+
+  /* GUARD RAILS ON THE TIMES (owner, 16 Aug 26 — "no guard rails on duty
+     templates timings": the editor took `2500` as a start). The editor refuses
+     on commit (DutyTplModal); these two choke points are the silent net, so a
+     value from stale storage or a pre-fix session can never reach the schedule.
+     A malformed time drops to '' (a duty role with no start is legal); a valid
+     one canonicalises to the compact HHMM the model stores. */
+  it('minting drops a malformed time and canonicalises a valid one', () => {
+    const t = addTpl('Nights')!
+    setTplRow(t.id, 0, 'str', '2500')     // not a clock time
+    setTplRow(t.id, 0, 'end', '7:00')     // valid, but not the stored compact form
+    const blk = blockFromTpl(t.id)
+    expect(blk.rows[0].str).toBe('')      // nonsense cleared
+    expect(blk.rows[0].end).toBe('0700')  // 7:00 → 0700
+  })
+
+  it('tplTime is the shared fold: clock time or nothing, compact form', () => {
+    expect(tplTime('0700')).toBe('0700')
+    expect(tplTime('7:00')).toBe('0700')
+    expect(tplTime('700')).toBe('0700')
+    expect(tplTime('2400')).toBe('2400')  // the midnight tail hmOK allows, as on the schedule
+    expect(tplTime('2500')).toBe('')      // hour out of range
+    expect(tplTime('0961')).toBe('')      // minute out of range
+    expect(tplTime('morning')).toBe('')   // not a time at all
+    expect(tplTime('')).toBe('')
+  })
 })
 
 describe('persistence, like the stores list', () => {
@@ -114,5 +140,15 @@ describe('persistence, like the stores list', () => {
     mem['sqn142_dutytpl'] = JSON.stringify({ nope: true })
     dutyTplLoad()
     expect(DUTYTPL_CFG.map(t => t.title)).toEqual(['Standard', 'SC Shift', 'AVALON'])
+  })
+
+  it('a malformed stored time is dropped on load, a valid one canonicalised', () => {
+    /* untrusted storage from a pre-guard session could hold a nonsense time —
+       load is the second net under the editor, so it never reaches a block */
+    mem['sqn142_dutytpl'] = JSON.stringify([
+      { id: 'x', title: 'Ok', rows: [{ role: 'SDO', str: '2500', end: '7:00' }] },
+    ])
+    dutyTplLoad()
+    expect(DUTYTPL_CFG[0]!.rows[0]).toEqual({ role: 'SDO', str: '', end: '0700' })
   })
 })
