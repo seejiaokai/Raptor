@@ -815,7 +815,12 @@ routes `data-air`):
   an empty remarks box (still folded away empty on a phone to save row height —
   that measured saving stands) now reads `R` so it obviously means remarks. The
   box itself carries a faded `Remarks` placeholder (`sbRmk`) so a revealed-but-
-  empty one says what it is.
+  empty one says what it is. **The flying line's own always-visible remarks box
+  (`.nts` in `board.ts`) carries the same faded `Remarks` placeholder** (owner,
+  16 Aug 26) — so an empty one reads the same way. A STANDALONE line keeps its
+  MAIN/SPARE ghost text instead (the Stable decision in `CLAUDE.md`), so the
+  `Remarks` placeholder is emitted only on a formation line, never in place of
+  that ghost.
 - **FCP and RCP sit side by side on the phone board** (owner, 14 Aug 26 — "FCP
   on the left RCP on the right in 1 row" to save vertical space). The two seats
   wrap in `.sb-seatpair`, which is `display:contents` on desktop (the seats stay
