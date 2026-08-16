@@ -181,18 +181,22 @@ describe('the edit select and the frozen draft preview', () => {
     const opts = [...sel.options].map(o => [o.value, o.text])
     /* Live names the selected draft; the OTHER draft rides as d:<id>; no
        ORIG/AL entries exist on an unpublished day */
+    /* Live names the selected draft (·live); the OTHER draft rides as d:<id>;
+       no ORIG/AL entries exist on an unpublished day. optgroups don't appear
+       in .options, so the flattened list is plans only here. */
     expect(opts).toEqual([
-      ['live', 'Live · Draft 2'],
+      ['live', 'Draft 2 · live'],
       ['d:' + dayDrafts(0)[0].id, 'Draft 1'],
     ])
   })
 
-  it('picking a draft freezes it read-only with the banner and NO restore button', async () => {
+  it('picking a draft freezes it read-only with the reworded banner, a Switch action and NO restore button', async () => {
     const sel = $(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement
     await pick(sel, 'd:' + dayDrafts(0)[0].id)
     const day = () => $(`#eWeek .day[data-day="0"]`)
     expect(day().className).toContain('preview')
-    expect(day().querySelector('.dprev-bar')!.textContent).toContain('Viewing Draft 1 — a draft, read-only')
+    expect(day().querySelector('.dprev-bar')!.textContent).toContain('Viewing plan Draft 1 — read-only')
+    expect(day().querySelector('.dprev-switch')).toBeTruthy()   // switch, not restore
     expect(day().querySelector('.dprev-restore')).toBeFalsy()
     expect(day().querySelector('[data-restore]')).toBeFalsy()
     expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
@@ -206,14 +210,55 @@ describe('the edit select and the frozen draft preview', () => {
     expect(sel).toBeTruthy()
     const vals = [...sel.options].map(o => o.value)
     expect(vals).toContain('d:' + dayDrafts(0)[0].id)
-    expect([...sel.options].find(o => o.value === 'live')!.text).toBe('Live · Draft 2')
+    expect([...sel.options].find(o => o.value === 'live')!.text).toBe('Draft 2 · live')
     await click($('#sbClose'))
   })
 
   it('the day head wears the selected draft’s chip on the edit week', async () => {
     const chip = $(`#eWeek .day[data-day="0"] .ddraft`)
     expect(chip).toBeTruthy()
-    expect(chip.textContent).toBe('Draft 2')
+    expect(chip.textContent).toContain('Draft 2')     // "Publishes Draft 2" (16 Aug 26)
+    expect(chip.textContent).toContain('Publishes')
+  })
+})
+
+describe('the redesigned version cluster (owner, 16 Aug 26)', () => {
+  it('shows a green Live-copy marker on the working copy, and a Back button while previewing', async () => {
+    await resetDrafts()
+    await act(async () => { setPage('editsched'); draftDup(0); notify() })
+    const day = () => $(`#eWeek .day[data-day="0"]`)
+    /* on live: a static green marker, no back button */
+    expect(day().querySelector('.livebtn.on')).toBeTruthy()
+    expect(day().querySelector('[data-golive]')).toBeFalsy()
+    /* preview another plan → the marker becomes an active "Back to live" button */
+    await pick($(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement, 'd:' + dayDrafts(0)[0].id)
+    expect(day().querySelector('.livebtn.on')).toBeFalsy()
+    const back = day().querySelector('[data-golive]')
+    expect(back).toBeTruthy()
+    /* clicking it returns to the live working copy in one tap */
+    await click(back)
+    expect(day().className).not.toContain('preview')
+    expect(day().querySelector('.livebtn.on')).toBeTruthy()
+  })
+
+  it('groups the dropdown under a "Your plans" heading', async () => {
+    await resetDrafts()
+    await act(async () => { setPage('editsched'); draftDup(0); notify() })
+    const sel = $(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement
+    expect([...sel.querySelectorAll('optgroup')].map(g => (g as HTMLElement).getAttribute('label'))).toContain('Your plans')
+  })
+
+  it('"Switch to this plan" makes the previewed draft the live working copy', async () => {
+    await resetDrafts()
+    await act(async () => { setPage('editsched'); draftDup(0); notify() })   // Draft 2 live, Draft 1 stowed
+    const otherId = dayDrafts(0)[0].id                                        // Draft 1
+    expect(curDraftId(0)).not.toBe(otherId)
+    await pick($(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement, 'd:' + otherId)
+    const sw = $(`#eWeek .day[data-day="0"] .dprev-switch`)
+    expect(sw).toBeTruthy()
+    await click(sw)
+    expect(curDraftId(0)).toBe(otherId)                                       // Draft 1 is now live
+    expect($(`#eWeek .day[data-day="0"]`).className).not.toContain('preview')
   })
 })
 
@@ -241,7 +286,10 @@ describe('the view-only week', () => {
     await pick(sel, 'd:' + dayDrafts(0)[0].id)
     const day = () => $(`#vWeek .day[data-day="0"]`)
     expect(day().className).toContain('preview')
-    expect(day().querySelector('.dprev-bar')!.textContent).toContain('a draft, read-only')
+    /* view page: reworded banner, and NO switch action (a viewer cannot switch
+       drafts — the Switch button is edit-surface only) */
+    expect(day().querySelector('.dprev-bar')!.textContent).toContain('Viewing plan Draft 1 — read-only')
+    expect(day().querySelector('.dprev-switch')).toBeFalsy()
     expect(day().querySelector('[data-restore]')).toBeFalsy()
     expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
     /* back to the live (selected) draft */

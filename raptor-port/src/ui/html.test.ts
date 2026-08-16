@@ -489,7 +489,8 @@ describe('version dropdown and preview build', () => {
     draftDup(0)                                   // legal on a published day now
     const dv = 'd:' + dayDrafts(0)[0].id
     const h = dayPreviewHTML(0, dv, true)
-    expect(h).toContain('a draft, read-only')
+    expect(h).toContain('Viewing plan')            // reworded banner (16 Aug 26)
+    expect(h).toContain('Switch to this plan')      // edit-surface draft action
     expect(h).not.toContain('✓ Published')
     expect(h).not.toContain('class="dal')
     expect(h).toContain('A stored draft — not the issued schedule')

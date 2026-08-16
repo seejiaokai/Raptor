@@ -8,6 +8,7 @@ import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
+import { draftSelect, draftVerLabel } from '../engine/drafts'
 import { restoreDayVersion } from '../engine/restore'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -558,18 +559,57 @@ export function routeClick(e: MouseEvent) {
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
     publishALDay(+alp.dataset.alpub!); notify(); return
   }
-  /* restore a previewed version — a ROLLBACK: that version becomes the live
-     document immediately, marks and all. Unpublished edits on the day are
-     discarded (the toast says how many); later ALs keep their records. No
-     confirm dialog — the app has none anywhere, and undo is one step. */
+  /* Back to live copy — the home button on the version cluster (owner, 16 Aug
+     26). Pure view state, like the dropdown change: it clears the preview, no
+     role gate and no history step. */
+  const glv = t.closest('button[data-golive]') as HTMLElement | null
+  if (glv) {
+    e.stopPropagation()
+    view.setDayPreview(+glv.dataset.golive!, null)
+    notify(); return
+  }
+  /* Keep editing — cancels an armed "Load onto working copy" confirm without
+     touching the preview it is shown in. */
+  const rcx = t.closest('button[data-restcancel]') as HTMLElement | null
+  if (rcx) {
+    e.stopPropagation()
+    view.setRestArm(null, null)
+    notify(); return
+  }
+  /* Switch to this plan — from a draft preview, make that plan the live
+     working copy (owner, 16 Aug 26). draftSelect stows the outgoing live day
+     into its own draft entry first, so nothing is lost; afterSchedMutate is
+     the single undo step, the same contract the rollback below carries. */
+  const dgo = t.closest('button[data-draftgo]') as HTMLElement | null
+  if (dgo) {
+    e.stopPropagation()
+    if (!canEditSched() || !(view.CURPAGE === 'editsched' || view.SBDAY != null)) return
+    const di = +dgo.dataset.draftgo!, id = dgo.dataset.draftid!
+    const nm = draftVerLabel(di, 'd:' + id)
+    if (view.ARM && view.ARM.di === di) view.disarmSlot()
+    if (!draftSelect(di, id)) { HOOKS.toast('That plan is no longer available', 'warn'); notify(); return }
+    view.setDayPreview(di, null)
+    view.afterSchedMutate()
+    const said = `${DAYS[di].dow} switched to plan ${nm} — this is now the live schedule`
+    logAction(di, said)
+    HOOKS.toast(said)
+    notify(); return
+  }
+  /* "Load onto working copy" — a ROLLBACK: that issued version becomes the
+     live working copy immediately, marks and all. Unpublished edits on the day
+     are discarded (the toast says how many); the issued versions themselves
+     stay frozen, and later ALs keep their dropdown records. Because the load
+     discards edits, when the day has any it takes a confirming second tap
+     (owner, 16 Aug 26 — the one deliberate confirm in the app): the first tap
+     arms restArmed, the second on the same version loads. */
   const rst = t.closest('button[data-restore]') as HTMLElement | null
   if (rst) {
     e.stopPropagation()
     if (!canEditSched() || !(view.CURPAGE === 'editsched' || view.SBDAY != null)) return
-    /* never for a draft ('d:<id>') — the banner renders no restore button for
-       one, but a stale element must not roll a stowed draft blob over the live
-       day either: making a draft live is the Drafts menu's job (draftSelect),
-       which stows the outgoing day first; a restore here would not */
+    /* never for a draft ('d:<id>') — the banner renders "Switch to this plan"
+       for one, not this button, but a stale element must not roll a stowed
+       draft blob over the live day either: switching drafts is draftSelect's
+       job (data-draftgo above), which stows the outgoing day first */
     if (String(rst.dataset.rver || '').slice(0, 2) === 'd:') return
     const di = +rst.dataset.restore!
     const ver = rst.dataset.rver === 'orig' ? 'orig' : +rst.dataset.rver!
@@ -580,6 +620,14 @@ export function routeClick(e: MouseEvent) {
       HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver)}`)
       notify(); return
     }
+    /* the confirm gate: with unpublished edits on the day, arm on the first
+       tap and wait for the second on the same version. Any navigation
+       (dropdown change, Back to live) clears the arm via setDayPreview. */
+    if (dayPendCount(di) > 0 && !view.restArmed(di, rst.dataset.rver)) {
+      view.setRestArm(di, rst.dataset.rver)
+      notify(); return
+    }
+    view.setRestArm(null, null)   // consume the arm before loading
     if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the rollback may remove the armed row
     const dropped = restoreDayVersion(di, ver)
     view.setDayPreview(di, null)

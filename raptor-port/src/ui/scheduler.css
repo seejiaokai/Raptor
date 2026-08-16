@@ -554,6 +554,30 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .dbeak.ro:hover{filter:none;color:var(--ink-2);border-color:var(--edge-2)}
 .dbeak.ro.ok{color:#A8E6BC;background:rgba(87,201,122,.16);border-color:rgba(87,201,122,.55)}
 .dbeak.ro.ok:hover{border-color:rgba(87,201,122,.55)}
+/* THE VERSION CLUSTER'S HOME BUTTON (owner, 16 Aug 26). A static green "you
+   are here" while on the live working copy; an active "← Back to live copy"
+   while previewing an older version. It only navigates — it never publishes. */
+.day-head .livebtn{font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.01em;
+  padding:3px 10px;border-radius:8px;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;line-height:1.55}
+.livebtn.on{color:#A8E6BC;background:rgba(87,201,122,.16);border:1px solid rgba(87,201,122,.55);cursor:default}
+.livebtn.on .dot{width:7px;height:7px;border-radius:50%;background:#57C97A;box-shadow:0 0 0 3px rgba(87,201,122,.22)}
+.livebtn.back{color:var(--accent);background:rgba(59,198,232,.12);border:1px solid rgba(59,198,232,.55);cursor:pointer}
+.livebtn.back:hover{border-color:var(--accent)}
+/* the board's banner carries the same home button (its bar has no room for a
+   permanent one) — pushed to the strip's left, the action button to the right */
+.dprev-bar .dprev-back{color:var(--accent);background:rgba(59,198,232,.12);border-color:rgba(59,198,232,.55);font-size:10.5px;padding:3px 9px}
+.dprev-bar .dprev-back:hover{filter:none;border-color:var(--accent)}
+/* the armed "Load onto working copy" confirm — amber, because it will discard
+   the day's unpublished edits; the plain state stays the accent primary */
+.dbeak.dprev-restore.warn{color:#20180a;background:#E5B34A;border-color:#E5B34A}
+.dbeak.dprev-restore.warn:hover{filter:brightness(1.05)}
+.dprev-bar .dprev-cancel{margin-left:6px}
+.dprev-bar .dprev-switch{margin-left:auto}
+/* the "Publishes" sub-label inside the live-plan chip */
+.day-head .ddraft .k,.sb-pub .ddraft .k{font-size:8px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-right:2px}
+/* the two labelled groups in the version dropdown read as headers */
+.dver optgroup{font-size:10px;font-weight:700;color:var(--ink-3);background:var(--panel-2)}
+.dver option{color:var(--ink);font-weight:600}
 .day.dok{border-color:rgba(87,201,122,.34)}
 .day.dok .day-head{background:rgba(87,201,122,.055);border-bottom-color:rgba(87,201,122,.3)}
 
