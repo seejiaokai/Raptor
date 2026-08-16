@@ -161,8 +161,12 @@ export function wireStore() {
      (audit, 12 Aug 26). Null from `move` means the revealed row itself was
      the one deleted, and the reveal goes with it. */
   HOOKS.remapViewKeys = (move) => {
-    if (view.RMKOPEN == null) return
-    view.setRmkOpen(move(view.RMKOPEN) ?? null)
+    if (view.RMKOPEN != null) view.setRmkOpen(move(view.RMKOPEN) ?? null)
+    /* CTLOPEN (the phone's revealed control strip) rides the same renumbering:
+       a delete/reorder under an open strip carries it to the row's new address,
+       and a null from `move` — the open row was itself the one deleted — closes
+       it. The strip carries no seat key, so `move` sees the row address as-is. */
+    if (view.CTLOPEN != null) view.setCtlOpen(move(view.CTLOPEN) ?? null)
   }
   /* the just-added blue box (owner, 14 Aug 26): markStructuralAdd hands every
      add's key here, view.ts holds it for ~6s, highlights.ts hangs the box */

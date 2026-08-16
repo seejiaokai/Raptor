@@ -191,7 +191,8 @@ export function boardHTML(di: number, pv?: boolean) {
               + `<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
               + `<span class="bombs" contenteditable="true" data-bombs="${key}">${esc((a.opts || {}).bombs || '')}</span></span>`)}
         </div>
-        ${mvRO ? '' : `<span class="lctl">
+        ${mvRO ? '' : `<span class="lctl${view.CTLOPEN === key ? ' open' : ''}">
+          <button class="mbtn ctlmore" data-ctlmore="${key}" title="Row actions">⋯</button>
           ${sbNudge(`mv:ac.${key}`, mvRO)}
           <button class="mbtn${cxOn ? ' on' : ''}" data-lcx="${key}" title="${cxOn ? 'Restore this line' : 'Cancel this line (CX)'}">CX</button>
           <button class="mbtn red${a.flag ? ' on' : ''}" data-lflag="${key}" title="${a.flag ? 'Clear the red box' : 'Red box — flag this for the next scheduler'}">■</button>
@@ -505,6 +506,16 @@ export function boardMbtn(e: MouseEvent) {
     view.setRmkOpen(path)
     notify()
     setTimeout(() => (document.querySelector(`[data-bfld="${CSS.escape(path)}"]`) as HTMLElement | null)?.focus(), 0)
+    return
+  }
+  /* ⋯ — the phone's per-row control toggle (owner, 16 Aug 26). Each row hides
+     its ▲▼/CX/■/✕ strip behind this one dot so a day of rows reads clean;
+     tapping it names that row in CTLOPEN and its strip unfolds, closing any
+     other (tapping the open one closes it). Pure UI state like RMKOPEN — no
+     schedule write, so notify() alone repaints the panel and the strip appears. */
+  if (ds.ctlmore != null) {
+    view.setCtlOpen(view.CTLOPEN === ds.ctlmore ? null : ds.ctlmore)
+    notify()
     return
   }
   /* ▲/▼ — the phone's reorder gesture. The target is read off the NEIGHBOURING

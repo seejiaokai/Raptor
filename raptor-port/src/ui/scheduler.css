@@ -2454,6 +2454,9 @@ button.sanscard:hover{border-color:var(--accent)}
 /* ▲/▼ are the phone's gesture; the grip is the desktop's. Both are always in
    the markup — see board-html.ts's sbGrip/sbNudge for why. */
 .mbtn.nudge{display:none;padding:2px 4px;font-size:9px}
+/* the ⋯ row-action toggle is a PHONE affordance: desktop shows the whole strip,
+   so the dot is hidden there (owner, 16 Aug 26). Shown + wired on a phone below. */
+.mbtn.ctlmore{display:none;padding:2px 6px;font-size:12px;line-height:1}
 /* the B cell wraps an optional suggestion ghost + the input so it is always
    exactly one grid item regardless of whether f.br is set (see html.ts's
    .bto for the same reasoning) — a bare flex column, same idea as .fcell. */
@@ -2778,6 +2781,23 @@ button.sanscard:hover{border-color:var(--accent)}
      a DOM child, so every nth-child index below counts it (8 Aug 26) */
   .sb-grip{display:none}
   .mbtn.nudge{display:inline-flex}
+  /* ⋯ COLLAPSES THE ROW STRIP (owner, 16 Aug 26). A flying/duty/sim/ground row
+     hides its ▲▼/CX/■/✕ behind one ⋯ so a day of rows reads clean; tapping it
+     (CTLOPEN) unfolds that row's strip and closes any other. Scoped by
+     `:has(.ctlmore)` so the note, programme and input strips — which carry no
+     toggle — keep their controls always shown. `.sb-wide` (a tablet showing the
+     desktop layout) opts out: it keeps the full strip and hides the dot. */
+  .schedboard:not(.sb-wide) .mbtn.ctlmore{display:inline-flex}
+  .schedboard:not(.sb-wide) .lctl:has(.ctlmore):not(.open) .mbtn:not(.ctlmore){display:none}
+  /* CLOSED, THE STRIP LEAVES THE FLOW so its whole row is reclaimed (owner,
+     16 Aug 26 — "make it more compact"): the collapsed `.lctl` (now just the ⋯)
+     floats in the block's empty bottom-right corner instead of holding a row of
+     its own. The row anchors it (position:relative). OPEN, it drops back to a
+     normal full-width row carrying the whole strip. */
+  .schedboard:not(.sb-wide) .sb-line,
+  .schedboard:not(.sb-wide) .sb-arow{position:relative}
+  .schedboard:not(.sb-wide) .lctl:has(.ctlmore):not(.open){
+    position:absolute;right:6px;bottom:5px;margin:0;padding:0;min-height:0;z-index:2}
   /* the wave header's .gctl grew a third button (Auto sort) — Go N + the
      wave-title select + the in-time/aircraft-count text already filled a
      390px row, and none of .mbtn/<select>/the label spans opt out of the
