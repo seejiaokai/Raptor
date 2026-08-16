@@ -373,11 +373,14 @@ only after re-running them.
   that clears 4.5:1 — A `#ca4750`, D `#3673dd`, OCU `#7f65bf`, instr `#9f4adf`,
   SANS `#a748dc`); NOT built, awaiting his pick. Also open: the owner's own
   **"make the Insights panel consistent"** question (see
-  `docs/session-state.md`), and his **Quals add-person layout** question —
-  he finds the always-open Add-person form above the table heavy and wants the
-  Pilots/WSOs/Personnel/All filter promoted there instead; a "now vs proposed"
-  comp (View as a segmented control above the table, Add person folded behind a
-  "+ Add person" button) was shown, NOT built. The "Throw pucks (auto)" dead
+  `docs/session-state.md`). His **Quals add-person layout** question is now
+  CLOSED (owner, 15 Aug 26): the Pilots/WSOs/Personnel/All filter left the top
+  toolbar for a segmented control (`.segview`) in a new `.qtablehead` strip
+  directly above the table, and the Add-person form folds behind a "+ Add
+  person" toggle (`showAdd` in `QualsPage.tsx`); Enable editing and Export
+  stayed in the toolbar at the owner's word. The four seat buttons keep their
+  `#qViewP/W/G/A` ids, so every caller and test is unchanged; pinned in
+  `quals.test.tsx`. The "Throw pucks (auto)" dead
   button is a known deliberate stub (one dataset bullet below), flagged by the
   review but not new.
 - **The week-chrome blank-click deselect was widened again (15 Aug 26).** PR

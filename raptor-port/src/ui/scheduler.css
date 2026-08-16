@@ -1186,6 +1186,18 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .qadd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--edge)}
 .qadd input,.qadd select{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:7px 9px;border-radius:8px}
 .qadd .lab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+/* the seat-view strip that heads the table (owner, 15 Aug 26) — the seat
+   switch is the everyday control, so it lives directly above the table it
+   filters, read as one segmented control, with Add person folded to the right. */
+.qtablehead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 20px 8px}
+.qtablehead .seglab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.qtablehead .grow{flex:1}
+.segview{display:inline-flex;background:var(--panel-2);border:1px solid var(--edge-2);border-radius:11px;padding:3px;gap:2px}
+.segview button{border:none;background:transparent;color:var(--ink-2);font-weight:600;font-size:12.5px;
+  padding:7px 15px;border-radius:8px;cursor:pointer;font-family:'Inter Tight',sans-serif}
+.segview button:hover{color:var(--ink)}
+.segview button.on{background:rgba(59,198,232,.12);color:var(--accent);box-shadow:inset 0 0 0 1px rgba(59,198,232,.5)}
+.segview button:active{transform:translateY(1px)}
 /* the 20px page gutter is a MARGIN, not padding, so it sits OUTSIDE the scroll
    box — otherwise the frozen callsign sticks at the padding edge and scrolled
    cells show through the 20px gap to its left (owner, 15 Aug 26). */

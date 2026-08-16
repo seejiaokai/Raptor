@@ -294,7 +294,19 @@ describe('the callsign / initials columns', () => {
     expect($$('#qtbl tbody tr:not(.grp) td.qinitc').length).toBe($$('#qtbl tbody tr:not(.grp)').length)
   })
 
+  it('the Add person form folds behind a button and toggles open (owner, 15 Aug 26)', async () => {
+    expect($('#qCS'), 'closed by default — no open form above the table').toBeFalsy()
+    expect($('#qAddToggle'), 'the admin sees the toggle').toBeTruthy()
+    await click($('#qAddToggle'))
+    expect($('#qCS'), 'opens on click').toBeTruthy()
+    await click($('#qAddToggle'))
+    expect($('#qCS'), 'and closes again').toBeFalsy()
+  })
+
   it('Add person takes callsign + initials + pilot/WSO + cat, with no name fields', async () => {
+    /* the form folds behind the "+ Add person" button now (owner, 15 Aug 26) */
+    expect($('#qCS'), 'the form is closed until the toggle is pressed').toBeFalsy()
+    await click($('#qAddToggle'))
     expect($('#qLast')).toBeFalsy()
     expect($('#qFirst')).toBeFalsy()
     await setV($('#qCS') as HTMLElement, 'Tester')
@@ -502,10 +514,15 @@ describe('sorting by clicking a heading', () => {
     await click($('#qViewP'))
   })
 
-  it('the Sort chips are gone, and View carries the seat choices plus Personnel', () => {
-    expect($$('.qbar .lab').map(x => x.textContent)).toContain('View')
-    expect($$('.qbar .lab').map(x => x.textContent)).not.toContain('Sort')
-    expect($$('.qbar .fchip').map(x => x.textContent)).toEqual(['Pilots', 'WSOs', 'Personnel', 'All'])
+  it('the seat view is a segmented control above the table, and the toolbar keeps Enable editing + Export', () => {
+    /* owner, 15 Aug 26: the view switch moved out of the toolbar to a strip
+       directly above the table; Enable editing and Export stayed up top. */
+    expect($$('.segview button').map(x => x.textContent)).toEqual(['Pilots', 'WSOs', 'Personnel', 'All'])
+    expect($('.qtablehead .segview'), 'the seat view heads the table now').toBeTruthy()
+    expect($$('.qbar .fchip').length, 'no seat chips left in the toolbar').toBe(0)
+    expect($('#qEdit') || $('#qSave'), 'Enable editing stays in the toolbar').toBeTruthy()
+    expect($('#qExport'), 'Export stays in the toolbar').toBeTruthy()
+    expect($$('.qbar .lab, .qtablehead .seglab').map(x => x.textContent)).not.toContain('Sort')
     for (const k of ['cs', 'initials', 'flight', 'cat', 'tf']) expect(th(k), k).toBeTruthy()
   })
 
