@@ -9,7 +9,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../e
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayALs, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
@@ -686,7 +686,7 @@ export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateIn
    view-only page), and the board has no equivalent slot for it today. */
 export function dayStatHTML(di:any,ed:any){
     const d=DAYS[di];
-    const ok=dayApproved(di), dals=dayALs(di), dp=dayPendCount(di);
+    const ok=dayApproved(di), dp=dayPendCount(di);
     /* a DRAFT preview must never wear the published day's clothes (owner,
        15 Aug 26 — "when I toggle to draft 1, it shouldn't say published"):
        under a d: preview the ✓ Published stamp and the AL chip are replaced
@@ -706,25 +706,31 @@ export function dayStatHTML(di:any,ed:any){
        made on another surface. The bare !ed means "read-only render", which is
        not the same as "the view page". */
     const workView=!ed&&!PV&&ok&&VWORK.has(+di)&&CURPAGE==='viewsched';
-    /* the chip appears once amendments exist: a published day with no ALs
-       anywhere keeps the clean "✓ Published" look, but a day rolled back to
-       the Original while ALs sit in the dropdown must say so — silence there
-       would look identical to "never amended". Grey ORIG, never AL1's cyan. */
+    /* THE PUBLISHED STAMP NAMES THE ISSUED VERSION (owner, 16 Aug 26 — "it's
+       misleading that it shows published… published what? Original Published /
+       AL1 Published"). "✓ Published" alone said the DAY was issued but not WHICH
+       version is the issued one, so it read the same on every view. The version
+       now rides INSIDE the stamp as its coloured tag (ORIG grey, ALn in its AL
+       colour), always — including a never-amended Original — which is what makes
+       "published… what?" answerable. It names the LIVE issued version (cv =
+       dayCurVer), so under an AL/ORIG preview the stamp still says what is issued
+       while the banner names what you are viewing. Replaces the old standalone
+       .dal chip, which is why there is no separate version chip any more. */
     const cv=dayCurVer(di);
-    const alChips=(ok&&!pvDraft&&!workView&&cv!=null&&(cv!=='orig'||dals.length))
+    const verTag=(ok&&!pvDraft&&!workView&&cv!=null)
       ? (cv==='orig'
-        ? `<span class="dal orig" title="${DAYS[di].dow} is currently at the Original — as first published">ORIG</span>`
-        : `<span class="dal" data-alc="${cv}" title="${DAYS[di].dow} is currently at AL${cv}">AL${cv}</span>`)
+        ? ` · <span class="dal orig" title="${DAYS[di].dow} is issued as the Original">ORIG</span>`
+        : ` · <span class="dal" data-alc="${cv}" title="${DAYS[di].dow} is issued as AL${cv}">AL${cv}</span>`)
       : '';
-    const pendChip=dp?`<span class="dpend" title="${dp} unpublished edit${dp>1?'s':''} on this day${ok?'':' — publish the day before publishing an AL'}">${dp}&nbsp;pending</span>`:'';
+    const pendChip=dp?`<span class="dpend" title="${dp} unpublished edit${dp>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${dp}&nbsp;pending</span>`:'';
     const sgOK=daySigned(di);
     const beak=pvDraft
       ? `<span class="dbeak ro" title="A stored draft — not the issued schedule">Draft</span>`
       : workView
       ? `<span class="dbeak ro work" title="${d.dow} is published, but this is the working draft — not what was issued">Working draft</span>`
       : ed
-      ? `<button class="dbeak ${ok?'ok':''}${(!ok&&!sgOK)?' locked':''}" data-beak="${di}"${(!ok&&!sgOK)?' disabled':''} title="${ok?'Reopen '+d.dow+' to draft':(sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow)}">${ok?'✓ Published':'Publish day'}</button>`
-      : `<span class="dbeak ro ${ok?'ok':''}" title="${ok?d.dow+' has been published':d.dow+' is still draft'}">${ok?'✓ Published':'Draft'}</span>`;
+      ? `<button class="dbeak ${ok?'ok':''}${(!ok&&!sgOK)?' locked':''}" data-beak="${di}"${(!ok&&!sgOK)?' disabled':''} title="${ok?'Reopen '+d.dow+' to draft':(sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow)}">${ok?'✓ Published'+verTag:'Publish day'}</button>`
+      : `<span class="dbeak ro ${ok?'ok':''}" title="${ok?d.dow+' has been published':d.dow+' is still draft'}">${ok?'✓ Published'+verTag:'Draft'}</span>`;
     /* per-day AL publish — lives beside the day's own publish button, only on a
        PUBLISHED day that carries pending edits of its own. Locked (darkened,
        like the publish-day lock) until the day's four sign-offs are in. The
@@ -747,7 +753,7 @@ export function dayStatHTML(di:any,ed:any){
        .ddraft class, never .dal — the "one version chip" pins count those. */
     const selDraft=ed?dayDrafts(di).find((t:any)=>t.id===curDraftId(di)):null;
     const draftChip=selDraft?`<span class="ddraft" title="${d.dow} has ${dayDrafts(di).length} plans — ${esc(selDraft.name)} is the live one, and is what publishes"><span class="k">Publishes</span> ${esc(selDraft.name)}</span>`:'';
-    return `${alChips}${draftChip}${pendChip}${infoChip}${beak}${alpub}`;
+    return `${draftChip}${pendChip}${infoChip}${beak}${alpub}`;
 }
 export function dayHTML(di:any,ed:any,vsel?:any){
   const d=DAYS[di];

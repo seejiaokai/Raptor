@@ -7,7 +7,7 @@ import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, personWarnDays } from '../engine/avail'
 import { validate, WARN } from '../engine/validate'
 import { markEdit, daySnapOf } from '../engine/publish'
-import { curDraftId } from '../engine/drafts'
+import { curDraftId, reconcileIssuedMarks } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from './auth'
@@ -519,6 +519,11 @@ export function slotTitle(key:any){
   return 'Assign crew';
 }
 export function afterSchedMutate(){
+  /* an edit that restored a field to its issued value must not keep its dotted
+     "changed" mark (owner, 16 Aug 26). noteChange raised the mark before the
+     value landed; this drops it now the write is in, BEFORE markEdit's histPush
+     so the reconciled marks are what undo captures. Only removes stale marks. */
+  reconcileIssuedMarks();
   markEdit();
   /* Delete a puck while its person is selected and the selection goes with it —
      for every day, not just the one you deleted from. Counting rather than

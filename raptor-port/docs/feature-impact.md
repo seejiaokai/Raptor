@@ -113,15 +113,18 @@ arrow / dot scrub  → boardDayStep(±1)  → SBDAY changes
 `boardTab` is view-only by contract. A "navigation" feature that quietly
 validates or writes has crossed from Flow C into Flow A and needs its guards.
 
-### Flow D — publish / amendment / rollback
+### Flow D — publish / amendment / load-a-version
 ```
 sign off a day          → setDayApproved / SCHED
 edit a signed day       → the pending keys become an AL issue (alIssue)
-roll a day back          → restoreDayVersion   (ROLLBACK semantics — session-only)
+edit back to issued     → reconcileIssuedMarks (afterSchedMutate) drops the now-matching pending key
+load a version onto WC   → loadVersionToWorkingCopy (16 Aug 26; NOT a rollback — leaves SCHED.cur, so
+                            viewers keep the issued AL; rebases pending vs issued, like a draft switch)
 apply a day template     → applyDayTpl          (same direct-write + refuse-on-published shape)
 duplicate / switch a draft → draftDup / draftSelect (same shape; the live day IS the selected draft;
                             on a PUBLISHED day the switch ends in rebaseDayPending — the diff vs
                             the issued snapshot becomes the pending set the next AL issues)
+roll a day back          → restoreDayVersion   (OLD instant-rollback; probe-bridge only, no app caller)
 ```
 Previews freeze schedule content but read live personal-inputs and day-info —
 a known limitation, `docs/engine-rules.md` §Version snapshots. Day templates

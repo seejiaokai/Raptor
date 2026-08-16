@@ -460,9 +460,13 @@ describe('version dropdown and preview build', () => {
     restoreDayVersion(0, 1)
   })
 
-  it('a published day with no ALs anywhere shows no chip at all', () => {
+  it('a published day with no ALs still names the issued version in its stamp', () => {
+    /* owner, 16 Aug 26 — "published… what? Original Published makes sense".
+       The version now always rides inside the ✓ Published stamp, ORIG included. */
     sgn(1); setDayApproved(1, 1)
-    expect(dayHTML(1, false)).not.toContain('class="dal')
+    const h = dayHTML(1, false)
+    expect(h).toContain('✓ Published')
+    expect(h).toContain('class="dal orig"')   // "· ORIG" now lives inside the stamp
     setDayApproved(1, 0)
   })
 

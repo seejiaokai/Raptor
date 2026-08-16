@@ -1872,7 +1872,8 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
     await click($('#sbSignBar [data-beak="0"]'))
     expect(dayApproved(0)).toBe(true)
     const beak = $('#sbSignBar [data-beak="0"]')
-    expect(beak.textContent).toBe('✓ Published')
+    expect(beak.textContent).toContain('✓ Published')       // now names the issued version too
+    expect(beak.querySelector('.dal.orig'), 'the stamp names the Original').toBeTruthy()
     expect(beak.classList.contains('ok')).toBe(true)
     expect($('#sbSignBar [data-alpub="0"]'), 'no pending edits yet — no AL button').toBeFalsy()
 

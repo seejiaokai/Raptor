@@ -8,8 +8,7 @@ import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
-import { draftSelect, draftVerLabel } from '../engine/drafts'
-import { restoreDayVersion } from '../engine/restore'
+import { draftSelect, draftVerLabel, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -628,17 +627,19 @@ export function routeClick(e: MouseEvent) {
       notify(); return
     }
     view.setRestArm(null, null)   // consume the arm before loading
-    if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the rollback may remove the armed row
-    const dropped = restoreDayVersion(di, ver)
+    if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the load may remove the armed row
+    const replaced = dayPendCount(di)   // working-copy edits about to be replaced
+    if (!loadVersionToWorkingCopy(di, ver)) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
     view.setDayPreview(di, null)
-    if (dropped === false) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
     view.afterSchedMutate()
-    /* the biggest single change on the board, and it used to leave no trace at
-       all: restoreDayVersion swaps the whole day object, so not one key passes
-       through the funnel and the value-diff path has nothing to compare. The
-       sentence is the record, exactly as it is for a removed line. */
-    const said = `${DAYS[di].dow} rolled back to ${verLabel(ver)} — this is now the live schedule`
-      + (dropped ? ` · ${dropped} unpublished edit${dropped === 1 ? '' : 's'} discarded` : '')
+    /* loadVersionToWorkingCopy swaps the whole day object, so nothing passes
+       through the funnel — the sentence is the record, as it is for a removed
+       line. It loads onto the WORKING COPY only: the issued schedule the view
+       page shows is untouched (SCHED.cur unchanged) until a new AL is published,
+       which is the whole point of the reword from the old instant rollback. */
+    const said = `${DAYS[di].dow}: ${verLabel(ver)} loaded onto the working copy`
+      + (dayApproved(di) ? ` — viewers still see ${verLabel(dayCurVer(di))} until you publish` : '')
+      + (replaced ? ` · ${replaced} unpublished edit${replaced === 1 ? '' : 's'} replaced` : '')
     logAction(di, said)
     HOOKS.toast(said)
     notify(); return

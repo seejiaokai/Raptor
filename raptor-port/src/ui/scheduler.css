@@ -554,6 +554,10 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .dbeak.ro:hover{filter:none;color:var(--ink-2);border-color:var(--edge-2)}
 .dbeak.ro.ok{color:#A8E6BC;background:rgba(87,201,122,.16);border-color:rgba(87,201,122,.55)}
 .dbeak.ro.ok:hover{border-color:rgba(87,201,122,.55)}
+/* the issued-version tag now rides INSIDE the published stamp (owner, 16 Aug
+   26) — "✓ Published · AL1". Slightly smaller than the stamp text and nudged to
+   sit on its baseline; keeps its own AL colour (data-alc) / grey ORIG. */
+.dbeak .dal{font-size:9.5px;padding:0 5px;vertical-align:baseline;margin-left:1px}
 /* THE VERSION CLUSTER'S HOME BUTTON (owner, 16 Aug 26). A static green "you
    are here" while on the live working copy; an active "← Back to live copy"
    while previewing an older version. It only navigates — it never publishes. */

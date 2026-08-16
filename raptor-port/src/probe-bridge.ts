@@ -14,7 +14,7 @@ import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveSt
 import { DAYTPL_CFG, DAYTPL_STD, tplFromDay, addDayTpl, delDayTpl, renameDayTpl, moveDayTpl, applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, dayTplAreStandard } from './engine/daytpl'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
-import { dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete, draftVerLabel, isDraftVer, rebaseDayPending } from './engine/drafts'
+import { dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete, draftVerLabel, isDraftVer, rebaseDayPending, loadVersionToWorkingCopy, reconcileIssuedMarks } from './engine/drafts'
 import * as V from './engine/validate'
 import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayEvents, traceOf, traceLeads, traceIx } from './engine/validate'
 import { collectEvents } from './engine/events'
@@ -142,6 +142,7 @@ export function installProbeBridge() {
   w.dayDrafts = dayDrafts; w.curDraftId = curDraftId; w.draftDup = draftDup
   w.draftSelect = draftSelect; w.draftRename = draftRename; w.draftDelete = draftDelete
   w.draftVerLabel = draftVerLabel; w.isDraftVer = isDraftVer; w.rebaseDayPending = rebaseDayPending
+  w.loadVersionToWorkingCopy = loadVersionToWorkingCopy; w.reconcileIssuedMarks = reconcileIssuedMarks
   w.setDayPreview = (di: any, v: any) => { view.setDayPreview(di, v); notify() }
   w.renderInputs = () => notify()
   w.renderStatus = () => notify()
