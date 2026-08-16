@@ -1,6 +1,7 @@
 import { DAYS } from './data'
 import { SCHED, daySnapOf } from './publish'
 import { keyDay } from './keys'
+import { nameToId } from './people'
 /* =====================================================================
    ROLL A DAY BACK TO A PUBLISHED VERSION
    A rollback, not an amendment (owner decision, Aug 26): clicking Restore
@@ -25,6 +26,15 @@ export function dayKeys(d:any,di:any){
   const m=new Map<string,string>();
   const S=(v:any)=>String(v==null?'':v);
   const J=(v:any)=>JSON.stringify(v==null?null:v);
+  /* Person-valued cells are compared CANONICALLY: a seed/pre-fix row holds the
+     person's id ('nact') where an app write stores his callsign ('Nact') —
+     both name the same man, and comparing them raw made a moved-and-restored
+     person on such a row read as a permanent diff (a pending mark that could
+     never clear, and a rebase diff that was never real). nameToId resolves a
+     callsign to its id and returns undefined for anything else — an id, free
+     text, a placeholder — so P() folds the two spellings together and leaves
+     every other value untouched. Keys and structure are unchanged. */
+  const P=(v:any)=>{const s=S(v);return nameToId(s)||s;};
   (d.notes||[]).forEach((t:any,ni:any)=>m.set(`dn:${di}.${ni}`,S(t)));
   m.set(`sn:${di}`,S(d.simnotes));
   m.set(`pn:${di}`,S(d.prognotes));
@@ -34,7 +44,7 @@ export function dayKeys(d:any,di:any){
     m.set(`ap:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+S(r.cxr)+'␟'+(r.flag?1:0));
     m.set(`ap:${di}.${ri}.sub`,S(r.sub)); m.set(`ap:${di}.${ri}.str`,S(r.str)); m.set(`ap:${di}.${ri}.end`,S(r.end));
     const who=Array.isArray(r.who)?r.who:(r.who?[r.who]:[]);
-    who.forEach((nm:any,k:any)=>m.set(`a:${di}.${ri}.${k}`,S(nm)));
+    who.forEach((nm:any,k:any)=>m.set(`a:${di}.${ri}.${k}`,P(nm)));
   });
   (d.waves||[]).forEach((w:any,gi:any)=>{
     m.set(`wl:${di}.${gi}`,S(w.label)+'␟'+(w.night?1:0)+'␟'+S(w.kind));
@@ -48,7 +58,7 @@ export function dayKeys(d:any,di:any){
       m.set(`ar:${di}.${gi}.${li}`,J((f.aircraft||[]).map((a:any)=>a.area==null?null:String(a.area))));
       m.set(`at:${di}.${gi}.${li}`,J((f.aircraft||[]).map((a:any)=>a.atime==null?null:String(a.atime))));
       (f.aircraft||[]).forEach((a:any,ai:any)=>{
-        m.set(`${di}.${gi}.${li}.${ai}.p`,S(a.p)); m.set(`${di}.${gi}.${li}.${ai}.w`,S(a.w));
+        m.set(`${di}.${gi}.${li}.${ai}.p`,P(a.p)); m.set(`${di}.${gi}.${li}.${ai}.w`,P(a.w));
         m.set(`fr:${di}.${gi}.${li}.${ai}`,S(a.rmks)+'␟'+(a.cx?1:0)+'␟'+S(a.cxr)+'␟'+(a.flag?1:0)+'␟'+S(a.role)+'␟'+(a.spare?1:0));
         m.set(`st:${di}.${gi}.${li}.${ai}`,J(a.opts||{}));
       });
@@ -59,24 +69,24 @@ export function dayKeys(d:any,di:any){
     (dw.rows||[]).forEach((r:any,ri:any)=>{
       m.set(`dr:${di}.${wi}.${ri}.role`,S(r.role)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0));
       m.set(`dr:${di}.${wi}.${ri}.str`,S(r.str)); m.set(`dr:${di}.${wi}.${ri}.end`,S(r.end)); m.set(`dr:${di}.${wi}.${ri}.rmks`,S(r.rmks));
-      m.set(`d:${di}.${wi}.${ri}`,S(r.id));
-      (r.more||[]).forEach((v:any,x:any)=>m.set(`d:${di}.${wi}.${ri}.x${x}`,S(v)));
+      m.set(`d:${di}.${wi}.${ri}`,P(r.id));
+      (r.more||[]).forEach((v:any,x:any)=>m.set(`d:${di}.${wi}.${ri}.x${x}`,P(v)));
     });
   });
   Object.keys(d.sims||{}).forEach((kind:any)=>{
     (d.sims[kind]||[]).forEach((r:any,ri:any)=>{
       m.set(`sr:${di}.${kind}.${ri}.label`,S(r.label)+'␟'+S(r.who)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0));
       m.set(`sr:${di}.${kind}.${ri}.str`,S(r.str)); m.set(`sr:${di}.${kind}.${ri}.end`,S(r.end)); m.set(`sr:${di}.${kind}.${ri}.rmks`,S(r.rmks));
-      if(Array.isArray(r.pax))r.pax.forEach((v:any,k:any)=>m.set(`s:${di}.${kind}.${ri}.pax.${k}`,S(v)));
-      else {m.set(`s:${di}.${kind}.${ri}.p`,S(r.p)); m.set(`s:${di}.${kind}.${ri}.w`,S(r.w));}
-      (r.more||[]).forEach((v:any,x:any)=>m.set(`s:${di}.${kind}.${ri}.x${x}`,S(v)));
+      if(Array.isArray(r.pax))r.pax.forEach((v:any,k:any)=>m.set(`s:${di}.${kind}.${ri}.pax.${k}`,P(v)));
+      else {m.set(`s:${di}.${kind}.${ri}.p`,P(r.p)); m.set(`s:${di}.${kind}.${ri}.w`,P(r.w));}
+      (r.more||[]).forEach((v:any,x:any)=>m.set(`s:${di}.${kind}.${ri}.x${x}`,P(v)));
     });
   });
   (d.ground||[]).forEach((r:any,ri:any)=>{
     m.set(`gr:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0));
     m.set(`gr:${di}.${ri}.str`,S(r.str)); m.set(`gr:${di}.${ri}.end`,S(r.end)); m.set(`gr:${di}.${ri}.rmks`,S(r.rmks));
-    m.set(`g:${di}.${ri}`,S(r.who));
-    (r.more||[]).forEach((v:any,x:any)=>m.set(`g:${di}.${ri}.x${x}`,S(v)));
+    m.set(`g:${di}.${ri}`,P(r.who));
+    (r.more||[]).forEach((v:any,x:any)=>m.set(`g:${di}.${ri}.x${x}`,P(v)));
   });
   return m;
 }

@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, trackStructuralAdd } from './publish'
+import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, trackStructuralAdd, isDeleteKey } from './publish'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
 
@@ -340,9 +340,10 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
    run from afterSchedMutate AFTER the write, drops any pending FIELD key whose
    live value now equals the issued snapshot's, restoring the AL tint that field
    carried when it was issued (snap.c). It only ever REMOVES a stale mark, never
-   adds one, so it can never hide a real change; and it touches only keys dayKeys
-   produces, leaving del:/inp:/structural-add marks (never in dayKeys) alone.
-   Bounded to the published days and their own pending field keys. */
+   adds one, so it can never hide a real change; del:/inp: marks (never in
+   dayKeys) are left alone by name. A pending FIELD key in NEITHER walk is also
+   dropped — see the comment at that branch. Bounded to the published days and
+   their own pending field keys. */
 export function reconcileIssuedMarks() {
   approvedDays().forEach((di: any) => {
     const pend = Object.keys(SCHED.pending).filter((k: any) => keyDay(k) === di)
@@ -352,8 +353,20 @@ export function reconcileIssuedMarks() {
     const iss = dayKeys(snap.d, di)
     let live: any = null
     pend.forEach((k: any) => {
-      if (!iss.has(k)) return                             // del:/inp:/structural — not a field diff
+      if (isDeleteKey(k) || /^inp:/.test(String(k))) return   // inert marks — never field diffs
       if (!live) live = dayKeys(DAYS[di], di)
+      if (!iss.has(k)) {
+        /* A key the issued day never had. If the live day no longer has it
+           either, the field was raised in passing and is gone from BOTH
+           documents — a drop onto an occupied row parks a man at an overflow/
+           append address the issued day lacks, and dragging him back trims
+           the entry away again (owner, 16 Aug 26 — "swap the pucks and swap
+           it back… it shouldn't register as a change"). Left alone, that
+           phantom mark keeps the day reading edited and mints an AL over a
+           net no-op. In live only = a genuine add — keep its mark. */
+        if (!live.has(k)) delete SCHED.pending[k]
+        return
+      }
       if (live.get(k) === iss.get(k)) {
         delete SCHED.pending[k]
         if (snap.c && snap.c[k] != null) SCHED.changes[k] = snap.c[k]
