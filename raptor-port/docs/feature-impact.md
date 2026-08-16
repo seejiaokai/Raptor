@@ -232,6 +232,15 @@ check the other):
 - **Three editors over one list.** The Inputs page, the week cell and the board
   cell all edit `INPUTS`; they are kept from drifting only because all three
   funnel through `commitInputEdit`/`setInpField`. Add a fourth the same way.
+- **What a write STORES vs what a snapshot HOLDS** (16 Aug 26). `txtSet`
+  normalises on the way in (`0700` stored as `07:00`) and `setSlotVal` stores a
+  callsign where the seed holds an id — so a value can be semantically equal to
+  a frozen snapshot's while being byte-different, and every raw compare against
+  a snapshot (`dayKeys` feeding `reconcileIssuedMarks`/`rebaseDayPending`) read
+  a respelling as an edit. `dayKeys` now folds person and time cells to one
+  canonical spelling (`P()`/`T()` in restore.ts). A NEW normalising write path
+  (a new value family the editor reformats) needs a matching fold there, or a
+  reverted edit on a published day wears a mark that never clears.
 - **The edit-week day-head diverges from the reference (15 Aug 26).** The day
   NAME is a crew-day picker (`.dow.crewday`) while the reference's whole day-head
   opened the board; the two are held in sync by `html.test.ts`'s `normDow`, which
