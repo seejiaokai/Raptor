@@ -613,7 +613,7 @@ test('the counter column changes every row at once', async ({ page }) => {
   const before = await Promise.all(rows.map(r => page.locator(`[data-testid="bal-${r}"]`).textContent()))
 
   await pickCounter(page, 'oil')
-  await expect(page.locator('[data-testid="counter-name"]')).toHaveText('OIL CON')
+  await expect(page.locator('[data-testid="counter-name"]')).toHaveText('OIL USED')
 
   const after = await Promise.all(rows.map(r => page.locator(`[data-testid="bal-${r}"]`).textContent()))
   expect(after).not.toEqual(before)
@@ -651,7 +651,7 @@ test('the date headers are square, the .day leak overridden', async ({ page }) =
 test('the figure picker doubles as the legend, aggregates spelled out', async ({ page }) => {
   await page.locator('[data-testid="counter-pick"]').click()
   await expect(page.locator('[data-testid="counter-legend"]')).toContainText('BAL')
-  await expect(page.locator('[data-testid="counter-legend"]')).toContainText('CON')
+  await expect(page.locator('[data-testid="counter-legend"]')).toContainText('USED')
   await expect(page.locator('[data-testid="figsub-med"]')).toHaveText('= ATT C + HL + OML')
   await expect(page.locator('[data-testid="figsub-lvecon"]'))
     .toHaveText('= LL + OL + OIL + OFF + CCL + PL + FCL')
@@ -662,9 +662,9 @@ test('the figure picker doubles as the legend, aggregates spelled out', async ({
 test('the figures reorder, and Reset restores the default order', async ({ page }) => {
   await page.locator('[data-testid="counter-pick"]').click()
   await page.locator('[data-testid="figdown-ll"]').click()
-  expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('OL CON')
+  expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('OL USED')
   await page.locator('[data-testid="counter-reset"]').click()
-  expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('LL CON')
+  expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('LL USED')
 })
 
 // Nothing in the frozen column may be cut off. `.who` carries `overflow:
@@ -1003,7 +1003,7 @@ test('the counter sheet changes the column, and every row with it', async ({ pag
   await page.locator('[data-testid="counter-pick"]').click()
   await page.locator('[data-testid="counter-oil"]').click()
 
-  expect(await shown()).toBe('OIL CON')
+  expect(await shown()).toBe('OIL USED')
   await expect(page.locator('[data-testid="counter-sheet"]')).toHaveCount(0)
   expect(await page.locator('[data-testid="bal-slipway"]').textContent()).not.toBe(before)
 })
@@ -1022,7 +1022,7 @@ test('swiping across the counter column cycles it', async ({ page }, testInfo) =
   // Right to left is "next", the direction a page turns. LVE BAL sits second
   // from the end of the default order, so next is LVE CON.
   await swipe(page, at, -90)
-  expect(await shown()).toBe('LVE CON')
+  expect(await shown()).toBe('LVE USED')
   await swipe(page, at, 90)
   expect(await shown()).toBe('LVE BAL')
 })

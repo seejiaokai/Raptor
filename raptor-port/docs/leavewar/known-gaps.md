@@ -110,15 +110,15 @@ the grid cannot know.
 
 The frozen column no longer cycles the six entitlement counters. It cycles
 ELEVEN named figures (owner's set), each labelled `BAL` (a balance left) or
-`CON` (days taken):
+`USED` (days taken):
 
-    LL CON · OL CON · OIL CON · OFF CON · CCL CON · PL CON · FCL CON ·
-    MED CON · OML CON · LVE BAL · LVE CON
+    LL USED · OL USED · OIL USED · OFF USED · CCL USED · PL USED · FCL USED ·
+    MED USED · OML USED · LVE BAL · LVE USED
 
-- **Ten are consumed (`CON`)** — days of that type taken, read per-TYPE by
+- **Ten are consumed (`USED`)** — days of that type taken, read per-TYPE by
   `takenOf` (not the per-counter `drawnFrom`, which cannot tell LL from OL —
-  both spend the one annual pool). Two are aggregates: `MED CON` = ATT C + HL +
-  OML, `LVE CON` = LL+OL+OIL+OFF+CCL+PL+FCL (medical deliberately excluded).
+  both spend the one annual pool). Two are aggregates: `MED USED` = ATT C + HL +
+  OML, `LVE USED` = LL+OL+OIL+OFF+CCL+PL+FCL (medical deliberately excluded).
 - **One is a balance (`LVE BAL`)** — the annual pool, `opening + grants −
   drawn`, the only figure that can go negative and red. The other entitlement
   balances (OIL/CCL/FCL/PL/EL) are still computed by `balanceOf` and used by
@@ -130,10 +130,10 @@ ELEVEN named figures (owner's set), each labelled `BAL` (a balance left) or
   the figure selection itself. `orderedFigures` heals a stale saved order — an
   unknown id is dropped, a newly added figure appended.
 - **The picker sheet is also the legend** (owner: "show the legend as a
-  bubble"): the BAL/CON key and the two aggregates' compositions render inline.
+  bubble"): the USED/BAL key and the two aggregates' compositions render inline.
 - **Medical is three markers now** — `ATTC` (shown "ATT C"), `HL`, `OML` —
   replacing the single `M`. Like `M` they are assigned, not bid, so **there is
-  no cell-entry UI for them**; MED CON and OML CON populate from seed or a CSV
+  no cell-entry UI for them**; MED USED and OML USED populate from seed or a CSV
   import. A grid affordance to mark someone medical is the natural follow-up if
   the owner wants it (reported, not built).
 

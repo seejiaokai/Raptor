@@ -490,13 +490,13 @@ only after re-running them.
   `docs/leavewar/known-gaps.md`.
 - **LEAVE WAR COUNTER COLUMN reworked to named figures (Aug 26).** The frozen
   column no longer cycles the six entitlement counters; it cycles ELEVEN named
-  figures, each labelled `BAL` (balance left) or `CON` (days taken): LL CON, OL
-  CON, OIL CON, OFF CON, CCL CON, PL CON, FCL CON, MED CON, OML CON, LVE BAL, LVE
-  CON. Ten are per-type consumed (`takenOf`, which splits LL from OL where the
-  per-counter `drawnFrom` cannot); `MED CON` = ATT C + HL + OML, `LVE CON` =
+  figures, each labelled `BAL` (balance left) or `USED` (days taken): LL USED, OL
+  USED, OIL USED, OFF USED, CCL USED, PL USED, FCL USED, MED USED, OML USED, LVE BAL, LVE
+  USED. Ten are per-type consumed (`takenOf`, which splits LL from OL where the
+  per-counter `drawnFrom` cannot); `MED USED` = ATT C + HL + OML, `LVE USED` =
   LL+OL+OIL+OFF+CCL+PL+FCL (medical excluded). `LVE BAL` is the one balance (the
   annual pool, the only figure that can go red). The picker sheet doubles as the
-  **legend** (BAL/CON key + the two aggregates' make-up inline) and as the
+  **legend** (USED/BAL key + the two aggregates' make-up inline) and as the
   **reorder** surface (▲▼ per row + Reset; order persisted under `figorder`, a
   display preference, ungated). Medical is three markers now — `ATTC`/`HL`/`OML`,
   replacing `M`; like `M` they are assigned, not bid, so **no cell-entry UI**

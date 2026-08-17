@@ -125,7 +125,7 @@ export function seedGrid(): Grid {
     ramp: { '2026-01-01': 'OL', '2026-01-03': 'FS', '2026-02-10': '*OIL' },
     tata: { '2026-01-01': 'FS', '2026-01-04': 'FS', '2026-01-09': 'OIL' },
     // The two `M` days become two of the three medical markers — `ATTC` and
-    // `OML` — so MED CON reads 2 and OML CON reads 1 on this demo run (they
+    // `OML` — so MED USED reads 2 and OML USED reads 1 on this demo run (they
     // replaced the single `M`, owner Aug 26). Both remove a whole day exactly
     // as `M` did, so splice keeps the availability it had and no manning count
     // moves. (`HL` is the third medical marker; it is exercised in the unit

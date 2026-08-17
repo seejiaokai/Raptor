@@ -10,7 +10,7 @@
 // figure and showing the squadron-wide total. This sheet is ALSO the legend
 // the owner asked for: each row carries what it means (a `CON` figure's days,
 // a `BAL` figure's balance) and an aggregate carries what it is made of —
-// MED CON reads "= ATT C + HL + OML", LVE CON its seven codes. And it is where
+// MED USED reads "= ATT C + HL + OML", LVE USED its seven codes. And it is where
 // the figures are REORDERED: the ▲▼ on each row move it, persisted, so the
 // column cycles in the squadron's own preferred order.
 
@@ -44,11 +44,11 @@ export function CounterSheet({
           ✕
         </button>
       </div>
-      {/* The suffix key, stated once. `BAL` = what is left, `CON` = what has
-          been taken — the owner's own shorthand, and the one thing a reader
+      {/* The suffix key, stated once. `USED` = what has been taken, `BAL` =
+          what is left — the owner's own shorthand, and the one thing a reader
           needs to know to trust every number below. */}
       <div className="clegend" data-testid="counter-legend">
-        <b>BAL</b> = balance left · <b>CON</b> = days taken
+        <b>USED</b> = days taken · <b>BAL</b> = balance left
       </div>
       <div className="clist">
         {figures.map((f, i) => {

@@ -321,8 +321,8 @@ describe('the two consumed aggregates', () => {
 describe('FIGURES and orderedFigures', () => {
   it('is the eleven figures in the owner\'s order', () => {
     expect(FIGURES.map(f => f.label)).toEqual([
-      'LL CON', 'OL CON', 'OIL CON', 'OFF CON', 'CCL CON', 'PL CON',
-      'FCL CON', 'MED CON', 'OML CON', 'LVE BAL', 'LVE CON',
+      'LL USED', 'OL USED', 'OIL USED', 'OFF USED', 'CCL USED', 'PL USED',
+      'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
     ])
   })
 

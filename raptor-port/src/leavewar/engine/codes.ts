@@ -75,7 +75,7 @@ const LEAVE_TYPE_BY_CODE: Record<string, LeaveType> = Object.fromEntries(
 //
 // The three medical markers ATT C, HL and OML replaced the single `M` marker
 // (owner, Aug 26 — "remove M, it's MED CON, which is ATT C, HL AND OML"). They
-// are the three things that make up a person's MED CON tally, the days-consumed
+// are the three things that make up a person's MED USED tally, the days-consumed
 // figure the counter column shows. Medical is assigned, not applied for, so like
 // every other marker none of the three is biddable and none carries a balance —
 // only OML was ever floated as an entitlement, and the owner settled it as a

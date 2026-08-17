@@ -74,7 +74,7 @@ export function Matrix() {
   // ONE selected figure, shared by every row, tracked by its stable ID so a
   // reorder keeps the SAME figure on screen rather than whatever now sits in
   // its old slot. Giving each row its own would let them desync — row 1
-  // showing LVE BAL while row 2 shows MED CON — worse than no column at all.
+  // showing LVE BAL while row 2 shows MED USED — worse than no column at all.
   const figures = orderedFigures(figureOrder)
   const [shownId, setShownId] = useState(DEFAULT_FIGURE_ID)
   const [picking, setPicking] = useState(false)
@@ -519,7 +519,7 @@ export function Matrix() {
           current={grid[open.id]?.[open.date] ?? ''}
           dates={dates}
           /* The column follows the leave just entered — ask for OIL and it
-             snaps to OIL CON. The owner's ask, and it makes the figure answer
+             snaps to OIL USED. The owner's ask, and it makes the figure answer
              the question the bidder is holding in their head at that moment.
              Each leave type's figure id is just its code lower-cased (LL→'ll',
              OIL→'oil'…), so the map is the string itself — a type without a

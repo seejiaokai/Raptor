@@ -43,7 +43,7 @@ describe('the counter column', () => {
     render(<Matrix />)
     const before = getState().people.map(p => screen.getByTestId(`bal-${p.id}`).textContent)
     pick('oil')
-    expect(screen.getByTestId('counter-name').textContent).toBe('OIL CON')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OIL USED')
     const after = getState().people.map(p => screen.getByTestId(`bal-${p.id}`).textContent)
     expect(after).not.toEqual(before)
     // RAMP has one *OIL (10 Feb, pending) — half a day of OIL taken.
@@ -58,11 +58,11 @@ describe('the counter column', () => {
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
       .toEqual([
-        'LL CON', 'OL CON', 'OIL CON', 'OFF CON', 'CCL CON', 'PL CON',
-        'FCL CON', 'MED CON', 'OML CON', 'LVE BAL', 'LVE CON',
+        'LL USED', 'OL USED', 'OIL USED', 'OFF USED', 'CCL USED', 'PL USED',
+        'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
       ])
     fireEvent.click(screen.getByTestId('counter-lvecon'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('LVE CON')
+    expect(screen.getByTestId('counter-name').textContent).toBe('LVE USED')
     expect(screen.queryByTestId('counter-sheet')).toBeNull()
 
     // ...and back again, without walking through the ten in between.
@@ -83,7 +83,7 @@ describe('the counter column', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect(screen.getByTestId('counter-legend').textContent).toContain('BAL')
-    expect(screen.getByTestId('counter-legend').textContent).toContain('CON')
+    expect(screen.getByTestId('counter-legend').textContent).toContain('USED')
     expect(screen.getByTestId('figsub-med').textContent).toBe('= ATT C + HL + OML')
     expect(screen.getByTestId('figsub-lvecon').textContent).toBe('= LL + OL + OIL + OFF + CCL + PL + FCL')
   })
@@ -168,7 +168,7 @@ describe('the counter follows the leave just entered', () => {
     expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-OIL'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('OIL CON')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OIL USED')
   })
 
   it('snaps for a half day exactly as for a whole one', () => {
@@ -176,7 +176,7 @@ describe('the counter follows the leave just entered', () => {
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('portion-am'))
     fireEvent.click(screen.getByTestId('bid-CCL'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('CCL CON')
+    expect(screen.getByTestId('counter-name').textContent).toBe('CCL USED')
   })
 
   // LL and OL now have SEPARATE consumed figures — the whole reason the column
@@ -186,10 +186,10 @@ describe('the counter follows the leave just entered', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-LL'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('LL CON')
+    expect(screen.getByTestId('counter-name').textContent).toBe('LL USED')
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-12'))
     fireEvent.click(screen.getByTestId('bid-OL'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('OL CON')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OL USED')
   })
 
   // OFF has its own consumed figure now (OFF CON), so entering it snaps there
@@ -198,7 +198,7 @@ describe('the counter follows the leave just entered', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-OFF'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('OFF CON')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OFF USED')
   })
 
   it('clearing a cell moves nothing', () => {
@@ -218,8 +218,8 @@ describe('reordering the figures', () => {
     // LL CON is first; nudging it down puts OL CON at the top of the list.
     fireEvent.click(screen.getByTestId('figdown-ll'))
     const labels = [...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent)
-    expect(labels[0]).toBe('OL CON')
-    expect(labels[1]).toBe('LL CON')
+    expect(labels[0]).toBe('OL USED')
+    expect(labels[1]).toBe('LL USED')
     expect(getState().figureOrder[0]).toBe('ol')
   })
 
@@ -243,10 +243,10 @@ describe('reordering the figures', () => {
     render(<Matrix />)
     // Show OL CON, then move it down. The column must still show OL CON.
     pick('ol')
-    expect(screen.getByTestId('counter-name').textContent).toBe('OL CON')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OL USED')
     fireEvent.click(screen.getByTestId('counter-pick'))
     fireEvent.click(screen.getByTestId('figdown-ol'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('OL CON')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OL USED')
   })
 
   it('persists the order through the backend', () => {

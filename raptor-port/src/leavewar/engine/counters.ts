@@ -146,7 +146,7 @@ export function balanceOf(
 // from this `FIGURES` catalogue rather than from `COUNTERS` — which stays as
 // the counter-name vocabulary the balance/bid math still uses.
 //
-// Suffix convention, owner's own: `CON` = days taken, `BAL` = balance left.
+// Suffix convention, owner's own: `USED` = days taken, `BAL` = balance left.
 
 /**
  * Days of ONE code TYPE this person has taken, across every war — the
@@ -169,10 +169,10 @@ export function takenOf(sources: LeaveSource[], personId: string, type: string):
   return total
 }
 
-// The three medical markers that make up MED CON, and the seven leave codes
-// that make up LVE CON. Kept as literals here (not derived) because these two
-// aggregates are the owner's exact groupings — LVE CON deliberately excludes
-// OML/medical, and MED CON deliberately excludes everything else.
+// The three medical markers that make up MED USED, and the seven leave codes
+// that make up LVE USED. Kept as literals here (not derived) because these two
+// aggregates are the owner's exact groupings — LVE USED deliberately excludes
+// OML/medical, and MED USED deliberately excludes everything else.
 const MED_CON_TYPES = ['ATTC', 'HL', 'OML'] as const
 const LVE_CON_TYPES = ['LL', 'OL', 'OIL', 'OFF', 'CCL', 'PL', 'FCL'] as const
 
@@ -182,7 +182,7 @@ export function medConOf(sources: LeaveSource[], personId: string): number {
 }
 
 /** Total leave days consumed = LL + OL + OIL + OFF + CCL + PL + FCL taken
- *  (medical is its own MED CON tally, so it is not in here). */
+ *  (medical is its own MED USED tally, so it is not in here). */
 export function lveConOf(sources: LeaveSource[], personId: string): number {
   return LVE_CON_TYPES.reduce((sum, t) => sum + takenOf(sources, personId, t), 0)
 }
@@ -215,17 +215,17 @@ export interface Figure {
  * the fixed definition set `orderedFigures` arranges.
  */
 export const FIGURES: readonly Figure[] = Object.freeze([
-  { id: 'll',  label: 'LL CON',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'LL') },
-  { id: 'ol',  label: 'OL CON',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OL') },
-  { id: 'oil', label: 'OIL CON', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OIL') },
-  { id: 'off', label: 'OFF CON', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OFF') },
-  { id: 'ccl', label: 'CCL CON', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL') },
-  { id: 'pl',  label: 'PL CON',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL') },
-  { id: 'fcl', label: 'FCL CON', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'FCL') },
-  { id: 'med', label: 'MED CON', kind: 'con', desc: 'days taken', legend: 'ATT C + HL + OML', value: (c, p) => medConOf(c.sources, p) },
-  { id: 'oml', label: 'OML CON', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OML') },
+  { id: 'll',  label: 'LL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'LL') },
+  { id: 'ol',  label: 'OL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OL') },
+  { id: 'oil', label: 'OIL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OIL') },
+  { id: 'off', label: 'OFF USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OFF') },
+  { id: 'ccl', label: 'CCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL') },
+  { id: 'pl',  label: 'PL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL') },
+  { id: 'fcl', label: 'FCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'FCL') },
+  { id: 'med', label: 'MED USED', kind: 'con', desc: 'days taken', legend: 'ATT C + HL + OML', value: (c, p) => medConOf(c.sources, p) },
+  { id: 'oml', label: 'OML USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OML') },
   { id: 'lvebal', label: 'LVE BAL', kind: 'bal', desc: 'balance available to take', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'annual') },
-  { id: 'lvecon', label: 'LVE CON', kind: 'con', desc: 'days taken', legend: 'LL + OL + OIL + OFF + CCL + PL + FCL', value: (c, p) => lveConOf(c.sources, p) },
+  { id: 'lvecon', label: 'LVE USED', kind: 'con', desc: 'days taken', legend: 'LL + OL + OIL + OFF + CCL + PL + FCL', value: (c, p) => lveConOf(c.sources, p) },
 ])
 
 /** The figure the column opens on: how much leave is left. */
