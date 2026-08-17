@@ -56,6 +56,19 @@
   padding-bottom: 8px;
   margin-bottom: 8px;
   border-bottom: 1px solid var(--edge);
+  /* STUCK to the top of the sheet's own scroller. The twelve-figure sheets
+     run past a phone's height and scroll inside the sheet — and the header
+     used to scroll away with them, taking the ✕ along, so a reader deep in
+     the list had no visible way out (owner, 17 Aug 26, from the deployed
+     page). -10px eats the sheet's top padding and the padding-top puts it
+     back, so the stuck header sits flush on the sheet's edge with nothing
+     peeking through the gap; the opaque background is what makes rows
+     vanish under it instead of showing through. */
+  position: sticky;
+  top: -10px;
+  z-index: 2;
+  background: var(--panel);
+  padding-top: 10px;
 }
 
 .bidsheet-hd .who {
@@ -403,8 +416,6 @@
   color: var(--ink);
 }
 
-}
-
 /* The per-person breakdown sheet's rows are STATEMENTS, not choices — same
    card shape as the picker's rows so the two sheets read as one family, but
    no pointer and no hover invitation, because tapping one does nothing. */
@@ -434,4 +445,5 @@
 .bidsheet .tchip.med {
   color: var(--ink-3);
   border-style: dotted;
+}
 }

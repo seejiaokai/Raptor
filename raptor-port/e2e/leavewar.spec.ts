@@ -705,6 +705,26 @@ test('the figures reorder, and Reset restores the default order', async ({ page 
   expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('LL USED')
 })
 
+// The twelve-figure sheets scroll INSIDE the sheet on a phone, and the header
+// used to scroll away with them, taking the ✕ along — a reader deep in the
+// list had no visible way out (owner, 17 Aug 26, from the deployed page).
+// The header is stuck to the sheet's top now: scroll to the floor of the
+// list and the close button still sits inside the viewport, clickable.
+test('a scrolled sheet keeps its header and its close button', async ({ page }) => {
+  await page.locator('[data-testid="counter-pick"]').click()
+  const sheet = page.locator('[data-testid="counter-sheet"]')
+  await expect(sheet).toBeVisible()
+  await sheet.evaluate(el => { el.scrollTop = el.scrollHeight })
+  const x = page.locator('[data-testid="counter-cancel"]')
+  await expect(x).toBeVisible()
+  const box = (await x.boundingBox())!
+  const vp = page.viewportSize()!
+  expect(box.y).toBeGreaterThanOrEqual(0)
+  expect(box.y + box.height).toBeLessThanOrEqual(vp.height)
+  await x.click()
+  await expect(sheet).toHaveCount(0)
+})
+
 // The viewer — Raptor's "View as" person, Bane on a fresh login — is lit on
 // the grid, the title sheet answers with THEIR numbers, and any callsign
 // opens that person's all-figures sheet, member included (owner, 17 Aug 26).

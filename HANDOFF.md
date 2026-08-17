@@ -605,7 +605,17 @@ ever.
   "your own numbers" over a per-person roster list when asked); and ANY
   callsign tap opens `PersonFiguresSheet` — all twelve figures for that
   person, for every role, each row opening its parts breakdown, the admin's
-  person EDITOR now behind that sheet's "Edit person" button.
+  person EDITOR now behind that sheet's "Edit person" button. **Third pass,
+  from the owner's deployed-page screenshot the same evening:** every
+  sheet's header (and its ✕) is STUCK to the top of the sheet's own
+  scroller now — the twelve-figure list scrolls inside the sheet on a phone
+  and used to carry the close button away with it (`.bidsheet-hd`
+  position:sticky, e2e-pinned). The same fix pass found BOTH LW stylesheet
+  appends of this session had landed OUTSIDE their files' `#page-leavewar`
+  nesting wrapper (matrix.css AND bidpicker.css are wholly scope-wrapped;
+  an append after the closing brace silently loses to the wrapper's +1 id
+  specificity) — all moved inside; when editing either file, insert INSIDE
+  the wrapper.
   Also fixed in the same pass: the date-header cells were rounded by a leak of
   Raptor's global `.day{border-radius}` onto Leave War's `className="day"` header
   cells — overridden square in the scoped `matrix.css`. Full detail in
