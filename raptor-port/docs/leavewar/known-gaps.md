@@ -49,6 +49,13 @@ Everything is built to make that change small: all persistence goes through one
 module (`src/state/storage.ts`), and every write goes through one function
 (`setCell`). Nothing else in the codebase touches either.
 
+**Since the Raptor merge (17 Aug 26) the app boots on the seam's `memoryBackend`,
+not `localBackend`** — so a leave war lasts the session and resets on reload,
+deliberately matching Raptor's session-only `INPUTS` (the paragraphs below that
+describe data surviving a reload are the standalone app's behaviour, superseded
+by this). `localBackend` is still in `storage.ts` for reference and tests; the
+future shared backend that "pushes, not just persists" replaces the seam.
+
 Storage now holds five keys, not one: `wars` (each carrying its own period,
 grid and states), `current`, `role`, `openings` and `ledger`. They are written together by a single `persist()` so
 no path can save one and forget another, and `initStore` reconciles each

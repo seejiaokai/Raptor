@@ -1220,6 +1220,30 @@ export function selectWar(id: string): void {
 }
 
 /**
+ * Install a full set of wars into the live store, replacing whatever is there,
+ * and select `currentId` (falling back to the first war if that id is absent).
+ *
+ * The raw blob is validated through the SAME `readWars` path a stored blob
+ * would have taken at boot, so its states reconcile against their grid exactly
+ * as a persisted war did — returns false and changes nothing if it does not
+ * pass. It does not persist: this is a live injection, not a save.
+ *
+ * Its one caller is the e2e probe bridge. Leave War is session-only now (a
+ * memory backend, see main.tsx), so the under-manned fixtures — which used to
+ * inject a red-day war by writing `leavewar:wars` into localStorage before
+ * boot — can no longer reach the store that way. They boot the app, then push
+ * the same war object in through here. Not a production path.
+ */
+export function loadWars(raw: unknown, currentId: string): boolean {
+  const wars = readWars(raw)
+  if (!wars) return false
+  const id = wars.some(w => w.period.id === currentId) ? currentId : wars[0].period.id
+  state = withCurrent({ ...state, wars, currentId: id })
+  notify()
+  return true
+}
+
+/**
  * Which existing war already covers part of this span, if any.
  *
  * `createWar` returns a bare `'overlap'`, and "those dates overlap a leave

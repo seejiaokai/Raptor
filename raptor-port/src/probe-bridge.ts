@@ -30,7 +30,7 @@ import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
 import { notify, undo, redo } from './state/store'
-import { setRole as lwSetRole } from './leavewar/state/store'
+import { setRole as lwSetRole, loadWars as lwLoadWars } from './leavewar/state/store'
 
 export function installProbeBridge() {
   const w = window as any
@@ -82,6 +82,11 @@ export function installProbeBridge() {
      needs mid-test member↔admin switches that no click path reaches since
      the standalone app's on-screen toggle was removed at the merge. */
   w.lwSetRole = (r: 'admin' | 'member') => lwSetRole(r)
+  /* Inject a full war set into the live store. Same reason as w.lwSetRole:
+     Leave War is session-only now (a memory backend, see main.tsx), so the
+     under-manned e2e fixtures can no longer seed a red-day war through
+     localStorage before boot — they boot, then push it in through here. */
+  w.lwLoadWars = (raw: unknown, currentId: string) => lwLoadWars(raw, currentId)
   /* the board — loaded lazily to keep module order simple */
   /* the id-getter every probe leans on, and the wider engine surface */
   w.$ = (id: string) => document.getElementById(id)

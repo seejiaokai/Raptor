@@ -9,10 +9,14 @@
 // people onto Raptor aircrew of the SAME seat and band, so every demo cell
 // still means what it meant.
 //
-// It runs only on a FRESH browser: the caller (main.tsx) reads whether
-// `leavewar:wars` existed in storage before the store booted. If stored wars
-// exist they are already the squadron's own data — re-keying them would
-// corrupt it — so only the people projection is installed.
+// It runs only on a FRESH boot, and since Leave War went session-only (a
+// memory backend, matching Raptor's own INPUTS — see main.tsx) EVERY boot is
+// a fresh one: nothing survives a reload to be corrupted, so the caller always
+// passes hadStoredWars=false and the demo world is always re-keyed. The
+// `hadStoredWars=true` branch (people projection only, wars left alone) is kept
+// for the shared database backend to come: once real war data can outlive a
+// reload, "this squadron already has its own data" becomes meaningful again
+// and re-keying it would corrupt it.
 
 import { INPUTS, inpId } from '../../engine/inputs'
 import { seedPeople } from '../engine'

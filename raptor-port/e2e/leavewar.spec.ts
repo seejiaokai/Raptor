@@ -384,6 +384,26 @@ test('a bid can be placed, and lands plain because nobody has answered it', asyn
   expect(await chip.evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
 })
 
+// Leave War is session-only, deliberately (see main.tsx): its store boots on a
+// memory backend so a reload forgets everything and returns to the seed — the
+// same as Raptor's own INPUTS, and the point is that the two apps reset in
+// lockstep so a synced cell can never linger on one side of a reload. A freshly
+// placed bid must therefore be gone after a reload, and the seed's own cells
+// (which the demo re-key always re-installs on the fresh boot) must be back.
+test('a placed bid does not survive a reload — the war is session-only', async ({ page }) => {
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  await page.locator('[data-testid="bid-LL"]').click()
+  await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveText('LL')
+
+  await page.reload()
+  await openLeaveWar(page)
+
+  // The bid is gone (empty cells render no chip at all), while a seed cell is
+  // back — proving the reload reset to the seed rather than losing the war.
+  await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveCount(0)
+  await expect(page.locator('[data-testid="cell-dj-2026-01-16"] .c')).toBeVisible()
+})
+
 // The four medical markers are management's to mark (owner, 17 Aug 26): the
 // Medical row exists for an admin, is absent for a member (they file on
 // Raptor's Inputs page and it syncs), and the ATT chips read the owner's
@@ -1373,6 +1393,11 @@ test('the under-manned chip reads 0 days on the projected roster, and is disable
    pinning them. */
 const RED_DAYS = ['2026-01-05', '2026-01-15', '2026-02-10']
 async function seedRedDays(page: Page) {
+  /* Leave War is session-only now (a memory backend, see main.tsx), so writing
+     `leavewar:wars` into localStorage before boot no longer reaches the store.
+     The app is already up (beforeEach opens it), so push the red-day war
+     straight into the live store through the probe bridge (w.lwLoadWars — the
+     w.lwSetRole precedent). */
   await page.evaluate((red) => {
     const sxo = ['bane', 'stiff', 'slipway', 'nact', 'pump', 'snap',
       'mamba', 'shaft', 'dice', 'razer', 'freak', 'glass']
@@ -1400,10 +1425,8 @@ async function seedRedDays(page: Page) {
       },
       grid, states,
     }
-    localStorage.setItem('leavewar:wars', JSON.stringify([war]))
-    localStorage.setItem('leavewar:current', 'y2026')
+    ;(window as any).lwLoadWars([war], 'y2026')
   }, RED_DAYS)
-  await openLeaveWar(page)
 }
 
 test('the under-manned chip opens the days that caused it', async ({ page }) => {

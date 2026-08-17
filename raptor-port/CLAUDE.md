@@ -388,9 +388,15 @@ the phone perf budget. Don't convert them to components.
 
 **The Leave War tab is a SECOND app with a SECOND store** (vendored 16 Aug
 26, `src/leavewar/`). It keeps its own store/notify/useVersion, its own
-`leavewar:`-prefixed localStorage (via its `state/storage.ts` seam — NOT
-`HOOKS.storeBackend`), and its own vitest project (fixed TZ + jsdom + 20s
-timeout — see vite.config.ts). Four seams cross the boundary, and only
+`state/storage.ts` seam (NOT `HOOKS.storeBackend`), and its own vitest project
+(fixed TZ + jsdom + 20s timeout — see vite.config.ts). **It is session-only
+since 17 Aug 26** — `main.tsx` boots it on `memoryBackend()`, so a reload
+forgets the war and returns to the seed, deliberately matching Raptor's own
+session-only `INPUTS` (before this it persisted to `leavewar:`-prefixed
+localStorage while Raptor did not, and a synced cell reverse-cleared or
+reappeared across a reload; both forget in lockstep now). `localBackend` still
+lives in the seam for reference/tests; the future shared database backend
+replaces the seam. Four seams cross the boundary, and only
 four: `main.tsx` boots it once (`lwInitStore` → `installDemoWorld` →
 `wireLeaveWarSync` → a `histInit` re-baseline, in that order), `resetSession`
 derives its role from the Raptor login (the ONE writer), `probe-bridge.ts`
