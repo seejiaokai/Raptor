@@ -424,6 +424,45 @@ pass; and the day-navigation pass. The `probes:adapted` resolution failure
 recorded here before 12 Aug 26 was a Windows-checkout problem with the adapted
 runner's direct `playwright` import, not a code fault. Re-state any of these
 only after re-running them.
+**WIRE 4 — WEEKEND/PH DUTY EARNS OIL (17 Aug 26, on the owner's "if a duty
+is made on those days then u will credit OIL automatically… for SC if it's
+like AM and PM then it's half day… for non SC u count hours, which is 6 or
+more") — all six gates green first-hand on the matching tree.** The last
+design-only wire is built: publishing a weekend or Leave-War-holiday day
+(`DayInfo.ph` OR an 'off'-tagged event word — the owner's PH input path now
+WIRED, the first thing the event tags actually drive) lands each SC MAIN /
+duty-row stander a raptor-owned FS/HS cell and moves the NEW `OIL BAL`
+counter-column figure (duty threshold 361 min — the owner's "6 hours 1 min
+or more", corrected same day from a plain 6h: exactly six hours is a
+half); the credit derives from the ISSUED snapshot per
+`dayApproved` day inside a third reconciler pass (`sync.ts:runOilPass` —
+no fifth cross-app seam), so reopen/AL/reissue/undo all reverse-and-replace
+by construction, leave WINS a contested cell (a `kind:'duty'` clash on the
+strip says so), and each wire's reverse sweep clears only its own cell
+vocabulary — without that partition inbound's garbage collection would eat
+every credit on its next pass. `npm test` **2431 across 136 files**
+(`oil.test.ts` 20 — the AM/PM-half vs full-day shift rule, summed duty
+hours vs `VCONF.oilFullMin`, the one-day cap, spare/time-less/unknown earn
+nothing, and the review pass's two catches pinned: a CX'd shift or duty row
+earns nothing (every sibling consumer skips cx; this one did not), and a
+duty row's `more[]` extras earn its hours like the primary (dayEngaged's
+own "tasked exactly as much" reading); `oilsync.test.ts` 13 — publish drives the cell, issued-snapshot
+not live-day, reopen/reissue reverse-and-replace, the ownership partition,
+never-overwrite + both clash kinds; `counters.test.ts` +4 earned-OIL/OIL
+BAL; three catalogue tests re-pointed 11→12 figures), `node
+reference/tfin.js` 728/0 (the wire runs at publish, which no parity fixture
+ever does; the engine half is a NEW module nothing seeded calls), `npm run
+build` clean, `npm run test:e2e` **248 passed / 6 touch-only skips**,
+`probes:adapted` 6/6, `perf` 4/4 — week 3743 / board 844, all ceilings and
+measures byte-identical to the wires 0–3 entry above: the only DOM this
+feature adds is one Logic-page rule card (ungated), a 12th figure row in
+Leave War's counter sheet (its own band, green), and a clash-strip line
+that renders only on a clash the seed cannot produce. Live-driven on the
+built bundle at 1500px: Saturday signed through the real four-select strip
+and published as admin ("✓ Published · ORIG"), plasma's Jul 18 Leave War
+cell reading FS with the OIL BAL figure at 1 and the sheet's new row
+carrying its "earned by weekend/PH duty + granted − taken" legend, the day
+reopened and both back to nothing — zero console/page/network errors.
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
   DOM ceilings and two behavioural checks. The three per-node TIMING budgets
@@ -489,13 +528,15 @@ only after re-running them.
   `ui/EventRows.tsx`, `ui/EventSheet.tsx`, and the "Event model" section of
   `docs/leavewar/known-gaps.md`.
 - **LEAVE WAR COUNTER COLUMN reworked to named figures (Aug 26).** The frozen
-  column no longer cycles the six entitlement counters; it cycles ELEVEN named
-  figures, each labelled `BAL` (balance left) or `USED` (days taken): LL USED, OL
-  USED, OIL USED, OFF USED, CCL USED, PL USED, FCL USED, MED USED, OML USED, LVE BAL, LVE
+  column no longer cycles the six entitlement counters; it cycles TWELVE named
+  figures (eleven at the rework; `OIL BAL` joined with wire 4 the same day),
+  each labelled `BAL` (balance left) or `USED` (days taken): LL USED, OL
+  USED, OIL USED, OIL BAL, OFF USED, CCL USED, PL USED, FCL USED, MED USED, OML USED, LVE BAL, LVE
   USED. Ten are per-type consumed (`takenOf`, which splits LL from OL where the
   per-counter `drawnFrom` cannot); `MED USED` = ATT C + HL + OML, `LVE USED` =
-  LL+OL+OIL+OFF+CCL+PL+FCL (medical excluded). `LVE BAL` is the one balance (the
-  annual pool, the only figure that can go red). The picker sheet doubles as the
+  LL+OL+OIL+OFF+CCL+PL+FCL (medical excluded). `LVE BAL` is the annual-pool balance; `OIL BAL`
+  (wire 4) is `earned by duty + granted − taken` — a negative value goes red
+  on either, the paint being generic to `bal` figures. The picker sheet doubles as the
   **legend** (USED/BAL key + the two aggregates' make-up inline) and as the
   **reorder** surface (▲▼ per row + Reset; order persisted under `figorder`, a
   display preference, ungated). Medical is three markers now — `ATTC`/`HL`/`OML`,
@@ -505,17 +546,34 @@ only after re-running them.
   Raptor's global `.day{border-radius}` onto Leave War's `className="day"` header
   cells — overridden square in the scoped `matrix.css`. Full detail in
   `docs/leavewar/known-gaps.md` §The counter column is figures.
-- **LEAVE WAR is merged as the sixth tab (16 Aug 26) and SYNC WIRES 0–3 are
-  BUILT (17 Aug 26)** — one roster (boot projection of `PEOPLE`),
-  approved-leave ⇄ schedule-input both ways, counters drawing down (derived,
-  so the wire IS the decrement), the clash strip. **Wire 4 is the one still
-  design-only**: weekend/public-holiday duty (SC lines AND duty rows, from
-  the timings as written, thresholds editable on the Logic page)
-  auto-crediting OIL into Leave War's FS/HS categories —
-  `raptor-port/docs/superpowers/specs/leavewar-sync.md` §Wire 4 carries the
-  owner's rule and the build shape (needs: a non-working-day answer read off
-  Leave War's `DayInfo.ph`, a VCONF threshold, publish-time derivation with
-  reverse-and-replace). Open around the built wires: **the session-only
+- **LEAVE WAR is merged as the sixth tab (16 Aug 26) and ALL FOUR SYNC WIRES
+  are BUILT (wires 0–3 on 17 Aug 26; WIRE 4 later the same day)** — one
+  roster (boot projection of `PEOPLE`), approved-leave ⇄ schedule-input both
+  ways, counters drawing down (derived, so the wire IS the decrement), the
+  clash strip, and now **weekend/public-holiday duty auto-crediting OIL**:
+  publishing a non-working day (weekend by date; holiday = Leave War's
+  `DayInfo.ph` OR an event word tagged 'off day' — the owner's own PH input
+  path) lands each duty-stander a raptor-owned FS/HS cell and moves the new
+  OIL BAL figure. SC AM/PM shift = half, more = full; other duty rows by
+  summed written hours vs `VCONF.oilFullMin` (361, Logic-page editable, the
+  owner's "6 hours 1 min or more" — exactly 6h is a half); SC spares and time-less rows earn nothing; leave
+  wins a contested cell and the duty credit reads as a `kind:'duty'` clash
+  on the strip. Rules in `docs/engine-rules.md` §Weekend/PH duty earns OIL;
+  the five build-time divergences from the design sketch (derived credit
+  not cell+ledger, reconciler pass not publish hook, the event-'off' half,
+  the SC/duty split, the vocabulary partition) are argued at the top of
+  `raptor-port/docs/superpowers/specs/leavewar-sync.md`. **What wire 4
+  deliberately leaves open**: it reads duties for the LOADED WEEK only (the
+  one-dataset bullet below — more weeks fix it for free); the demo seed
+  publishes nothing at boot, so on the demo data a credit appears only
+  after a scheduler actually signs and publishes a weekend day (by design —
+  publishing is the squadron's word); and the earned credit rides the same
+  session asymmetry as every wire: Raptor's publish state resets on reload
+  while Leave War persists, so a stored FS/HS credit whose published day is
+  gone is REVERSE-CLEARED at the next boot (the pass finds nothing earning
+  it) — the same server-shaped hole as the lw-input reverse-clear above,
+  wearing one more hat, and the same "tell the owner before real use" note
+  covers it. Open around the built wires: **the session-only
   asymmetry is now user-visible** — Raptor's `INPUTS` reset on reload while
   Leave War persists, so Raptor-ingested LW cells (except the demo-backed
   pair) reverse-clear on the next boot, and lw-tagged inputs REAPPEAR from
@@ -1317,6 +1375,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `publish.ts` | SCHED, sign-offs (SIGN_ROLES), `setDayApproved`, `publishALDay`/`alIssue`/`unpublishAL`, `markEdit`, inert structural-removal/input-action amendment keys, AL colours, per-day version snapshots (`daySnap`/`daySnapOf`/`dayVersions`), `dayCurVer` (the day-head chip). |
 | `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |
 | `rules.ts` | VCONF/SHIFT_HARD editing, `ruleParse`/`ruleFmt`, `rulesSave`/`rulesLoad`/`rulesReset`. |
+| `oil.ts` | **Wire 4's engine half** (17 Aug 26) — `dayOilCredits(day)` → per-person 0.5/1: SC MAIN shifts by shape (`scShiftCredit` — wholly inside one half of the SC day window = 0.5, more = 1), duty rows by summed written hours vs `VCONF.oilFullMin`, capped at one day; spares, time-less rows and unknown names earn nothing. Pure and Leave-War-blind — the non-working-day question and the credit posting live in `src/leavewar/sync.ts`. Rules: `docs/engine-rules.md` §Weekend/PH duty earns OIL. |
 | `insights.ts` | `computeInsights()` for the Insights modal. |
 | `stores.ts` | The squadron's stores list — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Persisted state, so it lives here. Nothing in `validate.ts` reads a store. |
 | `dutytpl.ts` | The squadron's **duty-block templates** (13 Aug 26) — mutable `DUTYTPL_CFG`, frozen `DUTYTPL_STD` (Standard / SC Shift / AVALON), `addTpl`/`delTpl`/`renameTpl`/`moveTpl` and the per-row `addTplRow`/`delTplRow`/`setTplRow`/`moveTplRow`, `blockFromTpl` (mints a PLAIN `{label,rows}` duty block — no `sa`/`noconf`), and `dutyTplSave`/`dutyTplLoad`/`dutyTplReset` against its own `dutytpl` key. Persisted state, exactly like stores; nothing in `validate.ts` reads a template. Loaded at boot in `initStore`. This is what `+ Block` offers now — waves no longer create desks (§Stable decisions). |
@@ -1370,12 +1429,12 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | file | what it does |
 |---|---|
 | `LeaveWarPage.tsx` | The ONE seam: renders the standalone app's Topbar/StageBar/Matrix inside `#page-leavewar`, scrolls the window to top on mount (Raptor keeps scroll across tab switches). Boot is NOT here — `main.tsx` calls its `initStore` once. |
-| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + medical markers `ATTC`/`HL`/`OML` (replaced `M`, Aug 26) + `CSE`/`OD` + FS/HS SC-duty, portions `*X`/`X*`), `counters.ts` (derived balances + ledger, **plus the counter-column figures: `takenOf` per-type consumed, `medConOf`/`lveConOf` aggregates, the 11-figure `FIGURES` catalogue and `orderedFigures` — see the open-work counter-column bullet**), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/nolv/work, `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
+| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + medical markers `ATTC`/`HL`/`OML` (replaced `M`, Aug 26) + `CSE`/`OD` + FS/HS SC-duty, portions `*X`/`X*`), `counters.ts` (derived balances + ledger, **plus the counter-column figures: `takenOf` per-type consumed, `medConOf`/`lveConOf` aggregates, the 12-figure `FIGURES` catalogue — `OIL BAL` joined with wire 4, fed by `earnedOil` summing FS/HS cells straight into the OIL balance — and `orderedFigures`; see the open-work counter-column bullet**), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/nolv/work, `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
 | `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`, **the event writers `setDayEvent`/`setDayEventRange` (repeat) + `addEventBand`/`removeEventBand` (merge) + the `addEventType`/`updateEventType`/`removeEventType`/`resetEventTypes` library writers, all admin-gated; `state.eventDefs` persisted under `eventdefs`, `period.bands` read leniently in `readWar`**. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. |
 | `state/storage.ts` | The `leavewar:`-prefixed localStorage seam (`memoryBackend` headless) — deliberately NOT `HOOKS.storeBackend`; the future shared backend replaces both together. |
 | `state/raptorRoster.ts` | Wire 0 — `projectPeople()`: the LW roster as a projection of Raptor's `PEOPLE` (skips ground crew + sentinels; band from `isInstr`; sxo carried). Installed at boot, never persisted. |
 | `state/demoworld.ts` | The fresh-browser demo re-key — DEMO_MAP (16 seed people → Raptor aircrew, seat+band-equal by construction), the seed overlay, and the two idempotent backing inputs for the seed's Raptor-owned cells. Boot-time only; the 632 vendored tests stay blind by construction. |
-| `sync.ts` | Wires 1+2 — both DERIVED reconcilers (outbound: approved cells → span-collapsed lw-tagged `INPUTS` rows, one `writeInputsBatch`, only on a non-empty diff; inbound: leave inputs → Raptor-owned cells per day, portions both ways, custom rounds OUT, reverse-clear, the clash list + its own subscription), the SYNCING flag, `wireLeaveWarSync()`. The loop-breaker pair is documented at the top of the file. |
+| `sync.ts` | Wires 1+2+4 — three DERIVED reconcilers (outbound: approved cells → span-collapsed lw-tagged `INPUTS` rows, one `writeInputsBatch`, only on a non-empty diff; inbound: leave inputs → Raptor-owned cells per day, portions both ways, custom rounds OUT, reverse-clear, the clash list + its own subscription; **`runOilPass`**: published weekend/PH duty → raptor-owned FS/HS cells off the issued snapshot, `isNonWorkingISO` reading `DayInfo.ph` + 'off'-tagged events, reverse sweeps partitioned by cell vocabulary, leave wins a contested cell with a `kind:'duty'` clash), the SYNCING flag, `wireLeaveWarSync()`. The loop-breaker pair is documented at the top of the file. Tested in `sync.test.ts` + `oilsync.test.ts`. |
 | `ui/` | Matrix (the 365-column grid; now paints the event column colours + mounts the Event sheet), Chrome (its topbar + stage strip; the role toggle is deleted — see the comment there), the seven sheets, RangePicker, **`EventRows.tsx` (the two event lines — merged bands as colspan, red work text, tap-to-edit), `EventSheet.tsx` (the admin event editor + type library, on `Sheet`+`RangePicker`; `eventsheet.css`)**. All stylesheets scoped under `#page-leavewar` (theme.css deleted as pure duplication); cascade note at the top of each file — the event column colours in `matrix.css` are ordered after weekend/blocked deliberately. |
 
 ### Tooling

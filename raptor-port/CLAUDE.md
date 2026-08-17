@@ -396,10 +396,12 @@ four: `main.tsx` boots it once (`lwInitStore` → `installDemoWorld` →
 derives its role from the Raptor login (the ONE writer), `probe-bridge.ts`
 exposes `w.lwSetRole` for its e2e suite, and **`src/leavewar/sync.ts`** — the
 sync wires (17 Aug 26): Leave War's roster is a boot-time PROJECTION of
-Raptor's PEOPLE, and approved leave crosses both ways as DERIVED
+Raptor's PEOPLE, approved leave crosses both ways as DERIVED
 RECONCILIATION (outbound skips Raptor-owned cells, inbound skips lw-tagged
-inputs — that pairing is the loop-breaker; details in
-`docs/superpowers/specs/leavewar-sync.md`). Don't add a fifth seam casually,
+inputs — that pairing is the loop-breaker), and a PUBLISHED weekend/holiday
+duty credits OIL as a third derived pass (wire 4, `runOilPass` +
+`engine/oil.ts` — the ownership partition is by cell vocabulary, FS/HS vs
+leave codes; details in `docs/superpowers/specs/leavewar-sync.md`). Don't add a fifth seam casually,
 and never call its `initStore` from a component — it clears the store's
 subscribers.
 

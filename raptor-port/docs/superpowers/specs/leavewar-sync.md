@@ -8,7 +8,48 @@ divergences worth knowing: `ingestFromRaptor` now writes into the war HOLDING th
 date (it wrote only the current war — a 2027 input would have landed in the 2026
 grid); the seed's two Raptor-owned cells are backed by boot-time demo inputs
 (else the reverse-clear would erase them); and both directions skip persons the
-other side does not know. **Wire 4 (weekend/PH OIL) is still design-only, below.**
+other side does not know. **Wire 4 (weekend/PH OIL) is BUILT too (17 Aug 26)**
+— `engine/oil.ts` (the credit computation) + `sync.ts:runOilPass` (the
+reconciler) — with five build-time divergences from the sketch below, each
+argued where it lives:
+
+- **The credit is DERIVED, not a cell-plus-ledger-entry.** The FS/HS cell IS
+  the record the duty stood; the OIL balance derives `+ earned` straight from
+  the cells' `earnsOil` (`counters.ts:earnedOil`). A ledger entry for the
+  same fact would be the two-records-of-one-fact the counters module refuses,
+  and reverse-and-replace comes free: the cell changes, the balance follows.
+  The demanded distinguishability holds — only the wire mints raptor-owned
+  FS/HS — and an **OIL BAL** figure joined the counter column so the credit
+  lands somewhere visible.
+- **No publish hook; a third reconciler pass.** Rather than a fifth
+  cross-app seam on `setDayApproved`, `runOilPass` runs beside
+  inbound/outbound on both stores' notifies and derives desired credits from
+  `dayApproved` + the issued snapshot (`daySnapOf(dayCurVer)`). Every path
+  that moves the issued document — publish, reopen, AL, reissue, undo,
+  restore — is covered by construction, and "on publish, not on every
+  keystroke" still holds: an unpublished edit changes no snapshot, so the
+  pass finds an empty diff.
+- **The non-working-day answer grew the event half.** Weekend from the date
+  (`isWeekend`, UTC), holiday from the war holding the date — `DayInfo.ph`
+  OR an event word whose type is tagged **'off'** (`columnKindFor`), which
+  wires in the owner's own PH input path from the 17 Aug event build.
+- **The SC/duty split is the owner's 17 Aug refinement**, superseding plain
+  scheduled-hours for SC: an SC AM/PM shift (wholly inside one half of the
+  SC day window) is 0.5, anything more 1.0; other duty rows go by summed
+  written hours against `VCONF.oilFullMin` (default 361 — the owner's "6
+  hours 1 min or more"; exactly 6h is a half — Logic-editable);
+  SC spares and time-less rows earn nothing; per-person cap 1.0/day.
+- **The ownership partition is by vocabulary.** Wire 4's cells wear the same
+  `{approved, raptor}` marker as wire 2's (every existing guard protects
+  them for free), so each reverse sweep clears only its OWN codes — inbound
+  skips FS/HS, the OIL pass clears nothing else — and on a contested cell
+  **leave wins** while the duty credit raises a `kind:'duty'` clash on the
+  strip. Without the partition each wire would garbage-collect the other's
+  writes.
+
+Rules: `docs/engine-rules.md` §Weekend/PH duty earns OIL. Tests:
+`src/engine/oil.test.ts`, `src/leavewar/oilsync.test.ts`. The §Wire 4
+section below is kept as the design record.
 
 Written at the merge (16 Aug 26), when Leave War became the sixth tab
 (`src/leavewar/`, see `docs/leavewar/known-gaps.md` for what the vendored

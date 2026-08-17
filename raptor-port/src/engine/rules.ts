@@ -30,7 +30,16 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
      downchits are exempt from it entirely (engine/inputs.ts). */
   inputLead:14,     // member input deadline, days before the week's Monday
   scDayFrom:7*60,   // an SC shift wholly inside this window is a DAY shift
-  scDayTo:19*60};
+  scDayTo:19*60,
+  /* WEEKEND / PUBLIC-HOLIDAY DUTY EARNS OIL (owner, 16-17 Aug 26 — Leave War
+     sync wire 4). A duty stood on a non-working day credits OIL in Leave War:
+     an SC AM or PM shift is half a day, a whole-day shift a full one, and a
+     plain duty row goes by its written hours — this many minutes or more is a
+     FULL day (1.0 OIL), under it a HALF (0.5). "6 hours 1 min or more" is the
+     owner's own line (17 Aug 26, corrected from a plain 6h the same day):
+     exactly six hours is still a HALF day. Like inputLead this grades no
+     flying — engine/oil.ts is its only reader, at publish time. */
+  oilFullMin:6*60+1}; // scheduled duty minutes that make a FULL day of OIL
 /* SC currency. A shift that sits wholly inside 07:00–19:00 is a DAY shift and
    needs SC DAY; anything reaching outside it is a NIGHT shift and needs SC
    NIGHT. Crew change times move, so the window is read off the shift as
@@ -83,6 +92,7 @@ export const RULE_SPEC:any={
   amtDebrief:{t:'AMT debrief',               u:'min', lo:0,  hi:240},
   scDayFrom: {t:'SC day window opens',       u:'time',lo:0,  hi:1439},
   scDayTo:   {t:'SC day window closes',      u:'time',lo:0,  hi:1439},
+  oilFullMin:{t:'Weekend duty full day (OIL)',u:'min',lo:60, hi:720},
   maxRun:    {t:'Max days worked in a row',  u:'days',lo:1,  hi:14},
   inputLead: {t:'Member input deadline before the week',u:'days',lo:0,hi:60},
   minTurn:   {t:'Minimum turn (unused)',     u:'min', lo:0,  hi:480},

@@ -339,12 +339,17 @@ export function StageBar() {
       {role === 'admin' && clashes.length > 0 && (
         <div className="syncclash" data-testid="sync-clashes">
           <span className="n">
-            {clashes.length} leave clash{clashes.length === 1 ? '' : 'es'} with the schedule
+            {clashes.length} clash{clashes.length === 1 ? '' : 'es'} with the schedule
           </span>
           {clashes.map(c => (
-            <span className="row" key={`${c.person}-${c.date}`}>
-              {(people.find(p => p.id === c.person)?.callsign ?? c.person)}: input {c.inputCode} vs
-              bid {c.bidCode} on {shortDate(c.date)} — resolve on the sheet
+            // kind joins the key: a leave clash and a duty clash can share one
+            // person and date, and duplicate keys drop a row on repaint
+            <span className="row" key={`${c.kind ?? 'leave'}-${c.person}-${c.date}`}>
+              {c.kind === 'duty'
+                ? <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: published duty
+                    earns {c.inputCode} but {shortDate(c.date)} holds {c.bidCode} — resolve on the sheet</>
+                : <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: input {c.inputCode} vs
+                    bid {c.bidCode} on {shortDate(c.date)} — resolve on the sheet</>}
             </span>
           ))}
         </div>

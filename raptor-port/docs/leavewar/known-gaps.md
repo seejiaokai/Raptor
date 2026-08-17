@@ -86,13 +86,22 @@ themselves.
 
 ## What balances do not yet do
 
-Balances are computed and on screen. Three parts of §Counters are not built:
+Balances are computed and on screen. Two parts of §Counters are not built:
 
-- **Earned OIL.** The automatic-OIL rule turns on knock-off time — later than
-  14:30 credits 1.0, at or before credits 0.5 — and **nothing in this app
-  carries a knock-off time**. So a balance is `opening + grants − drawn` and
-  never `+ earned`. This is blocked on data, not effort, and it is the reason
-  step 5 of the build order is only half done.
+- **Earned OIL is BUILT (sync wire 4, 17 Aug 26)** — and not the way this
+  bullet used to describe. The old spec's knock-off-time rule (later than
+  14:30 credits 1.0) is superseded by the owner's scheduled-hours rule,
+  computed on the Raptor side from the published schedule (`engine/oil.ts`:
+  SC AM/PM shift = 0.5, more = 1.0; a duty row's summed written hours ≥
+  `VCONF.oilFullMin` = 1.0, under = 0.5, on weekends and days this app calls
+  a holiday — `DayInfo.ph` or an 'off'-tagged event). The credit lands as a
+  raptor-owned FS/HS cell, and the OIL balance is
+  `opening + grants + earned − drawn`, `earned` derived straight from the
+  FS/HS cells' `earnsOil` (`counters.ts:earnedOil`) — a ledger entry for the
+  same fact would be the two-records-of-one-fact this engine refuses. The
+  **OIL BAL figure** joined the counter column as its landing strip. The
+  wire itself: `src/leavewar/sync.ts` `runOilPass`, tested in
+  `src/leavewar/oilsync.test.ts`.
 - **No grant sheet.** The ledger is seeded and read; nothing can post a
   top-up, an award or a correction through the interface.
 - **No ledger view.** §Counters promises that any number on screen can be

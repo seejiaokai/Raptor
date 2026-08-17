@@ -1033,6 +1033,53 @@ export function ingestFromRaptor(personId: string, date: string, code: string): 
 }
 
 /**
+ * Post an OIL credit earned on the schedule — sync wire 4's writer, the
+ * duty-shaped sibling of `ingestFromRaptor` above.
+ *
+ * Only `FS` and `HS` come through here: they are the two codes nobody bids
+ * for that Raptor's schedule can mint (a published duty on a non-working
+ * day, `engine/oil.ts`), which is exactly the gap ingest's `isBiddable`
+ * gate exists to refuse. The ownership record is the same
+ * `{approved, raptor}` shape, and deliberately so — every guard that keeps
+ * a hand off a synced leave cell (setCell's refusal, outbound's skip,
+ * `clearRaptorCell`'s narrowness) protects a credit identically, and the
+ * schedule stays the only thing that can move it. A cell already holding
+ * anything else — a leave bid, a course, a hand-typed marker — is the
+ * clash: write nothing, a human decides (the wire surfaces it). A
+ * hand-typed FS/HS matching the schedule's verdict is not a clash, it is
+ * the squadron having recorded the same fact first — taken over in place,
+ * exactly like ingest's confirming upgrade.
+ */
+export function ingestDutyCredit(personId: string, date: string, code: 'FS' | 'HS'): IngestResult {
+  if (code !== 'FS' && code !== 'HS') return 'ignored'
+  const war = warHolding(state.wars, date)
+  if (!war) return 'ignored'
+
+  const existing = war.grid[personId]?.[date]
+  const owned = raptorOwns(war.states, personId, date)
+  /* An owned cell is only this wire's to move while it holds this wire's own
+     vocabulary (FS/HS — the hours changed, the credit follows). An owned cell
+     holding a LEAVE code is wire 2's: overwriting it would set the two passes
+     flipping one cell forever, so the man reading as on leave AND on duty is
+     surfaced as the clash it is, and leave keeps the cell until a human moves
+     one of the two records. */
+  if (existing && existing !== code && !(owned && (existing === 'FS' || existing === 'HS'))) return 'clash'
+  const confirming = existing === code && !owned
+
+  const row = { ...(war.grid[personId] ?? {}), [date]: code }
+  const srow = {
+    ...(war.states[personId] ?? {}),
+    [date]: { state: 'approved', source: 'raptor' } as BidRecord,
+  }
+  updateWar(war.period.id, w => ({
+    ...w,
+    grid: { ...w.grid, [personId]: row },
+    states: { ...w.states, [personId]: srow },
+  }))
+  return confirming ? 'confirmed' : 'written'
+}
+
+/**
  * Clear one cell Raptor owns — the sync wire's delete path, and nothing
  * else's.
  *

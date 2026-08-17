@@ -12,6 +12,7 @@ import {
   lveConOf,
   FIGURES,
   orderedFigures,
+  earnedOil,
   DEFAULT_FIGURE_ID,
   DEFAULT_FIGURE_ORDER,
   type Ledger,
@@ -191,6 +192,37 @@ describe('balanceOf', () => {
   })
 })
 
+describe('earnedOil — duty stood on a non-working day (wire 4)', () => {
+  it('sums FS as a full day and HS as a half into the OIL balance', () => {
+    const grid: Grid = { ramp: { '2026-01-10': 'FS', '2026-01-11': 'HS' } }
+    expect(earnedOil([{ grid, states: {} }], 'ramp')).toBe(1.5)
+    // opening 1 + earned 1.5 − nothing taken = 2.5
+    expect(balanceOf({ ramp: { oil: 1 } }, [], [{ grid, states: {} }], 'ramp', 'oil')).toBe(2.5)
+  })
+
+  it('earns across every war, like drawnFrom — December duty is January\'s balance', () => {
+    const a: Grid = { ramp: { '2025-12-27': 'FS' } }
+    const b: Grid = { ramp: { '2026-01-10': 'HS' } }
+    expect(earnedOil([{ grid: a, states: {} }, { grid: b, states: {} }], 'ramp')).toBe(1.5)
+  })
+
+  it('feeds ONLY the OIL balance — leave codes earn nothing, other counters see no earned term', () => {
+    const grid: Grid = { ramp: { '2026-01-10': 'FS', '2026-01-11': 'LL' } }
+    expect(earnedOil([{ grid, states: {} }], 'ramp')).toBe(1)
+    expect(balanceOf({ ramp: { annual: 5 } }, [], [{ grid, states: {} }], 'ramp', 'annual')).toBe(4)
+  })
+
+  it('the OIL BAL figure reads it: earned + granted − taken', () => {
+    const ctx = {
+      openings: {},
+      ledger: [{ id: 'g1', personId: 'ramp', counter: 'oil' as const, amount: 0.5, date: '2026-01-01', reason: 'award', approvedBy: 'SQNCDR' }],
+      sources: [{ grid: { ramp: { '2026-01-10': 'FS', '2026-01-20': 'OIL' } }, states: {} }],
+    }
+    // earned 1 (FS) + granted 0.5 − taken 1 (OIL) = 0.5
+    expect(FIGURES.find(f => f.id === 'oilbal')!.value(ctx, 'ramp')).toBe(0.5)
+  })
+})
+
 describe('balances across more than one leave war', () => {
   // THE point of the multi-war change, and the thing most easily got wrong.
   // Leave bid in the Jan–Mar war still spends annual leave while you are
@@ -319,15 +351,15 @@ describe('the two consumed aggregates', () => {
 })
 
 describe('FIGURES and orderedFigures', () => {
-  it('is the eleven figures in the owner\'s order', () => {
+  it('is the twelve figures in the owner\'s order — OIL BAL joined with wire 4', () => {
     expect(FIGURES.map(f => f.label)).toEqual([
-      'LL USED', 'OL USED', 'OIL USED', 'OFF USED', 'CCL USED', 'PL USED',
+      'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'OFF USED', 'CCL USED', 'PL USED',
       'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
     ])
   })
 
-  it('has exactly one balance figure, LVE BAL — every other is consumed', () => {
-    expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.label)).toEqual(['LVE BAL'])
+  it('has exactly two balance figures — LVE BAL and OIL BAL (wire 4\'s landing strip); every other is consumed', () => {
+    expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.label)).toEqual(['OIL BAL', 'LVE BAL'])
     expect(FIGURES.filter(f => f.kind === 'con')).toHaveLength(10)
   })
 
