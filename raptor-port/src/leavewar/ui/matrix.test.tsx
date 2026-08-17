@@ -125,15 +125,15 @@ describe('Matrix', () => {
 
   it('gives a duty cell the sc chip class and a non-bid code the info chip class', () => {
     render(<Matrix />)
-    // Seed: TATA is on FS (a duty code) on 1 Jan; SPLICE is on M (medical)
-    // on 5 Jan. This asserted TATA's OIL on 9 Jan as the `.info` case until
-    // bid states landed — OIL is leave someone asked for, so it now carries
-    // a bid colour instead. `.info` is what remains: the codes nobody bids
-    // for, which is medical, courses and overseas duty.
+    // Seed: TATA is on FS (a duty code) on 1 Jan; SPLICE is on ATTC (a medical
+    // marker) on 5 Jan. This asserted TATA's OIL on 9 Jan as the `.info` case
+    // until bid states landed — OIL is leave someone asked for, so it now
+    // carries a bid colour instead. `.info` is what remains: the codes nobody
+    // bids for, which is medical (ATT C / HL / OML), courses and overseas duty.
     const dutyCell = screen.getByTestId('cell-tata-2026-01-01')
     expect(dutyCell.querySelector('.c.sc')?.textContent).toBe('FS')
     const ordinaryCell = screen.getByTestId('cell-splice-2026-01-05')
-    expect(ordinaryCell.querySelector('.c.info')?.textContent).toBe('M')
+    expect(ordinaryCell.querySelector('.c.info')?.textContent).toBe('ATTC')
   })
 
   it('carries the am/pm portion class on the chip, derived from the stored asterisk', () => {

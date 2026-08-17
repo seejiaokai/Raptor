@@ -10,8 +10,8 @@ import {
   inSquadron,
   isBiddable,
   isDuty,
-  COUNTERS,
-  counterLabel,
+  orderedFigures,
+  DEFAULT_FIGURE_ID,
   dayName,
   isWeekend,
   monthsIn,
@@ -48,7 +48,7 @@ function monthLabel(date: string): string | null {
 
 export function Matrix() {
   useVersion()
-  const { people, period, grid, states, requirements, role, eventDefs, openings, ledger, wars, focusDate, focusSeq } = getState()
+  const { people, period, grid, states, requirements, role, eventDefs, openings, ledger, wars, figureOrder, focusDate, focusSeq } = getState()
   const dates = period.days.map(d => d.date)
   const verdicts = evaluatePeriod(people, grid, states, requirements, dates)
 
@@ -71,17 +71,23 @@ export function Matrix() {
   // controls on screen.
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string } | null>(null)
   const close = () => setOpen(null)
-  // ONE selected counter, shared by every row. Giving each row its own
-  // scroller would let them desync — row 1 showing ANNUAL while row 2 shows
-  // OIL — which is worse than no panel at all.
-  const [counter, setCounter] = useState(0)
+  // ONE selected figure, shared by every row, tracked by its stable ID so a
+  // reorder keeps the SAME figure on screen rather than whatever now sits in
+  // its old slot. Giving each row its own would let them desync — row 1
+  // showing LVE BAL while row 2 shows MED USED — worse than no column at all.
+  const figures = orderedFigures(figureOrder)
+  const [shownId, setShownId] = useState(DEFAULT_FIGURE_ID)
   const [picking, setPicking] = useState(false)
   const [editingWho, setEditing] = useState<string | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
   const [eventEdit, setEventEdit] = useState<{ line: 0 | 1; date: string } | null>(null)
-  const shown = COUNTERS[counter]
-  const cycle = (by: number) => setCounter(c => (c + by + COUNTERS.length) % COUNTERS.length)
+  const shownIx = Math.max(0, figures.findIndex(f => f.id === shownId))
+  const shown = figures[shownIx]
+  // Everything a figure needs to read a person's number. `wars` is LeaveWar[],
+  // which satisfies LeaveSource[] structurally, so it passes straight in.
+  const figureCtx = { openings, ledger, sources: wars }
+  const cycle = (by: number) => setShownId(figures[(shownIx + by + figures.length) % figures.length].id)
 
   // Swipe across the counter column to cycle it — the fast path, beside the
   // sheet's guaranteed one. Bound on the wrapper rather than on each cell so
@@ -265,13 +271,13 @@ export function Matrix() {
                   <button
                     className="cpick"
                     data-testid="counter-pick"
-                    aria-label={`Showing ${counterLabel(shown)}. Choose a counter`}
+                    aria-label={`Showing ${shown.label}. Choose what this column shows`}
                     onClick={() => setPicking(true)}
                   >
-                    <span className="cname" data-testid="counter-name">{counterLabel(shown)}</span>
+                    <span className="cname" data-testid="counter-name">{shown.label}</span>
                     <span className="cdots" aria-hidden="true">
-                      {COUNTERS.map((_, i) => (
-                        <span key={i} className={`cdot${i === counter ? ' on' : ''}`} />
+                      {figures.map((f, i) => (
+                        <span key={f.id} className={`cdot${i === shownIx ? ' on' : ''}`} />
                       ))}
                     </span>
                   </button>
@@ -338,25 +344,25 @@ export function Matrix() {
                       </>
                     )}
                   </td>
-                  {/* Derived on every render rather than cached: the figure
-                      has to move the instant a bid is placed, because a
-                      pending bid has been asked for and cannot be asked for
-                      twice. Negative shows red and is never refused — the
-                      squadron's balances already run negative (§Counters).
-
-                      Counted across EVERY war, not the one on screen: leave
-                      bid in Jan–Mar still spends annual leave while you are
-                      looking at Apr–Jun, or the same days could be bid twice
-                      over. */}
+                  {/* The selected figure's value for this person, derived on
+                      every render rather than cached: it has to move the
+                      instant a bid is placed, because a pending bid has been
+                      asked for and cannot be asked for twice. A balance can go
+                      negative (shown red, never refused — the squadron's
+                      balances already run negative, §Counters); a consumed
+                      figure never does. Every figure counts across EVERY war,
+                      not the one on screen — leave bid in Jan–Mar still spends
+                      against Apr–Jun. */}
                   {(() => {
-                    const left = balanceOf(openings, ledger, wars, p.id, shown)
+                    const v = shown.value(figureCtx, p.id)
+                    const suffix = shown.kind === 'bal' ? 'remaining, pending bids included' : 'taken'
                     return (
                       <td
-                        className={`bal${left < 0 ? ' neg' : ''}`}
+                        className={`bal${v < 0 ? ' neg' : ''}`}
                         data-testid={`bal-${p.id}`}
-                        title={`${p.callsign}: ${show(left)} ${counterLabel(shown)} remaining, pending bids included`}
+                        title={`${p.callsign}: ${show(v)} ${shown.label} — ${suffix}`}
                       >
-                        {show(left)}
+                        {show(v)}
                       </td>
                     )
                   })()}
@@ -486,7 +492,7 @@ export function Matrix() {
           for; the picker still opens on an empty one, so an admin can add
           leave to a closed sheet without a second control. */}
       {picking && (
-        <CounterSheet shown={shown} onPick={setCounter} onClose={() => setPicking(false)} />
+        <CounterSheet shownId={shownId} onPick={setShownId} onClose={() => setPicking(false)} />
       )}
       {editingWho && people.some(p => p.id === editingWho) && (
         <PersonSheet
@@ -512,17 +518,17 @@ export function Matrix() {
           date={open.date}
           current={grid[open.id]?.[open.date] ?? ''}
           dates={dates}
-          /* The counter column follows the leave just entered — ask for OIL
-             and the panel snaps to OIL. The owner's ask, and it makes the
-             figure answer the question the bidder is actually holding in
-             their head at that moment. Derived through the catalogue, so a
-             leave type added later needs no edit here; OFF spends nothing,
-             so it moves nothing. */
+          /* The column follows the leave just entered — ask for OIL and it
+             snaps to OIL USED. The owner's ask, and it makes the figure answer
+             the question the bidder is holding in their head at that moment.
+             Each leave type's figure id is just its code lower-cased (LL→'ll',
+             OIL→'oil'…), so the map is the string itself — a type without a
+             figure (EL) simply does not snap. */
           onWrote={code => {
-            const spends = codeOf(code)?.spends
-            if (!spends) return
-            const i = COUNTERS.indexOf(spends.counter)
-            if (i >= 0) setCounter(i)
+            const cell = parseCell(code)
+            if (!cell) return
+            const id = cell.type.toLowerCase()
+            if (figures.some(f => f.id === id)) setShownId(id)
           }}
           /* What the balance would read AFTER this write, so the sheet can
              ask before taking someone negative. Computed here because this

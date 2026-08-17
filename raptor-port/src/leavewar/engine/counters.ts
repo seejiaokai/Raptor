@@ -20,7 +20,7 @@
 
 import type { Grid } from './availability'
 import { removesAvailability, stateOf, type States } from './bids'
-import { codeOf, LEAVE_TYPES, type CounterName } from './codes'
+import { codeOf, LEAVE_TYPES, parseCell, portionAmount, type CounterName } from './codes'
 
 /**
  * The counters, in the order the interface cycles them.
@@ -135,4 +135,121 @@ export function balanceOf(
 ): number {
   const opening = openings[personId]?.[counter] ?? 0
   return opening + grantedTo(ledger, personId, counter) - drawnFrom(sources, personId, counter)
+}
+
+// ── The counter column's figures ────────────────────────────────────────────
+//
+// The column shows one figure at a time (picked in `CounterSheet`), and the
+// owner's set (Aug 26) is neither the raw counters nor a 1:1 map onto them:
+// most rows are DAYS CONSUMED of a single code, two are consumed AGGREGATES
+// (medical, and total leave), and only one is a balance. So the column reads
+// from this `FIGURES` catalogue rather than from `COUNTERS` — which stays as
+// the counter-name vocabulary the balance/bid math still uses.
+//
+// Suffix convention, owner's own: `USED` = days taken, `BAL` = balance left.
+
+/**
+ * Days of ONE code TYPE this person has taken, across every war — the
+ * per-type twin of `drawnFrom` (which keys on the COUNTER, so it cannot tell
+ * LL from OL, both of which spend `annual`). Portion-aware and gated by the
+ * SAME `removesAvailability` the manning rows use, so a refused bid counts
+ * nothing and a half day counts 0.5. Counts free/marker codes too (OFF, and
+ * the medical markers), which spend no counter but are still days taken.
+ */
+export function takenOf(sources: LeaveSource[], personId: string, type: string): number {
+  let total = 0
+  for (const { grid, states } of sources) {
+    for (const [date, code] of Object.entries(grid[personId] ?? {})) {
+      const cell = parseCell(code)
+      if (!cell || cell.type !== type) continue
+      if (!removesAvailability(code, stateOf(states, personId, date))) continue
+      total += portionAmount(cell.portion)
+    }
+  }
+  return total
+}
+
+// The three medical markers that make up MED USED, and the seven leave codes
+// that make up LVE USED. Kept as literals here (not derived) because these two
+// aggregates are the owner's exact groupings — LVE USED deliberately excludes
+// OML/medical, and MED USED deliberately excludes everything else.
+const MED_CON_TYPES = ['ATTC', 'HL', 'OML'] as const
+const LVE_CON_TYPES = ['LL', 'OL', 'OIL', 'OFF', 'CCL', 'PL', 'FCL'] as const
+
+/** Medical days consumed = ATT C + HL + OML taken. */
+export function medConOf(sources: LeaveSource[], personId: string): number {
+  return MED_CON_TYPES.reduce((sum, t) => sum + takenOf(sources, personId, t), 0)
+}
+
+/** Total leave days consumed = LL + OL + OIL + OFF + CCL + PL + FCL taken
+ *  (medical is its own MED USED tally, so it is not in here). */
+export function lveConOf(sources: LeaveSource[], personId: string): number {
+  return LVE_CON_TYPES.reduce((sum, t) => sum + takenOf(sources, personId, t), 0)
+}
+
+/** Everything a figure needs to read a person's number. `LeaveWar`-shaped
+ *  callers already hold all three. */
+export interface FigureCtx {
+  openings: Openings
+  ledger: Ledger
+  sources: LeaveSource[]
+}
+
+export interface Figure {
+  /** Stable id — the persisted display order is a list of these, so renaming
+   *  one silently drops it from a saved order. Don't. */
+  id: string
+  label: string
+  kind: 'bal' | 'con'
+  /** Plain-words caption for the picker/legend when there is no composition. */
+  desc: string
+  /** For an aggregate: what it is made of, shown as the legend "bubble". */
+  legend?: string
+  value: (ctx: FigureCtx, personId: string) => number
+}
+
+/**
+ * The counter column's figures, in their default order (owner, Aug 26).
+ * Frozen for the same reason `COUNTERS` is — an exported array is mutable by
+ * whoever imports it. The DISPLAY order is a separate persisted list; this is
+ * the fixed definition set `orderedFigures` arranges.
+ */
+export const FIGURES: readonly Figure[] = Object.freeze([
+  { id: 'll',  label: 'LL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'LL') },
+  { id: 'ol',  label: 'OL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OL') },
+  { id: 'oil', label: 'OIL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OIL') },
+  { id: 'off', label: 'OFF USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OFF') },
+  { id: 'ccl', label: 'CCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL') },
+  { id: 'pl',  label: 'PL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL') },
+  { id: 'fcl', label: 'FCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'FCL') },
+  { id: 'med', label: 'MED USED', kind: 'con', desc: 'days taken', legend: 'ATT C + HL + OML', value: (c, p) => medConOf(c.sources, p) },
+  { id: 'oml', label: 'OML USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OML') },
+  { id: 'lvebal', label: 'LVE BAL', kind: 'bal', desc: 'balance available to take', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'annual') },
+  { id: 'lvecon', label: 'LVE USED', kind: 'con', desc: 'days taken', legend: 'LL + OL + OIL + OFF + CCL + PL + FCL', value: (c, p) => lveConOf(c.sources, p) },
+])
+
+/** The figure the column opens on: how much leave is left. */
+export const DEFAULT_FIGURE_ID = 'lvebal'
+
+const FIGURE_BY_ID: Record<string, Figure> = Object.fromEntries(FIGURES.map(f => [f.id, f]))
+
+/** The catalogue order, as a list of ids — the persisted display order's default. */
+export const DEFAULT_FIGURE_ORDER: readonly string[] = Object.freeze(FIGURES.map(f => f.id))
+
+/**
+ * The figures arranged by a saved id order. Tolerant on both sides so a stale
+ * saved order never breaks the column: an unknown id (a figure since removed)
+ * is skipped, and any catalogue figure the saved order does not mention (a
+ * figure since added) is appended in catalogue order. Same forward-compat rule
+ * the stores list uses.
+ */
+export function orderedFigures(order: readonly string[]): Figure[] {
+  const seen = new Set<string>()
+  const out: Figure[] = []
+  for (const id of order) {
+    const f = FIGURE_BY_ID[id]
+    if (f && !seen.has(id)) { out.push(f); seen.add(id) }
+  }
+  for (const f of FIGURES) if (!seen.has(f.id)) out.push(f)
+  return out
 }

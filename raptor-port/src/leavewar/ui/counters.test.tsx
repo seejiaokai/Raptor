@@ -25,52 +25,67 @@ describe('the counter column', () => {
     expect(screen.getAllByTestId(/^bal-/)).toHaveLength(getState().people.length)
   })
 
-  it('opens on the annual pool, which is the one people ask about', () => {
+  it('opens on the leave balance, which is the one people ask about', () => {
     render(<Matrix />)
-    expect(screen.getByTestId('counter-name').textContent).toBe('ANNUAL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
   })
 
-  // RAMP: 12 opening + 14 top-up − 1 (OL on 1 Jan, approved) = 25.
-  it('shows the opening figure plus grants less what the grid has drawn', () => {
+  // RAMP's LVE BAL is the annual pool: 12 opening + 14 top-up − 1 (OL on 1
+  // Jan, approved) = 25.
+  it('shows the leave balance: opening plus grants less what the grid has drawn', () => {
     render(<Matrix />)
     expect(screen.getByTestId('bal-ramp').textContent).toBe('25')
   })
 
-  // The reason the panel cycles counters rather than leave types: every row
-  // has to change together, or row 1 shows ANNUAL while row 2 shows OIL.
-  it('changes every row at once when the counter changes', () => {
+  // The reason the panel cycles figures rather than showing all of them: every
+  // row has to change together, or row 1 shows LVE BAL while row 2 shows OIL CON.
+  it('changes every row at once when the figure changes', () => {
     render(<Matrix />)
     const before = getState().people.map(p => screen.getByTestId(`bal-${p.id}`).textContent)
     pick('oil')
-    expect(screen.getByTestId('counter-name').textContent).toBe('OIL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OIL USED')
     const after = getState().people.map(p => screen.getByTestId(`bal-${p.id}`).textContent)
     expect(after).not.toEqual(before)
-    // RAMP: 3 opening − 0.5 (*OIL on 10 Feb, pending) = 2.5
-    expect(screen.getByTestId('bal-ramp').textContent).toBe('2.5')
+    // RAMP has one *OIL (10 Feb, pending) — half a day of OIL taken.
+    expect(screen.getByTestId('bal-ramp').textContent).toBe('0.5')
   })
 
-  // Every counter is reachable, and each is ONE tap from any other. That is
-  // the point of the sheet: the arrows it replaced made EL five taps from
-  // ANNUAL, on a control the owner could not reliably hit even once.
-  it('offers every counter, each a single tap away', () => {
+  // Every figure is reachable, and each is ONE tap from any other. That is
+  // the point of the sheet: the arrows it replaced made the last figure many
+  // taps away, on a control the owner could not reliably hit even once.
+  it('offers every figure, in order, each a single tap away', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
-      .toEqual(['ANNUAL', 'OIL', 'CCL', 'FCL', 'PL', 'EL'])
-    fireEvent.click(screen.getByTestId('counter-el'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('EL')
+      .toEqual([
+        'LL USED', 'OL USED', 'OIL USED', 'OFF USED', 'CCL USED', 'PL USED',
+        'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
+      ])
+    fireEvent.click(screen.getByTestId('counter-lvecon'))
+    expect(screen.getByTestId('counter-name').textContent).toBe('LVE USED')
     expect(screen.queryByTestId('counter-sheet')).toBeNull()
 
-    // ...and back again, without walking through the four in between.
-    pick('annual')
-    expect(screen.getByTestId('counter-name').textContent).toBe('ANNUAL')
+    // ...and back again, without walking through the ten in between.
+    pick('lvebal')
+    expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
   })
 
-  it('marks which counter is already showing', () => {
+  it('marks which figure is already showing', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
-    expect(screen.getByTestId('counter-annual').getAttribute('aria-pressed')).toBe('true')
-    expect(screen.getByTestId('counter-oil').getAttribute('aria-pressed')).toBe('false')
+    expect(screen.getByTestId('counter-lvebal').getAttribute('aria-pressed')).toBe('true')
+    expect(screen.getByTestId('counter-ll').getAttribute('aria-pressed')).toBe('false')
+  })
+
+  // MED CON and LVE CON are the two aggregates, and the sheet is where the
+  // owner asked their make-up to show — the "= …" caption is the legend bubble.
+  it('states the legend and each aggregate composition in the sheet', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.getByTestId('counter-legend').textContent).toContain('BAL')
+    expect(screen.getByTestId('counter-legend').textContent).toContain('USED')
+    expect(screen.getByTestId('figsub-med').textContent).toBe('= ATT C + HL + OML')
+    expect(screen.getByTestId('figsub-lvecon').textContent).toBe('= LL + OL + OIL + OFF + CCL + PL + FCL')
   })
 
   // The figure is what makes the list answerable: "which counter" is a
@@ -87,17 +102,22 @@ describe('the counter column', () => {
   // and negative shows red and is never refused.
   it('paints a negative balance red without refusing it', () => {
     render(<Matrix />)
-    // CROSS opens at −12 annual, +14 top-up, −1 refused LL (refused draws
-    // nothing) = 2. Take him negative with a fresh bid instead.
-    setCell('cross', '2026-02-10', 'LL')
-    act(() => setCell('cross', '2026-02-11', 'LL'))
-    const before = screen.getByTestId('bal-cross').textContent
-    expect(before).toBeTruthy()
-    // DECAL's OIL opens at −4.5 and nothing has moved it.
-    pick('oil')
-    const decal = screen.getByTestId('bal-decal')
-    expect(decal.textContent).toBe('-4.5')
-    expect(decal.className).toContain('neg')
+    // LVE BAL is the one figure that can go negative, and it is the default.
+    // RESET opens it below zero (2, less four days pending in the 2027 war),
+    // and negative shows red, never refused (§Counters).
+    const reset = screen.getByTestId('bal-reset')
+    expect(reset.textContent!.startsWith('-')).toBe(true)
+    expect(reset.className).toContain('neg')
+  })
+
+  // A consumed figure counts days taken, so it is never negative — the red is
+  // the balance's alone.
+  it('never paints a consumed figure red', () => {
+    render(<Matrix />)
+    pick('ll')
+    for (const p of getState().people) {
+      expect(screen.getByTestId(`bal-${p.id}`).className).not.toContain('neg')
+    }
   })
 
   it('does not paint a positive balance red', () => {
@@ -130,10 +150,10 @@ describe('the counter column', () => {
     expect(screen.getByTestId('counter-count-ip').textContent).toBe('')
   })
 
-  it('names the counter for a screen reader, not just in the chip', () => {
+  it('names the figure for a screen reader, not just in the chip', () => {
     render(<Matrix />)
     const label = screen.getByTestId('counter-pick').getAttribute('aria-label')!
-    expect(label).toContain('ANNUAL')
+    expect(label).toContain('LVE BAL')
     expect(label.toLowerCase()).toContain('choose')
   })
 })
@@ -143,12 +163,12 @@ describe('the counter follows the leave just entered', () => {
   // counter will snap to show how many OIL they have." The figure then
   // answers the question the bidder is holding in their head at that moment,
   // instead of showing a pool they were not thinking about.
-  it('snaps to the counter the leave spends', () => {
+  it('snaps to the consumed figure of the leave just entered', () => {
     render(<Matrix />)
-    expect(screen.getByTestId('counter-name').textContent).toBe('ANNUAL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-OIL'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('OIL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OIL USED')
   })
 
   it('snaps for a half day exactly as for a whole one', () => {
@@ -156,37 +176,88 @@ describe('the counter follows the leave just entered', () => {
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('portion-am'))
     fireEvent.click(screen.getByTestId('bid-CCL'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('CCL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('CCL USED')
   })
 
-  // Two leave types share the annual pool, so LL and OL must both land on
-  // ANNUAL rather than on a column of their own. That is the difference
-  // between cycling COUNTERS and cycling leave types.
-  it('lands on the shared pool for the two that share one', () => {
+  // LL and OL now have SEPARATE consumed figures — the whole reason the column
+  // reads per-type consumed rather than per-counter, which could not tell the
+  // two apart (both spend the one annual pool).
+  it('snaps each leave to its own consumed figure, LL and OL apart', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
-    fireEvent.click(screen.getByTestId('bid-OIL'))
+    fireEvent.click(screen.getByTestId('bid-LL'))
+    expect(screen.getByTestId('counter-name').textContent).toBe('LL USED')
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-12'))
     fireEvent.click(screen.getByTestId('bid-OL'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('ANNUAL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OL USED')
   })
 
-  // OFF spends nothing, so there is no counter to snap to. Leaving the panel
-  // where it is beats moving it somewhere arbitrary.
-  it('leaves the counter alone for free leave', () => {
+  // OFF has its own consumed figure now (OFF CON), so entering it snaps there
+  // rather than being left where it was — free leave is still leave taken.
+  it('snaps to OFF CON for free leave', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
-    fireEvent.click(screen.getByTestId('bid-OIL'))
-    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-12'))
     fireEvent.click(screen.getByTestId('bid-OFF'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('OIL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OFF USED')
   })
 
   it('clearing a cell moves nothing', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-clear'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('ANNUAL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
+  })
+})
+
+describe('reordering the figures', () => {
+  // Open the sheet and drag a figure with the ▲▼ its row carries. A display
+  // preference, so it persists and is not role-gated.
+  it('moves a figure down, and the column follows the new order', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    // LL CON is first; nudging it down puts OL CON at the top of the list.
+    fireEvent.click(screen.getByTestId('figdown-ll'))
+    const labels = [...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent)
+    expect(labels[0]).toBe('OL USED')
+    expect(labels[1]).toBe('LL USED')
+    expect(getState().figureOrder[0]).toBe('ol')
+  })
+
+  it('clamps at the ends — the first cannot go up, the last cannot go down', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect((screen.getByTestId('figup-ll') as HTMLButtonElement).disabled).toBe(true)
+    expect((screen.getByTestId('figdown-lvecon') as HTMLButtonElement).disabled).toBe(true)
+  })
+
+  it('resets to the catalogue order', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('figdown-ll'))
+    expect(getState().figureOrder[0]).toBe('ol')
+    fireEvent.click(screen.getByTestId('counter-reset'))
+    expect(getState().figureOrder[0]).toBe('ll')
+  })
+
+  it('keeps the SAME figure shown across a reorder, not the same slot', () => {
+    render(<Matrix />)
+    // Show OL CON, then move it down. The column must still show OL CON.
+    pick('ol')
+    expect(screen.getByTestId('counter-name').textContent).toBe('OL USED')
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('figdown-ol'))
+    expect(screen.getByTestId('counter-name').textContent).toBe('OL USED')
+  })
+
+  it('persists the order through the backend', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('figdown-ll'))
+    // A fresh boot on the same backend reads the saved order back.
+    initStore(backend)
+    expect(getState().figureOrder[0]).toBe('ol')
   })
 })
 

@@ -263,19 +263,144 @@
   font-weight: 800;
   letter-spacing: .1em;
   color: var(--ink);
+  white-space: nowrap;
 }
 
 /* The squadron-wide figure beside each name. It is what makes the list
-   answerable: "which counter" is a question people settle by looking for the
-   one that is running out. Tabular so the six line up as a column. */
+   answerable: "which figure" is a question people settle by looking for the
+   one that is running out. Tabular so the numbers line up as a column. */
 .crow .ct {
   font-size: 11px;
   color: var(--ink-3);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .crow .ct.neg {
   color: #FFAAB0;
+}
+
+/* The figure column's picker is ALSO its legend and its reorder surface, so
+   each row is a select button plus its own ▲▼ pair rather than a bare button.
+   The wrap holds them side by side; the selected highlight lives on the wrap
+   so the arrows light with the row they belong to. */
+.crow-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+/* In the counter sheet a row stacks: label + total on top, the caption on its
+   own line below. That keeps an aggregate's composition fully readable on a
+   phone instead of being squeezed to an ellipsis between two other spans. */
+.crow-wrap .crow {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 4px;
+}
+
+.crow-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.crow-wrap.on .crow {
+  background: rgba(59, 198, 232, .14);
+  border-color: var(--accent);
+}
+
+/* The caption under the label: what a figure MEANS. For an aggregate it is the
+   composition ("= ATT C + HL + OML") — the "bubble" the owner asked for, shown
+   inline so it needs no second tap, on its own full-width line so it never
+   truncates. */
+.crow .csub {
+  font-size: 10px;
+  color: var(--ink-3);
+  letter-spacing: .02em;
+  text-align: left;
+}
+
+/* The reorder arrows. ≥36px tall each (the tap-target floor the picker rows
+   honour), stacked so the pair fits the row height without widening it much. */
+.cmove {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+
+.cmv {
+  flex: 1 1 auto;
+  min-width: 36px;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  color: var(--ink-2);
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cmv:hover:not(:disabled) {
+  border-color: rgba(59, 198, 232, .5);
+  color: var(--ink);
+}
+
+.cmv:disabled {
+  opacity: .3;
+  cursor: default;
+}
+
+/* The suffix key, once, above the list — the whole legend the owner wanted on
+   tapping the column. */
+.clegend {
+  padding: 6px 14px 8px;
+  font-size: 11px;
+  color: var(--ink-2);
+  letter-spacing: .02em;
+}
+
+.clegend b {
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+
+.cfoot {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0 2px;
+}
+
+.creset {
+  min-height: 36px;
+  padding: 6px 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.creset:hover {
+  border-color: rgba(59, 198, 232, .5);
+  color: var(--ink);
 }
 
 }

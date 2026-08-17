@@ -71,12 +71,21 @@ const LEAVE_TYPE_BY_CODE: Record<string, LeaveType> = Object.fromEntries(
 )
 
 // Non-leave markers remove the whole day and spend nothing — they are not
-// bid for, so there is no counter to draw down. `HL` is deliberately absent:
-// the owner's legend reads "M - Medical (HL/ATT C)", meaning HL is a REASON
-// a day is coded M, not a code of its own. Coding it separately was this
-// author's unverified guess, now corrected.
+// bid for, so there is no counter to draw down.
+//
+// The three medical markers ATT C, HL and OML replaced the single `M` marker
+// (owner, Aug 26 — "remove M, it's MED CON, which is ATT C, HL AND OML"). They
+// are the three things that make up a person's MED USED tally, the days-consumed
+// figure the counter column shows. Medical is assigned, not applied for, so like
+// every other marker none of the three is biddable and none carries a balance —
+// only OML was ever floated as an entitlement, and the owner settled it as a
+// consumed figure too ("just change to OML CON, not OML BAL"). `ATTC` is stored
+// spaceless so `parseCell`'s trim/upper round-trips it cleanly; the display label
+// carries the space the owner writes.
 const NON_LEAVE_LABELS: Record<string, string> = {
-  M: 'medical (HL/ATT C)',
+  ATTC: 'medical — ATT C',
+  HL: 'medical — hospitalisation leave',
+  OML: 'medical — outpatient medical leave',
   CSE: 'course',
   OD: 'overseas duty',
 }
@@ -105,7 +114,7 @@ export function portionAmount(portion: Portion): number {
  * screen:
  * - an asterisk on BOTH sides (`*LL*`) — the notation only ever carries one
  *   time marker, so this is not "a valid portion", it is malformed input.
- * - an asterisk on a NON-LEAVE marker (`*M`, `CSE*`, `*FS`) — only leave
+ * - an asterisk on a NON-LEAVE marker (`*OML`, `CSE*`, `*FS`) — only leave
  *   types take a portion; medical, courses and SC duty do not come in
  *   halves in this squadron's vocabulary.
  */

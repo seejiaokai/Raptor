@@ -131,7 +131,7 @@ describe('availability and the bid state', () => {
   })
 
   it('keeps a sick man away whatever state is attached', () => {
-    expect(availabilityOf(someone, '2026-01-05', 'M', 'refused')).toBe(0)
+    expect(availabilityOf(someone, '2026-01-05', 'OML', 'refused')).toBe(0)
   })
 
   // A refused bid gives back the person, not the roster window. Someone

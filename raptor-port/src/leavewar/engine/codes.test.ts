@@ -32,7 +32,7 @@ describe('parseCell', () => {
   })
 
   it('parses a non-leave marker as a full day with no meaningful portion', () => {
-    for (const type of ['M', 'CSE', 'OD']) {
+    for (const type of ['ATTC', 'HL', 'OML', 'CSE', 'OD']) {
       expect(parseCell(type)).toEqual({ type, portion: 'full' })
     }
   })
@@ -86,8 +86,12 @@ describe('parseCell', () => {
     expect(parseCell('HO')).toBeNull()
   })
 
-  it('has no HL code — the owner\'s legend makes HL a reason M is used, not a code of its own', () => {
-    expect(parseCell('HL')).toBeNull()
+  it('parses the three medical markers, and no longer the old M', () => {
+    for (const type of ['ATTC', 'HL', 'OML']) {
+      expect(parseCell(type)).toEqual({ type, portion: 'full' })
+    }
+    // `M` was replaced three-for-one by ATT C, HL and OML (owner, Aug 26).
+    expect(parseCell('M')).toBeNull()
   })
 })
 
@@ -118,7 +122,7 @@ describe('formatCell', () => {
 
   it('throws rather than emit a portion on a non-leave marker, which parseCell would only reject', () => {
     expect(() => formatCell({ type: 'FS', portion: 'am' })).toThrow()
-    expect(() => formatCell({ type: 'M', portion: 'pm' })).toThrow()
+    expect(() => formatCell({ type: 'OML', portion: 'pm' })).toThrow()
     expect(() => formatCell({ type: 'CSE', portion: 'am' })).toThrow()
   })
 })
@@ -148,7 +152,7 @@ describe('codeOf', () => {
   })
 
   it('spends nothing for medical, courses and overseas duty', () => {
-    for (const c of ['M', 'CSE', 'OD']) expect(codeOf(c)!.spends).toBeNull()
+    for (const c of ['ATTC', 'HL', 'OML', 'CSE', 'OD']) expect(codeOf(c)!.spends).toBeNull()
   })
 
   // `OFF` is free leave (owner, 10 Aug 26): the person asks for it and it
@@ -191,7 +195,7 @@ describe('codeOf', () => {
   })
 
   it('does not treat medical, courses or duty as bids', () => {
-    for (const c of ['M', 'CSE', 'OD', 'FS', 'HS']) {
+    for (const c of ['ATTC', 'HL', 'OML', 'CSE', 'OD', 'FS', 'HS']) {
       expect(codeOf(c)!.bid).toBe(false)
     }
   })
@@ -215,12 +219,16 @@ describe('codeOf', () => {
     expect(codeOf('HO')).toBeUndefined()
   })
 
-  it('no longer recognises HL as a code', () => {
-    expect(codeOf('HL')).toBeUndefined()
+  it('recognises the three medical markers as full-day codes, and no longer M', () => {
+    for (const c of ['ATTC', 'HL', 'OML']) {
+      expect(codeOf(c)!.removes).toBe(1)
+      expect(codeOf(c)!.bid).toBe(false)
+    }
+    expect(codeOf('M')).toBeUndefined()
   })
 
   it('rejects a portion on a non-leave or SC-duty marker end to end', () => {
-    expect(codeOf('*M')).toBeUndefined()
+    expect(codeOf('*OML')).toBeUndefined()
     expect(codeOf('CSE*')).toBeUndefined()
     expect(codeOf('*FS')).toBeUndefined()
   })
