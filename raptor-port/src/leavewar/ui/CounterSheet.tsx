@@ -7,7 +7,8 @@
 //
 // So the choice moves out of the column entirely, into the sheet idiom every
 // other decision in this app already uses — full-width rows, each naming a
-// figure and showing the squadron-wide total. This sheet is ALSO the legend
+// figure and previewing the VIEWING person's number (a dash where nobody is
+// being viewed — owner, 18 Aug 26, no squadron-wide total). This sheet is ALSO the legend
 // the owner asked for: each row carries what it means (a `CON` figure's days,
 // a `BAL` figure's balance) and an aggregate carries what it is made of —
 // MED USED reads "= ATT C + HL + OML", LVE USED its seven codes. And it is where
@@ -37,9 +38,14 @@ export function CounterSheet({
   // The person LOOKING at the page, when the roster holds them — each row
   // then answers with THEIR number (owner, 17 Aug 26: the title tap should
   // show "what was used or balance of that individual"), because "how much
-  // do I have left" is the question a person opens this sheet holding. A
-  // viewer the roster does not hold (or none at all) falls back to the
-  // squadron-wide sums this sheet showed before.
+  // do I have left" is the question a person opens this sheet holding. The
+  // viewer is Raptor's own "view as", which defaults to the account's person,
+  // so a row is personal to whoever is being viewed. When NOBODY is (an admin
+  // with no view-as, or a viewer the roster does not hold) the row shows a
+  // dash — NOT a squadron-wide sum (owner, 18 Aug 26: "I don't need to see
+  // totals when no one is picked… it defaults to the account viewer"). The
+  // number is meant to answer "how much do I have left", which has no meaning
+  // without a person.
   const me = viewer ? people.find(p => p.id === viewer) ?? null : null
   // The ARRANGEMENT is management's (owner, same day) — the ▲▼ and Reset
   // render for an admin only; the store refuses a member's write anyway.
@@ -50,7 +56,7 @@ export function CounterSheet({
       <div className="bidsheet-hd">
         <span className="who">WHAT THIS COLUMN SHOWS</span>
         <span className="dt">
-          {me ? `your numbers — ${me.callsign}` : 'squadron-wide numbers'}
+          {me ? `your numbers — ${me.callsign}` : 'view a callsign to see numbers'}
           {arranging ? ' · tap to show it · ▲▼ to reorder' : ' · tap to show it beside every callsign'}
         </span>
         <button className="x" data-testid="counter-cancel" onClick={onClose} aria-label="Cancel">
@@ -65,22 +71,15 @@ export function CounterSheet({
       </div>
       <div className="clist">
         {figures.map((f, i) => {
-          // The viewer's own figure where the roster knows who is looking
-          // (the common case since the View-as mirror); the squadron's sum
-          // where it does not. `f.value` already knows con from bal, so one
-          // line covers both either way. GROUND CREW are excluded from the
-          // squadron-wide sum (owner, 18 Aug 26): these are aircrew leave-pool
-          // figures, and a ground-crew body — who holds no entitlement, so
-          // reads a negative balance against a zero opening — would drag the
-          // squadron total the wrong way. Their own per-person figures still
-          // show; only this aggregate leaves them out.
-          const total = me
-            ? f.value(ctx, me.id)
-            : people.reduce((sum, p) => (p.pers ? sum : sum + f.value(ctx, p.id)), 0)
+          // The viewer's own figure where the roster knows who is looking (the
+          // common case since the View-as mirror). Where nobody is being viewed
+          // the row shows a dash rather than a squadron-wide sum (owner, 18 Aug
+          // 26): the number answers "how much do I have left", which has no
+          // meaning without a person — and a squadron total here only invited
+          // the aircrew/ground-crew mixing the owner did not want either.
+          const val = me ? f.value(ctx, me.id) : null
           const caption = f.legend ? `= ${f.legend}` : f.desc
-          const totalNote = f.kind === 'bal'
-            ? me ? 'left, yours' : 'left, squadron-wide'
-            : me ? 'taken, yours' : 'taken, squadron-wide'
+          const totalNote = f.kind === 'bal' ? 'left, yours' : 'taken, yours'
           return (
             <div
               key={f.id}
@@ -95,7 +94,7 @@ export function CounterSheet({
               >
                 <span className="crow-top">
                   <span className="cn">{f.label}</span>
-                  <span className={`ct${total < 0 ? ' neg' : ''}`}>{show(total)} {totalNote}</span>
+                  <span className={`ct${val != null && val < 0 ? ' neg' : ''}`}>{val == null ? '—' : `${show(val)} ${totalNote}`}</span>
                 </span>
                 {/* Its own full-width line so an aggregate's composition — the
                     legend the owner wanted — is never truncated on a phone. */}

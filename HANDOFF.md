@@ -609,8 +609,9 @@ ever.
   never persisted — has their row lit (`tr.me`; the CSS must sit INSIDE
   matrix.css's `#page-leavewar` wrapper or the +1 id specificity beats it);
   the picker's rows answer with the viewer's OWN numbers ("N taken/left,
-  yours"; squadron-wide only as the no-viewer fallback — the owner chose
-  "your own numbers" over a per-person roster list when asked); and ANY
+  yours"; a DASH where nobody is being viewed — owner, 18 Aug 26: "I don't
+  need to see totals when no one is picked… it defaults to the account
+  viewer", so the old squadron-wide fallback is gone); and ANY
   callsign tap opens `PersonFiguresSheet` — all twelve figures for that
   person, for every role, each row opening its parts breakdown, the admin's
   person EDITOR now behind that sheet's "Edit person" button. **Third pass,
@@ -759,11 +760,13 @@ ever.
   of silently dropping the second (was under-drawing / losing half a day —
   `sync.test.ts`); (7) `dutyTplLoad` pre-scans `SEQ` so an id-less entry can't
   mint a `uN` a later entry claims; (8) the DEBRIEF advisory prints the
-  configured `VCONF.debrief` pad, not a hard-coded "2h"; (9) the counter-picker's
-  squadron-wide fallback TOTAL now EXCLUDES ground crew (owner said yes,
-  18 Aug 26) — an aircrew leave-pool figure no longer folds in a `pers` body's
-  negative balance (`CounterSheet.tsx`, `counters.test.tsx`; per-person figures
-  still show ground crew).** The owner actioned the two
+  configured `VCONF.debrief` pad, not a hard-coded "2h"; (9) the counter-picker
+  no longer shows a squadron-wide total at all — where nobody is being viewed a
+  row reads a DASH, not a sum (owner, 18 Aug 26: "I don't need to see totals
+  when no one is picked… it defaults to the account viewer"), which also
+  retired the same-day ground-crew-exclusion tweak a squadron sum had needed
+  (`CounterSheet.tsx`, `counters.test.tsx`; per-person figures still show for
+  everyone, ground crew included).** The owner actioned the two
   mobile items (frozen Quals callsign, collapsible legend) and the "click any
   blank area to deselect" bug. **The P0 keyboard bug is now CLOSED (15 Aug 26):**
   the five top-nav items and the phone drawer's nav were hrefless `<a>`s a

@@ -289,9 +289,10 @@
   white-space: nowrap;
 }
 
-/* The squadron-wide figure beside each name. It is what makes the list
-   answerable: "which figure" is a question people settle by looking for the
-   one that is running out. Tabular so the numbers line up as a column. */
+/* The viewing person's figure beside each name (a dash where nobody is being
+   viewed). It is what makes the list answerable: "which figure" is a question
+   people settle by looking for the one that is running out. Tabular so the
+   numbers line up as a column. */
 .crow .ct {
   font-size: 11px;
   color: var(--ink-3);

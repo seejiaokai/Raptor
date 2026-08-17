@@ -153,8 +153,11 @@ labelled `BAL` (a balance left) or `USED` (days taken):
   inline. **Since 17 Aug 26 its rows answer with the VIEWER's own numbers**
   ("your numbers — <callsign>", each row "N taken/left, yours") — the
   viewer being Raptor's "View as" person, mirrored into `state.viewer` by
-  the sync wire (never persisted); with no viewer on the roster it falls
-  back to the squadron-wide sums it showed before.
+  the sync wire (never persisted). **With no viewer on the roster the row
+  now reads a DASH, not a squadron-wide sum** (owner, 18 Aug 26: "I don't
+  need to see totals when no one is picked… it defaults to the account
+  viewer") — the figure answers "how much do I have left", which has no
+  meaning without a person.
 - **The viewer's row is lit on the matrix** (same ask) — `tr.me`, a solid
   tint on the frozen callsign+counter pair and a faint band across the row.
   The CSS lives INSIDE matrix.css's `#page-leavewar` wrapper — a rule
