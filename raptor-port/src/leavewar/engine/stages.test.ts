@@ -77,7 +77,7 @@ describe('canEditCell — stage, role and the bidding window together', () => {
   const year = (bidFrom: string | null, bidTo: string | null, stage: Stage = 'open'): Period => ({
     id: 'y', name: 'JAN - DEC 26',
     start: '2026-01-01', end: '2026-12-31',
-    stage, bidFrom, bidTo, days: [],
+    stage, bidFrom, bidTo, days: [], bands: [],
   })
 
   // The whole point of the window. The year is on screen; the squadron may
@@ -140,7 +140,7 @@ describe('canEditCell — stage, role and the bidding window together', () => {
 describe('windowFits', () => {
   const p: Period = {
     id: 'y', name: 'JAN - DEC 26', start: '2026-01-01', end: '2026-12-31',
-    stage: 'open', bidFrom: null, bidTo: null, days: [],
+    stage: 'open', bidFrom: null, bidTo: null, days: [], bands: [],
   }
 
   it('accepts a range inside the war, including its very edges', () => {

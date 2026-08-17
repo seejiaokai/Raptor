@@ -93,6 +93,7 @@ export function seedPeriod(): Period {
     bidFrom: '2026-01-01',
     bidTo: '2026-03-31',
     days,
+    bands: [],
   }
 }
 

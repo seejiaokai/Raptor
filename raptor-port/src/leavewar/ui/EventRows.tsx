@@ -1,87 +1,102 @@
-// Two free-text lines per day, above the count rows.
+// Two event lines per day, above the count rows.
 //
-// The owner's ask, 10 Aug 26: "I should have 2 open text areas to indicate
-// events for each day. If the text needs more space, that day will widen to
-// accommodate the info until a certain point then it will wrap text and grow
-// vertically on that grid only."
+// The owner's first ask, 10 Aug 26: "I should have 2 open text areas to
+// indicate events for each day." That shipped as two rows of inline textareas.
 //
-// `DayInfo.events` has been a `[string, string]` since the period model was
-// written — the shape was right and the surface simply did not exist. This is
-// the surface.
+// The owner's Aug-26 rework grew it into a real surface: a day event can now be
+// TAGGED (off day / no-leave / work — engine/eventdefs.ts) and it can span a
+// RANGE two ways — the same word repeated in each day, or one MERGED bar across
+// the whole span. The tag never shows as words (typing "PH" reads "PH", never
+// "PH (off)"); it surfaces only as colour — the word goes red for a work
+// commitment, and the whole day column takes a light-green (off) or orange
+// (no-leave) band, painted by Matrix, not here.
 //
-// ADMIN-ONLY to edit, everyone to read. These are the scheduler's facts about
-// a day (an exercise, a visit, a range closure), not something a bidder
-// writes about themselves — and the whole squadron has to be able to see why
-// a week is a bad week to ask for.
+// Editing moved OUT of the cell and into a sheet (the owner: "click on the
+// event and an edit button is at the top"). So an admin now TAPS a cell to open
+// the Event sheet — which carries the range, the merge/repeat choice, the tag,
+// and the type library — rather than typing inline. A member still only reads.
 
-import type { DayInfo } from '../engine'
-import { setDayEvent } from '../state/store'
+import type { ReactNode } from 'react'
+import { bandAt, classifyEvent, type DayInfo, type EventBand, type EventDef } from '../engine'
 
-/** How many characters a day column widens to before the text wraps. In
- *  `ch` — the width of a character in the cell's own font, which is the unit
- *  this question is actually in — and the same figure the row height is
- *  derived from, so the two cannot disagree. */
+/** How many characters a day column widens to before the text wraps. In `ch`,
+ *  the width of a character in the cell's own font — the unit the row height is
+ *  also derived from, so the two cannot disagree. */
 const CEILING = 22
 
-export function EventRows({ days, editable }: { days: DayInfo[]; editable: boolean }) {
+export function EventRows({
+  days,
+  bands,
+  defs,
+  editable,
+  onEdit,
+}: {
+  days: DayInfo[]
+  bands: EventBand[]
+  defs: EventDef[]
+  editable: boolean
+  /** Open the Event sheet for one line + day. Only wired when `editable`. */
+  onEdit: (line: 0 | 1, date: string) => void
+}) {
   return (
     <tbody className="events">
-      {([0, 1] as const).map(line => (
-        <tr key={line} data-testid={`event-row-${line}`}>
-          <td className="who">Event {line + 1}</td>
-          {/* Same empty balance cell the count rows carry: a day's event has
-              no leave balance, and the cell exists to hold the column. */}
-          <td className="bal" />
-          {days.map(d => (
+      {([0, 1] as const).map(line => {
+        const cells: ReactNode[] = []
+        for (let i = 0; i < days.length; i++) {
+          const d = days[i]!
+          const band = bandAt(bands, line, d.date)
+
+          // A MERGED band: one spanning cell at its first day, then every day
+          // it covers is skipped so the colspan owns those column slots.
+          if (band) {
+            if (band.from === d.date) {
+              let span = 1
+              while (i + span < days.length && days[i + span]!.date <= band.to) span++
+              const work = classifyEvent(defs, band.text) === 'work'
+              cells.push(
+                <td
+                  key={d.date}
+                  colSpan={span}
+                  className={`ev band has${work ? ' work' : ''}${editable ? ' editable' : ''}`}
+                  data-testid={`event-band-${line}-${band.from}`}
+                  onClick={editable ? () => onEdit(line, d.date) : undefined}
+                >
+                  {band.text}
+                </td>,
+              )
+              i += span - 1
+            }
+            continue
+          }
+
+          // A plain per-day cell. Widens to fit the text up to the ceiling,
+          // then the CSS wraps it — the owner's "widen then wrap" rule. An
+          // empty admin cell shows a faint add hint so there is something to
+          // tap; a member's empty cell is blank.
+          const text = d.events[line]
+          const work = classifyEvent(defs, text) === 'work'
+          cells.push(
             <td
               key={d.date}
-              className={`ev${d.events[line] ? ' has' : ''}`}
+              className={`ev${text ? ' has' : ''}${work ? ' work' : ''}${editable ? ' editable' : ''}`}
               data-testid={`event-${line}-${d.date}`}
-              /* The column widens to fit the text, up to a ceiling, and only
-                 then wraps — the owner's rule. It cannot be left to the
-                 table's own auto layout: an `<input>` with `width: 100%`
-                 contributes nothing to a column's content width (its width
-                 depends on the cell, and the cell's on it), so a day with an
-                 admin typing in it stayed 37px wide however much was typed.
-                 Measured in a browser; the member's plain-text row widened
-                 correctly all along, which is what made it confusing.
-
-                 So the width is asked for in `ch` — the width of a character
-                 in the cell's own font, which is exactly the unit this
-                 question is in — and CSS caps it. Past the cap, the text
-                 wraps and grows these two rows only. */
-              style={{ minWidth: `${Math.min(d.events[line].length, CEILING)}ch` }}
+              onClick={editable ? () => onEdit(line, d.date) : undefined}
+              style={{ minWidth: `${Math.min(Math.max(text.length, 1), CEILING)}ch` }}
             >
-              {editable ? (
-                /* A TEXTAREA, which is what the owner asked for — "2 open
-                   text areas" — and also the only control that can wrap. An
-                   `<input>` is single-line by nature, so with one in the cell
-                   the column widened correctly and then simply never wrapped,
-                   however long the text got. Found in a browser.
-
-                   `rows` is derived from the text rather than left to the
-                   element's default, because a textarea does not grow to fit
-                   its own content: one line up to the ceiling, then a line
-                   per ceiling's worth after it, which is exactly "wrap and
-                   grow vertically on that grid only". */
-                <textarea
-                  className="evin"
-                  data-testid={`event-in-${line}-${d.date}`}
-                  aria-label={`Event ${line + 1} on ${d.date}`}
-                  rows={Math.min(Math.ceil(Math.max(d.events[line].length, 1) / CEILING), 4)}
-                  value={d.events[line]}
-                  onChange={e => setDayEvent(d.date, line, e.target.value)}
-                />
-              ) : (
-                /* Rendered as text rather than a disabled input: a disabled
-                   field invites a tap that does nothing, and an empty one
-                   would draw a box around a day where there is no event. */
-                d.events[line] || null
-              )}
-            </td>
-          ))}
-        </tr>
-      ))}
+              {text || (editable ? <span className="evadd" aria-hidden="true">＋</span> : null)}
+            </td>,
+          )
+        }
+        return (
+          <tr key={line} data-testid={`event-row-${line}`}>
+            <td className="who">Event {line + 1}</td>
+            {/* The count rows' blank balance cell: a day's event has no
+                balance, and the cell holds the frozen column. */}
+            <td className="bal" />
+            {cells}
+          </tr>
+        )
+      })}
     </tbody>
   )
 }

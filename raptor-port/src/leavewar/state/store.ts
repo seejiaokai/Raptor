@@ -18,10 +18,13 @@ import {
   overlapping,
   seedLedger,
   seedOpenings,
+  seedEventDefs,
   seedPeople,
   seedPeriod,
   seedRequirements,
   seedWars,
+  readEventDefs,
+  bandOverlaps,
   warHolding,
   STAGE_ORDER,
   type BidRecord,
@@ -29,6 +32,12 @@ import {
   type BidState,
   type CounterName,
   type DayInfo,
+  type EventBand,
+  type EventDef,
+  type EventKind,
+  addEventDef,
+  updateEventDef,
+  removeEventDef,
   type Grid,
   type LeaveWar,
   type Ledger,
@@ -45,6 +54,10 @@ import { localBackend, memoryBackend, type StorageBackend } from './storage'
 interface State {
   people: Person[]
   requirements: Requirements
+  /** The squadron's EVENT TYPES — the small library that gives a day-event
+   *  word its off/no-leave/work meaning (engine/eventdefs.ts). Squadron-wide,
+   *  not per-war, and persisted under its own `eventdefs` key. */
+  eventDefs: EventDef[]
   /** Every leave war, in the order they were created. Never empty. */
   wars: LeaveWar[]
   /** Which one is on screen. */
@@ -101,6 +114,7 @@ function blank(): State {
   return withCurrent({
     people: seedPeople(),
     requirements: seedRequirements(),
+    eventDefs: seedEventDefs(),
     wars,
     currentId: wars[0].period.id,
     openings: seedOpenings(),
@@ -239,7 +253,7 @@ function readWar(x: unknown): LeaveWar | null {
   if (!isPlainObject(x)) return null
   const { period, grid, states } = x
   if (!isPlainObject(period)) return null
-  const { id, name, start, end, stage, bidFrom, bidTo, days } = period
+  const { id, name, start, end, stage, bidFrom, bidTo, days, bands } = period
   if (typeof id !== 'string' || typeof name !== 'string') return null
   if (typeof start !== 'string' || typeof end !== 'string' || end < start) return null
   if (typeof stage !== 'string' || !STAGE_ORDER.includes(stage as Stage)) return null
@@ -272,6 +286,27 @@ function readWar(x: unknown): LeaveWar | null {
     readDays.push({ date, events: [events[0], events[1]], blocked, blockedReason, ph })
   }
 
+  // Bands are READ LENIENTLY, like the window above: a war stored before
+  // merged events existed has no `bands` key, and `undefined` there means "no
+  // merged labels", which is exactly how that war behaved. A key that is
+  // present but not an array, or holds a malformed band, IS rejected — that is
+  // corruption, not an older shape. A band whose dates fall outside the period,
+  // are backwards, or sit on neither event line is dropped rather than failing
+  // the whole war.
+  const readBands: EventBand[] = []
+  if (bands !== undefined) {
+    if (!Array.isArray(bands)) return null
+    for (const b of bands) {
+      if (!isPlainObject(b)) return null
+      const { line, from: bf, to: bt, text } = b
+      if (line !== 0 && line !== 1) continue
+      if (typeof bf !== 'string' || typeof bt !== 'string' || typeof text !== 'string') continue
+      if (bt < bf || bf < start || bt > end) continue
+      if (bandOverlaps(readBands, line, bf, bt)) continue
+      readBands.push({ line, from: bf, to: bt, text })
+    }
+  }
+
   if (!isValidGrid(grid)) return null
   const readStatesOrNull = readStates(states)
   if (!readStatesOrNull) return null
@@ -281,6 +316,7 @@ function readWar(x: unknown): LeaveWar | null {
       id, name, start, end, stage: stage as Stage,
       bidFrom: from as string | null, bidTo: to as string | null,
       days: readDays,
+      bands: readBands,
     },
     grid,
     // Same reconciliation the single-war store did: a state whose cell no
@@ -360,6 +396,7 @@ export function initStore(b?: StorageBackend): void {
 
   const openings = readStored('openings', readOpenings) ?? seedOpenings()
   const ledger = readStored('ledger', readLedger) ?? seedLedger()
+  const eventDefs = readStored('eventdefs', readEventDefs) ?? seedEventDefs()
 
   /* The role is neither read nor persisted since the Raptor merge: it is
      derived from the Raptor login on every session change (resetSession in
@@ -372,7 +409,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs })
 
   version = 0
   listeners.clear()
@@ -429,6 +466,7 @@ function persist(): void {
   backend.write('current', state.currentId)
   backend.write('openings', JSON.stringify(state.openings))
   backend.write('ledger', JSON.stringify(state.ledger))
+  backend.write('eventdefs', JSON.stringify(state.eventDefs))
   /* `people` deliberately absent: the roster is a projection of Raptor's
      PEOPLE (see initStore) — persisting it would store a copy that can only
      disagree with the projection the next boot installs. */
@@ -727,6 +765,128 @@ export function setDayEvent(date: string, line: 0 | 1, text: string): boolean {
     },
   }))
   return true
+}
+
+/**
+ * Write one event line across a RANGE of days — the "repeat" mode: the same
+ * word lands in each covered day's own `events[line]` (e.g. "SC" on every day
+ * of a tasking week). The merged-bar mode is `addEventBand` instead.
+ *
+ * Admin-only, same reason as `setDayEvent`. Any day already under a band on
+ * this line keeps the band — the band is the merged label and per-day text
+ * beneath it is suppressed anyway — so the repeat writes only the free days.
+ * A backwards range is a no-op.
+ */
+export function setDayEventRange(from: string, to: string, line: 0 | 1, text: string): boolean {
+  if (state.role !== 'admin') return false
+  if (to < from) return false
+  updateCurrent(w => ({
+    ...w,
+    period: {
+      ...w.period,
+      days: w.period.days.map(d => {
+        if (d.date < from || d.date > to) return d
+        if (bandCoversDate(w.period.bands, line, d.date)) return d
+        const events: [string, string] = [d.events[0], d.events[1]]
+        events[line] = text
+        return { ...d, events }
+      }),
+    },
+  }))
+  return true
+}
+
+/** Why a merged band was refused. */
+export type EventBandResult = 'set' | 'overlap' | 'backwards' | 'outside' | 'forbidden'
+
+/**
+ * Add a MERGED event label spanning a range on one event line.
+ *
+ * Admin-only. Refused rather than clamped when it overlaps an existing band on
+ * the same line (two merged labels over one day has no single right answer) or
+ * falls outside the war. On success the per-day text UNDER the band on that
+ * line is cleared, so a merged label never hides stray words a later delete
+ * would resurrect.
+ */
+export function addEventBand(line: 0 | 1, from: string, to: string, text: string): EventBandResult {
+  if (state.role !== 'admin') return 'forbidden'
+  if (to < from) return 'backwards'
+  if (from < state.period.start || to > state.period.end) return 'outside'
+  if (bandOverlaps(state.period.bands, line, from, to)) return 'overlap'
+  updateCurrent(w => ({
+    ...w,
+    period: {
+      ...w.period,
+      bands: [...w.period.bands, { line, from, to, text }],
+      days: w.period.days.map(d => {
+        if (d.date < from || d.date > to || !d.events[line]) return d
+        const events: [string, string] = [d.events[0], d.events[1]]
+        events[line] = ''
+        return { ...d, events }
+      }),
+    },
+  }))
+  return 'set'
+}
+
+/** Remove the merged band on `line` that covers `date`. Admin-only. A no-op
+ *  when no band is there. The days it covered keep their (empty) per-day text —
+ *  the band cleared them on the way in; a fresh edit refills them. */
+export function removeEventBand(line: 0 | 1, date: string): boolean {
+  if (state.role !== 'admin') return false
+  const band = state.period.bands.find(b => b.line === line && b.from <= date && date <= b.to)
+  if (!band) return false
+  updateCurrent(w => ({
+    ...w,
+    period: { ...w.period, bands: w.period.bands.filter(b => b !== band) },
+  }))
+  return true
+}
+
+/** True where a band on `line` covers `date`. A module-local reader for the
+ *  range writer above; the engine's `bandAt` is the exported one. */
+function bandCoversDate(bands: EventBand[], line: 0 | 1, date: string): boolean {
+  return bands.some(b => b.line === line && b.from <= date && date <= b.to)
+}
+
+/* THE EVENT-TYPE LIBRARY writers. Admin-only, squadron-wide, persisted under
+   the `eventdefs` key. Each wraps a pure helper from engine/eventdefs.ts and
+   returns its error sentence unchanged so the sheet can show it; a successful
+   edit republishes state, saves and notifies like every other write. */
+
+function commitEventDefs(result: EventDef[] | string): string | null {
+  if (typeof result === 'string') return result
+  state = withCurrent({ ...state, eventDefs: result })
+  persist()
+  notify()
+  return null
+}
+
+export function addEventType(name: string, kind: EventKind): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit event types'
+  return commitEventDefs(addEventDef(state.eventDefs, name, kind))
+}
+
+export function updateEventType(index: number, patch: { name?: string; kind?: EventKind }): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit event types'
+  return commitEventDefs(updateEventDef(state.eventDefs, index, patch))
+}
+
+export function removeEventType(index: number): boolean {
+  if (state.role !== 'admin') return false
+  const next = removeEventDef(state.eventDefs, index)
+  if (next === state.eventDefs) return false
+  state = withCurrent({ ...state, eventDefs: next })
+  persist()
+  notify()
+  return true
+}
+
+export function resetEventTypes(): void {
+  if (state.role !== 'admin') return
+  state = withCurrent({ ...state, eventDefs: seedEventDefs() })
+  persist()
+  notify()
 }
 
 /** Walk the period to its next stage. A no-op at the end of the cycle —

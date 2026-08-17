@@ -468,6 +468,26 @@ only after re-running them.
 
 ## Known issues / open work
 
+- **LEAVE WAR EVENTS grew into a tagged, ranged surface (17 Aug 26).** The two
+  event lines are now editable through the **Event sheet** (tap an event as
+  admin — inline textareas are gone), which carries: open text; a **range**
+  (the same RangePicker the bid window uses); **merge vs repeat** for a range
+  (one spanning bar, stored as an `EventBand` on the period, or the word in
+  each day); a **tag** (off day / no-leave / work); and, behind an "Edit types"
+  button, the **event-type library**. Tags surface ONLY as colour — the word
+  is never annotated on screen — painted by `Matrix`: an off day (PH) tints its
+  whole column light green, a no-leave day orange, a work word reads red (the
+  column left alone). **Colours only for now (owner's call this pass):** the
+  off/no-leave/work classification is stored (squadron-wide, persisted under
+  the `eventdefs` key, `state.eventDefs`) but does NOT yet change the manning
+  counts or raise a warning — that wiring, and PH→OIL, stay for the future
+  rules pass (Wire 4). The counter-picker header ("ANNUAL") was squared off in
+  the same batch — it read as a floating pill crowding the events; it is a
+  contained square control now, still a full 40px tap target. Documented (Leave
+  War is self-documented in code + `docs/leavewar/`, not in engine-rules /
+  ui-contracts): the module comments in `engine/eventdefs.ts`,
+  `ui/EventRows.tsx`, `ui/EventSheet.tsx`, and the "Event model" section of
+  `docs/leavewar/known-gaps.md`.
 - **LEAVE WAR is merged as the sixth tab (16 Aug 26) and SYNC WIRES 0–3 are
   BUILT (17 Aug 26)** — one roster (boot projection of `PEOPLE`),
   approved-leave ⇄ schedule-input both ways, counters drawing down (derived,
@@ -1333,13 +1353,13 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | file | what it does |
 |---|---|
 | `LeaveWarPage.tsx` | The ONE seam: renders the standalone app's Topbar/StageBar/Matrix inside `#page-leavewar`, scrolls the window to top on mount (Raptor keeps scroll across tab switches). Boot is NOT here — `main.tsx` calls its `initStore` once. |
-| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + M/CSE/OD markers + FS/HS SC-duty, portions `*X`/`X*`), `counters.ts` (derived balances, ledger), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`), `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
-| `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. |
+| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + M/CSE/OD markers + FS/HS SC-duty, portions `*X`/`X*`), `counters.ts` (derived balances, ledger), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/nolv/work, `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
+| `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`, **the event writers `setDayEvent`/`setDayEventRange` (repeat) + `addEventBand`/`removeEventBand` (merge) + the `addEventType`/`updateEventType`/`removeEventType`/`resetEventTypes` library writers, all admin-gated; `state.eventDefs` persisted under `eventdefs`, `period.bands` read leniently in `readWar`**. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. |
 | `state/storage.ts` | The `leavewar:`-prefixed localStorage seam (`memoryBackend` headless) — deliberately NOT `HOOKS.storeBackend`; the future shared backend replaces both together. |
 | `state/raptorRoster.ts` | Wire 0 — `projectPeople()`: the LW roster as a projection of Raptor's `PEOPLE` (skips ground crew + sentinels; band from `isInstr`; sxo carried). Installed at boot, never persisted. |
 | `state/demoworld.ts` | The fresh-browser demo re-key — DEMO_MAP (16 seed people → Raptor aircrew, seat+band-equal by construction), the seed overlay, and the two idempotent backing inputs for the seed's Raptor-owned cells. Boot-time only; the 632 vendored tests stay blind by construction. |
 | `sync.ts` | Wires 1+2 — both DERIVED reconcilers (outbound: approved cells → span-collapsed lw-tagged `INPUTS` rows, one `writeInputsBatch`, only on a non-empty diff; inbound: leave inputs → Raptor-owned cells per day, portions both ways, custom rounds OUT, reverse-clear, the clash list + its own subscription), the SYNCING flag, `wireLeaveWarSync()`. The loop-breaker pair is documented at the top of the file. |
-| `ui/` | Matrix (the 365-column grid), Chrome (its topbar + stage strip; the role toggle is deleted — see the comment there), the seven sheets, RangePicker. All five stylesheets scoped under `#page-leavewar` (theme.css deleted as pure duplication); cascade note at the top of each file. |
+| `ui/` | Matrix (the 365-column grid; now paints the event column colours + mounts the Event sheet), Chrome (its topbar + stage strip; the role toggle is deleted — see the comment there), the seven sheets, RangePicker, **`EventRows.tsx` (the two event lines — merged bands as colspan, red work text, tap-to-edit), `EventSheet.tsx` (the admin event editor + type library, on `Sheet`+`RangePicker`; `eventsheet.css`)**. All stylesheets scoped under `#page-leavewar` (theme.css deleted as pure duplication); cascade note at the top of each file — the event column colours in `matrix.css` are ordered after weekend/blocked deliberately. |
 
 ### Tooling
 | file | what it does |

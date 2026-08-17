@@ -1058,14 +1058,23 @@ test('an event widens its day, then wraps and grows only its own rows', async ({
   const rowBefore = (await personRow())!
   const eventBefore = (await eventRow())!
 
+  // Editing moved into the Event sheet (owner, Aug 26 — "click on the event
+  // and an edit button is at the top"), so a value is set by tapping the cell,
+  // typing, and saving rather than into an inline textarea.
+  const setEvent = async (date: string, text: string) => {
+    await page.locator(`[data-testid="event-0-${date}"]`).click()
+    await page.locator('[data-testid="event-text"]').fill(text)
+    await page.locator('[data-testid="event-apply"]').click()
+    await page.waitForTimeout(150)
+  }
+
   // 1. A SHORT event widens the column.
-  await page.locator('[data-testid="event-in-0-2026-01-05"]').fill('CO visit')
+  await setEvent('2026-01-05', 'CO visit')
   const widened = (await col('2026-01-05'))!
   expect(widened.width).toBeGreaterThan(narrow.width)
 
   // 2. A LONG one stops widening at the ceiling and wraps instead.
-  await page.locator('[data-testid="event-in-0-2026-01-05"]')
-    .fill('Range closure 0900-1400, live firing on the eastern ranges, all crews briefed')
+  await setEvent('2026-01-05', 'Range closure 0900-1400, live firing on the eastern ranges, all crews briefed')
   const capped = (await col('2026-01-05'))!
   expect(capped.width).toBeLessThanOrEqual(140)
   const eventAfter = (await eventRow())!
@@ -1081,6 +1090,57 @@ test('an event widens its day, then wraps and grows only its own rows', async ({
 test('a member reads the events and cannot type into them', async ({ page }) => {
   await expect(page.locator('[data-testid="event-0-2026-01-01"]')).toHaveText('PH')
   await expect(page.locator('[data-testid="event-in-0-2026-01-01"]')).toHaveCount(0)
+})
+
+// The event tags surface only as colour (owner, Aug 26): an off day (PH) tints
+// its column green, a no-leave day orange, a work word reads red. None of this
+// is visible to jsdom, which loads no stylesheet and measures no colour.
+test('an off day is green, a no-leave day orange, and a work word red', async ({ page }) => {
+  await lwRole(page, 'admin')
+  const rgb = (s: string) => s.match(/[\d.]+/g)!.map(Number)
+  const headBg = (d: string) =>
+    page.locator(`[data-testid="head-${d}"]`).evaluate(el => getComputedStyle(el).backgroundColor)
+
+  // The seed marks 2026-01-01 PH → an off day → green header (green channel on
+  // top).
+  const [pr, pg, pb] = rgb(await headBg('2026-01-01'))
+  expect(pg).toBeGreaterThan(pr)
+  expect(pg).toBeGreaterThan(pb)
+
+  const setEvent = async (line: 0 | 1, date: string, text: string) => {
+    await page.locator(`[data-testid="event-${line}-${date}"]`).click()
+    await page.locator('[data-testid="event-text"]').fill(text)
+    await page.locator('[data-testid="event-apply"]').click()
+    await page.waitForTimeout(150)
+  }
+
+  // A no-leave day → orange header (red channel leads, warm).
+  await setEvent(0, '2026-01-08', 'No Leave')
+  const [nr, ng, nb] = rgb(await headBg('2026-01-08'))
+  expect(nr).toBeGreaterThan(nb)
+  expect(nr).toBeGreaterThanOrEqual(ng)
+
+  // A work word → the word reads red; the column is NOT tinted (green channel
+  // does not lead the header the way an off day's does).
+  await setEvent(1, '2026-01-09', 'SC')
+  const [wr, wg, wb] = rgb(
+    await page.locator('[data-testid="event-1-2026-01-09"]').evaluate(el => getComputedStyle(el).color),
+  )
+  expect(wr).toBeGreaterThan(wg)
+  expect(wr).toBeGreaterThan(wb)
+  const [hr, hg, hb] = rgb(await headBg('2026-01-09'))
+  expect(hg <= hr || hg <= hb).toBeTruthy()
+})
+
+// The counter picker was a rounded floating pill that crowded the events; the
+// owner asked to square it off. Pin that it reads as a contained, squared
+// control — a small radius and a real border — which jsdom cannot measure.
+test('the counter picker is a contained, squared control', async ({ page }) => {
+  const pick = page.locator('[data-testid="counter-pick"]')
+  const radius = parseFloat(await pick.evaluate(el => getComputedStyle(el).borderTopLeftRadius))
+  expect(radius).toBeLessThanOrEqual(4)
+  const border = parseFloat(await pick.evaluate(el => getComputedStyle(el).borderTopWidth))
+  expect(border).toBeGreaterThan(0)
 })
 
 // ---- the period label, the contrast, and the under-manned list -----------

@@ -7,6 +7,25 @@
 
 export type Stage = 'draft' | 'open' | 'closed' | 'published'
 
+/**
+ * A MERGED event — one label shown as a single cell across a range of days, on
+ * one of the two event lines (owner, Aug 26). The alternative a scheduler can
+ * choose instead is a repeat: the same word written into each day's own
+ * `events[line]`, which needs no band and no new shape. A band is the merged
+ * look, so it is the piece that needed a home.
+ *
+ * `from`/`to` are inclusive `yyyy-mm-dd` and lie inside the period. Bands on
+ * one line never overlap (the store refuses it), and a band suppresses the
+ * per-day `events[line]` text under it — the store clears that text when the
+ * band is made, so no hidden words linger beneath a merged label.
+ */
+export interface EventBand {
+  line: 0 | 1
+  from: string
+  to: string
+  text: string
+}
+
 export interface DayInfo {
   date: string
   /** Two free-text event lines, matching the two EVENT rows of the sheet. */
@@ -41,6 +60,24 @@ export interface Period {
   bidFrom: string | null
   bidTo: string | null
   days: DayInfo[]
+  /** Merged event labels — the spanning-cell alternative to per-day repeat.
+   *  Empty on every war that predates the feature, read leniently in the
+   *  store's `readWar` so an older stored war loads unchanged. */
+  bands: EventBand[]
+}
+
+/** Whether a proposed band overlaps any existing band on the same line. The
+ *  store refuses an overlap rather than trimming it — two merged labels
+ *  fighting over one day has no single right answer, and silently shrinking
+ *  one would hide the collision. */
+export function bandOverlaps(bands: EventBand[], line: 0 | 1, from: string, to: string): boolean {
+  return bands.some(b => b.line === line && from <= b.to && b.from <= to)
+}
+
+/** The band covering a date on a line, or null. A line holds at most one band
+ *  over any day (no overlaps), so the first hit is the only hit. */
+export function bandAt(bands: EventBand[], line: 0 | 1, date: string): EventBand | null {
+  return bands.find(b => b.line === line && b.from <= date && date <= b.to) ?? null
 }
 
 function toUTC(date: string): number {
@@ -108,6 +145,12 @@ export function inBidWindow(period: Period, date: string): boolean {
  */
 export function windowFits(period: Period, from: string, to: string): boolean {
   return to >= from && from >= period.start && to <= period.end
+}
+
+/** A period's empty band list. A named helper so the two constructors and the
+ *  reader agree on the starting shape. */
+export function emptyBands(): EventBand[] {
+  return []
 }
 
 export function buildDays(start: string, end: string): DayInfo[] {
