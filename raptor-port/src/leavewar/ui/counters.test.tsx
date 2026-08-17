@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setRole, setViewer } from '../state/store'
+import { getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setPeople, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -88,14 +88,34 @@ describe('the counter column', () => {
     expect(screen.getByTestId('figsub-lvecon').textContent).toBe('= LL + OL + OIL + OFF + CCL + PL + FCL')
   })
 
-  // The figure is what makes the list answerable: "which counter" is a
-  // question people settle by looking for the one running out.
-  it('shows the squadron-wide total beside each counter', () => {
+  // The figure is what makes the list answerable: each row previews the
+  // VIEWING person's number so "which counter" can be settled by looking for
+  // the one running out.
+  it('shows the viewing person\'s number beside each counter', () => {
+    setViewer('ramp')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     const oil = screen.getByTestId('counter-oil').textContent!
     expect(oil).toContain('OIL')
     expect(oil).toMatch(/-?\d/)
+  })
+
+  it('shows a dash, not a squadron-wide sum, when no one is being viewed (owner, 18 Aug 26)', () => {
+    // The owner does not want a squadron total here — the number answers "how
+    // much do I have left", which has no meaning without a person, and a
+    // squadron sum only mixed aircrew with ground crew. With nobody viewed the
+    // row shows a dash; adding a ground-crew body with leave does not conjure
+    // a number back.
+    setViewer(null)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.getByTestId('counter-lvebal').textContent).toContain('—')
+    expect(screen.getByTestId('counter-lvebal').textContent).not.toMatch(/\d/)
+    act(() => {
+      setPeople([...getState().people, { id: 'gnd_x', callsign: 'GNDX', seat: 'gnd', band: 'ops', sxo: false, from: null, to: null, pers: true } as any])
+      setCell('gnd_x', '2026-02-10', 'LL')
+    })
+    expect(screen.getByTestId('counter-lvebal').textContent).toContain('—')
   })
 
   // §Counters: balances already go negative in the squadron's own workbook,
@@ -391,11 +411,13 @@ describe('the picker answers with the viewer\'s own numbers (owner, 17 Aug 26)',
     expect(screen.getByTestId('counter-sheet').textContent).toContain('your numbers — RAMP')
   })
 
-  it('falls back to the squadron-wide sums when nobody (or an unknown id) is viewing', () => {
+  it('shows a dash, not a squadron-wide sum, when nobody (or an unknown id) is viewing', () => {
     setViewer('nobody-here')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
-    expect(screen.getByTestId('counter-lvebal').textContent).toContain('squadron-wide')
+    const txt = screen.getByTestId('counter-lvebal').textContent!
+    expect(txt).not.toContain('squadron-wide')
+    expect(txt).toContain('—')
   })
 })
 
