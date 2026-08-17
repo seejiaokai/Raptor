@@ -68,10 +68,15 @@ export function CounterSheet({
           // The viewer's own figure where the roster knows who is looking
           // (the common case since the View-as mirror); the squadron's sum
           // where it does not. `f.value` already knows con from bal, so one
-          // line covers both either way.
+          // line covers both either way. GROUND CREW are excluded from the
+          // squadron-wide sum (owner, 18 Aug 26): these are aircrew leave-pool
+          // figures, and a ground-crew body — who holds no entitlement, so
+          // reads a negative balance against a zero opening — would drag the
+          // squadron total the wrong way. Their own per-person figures still
+          // show; only this aggregate leaves them out.
           const total = me
             ? f.value(ctx, me.id)
-            : people.reduce((sum, p) => sum + f.value(ctx, p.id), 0)
+            : people.reduce((sum, p) => (p.pers ? sum : sum + f.value(ctx, p.id)), 0)
           const caption = f.legend ? `= ${f.legend}` : f.desc
           const totalNote = f.kind === 'bal'
             ? me ? 'left, yours' : 'left, squadron-wide'

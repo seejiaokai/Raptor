@@ -759,10 +759,11 @@ ever.
   of silently dropping the second (was under-drawing / losing half a day —
   `sync.test.ts`); (7) `dutyTplLoad` pre-scans `SEQ` so an id-less entry can't
   mint a `uN` a later entry claims; (8) the DEBRIEF advisory prints the
-  configured `VCONF.debrief` pad, not a hard-coded "2h". NOTED, not changed
-  (owner to decide): the counter-picker's squadron-wide fallback TOTAL sums a
-  figure over ALL bodies incl. ground crew, so a ground-crew body's negative
-  balance can distort the aircrew leave-pool summary line.** The owner actioned the two
+  configured `VCONF.debrief` pad, not a hard-coded "2h"; (9) the counter-picker's
+  squadron-wide fallback TOTAL now EXCLUDES ground crew (owner said yes,
+  18 Aug 26) — an aircrew leave-pool figure no longer folds in a `pers` body's
+  negative balance (`CounterSheet.tsx`, `counters.test.tsx`; per-person figures
+  still show ground crew).** The owner actioned the two
   mobile items (frozen Quals callsign, collapsible legend) and the "click any
   blank area to deselect" bug. **The P0 keyboard bug is now CLOSED (15 Aug 26):**
   the five top-nav items and the phone drawer's nav were hrefless `<a>`s a

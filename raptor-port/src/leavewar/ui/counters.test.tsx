@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setRole, setViewer } from '../state/store'
+import { getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setPeople, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -96,6 +96,21 @@ describe('the counter column', () => {
     const oil = screen.getByTestId('counter-oil').textContent!
     expect(oil).toContain('OIL')
     expect(oil).toMatch(/-?\d/)
+  })
+
+  it('leaves ground crew out of the squadron-wide total (owner, 18 Aug 26)', () => {
+    // These are aircrew leave-pool figures; a ground-crew body holds no
+    // entitlement, so their negative balance must not drag the squadron sum.
+    setViewer(null)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    const before = screen.getByTestId('counter-lvebal').textContent
+    act(() => {
+      setPeople([...getState().people, { id: 'gnd_x', callsign: 'GNDX', seat: 'gnd', band: 'ops', sxo: false, from: null, to: null, pers: true } as any])
+      setCell('gnd_x', '2026-02-10', 'LL')
+    })
+    // A ground-crew body with leave changed nothing in the aircrew total.
+    expect(screen.getByTestId('counter-lvebal').textContent).toBe(before)
   })
 
   // §Counters: balances already go negative in the squadron's own workbook,
