@@ -5,7 +5,20 @@
    the on-screen role toggle is gone (the role rides the login), so the
    toggle clicks became lwRole() calls through the probe bridge; and the two
    Playwright projects (phone + desktop) moved into raptor-port's own
-   playwright.config.ts. */
+   playwright.config.ts.
+
+   RENAMED AT THE SYNC WIRES (17 Aug 26, wire 0 of docs/superpowers/specs/
+   leavewar-sync.md): the roster is now the projection of Raptor's PEOPLE,
+   and on a fresh browser the seeded demo world is re-keyed onto that real
+   crew — so every seed callsign inside a testid here was renamed through
+   the SAME 16-entry map the boot applies (DEMO_MAP in
+   src/leavewar/state/demoworld.ts, seat+band-equal by construction):
+   ramp→slipway, tata→prowler, splice→wolf, jaguar→dj, switcher→ignite,
+   asics→bruise, pipper→pain, dusk→ammo, miles→slash, roulette→dirty,
+   cross→rocky, decal→casper, skin→divot, slammed→vinci, cage→spaceman,
+   reset→harpoon. The category-label assertions (OPSP(S), IP→IP(S)) hold
+   unchanged because the map preserves seat and band and the mapped
+   people's own SXO flags match the seed's. */
 import { expect, test, type Page } from '@playwright/test'
 import { lwRole, openLeaveWar } from './app'
 
@@ -59,7 +72,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('the callsign column stays put when the grid scrolls sideways', async ({ page }) => {
-  const cell = page.locator('[data-testid="row-ramp"] .who')
+  const cell = page.locator('[data-testid="row-slipway"] .who')
   const before = await cell.boundingBox()
   const wrap = page.locator('.mx-wrap')
   await wrap.evaluate(el => el.scrollBy(600, 0))
@@ -129,7 +142,7 @@ test('the grid still owns the sideways scroll', async ({ page }) => {
 })
 
 test('the frozen column is opaque — day cells never show through it', async ({ page }) => {
-  const bg = await page.locator('[data-testid="row-ramp"] .who')
+  const bg = await page.locator('[data-testid="row-slipway"] .who')
     .evaluate(el => getComputedStyle(el).backgroundColor)
   expect(bg).not.toBe('rgba(0, 0, 0, 0)')
 })
@@ -171,11 +184,11 @@ test('a blocked day that falls on a weekend still paints amber, not grey', async
 // jsdom (the unit-test DOM) never computes an element's cascade, so it can
 // prove the `.am`/`.pm` class landed on the right chip but not that the
 // divider it triggers is actually painted — that only a real browser's
-// `getComputedStyle(el, '::after')` can answer. Seed: ramp carries `*OIL`
+// `getComputedStyle(el, '::after')` can answer. Seed (re-keyed): slipway carries `*OIL`
 // on 2026-02-10 (morning, half day), and OL on 2026-01-01 (whole day, no
 // divider).
 test('the half-day divider is painted on a half-day chip and absent on a whole-day chip', async ({ page }) => {
-  const half = page.locator('[data-testid="cell-ramp-2026-02-10"] .c')
+  const half = page.locator('[data-testid="cell-slipway-2026-02-10"] .c')
   const halfAfter = await half.evaluate(el => {
     const s = getComputedStyle(el, '::after')
     return { width: s.width, background: s.backgroundColor }
@@ -188,7 +201,7 @@ test('the half-day divider is painted on a half-day chip and absent on a whole-d
   // of `auto` rather than `0px` — `parseFloat('auto')` is `NaN`, not `0`, so
   // this checks the same "nothing painted" fact via content and background
   // instead of width.
-  const whole = page.locator('[data-testid="cell-ramp-2026-01-01"] .c')
+  const whole = page.locator('[data-testid="cell-slipway-2026-01-01"] .c')
   const wholeAfter = await whole.evaluate(el => {
     const s = getComputedStyle(el, '::after')
     return { content: s.content, background: s.backgroundColor }
@@ -236,18 +249,26 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
   // it is worth the nodes: a year of columns numbered 01…31 twelve times
   // over gives the eye nothing to hold on to.
   //
+  // RAISED A FOURTH TIME, 10700 -> 26500, at the sync wires (17 Aug 26):
+  // wire 0 makes the roster the projection of Raptor's PEOPLE, so the same
+  // 365-column grid now carries 58 aircrew rows instead of 16. Measured
+  // BEFORE writing the number here, on the built bundle: 25850 nodes inside
+  // `.mx` (67 tbody/count/event rows), 25918 whole-page with a sheet open.
+  // The cost is the roster's real size, not a regression — the demo simply
+  // shows the crew Raptor actually flies.
+  //
   // The headroom principle is unchanged: this is a ceiling, not a target,
   // and raising it is a deliberate edit in the change that adds the nodes.
   const nodes = await page.evaluate(() => document.querySelectorAll('.mx *').length)
   // A missing `.mx` would make this 0, which is comfortably "less than the
   // ceiling" — assert it's also nonzero so an absent grid fails loudly
   // instead of passing by accident. The lower bound is a real floor too: a
-  // grid that quietly went back to a quarter would sit near 2357 and this
-  // would catch it.
-  expect(nodes).toBeGreaterThan(8000)
-  expect(nodes).toBeLessThan(10700)
+  // grid that quietly went back to the 16-person seed roster would sit near
+  // 10350 and this would catch it.
+  expect(nodes).toBeGreaterThan(20000)
+  expect(nodes).toBeLessThan(26500)
 
-  await page.locator('[data-testid="cell-dusk-2026-02-11"]').click()
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
   // 9644 whole-document nodes with the sheet open (9607 of them the matrix),
   // measured 2026-08-10 after the weekday labels landed. Ceiling 10000 on
@@ -262,7 +283,9 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
      open sheet, and nothing else. */
   const all = await page.evaluate(() => document.querySelectorAll('#page-leavewar *').length)
   expect(all).toBeGreaterThan(nodes)
-  expect(all).toBeLessThan(10800)
+  // 25918 measured with the sheet open (17 Aug 26) — same 26500-class
+  // ceiling plus the sheet's few dozen nodes.
+  expect(all).toBeLessThan(26800)
 })
 
 // A year is ~13,600px of grid. Reaching September by dragging is not a thing
@@ -326,22 +349,22 @@ test('the whole month strip is on screen at phone width', async ({ page }) => {
 // nothing about what was painted — only a browser computes the cascade.
 test('the four bid states read as three colours and one plain cell', async ({ page }) => {
   const bg = (sel: string) => page.locator(sel).evaluate(el => getComputedStyle(el).backgroundColor)
-  const appr = await bg('[data-testid="cell-jaguar-2026-01-16"] .c')
-  const ack = await bg('[data-testid="cell-asics-2026-02-24"] .c')
-  const ref = await bg('[data-testid="cell-jaguar-2026-01-19"] .c')
+  const appr = await bg('[data-testid="cell-dj-2026-01-16"] .c')
+  const ack = await bg('[data-testid="cell-bruise-2026-02-24"] .c')
+  const ref = await bg('[data-testid="cell-dj-2026-01-19"] .c')
   expect(new Set([appr, ack, ref]).size).toBe(3)
   for (const c of [appr, ack, ref]) expect(c).not.toBe('rgba(0, 0, 0, 0)')
 
   // Pending is the absence of news, so it must be the absence of paint —
   // asserted against all three answered colours, not merely "not purple".
-  const pending = await bg('[data-testid="cell-asics-2026-01-23"] .c')
+  const pending = await bg('[data-testid="cell-bruise-2026-01-23"] .c')
   expect(pending).toBe('rgba(0, 0, 0, 0)')
   for (const c of [appr, ack, ref]) expect(pending).not.toBe(c)
 
   // Plain must still be READABLE. A cell with no background is only correct
   // if its text keeps the ordinary ink — an invisible bid would be worse
   // than a wrongly coloured one.
-  const ink = await page.locator('[data-testid="cell-asics-2026-01-23"] .c')
+  const ink = await page.locator('[data-testid="cell-bruise-2026-01-23"] .c')
     .evaluate(el => getComputedStyle(el).color)
   const body = await page.evaluate(() => getComputedStyle(document.body).color)
   expect(ink).toBe(body)
@@ -352,9 +375,9 @@ test('the four bid states read as three colours and one plain cell', async ({ pa
 // squadron must be able to tell a bid nobody has looked at from one already
 // in management's hands, and a freshly typed bid is the former.
 test('a bid can be placed, and lands plain because nobody has answered it', async ({ page }) => {
-  await page.locator('[data-testid="cell-dusk-2026-02-11"]').click()
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await page.locator('[data-testid="bid-LL"]').click()
-  const chip = page.locator('[data-testid="cell-dusk-2026-02-11"] .c')
+  const chip = page.locator('[data-testid="cell-ammo-2026-02-11"] .c')
   await expect(chip).toBeVisible()
   const cls = (await chip.getAttribute('class'))!
   for (const painted of ['tbc', 'appr', 'ref']) expect(cls).not.toContain(painted)
@@ -367,7 +390,7 @@ test('a bid can be placed, and lands plain because nobody has answered it', asyn
 // layout at all, so the unit tests can prove the sheet was rendered and
 // nothing whatever about whether it can be seen. Only a real browser can.
 test('the bid sheet is visible in full, not clipped by the grid scroller', async ({ page }) => {
-  await page.locator('[data-testid="cell-dusk-2026-02-11"]').click()
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   const sheet = page.locator('[data-testid="bid-picker"]')
   await expect(sheet).toBeVisible()
 
@@ -389,7 +412,7 @@ test('the bid sheet is visible in full, not clipped by the grid scroller', async
 })
 
 test('opening the bid sheet never makes the page scroll sideways', async ({ page }) => {
-  await page.locator('[data-testid="cell-dusk-2026-02-11"]').click()
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -403,8 +426,8 @@ test('opening the bid sheet never makes the page scroll sideways', async ({ page
 // computes which of the two rules on the chip actually won.
 test('a cell Raptor owns is the same green as an approved bid', async ({ page }) => {
   const bg = (sel: string) => page.locator(sel).evaluate(el => getComputedStyle(el).backgroundColor)
-  const raptor = await bg('[data-testid="cell-tata-2026-01-09"] .c')
-  const bid = await bg('[data-testid="cell-jaguar-2026-01-16"] .c')
+  const raptor = await bg('[data-testid="cell-prowler-2026-01-09"] .c')
+  const bid = await bg('[data-testid="cell-dj-2026-01-16"] .c')
   expect(raptor).toBe(bid)
   expect(raptor).not.toBe('rgba(0, 0, 0, 0)')
 })
@@ -418,20 +441,20 @@ test('the Raptor mark is painted, and an ordinary bid carries none', async ({ pa
     const s = getComputedStyle(el)
     return { width: s.borderLeftWidth, style: s.borderLeftStyle }
   })
-  const raptor = await edge('[data-testid="cell-tata-2026-01-09"] .c')
+  const raptor = await edge('[data-testid="cell-prowler-2026-01-09"] .c')
   expect(parseFloat(raptor.width)).toBeGreaterThan(0)
   expect(raptor.style).toBe('solid')
 
-  const moved = await edge('[data-testid="cell-miles-2026-02-03"] .c')
+  const moved = await edge('[data-testid="cell-slash-2026-02-03"] .c')
   expect(parseFloat(moved.width)).toBeGreaterThan(0)
   expect(moved.style).toBe('dotted')
 
-  const plain = await edge('[data-testid="cell-jaguar-2026-01-16"] .c')
+  const plain = await edge('[data-testid="cell-dj-2026-01-16"] .c')
   expect(parseFloat(plain.width) || 0).toBe(0)
 })
 
 test('a cell Raptor owns offers no way to change it', async ({ page }) => {
-  await page.locator('[data-testid="cell-tata-2026-01-09"]').click()
+  await page.locator('[data-testid="cell-prowler-2026-01-09"]').click()
   await expect(page.locator('[data-testid="raptor-sheet"]')).toBeVisible()
   await expect(page.locator('[data-testid="bid-LL"]')).toHaveCount(0)
   await expect(page.locator('[data-testid="decide-approve"]')).toHaveCount(0)
@@ -443,23 +466,23 @@ test('closing the war locks the squadron out, and the admin account still edits'
   await page.locator('[data-testid="stage-advance"]').click()
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
 
-  await page.locator('[data-testid="cell-dusk-2026-02-11"]').click()
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
 
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="cell-dusk-2026-02-11"]').click()
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
 })
 
 test('an admin moves a bid to another date, and it lands pending there', async ({ page }) => {
   await page.locator('[data-testid="stage-advance"]').click()
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="cell-asics-2026-01-23"]').click()
+  await page.locator('[data-testid="cell-bruise-2026-01-23"]').click()
   await page.locator('[data-testid="shift-date"]').fill('2026-01-30')
   await page.locator('[data-testid="decide-shift"]').click()
 
-  await expect(page.locator('[data-testid="cell-asics-2026-01-23"] .c')).toHaveCount(0)
-  const moved = page.locator('[data-testid="cell-asics-2026-01-30"] .c')
+  await expect(page.locator('[data-testid="cell-bruise-2026-01-23"] .c')).toHaveCount(0)
+  const moved = page.locator('[data-testid="cell-bruise-2026-01-30"] .c')
   await expect(moved).toBeVisible()
   // A shift lands PENDING — a move is a proposal, and someone still has to
   // approve the date it moved to — so the chip is plain, not purple. The
@@ -479,8 +502,8 @@ test('an admin moves a bid to another date, and it lands pending there', async (
 // none of that is visible there.
 
 test('both frozen columns stay put when the grid scrolls sideways', async ({ page }) => {
-  const who = page.locator('[data-testid="row-ramp"] .who')
-  const bal = page.locator('[data-testid="bal-ramp"]')
+  const who = page.locator('[data-testid="row-slipway"] .who')
+  const bal = page.locator('[data-testid="bal-slipway"]')
   const before = { who: (await who.boundingBox())!, bal: (await bal.boundingBox())! }
 
   const wrap = page.locator('.mx-wrap')
@@ -493,8 +516,8 @@ test('both frozen columns stay put when the grid scrolls sideways', async ({ pag
 })
 
 test('the two frozen columns sit flush — no gap, no overlap', async ({ page }) => {
-  const who = (await page.locator('[data-testid="row-ramp"] .who').boundingBox())!
-  const bal = (await page.locator('[data-testid="bal-ramp"]').boundingBox())!
+  const who = (await page.locator('[data-testid="row-slipway"] .who').boundingBox())!
+  const bal = (await page.locator('[data-testid="bal-slipway"]').boundingBox())!
   // The balance column starts exactly where the callsign column ends. A gap
   // lets day cells scroll through between them; an overlap hides the name.
   expect(Math.abs(bal.x - (who.x + who.width))).toBeLessThan(1)
@@ -511,20 +534,20 @@ test('the two frozen columns sit flush — no gap, no overlap', async ({ page })
 // touch screen: a tap leaves the row hovered until something else is tapped,
 // so on a phone the column stays see-through for as long as you look at it.
 test('the balance column is opaque — day cells never show through it', async ({ page }) => {
-  const bal = page.locator('[data-testid="bal-ramp"]')
+  const bal = page.locator('[data-testid="bal-slipway"]')
   const alphaOf = (css: string) => {
     const parts = css.match(/[\d.]+/g)!
     return parts.length < 4 ? 1 : Number(parts[3])
   }
 
   await page.locator('.mx-wrap').evaluate(el => el.scrollBy(600, 0))
-  const day = page.locator('[data-testid="cell-ramp-2026-01-15"]')
+  const day = page.locator('[data-testid="cell-slipway-2026-01-15"]')
   // A cell in the SAME ROW that the pointer will not be on. Asserting the
   // row lights up needs a cell the pointer is not touching: the hovered one
   // changes colour anyway through `.mx td.act:hover`, so it cannot tell
   // "the row lights up" from "the cell does".
-  const sibling = page.locator('[data-testid="cell-ramp-2026-01-16"]')
-  const who = page.locator('[data-testid="row-ramp"] .who')
+  const sibling = page.locator('[data-testid="cell-slipway-2026-01-16"]')
+  const who = page.locator('[data-testid="row-slipway"] .who')
   const bg = (l: typeof day) => l.evaluate(el => getComputedStyle(el).backgroundColor)
 
   // Every at-rest reading is taken BEFORE anything is hovered. Taking them
@@ -563,9 +586,9 @@ test('the counter column does not eat the grid on a phone', async ({ page }) => 
   await page.setViewportSize({ width: 390, height: 664 })
   const m = await page.evaluate(() => {
     const wrap = document.querySelector('.mx-wrap')!.getBoundingClientRect().width
-    const who = document.querySelector('[data-testid="row-ramp"] .who')!.getBoundingClientRect().width
-    const bal = document.querySelector('[data-testid="bal-ramp"]')!.getBoundingClientRect().width
-    const day = document.querySelector('[data-testid="cell-ramp-2026-01-15"]')!.getBoundingClientRect().width
+    const who = document.querySelector('[data-testid="row-slipway"] .who')!.getBoundingClientRect().width
+    const bal = document.querySelector('[data-testid="bal-slipway"]')!.getBoundingClientRect().width
+    const day = document.querySelector('[data-testid="cell-slipway-2026-01-15"]')!.getBoundingClientRect().width
     return { wrap, who, bal, day }
   })
   expect(m.day).toBeGreaterThan(0)
@@ -578,7 +601,7 @@ test('the counter column does not eat the grid on a phone', async ({ page }) => 
 
 test('the counter column changes every row at once', async ({ page }) => {
   await expect(page.locator('[data-testid="counter-name"]')).toHaveText('ANNUAL')
-  const rows = ['ramp', 'tata', 'jaguar', 'dusk']
+  const rows = ['slipway', 'prowler', 'dj', 'ammo']
   const before = await Promise.all(rows.map(r => page.locator(`[data-testid="bal-${r}"]`).textContent()))
 
   await pickCounter(page, 'oil')
@@ -591,14 +614,14 @@ test('the counter column changes every row at once', async ({ page }) => {
 })
 
 test('a negative balance is painted red, and a positive one is not', async ({ page }) => {
-  // DECAL's OIL opens at -4.5 and nothing in the seed moves it.
+  // CASPER's OIL opens at -4.5 and nothing in the seed moves it.
   await pickCounter(page, 'oil')
   await expect(page.locator('[data-testid="counter-name"]')).toHaveText('OIL')
-  const neg = await page.locator('[data-testid="bal-decal"]').evaluate(el => ({
+  const neg = await page.locator('[data-testid="bal-casper"]').evaluate(el => ({
     text: el.textContent, colour: getComputedStyle(el).color,
   }))
   expect(neg.text).toBe('-4.5')
-  const pos = await page.locator('[data-testid="bal-ramp"]')
+  const pos = await page.locator('[data-testid="bal-slipway"]')
     .evaluate(el => getComputedStyle(el).color)
   expect(neg.colour).not.toBe(pos)
 })
@@ -629,17 +652,17 @@ test('nothing in the callsign column is cut off', async ({ page }) => {
 // ---- more than one leave war ----
 
 test('switching leave war repaints the grid and keeps the balance', async ({ page }) => {
-  await expect(page.locator('[data-testid="cell-ramp-2026-01-01"]')).toHaveText('OL')
-  const before = await page.locator('[data-testid="bal-reset"]').textContent()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-01"]')).toHaveText('OL')
+  const before = await page.locator('[data-testid="bal-harpoon"]').textContent()
 
   await page.selectOption('[data-testid="war-picker"]', { label: 'JAN - DEC 27' })
-  await expect(page.locator('[data-testid="cell-reset-2027-04-13"]')).toHaveText('LL')
-  await expect(page.locator('[data-testid="cell-ramp-2026-01-01"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="cell-harpoon-2027-04-13"]')).toHaveText('LL')
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-01"]')).toHaveCount(0)
 
   // Entitlements are continuous and wars are windows onto them, so the
-  // figure is the same from either screen. RESET's four days sit in Apr–Jun
+  // figure is the same from either screen. HARPOON's four days sit in Apr–Jun
   // and take him to −2 annual, which reads −2 from Jan–Mar too.
-  await expect(page.locator('[data-testid="bal-reset"]')).toHaveText(before!)
+  await expect(page.locator('[data-testid="bal-harpoon"]')).toHaveText(before!)
   expect(before).toBe('-2')
 })
 
@@ -790,10 +813,10 @@ test('the bidding-window sheet is anchored to the viewport, not clipped', async 
 // too faint to read on a phone. jsdom cannot see a gradient at all, so the
 // unit suite can only prove the `.gone` class was emitted.
 test('a posted-out cell is hatched, and an ordinary cell is not', async ({ page }) => {
-  const bgImage = (d: string) => page.locator(`[data-testid="cell-switcher-${d}"]`)
+  const bgImage = (d: string) => page.locator(`[data-testid="cell-ignite-${d}"]`)
     .evaluate(el => getComputedStyle(el).backgroundImage)
 
-  // SWITCHER is posted out on 2026-01-12, so the 13th is the first day gone.
+  // IGNITE is posted out on 2026-01-12, so the 13th is the first day gone.
   const gone = await bgImage('2026-01-13')
   expect(gone).toContain('repeating-linear-gradient')
   expect(await bgImage('2026-01-09')).toBe('none')
@@ -811,14 +834,14 @@ test('a posted-out cell is hatched, and an ordinary cell is not', async ({ page 
 // picture and no entitlement is spent. It has to be offered like any other
 // leave, or it cannot be asked for at all.
 test('OFF can be bid, takes the day, and moves no balance', async ({ page }) => {
-  const balance = () => page.locator('[data-testid="bal-dusk"]').textContent()
+  const balance = () => page.locator('[data-testid="bal-ammo"]').textContent()
   const count = () => page.locator('[data-testid="count-opsw-2026-02-11"]').textContent()
   const before = { bal: await balance(), manning: await count() }
 
-  await page.locator('[data-testid="cell-dusk-2026-02-11"]').click()
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await page.locator('[data-testid="bid-OFF"]').click()
 
-  await expect(page.locator('[data-testid="cell-dusk-2026-02-11"] .c')).toHaveText('OFF')
+  await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveText('OFF')
   // The man is gone from the count...
   expect(await count()).not.toBe(before.manning)
   // ...and his annual balance has not moved, because OFF spends nothing.
@@ -890,7 +913,8 @@ test('the grid gets most of the screen on a phone once the chrome is scrolled aw
       return b.top >= 0 && b.bottom <= window.innerHeight && b.height > 0
     }).length
   })
-  // Four rows was the complaint. Twelve of the sixteen aircrew is the answer.
+  // Four rows was the complaint. Twelve visible aircrew is the answer (the
+  // projected roster holds 58, so the viewport, not the roster, is the cap).
   expect(rows).toBeGreaterThanOrEqual(12)
 })
 
@@ -929,14 +953,14 @@ test('the counter control is a real tap target on a phone', async ({ page }) => 
 test('the counter sheet changes the column, and every row with it', async ({ page }) => {
   const shown = () => page.locator('[data-testid="counter-name"]').textContent()
   expect(await shown()).toBe('ANNUAL')
-  const before = await page.locator('[data-testid="bal-ramp"]').textContent()
+  const before = await page.locator('[data-testid="bal-slipway"]').textContent()
 
   await page.locator('[data-testid="counter-pick"]').click()
   await page.locator('[data-testid="counter-oil"]').click()
 
   expect(await shown()).toBe('OIL')
   await expect(page.locator('[data-testid="counter-sheet"]')).toHaveCount(0)
-  expect(await page.locator('[data-testid="bal-ramp"]').textContent()).not.toBe(before)
+  expect(await page.locator('[data-testid="bal-slipway"]').textContent()).not.toBe(before)
 })
 
 // The fast path beside the sheet's guaranteed one. Touch emulation is only
@@ -947,7 +971,7 @@ test('swiping across the counter column cycles it', async ({ page }, testInfo) =
   const shown = () => page.locator('[data-testid="counter-name"]').textContent()
   expect(await shown()).toBe('ANNUAL')
 
-  const bal = (await page.locator('[data-testid="bal-ramp"]').boundingBox())!
+  const bal = (await page.locator('[data-testid="bal-slipway"]').boundingBox())!
   const at = { x: bal.x + bal.width / 2, y: bal.y + bal.height / 2 }
 
   // Right to left is "next", the direction a page turns.
@@ -961,7 +985,7 @@ test('swiping across the counter column cycles it', async ({ page }, testInfo) =
 // whenever somebody scrolled the rows under their thumb.
 test('a small or vertical drag on the counter column changes nothing', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'phone', 'needs touch emulation')
-  const bal = (await page.locator('[data-testid="bal-ramp"]').boundingBox())!
+  const bal = (await page.locator('[data-testid="bal-slipway"]').boundingBox())!
   const at = { x: bal.x + bal.width / 2, y: bal.y + bal.height / 2 }
   await swipe(page, at, -20)
   expect(await page.locator('[data-testid="counter-name"]').textContent()).toBe('ANNUAL')
@@ -977,7 +1001,7 @@ test('swiping the day columns leaves the counter alone', async ({ page }, testIn
   // is at that coordinate in the viewport — which is the frozen counter
   // column, and the test would then be swiping the very thing it means to
   // avoid. Found by this test failing for that reason.
-  const cell = (await page.locator('[data-testid="cell-ramp-2026-01-03"]').boundingBox())!
+  const cell = (await page.locator('[data-testid="cell-slipway-2026-01-03"]').boundingBox())!
   expect(cell.x).toBeLessThan(390)
   await swipe(page, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, -120)
   expect(await page.locator('[data-testid="counter-name"]').textContent()).toBe('ANNUAL')
@@ -988,13 +1012,13 @@ test('swiping the day columns leaves the counter alone', async ({ page }, testIn
 // one without a migration.
 test('an admin edits who somebody is, and the grid follows', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="person-tata"]').click()
+  await page.locator('[data-testid="person-prowler"]').click()
   await expect(page.locator('[data-testid="person-sheet"]')).toBeVisible()
   await expect(page.locator('[data-testid="person-category"]')).toHaveText('IP')
 
   await page.locator('[data-testid="person-sxo"]').click()
   await expect(page.locator('[data-testid="person-category"]')).toHaveText('IP(S)')
-  await expect(page.locator('[data-testid="person-tata"]')).toContainText('IP(S)')
+  await expect(page.locator('[data-testid="person-prowler"]')).toContainText('IP(S)')
 })
 
 // The (S) has to FIT. The callsign column is 76px on a phone and already
@@ -1003,7 +1027,7 @@ test('an admin edits who somebody is, and the grid follows', async ({ page }) =>
 // it.
 test('the SXO tag is not clipped in the callsign column on a phone', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 760 })
-  const cut = await page.locator('[data-testid="row-ramp"] .who').evaluate(el => ({
+  const cut = await page.locator('[data-testid="row-slipway"] .who').evaluate(el => ({
     over: el.scrollWidth > el.clientWidth + 1,
     text: el.textContent,
   }))
@@ -1019,7 +1043,7 @@ test('an event widens its day, then wraps and grows only its own rows', async ({
   await lwRole(page, 'admin')
 
   const col = (d: string) => page.locator(`[data-testid="head-${d}"]`).boundingBox()
-  const personRow = () => page.locator('[data-testid="row-ramp"]').boundingBox()
+  const personRow = () => page.locator('[data-testid="row-slipway"]').boundingBox()
   const eventRow = () => page.locator('[data-testid="event-row-0"]').boundingBox()
 
   const narrow = (await col('2026-01-05'))!
@@ -1095,12 +1119,71 @@ test('the picker options are neutral, not the chip green', async ({ page }) => {
   expect(opt.bg).not.toBe('rgba(0, 0, 0, 0)')
 })
 
+/* ADAPTED AT THE SYNC WIRES (17 Aug 26). The vendored fixture relied on the
+   16-person seed roster, where losing the one SXO made seven days red. With
+   wire 0 the roster is the projection of Raptor's PEOPLE — 58 aircrew,
+   twelve of them SXO — so NO seed day breaks a manning rule any more: the
+   surface is dormant on the demo data, not broken. This test pins that new
+   truth (0 days, chip disabled); the three list tests that follow seed a
+   red-day fixture of their own through storage, because the list cannot be
+   opened otherwise. */
+test('the under-manned chip reads 0 days on the projected roster, and is disabled', async ({ page }) => {
+  const chip = page.locator('[data-testid="undermanned"]')
+  await expect(chip).toHaveText('0 days')
+  await expect(chip).toBeDisabled()
+  await expect(page.locator('[data-testid="undermanned-list"]')).toHaveCount(0)
+})
+
+/* A stored leave war whose bids empty the SXO pool on three dates — the
+   smallest red the 58-man roster can produce (the SXO rule reds at zero
+   available). Written straight into localStorage in the shape the store
+   persists, then the app is reopened so boot reads it; pending bids on
+   purpose, so the outbound sync has nothing to push and the fixture stays
+   inert on the Raptor side. The twelve ids are Raptor's SXO holders — if
+   the quals ever change this fails loudly here, which is the point of
+   pinning them. */
+const RED_DAYS = ['2026-01-05', '2026-01-15', '2026-02-10']
+async function seedRedDays(page: Page) {
+  await page.evaluate((red) => {
+    const sxo = ['bane', 'stiff', 'slipway', 'nact', 'pump', 'snap',
+      'mamba', 'shaft', 'dice', 'razer', 'freak', 'glass']
+    const days = []
+    for (let t = Date.UTC(2026, 0, 1); t <= Date.UTC(2026, 11, 31); t += 86_400_000) {
+      days.push({
+        date: new Date(t).toISOString().slice(0, 10),
+        events: ['', ''], blocked: false, blockedReason: '', ph: false,
+      })
+    }
+    const grid: Record<string, Record<string, string>> = {}
+    const states: Record<string, Record<string, unknown>> = {}
+    for (const id of sxo) {
+      grid[id] = {}
+      states[id] = {}
+      for (const d of red) {
+        grid[id][d] = 'LL'
+        states[id][d] = { state: 'pending', source: 'bid' }
+      }
+    }
+    const war = {
+      period: {
+        id: 'y2026', name: 'JAN - DEC 26', start: '2026-01-01', end: '2026-12-31',
+        stage: 'open', bidFrom: null, bidTo: null, days,
+      },
+      grid, states,
+    }
+    localStorage.setItem('leavewar:wars', JSON.stringify([war]))
+    localStorage.setItem('leavewar:current', 'y2026')
+  }, RED_DAYS)
+  await openLeaveWar(page)
+}
+
 test('the under-manned chip opens the days that caused it', async ({ page }) => {
+  await seedRedDays(page)
   await page.locator('[data-testid="undermanned"]').click()
   const rows = page.locator('[data-testid^="undermanned-day-"]')
-  await expect(rows).toHaveCount(7)
+  await expect(rows).toHaveCount(3)
   // Each row names the rule that broke, not just the date.
-  await expect(page.locator('[data-testid="undermanned-day-2026-01-01"]')).toContainText('SXO')
+  await expect(page.locator('[data-testid="undermanned-day-2026-01-05"]')).toContainText('SXO')
 })
 
 // The point of the list is landing on the day. jsdom reports every rect as
@@ -1108,6 +1191,7 @@ test('the under-manned chip opens the days that caused it', async ({ page }) => 
 // whether 365 columns actually moved. 10 Feb is the last red day and sits far
 // off the right edge on both projects.
 test('choosing a day jumps the grid to it, clear of the frozen columns', async ({ page }) => {
+  await seedRedDays(page)
   const wrap = page.locator('.mx-wrap')
   expect(await wrap.evaluate(el => el.scrollLeft)).toBe(0)
 
@@ -1133,6 +1217,7 @@ test('choosing a day jumps the grid to it, clear of the frozen columns', async (
 })
 
 test('the jumped-to day is visibly marked', async ({ page }) => {
+  await seedRedDays(page)
   await page.locator('[data-testid="undermanned"]').click()
   await page.locator('[data-testid="undermanned-day-2026-01-15"]').click()
   const head = page.locator('[data-testid="head-2026-01-15"]')
@@ -1146,6 +1231,7 @@ test('the jumped-to day is visibly marked', async ({ page }) => {
 // the chip sits far enough right that a list anchored to its left edge runs
 // past the viewport and stops being clickable at all.
 test('the under-manned list stays on screen and its rows are reachable', async ({ page }) => {
+  await seedRedDays(page)
   await page.locator('[data-testid="undermanned"]').click()
   const box = (await page.locator('[data-testid="undermanned-list"]').boundingBox())!
   const view = page.viewportSize()!
@@ -1264,9 +1350,9 @@ test('a member is offered no way back', async ({ page }) => {
 test('a decision made before the reopen survives it', async ({ page }) => {
   await lwRole(page, 'admin')          // -> admin
   await page.locator('[data-testid="stage-advance"]').click()        // open -> closed
-  await page.locator('[data-testid="cell-asics-2026-01-23"]').click()
+  await page.locator('[data-testid="cell-bruise-2026-01-23"]').click()
   await page.locator('[data-testid="decide-refuse"]').click()
-  const chip = page.locator('[data-testid="cell-asics-2026-01-23"] .c')
+  const chip = page.locator('[data-testid="cell-bruise-2026-01-23"] .c')
   expect(await chip.getAttribute('class')).toContain('ref')
 
   await page.locator('[data-testid="stage-back"]').click()

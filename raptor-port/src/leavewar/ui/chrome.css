@@ -187,6 +187,31 @@
   border-color: rgba(240, 85, 95, .65);
 }
 
+/* The sync-clash strip: amber, the same tint the matrix uses for a blocked
+   day — "needs a human" rather than "broken". Full-width inside the wrapping
+   .filters row so the clash lines read as one block under the chips. */
+.syncclash {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: 6px 10px;
+  border: 1px solid rgba(229, 168, 59, .65);
+  border-radius: 9px;
+  background: rgba(229, 168, 59, .16);
+  font-size: 12px;
+}
+
+.syncclash .n {
+  font-weight: 700;
+  color: #FFF0D6;
+}
+
+.syncclash .row {
+  color: #F5E3BF;
+}
+
 /* ---- the stage: card wrapper around the matrix ---- */
 .stage {
   padding: 14px 20px 28px;

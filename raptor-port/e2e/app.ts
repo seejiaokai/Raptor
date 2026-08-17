@@ -142,7 +142,7 @@ export async function puckSize(page: Page) {
 export async function openLeaveWar(page: Page, who: 'a' | 'user' = 'user') {
   await login(page, who)
   await go(page, 'leavewar')
-  await page.waitForSelector('[data-testid="row-ramp"]')
+  await page.waitForSelector('[data-testid="row-slipway"]')
 }
 
 /* The mid-test role switch, via the probe bridge (see probe-bridge.ts for

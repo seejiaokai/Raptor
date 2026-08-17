@@ -3,8 +3,9 @@
 // yet (My leave, Ledger, Rules, Roster) and no "closes in N days", which
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { canReopen, evaluatePeriod, nextStage, previousStage, stageLabel } from '../engine'
+import { getClashes, getClashVersion, subscribeClashes } from '../sync'
 import {
   advanceStage,
   clearBidWindow,
@@ -155,6 +156,11 @@ function WindowSheet({ onClose }: { onClose: () => void }) {
 
 export function StageBar() {
   useVersion()
+  /* The clash list lives in the sync module, not the store — it is a view of
+     two live records, re-derived on every inbound pass — so it carries its
+     own subscription rather than riding the store's version. */
+  useSyncExternalStore(subscribeClashes, getClashVersion, getClashVersion)
+  const clashes = getClashes()
   const [picking, setPicking] = useState(false)
   const { people, period, grid, states, requirements, role } = getState()
   const dates = period.days.map(d => d.date)
@@ -323,6 +329,25 @@ export function StageBar() {
             </div>
           </div>
         </>
+      )}
+      {/* Sync clashes (wire 2): a leave input filed in Raptor asking for a
+          date the squadron already bid differently on. The rule is that
+          neither side is silently overwritten — the input stands, the bid
+          stands, and the ADMIN resolves it on the sheet — so the strip is
+          admin-only, the way every other resolution control here is. It
+          re-derives on every inbound pass and holds nothing of its own. */}
+      {role === 'admin' && clashes.length > 0 && (
+        <div className="syncclash" data-testid="sync-clashes">
+          <span className="n">
+            {clashes.length} leave clash{clashes.length === 1 ? '' : 'es'} with the schedule
+          </span>
+          {clashes.map(c => (
+            <span className="row" key={`${c.person}-${c.date}`}>
+              {(people.find(p => p.id === c.person)?.callsign ?? c.person)}: input {c.inputCode} vs
+              bid {c.bidCode} on {shortDate(c.date)} — resolve on the sheet
+            </span>
+          ))}
+        </div>
       )}
       {/* Rendered inside `.filters` rather than `.topbar`, which carries no
           `backdrop-filter` — see the note on WarSheet in Topbar for why that
