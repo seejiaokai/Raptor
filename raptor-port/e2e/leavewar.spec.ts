@@ -687,14 +687,46 @@ test('the figure picker doubles as the legend, aggregates spelled out', async ({
     .toHaveText('= LL + OL + OIL + OFF + CCL + PL + FCL')
 })
 
-// The figures reorder through the ▲▼ each row carries, and Reset restores the
-// catalogue order.
+// The figures reorder through the ▲▼ each row carries — management's alone
+// since 17 Aug 26 ("normal user should not have authority to change the
+// leave war column arrangement") — and Reset restores the catalogue order.
 test('the figures reorder, and Reset restores the default order', async ({ page }) => {
+  // A member sees no reorder controls at all.
+  await page.locator('[data-testid="counter-pick"]').click()
+  await expect(page.locator('[data-testid="figrow-ll"]')).toBeVisible()
+  await expect(page.locator('[data-testid="figdown-ll"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="counter-reset"]')).toHaveCount(0)
+  await page.locator('[data-testid="counter-cancel"]').click()
+  await lwRole(page, 'admin')
   await page.locator('[data-testid="counter-pick"]').click()
   await page.locator('[data-testid="figdown-ll"]').click()
   expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('OL USED')
   await page.locator('[data-testid="counter-reset"]').click()
   expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('LL USED')
+})
+
+// The viewer — Raptor's "View as" person, Bane on a fresh login — is lit on
+// the grid, the title sheet answers with THEIR numbers, and any callsign
+// opens that person's all-figures sheet, member included (owner, 17 Aug 26).
+test('the viewer\'s row is lit and the title sheet answers with their numbers', async ({ page }) => {
+  const mine = page.locator('[data-testid="row-bane"]')
+  await expect(mine).toHaveClass('me')
+  // Painted, not merely classed — the frozen pair carries a solid tint.
+  const bg = await page.locator('[data-testid="row-bane"] .who').evaluate(el => getComputedStyle(el).backgroundColor)
+  const other = await page.locator('[data-testid="row-prowler"] .who').evaluate(el => getComputedStyle(el).backgroundColor)
+  expect(bg).not.toBe(other)
+
+  await page.locator('[data-testid="counter-pick"]').click()
+  await expect(page.locator('[data-testid="counter-sheet"]')).toContainText('your numbers — Bane')
+  await expect(page.locator('[data-testid="counter-lvebal"]')).toContainText('yours')
+  await page.locator('[data-testid="counter-cancel"]').click()
+
+  await page.locator('[data-testid="person-prowler"]').click()
+  const figs = page.locator('[data-testid="person-figures"]')
+  await expect(figs).toBeVisible()
+  await expect(figs.locator('.crow-wrap')).toHaveCount(12)
+  // A member reaches no editor from here.
+  await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
 })
 
 // Nothing in the frozen column may be cut off. `.who` carries `overflow:
@@ -1088,7 +1120,11 @@ test('swiping the day columns leaves the counter alone', async ({ page }, testIn
 // one without a migration.
 test('an admin edits who somebody is, and the grid follows', async ({ page }) => {
   await lwRole(page, 'admin')
+  // The callsign opens the all-figures sheet for everyone since 17 Aug 26;
+  // the editor is its Edit person button.
   await page.locator('[data-testid="person-prowler"]').click()
+  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await page.locator('[data-testid="person-edit"]').click()
   await expect(page.locator('[data-testid="person-sheet"]')).toBeVisible()
   await expect(page.locator('[data-testid="person-category"]')).toHaveText('IP')
 

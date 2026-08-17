@@ -483,13 +483,18 @@ sheet grew an admin-only Medical row (whole-day default, AM/PM, range); and
 tapping a person's counter CELL opens `FigureBreakdownSheet` — MED USED as
 ATT C/HL/OML rows, LVE USED as its seven codes, a balance as opening +
 granted (+ earned) − taken, parts signed so they sum (`figureParts`).
-`npm test` **2464 across 136 files** (raptor 1716/101 untouched by this
-build; leavewar 748/35 — codes/counters/raptor/sync/store suites extended,
-`bidding` +4 medical-entry, `counters.test.tsx` +3 breakdown, one matrix
-assertion re-pointed at the C short form), `node reference/tfin.js` 728/0
+`npm test` **2475 across 137 files** (raptor 1716/101 untouched by this
+build; leavewar 759/36 — codes/counters/raptor/sync/store suites extended,
+`bidding` +4 medical-entry, `counters.test.tsx` +3 breakdown then +7 for
+the viewer/figures pass, `viewer.test.ts` new — its own file because
+`wireLeaveWarSync` leaves a live subscription behind — one matrix assertion
+re-pointed at the C short form, `person`/`scrim` re-pointed at the two-tap
+editor), `node reference/tfin.js` 728/0
 (no Raptor engine/seed file touched), `npm run build` clean, `npm run
-test:e2e` **252 passed / 6 touch-only skips** (+4: the admin-vs-member
-medical row and the breakdown sheet, at both LW viewports),
+test:e2e` **254 passed / 6 touch-only skips** (+6: the admin-vs-member
+medical row, the breakdown sheet, and the viewer's lit row + "yours"
+picker + member figures sheet, at both LW viewports; the reorder and
+edit-person tests re-pointed at the gated/two-tap flows),
 `probes:adapted` 6/6, `perf` 4/4 — **week 3743 / board 844, all ceilings
 and measures byte-identical**: everything new renders inside Leave War's
 page and sheets. The built bundle was driven at 1500px and 390×844: the
@@ -588,6 +593,19 @@ ever.
   ATT C/HL/OML rows, LVE USED as its seven codes, a balance as opening +
   granted (+ earned) − taken, parts signed so they sum; `figureParts`,
   `FigureBreakdownSheet`; the column header still opens the picker).
+  **Second pass the same day (owner's four follow-ups):** the figure ORDER
+  is admin-gated at the write path (`moveFigure`/`resetFigureOrder` refuse a
+  member; the ▲▼/Reset render for admin only — "normal user should not have
+  authority to change the leave war column arrangement"); the VIEWER —
+  Raptor's "View as" person, mirrored into `state.viewer` by the sync wire,
+  never persisted — has their row lit (`tr.me`; the CSS must sit INSIDE
+  matrix.css's `#page-leavewar` wrapper or the +1 id specificity beats it);
+  the picker's rows answer with the viewer's OWN numbers ("N taken/left,
+  yours"; squadron-wide only as the no-viewer fallback — the owner chose
+  "your own numbers" over a per-person roster list when asked); and ANY
+  callsign tap opens `PersonFiguresSheet` — all twelve figures for that
+  person, for every role, each row opening its parts breakdown, the admin's
+  person EDITOR now behind that sheet's "Edit person" button.
   Also fixed in the same pass: the date-header cells were rounded by a leak of
   Raptor's global `.day{border-radius}` onto Leave War's `className="day"` header
   cells — overridden square in the scoped `matrix.css`. Full detail in

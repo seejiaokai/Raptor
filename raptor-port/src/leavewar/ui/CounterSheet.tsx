@@ -31,15 +31,28 @@ export function CounterSheet({
   onPick: (id: string) => void
   onClose: () => void
 }) {
-  const { people, openings, ledger, wars, figureOrder } = getState()
+  const { people, openings, ledger, wars, figureOrder, role, viewer } = getState()
   const figures = orderedFigures(figureOrder)
   const ctx = { openings, ledger, sources: wars }
+  // The person LOOKING at the page, when the roster holds them — each row
+  // then answers with THEIR number (owner, 17 Aug 26: the title tap should
+  // show "what was used or balance of that individual"), because "how much
+  // do I have left" is the question a person opens this sheet holding. A
+  // viewer the roster does not hold (or none at all) falls back to the
+  // squadron-wide sums this sheet showed before.
+  const me = viewer ? people.find(p => p.id === viewer) ?? null : null
+  // The ARRANGEMENT is management's (owner, same day) — the ▲▼ and Reset
+  // render for an admin only; the store refuses a member's write anyway.
+  const arranging = role === 'admin'
 
   return (
     <Sheet testid="counter-sheet" label="Which figure" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">WHAT THIS COLUMN SHOWS</span>
-        <span className="dt">tap to show it beside every callsign · ▲▼ to reorder</span>
+        <span className="dt">
+          {me ? `your numbers — ${me.callsign}` : 'squadron-wide numbers'}
+          {arranging ? ' · tap to show it · ▲▼ to reorder' : ' · tap to show it beside every callsign'}
+        </span>
         <button className="x" data-testid="counter-cancel" onClick={onClose} aria-label="Cancel">
           ✕
         </button>
@@ -52,13 +65,17 @@ export function CounterSheet({
       </div>
       <div className="clist">
         {figures.map((f, i) => {
-          // The squadron's total, not one person's: this sheet is opened from
-          // a column header, which belongs to everybody. A `CON` figure sums
-          // days taken; a `BAL` figure sums what is left — `f.value` already
-          // knows which, so one line covers both.
-          const total = people.reduce((sum, p) => sum + f.value(ctx, p.id), 0)
+          // The viewer's own figure where the roster knows who is looking
+          // (the common case since the View-as mirror); the squadron's sum
+          // where it does not. `f.value` already knows con from bal, so one
+          // line covers both either way.
+          const total = me
+            ? f.value(ctx, me.id)
+            : people.reduce((sum, p) => sum + f.value(ctx, p.id), 0)
           const caption = f.legend ? `= ${f.legend}` : f.desc
-          const totalNote = f.kind === 'bal' ? 'left, squadron-wide' : 'taken, squadron-wide'
+          const totalNote = f.kind === 'bal'
+            ? me ? 'left, yours' : 'left, squadron-wide'
+            : me ? 'taken, yours' : 'taken, squadron-wide'
           return (
             <div
               key={f.id}
@@ -80,36 +97,44 @@ export function CounterSheet({
                 <span className="csub" data-testid={`figsub-${f.id}`}>{caption}</span>
               </button>
               {/* Their own hit target, outside the select button — a button
-                  cannot nest a button, and tapping ▲ must reorder, not select. */}
-              <span className="cmove">
-                <button
-                  className="cmv"
-                  data-testid={`figup-${f.id}`}
-                  disabled={i === 0}
-                  aria-label={`Move ${f.label} up`}
-                  onClick={() => moveFigure(f.id, -1)}
-                >
-                  ▲
-                </button>
-                <button
-                  className="cmv"
-                  data-testid={`figdown-${f.id}`}
-                  disabled={i === figures.length - 1}
-                  aria-label={`Move ${f.label} down`}
-                  onClick={() => moveFigure(f.id, 1)}
-                >
-                  ▼
-                </button>
-              </span>
+                  cannot nest a button, and tapping ▲ must reorder, not
+                  select. Admin only: the arrangement is management's
+                  (owner, 17 Aug 26), and a member's tap would be refused by
+                  the store anyway — a control that does nothing is worse
+                  than no control. */}
+              {arranging && (
+                <span className="cmove">
+                  <button
+                    className="cmv"
+                    data-testid={`figup-${f.id}`}
+                    disabled={i === 0}
+                    aria-label={`Move ${f.label} up`}
+                    onClick={() => moveFigure(f.id, -1)}
+                  >
+                    ▲
+                  </button>
+                  <button
+                    className="cmv"
+                    data-testid={`figdown-${f.id}`}
+                    disabled={i === figures.length - 1}
+                    aria-label={`Move ${f.label} down`}
+                    onClick={() => moveFigure(f.id, 1)}
+                  >
+                    ▼
+                  </button>
+                </span>
+              )}
             </div>
           )
         })}
       </div>
-      <div className="cfoot">
-        <button className="creset" data-testid="counter-reset" onClick={() => resetFigureOrder()}>
-          Reset order
-        </button>
-      </div>
+      {arranging && (
+        <div className="cfoot">
+          <button className="creset" data-testid="counter-reset" onClick={() => resetFigureOrder()}>
+            Reset order
+          </button>
+        </div>
+      )}
     </Sheet>
   )
 }
@@ -174,6 +199,72 @@ export function FigureBreakdownSheet({
           </span>
         </div>
       </div>
+    </Sheet>
+  )
+}
+
+/**
+ * EVERY figure for ONE person — the sheet a tap on any CALLSIGN opens, for
+ * everyone (owner, 17 Aug 26: "everyone should be able to click on that
+ * person's name and see these logics"). Where the column shows one figure at
+ * a time and the breakdown sheet opens one figure's parts, this is the whole
+ * picture: each of the twelve figures with this person's own number. Tapping
+ * a row opens that figure's parts breakdown for this person, so the two
+ * sheets chain into the full story. An admin also gets the Edit person
+ * button here — the callsign tap used to be the edit shortcut for them, and
+ * the edit surface must not become unreachable because the tap now informs.
+ */
+export function PersonFiguresSheet({
+  person,
+  onOpenFigure,
+  onEdit,
+  onClose,
+}: {
+  person: Person
+  onOpenFigure: (figureId: string) => void
+  /** Present for an admin only — opens the person EDITOR (PersonSheet). */
+  onEdit?: () => void
+  onClose: () => void
+}) {
+  const { openings, ledger, wars, figureOrder } = getState()
+  const figures = orderedFigures(figureOrder)
+  const ctx = { openings, ledger, sources: wars }
+
+  return (
+    <Sheet testid="person-figures" label={`${person.callsign}'s figures`} onClose={onClose}>
+      <div className="bidsheet-hd">
+        <span className="who">{person.callsign}</span>
+        <span className="dt">every figure · tap one for its breakdown</span>
+        <button className="x" data-testid="pfig-close" onClick={onClose} aria-label="Close">
+          ✕
+        </button>
+      </div>
+      <div className="clegend">
+        <b>USED</b> = days taken · <b>BAL</b> = balance left
+      </div>
+      <div className="clist">
+        {figures.map(f => {
+          const v = f.value(ctx, person.id)
+          return (
+            <div key={f.id} className="crow-wrap" data-testid={`pfig-${f.id}`}>
+              <button className="crow" onClick={() => onOpenFigure(f.id)}>
+                <span className="crow-top">
+                  <span className="cn">{f.label}</span>
+                  <span className={`ct${v < 0 ? ' neg' : ''}`}>{show(v)} {f.kind === 'bal' ? 'left' : 'taken'}</span>
+                </span>
+                <span className="csub">{f.legend ? `= ${f.legend}` : f.desc}</span>
+              </button>
+            </div>
+          )
+        })}
+      </div>
+      {onEdit && (
+        <div className="cfoot">
+          <button className="creset" data-testid="person-edit" onClick={onEdit}>
+            Edit person
+          </button>
+        </div>
+      )}
     </Sheet>
   )
 }

@@ -23,7 +23,7 @@ import {
 } from '../engine'
 import { getState } from '../state/store'
 import { BidPicker, DecisionSheet, RaptorSheet } from './BidPicker'
-import { CounterSheet, FigureBreakdownSheet } from './CounterSheet'
+import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
 import { CountRows } from './CountRows'
 import { EventRows } from './EventRows'
@@ -49,7 +49,7 @@ function monthLabel(date: string): string | null {
 
 export function Matrix() {
   useVersion()
-  const { people, period, grid, states, requirements, role, eventDefs, openings, ledger, wars, figureOrder, focusDate, focusSeq } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, focusDate, focusSeq } = getState()
   const dates = period.days.map(d => d.date)
   const verdicts = evaluatePeriod(people, grid, states, requirements, dates)
 
@@ -79,11 +79,14 @@ export function Matrix() {
   const figures = orderedFigures(figureOrder)
   const [shownId, setShownId] = useState(DEFAULT_FIGURE_ID)
   const [picking, setPicking] = useState(false)
-  // Whose counter CELL was tapped — the per-person breakdown of the shown
-  // figure (owner, 17 Aug 26). Person only: the figure is the shared one, so
-  // a column change while the sheet is open re-answers rather than going
-  // stale.
-  const [balOpen, setBalOpen] = useState<string | null>(null)
+  // Whose counter was tapped, and WHICH figure to break down (owner, 17 Aug
+  // 26). A counter-cell tap opens the column's shown figure; a row tapped
+  // inside the person-figures sheet names its own.
+  const [balOpen, setBalOpen] = useState<{ person: string; figureId: string } | null>(null)
+  // Whose CALLSIGN was tapped — the all-figures sheet, for every role
+  // (owner, same day: "everyone should be able to click on that person's
+  // name and see these logics").
+  const [whoOpen, setWhoOpen] = useState<string | null>(null)
   const [editingWho, setEditing] = useState<string | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
@@ -327,28 +330,28 @@ export function Matrix() {
             <CountRows verdicts={verdicts} dates={dates} />
             <tbody>
               {people.map(p => (
-                <tr key={p.id} data-testid={`row-${p.id}`}>
-                  {/* The callsign opens the person sheet for an admin, and
-                      is plain text for everyone else. `IWSO(S)` rather than a
-                      second column for SXO: it sits on top of a category, so
-                      it decorates the label rather than replacing it. */}
+                // `me` lights the VIEWER's own row — Raptor's "View as"
+                // person, mirrored by the sync wire — so anyone opening the
+                // page finds themselves without reading 58 callsigns
+                // (owner, 17 Aug 26).
+                <tr key={p.id} data-testid={`row-${p.id}`} className={p.id === viewer ? 'me' : undefined}>
+                  {/* The callsign opens the person's all-figures sheet, for
+                      EVERYONE (owner, 17 Aug 26) — an admin reaches the
+                      person EDITOR through that sheet's Edit person button,
+                      which is where the old direct-to-editor tap went.
+                      `IWSO(S)` rather than a second column for SXO: it sits
+                      on top of a category, so it decorates the label rather
+                      than replacing it. */}
                   <td className="who">
-                    {role === 'admin' ? (
-                      <button
-                        className="whoedit"
-                        data-testid={`person-${p.id}`}
-                        title={`Edit ${p.callsign}`}
-                        onClick={() => setEditing(p.id)}
-                      >
-                        {p.callsign}
-                        <span className="cat">{categoryLabel(p)}</span>
-                      </button>
-                    ) : (
-                      <>
-                        {p.callsign}
-                        <span className="cat">{categoryLabel(p)}</span>
-                      </>
-                    )}
+                    <button
+                      className="whoedit"
+                      data-testid={`person-${p.id}`}
+                      title={`${p.callsign} — every figure`}
+                      onClick={() => setWhoOpen(p.id)}
+                    >
+                      {p.callsign}
+                      <span className="cat">{categoryLabel(p)}</span>
+                    </button>
                   </td>
                   {/* The selected figure's value for this person, derived on
                       every render rather than cached: it has to move the
@@ -372,7 +375,7 @@ export function Matrix() {
                            personnel counter" (17 Aug 26). The td is the
                            target, like every grid cell here: a nested button
                            would cost the 44px column its number. */
-                        onClick={() => setBalOpen(p.id)}
+                        onClick={() => setBalOpen({ person: p.id, figureId: shown.id })}
                       >
                         {show(v)}
                       </td>
@@ -510,14 +513,28 @@ export function Matrix() {
       {picking && (
         <CounterSheet shownId={shownId} onPick={setShownId} onClose={() => setPicking(false)} />
       )}
-      {/* The tapped person's breakdown of the shown figure. Guarded on the
-          person still existing — an admin can delete a row while any sheet
-          is up, the same guard PersonSheet carries. */}
-      {balOpen && people.some(p => p.id === balOpen) && (
+      {/* The tapped person's breakdown of one figure — the column's shown
+          one from a counter-cell tap, or whichever row was tapped in the
+          person-figures sheet. Guarded on the person still existing — an
+          admin can delete a row while any sheet is up, the same guard
+          PersonSheet carries; an unknown figure id (a stale saved order)
+          falls back to the shown one. */}
+      {balOpen && people.some(p => p.id === balOpen.person) && (
         <FigureBreakdownSheet
-          figure={shown}
-          person={people.find(p => p.id === balOpen)!}
+          figure={figures.find(f => f.id === balOpen.figureId) ?? shown}
+          person={people.find(p => p.id === balOpen.person)!}
           onClose={() => setBalOpen(null)}
+        />
+      )}
+      {/* The tapped person's ALL-FIGURES sheet — every role's way in from a
+          callsign. A figure row hands over to the breakdown above; the
+          admin's Edit person button hands over to the editor below. */}
+      {whoOpen && people.some(p => p.id === whoOpen) && (
+        <PersonFiguresSheet
+          person={people.find(p => p.id === whoOpen)!}
+          onOpenFigure={figureId => { setBalOpen({ person: whoOpen, figureId }); setWhoOpen(null) }}
+          onEdit={role === 'admin' ? () => { setEditing(whoOpen); setWhoOpen(null) } : undefined}
+          onClose={() => setWhoOpen(null)}
         />
       )}
       {editingWho && people.some(p => p.id === editingWho) && (

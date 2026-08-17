@@ -23,6 +23,7 @@
 // store write notifies subscribers synchronously, and this module is one.
 
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave } from '../engine/inputs'
+import { ME } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
 import { dayOilCredits } from '../engine/oil'
@@ -42,6 +43,7 @@ import {
   getState,
   ingestDutyCredit,
   ingestFromRaptor,
+  setViewer,
   subscribe as lwSubscribe,
 } from './state/store'
 
@@ -493,10 +495,17 @@ export function runOilPass(): void {
  * Both passes are cheap no-ops when nothing they read has changed.
  */
 export function wireLeaveWarSync(): void {
+  /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix
+     lights the viewer's row and the counter picker answers with their
+     numbers). Raptor's "View as" (`ME`) notifies on every change, so pushing
+     it here — once at boot, again on every Raptor notify below — keeps the
+     mirror converged without a new seam; setViewer no-ops on a same value. */
+  setViewer(ME)
   runInbound()
   runOilPass()
   runOutbound()
   raptorSubscribe(() => {
+    setViewer(ME)
     runInbound()
     runOilPass()
     runOutbound()

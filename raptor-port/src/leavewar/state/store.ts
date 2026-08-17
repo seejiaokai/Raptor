@@ -85,12 +85,22 @@ interface State {
    *  there is no login — so this decides which controls appear, not who is
    *  allowed to use them. See `docs/known-gaps.md`. */
   role: Role
+  /** WHICH PERSON is looking at the page — Raptor's "View as" identity,
+   *  mirrored here so the matrix can light their row and the counter picker
+   *  can answer with THEIR numbers (owner, 17 Aug 26). Like the role it is
+   *  neither read nor persisted: Raptor's `setMe` is the one production
+   *  writer (plus the boot in main.tsx), so a stored copy could only ever
+   *  disagree with the person actually selected. May name someone this
+   *  roster does not hold; consumers check membership. */
+  viewer: string | null
 
   /** The counter column's figure order — the ids of `FIGURES`, in the order
-   *  the picker lists them and the column cycles them. A DISPLAY preference,
-   *  not squadron policy, so it is persisted (under `figorder`) but ungated,
-   *  the way the counter *selection* is ungated. Read leniently: unknown or
-   *  missing ids are healed by `orderedFigures`, never rejected. */
+   *  the picker lists them and the column cycles them. Persisted (under
+   *  `figorder`) and — since the owner's word, 17 Aug 26 ("normal user
+   *  should not have authority to change the leave war column arrangement")
+   *  — ADMIN-gated at the write path, while the counter *selection* stays
+   *  ungated view state. Read leniently: unknown or missing ids are healed
+   *  by `orderedFigures`, never rejected. */
   figureOrder: string[]
 
   /** The day the matrix has been asked to bring into view, or null. */
@@ -133,6 +143,7 @@ function blank(): State {
     // The squadron is the common case, so the app opens as one. An admin
     // says so deliberately rather than arriving with the locks already off.
     role: 'member',
+    viewer: null,
     focusDate: null,
     focusSeq: 0,
   })
@@ -610,6 +621,15 @@ export function setRole(next: Role): void {
   notify()
 }
 
+/** The viewing person — Raptor's "View as" selection, mirrored on every
+ *  change by `setMe` (state/auth.ts) and once at boot by main.tsx. Not
+ *  persisted, same reasoning as the role above. */
+export function setViewer(next: string | null): void {
+  if (next === state.viewer) return
+  state = withCurrent({ ...state, viewer: next })
+  notify()
+}
+
 // A cell and its bid state are written together. Splitting them across two
 // callers is how the two maps drift — a code with no state, or a state whose
 // code has gone. This is the only function allowed to write either.
@@ -931,6 +951,12 @@ export function resetEventTypes(): void {
  *  Clamped at the ends and a no-op for an unknown id — returns whether it
  *  moved so a caller can disable a control at the boundary. */
 export function moveFigure(id: string, dir: -1 | 1): boolean {
+  // The column arrangement is management's (owner, 17 Aug 26: "normal user
+  // should not have authority to change the leave war column arrangement").
+  // Enforced here and not only in the sheet, for the same reason setCell
+  // re-checks: the interface hides what a person may not do, the store is
+  // what makes it true.
+  if (state.role !== 'admin') return false
   const ids = orderedFigures(state.figureOrder).map(f => f.id)
   const i = ids.indexOf(id)
   if (i < 0) return false
@@ -945,6 +971,8 @@ export function moveFigure(id: string, dir: -1 | 1): boolean {
 
 /** Put the column's figures back in their catalogue order. */
 export function resetFigureOrder(): void {
+  // Same gate as moveFigure — a reset rewrites the arrangement too.
+  if (state.role !== 'admin') return
   state = withCurrent({ ...state, figureOrder: [...DEFAULT_FIGURE_ORDER] })
   persist()
   notify()

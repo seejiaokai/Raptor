@@ -135,12 +135,29 @@ labelled `BAL` (a balance left) or `USED` (days taken):
   the bid-warning path, but are NOT surfaced in the column — the owner asked
   for exactly the eleven above. EL is dropped from the column yet stays a valid
   biddable code.
-- **The order is a persisted display preference** (`state.figureOrder`, stored
-  under `figorder`), reordered by the ▲▼ on each picker row and ungated like
-  the figure selection itself. `orderedFigures` heals a stale saved order — an
-  unknown id is dropped, a newly added figure appended.
+- **The order is persisted (`figorder`) and ADMIN-GATED since 17 Aug 26**
+  (owner: "normal user should not have authority to change the leave war
+  column arrangement") — the ▲▼ and Reset render for an admin only and
+  `moveFigure`/`resetFigureOrder` refuse a member at the write path; the
+  figure SELECTION stays ungated view state. `orderedFigures` heals a stale
+  saved order — an unknown id is dropped, a newly added figure appended.
 - **The picker sheet is also the legend** (owner: "show the legend as a
-  bubble"): the USED/BAL key and the two aggregates' compositions render inline.
+  bubble"): the USED/BAL key and the two aggregates' compositions render
+  inline. **Since 17 Aug 26 its rows answer with the VIEWER's own numbers**
+  ("your numbers — <callsign>", each row "N taken/left, yours") — the
+  viewer being Raptor's "View as" person, mirrored into `state.viewer` by
+  the sync wire (never persisted); with no viewer on the roster it falls
+  back to the squadron-wide sums it showed before.
+- **The viewer's row is lit on the matrix** (same ask) — `tr.me`, a solid
+  tint on the frozen callsign+counter pair and a faint band across the row.
+  The CSS lives INSIDE matrix.css's `#page-leavewar` wrapper — a rule
+  appended after the closing brace loses to the wrapper's +1 id specificity,
+  which is exactly the trap the file's header warns about.
+- **Any callsign tap opens that person's ALL-FIGURES sheet, for every role**
+  (owner: "everyone should be able to click on that person's name and see
+  these logics") — the twelve figures with that person's numbers, each row
+  opening its parts breakdown; an admin reaches the person EDITOR through
+  the sheet's "Edit person" button (the old direct-to-editor tap).
 - **Medical is FOUR markers now** — `ATTB` (shown as a bare "B" on the grid),
   `ATTC` (shown "C"), `HL`, `OML` — B joined 17 Aug 26 ("u can indicate,
   B (att b), C (att c), OML, HL"), and since the same day they TAKE PORTIONS

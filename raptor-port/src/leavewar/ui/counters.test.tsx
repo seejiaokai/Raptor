@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { getState, initStore, setBidState, setCell } from '../state/store'
+import { getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -210,8 +210,23 @@ describe('the counter follows the leave just entered', () => {
 })
 
 describe('reordering the figures', () => {
-  // Open the sheet and drag a figure with the ▲▼ its row carries. A display
-  // preference, so it persists and is not role-gated.
+  // The ARRANGEMENT is management's since 17 Aug 26 ("normal user should
+  // not have authority to change the leave war column arrangement") — every
+  // reorder test runs as admin, and the member case pins the gate.
+  beforeEach(() => setRole('admin'))
+
+  it('offers a member no reorder controls, and the store refuses the write anyway', () => {
+    setRole('member')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.queryByTestId('figdown-ll')).toBeNull()
+    expect(screen.queryByTestId('counter-reset')).toBeNull()
+    // The write path is the real gate — the interface only hides it.
+    expect(moveFigure('ll', 1)).toBe(false)
+    resetFigureOrder()
+    expect(getState().figureOrder[0]).toBe('ll')
+  })
+
   it('moves a figure down, and the column follows the new order', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
@@ -252,6 +267,8 @@ describe('reordering the figures', () => {
   it('persists the order through the backend', () => {
     const backend = memoryBackend()
     initStore(backend)
+    // initStore resets the role (never persisted); re-arm the admin.
+    setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     fireEvent.click(screen.getByTestId('figdown-ll'))
@@ -358,5 +375,74 @@ describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
     fireEvent.click(screen.getByTestId('bal-ramp'))
     const rows = [...screen.getByTestId('figure-breakdown').querySelectorAll('.crow-top')].map(r => r.textContent)
     expect(rows).toEqual(['days taken0.5', 'Total0.5'])
+  })
+})
+
+describe('the picker answers with the viewer\'s own numbers (owner, 17 Aug 26)', () => {
+  it('shows YOUR figure per row when the roster knows who is looking', () => {
+    setViewer('ramp')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    // RAMP's own LVE BAL is 25; the squadron-wide sum is not.
+    expect(screen.getByTestId('counter-lvebal').textContent).toContain('25 left, yours')
+    // RAMP's *OIL half-day: 0.5 taken.
+    expect(screen.getByTestId('counter-oil').textContent).toContain('0.5 taken, yours')
+    // The header names whose numbers these are.
+    expect(screen.getByTestId('counter-sheet').textContent).toContain('your numbers — RAMP')
+  })
+
+  it('falls back to the squadron-wide sums when nobody (or an unknown id) is viewing', () => {
+    setViewer('nobody-here')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.getByTestId('counter-lvebal').textContent).toContain('squadron-wide')
+  })
+})
+
+describe('the viewer\'s row is lit (owner, 17 Aug 26)', () => {
+  it('marks exactly the viewing person\'s row, and follows a viewer change', () => {
+    setViewer('ramp')
+    const { rerender } = render(<Matrix />)
+    expect(screen.getByTestId('row-ramp').className).toBe('me')
+    expect(screen.getByTestId('row-tata').className).toBe('')
+    act(() => setViewer('tata'))
+    rerender(<Matrix />)
+    expect(screen.getByTestId('row-ramp').className).toBe('')
+    expect(screen.getByTestId('row-tata').className).toBe('me')
+  })
+
+  it('marks nobody when the viewer is not on this roster', () => {
+    render(<Matrix />)
+    for (const p of getState().people) {
+      expect(screen.getByTestId(`row-${p.id}`).className).toBe('')
+    }
+  })
+})
+
+describe('a callsign opens the all-figures sheet, for everyone (owner, 17 Aug 26)', () => {
+  it('lists every figure with that person\'s own number, for a member', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    const sheet = screen.getByTestId('person-figures')
+    expect(sheet.textContent).toContain('RAMP')
+    // All twelve figures, in the column's own order.
+    expect(sheet.querySelectorAll('.crow-wrap')).toHaveLength(12)
+    expect(screen.getByTestId('pfig-lvebal').textContent).toContain('25 left')
+    expect(screen.getByTestId('pfig-oil').textContent).toContain('0.5 taken')
+    // A member gets no editor path.
+    expect(screen.queryByTestId('person-edit')).toBeNull()
+  })
+
+  it('a figure row opens that figure\'s breakdown for that person', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('person-splice'))
+    fireEvent.click(screen.getByTestId('pfig-med').querySelector('.crow')!)
+    // The figures sheet hands over to the breakdown — MED USED, splice's parts.
+    expect(screen.queryByTestId('person-figures')).toBeNull()
+    const bd = screen.getByTestId('figure-breakdown')
+    expect(bd.textContent).toContain('SPLICE')
+    expect(bd.textContent).toContain('MED USED')
+    const rows = [...bd.querySelectorAll('.crow-top')].map(r => r.textContent)
+    expect(rows).toEqual(['ATT C1', 'HL0', 'OML1', 'Total2'])
   })
 })
