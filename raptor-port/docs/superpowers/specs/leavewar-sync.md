@@ -194,6 +194,43 @@ in the rules engine too. Categorise them into Leave War."*
   publish re-run it through the reissue path, which is where
   reverse-and-replace naturally lives.
 
+## Wire 5 — medical rides wires 1+2 (built 17 Aug 26, owner's rule)
+
+The four medical markers — ATT B, ATT C, HL, OML — cross on the SAME two
+wires as leave, not a new seam: an input on Raptor's Inputs page lands as a
+raptor-owned Leave War cell, and a marker the admin writes on the grid
+lands as an lw-tagged input. The differences from leave, each the owner's
+own word ("these will be connected to the inputs"):
+
+- **No approval step.** Medical is assigned, not bid — `outboundToRaptor`
+  sends a medical cell the moment it exists (no `approved` gate), and no
+  bid state ever rides one (`setCell` strips it; the `approved/raptor`
+  record an INGESTED medical cell carries is purely the ownership marker
+  the reverse sweeps read — `reconcile()` on load keeps exactly that
+  record and still drops any bid-sourced state on a medical cell as drift).
+- **Portion rule** (`medRowPortion`, not leave's round-OUT): AM/PM presets
+  are the halves; a CUSTOM window — "which they should not" file — is a
+  HALF day at six hours or less (exactly six is a half; contrast wire 4's
+  "6h 1min or more" full-day duty rule, which is the owner's wording in
+  each case) and a FULL day past that. Which half: the side of noon the
+  window sits on, midpoint deciding a straddler. Leave's own round-OUT
+  rule is untouched.
+- **Vocabulary bridge**: Raptor spells the types 'ATT B'/'ATT C'; Leave
+  War stores ATTB/ATTC (spaceless, parseCell round-trips), prints the
+  owner's bare B/C (`displayCell`), and both sides' rows reduce to ONE
+  signature via `lwTypeOf` so the diff sees them as the same fact.
+- **Grid entry is admin-only** (`BidPicker`'s Medical row): members file
+  on the Inputs page — "normally the input comes from input" — and once
+  bidding closes a member could not write cells anyway.
+- **Counters**: MED USED (= ATT C + HL + OML, halves as 0.5) follows for
+  free exactly as wire 3 describes; ATT B feeds no figure (the owner's sum
+  names the other three) and removes nothing from manning (he is at work).
+- **Clash/deletion/ownership**: identical to wire 2 — a different existing
+  bid raises the clash and nothing is overwritten; deleting the input
+  reverse-clears only still-raptor-owned cells; the FS/HS-vs-rest
+  vocabulary partition with wire 4's sweep is unchanged (medical belongs
+  to inbound's side of it).
+
 ## The standing gaps every wire inherits (say them, don't rediscover them)
 
 - **Raptor's `INPUTS` are session-only; Leave War persists.** Until the

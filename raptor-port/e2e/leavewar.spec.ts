@@ -384,6 +384,36 @@ test('a bid can be placed, and lands plain because nobody has answered it', asyn
   expect(await chip.evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
 })
 
+// The four medical markers are management's to mark (owner, 17 Aug 26): the
+// Medical row exists for an admin, is absent for a member (they file on
+// Raptor's Inputs page and it syncs), and the ATT chips read the owner's
+// bare B / C — on the chip and on the grid cell it writes.
+test('an admin marks medical on the grid; a member is never offered the row', async ({ page }) => {
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
+  await expect(page.locator('[data-testid="bid-ATTB"]')).toHaveCount(0)
+  await page.locator('[data-testid="bid-cancel"]').click()
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  const chip = page.locator('[data-testid="bid-ATTB"]')
+  await expect(chip).toHaveText('B')
+  await chip.click()
+  await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveText('B')
+})
+
+// The owner's "click the individual personnel counter" (17 Aug 26): the cell
+// opens a per-person breakdown whose rows sum to the total on screen. Four
+// rows for the default LVE BAL figure — opening, granted, taken, Total.
+test('tapping a counter cell opens that person\'s breakdown of the shown figure', async ({ page }) => {
+  await page.locator('[data-testid="bal-ammo"]').click()
+  const sheet = page.locator('[data-testid="figure-breakdown"]')
+  await expect(sheet).toBeVisible()
+  await expect(sheet.locator('.crow-top')).toHaveCount(4)
+  await expect(sheet.locator('[data-testid="breakdown-total"]')).toBeVisible()
+  await page.locator('[data-testid="breakdown-close"]').click()
+  await expect(sheet).toHaveCount(0)
+})
+
 // The reason the bid sheet is a fixed-position sheet rather than a popover
 // inside the cell: `.mx-wrap` is an `overflow: auto` scroller, and anything
 // positioned inside a 30px-wide cell is clipped by it. jsdom applies no
@@ -657,14 +687,66 @@ test('the figure picker doubles as the legend, aggregates spelled out', async ({
     .toHaveText('= LL + OL + OIL + OFF + CCL + PL + FCL')
 })
 
-// The figures reorder through the ▲▼ each row carries, and Reset restores the
-// catalogue order.
+// The figures reorder through the ▲▼ each row carries — management's alone
+// since 17 Aug 26 ("normal user should not have authority to change the
+// leave war column arrangement") — and Reset restores the catalogue order.
 test('the figures reorder, and Reset restores the default order', async ({ page }) => {
+  // A member sees no reorder controls at all.
+  await page.locator('[data-testid="counter-pick"]').click()
+  await expect(page.locator('[data-testid="figrow-ll"]')).toBeVisible()
+  await expect(page.locator('[data-testid="figdown-ll"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="counter-reset"]')).toHaveCount(0)
+  await page.locator('[data-testid="counter-cancel"]').click()
+  await lwRole(page, 'admin')
   await page.locator('[data-testid="counter-pick"]').click()
   await page.locator('[data-testid="figdown-ll"]').click()
   expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('OL USED')
   await page.locator('[data-testid="counter-reset"]').click()
   expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('LL USED')
+})
+
+// The twelve-figure sheets scroll INSIDE the sheet on a phone, and the header
+// used to scroll away with them, taking the ✕ along — a reader deep in the
+// list had no visible way out (owner, 17 Aug 26, from the deployed page).
+// The header is stuck to the sheet's top now: scroll to the floor of the
+// list and the close button still sits inside the viewport, clickable.
+test('a scrolled sheet keeps its header and its close button', async ({ page }) => {
+  await page.locator('[data-testid="counter-pick"]').click()
+  const sheet = page.locator('[data-testid="counter-sheet"]')
+  await expect(sheet).toBeVisible()
+  await sheet.evaluate(el => { el.scrollTop = el.scrollHeight })
+  const x = page.locator('[data-testid="counter-cancel"]')
+  await expect(x).toBeVisible()
+  const box = (await x.boundingBox())!
+  const vp = page.viewportSize()!
+  expect(box.y).toBeGreaterThanOrEqual(0)
+  expect(box.y + box.height).toBeLessThanOrEqual(vp.height)
+  await x.click()
+  await expect(sheet).toHaveCount(0)
+})
+
+// The viewer — Raptor's "View as" person, Bane on a fresh login — is lit on
+// the grid, the title sheet answers with THEIR numbers, and any callsign
+// opens that person's all-figures sheet, member included (owner, 17 Aug 26).
+test('the viewer\'s row is lit and the title sheet answers with their numbers', async ({ page }) => {
+  const mine = page.locator('[data-testid="row-bane"]')
+  await expect(mine).toHaveClass('me')
+  // Painted, not merely classed — the frozen pair carries a solid tint.
+  const bg = await page.locator('[data-testid="row-bane"] .who').evaluate(el => getComputedStyle(el).backgroundColor)
+  const other = await page.locator('[data-testid="row-prowler"] .who').evaluate(el => getComputedStyle(el).backgroundColor)
+  expect(bg).not.toBe(other)
+
+  await page.locator('[data-testid="counter-pick"]').click()
+  await expect(page.locator('[data-testid="counter-sheet"]')).toContainText('your numbers — Bane')
+  await expect(page.locator('[data-testid="counter-lvebal"]')).toContainText('yours')
+  await page.locator('[data-testid="counter-cancel"]').click()
+
+  await page.locator('[data-testid="person-prowler"]').click()
+  const figs = page.locator('[data-testid="person-figures"]')
+  await expect(figs).toBeVisible()
+  await expect(figs.locator('.crow-wrap')).toHaveCount(12)
+  // A member reaches no editor from here.
+  await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
 })
 
 // Nothing in the frozen column may be cut off. `.who` carries `overflow:
@@ -1058,7 +1140,11 @@ test('swiping the day columns leaves the counter alone', async ({ page }, testIn
 // one without a migration.
 test('an admin edits who somebody is, and the grid follows', async ({ page }) => {
   await lwRole(page, 'admin')
+  // The callsign opens the all-figures sheet for everyone since 17 Aug 26;
+  // the editor is its Edit person button.
   await page.locator('[data-testid="person-prowler"]').click()
+  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await page.locator('[data-testid="person-edit"]').click()
   await expect(page.locator('[data-testid="person-sheet"]')).toBeVisible()
   await expect(page.locator('[data-testid="person-category"]')).toHaveText('IP')
 

@@ -1,7 +1,12 @@
 // Wires 1 + 2 of the Leave War ⇄ Raptor sync
 // (docs/superpowers/specs/leavewar-sync.md): approved leave crosses to the
 // schedule as a personal input, and leave filed on the Inputs page crosses
-// back as an approved, Raptor-owned cell.
+// back as an approved, Raptor-owned cell. Since 17 Aug 26 the four MEDICAL
+// markers ride the same two wires (owner: "these will be connected to the
+// inputs") — an ATT B / ATT C / HL / OML input lands as a raptor-owned
+// medical cell (half days per medRowPortion's six-hour rule), and a marker
+// the admin writes on the grid lands as an lw-tagged input, no approval
+// step because medical is assigned, not bid.
 //
 // Both directions are DERIVED RECONCILIATION, not queues: each pass computes
 // the desired state from the source of truth, diffs it against what the
@@ -17,7 +22,8 @@
 // reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
 // store write notifies subscribers synchronously, and this module is one.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isLeave } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave } from '../engine/inputs'
+import { ME } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
 import { dayOilCredits } from '../engine/oil'
@@ -37,6 +43,7 @@ import {
   getState,
   ingestDutyCredit,
   ingestFromRaptor,
+  setViewer,
   subscribe as lwSubscribe,
 } from './state/store'
 
@@ -84,6 +91,40 @@ function rowPortion(row: any): Portion {
     }
   }
   return 'full'
+}
+
+/* A MEDICAL row's portion runs on the owner's own rule instead (17 Aug 26):
+   AM/PM are the halves, and a CUSTOM window — "which they should not" file,
+   but the form allows — counts as a half day at six hours or less ("6 hours
+   or less as half day"; exactly six is a half) and a full day past that.
+   Which half: the side of noon the window sits on, its midpoint deciding a
+   straddler. Leave keeps its round-OUT rule above untouched — the owner
+   stated this one for the medical types. */
+function medRowPortion(row: any): Portion {
+  if (row.allday) return 'full'
+  if (row.half === 'am') return 'am'
+  if (row.half === 'pm') return 'pm'
+  if (row.s != null && row.e != null) {
+    const w = inpWin(row)
+    if (w && w[1] - w[0] <= 360) {
+      if (w[1] <= 720) return 'am'
+      if (w[0] >= 721) return 'pm'
+      return (w[0] + w[1]) / 2 <= 720 ? 'am' : 'pm'
+    }
+  }
+  return 'full'
+}
+
+/* The type vocabulary bridge. Raptor's INPUT_META spells the markers as a
+   person types them ('ATT B', 'ATT C', 'HL', 'OML'); Leave War stores them
+   spaceless ('ATTB', 'ATTC') so parseCell's trim/upper round-trips. Leave
+   types are spelled identically on both sides, so they map through
+   untouched. */
+const LW_FOR_INPUT: Record<string, string> = { 'ATT B': 'ATTB', 'ATT C': 'ATTC', HL: 'HL', OML: 'OML' }
+const INPUT_FOR_LW: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C' }
+const lwTypeOf = (rawType: unknown): string => {
+  const t = String(rawType).trim().toUpperCase()
+  return LW_FOR_INPUT[t] ?? t
 }
 
 /* ---- outbound: Leave War -> Raptor inputs -------------------------------- */
@@ -140,11 +181,20 @@ function desiredRuns(): Run[] {
    never overlap. */
 const runSig = (r: Run) => `${r.person}|${r.type}|${r.portion}|${r.start}|${r.end}`
 
+/* One dispatcher so every reader of a row's portion picks the right rule by
+   the row's own type — a medical row must never be read with leave's
+   round-OUT rule or the two sides of the diff would disagree about the same
+   row. */
+const portionOfRow = (row: any): Portion => (isDownchit(row.type) ? medRowPortion(row) : rowPortion(row))
+
 function rowSig(row: any): string | null {
   const start = labelToISO(row.date)
   if (!start) return null
   const end = row.endDate ? labelToISO(row.endDate) ?? start : start
-  return `${row.person}|${String(row.type).trim().toUpperCase()}|${rowPortion(row)}|${start}|${end}`
+  /* lwTypeOf, so an 'ATT C' row and the ATTC run it mirrors reduce to the
+     same signature — the two vocabularies must meet in ONE for the diff to
+     see them as the same fact. */
+  return `${row.person}|${lwTypeOf(row.type)}|${portionOfRow(row)}|${start}|${end}`
 }
 
 export function runOutbound(): void {
@@ -179,7 +229,9 @@ export function runOutbound(): void {
       for (const r of missing) {
         const row: any = {
           person: r.person,
-          type: r.type,
+          /* Back to Raptor's own spelling — an 'ATTB' run lands as an
+             'ATT B' input, the type the Inputs page and INPUT_META know. */
+          type: INPUT_FOR_LW[r.type] ?? r.type,
           date: isoToLabel(r.start),
           remarks: 'Leave War',
           mod: 'now',
@@ -265,12 +317,15 @@ export function runInbound(): void {
     const { people, wars } = getState()
     const known = new Set(people.map(p => p.id))
 
-    /* The desired cells: every NON-lw leave input, one entry per covered
-       day. person|isoDate -> code-with-portion. */
+    /* The desired cells: every NON-lw leave OR medical input, one entry per
+       covered day. person|isoDate -> code-with-portion. Medical joined
+       17 Aug 26 ("if I apply on inputs, it will auto populate on the leave
+       war") — same wire, same ownership, only its portion rule differs
+       (medRowPortion's six-hour half). */
     const desired = new Map<string, string>()
     for (const row of INPUTS) {
       if (row.lw) continue // the loop-breaker: rows this module itself wrote
-      if (!isLeave(row.type)) continue
+      if (!isLeave(row.type) && !isDownchit(row.type)) continue
       /* A person Leave War does not know (the seed's j_lee, say) would
          become an invisible grid row no matrix draws — skip rather than
          write a cell nobody can see or clear. */
@@ -279,8 +334,8 @@ export function runInbound(): void {
       if (!start) continue
       let end = row.endDate ? labelToISO(row.endDate) ?? start : start
       if (end < start) end = start
-      const portion = rowPortion(row)
-      const type = String(row.type).trim().toUpperCase()
+      const portion = portionOfRow(row)
+      const type = lwTypeOf(row.type)
       const notation = portion === 'am' ? `*${type}` : portion === 'pm' ? `${type}*` : type
       /* Capped walk: a malformed span cannot spin the boot. 400 covers any
          legitimate year-crossing leave. */
@@ -440,10 +495,17 @@ export function runOilPass(): void {
  * Both passes are cheap no-ops when nothing they read has changed.
  */
 export function wireLeaveWarSync(): void {
+  /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix
+     lights the viewer's row and the counter picker answers with their
+     numbers). Raptor's "View as" (`ME`) notifies on every change, so pushing
+     it here — once at boot, again on every Raptor notify below — keeps the
+     mirror converged without a new seam; setViewer no-ops on a same value. */
+  setViewer(ME)
   runInbound()
   runOilPass()
   runOutbound()
   raptorSubscribe(() => {
+    setViewer(ME)
     runInbound()
     runOilPass()
     runOutbound()

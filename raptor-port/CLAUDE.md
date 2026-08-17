@@ -395,7 +395,10 @@ four: `main.tsx` boots it once (`lwInitStore` → `installDemoWorld` →
 `wireLeaveWarSync` → a `histInit` re-baseline, in that order), `resetSession`
 derives its role from the Raptor login (the ONE writer), `probe-bridge.ts`
 exposes `w.lwSetRole` for its e2e suite, and **`src/leavewar/sync.ts`** — the
-sync wires (17 Aug 26): Leave War's roster is a boot-time PROJECTION of
+sync wires (17 Aug 26; this seam also mirrors Raptor's "View as" person into
+the Leave War store's `viewer` on every Raptor notify — what lights the
+viewer's row and personalises the counter picker — a rider on this seam, not
+a fifth): Leave War's roster is a boot-time PROJECTION of
 Raptor's PEOPLE, approved leave crosses both ways as DERIVED
 RECONCILIATION (outbound skips Raptor-owned cells, inbound skips lw-tagged
 inputs — that pairing is the loop-breaker), and a PUBLISHED weekend/holiday

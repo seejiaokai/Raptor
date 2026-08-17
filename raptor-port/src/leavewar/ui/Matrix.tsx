@@ -6,6 +6,7 @@ import {
   categoryLabel,
   codeOf,
   columnKindFor,
+  displayCell,
   evaluatePeriod,
   inSquadron,
   isBiddable,
@@ -22,7 +23,7 @@ import {
 } from '../engine'
 import { getState } from '../state/store'
 import { BidPicker, DecisionSheet, RaptorSheet } from './BidPicker'
-import { CounterSheet } from './CounterSheet'
+import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
 import { CountRows } from './CountRows'
 import { EventRows } from './EventRows'
@@ -48,7 +49,7 @@ function monthLabel(date: string): string | null {
 
 export function Matrix() {
   useVersion()
-  const { people, period, grid, states, requirements, role, eventDefs, openings, ledger, wars, figureOrder, focusDate, focusSeq } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, focusDate, focusSeq } = getState()
   const dates = period.days.map(d => d.date)
   const verdicts = evaluatePeriod(people, grid, states, requirements, dates)
 
@@ -78,6 +79,14 @@ export function Matrix() {
   const figures = orderedFigures(figureOrder)
   const [shownId, setShownId] = useState(DEFAULT_FIGURE_ID)
   const [picking, setPicking] = useState(false)
+  // Whose counter was tapped, and WHICH figure to break down (owner, 17 Aug
+  // 26). A counter-cell tap opens the column's shown figure; a row tapped
+  // inside the person-figures sheet names its own.
+  const [balOpen, setBalOpen] = useState<{ person: string; figureId: string } | null>(null)
+  // Whose CALLSIGN was tapped — the all-figures sheet, for every role
+  // (owner, same day: "everyone should be able to click on that person's
+  // name and see these logics").
+  const [whoOpen, setWhoOpen] = useState<string | null>(null)
   const [editingWho, setEditing] = useState<string | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
@@ -321,28 +330,28 @@ export function Matrix() {
             <CountRows verdicts={verdicts} dates={dates} />
             <tbody>
               {people.map(p => (
-                <tr key={p.id} data-testid={`row-${p.id}`}>
-                  {/* The callsign opens the person sheet for an admin, and
-                      is plain text for everyone else. `IWSO(S)` rather than a
-                      second column for SXO: it sits on top of a category, so
-                      it decorates the label rather than replacing it. */}
+                // `me` lights the VIEWER's own row — Raptor's "View as"
+                // person, mirrored by the sync wire — so anyone opening the
+                // page finds themselves without reading 58 callsigns
+                // (owner, 17 Aug 26).
+                <tr key={p.id} data-testid={`row-${p.id}`} className={p.id === viewer ? 'me' : undefined}>
+                  {/* The callsign opens the person's all-figures sheet, for
+                      EVERYONE (owner, 17 Aug 26) — an admin reaches the
+                      person EDITOR through that sheet's Edit person button,
+                      which is where the old direct-to-editor tap went.
+                      `IWSO(S)` rather than a second column for SXO: it sits
+                      on top of a category, so it decorates the label rather
+                      than replacing it. */}
                   <td className="who">
-                    {role === 'admin' ? (
-                      <button
-                        className="whoedit"
-                        data-testid={`person-${p.id}`}
-                        title={`Edit ${p.callsign}`}
-                        onClick={() => setEditing(p.id)}
-                      >
-                        {p.callsign}
-                        <span className="cat">{categoryLabel(p)}</span>
-                      </button>
-                    ) : (
-                      <>
-                        {p.callsign}
-                        <span className="cat">{categoryLabel(p)}</span>
-                      </>
-                    )}
+                    <button
+                      className="whoedit"
+                      data-testid={`person-${p.id}`}
+                      title={`${p.callsign} — every figure`}
+                      onClick={() => setWhoOpen(p.id)}
+                    >
+                      {p.callsign}
+                      <span className="cat">{categoryLabel(p)}</span>
+                    </button>
                   </td>
                   {/* The selected figure's value for this person, derived on
                       every render rather than cached: it has to move the
@@ -358,9 +367,15 @@ export function Matrix() {
                     const suffix = shown.kind === 'bal' ? 'remaining, pending bids included' : 'taken'
                     return (
                       <td
-                        className={`bal${v < 0 ? ' neg' : ''}`}
+                        className={`bal act${v < 0 ? ' neg' : ''}`}
                         data-testid={`bal-${p.id}`}
-                        title={`${p.callsign}: ${show(v)} ${shown.label} — ${suffix}`}
+                        title={`${p.callsign}: ${show(v)} ${shown.label} — ${suffix}. Tap for the breakdown`}
+                        /* A tap opens the person's breakdown of the shown
+                           figure — the owner's "click the individual
+                           personnel counter" (17 Aug 26). The td is the
+                           target, like every grid cell here: a nested button
+                           would cost the 44px column its number. */
+                        onClick={() => setBalOpen({ person: p.id, figureId: shown.id })}
                       >
                         {show(v)}
                       </td>
@@ -393,7 +408,11 @@ export function Matrix() {
                       // .blocked/.weekend pair needs, and for the same reason.
                       lockedDate(d.date) ? 'locked' : '',
                     ].filter(Boolean).join(' ')
-                    const text = here ? code : notYetArrived ? '' : 'PO'
+                    // The stored notation, printed through the one display
+                    // mapping — the ATT markers read as the owner's bare
+                    // B / C on the grid while everything else prints as
+                    // stored (displayCell is identity for it).
+                    const text = here ? displayCell(code) : notYetArrived ? '' : 'PO'
                     // Duty first for the reader — FS/HS are work, not a bid.
                     // (They carry `bid: false`, so they could not reach a
                     // bid branch anyway; the order is legibility, not a
@@ -494,6 +513,30 @@ export function Matrix() {
       {picking && (
         <CounterSheet shownId={shownId} onPick={setShownId} onClose={() => setPicking(false)} />
       )}
+      {/* The tapped person's breakdown of one figure — the column's shown
+          one from a counter-cell tap, or whichever row was tapped in the
+          person-figures sheet. Guarded on the person still existing — an
+          admin can delete a row while any sheet is up, the same guard
+          PersonSheet carries; an unknown figure id (a stale saved order)
+          falls back to the shown one. */}
+      {balOpen && people.some(p => p.id === balOpen.person) && (
+        <FigureBreakdownSheet
+          figure={figures.find(f => f.id === balOpen.figureId) ?? shown}
+          person={people.find(p => p.id === balOpen.person)!}
+          onClose={() => setBalOpen(null)}
+        />
+      )}
+      {/* The tapped person's ALL-FIGURES sheet — every role's way in from a
+          callsign. A figure row hands over to the breakdown above; the
+          admin's Edit person button hands over to the editor below. */}
+      {whoOpen && people.some(p => p.id === whoOpen) && (
+        <PersonFiguresSheet
+          person={people.find(p => p.id === whoOpen)!}
+          onOpenFigure={figureId => { setBalOpen({ person: whoOpen, figureId }); setWhoOpen(null) }}
+          onEdit={role === 'admin' ? () => { setEditing(whoOpen); setWhoOpen(null) } : undefined}
+          onClose={() => setWhoOpen(null)}
+        />
+      )}
       {editingWho && people.some(p => p.id === editingWho) && (
         <PersonSheet
           person={people.find(p => p.id === editingWho)!}
@@ -518,17 +561,24 @@ export function Matrix() {
           date={open.date}
           current={grid[open.id]?.[open.date] ?? ''}
           dates={dates}
+          /* Medical is assigned, not bid: only management marks it here.
+             Members file theirs on Raptor's Inputs page, which is also the
+             normal path once bidding has closed. */
+          medical={role === 'admin'}
           /* The column follows the leave just entered — ask for OIL and it
              snaps to OIL USED. The owner's ask, and it makes the figure answer
              the question the bidder is holding in their head at that moment.
              Each leave type's figure id is just its code lower-cased (LL→'ll',
              OIL→'oil'…), so the map is the string itself — a type without a
-             figure (EL) simply does not snap. */
+             figure (EL) simply does not snap. ATT C and HL have no figure of
+             their own but do feed MED USED, so they snap there; ATT B feeds
+             nothing (the owner's sum leaves it out) and does not snap. */
           onWrote={code => {
             const cell = parseCell(code)
             if (!cell) return
             const id = cell.type.toLowerCase()
             if (figures.some(f => f.id === id)) setShownId(id)
+            else if (cell.type === 'ATTC' || cell.type === 'HL') setShownId('med')
           }}
           /* What the balance would read AFTER this write, so the sheet can
              ask before taking someone negative. Computed here because this

@@ -46,6 +46,16 @@ const SHEETS: { name: string; testid: string; open: () => void }[] = [
     open: () => {
       setRole('admin')
       render(<Matrix />)
+      // The editor sits behind the figures sheet since 17 Aug 26.
+      fireEvent.click(screen.getByTestId('person-ramp'))
+      fireEvent.click(screen.getByTestId('person-edit'))
+    },
+  },
+  {
+    name: 'the person figures sheet',
+    testid: 'person-figures',
+    open: () => {
+      render(<Matrix />)
       fireEvent.click(screen.getByTestId('person-ramp'))
     },
   },

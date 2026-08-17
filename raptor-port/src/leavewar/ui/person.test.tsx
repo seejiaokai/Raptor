@@ -8,16 +8,26 @@ beforeEach(() => {
   initStore(memoryBackend())
 })
 
-describe('editing who somebody is', () => {
-  it('offers no editing to a member', () => {
-    render(<Matrix />)
-    expect(screen.queryByTestId('person-ramp')).toBeNull()
-  })
+/** The callsign tap opens the ALL-FIGURES sheet for everyone since 17 Aug
+ *  26; the admin's editor sits behind its Edit person button. This helper is
+ *  the old one-tap editor open, spelled as the two taps it takes now. */
+function openEditor(id: string) {
+  fireEvent.click(screen.getByTestId(`person-${id}`))
+  fireEvent.click(screen.getByTestId('person-edit'))
+}
 
-  it('opens a sheet on the callsign for an admin', () => {
-    setRole('admin')
+describe('editing who somebody is', () => {
+  it('offers a member the figures sheet but never the editor', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
+    expect(screen.getByTestId('person-figures')).toBeTruthy()
+    expect(screen.queryByTestId('person-edit')).toBeNull()
+  })
+
+  it('opens the editor from the figures sheet for an admin', () => {
+    setRole('admin')
+    render(<Matrix />)
+    openEditor('ramp')
     expect(screen.getByTestId('person-sheet')).toBeTruthy()
     expect(screen.getByTestId('person-category').textContent).toBe('OPSP(S)')
   })
@@ -27,7 +37,7 @@ describe('editing who somebody is', () => {
   it('changes the category by changing the seat it derives from', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('person-tata'))
+    openEditor('tata')
     expect(screen.getByTestId('person-category').textContent).toBe('IP')
     fireEvent.click(screen.getByTestId('seat-wso'))
     expect(screen.getByTestId('person-category').textContent).toBe('IWSO')
@@ -37,7 +47,7 @@ describe('editing who somebody is', () => {
   it('changes the category by changing the band', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('person-tata'))
+    openEditor('tata')
     fireEvent.click(screen.getByTestId('band-ops'))
     expect(screen.getByTestId('person-category').textContent).toBe('OPSP')
   })
@@ -45,7 +55,7 @@ describe('editing who somebody is', () => {
   it('tags and untags SXO, and the grid follows', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('person-tata'))
+    openEditor('tata')
     fireEvent.click(screen.getByTestId('person-sxo'))
     expect(screen.getByTestId('person-category').textContent).toBe('IP(S)')
     expect(screen.getByTestId('person-tata').textContent).toContain('IP(S)')
@@ -60,7 +70,7 @@ describe('editing who somebody is', () => {
     setRole('admin')
     render(<Matrix />)
     const before = screen.getByTestId('count-sxo-2026-01-05').textContent
-    fireEvent.click(screen.getByTestId('person-tata'))
+    openEditor('tata')
     fireEvent.click(screen.getByTestId('person-sxo'))
     expect(screen.getByTestId('count-sxo-2026-01-05').textContent).not.toBe(before)
   })
@@ -71,7 +81,7 @@ describe('editing who somebody is', () => {
     setRole('admin')
     render(<Matrix />)
     const before = screen.getByTestId('count-ip-2026-01-05').textContent
-    fireEvent.click(screen.getByTestId('person-tata'))
+    openEditor('tata')
     fireEvent.click(screen.getByTestId('person-sxo'))
     expect(screen.getByTestId('count-ip-2026-01-05').textContent).toBe(before)
   })
@@ -80,7 +90,7 @@ describe('editing who somebody is', () => {
     setRole('admin')
     render(<Matrix />)
     const before = screen.getByTestId('count-ip-2026-01-05').textContent
-    fireEvent.click(screen.getByTestId('person-tata'))
+    openEditor('tata')
     fireEvent.click(screen.getByTestId('seat-wso'))
     expect(screen.getByTestId('count-ip-2026-01-05').textContent).not.toBe(before)
   })
@@ -96,7 +106,7 @@ describe('editing who somebody is', () => {
     initStore(backend)
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('person-tata'))
+    openEditor('tata')
     fireEvent.click(screen.getByTestId('seat-wso'))
     expect(getState().people.find(p => p.id === 'tata')!.seat).toBe('wso')
     initStore(backend)

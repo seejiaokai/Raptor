@@ -736,4 +736,23 @@
   color: var(--ink);
 }
 
+
+/* The VIEWER's own row — Raptor's "View as" person. The frozen pair must
+   stay OPAQUE (it paints over scrolling cells), so it takes a solid tinted
+   panel; the scrolling cells take a wash faint enough to sit under every
+   state colour. The tint is the app's accent at whisper volume, not a
+   selection colour — nothing here is selected, it is "this row is you". */
+.mx tbody tr.me .who,
+.mx tbody tr.me .bal {
+  background: #14333E;
+}
+
+.mx tbody tr.me td {
+  box-shadow: inset 0 1px 0 rgba(59, 198, 232, .28), inset 0 -1px 0 rgba(59, 198, 232, .28);
+}
+
+.mx tbody tr.me .who {
+  color: var(--accent);
+}
+
 }

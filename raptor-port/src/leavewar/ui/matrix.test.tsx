@@ -133,7 +133,9 @@ describe('Matrix', () => {
     const dutyCell = screen.getByTestId('cell-tata-2026-01-01')
     expect(dutyCell.querySelector('.c.sc')?.textContent).toBe('FS')
     const ordinaryCell = screen.getByTestId('cell-splice-2026-01-05')
-    expect(ordinaryCell.querySelector('.c.info')?.textContent).toBe('ATTC')
+    // Stored ATTC, PRINTED as the owner's bare C since 17 Aug 26
+    // (displayCell) — the info class is unchanged.
+    expect(ordinaryCell.querySelector('.c.info')?.textContent).toBe('C')
   })
 
   it('carries the am/pm portion class on the chip, derived from the stored asterisk', () => {

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore } from '../state/store'
+import { advanceStage, getState, initStore, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -220,5 +220,48 @@ describe('bidding over a range', () => {
     fireEvent.click(screen.getByTestId('span-range'))
     goTo('2025-12')
     expect((screen.getByTestId('span-day-2025-12-31') as HTMLButtonElement).disabled).toBe(true)
+  })
+})
+
+describe('marking medical on the grid (owner, 17 Aug 26)', () => {
+  it('offers the four medical markers to an admin, in the owner’s order, whole day by default', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(CELL))
+    const labels = ['ATTB', 'ATTC', 'OML', 'HL'].map(t => screen.getByTestId(`bid-${t}`).textContent)
+    // The chips read the owner's own shorthand — B and C, not ATTB/ATTC.
+    expect(labels).toEqual(['B', 'C', 'OML', 'HL'])
+    fireEvent.click(screen.getByTestId('bid-ATTC'))
+    expect(getState().grid.dusk['2026-02-11']).toBe('ATTC')
+    // Assigned, not bid: no bid state rides a medical cell.
+    expect(getState().states.dusk?.['2026-02-11']).toBeUndefined()
+  })
+
+  it('marks a half day with the portion controls, asterisk on the right side', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(CELL))
+    fireEvent.click(screen.getByTestId('portion-pm'))
+    fireEvent.click(screen.getByTestId('bid-OML'))
+    expect(getState().grid.dusk['2026-02-11']).toBe('OML*')
+    // The grid cell prints the stored notation (OML has no short form).
+    expect(screen.getByTestId(CELL).textContent).toBe('OML*')
+  })
+
+  it('prints the ATT markers as bare B / C on the grid', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(CELL))
+    fireEvent.click(screen.getByTestId('bid-ATTB'))
+    expect(getState().grid.dusk['2026-02-11']).toBe('ATTB')
+    expect(screen.getByTestId(CELL).textContent).toBe('B')
+  })
+
+  it('never shows the medical row to a member — they file on Raptor’s Inputs page', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(CELL))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.queryByTestId('bid-ATTC')).toBeNull()
+    expect(screen.queryByTestId('bid-HL')).toBeNull()
   })
 })

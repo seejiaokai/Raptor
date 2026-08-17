@@ -8,6 +8,7 @@ import {
   canEditCell,
   inSquadron,
   isBiddable,
+  isMedical,
   windowFits,
   canReopen,
   nextStage,
@@ -84,12 +85,22 @@ interface State {
    *  there is no login — so this decides which controls appear, not who is
    *  allowed to use them. See `docs/known-gaps.md`. */
   role: Role
+  /** WHICH PERSON is looking at the page — Raptor's "View as" identity,
+   *  mirrored here so the matrix can light their row and the counter picker
+   *  can answer with THEIR numbers (owner, 17 Aug 26). Like the role it is
+   *  neither read nor persisted: Raptor's `setMe` is the one production
+   *  writer (plus the boot in main.tsx), so a stored copy could only ever
+   *  disagree with the person actually selected. May name someone this
+   *  roster does not hold; consumers check membership. */
+  viewer: string | null
 
   /** The counter column's figure order — the ids of `FIGURES`, in the order
-   *  the picker lists them and the column cycles them. A DISPLAY preference,
-   *  not squadron policy, so it is persisted (under `figorder`) but ungated,
-   *  the way the counter *selection* is ungated. Read leniently: unknown or
-   *  missing ids are healed by `orderedFigures`, never rejected. */
+   *  the picker lists them and the column cycles them. Persisted (under
+   *  `figorder`) and — since the owner's word, 17 Aug 26 ("normal user
+   *  should not have authority to change the leave war column arrangement")
+   *  — ADMIN-gated at the write path, while the counter *selection* stays
+   *  ungated view state. Read leniently: unknown or missing ids are healed
+   *  by `orderedFigures`, never rejected. */
   figureOrder: string[]
 
   /** The day the matrix has been asked to bring into view, or null. */
@@ -132,6 +143,7 @@ function blank(): State {
     // The squadron is the common case, so the app opens as one. An admin
     // says so deliberately rather than arriving with the locks already off.
     role: 'member',
+    viewer: null,
     focusDate: null,
     focusSeq: 0,
   })
@@ -391,15 +403,21 @@ function readStored<T>(key: string, parse: (x: unknown) => T | null): T | null {
 // drift can arrive from outside `setCell` — hand-edited storage, or data
 // written by a build that predates bid states. So every stored state is
 // checked against the cell it names and dropped if that cell no longer
-// holds a code someone bids for: a stale 'approved' left on a cell that is
-// now medical would colour it wrong, and one left on an empty cell would
-// mean nothing at all.
+// holds a code that legitimately carries one: a bid code (any record), or a
+// medical cell's raptor OWNERSHIP record — that one is what keeps a synced
+// medical cell read-only and reverse-clearable across a reload, and dropping
+// it here would let the outbound pass re-mint an input for a row Raptor
+// itself wrote (the loop the source model exists to prevent). A BID-sourced
+// record on a medical cell stays drift — `setCell` never writes one — and an
+// 'approved' left on a cell that no longer holds any such code would colour
+// it wrong, so both are still dropped.
 function reconcile(grid: Grid, states: States): States {
   const out: States = {}
   for (const [id, row] of Object.entries(states)) {
     const kept: Record<string, BidRecord> = {}
     for (const [date, record] of Object.entries(row)) {
-      if (isBiddable(grid[id]?.[date])) kept[date] = record
+      const code = grid[id]?.[date]
+      if (isBiddable(code) || (isMedical(code) && record.source === 'raptor')) kept[date] = record
     }
     if (Object.keys(kept).length > 0) out[id] = kept
   }
@@ -600,6 +618,15 @@ export function remapPersonKeys(map: Record<string, string>): void {
 export function setRole(next: Role): void {
   if (next === state.role) return
   state = withCurrent({ ...state, role: next })
+  notify()
+}
+
+/** The viewing person — Raptor's "View as" selection, mirrored on every
+ *  change by `setMe` (state/auth.ts) and once at boot by main.tsx. Not
+ *  persisted, same reasoning as the role above. */
+export function setViewer(next: string | null): void {
+  if (next === state.viewer) return
+  state = withCurrent({ ...state, viewer: next })
   notify()
 }
 
@@ -924,6 +951,12 @@ export function resetEventTypes(): void {
  *  Clamped at the ends and a no-op for an unknown id — returns whether it
  *  moved so a caller can disable a control at the boundary. */
 export function moveFigure(id: string, dir: -1 | 1): boolean {
+  // The column arrangement is management's (owner, 17 Aug 26: "normal user
+  // should not have authority to change the leave war column arrangement").
+  // Enforced here and not only in the sheet, for the same reason setCell
+  // re-checks: the interface hides what a person may not do, the store is
+  // what makes it true.
+  if (state.role !== 'admin') return false
   const ids = orderedFigures(state.figureOrder).map(f => f.id)
   const i = ids.indexOf(id)
   if (i < 0) return false
@@ -938,6 +971,8 @@ export function moveFigure(id: string, dir: -1 | 1): boolean {
 
 /** Put the column's figures back in their catalogue order. */
 export function resetFigureOrder(): void {
+  // Same gate as moveFigure — a reset rewrites the arrangement too.
+  if (state.role !== 'admin') return
   state = withCurrent({ ...state, figureOrder: [...DEFAULT_FIGURE_ORDER] })
   persist()
   notify()
@@ -994,10 +1029,14 @@ export type IngestResult = 'written' | 'confirmed' | 'clash' | 'ignored'
  */
 export function ingestFromRaptor(personId: string, date: string, code: string): IngestResult {
   const clean = code.trim().toUpperCase()
-  // Raptor sends more than leave. Anything nobody bids for is not this
-  // app's business and is dropped rather than written as a cell with a
-  // state that would make no sense.
-  if (!isBiddable(clean)) return 'ignored'
+  // Raptor sends more than leave. Leave is bid for and medical is assigned
+  // (owner, 17 Aug 26 — the four markers cross from the Inputs page too);
+  // anything else nobody bids for is not this app's business and is dropped
+  // rather than written as a cell with a state that would make no sense.
+  // The 'approved' record a medical cell gets below is its OWNERSHIP marker
+  // — raptorOwns and both reverse sweeps read the source; the grid draws a
+  // non-biddable code as plain information whatever state rides it.
+  if (!isBiddable(clean) && !isMedical(clean)) return 'ignored'
 
   // The war that OWNS the date, not the war on screen. The sync wire feeds
   // this whatever dates Raptor's inputs cover, whichever war is currently

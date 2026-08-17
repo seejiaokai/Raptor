@@ -70,22 +70,46 @@ const LEAVE_TYPE_BY_CODE: Record<string, LeaveType> = Object.fromEntries(
   LEAVE_TYPES.map(t => [t.type, t]),
 )
 
-// Non-leave markers remove the whole day and spend nothing — they are not
-// bid for, so there is no counter to draw down.
-//
-// The three medical markers ATT C, HL and OML replaced the single `M` marker
-// (owner, Aug 26 — "remove M, it's MED CON, which is ATT C, HL AND OML"). They
+// The medical markers. ATT C, HL and OML replaced the single `M` marker
+// (owner, Aug 26 — "remove M, it's MED CON, which is ATT C, HL AND OML"); they
 // are the three things that make up a person's MED USED tally, the days-consumed
-// figure the counter column shows. Medical is assigned, not applied for, so like
-// every other marker none of the three is biddable and none carries a balance —
-// only OML was ever floated as an entitlement, and the owner settled it as a
-// consumed figure too ("just change to OML CON, not OML BAL"). `ATTC` is stored
-// spaceless so `parseCell`'s trim/upper round-trips it cleanly; the display label
-// carries the space the owner writes.
-const NON_LEAVE_LABELS: Record<string, string> = {
+// figure the counter column shows. `ATTB` joined 17 Aug 26 ("for the leave war
+// grids u can indicate, B (att b), C (att c), OML, HL") — it is on the grid but
+// deliberately NOT in MED USED, because the owner's sum names the other three
+// only. Medical is assigned, not applied for, so like every other marker none
+// is biddable and none carries a balance — only OML was ever floated as an
+// entitlement, and the owner settled it as a consumed figure too ("just change
+// to OML CON, not OML BAL"). `ATTC`/`ATTB` are stored spaceless so `parseCell`'s
+// trim/upper round-trips them cleanly; the display label carries the space the
+// owner writes, and the GRID shows the one-letter short forms below.
+//
+// Since 17 Aug 26 medical markers TAKE PORTIONS (`*OML` a morning, `HL*` an
+// afternoon) — the owner's medical inputs come in halves ("count half day as
+// AM or PM"), which retired the older rule that only leave could carry an
+// asterisk. Courses, overseas duty and SC duty still cannot.
+const MEDICAL_LABELS: Record<string, string> = {
+  ATTB: 'medical — ATT B, no flying but may still work',
   ATTC: 'medical — ATT C',
   HL: 'medical — hospitalisation leave',
   OML: 'medical — outpatient medical leave',
+}
+
+// The owner's own grid shorthand: a cell reads `B` / `C`, stored canonically
+// as ATTB/ATTC. The alias is accepted on the way in (a CSV typed the short
+// way still parses) and the short form is what `displayCell` shows.
+const MEDICAL_ALIAS: Record<string, string> = { B: 'ATTB', C: 'ATTC' }
+const MEDICAL_SHORT: Record<string, string> = { ATTB: 'B', ATTC: 'C' }
+
+/** The four markers in the owner's own order — "B (att b), C (att c), OML,
+ *  HL" — for the admin's grid picker. Nobody bids these; the picker shows
+ *  them to management only. Frozen like every exported list here. */
+export const MEDICAL_TYPES: readonly { type: string; label: string }[] = Object.freeze(
+  ['ATTB', 'ATTC', 'OML', 'HL'].map(type => ({ type, label: MEDICAL_LABELS[type] })),
+)
+
+// Non-leave markers beyond medical: remove the whole day, spend nothing,
+// never portioned — they are not bid for, so there is no counter to draw.
+const NON_LEAVE_LABELS: Record<string, string> = {
   CSE: 'course',
   OD: 'overseas duty',
 }
@@ -114,9 +138,10 @@ export function portionAmount(portion: Portion): number {
  * screen:
  * - an asterisk on BOTH sides (`*LL*`) — the notation only ever carries one
  *   time marker, so this is not "a valid portion", it is malformed input.
- * - an asterisk on a NON-LEAVE marker (`*OML`, `CSE*`, `*FS`) — only leave
- *   types take a portion; medical, courses and SC duty do not come in
- *   halves in this squadron's vocabulary.
+ * - an asterisk on a course, overseas-duty or SC-duty marker (`CSE*`, `*FS`)
+ *   — those do not come in halves in this squadron's vocabulary. Medical
+ *   USED to be in this list; the owner's half-day medical inputs (17 Aug 26)
+ *   moved it to the portioned side.
  */
 export function parseCell(raw: string | undefined | null): Cell | null {
   if (!raw) return null
@@ -128,14 +153,17 @@ export function parseCell(raw: string | undefined | null): Cell | null {
   if (leadingStar && trailingStar) return null
 
   const portion: Portion = leadingStar ? 'am' : trailingStar ? 'pm' : 'full'
-  const type = trimmed.slice(leadingStar ? 1 : 0, trailingStar ? -1 : undefined)
-  if (!type) return null
+  const typed = trimmed.slice(leadingStar ? 1 : 0, trailingStar ? -1 : undefined)
+  if (!typed) return null
+  // Canonical before lookup, so `B`/`*C` read as the medical marker they
+  // abbreviate rather than as unknown codes.
+  const type = MEDICAL_ALIAS[typed] ?? typed
 
   if (portion !== 'full') {
-    return LEAVE_TYPE_BY_CODE[type] ? { type, portion } : null
+    return LEAVE_TYPE_BY_CODE[type] || MEDICAL_LABELS[type] ? { type, portion } : null
   }
 
-  const known = LEAVE_TYPE_BY_CODE[type] || NON_LEAVE_LABELS[type] || SC_DUTY_LABELS[type]
+  const known = LEAVE_TYPE_BY_CODE[type] || MEDICAL_LABELS[type] || NON_LEAVE_LABELS[type] || SC_DUTY_LABELS[type]
   return known ? { type, portion: 'full' } : null
 }
 
@@ -153,12 +181,37 @@ export function parseCell(raw: string | undefined | null): Cell | null {
  * bad `Cell` was formatted turns that into a stack trace instead.
  */
 export function formatCell(cell: Cell): string {
-  if (cell.portion !== 'full' && !LEAVE_TYPE_BY_CODE[cell.type]) {
-    throw new Error(`formatCell: '${cell.type}' cannot carry a portion — only leave types come in halves`)
+  if (cell.portion !== 'full' && !LEAVE_TYPE_BY_CODE[cell.type] && !MEDICAL_LABELS[cell.type]) {
+    throw new Error(`formatCell: '${cell.type}' cannot carry a portion — only leave and medical come in halves`)
   }
   if (cell.portion === 'am') return `*${cell.type}`
   if (cell.portion === 'pm') return `${cell.type}*`
   return cell.type
+}
+
+/** Whether this cell is one of the four medical markers, whatever portion it
+ *  carries. The sync wire and the picker both ask; neither should re-own the
+ *  list. */
+export function isMedical(code: string | undefined | null): boolean {
+  const cell = parseCell(code)
+  return !!cell && !!MEDICAL_LABELS[cell.type]
+}
+
+/**
+ * What a grid cell PRINTS. Identical to the stored notation for everything
+ * except the two ATT markers, whose stored `ATTB`/`ATTC` would drown a 30px
+ * column — the owner's own shorthand is a bare `B` / `C`, and the asterisk
+ * keeps its side. Display only: nothing stores or parses what this returns
+ * without going back through `parseCell`, which accepts the short form too.
+ */
+export function displayCell(raw: string): string {
+  const cell = parseCell(raw)
+  if (!cell) return raw
+  const short = MEDICAL_SHORT[cell.type]
+  if (!short) return raw
+  if (cell.portion === 'am') return `*${short}`
+  if (cell.portion === 'pm') return `${short}*`
+  return short
 }
 
 export interface DayCode {
@@ -196,6 +249,24 @@ function dayCodeFor(cell: Cell): DayCode {
       spends: leave.counter === null ? null : { counter: leave.counter, amount },
       earnsOil: 0,
       bid: true,
+      duty: false,
+    }
+  }
+
+  const medicalLabel = MEDICAL_LABELS[type]
+  if (medicalLabel) {
+    const suffix = portion === 'am' ? ' (morning)' : portion === 'pm' ? ' (afternoon)' : ''
+    return {
+      code: formatCell(cell),
+      label: `${medicalLabel}${suffix}`,
+      // ATT B keeps the man AT WORK — Raptor's own catalogue says so
+      // (`work:true`, "no flying, may still work") — so it removes nothing
+      // from the manning picture here either; the other three take him out
+      // for however much of the day they cover. Two apps, one meaning.
+      removes: type === 'ATTB' ? 0 : (portionAmount(portion) as 0.5 | 1),
+      spends: null,
+      earnsOil: 0,
+      bid: false,
       duty: false,
     }
   }

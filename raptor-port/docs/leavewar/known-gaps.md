@@ -105,9 +105,10 @@ Balances are computed and on screen. Two parts of §Counters are not built:
 - **No grant sheet.** The ledger is seeded and read; nothing can post a
   top-up, an award or a correction through the interface.
 - **No ledger view.** §Counters promises that any number on screen can be
-  opened and explained. It cannot yet: the counter column shows the figure
-  and the tooltip says what it counts, but the entries behind it are not
-  visible anywhere.
+  opened and explained. The breakdown sheet (17 Aug 26 — tap a person's
+  counter cell) now answers the first layer: the figure's composition, a
+  balance as opening + granted (+ earned) − taken. The individual LEDGER
+  ENTRIES behind "granted" are still not visible anywhere.
 
 Also note the derivation, because it narrows the spec deliberately: §Counters
 says every change to a counter is a ledger entry, and **leave taken is not
@@ -118,11 +119,11 @@ the grid cannot know.
 ## The counter column is figures, not raw counters (Aug 26)
 
 The frozen column no longer cycles the six entitlement counters. It cycles
-ELEVEN named figures (owner's set), each labelled `BAL` (a balance left) or
-`USED` (days taken):
+TWELVE named figures (owner's set; `OIL BAL` joined with wire 4), each
+labelled `BAL` (a balance left) or `USED` (days taken):
 
-    LL USED · OL USED · OIL USED · OFF USED · CCL USED · PL USED · FCL USED ·
-    MED USED · OML USED · LVE BAL · LVE USED
+    LL USED · OL USED · OIL USED · OIL BAL · OFF USED · CCL USED · PL USED ·
+    FCL USED · MED USED · OML USED · LVE BAL · LVE USED
 
 - **Ten are consumed (`USED`)** — days of that type taken, read per-TYPE by
   `takenOf` (not the per-counter `drawnFrom`, which cannot tell LL from OL —
@@ -134,17 +135,47 @@ ELEVEN named figures (owner's set), each labelled `BAL` (a balance left) or
   the bid-warning path, but are NOT surfaced in the column — the owner asked
   for exactly the eleven above. EL is dropped from the column yet stays a valid
   biddable code.
-- **The order is a persisted display preference** (`state.figureOrder`, stored
-  under `figorder`), reordered by the ▲▼ on each picker row and ungated like
-  the figure selection itself. `orderedFigures` heals a stale saved order — an
-  unknown id is dropped, a newly added figure appended.
+- **The order is persisted (`figorder`) and ADMIN-GATED since 17 Aug 26**
+  (owner: "normal user should not have authority to change the leave war
+  column arrangement") — the ▲▼ and Reset render for an admin only and
+  `moveFigure`/`resetFigureOrder` refuse a member at the write path; the
+  figure SELECTION stays ungated view state. `orderedFigures` heals a stale
+  saved order — an unknown id is dropped, a newly added figure appended.
 - **The picker sheet is also the legend** (owner: "show the legend as a
-  bubble"): the USED/BAL key and the two aggregates' compositions render inline.
-- **Medical is three markers now** — `ATTC` (shown "ATT C"), `HL`, `OML` —
-  replacing the single `M`. Like `M` they are assigned, not bid, so **there is
-  no cell-entry UI for them**; MED USED and OML USED populate from seed or a CSV
-  import. A grid affordance to mark someone medical is the natural follow-up if
-  the owner wants it (reported, not built).
+  bubble"): the USED/BAL key and the two aggregates' compositions render
+  inline. **Since 17 Aug 26 its rows answer with the VIEWER's own numbers**
+  ("your numbers — <callsign>", each row "N taken/left, yours") — the
+  viewer being Raptor's "View as" person, mirrored into `state.viewer` by
+  the sync wire (never persisted); with no viewer on the roster it falls
+  back to the squadron-wide sums it showed before.
+- **The viewer's row is lit on the matrix** (same ask) — `tr.me`, a solid
+  tint on the frozen callsign+counter pair and a faint band across the row.
+  The CSS lives INSIDE matrix.css's `#page-leavewar` wrapper — a rule
+  appended after the closing brace loses to the wrapper's +1 id specificity,
+  which is exactly the trap the file's header warns about.
+- **Any callsign tap opens that person's ALL-FIGURES sheet, for every role**
+  (owner: "everyone should be able to click on that person's name and see
+  these logics") — the twelve figures with that person's numbers, each row
+  opening its parts breakdown; an admin reaches the person EDITOR through
+  the sheet's "Edit person" button (the old direct-to-editor tap).
+- **Medical is FOUR markers now** — `ATTB` (shown as a bare "B" on the grid),
+  `ATTC` (shown "C"), `HL`, `OML` — B joined 17 Aug 26 ("u can indicate,
+  B (att b), C (att c), OML, HL"), and since the same day they TAKE PORTIONS
+  (`*OML` a morning, `HL*` an afternoon; a half counts 0.5 in MED USED). ATT B
+  deliberately feeds NO figure (the owner's MED USED sum names the other three)
+  and removes nothing from manning — no flying, but at work, matching Raptor's
+  own meaning of the code. Still assigned, not bid, but **the cell-entry UI now
+  exists**: the cell sheet shows a Medical row of the four chips to an ADMIN
+  only (whole day default, AM/PM the halves, range supported); members file on
+  Raptor's Inputs page and the record syncs across (the spec's Wire 5 — an
+  ATT B / ATT C / HL / OML input lands as a read-only raptor-owned cell, an
+  admin-marked cell lands as an lw-tagged input, no approval step either way).
+- **Tapping a person's counter CELL opens the breakdown** (owner, 17 Aug 26):
+  MED USED as its ATT C / HL / OML rows, LVE USED as its seven codes, a
+  balance as opening + granted (+ earned) − taken, any single-code figure as
+  its one line — parts signed so they visibly sum to the total
+  (`figureParts` in counters.ts, `FigureBreakdownSheet`). The column HEADER
+  still opens the figure picker; the two controls answer different questions.
 
 ## The owner's review of 10 Aug 26, and what it settled
 

@@ -10,6 +10,7 @@ import {
   takenOf,
   medConOf,
   lveConOf,
+  figureParts,
   FIGURES,
   orderedFigures,
   earnedOil,
@@ -339,6 +340,19 @@ describe('the two consumed aggregates', () => {
     expect(medConOf(sources, 'ramp')).toBe(3)
   })
 
+  it('counts a half-day medical as half — the owner\'s AM/PM medical inputs', () => {
+    const sources = [{ grid: { ramp: { '2026-01-05': '*ATTC', '2026-01-06': 'HL*', '2026-01-07': 'OML' } }, states: {} }]
+    expect(medConOf(sources, 'ramp')).toBe(2)
+    expect(takenOf(sources, 'ramp', 'ATTC')).toBe(0.5)
+  })
+
+  it('deliberately leaves ATT B out of MED CON — the owner\'s sum names the other three', () => {
+    const sources = [{ grid: { ramp: { '2026-01-05': 'ATTB', '2026-01-06': 'HL' } }, states: {} }]
+    expect(medConOf(sources, 'ramp')).toBe(1)
+    // ATT B days are still countable per type, they just feed no figure.
+    expect(takenOf(sources, 'ramp', 'ATTB')).toBe(1)
+  })
+
   it('LVE CON sums the seven leave codes and deliberately excludes medical', () => {
     const sources = [{ grid: { ramp: {
       '2026-01-05': 'LL', '2026-01-06': 'OL', '2026-01-07': 'OIL', '2026-01-08': 'OFF',
@@ -395,5 +409,51 @@ describe('FIGURES and orderedFigures', () => {
     expect(out.filter(f => f.id === 'll')).toHaveLength(1)
     expect(out.some(f => f.id === 'nope')).toBe(false)
     expect(out).toHaveLength(FIGURES.length)
+  })
+})
+
+describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () => {
+  const f = (id: string) => FIGURES.find(x => x.id === id)!
+  const ctx = {
+    openings: { ramp: { annual: 10, oil: 2 } },
+    ledger: [{ id: 'g1', personId: 'ramp', counter: 'oil', amount: 1, date: '2026-01-01', reason: 'grant', approvedBy: 'boss' }] as Ledger,
+    sources: [{ grid: { ramp: {
+      '2026-01-05': 'ATTC', '2026-01-06': '*HL', '2026-01-07': 'OML', '2026-01-08': 'LL',
+      '2026-01-09': 'OIL', '2026-01-10': 'FS',
+    } }, states: {} }],
+  }
+
+  it('MED USED opens as its three markers, half days included, and the parts sum to the figure', () => {
+    const parts = figureParts(f('med'), ctx, 'ramp')
+    expect(parts).toEqual([
+      { label: 'ATT C', value: 1 },
+      { label: 'HL', value: 0.5 },
+      { label: 'OML', value: 1 },
+    ])
+    expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('med').value(ctx, 'ramp'))
+  })
+
+  it('LVE USED opens as its seven codes and sums to the figure', () => {
+    const parts = figureParts(f('lvecon'), ctx, 'ramp')
+    expect(parts.map(p => p.label)).toEqual(['LL', 'OL', 'OIL', 'OFF', 'CCL', 'PL', 'FCL'])
+    expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('lvecon').value(ctx, 'ramp'))
+  })
+
+  it('a balance opens as opening + granted (+ earned for OIL) − taken, signed so it sums', () => {
+    const oil = figureParts(f('oilbal'), ctx, 'ramp')
+    expect(oil).toEqual([
+      { label: 'opening figure', value: 2 },
+      { label: 'granted', value: 1 },
+      { label: 'earned by weekend/PH duty', value: 1 },
+      { label: 'taken', value: -1 },
+    ])
+    expect(oil.reduce((s, p) => s + p.value, 0)).toBe(f('oilbal').value(ctx, 'ramp'))
+    // LVE BAL has no earned row — nothing but OIL is earned by working.
+    expect(figureParts(f('lvebal'), ctx, 'ramp').map(p => p.label))
+      .toEqual(['opening figure', 'granted', 'taken'])
+  })
+
+  it('a single-code figure restates itself as one line, so every figure answers', () => {
+    expect(figureParts(f('ll'), ctx, 'ramp')).toEqual([{ label: 'days taken', value: 1 }])
   })
 })
