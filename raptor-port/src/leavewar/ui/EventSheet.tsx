@@ -128,8 +128,16 @@ export function EventSheet({ line, date, onClose }: { line: 0 | 1; date: string;
           </button>
         </div>
         <div className="evtypes">
+          {/* Keyed by the type's NAME, not its index (bug sweep, 18 Aug 26).
+              The name field is uncontrolled (defaultValue, applied once on
+              mount), so an index key let a mid-list delete shift the array
+              under the same DOM inputs: the row then showed a stale name and
+              blurring it renamed the WRONG type. Keying by the stable name
+              keeps each row bound to its own type across a delete — the same
+              fix the personnel-label input (key={val}) already uses. Names are
+              unique by the store's own refusal of a duplicate. */}
           {defs.map((d, i) => (
-            <div className="evtype" key={i} data-testid={`evtype-${i}`}>
+            <div className="evtype" key={d.name} data-testid={`evtype-${i}`}>
               <input
                 className="evtype-name"
                 defaultValue={d.name}

@@ -2,7 +2,10 @@
 // which is what lets RAPTOR's own roster replace this one without a migration:
 // it already holds seat, the CAT ladder and an `sxo` qualification flag.
 
-export type Seat = 'pilot' | 'wso'
+/** `gnd` is ground crew — no flying seat. It exists so a personnel body can
+ *  ride the same roster, and every MANNING path skips it (countsFor); only the
+ *  display groups it. */
+export type Seat = 'pilot' | 'wso' | 'gnd'
 /** `ops` is CAT D up to CAT A; `instructor` is the instructor grades above it. */
 export type Band = 'instructor' | 'ops'
 export type Category = 'IP' | 'OPSP' | 'IWSO' | 'OPSW'
@@ -18,11 +21,125 @@ export interface Person {
   from: string | null
   /** Last day in the squadron, inclusive — the posting-out date. `null` means still here. */
   to: string | null
+  /** The Raptor CAT (OCU/D/C/B/A/IW/IP/IR/FI), carried through the projection
+   *  so the display can group ops crew by CAT and split OCU / instructors out.
+   *  Absent on the seed people (which know only band) — the display falls back
+   *  to band there. NEVER read by manning: `categoryOf` still derives from
+   *  seat + band, so a stale or missing CAT cannot move a count. */
+  q?: string
+  /** Ground crew. Included in the roster since 18 Aug 26 (owner) so they can
+   *  hold leave and be seen; excluded from every aircrew manning count. */
+  pers?: boolean
+  /** A personnel body's free-text label ("Maintenance", "Line crew"). Editable
+   *  in edit mode; seeded from Raptor's `flight`. Only meaningful when `pers`. */
+  label?: string
 }
 
 export function categoryOf(p: Person): Category {
+  // Manning only. Ground crew never reach here — countsFor skips `pers` before
+  // it would call this — but default the impossible seat to the WSO branch so
+  // the return type stays a real Category rather than widening every caller.
   if (p.seat === 'pilot') return p.band === 'instructor' ? 'IP' : 'OPSP'
   return p.band === 'instructor' ? 'IWSO' : 'OPSW'
+}
+
+// ---- Display grouping (owner, 18 Aug 26) --------------------------------
+// The roster is drawn in named, colour-coded groups: SXO lifted to the top,
+// then instructor pilots, ops pilots (by CAT), instructor WSOs, ops WSOs (by
+// CAT), OCU, and ground crew. This is a DISPLAY layer only — `categoryOf`,
+// the requirements and every count are untouched, so an OCU still counts as
+// ops manning exactly as before; it is merely shown under its own heading.
+
+export type Group = 'SXO' | 'IP' | 'OPSP' | 'IWSO' | 'OPSW' | 'OCU' | 'PERS'
+
+/** Top-to-bottom order of the groups, the owner's own sequence. */
+export const GROUP_ORDER: Group[] = ['SXO', 'IP', 'OPSP', 'IWSO', 'OPSW', 'OCU', 'PERS']
+
+export const GROUP_LABEL: Record<Group, string> = {
+  SXO: 'SXO', IP: 'IP', OPSP: 'OPS P', IWSO: 'IWSO', OPSW: 'OPS W', OCU: 'OCU', PERS: 'Personnel',
+}
+
+/** Which display group a person belongs to. SXO wins over their flying
+ *  category (an SXO IP shows once, at the top); ground crew are always PERS. */
+export function groupOf(p: Person): Group {
+  if (p.pers || p.seat === 'gnd') return 'PERS'
+  if (p.sxo) return 'SXO'
+  if ((p.q || '').toUpperCase() === 'OCU') return 'OCU'
+  if (p.seat === 'pilot') return p.band === 'instructor' ? 'IP' : 'OPSP'
+  return p.band === 'instructor' ? 'IWSO' : 'OPSW'
+}
+
+/** A→D first, then instructor grades, then OCU — the display order WITHIN an
+ *  ops group (the owner's "cats A, B, C, D"). Unknown CATs sort last. */
+const CAT_RANK: Record<string, number> = { A: 0, B: 1, C: 2, D: 3, IW: 4, IP: 4, IR: 5, FI: 6, OCU: 7 }
+
+/** The CAT text a person's chip shows: their Raptor CAT, or the plain
+ *  category as a fallback when the seed carries no CAT. Empty for ground crew
+ *  (their free-text label stands in its place). */
+export function catText(p: Person): string {
+  if (p.pers || p.seat === 'gnd') return ''
+  return (p.q || '').toUpperCase() || categoryOf(p)
+}
+
+/** The colour class for a person's chip, reusing Raptor's own `--q-*` CAT
+ *  palette so a callsign wears the same colour in Quals and here. Ops crew
+ *  colour by CAT letter; instructors share one; SXO and Personnel get their
+ *  own; a seed person with no CAT falls back to a neutral ops fill. */
+export function catClass(p: Person): string {
+  const g = groupOf(p)
+  if (g === 'PERS') return 'q-pers'
+  if (g === 'SXO') return 'q-sxo'
+  if (g === 'OCU') return 'q-ocu'
+  if (g === 'IP' || g === 'IWSO') return 'q-ins'
+  const q = (p.q || '').toUpperCase()
+  return (q === 'A' || q === 'B' || q === 'C' || q === 'D') ? 'q-' + q.toLowerCase() : 'q-ops'
+}
+
+/** The CAT sub-heading a person sits under inside an ops group (desktop only),
+ *  e.g. 'A'. Empty when the person is not in an ops group or carries no CAT. */
+export function opsCatOf(p: Person): string {
+  if (groupOf(p) !== 'OPSP' && groupOf(p) !== 'OPSW') return ''
+  const q = (p.q || '').toUpperCase()
+  return (q === 'A' || q === 'B' || q === 'C' || q === 'D') ? q : ''
+}
+
+/** The default categorised order: every group in `GROUP_ORDER`, each sorted by
+ *  CAT (A first) then callsign. This is what the Auto-sort button writes and
+ *  what a roster with no manual order shows. Stable and pure. */
+export function autoOrder(people: Person[]): string[] {
+  const out: string[] = []
+  for (const g of GROUP_ORDER) {
+    const arr = people.filter(p => groupOf(p) === g)
+    arr.sort((a, b) => {
+      const ra = CAT_RANK[(a.q || '').toUpperCase()] ?? 8
+      const rb = CAT_RANK[(b.q || '').toUpperCase()] ?? 8
+      if (ra !== rb) return ra - rb
+      return a.callsign.localeCompare(b.callsign)
+    })
+    for (const p of arr) out.push(p.id)
+  }
+  return out
+}
+
+/** Apply a stored id order to the live roster: ids in `order` first (in that
+ *  order), then anyone not yet placed appended in `autoOrder` position — so a
+ *  person added to the squadron after the order was saved still appears,
+ *  grouped, rather than vanishing. Ids in `order` that no longer exist are
+ *  dropped. Returns the people in display order. */
+export function orderedPeople(people: Person[], order: string[]): Person[] {
+  const byId = new Map(people.map(p => [p.id, p]))
+  const placed = new Set<string>()
+  const out: Person[] = []
+  for (const id of order) {
+    const p = byId.get(id)
+    if (p && !placed.has(id)) { out.push(p); placed.add(id) }
+  }
+  if (out.length < people.length) {
+    for (const id of autoOrder(people)) {
+      if (!placed.has(id)) { out.push(byId.get(id)!); placed.add(id) }
+    }
+  }
+  return out
 }
 
 /**

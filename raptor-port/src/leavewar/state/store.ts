@@ -26,6 +26,10 @@ import {
   seedPeriod,
   seedRequirements,
   seedWars,
+  autoOrder,
+  groupOf,
+  GROUP_ORDER,
+  orderedPeople,
   readEventDefs,
   bandOverlaps,
   warHolding,
@@ -103,6 +107,19 @@ interface State {
    *  by `orderedFigures`, never rejected. */
   figureOrder: string[]
 
+  /** The roster's row order — person ids, in the order the matrix draws them
+   *  (owner, 18 Aug 26). Empty means "categorised": the matrix falls back to
+   *  `autoOrder`. The Auto-sort button writes the grouped order; an edit-mode
+   *  drag writes a hand-chosen one. ADMIN-gated at the write path, the same
+   *  rule as `figureOrder` — a member does not rearrange the roster. Read
+   *  leniently: `orderedPeople` drops ids that have left and appends anyone
+   *  the saved order predates. */
+  rosterOrder: string[]
+  /** An admin's free-text labels for ground-crew rows, keyed by person id —
+   *  an override of the projected default (Raptor's `flight`). Ground-crew
+   *  only; an aircrew id here is simply never read. */
+  persLabels: Record<string, string>
+
   /** The day the matrix has been asked to bring into view, or null. */
   focusDate: string | null
   /** Bumped on every request, including a repeat of the same date. The matrix
@@ -140,6 +157,8 @@ function blank(): State {
     openings: seedOpenings(),
     ledger: seedLedger(),
     figureOrder: [...DEFAULT_FIGURE_ORDER],
+    rosterOrder: [],
+    persLabels: {},
     // The squadron is the common case, so the app opens as one. An admin
     // says so deliberately rather than arriving with the locks already off.
     role: 'member',
@@ -277,6 +296,19 @@ function readFigureOrder(x: unknown): string[] | null {
   if (!Array.isArray(x)) return null
   if (x.some(id => typeof id !== 'string')) return null
   return x as string[]
+}
+
+/** A stored id list (the roster order), same shape as the figure order. */
+const readIdList = readFigureOrder
+
+/** A stored id→label map (personnel labels). Non-string values are dropped
+ *  rather than rejecting the whole blob — one bad entry should not blank the
+ *  admin's other labels. */
+function readLabelMap(x: unknown): Record<string, string> | null {
+  if (!isPlainObject(x)) return null
+  const out: Record<string, string> = {}
+  for (const [k, v] of Object.entries(x)) if (typeof v === 'string') out[k] = v
+  return out
 }
 
 // A stored war is its period plus its grid and states. `days` is stored in
@@ -438,6 +470,8 @@ export function initStore(b?: StorageBackend): void {
   const ledger = readStored('ledger', readLedger) ?? seedLedger()
   const eventDefs = readStored('eventdefs', readEventDefs) ?? seedEventDefs()
   const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
+  const rosterOrder = readStored('rosterorder', readIdList) ?? []
+  const persLabels = readStored('perslabels', readLabelMap) ?? {}
 
   /* The role is neither read nor persisted since the Raptor merge: it is
      derived from the Raptor login on every session change (resetSession in
@@ -450,7 +484,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels })
 
   version = 0
   listeners.clear()
@@ -509,9 +543,14 @@ function persist(): void {
   backend.write('ledger', JSON.stringify(state.ledger))
   backend.write('eventdefs', JSON.stringify(state.eventDefs))
   backend.write('figorder', JSON.stringify(state.figureOrder))
+  backend.write('rosterorder', JSON.stringify(state.rosterOrder))
+  backend.write('perslabels', JSON.stringify(state.persLabels))
   /* `people` deliberately absent: the roster is a projection of Raptor's
      PEOPLE (see initStore) — persisting it would store a copy that can only
-     disagree with the projection the next boot installs. */
+     disagree with the projection the next boot installs. The roster ORDER and
+     the personnel LABELS are kept instead: they are the admin's arrangement
+     of that projection, keyed by id, so they survive a roster that gains or
+     loses a body. */
 }
 
 /**
@@ -582,6 +621,85 @@ export function setPerson(id: string, patch: Partial<Pick<Person, 'seat' | 'band
  */
 export function setPeople(people: Person[]): void {
   state = withCurrent({ ...state, people })
+  notify()
+}
+
+/**
+ * The roster in display order (owner, 18 Aug 26). ALWAYS grouped: every group
+ * in `GROUP_ORDER`, and WITHIN each group the members ordered by the admin's
+ * hand-order (or the categorised default). Grouping the output — rather than
+ * returning a flat hand-order — means the groups are always contiguous, so the
+ * matrix draws exactly one heading per group; a cross-group drag reorders a
+ * person within their own group (they cannot leave the category their CAT puts
+ * them in) instead of stranding a row under a duplicated heading.
+ */
+export function displayRoster(): Person[] {
+  const order = state.rosterOrder.length ? state.rosterOrder : autoOrder(state.people)
+  const pos = new Map(order.map((id, i) => [id, i]))
+  const out: Person[] = []
+  for (const g of GROUP_ORDER) {
+    const members = state.people.filter(p => groupOf(p) === g)
+    // A body missing from the saved order (just arrived) sinks to the end of
+    // its group rather than jumping to the top.
+    members.sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
+    out.push(...members)
+  }
+  return out
+}
+
+/** A ground-crew body's label: the admin's override if set, else the projected
+ *  default (Raptor's `flight`). */
+export function personLabel(p: Person): string {
+  return state.persLabels[p.id] ?? p.label ?? ''
+}
+
+/**
+ * Write the roster's row order. ADMIN-gated, the `figureOrder` rule: a member
+ * does not rearrange the roster (the drag handles and Auto-sort do not render
+ * for them). An empty array clears back to the categorised default.
+ */
+export function setRosterOrder(order: string[]): void {
+  if (state.role !== 'admin') return
+  state = withCurrent({ ...state, rosterOrder: order })
+  persist()
+  notify()
+}
+
+/** Re-group everyone into the categorised order — the Auto-sort button. */
+export function autoSortRoster(): void {
+  setRosterOrder(autoOrder(state.people))
+}
+
+/**
+ * Move one row to sit before `beforeId` (or to the end when null) — one
+ * edit-mode drag. It materialises the CURRENT display order first (so the
+ * first drag off the categorised default captures where every row actually
+ * was) and writes the whole new order, keeping this the one write path the
+ * admin gate covers.
+ */
+export function moveRosterRow(id: string, beforeId: string | null): void {
+  if (state.role !== 'admin') return
+  const ids = displayRoster().map(p => p.id)
+  const from = ids.indexOf(id)
+  if (from < 0) return
+  ids.splice(from, 1)
+  const at = beforeId ? ids.indexOf(beforeId) : ids.length
+  ids.splice(at < 0 ? ids.length : at, 0, id)
+  setRosterOrder(ids)
+}
+
+/**
+ * Set (or clear) a ground-crew body's free-text label. ADMIN-gated. An empty
+ * string removes the override, so the row falls back to the projected default.
+ */
+export function setPersLabel(id: string, label: string): void {
+  if (state.role !== 'admin') return
+  const persLabels = { ...state.persLabels }
+  const clean = label.trim()
+  if (clean) persLabels[id] = clean
+  else delete persLabels[id]
+  state = withCurrent({ ...state, persLabels })
+  persist()
   notify()
 }
 
@@ -940,9 +1058,11 @@ export function resetEventTypes(): void {
   notify()
 }
 
-/* THE COUNTER-COLUMN FIGURE ORDER writers. A display preference, so — unlike
-   the event-type library above — they are NOT role-gated: a member reorders
-   their own view exactly as they pick which counter it shows. Persisted under
+/* THE COUNTER-COLUMN FIGURE ORDER writers. ADMIN-GATED (owner, 17 Aug 26:
+   "normal user should not have authority to change the leave war column
+   arrangement") — the enforcement is in each writer below, mirroring the
+   event-type library. (The counter SELECTION — which figure the column shows —
+   stays ungated view state; only the ORDER is management's.) Persisted under
    `figorder`. The order is normalised through `orderedFigures` on every move,
    so a stored blob missing a new figure (or naming a dead one) is healed the
    first time it is touched rather than carried forward malformed. */

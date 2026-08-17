@@ -27,10 +27,19 @@ describe('projectPeople', () => {
     })
   })
 
-  it('excludes ground crew and sentinel bodies', () => {
-    for (const id of ['torque', 'spanner', 'gizmo', 'allavail']) {
-      expect(byId.has(id)).toBe(false)
-    }
+  it('excludes sentinel bodies but INCLUDES ground crew (owner, 18 Aug 26)', () => {
+    // Sentinels (ALL AVAIL etc.) are slot fillers, not people — still out.
+    expect(byId.has('allavail')).toBe(false)
+    // Ground crew ride the roster now, marked `pers`, seat `gnd`, no CAT, and
+    // labelled from Raptor's `flight` (torque's is 'Maint').
+    for (const id of ['torque', 'spanner', 'gizmo']) expect(byId.has(id)).toBe(true)
+    expect(byId.get('torque')).toMatchObject({ pers: true, seat: 'gnd', label: 'Maint' })
+  })
+
+  it('carries the CAT itself for aircrew, for the by-CAT display grouping', () => {
+    expect(byId.get('slipway')!.q).toBe('A')
+    expect(byId.get('dice')!.q).toBe('IR')
+    expect(byId.get('bane')!.q).toBe('IP')
   })
 
   it('carries the CAT ladder split exactly as Raptor draws it', () => {

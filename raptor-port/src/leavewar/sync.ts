@@ -43,10 +43,12 @@ import {
   getState,
   ingestDutyCredit,
   ingestFromRaptor,
+  setPeople,
   setViewer,
   subscribe as lwSubscribe,
   withdrawLeaveCell,
 } from './state/store'
+import { projectPeople } from './state/raptorRoster'
 
 /* Re-entrancy: ingest persists-and-notifies per cell, and writeInputsBatch's
    epilogue notifies too, so each reconciler fires the other's subscription
@@ -370,7 +372,17 @@ export function runInbound(): void {
        17 Aug 26 ("if I apply on inputs, it will auto populate on the leave
        war") — same wire, same ownership, only its portion rule differs
        (medRowPortion's six-hour half). */
-    const desired = new Map<string, string>()
+    /* Per person|day, gather each covering input's contribution — the AM
+       half, the PM half, a full day — so that TWO rows covering one day
+       combine instead of the first silently winning (bug sweep, 18 Aug 26:
+       an AM local-leave + a PM off-in-lieu used to land only the first, so a
+       same-type split under-drew half a day and a different-type split lost a
+       whole half with nothing flagged). A Leave War cell holds one code, so:
+       two halves of the SAME type make a full day; a full day subsumes a
+       matching half; a genuinely un-representable pair (two different half
+       types, or a half whose type differs from a full day) lands the AM one
+       and raises a CLASH rather than dropping the other in silence. */
+    const parts = new Map<string, { am?: string; pm?: string; full?: string }>()
     for (const row of INPUTS) {
       if (row.lw) continue // the loop-breaker: rows this module itself wrote
       if (!isLeave(row.type) && !isDownchit(row.type)) continue
@@ -384,7 +396,6 @@ export function runInbound(): void {
       if (end < start) end = start
       const portion = portionOfRow(row)
       const type = lwTypeOf(row.type)
-      const notation = portion === 'am' ? `*${type}` : portion === 'pm' ? `${type}*` : type
       /* Capped walk: a malformed span cannot spin the boot. 400 covers any
          legitimate year-crossing leave. */
       let n = 0
@@ -393,13 +404,39 @@ export function runInbound(): void {
            exist for that year. Skipped silently, per the spec. */
         if (!warHolding(wars, d)) continue
         const key = `${row.person}|${d}`
-        if (!desired.has(key)) desired.set(key, notation)
+        const slot = parts.get(key) ?? {}
+        // First-of-its-kind wins its half, matching the old first-wins order
+        // for a genuine duplicate; the combining is across DIFFERENT halves.
+        if (portion === 'am') { if (slot.am === undefined) slot.am = type }
+        else if (portion === 'pm') { if (slot.pm === undefined) slot.pm = type }
+        else { if (slot.full === undefined) slot.full = type }
+        parts.set(key, slot)
       }
     }
 
+    const desired = new Map<string, string>()
+    const splitClashes: SyncClash[] = []
+    for (const [key, slot] of parts) {
+      const at = key.indexOf('|')
+      const person = key.slice(0, at)
+      const date = key.slice(at + 1)
+      if (slot.full !== undefined) {
+        desired.set(key, slot.full)
+        for (const h of [slot.am, slot.pm]) {
+          if (h !== undefined && h !== slot.full) splitClashes.push({ person, date, inputCode: h, bidCode: slot.full })
+        }
+      } else if (slot.am !== undefined && slot.pm !== undefined) {
+        if (slot.am === slot.pm) desired.set(key, slot.am) // two halves, one type → a full day
+        else { desired.set(key, `*${slot.am}`); splitClashes.push({ person, date, inputCode: slot.pm, bidCode: slot.am }) }
+      } else if (slot.am !== undefined) desired.set(key, `*${slot.am}`)
+      else if (slot.pm !== undefined) desired.set(key, `${slot.pm}*`)
+    }
+
     /* Forward: land what Raptor holds. Already-synced cells are skipped so
-       an unchanged world writes nothing (ingest would persist-and-notify). */
-    const clashes: SyncClash[] = []
+       an unchanged world writes nothing (ingest would persist-and-notify).
+       The split-clashes (a same-day pair the one-code cell cannot show) join
+       the ingest clashes below on the same strip. */
+    const clashes: SyncClash[] = [...splitClashes]
     for (const [key, notation] of desired) {
       const at = key.indexOf('|')
       const person = key.slice(0, at)
@@ -532,6 +569,41 @@ export function runOilPass(): void {
   }
 }
 
+/* ---- wire 0 upkeep: the roster stays a live projection ------------------- */
+
+/* A stable signature of the roster, so a re-projection that changed nothing
+   does not churn a re-render. Every projected field is in it; the order is
+   `projectPeople`'s own, which is deterministic. */
+/**
+ * Re-project Raptor's PEOPLE onto the Leave War roster (owner, 18 Aug 26 —
+ * "when I add personnel through quals, the new personnel will appear on leave
+ * war too"). The roster is a boot-time projection; without this a body added
+ * on the Quals page mid-session never reached Leave War, and reload no longer
+ * helps now the app is session-only.
+ *
+ * ADDITIONS AND REMOVALS ONLY. A body Quals gains is appended; a body it loses
+ * is dropped; every EXISTING person's record is left exactly as it is. This is
+ * deliberate: it lands the owner's ask (a new person shows up) without the
+ * reconciler overwriting an in-session edit an admin made through Leave War's
+ * own person sheet (`setPerson` — seat / band / SXO) or the demo overlay's
+ * posting dates, which a wholesale re-projection silently reverted on the next
+ * Raptor notify. A field change to an EXISTING person on the Quals page
+ * therefore reaches Leave War on the next reload rather than live — the rare
+ * case, and the safe direction to err. Writes only when the set of ids
+ * actually changed, so an ordinary leave edit does not repaint the grid; the
+ * hand-order and personnel labels are keyed by id, so they reconcile for free.
+ */
+function reprojectRoster(): void {
+  const projected = projectPeople()
+  const current = getState().people
+  const curIds = new Set(current.map(p => p.id))
+  const projIds = new Set(projected.map(p => p.id))
+  const additions = projected.filter(p => !curIds.has(p.id))
+  const kept = current.filter(p => projIds.has(p.id))
+  if (additions.length === 0 && kept.length === current.length) return
+  setPeople([...kept, ...additions])
+}
+
 /* ---- wiring -------------------------------------------------------------- */
 
 /**
@@ -554,6 +626,9 @@ export function wireLeaveWarSync(): void {
   runOutbound()
   raptorSubscribe(() => {
     setViewer(ME)
+    // Before the passes: a body added on the Quals page must be on the roster
+    // before inbound tries to land any of its leave (owner, 18 Aug 26).
+    reprojectRoster()
     runInbound()
     runOilPass()
     runOutbound()

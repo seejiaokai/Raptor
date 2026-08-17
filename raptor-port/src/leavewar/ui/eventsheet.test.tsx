@@ -127,4 +127,18 @@ describe('the type library', () => {
     expect(getState().eventDefs).toHaveLength(3)
     expect(getState().eventDefs[2]!.kind).toBe('work')
   })
+
+  it('deleting a middle type does not leave a stale name on the survivor', () => {
+    // bug sweep, 18 Aug 26: the name fields are uncontrolled, so an index key
+    // let a middle delete shift the array under the same DOM inputs — the
+    // survivor showed the deleted type's name, and blurring it renamed the
+    // WRONG type. Keying by name fixes it.
+    openEvent(0, '2026-01-05')
+    fireEvent.click(screen.getByTestId('event-edit-types'))
+    // seed: [PH, No Leave, SC]. Delete the middle one.
+    fireEvent.click(screen.getByTestId('evtype-del-1'))
+    expect(getState().eventDefs.map(d => d.name)).toEqual(['PH', 'SC'])
+    // The input now at position 1 shows the survivor SC, not the stale "No Leave".
+    expect((screen.getByTestId('evtype-name-1') as HTMLInputElement).value).toBe('SC')
+  })
 })

@@ -10,15 +10,21 @@ beforeEach(() => {
 })
 
 describe('Matrix', () => {
-  it('renders a row for every person with their callsign and category', () => {
+  it('renders a row for every person with their callsign and a category chip', () => {
     render(<Matrix />)
     const row = screen.getByTestId('row-ramp')
     expect(within(row).getByText('RAMP')).toBeTruthy()
-    // RAMP is the seed's one SXO, so his category carries the (S) tag. TATA
-    // is not, so his does not — asserted alongside, or a build that appended
-    // (S) to everybody would pass this just as happily.
-    expect(within(row).getByText('OPSP(S)')).toBeTruthy()
+    // Every row wears a colour-coded CAT chip now (18 Aug 26). RAMP is the
+    // seed's one SXO, so — rather than an appended (S) — he is LIFTED into the
+    // SXO group and his chip takes the SXO colour class; the grouping, not a
+    // suffix, is what says he is an SXO.
+    expect(within(row).getByTestId('cat-ramp')).toBeTruthy()
+    expect(within(row).getByTestId('cat-ramp').className).toContain('q-sxo')
+    expect(screen.getByTestId('group-SXO')).toBeTruthy()
+    // TATA is an instructor pilot: his chip reads IP and takes the instructor
+    // colour, under the IP group.
     expect(within(screen.getByTestId('row-tata')).getByText('IP')).toBeTruthy()
+    expect(screen.getByTestId('group-IP')).toBeTruthy()
   })
 
   it('renders a column for every day of the year', () => {

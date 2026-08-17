@@ -58,10 +58,15 @@ describe('editing who somebody is', () => {
     openEditor('tata')
     fireEvent.click(screen.getByTestId('person-sxo'))
     expect(screen.getByTestId('person-category').textContent).toBe('IP(S)')
-    expect(screen.getByTestId('person-tata').textContent).toContain('IP(S)')
+    // The grid follows by GROUPING now, not a suffix: tata's chip takes the
+    // SXO colour and an SXO group heading appears (18 Aug 26).
+    expect(screen.getByTestId('cat-tata').className).toContain('q-sxo')
+    expect(screen.getByTestId('group-SXO')).toBeTruthy()
 
     fireEvent.click(screen.getByTestId('person-sxo'))
     expect(screen.getByTestId('person-category').textContent).toBe('IP')
+    // Back to the instructor colour once the SXO flag is cleared.
+    expect(screen.getByTestId('cat-tata').className).toContain('q-ins')
   })
 
   // The SXO row counts heads that hold the qualification. Adding one has to

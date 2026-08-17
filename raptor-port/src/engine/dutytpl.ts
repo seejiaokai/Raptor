@@ -165,6 +165,17 @@ export function dutyTplSave() {
 export function dutyTplLoad() {
   const raw = store.get('dutytpl', null)
   const out: DutyTpl[] = []
+  /* Advance SEQ past every restored 'uN' BEFORE minting any id (bug sweep,
+     18 Aug 26). Without this an id-less entry that mints inside the loop could
+     take a 'uN' a LATER entry then also claims — two rows sharing one id, the
+     second unreachable to rename/delete/place. The day-template loader already
+     pre-scans for exactly this reason; the post-loop pass alone cannot, since
+     it runs after the collision is minted. */
+  if (Array.isArray(raw)) for (const t of raw) {
+    const id = (t as any)?.id
+    const m = typeof id === 'string' ? /^u(\d+)$/.exec(id) : null
+    if (m) SEQ = Math.max(SEQ, +m[1]!)
+  }
   if (Array.isArray(raw)) for (const t of raw) {
     if (out.length >= MAX_TPL) break
     if (!t || typeof t !== 'object' || !Array.isArray((t as any).rows)) continue
@@ -183,8 +194,8 @@ export function dutyTplLoad() {
     out.push({ id, title, rows })
   }
   DUTYTPL_CFG = out.length ? out : stdCopy()
-  /* keep newId ahead of every restored 'uN' so a later add cannot reuse one */
-  DUTYTPL_CFG.forEach(t => { const m = /^u(\d+)$/.exec(t.id); if (m) SEQ = Math.max(SEQ, +m[1]!) })
+  /* SEQ was advanced past every restored 'uN' in the pre-scan above, before
+     any id was minted, so a later add cannot reuse one. */
 }
 
 export function dutyTplReset() {

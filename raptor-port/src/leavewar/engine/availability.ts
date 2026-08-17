@@ -51,6 +51,12 @@ export function countsFor(people: Person[], grid: Grid, states: States, date: st
   let wsos = 0
 
   for (const p of people) {
+    // Ground crew ride the roster (owner, 18 Aug 26) but are not aircrew:
+    // they fill no category, crew no set and stand no SC duty here, so the
+    // manning picture must not see them at all. Skipping before the duty
+    // tally, the category add and the seat count keeps every existing
+    // threshold reading exactly the squadron it always did.
+    if (p.pers || p.seat === 'gnd') continue
     const code = grid[p.id]?.[date]
     if (inSquadron(p, date) && isDuty(code)) duty += 1
 

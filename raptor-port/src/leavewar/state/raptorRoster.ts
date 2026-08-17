@@ -27,8 +27,19 @@ import type { Person } from '../engine'
 export function projectPeople(): Person[] {
   const out: Person[] = []
   for (const [id, p] of Object.entries<any>(PEOPLE)) {
-    if (p.pers || p.seat === 'GND') continue
     if (p.special) continue
+    // Ground crew ride the roster since 18 Aug 26 (owner: "when I add
+    // personnel through quals, the new personnel will appear on leave war
+    // too"). They carry no CAT and no flying seat — `pers` marks them out of
+    // every manning count — and their free-text label seeds from Raptor's
+    // own `flight`, editable in Leave War's edit mode thereafter.
+    if (p.pers || p.seat === 'GND') {
+      out.push({
+        id, callsign: p.cs, seat: 'gnd', band: 'ops', sxo: false,
+        from: null, to: null, pers: true, label: p.flight || '',
+      })
+      continue
+    }
     out.push({
       id,
       callsign: p.cs,
@@ -37,6 +48,9 @@ export function projectPeople(): Person[] {
       sxo: !!p.sxo,
       from: null,
       to: null,
+      // The CAT itself, for the display's by-CAT grouping and colour — never
+      // for manning, which reads seat + band as it always has.
+      q: p.q || '',
     })
   }
   return out
