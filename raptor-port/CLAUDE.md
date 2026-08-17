@@ -390,11 +390,18 @@ the phone perf budget. Don't convert them to components.
 26, `src/leavewar/`). It keeps its own store/notify/useVersion, its own
 `leavewar:`-prefixed localStorage (via its `state/storage.ts` seam — NOT
 `HOOKS.storeBackend`), and its own vitest project (fixed TZ + jsdom + 20s
-timeout — see vite.config.ts). Three seams cross the boundary, and only
-three: `main.tsx` boots it once (`lwInitStore`), `resetSession` derives its
-role from the Raptor login (the ONE writer), and `probe-bridge.ts` exposes
-`w.lwSetRole` for its e2e suite. Don't add a fourth casually, and never
-call its `initStore` from a component — it clears the store's subscribers.
+timeout — see vite.config.ts). Four seams cross the boundary, and only
+four: `main.tsx` boots it once (`lwInitStore` → `installDemoWorld` →
+`wireLeaveWarSync` → a `histInit` re-baseline, in that order), `resetSession`
+derives its role from the Raptor login (the ONE writer), `probe-bridge.ts`
+exposes `w.lwSetRole` for its e2e suite, and **`src/leavewar/sync.ts`** — the
+sync wires (17 Aug 26): Leave War's roster is a boot-time PROJECTION of
+Raptor's PEOPLE, and approved leave crosses both ways as DERIVED
+RECONCILIATION (outbound skips Raptor-owned cells, inbound skips lw-tagged
+inputs — that pairing is the loop-breaker; details in
+`docs/superpowers/specs/leavewar-sync.md`). Don't add a fifth seam casually,
+and never call its `initStore` from a component — it clears the store's
+subscribers.
 
 ## Coding conventions
 

@@ -22,6 +22,7 @@ import {
   seedPeriod,
   seedRequirements,
   seedWars,
+  warHolding,
   STAGE_ORDER,
   type BidRecord,
   type BidSource,
@@ -192,40 +193,9 @@ const COUNTER_NAMES = new Set<string>(COUNTERS)
 // dangerous shape here rather than merely a wrong one: NaN propagates
 // silently through every sum it touches, so a single bad leaf would turn a
 // whole column of balances into "NaN" with nothing to say why.
-const SEATS = new Set(['pilot', 'wso'])
-const BANDS = new Set(['instructor', 'ops'])
-
-/**
- * The roster, validated leaf by leaf.
- *
- * A person carries no `category` — it is derived from seat and band — so a
- * stored blob that names one is from a shape this app never wrote and is
- * rejected along with every other malformed one. `from`/`to` are `null` or a
- * date string; a person with neither field would silently be in the squadron
- * forever, which is exactly the sort of quiet wrong the seed fallback exists
- * to prevent.
- */
-function readPeople(x: unknown): Person[] | null {
-  if (!Array.isArray(x) || x.length === 0) return null
-  const out: Person[] = []
-  const seen = new Set<string>()
-  for (const p of x) {
-    if (!isPlainObject(p)) return null
-    const { id, callsign, seat, band, sxo, from, to } = p
-    if (typeof id !== 'string' || !id || typeof callsign !== 'string') return null
-    if (typeof seat !== 'string' || !SEATS.has(seat)) return null
-    if (typeof band !== 'string' || !BANDS.has(band)) return null
-    if (typeof sxo !== 'boolean') return null
-    if (from !== null && typeof from !== 'string') return null
-    if (to !== null && typeof to !== 'string') return null
-    // Two people sharing an id share a grid row and a React key — the same
-    // shape `readWars` refuses for wars, and for the same reason.
-    if (seen.has(id)) return null
-    seen.add(id)
-    out.push({ id, callsign, seat: seat as Person['seat'], band: band as Person['band'], sxo, from, to })
-  }
-  return out
-}
+//
+// (`readPeople` stood here until the sync wires: a stored roster is no
+// longer read at all — see initStore — so its validator went with it.)
 
 function readOpenings(x: unknown): Openings | null {
   if (!isPlainObject(x)) return null
@@ -388,7 +358,6 @@ export function initStore(b?: StorageBackend): void {
     ? (storedCurrent as string)
     : wars[0].period.id
 
-  const people = readStored('people', readPeople) ?? seedPeople()
   const openings = readStored('openings', readOpenings) ?? seedOpenings()
   const ledger = readStored('ledger', readLedger) ?? seedLedger()
 
@@ -397,7 +366,13 @@ export function initStore(b?: StorageBackend): void {
      ../../state/store.ts calls setRole), so a stored copy could only ever
      disagree with the session that is actually looking at the page. Boot
      leaves the default ('member'); the login that follows sets it. */
-  state = withCurrent({ ...state, people, wars, currentId, openings, ledger })
+  /* PEOPLE are neither read nor persisted since the sync wires, for the same
+     reason as the role: the roster is a PROJECTION of Raptor's own PEOPLE
+     (state/raptorRoster.ts), installed by main.tsx via setPeople on every
+     boot, so a stored copy could only ever disagree with the roster Raptor
+     is actually flying. Boot leaves the seed — the vendored unit suite reads
+     it pristine — and the projection that follows replaces it. */
+  state = withCurrent({ ...state, wars, currentId, openings, ledger })
 
   version = 0
   listeners.clear()
@@ -454,7 +429,9 @@ function persist(): void {
   backend.write('current', state.currentId)
   backend.write('openings', JSON.stringify(state.openings))
   backend.write('ledger', JSON.stringify(state.ledger))
-  backend.write('people', JSON.stringify(state.people))
+  /* `people` deliberately absent: the roster is a projection of Raptor's
+     PEOPLE (see initStore) — persisting it would store a copy that can only
+     disagree with the projection the next boot installs. */
 }
 
 /**
@@ -474,7 +451,14 @@ let quiet = false
  *  notify. Every write to a cell, a decision or a stage goes through here,
  *  so none of them can update a war without the interface following. */
 function updateCurrent(fn: (war: LeaveWar) => LeaveWar): void {
-  const wars = state.wars.map((w: LeaveWar) => (w.period.id === state.currentId ? fn(w) : w))
+  updateWar(state.currentId, fn)
+}
+
+/** As updateCurrent, but for a NAMED war — the Raptor ingest/clear pair
+ *  writes into whichever war holds the input's date, which need not be the
+ *  one on screen. Same save-and-notify epilogue, same `quiet` batching. */
+function updateWar(id: string, fn: (war: LeaveWar) => LeaveWar): void {
+  const wars = state.wars.map((w: LeaveWar) => (w.period.id === id ? fn(w) : w))
   state = withCurrent({ ...state, wars })
   if (quiet) return
   persist()
@@ -504,6 +488,45 @@ export function setPerson(id: string, patch: Partial<Pick<Person, 'seat' | 'band
   persist()
   notify()
   return true
+}
+
+/**
+ * Install the roster. The one production caller is main.tsx's boot, which
+ * hands in the projection of Raptor's PEOPLE (state/raptorRoster.ts, plus
+ * the demo overlay in state/demoworld.ts).
+ *
+ * Deliberately NOT persisted, mirroring setRole: the projection is derived
+ * from Raptor's roster on every boot, so a stored copy could only ever
+ * disagree with it. In-session edits through setPerson stay session-only for
+ * the same reason — Raptor's Quals page owns identity.
+ */
+export function setPeople(people: Person[]): void {
+  state = withCurrent({ ...state, people })
+  notify()
+}
+
+/**
+ * Re-key every person-keyed record — each war's grid and states, the
+ * openings, the ledger — through `map` (old id -> new id). Ids the map does
+ * not name pass through unchanged.
+ *
+ * This exists for exactly one caller: the boot-time demo re-key
+ * (state/demoworld.ts), which dresses the seeded demo world in Raptor's real
+ * crew. It does not persist — boot must not write, and the result is
+ * deterministic, so a fresh browser simply re-keys again next boot; the
+ * first real user write persists the re-keyed wars like any other state.
+ */
+export function remapPersonKeys(map: Record<string, string>): void {
+  const rekey = <T,>(rows: Record<string, T>): Record<string, T> => {
+    const out: Record<string, T> = {}
+    for (const [id, row] of Object.entries(rows)) out[map[id] ?? id] = row
+    return out
+  }
+  const wars = state.wars.map(w => ({ ...w, grid: rekey(w.grid), states: rekey(w.states) }))
+  const openings = rekey(state.openings)
+  const ledger = state.ledger.map(e => ({ ...e, personId: map[e.personId] ?? e.personId }))
+  state = withCurrent({ ...state, wars, openings, ledger })
+  notify()
 }
 
 /** Set which role the interface is being used as. Since the Raptor merge the
@@ -762,8 +785,17 @@ export function ingestFromRaptor(personId: string, date: string, code: string): 
   // state that would make no sense.
   if (!isBiddable(clean)) return 'ignored'
 
-  const existing = state.grid[personId]?.[date]
-  const owned = raptorOwns(state.states, personId, date)
+  // The war that OWNS the date, not the war on screen. The sync wire feeds
+  // this whatever dates Raptor's inputs cover, whichever war is currently
+  // selected — writing through updateCurrent would land a 2027 leave in the
+  // 2026 grid the moment the admin happened to be looking at 2026. A date no
+  // war holds is skipped silently: a war might simply not exist for that
+  // year yet, and that is the caller's documented contract.
+  const war = warHolding(state.wars, date)
+  if (!war) return 'ignored'
+
+  const existing = war.grid[personId]?.[date]
+  const owned = raptorOwns(war.states, personId, date)
 
   // A DIFFERENT code already bid here is the clash. Write nothing.
   if (existing && existing !== clean && !owned) return 'clash'
@@ -773,17 +805,48 @@ export function ingestFromRaptor(personId: string, date: string, code: string): 
   // forever, waiting on a decision that has in fact already been made.
   const confirming = existing === clean && !owned
 
-  const row = { ...(state.grid[personId] ?? {}), [date]: clean }
+  const row = { ...(war.grid[personId] ?? {}), [date]: clean }
   const srow = {
-    ...(state.states[personId] ?? {}),
+    ...(war.states[personId] ?? {}),
     [date]: { state: 'approved', source: 'raptor' } as BidRecord,
   }
-  updateCurrent(w => ({
+  updateWar(war.period.id, w => ({
     ...w,
     grid: { ...w.grid, [personId]: row },
     states: { ...w.states, [personId]: srow },
   }))
   return confirming ? 'confirmed' : 'written'
+}
+
+/**
+ * Clear one cell Raptor owns — the sync wire's delete path, and nothing
+ * else's.
+ *
+ * Every ordinary clearing path (setCell with an empty code, the bid sheet's
+ * Clear) REFUSES a Raptor-owned cell, and rightly: the squadron does not
+ * un-decide what was decided in Raptor. But when the input that put the cell
+ * here is deleted on Raptor's Inputs page, the deletion IS Raptor speaking,
+ * and the cell has to follow it out. Narrow on purpose — only a cell whose
+ * source is still 'raptor' is touched, so a cell Leave War has since taken
+ * back over is left alone (the spec's own deletion rule).
+ *
+ * Ignores stage, role and the bidding window for the same reason ingest
+ * does: Raptor's word arrives already decided.
+ */
+export function clearRaptorCell(personId: string, date: string): boolean {
+  const war = warHolding(state.wars, date)
+  if (!war) return false
+  if (!raptorOwns(war.states, personId, date)) return false
+  const row = { ...(war.grid[personId] ?? {}) }
+  delete row[date]
+  const srow = { ...(war.states[personId] ?? {}) }
+  delete srow[date]
+  updateWar(war.period.id, w => ({
+    ...w,
+    grid: { ...w.grid, [personId]: row },
+    states: { ...w.states, [personId]: srow },
+  }))
+  return true
 }
 
 /** What a shift did, or why it did nothing. */

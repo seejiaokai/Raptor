@@ -383,6 +383,37 @@ LL through the real picker (cell reads LL), an admin closed bidding and
 opened the decide sheet (Acknowledge/Approve/Refuse), Raptor's own pages
 pixel-normal (no leak-out) — zero console, page or network errors.
 Deployed-page check at merge, as ever.
+**THE SYNC WIRES 0–3 (17 Aug 26, overnight on the owner's "do more stuff
+confidently" — one roster + bidirectional leave sync + counters, per
+`docs/superpowers/specs/leavewar-sync.md`; wire 4/OIL still design-only) —
+all six gates green first-hand on the matching tree.** Leave War's roster is
+now a boot-time PROJECTION of Raptor's PEOPLE (58 aircrew; ground crew and
+sentinels excluded; band from the CAT ladder, sxo carried), with the
+standalone demo world RE-KEYED onto the real crew on a fresh browser only
+(`state/demoworld.ts`, DEMO_MAP — seat+band-equal by construction, pinned by
+test). Approved LW leave lands in `INPUTS` as lw-tagged, span-collapsed rows
+through ONE `writeInputsBatch` per pass; leave filed on the Inputs page lands
+as approved, Raptor-owned LW cells per covered day (portions map AM/PM both
+ways; a custom window ROUNDS OUT); a different code already bid = a clash on
+the StageBar's amber strip, nothing overwritten; a deleted input reverse-
+clears only cells still Raptor-owned. Both directions are DERIVED
+RECONCILIATION with a fixed point (outbound skips Raptor-owned, inbound skips
+lw-tagged — the loop-breaker pair), and boot re-takes the history baseline so
+Undo cannot peel the synced world away. Build-time catches worth keeping:
+`ingestFromRaptor` wrote only the CURRENT war (a 2027 input would have landed
+in the 2026 grid — fixed, `warHolding`); the seed's Raptor-owned cells needed
+backing demo inputs or the reverse-clear erased them at boot; both directions
+skip unknown persons. `npm test` **2328** across **132** files (raptor 1696
+unchanged; leavewar 632 — `raptorRoster.test.ts` + `sync.test.ts` new, the
+people-persistence tests flipped to pin NON-persistence like the role's),
+`node reference/tfin.js` 728/0, `npm run build` clean, `npm run test:e2e`
+**238 passed / 6 touch-only skips** (the under-manned fixtures now seed a
+red-day war via localStorage — the projected 58-crew roster cannot go red on
+the seed thresholds; the LW DOM band raised 10700 → 26500 against a measured
+~25.9k, the 58-row year matrix), `probes:adapted` 6/6, `perf` 4/4 — week
+3743 / board 844, Raptor's ceilings and measures both untouched. Live-driven
+at 390×844: the boot sync writes exactly 4 lw-tagged inputs (one spanned),
+the real-crew matrix scrolls at ~100ms with zero console errors.
 Three earlier passes the same day were each green on the same six and each
 checked on the DEPLOYED page (the standing instruction, owner 7 Aug 26): the
 zoom/history/bubble batch (1141 tests, 84 geometry — the bubble that the old
@@ -437,26 +468,32 @@ only after re-running them.
 
 ## Known issues / open work
 
-- **LEAVE WAR is merged as the sixth tab (16 Aug 26); the SYNC is designed,
-  not built.** The owner's full vision — approved leave in Leave War
-  auto-creates the schedule input and vice versa, counters draw down, and
-  weekend/public-holiday duty (SC lines AND duty rows, from the timings as
-  written, thresholds editable on the Logic page) auto-credits OIL into
-  Leave War's FS/HS categories — is specced wire by wire in
-  `raptor-port/docs/superpowers/specs/leavewar-sync.md`; each wire is a
-  separately shippable batch, roster unification first. What is open around
-  the merge itself: the Leave War page's ~10,400-node year matrix is
-  OUTSIDE the perf gate (the ceilings measure `#eWeek`/`#sbBoard` only; its
-  own e2e DOM band in `leavewar.spec.ts` is the guard it has); the vendored
-  app's own limitations travel in `raptor-port/docs/leavewar/known-gaps.md`
-  (read its merge preamble — its claims about Raptor are stale, and its
-  role-toggle entry is superseded); its localStorage keys are still
-  `leavewar:`-prefixed and its INPUTS-equivalent persists while Raptor's
-  INPUTS do not, which is the same server-shaped hole as the first bullet
-  below wearing yet another hat; and the page's own topbar still draws the
-  standalone "142 SQN / LEAVE WAR" mark plus a decorative "Leave war" nav
-  pill under Raptor's topbar — reported to the owner as a cosmetic
-  follow-up option, deliberately not built unasked.
+- **LEAVE WAR is merged as the sixth tab (16 Aug 26) and SYNC WIRES 0–3 are
+  BUILT (17 Aug 26)** — one roster (boot projection of `PEOPLE`),
+  approved-leave ⇄ schedule-input both ways, counters drawing down (derived,
+  so the wire IS the decrement), the clash strip. **Wire 4 is the one still
+  design-only**: weekend/public-holiday duty (SC lines AND duty rows, from
+  the timings as written, thresholds editable on the Logic page)
+  auto-crediting OIL into Leave War's FS/HS categories —
+  `raptor-port/docs/superpowers/specs/leavewar-sync.md` §Wire 4 carries the
+  owner's rule and the build shape (needs: a non-working-day answer read off
+  Leave War's `DayInfo.ph`, a VCONF threshold, publish-time derivation with
+  reverse-and-replace). Open around the built wires: **the session-only
+  asymmetry is now user-visible** — Raptor's `INPUTS` reset on reload while
+  Leave War persists, so Raptor-ingested LW cells (except the demo-backed
+  pair) reverse-clear on the next boot, and lw-tagged inputs REAPPEAR from
+  the persisted grid; same server-shaped hole as the first bullet below,
+  now wearing its most visible hat — tell the owner before the squadron
+  files real leave. **Editing/deleting an lw-tagged input on the Inputs
+  page snaps back on the next reconcile** (the war is the source of truth);
+  a read-only affordance for those rows is open UI polish. The **58-row
+  year matrix (~25.9k nodes)** is outside the perf gate (its own e2e DOM
+  band, raised 10700 → 26500 measured-first, is its guard); phone
+  scroll measured ~100ms, fine today. The vendored app's own limitations
+  travel in `raptor-port/docs/leavewar/known-gaps.md` (read its merge
+  preamble — stale-about-Raptor claims, superseded role toggle). Cosmetic
+  follow-up option still open (reported, not built): the page's own
+  "142 SQN / LEAVE WAR" mark + decorative nav pill under Raptor's topbar.
   is in `raptor-port/.impeccable/critique/`.** The owner actioned the two
   mobile items (frozen Quals callsign, collapsible legend) and the "click any
   blank area to deselect" bug. **The P0 keyboard bug is now CLOSED (15 Aug 26):**
@@ -1299,6 +1336,9 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + M/CSE/OD markers + FS/HS SC-duty, portions `*X`/`X*`), `counters.ts` (derived balances, ledger), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`), `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
 | `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. |
 | `state/storage.ts` | The `leavewar:`-prefixed localStorage seam (`memoryBackend` headless) — deliberately NOT `HOOKS.storeBackend`; the future shared backend replaces both together. |
+| `state/raptorRoster.ts` | Wire 0 — `projectPeople()`: the LW roster as a projection of Raptor's `PEOPLE` (skips ground crew + sentinels; band from `isInstr`; sxo carried). Installed at boot, never persisted. |
+| `state/demoworld.ts` | The fresh-browser demo re-key — DEMO_MAP (16 seed people → Raptor aircrew, seat+band-equal by construction), the seed overlay, and the two idempotent backing inputs for the seed's Raptor-owned cells. Boot-time only; the 632 vendored tests stay blind by construction. |
+| `sync.ts` | Wires 1+2 — both DERIVED reconcilers (outbound: approved cells → span-collapsed lw-tagged `INPUTS` rows, one `writeInputsBatch`, only on a non-empty diff; inbound: leave inputs → Raptor-owned cells per day, portions both ways, custom rounds OUT, reverse-clear, the clash list + its own subscription), the SYNCING flag, `wireLeaveWarSync()`. The loop-breaker pair is documented at the top of the file. |
 | `ui/` | Matrix (the 365-column grid), Chrome (its topbar + stage strip; the role toggle is deleted — see the comment there), the seven sheets, RangePicker. All five stylesheets scoped under `#page-leavewar` (theme.css deleted as pure duplication); cascade note at the top of each file. |
 
 ### Tooling

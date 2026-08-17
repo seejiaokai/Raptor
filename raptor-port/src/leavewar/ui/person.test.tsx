@@ -85,14 +85,21 @@ describe('editing who somebody is', () => {
     expect(screen.getByTestId('count-ip-2026-01-05').textContent).not.toBe(before)
   })
 
-  it('survives a reload', () => {
+  /* Flipped at the sync wires, the same adaptation the role tests had at the
+     merge: the roster is a PROJECTION of Raptor's PEOPLE (state/
+     raptorRoster.ts) installed on every boot, so a sheet edit is an
+     in-session working note and deliberately does NOT survive a reload —
+     Raptor's Quals page owns identity, and a stored copy could only ever
+     disagree with it. */
+  it('does not survive a reload — the projection owns the roster', () => {
     const backend = memoryBackend()
     initStore(backend)
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-tata'))
     fireEvent.click(screen.getByTestId('seat-wso'))
-    initStore(backend)
     expect(getState().people.find(p => p.id === 'tata')!.seat).toBe('wso')
+    initStore(backend)
+    expect(getState().people.find(p => p.id === 'tata')!.seat).toBe('pilot')
   })
 })

@@ -1,4 +1,14 @@
-# Leave War ⇄ RAPTOR sync — the design (spec only, nothing here is built)
+# Leave War ⇄ RAPTOR sync — the design
+
+**STATUS (17 Aug 26): wires 0–3 are BUILT** — `src/leavewar/state/raptorRoster.ts`
+(projection) + `state/demoworld.ts` (the fresh-browser demo re-key, DEMO_MAP) +
+`src/leavewar/sync.ts` (both reconcilers, the clash strip, `wireLeaveWarSync`
+booted from `main.tsx` with a post-sync `histInit` re-baseline). Three build-time
+divergences worth knowing: `ingestFromRaptor` now writes into the war HOLDING the
+date (it wrote only the current war — a 2027 input would have landed in the 2026
+grid); the seed's two Raptor-owned cells are backed by boot-time demo inputs
+(else the reverse-clear would erase them); and both directions skip persons the
+other side does not know. **Wire 4 (weekend/PH OIL) is still design-only, below.**
 
 Written at the merge (16 Aug 26), when Leave War became the sixth tab
 (`src/leavewar/`, see `docs/leavewar/known-gaps.md` for what the vendored

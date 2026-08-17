@@ -12,6 +12,7 @@ import {
   setRole,
   setBidWindow,
   setCellRange,
+  setPeople,
   setPerson,
   clearBidWindow,
   shiftBid,
@@ -1232,42 +1233,43 @@ describe('editing the roster', () => {
     expect(getState().people.filter(p => p.id !== 'tata')).toEqual(others)
   })
 
-  it('persists the roster and reads it back', () => {
+  /* Since the sync wires the roster is a PROJECTION of Raptor's PEOPLE
+     (state/raptorRoster.ts), installed by main.tsx via setPeople on every
+     boot and deliberately not persisted — the same reasoning as the role at
+     the merge: a stored copy could only ever disagree with the roster Raptor
+     is actually flying. These pin the non-persistence both ways, exactly as
+     the role tests do: an edit does not survive a re-boot, and a stored
+     roster (a leftover from the standalone app, or a hand edit) is ignored. */
+  it('edits in session, but a re-boot returns to the seed — the roster is not persisted', () => {
     const backend = memoryBackend()
     initStore(backend)
     setRole('admin')
     setPerson('tata', { seat: 'wso', sxo: true })
-    initStore(backend)
     expect(getState().people.find(p => p.id === 'tata')).toMatchObject({ seat: 'wso', sxo: true })
-  })
-
-  // Same rule as every other stored shape here: a blob that is not the shape
-  // this app writes is not trusted, and the seed is the fallback.
-  it.each([
-    ['a seat nothing recognises', [{ id: 'a', callsign: 'A', seat: 'gunner', band: 'ops', sxo: false, from: null, to: null }]],
-    ['a band nothing recognises', [{ id: 'a', callsign: 'A', seat: 'pilot', band: 'ace', sxo: false, from: null, to: null }]],
-    ['sxo as a string', [{ id: 'a', callsign: 'A', seat: 'pilot', band: 'ops', sxo: 'yes', from: null, to: null }]],
-    ['a missing posting-out field', [{ id: 'a', callsign: 'A', seat: 'pilot', band: 'ops', sxo: false, from: null }]],
-    ['two people sharing an id', [
-      { id: 'a', callsign: 'A', seat: 'pilot', band: 'ops', sxo: false, from: null, to: null },
-      { id: 'a', callsign: 'B', seat: 'wso', band: 'ops', sxo: false, from: null, to: null },
-    ]],
-    ['an empty roster', []],
-  ])('falls back to the seeded roster when the stored one has %s', (_label, stored) => {
-    const backend = memoryBackend()
-    backend.write('people', JSON.stringify(stored))
     initStore(backend)
-    expect(getState().people.length).toBeGreaterThan(10)
-    expect(getState().people.find(p => p.id === 'tata')).toBeTruthy()
+    expect(getState().people.find(p => p.id === 'tata')).toMatchObject({ seat: 'pilot', sxo: false })
   })
 
-  it('keeps a well-formed stored roster', () => {
+  it('ignores a stored roster entirely', () => {
     const backend = memoryBackend()
     backend.write('people', JSON.stringify([
       { id: 'solo', callsign: 'SOLO', seat: 'wso', band: 'instructor', sxo: true, from: null, to: null },
     ]))
     initStore(backend)
+    expect(getState().people.length).toBeGreaterThan(10)
+    expect(getState().people.find(p => p.id === 'solo')).toBeUndefined()
+    expect(getState().people.find(p => p.id === 'tata')).toBeTruthy()
+  })
+
+  it('setPeople replaces the roster without persisting it', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    setPeople([
+      { id: 'solo', callsign: 'SOLO', seat: 'wso', band: 'instructor', sxo: true, from: null, to: null },
+    ])
     expect(getState().people.map(p => p.id)).toEqual(['solo'])
+    initStore(backend)
+    expect(getState().people.find(p => p.id === 'tata')).toBeTruthy()
   })
 })
 
