@@ -17,10 +17,15 @@
 // reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
 // store write notifies subscribers synchronously, and this module is one.
 
-import { INPUTS, baseYear, dateOrd, inpId, inpWin, isLeave } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isLeave } from '../engine/inputs'
+import { DAYS } from '../engine/data'
+import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
+import { dayOilCredits } from '../engine/oil'
 import { subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
 import {
   addDays,
+  columnKindFor,
+  isWeekend,
   outboundToRaptor,
   parseCell,
   raptorOwns,
@@ -30,6 +35,7 @@ import {
 import {
   clearRaptorCell,
   getState,
+  ingestDutyCredit,
   ingestFromRaptor,
   subscribe as lwSubscribe,
 } from './state/store'
@@ -215,10 +221,18 @@ export interface SyncClash {
   inputCode: string
   /** What the squadron already bid. */
   bidCode: string
+  /** Absent for a leave clash; 'duty' when a published weekend/PH duty's OIL
+   *  credit (wire 4) found the date already holding something else. */
+  kind?: 'duty'
 }
 
-/* Re-derived on every inbound pass, never persisted — a clash list is a view
-   of two live records, and storing it would let it outlive either. */
+/* Re-derived on every pass, never persisted — a clash list is a view of two
+   live records, and storing it would let it outlive either. Two passes
+   contribute (inbound's leave clashes, the OIL pass's duty clashes), each
+   replacing only its own half, so one pass running cannot blank the other's
+   findings between its runs. */
+let LEAVE_CLASHES: SyncClash[] = []
+let OIL_CLASHES: SyncClash[] = []
 let CLASHES: SyncClash[] = []
 let clashVersion = 0
 const clashListeners = new Set<() => void>()
@@ -234,8 +248,9 @@ export function subscribeClashes(fn: () => void): () => void {
   return () => void clashListeners.delete(fn)
 }
 
-function setClashes(next: SyncClash[]): void {
-  /* A clash that did not change must not repaint the strip: inbound runs on
+function publishClashes(): void {
+  const next = [...LEAVE_CLASHES, ...OIL_CLASHES]
+  /* A clash that did not change must not repaint the strip: the passes run on
      every Raptor notify, and the common case is "still the same clashes". */
   if (JSON.stringify(next) === JSON.stringify(CLASHES)) return
   CLASHES = next
@@ -298,18 +313,117 @@ export function runInbound(): void {
 
     /* Reverse: a Raptor-owned cell no live input still covers was DELETED on
        the Inputs page — clear it (and only it: clearRaptorCell refuses
-       anything Leave War has taken back over). */
+       anything Leave War has taken back over). An owned FS/HS cell is NOT
+       ours to garbage-collect: the OIL pass wrote it from a published duty,
+       not from an input, so no input covering it is its normal state — the
+       ownership marker is shared, the vocabulary is the partition. */
     for (const war of getState().wars) {
       for (const [person, row] of Object.entries(war.states)) {
         for (const [date, rec] of Object.entries(row)) {
           if (rec.source !== 'raptor') continue
+          const code = war.grid[person]?.[date]
+          if (code === 'FS' || code === 'HS') continue
           if (desired.has(`${person}|${date}`)) continue
           clearRaptorCell(person, date)
         }
       }
     }
 
-    setClashes(clashes)
+    LEAVE_CLASHES = clashes
+    publishClashes()
+  } finally {
+    SYNCING = false
+  }
+}
+
+/* ---- wire 4: published weekend/PH duty -> OIL credit --------------------- */
+
+/* Whether Leave War calls this date non-working. The weekend needs no war at
+   all; a public holiday is whatever the war holding the date says — its PH
+   flag, or an event word typed on it whose type is tagged "off day" (the
+   owner's own input path for holidays, seeded as `PH`). A date no war holds
+   can still be a weekend, but never a holiday: there is nowhere to have
+   filed one. */
+function isNonWorkingISO(date: string): boolean {
+  if (isWeekend(date)) return true
+  const war = warHolding(getState().wars, date)
+  if (!war) return false
+  const day = war.period.days.find(d => d.date === date)
+  if (!day) return false
+  if (day.ph) return true
+  return columnKindFor(getState().eventDefs, day, war.period.bands ?? []) === 'off'
+}
+
+/** The credits a published, non-working day earns right now: person|isoDate
+ *  -> FS/HS. Computed from the ISSUED snapshot, not the live day — an issued
+ *  day is the squadron's word that the duty stood, so a draft edit after
+ *  publish moves nothing until it is published too (the AL/reissue paths),
+ *  which is also where reverse-and-replace naturally lives: the snapshot
+ *  changes, the diff below follows it. */
+function desiredOilCells(): Map<string, 'FS' | 'HS'> {
+  const out = new Map<string, 'FS' | 'HS'>()
+  const { people, wars } = getState()
+  const known = new Set(people.map(p => p.id))
+  for (let di = 0; di < DAYS.length; di++) {
+    if (!dayApproved(di)) continue
+    const iso = labelToISO(DATES[di])
+    if (!iso || !warHolding(wars, iso)) continue
+    if (!isNonWorkingISO(iso)) continue
+    const snap = daySnapOf(di, dayCurVer(di))
+    const credits = dayOilCredits(snap ? snap.d : DAYS[di])
+    for (const [person, amt] of Object.entries(credits)) {
+      /* The same unknown-person guard both leave directions carry: a duty row
+         naming someone the roster does not hold (ground crew, a sentinel)
+         must not become a grid row no matrix draws. */
+      if (!known.has(person)) continue
+      out.set(`${person}|${iso}`, amt === 1 ? 'FS' : 'HS')
+    }
+  }
+  return out
+}
+
+export function runOilPass(): void {
+  if (SYNCING) return
+  SYNCING = true
+  try {
+    const desired = desiredOilCells()
+
+    /* Forward: land what the published schedule earns. Already-landed cells
+       are skipped so an unchanged world writes nothing. */
+    const clashes: SyncClash[] = []
+    for (const [key, code] of desired) {
+      const at = key.indexOf('|')
+      const person = key.slice(0, at)
+      const date = key.slice(at + 1)
+      const war = warHolding(getState().wars, date)
+      if (!war) continue
+      const existing = war.grid[person]?.[date]
+      if (existing === code && raptorOwns(war.states, person, date)) continue
+      const result = ingestDutyCredit(person, date, code)
+      if (result === 'clash') {
+        clashes.push({ person, date, inputCode: code, bidCode: existing ?? '', kind: 'duty' })
+      }
+    }
+
+    /* Reverse-and-replace: an owned FS/HS cell no published duty still earns
+       — the day was reopened, the man came off the roster, the times shrank,
+       an AL moved him — goes, and the forward half above has already written
+       whatever replaces it. Only FS/HS: the leave cells under the same
+       ownership marker are inbound's, the mirror of its skip. */
+    for (const war of getState().wars) {
+      for (const [person, row] of Object.entries(war.states)) {
+        for (const [date, rec] of Object.entries(row)) {
+          if (rec.source !== 'raptor') continue
+          const code = war.grid[person]?.[date]
+          if (code !== 'FS' && code !== 'HS') continue
+          if (desired.has(`${person}|${date}`)) continue
+          clearRaptorCell(person, date)
+        }
+      }
+    }
+
+    OIL_CLASHES = clashes
+    publishClashes()
   } finally {
     SYNCING = false
   }
@@ -327,13 +441,19 @@ export function runInbound(): void {
  */
 export function wireLeaveWarSync(): void {
   runInbound()
+  runOilPass()
   runOutbound()
   raptorSubscribe(() => {
     runInbound()
+    runOilPass()
     runOutbound()
   })
   lwSubscribe(() => {
     runOutbound()
     runInbound()
+    /* The OIL pass reads Leave War too — a PH flag set, an event word tagged
+       "off day", a war created over the loaded week — so a Leave War change
+       can change what a published Saturday earns. */
+    runOilPass()
   })
 }

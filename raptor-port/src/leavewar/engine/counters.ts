@@ -13,10 +13,16 @@
 // annual 22" is answered by an opening figure, a list of grants, and the
 // leave visible on the person's own row.
 //
-// NOT here, and deliberately: OIL EARNED by working. The spec's rule turns
-// on knock-off time — later than 14:30 credits 1.0, at or before credits
-// 0.5 — and nothing in this app carries a knock-off time yet. See
-// `docs/known-gaps.md`.
+// OIL EARNED by working IS here now (sync wire 4, 17 Aug 26) — and it is
+// derived, not posted: an FS/HS cell on the grid is the record that the
+// duty stood, and each one's `earnsOil` (codes.ts) is summed straight into
+// the OIL balance below. A ledger entry for the same fact would be the
+// second record this header warns against. The standalone spec's
+// knock-off-time sketch (later than 14:30 credits 1.0) is superseded by the
+// owner's scheduled-hours rule, which lives on the Raptor side
+// (`engine/oil.ts`, VCONF.oilFullMin) — this module only ever sees the
+// FS or HS verdict, wherever the cell came from: the sync wire at publish,
+// a hand-typed cell, or the seed.
 
 import type { Grid } from './availability'
 import { removesAvailability, stateOf, type States } from './bids'
@@ -119,6 +125,24 @@ export function drawnFrom(
 }
 
 /**
+ * OIL earned by duty stood on a non-working day, **across every leave war**
+ * — the credit side of the FS/HS cells the sync wire (or a hand) writes.
+ * A list of sources for the same reason `drawnFrom` takes one: OIL earned
+ * standing a December weekend still belongs to the man in January. No state
+ * gate — FS/HS are not bid (`bid: false`), so there is no refused state to
+ * exclude; the cell existing is the duty having stood.
+ */
+export function earnedOil(sources: LeaveSource[], personId: string): number {
+  let total = 0
+  for (const { grid } of sources) {
+    for (const code of Object.values(grid[personId] ?? {})) {
+      total += codeOf(code)?.earnsOil ?? 0
+    }
+  }
+  return total
+}
+
+/**
  * What this person has left of this counter.
  *
  * Never clamped: balances already go negative in the squadron's own sheet —
@@ -134,7 +158,10 @@ export function balanceOf(
   counter: CounterName,
 ): number {
   const opening = openings[personId]?.[counter] ?? 0
-  return opening + grantedTo(ledger, personId, counter) - drawnFrom(sources, personId, counter)
+  // Earned OIL joins the OIL balance only — no other counter is earned by
+  // working, and adding a zero term for them would just be noise here.
+  const earned = counter === 'oil' ? earnedOil(sources, personId) : 0
+  return opening + grantedTo(ledger, personId, counter) + earned - drawnFrom(sources, personId, counter)
 }
 
 // ── The counter column's figures ────────────────────────────────────────────
@@ -218,6 +245,11 @@ export const FIGURES: readonly Figure[] = Object.freeze([
   { id: 'll',  label: 'LL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'LL') },
   { id: 'ol',  label: 'OL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OL') },
   { id: 'oil', label: 'OIL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OIL') },
+  // Wire 4's landing strip: without a balance figure the earned credit would
+  // move nothing anyone can see in the frozen column. A saved figure order
+  // from before this id existed shows it appended at the end (orderedFigures'
+  // tail rule) rather than losing it.
+  { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH duty + granted − taken', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'oil') },
   { id: 'off', label: 'OFF USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OFF') },
   { id: 'ccl', label: 'CCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL') },
   { id: 'pl',  label: 'PL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL') },

@@ -58,7 +58,7 @@ describe('the counter column', () => {
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
       .toEqual([
-        'LL USED', 'OL USED', 'OIL USED', 'OFF USED', 'CCL USED', 'PL USED',
+        'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'OFF USED', 'CCL USED', 'PL USED',
         'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
       ])
     fireEvent.click(screen.getByTestId('counter-lvecon'))

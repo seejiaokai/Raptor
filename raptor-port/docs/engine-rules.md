@@ -944,9 +944,57 @@ shrek, yeti), and exempt-though-latest-of-all (the two downchits). Before
 that they all sat inside their own week, which marked every input and made
 the mark useless.
 
+## Weekend/PH duty earns OIL (`engine/oil.ts`, owner 16–17 Aug 26 — Leave War sync wire 4)
+
+Duty stood on a NON-WORKING day credits OIL into Leave War, automatically,
+when the day is **published**. Like the late-input mark this grades no
+flying: `validate()` never sees it, no slot closes, and the engine half is
+one pure function — `dayOilCredits(day)` → `{personId: 0.5|1}` — fed a day
+blob by the sync wire (`src/leavewar/sync.ts:runOilPass`), which owns every
+other half of the rule (whether the date is non-working, where the credit
+lands, the clash handling — see `docs/superpowers/specs/leavewar-sync.md`
+§Wire 4 for the built shape).
+
+- **What earns.** An SC MAIN seat (either cockpit), and any duty row
+  (`dutywaves[].rows`) naming a real person. An SC **SPARE earns nothing** —
+  standing by at home is the same reading `scSpare` gives the conflict
+  engine. AVALON/BB and flying seats are outside the rule; the owner named
+  SC and the duties.
+- **How much.** The owner's 17 Aug refinement, two vocabularies:
+  - **SC goes by the shift shape, not hours**: a shift wholly inside ONE
+    half of the SC day window (`[scDayFrom, scDayTo]`, split at its
+    midpoint — the minted AM 07:00–13:00 / PM 13:00–19:00 pair) is **0.5**;
+    anything more — the whole window, a shift spanning the midpoint, a
+    night shift reaching outside it — is **1.0**. Standing both halves sums
+    to a full day.
+  - **Any other duty goes by its written hours**, summed per person first:
+    `VCONF.oilFullMin` minutes or more ⇒ **1.0** (Leave War's FS), under it
+    ⇒ **0.5** (HS). Default 360 — "6 or more" is the owner's line — and it
+    is a `RULE_SPEC` entry, Logic-page editable like every threshold.
+  - A person on SC **and** a duty caps at 1.0: a day worked, not a day and
+    a half.
+- **Times as written, or nothing.** A row with no readable times (blank,
+  half-blank, zero-length) mints no credit — the owner's rule is "based on
+  what timing was written", and a default here would mint OIL from a guess.
+- **The credit follows the ISSUED document.** `runOilPass` computes from
+  `daySnapOf(di, dayCurVer(di))` on days where `dayApproved(di)` — so a
+  draft edit after publish moves nothing until an AL/reissue publishes it,
+  reopening a day takes its credit back, and re-publishing replaces it
+  (reverse-and-replace is the diff against the refreshed snapshot, free).
+- **Never overwrites.** A date already holding anything else — a leave bid,
+  a synced leave cell, a hand-typed marker — is left alone and raised on
+  Leave War's clash strip (`kind:'duty'`) for a human; where the same date
+  holds a wire-2 leave cell, **leave wins** deterministically (the two
+  reconcilers must not fight over one cell). A hand-typed FS/HS matching
+  the verdict is taken over in place, like ingest's confirming upgrade.
+
+Tests: `src/engine/oil.test.ts` (the computation),
+`src/leavewar/oilsync.test.ts` (the wire, the partition, the clashes),
+`counters.test.ts` (earned OIL in the balance and the OIL BAL figure).
+
 ## Editable rules (Logic tab)
 
-`VCONF` (19 numbers) + `SHIFT_HARD` (6 gradings), admin-only.
+`VCONF` (20 numbers) + `SHIFT_HARD` (6 gradings), admin-only.
 `RULE_STD` frozen standard; `RULE_SPEC[k]={t,u,lo,hi}`. `ruleParse` accepts
 "12h", "2h20", "90", "0700". Storage keeps ONLY the diff in
 `localStorage['sqn142_rules']`; `rulesLoad` (called by `initStore` at boot —
