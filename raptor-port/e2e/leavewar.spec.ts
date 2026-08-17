@@ -554,6 +554,14 @@ test('the balance column is opaque — day cells never show through it', async (
   // after a hover was a real mistake in this test's first draft: the row was
   // already lit, so "at rest" and "hovered" were the same measurement and
   // the comparison could only ever be false.
+  //
+  // "Before anything is hovered" now has to be MADE true, not assumed: the
+  // pointer rests wherever the login click left it, and with the projected
+  // 58-row roster the matrix reaches high enough that this row sits under
+  // that stale position on the desktop project — the row read as already
+  // lit and the hover comparison went false. Park the mouse in the corner
+  // first, where nothing of the grid lives.
+  await page.mouse.move(0, 0)
   const balAtRest = await bg(bal)
   const siblingAtRest = await bg(sibling)
   expect(alphaOf(balAtRest)).toBe(1)
@@ -1091,6 +1099,10 @@ test('the period picker says what it is', async ({ page }) => {
 // broke: ink that is a tint of its own background's hue gives the eye no
 // edge. A near-neutral ink is the fix, and this is what holds it.
 test('the tinted chips are not ink in their own background hue', async ({ page }) => {
+  /* The `.undermanned` class only exists while some day is red, and on the
+     projected 58-man roster the demo breaks no rule — so the red chip needs
+     the same stored red-day fixture the under-manned list tests use. */
+  await seedRedDays(page)
   /* Scoped since the merge: bare `.wk.on` would resolve to RAPTOR's week
      chip, which is deliberately accent-tinted — this rule is Leave War's. */
   for (const sel of ['#page-leavewar .wk.on', '#page-leavewar .fchip.stage-open', '#page-leavewar .fchip.undermanned']) {
