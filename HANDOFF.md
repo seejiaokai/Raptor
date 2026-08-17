@@ -615,7 +615,20 @@ ever.
   nesting wrapper (matrix.css AND bidpicker.css are wholly scope-wrapped;
   an append after the closing brace silently loses to the wrapper's +1 id
   specificity) — all moved inside; when editing either file, insert INSIDE
-  the wrapper.
+  the wrapper. **Fourth pass (owner: "I think it's cause by having 2
+  scrolls… on the phone"): ONE scroll while a sheet is up.** The page
+  behind an open Leave War sheet is LOCKED (`body.lw-sheet-lock`,
+  overflow:hidden, added/removed by Sheet.tsx with a lock counter — the
+  offset survives, same technique and same iOS caveat as Raptor's
+  `body.sb-lock`), the scrim refuses touch (`touch-action:none`), and the
+  sheet's own scroller carries `overscroll-behavior:contain`. The lock is
+  what covers a sheet that FITS the screen — containment alone does
+  nothing on a scroller with no overflow, which is how the desktop wheel
+  fell straight through to the page during the build. The body rule sits
+  DELIBERATELY OUTSIDE bidpicker.css's `#page-leavewar` wrapper (no scoped
+  selector can reach `body`; the class is `lw-`-namespaced instead).
+  E2e-pinned: wheel over a bottomed-out sheet moves the page zero pixels,
+  the body locks while open and unlocks with position intact on close.
   Also fixed in the same pass: the date-header cells were rounded by a leak of
   Raptor's global `.day{border-radius}` onto Leave War's `className="day"` header
   cells — overridden square in the scoped `matrix.css`. Full detail in

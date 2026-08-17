@@ -25,6 +25,11 @@
   position: fixed;
   inset: 0;
   z-index: 79;
+  /* ONE scroll while a sheet is up (owner, 17 Aug 26 — "I think it's cause
+     by having 2 scrolls"): a finger landing on the scrim must not scroll
+     the page behind the sheet. Touch only — the scrim still passes its
+     CLICK through to close, which is its whole job. */
+  touch-action: none;
 }
 
 .bidsheet {
@@ -47,6 +52,11 @@
   max-height: calc(100vh - 28px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  /* The other half of the one-scroll rule: when this list tops or bottoms
+     out, the swipe must STOP here rather than chain into scrolling the
+     page behind — that fall-through is exactly the "2 scrolls" the owner
+     reported, a page that jumps under a sheet he was reading. */
+  overscroll-behavior: contain;
 }
 
 .bidsheet-hd {
@@ -446,4 +456,12 @@
   color: var(--ink-3);
   border-style: dotted;
 }
+}
+
+/* DELIBERATELY OUTSIDE the #page-leavewar wrapper above — this rule targets
+   the BODY, which no page-scoped selector can reach. The class is namespaced
+   (`lw-`) so it collides with nothing of Raptor's; Sheet.tsx adds and
+   removes it. See the one-scroll comments on .sheetscrim / .bidsheet. */
+body.lw-sheet-lock {
+  overflow: hidden;
 }
