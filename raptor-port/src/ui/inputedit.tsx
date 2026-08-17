@@ -20,6 +20,10 @@ import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction } from '../engine/editlog'
 import { writeInputsBatch, notify } from '../state/store'
+/* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
+   War tab): retracting a synced row's war cells when it is edited or deleted
+   here — not a new seam, a Raptor-side caller of the existing one. */
+import { retractLwRow } from '../leavewar/sync'
 import { canEditSched } from '../state/auth'
 import { INPEDIT, setInpEdit } from './pops'
 import { useVersion } from './useStore'
@@ -243,6 +247,15 @@ export function commitInputEdit(r: any, draft: any) {
     if (dup) { HOOKS.toast(dup, 'warn'); return false }
   }
   writeInputsBatch(() => {
+    /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing it
+       here changes the leave in the war too. The old grant is WITHDRAWN
+       first, while the row still says what the war approved, and the lw tag
+       is dropped — the edited row is an ordinary input from here on, which
+       inbound lands as Raptor-owned cells exactly like a leave filed on this
+       page ("Raptor owns what Raptor last wrote"). Leaving either half out
+       resurrects the snap-back: keep the cells and outbound re-mints the old
+       row; keep the tag and inbound skips the edited one. */
+    if (r.lw) { retractLwRow(r); delete r.lw }
     /* An ACCEPTED input is linked to the row it created by `src`, a content
        key of person|date|type|s. Editing any of those silently broke the
        link: the row stayed on the programme, undo could no longer find it,
@@ -433,6 +446,11 @@ export function removeInput(r: any) {
   const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
   const when = r.date + (r.endDate ? '–' + r.endDate : '')
   writeInputsBatch(() => {
+    /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): deleting it
+       here WITHDRAWS the leave from the war too, before the splice while the
+       row still says what was granted. Without this the next reconcile would
+       re-mint the row from the still-approved cells — the snap-back. */
+    if (r.lw) retractLwRow(r)
     if (r.acc) unacceptInput(acceptedDay(r), r)
     INPUTS.splice(inx, 1)
   })

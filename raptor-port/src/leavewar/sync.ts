@@ -45,6 +45,7 @@ import {
   ingestFromRaptor,
   setViewer,
   subscribe as lwSubscribe,
+  withdrawLeaveCell,
 } from './state/store'
 
 /* Re-entrancy: ingest persists-and-notifies per cell, and writeInputsBatch's
@@ -258,6 +259,53 @@ export function runOutbound(): void {
     })
   } finally {
     SYNCING = false
+  }
+}
+
+/**
+ * Withdraw the war cells an lw-tagged input derives from — what makes an
+ * EDIT or DELETE of that row on the Inputs page carry back into Leave War
+ * (owner, 17 Aug 26: "make sure both leave war and input, edits or deletes
+ * are sync"; full two-way, members included, chosen over blocking).
+ *
+ * Called by `commitInputEdit` / `removeInput` (ui/inputedit.tsx) BEFORE the
+ * row is mutated or spliced, while it still says what the war granted. Each
+ * covered day's cell is cleared through `withdrawLeaveCell`, which touches
+ * only a cell still holding exactly this row's notation and never one
+ * Raptor owns — so a cell the squadron has since rebid, and every
+ * Raptor-owned cell, are left for the ordinary reconcile to judge.
+ *
+ * The reconcilers then finish the job on their own: a DELETED row leaves
+ * nothing behind on either side (the cells are gone, so outbound re-mints
+ * nothing); an EDITED row has its lw tag dropped by the caller and becomes
+ * an ordinary input, which inbound lands as Raptor-owned cells — the same
+ * path a leave filed on the Inputs page has always taken, keeping "Raptor
+ * owns what Raptor last wrote" true.
+ *
+ * SYNCING is held across the walk because withdrawLeaveCell persists-and-
+ * notifies per cell, and each notify would otherwise run a reconcile pass
+ * against a half-withdrawn span. The caller's own write epilogue triggers
+ * the full converging pass once everything is settled.
+ */
+export function retractLwRow(row: any): void {
+  if (!row?.lw) return
+  const start = labelToISO(row.date)
+  if (!start) return
+  let end = row.endDate ? labelToISO(row.endDate) ?? start : start
+  if (end < start) end = start
+  const type = lwTypeOf(row.type)
+  const portion = portionOfRow(row)
+  const notation = portion === 'am' ? `*${type}` : portion === 'pm' ? `${type}*` : type
+  const was = SYNCING
+  SYNCING = true
+  try {
+    /* Capped walk, the runInbound precedent: a malformed span cannot spin. */
+    let n = 0
+    for (let d = start; d <= end && n < 400; d = addDays(d, 1), n++) {
+      withdrawLeaveCell(row.person, d, notation)
+    }
+  } finally {
+    SYNCING = was
   }
 }
 

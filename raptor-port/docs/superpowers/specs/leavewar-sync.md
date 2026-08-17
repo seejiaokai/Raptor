@@ -123,9 +123,20 @@ moment the input exists.
   onto the input (a `lw:` source field beside `iid`), so re-running the
   sync updates in place instead of duplicating, and deleting an
   un-approved bid removes exactly its own input.
-- The reverse guard: inputs the wire wrote are Leave-War-owned on the
-  Raptor side — the Inputs page may show them read-only-ish or at least
-  route edits back (wire 2's clash rule decides).
+- The reverse guard, RESOLVED as "route edits back" (owner, 17 Aug 26 —
+  "make sure both leave war and input, edits or deletes are sync"; full
+  two-way chosen over read-only, members included for their own rows):
+  `commitInputEdit`/`removeInput` call `retractLwRow` (sync.ts), which
+  withdraws the row's war cells through `withdrawLeaveCell` — the mirror
+  of `clearRaptorCell` for lw ownership; exact-notation match only, never
+  a Raptor-owned cell, stage/window bypassed (Raptor's word arrives
+  decided). A delete ends the leave on both sides; an edit also drops the
+  `lw` tag so wire 2 lands the edited shape as Raptor-owned cells — the
+  ownership follows the last writer, which is the model's own rule. A cell
+  the squadron has since rebid is left for the reconcile. Caveat by
+  construction: Undo after such an edit/delete does not resurrect the
+  leave (the restored lw row matches no approved cells and reconciles away
+  as stale); re-file instead. Tested in `sync.test.ts` §two-way.
 
 ## Wire 2 — Raptor leave input → Leave War calendar
 

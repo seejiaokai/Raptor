@@ -23,7 +23,8 @@ import {
   setRole,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { getClashes, runInbound, runOutbound } from './sync'
+import { getClashes, retractLwRow, runInbound, runOutbound } from './sync'
+import { commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
 
 const ISNAP = JSON.stringify(INPUTS)
 
@@ -415,5 +416,135 @@ describe('medical crosses both ways (owner, 17 Aug 26)', () => {
       { label: 'HL', value: 0 },
       { label: 'OML', value: 0 },
     ])
+  })
+})
+
+/* Two-way edits and deletes (owner, 17 Aug 26 — "make sure both leave war
+   and input, edits or deletes are sync"; full two-way, members included).
+   The write paths are ui/inputedit.tsx's commitInputEdit/removeInput — the
+   same functions the Inputs page and the schedule dialog call — so these
+   tests drive the REAL entry points, not the retraction primitive alone. */
+describe('two-way: edits and deletes on the Inputs page carry back into the war', () => {
+  it('deleting a synced input withdraws the leave from the war for good', () => {
+    approve('ammo', ['2026-02-02', '2026-02-03', '2026-02-04'])
+    runOutbound()
+    const row = lwInputs()[0]
+    expect(removeInput(row)).toBe(true)
+    const { grid, states } = getState()
+    for (const d of ['2026-02-02', '2026-02-03', '2026-02-04']) {
+      expect(grid.ammo?.[d]).toBeUndefined()
+      expect(states.ammo?.[d]).toBeUndefined()
+    }
+    // The reconcile re-mints nothing: the cells the row derived from are gone.
+    runOutbound(); runInbound()
+    expect(lwInputs()).toHaveLength(0)
+    expect(getState().grid.ammo?.['2026-02-02']).toBeUndefined()
+  })
+
+  it('a half-day grant withdraws by its own notation', () => {
+    approve('ammo', ['2026-02-06'], '*LL')
+    runOutbound()
+    expect(removeInput(lwInputs()[0])).toBe(true)
+    expect(getState().grid.ammo?.['2026-02-06']).toBeUndefined()
+  })
+
+  it('a delete touches only its own cells — a sibling grant survives', () => {
+    approve('ammo', ['2026-02-02', '2026-02-03'])
+    approve('ammo', ['2026-02-10'], 'OL')
+    runOutbound()
+    const ll = lwInputs().find((r: any) => r.type === 'LL')!
+    removeInput(ll)
+    expect(getState().grid.ammo?.['2026-02-02']).toBeUndefined()
+    expect(getState().grid.ammo['2026-02-10']).toBe('OL')
+    expect(lwInputs()).toHaveLength(1)
+    expect(lwInputs()[0].type).toBe('OL')
+  })
+
+  it('editing the dates moves the leave in the war, as Raptor-owned cells', () => {
+    approve('ammo', ['2026-02-02', '2026-02-03', '2026-02-04'])
+    runOutbound()
+    const row = lwInputs()[0]
+    const draft = draftOf(row)
+    draft.end = '2026-02-05'
+    expect(commitInputEdit(row, draft)).toBe(true)
+    // The tag is dropped: the edited row is an ordinary input now, and the
+    // ordinary inbound pass lands its new shape as Raptor-owned cells.
+    expect(row.lw).toBeUndefined()
+    runInbound()
+    const { grid, states } = getState()
+    for (const d of ['2026-02-02', '2026-02-03', '2026-02-04', '2026-02-05']) {
+      expect(grid.ammo[d]).toBe('LL')
+      expect(states.ammo[d]).toEqual({ state: 'approved', source: 'raptor' })
+    }
+    // Converged: another full round changes nothing and mints no second row.
+    runOutbound(); runInbound()
+    expect(INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'LL')).toHaveLength(1)
+  })
+
+  it('editing the type carries across — LL becomes OL on the grid', () => {
+    approve('ammo', ['2026-02-02'])
+    runOutbound()
+    const row = lwInputs()[0]
+    const draft = draftOf(row)
+    draft.type = 'OL'
+    expect(commitInputEdit(row, draft)).toBe(true)
+    runInbound()
+    expect(getState().grid.ammo['2026-02-02']).toBe('OL')
+    expect(getState().states.ammo['2026-02-02']).toEqual({ state: 'approved', source: 'raptor' })
+  })
+
+  it('editing to a non-leave type withdraws the leave and grants nothing back', () => {
+    approve('ammo', ['2026-02-02'])
+    runOutbound()
+    const row = lwInputs()[0]
+    const draft = draftOf(row)
+    draft.type = 'Meeting'
+    expect(commitInputEdit(row, draft)).toBe(true)
+    runInbound()
+    expect(getState().grid.ammo?.['2026-02-02']).toBeUndefined()
+    // The row lives on as an ordinary input — only the war half is gone.
+    expect(INPUTS.some((r: any) => r.person === 'ammo' && r.type === 'Meeting')).toBe(true)
+    expect(lwInputs()).toHaveLength(0)
+  })
+
+  it('a Raptor-owned cell is never withdrawn — retraction is lw-ownership only', () => {
+    writeInputs(() => INPUTS.push({
+      person: 'ammo', date: 'Feb 2', allday: true, type: 'LL', remarks: '', mod: '2026-06-01',
+    }))
+    runInbound()
+    expect(getState().states.ammo['2026-02-02']).toEqual({ state: 'approved', source: 'raptor' })
+    // A fabricated lw row over the same date and code: the withdraw must
+    // refuse the cell, because wire 2's input — not this row — is its record.
+    retractLwRow({ lw: 'y2026', person: 'ammo', date: 'Feb 2', allday: true, type: 'LL' })
+    expect(getState().grid.ammo['2026-02-02']).toBe('LL')
+  })
+
+  it('a cell the squadron has since rebid differently is left for the reconcile', () => {
+    approve('ammo', ['2026-02-02'])
+    runOutbound()
+    const row = lwInputs()[0]
+    // The squadron rewrites the cell before the row is deleted — a newer ask.
+    setCell('ammo', '2026-02-02', 'OL')
+    expect(getState().grid.ammo['2026-02-02']).toBe('OL')
+    removeInput(row)
+    // The withdraw matched nothing (notation differs), so the rebid stands.
+    expect(getState().grid.ammo['2026-02-02']).toBe('OL')
+  })
+})
+
+/* The medical marker rides the same retraction: an admin-marked grid cell
+   lands as an lw-tagged input (wire 5), so deleting THAT input on the Inputs
+   page must clear the grid mark too — same rule, medical's own notation. */
+describe('two-way: a medical grid mark follows its input out', () => {
+  it('deleting the lw medical input clears the admin\'s grid mark', () => {
+    setRole('admin')
+    setCell('ammo', '2026-02-11', 'ATTC')
+    runOutbound()
+    const row = lwInputs().find((r: any) => r.type === 'ATT C')
+    expect(row).toBeTruthy()
+    expect(removeInput(row)).toBe(true)
+    expect(getState().grid.ammo?.['2026-02-11']).toBeUndefined()
+    runOutbound(); runInbound()
+    expect(lwInputs().filter((r: any) => r.type === 'ATT C')).toHaveLength(0)
   })
 })

@@ -1149,6 +1149,42 @@ export function clearRaptorCell(personId: string, date: string): boolean {
   return true
 }
 
+/**
+ * Withdraw one cell of Leave-War-owned leave — the mirror of `clearRaptorCell`
+ * for the OTHER ownership, and the piece that makes editing or deleting a
+ * synced input on Raptor's Inputs page carry back here (owner, 17 Aug 26 —
+ * "make sure both leave war and input, edits or deletes are sync").
+ *
+ * A synced input row derives from approved cells this store owns. When that
+ * row is edited or deleted on the Inputs page, the change IS the squadron
+ * speaking — leaving the cells behind would make the next reconcile re-mint
+ * the very row that was just changed (the snap-back this closes). Narrow on
+ * purpose, twice over: a Raptor-owned cell is wire 2's and is never touched
+ * here (its input is its record), and the cell must still hold EXACTLY the
+ * notation the row derived from — a cell the squadron has since rebid says
+ * something newer than the row being retired, and the reconcile is the one
+ * that sorts that disagreement out, not this.
+ *
+ * Ignores stage, role and the bidding window for the same reason ingest and
+ * `clearRaptorCell` do: Raptor's word arrives already decided.
+ */
+export function withdrawLeaveCell(personId: string, date: string, code: string): boolean {
+  const war = warHolding(state.wars, date)
+  if (!war) return false
+  if (raptorOwns(war.states, personId, date)) return false
+  if (war.grid[personId]?.[date] !== code) return false
+  const row = { ...(war.grid[personId] ?? {}) }
+  delete row[date]
+  const srow = { ...(war.states[personId] ?? {}) }
+  delete srow[date]
+  updateWar(war.period.id, w => ({
+    ...w,
+    grid: { ...w.grid, [personId]: row },
+    states: { ...w.states, [personId]: srow },
+  }))
+  return true
+}
+
 /** What a shift did, or why it did nothing. */
 export type ShiftResult = 'shifted' | 'occupied' | 'raptor' | 'nothing'
 
