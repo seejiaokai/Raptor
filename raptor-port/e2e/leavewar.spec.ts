@@ -608,30 +608,63 @@ test('the counter column does not eat the grid on a phone', async ({ page }) => 
 })
 
 test('the counter column changes every row at once', async ({ page }) => {
-  await expect(page.locator('[data-testid="counter-name"]')).toHaveText('ANNUAL')
+  await expect(page.locator('[data-testid="counter-name"]')).toHaveText('LVE BAL')
   const rows = ['slipway', 'prowler', 'dj', 'ammo']
   const before = await Promise.all(rows.map(r => page.locator(`[data-testid="bal-${r}"]`).textContent()))
 
   await pickCounter(page, 'oil')
-  await expect(page.locator('[data-testid="counter-name"]')).toHaveText('OIL')
+  await expect(page.locator('[data-testid="counter-name"]')).toHaveText('OIL CON')
 
   const after = await Promise.all(rows.map(r => page.locator(`[data-testid="bal-${r}"]`).textContent()))
   expect(after).not.toEqual(before)
-  // Every row moved together — none is still showing the previous counter.
+  // Every row moved together — none is still showing the previous figure.
   for (const v of after) expect(v).not.toBeNull()
 })
 
 test('a negative balance is painted red, and a positive one is not', async ({ page }) => {
-  // CASPER's OIL opens at -4.5 and nothing in the seed moves it.
-  await pickCounter(page, 'oil')
-  await expect(page.locator('[data-testid="counter-name"]')).toHaveText('OIL')
-  const neg = await page.locator('[data-testid="bal-casper"]').evaluate(el => ({
+  // LVE BAL is the one figure that can go negative, and it is the default.
+  // HARPOON opens annual at 2 and holds four pending days in the 2027 war,
+  // which the cross-war rule counts — so his balance reads -2; SLIPWAY sits
+  // comfortably positive.
+  await expect(page.locator('[data-testid="counter-name"]')).toHaveText('LVE BAL')
+  const neg = await page.locator('[data-testid="bal-harpoon"]').evaluate(el => ({
     text: el.textContent, colour: getComputedStyle(el).color,
   }))
-  expect(neg.text).toBe('-4.5')
+  expect(neg.text!.startsWith('-')).toBe(true)
   const pos = await page.locator('[data-testid="bal-slipway"]')
     .evaluate(el => getComputedStyle(el).color)
   expect(neg.colour).not.toBe(pos)
+})
+
+// The date cells carry className="day", which Raptor's global scheduler.css
+// rounds (border-radius: var(--r)) — a cross-page leak. The scoped Leave War
+// rule forces them square (owner, Aug 26 — "make the dates a square"). jsdom
+// reports no border-radius at all, so this contract lives only in a browser.
+test('the date headers are square, the .day leak overridden', async ({ page }) => {
+  const r = await page.locator('[data-testid="head-2026-01-07"]')
+    .evaluate(el => getComputedStyle(el).borderTopLeftRadius)
+  expect(r).toBe('0px')
+})
+
+// The picker is also the legend the owner asked for: the BAL/CON key, and each
+// aggregate's make-up shown inline as its "= …" caption.
+test('the figure picker doubles as the legend, aggregates spelled out', async ({ page }) => {
+  await page.locator('[data-testid="counter-pick"]').click()
+  await expect(page.locator('[data-testid="counter-legend"]')).toContainText('BAL')
+  await expect(page.locator('[data-testid="counter-legend"]')).toContainText('CON')
+  await expect(page.locator('[data-testid="figsub-med"]')).toHaveText('= ATT C + HL + OML')
+  await expect(page.locator('[data-testid="figsub-lvecon"]'))
+    .toHaveText('= LL + OL + OIL + OFF + CCL + PL + FCL')
+})
+
+// The figures reorder through the ▲▼ each row carries, and Reset restores the
+// catalogue order.
+test('the figures reorder, and Reset restores the default order', async ({ page }) => {
+  await page.locator('[data-testid="counter-pick"]').click()
+  await page.locator('[data-testid="figdown-ll"]').click()
+  expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('OL CON')
+  await page.locator('[data-testid="counter-reset"]').click()
+  expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('LL CON')
 })
 
 // Nothing in the frozen column may be cut off. `.who` carries `overflow:
@@ -852,7 +885,9 @@ test('OFF can be bid, takes the day, and moves no balance', async ({ page }) => 
   await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveText('OFF')
   // The man is gone from the count...
   expect(await count()).not.toBe(before.manning)
-  // ...and his annual balance has not moved, because OFF spends nothing.
+  // ...and his leave balance has not moved, because OFF spends nothing.
+  // Entering OFF snaps the column to OFF CON, so read LVE BAL back explicitly.
+  await pickCounter(page, 'lvebal')
   expect(await balance()).toBe(before.bal)
 })
 
@@ -950,23 +985,25 @@ test('the counter control is a real tap target on a phone', async ({ page }) => 
 
   await page.locator('[data-testid="counter-pick"]').click()
   await expect(page.locator('[data-testid="counter-sheet"]')).toBeVisible()
-  // And every row in the sheet clears the 44px a thumb needs.
-  for (const c of ['annual', 'oil', 'el']) {
-    const row = (await page.locator(`[data-testid="counter-${c}"]`).boundingBox())!
-    expect(row.height).toBeGreaterThanOrEqual(44)
-    expect(row.width).toBeGreaterThanOrEqual(240)
+  // And every row in the sheet clears the 44px a thumb needs: the wrap spans
+  // the sheet, and the select button inside it is tall enough to hit.
+  for (const c of ['ll', 'lvebal', 'lvecon']) {
+    const wrap = (await page.locator(`[data-testid="figrow-${c}"]`).boundingBox())!
+    expect(wrap.width).toBeGreaterThanOrEqual(240)
+    const crow = (await page.locator(`[data-testid="counter-${c}"]`).boundingBox())!
+    expect(crow.height).toBeGreaterThanOrEqual(44)
   }
 })
 
 test('the counter sheet changes the column, and every row with it', async ({ page }) => {
   const shown = () => page.locator('[data-testid="counter-name"]').textContent()
-  expect(await shown()).toBe('ANNUAL')
+  expect(await shown()).toBe('LVE BAL')
   const before = await page.locator('[data-testid="bal-slipway"]').textContent()
 
   await page.locator('[data-testid="counter-pick"]').click()
   await page.locator('[data-testid="counter-oil"]').click()
 
-  expect(await shown()).toBe('OIL')
+  expect(await shown()).toBe('OIL CON')
   await expect(page.locator('[data-testid="counter-sheet"]')).toHaveCount(0)
   expect(await page.locator('[data-testid="bal-slipway"]').textContent()).not.toBe(before)
 })
@@ -977,16 +1014,17 @@ test('the counter sheet changes the column, and every row with it', async ({ pag
 test('swiping across the counter column cycles it', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'phone', 'needs touch emulation')
   const shown = () => page.locator('[data-testid="counter-name"]').textContent()
-  expect(await shown()).toBe('ANNUAL')
+  expect(await shown()).toBe('LVE BAL')
 
   const bal = (await page.locator('[data-testid="bal-slipway"]').boundingBox())!
   const at = { x: bal.x + bal.width / 2, y: bal.y + bal.height / 2 }
 
-  // Right to left is "next", the direction a page turns.
+  // Right to left is "next", the direction a page turns. LVE BAL sits second
+  // from the end of the default order, so next is LVE CON.
   await swipe(page, at, -90)
-  expect(await shown()).toBe('OIL')
+  expect(await shown()).toBe('LVE CON')
   await swipe(page, at, 90)
-  expect(await shown()).toBe('ANNUAL')
+  expect(await shown()).toBe('LVE BAL')
 })
 
 // Short and vertical drags must NOT cycle it, or the counter would flip
@@ -996,7 +1034,7 @@ test('a small or vertical drag on the counter column changes nothing', async ({ 
   const bal = (await page.locator('[data-testid="bal-slipway"]').boundingBox())!
   const at = { x: bal.x + bal.width / 2, y: bal.y + bal.height / 2 }
   await swipe(page, at, -20)
-  expect(await page.locator('[data-testid="counter-name"]').textContent()).toBe('ANNUAL')
+  expect(await page.locator('[data-testid="counter-name"]').textContent()).toBe('LVE BAL')
 })
 
 // A swipe that starts anywhere else must go on scrolling the grid. A counter
@@ -1012,7 +1050,7 @@ test('swiping the day columns leaves the counter alone', async ({ page }, testIn
   const cell = (await page.locator('[data-testid="cell-slipway-2026-01-03"]').boundingBox())!
   expect(cell.x).toBeLessThan(390)
   await swipe(page, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, -120)
-  expect(await page.locator('[data-testid="counter-name"]').textContent()).toBe('ANNUAL')
+  expect(await page.locator('[data-testid="counter-name"]').textContent()).toBe('LVE BAL')
 })
 
 // The roster sheet: seat, band and SXO. The category is never edited — it is
@@ -1054,7 +1092,10 @@ test('an event widens its day, then wraps and grows only its own rows', async ({
   const personRow = () => page.locator('[data-testid="row-slipway"]').boundingBox()
   const eventRow = () => page.locator('[data-testid="event-row-0"]').boundingBox()
 
-  const narrow = (await col('2026-01-05'))!
+  // 2026-01-07 is a clean, empty column (splice's medical markers sit on
+  // 01-05/01-06, and a wide code there would inflate the baseline this test
+  // measures against). No event band or PH covers it in the seed.
+  const narrow = (await col('2026-01-07'))!
   const rowBefore = (await personRow())!
   const eventBefore = (await eventRow())!
 
@@ -1069,13 +1110,13 @@ test('an event widens its day, then wraps and grows only its own rows', async ({
   }
 
   // 1. A SHORT event widens the column.
-  await setEvent('2026-01-05', 'CO visit')
-  const widened = (await col('2026-01-05'))!
+  await setEvent('2026-01-07', 'CO visit')
+  const widened = (await col('2026-01-07'))!
   expect(widened.width).toBeGreaterThan(narrow.width)
 
   // 2. A LONG one stops widening at the ceiling and wraps instead.
-  await setEvent('2026-01-05', 'Range closure 0900-1400, live firing on the eastern ranges, all crews briefed')
-  const capped = (await col('2026-01-05'))!
+  await setEvent('2026-01-07', 'Range closure 0900-1400, live firing on the eastern ranges, all crews briefed')
+  const capped = (await col('2026-01-07'))!
   expect(capped.width).toBeLessThanOrEqual(140)
   const eventAfter = (await eventRow())!
   expect(eventAfter.height).toBeGreaterThan(eventBefore.height)

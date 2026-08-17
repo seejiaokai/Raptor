@@ -124,7 +124,13 @@ export function seedGrid(): Grid {
   return {
     ramp: { '2026-01-01': 'OL', '2026-01-03': 'FS', '2026-02-10': '*OIL' },
     tata: { '2026-01-01': 'FS', '2026-01-04': 'FS', '2026-01-09': 'OIL' },
-    splice: { '2026-01-05': 'M', '2026-01-06': 'M', '2026-01-08': 'LL' },
+    // The two `M` days become two of the three medical markers — `ATTC` and
+    // `OML` — so MED CON reads 2 and OML CON reads 1 on this demo run (they
+    // replaced the single `M`, owner Aug 26). Both remove a whole day exactly
+    // as `M` did, so splice keeps the availability it had and no manning count
+    // moves. (`HL` is the third medical marker; it is exercised in the unit
+    // tests rather than seeded, to keep this grid's counts unchanged.)
+    splice: { '2026-01-05': 'ATTC', '2026-01-06': 'OML', '2026-01-08': 'LL' },
     jaguar: { '2026-01-16': 'OL', '2026-01-17': 'OL', '2026-01-19': 'OL' },
     asics: { '2026-01-08': 'LL', '2026-01-09': 'LL', '2026-01-23': '*LL', '2026-02-24': 'OIL' },
     pipper: { '2026-01-12': 'CSE', '2026-01-13': 'CSE' },

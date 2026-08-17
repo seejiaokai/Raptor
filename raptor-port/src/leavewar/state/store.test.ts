@@ -185,7 +185,7 @@ describe('bids', () => {
 
   it('drops the state when a bid is overwritten by a non-bid code', () => {
     setCell('ramp', '2026-02-05', 'LL')
-    setCell('ramp', '2026-02-05', 'M')
+    setCell('ramp', '2026-02-05', 'OML')
     expect(getState().states.ramp?.['2026-02-05']).toBeUndefined()
   })
 
@@ -292,7 +292,7 @@ describe('bids', () => {
   // now medical, or to remove a man who has no leave booked at all.
   it('drops a stored state whose code has gone or is no longer a bid', () => {
     const backend = memoryBackend()
-    backend.write('grid', JSON.stringify({ ramp: { '2026-01-05': 'M' } }))
+    backend.write('grid', JSON.stringify({ ramp: { '2026-01-05': 'OML' } }))
     backend.write('states', JSON.stringify({
       ramp: { '2026-01-05': 'approved', '2026-01-06': 'approved' },
     }))

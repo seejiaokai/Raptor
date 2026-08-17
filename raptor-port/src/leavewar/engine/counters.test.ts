@@ -7,6 +7,13 @@ import {
   counterLabel,
   drawnFrom,
   grantedTo,
+  takenOf,
+  medConOf,
+  lveConOf,
+  FIGURES,
+  orderedFigures,
+  DEFAULT_FIGURE_ID,
+  DEFAULT_FIGURE_ORDER,
   type Ledger,
   type Openings,
 } from './counters'
@@ -95,7 +102,7 @@ describe('drawnFrom', () => {
   })
 
   it('draws nothing for codes that spend no counter', () => {
-    for (const code of ['CSE', 'M', 'OD', 'FS', 'HS']) {
+    for (const code of ['CSE', 'ATTC', 'HL', 'OML', 'OD', 'FS', 'HS']) {
       const grid: Grid = { ramp: { '2026-01-09': code } }
       for (const c of COUNTERS) expect(drawnFrom([{ grid: grid, states: {} }], 'ramp', c)).toBe(0)
     }
@@ -261,5 +268,100 @@ describe('free leave draws nothing', () => {
     expect(COUNTERS).not.toContain(undefined)
     expect(COUNTERS).not.toContain(null)
     expect(COUNTERS).toEqual(['annual', 'oil', 'ccl', 'fcl', 'pl', 'el'])
+  })
+})
+
+describe('takenOf — days of ONE type taken', () => {
+  it('counts by type, portion-aware', () => {
+    const sources = [{ grid: { ramp: { '2026-01-05': 'LL', '2026-01-06': '*LL', '2026-01-07': 'OL' } }, states: {} }]
+    expect(takenOf(sources, 'ramp', 'LL')).toBe(1.5)
+    expect(takenOf(sources, 'ramp', 'OL')).toBe(1)
+  })
+
+  // The whole reason takenOf exists beside drawnFrom: LL and OL both spend the
+  // annual pool, so the per-COUNTER figure cannot tell them apart. The
+  // per-TYPE one can.
+  it('separates LL from OL where drawnFrom cannot', () => {
+    const sources = [{ grid: { ramp: { '2026-01-05': 'LL', '2026-01-06': 'OL' } }, states: {} }]
+    expect(drawnFrom(sources, 'ramp', 'annual')).toBe(2)
+    expect(takenOf(sources, 'ramp', 'LL')).toBe(1)
+    expect(takenOf(sources, 'ramp', 'OL')).toBe(1)
+  })
+
+  it('counts OFF and the medical markers, which spend no counter at all', () => {
+    const sources = [{ grid: { ramp: { '2026-01-05': 'OFF', '2026-01-06': 'ATTC', '2026-01-07': 'OML' } }, states: {} }]
+    expect(takenOf(sources, 'ramp', 'OFF')).toBe(1)
+    expect(takenOf(sources, 'ramp', 'ATTC')).toBe(1)
+    expect(takenOf(sources, 'ramp', 'OML')).toBe(1)
+  })
+
+  it('does not count a refused bid, the same rule the balances use', () => {
+    const sources = [{ grid: { ramp: { '2026-01-05': 'LL' } }, states: { ramp: { '2026-01-05': refused } } }]
+    expect(takenOf(sources, 'ramp', 'LL')).toBe(0)
+  })
+})
+
+describe('the two consumed aggregates', () => {
+  it('MED CON sums ATT C, HL and OML', () => {
+    const sources = [{ grid: { ramp: { '2026-01-05': 'ATTC', '2026-01-06': 'HL', '2026-01-07': 'OML', '2026-01-08': 'LL' } }, states: {} }]
+    expect(medConOf(sources, 'ramp')).toBe(3)
+  })
+
+  it('LVE CON sums the seven leave codes and deliberately excludes medical', () => {
+    const sources = [{ grid: { ramp: {
+      '2026-01-05': 'LL', '2026-01-06': 'OL', '2026-01-07': 'OIL', '2026-01-08': 'OFF',
+      '2026-01-09': 'CCL', '2026-01-10': 'PL', '2026-01-11': 'FCL', '2026-01-12': 'OML',
+    } }, states: {} }]
+    // Eight leave/medical days, but LVE CON counts only the seven — OML is
+    // medical and lives in MED CON.
+    expect(lveConOf(sources, 'ramp')).toBe(7)
+  })
+})
+
+describe('FIGURES and orderedFigures', () => {
+  it('is the eleven figures in the owner\'s order', () => {
+    expect(FIGURES.map(f => f.label)).toEqual([
+      'LL CON', 'OL CON', 'OIL CON', 'OFF CON', 'CCL CON', 'PL CON',
+      'FCL CON', 'MED CON', 'OML CON', 'LVE BAL', 'LVE CON',
+    ])
+  })
+
+  it('has exactly one balance figure, LVE BAL — every other is consumed', () => {
+    expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.label)).toEqual(['LVE BAL'])
+    expect(FIGURES.filter(f => f.kind === 'con')).toHaveLength(10)
+  })
+
+  it('carries each aggregate\'s composition as its legend', () => {
+    expect(FIGURES.find(f => f.id === 'med')!.legend).toBe('ATT C + HL + OML')
+    expect(FIGURES.find(f => f.id === 'lvecon')!.legend).toBe('LL + OL + OIL + OFF + CCL + PL + FCL')
+  })
+
+  it('computes a figure through its ctx — CON via takenOf, BAL via balanceOf', () => {
+    const ctx = { openings: { ramp: { annual: 10 } }, ledger: [], sources: [{ grid: { ramp: { '2026-01-05': 'LL' } }, states: {} }] }
+    expect(FIGURES.find(f => f.id === 'll')!.value(ctx, 'ramp')).toBe(1)
+    // LVE BAL = opening 10 − 1 drawn.
+    expect(FIGURES.find(f => f.id === 'lvebal')!.value(ctx, 'ramp')).toBe(9)
+  })
+
+  it('opens on LVE BAL by default', () => {
+    expect(FIGURES.find(f => f.id === DEFAULT_FIGURE_ID)!.label).toBe('LVE BAL')
+    expect([...DEFAULT_FIGURE_ORDER]).toEqual(FIGURES.map(f => f.id))
+  })
+
+  it('orders by a saved id list', () => {
+    expect(orderedFigures(['lvebal', 'll']).map(f => f.id).slice(0, 2)).toEqual(['lvebal', 'll'])
+  })
+
+  it('appends catalogue figures a stale saved order omits, and never duplicates', () => {
+    const out = orderedFigures(['lvebal'])
+    expect(out[0].id).toBe('lvebal')
+    expect(out).toHaveLength(FIGURES.length)
+  })
+
+  it('drops an unknown id and dedups a repeated one', () => {
+    const out = orderedFigures(['nope', 'll', 'll'])
+    expect(out.filter(f => f.id === 'll')).toHaveLength(1)
+    expect(out.some(f => f.id === 'nope')).toBe(false)
+    expect(out).toHaveLength(FIGURES.length)
   })
 })

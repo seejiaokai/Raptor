@@ -488,6 +488,23 @@ only after re-running them.
   ui-contracts): the module comments in `engine/eventdefs.ts`,
   `ui/EventRows.tsx`, `ui/EventSheet.tsx`, and the "Event model" section of
   `docs/leavewar/known-gaps.md`.
+- **LEAVE WAR COUNTER COLUMN reworked to named figures (Aug 26).** The frozen
+  column no longer cycles the six entitlement counters; it cycles ELEVEN named
+  figures, each labelled `BAL` (balance left) or `CON` (days taken): LL CON, OL
+  CON, OIL CON, OFF CON, CCL CON, PL CON, FCL CON, MED CON, OML CON, LVE BAL, LVE
+  CON. Ten are per-type consumed (`takenOf`, which splits LL from OL where the
+  per-counter `drawnFrom` cannot); `MED CON` = ATT C + HL + OML, `LVE CON` =
+  LL+OL+OIL+OFF+CCL+PL+FCL (medical excluded). `LVE BAL` is the one balance (the
+  annual pool, the only figure that can go red). The picker sheet doubles as the
+  **legend** (BAL/CON key + the two aggregates' make-up inline) and as the
+  **reorder** surface (▲▼ per row + Reset; order persisted under `figorder`, a
+  display preference, ungated). Medical is three markers now — `ATTC`/`HL`/`OML`,
+  replacing `M`; like `M` they are assigned, not bid, so **no cell-entry UI**
+  (seed/CSV only — a grid affordance to mark medical is the reported follow-up).
+  Also fixed in the same pass: the date-header cells were rounded by a leak of
+  Raptor's global `.day{border-radius}` onto Leave War's `className="day"` header
+  cells — overridden square in the scoped `matrix.css`. Full detail in
+  `docs/leavewar/known-gaps.md` §The counter column is figures.
 - **LEAVE WAR is merged as the sixth tab (16 Aug 26) and SYNC WIRES 0–3 are
   BUILT (17 Aug 26)** — one roster (boot projection of `PEOPLE`),
   approved-leave ⇄ schedule-input both ways, counters drawing down (derived,
@@ -1353,7 +1370,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | file | what it does |
 |---|---|
 | `LeaveWarPage.tsx` | The ONE seam: renders the standalone app's Topbar/StageBar/Matrix inside `#page-leavewar`, scrolls the window to top on mount (Raptor keeps scroll across tab switches). Boot is NOT here — `main.tsx` calls its `initStore` once. |
-| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + M/CSE/OD markers + FS/HS SC-duty, portions `*X`/`X*`), `counters.ts` (derived balances, ledger), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/nolv/work, `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
+| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + medical markers `ATTC`/`HL`/`OML` (replaced `M`, Aug 26) + `CSE`/`OD` + FS/HS SC-duty, portions `*X`/`X*`), `counters.ts` (derived balances + ledger, **plus the counter-column figures: `takenOf` per-type consumed, `medConOf`/`lveConOf` aggregates, the 11-figure `FIGURES` catalogue and `orderedFigures` — see the open-work counter-column bullet**), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/nolv/work, `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
 | `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`, **the event writers `setDayEvent`/`setDayEventRange` (repeat) + `addEventBand`/`removeEventBand` (merge) + the `addEventType`/`updateEventType`/`removeEventType`/`resetEventTypes` library writers, all admin-gated; `state.eventDefs` persisted under `eventdefs`, `period.bands` read leniently in `readWar`**. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. |
 | `state/storage.ts` | The `leavewar:`-prefixed localStorage seam (`memoryBackend` headless) — deliberately NOT `HOOKS.storeBackend`; the future shared backend replaces both together. |
 | `state/raptorRoster.ts` | Wire 0 — `projectPeople()`: the LW roster as a projection of Raptor's `PEOPLE` (skips ground crew + sentinels; band from `isInstr`; sxo carried). Installed at boot, never persisted. |

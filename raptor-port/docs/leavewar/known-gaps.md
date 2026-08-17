@@ -106,6 +106,37 @@ posted to the ledger here**. The grid is already that record, and a second
 copy of it would be a second version of the truth. The ledger holds only what
 the grid cannot know.
 
+## The counter column is figures, not raw counters (Aug 26)
+
+The frozen column no longer cycles the six entitlement counters. It cycles
+ELEVEN named figures (owner's set), each labelled `BAL` (a balance left) or
+`CON` (days taken):
+
+    LL CON · OL CON · OIL CON · OFF CON · CCL CON · PL CON · FCL CON ·
+    MED CON · OML CON · LVE BAL · LVE CON
+
+- **Ten are consumed (`CON`)** — days of that type taken, read per-TYPE by
+  `takenOf` (not the per-counter `drawnFrom`, which cannot tell LL from OL —
+  both spend the one annual pool). Two are aggregates: `MED CON` = ATT C + HL +
+  OML, `LVE CON` = LL+OL+OIL+OFF+CCL+PL+FCL (medical deliberately excluded).
+- **One is a balance (`LVE BAL`)** — the annual pool, `opening + grants −
+  drawn`, the only figure that can go negative and red. The other entitlement
+  balances (OIL/CCL/FCL/PL/EL) are still computed by `balanceOf` and used by
+  the bid-warning path, but are NOT surfaced in the column — the owner asked
+  for exactly the eleven above. EL is dropped from the column yet stays a valid
+  biddable code.
+- **The order is a persisted display preference** (`state.figureOrder`, stored
+  under `figorder`), reordered by the ▲▼ on each picker row and ungated like
+  the figure selection itself. `orderedFigures` heals a stale saved order — an
+  unknown id is dropped, a newly added figure appended.
+- **The picker sheet is also the legend** (owner: "show the legend as a
+  bubble"): the BAL/CON key and the two aggregates' compositions render inline.
+- **Medical is three markers now** — `ATTC` (shown "ATT C"), `HL`, `OML` —
+  replacing the single `M`. Like `M` they are assigned, not bid, so **there is
+  no cell-entry UI for them**; MED CON and OML CON populate from seed or a CSV
+  import. A grid affordance to mark someone medical is the natural follow-up if
+  the owner wants it (reported, not built).
+
 ## The owner's review of 10 Aug 26, and what it settled
 
 Twelve pieces of feedback from a phone. What they changed is in the spec; what

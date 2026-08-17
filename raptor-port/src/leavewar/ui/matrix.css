@@ -159,16 +159,22 @@
    says there are more counters than the one on screen — which the arrows used
    to say — and it says where in the six this one sits, which they never did.
    3px each, so the whole strip costs less width than one old arrow. */
+/* One dot per figure, one lit. The set grew from six counters to eleven
+   figures (owner, Aug 26), so the dots shrank and may wrap: at 2px with a 1px
+   gap the eleven still fit the 44px `.bal` column on one line, and flex-wrap is
+   the safety net if the column is ever narrowed further. The label above still
+   names the figure — the dots only say "there are more, and this is where". */
 .mx thead th.bal .cdots {
   display: flex;
-  gap: 2px;
+  flex-wrap: wrap;
+  gap: 1px;
   justify-content: center;
   margin-top: 2px;
 }
 
 .mx thead th.bal .cdot {
-  width: 3px;
-  height: 3px;
+  width: 2px;
+  height: 2px;
   border-radius: 50%;
   background: var(--edge-2);
 }
@@ -196,6 +202,21 @@
   font-weight: 700;
   letter-spacing: .04em;
   min-width: 30px;
+}
+
+/* Square the date cells (owner, Aug 26 — "make the dates at the top a
+   square"). They were reading as rounded green bubbles, and the cause was a
+   LEAK, not a rule of this file: the header cells carry `className="day"`, and
+   Raptor's global `scheduler.css .day { border-radius: var(--r) }` (unscoped)
+   was reaching them. This file is scoped under `#page-leavewar`, so its rules
+   out-specify the bare `.day` — the fix belongs HERE, per this file's own
+   preamble ("never fix a cross-page bleed by editing scheduler.css"). Null the
+   other props the same rule leaks (`overflow`/`scroll-snap-align`) so nothing
+   else of Raptor's day card rides in unnoticed. */
+.mx thead th.day {
+  border-radius: 0;
+  overflow: visible;
+  scroll-snap-align: none;
 }
 
 .mx thead th.who {

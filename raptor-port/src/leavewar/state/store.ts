@@ -14,6 +14,8 @@ import {
   previousStage,
   raptorOwns,
   COUNTERS,
+  DEFAULT_FIGURE_ORDER,
+  orderedFigures,
   makeWar,
   overlapping,
   seedLedger,
@@ -83,6 +85,13 @@ interface State {
    *  allowed to use them. See `docs/known-gaps.md`. */
   role: Role
 
+  /** The counter column's figure order — the ids of `FIGURES`, in the order
+   *  the picker lists them and the column cycles them. A DISPLAY preference,
+   *  not squadron policy, so it is persisted (under `figorder`) but ungated,
+   *  the way the counter *selection* is ungated. Read leniently: unknown or
+   *  missing ids are healed by `orderedFigures`, never rejected. */
+  figureOrder: string[]
+
   /** The day the matrix has been asked to bring into view, or null. */
   focusDate: string | null
   /** Bumped on every request, including a repeat of the same date. The matrix
@@ -119,6 +128,7 @@ function blank(): State {
     currentId: wars[0].period.id,
     openings: seedOpenings(),
     ledger: seedLedger(),
+    figureOrder: [...DEFAULT_FIGURE_ORDER],
     // The squadron is the common case, so the app opens as one. An admin
     // says so deliberately rather than arriving with the locks already off.
     role: 'member',
@@ -243,6 +253,18 @@ function readLedger(x: unknown): Ledger | null {
     out.push({ id, personId, counter: counter as CounterName, amount, date, reason, approvedBy })
   }
   return out
+}
+
+// The figure order is just a list of ids. Validated only as "an array of
+// strings" and no more: `orderedFigures` already heals an unknown id (skip) or
+// a missing one (append), so tightening it to "known ids only" here would buy
+// nothing and would reject a blob written by a build that had a figure this
+// one has since renamed. A non-array or a non-string leaf IS rejected — that
+// is corruption, and the caller falls back to the default order.
+function readFigureOrder(x: unknown): string[] | null {
+  if (!Array.isArray(x)) return null
+  if (x.some(id => typeof id !== 'string')) return null
+  return x as string[]
 }
 
 // A stored war is its period plus its grid and states. `days` is stored in
@@ -397,6 +419,7 @@ export function initStore(b?: StorageBackend): void {
   const openings = readStored('openings', readOpenings) ?? seedOpenings()
   const ledger = readStored('ledger', readLedger) ?? seedLedger()
   const eventDefs = readStored('eventdefs', readEventDefs) ?? seedEventDefs()
+  const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
 
   /* The role is neither read nor persisted since the Raptor merge: it is
      derived from the Raptor login on every session change (resetSession in
@@ -409,7 +432,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder })
 
   version = 0
   listeners.clear()
@@ -467,6 +490,7 @@ function persist(): void {
   backend.write('openings', JSON.stringify(state.openings))
   backend.write('ledger', JSON.stringify(state.ledger))
   backend.write('eventdefs', JSON.stringify(state.eventDefs))
+  backend.write('figorder', JSON.stringify(state.figureOrder))
   /* `people` deliberately absent: the roster is a projection of Raptor's
      PEOPLE (see initStore) — persisting it would store a copy that can only
      disagree with the projection the next boot installs. */
@@ -885,6 +909,36 @@ export function removeEventType(index: number): boolean {
 export function resetEventTypes(): void {
   if (state.role !== 'admin') return
   state = withCurrent({ ...state, eventDefs: seedEventDefs() })
+  persist()
+  notify()
+}
+
+/* THE COUNTER-COLUMN FIGURE ORDER writers. A display preference, so — unlike
+   the event-type library above — they are NOT role-gated: a member reorders
+   their own view exactly as they pick which counter it shows. Persisted under
+   `figorder`. The order is normalised through `orderedFigures` on every move,
+   so a stored blob missing a new figure (or naming a dead one) is healed the
+   first time it is touched rather than carried forward malformed. */
+
+/** Move a figure one place up (`-1`) or down (`+1`) the column's order.
+ *  Clamped at the ends and a no-op for an unknown id — returns whether it
+ *  moved so a caller can disable a control at the boundary. */
+export function moveFigure(id: string, dir: -1 | 1): boolean {
+  const ids = orderedFigures(state.figureOrder).map(f => f.id)
+  const i = ids.indexOf(id)
+  if (i < 0) return false
+  const j = i + dir
+  if (j < 0 || j >= ids.length) return false
+  ;[ids[i], ids[j]] = [ids[j], ids[i]]
+  state = withCurrent({ ...state, figureOrder: ids })
+  persist()
+  notify()
+  return true
+}
+
+/** Put the column's figures back in their catalogue order. */
+export function resetFigureOrder(): void {
+  state = withCurrent({ ...state, figureOrder: [...DEFAULT_FIGURE_ORDER] })
   persist()
   notify()
 }
