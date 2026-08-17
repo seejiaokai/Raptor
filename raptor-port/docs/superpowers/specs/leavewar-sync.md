@@ -36,7 +36,8 @@ argued where it lives:
 - **The SC/duty split is the owner's 17 Aug refinement**, superseding plain
   scheduled-hours for SC: an SC AM/PM shift (wholly inside one half of the
   SC day window) is 0.5, anything more 1.0; other duty rows go by summed
-  written hours against `VCONF.oilFullMin` (default 360, Logic-editable);
+  written hours against `VCONF.oilFullMin` (default 361 — the owner's "6
+  hours 1 min or more"; exactly 6h is a half — Logic-editable);
   SC spares and time-less rows earn nothing; per-person cap 1.0/day.
 - **The ownership partition is by vocabulary.** Wire 4's cells wear the same
   `{approved, raptor}` marker as wire 2's (every existing guard protects

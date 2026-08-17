@@ -969,8 +969,10 @@ lands, the clash handling — see `docs/superpowers/specs/leavewar-sync.md`
     to a full day.
   - **Any other duty goes by its written hours**, summed per person first:
     `VCONF.oilFullMin` minutes or more ⇒ **1.0** (Leave War's FS), under it
-    ⇒ **0.5** (HS). Default 360 — "6 or more" is the owner's line — and it
-    is a `RULE_SPEC` entry, Logic-page editable like every threshold.
+    ⇒ **0.5** (HS). Default 361 — "6 hours 1 min or more" is the owner's
+    line (17 Aug 26, corrected from a plain 6h the same day: exactly six
+    hours is still a half) — and it is a `RULE_SPEC` entry, Logic-page
+    editable like every threshold.
   - A person on SC **and** a duty caps at 1.0: a day worked, not a day and
     a half.
 - **Times as written, or nothing.** A row with no readable times (blank,

@@ -79,19 +79,21 @@ describe('dayOilCredits — who earns what from one day blob', () => {
     expect(dayOilCredits(d)).toEqual({})
   })
 
-  it('a duty row goes by its written hours: six or more is a full day', () => {
+  it('a duty row goes by its written hours: MORE than six is a full day, six exactly is half', () => {
     expect(dayOilCredits(day([], [duty('plasma', '0800', '1800')]))).toEqual({ plasma: 1 })   // 10h
-    expect(dayOilCredits(day([], [duty('plasma', '0800', '1400')]))).toEqual({ plasma: 1 })   // 6h exactly
+    expect(dayOilCredits(day([], [duty('plasma', '0800', '1401')]))).toEqual({ plasma: 1 })   // 6h01 — the owner's line
+    expect(dayOilCredits(day([], [duty('plasma', '0800', '1400')]))).toEqual({ plasma: 0.5 }) // 6h exactly is a HALF
     expect(dayOilCredits(day([], [duty('plasma', '0800', '1200')]))).toEqual({ plasma: 0.5 }) // 4h
   })
 
   it('hours are summed per person before the line is drawn', () => {
-    const d = day([], [duty('plasma', '0800', '1100'), duty('plasma', '1400', '1700')])  // 3h + 3h
+    const d = day([], [duty('plasma', '0800', '1200'), duty('plasma', '1400', '1701')])  // 4h + 3h01
     expect(dayOilCredits(d)).toEqual({ plasma: 1 })
   })
 
   it('an overnight duty counts its real length', () => {
-    expect(dayOilCredits(day([], [duty('plasma', '2000', '0200')]))).toEqual({ plasma: 1 })  // 6h across midnight
+    expect(dayOilCredits(day([], [duty('plasma', '2000', '0201')]))).toEqual({ plasma: 1 })    // 6h01 across midnight
+    expect(dayOilCredits(day([], [duty('plasma', '2000', '0200')]))).toEqual({ plasma: 0.5 })  // 6h exactly — half, not a negative-length skip
   })
 
   it('a row with no readable times mints nothing — the credit follows what was written', () => {

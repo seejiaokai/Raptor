@@ -432,7 +432,9 @@ design-only wire is built: publishing a weekend or Leave-War-holiday day
 (`DayInfo.ph` OR an 'off'-tagged event word — the owner's PH input path now
 WIRED, the first thing the event tags actually drive) lands each SC MAIN /
 duty-row stander a raptor-owned FS/HS cell and moves the NEW `OIL BAL`
-counter-column figure; the credit derives from the ISSUED snapshot per
+counter-column figure (duty threshold 361 min — the owner's "6 hours 1 min
+or more", corrected same day from a plain 6h: exactly six hours is a
+half); the credit derives from the ISSUED snapshot per
 `dayApproved` day inside a third reconciler pass (`sync.ts:runOilPass` —
 no fifth cross-app seam), so reopen/AL/reissue/undo all reverse-and-replace
 by construction, leave WINS a contested cell (a `kind:'duty'` clash on the
@@ -553,8 +555,8 @@ reopened and both back to nothing — zero console/page/network errors.
   `DayInfo.ph` OR an event word tagged 'off day' — the owner's own PH input
   path) lands each duty-stander a raptor-owned FS/HS cell and moves the new
   OIL BAL figure. SC AM/PM shift = half, more = full; other duty rows by
-  summed written hours vs `VCONF.oilFullMin` (360, Logic-page editable, the
-  owner's "6 or more"); SC spares and time-less rows earn nothing; leave
+  summed written hours vs `VCONF.oilFullMin` (361, Logic-page editable, the
+  owner's "6 hours 1 min or more" — exactly 6h is a half); SC spares and time-less rows earn nothing; leave
   wins a contested cell and the duty credit reads as a `kind:'duty'` clash
   on the strip. Rules in `docs/engine-rules.md` §Weekend/PH duty earns OIL;
   the five build-time divergences from the design sketch (derived credit
