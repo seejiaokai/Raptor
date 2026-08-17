@@ -703,14 +703,42 @@ ever.
   UNDO after such an edit/delete does not resurrect the leave — the restored
   lw row no longer matches any approved cells, so the next reconcile splices
   it as stale; re-file the leave instead. The **58-row
-  year matrix (~25.9k nodes)** is outside the perf gate (its own e2e DOM
-  band, raised 10700 → 26500 measured-first, is its guard); phone
+  year matrix (~28k nodes now — the categorised roster below added ground crew
+  and group headings)** is outside the perf gate (its own e2e DOM
+  band, raised to 29000 measured-first, is its guard); phone
   scroll measured ~100ms, fine today. The vendored app's own limitations
   travel in `raptor-port/docs/leavewar/known-gaps.md` (read its merge
-  preamble — stale-about-Raptor claims, superseded role toggle). Cosmetic
-  follow-up option still open (reported, not built): the page's own
-  "142 SQN / LEAVE WAR" mark + decorative nav pill under Raptor's topbar.
-  is in `raptor-port/.impeccable/critique/`.** The owner actioned the two
+  preamble — stale-about-Raptor claims, superseded role toggle).**
+- **LEAVE WAR — CATEGORISED ROSTER + HEADER TRIM (18 Aug 26, owner: "fix how
+  the top of the leave war looks… 142 is repeated… categorise the personnel
+  into SXO, IP, OPS P, IWSO, OPS W, OCU, Personnel").** The page's own
+  "142 SQN / LEAVE WAR" mark and "Leave war" nav pill are DELETED (Raptor's
+  shell already carries the identity and the active tab) — the header is one
+  slim control strip now. The roster draws in seven colour-coded groups
+  (`engine/people.ts:groupOf`/`GROUP_ORDER`), ops crew split by CAT A→D on
+  desktop (sub-headings fold away under 700px — the owner's "just colour code
+  it on mobile"), OCU and ground crew their own groups. Colours reuse Raptor's
+  `--q-*` CAT palette (A red, B amber, C cyan, D blue, OCU purple, IP/IWSO
+  violet), SXO gold, Personnel white — so a callsign's colour means the same
+  here and on Quals. **Ground crew now ride the roster** (`projectPeople`
+  includes `pers`, seat `gnd`, a free-text `label` seeded from Raptor's
+  `flight`), EXCLUDED from every aircrew manning count (`countsFor` skips
+  `pers` first — the one line that keeps SXO/IP/set thresholds reading the
+  same squadron). An admin **Auto-sort** re-groups (`autoSortRoster` →
+  `autoOrder`); a **Rearrange** toggle turns on pointer-drag handles
+  (`moveRosterRow`, works touch + mouse — HTML5 DnD does nothing on a phone);
+  personnel labels are editable there (`setPersLabel`). Order and labels are
+  admin-gated and keyed by id (`rosterOrder`/`persLabels`, the figureOrder
+  precedent), so they survive a roster that gains or loses a body. **The
+  roster stays LIVE**: `sync.ts:reprojectRoster` re-projects on every Raptor
+  notify (change-guarded), so a personnel body added on the Quals page appears
+  in Leave War without a reload (owner's explicit ask). `manning`/`categoryOf`
+  are UNTOUCHED — the grouping is a display layer; an OCU still counts as ops
+  for a threshold, it is merely shown apart. Tests: `roster.test.ts` (13),
+  extended `raptorRoster`/`matrix`/`person` suites, e2e roster block. KNOWN:
+  pointer-drag is desktop-verified live; on a phone the primary path is
+  Auto-sort (drag works but is fiddly on a 76px frozen column). The
+  standalone-app critique is in `raptor-port/.impeccable/critique/`.** The owner actioned the two
   mobile items (frozen Quals callsign, collapsible legend) and the "click any
   blank area to deselect" bug. **The P0 keyboard bug is now CLOSED (15 Aug 26):**
   the five top-nav items and the phone drawer's nav were hrefless `<a>`s a

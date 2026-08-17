@@ -26,6 +26,8 @@ import {
   seedPeriod,
   seedRequirements,
   seedWars,
+  autoOrder,
+  orderedPeople,
   readEventDefs,
   bandOverlaps,
   warHolding,
@@ -103,6 +105,19 @@ interface State {
    *  by `orderedFigures`, never rejected. */
   figureOrder: string[]
 
+  /** The roster's row order — person ids, in the order the matrix draws them
+   *  (owner, 18 Aug 26). Empty means "categorised": the matrix falls back to
+   *  `autoOrder`. The Auto-sort button writes the grouped order; an edit-mode
+   *  drag writes a hand-chosen one. ADMIN-gated at the write path, the same
+   *  rule as `figureOrder` — a member does not rearrange the roster. Read
+   *  leniently: `orderedPeople` drops ids that have left and appends anyone
+   *  the saved order predates. */
+  rosterOrder: string[]
+  /** An admin's free-text labels for ground-crew rows, keyed by person id —
+   *  an override of the projected default (Raptor's `flight`). Ground-crew
+   *  only; an aircrew id here is simply never read. */
+  persLabels: Record<string, string>
+
   /** The day the matrix has been asked to bring into view, or null. */
   focusDate: string | null
   /** Bumped on every request, including a repeat of the same date. The matrix
@@ -140,6 +155,8 @@ function blank(): State {
     openings: seedOpenings(),
     ledger: seedLedger(),
     figureOrder: [...DEFAULT_FIGURE_ORDER],
+    rosterOrder: [],
+    persLabels: {},
     // The squadron is the common case, so the app opens as one. An admin
     // says so deliberately rather than arriving with the locks already off.
     role: 'member',
@@ -277,6 +294,19 @@ function readFigureOrder(x: unknown): string[] | null {
   if (!Array.isArray(x)) return null
   if (x.some(id => typeof id !== 'string')) return null
   return x as string[]
+}
+
+/** A stored id list (the roster order), same shape as the figure order. */
+const readIdList = readFigureOrder
+
+/** A stored id→label map (personnel labels). Non-string values are dropped
+ *  rather than rejecting the whole blob — one bad entry should not blank the
+ *  admin's other labels. */
+function readLabelMap(x: unknown): Record<string, string> | null {
+  if (!isPlainObject(x)) return null
+  const out: Record<string, string> = {}
+  for (const [k, v] of Object.entries(x)) if (typeof v === 'string') out[k] = v
+  return out
 }
 
 // A stored war is its period plus its grid and states. `days` is stored in
@@ -438,6 +468,8 @@ export function initStore(b?: StorageBackend): void {
   const ledger = readStored('ledger', readLedger) ?? seedLedger()
   const eventDefs = readStored('eventdefs', readEventDefs) ?? seedEventDefs()
   const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
+  const rosterOrder = readStored('rosterorder', readIdList) ?? []
+  const persLabels = readStored('perslabels', readLabelMap) ?? {}
 
   /* The role is neither read nor persisted since the Raptor merge: it is
      derived from the Raptor login on every session change (resetSession in
@@ -450,7 +482,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels })
 
   version = 0
   listeners.clear()
@@ -509,9 +541,14 @@ function persist(): void {
   backend.write('ledger', JSON.stringify(state.ledger))
   backend.write('eventdefs', JSON.stringify(state.eventDefs))
   backend.write('figorder', JSON.stringify(state.figureOrder))
+  backend.write('rosterorder', JSON.stringify(state.rosterOrder))
+  backend.write('perslabels', JSON.stringify(state.persLabels))
   /* `people` deliberately absent: the roster is a projection of Raptor's
      PEOPLE (see initStore) — persisting it would store a copy that can only
-     disagree with the projection the next boot installs. */
+     disagree with the projection the next boot installs. The roster ORDER and
+     the personnel LABELS are kept instead: they are the admin's arrangement
+     of that projection, keyed by id, so they survive a roster that gains or
+     loses a body. */
 }
 
 /**
@@ -582,6 +619,75 @@ export function setPerson(id: string, patch: Partial<Pick<Person, 'seat' | 'band
  */
 export function setPeople(people: Person[]): void {
   state = withCurrent({ ...state, people })
+  notify()
+}
+
+/**
+ * The roster in display order (owner, 18 Aug 26): the stored hand-order if one
+ * exists, otherwise the categorised `autoOrder`. `orderedPeople` heals the
+ * saved list — a body that has left drops out, one that arrived after the
+ * order was saved is appended in its grouped place — so this is always the
+ * whole live roster, never a stale subset.
+ */
+export function displayRoster(): Person[] {
+  return state.rosterOrder.length
+    ? orderedPeople(state.people, state.rosterOrder)
+    : orderedPeople(state.people, autoOrder(state.people))
+}
+
+/** A ground-crew body's label: the admin's override if set, else the projected
+ *  default (Raptor's `flight`). */
+export function personLabel(p: Person): string {
+  return state.persLabels[p.id] ?? p.label ?? ''
+}
+
+/**
+ * Write the roster's row order. ADMIN-gated, the `figureOrder` rule: a member
+ * does not rearrange the roster (the drag handles and Auto-sort do not render
+ * for them). An empty array clears back to the categorised default.
+ */
+export function setRosterOrder(order: string[]): void {
+  if (state.role !== 'admin') return
+  state = withCurrent({ ...state, rosterOrder: order })
+  persist()
+  notify()
+}
+
+/** Re-group everyone into the categorised order — the Auto-sort button. */
+export function autoSortRoster(): void {
+  setRosterOrder(autoOrder(state.people))
+}
+
+/**
+ * Move one row to sit before `beforeId` (or to the end when null) — one
+ * edit-mode drag. It materialises the CURRENT display order first (so the
+ * first drag off the categorised default captures where every row actually
+ * was) and writes the whole new order, keeping this the one write path the
+ * admin gate covers.
+ */
+export function moveRosterRow(id: string, beforeId: string | null): void {
+  if (state.role !== 'admin') return
+  const ids = displayRoster().map(p => p.id)
+  const from = ids.indexOf(id)
+  if (from < 0) return
+  ids.splice(from, 1)
+  const at = beforeId ? ids.indexOf(beforeId) : ids.length
+  ids.splice(at < 0 ? ids.length : at, 0, id)
+  setRosterOrder(ids)
+}
+
+/**
+ * Set (or clear) a ground-crew body's free-text label. ADMIN-gated. An empty
+ * string removes the override, so the row falls back to the projected default.
+ */
+export function setPersLabel(id: string, label: string): void {
+  if (state.role !== 'admin') return
+  const persLabels = { ...state.persLabels }
+  const clean = label.trim()
+  if (clean) persLabels[id] = clean
+  else delete persLabels[id]
+  state = withCurrent({ ...state, persLabels })
+  persist()
   notify()
 }
 

@@ -1,16 +1,20 @@
-import { useEffect, useRef, useState, type TouchEvent } from 'react'
+import { Fragment, useEffect, useRef, useState, type TouchEvent } from 'react'
 import {
   balanceOf,
   canDecide,
   canEditCell,
-  categoryLabel,
+  catClass,
+  catText,
   codeOf,
   columnKindFor,
   displayCell,
   evaluatePeriod,
+  groupOf,
+  GROUP_LABEL,
   inSquadron,
   isBiddable,
   isDuty,
+  opsCatOf,
   orderedFigures,
   DEFAULT_FIGURE_ID,
   dayName,
@@ -20,8 +24,10 @@ import {
   raptorOwns,
   shiftedFrom,
   stateOf,
+  type Group,
+  type Person,
 } from '../engine'
-import { getState } from '../state/store'
+import { autoSortRoster, displayRoster, getState, moveRosterRow, personLabel, setPersLabel } from '../state/store'
 import { BidPicker, DecisionSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -45,6 +51,28 @@ const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', '
 function monthLabel(date: string): string | null {
   if (date.slice(8, 10) !== '01') return null
   return MONTHS[Number(date.slice(5, 7)) - 1]
+}
+
+/** A ground-crew body's free-text label — read-only text, or an edit box while
+ *  the roster is being rearranged. Uncontrolled (defaultValue + commit on blur)
+ *  so typing does not repaint the grid on every keystroke. */
+function PersLabel({ p, editable }: { p: Person; editable: boolean }) {
+  const val = personLabel(p)
+  if (!editable) {
+    return val ? <span className="pers-lbl" data-testid={`perslabel-${p.id}`}>{val}</span> : null
+  }
+  return (
+    <input
+      key={val}
+      className="pers-in"
+      data-testid={`perslabel-in-${p.id}`}
+      defaultValue={val}
+      placeholder="label…"
+      aria-label={`${p.callsign} — role label`}
+      onBlur={e => setPersLabel(p.id, e.target.value)}
+      onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
+    />
+  )
 }
 
 export function Matrix() {
@@ -91,6 +119,46 @@ export function Matrix() {
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
   const [eventEdit, setEventEdit] = useState<{ line: 0 | 1; date: string } | null>(null)
+  // Edit-mode roster rearranging (owner, 18 Aug 26). Admin-only view state: it
+  // turns the drag handles on, so an admin reading the grid does not nudge a
+  // row by accident. Auto-sort stays available without it.
+  const [arranging, setArranging] = useState(false)
+  // Pointer-based drag (owner, 18 Aug 26 — the roster rearranges on a phone
+  // too, where HTML5 drag-and-drop does nothing). `dragId`/`dragOverRef` are
+  // refs because they change many times a second during a drag and must not
+  // repaint the grid; the two bits of STATE mirror them only for the row
+  // highlight. One window pointermove/pointerup pair is attached for the life
+  // of a drag and torn down on release.
+  const dragId = useRef<string | null>(null)
+  const dragOverRef = useRef<string | null>(null)
+  const [draggingId, setDraggingId] = useState<string | null>(null)
+  const [dragOver, setDragOver] = useState<string | null>(null)
+
+  function startRowDrag(e: React.PointerEvent, id: string) {
+    if (e.button != null && e.button !== 0) return // primary pointer only
+    e.preventDefault()
+    dragId.current = id
+    setDraggingId(id)
+    const move = (ev: PointerEvent) => {
+      const el = document.elementFromPoint(ev.clientX, ev.clientY)
+      const row = el && (el as Element).closest ? (el as Element).closest('[data-testid^="row-"]') : null
+      const overId = row?.getAttribute('data-testid')?.slice(4) ?? null
+      if (overId !== dragOverRef.current) { dragOverRef.current = overId; setDragOver(overId) }
+    }
+    const up = () => {
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+      const from = dragId.current
+      const to = dragOverRef.current
+      dragId.current = null
+      dragOverRef.current = null
+      setDraggingId(null)
+      setDragOver(null)
+      if (from && to && from !== to) moveRosterRow(from, to)
+    }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
+  }
   const shownIx = Math.max(0, figures.findIndex(f => f.id === shownId))
   const shown = figures[shownIx]
   // Everything a figure needs to read a person's number. `wars` is LeaveWar[],
@@ -231,7 +299,32 @@ export function Matrix() {
     <div className="stage">
       <div className="card">
         <div className="card-hd">
-          <span className="t">{period.name} · {dates.length} days · {people.length} aircrew</span>
+          <span className="t">{period.name} · {dates.length} days · {people.length} people</span>
+          {/* Roster arrangement (owner, 18 Aug 26), admin only: Auto-sort
+              re-groups everyone into the categorised order; Rearrange turns on
+              the edit-mode drag handles. A member sees neither — the roster is
+              management's to order (the figureOrder rule). */}
+          {role === 'admin' && (
+            <div className="rostertools">
+              <button
+                className={`rtbtn${arranging ? ' on' : ''}`}
+                data-testid="roster-arrange"
+                aria-pressed={arranging}
+                title="Drag rows to rearrange the roster by hand"
+                onClick={() => setArranging(a => !a)}
+              >
+                ⠿ {arranging ? 'Done' : 'Rearrange'}
+              </button>
+              <button
+                className="rtbtn pri"
+                data-testid="roster-autosort"
+                title="Group everyone into SXO, IP, OPS P, IWSO, OPS W, OCU, Personnel"
+                onClick={autoSortRoster}
+              >
+                ⇅ Auto-sort
+              </button>
+            </div>
+          )}
           {/* One button per month the war covers, so the strip fits a
               quarter and a year alike without being told which it is. */}
           <div className="months" data-testid="month-strip">
@@ -329,30 +422,98 @@ export function Matrix() {
             />
             <CountRows verdicts={verdicts} dates={dates} />
             <tbody>
-              {people.map(p => (
-                // `me` lights the VIEWER's own row — Raptor's "View as"
-                // person, mirrored by the sync wire — so anyone opening the
-                // page finds themselves without reading 58 callsigns
-                // (owner, 17 Aug 26).
-                <tr key={p.id} data-testid={`row-${p.id}`} className={p.id === viewer ? 'me' : undefined}>
-                  {/* The callsign opens the person's all-figures sheet, for
-                      EVERYONE (owner, 17 Aug 26) — an admin reaches the
-                      person EDITOR through that sheet's Edit person button,
-                      which is where the old direct-to-editor tap went.
-                      `IWSO(S)` rather than a second column for SXO: it sits
-                      on top of a category, so it decorates the label rather
-                      than replacing it. */}
-                  <td className="who">
-                    <button
-                      className="whoedit"
-                      data-testid={`person-${p.id}`}
-                      title={`${p.callsign} — every figure`}
-                      onClick={() => setWhoOpen(p.id)}
-                    >
-                      {p.callsign}
-                      <span className="cat">{categoryLabel(p)}</span>
-                    </button>
-                  </td>
+              {(() => {
+                // The roster in DISPLAY order (owner, 18 Aug 26): the admin's
+                // hand-order, or the categorised default. A group heading is
+                // emitted at every top-level boundary, and a CAT sub-heading
+                // inside an ops group — the sub-heading is desktop-only in CSS,
+                // per the owner ("if it takes up too much space on mobile…").
+                const roster = displayRoster()
+                const span = 2 + dates.length
+                let prevG: Group | null = null
+                let prevCat = ''
+                return roster.map(p => {
+                  const g = groupOf(p)
+                  const heads: any[] = []
+                  if (g !== prevG) {
+                    const n = roster.filter(x => groupOf(x) === g).length
+                    heads.push(
+                      <tr key={`grp-${g}`} className={`grp g-${g.toLowerCase()}`} data-testid={`group-${g}`}>
+                        {/* The label sits in a sticky td spanning only the two
+                            frozen columns — the SAME technique .who/.bal use —
+                            so it stays pinned to the left as the year scrolls;
+                            its text overflows visibly over the empty fill cell
+                            beside it. (A sticky div inside a full-width colSpan
+                            td does not stick — it rides off to the right.) */}
+                        <td className="grphd" colSpan={2}>
+                          <div className="grphd-in">
+                            <span className="gsw" aria-hidden="true" />
+                            <span className="gname">{GROUP_LABEL[g]}</span>
+                            <span className="gcount">· {n}</span>
+                          </div>
+                        </td>
+                        <td className="grpfill" colSpan={span - 2} />
+                      </tr>,
+                    )
+                    prevG = g
+                    prevCat = ''
+                  }
+                  const cat = opsCatOf(p)
+                  if (cat && cat !== prevCat) {
+                    heads.push(
+                      <tr key={`sub-${g}-${cat}`} className="catsub" data-testid={`subcat-${g}-${cat}`}>
+                        <td className="catsub-in" colSpan={2}>CAT {cat}</td>
+                        <td className="catsub-fill" colSpan={span - 2} />
+                      </tr>,
+                    )
+                    prevCat = cat
+                  }
+                  return (
+                    <Fragment key={p.id}>
+                      {heads}
+                      {/* `me` lights the VIEWER's own row (owner, 17 Aug 26).
+                          While arranging the row is a drop target the pointer
+                          drag reads by hit-test; the drag SOURCE is the handle
+                          alone, so a tap on the personnel label box types
+                          rather than starting a drag. */}
+                      <tr
+                        data-testid={`row-${p.id}`}
+                        className={[
+                          p.id === viewer ? 'me' : '',
+                          arranging ? 'arrange' : '',
+                          draggingId === p.id ? 'dragging' : '',
+                          draggingId && dragOver === p.id && draggingId !== p.id ? 'dragover' : '',
+                        ].filter(Boolean).join(' ') || undefined}
+                      >
+                        <td className="who">
+                          <div className="whorow">
+                            {arranging && (
+                              <span
+                                className="drag"
+                                data-testid={`drag-${p.id}`}
+                                title="Drag to move this row"
+                                style={{ touchAction: 'none' }}
+                                onPointerDown={e => startRowDrag(e, p.id)}
+                              >⠿</span>
+                            )}
+                            {/* The callsign opens the person's all-figures
+                                sheet, for everyone (owner, 17 Aug 26). The CAT
+                                chip carries the person's colour, reused from
+                                Raptor's Quals palette, and an SXO sits under
+                                the SXO heading rather than wearing a second
+                                column. */}
+                            <button
+                              className="whoedit"
+                              data-testid={`person-${p.id}`}
+                              title={`${p.callsign} — every figure`}
+                              onClick={() => setWhoOpen(p.id)}
+                            >
+                              <span className="cs">{p.callsign}</span>
+                              <span className={`catchip ${catClass(p)}`} data-testid={`cat-${p.id}`}>{catText(p) || 'GND'}</span>
+                            </button>
+                            {p.pers && <PersLabel p={p} editable={arranging} />}
+                          </div>
+                        </td>
                   {/* The selected figure's value for this person, derived on
                       every render rather than cached: it has to move the
                       instant a bid is placed, because a pending bid has been
@@ -482,8 +643,11 @@ export function Matrix() {
                       </td>
                     )
                   })}
-                </tr>
-              ))}
+                      </tr>
+                    </Fragment>
+                  )
+                })
+              })()}
             </tbody>
           </table>
         </div>

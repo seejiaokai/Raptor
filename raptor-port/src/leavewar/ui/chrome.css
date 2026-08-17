@@ -100,7 +100,10 @@
 }
 
 .spring {
-  margin-left: auto;
+  /* Was `margin-left:auto` to sit at the far right of the mark + nav. Those
+     were removed (18 Aug 26), so the period picker leads the strip from the
+     left now — nothing to push away from. */
+  margin-left: 0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -231,6 +234,10 @@
   padding: 10px 14px;
   border-bottom: 1px solid var(--edge);
   background: rgba(26, 31, 38, .6);
+  /* Wrap since the roster tools joined the row (18 Aug 26): on a phone the
+     month strip drops to its own line and lays out two rows there, instead of
+     being crushed into a one-per-line column beside the buttons. */
+  flex-wrap: wrap;
 }
 
 .card-hd .t {

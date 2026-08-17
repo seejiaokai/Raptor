@@ -32,20 +32,13 @@ export function Topbar() {
   const [making, setMaking] = useState(false)
   return (
     <>
+    {/* The Leave War page's own "142 SQN / LEAVE WAR" mark and "Leave war" nav
+        pill were REMOVED (owner, 18 Aug 26 — "142 is repeated… takes too much
+        space"). Raptor's shell topbar already carries the 142 SQN identity and
+        highlights the Leave War tab, so a second copy under it was pure
+        duplication and a band of wasted height on a phone. What stays is the
+        real controls only: the period picker here, and the stage strip below. */}
     <div className="topbar">
-      <div className="mark">
-        <svg className="rglyph" width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <path d="M3 6 L12 3 L21 6 L12 11 Z" fill="#3BC6E8" opacity=".9" />
-          <path d="M4 12 L12 15 L20 12 L12 21 Z" fill="#3BC6E8" opacity=".45" />
-        </svg>
-        <div className="tx">
-          <span className="k">142 SQN</span>
-          <span className="v">LEAVE WAR</span>
-        </div>
-      </div>
-      <nav className="nav">
-        <span className="on">Leave war</span>
-      </nav>
       <div className="spring">
         {/* A native select rather than a popover: it is the one control that
             works the same on a phone, a desktop and a keyboard, and it needs

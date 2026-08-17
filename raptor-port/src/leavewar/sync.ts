@@ -43,10 +43,12 @@ import {
   getState,
   ingestDutyCredit,
   ingestFromRaptor,
+  setPeople,
   setViewer,
   subscribe as lwSubscribe,
   withdrawLeaveCell,
 } from './state/store'
+import { projectPeople } from './state/raptorRoster'
 
 /* Re-entrancy: ingest persists-and-notifies per cell, and writeInputsBatch's
    epilogue notifies too, so each reconciler fires the other's subscription
@@ -532,6 +534,40 @@ export function runOilPass(): void {
   }
 }
 
+/* ---- wire 0 upkeep: the roster stays a live projection ------------------- */
+
+/* A stable signature of the roster, so a re-projection that changed nothing
+   does not churn a re-render. Every projected field is in it; the order is
+   `projectPeople`'s own, which is deterministic. */
+function rosterSig(people: { id: string; callsign: string; seat: string; band: string; sxo: boolean; q?: string; pers?: boolean; label?: string }[]): string {
+  return people.map(p => `${p.id}|${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q ?? ''}|${p.pers ? 1 : 0}|${p.label ?? ''}`).join(';')
+}
+
+/**
+ * Re-project Raptor's PEOPLE onto the Leave War roster (owner, 18 Aug 26 —
+ * "when I add personnel through quals, the new personnel will appear on leave
+ * war too"). The roster is a boot-time projection; without this a body added
+ * on the Quals page mid-session never reached Leave War, and reload no longer
+ * helps now the app is session-only.
+ *
+ * Posting dates set by the demo overlay (state/demoworld.ts — Raptor has none
+ * of its own) are preserved across the re-projection, so the demo world does
+ * not lose IGNITE's posting-out on the first Raptor notify. Writes only when
+ * the roster actually changed, so an ordinary leave edit does not repaint the
+ * whole grid. The admin's hand-order and personnel labels are keyed by id in
+ * the store, so a new or departed body reconciles against them for free.
+ */
+function reprojectRoster(): void {
+  const projected = projectPeople()
+  const current = getState().people
+  const prev = new Map(current.map(p => [p.id, p]))
+  const merged = projected.map(p => {
+    const was = prev.get(p.id)
+    return was ? { ...p, from: was.from, to: was.to } : p
+  })
+  if (rosterSig(current) !== rosterSig(merged)) setPeople(merged)
+}
+
 /* ---- wiring -------------------------------------------------------------- */
 
 /**
@@ -554,6 +590,9 @@ export function wireLeaveWarSync(): void {
   runOutbound()
   raptorSubscribe(() => {
     setViewer(ME)
+    // Before the passes: a body added on the Quals page must be on the roster
+    // before inbound tries to land any of its leave (owner, 18 Aug 26).
+    reprojectRoster()
     runInbound()
     runOilPass()
     runOutbound()

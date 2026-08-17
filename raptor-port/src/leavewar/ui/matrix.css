@@ -59,9 +59,17 @@
    to grow would slide the two apart and leave a gap the day cells show
    through. Change one and you must change the other. */
 & {
-  --who-w: 118px;
+  /* Widened 118 → 140 (18 Aug 26) to seat the colour-coded CAT chip and the
+     edit-mode drag handle beside the callsign. `.bal` anchors its `left:` to
+     this same var, so the two frozen columns still move as one. A phone keeps
+     it tighter (below) — there the chip's colour carries the CAT and the
+     callsign ellipses. */
+  --who-w: 140px;
   --bal-w: 44px;
+  --sxo: #E8B23B;
+  --pers: #E7ECF1;
 }
+@media (max-width: 480px) { & { --who-w: 122px; } }
 
 .mx .who,
 .mx .bal {
@@ -753,6 +761,171 @@
 
 .mx tbody tr.me .who {
   color: var(--accent);
+}
+
+/* ---- Categorised roster (owner, 18 Aug 26) ------------------------------ */
+
+/* The Auto-sort / Rearrange controls in the card header. */
+.rostertools { display: flex; gap: 8px; align-items: center; }
+.rtbtn {
+  background: var(--panel-2);
+  border: 1px solid var(--edge-2);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.rtbtn:hover { border-color: var(--accent); }
+.rtbtn.pri { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.rtbtn.on { background: var(--raised); border-color: var(--accent); color: var(--accent); }
+
+/* Group heading. The label rides a sticky td spanning the two frozen columns
+   (the .who/.bal technique), pinned to the left as the year scrolls; its text
+   overflows visibly across the empty fill cell. z-index 3 keeps it above the
+   scrolling body cells. */
+.mx tbody tr.grp td.grphd {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  padding: 0;
+  overflow: visible;
+  background: var(--bg);
+  border-top: 1px solid var(--edge);
+  border-bottom: 1px solid var(--edge);
+}
+.mx tbody tr.grp td.grpfill {
+  background: var(--bg);
+  border-top: 1px solid var(--edge);
+  border-bottom: 1px solid var(--edge);
+}
+.grphd-in {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px 6px;
+  white-space: nowrap;
+  /* Zero-width, overflowing: the label paints past the cell but contributes NO
+     min-width, so an auto-layout table cannot grow the frozen callsign column
+     to fit "Personnel · N". Without this the colSpan-2 heading dragged the
+     76px phone column out to ~86px and the balance column slid off it. */
+  width: 0;
+  overflow: visible;
+}
+.grphd-in .gsw { width: 10px; height: 10px; border-radius: 3px; flex: none; background: var(--edge-2); }
+.grphd-in .gname { font-size: 11px; font-weight: 800; letter-spacing: .09em; color: var(--ink); }
+.grphd-in .gcount { font-size: 10px; color: var(--ink-3); font-weight: 600; }
+/* Per-group swatch colour, reusing Raptor's CAT palette so a colour means the
+   same thing here as on the Quals page. Ops groups get a red→blue sweep (A→D)
+   to say "this group is graded inside". */
+.grp.g-sxo  .gsw { background: var(--sxo); }
+.grp.g-ip   .gsw,
+.grp.g-iwso .gsw { background: var(--q-ins); }
+.grp.g-opsp .gsw,
+.grp.g-opsw .gsw { background: linear-gradient(90deg, var(--q-a), var(--q-d)); }
+.grp.g-ocu  .gsw { background: var(--q-ocu); }
+.grp.g-pers .gsw { background: var(--pers); }
+
+/* The CAT sub-heading inside an ops group — DESKTOP ONLY. On a phone the
+   coloured chip carries the CAT and these headings would only cost height
+   (owner: "if it takes up too much space on the mobile… just colour code it"). */
+.mx tbody tr.catsub td.catsub-in {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  overflow: visible;
+  white-space: nowrap;
+  background: var(--bg);
+  padding: 5px 12px 2px 24px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--ink-2);
+}
+.mx tbody tr.catsub td.catsub-fill { background: var(--bg); }
+@media (max-width: 700px) { .mx tbody tr.catsub { display: none; } }
+
+/* The callsign cell: handle, name, colour chip, and (ground crew) a label. */
+.whorow { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.whorow .drag {
+  color: var(--edge-2);
+  font-size: 13px;
+  cursor: grab;
+  flex: none;
+  line-height: 1;
+  user-select: none;
+}
+.whorow .drag:active { cursor: grabbing; }
+/* Matches the base `.mx .who .whoedit` specificity so the flex layout wins
+   over its `width:100%` — the button hugs its name + chip now, leaving room
+   for a personnel label beside it. */
+.mx .who .whoedit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+.mx .who .whoedit .cs {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Shrinks to ellipsis inside the 76px phone frozen column rather than
+     pushing the cell wider than it is (the "nothing in the callsign column is
+     cut off" gate reads scrollWidth vs clientWidth). */
+  min-width: 0;
+}
+.catchip {
+  flex: none;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  padding: 2px 5px;
+  border-radius: 5px;
+  line-height: 1.2;
+}
+.catchip.q-a   { background: var(--q-a);   color: #fff; }
+.catchip.q-b   { background: var(--q-b);   color: #2a1e02; }
+.catchip.q-c   { background: var(--q-c);   color: #04222b; }
+.catchip.q-d   { background: var(--q-d);   color: #fff; }
+.catchip.q-ocu { background: var(--q-ocu); color: #fff; }
+.catchip.q-ins { background: var(--q-ins); color: #fff; }
+.catchip.q-sxo { background: var(--sxo);   color: #2a1e02; }
+.catchip.q-pers{ background: var(--pers);  color: #12161b; }
+.catchip.q-ops { background: var(--edge-2); color: var(--ink); }
+.pers-lbl { font-size: 10.5px; color: var(--ink-3); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.pers-in {
+  width: 74px;
+  background: var(--bg);
+  border: 1px solid var(--edge-2);
+  border-radius: 5px;
+  color: var(--ink);
+  font-size: 10.5px;
+  padding: 2px 5px;
+}
+
+/* Edit-mode row affordances. */
+.mx tbody tr.arrange .who { cursor: default; }
+.mx tbody tr.dragover .who { box-shadow: inset 0 2px 0 var(--accent); }
+.mx tbody tr.dragging .who,
+.mx tbody tr.dragging .bal { opacity: .5; }
+
+/* The frozen callsign column is only 76px on a phone, and an auto-layout
+   table grows a column to its content's min-width — so anything wider than
+   76px there drags the balance column (anchored to --who-w) out of line.
+   Keep the chip compact and fold the personnel label away (the white chip
+   still reads as ground crew; the label is a desktop editing aid, and the
+   owner's rule for the phone was "just colour code it"). */
+@media (max-width: 430px) {
+  .whorow { gap: 4px; }
+  .catchip { padding: 1px 3px; font-size: 8px; letter-spacing: 0; }
+  .pers-lbl, .pers-in { display: none; }
 }
 
 }

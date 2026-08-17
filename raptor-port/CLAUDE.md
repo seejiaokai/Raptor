@@ -414,7 +414,14 @@ leave codes; details in `docs/superpowers/specs/leavewar-sync.md`). Editing
 or deleting an lw-tagged input on the Inputs page carries back INTO the war
 (owner, 17 Aug 26 — full two-way): `commitInputEdit`/`removeInput` call
 `sync.ts:retractLwRow`, a Raptor-side caller of this same seam, not a new
-one. Don't add a fifth seam casually,
+one. The roster is a LIVE projection since 18 Aug 26: `sync.ts:reprojectRoster`
+re-projects Raptor's PEOPLE on every Raptor notify (change-guarded), so a body
+added on the Quals page reaches Leave War without a reload — a rider on this
+same seam. Its DISPLAY is categorised (`engine/people.ts:groupOf` — SXO / IP /
+OPS P by CAT / IWSO / OPS W by CAT / OCU / Personnel, colours from Raptor's
+`--q-*`), and ground crew ride it (`pers`, seat `gnd`) but are skipped by every
+manning count (`countsFor`); `categoryOf` and the thresholds are untouched.
+Don't add a fifth seam casually,
 and never call its `initStore` from a component — it clears the store's
 subscribers.
 

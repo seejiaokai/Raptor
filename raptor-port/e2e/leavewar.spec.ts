@@ -257,6 +257,15 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
   // The cost is the roster's real size, not a regression — the demo simply
   // shows the crew Raptor actually flies.
   //
+  // RAISED A FIFTH TIME, 26500 -> 29000, for the categorised roster (owner,
+  // 18 Aug 26): ground crew now ride the roster (5 more rows across the
+  // 365-column grid), each person row gained a `.whorow`/`.cs` wrapper pair
+  // and a colour chip, and the seven group headings plus eight CAT
+  // sub-headings add their own rows. Measured BEFORE writing the number, on
+  // the built bundle: 27953 nodes inside `.mx`, 28023 whole-page with a sheet
+  // open. Real size, not a regression — the crew Raptor flies plus its own
+  // ground crew, grouped.
+  //
   // The headroom principle is unchanged: this is a ceiling, not a target,
   // and raising it is a deliberate edit in the change that adds the nodes.
   const nodes = await page.evaluate(() => document.querySelectorAll('.mx *').length)
@@ -266,7 +275,7 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
   // grid that quietly went back to the 16-person seed roster would sit near
   // 10350 and this would catch it.
   expect(nodes).toBeGreaterThan(20000)
-  expect(nodes).toBeLessThan(26500)
+  expect(nodes).toBeLessThan(29000)
 
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
@@ -283,9 +292,9 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
      open sheet, and nothing else. */
   const all = await page.evaluate(() => document.querySelectorAll('#page-leavewar *').length)
   expect(all).toBeGreaterThan(nodes)
-  // 25918 measured with the sheet open (17 Aug 26) — same 26500-class
+  // 28023 measured with the sheet open (18 Aug 26) — same 29000-class
   // ceiling plus the sheet's few dozen nodes.
-  expect(all).toBeLessThan(26800)
+  expect(all).toBeLessThan(29200)
 })
 
 // A year is ~13,600px of grid. Reaching September by dragging is not a thing
@@ -1200,21 +1209,27 @@ test('an admin edits who somebody is, and the grid follows', async ({ page }) =>
 
   await page.locator('[data-testid="person-sxo"]').click()
   await expect(page.locator('[data-testid="person-category"]')).toHaveText('IP(S)')
-  await expect(page.locator('[data-testid="person-prowler"]')).toContainText('IP(S)')
+  // The grid follows by GROUPING now (18 Aug 26), not a suffix: prowler's chip
+  // takes the SXO colour and an SXO group heading is present.
+  await expect(page.locator('[data-testid="cat-prowler"]')).toHaveClass(/q-sxo/)
+  await expect(page.locator('[data-testid="group-SXO"]')).toBeVisible()
 })
 
-// The (S) has to FIT. The callsign column is 76px on a phone and already
-// clipped a label once — the tag adds three characters to every SXO's
-// category, and `overflow: hidden` would hide the failure rather than show
-// it.
-test('the SXO tag is not clipped in the callsign column on a phone', async ({ page }) => {
+// The callsign column is 76px on a phone. Its content — the callsign, the
+// colour-coded CAT chip, and (ground crew) a label — must FIT: `overflow:
+// hidden` would hide a too-wide row as mere truncation rather than show it.
+// SXO is a group + a gold chip now, not a `(S)` suffix, so this guards the
+// chip layout rather than the old tag.
+test('the callsign, its CAT chip and a personnel label all fit the phone column', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 760 })
-  const cut = await page.locator('[data-testid="row-slipway"] .who').evaluate(el => ({
-    over: el.scrollWidth > el.clientWidth + 1,
-    text: el.textContent,
-  }))
-  expect(cut.text).toContain('OPSP(S)')
-  expect(cut.over).toBe(false)
+  // An SXO aircrew row (slipway is Raptor's own SXO) — chip present, not clipped.
+  await expect(page.locator('[data-testid="cat-slipway"]')).toHaveClass(/q-sxo/)
+  const clipped = await page.evaluate(() =>
+    [...document.querySelectorAll('.mx tbody .who')]
+      .map(el => el as HTMLElement)
+      .filter(el => el.scrollWidth > el.clientWidth + 1)
+      .map(el => el.textContent?.trim()))
+  expect(clipped).toEqual([])
 })
 
 // The owner's rule for the event lines: "If the text needs more space, that
@@ -1610,4 +1625,83 @@ test('a decision made before the reopen survives it', async ({ page }) => {
   await page.locator('[data-testid="stage-back"]').click()
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('OPEN FOR BIDDING')
   expect(await chip.getAttribute('class')).toContain('ref')
+})
+
+// ---- the categorised roster (owner, 18 Aug 26) --------------------------
+// The header no longer repeats "142 SQN / LEAVE WAR"; the roster is grouped
+// into the owner's seven categories, colour-coded from Raptor's own CAT
+// palette; ground crew ride it as a white Personnel group; an admin auto-sorts
+// or hand-drags the order.
+
+test('the page carries no second squadron mark — the shell is the only identity', async ({ page }) => {
+  // The old "142 SQN / LEAVE WAR" mark and "Leave war" nav pill are removed.
+  expect(await page.locator('#page-leavewar .mark, #page-leavewar .nav').count()).toBe(0)
+})
+
+test('the roster is grouped SXO → IP → OPS P → IWSO → OPS W → OCU → Personnel', async ({ page }) => {
+  const order = await page.$$eval('[data-testid^="group-"]',
+    els => els.map(e => e.getAttribute('data-testid').replace('group-', '')))
+  expect(order).toEqual(['SXO', 'IP', 'OPSP', 'IWSO', 'OPSW', 'OCU', 'PERS'])
+})
+
+test('every callsign wears its CAT colour, reused from the Quals palette', async ({ page }) => {
+  await expect(page.locator('[data-testid="cat-dj"]')).toHaveClass(/q-a/)       // CAT A ops pilot → red
+  await expect(page.locator('[data-testid="cat-torque"]')).toHaveClass(/q-pers/) // ground crew → white
+  await expect(page.locator('[data-testid="group-PERS"]')).toBeVisible()
+  await expect(page.locator('[data-testid="row-torque"]')).toBeVisible()
+})
+
+test('CAT sub-headings split the ops groups on desktop and fold away on a phone', async ({ page }) => {
+  const sub = page.locator('[data-testid="subcat-OPSP-A"]')
+  if (page.viewportSize()!.width >= 700) await expect(sub).toBeVisible()
+  else await expect(sub).toBeHidden()   // rendered but display:none — the owner's "just colour code it" on mobile
+})
+
+test('an admin auto-sorts and hand-drags the roster; a member gets neither tool', async ({ page }) => {
+  await lwRole(page, 'admin')
+  const ids = () => page.$$eval('[data-testid^="row-"]', els => els.map(e => e.getAttribute('data-testid').slice(4)))
+  const before = await ids()
+
+  if (page.viewportSize()!.width >= 700) {
+    // Pointer drag (works on touch too): move the top row down past the fifth.
+    await page.locator('[data-testid="roster-arrange"]').click()
+    const h = (await page.locator(`[data-testid="drag-${before[0]}"]`).boundingBox())!
+    const tgt = (await page.locator(`[data-testid="row-${before[5]}"]`).boundingBox())!
+    await page.mouse.move(h.x + 5, h.y + 5)
+    await page.mouse.down()
+    await page.mouse.move(h.x + 5, h.y + 25, { steps: 3 })
+    await page.mouse.move(tgt.x + 40, tgt.y + 8, { steps: 5 })
+    await page.mouse.up()
+    expect((await ids())[0]).not.toBe(before[0])
+    // Auto-sort restores the categorised order.
+    await page.locator('[data-testid="roster-autosort"]').click()
+    expect((await ids())[0]).toBe(before[0])
+    await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
+  } else {
+    // On a phone at least prove Auto-sort is reachable and does not throw.
+    await page.locator('[data-testid="roster-autosort"]').click()
+    expect((await ids())[0]).toBe(before[0])
+  }
+
+  await lwRole(page, 'member')
+  await expect(page.locator('[data-testid="roster-autosort"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
+})
+
+test('an admin gives a personnel body a free-text label', async ({ page }) => {
+  // The personnel label is a desktop editing aid — it folds away on a phone,
+  // where the white chip alone carries "ground crew" (the owner's "just colour
+  // code it on mobile"). So the edit path is desktop-only; on a phone assert
+  // the fold instead.
+  if (page.viewportSize()!.width < 700) {
+    await expect(page.locator('[data-testid="perslabel-torque"]')).toBeHidden()
+    return
+  }
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="roster-arrange"]').click()
+  const inp = page.locator('[data-testid="perslabel-in-torque"]')
+  await inp.fill('Avionics')
+  await inp.press('Enter')
+  await page.locator('[data-testid="roster-arrange"]').click() // leave arrange → read-only label
+  await expect(page.locator('[data-testid="perslabel-torque"]')).toHaveText('Avionics')
 })
