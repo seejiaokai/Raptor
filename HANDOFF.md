@@ -668,19 +668,23 @@ ever.
   one-dataset bullet below — more weeks fix it for free); the demo seed
   publishes nothing at boot, so on the demo data a credit appears only
   after a scheduler actually signs and publishes a weekend day (by design —
-  publishing is the squadron's word); and the earned credit rides the same
-  session asymmetry as every wire: Raptor's publish state resets on reload
-  while Leave War persists, so a stored FS/HS credit whose published day is
-  gone is REVERSE-CLEARED at the next boot (the pass finds nothing earning
-  it) — the same server-shaped hole as the lw-input reverse-clear above,
-  wearing one more hat, and the same "tell the owner before real use" note
-  covers it. Open around the built wires: **the session-only
-  asymmetry is now user-visible** — Raptor's `INPUTS` reset on reload while
-  Leave War persists, so Raptor-ingested LW cells (except the demo-backed
-  pair) reverse-clear on the next boot, and lw-tagged inputs REAPPEAR from
-  the persisted grid; same server-shaped hole as the first bullet below,
-  now wearing its most visible hat — tell the owner before the squadron
-  files real leave. **Editing/deleting an lw-tagged input on the Inputs
+  publishing is the squadron's word); and on reload the earned credit resets
+  with the rest of the session — see the resolved asymmetry bullet next.
+  **RESOLVED — the session asymmetry is gone; Leave War is session-only now,
+  matching Raptor (17 Aug 26, owner: "I'm ok that it resets every session… I
+  will make it eventually work with database").** Leave War's store boots on a
+  memory backend (`main.tsx` passes `memoryBackend()` to `lwInitStore`), so a
+  reload forgets the whole war and returns to the seed exactly as Raptor's own
+  `INPUTS` do. Before this the two halves disagreed across a reload — Raptor
+  reset while Leave War persisted — so a synced leave cell would reverse-clear
+  or reappear at the next boot; now both forget in lockstep and nothing
+  lingers on one side. The storage seam (`leavewar/state/storage.ts`,
+  `localBackend` still present) is where the shared database backend plugs in
+  when real multi-device data arrives; until then, memory, and reset-per-
+  session is the deliberate behaviour, not a bug. Every boot is now a fresh
+  one, so `installDemoWorld` always takes the re-key path (`main.tsx` passes
+  `false`). Pinned by an e2e test (`leavewar.spec.ts` — a placed bid does not
+  survive a reload). **Editing/deleting an lw-tagged input on the Inputs
   page snaps back on the next reconcile** (the war is the source of truth);
   a read-only affordance for those rows is open UI polish. The **58-row
   year matrix (~25.9k nodes)** is outside the perf gate (its own e2e DOM
@@ -1532,7 +1536,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `LeaveWarPage.tsx` | The ONE seam: renders the standalone app's Topbar/StageBar/Matrix inside `#page-leavewar`, scrolls the window to top on mount (Raptor keeps scroll across tab switches). Boot is NOT here — `main.tsx` calls its `initStore` once. |
 | `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + the FOUR medical markers `ATTB`/`ATTC`/`HL`/`OML` (replaced `M`, Aug 26; `ATTB` joined 17 Aug 26) + `CSE`/`OD` + FS/HS SC-duty, portions `*X`/`X*` — **carried by leave AND medical since 17 Aug 26**, courses/OD/SC-duty still refusing one; plus `isMedical`, `MEDICAL_TYPES` (the admin picker's list) and `displayCell`, which prints ATTB/ATTC as the owner's bare `B`/`C` while `parseCell` accepts either spelling), `counters.ts` (derived balances + ledger, **plus the counter-column figures: `takenOf` per-type consumed, `medConOf`/`lveConOf` aggregates, the 12-figure `FIGURES` catalogue — `OIL BAL` joined with wire 4, fed by `earnedOil` summing FS/HS cells straight into the OIL balance — `orderedFigures`, and `figureParts`, the signed per-person breakdown rows the tap-a-counter sheet shows (they always sum to the figure, pinned by test); see the open-work counter-column bullet**), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/nolv/work, `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
 | `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`, **the event writers `setDayEvent`/`setDayEventRange` (repeat) + `addEventBand`/`removeEventBand` (merge) + the `addEventType`/`updateEventType`/`removeEventType`/`resetEventTypes` library writers, all admin-gated; `state.eventDefs` persisted under `eventdefs`, `period.bands` read leniently in `readWar`**. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. **`viewer` rides the same rule** (17 Aug 26 — WHICH PERSON is looking, mirrored from Raptor's `ME` by `sync.ts`, never persisted; lights that row and personalises the counter picker). `moveFigure`/`resetFigureOrder` are ADMIN-GATED at the write path (owner: the column arrangement is management's); `reconcile()` on load keeps a MEDICAL cell's `source:'raptor'` record — dropping it would strip a synced cell's ownership at every reload and let outbound re-mint Raptor's own row. |
-| `state/storage.ts` | The `leavewar:`-prefixed localStorage seam (`memoryBackend` headless) — deliberately NOT `HOOKS.storeBackend`; the future shared backend replaces both together. |
+| `state/storage.ts` | The storage seam — `memoryBackend` (the one the browser boots now, so Leave War is session-only and resets on reload like Raptor's `INPUTS`; `main.tsx` passes it to `lwInitStore`) and `localBackend` (the `leavewar:`-prefixed localStorage backend, still here but no longer wired in — kept for reference and tests). Deliberately NOT `HOOKS.storeBackend`; the future shared database backend replaces this seam. |
 | `state/raptorRoster.ts` | Wire 0 — `projectPeople()`: the LW roster as a projection of Raptor's `PEOPLE` (skips ground crew + sentinels; band from `isInstr`; sxo carried). Installed at boot, never persisted. |
 | `state/demoworld.ts` | The fresh-browser demo re-key — DEMO_MAP (16 seed people → Raptor aircrew, seat+band-equal by construction), the seed overlay, and the two idempotent backing inputs for the seed's Raptor-owned cells. Boot-time only; the 632 vendored tests stay blind by construction. |
 | `sync.ts` | Wires 1+2+4 — three DERIVED reconcilers (outbound: approved cells → span-collapsed lw-tagged `INPUTS` rows, one `writeInputsBatch`, only on a non-empty diff; inbound: leave inputs → Raptor-owned cells per day, portions both ways, custom rounds OUT, reverse-clear, the clash list + its own subscription; **`runOilPass`**: published weekend/PH duty → raptor-owned FS/HS cells off the issued snapshot, `isNonWorkingISO` reading `DayInfo.ph` + 'off'-tagged events, reverse sweeps partitioned by cell vocabulary, leave wins a contested cell with a `kind:'duty'` clash), the SYNCING flag, `wireLeaveWarSync()`. **Wire 5 (17 Aug 26) rides wires 1+2 rather than adding a pass**: the four MEDICAL markers cross both ways — `medRowPortion` (AM/PM exact, a custom window ≤6h a half sided by its midpoint, >6h full; NOT leave's round-OUT), `lwTypeOf`/`INPUT_FOR_LW` bridging Raptor's `ATT B`/`ATT C` to the spaceless store form, and no approval gate outbound because medical is assigned, not bid. `wireLeaveWarSync` also mirrors Raptor's `ME` into `viewer` on every notify. The loop-breaker pair is documented at the top of the file. Tested in `sync.test.ts` + `oilsync.test.ts` + `viewer.test.ts` (the last is its own file because wiring the sync leaves a live Raptor subscription behind). |

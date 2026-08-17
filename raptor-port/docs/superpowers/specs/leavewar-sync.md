@@ -233,15 +233,19 @@ own word ("these will be connected to the inputs"):
 
 ## The standing gaps every wire inherits (say them, don't rediscover them)
 
-- **Raptor's `INPUTS` are session-only; Leave War persists.** Until the
-  server/sync backend exists (HANDOFF's first bullet), a synced pair
-  diverges on reload: the Leave War half survives, the Raptor half
-  resets to seed. Wire 1/2 are therefore honest only within a session —
-  ship them WITH that caveat in the owner's words, or ship the shared
-  backend first. Leave War's storage seam (`state/storage.ts`) and
-  Raptor's `HOOKS.storeBackend` are the two swap points one backend
-  replaces together (Leave War's own next-phase note says push, not just
-  persist).
+- **Both sides are session-only now — the reload asymmetry is CLOSED
+  (17 Aug 26).** Leave War used to persist to localStorage while Raptor's
+  `INPUTS` reset on reload, so a synced pair diverged: the Leave War half
+  survived a reload and the Raptor half returned to seed, leaving a cell
+  reverse-cleared or reappearing. The owner chose to make both reset per
+  session ("I'm ok that it resets every session… I will make it eventually
+  work with database"), so `main.tsx` now boots Leave War on `memoryBackend()`
+  and the whole war resets on reload exactly as Raptor does — the two forget
+  in lockstep, nothing lingers on one side. Wire 1/2 are therefore consistent
+  within a session and consistent across a reload (both empty back to seed).
+  Leave War's storage seam (`state/storage.ts`, `localBackend` still present
+  but unwired) and Raptor's `HOOKS.storeBackend` remain the two swap points
+  the future shared database backend replaces together.
 - **Raptor loads ONE week; Leave War holds years.** Outbound (wire 1)
   writes inputs for any date (inputs already live off-week via
   `endDate`/`dateOrd`); wire 4 can only read duties for the loaded week.
