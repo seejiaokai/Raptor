@@ -12,8 +12,30 @@
 // the grid, and the manning counts behind an open sheet are exactly what
 // somebody is reading while they decide.
 
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import './bidpicker.css'
+
+/* ONE scroll while a sheet is up (owner, 17 Aug 26 — "I think it's cause by
+   having 2 scrolls... on the phone"): the page behind a sheet must not move.
+   A swipe that landed beside the sheet, or on a sheet with nothing left to
+   scroll, used to fall through and scroll the year grid under the reader.
+   The lock is a body class (the page scrolls on the window, so only the
+   body can refuse it), counted rather than toggled so a sheet closing while
+   another opens cannot unlock the page under the survivor. Scroll position
+   survives: overflow:hidden freezes the offset, it does not reset it —
+   same technique as Raptor's own board lock (`body.sb-lock`), same known
+   iOS caveat recorded there. */
+let LOCKS = 0
+function useSheetLock() {
+  useEffect(() => {
+    LOCKS += 1
+    document.body.classList.add('lw-sheet-lock')
+    return () => {
+      LOCKS -= 1
+      if (LOCKS <= 0) document.body.classList.remove('lw-sheet-lock')
+    }
+  }, [])
+}
 
 export function Sheet({
   testid,
@@ -26,6 +48,7 @@ export function Sheet({
   onClose: () => void
   children: ReactNode
 }) {
+  useSheetLock()
   return (
     <>
       {/* Not a button and not focusable: it carries nothing a screen reader
