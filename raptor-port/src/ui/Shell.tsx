@@ -35,6 +35,7 @@ import { LogicPage } from './LogicPage'
 import { QualsPage } from './QualsPage'
 import { EditWeek, EditRoster } from './EditWeek'
 import { ALPanel } from './ALPanel'
+import { LeaveWarPage } from '../leavewar/LeaveWarPage'
 
 /* the week banner — the exact strings renderStatus builds, as a pure value */
 function banner() {
@@ -211,6 +212,7 @@ export function Shell() {
           <a data-page="inputs" role="button" tabIndex={0} className={page === 'inputs' ? 'on' : ''} onClick={() => nav('inputs')} onKeyDown={navKey('inputs')}>Inputs</a>
           <a data-page="quals" role="button" tabIndex={0} className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')} onKeyDown={navKey('quals')}>Quals</a>
           <a data-page="logic" role="button" tabIndex={0} className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')} onKeyDown={navKey('logic')}>Logic</a>
+          <a data-page="leavewar" role="button" tabIndex={0} className={page === 'leavewar' ? 'on' : ''} onClick={() => nav('leavewar')} onKeyDown={navKey('leavewar')}>Leave War</a>
         </nav>
         <div className="spring">
           <div className="acct">
@@ -325,6 +327,9 @@ export function Shell() {
       </section>
       <section className={'page' + (page === 'logic' ? ' on' : '')} id="page-logic">
         {page === 'logic' && <LogicPage />}
+      </section>
+      <section className={'page' + (page === 'leavewar' ? ' on' : '')} id="page-leavewar">
+        {page === 'leavewar' && <LeaveWarPage />}
       </section>
 
       {/* week pan arrows + the pinned proxy scrollbar (desktop) — markup 1:1;

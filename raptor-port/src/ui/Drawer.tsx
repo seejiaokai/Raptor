@@ -16,6 +16,7 @@ export function Drawer() {
   const items: [string, string, boolean][] = [
     ['editsched', 'Edit Schedule', !!admin], ['viewsched', 'View-only Sched', true],
     ['inputs', 'Inputs', true], ['quals', 'Quals', true], ['logic', 'Logic', true],
+    ['leavewar', 'Leave War', true],
   ]
   const close = () => { setDrawer(false); notify() }
   const people = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)

@@ -29,6 +29,7 @@ import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
 import { notify, undo, redo } from './state/store'
+import { setRole as lwSetRole } from './leavewar/state/store'
 
 export function installProbeBridge() {
   const w = window as any
@@ -75,6 +76,11 @@ export function installProbeBridge() {
      reach (a squadron member's Edit Schedule link doesn't exist to click),
      the same way w.openScheduler already forces SBDAY open with no click. */
   w.setPage = (p: string) => { view.setPage(p); notify() }
+  /* the Leave War role, same precedent as w.setPage: production writes it
+     only from resetSession (the Raptor login), but the vendored e2e suite
+     needs mid-test member↔admin switches that no click path reaches since
+     the standalone app's on-screen toggle was removed at the merge. */
+  w.lwSetRole = (r: 'admin' | 'member') => lwSetRole(r)
   /* the board — loaded lazily to keep module order simple */
   /* the id-getter every probe leans on, and the wider engine surface */
   w.$ = (id: string) => document.getElementById(id)

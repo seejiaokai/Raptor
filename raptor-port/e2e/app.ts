@@ -13,7 +13,7 @@ export async function login(page: Page, who: 'a' | 'user' = 'a') {
 
 /* React commits a tick after the nav, so every reader has to wait for the page
    it asked for rather than for a fixed delay. */
-export async function go(page: Page, to: 'viewsched' | 'editsched' | 'inputs' | 'quals' | 'logic') {
+export async function go(page: Page, to: 'viewsched' | 'editsched' | 'inputs' | 'quals' | 'logic' | 'leavewar') {
   await page.evaluate(p => (window as any).go(p), to)
   await page.waitForFunction(p => (window as any).CURPAGE === p, to)
   await page.waitForTimeout(350)
@@ -130,4 +130,25 @@ export async function puckSize(page: Page) {
     const cs = getComputedStyle(document.documentElement)
     return { w: parseFloat(cs.getPropertyValue('--puck-w')), h: parseFloat(cs.getPropertyValue('--puck-h')) }
   })
+}
+
+/* Open the Leave War tab the way a user reaches it: log in, click the tab,
+   wait for the matrix. The vendored suite was written against the standalone
+   app, where the matrix WAS the page and there was no login — this helper is
+   the whole difference. Default is the member account, which matches the
+   standalone app's own default role; a test that needs admin from the start
+   passes 'a', and mid-test switches go through w.lwSetRole (the toggle the
+   standalone app drew was removed at the merge — the role rides the login). */
+export async function openLeaveWar(page: Page, who: 'a' | 'user' = 'user') {
+  await login(page, who)
+  await go(page, 'leavewar')
+  await page.waitForSelector('[data-testid="row-ramp"]')
+}
+
+/* The mid-test role switch, via the probe bridge (see probe-bridge.ts for
+   why it exists). The wait lets React commit the re-render the switch causes
+   before the test reads the controls it changed. */
+export async function lwRole(page: Page, role: 'admin' | 'member') {
+  await page.evaluate(r => (window as any).lwSetRole(r), role)
+  await page.waitForTimeout(150)
 }

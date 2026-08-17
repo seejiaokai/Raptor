@@ -1,0 +1,630 @@
+/* SCOPED under #page-leavewar (16 Aug 26, the Leave War merge): this file
+   was written for Leave War as a standalone page, and several of its class
+   names (.topbar .nav .wk .filters .lab .note ...) collide with Raptor's
+   scheduler.css — some with deliberately different values. Native CSS
+   nesting scopes every rule to the Leave War page section without touching
+   a selector, and the uniform +1 id specificity preserves this file's own
+   internal cascade order (the .blocked/.weekend and count-row orderings
+   below are load-bearing). :root blocks became `&` blocks for the same
+   reason. Do not unwrap, and never fix a cross-page bleed by editing
+   scheduler.css — add the explicit property here instead. */
+#page-leavewar {
+/* The matrix — Raptor's chip-and-card idiom. The .card/.stage wrapper this
+   table sits inside lives in chrome.css. */
+
+/* ONE vertical scroll on the page, none inside the grid (owner, 10 Aug 26).
+   It used to be `overflow: auto; max-height: 86vh`, which gave a phone two
+   vertical scrollers stacked inside each other — drag the grid and you could
+   never be sure which one would move.
+   So the wrapper scrolls HORIZONTALLY only and has no height cap: it grows to
+   whatever the roster needs and the page carries the vertical scrolling for
+   all of it. `overflow-y: hidden` never actually clips anything, because with
+   no cap there is no vertical overflow to clip; it is there to stop the
+   browser giving back the second scrollbar.
+
+   The cost, stated plainly because it is a real loss: the date header no
+   longer sticks. `position: sticky` resolves against the nearest scrollport,
+   which is still this wrapper, and this wrapper no longer scrolls vertically —
+   so scrolling the PAGE carries the header away with it. There is no CSS that
+   both scrolls one axis here and lets a descendant stick to the page's other
+   axis. The frozen callsign and counter columns are unaffected: they stick on
+   `left`, and this wrapper still owns the horizontal axis. */
+.mx-wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mx {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.mx th,
+.mx td {
+  border-right: 1px solid rgba(42, 49, 58, .7);
+  border-bottom: 1px solid rgba(42, 49, 58, .7);
+  padding: 3px 5px;
+  text-align: center;
+  height: 22px;
+}
+
+/* The two frozen columns. `left: 0` plus a solid --panel background is what
+   stops the day cells showing through while the grid scrolls sideways.
+
+   `.who` is a FIXED width, not a min-width, and that is load-bearing: the
+   balance column anchors its own `left:` to this number, and a `.who` free
+   to grow would slide the two apart and leave a gap the day cells show
+   through. Change one and you must change the other. */
+& {
+  --who-w: 118px;
+  --bal-w: 44px;
+}
+
+.mx .who,
+.mx .bal {
+  position: sticky;
+  z-index: 2;
+  background: var(--panel);
+}
+
+.mx .who {
+  left: 0;
+  text-align: left;
+  width: var(--who-w);
+  min-width: var(--who-w);
+  max-width: var(--who-w);
+  padding-left: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  overflow: hidden;
+}
+
+/* The balance column: ONE column showing one counter, not one column per
+   counter. That is the whole idea — its cost is fixed at 44px however many
+   entitlements exist, so a ninth leave type does not shrink the grid. */
+.mx .bal {
+  left: var(--who-w);
+  width: var(--bal-w);
+  min-width: var(--bal-w);
+  max-width: var(--bal-w);
+  text-align: center;
+  font-weight: 700;
+  font-size: 10.5px;
+  color: var(--ink-2);
+  /* A hairline that reads as the edge of the frozen pair, so the eye sees
+     one fixed panel rather than two columns that happen to be stuck. */
+  box-shadow: inset -1px 0 0 var(--edge);
+}
+
+.mx .bal.neg {
+  color: #FFAAB0;
+}
+
+.mx thead th.bal {
+  z-index: 3;
+  background: var(--panel-2);
+  padding: 2px 1px;
+  white-space: nowrap;
+}
+
+.mx thead th.bal .cname {
+  display: block;
+  font-size: 8.5px;
+  letter-spacing: .06em;
+  color: var(--accent);
+}
+
+/* The whole header is the button. It was two 13px arrows either side of the
+   label, and the owner's verdict from a phone was that they are too small to
+   hit — which they were: a glyph in a 44px column is not a tap target, and no
+   padding makes it one without eating the column it sits in.
+
+   So the target became the entire header cell, and the choosing moved out to
+   a sheet. */
+.mx thead th.bal .cpick {
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 2px 1px;
+  font-family: inherit;
+}
+
+.mx thead th.bal .cpick:hover .cname {
+  color: #8FE2F5;
+}
+
+/* Six dots under the label, one lit. Two jobs at once and both needed: it
+   says there are more counters than the one on screen — which the arrows used
+   to say — and it says where in the six this one sits, which they never did.
+   3px each, so the whole strip costs less width than one old arrow. */
+.mx thead th.bal .cdots {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.mx thead th.bal .cdot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--edge-2);
+}
+
+.mx thead th.bal .cdot.on {
+  background: var(--accent);
+}
+
+/* The counts' own balance cell is deliberately blank — a rule has no leave —
+   but it still needs the frozen background, or day cells scroll through it. */
+.mx .counts td.bal {
+  background: var(--panel);
+}
+
+/* The sticky date header. z-index 3 on the corner cell so it keeps
+   winning the stacking order over both the sticky header row and the
+   sticky column beneath it. */
+.mx thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--panel-2);
+  color: var(--ink-3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  min-width: 30px;
+}
+
+.mx thead th.who {
+  z-index: 3;
+  background: var(--panel-2);
+}
+
+/* The weekday, on its own line above the date. Quieter than both the month
+   label and the number — it is an aid to finding a column, not something
+   anybody reads a row of.
+
+   `display: block` is load-bearing, not tidiness: without it the weekday and
+   the date run together as "SAT03", which reads as one long token and widens
+   every column in the year to fit it. Seen happening in a screenshot at
+   390px before it was caught. */
+.mx thead th .dow {
+  display: block;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--ink-3);
+  opacity: .8;
+}
+
+.mx thead th .mon {
+  display: block;
+  font-size: 8.5px;
+  letter-spacing: .12em;
+  color: var(--accent);
+  opacity: .85;
+}
+
+/* Weekend banding runs the FULL COLUMN, header and body alike, not just the
+   header. Banding only the header gives you a tint you have to hunt for; the
+   point of the band is to let the eye find a Tuesday in a 90-column grid
+   without counting, and that needs the whole column. The step from --panel-2
+   is deliberately larger than it was — the first attempt sat 8 values away
+   and was invisible in a screenshot. */
+.mx thead th.weekend {
+  background: #0D1014;
+  color: var(--ink-3);
+}
+
+.mx td.weekend {
+  background: rgba(6, 8, 11, .55);
+}
+
+/* Declared after .weekend on purpose: both rules share specificity (0,2,0),
+   so the later rule wins the cascade on a header carrying both classes
+   (a blocked day that falls on a weekend). Blocked must win — it's the
+   squadron being told leave is discouraged, which matters more than the
+   fact that the day is also a Saturday. Do not reorder this back above
+   .weekend, and do not "tidy" it without re-checking the cascade. The
+   computed colour this now produces is rgba(229, 168, 59, 0.22), not the
+   old rgb(255, 165, 0) — see e2e/matrix.spec.ts. */
+.mx thead th.blocked {
+  background: rgba(229, 168, 59, .22);
+  color: #F2D9A6;
+  box-shadow: inset 0 -2px 0 var(--adv);
+}
+
+.mx .cat {
+  font-weight: 500;
+  color: var(--ink-3);
+  font-size: 9.5px;
+  margin-left: 6px;
+  letter-spacing: .06em;
+}
+
+/* count rows — tinted fills with coloured ink and an inset hairline,
+   never a solid block. */
+.mx .counts td {
+  font-weight: 700;
+  color: var(--ink-2);
+  background: rgba(26, 31, 38, .45);
+}
+
+.mx .counts .who {
+  background: var(--panel);
+  color: var(--ink-2);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.mx .counts td.amber {
+  background: rgba(229, 168, 59, .18);
+  color: #F2C879;
+  box-shadow: inset 0 0 0 1px rgba(229, 168, 59, .45);
+}
+
+.mx .counts td.red {
+  background: rgba(240, 85, 95, .20);
+  color: #FFAAB0;
+  box-shadow: inset 0 0 0 1px rgba(240, 85, 95, .55);
+}
+
+/* cells — chip idiom: tint + ink + hairline, never a solid block. Five
+   states are emitted: `.sc` for duty, `.info` for the codes nobody bids for,
+   and `.appr` / `.tbc` / `.ref` for an approved, pending and refused bid.
+   The three bid colours sat here unused until the bidding plan lit them up;
+   the values are unchanged from that original definition. */
+.mx td .c {
+  display: inline-block;
+  min-width: 26px;
+  padding: 1px 4px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 14px;
+}
+
+.c.appr {
+  background: rgba(87, 201, 122, .16);
+  color: #8FE0A8;
+  box-shadow: inset 0 0 0 1px rgba(87, 201, 122, .5);
+}
+
+.c.tbc {
+  background: rgba(178, 77, 234, .16);
+  color: #D9A6F5;
+  box-shadow: inset 0 0 0 1px rgba(178, 77, 234, .5);
+}
+
+.c.ref {
+  background: rgba(240, 85, 95, .16);
+  color: #FFA6AD;
+  box-shadow: inset 0 0 0 1px rgba(240, 85, 95, .5);
+}
+
+.c.sc {
+  background: rgba(231, 193, 58, .16);
+  color: #F0DC8E;
+  box-shadow: inset 0 0 0 1px rgba(231, 193, 58, .5);
+}
+
+.c.info {
+  color: var(--ink-3);
+}
+
+/* Half-day fill: a hard-edged divider echoing the asterisk's position, not a
+   second store of it. `parseCell` is the only place that reads the
+   asterisk — Matrix.tsx derives `.am`/`.pm` from its result cell-by-cell, so
+   this class can never drift out of sync with the text it decorates. The
+   filled half sits where the asterisk sits (left for a leading `*`, i.e.
+   morning; right for a trailing one, i.e. afternoon), so the two cues always
+   agree instead of racing each other for the reader's attention. `position:
+   relative` is needed on `.c` itself so the `::after` divider line anchors
+   to the chip rather than to the row. */
+.c {
+  position: relative;
+}
+
+.c.am {
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, .20) 0 50%, transparent 50%);
+}
+
+.c.pm {
+  background-image: linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, .20) 50%);
+}
+
+.c.am::after,
+.c.pm::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  left: 50%;
+  background: rgba(255, 255, 255, .35);
+}
+
+/* Out-of-squadron cells: shaded grey diagonal lines rather than a flat block.
+   The owner asked for exactly this on 10 Aug 26 — it already existed, and
+   their asking for it is the evidence that it was too faint to read as
+   anything on a phone. Widened from a 1px line every 5px to a 2px line every
+   6px, and lifted from .5 to .75 alpha, so the hatch is legible at the size a
+   day column actually is. A flat grey block is still the wrong answer: it
+   would read as a filled cell, and an empty posted-out day is not filled. */
+.mx td.gone {
+  background: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(58, 67, 79, .75) 4px, rgba(58, 67, 79, .75) 6px);
+}
+
+.mx td.gone .c {
+  color: var(--ink-3);
+  opacity: .75;
+}
+
+/* `.bal` is excluded alongside `.who`, and that is a BUG FIX, not tidiness.
+   Both are frozen columns painted over the day cells, and they hold their
+   ground only because their background is opaque. This tint is translucent,
+   so a hovered row turned the counter column see-through and the grid
+   scrolled visibly underneath it — reported by the owner from a phone, where
+   a tap leaves the row hovered until something else is tapped, so the column
+   simply stays broken. `.who` was already exempt, which is why only the
+   counter showed it. Pinned by the geometry gate; jsdom cannot see it. */
+.mx tbody tr:hover td:not(.who):not(.bal) {
+  background: rgba(59, 198, 232, .05);
+}
+
+/* An actionable cell — one a click will do something with, which is stage-
+   dependent. The cursor is the only affordance a 30px column has room for;
+   the hover tint sits above the row hover (.12 against .05) so that on a row
+   the pointer is already over, the one cell under it still stands out. */
+.mx td.act {
+  cursor: pointer;
+}
+
+.mx tbody tr td.act:hover {
+  background: rgba(59, 198, 232, .12);
+}
+
+/* Two marks that sit ON TOP of a state colour, never instead of one. The
+   squadron's colour convention is approved by the owner and unchanged: green
+   is approved, magenta pending, red refused. These answer a second question
+   the colour cannot — where the cell came from, and whether it was moved —
+   for management scanning the grid.
+
+   Both are a 2px left edge rather than a fill or a border, because a chip is
+   26px wide on a phone and anything larger competes with the code it is
+   decorating. If either reads as damage at that size, delete the rule: the
+   state colour is the load-bearing part and it survives without them. */
+.mx td .c.raptor {
+  border-left: 2px solid var(--accent);
+  padding-left: 2px;
+}
+
+.mx td .c.moved {
+  border-left: 2px dotted #F2C879;
+  padding-left: 2px;
+}
+
+/* Outside the bidding window: not editable by whoever is looking.
+   Deliberately QUIET — a dimmed column that reads as "not yours to touch
+   yet", not an alarm. The whole year stays legible, because seeing the rest
+   of the year is the reason the war is a year in the first place; this only
+   says which part of it is being bid on right now.
+
+   Declared after .weekend and .blocked so a locked weekend and a locked
+   exercise week still read as locked. Same cascade care those two already
+   needed — see the note above .blocked. */
+.mx thead th.locked {
+  opacity: .45;
+}
+
+.mx td.locked {
+  opacity: .5;
+}
+
+/* The frozen columns are never locked — they are not dates — but a locked
+   day cell must not fade its own hatch away to nothing on a posted-out row,
+   or "gone" and "locked" become indistinguishable. */
+.mx td.locked.gone {
+  opacity: .65;
+}
+
+/* ---- phone breakpoint ----
+
+   The balance column has to be PAID for, not added on top. Below this width
+   the callsign column gives back what the counter column takes, so the number
+   of visible day columns is roughly unchanged — a counter panel that left
+   four days on screen would be a worse app than no counters at all. The
+   category chip drops rather than wrapping: it is secondary information, and
+   a second line would cost every row's height instead.
+
+   LAST IN THE FILE ON PURPOSE. These overrides share specificity with the
+   rules they narrow (`.mx .counts .who` is 0,3,0 either way), so the later
+   one wins the cascade — and the first attempt put this block near the top,
+   where the `.mx .counts .who` further down silently overrode it and the fix
+   appeared to do nothing at all. Same trap as the .blocked/.weekend ordering
+   above. Do not move this block up the file. */
+@media (max-width: 430px) {
+  & {
+    --who-w: 76px;
+  }
+
+  .mx .who {
+    padding-left: 6px;
+    font-size: 10px;
+  }
+
+  .mx .cat {
+    display: none;
+  }
+
+  /* The count rows' labels are the longest text in this column — "Crew sets"
+     needed 84px against the 75 available, and "IP + IWSO" 77 — so they were
+     being clipped mid-word while every callsign still fitted. The letter
+     spacing is what costs the room, and it is decoration; the label is not.
+     Found by measuring in a browser, not by reading the stylesheet, and
+     pinned by the geometry gate so the next label to outgrow the column
+     fails loudly instead of appearing cut off on a phone. */
+  .mx .counts .who {
+    letter-spacing: 0;
+    font-size: 9.5px;
+  }
+}
+
+/* The month strip. A year-long war is ~13,600px wide, so this is not a
+   convenience — it is the only practical way to reach September. It wraps
+   rather than scrolling: twelve short labels fit two lines on a phone, and a
+   strip that itself needed scrolling would be a second navigation problem
+   sitting on top of the first. */
+.months {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.mjump {
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  color: var(--ink-3);
+  border-radius: 7px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.mjump:hover {
+  border-color: rgba(59, 198, 232, .5);
+  color: var(--accent);
+}
+
+/* The month the grid is actually showing. The accent, matching Raptor's own
+   `.fchip.on` — this is the same idea as a selected filter chip, so it must
+   not invent a second visual language for "this one".
+   Declared AFTER `:hover` so the month you are on keeps its fill while the
+   pointer is over a different button: both rules are specificity (0,2,0), so
+   the later one wins where they collide, and the reading must not change
+   under the cursor. */
+.mjump.on {
+  background: rgba(59, 198, 232, .16);
+  border-color: rgba(59, 198, 232, .6);
+  color: var(--accent);
+}
+
+/* The callsign as a control, for an admin. Inherits the cell's own type and
+   colour rather than styling itself, so the row reads identically whether it
+   is editable or not — a member and an admin must see the same roster, not
+   two different-looking ones. */
+.mx .who .whoedit {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+.mx .who .whoedit:hover {
+  color: var(--accent);
+}
+
+/* ---- the two event rows ----
+
+   The owner's rule, 10 Aug 26: "If the text needs more space, that day will
+   widen to accommodate the info until a certain point then it will wrap text
+   and grow vertically on that grid only."
+
+   That is three behaviours in one sentence, and CSS gives them in one place.
+   `.mx` is `white-space: nowrap` throughout, so a day column already widens
+   to fit whatever is in it — the missing half is the CEILING. `max-width`
+   on the event cell is the "certain point"; past it `white-space: normal`
+   takes over and the text wraps instead, which grows the row rather than the
+   year. And because a table row is as tall as its tallest cell, only the two
+   event rows grow — every person's row keeps its height, which is what
+   "on that grid only" has to mean if the year is to stay readable.
+
+   130px is the ceiling: about three columns' worth, wide enough for "Range
+   closure 0900-1400" and narrow enough that one busy day cannot push
+   September off the far end of the grid. */
+.mx .events td.ev {
+  max-width: 130px;
+  white-space: normal;
+  vertical-align: top;
+  font-size: 9.5px;
+  line-height: 1.25;
+  color: var(--ink-3);
+  text-align: left;
+  padding: 2px 4px;
+}
+
+/* A day that HAS an event reads as one at a glance, before anybody reads the
+   words. The tint is the same accent every informational surface here uses,
+   at the lowest strength that survives on the panel. */
+.mx .events td.ev.has {
+  background: rgba(59, 198, 232, .07);
+  color: var(--ink-2);
+}
+
+.mx .events .who {
+  font-size: 9.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--panel);
+}
+
+.mx .events td.bal {
+  background: var(--panel);
+}
+
+/* The input fills its cell and paints nothing of its own — a box around every
+   day of a year would be 730 boxes, and the cell it sits in is already a box.
+   It comes forward on focus, which is the one moment it needs an edge. */
+.mx .events .evin {
+  width: 100%;
+  min-width: 26px;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  font-family: inherit;
+  padding: 0;
+  /* A textarea, so: no drag handle (the column decides its own width), no
+     scrollbar (its `rows` already match its content), and wrapping on. */
+  resize: none;
+  overflow: hidden;
+  display: block;
+  line-height: 1.25;
+}
+
+.mx .events .evin:focus {
+  outline: 1px solid rgba(59, 198, 232, .55);
+  outline-offset: 1px;
+  color: var(--ink);
+}
+
+/* The day the under-manned list jumped to. An accent ring rather than a fill:
+   the header may already carry `.blocked`, `.weekend` or `.locked`, and a
+   fill would fight whichever of those won the cascade. This only says "here",
+   and must not overwrite what the column already means. */
+.mx thead th.day.focus {
+  box-shadow: inset 0 0 0 2px var(--accent);
+  color: var(--ink);
+}
+
+}
