@@ -124,15 +124,30 @@
 
    So the target became the entire header cell, and the choosing moved out to
    a sheet. */
+/* A CONTAINED, SQUARE control (owner, Aug 26 — "make it squarish, it's
+   blocking the event box"). It used to read as a rounded floating pill that
+   crowded the first event column; now it is a compact square chip that sits
+   inside its own frozen cell — a faint border and fill give it a clear edge so
+   it stops looking like it hangs over the grid, and square corners are the
+   whole ask. Kept narrow (no min-height loom) so it does not tower over the
+   two event rows beside it. */
 .mx thead th.bal .cpick {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
   width: 100%;
+  /* Stays a full tap target (owner's earlier complaint that it was too small
+     to hit — e2e pins >=36px); the squaring is the border and corners, not a
+     smaller box. */
   min-height: 40px;
-  background: none;
-  border: none;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: 3px;
   color: inherit;
   cursor: pointer;
-  padding: 2px 1px;
+  padding: 3px 2px;
   font-family: inherit;
 }
 
@@ -240,6 +255,40 @@
   background: rgba(229, 168, 59, .22);
   color: #F2D9A6;
   box-shadow: inset 0 -2px 0 var(--adv);
+}
+
+/* EVENT COLUMN COLOURS (owner, Aug 26). A day tagged an off day (a PH) tints
+   its whole column light GREEN; a no-leave day tints it ORANGE. Painted down
+   the whole column — the header and every person cell — so a holiday is found
+   without reading the top two event rows, the same reason the weekend band
+   runs the whole column.
+
+   The header rules carry `.day` (specificity 0,3,2) so they out-rank both
+   `.weekend` and `.blocked` (0,2,2) whatever the source order: a holiday
+   Saturday reads green, not grey, and a green holiday beats an amber blocked
+   day. The body rules share specificity with `.weekend` (0,2,1), so they are
+   declared AFTER it and win by order — do not reorder above `.mx td.weekend`.
+   `.locked` (the out-of-window dim) is declared after both, so a locked tinted
+   day still reads as locked. Orange is a distinct hue from blocked's amber on
+   purpose — the two mean different things. */
+.mx thead th.day.evoff {
+  background: rgba(74, 201, 126, .24);
+  color: #BFead0;
+  box-shadow: inset 0 -2px 0 rgba(74, 201, 126, .7);
+}
+
+.mx thead th.day.evnolv {
+  background: rgba(242, 139, 46, .26);
+  color: #F7CB9E;
+  box-shadow: inset 0 -2px 0 rgba(242, 139, 46, .75);
+}
+
+.mx td.evoff {
+  background: rgba(74, 201, 126, .13);
+}
+
+.mx td.evnolv {
+  background: rgba(242, 139, 46, .14);
 }
 
 .mx .cat {
@@ -578,6 +627,45 @@
 .mx .events td.ev.has {
   background: rgba(59, 198, 232, .07);
   color: var(--ink-2);
+}
+
+/* A WORK event (SC and the like) reads RED — the word itself, never the
+   column. Declared after `.ev.has` so it wins the ink on a cell carrying both
+   (a work word is, by definition, a filled cell). */
+.mx .events td.ev.work {
+  color: #FF9098;
+  font-weight: 600;
+}
+
+/* A MERGED band: one label centred across the days it spans, drawn as a
+   contained bar rather than left-aligned text, so it reads as one thing over
+   the range and not a word that happens to sit in the first day. */
+.mx .events td.ev.band {
+  text-align: center;
+  background: rgba(59, 198, 232, .12);
+  box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .3);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.mx .events td.ev.band.work {
+  color: #FF9098;
+}
+
+/* An admin's event cell is a tap target (the Event sheet opens on it), so it
+   shows a pointer; an empty one carries a faint add hint so there is something
+   to aim at. A member's cells are plain text and get neither. */
+.mx .events td.ev.editable {
+  cursor: pointer;
+}
+
+.mx .events td.ev .evadd {
+  color: var(--edge-2);
+  font-size: 11px;
+}
+
+.mx .events td.ev.editable:hover {
+  background: rgba(59, 198, 232, .1);
 }
 
 .mx .events .who {

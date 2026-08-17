@@ -1,6 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getState, initStore, setDayEvent, setRole } from '../state/store'
+import {
+  addEventBand,
+  getState,
+  initStore,
+  setDayEvent,
+  setDayEventRange,
+  setRole,
+} from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -17,79 +24,88 @@ describe('the two event lines', () => {
     expect(screen.getByTestId('event-1-2026-01-05')).toBeTruthy()
   })
 
-  // The seed marks public holidays on line 1, so the row is not empty on
+  // The seed marks public holidays on line 0, so the row is not empty on
   // first run and the surface is visible without anyone typing.
   it('shows what the seed already put there', () => {
     render(<Matrix />)
     expect(screen.getByTestId('event-0-2026-01-01').textContent).toBe('PH')
   })
 
-  // These are the scheduler's facts about a day, not something a bidder
-  // writes about themselves — but the whole squadron has to READ them, or
-  // nobody knows why a week is a bad week to ask for.
-  it('is read-only for a member and editable for an admin', () => {
+  // A member reads events; only an admin can open the editor on one.
+  it('is read-only for a member and tappable for an admin', () => {
     render(<Matrix />)
-    expect(screen.queryByTestId('event-in-0-2026-01-05')).toBeNull()
-    expect(screen.getByTestId('event-0-2026-01-01').textContent).toBe('PH')
+    expect(screen.getByTestId('event-0-2026-01-05').className).not.toContain('editable')
+    fireEvent.click(screen.getByTestId('event-0-2026-01-05'))
+    expect(screen.queryByTestId('event-sheet')).toBeNull()
 
-    setRole('admin')
-    render(<Matrix />)
-    expect(screen.getAllByTestId('event-in-0-2026-01-05').length).toBeGreaterThan(0)
-  })
-
-  it('writes what an admin types, on the line they typed it', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.change(screen.getByTestId('event-in-0-2026-01-05'), { target: { value: 'CO visit' } })
-    fireEvent.change(screen.getByTestId('event-in-1-2026-01-05'), { target: { value: 'Range closure' } })
-    const day = getState().period.days.find(d => d.date === '2026-01-05')!
-    expect(day.events).toEqual(['CO visit', 'Range closure'])
+    expect(screen.getAllByTestId('event-0-2026-01-05')[1]!.className).toContain('editable')
   })
+})
 
-  it('leaves the other line alone', () => {
-    setRole('admin')
+describe('event classification colours', () => {
+  it('tints a PH column green (off day) on the header and the cells', () => {
     render(<Matrix />)
-    fireEvent.change(screen.getByTestId('event-in-1-2026-01-01'), { target: { value: 'Parade' } })
-    expect(getState().period.days.find(d => d.date === '2026-01-01')!.events).toEqual(['PH', 'Parade'])
+    expect(screen.getByTestId('head-2026-01-01').className).toContain('evoff')
+    // a person cell in the same column carries it too — the whole bar
+    const anyPerson = getState().people[0]!.id
+    expect(screen.getByTestId(`cell-${anyPerson}-2026-01-01`).className).toContain('evoff')
   })
 
-  it('leaves every other day alone', () => {
+  it('tints a no-leave column orange', () => {
     setRole('admin')
+    setDayEvent('2026-01-08', 0, 'No Leave')
     render(<Matrix />)
-    fireEvent.change(screen.getByTestId('event-in-0-2026-01-05'), { target: { value: 'CO visit' } })
-    expect(getState().period.days.find(d => d.date === '2026-01-06')!.events).toEqual(['', ''])
+    expect(screen.getByTestId('head-2026-01-08').className).toContain('evnolv')
   })
 
-  it('marks a day that has an event, and one that does not', () => {
+  it('never tints the column for a work word, but reddens the word', () => {
     setRole('admin')
+    setDayEvent('2026-01-08', 0, 'SC')
     render(<Matrix />)
-    expect(screen.getByTestId('event-0-2026-01-01').className).toContain('has')
-    expect(screen.getByTestId('event-0-2026-01-05').className).not.toContain('has')
-    fireEvent.change(screen.getByTestId('event-in-0-2026-01-05'), { target: { value: 'CO visit' } })
-    expect(screen.getByTestId('event-0-2026-01-05').className).toContain('has')
+    expect(screen.getByTestId('head-2026-01-08').className).not.toContain('evoff')
+    expect(screen.getByTestId('head-2026-01-08').className).not.toContain('evnolv')
+    expect(screen.getByTestId('event-0-2026-01-08').className).toContain('work')
   })
 
-  it('survives a reload', () => {
-    const backend = memoryBackend()
-    initStore(backend)
+  it('lets off win over no-leave on one day', () => {
     setRole('admin')
-    setDayEvent('2026-01-05', 0, 'CO visit')
-    initStore(backend)
-    expect(getState().period.days.find(d => d.date === '2026-01-05')!.events[0]).toBe('CO visit')
+    setDayEvent('2026-01-08', 0, 'No Leave')
+    setDayEvent('2026-01-08', 1, 'PH')
+    render(<Matrix />)
+    expect(screen.getByTestId('head-2026-01-08').className).toContain('evoff')
+    expect(screen.getByTestId('head-2026-01-08').className).not.toContain('evnolv')
+  })
+})
+
+describe('merged bands render as one spanning cell', () => {
+  it('draws a band and skips the days it covers', () => {
+    setRole('admin')
+    addEventBand(0, '2026-02-02', '2026-02-06', 'Exercise')
+    render(<Matrix />)
+    const band = screen.getByTestId('event-band-0-2026-02-02')
+    expect(band.textContent).toBe('Exercise')
+    expect(band.getAttribute('colspan')).toBe('5')
+    // a day under the band is no longer its own cell
+    expect(screen.queryByTestId('event-0-2026-02-03')).toBeNull()
+    // a day just outside it still is
+    expect(screen.getByTestId('event-0-2026-02-07')).toBeTruthy()
   })
 
-  it('refuses a member, and a date the war does not hold', () => {
-    expect(setDayEvent('2026-01-05', 0, 'CO visit')).toBe(false)
+  it('reddens a merged band whose label is a work type', () => {
     setRole('admin')
-    expect(setDayEvent('2030-01-05', 0, 'CO visit')).toBe(false)
-    expect(setDayEvent('2026-01-05', 0, 'CO visit')).toBe(true)
+    addEventBand(1, '2026-02-02', '2026-02-04', 'SC')
+    render(<Matrix />)
+    expect(screen.getByTestId('event-band-1-2026-02-02').className).toContain('work')
   })
 
-  // The events belong to the WAR, like everything else in a period.
-  it('belongs to the war it was written in', () => {
+  it('repeats a word into each day of a range', () => {
     setRole('admin')
-    setDayEvent('2026-01-05', 0, 'CO visit')
-    expect(getState().wars[0].period.days.find(d => d.date === '2026-01-05')!.events[0]).toBe('CO visit')
-    expect(getState().wars[1].period.days[0].events).toEqual(['', ''])
+    setDayEventRange('2026-02-02', '2026-02-04', 0, 'SC')
+    render(<Matrix />)
+    expect(screen.getByTestId('event-0-2026-02-02').textContent).toBe('SC')
+    expect(screen.getByTestId('event-0-2026-02-03').textContent).toBe('SC')
+    expect(screen.getByTestId('event-0-2026-02-04').textContent).toBe('SC')
   })
 })

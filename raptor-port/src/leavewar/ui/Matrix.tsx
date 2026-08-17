@@ -5,6 +5,7 @@ import {
   canEditCell,
   categoryLabel,
   codeOf,
+  columnKindFor,
   evaluatePeriod,
   inSquadron,
   isBiddable,
@@ -25,6 +26,7 @@ import { CounterSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
 import { CountRows } from './CountRows'
 import { EventRows } from './EventRows'
+import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { useVersion } from './useStore'
 import './matrix.css'
@@ -46,9 +48,22 @@ function monthLabel(date: string): string | null {
 
 export function Matrix() {
   useVersion()
-  const { people, period, grid, states, requirements, role, openings, ledger, wars, focusDate, focusSeq } = getState()
+  const { people, period, grid, states, requirements, role, eventDefs, openings, ledger, wars, focusDate, focusSeq } = getState()
   const dates = period.days.map(d => d.date)
   const verdicts = evaluatePeriod(people, grid, states, requirements, dates)
+
+  // The colour a whole day column takes from its events: light green for an
+  // off day (a PH), orange for a no-leave day. Computed once per day and read
+  // into both the header and the body cells, so a tag colours the whole
+  // column, not just the event rows — finding a holiday in 90 columns should
+  // not need reading the top two rows. `work` never colours the column (its
+  // own word goes red instead), so it maps to no class here.
+  const evKind = new Map<string, string>()
+  for (const d of period.days) {
+    const k = columnKindFor(eventDefs, d, period.bands)
+    if (k === 'off') evKind.set(d.date, 'evoff')
+    else if (k === 'nolv') evKind.set(d.date, 'evnolv')
+  }
 
   // Which cell is open, not which sheet is open: what the sheet OFFERS is
   // derived from the stage and the role, so a period that moves on — or a
@@ -62,6 +77,9 @@ export function Matrix() {
   const [counter, setCounter] = useState(0)
   const [picking, setPicking] = useState(false)
   const [editingWho, setEditing] = useState<string | null>(null)
+  // Which event cell the admin has tapped to edit, or null. Keyed by line +
+  // day; the Event sheet reads the current text or band off the store.
+  const [eventEdit, setEventEdit] = useState<{ line: 0 | 1; date: string } | null>(null)
   const shown = COUNTERS[counter]
   const cycle = (by: number) => setCounter(c => (c + by + COUNTERS.length) % COUNTERS.length)
 
@@ -264,7 +282,7 @@ export function Matrix() {
                     <th
                       key={d.date}
                       data-testid={`head-${d.date}`}
-                      className={`day${d.blocked ? ' blocked' : ''}${isWeekend(d.date) ? ' weekend' : ''}${lockedDate(d.date) ? ' locked' : ''}${d.date === focusDate ? ' focus' : ''}`}
+                      className={`day${d.blocked ? ' blocked' : ''}${isWeekend(d.date) ? ' weekend' : ''}${evKind.has(d.date) ? ` ${evKind.get(d.date)}` : ''}${lockedDate(d.date) ? ' locked' : ''}${d.date === focusDate ? ' focus' : ''}`}
                       title={[d.blocked ? d.blockedReason : '', d.events.filter(Boolean).join(' / ')]
                         .filter(Boolean)
                         .join(' — ')}
@@ -287,7 +305,13 @@ export function Matrix() {
             {/* Above the counts, because an event is the REASON a day is
                 thin — reading the cause before the effect is the order a
                 scheduler works in. */}
-            <EventRows days={period.days} editable={role === 'admin'} />
+            <EventRows
+              days={period.days}
+              bands={period.bands}
+              defs={eventDefs}
+              editable={role === 'admin'}
+              onEdit={(line, date) => setEventEdit({ line, date })}
+            />
             <CountRows verdicts={verdicts} dates={dates} />
             <tbody>
               {people.map(p => (
@@ -353,10 +377,14 @@ export function Matrix() {
                       // weekend rule so a posted-out weekend still reads as
                       // posted out.
                       isWeekend(d.date) ? 'weekend' : '',
+                      // The event column colour (off = green, no-leave =
+                      // orange), declared after the weekend so a holiday
+                      // Saturday reads as the holiday, not the weekend.
+                      evKind.get(d.date) ?? '',
                       // Outside the bidding window, for this role. Declared
-                      // after the weekend so a locked Saturday still reads as
-                      // locked — the same cascade care the .blocked/.weekend
-                      // pair needs, and for the same reason.
+                      // after the event colour so a locked, tinted day still
+                      // reads as locked — the same cascade care the
+                      // .blocked/.weekend pair needs, and for the same reason.
                       lockedDate(d.date) ? 'locked' : '',
                     ].filter(Boolean).join(' ')
                     const text = here ? code : notYetArrived ? '' : 'PO'
@@ -464,6 +492,14 @@ export function Matrix() {
         <PersonSheet
           person={people.find(p => p.id === editingWho)!}
           onClose={() => setEditing(null)}
+        />
+      )}
+      {eventEdit && role === 'admin' && (
+        <EventSheet
+          key={`${eventEdit.line}-${eventEdit.date}`}
+          line={eventEdit.line}
+          date={eventEdit.date}
+          onClose={() => setEventEdit(null)}
         />
       )}
       {open && !raptorOwns(states, open.id, open.date)

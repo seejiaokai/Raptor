@@ -359,3 +359,41 @@ accounts land and the roles stop being an affordance.
   `stateOf`, which is indifferent, and `initStore` prunes empty rows on the
   next load. Worth knowing before someone reads a persisted blob and
   concludes a row means something.
+
+## Event model (17 Aug 26) — tags, ranges, merged bands, colours only
+
+The two event lines grew a real editor and a classification (owner, Aug 26).
+What is a contract, and what is deliberately still open:
+
+- **The tag is invisible; only colour shows.** An event word is looked up in
+  the type library (`engine/eventdefs.ts`) and classified off / no-leave /
+  work. Typing `PH` shows `PH`, never `PH (off)` — the kind surfaces ONLY as
+  colour: a green column for an off day, an orange column for no-leave, red
+  text for a work word (the column left alone). `columnKindFor` lets `off` win
+  over `nolv` on one day; `work` never colours the column.
+- **Classification is stored but not yet wired to the rules.** This is the
+  deliberate gap the owner chose this pass ("colours only for now"): the
+  off/no-leave/work kind changes no manning count and raises no warning. It is
+  persisted (`state.eventDefs`, key `eventdefs`) so a future rules pass — and
+  Wire 4's PH→OIL — can read it. A no-leave day does NOT block or warn a bid;
+  urgent leave still goes through. Nothing reads `DayInfo.ph` yet either (it
+  stays the inert flag it was); an off-day tag is what colours a holiday, not
+  that flag.
+- **Two ways to span a range, both kept.** REPEAT writes the word into each
+  day's own `events[line]` (`setDayEventRange`); MERGE stores one `EventBand`
+  on the period drawn as a colspan cell (`addEventBand`). A band suppresses —
+  and, on creation, clears — the per-day text under it on that line, so a
+  merged label never hides stray words a later delete would resurrect. Bands on
+  one line never overlap (refused, not trimmed). `period.bands` is read
+  leniently in `readWar`, so a war stored before the feature loads with none.
+- **Editing is a sheet, not inline.** An admin taps an event cell to open the
+  Event sheet (`ui/EventSheet.tsx`); the old inline textareas are gone. A
+  member still only reads. The sheet also carries the type-library editor
+  (add / rename / reclassify / delete / reset), reached from its "Edit types"
+  button.
+- **The type library is squadron-wide, not per-war** (a holiday is a holiday
+  in every war), so it lives on `state.eventDefs`, seeded PH=off / No Leave=
+  nolv / SC=work, and persists under its own `eventdefs` key.
+- **The counter-picker header was squared** in the same batch (owner: "make it
+  squarish, it's blocking the event box") — a contained bordered chip now, kept
+  at a 40px tap target (the earlier "too small to hit" complaint still holds).

@@ -12,6 +12,14 @@ import {
   setRole,
   setBidWindow,
   setCellRange,
+  setDayEvent,
+  setDayEventRange,
+  addEventBand,
+  removeEventBand,
+  addEventType,
+  updateEventType,
+  removeEventType,
+  resetEventTypes,
   setPeople,
   setPerson,
   clearBidWindow,
@@ -1358,5 +1366,107 @@ describe('reopening a period', () => {
     advanceStage()
     reopenStage()
     expect(getState().wars.find(w => w.period.id === other.period.id)!.period.stage).toBe(before)
+  })
+})
+
+describe('events — ranged repeat, merged bands, and the type library', () => {
+  it('repeats a word across a range on one line (admin only)', () => {
+    setRole('admin')
+    expect(setDayEventRange('2026-01-05', '2026-01-07', 0, 'SC')).toBe(true)
+    const on = (d: string) => getState().period.days.find(x => x.date === d)!.events[0]
+    expect(on('2026-01-05')).toBe('SC')
+    expect(on('2026-01-06')).toBe('SC')
+    expect(on('2026-01-07')).toBe('SC')
+    expect(on('2026-01-08')).toBe('')
+  })
+
+  it('refuses a range write for a member', () => {
+    setRole('member')
+    expect(setDayEventRange('2026-01-05', '2026-01-07', 0, 'SC')).toBe(false)
+    expect(getState().period.days.find(x => x.date === '2026-01-05')!.events[0]).toBe('')
+  })
+
+  it('adds a merged band and clears the per-day text under it', () => {
+    setRole('admin')
+    setDayEvent('2026-01-06', 0, 'stale')
+    expect(addEventBand(0, '2026-01-05', '2026-01-09', 'Exercise')).toBe('set')
+    const band = getState().period.bands.find(b => b.line === 0 && b.from === '2026-01-05')
+    expect(band).toMatchObject({ line: 0, from: '2026-01-05', to: '2026-01-09', text: 'Exercise' })
+    // the word that sat under the band is gone, so a later delete cannot resurrect it
+    expect(getState().period.days.find(x => x.date === '2026-01-06')!.events[0]).toBe('')
+  })
+
+  it('refuses an overlapping band on the same line', () => {
+    setRole('admin')
+    expect(addEventBand(0, '2026-01-05', '2026-01-09', 'A')).toBe('set')
+    expect(addEventBand(0, '2026-01-08', '2026-01-12', 'B')).toBe('overlap')
+    // the other line is free
+    expect(addEventBand(1, '2026-01-08', '2026-01-12', 'B')).toBe('set')
+  })
+
+  it('refuses a band outside the war, backwards, or for a member', () => {
+    setRole('admin')
+    expect(addEventBand(0, '2026-01-09', '2026-01-05', 'x')).toBe('backwards')
+    expect(addEventBand(0, '2025-12-01', '2026-01-05', 'x')).toBe('outside')
+    setRole('member')
+    expect(addEventBand(0, '2026-01-05', '2026-01-09', 'x')).toBe('forbidden')
+  })
+
+  it('a repeat write skips days already under a band', () => {
+    setRole('admin')
+    addEventBand(0, '2026-01-05', '2026-01-07', 'Exercise')
+    setDayEventRange('2026-01-05', '2026-01-09', 0, 'SC')
+    const on = (d: string) => getState().period.days.find(x => x.date === d)!.events[0]
+    expect(on('2026-01-06')).toBe('') // under the band, untouched
+    expect(on('2026-01-08')).toBe('SC') // free, written
+  })
+
+  it('removes a band by the line and a covered date', () => {
+    setRole('admin')
+    addEventBand(0, '2026-01-05', '2026-01-09', 'Exercise')
+    expect(removeEventBand(0, '2026-01-07')).toBe(true)
+    expect(getState().period.bands).toHaveLength(0)
+    expect(removeEventBand(0, '2026-01-07')).toBe(false)
+  })
+
+  it('bands and event types survive a reload', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    setRole('admin')
+    addEventBand(0, '2026-01-05', '2026-01-09', 'Exercise')
+    addEventType('Standby', 'work')
+    initStore(backend)
+    expect(getState().period.bands).toHaveLength(1)
+    expect(getState().period.bands[0]).toMatchObject({ text: 'Exercise' })
+    expect(getState().eventDefs.some(d => d.name === 'Standby')).toBe(true)
+  })
+
+  it('boots with the three seeded event types', () => {
+    expect(getState().eventDefs).toEqual([
+      { name: 'PH', kind: 'off' },
+      { name: 'No Leave', kind: 'nolv' },
+      { name: 'SC', kind: 'work' },
+    ])
+  })
+
+  it('adds, updates, removes and resets event types (admin only)', () => {
+    setRole('admin')
+    expect(addEventType('Standby', 'work')).toBeNull()
+    expect(getState().eventDefs).toHaveLength(4)
+    expect(updateEventType(3, { kind: 'off' })).toBeNull()
+    expect(getState().eventDefs[3]!.kind).toBe('off')
+    expect(removeEventType(3)).toBe(true)
+    expect(getState().eventDefs).toHaveLength(3)
+    // reset restores the seed
+    addEventType('Temp', 'off')
+    resetEventTypes()
+    expect(getState().eventDefs).toHaveLength(3)
+  })
+
+  it('refuses type edits for a member', () => {
+    setRole('member')
+    expect(addEventType('Standby', 'work')).toContain('admin')
+    expect(removeEventType(0)).toBe(false)
+    expect(getState().eventDefs).toHaveLength(3)
   })
 })

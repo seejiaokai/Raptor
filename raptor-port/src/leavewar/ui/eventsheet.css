@@ -1,0 +1,188 @@
+/* SCOPED under #page-leavewar, like every other Leave War stylesheet (see the
+   note atop matrix.css). The Event sheet reuses the `.bidsheet` chrome from
+   bidpicker.css; this file adds only the controls that sheet does not already
+   have — the text field, the quick-pick chips, the tag row, the scope/mode
+   toggles, and the type-library list. The three tag colours are the same hues
+   the grid paints: green off, orange no-leave, red work. */
+#page-leavewar {
+
+.bidsheet .evtext {
+  width: 100%;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+  color: var(--ink-1);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 9px 12px;
+}
+
+.bidsheet .evtext:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Scope and mode toggles reuse `.dchip`, which has no fill of its own — give
+   the inactive state a neutral chip so it reads as a button; `.approve` lights
+   the active one. */
+.bidsheet .evscope,
+.bidsheet .evmode {
+  gap: 8px;
+}
+
+.bidsheet .evscope .dchip,
+.bidsheet .evmode .dchip {
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  color: var(--ink-2);
+}
+
+.bidsheet .evscope .dchip.approve,
+.bidsheet .evmode .dchip.approve {
+  background: rgba(87, 201, 122, .16);
+  color: #8FE0A8;
+  border-color: rgba(87, 201, 122, .5);
+}
+
+/* Quick-pick chips — the saved type names, one tap to fill the field. Each
+   wears a hairline in its kind's colour so the list doubles as a key. */
+.bidsheet .evquick {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bidsheet .evchip {
+  padding: 4px 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  color: var(--ink-2);
+}
+
+.bidsheet .evchip.off { border-color: rgba(74, 201, 126, .55); }
+.bidsheet .evchip.nolv { border-color: rgba(242, 139, 46, .6); }
+.bidsheet .evchip.work { border-color: rgba(240, 85, 95, .55); color: #FFA6AD; }
+
+/* The tag row: three kind buttons plus a read-out of the current tag. */
+.bidsheet .evtagrow {
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.bidsheet .evtag-cur {
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* A kind button — off / no-leave / work. Neutral until chosen, then it lights
+   in its own colour so a tag reads at a glance. Used both in the tag row and
+   in the type-library list. */
+.bidsheet .evkind {
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  color: var(--ink-3);
+}
+
+.bidsheet .evkind.off.on {
+  background: rgba(74, 201, 126, .2);
+  color: #9FE6BC;
+  border-color: rgba(74, 201, 126, .6);
+}
+
+.bidsheet .evkind.nolv.on {
+  background: rgba(242, 139, 46, .2);
+  color: #F7CB9E;
+  border-color: rgba(242, 139, 46, .65);
+}
+
+.bidsheet .evkind.work.on {
+  background: rgba(240, 85, 95, .2);
+  color: #FFA6AD;
+  border-color: rgba(240, 85, 95, .6);
+}
+
+/* The "Edit types" opener sits in the sheet header beside the ✕. */
+.bidsheet .evtypes-open {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  color: var(--accent);
+}
+
+/* The type-library list. */
+.bidsheet .evtypes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 2px 8px;
+  max-height: 46vh;
+  overflow-y: auto;
+}
+
+.bidsheet .evtype {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bidsheet .evtype-name {
+  flex: 1 1 120px;
+  min-width: 90px;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  color: var(--ink-1);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 6px 9px;
+}
+
+.bidsheet .evtype-name:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.bidsheet .evkinds {
+  display: flex;
+  gap: 4px;
+}
+
+.bidsheet .evtype-del,
+.bidsheet .evtype-add-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  color: var(--ink-3);
+}
+
+.bidsheet .evtype-add {
+  padding-top: 6px;
+  border-top: 1px solid var(--edge);
+}
+
+}
