@@ -290,7 +290,7 @@ export function validate(){
           add('adv','NO_BRIEF',[id],`No time for the ${lg.label} flight brief — ${hb.join(', ')} sits inside ${hm24(bs)}–${hm24(lg.to)} (brief ${hm24(bs)})`,lg.slot);}
         const hd=hits(lg.ld,de);
         if(hd.length){markChip(di,id,'DB');markRing(di,id,'adv');
-          add('adv','DEBRIEF',[id],`Not enough time to attend the ${lg.label} debrief — ${hd.join(', ')} sits inside ${hm24(lg.ld)}–${hm24(de)} (land + 2h)`,lg.slot);}
+          add('adv','DEBRIEF',[id],`Not enough time to attend the ${lg.label} debrief — ${hd.join(', ')} sits inside ${hm24(lg.ld)}–${hm24(de)} (land + ${lgT(VCONF.debrief)})`,lg.slot);}
       });
     });
     /* ---- sim brief / debrief windows -------------------------------------

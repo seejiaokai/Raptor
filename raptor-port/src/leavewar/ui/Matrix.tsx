@@ -131,6 +131,10 @@ export function Matrix() {
   // of a drag and torn down on release.
   const dragId = useRef<string | null>(null)
   const dragOverRef = useRef<string | null>(null)
+  // The teardown for a drag in flight, so an unmount (role change, war switch)
+  // can end it — otherwise its window listeners leak and the row stays stuck
+  // in the .dragging highlight.
+  const dragCleanup = useRef<(() => void) | null>(null)
   const [draggingId, setDraggingId] = useState<string | null>(null)
   const [dragOver, setDragOver] = useState<string | null>(null)
 
@@ -145,20 +149,36 @@ export function Matrix() {
       const overId = row?.getAttribute('data-testid')?.slice(4) ?? null
       if (overId !== dragOverRef.current) { dragOverRef.current = overId; setDragOver(overId) }
     }
-    const up = () => {
+    // `commit` is false for a cancel (a system gesture, multi-touch, or the
+    // grid unmounting mid-drag): tear down without moving anything. Without a
+    // pointercancel path the pointerup never comes and the listeners — and the
+    // stuck highlight — leak, most likely on the phone drag this was built for.
+    const end = (commit: boolean) => {
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
+      window.removeEventListener('pointercancel', cancel)
+      dragCleanup.current = null
       const from = dragId.current
       const to = dragOverRef.current
       dragId.current = null
       dragOverRef.current = null
       setDraggingId(null)
       setDragOver(null)
-      if (from && to && from !== to) moveRosterRow(from, to)
+      if (commit && from && to && from !== to) moveRosterRow(from, to)
     }
+    const up = () => end(true)
+    const cancel = () => end(false)
+    dragCleanup.current = () => end(false)
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
+    window.addEventListener('pointercancel', cancel)
   }
+
+  // A drag in flight must not outlive the grid, and rearrange mode is the
+  // admin's alone: end any drag and drop out of arrange mode the moment the
+  // component unmounts or the role stops being admin (a logout mid-arrange).
+  useEffect(() => () => { dragCleanup.current?.() }, [])
+  useEffect(() => { if (role !== 'admin' && arranging) setArranging(false) }, [role, arranging])
   const shownIx = Math.max(0, figures.findIndex(f => f.id === shownId))
   const shown = figures[shownIx]
   // Everything a figure needs to read a person's number. `wars` is LeaveWar[],

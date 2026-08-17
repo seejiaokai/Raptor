@@ -151,4 +151,18 @@ describe('persistence, like the stores list', () => {
     dutyTplLoad()
     expect(DUTYTPL_CFG[0]!.rows[0]).toEqual({ role: 'SDO', str: '', end: '0700' })
   })
+
+  it('an id-less entry does not mint a uN a later entry already claims', () => {
+    /* bug sweep, 18 Aug 26: the first entry has no id (it mints one inside the
+       loop) and the second is 'u1'. The pre-scan advances SEQ past 'u1' BEFORE
+       minting, so the two get distinct ids and both stay reachable to
+       rename/delete rather than colliding on 'u1'. */
+    mem['sqn142_dutytpl'] = JSON.stringify([
+      { title: 'A', rows: [{ role: 'SDO', str: '0700', end: '1300' }] },
+      { id: 'u1', title: 'B', rows: [{ role: 'SDO', str: '0700', end: '1300' }] },
+    ])
+    dutyTplLoad()
+    const ids = DUTYTPL_CFG.map(t => t.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
 })

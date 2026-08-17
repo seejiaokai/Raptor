@@ -27,6 +27,8 @@ import {
   seedRequirements,
   seedWars,
   autoOrder,
+  groupOf,
+  GROUP_ORDER,
   orderedPeople,
   readEventDefs,
   bandOverlaps,
@@ -623,16 +625,26 @@ export function setPeople(people: Person[]): void {
 }
 
 /**
- * The roster in display order (owner, 18 Aug 26): the stored hand-order if one
- * exists, otherwise the categorised `autoOrder`. `orderedPeople` heals the
- * saved list — a body that has left drops out, one that arrived after the
- * order was saved is appended in its grouped place — so this is always the
- * whole live roster, never a stale subset.
+ * The roster in display order (owner, 18 Aug 26). ALWAYS grouped: every group
+ * in `GROUP_ORDER`, and WITHIN each group the members ordered by the admin's
+ * hand-order (or the categorised default). Grouping the output — rather than
+ * returning a flat hand-order — means the groups are always contiguous, so the
+ * matrix draws exactly one heading per group; a cross-group drag reorders a
+ * person within their own group (they cannot leave the category their CAT puts
+ * them in) instead of stranding a row under a duplicated heading.
  */
 export function displayRoster(): Person[] {
-  return state.rosterOrder.length
-    ? orderedPeople(state.people, state.rosterOrder)
-    : orderedPeople(state.people, autoOrder(state.people))
+  const order = state.rosterOrder.length ? state.rosterOrder : autoOrder(state.people)
+  const pos = new Map(order.map((id, i) => [id, i]))
+  const out: Person[] = []
+  for (const g of GROUP_ORDER) {
+    const members = state.people.filter(p => groupOf(p) === g)
+    // A body missing from the saved order (just arrived) sinks to the end of
+    // its group rather than jumping to the top.
+    members.sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
+    out.push(...members)
+  }
+  return out
 }
 
 /** A ground-crew body's label: the admin's override if set, else the projected
@@ -1046,9 +1058,11 @@ export function resetEventTypes(): void {
   notify()
 }
 
-/* THE COUNTER-COLUMN FIGURE ORDER writers. A display preference, so — unlike
-   the event-type library above — they are NOT role-gated: a member reorders
-   their own view exactly as they pick which counter it shows. Persisted under
+/* THE COUNTER-COLUMN FIGURE ORDER writers. ADMIN-GATED (owner, 17 Aug 26:
+   "normal user should not have authority to change the leave war column
+   arrangement") — the enforcement is in each writer below, mirroring the
+   event-type library. (The counter SELECTION — which figure the column shows —
+   stays ungated view state; only the ORDER is management's.) Persisted under
    `figorder`. The order is normalised through `orderedFigures` on every move,
    so a stored blob missing a new figure (or naming a dead one) is healed the
    first time it is touched rather than carried forward malformed. */

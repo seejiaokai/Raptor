@@ -24,6 +24,7 @@ import {
   moveRosterRow,
   personLabel,
   setPeople,
+  setPerson,
   setRole,
   setRosterOrder,
   setPersLabel,
@@ -127,10 +128,22 @@ describe('roster order + labels are admin-gated writers', () => {
     expect(displayRoster().map(p => p.id)).toEqual(autoOrder(CREW))
   })
 
-  it('moveRosterRow reorders and persists a hand order', () => {
-    moveRosterRow('gnd_1', 'sxo_1')             // ground crew to the very top
-    expect(displayRoster()[0].id).toBe('gnd_1')
-    expect(getState().rosterOrder[0]).toBe('gnd_1')
+  it('moveRosterRow reorders WITHIN a group and persists a hand order', () => {
+    // ops_c and ops_a are both OPS P. Drag ops_c to sit before ops_a.
+    moveRosterRow('ops_c', 'ops_a')
+    const ids = displayRoster().map(p => p.id)
+    expect(ids.indexOf('ops_c')).toBeLessThan(ids.indexOf('ops_a'))
+    expect(getState().rosterOrder).toContain('ops_c')
+  })
+
+  it('a cross-group drag keeps a person in their own group (display is always grouped)', () => {
+    // Drag ground crew up onto an SXO row: it does NOT leave the Personnel
+    // group — the display groups by CAT, so a body cannot be dragged out of
+    // the category its CAT puts it in.
+    moveRosterRow('gnd_1', 'sxo_1')
+    const roster = displayRoster()
+    expect(groupOf(roster[0])).toBe('SXO')                  // SXO still leads
+    expect(roster[roster.length - 1].id).toBe('gnd_1')      // ground crew still last
   })
 
   it('autoSortRoster re-groups back to the categorised order', () => {
@@ -176,5 +189,17 @@ describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
     expect(landed!.pers).toBe(true)
     expect(personLabel(landed!)).toBe('Stores')
     expect(groupOf(landed!)).toBe('PERS')
+  })
+
+  it('an in-session person edit is NOT reverted by the live re-projection', () => {
+    // reprojectRoster is additions/removals only, so an admin's setPerson edit
+    // (or a demo posting date) survives the next Raptor notify rather than
+    // snapping back to Raptor's projected value.
+    setRole('admin')
+    const someone = getState().people.find(p => !p.pers)!
+    const flipped = someone.seat === 'pilot' ? 'wso' : 'pilot'
+    setPerson(someone.id, { seat: flipped })
+    raptorNotify()
+    expect(getState().people.find(p => p.id === someone.id)!.seat).toBe(flipped)
   })
 })

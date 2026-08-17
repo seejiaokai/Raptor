@@ -734,11 +734,35 @@ ever.
   notify (change-guarded), so a personnel body added on the Quals page appears
   in Leave War without a reload (owner's explicit ask). `manning`/`categoryOf`
   are UNTOUCHED — the grouping is a display layer; an OCU still counts as ops
-  for a threshold, it is merely shown apart. Tests: `roster.test.ts` (13),
+  for a threshold, it is merely shown apart. Tests: `roster.test.ts` (15),
   extended `raptorRoster`/`matrix`/`person` suites, e2e roster block. KNOWN:
   pointer-drag is desktop-verified live; on a phone the primary path is
   Auto-sort (drag works but is fiddly on a 76px frozen column). The
-  standalone-app critique is in `raptor-port/.impeccable/critique/`.** The owner actioned the two
+  standalone-app critique is in `raptor-port/.impeccable/critique/`.
+  **DESKTOP IS "AN EXTENDED MOBILE" (owner, 18 Aug 26 — "make it similar to the
+  mobile… I don't like the days to be so wide… the counter is extended"):** the
+  desktop uses the phone's compact columns, not its own wide ones — day cells
+  ~33px (`--who-w:92`, `--bal-w:72` on desktop; the phone stays 76/44), so far
+  more of the year is on screen and the COUNTER column is the one thing widened.
+  Set in `matrix.css`'s base `&` block + the ≤430px override; day cells narrowed
+  by trimming `.mx td` padding and the `.c` min-width.
+  **ROSTER-AUDIT + BUG-SWEEP FIXES folded in (18 Aug 26 — the owner's "full bug
+  sweep of the most recent 20 features"):** (1) `reprojectRoster` is now
+  additions/removals-only so it no longer reverts an in-session `setPerson`
+  edit; (2) pointer-drag has a `pointercancel` + unmount teardown (no stuck
+  highlight / leaked window listeners); (3) `displayRoster` is always grouped so
+  a cross-group drag reorders within a group instead of duplicating a heading;
+  (4) rearrange mode resets when the role drops from admin; (5) the event-type
+  editor keys rows by name (`EventSheet.tsx`) so a mid-list delete cannot
+  silently rename the wrong type; (6) `runInbound` merges two same-type half
+  inputs on one day into a full day and clashes an un-representable pair instead
+  of silently dropping the second (was under-drawing / losing half a day —
+  `sync.test.ts`); (7) `dutyTplLoad` pre-scans `SEQ` so an id-less entry can't
+  mint a `uN` a later entry claims; (8) the DEBRIEF advisory prints the
+  configured `VCONF.debrief` pad, not a hard-coded "2h". NOTED, not changed
+  (owner to decide): the counter-picker's squadron-wide fallback TOTAL sums a
+  figure over ALL bodies incl. ground crew, so a ground-crew body's negative
+  balance can distort the aircrew leave-pool summary line.** The owner actioned the two
   mobile items (frozen Quals callsign, collapsible legend) and the "click any
   blank area to deselect" bug. **The P0 keyboard bug is now CLOSED (15 Aug 26):**
   the five top-nav items and the phone drawer's nav were hrefless `<a>`s a

@@ -163,6 +163,28 @@ describe('inbound: Raptor leave inputs become Leave War cells', () => {
     expect(getState().states.ammo['2026-02-20']).toEqual({ state: 'pending', source: 'bid' })
   })
 
+  it('two same-type halves on one day merge into a full day (not a lost half)', () => {
+    // The bug-sweep case: an AM local-leave row + a PM local-leave row filed
+    // for one day used to land only the first, drawing 0.5 instead of 1.0.
+    writeInputs(() => {
+      INPUTS.push({ person: 'ammo', date: 'Feb 10', allday: false, half: 'am', s: 0, e: 720, type: 'LL', remarks: '', mod: '2026-06-01' })
+      INPUTS.push({ person: 'ammo', date: 'Feb 10', allday: false, half: 'pm', s: 721, e: 1439, type: 'LL', remarks: '', mod: '2026-06-01' })
+    })
+    runInbound()
+    expect(getState().grid.ammo['2026-02-10']).toBe('LL')
+  })
+
+  it('two different half types on one day land the AM half and raise a clash for the PM', () => {
+    writeInputs(() => {
+      INPUTS.push({ person: 'ammo', date: 'Feb 10', allday: false, half: 'am', s: 0, e: 720, type: 'LL', remarks: '', mod: '2026-06-01' })
+      INPUTS.push({ person: 'ammo', date: 'Feb 10', allday: false, half: 'pm', s: 721, e: 1439, type: 'OL', remarks: '', mod: '2026-06-01' })
+    })
+    runInbound()
+    expect(getState().grid.ammo['2026-02-10']).toBe('*LL')   // AM half lands
+    // ...and the PM half is not silently dropped — it surfaces as a clash.
+    expect(getClashes()).toContainEqual({ person: 'ammo', date: '2026-02-10', inputCode: 'OL', bidCode: 'LL' })
+  })
+
   it('deleting the input clears the Raptor-owned cell it landed', () => {
     writeInputs(() => INPUTS.push({
       person: 'ammo', date: 'Feb 10', endDate: 'Feb 11', allday: true,

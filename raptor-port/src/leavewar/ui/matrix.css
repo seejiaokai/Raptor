@@ -46,7 +46,11 @@
 .mx td {
   border-right: 1px solid rgba(42, 49, 58, .7);
   border-bottom: 1px solid rgba(42, 49, 58, .7);
-  padding: 3px 5px;
+  /* Tight horizontal padding so the day columns stay narrow (owner, 18 Aug 26
+     — "I don't like the days to be so wide"): more of the year fits on screen,
+     the "extended mobile" feel. The frozen callsign/counter columns carry
+     their own widths and padding, so this only squeezes the day grid. */
+  padding: 3px 2px;
   text-align: center;
   height: 22px;
 }
@@ -59,17 +63,18 @@
    to grow would slide the two apart and leave a gap the day cells show
    through. Change one and you must change the other. */
 & {
-  /* Widened 118 → 140 (18 Aug 26) to seat the colour-coded CAT chip and the
-     edit-mode drag handle beside the callsign. `.bal` anchors its `left:` to
-     this same var, so the two frozen columns still move as one. A phone keeps
-     it tighter (below) — there the chip's colour carries the CAT and the
-     callsign ellipses. */
-  --who-w: 140px;
-  --bal-w: 44px;
+  /* Desktop is "an extended mobile" (owner, 18 Aug 26): the SAME compact
+     columns as the phone, just more of the year on screen. A narrow callsign
+     column (wide enough to seat the colour chip without ellipsing most
+     callsigns) and tight day cells, with the COUNTER column WIDENED — that is
+     the one place the desktop's extra room is spent, so the figure reads big.
+     `.bal` anchors its `left:` to `--who-w`, so the two frozen columns move as
+     one. The phone keeps its own tighter widths (below). */
+  --who-w: 92px;
+  --bal-w: 72px;
   --sxo: #E8B23B;
   --pers: #E7ECF1;
 }
-@media (max-width: 480px) { & { --who-w: 122px; } }
 
 .mx .who,
 .mx .bal {
@@ -209,7 +214,7 @@
   font-size: 10px;
   font-weight: 700;
   letter-spacing: .04em;
-  min-width: 30px;
+  min-width: 24px;
 }
 
 /* Square the date cells (owner, Aug 26 — "make the dates at the top a
@@ -363,8 +368,8 @@
    the values are unchanged from that original definition. */
 .mx td .c {
   display: inline-block;
-  min-width: 26px;
-  padding: 1px 4px;
+  min-width: 20px;
+  padding: 1px 3px;
   border-radius: 5px;
   font-size: 10px;
   font-weight: 700;
@@ -534,6 +539,9 @@
 @media (max-width: 430px) {
   & {
     --who-w: 76px;
+    /* The phone keeps the tight counter — the "extended" counter is a desktop
+       affordance where there is room; on a phone every px goes to the days. */
+    --bal-w: 44px;
   }
 
   .mx .who {
