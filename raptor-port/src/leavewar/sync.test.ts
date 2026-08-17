@@ -11,7 +11,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { HIST, initStore as raptorInitStore, writeInputs } from '../state/store'
-import { balanceOf } from './engine'
+import { balanceOf, figureParts, FIGURES } from './engine'
 import { projectPeople } from './state/raptorRoster'
 import {
   getState,
@@ -20,6 +20,7 @@ import {
   setBidState,
   setCell,
   setPeople,
+  setRole,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { getClashes, runInbound, runOutbound } from './sync'
@@ -267,5 +268,152 @@ describe('wire 3: counters follow the sync for free', () => {
     })
     runInbound()
     expect(balance()).toBe(before)
+  })
+})
+
+describe('medical crosses both ways (owner, 17 Aug 26)', () => {
+  it('a spanned ATT C input lands per-day ATTC cells, approved and Raptor-owned', () => {
+    writeInputs(() => INPUTS.push({
+      person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', allday: true,
+      type: 'ATT C', remarks: '', mod: '2026-06-01',
+    }))
+    runInbound()
+    const { grid, states } = getState()
+    for (const d of ['2026-02-10', '2026-02-11', '2026-02-12']) {
+      expect(grid.ammo[d]).toBe('ATTC')
+      expect(states.ammo[d]).toEqual({ state: 'approved', source: 'raptor' })
+    }
+  })
+
+  it('AM and PM halves land the asterisk notation', () => {
+    writeInputs(() => INPUTS.push(
+      { person: 'ammo', date: 'Feb 10', allday: false, half: 'am', s: 0, e: 720, type: 'OML', remarks: '', mod: '2026-06-01' },
+      { person: 'ammo', date: 'Feb 11', allday: false, half: 'pm', s: 721, e: 1439, type: 'HL', remarks: '', mod: '2026-06-01' },
+    ))
+    runInbound()
+    expect(getState().grid.ammo['2026-02-10']).toBe('*OML')
+    expect(getState().grid.ammo['2026-02-11']).toBe('HL*')
+  })
+
+  it('a custom window of six hours or less is a half day — the side of noon it sits on', () => {
+    writeInputs(() => INPUTS.push(
+      // 09:00–12:00, inside the morning.
+      { person: 'ammo', date: 'Feb 10', allday: false, s: 540, e: 720, type: 'ATT C', remarks: '', mod: '2026-06-01' },
+      // 13:00–16:00, inside the afternoon.
+      { person: 'ammo', date: 'Feb 11', allday: false, s: 780, e: 960, type: 'ATT C', remarks: '', mod: '2026-06-01' },
+      // 10:00–16:00 — exactly six hours ("6 hours 1 min or more" is wire 4's
+      // rule; HERE exactly six is still a half). Straddles noon; midpoint
+      // 13:00 puts it in the afternoon.
+      { person: 'ammo', date: 'Feb 12', allday: false, s: 600, e: 960, type: 'ATT C', remarks: '', mod: '2026-06-01' },
+    ))
+    runInbound()
+    expect(getState().grid.ammo['2026-02-10']).toBe('*ATTC')
+    expect(getState().grid.ammo['2026-02-11']).toBe('ATTC*')
+    expect(getState().grid.ammo['2026-02-12']).toBe('ATTC*')
+  })
+
+  it('a custom window past six hours is a full day — medical does not use leave\'s round-OUT rule', () => {
+    writeInputs(() => INPUTS.push({
+      // 08:00–15:00 — seven hours.
+      person: 'ammo', date: 'Feb 10', allday: false, s: 480, e: 900, type: 'OML', remarks: '', mod: '2026-06-01',
+    }))
+    runInbound()
+    expect(getState().grid.ammo['2026-02-10']).toBe('OML')
+  })
+
+  it('deleting the medical input reverse-clears its cells', () => {
+    writeInputs(() => INPUTS.push({
+      person: 'ammo', date: 'Feb 10', allday: true, type: 'HL', remarks: '', mod: '2026-06-01',
+    }))
+    runInbound()
+    expect(getState().grid.ammo['2026-02-10']).toBe('HL')
+    writeInputs(() => {
+      const ix = INPUTS.findIndex((r: any) => r.type === 'HL' && r.person === 'ammo')
+      INPUTS.splice(ix, 1)
+    })
+    runInbound()
+    expect(getState().grid.ammo?.['2026-02-10']).toBeUndefined()
+  })
+
+  it('a marker the admin writes on the grid lands as an lw-tagged input in Raptor\'s spelling — no approval step', () => {
+    setRole('admin')
+    setCell('ammo', '2026-02-02', 'ATTB')
+    setCell('ammo', '2026-02-03', 'ATTB')
+    runOutbound()
+    const rows = lwInputs()
+    expect(rows).toHaveLength(1)
+    expect(rows[0]).toMatchObject({
+      person: 'ammo', type: 'ATT B', date: 'Feb 2', endDate: 'Feb 3', allday: true, lw: 'y2026',
+    })
+  })
+
+  it('a half-day C on the grid lands as a half-day ATT C input', () => {
+    setRole('admin')
+    setCell('ammo', '2026-02-05', 'ATTC*')
+    runOutbound()
+    const rows = lwInputs()
+    expect(rows).toHaveLength(1)
+    expect(rows[0]).toMatchObject({
+      person: 'ammo', type: 'ATT C', date: 'Feb 5', allday: false, half: 'pm', s: 721, e: 1439,
+    })
+  })
+
+  it('clearing the grid marker removes exactly its own input again', () => {
+    setRole('admin')
+    setCell('ammo', '2026-02-05', 'OML')
+    runOutbound()
+    expect(lwInputs()).toHaveLength(1)
+    setCell('ammo', '2026-02-05', '')
+    runOutbound()
+    expect(lwInputs()).toHaveLength(0)
+  })
+
+  it('reaches a fixed point: each side skips what the other wrote', () => {
+    // In from Raptor: the raptor-owned cell must NOT come back out.
+    writeInputs(() => INPUTS.push({
+      person: 'ammo', date: 'Feb 10', allday: true, type: 'ATT C', remarks: '', mod: '2026-06-01',
+    }))
+    runInbound()
+    runOutbound()
+    expect(lwInputs()).toHaveLength(0)
+    // Out from the grid: the lw-tagged input must NOT be re-ingested as a
+    // fresh, differently-owned cell (it already IS the grid's own row).
+    setRole('admin')
+    setCell('ammo', '2026-02-20', 'HL')
+    runOutbound()
+    const before = JSON.stringify([getState().grid.ammo, getState().states.ammo])
+    runInbound()
+    runOutbound()
+    runInbound()
+    expect(JSON.stringify([getState().grid.ammo, getState().states.ammo])).toBe(before)
+    expect(lwInputs()).toHaveLength(1)
+  })
+
+  it('a medical input against an existing bid raises the clash and overwrites nothing', () => {
+    setCell('ammo', '2026-02-20', 'OL')
+    writeInputs(() => INPUTS.push({
+      person: 'ammo', date: 'Feb 20', allday: true, type: 'ATT C', remarks: '', mod: '2026-06-01',
+    }))
+    runInbound()
+    expect(getClashes()).toContainEqual({
+      person: 'ammo', date: '2026-02-20', inputCode: 'ATTC', bidCode: 'OL',
+    })
+    expect(getState().grid.ammo['2026-02-20']).toBe('OL')
+  })
+
+  it('MED USED follows a synced-in ATT C for free, halves included', () => {
+    const med = () => {
+      const { openings, ledger, wars } = getState()
+      return figureParts(FIGURES.find(f => f.id === 'med')!, { openings, ledger, sources: wars }, 'ammo')
+    }
+    writeInputs(() => INPUTS.push({
+      person: 'ammo', date: 'Feb 10', allday: false, half: 'am', s: 0, e: 720, type: 'ATT C', remarks: '', mod: '2026-06-01',
+    }))
+    runInbound()
+    expect(med()).toEqual([
+      { label: 'ATT C', value: 0.5 },
+      { label: 'HL', value: 0 },
+      { label: 'OML', value: 0 },
+    ])
   })
 })

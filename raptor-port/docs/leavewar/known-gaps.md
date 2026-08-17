@@ -105,9 +105,10 @@ Balances are computed and on screen. Two parts of §Counters are not built:
 - **No grant sheet.** The ledger is seeded and read; nothing can post a
   top-up, an award or a correction through the interface.
 - **No ledger view.** §Counters promises that any number on screen can be
-  opened and explained. It cannot yet: the counter column shows the figure
-  and the tooltip says what it counts, but the entries behind it are not
-  visible anywhere.
+  opened and explained. The breakdown sheet (17 Aug 26 — tap a person's
+  counter cell) now answers the first layer: the figure's composition, a
+  balance as opening + granted (+ earned) − taken. The individual LEDGER
+  ENTRIES behind "granted" are still not visible anywhere.
 
 Also note the derivation, because it narrows the spec deliberately: §Counters
 says every change to a counter is a ledger entry, and **leave taken is not
@@ -118,11 +119,11 @@ the grid cannot know.
 ## The counter column is figures, not raw counters (Aug 26)
 
 The frozen column no longer cycles the six entitlement counters. It cycles
-ELEVEN named figures (owner's set), each labelled `BAL` (a balance left) or
-`USED` (days taken):
+TWELVE named figures (owner's set; `OIL BAL` joined with wire 4), each
+labelled `BAL` (a balance left) or `USED` (days taken):
 
-    LL USED · OL USED · OIL USED · OFF USED · CCL USED · PL USED · FCL USED ·
-    MED USED · OML USED · LVE BAL · LVE USED
+    LL USED · OL USED · OIL USED · OIL BAL · OFF USED · CCL USED · PL USED ·
+    FCL USED · MED USED · OML USED · LVE BAL · LVE USED
 
 - **Ten are consumed (`USED`)** — days of that type taken, read per-TYPE by
   `takenOf` (not the per-counter `drawnFrom`, which cannot tell LL from OL —
@@ -140,11 +141,24 @@ ELEVEN named figures (owner's set), each labelled `BAL` (a balance left) or
   unknown id is dropped, a newly added figure appended.
 - **The picker sheet is also the legend** (owner: "show the legend as a
   bubble"): the USED/BAL key and the two aggregates' compositions render inline.
-- **Medical is three markers now** — `ATTC` (shown "ATT C"), `HL`, `OML` —
-  replacing the single `M`. Like `M` they are assigned, not bid, so **there is
-  no cell-entry UI for them**; MED USED and OML USED populate from seed or a CSV
-  import. A grid affordance to mark someone medical is the natural follow-up if
-  the owner wants it (reported, not built).
+- **Medical is FOUR markers now** — `ATTB` (shown as a bare "B" on the grid),
+  `ATTC` (shown "C"), `HL`, `OML` — B joined 17 Aug 26 ("u can indicate,
+  B (att b), C (att c), OML, HL"), and since the same day they TAKE PORTIONS
+  (`*OML` a morning, `HL*` an afternoon; a half counts 0.5 in MED USED). ATT B
+  deliberately feeds NO figure (the owner's MED USED sum names the other three)
+  and removes nothing from manning — no flying, but at work, matching Raptor's
+  own meaning of the code. Still assigned, not bid, but **the cell-entry UI now
+  exists**: the cell sheet shows a Medical row of the four chips to an ADMIN
+  only (whole day default, AM/PM the halves, range supported); members file on
+  Raptor's Inputs page and the record syncs across (the spec's Wire 5 — an
+  ATT B / ATT C / HL / OML input lands as a read-only raptor-owned cell, an
+  admin-marked cell lands as an lw-tagged input, no approval step either way).
+- **Tapping a person's counter CELL opens the breakdown** (owner, 17 Aug 26):
+  MED USED as its ATT C / HL / OML rows, LVE USED as its seven codes, a
+  balance as opening + granted (+ earned) − taken, any single-code figure as
+  its one line — parts signed so they visibly sum to the total
+  (`figureParts` in counters.ts, `FigureBreakdownSheet`). The column HEADER
+  still opens the figure picker; the two controls answer different questions.
 
 ## The owner's review of 10 Aug 26, and what it settled
 

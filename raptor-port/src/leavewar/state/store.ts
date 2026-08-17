@@ -8,6 +8,7 @@ import {
   canEditCell,
   inSquadron,
   isBiddable,
+  isMedical,
   windowFits,
   canReopen,
   nextStage,
@@ -391,15 +392,21 @@ function readStored<T>(key: string, parse: (x: unknown) => T | null): T | null {
 // drift can arrive from outside `setCell` — hand-edited storage, or data
 // written by a build that predates bid states. So every stored state is
 // checked against the cell it names and dropped if that cell no longer
-// holds a code someone bids for: a stale 'approved' left on a cell that is
-// now medical would colour it wrong, and one left on an empty cell would
-// mean nothing at all.
+// holds a code that legitimately carries one: a bid code (any record), or a
+// medical cell's raptor OWNERSHIP record — that one is what keeps a synced
+// medical cell read-only and reverse-clearable across a reload, and dropping
+// it here would let the outbound pass re-mint an input for a row Raptor
+// itself wrote (the loop the source model exists to prevent). A BID-sourced
+// record on a medical cell stays drift — `setCell` never writes one — and an
+// 'approved' left on a cell that no longer holds any such code would colour
+// it wrong, so both are still dropped.
 function reconcile(grid: Grid, states: States): States {
   const out: States = {}
   for (const [id, row] of Object.entries(states)) {
     const kept: Record<string, BidRecord> = {}
     for (const [date, record] of Object.entries(row)) {
-      if (isBiddable(grid[id]?.[date])) kept[date] = record
+      const code = grid[id]?.[date]
+      if (isBiddable(code) || (isMedical(code) && record.source === 'raptor')) kept[date] = record
     }
     if (Object.keys(kept).length > 0) out[id] = kept
   }
@@ -994,10 +1001,14 @@ export type IngestResult = 'written' | 'confirmed' | 'clash' | 'ignored'
  */
 export function ingestFromRaptor(personId: string, date: string, code: string): IngestResult {
   const clean = code.trim().toUpperCase()
-  // Raptor sends more than leave. Anything nobody bids for is not this
-  // app's business and is dropped rather than written as a cell with a
-  // state that would make no sense.
-  if (!isBiddable(clean)) return 'ignored'
+  // Raptor sends more than leave. Leave is bid for and medical is assigned
+  // (owner, 17 Aug 26 — the four markers cross from the Inputs page too);
+  // anything else nobody bids for is not this app's business and is dropped
+  // rather than written as a cell with a state that would make no sense.
+  // The 'approved' record a medical cell gets below is its OWNERSHIP marker
+  // — raptorOwns and both reverse sweeps read the source; the grid draws a
+  // non-biddable code as plain information whatever state rides it.
+  if (!isBiddable(clean) && !isMedical(clean)) return 'ignored'
 
   // The war that OWNS the date, not the war on screen. The sync wire feeds
   // this whatever dates Raptor's inputs cover, whichever war is currently

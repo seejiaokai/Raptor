@@ -384,6 +384,36 @@ test('a bid can be placed, and lands plain because nobody has answered it', asyn
   expect(await chip.evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
 })
 
+// The four medical markers are management's to mark (owner, 17 Aug 26): the
+// Medical row exists for an admin, is absent for a member (they file on
+// Raptor's Inputs page and it syncs), and the ATT chips read the owner's
+// bare B / C — on the chip and on the grid cell it writes.
+test('an admin marks medical on the grid; a member is never offered the row', async ({ page }) => {
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
+  await expect(page.locator('[data-testid="bid-ATTB"]')).toHaveCount(0)
+  await page.locator('[data-testid="bid-cancel"]').click()
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  const chip = page.locator('[data-testid="bid-ATTB"]')
+  await expect(chip).toHaveText('B')
+  await chip.click()
+  await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveText('B')
+})
+
+// The owner's "click the individual personnel counter" (17 Aug 26): the cell
+// opens a per-person breakdown whose rows sum to the total on screen. Four
+// rows for the default LVE BAL figure — opening, granted, taken, Total.
+test('tapping a counter cell opens that person\'s breakdown of the shown figure', async ({ page }) => {
+  await page.locator('[data-testid="bal-ammo"]').click()
+  const sheet = page.locator('[data-testid="figure-breakdown"]')
+  await expect(sheet).toBeVisible()
+  await expect(sheet.locator('.crow-top')).toHaveCount(4)
+  await expect(sheet.locator('[data-testid="breakdown-total"]')).toBeVisible()
+  await page.locator('[data-testid="breakdown-close"]').click()
+  await expect(sheet).toHaveCount(0)
+})
+
 // The reason the bid sheet is a fixed-position sheet rather than a popover
 // inside the cell: `.mx-wrap` is an `overflow: auto` scroller, and anything
 // positioned inside a 30px-wide cell is clipped by it. jsdom applies no

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { codeOf, formatCell, isDuty, LEAVE_TYPES, parseCell, portionAmount } from './codes'
+import { codeOf, displayCell, formatCell, isDuty, isMedical, LEAVE_TYPES, parseCell, portionAmount } from './codes'
 
 describe('portionAmount', () => {
   it('costs a whole day for full, half a day for am or pm', () => {
@@ -53,10 +53,23 @@ describe('parseCell', () => {
     expect(parseCell('*OIL*')).toBeNull()
   })
 
-  it('rejects a portion on a non-leave marker — only leave types come in halves', () => {
+  it('rejects a portion on a course or overseas-duty marker — those never come in halves', () => {
     expect(parseCell('*M')).toBeNull()
     expect(parseCell('CSE*')).toBeNull()
     expect(parseCell('*OD')).toBeNull()
+  })
+
+  it('accepts a portion on a medical marker — half-day medical joined 17 Aug 26', () => {
+    expect(parseCell('*OML')).toEqual({ type: 'OML', portion: 'am' })
+    expect(parseCell('HL*')).toEqual({ type: 'HL', portion: 'pm' })
+    expect(parseCell('*ATTC')).toEqual({ type: 'ATTC', portion: 'am' })
+    expect(parseCell('ATTB*')).toEqual({ type: 'ATTB', portion: 'pm' })
+  })
+
+  it("reads the owner's B/C shorthand as the ATT markers, portions included", () => {
+    expect(parseCell('B')).toEqual({ type: 'ATTB', portion: 'full' })
+    expect(parseCell('*C')).toEqual({ type: 'ATTC', portion: 'am' })
+    expect(parseCell('c*')).toEqual({ type: 'ATTC', portion: 'pm' })
   })
 
   it('rejects a portion on an SC duty marker', () => {
@@ -86,12 +99,38 @@ describe('parseCell', () => {
     expect(parseCell('HO')).toBeNull()
   })
 
-  it('parses the three medical markers, and no longer the old M', () => {
-    for (const type of ['ATTC', 'HL', 'OML']) {
+  it('parses the four medical markers, and no longer the old M', () => {
+    for (const type of ['ATTB', 'ATTC', 'HL', 'OML']) {
       expect(parseCell(type)).toEqual({ type, portion: 'full' })
     }
     // `M` was replaced three-for-one by ATT C, HL and OML (owner, Aug 26).
     expect(parseCell('M')).toBeNull()
+  })
+})
+
+describe('displayCell', () => {
+  it('shows the ATT markers as the owner’s one-letter shorthand, asterisk kept on its side', () => {
+    expect(displayCell('ATTB')).toBe('B')
+    expect(displayCell('*ATTC')).toBe('*C')
+    expect(displayCell('ATTC*')).toBe('C*')
+  })
+
+  it('leaves every other code exactly as stored', () => {
+    for (const raw of ['LL', '*OIL', 'HL*', 'OML', 'CSE', 'FS', 'PO', 'NOPE']) {
+      expect(displayCell(raw)).toBe(raw)
+    }
+  })
+})
+
+describe('isMedical', () => {
+  it('recognises the four markers, portioned or not, shorthand included', () => {
+    for (const raw of ['ATTB', 'ATTC', 'HL', '*OML', 'B', 'C*']) expect(isMedical(raw)).toBe(true)
+  })
+
+  it('says no to leave, duty, courses and junk', () => {
+    for (const raw of ['LL', '*OIL', 'FS', 'CSE', 'OD', 'NOPE', '', undefined]) {
+      expect(isMedical(raw as any)).toBe(false)
+    }
   })
 })
 
@@ -120,10 +159,15 @@ describe('formatCell', () => {
     expect(parseCell(formatCell(cell))).toEqual(cell)
   })
 
-  it('throws rather than emit a portion on a non-leave marker, which parseCell would only reject', () => {
+  it('throws rather than emit a portion on a duty or course marker, which parseCell would only reject', () => {
     expect(() => formatCell({ type: 'FS', portion: 'am' })).toThrow()
-    expect(() => formatCell({ type: 'OML', portion: 'pm' })).toThrow()
     expect(() => formatCell({ type: 'CSE', portion: 'am' })).toThrow()
+  })
+
+  it('round-trips a portioned medical marker like any leave', () => {
+    const cell = { type: 'OML', portion: 'pm' } as const
+    expect(formatCell(cell)).toBe('OML*')
+    expect(parseCell(formatCell(cell))).toEqual(cell)
   })
 })
 
@@ -219,16 +263,26 @@ describe('codeOf', () => {
     expect(codeOf('HO')).toBeUndefined()
   })
 
-  it('recognises the three medical markers as full-day codes, and no longer M', () => {
+  it('recognises the medical markers, whole and half days, and no longer M', () => {
     for (const c of ['ATTC', 'HL', 'OML']) {
       expect(codeOf(c)!.removes).toBe(1)
       expect(codeOf(c)!.bid).toBe(false)
     }
+    // A half-day medical removes half the man, exactly like a half-day leave.
+    expect(codeOf('*OML')!.removes).toBe(0.5)
+    expect(codeOf('HL*')!.removes).toBe(0.5)
     expect(codeOf('M')).toBeUndefined()
   })
 
-  it('rejects a portion on a non-leave or SC-duty marker end to end', () => {
-    expect(codeOf('*OML')).toBeUndefined()
+  it('ATT B removes nothing from manning — no flying, but at work (matching Raptor’s own meaning)', () => {
+    expect(codeOf('ATTB')!.removes).toBe(0)
+    expect(codeOf('*ATTB')!.removes).toBe(0)
+    expect(codeOf('ATTB')!.bid).toBe(false)
+    expect(codeOf('ATTB')!.spends).toBeNull()
+    expect(codeOf('ATTB')!.duty).toBe(false)
+  })
+
+  it('rejects a portion on a course or SC-duty marker end to end', () => {
     expect(codeOf('CSE*')).toBeUndefined()
     expect(codeOf('*FS')).toBeUndefined()
   })

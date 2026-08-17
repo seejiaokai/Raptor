@@ -404,3 +404,34 @@
 }
 
 }
+
+/* The per-person breakdown sheet's rows are STATEMENTS, not choices — same
+   card shape as the picker's rows so the two sheets read as one family, but
+   no pointer and no hover invitation, because tapping one does nothing. */
+.crow.bdrow {
+  cursor: default;
+}
+
+.crow.bdrow:hover {
+  border-color: var(--edge);
+}
+
+/* The total, ruled off from the parts above it the way a sum is. */
+.crow-wrap.bdtotal {
+  border-top: 1px solid var(--edge);
+  margin-top: 4px;
+  padding-top: 10px;
+}
+
+.crow-wrap.bdtotal .cn {
+  color: var(--accent);
+}
+
+/* The medical chips echo the grid's own reading of a medical cell — plain
+   information, no bid colour — with a dotted edge saying "assigned, not
+   asked for". They must not borrow the leave chips' full styling wholesale,
+   or the row would read as four more things to bid. */
+.bidsheet .tchip.med {
+  color: var(--ink-3);
+  border-style: dotted;
+}

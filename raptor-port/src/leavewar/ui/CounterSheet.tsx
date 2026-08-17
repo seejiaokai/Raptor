@@ -14,7 +14,7 @@
 // the figures are REORDERED: the ▲▼ on each row move it, persisted, so the
 // column cycles in the squadron's own preferred order.
 
-import { orderedFigures } from '../engine'
+import { figureParts, orderedFigures, type Figure, type Person } from '../engine'
 import { getState, moveFigure, resetFigureOrder } from '../state/store'
 import { Sheet } from './Sheet'
 import './bidpicker.css'
@@ -109,6 +109,70 @@ export function CounterSheet({
         <button className="creset" data-testid="counter-reset" onClick={() => resetFigureOrder()}>
           Reset order
         </button>
+      </div>
+    </Sheet>
+  )
+}
+
+/**
+ * One person's number, opened out — the sheet a tap on a counter CELL opens
+ * (the header still opens the picker above; the cell is the person's own
+ * figure, so it answers for that person). The owner's ask, 17 Aug 26: "when
+ * I click on the individual personnel counter, I should be able to see the
+ * breakdown" — MED USED opens as its ATT C / HL / OML rows, LVE USED as its
+ * seven codes, a balance as opening + granted (+ earned) − taken, and a
+ * single-code figure simply restates itself, so every figure answers rather
+ * than only the aggregates.
+ *
+ * Zero rows are kept, not hidden: "ATT C 0" says something true — that none
+ * of this person's medical days were ATT C — and a breakdown with vanishing
+ * rows would make the three-line shape read differently person to person.
+ */
+export function FigureBreakdownSheet({
+  figure,
+  person,
+  onClose,
+}: {
+  figure: Figure
+  person: Person
+  onClose: () => void
+}) {
+  const { openings, ledger, wars } = getState()
+  const ctx = { openings, ledger, sources: wars }
+  const parts = figureParts(figure, ctx, person.id)
+  const total = figure.value(ctx, person.id)
+
+  return (
+    <Sheet testid="figure-breakdown" label={`${figure.label} breakdown`} onClose={onClose}>
+      <div className="bidsheet-hd">
+        <span className="who">{person.callsign}</span>
+        <span className="dt">{figure.label}</span>
+        <span className="cur">{figure.kind === 'bal' ? 'balance left' : 'days taken'}</span>
+        <button className="x" data-testid="breakdown-close" onClick={onClose} aria-label="Close">
+          ✕
+        </button>
+      </div>
+      <div className="clist">
+        {parts.map(p => (
+          <div key={p.label} className="crow-wrap" data-testid={`part-${p.label}`}>
+            <span className="crow bdrow">
+              <span className="crow-top">
+                <span className="cn">{p.label}</span>
+                {/* Signed as computed — a balance's "taken −3" reads as the
+                    subtraction it is, so the rows visibly sum to the total. */}
+                <span className={`ct${p.value < 0 ? ' neg' : ''}`}>{show(p.value)}</span>
+              </span>
+            </span>
+          </div>
+        ))}
+        <div className="crow-wrap bdtotal" data-testid="breakdown-total">
+          <span className="crow bdrow">
+            <span className="crow-top">
+              <span className="cn">Total</span>
+              <span className={`ct${total < 0 ? ' neg' : ''}`}>{show(total)}</span>
+            </span>
+          </span>
+        </div>
       </div>
     </Sheet>
   )

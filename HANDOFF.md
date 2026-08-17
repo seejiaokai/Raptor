@@ -463,6 +463,43 @@ and published as admin ("✓ Published · ORIG"), plasma's Jul 18 Leave War
 cell reading FS with the OIL BAL figure at 1 and the sheet's new row
 carrying its "earned by weekend/PH duty + granted − taken" legend, the day
 reopened and both back to nothing — zero console/page/network errors.
+**WIRE 5 — MEDICAL BOTH WAYS + THE COUNTER BREAKDOWN (17 Aug 26, the owner's
+"Med used… when I click on the individual personnel counter, I should be able
+to see the breakdown… B (att b), C (att c), OML, HL… connected to the
+inputs") — all six gates green first-hand on the matching tree.** ATT B
+joined the medical markers (printed as a bare B/C on the grid via
+`displayCell`; parse aliases accepted; feeds NO figure and removes nothing
+from manning — at work, no flying); all four markers take AM/PM portions now
+(a half counts 0.5 in MED USED; courses/OD/FS-HS still refuse an asterisk);
+medical crosses BOTH WAYS on wires 1+2's own machinery (an Inputs-page
+ATT B/ATT C/HL/OML row lands as a raptor-owned cell — AM/PM exact, a custom
+window ≤6h is a HALF day sided by its midpoint, >6h a full day,
+`medRowPortion`, leave's round-OUT untouched; an admin-marked grid cell
+lands as an lw-tagged input in Raptor's spelling with NO approval step —
+assigned, not bid; `reconcile()` on load now keeps a medical cell's raptor
+ownership record, without which every reload would strip ownership and the
+next outbound pass would re-mint Raptor's own row back at it); the cell
+sheet grew an admin-only Medical row (whole-day default, AM/PM, range); and
+tapping a person's counter CELL opens `FigureBreakdownSheet` — MED USED as
+ATT C/HL/OML rows, LVE USED as its seven codes, a balance as opening +
+granted (+ earned) − taken, parts signed so they sum (`figureParts`).
+`npm test` **2464 across 136 files** (raptor 1716/101 untouched by this
+build; leavewar 748/35 — codes/counters/raptor/sync/store suites extended,
+`bidding` +4 medical-entry, `counters.test.tsx` +3 breakdown, one matrix
+assertion re-pointed at the C short form), `node reference/tfin.js` 728/0
+(no Raptor engine/seed file touched), `npm run build` clean, `npm run
+test:e2e` **252 passed / 6 touch-only skips** (+4: the admin-vs-member
+medical row and the breakdown sheet, at both LW viewports),
+`probes:adapted` 6/6, `perf` 4/4 — **week 3743 / board 844, all ceilings
+and measures byte-identical**: everything new renders inside Leave War's
+page and sheets. The built bundle was driven at 1500px and 390×844: the
+seed's own medical inputs (sufa's ATT C week, divot's OML) on the grid as
+read-only raptor-marked C/OML cells, sufa's MED USED at 5 opening as
+ATT C 5 · HL 0 · OML 0 · Total 5, an admin PM-half C mark printing `C*` and
+crossing back as an 'ammo ATT C Feb 11 pm' input, the demo re-key's two
+medical cells minting their backing inputs (wolf, Jan 5/6) — zero
+console/page/network errors, both widths. Deployed-page check at merge, as
+ever.
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
   DOM ceilings and two behavioural checks. The three per-node TIMING budgets
@@ -539,15 +576,30 @@ reopened and both back to nothing — zero console/page/network errors.
   on either, the paint being generic to `bal` figures. The picker sheet doubles as the
   **legend** (USED/BAL key + the two aggregates' make-up inline) and as the
   **reorder** surface (▲▼ per row + Reset; order persisted under `figorder`, a
-  display preference, ungated). Medical is three markers now — `ATTC`/`HL`/`OML`,
-  replacing `M`; like `M` they are assigned, not bid, so **no cell-entry UI**
-  (seed/CSV only — a grid affordance to mark medical is the reported follow-up).
+  display preference, ungated). Medical is FOUR markers now — `ATTB` (printed
+  as a bare B on the grid) / `ATTC` (printed C) / `HL` / `OML` — B joined
+  17 Aug 26 and all four take AM/PM portions since the same day (a half
+  counts 0.5 in MED USED; ATT B feeds no figure and removes nothing from
+  manning — at work, no flying). Still assigned, not bid, but the **grid
+  affordance EXISTS now**: the cell sheet's Medical row, ADMIN-only, whole
+  day default with AM/PM halves; members file on the Inputs page and it
+  syncs across (the medical sync bullet below). **A tap on a person's
+  counter CELL opens that figure's breakdown** (17 Aug 26 — MED USED as its
+  ATT C/HL/OML rows, LVE USED as its seven codes, a balance as opening +
+  granted (+ earned) − taken, parts signed so they sum; `figureParts`,
+  `FigureBreakdownSheet`; the column header still opens the picker).
   Also fixed in the same pass: the date-header cells were rounded by a leak of
   Raptor's global `.day{border-radius}` onto Leave War's `className="day"` header
   cells — overridden square in the scoped `matrix.css`. Full detail in
   `docs/leavewar/known-gaps.md` §The counter column is figures.
-- **LEAVE WAR is merged as the sixth tab (16 Aug 26) and ALL FOUR SYNC WIRES
-  are BUILT (wires 0–3 on 17 Aug 26; WIRE 4 later the same day)** — one
+- **LEAVE WAR is merged as the sixth tab (16 Aug 26) and ALL FIVE SYNC WIRES
+  are BUILT (wires 0–3 on 17 Aug 26; WIRE 4 later the same day; WIRE 5 —
+  MEDICAL — the same day again: the four markers ATT B/ATT C/HL/OML cross
+  both ways on wires 1+2's own machinery, an input landing as a read-only
+  raptor-owned cell with the owner's ≤6h-custom-window-is-a-half rule
+  (`medRowPortion` — AM/PM exact, midpoint decides a straddler; leave keeps
+  round-OUT), an admin-marked grid cell landing as an lw-tagged input with
+  no approval step, spec §Wire 5)** — one
   roster (boot projection of `PEOPLE`), approved-leave ⇄ schedule-input both
   ways, counters drawing down (derived, so the wire IS the decrement), the
   clash strip, and now **weekend/public-holiday duty auto-crediting OIL**:

@@ -233,6 +233,45 @@ export interface Figure {
   /** For an aggregate: what it is made of, shown as the legend "bubble". */
   legend?: string
   value: (ctx: FigureCtx, personId: string) => number
+  /** The per-person breakdown, where a figure has one — the rows the tap-a-
+   *  counter sheet shows. SIGNED so the parts always sum to `value`: a
+   *  balance's "taken" row is negative, which is also how it reads. */
+  parts?: (ctx: FigureCtx, personId: string) => FigurePart[]
+}
+
+/** One labelled component of a figure's number. */
+export interface FigurePart {
+  label: string
+  value: number
+}
+
+// The breakdown builders. One per shape rather than one per figure, so the
+// aggregates cannot drift from the type lists they sum (`MED_CON_TYPES` /
+// `LVE_CON_TYPES` feed both the value and its parts).
+const PART_LABEL: Record<string, string> = { ATTC: 'ATT C', ATTB: 'ATT B' }
+const typeParts = (types: readonly string[]) => (c: FigureCtx, p: string): FigurePart[] =>
+  types.map(t => ({ label: PART_LABEL[t] ?? t, value: takenOf(c.sources, p, t) }))
+const balParts = (counter: CounterName, earns: boolean) => (c: FigureCtx, p: string): FigurePart[] => {
+  const parts: FigurePart[] = [
+    { label: 'opening figure', value: c.openings[p]?.[counter] ?? 0 },
+    { label: 'granted', value: grantedTo(c.ledger, p, counter) },
+  ]
+  if (earns) parts.push({ label: 'earned by weekend/PH duty', value: earnedOil(c.sources, p) })
+  parts.push({ label: 'taken', value: -drawnFrom(c.sources, p, counter) })
+  return parts
+}
+
+/**
+ * The rows the tap-a-person's-counter sheet shows: the figure's own parts
+ * where it has them (the owner's ask was MED USED — "when I click on the
+ * individual personnel counter, I should be able to see the breakdown"), or
+ * the figure restated as its one line where it is already a single number.
+ * The parts are signed and always sum to the figure's value, pinned by test —
+ * a breakdown that did not add up would be worse than none.
+ */
+export function figureParts(f: Figure, ctx: FigureCtx, personId: string): FigurePart[] {
+  if (f.parts) return f.parts(ctx, personId)
+  return [{ label: f.kind === 'bal' ? 'balance' : 'days taken', value: f.value(ctx, personId) }]
 }
 
 /**
@@ -249,15 +288,15 @@ export const FIGURES: readonly Figure[] = Object.freeze([
   // move nothing anyone can see in the frozen column. A saved figure order
   // from before this id existed shows it appended at the end (orderedFigures'
   // tail rule) rather than losing it.
-  { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH duty + granted − taken', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'oil') },
+  { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH duty + granted − taken', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'oil'), parts: balParts('oil', true) },
   { id: 'off', label: 'OFF USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OFF') },
   { id: 'ccl', label: 'CCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL') },
   { id: 'pl',  label: 'PL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL') },
   { id: 'fcl', label: 'FCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'FCL') },
-  { id: 'med', label: 'MED USED', kind: 'con', desc: 'days taken', legend: 'ATT C + HL + OML', value: (c, p) => medConOf(c.sources, p) },
+  { id: 'med', label: 'MED USED', kind: 'con', desc: 'days taken', legend: 'ATT C + HL + OML', value: (c, p) => medConOf(c.sources, p), parts: typeParts(MED_CON_TYPES) },
   { id: 'oml', label: 'OML USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OML') },
-  { id: 'lvebal', label: 'LVE BAL', kind: 'bal', desc: 'balance available to take', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'annual') },
-  { id: 'lvecon', label: 'LVE USED', kind: 'con', desc: 'days taken', legend: 'LL + OL + OIL + OFF + CCL + PL + FCL', value: (c, p) => lveConOf(c.sources, p) },
+  { id: 'lvebal', label: 'LVE BAL', kind: 'bal', desc: 'balance available to take', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'annual'), parts: balParts('annual', false) },
+  { id: 'lvecon', label: 'LVE USED', kind: 'con', desc: 'days taken', legend: 'LL + OL + OIL + OFF + CCL + PL + FCL', value: (c, p) => lveConOf(c.sources, p), parts: typeParts(LVE_CON_TYPES) },
 ])
 
 /** The figure the column opens on: how much leave is left. */

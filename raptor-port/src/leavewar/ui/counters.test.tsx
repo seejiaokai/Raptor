@@ -327,3 +327,36 @@ describe('going negative is asked about, never refused', () => {
     expect(getState().grid.reset['2026-02-11']).toBe('OFF')
   })
 })
+
+describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
+  it('opens from a tap on a person’s counter cell and breaks MED USED into its three markers', () => {
+    render(<Matrix />)
+    pick('med')
+    // splice's seed medical: one ATT C (5 Jan) and one OML (6 Jan).
+    fireEvent.click(screen.getByTestId('bal-splice'))
+    const sheet = screen.getByTestId('figure-breakdown')
+    expect(sheet.textContent).toContain('SPLICE')
+    expect(sheet.textContent).toContain('MED USED')
+    const rows = [...sheet.querySelectorAll('.crow-top')].map(r => r.textContent)
+    expect(rows).toEqual(['ATT C1', 'HL0', 'OML1', 'Total2'])
+  })
+
+  it('breaks a balance into opening + granted − taken, and closes', () => {
+    render(<Matrix />)
+    // LVE BAL is the default figure. RAMP: 12 opening + 14 granted − 1 taken = 25.
+    fireEvent.click(screen.getByTestId('bal-ramp'))
+    const sheet = screen.getByTestId('figure-breakdown')
+    const rows = [...sheet.querySelectorAll('.crow-top')].map(r => r.textContent)
+    expect(rows).toEqual(['opening figure12', 'granted14', 'taken-1', 'Total25'])
+    fireEvent.click(screen.getByTestId('breakdown-close'))
+    expect(screen.queryByTestId('figure-breakdown')).toBeNull()
+  })
+
+  it('restates a single-code figure as one line, so every figure answers', () => {
+    render(<Matrix />)
+    pick('oil')
+    fireEvent.click(screen.getByTestId('bal-ramp'))
+    const rows = [...screen.getByTestId('figure-breakdown').querySelectorAll('.crow-top')].map(r => r.textContent)
+    expect(rows).toEqual(['days taken0.5', 'Total0.5'])
+  })
+})

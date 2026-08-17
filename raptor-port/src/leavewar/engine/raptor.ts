@@ -17,6 +17,7 @@
 import type { Grid } from './availability'
 import { sourceOf, stateOf, type States } from './bids'
 import { isBiddable } from './bids'
+import { isMedical } from './codes'
 
 export interface OutboundLeave {
   personId: string
@@ -34,8 +35,15 @@ export function outboundToRaptor(grid: Grid, states: States): OutboundLeave[] {
   for (const personId of Object.keys(grid).sort()) {
     for (const date of Object.keys(grid[personId]).sort()) {
       const code = grid[personId][date]
-      if (!isBiddable(code)) continue
-      if (stateOf(states, personId, date) !== 'approved') continue
+      // Leave crosses once it is APPROVED — a bid is only a question. A
+      // MEDICAL marker crosses as soon as it is marked (owner, 17 Aug 26):
+      // medical is assigned, not asked for, so there is no approval to wait
+      // on — the admin writing it on the grid IS the record. Both still pass
+      // the ownership check below.
+      if (!isMedical(code)) {
+        if (!isBiddable(code)) continue
+        if (stateOf(states, personId, date) !== 'approved') continue
+      }
       // A cell Raptor owns came FROM Raptor. Sending it back would be this
       // app telling Raptor something Raptor told it, which is how a sync
       // loop starts.

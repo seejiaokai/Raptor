@@ -6,6 +6,7 @@ import {
   categoryLabel,
   codeOf,
   columnKindFor,
+  displayCell,
   evaluatePeriod,
   inSquadron,
   isBiddable,
@@ -22,7 +23,7 @@ import {
 } from '../engine'
 import { getState } from '../state/store'
 import { BidPicker, DecisionSheet, RaptorSheet } from './BidPicker'
-import { CounterSheet } from './CounterSheet'
+import { CounterSheet, FigureBreakdownSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
 import { CountRows } from './CountRows'
 import { EventRows } from './EventRows'
@@ -78,6 +79,11 @@ export function Matrix() {
   const figures = orderedFigures(figureOrder)
   const [shownId, setShownId] = useState(DEFAULT_FIGURE_ID)
   const [picking, setPicking] = useState(false)
+  // Whose counter CELL was tapped — the per-person breakdown of the shown
+  // figure (owner, 17 Aug 26). Person only: the figure is the shared one, so
+  // a column change while the sheet is open re-answers rather than going
+  // stale.
+  const [balOpen, setBalOpen] = useState<string | null>(null)
   const [editingWho, setEditing] = useState<string | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
@@ -358,9 +364,15 @@ export function Matrix() {
                     const suffix = shown.kind === 'bal' ? 'remaining, pending bids included' : 'taken'
                     return (
                       <td
-                        className={`bal${v < 0 ? ' neg' : ''}`}
+                        className={`bal act${v < 0 ? ' neg' : ''}`}
                         data-testid={`bal-${p.id}`}
-                        title={`${p.callsign}: ${show(v)} ${shown.label} — ${suffix}`}
+                        title={`${p.callsign}: ${show(v)} ${shown.label} — ${suffix}. Tap for the breakdown`}
+                        /* A tap opens the person's breakdown of the shown
+                           figure — the owner's "click the individual
+                           personnel counter" (17 Aug 26). The td is the
+                           target, like every grid cell here: a nested button
+                           would cost the 44px column its number. */
+                        onClick={() => setBalOpen(p.id)}
                       >
                         {show(v)}
                       </td>
@@ -393,7 +405,11 @@ export function Matrix() {
                       // .blocked/.weekend pair needs, and for the same reason.
                       lockedDate(d.date) ? 'locked' : '',
                     ].filter(Boolean).join(' ')
-                    const text = here ? code : notYetArrived ? '' : 'PO'
+                    // The stored notation, printed through the one display
+                    // mapping — the ATT markers read as the owner's bare
+                    // B / C on the grid while everything else prints as
+                    // stored (displayCell is identity for it).
+                    const text = here ? displayCell(code) : notYetArrived ? '' : 'PO'
                     // Duty first for the reader — FS/HS are work, not a bid.
                     // (They carry `bid: false`, so they could not reach a
                     // bid branch anyway; the order is legibility, not a
@@ -494,6 +510,16 @@ export function Matrix() {
       {picking && (
         <CounterSheet shownId={shownId} onPick={setShownId} onClose={() => setPicking(false)} />
       )}
+      {/* The tapped person's breakdown of the shown figure. Guarded on the
+          person still existing — an admin can delete a row while any sheet
+          is up, the same guard PersonSheet carries. */}
+      {balOpen && people.some(p => p.id === balOpen) && (
+        <FigureBreakdownSheet
+          figure={shown}
+          person={people.find(p => p.id === balOpen)!}
+          onClose={() => setBalOpen(null)}
+        />
+      )}
       {editingWho && people.some(p => p.id === editingWho) && (
         <PersonSheet
           person={people.find(p => p.id === editingWho)!}
@@ -518,17 +544,24 @@ export function Matrix() {
           date={open.date}
           current={grid[open.id]?.[open.date] ?? ''}
           dates={dates}
+          /* Medical is assigned, not bid: only management marks it here.
+             Members file theirs on Raptor's Inputs page, which is also the
+             normal path once bidding has closed. */
+          medical={role === 'admin'}
           /* The column follows the leave just entered — ask for OIL and it
              snaps to OIL USED. The owner's ask, and it makes the figure answer
              the question the bidder is holding in their head at that moment.
              Each leave type's figure id is just its code lower-cased (LL→'ll',
              OIL→'oil'…), so the map is the string itself — a type without a
-             figure (EL) simply does not snap. */
+             figure (EL) simply does not snap. ATT C and HL have no figure of
+             their own but do feed MED USED, so they snap there; ATT B feeds
+             nothing (the owner's sum leaves it out) and does not snap. */
           onWrote={code => {
             const cell = parseCell(code)
             if (!cell) return
             const id = cell.type.toLowerCase()
             if (figures.some(f => f.id === id)) setShownId(id)
+            else if (cell.type === 'ATTC' || cell.type === 'HL') setShownId('med')
           }}
           /* What the balance would read AFTER this write, so the sheet can
              ask before taking someone negative. Computed here because this

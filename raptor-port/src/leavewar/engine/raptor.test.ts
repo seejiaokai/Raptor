@@ -83,6 +83,20 @@ describe('outboundToRaptor', () => {
     ])
   })
 
+  it('sends a medical marker with NO approval step — assigned, not bid — but never one Raptor owns', () => {
+    const g: Grid = {
+      ramp: { '2026-01-05': 'ATTB', '2026-01-06': '*OML', '2026-01-07': 'ATTC' },
+    }
+    const st: States = {
+      // The ATTC came from Raptor in the first place: it must not echo back.
+      ramp: { '2026-01-07': { state: 'approved', source: 'raptor' } },
+    }
+    expect(outboundToRaptor(g, st)).toEqual([
+      { personId: 'ramp', date: '2026-01-05', code: 'ATTB' },
+      { personId: 'ramp', date: '2026-01-06', code: '*OML' },
+    ])
+  })
+
   it('sends nothing at all from an empty leave war', () => {
     expect(outboundToRaptor({}, {})).toEqual([])
   })
