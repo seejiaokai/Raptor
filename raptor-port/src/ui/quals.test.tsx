@@ -88,6 +88,20 @@ describe('the Quals page (tfin)', () => {
     expect(sansGate(id, 'Jul 13', 'fly', 480, 600).status).toBe('na')     // removed again
   })
 
+  /* SXO is the SAME one-way-copy trap as SANS: deriveQuals copies p.sxo ->
+     quals.sxo, so the tick has to write the RAW p.sxo, not only the derived
+     copy — Leave War's roster projection reads p.sxo, and before the fix an SXO
+     marked here never showed there (owner, 18 Aug 26). */
+  it('ticking SXO sets the raw p.sxo the Leave War projection reads', async () => {
+    const id = Object.keys(PEOPLE).find(i => !PEOPLE[i].sxo && !PEOPLE[i].archived && !PEOPLE[i].special && PEOPLE[i].seat && !PEOPLE[i].pers)!
+    expect(id).toBeTruthy()
+    await click($(`#qtbl td[data-q="${id}|sxo"]`))
+    expect(PEOPLE[id].sxo).toBe(true)
+    expect(PEOPLE[id].quals.sxo).toBe(true)
+    await click($(`#qtbl td[data-q="${id}|sxo"]`))
+    expect(PEOPLE[id].sxo).toBe(false)
+  })
+
   it('NAAR cannot be ticked before DAAR, and removing DAAR removes NAAR', async () => {
     const id = Object.keys(PEOPLE).find(i => PEOPLE[i].seat === 'FCP' && !PEOPLE[i].archived && !PEOPLE[i].quals.daar && !PEOPLE[i].special)!
     expect(id).toBeTruthy()

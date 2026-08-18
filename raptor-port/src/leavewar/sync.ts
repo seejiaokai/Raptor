@@ -621,13 +621,32 @@ export function runOilPass(): void {
  */
 function reprojectRoster(): void {
   const projected = projectPeople()
-  const current = getState().people
-  const curIds = new Set(current.map(p => p.id))
-  const projIds = new Set(projected.map(p => p.id))
-  const additions = projected.filter(p => !curIds.has(p.id))
-  const kept = current.filter(p => projIds.has(p.id))
-  if (additions.length === 0 && kept.length === current.length) return
-  setPeople([...kept, ...additions])
+  const st = getState()
+  const curById = new Map(st.people.map(p => [p.id, p]))
+  const edits = st.personEdits
+  // Raptor owns identity (store.ts §setPeople), so take each person fresh from
+  // the projection — that is what carries a Quals change (a new SXO mark, a CAT
+  // move, a seat swap, a re-callsign) through to Leave War on the next notify,
+  // which the old additions/removals-only pass never did (owner, 18 Aug 26 —
+  // an SXO marked in Quals did not show here). Then lay back the two things
+  // Leave War owns locally: the posting-out window (from/to), and any
+  // deliberate setPerson override an admin made in this session. A person Raptor
+  // no longer has drops out — they are simply absent from `projected`.
+  const next = projected.map(pp => {
+    const ex = curById.get(pp.id)
+    const merged: any = { ...pp, ...(edits[pp.id] || {}) }
+    if (ex) { merged.from = ex.from; merged.to = ex.to }
+    return merged
+  })
+  // Write only when a roster-visible field actually changed, so an ordinary
+  // Raptor notify (a schedule edit touching no roster field) stays a cheap
+  // no-op instead of thrashing the matrix on every keystroke.
+  const sig = (p: any) =>
+    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}`
+  const before = new Map(st.people.map(p => [p.id, sig(p)]))
+  const unchanged = before.size === next.length && next.every(p => before.get(p.id) === sig(p))
+  if (unchanged) return
+  setPeople(next)
 }
 
 /* ---- wiring -------------------------------------------------------------- */

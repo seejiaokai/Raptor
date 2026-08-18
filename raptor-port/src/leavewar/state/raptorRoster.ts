@@ -17,6 +17,11 @@ import type { Person } from '../engine'
  *   slot fillers, not people, and a leave row for one would be nonsense.
  *   (The spec names only ground crew; the sentinel exclusion follows from
  *   the same rule — Raptor itself keeps them out of every roster surface.)
+ * - ARCHIVED bodies are excluded on the same principle: `archived` "keeps them
+ *   out of every roster" in Raptor (people.ts), and the Quals table already
+ *   hides them, so a body taken off the roster there must leave Leave War too
+ *   (it does, on the next notify, via reprojectRoster). Every sentinel is also
+ *   archived, so this subsumes the `special` skip; both are kept for clarity.
  * - `band` reads off the CAT ladder exactly as Raptor's own `isInstr` does:
  *   the instructor CATs (IW / IP / IR / FI) are 'instructor', the rest
  *   (OCU → D → C → B → A) are 'ops'.
@@ -27,7 +32,7 @@ import type { Person } from '../engine'
 export function projectPeople(): Person[] {
   const out: Person[] = []
   for (const [id, p] of Object.entries<any>(PEOPLE)) {
-    if (p.special) continue
+    if (p.special || p.archived) continue
     // Ground crew ride the roster since 18 Aug 26 (owner: "when I add
     // personnel through quals, the new personnel will appear on leave war
     // too"). They carry no CAT and no flying seat — `pers` marks them out of

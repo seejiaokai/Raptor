@@ -360,6 +360,13 @@ export function QualsPage() {
            like every qual tick — PEOPLE is rebuilt from source and SANS_IDS
            re-applied at boot. */
         if (k === 'san') { p.san = !!next; if (next) p.sanQ = p.sanQ || { flown: 0, carry: 0, missedQtrs: 0 } }
+        /* SXO is the SAME one-way-copy trap as SANS above: deriveQuals copies
+           p.sxo -> quals.sxo, so the tick set only the derived flag and left the
+           RAW p.sxo untouched. Leave War's roster projection reads p.sxo, so a
+           man marked SXO here never showed as SXO there (owner, 18 Aug 26).
+           Wire it through so the projection — and anything else reading the raw
+           flag — sees it. Session-only, like every qual tick. */
+        if (k === 'sxo') p.sxo = !!next
         if (k === 'daar' && !next && p.quals.naar) { p.quals.naar = false; HOOKS.toast(`${p.cs} — NAAR removed too, it cannot stand without DAAR`) }
         /* DEMOTED, not removed: withdrawing the day instructor mark costs him
            the night one as well, but he keeps night currency itself. */

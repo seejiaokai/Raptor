@@ -524,11 +524,11 @@ export function InputsPage() {
               const inx = INPUTS.indexOf(r)
               if (editRow === r && draft) return (
                 <tr key={inx} className="ined" data-iid={r.iid}>
-                  <td><select aria-label="Person" data-ed="person" value={draft.person}
+                  <td data-fld="Person"><select aria-label="Person" data-ed="person" value={draft.person}
                     onChange={e => setDraft({ ...draft, person: e.target.value })}>
                     {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
                   </select></td>
-                  <td colSpan={2}>
+                  <td colSpan={2} data-fld="Dates">
                     {/* the editor's calendar owns the tail the same way — but only
                         from a click: OPENING the editor leaves an existing remark
                         exactly as it was written */}
@@ -557,17 +557,17 @@ export function InputsPage() {
                         onChange={e => setDraft({ ...draft, eTime: e.target.value })} />
                     </span>
                   </td>
-                  <td><select aria-label="Type" data-ed="type" value={draft.type}
+                  <td data-fld="Type"><select aria-label="Type" data-ed="type" value={draft.type}
                     onChange={e => {
                       const t = e.target.value
                       setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }), sans: isSansAvail(t) ? (draft.sans || {}) : null })
                     }}>
                     {typeOptions()}
                   </select></td>
-                  <td><input aria-label="Remarks" data-ed="remarks" maxLength={200} value={draft.remarks}
+                  <td data-fld="Remarks"><input aria-label="Remarks" data-ed="remarks" maxLength={200} value={draft.remarks}
                     onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
-                  <td>{r.recur || ''}</td>
-                  <td className="mono" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
+                  <td className="ined-sec">{r.recur || ''}</td>
+                  <td className="mono ined-sec" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
                   <td className="inact">
                     <span className="rok" data-save={inx} title="Save" onClick={saveEdit}>✓</span>
                     <span className="rmx" data-cancel={inx} title="Cancel" onClick={() => { setEditRow(null); setDraft(null) }}>✕</span>
@@ -576,14 +576,14 @@ export function InputsPage() {
               )
               return (
                 <tr key={inx} className={flash.indexOf(r) >= 0 ? 'innew' : undefined} data-iid={r.iid}>
-                  <td>{cs}</td><td>{st}</td><td>{en}</td>
-                  <td><span className="intag">{r.type}</span></td>
+                  <td data-label="Name">{cs}</td><td data-label="Start">{st}</td><td data-label="End">{en}</td>
+                  <td data-label="Type"><span className="intag">{r.type}</span></td>
                   {/* the mark reads in Remarks, not beside the type (owner,
                       9 Aug 26) — same column on every surface that draws an
                       input, and the type column stays pure identity */}
-                  <td>{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}</td>
-                  <td>{r.recur || ''}</td>
-                  <td className="mono" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
+                  <td data-label="Remarks">{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}</td>
+                  <td data-label="Recurring">{r.recur || ''}</td>
+                  <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
                   <td className="inact">
                     <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
                     <span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span>

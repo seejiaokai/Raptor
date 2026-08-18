@@ -29,6 +29,7 @@ import {
   resetManning,
   setPeople,
   setPerson,
+  setPostOut,
   setRole,
   setRosterOrder,
   setPersLabel,
@@ -242,13 +243,14 @@ describe('the manning count rows are admin-arrangeable and hideable', () => {
 
 describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
   const NEWID = 'zzz_test_gnd'
+  const AIRID = 'zzz_test_ir'
   beforeEach(() => {
     raptorInitStore()
     lwInitStore(memoryBackend())
     setPeople(projectPeople())
     wireLeaveWarSync()
   })
-  afterEach(() => { delete (PEOPLE as any)[NEWID] })
+  afterEach(() => { delete (PEOPLE as any)[NEWID]; delete (PEOPLE as any)[AIRID] })
 
   it('a body added on the Quals page appears in Leave War on the next notify', () => {
     expect(getState().people.some(p => p.id === NEWID)).toBe(false)
@@ -263,14 +265,72 @@ describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
   })
 
   it('an in-session person edit is NOT reverted by the live re-projection', () => {
-    // reprojectRoster is additions/removals only, so an admin's setPerson edit
-    // (or a demo posting date) survives the next Raptor notify rather than
-    // snapping back to Raptor's projected value.
+    // A deliberate setPerson override is recorded in state.personEdits and
+    // re-applied over the fresh projection, so it survives the next Raptor
+    // notify rather than snapping back to Raptor's projected value.
     setRole('admin')
     const someone = getState().people.find(p => !p.pers)!
     const flipped = someone.seat === 'pilot' ? 'wso' : 'pilot'
     setPerson(someone.id, { seat: flipped })
     raptorNotify()
     expect(getState().people.find(p => p.id === someone.id)!.seat).toBe(flipped)
+  })
+
+  it('an SXO marked in Quals reaches Leave War on the next notify (owner, 18 Aug 26)', () => {
+    // An IR instructor pilot the way the Quals add-person path builds one — an
+    // aircrew body with a CAT, no SXO yet.
+    ;(PEOPLE as any)[AIRID] = { cs: 'Testir', seat: 'FCP', q: 'IR' }
+    raptorNotify()
+    const before = getState().people.find(p => p.id === AIRID)!
+    expect(groupOf(before)).toBe('IP') // IR -> instructor band -> IP group
+
+    // Mark SXO exactly as the fixed Quals tick now does: it sets the RAW p.sxo,
+    // which is the flag the projection reads. Before the fix the tick set only
+    // p.quals.sxo and this never propagated.
+    ;(PEOPLE as any)[AIRID].sxo = true
+    raptorNotify()
+    const after = getState().people.find(p => p.id === AIRID)!
+    expect(after.sxo).toBe(true)
+    expect(groupOf(after)).toBe('SXO') // SXO wins over the flying category
+  })
+
+  it('a Raptor CAT/seat change also propagates to an existing person', () => {
+    ;(PEOPLE as any)[AIRID] = { cs: 'Testir', seat: 'FCP', q: 'IR' }
+    raptorNotify()
+    expect(groupOf(getState().people.find(p => p.id === AIRID)!)).toBe('IP')
+    // Drop the CAT to an ops grade and move to the back seat.
+    ;(PEOPLE as any)[AIRID].q = 'C'
+    ;(PEOPLE as any)[AIRID].seat = 'RCP'
+    raptorNotify()
+    const after = getState().people.find(p => p.id === AIRID)!
+    expect(after.seat).toBe('wso')
+    expect(after.band).toBe('ops')
+    expect(groupOf(after)).toBe('OPSW')
+  })
+
+  it('archiving a person on the Quals page removes them from Leave War', () => {
+    ;(PEOPLE as any)[AIRID] = { cs: 'Testir', seat: 'FCP', q: 'IR' }
+    raptorNotify()
+    expect(getState().people.some(p => p.id === AIRID)).toBe(true)
+    // the Quals archive button sets p.archived; a body off Raptor's roster
+    // must leave Leave War's too
+    ;(PEOPLE as any)[AIRID].archived = true
+    raptorNotify()
+    expect(getState().people.some(p => p.id === AIRID)).toBe(false)
+  })
+
+  it('posting-out survives a re-projection that rewrites the roster', () => {
+    // Post one person out, then force a rewrite by changing a DIFFERENT person
+    // in Raptor. The post-out window is Leave War's own and must be preserved.
+    setRole('admin')
+    ;(PEOPLE as any)[AIRID] = { cs: 'Testir', seat: 'FCP', q: 'IR' }
+    raptorNotify()
+    const other = getState().people.find(p => !p.pers && p.id !== AIRID)!
+    setPostOut(other.id, '2026-06-01')
+    expect(getState().people.find(p => p.id === other.id)!.to).toBe('2026-05-31')
+    // a roster-visible change elsewhere forces reprojectRoster to write
+    ;(PEOPLE as any)[AIRID].sxo = true
+    raptorNotify()
+    expect(getState().people.find(p => p.id === other.id)!.to).toBe('2026-05-31')
   })
 })
