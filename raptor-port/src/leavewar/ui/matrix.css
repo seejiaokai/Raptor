@@ -215,6 +215,52 @@
   background: var(--panel);
 }
 
+/* Rearrange-mode controls for the manning rows (owner, 18 Aug 26 — reorder or
+   hide a count row, admin only). They live in the otherwise-blank balance cell,
+   the one bit of frozen space a 44px column can spare; three tiny buttons that
+   wrap to two rows on the narrowest phone rather than overflow the column. */
+.mx .counts .mrow-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  justify-content: center;
+  align-items: center;
+}
+.mx .counts .mrow-btn {
+  appearance: none;
+  border: 1px solid var(--edge);
+  background: var(--panel-2);
+  color: inherit;
+  border-radius: 3px;
+  width: 14px;
+  height: 15px;
+  padding: 0;
+  line-height: 1;
+  font-size: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.mx .counts .mrow-btn:disabled {
+  opacity: .3;
+  cursor: default;
+}
+.mx .counts .mrow-btn.eye {
+  font-size: 10px;
+}
+.mx .counts .mrow-btn.eye.off {
+  border-style: dashed;
+  color: var(--muted, #8a94a6);
+}
+/* A hidden row, shown dimmed WHILE arranging so an admin can bring it back. */
+.mx .counts tr.mrow-hidden td {
+  opacity: .45;
+}
+.mx .counts tr.mrow-hidden td.bal {
+  opacity: 1;   /* keep its controls fully legible */
+}
+
 /* The sticky date header. z-index 3 on the corner cell so it keeps
    winning the stacking order over both the sticky header row and the
    sticky column beneath it. */

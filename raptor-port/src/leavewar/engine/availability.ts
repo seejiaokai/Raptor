@@ -8,7 +8,7 @@
 
 import { removesAvailability, stateOf, type BidState, type States } from './bids'
 import { codeOf, isDuty } from './codes'
-import { categoryOf, inSquadron, type Category, type Person } from './people'
+import { categoryOf, inSquadron, pilotLead, type Category, type Person } from './people'
 
 /** `personId -> date -> code`. Sparse: most cells are empty. */
 export type Grid = Record<string, Record<string, string>>
@@ -21,6 +21,10 @@ export interface DayCounts {
   sets: number
   /** Head count on SC duty — at work, off the flying programme. */
   duty: number
+  /** Available flight-lead pilots — CAT B and above, instructors included (owner). */
+  flp: number
+  /** Available wingman pilots — CAT C and below. FL P + WM P is every pilot. */
+  wmp: number
 }
 
 export function availabilityOf(
@@ -49,6 +53,8 @@ export function countsFor(people: Person[], grid: Grid, states: States, date: st
   let duty = 0
   let pilots = 0
   let wsos = 0
+  let flp = 0
+  let wmp = 0
 
   for (const p of people) {
     // Ground crew ride the roster (owner, 18 Aug 26) but are not aircrew:
@@ -65,11 +71,16 @@ export function countsFor(people: Person[], grid: Grid, states: States, date: st
 
     byCategory[categoryOf(p)] += have
     if (p.sxo) sxo += have
-    if (p.seat === 'pilot') pilots += have
-    else wsos += have
+    if (p.seat === 'pilot') {
+      pilots += have
+      // FL P / WM P split every pilot by CAT (owner, 18 Aug 26). Fractional
+      // like every other count, so a half-day of leave costs half a lead.
+      if (pilotLead(p) === 'FLP') flp += have
+      else wmp += have
+    } else wsos += have
   }
 
   // A set is a crewed jet: one pilot and one WSO. Whichever seat runs out
   // first caps the number of sets, so the count is the lesser of the two.
-  return { byCategory, sxo, sets: Math.min(pilots, wsos), duty }
+  return { byCategory, sxo, sets: Math.min(pilots, wsos), duty, flp, wmp }
 }

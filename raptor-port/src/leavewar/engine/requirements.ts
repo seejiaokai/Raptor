@@ -19,6 +19,10 @@ export type RuleTarget =
   | { kind: 'category'; categories: Category[] }
   /** Sum the availability of everyone carrying the SXO flag. */
   | { kind: 'sxo' }
+  /** Available flight-lead pilots (CAT B and above, instructors included). */
+  | { kind: 'flp' }
+  /** Available wingman pilots (CAT C and below). */
+  | { kind: 'wmp' }
 
 export interface ManningRule {
   id: string

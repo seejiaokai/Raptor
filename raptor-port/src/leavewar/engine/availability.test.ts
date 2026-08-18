@@ -108,6 +108,36 @@ describe('countsFor', () => {
   it('handles a pm-portion cell (the trailing asterisk)', () => {
     expect(availabilityOf(p('a', 'pilot', 'ops'), '2026-01-05', 'LL*')).toBe(0.5)
   })
+
+  // FL P / WM P split the pilots by CAT (owner, 18 Aug 26): flight leads are
+  // CAT B and above with the instructor pilots, wingmen are CAT C and below;
+  // WSOs are neither, and the two rows together are every pilot.
+  it('splits pilots into FL P and WM P, WSOs into neither', () => {
+    const crew = [
+      p('fi', 'pilot', 'instructor', { q: 'FI' }),   // instructor pilot -> FL
+      p('ip', 'pilot', 'instructor', { q: 'IP' }),   // instructor pilot -> FL
+      p('a', 'pilot', 'ops', { q: 'A' }),            // ops A -> FL
+      p('b', 'pilot', 'ops', { q: 'B' }),            // ops B -> FL
+      p('c', 'pilot', 'ops', { q: 'C' }),            // ops C -> WM
+      p('d', 'pilot', 'ops', { q: 'D' }),            // ops D -> WM
+      p('ocu', 'pilot', 'ops', { q: 'OCU' }),        // OCU -> WM
+      p('iw', 'wso', 'instructor', { q: 'IW' }),     // WSO -> neither
+      p('ow', 'wso', 'ops', { q: 'C' }),             // WSO -> neither
+    ]
+    const c = countsFor(crew, {}, {}, '2026-01-05')
+    expect(c.flp).toBe(4)
+    expect(c.wmp).toBe(3)
+    // a half day of leave costs half a lead, fractional like every count
+    const half = countsFor(crew, { a: { '2026-01-05': '*LL' } }, {}, '2026-01-05')
+    expect(half.flp).toBe(3.5)
+  })
+
+  it('an ops pilot with no CAT falls back to wingman, so the split stays total', () => {
+    const crew = [p('x', 'pilot', 'ops')]   // no q
+    const c = countsFor(crew, {}, {}, '2026-01-05')
+    expect(c.flp).toBe(0)
+    expect(c.wmp).toBe(1)
+  })
 })
 
 describe('availability and the bid state', () => {

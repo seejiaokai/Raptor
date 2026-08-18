@@ -642,6 +642,40 @@ ever.
   Raptor's global `.day{border-radius}` onto Leave War's `className="day"` header
   cells — overridden square in the scoped `matrix.css`. Full detail in
   `docs/leavewar/known-gaps.md` §The counter column is figures.
+  **COUNTER-SHEET DISMISS + TAP HINT (18 Aug 26).** The counter sheet used
+  `max-height: calc(100vh - 28px)`; on iOS Safari `100vh` counts the space
+  behind the URL bar, so a tall sheet grew off the top of the screen and took
+  its sticky ✕ with it (owner: "I always can't scroll past the top to the cross
+  button"). Now `100dvh` (the VISIBLE viewport, plain-`vh` fallback) with a
+  wider top margin so there is scrim to tap OUTSIDE too — `bidpicker.css`
+  `.bidsheet`. The headless e2e can't reproduce it (no URL bar, `100vh===100dvh`)
+  but the existing "scrolled sheet keeps its ✕" test still pins the ✕ in-viewport.
+  Plus a small tap-hint finger under the counter-column dots (`.ctap` in
+  `Matrix.tsx`/`matrix.css`) — the whole header has been the control since the
+  arrows were pulled, but a phone had nothing saying so.
+- **LEAVE WAR MANNING ROWS — FL P / WM P + admin arrange/hide (18 Aug 26).**
+  Two new count rows split the pilots by CAT: **FL P** (flight-lead pilot — CAT
+  B and above, instructor pilots included, owner's call) and **WM P** (wingman —
+  CAT C and below), together every pilot. `engine/people.ts:pilotLead` is the
+  classifier and the ONE manning path that reads the CAT (`q`) — the owner's
+  rule is CAT-defined, so it cannot come from band like `categoryOf`; an ops
+  pilot with no CAT falls back to wingman so the split stays total, and on the
+  live re-keyed roster every pilot carries a real CAT. Wired through
+  `availability.ts` (`flp`/`wmp` in `DayCounts`), a new `flp`/`wmp` `RuleTarget`
+  kind, `evaluate.ts:haveFor`, and two `seed.ts` rules at **amber 0 / red 0 —
+  DISPLAY-ONLY** (a count is never below zero, so they never paint a day amber
+  or red; give them real thresholds the day the squadron wants a floor). The
+  manning count rows are now **admin-arrangeable and hideable** (owner: "allow
+  me to rearrange or hide some rows… admin only"): `store.ts` `manningOrder`/
+  `manningHidden` (persisted `manningorder`/`manninghidden`, admin-gated
+  `moveManningRow`/`toggleManningRow`/`resetManning`, the `figureOrder`
+  precedent), the controls drawn in the row's blank balance cell by
+  `ui/CountRows.tsx` under the SAME Rearrange toggle as the roster. Display-only
+  — `manning`/`categoryOf`/thresholds untouched, so reference parity and the
+  counts are unmoved. Deliberately scoped to the COUNT rows: the EVENT rows are
+  functional inputs and stay. Tests: `availability.test.ts` (FL/WM split),
+  `roster.test.ts` (manning writers, admin gate), `counts.test.tsx` (hide/arrange
+  rendering).
 - **LEAVE WAR is merged as the sixth tab (16 Aug 26) and ALL FIVE SYNC WIRES
   are BUILT (wires 0–3 on 17 Aug 26; WIRE 4 later the same day; WIRE 5 —
   MEDICAL — the same day again: the four markers ATT B/ATT C/HL/OML cross

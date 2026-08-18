@@ -43,6 +43,29 @@ export function categoryOf(p: Person): Category {
   return p.band === 'instructor' ? 'IWSO' : 'OPSW'
 }
 
+/**
+ * Flight-lead vs wingman, for the FL P / WM P manning rows (owner, 18 Aug 26 —
+ * "FL P (flight lead pilot) is cat B pilot and above; WM P (wingman pilot) is
+ * cat C and below", instructor pilots counting as FL). PILOTS only — a WSO or
+ * ground crew is neither, so this returns null for them.
+ *
+ * This is the ONE manning path that reads the CAT (`q`), a deliberate exception
+ * to the note on `Person.q`: the owner's rule is CAT-defined, so it cannot be
+ * derived from band alone the way `categoryOf` is. An instructor pilot is a
+ * flight lead by BAND (IP/IR/FI are all above CAT B), so that case needs no
+ * CAT; an ops pilot is read by CAT, and one with no CAT at all falls back to
+ * wingman — the junior default — so FL P and WM P still partition every pilot
+ * rather than dropping one silently. On the live app every pilot carries a real
+ * CAT through the Raptor projection, so the fallback only ever meets the raw
+ * seed (which knows band but not CAT).
+ */
+export function pilotLead(p: Person): 'FLP' | 'WMP' | null {
+  if (p.seat !== 'pilot') return null
+  if (p.band === 'instructor') return 'FLP'
+  const q = (p.q || '').toUpperCase()
+  return q === 'A' || q === 'B' ? 'FLP' : 'WMP'
+}
+
 // ---- Display grouping (owner, 18 Aug 26) --------------------------------
 // The roster is drawn in named, colour-coded groups: SXO lifted to the top,
 // then instructor pilots, ops pilots (by CAT), instructor WSOs, ops WSOs (by

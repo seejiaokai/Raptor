@@ -27,7 +27,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { autoSortRoster, displayRoster, getState, moveRosterRow, personLabel, setPersLabel } from '../state/store'
+import { autoSortRoster, displayRoster, getState, moveRosterRow, orderedManningIds, personLabel, setPersLabel } from '../state/store'
 import { BidPicker, DecisionSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -77,7 +77,7 @@ function PersLabel({ p, editable }: { p: Person; editable: boolean }) {
 
 export function Matrix() {
   useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, focusDate, focusSeq } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, focusDate, focusSeq } = getState()
   const dates = period.days.map(d => d.date)
   const verdicts = evaluatePeriod(people, grid, states, requirements, dates)
 
@@ -322,15 +322,17 @@ export function Matrix() {
           <span className="t">{period.name} · {dates.length} days · {people.length} people</span>
           {/* Roster arrangement (owner, 18 Aug 26), admin only: Auto-sort
               re-groups everyone into the categorised order; Rearrange turns on
-              the edit-mode drag handles. A member sees neither — the roster is
-              management's to order (the figureOrder rule). */}
+              the edit-mode drag handles AND the manning rows' reorder/hide
+              controls (owner, 18 Aug 26 — one edit mode for both). A member
+              sees neither — the arrangement is management's (the figureOrder
+              rule). */}
           {role === 'admin' && (
             <div className="rostertools">
               <button
                 className={`rtbtn${arranging ? ' on' : ''}`}
                 data-testid="roster-arrange"
                 aria-pressed={arranging}
-                title="Drag rows to rearrange the roster by hand"
+                title="Rearrange or hide the roster and the count rows"
                 onClick={() => setArranging(a => !a)}
               >
                 ⠿ {arranging ? 'Done' : 'Rearrange'}
@@ -454,7 +456,14 @@ export function Matrix() {
               editable={role === 'admin'}
               onEdit={(line, date) => setEventEdit({ line, date })}
             />
-            <CountRows verdicts={verdicts} dates={dates} />
+            <CountRows
+              verdicts={verdicts}
+              dates={dates}
+              order={orderedManningIds()}
+              hidden={manningHidden}
+              arranging={arranging}
+              admin={role === 'admin'}
+            />
             <tbody>
               {(() => {
                 // The roster in DISPLAY order (owner, 18 Aug 26): the admin's
