@@ -676,6 +676,26 @@ ever.
   functional inputs and stay. Tests: `availability.test.ts` (FL/WM split),
   `roster.test.ts` (manning writers, admin gate), `counts.test.tsx` (hide/arrange
   rendering).
+- **LEAVE WAR — POST OUT (PO) + VARIABLE EVENT ROWS (18 Aug 26).** Two more
+  owner asks. **PO**: an admin taps a person's day → the bid sheet carries a
+  "Post out from here" control (`BidPicker` `onPostOut`); it sets the person's
+  posting-out date (`store.ts:setPostOut(id, fromDate|null)`, `to = fromDate−1`),
+  and everything from that day on greys with the diagonal `.gone` hatch and
+  drops out of every manning count — because the hatch and the exclusion already
+  keyed off `to` (`inSquadron`→`availabilityOf` 0), so this is a WRITE PATH only,
+  not new rendering or new manning logic. Tapping a struck day (admin) opens
+  `PostOutSheet` with the one Undo control (`setPostOut(id, null)`). A struck
+  cell is made tappable for admin only; a member's posted-out cell stays inert.
+  Session-only and safe against the live re-projection (`reprojectRoster` is
+  additions/removals-only). **Variable event rows**: `DayInfo.events` is a
+  `string[]` now (was a 2-tuple) and `EventBand.line` a plain index; a squadron
+  can have 2–`MAX_EVENT_ROWS` (6) rows via `store.ts` `eventRows` (persisted
+  `eventrows`; admin `addEventRow`/`removeEventRow`, the add/remove buttons in
+  the Rearrange toolbar, remove refused while the last row carries anything).
+  `EventRows.tsx` draws `eventRows` lines; `dayEvent(day, line)` is the one
+  bounds-checked reader; `columnKindFor` scans EVERY line now. Old wars (length-2
+  arrays) load unchanged; the store reads `events.length >= 2`. Tests:
+  `po.test.tsx`, `events.test.tsx` (+3), `store.test.ts` (+2 event-row writers).
 - **LEAVE WAR is merged as the sixth tab (16 Aug 26) and ALL FIVE SYNC WIRES
   are BUILT (wires 0–3 on 17 Aug 26; WIRE 4 later the same day; WIRE 5 —
   MEDICAL — the same day again: the four markers ATT B/ATT C/HL/OML cross

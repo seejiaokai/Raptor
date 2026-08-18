@@ -2,8 +2,10 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
   addEventBand,
+  addEventRow,
   getState,
   initStore,
+  removeEventRow,
   setDayEvent,
   setDayEventRange,
   setRole,
@@ -22,6 +24,33 @@ describe('the two event lines', () => {
     expect(screen.getByTestId('event-row-1')).toBeTruthy()
     expect(screen.getByTestId('event-0-2026-01-05')).toBeTruthy()
     expect(screen.getByTestId('event-1-2026-01-05')).toBeTruthy()
+  })
+
+  it('an admin can add a third event row, and it appears (owner, 18 Aug 26)', () => {
+    setRole('admin')
+    addEventRow()
+    render(<Matrix />)
+    expect(screen.getByTestId('event-row-2')).toBeTruthy()
+    expect(screen.getByTestId('event-2-2026-01-05')).toBeTruthy()
+    // and it is editable — a write lands on the new row
+    setDayEvent('2026-01-05', 2, 'Range det')
+    expect(getState().period.days.find(d => d.date === '2026-01-05')!.events[2]).toBe('Range det')
+  })
+
+  it('the add/remove-row controls show in Rearrange mode for an admin only', () => {
+    setRole('admin')
+    const { rerender } = render(<Matrix />)
+    // not in the normal view
+    expect(screen.queryByTestId('event-add')).toBeNull()
+    fireEvent.click(screen.getByTestId('roster-arrange'))
+    rerender(<Matrix />)
+    expect(screen.getByTestId('event-add')).toBeTruthy()
+    // remove only appears once above the default two rows
+    expect(screen.queryByTestId('event-remove')).toBeNull()
+    addEventRow()
+    rerender(<Matrix />)
+    expect(screen.getByTestId('event-remove')).toBeTruthy()
+    removeEventRow()
   })
 
   // The seed marks public holidays on line 0, so the row is not empty on
