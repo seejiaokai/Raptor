@@ -22,7 +22,7 @@
 // reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
 // store write notifies subscribers synchronously, and this module is one.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave, withRemarksTail } from '../engine/inputs'
 import { ME } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
@@ -190,7 +190,12 @@ const runSig = (r: Run) => `${r.person}|${r.type}|${r.portion}|${r.start}|${r.en
    row. */
 const portionOfRow = (row: any): Portion => (isDownchit(row.type) ? medRowPortion(row) : rowPortion(row))
 
-function rowSig(row: any): string | null {
+/* Exported so the Inputs-page editor can ask "does this edit change the leave
+   itself, or only its remarks?" — a remarks-only edit leaves this signature
+   unchanged, and commitInputEdit keeps such a row synced instead of retracting
+   it (owner, 18 Aug 26: refining an OL's remarks must not seize the leave from
+   Leave War, which does not show remarks anyway). */
+export function rowSig(row: any): string | null {
   const start = labelToISO(row.date)
   if (!start) return null
   const end = row.endDate ? labelToISO(row.endDate) ?? start : start
@@ -225,18 +230,39 @@ export function runOutbound(): void {
        acceptInput — leave is isUnavail and that path hard-refuses it by
        design; the input existing is what reaches every schedule surface. */
     writeInputsBatch(() => {
+      /* When a leave's DATES change (an admin extends it in Leave War), its
+         old row is stale and a new run is missing — a remove-then-mint. Carry
+         the member's own remark detail across that gap keyed on the unchanging
+         part of the leave (person|type|portion), so "till 13 Jul Bangkok"
+         becomes "till 18 Jul Bangkok" rather than losing Bangkok (owner,
+         18 Aug 26 — the same "the note remains, the date moves" rule the Inputs
+         calendar now follows). withRemarksTail rewrites just the date token in
+         whatever the member wrote. */
+      const priorRemark = new Map<string, string>()
       for (const row of stale) {
+        const key = `${row.person}|${lwTypeOf(row.type)}|${portionOfRow(row)}`
+        if (!priorRemark.has(key)) priorRemark.set(key, String(row.remarks ?? ''))
         const ix = INPUTS.indexOf(row)
         if (ix >= 0) INPUTS.splice(ix, 1)
       }
       for (const r of missing) {
+        const prior = priorRemark.get(`${r.person}|${r.type}|${r.portion}`)
         const row: any = {
           person: r.person,
           /* Back to Raptor's own spelling — an 'ATTB' run lands as an
              'ATT B' input, the type the Inputs page and INPUT_META know. */
           type: INPUT_FOR_LW[r.type] ?? r.type,
           date: isoToLabel(r.start),
-          remarks: 'Leave War',
+          /* The remarks read "till 17 Jul" for a span, "on 15 Jul" for a
+             single day — the same tail the Inputs-page calendar writes, so a
+             synced leave says how long it runs wherever remarks are read, and
+             the type column already carries LL/OL so nothing repeats it
+             (owner, 18 Aug 26). A member then refines this on the Inputs page
+             — "in Bali till 17 Jul" — and reconciliation preserves it: remarks
+             are not in the signature, so an unchanged leave is matched, not
+             re-minted; and when the DATES change, `prior` above carries the
+             detail into the re-minted row with only the date token moved. */
+          remarks: withRemarksTail(prior ?? '', r.start, r.end, 'on'),
           mod: 'now',
           /* The ownership tag: which war this row is derived from. Inbound
              skips lw-tagged rows (the loop-breaker), and reconciliation

@@ -12,7 +12,7 @@ beforeEach(() => {
 
 // Dummy counts payload — CountRows never reads `counts`, only `results`, but
 // DayVerdict requires the field to type-check.
-const zeroCounts = { byCategory: { IP: 0, OPSP: 0, IWSO: 0, OPSW: 0 }, sxo: 0, sets: 0, duty: 0 }
+const zeroCounts = { byCategory: { IP: 0, OPSP: 0, IWSO: 0, OPSW: 0 }, sxo: 0, sets: 0, duty: 0, flp: 0, wmp: 0 }
 
 function rule(ruleId: string, label: string, have: number): RuleResult {
   return { ruleId, label, have, amber: 0, red: 0, verdict: 'ok' }
@@ -83,7 +83,7 @@ describe('count rows keyed by rule identity, not array position', () => {
       // the "ip" row, and its ip count to the "sxo" row.
       'd2': day('d2', [rule('sxo', 'SXO', 9), rule('sets', 'Crew sets', 6), rule('ip', 'IP', 3)]),
     }
-    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} /></table>)
+    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} order={[]} hidden={[]} arranging={false} admin={false} /></table>)
 
     expect(screen.getByTestId('count-sets-d1').textContent).toBe('5')
     expect(screen.getByTestId('count-sets-d2').textContent).toBe('6')
@@ -103,12 +103,52 @@ describe('count rows keyed by rule identity, not array position', () => {
       // the real one.
       'd2': day('d2', [rule('sets', 'Crew sets', 6), rule('sxo', 'SXO', 9)]),
     }
-    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} /></table>)
+    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} order={[]} hidden={[]} arranging={false} admin={false} /></table>)
 
     expect(screen.getByTestId('count-sets-d2').textContent).toBe('6')
     // CountRows renders a missing cell as a bare `<td />` with no testid —
     // so its absence, not an empty string under the testid, is the proof.
     expect(screen.queryByTestId('count-ip-d2')).toBeNull()
     expect(screen.getByTestId('count-sxo-d2').textContent).toBe('9')
+  })
+})
+
+// Rearrange/hide the manning rows (owner, 18 Aug 26). CountRows takes the
+// order, the hidden set and whether an admin is arranging; it drops a hidden
+// row for everyone until an admin turns Rearrange on, where it comes back
+// dimmed with the reorder/hide controls in its balance cell.
+describe('the manning rows can be reordered and hidden (admin)', () => {
+  const verdicts = {
+    d1: day('d1', [rule('sets', 'Crew sets', 5), rule('ip', 'IP', 2), rule('sxo', 'SXO', 1)]),
+  }
+  const draw = (props: Partial<{ order: string[]; hidden: string[]; arranging: boolean; admin: boolean }>) =>
+    render(<table><CountRows verdicts={verdicts} dates={['d1']}
+      order={props.order ?? []} hidden={props.hidden ?? []}
+      arranging={props.arranging ?? false} admin={props.admin ?? false} /></table>)
+
+  it('a hidden row is gone for a member and an idle admin', () => {
+    draw({ hidden: ['ip'] })
+    expect(screen.queryByTestId('count-ip')).toBeNull()
+    expect(screen.getByTestId('count-sxo')).toBeTruthy()
+  })
+
+  it('an arranging admin sees the hidden row dimmed, with its show control', () => {
+    draw({ hidden: ['ip'], arranging: true, admin: true })
+    const row = screen.getByTestId('count-ip')
+    expect(row.className).toContain('mrow-hidden')
+    expect(screen.getByTestId('manning-hide-ip').getAttribute('aria-pressed')).toBe('true')
+    // the reorder controls are only there while arranging
+    expect(screen.getByTestId('manning-up-ip')).toBeTruthy()
+  })
+
+  it('a member never gets the reorder controls even for a visible row', () => {
+    draw({ arranging: true, admin: false })
+    expect(screen.queryByTestId('manning-up-ip')).toBeNull()
+  })
+
+  it('honours the given display order', () => {
+    draw({ order: ['sxo', 'sets', 'ip'] })
+    const rows = screen.getAllByTestId(/^count-(sets|ip|sxo)$/).map(r => r.getAttribute('data-testid'))
+    expect(rows).toEqual(['count-sxo', 'count-sets', 'count-ip'])
   })
 })

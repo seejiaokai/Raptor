@@ -642,6 +642,40 @@ ever.
   Raptor's global `.day{border-radius}` onto Leave War's `className="day"` header
   cells — overridden square in the scoped `matrix.css`. Full detail in
   `docs/leavewar/known-gaps.md` §The counter column is figures.
+  **COUNTER-SHEET DISMISS + TAP HINT (18 Aug 26).** The counter sheet used
+  `max-height: calc(100vh - 28px)`; on iOS Safari `100vh` counts the space
+  behind the URL bar, so a tall sheet grew off the top of the screen and took
+  its sticky ✕ with it (owner: "I always can't scroll past the top to the cross
+  button"). Now `100dvh` (the VISIBLE viewport, plain-`vh` fallback) with a
+  wider top margin so there is scrim to tap OUTSIDE too — `bidpicker.css`
+  `.bidsheet`. The headless e2e can't reproduce it (no URL bar, `100vh===100dvh`)
+  but the existing "scrolled sheet keeps its ✕" test still pins the ✕ in-viewport.
+  Plus a small tap-hint finger under the counter-column dots (`.ctap` in
+  `Matrix.tsx`/`matrix.css`) — the whole header has been the control since the
+  arrows were pulled, but a phone had nothing saying so.
+- **LEAVE WAR MANNING ROWS — FL P / WM P + admin arrange/hide (18 Aug 26).**
+  Two new count rows split the pilots by CAT: **FL P** (flight-lead pilot — CAT
+  B and above, instructor pilots included, owner's call) and **WM P** (wingman —
+  CAT C and below), together every pilot. `engine/people.ts:pilotLead` is the
+  classifier and the ONE manning path that reads the CAT (`q`) — the owner's
+  rule is CAT-defined, so it cannot come from band like `categoryOf`; an ops
+  pilot with no CAT falls back to wingman so the split stays total, and on the
+  live re-keyed roster every pilot carries a real CAT. Wired through
+  `availability.ts` (`flp`/`wmp` in `DayCounts`), a new `flp`/`wmp` `RuleTarget`
+  kind, `evaluate.ts:haveFor`, and two `seed.ts` rules at **amber 0 / red 0 —
+  DISPLAY-ONLY** (a count is never below zero, so they never paint a day amber
+  or red; give them real thresholds the day the squadron wants a floor). The
+  manning count rows are now **admin-arrangeable and hideable** (owner: "allow
+  me to rearrange or hide some rows… admin only"): `store.ts` `manningOrder`/
+  `manningHidden` (persisted `manningorder`/`manninghidden`, admin-gated
+  `moveManningRow`/`toggleManningRow`/`resetManning`, the `figureOrder`
+  precedent), the controls drawn in the row's blank balance cell by
+  `ui/CountRows.tsx` under the SAME Rearrange toggle as the roster. Display-only
+  — `manning`/`categoryOf`/thresholds untouched, so reference parity and the
+  counts are unmoved. Deliberately scoped to the COUNT rows: the EVENT rows are
+  functional inputs and stay. Tests: `availability.test.ts` (FL/WM split),
+  `roster.test.ts` (manning writers, admin gate), `counts.test.tsx` (hide/arrange
+  rendering).
 - **LEAVE WAR is merged as the sixth tab (16 Aug 26) and ALL FIVE SYNC WIRES
   are BUILT (wires 0–3 on 17 Aug 26; WIRE 4 later the same day; WIRE 5 —
   MEDICAL — the same day again: the four markers ATT B/ATT C/HL/OML cross
@@ -695,12 +729,27 @@ ever.
   cells the row derived from via the new `withdrawLeaveCell` (the mirror of
   `clearRaptorCell` for the other ownership: exact-notation match, never a
   Raptor-owned cell, gates bypassed because Raptor's word arrives decided).
-  A DELETE leaves nothing on either side; an EDIT also drops the row's `lw`
+  A DELETE leaves nothing on either side; an EDIT THAT CHANGES THE LEAVE
+  ITSELF (person, type, dates or which half) also drops the row's `lw`
   tag, so inbound lands the edited shape as Raptor-owned cells — the same
   path a leave filed on the Inputs page has always taken ("Raptor owns what
   Raptor last wrote"). A cell the squadron has since REBID differently is
   deliberately left alone (notation mismatch — the reconcile judges it).
-  Nine tests in `sync.test.ts` §two-way. KNOWN CAVEAT, by construction: an
+  **REFINED 18 Aug 26 — a REMARKS-ONLY edit no longer seizes the leave**
+  (owner: a member adds where they are going for an OL; "remarks don't change
+  leave war because leave war don't show remarks"): `commitInputEdit` keeps
+  the `lw` tag when the row's sync signature (`sync.ts:rowSig` — person, type,
+  portion, start, end, exported for exactly this) is unchanged, so Leave War
+  keeps the leave (as an approved BID, not converted to Raptor-owned) and the
+  next reconcile MATCHES the row rather than re-minting it, preserving the
+  refined remark (remarks are not in the signature). And when the leave's
+  DATES change (an admin extends it in Leave War), outbound carries the
+  member's detail across the remove-and-mint keyed on person|type|portion, so
+  "till 13 Jul Bangkok" becomes "till 18 Jul Bangkok" — only the date token
+  moves (`withRemarksTail`, `engine/inputs.ts`, matched anywhere in the remark,
+  not anchored to the end; the same helper the Inputs calendar's tail uses).
+  Ten tests in
+  `sync.test.ts` §two-way. KNOWN CAVEAT, by construction: an
   UNDO after such an edit/delete does not resurrect the leave — the restored
   lw row no longer matches any approved cells, so the next reconcile splices
   it as stale; re-file the leave instead. The **58-row
@@ -1611,7 +1660,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `state/storage.ts` | The storage seam — `memoryBackend` (the one the browser boots now, so Leave War is session-only and resets on reload like Raptor's `INPUTS`; `main.tsx` passes it to `lwInitStore`) and `localBackend` (the `leavewar:`-prefixed localStorage backend, still here but no longer wired in — kept for reference and tests). Deliberately NOT `HOOKS.storeBackend`; the future shared database backend replaces this seam. |
 | `state/raptorRoster.ts` | Wire 0 — `projectPeople()`: the LW roster as a projection of Raptor's `PEOPLE` (skips ground crew + sentinels; band from `isInstr`; sxo carried). Installed at boot, never persisted. |
 | `state/demoworld.ts` | The fresh-browser demo re-key — DEMO_MAP (16 seed people → Raptor aircrew, seat+band-equal by construction), the seed overlay, and the two idempotent backing inputs for the seed's Raptor-owned cells. Boot-time only; the 632 vendored tests stay blind by construction. |
-| `sync.ts` | Wires 1+2+4 — three DERIVED reconcilers (outbound: approved cells → span-collapsed lw-tagged `INPUTS` rows, one `writeInputsBatch`, only on a non-empty diff; inbound: leave inputs → Raptor-owned cells per day, portions both ways, custom rounds OUT, reverse-clear, the clash list + its own subscription; **`runOilPass`**: published weekend/PH duty → raptor-owned FS/HS cells off the issued snapshot, `isNonWorkingISO` reading `DayInfo.ph` + 'off'-tagged events, reverse sweeps partitioned by cell vocabulary, leave wins a contested cell with a `kind:'duty'` clash), the SYNCING flag, `wireLeaveWarSync()`. **Wire 5 (17 Aug 26) rides wires 1+2 rather than adding a pass**: the four MEDICAL markers cross both ways — `medRowPortion` (AM/PM exact, a custom window ≤6h a half sided by its midpoint, >6h full; NOT leave's round-OUT), `lwTypeOf`/`INPUT_FOR_LW` bridging Raptor's `ATT B`/`ATT C` to the spaceless store form, and no approval gate outbound because medical is assigned, not bid. `wireLeaveWarSync` also mirrors Raptor's `ME` into `viewer` on every notify. The loop-breaker pair is documented at the top of the file. **`retractLwRow` (17 Aug 26, full two-way)**: called by `ui/inputedit.tsx`'s `commitInputEdit`/`removeInput` on an lw-tagged row — withdraws the row's war cells (`withdrawLeaveCell`, exact-notation, never Raptor-owned) under the SYNCING flag; an edit also drops the `lw` tag so inbound re-lands the new shape Raptor-owned. Tested in `sync.test.ts` + `oilsync.test.ts` + `viewer.test.ts` (the last is its own file because wiring the sync leaves a live Raptor subscription behind). |
+| `sync.ts` | Wires 1+2+4 — three DERIVED reconcilers (outbound: approved cells → span-collapsed lw-tagged `INPUTS` rows, one `writeInputsBatch`, only on a non-empty diff; inbound: leave inputs → Raptor-owned cells per day, portions both ways, custom rounds OUT, reverse-clear, the clash list + its own subscription; **`runOilPass`**: published weekend/PH duty → raptor-owned FS/HS cells off the issued snapshot, `isNonWorkingISO` reading `DayInfo.ph` + 'off'-tagged events, reverse sweeps partitioned by cell vocabulary, leave wins a contested cell with a `kind:'duty'` clash), the SYNCING flag, `wireLeaveWarSync()`. **Wire 5 (17 Aug 26) rides wires 1+2 rather than adding a pass**: the four MEDICAL markers cross both ways — `medRowPortion` (AM/PM exact, a custom window ≤6h a half sided by its midpoint, >6h full; NOT leave's round-OUT), `lwTypeOf`/`INPUT_FOR_LW` bridging Raptor's `ATT B`/`ATT C` to the spaceless store form, and no approval gate outbound because medical is assigned, not bid. `wireLeaveWarSync` also mirrors Raptor's `ME` into `viewer` on every notify. The loop-breaker pair is documented at the top of the file. **`retractLwRow` (17 Aug 26, full two-way)**: called by `ui/inputedit.tsx`'s `commitInputEdit`/`removeInput` on an lw-tagged row — withdraws the row's war cells (`withdrawLeaveCell`, exact-notation, never Raptor-owned) under the SYNCING flag; an edit that CHANGES THE LEAVE also drops the `lw` tag so inbound re-lands the new shape Raptor-owned, but a REMARKS-ONLY edit keeps the tag (18 Aug 26 — `commitInputEdit` compares the exported `rowSig` before and after; an unchanged signature means the leave is the same, so Leave War keeps it). **Minted remarks are the date tail now, not "Leave War" (18 Aug 26)**: `withRemarksTail(prior, start, end, 'on')` → "till 17 Jul" for a span, "on 15 Jul" for a single day — the same helper (`engine/inputs.ts`) the Inputs-page calendar's `withTill` uses; `prior` carries a member's own detail across a DATE change (person\|type\|portion keyed), moving only the date token. A synced leave says how long it runs and the type column carries the code. Tested in `sync.test.ts` + `oilsync.test.ts` + `viewer.test.ts` (the last is its own file because wiring the sync leaves a live Raptor subscription behind). |
 | `ui/` | Matrix (the 365-column grid; now paints the event column colours + mounts the Event sheet), Chrome (its topbar + stage strip; the role toggle is deleted — see the comment there), the seven sheets, RangePicker, **`EventRows.tsx` (the two event lines — merged bands as colspan, red work text, tap-to-edit), `EventSheet.tsx` (the admin event editor + type library, on `Sheet`+`RangePicker`; `eventsheet.css`)**. `Sheet.tsx` is the shared shell every sheet is built on — scrim + the PAGE LOCK (17 Aug 26: `body.lw-sheet-lock`, counted so one sheet closing as another opens cannot unlock the page under the survivor), and `CounterSheet.tsx` now holds three: the figure picker (viewer's own numbers; admin-only ▲▼/Reset), `FigureBreakdownSheet` and `PersonFiguresSheet`. All stylesheets scoped under `#page-leavewar` (theme.css deleted as pure duplication) **with ONE deliberate exception: `body.lw-sheet-lock` at the foot of `bidpicker.css`, which is outside the wrapper because no page-scoped selector can reach `body` — do not "fix" it inwards, that silently kills the scroll lock; the class is `lw-`-namespaced instead.** Both `matrix.css` and `bidpicker.css` are WHOLLY wrapped, so an append after the closing brace lands outside the scope and loses to its +1 id specificity — insert inside (this bit twice in one session). Cascade note at the top of each file — the event column colours in `matrix.css` are ordered after weekend/blocked deliberately. |
 
 ### Tooling

@@ -54,11 +54,21 @@ describe('outbound: Leave War approvals become Raptor inputs', () => {
     expect(rows).toHaveLength(1)
     expect(rows[0]).toMatchObject({
       person: 'ammo', type: 'LL', date: 'Feb 2', endDate: 'Feb 4',
-      allday: true, remarks: 'Leave War', mod: 'now', lw: 'y2026',
+      // A span's remark names its LAST day, no leave code — the type column
+      // already carries LL (owner, 18 Aug 26).
+      allday: true, remarks: 'till 4 Feb', mod: 'now', lw: 'y2026',
     })
     // The iid is minted inside the write, so the history snapshot the row
     // first appears in already carries its address.
     expect(rows[0].iid).toBeTruthy()
+  })
+
+  it('a single-day approval reads "on <day>" — a one-day leave still names its date', () => {
+    approve('rocky', ['2026-02-09'])
+    runOutbound()
+    const row = lwInputs()[0]
+    expect(row.endDate).toBeUndefined()
+    expect(row.remarks).toBe('on 9 Feb')
   })
 
   it('an approved AM half lands with the AM minutes and half mark', () => {
@@ -527,6 +537,50 @@ describe('two-way: edits and deletes on the Inputs page carry back into the war'
     // The row lives on as an ordinary input — only the war half is gone.
     expect(INPUTS.some((r: any) => r.person === 'ammo' && r.type === 'Meeting')).toBe(true)
     expect(lwInputs()).toHaveLength(0)
+  })
+
+  it('editing ONLY the remarks keeps the leave Leave War\'s — the grid is untouched', () => {
+    approve('ammo', ['2026-02-02', '2026-02-03'])
+    runOutbound()
+    const row = lwInputs()[0]
+    expect(row.remarks).toBe('till 3 Feb')
+    const draft = draftOf(row)
+    draft.remarks = 'in Bali till 3 Feb'   // the member adds their own detail
+    expect(commitInputEdit(row, draft)).toBe(true)
+    // The tag survives, so the leave still belongs to Leave War — the cells
+    // stay approved BIDS (not converted to raptor-owned), and nothing on the
+    // grid changed, because Leave War does not show remarks at all.
+    expect(row.lw).toBe('y2026')
+    expect(row.remarks).toBe('in Bali till 3 Feb')
+    for (const d of ['2026-02-02', '2026-02-03']) {
+      expect(getState().grid.ammo[d]).toBe('LL')
+      expect(getState().states.ammo[d]).toEqual({ state: 'approved', source: 'bid' })
+    }
+    // Reconcile MATCHES the row rather than re-minting it, so the refined
+    // remark is preserved — remarks are not in the signature.
+    runOutbound(); runInbound()
+    expect(lwInputs()).toHaveLength(1)
+    expect(lwInputs()[0].remarks).toBe('in Bali till 3 Feb')
+  })
+
+  it('extending a leave keeps the member\'s remark note, moving only the date', () => {
+    approve('ammo', ['2026-02-02', '2026-02-03', '2026-02-04'])
+    runOutbound()
+    const row = lwInputs()[0]
+    expect(row.remarks).toBe('till 4 Feb')
+    // the member adds detail after the tail — a remarks-only edit stays synced
+    const draft = draftOf(row)
+    draft.remarks = 'till 4 Feb Bangkok'
+    expect(commitInputEdit(row, draft)).toBe(true)
+    expect(row.lw).toBe('y2026')
+    // now the war extends the leave by a day: the row is re-minted, but the
+    // note rides across and only the date token moves.
+    approve('ammo', ['2026-02-05'])
+    runOutbound()
+    const rows = lwInputs()
+    expect(rows).toHaveLength(1)
+    expect(rows[0].endDate).toBe('Feb 5')
+    expect(rows[0].remarks).toBe('till 5 Feb Bangkok')
   })
 
   it('a Raptor-owned cell is never withdrawn — retraction is lw-ownership only', () => {

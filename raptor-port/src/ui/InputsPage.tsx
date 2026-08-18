@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, withRemarksTail } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -21,8 +21,6 @@ import { useVersion } from './useStore'
 import { exportCSV } from './export'
 import { RangeCal } from './RangeCal'
 
-const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
 /* The remarks tail (owner, Aug 26). Closing a range on the calendar writes its
    last day into Remarks as `till 15 Jul`, so a multi-day input says how long it
    runs wherever remarks are read — nobody has to type it, and nobody forgets.
@@ -33,15 +31,13 @@ const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 
    end moves — the whole point of the ask. It is matched anchored at the END
    because that is where the calendar puts it; text typed AFTER it is prose the
    calendar has no business rewriting, so it is left alone. */
-const TILL = /\s*till\s+\d{1,2}\s+[A-Za-z]{3}\s*$/i
-const withTill = (rm: any, s: string, e: string) => {
-  const head = String(rm || '').replace(TILL, '').trimEnd()
-  /* a range that ends where it starts is one day: add() drops endDate for it,
-     so a tail there would name a span the input does not have */
-  if (!e || e === s) return head
-  const [, m, da] = e.split('-')
-  return (head ? head + ' ' : '') + 'till ' + (+da) + ' ' + MON[+m]
-}
+/* Closing a range rewrites the `till 15 Jul` token IN PLACE — wherever it sits,
+   not only at the end — so a note the typist put AFTER it survives the date
+   moving (owner, 18 Aug 26: "till 13 Jul Bangkok" → change the end → "till 18
+   Jul Bangkok", Bangkok stays). 'none' means the picker writes no one-day token
+   (it fires on the first click of a two-click range, so a token would flash
+   before the end day is chosen). All the logic is `withRemarksTail`. */
+const withTill = (rm: any, s: string, e: string) => withRemarksTail(rm, s, e, 'none')
 
 /* ---- the table's own view state: which window, and sorted how ------------
    (owner, Aug 5). The list is a planning tool, so it opens on what is COMING:

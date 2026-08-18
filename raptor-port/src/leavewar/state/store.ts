@@ -120,6 +120,17 @@ interface State {
    *  only; an aircrew id here is simply never read. */
   persLabels: Record<string, string>
 
+  /** The manning COUNT rows' display order (owner, 18 Aug 26) — rule ids
+   *  (`'sets'` plus each requirement rule's id), in the order the matrix draws
+   *  them. Empty means the natural order the rules appear in. ADMIN-gated, the
+   *  same rule as `figureOrder`/`rosterOrder`. Read leniently: unknown ids are
+   *  dropped and any not named are appended in natural order. */
+  manningOrder: string[]
+  /** The manning count rows an admin has hidden (rule ids). A member never sees
+   *  a hidden row at all; an admin sees it dimmed in Rearrange mode, so it can
+   *  be brought back. ADMIN-gated at the write path. */
+  manningHidden: string[]
+
   /** The day the matrix has been asked to bring into view, or null. */
   focusDate: string | null
   /** Bumped on every request, including a repeat of the same date. The matrix
@@ -159,6 +170,8 @@ function blank(): State {
     figureOrder: [...DEFAULT_FIGURE_ORDER],
     rosterOrder: [],
     persLabels: {},
+    manningOrder: [],
+    manningHidden: [],
     // The squadron is the common case, so the app opens as one. An admin
     // says so deliberately rather than arriving with the locks already off.
     role: 'member',
@@ -472,6 +485,8 @@ export function initStore(b?: StorageBackend): void {
   const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
   const rosterOrder = readStored('rosterorder', readIdList) ?? []
   const persLabels = readStored('perslabels', readLabelMap) ?? {}
+  const manningOrder = readStored('manningorder', readIdList) ?? []
+  const manningHidden = readStored('manninghidden', readIdList) ?? []
 
   /* The role is neither read nor persisted since the Raptor merge: it is
      derived from the Raptor login on every session change (resetSession in
@@ -484,7 +499,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden })
 
   version = 0
   listeners.clear()
@@ -545,6 +560,8 @@ function persist(): void {
   backend.write('figorder', JSON.stringify(state.figureOrder))
   backend.write('rosterorder', JSON.stringify(state.rosterOrder))
   backend.write('perslabels', JSON.stringify(state.persLabels))
+  backend.write('manningorder', JSON.stringify(state.manningOrder))
+  backend.write('manninghidden', JSON.stringify(state.manningHidden))
   /* `people` deliberately absent: the roster is a projection of Raptor's
      PEOPLE (see initStore) — persisting it would store a copy that can only
      disagree with the projection the next boot installs. The roster ORDER and
@@ -1094,6 +1111,73 @@ export function resetFigureOrder(): void {
   // Same gate as moveFigure — a reset rewrites the arrangement too.
   if (state.role !== 'admin') return
   state = withCurrent({ ...state, figureOrder: [...DEFAULT_FIGURE_ORDER] })
+  persist()
+  notify()
+}
+
+/* THE MANNING COUNT ROWS' order and visibility (owner, 18 Aug 26: "allow me to
+   rearrange or hide some rows that are not needed. Admin only."). Same shape and
+   same admin gate as the figure order above; persisted under `manningorder` /
+   `manninghidden`. The canonical row set is the DEFAULT requirement's rules
+   (plus the set rule when there is one); a per-day override that adds a rule the
+   default lacks is reconciled in the interface (CountRows), which is the only
+   place that walks every day's actual results. */
+
+/** The rule ids the manning block can draw, in their natural order — `'sets'`
+ *  when a set rule exists, then each default rule's id. */
+export function manningRowIds(): string[] {
+  const req = state.requirements.default
+  const ids = req.sets ? ['sets'] : []
+  for (const r of req.rules) ids.push(r.id)
+  return ids
+}
+
+/** The manning rows in DISPLAY order: the admin's hand-order first (unknown ids
+ *  dropped), then any not named appended in natural order — the `orderedPeople`
+ *  rule, so a rule added to the default after an order was saved still appears
+ *  rather than vanishing. Hidden rows are still IN this list; hiding is applied
+ *  at render, so Rearrange mode can show and un-hide them. */
+export function orderedManningIds(): string[] {
+  const all = manningRowIds()
+  if (!state.manningOrder.length) return all
+  const known = new Set(all)
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const id of state.manningOrder) if (known.has(id) && !seen.has(id)) { out.push(id); seen.add(id) }
+  for (const id of all) if (!seen.has(id)) out.push(id)
+  return out
+}
+
+/** Move one manning row up (`-1`) or down (`+1`). Clamped at the ends; returns
+ *  whether it moved so a control can disable at the boundary. ADMIN-gated. */
+export function moveManningRow(id: string, dir: -1 | 1): boolean {
+  if (state.role !== 'admin') return false
+  const ids = orderedManningIds()
+  const i = ids.indexOf(id)
+  if (i < 0) return false
+  const j = i + dir
+  if (j < 0 || j >= ids.length) return false
+  ;[ids[i], ids[j]] = [ids[j], ids[i]]
+  state = withCurrent({ ...state, manningOrder: ids })
+  persist()
+  notify()
+  return true
+}
+
+/** Hide or show one manning row. ADMIN-gated. */
+export function toggleManningRow(id: string): void {
+  if (state.role !== 'admin') return
+  const hidden = new Set(state.manningHidden)
+  hidden.has(id) ? hidden.delete(id) : hidden.add(id)
+  state = withCurrent({ ...state, manningHidden: [...hidden] })
+  persist()
+  notify()
+}
+
+/** Put every manning row back — natural order, nothing hidden. ADMIN-gated. */
+export function resetManning(): void {
+  if (state.role !== 'admin') return
+  state = withCurrent({ ...state, manningOrder: [], manningHidden: [] })
   persist()
   notify()
 }

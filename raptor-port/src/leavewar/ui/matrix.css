@@ -196,10 +196,69 @@
   background: var(--accent);
 }
 
+/* The tap hint under the dots (owner, 18 Aug 26). A small finger that says the
+   whole box is a control — the affordance the pulled arrows used to carry, for
+   a phone where hover cannot hint it. Accent-tinted but muted so it reads as a
+   hint, not a live button of its own; the button around it is the real target. */
+.mx thead th.bal .ctap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  color: var(--accent);
+  opacity: .78;
+}
+
 /* The counts' own balance cell is deliberately blank — a rule has no leave —
    but it still needs the frozen background, or day cells scroll through it. */
 .mx .counts td.bal {
   background: var(--panel);
+}
+
+/* Rearrange-mode controls for the manning rows (owner, 18 Aug 26 — reorder or
+   hide a count row, admin only). They live in the otherwise-blank balance cell,
+   the one bit of frozen space a 44px column can spare; three tiny buttons that
+   wrap to two rows on the narrowest phone rather than overflow the column. */
+.mx .counts .mrow-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  justify-content: center;
+  align-items: center;
+}
+.mx .counts .mrow-btn {
+  appearance: none;
+  border: 1px solid var(--edge);
+  background: var(--panel-2);
+  color: inherit;
+  border-radius: 3px;
+  width: 14px;
+  height: 15px;
+  padding: 0;
+  line-height: 1;
+  font-size: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.mx .counts .mrow-btn:disabled {
+  opacity: .3;
+  cursor: default;
+}
+.mx .counts .mrow-btn.eye {
+  font-size: 10px;
+}
+.mx .counts .mrow-btn.eye.off {
+  border-style: dashed;
+  color: var(--muted, #8a94a6);
+}
+/* A hidden row, shown dimmed WHILE arranging so an admin can bring it back. */
+.mx .counts tr.mrow-hidden td {
+  opacity: .45;
+}
+.mx .counts tr.mrow-hidden td.bal {
+  opacity: 1;   /* keep its controls fully legible */
 }
 
 /* The sticky date header. z-index 3 on the corner cell so it keeps

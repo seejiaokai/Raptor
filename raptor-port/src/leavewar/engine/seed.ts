@@ -107,6 +107,12 @@ export function seedRequirements(): Requirements {
         { id: 'instr', label: 'IP + IWSO', target: { kind: 'category', categories: ['IP', 'IWSO'] }, threshold: { amber: 5, red: 4 } },
         { id: 'opsp', label: 'OPSP', target: { kind: 'category', categories: ['OPSP'] }, threshold: { amber: 4, red: 3 } },
         { id: 'opsw', label: 'OPSW', target: { kind: 'category', categories: ['OPSW'] }, threshold: { amber: 4, red: 3 } },
+        // FL P / WM P split the pilots by CAT (owner, 18 Aug 26). Display-only
+        // for now: amber 0 / red 0 never fires (a count is never below zero),
+        // so the row shows the head count without judging a day amber or red.
+        // Give them real thresholds here the day the squadron wants a floor.
+        { id: 'flp', label: 'FL P', target: { kind: 'flp' }, threshold: { amber: 0, red: 0 } },
+        { id: 'wmp', label: 'WM P', target: { kind: 'wmp' }, threshold: { amber: 0, red: 0 } },
         { id: 'sxo', label: 'SXO', target: { kind: 'sxo' }, threshold: { amber: 1, red: 1 } },
       ],
     },

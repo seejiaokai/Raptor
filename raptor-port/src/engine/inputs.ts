@@ -94,6 +94,16 @@ export const INPUT_META:any={
   'Fly with':   {name:'flying with another squadron', grp:'act', work:false, local:true, ground:true, half:false},
   'Personal':   {name:'personal',                 grp:'act',   work:false, local:true,  ground:true,  half:false},
   'Appointment':{name:'appointment',              grp:'act',   work:false, local:true,  ground:true,  half:false},
+  /* a LOCAL duty (owner, 18 Aug 26 — "a new input call Duty… local… same kind
+     of rules similar to appointment"). grp:'act' makes it behave EXACTLY like
+     an Appointment everywhere by construction: a personal input (drawn in the
+     Personal block, not Unavailable), on the island (canSpare yes), liftable
+     onto the Ground Programme (ground:true), warns-but-does-not-bar, and it
+     does NOT cross to Leave War (the sync only carries leave/medical). It sits
+     under the dropdown's "Duty & other commitments" heading, distinct from OD
+     (overseas duty, grp:'duty' — out of reach). Placed AFTER the medical block
+     so the leave/med indices the suite pins stay put. */
+  'Duty':       {name:'duty',                     grp:'act',   work:false, local:true,  ground:true,  half:false},
   /* overseas duty — replaces Detachment (owner, 10 Aug 26). Out of reach:
      cannot be planned for anything at all, an SC spare included. */
   'OD':         {name:'overseas duty',            grp:'duty',  work:false, local:false, ground:false, half:false},
@@ -460,6 +470,42 @@ export function isLateInput(inp:any){
 export function isoLabel(iso:any){
   if(!isISO(iso))return '';
   return `${+String(iso).slice(8,10)} ${MONTHS[+String(iso).slice(5,7)-1]||''}`.trim();
+}
+/* The date tail the Inputs page and the Leave War sync both append to a
+   personal input's remarks, so a reader sees how long it runs without anyone
+   typing it and nobody has to repeat the type — the type column already says
+   LL/OL (owner, Aug 26; extended to synced leave and single days 18 Aug 26).
+   A span reads "till 17 Jul" (its LAST day); a single day reads "on 15 Jul"
+   when `single` is 'on', or nothing when 'none'. The Inputs CALENDAR passes
+   'none': its picker fires on the first click of a two-click range, so an
+   "on 13 Jul" would flash before the end day is even chosen. A SYNCED leave,
+   whose span is already settled when it mints, passes 'on' so a one-day leave
+   still reads as a proper remark. Dates are ISO 'yyyy-mm-dd'. */
+export function remarksDateTail(startISO:any, endISO:any, single:'on'|'none'){
+  if(!endISO||endISO===startISO)return single==='on'?`on ${isoLabel(startISO)}`:'';
+  return `till ${isoLabel(endISO)}`;
+}
+/* The date token, matched WHEREVER it sits in a remark — not anchored to the
+   end. That is the difference the owner asked for (18 Aug 26): "if the user has
+   till 13 Jul Bangkok, when the date changes the Bangkok remains." The token is
+   the calendar's to rewrite; everything around it — before OR after — is the
+   typist's and is kept. */
+const DATE_TOKEN=/(?:till|on)\s+\d{1,2}\s+[A-Za-z]{3}/i;
+/* Rewrite (or insert, or remove) the date token inside a remark IN PLACE,
+   leaving the surrounding prose untouched. `single` is passed straight to
+   `remarksDateTail`: the Inputs calendar passes 'none' (no one-day token — its
+   picker fires mid-selection), a synced leave passes 'on'. When the desired
+   token is empty and one is present it is dropped and the gap tidied; when it
+   is present elsewhere it is replaced; otherwise it is appended. */
+export function withRemarksTail(remark:any, startISO:any, endISO:any, single:'on'|'none'){
+  const tok=remarksDateTail(startISO,endISO,single);
+  const s=String(remark==null?'':remark);
+  if(DATE_TOKEN.test(s)){
+    return s.replace(DATE_TOKEN,tok).replace(/\s{2,}/g,' ').trim();
+  }
+  if(!tok)return s.trim();
+  const head=s.trim();
+  return head?`${head} ${tok}`:tok;
 }
 /* what the mark says when you hover it — plain enough for the squadron */
 export function lateNote(inp:any){

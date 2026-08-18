@@ -41,6 +41,8 @@ function judge(have: number, amber: number, red: number): Verdict {
 
 function haveFor(rule: ManningRule, counts: DayCounts): number {
   if (rule.target.kind === 'sxo') return counts.sxo
+  if (rule.target.kind === 'flp') return counts.flp
+  if (rule.target.kind === 'wmp') return counts.wmp
   return rule.target.categories.reduce((sum, c) => sum + counts.byCategory[c], 0)
 }
 

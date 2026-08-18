@@ -21,13 +21,18 @@ import {
   displayRoster,
   getState,
   initStore as lwInitStore,
+  manningRowIds,
+  moveManningRow,
   moveRosterRow,
+  orderedManningIds,
   personLabel,
+  resetManning,
   setPeople,
   setPerson,
   setRole,
   setRosterOrder,
   setPersLabel,
+  toggleManningRow,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
@@ -72,6 +77,25 @@ describe('autoOrder — the categorised default', () => {
       const a = firstIndex(GROUP_ORDER[i - 1]), b = firstIndex(GROUP_ORDER[i])
       if (a >= 0 && b >= 0) expect(a).toBeLessThan(b)
     }
+  })
+
+  /* Within a MIXED group (SXO holds every grade) the order is most-qualified
+     first — FI, IR, IP, IW, then the ops grades A→D, then OCU (owner, 18 Aug
+     26: "look at my list of hierarchy"). Before this IP and IW shared a rank
+     and interleaved by callsign, which is the jumble the owner flagged. */
+  it('a mixed group sorts most-qualified first: FI, IR, IP, IW, A→D, OCU', () => {
+    const sxo = (id: string, q: string, over: Partial<Person> = {}) =>
+      person(id, { sxo: true, band: 'instructor', q, ...over })
+    const mixed = [
+      sxo('s_a', 'A', { band: 'ops' }),
+      sxo('s_iw', 'IW', { seat: 'wso' }),
+      sxo('s_fi', 'FI'),
+      sxo('s_ocu', 'OCU', { band: 'ops' }),
+      sxo('s_ip', 'IP'),
+      sxo('s_c', 'C', { band: 'ops' }),
+      sxo('s_ir', 'IR'),
+    ]
+    expect(autoOrder(mixed)).toEqual(['s_fi', 's_ir', 's_ip', 's_iw', 's_a', 's_c', 's_ocu'])
   })
 })
 
@@ -166,6 +190,53 @@ describe('roster order + labels are admin-gated writers', () => {
     expect(personLabel(gnd())).toBe('Avionics')
     setPersLabel('gnd_1', '')                    // empty clears the override
     expect(personLabel(gnd())).toBe('Line')
+  })
+})
+
+describe('the manning count rows are admin-arrangeable and hideable', () => {
+  beforeEach(() => {
+    lwInitStore(memoryBackend())
+    setRole('admin')
+  })
+
+  it('lists the seed manning rows in natural order until one is moved', () => {
+    expect(manningRowIds()).toEqual(['sets', 'ip', 'iwso', 'instr', 'opsp', 'opsw', 'flp', 'wmp', 'sxo'])
+    expect(orderedManningIds()).toEqual(manningRowIds())
+  })
+
+  it('moves a row and persists the hand order; the ends are clamped', () => {
+    expect(moveManningRow('sxo', -1)).toBe(true)     // SXO up one, above WM P
+    const ids = orderedManningIds()
+    expect(ids.indexOf('sxo')).toBeLessThan(ids.indexOf('wmp'))
+    expect(getState().manningOrder).toEqual(ids)
+    expect(moveManningRow('sets', -1)).toBe(false)   // already first
+  })
+
+  it('hides and shows a row, and reset clears both order and hidden', () => {
+    toggleManningRow('opsw')
+    expect(getState().manningHidden).toContain('opsw')
+    toggleManningRow('opsw')
+    expect(getState().manningHidden).not.toContain('opsw')
+    toggleManningRow('wmp')
+    moveManningRow('sxo', -1)
+    resetManning()
+    expect(getState().manningHidden).toEqual([])
+    expect(getState().manningOrder).toEqual([])
+  })
+
+  it('a member cannot reorder or hide a manning row', () => {
+    setRole('member')
+    expect(moveManningRow('sxo', -1)).toBe(false)
+    toggleManningRow('opsw')
+    expect(getState().manningOrder).toEqual([])
+    expect(getState().manningHidden).toEqual([])
+  })
+
+  it('every row still appears after a partial reorder — none is dropped', () => {
+    moveManningRow('sxo', -1)
+    moveManningRow('flp', -1)
+    // whatever the hand order, orderedManningIds is a permutation of the full set
+    expect([...orderedManningIds()].sort()).toEqual([...manningRowIds()].sort())
   })
 })
 
