@@ -475,14 +475,20 @@ export function isoLabel(iso:any){
    personal input's remarks, so a reader sees how long it runs without anyone
    typing it and nobody has to repeat the type — the type column already says
    LL/OL (owner, Aug 26; extended to synced leave and single days 18 Aug 26).
-   A span reads "till 17 Jul" (its LAST day); a single day reads "on 15 Jul"
-   when `single` is 'on', or nothing when 'none'. The Inputs CALENDAR passes
-   'none': its picker fires on the first click of a two-click range, so an
-   "on 13 Jul" would flash before the end day is even chosen. A SYNCED leave,
-   whose span is already settled when it mints, passes 'on' so a one-day leave
-   still reads as a proper remark. Dates are ISO 'yyyy-mm-dd'. */
-export function remarksDateTail(startISO:any, endISO:any, single:'on'|'none'){
-  if(!endISO||endISO===startISO)return single==='on'?`on ${isoLabel(startISO)}`:'';
+   A span reads "till 17 Jul" (its LAST day). A single day reads "till 15 Jul"
+   when `single` is 'till', "on 15 Jul" when 'on', or nothing when 'none'.
+   The Inputs CALENDAR passes 'till' (owner, 18 Aug 26 — "a one-day input should
+   still show till <date>"): its picker fires on the first click of a two-click
+   range, and "till 13 Jul" showing then updating to "till 18 Jul" reads
+   consistently, where the old "on 13 Jul" that VANISHED on the second click did
+   not — which is why 'none' (no one-day token) existed and the calendar no
+   longer needs it. A SYNCED leave, whose span is already settled when it mints,
+   passes 'on'. Dates are ISO 'yyyy-mm-dd'. */
+export function remarksDateTail(startISO:any, endISO:any, single:'on'|'none'|'till'){
+  if(!endISO||endISO===startISO){
+    if(single==='none'||!isISO(startISO))return '';
+    return `${single==='till'?'till':'on'} ${isoLabel(startISO)}`;
+  }
   return `till ${isoLabel(endISO)}`;
 }
 /* The date token, matched WHEREVER it sits in a remark — not anchored to the
@@ -493,11 +499,11 @@ export function remarksDateTail(startISO:any, endISO:any, single:'on'|'none'){
 const DATE_TOKEN=/(?:till|on)\s+\d{1,2}\s+[A-Za-z]{3}/i;
 /* Rewrite (or insert, or remove) the date token inside a remark IN PLACE,
    leaving the surrounding prose untouched. `single` is passed straight to
-   `remarksDateTail`: the Inputs calendar passes 'none' (no one-day token — its
-   picker fires mid-selection), a synced leave passes 'on'. When the desired
+   `remarksDateTail`: the Inputs calendar passes 'till' (a one-day pick reads
+   "till <that day>"), a synced leave passes 'on'. When the desired
    token is empty and one is present it is dropped and the gap tidied; when it
    is present elsewhere it is replaced; otherwise it is appended. */
-export function withRemarksTail(remark:any, startISO:any, endISO:any, single:'on'|'none'){
+export function withRemarksTail(remark:any, startISO:any, endISO:any, single:'on'|'none'|'till'){
   const tok=remarksDateTail(startISO,endISO,single);
   const s=String(remark==null?'':remark);
   if(DATE_TOKEN.test(s)){

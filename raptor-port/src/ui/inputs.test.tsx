@@ -694,11 +694,12 @@ describe('accepted rows are never stranded', () => {
   })
 })
 
-/* The remarks tail (owner, Aug 26): closing a range on the calendar writes its
-   last day into Remarks as `till 15 Jul`, and everything the typist put in
-   front of it is kept — `LL till 15 Jul`. The tail belongs to the calendar, so
-   it is rewritten and removed by picking, never duplicated. */
-describe('the end date writes itself into Remarks', () => {
+/* The remarks tail (owner, Aug 26; single-day "till" 18 Aug 26): picking on the
+   calendar writes the date into Remarks as `till 15 Jul` — a span uses its last
+   day, and a ONE-DAY pick uses that day — and everything the typist put in front
+   of it is kept — `LL till 15 Jul`. The tail belongs to the calendar, so it is
+   rewritten and removed by picking, never duplicated. */
+describe('the picked date writes itself into Remarks', () => {
   const day = (d: string) => $(`#inCal [data-cal="2026-07-${d}"]`)
   const rm = () => $('#inRemarks') as HTMLInputElement
   const typeInto = async (el: any, v: string) => act(async () => {
@@ -706,37 +707,41 @@ describe('the end date writes itself into Remarks', () => {
     setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
   })
 
-  it('a start alone says nothing; closing the range writes the end date', async () => {
+  it('a lone start already reads till <that day>; the end then moves the date', async () => {
     await click(day('13'))
-    expect(rm().value, 'one date is not a span').toBe('')
+    expect(rm().value, 'a one-day pick still says till <date>').toBe('till 13 Jul')
     await click(day('15'))
     expect(rm().value).toBe('till 15 Jul')
   })
 
   it('the typed note survives, and the tail follows the calendar', async () => {
     await typeInto(rm(), 'LL till 15 Jul')
-    await click(day('16'))                  // a fresh range takes the tail with it…
-    expect(rm().value, 'only the tail is the calendars to remove').toBe('LL')
-    await click(day('18'))                  // …and the new end writes a new one
+    await click(day('16'))                  // a fresh start now rewrites the tail to that one day…
+    expect(rm().value, 'the tail follows the calendar, never stacks').toBe('LL till 16 Jul')
+    await click(day('18'))                  // …and the end extends it
     expect(rm().value).toBe('LL till 18 Jul')
     /* re-picking rewrites the tail rather than stacking another one on */
     await click(day('16')); await click(day('17'))
     expect(rm().value).toBe('LL till 17 Jul')
   })
 
-  it('a range that ends where it starts writes no tail', async () => {
+  it('a range that ends where it starts still writes till <that day>', async () => {
     await typeInto(rm(), '')
     await click(day('20')); await click(day('20'))
-    // add() drops endDate for a one-day range, so a tail would name a span it lacks
-    expect(rm().value).toBe('')
+    // add() drops endDate for a one-day input, but the owner wants the tail to
+    // name that single day anyway (18 Aug 26) — the type column, not endDate, is
+    // what tells a span from a day
+    expect(rm().value).toBe('till 20 Jul')
   })
 
   it('a note kept AFTER the tail survives the dates changing (owner, 18 Aug 26)', async () => {
     await typeInto(rm(), 'till 15 Jul Bangkok')
-    // re-pick a new range: the note is kept, the date token follows the calendar
+    // re-pick a new range: the token is rewritten IN PLACE (it no longer strips
+    // and re-appends, so Bangkok stays exactly where the typist put it) — this is
+    // the owner's own example, "till 13 Jul Bangkok" -> "till 18 Jul Bangkok"
     await click(day('16')); await click(day('18'))
     expect(rm().value, 'Bangkok must remain').toContain('Bangkok')
-    expect(rm().value).toBe('Bangkok till 18 Jul')
+    expect(rm().value).toBe('till 18 Jul Bangkok')
   })
 
   it('Add clears the note but keeps the tail, because the dates stay on the form', async () => {
@@ -756,9 +761,10 @@ describe('the end date writes itself into Remarks', () => {
     expect(ed().value, 'opening the editor rewrites nothing').toBe(INPUTS[0].remarks || '')
     await typeInto(ed(), 'LL')
     /* Jul 12 is before every date in the demo week, so this always lands as a
-       bare start whatever range the row opened with */
+       bare start whatever range the row opened with — and a bare start now
+       carries its own one-day "till" */
     await click($('#inedCal [data-cal="2026-07-12"]'))
-    expect(ed().value).toBe('LL')
+    expect(ed().value).toBe('LL till 12 Jul')
     await click($('#inedCal [data-cal="2026-07-14"]'))
     expect(ed().value).toBe('LL till 14 Jul')
     await click($('#inBody tr.ined [data-cancel]'))
