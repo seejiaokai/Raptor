@@ -146,6 +146,17 @@ interface State {
    *  the day you are notionally already on must snap you back to it. A date
    *  alone cannot say "asked again". */
   focusSeq: number
+
+  /** In-app identity overrides an admin made through `setPerson`, keyed by
+   *  person id — the fields Leave War let them flip locally (seat / band / sxo).
+   *  Raptor's Quals page OWNS identity (see `setPeople`), so the live
+   *  re-projection refreshes every person's identity from Raptor by default;
+   *  this registry is the exception, the deliberate local edits that survive it.
+   *  Session-only and NOT persisted, exactly like `role`/`viewer` — a stored
+   *  copy could only disagree with the roster Raptor is actually flying, and a
+   *  reboot returns to Raptor's truth. Posting-out (`from`/`to`) is preserved
+   *  separately in `reprojectRoster`; it is not an identity field. */
+  personEdits: Record<string, Partial<Pick<Person, 'seat' | 'band' | 'sxo'>>>
 }
 
 /** The event-row count and its bounds (owner, 18 Aug 26). Two rows is the
@@ -192,6 +203,7 @@ function blank(): State {
     viewer: null,
     focusDate: null,
     focusSeq: 0,
+    personEdits: {},
   })
 }
 
@@ -640,6 +652,11 @@ export function setPerson(id: string, patch: Partial<Pick<Person, 'seat' | 'band
   state = withCurrent({
     ...state,
     people: state.people.map(p => (p.id === id ? { ...p, ...patch } : p)),
+    // Record the override so the live re-projection keeps it. Raptor owns
+    // identity and `reprojectRoster` refreshes every person from Raptor's
+    // projection by default; without this entry the next Raptor notify would
+    // snap this deliberate local edit straight back to the projected value.
+    personEdits: { ...state.personEdits, [id]: { ...state.personEdits[id], ...patch } },
   })
   persist()
   notify()
@@ -659,8 +676,9 @@ export function setPerson(id: string, patch: Partial<Pick<Person, 'seat' | 'band
  * affordance, so the store is the only place it can mean anything.
  *
  * Session-only like the rest of this store, and safe against the live
- * re-projection: `reprojectRoster` is additions/removals-only, so it never
- * reverts this in-session edit (the 18 Aug fix that keeps a `setPerson` edit).
+ * re-projection: `reprojectRoster` refreshes each person's identity from
+ * Raptor's projection but preserves posting-out (`from`/`to`) explicitly, so
+ * this window survives every Raptor notify.
  */
 export function setPostOut(id: string, fromDate: string | null): boolean {
   if (state.role !== 'admin') return false
