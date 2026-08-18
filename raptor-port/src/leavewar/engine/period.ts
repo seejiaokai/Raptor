@@ -7,6 +7,10 @@
 
 export type Stage = 'draft' | 'open' | 'closed' | 'published'
 
+// Type-only — eventdefs.ts imports DayInfo from here the same way; both
+// directions are erased at compile so there is no runtime cycle.
+import type { EventKind } from './eventdefs'
+
 /**
  * A MERGED event — one label shown as a single cell across a range of days, on
  * one of the two event lines (owner, Aug 26). The alternative a scheduler can
@@ -26,6 +30,12 @@ export interface EventBand {
   from: string
   to: string
   text: string
+  /** THIS band's own tag (owner, 18 Aug 26 — "I don't want u to save it as a
+   *  type"). Tagging a one-off event used to silently add its word to the
+   *  squadron's type library; now the tag lives on the event instance itself.
+   *  `null`/absent means untagged — the word still classifies through the
+   *  library if it matches a type there (instance wins over library). */
+  kind?: EventKind | null
 }
 
 export interface DayInfo {
@@ -35,6 +45,12 @@ export interface DayInfo {
    *  reads as '' (see `dayEvent`). Old wars stored a fixed 2-tuple, which is
    *  just a length-2 array and loads unchanged. */
   events: string[]
+  /** Per-slot tags for `events`, same index (owner, 18 Aug 26 — the tag on a
+   *  typed one-off event, stored on the event rather than minted into the
+   *  type library). Sparse and optional: a missing entry (or the whole array
+   *  absent, as on every older war) means untagged, and the word still
+   *  classifies through the library. Read via `dayEventKind`. */
+  eventKinds?: (EventKind | null)[]
   /** Leave is discouraged. Bids are still accepted — warn, never block. */
   blocked: boolean
   blockedReason: string
@@ -90,6 +106,14 @@ export function bandAt(bands: EventBand[], line: number, date: string): EventBan
  *  beyond what a day's array holds reads blank rather than `undefined`. */
 export function dayEvent(day: DayInfo, line: number): string {
   return day.events[line] ?? ''
+}
+
+/** One day's INSTANCE tag on an event row, `null` past the end or where none
+ *  was set — the bounds-checked read `dayEvent` is for text, for the same
+ *  reason. `null` does not mean "no colour": the word may still match a
+ *  library type; callers fold the two (`instance ?? classifyEvent`). */
+export function dayEventKind(day: DayInfo, line: number): EventKind | null {
+  return day.eventKinds?.[line] ?? null
 }
 
 function toUTC(date: string): number {

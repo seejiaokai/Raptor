@@ -99,3 +99,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Extend the skill's evidence rule to cover PRESERVATION claims, not just change claims: before reporting "X is unchanged / still works / stays as-is" for any behaviour named by the user, locate the code that implements X (one grep). If it cannot be found, say "I could not find X" instead of affirming it. A user's description of their own system is a hypothesis to verify, not a fact to relay.
 
 **Principle:** "Verified vs assumed, always distinguished" applies with full force to statements about what ALREADY exists — the cheapest lies to ship are affirmations of the status quo, because nothing red-flags them.
+
+### Observation 7: Widened field domains leave stale validators behind
+
+**Status:** OPEN
+**Date:** 2026-08-18
+**Session context:** Leave War per-event tags — extending the untrusted war reader
+**Skill:** New skill candidate: none — cross-cutting reviewing principle
+**Type:** open-source
+**Phase/Area:** data-model changes / untrusted-input readers
+
+**Issue:** A feature widened event rows from exactly 2 to up to 6, but the stored-data reader still dropped any band whose line was not 0 or 1 — silently deleting data on reload. Found only because an adjacent change touched the same reader.
+
+**Suggested improvement:** When a change widens a field's legal domain (enum grows, count becomes variable), grep for every reader/validator that hard-codes the old domain before calling the change done.
+
+**Principle:** A domain widening is not complete until every validator of that domain is re-derived from the new bound, not the old literal.
+
+### Observation 8: A thead cannot sit mid-table — CSS paints it at the top regardless
+
+**Status:** OPEN
+**Date:** 2026-08-18
+**Session context:** Leave War layout reorder (header row moved below count rows)
+**Skill:** New skill candidate: none — frontend layout gotcha
+**Type:** open-source
+**Phase/Area:** table layout / row reordering
+
+**Issue:** Moving a table's header row below other row groups in JSX does nothing visually: CSS table layout renders the table-header-group first wherever it appears in the DOM. The row had to become a classed tbody to obey DOM order.
+
+**Suggested improvement:** When reordering table row groups, remember thead/tfoot are position-independent display groups; use tbody + class for any header that must sit mid-table.
+
+**Principle:** display: table-header-group is a rendering role, not a position — DOM order only governs plain row groups.

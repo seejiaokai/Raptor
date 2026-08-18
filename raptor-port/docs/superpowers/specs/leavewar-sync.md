@@ -31,8 +31,12 @@ argued where it lives:
   pass finds an empty diff.
 - **The non-working-day answer grew the event half.** Weekend from the date
   (`isWeekend`, UTC), holiday from the war holding the date — `DayInfo.ph`
-  OR an event word whose type is tagged **'off'** (`columnKindFor`), which
-  wires in the owner's own PH input path from the 17 Aug event build.
+  OR an event classified **'off'** by `columnKindFor`, which wires in the
+  owner's own PH input path from the 17 Aug event build. Since the 18 Aug
+  per-event tags, `columnKindFor` reads an event's own instance tag first
+  and falls back to the type-library word match — so a one-off event tagged
+  'off' in the sheet makes the day a holiday here exactly as a library word
+  does.
 - **The SC/duty split is the owner's 17 Aug refinement**, superseding plain
   scheduled-hours for SC: an SC AM/PM shift (wholly inside one half of the
   SC day window) is 0.5, anything more 1.0; other duty rows go by summed

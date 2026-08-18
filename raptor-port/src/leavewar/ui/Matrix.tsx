@@ -226,6 +226,21 @@ export function Matrix() {
   const wrapRef = useRef<HTMLDivElement>(null)
   const months = monthsIn(period.start, period.end)
 
+  // The month BRACKET above the dates (owner, 18 Aug 26 — "draw a line at the
+  // top of the dates that bracket the month u are looking at"): one spanning
+  // cell per month, derived from the loaded days so a partial first or last
+  // month brackets exactly the days it actually has on screen.
+  const brackets = (() => {
+    const out: { key: string; label: string; count: number }[] = []
+    for (const d of dates) {
+      const key = d.slice(0, 7)
+      const last = out[out.length - 1]
+      if (last && last.key === key) last.count++
+      else out.push({ key, label: MONTHS[Number(d.slice(5, 7)) - 1]!, count: 1 })
+    }
+    return out
+  })()
+
   // Measured live rather than read off the CSS custom properties: the two
   // frozen columns change width at the phone breakpoint, and a hard-coded
   // offset would be wrong on one of the two devices. Shared by the jump and
@@ -249,6 +264,164 @@ export function Matrix() {
   // only where you can go. Held as state rather than derived during render
   // because it is a fact about scroll position, which no render sees.
   const [inView, setInView] = useState<string | null>(null)
+
+  // The phone ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
+  // war"). Stepped +/− buttons rather than pinch: pinch fights the browser's
+  // own page zoom and the frozen columns, and a button cannot half-work.
+  // `zoom` (not transform) so layout, scroll width and the sticky offsets all
+  // scale together. View state, session-only, like the counter choice.
+  const ZOOMS = [0.6, 0.8, 1, 1.2, 1.4]
+  const [zoom, setZoom] = useState(1)
+  const zoomStep = (by: number) => {
+    const i = ZOOMS.indexOf(zoom)
+    setZoom(ZOOMS[Math.min(ZOOMS.length - 1, Math.max(0, i + by))]!)
+  }
+
+  // ---- the frozen header on a phone (owner, 18 Aug 26: "when the callsign
+  // row almost reaches outside the phone view, it will freeze at the top") --
+  //
+  // The page's one-vertical-scroll rule (10 Aug 26, the .mx-wrap comment in
+  // matrix.css) stands: the wrapper still scrolls horizontally only and the
+  // page still carries the vertical axis, so CSS sticky cannot pin the header
+  // — its scrollport never moves vertically. Instead a fixed MIRROR of the
+  // bracket + header rows appears once the real rows pass under the top bar,
+  // and disappears the moment they come back. The mirror is its own tiny
+  // horizontal scroller kept in lockstep with the grid's, which is what lets
+  // the same `.who`/`.bal` sticky-left CSS freeze its lead columns for free.
+  // Its column widths are MEASURED off the live header (the events row is
+  // what widens a column, and only layout knows by how much) and pinned via
+  // a fixed-layout colgroup. Phone only — a desktop window is tall enough
+  // that the owner has not asked for it there.
+  const headRef = useRef<HTMLTableSectionElement>(null)
+  const mirrorRef = useRef<HTMLDivElement>(null)
+  const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
+
+  useEffect(() => {
+    setStuck(null)
+    // jsdom has neither matchMedia nor layout — the mirror is a browser-only
+    // creature and the browser gate is what proves it.
+    if (typeof window.matchMedia !== 'function') return
+    const mq = window.matchMedia('(max-width: 700px)')
+    const onScroll = () => {
+      const head = headRef.current
+      if (!head || !mq.matches) { setStuck(null); return }
+      const r = head.getBoundingClientRect()
+      if (r.height === 0) return // jsdom, or not laid out yet — never activate
+      // The Raptor top bar is sticky, so "the top" is its lower edge.
+      const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      if (r.top >= topEdge) { setStuck(null); return }
+      setStuck(prev => {
+        if (prev) return prev
+        const wrap = wrapRef.current
+        if (!wrap) return prev
+        const wr = wrap.getBoundingClientRect()
+        const cells = Array.from(head.querySelectorAll('tr:last-child > th')) as HTMLElement[]
+        const cols = cells.map(c => c.getBoundingClientRect().width)
+        if (cols.length === 0 || cols.some(w => !w)) return prev
+        return { top: topEdge, left: wr.left, width: wr.width, cols }
+      })
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    onScroll()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+    // `zoom` is a dep because it changes every measured width the mirror pins.
+  }, [period.id, dates.length, zoom])
+
+  // The mirror starts life at the grid's current horizontal position, and the
+  // two scrollers keep each other in lockstep from then on. Assigning an
+  // unchanged scrollLeft fires no event, so the pair settles instead of
+  // ping-ponging.
+  useEffect(() => {
+    if (stuck && mirrorRef.current && wrapRef.current) {
+      mirrorRef.current.scrollLeft = wrapRef.current.scrollLeft
+    }
+  }, [stuck])
+  const syncMirror = () => {
+    const m = mirrorRef.current, w = wrapRef.current
+    if (m && w && m.scrollLeft !== w.scrollLeft) m.scrollLeft = w.scrollLeft
+  }
+  const syncFromMirror = () => {
+    const m = mirrorRef.current, w = wrapRef.current
+    if (m && w && w.scrollLeft !== m.scrollLeft) w.scrollLeft = m.scrollLeft
+  }
+
+  // The bracket row and the header row, rendered once in the grid and again
+  // inside the phone mirror. The mirror copy carries no test ids — two nodes
+  // answering one id would break every query that expects the real one.
+  const bracketRow = (testids: boolean) => (
+    <tr className="mbrak" data-testid={testids ? 'month-bracket' : undefined}>
+      <th className="brakhd" colSpan={2} />
+      {brackets.map(b => (
+        <th key={b.key} className="brakm" data-testid={testids ? `bracket-${b.key}` : undefined} colSpan={b.count}>
+          <div className="brakin">
+            <span className="brakl">{b.label}</span>
+          </div>
+        </th>
+      ))}
+    </tr>
+  )
+
+  const headerRow = (testids: boolean) => (
+    <tr>
+      <th className="who">Callsign</th>
+      {/* The counter selector lives in the column header, which is the only
+          place a 40px-wide column has room for a control. The WHOLE header is
+          the control (the two 13px arrows were too small to hit from a
+          phone): tapping anywhere on it opens the full-width counter sheet,
+          and swiping across the column (handled on `.mx-wrap`) is the fast
+          path. The column is frozen beside the callsign so the figure stays
+          on screen however far the grid scrolls. */}
+      <th className="bal" data-testid={testids ? 'counter-head' : undefined}>
+        <button
+          className="cpick"
+          data-testid={testids ? 'counter-pick' : undefined}
+          aria-label={`Showing ${shown.label}. Choose what this column shows`}
+          onClick={() => setPicking(true)}
+        >
+          <span className="cname" data-testid={testids ? 'counter-name' : undefined}>{shown.label}</span>
+          <span className="cdots" aria-hidden="true">
+            {figures.map((f, i) => (
+              <span key={f.id} className={`cdot${i === shownIx ? ' on' : ''}`} />
+            ))}
+          </span>
+          {/* A tap hint (owner, 18 Aug 26): the whole header has been the
+              control since the arrows were pulled, but on a phone nothing
+              SAID so; this little finger does. aria-hidden — the button's own
+              label already tells a screen reader it is tappable. */}
+          <span className="ctap" aria-hidden="true">
+            <svg viewBox="0 0 20 20" width="12" height="12" fill="none"
+              stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M7.5 9V4.4a1.5 1.5 0 0 1 3 0V8.5" />
+              <path d="M10.5 8.6V7.2a1.4 1.4 0 0 1 2.8 0v3.9c0 2.7-1.8 4.4-4.3 4.4-1.7 0-3-.8-3.8-2.2L4 11.1a1.25 1.25 0 0 1 2.1-1.3l1 1.4" />
+            </svg>
+          </span>
+        </button>
+      </th>
+      {period.days.map(d => {
+        const mon = monthLabel(d.date)
+        return (
+          <th
+            key={d.date}
+            data-testid={testids ? `head-${d.date}` : undefined}
+            className={`day${d.blocked ? ' blocked' : ''}${isWeekend(d.date) ? ' weekend' : ''}${evKind.has(d.date) ? ` ${evKind.get(d.date)}` : ''}${lockedDate(d.date) ? ' locked' : ''}${d.date === focusDate ? ' focus' : ''}`}
+            title={[d.blocked ? d.blockedReason : '', d.events.filter(Boolean).join(' / ')]
+              .filter(Boolean)
+              .join(' — ')}
+          >
+            {mon && <span className="mon">{mon}</span>}
+            {/* The day of the week, on every column: "which Tuesday" is the
+                question somebody bidding actually asks. Owner, 10 Aug 26. */}
+            <span className="dow">{dayName(d.date)}</span>
+            {d.date.slice(8)}
+          </th>
+        )
+      })}
+    </tr>
+  )
 
   const measureInView = () => {
     const wrap = wrapRef.current
@@ -402,116 +575,21 @@ export function Matrix() {
               )}
             </div>
           )}
-          {/* One button per month the war covers, so the strip fits a
-              quarter and a year alike without being told which it is. */}
-          <div className="months" data-testid="month-strip">
-            {months.map(m => (
-              <button
-                key={m.first}
-                className={`mjump${m.label === inView ? ' on' : ''}`}
-                data-testid={`month-${m.label.replace(' ', '-')}`}
-                aria-current={m.label === inView ? 'true' : undefined}
-                title={`Jump to ${m.label}`}
-                onClick={() => jumpTo(m.first)}
-              >
-                {m.label}
-              </button>
-            ))}
-          </div>
         </div>
         <div
           className="mx-wrap"
           ref={wrapRef}
-          onScroll={measureInView}
+          onScroll={() => { measureInView(); syncMirror() }}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          <table className="mx">
-            <thead>
-              <tr>
-                <th className="who">Callsign</th>
-                {/* The counter selector lives in the column header, which is
-                    the only place a 40px-wide column has room for a control.
-                    Arrows are the guaranteed path on every device; the
-                    column is frozen alongside the callsign so the figure
-                    stays beside the name however far the grid scrolls. */}
-                {/* The WHOLE header is the control. It was two 13px arrows
-                    either side of the label, and the owner's verdict from a
-                    phone was that they are too small to hit — which they
-                    were: a glyph in a 44px column is not a tap target.
-
-                    Tapping anywhere on the header opens a sheet listing every
-                    counter at full width, which is the guaranteed path on any
-                    device. Swiping across the column is the fast one, and is
-                    handled on `.mx-wrap` below. The arrows are gone rather
-                    than kept alongside: leaving a control that is known to be
-                    too small to hit is worse than having one way in. */}
-                <th className="bal" data-testid="counter-head">
-                  <button
-                    className="cpick"
-                    data-testid="counter-pick"
-                    aria-label={`Showing ${shown.label}. Choose what this column shows`}
-                    onClick={() => setPicking(true)}
-                  >
-                    <span className="cname" data-testid="counter-name">{shown.label}</span>
-                    <span className="cdots" aria-hidden="true">
-                      {figures.map((f, i) => (
-                        <span key={f.id} className={`cdot${i === shownIx ? ' on' : ''}`} />
-                      ))}
-                    </span>
-                    {/* A tap hint (owner, 18 Aug 26 — "put a click icon near
-                        this counter box to tell the user on mobile to click to
-                        change the view"). The whole header has been the control
-                        since the arrows were pulled, but on a phone nothing
-                        SAID so; this little finger does. aria-hidden — the
-                        button's own label already tells a screen reader it is
-                        tappable. */}
-                    <span className="ctap" aria-hidden="true">
-                      <svg viewBox="0 0 20 20" width="12" height="12" fill="none"
-                        stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M7.5 9V4.4a1.5 1.5 0 0 1 3 0V8.5" />
-                        <path d="M10.5 8.6V7.2a1.4 1.4 0 0 1 2.8 0v3.9c0 2.7-1.8 4.4-4.3 4.4-1.7 0-3-.8-3.8-2.2L4 11.1a1.25 1.25 0 0 1 2.1-1.3l1 1.4" />
-                      </svg>
-                    </span>
-                  </button>
-                </th>
-                {period.days.map(d => {
-                  const mon = monthLabel(d.date)
-                  return (
-                    <th
-                      key={d.date}
-                      data-testid={`head-${d.date}`}
-                      className={`day${d.blocked ? ' blocked' : ''}${isWeekend(d.date) ? ' weekend' : ''}${evKind.has(d.date) ? ` ${evKind.get(d.date)}` : ''}${lockedDate(d.date) ? ' locked' : ''}${d.date === focusDate ? ' focus' : ''}`}
-                      title={[d.blocked ? d.blockedReason : '', d.events.filter(Boolean).join(' / ')]
-                        .filter(Boolean)
-                        .join(' — ')}
-                    >
-                      {mon && <span className="mon">{mon}</span>}
-                      {/* The day of the week, on every column. A year of
-                          columns numbered 01…31 twelve times over gives the
-                          eye nothing to hold on to: the weekend banding says
-                          where a week ENDS but not which day any given
-                          column is, and "which Tuesday" is the question
-                          somebody bidding actually asks. Owner's request,
-                          10 Aug 26. */}
-                      <span className="dow">{dayName(d.date)}</span>
-                      {d.date.slice(8)}
-                    </th>
-                  )
-                })}
-              </tr>
-            </thead>
-            {/* Above the counts, because an event is the REASON a day is
-                thin — reading the cause before the effect is the order a
-                scheduler works in. */}
-            <EventRows
-              days={period.days}
-              bands={period.bands}
-              defs={eventDefs}
-              rows={eventRows}
-              editable={role === 'admin'}
-              onEdit={(line, date) => setEventEdit({ line, date })}
-            />
+          <table className="mx" style={zoom !== 1 ? { zoom } : undefined}>
+            {/* THE ROW ORDER IS THE OWNER'S (18 Aug 26, arrows on a
+                screenshot): counts first, then the month buttons, then the
+                callsign + dates header, then the event rows, then the roster.
+                The header row is a tbody (`.mxhead`), not a thead — CSS
+                paints a thead at the TOP of the table wherever it sits in
+                the DOM, which would undo this whole arrangement. */}
             <CountRows
               verdicts={verdicts}
               dates={dates}
@@ -519,6 +597,69 @@ export function Matrix() {
               hidden={manningHidden}
               arranging={arranging}
               admin={role === 'admin'}
+            />
+            {/* The month strip, now a row of the grid so it sits between the
+                counts and the header (owner's arrows). The buttons live in a
+                sticky two-column cell and overflow visibly across the fill
+                cell — the grphd technique — so they stay pinned to the left
+                edge while the year scrolls under them. */}
+            <tbody className="mstripe">
+              <tr>
+                <td className="mstick" colSpan={2}>
+                  <div className="mstrow">
+                    <div className="months" data-testid="month-strip">
+                      {months.map(m => (
+                        <button
+                          key={m.first}
+                          className={`mjump${m.label === inView ? ' on' : ''}`}
+                          data-testid={`month-${m.label.replace(' ', '-')}`}
+                          aria-current={m.label === inView ? 'true' : undefined}
+                          title={`Jump to ${m.label}`}
+                          onClick={() => jumpTo(m.first)}
+                        >
+                          {m.label}
+                        </button>
+                      ))}
+                    </div>
+                    {/* The phone zoom, riding the same pinned cell as the
+                        months so it never scrolls out of reach sideways —
+                        but OUTSIDE the strip: it is not a month, and the
+                        strip's tests and readers treat every button there as
+                        one. Hidden above 700px in CSS — a desktop has room. */}
+                    <span className="lwzoom" data-testid="lw-zoom">
+                      <button
+                        className="mjump"
+                        data-testid="lw-zoom-out"
+                        aria-label="Zoom out"
+                        disabled={zoom === ZOOMS[0]}
+                        onClick={() => zoomStep(-1)}
+                      >−</button>
+                      <button
+                        className="mjump"
+                        data-testid="lw-zoom-in"
+                        aria-label="Zoom in"
+                        disabled={zoom === ZOOMS[ZOOMS.length - 1]}
+                        onClick={() => zoomStep(1)}
+                      >＋</button>
+                    </span>
+                  </div>
+                </td>
+                <td className="mfill" colSpan={dates.length} />
+              </tr>
+            </tbody>
+            <tbody className="mxhead" ref={headRef}>
+              {bracketRow(true)}
+              {headerRow(true)}
+            </tbody>
+            {/* Above the roster, below the header — an event is the REASON a
+                day is thin, so it reads right under the date it explains. */}
+            <EventRows
+              days={period.days}
+              bands={period.bands}
+              defs={eventDefs}
+              rows={eventRows}
+              editable={role === 'admin'}
+              onEdit={(line, date) => setEventEdit({ line, date })}
             />
             <tbody>
               {(() => {
@@ -755,6 +896,42 @@ export function Matrix() {
             </tbody>
           </table>
         </div>
+        {/* The phone's frozen header — the fixed mirror described above the
+            sticky machinery. Sits under the top bar (z 55 < the bar's 60 and
+            the sheets' 79/80) and never renders in jsdom, where nothing has
+            a height to scroll past. */}
+        {stuck && (
+          <div
+            className="mxfixed"
+            data-testid="sticky-head"
+            style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
+          >
+            <div className="mxfixed-scroll" ref={mirrorRef} onScroll={syncFromMirror}>
+              {/* The measured widths are visual px (they include the zoom),
+                  and the mirror table wears the same zoom so its text sizes
+                  match — so its layout widths are the measurements divided
+                  back out, or the zoom would apply twice. */}
+              <table
+                className="mx"
+                style={{
+                  tableLayout: 'fixed',
+                  width: stuck.cols.reduce((a, b) => a + b, 0) / zoom,
+                  ...(zoom !== 1 ? { zoom } : null),
+                }}
+              >
+                <colgroup>
+                  {stuck.cols.map((w, i) => (
+                    <col key={i} style={{ width: w / zoom }} />
+                  ))}
+                </colgroup>
+                <tbody className="mxhead">
+                  {bracketRow(false)}
+                  {headerRow(false)}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Rendered outside `.mx-wrap` on purpose: that wrapper scrolls, and a

@@ -269,3 +269,31 @@ describe('bid state on a cell', () => {
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).not.toBe(before)
   })
 })
+
+/* The 18 Aug 26 layout order (owner's arrows on a screenshot): counts →
+   month buttons → callsign/dates header → event rows → roster. */
+describe('the grid row order', () => {
+  it('draws counts, then the month strip, then the header, then events, then people', () => {
+    render(<Matrix />)
+    const table = screen.getByTestId('month-strip').closest('table')!
+    const sections = Array.from(table.children).map(el => el.className || el.tagName.toLowerCase())
+    expect(sections).toEqual(['counts', 'mstripe', 'mxhead', 'events', 'tbody'])
+  })
+
+  it('brackets every month above the dates, spanning its own days', () => {
+    render(<Matrix />)
+    const jan = screen.getByTestId('bracket-2026-01')
+    expect(jan.getAttribute('colspan')).toBe('31')
+    expect(jan.textContent).toBe('JAN')
+    expect(screen.getByTestId('bracket-2026-02').getAttribute('colspan')).toBe('28')
+    // the bracket row sits directly above the header row, inside one tbody
+    const head = jan.closest('tbody')!
+    expect(head.className).toBe('mxhead')
+    expect(head.querySelector('[data-testid="counter-head"]')).toBeTruthy()
+  })
+
+  it('never renders the phone header mirror in jsdom (no layout to scroll past)', () => {
+    render(<Matrix />)
+    expect(screen.queryByTestId('sticky-head')).toBeNull()
+  })
+})

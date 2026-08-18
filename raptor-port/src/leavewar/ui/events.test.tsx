@@ -160,3 +160,64 @@ describe('merged bands render as one spanning cell', () => {
     expect(screen.getByTestId('event-0-2026-02-04').textContent).toBe('SC')
   })
 })
+
+/* The blocked-week reason on the event row (owner, 18 Aug 26 — "it should
+   show exercise on the event"). The amber header said leave was discouraged
+   but the WHY lived in a hover title, invisible on a phone. */
+describe('a blocked run prints its reason on the first event line', () => {
+  it('merges the seed exercise week into one spanning amber cell', () => {
+    render(<Matrix />)
+    const cell = screen.getByTestId('event-blocked-2026-03-09')
+    expect(cell.textContent).toBe('Exercise week')
+    expect(cell.getAttribute('colspan')).toBe('6') // 9–14 Mar inclusive
+    expect(cell.className).toContain('blk')
+    // the covered days draw no plain event cells of their own on line 0
+    expect(screen.queryByTestId('event-0-2026-03-10')).toBeNull()
+    // line 1 is untouched — still a plain (empty) cell
+    expect(screen.getByTestId('event-1-2026-03-10')).toBeTruthy()
+  })
+
+  it('a real event typed on a blocked day breaks the run around it', () => {
+    setRole('admin')
+    setDayEvent('2026-03-11', 0, 'Det brief')
+    render(<Matrix />)
+    // the run now stops before the typed day and restarts after it
+    expect(screen.getByTestId('event-blocked-2026-03-09').getAttribute('colspan')).toBe('2')
+    expect(screen.getByTestId('event-0-2026-03-11').textContent).toBe('Det brief')
+    expect(screen.getByTestId('event-blocked-2026-03-12').getAttribute('colspan')).toBe('3')
+  })
+
+  it('an admin can tap the reason bar to open the event sheet on its first day', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('event-blocked-2026-03-09'))
+    expect(screen.getByTestId('event-sheet')).toBeTruthy()
+  })
+})
+
+/* Per-event tags reach the column tint (owner, 18 Aug 26): a one-off word
+   tagged on the event itself tints the day exactly as a library word does. */
+describe('instance tags colour the column', () => {
+  it('a day event tagged no-leave tints its column orange without a library type', () => {
+    setRole('admin')
+    setDayEvent('2026-02-10', 0, 'Standby', 'nolv')
+    render(<Matrix />)
+    expect(screen.getByTestId('head-2026-02-10').className).toContain('evnolv')
+    expect(getState().eventDefs.some(d => d.name === 'Standby')).toBe(false)
+  })
+
+  it('a band tagged off tints every day it covers green', () => {
+    setRole('admin')
+    addEventBand(1, '2026-02-16', '2026-02-18', 'Det stand-down', 'off')
+    render(<Matrix />)
+    expect(screen.getByTestId('head-2026-02-17').className).toContain('evoff')
+  })
+
+  it('an instance tag wins over the library word match', () => {
+    setRole('admin')
+    // "PH" is a library off-day word; tagging this one instance no-leave wins
+    setDayEvent('2026-02-20', 0, 'PH', 'nolv')
+    render(<Matrix />)
+    expect(screen.getByTestId('head-2026-02-20').className).toContain('evnolv')
+  })
+})

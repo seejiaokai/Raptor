@@ -441,17 +441,28 @@ accounts land and the roles stop being an affordance.
   next load. Worth knowing before someone reads a persisted blob and
   concludes a row means something.
 
-## Event model (17 Aug 26) — tags, ranges, merged bands, colours only
+## Event model (17 Aug 26; per-event tags 18 Aug 26) — tags, ranges, merged bands, colours only
 
 The two event lines grew a real editor and a classification (owner, Aug 26).
 What is a contract, and what is deliberately still open:
 
-- **The tag is invisible; only colour shows.** An event word is looked up in
-  the type library (`engine/eventdefs.ts`) and classified off / no-leave /
-  work. Typing `PH` shows `PH`, never `PH (off)` — the kind surfaces ONLY as
-  colour: a green column for an off day, an orange column for no-leave, red
-  text for a work word (the column left alone). `columnKindFor` lets `off` win
-  over `nolv` on one day; `work` never colours the column.
+- **The tag is invisible; only colour shows.** An event is classified off /
+  no-leave / work. Typing `PH` shows `PH`, never `PH (off)` — the kind
+  surfaces ONLY as colour: a green column for an off day, an orange column
+  for no-leave, red text for a work word (the column left alone).
+  `columnKindFor` lets `off` win over `nolv` on one day; `work` never
+  colours the column.
+- **The tag lives ON the event, not in the library (owner, 18 Aug 26 — "I
+  don't want u to save it as a type").** Tapping a tag in the Event sheet
+  used to silently mint the typed word into the type library; now it is held
+  in the sheet and saved with the event — `DayInfo.eventKinds[line]` for a
+  per-day word (written by `writeDayEvent`, read by `dayEventKind`),
+  `EventBand.kind` for a merged bar. Precedence everywhere is **instance tag
+  first, library word match second** (`columnKindFor`, the red work word in
+  `EventRows`, wire 4's holiday answer). The library changes ONLY inside the
+  Edit types view. Both new fields read leniently in `readWar` (absent =
+  untagged, exactly the old shape); clearing an event clears its tag so a
+  stale kind can never colour a later word.
 - **Classification is stored but not yet wired to the rules.** This is the
   deliberate gap the owner chose this pass ("colours only for now"): the
   off/no-leave/work kind changes no manning count and raises no warning. It is
