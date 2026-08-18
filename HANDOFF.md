@@ -24,22 +24,23 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (18 Aug 26 — the SXO/SANS/compact-card
-session, full set re-run and watched):
+**Last recorded green baseline** (Wire 5, 17 Aug 26). The 18 Aug batches
+(post-out, manning rows, categorised roster, variable event rows) added
+tests without re-recording the full set, so treat these as a floor, and
+re-measure before quoting:
 
 | gate | reading |
 |---|---|
-| `npm test` | 2545 across 139 files — two vitest projects: raptor 1726/101, leavewar 819/38 |
+| `npm test` | 2556 across 139 files — two vitest projects: raptor 1725/101, leavewar 831/38 |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 272 passed / 6 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `npm run test:e2e` | 283 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
 | `perf` | 4/4 |
 
 DOM measures at that baseline: week **3743** under a 4000 ceiling, board
-**844** under 960. The Leave War year matrix is outside the perf gate — its
-own e2e DOM band (29000, measured-first) is the guard, and it dropped further
-below that when SANS left the default roster (18 Aug 26).
+**844** under 960. The Leave War year matrix (~28k nodes) is outside the
+perf gate — it has its own e2e DOM band (29000), measured-first.
 
 **How the gates lie — the durable traps, worth more than any count:**
 
