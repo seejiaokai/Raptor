@@ -45,7 +45,7 @@ const KIND_LABEL: Record<EventKind, string> = {
   work: 'Work',
 }
 
-export function EventSheet({ line, date, onClose }: { line: 0 | 1; date: string; onClose: () => void }) {
+export function EventSheet({ line, date, onClose }: { line: number; date: string; onClose: () => void }) {
   useVersion()
   const { period, eventDefs: defs } = getState()
   // The band (if any) that owns this cell. Editing it means replacing it, so

@@ -20,6 +20,9 @@ import {
   updateEventType,
   removeEventType,
   resetEventTypes,
+  addEventRow,
+  removeEventRow,
+  MAX_EVENT_ROWS,
   setPeople,
   setPerson,
   clearBidWindow,
@@ -1384,6 +1387,36 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
     setRole('member')
     expect(setDayEventRange('2026-01-05', '2026-01-07', 0, 'SC')).toBe(false)
     expect(getState().period.days.find(x => x.date === '2026-01-05')!.events[0]).toBe('')
+  })
+
+  it('an admin can add and remove event rows (owner, 18 Aug 26)', () => {
+    setRole('admin')
+    expect(getState().eventRows).toBe(2)
+    expect(addEventRow()).toBe(true)
+    expect(getState().eventRows).toBe(3)
+    // a write into the new (third) row grows the day array on demand
+    expect(setDayEvent('2026-01-05', 2, 'Trial')).toBe(true)
+    expect(getState().period.days.find(x => x.date === '2026-01-05')!.events[2]).toBe('Trial')
+    // the row is in use, so removing it is refused rather than losing the word
+    expect(removeEventRow()).toBe('nonempty')
+    expect(getState().eventRows).toBe(3)
+    // clear it, then it removes
+    setDayEvent('2026-01-05', 2, '')
+    expect(removeEventRow()).toBe('removed')
+    expect(getState().eventRows).toBe(2)
+    // never below the default two
+    expect(removeEventRow()).toBe('min')
+  })
+
+  it('caps the row count and gates both writers to admin', () => {
+    setRole('admin')
+    for (let i = 2; i < MAX_EVENT_ROWS; i++) expect(addEventRow()).toBe(true)
+    expect(getState().eventRows).toBe(MAX_EVENT_ROWS)
+    expect(addEventRow()).toBe(false)          // at the cap
+    setRole('member')
+    expect(addEventRow()).toBe(false)
+    expect(removeEventRow()).toBe('forbidden')
+    expect(getState().eventRows).toBe(MAX_EVENT_ROWS)
   })
 
   it('adds a merged band and clears the per-day text under it', () => {

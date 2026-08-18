@@ -75,7 +75,9 @@ export function classifyEvent(defs: EventDef[], text: string): EventKind | null 
  *  more than a discouraged day); `work` never colours the column, only its own
  *  word. `null` means no colour. */
 export function columnKindFor(defs: EventDef[], day: DayInfo, bands: EventBand[]): EventKind | null {
-  const texts = [day.events[0], day.events[1]]
+  // Every event row this day carries, not just the first two — an admin can
+  // add rows now (18 Aug 26), and a tag on any of them tints the column.
+  const texts = [...day.events]
   for (const b of bands) if (b.from <= day.date && day.date <= b.to) texts.push(b.text)
   let sawNolv = false
   for (const t of texts) {

@@ -131,6 +131,13 @@ interface State {
    *  be brought back. ADMIN-gated at the write path. */
   manningHidden: string[]
 
+  /** How many EVENT rows the matrix draws (owner, 18 Aug 26 — "add more event
+   *  rows if needed"). Two by default; an admin can add up to `MAX_EVENT_ROWS`.
+   *  Squadron-wide config (persisted `eventrows`), admin-gated. A day's
+   *  `events` array grows on demand as rows are written; a row past a day's
+   *  stored length reads '' (`dayEvent`). */
+  eventRows: number
+
   /** The day the matrix has been asked to bring into view, or null. */
   focusDate: string | null
   /** Bumped on every request, including a repeat of the same date. The matrix
@@ -140,6 +147,12 @@ interface State {
    *  alone cannot say "asked again". */
   focusSeq: number
 }
+
+/** The event-row count and its bounds (owner, 18 Aug 26). Two rows is the
+ *  historic default; six is a soft cap so the header block cannot be grown
+ *  without limit. */
+export const DEFAULT_EVENT_ROWS = 2
+export const MAX_EVENT_ROWS = 6
 
 let backend: StorageBackend = memoryBackend()
 let state: State = blank()
@@ -172,6 +185,7 @@ function blank(): State {
     persLabels: {},
     manningOrder: [],
     manningHidden: [],
+    eventRows: DEFAULT_EVENT_ROWS,
     // The squadron is the common case, so the app opens as one. An admin
     // says so deliberately rather than arriving with the locks already off.
     role: 'member',
@@ -358,11 +372,13 @@ function readWar(x: unknown): LeaveWar | null {
     if (!isPlainObject(d)) return null
     const { date, events, blocked, blockedReason, ph } = d
     if (typeof date !== 'string') return null
-    if (!Array.isArray(events) || events.length !== 2) return null
+    // At LEAST two event lines (the historic default), and any number beyond
+    // that (an admin can add rows since 18 Aug 26). Every entry a string.
+    if (!Array.isArray(events) || events.length < 2) return null
     if (events.some(e => typeof e !== 'string')) return null
     if (typeof blocked !== 'boolean' || typeof ph !== 'boolean') return null
     if (typeof blockedReason !== 'string') return null
-    readDays.push({ date, events: [events[0], events[1]], blocked, blockedReason, ph })
+    readDays.push({ date, events: [...events], blocked, blockedReason, ph })
   }
 
   // Bands are READ LENIENTLY, like the window above: a war stored before
@@ -487,6 +503,9 @@ export function initStore(b?: StorageBackend): void {
   const persLabels = readStored('perslabels', readLabelMap) ?? {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
+  const eventRows = readStored('eventrows', x =>
+    typeof x === 'number' && Number.isInteger(x) && x >= DEFAULT_EVENT_ROWS && x <= MAX_EVENT_ROWS ? x : null,
+  ) ?? DEFAULT_EVENT_ROWS
 
   /* The role is neither read nor persisted since the Raptor merge: it is
      derived from the Raptor login on every session change (resetSession in
@@ -499,7 +518,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, eventRows })
 
   version = 0
   listeners.clear()
@@ -562,6 +581,7 @@ function persist(): void {
   backend.write('perslabels', JSON.stringify(state.persLabels))
   backend.write('manningorder', JSON.stringify(state.manningOrder))
   backend.write('manninghidden', JSON.stringify(state.manningHidden))
+  backend.write('eventrows', JSON.stringify(state.eventRows))
   /* `people` deliberately absent: the roster is a projection of Raptor's
      PEOPLE (see initStore) — persisting it would store a copy that can only
      disagree with the projection the next boot installs. The roster ORDER and
@@ -620,6 +640,36 @@ export function setPerson(id: string, patch: Partial<Pick<Person, 'seat' | 'band
   state = withCurrent({
     ...state,
     people: state.people.map(p => (p.id === id ? { ...p, ...patch } : p)),
+  })
+  persist()
+  notify()
+  return true
+}
+
+/**
+ * Post a person OUT from a date, or clear it (owner, 18 Aug 26 — "PO… they are
+ * not counted in the manpower… grey with diagonal stripe through the boxes").
+ *
+ * `fromDate` is the first day they are GONE, so their last day in the squadron
+ * is the day before — `to = fromDate − 1`. Everything from `fromDate` on then
+ * reads as posted out: `inSquadron` is false there, which the grey `.gone`
+ * hatch and the `PO` chip already key off, and which every manning count
+ * (`countsFor` → `availabilityOf`) already treats as zero. `null` clears the
+ * post-out (the undo). ADMIN-gated, checked here — the role switch is an
+ * affordance, so the store is the only place it can mean anything.
+ *
+ * Session-only like the rest of this store, and safe against the live
+ * re-projection: `reprojectRoster` is additions/removals-only, so it never
+ * reverts this in-session edit (the 18 Aug fix that keeps a `setPerson` edit).
+ */
+export function setPostOut(id: string, fromDate: string | null): boolean {
+  if (state.role !== 'admin') return false
+  const person = state.people.find(p => p.id === id)
+  if (!person) return false
+  const to = fromDate ? addDays(fromDate, -1) : null
+  state = withCurrent({
+    ...state,
+    people: state.people.map(p => (p.id === id ? { ...p, to } : p)),
   })
   persist()
   notify()
@@ -935,22 +985,27 @@ export function clearBidWindow(): BidWindowResult {
  * Days are stored in full rather than rebuilt from the period's range
  * precisely so these survive a reload; see `readWar`.
  */
-export function setDayEvent(date: string, line: 0 | 1, text: string): boolean {
+export function setDayEvent(date: string, line: number, text: string): boolean {
   if (state.role !== 'admin') return false
   if (!state.period.days.some(d => d.date === date)) return false
   updateCurrent(w => ({
     ...w,
     period: {
       ...w.period,
-      days: w.period.days.map(d => {
-        if (d.date !== date) return d
-        const events: [string, string] = [d.events[0], d.events[1]]
-        events[line] = text
-        return { ...d, events }
-      }),
+      days: w.period.days.map(d => (d.date === date ? { ...d, events: writeEventLine(d.events, line, text) } : d)),
     },
   }))
   return true
+}
+
+/** Copy a day's event lines and write one, padding with '' so a row beyond the
+ *  stored array's end (a just-added row) can be written into rather than
+ *  silently dropped. The one place events are mutated. */
+function writeEventLine(events: string[], line: number, text: string): string[] {
+  const out = [...events]
+  while (out.length <= line) out.push('')
+  out[line] = text
+  return out
 }
 
 /**
@@ -963,7 +1018,7 @@ export function setDayEvent(date: string, line: 0 | 1, text: string): boolean {
  * beneath it is suppressed anyway — so the repeat writes only the free days.
  * A backwards range is a no-op.
  */
-export function setDayEventRange(from: string, to: string, line: 0 | 1, text: string): boolean {
+export function setDayEventRange(from: string, to: string, line: number, text: string): boolean {
   if (state.role !== 'admin') return false
   if (to < from) return false
   updateCurrent(w => ({
@@ -973,9 +1028,7 @@ export function setDayEventRange(from: string, to: string, line: 0 | 1, text: st
       days: w.period.days.map(d => {
         if (d.date < from || d.date > to) return d
         if (bandCoversDate(w.period.bands, line, d.date)) return d
-        const events: [string, string] = [d.events[0], d.events[1]]
-        events[line] = text
-        return { ...d, events }
+        return { ...d, events: writeEventLine(d.events, line, text) }
       }),
     },
   }))
@@ -994,7 +1047,7 @@ export type EventBandResult = 'set' | 'overlap' | 'backwards' | 'outside' | 'for
  * line is cleared, so a merged label never hides stray words a later delete
  * would resurrect.
  */
-export function addEventBand(line: 0 | 1, from: string, to: string, text: string): EventBandResult {
+export function addEventBand(line: number, from: string, to: string, text: string): EventBandResult {
   if (state.role !== 'admin') return 'forbidden'
   if (to < from) return 'backwards'
   if (from < state.period.start || to > state.period.end) return 'outside'
@@ -1004,12 +1057,8 @@ export function addEventBand(line: 0 | 1, from: string, to: string, text: string
     period: {
       ...w.period,
       bands: [...w.period.bands, { line, from, to, text }],
-      days: w.period.days.map(d => {
-        if (d.date < from || d.date > to || !d.events[line]) return d
-        const events: [string, string] = [d.events[0], d.events[1]]
-        events[line] = ''
-        return { ...d, events }
-      }),
+      days: w.period.days.map(d =>
+        d.date < from || d.date > to || !d.events[line] ? d : { ...d, events: writeEventLine(d.events, line, '') }),
     },
   }))
   return 'set'
@@ -1018,7 +1067,7 @@ export function addEventBand(line: 0 | 1, from: string, to: string, text: string
 /** Remove the merged band on `line` that covers `date`. Admin-only. A no-op
  *  when no band is there. The days it covered keep their (empty) per-day text —
  *  the band cleared them on the way in; a fresh edit refills them. */
-export function removeEventBand(line: 0 | 1, date: string): boolean {
+export function removeEventBand(line: number, date: string): boolean {
   if (state.role !== 'admin') return false
   const band = state.period.bands.find(b => b.line === line && b.from <= date && date <= b.to)
   if (!band) return false
@@ -1031,8 +1080,44 @@ export function removeEventBand(line: 0 | 1, date: string): boolean {
 
 /** True where a band on `line` covers `date`. A module-local reader for the
  *  range writer above; the engine's `bandAt` is the exported one. */
-function bandCoversDate(bands: EventBand[], line: 0 | 1, date: string): boolean {
+function bandCoversDate(bands: EventBand[], line: number, date: string): boolean {
   return bands.some(b => b.line === line && b.from <= date && date <= b.to)
+}
+
+/** Add one more EVENT row (owner, 18 Aug 26 — "add more event rows if needed"),
+ *  up to `MAX_EVENT_ROWS`. ADMIN-gated; returns whether it grew so a control
+ *  can disable at the cap. Nothing to migrate — a day's `events` array grows
+ *  the first time the new row is written into (`writeEventLine`), and a row
+ *  past a day's stored length reads '' until then. */
+export function addEventRow(): boolean {
+  if (state.role !== 'admin') return false
+  if (state.eventRows >= MAX_EVENT_ROWS) return false
+  state = withCurrent({ ...state, eventRows: state.eventRows + 1 })
+  persist()
+  notify()
+  return true
+}
+
+/** Why removing the last event row was refused. */
+export type RemoveEventRowResult = 'removed' | 'min' | 'nonempty' | 'forbidden'
+
+/** Remove the LAST event row. ADMIN-gated, never below the default two, and
+ *  refused if that row still carries any text or band on the current war
+ *  (`'nonempty'`) so nothing vanishes unseen — the admin clears it first. This
+ *  guard is also what keeps `columnKindFor` honest: it scans every stored event
+ *  line, so a row is only ever dropped from view once it is provably empty. */
+export function removeEventRow(): RemoveEventRowResult {
+  if (state.role !== 'admin') return 'forbidden'
+  if (state.eventRows <= DEFAULT_EVENT_ROWS) return 'min'
+  const line = state.eventRows - 1
+  const used =
+    state.period.days.some(d => (d.events[line] ?? '') !== '') ||
+    state.period.bands.some(b => b.line === line)
+  if (used) return 'nonempty'
+  state = withCurrent({ ...state, eventRows: state.eventRows - 1 })
+  persist()
+  notify()
+  return 'removed'
 }
 
 /* THE EVENT-TYPE LIBRARY writers. Admin-only, squadron-wide, persisted under

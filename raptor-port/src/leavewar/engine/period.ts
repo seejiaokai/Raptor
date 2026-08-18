@@ -20,7 +20,9 @@ export type Stage = 'draft' | 'open' | 'closed' | 'published'
  * band is made, so no hidden words linger beneath a merged label.
  */
 export interface EventBand {
-  line: 0 | 1
+  /** Which event row (0-based). Two rows until 18 Aug 26; an admin can add
+   *  more now (store's `eventRows`), so this is a plain index, not `0 | 1`. */
+  line: number
   from: string
   to: string
   text: string
@@ -28,8 +30,11 @@ export interface EventBand {
 
 export interface DayInfo {
   date: string
-  /** Two free-text event lines, matching the two EVENT rows of the sheet. */
-  events: [string, string]
+  /** The free-text event lines, one string per EVENT row. Variable length
+   *  since 18 Aug 26 — an admin can add rows; a line past the array's end
+   *  reads as '' (see `dayEvent`). Old wars stored a fixed 2-tuple, which is
+   *  just a length-2 array and loads unchanged. */
+  events: string[]
   /** Leave is discouraged. Bids are still accepted — warn, never block. */
   blocked: boolean
   blockedReason: string
@@ -70,14 +75,21 @@ export interface Period {
  *  store refuses an overlap rather than trimming it — two merged labels
  *  fighting over one day has no single right answer, and silently shrinking
  *  one would hide the collision. */
-export function bandOverlaps(bands: EventBand[], line: 0 | 1, from: string, to: string): boolean {
+export function bandOverlaps(bands: EventBand[], line: number, from: string, to: string): boolean {
   return bands.some(b => b.line === line && from <= b.to && b.from <= to)
 }
 
 /** The band covering a date on a line, or null. A line holds at most one band
  *  over any day (no overlaps), so the first hit is the only hit. */
-export function bandAt(bands: EventBand[], line: 0 | 1, date: string): EventBand | null {
+export function bandAt(bands: EventBand[], line: number, date: string): EventBand | null {
   return bands.find(b => b.line === line && b.from <= date && date <= b.to) ?? null
+}
+
+/** One day's text on an event row, '' past the end of the stored array. The
+ *  one place a `day.events[line]` read is bounds-checked, so a row added
+ *  beyond what a day's array holds reads blank rather than `undefined`. */
+export function dayEvent(day: DayInfo, line: number): string {
+  return day.events[line] ?? ''
 }
 
 function toUTC(date: string): number {
@@ -157,6 +169,7 @@ export function buildDays(start: string, end: string): DayInfo[] {
   const days: DayInfo[] = []
   for (let d = start; d <= end; d = addDays(d, 1)) {
     days.push({ date: d, events: ['', ''], blocked: false, blockedReason: '', ph: false })
+    // (seeded length 2 — the default row count; extra rows read '' via dayEvent)
   }
   return days
 }

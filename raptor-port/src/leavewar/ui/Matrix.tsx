@@ -27,8 +27,8 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { autoSortRoster, displayRoster, getState, moveRosterRow, orderedManningIds, personLabel, setPersLabel } from '../state/store'
-import { BidPicker, DecisionSheet, RaptorSheet } from './BidPicker'
+import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, getState, MAX_EVENT_ROWS, moveRosterRow, orderedManningIds, personLabel, removeEventRow, setPersLabel, setPostOut } from '../state/store'
+import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
 import { CountRows } from './CountRows'
@@ -77,9 +77,15 @@ function PersLabel({ p, editable }: { p: Person; editable: boolean }) {
 
 export function Matrix() {
   useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, focusDate, focusSeq } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq } = getState()
   const dates = period.days.map(d => d.date)
   const verdicts = evaluatePeriod(people, grid, states, requirements, dates)
+  // Whether the LAST event row still carries any text or band — the remove
+  // control is disabled while it does, so nothing is dropped unseen (owner,
+  // 18 Aug 26; the store refuses it too).
+  const lastEventRowUsed =
+    period.days.some(d => (d.events[eventRows - 1] ?? '') !== '') ||
+    period.bands.some(b => b.line === eventRows - 1)
 
   // The colour a whole day column takes from its events: light green for an
   // off day (a PH), orange for a no-leave day. Computed once per day and read
@@ -100,6 +106,13 @@ export function Matrix() {
   // controls on screen.
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string } | null>(null)
   const close = () => setOpen(null)
+  // Whether the open cell is a POSTED-OUT day (admin tapped a greyed cell to
+  // undo it, owner 18 Aug 26). A day before the person joined is blank, not a
+  // post-out, so it is excluded — there is nothing to undo there.
+  const openPerson = open ? people.find(p => p.id === open.id) : undefined
+  const openPostedOut =
+    !!open && !!openPerson && !inSquadron(openPerson, open.date) &&
+    !(openPerson.from !== null && open.date < openPerson.from)
   // ONE selected figure, shared by every row, tracked by its stable ID so a
   // reorder keeps the SAME figure on screen rather than whatever now sits in
   // its old slot. Giving each row its own would let them desync — row 1
@@ -118,7 +131,7 @@ export function Matrix() {
   const [editingWho, setEditing] = useState<string | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
-  const [eventEdit, setEventEdit] = useState<{ line: 0 | 1; date: string } | null>(null)
+  const [eventEdit, setEventEdit] = useState<{ line: number; date: string } | null>(null)
   // Edit-mode roster rearranging (owner, 18 Aug 26). Admin-only view state: it
   // turns the drag handles on, so an admin reading the grid does not nudge a
   // row by accident. Auto-sort stays available without it.
@@ -345,6 +358,35 @@ export function Matrix() {
               >
                 ⇅ Auto-sort
               </button>
+              {/* Add / remove EVENT rows — only in Rearrange (edit) mode, so
+                  the normal view stays clean (owner, 18 Aug 26: "in edit mode
+                  for admin I should have the option to add more event rows").
+                  Remove is disabled while the last row still carries anything,
+                  so nothing is dropped unseen (the store refuses it anyway). */}
+              {arranging && (
+                <>
+                  <button
+                    className="rtbtn"
+                    data-testid="event-add"
+                    disabled={eventRows >= MAX_EVENT_ROWS}
+                    title={eventRows >= MAX_EVENT_ROWS ? `At most ${MAX_EVENT_ROWS} event rows` : 'Add another event row'}
+                    onClick={() => addEventRow()}
+                  >
+                    ＋ Event row
+                  </button>
+                  {eventRows > DEFAULT_EVENT_ROWS && (
+                    <button
+                      className="rtbtn"
+                      data-testid="event-remove"
+                      disabled={lastEventRowUsed}
+                      title={lastEventRowUsed ? 'Clear the last event row before removing it' : 'Remove the last event row'}
+                      onClick={() => removeEventRow()}
+                    >
+                      － Event row
+                    </button>
+                  )}
+                </>
+              )}
             </div>
           )}
           {/* One button per month the war covers, so the strip fits a
@@ -453,6 +495,7 @@ export function Matrix() {
               days={period.days}
               bands={period.bands}
               defs={eventDefs}
+              rows={eventRows}
               editable={role === 'admin'}
               onEdit={(line, date) => setEventEdit({ line, date })}
             />
@@ -664,9 +707,14 @@ export function Matrix() {
                       here && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
                     ].filter(Boolean).join(' ')
                     // A cell outside the person's time in the squadron is
-                    // never actionable: bidding leave for a man who has been
-                    // posted out is a data-entry accident, not a bid.
-                    const actionable = here && openable(p.id, d.date)
+                    // never actionable FOR A BID: bidding leave for a man who
+                    // has been posted out is a data-entry accident, not a bid.
+                    // But an ADMIN can still tap a posted-out day to UNDO the
+                    // post-out (owner, 18 Aug 26 — "tap a struck day to undo");
+                    // `notYetArrived` is excluded — a day before someone joins
+                    // is blank, not a post-out, and nothing there to undo.
+                    const actionable =
+                      (here && openable(p.id, d.date)) || (role === 'admin' && !here && !notYetArrived)
                     return (
                       <td
                         key={d.date}
@@ -709,6 +757,17 @@ export function Matrix() {
           callsign={open.callsign}
           date={open.date}
           code={grid[open.id]?.[open.date] ?? ''}
+          onClose={close}
+        />
+      )}
+      {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
+          and it short-circuits every bid/decision sheet below (owner, 18 Aug
+          26). */}
+      {open && openPostedOut && role === 'admin' && (
+        <PostOutSheet
+          callsign={open.callsign}
+          date={open.date}
+          onUndo={() => { setPostOut(open.id, null); close() }}
           onClose={close}
         />
       )}
@@ -758,7 +817,7 @@ export function Matrix() {
           onClose={() => setEventEdit(null)}
         />
       )}
-      {open && !raptorOwns(states, open.id, open.date)
+      {open && !openPostedOut && !raptorOwns(states, open.id, open.date)
         && canEditCell(period, role, open.date)
         && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
         <BidPicker
@@ -768,6 +827,10 @@ export function Matrix() {
           date={open.date}
           current={grid[open.id]?.[open.date] ?? ''}
           dates={dates}
+          /* Admin-only: post this person out from this day (owner, 18 Aug 26).
+             The store sets their posting-out date; the greyed boxes and the
+             manpower exclusion follow from it. */
+          onPostOut={role === 'admin' ? () => { setPostOut(open.id, open.date); close() } : undefined}
           /* Medical is assigned, not bid: only management marks it here.
              Members file theirs on Raptor's Inputs page, which is also the
              normal path once bidding has closed. */

@@ -17,7 +17,7 @@
 // and the type library — rather than typing inline. A member still only reads.
 
 import type { ReactNode } from 'react'
-import { bandAt, classifyEvent, type DayInfo, type EventBand, type EventDef } from '../engine'
+import { bandAt, classifyEvent, dayEvent, type DayInfo, type EventBand, type EventDef } from '../engine'
 
 /** How many characters a day column widens to before the text wraps. In `ch`,
  *  the width of a character in the cell's own font — the unit the row height is
@@ -28,19 +28,23 @@ export function EventRows({
   days,
   bands,
   defs,
+  rows,
   editable,
   onEdit,
 }: {
   days: DayInfo[]
   bands: EventBand[]
   defs: EventDef[]
+  /** How many event rows to draw — two by default, more once an admin adds
+   *  them (store's `eventRows`, owner 18 Aug 26). */
+  rows: number
   editable: boolean
   /** Open the Event sheet for one line + day. Only wired when `editable`. */
-  onEdit: (line: 0 | 1, date: string) => void
+  onEdit: (line: number, date: string) => void
 }) {
   return (
     <tbody className="events">
-      {([0, 1] as const).map(line => {
+      {Array.from({ length: rows }, (_, line) => {
         const cells: ReactNode[] = []
         for (let i = 0; i < days.length; i++) {
           const d = days[i]!
@@ -73,7 +77,7 @@ export function EventRows({
           // then the CSS wraps it — the owner's "widen then wrap" rule. An
           // empty admin cell shows a faint add hint so there is something to
           // tap; a member's empty cell is blank.
-          const text = d.events[line]
+          const text = dayEvent(d, line)
           const work = classifyEvent(defs, text) === 'work'
           cells.push(
             <td

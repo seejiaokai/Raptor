@@ -36,6 +36,7 @@ export function BidPicker({
   medical,
   onWrote,
   wouldLeave,
+  onPostOut,
   onClose,
 }: {
   callsign: string
@@ -58,6 +59,10 @@ export function BidPicker({
    *  spends nothing. Supplied by the matrix, where the wars, openings and
    *  ledger already are. */
   wouldLeave?: (code: string, days: number) => { counter: CounterName; after: number } | null
+  /** Admin-only: post this person OUT from this day on (owner, 18 Aug 26).
+   *  Present only for an admin; the matrix wires it to the store and closes
+   *  the sheet. A member never sees the control. */
+  onPostOut?: () => void
   onClose: () => void
 }) {
   // Deliberately not seeded from `current`: the portion resets to a whole
@@ -232,6 +237,18 @@ export function BidPicker({
           ))}
         </div>
       )}
+
+      {/* Post the person OUT from this day on (owner, 18 Aug 26). A management
+          action, not a bid — it takes them off the manpower from here and greys
+          their boxes; it is undone by tapping a greyed day. Set apart below the
+          bid controls so it cannot be hit by reflex. */}
+      {onPostOut && (
+        <div className="bidsheet-row postout">
+          <button className="dchip po" data-testid="bid-postout" onClick={onPostOut}>
+            Post out from here (PO)
+          </button>
+        </div>
+      )}
     </Sheet>
   )
 }
@@ -403,6 +420,44 @@ export function RaptorSheet({
           Entered on Raptor’s input tab, so it was approved there — change it in Raptor and it
           syncs back here.
         </span>
+      </div>
+    </Sheet>
+  )
+}
+
+/**
+ * Undo a post-out (owner, 18 Aug 26). Opens when an admin taps a greyed,
+ * posted-out cell — the person is off the manpower from here, and this is the
+ * one control that puts them back. A member never reaches it: a posted-out
+ * cell is inert for them, and the matrix only makes it tappable for an admin.
+ */
+export function PostOutSheet({
+  callsign,
+  date,
+  onUndo,
+  onClose,
+}: {
+  callsign: string
+  date: string
+  onUndo: () => void
+  onClose: () => void
+}) {
+  return (
+    <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>
+      <div className="bidsheet-hd">
+        <span className="who">{callsign}</span>
+        <span className="dt">{date}</span>
+        <button className="x" data-testid="postout-cancel" onClick={onClose} aria-label="Close">
+          ✕
+        </button>
+      </div>
+      <div className="bidsheet-row">
+        <span className="note">Posted out — off the manpower from here on.</span>
+      </div>
+      <div className="bidsheet-row postout">
+        <button className="dchip po" data-testid="postout-undo" onClick={onUndo}>
+          Undo post out (PO)
+        </button>
       </div>
     </Sheet>
   )
