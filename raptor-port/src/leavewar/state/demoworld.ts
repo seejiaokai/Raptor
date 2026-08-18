@@ -21,7 +21,7 @@
 import { INPUTS, inpId } from '../../engine/inputs'
 import { seedPeople } from '../engine'
 import { projectPeople } from './raptorRoster'
-import { remapPersonKeys, setPeople } from './store'
+import { getState, remapPersonKeys, setPeople } from './store'
 
 /**
  * Seed person -> Raptor person. HAND-PICKED so that every mapped Raptor
@@ -49,7 +49,9 @@ export const DEMO_MAP: Record<string, string> = {
   cross: 'rocky',       // wso / ops
   decal: 'casper',      // pilot / ops
   skin: 'divot',        // wso / ops
-  slammed: 'vinci',     // pilot / ops
+  slammed: 'pike',      // pilot / ops — was vinci, moved off him when SANS
+                        // left the default roster (18 Aug 26): a demo cell
+                        // keyed onto a hidden SANS body would render nowhere
   cage: 'spaceman',     // wso / ops
   reset: 'harpoon',     // pilot / instructor
 }
@@ -74,7 +76,8 @@ const DEMO_RAPTOR_INPUTS: any[] = [
  * lwInitStore and before the sync wires run.
  */
 export function installDemoWorld(hadStoredWars: boolean): void {
-  const people = projectPeople()
+  /* honour a stored showSans at boot — the store loaded before this runs */
+  const people = projectPeople(getState().showSans)
 
   if (!hadStoredWars) {
     /* The demo overlay: sxo and the posting-out window come from the SEED

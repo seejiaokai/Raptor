@@ -138,6 +138,16 @@ interface State {
    *  stored length reads '' (`dayEvent`). */
   eventRows: number
 
+  /** Whether SANS aircrew ride the Leave War roster (owner, 18 Aug 26 — "we
+   *  will not show the SANS in the leave war however there is a function to
+   *  still enable this"). OFF by default: SANS offer availability rather than
+   *  being planned as squadron manning, so they neither clutter the grid nor
+   *  count in its manning rows. The switch is squadron-wide config (persisted
+   *  `showsans`), ADMIN-gated at the write path like `eventRows`, and takes
+   *  effect through the roster PROJECTION — sync.ts's reprojectRoster passes
+   *  it to projectPeople on every notify, so flipping it re-projects at once. */
+  showSans: boolean
+
   /** The day the matrix has been asked to bring into view, or null. */
   focusDate: string | null
   /** Bumped on every request, including a repeat of the same date. The matrix
@@ -197,6 +207,7 @@ function blank(): State {
     manningOrder: [],
     manningHidden: [],
     eventRows: DEFAULT_EVENT_ROWS,
+    showSans: false,
     // The squadron is the common case, so the app opens as one. An admin
     // says so deliberately rather than arriving with the locks already off.
     role: 'member',
@@ -518,6 +529,7 @@ export function initStore(b?: StorageBackend): void {
   const eventRows = readStored('eventrows', x =>
     typeof x === 'number' && Number.isInteger(x) && x >= DEFAULT_EVENT_ROWS && x <= MAX_EVENT_ROWS ? x : null,
   ) ?? DEFAULT_EVENT_ROWS
+  const showSans = readStored('showsans', x => (typeof x === 'boolean' ? x : null)) ?? false
 
   /* The role is neither read nor persisted since the Raptor merge: it is
      derived from the Raptor login on every session change (resetSession in
@@ -530,7 +542,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, eventRows })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, eventRows, showSans })
 
   version = 0
   listeners.clear()
@@ -594,6 +606,7 @@ function persist(): void {
   backend.write('manningorder', JSON.stringify(state.manningOrder))
   backend.write('manninghidden', JSON.stringify(state.manningHidden))
   backend.write('eventrows', JSON.stringify(state.eventRows))
+  backend.write('showsans', JSON.stringify(state.showSans))
   /* `people` deliberately absent: the roster is a projection of Raptor's
      PEOPLE (see initStore) — persisting it would store a copy that can only
      disagree with the projection the next boot installs. The roster ORDER and
@@ -1111,6 +1124,24 @@ export function addEventRow(): boolean {
   if (state.role !== 'admin') return false
   if (state.eventRows >= MAX_EVENT_ROWS) return false
   state = withCurrent({ ...state, eventRows: state.eventRows + 1 })
+  persist()
+  notify()
+  return true
+}
+
+/**
+ * THE SANS ENABLE FUNCTION (owner, 18 Aug 26 — "we will not show the SANS in
+ * the leave war however there is a function to still enable this"). SANS
+ * aircrew are excluded from the roster PROJECTION by default; flipping this on
+ * asks the next projection to include them. The switch itself changes no
+ * roster — sync.ts's reprojectRoster reads it and re-projects on the notify
+ * this write fires, so the rows appear (or leave) at once. ADMIN-gated like
+ * every squadron-wide config; surfaced in the matrix's Rearrange toolbar.
+ */
+export function setShowSans(on: boolean): boolean {
+  if (state.role !== 'admin') return false
+  if (state.showSans === !!on) return true
+  state = withCurrent({ ...state, showSans: !!on })
   persist()
   notify()
   return true

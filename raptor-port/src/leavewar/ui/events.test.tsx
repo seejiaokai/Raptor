@@ -53,6 +53,28 @@ describe('the two event lines', () => {
     removeEventRow()
   })
 
+  /* The SANS enable switch (owner, 18 Aug 26) rides the same toolbar under the
+     same gate: Rearrange mode, admin only. The roster effect itself is pinned
+     in roster.test.ts — this pins where the control lives and that a click
+     lands on the store. */
+  it('the Show SANS switch shows in Rearrange mode for an admin only, and flips the store', () => {
+    const { rerender, unmount } = render(<Matrix />)
+    expect(screen.queryByTestId('sans-toggle'), 'a member never sees it').toBeNull()
+    unmount()
+    setRole('admin')
+    const r2 = render(<Matrix />)
+    expect(screen.queryByTestId('sans-toggle'), 'not in the normal view').toBeNull()
+    fireEvent.click(screen.getByTestId('roster-arrange'))
+    r2.rerender(<Matrix />)
+    const btn = screen.getByTestId('sans-toggle')
+    expect(btn.textContent).toBe('Show SANS')
+    expect(getState().showSans).toBe(false)
+    fireEvent.click(btn)
+    r2.rerender(<Matrix />)
+    expect(getState().showSans).toBe(true)
+    expect(screen.getByTestId('sans-toggle').textContent).toBe('✓ SANS shown')
+  })
+
   // The seed marks public holidays on line 0, so the row is not empty on
   // first run and the surface is visible without anyone typing.
   it('shows what the seed already put there', () => {
