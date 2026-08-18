@@ -48,8 +48,17 @@
      fits above the bottom margin on a phone. Bounded and scrolled INSIDE
      rather than allowed to grow off the top of the screen, where the header
      naming whose leave it is would be the first thing lost. The geometry
-     gate pins this: every sheet must sit wholly inside the viewport. */
-  max-height: calc(100vh - 28px);
+     gate pins this: every sheet must sit wholly inside the viewport.
+     `dvh`, NOT `vh` (owner, 18 Aug 26 — "I always can't scroll past the top
+     to the cross button"): on iOS Safari `100vh` is the LARGE viewport that
+     counts the space behind the URL bar, so `100vh - 28px` still pushed the
+     sheet's top — and its sticky ✕ — up behind the toolbar, out of reach and
+     with no way to scroll to it. `dvh` is the VISIBLE viewport, so the ✕ stays
+     on screen. The extra margin (72, not 28) leaves a strip of scrim above the
+     tallest sheet, which is the owner's other ask — somewhere to tap OUTSIDE
+     to close. The plain-vh line is the fallback for anything without dvh. */
+  max-height: calc(100vh - 72px);
+  max-height: calc(100dvh - 72px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   /* The other half of the one-scroll rule: when this list tops or bottoms

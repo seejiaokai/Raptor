@@ -402,6 +402,20 @@ export function Matrix() {
                         <span key={f.id} className={`cdot${i === shownIx ? ' on' : ''}`} />
                       ))}
                     </span>
+                    {/* A tap hint (owner, 18 Aug 26 — "put a click icon near
+                        this counter box to tell the user on mobile to click to
+                        change the view"). The whole header has been the control
+                        since the arrows were pulled, but on a phone nothing
+                        SAID so; this little finger does. aria-hidden — the
+                        button's own label already tells a screen reader it is
+                        tappable. */}
+                    <span className="ctap" aria-hidden="true">
+                      <svg viewBox="0 0 20 20" width="12" height="12" fill="none"
+                        stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M7.5 9V4.4a1.5 1.5 0 0 1 3 0V8.5" />
+                        <path d="M10.5 8.6V7.2a1.4 1.4 0 0 1 2.8 0v3.9c0 2.7-1.8 4.4-4.3 4.4-1.7 0-3-.8-3.8-2.2L4 11.1a1.25 1.25 0 0 1 2.1-1.3l1 1.4" />
+                      </svg>
+                    </span>
                   </button>
                 </th>
                 {period.days.map(d => {

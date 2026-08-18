@@ -196,6 +196,19 @@
   background: var(--accent);
 }
 
+/* The tap hint under the dots (owner, 18 Aug 26). A small finger that says the
+   whole box is a control — the affordance the pulled arrows used to carry, for
+   a phone where hover cannot hint it. Accent-tinted but muted so it reads as a
+   hint, not a live button of its own; the button around it is the real target. */
+.mx thead th.bal .ctap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  color: var(--accent);
+  opacity: .78;
+}
+
 /* The counts' own balance cell is deliberately blank — a rule has no leave —
    but it still needs the frozen background, or day cells scroll through it. */
 .mx .counts td.bal {
