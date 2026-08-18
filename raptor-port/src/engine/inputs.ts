@@ -461,6 +461,20 @@ export function isoLabel(iso:any){
   if(!isISO(iso))return '';
   return `${+String(iso).slice(8,10)} ${MONTHS[+String(iso).slice(5,7)-1]||''}`.trim();
 }
+/* The date tail the Inputs page and the Leave War sync both append to a
+   personal input's remarks, so a reader sees how long it runs without anyone
+   typing it and nobody has to repeat the type — the type column already says
+   LL/OL (owner, Aug 26; extended to synced leave and single days 18 Aug 26).
+   A span reads "till 17 Jul" (its LAST day); a single day reads "on 15 Jul"
+   when `single` is 'on', or nothing when 'none'. The Inputs CALENDAR passes
+   'none': its picker fires on the first click of a two-click range, so an
+   "on 13 Jul" would flash before the end day is even chosen. A SYNCED leave,
+   whose span is already settled when it mints, passes 'on' so a one-day leave
+   still reads as a proper remark. Dates are ISO 'yyyy-mm-dd'. */
+export function remarksDateTail(startISO:any, endISO:any, single:'on'|'none'){
+  if(!endISO||endISO===startISO)return single==='on'?`on ${isoLabel(startISO)}`:'';
+  return `till ${isoLabel(endISO)}`;
+}
 /* what the mark says when you hover it — plain enough for the squadron */
 export function lateNote(inp:any){
   if(!isLateInput(inp))return '';

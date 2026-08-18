@@ -22,7 +22,7 @@
 // reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
 // store write notifies subscribers synchronously, and this module is one.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave, remarksDateTail } from '../engine/inputs'
 import { ME } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
@@ -190,7 +190,12 @@ const runSig = (r: Run) => `${r.person}|${r.type}|${r.portion}|${r.start}|${r.en
    row. */
 const portionOfRow = (row: any): Portion => (isDownchit(row.type) ? medRowPortion(row) : rowPortion(row))
 
-function rowSig(row: any): string | null {
+/* Exported so the Inputs-page editor can ask "does this edit change the leave
+   itself, or only its remarks?" — a remarks-only edit leaves this signature
+   unchanged, and commitInputEdit keeps such a row synced instead of retracting
+   it (owner, 18 Aug 26: refining an OL's remarks must not seize the leave from
+   Leave War, which does not show remarks anyway). */
+export function rowSig(row: any): string | null {
   const start = labelToISO(row.date)
   if (!start) return null
   const end = row.endDate ? labelToISO(row.endDate) ?? start : start
@@ -236,7 +241,15 @@ export function runOutbound(): void {
              'ATT B' input, the type the Inputs page and INPUT_META know. */
           type: INPUT_FOR_LW[r.type] ?? r.type,
           date: isoToLabel(r.start),
-          remarks: 'Leave War',
+          /* The remarks read "till 17 Jul" for a span, "on 15 Jul" for a
+             single day — the same tail the Inputs-page calendar writes, so a
+             synced leave says how long it runs wherever remarks are read, and
+             the type column already carries LL/OL so nothing repeats it
+             (owner, 18 Aug 26). A member then refines this on the Inputs page
+             — "on leave in Bali till 17 Jul" — and reconciliation preserves it:
+             remarks are not in the signature, so an unchanged leave is matched,
+             not re-minted. */
+          remarks: remarksDateTail(r.start, r.end, 'on'),
           mod: 'now',
           /* The ownership tag: which war this row is derived from. Inbound
              skips lw-tagged rows (the loop-breaker), and reconciliation

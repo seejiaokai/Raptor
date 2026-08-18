@@ -23,7 +23,7 @@ import { writeInputsBatch, notify } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
-import { retractLwRow } from '../leavewar/sync'
+import { retractLwRow, rowSig } from '../leavewar/sync'
 import { canEditSched } from '../state/auth'
 import { INPEDIT, setInpEdit } from './pops'
 import { useVersion } from './useStore'
@@ -246,16 +246,31 @@ export function commitInputEdit(r: any, draft: any) {
     const dup = sansOverlapRefusal(draft.person, date, endDate, r)
     if (dup) { HOOKS.toast(dup, 'warn'); return false }
   }
+  /* Derived once, here, because the Leave-War check below reads the input's
+     PORTION and the label write near the end reads the same value — deriving
+     it twice is how the two would drift (see the note at that write). */
+  const half = (!draft.allday && hasHalf(draft.type) && s != null && e != null) ? halfOf(s as number, e as number) : ''
   writeInputsBatch(() => {
-    /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing it
-       here changes the leave in the war too. The old grant is WITHDRAWN
-       first, while the row still says what the war approved, and the lw tag
-       is dropped — the edited row is an ordinary input from here on, which
-       inbound lands as Raptor-owned cells exactly like a leave filed on this
-       page ("Raptor owns what Raptor last wrote"). Leaving either half out
-       resurrects the snap-back: keep the cells and outbound re-mints the old
-       row; keep the tag and inbound skips the edited one. */
-    if (r.lw) { retractLwRow(r); delete r.lw }
+    /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the
+       LEAVE ITSELF — its person, type, dates or which half — changes the war
+       too. The old grant is WITHDRAWN first, while the row still says what the
+       war approved, and the lw tag is dropped — the edited row is an ordinary
+       input from here on, which inbound lands as Raptor-owned cells exactly
+       like a leave filed on this page ("Raptor owns what Raptor last wrote").
+       Leaving either half out resurrects the snap-back: keep the cells and
+       outbound re-mints the old row; keep the tag and inbound skips the edited
+       one.
+       But editing ONLY THE REMARKS leaves the leave untouched, and that is the
+       common case now (owner, 18 Aug 26 — a member adding where they are going
+       for an OL). The leave's sync signature is unchanged, so the row STAYS
+       lw-tagged: Leave War keeps the leave (it does not show remarks anyway),
+       and the next reconcile MATCHES this row rather than re-minting it, so the
+       refined remark survives. rowSig folds the type vocabulary and the portion
+       exactly as reconciliation does, so "did the leave change?" here cannot
+       disagree with what a re-sync would decide. */
+    const leaveSame = r.lw && rowSig(r) != null &&
+      rowSig(r) === rowSig({ person: draft.person, type: draft.type, date, endDate, allday: draft.allday, half, s, e })
+    if (r.lw && !leaveSame) { retractLwRow(r); delete r.lw }
     /* An ACCEPTED input is linked to the row it created by `src`, a content
        key of person|date|type|s. Editing any of those silently broke the
        link: the row stayed on the programme, undo could no longer find it,
@@ -297,8 +312,8 @@ export function commitInputEdit(r: any, draft: any) {
        label cannot drift from the hours it claims to describe.
        hasHalf too, not just the hours: a type that has no halves (CSE) must
        drop the label even when the times happen to land on one, or it would be
-       stranded on a record with no control left to change it. */
-    const half = (!draft.allday && hasHalf(draft.type) && s != null && e != null) ? halfOf(s as number, e as number) : ''
+       stranded on a record with no control left to change it. `half` is derived
+       once above the write (the Leave-War check needs it too). */
     if (half) r.half = half; else delete r.half
     if (endDate) r.endDate = endDate; else delete r.endDate
     if (wasAcc) {

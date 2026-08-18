@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, remarksDateTail } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -21,8 +21,6 @@ import { useVersion } from './useStore'
 import { exportCSV } from './export'
 import { RangeCal } from './RangeCal'
 
-const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
 /* The remarks tail (owner, Aug 26). Closing a range on the calendar writes its
    last day into Remarks as `till 15 Jul`, so a multi-day input says how long it
    runs wherever remarks are read — nobody has to type it, and nobody forgets.
@@ -33,14 +31,18 @@ const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 
    end moves — the whole point of the ask. It is matched anchored at the END
    because that is where the calendar puts it; text typed AFTER it is prose the
    calendar has no business rewriting, so it is left alone. */
-const TILL = /\s*till\s+\d{1,2}\s+[A-Za-z]{3}\s*$/i
+/* Also strips an `on 15 Jul` tail, not just `till`: a Leave-War leave that
+   syncs in as a single day carries that form, and re-picking its range on the
+   calendar must rewrite the tail rather than strand it. */
+const TILL = /\s*(?:till|on)\s+\d{1,2}\s+[A-Za-z]{3}\s*$/i
 const withTill = (rm: any, s: string, e: string) => {
   const head = String(rm || '').replace(TILL, '').trimEnd()
-  /* a range that ends where it starts is one day: add() drops endDate for it,
-     so a tail there would name a span the input does not have */
-  if (!e || e === s) return head
-  const [, m, da] = e.split('-')
-  return (head ? head + ' ' : '') + 'till ' + (+da) + ' ' + MON[+m]
+  /* 'none' for the picker: a range that ends where it starts is one day (add()
+     drops endDate for it), and the picker fires mid-selection, so no tail is
+     written until an end day closes a real span — see remarksDateTail. */
+  const tail = remarksDateTail(s, e, 'none')
+  if (!tail) return head
+  return (head ? head + ' ' : '') + tail
 }
 
 /* ---- the table's own view state: which window, and sorted how ------------
