@@ -77,11 +77,17 @@ export function classifyEvent(defs: EventDef[], text: string): EventKind | null 
 export function columnKindFor(defs: EventDef[], day: DayInfo, bands: EventBand[]): EventKind | null {
   // Every event row this day carries, not just the first two — an admin can
   // add rows now (18 Aug 26), and a tag on any of them tints the column.
-  const texts = [...day.events]
-  for (const b of bands) if (b.from <= day.date && day.date <= b.to) texts.push(b.text)
+  // Each event reads its own INSTANCE tag first (owner, 18 Aug 26 — a tag
+  // saved on the event itself, not minted into the library), falling back to
+  // the library word match; an untagged non-library word stays colourless.
+  const kinds: (EventKind | null)[] = day.events.map(
+    (t, i) => (t ? (day.eventKinds?.[i] ?? classifyEvent(defs, t)) : null),
+  )
+  for (const b of bands) {
+    if (b.from <= day.date && day.date <= b.to) kinds.push(b.kind ?? classifyEvent(defs, b.text))
+  }
   let sawNolv = false
-  for (const t of texts) {
-    const k = classifyEvent(defs, t)
+  for (const k of kinds) {
     if (k === 'off') return 'off'
     if (k === 'nolv') sawNolv = true
   }

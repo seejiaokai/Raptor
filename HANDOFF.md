@@ -87,13 +87,65 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
-- **LEAVE WAR EVENTS grew into a tagged, ranged surface (17 Aug 26).** The two
+- **LEAVE WAR — THE 18 AUG EVENING BATCH (owner's screenshot arrows + five
+  asks).** Six changes, all in `src/leavewar/`:
+  (1) **Row order is counts → month buttons → callsign/dates header → event
+  rows → roster.** The header row is a `tbody.mxhead`, NOT a thead — CSS
+  paints a thead at the top of the table wherever it sits in the DOM, so a
+  mid-table header can never be one (every `.mx thead th` selector in
+  matrix.css became `.mx .mxhead th`, same relative cascade, +1 class each).
+  The month strip is a grid row (`tbody.mstripe`): its buttons live in an
+  ABSOLUTELY-positioned block inside the sticky two-column cell (`.mstrow` —
+  in-flow width would become the frozen columns' minimum and was measured
+  inflating the callsign column to 245px), with the row's height fixed on the
+  cell (44px desktop / 72px phone).
+  (2) **The phone freezes the header on scroll (≤700px)** — NOT by re-adding
+  an inner vertical scroller (the 10 Aug "ONE vertical scroll" ruling stands,
+  see the `.mx-wrap` comment): Matrix renders a fixed MIRROR of the bracket +
+  header rows (`.mxfixed`, z 55, testid `sticky-head`) once the real rows
+  pass under the sticky `.topbar` (the SHELL's — Leave War's chrome has a
+  second `.topbar`; querySelector's first is the right one), and unmounts it
+  on the way back. The mirror is its own hidden-scrollbar horizontal
+  scroller kept in lockstep with `.mx-wrap` (two handlers, converges because
+  an unchanged scrollLeft fires no event), which is what lets the same
+  `.who`/`.bal` sticky-left CSS freeze its lead columns; its column widths
+  are MEASURED off the live header at activation and pinned via a
+  fixed-layout colgroup (the events row is what widens a column). Never in
+  jsdom (no matchMedia, no layout — guarded); e2e-pinned in leavewar.spec.ts
+  (freeze/thaw, topbar anchor, horizontal lockstep, column alignment).
+  (3) **A month BRACKET row** (`tr.mbrak` in the same `.mxhead` tbody): one
+  open-topped accent box per month spanning exactly its days, label sticky
+  just clear of the frozen columns. Derived from the loaded days, so a
+  partial month brackets what is on screen.
+  (4) **Phone zoom** (`lw-zoom-in`/`-out`, in the month-strip cell, hidden
+  >700px): steps `zoom` on the grid table through 0.6–1.4. CSS `zoom`, not
+  transform, so layout/scroll/sticky offsets scale together; the mirror
+  wears the same zoom and divides its measured widths back out (they are
+  visual px). Zoom is a dep of the mirror effect — it changes every width.
+  (5) **A blocked run prints its reason on event line 0** (owner: "it should
+  show exercise on the event") — consecutive blocked days with nothing real
+  on line 0 merge into one amber `.ev.band.blk` cell reading
+  `d.blockedReason` ("Exercise week"), the hover-only title made visible for
+  phones. A typed word or band breaks the run around itself; admin tap opens
+  the sheet on the run's first day.
+  (6) **Per-event tags** — see the events bullet below.
+  Plus a latent-bug fix riding along: `readWar`'s band reader dropped any
+  band on a line other than 0/1 — stale since variable event rows; it now
+  accepts any integer line under `MAX_EVENT_ROWS`.
+- **LEAVE WAR EVENTS grew into a tagged, ranged surface (17 Aug 26; tags
+  moved ONTO the event 18 Aug 26).** The two
   event lines are now editable through the **Event sheet** (tap an event as
   admin — inline textareas are gone), which carries: open text; a **range**
   (the same RangePicker the bid window uses); **merge vs repeat** for a range
   (one spanning bar, stored as an `EventBand` on the period, or the word in
   each day); a **tag** (off day / no-leave / work); and, behind an "Edit types"
-  button, the **event-type library**. Tags surface ONLY as colour — the word
+  button, the **event-type library**. **The tag rides the EVENT since 18 Aug
+  26 (owner: "I don't want u to save it as a type"):** tapping a tag no longer
+  mints the typed word into the library — it is sheet state saved with the
+  event (`DayInfo.eventKinds[line]` / `EventBand.kind`, both read leniently by
+  `readWar`; instance tag wins over the library word match everywhere —
+  `columnKindFor`, the red work word, wire 4's holiday answer), and the
+  library changes only inside Edit types. Tags surface ONLY as colour — the word
   is never annotated on screen — painted by `Matrix`: an off day (PH) tints its
   whole column light green, a no-leave day orange, a work word reads red (the
   column left alone). **Colours only for now (owner's call this pass):** the

@@ -87,7 +87,10 @@ describe('a range', () => {
 })
 
 describe('tagging a word', () => {
-  it('shows the tag of a known word and tags a new one', () => {
+  /* Per-event tags (owner, 18 Aug 26 — "I don't want u to save it as a
+     type"): tapping a tag colours THIS event and never mints the word into
+     the library; the library changes only inside Edit types. */
+  it('shows the tag of a known word, and tags a new one WITHOUT saving a type', () => {
     openEvent(0, '2026-01-05')
     fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'PH' } })
     expect(screen.getByTestId('event-tag-current').textContent).toBe('Off day')
@@ -95,8 +98,43 @@ describe('tagging a word', () => {
     fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Standby' } })
     expect(screen.getByTestId('event-tag-current').textContent).toBe('untagged')
     fireEvent.click(screen.getByTestId('event-tag-work'))
-    expect(getState().eventDefs.some(d => d.name === 'Standby' && d.kind === 'work')).toBe(true)
     expect(screen.getByTestId('event-tag-current').textContent).toBe('Work')
+    // the library is untouched — the tag belongs to the event alone
+    expect(getState().eventDefs.some(d => d.name === 'Standby')).toBe(false)
+  })
+
+  it('saves the tag on the event, and it survives reopening', () => {
+    openEvent(0, '2026-01-05')
+    fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Standby' } })
+    fireEvent.click(screen.getByTestId('event-tag-nolv'))
+    fireEvent.click(screen.getByTestId('event-apply'))
+    const day = getState().period.days.find(d => d.date === '2026-01-05')!
+    expect(day.events[0]).toBe('Standby')
+    expect(day.eventKinds?.[0]).toBe('nolv')
+
+    // reopen on the SAME rendered grid (a second render would duplicate it)
+    fireEvent.click(screen.getByTestId('event-0-2026-01-05'))
+    expect(screen.getByTestId('event-tag-current').textContent).toBe('No leave')
+  })
+
+  it('tapping the chosen tag again clears it back to untagged', () => {
+    openEvent(0, '2026-01-05')
+    fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Standby' } })
+    fireEvent.click(screen.getByTestId('event-tag-work'))
+    fireEvent.click(screen.getByTestId('event-tag-work'))
+    expect(screen.getByTestId('event-tag-current').textContent).toBe('untagged')
+  })
+
+  it('a merged band carries its tag too', () => {
+    openEvent(1, '2026-01-06')
+    fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Det block' } })
+    fireEvent.click(screen.getByTestId('event-tag-off'))
+    fireEvent.click(screen.getByTestId('event-scope-range'))
+    fireEvent.click(screen.getByTestId('event-mode-merge'))
+    fireEvent.click(screen.getByTestId('event-apply'))
+    const band = getState().period.bands.find(b => b.text === 'Det block')!
+    expect(band.kind).toBe('off')
+    expect(getState().eventDefs.some(d => d.name === 'Det block')).toBe(false)
   })
 
   it('fills the field from a quick-pick chip', () => {

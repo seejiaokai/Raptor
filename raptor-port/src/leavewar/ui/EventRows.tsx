@@ -17,7 +17,7 @@
 // and the type library — rather than typing inline. A member still only reads.
 
 import type { ReactNode } from 'react'
-import { bandAt, classifyEvent, dayEvent, type DayInfo, type EventBand, type EventDef } from '../engine'
+import { bandAt, classifyEvent, dayEvent, dayEventKind, type DayInfo, type EventBand, type EventDef } from '../engine'
 
 /** How many characters a day column widens to before the text wraps. In `ch`,
  *  the width of a character in the cell's own font — the unit the row height is
@@ -56,7 +56,9 @@ export function EventRows({
             if (band.from === d.date) {
               let span = 1
               while (i + span < days.length && days[i + span]!.date <= band.to) span++
-              const work = classifyEvent(defs, band.text) === 'work'
+              // The band's own tag first (per-event tags, 18 Aug 26), then
+              // the library word match — same precedence the column tint uses.
+              const work = (band.kind ?? classifyEvent(defs, band.text)) === 'work'
               cells.push(
                 <td
                   key={d.date}
@@ -78,7 +80,40 @@ export function EventRows({
           // empty admin cell shows a faint add hint so there is something to
           // tap; a member's empty cell is blank.
           const text = dayEvent(d, line)
-          const work = classifyEvent(defs, text) === 'work'
+
+          // A BLOCKED day's reason, printed on the first event line (owner,
+          // 18 Aug 26 — "it should show exercise on the event"). The amber
+          // header said leave was discouraged but nothing on a phone said WHY
+          // (the reason lived in a hover title, and phones have no hover). A
+          // run of consecutive blocked days with nothing real on this line
+          // merges into one spanning cell, the same shape a merged band has,
+          // so "Exercise week" reads once across the week rather than six
+          // times. A day that gains a real event or band breaks the run —
+          // the typed word wins the cell, and the header still carries the
+          // amber. Tapping it (admin) opens the sheet on the run's first day.
+          if (line === 0 && !text && d.blocked && d.blockedReason) {
+            let span = 1
+            while (i + span < days.length) {
+              const n = days[i + span]!
+              if (!n.blocked || n.blockedReason !== d.blockedReason) break
+              if (dayEvent(n, line) || bandAt(bands, line, n.date)) break
+              span++
+            }
+            cells.push(
+              <td
+                key={d.date}
+                colSpan={span}
+                className={`ev band blk${editable ? ' editable' : ''}`}
+                data-testid={`event-blocked-${d.date}`}
+                onClick={editable ? () => onEdit(line, d.date) : undefined}
+              >
+                {d.blockedReason}
+              </td>,
+            )
+            i += span - 1
+            continue
+          }
+          const work = (dayEventKind(d, line) ?? classifyEvent(defs, text)) === 'work'
           cells.push(
             <td
               key={d.date}

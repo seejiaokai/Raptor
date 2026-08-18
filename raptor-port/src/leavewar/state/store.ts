@@ -42,6 +42,7 @@ import {
   type EventBand,
   type EventDef,
   type EventKind,
+  EVENT_KINDS,
   addEventDef,
   updateEventDef,
   removeEventDef,
@@ -393,7 +394,7 @@ function readWar(x: unknown): LeaveWar | null {
   const readDays: DayInfo[] = []
   for (const d of days) {
     if (!isPlainObject(d)) return null
-    const { date, events, blocked, blockedReason, ph } = d
+    const { date, events, eventKinds, blocked, blockedReason, ph } = d
     if (typeof date !== 'string') return null
     // At LEAST two event lines (the historic default), and any number beyond
     // that (an admin can add rows since 18 Aug 26). Every entry a string.
@@ -401,7 +402,14 @@ function readWar(x: unknown): LeaveWar | null {
     if (events.some(e => typeof e !== 'string')) return null
     if (typeof blocked !== 'boolean' || typeof ph !== 'boolean') return null
     if (typeof blockedReason !== 'string') return null
-    readDays.push({ date, events: [...events], blocked, blockedReason, ph })
+    // Instance tags are READ LENIENTLY, like the window and the bands: absent
+    // on every war stored before per-event tags (18 Aug 26) and that means
+    // "untagged", which is exactly how those wars behaved. An entry that is
+    // not a known kind reads as null rather than failing the day.
+    const readKinds: (EventKind | null)[] = Array.isArray(eventKinds)
+      ? eventKinds.map(k => (typeof k === 'string' && EVENT_KINDS.includes(k as EventKind) ? (k as EventKind) : null))
+      : []
+    readDays.push({ date, events: [...events], eventKinds: readKinds, blocked, blockedReason, ph })
   }
 
   // Bands are READ LENIENTLY, like the window above: a war stored before
@@ -416,12 +424,17 @@ function readWar(x: unknown): LeaveWar | null {
     if (!Array.isArray(bands)) return null
     for (const b of bands) {
       if (!isPlainObject(b)) return null
-      const { line, from: bf, to: bt, text } = b
-      if (line !== 0 && line !== 1) continue
+      const { line, from: bf, to: bt, text, kind } = b
+      // Any row an admin can have (variable event rows, 18 Aug 26) — the old
+      // `0 | 1` check silently dropped a band on an added row at reload.
+      if (typeof line !== 'number' || !Number.isInteger(line) || line < 0 || line >= MAX_EVENT_ROWS) continue
       if (typeof bf !== 'string' || typeof bt !== 'string' || typeof text !== 'string') continue
       if (bt < bf || bf < start || bt > end) continue
       if (bandOverlaps(readBands, line, bf, bt)) continue
-      readBands.push({ line, from: bf, to: bt, text })
+      // The band's instance tag, read as leniently as the days' (null when
+      // absent or unrecognised).
+      const bk = typeof kind === 'string' && EVENT_KINDS.includes(kind as EventKind) ? (kind as EventKind) : null
+      readBands.push({ line, from: bf, to: bt, text, kind: bk })
     }
   }
 
@@ -1016,14 +1029,14 @@ export function clearBidWindow(): BidWindowResult {
  * Days are stored in full rather than rebuilt from the period's range
  * precisely so these survive a reload; see `readWar`.
  */
-export function setDayEvent(date: string, line: number, text: string): boolean {
+export function setDayEvent(date: string, line: number, text: string, kind: EventKind | null = null): boolean {
   if (state.role !== 'admin') return false
   if (!state.period.days.some(d => d.date === date)) return false
   updateCurrent(w => ({
     ...w,
     period: {
       ...w.period,
-      days: w.period.days.map(d => (d.date === date ? { ...d, events: writeEventLine(d.events, line, text) } : d)),
+      days: w.period.days.map(d => (d.date === date ? writeDayEvent(d, line, text, kind) : d)),
     },
   }))
   return true
@@ -1039,6 +1052,17 @@ function writeEventLine(events: string[], line: number, text: string): string[] 
   return out
 }
 
+/** A day with one event slot written — text AND its instance tag together
+ *  (owner, 18 Aug 26: the tag rides the event, not the type library). Every
+ *  write sets both: an edit that drops the tag must clear the stored one, or
+ *  yesterday's tag would silently colour today's different word. */
+function writeDayEvent(d: DayInfo, line: number, text: string, kind: EventKind | null): DayInfo {
+  const kinds = [...(d.eventKinds ?? [])]
+  while (kinds.length <= line) kinds.push(null)
+  kinds[line] = text ? kind : null // a cleared event keeps no tag behind
+  return { ...d, events: writeEventLine(d.events, line, text), eventKinds: kinds }
+}
+
 /**
  * Write one event line across a RANGE of days — the "repeat" mode: the same
  * word lands in each covered day's own `events[line]` (e.g. "SC" on every day
@@ -1049,7 +1073,7 @@ function writeEventLine(events: string[], line: number, text: string): string[] 
  * beneath it is suppressed anyway — so the repeat writes only the free days.
  * A backwards range is a no-op.
  */
-export function setDayEventRange(from: string, to: string, line: number, text: string): boolean {
+export function setDayEventRange(from: string, to: string, line: number, text: string, kind: EventKind | null = null): boolean {
   if (state.role !== 'admin') return false
   if (to < from) return false
   updateCurrent(w => ({
@@ -1059,7 +1083,7 @@ export function setDayEventRange(from: string, to: string, line: number, text: s
       days: w.period.days.map(d => {
         if (d.date < from || d.date > to) return d
         if (bandCoversDate(w.period.bands, line, d.date)) return d
-        return { ...d, events: writeEventLine(d.events, line, text) }
+        return writeDayEvent(d, line, text, kind)
       }),
     },
   }))
@@ -1078,7 +1102,7 @@ export type EventBandResult = 'set' | 'overlap' | 'backwards' | 'outside' | 'for
  * line is cleared, so a merged label never hides stray words a later delete
  * would resurrect.
  */
-export function addEventBand(line: number, from: string, to: string, text: string): EventBandResult {
+export function addEventBand(line: number, from: string, to: string, text: string, kind: EventKind | null = null): EventBandResult {
   if (state.role !== 'admin') return 'forbidden'
   if (to < from) return 'backwards'
   if (from < state.period.start || to > state.period.end) return 'outside'
@@ -1087,9 +1111,9 @@ export function addEventBand(line: number, from: string, to: string, text: strin
     ...w,
     period: {
       ...w.period,
-      bands: [...w.period.bands, { line, from, to, text }],
+      bands: [...w.period.bands, { line, from, to, text, kind }],
       days: w.period.days.map(d =>
-        d.date < from || d.date > to || !d.events[line] ? d : { ...d, events: writeEventLine(d.events, line, '') }),
+        d.date < from || d.date > to || !d.events[line] ? d : writeDayEvent(d, line, '', null)),
     },
   }))
   return 'set'

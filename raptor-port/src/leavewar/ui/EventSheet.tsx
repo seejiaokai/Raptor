@@ -6,19 +6,21 @@
 //   · open text for the day (or a range);
 //   · a range, chosen on the same calendar the bid window uses;
 //   · for a range, MERGE (one bar) or REPEAT (the word in each day);
-//   · a TAG (off / no-leave / work) for the typed word, which colours it and
-//     every future day it appears on — the "define what is a work event and
-//     what is an off day" the owner asked for;
+//   · a TAG (off / no-leave / work) for THIS event — held on the event itself
+//     and saved with it (owner, 18 Aug 26: "I don't want u to save it as a
+//     type"). It used to mint the typed word into the type library; now the
+//     library changes only inside Edit types, and a library word still
+//     classifies by match when the event carries no tag of its own;
 //   · and, behind the "Edit types" button at the top, the whole type library.
 //
-// The tag never shows as words in the grid; it is stored on the type and reads
-// only as colour (Matrix paints the column; the word itself goes red for work).
+// The tag never shows as words in the grid; it reads only as colour (Matrix
+// paints the column; the word itself goes red for work).
 
 import { useState } from 'react'
 import {
   bandAt,
   classifyEvent,
-  defKey,
+  dayEventKind,
   EVENT_KINDS,
   type EventKind,
 } from '../engine'
@@ -62,7 +64,16 @@ export function EventSheet({ line, date, onClose }: { line: number; date: string
   const [view, setView] = useState<'event' | 'types'>('event')
   const [problem, setProblem] = useState('')
 
-  const tagged = classifyEvent(defs, text)
+  // THIS event's own tag (owner, 18 Aug 26 — "I don't want u to save it as a
+  // type"). Tapping a tag used to write the typed word into the squadron's
+  // type library; now the tag is held here and saved ON the event. It starts
+  // as whatever instance tag the event already carries; the EFFECTIVE tag the
+  // buttons light is that, or failing it the library's word match — so "PH"
+  // still reads as an off day without anyone tagging it again.
+  const [kind, setKind] = useState<EventKind | null>(
+    band ? (band.kind ?? null) : day ? dayEventKind(day, line) : null,
+  )
+  const tagged = kind ?? classifyEvent(defs, text)
 
   const apply = () => {
     setProblem('')
@@ -70,7 +81,7 @@ export function EventSheet({ line, date, onClose }: { line: number; date: string
 
     if (scope === 'day') {
       if (band) removeEventBand(line, band.from)
-      setDayEvent(date, line, t)
+      setDayEvent(date, line, t, kind)
       return onClose()
     }
 
@@ -78,7 +89,7 @@ export function EventSheet({ line, date, onClose }: { line: number; date: string
 
     if (mode === 'repeat') {
       if (band) removeEventBand(line, band.from)
-      setDayEventRange(range.from, range.to, line, t)
+      setDayEventRange(range.from, range.to, line, t, kind)
       return onClose()
     }
 
@@ -87,9 +98,9 @@ export function EventSheet({ line, date, onClose }: { line: number; date: string
     // one is refused, so a failed edit never loses the original.
     if (!t) return setProblem('A merged event needs a label.')
     if (band) removeEventBand(line, band.from)
-    const r = addEventBand(line, range.from, range.to, t)
+    const r = addEventBand(line, range.from, range.to, t, kind)
     if (r === 'set') return onClose()
-    if (band) addEventBand(line, band.from, band.to, band.text)
+    if (band) addEventBand(line, band.from, band.to, band.text, band.kind ?? null)
     setProblem(
       r === 'overlap'
         ? 'Those dates already carry a merged event on this line.'
@@ -107,14 +118,13 @@ export function EventSheet({ line, date, onClose }: { line: number; date: string
     onClose()
   }
 
-  // Tag the typed word: update the matching type, or add it if it is new. The
-  // colour follows on the next render, here and on the grid.
-  const tag = (kind: EventKind) => {
-    const t = text.trim()
-    if (!t) return setProblem('Type a word before tagging it.')
-    const i = defs.findIndex(d => defKey(d.name) === defKey(t))
-    const err = i >= 0 ? updateEventType(i, { kind }) : addEventType(t, kind)
-    setProblem(err ?? '')
+  // Choose this event's tag — held locally until Save, never written to the
+  // library (that is Edit types' job alone now). Tapping the one already
+  // chosen clears it back to untagged.
+  const tag = (k: EventKind) => {
+    if (!text.trim()) return setProblem('Type a word before tagging it.')
+    setProblem('')
+    setKind(k === kind ? null : k)
   }
 
   if (view === 'types') {
@@ -215,7 +225,15 @@ export function EventSheet({ line, date, onClose }: { line: number; date: string
       {defs.length > 0 && (
         <div className="bidsheet-row evquick" data-testid="event-quickpicks">
           {defs.map((d, i) => (
-            <button key={i} className={`evchip ${d.kind}`} data-testid={`event-quick-${i}`} onClick={() => setText(d.name)}>
+            <button
+              key={i}
+              className={`evchip ${d.kind}`}
+              data-testid={`event-quick-${i}`}
+              /* Picking a library word also drops any instance tag chosen for
+                 the previous text — the word should light its own library
+                 colour, not inherit a tag meant for something else. */
+              onClick={() => { setText(d.name); setKind(null) }}
+            >
               {d.name}
             </button>
           ))}

@@ -315,7 +315,7 @@ test('a month button scrolls the grid to that month', async ({ page }) => {
   // A jump that forgot their width would put 1 September underneath the
   // callsign column, where it is scrolled-to and invisible at the same time.
   const head = (await page.locator('[data-testid="head-2026-09-01"]').boundingBox())!
-  const bal = (await page.locator('.mx thead th.bal').boundingBox())!
+  const bal = (await page.locator('.mx .mxhead th.bal').boundingBox())!
   expect(head.x).toBeGreaterThanOrEqual(bal.x + bal.width - 1)
   const wrapBox = (await wrap.boundingBox())!
   expect(head.x + head.width).toBeLessThanOrEqual(wrapBox.x + wrapBox.width + 1)
@@ -332,7 +332,7 @@ test('a month button works from wherever the grid already is', async ({ page }) 
   expect(atMar).toBeLessThan(atSep)
 
   const head = (await page.locator('[data-testid="head-2026-03-01"]').boundingBox())!
-  const bal = (await page.locator('.mx thead th.bal').boundingBox())!
+  const bal = (await page.locator('.mx .mxhead th.bal').boundingBox())!
   expect(head.x).toBeGreaterThanOrEqual(bal.x + bal.width - 1)
 })
 
@@ -1704,4 +1704,112 @@ test('an admin gives a personnel body a free-text label', async ({ page }) => {
   await inp.press('Enter')
   await page.locator('[data-testid="roster-arrange"]').click() // leave arrange → read-only label
   await expect(page.locator('[data-testid="perslabel-torque"]')).toHaveText('Avionics')
+})
+
+/* ---- the 18 Aug 26 layout rework: row order, bracket, frozen header, zoom.
+   Browser-gated because every one of these is geometry jsdom cannot see. */
+
+test('the grid reads counts, months, header, events, roster — top to bottom', async ({ page }) => {
+  const groups = page.locator('#page-leavewar table.mx > *')
+  await expect(groups.nth(0)).toHaveClass('counts')
+  await expect(groups.nth(1)).toHaveClass('mstripe')
+  await expect(groups.nth(2)).toHaveClass('mxhead')
+  await expect(groups.nth(3)).toHaveClass('events')
+  // and the order is PAINTED that way, not merely in the DOM
+  const counts = (await page.locator('[data-testid="count-sets"]').boundingBox())!
+  const head = (await page.locator('.mx .mxhead th.who').boundingBox())!
+  const firstRow = (await page.locator('[data-testid="group-SXO"]').boundingBox())!
+  expect(counts.y).toBeLessThan(head.y)
+  expect(head.y).toBeLessThan(firstRow.y)
+})
+
+test('every month wears a bracket spanning exactly its days', async ({ page }) => {
+  const jan = page.locator('[data-testid="bracket-2026-01"]')
+  await expect(jan).toHaveText('JAN')
+  const bb = (await jan.boundingBox())!
+  const first = (await page.locator('[data-testid="head-2026-01-01"]').boundingBox())!
+  const last = (await page.locator('[data-testid="head-2026-01-31"]').boundingBox())!
+  expect(Math.abs(bb.x - first.x)).toBeLessThan(2)
+  expect(Math.abs(bb.x + bb.width - (last.x + last.width))).toBeLessThan(2)
+})
+
+test('the blocked exercise week prints its reason across the event row', async ({ page }) => {
+  await page.locator('[data-testid="month-MAR"]').click()
+  const bar = page.locator('[data-testid="event-blocked-2026-03-09"]')
+  await expect(bar).toHaveText('Exercise week')
+  const bb = (await bar.boundingBox())!
+  const from = (await page.locator('[data-testid="head-2026-03-09"]').boundingBox())!
+  const to = (await page.locator('[data-testid="head-2026-03-14"]').boundingBox())!
+  expect(Math.abs(bb.x - from.x)).toBeLessThan(2)
+  expect(Math.abs(bb.x + bb.width - (to.x + to.width))).toBeLessThan(2)
+})
+
+test('on a phone the header freezes under the top bar and thaws on the way back', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'lw-phone', 'the mirror is phone-only')
+  // above the fold: no mirror
+  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+  await page.evaluate(() => window.scrollTo(0, 700))
+  await page.waitForTimeout(250)
+  const mirror = page.locator('[data-testid="sticky-head"]')
+  await expect(mirror).toHaveCount(1)
+  // pinned under the sticky top bar, not the page origin (.first(): Leave
+  // War's own chrome also carries a .topbar; the shell's is the sticky one
+  // and the first in the document, same pick Matrix's querySelector makes)
+  const bar = (await page.locator('.topbar').first().boundingBox())!
+  const mb = (await mirror.boundingBox())!
+  expect(Math.abs(mb.y - (bar.y + bar.height))).toBeLessThan(2)
+  // it follows the grid's horizontal scroll
+  await page.evaluate(() => { document.querySelector('.mx-wrap')!.scrollLeft = 400 })
+  await page.waitForTimeout(200)
+  expect(await page.evaluate(() => document.querySelector('.mxfixed-scroll')!.scrollLeft)).toBe(400)
+  // and its columns sit exactly over the grid's
+  const real = (await page.locator('[data-testid="head-2026-01-20"]').boundingBox())!
+  const ghost = await page.evaluate(() => {
+    const cells = document.querySelectorAll('.mxfixed .mxhead tr:last-child th')
+    for (const c of cells) {
+      if (c.textContent!.includes('20')) return c.getBoundingClientRect().x
+    }
+    return null
+  })
+  if (ghost !== null) expect(Math.abs(ghost - real.x)).toBeLessThan(2)
+  // scrolling back up thaws it
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await page.waitForTimeout(250)
+  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+})
+
+test('the phone zoom steps the whole grid down and back', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'lw-phone', 'the control is phone-only')
+  const width = () => page.evaluate(() => document.querySelector('.mx-wrap table.mx')!.getBoundingClientRect().width)
+  const before = await width()
+  await page.locator('[data-testid="lw-zoom-out"]').click()
+  await page.locator('[data-testid="lw-zoom-out"]').click()
+  const small = await width()
+  expect(small).toBeLessThan(before * 0.75)
+  await page.locator('[data-testid="lw-zoom-in"]').click()
+  await page.locator('[data-testid="lw-zoom-in"]').click()
+  expect(Math.abs((await width()) - before)).toBeLessThan(4)
+  // the desktop never shows the control — asserted in the desktop project
+})
+
+test('the zoom control hides on desktop', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'lw-desktop', 'desktop-only assertion')
+  await expect(page.locator('[data-testid="lw-zoom"]')).toBeHidden()
+})
+
+test('tagging a typed event colours the day without minting a type', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="event-1-2026-01-21"]').click()
+  await page.locator('[data-testid="event-text"]').fill('Standby crew')
+  await page.locator('[data-testid="event-tag-nolv"]').click()
+  await page.locator('[data-testid="event-apply"]').click()
+  // the column tints orange — painted, not merely classed
+  const head = page.locator('[data-testid="head-2026-01-21"]')
+  await expect(head).toHaveClass(/evnolv/)
+  const bg = await head.evaluate(e => getComputedStyle(e).backgroundColor)
+  expect(bg).toContain('242') // the orange channel of the nolv tint
+  // and the library holds only the three standard types
+  await page.locator('[data-testid="event-1-2026-01-21"]').click()
+  await page.locator('[data-testid="event-edit-types"]').click()
+  await expect(page.locator('.evtype:not(.evtype-add)')).toHaveCount(3)
 })

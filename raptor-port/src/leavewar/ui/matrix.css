@@ -116,14 +116,14 @@
   color: #FFAAB0;
 }
 
-.mx thead th.bal {
+.mx .mxhead th.bal {
   z-index: 3;
   background: var(--panel-2);
   padding: 2px 1px;
   white-space: nowrap;
 }
 
-.mx thead th.bal .cname {
+.mx .mxhead th.bal .cname {
   display: block;
   font-size: 8.5px;
   letter-spacing: .06em;
@@ -144,7 +144,7 @@
    it stops looking like it hangs over the grid, and square corners are the
    whole ask. Kept narrow (no min-height loom) so it does not tower over the
    two event rows beside it. */
-.mx thead th.bal .cpick {
+.mx .mxhead th.bal .cpick {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -164,7 +164,7 @@
   font-family: inherit;
 }
 
-.mx thead th.bal .cpick:hover .cname {
+.mx .mxhead th.bal .cpick:hover .cname {
   color: #8FE2F5;
 }
 
@@ -177,7 +177,7 @@
    gap the eleven still fit the 44px `.bal` column on one line, and flex-wrap is
    the safety net if the column is ever narrowed further. The label above still
    names the figure — the dots only say "there are more, and this is where". */
-.mx thead th.bal .cdots {
+.mx .mxhead th.bal .cdots {
   display: flex;
   flex-wrap: wrap;
   gap: 1px;
@@ -185,14 +185,14 @@
   margin-top: 2px;
 }
 
-.mx thead th.bal .cdot {
+.mx .mxhead th.bal .cdot {
   width: 2px;
   height: 2px;
   border-radius: 50%;
   background: var(--edge-2);
 }
 
-.mx thead th.bal .cdot.on {
+.mx .mxhead th.bal .cdot.on {
   background: var(--accent);
 }
 
@@ -200,7 +200,7 @@
    whole box is a control — the affordance the pulled arrows used to carry, for
    a phone where hover cannot hint it. Accent-tinted but muted so it reads as a
    hint, not a live button of its own; the button around it is the real target. */
-.mx thead th.bal .ctap {
+.mx .mxhead th.bal .ctap {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -264,7 +264,7 @@
 /* The sticky date header. z-index 3 on the corner cell so it keeps
    winning the stacking order over both the sticky header row and the
    sticky column beneath it. */
-.mx thead th {
+.mx .mxhead th {
   position: sticky;
   top: 0;
   z-index: 1;
@@ -285,13 +285,13 @@
    preamble ("never fix a cross-page bleed by editing scheduler.css"). Null the
    other props the same rule leaks (`overflow`/`scroll-snap-align`) so nothing
    else of Raptor's day card rides in unnoticed. */
-.mx thead th.day {
+.mx .mxhead th.day {
   border-radius: 0;
   overflow: visible;
   scroll-snap-align: none;
 }
 
-.mx thead th.who {
+.mx .mxhead th.who {
   z-index: 3;
   background: var(--panel-2);
 }
@@ -304,7 +304,7 @@
    the date run together as "SAT03", which reads as one long token and widens
    every column in the year to fit it. Seen happening in a screenshot at
    390px before it was caught. */
-.mx thead th .dow {
+.mx .mxhead th .dow {
   display: block;
   font-size: 8px;
   font-weight: 600;
@@ -313,7 +313,7 @@
   opacity: .8;
 }
 
-.mx thead th .mon {
+.mx .mxhead th .mon {
   display: block;
   font-size: 8.5px;
   letter-spacing: .12em;
@@ -327,7 +327,7 @@
    without counting, and that needs the whole column. The step from --panel-2
    is deliberately larger than it was — the first attempt sat 8 values away
    and was invisible in a screenshot. */
-.mx thead th.weekend {
+.mx .mxhead th.weekend {
   background: #0D1014;
   color: var(--ink-3);
 }
@@ -344,7 +344,7 @@
    .weekend, and do not "tidy" it without re-checking the cascade. The
    computed colour this now produces is rgba(229, 168, 59, 0.22), not the
    old rgb(255, 165, 0) — see e2e/matrix.spec.ts. */
-.mx thead th.blocked {
+.mx .mxhead th.blocked {
   background: rgba(229, 168, 59, .22);
   color: #F2D9A6;
   box-shadow: inset 0 -2px 0 var(--adv);
@@ -364,13 +364,13 @@
    `.locked` (the out-of-window dim) is declared after both, so a locked tinted
    day still reads as locked. Orange is a distinct hue from blocked's amber on
    purpose — the two mean different things. */
-.mx thead th.day.evoff {
+.mx .mxhead th.day.evoff {
   background: rgba(74, 201, 126, .24);
   color: #BFead0;
   box-shadow: inset 0 -2px 0 rgba(74, 201, 126, .7);
 }
 
-.mx thead th.day.evnolv {
+.mx .mxhead th.day.evnolv {
   background: rgba(242, 139, 46, .26);
   color: #F7CB9E;
   box-shadow: inset 0 -2px 0 rgba(242, 139, 46, .75);
@@ -565,7 +565,7 @@
    Declared after .weekend and .blocked so a locked weekend and a locked
    exercise week still read as locked. Same cascade care those two already
    needed — see the note above .blocked. */
-.mx thead th.locked {
+.mx .mxhead th.locked {
   opacity: .45;
 }
 
@@ -748,6 +748,15 @@
   color: #FF9098;
 }
 
+/* The BLOCKED-day reason bar ("Exercise week"), drawn in the amber the
+   blocked header already wears so the two read as one marking. Declared
+   after .ev.band so its tint wins the cyan on the shared class. */
+.mx .events td.ev.band.blk {
+  background: rgba(229, 168, 59, .16);
+  box-shadow: inset 0 0 0 1px rgba(229, 168, 59, .35);
+  color: #F2D9A6;
+}
+
 /* An admin's event cell is a tap target (the Event sheet opens on it), so it
    shows a pointer; an empty one carries a faint add hint so there is something
    to aim at. A member's cells are plain text and get neither. */
@@ -806,7 +815,7 @@
    the header may already carry `.blocked`, `.weekend` or `.locked`, and a
    fill would fight whichever of those won the cascade. This only says "here",
    and must not overwrite what the column already means. */
-.mx thead th.day.focus {
+.mx .mxhead th.day.focus {
   box-shadow: inset 0 0 0 2px var(--accent);
   color: var(--ink);
 }
@@ -993,6 +1002,147 @@
   .whorow { gap: 4px; }
   .catchip { padding: 1px 3px; font-size: 8px; letter-spacing: 0; }
   .pers-lbl, .pers-in { display: none; }
+}
+
+/* ---- the 18 Aug 26 row order: counts → months → header → events → roster ----
+
+   The month strip became a ROW of the grid so it can sit between the counts
+   and the callsign header (the owner's arrows). Its buttons live in a sticky
+   two-column cell and OVERFLOW visibly across the fill cell — the grphd
+   technique — so they stay pinned while the year scrolls beneath them. The
+   overflow needs a real width to wrap at: the viewport, less the card's
+   chrome, capped so a desktop lays the twelve buttons on one line. */
+.mx .mstripe td {
+  background: var(--panel);
+  border-right: none;
+}
+
+.mx .mstripe td.mstick {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  overflow: visible;
+  text-align: left;
+  padding: 0;
+  /* The row's height lives HERE, because the buttons are absolutely
+     positioned (below) and reserve none themselves. One line on desktop. */
+  height: 44px;
+}
+
+/* ABSOLUTE, not in flow, and that is load-bearing: this block is wider than
+   the two frozen columns its cell spans, and an in-flow width becomes the
+   cell's minimum — which was measured inflating the callsign column to 245px
+   on a phone and shoving the whole grid off screen. Out of flow it overflows
+   across the fill cell exactly like the group headings' text, costing the
+   columns nothing. The sticky cell is its containing block, so it stays
+   pinned while the year scrolls. */
+.mx .mstripe .mstrow {
+  position: absolute;
+  left: 10px;
+  top: 7px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  width: min(640px, calc(100vw - 60px));
+}
+
+.mx .mstripe .months {
+  margin-left: 0;
+  flex: 1 1 auto;
+}
+
+/* Two wrapped lines of buttons on a phone need a taller row. */
+@media (max-width: 700px) {
+  .mx .mstripe td.mstick { height: 72px; }
+}
+
+/* The phone zoom pair rides the end of the month strip; a desktop has the
+   room not to need it, so it only exists under the phone breakpoint. */
+.mx .mstripe .lwzoom {
+  display: none;
+  gap: 4px;
+  margin-left: 6px;
+}
+
+.mx .mstripe .lwzoom .mjump {
+  min-width: 30px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.mx .mstripe .lwzoom .mjump:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+@media (max-width: 700px) {
+  .mx .mstripe .lwzoom { display: inline-flex; }
+}
+
+/* The month BRACKET over the dates (owner, 18 Aug 26): one open-topped box
+   per month — a line with two down-ticks, the accent at low volume — so the
+   eye reads where a month starts and ends without hunting for the tiny label
+   on its first day. The label rides sticky just clear of the frozen columns,
+   so mid-month you still know which month you are in. */
+.mx .mxhead th.brakhd {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: var(--panel-2);
+}
+
+.mx .mxhead th.brakm {
+  padding: 4px 3px 0;
+  background: var(--panel-2);
+  vertical-align: bottom;
+}
+
+.mx .mxhead th.brakm .brakin {
+  border: 1px solid rgba(59, 198, 232, .45);
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  height: 15px;
+  display: flex;
+  align-items: flex-start;
+  overflow: visible;
+}
+
+.mx .mxhead th.brakm .brakl {
+  position: sticky;
+  left: calc(var(--who-w) + var(--bal-w) + 6px);
+  display: inline-block;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  line-height: 1;
+  color: var(--accent);
+  padding: 3px 5px 0;
+}
+
+/* ---- the phone's frozen header (owner, 18 Aug 26) ----
+
+   A fixed MIRROR of the bracket + header rows, shown by Matrix only while
+   the real rows sit under the top bar and only under 700px — the page still
+   has its ONE vertical scroll (the 10 Aug rule at the top of this file); the
+   mirror just rides above it. Its own scrollbar is hidden: it is a slave to
+   the grid's horizontal position, not a second control. */
+.mxfixed {
+  position: fixed;
+  z-index: 55;
+  overflow: hidden;
+  background: var(--panel-2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
+}
+
+.mxfixed-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mxfixed-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 }
