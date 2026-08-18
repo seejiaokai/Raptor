@@ -21,23 +21,21 @@ import { useVersion } from './useStore'
 import { exportCSV } from './export'
 import { RangeCal } from './RangeCal'
 
-/* The remarks tail (owner, Aug 26). Closing a range on the calendar writes its
-   last day into Remarks as `till 15 Jul`, so a multi-day input says how long it
-   runs wherever remarks are read — nobody has to type it, and nobody forgets.
+/* The remarks tail (owner, Aug 26; single-day "till" added 18 Aug 26). Picking
+   a range on the calendar writes its date into Remarks as `till 15 Jul`, so an
+   input says how long it runs wherever remarks are read — nobody types it, and
+   nobody forgets. A ONE-DAY pick now writes "till <that day>" too (owner,
+   18 Aug 26: "a single-day input should still show till <date>"); on the first
+   click of a two-click range that reads "till <start>", and the second click
+   just moves the date.
 
-   The tail belongs to the CALENDAR, not the typist: re-picking rewrites it and
-   starting a fresh range removes it. Everything in front of it is the typist's
-   and is kept verbatim, so `LL till 15 Jul` becomes `LL till 17 Jul` when the
-   end moves — the whole point of the ask. It is matched anchored at the END
-   because that is where the calendar puts it; text typed AFTER it is prose the
-   calendar has no business rewriting, so it is left alone. */
-/* Closing a range rewrites the `till 15 Jul` token IN PLACE — wherever it sits,
-   not only at the end — so a note the typist put AFTER it survives the date
-   moving (owner, 18 Aug 26: "till 13 Jul Bangkok" → change the end → "till 18
-   Jul Bangkok", Bangkok stays). 'none' means the picker writes no one-day token
-   (it fires on the first click of a two-click range, so a token would flash
-   before the end day is chosen). All the logic is `withRemarksTail`. */
-const withTill = (rm: any, s: string, e: string) => withRemarksTail(rm, s, e, 'none')
+   The tail belongs to the CALENDAR, not the typist: re-picking rewrites the
+   `till 15 Jul` token IN PLACE — wherever it sits, not only at the end — so a
+   note the typist put in front OR after it survives the dates moving (owner,
+   18 Aug 26: "till 13 Jul Bangkok" → change the end → "till 18 Jul Bangkok",
+   Bangkok stays), and starting a fresh range takes only the old token with it.
+   All the logic is `withRemarksTail`. */
+const withTill = (rm: any, s: string, e: string) => withRemarksTail(rm, s, e, 'till')
 
 /* ---- the table's own view state: which window, and sorted how ------------
    (owner, Aug 5). The list is a planning tool, so it opens on what is COMING:

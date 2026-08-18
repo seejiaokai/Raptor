@@ -184,5 +184,14 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
       expect(withRemarksTail('till 13 Jul Bangkok', jul(16), jul(16), 'none')).toBe('Bangkok')
       expect(withRemarksTail('', jul(16), jul(16), 'none')).toBe('')
     })
+    it("'till' (the Inputs calendar) writes a one-day tail too — 'till <that day>'", () => {
+      // a span still names its LAST day
+      expect(withRemarksTail('', jul(16), jul(18), 'till')).toBe('till 18 Jul')
+      // a single day (end == start, or a lone start with no end) names that day
+      expect(withRemarksTail('', jul(16), jul(16), 'till')).toBe('till 16 Jul')
+      expect(withRemarksTail('LL', jul(16), '', 'till')).toBe('LL till 16 Jul')
+      // an empty form still yields nothing, never 'till <blank>'
+      expect(withRemarksTail('', '', '', 'till')).toBe('')
+    })
   })
 })
