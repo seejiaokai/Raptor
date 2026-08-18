@@ -3,6 +3,7 @@
 
 import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
+import { SANS_IDS } from '../../engine/people'
 import { seedPeople } from '../engine'
 import { DEMO_MAP, installDemoWorld } from './demoworld'
 import { projectPeople } from './raptorRoster'
@@ -54,6 +55,22 @@ describe('projectPeople', () => {
       expect(p.from).toBeNull()
       expect(p.to).toBeNull()
     }
+  })
+
+  /* SANS are off the roster BY DEFAULT (owner, 18 Aug 26 — "we will not show
+     the SANS in the leave war however there is a function to still enable
+     this"); the enable is projectPeople's includeSans, driven by the store's
+     showSans switch. */
+  it('excludes SANS aircrew by default, and includes them when asked', () => {
+    for (const id of SANS_IDS) expect(byId.has(id)).toBe(false)
+    const withSans = new Map(projectPeople(true).map(p => [p.id, p]))
+    for (const id of SANS_IDS) expect(withSans.has(id)).toBe(true)
+    // vinci rides in exactly the shape he had before the exclusion existed
+    expect(withSans.get('vinci')).toMatchObject({ seat: 'pilot', band: 'ops', q: 'C' })
+  })
+
+  it('the demo re-key never targets a SANS member — a hidden body would render nowhere', () => {
+    for (const target of Object.values(DEMO_MAP)) expect(SANS_IDS).not.toContain(target)
   })
 
   it('never projects two people onto one id', () => {

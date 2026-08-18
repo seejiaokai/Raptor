@@ -302,13 +302,38 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   `sync.test.ts` §two-way. KNOWN CAVEAT, by construction: an
   UNDO after such an edit/delete does not resurrect the leave — the restored
   lw row no longer matches any approved cells, so the next reconcile splices
-  it as stale; re-file the leave instead. The **58-row
-  year matrix (~28k nodes now — the categorised roster below added ground crew
-  and group headings)** is outside the perf gate (its own e2e DOM
+  it as stale; re-file the leave instead. The **year matrix (~50 rows by
+  default since SANS left the roster on 18 Aug 26 — 61 with the Show-SANS
+  switch on; ~28k nodes with the categorised roster's ground crew and group
+  headings)** is outside the perf gate (its own e2e DOM
   band, raised to 29000 measured-first, is its guard); phone
   scroll measured ~100ms, fine today. The vendored app's own limitations
   travel in `raptor-port/docs/leavewar/known-gaps.md` (read its merge
   preamble — stale-about-Raptor claims, superseded role toggle).**
+- **LEAVE WAR — QUALS IDENTITY PROPAGATES LIVE + SANS HIDDEN WITH AN ENABLE
+  SWITCH (18 Aug 26, owner: an IR marked SXO "doesn't appear in the leave war
+  as SXO", and "we will not show the SANS in the leave war however there is a
+  function to still enable this").** Three fixes of one shape plus the switch:
+  the Quals SXO tick now writes the RAW `p.sxo` the projection reads (the same
+  one-way-copy trap the SANS tick had — `QualsPage.tsx`, beside the `san`
+  wire-through); `reprojectRoster` (`sync.ts`) refreshes every kept person's
+  IDENTITY from Raptor's projection on each notify — SXO, CAT, seat, callsign
+  all propagate now — preserving only what Leave War owns locally: posting-out
+  (`from`/`to`) and a deliberate in-app `setPerson` edit, recorded in the
+  session-only `personEdits` registry; and ARCHIVED bodies are excluded from
+  the projection (a body archived on Quals leaves Leave War on the next
+  notify). **SANS aircrew are OFF the roster by default** — they offer
+  availability rather than being planned as manning, so they neither ride the
+  grid nor count in its manning rows — and **the enable function is
+  `setShowSans`** (`state/store.ts`, admin-gated, persisted `showsans`,
+  surfaced as the "Show SANS" button in the matrix's Rearrange toolbar; the
+  flip re-projects at once via the sync's own Leave War subscription). The
+  demo re-key moved `slammed` off vinci (SANS) onto pike so no demo cell keys
+  onto a hidden body, and a test guards `DEMO_MAP` against SANS targets.
+  Tests: `roster.test.ts` (propagation, PO-survives-rewrite, archive, the
+  switch both ways + its member refusal), `raptorRoster.test.ts` (default
+  exclusion / includeSans / demo-map guard), `quals.test.tsx` (the raw-flag
+  tick), `events.test.tsx` (the toolbar control's gate).
 - **LEAVE WAR — CATEGORISED ROSTER + HEADER TRIM (18 Aug 26, owner: "fix how
   the top of the leave war looks… 142 is repeated… categorise the personnel
   into SXO, IP, OPS P, IWSO, OPS W, OCU, Personnel").** The page's own

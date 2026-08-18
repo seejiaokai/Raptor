@@ -478,3 +478,27 @@ What is a contract, and what is deliberately still open:
 - **The counter-picker header was squared** in the same batch (owner: "make it
   squarish, it's blocking the event box") — a contained bordered chip now, kept
   at a 40px tap target (the earlier "too small to hit" complaint still holds).
+
+## SANS are off the roster by default, with an enable switch (18 Aug 26)
+
+The owner's rule: "we will not show the SANS in the leave war however there is
+a function to still enable this." What that means here:
+
+- **The exclusion is at the PROJECTION** (`state/raptorRoster.ts`): a Raptor
+  person flagged `san` is simply not projected, so the grid, the manning
+  counts, the counters and both sync directions all agree by construction —
+  the sync's own skip-unknown-persons rule makes a hidden SANS body's leave
+  inputs harmless (they land nowhere and clear nothing).
+- **The enable function is `setShowSans`** (`state/store.ts`) — admin-gated
+  squadron config, persisted under `showsans`, default off. The UI control is
+  the "Show SANS" button in the matrix's Rearrange toolbar (admin, edit mode).
+  Flipping it re-projects at once: the sync's Leave War subscription runs
+  `reprojectRoster`, which reads the flag.
+- **With the switch ON, a SANS body rides the roster exactly as before the
+  exclusion existed** — grouped by CAT, counted in manning, syncable. Turning
+  it back off drops them again; nothing they carried is deleted, only
+  unprojected (their war cells stay in the grid keyed by id, invisible until
+  shown again).
+- **The demo world never touches a SANS body** (`DEMO_MAP` remapped
+  `slammed` off vinci onto pike when this shipped; a test guards it), so the
+  demo reads identically with the switch off.

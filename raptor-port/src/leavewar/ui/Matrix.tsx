@@ -27,7 +27,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, getState, MAX_EVENT_ROWS, moveRosterRow, orderedManningIds, personLabel, removeEventRow, setPersLabel, setPostOut } from '../state/store'
+import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, getState, MAX_EVENT_ROWS, moveRosterRow, orderedManningIds, personLabel, removeEventRow, setPersLabel, setPostOut, setShowSans } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -77,7 +77,7 @@ function PersLabel({ p, editable }: { p: Person; editable: boolean }) {
 
 export function Matrix() {
   useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, showSans, focusDate, focusSeq } = getState()
   const dates = period.days.map(d => d.date)
   const verdicts = evaluatePeriod(people, grid, states, requirements, dates)
   // Whether the LAST event row still carries any text or band — the remove
@@ -385,6 +385,19 @@ export function Matrix() {
                       － Event row
                     </button>
                   )}
+                  {/* THE SANS ENABLE FUNCTION (owner, 18 Aug 26): SANS aircrew
+                      are off the roster by default; this puts them on (and
+                      takes them off again). Lives in Rearrange with the other
+                      roster-shape controls, admin by the same gate. */}
+                  <button
+                    className={`rtbtn${showSans ? ' on' : ''}`}
+                    data-testid="sans-toggle"
+                    aria-pressed={showSans}
+                    title={showSans ? 'Take SANS aircrew off the leave war roster' : 'Put SANS aircrew on the leave war roster'}
+                    onClick={() => setShowSans(!showSans)}
+                  >
+                    {showSans ? '✓ SANS shown' : 'Show SANS'}
+                  </button>
                 </>
               )}
             </div>

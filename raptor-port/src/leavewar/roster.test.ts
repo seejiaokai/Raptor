@@ -3,7 +3,7 @@
 // and the live re-projection that lands a body added on Raptor's Quals page.
 
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, SANS_IDS } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify } from '../state/store'
 import {
   autoOrder,
@@ -33,6 +33,7 @@ import {
   setRole,
   setRosterOrder,
   setPersLabel,
+  setShowSans,
   toggleManningRow,
 } from './state/store'
 import { memoryBackend } from './state/storage'
@@ -306,6 +307,31 @@ describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
     expect(after.seat).toBe('wso')
     expect(after.band).toBe('ops')
     expect(groupOf(after)).toBe('OPSW')
+  })
+
+  /* THE SANS ENABLE FUNCTION (owner, 18 Aug 26): hidden by default, and the
+     admin switch puts them on the roster at once — the setShowSans write fires
+     a Leave War notify, whose sync callback re-projects. */
+  it('SANS are hidden by default, and the enable switch shows them at once', () => {
+    for (const id of SANS_IDS) expect(getState().people.some(p => p.id === id)).toBe(false)
+    expect(setShowSans(true), 'a member cannot flip it').toBe(false)
+    setRole('admin')
+    expect(setShowSans(true)).toBe(true)
+    for (const id of SANS_IDS) expect(getState().people.some(p => p.id === id)).toBe(true)
+    expect(getState().people.find(p => p.id === 'vinci')).toMatchObject({ seat: 'pilot', band: 'ops' })
+    // and off again — the same switch is the hide
+    expect(setShowSans(false)).toBe(true)
+    for (const id of SANS_IDS) expect(getState().people.some(p => p.id === id)).toBe(false)
+  })
+
+  it('shown SANS survive a Raptor notify, and stay hidden after a re-hide', () => {
+    setRole('admin')
+    setShowSans(true)
+    raptorNotify()
+    expect(getState().people.some(p => p.id === 'vinci')).toBe(true)
+    setShowSans(false)
+    raptorNotify()
+    expect(getState().people.some(p => p.id === 'vinci')).toBe(false)
   })
 
   it('archiving a person on the Quals page removes them from Leave War', () => {

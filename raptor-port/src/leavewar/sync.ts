@@ -620,8 +620,10 @@ export function runOilPass(): void {
  * hand-order and personnel labels are keyed by id, so they reconcile for free.
  */
 function reprojectRoster(): void {
-  const projected = projectPeople()
   const st = getState()
+  // showSans is the owner's SANS enable switch (store.ts:setShowSans): the
+  // projection drops SANS aircrew unless it is on.
+  const projected = projectPeople(st.showSans)
   const curById = new Map(st.people.map(p => [p.id, p]))
   const edits = st.personEdits
   // Raptor owns identity (store.ts §setPeople), so take each person fresh from
@@ -679,6 +681,13 @@ export function wireLeaveWarSync(): void {
     runOutbound()
   })
   lwSubscribe(() => {
+    /* The showSans switch (store.ts:setShowSans) is a Leave War write, so the
+       re-projection that makes it take effect must run on THIS lane too — the
+       Raptor lane alone would leave the toggle dead until some unrelated
+       schedule edit happened to notify. Safe against its own echo: the write
+       it makes (setPeople) re-fires this callback, and the signature compare
+       inside reprojectRoster then finds nothing changed and stops. */
+    reprojectRoster()
     runOutbound()
     runInbound()
     /* The OIL pass reads Leave War too — a PH flag set, an event word tagged

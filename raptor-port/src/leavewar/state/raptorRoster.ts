@@ -22,6 +22,14 @@ import type { Person } from '../engine'
  *   hides them, so a body taken off the roster there must leave Leave War too
  *   (it does, on the next notify, via reprojectRoster). Every sentinel is also
  *   archived, so this subsumes the `special` skip; both are kept for clarity.
+ * - SANS aircrew (`p.san`) are excluded BY DEFAULT (owner, 18 Aug 26 — "we
+ *   will not show the SANS in the leave war however there is a function to
+ *   still enable this"): SANS offer availability rather than being planned as
+ *   squadron manning, so they neither ride the leave grid nor count in its
+ *   manning rows. The enable function is the store's `showSans` config
+ *   (`setShowSans`, admin-gated, surfaced in the Rearrange toolbar) — its two
+ *   callers pass it through as `includeSans`, and with it on a SANS body rides
+ *   the roster exactly as before the exclusion existed.
  * - `band` reads off the CAT ladder exactly as Raptor's own `isInstr` does:
  *   the instructor CATs (IW / IP / IR / FI) are 'instructor', the rest
  *   (OCU → D → C → B → A) are 'ops'.
@@ -29,10 +37,11 @@ import type { Person } from '../engine'
  *   state/demoworld.ts is the one thing that sets them, and only on the
  *   demo crew.
  */
-export function projectPeople(): Person[] {
+export function projectPeople(includeSans = false): Person[] {
   const out: Person[] = []
   for (const [id, p] of Object.entries<any>(PEOPLE)) {
     if (p.special || p.archived) continue
+    if (p.san && !includeSans) continue
     // Ground crew ride the roster since 18 Aug 26 (owner: "when I add
     // personnel through quals, the new personnel will appear on leave war
     // too"). They carry no CAT and no flying seat — `pers` marks them out of
