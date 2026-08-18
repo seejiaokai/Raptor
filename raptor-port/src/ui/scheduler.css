@@ -1474,6 +1474,52 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ined-ad{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;color:var(--ink-2);margin-top:4px}
 .ined-t{display:inline-flex;gap:4px;margin-left:8px}
 .ined-t input{width:78px}
+/* On a phone the inputs table is a stack of CARDS, not a sideways-scrolling
+   eight-column grid. The old fixed 640px table gave the inline editor's calendar
+   only 2 of 8 columns, so it overflowed and the Type/Remarks cells printed on
+   top of it (owner, 18 Aug 26 — "the OL is cutting into the calendar"). As a
+   card stack each read row labels its own values and the editor gets the full
+   width, calendar and all. Desktop, where the columns have the room, is
+   untouched. 820px is where the table was already forced to scroll. */
+@media (max-width:820px){
+  #intbl{ min-width:0; display:block; }
+  #intbl thead{ display:none; }                 /* the header moves into per-cell labels */
+  #intbl tbody{ display:block; }
+  #intbl tbody tr{
+    display:block; border:1px solid var(--edge); border-radius:12px;
+    margin:0 0 10px; padding:3px 2px; background:var(--panel);
+  }
+  #intbl tbody tr td{
+    display:block; border-bottom:none; padding:6px 14px; text-align:left;
+    overflow-wrap:anywhere;
+  }
+  /* each value carries its column name so the card reads without the header */
+  #intbl tbody tr td[data-label]::before{
+    content:attr(data-label); margin-right:8px; color:var(--ink-3);
+    font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  }
+  #intbl tbody tr td:empty{ display:none; }      /* a blank recurring/modified line adds nothing */
+  #intbl tbody tr td.inact{
+    display:flex; justify-content:flex-end; gap:26px;
+    margin-top:2px; padding-top:10px; border-top:1px solid var(--edge);
+  }
+
+  /* the inline EDIT row is a tinted form card: fields stacked and full-width,
+     each labelled from its column, the calendar roomy for a thumb, the
+     read-only recurring/modified cells dropped. */
+  tr.ined{ background:rgba(59,198,232,.06); border-color:rgba(59,198,232,.35); box-shadow:0 10px 26px rgba(0,0,0,.4); }
+  tr.ined>td[data-fld]::before{
+    content:attr(data-fld); display:block; margin:0 0 5px;
+    font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+  }
+  tr.ined>td>select,
+  tr.ined>td>input{ width:100%; box-sizing:border-box; height:38px; }
+  tr.ined .rangecal{ width:100%; max-width:360px; box-sizing:border-box; padding:8px 10px; }
+  tr.ined .rc-d{ font-size:13px; padding:8px 0; }
+  tr.ined .rc-nav{ width:28px; height:28px; font-size:14px; }
+  tr.ined>td.ined-sec{ display:none; }
+  tr.ined>td.inact>span{ width:40px; height:40px; font-size:17px; }
+}
 
 /* ============ MODALS / DRAWER / AIRSPACE ============ */
 /* Stacking, highest last: the scheduler board is a full-screen overlay at 400,
