@@ -1486,28 +1486,84 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   #intbl thead{ display:none; }                 /* the header moves into per-cell labels */
   #intbl tbody{ display:block; }
   #intbl tbody tr{
-    display:block; border:1px solid var(--edge); border-radius:12px;
-    margin:0 0 10px; padding:3px 2px; background:var(--panel);
+    border:1px solid var(--edge); border-radius:12px;
+    margin:0 0 8px; background:var(--panel);
   }
-  #intbl tbody tr td{
-    display:block; border-bottom:none; padding:6px 14px; text-align:left;
-    overflow-wrap:anywhere;
+  /* A READ row is ONE line — name · type · dates · ✎ ✕ — with the remarks
+     (and the rare recurring/modified tails) wrapping onto a second (owner,
+     18 Aug 26: "squeeze the info into as little row as possible… so that I
+     can see more data"). The values read on their own in this order, so the
+     per-cell labels are dropped except on the two metadata tails; the DOM
+     stays the desktop table's column order and CSS `order` does the rest.
+     The EDIT row below keeps its stacked form — a calendar needs the width. */
+  #intbl tbody tr:not(.ined){
+    display:flex; flex-wrap:wrap; align-items:center;
+    column-gap:9px; row-gap:3px; padding:8px 12px 9px;
   }
-  /* each value carries its column name so the card reads without the header */
-  #intbl tbody tr td[data-label]::before{
-    content:attr(data-label); margin-right:8px; color:var(--ink-3);
-    font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  #intbl tbody tr:not(.ined) td{
+    display:block; border-bottom:none; padding:0; text-align:left;
+    overflow-wrap:anywhere; min-width:0;
   }
-  #intbl tbody tr td:empty{ display:none; }      /* a blank recurring/modified line adds nothing */
-  #intbl tbody tr td.inact{
-    display:flex; justify-content:flex-end; gap:26px;
-    margin-top:2px; padding-top:10px; border-top:1px solid var(--edge);
+  #intbl tbody tr:not(.ined) td[data-label="Name"]{ order:0; font-weight:700 }
+  #intbl tbody tr:not(.ined) td[data-label="Type"]{ order:1 }
+  #intbl tbody tr:not(.ined) td[data-label="Start"]{ order:2 }
+  #intbl tbody tr:not(.ined) td[data-label="End"]{ order:3 }
+  /* the range joiner; a one-day input reads once, never "Jul 13 → Jul 13" —
+     the row marks its End cell data-same when it repeats the start */
+  #intbl tbody tr:not(.ined) td[data-label="End"]::before{
+    content:'→'; color:var(--ink-3); margin-right:9px;
   }
+  #intbl tbody tr:not(.ined) td[data-label="End"][data-same]{ display:none }
+  /* the actions close line one; margin-left:auto soaks the slack, which is
+     also what makes everything after them wrap. The two targets keep their
+     deliberate size and distance (the Aug-5 rule — delete is not undoable). */
+  #intbl tbody tr:not(.ined) td.inact{
+    order:4; display:flex; gap:22px; margin-left:auto;
+    border-top:none; margin-top:0; padding:0;
+  }
+  /* the 40% basis is what keeps remarks OFF line one (even the shortest
+     card's first line leaves less slack than that, so remarks always wrap and
+     never read after the ✕) while still leaving room for the modified tail to
+     share line TWO beside them instead of taking a third */
+  #intbl tbody tr:not(.ined) td[data-label="Remarks"]{ order:5; flex:1 1 40% }
+  #intbl tbody tr:not(.ined) td[data-label="Recurring"],
+  #intbl tbody tr:not(.ined) td[data-label="Modified"]{
+    order:6; font-size:10.5px; color:var(--ink-3);
+  }
+  /* modified hugs the second line's right edge; the 140px floor keeps a short
+     value ("now") from fitting — and floating — on line one when the card has
+     no remarks */
+  #intbl tbody tr:not(.ined) td[data-label="Modified"]{
+    order:7; margin-left:auto; min-width:140px; text-align:right;
+  }
+  #intbl tbody tr:not(.ined) td[data-label="Recurring"]::before,
+  #intbl tbody tr:not(.ined) td[data-label="Modified"]::before{
+    content:attr(data-label) ' '; font-size:9px; font-weight:600;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3);
+  }
+  #intbl tbody tr td:empty{ display:none; }      /* a blank recurring/modified tail adds nothing */
+  /* the just-added flash moves to the ROW here: the compact cells carry no
+     padding for an inset ring to sit in, and on this surface the tr owns the
+     card's border/background so its shadow is not clipped by cell paint */
+  #intbl tbody tr.innew{ animation:inflash 6s ease-out 1; }
+  #intbl tbody tr.innew>td{ animation:none; }
 
   /* the inline EDIT row is a tinted form card: fields stacked and full-width,
      each labelled from its column, the calendar roomy for a thumb, the
      read-only recurring/modified cells dropped. */
-  tr.ined{ background:rgba(59,198,232,.06); border-color:rgba(59,198,232,.35); box-shadow:0 10px 26px rgba(0,0,0,.4); }
+  tr.ined{
+    display:block; padding:3px 2px;
+    background:rgba(59,198,232,.06); border-color:rgba(59,198,232,.35);
+    box-shadow:0 10px 26px rgba(0,0,0,.4);
+  }
+  tr.ined>td{
+    display:block; border-bottom:none; padding:6px 14px; text-align:left;
+    overflow-wrap:anywhere;
+  }
+  tr.ined>td.inact{
+    display:flex; justify-content:flex-end; gap:26px;
+    margin-top:2px; padding-top:10px; border-top:1px solid var(--edge);
+  }
   tr.ined>td[data-fld]::before{
     content:attr(data-fld); display:block; margin:0 0 5px;
     font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
