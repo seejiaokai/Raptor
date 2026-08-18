@@ -563,6 +563,26 @@ describe('two-way: edits and deletes on the Inputs page carry back into the war'
     expect(lwInputs()[0].remarks).toBe('in Bali till 3 Feb')
   })
 
+  it('extending a leave keeps the member\'s remark note, moving only the date', () => {
+    approve('ammo', ['2026-02-02', '2026-02-03', '2026-02-04'])
+    runOutbound()
+    const row = lwInputs()[0]
+    expect(row.remarks).toBe('till 4 Feb')
+    // the member adds detail after the tail — a remarks-only edit stays synced
+    const draft = draftOf(row)
+    draft.remarks = 'till 4 Feb Bangkok'
+    expect(commitInputEdit(row, draft)).toBe(true)
+    expect(row.lw).toBe('y2026')
+    // now the war extends the leave by a day: the row is re-minted, but the
+    // note rides across and only the date token moves.
+    approve('ammo', ['2026-02-05'])
+    runOutbound()
+    const rows = lwInputs()
+    expect(rows).toHaveLength(1)
+    expect(rows[0].endDate).toBe('Feb 5')
+    expect(rows[0].remarks).toBe('till 5 Feb Bangkok')
+  })
+
   it('a Raptor-owned cell is never withdrawn — retraction is lw-ownership only', () => {
     writeInputs(() => INPUTS.push({
       person: 'ammo', date: 'Feb 2', allday: true, type: 'LL', remarks: '', mod: '2026-06-01',

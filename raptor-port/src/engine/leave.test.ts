@@ -3,7 +3,7 @@
    assertions are kept intact below; everything after them pins the axes the
    new table added. */
 import { describe, expect, it } from 'vitest'
-import { LEAVE_TYPES, INPUT_TYPES, INPUT_META, inpMeta, canSpare, canWork, awayAllDay, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isSansAvail, offWord, inputCoversDate } from './inputs'
+import { LEAVE_TYPES, INPUT_TYPES, INPUT_META, inpMeta, canSpare, canWork, awayAllDay, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isSansAvail, offWord, inputCoversDate, typeGroup, withRemarksTail } from './inputs'
 import { validate } from './validate'
 
 describe('leave is LL / OL / OIL (tfin B42)', () => {
@@ -149,5 +149,40 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
   it('the roster really does carry leave to test against', () => {
     const W = validate()
     expect(W.all.some((x: any) => x.code === 'LEAVE_FLY' || x.code === 'DNIF_FLY')).toBe(true)
+  })
+
+  /* Duty is a new LOCAL personal input (owner, 18 Aug 26) that must behave in
+     every derived rule EXACTLY like Appointment — the whole point of building
+     it as a grp:'act' entry rather than special-casing it. */
+  it('Duty behaves like Appointment in every derived rule', () => {
+    expect(INPUT_TYPES).toContain('Duty')
+    for (const pred of [isPersonal, isUnavail, isLeave, isDownchit, isSansAvail, canSpare, canWork, awayAllDay] as any[])
+      expect(pred('Duty'), pred.name).toBe(pred('Appointment'))
+    // same dropdown section as Appointment — under "Duty & other commitments"
+    expect(typeGroup('Duty')).toBe(typeGroup('Appointment'))
+    expect(typeGroup('Duty')).toBe('other')
+    // and it is NOT overseas duty (OD), which is out of reach
+    expect(isUnavail('Duty')).toBe(false)
+    expect(isUnavail('OD')).toBe(true)
+  })
+
+  /* The remarks date token is rewritten IN PLACE, so a note the typist put
+     BEFORE or AFTER it survives the date moving (owner, 18 Aug 26). */
+  describe('withRemarksTail rewrites the date token in place', () => {
+    const jul = (d: number) => `2026-07-${String(d).padStart(2, '0')}`
+    it('a note after the tail survives the end date moving', () => {
+      expect(withRemarksTail('till 13 Jul Bangkok', jul(16), jul(18), 'on')).toBe('till 18 Jul Bangkok')
+    })
+    it('a note before the tail survives too', () => {
+      expect(withRemarksTail('LL till 13 Jul', jul(16), jul(18), 'on')).toBe('LL till 18 Jul')
+    })
+    it('an empty remark just gets the tail; a span reads "till", a single day "on"', () => {
+      expect(withRemarksTail('', jul(16), jul(18), 'on')).toBe('till 18 Jul')
+      expect(withRemarksTail('', jul(16), jul(16), 'on')).toBe('on 16 Jul')
+    })
+    it("'none' writes no one-day token and drops an existing one, keeping the note", () => {
+      expect(withRemarksTail('till 13 Jul Bangkok', jul(16), jul(16), 'none')).toBe('Bangkok')
+      expect(withRemarksTail('', jul(16), jul(16), 'none')).toBe('')
+    })
   })
 })

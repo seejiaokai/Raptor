@@ -731,6 +731,14 @@ describe('the end date writes itself into Remarks', () => {
     expect(rm().value).toBe('')
   })
 
+  it('a note kept AFTER the tail survives the dates changing (owner, 18 Aug 26)', async () => {
+    await typeInto(rm(), 'till 15 Jul Bangkok')
+    // re-pick a new range: the note is kept, the date token follows the calendar
+    await click(day('16')); await click(day('18'))
+    expect(rm().value, 'Bangkok must remain').toContain('Bangkok')
+    expect(rm().value).toBe('Bangkok till 18 Jul')
+  })
+
   it('Add clears the note but keeps the tail, because the dates stay on the form', async () => {
     await click(day('14')); await click(day('16'))
     await typeInto(rm(), 'LL till 16 Jul')

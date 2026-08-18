@@ -242,7 +242,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - The input types still split two ways, but the split is **presentational
   only** since 10 Aug 26 — it decides which block a row is drawn in and
   nothing else. `isUnavail` = leave + medical + OD; `isPersonal` = the
-  activity types (Training, CSE, Meeting, Fly with, Personal, Appointment, Other),
+  activity types (Training, CSE, Meeting, Fly with, Personal, Appointment,
+  **Duty** — a LOCAL duty added 18 Aug 26, identical to Appointment in every
+  derived rule — and Other),
   which are also exactly the types a scheduler may lift onto the Ground
   Programme (`ground` in the table). Together they partition `INPUT_TYPES` —
   a test pins that nothing falls between them, and a second pins that

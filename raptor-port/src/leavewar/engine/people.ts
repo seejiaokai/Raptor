@@ -69,9 +69,13 @@ export function groupOf(p: Person): Group {
   return p.band === 'instructor' ? 'IWSO' : 'OPSW'
 }
 
-/** A→D first, then instructor grades, then OCU — the display order WITHIN an
- *  ops group (the owner's "cats A, B, C, D"). Unknown CATs sort last. */
-const CAT_RANK: Record<string, number> = { A: 0, B: 1, C: 2, D: 3, IW: 4, IP: 4, IR: 5, FI: 6, OCU: 7 }
+/** Most-qualified first: FI, IR, IP, IW, then the ops grades A→D, then OCU
+ *  (owner, 18 Aug 26 — "look at my list of hierarchy"; the SXO group was
+ *  jumbled because IP and IW used to share one rank and interleaved by
+ *  callsign). Every grade now has its OWN rank, so a mixed group (SXO) reads
+ *  top-qual-down; an ops-only group (OPS P / OPS W) is unaffected — it holds
+ *  only A→D, whose relative order is unchanged. Unknown CATs sort last. */
+const CAT_RANK: Record<string, number> = { FI: 0, IR: 1, IP: 2, IW: 3, A: 4, B: 5, C: 6, D: 7, OCU: 8 }
 
 /** The CAT text a person's chip shows: their Raptor CAT, or the plain
  *  category as a fallback when the seed carries no CAT. Empty for ground crew
@@ -111,8 +115,8 @@ export function autoOrder(people: Person[]): string[] {
   for (const g of GROUP_ORDER) {
     const arr = people.filter(p => groupOf(p) === g)
     arr.sort((a, b) => {
-      const ra = CAT_RANK[(a.q || '').toUpperCase()] ?? 8
-      const rb = CAT_RANK[(b.q || '').toUpperCase()] ?? 8
+      const ra = CAT_RANK[(a.q || '').toUpperCase()] ?? 9
+      const rb = CAT_RANK[(b.q || '').toUpperCase()] ?? 9
       if (ra !== rb) return ra - rb
       return a.callsign.localeCompare(b.callsign)
     })

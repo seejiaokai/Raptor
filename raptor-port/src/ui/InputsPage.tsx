@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, remarksDateTail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, withRemarksTail } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -31,19 +31,13 @@ import { RangeCal } from './RangeCal'
    end moves — the whole point of the ask. It is matched anchored at the END
    because that is where the calendar puts it; text typed AFTER it is prose the
    calendar has no business rewriting, so it is left alone. */
-/* Also strips an `on 15 Jul` tail, not just `till`: a Leave-War leave that
-   syncs in as a single day carries that form, and re-picking its range on the
-   calendar must rewrite the tail rather than strand it. */
-const TILL = /\s*(?:till|on)\s+\d{1,2}\s+[A-Za-z]{3}\s*$/i
-const withTill = (rm: any, s: string, e: string) => {
-  const head = String(rm || '').replace(TILL, '').trimEnd()
-  /* 'none' for the picker: a range that ends where it starts is one day (add()
-     drops endDate for it), and the picker fires mid-selection, so no tail is
-     written until an end day closes a real span — see remarksDateTail. */
-  const tail = remarksDateTail(s, e, 'none')
-  if (!tail) return head
-  return (head ? head + ' ' : '') + tail
-}
+/* Closing a range rewrites the `till 15 Jul` token IN PLACE — wherever it sits,
+   not only at the end — so a note the typist put AFTER it survives the date
+   moving (owner, 18 Aug 26: "till 13 Jul Bangkok" → change the end → "till 18
+   Jul Bangkok", Bangkok stays). 'none' means the picker writes no one-day token
+   (it fires on the first click of a two-click range, so a token would flash
+   before the end day is chosen). All the logic is `withRemarksTail`. */
+const withTill = (rm: any, s: string, e: string) => withRemarksTail(rm, s, e, 'none')
 
 /* ---- the table's own view state: which window, and sorted how ------------
    (owner, Aug 5). The list is a planning tool, so it opens on what is COMING:

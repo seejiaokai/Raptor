@@ -73,6 +73,25 @@ describe('autoOrder — the categorised default', () => {
       if (a >= 0 && b >= 0) expect(a).toBeLessThan(b)
     }
   })
+
+  /* Within a MIXED group (SXO holds every grade) the order is most-qualified
+     first — FI, IR, IP, IW, then the ops grades A→D, then OCU (owner, 18 Aug
+     26: "look at my list of hierarchy"). Before this IP and IW shared a rank
+     and interleaved by callsign, which is the jumble the owner flagged. */
+  it('a mixed group sorts most-qualified first: FI, IR, IP, IW, A→D, OCU', () => {
+    const sxo = (id: string, q: string, over: Partial<Person> = {}) =>
+      person(id, { sxo: true, band: 'instructor', q, ...over })
+    const mixed = [
+      sxo('s_a', 'A', { band: 'ops' }),
+      sxo('s_iw', 'IW', { seat: 'wso' }),
+      sxo('s_fi', 'FI'),
+      sxo('s_ocu', 'OCU', { band: 'ops' }),
+      sxo('s_ip', 'IP'),
+      sxo('s_c', 'C', { band: 'ops' }),
+      sxo('s_ir', 'IR'),
+    ]
+    expect(autoOrder(mixed)).toEqual(['s_fi', 's_ir', 's_ip', 's_iw', 's_a', 's_c', 's_ocu'])
+  })
 })
 
 describe('catClass / catText — colours reuse Raptor\'s CAT palette', () => {

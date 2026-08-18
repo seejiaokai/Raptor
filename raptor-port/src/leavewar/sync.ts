@@ -22,7 +22,7 @@
 // reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
 // store write notifies subscribers synchronously, and this module is one.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave, remarksDateTail } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave, withRemarksTail } from '../engine/inputs'
 import { ME } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
@@ -230,11 +230,23 @@ export function runOutbound(): void {
        acceptInput — leave is isUnavail and that path hard-refuses it by
        design; the input existing is what reaches every schedule surface. */
     writeInputsBatch(() => {
+      /* When a leave's DATES change (an admin extends it in Leave War), its
+         old row is stale and a new run is missing — a remove-then-mint. Carry
+         the member's own remark detail across that gap keyed on the unchanging
+         part of the leave (person|type|portion), so "till 13 Jul Bangkok"
+         becomes "till 18 Jul Bangkok" rather than losing Bangkok (owner,
+         18 Aug 26 — the same "the note remains, the date moves" rule the Inputs
+         calendar now follows). withRemarksTail rewrites just the date token in
+         whatever the member wrote. */
+      const priorRemark = new Map<string, string>()
       for (const row of stale) {
+        const key = `${row.person}|${lwTypeOf(row.type)}|${portionOfRow(row)}`
+        if (!priorRemark.has(key)) priorRemark.set(key, String(row.remarks ?? ''))
         const ix = INPUTS.indexOf(row)
         if (ix >= 0) INPUTS.splice(ix, 1)
       }
       for (const r of missing) {
+        const prior = priorRemark.get(`${r.person}|${r.type}|${r.portion}`)
         const row: any = {
           person: r.person,
           /* Back to Raptor's own spelling — an 'ATTB' run lands as an
@@ -246,10 +258,11 @@ export function runOutbound(): void {
              synced leave says how long it runs wherever remarks are read, and
              the type column already carries LL/OL so nothing repeats it
              (owner, 18 Aug 26). A member then refines this on the Inputs page
-             — "on leave in Bali till 17 Jul" — and reconciliation preserves it:
-             remarks are not in the signature, so an unchanged leave is matched,
-             not re-minted. */
-          remarks: remarksDateTail(r.start, r.end, 'on'),
+             — "in Bali till 17 Jul" — and reconciliation preserves it: remarks
+             are not in the signature, so an unchanged leave is matched, not
+             re-minted; and when the DATES change, `prior` above carries the
+             detail into the re-minted row with only the date token moved. */
+          remarks: withRemarksTail(prior ?? '', r.start, r.end, 'on'),
           mod: 'now',
           /* The ownership tag: which war this row is derived from. Inbound
              skips lw-tagged rows (the loop-breaker), and reconciliation
