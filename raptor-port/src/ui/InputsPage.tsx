@@ -576,7 +576,11 @@ export function InputsPage() {
               )
               return (
                 <tr key={inx} className={flash.indexOf(r) >= 0 ? 'innew' : undefined} data-iid={r.iid}>
-                  <td data-label="Name">{cs}</td><td data-label="Start">{st}</td><td data-label="End">{en}</td>
+                  {/* data-same marks an End that just repeats the Start, so the
+                      phone card can drop it and read "Jul 13", never
+                      "Jul 13 → Jul 13" (scheduler.css, the inputs card block);
+                      the desktop table renders both columns as ever */}
+                  <td data-label="Name">{cs}</td><td data-label="Start">{st}</td><td data-label="End" data-same={en === st ? '' : undefined}>{en}</td>
                   <td data-label="Type"><span className="intag">{r.type}</span></td>
                   {/* the mark reads in Remarks, not beside the type (owner,
                       9 Aug 26) — same column on every surface that draws an

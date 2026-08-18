@@ -513,6 +513,43 @@ describe('the range calendar', () => {
   })
 })
 
+/* the phone card drops an End that repeats the Start ("Jul 13", never
+   "Jul 13 → Jul 13") — CSS hides it off this marker, which is all jsdom can
+   see, so pin the marker itself */
+describe('the End cell marks itself data-same on a one-day input', () => {
+  it('a one-day row carries it, a span row does not', async () => {
+    /* plant one of each shape rather than trusting what earlier tests left of
+       the seed, and widen the window so both are certainly on screen */
+    const planted: any[] = [
+      { person: 'sufa', date: 'Jul 14', allday: true, type: 'LL', remarks: '' },
+      { person: 'sufa', date: 'Jul 14', endDate: 'Jul 16', allday: true, type: 'LL', remarks: '' },
+    ]
+    INPUTS.push(...planted)
+    await act(async () => { notify() })
+    /* neutralise whatever filters earlier tests left behind */
+    await act(async () => {
+      const setv = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
+      for (const id of ['inFPerson', 'inFType']) {
+        const sel = $('#' + id) as unknown as HTMLSelectElement
+        setv.call(sel, 'all'); sel.dispatchEvent(new Event('change', { bubbles: true }))
+      }
+    })
+    if (!$('#inRangePop')) await click($('#inRangeBtn'))
+    await click($('#inRangeAll'))
+    try {
+      const cell = (row: any) => {
+        const inx = INPUTS.indexOf(row)
+        return rowFor(inx).querySelector('td[data-label="End"]')!
+      }
+      expect(cell(planted[0]).hasAttribute('data-same'), 'one-day marks itself').toBe(true)
+      expect(cell(planted[1]).hasAttribute('data-same'), 'a span does not').toBe(false)
+    } finally {
+      for (const r of planted) INPUTS.splice(INPUTS.indexOf(r), 1)
+      await act(async () => { notify() })
+    }
+  })
+})
+
 /* the pencil edits the row in place */
 describe('editing an input from its own line', () => {
   it('opens on the pencil, commits on ✓, and joins the undo stack', async () => {
