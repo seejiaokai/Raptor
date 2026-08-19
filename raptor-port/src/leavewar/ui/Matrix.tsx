@@ -410,6 +410,38 @@ export function Matrix() {
     if (m && w && w.scrollLeft !== m.scrollLeft) w.scrollLeft = m.scrollLeft
   }
 
+  // The frozen header tracks the grid on a requestAnimationFrame LOOP, not
+  // straight off the scroll event (owner, 19 Aug 26 — a sideways scroll felt
+  // stuttery and the header lagged the grid, "trying to catch up"). A touch
+  // scroll moves `.mx-wrap` on the compositor at full frame rate, but its
+  // `scroll` event fires on the main thread COALESCED — often fewer than once
+  // a frame during a fling — so copying the mirror's position from the event
+  // alone always lands a frame or more behind, which reads as the header
+  // chasing the grid. Sampling `wrap.scrollLeft` inside rAF instead writes the
+  // match in the same frame the grid paints, so the two move as one. The loop
+  // runs ONLY while a scroll is in flight — each scroll event re-arms a short
+  // stop timer — so an idle page still idles rather than spinning rAF forever.
+  const rafRef = useRef<number | null>(null)
+  const pumpStopRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const stopPump = () => {
+    if (rafRef.current != null) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
+    if (pumpStopRef.current) { clearTimeout(pumpStopRef.current); pumpStopRef.current = null }
+  }
+  const pump = () => {
+    syncMirror()
+    rafRef.current = requestAnimationFrame(pump)
+  }
+  const startPump = () => {
+    if (rafRef.current == null) rafRef.current = requestAnimationFrame(pump)
+    if (pumpStopRef.current) clearTimeout(pumpStopRef.current)
+    // Outlive the scroll-rest window the row reflow uses, so the last few
+    // settling frames are still tracked before the loop lets go.
+    pumpStopRef.current = setTimeout(stopPump, 200)
+  }
+  // The mirror only exists while stuck; stop the loop the moment it thaws so
+  // it never runs with nothing to drive.
+  useEffect(() => { if (!stuck) stopPump() }, [stuck])
+
   // The bracket row and the header row, rendered once in the grid and again
   // inside the phone mirror. The mirror copy carries no test ids — two nodes
   // answering one id would break every query that expects the real one.
@@ -580,11 +612,16 @@ export function Matrix() {
   const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const onWrapScroll = () => {
     measureStrip()
+    // Match this frame straight away, then keep matching every frame on the
+    // rAF loop until the scroll rests — the immediate write covers the case
+    // where the loop has not spun up yet, the loop covers the frames the
+    // coalesced scroll event skips.
     syncMirror()
+    startPump()
     if (idleRef.current) clearTimeout(idleRef.current)
     idleRef.current = setTimeout(() => { idleRef.current = null; measureWindow() }, SCROLL_REST_MS)
   }
-  useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current) }, [])
+  useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); stopPump() }, [])
 
   // Both halves measured when the war changes, since that rebuilds every
   // column — and NOT mid-fling, so the window half runs directly here.

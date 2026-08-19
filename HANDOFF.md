@@ -156,6 +156,19 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   fixed-layout colgroup (the events row is what widens a column). Never in
   jsdom (no matchMedia, no layout — guarded); e2e-pinned in leavewar.spec.ts
   (freeze/thaw, topbar anchor, horizontal lockstep, column alignment).
+  **The mirror tracks the grid on a requestAnimationFrame LOOP now, not the
+  scroll event alone (19 Aug 26, owner: sideways scroll "stuttery… it lags
+  the grids below, trying to catch up").** The old `syncMirror` wrote the
+  mirror's scrollLeft straight off `.mx-wrap`'s `scroll` event, which fires
+  coalesced on the main thread — so the compositor-driven grid outran it and
+  the header chased. Now `onWrapScroll` also starts a rAF pump (`pump`/
+  `startPump`/`stopPump` in Matrix.tsx) that re-runs `syncMirror` every frame
+  while a scroll is in flight and stops ~200ms after it rests (so an idle page
+  still idles); the immediate `syncMirror` in the event covers the first
+  frame, the loop covers the frames the event skips. `syncFromMirror`
+  (mirror→grid, for a drag on the frozen strip) is unchanged and the guards
+  keep the two from fighting. Not measurable headless (no kinetic scroll — the
+  e2e proves tracking + alignment, a real phone proves the smoothness).
   (3) **A month BRACKET row** (`tr.mbrak` in the same `.mxhead` tbody): one
   open-topped accent box per month spanning exactly its days, label sticky
   just clear of the frozen columns. Derived from the loaded days, so a
