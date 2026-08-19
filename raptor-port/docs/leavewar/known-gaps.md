@@ -545,3 +545,45 @@ restating so they are not read as bugs:
   `quals.scDay`/`scNight`, in `reprojectRoster`'s signature) — tick or untick
   SC DAY / SC NIGHT on the Quals page and the rows recount on the next
   notify. The raw seed carries a demo set mirroring Raptor's own boot rule.
+
+## The manning counters are the squadron's own rules (19 Aug 26, supersedes the overlay above)
+
+Later the same day the owner asked for the rules themselves ("instead of hard
+coding these permutations, make it editable… these counters can also be
+deleted"), so the numbers-only overlay above is history: a `ManningRule` is
+now DATA, stored whole under `manningdefs`, and the section above's
+"only thresholds are stored, never rule definitions" no longer holds — the
+deliberate departure and its forward-compat story live on the State comment in
+`store.ts` and in HANDOFF's top bullet. What stands from the section above:
+the explainer sheet, the amber/red quick-edit, the no-amber-band idiom, and
+everything said about the SC teams' matching, duty presence, and projected
+quals.
+
+The shape, briefly (detail in HANDOFF's bullet):
+
+- **Two counting kinds cover the old six.** `people` sums availability over
+  one `CrewFilter` (seats · effective CAT is/is-not · qualification keys
+  held/not held); `team` counts complete teams of DIFFERENT people from 1–6
+  slots (`availability.ts:teamsOf`, the full Hall subset walk that `scTeams`
+  hand-picked; parity pinned per seeded rule per demo day in
+  `engine/counterrules.test.ts`). Crew sets are the two-slot team; a team can
+  `show` teams or people-in-teams, and `presence` keeps duty-standers counted.
+- **The form** (`ui/CounterForm.tsx`, testids `cform-*`) is guided pickers,
+  never free text (owner's pick): name, kind, filters, slots, a live
+  first-day sample, amber/red. Delete arms. `+ Counter` and the armed
+  "Reset counters" live in the Rearrange tools; `Edit counter…` on the sheet.
+  A rule saved from the form carries no hand `desc` — the sheet writes its
+  words from the definition (`describeRule`), so words and rule cannot drift.
+- **The qual chips are Raptor's live catalogue** (`qualCatalogue()` →
+  `setQualCatalog`, refreshed with every reprojection; held keys ride
+  `Person.xq`). A qualification added on the Quals page appears in the form
+  as soon as anyone holds it; one removed keeps counting whoever still holds
+  the flag (removal never touches `p.quals`), and an edited rule keeps its
+  orphan key as a chip so Save cannot silently rewrite it.
+- **Persistence departs from "the war forgets"**: `manningdefs` /
+  `manningorder` / `manninghidden` route to localStorage
+  (`storage.ts:splitBackend`, boot in `main.tsx`) because a counter built or
+  deleted is squadron configuration, not leave data. The boot reader IS the
+  save validator (`readManningRules`), so nothing saveable is un-reloadable;
+  a corrupt blob falls back to the seeded eleven, and the legacy
+  `manningthresh` overlay is still read once as a migration.

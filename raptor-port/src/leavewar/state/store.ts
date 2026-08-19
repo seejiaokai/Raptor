@@ -26,6 +26,13 @@ import {
   seedPeriod,
   seedRequirements,
   seedWars,
+  MAX_TEAM_SLOTS,
+  SEED_QUAL_CATALOG,
+  type CrewFilter,
+  type ManningRule,
+  type QualDef,
+  type RuleCount,
+  type TeamSlot,
   autoOrder,
   groupOf,
   GROUP_ORDER,
@@ -62,16 +69,24 @@ import { localBackend, memoryBackend, type StorageBackend } from './storage'
 
 interface State {
   people: Person[]
+  /** The manning rules ARE data now (owner, 19 Aug 26 — "instead of hard
+   *  coding these permutations, make it editable… and these counters can
+   *  also be deleted"): `requirements.default.rules` is the squadron's own
+   *  set, persisted WHOLE under `manningdefs` and edited through
+   *  `saveManningRule` / `deleteManningRule` / the threshold setters, all
+   *  ADMIN-gated. The old numbers-only overlay (`manningthresh`) is still
+   *  READ at boot so a squadron's tuned amber/red lines survive the upgrade,
+   *  but never written again. This deliberately departs from the
+   *  stores-list rule about code-owned definitions: the owner asked for the
+   *  definitions themselves, and forward-compat lives in `readManningRules`
+   *  dropping any stored rule a later build cannot understand (the seed
+   *  fills the gap). */
   requirements: Requirements
-  /** The squadron's own amber/red lines, keyed by manning row id (`'sets'`
-   *  plus each rule's id) — an OVERLAY on the seeded defaults, which is what
-   *  `requirements` above is always derived from (`requirementsWith`).
-   *  Storing only the numbers keeps the rule definitions code-owned, so a
-   *  rule renamed or reworded in a later build cannot be frozen by an old
-   *  blob (the stores-list lesson). Persisted under `manningthresh`,
-   *  ADMIN-gated at the write path (owner, 19 Aug 26 — "when does the amber
-   *  show or red show… is customisable"). */
-  manningThresh: Record<string, Threshold>
+  /** The qualification chips the counter form offers — Raptor's live Quals
+   *  catalogue, installed by the projection (`setQualCatalog`) exactly like
+   *  the roster; never persisted, and the seed's three keys stand in when
+   *  the app runs standalone. */
+  qualCatalog: QualDef[]
   /** The squadron's EVENT TYPES — the small library that gives a day-event
    *  word its off/no-leave/work meaning (engine/eventdefs.ts). Squadron-wide,
    *  not per-war, and persisted under its own `eventdefs` key. */
@@ -207,7 +222,7 @@ function blank(): State {
   return withCurrent({
     people: seedPeople(),
     requirements: seedRequirements(),
-    manningThresh: {},
+    qualCatalog: [...SEED_QUAL_CATALOG],
     eventDefs: seedEventDefs(),
     wars,
     currentId: wars[0].period.id,
@@ -363,9 +378,12 @@ function readFigureOrder(x: unknown): string[] | null {
 /** A stored id list (the roster order), same shape as the figure order. */
 const readIdList = readFigureOrder
 
-/** The stored amber/red overlay. One bad entry is dropped rather than
- *  rejecting the whole blob (the label-map rule); an id no rule carries any
- *  more is harmless — `requirementsWith` only reads ids the seed still has. */
+/** The stored amber/red overlay of the PRE-definitions build, read at boot
+ *  only so an upgraded browser keeps its tuned lines (they migrate into the
+ *  rules themselves and persist under `manningdefs` from then on). One bad
+ *  entry is dropped rather than rejecting the whole blob (the label-map
+ *  rule); an id no rule carries any more is harmless — `requirementsWith`
+ *  only reads ids the seed still has. */
 function readThreshMap(x: unknown): Record<string, Threshold> | null {
   if (!isPlainObject(x)) return null
   const out: Record<string, Threshold> = {}
@@ -379,16 +397,109 @@ function readThreshMap(x: unknown): Record<string, Threshold> | null {
   return out
 }
 
-/** The seeded requirements with the squadron's own amber/red lines laid on
- *  top. ALWAYS built from the seed, never from the previous derived object,
- *  so removing an overlay entry genuinely returns the default. */
+/** The seeded requirements with a legacy amber/red overlay laid on top — the
+ *  migration path for a browser that customised its lines before the rules
+ *  became data. The old overlay knew `sets` as its own key; it is an ordinary
+ *  rule now, so the same map read covers it. */
 function requirementsWith(overlay: Record<string, Threshold>): Requirements {
   const req = seedRequirements()
-  if (req.default.sets && overlay['sets']) req.default.sets = { ...overlay['sets'] }
   req.default.rules = req.default.rules.map(r =>
     overlay[r.id] ? { ...r, threshold: { ...overlay[r.id] } } : r,
   )
   return req
+}
+
+// ---- The stored manning rules (owner, 19 Aug 26) ---------------------------
+//
+// Read with the label-map tolerance: one rule a later build cannot understand
+// is dropped, the rest survive. A stored empty LIST is honoured (the admin
+// deleted every counter — a decision, not damage); a non-empty list where
+// nothing survived is corruption and falls back to the seed rather than to a
+// blank manning block.
+
+const isShortString = (x: unknown): x is string => typeof x === 'string' && x.length > 0 && x.length <= 80
+
+function readStringList(x: unknown): string[] | null {
+  if (!Array.isArray(x) || x.length > 24) return null
+  return x.every(isShortString) ? [...x] : null
+}
+
+function readFilter(x: unknown): CrewFilter | null {
+  if (!isPlainObject(x)) return null
+  const out: CrewFilter = {}
+  const lists: [keyof CrewFilter, unknown][] = [
+    ['seats', x.seats], ['cats', x.cats], ['notCats', x.notCats], ['quals', x.quals], ['notQuals', x.notQuals],
+  ]
+  for (const [key, v] of lists) {
+    if (v === undefined) continue
+    const list = readStringList(v)
+    if (!list) return null
+    if (key === 'seats' && !list.every(s => s === 'pilot' || s === 'wso')) return null
+    if (list.length) (out as Record<string, unknown>)[key] = list
+  }
+  return out
+}
+
+function readThreshold(x: unknown): Threshold | null {
+  if (!isPlainObject(x)) return null
+  const { amber, red } = x as { amber?: unknown; red?: unknown }
+  if (typeof amber !== 'number' || !Number.isFinite(amber) || amber < 0) return null
+  if (typeof red !== 'number' || !Number.isFinite(red) || red < 0) return null
+  return { amber, red }
+}
+
+function readRuleCount(x: unknown): RuleCount | null {
+  if (!isPlainObject(x)) return null
+  if (x.kind === 'people') {
+    const filter = readFilter(x.filter)
+    return filter ? { kind: 'people', filter } : null
+  }
+  if (x.kind !== 'team' || !Array.isArray(x.slots)) return null
+  if (x.slots.length < 1 || x.slots.length > MAX_TEAM_SLOTS) return null
+  const slots: TeamSlot[] = []
+  for (const s of x.slots) {
+    if (!isPlainObject(s)) return null
+    const { count } = s as { count?: unknown }
+    if (typeof count !== 'number' || !Number.isInteger(count) || count < 1 || count > 9) return null
+    const filter = readFilter(s.filter)
+    if (!filter) return null
+    slots.push({ count, filter })
+  }
+  const out: RuleCount = { kind: 'team', slots }
+  if (x.show === 'people') out.show = 'people'
+  if (x.presence === true) out.presence = true
+  return out
+}
+
+/** One rule, or `null` when it is not usable. Shared by the storage read and
+ *  the write path (`saveManningRule`), so nothing malformed can arrive by
+ *  either door. */
+function readManningRule(x: unknown): ManningRule | null {
+  if (!isPlainObject(x)) return null
+  if (!isShortString(x.id) || !isShortString(x.label)) return null
+  const threshold = readThreshold(x.threshold)
+  const count = readRuleCount(x.count)
+  if (!threshold || !count) return null
+  const out: ManningRule = { id: x.id, label: x.label, count, threshold }
+  if (typeof x.desc === 'string' && x.desc.length <= 2000) out.desc = x.desc
+  return out
+}
+
+function readManningRules(x: unknown): ManningRule[] | null {
+  if (!Array.isArray(x) || x.length > 60) return null
+  const out: ManningRule[] = []
+  const seen = new Set<string>()
+  for (const r of x) {
+    const rule = readManningRule(r)
+    if (!rule || seen.has(rule.id)) continue
+    out.push(rule)
+    seen.add(rule.id)
+  }
+  // A stored EMPTY list is a decision — the admin deleted every counter, and
+  // a reload must not resurrect the seed. A non-empty list where every entry
+  // was dropped is corruption, and falls back to the seed like any other
+  // unreadable blob.
+  return out.length || x.length === 0 ? out : null
 }
 
 /** A stored id→label map (personnel labels). Non-string values are dropped
@@ -578,7 +689,12 @@ export function initStore(b?: StorageBackend): void {
   const persLabels = readStored('perslabels', readLabelMap) ?? {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
-  const manningThresh = readStored('manningthresh', readThreshMap) ?? {}
+  // The squadron's own rule set, or — for a browser from before rules were
+  // data — the seed with its old numbers-only overlay migrated in.
+  const storedRules = readStored('manningdefs', readManningRules)
+  const requirements: Requirements = storedRules
+    ? { default: { rules: storedRules }, overrides: {} }
+    : requirementsWith(readStored('manningthresh', readThreshMap) ?? {})
   const eventRows = readStored('eventrows', x =>
     typeof x === 'number' && Number.isInteger(x) && x >= DEFAULT_EVENT_ROWS && x <= MAX_EVENT_ROWS ? x : null,
   ) ?? DEFAULT_EVENT_ROWS
@@ -595,7 +711,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, manningThresh, requirements: requirementsWith(manningThresh), eventRows, showSans })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, requirements, eventRows, showSans })
 
   version = 0
   listeners.clear()
@@ -658,7 +774,7 @@ function persist(): void {
   backend.write('perslabels', JSON.stringify(state.persLabels))
   backend.write('manningorder', JSON.stringify(state.manningOrder))
   backend.write('manninghidden', JSON.stringify(state.manningHidden))
-  backend.write('manningthresh', JSON.stringify(state.manningThresh))
+  backend.write('manningdefs', JSON.stringify(state.requirements.default.rules))
   backend.write('eventrows', JSON.stringify(state.eventRows))
   backend.write('showsans', JSON.stringify(state.showSans))
   /* `people` deliberately absent: the roster is a projection of Raptor's
@@ -1353,10 +1469,7 @@ export function resetFigureOrder(): void {
 /** The rule ids the manning block can draw, in their natural order — `'sets'`
  *  when a set rule exists, then each default rule's id. */
 export function manningRowIds(): string[] {
-  const req = state.requirements.default
-  const ids = req.sets ? ['sets'] : []
-  for (const r of req.rules) ids.push(r.id)
-  return ids
+  return state.requirements.default.rules.map(r => r.id)
 }
 
 /** The manning rows in DISPLAY order: the admin's hand-order first (unknown ids
@@ -1421,22 +1534,82 @@ export function resetManning(): void {
 export function setManningThreshold(id: string, amber: number, red: number): boolean {
   if (state.role !== 'admin') return false
   if (!Number.isFinite(amber) || amber < 0 || !Number.isFinite(red) || red < 0) return false
-  if (!manningRowIds().includes(id)) return false
-  const manningThresh = { ...state.manningThresh, [id]: { amber, red } }
-  state = withCurrent({ ...state, manningThresh, requirements: requirementsWith(manningThresh) })
+  const rules = state.requirements.default.rules
+  if (!rules.some(r => r.id === id)) return false
+  const next = rules.map(r => (r.id === id ? { ...r, threshold: { amber, red } } : r))
+  state = withCurrent({ ...state, requirements: { ...state.requirements, default: { rules: next } } })
   persist()
   notify()
   return true
 }
 
-/** Put one row's amber/red lines back to the built-in default. ADMIN-gated. */
+/** Put one row's amber/red lines back to the built-in default — only a row
+ *  the seed still knows has one; a counter the admin built is its own
+ *  default. ADMIN-gated. */
 export function resetManningThreshold(id: string): void {
   if (state.role !== 'admin') return
-  if (!(id in state.manningThresh)) return
-  const manningThresh = { ...state.manningThresh }
-  delete manningThresh[id]
-  state = withCurrent({ ...state, manningThresh, requirements: requirementsWith(manningThresh) })
+  const seedT = seedRequirements().default.rules.find(r => r.id === id)?.threshold
+  if (!seedT) return
+  setManningThreshold(id, seedT.amber, seedT.red)
+}
+
+/**
+ * Create or rework one counter (owner, 19 Aug 26). The rule is pushed through
+ * the SAME validator the storage read uses, so the form cannot save a shape a
+ * reload would drop. An existing id is replaced in place — the row keeps its
+ * position and its hidden flag; a new id is appended and `orderedManningIds`'
+ * tail rule shows it at the bottom. ADMIN-gated; returns whether it wrote.
+ */
+export function saveManningRule(rule: ManningRule): boolean {
+  if (state.role !== 'admin') return false
+  const clean = readManningRule(rule)
+  if (!clean) return false
+  const rules = state.requirements.default.rules
+  const next = rules.some(r => r.id === clean.id)
+    ? rules.map(r => (r.id === clean.id ? clean : r))
+    : [...rules, clean]
+  state = withCurrent({ ...state, requirements: { ...state.requirements, default: { rules: next } } })
   persist()
+  notify()
+  return true
+}
+
+/** Delete one counter outright (owner, 19 Aug 26 — "these counters can also
+ *  be deleted"). Its order and hidden entries go with it, so nothing keeps a
+ *  dead id alive; a SEEDED id deleted here stays deleted (the stored list is
+ *  the whole truth), and `resetManningRules` is the road back. ADMIN-gated. */
+export function deleteManningRule(id: string): boolean {
+  if (state.role !== 'admin') return false
+  const rules = state.requirements.default.rules
+  if (!rules.some(r => r.id === id)) return false
+  state = withCurrent({
+    ...state,
+    requirements: { ...state.requirements, default: { rules: rules.filter(r => r.id !== id) } },
+    manningOrder: state.manningOrder.filter(x => x !== id),
+    manningHidden: state.manningHidden.filter(x => x !== id),
+  })
+  persist()
+  notify()
+  return true
+}
+
+/** Put the BUILT-IN counter set back — the recovery path when a seeded row
+ *  was deleted or reworked beyond recognition. Counters the admin created
+ *  are discarded with everything else, which is what "reset" says; the
+ *  toolbar arms the button so one stray tap cannot do it. ADMIN-gated. */
+export function resetManningRules(): void {
+  if (state.role !== 'admin') return
+  state = withCurrent({ ...state, requirements: seedRequirements(), manningOrder: [], manningHidden: [] })
+  persist()
+  notify()
+}
+
+/** Install Raptor's live qualification catalogue for the counter form's
+ *  chips — the projection's rider, change-guarded by the caller like the
+ *  roster itself. Not persisted and not admin-gated: it is derived squadron
+ *  vocabulary, not a decision. */
+export function setQualCatalog(catalog: QualDef[]): void {
+  state = withCurrent({ ...state, qualCatalog: catalog })
   notify()
 }
 

@@ -6,13 +6,14 @@
 // count row's name opens this sheet — the same bottom-sheet idiom every other
 // decision in this app uses — with the row's plain-words definition, the
 // current amber/red lines spelt out, and (admin only) the two numbers
-// editable. The definitions live on the rules themselves (`ManningRule.desc`,
-// seed.ts); the numbers are the squadron's own overlay on the seeded defaults
-// (store.ts:setManningThreshold), so a later build can reword a rule without
-// an old blob freezing it.
+// editable. Since rules became data (same day — "make it editable… and these
+// counters can also be deleted"), the definition is either the seeded rule's
+// hand wording or written from the rule itself (`describeRule`), and the
+// sheet's admin footer opens the full counter form (`CounterForm`) where the
+// WHO and the shape are edited, or the counter deleted.
 
 import { useEffect, useState } from 'react'
-import { seedRequirements, SETS_DESC, type Threshold } from '../engine'
+import { describeRule, seedRequirements, type Threshold } from '../engine'
 import { getState, resetManningThreshold, setManningThreshold } from '../state/store'
 import { Sheet } from './Sheet'
 import { useVersion } from './useStore'
@@ -31,24 +32,29 @@ function whenColours(t: Threshold): string {
   return `Amber when the day's number drops below ${show(t.amber)} · red below ${show(t.red)}.`
 }
 
-export function ManningSheet({ ruleId, onClose }: { ruleId: string; onClose: () => void }) {
+export function ManningSheet({ ruleId, onClose, onEdit }: {
+  ruleId: string
+  onClose: () => void
+  /** Open the full counter form on this rule — the admin's road to renaming,
+   *  redefining or deleting it. */
+  onEdit: (ruleId: string) => void
+}) {
   // Its own subscription, not just the Matrix's: a Save from this sheet must
   // repaint the sentence above the fields even where the sheet is mounted
   // alone (the tests do; a future surface might).
   useVersion()
-  const { requirements, manningThresh, role } = getState()
+  const { requirements, qualCatalog, role } = getState()
   const rule = requirements.default.rules.find(r => r.id === ruleId)
-  const isSets = ruleId === 'sets'
-  const label = isSets ? 'Crew sets' : rule?.label ?? ruleId
-  const desc = isSets ? SETS_DESC : rule?.desc ?? ''
-  const threshold: Threshold | null = isSets ? requirements.default.sets : rule?.threshold ?? null
+  const label = rule?.label ?? ruleId
+  const qualLabel = (k: string) => qualCatalog.find(q => q.k === k)?.label ?? k.toUpperCase()
+  const desc = rule ? rule.desc ?? describeRule(rule, qualLabel) : ''
+  const threshold: Threshold | null = rule?.threshold ?? null
 
   // The built-in numbers, for the "Default" note and to know whether Reset
   // has anything to do. Read off a fresh seed so a customised store cannot
-  // shadow them.
-  const seed = seedRequirements().default
-  const seedT = isSets ? seed.sets : seed.rules.find(r => r.id === ruleId)?.threshold ?? null
-  const customised = ruleId in manningThresh
+  // shadow them; a counter the admin built has no seed twin and no Reset.
+  const seedT = seedRequirements().default.rules.find(r => r.id === ruleId)?.threshold ?? null
+  const customised = !!threshold && !!seedT && (threshold.amber !== seedT.amber || threshold.red !== seedT.red)
 
   // Draft fields, re-synced whenever the stored numbers move (a save from
   // this sheet, a Reset, or another admin elsewhere) — never mid-keystroke.
@@ -138,6 +144,15 @@ export function ManningSheet({ ruleId, onClose }: { ruleId: string; onClose: () 
                 Reset to default
               </button>
             )}
+            {/* The road to the counter itself — who it counts, its name, its
+                shape, or deleting it outright (owner, 19 Aug 26). */}
+            <button
+              className="creset"
+              data-testid="counter-edit-open"
+              onClick={() => onEdit(ruleId)}
+            >
+              Edit counter…
+            </button>
           </div>
         </>
       )}

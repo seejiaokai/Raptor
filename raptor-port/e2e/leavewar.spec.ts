@@ -1925,3 +1925,45 @@ test('the roster does not reflow mid-scroll, only once the scroll settles', asyn
   // Once the scroll comes to rest the window updates and the row leaves.
   await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(0)
 })
+
+// The counters as data (owner, 19 Aug 26): an admin builds one in the guided
+// form, and it reads real numbers on the real grid. The form is the tallest
+// sheet in the app — the whole-viewport assertion is the point of running
+// this in a browser, on the phone project especially.
+test('an admin builds a counter in the form, and the new row counts', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="roster-arrange"]').click()
+  await page.locator('[data-testid="counter-add"]').click()
+  const sheet = page.locator('[data-testid="counter-form"]')
+  await expect(sheet).toBeVisible()
+  // The sheet sits wholly inside the viewport — scrolled inside, never
+  // clipped or pushed off the top (the dvh rule every sheet rides).
+  const box = (await sheet.boundingBox())!
+  const vp = page.viewportSize()!
+  expect(box.y).toBeGreaterThanOrEqual(0)
+  expect(box.y + box.height).toBeLessThanOrEqual(vp.height + 1)
+  expect(box.x).toBeGreaterThanOrEqual(0)
+  expect(box.x + box.width).toBeLessThanOrEqual(vp.width + 1)
+
+  await page.locator('[data-testid="cform-name"]').fill('SXO CREW')
+  await page.locator('[data-testid="cf-qual-sxo"]').click()
+  await page.locator('[data-testid="cform-save"]').click()
+  const row = page.locator('[data-testid="count-sxo-crew"]')
+  await expect(row).toHaveCount(1)
+  // The seeded world has SXOs on its roster, so the new row shows a real
+  // number on the war's first day — not a blank and not zero.
+  const first = page.locator('[data-testid^="count-sxo-crew-2026-01-01"]')
+  await expect(first).not.toHaveText('0')
+})
+
+test('deleting a counter takes its row off the grid', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await expect(page.locator('[data-testid="count-wmp"]')).toHaveCount(1)
+  await page.locator('[data-testid="manning-info-wmp"]').click()
+  await page.locator('[data-testid="counter-edit-open"]').click()
+  const del = page.locator('[data-testid="cform-delete"]')
+  await del.click()
+  await expect(del).toHaveText('Really delete?')
+  await del.click()
+  await expect(page.locator('[data-testid="count-wmp"]')).toHaveCount(0)
+})

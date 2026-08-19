@@ -18,6 +18,22 @@ export function memoryBackend(): StorageBackend {
   }
 }
 
+/**
+ * Route a few named keys to a durable backend while everything else stays on
+ * the session one. The counter DEFINITIONS (and their order/hidden lists) are
+ * squadron SETTINGS, not leave data (owner, 19 Aug 26 — a counter he built,
+ * or deleted, must not resurrect on reload), so they outlive the session that
+ * deliberately forgets the war itself. One routing seam rather than a second
+ * store: the shared database backend still replaces this whole module.
+ */
+export function splitBackend(session: StorageBackend, durable: StorageBackend, durableKeys: string[]): StorageBackend {
+  const keys = new Set(durableKeys)
+  return {
+    read: key => (keys.has(key) ? durable : session).read(key),
+    write: (key, value) => (keys.has(key) ? durable : session).write(key, value),
+  }
+}
+
 export function localBackend(): StorageBackend {
   return {
     read: key => {

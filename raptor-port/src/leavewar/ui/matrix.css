@@ -904,6 +904,8 @@
 .rtbtn:hover { border-color: var(--accent); }
 .rtbtn.pri { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
 .rtbtn.on { background: var(--raised); border-color: var(--accent); color: var(--accent); }
+/* An armed destructive button (Reset counters): the first tap only asks. */
+.rtbtn.arm { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
 
 /* Group heading. The label rides a sticky td spanning the two frozen columns
    (the .who/.bal technique), pinned to the left as the year scrolls; its text
