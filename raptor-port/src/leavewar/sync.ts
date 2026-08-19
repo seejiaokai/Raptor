@@ -242,14 +242,27 @@ export function runOutbound(): void {
          calendar now follows). withRemarksTail rewrites just the date token in
          whatever the member wrote. */
       const priorRemark = new Map<string, string>()
+      /* keyed WITHOUT the portion, as the fallback (review fix, 19 Aug 26):
+         converting a full-day leave to a half day moves the exact key from
+         'p|OL|full' to 'p|OL|am', so the lookup missed and the member's own
+         detail ("Bangkok") was silently dropped — the very loss the date-change
+         carry above exists to prevent. The exact key still wins where it
+         matches, so two same-type leaves with different portions carry their
+         own remarks; only an unmatched portion falls back to the person+type's
+         first stale remark, which beats losing the words. */
+      const priorLoose = new Map<string, string>()
       for (const row of stale) {
-        const key = `${row.person}|${lwTypeOf(row.type)}|${portionOfRow(row)}`
+        const t = lwTypeOf(row.type)
+        const key = `${row.person}|${t}|${portionOfRow(row)}`
         if (!priorRemark.has(key)) priorRemark.set(key, String(row.remarks ?? ''))
+        const lk = `${row.person}|${t}`
+        if (!priorLoose.has(lk)) priorLoose.set(lk, String(row.remarks ?? ''))
         const ix = INPUTS.indexOf(row)
         if (ix >= 0) INPUTS.splice(ix, 1)
       }
       for (const r of missing) {
         const prior = priorRemark.get(`${r.person}|${r.type}|${r.portion}`)
+          ?? priorLoose.get(`${r.person}|${r.type}`)
         const row: any = {
           person: r.person,
           /* Back to Raptor's own spelling — an 'ATTB' run lands as an

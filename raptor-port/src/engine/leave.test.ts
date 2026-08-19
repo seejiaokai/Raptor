@@ -184,6 +184,14 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
       expect(withRemarksTail('till 13 Jul Bangkok', jul(16), jul(16), 'none')).toBe('Bangkok')
       expect(withRemarksTail('', jul(16), jul(16), 'none')).toBe('')
     })
+    it('never rewrites the MIDDLE of a word — "Reunion 12 Jul" is the typist\'s prose, not a token (review fix, 19 Aug 26)', () => {
+      // before the \b guard these came back "Reunitill 18 Jul dinner" / "Londtill 18 Jul"
+      expect(withRemarksTail('Reunion 12 Jul dinner', jul(16), jul(18), 'on')).toBe('Reunion 12 Jul dinner till 18 Jul')
+      expect(withRemarksTail('London 12 Jul', jul(16), jul(18), 'on')).toBe('London 12 Jul till 18 Jul')
+      // the month written out is not the token either — left alone, tail appended
+      // (the lesser wrong beside eating "Jul" out of "July")
+      expect(withRemarksTail('till 15 July', jul(16), jul(18), 'on')).toBe('till 15 July till 18 Jul')
+    })
     it("'till' (the Inputs calendar) writes a one-day tail too — 'till <that day>'", () => {
       // a span still names its LAST day
       expect(withRemarksTail('', jul(16), jul(18), 'till')).toBe('till 18 Jul')

@@ -22,6 +22,7 @@ import {
   resetEventTypes,
   addEventRow,
   removeEventRow,
+  eventRowUsed,
   MAX_EVENT_ROWS,
   setManningThreshold,
   resetManningThreshold,
@@ -1408,6 +1409,29 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
     expect(getState().eventRows).toBe(2)
     // never below the default two
     expect(removeEventRow()).toBe('min')
+  })
+
+  it('the remove guard sees EVERY war, not only the open one (review fix, 19 Aug 26)', () => {
+    setRole('admin')
+    expect(addEventRow()).toBe(true)                       // rows: 3, squadron-wide
+    const home = getState().currentId
+    expect(createWar('JUL 28', '2028-07-01', '2028-07-31')).toBe('created')
+    // by the created id, not "any other war" — the seed already holds several
+    const other = 'war-2028-07-01-2028-07-31'
+    selectWar(other)
+    expect(setDayEvent('2028-07-06', 2, 'Exercise')).toBe(true)
+    selectWar(home)
+    // the open war's line 2 is empty, but 2028's is not — the row must stay
+    expect(eventRowUsed(2)).toBe(true)
+    expect(removeEventRow()).toBe('nonempty')
+    expect(getState().eventRows).toBe(3)
+    // clear the OTHER war's word and the remove goes through
+    selectWar(other)
+    setDayEvent('2028-07-06', 2, '')
+    selectWar(home)
+    expect(eventRowUsed(2)).toBe(false)
+    expect(removeEventRow()).toBe('removed')
+    expect(getState().eventRows).toBe(2)
   })
 
   it('caps the row count and gates both writers to admin', () => {

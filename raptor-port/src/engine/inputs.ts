@@ -495,8 +495,14 @@ export function remarksDateTail(startISO:any, endISO:any, single:'on'|'none'|'ti
    end. That is the difference the owner asked for (18 Aug 26): "if the user has
    till 13 Jul Bangkok, when the date changes the Bangkok remains." The token is
    the calendar's to rewrite; everything around it — before OR after — is the
-   typist's and is kept. */
-const DATE_TOKEN=/(?:till|on)\s+\d{1,2}\s+[A-Za-z]{3}/i;
+   typist's and is kept.
+   BOUNDED AT BOTH ENDS (review fix, 19 Aug 26): without \b the token matched
+   MID-WORD — "Reunion 12 Jul dinner" matched the "on 12 Jul" inside "Reunion"
+   and a re-pick rewrote it to "Reunitill 18 Jul dinner", destroying the
+   typist's word. The trailing \b keeps "till 15 July" (the month written out)
+   from being half-eaten the same way — an unrecognised spelling is left alone
+   and the fresh token appended, which is the lesser wrong. */
+const DATE_TOKEN=/\b(?:till|on)\s+\d{1,2}\s+[A-Za-z]{3}\b/i;
 /* Rewrite (or insert, or remove) the date token inside a remark IN PLACE,
    leaving the surrounding prose untouched. `single` is passed straight to
    `remarksDateTail`: the Inputs calendar passes 'till' (a one-day pick reads

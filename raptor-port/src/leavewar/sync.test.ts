@@ -583,6 +583,25 @@ describe('two-way: edits and deletes on the Inputs page carry back into the war'
     expect(rows[0].remarks).toBe('till 5 Feb Bangkok')
   })
 
+  it('converting a full day to a half keeps the member\'s remark detail too (review fix, 19 Aug 26)', () => {
+    approve('ammo', ['2026-02-02'])
+    runOutbound()
+    const row = lwInputs()[0]
+    const draft = draftOf(row)
+    draft.remarks = 'on 2 Feb Bangkok'
+    expect(commitInputEdit(row, draft)).toBe(true)
+    // the admin converts the approved cell to a MORNING half — same leave,
+    // same date, new portion. The re-mint used to look the remark up under
+    // the exact person|type|portion key, miss on the portion, and drop
+    // "Bangkok" — the very loss the date-change carry above prevents.
+    approve('ammo', ['2026-02-02'], '*LL')
+    runOutbound()
+    const rows = lwInputs()
+    expect(rows).toHaveLength(1)
+    expect(rows[0].half).toBe('am')
+    expect(rows[0].remarks).toContain('Bangkok')
+  })
+
   it('a Raptor-owned cell is never withdrawn — retraction is lw-ownership only', () => {
     writeInputs(() => INPUTS.push({
       person: 'ammo', date: 'Feb 2', allday: true, type: 'LL', remarks: '', mod: '2026-06-01',

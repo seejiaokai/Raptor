@@ -28,7 +28,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, getState, MAX_EVENT_ROWS, moveRosterRow, orderedManningIds, personLabel, removeEventRow, setPersLabel, setPostOut, setShowSans } from '../state/store'
+import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveRosterRow, orderedManningIds, personLabel, removeEventRow, setPersLabel, setPostOut, setShowSans } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -100,9 +100,11 @@ export function Matrix() {
   // Whether the LAST event row still carries any text or band — the remove
   // control is disabled while it does, so nothing is dropped unseen (owner,
   // 18 Aug 26; the store refuses it too).
-  const lastEventRowUsed =
-    period.days.some(d => (d.events[eventRows - 1] ?? '') !== '') ||
-    period.bands.some(b => b.line === eventRows - 1)
+  /* across EVERY war, not just the open one — eventRows is squadron-wide, so
+     the button must stay disabled while any year's war still uses the line
+     (review fix, 19 Aug 26; the store's removeEventRow guard is the same
+     check, this only keeps the button honest about it) */
+  const lastEventRowUsed = eventRowUsed(eventRows - 1)
 
   // The colour a whole day column takes from its events: light green for an
   // off day (a PH), orange for a no-leave day. Computed once per day and read
@@ -163,13 +165,20 @@ export function Matrix() {
   // highlight. One window pointermove/pointerup pair is attached for the life
   // of a drag and torn down on release.
   const dragId = useRef<string | null>(null)
-  const dragOverRef = useRef<string | null>(null)
+  /* `after` says which HALF of the hovered row the pointer is in (review fix,
+     19 Aug 26). Insert-before-only had two dead spots: dropping a row on the
+     row directly beneath it re-inserted it exactly where it was (a silent
+     no-op), and the last position of the roster was unreachable — the store's
+     move-to-end path (beforeId null) had no gesture that produced it. The
+     lower half of a row now means "after this row", so both work. */
+  const dragOverRef = useRef<{ id: string, after: boolean } | null>(null)
   // The teardown for a drag in flight, so an unmount (role change, war switch)
   // can end it — otherwise its window listeners leak and the row stays stuck
   // in the .dragging highlight.
   const dragCleanup = useRef<(() => void) | null>(null)
   const [draggingId, setDraggingId] = useState<string | null>(null)
   const [dragOver, setDragOver] = useState<string | null>(null)
+  const [dragAfter, setDragAfter] = useState(false)
 
   function startRowDrag(e: React.PointerEvent, id: string) {
     if (e.button != null && e.button !== 0) return // primary pointer only
@@ -180,7 +189,18 @@ export function Matrix() {
       const el = document.elementFromPoint(ev.clientX, ev.clientY)
       const row = el && (el as Element).closest ? (el as Element).closest('[data-testid^="row-"]') : null
       const overId = row?.getAttribute('data-testid')?.slice(4) ?? null
-      if (overId !== dragOverRef.current) { dragOverRef.current = overId; setDragOver(overId) }
+      /* which half decides before/after; a zero-height rect (jsdom) reads as
+         "before", keeping the old semantics where layout cannot answer */
+      let after = false
+      if (row) {
+        const r = (row as HTMLElement).getBoundingClientRect()
+        after = r.height > 0 && ev.clientY > r.top + r.height / 2
+      }
+      const cur = dragOverRef.current
+      if (overId !== (cur?.id ?? null) || after !== (cur?.after ?? false)) {
+        dragOverRef.current = overId ? { id: overId, after } : null
+        setDragOver(overId); setDragAfter(after)
+      }
     }
     // `commit` is false for a cancel (a system gesture, multi-touch, or the
     // grid unmounting mid-drag): tear down without moving anything. Without a
@@ -192,12 +212,29 @@ export function Matrix() {
       window.removeEventListener('pointercancel', cancel)
       dragCleanup.current = null
       const from = dragId.current
-      const to = dragOverRef.current
+      const over = dragOverRef.current
       dragId.current = null
       dragOverRef.current = null
       setDraggingId(null)
       setDragOver(null)
-      if (commit && from && to && from !== to) moveRosterRow(from, to)
+      setDragAfter(false)
+      if (commit && from && over && over.id !== from) {
+        /* "after row X" resolves to "before the row that follows X" in the
+           RENDERED order — the DOM is what the user is looking at, and the
+           hit-test above already trusts it. No follower means the true end
+           of the roster, the store's beforeId:null path (unreachable from
+           this gesture before the rework). Resolving to `from` itself means
+           the drop lands exactly where the row already is — skip, or the
+           store's before-itself guard would have to save us. */
+        let beforeId: string | null = over.id
+        if (over.after) {
+          const rows = [...document.querySelectorAll('[data-testid^="row-"]')]
+            .map(el => el.getAttribute('data-testid')!.slice(4))
+          const ix = rows.indexOf(over.id)
+          beforeId = ix >= 0 ? (rows[ix + 1] ?? null) : over.id
+        }
+        if (beforeId !== from) moveRosterRow(from, beforeId)
+      }
     }
     const up = () => end(true)
     const cancel = () => end(false)
@@ -956,7 +993,7 @@ export function Matrix() {
                           p.id === viewer ? 'me' : '',
                           arranging ? 'arrange' : '',
                           draggingId === p.id ? 'dragging' : '',
-                          draggingId && dragOver === p.id && draggingId !== p.id ? 'dragover' : '',
+                          draggingId && dragOver === p.id && draggingId !== p.id ? (dragAfter ? 'dragover after' : 'dragover') : '',
                         ].filter(Boolean).join(' ') || undefined}
                       >
                         <td className="who">

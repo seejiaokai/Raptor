@@ -27,6 +27,14 @@ export default defineConfig({
           name: 'raptor',
           include: ['src/**/*.test.{ts,tsx}'],
           exclude: ['**/node_modules/**', 'src/leavewar/**'],
+          /* 20s like leavewar's, for the same reason: headroom on a slow
+             shared runner, not a target. The default 5s failed main's deploy
+             on 19 Aug 26 — a board.test.tsx test that runs ~1s locally timed
+             out on a CI runner ~30% slower than this container, and the
+             abandoned test's un-run cleanup cascaded a second, misleading
+             failure. The same commit had passed the identical PR gate
+             minutes earlier: the code was never wrong, the ceiling was. */
+          testTimeout: 20_000,
         },
       },
       {
