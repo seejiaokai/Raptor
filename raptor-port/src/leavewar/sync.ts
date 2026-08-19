@@ -660,8 +660,11 @@ function reprojectRoster(): void {
   // Write only when a roster-visible field actually changed, so an ordinary
   // Raptor notify (a schedule edit touching no roster field) stays a cheap
   // no-op instead of thrashing the matrix on every keystroke.
+  // scd/scn ride the signature so a Quals-page SC DAY / SC NIGHT tick — a
+  // change no other field carries — still writes the roster and recounts the
+  // SC team rows (owner, 19 Aug 26: quals edits must update the leave war).
   const sig = (p: any) =>
-    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}`
+    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.scd ? 1 : 0}|${p.scn ? 1 : 0}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}`
   const before = new Map(st.people.map(p => [p.id, sig(p)]))
   const unchanged = before.size === next.length && next.every(p => before.get(p.id) === sig(p))
   if (unchanged) return

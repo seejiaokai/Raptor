@@ -34,6 +34,14 @@ export interface Person {
    *  to band there. NEVER read by manning: `categoryOf` still derives from
    *  seat + band, so a stale or missing CAT cannot move a count. */
   q?: string
+  /** SC DAY / SC NIGHT currency, carried through the Raptor projection for the
+   *  SC D / SC N team rows (owner, 19 Aug 26). Like `q` these are Raptor's to
+   *  hold — the Quals page is where they are ticked — and NEVER read by the
+   *  category counts: only the two SC team figures in `countsFor` look at
+   *  them, so a stale or missing flag cannot move any other manning number.
+   *  Absent on the raw seed people until `seedPeople` assigns the demo set. */
+  scd?: boolean
+  scn?: boolean
   /** Ground crew. Included in the roster since 18 Aug 26 (owner) so they can
    *  hold leave and be seen; excluded from every aircrew manning count. */
   pers?: boolean

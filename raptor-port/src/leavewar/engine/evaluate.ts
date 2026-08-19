@@ -43,6 +43,8 @@ function haveFor(rule: ManningRule, counts: DayCounts): number {
   if (rule.target.kind === 'sxo') return counts.sxo
   if (rule.target.kind === 'flp') return counts.flp
   if (rule.target.kind === 'wmp') return counts.wmp
+  if (rule.target.kind === 'scd') return counts.scd
+  if (rule.target.kind === 'scn') return counts.scn
   return rule.target.categories.reduce((sum, c) => sum + counts.byCategory[c], 0)
 }
 

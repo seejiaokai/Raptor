@@ -23,13 +23,27 @@ export type RuleTarget =
   | { kind: 'flp' }
   /** Available wingman pilots (CAT C and below). */
   | { kind: 'wmp' }
+  /** Complete SC DAY teams (2 SC-day pilots + 2 SC-day WSOs + 1 SXO + 1 more
+   *  crew, six different people — availability.ts:scTeams). */
+  | { kind: 'scd' }
+  /** As `scd`, for SC NIGHT (AVALON). */
+  | { kind: 'scn' }
 
 export interface ManningRule {
   id: string
   label: string
   target: RuleTarget
   threshold: Threshold
+  /** Plain words for the tap-a-row sheet: what this row counts (owner,
+   *  19 Aug 26 — "crew sets means Pilot + Wso", spelt out for every row). */
+  desc?: string
 }
+
+/** What the CREW SETS row counts, for the same sheet — the set rule is a
+ *  `Threshold` on the requirement rather than a `ManningRule`, so its words
+ *  cannot ride a rule object. */
+export const SETS_DESC =
+  'One set is one pilot plus one WSO — a jet you can crew. The day\'s number is whichever seat runs out first.'
 
 export interface Requirement {
   /** In sets, where one set is a pilot plus a WSO. `null` means no set rule. */

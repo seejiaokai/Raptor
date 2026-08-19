@@ -11,6 +11,7 @@ export function CountRows({
   hidden,
   arranging,
   admin,
+  onInfo,
 }: {
   verdicts: Record<string, DayVerdict>
   dates: string[]
@@ -22,6 +23,9 @@ export function CountRows({
   arranging: boolean
   /** The viewer is an admin — the only role that may reorder or hide. */
   admin: boolean
+  /** A tap on a row's NAME opens its explainer sheet (owner, 19 Aug 26 —
+   *  "create a bubble when I tap on the individual crew counter"). */
+  onInfo: (ruleId: string) => void
 }) {
   // `requirementFor` can swap in a wholly different rule set per date via
   // `overrides[date]` — nothing constrains an override's rules to the same
@@ -60,7 +64,20 @@ export function CountRows({
         const isHidden = hiddenSet.has(ruleId)
         return (
           <tr key={ruleId} data-testid={`count-${ruleId}`} className={isHidden ? 'mrow-hidden' : ''}>
-            <td className="who">{label.get(ruleId)}</td>
+            {/* The name is the tap target for the row's explainer sheet — the
+                whole 76px frozen cell, not a glyph inside it, because a glyph
+                in that column is not a tap target (the counter-arrows lesson).
+                A real button for the keyboard; styled as the plain label. */}
+            <td className="who">
+              <button
+                className="mwho"
+                data-testid={`manning-info-${ruleId}`}
+                title={`What does ${label.get(ruleId)} count?`}
+                onClick={() => onInfo(ruleId)}
+              >
+                {label.get(ruleId)}
+              </button>
+            </td>
             {/* A count row is a rule, not a person, so it has no leave balance.
                 The cell is otherwise empty and aligns the column — in Rearrange
                 mode it carries the admin's reorder / hide controls, which have

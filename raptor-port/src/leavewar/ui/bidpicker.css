@@ -483,6 +483,81 @@
   color: var(--ink-3);
   border-style: dotted;
 }
+
+/* THE MANNING EXPLAINER (owner, 19 Aug 26) — what a count row means and
+   where its colours turn on. Prose first, then the colour rule in a bolder
+   line, then (admin) the two number fields. */
+.bidsheet .mdef {
+  padding: 10px 14px 4px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.bidsheet .mwhen {
+  padding: 4px 14px 8px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.bidsheet .mwhen .mdefault {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.bidsheet .mth-edit {
+  display: flex;
+  gap: 10px;
+  padding: 8px 14px 0;
+}
+
+.bidsheet .mth-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bidsheet .mth-field .lab {
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 700;
+}
+
+/* The dateinput's own recipe, sized as a full-width 40px field so it is a
+   real tap target on a phone. */
+.bidsheet .mth-in {
+  width: 100%;
+  min-height: 40px;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  color: var(--ink);
+  border-radius: 9px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color-scheme: dark;
+}
+
+.bidsheet .mth-foot {
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 10px 14px 4px;
+}
+
+.creset.pri {
+  border-color: rgba(59, 198, 232, .5);
+  color: var(--ink);
+}
+
+.creset:disabled {
+  opacity: .45;
+  cursor: default;
+}
 }
 
 /* DELIBERATELY OUTSIDE the #page-leavewar wrapper above — this rule targets

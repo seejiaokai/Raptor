@@ -202,7 +202,7 @@ describe('the manning count rows are admin-arrangeable and hideable', () => {
   })
 
   it('lists the seed manning rows in natural order until one is moved', () => {
-    expect(manningRowIds()).toEqual(['sets', 'ip', 'iwso', 'instr', 'opsp', 'opsw', 'flp', 'wmp', 'sxo'])
+    expect(manningRowIds()).toEqual(['sets', 'ip', 'iwso', 'instr', 'opsp', 'opsw', 'flp', 'wmp', 'sxo', 'scd', 'scn'])
     expect(orderedManningIds()).toEqual(manningRowIds())
   })
 
@@ -293,6 +293,24 @@ describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
     const after = getState().people.find(p => p.id === AIRID)!
     expect(after.sxo).toBe(true)
     expect(groupOf(after)).toBe('SXO') // SXO wins over the flying category
+  })
+
+  /* The SC quals ride the same live projection (owner, 19 Aug 26 — "when I
+     add or remove quals in the quals page, it will update the leave war"):
+     an SC DAY / SC NIGHT tick is a change no other roster field carries, so
+     the reprojection signature names them explicitly. */
+  it('an SC DAY / SC NIGHT tick on the Quals page reaches Leave War on the next notify', () => {
+    ;(PEOPLE as any)[AIRID] = { cs: 'Testir', seat: 'FCP', q: 'C', quals: {} }
+    raptorNotify()
+    expect(getState().people.find(p => p.id === AIRID)).toMatchObject({ scd: false, scn: false })
+    // Tick SC DAY the way the Quals cell does — the raw quals flag.
+    ;(PEOPLE as any)[AIRID].quals.scDay = true
+    raptorNotify()
+    expect(getState().people.find(p => p.id === AIRID)).toMatchObject({ scd: true, scn: false })
+    // And untick it again — removal propagates the same way.
+    ;(PEOPLE as any)[AIRID].quals.scDay = false
+    raptorNotify()
+    expect(getState().people.find(p => p.id === AIRID)).toMatchObject({ scd: false, scn: false })
   })
 
   it('a Raptor CAT/seat change also propagates to an existing person', () => {

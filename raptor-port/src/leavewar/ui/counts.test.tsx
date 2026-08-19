@@ -12,7 +12,7 @@ beforeEach(() => {
 
 // Dummy counts payload — CountRows never reads `counts`, only `results`, but
 // DayVerdict requires the field to type-check.
-const zeroCounts = { byCategory: { IP: 0, OPSP: 0, IWSO: 0, OPSW: 0 }, sxo: 0, sets: 0, duty: 0, flp: 0, wmp: 0 }
+const zeroCounts = { byCategory: { IP: 0, OPSP: 0, IWSO: 0, OPSW: 0 }, sxo: 0, sets: 0, duty: 0, flp: 0, wmp: 0, scd: 0, scn: 0 }
 
 function rule(ruleId: string, label: string, have: number): RuleResult {
   return { ruleId, label, have, amber: 0, red: 0, verdict: 'ok' }
@@ -83,7 +83,7 @@ describe('count rows keyed by rule identity, not array position', () => {
       // the "ip" row, and its ip count to the "sxo" row.
       'd2': day('d2', [rule('sxo', 'SXO', 9), rule('sets', 'Crew sets', 6), rule('ip', 'IP', 3)]),
     }
-    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} order={[]} hidden={[]} arranging={false} admin={false} /></table>)
+    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} order={[]} hidden={[]} arranging={false} admin={false} onInfo={() => {}} /></table>)
 
     expect(screen.getByTestId('count-sets-d1').textContent).toBe('5')
     expect(screen.getByTestId('count-sets-d2').textContent).toBe('6')
@@ -103,7 +103,7 @@ describe('count rows keyed by rule identity, not array position', () => {
       // the real one.
       'd2': day('d2', [rule('sets', 'Crew sets', 6), rule('sxo', 'SXO', 9)]),
     }
-    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} order={[]} hidden={[]} arranging={false} admin={false} /></table>)
+    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} order={[]} hidden={[]} arranging={false} admin={false} onInfo={() => {}} /></table>)
 
     expect(screen.getByTestId('count-sets-d2').textContent).toBe('6')
     // CountRows renders a missing cell as a bare `<td />` with no testid —
@@ -124,7 +124,7 @@ describe('the manning rows can be reordered and hidden (admin)', () => {
   const draw = (props: Partial<{ order: string[]; hidden: string[]; arranging: boolean; admin: boolean }>) =>
     render(<table><CountRows verdicts={verdicts} dates={['d1']}
       order={props.order ?? []} hidden={props.hidden ?? []}
-      arranging={props.arranging ?? false} admin={props.admin ?? false} /></table>)
+      arranging={props.arranging ?? false} admin={props.admin ?? false} onInfo={() => {}} /></table>)
 
   it('a hidden row is gone for a member and an idle admin', () => {
     draw({ hidden: ['ip'] })

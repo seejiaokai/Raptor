@@ -513,3 +513,35 @@ a function to still enable this." What that means here:
 - **The demo world never touches a SANS body** (`DEMO_MAP` remapped
   `slammed` off vinci onto pike when this shipped; a test guards it), so the
   demo reads identically with the switch off.
+
+## The manning rows explain themselves, and their lines are the squadron's (19 Aug 26)
+
+Tapping a count row's NAME (the frozen cell — the whole label is the target,
+dotted-underlined) opens `ManningSheet`: what the row counts in plain words
+(`ManningRule.desc`, seeded in `seed.ts`; `SETS_DESC` for the set rule), the
+current colour rule as a sentence, and — admin only — the amber/red numbers as
+editable fields with Save and a per-row Reset. The numbers are an OVERLAY on
+the seeded defaults (`store.ts` `manningThresh`, persisted `manningthresh`,
+admin-gated `setManningThreshold`/`resetManningThreshold`): only thresholds
+are stored, never rule definitions, so a later build can reword or re-target a
+rule without an old blob freezing it (the stores-list lesson). Amber at or
+under red is accepted deliberately — it means "no amber band", the SXO seed's
+own idiom — and the sheet says so rather than printing a number that never
+fires.
+
+Two rows joined the block the same day: **SC D** and **SC N** (the AVALON
+cover). Each counts COMPLETE TEAMS — 2 SC-qualified pilots + 2 SC-qualified
+WSOs + 1 SXO + 1 more crew, six different people, ground crew never counted
+(`availability.ts:scTeams`; seeded red below one team). Three things worth
+restating so they are not read as bugs:
+
+- **The count is a matching, not four separate counts.** The only SXO
+  doubling as one of only two SC pilots reads under 1 team — one body cannot
+  fill two of the six seats. That is the point, not an error.
+- **A duty-stander counts as PRESENT for these two rows** while reading 0 to
+  every other figure. SC duty is at work; a fully-manned duty weekend must
+  not go red for being manned.
+- **The SC quals ride the Raptor projection** (`scd`/`scn` off Raptor's
+  `quals.scDay`/`scNight`, in `reprojectRoster`'s signature) — tick or untick
+  SC DAY / SC NIGHT on the Quals page and the rows recount on the next
+  notify. The raw seed carries a demo set mirroring Raptor's own boot rule.
