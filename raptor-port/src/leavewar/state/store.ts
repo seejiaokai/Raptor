@@ -701,19 +701,34 @@ export function setPerson(id: string, patch: Partial<Pick<Person, 'seat' | 'band
  * post-out (the undo). ADMIN-gated, checked here — the role switch is an
  * affordance, so the store is the only place it can mean anything.
  *
+ * ANY date is legal, not just a day of the loaded war (owner, 19 Aug 26 —
+ * "prior to this date to infinity… now till the future infinity… and also
+ * custom dates"): a past date strikes the person's whole history from there,
+ * a date beyond the war's end simply has nothing on screen to grey yet. Only
+ * a malformed string is refused — same line as every guard rail: refuse
+ * malformed data, never a decision.
+ *
+ * `archive` is the sheet's "Archive on PO date" switch (default ON): when the
+ * date arrives, sync.ts's auto-archive pass moves the Raptor body into the
+ * Quals archive. Stored explicitly true/false so a `to` that was NOT set
+ * through this path (the demo overlay) stays untouched by that pass; clearing
+ * the post-out clears the flag with it.
+ *
  * Session-only like the rest of this store, and safe against the live
  * re-projection: `reprojectRoster` refreshes each person's identity from
- * Raptor's projection but preserves posting-out (`from`/`to`) explicitly, so
- * this window survives every Raptor notify.
+ * Raptor's projection but preserves posting-out (`from`/`to`/`poArchive`)
+ * explicitly, so this window survives every Raptor notify.
  */
-export function setPostOut(id: string, fromDate: string | null): boolean {
+export function setPostOut(id: string, fromDate: string | null, archive = true): boolean {
   if (state.role !== 'admin') return false
+  if (fromDate !== null && !/^\d{4}-\d{2}-\d{2}$/.test(fromDate)) return false
   const person = state.people.find(p => p.id === id)
   if (!person) return false
   const to = fromDate ? addDays(fromDate, -1) : null
   state = withCurrent({
     ...state,
-    people: state.people.map(p => (p.id === id ? { ...p, to } : p)),
+    people: state.people.map(p =>
+      (p.id === id ? { ...p, to, poArchive: fromDate ? archive : undefined } : p)),
   })
   persist()
   notify()

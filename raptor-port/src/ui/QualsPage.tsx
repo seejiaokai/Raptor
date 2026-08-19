@@ -14,6 +14,12 @@ import { useVersion } from './useStore'
 /* this page used to carry its own copy of exportCSV — which is how it missed
    the UTF-8 BOM the shared one now writes. One exporter, one encoding. */
 import { exportCSV } from './export'
+/* the sync seam is the ONE sanctioned crossing into Leave War (CLAUDE.md's
+   four-seams rule; inputedit's retractLwRow is the precedent). Restoring an
+   archived body has to clear their Leave War posting-out too, or the very
+   next auto-archive pass would put them straight back — so the whole restore
+   lives in sync.ts and this page just calls it. */
+import { restoreArchivedPerson } from '../leavewar/sync'
 
 /* Column order is the owner's, left to right (5 Aug 26): SANS, SXO, SCHEDULER,
    SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF — currency and appointments
@@ -248,6 +254,9 @@ export function QualsPage() {
      instead of taking an open row on every visit. Admin-only, so a member
      never sees the toggle or the form. */
   const [showAdd, setShowAdd] = useState(false)
+  /* the Archived section under the table (owner, 19 Aug 26): folded to a
+     count by default — it is a records drawer, not the roster */
+  const [showArch, setShowArch] = useState(false)
   const tblRef = useRef<HTMLTableElement>(null)
   const admin = !!SESSION && SESSION.role === 'admin'
 
@@ -607,6 +616,58 @@ export function QualsPage() {
         <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
           dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel) }} />
       </div>
+      {/* ---- the Archived section (owner, 19 Aug 26) ------------------------
+          Where a body lands when it is archived — by the red ✕ above, or by
+          the Leave War post-out's "Archive on PO date" switch the day the PO
+          arrives. Their quals, CAT and every puck on a past schedule are
+          untouched (archiving is a flag, not a delete), so Restore puts them
+          back exactly as they left — "in the future they post back into this
+          sqn, they can be re-added easily". Restore is admin-only: it is the
+          other half of the post-out, which is management's, and it also
+          clears the Leave War posting-out through the sync seam. Sentinel
+          bodies (ALL AVAIL) are archived by construction and are not people,
+          so they never list here. */}
+      {(() => {
+        const archived = Object.keys(PEOPLE)
+          .filter(id => PEOPLE[id].archived && !PEOPLE[id].special)
+          .sort((a, b) => cmp(SORTKEY.cs(PEOPLE[a]), SORTKEY.cs(PEOPLE[b])))
+        if (!archived.length) return null
+        return (
+          <div className="qarchive" id="qArchive">
+            <button className="abtn" id="qArchToggle" aria-expanded={showArch}
+              onClick={() => setShowArch(v => !v)}>
+              {showArch ? '▾' : '▸'} Archived · {archived.length}
+            </button>
+            {showArch && (
+              <div className="qarchlist" data-testid="qarchlist">
+                {archived.map(id => {
+                  const p = PEOPLE[id]
+                  return (
+                    <div className="qarchrow" key={id} data-testid={`qarchrow-${id}`}>
+                      <span className="qarchcs">{p.cs}</span>
+                      <span className="qarchmeta">
+                        {p.pers ? 'Personnel' : `${p.seat === 'FCP' ? 'Pilot' : 'WSO'} · ${p.q}`}
+                      </span>
+                      {admin && (
+                        <button className="abtn qrestore" data-restore={id}
+                          onClick={() => {
+                            if (restoreArchivedPerson(id)) HOOKS.toast(`${p.cs} restored to the roster`, 'ok')
+                          }}>
+                          Restore
+                        </button>
+                      )}
+                    </div>
+                  )
+                })}
+                <div className="qarchhint">
+                  Archived people keep their quals and their pucks on past schedules.
+                  {admin ? ' Restore puts them straight back on the roster.' : ' An admin can restore them.'}
+                </div>
+              </div>
+            )}
+          </div>
+        )
+      })()}
     </>
   )
 }

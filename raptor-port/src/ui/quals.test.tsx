@@ -893,3 +893,38 @@ describe('Edit quals', () => {
     expect($$('#qtbl .qdel')).toEqual([])
   })
 })
+
+describe('the Archived section (owner, 19 Aug 26)', () => {
+  /* the drawer under the table: where the ✕ (and the Leave War post-out's
+     auto-archive) put a body, and where an admin puts one back */
+  it('archiving with the ✕ lands the person in the drawer, and the schedules are untouched', async () => {
+    /* make sure editing is on — the previous describe's Save turned it off */
+    if ($('#qtbl')!.className.indexOf('editing') < 0) await click($('#qEdit'))
+    const archBtn = $$('#qtbl [data-arch]')[0]
+    const id = archBtn.dataset.arch!
+    const daysBefore = JSON.stringify(DAYS)
+    await click(archBtn)
+    expect(PEOPLE[id].archived).toBe(true)
+    /* off the roster table… */
+    expect($(`#qtbl [data-arch="${id}"]`)).toBeFalsy()
+    /* …into the drawer, folded to a count by default */
+    expect($('#qArchToggle')).toBeTruthy()
+    expect($('#qArchToggle')!.textContent).toContain('Archived')
+    expect($('[data-testid="qarchlist"]')).toBeFalsy()
+    await click($('#qArchToggle'))
+    expect($(`[data-testid="qarchrow-${id}"]`)).toBeTruthy()
+    /* archiving is a flag, never a schedule write — every puck stays */
+    expect(JSON.stringify(DAYS)).toBe(daysBefore)
+    /* the ALL AVAIL sentinel is archived by construction and is not a person */
+    expect($('[data-testid="qarchrow-allavail"]')).toBeFalsy()
+  })
+
+  it('Restore puts them straight back on the roster', async () => {
+    const row = $$('[data-testid^="qarchrow-"]')[0]
+    expect(row, 'the previous test left someone archived').toBeTruthy()
+    const id = row.dataset.testid!.slice('qarchrow-'.length)
+    await click(row.querySelector(`[data-restore="${id}"]`))
+    expect(PEOPLE[id].archived).toBe(false)
+    expect($(`[data-testid="qarchrow-${id}"]`)).toBeFalsy()
+  })
+})

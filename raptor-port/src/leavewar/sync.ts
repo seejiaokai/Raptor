@@ -25,9 +25,11 @@
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave, withRemarksTail } from '../engine/inputs'
 import { ME } from '../state/auth'
 import { DAYS } from '../engine/data'
+import { PEOPLE } from '../engine/people'
 import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
 import { dayOilCredits } from '../engine/oil'
-import { subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
+import { validate } from '../engine/validate'
+import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
 import {
   addDays,
   columnKindFor,
@@ -44,6 +46,7 @@ import {
   ingestDutyCredit,
   ingestFromRaptor,
   setPeople,
+  setPostOut,
   setViewer,
   subscribe as lwSubscribe,
   withdrawLeaveCell,
@@ -634,21 +637,106 @@ function reprojectRoster(): void {
   // Leave War owns locally: the posting-out window (from/to), and any
   // deliberate setPerson override an admin made in this session. A person Raptor
   // no longer has drops out — they are simply absent from `projected`.
-  const next = projected.map(pp => {
+  const next: any[] = projected.map(pp => {
     const ex = curById.get(pp.id)
     const merged: any = { ...pp, ...(edits[pp.id] || {}) }
-    if (ex) { merged.from = ex.from; merged.to = ex.to }
+    if (ex) { merged.from = ex.from; merged.to = ex.to; merged.poArchive = ex.poArchive }
     return merged
   })
+  // A POSTED-OUT person stays on the war after their Raptor body is archived
+  // (owner, 19 Aug 26 — "their data will still be kept on the previous
+  // schedules… nothing will be altered"): the auto-archive pass below (and
+  // the Quals ✕) takes them out of the projection, but their leave history is
+  // still what the past months show, and the month-window row filter is what
+  // hides them from the months after they left. So an existing person with a
+  // posting-out window who dropped out of `projected` is KEPT, identity
+  // frozen as last projected. A body archived WITHOUT a posting-out window
+  // still leaves at once — that ✕ means "should never have been here", and
+  // the old exclusion behaviour stands for it.
+  const nextIds = new Set(next.map(p => p.id))
+  for (const p of st.people) {
+    if (!nextIds.has(p.id) && p.to !== null) next.push(p)
+  }
   // Write only when a roster-visible field actually changed, so an ordinary
   // Raptor notify (a schedule edit touching no roster field) stays a cheap
   // no-op instead of thrashing the matrix on every keystroke.
   const sig = (p: any) =>
-    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}`
+    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}`
   const before = new Map(st.people.map(p => [p.id, sig(p)]))
   const unchanged = before.size === next.length && next.every(p => before.get(p.id) === sig(p))
   if (unchanged) return
   setPeople(next)
+}
+
+/* ---- post-out auto-archive (owner, 19 Aug 26) ---------------------------- */
+
+/* Local calendar date, the same convention engine/inputs.ts's 'now' uses —
+   never UTC: a PO dated "today" must archive on the squadron's today. */
+function localTodayISO(): string {
+  const d = new Date()
+  const p2 = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`
+}
+
+/**
+ * Archive the Raptor body of anyone whose posting-out date has ARRIVED
+ * (owner, 19 Aug 26 — "on that live date itself… under quals, they will go
+ * into an archive section"). Keys on THREE things, each deliberate:
+ *
+ * - `to !== null` and today past it — `to` is the last day IN, so the PO date
+ *   itself (to + 1) is the first day this fires.
+ * - `poArchive === true` — the sheet's "Archive on PO date" switch, stored
+ *   explicitly by setPostOut. A custom PO with the switch off never archives,
+ *   and a `to` that predates the switch (the demo overlay's windows) is left
+ *   alone rather than read as consent.
+ * - the Raptor body exists and is not already archived — which is also what
+ *   makes the second pass over an unchanged world a no-op, the same
+ *   fixed-point property every reconciler here has.
+ *
+ * Archiving ONLY sets the flag: pucks on published and past schedules render
+ * from the slot values and PEOPLE[id] is still there, so nothing a scheduler
+ * issued changes — the body just leaves every roster surface, and the Quals
+ * page's Archived section is where it lands. The person STAYS on the leave
+ * war (reprojectRoster's keep rule) so the months before they left still
+ * show their history.
+ */
+export function runPoArchive(): void {
+  if (SYNCING) return
+  const st = getState()
+  const today = localTodayISO()
+  const due = st.people.filter(p =>
+    p.to !== null && p.poArchive === true && today > p.to &&
+    (PEOPLE as any)[p.id] && !(PEOPLE as any)[p.id].archived && !(PEOPLE as any)[p.id].special)
+  if (!due.length) return
+  SYNCING = true
+  try {
+    for (const p of due) (PEOPLE as any)[p.id].archived = true
+    // A body leaving the roster can change what the warnings say about the
+    // lines it was on — the same reason the Quals ✕ re-validates.
+    validate()
+    raptorNotify()
+  } finally {
+    SYNCING = false
+  }
+}
+
+/**
+ * Put an archived body back on the roster — the Quals Archived section's
+ * Restore (owner, 19 Aug 26: "in the future they post back into this sqn,
+ * they can be re added easily"). Clears the Leave War posting-out FIRST:
+ * restoring is "they are back", and a surviving window would hide their row
+ * from every current month — and, with the archive switch on, re-archive
+ * them on the very next pass. Quals, ticks and CAT were never touched by
+ * archiving, so they come back exactly as they left.
+ */
+export function restoreArchivedPerson(id: string): boolean {
+  const body = (PEOPLE as any)[id]
+  if (!body || !body.archived || body.special) return false
+  setPostOut(id, null)
+  body.archived = false
+  validate()
+  raptorNotify()
+  return true
 }
 
 /* ---- wiring -------------------------------------------------------------- */
@@ -668,6 +756,7 @@ export function wireLeaveWarSync(): void {
      it here — once at boot, again on every Raptor notify below — keeps the
      mirror converged without a new seam; setViewer no-ops on a same value. */
   setViewer(ME)
+  runPoArchive()
   runInbound()
   runOilPass()
   runOutbound()
@@ -676,6 +765,7 @@ export function wireLeaveWarSync(): void {
     // Before the passes: a body added on the Quals page must be on the roster
     // before inbound tries to land any of its leave (owner, 18 Aug 26).
     reprojectRoster()
+    runPoArchive()
     runInbound()
     runOilPass()
     runOutbound()
@@ -688,6 +778,10 @@ export function wireLeaveWarSync(): void {
        it makes (setPeople) re-fires this callback, and the signature compare
        inside reprojectRoster then finds nothing changed and stops. */
     reprojectRoster()
+    /* A post-out placed just now (setPostOut is a Leave War write) archives on
+       this lane too, so a PO dated in the past takes effect the moment it is
+       set rather than waiting for a Raptor edit to happen along. */
+    runPoArchive()
     runOutbound()
     runInbound()
     /* The OIL pass reads Leave War too — a PH flag set, an event word tagged

@@ -1813,3 +1813,51 @@ test('tagging a typed event colours the day without minting a type', async ({ pa
   await page.locator('[data-testid="event-edit-types"]').click()
   await expect(page.locator('.evtype:not(.evtype-add)')).toHaveCount(3)
 })
+
+// ---- Post out from any date + the month-window roster (owner, 19 Aug 26) --
+// The PO controls fold behind one button on the bid sheet: a date (seeded
+// with the tapped day, but ANY date is legal), the "Archive on PO date"
+// switch, and a confirm. Once posted, the tail is hatched, the LAST day in
+// wears a small PO corner tag, and the row leaves the roster in months after
+// they are gone — jsdom can prove none of the geometry half, so the
+// month-window filter is pinned here.
+test('posting out tags the last day, and the row leaves the months after it', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="cell-slipway-2026-06-15"]').click()
+  await page.locator('[data-testid="bid-postout"]').click()
+  // The switch is ON by default; this test flips it off (the custom case) —
+  // the store side of that choice is pinned in the unit suite.
+  await expect(page.locator('[data-testid="po-archive"]')).toHaveAttribute('aria-pressed', 'true')
+  await page.locator('[data-testid="po-archive"]').click()
+  await page.locator('[data-testid="po-confirm"]').click()
+
+  // The first day gone is hatched; the last day IN wears the PO tag.
+  await expect(page.locator('[data-testid="cell-slipway-2026-06-15"]')).toHaveClass(/gone/)
+  const tag = page.locator('[data-testid="polast-slipway"]')
+  await expect(tag).toHaveText('PO')
+  const box = (await tag.boundingBox())!
+  expect(box.width).toBeGreaterThan(0)
+
+  // Viewing June — their last month — the row rides the roster.
+  await page.locator(`[data-testid="month-JUN"]`).click()
+  await expect(page.locator('[data-testid="row-slipway"]')).toHaveCount(1)
+  // "Once I hit the next month, the row disappears": July on has no slipway.
+  await page.locator(`[data-testid="month-JUL"]`).click()
+  await expect(page.locator('[data-testid="row-slipway"]')).toHaveCount(0)
+  await page.locator(`[data-testid="month-SEP"]`).click()
+  await expect(page.locator('[data-testid="row-slipway"]')).toHaveCount(0)
+  // Back into their time and the row returns, history intact.
+  await page.locator(`[data-testid="month-MAR"]`).click()
+  await expect(page.locator('[data-testid="row-slipway"]')).toHaveCount(1)
+})
+
+// The demo's own posted-out man (IGNITE, gone 12 Jan) proves the seeded path:
+// his row rides January but not a month he never reached.
+test('a seeded posting-out hides its row in later months too', async ({ page }) => {
+  await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(1)
+  await expect(page.locator('[data-testid="polast-ignite"]')).toHaveText('PO')
+  await page.locator(`[data-testid="month-APR"]`).click()
+  await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(0)
+  await page.locator(`[data-testid="month-JAN"]`).click()
+  await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(1)
+})

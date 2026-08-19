@@ -1327,6 +1327,16 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .qcs:focus{outline:none;border-color:var(--accent)}
 .qarch{color:var(--hard);cursor:pointer;font-weight:800;display:none}
 .qtbl.editing .qarch{display:inline}
+/* the Archived drawer under the table (19 Aug 26): a fold-away records list,
+   deliberately quieter than the roster above it */
+.qarchive{margin:0 20px 40px;padding-top:2px}
+.qarchlist{margin-top:8px;border:1px solid var(--edge);border-radius:10px;padding:6px 12px;max-width:520px}
+.qarchrow{display:flex;align-items:center;gap:12px;padding:7px 2px;border-bottom:1px solid var(--edge)}
+.qarchrow:last-of-type{border-bottom:none}
+.qarchcs{color:var(--accent);font-weight:600;font-size:12.5px;min-width:90px}
+.qarchmeta{color:var(--ink-3);font-size:11.5px;flex:1}
+.qrestore{margin-left:auto}
+.qarchhint{color:var(--ink-3);font-size:11px;line-height:1.5;padding:8px 2px 4px}
 .qmini{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:15px;border-radius:3px;font-size:9px;font-weight:800;color:#fff;margin-right:4px}
 
 /* ============ INPUTS PAGE ============ */

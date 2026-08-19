@@ -512,6 +512,32 @@
   opacity: .75;
 }
 
+/* The LAST day in the squadron wears a small corner tag (owner, 19 Aug 26).
+   Without it, a person posting out on the 1st of a month is invisible as a
+   PO: their final month looks completely normal and the month after, their
+   row is gone (the month-window row filter in Matrix.tsx). The tag is a
+   corner ribbon rather than a chip so a leave code on the same day still
+   prints beneath it; amber like the `moved` mark's edge — a heads-up, not an
+   alarm — with the dark ink the pale CAT fills already use for contrast. */
+.mx td.pofin {
+  position: relative;
+}
+
+.mx td.pofin .polast {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: .04em;
+  padding: 1px 2px;
+  border-radius: 0 0 0 4px;
+  background: #F2C879;
+  color: #04222b;
+  pointer-events: none;
+}
+
 /* `.bal` is excluded alongside `.who`, and that is a BUG FIX, not tidiness.
    Both are frozen columns painted over the day cells, and they hold their
    ground only because their background is opaque. This tint is translucent,

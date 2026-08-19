@@ -21,6 +21,13 @@ export interface Person {
   from: string | null
   /** Last day in the squadron, inclusive — the posting-out date. `null` means still here. */
   to: string | null
+  /** Archive the Raptor body once the posting-out date arrives (the PO
+   *  sheet's "Archive on PO date" switch — owner, 19 Aug 26: on by default,
+   *  off for the custom cases). Explicit true/false, written ONLY by
+   *  `setPostOut` alongside `to`: absent means the window came from somewhere
+   *  other than the sheet (seed, demo overlay), and the auto-archive pass in
+   *  sync.ts leaves those alone. Meaningless without `to`. */
+  poArchive?: boolean
   /** The Raptor CAT (OCU/D/C/B/A/IW/IP/IR/FI), carried through the projection
    *  so the display can group ops crew by CAT and split OCU / instructors out.
    *  Absent on the seed people (which know only band) — the display falls back

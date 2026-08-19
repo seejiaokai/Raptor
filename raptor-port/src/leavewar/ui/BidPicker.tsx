@@ -59,10 +59,11 @@ export function BidPicker({
    *  spends nothing. Supplied by the matrix, where the wars, openings and
    *  ledger already are. */
   wouldLeave?: (code: string, days: number) => { counter: CounterName; after: number } | null
-  /** Admin-only: post this person OUT from this day on (owner, 18 Aug 26).
-   *  Present only for an admin; the matrix wires it to the store and closes
-   *  the sheet. A member never sees the control. */
-  onPostOut?: () => void
+  /** Admin-only: post this person OUT (owner, 18 Aug 26; reworked 19 Aug 26
+   *  — any date, not just the tapped day, and the "Archive on PO date"
+   *  switch). Present only for an admin; the matrix wires it to the store and
+   *  closes the sheet. A member never sees the control. */
+  onPostOut?: (fromDate: string, archive: boolean) => void
   onClose: () => void
 }) {
   // Deliberately not seeded from `current`: the portion resets to a whole
@@ -79,6 +80,14 @@ export function BidPicker({
   // control to find on a phone, and tapping the thing you already meant to
   // tap is the least surprising way to say yes.
   const [confirming, setConfirming] = useState<string | null>(null)
+  // The post-out controls, folded behind the one PO button until the admin
+  // asks (owner, 19 Aug 26 — "show this toggle when the admin clicks PO"):
+  // the date (seeded with the tapped day, but ANY date is legal — past,
+  // future, outside the war), the archive switch (ON by default), and the
+  // confirm. Folding also stops a reflex tap posting someone out.
+  const [poOpen, setPoOpen] = useState(false)
+  const [poDate, setPoDate] = useState(date)
+  const [poArchive, setPoArchive] = useState(true)
 
   /** Days this write covers — one, or the span if a range is chosen. */
   const dayCount = () => {
@@ -238,16 +247,63 @@ export function BidPicker({
         </div>
       )}
 
-      {/* Post the person OUT from this day on (owner, 18 Aug 26). A management
-          action, not a bid — it takes them off the manpower from here and greys
-          their boxes; it is undone by tapping a greyed day. Set apart below the
-          bid controls so it cannot be hit by reflex. */}
-      {onPostOut && (
+      {/* Post the person OUT (owner, 18 Aug 26; any date + the archive switch
+          19 Aug 26). A management action, not a bid — it takes them off the
+          manpower from the chosen date and greys their boxes; it is undone by
+          tapping a greyed day. Set apart below the bid controls, and folded
+          behind one button, so it cannot be hit by reflex. */}
+      {onPostOut && !poOpen && (
         <div className="bidsheet-row postout">
-          <button className="dchip po" data-testid="bid-postout" onClick={onPostOut}>
-            Post out from here (PO)
+          <button className="dchip po" data-testid="bid-postout" onClick={() => setPoOpen(true)}>
+            Post out (PO)…
           </button>
         </div>
+      )}
+      {onPostOut && poOpen && (
+        <>
+          <div className="bidsheet-row postout">
+            <span className="lab">PO from</span>
+            {/* Deliberately unbounded — no min/max. A posting can predate the
+                war (strike their whole history from a past date) or land past
+                its end; the store takes any real date (owner, 19 Aug 26 —
+                "prior to this date to infinity… now till the future
+                infinity"). Native picker: a single date, not a range, and the
+                keyboard path is what reaches a year the calendar UI would
+                take twelve taps to walk to. */}
+            <input
+              type="date"
+              className="dateinput"
+              data-testid="po-date"
+              aria-label={`Post ${callsign} out from`}
+              value={poDate}
+              onChange={e => setPoDate(e.target.value)}
+            />
+            <button
+              className={`pchip${poArchive ? ' on' : ''}`}
+              data-testid="po-archive"
+              aria-pressed={poArchive}
+              title={poArchive
+                ? 'On the PO date they move to the Quals archive. Their pucks on past schedules are untouched.'
+                : 'They stay on the Quals roster after the PO date — for the custom cases.'}
+              onClick={() => setPoArchive(a => !a)}
+            >
+              {poArchive ? '✓ ' : ''}Archive on PO date
+            </button>
+          </div>
+          <div className="bidsheet-row postout">
+            <button
+              className="dchip po"
+              data-testid="po-confirm"
+              disabled={!poDate}
+              onClick={() => onPostOut(poDate, poArchive)}
+            >
+              Post out from {poDate || '…'}
+            </button>
+            <span className="note">
+              Off the manpower from that day on. Past schedules keep their pucks.
+            </span>
+          </div>
+        </>
       )}
     </Sheet>
   )
@@ -426,19 +482,31 @@ export function RaptorSheet({
 }
 
 /**
- * Undo a post-out (owner, 18 Aug 26). Opens when an admin taps a greyed,
- * posted-out cell — the person is off the manpower from here, and this is the
- * one control that puts them back. A member never reaches it: a posted-out
- * cell is inert for them, and the matrix only makes it tappable for an admin.
+ * Manage a post-out (owner, 18 Aug 26; date + archive controls 19 Aug 26).
+ * Opens when an admin taps a greyed, posted-out cell — the person is off the
+ * manpower from their PO date, and this sheet is where that date is moved,
+ * the archive switch flipped, or the whole thing undone. A member never
+ * reaches it: a posted-out cell is inert for them, and the matrix only makes
+ * it tappable for an admin.
  */
 export function PostOutSheet({
   callsign,
   date,
+  poFrom,
+  archive,
+  onChange,
   onUndo,
   onClose,
 }: {
   callsign: string
   date: string
+  /** The person's CURRENT PO date — the first day they are gone. */
+  poFrom: string
+  /** Whether the auto-archive switch is on for this posting. */
+  archive: boolean
+  /** Re-post with a new date and/or archive choice. Commits on change — the
+   *  sheet stays up so the admin can see the grid move behind it. */
+  onChange: (fromDate: string, archive: boolean) => void
   onUndo: () => void
   onClose: () => void
 }) {
@@ -452,7 +520,35 @@ export function PostOutSheet({
         </button>
       </div>
       <div className="bidsheet-row">
-        <span className="note">Posted out — off the manpower from here on.</span>
+        <span className="note">
+          Posted out from {poFrom} — off the manpower from that day on.
+          {archive ? ' Moves to the Quals archive on that date.' : ' Stays on the Quals roster (custom).'}
+        </span>
+      </div>
+      <div className="bidsheet-row postout">
+        <span className="lab">PO from</span>
+        {/* Unbounded like the picker's — a posting moves to any real date. An
+            emptied field commits nothing: clearing a PO is the Undo button's
+            job, and it should not happen by backspacing a date. */}
+        <input
+          type="date"
+          className="dateinput"
+          data-testid="postout-date"
+          aria-label={`Move ${callsign}'s post-out date`}
+          value={poFrom}
+          onChange={e => { if (e.target.value) onChange(e.target.value, archive) }}
+        />
+        <button
+          className={`pchip${archive ? ' on' : ''}`}
+          data-testid="postout-archive"
+          aria-pressed={archive}
+          title={archive
+            ? 'On the PO date they move to the Quals archive. Their pucks on past schedules are untouched.'
+            : 'They stay on the Quals roster after the PO date — for the custom cases.'}
+          onClick={() => onChange(poFrom, !archive)}
+        >
+          {archive ? '✓ ' : ''}Archive on PO date
+        </button>
       </div>
       <div className="bidsheet-row postout">
         <button className="dchip po" data-testid="postout-undo" onClick={onUndo}>
