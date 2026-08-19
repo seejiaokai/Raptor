@@ -12,7 +12,7 @@ resolved statuses always carry their resolution date
 
 ### Observation 1: Session-start checkpoint — no observations pending
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-08-19) — already reflected: the log lives committed in the repo per the activation note; nothing to change (weekly review)
 **Date:** 2026-08-17
 **Session context:** Building Leave War sync wire 4 (weekend/PH duty earns OIL) in the Raptor repo.
 **Skill:** task-observer
@@ -42,7 +42,7 @@ resolved statuses always carry their resolution date
 
 ### Observation 3: Checkpoint — no observations pending (medical-sync build, tasks 1–3)
 
-**Status:** OPEN
+**Status:** DECLINED (2026-08-19) — acknowledgement marker only, no action (weekly review)
 **Date:** 2026-08-17
 **Session context:** Leave War medical markers build — codes/counters/picker done, sync next
 **Skill:** task-observer
