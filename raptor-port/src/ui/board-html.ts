@@ -377,8 +377,14 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
 }
 export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
   const rows=d.ground||[];
+  /* + Inputs (owner, 19 Aug 26 — moved here from the Personal Inputs panel and
+     renamed): a scheduler adds an activity input (Meeting, CSE…) FROM the
+     ground programme, and it lands ON the ground programme — the dialog offers
+     only ground-eligible types and commitNewInput accepts the new row straight
+     onto this section (see interactions.ts / ui/inputedit.tsx). "+ Item" beside
+     it stays the bare-row add for things that are not anybody's input. */
   let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme · scheduler <span class="sub">briefs, reviews, admin</span>`
-    +(ro?'':`<span class="gctl">${sbSortBtn(`g.${di}`,ro)}<button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
+    +(ro?'':`<span class="gctl"><button class="sb-addinp" data-inpadd="${di}.g" title="Add a personal input (meeting, course…) — it goes straight onto the Ground Programme">+ Inputs</button>${sbSortBtn(`g.${di}`,ro)}<button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No ground items yet — “+ Item” adds one.</div>`;
   else{
     s+=C6;
@@ -468,11 +474,10 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
 export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
   const acRo=ro??pv;
-  /* + Add (owner, Aug 26 — "scheduler board should have the authority to add
-     inputs... under unavailable and personal inputs"). Live board only; it
-     opens the same dialog an edit does, seeded blank for this day. */
-  const addBtn=acRo?'':`<button class="sb-addinp" data-inpadd="${di}.p" title="Add a personal input for this day">+ Add</button>`;
-  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day'}</span>${addBtn}</div><div class="sb-pb">`;
+  /* this panel's own + Add MOVED to the Ground Programme header as "+ Inputs"
+     (owner, 19 Aug 26) — an activity input a scheduler adds belongs on the
+     programme, so the button lives where the result lands */
+  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day'}</span></div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
   else if(!acRo)s+=C6;
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo,acRo); });
@@ -484,7 +489,10 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
 export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this panel
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type));
-  const addBtn=ro?'':`<button class="sb-addinp" data-inpadd="${di}.u" title="Add an unavailability (leave, medical, overseas duty) for this day">+ Add</button>`;
+  /* + Add stays here (owner, Aug 26; reworked 19 Aug 26): the dialog now
+     offers only leave/medical/OD types and carries a DATE RANGE, whose till
+     date lands in remarks the way the Inputs page's calendar writes it */
+  const addBtn=ro?'':`<button class="sb-addinp" data-inpadd="${di}.u" title="Add an unavailability (leave, medical, overseas duty) — pick a date range in the dialog">+ Add</button>`;
   let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable <span class="sub">leave, medical and overseas duty${ro?'':' — times and remarks type in place, clear a time for all day'}</span>${addBtn}</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nil — everybody is available today.</div>`;
   else if(!ro)s+=C6;
@@ -505,7 +513,11 @@ export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
    instead, so the hint now points at that. */
 export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isSansAvail(inp.type));
-  let s=`<div class="sb-panel sansav"><div class="sb-ph">SANS Availability <span class="sub">what SANS aircrew are offering${ro?'':' — press a card to edit'}</span></div><div class="sb-pb">`;
+  /* + Add (owner, 19 Aug 26 — SANS availability left the other panels' type
+     lists, so it gets its own add HERE, "likewise"): opens the same dialog,
+     locked to the SANS type and offering SANS aircrew only */
+  const addBtn=ro?'':`<button class="sb-addinp" data-inpadd="${di}.s" title="Add a SANS availability for this day">+ Add</button>`;
+  let s=`<div class="sb-panel sansav"><div class="sb-ph">SANS Availability <span class="sub">what SANS aircrew are offering${ro?'':' — press a card to edit'}</span>${addBtn}</div><div class="sb-pb">`;
   s+=rows.length?sansCardsHTML(rows,di,ro):`<div class="sb-empty">No SANS availability filed for this day.</div>`;
   return s+`</div></div>`;
 }

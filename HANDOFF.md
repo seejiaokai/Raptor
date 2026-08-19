@@ -24,12 +24,12 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (board can ADD inputs,
+**Last recorded green baseline** (board adds are context-bound,
 19 Aug 26 — all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2609 across 142 files — two vitest projects: raptor (1739) + leavewar (870) |
+| `npm test` | 2617 across 142 files — two vitest projects: raptor (1747) + leavewar (870) |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 293 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -37,9 +37,9 @@ watched — this file's history twice recorded a count that was wrong.
 | `perf` | 4/4 |
 
 DOM measures at that baseline: week **3743** under a 4000 ceiling, board
-**846** under 960 (the two + Add buttons added 2 nodes). The Leave War year
-matrix (~28k nodes) is outside the perf gate — it has its own e2e DOM band
-(29000), measured-first.
+**847** under 960 (three context-bound add buttons, net +1 node over the old
+two). The Leave War year matrix (~28k nodes) is outside the perf gate — it
+has its own e2e DOM band (29000), measured-first.
 
 **How the gates lie — the durable traps, worth more than any count:**
 
@@ -86,32 +86,33 @@ matrix (~28k nodes) is outside the perf gate — it has its own e2e DOM band
 
 ## Known issues / open work
 
-- **THE SCHEDULER BOARD CAN ADD INPUTS NOW, not only edit and delete them
-  (owner, Aug 26 — "scheduler board should have the authority to add inputs…
-  under unavailable and personal inputs. They can also add or remove them or
-  edit").** Edit and delete from the board already shipped (14 Aug 26); this
-  adds the third verb. Each board panel — **Personal Inputs** and
-  **Unavailable** — carries a **+ Add** button in its header on a LIVE board
-  (`.sb-addinp`/`data-inpadd` in `ui/board-html.ts`, gated on the same
-  `ro`/`pv` as the panels' editable rows; absent on a preview/view-only
-  board). It opens the SAME `InputEditor` an edit opens, seeded blank for the
-  OPEN DAY (`_new:true`) with a default type suiting the panel
-  (`firstPersonalType`/`firstUnavailType`). In `_new` mode the dialog reads
-  "New input", drops Delete, and its primary button reads Add. Save runs the
-  new **`commitNewInput`** (`ui/inputedit.tsx`), which shares ALL of an edit's
-  refusals+derivations through the extracted **`normalizeInputDraft`** (so the
-  add and edit paths can never drift on a malformed window, an overnight range
-  or a span's year) and then unshifts the row exactly as the Inputs page's own
-  `add()` does — one `writeInputsBatch` step, a minted `iid`, UNACCEPTED like
-  any freshly filed input. So it is the ordinary INPUTS record every surface
-  reads back, and a leave/medical type crosses to Leave War on the same notify
-  the Inputs page add already rides — **no new sync seam**. DELIBERATELY
-  SCOPED: **single day only** (a span still goes on the Inputs page, the
-  dialog's standing dates rule), and the ask named the BOARD, so the edit
-  WEEK's own Personal/Unavailable blocks did not gain a + Add — an easy
-  follow-up if wanted (the same `commitNewInput` + a seed). `routeClick`
-  re-checks `canEditSched()`. Contract: `docs/ui-contracts.md` §Adding an
-  input from the board. Tests: `boardaddinput.test.tsx` (11).
+- **THE BOARD'S ADD-INPUT BUTTONS ARE CONTEXT-BOUND NOW (owner, 19 Aug 26 —
+  "move the personal inputs +Add button to ground programme… called +Inputs…
+  only show those that will go into the ground programme… unavailable will
+  only show those applicable… I can select a date range as well… sans
+  availability shouldn't be shown at unavailable and ground programme").**
+  Reworks the Aug-26 board add (edit and delete shipped 14 Aug 26). Three
+  buttons on a LIVE board, none on the Personal Inputs panel any more:
+  **Ground Programme carries "+ Inputs"** (`data-inpadd="di.g"`, beside
+  "+ Item") — the dialog offers ACTIVITY types only (Meeting, CSE…) and Save
+  accepts the new row STRAIGHT ONTO the ground programme (`commitNewInput`'s
+  `toGround` runs `acceptInput` inside the same `writeInputsBatch` — one undo
+  step; a duplicate content key is the one refusal, and the input then lands
+  unaccepted with a toast). **Unavailable keeps "+ Add"** (`di.u`) — the
+  dialog offers leave/medical/OD only and carries a **DATE RANGE** (the Inputs
+  page's own `RangeCal`), whose till date rides the remarks token exactly as
+  the Inputs page writes it (`withRemarksTail`, 'till'); the seed is a
+  COMPLETED one-day range on the open day so the first calendar click begins a
+  fresh range rather than silently completing a span from the open day. A
+  leave span syncs to the Inputs page and Leave War as the ordinary record it
+  is — no new seam. **SANS Availability gained its own "+ Add"** (`di.s`) —
+  type FIXED as a plain value (`#inpEditTypeFixed`), Person list SANS aircrew
+  only; SANS left BOTH other type lists (`TYPE_ALLOW` in `ui/inputedit.tsx`).
+  The context rides the dialog seed as `_ctx`; an ordinary EDIT keeps the full
+  type list. The edit WEEK's own blocks still have no add — same easy
+  follow-up as before. `routeClick` re-checks `canEditSched()`. Contract:
+  `docs/ui-contracts.md` §Adding an input from the board. Tests:
+  `boardaddinput.test.tsx` (19).
 - **LEAVE WAR MANNING EXPLAINER + EDITABLE AMBER/RED LINES + SC D / SC N TEAM
   ROWS (19 Aug 26, owner's ask).** Tap any manning count row's NAME → a sheet
   (`ui/ManningSheet.tsx`) saying in plain words what the row counts

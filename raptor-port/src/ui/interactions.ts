@@ -4,7 +4,7 @@
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
 import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/slots'
-import { INPUTS, DATES } from '../engine/inputs'
+import { INPUTS, DATES, withRemarksTail } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
@@ -18,7 +18,7 @@ import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, stor
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
-import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType } from './inputedit'
+import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, draftsMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
@@ -469,12 +469,19 @@ export function routeClick(e: MouseEvent) {
     return
   }
 
-  /* the board's + Add on the Personal Inputs / Unavailable panels (owner,
-     Aug 26). Opens the SAME dialog an edit does, seeded with a blank row for
-     THIS day and a default type suiting the panel (`.p` personal / `.u` leave).
-     No row exists yet — the seed carries `_new`, and commitNewInput does the
-     insert on Save. A member never sees the button (live board only), but the
-     gate is repeated here the way every other input control's is. */
+  /* the board's context-bound adds (owner, Aug 26; reworked 19 Aug 26 — the
+     Personal Inputs + Add moved to the Ground Programme as "+ Inputs", the
+     SANS panel gained its own). Opens the SAME dialog an edit does, seeded
+     with a blank row for THIS day; the kind rides as `_ctx`, which is what
+     narrows the dialog's type list to the panel it came from ('g' activity
+     types, 'u' leave/medical/OD, 's' the SANS type alone) and, for 'g', has
+     Save accept the row straight onto the ground programme. The Unavailable
+     seed pre-writes the remarks' till-date token because its dialog carries
+     the range calendar, whose picks rewrite that same token — the Inputs
+     page's own behaviour. No row exists yet — the seed carries `_new`, and
+     commitNewInput does the insert on Save. A member never sees the buttons
+     (live board only), but the gate is repeated here the way every other
+     input control's is. */
   const iad = t.closest('[data-inpadd]') as HTMLElement | null
   if (iad) {
     e.stopPropagation()
@@ -483,9 +490,26 @@ export function routeClick(e: MouseEvent) {
     const di = +dis
     const date = DATES[di]
     if (date == null) { HOOKS.toast('That day is not loaded', 'warn'); return }
-    const person = rosterOptions()[0]
-    if (!person) { HOOKS.toast('No crew on the roster to file an input for', 'warn'); return }
-    setInpEdit({ _new: true, person, type: kind === 'u' ? firstUnavailType() : firstPersonalType(), date, allday: true, s: 0, e: 1439 })
+    /* the SANS add offers SANS aircrew only — the commit refuses anyone else
+       anyway (sansRefusal), so seeding a non-SANS default would open a dialog
+       already pointed at a refusal */
+    const pool = kind === 's' ? rosterOptions().filter(id => PEOPLE[id].san) : rosterOptions()
+    const person = pool[0]
+    if (!person) { HOOKS.toast(kind === 's' ? 'No SANS aircrew on the roster' : 'No crew on the roster to file an input for', 'warn'); return }
+    setInpEdit({
+      _new: true, _ctx: kind, person,
+      type: kind === 'u' ? firstUnavailType() : kind === 's' ? firstSansType() : firstPersonalType(),
+      date, allday: true, s: 0, e: 1439,
+      /* the range seed is a COMPLETED one-day range (endDate = date), not a
+         bare start: RangeCal treats "start with no end" as a range waiting
+         for its end, so a bare seed made the first calendar click COMPLETE a
+         span from the open day — click Jul 15 for leave starting there and
+         you had silently picked Jul 13–15. A completed range makes the first
+         click begin a fresh one, which is what picking dates means. The
+         same-day end collapses back off in normalizeInputDraft. */
+      ...(kind === 'u' ? { endDate: date, remarks: withRemarksTail('', unfmt(date), '', 'till') } : {}),
+      ...(kind === 's' ? { sans: {} } : {}),
+    })
     notify()
     return
   }
