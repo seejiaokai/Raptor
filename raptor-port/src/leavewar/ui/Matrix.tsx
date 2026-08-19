@@ -312,6 +312,25 @@ export function Matrix() {
     setZoom(ZOOMS[Math.min(ZOOMS.length - 1, Math.max(0, i + by))]!)
   }
 
+  // The manning counts block (CREW SETS … SXO) collapses on a tap, for EITHER
+  // role (owner, 19 Aug 26 — "allow both admin and norm user to hide it when
+  // viewing, click to open or close"). A view preference, session-only like the
+  // zoom above; forced open while an admin is Rearranging so the row reorder /
+  // hide controls stay reachable.
+  const [countsOpen, setCountsOpen] = useState(true)
+
+  // The month strip's buttons are ABSOLUTELY positioned (they must not widen
+  // the frozen columns — see matrix.css), so the sticky cell they sit in has to
+  // RESERVE their height by hand. That height was a hardcoded 72px (two wrapped
+  // rows), but a phone wraps them to three and a higher zoom to more, so the
+  // last months (NOV/DEC) spilled out of the cell and collided with the bracket
+  // bar below (owner, 19 Aug 26). Measure the strip's real height and reserve
+  // exactly that instead — dividing the table's CSS `zoom` back out, since the
+  // cell lives inside it, so the value we set is layout px not doubled by zoom.
+  const mstrowRef = useRef<HTMLDivElement>(null)
+  const mstickRef = useRef<HTMLTableCellElement>(null)
+  const [stripH, setStripH] = useState<number | null>(null)
+
   // ---- the frozen header on a phone (owner, 18 Aug 26: "when the callsign
   // row almost reaches outside the phone view, it will freeze at the top") --
   //
@@ -589,6 +608,29 @@ export function Matrix() {
     if (Math.abs(shift) > 1) wrap.scrollLeft += shift
   }, [visWindow])
 
+  // Reserve exactly the month strip's own height on its sticky cell, so the
+  // wrapped rows (three on a phone, more at a high zoom) never overflow into
+  // the bracket bar below (see mstrowRef above). Layout effect so the cell is
+  // sized before paint — no flash of the collided state. Re-measures on the
+  // zoom (which re-wraps the buttons), the war change, and a viewport resize.
+  useLayoutEffect(() => {
+    const measure = () => {
+      const strow = mstrowRef.current, cell = mstickRef.current
+      if (!strow || !cell) return
+      const sr = strow.getBoundingClientRect()
+      const cr = cell.getBoundingClientRect()
+      if (sr.height === 0) return // jsdom / not laid out — leave the CSS floor
+      // Screen px from the cell's top to the strip's bottom, + a little
+      // breathing room, divided back out of the table zoom the cell sits in.
+      // Floored at the desktop one-row height so a single-row strip never
+      // shrinks the cell below what it was.
+      setStripH(Math.max(44, (sr.bottom - cr.top + 6) / (zoom || 1)))
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [zoom, period.id, dates.length])
+
   // The under-manned list asks for a day the same way the month strip asks
   // for a month, through the one `jumpTo` above — so a target lands clear of
   // both frozen columns without that measurement existing twice.
@@ -634,6 +676,18 @@ export function Matrix() {
       <div className="card">
         <div className="card-hd">
           <span className="t">{period.name} · {dates.length} days · {people.length} people</span>
+          {/* Collapse the manning counts block — EITHER role (owner, 19 Aug 26).
+              A plain view toggle, in the header so it is reachable above the
+              scroll and does not ride the grid it hides. */}
+          <button
+            className="rtbtn countstoggle"
+            data-testid="counts-toggle"
+            aria-expanded={countsOpen}
+            title={countsOpen ? 'Hide the manning counts' : 'Show the manning counts'}
+            onClick={() => setCountsOpen(o => !o)}
+          >
+            {countsOpen ? '▾' : '▸'} Manning
+          </button>
           {/* Roster arrangement (owner, 18 Aug 26), admin only: Auto-sort
               re-groups everyone into the categorised order; Rearrange turns on
               the edit-mode drag handles AND the manning rows' reorder/hide
@@ -718,14 +772,19 @@ export function Matrix() {
                 The header row is a tbody (`.mxhead`), not a thead — CSS
                 paints a thead at the TOP of the table wherever it sits in
                 the DOM, which would undo this whole arrangement. */}
-            <CountRows
-              verdicts={verdicts}
-              dates={dates}
-              order={orderedManningIds()}
-              hidden={manningHidden}
-              arranging={arranging}
-              admin={role === 'admin'}
-            />
+            {/* Collapsed away on the view toggle, but always shown while an
+                admin is Rearranging — that is where the per-row reorder / hide
+                controls live, and hiding the block would hide them too. */}
+            {(countsOpen || (arranging && role === 'admin')) && (
+              <CountRows
+                verdicts={verdicts}
+                dates={dates}
+                order={orderedManningIds()}
+                hidden={manningHidden}
+                arranging={arranging}
+                admin={role === 'admin'}
+              />
+            )}
             {/* The month strip, now a row of the grid so it sits between the
                 counts and the header (owner's arrows). The buttons live in a
                 sticky two-column cell and overflow visibly across the fill
@@ -733,8 +792,8 @@ export function Matrix() {
                 edge while the year scrolls under them. */}
             <tbody className="mstripe">
               <tr>
-                <td className="mstick" colSpan={2}>
-                  <div className="mstrow">
+                <td className="mstick" colSpan={2} ref={mstickRef} style={stripH ? { height: stripH } : undefined}>
+                  <div className="mstrow" ref={mstrowRef}>
                     <div className="months" data-testid="month-strip">
                       {months.map(m => (
                         <button

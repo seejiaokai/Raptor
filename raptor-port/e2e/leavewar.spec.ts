@@ -1733,6 +1733,30 @@ test('every month wears a bracket spanning exactly its days', async ({ page }) =
   expect(Math.abs(bb.x + bb.width - (last.x + last.width))).toBeLessThan(2)
 })
 
+// The month buttons are absolutely positioned inside a sticky cell whose
+// height is reserved by hand; a phone wraps them to three rows and the old
+// fixed 72px was too short, so NOV/DEC spilled onto the bracket bar below
+// (owner, 19 Aug 26). The cell now measures the strip and reserves its real
+// height, so the last row must sit clear of the bracket.
+test('the month strip fits its wrapped rows and clears the bracket bar below', async ({ page }) => {
+  for (const m of ['JAN', 'JUN', 'DEC']) await expect(page.locator(`[data-testid="month-${m}"]`)).toBeVisible()
+  const dec = (await page.locator('[data-testid="month-DEC"]').boundingBox())!
+  const bracket = (await page.locator('[data-testid="month-bracket"]').boundingBox())!
+  expect(dec.y + dec.height).toBeLessThanOrEqual(bracket.y + 1)
+})
+
+// The manning counts block collapses on a header toggle, for EITHER role — the
+// default login is a member, so this proves a normal user can hide it (owner,
+// 19 Aug 26).
+test('a member can collapse and reopen the manning counts', async ({ page }) => {
+  await expect(page.locator('[data-testid="count-sets"]')).toBeVisible()
+  await page.locator('[data-testid="counts-toggle"]').click()
+  await expect(page.locator('[data-testid="count-sets"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="count-ip"]')).toHaveCount(0)
+  await page.locator('[data-testid="counts-toggle"]').click()
+  await expect(page.locator('[data-testid="count-sets"]')).toBeVisible()
+})
+
 test('the blocked exercise week prints its reason across the event row', async ({ page }) => {
   await page.locator('[data-testid="month-MAR"]').click()
   const bar = page.locator('[data-testid="event-blocked-2026-03-09"]')

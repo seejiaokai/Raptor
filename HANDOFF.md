@@ -85,6 +85,26 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **LEAVE WAR HEADER POLISH (19 Aug 26, owner's two phone screenshots).** Two
+  fixes in `src/leavewar/ui/Matrix.tsx` + `matrix.css`. (1) **The manning
+  counts block collapses on a header toggle, for EITHER role** (owner: "allow
+  both admin and norm user to hide it when viewing, click to open or close").
+  A "▾/▸ Manning" button in the card header (`counts-toggle`, both roles —
+  NOT admin-gated like Rearrange) gates whether `<CountRows>` renders;
+  `countsOpen` is a session-only view state like `zoom`. It is FORCED open
+  while an admin is Rearranging, because the per-row reorder/hide controls live
+  in the counts block and hiding it would hide them. Pinned in `counts.test.tsx`
+  + a member e2e. (2) **The month strip's sticky cell now MEASURES its own
+  height instead of a hardcoded 72px** (owner: "the Nov and Dec is ugly that
+  it's cutting the bar"). The month buttons are absolutely positioned (they
+  must not widen the frozen columns), so their cell has to reserve their height
+  by hand; a phone wraps them to three rows and a high zoom to more, so NOV/DEC
+  spilled onto the bracket bar below. A `useLayoutEffect` reads the strip's real
+  height off `mstrowRef`/`mstickRef` and sets the cell's `height` (floored at
+  44, the table `zoom` divided back out since the cell sits inside it), re-run
+  on zoom/war-change/resize; jsdom (0×0 rects) leaves the CSS floor. Pinned by
+  a geometry e2e (DEC's bottom clears the bracket). The old CSS `height:72px`
+  phone rule is now just the pre-measure floor.
 - **LEAVE WAR — THE 18 AUG EVENING BATCH (owner's screenshot arrows + five
   asks).** Six changes, all in `src/leavewar/`:
   (1) **Row order is counts → month buttons → callsign/dates header → event

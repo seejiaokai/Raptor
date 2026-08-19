@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { DayVerdict, RuleResult } from '../engine'
-import { initStore, setCell } from '../state/store'
+import { initStore, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { CountRows } from './CountRows'
 import { Matrix } from './Matrix'
@@ -150,5 +150,29 @@ describe('the manning rows can be reordered and hidden (admin)', () => {
     draw({ order: ['sxo', 'sets', 'ip'] })
     const rows = screen.getAllByTestId(/^count-(sets|ip|sxo)$/).map(r => r.getAttribute('data-testid'))
     expect(rows).toEqual(['count-sxo', 'count-sets', 'count-ip'])
+  })
+})
+
+// The header toggle collapses the whole manning block, for EITHER role (owner,
+// 19 Aug 26 — "allow both admin and norm user to hide it when viewing").
+describe('collapsing the manning block', () => {
+  it('a normal viewer hides and reopens it on the header toggle', () => {
+    render(<Matrix />)
+    expect(screen.getByTestId('count-sets')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('counts-toggle'))
+    expect(screen.queryByTestId('count-sets')).toBeNull()
+    expect(screen.queryByTestId('count-ip')).toBeNull()
+    fireEvent.click(screen.getByTestId('counts-toggle'))
+    expect(screen.getByTestId('count-sets')).toBeTruthy()
+  })
+
+  it('stays shown while an admin is Rearranging, so the row controls are reachable', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counts-toggle'))       // collapse
+    expect(screen.queryByTestId('count-sets')).toBeNull()
+    fireEvent.click(screen.getByTestId('roster-arrange'))       // enter Rearrange
+    expect(screen.getByTestId('count-sets')).toBeTruthy()
+    expect(screen.getByTestId('manning-up-sets')).toBeTruthy()  // and its controls
   })
 })
