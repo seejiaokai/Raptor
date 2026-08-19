@@ -1733,6 +1733,30 @@ test('every month wears a bracket spanning exactly its days', async ({ page }) =
   expect(Math.abs(bb.x + bb.width - (last.x + last.width))).toBeLessThan(2)
 })
 
+// The month buttons are absolutely positioned inside a sticky cell whose
+// height is reserved by hand; a phone wraps them to three rows and the old
+// fixed 72px was too short, so NOV/DEC spilled onto the bracket bar below
+// (owner, 19 Aug 26). The cell now measures the strip and reserves its real
+// height, so the last row must sit clear of the bracket.
+test('the month strip fits its wrapped rows and clears the bracket bar below', async ({ page }) => {
+  for (const m of ['JAN', 'JUN', 'DEC']) await expect(page.locator(`[data-testid="month-${m}"]`)).toBeVisible()
+  const dec = (await page.locator('[data-testid="month-DEC"]').boundingBox())!
+  const bracket = (await page.locator('[data-testid="month-bracket"]').boundingBox())!
+  expect(dec.y + dec.height).toBeLessThanOrEqual(bracket.y + 1)
+})
+
+// The manning counts block collapses on a header toggle, for EITHER role — the
+// default login is a member, so this proves a normal user can hide it (owner,
+// 19 Aug 26).
+test('a member can collapse and reopen the manning counts', async ({ page }) => {
+  await expect(page.locator('[data-testid="count-sets"]')).toBeVisible()
+  await page.locator('[data-testid="counts-toggle"]').click()
+  await expect(page.locator('[data-testid="count-sets"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="count-ip"]')).toHaveCount(0)
+  await page.locator('[data-testid="counts-toggle"]').click()
+  await expect(page.locator('[data-testid="count-sets"]')).toBeVisible()
+})
+
 test('the blocked exercise week prints its reason across the event row', async ({ page }) => {
   await page.locator('[data-testid="month-MAR"]').click()
   const bar = page.locator('[data-testid="event-blocked-2026-03-09"]')
@@ -1860,4 +1884,26 @@ test('a seeded posting-out hides its row in later months too', async ({ page }) 
   await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(0)
   await page.locator(`[data-testid="month-JAN"]`).click()
   await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(1)
+})
+
+// The roster reflow (hiding a posted-out row) repaints the ~28k-node grid and
+// re-pins the viewed column with a `scrollLeft +=` correction. Run mid-fling,
+// that scrollLeft write stops a real touch scroll's momentum dead — the scroll
+// visibly halts at the month a row leaves (owner, 19 Aug 26). The fix defers
+// the reflow to scroll REST, so it must NOT fire during a scroll: a burst of
+// scroll events leaves IGNITE's row up until the burst ends, and only the
+// settle that follows takes it away.
+test('the roster does not reflow mid-scroll, only once the scroll settles', async ({ page }) => {
+  await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(1)
+  // A synchronous burst deep past January (scrollLeft clamps to the far right,
+  // well beyond IGNITE's only month). No settle timer can fire inside the
+  // loop, so the row is guaranteed still present the instant it ends.
+  const stillThere = await page.evaluate(() => {
+    const el = document.querySelector('.mx-wrap') as HTMLElement
+    for (let i = 0; i < 30; i++) { el.scrollLeft = 12000 + i * 100; el.dispatchEvent(new Event('scroll')) }
+    return !!document.querySelector('[data-testid="row-ignite"]')
+  })
+  expect(stillThere).toBe(true)
+  // Once the scroll comes to rest the window updates and the row leaves.
+  await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(0)
 })

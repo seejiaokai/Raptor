@@ -85,6 +85,26 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **LEAVE WAR HEADER POLISH (19 Aug 26, owner's two phone screenshots).** Two
+  fixes in `src/leavewar/ui/Matrix.tsx` + `matrix.css`. (1) **The manning
+  counts block collapses on a header toggle, for EITHER role** (owner: "allow
+  both admin and norm user to hide it when viewing, click to open or close").
+  A "▾/▸ Manning" button in the card header (`counts-toggle`, both roles —
+  NOT admin-gated like Rearrange) gates whether `<CountRows>` renders;
+  `countsOpen` is a session-only view state like `zoom`. It is FORCED open
+  while an admin is Rearranging, because the per-row reorder/hide controls live
+  in the counts block and hiding it would hide them. Pinned in `counts.test.tsx`
+  + a member e2e. (2) **The month strip's sticky cell now MEASURES its own
+  height instead of a hardcoded 72px** (owner: "the Nov and Dec is ugly that
+  it's cutting the bar"). The month buttons are absolutely positioned (they
+  must not widen the frozen columns), so their cell has to reserve their height
+  by hand; a phone wraps them to three rows and a high zoom to more, so NOV/DEC
+  spilled onto the bracket bar below. A `useLayoutEffect` reads the strip's real
+  height off `mstrowRef`/`mstickRef` and sets the cell's `height` (floored at
+  44, the table `zoom` divided back out since the cell sits inside it), re-run
+  on zoom/war-change/resize; jsdom (0×0 rects) leaves the CSS floor. Pinned by
+  a geometry e2e (DEC's bottom clears the bracket). The old CSS `height:72px`
+  phone rule is now just the pre-measure floor.
 - **LEAVE WAR — THE 18 AUG EVENING BATCH (owner's screenshot arrows + five
   asks).** Six changes, all in `src/leavewar/`:
   (1) **Row order is counts → month buttons → callsign/dates header → event
@@ -284,7 +304,19 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   layout effect puts it back after the repaint (`anchorRef` in Matrix.tsx; the
   phone mirror re-measures on the same signal). Re-renders fire only when the
   visible ROW SET changes (a signature compare), which is what keeps the
-  scroll-responsiveness e2e honest. **AUTO-ARCHIVE (`sync.ts:runPoArchive`)**:
+  scroll-responsiveness e2e honest. **THE ROW-WINDOW CHANGE IS DEFERRED TO
+  SCROLL REST (19 Aug 26, owner: the scroll "stops" at the month a row leaves).**
+  That `anchorRef` correction WRITES `scrollLeft`, and writing scrollLeft
+  mid-fling kills a touch scroll's native momentum dead — so the month-strip
+  readout (`inView`, `measureStrip`) still runs LIVE on every scroll event, but
+  the roster reflow (`visWindow`, `measureWindow` — the only thing that repaints
+  the grid and moves scrollLeft) is debounced ~120ms and fires only once the
+  scroll comes to rest, where the grid is still and moving scrollLeft is
+  invisible. A fling keeps its native deceleration; the row updates the instant
+  you stop. Pinned by "the roster does not reflow mid-scroll" in
+  leavewar.spec.ts. Not verifiable here for the momentum itself (headless
+  Chromium has no kinetic scroll) — the e2e proves the deferral, a real phone
+  proves the smoothness. **AUTO-ARCHIVE (`sync.ts:runPoArchive`)**:
   when the PO date arrives (real clock, local — "on that live date itself"), a
   `poArchive === true` person's Raptor body gets `archived = true` — nothing
   else: pucks on past/published schedules render from slot values and stay

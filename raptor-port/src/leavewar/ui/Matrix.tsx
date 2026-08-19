@@ -312,6 +312,25 @@ export function Matrix() {
     setZoom(ZOOMS[Math.min(ZOOMS.length - 1, Math.max(0, i + by))]!)
   }
 
+  // The manning counts block (CREW SETS … SXO) collapses on a tap, for EITHER
+  // role (owner, 19 Aug 26 — "allow both admin and norm user to hide it when
+  // viewing, click to open or close"). A view preference, session-only like the
+  // zoom above; forced open while an admin is Rearranging so the row reorder /
+  // hide controls stay reachable.
+  const [countsOpen, setCountsOpen] = useState(true)
+
+  // The month strip's buttons are ABSOLUTELY positioned (they must not widen
+  // the frozen columns — see matrix.css), so the sticky cell they sit in has to
+  // RESERVE their height by hand. That height was a hardcoded 72px (two wrapped
+  // rows), but a phone wraps them to three and a higher zoom to more, so the
+  // last months (NOV/DEC) spilled out of the cell and collided with the bracket
+  // bar below (owner, 19 Aug 26). Measure the strip's real height and reserve
+  // exactly that instead — dividing the table's CSS `zoom` back out, since the
+  // cell lives inside it, so the value we set is layout px not doubled by zoom.
+  const mstrowRef = useRef<HTMLDivElement>(null)
+  const mstickRef = useRef<HTMLTableCellElement>(null)
+  const [stripH, setStripH] = useState<number | null>(null)
+
   // ---- the frozen header on a phone (owner, 18 Aug 26: "when the callsign
   // row almost reaches outside the phone view, it will freeze at the top") --
   //
@@ -461,19 +480,19 @@ export function Matrix() {
     </tr>
   )
 
-  const measureInView = () => {
+  // The month spans + the visible view bounds — the thirteen rect reads both
+  // the strip readout and the row window are computed from. One rect per month
+  // plus the last column, not one per day: thirteen reads on a year rather than
+  // 365, which is what makes measuring this on every scroll event affordable.
+  const readSpans = () => {
     const wrap = wrapRef.current
-    if (!wrap || months.length === 0 || dates.length === 0) return
+    if (!wrap || months.length === 0 || dates.length === 0) return null
     const headLeft = (date: string) =>
       wrap.querySelector<HTMLElement>(`[data-testid="head-${date}"]`)?.getBoundingClientRect().left
     const lastHead = wrap.querySelector<HTMLElement>(`[data-testid="head-${dates[dates.length - 1]}"]`)
-    if (!lastHead) return
-
-    // One rect per month plus the last column, not one per day: thirteen
-    // reads on a year rather than 365, which is what makes measuring this on
-    // every scroll event affordable.
+    if (!lastHead) return null
     const edges = months.map(m => headLeft(m.first))
-    if (edges.some(e => e === undefined)) return
+    if (edges.some(e => e === undefined)) return null
     const end = lastHead.getBoundingClientRect().right
     const spans = months.map((m, i) => ({
       label: m.label,
@@ -482,18 +501,38 @@ export function Matrix() {
       // right edge of the final column.
       right: i + 1 < edges.length ? edges[i + 1]! : end,
     }))
-
     const wr = wrap.getBoundingClientRect()
     // The visible strip starts where the day columns do — the frozen columns
     // sit ON TOP of them, so counting from the wrapper's own left edge would
     // credit whichever month is hidden underneath the callsigns.
     const viewL = wr.left + frozenWidth(wrap)
     const viewR = wr.right
-    setInView(monthInView(spans, viewL, viewR))
-    // The visible WINDOW for the row filter. Only from a real layout: jsdom
-    // reports every rect 0×0, the spans have no width, and a zero-width
-    // "window" must leave visWindow at '' (show everyone) rather than hide
-    // the whole roster.
+    return { wrap, spans, end, viewL, viewR }
+  }
+
+  // The month-strip readout — which month the grid is showing. Cheap (one
+  // setState of a string, and React bails when it is unchanged), so it runs
+  // LIVE on every scroll event: the strip has to say where you ARE while you
+  // move, not lag behind at rest.
+  const measureStrip = () => {
+    const m = readSpans()
+    if (!m) return
+    setInView(monthInView(m.spans, m.viewL, m.viewR))
+  }
+
+  // The row WINDOW for the roster filter — the expensive half. Changing it
+  // repaints the whole ~28k-node grid AND fires the anchor correction below
+  // (`scrollLeft +=`), which writes scrollLeft and so KILLS a touch fling's
+  // momentum dead: the scroll visibly stops at the month a posted-out row
+  // leaves. So this is NEVER run mid-scroll — the wrap's onScroll defers it to
+  // scroll REST (idleRef below), where the grid is still and moving scrollLeft
+  // is invisible. Only from a real layout: jsdom reports every rect 0×0, the
+  // spans have no width, and a zero-width "window" must leave visWindow at ''
+  // (show everyone) rather than hide the whole roster.
+  const measureWindow = () => {
+    const m = readSpans()
+    if (!m) return
+    const { wrap, spans, end, viewL, viewR } = m
     if (end > spans[0]!.left && viewR > viewL) {
       // >2px of overlap, not >0: a month jump aligns the next month's first
       // column to the frozen edge by integer scrollLeft, and a sub-pixel
@@ -527,19 +566,36 @@ export function Matrix() {
     }
   }
 
-  // Measured synchronously on scroll rather than deferred to a frame: thirteen
-  // rectangle reads is small beside what scrolling a 9,200-node table already
-  // costs, and a deferred reading is a reading of where the grid used to be.
-  // Re-measured when the war changes too, since that rebuilds every column.
+  // The scroll-settle debounce. iOS/Android inertia keeps firing scroll events
+  // frame by frame until the fling stops, then goes silent, so "no scroll for
+  // SCROLL_REST_MS" is what "at rest" means across browsers (scrollend is
+  // still patchy on Safari). While the events keep coming the timer keeps
+  // resetting, so the heavy row-window work fires exactly once, the instant
+  // the scroll comes to rest — never under a moving finger.
+  const SCROLL_REST_MS = 120
+  const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const onWrapScroll = () => {
+    measureStrip()
+    syncMirror()
+    if (idleRef.current) clearTimeout(idleRef.current)
+    idleRef.current = setTimeout(() => { idleRef.current = null; measureWindow() }, SCROLL_REST_MS)
+  }
+  useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current) }, [])
+
+  // Both halves measured when the war changes, since that rebuilds every
+  // column — and NOT mid-fling, so the window half runs directly here.
   useEffect(() => {
-    measureInView()
+    measureStrip()
+    measureWindow()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id, dates.length])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
-  // the narrowed columns or the reader sees the grid jump and snap back. The
-  // scroll it makes re-fires measureInView, whose signature compare then
+  // the narrowed columns or the reader sees the grid jump and snap back. It
+  // only ever fires now at scroll REST (the window is deferred there), so the
+  // scrollLeft it writes has no fling momentum left to interrupt. The scroll
+  // it makes re-fires the strip/window measure; the signature compare then
   // finds the same row set and stops — no loop.
   useLayoutEffect(() => {
     const a = anchorRef.current
@@ -551,6 +607,29 @@ export function Matrix() {
     const shift = cell.getBoundingClientRect().left - a.left
     if (Math.abs(shift) > 1) wrap.scrollLeft += shift
   }, [visWindow])
+
+  // Reserve exactly the month strip's own height on its sticky cell, so the
+  // wrapped rows (three on a phone, more at a high zoom) never overflow into
+  // the bracket bar below (see mstrowRef above). Layout effect so the cell is
+  // sized before paint — no flash of the collided state. Re-measures on the
+  // zoom (which re-wraps the buttons), the war change, and a viewport resize.
+  useLayoutEffect(() => {
+    const measure = () => {
+      const strow = mstrowRef.current, cell = mstickRef.current
+      if (!strow || !cell) return
+      const sr = strow.getBoundingClientRect()
+      const cr = cell.getBoundingClientRect()
+      if (sr.height === 0) return // jsdom / not laid out — leave the CSS floor
+      // Screen px from the cell's top to the strip's bottom, + a little
+      // breathing room, divided back out of the table zoom the cell sits in.
+      // Floored at the desktop one-row height so a single-row strip never
+      // shrinks the cell below what it was.
+      setStripH(Math.max(44, (sr.bottom - cr.top + 6) / (zoom || 1)))
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [zoom, period.id, dates.length])
 
   // The under-manned list asks for a day the same way the month strip asks
   // for a month, through the one `jumpTo` above — so a target lands clear of
@@ -597,6 +676,18 @@ export function Matrix() {
       <div className="card">
         <div className="card-hd">
           <span className="t">{period.name} · {dates.length} days · {people.length} people</span>
+          {/* Collapse the manning counts block — EITHER role (owner, 19 Aug 26).
+              A plain view toggle, in the header so it is reachable above the
+              scroll and does not ride the grid it hides. */}
+          <button
+            className="rtbtn countstoggle"
+            data-testid="counts-toggle"
+            aria-expanded={countsOpen}
+            title={countsOpen ? 'Hide the manning counts' : 'Show the manning counts'}
+            onClick={() => setCountsOpen(o => !o)}
+          >
+            {countsOpen ? '▾' : '▸'} Manning
+          </button>
           {/* Roster arrangement (owner, 18 Aug 26), admin only: Auto-sort
               re-groups everyone into the categorised order; Rearrange turns on
               the edit-mode drag handles AND the manning rows' reorder/hide
@@ -670,7 +761,7 @@ export function Matrix() {
         <div
           className="mx-wrap"
           ref={wrapRef}
-          onScroll={() => { measureInView(); syncMirror() }}
+          onScroll={onWrapScroll}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
@@ -681,14 +772,19 @@ export function Matrix() {
                 The header row is a tbody (`.mxhead`), not a thead — CSS
                 paints a thead at the TOP of the table wherever it sits in
                 the DOM, which would undo this whole arrangement. */}
-            <CountRows
-              verdicts={verdicts}
-              dates={dates}
-              order={orderedManningIds()}
-              hidden={manningHidden}
-              arranging={arranging}
-              admin={role === 'admin'}
-            />
+            {/* Collapsed away on the view toggle, but always shown while an
+                admin is Rearranging — that is where the per-row reorder / hide
+                controls live, and hiding the block would hide them too. */}
+            {(countsOpen || (arranging && role === 'admin')) && (
+              <CountRows
+                verdicts={verdicts}
+                dates={dates}
+                order={orderedManningIds()}
+                hidden={manningHidden}
+                arranging={arranging}
+                admin={role === 'admin'}
+              />
+            )}
             {/* The month strip, now a row of the grid so it sits between the
                 counts and the header (owner's arrows). The buttons live in a
                 sticky two-column cell and overflow visibly across the fill
@@ -696,8 +792,8 @@ export function Matrix() {
                 edge while the year scrolls under them. */}
             <tbody className="mstripe">
               <tr>
-                <td className="mstick" colSpan={2}>
-                  <div className="mstrow">
+                <td className="mstick" colSpan={2} ref={mstickRef} style={stripH ? { height: stripH } : undefined}>
+                  <div className="mstrow" ref={mstrowRef}>
                     <div className="months" data-testid="month-strip">
                       {months.map(m => (
                         <button
