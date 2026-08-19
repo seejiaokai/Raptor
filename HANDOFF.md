@@ -24,15 +24,16 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (PO rework + archive, 19 Aug 26 — every
-gate watched that day):
+**Last recorded green baseline** (Leave War header polish, 19 Aug 26 — the
+four core gates watched this session; perf/probes carried from the PO-rework
+baseline the same day, unaffected by a Leave-War-UI-only change):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2571 across 140 files — two vitest projects: raptor + leavewar (leavewar alone re-read 843 the same day) |
+| `npm test` | 2573 across 140 files — two vitest projects: raptor + leavewar (leavewar alone 845) |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 287 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `npm run test:e2e` | 293 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
 | `perf` | 4/4 |
 
