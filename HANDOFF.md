@@ -24,12 +24,12 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (Leave War manning explainer + SC D/SC N,
+**Last recorded green baseline** (board can ADD inputs,
 19 Aug 26 — all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2598 across 141 files — two vitest projects: raptor + leavewar (leavewar alone 870) |
+| `npm test` | 2609 across 142 files — two vitest projects: raptor (1739) + leavewar (870) |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 293 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -37,8 +37,9 @@ watched — this file's history twice recorded a count that was wrong.
 | `perf` | 4/4 |
 
 DOM measures at that baseline: week **3743** under a 4000 ceiling, board
-**844** under 960. The Leave War year matrix (~28k nodes) is outside the
-perf gate — it has its own e2e DOM band (29000), measured-first.
+**846** under 960 (the two + Add buttons added 2 nodes). The Leave War year
+matrix (~28k nodes) is outside the perf gate — it has its own e2e DOM band
+(29000), measured-first.
 
 **How the gates lie — the durable traps, worth more than any count:**
 
