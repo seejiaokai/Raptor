@@ -57,6 +57,15 @@ describe('projectPeople', () => {
     }
   })
 
+  /* SC currency rides the projection for the SC D / SC N team rows (owner,
+     19 Aug 26). Raptor's own boot rule: non-OCU aircrew hold SC DAY, the
+     instructor CATs and A/B hold SC NIGHT too, OCU hold neither. */
+  it('carries SC DAY / SC NIGHT off the Quals flags', () => {
+    expect(byId.get('bane')).toMatchObject({ scd: true, scn: true })      // IP
+    expect(byId.get('rocky')).toMatchObject({ scd: true, scn: false })    // CAT C
+    expect(byId.get('bapster')).toMatchObject({ scd: false, scn: false }) // OCU
+  })
+
   /* SANS are off the roster BY DEFAULT (owner, 18 Aug 26 — "we will not show
      the SANS in the leave war however there is a function to still enable
      this"); the enable is projectPeople's includeSans, driven by the store's

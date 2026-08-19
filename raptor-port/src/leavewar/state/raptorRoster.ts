@@ -65,6 +65,12 @@ export function projectPeople(includeSans = false): Person[] {
       // The CAT itself, for the display's by-CAT grouping and colour — never
       // for manning, which reads seat + band as it always has.
       q: p.q || '',
+      // SC currency, for the SC D / SC N team rows only (owner, 19 Aug 26).
+      // Ticked on Raptor's Quals page; reprojectRoster's signature carries
+      // them, so a tick reaches Leave War on the next notify like any other
+      // qual change.
+      scd: !!(p.quals && p.quals.scDay),
+      scn: !!(p.quals && p.quals.scNight),
     })
   }
   return out

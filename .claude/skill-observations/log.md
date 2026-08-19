@@ -129,3 +129,5 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When reordering table row groups, remember thead/tfoot are position-independent display groups; use tbody + class for any header that must sit mid-table.
 
 **Principle:** display: table-header-group is a rendering role, not a position — DOM order only governs plain row groups.
+
+*Checkpoint 19 Aug 26 (Leave War manning-explainer session): no observations — mid-build, nothing skill-worthy yet.*

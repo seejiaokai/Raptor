@@ -32,16 +32,30 @@ const ROWS: Row[] = [
   ['RESET', 'pilot', 'instructor', false, null],
 ]
 
+// SC currency for the demo, mirroring Raptor's own seeding rule (people.ts:
+// "the experienced hands hold both, the rest hold day only"): every
+// instructor holds SC DAY and SC NIGHT; these four ops hands hold DAY only.
+// On the live app the flags are a projection of Raptor's Quals page and this
+// set is never read — it exists so the seeded SC D / SC N rows show real
+// numbers instead of a uniform red, exactly like the rest of the demo grid.
+const SC_DAY_OPS = new Set(['jaguar', 'asics', 'pipper', 'dusk'])
+
 export function seedPeople(): Person[] {
-  return ROWS.map(([callsign, seat, band, sxo, to]) => ({
-    id: callsign.toLowerCase(),
-    callsign,
-    seat,
-    band,
-    sxo,
-    from: null,
-    to,
-  }))
+  return ROWS.map(([callsign, seat, band, sxo, to]) => {
+    const id = callsign.toLowerCase()
+    const instr = band === 'instructor'
+    return {
+      id,
+      callsign,
+      seat,
+      band,
+      sxo,
+      from: null,
+      to,
+      scd: instr || SC_DAY_OPS.has(id),
+      scn: instr,
+    }
+  })
 }
 
 // A FULL YEAR, not a quarter. The squadron forecasts a quarter ahead, but the
@@ -97,23 +111,34 @@ export function seedPeriod(): Period {
   }
 }
 
+// One team of SC cover, spelt out for the tap-a-row sheet. The wording is the
+// owner's own combination (19 Aug 26): "2 pilot SC day qualified and 2 WSO sc
+// day qualified. And a SXO. And any crew, not including ground crew."
+const SC_TEAM = (kind: string) =>
+  `One team is 2 SC ${kind} qualified pilots + 2 SC ${kind} qualified WSOs + 1 SXO + 1 more crew (pilot or WSO, any CAT) — six different people, ground crew never counted. The day's number is how many complete teams can still be manned; someone standing SC duty still counts, they are at work.`
+
 export function seedRequirements(): Requirements {
   return {
     default: {
       sets: { amber: 5, red: 4.5 },
       rules: [
-        { id: 'ip', label: 'IP', target: { kind: 'category', categories: ['IP'] }, threshold: { amber: 3, red: 2 } },
-        { id: 'iwso', label: 'IWSO', target: { kind: 'category', categories: ['IWSO'] }, threshold: { amber: 3, red: 2 } },
-        { id: 'instr', label: 'IP + IWSO', target: { kind: 'category', categories: ['IP', 'IWSO'] }, threshold: { amber: 5, red: 4 } },
-        { id: 'opsp', label: 'OPSP', target: { kind: 'category', categories: ['OPSP'] }, threshold: { amber: 4, red: 3 } },
-        { id: 'opsw', label: 'OPSW', target: { kind: 'category', categories: ['OPSW'] }, threshold: { amber: 4, red: 3 } },
-        // FL P / WM P split the pilots by CAT (owner, 18 Aug 26). Display-only
-        // for now: amber 0 / red 0 never fires (a count is never below zero),
-        // so the row shows the head count without judging a day amber or red.
-        // Give them real thresholds here the day the squadron wants a floor.
-        { id: 'flp', label: 'FL P', target: { kind: 'flp' }, threshold: { amber: 0, red: 0 } },
-        { id: 'wmp', label: 'WM P', target: { kind: 'wmp' }, threshold: { amber: 0, red: 0 } },
-        { id: 'sxo', label: 'SXO', target: { kind: 'sxo' }, threshold: { amber: 1, red: 1 } },
+        { id: 'ip', label: 'IP', target: { kind: 'category', categories: ['IP'] }, threshold: { amber: 3, red: 2 }, desc: 'Instructor pilots available.' },
+        { id: 'iwso', label: 'IWSO', target: { kind: 'category', categories: ['IWSO'] }, threshold: { amber: 3, red: 2 }, desc: 'Instructor WSOs available.' },
+        { id: 'instr', label: 'IP + IWSO', target: { kind: 'category', categories: ['IP', 'IWSO'] }, threshold: { amber: 5, red: 4 }, desc: 'Instructor pilots and instructor WSOs together.' },
+        { id: 'opsp', label: 'OPSP', target: { kind: 'category', categories: ['OPSP'] }, threshold: { amber: 4, red: 3 }, desc: 'Ops pilots (CAT A–D, OCU included) available.' },
+        { id: 'opsw', label: 'OPSW', target: { kind: 'category', categories: ['OPSW'] }, threshold: { amber: 4, red: 3 }, desc: 'Ops WSOs (CAT A–D, OCU included) available.' },
+        // FL P / WM P split the pilots by CAT (owner, 18 Aug 26). Seeded at
+        // amber 0 / red 0, which never fires (a count is never below zero) —
+        // the row shows the head count without judging a day. Since 19 Aug 26
+        // the floors are the squadron's to set: tap the row, edit the numbers.
+        { id: 'flp', label: 'FL P', target: { kind: 'flp' }, threshold: { amber: 0, red: 0 }, desc: 'Flight-lead pilots — CAT B and above, instructors included.' },
+        { id: 'wmp', label: 'WM P', target: { kind: 'wmp' }, threshold: { amber: 0, red: 0 }, desc: 'Wingman pilots — CAT C and below.' },
+        { id: 'sxo', label: 'SXO', target: { kind: 'sxo' }, threshold: { amber: 1, red: 1 }, desc: 'SXO-qualified crew available, counted on top of their own category.' },
+        // The SC cover rows (owner, 19 Aug 26): below one complete team the
+        // day is RED — amber equal to red means there is no amber band, the
+        // same idiom as the SXO row. Both editable from the row's sheet.
+        { id: 'scd', label: 'SC D', target: { kind: 'scd' }, threshold: { amber: 1, red: 1 }, desc: SC_TEAM('Day') },
+        { id: 'scn', label: 'SC N', target: { kind: 'scn' }, threshold: { amber: 1, red: 1 }, desc: `${SC_TEAM('Night')} SC Night is the AVALON cover.` },
       ],
     },
     overrides: {},

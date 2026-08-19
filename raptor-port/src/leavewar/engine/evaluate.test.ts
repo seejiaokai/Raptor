@@ -178,3 +178,42 @@ describe('overseas duty', () => {
     expect(evaluateDay(people, { ip1: { [D]: 'OD' } }, {}, reqs, D).verdict).toBe('red')
   })
 })
+
+// The SC D / SC N rules (owner, 19 Aug 26) read the team counts, and the
+// seeded amber-equal-to-red idiom means straight to red below one team.
+describe('the SC team rules', () => {
+  const scReqs: Requirements = {
+    default: {
+      sets: null,
+      rules: [
+        { id: 'scd', label: 'SC D', target: { kind: 'scd' }, threshold: { amber: 1, red: 1 } },
+        { id: 'scn', label: 'SC N', target: { kind: 'scn' }, threshold: { amber: 1, red: 1 } },
+      ],
+    },
+    overrides: {},
+  }
+  const crew: Person[] = [
+    p('p1', 'pilot', 'ops', { scd: true, scn: true }),
+    p('p2', 'pilot', 'ops', { scd: true, scn: true }),
+    p('w1', 'wso', 'ops', { scd: true, scn: true }),
+    p('w2', 'wso', 'ops', { scd: true, scn: true }),
+    p('sx', 'pilot', 'ops', { sxo: true }),
+    p('c1', 'wso', 'ops'),
+  ]
+
+  it('a day that can man one team of each is ok', () => {
+    const v = evaluateDay(crew, {}, {}, scReqs, D)
+    expect(v.results.find(r => r.ruleId === 'scd')!.verdict).toBe('ok')
+    expect(v.results.find(r => r.ruleId === 'scn')!.verdict).toBe('ok')
+    expect(v.verdict).toBe('ok')
+  })
+
+  it('leave that breaks the combination turns the day red, with no amber band', () => {
+    const grid: Grid = { w1: { [D]: 'LL' } }
+    const v = evaluateDay(crew, grid, {}, scReqs, D)
+    const scd = v.results.find(r => r.ruleId === 'scd')!
+    expect(scd.have).toBe(0.5)
+    expect(scd.verdict).toBe('red')
+    expect(v.verdict).toBe('red')
+  })
+})

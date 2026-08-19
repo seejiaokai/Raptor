@@ -408,6 +408,27 @@
   text-transform: uppercase;
 }
 
+/* The row's name is a real BUTTON since 19 Aug 26 (tap → the explainer
+   sheet), drawn as the plain label it replaced so the frozen column does not
+   grow a control it has no room for. The dotted underline is the one clue it
+   answers a tap; the whole text block is the target, not a glyph (the
+   counter-arrows lesson: a glyph in a 76px column is not a tap target). */
+.mx .counts .who .mwho {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline dotted rgba(159, 176, 195, .55);
+  text-underline-offset: 3px;
+}
+
 .mx .counts td.amber {
   background: rgba(229, 168, 59, .18);
   color: #F2C879;

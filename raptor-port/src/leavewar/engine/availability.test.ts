@@ -181,3 +181,87 @@ describe('availability and the bid state', () => {
     expect(countsFor(people, grid, states, '2026-01-05').byCategory.OPSP).toBe(1)
   })
 })
+
+// The SC D / SC N team counts (owner, 19 Aug 26): one team is 2 SC-qualified
+// pilots + 2 SC-qualified WSOs + 1 SXO + 1 more crew — six DIFFERENT people,
+// ground crew never counted. The count is how many complete teams the day can
+// still man; someone standing SC duty counts as present, they are at work.
+describe('the SC D / SC N team counts', () => {
+  const D = '2026-01-05'
+  // Exactly one team with nothing to spare: six people, each role covered once.
+  const team: Person[] = [
+    p('p1', 'pilot', 'ops', { scd: true }),
+    p('p2', 'pilot', 'ops', { scd: true }),
+    p('w1', 'wso', 'ops', { scd: true }),
+    p('w2', 'wso', 'ops', { scd: true }),
+    p('sx', 'pilot', 'ops', { sxo: true }),
+    p('c1', 'wso', 'ops'),
+  ]
+
+  it('counts one complete team from six distinct people, and no night team without night quals', () => {
+    const c = countsFor(team, {}, {}, D)
+    expect(c.scd).toBe(1)
+    expect(c.scn).toBe(0)
+  })
+
+  it('reads the night flags for SC N', () => {
+    const night = team.map(x => ({ ...x, scn: x.scd, scd: undefined }))
+    const c = countsFor(night, {}, {}, D)
+    expect(c.scn).toBe(1)
+    expect(c.scd).toBe(0)
+  })
+
+  it('a missing sixth body means no complete team — the any-crew seat is part of the combination', () => {
+    expect(countsFor(team.slice(0, 5), {}, {}, D).scd).toBeLessThan(1)
+  })
+
+  it('ground crew never fill the any-crew seat', () => {
+    const withGnd = [...team.slice(0, 5), p('g1', 'wso', 'ops', { pers: true, seat: 'gnd' })]
+    expect(countsFor(withGnd, {}, {}, D).scd).toBeLessThan(1)
+  })
+
+  // The distinctness trap the four simple counts cannot see: the only SXO
+  // doubling as one of the only two SC pilots can fill one role, not both.
+  it('the only SXO doubling as an SC pilot cannot fill both roles', () => {
+    const overlap: Person[] = [
+      p('p1', 'pilot', 'ops', { scd: true, sxo: true }),
+      p('p2', 'pilot', 'ops', { scd: true }),
+      p('w1', 'wso', 'ops', { scd: true }),
+      p('w2', 'wso', 'ops', { scd: true }),
+      p('c1', 'wso', 'ops'),
+      p('c2', 'wso', 'ops'),
+    ]
+    expect(countsFor(overlap, {}, {}, D).scd).toBeLessThan(1)
+  })
+
+  it('but a SPARE SXO or a spare SC pilot makes the overlap legal again', () => {
+    const covered: Person[] = [
+      p('p1', 'pilot', 'ops', { scd: true, sxo: true }),
+      p('p2', 'pilot', 'ops', { scd: true }),
+      p('p3', 'pilot', 'ops', { scd: true }),
+      p('w1', 'wso', 'ops', { scd: true }),
+      p('w2', 'wso', 'ops', { scd: true }),
+      p('c1', 'wso', 'ops'),
+    ]
+    expect(countsFor(covered, {}, {}, D).scd).toBe(1)
+  })
+
+  it('leave costs a team fractionally, half days included', () => {
+    const grid: Grid = { p1: { [D]: '*LL' } }
+    // 1.5 SC-day pilots against a need of 2 per team.
+    expect(countsFor(team, grid, {}, D).scd).toBe(0.75)
+  })
+
+  it('a full day of leave on the one SXO takes the team to zero', () => {
+    const grid: Grid = { sx: { [D]: 'LL' } }
+    expect(countsFor(team, grid, {}, D).scd).toBe(0)
+  })
+
+  // Presence, not flying availability: an SC duty stander reads 0 to every
+  // other figure but they are AT WORK — a fully-manned duty day must not go
+  // red for being manned.
+  it('someone standing SC duty still counts toward the team', () => {
+    const grid: Grid = { p1: { [D]: 'FS' }, sx: { [D]: 'HS' } }
+    expect(countsFor(team, grid, {}, D).scd).toBe(1)
+  })
+})

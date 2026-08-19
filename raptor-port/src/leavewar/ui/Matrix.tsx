@@ -33,6 +33,7 @@ import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
 import { CountRows } from './CountRows'
+import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
@@ -148,6 +149,9 @@ export function Matrix() {
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
   const [eventEdit, setEventEdit] = useState<{ line: number; date: string } | null>(null)
+  // Which manning count row's explainer is open (owner, 19 Aug 26 — a tap on
+  // the row's name says what it counts and where its colours turn on).
+  const [manningInfo, setManningInfo] = useState<string | null>(null)
   // Edit-mode roster rearranging (owner, 18 Aug 26). Admin-only view state: it
   // turns the drag handles on, so an admin reading the grid does not nudge a
   // row by accident. Auto-sort stays available without it.
@@ -783,6 +787,7 @@ export function Matrix() {
                 hidden={manningHidden}
                 arranging={arranging}
                 admin={role === 'admin'}
+                onInfo={setManningInfo}
               />
             )}
             {/* The month strip, now a row of the grid so it sits between the
@@ -1222,6 +1227,13 @@ export function Matrix() {
           date={eventEdit.date}
           onClose={() => setEventEdit(null)}
         />
+      )}
+      {/* A manning row's explainer — every role's way in from the row's name;
+          what it OFFERS (the amber/red fields) is derived from the role
+          inside, so a role change while it is open cannot leave the fields
+          on a member's screen. Keyed so switching rows resets the drafts. */}
+      {manningInfo && (
+        <ManningSheet key={manningInfo} ruleId={manningInfo} onClose={() => setManningInfo(null)} />
       )}
       {open && !openPostedOut && !raptorOwns(states, open.id, open.date)
         && canEditCell(period, role, open.date)

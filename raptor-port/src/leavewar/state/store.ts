@@ -54,6 +54,7 @@ import {
   type Person,
   type Requirements,
   type Role,
+  type Threshold,
   type Stage,
   type States,
 } from '../engine'
@@ -62,6 +63,15 @@ import { localBackend, memoryBackend, type StorageBackend } from './storage'
 interface State {
   people: Person[]
   requirements: Requirements
+  /** The squadron's own amber/red lines, keyed by manning row id (`'sets'`
+   *  plus each rule's id) — an OVERLAY on the seeded defaults, which is what
+   *  `requirements` above is always derived from (`requirementsWith`).
+   *  Storing only the numbers keeps the rule definitions code-owned, so a
+   *  rule renamed or reworded in a later build cannot be frozen by an old
+   *  blob (the stores-list lesson). Persisted under `manningthresh`,
+   *  ADMIN-gated at the write path (owner, 19 Aug 26 — "when does the amber
+   *  show or red show… is customisable"). */
+  manningThresh: Record<string, Threshold>
   /** The squadron's EVENT TYPES — the small library that gives a day-event
    *  word its off/no-leave/work meaning (engine/eventdefs.ts). Squadron-wide,
    *  not per-war, and persisted under its own `eventdefs` key. */
@@ -197,6 +207,7 @@ function blank(): State {
   return withCurrent({
     people: seedPeople(),
     requirements: seedRequirements(),
+    manningThresh: {},
     eventDefs: seedEventDefs(),
     wars,
     currentId: wars[0].period.id,
@@ -351,6 +362,34 @@ function readFigureOrder(x: unknown): string[] | null {
 
 /** A stored id list (the roster order), same shape as the figure order. */
 const readIdList = readFigureOrder
+
+/** The stored amber/red overlay. One bad entry is dropped rather than
+ *  rejecting the whole blob (the label-map rule); an id no rule carries any
+ *  more is harmless — `requirementsWith` only reads ids the seed still has. */
+function readThreshMap(x: unknown): Record<string, Threshold> | null {
+  if (!isPlainObject(x)) return null
+  const out: Record<string, Threshold> = {}
+  for (const [id, t] of Object.entries(x)) {
+    if (!isPlainObject(t)) continue
+    const { amber, red } = t as { amber?: unknown; red?: unknown }
+    if (typeof amber !== 'number' || !Number.isFinite(amber) || amber < 0) continue
+    if (typeof red !== 'number' || !Number.isFinite(red) || red < 0) continue
+    out[id] = { amber, red }
+  }
+  return out
+}
+
+/** The seeded requirements with the squadron's own amber/red lines laid on
+ *  top. ALWAYS built from the seed, never from the previous derived object,
+ *  so removing an overlay entry genuinely returns the default. */
+function requirementsWith(overlay: Record<string, Threshold>): Requirements {
+  const req = seedRequirements()
+  if (req.default.sets && overlay['sets']) req.default.sets = { ...overlay['sets'] }
+  req.default.rules = req.default.rules.map(r =>
+    overlay[r.id] ? { ...r, threshold: { ...overlay[r.id] } } : r,
+  )
+  return req
+}
 
 /** A stored id→label map (personnel labels). Non-string values are dropped
  *  rather than rejecting the whole blob — one bad entry should not blank the
@@ -539,6 +578,7 @@ export function initStore(b?: StorageBackend): void {
   const persLabels = readStored('perslabels', readLabelMap) ?? {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
+  const manningThresh = readStored('manningthresh', readThreshMap) ?? {}
   const eventRows = readStored('eventrows', x =>
     typeof x === 'number' && Number.isInteger(x) && x >= DEFAULT_EVENT_ROWS && x <= MAX_EVENT_ROWS ? x : null,
   ) ?? DEFAULT_EVENT_ROWS
@@ -555,7 +595,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, eventRows, showSans })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, manningThresh, requirements: requirementsWith(manningThresh), eventRows, showSans })
 
   version = 0
   listeners.clear()
@@ -618,6 +658,7 @@ function persist(): void {
   backend.write('perslabels', JSON.stringify(state.persLabels))
   backend.write('manningorder', JSON.stringify(state.manningOrder))
   backend.write('manninghidden', JSON.stringify(state.manningHidden))
+  backend.write('manningthresh', JSON.stringify(state.manningThresh))
   backend.write('eventrows', JSON.stringify(state.eventRows))
   backend.write('showsans', JSON.stringify(state.showSans))
   /* `people` deliberately absent: the roster is a projection of Raptor's
@@ -1351,6 +1392,37 @@ export function toggleManningRow(id: string): void {
 export function resetManning(): void {
   if (state.role !== 'admin') return
   state = withCurrent({ ...state, manningOrder: [], manningHidden: [] })
+  persist()
+  notify()
+}
+
+/**
+ * Set one manning row's amber/red lines (owner, 19 Aug 26 — "when does the
+ * amber show or red show on the box… is customisable"). ADMIN-gated like the
+ * row order; the guard-rails line applies — refuse MALFORMED (not a finite
+ * non-negative number, or a row that does not exist), accept any decision:
+ * amber below red simply means there is no amber band, the SXO seed's own
+ * idiom, and refusing it would refuse the seed. Returns whether it wrote, so
+ * the sheet can keep its fields on a refusal.
+ */
+export function setManningThreshold(id: string, amber: number, red: number): boolean {
+  if (state.role !== 'admin') return false
+  if (!Number.isFinite(amber) || amber < 0 || !Number.isFinite(red) || red < 0) return false
+  if (!manningRowIds().includes(id)) return false
+  const manningThresh = { ...state.manningThresh, [id]: { amber, red } }
+  state = withCurrent({ ...state, manningThresh, requirements: requirementsWith(manningThresh) })
+  persist()
+  notify()
+  return true
+}
+
+/** Put one row's amber/red lines back to the built-in default. ADMIN-gated. */
+export function resetManningThreshold(id: string): void {
+  if (state.role !== 'admin') return
+  if (!(id in state.manningThresh)) return
+  const manningThresh = { ...state.manningThresh }
+  delete manningThresh[id]
+  state = withCurrent({ ...state, manningThresh, requirements: requirementsWith(manningThresh) })
   persist()
   notify()
 }

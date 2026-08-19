@@ -23,6 +23,8 @@ import {
   addEventRow,
   removeEventRow,
   MAX_EVENT_ROWS,
+  setManningThreshold,
+  resetManningThreshold,
   setPeople,
   setPerson,
   clearBidWindow,
@@ -1501,5 +1503,67 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
     expect(addEventType('Standby', 'work')).toContain('admin')
     expect(removeEventType(0)).toBe(false)
     expect(getState().eventDefs).toHaveLength(3)
+  })
+})
+
+// The manning amber/red lines are the squadron's own (owner, 19 Aug 26 —
+// "when does the amber show or red show… is customisable"): an overlay on the
+// seeded defaults, admin-gated, persisted under `manningthresh`.
+describe('the manning thresholds are editable, admin-gated and persisted', () => {
+  it('a member cannot move a line', () => {
+    expect(setManningThreshold('sets', 6, 5)).toBe(false)
+    expect(getState().requirements.default.sets).toEqual({ amber: 5, red: 4.5 })
+  })
+
+  it('an admin moves a line and the derived requirements follow, sets included', () => {
+    setRole('admin')
+    expect(setManningThreshold('sets', 6, 5)).toBe(true)
+    expect(getState().requirements.default.sets).toEqual({ amber: 6, red: 5 })
+    expect(setManningThreshold('scd', 2, 2)).toBe(true)
+    expect(getState().requirements.default.rules.find(r => r.id === 'scd')!.threshold).toEqual({ amber: 2, red: 2 })
+    // The rule's words are code-owned and survive the overlay untouched.
+    expect(getState().requirements.default.rules.find(r => r.id === 'scd')!.desc).toBeTruthy()
+  })
+
+  it('refuses malformed numbers and unknown rows, accepts the no-amber-band decision', () => {
+    setRole('admin')
+    expect(setManningThreshold('ip', NaN, 1)).toBe(false)
+    expect(setManningThreshold('ip', -1, 1)).toBe(false)
+    expect(setManningThreshold('ip', 2, Infinity)).toBe(false)
+    expect(setManningThreshold('nosuchrow', 2, 1)).toBe(false)
+    expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 3, red: 2 })
+    // Amber at or under red is a decision (no amber band), not corruption.
+    expect(setManningThreshold('ip', 1, 4)).toBe(true)
+  })
+
+  it('a saved line survives a reload; reset returns the seeded default', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    setRole('admin')
+    setManningThreshold('flp', 3, 2)
+    initStore(backend)
+    expect(getState().requirements.default.rules.find(r => r.id === 'flp')!.threshold).toEqual({ amber: 3, red: 2 })
+    setRole('admin')
+    resetManningThreshold('flp')
+    expect(getState().requirements.default.rules.find(r => r.id === 'flp')!.threshold).toEqual({ amber: 0, red: 0 })
+    initStore(backend)
+    expect(getState().requirements.default.rules.find(r => r.id === 'flp')!.threshold).toEqual({ amber: 0, red: 0 })
+  })
+
+  it('a member cannot reset either', () => {
+    setRole('admin')
+    setManningThreshold('ip', 5, 4)
+    setRole('member')
+    resetManningThreshold('ip')
+    expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 5, red: 4 })
+  })
+
+  it('a corrupt stored blob degrades to the defaults instead of crashing', () => {
+    const backend = memoryBackend()
+    backend.write('manningthresh', JSON.stringify({ ip: { amber: 'six', red: 2 }, sets: { amber: 7, red: 6 } }))
+    initStore(backend)
+    // The bad entry is dropped; the good one beside it still applies.
+    expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 3, red: 2 })
+    expect(getState().requirements.default.sets).toEqual({ amber: 7, red: 6 })
   })
 })
