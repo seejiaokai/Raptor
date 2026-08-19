@@ -461,19 +461,19 @@ export function Matrix() {
     </tr>
   )
 
-  const measureInView = () => {
+  // The month spans + the visible view bounds — the thirteen rect reads both
+  // the strip readout and the row window are computed from. One rect per month
+  // plus the last column, not one per day: thirteen reads on a year rather than
+  // 365, which is what makes measuring this on every scroll event affordable.
+  const readSpans = () => {
     const wrap = wrapRef.current
-    if (!wrap || months.length === 0 || dates.length === 0) return
+    if (!wrap || months.length === 0 || dates.length === 0) return null
     const headLeft = (date: string) =>
       wrap.querySelector<HTMLElement>(`[data-testid="head-${date}"]`)?.getBoundingClientRect().left
     const lastHead = wrap.querySelector<HTMLElement>(`[data-testid="head-${dates[dates.length - 1]}"]`)
-    if (!lastHead) return
-
-    // One rect per month plus the last column, not one per day: thirteen
-    // reads on a year rather than 365, which is what makes measuring this on
-    // every scroll event affordable.
+    if (!lastHead) return null
     const edges = months.map(m => headLeft(m.first))
-    if (edges.some(e => e === undefined)) return
+    if (edges.some(e => e === undefined)) return null
     const end = lastHead.getBoundingClientRect().right
     const spans = months.map((m, i) => ({
       label: m.label,
@@ -482,18 +482,38 @@ export function Matrix() {
       // right edge of the final column.
       right: i + 1 < edges.length ? edges[i + 1]! : end,
     }))
-
     const wr = wrap.getBoundingClientRect()
     // The visible strip starts where the day columns do — the frozen columns
     // sit ON TOP of them, so counting from the wrapper's own left edge would
     // credit whichever month is hidden underneath the callsigns.
     const viewL = wr.left + frozenWidth(wrap)
     const viewR = wr.right
-    setInView(monthInView(spans, viewL, viewR))
-    // The visible WINDOW for the row filter. Only from a real layout: jsdom
-    // reports every rect 0×0, the spans have no width, and a zero-width
-    // "window" must leave visWindow at '' (show everyone) rather than hide
-    // the whole roster.
+    return { wrap, spans, end, viewL, viewR }
+  }
+
+  // The month-strip readout — which month the grid is showing. Cheap (one
+  // setState of a string, and React bails when it is unchanged), so it runs
+  // LIVE on every scroll event: the strip has to say where you ARE while you
+  // move, not lag behind at rest.
+  const measureStrip = () => {
+    const m = readSpans()
+    if (!m) return
+    setInView(monthInView(m.spans, m.viewL, m.viewR))
+  }
+
+  // The row WINDOW for the roster filter — the expensive half. Changing it
+  // repaints the whole ~28k-node grid AND fires the anchor correction below
+  // (`scrollLeft +=`), which writes scrollLeft and so KILLS a touch fling's
+  // momentum dead: the scroll visibly stops at the month a posted-out row
+  // leaves. So this is NEVER run mid-scroll — the wrap's onScroll defers it to
+  // scroll REST (idleRef below), where the grid is still and moving scrollLeft
+  // is invisible. Only from a real layout: jsdom reports every rect 0×0, the
+  // spans have no width, and a zero-width "window" must leave visWindow at ''
+  // (show everyone) rather than hide the whole roster.
+  const measureWindow = () => {
+    const m = readSpans()
+    if (!m) return
+    const { wrap, spans, end, viewL, viewR } = m
     if (end > spans[0]!.left && viewR > viewL) {
       // >2px of overlap, not >0: a month jump aligns the next month's first
       // column to the frozen edge by integer scrollLeft, and a sub-pixel
@@ -527,19 +547,36 @@ export function Matrix() {
     }
   }
 
-  // Measured synchronously on scroll rather than deferred to a frame: thirteen
-  // rectangle reads is small beside what scrolling a 9,200-node table already
-  // costs, and a deferred reading is a reading of where the grid used to be.
-  // Re-measured when the war changes too, since that rebuilds every column.
+  // The scroll-settle debounce. iOS/Android inertia keeps firing scroll events
+  // frame by frame until the fling stops, then goes silent, so "no scroll for
+  // SCROLL_REST_MS" is what "at rest" means across browsers (scrollend is
+  // still patchy on Safari). While the events keep coming the timer keeps
+  // resetting, so the heavy row-window work fires exactly once, the instant
+  // the scroll comes to rest — never under a moving finger.
+  const SCROLL_REST_MS = 120
+  const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const onWrapScroll = () => {
+    measureStrip()
+    syncMirror()
+    if (idleRef.current) clearTimeout(idleRef.current)
+    idleRef.current = setTimeout(() => { idleRef.current = null; measureWindow() }, SCROLL_REST_MS)
+  }
+  useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current) }, [])
+
+  // Both halves measured when the war changes, since that rebuilds every
+  // column — and NOT mid-fling, so the window half runs directly here.
   useEffect(() => {
-    measureInView()
+    measureStrip()
+    measureWindow()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id, dates.length])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
-  // the narrowed columns or the reader sees the grid jump and snap back. The
-  // scroll it makes re-fires measureInView, whose signature compare then
+  // the narrowed columns or the reader sees the grid jump and snap back. It
+  // only ever fires now at scroll REST (the window is deferred there), so the
+  // scrollLeft it writes has no fling momentum left to interrupt. The scroll
+  // it makes re-fires the strip/window measure; the signature compare then
   // finds the same row set and stops — no loop.
   useLayoutEffect(() => {
     const a = anchorRef.current
@@ -670,7 +707,7 @@ export function Matrix() {
         <div
           className="mx-wrap"
           ref={wrapRef}
-          onScroll={() => { measureInView(); syncMirror() }}
+          onScroll={onWrapScroll}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >

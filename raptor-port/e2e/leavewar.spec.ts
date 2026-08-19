@@ -1861,3 +1861,25 @@ test('a seeded posting-out hides its row in later months too', async ({ page }) 
   await page.locator(`[data-testid="month-JAN"]`).click()
   await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(1)
 })
+
+// The roster reflow (hiding a posted-out row) repaints the ~28k-node grid and
+// re-pins the viewed column with a `scrollLeft +=` correction. Run mid-fling,
+// that scrollLeft write stops a real touch scroll's momentum dead — the scroll
+// visibly halts at the month a row leaves (owner, 19 Aug 26). The fix defers
+// the reflow to scroll REST, so it must NOT fire during a scroll: a burst of
+// scroll events leaves IGNITE's row up until the burst ends, and only the
+// settle that follows takes it away.
+test('the roster does not reflow mid-scroll, only once the scroll settles', async ({ page }) => {
+  await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(1)
+  // A synchronous burst deep past January (scrollLeft clamps to the far right,
+  // well beyond IGNITE's only month). No settle timer can fire inside the
+  // loop, so the row is guaranteed still present the instant it ends.
+  const stillThere = await page.evaluate(() => {
+    const el = document.querySelector('.mx-wrap') as HTMLElement
+    for (let i = 0; i < 30; i++) { el.scrollLeft = 12000 + i * 100; el.dispatchEvent(new Event('scroll')) }
+    return !!document.querySelector('[data-testid="row-ignite"]')
+  })
+  expect(stillThere).toBe(true)
+  // Once the scroll comes to rest the window updates and the row leaves.
+  await expect(page.locator('[data-testid="row-ignite"]')).toHaveCount(0)
+})
