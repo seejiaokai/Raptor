@@ -334,10 +334,16 @@ export function StageBar() {
           <span className="n">
             {clashes.length} clash{clashes.length === 1 ? '' : 'es'} with the schedule
           </span>
-          {clashes.map(c => (
-            // kind joins the key: a leave clash and a duty clash can share one
-            // person and date, and duplicate keys drop a row on repaint
-            <span className="row" key={`${c.kind ?? 'leave'}-${c.person}-${c.date}`}>
+          {clashes.map((c, i) => (
+            // kind AND both codes AND the index join the key (review fix,
+            // 19 Aug 26 — kind alone was not enough): two split-clashes, or a
+            // split-clash beside an ingest clash, legitimately share one
+            // person, date and kind (a full-day LL plus a PM OML against one
+            // approved bid), and a duplicate key drops one strip row on
+            // repaint — hiding a clash the admin must resolve. The list is
+            // re-derived whole on every pass, so the index is a safe
+            // tiebreak, not a reorder hazard.
+            <span className="row" key={`${c.kind ?? 'leave'}-${c.person}-${c.date}-${c.inputCode}-${c.bidCode}-${i}`}>
               {c.kind === 'duty'
                 ? <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: published duty
                     earns {c.inputCode} but {shortDate(c.date)} holds {c.bidCode} — resolve on the sheet</>

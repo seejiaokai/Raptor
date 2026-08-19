@@ -172,6 +172,19 @@ describe('roster order + labels are admin-gated writers', () => {
     expect(roster[roster.length - 1].id).toBe('gnd_1')      // ground crew still last
   })
 
+  it('moveRosterRow: "before itself" is a no-op, and beforeId null moves to the end (review fix, 19 Aug 26)', () => {
+    const before = displayRoster().map(p => p.id)
+    // before-itself used to splice the row out, miss the indexOf, and silently
+    // dump it at the END — the guard makes it the no-op it means
+    moveRosterRow('ops_a', 'ops_a')
+    expect(displayRoster().map(p => p.id)).toEqual(before)
+    // null = the true end of the roster: the drag machine's "after the last
+    // row" gesture resolves here (display grouping then holds it in its group)
+    moveRosterRow('ops_a', null)
+    const ids = displayRoster().map(p => p.id)
+    expect(ids.indexOf('ops_a')).toBeGreaterThan(ids.indexOf('ops_c'))
+  })
+
   it('autoSortRoster re-groups back to the categorised order', () => {
     setRosterOrder(['gnd_1', 'sxo_1'])
     autoSortRoster()

@@ -1673,6 +1673,24 @@ test('an admin auto-sorts and hand-drags the roster; a member gets neither tool'
     await page.mouse.move(tgt.x + 40, tgt.y + 8, { steps: 5 })
     await page.mouse.up()
     expect((await ids())[0]).not.toBe(before[0])
+    // A drop in the LOWER half of the LAST row lands the dragged row at the
+    // very end (review fix, 19 Aug 26). Driven with the two GROUND-CREW rows
+    // at the bottom — same group, adjacent — because this exact gesture was
+    // BOTH dead spots at once before the rework: insert-before-only made
+    // "drag the second-to-last onto the row beneath it" a silent no-op, and
+    // the end of the roster had no gesture that reached it at all.
+    const cur = await ids()
+    const src = cur[cur.length - 2], endId = cur[cur.length - 1]
+    await page.locator(`[data-testid="row-${endId}"]`).scrollIntoViewIfNeeded()
+    const h2 = (await page.locator(`[data-testid="drag-${src}"]`).boundingBox())!
+    const last = (await page.locator(`[data-testid="row-${endId}"]`).boundingBox())!
+    await page.mouse.move(h2.x + 5, h2.y + 5)
+    await page.mouse.down()
+    await page.mouse.move(h2.x + 5, h2.y + 12, { steps: 3 })
+    await page.mouse.move(last.x + 40, last.y + last.height - 3, { steps: 5 })
+    await page.mouse.up()
+    const after = await ids()
+    expect(after[after.length - 1]).toBe(src)
     // Auto-sort restores the categorised order.
     await page.locator('[data-testid="roster-autosort"]').click()
     expect((await ids())[0]).toBe(before[0])

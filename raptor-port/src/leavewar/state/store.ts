@@ -846,6 +846,11 @@ export function autoSortRoster(): void {
  */
 export function moveRosterRow(id: string, beforeId: string | null): void {
   if (state.role !== 'admin') return
+  /* "before itself" is where it already is — and without this guard it was
+     worse than a no-op: the splice below removes `id` first, so indexOf then
+     misses and the row silently jumped to the END (review hardening, 19 Aug
+     26, alongside the drag machine's insert-after rework) */
+  if (beforeId === id) return
   const ids = displayRoster().map(p => p.id)
   const from = ids.indexOf(id)
   if (from < 0) return
@@ -1235,14 +1240,22 @@ export type RemoveEventRowResult = 'removed' | 'min' | 'nonempty' | 'forbidden'
  *  (`'nonempty'`) so nothing vanishes unseen — the admin clears it first. This
  *  guard is also what keeps `columnKindFor` honest: it scans every stored event
  *  line, so a row is only ever dropped from view once it is provably empty. */
+/* Does ANY war hold text or a band on this event line? `eventRows` is
+   squadron-wide across every war, so the remove guard below (and the button
+   state in Matrix.tsx) must look at ALL of them (review fix, 19 Aug 26) —
+   checking only the open war let an admin remove a row that still carried an
+   "Exercise" in another year's war, leaving that text, its column tint and
+   its OIL effects invisible with nothing left to see or clear them by. */
+export function eventRowUsed(line: number): boolean {
+  return state.wars.some(w =>
+    w.period.days.some(d => (d.events[line] ?? '') !== '') ||
+    w.period.bands.some(b => b.line === line))
+}
+
 export function removeEventRow(): RemoveEventRowResult {
   if (state.role !== 'admin') return 'forbidden'
   if (state.eventRows <= DEFAULT_EVENT_ROWS) return 'min'
-  const line = state.eventRows - 1
-  const used =
-    state.period.days.some(d => (d.events[line] ?? '') !== '') ||
-    state.period.bands.some(b => b.line === line)
-  if (used) return 'nonempty'
+  if (eventRowUsed(state.eventRows - 1)) return 'nonempty'
   state = withCurrent({ ...state, eventRows: state.eventRows - 1 })
   persist()
   notify()

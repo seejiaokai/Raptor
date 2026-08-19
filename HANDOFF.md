@@ -24,12 +24,12 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (board adds are context-bound,
+**Last recorded green baseline** (the five-review-findings fix batch,
 19 Aug 26 — all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2617 across 142 files — two vitest projects: raptor (1747) + leavewar (870) |
+| `npm test` | 2621 across 142 files — two vitest projects: raptor (1748) + leavewar (873) |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 293 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -67,7 +67,18 @@ has its own e2e DOM band (29000), measured-first.
   case passed too, which is how it was caught. **Kill the preview before
   trusting an e2e run after editing CSS or markup**, or run the two in the
   other order: e2e first, then start the preview for the probes.
-- **jsdom cannot measure layout** — every rect Vitest reports is 0×0, so it
+- **The CI runner can run ~30% slower than this container, and vitest's
+  default 5s per-test timeout was the margin that failed main's deploy on
+  19 Aug 26** — a board.test.tsx test that runs ~1s locally timed out, its
+  abandoned cleanup left TEST BLOCK duty rows installed, and the NEXT test
+  failed on markup that had nothing to do with it (the misleading half:
+  the second failure is the one a reader debugs first, and it is pure
+  fallout). The identical commit had passed the identical PR gate minutes
+  earlier. Both vitest projects run a 20s testTimeout now (vite.config.ts) —
+  headroom, not a target; a test that genuinely needs seconds is still worth
+  a look. If a main run ever fails on a test the PR run just passed, read
+  for "Test timed out" FIRST, and check whether every later failure in the
+  same file is downstream of an un-run `finally`. — every rect Vitest reports is 0×0, so it
   can prove which class was emitted and nothing about what was painted.
   Geometry contracts are gated by `e2e/geometry.spec.ts` (the fourth CI
   gate, 86 checks); wider visual work still wants the probe path
@@ -545,6 +556,14 @@ has its own e2e DOM band (29000), measured-first.
   pointer-drag is desktop-verified live; on a phone the primary path is
   Auto-sort (drag works but is fiddly on a 76px frozen column). The
   standalone-app critique is in `raptor-port/.impeccable/critique/`.
+  **The drag reads the ROW HALF since 19 Aug 26 (review fix):** the lower
+  half of a hovered row means "after this row" (drop bar on the bottom edge),
+  which is what made the two dead spots go — dropping on the row directly
+  beneath used to be a silent no-op, and the last position of the roster was
+  unreachable by drag at all (the store's move-to-end path had no gesture).
+  `moveRosterRow` also refuses "before itself" now — it used to silently dump
+  the row at the END through a splice-then-miss. E2e-pinned (the ground-crew
+  pair at the bottom drives both old dead spots in one gesture).
   **DESKTOP IS "AN EXTENDED MOBILE" (owner, 18 Aug 26 — "make it similar to the
   mobile… I don't like the days to be so wide… the counter is extended"):** the
   desktop uses the phone's compact columns, not its own wide ones — day cells

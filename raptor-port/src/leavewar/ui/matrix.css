@@ -1033,9 +1033,14 @@
   padding: 2px 5px;
 }
 
-/* Edit-mode row affordances. */
+/* Edit-mode row affordances. The drop bar sits on the TOP edge for an
+   insert-before and the BOTTOM edge when the pointer is in the row's lower
+   half — "after this row" (19 Aug 26, with the drag machine's insert-after
+   rework in Matrix.tsx), so the bar always points at the seam the row will
+   actually land in. */
 .mx tbody tr.arrange .who { cursor: default; }
 .mx tbody tr.dragover .who { box-shadow: inset 0 2px 0 var(--accent); }
+.mx tbody tr.dragover.after .who { box-shadow: inset 0 -2px 0 var(--accent); }
 .mx tbody tr.dragging .who,
 .mx tbody tr.dragging .bal { opacity: .5; }
 
