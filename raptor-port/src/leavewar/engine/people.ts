@@ -42,6 +42,12 @@ export interface Person {
    *  Absent on the raw seed people until `seedPeople` assigns the demo set. */
   scd?: boolean
   scn?: boolean
+  /** EVERY qualification key this person holds in Raptor (`p.quals` truthy
+   *  keys — sxo, scDay, daar, plus anything the squadron adds on the Quals
+   *  page later), carried through the projection for the custom counters'
+   *  filters (owner, 19 Aug 26). Like `q`, Raptor's to hold; absent on the
+   *  raw seed, whose three boolean flags `heldQuals` folds in instead. */
+  xq?: string[]
   /** Ground crew. Included in the roster since 18 Aug 26 (owner) so they can
    *  hold leave and be seen; excluded from every aircrew manning count. */
   pers?: boolean

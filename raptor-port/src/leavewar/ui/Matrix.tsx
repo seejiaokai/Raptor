@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useLayoutEffect, useRef, useState, type TouchEvent } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type TouchEvent } from 'react'
 import {
   addDays,
   balanceOf,
@@ -28,11 +28,12 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveRosterRow, orderedManningIds, personLabel, removeEventRow, setPersLabel, setPostOut, setShowSans } from '../state/store'
+import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
 import { CountRows } from './CountRows'
+import { CounterForm } from './CounterForm'
 import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
@@ -96,7 +97,16 @@ export function Matrix() {
   useVersion()
   const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, showSans, focusDate, focusSeq } = getState()
   const dates = period.days.map(d => d.date)
-  const verdicts = evaluatePeriod(people, grid, states, requirements, dates)
+  // Memoized on the store objects (the store replaces what it writes, so
+  // identity IS change): rules-as-data made a day's evaluation walk every
+  // rule's own filter, and paying that for all 365 days again on every
+  // VIEW-state render (a sheet opening, Rearrange toggling) is waste the old
+  // fixed-kind lookup merely tolerated.
+  const verdicts = useMemo(
+    () => evaluatePeriod(people, grid, states, requirements, dates),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [people, grid, states, requirements, period],
+  )
   // Whether the LAST event row still carries any text or band — the remove
   // control is disabled while it does, so nothing is dropped unseen (owner,
   // 18 Aug 26; the store refuses it too).
@@ -154,10 +164,18 @@ export function Matrix() {
   // Which manning count row's explainer is open (owner, 19 Aug 26 — a tap on
   // the row's name says what it counts and where its colours turn on).
   const [manningInfo, setManningInfo] = useState<string | null>(null)
+  // The counter form (owner, 19 Aug 26): `false` closed, `null` building a
+  // NEW counter, an id editing that one. Reached from + Counter in the
+  // Rearrange tools and from the explainer sheet's Edit counter… button.
+  const [counterEdit, setCounterEdit] = useState<string | null | false>(false)
   // Edit-mode roster rearranging (owner, 18 Aug 26). Admin-only view state: it
   // turns the drag handles on, so an admin reading the grid does not nudge a
   // row by accident. Auto-sort stays available without it.
   const [arranging, setArranging] = useState(false)
+  // "Reset counters" arms rather than firing (it discards custom counters);
+  // disarmed whenever Rearrange closes so it never sits armed unseen.
+  const [armCounterReset, setArmCounterReset] = useState(false)
+  useEffect(() => { if (!arranging) setArmCounterReset(false) }, [arranging])
   // Pointer-based drag (owner, 18 Aug 26 — the roster rearranges on a phone
   // too, where HTML5 drag-and-drop does nothing). `dragId`/`dragOverRef` are
   // refs because they change many times a second during a drag and must not
@@ -831,6 +849,33 @@ export function Matrix() {
                   >
                     {showSans ? '✓ SANS shown' : 'Show SANS'}
                   </button>
+                  {/* Build a counting rule from scratch (owner, 19 Aug 26 —
+                      the counters are fully customisable). Lives with the
+                      other manning-shape controls, same admin gate. */}
+                  <button
+                    className="rtbtn"
+                    data-testid="counter-add"
+                    title="Add a manning counter — pick who it counts and when it turns amber or red"
+                    onClick={() => setCounterEdit(null)}
+                  >
+                    ＋ Counter
+                  </button>
+                  {/* The road back after deleting or mangling a built-in row:
+                      the seeded counter set, whole. It DISCARDS custom
+                      counters, so it arms — first tap asks, second does it
+                      (the counter form's own delete idiom). */}
+                  <button
+                    className={`rtbtn${armCounterReset ? ' arm' : ''}`}
+                    data-testid="counter-reset-all"
+                    title="Put the built-in counters back — counters you built are discarded"
+                    onClick={() => {
+                      if (!armCounterReset) { setArmCounterReset(true); return }
+                      setArmCounterReset(false)
+                      resetManningRules()
+                    }}
+                  >
+                    {armCounterReset ? 'Really reset?' : 'Reset counters'}
+                  </button>
                 </>
               )}
             </div>
@@ -1307,7 +1352,17 @@ export function Matrix() {
           inside, so a role change while it is open cannot leave the fields
           on a member's screen. Keyed so switching rows resets the drafts. */}
       {manningInfo && (
-        <ManningSheet key={manningInfo} ruleId={manningInfo} onClose={() => setManningInfo(null)} />
+        <ManningSheet
+          key={manningInfo}
+          ruleId={manningInfo}
+          onClose={() => setManningInfo(null)}
+          onEdit={id => { setManningInfo(null); setCounterEdit(id) }}
+        />
+      )}
+      {/* The counter form — new counter (null) or a rework of one row's rule.
+          Keyed so switching counters resets every draft field. */}
+      {counterEdit !== false && (
+        <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
       )}
       {open && !openPostedOut && !raptorOwns(states, open.id, open.date)
         && canEditCell(period, role, open.date)

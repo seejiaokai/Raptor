@@ -43,7 +43,7 @@ describe('the count row names open the explainer', () => {
 
 describe('the explainer sheet', () => {
   it('spells out the definition and the colour lines for a member, with no edit fields', () => {
-    render(<ManningSheet ruleId="scd" onClose={() => {}} />)
+    render(<ManningSheet ruleId="scd" onClose={() => {}} onEdit={() => {}} />)
     const desc = screen.getByTestId('manning-desc').textContent!
     expect(desc).toContain('2 SC Day qualified pilots')
     expect(desc).toContain('1 SXO')
@@ -55,13 +55,13 @@ describe('the explainer sheet', () => {
   })
 
   it('says a 0/0 row never judges the day', () => {
-    render(<ManningSheet ruleId="flp" onClose={() => {}} />)
+    render(<ManningSheet ruleId="flp" onClose={() => {}} onEdit={() => {}} />)
     expect(screen.getByTestId('manning-when').textContent).toContain('Never amber or red')
   })
 
   it('an admin edits the lines; Save writes them and the sentence follows', () => {
     setRole('admin')
-    render(<ManningSheet ruleId="sets" onClose={() => {}} />)
+    render(<ManningSheet ruleId="sets" onClose={() => {}} onEdit={() => {}} />)
     const amber = screen.getByTestId('thresh-amber') as HTMLInputElement
     const red = screen.getByTestId('thresh-red') as HTMLInputElement
     expect(amber.value).toBe('5')
@@ -69,18 +69,18 @@ describe('the explainer sheet', () => {
     fireEvent.change(amber, { target: { value: '6' } })
     fireEvent.change(red, { target: { value: '5' } })
     fireEvent.click(screen.getByTestId('thresh-save'))
-    expect(getState().requirements.default.sets).toEqual({ amber: 6, red: 5 })
+    expect(getState().requirements.default.rules.find(r => r.id === 'sets')!.threshold).toEqual({ amber: 6, red: 5 })
     expect(screen.getByTestId('manning-when').textContent).toContain('drops below 6')
     // The default is named once the row is customised, and Reset restores it.
     expect(screen.getByTestId('manning-when').textContent).toContain('Default: amber 5')
     fireEvent.click(screen.getByTestId('thresh-reset'))
-    expect(getState().requirements.default.sets).toEqual({ amber: 5, red: 4.5 })
+    expect(getState().requirements.default.rules.find(r => r.id === 'sets')!.threshold).toEqual({ amber: 5, red: 4.5 })
     expect(screen.queryByTestId('thresh-reset')).toBeNull()
   })
 
   it('Save stays disabled on an emptied field', () => {
     setRole('admin')
-    render(<ManningSheet ruleId="ip" onClose={() => {}} />)
+    render(<ManningSheet ruleId="ip" onClose={() => {}} onEdit={() => {}} />)
     fireEvent.change(screen.getByTestId('thresh-amber'), { target: { value: '' } })
     expect((screen.getByTestId('thresh-save') as HTMLButtonElement).disabled).toBe(true)
   })

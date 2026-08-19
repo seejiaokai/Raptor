@@ -177,6 +177,16 @@
   border-style: dashed;
 }
 
+/* A picked tchip reads exactly like a picked pchip — the counter form's
+   chips (crew, CAT, quals, mode) are tchips, and a pick the eye cannot see
+   is a form that lies (found on the 19 Aug 26 live-view pass: only pchip
+   had the .on recipe). */
+.bidsheet .tchip.on {
+  background: rgba(59, 198, 232, .14);
+  border-color: rgba(59, 198, 232, .55);
+  color: var(--accent);
+}
+
 /* The two decision buttons borrow the approved/refused chip colours from the
    matrix so the button and the cell it will paint read as the same thing. */
 .bidsheet .dchip {
@@ -566,4 +576,63 @@
    removes it. See the one-scroll comments on .sheetscrim / .bidsheet. */
 body.lw-sheet-lock {
   overflow: hidden;
+}
+
+/* ---- The counter form (owner, 19 Aug 26) ----------------------------------
+   Guided pickers inside the standard sheet. Slots box their filter rows so a
+   team reads as a list of parts; the delete button arms like the Quals page's
+   wired columns — first tap asks, second removes. */
+
+.bidsheet .namein.namein {
+  flex: 1;
+  min-width: 0;
+}
+
+.bidsheet .cf-hint {
+  font-size: 11px;
+  color: var(--ink-3);
+  flex-basis: 100%;
+}
+
+.bidsheet .cf-row .cf-hint:not(:first-child) {
+  flex-basis: auto;
+}
+
+/* The is/is-not toggle reads as a small mode word, not a pick. */
+.bidsheet .cf-not {
+  border-style: dashed;
+  color: var(--ink-3);
+  padding: 6px 8px;
+}
+
+/* The "Without" row is the rarer ask, so it steps back a little. */
+.bidsheet .cf-sub .tchip:not(.on) {
+  color: var(--ink-3);
+}
+
+.bidsheet .cf-slot {
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+  padding: 2px 8px 8px;
+  margin-top: 8px;
+}
+
+.bidsheet .cf-count.cf-count {
+  width: 64px;
+  min-height: 32px;
+}
+
+.bidsheet .cf-slotdel {
+  margin-left: auto;
+  color: var(--ink-3);
+}
+
+.bidsheet .tchip:disabled {
+  opacity: .45;
+  cursor: default;
+}
+
+.bidsheet .cf-del.arm {
+  border-color: rgba(255, 92, 92, .6);
+  color: #ff5c5c;
 }

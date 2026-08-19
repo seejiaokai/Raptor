@@ -4,10 +4,10 @@
 // is enough to make it red. Meeting a threshold exactly is met, not breached —
 // "IP >= 2" with two IPs available is fine.
 
-import { countsFor, type DayCounts, type Grid } from './availability'
+import { countsFor, ruleHave, type DayCounts, type Grid } from './availability'
 import type { States } from './bids'
 import type { Person } from './people'
-import { requirementFor, type ManningRule, type Requirements } from './requirements'
+import { requirementFor, type Requirements } from './requirements'
 
 export type Verdict = 'ok' | 'amber' | 'red'
 
@@ -39,15 +39,6 @@ function judge(have: number, amber: number, red: number): Verdict {
   return 'ok'
 }
 
-function haveFor(rule: ManningRule, counts: DayCounts): number {
-  if (rule.target.kind === 'sxo') return counts.sxo
-  if (rule.target.kind === 'flp') return counts.flp
-  if (rule.target.kind === 'wmp') return counts.wmp
-  if (rule.target.kind === 'scd') return counts.scd
-  if (rule.target.kind === 'scn') return counts.scn
-  return rule.target.categories.reduce((sum, c) => sum + counts.byCategory[c], 0)
-}
-
 export function evaluateDay(
   people: Person[],
   grid: Grid,
@@ -59,19 +50,10 @@ export function evaluateDay(
   const req = requirementFor(reqs, date)
   const results: RuleResult[] = []
 
-  if (req.sets) {
-    results.push({
-      ruleId: 'sets',
-      label: 'Crew sets',
-      have: counts.sets,
-      amber: req.sets.amber,
-      red: req.sets.red,
-      verdict: judge(counts.sets, req.sets.amber, req.sets.red),
-    })
-  }
-
   for (const rule of req.rules) {
-    const have = haveFor(rule, counts)
+    // Each rule computes its own number from its definition (availability.ts:
+    // ruleHave) — the old fixed-kind lookup went when rules became data.
+    const have = ruleHave(rule.count, people, grid, states, date)
     results.push({
       ruleId: rule.id,
       label: rule.label,

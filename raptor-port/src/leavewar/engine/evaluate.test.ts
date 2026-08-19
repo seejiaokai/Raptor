@@ -18,12 +18,21 @@ const people: Person[] = [
   p('ow2', 'wso', 'ops', { sxo: true }),
 ]
 
+// The fixtures speak the data-rules vocabulary (rules became data, 19 Aug
+// 26): crew sets are the two-slot team, a category is a seat + CAT filter
+// (an instructor with no CAT reads as IP/IW via effectiveCat), SXO is a
+// qualification filter, and the SC teams are slot recipes.
+const SETS = (amber: number, red: number) =>
+  ({ id: 'sets', label: 'Crew sets', count: { kind: 'team' as const, slots: [{ count: 1, filter: { seats: ['pilot' as const] } }, { count: 1, filter: { seats: ['wso' as const] } }] }, threshold: { amber, red } })
+const IP_RULE = (amber: number, red: number) =>
+  ({ id: 'ip', label: 'IP', count: { kind: 'people' as const, filter: { seats: ['pilot' as const], cats: ['FI', 'IR', 'IP'] } }, threshold: { amber, red } })
+
 const reqs: Requirements = {
   default: {
-    sets: { amber: 3, red: 2 },
     rules: [
-      { id: 'ip', label: 'IP', target: { kind: 'category', categories: ['IP'] }, threshold: { amber: 2, red: 1 } },
-      { id: 'sxo', label: 'SXO', target: { kind: 'sxo' }, threshold: { amber: 1, red: 1 } },
+      SETS(3, 2),
+      IP_RULE(2, 1),
+      { id: 'sxo', label: 'SXO', count: { kind: 'people', filter: { quals: ['sxo'] } }, threshold: { amber: 1, red: 1 } },
     ],
   },
   overrides: {},
@@ -78,7 +87,7 @@ describe('evaluateDay', () => {
   })
 
   it('reports a rule with no set requirement without inventing one', () => {
-    const noSets: Requirements = { default: { sets: null, rules: [] }, overrides: {} }
+    const noSets: Requirements = { default: { rules: [] }, overrides: {} }
     const day = evaluateDay(people, {}, {}, noSets, D)
     expect(day.results).toEqual([])
     expect(day.verdict).toBe('ok')
@@ -87,7 +96,7 @@ describe('evaluateDay', () => {
   it('uses a day override in place of the default', () => {
     const strict: Requirements = {
       default: reqs.default,
-      overrides: { [D]: { sets: { amber: 99, red: 98 }, rules: [] } },
+      overrides: { [D]: { rules: [SETS(99, 98)] } },
     }
     expect(evaluateDay(people, {}, {}, strict, D).verdict).toBe('red')
   })
@@ -142,8 +151,7 @@ describe('overseas duty', () => {
   ]
   const reqs: Requirements = {
     default: {
-      sets: { amber: 1, red: 0.5 },
-      rules: [{ id: 'ip', label: 'IP', target: { kind: 'category', categories: ['IP'] }, threshold: { amber: 2, red: 1 } }],
+      rules: [SETS(1, 0.5), IP_RULE(2, 1)],
     },
     overrides: {},
   }
@@ -182,12 +190,17 @@ describe('overseas duty', () => {
 // The SC D / SC N rules (owner, 19 Aug 26) read the team counts, and the
 // seeded amber-equal-to-red idiom means straight to red below one team.
 describe('the SC team rules', () => {
+  const SC = (qual: string) => [
+    { count: 2, filter: { seats: ['pilot' as const], quals: [qual] } },
+    { count: 2, filter: { seats: ['wso' as const], quals: [qual] } },
+    { count: 1, filter: { quals: ['sxo'] } },
+    { count: 1, filter: {} },
+  ]
   const scReqs: Requirements = {
     default: {
-      sets: null,
       rules: [
-        { id: 'scd', label: 'SC D', target: { kind: 'scd' }, threshold: { amber: 1, red: 1 } },
-        { id: 'scn', label: 'SC N', target: { kind: 'scn' }, threshold: { amber: 1, red: 1 } },
+        { id: 'scd', label: 'SC D', count: { kind: 'team', slots: SC('scDay'), presence: true }, threshold: { amber: 1, red: 1 } },
+        { id: 'scn', label: 'SC N', count: { kind: 'team', slots: SC('scNight'), presence: true }, threshold: { amber: 1, red: 1 } },
       ],
     },
     overrides: {},

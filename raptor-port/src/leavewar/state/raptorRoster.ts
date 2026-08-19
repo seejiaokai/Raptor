@@ -6,7 +6,7 @@
 // drop in without a migration.
 
 import { PEOPLE, isInstr } from '../../engine/people'
-import type { Person } from '../engine'
+import type { Person, QualDef } from '../engine'
 
 /**
  * Raptor's aircrew as Leave War people.
@@ -71,7 +71,40 @@ export function projectPeople(includeSans = false): Person[] {
       // qual change.
       scd: !!(p.quals && p.quals.scDay),
       scn: !!(p.quals && p.quals.scNight),
+      // EVERY held qualification key, for the custom counters' filters
+      // (owner, 19 Aug 26). Truthy covers the AAR cells' 'I' state — cleared
+      // to instruct is still held. Sorted so an unchanged set compares equal
+      // in reprojectRoster's change guard whatever order the object held.
+      xq: Object.keys(p.quals || {}).filter(k => p.quals[k]).sort(),
     })
   }
   return out
+}
+
+/** The headings Raptor's own Quals page gives its built-in columns. A copy of
+ *  those labels rather than an import: the page is a component and this is a
+ *  state file, and a heading is display vocabulary — a drifted label mislabels
+ *  a chip, never a count. A key with no entry (a column the squadron added)
+ *  shows as its key upper-cased, which is the key's own heading minus spaces. */
+const QUAL_LABELS: Record<string, string> = {
+  san: 'SANS', sxo: 'SXO', sched: 'Scheduler', scDay: 'SC DAY', scNight: 'SC NIGHT',
+  daar: 'DAAR', naar: 'NAAR', nvg: 'NVG', imc: 'IMC', tf: 'TF',
+}
+
+/**
+ * The qualification chips the counter form offers: every key any Raptor body
+ * carries (`deriveQuals` writes the full built-in set onto every aircrew, so
+ * the ten standard columns are always here; a squadron-added column joins as
+ * soon as anyone is ticked). Known keys first in the Quals page's own order,
+ * additions after, alphabetically — a stable list, so the chips never jump.
+ */
+export function qualCatalogue(): QualDef[] {
+  const keys = new Set<string>()
+  for (const p of Object.values<any>(PEOPLE)) {
+    if (p.special || p.archived) continue
+    for (const k of Object.keys(p.quals || {})) keys.add(k)
+  }
+  const known = Object.keys(QUAL_LABELS).filter(k => keys.has(k))
+  const extra = [...keys].filter(k => !(k in QUAL_LABELS)).sort()
+  return [...known, ...extra].map(k => ({ k, label: QUAL_LABELS[k] ?? k.toUpperCase() }))
 }

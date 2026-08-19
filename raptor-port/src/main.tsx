@@ -6,7 +6,7 @@ import { storeBackend } from './engine/hooks'
 import { toast } from './ui/toast'
 import { App } from './ui/App'
 import { initStore as lwInitStore } from './leavewar/state/store'
-import { memoryBackend } from './leavewar/state/storage'
+import { localBackend, memoryBackend, splitBackend } from './leavewar/state/storage'
 import { installDemoWorld } from './leavewar/state/demoworld'
 import { wireLeaveWarSync } from './leavewar/sync'
 import { installProbeBridge } from './probe-bridge'
@@ -31,8 +31,14 @@ initStore()
    because one half remembered the world across a reload and the other had
    forgotten it. Making both forget keeps them in step. The storage seam
    (leavewar/state/storage.ts) is still where a shared database backend plugs
-   in when real multi-device data arrives; until then, memory. */
-lwInitStore(memoryBackend())
+   in when real multi-device data arrives; until then, memory.
+
+   The MANNING COUNTER keys are the one exception (owner, 19 Aug 26): the
+   counter definitions and their arrangement are squadron settings, not leave
+   data — a counter he built (or deleted) must not resurrect on reload — so
+   those three keys route to localStorage while the war itself stays
+   session-only. */
+lwInitStore(splitBackend(memoryBackend(), localBackend(), ['manningdefs', 'manningorder', 'manninghidden']))
 /* One roster (sync wire 0): Leave War's people become the projection of
    Raptor's PEOPLE, and the seeded demo world is re-keyed onto that real crew.
    Every boot is a FRESH one now (the memory backend above forgets the last

@@ -9,6 +9,7 @@
 import { removesAvailability, stateOf, type BidState, type States } from './bids'
 import { codeOf, isDuty } from './codes'
 import { categoryOf, inSquadron, pilotLead, type Category, type Person } from './people'
+import type { CrewFilter, RuleCount, TeamSlot } from './requirements'
 
 /** `personId -> date -> code`. Sparse: most cells are empty. */
 export type Grid = Record<string, Record<string, string>>
@@ -99,6 +100,121 @@ export function availabilityOf(
   // programme, never to a squadron he has left or to a duty he is still on.
   if (!removesAvailability(code, state)) return 1
   return 1 - c.removes
+}
+
+// ---- The custom counters' maths (owner, 19 Aug 26) -------------------------
+//
+// Everything a `RuleCount` needs to read a day. `matchesFilter` is the one
+// place a filter meets a person, so the counter form's preview, the count
+// rows and the sheet's words can never disagree about who is in.
+
+/**
+ * The CAT a filter matches against: the person's Raptor CAT where the
+ * projection carries one, with the instructor BAND standing in for a missing
+ * one (the raw seed knows band but not CAT — same fallback `pilotLead` uses,
+ * so a seeded instructor still reads as one). An ops person with no CAT reads
+ * '' — matched by no `cats` list, excluded by no `notCats` list, which is the
+ * junior default the FL P / WM P split has always applied.
+ */
+export function effectiveCat(p: Person): string {
+  const q = (p.q || '').toUpperCase()
+  if (q) return q
+  if (p.band === 'instructor') return p.seat === 'pilot' ? 'IP' : 'IW'
+  return ''
+}
+
+/** Every qualification key this person holds. The projected set (`xq`) plus
+ *  the three flags older stores and the seed carry as booleans — kept in both
+ *  places so a seed person and a projected person answer the same question
+ *  the same way. */
+export function heldQuals(p: Person): Set<string> {
+  const out = new Set<string>(p.xq ?? [])
+  if (p.sxo) out.add('sxo')
+  if (p.scd) out.add('scDay')
+  if (p.scn) out.add('scNight')
+  return out
+}
+
+/** Whether this person is inside the filter. Aircrew only — callers skip
+ *  ground crew before asking, same as every manning path. */
+export function matchesFilter(p: Person, f: CrewFilter): boolean {
+  if (f.seats?.length && !f.seats.includes(p.seat)) return false
+  const cat = effectiveCat(p)
+  if (f.cats?.length && !f.cats.includes(cat)) return false
+  if (f.notCats?.length && f.notCats.includes(cat)) return false
+  if (f.quals?.length || f.notQuals?.length) {
+    const held = heldQuals(p)
+    if (f.quals?.length && !f.quals.every(k => held.has(k))) return false
+    if (f.notQuals?.length && f.notQuals.some(k => held.has(k))) return false
+  }
+  return true
+}
+
+/**
+ * How many complete teams the day can man, each slot filled by a DIFFERENT
+ * person. The exact generalisation of the SC-team maths: by Hall's condition
+ * the answer is the worst ratio over every subset of slots — the people who
+ * can fill ANY slot in the subset, against the bodies the subset needs. The
+ * old `scTeams` hand-picked the subsets that matter for its one shape; this
+ * walks them all (≤ 2^MAX_TEAM_SLOTS), which for that shape provably lands on
+ * the same number (the extra subsets are dominated — pinned by test).
+ *
+ * `weight` is each person's fractional presence for this rule (availability,
+ * or presence when the rule counts duty as present). Accumulated per
+ * slot-membership BITMASK so the subset walk touches masks, not people.
+ */
+function teamsOf(slots: TeamSlot[], weightOf: (p: Person) => number, people: Person[]): number {
+  const byMask = new Map<number, number>()
+  for (const p of people) {
+    if (p.pers || p.seat === 'gnd') continue
+    const w = weightOf(p)
+    if (w <= 0) continue
+    let mask = 0
+    for (let i = 0; i < slots.length; i++) if (matchesFilter(p, slots[i].filter)) mask |= 1 << i
+    if (mask) byMask.set(mask, (byMask.get(mask) ?? 0) + w)
+  }
+  let teams = Infinity
+  for (let s = 1; s < 1 << slots.length; s++) {
+    let need = 0
+    for (let i = 0; i < slots.length; i++) if (s & (1 << i)) need += slots[i].count
+    if (need <= 0) continue
+    let have = 0
+    for (const [mask, w] of byMask) if (mask & s) have += w
+    teams = Math.min(teams, have / need)
+  }
+  if (!Number.isFinite(teams)) return 0
+  // Never negative, and rounded to kill float dust (0.9999999 must read 1 —
+  // a team the squadron actually has must not paint the day red).
+  return Math.max(0, Math.round(teams * 1000) / 1000)
+}
+
+/**
+ * The day's number for one rule. `people` sums availability over the filter;
+ * `team` runs the Hall walk above, on presence when the rule says duty
+ * counts (the SC-cover reading) and on availability otherwise, then shows
+ * either teams or the people inside them. The thresholds judge the SAME
+ * number the cell shows, so what the admin typed is what turns amber.
+ */
+export function ruleHave(rc: RuleCount, people: Person[], grid: Grid, states: States, date: string): number {
+  if (rc.kind === 'people') {
+    let total = 0
+    for (const p of people) {
+      if (p.pers || p.seat === 'gnd') continue
+      if (!matchesFilter(p, rc.filter)) continue
+      total += availabilityOf(p, date, grid[p.id]?.[date], stateOf(states, p.id, date))
+    }
+    return Math.round(total * 1000) / 1000
+  }
+  const weightOf = (p: Person): number => {
+    const code = grid[p.id]?.[date]
+    const onDuty = inSquadron(p, date) && isDuty(code)
+    const have = availabilityOf(p, date, code, stateOf(states, p.id, date))
+    return rc.presence && onDuty ? 1 : have
+  }
+  const teams = teamsOf(rc.slots, weightOf, people)
+  if (rc.show !== 'people') return teams
+  const size = rc.slots.reduce((n, s) => n + s.count, 0)
+  return Math.round(teams * size * 1000) / 1000
 }
 
 export function countsFor(people: Person[], grid: Grid, states: States, date: string): DayCounts {

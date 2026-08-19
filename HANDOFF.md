@@ -24,15 +24,15 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the five-review-findings fix batch,
+**Last recorded green baseline** (the custom manning counters batch,
 19 Aug 26 — all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2621 across 142 files — two vitest projects: raptor (1748) + leavewar (873) |
+| `npm test` | 2672 across 144 files — two vitest projects: raptor (1748) + leavewar (924) |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 293 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `npm run test:e2e` | 297 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
 | `perf` | 4/4 |
 
@@ -97,7 +97,48 @@ has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
-- **THE BOARD'S ADD-INPUT BUTTONS ARE CONTEXT-BOUND NOW (owner, 19 Aug 26 —
+- **THE LEAVE WAR MANNING COUNTERS ARE FULLY CUSTOM NOW (owner, 19 Aug 26 —
+  "instead of hard coding these permutations, make it editable… these
+  counters can also be deleted"; his picks: guided form, full team builder,
+  too-few thresholds only, the eleven built-ins convert to editable).** A
+  manning rule is DATA: `ManningRule.count` is either `people` (sum
+  availability over one `CrewFilter` — seats, effective CATs incl. "is not",
+  qualification keys held/not held) or `team` (1–6 slots of DIFFERENT people;
+  `teamsOf` in `availability.ts` is the full Hall-condition subset walk, the
+  exact generalisation of the old `scTeams` — parity on every seeded rule ×
+  every day of the demo war is pinned in `engine/counterrules.test.ts`; `show`
+  displays teams or people-in-teams, `presence` keeps a duty-stander counted).
+  The old standalone set rule folded in as the `sets` rule (two-slot team);
+  `Requirement.sets`, `SETS_DESC`, the `RuleTarget` kinds and the
+  `manningThresh` overlay are GONE — `manningthresh` is still read once at
+  boot as a migration. Admin UI: `+ Counter` in the Rearrange tools and
+  `Edit counter…` on the explainer sheet open `ui/CounterForm.tsx` (name,
+  people/team pickers, live first-day sample, amber/red, armed two-tap
+  delete; testids `cform-*` — `counter-name` was taken by the balance
+  column). A rule saved from the form carries NO `desc`: the sheet writes its
+  words from the definition (`describeRule`, requirements.ts), so the
+  explanation cannot drift. The qual chips are the LIVE Quals-page catalogue:
+  `raptorRoster.ts:qualCatalogue()` (union of `p.quals` keys) installs via
+  `setQualCatalog` on every reprojection, and every held key rides the
+  projection as `Person.xq` (in the roster change-guard signature), so a
+  qualification added on the Quals page appears in the form and counts
+  without a build. PERSISTENCE SPLIT (`storage.ts:splitBackend`, main.tsx):
+  `manningdefs`/`manningorder`/`manninghidden` route to localStorage while
+  the war itself stays session-only — a counter he built or deleted must not
+  resurrect on reload; `readManningRules` is both the boot reader and the
+  `saveManningRule` validator, so nothing saveable is un-reloadable, and a
+  corrupt blob falls back to the seeded eleven. `resetManningRules` is the
+  deliberate road back after deleting or mangling a built-in: the Rearrange
+  toolbar's armed "Reset counters" button (`counter-reset-all`) — it restores
+  the seeded set and DISCARDS custom counters, which is what the armed second
+  tap is for. Tests: `counterrules.test.ts` (filters,
+  Hall math, migration parity), `requirements.test.ts` (describeRule),
+  `store.test.ts` (save/delete/reset gates, split persistence, legacy
+  migration), `counterform.test.tsx`, two e2e drives (build a counter on the
+  real grid; delete takes the row off). Future work that touches this:
+  anything renaming a QUAL KEY in Raptor silently un-matches filters built
+  on the old key (the chip survives via the rule's own keys — see
+  `CounterForm`'s qualChips merge).
   "move the personal inputs +Add button to ground programme… called +Inputs…
   only show those that will go into the ground programme… unavailable will
   only show those applicable… I can select a date range as well… sans
@@ -867,7 +908,11 @@ has its own e2e DOM band (29000), measured-first.
   full Monday-to-Sunday week; the weekend is non-flying, duty crew only).
   Week chips re-label but every week shows the same data (the original
   behaved the same way). "Throw pucks (auto)" is a stub, as in the original.
-- **Only `rules` and `stores` survive a reload.** Everything else a
+- **Only `rules`, `stores` — and the Leave War counter keys — survive a
+  reload.** The Leave War's `manningdefs`/`manningorder`/`manninghidden`
+  route to localStorage since 19 Aug 26 (splitBackend; the counters bullet
+  above): counter definitions are squadron configuration, not leave data.
+  Everything else a
   scheduler types is session-only: the whole schedule, the Quals page's
   ticks, initials and FLIGHT, **a personnel body added on the Quals page and
   its Remarks note** (the seeded three are in source and always there), and
@@ -1430,7 +1475,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | file | what it does |
 |---|---|
 | `LeaveWarPage.tsx` | The ONE seam: renders the standalone app's Topbar/StageBar/Matrix inside `#page-leavewar`, scrolls the window to top on mount (Raptor keeps scroll across tab switches). Boot is NOT here — `main.tsx` calls its `initStore` once. |
-| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + the FOUR medical markers `ATTB`/`ATTC`/`HL`/`OML` (replaced `M`, Aug 26; `ATTB` joined 17 Aug 26) + `CSE`/`OD` + FS/HS SC-duty, portions `*X`/`X*` — **carried by leave AND medical since 17 Aug 26**, courses/OD/SC-duty still refusing one; plus `isMedical`, `MEDICAL_TYPES` (the admin picker's list) and `displayCell`, which prints ATTB/ATTC as the owner's bare `B`/`C` while `parseCell` accepts either spelling), `counters.ts` (derived balances + ledger, **plus the counter-column figures: `takenOf` per-type consumed, `medConOf`/`lveConOf` aggregates, the 12-figure `FIGURES` catalogue — `OIL BAL` joined with wire 4, fed by `earnedOil` summing FS/HS cells straight into the OIL balance — `orderedFigures`, and `figureParts`, the signed per-person breakdown rows the tap-a-counter sheet shows (they always sum to the figure, pinned by test); see the open-work counter-column bullet**), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/nolv/work, `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
+| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + the FOUR medical markers `ATTB`/`ATTC`/`HL`/`OML` (replaced `M`, Aug 26; `ATTB` joined 17 Aug 26) + `CSE`/`OD` + FS/HS SC-duty, portions `*X`/`X*` — **carried by leave AND medical since 17 Aug 26**, courses/OD/SC-duty still refusing one; plus `isMedical`, `MEDICAL_TYPES` (the admin picker's list) and `displayCell`, which prints ATTB/ATTC as the owner's bare `B`/`C` while `parseCell` accepts either spelling), `counters.ts` (derived balances + ledger, **plus the counter-column figures: `takenOf` per-type consumed, `medConOf`/`lveConOf` aggregates, the 12-figure `FIGURES` catalogue — `OIL BAL` joined with wire 4, fed by `earnedOil` summing FS/HS cells straight into the OIL balance — `orderedFigures`, and `figureParts`, the signed per-person breakdown rows the tap-a-counter sheet shows (they always sum to the figure, pinned by test); see the open-work counter-column bullet**), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/nolv/work, `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds; **rules are DATA since 19 Aug 26** — `CrewFilter`/`RuleCount`, `matchesFilter`/`ruleHave`/`teamsOf` the Hall walk, `describeRule` self-writing sheet words; see the top counters bullet), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
 | `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`, **the event writers `setDayEvent`/`setDayEventRange` (repeat) + `addEventBand`/`removeEventBand` (merge) + the `addEventType`/`updateEventType`/`removeEventType`/`resetEventTypes` library writers, all admin-gated; `state.eventDefs` persisted under `eventdefs`, `period.bands` read leniently in `readWar`**. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. **`viewer` rides the same rule** (17 Aug 26 — WHICH PERSON is looking, mirrored from Raptor's `ME` by `sync.ts`, never persisted; lights that row and personalises the counter picker). `moveFigure`/`resetFigureOrder` are ADMIN-GATED at the write path (owner: the column arrangement is management's); `reconcile()` on load keeps a MEDICAL cell's `source:'raptor'` record — dropping it would strip a synced cell's ownership at every reload and let outbound re-mint Raptor's own row. `withdrawLeaveCell` (17 Aug 26) is `clearRaptorCell`'s mirror for the OTHER ownership — the two-way edit/delete retraction's one grid writer. |
 | `state/storage.ts` | The storage seam — `memoryBackend` (the one the browser boots now, so Leave War is session-only and resets on reload like Raptor's `INPUTS`; `main.tsx` passes it to `lwInitStore`) and `localBackend` (the `leavewar:`-prefixed localStorage backend, still here but no longer wired in — kept for reference and tests). Deliberately NOT `HOOKS.storeBackend`; the future shared database backend replaces this seam. |
 | `state/raptorRoster.ts` | Wire 0 — `projectPeople()`: the LW roster as a projection of Raptor's `PEOPLE` (skips ground crew + sentinels; band from `isInstr`; sxo carried). Installed at boot, never persisted. |

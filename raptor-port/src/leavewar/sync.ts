@@ -47,11 +47,12 @@ import {
   ingestFromRaptor,
   setPeople,
   setPostOut,
+  setQualCatalog,
   setViewer,
   subscribe as lwSubscribe,
   withdrawLeaveCell,
 } from './state/store'
-import { projectPeople } from './state/raptorRoster'
+import { projectPeople, qualCatalogue } from './state/raptorRoster'
 
 /* Re-entrancy: ingest persists-and-notifies per cell, and writeInputsBatch's
    epilogue notifies too, so each reconciler fires the other's subscription
@@ -676,8 +677,16 @@ function reprojectRoster(): void {
   // scd/scn ride the signature so a Quals-page SC DAY / SC NIGHT tick — a
   // change no other field carries — still writes the roster and recounts the
   // SC team rows (owner, 19 Aug 26: quals edits must update the leave war).
+  // The qualification catalogue rides the same reprojection (owner, 19 Aug
+  // 26 — the counter form's chips must show a qualification the moment the
+  // squadron adds one). Its own change guard, before the roster's early
+  // return: the catalogue is derived from the same PEOPLE, but guarded
+  // separately so neither write depends on the other having changed.
+  const catalog = qualCatalogue()
+  if (JSON.stringify(catalog) !== JSON.stringify(st.qualCatalog)) setQualCatalog(catalog)
+  // xq is sorted at projection, so an unchanged qual set compares equal here.
   const sig = (p: any) =>
-    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.scd ? 1 : 0}|${p.scn ? 1 : 0}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}`
+    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.scd ? 1 : 0}|${p.scn ? 1 : 0}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}|${(p.xq || []).join(',')}`
   const before = new Map(st.people.map(p => [p.id, sig(p)]))
   const unchanged = before.size === next.length && next.every(p => before.get(p.id) === sig(p))
   if (unchanged) return

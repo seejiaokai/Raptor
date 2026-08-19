@@ -26,6 +26,13 @@ import {
   MAX_EVENT_ROWS,
   setManningThreshold,
   resetManningThreshold,
+  saveManningRule,
+  deleteManningRule,
+  resetManningRules,
+  setQualCatalog,
+  orderedManningIds,
+  moveManningRow,
+  toggleManningRow,
   setPeople,
   setPerson,
   clearBidWindow,
@@ -33,8 +40,8 @@ import {
   reopenStage,
   subscribe,
 } from './store'
-import { makeWar } from '../engine'
-import { localBackend, memoryBackend } from './storage'
+import { makeWar, seedRequirements } from '../engine'
+import { localBackend, memoryBackend, splitBackend } from './storage'
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -1531,18 +1538,19 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
 })
 
 // The manning amber/red lines are the squadron's own (owner, 19 Aug 26 —
-// "when does the amber show or red show… is customisable"): an overlay on the
-// seeded defaults, admin-gated, persisted under `manningthresh`.
+// "when does the amber show or red show… is customisable"). The rules are
+// whole data now (`manningdefs`); the old `manningthresh` overlay is read at
+// boot as a migration, which the corrupt-blob test below still exercises.
 describe('the manning thresholds are editable, admin-gated and persisted', () => {
   it('a member cannot move a line', () => {
     expect(setManningThreshold('sets', 6, 5)).toBe(false)
-    expect(getState().requirements.default.sets).toEqual({ amber: 5, red: 4.5 })
+    expect(getState().requirements.default.rules.find(r => r.id === 'sets')!.threshold).toEqual({ amber: 5, red: 4.5 })
   })
 
   it('an admin moves a line and the derived requirements follow, sets included', () => {
     setRole('admin')
     expect(setManningThreshold('sets', 6, 5)).toBe(true)
-    expect(getState().requirements.default.sets).toEqual({ amber: 6, red: 5 })
+    expect(getState().requirements.default.rules.find(r => r.id === 'sets')!.threshold).toEqual({ amber: 6, red: 5 })
     expect(setManningThreshold('scd', 2, 2)).toBe(true)
     expect(getState().requirements.default.rules.find(r => r.id === 'scd')!.threshold).toEqual({ amber: 2, red: 2 })
     // The rule's words are code-owned and survive the overlay untouched.
@@ -1588,6 +1596,156 @@ describe('the manning thresholds are editable, admin-gated and persisted', () =>
     initStore(backend)
     // The bad entry is dropped; the good one beside it still applies.
     expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 3, red: 2 })
-    expect(getState().requirements.default.sets).toEqual({ amber: 7, red: 6 })
+    expect(getState().requirements.default.rules.find(r => r.id === 'sets')!.threshold).toEqual({ amber: 7, red: 6 })
+  })
+})
+
+// The counters as data (owner, 19 Aug 26): built, reworked and deleted by an
+// admin, refused from anyone else, persisted whole, and validated on the way
+// in BY THE SAME READER the boot uses — so nothing can be saved that a reload
+// would drop.
+describe('custom manning counters', () => {
+  const nvgRule = () => ({
+    id: 'nvg-pilots',
+    label: 'NVG PILOTS',
+    count: { kind: 'people' as const, filter: { seats: ['pilot' as const], quals: ['nvg'] } },
+    threshold: { amber: 2, red: 1 },
+  })
+
+  it('a member cannot save, delete or reset', () => {
+    expect(saveManningRule(nvgRule())).toBe(false)
+    expect(deleteManningRule('ip')).toBe(false)
+    const before = getState().requirements.default.rules.length
+    resetManningRules()
+    expect(getState().requirements.default.rules.length).toBe(before)
+  })
+
+  it('an admin adds a counter and it joins the row set, at the end', () => {
+    setRole('admin')
+    expect(saveManningRule(nvgRule())).toBe(true)
+    const ids = orderedManningIds()
+    expect(ids[ids.length - 1]).toBe('nvg-pilots')
+    expect(getState().requirements.default.rules.find(r => r.id === 'nvg-pilots')!.label).toBe('NVG PILOTS')
+  })
+
+  it('saving an existing id reworks the rule in place — position kept', () => {
+    setRole('admin')
+    const before = orderedManningIds()
+    expect(saveManningRule({ ...nvgRule(), id: 'ip', label: 'IP (NVG)' })).toBe(true)
+    expect(orderedManningIds()).toEqual(before)
+    const ip = getState().requirements.default.rules.find(r => r.id === 'ip')!
+    expect(ip.label).toBe('IP (NVG)')
+    // A rework drops the seeded hand words — the sheet writes fresh ones
+    // from the definition, so the words can never describe the old rule.
+    expect(ip.desc).toBeUndefined()
+  })
+
+  it('refuses a malformed rule whole — the reader is the validator', () => {
+    setRole('admin')
+    expect(saveManningRule({ ...nvgRule(), threshold: { amber: -1, red: 0 } })).toBe(false)
+    expect(saveManningRule({ ...nvgRule(), label: '' })).toBe(false)
+    const bad: any = { ...nvgRule(), count: { kind: 'team', slots: [] } }
+    expect(saveManningRule(bad)).toBe(false)
+    const sevenSlots: any = { ...nvgRule(), count: { kind: 'team', slots: Array.from({ length: 7 }, () => ({ count: 1, filter: {} })) } }
+    expect(saveManningRule(sevenSlots)).toBe(false)
+    expect(getState().requirements.default.rules.some(r => r.id === 'nvg-pilots')).toBe(false)
+  })
+
+  it('deletes a counter — the seeded ones included — and its order/hidden entries with it', () => {
+    setRole('admin')
+    moveManningRow('scd', -1)
+    toggleManningRow('scd')
+    expect(deleteManningRule('scd')).toBe(true)
+    expect(getState().requirements.default.rules.some(r => r.id === 'scd')).toBe(false)
+    expect(getState().manningOrder).not.toContain('scd')
+    expect(getState().manningHidden).not.toContain('scd')
+    expect(deleteManningRule('scd')).toBe(false)
+  })
+
+  it('custom counters and deletions survive a reload; a corrupt blob falls back to the seed', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    setRole('admin')
+    saveManningRule(nvgRule())
+    deleteManningRule('wmp')
+    initStore(backend)
+    expect(getState().requirements.default.rules.some(r => r.id === 'nvg-pilots')).toBe(true)
+    expect(getState().requirements.default.rules.some(r => r.id === 'wmp')).toBe(false)
+
+    const broken = memoryBackend()
+    broken.write('manningdefs', '{"not":"a list"}')
+    initStore(broken)
+    expect(getState().requirements.default.rules.length).toBe(seedRequirements().default.rules.length)
+  })
+
+  it('a stored rule set wins over the legacy threshold overlay; the overlay migrates when no set is stored', () => {
+    const legacy = memoryBackend()
+    legacy.write('manningthresh', JSON.stringify({ ip: { amber: 9, red: 8 } }))
+    initStore(legacy)
+    // Migration: the seed with the old numbers laid on.
+    expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 9, red: 8 })
+    // The first persist writes `manningdefs`; from then on the overlay is
+    // inert — even one pointing at different numbers.
+    setRole('admin')
+    setManningThreshold('ip', 4, 3)
+    legacy.write('manningthresh', JSON.stringify({ ip: { amber: 9, red: 8 } }))
+    initStore(legacy)
+    expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 4, red: 3 })
+  })
+
+  it('deleting EVERY counter is a decision that survives a reload — the seed does not resurrect', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    setRole('admin')
+    for (const id of getState().requirements.default.rules.map(r => r.id)) deleteManningRule(id)
+    expect(getState().requirements.default.rules).toEqual([])
+    initStore(backend)
+    expect(getState().requirements.default.rules).toEqual([])
+  })
+
+  it('reset puts the whole built-in set back, admin only', () => {
+    setRole('admin')
+    saveManningRule(nvgRule())
+    deleteManningRule('sets')
+    resetManningRules()
+    const ids = getState().requirements.default.rules.map(r => r.id)
+    expect(ids).toEqual(seedRequirements().default.rules.map(r => r.id))
+  })
+
+  it('the qual catalogue installs through its setter and starts on the seed three', () => {
+    expect(getState().qualCatalog.map(q => q.k)).toEqual(['sxo', 'scDay', 'scNight'])
+    setQualCatalog([{ k: 'nvg', label: 'NVG' }])
+    expect(getState().qualCatalog.map(q => q.k)).toEqual(['nvg'])
+  })
+})
+
+// The settings keys outlive the session while the war stays session-only
+// (owner, 19 Aug 26): a counter he built — or deleted — must not resurrect on
+// reload. `splitBackend` is the routing seam main.tsx boots with.
+describe('splitBackend', () => {
+  it('routes the named keys to the durable side and everything else to the session side', () => {
+    const session = memoryBackend()
+    const durable = memoryBackend()
+    const split = splitBackend(session, durable, ['manningdefs'])
+    split.write('manningdefs', 'RULES')
+    split.write('wars', 'WARS')
+    expect(durable.read('manningdefs')).toBe('RULES')
+    expect(durable.read('wars')).toBeNull()
+    expect(session.read('wars')).toBe('WARS')
+    expect(session.read('manningdefs')).toBeNull()
+    expect(split.read('manningdefs')).toBe('RULES')
+    expect(split.read('wars')).toBe('WARS')
+  })
+
+  it('a store booted on a fresh session but the same durable side keeps its counters and loses its war edits', () => {
+    const durable = memoryBackend()
+    initStore(splitBackend(memoryBackend(), durable, ['manningdefs', 'manningorder', 'manninghidden']))
+    setRole('admin')
+    setCell('ramp', '2026-01-05', 'LL')
+    deleteManningRule('scn')
+    // A "reload": new session memory, same durable store.
+    initStore(splitBackend(memoryBackend(), durable, ['manningdefs', 'manningorder', 'manninghidden']))
+    expect(getState().grid['ramp']?.['2026-01-05']).toBeUndefined()
+    expect(getState().requirements.default.rules.some(r => r.id === 'scn')).toBe(false)
   })
 })
