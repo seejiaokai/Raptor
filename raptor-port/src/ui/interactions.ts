@@ -4,7 +4,7 @@
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
 import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/slots'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, DATES } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
@@ -18,7 +18,7 @@ import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, stor
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
-import { reassignInput } from './inputedit'
+import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType } from './inputedit'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, draftsMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
@@ -466,6 +466,27 @@ export function routeClick(e: MouseEvent) {
       HOOKS.toast(said, 'ok')
       view.afterSchedMutate()
     }
+    return
+  }
+
+  /* the board's + Add on the Personal Inputs / Unavailable panels (owner,
+     Aug 26). Opens the SAME dialog an edit does, seeded with a blank row for
+     THIS day and a default type suiting the panel (`.p` personal / `.u` leave).
+     No row exists yet — the seed carries `_new`, and commitNewInput does the
+     insert on Save. A member never sees the button (live board only), but the
+     gate is repeated here the way every other input control's is. */
+  const iad = t.closest('[data-inpadd]') as HTMLElement | null
+  if (iad) {
+    e.stopPropagation()
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can add inputs from here', 'warn'); return }
+    const [dis, kind] = iad.dataset.inpadd!.split('.')
+    const di = +dis
+    const date = DATES[di]
+    if (date == null) { HOOKS.toast('That day is not loaded', 'warn'); return }
+    const person = rosterOptions()[0]
+    if (!person) { HOOKS.toast('No crew on the roster to file an input for', 'warn'); return }
+    setInpEdit({ _new: true, person, type: kind === 'u' ? firstUnavailType() : firstPersonalType(), date, allday: true, s: 0, e: 1439 })
+    notify()
     return
   }
 

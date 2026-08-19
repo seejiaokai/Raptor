@@ -1157,6 +1157,34 @@ call `afterSchedMutate()` a second time — `reassignInput`'s own
 `commitInputEdit` already ran the input funnel's full epilogue (validate,
 notify, one history step); the drop/tap handlers only disarm and repaint.
 
+## Adding an input from the board (owner, Aug 26)
+
+The board's **Personal Inputs** and **Unavailable** panels each carry a
+**+ Add** button in their header on a LIVE board (`.sb-addinp`, `data-inpadd`;
+absent on a preview or view-only board, the same `ro`/`pv` gate the panels'
+editable rows use). It opens the SAME `InputEditor` an edit opens, seeded
+blank for the OPEN DAY: `_new:true`, all-day, the first roster member, and a
+default type suiting the panel — a personal (activity) type from Personal
+Inputs (`firstPersonalType`), a leave/medical type from Unavailable
+(`firstUnavailType`, never SANS Availability, which is an offer not an
+absence). In `_new` mode the dialog reads **"New input"**, drops the Delete
+button, and the primary button reads **Add**; the footer says the row lands on
+the open day and a multi-day span goes on the Inputs page.
+
+Save runs `commitNewInput` (`ui/inputedit.tsx`), which shares ALL of an edit's
+refusals and derivations through the extracted `normalizeInputDraft` — so the
+add path can never disagree with the editor about a malformed window, an
+overnight range, or a span's year — then unshifts the row exactly as the
+Inputs page's own `add()` does: one write through `writeInputsBatch` (one undo
+step, one re-validate) with a minted `iid`. It is therefore the ordinary
+INPUTS record every other surface reads back, and for a leave/medical type it
+crosses to Leave War on the very notify the Inputs page add already rides — no
+new sync seam. The row is UNACCEPTED, like any freshly filed input; the
+Personal Inputs panel's own Accept control then promotes it if wanted. The
+handler in `routeClick` re-checks `canEditSched()` (the gate is the write path,
+not the markup). Dates stay a single day here, the dialog's standing rule.
+Pinned in `boardaddinput.test.tsx`.
+
 ## Scheduler notes (edit week + board only)
 
 Four free-text blocks — under Programme, Duties, Sims and Ground programme —
