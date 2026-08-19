@@ -580,10 +580,11 @@ The shape, briefly (detail in HANDOFF's bullet):
   as soon as anyone holds it; one removed keeps counting whoever still holds
   the flag (removal never touches `p.quals`), and an edited rule keeps its
   orphan key as a chip so Save cannot silently rewrite it.
-- **Persistence departs from "the war forgets"**: `manningdefs` /
-  `manningorder` / `manninghidden` route to localStorage
-  (`storage.ts:splitBackend`, boot in `main.tsx`) because a counter built or
-  deleted is squadron configuration, not leave data. The boot reader IS the
-  save validator (`readManningRules`), so nothing saveable is un-reloadable;
+- **The counters forget with the war**: `manningdefs` / `manningorder` /
+  `manninghidden` ride the memory backend like everything else (owner,
+  19 Aug 26 — no persistence wanted; counter configuration will live in the
+  database when it arrives), so a counter built or deleted resets on reload
+  back to the seeded eleven. The boot reader IS the save validator
+  (`readManningRules`), so nothing saveable is un-loadable within a session;
   a corrupt blob falls back to the seeded eleven, and the legacy
   `manningthresh` overlay is still read once as a migration.
