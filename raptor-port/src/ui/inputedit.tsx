@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, dateOrd, baseYear } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, dateOrd, baseYear, withRemarksTail } from '../engine/inputs'
 import { acceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
@@ -27,6 +27,7 @@ import { retractLwRow, rowSig } from '../leavewar/sync'
 import { canEditSched } from '../state/auth'
 import { INPEDIT, setInpEdit } from './pops'
 import { useVersion } from './useStore'
+import { RangeCal } from './RangeCal'
 
 /* THE ROSTER LIST, one place — the Inputs page's add form, its own row
    editor and this dialog's new Person field must never disagree on who is
@@ -171,11 +172,17 @@ export function sansOverlapRefusal(person: any, date: any, endDate: any, except:
 /* THE TYPE CONTROLS. Twenty types is too many for a flat list, so every
    dropdown is cut into the same three groups the legend uses, generated from
    INPUT_META — the list you pick from, the explanation you read and the rule
-   the engine applies are one thing. */
-export const typeOptions = () => TYPE_GROUPS.map((g: any) =>
-  <optgroup key={g.k} label={g.t}>
-    {INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k).map((t: string) => <option key={t}>{t}</option>)}
-  </optgroup>)
+   the engine applies are one thing.
+   `allow` (owner, 19 Aug 26) narrows the list for the board's context-bound
+   adds — the Ground Programme's + Inputs offers activity types only, the
+   Unavailable + Add leave/medical/OD only — without minting a second list
+   that could drift; a group whose every type is filtered out is skipped
+   rather than left as an empty heading. No filter = the full list, which is
+   what every EDIT and the Inputs page keep. */
+export const typeOptions = (allow?: (t: string) => boolean) => TYPE_GROUPS.map((g: any) => {
+  const ts = INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k && (!allow || allow(t)))
+  return ts.length ? <optgroup key={g.k} label={g.t}>{ts.map((t: string) => <option key={t}>{t}</option>)}</optgroup> : null
+})
 
 /* The draft is held apart from the model so Cancel is a real cancel. */
 export const draftOf = (r: any) => ({
@@ -260,6 +267,17 @@ export function normalizeInputDraft(draft: any, except: any):
    (it is an offer, not an absence, and carries its own aircrew restriction). */
 export const firstPersonalType = () => INPUT_TYPES.find((t: any) => isPersonal(t)) || INPUT_TYPES[0]
 export const firstUnavailType = () => INPUT_TYPES.find((t: any) => isUnavail(t) && !isSansAvail(t)) || INPUT_TYPES[0]
+export const firstSansType = () => INPUT_TYPES.find((t: any) => isSansAvail(t)) || INPUT_TYPES[0]
+/* which types each board add offers (owner, 19 Aug 26) — the Ground
+   Programme's + Inputs takes what can land on the programme, Unavailable
+   takes what makes a man absent, and SANS Availability is nowhere else's
+   business (it is an offer, not an absence, so it appears in NEITHER of the
+   other two lists — its own panel's + Add is where it is filed) */
+export const TYPE_ALLOW: any = {
+  g: (t: any) => isPersonal(t),
+  u: (t: any) => isUnavail(t) && !isSansAvail(t),
+  s: (t: any) => isSansAvail(t),
+}
 
 /* ADD a brand-new input from a schedule surface (owner, Aug 26 — "scheduler
    board should have the authority to add inputs... under unavailable and
@@ -269,9 +287,16 @@ export const firstUnavailType = () => INPUT_TYPES.find((t: any) => isUnavail(t) 
    row exactly as the Inputs page's own add form does — one write through
    writeInputsBatch, so it joins the undo stack as ONE step, re-validates the
    week, and (for a leave/medical type) crosses to Leave War on the same notify
-   the Inputs page add already rides. DATES stay a SINGLE DAY here, the dialog's
-   standing rule — a span is still filed on the Inputs page. */
-export function commitNewInput(draft: any): boolean {
+   the Inputs page add already rides. Dates were a single day here until the
+   Unavailable + Add grew the range picker (owner, 19 Aug 26) — a draft
+   carrying an end date lands a span through the same normalize the Inputs
+   page's calendar feeds.
+   `toGround` (owner, 19 Aug 26 — the Ground Programme's + Inputs): the new
+   row is ACCEPTED onto the open day's ground programme in the same batch, so
+   the button on that panel puts the item where the button is. One undo step
+   still — writeInputsBatch swallows acceptInput's own history pushes exactly
+   as commitInputEdit's relink already relies on. */
+export function commitNewInput(draft: any, toGround?: boolean): boolean {
   if (!draft) return false
   const n = normalizeInputDraft(draft, null)
   if (!n) return false
@@ -287,9 +312,22 @@ export function commitNewInput(draft: any): boolean {
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
   inpId(row)
-  writeInputsBatch(() => { INPUTS.unshift(row) })
+  writeInputsBatch(() => {
+    INPUTS.unshift(row)
+    if (toGround) {
+      /* isUnavail is acceptInput's own refusal, re-checked here only to say
+         something useful if a future caller mis-routes; the dialog's ground
+         context can only offer activity types. A duplicate content key
+         (identical person|date|type|start already promoted) is the one
+         genuine refusal left — the input still lands, just unaccepted, and
+         the toast says where to find it. */
+      const di = DATES.indexOf(date)
+      if (di >= 0 && !isUnavail(row.type) && !acceptInput(di, row, 'g'))
+        HOOKS.toast('An identical row is already on the Ground Programme — added under Personal Inputs instead', 'warn')
+    }
+  })
   const cs = PEOPLE[row.person] ? PEOPLE[row.person].cs : row.person
-  logAction(null, `Input added — ${cs}, ${row.type}, ${date}${endDate ? '–' + endDate : ''}`)
+  logAction(null, `Input added — ${cs}, ${row.type}, ${date}${endDate ? '–' + endDate : ''}${row.acc === 'g' ? ' (on the Ground Programme)' : ''}`)
   return true
 }
 
@@ -557,6 +595,13 @@ export function InputEditor() {
      `_new` for the board's + Add — same fields, but Save inserts rather than
      overwrites and there is nothing to Delete (see commitNewInput) */
   const isNew = !!(r && r._new)
+  /* which board panel the + Add came from (owner, 19 Aug 26) — 'g' the Ground
+     Programme (+ Inputs: activity types only, accepted straight onto the
+     programme), 'u' Unavailable (leave/medical/OD only, with a date range),
+     's' SANS Availability (the type is fixed, SANS aircrew only). '' is an
+     ordinary EDIT, which keeps the full type list — retyping an existing row
+     across groups is a real move the app already handles. */
+  const ctx = isNew ? (r._ctx || '') : ''
   const [draft, setDraft] = useState<any>(null)
   const box = useRef<HTMLDivElement>(null)
   /* re-seed whenever a different row is opened, never on a repaint — a
@@ -574,15 +619,22 @@ export function InputEditor() {
      refusal there is no way back from: the row went (an undo under the modal),
      and there is nothing left to hold the typing for */
   const save = () => {
-    if (isNew) { if (commitNewInput(draft)) { HOOKS.toast('Input added', 'ok'); close() }; return }
+    if (isNew) { if (commitNewInput(draft, ctx === 'g')) { HOOKS.toast(ctx === 'g' ? 'Input added to the Ground Programme' : 'Input added', 'ok'); close() }; return }
     if (commitInputEdit(r, draft)) { HOOKS.toast('Input updated', 'ok'); close() }
     else if (INPUTS.indexOf(r) < 0) close()
   }
   const del = () => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } }
 
   const who = r && PEOPLE[r.person] ? PEOPLE[r.person].cs : (r ? String(r.person) : '')
-  const when = r ? (r.date + (r.endDate ? ' → ' + r.endDate : '')) : ''
+  /* a NEW row's dates live on the DRAFT (the range picker moves them); an
+     edit's stay on the row, whose dates this dialog never changes */
+  const when = !r ? '' : (isNew && draft && draft.start)
+    ? fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')
+    : r.date + (r.endDate ? ' → ' + r.endDate : '')
   const span = draft ? spanOf(draft.allday, draft.half) : 'all'
+  /* the roster a context-bound add offers — SANS Availability is refused for
+     anyone else at commit (sansRefusal), so the list should not offer them */
+  const peopleFor = () => ctx === 's' ? rosterOptions().filter(id => PEOPLE[id].san) : rosterOptions()
 
   return (
     <div className="airpop" id="inpEditPop" hidden={!open}
@@ -604,26 +656,47 @@ export function InputEditor() {
             <span className="inped-k">Person</span>
             <select id="inpEditPerson" aria-label="Person" value={draft.person}
               onChange={e => setDraft({ ...draft, person: e.target.value })}>
-              {rosterOptions().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+              {peopleFor().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
             </select>
           </label>}
-          <label className="inped-f">
-            <span className="inped-k">Type</span>
-            <select id="inpEditType" aria-label="Type" value={draft.type}
-              onChange={e => {
-                const t = e.target.value
-                /* a type with no halves cannot keep a half label — it would
-                   read "(AM)" on a row the picker can no longer express.
-                   Switching TO SANS Availability seeds an empty payload for
-                   the picker below to fill; switching AWAY drops it — a
-                   record for a different type carrying a stale sans object
-                   would be dead weight nothing reads. */
-                setDraft({
-                  ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }),
-                  sans: isSansAvail(t) ? (draft.sans || {}) : null,
-                })
-              }}>{typeOptions()}</select>
-          </label>
+          {/* the SANS panel's add is not a choice of type at all, so a dropdown
+              with one entry would only pretend it was — the type reads as a
+              plain value there (owner, 19 Aug 26) */}
+          {ctx === 's'
+            ? <div className="inped-f">
+              <span className="inped-k">Type</span>
+              <span className="inped-v" id="inpEditTypeFixed">{draft.type}</span>
+            </div>
+            : <label className="inped-f">
+              <span className="inped-k">Type</span>
+              <select id="inpEditType" aria-label="Type" value={draft.type}
+                onChange={e => {
+                  const t = e.target.value
+                  /* a type with no halves cannot keep a half label — it would
+                     read "(AM)" on a row the picker can no longer express.
+                     Switching TO SANS Availability seeds an empty payload for
+                     the picker below to fill; switching AWAY drops it — a
+                     record for a different type carrying a stale sans object
+                     would be dead weight nothing reads. */
+                  setDraft({
+                    ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }),
+                    sans: isSansAvail(t) ? (draft.sans || {}) : null,
+                  })
+                }}>{typeOptions(ctx ? TYPE_ALLOW[ctx] : undefined)}</select>
+            </label>}
+          {/* the Unavailable add takes a RANGE (owner, 19 Aug 26 — "I can
+              select a date range as well"): the same two-click calendar the
+              Inputs page uses, owning the remarks' till-date token the same
+              way (withRemarksTail — a one-day pick reads "till <that day>",
+              and what the typist wrote around the token survives re-picks) */}
+          {ctx === 'u' && <div className="inped-f">
+            <span className="inped-k">Dates</span>
+            <div className="inped-dates">
+              <RangeCal idPrefix="inpEd" start={draft.start} end={draft.end}
+                onPick={(s2, e2) => setDraft({ ...draft, start: s2, end: e2, remarks: withRemarksTail(draft.remarks, s2, e2, 'till') })} />
+              <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
+            </div>
+          </div>}
           {/* the F/O/A ticks sit ABOVE the standard timing controls now, not
               in place of them (owner rework, 14 Aug 26) — SANS Availability
               is a normal timed input with one extra field, and its single
@@ -664,7 +737,11 @@ export function InputEditor() {
               onKeyDown={e => { if (e.key === 'Enter') save() }} />
           </label>
           <div className="inped-hint">{isNew
-            ? `Added on ${when}. For a multi-day span, use the Inputs page.`
+            ? ctx === 'u'
+              ? 'Pick the dates on the calendar — the remarks carry the till date automatically, and a leave syncs to the Inputs page and Leave War.'
+              : ctx === 'g'
+                ? `Added on ${when}, straight onto the Ground Programme. For a multi-day span, use the Inputs page.`
+                : `Added on ${when}. For a multi-day span, use the Inputs page.`
             : canEditSched()
               ? 'The dates are changed on the Inputs page.'
               : 'The person and the dates are changed on the Inputs page.'}</div>

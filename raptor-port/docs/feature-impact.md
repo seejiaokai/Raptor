@@ -87,8 +87,15 @@ Deletes renumber the live key space FIRST, then drop an inert `del:` tombstone
 
 ### Flow B — a personal input added or edited (the owner's example)
 ```
-add form / row editor / week cell / board cell   (three editors, ONE list)
-  → commitInputEdit / setInpField / removeInput   (all in inputedit.tsx)
+add form / row editor / week cell / board cell / board panel adds
+                                                 (three editors + the board's
+                                                  context-bound adds, ONE list)
+  → commitInputEdit / setInpField / removeInput / commitNewInput
+                                                  (all in inputedit.tsx —
+                                                   commitNewInput's toGround
+                                                   also runs acceptInput in
+                                                   the same batch, the Ground
+                                                   Programme's + Inputs)
   → writeInputsBatch()                            one undo step, re-validates
       → the record lands in INPUTS; which BLOCK it draws in is decided by
         isUnavail (leave/medical/OD) vs isPersonal (activities) — presentational

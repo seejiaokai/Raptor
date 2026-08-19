@@ -1157,33 +1157,54 @@ call `afterSchedMutate()` a second time — `reassignInput`'s own
 `commitInputEdit` already ran the input funnel's full epilogue (validate,
 notify, one history step); the drop/tap handlers only disarm and repaint.
 
-## Adding an input from the board (owner, Aug 26)
+## Adding an input from the board (owner, Aug 26; context-bound rework 19 Aug 26)
 
-The board's **Personal Inputs** and **Unavailable** panels each carry a
-**+ Add** button in their header on a LIVE board (`.sb-addinp`, `data-inpadd`;
-absent on a preview or view-only board, the same `ro`/`pv` gate the panels'
-editable rows use). It opens the SAME `InputEditor` an edit opens, seeded
-blank for the OPEN DAY: `_new:true`, all-day, the first roster member, and a
-default type suiting the panel — a personal (activity) type from Personal
-Inputs (`firstPersonalType`), a leave/medical type from Unavailable
-(`firstUnavailType`, never SANS Availability, which is an offer not an
-absence). In `_new` mode the dialog reads **"New input"**, drops the Delete
-button, and the primary button reads **Add**; the footer says the row lands on
-the open day and a multi-day span goes on the Inputs page.
+THREE add buttons on a LIVE board (`.sb-addinp`, `data-inpadd`; absent on a
+preview or view-only board, the same `ro`/`pv` gate the panels' editable rows
+use), each bound to the panel it sits on — the kind rides the dialog seed as
+`_ctx`, which narrows the type dropdown (`typeOptions(TYPE_ALLOW[ctx])`,
+`ui/inputedit.tsx` — an emptied optgroup is skipped, not left as a bare
+heading). The Personal Inputs panel carries NO add any more; its old + Add
+moved to the Ground Programme (owner, 19 Aug 26).
 
+- **Ground Programme → "+ Inputs"** (`data-inpadd="di.g"`, beside the bare-row
+  "+ Item"). Types: the activity set only (`isPersonal` — Meeting, CSE,
+  Training…), because those are what the programme can carry. Save ACCEPTS the
+  new row straight onto the open day's ground programme (`commitNewInput`'s
+  `toGround` — `acceptInput(di,row,'g')` inside the same `writeInputsBatch`,
+  so add-plus-accept is ONE undo step): the button puts the item where the
+  button is. The one refusal left is a duplicate content key (an identical
+  person|date|type|start already promoted) — the input still lands, unaccepted,
+  and the toast says so. Single day, the open day.
+- **Unavailable → "+ Add"** (`data-inpadd="di.u"`). Types: leave, medical and
+  OD only (`isUnavail && !isSansAvail`). The dialog carries a **date RANGE** —
+  the same two-click `RangeCal` the Inputs page uses — and owns the remarks'
+  till-date token the same way (`withRemarksTail`, single-day reads
+  "till <that day>"; the typist's own words around the token survive
+  re-picks). The seed is a COMPLETED one-day range on the open day
+  (`endDate = date`) so the first calendar click begins a fresh range rather
+  than silently completing a span from the open day; the same-day end
+  collapses off in `normalizeInputDraft`. A leave span crosses to Leave War
+  and the Inputs page exactly as one filed there — same record, same notify.
+- **SANS Availability → "+ Add"** (`data-inpadd="di.s"`). The type is FIXED
+  (no dropdown — a one-entry select would pretend it was a choice; a plain
+  value, `#inpEditTypeFixed`), the Person list offers SANS aircrew only
+  (`sansRefusal` would refuse anyone else at commit), and the Fly/AMT/OFT
+  ticks are up with an empty payload. SANS Availability appears in NEITHER
+  other list — it is an offer, not an absence, and not programme material.
+
+In `_new` mode the dialog reads **"New input"**, drops the Delete button, and
+the primary button reads **Add**; the hint names each context's behaviour.
 Save runs `commitNewInput` (`ui/inputedit.tsx`), which shares ALL of an edit's
-refusals and derivations through the extracted `normalizeInputDraft` — so the
-add path can never disagree with the editor about a malformed window, an
-overnight range, or a span's year — then unshifts the row exactly as the
-Inputs page's own `add()` does: one write through `writeInputsBatch` (one undo
-step, one re-validate) with a minted `iid`. It is therefore the ordinary
-INPUTS record every other surface reads back, and for a leave/medical type it
-crosses to Leave War on the very notify the Inputs page add already rides — no
-new sync seam. The row is UNACCEPTED, like any freshly filed input; the
-Personal Inputs panel's own Accept control then promotes it if wanted. The
-handler in `routeClick` re-checks `canEditSched()` (the gate is the write path,
-not the markup). Dates stay a single day here, the dialog's standing rule.
-Pinned in `boardaddinput.test.tsx`.
+refusals and derivations through the extracted `normalizeInputDraft` — so no
+add path can disagree with the editor about a malformed window, an overnight
+range, or a span's year — then unshifts the row exactly as the Inputs page's
+own `add()` does: one write through `writeInputsBatch` with a minted `iid`.
+It is therefore the ordinary INPUTS record every other surface reads back.
+An ordinary EDIT keeps the full type list — retyping a row across groups is a
+real move the app already handles. The handler in `routeClick` re-checks
+`canEditSched()` (the gate is the write path, not the markup). Pinned in
+`boardaddinput.test.tsx`.
 
 ## Scheduler notes (edit week + board only)
 

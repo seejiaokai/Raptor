@@ -2928,6 +2928,13 @@ button.sanscard:hover{border-color:var(--accent)}
      longer wave label could tip back into overflow. */
   .sb-go-h{flex-wrap:wrap}
   .sb-go-h .gctl{flex:1 0 100%;margin-left:0;justify-content:flex-end}
+  /* the Ground Programme header grew a third control (+ Inputs, 19 Aug 26)
+     and its title + sub + three buttons ran 376px on a 342px phone header —
+     the exact overflow the wave header hit when Auto sort joined it (above),
+     fixed the same way: the button group takes its own full-width row. The
+     e2e phone-overflow sweep is what catches this class of bug. */
+  .sb-panel.grnd .sb-ph{flex-wrap:wrap}
+  .sb-panel.grnd .sb-ph .gctl{flex:1 0 100%;margin-left:0;justify-content:flex-end}
   /* ============ ONE ROW (owner, 11 Aug 26 — comp approved before build) ====
      The bar used to be FOUR stacked rows and 166px of a 780px screen: the
      title, seven Mon–Sun chips, then six buttons that flex-wrap folded onto
@@ -3425,3 +3432,9 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .inped-ad{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2)}
 .inped-ad input{width:auto;padding:0}
 .inped-hint{font-size:10.5px;color:var(--ink-3);line-height:1.4}
+/* the Unavailable + Add's range calendar (owner, 19 Aug 26) — the same
+   .rangecal the Inputs page draws, stacked over its read-out line */
+.inped-dates{display:flex;flex-direction:column;gap:5px}
+/* a type that is not a choice (the SANS panel's add) reads as a plain value
+   in the same register the select would have used */
+.inped-v{font:600 13px inherit;color:var(--ink);padding:2px 0}
