@@ -2633,6 +2633,15 @@ button.sanscard:hover{border-color:var(--accent)}
 .sb-ph .sub{font-family:'JetBrains Mono',monospace;text-transform:none;letter-spacing:0;
   font-size:10px;font-weight:500;color:var(--ink-3)}
 .sb-ph .gctl{margin-left:auto;display:flex;gap:5px}
+/* + Add on the Personal Inputs / Unavailable panel headers (owner, Aug 26) —
+   pushed to the right edge, the same ghost-with-green-hover idiom as .addrow so
+   it reads as an add without shouting over the panel title. */
+.sb-addinp{margin-left:auto;flex:0 0 auto;background:none;border:1px dashed var(--edge-2);
+  border-radius:6px;color:var(--ink-2);padding:4px 10px;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;cursor:pointer;white-space:nowrap}
+.sb-addinp:hover{border-color:var(--ok);color:#9BE3B4}
+.sb-addinp:active{transform:translateY(1px)}
 .sb-pb{padding:8px 11px 10px}
 .sb-nrow{display:grid;grid-template-columns:18px 22px 1fr 62px;gap:7px;align-items:center;margin-bottom:5px}
 .sb-nrow .nx{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);text-align:right}

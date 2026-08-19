@@ -85,6 +85,32 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **THE SCHEDULER BOARD CAN ADD INPUTS NOW, not only edit and delete them
+  (owner, Aug 26 — "scheduler board should have the authority to add inputs…
+  under unavailable and personal inputs. They can also add or remove them or
+  edit").** Edit and delete from the board already shipped (14 Aug 26); this
+  adds the third verb. Each board panel — **Personal Inputs** and
+  **Unavailable** — carries a **+ Add** button in its header on a LIVE board
+  (`.sb-addinp`/`data-inpadd` in `ui/board-html.ts`, gated on the same
+  `ro`/`pv` as the panels' editable rows; absent on a preview/view-only
+  board). It opens the SAME `InputEditor` an edit opens, seeded blank for the
+  OPEN DAY (`_new:true`) with a default type suiting the panel
+  (`firstPersonalType`/`firstUnavailType`). In `_new` mode the dialog reads
+  "New input", drops Delete, and its primary button reads Add. Save runs the
+  new **`commitNewInput`** (`ui/inputedit.tsx`), which shares ALL of an edit's
+  refusals+derivations through the extracted **`normalizeInputDraft`** (so the
+  add and edit paths can never drift on a malformed window, an overnight range
+  or a span's year) and then unshifts the row exactly as the Inputs page's own
+  `add()` does — one `writeInputsBatch` step, a minted `iid`, UNACCEPTED like
+  any freshly filed input. So it is the ordinary INPUTS record every surface
+  reads back, and a leave/medical type crosses to Leave War on the same notify
+  the Inputs page add already rides — **no new sync seam**. DELIBERATELY
+  SCOPED: **single day only** (a span still goes on the Inputs page, the
+  dialog's standing dates rule), and the ask named the BOARD, so the edit
+  WEEK's own Personal/Unavailable blocks did not gain a + Add — an easy
+  follow-up if wanted (the same `commitNewInput` + a seed). `routeClick`
+  re-checks `canEditSched()`. Contract: `docs/ui-contracts.md` §Adding an
+  input from the board. Tests: `boardaddinput.test.tsx` (11).
 - **LEAVE WAR MANNING EXPLAINER + EDITABLE AMBER/RED LINES + SC D / SC N TEAM
   ROWS (19 Aug 26, owner's ask).** Tap any manning count row's NAME → a sheet
   (`ui/ManningSheet.tsx`) saying in plain words what the row counts
@@ -1372,7 +1398,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `DayTplModal.tsx` | The **day-template library editor** (15 Aug 26) — opened from the Templates picker's pencil, on either surface (`DAYTPLEDIT` in `pops.ts`, a `false\|true\|string` open-pre-selected flag). Tabs per template, an editable title, a read-only structure summary; deliberately no row editor (a day template's content is edited on the board/week themselves, which already own that surface) and no "+ New" (a template is always recaptured off a real day, never started blank). Reset / Delete / Done, all toasting. |
 | `DraftsModal.tsx` | The **drafts manager** (15 Aug 26) — opened from the Drafts picker's pencils (`DRAFTSEDIT` in `pops.ts`, carrying the day since drafts are per-day), scoped to the one day whose menu opened it. Tabs per draft (selected one marked ●), a name field that commits on blur/Enter (`draftRename` refuses empty/duplicate names, and refusing mid-keystroke would fight the typist), Select (make it live) / Delete (disabled on the selected entry, with a title saying why) / Done. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Contract: `docs/ui-contracts.md` §The Inputs table's view state. |
-| `inputedit.tsx` | Editing ONE personal input, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, `commitInputEdit` (including the accepted-row relink), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule) and `InputEditor` itself. Three editors over one list is how they drift apart. |
+| `inputedit.tsx` | Editing ONE personal input AND adding one, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, **`normalizeInputDraft`** (every input write's shared refusals+derivations, extracted so add and edit cannot drift), `commitInputEdit` (including the accepted-row relink), **`commitNewInput`** (the board's + Add — unshifts a new row through the one funnel, Aug 26), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule), `firstPersonalType`/`firstUnavailType` (the panel defaults the board's + Add seeds), and `InputEditor` itself (an `_new` seed row opens it in add mode). Three editors over one list is how they drift apart. |
 | `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
 | `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer, login. |
 | `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. |
@@ -1424,6 +1450,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step and stop disabled at both ends, the marked dot follows, the dots still scrub, the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `src/state/demosans.test.ts` | The demo SANS seed (14 Aug 26) — shape, idempotency (`initStore()` boots twice against the same `INPUTS` array), the zero-`SANS_AVAIL`-warning proof against every seed record's own padded commitment, and the rendered card grid. |
 | `src/ui/pubsweep.test.tsx` | The comprehensive publishing sweep (16 Aug 26, 28 tests) — scenario by scenario, asserting what the edit week, the board's publish strip and the view page each show: lifecycle, edit-after-publish, edit-and-revert across key families, structural round trips netting out, drafts-on-published-day rebase (including rebase-against-current-AL), load-onto-working-copy leaving `SCHED.cur` alone, reopen → re-publish, unpublish, and week-vs-board deep-equal agreement. Finding a live bug (the time-respelling pending mark) is what this file is FOR — keep extending it when publishing behaviour changes. |
+| `src/ui/boardaddinput.test.tsx` | The board's **+ Add** input (Aug 26, 11 tests) — the button renders on a live Personal Inputs / Unavailable panel and not on a read-only one, `commitNewInput` lands a row on the open day (and refuses a malformed draft), the dialog opens in its `_new` shape (no Delete, "Add", panel-suited default type), the whole click-fill-Add gesture paints the new row under the panel, Cancel adds nothing, and a member is refused at the `routeClick` handler even with a hand-made button. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |
 | `src/ui/daytplui.test.tsx` | Day templates' UI half (15 Aug 26, 15 tests) — the `dayTplMenu` picker reached from both the board's button and the week's sign-off strip, `DayTplModal.tsx`'s tabs/rename/delete/reset, and the published-day "Reopen the day first" refusal toast. |

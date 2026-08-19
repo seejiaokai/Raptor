@@ -468,7 +468,11 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
 export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
   const acRo=ro??pv;
-  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day'}</span></div><div class="sb-pb">`;
+  /* + Add (owner, Aug 26 — "scheduler board should have the authority to add
+     inputs... under unavailable and personal inputs"). Live board only; it
+     opens the same dialog an edit does, seeded blank for this day. */
+  const addBtn=acRo?'':`<button class="sb-addinp" data-inpadd="${di}.p" title="Add a personal input for this day">+ Add</button>`;
+  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day'}</span>${addBtn}</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
   else if(!acRo)s+=C6;
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo,acRo); });
@@ -480,7 +484,8 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
 export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this panel
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type));
-  let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable <span class="sub">leave, medical and overseas duty${ro?'':' — times and remarks type in place, clear a time for all day'}</span></div><div class="sb-pb">`;
+  const addBtn=ro?'':`<button class="sb-addinp" data-inpadd="${di}.u" title="Add an unavailability (leave, medical, overseas duty) for this day">+ Add</button>`;
+  let s=`<div class="sb-panel unav"><div class="sb-ph">Unavailable <span class="sub">leave, medical and overseas duty${ro?'':' — times and remarks type in place, clear a time for all day'}</span>${addBtn}</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nil — everybody is available today.</div>`;
   else if(!ro)s+=C6;
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,false,ro,ro); });

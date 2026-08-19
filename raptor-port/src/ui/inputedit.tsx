@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpMeta, typeGroup, inputCoversDate, isUnavail, isSansAvail, dateOrd, baseYear } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, dateOrd, baseYear } from '../engine/inputs'
 import { acceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
@@ -187,25 +187,25 @@ export const draftOf = (r: any) => ({
   sans: r.sans ? { ...r.sans } : null,
 })
 
-/* Commit a draft onto its row. Returns false and toasts when it will not go —
-   the caller keeps its editor open on a false, so nothing typed is lost.
-   Runs through writeInputsBatch like every other mutation, so an edit joins
-   the undo stack as ONE step and re-validates the week. */
-export function commitInputEdit(r: any, draft: any) {
-  if (!r || !draft) return false
-  if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
-    HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
-    return false
-  }
+/* The refusals and the derivations EVERY input write shares — the edit dialog
+   (commitInputEdit) and the board's + Add (commitNewInput). Kept in one place
+   so a second creation path can never quietly disagree with the editor about,
+   say, whether an overnight range is allowed or how a span's year is read.
+   Toasts the reason and returns null on refusal — the caller keeps its editor
+   open, so nothing typed is lost; on success it returns the model-ready fields.
+   `except` is the row to leave out of the SANS overlap check: an edit excludes
+   itself, a brand-new input excludes nothing (null). */
+export function normalizeInputDraft(draft: any, except: any):
+  { s: number, e: number, date: string, endDate: string | undefined, half: string } | null {
   const s = draft.allday ? 0 : parseHM(draft.sTime), e = draft.allday ? 1439 : parseHM(draft.eTime)
-  if (!draft.allday && (s == null || e == null)) { HOOKS.toast('Give the input a start and end time, or tick All day', 'warn'); return false }
+  if (!draft.allday && (s == null || e == null)) { HOOKS.toast('Give the input a start and end time, or tick All day', 'warn'); return null }
   /* and they have to be times a clock can show. Without this an out-of-range
      value reached the model through the DIALOG even after the cells were
      guarded, and anything past 24:00 was refused only by accident — hhmm()
      turned it into `100:39`, which failed the re-parse above and so complained
      that no time had been given, when one had (audit, 12 Aug 26). */
   if (!draft.allday && (!hmOK(draft.sTime) || !hmOK(draft.eTime))) {
-    HOOKS.toast('That is not a time — try 0900 or 09:00', 'warn'); return false
+    HOOKS.toast('That is not a time — try 0900 or 09:00', 'warn'); return null
   }
   /* An end EARLIER than the start crosses midnight — 22:00–02:00 is a real
      absence, and a duty row, a sim box and a night sortie have all rolled that
@@ -215,7 +215,7 @@ export function commitInputEdit(r: any, draft: any) {
      is a zero-length absence, which means nothing either way. The cost of the
      roll is that a transposed 09:00–08:00 becomes a 23-hour absence instead of
      an error — the same trade every other row type on the board already makes. */
-  if (!draft.allday && (e as number) === (s as number)) { HOOKS.toast('Give the input a start and end that are not the same time', 'warn'); return false }
+  if (!draft.allday && (e as number) === (s as number)) { HOOKS.toast('Give the input a start and end that are not the same time', 'warn'); return null }
   const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
   /* A SPAN HAS TO RUN FORWARDS. Dates now carry their year whenever it is not
      the loaded week's (fmt above), so a leave into the new year — Dec 28 →
@@ -233,7 +233,7 @@ export function commitInputEdit(r: any, draft: any) {
     const a = dateOrd(date), b = dateOrd(endDate)
     if (a == null || b == null || b < a) {
       HOOKS.toast('The end date has to fall on or after the start date', 'warn')
-      return false
+      return null
     }
   }
   /* SANS AVAILABILITY IS RESTRICTED TO SANS AIRCREW, AND NEEDS AT LEAST ONE
@@ -242,14 +242,70 @@ export function commitInputEdit(r: any, draft: any) {
      editor's commit passes through. */
   if (isSansAvail(draft.type)) {
     const why = sansRefusal(draft.person, draft.sans)
-    if (why) { HOOKS.toast(why, 'warn'); return false }
-    const dup = sansOverlapRefusal(draft.person, date, endDate, r)
-    if (dup) { HOOKS.toast(dup, 'warn'); return false }
+    if (why) { HOOKS.toast(why, 'warn'); return null }
+    const dup = sansOverlapRefusal(draft.person, date, endDate, except)
+    if (dup) { HOOKS.toast(dup, 'warn'); return null }
   }
-  /* Derived once, here, because the Leave-War check below reads the input's
-     PORTION and the label write near the end reads the same value — deriving
-     it twice is how the two would drift (see the note at that write). */
+  /* Derived once, here, because the Leave-War check reads the input's PORTION
+     and the label write near the end of commitInputEdit reads the same value —
+     deriving it twice is how the two would drift (see the note at that write). */
   const half = (!draft.allday && hasHalf(draft.type) && s != null && e != null) ? halfOf(s as number, e as number) : ''
+  return { s: s as number, e: e as number, date, endDate, half }
+}
+
+/* The default type a board panel's + Add opens on — a personal (activity) type
+   for the Personal Inputs panel, a leave/medical type for Unavailable, so the
+   new row lands in the panel it was added from. The scheduler can change it in
+   the dialog; SANS Availability is deliberately never the Unavailable default
+   (it is an offer, not an absence, and carries its own aircrew restriction). */
+export const firstPersonalType = () => INPUT_TYPES.find((t: any) => isPersonal(t)) || INPUT_TYPES[0]
+export const firstUnavailType = () => INPUT_TYPES.find((t: any) => isUnavail(t) && !isSansAvail(t)) || INPUT_TYPES[0]
+
+/* ADD a brand-new input from a schedule surface (owner, Aug 26 — "scheduler
+   board should have the authority to add inputs... under unavailable and
+   personal inputs"). The board's + Add seeds a blank row for the OPEN DAY and
+   opens the SAME dialog an edit uses; Save lands here. It runs the identical
+   refusals and derivations an edit does (normalizeInputDraft) and unshifts the
+   row exactly as the Inputs page's own add form does — one write through
+   writeInputsBatch, so it joins the undo stack as ONE step, re-validates the
+   week, and (for a leave/medical type) crosses to Leave War on the same notify
+   the Inputs page add already rides. DATES stay a SINGLE DAY here, the dialog's
+   standing rule — a span is still filed on the Inputs page. */
+export function commitNewInput(draft: any): boolean {
+  if (!draft) return false
+  const n = normalizeInputDraft(draft, null)
+  if (!n) return false
+  const { s, e, date, endDate, half } = n
+  const flags = isSansAvail(draft.type) ? sansFlags(draft.sans) : {}
+  const row: any = {
+    person: draft.person, type: draft.type, allday: !!draft.allday,
+    s, e, date, remarks: String(draft.remarks || '').trim(), mod: 'now',
+    ...(endDate ? { endDate } : {}),
+    ...(half ? { half } : {}),
+    ...(Object.keys(flags).length ? { sans: flags } : {}),
+  }
+  /* the row's own address, minted before the write so the snapshot this add
+     pushes already carries it — the Inputs page add's own withId precedent */
+  inpId(row)
+  writeInputsBatch(() => { INPUTS.unshift(row) })
+  const cs = PEOPLE[row.person] ? PEOPLE[row.person].cs : row.person
+  logAction(null, `Input added — ${cs}, ${row.type}, ${date}${endDate ? '–' + endDate : ''}`)
+  return true
+}
+
+/* Commit a draft onto its row. Returns false and toasts when it will not go —
+   the caller keeps its editor open on a false, so nothing typed is lost.
+   Runs through writeInputsBatch like every other mutation, so an edit joins
+   the undo stack as ONE step and re-validates the week. */
+export function commitInputEdit(r: any, draft: any) {
+  if (!r || !draft) return false
+  if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
+    HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
+    return false
+  }
+  const n = normalizeInputDraft(draft, r)
+  if (!n) return false
+  const { s, e, date, endDate, half } = n
   writeInputsBatch(() => {
     /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the
        LEAVE ITSELF — its person, type, dates or which half — changes the war
@@ -497,6 +553,10 @@ export function InputEditor() {
   useVersion()
   const r = INPEDIT
   const open = !!r
+  /* the dialog opens on an EXISTING row for an edit, or on a seed row carrying
+     `_new` for the board's + Add — same fields, but Save inserts rather than
+     overwrites and there is nothing to Delete (see commitNewInput) */
+  const isNew = !!(r && r._new)
   const [draft, setDraft] = useState<any>(null)
   const box = useRef<HTMLDivElement>(null)
   /* re-seed whenever a different row is opened, never on a repaint — a
@@ -514,6 +574,7 @@ export function InputEditor() {
      refusal there is no way back from: the row went (an undo under the modal),
      and there is nothing left to hold the typing for */
   const save = () => {
+    if (isNew) { if (commitNewInput(draft)) { HOOKS.toast('Input added', 'ok'); close() }; return }
     if (commitInputEdit(r, draft)) { HOOKS.toast('Input updated', 'ok'); close() }
     else if (INPUTS.indexOf(r) < 0) close()
   }
@@ -528,7 +589,7 @@ export function InputEditor() {
       onClick={e => { if ((e.target as HTMLElement).id === 'inpEditPop') close() }}>
       <div className="airpop-box inpedbox" ref={box}>
         <div className="airpop-head">
-          <b id="inpEditTitle">{who}{when ? ' · ' + when : ''}</b>
+          <b id="inpEditTitle">{isNew ? 'New input' : who}{when ? ' · ' + when : ''}</b>
           <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
         </div>
         {draft && <div className="airpop-body inped-body">
@@ -602,15 +663,19 @@ export function InputEditor() {
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
               onKeyDown={e => { if (e.key === 'Enter') save() }} />
           </label>
-          <div className="inped-hint">{canEditSched()
-            ? 'The dates are changed on the Inputs page.'
-            : 'The person and the dates are changed on the Inputs page.'}</div>
+          <div className="inped-hint">{isNew
+            ? `Added on ${when}. For a multi-day span, use the Inputs page.`
+            : canEditSched()
+              ? 'The dates are changed on the Inputs page.'
+              : 'The person and the dates are changed on the Inputs page.'}</div>
         </div>}
         <div className="airpop-foot">
-          <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>
+          {/* nothing to delete on a row that does not exist yet (the board's
+              + Add) — the button is simply absent in that mode */}
+          {!isNew && <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" id="inpEditCancel" onClick={close}>Cancel</button>
-          <button className="abtn primary" id="inpEditSave" onClick={save}>Save</button>
+          <button className="abtn primary" id="inpEditSave" onClick={save}>{isNew ? 'Add' : 'Save'}</button>
         </div>
       </div>
     </div>
