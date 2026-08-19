@@ -1,5 +1,6 @@
-import { Fragment, useEffect, useRef, useState, type TouchEvent } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type TouchEvent } from 'react'
 import {
+  addDays,
   balanceOf,
   canDecide,
   canEditCell,
@@ -51,6 +52,21 @@ const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', '
 function monthLabel(date: string): string | null {
   if (date.slice(8, 10) !== '01') return null
   return MONTHS[Number(date.slice(5, 7)) - 1]
+}
+
+/** Whether a person's row rides the roster for a visible month window
+ *  ('yyyy-mm|yyyy-mm', or '' meaning no measurement → everyone). A
+ *  posted-out person rides every month up to and including the one holding
+ *  their last day and drops off after it (owner, 19 Aug 26 — "once I hit the
+ *  next month… the row disappears"); a late joiner mirrors it at the other
+ *  end. Month granularity on purpose: scrolling inside a month never
+ *  reshuffles the rows, only crossing a boundary does. */
+function rowInWindow(p: Person, win: string): boolean {
+  if (!win) return true
+  const [first, last] = win.split('|')
+  if (p.to !== null && p.to.slice(0, 7) < first!) return false
+  if (p.from !== null && p.from.slice(0, 7) > last!) return false
+  return true
 }
 
 /** A ground-crew body's free-text label — read-only text, or an edit box while
@@ -265,6 +281,25 @@ export function Matrix() {
   // because it is a fact about scroll position, which no render sees.
   const [inView, setInView] = useState<string | null>(null)
 
+  // The visible month WINDOW — 'yyyy-mm|yyyy-mm', first and last months with
+  // any day column on screen (owner, 19 Aug 26: a posted-out person's row
+  // disappears "once I hit the next month"). '' means "no measurement" —
+  // jsdom, or not laid out yet — and the row filter shows everyone then,
+  // which is also what keeps every unit test honest about the full roster.
+  // The state is only WRITTEN when the visible ROW SET actually changes
+  // (visSigRef below): a drag across the whole year crosses eleven month
+  // boundaries, and eleven full repaints of a ~28k-node table is what the
+  // scroll-responsiveness gate exists to refuse.
+  const [visWindow, setVisWindow] = useState('')
+  const visSigRef = useRef<string | null>(null)
+  // Where a named day column sat the instant the row set changed, so the
+  // repaint can put it back. Removing (or restoring) a row lets the table's
+  // auto layout re-narrow every column that row's chips had widened — all of
+  // them UPSTREAM of the view — which otherwise yanks the grid sideways under
+  // the reader and lands a month jump short (measured 165px off at SEP, from
+  // the demo's one posted-out man leaving the roster).
+  const anchorRef = useRef<{ date: string; left: number } | null>(null)
+
   // The phone ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
   // war"). Stepped +/− buttons rather than pinch: pinch fights the browser's
   // own page zoom and the frozen columns, and a button cannot half-work.
@@ -329,7 +364,10 @@ export function Matrix() {
       window.removeEventListener('resize', onScroll)
     }
     // `zoom` is a dep because it changes every measured width the mirror pins.
-  }, [period.id, dates.length, zoom])
+    // `visWindow` too (19 Aug 26): a row-set change lets auto layout re-narrow
+    // the columns a removed row's chips had widened, and a stuck mirror
+    // pinning the OLD widths would sit misaligned over the new ones.
+  }, [period.id, dates.length, zoom, visWindow])
 
   // The mirror starts life at the grid's current horizontal position, and the
   // two scrollers keep each other in lockstep from then on. Assigning an
@@ -449,7 +487,44 @@ export function Matrix() {
     // The visible strip starts where the day columns do — the frozen columns
     // sit ON TOP of them, so counting from the wrapper's own left edge would
     // credit whichever month is hidden underneath the callsigns.
-    setInView(monthInView(spans, wr.left + frozenWidth(wrap), wr.right))
+    const viewL = wr.left + frozenWidth(wrap)
+    const viewR = wr.right
+    setInView(monthInView(spans, viewL, viewR))
+    // The visible WINDOW for the row filter. Only from a real layout: jsdom
+    // reports every rect 0×0, the spans have no width, and a zero-width
+    // "window" must leave visWindow at '' (show everyone) rather than hide
+    // the whole roster.
+    if (end > spans[0]!.left && viewR > viewL) {
+      // >2px of overlap, not >0: a month jump aligns the next month's first
+      // column to the frozen edge by integer scrollLeft, and a sub-pixel
+      // sliver of the month being LEFT must not count as still viewing it.
+      const vis = spans
+        .map((s, i) => ({ s, key: months[i]!.first.slice(0, 7) }))
+        .filter(x => Math.min(x.s.right, viewR) - Math.max(x.s.left, viewL) > 2)
+      if (vis.length) {
+        const win = `${vis[0]!.key}|${vis[vis.length - 1]!.key}`
+        const sig = people.filter(p => rowInWindow(p, win)).map(p => p.id).join(',')
+        if (sig !== visSigRef.current) {
+          // Capture where the FIRST VISIBLE DAY column sits NOW; the layout
+          // effect below puts it back after the repaint (see anchorRef). It
+          // has to be the day at the view's left edge, not the month's first
+          // day: a hidden row's chips widened columns on BOTH sides of any
+          // other anchor, and compensating an off-screen one leaves the
+          // residual on screen. Binary search — column lefts are monotonic —
+          // so this is ~9 rect reads, and only on a row-set change.
+          const at = (i: number) =>
+            wrap.querySelector<HTMLElement>(`[data-testid="head-${dates[i]}"]`)?.getBoundingClientRect().left ?? 0
+          let lo = 0, hi = dates.length - 1, best = 0
+          while (lo <= hi) {
+            const mid = (lo + hi) >> 1
+            if (at(mid) >= viewL - 1) { best = mid; hi = mid - 1 } else lo = mid + 1
+          }
+          anchorRef.current = { date: dates[best]!, left: at(best) }
+          visSigRef.current = sig
+          setVisWindow(win)
+        }
+      }
+    }
   }
 
   // Measured synchronously on scroll rather than deferred to a frame: thirteen
@@ -460,6 +535,22 @@ export function Matrix() {
     measureInView()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id, dates.length])
+
+  // Put the anchored column back after a row-set repaint (see anchorRef).
+  // Layout effect, not effect: the correction must land in the same frame as
+  // the narrowed columns or the reader sees the grid jump and snap back. The
+  // scroll it makes re-fires measureInView, whose signature compare then
+  // finds the same row set and stops — no loop.
+  useLayoutEffect(() => {
+    const a = anchorRef.current
+    anchorRef.current = null
+    if (!a) return
+    const wrap = wrapRef.current
+    const cell = wrap?.querySelector<HTMLElement>(`[data-testid="head-${a.date}"]`)
+    if (!wrap || !cell) return
+    const shift = cell.getBoundingClientRect().left - a.left
+    if (Math.abs(shift) > 1) wrap.scrollLeft += shift
+  }, [visWindow])
 
   // The under-manned list asks for a day the same way the month strip asks
   // for a month, through the one `jumpTo` above — so a target lands clear of
@@ -668,7 +759,12 @@ export function Matrix() {
                 // emitted at every top-level boundary, and a CAT sub-heading
                 // inside an ops group — the sub-heading is desktop-only in CSS,
                 // per the owner ("if it takes up too much space on mobile…").
-                const roster = displayRoster()
+                //
+                // FILTERED to the visible month window (owner, 19 Aug 26 —
+                // rowInWindow above): the heads/counts below derive from the
+                // filtered list, so an emptied group takes its heading with
+                // it. visWindow '' (jsdom, first paint) shows everyone.
+                const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
                 const span = 2 + dates.length
                 let prevG: Group | null = null
                 let prevCat = ''
@@ -869,11 +965,20 @@ export function Matrix() {
                     // is blank, not a post-out, and nothing there to undo.
                     const actionable =
                       (here && openable(p.id, d.date)) || (role === 'admin' && !here && !notYetArrived)
+                    // Their LAST day in the squadron wears a small PO tag
+                    // (owner, 19 Aug 26 — chosen over nothing after the edge
+                    // case was put to him): someone posting out on the 1st has
+                    // a final month that otherwise looks completely normal,
+                    // and the next month their row is gone — so without this,
+                    // a reader jumping month to month never sees the PO at
+                    // all. The tag rides the corner of the cell so a leave
+                    // code on the same day still prints.
+                    const lastIn = p.to !== null && d.date === p.to
                     return (
                       <td
                         key={d.date}
                         data-testid={`cell-${p.id}-${d.date}`}
-                        className={`${cls}${actionable ? ' act' : ''}`}
+                        className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}`}
                         onClick={actionable
                           ? () => setOpen({ id: p.id, callsign: p.callsign, date: d.date })
                           : undefined}
@@ -883,6 +988,15 @@ export function Matrix() {
                             className={`c${chipState ? ` ${chipState}` : ''}${portionClass}${marks ? ` ${marks}` : ''}`}
                           >
                             {text}
+                          </span>
+                        )}
+                        {lastIn && (
+                          <span
+                            className="polast"
+                            data-testid={`polast-${p.id}`}
+                            title={`${p.callsign} posts out ${addDays(p.to!, 1)} — this is their last day in the squadron`}
+                          >
+                            PO
                           </span>
                         )}
                       </td>
@@ -957,6 +1071,12 @@ export function Matrix() {
         <PostOutSheet
           callsign={open.callsign}
           date={open.date}
+          /* openPostedOut already proves `to` is set — a greyed day is a day
+             AFTER it. The sheet talks in the PO date (first day gone), which
+             is the day after the stored last-day-in. */
+          poFrom={addDays(openPerson!.to!, 1)}
+          archive={openPerson!.poArchive === true}
+          onChange={(from, archive) => setPostOut(open.id, from, archive)}
           onUndo={() => { setPostOut(open.id, null); close() }}
           onClose={close}
         />
@@ -1017,10 +1137,13 @@ export function Matrix() {
           date={open.date}
           current={grid[open.id]?.[open.date] ?? ''}
           dates={dates}
-          /* Admin-only: post this person out from this day (owner, 18 Aug 26).
-             The store sets their posting-out date; the greyed boxes and the
-             manpower exclusion follow from it. */
-          onPostOut={role === 'admin' ? () => { setPostOut(open.id, open.date); close() } : undefined}
+          /* Admin-only: post this person out (owner, 18 Aug 26; any date and
+             the archive switch, 19 Aug 26). The store sets their posting-out
+             date; the greyed boxes and the manpower exclusion follow from it,
+             and sync.ts's auto-archive pass reads the switch. */
+          onPostOut={role === 'admin'
+            ? (from, archive) => { setPostOut(open.id, from, archive); close() }
+            : undefined}
           /* Medical is assigned, not bid: only management marks it here.
              Members file theirs on Raptor's Inputs page, which is also the
              normal path once bidding has closed. */

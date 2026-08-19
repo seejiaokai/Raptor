@@ -345,6 +345,22 @@ describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
     expect(getState().people.some(p => p.id === AIRID)).toBe(false)
   })
 
+  it('an archived body WITH a posting-out window is kept — the war still owns their history (19 Aug 26)', () => {
+    ;(PEOPLE as any)[AIRID] = { cs: 'Testir', seat: 'FCP', q: 'IR' }
+    raptorNotify()
+    setRole('admin')
+    setPostOut(AIRID, '2026-06-01', false)
+    // The Quals ✕ (or the auto-archive pass) takes them out of the projection,
+    // but a posted-out person's past months are still the war's record — the
+    // month-window row filter is what hides them from the months after.
+    ;(PEOPLE as any)[AIRID].archived = true
+    raptorNotify()
+    const kept = getState().people.find(p => p.id === AIRID)
+    expect(kept).toBeTruthy()
+    expect(kept!.to).toBe('2026-05-31')
+    expect(kept!.poArchive).toBe(false)
+  })
+
   it('posting-out survives a re-projection that rewrites the roster', () => {
     // Post one person out, then force a rewrite by changing a DIFFERENT person
     // in Raptor. The post-out window is Leave War's own and must be preserved.
@@ -352,11 +368,13 @@ describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
     ;(PEOPLE as any)[AIRID] = { cs: 'Testir', seat: 'FCP', q: 'IR' }
     raptorNotify()
     const other = getState().people.find(p => !p.pers && p.id !== AIRID)!
-    setPostOut(other.id, '2026-06-01')
+    setPostOut(other.id, '2026-06-01', false)
     expect(getState().people.find(p => p.id === other.id)!.to).toBe('2026-05-31')
     // a roster-visible change elsewhere forces reprojectRoster to write
     ;(PEOPLE as any)[AIRID].sxo = true
     raptorNotify()
     expect(getState().people.find(p => p.id === other.id)!.to).toBe('2026-05-31')
+    // the archive choice is Leave War's own alongside the window — preserved too
+    expect(getState().people.find(p => p.id === other.id)!.poArchive).toBe(false)
   })
 })
