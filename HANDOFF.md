@@ -25,7 +25,8 @@ it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
 **Last recorded green baseline** (the board text-box alignment + wrapping
-batch, 20 Aug 26 — all six gates watched this session):
+batch AND the Leave War frozen-header scroll fix, 20 Aug 26 — all six gates
+watched this session):
 
 | gate | reading |
 |---|---|
@@ -300,6 +301,32 @@ has its own e2e DOM band (29000), measured-first.
   (mirror→grid, for a drag on the frozen strip) is unchanged and the guards
   keep the two from fighting. Not measurable headless (no kinetic scroll — the
   e2e proves tracking + alignment, a real phone proves the smoothness).
+  **THE PUMP WAS NOT THE PROBLEM, AND THE THIRD REPORT (owner, 20 Aug 26 —
+  the frozen bar "lags visually slightly left and right and also it stutters")
+  FOUND WHAT WAS.** The pump was being STARVED, not running too slowly.
+  `Matrix`'s month-strip readout held its answer in React STATE, and this
+  component renders the whole ~25,000-node grid — so every month boundary a
+  sideways scroll crossed re-rendered all of it to move one button highlight,
+  and no rAF loop can track anything inside a 129ms long task. Measured over
+  five PAIRED 120-frame drags with the header frozen, alternating the two
+  builds in one browser session to cancel machine drift: main-thread blocking
+  1573ms → 680ms, long tasks 20 → 7, worst frozen frame 129ms → 69ms,
+  90th-percentile frame gap 86ms → 42ms — the two sets of five do not overlap.
+  The readout is a REF now, painted onto the twelve buttons by hand
+  (`inViewRef`/`paintInView` in Matrix.tsx), and the geometry it needs is
+  cached in content space (`stripGeoRef`) rather than re-measured live. That
+  second half was measured as roughly NEUTRAL on its own; it is kept because
+  it takes 15 `querySelector` searches and 16 forced layout reads off every
+  scroll event, not because it moved the number.
+  **A CAUTION FOR THE NEXT ATTEMPT — single readings here are worthless.** One
+  unpaired A/B said the cached geometry alone was worth 82% of the blocking; a
+  proper paired run put it at ~3%, the gap being noise plus the fact that the
+  first test had also disabled the setState. Alternate the two builds in one
+  session, five trials each, compare medians — the same discipline
+  `docs/probe-sweep.md` already demands of the perf timings. And the thing
+  that is STILL not measurable here is the smoothness itself: headless
+  Chromium has no kinetic scroll, so the numbers above are main-thread cost,
+  which is the cause; only a real phone can confirm the effect.
   (3) **A month BRACKET row** (`tr.mbrak` in the same `.mxhead` tbody): one
   open-topped accent box per month spanning exactly its days, label sticky
   just clear of the frozen columns. Derived from the loaded days, so a
@@ -1572,6 +1599,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/state/demosans.test.ts` | The demo SANS seed (14 Aug 26) — shape, idempotency (`initStore()` boots twice against the same `INPUTS` array), the zero-`SANS_AVAIL`-warning proof against every seed record's own padded commitment, and the rendered card grid. |
 | `src/ui/pubsweep.test.tsx` | The comprehensive publishing sweep (16 Aug 26, 28 tests) — scenario by scenario, asserting what the edit week, the board's publish strip and the view page each show: lifecycle, edit-after-publish, edit-and-revert across key families, structural round trips netting out, drafts-on-published-day rebase (including rebase-against-current-AL), load-onto-working-copy leaving `SCHED.cur` alone, reopen → re-publish, unpublish, and week-vs-board deep-equal agreement. Finding a live bug (the time-respelling pending mark) is what this file is FOR — keep extending it when publishing behaviour changes. |
 | `src/ui/boardaddinput.test.tsx` | The board's **+ Add** input (Aug 26, 11 tests) — the button renders on a live Personal Inputs / Unavailable panel and not on a read-only one, `commitNewInput` lands a row on the open day (and refuses a malformed draft), the dialog opens in its `_new` shape (no Delete, "Add", panel-suited default type), the whole click-fill-Add gesture paints the new row under the panel, Cancel adds nothing, and a member is refused at the `routeClick` handler even with a hand-made button. |
+| `src/leavewar/ui/monthstrip.test.tsx` | The month readout (extended 20 Aug 26). Its `layoutYear` helper now simulates a scroll the way a BROWSER does — the columns hold still and `scrollLeft` moves over them — because the readout reads cached content-space geometry instead of re-measuring every rectangle on every scroll event. A test that leaves `scrollLeft` at zero is testing a scroll that never happened. Also pins that an unrelated re-render does not blank the highlight, with a note on what that test does NOT catch. |
 | `src/ui/boardwrap.test.tsx` | The board's text boxes wrap and grow (20 Aug 26, 8 tests) — every remarks box and every name/role box is a `<textarea>`, every TIME cell is still an `<input>` (the deliberate exclusion, pinned so a later pass does not "finish the job"), a value round-trips through textarea content unchanged (the leading-newline trick), and Enter still COMMITS while Shift+Enter is left alone and Escape restores. jsdom reports every rect 0×0, so the box actually GROWING — and a long unbroken word breaking rather than overflowing — is measured in `e2e/geometry.spec.ts` instead. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |

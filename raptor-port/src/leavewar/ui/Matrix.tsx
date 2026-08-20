@@ -338,7 +338,41 @@ export function Matrix() {
   // Which month the grid is showing, so the strip says where you ARE and not
   // only where you can go. Held as state rather than derived during render
   // because it is a fact about scroll position, which no render sees.
-  const [inView, setInView] = useState<string | null>(null)
+  // WHICH MONTH IS SHOWING — held in a ref and painted onto the buttons by
+  // hand, NOT in React state (20 Aug 26). It was `useState`, and because this
+  // component renders the whole ~25,000-node grid, every month boundary a
+  // scroll crossed re-rendered all of it to move one highlight. Measured over
+  // five paired 120-frame drags across the year, alternating in one browser
+  // session to cancel machine drift: with the setState, 1437ms of main-thread
+  // blocking, 18 long tasks, worst frozen frame 120ms; without it, 581ms, 6
+  // tasks, 64ms — no overlap between the two sets of five. That re-render is
+  // the "stuttery, lags the grid" sideways scroll the owner has now reported
+  // three times, and it is why the previous two fixes did not land: the rAF
+  // pump added on 19 Aug 26 was being starved by this, not running too slowly.
+  //
+  // Twelve class toggles cost nothing and touch no React tree, so the readout
+  // stays live on every scroll event as it must ("the strip has to say where
+  // you ARE while you move"). The ref is still the source of truth the render
+  // below reads, so a re-render from any OTHER cause repaints the right
+  // button rather than dropping the highlight.
+  const inViewRef = useRef<string | null>(null)
+  const monthsRef = useRef<HTMLDivElement>(null)
+  const paintInView = (v: string | null) => {
+    if (v === inViewRef.current) return
+    inViewRef.current = v
+    const box = monthsRef.current
+    if (!box) return
+    // `.months` holds month buttons and nothing else — the zoom control is
+    // deliberately outside it (see the comment at that markup).
+    const kids = box.children
+    for (let i = 0; i < kids.length && i < months.length; i++) {
+      const el = kids[i] as HTMLElement
+      const on = months[i]!.label === v
+      el.classList.toggle('on', on)
+      if (on) el.setAttribute('aria-current', 'true')
+      else el.removeAttribute('aria-current')
+    }
+  }
 
   // The visible month WINDOW — 'yyyy-mm|yyyy-mm', first and last months with
   // any day column on screen (owner, 19 Aug 26: a posted-out person's row
@@ -601,14 +635,84 @@ export function Matrix() {
     return { wrap, spans, end, viewL, viewR }
   }
 
-  // The month-strip readout — which month the grid is showing. Cheap (one
-  // setState of a string, and React bails when it is unchanged), so it runs
-  // LIVE on every scroll event: the strip has to say where you ARE while you
-  // move, not lag behind at rest.
+  // ---- the month-strip readout, and why it is CACHED (20 Aug 26) ----------
+  //
+  // This runs on every scroll event, and until now it called readSpans() each
+  // time — 15 `querySelector` searches across a 25,000-node grid plus 16
+  // `getBoundingClientRect` reads, every one of which forces a synchronous
+  // layout flush. It was described here as "cheap". It was not: measured with
+  // the strip readout switched off and back on again over an identical
+  // 120-frame drag across the year, it accounted for 82% of ALL main-thread
+  // blocking during a scroll — 2932ms of blocking down to 519ms, 27 long
+  // tasks down to 5, and the worst single frozen frame 503ms down to 65ms.
+  // That is the "stuttery, laggy" sideways scroll the owner reported three
+  // times; the rAF pump added on 19 Aug 26 could not fix it, because the
+  // pump was being starved by this, not running too slowly.
+  //
+  // The fix is that NONE of that measuring has to happen while scrolling. A
+  // month's edges move only when the COLUMNS change — a different war, a zoom
+  // step, a row-set reflow, a resize. Their offsets within the scroller's
+  // content are otherwise constant, and scrolling just slides the window over
+  // them. So the geometry is measured once per layout change into
+  // `stripGeoRef`, in CONTENT space (offsets from the start of the scrollable
+  // content, not from the viewport), and a scroll event then only has to read
+  // `scrollLeft` and do arithmetic. monthInView is documented as working in
+  // "whatever one coordinate space the caller is using", which is what makes
+  // content space a drop-in.
+  //
+  // measureWindow below is deliberately NOT converted: it runs at scroll REST,
+  // where its cost is invisible, and its anchor correction works in viewport
+  // coordinates that would have to be converted in lockstep with it.
+  const stripGeoRef = useRef<{ spans: { label: string; left: number; right: number }[]; frozen: number; client: number } | null>(null)
+
+  const measureStripGeo = () => {
+    const wrap = wrapRef.current
+    if (!wrap || months.length === 0 || dates.length === 0) { stripGeoRef.current = null; return }
+    const wr = wrap.getBoundingClientRect()
+    const sl = wrap.scrollLeft
+    // viewport px -> content px: constant across any scroll position
+    const contentL = (el: HTMLElement) => el.getBoundingClientRect().left - wr.left + sl
+    const head = (d: string) => wrap.querySelector<HTMLElement>(`[data-testid="head-${d}"]`)
+    const firsts = months.map(m => head(m.first))
+    const lastHead = head(dates[dates.length - 1]!)
+    if (!lastHead || firsts.some(e => !e)) { stripGeoRef.current = null; return }
+    const edges = firsts.map(e => contentL(e!))
+    const end = lastHead.getBoundingClientRect().right - wr.left + sl
+    // jsdom reports every rect 0x0; a zero-width geometry would make every
+    // month's overlap 0 and the readout permanently null, so leave the cache
+    // empty and let measureStrip no-op exactly as it did before.
+    if (end <= edges[0]!) { stripGeoRef.current = null; return }
+    stripGeoRef.current = {
+      spans: months.map((m, i) => ({
+        label: m.label,
+        left: edges[i]!,
+        right: i + 1 < edges.length ? edges[i + 1]! : end,
+      })),
+      frozen: frozenWidth(wrap),
+      // the wrapper's own rect, not clientWidth: every other edge above is
+      // measured from a rect, and mixing the two invites an off-by-a-scrollbar
+      client: wr.width,
+    }
+  }
+
+  // The hot path: no DOM search, no rect read, no forced layout — one
+  // scrollLeft read and a walk over twelve cached numbers. React still bails
+  // when the answer is unchanged, so a scroll inside one month re-renders
+  // nothing at all.
   const measureStrip = () => {
-    const m = readSpans()
-    if (!m) return
-    setInView(monthInView(m.spans, m.viewL, m.viewR))
+    const wrap = wrapRef.current
+    if (!wrap) return
+    // SELF-HEALING. The cache is normally filled by the layout effects below,
+    // but those run at mount, and a grid that has no layout yet at that moment
+    // (webfonts still loading, the tab opened in the background) would leave
+    // the cache empty and the readout dead until the next zoom, resize or war
+    // change. Filling it on first use costs one measurement in that case and
+    // nothing at all in the normal one, where the effects got there first.
+    if (!stripGeoRef.current) measureStripGeo()
+    const g = stripGeoRef.current
+    if (!g) return
+    const sl = wrap.scrollLeft
+    paintInView(monthInView(g.spans, sl + g.frozen, sl + g.client))
   }
 
   // The row WINDOW for the roster filter — the expensive half. Changing it
@@ -681,10 +785,27 @@ export function Matrix() {
   // Both halves measured when the war changes, since that rebuilds every
   // column — and NOT mid-fling, so the window half runs directly here.
   useEffect(() => {
+    measureStripGeo()
     measureStrip()
     measureWindow()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id, dates.length])
+
+  // Everything else that moves a column edge, and so invalidates the cached
+  // strip geometry: a zoom step (every width changes), a row-set reflow (the
+  // hidden rows' chips were widening columns — the very thing anchorRef exists
+  // to compensate), and a viewport resize (the wrapper's own width and the
+  // frozen columns both change). Layout effect so the re-measure lands in the
+  // same frame as the change that caused it, before any scroll can read a
+  // stale cache. The strip is re-read straight after, so the readout is right
+  // immediately rather than at the next scroll event.
+  useLayoutEffect(() => {
+    const remeasure = () => { measureStripGeo(); measureStrip() }
+    remeasure()
+    window.addEventListener('resize', remeasure)
+    return () => window.removeEventListener('resize', remeasure)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [zoom, visWindow, period.id, dates.length])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
@@ -918,13 +1039,13 @@ export function Matrix() {
               <tr>
                 <td className="mstick" colSpan={2} ref={mstickRef} style={stripH ? { height: stripH } : undefined}>
                   <div className="mstrow" ref={mstrowRef}>
-                    <div className="months" data-testid="month-strip">
+                    <div className="months" data-testid="month-strip" ref={monthsRef}>
                       {months.map(m => (
                         <button
                           key={m.first}
-                          className={`mjump${m.label === inView ? ' on' : ''}`}
+                          className={`mjump${m.label === inViewRef.current ? ' on' : ''}`}
                           data-testid={`month-${m.label.replace(' ', '-')}`}
-                          aria-current={m.label === inView ? 'true' : undefined}
+                          aria-current={m.label === inViewRef.current ? 'true' : undefined}
                           title={`Jump to ${m.label}`}
                           onClick={() => jumpTo(m.first)}
                         >
