@@ -24,17 +24,19 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the custom manning counters batch,
-19 Aug 26 — all six gates watched this session):
+**Last recorded green baseline** (the Leave War counter phone-fix + counting
+sweep, 20 Aug 26 — the four CI gates watched this session; `probes:adapted`
+and `perf` carried from the 19 Aug run, unchanged because the change was Leave
+War only and the Raptor scheduler they measure was untouched):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2672 across 144 files — two vitest projects: raptor (1748) + leavewar (924) |
+| `npm test` | 2676 across 144 files — two vitest projects: raptor (1748) + leavewar (928) |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 297 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
-| `probes:adapted` | 6/6 |
-| `perf` | 4/4 |
+| `npm run test:e2e` | 299 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `probes:adapted` | 6/6 (carried) |
+| `perf` | 4/4 (carried) |
 
 DOM measures at that baseline: week **3743** under a 4000 ceiling, board
 **847** under 960 (three context-bound add buttons, net +1 node over the old
