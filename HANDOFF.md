@@ -31,17 +31,21 @@ work below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2685 across 145 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2689 across 146 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 301 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `npm run test:e2e` | 303 passed / 11 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
 | `perf` | 4/4 |
 
 The counts reconcile against the counter session's own reading directly
 above what this replaced (2676 across 144 files, 299 e2e): +8 tests and +1
 file for `boardwrap.test.tsx`, +1 for the month-strip re-render guard, and
-+2 e2e for the remarks alignment and growth measurements.
++2 e2e for the remarks alignment and growth measurements (→ 2685 / 145 / 301);
+then +4 tests and +1 file for `frozencols.test.tsx` (the frozen-column
+overlay), and +2 e2e (both phone-only, so +2 desktop skips) for the overlay's
+alignment and its scrolled callsign tap (→ 2689 / 146 / 303). The reverted
+roster column-virtualisation left no tests behind.
 
 DOM measures at that baseline: week **3743** under a 4000 ceiling, board
 **847** under 960 (three context-bound add buttons, net +1 node over the old
