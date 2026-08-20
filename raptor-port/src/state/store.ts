@@ -122,6 +122,7 @@ export function resetSession(s: any) {
      scrolls to and a stale carry would immediately undo. */
   view.setCarryDay(null)
   view.setHistMode(false)         // the board's History toggle is a per-session view mode
+  view.setLateMark(true)          // the LATE marks come back on for the next session, like every other view mode
   /* the Leave War page's role rides the Raptor session: an admin login is a
      Leave War admin, everyone else (and a logout) is a member. This is the
      ONE production writer of that role — the standalone app's own toggle was

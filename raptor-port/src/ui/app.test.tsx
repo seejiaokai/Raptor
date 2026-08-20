@@ -37,9 +37,15 @@ describe('the app shell', () => {
     expect(host.querySelectorAll('#vWeek .allhands').length).toBeGreaterThanOrEqual(4)
   })
 
-  it('the banner reads DRAFT and the pills carry the counts', () => {
+  /* The three week-wide count pills left the topbar on 20 Aug 26 (owner: "what
+     is the point of having warning, advisory and note at the top. Just remove
+     it"). Their absence is pinned, not just untested: every day already leads
+     with its own issue count, and a later "the topbar looks empty" pass must
+     not put the sum back. */
+  it('the banner reads DRAFT, and the topbar carries no warning count pills', () => {
     expect(host.querySelector('#vBanner')!.textContent).toContain('DRAFT')
-    expect(+(host.querySelector('#nHard')!.textContent || 0)).toBeGreaterThan(0)
+    for (const id of ['#warnBtn', '#warnBtn2', '#warnBtn3', '#nHard', '#nAdv', '#nNote'])
+      expect(host.querySelector(id), `${id} is gone from the topbar`).toBeNull()
   })
 
   it('the edit tab is admin-only', async () => {

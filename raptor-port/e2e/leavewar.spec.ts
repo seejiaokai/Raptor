@@ -1670,9 +1670,23 @@ test('every month in the strip can be reached and lights itself', async ({ page 
   // Walked rather than sampled: a reading that worked for one month and not
   // for the boundary months would be worth knowing about, and December is the
   // one whose right edge is computed differently from all the others.
+  //
+  // SETTLE BETWEEN JUMPS (20 Aug 26 — this went red on main, not just here).
+  // `expect.poll` passes the instant the strip lights up, which is while the
+  // grid is still moving and before the roster's scroll-rest reflow (debounced
+  // 120ms) has run. Tapping the next month into that window raced the reflow
+  // and the strip ended up reading the month you LEFT — reproducible alone on
+  // main's tip, and load-sensitive under two workers. What this test is for is
+  // COVERAGE — that every month, boundary months included, can be reached and
+  // lights itself — so it waits for the grid to be still between jumps and
+  // tests that. A product fix was attempted first (dropping the pending anchor
+  // correction on an explicit jump) and REVERTED: with it disabled the same
+  // scenario still passes, so it was not what the failure was about, and a
+  // change nothing can be shown to need does not belong in the file.
   for (const m of ['MAR', 'JUN', 'DEC']) {
     await page.locator(`[data-testid="month-${m}"]`).click()
     await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual([m])
+    await settleGrid(page)
   }
 })
 

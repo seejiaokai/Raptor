@@ -13,7 +13,7 @@ import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, s
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, VWORK, CURPAGE, restArmed } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, VWORK, CURPAGE, LATEMARK, restArmed } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -641,8 +641,17 @@ export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Fl
    across all of them — the one exception is the board's promoted ground row,
    whose remarks cell is a bare <input> with nowhere to nest a chip; it keeps
    its amber row edge (see lateRowCls). */
+/* THE SWITCH IS READ HERE, ONCE PER MARK (owner, 20 Aug 26 — "give the
+   scheduler board the option to remove late input tags"). All four helpers
+   below funnel through `isLateInput`, so gating them here covers every
+   schedule surface at a stroke: the board's inputs bands and its Personal
+   Inputs / Unavailable panels (via `sbiRmk`, which calls `lateTag`), the edit
+   week, the view-only week and the board's promoted ground row. The Inputs
+   page keeps its own mark — see the note beside LATEMARK in state/view.ts.
+   Gated at the UI, never in the engine: `isLateInput` goes on answering, and
+   the mark was never a rule (§Stable decisions). */
 export function lateTag(inp:any){
-  return (inp&&isLateInput(inp))?`<span class="latetag" title="${esc(lateNote(inp))}">LATE</span>`:'';}
+  return (LATEMARK&&inp&&isLateInput(inp))?`<span class="latetag" title="${esc(lateNote(inp))}">LATE</span>`:'';}
 /* the same mark on a row that CAME from an input — the ground row acceptInput
    builds, which carries the source input's key in `src`. This is what carries
    the mark onto the view-only page for a personal input: accepting it is the
@@ -660,8 +669,8 @@ export function lateTagOf(o:any){return lateTag(srcInput(o));}
    inset amber edge, the .redbox idiom) plus the note in its tooltip: no extra
    node, no extra grid item, nothing to knock out of register. The row's own
    INPUT still carries the full chip in the Personal Inputs panel above it. */
-export function lateRowCls(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp))?' lateinp':'';}
-export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp))?` title="${esc(lateNote(inp))}"`:'';}
+export function lateRowCls(o:any){const inp=srcInput(o); return (LATEMARK&&inp&&isLateInput(inp))?' lateinp':'';}
+export function lateRowTitle(o:any){const inp=srcInput(o); return (LATEMARK&&inp&&isLateInput(inp))?` title="${esc(lateNote(inp))}"`:'';}
 /* =====================================================================
    ONE DAY'S MARKUP
    Extracted verbatim from renderSchedule's DAYS.map body so a single day can be

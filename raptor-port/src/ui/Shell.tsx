@@ -3,7 +3,6 @@
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
 import { useEffect, useMemo, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
-import { WARN } from '../engine/validate'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { WEEKS, CURWEEK } from '../engine/waves'
@@ -11,7 +10,7 @@ import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pen
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { resetSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, openWarns, CURPAGE, setDayPreview, toggleViewWork } from '../state/view'
+import { HLSET, setSearch, CURPAGE, setDayPreview, toggleViewWork } from '../state/view'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
 import { signOf } from '../engine/publish'
@@ -166,12 +165,9 @@ export function Shell() {
      clean banner until someone happened to open Logic" (audit2 probe #6) */
   useEffect(() => { document.body.classList.toggle('page-rules-off', !!rulesOffCount()) })
   /* NO validate() here: the reference never validates during a repaint — the
-     banner and pills read WARN as the last mutation left it (initStore and
-     every mutation path have already validated), and a second engine pass per
-     paint is what blew the phone budget */
-  const hard = WARN.all.filter((x: any) => x.sev === 'hard').length
-  const note = WARN.all.filter((x: any) => x.sev === 'note').length
-  const adv = WARN.all.length - hard - note
+     banner reads WARN as the last mutation left it (initStore and every
+     mutation path have already validated), and a second engine pass per paint
+     is what blew the phone budget */
   const b = banner()
   const admin = SESSION && SESSION.role === 'admin'
   const nav = (p: string) => { setPage(p); notify() }
@@ -226,9 +222,16 @@ export function Shell() {
           </div>
           <button className={'fastsync' + (fast ? ' on' : '')} id="fastSync" title="Toggle 1-second sync (for publishing / meetings)"
             onClick={() => setFast(f => !f)}><span className="dot"></span><span id="syncLbl">{fast ? 'Sync · 1 s' : 'Sync · slow'}</span></button>
-          <button className="pillbtn hard" id="warnBtn" onClick={() => { openWarns('hard'); notify() }}><span className="dot"></span><span id="nHard">{hard}</span> warning</button>
-          <button className="pillbtn adv" id="warnBtn2" onClick={() => { openWarns('adv'); notify() }}><span className="dot"></span><span id="nAdv">{adv}</span> advisory</button>
-          <button className="pillbtn note" id="warnBtn3" onClick={() => { openWarns('note'); notify() }}><span className="dot"></span><span id="nNote">{note}</span> note</button>
+          {/* THE THREE WEEK-WIDE COUNT PILLS ARE GONE (owner, 20 Aug 26 — "what's
+              the point of having warning, advisory and note at the top. Just
+              remove it"). They counted the whole week and expanded every day
+              carrying that severity; every day already leads with its own
+              "N issues · N warning · tap to review" bar, which is the number a
+              reader can act on, next to the day it belongs to. Three pills that
+              restated the sum bought a crowded phone bar and a second, blunter
+              route to the same lists. `openWarns` (state/view.ts) is left in
+              place — it is mirrored on the probe bridge and is the one call a
+              future "expand everything" control would use. */}
           <button className="abtn" id="insightBtn" title="Week insights" onClick={() => { setInsights(true); notify() }}>Insights</button>
           {/* resetSession (state/store.ts) is the one session-change path: it clears
               SBDAY itself, plus CURPAGE and the leftover selection/highlight/preview
@@ -238,7 +241,7 @@ export function Shell() {
           <button className="abtn ghost" id="logout" onClick={() => { setUserModal(false); resetSession(null); notify() }}>Logout</button>
         </div>
       </div>
-  ), [page, admin, ME, hard, adv, note, fast])
+  ), [page, admin, ME, fast])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

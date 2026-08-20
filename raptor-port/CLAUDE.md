@@ -515,8 +515,31 @@ subscribers.
   at the END of the remark saved nothing (759), and turning off mid-word
   breaking saved nothing (757). The badge's WIDTH is the whole cost, not its
   position.
+  **It CAN be switched off now, and that is a display switch, not a rule**
+  (owner, 20 Aug 26 — "can u give the scheduler board the option to remove late
+  input tags?"). "Hide LATE marks" in the board's Personal Inputs header,
+  admin-only, session-scoped. Three parts of the shape are decided, not
+  incidental: it is a SWITCH rather than a per-badge delete (clearing marks one
+  at a time needs a forgiven-input registry and a way back for a scheduler who
+  cleared the wrong one — pressing it again IS the way back); the gate is at
+  the four printers in `ui/html.ts`, so `isLateInput` goes on answering and the
+  mark stays a mark; and the **Inputs page keeps printing it**, because that
+  page is the paperwork record and quieting a busy board is not the same as
+  erasing when an input was filed. Don't move the gate into the engine, and
+  don't "finish the job" by silencing the Inputs page.
   Rules: `docs/engine-rules.md` §The late-input mark.
-  Placement: `docs/ui-contracts.md` §The late-input mark on screen.
+  Placement: `docs/ui-contracts.md` §The late-input mark on screen, §The LATE
+  marks can be switched off.
+- **No warning / advisory / note counts in the top bar** (owner, 20 Aug 26 —
+  "what's the point of having warning, advisory and note at the top. Just
+  remove it"). The three `pillbtn` counts are gone. Every day already leads
+  with its own "N issues · N warning · tap to review", which is the number a
+  reader can act on and it sits beside the day it belongs to; the pills
+  restated the week's sum on the phone's tightest bar. `openWarns`
+  (`state/view.ts`) is KEPT with no caller on purpose — probe-bridge mirrors
+  it, it is reference behaviour, and it is what any future "expand everything"
+  control would call. Their absence is pinned in `app.test.tsx`: do not put the
+  sum back as part of a "the top bar looks empty" pass.
 - **Nothing on the board re-orders itself** (owner, 10 Aug 26 — "prevent a
   situation when the scheduler types and the line jumps"). Typing a role into
   a blank duty cell used to reposition the whole block; that is gone. Auto

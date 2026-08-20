@@ -2818,3 +2818,122 @@ layout), because pinning a value that does nothing there would be theatre.
 the week on the board's day, so a week parked on Wednesday and a board opened
 on Monday comes back to Monday. That is the day-carry behaviour, it predates
 this, and it is unchanged — measured on both builds.
+
+## The top bar and the filters strip are OPAQUE (owner, 20 Aug 26)
+
+"The top bar on view only schedule has some leak to the left. U should make it
+opaque."
+
+Both strips are **horizontal scrollers on a phone with something pinned inside
+them**, which is the shape that leaks:
+
+- `.topbar` — one nowrap row that scrolls sideways, with the burger and the
+  mark `position: sticky; left: 0` over it.
+- `#page-viewsched .filters` — the highlight chips, with the HIGHLIGHT label
+  pinned left and (since the same day) the search box pinned right.
+
+Three ways they leaked, all now closed, and all three are the checklist for
+**any new pin over a scroller**:
+
+1. **The pin's background was not opaque.** The bar painted a translucent
+   gradient over an 18px backdrop blur, and the mark's own background was a
+   gradient that FADED TO TRANSPARENT on its right — a soft edge by design that
+   reads as a bleed the moment a control passes under it. The bar now paints
+   `--topbar-a` → `--topbar-b`, the old translucent pair composited over
+   `--bg`, so it looks the same where it always sat and stops showing what
+   passes behind. The sticky lead paints the same two stops, from the same
+   variables, so the pin and the bar cannot drift apart.
+2. **The pin was not as TALL as the row.** The HIGHLIGHT label was opaque and
+   eleven pixels high — its own line box — inside a ~30px row, so chips showed
+   above and below the word. `align-self: stretch` plus `display:flex;
+   align-items:center`.
+3. **Nothing painted the gutter the pin sits against.** A pin at `left: 0`
+   stops at the scroller's padding edge, and content scrolls through the
+   padding beside it (12px on the top bar and the filters strip; 5px between
+   the burger and the mark's 41px offset). Painted by a flat left box-shadow in
+   the strip's colour — flat rather than the gradient because a 6–12px slice of
+   a ramp spanning six RGB points cannot show a seam, and a pseudo-element per
+   pin is two more nodes on the phone's tightest bars.
+
+## A small search on the phone's view-only schedule (owner, 20 Aug 26)
+
+"We should have a small search bar too in view schedule at the top."
+
+`#searchV` was always in the markup; `#page-viewsched .filters .right` was
+`display: none` under the breakpoint, so on a phone the one control that
+answers "where is this man flying this week" could not be reached at all.
+
+It is the SAME box, not a new one, and it does **not** get its own row — a row
+of chrome is 40px of schedule on a device that has none to spare. It is pinned
+to the filters strip's right edge (`position: sticky; right: 0`) the way
+HIGHLIGHT is pinned to its left, with the chips scrolling between the two: 96px
+of input, ~142px of a 390px screen. Opaque and full-height by the rules above.
+
+The desktop and the Edit Schedule page are untouched — they show the same box
+in its ordinary place at the end of the strip.
+
+## No warning / advisory / note counts in the top bar (owner, 20 Aug 26)
+
+"What's the point of having warning, advisory and note at the top. Just remove
+it."
+
+The three `pillbtn` counts are gone. Every day already leads with its own
+"N issues · N warning · tap to review" bar, which is the number a reader can
+act on, next to the day it belongs to; the pills restated the week's sum and
+gave a second, blunter route into the same lists.
+
+`openWarns` (`state/view.ts`) is deliberately KEPT with no caller: it is
+mirrored on the probe bridge, it is reference behaviour (tfin: blocking pill
+expands days), and it is the call any future "expand everything" control would
+make. `interact.test.tsx` drives it directly now, and `app.test.tsx` pins that
+the buttons are absent — so a later "the top bar looks empty" pass does not put
+the sum back.
+
+## The LATE marks can be switched off (owner, 20 Aug 26)
+
+"Can u give the scheduler board the option to remove late input tags?"
+
+**"Hide LATE marks"** sits in the board's **Personal Inputs** panel header,
+beside where the marks are read. Not on the board's top bar: that bar is at its
+measured limit and nothing joins it without something leaving (CLAUDE.md
+§Stable decisions), which is a poor trade for a preference.
+
+- **A switch, not a per-badge delete.** Clearing marks one at a time needs a
+  forgiven-input registry and, worse, a way back for a scheduler who cleared
+  the wrong one. Pressing it again IS the way back.
+- **The label says what pressing it DOES** ("Hide LATE marks" / "Show LATE
+  marks"), because the marks themselves are the state and they are right there.
+- **It covers every schedule surface at once** — board, edit week, view-only —
+  because all four printers in `ui/html.ts` read the flag once each. The
+  tooltip says so, since the button sits on one panel but governs all of them.
+- **The Inputs page keeps its own mark.** That page is the paperwork record.
+- **Admin only**, at the write path (`toggleLateMark` refuses a member;
+  `routeClick` re-checks and toast-refuses a hand-made button), and
+  session-scoped like the board's History mode — `resetSession` puts it back on
+  so the next user does not inherit a quietly silenced board.
+
+## Week Insights: work hours (owner, 20 Aug 26)
+
+"Perhaps have a section to show everyone's work hours in the insights for the
+week."
+
+A bar per person, longest first, directly under the flying load — the two
+answer the same question from opposite ends, and the man flying the most
+sorties is regularly not the man at work the longest (a duty stander flies
+nothing and is there all day).
+
+- **The heading states the definition** — "report to debrief" — because "work
+  hours" otherwise reads as hours airborne. It is report (the published in-time
+  when the wave has one, else T/O − reportLead) through last landing + the
+  debrief pad for a flying day, and start → end for everything else.
+- **Everyone with a scheduled hour, not a top 12.** The ask was everyone's, the
+  number that matters may be at the bottom, and the modal already scrolls.
+- **The same span the long-work-day note uses** — `validate.ts:workSpan`. One
+  definition, two readers (`docs/feature-impact.md` §drift-seams).
+- **The bars actually draw now.** `.ibar .fill` is a `<span>` carrying
+  `height:100%` and an inline width percentage, and a span is `display:inline`
+  — where neither applies. It measured 0×0: the flying-load bars had been an
+  empty track since they shipped. jsdom cannot see this (every rect is 0×0
+  there), so it is gated in `e2e/geometry.spec.ts`, which also pins that no
+  value is clipped by its own cell — `.v` went 22px to 42px, because "25h35"
+  needs 33.
