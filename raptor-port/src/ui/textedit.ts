@@ -165,6 +165,29 @@ export function routeKeyDown(e: KeyboardEvent) {
     }
     return
   }
+  /* THE BOARD'S OWN BOXES GET THE SAME TWO KEYS (20 Aug 26). They were plain
+     <input>s until the wrapping pass, and an <input> commits on Enter by
+     itself — firing `change`, which is the board's write path. A <textarea>
+     does not: Enter inserts a line break there, so without this branch the
+     very change that made the boxes wrap would also have made Enter stop
+     saving. Blurring commits through the same `change` the input fired, so
+     the write path is untouched.
+     Escape now restores too, which the board never had — a typed-but-unwanted
+     value could only be undone by retyping it. `data-bfld` restores through
+     `txtGet` (it is a funnel key); `data-ifld` is an INPUT's own field, which
+     has no funnel key, so it is left to blur and let boardChange's own revert
+     branch put the model value back. */
+  const bx = t && t.closest && t.closest('[data-bfld],[data-ifld]') as HTMLElement | null
+  if (bx && (bx as any).tagName === 'TEXTAREA') {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); bx.blur() }
+    else if (e.key === 'Escape') {
+      e.preventDefault()
+      const k = (bx as any).dataset.bfld
+      if (k) { const v = txtGet(k); (bx as any).value = String(v == null ? '' : v) }
+      bx.blur()
+    }
+    return
+  }
   const tx = t && t.closest && t.closest('[data-txt]') as HTMLElement | null
   /* Escape outside a text field puts an armed slot down — the reference's
      global escape hatch (ref 4201), lost in the port. Inside a text field

@@ -104,7 +104,7 @@ describe('B1 — closing the board via setPage must carry the board’s day', ()
    defer, but do not destroy. */
 describe('B2 — a typed value must survive a day scrub', () => {
   it('scrubbing 2 → 5 with an uncommitted remark commits it to the day being left', async () => {
-    const inp = $('#sbBoard input[data-bfld^="fr:2."]') as HTMLInputElement
+    const inp = $('#sbBoard [data-bfld^="fr:2."]') as HTMLInputElement
     expect(inp, 'day 2 renders a flying-line remarks input').toBeTruthy()
     const p = inp.dataset.bfld!
     const before = txtGet(p)

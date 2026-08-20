@@ -2667,6 +2667,41 @@ button.sanscard:hover{border-color:var(--accent)}
 .sb-arow .ppl{display:flex;flex-wrap:wrap;gap:4px;min-height:var(--puck-h)}
 .sb-arow .ppl .seat{display:flex;flex:0 0 auto}
 .sb-arow .ppl .itxt{font-size:10px;color:var(--ink-3)}
+/* ---- every free-text box on the board WRAPS AND GROWS (owner, 20 Aug 26) ----
+   "For all remarks including common programme, can u wrap text? Which means
+   that if the text overflows, the text box will grow vertically. Apply this
+   to all text box as well."
+   These are `<textarea rows="1">` now rather than `<input>` (board-html.ts's
+   boxHTML, which is the ONE place that choice is made) because an `<input>`
+   cannot wrap its value at any width and no CSS makes it — the overflow just
+   scrolls out of sight inside the box, which is the fault being fixed. TIME
+   cells stay `<input>`: `0715` has nothing to wrap, and the guard rails
+   already refuse anything that is not a time. No selector here touches them.
+   `field-sizing:content` is what does the growing — the same mechanism, and
+   the same graceful degradation to a one-line box (never a broken tall one)
+   where it is unsupported, that the scheduler-notes box has used since
+   13 Aug 26. `resize:none` because these sit in dense grid tracks where a
+   drag grip would fight the row; `overflow:hidden` so a growing box never
+   flashes a scrollbar mid-grow; `overflow-wrap:anywhere` so a single long
+   unbroken word breaks instead of running out of the box — the overflow case
+   HANDOFF has carried as open since 12 Aug 26.
+   A textarea takes the UA's MONOSPACE default instead of inheriting, so the
+   prose boxes restate the app font by hand. `.lin`/`.msn` are deliberately
+   NOT in that list: their own rule gives them JetBrains Mono and should keep
+   winning, which it does — this file sets no font on them here. */
+.sb-arow textarea,.sb-line textarea,.sb-psub textarea{
+  field-sizing:content;resize:none;overflow:hidden;white-space:pre-wrap;
+  overflow-wrap:anywhere;display:block;min-height:0}
+.sb-arow textarea.ain,.sb-line textarea.nts,.sb-psub textarea.ain{
+  font-family:'Inter Tight',system-ui,sans-serif}
+/* 12px, and it is a MEASURED number rather than a taste: an <input> at
+   font-size 11px lays its content box out at exactly 12px, so a one-line
+   textarea only keeps the board's resting height byte-identical at that
+   leading. At the browser default (~1.25) every box on the board stood 2px
+   taller and the day grew 6543px→6658px — 115px of scroll bought for rows
+   that are not wrapping at all, which is most of them. Wrapped lines are
+   correspondingly tight; that is the trade and it favours the common case. */
+.sb-arow textarea,.sb-line textarea,.sb-psub textarea{line-height:12px}
 /* the c6r grid — duty / sim / ground rows: Item | Start | End | People | Rmks | ctl.
    Distinct from the prog grid (whose column 2 is Detail), so it carries its own
    modifier instead of bending the shared rule. */
@@ -3165,7 +3200,49 @@ button.sanscard:hover{border-color:var(--accent)}
      and END stayed perfectly legible beside it. The cell tweaks below were
      written for the three-column phone layout, so they were already assuming
      this line existed. */
-  .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:1fr 46px 46px}
+  /* FOUR tracks, not three, so the remarks box can START where the flying
+     line's does (owner, 20 Aug 26 — his screenshot ringed the dead strip
+     between the puck stack and the Rmks box: "extend all remarks to follow
+     where the red line is drawn … aligned with where the live flights
+     remarks extend to"). MEASURED at 390px before the change: a flying
+     line's remarks cell runs 194→348 (154px — its three 46px time tracks
+     plus two 8px gaps, all fixed, so it is 154px right-aligned at EVERY
+     width), while a duty/sim/ground row's ran 250→348 (98px). The 56px
+     difference is the ring.
+     A three-track grid has no boundary at 194, and the 1fr track cannot
+     simply be narrowed — that track is the ROLE/ITEM name on row 1, and
+     crushing it is the exact fault the note above records. So a 50px track
+     is inserted between them and Role is spanned back across the pair:
+     50 + 6 + 46 + 6 + 46 = 154, matching the flying line exactly, while
+     row 1 lays out pixel-identically (Role 28→244, Start 250→296, End
+     302→348 at 390px — verified unchanged after the change).
+     Common Programme is deliberately NOT included (owner: "do this for all
+     except common programme") — `.cprog` keeps its own three-track phone
+     grid and its 98px remarks below.
+     THE ONE COST, measured before/after rather than reasoned about: a puck
+     PAIR is 152px, so a pair plus the 6px gap plus the 154px remarks needs
+     312px of row, and the row has the viewport less 70px of chrome. At
+     390px and up (320px of row) it fits and every row height is byte-identical
+     to before — verified at 390/430/699. Below ~383px it does not, and the
+     People cell wraps its pair one-per-line: at 375px and 360px exactly ONE
+     row of the demo day's 25 grows 98px→117px (+19px on a ~6600px board).
+     That is accepted rather than fixed, because the alternative is a narrower
+     remarks box at those widths, which is the misalignment this change exists
+     to remove. The flying line already squeezes its own seat pair at 360px
+     for the same reason. */
+  .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:1fr 50px 46px 46px}
+  /* Role/Item spans the first pair, so Start and End auto-place into tracks
+     3 and 4 exactly where they sat before.
+     BY POSITION, not by class, and that is load-bearing: every c6r row
+     reserves a leading grip track (see sbInpRow's own note in board-html.ts),
+     so child 2 is always the row's NAME cell — but it is not always the same
+     ELEMENT. A duty/sim/ground row puts a `.ain` role box there; a personal-
+     input row puts its type LABEL there instead. Selecting `.ain` therefore
+     missed the input rows entirely and left their Start box sitting in the
+     50px spacer track, misaligned with the ground programme's rows directly
+     above them — caught by the e2e that pins those two row shapes together,
+     which is exactly why it exists. */
+  .sb-arow.c6r>:nth-child(2),.sb-acols.c6r>:nth-child(2){grid-column:1 / 3}
   .sb-acols.c6r>:nth-child(3){display:revert}
   .sb-acols.c6r>:nth-child(5){display:none}
   /* THE REMARKS BOX RIDES THE PUCKS' ROW, ALIGNED UNDER START (owner, 16 Aug
@@ -3259,9 +3336,25 @@ button.sanscard:hover{border-color:var(--accent)}
 /* the desktop layout keeps its wide People cell — the phone-stack pair cap
    above must not follow the board into .sb-wide */
 .schedboard.sb-wide .sb-arow .ppl{max-width:none}
-.schedboard.sb-wide .sb-acols.c6r,.schedboard.sb-wide .sb-arow.c6r{grid-template-columns:18px 150px 54px 54px 1fr 1fr 92px}
+/* THE TWO FLEXIBLE TRACKS HAVE A FLOOR (20 Aug 26). They were bare `1fr`, and
+   a bare 1fr floors at min-content, not at zero — but these cells hold an
+   input box with `width:100%`, whose min-content is nothing, so on a PHONE
+   showing the desktop layout the pair collapsed to 0px and 14px while the
+   fixed tracks kept their full width. That was survivable while the boxes
+   were <input>s (the text simply overflowed a squashed box), and it stopped
+   being survivable when they became wrapping textareas on the same day: a
+   remark wrapping inside a 14px column turned a 34px row into a 105px one.
+   The floors fix the collapse itself rather than papering over it downstream.
+   Both are well under what a real desktop gives these tracks (296px and 247px
+   at 1500px wide, measured), so nothing changes on an actual desktop. */
+.schedboard.sb-wide .sb-acols.c6r,.schedboard.sb-wide .sb-arow.c6r{grid-template-columns:18px 150px 54px 54px minmax(120px,1fr) minmax(150px,1fr) 92px}
 .schedboard.sb-wide .sb-acols.c6r>:nth-child(5){display:revert}
 .schedboard.sb-wide .sb-arow.c6r .rmkin{grid-column:auto}
+/* the phone's Role-spans-two-tracks pairing (added 20 Aug 26 with the wider
+   remarks) must not follow the board into .sb-wide, where c6r is a seven-track
+   grid and every column stands on its own — same undo as .ppl/.lctl above */
+.schedboard.sb-wide .sb-arow.c6r>:nth-child(2),
+.schedboard.sb-wide .sb-acols.c6r>:nth-child(2){grid-column:auto}
 /* Common Programme's own eight-track grid in the wide view (owner, 16 Aug 26 —
    its new Rmks column). The phone stack put People and remarks on the pucks'
    row; here every column stands on its own, so the remarks input drops back to

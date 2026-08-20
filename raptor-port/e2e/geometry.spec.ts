@@ -379,15 +379,18 @@ test('the board\'s duty rows keep a readable ITEM column on a phone', async ({ p
   await login(page)
   await go(page, 'editsched')
   await page.evaluate(() => (window as any).openScheduler(1))
-  await page.waitForSelector('#schedBoard .sb-arow input.ain')
+  await page.waitForSelector('#schedBoard .sb-arow .ain')
 
   const m = await page.evaluate(() => {
-    /* the ROLE/ITEM inputs only — NOT `.rmkin`, which is a deliberately narrow
-       scrollable remarks box now (owner, 16 Aug 26): it rides the pucks' row
-       and holds arbitrarily long text that scrolls, exactly like the flying
-       line's `.nts`, so its content SHOULD exceed its box and must not be read
-       as the ITEM column being crushed. */
-    const ins = [...document.querySelectorAll('#schedBoard .sb-arow.c6r input.ain:not(.rmkin)')] as HTMLInputElement[]
+    /* the ROLE/ITEM boxes only — NOT `.rmkin`, which rides the pucks' row and
+       holds arbitrarily long text (owner, 16 Aug 26), so it must not be read
+       as the ITEM column being crushed.
+       TAG-AGNOSTIC since 20 Aug 26, and that matters more than it looks: these
+       were `input.ain` until the wrapping pass made them textareas, at which
+       point the selector matched NOTHING, `named` came back empty and the
+       `test.skip` below fired — so this gate quietly stopped running instead
+       of failing. Do not put a tag back into it. */
+    const ins = [...document.querySelectorAll('#schedBoard .sb-arow.c6r .ain:not(.rmkin)')] as HTMLTextAreaElement[]
     const named = ins.filter(e => (e.value || '').trim().length > 2)
     if (!named.length) return null
     return {
@@ -398,7 +401,10 @@ test('the board\'s duty rows keep a readable ITEM column on a phone', async ({ p
     }
   })
   test.skip(!m, 'no named duty row on the seed board')
-  expect(m!.columns, 'the phone template is three columns, not the desktop six').toBe(3)
+  /* FOUR since 20 Aug 26 — the remarks-alignment spacer track; see the
+     column-layout test further down. The point of this assertion is that the
+     DESKTOP six-track template is not winning here, which it still makes. */
+  expect(m!.columns, 'the phone template is not the desktop six').toBe(4)
   expect(m!.worstOverflow, 'the item name is not clipped by its own box').toBeLessThanOrEqual(0)
   expect(m!.narrowest, 'and the item column is actually readable').toBeGreaterThan(80)
 })
@@ -1821,8 +1827,15 @@ test('the phone board keeps its column layout after the grip is added', async ({
       flyLabels: visible(flyHdr),
     }
   })
-  expect(m.tracks).toBe(3)
-  expect(m.hdrTracks).toBe(3)
+  /* FOUR since 20 Aug 26, and the change is deliberate: a 50px spacer track
+     was inserted so the remarks box could start where the flying line's does
+     (the owner's ringed screenshot — see the alignment test at the foot of
+     this file). Row 1 is unmoved by it, because the name cell spans the first
+     PAIR of tracks; that is what the item-width and label assertions below
+     still pin, and they are the ones that actually catch a mis-indexed
+     column. Common Programme keeps three. */
+  expect(m.tracks).toBe(4)
+  expect(m.hdrTracks).toBe(4)
   /* the 6 Aug regression: the ITEM column collapsed to a 14px stub */
   expect(m.item).toBeGreaterThan(150)
   /* the labels that survive the nth-child hide, in DOM order, must be
@@ -3504,4 +3517,90 @@ test('the phone board clears its parked aircrew tab', async ({ page }) => {
   })
   /* no board chrome reaches past the tab's left edge (sub-pixel slack only) */
   expect(m.contentRight, 'board content stops at or before the aircrew tab').toBeLessThanOrEqual(m.tabLeft + 1)
+})
+
+/* ---- the board's remarks boxes: aligned, and they grow (owner, 20 Aug 26) ----
+
+   TWO asks in one screenshot. He ringed the dead strip between a duty row's
+   puck stack and its Rmks box and asked for the box to "follow where the red
+   line is drawn … aligned with where the live flights remarks extend to", for
+   every panel EXCEPT Common Programme. And then: "if the text overflows, the
+   text box will grow vertically. Apply this to all text box as well."
+
+   Both are invisible to Vitest — jsdom reports every rect 0x0, so it can prove
+   which element was emitted and nothing about where it sits or how tall it got.
+   These are the measurements. */
+test('the phone board: duty/sim/ground remarks align with the flying line, Common Programme does not', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#schedBoard .sb-line')
+  await page.waitForTimeout(300)
+
+  const m = await page.evaluate(() => {
+    const L = (e: Element) => Math.round(e.getBoundingClientRect().left)
+    const W = (e: Element) => Math.round(e.getBoundingClientRect().width)
+    const fly = document.querySelector('#sbBoard .sb-line .nts')!
+    const c6r = [...document.querySelectorAll('#sbBoard .sb-arow.c6r .rmkin')]
+    const prog = [...document.querySelectorAll('#sbBoard .sb-arow.cprog .rmkin')]
+    return {
+      flyLeft: L(fly), flyWidth: W(fly),
+      c6rCount: c6r.length,
+      c6rLefts: [...new Set(c6r.map(L))],
+      c6rWidths: [...new Set(c6r.map(W))],
+      progLefts: [...new Set(prog.map(L))],
+    }
+  })
+
+  expect(m.c6rCount, 'the day draws duty/sim/ground rows').toBeGreaterThan(0)
+  /* ONE left edge across every c6r panel, and it is the flying line's */
+  expect(m.c6rLefts, 'every duty/sim/ground remarks box starts at one x').toHaveLength(1)
+  expect(m.c6rLefts[0], 'and that x is the flying line\'s remarks box').toBe(m.flyLeft)
+  expect(m.c6rWidths[0], 'same width, so the right edges agree too').toBe(m.flyWidth)
+
+  /* Common Programme was deliberately excluded from the ask, so it must NOT
+     have moved with the others — this is the half a later "consistency" pass
+     is most likely to break */
+  if (m.progLefts.length) {
+    expect(m.progLefts[0], 'Common Programme keeps its own narrower box').toBeGreaterThan(m.flyLeft)
+  }
+})
+
+test('the phone board: a long remark grows its box instead of scrolling inside it', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#schedBoard .sb-line')
+  await page.waitForTimeout(300)
+
+  const box = page.locator('#sbBoard .sb-panel.duty .sb-arow.c6r .rmkin').first()
+  await box.scrollIntoViewIfNeeded()
+  const rest = await box.evaluate(e => Math.round(e.getBoundingClientRect().height))
+
+  await box.fill('SDO swapped with Bane who has the PHA at 1700 and Pike covers the last hour of it')
+  const grown = await box.evaluate((e: any) => ({
+    h: Math.round(e.getBoundingClientRect().height),
+    hidden: e.scrollHeight - e.clientHeight,
+  }))
+  expect(grown.h, 'the box got taller').toBeGreaterThan(rest)
+  expect(grown.hidden, 'and no text is hidden behind an inner scroll').toBeLessThanOrEqual(1)
+
+  /* ONE unbroken word longer than the box — the overflow case HANDOFF has
+     carried as open since 12 Aug 26. overflow-wrap:anywhere is what stops it
+     running out of the row rather than breaking. */
+  await box.fill('X'.repeat(120))
+  const long = await box.evaluate((e: any) => {
+    const r = e.getBoundingClientRect(), row = e.closest('.sb-arow').getBoundingClientRect()
+    return { spills: r.right > row.right + 1, scrolls: e.scrollWidth > e.clientWidth + 1 }
+  })
+  expect(long.spills, 'a long unbroken word does not push the box out of its row').toBe(false)
+  expect(long.scrolls, 'and it breaks rather than scrolling sideways').toBe(false)
+
+  /* the time cells beside it are deliberately NOT textareas — nothing in
+     `0715` wraps, and the guard rails already refuse a non-time */
+  const tags = await page.evaluate(() =>
+    [...new Set([...document.querySelectorAll('#sbBoard .atm, #sbBoard .sb-line .tm')].map(e => e.tagName))])
+  expect(tags, 'every time cell is still a one-line input').toEqual(['INPUT'])
 })
