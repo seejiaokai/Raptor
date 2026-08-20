@@ -101,6 +101,17 @@ describe('the month strip', () => {
  *  stated geometry, never that a browser lays the year out this way.
  *  `monthview.test.ts` proves the arithmetic itself; the browser gate proves
  *  the real measurement follows a real scroll. */
+/** Scrolling, simulated the way a BROWSER does it: the columns keep their
+ *  positions and `scrollLeft` moves over them.
+ *
+ *  It used to be simulated the other way round — the rects were re-stubbed at
+ *  a shifted offset on every call while `scrollLeft` stayed 0 — which worked
+ *  only because the strip readout re-read every rectangle on every scroll
+ *  event. That live re-reading is exactly what was removed on 20 Aug 26 (it
+ *  cost 60% of the main thread during a drag; see Matrix.tsx), so a test that
+ *  keeps `scrollLeft` at zero is now testing a scroll that never happened.
+ *  The month expectations below are UNCHANGED: the same columns, the same
+ *  162px of frozen width, the same visible 638px window over them. */
 function layoutYear(offset: number) {
   const wrap = document.querySelector<HTMLElement>('.mx-wrap')!
   const rect = (left: number, width: number) => () => ({
@@ -113,12 +124,27 @@ function layoutYear(offset: number) {
   wrap.querySelector<HTMLElement>('.who')!.getBoundingClientRect = rect(0, 118)
   wrap.querySelector<HTMLElement>('.bal')!.getBoundingClientRect = rect(118, 44)
 
+  // The columns AT REST: month N starts at N*300 in the scroller's content,
+  // and December's last day ends the content at 3600.
   const firsts = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
   firsts.forEach((mm, i) => {
-    screen.getByTestId(`head-2026-${mm}-01`).getBoundingClientRect = rect(i * 300 - offset, 41)
+    screen.getByTestId(`head-2026-${mm}-01`).getBoundingClientRect = rect(i * 300, 41)
   })
-  screen.getByTestId('head-2026-12-31').getBoundingClientRect = rect(3600 - offset - 41, 41)
+  screen.getByTestId('head-2026-12-31').getBoundingClientRect = rect(3600 - 41, 41)
 
+  if (!Object.getOwnPropertyDescriptor(wrap, 'scrollLeft')?.configurable) {
+    let at = 0
+    Object.defineProperty(wrap, 'scrollLeft', {
+      configurable: true, get: () => at, set: (v: number) => { at = v },
+    })
+  }
+
+  // One scroll at rest to let the grid measure its columns, then the real
+  // move. jsdom reports 0x0 at mount, so the measurement cannot have happened
+  // before these stubs existed.
+  wrap.scrollLeft = 0
+  fireEvent.scroll(wrap)
+  wrap.scrollLeft = offset
   fireEvent.scroll(wrap)
 }
 
@@ -171,6 +197,28 @@ describe('the month strip says which month is on screen', () => {
     // JAN occupies 0..300 but only 162..300 of it is actually visible.
     act(() => layoutYear(0))
     expect(lit()).not.toContain('JAN')
+  })
+
+  // The highlight stopped being React state on 20 Aug 26 — it is a ref,
+  // painted onto the buttons by hand, because a setState here re-rendered all
+  // ~25,000 nodes of the grid on every month boundary a scroll crossed. This
+  // pins the user-visible consequence: an unrelated re-render must not blank
+  // the readout.
+  //
+  // Worth knowing what this does and does NOT catch — it was checked by
+  // breaking the code on purpose. Deleting the render-time ref read leaves
+  // this test PASSING, because React only writes `className` when its own
+  // prop value changes between renders, and this one is constant — so the
+  // hand-set class survives a re-render on its own. The render-time read is
+  // therefore belt-and-braces, and it earns its place only where the buttons
+  // are freshly mounted (a war change builds new ones). Do not read a green
+  // result here as proof that the ref plumbing is intact.
+  it('keeps the highlight through a re-render it did not cause', () => {
+    render(<Matrix />)
+    act(() => layoutYear(1800))
+    expect(lit()).toEqual(['AUG'])
+    act(() => setRole('admin'))
+    expect(lit(), 'an unrelated re-render must not drop it').toEqual(['AUG'])
   })
 
   it('lights nothing before anything has been measured', () => {

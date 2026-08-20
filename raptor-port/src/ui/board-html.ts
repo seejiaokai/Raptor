@@ -239,7 +239,30 @@ function sbMore(di:any,base:any,r:any,pv?:any){
    one: `placeholder=""` still counts as a placeholder to CSS, and the whole
    point of the 10 Aug pass is that a box with nothing in it looks empty. */
 function sbTxt(cls:any,path:any,v:any,ph:any,pv:any,extra?:any){
-  return `<input class="${cls}" data-bfld="${path}"${alAttr(path)}${pv?' disabled':''}${extra||''} value="${esc(v||'')}"${ph?` placeholder="${ph}"`:''}>`;
+  return boxHTML(cls,`data-bfld="${path}"${alAttr(path)}${pv?' disabled':''}${extra||''}`,v,ph);
+}
+/* ONE builder for every typed box on the board, because they now come in two
+   ELEMENT shapes and the choice must not be made call site by call site
+   (owner, 20 Aug 26 — "if the text overflows, the text box will grow
+   vertically. Apply this to all text box as well").
+   A free-text field is a <textarea rows="1">, not an <input>: an <input>
+   cannot wrap its value at any width, and no CSS makes it — the text simply
+   scrolls out of sight inside the box, which is the thing the owner is asking
+   to stop. The GROWING is `field-sizing:content` in scheduler.css, the same
+   mechanism the scheduler-notes box has used since 13 Aug 26 (and with the
+   same graceful degradation to a one-line box where it is unsupported).
+   A TIME cell stays an <input>: it holds `0715`, there is nothing in it to
+   wrap, and the guard rails already refuse anything that is not a time.
+   Class is what decides, so a caller keeps passing the class it always did.
+   The leading newline is REQUIRED, not stray formatting: an HTML parser
+   discards exactly one newline immediately after `<textarea>`, so without it
+   a pasted value that genuinely starts with a blank line would lose it on
+   every repaint. Enter still commits (textedit.ts's routeKeyDown), so a
+   hand-typed break cannot get in — a paste is the only way one arrives. */
+export function boxHTML(cls:any,attrs:any,v:any,ph:any){
+  const p=ph?` placeholder="${ph}"`:'';
+  if(/(^|\s)(atm|tm)(\s|$)/.test(cls))return `<input class="${cls}" ${attrs} value="${esc(v||'')}"${p}>`;
+  return `<textarea rows="1" class="${cls}" ${attrs}${p}>\n${esc(v||'')}</textarea>`;
 }
 /* a duty / sim / ground / programme remarks input, shown at ALL times now
    (owner, 16 Aug 26). It used to be hidden while empty on a phone with a "+"
@@ -447,7 +470,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
       +sbiRmk(inp,dt)+`</div>`;
   }
   const id=inpId(inp);
-  const fld=(cls:any,f:any,v:any,ph:any)=>`<input class="${cls}" data-ifld="${esc(id)}.${f}" value="${esc(v||'')}" placeholder="${ph}">`;
+  const fld=(cls:any,f:any,v:any,ph:any)=>boxHTML(cls,`data-ifld="${esc(id)}.${f}"`,v,ph);
   /* the GRIP's own track, kept even though an input row cannot be dragged.
      Every c6r template reserves a leading 18px track, and the phone rule
      (`display:none` on .sb-grip, three columns for the rest) is written

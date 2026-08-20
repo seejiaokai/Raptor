@@ -24,19 +24,24 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the Leave War counter phone-fix + counting
-sweep, 20 Aug 26 — the four CI gates watched this session; `probes:adapted`
-and `perf` carried from the 19 Aug run, unchanged because the change was Leave
-War only and the Raptor scheduler they measure was untouched):
+**Last recorded green baseline** (the board text-box alignment + wrapping
+batch AND the Leave War frozen-header scroll fix, 20 Aug 26 — all six gates
+watched this session, on a tree that already carries the counter session's
+work below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2676 across 144 files — two vitest projects: raptor (1748) + leavewar (928) |
+| `npm test` | 2685 across 145 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 299 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
-| `probes:adapted` | 6/6 (carried) |
-| `perf` | 4/4 (carried) |
+| `npm run test:e2e` | 301 passed / 9 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `probes:adapted` | 6/6 |
+| `perf` | 4/4 |
+
+The counts reconcile against the counter session's own reading directly
+above what this replaced (2676 across 144 files, 299 e2e): +8 tests and +1
+file for `boardwrap.test.tsx`, +1 for the month-strip re-render guard, and
++2 e2e for the remarks alignment and growth measurements.
 
 DOM measures at that baseline: week **3743** under a 4000 ceiling, board
 **847** under 960 (three context-bound add buttons, net +1 node over the old
@@ -99,6 +104,55 @@ has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **THE BOARD'S TEXT BOXES ALIGN AND WRAP (owner, 20 Aug 26, from a phone
+  screenshot with the target ringed in red).** Two asks, one batch, both
+  BOARD-only. (1) **Remarks alignment** — "extend all remarks to follow where
+  the red line is drawn… aligned with where the live flights remarks extend
+  to", explicitly "for all except common programme". A duty/sim/ground row's
+  Rmks box started 56px right of the flying line's; the phone `c6r` grid
+  gained a fourth, 50px track and the Role/Item cell spans the first PAIR, so
+  the remarks box is now 154px right-aligned exactly like the flying line's at
+  EVERY width while row 1 lays out pixel-identically. `.cprog` (Common
+  Programme) was deliberately left at its old 98px — that exclusion is the
+  half a later "consistency" pass is most likely to undo, so it is pinned by
+  e2e. (2) **Wrapping** — "if the text overflows, the text box will grow
+  vertically. Apply this to all text box as well." Every free-text field on
+  the board is a `<textarea rows="1">` now, minted by the ONE builder
+  `board-html.ts:boxHTML`; an `<input>` cannot wrap at any width and no CSS
+  makes it. `field-sizing:content` does the growing (the `.sb-nbox`
+  precedent, same graceful degradation), `overflow-wrap:anywhere` breaks a
+  long unbroken word. **TIME cells stay `<input>` on purpose** — `0715` has
+  nothing to wrap and the guard rails already refuse a non-time; pinned so a
+  later pass does not "finish the job". **Enter still COMMITS** rather than
+  inserting a line break: an `<input>` did that for free and a `<textarea>`
+  does not, so `routeKeyDown` learned the board's `data-bfld`/`data-ifld`
+  grammar — which also gave the board **Escape-to-restore**, which it never
+  had. Leading `\n` in the emitted markup is load-bearing (a parser eats one
+  newline after `<textarea>`). `line-height:12px` is measured, not taste: it
+  is what keeps a one-line box at the input's old 24px, and the browser
+  default cost 115px of board scroll for rows that never wrap.
+  Two things worth knowing, both found by measuring rather than reasoning:
+  - **Below ~383px the People cell wraps its puck pair**, growing exactly one
+    row of the demo day's 25 by 19px (a pair is 152px, and pair + gap +
+    154px remarks needs 312px of row). At 390px and up every row height is
+    byte-identical to before. Accepted rather than fixed: the alternative is
+    a narrower remarks box at those widths, which is the misalignment the
+    change exists to remove.
+  - **A pre-existing `.sb-wide` collapse was fixed on the way** — the desktop
+    layout's two flexible c6r tracks were bare `1fr`, which floors at
+    min-content, which is nothing for a `width:100%` box: on a phone showing
+    the desktop layout they collapsed to 0px and 14px (and the header
+    disagreed with the row). Harmless while the boxes were inputs; a remark
+    wrapping in a 14px column turned a 34px row into a 105px one. They carry
+    `minmax()` floors now, well under what a real desktop gives them, so an
+    actual desktop is unchanged.
+  Tests: `boardwrap.test.tsx` (8 — element shapes, the time exclusion, the
+  value round trip, Enter/Shift+Enter/Escape), two new `geometry.spec.ts`
+  measurements (alignment incl. the cprog exclusion; growth, no inner scroll,
+  the long-word break). **A silently-skipped gate was also repaired**: the
+  "readable ITEM column" e2e selected `input.ain`, which matched nothing once
+  the boxes became textareas, so its `test.skip` fired and it stopped testing
+  anything instead of failing. It is tag-agnostic now — do not put a tag back.
 - **THE LEAVE WAR MANNING COUNTERS ARE FULLY CUSTOM NOW (owner, 19 Aug 26 —
   "instead of hard coding these permutations, make it editable… these
   counters can also be deleted"; his picks: guided form, full team builder,
@@ -253,6 +307,32 @@ has its own e2e DOM band (29000), measured-first.
   (mirror→grid, for a drag on the frozen strip) is unchanged and the guards
   keep the two from fighting. Not measurable headless (no kinetic scroll — the
   e2e proves tracking + alignment, a real phone proves the smoothness).
+  **THE PUMP WAS NOT THE PROBLEM, AND THE THIRD REPORT (owner, 20 Aug 26 —
+  the frozen bar "lags visually slightly left and right and also it stutters")
+  FOUND WHAT WAS.** The pump was being STARVED, not running too slowly.
+  `Matrix`'s month-strip readout held its answer in React STATE, and this
+  component renders the whole ~25,000-node grid — so every month boundary a
+  sideways scroll crossed re-rendered all of it to move one button highlight,
+  and no rAF loop can track anything inside a 129ms long task. Measured over
+  five PAIRED 120-frame drags with the header frozen, alternating the two
+  builds in one browser session to cancel machine drift: main-thread blocking
+  1573ms → 680ms, long tasks 20 → 7, worst frozen frame 129ms → 69ms,
+  90th-percentile frame gap 86ms → 42ms — the two sets of five do not overlap.
+  The readout is a REF now, painted onto the twelve buttons by hand
+  (`inViewRef`/`paintInView` in Matrix.tsx), and the geometry it needs is
+  cached in content space (`stripGeoRef`) rather than re-measured live. That
+  second half was measured as roughly NEUTRAL on its own; it is kept because
+  it takes 15 `querySelector` searches and 16 forced layout reads off every
+  scroll event, not because it moved the number.
+  **A CAUTION FOR THE NEXT ATTEMPT — single readings here are worthless.** One
+  unpaired A/B said the cached geometry alone was worth 82% of the blocking; a
+  proper paired run put it at ~3%, the gap being noise plus the fact that the
+  first test had also disabled the setState. Alternate the two builds in one
+  session, five trials each, compare medians — the same discipline
+  `docs/probe-sweep.md` already demands of the perf timings. And the thing
+  that is STILL not measurable here is the smoothness itself: headless
+  Chromium has no kinetic scroll, so the numbers above are main-thread cost,
+  which is the cause; only a real phone can confirm the effect.
   (3) **A month BRACKET row** (`tr.mbrak` in the same `.mxhead` tbody): one
   open-topped accent box per month spanning exactly its days, label sticky
   just clear of the frozen columns. Derived from the loaded days, so a
@@ -867,9 +947,14 @@ has its own e2e DOM band (29000), measured-first.
   - **Long free text on the WEEK's prose cells** (flight remarks, day notes,
     area) can still run a row to ~2000px. They are `contenteditable`, which
     ignores `maxlength`, so the only guards available are truncating a paste
-    or refusing one — both worse than the disease. The board draws the same
-    fields as `<input>`s and stays 50px, so a value can look fine there and
-    tall on the week. Layout only; no gate is tripped.
+    or refusing one — both worse than the disease. Layout only; no gate is
+    tripped. **The BOARD half of this is closed as of 20 Aug 26** and the old
+    text here ("the board draws the same fields as `<input>`s and stays 50px,
+    so a value can look fine there and tall on the week") is no longer true:
+    the board's free-text fields WRAP and grow now, and carry
+    `overflow-wrap:anywhere`, so a long value — including one unbroken word —
+    reads in full there instead of scrolling out of sight. The two surfaces
+    now agree in direction; only the week's unbounded HEIGHT is still open.
   - **A wave label typed long on the week** becomes an `<option>` in the
     board's title `<select>` and can run past the panel (measured 2638px in a
     930px box). Recovery is picking any real title. Same class as above.
@@ -1520,6 +1605,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/state/demosans.test.ts` | The demo SANS seed (14 Aug 26) — shape, idempotency (`initStore()` boots twice against the same `INPUTS` array), the zero-`SANS_AVAIL`-warning proof against every seed record's own padded commitment, and the rendered card grid. |
 | `src/ui/pubsweep.test.tsx` | The comprehensive publishing sweep (16 Aug 26, 28 tests) — scenario by scenario, asserting what the edit week, the board's publish strip and the view page each show: lifecycle, edit-after-publish, edit-and-revert across key families, structural round trips netting out, drafts-on-published-day rebase (including rebase-against-current-AL), load-onto-working-copy leaving `SCHED.cur` alone, reopen → re-publish, unpublish, and week-vs-board deep-equal agreement. Finding a live bug (the time-respelling pending mark) is what this file is FOR — keep extending it when publishing behaviour changes. |
 | `src/ui/boardaddinput.test.tsx` | The board's **+ Add** input (Aug 26, 11 tests) — the button renders on a live Personal Inputs / Unavailable panel and not on a read-only one, `commitNewInput` lands a row on the open day (and refuses a malformed draft), the dialog opens in its `_new` shape (no Delete, "Add", panel-suited default type), the whole click-fill-Add gesture paints the new row under the panel, Cancel adds nothing, and a member is refused at the `routeClick` handler even with a hand-made button. |
+| `src/leavewar/ui/monthstrip.test.tsx` | The month readout (extended 20 Aug 26). Its `layoutYear` helper now simulates a scroll the way a BROWSER does — the columns hold still and `scrollLeft` moves over them — because the readout reads cached content-space geometry instead of re-measuring every rectangle on every scroll event. A test that leaves `scrollLeft` at zero is testing a scroll that never happened. Also pins that an unrelated re-render does not blank the highlight, with a note on what that test does NOT catch. |
+| `src/ui/boardwrap.test.tsx` | The board's text boxes wrap and grow (20 Aug 26, 8 tests) — every remarks box and every name/role box is a `<textarea>`, every TIME cell is still an `<input>` (the deliberate exclusion, pinned so a later pass does not "finish the job"), a value round-trips through textarea content unchanged (the leading-newline trick), and Enter still COMMITS while Shift+Enter is left alone and Escape restores. jsdom reports every rect 0×0, so the box actually GROWING — and a long unbroken word breaking rather than overflowing — is measured in `e2e/geometry.spec.ts` instead. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |
 | `src/ui/daytplui.test.tsx` | Day templates' UI half (15 Aug 26, 15 tests) — the `dayTplMenu` picker reached from both the board's button and the week's sign-off strip, `DayTplModal.tsx`'s tabs/rename/delete/reset, and the published-day "Reopen the day first" refusal toast. |

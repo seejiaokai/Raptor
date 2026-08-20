@@ -291,7 +291,7 @@ describe('the scheduler board (tfin board group)', () => {
   })
 
   it('a board field commits through the text funnel and earns a pending mark', async () => {
-    const inp = document.querySelector('#sbBoard input[data-bfld^="ff:"][data-bfld$=".msn"]') as HTMLInputElement
+    const inp = document.querySelector('#sbBoard [data-bfld^="ff:"][data-bfld$=".msn"]') as HTMLInputElement
     expect(inp).toBeTruthy()
     const key = inp.dataset.bfld!, before = inp.value
     await change(inp, 'BFM 2V2')
@@ -299,7 +299,7 @@ describe('the scheduler board (tfin board group)', () => {
     const d = DAYS[0]
     const [, gi, li] = key.replace('ff:', '').split('.').map(Number)
     expect(d.waves[gi!].formations[li!].msn).toBe('BFM 2V2')
-    await change(document.querySelector(`#sbBoard input[data-bfld="${key}"]`) as HTMLInputElement, before)
+    await change(document.querySelector(`#sbBoard [data-bfld="${key}"]`) as HTMLInputElement, before)
   })
 
   it('the red-box flag toggles on a line', async () => {
@@ -399,12 +399,12 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
   })
 
   it('a duty field commits through the text funnel and earns a pending mark', async () => {
-    const inp = document.querySelector('#sbBoard input[data-bfld^="dr:"][data-bfld$=".role"]') as HTMLInputElement
+    const inp = document.querySelector('#sbBoard [data-bfld^="dr:"][data-bfld$=".role"]') as HTMLInputElement
     expect(inp).toBeTruthy()
     const key = inp.dataset.bfld!, before = inp.value
     await change(inp, 'TEST DUTY')
     expect(SCHED.pending[key]).toBeTruthy()
-    await change(document.querySelector(`#sbBoard input[data-bfld="${key}"]`) as HTMLInputElement, before)
+    await change(document.querySelector(`#sbBoard [data-bfld="${key}"]`) as HTMLInputElement, before)
   })
 
   it('+ Row / ✕ on duty rows renumbers the keys under the delete', async () => {
@@ -479,7 +479,7 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
       await act(async () => { afterSchedMutate(); notify() })
       expect(d.dutywaves[0].rows.map((r: any) => r.role)).toEqual(['RUNNER', 'SDO'])
       // retype the OTHER row's (already non-empty) role
-      const inp = document.querySelector('#sbBoard input[data-bfld="dr:0.0.1.role"]') as HTMLInputElement
+      const inp = document.querySelector('#sbBoard [data-bfld="dr:0.0.1.role"]') as HTMLInputElement
       expect(inp).toBeTruthy()
       await change(inp, 'SXO')
       expect(d.dutywaves[0].rows.map((r: any) => r.role)).toEqual(['RUNNER', 'SXO'])
@@ -513,7 +513,7 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
       await act(async () => { afterSchedMutate(); notify() })
       await act(async () => { view.armSlot('d:0.0.0'); notify() })
       expect(view.armedKey()).toBe('d:0.0.0')
-      const inp = document.querySelector('#sbBoard input[data-bfld="dr:0.0.1.role"]') as HTMLInputElement
+      const inp = document.querySelector('#sbBoard [data-bfld="dr:0.0.1.role"]') as HTMLInputElement
       expect(inp).toBeTruthy()
       await change(inp, 'SDO')
       /* THE POINT (owner, 10 Aug 26): "+ Row, then type SDO" used to
@@ -546,7 +546,7 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     try {
       await act(async () => { afterSchedMutate(); notify() })
       const ixBefore = HIST.ix
-      const inp = document.querySelector('#sbBoard input[data-bfld="dr:0.0.1.role"]') as HTMLInputElement
+      const inp = document.querySelector('#sbBoard [data-bfld="dr:0.0.1.role"]') as HTMLInputElement
       await change(inp, 'SDO')
       expect(HIST.ix).toBe(ixBefore + 1)
     } finally {
@@ -1049,7 +1049,7 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
        row rendering the 1400 item (model index 5) must itself carry
        mv:g.0.5, and the row rendering the 1630 item (model index 4) must
        carry mv:g.0.4 — these are exactly the two rows the time sort swaps */
-    const pairs = [...h.matchAll(/data-move="mv:g\.0\.(\d+)"[\s\S]*?data-bfld="gr:0\.\d+\.prog"[^>]*value="([^"]*)"/g)]
+    const pairs = [...h.matchAll(/data-move="mv:g\.0\.(\d+)"[\s\S]*?data-bfld="gr:0\.\d+\.prog"[^>]*>\n([^<]*)/g)]
       .map(m => [+m[1], m[2]] as const)
     expect(pairs.find(([, prog]) => prog === 'OPS/LOGS @ 149 SQN')?.[0]).toBe(5)
     expect(pairs.find(([, prog]) => prog === 'HAM ENGAGEMENT @ AFTC')?.[0]).toBe(4)

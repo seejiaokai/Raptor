@@ -178,10 +178,64 @@ Owner, Aug 5. Three things, all view-only — none of them touches the model:
   even when the window or sort would drop it, so an open editor cannot vanish
   mid-edit.
 
+## The board's text boxes wrap and grow (owner, 20 Aug 26)
+
+Every FREE-TEXT field on the board is a `<textarea rows="1">`, minted by the
+one builder `board-html.ts:boxHTML`. An `<input>` cannot wrap its value at any
+width — the overflow scrolls out of sight inside the box — so the element had
+to change, not just the CSS. `field-sizing:content` does the growing (the
+`.sb-nbox` precedent since 13 Aug 26, degrading to a one-line box where it is
+unsupported, never to a broken tall one); `overflow-wrap:anywhere` breaks a
+single long unbroken word instead of letting it run out of the row.
+
+**TIME cells stay `<input>`.** `0715` has nothing to wrap and the guard rails
+already refuse anything that is not a time. `boxHTML` decides by CLASS
+(`atm`/`tm`), so a caller keeps passing the class it always did. Pinned in
+`boardwrap.test.tsx` and in the geometry suite — this exclusion is the thing a
+later "consistency" pass is most likely to remove.
+
+**Enter still COMMITS, and Escape now restores.** An `<input>` fired `change`
+on Enter by itself; a `<textarea>` inserts a line break instead, so
+`routeKeyDown` carries a `[data-bfld],[data-ifld]` branch that blurs on Enter
+(the blur fires the same `change` the board has always written on) and puts the
+model value back on Escape. Shift+Enter is deliberately left alone. So a line
+break can only ever arrive by PASTE — which is why `boxHTML` emits a leading
+newline: an HTML parser discards exactly one newline after `<textarea>`, and
+without it a pasted value starting with a blank line would lose it on every
+repaint.
+
+**`line-height:12px` is a measured number, not a preference.** An `<input>` at
+font-size 11px lays its content box out at exactly 12px, so only that leading
+keeps a one-line box at the old 24px. At the browser default every box on the
+board stood 2px taller and the day grew 115px of scroll, bought for rows that
+are not wrapping at all — which is most of them.
+
+## The board's remarks boxes align with the flying line (owner, 20 Aug 26)
+
+A duty/sim/ground (`c6r`) row's Rmks box starts at the same x as the flying
+line's, and is the same width — 154px, right-aligned, at every phone width,
+because the flying line's own cell is three fixed 46px time tracks plus two
+8px gaps. The phone `c6r` grid carries a fourth 50px track for it and spans
+the Role/Item cell across the first PAIR, which is what leaves row 1
+(Role | Start | End) pixel-identical.
+
+**Common Programme is deliberately excluded** (`.cprog` keeps its own
+three-track phone grid and a 98px remarks box) — the owner asked for "all
+except common programme". Pinned by e2e, in both directions.
+
+That span is applied BY POSITION (`:nth-child(2)`), not by class: every c6r row
+reserves a leading grip track, so child 2 is always the name cell — but a
+duty row puts a `.ain` role box there while a personal-input row puts its type
+LABEL there. Selecting `.ain` misses the input rows and leaves their Start box
+in the spacer track, misaligned with the ground programme rows above them.
+
 ## Inline text editing (`ui/textedit.ts`)
 
 Enter commits (everywhere, including sim notes), Escape restores the model
 value, drift is healed in place from the model rather than by a rebuild.
+The BOARD's own boxes get the same two keys — see the wrapping contract
+above; before 20 Aug 26 they had Enter only, and only because they were
+`<input>`s.
 
 Most strings commit through `[data-txt]` → `txtSet` (the funnel). FOUR
 fields live outside that grammar and each need their own focusout branch —
