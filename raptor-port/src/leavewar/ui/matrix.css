@@ -1193,10 +1193,19 @@
 }
 
 .mxfixed-scroll {
+  /* The frozen header FOLLOWS the grid and is never dragged itself (owner,
+     20 Aug 26). It stays a real scroller (`overflow-x: auto`) because that is
+     the one way to set `scrollLeft` that WebKit honours — an `overflow: hidden`
+     element clamps `scrollLeft` to 0 on iOS, which would stop the header
+     tracking. `touch-action: none` takes the user's finger off it instead, so
+     it cannot be dragged out of step; combined with the removed scroll-back
+     write (see syncMirror) that is what stops a fling on the grid being snapped
+     back and halted. `-webkit-overflow-scrolling: touch` is gone on purpose —
+     this element is driven by JS, never flung, so it needs no momentum. */
   overflow-x: auto;
   overflow-y: hidden;
+  touch-action: none;
   scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
 }
 
 .mxfixed-scroll::-webkit-scrollbar {

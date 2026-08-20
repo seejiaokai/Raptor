@@ -303,10 +303,26 @@ has its own e2e DOM band (29000), measured-first.
   `startPump`/`stopPump` in Matrix.tsx) that re-runs `syncMirror` every frame
   while a scroll is in flight and stops ~200ms after it rests (so an idle page
   still idles); the immediate `syncMirror` in the event covers the first
-  frame, the loop covers the frames the event skips. `syncFromMirror`
-  (mirror→grid, for a drag on the frozen strip) is unchanged and the guards
-  keep the two from fighting. Not measurable headless (no kinetic scroll — the
-  e2e proves tracking + alignment, a real phone proves the smoothness).
+  frame, the loop covers the frames the event skips. Not measurable headless
+  (no kinetic scroll — the e2e proves tracking + alignment, a real phone proves
+  the smoothness).
+  **THE WRITE-BACK WAS THE HALT (owner, 20 Aug 26, sixth report — the one that
+  found it: "when the top bar freezes the sideways scroll can only move a bit
+  and it halts quickly").** `syncFromMirror` (mirror→grid) is GONE. It was a
+  two-way sync: the mirror's own `scroll` event wrote its position back onto the
+  grid. On iOS that is fatal to a fling — the grid flings on the compositor, the
+  mirror lags it by a frame, and its handler then writes that STALE position
+  back onto the grid, snapping it back the instant it starts moving, which is
+  exactly "moves a bit then halts". This is why the scroll was smooth UNTIL the
+  header froze (no mirror = no write-back) and seized the moment it did. The
+  mirror now only FOLLOWS (`syncMirror`, grid→mirror); `.mxfixed-scroll` is
+  `touch-action: none` so a finger cannot drag it out of step, and it stays
+  `overflow-x: auto` (NOT hidden — WebKit clamps `scrollLeft` to 0 on an
+  overflow:hidden element, which would stop the header tracking). Pinned by the
+  header-freeze e2e: the grid drives the mirror, and setting the mirror's own
+  scrollLeft leaves the grid put. Alignment is untouched (this is scroll wiring,
+  not layout), so it cannot cause the misalignment the reverted column
+  virtualisation did — but the SMOOTHNESS still only a real iPhone can confirm.
   **THE PUMP WAS NOT THE PROBLEM, AND THE THIRD REPORT (owner, 20 Aug 26 —
   the frozen bar "lags visually slightly left and right and also it stutters")
   FOUND WHAT WAS.** The pump was being STARVED, not running too slowly.

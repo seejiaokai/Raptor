@@ -1869,6 +1869,15 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
     return null
   })
   if (ghost !== null) expect(Math.abs(ghost - real.x)).toBeLessThan(2)
+  // …but the header must NEVER drive the grid (owner, 20 Aug 26). Writing the
+  // mirror's lagged position back onto the grid mid-fling is what snapped the
+  // grid back and halted the sideways scroll the moment the header froze.
+  // Setting the mirror's OWN scrollLeft now leaves the grid exactly where it is
+  // (checked last, since it deliberately desyncs the mirror). No re-sync fires
+  // because the pump only runs while the GRID is being scrolled.
+  await page.evaluate(() => { document.querySelector('.mxfixed-scroll')!.scrollLeft = 50 })
+  await page.waitForTimeout(150)
+  expect(await page.evaluate(() => document.querySelector('.mx-wrap')!.scrollLeft)).toBe(400)
   // scrolling back up thaws it
   await page.evaluate(() => window.scrollTo(0, 0))
   await page.waitForTimeout(250)

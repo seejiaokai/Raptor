@@ -498,13 +498,21 @@ export function Matrix() {
       mirrorRef.current.scrollLeft = wrapRef.current.scrollLeft
     }
   }, [stuck])
+  // The mirror FOLLOWS the grid and never drives it (owner, 20 Aug 26 — the
+  // sixth report, and the one that found it: "when the top bar freezes the
+  // sideways scroll can only move a bit and halts quickly"). It used to be a
+  // two-way sync — the mirror's own `scroll` event wrote its position back onto
+  // the grid. On iOS that is fatal to a fling: the grid flings on the
+  // compositor, the mirror lags it by a frame, and its scroll handler then
+  // writes that STALE position back onto the grid, snapping it back and killing
+  // the fling — which is exactly the "moves a bit then halts". So the write-back
+  // is gone, and `.mxfixed-scroll` is `overflow-x: hidden` (matrix.css) so the
+  // header cannot be dragged out of step with the grid either. `syncMirror`
+  // (grid → mirror) is all that remains, and setting the mirror's own scrollLeft
+  // never touches the grid.
   const syncMirror = () => {
     const m = mirrorRef.current, w = wrapRef.current
     if (m && w && m.scrollLeft !== w.scrollLeft) m.scrollLeft = w.scrollLeft
-  }
-  const syncFromMirror = () => {
-    const m = mirrorRef.current, w = wrapRef.current
-    if (m && w && w.scrollLeft !== m.scrollLeft) w.scrollLeft = m.scrollLeft
   }
 
   // The frozen header tracks the grid on a requestAnimationFrame LOOP, not
@@ -1463,7 +1471,7 @@ export function Matrix() {
             data-testid="sticky-head"
             style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
           >
-            <div className="mxfixed-scroll" ref={mirrorRef} onScroll={syncFromMirror}>
+            <div className="mxfixed-scroll" ref={mirrorRef}>
               {/* The measured widths are visual px (they include the zoom),
                   and the mirror table wears the same zoom so its text sizes
                   match — so its layout widths are the measurements divided
