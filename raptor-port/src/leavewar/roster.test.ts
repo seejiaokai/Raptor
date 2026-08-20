@@ -14,7 +14,9 @@ import {
   GROUP_ORDER,
   opsCatOf,
   orderedPeople,
+  ruleHave,
   type Person,
+  type RuleCount,
 } from './engine'
 import {
   autoSortRoster,
@@ -324,6 +326,23 @@ describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
     ;(PEOPLE as any)[AIRID].quals.scDay = false
     raptorNotify()
     expect(getState().people.find(p => p.id === AIRID)).toMatchObject({ scd: false, scn: false })
+  })
+
+  /* The COUNT moves, not just the flag (owner, 19 Aug 26 — "it will update the
+     leave war"): a manning counter filtering on the SC-day qualification reads
+     one more the instant the Quals tick lands, end to end through the live
+     projection. This is the whole point of the qual wiring — a field that
+     propagated but never changed a count would be no use. */
+  it('ticking SC DAY in Quals lifts an SC-day counter\'s count live', () => {
+    const rc: RuleCount = { kind: 'people', filter: { quals: ['scDay'] } }
+    const D = '2026-02-02'
+    ;(PEOPLE as any)[AIRID] = { cs: 'Testir', seat: 'FCP', q: 'C', quals: {} }
+    raptorNotify()
+    const before = ruleHave(rc, getState().people, {}, {}, D)
+    ;(PEOPLE as any)[AIRID].quals.scDay = true
+    raptorNotify()
+    const after = ruleHave(rc, getState().people, {}, {}, D)
+    expect(after - before).toBe(1)
   })
 
   it('a Raptor CAT/seat change also propagates to an existing person', () => {

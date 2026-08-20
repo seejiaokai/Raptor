@@ -41,7 +41,7 @@ import {
   subscribe,
 } from './store'
 import { makeWar, seedRequirements } from '../engine'
-import { localBackend, memoryBackend, splitBackend } from './storage'
+import { localBackend, memoryBackend } from './storage'
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -1719,33 +1719,19 @@ describe('custom manning counters', () => {
   })
 })
 
-// The settings keys outlive the session while the war stays session-only
-// (owner, 19 Aug 26): a counter he built — or deleted — must not resurrect on
-// reload. `splitBackend` is the routing seam main.tsx boots with.
-describe('splitBackend', () => {
-  it('routes the named keys to the durable side and everything else to the session side', () => {
-    const session = memoryBackend()
-    const durable = memoryBackend()
-    const split = splitBackend(session, durable, ['manningdefs'])
-    split.write('manningdefs', 'RULES')
-    split.write('wars', 'WARS')
-    expect(durable.read('manningdefs')).toBe('RULES')
-    expect(durable.read('wars')).toBeNull()
-    expect(session.read('wars')).toBe('WARS')
-    expect(session.read('manningdefs')).toBeNull()
-    expect(split.read('manningdefs')).toBe('RULES')
-    expect(split.read('wars')).toBe('WARS')
-  })
-
-  it('a store booted on a fresh session but the same durable side keeps its counters and loses its war edits', () => {
-    const durable = memoryBackend()
-    initStore(splitBackend(memoryBackend(), durable, ['manningdefs', 'manningorder', 'manninghidden']))
+// The whole war is session-only (owner, 19 Aug 26): a fresh session forgets
+// everything, the manning counters included — a counter built or deleted does
+// not survive a reload, matching Raptor's own session-only INPUTS.
+describe('session-only counters', () => {
+  it('a store booted on a fresh session keeps neither its war edits nor its counter changes', () => {
+    initStore(memoryBackend())
     setRole('admin')
     setCell('ramp', '2026-01-05', 'LL')
     deleteManningRule('scn')
-    // A "reload": new session memory, same durable store.
-    initStore(splitBackend(memoryBackend(), durable, ['manningdefs', 'manningorder', 'manninghidden']))
-    expect(getState().grid['ramp']?.['2026-01-05']).toBeUndefined()
     expect(getState().requirements.default.rules.some(r => r.id === 'scn')).toBe(false)
+    // A "reload": a brand-new backend, nothing carried across.
+    initStore(memoryBackend())
+    expect(getState().grid['ramp']?.['2026-01-05']).toBeUndefined()
+    expect(getState().requirements.default.rules.some(r => r.id === 'scn')).toBe(true)
   })
 })

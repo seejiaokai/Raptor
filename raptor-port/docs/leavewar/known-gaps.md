@@ -580,10 +580,35 @@ The shape, briefly (detail in HANDOFF's bullet):
   as soon as anyone holds it; one removed keeps counting whoever still holds
   the flag (removal never touches `p.quals`), and an edited rule keeps its
   orphan key as a chip so Save cannot silently rewrite it.
-- **Persistence departs from "the war forgets"**: `manningdefs` /
-  `manningorder` / `manninghidden` route to localStorage
-  (`storage.ts:splitBackend`, boot in `main.tsx`) because a counter built or
-  deleted is squadron configuration, not leave data. The boot reader IS the
-  save validator (`readManningRules`), so nothing saveable is un-reloadable;
+- **The counters forget with the war**: `manningdefs` / `manningorder` /
+  `manninghidden` ride the memory backend like everything else (owner,
+  19 Aug 26 — no persistence wanted; counter configuration will live in the
+  database when it arrives), so a counter built or deleted resets on reload
+  back to the seeded eleven. The boot reader IS the save validator
+  (`readManningRules`), so nothing saveable is un-loadable within a session;
   a corrupt blob falls back to the seeded eleven, and the legacy
   `manningthresh` overlay is still read once as a migration.
+
+Two things a counting sweep (19 Aug 26) checked and DELIBERATELY left — do
+not "fix" either without reading this first:
+
+- **`matchesFilter` compares CAT case-sensitively** (`availability.ts` —
+  `effectiveCat` upper-cases `p.q`, the filter's `cats`/`notCats` are compared
+  verbatim). Not reachable from the form: the CAT chips are `CAT_LADDER`, all
+  upper-case, so a saved rule can only ever hold upper-case CATs. It is a trap
+  only for a hand-written or imported rule storing a lower-case CAT, which
+  would silently match nobody. Left as-is (no reachable bug); if a non-form
+  import path is ever added, upper-case the CAT there or normalise on read.
+- **A half-day SC duty (`HS`) counts as a WHOLE present body** in a
+  `presence` team and the duty tally (`availability.ts` — `weightOf` returns a
+  flat 1 for any duty code). Deliberate, and load-bearing: the old hard-coded
+  `scTeams` did the same, so the migration parity pin in
+  `counterrules.test.ts` requires it. A team seat is filled or it is not —
+  there is no half a body in a Hall count. Changing it would break parity;
+  raise it with the owner as a product question, never as a silent fix.
+
+The custom shapes the seed never exercises — a slot count above 1 still
+demanding distinct bodies, `quals` + `notQuals` on one filter, `show:'people'`
+keeping a fractional team, ATT B counting while ATT C does not, and the
+Quals-tick-lifts-the-count integration — are pinned in
+`engine/counterrules.test.ts` §custom counter shapes and `roster.test.ts`.
