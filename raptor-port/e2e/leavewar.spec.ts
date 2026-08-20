@@ -1967,3 +1967,21 @@ test('deleting a counter takes its row off the grid', async ({ page }) => {
   await del.click()
   await expect(page.locator('[data-testid="count-wmp"]')).toHaveCount(0)
 })
+
+// Owner, 19 Aug 26 — on a phone the six Rearrange controls could not fit one
+// line and the card clips its overflow, so +Counter and Reset counters fell
+// off the right edge with no way to reach them. The toolbar wraps now; every
+// control must sit wholly within the viewport width on BOTH projects (the
+// phone is the real guard, the desktop proves the wrap costs it nothing).
+test('every Rearrange control is reachable within the viewport', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="roster-arrange"]').click()
+  const vw = page.viewportSize()!.width
+  for (const id of ['roster-autosort', 'event-add', 'sans-toggle', 'counter-add', 'counter-reset-all']) {
+    const btn = page.locator(`[data-testid="${id}"]`)
+    await expect(btn).toBeVisible()
+    const box = (await btn.boundingBox())!
+    expect(box.x, `${id} starts off the left edge`).toBeGreaterThanOrEqual(0)
+    expect(box.x + box.width, `${id} runs off the right edge`).toBeLessThanOrEqual(vw + 1)
+  }
+})

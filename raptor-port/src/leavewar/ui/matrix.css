@@ -888,8 +888,12 @@
 
 /* ---- Categorised roster (owner, 18 Aug 26) ------------------------------ */
 
-/* The Auto-sort / Rearrange controls in the card header. */
-.rostertools { display: flex; gap: 8px; align-items: center; }
+/* The Auto-sort / Rearrange controls in the card header. Wraps (owner,
+   19 Aug 26): on a phone all six buttons cannot sit on one line, and the
+   card clips its overflow — so +Counter and Reset counters fell off the
+   right edge with no way to reach them. Wrapping flows them onto as many
+   lines as the width needs; desktop still fits them on one. */
+.rostertools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .rtbtn {
   background: var(--panel-2);
   border: 1px solid var(--edge-2);
