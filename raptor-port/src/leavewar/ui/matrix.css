@@ -1203,4 +1203,50 @@
   display: none;
 }
 
+/* ---- the frozen roster columns, drawn once (owner, 20 Aug 26 — the third
+   look at the sideways stutter) --------------------------------------------
+
+   See the long note beside `bandActive` in Matrix.tsx. The callsign and
+   counter columns were `position: sticky` on every one of ~80 roster rows,
+   and a sideways drag re-solved all ~160 of those pins each frame — the bulk
+   of the per-frame cost the stutter was made of. `.mxband` is a SECOND, static
+   copy of ONLY those two columns, drawn once and parked over the left edge
+   OUTSIDE `.mx-wrap` (the sideways scroller), so a sideways scroll neither
+   moves it nor re-solves anything. It is a sibling of `.mx-wrap` inside
+   `.mx-outer` — both in the page's own vertical flow — so it rides the page's
+   vertical scroll with the grid for free; only its TOP is set from JS, once,
+   off the roster's measured position. Phone only. */
+.mx-outer { position: relative; }
+
+.mxband {
+  position: absolute;
+  left: 0;
+  z-index: 4;
+  /* The group headings overflow their text rightward over the grid exactly as
+     the sticky headings did, so nothing here may clip. */
+  overflow: visible;
+  /* Transparent to taps until the year has scrolled sideways: at rest a tap
+     falls through to the REAL cell beneath, which owns the handler and the
+     testid. Once scrolled, onWrapScroll flips this to `auto` on the node's
+     inline style (the real cell has left the viewport, so the overlay is the
+     only copy left to tap). This is the AT-REST default; the scrolled state is
+     driven imperatively so a scroll never re-renders the grid. */
+  pointer-events: none;
+}
+
+/* The overlay's table carries no day columns, so it is only as wide as the two
+   frozen columns — their fixed widths (--who-w/--bal-w) size it unaided. A
+   transparent frame lets only the cells' own --panel/--bg backgrounds show, so
+   it matches the real columns pixel for pixel. */
+.mxband table.mx { background: transparent; width: auto; }
+
+/* With the overlay up, the REAL roster's two columns stop sticking: a sideways
+   scroll carries them off to the left under the overlay instead of paying to
+   pin them every frame. Only the roster body is freed — the header, month
+   strip, brackets and event rows keep their own sticky cells (few, and the
+   overlay does not redraw them). */
+.mx-banded .mxbody .who,
+.mx-banded .mxbody .bal,
+.mx-banded .mxbody tr.grp td.grphd { position: static; }
+
 }

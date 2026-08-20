@@ -71,8 +71,25 @@ test.beforeEach(async ({ page }) => {
   await openLeaveWar(page)
 })
 
+// THE FROZEN CALLSIGN/COUNTER COLUMNS on a phone are no longer the real cells
+// (20 Aug 26 — the third look at the sideways stutter). The real cells were
+// `position: sticky` on every one of ~80 rows and a sideways drag re-solved
+// all of them each frame; now the two columns are drawn ONCE in a `.mxband`
+// overlay outside the sideways scroller, and the real cells underneath are set
+// free to scroll away. So on the phone the thing that "stays put" is the
+// overlay's copy; on a desktop (untouched sticky path) it is still the real
+// cell. This helper points each project at whichever one is doing the freezing.
+const isPhone = () => test.info().project.name === 'lw-phone'
+function frozen(page: Page, id: string, col: '.who' | '.bal') {
+  return isPhone()
+    ? page.locator(`.mxband [data-band-id="${id}"] ${col}`)
+    : col === '.who'
+      ? page.locator(`[data-testid="row-${id}"] .who`)
+      : page.locator(`[data-testid="bal-${id}"]`)
+}
+
 test('the callsign column stays put when the grid scrolls sideways', async ({ page }) => {
-  const cell = page.locator('[data-testid="row-slipway"] .who')
+  const cell = frozen(page, 'slipway', '.who')
   const before = await cell.boundingBox()
   const wrap = page.locator('.mx-wrap')
   await wrap.evaluate(el => el.scrollBy(600, 0))
@@ -84,6 +101,44 @@ test('the callsign column stays put when the grid scrolls sideways', async ({ pa
   expect(scrollLeft).toBeGreaterThan(0)
   const after = await cell.boundingBox()
   expect(Math.abs(after!.x - before!.x)).toBeLessThan(1)
+})
+
+// THE OVERLAY LINES UP WITH THE GRID (phone only). The whole risk of drawing
+// the frozen columns a second time is that the copy sits a row out of step —
+// then every name reads beside the wrong person's balance. Prove the overlay's
+// callsign shares a row with the real one it stands in for, both before and
+// after a sideways scroll has carried the real one off to the left.
+test('the frozen overlay lines up with the rows it freezes', async ({ page }) => {
+  test.skip(!isPhone(), 'the overlay is a phone-only creature')
+  const realBox = (await page.locator('[data-testid="row-slipway"] .who').boundingBox())!
+  const overBox = (await page.locator('.mxband [data-band-id="slipway"] .who').boundingBox())!
+  // Same row: their vertical centres coincide. (At rest the overlay sits
+  // directly over the real cell, so their x coincides too.)
+  const midReal = realBox.y + realBox.height / 2
+  const midOver = overBox.y + overBox.height / 2
+  expect(Math.abs(midOver - midReal), 'overlay row shares the real row').toBeLessThan(1.5)
+
+  // Scroll the real cell away; the overlay must still hold that same row.
+  await page.locator('.mx-wrap').evaluate(el => el.scrollBy(600, 0))
+  const realAfter = (await page.locator('[data-testid="row-slipway"] .who').boundingBox())!
+  const overAfter = (await page.locator('.mxband [data-band-id="slipway"] .who').boundingBox())!
+  expect(realAfter.x, 'the real cell has scrolled off to the left').toBeLessThan(realBox.x - 1)
+  expect(
+    Math.abs((overAfter.y + overAfter.height / 2) - (realAfter.y + realAfter.height / 2)),
+    'the overlay still shares the real row after scrolling',
+  ).toBeLessThan(1.5)
+})
+
+// The overlay is transparent to taps AT REST (so a tap reaches the real cell,
+// which owns the handler and the testid), and catches them ONCE SCROLLED (the
+// real cell has left the viewport, so the overlay is the only copy left to
+// tap). This proves the scrolled half — the at-rest half is proven by every
+// other test in this file tapping a real cell through the overlay unbothered.
+test('the frozen overlay callsign opens the sheet once the year has scrolled', async ({ page }) => {
+  test.skip(!isPhone(), 'the overlay is a phone-only creature')
+  await page.locator('.mx-wrap').evaluate(el => el.scrollBy(600, 0))
+  await page.locator('.mxband [data-band-id="slipway"] .whoedit').click()
+  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
 })
 
 // Replaced the sticky-date-header test on 10 Aug 26, when the owner asked for
@@ -561,8 +616,8 @@ test('an admin moves a bid to another date, and it lands pending there', async (
 // none of that is visible there.
 
 test('both frozen columns stay put when the grid scrolls sideways', async ({ page }) => {
-  const who = page.locator('[data-testid="row-slipway"] .who')
-  const bal = page.locator('[data-testid="bal-slipway"]')
+  const who = frozen(page, 'slipway', '.who')
+  const bal = frozen(page, 'slipway', '.bal')
   const before = { who: (await who.boundingBox())!, bal: (await bal.boundingBox())! }
 
   const wrap = page.locator('.mx-wrap')
