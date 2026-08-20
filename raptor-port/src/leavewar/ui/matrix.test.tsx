@@ -277,7 +277,9 @@ describe('the grid row order', () => {
     render(<Matrix />)
     const table = screen.getByTestId('month-strip').closest('table')!
     const sections = Array.from(table.children).map(el => el.className || el.tagName.toLowerCase())
-    expect(sections).toEqual(['counts', 'mstripe', 'mxhead', 'events', 'tbody'])
+    // The roster body is `.mxbody` now (20 Aug 26) — the frozen-column overlay
+    // measures it by that name and draws a second copy of its two lead columns.
+    expect(sections).toEqual(['counts', 'mstripe', 'mxhead', 'events', 'mxbody'])
   })
 
   it('brackets every month above the dates, spanning its own days', () => {

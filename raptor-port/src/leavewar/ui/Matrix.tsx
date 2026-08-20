@@ -299,6 +299,14 @@ export function Matrix() {
   // Jumping to a month is how a year-long war is navigable at all: 365
   // columns is roughly 13,600px, and nobody finds September by dragging.
   const wrapRef = useRef<HTMLDivElement>(null)
+  // The frozen-column overlay's own anchors (see the .mxband block below and
+  // in matrix.css). `mxOuterRef` is the page-flow box the overlay is absolutely
+  // placed inside; `rosterBodyRef` is the one row group it must line up with.
+  const mxOuterRef = useRef<HTMLDivElement>(null)
+  const bandRef = useRef<HTMLDivElement>(null)
+  const rosterBodyRef = useRef<HTMLTableSectionElement>(null)
+  const [phone, setPhone] = useState(false)
+  const [bandTop, setBandTop] = useState<number | null>(null)
   const months = monthsIn(period.start, period.end)
 
   // The month BRACKET above the dates (owner, 18 Aug 26 — "draw a line at the
@@ -490,13 +498,21 @@ export function Matrix() {
       mirrorRef.current.scrollLeft = wrapRef.current.scrollLeft
     }
   }, [stuck])
+  // The mirror FOLLOWS the grid and never drives it (owner, 20 Aug 26 — the
+  // sixth report, and the one that found it: "when the top bar freezes the
+  // sideways scroll can only move a bit and halts quickly"). It used to be a
+  // two-way sync — the mirror's own `scroll` event wrote its position back onto
+  // the grid. On iOS that is fatal to a fling: the grid flings on the
+  // compositor, the mirror lags it by a frame, and its scroll handler then
+  // writes that STALE position back onto the grid, snapping it back and killing
+  // the fling — which is exactly the "moves a bit then halts". So the write-back
+  // is gone, and `.mxfixed-scroll` is `overflow-x: hidden` (matrix.css) so the
+  // header cannot be dragged out of step with the grid either. `syncMirror`
+  // (grid → mirror) is all that remains, and setting the mirror's own scrollLeft
+  // never touches the grid.
   const syncMirror = () => {
     const m = mirrorRef.current, w = wrapRef.current
     if (m && w && m.scrollLeft !== w.scrollLeft) m.scrollLeft = w.scrollLeft
-  }
-  const syncFromMirror = () => {
-    const m = mirrorRef.current, w = wrapRef.current
-    if (m && w && w.scrollLeft !== m.scrollLeft) w.scrollLeft = m.scrollLeft
   }
 
   // The frozen header tracks the grid on a requestAnimationFrame LOOP, not
@@ -770,6 +786,18 @@ export function Matrix() {
   const SCROLL_REST_MS = 120
   const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const onWrapScroll = () => {
+    // The frozen-column overlay sits ON TOP of the real columns. At rest
+    // (scrollLeft 0) it must let a tap fall THROUGH to the real cell beneath —
+    // that cell still carries the handler, the testid and the focus seat — so
+    // it is `pointer-events: none` until the year has actually scrolled the
+    // real cell away, at which point the overlay is the only copy left to tap
+    // and must catch it. Written straight onto the node's inline style (never
+    // React state — a setState here would re-render the whole ~25k-node grid
+    // on every scroll, the very cost this overlay exists to remove). It has to
+    // be the INLINE style, not a toggled class: React owns `.mx-outer`'s
+    // className and would wipe an imperatively-added class on its next render,
+    // but it never sets `pointer-events`, so this property is left alone.
+    if (bandRef.current) bandRef.current.style.pointerEvents = (wrapRef.current?.scrollLeft ?? 0) > 0 ? 'auto' : 'none'
     measureStrip()
     // Match this frame straight away, then keep matching every frame on the
     // rAF loop until the scroll rests — the immediate write covers the case
@@ -847,6 +875,84 @@ export function Matrix() {
     window.addEventListener('resize', measure)
     return () => window.removeEventListener('resize', measure)
   }, [zoom, period.id, dates.length])
+
+  // ---- the frozen roster columns, drawn ONCE (owner, 20 Aug 26 — the third
+  // look at the sideways stutter) --------------------------------------------
+  //
+  // The callsign and counter columns were `position: sticky` on every one of
+  // ~80 rows, and a sideways drag made the browser re-solve all ~160 of those
+  // pins every frame — measured as the bulk of the per-frame cost the stutter
+  // was made of. Instead the two columns are drawn a SECOND time, ONCE, in an
+  // overlay that lives OUTSIDE `.mx-wrap` (the sideways scroller): a sideways
+  // scroll never moves it and never re-solves anything, and the real columns
+  // underneath are set free to scroll away. Because the overlay is a sibling of
+  // the grid in the same page-flow box, it rides the page's own vertical scroll
+  // with the grid for free — so the ONLY thing it must be told is where the
+  // roster begins, one number, never read on scroll.
+  //
+  // Phone only, like the frozen header: the sideways stutter lives on the phone
+  // and the desktop keeps its untouched sticky path. Suspended while ARRANGING
+  // — that mode adds per-row drag handles the overlay does not carry, and it is
+  // an admin edit, not the scroll-perf path.
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return
+    const mq = window.matchMedia('(max-width: 700px)')
+    const on = () => setPhone(mq.matches)
+    on()
+    mq.addEventListener?.('change', on)
+    return () => mq.removeEventListener?.('change', on)
+  }, [])
+
+  const bandActive = phone && !arranging
+  useLayoutEffect(() => {
+    if (!bandActive) { setBandTop(null); return }
+    const measure = () => {
+      const outer = mxOuterRef.current, body = rosterBodyRef.current
+      if (!outer || !body) return
+      const br = body.getBoundingClientRect()
+      if (br.height === 0) { setBandTop(null); return } // jsdom / not laid out
+      setBandTop(br.top - outer.getBoundingClientRect().top)
+    }
+    measure()
+    // A row ABOVE the roster changing height (an event edited, the manning
+    // block collapsed, the strip re-wrapped) moves the roster's top — catch it
+    // without listing every cause. Never fires on a sideways scroll: that moves
+    // no edge the observer watches.
+    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null
+    if (ro && mxOuterRef.current) ro.observe(mxOuterRef.current)
+    window.addEventListener('resize', measure)
+    return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bandActive, zoom, visWindow, period.id, dates.length, countsOpen])
+
+  // The roster's row SEQUENCE — group headings, CAT sub-headings and people, in
+  // display order — computed so the real grid and the frozen overlay draw the
+  // SAME rows in the SAME order. The overlay must not invent its own order or
+  // it would sit a row out of step with the grid; the frozencols order test
+  // pins the two together. This mirrors the inline logic in the roster <tbody>
+  // render below on purpose — change one and the test catches the other.
+  type RSeq =
+    | { kind: 'group'; g: Group; n: number }
+    | { kind: 'catsub'; g: Group; cat: string }
+    | { kind: 'person'; p: Person }
+  const rosterSequence = (): RSeq[] => {
+    const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
+    const out: RSeq[] = []
+    let prevG: Group | null = null
+    let prevCat = ''
+    for (const p of roster) {
+      const g = groupOf(p)
+      if (g !== prevG) {
+        out.push({ kind: 'group', g, n: roster.filter(x => groupOf(x) === g).length })
+        prevG = g
+        prevCat = ''
+      }
+      const cat = opsCatOf(p)
+      if (cat && cat !== prevCat) { out.push({ kind: 'catsub', g, cat }); prevCat = cat }
+      out.push({ kind: 'person', p })
+    }
+    return out
+  }
 
   // The under-manned list asks for a day the same way the month strip asks
   // for a month, through the one `jumpTo` above — so a target lands clear of
@@ -1003,6 +1109,10 @@ export function Matrix() {
           )}
         </div>
         <div
+          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}`}
+          ref={mxOuterRef}
+        >
+        <div
           className="mx-wrap"
           ref={wrapRef}
           onScroll={onWrapScroll}
@@ -1093,7 +1203,7 @@ export function Matrix() {
               editable={role === 'admin'}
               onEdit={(line, date) => setEventEdit({ line, date })}
             />
-            <tbody>
+            <tbody className="mxbody" ref={rosterBodyRef}>
               {(() => {
                 // The roster in DISPLAY order (owner, 18 Aug 26): the admin's
                 // hand-order, or the categorised default. A group heading is
@@ -1361,7 +1471,7 @@ export function Matrix() {
             data-testid="sticky-head"
             style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
           >
-            <div className="mxfixed-scroll" ref={mirrorRef} onScroll={syncFromMirror}>
+            <div className="mxfixed-scroll" ref={mirrorRef}>
               {/* The measured widths are visual px (they include the zoom),
                   and the mirror table wears the same zoom so its text sizes
                   match — so its layout widths are the measurements divided
@@ -1387,6 +1497,70 @@ export function Matrix() {
             </div>
           </div>
         )}
+        {/* The frozen roster columns, drawn once. Sibling of `.mx-wrap`, not a
+            child — a child would ride the sideways scroll it exists to sit out.
+            aria-hidden and its buttons out of the tab order: the REAL columns
+            underneath (scrolled off to the left, still in the DOM) keep the
+            testids, focus order and screen-reader seat; this copy only has to
+            be tappable where the year has scrolled the real ones away. */}
+        {bandActive && (
+          <div
+            className="mxband"
+            ref={bandRef}
+            aria-hidden="true"
+            data-testid="frozen-cols"
+            style={{ top: bandTop ?? 0, ...(bandTop == null ? { visibility: 'hidden' as const } : null) }}
+          >
+            <table className="mx" style={zoom !== 1 ? { zoom } : undefined}>
+              <tbody className="mxbody">
+                {rosterSequence().map(item => {
+                  if (item.kind === 'group') return (
+                    <tr key={`b-grp-${item.g}`} className={`grp g-${item.g.toLowerCase()}`}>
+                      <td className="grphd" colSpan={2}>
+                        <div className="grphd-in">
+                          <span className="gsw" />
+                          <span className="gname">{GROUP_LABEL[item.g]}</span>
+                          <span className="gcount">· {item.n}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                  if (item.kind === 'catsub') return (
+                    <tr key={`b-sub-${item.g}-${item.cat}`} className="catsub">
+                      <td className="catsub-in" colSpan={2}>CAT {item.cat}</td>
+                    </tr>
+                  )
+                  const p = item.p
+                  const v = shown.value(figureCtx, p.id)
+                  return (
+                    // `data-band-id`, NOT a testid: the real row keeps `row-…`
+                    // and `bal-…`, and two nodes answering one testid would
+                    // break every query that expects the one real match. e2e
+                    // still needs to find a given person in the overlay to prove
+                    // it lines up with — and stays put over — the real row.
+                    <tr key={`b-${p.id}`} data-band-id={p.id} className={p.id === viewer ? 'me' : undefined}>
+                      <td className="who">
+                        <div className="whorow">
+                          <button className="whoedit" tabIndex={-1} onClick={() => setWhoOpen(p.id)}>
+                            <span className="cs">{p.callsign}</span>
+                            <span className={`catchip ${catClass(p)}`}>{catText(p) || 'GND'}</span>
+                          </button>
+                        </div>
+                      </td>
+                      <td
+                        className={`bal act${v < 0 ? ' neg' : ''}`}
+                        onClick={() => setBalOpen({ person: p.id, figureId: shown.id })}
+                      >
+                        {show(v)}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
       </div>
 
       {/* Rendered outside `.mx-wrap` on purpose: that wrapper scrolls, and a

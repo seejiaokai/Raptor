@@ -303,10 +303,26 @@ has its own e2e DOM band (29000), measured-first.
   `startPump`/`stopPump` in Matrix.tsx) that re-runs `syncMirror` every frame
   while a scroll is in flight and stops ~200ms after it rests (so an idle page
   still idles); the immediate `syncMirror` in the event covers the first
-  frame, the loop covers the frames the event skips. `syncFromMirror`
-  (mirror→grid, for a drag on the frozen strip) is unchanged and the guards
-  keep the two from fighting. Not measurable headless (no kinetic scroll — the
-  e2e proves tracking + alignment, a real phone proves the smoothness).
+  frame, the loop covers the frames the event skips. Not measurable headless
+  (no kinetic scroll — the e2e proves tracking + alignment, a real phone proves
+  the smoothness).
+  **THE WRITE-BACK WAS THE HALT (owner, 20 Aug 26, sixth report — the one that
+  found it: "when the top bar freezes the sideways scroll can only move a bit
+  and it halts quickly").** `syncFromMirror` (mirror→grid) is GONE. It was a
+  two-way sync: the mirror's own `scroll` event wrote its position back onto the
+  grid. On iOS that is fatal to a fling — the grid flings on the compositor, the
+  mirror lags it by a frame, and its handler then writes that STALE position
+  back onto the grid, snapping it back the instant it starts moving, which is
+  exactly "moves a bit then halts". This is why the scroll was smooth UNTIL the
+  header froze (no mirror = no write-back) and seized the moment it did. The
+  mirror now only FOLLOWS (`syncMirror`, grid→mirror); `.mxfixed-scroll` is
+  `touch-action: none` so a finger cannot drag it out of step, and it stays
+  `overflow-x: auto` (NOT hidden — WebKit clamps `scrollLeft` to 0 on an
+  overflow:hidden element, which would stop the header tracking). Pinned by the
+  header-freeze e2e: the grid drives the mirror, and setting the mirror's own
+  scrollLeft leaves the grid put. Alignment is untouched (this is scroll wiring,
+  not layout), so it cannot cause the misalignment the reverted column
+  virtualisation did — but the SMOOTHNESS still only a real iPhone can confirm.
   **THE PUMP WAS NOT THE PROBLEM, AND THE THIRD REPORT (owner, 20 Aug 26 —
   the frozen bar "lags visually slightly left and right and also it stutters")
   FOUND WHAT WAS.** The pump was being STARVED, not running too slowly.
@@ -333,6 +349,58 @@ has its own e2e DOM band (29000), measured-first.
   that is STILL not measurable here is the smoothness itself: headless
   Chromium has no kinetic scroll, so the numbers above are main-thread cost,
   which is the cause; only a real phone can confirm the effect.
+  **THE SIDEWAYS STUTTER, FOURTH REPORT (owner, 20 Aug 26 — "It's still
+  stuttering"): the FROZEN COLUMNS are drawn ONCE now.** The frozen-header work
+  above fixed the month readout re-render; the sideways drag was still rough
+  because the callsign and counter columns were `position: sticky` on every one
+  of ~80 roster rows, and the browser re-solved all ~160 of those pins each
+  frame. They are drawn a SECOND time now, ONCE, in a `.mxband` overlay parked
+  OUTSIDE `.mx-wrap` (the sideways scroller): a sideways scroll neither moves it
+  nor re-solves anything, and the real roster columns underneath are set free to
+  scroll away (`.mx-banded` unsticks `.mxbody .who/.bal/.grphd`). The overlay is
+  a sibling of `.mx-wrap` inside a new `.mx-outer` (position: relative) — both in
+  the page's own vertical flow — so it rides the page's vertical scroll with the
+  grid for free; only its TOP is set from JS (`bandTop`, measured off the roster
+  body's position, re-read on the mirror's deps + `countsOpen` + a
+  ResizeObserver, NEVER on scroll). Alignment holds by construction: the overlay
+  draws the SAME rows (`rosterSequence()`, shared with the real render and pinned
+  equal by the frozencols order test) at the SAME heights (on a phone a person
+  row is a uniform 22px, a group heading its own content — day cells never make
+  either taller). PHONE ONLY, suspended while arranging; the desktop keeps its
+  untouched sticky path. The real cells keep the testids, tab order and
+  screen-reader seat; the overlay is `aria-hidden` with `tabIndex=-1` copies of
+  the two controls and is `pointer-events: none` AT REST so a tap falls through
+  to the real cell beneath — `onWrapScroll` flips it to `auto` (on the node's
+  inline style, never state) once the year has scrolled the real cell away, so
+  the frozen copy is what catches the tap then. e2e (lw-phone) pins that it stays
+  put, lines up before AND after a scroll, and opens the sheet when scrolled;
+  `frozencols.test.tsx` pins the wiring. This removes the SECONDARY cost (the
+  pins); the PRIMARY cost is still drawing ~23,500 day cells at once, which no
+  frozen-column change touches — if the phone is still rough, the next lever is
+  not drawing the whole year at once (owner's call; it changes what loads).
+  **THAT LEVER WAS TRIED AND REVERTED — it breaks on iOS Safari (owner, 20 Aug
+  26, fifth report: "It's even worse now it's not aligned").** Column
+  virtualisation (only the roster's person rows draw the days near the view,
+  the rest collapsed into left/right `<td colSpan>` spacers over the still-full
+  header columns) was built, passed every gate, and measured dx=0 alignment in
+  Chromium across many re-windows — then misaligned the roster from the header
+  by ~1 column on the owner's iPhone, persistently (measured 61–123px offset off
+  his screen recording). The cause is the one this repo already warns about
+  (`docs/leavewar/known-gaps.md` §"The geometry gate claims less than it
+  appears to"): a `<table>` with `position: sticky` frozen columns and rows of
+  differing cell counts (a colSpan spacer vs full per-day cells) reconciles its
+  column widths DIFFERENTLY in WebKit than in Blink, and this container ships no
+  WebKit build (playwright's is registered but the binary and its system libs
+  are absent — `npx playwright install webkit` fails on missing libs), so NO
+  table-column virtualisation can be verified here before it reaches a phone.
+  The whole diff is one `git revert` away (commits "column-virtualise the
+  roster" + "window the roster only after the first scroll") if a WebKit test
+  path ever exists. Until then: do NOT re-attempt table-column virtualisation
+  blind. The genuinely safe next lever is a NON-table redraw of the grid
+  (absolutely-positioned divs or a canvas), which sidesteps table reconciliation
+  entirely — a bigger rebuild, and it STILL needs WebKit verification before it
+  ships. The frozen-columns overlay above is confirmed fine on his phone (his
+  fourth recording showed it aligned), so it stays.
   (3) **A month BRACKET row** (`tr.mbrak` in the same `.mxhead` tbody): one
   open-topped accent box per month spanning exactly its days, label sticky
   just clear of the frozen columns. Derived from the loaded days, so a
@@ -1606,6 +1674,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/ui/pubsweep.test.tsx` | The comprehensive publishing sweep (16 Aug 26, 28 tests) — scenario by scenario, asserting what the edit week, the board's publish strip and the view page each show: lifecycle, edit-after-publish, edit-and-revert across key families, structural round trips netting out, drafts-on-published-day rebase (including rebase-against-current-AL), load-onto-working-copy leaving `SCHED.cur` alone, reopen → re-publish, unpublish, and week-vs-board deep-equal agreement. Finding a live bug (the time-respelling pending mark) is what this file is FOR — keep extending it when publishing behaviour changes. |
 | `src/ui/boardaddinput.test.tsx` | The board's **+ Add** input (Aug 26, 11 tests) — the button renders on a live Personal Inputs / Unavailable panel and not on a read-only one, `commitNewInput` lands a row on the open day (and refuses a malformed draft), the dialog opens in its `_new` shape (no Delete, "Add", panel-suited default type), the whole click-fill-Add gesture paints the new row under the panel, Cancel adds nothing, and a member is refused at the `routeClick` handler even with a hand-made button. |
 | `src/leavewar/ui/monthstrip.test.tsx` | The month readout (extended 20 Aug 26). Its `layoutYear` helper now simulates a scroll the way a BROWSER does — the columns hold still and `scrollLeft` moves over them — because the readout reads cached content-space geometry instead of re-measuring every rectangle on every scroll event. A test that leaves `scrollLeft` at zero is testing a scroll that never happened. Also pins that an unrelated re-render does not blank the highlight, with a note on what that test does NOT catch. |
+| `src/leavewar/ui/frozencols.test.tsx` | The frozen roster columns drawn once (20 Aug 26, 4 tests). On a phone the callsign/counter columns are a `.mxband` overlay drawn OUTSIDE the sideways scroller instead of `position: sticky` on every row (see the frozen-columns block in HANDOFF's Leave War narrative). jsdom has no layout, so this pins the WIRING: the overlay exists on a phone (`matchMedia` stubbed) and not on a desktop, it lists the SAME people in the SAME order as the grid, it is `aria-hidden` with its buttons out of the tab order while the real cells keep the testids, and its copy of a callsign still opens the person sheet. Alignment, staying put, and the pointer-events handoff are measured in `e2e/leavewar.spec.ts` (lw-phone). |
 | `src/ui/boardwrap.test.tsx` | The board's text boxes wrap and grow (20 Aug 26, 8 tests) — every remarks box and every name/role box is a `<textarea>`, every TIME cell is still an `<input>` (the deliberate exclusion, pinned so a later pass does not "finish the job"), a value round-trips through textarea content unchanged (the leading-newline trick), and Enter still COMMITS while Shift+Enter is left alone and Escape restores. jsdom reports every rect 0×0, so the box actually GROWING — and a long unbroken word breaking rather than overflowing — is measured in `e2e/geometry.spec.ts` instead. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |

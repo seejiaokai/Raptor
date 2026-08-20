@@ -286,6 +286,15 @@ Run the gate against real WebKit before the squadron opens this on iPhones. It
 is a one-line config change wherever a WebKit build is available; nothing in the
 test code needs to change.
 
+Narrowed on the phone since 20 Aug 26: the roster's two frozen columns are no
+longer `position: sticky` there — they are drawn once in a `.mxband` overlay
+outside the sideways scroller (HANDOFF's frozen-columns block), which is
+ordinary absolute positioning Blink and WebKit agree on. So the sticky-in-table
+divergence now only rides the phone's frozen HEADER (the `.mxfixed` mirror, its
+own machinery) and the DESKTOP's still-sticky columns. Still worth the WebKit
+pass, but the riskiest surface — sticky cells on 80 scrolling rows — is off the
+phone now.
+
 ## Deliberately deferred to later plans
 
 - **The day's overall verdict is computed and not shown.** `evaluateDay`
