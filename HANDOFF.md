@@ -24,28 +24,24 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the board text-box alignment + wrapping
-batch AND the Leave War frozen-header scroll fix, 20 Aug 26 — all six gates
-watched this session, on a tree that already carries the counter session's
-work below):
+**Last recorded green baseline** (the frozen-column VERTICAL alignment fix,
+20 Aug 26 — all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2689 across 146 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2690 across 146 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 303 passed / 11 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `npm run test:e2e` | 304 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
 | `perf` | 4/4 |
 
-The counts reconcile against the counter session's own reading directly
-above what this replaced (2676 across 144 files, 299 e2e): +8 tests and +1
-file for `boardwrap.test.tsx`, +1 for the month-strip re-render guard, and
-+2 e2e for the remarks alignment and growth measurements (→ 2685 / 145 / 301);
-then +4 tests and +1 file for `frozencols.test.tsx` (the frozen-column
-overlay), and +2 e2e (both phone-only, so +2 desktop skips) for the overlay's
-alignment and its scrolled callsign tap (→ 2689 / 146 / 303). The reverted
-roster column-virtualisation left no tests behind.
+The counts reconcile against the reading directly above what this replaced
+(2689 across 146 files, 303 e2e / 11 skips): +1 test in the existing
+`frozencols.test.tsx` (every overlay row's `data-band-key` addresses exactly
+one real row) and +1 e2e — the whole-roster alignment walk, phone-only, so the
+desktop project skips it and the skip count moves with it. No new file, and
+the repaired blocked-exercise-week test below was already counted.
 
 DOM measures at that baseline: week **3743** under a 4000 ceiling, board
 **847** under 960 (three context-bound add buttons, net +1 node over the old
@@ -94,6 +90,21 @@ has its own e2e DOM band (29000), measured-first.
   Geometry contracts are gated by `e2e/geometry.spec.ts` (the fourth CI
   gate, 86 checks); wider visual work still wants the probe path
   (`npx vite preview --port 4173` + `probes/`).
+- **A MONTH JUMP IS NOT OVER WHEN THE CLICK RETURNS, and a rect read too early
+  is a hard failure, not a flake** (20 Aug 26). The Leave War roster's row
+  window is deliberately DEBOUNCED to scroll REST (writing scrollLeft mid-fling
+  kills a touch scroll's momentum), and the reflow it then runs re-narrows every
+  column the hidden rows' chips had widened and puts the anchored column back.
+  So a measurement taken straight after `month-MAR.click()` reads a layout
+  nothing ever settled at — and taking two boxes in two `boundingBox()` calls
+  lets the reflow fire BETWEEN them, comparing a rect from one layout against a
+  rect from the next. The blocked-exercise-week e2e did both and failed by a
+  byte-identical ~10.9px on BOTH projects, three runs running, which is exactly
+  what made it read as a code fault. Repaired with `settleGrid` (poll until the
+  scroll position AND a day column's own left edge both hold still — the reflow
+  moves the columns without moving the scroller) plus one atomic `evaluate` for
+  all three rects. **Any new Leave War geometry test that navigates first wants
+  the same two habits.**
 - **jsdom cannot HIT-TEST either, and that is a separate trap** (12 Aug 26). A
   pointer bug on the board hid there for a day: dispatching a synthetic
   pointerdown straight at the element you mean is not what a finger does, and a
@@ -366,11 +377,26 @@ has its own e2e DOM band (29000), measured-first.
   the page's own vertical flow — so it rides the page's vertical scroll with the
   grid for free; only its TOP is set from JS (`bandTop`, measured off the roster
   body's position, re-read on the mirror's deps + `countsOpen` + a
-  ResizeObserver, NEVER on scroll). Alignment holds by construction: the overlay
-  draws the SAME rows (`rosterSequence()`, shared with the real render and pinned
-  equal by the frozencols order test) at the SAME heights (on a phone a person
-  row is a uniform 22px, a group heading its own content — day cells never make
-  either taller). PHONE ONLY, suspended while arranging; the desktop keeps its
+  ResizeObserver, NEVER on scroll). The overlay draws the SAME rows
+  (`rosterSequence()`, shared with the real render and pinned equal by the
+  frozencols order test), and — since 20 Aug 26 — at MEASURED heights, not
+  assumed ones. **The assumption that a phone row is a uniform 22px was simply
+  false, and the error was cumulative** (owner, 20 Aug 26, seventh report: "see
+  the misalignment vertically too"): a person row carrying a code chip in any of
+  its 365 day cells is 23px where an empty one is 22 — the chip's line box runs a
+  pixel taller than the balance cell's bare text — and the overlay, which draws
+  no day cells, cannot grow with it. Measured here, the two were 14px apart by
+  the bottom of the demo roster, which is most of a row: names beside the wrong
+  balances. `syncBandHeights` now copies each real row's measured height onto its
+  overlay twin (addressed by `data-band-key` → the real row's `data-testid`,
+  visual px with the table `zoom` divided back out, written onto the nodes and
+  never through state), on every render — a bid placed or withdrawn moves a chip
+  in and out of a cell, and this component deliberately does not re-render on
+  scroll, so per-render is both correct and rare. **Deliberately NOT fixed by
+  making the grid's own rows uniform**: that is a bet on one engine's line-box
+  arithmetic, and the reverted column virtualisation below is this repo's
+  standing lesson that two independently laid out tables agree on nothing you
+  have not measured. PHONE ONLY, suspended while arranging; the desktop keeps its
   untouched sticky path. The real cells keep the testids, tab order and
   screen-reader seat; the overlay is `aria-hidden` with `tabIndex=-1` copies of
   the two controls and is `pointer-events: none` AT REST so a tap falls through
@@ -378,7 +404,16 @@ has its own e2e DOM band (29000), measured-first.
   inline style, never state) once the year has scrolled the real cell away, so
   the frozen copy is what catches the tap then. e2e (lw-phone) pins that it stays
   put, lines up before AND after a scroll, and opens the sheet when scrolled;
-  `frozencols.test.tsx` pins the wiring. This removes the SECONDARY cost (the
+  `frozencols.test.tsx` pins the wiring, including that every overlay row's
+  `data-band-key` addresses exactly one real row — a key that resolves to
+  nothing makes the height pin a silent no-op with every gate still green.
+  **THE ALIGNMENT GATE READ ONE ROW, WHICH IS WHY THIS SHIPPED**: the original
+  e2e measured `slipway`, eleven rows down, where the drift was still under its
+  1.5px tolerance — it passes on the broken build, verified as a control case.
+  A whole-roster walk replaced it ("lines up with every row it freezes, top to
+  bottom", with a `checked > 20` guard so a dead selector cannot make it
+  vacuous). **A cumulative error is invisible to a gate that samples one item;
+  when the risk is drift, walk the whole list.** This removes the SECONDARY cost (the
   pins); the PRIMARY cost is still drawing ~23,500 day cells at once, which no
   frozen-column change touches — if the phone is still rough, the next lever is
   not drawing the whole year at once (owner's call; it changes what loads).
@@ -1678,7 +1713,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/ui/pubsweep.test.tsx` | The comprehensive publishing sweep (16 Aug 26, 28 tests) — scenario by scenario, asserting what the edit week, the board's publish strip and the view page each show: lifecycle, edit-after-publish, edit-and-revert across key families, structural round trips netting out, drafts-on-published-day rebase (including rebase-against-current-AL), load-onto-working-copy leaving `SCHED.cur` alone, reopen → re-publish, unpublish, and week-vs-board deep-equal agreement. Finding a live bug (the time-respelling pending mark) is what this file is FOR — keep extending it when publishing behaviour changes. |
 | `src/ui/boardaddinput.test.tsx` | The board's **+ Add** input (Aug 26, 11 tests) — the button renders on a live Personal Inputs / Unavailable panel and not on a read-only one, `commitNewInput` lands a row on the open day (and refuses a malformed draft), the dialog opens in its `_new` shape (no Delete, "Add", panel-suited default type), the whole click-fill-Add gesture paints the new row under the panel, Cancel adds nothing, and a member is refused at the `routeClick` handler even with a hand-made button. |
 | `src/leavewar/ui/monthstrip.test.tsx` | The month readout (extended 20 Aug 26). Its `layoutYear` helper now simulates a scroll the way a BROWSER does — the columns hold still and `scrollLeft` moves over them — because the readout reads cached content-space geometry instead of re-measuring every rectangle on every scroll event. A test that leaves `scrollLeft` at zero is testing a scroll that never happened. Also pins that an unrelated re-render does not blank the highlight, with a note on what that test does NOT catch. |
-| `src/leavewar/ui/frozencols.test.tsx` | The frozen roster columns drawn once (20 Aug 26, 4 tests). On a phone the callsign/counter columns are a `.mxband` overlay drawn OUTSIDE the sideways scroller instead of `position: sticky` on every row (see the frozen-columns block in HANDOFF's Leave War narrative). jsdom has no layout, so this pins the WIRING: the overlay exists on a phone (`matchMedia` stubbed) and not on a desktop, it lists the SAME people in the SAME order as the grid, it is `aria-hidden` with its buttons out of the tab order while the real cells keep the testids, and its copy of a callsign still opens the person sheet. Alignment, staying put, and the pointer-events handoff are measured in `e2e/leavewar.spec.ts` (lw-phone). |
+| `src/leavewar/ui/frozencols.test.tsx` | The frozen roster columns drawn once (20 Aug 26, 5 tests). On a phone the callsign/counter columns are a `.mxband` overlay drawn OUTSIDE the sideways scroller instead of `position: sticky` on every row (see the frozen-columns block in HANDOFF's Leave War narrative). jsdom has no layout, so this pins the WIRING: the overlay exists on a phone (`matchMedia` stubbed) and not on a desktop, it lists the SAME people in the SAME order as the grid, it is `aria-hidden` with its buttons out of the tab order while the real cells keep the testids, its copy of a callsign still opens the person sheet, and every overlay row's `data-band-key` addresses exactly one real row (the address book `syncBandHeights` looks the measured heights up in — a key resolving to nothing would make the height pin a silent no-op). Alignment, staying put, and the pointer-events handoff are measured in `e2e/leavewar.spec.ts` (lw-phone), where the alignment walk covers EVERY row, not a sample. |
 | `src/ui/boardwrap.test.tsx` | The board's text boxes wrap and grow (20 Aug 26, 8 tests) — every remarks box and every name/role box is a `<textarea>`, every TIME cell is still an `<input>` (the deliberate exclusion, pinned so a later pass does not "finish the job"), a value round-trips through textarea content unchanged (the leading-newline trick), and Enter still COMMITS while Shift+Enter is left alone and Escape restores. jsdom reports every rect 0×0, so the box actually GROWING — and a long unbroken word breaking rather than overflowing — is measured in `e2e/geometry.spec.ts` instead. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |
