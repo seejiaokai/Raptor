@@ -64,6 +64,35 @@ export function restClear(di:any,id:any){const m=REST[di]; const v=m&&m[id]; ret
    running collectEvents() again for every name in the palette. SC SPARE lines
    are absent here exactly as they are absent from the engine. */
 export let EVD:any={};
+/* ONE PERSON'S WORKING DAY, out of the events they are on that day — the ONE
+   definition of it (extracted 20 Aug 26 for the Insights work-hours section;
+   the long-work-day note below is its other reader).
+
+   Report (the published in-time when the wave has one, else T/O − reportLead)
+   through last landing + the debrief pad, or plain start→end for everything
+   that is not flying. `ef` is the FLY event that set the END, null when a
+   non-flying commitment did, so a caller can name the debrief pad baked into
+   it. Null when the person has nothing with both a start and an end.
+
+   It is a function rather than two copies for the reason
+   docs/feature-impact.md §drift-seams exists: a week's total hours and the
+   note that says a day is long have to mean the same thing, or one of them is
+   lying. The body is the long-day block's own, moved unchanged. */
+export function workSpan(evs:any){
+  let s:any=null,e:any=null,ef:any=null;
+  (evs||[]).forEach((o:any)=>{
+    /* the published in-time IS the report time when there is one; only fall
+       back to T/O − 3h when the wave published none. Taking the min() of the
+       two discarded any in-time later than T/O − 3h and inflated the day —
+       three of the four long-day notes on the seed Monday were wrong. */
+    const os=o.kind==='fly'?(o.report!=null?o.report:o.to-VCONF.reportLead):o.s;
+    const oe=o.kind==='fly'?o.ld+VCONF.debrief:o.e;
+    if(os!=null&&(s==null||os<s))s=os;
+    if(oe!=null&&(e==null||oe>e)){e=oe;ef=o.kind==='fly'?o:null;}
+  });
+  if(s==null||e==null)return null;
+  return {s,e,span:e-s,ef};
+}
 export function dayEvents(di:any,id:any){const m=EVD[di]; return (m&&m[id])||[];}
 export function validate(){
   const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={}, trace:any={};
@@ -323,21 +352,10 @@ export function validate(){
        grey note stating the actual hours. Personal inputs are left out — an
        all-day input would read as a 24-hour work day.                          */
     Object.keys(byE).forEach((id:any)=>{
+      const w=workSpan(byE[id]); if(!w)return;
       /* ef keeps the FLY event that set the day's END (null when a non-flying
          commitment did), so the note can name the debrief pad baked into it. */
-      let s:any=null,e:any=null,ef:any=null;
-      byE[id].forEach((o:any)=>{
-        /* the published in-time IS the report time when there is one; only fall
-           back to T/O − 3h when the wave published none. Taking the min() of the
-           two discarded any in-time later than T/O − 3h and inflated the day —
-           three of the four long-day notes on the seed Monday were wrong. */
-        const os=o.kind==='fly'?(o.report!=null?o.report:o.to-VCONF.reportLead):o.s;
-        const oe=o.kind==='fly'?o.ld+VCONF.debrief:o.e;
-        if(os!=null&&(s==null||os<s))s=os;
-        if(oe!=null&&(e==null||oe>e)){e=oe;ef=o.kind==='fly'?o:null;}
-      });
-      if(s==null||e==null)return;
-      const span=e-s;
+      const s=w.s,e=w.e,ef=w.ef,span=w.span;
       if(span>VCONF.longDay){markChip(di,id,'LD');markRing(di,id,'note');
         /* NAME THE DEBRIEF ASSUMPTION (owner, 15 Aug 26 — the same "state the
            assumption" as crew rest). When a sortie closes the day, its end is

@@ -7,7 +7,7 @@ import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
-import { esc } from '../state/view'
+import { esc, LATEMARK } from '../state/view'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateRowCls, lateRowTitle, sansCardsHTML } from './html'
 
 /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
@@ -500,7 +500,26 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   /* this panel's own + Add MOVED to the Ground Programme header as "+ Inputs"
      (owner, 19 Aug 26) — an activity input a scheduler adds belongs on the
      programme, so the button lives where the result lands */
-  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day'}</span></div><div class="sb-pb">`;
+  /* THE LATE-MARK SWITCH LIVES HERE (owner, 20 Aug 26 — "can u give the
+     scheduler board the option to remove late input tags?"). This panel is
+     where the marks are read, and it is the only inputs header on the board
+     with room: the board's TOP bar is at its measured limit and §Stable
+     decisions forbids adding a control to it without taking one off, which is
+     a bad trade for a preference. The label says what pressing it DOES rather
+     than what the state is — the marks themselves are the state, and they are
+     right there. Effect is app-wide, not panel-wide, so the tooltip says so.
+     Rendered only where the panel is live; `routeClick` re-checks the role. */
+  /* MEASURED, not styled to taste: spelled out as "Hide LATE marks" this
+     button is ~180px, and this header is a flex row where it competes with a
+     long `.sub` — it drove the panel head from 79px to 145px on a 390px
+     screen, taller than every other panel on the board. It wears the board
+     bar's own `.bi`/`.bl` idiom instead (phone reads "LATE", desktop "LATE
+     marks"), and the STATE rides an `on` class + aria-pressed the way the
+     board's History toggle does — lit means the marks are suppressed, which is
+     the thing that is switched ON. The title carries the full sentence for
+     both states, since the short label cannot. */
+  const ltBtn=acRo?'':`<button class="sb-addinp latetog${LATEMARK?'':' on'}" data-latetog="1" aria-pressed="${LATEMARK?'false':'true'}" title="${LATEMARK?'Hide the LATE marks on the board and the week — the Inputs page keeps its own':'Show the LATE marks on the board and the week again'}"><span class="bi">LATE</span><span class="bl"> marks</span></button>`;
+  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day'}</span>${ltBtn}</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
   else if(!acRo)s+=C6;
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo,acRo); });

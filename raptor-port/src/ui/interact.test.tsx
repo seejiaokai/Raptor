@@ -242,8 +242,13 @@ describe('warning strips (tfin B14)', () => {
     expect($$('#vWeek .puck.wfoc').length).toBe(0)
   })
 
-  it('the warning pill expands every flagged day (tfin: blocking pill expands days)', async () => {
-    await click($('#warnBtn'))
+  /* Driven through openWarns() rather than a button since 20 Aug 26: the three
+     topbar pills that used to call it were removed at the owner's word. The
+     call itself stays — it is mirrored on the probe bridge, it is what any
+     future "expand everything" control would use, and this is the reference's
+     own behaviour (tfin: blocking pill expands days), so it keeps its test. */
+  it('openWarns expands every flagged day (tfin: blocking pill expands days)', async () => {
+    await act(async () => { view.openWarns('hard'); notify() })
     expect($$('#vWeek .dwbox.open').length).toBeGreaterThanOrEqual(1)
     for (let g = 0; g < 10; g++) {
       const s = $('#vWeek .dwbox.open .daywarn'); if (!s) break

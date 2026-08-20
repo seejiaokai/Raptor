@@ -3604,3 +3604,45 @@ test('the phone board: a long remark grows its box instead of scrolling inside i
     [...new Set([...document.querySelectorAll('#sbBoard .atm, #sbBoard .sb-line .tm')].map(e => e.tagName))])
   expect(tags, 'every time cell is still a one-line input').toEqual(['INPUT'])
 })
+
+/* THE INSIGHTS BARS ACTUALLY DRAW (20 Aug 26). `.ibar .fill` is a <span>
+   carrying `height:100%` and an inline `width:N%` — and a span is
+   `display:inline`, where neither applies. It measured 0x0: the flying-load
+   bars had been drawing an empty track since they shipped, and the work-hours
+   section added the same day would have shipped just as blank. jsdom cannot
+   see this — it reports EVERY rect as 0x0, so a unit test cannot tell a bar
+   that draws from one that does not. This is the only gate that can.
+
+   Pinned as a proportion, not a pixel count: the longest row is a full track
+   and a shorter one is strictly shorter, which is what makes it a BAR CHART
+   rather than a row of identical blocks. */
+test('the Insights bars draw, and their lengths mean something', async ({ page }) => {
+  await login(page)
+  await page.click('#insightBtn')
+  await page.waitForSelector('#insightBody .ibar')
+
+  const m = await page.evaluate(() => {
+    const rows = [...document.querySelectorAll('#insightBody .ibar')].map(r => ({
+      track: r.querySelector('.track')!.getBoundingClientRect().width,
+      fill: r.querySelector('.fill')!.getBoundingClientRect().width,
+      fillH: r.querySelector('.fill')!.getBoundingClientRect().height,
+      v: r.querySelector('.v') as HTMLElement,
+    }))
+    return {
+      n: rows.length,
+      first: { track: rows[0].track, fill: rows[0].fill, h: rows[0].fillH },
+      ratios: rows.map(r => r.fill / r.track),
+      /* a value that does not fit its cell is a number the reader cannot
+         trust — "25h35" is what widened it from 22px */
+      clipped: rows.filter(r => r.v.scrollWidth > r.v.getBoundingClientRect().width + 0.5).length,
+      headings: [...document.querySelectorAll('#insightBody .isec-h')].map(h => h.textContent || ''),
+    }
+  })
+
+  expect(m.n, 'the panel drew bars at all').toBeGreaterThan(5)
+  expect(m.first.h, 'the fill has height — a display:inline span has none').toBeGreaterThan(6)
+  expect(m.first.fill, 'the longest row fills its track').toBeGreaterThan(m.first.track * 0.9)
+  expect(Math.min(...m.ratios), 'and a shorter row is genuinely shorter').toBeLessThan(0.95)
+  expect(m.clipped, 'no value is clipped by its own cell').toBe(0)
+  expect(m.headings.some(h => h.startsWith('Work hours')), 'the work-hours section is there').toBe(true)
+})

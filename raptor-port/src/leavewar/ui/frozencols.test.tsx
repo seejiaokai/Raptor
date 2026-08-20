@@ -86,6 +86,33 @@ describe('the frozen roster columns, drawn once', () => {
     expect(screen.getByTestId('pfig-close'), 'tapping the frozen callsign opens the sheet').toBeTruthy()
   })
 
+  /* THE HEIGHT PIN'S ADDRESS BOOK (20 Aug 26 — the vertical misalignment).
+     `bandTop` lines the overlay's FIRST row up with the roster's; every row
+     below it stays in step only because `syncBandHeights` copies each real
+     row's measured height onto its overlay twin. That copy is looked up by
+     `data-band-key` → the real row's `data-testid`, so a key that addresses
+     nothing is a silent no-op: the heights go unwritten, the overlay reverts
+     to its own content height, and the drift this fixed comes straight back
+     with every gate still green. jsdom cannot measure the heights, but it CAN
+     prove every address resolves — which is the half that rots. */
+  it('every overlay row addresses exactly one real row, so the height pin can find it', () => {
+    setViewport(true)
+    render(<Matrix />)
+
+    const rows = Array.from(clone()!.querySelectorAll('tbody > tr'))
+    expect(rows.length, 'the overlay drew rows at all').toBeGreaterThan(0)
+
+    const grid = document.querySelector('.mx-wrap')!
+    for (const tr of rows) {
+      const key = tr.getAttribute('data-band-key')
+      expect(key, 'every overlay row carries the real row\'s address').toBeTruthy()
+      expect(
+        grid.querySelectorAll(`[data-testid="${key}"]`).length,
+        `${key} addresses exactly one real row`,
+      ).toBe(1)
+    }
+  })
+
   it('a desktop is left on its untouched sticky path — no overlay at all', () => {
     setViewport(false)
     render(<Matrix />)

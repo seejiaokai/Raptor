@@ -67,6 +67,28 @@ async function pickSpan(page: Page, testid: string, from: string, to: string) {
 }
 
 
+/** Wait for the grid to stop moving. A month jump scrolls, and the scroll's
+ *  consequences are deliberately deferred: the roster's row window is debounced
+ *  to scroll REST, and the reflow it then runs moves the day columns. "Still
+ *  for several frames" is the only cross-browser signal for that being over —
+ *  `scrollend` is patchy on Safari, and a fixed delay is a guess. Both the
+ *  scroll position and a day column's own left edge have to go quiet, because
+ *  the reflow moves the columns WITHOUT moving the scroller. */
+async function settleGrid(page: Page) {
+  await page.evaluate(async () => {
+    const wrap = document.querySelector('.mx-wrap') as HTMLElement
+    const probe = () => document.querySelector('.mx-wrap .mxhead th.day')?.getBoundingClientRect().x ?? 0
+    let last = NaN, lastX = NaN, same = 0
+    for (let i = 0; i < 240; i++) {
+      await new Promise(r => requestAnimationFrame(() => r(null)))
+      const now = Math.round(wrap.scrollLeft), x = Math.round(probe())
+      same = (now === last && x === lastX) ? same + 1 : 0
+      last = now; lastX = x
+      if (same >= 8) return
+    }
+  })
+}
+
 test.beforeEach(async ({ page }) => {
   await openLeaveWar(page)
 })
@@ -127,6 +149,47 @@ test('the frozen overlay lines up with the rows it freezes', async ({ page }) =>
     Math.abs((overAfter.y + overAfter.height / 2) - (realAfter.y + realAfter.height / 2)),
     'the overlay still shares the real row after scrolling',
   ).toBeLessThan(1.5)
+})
+
+// ...AND IT LINES UP ALL THE WAY DOWN (20 Aug 26, owner off his phone — "see
+// the misalignment vertically too"). The single-row check above is what let
+// this ship: it reads `slipway`, eleven rows into the roster, where the error
+// was still under a pixel. The error is CUMULATIVE. A person row carrying a
+// code chip in any of its 365 day cells is a pixel taller than an empty one,
+// the overlay draws no day cells and so cannot grow with it, and by the bottom
+// of the demo roster the two were 14px — most of a row — apart, which is names
+// standing beside the wrong balances. `syncBandHeights` copies each real row's
+// MEASURED height onto its overlay twin; the only test that can prove it is
+// one that walks the whole roster, so this walks the whole roster.
+test('the frozen overlay lines up with every row it freezes, top to bottom', async ({ page }) => {
+  test.skip(!isPhone(), 'the overlay is a phone-only creature')
+  const worst = async () => page.evaluate(() => {
+    let off = 0, key = '', checked = 0
+    for (const tr of document.querySelectorAll('.mxband [data-band-key]')) {
+      const k = tr.getAttribute('data-band-key')!
+      const real = document.querySelector(`.mx-wrap tbody.mxbody [data-testid="${k}"]`)
+      // A CAT sub-heading is display:none on a phone and a windowed-out row has
+      // no twin at all: neither is a row, and a 0-height rect cannot misalign.
+      if (!real || real.getBoundingClientRect().height === 0) continue
+      checked++
+      const d = tr.getBoundingClientRect().top - real.getBoundingClientRect().top
+      if (Math.abs(d) > Math.abs(off)) { off = d; key = k }
+    }
+    return { off, key, checked }
+  })
+
+  const rest = await worst()
+  // Without this the test passes just as well against a selector that matches
+  // nothing, which is how a gate stops testing anything without going red.
+  expect(rest.checked, 'the walk actually reached the roster').toBeGreaterThan(20)
+  expect(Math.abs(rest.off), `the overlay's ${rest.key} sits on its real row`).toBeLessThan(1.5)
+
+  // And after the year has scrolled sideways, which is when the overlay is the
+  // only copy of these columns the reader can still see.
+  await page.locator('.mx-wrap').evaluate(el => el.scrollBy(1200, 0))
+  const scrolled = await worst()
+  expect(scrolled.checked).toBeGreaterThan(20)
+  expect(Math.abs(scrolled.off), `${scrolled.key} still holds its row once scrolled`).toBeLessThan(1.5)
 })
 
 // The overlay is transparent to taps AT REST (so a tap reaches the real cell,
@@ -1607,9 +1670,23 @@ test('every month in the strip can be reached and lights itself', async ({ page 
   // Walked rather than sampled: a reading that worked for one month and not
   // for the boundary months would be worth knowing about, and December is the
   // one whose right edge is computed differently from all the others.
+  //
+  // SETTLE BETWEEN JUMPS (20 Aug 26 — this went red on main, not just here).
+  // `expect.poll` passes the instant the strip lights up, which is while the
+  // grid is still moving and before the roster's scroll-rest reflow (debounced
+  // 120ms) has run. Tapping the next month into that window raced the reflow
+  // and the strip ended up reading the month you LEFT — reproducible alone on
+  // main's tip, and load-sensitive under two workers. What this test is for is
+  // COVERAGE — that every month, boundary months included, can be reached and
+  // lights itself — so it waits for the grid to be still between jumps and
+  // tests that. A product fix was attempted first (dropping the pending anchor
+  // correction on an explicit jump) and REVERTED: with it disabled the same
+  // scenario still passes, so it was not what the failure was about, and a
+  // change nothing can be shown to need does not belong in the file.
   for (const m of ['MAR', 'JUN', 'DEC']) {
     await page.locator(`[data-testid="month-${m}"]`).click()
     await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual([m])
+    await settleGrid(page)
   }
 })
 
@@ -1834,11 +1911,30 @@ test('the blocked exercise week prints its reason across the event row', async (
   await page.locator('[data-testid="month-MAR"]').click()
   const bar = page.locator('[data-testid="event-blocked-2026-03-09"]')
   await expect(bar).toHaveText('Exercise week')
-  const bb = (await bar.boundingBox())!
-  const from = (await page.locator('[data-testid="head-2026-03-09"]').boundingBox())!
-  const to = (await page.locator('[data-testid="head-2026-03-14"]').boundingBox())!
-  expect(Math.abs(bb.x - from.x)).toBeLessThan(2)
-  expect(Math.abs(bb.x + bb.width - (to.x + to.width))).toBeLessThan(2)
+  // A month jump is not over when the click returns. Its scroll re-runs the
+  // roster's row window, which is DEBOUNCED to scroll rest (19 Aug 26 — writing
+  // scrollLeft mid-fling kills a touch scroll's momentum), and the reflow then
+  // re-narrows every column the hidden rows' chips had widened and puts the
+  // anchored column back. Reading a rect before that lands measures a layout
+  // nothing ever settled at — and reading the band and the header in two
+  // separate calls lets the reflow fire BETWEEN them, comparing a box from one
+  // layout against a box from the next. That is a deterministic ~11px failure
+  // here, not a flake. So: wait for the grid to hold still, then take all three
+  // rects in ONE evaluate, where no reflow can slip between them.
+  await settleGrid(page)
+  const box = await page.evaluate(() => {
+    const at = (sel: string) => {
+      const r = document.querySelector(sel)!.getBoundingClientRect()
+      return { x: r.x, right: r.x + r.width }
+    }
+    return {
+      bar: at('[data-testid="event-blocked-2026-03-09"]'),
+      from: at('[data-testid="head-2026-03-09"]'),
+      to: at('[data-testid="head-2026-03-14"]'),
+    }
+  })
+  expect(Math.abs(box.bar.x - box.from.x)).toBeLessThan(2)
+  expect(Math.abs(box.bar.right - box.to.right)).toBeLessThan(2)
 })
 
 test('on a phone the header freezes under the top bar and thaws on the way back', async ({ page }, testInfo) => {

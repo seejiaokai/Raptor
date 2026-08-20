@@ -24,32 +24,31 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the board text-box alignment + wrapping
-batch AND the Leave War frozen-header scroll fix, 20 Aug 26 — all six gates
-watched this session, on a tree that already carries the counter session's
-work below):
+**Last recorded green baseline** (the frozen-column VERTICAL alignment fix
+AND the owner's five-item 20 Aug 26 evening batch — all six gates watched this
+session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2689 across 146 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2701 across 147 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 303 passed / 11 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
 | `perf` | 4/4 |
 
-The counts reconcile against the counter session's own reading directly
-above what this replaced (2676 across 144 files, 299 e2e): +8 tests and +1
-file for `boardwrap.test.tsx`, +1 for the month-strip re-render guard, and
-+2 e2e for the remarks alignment and growth measurements (→ 2685 / 145 / 301);
-then +4 tests and +1 file for `frozencols.test.tsx` (the frozen-column
-overlay), and +2 e2e (both phone-only, so +2 desktop skips) for the overlay's
-alignment and its scrolled callsign tap (→ 2689 / 146 / 303). The reverted
-roster column-virtualisation left no tests behind.
+The counts reconcile against the reading this replaced (2689 across 146 files,
+303 e2e / 11 skips). Frozen columns: +1 test in `frozencols.test.tsx` and +1
+e2e (the whole-roster alignment walk, phone-only, so the desktop project skips
+it and the skip count moves with it) → 2690 / 146 / 304. The evening batch: +8
+tests and +1 file for `latemark.test.tsx`, +3 in `insights.test.ts` (work
+hours), and the two repaired topbar-pill assertions replaced in place → 2701 /
+147; +1 e2e for the Insights bars → 305. The two repaired Leave War
+month-navigation tests were already counted.
 
 DOM measures at that baseline: week **3743** under a 4000 ceiling, board
-**847** under 960 (three context-bound add buttons, net +1 node over the old
-two). The Leave War year matrix (~28k nodes) is outside the perf gate — it
+**850** under 960 (the three context-bound add buttons, plus the LATE-mark
+switch and its two label spans in the Personal Inputs header). The Leave War year matrix (~28k nodes) is outside the perf gate — it
 has its own e2e DOM band (29000), measured-first.
 
 **How the gates lie — the durable traps, worth more than any count:**
@@ -94,6 +93,30 @@ has its own e2e DOM band (29000), measured-first.
   Geometry contracts are gated by `e2e/geometry.spec.ts` (the fourth CI
   gate, 86 checks); wider visual work still wants the probe path
   (`npx vite preview --port 4173` + `probes/`).
+- **A MONTH JUMP IS NOT OVER WHEN THE CLICK RETURNS, and a rect read too early
+  is a hard failure, not a flake** (20 Aug 26). The Leave War roster's row
+  window is deliberately DEBOUNCED to scroll REST (writing scrollLeft mid-fling
+  kills a touch scroll's momentum), and the reflow it then runs re-narrows every
+  column the hidden rows' chips had widened and puts the anchored column back.
+  So a measurement taken straight after `month-MAR.click()` reads a layout
+  nothing ever settled at — and taking two boxes in two `boundingBox()` calls
+  lets the reflow fire BETWEEN them, comparing a rect from one layout against a
+  rect from the next. The blocked-exercise-week e2e did both and failed by a
+  byte-identical ~10.9px on BOTH projects, three runs running, which is exactly
+  what made it read as a code fault. Repaired with `settleGrid` (poll until the
+  scroll position AND a day column's own left edge both hold still — the reflow
+  moves the columns without moving the scroller) plus one atomic `evaluate` for
+  all three rects. **Any new Leave War geometry test that navigates first wants
+  the same two habits.** TWO tests in that family were red on main by 20 Aug 26,
+  not one: the blocked-exercise band above, and "every month in the strip can be
+  reached and lights itself", whose `expect.poll` passes the instant the strip
+  lights up — while the grid is still moving — so the next month was tapped into
+  the previous jump's settle. It waits for the grid to be still between jumps
+  now. A PRODUCT fix was tried first (dropping the pending anchor correction on
+  an explicit jump) and reverted: with it disabled the same scenario still
+  passed, so it was not what the failure was about. **Worth restating as a
+  habit: prove a fix with the control case before keeping it** — the change
+  looked plausible and did nothing.
 - **jsdom cannot HIT-TEST either, and that is a separate trap** (12 Aug 26). A
   pointer bug on the board hid there for a day: dispatching a synthetic
   pointerdown straight at the element you mean is not what a finger does, and a
@@ -107,6 +130,63 @@ has its own e2e DOM band (29000), measured-first.
   are still there.
 
 ## Known issues / open work
+
+- **THE 20 AUG EVENING BATCH — FOUR CHROME/PANEL ASKS (owner, from two phone
+  screenshots, then "I am going to sleep u have control and make the
+  decisions").** The LATE-mark switch is its own bullet below. The rest:
+  (1) **The top bar is OPAQUE** ("some leak to the left. U should make it
+  opaque"). It painted a translucent gradient over an 18px backdrop blur, and
+  on a phone it is its own SIDEWAYS scroller — so its sticky lead (burger +
+  mark) let the bar's own controls read through as they scrolled underneath,
+  and the mark's background actually FADED TO TRANSPARENT on its right by
+  design. The bar now paints `--topbar-a`/`--topbar-b`, the old translucent
+  pair composited over `--bg`, so it looks the same where it always sat and
+  simply stops showing what passes behind; the sticky lead paints the same two
+  stops, and the two uncovered gutters (the bar's 12px left padding, and the
+  5px between the burger and the mark's 41px offset) are painted by flat left
+  box-shadows. **The SAME leak was found one strip down and fixed with it**:
+  the view page's pinned HIGHLIGHT label was opaque but only ELEVEN PIXELS
+  TALL — its own line box, inside a ~30px row — so chips scrolling under it
+  showed above and below the word. Stretched to the row, gutter painted.
+  **Any sticky pin over a horizontal scroller wants both checks: full height,
+  and something painting the gutter it pins against.**
+  (2) **A small search on the phone's view-only schedule** ("we should have a
+  small search bar too in view schedule at the top"). `#searchV` was always
+  there; `#page-viewsched .filters .right` was simply `display:none` under the
+  breakpoint, so the one control that answers "where is this man flying" was
+  unreachable on a phone. It is NOT a new row — a row of chrome is 40px of
+  schedule — it is the same box pinned to the strip's RIGHT edge the way
+  HIGHLIGHT is pinned to the left, chips scrolling between them (96px input,
+  ~142px of a 390px screen). Desktop and the edit page are untouched.
+  (3) **The three week-wide count pills are GONE from the top bar** ("what's
+  the point of having warning, advisory and note at the top. Just remove it").
+  Every day already leads with its own "N issues · N warning · tap to review",
+  which is the number a reader can act on, beside the day it belongs to.
+  `openWarns` (state/view.ts) is KEPT — it is mirrored on the probe bridge, it
+  is reference behaviour (tfin: blocking pill expands days), and it is what any
+  future "expand everything" control would call; `interact.test.tsx` drives it
+  directly now. Their absence is pinned in `app.test.tsx` so a later "the top
+  bar looks empty" pass does not put the sum back.
+  (4) **Insights carries everyone's work hours for the week** ("perhaps have a
+  section to show everyone's work hours in the insights for the week").
+  Summed off the SAME per-person day span the long-work-day note is raised from
+  — `validate.ts:workSpan`, extracted from the LONGDAY block for exactly this
+  and read out of `EVD`. One definition, two readers: a week total that
+  disagreed with the note calling a day long is the drift-seam
+  `docs/feature-impact.md` exists to prevent, and `insights.test.ts` puts the
+  two numbers side by side. The heading states the definition ("report to
+  debrief") because "work hours" otherwise reads as hours airborne — it is
+  report → last landing + debrief for a flying day, start → end for anything
+  else. Everyone with a scheduled hour is listed, not a top 12; the modal
+  scrolls.
+  **AND THE BARS HAD NEVER DRAWN.** `.ibar .fill` is a `<span>` carrying
+  `height:100%` and an inline `width:N%` — and a span is `display:inline`,
+  where neither applies. It measured 0×0: the flying-load bars have been an
+  empty track since they shipped, and the new section would have shipped just
+  as blank. **jsdom could never have said so — it reports every rect as 0×0** —
+  so it is gated in `e2e/geometry.spec.ts` ("the Insights bars draw"), which
+  also pins that no value is clipped by its own cell (`.v` went 22px → 42px;
+  "25h35" needs 33).
 
 - **THE BOARD'S TEXT BOXES ALIGN AND WRAP (owner, 20 Aug 26, from a phone
   screenshot with the target ringed in red).** Two asks, one batch, both
@@ -366,11 +446,26 @@ has its own e2e DOM band (29000), measured-first.
   the page's own vertical flow — so it rides the page's vertical scroll with the
   grid for free; only its TOP is set from JS (`bandTop`, measured off the roster
   body's position, re-read on the mirror's deps + `countsOpen` + a
-  ResizeObserver, NEVER on scroll). Alignment holds by construction: the overlay
-  draws the SAME rows (`rosterSequence()`, shared with the real render and pinned
-  equal by the frozencols order test) at the SAME heights (on a phone a person
-  row is a uniform 22px, a group heading its own content — day cells never make
-  either taller). PHONE ONLY, suspended while arranging; the desktop keeps its
+  ResizeObserver, NEVER on scroll). The overlay draws the SAME rows
+  (`rosterSequence()`, shared with the real render and pinned equal by the
+  frozencols order test), and — since 20 Aug 26 — at MEASURED heights, not
+  assumed ones. **The assumption that a phone row is a uniform 22px was simply
+  false, and the error was cumulative** (owner, 20 Aug 26, seventh report: "see
+  the misalignment vertically too"): a person row carrying a code chip in any of
+  its 365 day cells is 23px where an empty one is 22 — the chip's line box runs a
+  pixel taller than the balance cell's bare text — and the overlay, which draws
+  no day cells, cannot grow with it. Measured here, the two were 14px apart by
+  the bottom of the demo roster, which is most of a row: names beside the wrong
+  balances. `syncBandHeights` now copies each real row's measured height onto its
+  overlay twin (addressed by `data-band-key` → the real row's `data-testid`,
+  visual px with the table `zoom` divided back out, written onto the nodes and
+  never through state), on every render — a bid placed or withdrawn moves a chip
+  in and out of a cell, and this component deliberately does not re-render on
+  scroll, so per-render is both correct and rare. **Deliberately NOT fixed by
+  making the grid's own rows uniform**: that is a bet on one engine's line-box
+  arithmetic, and the reverted column virtualisation below is this repo's
+  standing lesson that two independently laid out tables agree on nothing you
+  have not measured. PHONE ONLY, suspended while arranging; the desktop keeps its
   untouched sticky path. The real cells keep the testids, tab order and
   screen-reader seat; the overlay is `aria-hidden` with `tabIndex=-1` copies of
   the two controls and is `pointer-events: none` AT REST so a tap falls through
@@ -378,7 +473,16 @@ has its own e2e DOM band (29000), measured-first.
   inline style, never state) once the year has scrolled the real cell away, so
   the frozen copy is what catches the tap then. e2e (lw-phone) pins that it stays
   put, lines up before AND after a scroll, and opens the sheet when scrolled;
-  `frozencols.test.tsx` pins the wiring. This removes the SECONDARY cost (the
+  `frozencols.test.tsx` pins the wiring, including that every overlay row's
+  `data-band-key` addresses exactly one real row — a key that resolves to
+  nothing makes the height pin a silent no-op with every gate still green.
+  **THE ALIGNMENT GATE READ ONE ROW, WHICH IS WHY THIS SHIPPED**: the original
+  e2e measured `slipway`, eleven rows down, where the drift was still under its
+  1.5px tolerance — it passes on the broken build, verified as a control case.
+  A whole-roster walk replaced it ("lines up with every row it freezes, top to
+  bottom", with a `checked > 20` guard so a dead selector cannot make it
+  vacuous). **A cumulative error is invisible to a gate that samples one item;
+  when the risk is drift, walk the whole list.** This removes the SECONDARY cost (the
   pins); the PRIMARY cost is still drawing ~23,500 day cells at once, which no
   frozen-column change touches — if the phone is still rough, the next lever is
   not drawing the whole year at once (owner's call; it changes what loads).
@@ -1355,12 +1459,30 @@ has its own e2e DOM band (29000), measured-first.
   neither AAR rule fires anywhere in the week regardless. The mark is set by
   hand on the Quals page in two clicks. If the demo week ever gains a real
   AAR line, seed a few `'I'`s with it or every such line will read as a fault.
-- **The late-input mark has no off switch.** `VCONF.inputLead` is a day count;
-  0 ("due by the Monday itself") is the most permissive setting there is, so a
-  squadron that does not run an input deadline cannot silence the mark short
-  of a rule change. Deliberate, and a small change if it ever bites.
-  (Downchits ARE exempt — owner, 9 Aug 26 — so the commonest genuinely
-  unavoidable late input is already covered. Leave and detachments are not.)
+- **RESOLVED — the late-input mark has an off switch now (owner, 20 Aug 26 —
+  "can u give the scheduler board the option to remove late input tags?").**
+  It never had one: `VCONF.inputLead` bottoms out at 0 ("due by the Monday
+  itself"), so a squadron running no deadline could not silence it short of a
+  rule change. **"Hide LATE marks"** sits in the board's **Personal Inputs**
+  panel header (`data-latetog`, admin-only, `routeClick` re-checks the role),
+  and it is a SWITCH rather than a per-badge delete on purpose — clearing marks
+  one at a time needs a forgiven-input registry and, worse, a way BACK for a
+  scheduler who cleared the wrong one; pressing the switch again IS the way
+  back. It lives there and not on the board's top bar because that bar is at
+  its measured limit (§Stable decisions: nothing joins it without something
+  leaving), which is a bad trade for a preference.
+  Three things a later pass could get wrong, all pinned by `latemark.test.tsx`:
+  the gate is at the UI (`lateTag`/`lateTagOf`/`lateRowCls`/`lateRowTitle` in
+  `html.ts`, one read each), so **`isLateInput` goes on answering and the mark
+  stays a mark, never a rule**; it covers every SCHEDULE surface at once —
+  board, edit week, view-only — because all four helpers funnel through one
+  read; and the **Inputs page keeps its own mark**, because that page is the
+  paperwork record and quieting a busy board is not the same as erasing when an
+  input was filed. Session-scoped like `HISTMODE`, reset by `resetSession`; if
+  "we run no deadline" should stick, that is the same database work as
+  everything else here, not a second persistence path.
+  (Downchits are still exempt — owner, 9 Aug 26 — so the commonest genuinely
+  unavoidable late input was already covered. Leave and detachments are not.)
   Rules: `docs/engine-rules.md` §The late-input mark.
 - **The Inputs page opens on TODAY → TWO WEEKS, and its empty table on the
   demo data is the owner's own choice** (owner, 12 Aug 26 — "it is ok to show
@@ -1571,7 +1693,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `inputs.ts` | INPUTS list + **`INPUT_META`, the one table every input type is decided by** (10 Aug 26) — `INPUT_TYPES` is derived from its keys and every predicate is a lookup: `isLeave`, `isLocalLeave`, `isDownchit` (= the medical group), **`isPersonal`/`isUnavail`** (the two day blocks, presentational only), plus `canSpare`, `canWork`, `awayAllDay`, `TYPE_GROUPS`/`typeGroup`. `isDetach` is gone with the `Detachment` type. Also DATES and the late-input block. |
 | `time.ts` | `parseHM`/`hhmm`/`minus`/`overlap` (half-open — abutting windows do not clash). |
 | `events.ts` | `collectEvents()` — the per-day event build the validator consumes; appends tomorrow's inputs shifted +1440 (the midnight tail, marked `nx`) and collects AVALON crew (`day.sacrew`) for the one check the wave's `noconf` does not cover. |
-| `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`, `dashOf`, the crew-rest trace (`traceOf`/`traceLeads`/`traceIx`/`tracesOn`). **The conflict engine.** |
+| `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`, `dashOf`, the crew-rest trace (`traceOf`/`traceLeads`/`traceIx`/`tracesOn`), and **`workSpan`** — ONE person's working day out of their events (report → last landing + debrief, or start → end), the shared definition behind both the LONGDAY note and the Insights work-hours totals. **The conflict engine.** |
 | `avail.ts` | `slotRules`/`slotBar` eligibility, `dayOff`/`dayEngaged`, free-count ranking. |
 | `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`** (Ground removal and Unavailable filing use inert amendment keys, including every loaded day of a span). |
 | `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering (delete-time), and its bijective sibling `permuteKeys`/`moveKeys` for a reorder. |
@@ -1582,7 +1704,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |
 | `rules.ts` | VCONF/SHIFT_HARD editing, `ruleParse`/`ruleFmt`, `rulesSave`/`rulesLoad`/`rulesReset`. |
 | `oil.ts` | **Wire 4's engine half** (17 Aug 26) — `dayOilCredits(day)` → per-person 0.5/1: SC MAIN shifts by shape (`scShiftCredit` — wholly inside one half of the SC day window = 0.5, more = 1), duty rows by summed written hours vs `VCONF.oilFullMin`, capped at one day; spares, time-less rows and unknown names earn nothing. Pure and Leave-War-blind — the non-working-day question and the credit posting live in `src/leavewar/sync.ts`. Rules: `docs/engine-rules.md` §Weekend/PH duty earns OIL. |
-| `insights.ts` | `computeInsights()` for the Insights modal. |
+| `insights.ts` | `computeInsights()` for the Insights modal — sorties, formations, flying load, who is not on the programme, conflicts by type, by day, and (20 Aug 26) **everyone's WORK HOURS for the week**, summed off `validate.ts:workSpan` read out of `EVD` so the total and the long-work-day note can never mean different things. |
 | `stores.ts` | The squadron's stores list — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Persisted state, so it lives here. Nothing in `validate.ts` reads a store. |
 | `dutytpl.ts` | The squadron's **duty-block templates** (13 Aug 26) — mutable `DUTYTPL_CFG`, frozen `DUTYTPL_STD` (Standard / SC Shift / AVALON), `addTpl`/`delTpl`/`renameTpl`/`moveTpl` and the per-row `addTplRow`/`delTplRow`/`setTplRow`/`moveTplRow`, `blockFromTpl` (mints a PLAIN `{label,rows}` duty block — no `sa`/`noconf`), and `dutyTplSave`/`dutyTplLoad`/`dutyTplReset` against its own `dutytpl` key. Persisted state, exactly like stores; nothing in `validate.ts` reads a template. Loaded at boot in `initStore`. This is what `+ Block` offers now — waves no longer create desks (§Stable decisions). |
 | `daytpl.ts` | **Whole-day master templates** (15 Aug 26) — one level up from `dutytpl.ts`: mutable `DAYTPL_CFG`, frozen EMPTY `DAYTPL_STD` (unlike `dutytpl`'s three seeded desks — a whole day is too squadron-specific to guess at), `tplFromDay`/`addDayTpl`/`delDayTpl`/`renameDayTpl`/`moveDayTpl`, `applyDayTpl` (refuses a published day; direct-write shape mirroring `restoreDayVersion`, retiring the day's pending/added marks), `dayTplSave`/`dayTplLoad`/`dayTplReset` against its own `daytpl` key. A template's `d` blob (`DayTplBlob`) allowlists the day's STRUCTURE only — `notes`/`allhands`/`waves`/`sims`/`dutywaves`/`ground` + section notes, never `dow`/`dt`/`today`/`wc` — with every person reference blanked and every `cx`/`cxr`/`flag` mark stripped. Loaded at boot in `initStore`. Rules: `docs/engine-rules.md` §Day templates. |
@@ -1678,7 +1800,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/ui/pubsweep.test.tsx` | The comprehensive publishing sweep (16 Aug 26, 28 tests) — scenario by scenario, asserting what the edit week, the board's publish strip and the view page each show: lifecycle, edit-after-publish, edit-and-revert across key families, structural round trips netting out, drafts-on-published-day rebase (including rebase-against-current-AL), load-onto-working-copy leaving `SCHED.cur` alone, reopen → re-publish, unpublish, and week-vs-board deep-equal agreement. Finding a live bug (the time-respelling pending mark) is what this file is FOR — keep extending it when publishing behaviour changes. |
 | `src/ui/boardaddinput.test.tsx` | The board's **+ Add** input (Aug 26, 11 tests) — the button renders on a live Personal Inputs / Unavailable panel and not on a read-only one, `commitNewInput` lands a row on the open day (and refuses a malformed draft), the dialog opens in its `_new` shape (no Delete, "Add", panel-suited default type), the whole click-fill-Add gesture paints the new row under the panel, Cancel adds nothing, and a member is refused at the `routeClick` handler even with a hand-made button. |
 | `src/leavewar/ui/monthstrip.test.tsx` | The month readout (extended 20 Aug 26). Its `layoutYear` helper now simulates a scroll the way a BROWSER does — the columns hold still and `scrollLeft` moves over them — because the readout reads cached content-space geometry instead of re-measuring every rectangle on every scroll event. A test that leaves `scrollLeft` at zero is testing a scroll that never happened. Also pins that an unrelated re-render does not blank the highlight, with a note on what that test does NOT catch. |
-| `src/leavewar/ui/frozencols.test.tsx` | The frozen roster columns drawn once (20 Aug 26, 4 tests). On a phone the callsign/counter columns are a `.mxband` overlay drawn OUTSIDE the sideways scroller instead of `position: sticky` on every row (see the frozen-columns block in HANDOFF's Leave War narrative). jsdom has no layout, so this pins the WIRING: the overlay exists on a phone (`matchMedia` stubbed) and not on a desktop, it lists the SAME people in the SAME order as the grid, it is `aria-hidden` with its buttons out of the tab order while the real cells keep the testids, and its copy of a callsign still opens the person sheet. Alignment, staying put, and the pointer-events handoff are measured in `e2e/leavewar.spec.ts` (lw-phone). |
+| `src/leavewar/ui/frozencols.test.tsx` | The frozen roster columns drawn once (20 Aug 26, 5 tests). On a phone the callsign/counter columns are a `.mxband` overlay drawn OUTSIDE the sideways scroller instead of `position: sticky` on every row (see the frozen-columns block in HANDOFF's Leave War narrative). jsdom has no layout, so this pins the WIRING: the overlay exists on a phone (`matchMedia` stubbed) and not on a desktop, it lists the SAME people in the SAME order as the grid, it is `aria-hidden` with its buttons out of the tab order while the real cells keep the testids, its copy of a callsign still opens the person sheet, and every overlay row's `data-band-key` addresses exactly one real row (the address book `syncBandHeights` looks the measured heights up in — a key resolving to nothing would make the height pin a silent no-op). Alignment, staying put, and the pointer-events handoff are measured in `e2e/leavewar.spec.ts` (lw-phone), where the alignment walk covers EVERY row, not a sample. |
+| `src/ui/latemark.test.tsx` | The LATE-mark switch (20 Aug 26, 8 tests) — the Personal Inputs header carries it on a live board and not on a preview, the label says what pressing it DOES and flips with the state, throwing it clears every mark on the board and a second press is the way back, the WEEK goes with it (one read, every schedule surface), the ENGINE is untouched (`isLateInput` still answers true while `lateTag` prints nothing — which is what keeps the Inputs page's own mark honest), a member is refused at `routeClick` even with a hand-made button, and a session change puts the marks back on. |
 | `src/ui/boardwrap.test.tsx` | The board's text boxes wrap and grow (20 Aug 26, 8 tests) — every remarks box and every name/role box is a `<textarea>`, every TIME cell is still an `<input>` (the deliberate exclusion, pinned so a later pass does not "finish the job"), a value round-trips through textarea content unchanged (the leading-newline trick), and Enter still COMMITS while Shift+Enter is left alone and Escape restores. jsdom reports every rect 0×0, so the box actually GROWING — and a long unbroken word breaking rather than overflowing — is measured in `e2e/geometry.spec.ts` instead. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |

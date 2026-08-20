@@ -228,6 +228,28 @@ ON these, don't route around them):
 split — these are where this app's recurring bugs come from; touch one side and
 check the other):
 
+- **The working day: the LONGDAY note vs the Insights work-hours total**
+  (20 Aug 26). Both answer "how long is this person at work", and until the
+  work-hours section was built the answer existed only inside `validate()`'s
+  long-day block. It is `validate.ts:workSpan` now — report (the published
+  in-time, else T/O − reportLead) through last landing + debrief, or start →
+  end for anything that is not flying — and BOTH read it: the note raises off
+  one day's span, the panel sums the week out of `EVD`. Deliberately not a
+  second copy: a week total that disagreed with the note calling a day long is
+  the exact failure this list is about, and `insights.test.ts` puts the two
+  numbers side by side. A change to what counts as the working day (the
+  report rule, the debrief pad, which event kinds are in `EVD`) moves both, as
+  it should — but anything that re-derives a span WITHOUT `workSpan` is a new
+  seam.
+- **The LATE mark: four printers, one switch** (20 Aug 26). `lateTag`,
+  `lateTagOf`, `lateRowCls` and `lateRowTitle` (`ui/html.ts`) each print the
+  mark on a different surface, and each reads `LATEMARK` once. That is what
+  makes "hide the LATE marks" cover the board, the edit week and the view-only
+  week together rather than three-quarters of them. The Inputs page reads
+  `isLateInput` DIRECTLY and is deliberately outside the switch — the
+  paperwork record still says when an input was filed. A new surface that
+  prints the mark must go through one of the four, or it will keep printing
+  after the switch is thrown.
 - **Palette vs warning list.** `slotBar`/`avail.ts` and `validate.ts` read the
   same input independently. They must give the same answer about who is
   available. Failing closed (`inpWin`, `awayAllDay`) is how they are kept honest.

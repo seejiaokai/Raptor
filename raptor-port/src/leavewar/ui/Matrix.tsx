@@ -904,6 +904,52 @@ export function Matrix() {
   }, [])
 
   const bandActive = phone && !arranging
+
+  // ...and how TALL each of the overlay's rows must be. `bandTop` alone lines
+  // its FIRST row up with the roster's; every row below that only stays in
+  // step if the two tables agree on every height above it — and they do not.
+  // A person row carrying a code chip in ANY of its 365 day cells is 23px
+  // where an empty one is 22 (the chip's line box runs a pixel taller than the
+  // balance cell's bare text), and the overlay draws no day cells at all, so
+  // it cannot grow with it. The error is CUMULATIVE: measured on this
+  // container's Chromium it reached 14px — most of a row — by the bottom of
+  // the demo roster, which is the owner's 20 Aug 26 report of the names
+  // sitting beside the wrong rows.
+  //
+  // So the overlay never GUESSES a row height, and this is deliberately not
+  // fixed by making the grid's own rows uniform: that would be a bet on one
+  // engine's line-box arithmetic, and the reverted column virtualisation
+  // (HANDOFF) is this repo's standing lesson that two independently laid out
+  // tables agree on nothing you have not measured. It copies the height the
+  // real row actually took, on whatever engine is rendering — the same
+  // discipline as the frozen header's measured colgroup above.
+  //
+  // `height` on a <tr> is a MINIMUM, which is all this needs: the overlay
+  // draws a strict subset of the real row's content (the same two cells, minus
+  // the personnel label, which is `display:none` on a phone anyway), so its
+  // natural height is never the taller of the two.
+  //
+  // Written straight onto the nodes, never through state — a setState here
+  // would re-render the ~25,000-node grid, the very cost this overlay exists
+  // to remove. Every read is taken before any write, so one layout settles the
+  // lot instead of thrashing row by row. Heights come back as VISUAL pixels,
+  // so the table's `zoom` is divided out on the way in, exactly as the
+  // mirror's measured column widths are.
+  const syncBandHeights = () => {
+    const band = bandRef.current, body = rosterBodyRef.current
+    if (!band || !body) return
+    const rows = Array.from(band.querySelectorAll<HTMLTableRowElement>('tbody > tr'))
+    const want = rows.map(tr => {
+      const key = tr.getAttribute('data-band-key')
+      const real = key ? body.querySelector<HTMLElement>(`[data-testid="${key}"]`) : null
+      return real ? real.getBoundingClientRect().height : 0
+    })
+    // jsdom reports every rect 0x0, and a row the window has filtered out has
+    // no real twin at all; a 0 written here would collapse the overlay rather
+    // than align it, so an unmeasurable row is left exactly as it was.
+    rows.forEach((tr, i) => { if (want[i]! > 0) tr.style.height = `${want[i]! / zoom}px` })
+  }
+
   useLayoutEffect(() => {
     if (!bandActive) { setBandTop(null); return }
     const measure = () => {
@@ -912,6 +958,11 @@ export function Matrix() {
       const br = body.getBoundingClientRect()
       if (br.height === 0) { setBandTop(null); return } // jsdom / not laid out
       setBandTop(br.top - outer.getBoundingClientRect().top)
+      // A resize re-wraps nothing here, but it does change the day columns'
+      // widths and so which rows carry a chip on screen at all; re-read the
+      // heights on the same signal rather than waiting for a render that a
+      // resize alone does not cause.
+      syncBandHeights()
     }
     measure()
     // A row ABOVE the roster changing height (an event edited, the manning
@@ -924,6 +975,15 @@ export function Matrix() {
     return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bandActive, zoom, visWindow, period.id, dates.length, countsOpen])
+
+  // Re-pinned on EVERY render, not on a dependency list: a bid placed, a
+  // decision made or a figure switched can put a chip into a day cell or take
+  // one out, which moves that row's height by the pixel above — and there is
+  // no cheap signal for "some cell's content changed". It is affordable
+  // precisely because this component does NOT re-render on scroll (the reason
+  // the overlay exists), so this runs on real edits, not on frames. Layout
+  // effect, so the heights land in the same frame as the rows they answer.
+  useLayoutEffect(() => { if (bandActive) syncBandHeights() })
 
   // The roster's row SEQUENCE — group headings, CAT sub-headings and people, in
   // display order — computed so the real grid and the frozen overlay draw the
@@ -1515,7 +1575,7 @@ export function Matrix() {
               <tbody className="mxbody">
                 {rosterSequence().map(item => {
                   if (item.kind === 'group') return (
-                    <tr key={`b-grp-${item.g}`} className={`grp g-${item.g.toLowerCase()}`}>
+                    <tr key={`b-grp-${item.g}`} data-band-key={`group-${item.g}`} className={`grp g-${item.g.toLowerCase()}`}>
                       <td className="grphd" colSpan={2}>
                         <div className="grphd-in">
                           <span className="gsw" />
@@ -1526,7 +1586,7 @@ export function Matrix() {
                     </tr>
                   )
                   if (item.kind === 'catsub') return (
-                    <tr key={`b-sub-${item.g}-${item.cat}`} className="catsub">
+                    <tr key={`b-sub-${item.g}-${item.cat}`} data-band-key={`subcat-${item.g}-${item.cat}`} className="catsub">
                       <td className="catsub-in" colSpan={2}>CAT {item.cat}</td>
                     </tr>
                   )
@@ -1538,7 +1598,7 @@ export function Matrix() {
                     // break every query that expects the one real match. e2e
                     // still needs to find a given person in the overlay to prove
                     // it lines up with — and stays put over — the real row.
-                    <tr key={`b-${p.id}`} data-band-id={p.id} className={p.id === viewer ? 'me' : undefined}>
+                    <tr key={`b-${p.id}`} data-band-id={p.id} data-band-key={`row-${p.id}`} className={p.id === viewer ? 'me' : undefined}>
                       <td className="who">
                         <div className="whorow">
                           <button className="whoedit" tabIndex={-1} onClick={() => setWhoOpen(p.id)}>

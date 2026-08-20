@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayCount } from '../engine/waves'
+import { lgT } from '../engine/time'
 import { validate, WARN, WCODE, wlbl } from '../engine/validate'
 import { computeInsights } from '../engine/insights'
 import { markEdit } from '../engine/publish'
@@ -50,6 +51,27 @@ function insightsHTML() {
     h += `<div class="ibar"><span class="nm" title="${esc(p.name || '')}">${esc(p.cs)}</span><span class="track"><span class="fill" style="width:${Math.round(f.n / maxN * 100)}%"></span></span><span class="v">${f.n}</span></div>`
   })
   if (I.flyers.length > 12) h += `<div style="color:var(--ink-3);font-size:11px;margin-top:4px">+ ${I.flyers.length - 12} more flying</div>`
+  /* WORK HOURS (owner, 20 Aug 26 — "perhaps have a section to show everyone's
+     work hours in the insights for the week"). Beside the flying load on
+     purpose: the two answer the same question from opposite ends — who is
+     flying the most sorties, and who is at work the longest, which are
+     regularly not the same man (a duty stander flies nothing and is there all
+     day). Everyone with a scheduled hour is listed rather than a top 12: the
+     ask was everyone's, the number that matters may be at the bottom, and the
+     modal already scrolls.
+     The heading states the definition, because "work hours" would otherwise
+     read as hours airborne — it is report through debrief for a flying day and
+     start to end for everything else, the same span the long-work-day note is
+     raised from (engine/validate.ts `workSpan`). */
+  const maxW = I.hours.length ? I.hours[0].mins : 1
+  h += `<div class="isec-h">Work hours · report to debrief, this week</div>`
+  if (!I.hours.length) h += `<div style="color:var(--ink-3);font-size:12px">Nothing scheduled this week.</div>`
+  I.hours.forEach((w: any) => {
+    const p = PEOPLE[w.id]
+    h += `<div class="ibar"><span class="nm" title="${esc((p && p.name) || '')}">${esc((p && p.cs) || w.id)}</span>` +
+      `<span class="track"><span class="fill" style="width:${Math.round(w.mins / maxW * 100)}%"></span></span>` +
+      `<span class="v" title="${w.days} day${w.days > 1 ? 's' : ''} on the programme">${esc(lgT(w.mins))}</span></div>`
+  })
   h += `<div class="isec-h">Not on the flying programme · ${I.idle.length} available</div><div class="ichips">` +
     (I.idle.length ? I.idle.map((id: any) => `<span class="ichip">${esc(PEOPLE[id].cs)}</span>`).join('') : '<span style="color:var(--ink-3)">everyone is scheduled</span>') + `</div>`
   const types = Object.keys(I.byType)

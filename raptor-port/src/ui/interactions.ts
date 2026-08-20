@@ -482,6 +482,20 @@ export function routeClick(e: MouseEvent) {
      commitNewInput does the insert on Save. A member never sees the buttons
      (live board only), but the gate is repeated here the way every other
      input control's is. */
+  /* THE LATE-MARK SWITCH (owner, 20 Aug 26). A view toggle, so it neither
+     mutates the schedule nor validates — it repaints, and the four helpers in
+     html.ts read the flag on the way past. `toggleLateMark` refuses a member at
+     the write path (state/view.ts); the toast here is so a hand-made button
+     says why rather than doing nothing, the same shape as the add controls
+     below. */
+  const ltg = t.closest('[data-latetog]') as HTMLElement | null
+  if (ltg) {
+    e.stopPropagation()
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can change the LATE marks', 'warn'); return }
+    const on = view.toggleLateMark()
+    HOOKS.toast(on ? 'LATE marks shown' : 'LATE marks hidden — the Inputs page still shows them', 'ok')
+    notify(); return
+  }
   const iad = t.closest('[data-inpadd]') as HTMLElement | null
   if (iad) {
     e.stopPropagation()
