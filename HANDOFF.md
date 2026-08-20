@@ -362,6 +362,29 @@ has its own e2e DOM band (29000), measured-first.
   pins); the PRIMARY cost is still drawing ~23,500 day cells at once, which no
   frozen-column change touches — if the phone is still rough, the next lever is
   not drawing the whole year at once (owner's call; it changes what loads).
+  **THAT LEVER WAS TRIED AND REVERTED — it breaks on iOS Safari (owner, 20 Aug
+  26, fifth report: "It's even worse now it's not aligned").** Column
+  virtualisation (only the roster's person rows draw the days near the view,
+  the rest collapsed into left/right `<td colSpan>` spacers over the still-full
+  header columns) was built, passed every gate, and measured dx=0 alignment in
+  Chromium across many re-windows — then misaligned the roster from the header
+  by ~1 column on the owner's iPhone, persistently (measured 61–123px offset off
+  his screen recording). The cause is the one this repo already warns about
+  (`docs/leavewar/known-gaps.md` §"The geometry gate claims less than it
+  appears to"): a `<table>` with `position: sticky` frozen columns and rows of
+  differing cell counts (a colSpan spacer vs full per-day cells) reconciles its
+  column widths DIFFERENTLY in WebKit than in Blink, and this container ships no
+  WebKit build (playwright's is registered but the binary and its system libs
+  are absent — `npx playwright install webkit` fails on missing libs), so NO
+  table-column virtualisation can be verified here before it reaches a phone.
+  The whole diff is one `git revert` away (commits "column-virtualise the
+  roster" + "window the roster only after the first scroll") if a WebKit test
+  path ever exists. Until then: do NOT re-attempt table-column virtualisation
+  blind. The genuinely safe next lever is a NON-table redraw of the grid
+  (absolutely-positioned divs or a canvas), which sidesteps table reconciliation
+  entirely — a bigger rebuild, and it STILL needs WebKit verification before it
+  ships. The frozen-columns overlay above is confirmed fine on his phone (his
+  fourth recording showed it aligned), so it stays.
   (3) **A month BRACKET row** (`tr.mbrak` in the same `.mxhead` tbody): one
   open-topped accent box per month spanning exactly its days, label sticky
   just clear of the frozen columns. Derived from the loaded days, so a
