@@ -1401,7 +1401,7 @@ test('board at 390px: Live checks folds to one line, and a fill parks the drawer
   const hole = page.locator('#sbBoard .sb-slot.empty.pax').first()
   await hole.scrollIntoViewIfNeeded(); await hole.click({ position: { x: 20, y: 5 } })
   await page.waitForTimeout(300)
-  await page.locator('#schedBoard .sb-roster .rpuck', { hasText: 'Drill' }).first().click()
+  await page.locator('#schedBoard .sb-roster .rpuck', { hasText: 'Ledger' }).first().click()
   await page.waitForTimeout(350)
   const after = await page.evaluate(() => {
     const s = document.querySelector('#sbBoard .seat[data-slot="s:0.amt.1.pax.1"]')
