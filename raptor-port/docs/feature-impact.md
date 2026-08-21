@@ -241,15 +241,18 @@ check the other):
   report rule, the debrief pad, which event kinds are in `EVD`) moves both, as
   it should — but anything that re-derives a span WITHOUT `workSpan` is a new
   seam.
-- **The LATE mark: four printers, one switch** (20 Aug 26). `lateTag`,
-  `lateTagOf`, `lateRowCls` and `lateRowTitle` (`ui/html.ts`) each print the
-  mark on a different surface, and each reads `LATEMARK` once. That is what
-  makes "hide the LATE marks" cover the board, the edit week and the view-only
-  week together rather than three-quarters of them. The Inputs page reads
-  `isLateInput` DIRECTLY and is deliberately outside the switch — the
-  paperwork record still says when an input was filed. A new surface that
-  prints the mark must go through one of the four, or it will keep printing
-  after the switch is thrown.
+- **The LATE mark: passive printers read one gate, the board draws the control**
+  (21 Aug 26, was a global switch on 20 Aug). `lateTag`, `lateTagOf`,
+  `lateRowCls` and `lateRowTitle` (`ui/html.ts`) each print the mark on a READ
+  surface, and each reads `lateShown(inp)` once — so dropping an input's mark
+  (`LATEOFF` in `state/view.ts`) covers the board's passive badge, the edit week
+  and the view-only week together rather than three-quarters of them. The board's
+  LIVE input rows instead draw `lateChip`, the always-present clickable control,
+  so a dropped mark stays reachable to restore. The Inputs page reads
+  `isLateInput` DIRECTLY and is deliberately outside the gate — the paperwork
+  record still says when an input was filed. A new READ surface that prints the
+  mark must go through one of the four passive printers, or it will keep printing
+  after a scheduler drops it; a new EDIT surface wants the chip.
 - **Palette vs warning list.** `slotBar`/`avail.ts` and `validate.ts` read the
   same input independently. They must give the same answer about who is
   available. Failing closed (`inpWin`, `awayAllDay`) is how they are kept honest.

@@ -4,7 +4,7 @@
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
 import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/slots'
-import { INPUTS, DATES, withRemarksTail } from '../engine/inputs'
+import { INPUTS, DATES, withRemarksTail, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
@@ -482,18 +482,24 @@ export function routeClick(e: MouseEvent) {
      commitNewInput does the insert on Save. A member never sees the buttons
      (live board only), but the gate is repeated here the way every other
      input control's is. */
-  /* THE LATE-MARK SWITCH (owner, 20 Aug 26). A view toggle, so it neither
-     mutates the schedule nor validates — it repaints, and the four helpers in
-     html.ts read the flag on the way past. `toggleLateMark` refuses a member at
-     the write path (state/view.ts); the toast here is so a hand-made button
-     says why rather than doing nothing, the same shape as the add controls
-     below. */
-  const ltg = t.closest('[data-latetog]') as HTMLElement | null
+  /* THE PER-INPUT LATE CHIP (owner, 21 Aug 26 — "when I click on the late
+     orange icon beside the line, it will remove the late icon"). A view toggle,
+     so it neither mutates the schedule nor validates — it repaints, and the
+     helpers in html.ts read LATEOFF on the way past. `toggleLateOff` refuses a
+     member at the write path (state/view.ts); the toast here is so a hand-made
+     button says why rather than doing nothing. It carries the input's own id,
+     not a schedule address — one input can cover several loaded days — so it
+     resolves against INPUTS, like the Unavailable reassign arm. */
+  const ltg = t.closest('[data-lateoff]') as HTMLElement | null
   if (ltg) {
     e.stopPropagation()
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can change the LATE marks', 'warn'); return }
-    const on = view.toggleLateMark()
-    HOOKS.toast(on ? 'LATE marks shown' : 'LATE marks hidden — the Inputs page still shows them', 'ok')
+    const id = ltg.getAttribute('data-lateoff')
+    const inp = INPUTS.find((x: any) => inpId(x) === id)
+    if (inp) {
+      const shown = view.toggleLateOff(inp)
+      HOOKS.toast(shown ? 'LATE mark shown' : 'LATE mark hidden — the Inputs page still shows it', 'ok')
+    }
     notify(); return
   }
   const iad = t.closest('[data-inpadd]') as HTMLElement | null

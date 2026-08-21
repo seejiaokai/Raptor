@@ -13,7 +13,7 @@ import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, s
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, VWORK, CURPAGE, LATEMARK, restArmed } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, VWORK, CURPAGE, lateShown, restArmed } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -641,17 +641,31 @@ export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Fl
    across all of them — the one exception is the board's promoted ground row,
    whose remarks cell is a bare <input> with nowhere to nest a chip; it keeps
    its amber row edge (see lateRowCls). */
-/* THE SWITCH IS READ HERE, ONCE PER MARK (owner, 20 Aug 26 — "give the
-   scheduler board the option to remove late input tags"). All four helpers
-   below funnel through `isLateInput`, so gating them here covers every
-   schedule surface at a stroke: the board's inputs bands and its Personal
-   Inputs / Unavailable panels (via `sbiRmk`, which calls `lateTag`), the edit
-   week, the view-only week and the board's promoted ground row. The Inputs
-   page keeps its own mark — see the note beside LATEMARK in state/view.ts.
-   Gated at the UI, never in the engine: `isLateInput` goes on answering, and
-   the mark was never a rule (§Stable decisions). */
+/* THE MARK IS READ HERE, ONCE PER INPUT (owner, 21 Aug 26 — per-input dismissal
+   replaced the 20 Aug global switch). All four passive helpers below funnel
+   through `isLateInput(inp) && lateShown(inp)`, so a mark a scheduler has
+   dropped on the board (state/view.ts's LATEOFF) vanishes at a stroke from
+   every READ surface: the board's inputs bands and read-only panels (via
+   `sbiRmk`, which calls `lateTag`), the edit week, the view-only week and the
+   board's promoted ground row. The board's LIVE input rows draw `lateChip`
+   instead — the clickable control that is always present so the dropped state
+   stays reachable. The Inputs page keeps its own mark — see LATEOFF in
+   state/view.ts. Gated at the UI, never in the engine: `isLateInput` goes on
+   answering, and the mark was never a rule (§Stable decisions). */
 export function lateTag(inp:any){
-  return (LATEMARK&&inp&&isLateInput(inp))?`<span class="latetag" title="${esc(lateNote(inp))}">LATE</span>`:'';}
+  return (inp&&isLateInput(inp)&&lateShown(inp))?`<span class="latetag" title="${esc(lateNote(inp))}">LATE</span>`:'';}
+/* THE CLICKABLE LATE CHIP (owner, 21 Aug 26 — "when I click on the late orange
+   icon beside the line, it will remove the late icon, if I click the same area
+   again it will show"). Unlike lateTag (the passive amber badge the week and
+   the read surfaces show), this renders on a late input's LIVE board row
+   WHENEVER `isLateInput` — solid amber while the mark shows, a dim ghost once
+   dropped — so the same spot stays clickable to bring it back. `data-lateoff`
+   carries the input id routeClick toggles; admin-gated there. Nothing on a
+   non-late row, so an ordinary row is byte-identical to before. */
+export function lateChip(inp:any){
+  if(!inp||!isLateInput(inp))return '';
+  const off=!lateShown(inp);
+  return `<button class="latechip${off?' off':''}" data-lateoff="${esc(inpId(inp))}" aria-pressed="${off?'true':'false'}" title="${off?'LATE mark hidden here and on the week — tap to show it again':'Tap to hide this LATE mark from the board and the week (the Inputs page keeps it)'}">LATE</button>`;}
 /* the same mark on a row that CAME from an input — the ground row acceptInput
    builds, which carries the source input's key in `src`. This is what carries
    the mark onto the view-only page for a personal input: accepting it is the
@@ -669,8 +683,8 @@ export function lateTagOf(o:any){return lateTag(srcInput(o));}
    inset amber edge, the .redbox idiom) plus the note in its tooltip: no extra
    node, no extra grid item, nothing to knock out of register. The row's own
    INPUT still carries the full chip in the Personal Inputs panel above it. */
-export function lateRowCls(o:any){const inp=srcInput(o); return (LATEMARK&&inp&&isLateInput(inp))?' lateinp':'';}
-export function lateRowTitle(o:any){const inp=srcInput(o); return (LATEMARK&&inp&&isLateInput(inp))?` title="${esc(lateNote(inp))}"`:'';}
+export function lateRowCls(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp)&&lateShown(inp))?' lateinp':'';}
+export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp)&&lateShown(inp))?` title="${esc(lateNote(inp))}"`:'';}
 /* =====================================================================
    ONE DAY'S MARKUP
    Extracted verbatim from renderSchedule's DAYS.map body so a single day can be
