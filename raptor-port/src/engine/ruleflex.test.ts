@@ -1,20 +1,23 @@
-/* THE PROMOTED SETTINGS REALLY DRIVE THE ENGINE (owner, 21 Aug 26 — "could u
-   explore the logic rules and see what can be made editable. I don't wanna
-   hard code too many things and have no flexibility… make sure it's robust
-   and tested"). Two literals became VCONF settings in this pass:
+/* THE RULES STAY FLEXIBLE, AND THE FLEXIBLE ONES REALLY DRIVE THE ENGINE
+   (owner, 21 Aug 26 — "could u explore the logic rules and see what can be
+   made editable. I don't wanna hard code too many things… make sure it's
+   robust and tested"). Two rulings landed the same afternoon:
 
-     aarNight — a bare AAR reads as NIGHT when the sortie lands after this
-                (was a hard-coded 19:00, in TWO places: the validator's
-                collectEvents and the crew picker's slotRules — a drift seam
-                exactly of the kind the owner warned about);
-     simLen   — a sim row with no end time runs this long (was a hard-coded
-                90, in events.ts AND avail.ts's personBusy/slotRules).
+     simLen   — a sim row with no end time runs this long. Promoted from a
+                hard-coded 90 that sat in events.ts AND avail.ts (drift
+                seam); now one Logic-tab setting read by both.
+     NAAR     — night AAR is the WAVE's call, not the clock's ("make the
+                rule for NAAR instead of a time: if the wave is night and
+                AAR is mentioned, it's night AAR. Or NAAR is mentioned").
+                The landing-after-19:00 clause is REMOVED from both readers
+                (a short-lived aarNight setting went with it — don't bring
+                a clock back into this rule); refwin.ts:reaar() excises the
+                reference's identical clauses so parity holds everywhere.
 
-   What this pins, per setting: the default reproduces the old behaviour
-   byte-for-byte (reference parity rests on this), BOTH readers move when
-   the setting moves (validator and picker stay in sync), and the loose
-   ruleParse grammar plus save/load/reset round-trips cover the new keys.
-   The UI half — the Logic tab boxes — is pinned in ui/logic.test.tsx. */
+   What this pins: the sim default reproduces the old behaviour (parity
+   rests on it), BOTH readers of each rule agree (validator and picker),
+   the loose ruleParse grammar, and save/load/reset round-trips. The UI
+   half — the Logic tab boxes — is pinned in ui/logic.test.tsx. */
 import { afterEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { validate, WARN, EVD } from './validate'
@@ -29,29 +32,30 @@ afterEach(() => {
   validate()
 })
 
-describe('the squadron standard carries the new keys', () => {
-  it('aarNight is 19:00 and simLen 90 by standard — the old literals exactly', () => {
-    expect(RULE_STD.v.aarNight).toBe(19 * 60)
+describe('the squadron standard carries the new key', () => {
+  it('simLen is 90 by standard — the old literal exactly — and aarNight is gone for good', () => {
     expect(RULE_STD.v.simLen).toBe(90)
-    /* and both are offered to the Logic tab with sane bounds */
-    expect(RULE_SPEC.aarNight.u).toBe('time')
     expect(RULE_SPEC.simLen.lo).toBeGreaterThanOrEqual(15)
+    /* the owner removed the clock from the NAAR rule the same day it nearly
+       became a setting — neither the setting nor the literal may return */
+    expect(VCONF.aarNight, 'no aarNight in VCONF').toBeUndefined()
+    expect(RULE_SPEC.aarNight, 'no aarNight offered to the Logic tab').toBeUndefined()
   })
 })
 
 describe('ruleParse tolerates the spellings a scheduler actually types', () => {
   it('a clock field takes 1900, 19:00, 1900H and 19:00L as the same time', () => {
-    expect(ruleParse('aarNight', '1900')).toBe(1140)
-    expect(ruleParse('aarNight', '19:00')).toBe(1140)
-    expect(ruleParse('aarNight', '1900H')).toBe(1140)
-    expect(ruleParse('aarNight', '19:00L')).toBe(1140)
+    expect(ruleParse('scDayTo', '1900')).toBe(1140)
+    expect(ruleParse('scDayTo', '19:00')).toBe(1140)
+    expect(ruleParse('scDayTo', '1900H')).toBe(1140)
+    expect(ruleParse('scDayTo', '19:00L')).toBe(1140)
     expect(ruleParse('scDayFrom', '0700h')).toBe(420)
   })
   it('garbage and impossible clocks come back null, never a number', () => {
-    expect(ruleParse('aarNight', 'abc')).toBeNull()
-    expect(ruleParse('aarNight', '')).toBeNull()
+    expect(ruleParse('scDayTo', 'abc')).toBeNull()
+    expect(ruleParse('scDayTo', '')).toBeNull()
     /* the H strip must not make "H" alone parse */
-    expect(ruleParse('aarNight', 'H')).toBeNull()
+    expect(ruleParse('scDayTo', 'H')).toBeNull()
   })
   it('a duration field still reads 90, 90 min and 2h alike — and never strips a real digit', () => {
     expect(ruleParse('simLen', '90')).toBe(90)
@@ -60,37 +64,45 @@ describe('ruleParse tolerates the spellings a scheduler actually types', () => {
   })
 })
 
-describe('aarNight drives BOTH readers of the day/night call', () => {
+describe('night AAR is the wave, or the word — never the clock', () => {
   /* fantom is a CAT D pilot: DAAR current, NAAR not (people.ts grants naar
-     only to instructors and CAT A/B). Put him on a bare AAR landing 19:30 —
-     night at the standard 19:00, so AAR_QUAL fires; move the night line to
-     20:00 and the same sortie reads DAAR, which he holds, and it clears. */
-  const plantAAR = () => {
+     only to instructors and CAT A/B). His bare AAR lands 19:30 — under the
+     removed clock rule that was night; under the owner's rule it is DAY,
+     because the wave is a day wave. Flip the wave to night, or write NAAR
+     outright, and the night check fires. */
+  const plantAAR = (rmks = 'AAR') => {
     const w: any = (DAYS[0] as any).waves.find((x: any) => (x.formations || []).length)
     const f = w.formations[0]
     w.night = false
     /* colon format — the model stores '12:40' and toMin() reads nothing else
        (the board's 4-digit entry is normalised at the write path) */
     f.to = '18:00'; f.ld = '19:30'
-    f.aircraft[0].p = 'fantom'; f.aircraft[0].w = ''; f.aircraft[0].rmks = 'AAR'
-    const gi = (DAYS[0] as any).waves.indexOf(w)
-    return `0.${gi}.0.0.p`
+    f.aircraft[0].p = 'fantom'; f.aircraft[0].w = ''; f.aircraft[0].rmks = rmks
+    return { w, key: `0.${(DAYS[0] as any).waves.indexOf(w)}.0.0.p` }
   }
   const aarWarn = () => ((WARN.byDay.find((g: any) => g.di === 0) || {}).warns || [])
     .some((w: any) => w.code === 'AAR_QUAL' && (w.who || []).includes('fantom'))
 
-  it('the validator: lands 19:30 → NAAR wanted at standard (warning), DAAR once night starts at 20:00 (clear)', () => {
+  it('a bare AAR landing 19:30 on a DAY wave is day AAR — no clock tips it', () => {
     plantAAR(); validate()
-    expect(aarWarn(), 'NAAR asked of a DAAR-only pilot').toBe(true)
-    VCONF.aarNight = 20 * 60; validate()
-    expect(aarWarn(), 'the same sortie is day AAR now, and he is current').toBe(false)
+    expect(aarWarn(), 'he holds DAAR, so a day read stays silent').toBe(false)
   })
 
-  it('the crew picker reads the SAME setting — no second 19:00 left to drift', () => {
-    const key = plantAAR(); validate()
-    expect(slotRules(key).aar).toBe('NAAR')
-    VCONF.aarNight = 20 * 60; validate()
+  it('the same sortie on a NIGHT wave is night AAR, and the currency check fires', () => {
+    const { w } = plantAAR(); w.night = true; validate()
+    expect(aarWarn(), 'NAAR asked of a DAAR-only pilot').toBe(true)
+  })
+
+  it('writing NAAR outright asks for night whatever the wave says', () => {
+    plantAAR('NAAR'); validate()
+    expect(aarWarn(), 'the word overrides the day wave').toBe(true)
+  })
+
+  it('the crew picker reads the SAME rule — no clock clause left to drift', () => {
+    const { w, key } = plantAAR(); validate()
     expect(slotRules(key).aar).toBe('DAAR')
+    w.night = true; validate()
+    expect(slotRules(key).aar).toBe('NAAR')
   })
 })
 
@@ -117,36 +129,36 @@ describe('simLen drives the window of an open-ended sim row', () => {
 })
 
 describe('the new keys ride save / load / reset like every other rule', () => {
-  it('an off-standard aarNight survives the round trip; reset restores 19:00', () => {
+  it('an off-standard simLen survives the round trip; reset restores 90', () => {
     const mem: any = {}
     const was = storeBackend.impl
     storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k] : null), setItem: (k: string, v: string) => { mem[k] = v } }
     try {
-      VCONF.aarNight = 20 * 60; VCONF.simLen = 120
+      VCONF.simLen = 120
       rulesSave()
-      VCONF.aarNight = 19 * 60; VCONF.simLen = 90        // simulate a fresh boot
+      VCONF.simLen = 90                                  // simulate a fresh boot
       rulesLoad()
-      expect(VCONF.aarNight).toBe(20 * 60)
       expect(VCONF.simLen).toBe(120)
       rulesReset()
-      expect(VCONF.aarNight).toBe(19 * 60)
       expect(VCONF.simLen).toBe(90)
       /* reset also cleared the stored overrides — a reload stays standard */
       rulesLoad()
-      expect(VCONF.aarNight).toBe(19 * 60)
+      expect(VCONF.simLen).toBe(90)
     } finally { storeBackend.impl = was }
   })
 
-  it('a poisoned store — strings, out-of-bounds — cannot reach the engine', () => {
+  it('a poisoned store — strings, out-of-bounds, dead keys — cannot reach the engine', () => {
     const was = storeBackend.impl
     storeBackend.impl = {
-      getItem: (k: string) => k === 'sqn142_rules' ? JSON.stringify({ v: { aarNight: '1200', simLen: 9999 } }) : null,
+      getItem: (k: string) => k === 'sqn142_rules' ? JSON.stringify({ v: { simLen: 9999, crewRest: '840', aarNight: 1200 } }) : null,
       setItem: () => {},
     }
     try {
       rulesLoad()
-      expect(VCONF.aarNight, 'string refused').toBe(19 * 60)
       expect(VCONF.simLen, 'out of bounds refused').toBe(90)
+      expect(VCONF.crewRest, 'string refused').toBe(720)
+      /* a stored override for the REMOVED aarNight key must not resurrect it */
+      expect(VCONF.aarNight, 'a dead key stays dead').toBeUndefined()
     } finally { storeBackend.impl = was }
   })
 })

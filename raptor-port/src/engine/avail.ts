@@ -193,11 +193,12 @@ export function slotRules(key:any){
     if(f&&ac){
       let ld=parseHM(f.ld); const to=parseHM(f.to);
       if(ld!=null&&to!=null&&ld<to)ld+=1440;
-      /* the same VCONF.aarNight the validator reads (events.ts) — this was a
-         second literal 19:00, and the picker would have kept the old night
-         line the moment the Logic tab moved the rule (owner, 21 Aug 26 —
-         "rules engine affects many parts… are they in sync") */
-      out.aar=aarNeed(ac.rmks,!!wv.night||(ld!=null&&ld>VCONF.aarNight));
+      /* the same rule the validator applies (events.ts): night AAR is the
+         WAVE's nightness, never the landing clock (owner, 21 Aug 26). This
+         line once carried its own literal 19:00 — the drift seam the owner
+         warned about ("rules engine affects many parts… are they in sync") —
+         so whatever the rule is, it must stay identical in both places. */
+      out.aar=aarNeed(ac.rmks,!!wv.night);
     }
     /* the sortie's window, PADDED to the step and the dekit — because that is
        what the validator judges an input against (the brief/debrief loop), and

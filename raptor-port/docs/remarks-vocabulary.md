@@ -50,7 +50,7 @@ frozen by the reference test suite, so the trap is recorded, not fixed.
 
 | Typed | Means |
 |---|---|
-| `AAR` | this line is refuelling. **Day or night decided by the clock**: night if the wave is a night wave or the sortie lands after the night line on the Rules tab (19:00 as standard), otherwise day |
+| `AAR` | this line is refuelling. **Day or night decided by the wave**: night if the wave is a night wave, otherwise day — no clock is involved (owner, 21 Aug 26) |
 | `DAAR` | day refuelling, whatever the clock says |
 | `NAAR` | night refuelling, whatever the clock says |
 | `NO AAR` `NO DAAR` `NO NAAR` | cancels it — asks for nothing. Hyphens and dashes are tolerated (`NO-AAR`, `NO – DAAR`) |

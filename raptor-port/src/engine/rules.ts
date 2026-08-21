@@ -31,12 +31,14 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
   inputLead:14,     // member input deadline, days before the week's Monday
   scDayFrom:7*60,   // an SC shift wholly inside this window is a DAY shift
   scDayTo:19*60,
-  /* PROMOTED FROM HARD-CODED LITERALS (owner, 21 Aug 26 — "I don't wanna
-     hard code too many things and have no flexibility"). Both were fixed
-     numbers buried in events.ts/avail.ts; at these defaults the engine's
-     behaviour is byte-identical to before (and to the reference), so parity
-     is untouched — the gain is that the Logic tab can now move them. */
-  aarNight:19*60,   // a bare AAR is NIGHT when the sortie lands after this
+  /* PROMOTED FROM A HARD-CODED LITERAL (owner, 21 Aug 26 — "I don't wanna
+     hard code too many things and have no flexibility"). It was a fixed 90
+     buried in events.ts/avail.ts; at this default the engine's behaviour is
+     byte-identical to before (and to the reference), so parity is untouched
+     — the gain is that the Logic tab can now move it. A sibling `aarNight`
+     setting lived here for a few hours the same day and was REMOVED by the
+     owner's next ruling: night AAR is the wave's nightness (or an explicit
+     NAAR), never a landing-time line — don't reintroduce a clock for it. */
   simLen:90,        // a sim row with no end time is assumed to run this long
   /* WEEKEND / PUBLIC-HOLIDAY DUTY EARNS OIL (owner, 16-17 Aug 26 — Leave War
      sync wire 4). A duty stood on a non-working day credits OIL in Leave War:
@@ -99,7 +101,6 @@ export const RULE_SPEC:any={
   amtDebrief:{t:'AMT debrief',               u:'min', lo:0,  hi:240},
   scDayFrom: {t:'SC day window opens',       u:'time',lo:0,  hi:1439},
   scDayTo:   {t:'SC day window closes',      u:'time',lo:0,  hi:1439},
-  aarNight:  {t:'Bare AAR is night after',   u:'time',lo:0,  hi:1439},
   simLen:    {t:'Assumed sim length, no end time',u:'min',lo:15,hi:480},
   oilFullMin:{t:'Weekend duty full day (OIL)',u:'min',lo:60, hi:720},
   maxRun:    {t:'Max days worked in a row',  u:'days',lo:1,  hi:14},

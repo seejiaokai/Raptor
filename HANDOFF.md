@@ -31,7 +31,7 @@ date standardisation and the per-input LATE dismissal below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2747 across 152 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2749 across 152 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -56,7 +56,7 @@ pinned "a desk raises no breach", the owner overruled it), and e2e stays
 305 / 12. The crew-rest widening grew `dutyrest.test.ts` 6 → 8 (+2: sim
 and ground breaches in, the advisory-only pin inverted with the rule) →
 2736; the editable-rules pass added `ruleflex.test.ts` (+9, +1 file) and
-+2 in `logic.test.tsx` → 2747 / 152, with e2e, probes, perf and the DOM
++2 in `logic.test.tsx`, then the NAAR wave-only ruling reshaped `ruleflex` to 11 → 2749 / 152, with e2e, probes, perf and the DOM
 ceilings all unmoved (the Logic tab is outside every ceiling).
 
 DOM measures at that baseline: week **3767** under a 4000 ceiling (+24 over
@@ -1166,14 +1166,20 @@ gate — it has its own e2e DOM band (29000), measured-first.
     EARLIER of in-time and brief; the seed week raises no new warning —
     only the `REST[]` maps grew). A FOURTH pass the same day made the rules
     more editable (owner: "I don't wanna hard code too many things"):
-    `VCONF.aarNight` (bare AAR turns night, standard 19:00 — was a literal
-    in BOTH `events.ts` and `avail.ts:slotRules`) and `VCONF.simLen` (an
+    `VCONF.simLen` (an
     open-ended sim's assumed length, standard 90) joined `RULE_SPEC`; the
     Logic tab's CREW_TIGHT row carries a `reportLead` edit box where the
     owner circled the 3h (a key can render on several rows now — the
     focus-restore targets a per-render ordinal `data-lgi`); and `ruleParse`
-    clock fields tolerate an H/L suffix (`1900H` = `19:00`). Pinned in
-    `ruleflex.test.ts` (both AAR readers move together, simLen drives the
+    clock fields tolerate an H/L suffix (`1900H` = `19:00`). A FIFTH pass:
+    **night AAR is the wave's call, never the clock's** (owner: "make the
+    rule for NAAR instead of a time") — the lands-after-19:00 clause is
+    gone from BOTH readers (`events.ts`, `avail.ts:slotRules`), the
+    short-lived `aarNight` setting was removed with it (a stored override
+    for the dead key is ignored on load), and `refwin.ts:reaar()` excises
+    the reference's identical clauses. Pinned in
+    `ruleflex.test.ts` (both readers agree wave-only, the NAAR word
+    overrides, simLen drives the
     clash window, save/load/reset round-trips, poisoned-store refusal) and
     `logic.test.tsx`. Rules: `docs/engine-rules.md`
     §Validation; grammar: `docs/remarks-vocabulary.md` §The in-time lines;

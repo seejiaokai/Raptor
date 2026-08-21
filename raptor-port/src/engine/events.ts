@@ -159,7 +159,15 @@ export function collectEvents(){
           /* key = the aircraft's slot-key prefix, captured HERE because acs
              excludes CX'd and spare aircraft — ai is not recoverable by
              position later. Warnings anchor on it to pan to the line. */
-          acs.push({p:a.p,w:a.w,rmks:a.rmks,aar:aarNeed(a.rmks,!!w.night||ldM>VCONF.aarNight),key:`${di}.${gi}.${li}.${ai}`});
+          /* NIGHT AAR IS THE WAVE'S CALL, NOT THE CLOCK'S (owner, 21 Aug 26,
+             the same afternoon the 19:00 clock line briefly became a setting:
+             "make the rule for NAAR instead of a time — if the wave is night
+             and AAR is mentioned, it's night AAR. Or NAAR is mentioned").
+             A bare AAR is night only on a night wave; a landing time never
+             decides it. An explicit NAAR/DAAR in the remarks still overrides
+             either way, inside aarNeed. The reference's clock clause is
+             excised by refwin.ts:reaar() so both engines agree everywhere. */
+          acs.push({p:a.p,w:a.w,rmks:a.rmks,aar:aarNeed(a.rmks,!!w.night),key:`${di}.${gi}.${li}.${ai}`});
           [['FCP',a.p],['RCP',a.w]].forEach((pair:any)=>{ const seat=pair[0],id=pair[1]; if(!id||isSpecial(id))return;
             if(seat==='FCP')fcps.push(id);
             fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,

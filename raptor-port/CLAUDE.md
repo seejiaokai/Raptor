@@ -146,7 +146,9 @@ they are his words, keep walking them:
   never a second literal. When a rule CHANGES, grep for the old rule's
   WORDING as well as its identifiers: prose restatements (logic-html rows,
   docs) don't show up in code greps. The 19:00 AAR literal that sat in both
-  `events.ts` and `avail.ts` until 21 Aug 26 is the standing example.
+  `events.ts` and `avail.ts` until 21 Aug 26 is the standing example (the
+  owner then removed the clock from that rule entirely — night AAR is the
+  wave's flag or an explicit NAAR — but the seam lesson stands).
 Also standing: prefer a `VCONF` + `RULE_SPEC` setting over a hard-coded
 number for anything a squadron could plausibly set policy on, and put the
 edit box on the Logic-tab row where the number is QUOTED, not only where it

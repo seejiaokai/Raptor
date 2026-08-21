@@ -141,11 +141,11 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
     /* every edit repaints the built markup, so the box is re-queried before
        each write — the old node is off the DOM the moment the toast fires */
     const box = (k: string) => $(`#lgBody input[data-lgset="${k}"]`) as HTMLInputElement
-    expect(box('aarNight'), 'the AAR night line is editable now').toBeTruthy()
-    await setField(box('aarNight'), '2000H')        // the H suffix is tolerated
-    expect(VCONF.aarNight).toBe(1200)
-    await setField(box('aarNight'), '19:00')
-    expect(VCONF.aarNight).toBe(1140)
+    /* a clock field takes the squadron's own spellings, H suffix included */
+    await setField(box('scDayTo'), '2000H')
+    expect(VCONF.scDayTo).toBe(1200)
+    await setField(box('scDayTo'), '19:00')
+    expect(VCONF.scDayTo).toBe(1140)
     expect(box('simLen'), 'the sim length is editable now').toBeTruthy()
     await setField(box('simLen'), '2h')
     expect(VCONF.simLen).toBe(120)

@@ -26,7 +26,7 @@ import { INPUTS, inputFlags } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 
 export async function refWindow(): Promise<any> {
-  const html = relabel(reinput(redn(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))))))))))
+  const html = relabel(reinput(redn(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -489,6 +489,26 @@ function rebrief(html: string): string {
    rest from the identical line, so the same substitution moves both engines
    together — REST[] maps, the hard branch and the messages all follow from
    it. Rule: docs/engine-rules.md §Validation, "Crew rest". */
+/* NIGHT AAR IS THE WAVE'S CALL, NOT THE CLOCK'S (owner, 21 Aug 26 — "make
+   the rule for NAAR instead of a time: if the wave is night and AAR is
+   mentioned, it's night AAR. Or NAAR is mentioned"). The reference decides
+   a bare AAR's day/night with `!!w.night||ldM>19*60` in the validator and
+   the same clause again in the crew picker; the port dropped the clock in
+   both places, so both reference sites are excised to the wave flag alone.
+   aarNeed itself is untouched — an explicit NAAR/DAAR still overrides. */
+function reaar(html: string): string {
+  const subs: Array<[string, string]> = [
+    ['aar:aarNeed(a.rmks,!!w.night||ldM>19*60)', 'aar:aarNeed(a.rmks,!!w.night)'],
+    ['out.aar=aarNeed(ac.rmks,!!wv.night||(ld!=null&&ld>19*60));', 'out.aar=aarNeed(ac.rmks,!!wv.night);'],
+  ]
+  subs.forEach(([from, to]) => {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin reaar: expected exactly 1 match, got ${n} for: ${from.slice(0, 40)}…`)
+    html = html.replace(from, to)
+  })
+  return html
+}
+
 function rerest(html: string): string {
   const from = "const rests=(e.kind==='fly'||e.kind==='shift');"
   const to = 'const rests=true;'

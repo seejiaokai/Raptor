@@ -370,11 +370,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   currency) and already strips `NO AAR` / `NO DAAR` / `NO NAAR`. **It is
   byte-identical to `reference/scheduler.html` and pinned by `tfin.js` group
   V — do not touch it.** What is new sits on top of its answer.
-  A bare `AAR` is night when the wave is a night wave **or the sortie lands
-  after `VCONF.aarNight`** — a Logic-tab setting since 21 Aug 26 (standard
-  19:00, previously a literal in TWO places: `events.ts` for the validator
-  and `avail.ts:slotRules` for the crew picker, which would have drifted the
-  first time the rule moved). Pinned in `ruleflex.test.ts`, both readers.
+  A bare `AAR` is night **when the wave is a night wave** — the wave's own
+  day/night flag is the whole answer; writing `NAAR`/`DAAR` says it outright
+  either way. **The clock is out of this rule** (owner, 21 Aug 26 — "make
+  the rule for NAAR instead of a time"): a lands-after-19:00 clause used to
+  tip a bare AAR to night, written as a literal in TWO places (`events.ts`
+  for the validator, `avail.ts:slotRules` for the crew picker); it briefly
+  became a setting that same day and was then removed with the rule — do
+  not reintroduce a landing-time line here. `refwin.ts:reaar()` excises the
+  reference's identical clauses so parity holds off-seed too. Pinned in
+  `ruleflex.test.ts`, both readers.
   One quirk of that segmenter, found by the owner asking and pinned in
   `aar.test.ts`: it splits on an optional digit + `A`/`B` + colon, and that
   pattern turns up inside ordinary words. `AREA: … AAR` is harmless (an `A:`
