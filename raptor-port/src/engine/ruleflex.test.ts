@@ -24,6 +24,7 @@ import { validate, WARN, EVD } from './validate'
 import { VCONF, RULE_STD, RULE_SPEC, ruleParse, rulesSave, rulesLoad, rulesReset } from './rules'
 import { slotRules } from './avail'
 import { storeBackend } from './hooks'
+import { INPUT_TYPES, inpMeta, typeGroup, restsInput } from './inputs'
 
 const DSNAP = JSON.stringify(DAYS)
 afterEach(() => {
@@ -173,6 +174,40 @@ describe('the new keys ride save / load / reset like every other rule', () => {
       expect(VCONF.aarNight, 'a dead key stays dead').toBeUndefined()
       expect(VCONF.showLead, 'showLead stays dead too').toBeUndefined()
     } finally { storeBackend.impl = was }
+  })
+})
+
+describe('which input types bear crew rest (owner, 21 Aug 26)', () => {
+  /* "everything in duty and commitments affects crew rest… do not include
+     personal, sans availability" — the whole taxonomy, pinned per type so a
+     future INPUT_META edit cannot silently move a type across the line.
+     The reference mirror is an inline regex in refwin.ts:reirest(); this
+     table is the thing that regex must keep agreeing with. */
+  const RESTS: any = {
+    Training: true, CSE: true, Meeting: true, 'Fly with': true,
+    Appointment: true, Duty: true, OD: true, Other: true,
+    Personal: false, 'SANS Availability': false,
+  }
+  it('the commitments group minus Personal and SANS Availability — nothing else', () => {
+    INPUT_TYPES.forEach((t: any) => {
+      const want = RESTS[t] != null ? RESTS[t] : false   // every leave + medical type
+      expect(restsInput(t), t).toBe(want)
+    })
+  })
+  it('spellings are tolerated, garbage is refused', () => {
+    expect(restsInput('meeting')).toBe(true)
+    expect(restsInput(' TRAINING ')).toBe(true)
+    expect(restsInput('personal')).toBe(false)
+    expect(restsInput('nonsense')).toBe(false)
+    expect(restsInput(null)).toBe(false)
+  })
+  it('AM/PM quick-picks stay OFF the commitments group except SANS — typed times only', () => {
+    /* the owner asked for their removal (21 Aug 26); they were already only
+       offered where INPUT_META.half is true, which in this group is SANS
+       Availability alone. Pinned so nobody hands Meeting an AM button back. */
+    INPUT_TYPES.filter((t: any) => typeGroup(t) === 'other').forEach((t: any) => {
+      expect(!!inpMeta(t).half, t).toBe(t === 'SANS Availability')
+    })
   })
 })
 

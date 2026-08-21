@@ -89,8 +89,10 @@ never reads as a time, and an impossible clock (`2590`) is skipped.
 The published in-time moves the formation's **report time**, which feeds crew
 rest (the anchor is the EARLIER of in-time and brief — and, since 21 Aug 26,
 anything scheduled even earlier that day starts the clock instead: an 08:00
-meeting ahead of a 10:00 in-time is what the 12 hours are measured to), the
-long-work-day note, and the wave windows. A line with no readable time is
+meeting ahead of a 10:00 in-time is what the 12 hours are measured to. That
+includes a duty-and-commitments INPUT with typed times — but never the
+Personal or SANS Availability types, leave, medical, or an all-day record),
+the long-work-day note, and the wave windows. A line with no readable time is
 inert until a time is typed into it.
 
 ## Late show — in a flying line's RMKS

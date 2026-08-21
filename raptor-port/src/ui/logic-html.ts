@@ -95,7 +95,7 @@ export function lgRules(){
    sub:'The rule the squadron cares about most, and the one with the most edge cases.',
    rows:[
     {sev:'hard',code:'CREW_REST',set:['crewRest'],src:()=>`VCONF.crewRest ${VCONF.crewRest}`,
-     t:()=>`Aircrew flying today must have ${lgV(lgT(VCONF.crewRest))} clear before <b>the first thing on their programme</b> — the report, or anything scheduled earlier: a meeting, a sim, a duty post.<span class="why">The owner's rule (21 Aug 26): this person needs ${lgT(VCONF.crewRest)} of rest in order to fly. An 08:00 meeting ahead of a 10:00 in-time is what starts his day, so it is what the warning measures to and names. A day with no flying asks for no rest. Exactly ${lgT(VCONF.crewRest)} is legal — the bar is strictly greater-than.</span>`},
+     t:()=>`Aircrew flying today must have ${lgV(lgT(VCONF.crewRest))} clear before <b>the first thing on their programme</b> — the report, or anything scheduled earlier: a meeting, a sim, a duty post, or a duty-and-commitments input with typed times.<span class="why">The owner's rule (21 Aug 26): this person needs ${lgT(VCONF.crewRest)} of rest in order to fly. An 08:00 meeting ahead of a 10:00 in-time is what starts his day, so it is what the warning measures to and names — whether it sits on the Ground Programme or came in as an input. A day with no flying asks for no rest. Exactly ${lgT(VCONF.crewRest)} is legal — the bar is strictly greater-than.</span>`},
     /* set:['reportLead'] — the owner circled this exact row asking "is this
        editable as well? The number?" (21 Aug 26). The 3h IS reportLead,
        already editable further up under "The clock a day runs on"; the box
@@ -104,7 +104,7 @@ export function lgRules(){
     {sev:'adv',code:'CREW_TIGHT',set:['reportLead'],
      t:()=>`If the <b>nominal</b> ${lgT(VCONF.reportLead)} report falls inside the rest window but the instructed report does not, that is an <b>Advisory</b>, not a breach.`},
     {sev:'set',src:()=>`prevFlyEnd → REST[di]`,
-     t:()=>`Rest is measured off the last commitment of <b>any kind</b> the day before — a sortie, a shift, a duty post, a sim, a ground event or a programme item all count.<span class="why">A sortie ends for rest purposes at landing + the debrief; everything else ends at its written end, with no tail added. This is the owner's 21 Aug 26 ruling: anything that ends the day prior and eats into the ${lgT(VCONF.crewRest)} is a warning, whatever kind of row it was.</span>`},
+     t:()=>`Rest is measured off the last commitment of <b>any kind</b> the day before — a sortie, a shift, a duty post, a sim, a ground event, a programme item, or a <b>duty-and-commitments input</b> all count.<span class="why">A sortie ends for rest purposes at landing + the debrief; everything else ends at its written end, with no tail added. This is the owner's 21 Aug 26 ruling: anything that ends the day prior and eats into the ${lgT(VCONF.crewRest)} is a warning, whatever kind of row it was. For inputs the same ruling names its own limits: only the Duty &amp; other commitments types except <b>Personal</b> and <b>SANS Availability</b> — leave and medical never count — and only when the input carries <b>typed times</b>; an all-day record has no timing to measure to.</span>`},
     {sev:'set',src:()=>`nomOf · insOf`,
      t:()=>`A shift's <b>own start time is its report time</b>: no ${lgT(VCONF.reportLead)} lead and no brief lead come off it.`},
     {sev:'set',src:()=>`saExempt · scSpare`,

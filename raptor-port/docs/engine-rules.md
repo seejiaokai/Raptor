@@ -87,14 +87,32 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   fly"): the earliest of the instructed flying report — itself the earlier
   of the published in-time and the leg's own brief — and the start of any
   other scheduled commitment that day (sim, duty post, ground event,
-  programme item; not the flying legs' derived step pads, not personal
-  inputs). The rule only exists when he FLIES that day — a meeting-only
+  programme item; not the flying legs' derived step pads). The rule only
+  exists when he FLIES that day — a meeting-only
   day needs no rest. When an earlier event binds, the message names it
   ("his day starts 08:00 (MTG) before the 10:00 report"), the warning
   anchors on that row, the leave-by follows it, and a late-show remark on
   the jet cannot dash the ring — a sanctioned late join to the sortie does
   not excuse the meeting. Mirrored into the reference by
-  `refwin.ts:refirst()`. Breach = hard CR;
+  `refwin.ts:refirst()`.
+  **Duty & commitment INPUTS joined both sides the same day** (owner —
+  "everything in duty and commitments affects crew rest… do not include
+  personal, sans availability"; "use the timings u see"): an input whose
+  type passes `inputs.ts:restsInput` (Training, CSE, Meeting, Fly with,
+  Appointment, Duty, OD, Other — NOT the type spelled 'Personal', not SANS
+  Availability, and no leave or medical type) counts exactly like a
+  scheduled event, on BOTH sides, provided it carries TYPED times: an
+  all-day record spans the full 1439 minutes and moves nothing. Ending
+  late yesterday it starts the clock at its written end (no debrief tail)
+  and rides `REST[]`; starting early on a fly-day it binds the anchor, is
+  named in the message via `inpLabel` (an Other reads by its remarks), and
+  the warning anchors on the LEG — an unaccepted input has no board row to
+  jump to. The `nx`/`pv` midnight-tail copies in `day.input` are skipped —
+  counting an `nx` copy would file today's own meeting as yesterday's end.
+  Mirrored by `refwin.ts:reirest()` (the type set is an inline regex there;
+  change `restsInput`, change it too). On the seed this adds no warning —
+  the one visible change is vinci's Monday Meeting (09:00–17:00) holding
+  his Tuesday REST entry at 05:00. Breach = hard CR;
   nominal-inside-rest with the instructed report clear = adv TT (the
   advisory is now only that gap, never a severity downgrade by event kind).
   Exactly `crewRest` is legal — the breach is strictly less (owner, 6 Aug 26).

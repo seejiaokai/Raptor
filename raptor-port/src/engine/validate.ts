@@ -1,5 +1,5 @@
 import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
-import { isDownchit, isLeave, isUnavail, canSpare, canWork } from './inputs'
+import { isDownchit, isLeave, isUnavail, canSpare, canWork, restsInput, inpLabel } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
 import { collectEvents } from './events'
@@ -426,6 +426,26 @@ export function validate(){
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
         if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}
       });
+      /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
+         "everything in duty and commitments affects crew rest… do not
+         include personal, sans availability", and it counts on both sides).
+         Only the restsInput types, and only entries with TYPED times — an
+         all-day record spans the full 1439 minutes and has no "timing you
+         see" (his words), so it stays with the ordinary clash rules. The
+         nx/pv copies are the midnight tails: other days' records shifted
+         into this frame — counting an nx entry would file TODAY's own
+         meeting as yesterday's end, so both are skipped. The end is the
+         written end, no debrief tail; prevFlyLd stays null so the message
+         keeps the plain "ended" wording, and prevFlyKey is cleared — an
+         input has no board slot for the previous-day trace to jump to.
+         REST[di] below is built from these same maps, so the SC picker's
+         crew-rest refusal follows this rule with no second copy. */
+      ev[idx-1].input.forEach((i:any)=>{
+        if(i.nx||i.pv||!restsInput(i.type))return;
+        if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;
+        if(prevEnd[i.id]==null||i.e>prevEnd[i.id])prevEnd[i.id]=i.e;
+        if(prevFlyEnd[i.id]==null||i.e>prevFlyEnd[i.id]){prevFlyEnd[i.id]=i.e; prevFlyKey[i.id]=null; prevFlyLd[i.id]=null;}
+      });
       /* when rest expires today, for everyone who had ANY commitment
          yesterday — the palette reads this to keep an SC slot closed to
          anyone who is not yet clear */
@@ -476,12 +496,20 @@ export function validate(){
            the EARLIEST of the instructed flying report and any other
            scheduled commitment that day: a sim, a duty post, a ground
            event, a programme item. The flying legs themselves stay on
-           insOf (their step/dekit pads are derived, not instructions), and
-           personal inputs stay out — the squadron schedules none of them,
-           and they carry their own clash rules. When nothing else starts
-           earlier, first === instructed and every message below is
+           insOf (their step/dekit pads are derived, not instructions).
+           PERSONAL INPUTS joined the candidate set the same day (the second
+           reduce): the restsInput types with typed times count — an 08:00
+           Meeting input before a 10:00 report binds the breach exactly as a
+           ground row would — while 'Personal', 'SANS Availability', leave,
+           medical and all-day records stay out. An input-bound breach names
+           the input in the message (inpLabel, so an Other reads by its
+           remarks) but anchors on the LEG's key — an unaccepted input has
+           no schedule row for the warning jump to pan to. When nothing else
+           starts earlier, first === instructed and every message below is
            byte-identical to before. */
-        const fe=day.events.reduce((m:any,e:any)=>e.id===id&&e.kind!=='fly'&&e.kind!=='shift'&&e.s!=null&&isFinite(e.s)&&(m==null||e.s<m.s)?e:m,null);
+        const fe0=day.events.reduce((m:any,e:any)=>e.id===id&&e.kind!=='fly'&&e.kind!=='shift'&&e.s!=null&&isFinite(e.s)&&(m==null||e.s<m.s)?e:m,null);
+        const fi=day.input.reduce((m:any,i:any)=>i.id===id&&!i.nx&&!i.pv&&restsInput(i.type)&&i.s!=null&&isFinite(i.s)&&i.e!=null&&i.e-i.s<1439&&(m==null||i.s<m.s)?i:m,null);
+        const fe=fi!=null&&(fe0==null||fi.s<fe0.s)?{s:fi.s,label:inpLabel(fi)}:fe0;
         const first=Math.min(instructed,fe!=null?fe.s:Infinity);
         const evBound=first<instructed;
         const onShift=legs.some((e:any)=>e.shift);

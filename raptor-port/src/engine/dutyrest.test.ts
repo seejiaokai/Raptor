@@ -24,6 +24,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { validate, WARN, REST, restClear } from './validate'
 import { VCONF } from './rules'
+import { INPUTS } from './inputs'
 
 /* Mon (di 0): stuff stands Ops-O 14:00–21:30 in the seed. Tue (di 1): plant
    him on the RU line and instruct an 09:00 report — 11h30 rest, 30min short. */
@@ -214,5 +215,141 @@ describe('a duty row bears crew rest', () => {
     const g: any = WARN.byDay.find((x: any) => x.di === TUE)
     const mine = ((g && g.warns) || []).filter((w: any) => (w.who || []).includes('fantom'))
     expect(mine.find((w: any) => w.code === 'CREW_REST'), 'no breach when rest is genuinely clear').toBeFalsy()
+  })
+})
+
+/* DUTY & COMMITMENT INPUTS BEAR CREW REST (owner, 21 Aug 26 — "everything in
+   duty and commitments affects crew rest if the person is flying… do not
+   include personal, sans availability", both sides, and "use the timings u
+   see": typed times only, an all-day record moves nothing). The type set is
+   inputs.ts:restsInput; the same rule is mirrored into the patched reference
+   by refwin.ts:reirest(). Seed dates: Mon = 'Jul 13', Tue = 'Jul 14'. */
+describe('a duty & commitment INPUT bears crew rest', () => {
+  /* stuff flies RU on Tuesday with a 10:00 in-time and an 11:00 brief — both
+     clear of his 21:30 Monday duty (clear at 09:30). Each case then plants
+     one INPUT and asks what it changes. */
+  const flyStuffAt10 = () => {
+    const ru = ruOf()
+    const seat = ru.aircraft[1]
+    const w2: any = (DAYS[TUE] as any).waves[1]
+    const wasIn = w2.intimes.slice(), wasW = seat.w, wasBr = ru.br
+    plant(() => { seat.w = 'stuff'; w2.intimes = [...wasIn.slice(0, 1), '1000H: RU IN TIME']; ru.br = '11:00' },
+      () => { seat.w = wasW; w2.intimes = wasIn; ru.br = wasBr })
+    return ru
+  }
+  const plantInput = (rec: any) =>
+    plant(() => { INPUTS.push({ mod: '2026-06-26', remarks: '', ...rec }) }, () => { INPUTS.pop() })
+
+  it('a timed Meeting input at 08:00 binds the breach and is named in the warning', () => {
+    flyStuffAt10()
+    plantInput({ person: 'stuff', date: 'Jul 14', allday: false, s: 8 * 60, e: 9 * 60, type: 'Meeting' })
+    validate()
+    const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
+    expect(cr, 'the input binds the breach').toBeTruthy()
+    expect(cr.sev).toBe('hard')
+    expect(cr.msg).toContain('his day starts 08:00 (Meeting)')
+    expect(cr.msg).toContain('before the 10:00 report')
+    /* leave-by follows the input: 08:00 + 24h − 12h = Monday 20:00 */
+    expect(cr.leaveBy).toBe('20:00')
+    /* an unaccepted input has no board row, so the warning anchors on the
+       LEG — the one row of his the scheduler can jump to */
+    expect(String(cr.key)).toMatch(/^1\.1\./)
+  })
+
+  it('a LATE SHOW remark on the jet cannot dash an input-bound breach', () => {
+    const ru = flyStuffAt10()
+    const wasR = ru.aircraft[1].rmks
+    plant(() => { ru.aircraft[1].rmks = '2A: LATE SHOW' }, () => { ru.aircraft[1].rmks = wasR })
+    plantInput({ person: 'stuff', date: 'Jul 14', allday: false, s: 8 * 60, e: 9 * 60, type: 'Meeting' })
+    validate()
+    const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
+    expect(cr).toBeTruthy()
+    expect(cr.msg, 'no late-show clause: the remark is about the jet, not the meeting').not.toContain('Late show')
+    expect(!!(WARN.dash && WARN.dash[TUE] && WARN.dash[TUE].stuff), 'ring stays solid').toBe(false)
+  })
+
+  it('an ALL-DAY input moves nothing — no timing to see', () => {
+    flyStuffAt10()
+    plantInput({ person: 'stuff', date: 'Jul 14', allday: true, s: 0, e: 1439, type: 'Meeting' })
+    validate()
+    expect(stuffWarns().find((w: any) => w.code === 'CREW_REST')).toBeFalsy()
+  })
+
+  it("the type spelled 'Personal' is excluded by the owner's ruling", () => {
+    flyStuffAt10()
+    plantInput({ person: 'stuff', date: 'Jul 14', allday: false, s: 8 * 60, e: 9 * 60, type: 'Personal' })
+    validate()
+    expect(stuffWarns().find((w: any) => w.code === 'CREW_REST')).toBeFalsy()
+  })
+
+  it('an Other input reads by its remarks in the message', () => {
+    flyStuffAt10()
+    plantInput({ person: 'stuff', date: 'Jul 14', allday: false, s: 8 * 60, e: 9 * 60, type: 'Other', remarks: 'JPT PLANNING' })
+    validate()
+    const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
+    expect(cr).toBeTruthy()
+    expect(cr.msg).toContain('his day starts 08:00 (JPT PLANNING)')
+  })
+
+  it('a Training input ending 22:00 YESTERDAY starts the clock — both sides count', () => {
+    /* waldo has nothing else on Monday; the input is his whole evening */
+    const ru = ruOf()
+    const seat = ru.aircraft[1]
+    const w2: any = (DAYS[TUE] as any).waves[1]
+    const wasIn = w2.intimes.slice(), wasW = seat.w
+    plant(() => { seat.w = 'waldo'; w2.intimes = [...wasIn.slice(0, 1), '0900H: RU IN TIME'] },
+      () => { seat.w = wasW; w2.intimes = wasIn })
+    plantInput({ person: 'waldo', date: 'Jul 13', allday: false, s: 19 * 60, e: 22 * 60, type: 'Training' })
+    validate()
+    const g: any = WARN.byDay.find((x: any) => x.di === TUE)
+    const cr = ((g && g.warns) || []).filter((w: any) => (w.who || []).includes('waldo'))
+      .find((w: any) => w.code === 'CREW_REST')
+    expect(cr, 'hard breach off an input ender').toBeTruthy()
+    expect(cr.msg).toContain('ended 22:00')
+    expect(cr.msg, 'an input ends at its written end').not.toContain('debrief assumed')
+    /* and the palette agrees: 22:00 + 12h − 24h = 10:00 into Tuesday */
+    expect(restClear(TUE, 'waldo')).toBe(22 * 60 + VCONF.crewRest - 1440)
+  })
+
+  it('leave and medical inputs stay out of crew rest — the ruling is the commitments group', () => {
+    const ru = ruOf()
+    const seat = ru.aircraft[1]
+    const w2: any = (DAYS[TUE] as any).waves[1]
+    const wasIn = w2.intimes.slice(), wasW = seat.w
+    plant(() => { seat.w = 'waldo'; w2.intimes = [...wasIn.slice(0, 1), '0900H: RU IN TIME'] },
+      () => { seat.w = wasW; w2.intimes = wasIn })
+    plantInput({ person: 'waldo', date: 'Jul 13', allday: false, s: 19 * 60, e: 22 * 60, type: 'LL' })
+    plantInput({ person: 'waldo', date: 'Jul 13', allday: false, s: 17 * 60, e: 23 * 60, type: 'ATT B' })
+    validate()
+    const g: any = WARN.byDay.find((x: any) => x.di === TUE)
+    const mine = ((g && g.warns) || []).filter((w: any) => (w.who || []).includes('waldo'))
+    expect(mine.find((w: any) => w.code === 'CREW_REST')).toBeFalsy()
+  })
+
+  it('an OD (overseas duty) input counts — it sits in the commitments group', () => {
+    const ru = ruOf()
+    const seat = ru.aircraft[1]
+    const w2: any = (DAYS[TUE] as any).waves[1]
+    const wasIn = w2.intimes.slice(), wasW = seat.w
+    plant(() => { seat.w = 'waldo'; w2.intimes = [...wasIn.slice(0, 1), '0900H: RU IN TIME'] },
+      () => { seat.w = wasW; w2.intimes = wasIn })
+    plantInput({ person: 'waldo', date: 'Jul 13', allday: false, s: 12 * 60, e: 22 * 60, type: 'OD' })
+    validate()
+    const g: any = WARN.byDay.find((x: any) => x.di === TUE)
+    const cr = ((g && g.warns) || []).filter((w: any) => (w.who || []).includes('waldo'))
+      .find((w: any) => w.code === 'CREW_REST')
+    expect(cr).toBeTruthy()
+    expect(cr.msg).toContain('ended 22:00')
+  })
+
+  it("TODAY's own afternoon input never files as yesterday's end — the nx midnight copy is skipped", () => {
+    /* stuff at the clear 10:00 in-time; a Tuesday 13:00–21:00 Meeting sits
+       AFTER his report. Its nx copy lives in Monday's minute-space at +1440,
+       and counting it would put his "previous end" at Tuesday 21:00 and
+       breach a perfectly legal morning. */
+    flyStuffAt10()
+    plantInput({ person: 'stuff', date: 'Jul 14', allday: false, s: 13 * 60, e: 21 * 60, type: 'Meeting' })
+    validate()
+    expect(stuffWarns().find((w: any) => w.code === 'CREW_REST')).toBeFalsy()
   })
 })

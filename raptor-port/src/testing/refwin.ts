@@ -26,7 +26,7 @@ import { INPUTS, inputFlags } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 
 export async function refWindow(): Promise<any> {
-  const html = relabel(reinput(redn(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))))))))))))
+  const html = relabel(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -491,8 +491,9 @@ function rebrief(html: string): string {
    it's also a violation… this person needs 12 hours of rest in order to
    fly"). The port anchors the crew-rest breach on the EARLIEST of the
    instructed flying report and any other scheduled commitment that day
-   (sim, duty, ground, programme — not the flying legs' own derived pads,
-   not personal inputs). Parity compares the message text and the dashed
+   (sim, duty, ground, programme — not the flying legs' own derived pads;
+   duty & commitment INPUTS joined the set later the same day, see
+   reirest()). Parity compares the message text and the dashed
    ring, so the reference gets the identical anchor, message branch and
    late-show guard. These swaps target the text rebrief() has already
    emitted, so refirst must sit OUTSIDE rebrief in the chain. */
@@ -513,6 +514,44 @@ function refirst(html: string): string {
   for (const [from, to] of swaps) {
     const n = html.split(from).length - 1
     if (n !== 1) throw new Error(`refwin refirst: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
+    html = html.replace(from, to)
+  }
+  return html
+}
+
+/* DUTY & COMMITMENT INPUTS BEAR CREW REST (owner, 21 Aug 26 — "everything in
+   duty and commitments affects crew rest… do not include personal, sans
+   availability"; both sides, typed times only). The port's set is
+   inputs.ts:restsInput and its label inputs.ts:inpLabel; the reference has
+   neither (its type classes are still regex-era), so the patch injects
+   self-contained equivalents: _rt is the type set, _il the Other-reads-by-
+   its-remarks label. Change the rule in restsInput and this regex changes
+   with it — both carry a pointer to the other. Swap A appends the prior-day
+   input loop after the text rebrief() emitted (the braced prevFlyLd line);
+   swap B retargets the fe reduce refirst() emitted — so reirest sits
+   OUTSIDE refirst in the chain. The reference's day.input has no nx/pv
+   midnight tails, but the injected code keeps the port's guards verbatim:
+   undefined flags read false and the emitted strings stay identical. */
+function reirest(html: string): string {
+  const swaps: Array<[string, string]> = [
+    ["prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });",
+     "prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });"
+     + "const _rt=/^(training|cse|meeting|fly with|appointment|duty|od|other)$/i;"
+     + "const _il=i=>(/^other$/i.test(String(i.type||'').trim())&&String(i.remarks||'').trim())?String(i.remarks).trim():String(i.type||'');"
+     + "ev[idx-1].input.forEach(i=>{"
+     + "if(i.nx||i.pv||!_rt.test(String(i.type||'').trim()))return;"
+     + "if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;"
+     + "if(prevEnd[i.id]==null||i.e>prevEnd[i.id])prevEnd[i.id]=i.e;"
+     + "if(prevFlyEnd[i.id]==null||i.e>prevFlyEnd[i.id]){prevFlyEnd[i.id]=i.e;prevFlyLd[i.id]=null;}"
+     + "});"],
+    ["const fe=day.events.reduce((m,e)=>e.id===id&&e.kind!=='fly'&&e.kind!=='shift'&&e.s!=null&&isFinite(e.s)&&(m==null||e.s<m.s)?e:m,null);",
+     "const fe0=day.events.reduce((m,e)=>e.id===id&&e.kind!=='fly'&&e.kind!=='shift'&&e.s!=null&&isFinite(e.s)&&(m==null||e.s<m.s)?e:m,null);"
+     + "const fi=day.input.reduce((m,i)=>i.id===id&&!i.nx&&!i.pv&&_rt.test(String(i.type||'').trim())&&i.s!=null&&isFinite(i.s)&&i.e!=null&&i.e-i.s<1439&&(m==null||i.s<m.s)?i:m,null);"
+     + "const fe=fi!=null&&(fe0==null||fi.s<fe0.s)?{s:fi.s,label:_il(fi)}:fe0;"],
+  ]
+  for (const [from, to] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin reirest: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
     html = html.replace(from, to)
   }
   return html

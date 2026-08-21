@@ -31,7 +31,7 @@ date standardisation and the per-input LATE dismissal below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2757 across 152 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2769 across 152 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -61,8 +61,10 @@ grew `dutyrest.test.ts` 8 → 12 (the owner's 21:30→08:00-meeting example, the
 10:00 boundary, the unchanged wording, the meeting-only exemption), and the
 step unification (showLead removed — `VCONF.step` is the one step knob, and
 the late-show line and message move with it) reshaped `ruleflex` to 15,
-adding the all-bounds interdependency sweep → 2757 / 152, with e2e, probes,
-perf and the DOM
+adding the all-bounds interdependency sweep → 2757 / 152. The
+duty-&-commitment-inputs pass grew `dutyrest.test.ts` 12 → 21 and
+`ruleflex` 15 → 18 (the restsInput table, spellings, the AM/PM half-flag
+pin) → 2769 / 152, with e2e, probes, perf and the DOM
 ceilings all unmoved (the Logic tab is outside every ceiling).
 
 DOM measures at that baseline: week **3767** under a 4000 ceiling (+24 over
@@ -1205,6 +1207,20 @@ gate — it has its own e2e DOM band (29000), measured-first.
     late-show row carries a second step edit box, and a new
     `ruleflex.test.ts` sweep runs the seed under every RULE_SPEC bound
     combination asserting no warning ever prints NaN/undefined/Infinity.
+    An EIGHTH pass: **duty & commitment INPUTS bear crew rest, both
+    sides** (owner: "everything in duty and commitments affects crew
+    rest… do not include personal, sans availability"; "use the timings u
+    see"). `inputs.ts:restsInput` is the type set (Training, CSE, Meeting,
+    Fly with, Appointment, Duty, OD, Other — never the type spelled
+    'Personal', SANS, leave or medical), typed times only (all-day records
+    move nothing), the `nx`/`pv` midnight-tail copies are skipped so
+    today's own meeting can't file as yesterday's end, an input-bound
+    breach is named via `inpLabel` but anchors on the LEG (an unaccepted
+    input has no board row), and `refwin.ts:reirest()` mirrors the set as
+    an inline regex (change one, change both). AM/PM quick-picks were
+    ALREADY absent from that group except SANS (`INPUT_META.half`) — now
+    pinned. Seed effect: no new warning; vinci's Monday Meeting input now
+    holds his Tuesday REST entry at 05:00 (WARN diff verified).
     Pinned in
     `ruleflex.test.ts` (both readers agree wave-only, the NAAR word
     overrides, simLen drives the
