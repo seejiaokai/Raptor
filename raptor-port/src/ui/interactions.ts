@@ -888,6 +888,24 @@ export function routeClick(e: MouseEvent) {
      is what covers the other seven boxes this one call site never did. */
   if (t.closest('[data-histopen]')) { hideHistBub(); setHistList('all'); notify(); e.stopPropagation(); return }
 
+  /* MUTE a specific check (owner, Aug 26 — "turn off that specific warning
+     advisory … but if things change that warning will appear again"). Admin-only,
+     session-only, keyed by the warning's CONTENT (view.warnMuteKey) so it comes
+     back on its own when validate() next rebuilds a different warning. Caught
+     ABOVE the .wln jump so muting a row never also pans to its puck. */
+  const wo = t.closest('[data-woff]') as HTMLElement | null
+  if (wo) {
+    e.stopPropagation()
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can mute a check', 'warn'); return }
+    const [di, ix] = (wo.dataset.woff || '').split('.').map(Number)
+    const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]
+    if (w) { const shown = view.toggleWarnOff(view.warnMuteKey(w)); HOOKS.toast(shown ? 'Check shown again' : 'Check hidden — it returns if the day changes', 'ok') }
+    notify(); return
+  }
+  /* show / hide the day's muted checks — the reveal so a muted one stays reachable */
+  const wm = t.closest('[data-wmtog]') as HTMLElement | null
+  if (wm) { view.toggleWarnMuted(+wm.dataset.wmtog!); notify(); e.stopPropagation(); return }
+
   const wl = t.closest('.wln[data-wdi]') as HTMLElement | null
   if (wl) { jumpToWarn(+wl.dataset.wdi!, +wl.dataset.wix!); e.stopPropagation(); return }
 

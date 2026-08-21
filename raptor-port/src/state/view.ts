@@ -10,7 +10,7 @@ import { markEdit, daySnapOf } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
-import { canEditSched } from './auth'
+import { canEditSched, ME } from './auth'
 
 /* the repaint/gesture call sites inside these verbatim bodies route through
    the hooks — no-ops headless, mapped to the store's notify() when wired */
@@ -365,6 +365,41 @@ export function toggleAvail(di:any){ if(AVOPEN.has(+di))AVOPEN.delete(+di); else
    never persisted, never in a history snapshot. */
 export const PIOPEN=new Set()
 export function togglePInputs(di:any){ if(PIOPEN.has(+di))PIOPEN.delete(+di); else PIOPEN.add(+di) }
+/* THE NOTIFICATION BELL (owner, Aug 26 — "a notification button icon at the top
+   for both phone and desktop. In any mode if I see it light up, it is specific
+   for that view as person. I'll add next time when this will be triggered").
+   The bell in the top bar glows when the CURRENT page + view-as person has an
+   alert. What SETS a bell is deliberately left for the owner to wire; this is
+   the seam the shell needs now — a session-only registry keyed by page|person,
+   the LATEOFF precedent (cleared on login/logout by resetSession, never
+   persisted, never in a snapshot). A future trigger calls markBell(page,who);
+   the bell reads bellLit() for the view it is drawn in and clearBell() drops it
+   when the reader acknowledges it. */
+export const BELLLIT=new Set<string>()
+const bellKeyOf=(page:any,who:any)=>`${page}|${who}`
+export function markBell(page:any,who:any,on=true){ const k=bellKeyOf(page,who); if(on)BELLLIT.add(k); else BELLLIT.delete(k) }
+export function bellLit(){ return BELLLIT.has(bellKeyOf(CURPAGE,ME)) }
+export function clearBell(){ BELLLIT.delete(bellKeyOf(CURPAGE,ME)) }
+/* MUTING A SPECIFIC BOARD WARNING (owner, Aug 26 — "turn off that specific
+   warning advisory in scheduler board mode, but if things change that warning
+   will appear again"). A session-only registry keyed by the warning's CONTENT
+   identity — the day, code, people and message the validator itself dedups on
+   (validate.ts's `seen`), NOT its position in the list. So the instant the
+   situation changes and validate() rebuilds WARN with a different message or a
+   different set of people, the key no longer matches and the warning shows
+   again — exactly the ask; a warning that persists unchanged stays hidden
+   because the scheduler already acknowledged it. The day's header keeps its
+   TRUE count and colour (a muted problem is still a problem — this declutters
+   the list, it does not lie about the day). Admin-gated at the write path,
+   cleared on login/logout — the LATEOFF precedent. WMOPEN is the per-day "show
+   the hidden ones" reveal (the PIOPEN pattern) so a muted warning is always
+   reachable to un-mute. */
+export const WARNOFF=new Set<string>()
+export function warnMuteKey(w:any){ return `${w.di}|${w.code}|${(w.who||[]).join(',')}|${w.msg}` }
+export function warnShown(w:any){ return !WARNOFF.has(warnMuteKey(w)) }
+export function toggleWarnOff(key:any){ if(!canEditSched())return false; if(WARNOFF.has(key)){WARNOFF.delete(key);return true} WARNOFF.add(key); return false }
+export const WMOPEN=new Set<number>()
+export function toggleWarnMuted(di:any){ if(WMOPEN.has(+di))WMOPEN.delete(+di); else WMOPEN.add(+di) }
 /* RESTARM — the one deliberate confirm in the app (owner, 16 Aug 26). "Load
    onto working copy" (the reworded restore) discards any unpublished edits on
    the day, so when there ARE some it takes two taps: the first arms this flag,

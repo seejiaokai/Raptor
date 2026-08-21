@@ -21,7 +21,7 @@ import { DAYS } from '../engine/data'
 import { setCurWeek } from '../engine/waves'
 import { weekBundle } from '../engine/weeks-data'
 import { seedDemoSans } from './demoseed'
-import { storesLoad, dutyTplLoad, dayTplLoad, autoAcceptSeedInputs } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, dayTplLoad, autoAcceptSeedInputs } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched } from '../engine/publish'
 import { afterSchedMutate } from './view'
@@ -127,6 +127,9 @@ export function resetSession(s: any) {
   view.setCarryDay(null)
   view.setHistMode(false)         // the board's History toggle is a per-session view mode
   view.LATEOFF.clear()            // dropped LATE marks come back for the next session, like every other view mode
+  view.BELLLIT.clear()            // notification glows never carry across a login/logout
+  view.WARNOFF.clear()            // muted board warnings come back for the next session
+  view.WMOPEN.clear()
   /* the Leave War page's role rides the Raptor session: an admin login is a
      Leave War admin, everyone else (and a logout) is a member. This is the
      ONE production writer of that role — the standalone app's own toggle was
@@ -173,6 +176,9 @@ export function loadWeek(v: any) {
   view.VWORK.clear()
   view.AVOPEN.clear()
   view.PIOPEN.clear()
+  view.BELLLIT.clear()
+  view.WARNOFF.clear()
+  view.WMOPEN.clear()
   view.setCarryDay(null)
   view.setHistMode(false)
   view.setRosDay(0)
@@ -247,6 +253,7 @@ export function initStore() {
   wireStore()
   rulesLoad()
   storesLoad()
+  cxReasonsLoad()
   dutyTplLoad()
   dayTplLoad()
   /* demo-only SANS Availability rows (see state/demoseed.ts for why this

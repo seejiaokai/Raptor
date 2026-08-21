@@ -16,7 +16,7 @@ import { whoArr, acceptedDay } from './slots'
    row's own day, so that is the only day the deferral now applies to.
    A deferred input whose row cannot be found at all stays VISIBLE: with no
    row anywhere, hiding it here would silence the man's absence outright. */
-const inpShow=(inp:any,dt:any)=>{
+export const inpShow=(inp:any,dt:any)=>{
   /* SANS AVAILABILITY IS AN OFFER, NOT A COMMITMENT — it must never reach
      day.input (brief/debrief clashes, INPUT_FLY, the midnight-tail machinery
      all read that array). sansGate (avail.ts) is the only thing that judges

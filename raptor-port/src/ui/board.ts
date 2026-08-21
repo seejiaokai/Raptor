@@ -9,7 +9,7 @@ import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
-import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr } from '../engine/slots'
+import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput } from '../engine/slots'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, verLabel, nextAL } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
@@ -17,7 +17,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, srcInput } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -286,20 +286,45 @@ export function boardWarnHTML(di: number) {
       : `No conflicts flagged for ${esc(d.dow)} ✓`)
     + `</div>`
   if (dw.length) {
+    const canMute = canEditSched()
+    const wtext = (w: any) => {
+      const names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
+      return `${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || ''))}`
+    }
     /* Iterate WARN's own array, unsorted: validate() has already ordered it by
        SORD (hard, adv, note), so the local hard-first sort this used to do was a
        second copy of ordering the engine owns — and re-ordering would break the
        index these rows now carry. Same order as the week's .dwlist, which also
-       iterates as stored; the two lists could previously disagree. */
+       iterates as stored; the two lists could previously disagree.
+       A scheduler can MUTE a specific check (owner, Aug 26): the muted ones drop
+       out of the list here (warnShown) and gather under a "N hidden" line below,
+       reachable to un-mute. The header count above stays the TRUE total on
+       purpose — muting declutters the list, it does not change what the day is. */
+    const muted: number[] = []
     dw.forEach((w: any, ix: number) => {
-      const names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
+      if (!view.warnShown(w)) { muted.push(ix); return }
       /* the selected state goes in the STRING, not on a class painted later:
          SchedBoard diffs this html against the last one to decide whether to
          re-hang the panel, so a class added afterwards is lost on the next
          unrelated repaint */
       const on = view.WFOCUS && view.WFOCUS.di === di && view.WFOCUS.ix === ix ? ' on' : ''
-      wh += `<div class="wln ${w.sev}${on}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || ''))}</div>`
+      wh += `<div class="wln ${w.sev}${on}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
+        + `<span class="wln-t">${wtext(w)}</span>`
+        + (canMute ? `<button class="wln-mute" data-woff="${di}.${ix}" title="Hide this check — it comes back if the situation changes">✕</button>` : '')
+        + `</div>`
     })
+    if (muted.length) {
+      const mopen = view.WMOPEN.has(di)
+      wh += `<div class="wmuted-h${mopen ? ' open' : ''}" data-wmtog="${di}" title="Show or hide the checks you have muted">`
+        + `<span class="sbw-car">${mopen ? '▾' : '▸'}</span>${muted.length} hidden</div>`
+      if (mopen) muted.forEach((ix: number) => {
+        const w = dw[ix]
+        wh += `<div class="wln ${w.sev} muted" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
+          + `<span class="wln-t">${wtext(w)}</span>`
+          + `<button class="wln-mute" data-woff="${di}.${ix}" title="Show this check again">↺</button>`
+          + `</div>`
+      })
+    }
   } else wh += `<div class="wln ok">No conflicts flagged for this day ✓</div>`
   /* THE WAY INTO THE CHANGES LIST (owner, 11 Aug 26), and it lives here
      rather than on the top bar for a measured reason: a second control up
@@ -325,6 +350,51 @@ export function boardWarnHTML(di: number) {
   return wh
 }
 
+/* THE CHECKS PANEL IS RESIZABLE ON DESKTOP (owner, Aug 26 — "allow adjusting of
+   the warning and placeholder windows … move the border to reduce the amount of
+   warning shown. Vice versa"). A grip on the border between the day's checks
+   (.sb-warn) and the crew roster below it; dragging it sets an explicit height
+   on .sb-warn, so the two trade space. The DEFAULT — never dragged — is left
+   exactly as it was (content-sized up to 38%, .sb-side has no .sb-warn-sized
+   class), so the board's geometry is unchanged until the grip is actually used.
+   Desktop only: the phone board is one scroller with no split to move (the grip
+   is display:none there). Pointer events with a deferred commit after a small
+   slop, the wireDayDots shape — capture is released on down so the trailing
+   click is not retargeted, and the move/up listeners live on document so a drag
+   that leaves the 7px grip still tracks and still ends. Written straight to the
+   DOM (a CSS var + a class on the persistent .sb-side), never through React
+   state, so a panel re-hang mid-session does not throw the size away. */
+export function wireWarnSplit(side: HTMLElement) {
+  const down = (e: PointerEvent) => {
+    const grip = (e.target as HTMLElement).closest('[data-wsplit]')
+    if (!grip || (e.button != null && e.button !== 0)) return
+    const warn = side.querySelector('.sb-warn') as HTMLElement | null
+    if (!warn) return
+    const y0 = e.clientY, h0 = warn.offsetHeight
+    let moved = false
+    try { (grip as HTMLElement).releasePointerCapture((e as any).pointerId) } catch { }
+    const move = (ev: PointerEvent) => {
+      if (!moved && Math.abs(ev.clientY - y0) < 3) return
+      moved = true
+      const max = Math.max(120, side.clientHeight - 140)
+      const h = Math.max(80, Math.min(max, h0 + (ev.clientY - y0)))
+      side.style.setProperty('--sb-warnH', h + 'px')
+      side.classList.add('sb-warn-sized')
+      ev.preventDefault()
+    }
+    const up = () => {
+      document.removeEventListener('pointermove', move)
+      document.removeEventListener('pointerup', up)
+      document.removeEventListener('pointercancel', up)
+    }
+    document.addEventListener('pointermove', move)
+    document.addEventListener('pointerup', up)
+    document.addEventListener('pointercancel', up)
+  }
+  side.addEventListener('pointerdown', down)
+  return () => side.removeEventListener('pointerdown', down)
+}
+
 /* ONE definition of the way in, rendered twice at different widths. Counted
    here rather than in the modal so the number is visible before you open it:
    an empty log says so up front instead of after a tap. It shows only while
@@ -343,7 +413,9 @@ export function dayTabsHTML(di: number) {
 }
 
 /* ---- CX-with-a-reason dialog state ---- */
-export const CX_QUICK = ['WX', 'U/S AIRCRAFT', 'CREW SICK', 'NO AIRSPACE', 'TASKING', 'ENGINEERING', 'SLIPPED']
+/* The quick-fill reasons list moved to engine/cxreasons.ts (owner, Aug 26 —
+   add/rename/delete your own), the same persisted-config footing as `stores`.
+   The dialog now reads CXR_CFG; nothing here owns the list any more. */
 export let CXT: any = null
 export function setCxt(v: any) { CXT = v }
 export function askCx(o: any, key: any, label: any, after?: any) {
@@ -733,6 +805,20 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.grdel != null) {
     const [di, ri] = ds.grdel.split('.').map(Number)
     const row = DAYS[di].ground[ri]
+    /* An auto-landed / accepted input row carries a `src` back-link. The plain
+       splice below would strip the ROW but leave its input still marked
+       accepted (inp.acc) with nothing behind it — an orphan the validator reads
+       as a live commitment while the picker and the board show nothing of it
+       (audit, Aug 26). The owner's round-trip is that removing such a row
+       returns the input to Personal Inputs, which is exactly what unacceptInput
+       does (splice + renumber + markDeletion + clear acc, day-searched not
+       guessed). Route a src row there; a hand-built ground item still takes the
+       direct delete. */
+    const inp = row && row.src ? srcInput(row) : null
+    if (inp && unacceptInput(di, inp)) {
+      afterSchedMutate(); notify()
+      return act(di, 'Ground item removed — back under Personal Inputs' + desc(row.prog, timeSpan(row.str, row.end), whoText(row)))
+    }
     const issued = deletionWasIssued(di, 'ground', ri, row && row.src)
     const said = 'Ground item removed' + desc(row && row.prog, row && timeSpan(row.str, row.end), row && whoText(row))
     DAYS[di].ground.splice(ri, 1)

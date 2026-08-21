@@ -12,6 +12,7 @@ import { DAYS } from './data'
 import { INPUTS, inpId, isPersonal } from './inputs'
 import { PEOPLE } from './people'
 import { validate, WARN } from './validate'
+import { inpShow } from './events'
 import { slotBar, slotRules, dayEngaged } from './avail'
 import { setSlotVal, acceptInput, unacceptInput, autoAcceptInput, autoAcceptSeedInputs, inpKey } from './slots'
 import { SCHED, resetSched } from './publish'
@@ -33,6 +34,13 @@ const freePilot = () => {
   const id = Object.keys(PEOPLE).find(k =>
     PEOPLE[k].seat === 'FCP' && !PEOPLE[k].special && !PEOPLE[k].pers && !PEOPLE[k].san && !eng.has(k))
   if (!id) throw new Error('no free non-SANS pilot in the seed — retune the fixture')
+  return id
+}
+const freePilotOn = (di: number) => {
+  const eng = dayEngaged(DAYS[di])
+  const id = Object.keys(PEOPLE).find(k =>
+    PEOPLE[k].seat === 'FCP' && !PEOPLE[k].special && !PEOPLE[k].pers && !PEOPLE[k].san && !eng.has(k))
+  if (!id) throw new Error(`no free non-SANS pilot on day ${di} — retune the fixture`)
   return id
 }
 const fileMeeting = (person: string, s: number, e: number, date = 'Jul 13') => {
@@ -74,6 +82,38 @@ describe('the picker and the validator agree about an unaccepted activity input'
 })
 
 const overlapping = (r: any) => r.slotStart != null && r.slotEnd != null && r.slotStart < 900 && 600 < r.slotEnd
+
+/* The picker read the accept deferral with a DAY-BLIND gate (inputFlags) while
+   the validator reads it per-day (inpShow). Where they disagreed the validator
+   warned and the picker was silent — the drift the whole scan exists to close,
+   reopened by a day (audit, Aug 26). Two shapes trigger it; both now agree. */
+describe('the deferral is per-day: the picker cannot go silent where the validator warns', () => {
+  it('a MULTI-DAY meeting whose row lands on one day still bars the man on the others', () => {
+    const P = freePilotOn(1)
+    const m: any = { person: P, date: 'Jul 13', endDate: 'Jul 15', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'conf', mod: 'now' }
+    inpId(m); INPUTS.push(m)
+    expect(autoAcceptInput(m)).toBe(true)                 // lands a ground row on Jul 13 only
+    validate()
+    /* the validator's own gate: deferred on the row's day, VISIBLE on the others */
+    expect(inpShow(m, DAYS[0].dt), 'deferred to the ground row on its own day').toBe(false)
+    expect(inpShow(m, DAYS[1].dt), 'still a live voice on the next covered day').toBe(true)
+    /* the picker must say the same on Jul 14, where no row carries the clash */
+    const rules = { seat: 'p', di: 1, slotStart: 600, slotEnd: 660, sc: null }
+    expect(slotBar(P, '1.0.0.0.p', rules)).toMatch(/^already on Meeting /)
+  })
+
+  it('an ORPHANED accept (row gone, acc left set) still warns the picker', () => {
+    const KEY = '0.0.0.0.p', P = freePilot()
+    const m = fileMeeting(P, 600, 900)
+    expect(autoAcceptInput(m)).toBe(true)
+    /* strip the ground row WITHOUT clearing acc — the exact half-state the row's
+       own ✕ used to leave (before it routed through unacceptInput) */
+    DAYS[0].ground = (DAYS[0].ground || []).filter((r: any) => r.src !== inpKey(m))
+    validate()
+    expect(inpShow(m, DAYS[0].dt), 'no row anywhere → visible, never silenced').toBe(true)
+    expect(slotBar(P, KEY)).toMatch(/^already on Meeting /)
+  })
+})
 
 describe('autoAcceptInput — the one gate', () => {
   it('lands an activity input on its day, editable day, tagged with its src', () => {

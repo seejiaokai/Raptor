@@ -11,6 +11,7 @@ import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, 
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { ELOG, elogRows, elogFor, elogWhen, elogClear, elogRemap, keyLabel } from './engine/editlog'
 import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard, storesText } from './engine/stores'
+import { CXR_CFG, CXR_STD, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsLoad, cxReasonsReset, cxrAreStandard } from './engine/cxreasons'
 import { DAYTPL_CFG, DAYTPL_STD, tplFromDay, addDayTpl, delDayTpl, renameDayTpl, moveDayTpl, applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, dayTplAreStandard } from './engine/daytpl'
 import { dayOilCredits, scShiftCredit } from './engine/oil'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
@@ -50,6 +51,9 @@ export function installProbeBridge() {
      reason as ARM/SBDAY/CURPAGE above, a getter so a probe never reads a
      stale array after a load/reset */
   Object.defineProperty(w, 'STORE_CFG', { get: () => STORE_CFG, configurable: true })
+  /* CXR_CFG is a `let` reassigned whole by cxReasonsLoad/cxReasonsReset — a
+     getter for the same reason STORE_CFG is */
+  Object.defineProperty(w, 'CXR_CFG', { get: () => CXR_CFG, configurable: true })
   /* the mutation funnel + validation */
   w.slotVal = slotVal; w.setSlotVal = setSlotVal; w.fillSlot = fillSlot
   w.txtGet = txtGet; w.txtSet = txtSet
@@ -133,6 +137,9 @@ export function installProbeBridge() {
   w.STORE_STD = STORE_STD; w.storeKey = storeKey; w.storesAreStandard = storesAreStandard; w.storesText = storesText
   w.addStore = addStore; w.delStore = delStore; w.renameStore = renameStore; w.moveStore = moveStore
   w.storesSave = storesSave; w.storesLoad = storesLoad; w.storesReset = storesReset
+  w.CXR_STD = CXR_STD; w.cxrAreStandard = cxrAreStandard
+  w.addCxReason = addCxReason; w.delCxReason = delCxReason; w.renameCxReason = renameCxReason; w.moveCxReason = moveCxReason
+  w.cxReasonsSave = cxReasonsSave; w.cxReasonsLoad = cxReasonsLoad; w.cxReasonsReset = cxReasonsReset
   /* whole-day schedule templates (owner, 15 Aug 26). DAYTPL_CFG is a `let`
      reassigned whole by dayTplLoad/dayTplReset — same reason STORE_CFG above
      is a getter, not a plain reference: a probe reading a bare snapshot could

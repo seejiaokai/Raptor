@@ -2,7 +2,7 @@
    is 1:1 with the reference; the four panels are filled by the verbatim
    builders in an effect and re-hung on every store change, and the board's
    own delegated handlers are attached to #sbBoard. */
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode, esc, restArmed } from '../state/view'
@@ -14,7 +14,9 @@ import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { sbInputsHTML } from './board-html'
-import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, CX_QUICK, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, wireDayDots, wireParkedRosScroll } from './board'
+import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, wireDayDots, wireParkedRosScroll, wireWarnSplit } from './board'
+import { CXR_CFG, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsReset, cxrAreStandard } from '../engine/cxreasons'
+import { canEditSched } from '../state/auth'
 import { refreshHighlights } from './highlights'
 import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
@@ -35,6 +37,7 @@ export function SchedBoard() {
   const rootRef = useRef<HTMLDivElement>(null)
   const topRef = useRef<HTMLDivElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
+  const sideRef = useRef<HTMLDivElement>(null)
   /* The board's only home page is Edit Schedule — `open` used to be a bare
      `SBDAY != null`, so a nav click while the board was open left the
      modal (position:fixed, inset:0, z-index:400 — the whole viewport)
@@ -120,9 +123,12 @@ export function SchedBoard() {
        stops propagation — with History on, a tap still arms and still edits
        (histbubble.ts). */
     const offHist = wireHistBubble(wrapRef.current!)
+    /* the desktop grip that resizes the checks panel against the roster below it
+       (owner, Aug 26) — a no-op until dragged, phone grip is display:none */
+    const offSplit = sideRef.current ? wireWarnSplit(sideRef.current) : () => {}
     return () => {
       el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
-      el.removeEventListener('change', boardChange); offDrag(); offDots(); offRos(); offHist()
+      el.removeEventListener('change', boardChange); offDrag(); offDots(); offRos(); offHist(); offSplit()
     }
   }, [])
 
@@ -421,8 +427,11 @@ export function SchedBoard() {
             all apply verbatim, and armSlot's isPhone() ros-open means
             tapping any slot slides it open, exactly like the week. The
             desktop column and .sb-wide are unchanged (both restate). */}
-        <div className="sb-side" id="sbSide">
+        <div className="sb-side" id="sbSide" ref={sideRef}>
           <div className="sb-warn" id="sbWarn" ref={warnRef} />
+          {/* the drag grip between the checks and the roster (owner, Aug 26) —
+              desktop only; see wireWarnSplit / .sb-wsplit */}
+          <div className="sb-wsplit" data-wsplit title="Drag to resize the checks panel" aria-hidden="true"></div>
           <aside className="sb-ros eroster">
             <div className="ros-tab" title="Aircrew palette"><b>AIRCREW</b></div>
             <div className="ros-body">
@@ -435,15 +444,39 @@ export function SchedBoard() {
   )
 }
 
-/* the CX-with-a-reason dialog */
+/* the CX-with-a-reason dialog, plus an inline admin editor for the reason
+   TEMPLATES (owner, Aug 26 — "edit and create new cancel reasons template …
+   add or delete or rename"). The chips read the persisted CXR_CFG; a scheduler
+   flips the dialog into Edit mode to add / rename / reorder / delete the
+   presets or reset to the shipped set. cxCommit still writes whatever free text
+   ends up in the box, so managing the templates never blocks a one-off reason. */
 export function CxDialog() {
   useVersion()
   const inRef = useRef<HTMLInputElement>(null)
+  const addRef = useRef<HTMLInputElement>(null)
+  const [editing, setEditing] = useState(false)
+  const [armReset, setArmReset] = useState(false)
   const open = CXT != null
   const on = open && !!CXT.o.cx
   const what = open ? (CXT.label || 'this line') : ''
+  const canEdit = canEditSched()
   useEffect(() => { if (open && inRef.current) { inRef.current.value = (CXT.o.cxr || ''); inRef.current.focus() } }, [open])
+  /* dropping edit mode when the dialog closes so it never reopens mid-edit */
+  useEffect(() => { if (!open) { setEditing(false); setArmReset(false) } }, [open])
   const close = () => { setCxt(null); notify() }
+  const warn = (m: string) => HOOKS.toast(m, 'warn')
+  const add = () => {
+    const el = addRef.current; if (!el) return
+    const err = addCxReason(el.value)
+    if (err) { warn(err); return }
+    cxReasonsSave(); el.value = ''; notify(); el.focus()
+  }
+  const del = (i: number) => { if (delCxReason(i)) { cxReasonsSave(); notify() } }
+  const move = (i: number, d: number) => { if (moveCxReason(i, i + d)) { cxReasonsSave(); notify() } }
+  const reset = () => {
+    if (!armReset) { setArmReset(true); return }
+    cxReasonsReset(); setArmReset(false); notify()
+  }
   return (
     <div className="airpop" id="cxPop" hidden={!open}
       onClick={e => { if ((e.target as HTMLElement).id === 'cxPop') close() }}>
@@ -454,9 +487,42 @@ export function CxDialog() {
           <input id="cxReason" ref={inRef} placeholder="WX / U-S AIRCRAFT / CREW SICK…" autoComplete="off" aria-label="Reason for cancellation"
             onKeyDown={e => { if (e.key === 'Enter') cxCommit(true, (e.target as HTMLInputElement).value); if (e.key === 'Escape') close() }} />
           <div className="cxhint">Reads <b>CX DUE &lt;reason&gt;</b> on the line. Leave it blank for a plain CX.</div>
-          <div className="cxquick" id="cxQuick">
-            {CX_QUICK.map(q => <button key={q} type="button" data-cxq={q} onClick={() => { if (inRef.current) inRef.current.value = q }}>{q}</button>)}
-          </div>
+          {!editing
+            ? <div className="cxquick" id="cxQuick">
+                {CXR_CFG.map((q, i) => <button key={i + ':' + q} type="button" data-cxq={q} onClick={() => { if (inRef.current) inRef.current.value = q }}>{q}</button>)}
+                {canEdit && <button type="button" className="cxq-edit" data-cxedit onClick={() => setEditing(true)} title="Add, rename or remove the quick reasons">✎ Edit</button>}
+              </div>
+            : <div className="cxedit" id="cxEdit">
+                <div className="cxedit-h"><b>Cancel reasons</b><button type="button" className="abtn sm" data-cxdone onClick={() => { setEditing(false); setArmReset(false) }}>Done</button></div>
+                <div className="cxedit-list">
+                  {CXR_CFG.map((q, i) => (
+                    <div className="cxedit-row" key={i + ':' + q}>
+                      <input className="cxedit-name" defaultValue={q} aria-label={'Cancel reason ' + (i + 1)} maxLength={24}
+                        onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
+                        onBlur={e => {
+                          const v = e.target.value.trim()
+                          if (!v) { e.target.value = q; return }
+                          if (v === q) return
+                          const err = renameCxReason(i, v)
+                          if (err) { warn(err); e.target.value = q; return }
+                          cxReasonsSave(); notify()
+                        }} />
+                      <button type="button" className="cxedit-mv" data-cxmv={'u' + i} disabled={i === 0} aria-label="Move up" onClick={() => move(i, -1)}>▲</button>
+                      <button type="button" className="cxedit-mv" data-cxmv={'d' + i} disabled={i === CXR_CFG.length - 1} aria-label="Move down" onClick={() => move(i, 1)}>▼</button>
+                      <button type="button" className="cxedit-del" data-cxdel={i} aria-label="Remove reason" onClick={() => del(i)}>✕</button>
+                    </div>
+                  ))}
+                  {CXR_CFG.length === 0 && <div className="cxedit-empty">No quick reasons — add one below, or reset to the standard set.</div>}
+                </div>
+                <div className="cxedit-add">
+                  <input ref={addRef} className="cxedit-name" placeholder="Add a reason…" aria-label="New cancel reason" maxLength={24}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add() } }} />
+                  <button type="button" className="abtn primary sm" data-cxadd onClick={add}>Add</button>
+                </div>
+                <div className="cxedit-foot">
+                  <button type="button" className={'abtn sm ghost' + (armReset ? ' danger' : '')} data-cxreset onClick={reset} disabled={cxrAreStandard() && !armReset}>{armReset ? 'Tap again to reset' : 'Reset to standard'}</button>
+                </div>
+              </div>}
         </div>
         <div className="airpop-foot">
           <button className="abtn danger" id="cxUn" hidden={!on} onClick={() => cxCommit(false, '')}>Un-cancel</button>

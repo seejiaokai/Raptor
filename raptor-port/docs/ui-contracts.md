@@ -2541,6 +2541,73 @@ paint on whichever surface the edit was actually made from — a scheduler
 working the board no longer has to switch to the week to see their own
 pending edit.
 
+## Cancel-reason templates (owner, Aug 26)
+
+The CX-with-a-reason dialog (`ui/SchedBoard.tsx:CxDialog`) offers quick-fill
+chips — "WX", "U/S AIRCRAFT", … — so cancelling a line is a tap, not a retype.
+That list used to be a frozen `CX_QUICK` const; it is squadron-editable now, the
+same footing as the stores list (`engine/cxreasons.ts`, `CXR_CFG` persisted under
+`cxreasons`). An admin taps the `✎ Edit` chip beside the presets to flip the
+dialog into an inline editor: rename a reason in place (blur/Enter commits;
+duplicate or empty is refused with a toast and the field snaps back), `▲▼` to
+reorder, `✕` to remove, an add box, and a two-tap "Reset to standard".
+
+Three things stay decided:
+- **A reason is FREE TEXT, not a key.** `cxCommit` copies the chosen (or typed)
+  string straight onto the row as `cxr`. So editing or deleting a template never
+  disturbs a line already cancelled with it, and the list is addressed by
+  POSITION, not a stable id (unlike stores, whose key a jet carries). Managing the
+  templates and cancelling a line are independent — the reason box still accepts
+  any one-off text the presets don't cover.
+- **Admin only, at the write path** (`canEditSched`), like every other config
+  editor; a member sees the chips but not the `✎ Edit`.
+- **Parity-neutral.** Nothing in the reference/parity harness reads the list and
+  the seed week has no cancellations, so it is safe to change freely — the same
+  standing as stores. Do NOT change the RENDERED shape of a cancelled row
+  (`cxText` → "CX DUE <reason>", the `.cx`/`.cxtag` markup): that markup IS in
+  the parity-compared path even though the seed never triggers it.
+
+## The top bar carries the bell and, while editing, undo/redo (owner, Aug 26)
+
+Two additions to the sticky top bar (`ui/Shell.tsx`), both desktop-and-phone
+except where noted:
+- **A notification bell** (`#notifyBell`) sits by Insights on every page and both
+  widths. It GLOWS when the current page + view-as person has an alert
+  (`bellLit()`, `state/view.ts`, keyed `page|person`) — a per-person indicator,
+  deliberately NOT the removed week-wide count pills. What RAISES a bell is left
+  for the owner to wire (`markBell(page, who)` is the seam); tapping the bell
+  acknowledges the current view's alert. Session-only, wiped on login/logout.
+- **Undo / redo** (`.tb-hist`, `#undoBtn`/`#redoBtn`) moved OUT of the edit page's
+  scroll-away `.filters` row INTO the sticky bar, shown only on the edit page, so
+  they stay in view while the page scrolls (owner: "always see it when I'm
+  editing"). Desktop-facing — hidden under 820px, where the phone board already
+  carries its own pair in its own bar. Same `undo()/redo()/HIST` wiring, no new
+  stack; the topbar memo's deps grew `HIST.ix`/`HIST.stack.length` so the disabled
+  state stays live.
+
+## Muting a check, and resizing the checks panel (owner, Aug 26)
+
+Both are board-side, admin-only, session-only, and DESKTOP-scoped for the resize.
+- **Mute a specific check.** Each `.wln` row in the board's checks panel
+  (`board.ts:boardWarnHTML`) carries a `✕` (`data-woff`). Tapping it hides that
+  check; the muted ones gather under a "N hidden" line (`data-wmtog`, `WMOPEN`)
+  that reveals them dimmed with a `↺` to restore. The mute is keyed by the
+  warning's CONTENT — `warnMuteKey` = day|code|people|message, the identity the
+  validator itself dedups on — so it AUTO-RE-ARMS: a check that persists unchanged
+  stays hidden (the scheduler acknowledged it), but the moment the situation
+  changes and `validate()` rebuilds a different warning the key no longer matches
+  and it shows again (owner: "if things change that warning will appear again").
+  The day's HEADER keeps its true count and colour — muting declutters the list,
+  it does not change what the day IS. Admin-gated at the write path
+  (`view.toggleWarnOff`), cleared on login/logout — the LATEOFF precedent.
+- **Resize the checks panel.** On desktop a grip (`.sb-wsplit`) sits on the
+  border between the checks panel and the roster below it; dragging it sets an
+  explicit height on `.sb-warn` (`wireWarnSplit`, a CSS var + `.sb-warn-sized`
+  class written straight to the persistent `.sb-side`). It is a NO-OP until
+  actually dragged — the default is unchanged (content-sized up to 38%), so the
+  board's geometry is identical until the grip is used — and it is absent on a
+  phone, whose board is one scroller with no split to move. Session-only.
+
 ## The Quals page's editable columns
 
 `CALLSIGN` heads the table (it is what every puck prints) with `INITIALS`

@@ -1,11 +1,11 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inputFlags, inpLabel } from './inputs'
+import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare } from './waves'
 import { WARN, restClear, dayEvents } from './validate'
-import { waveWindows } from './events'
+import { waveWindows, inpShow } from './events'
 import { whoArr, rowRef, XKEY } from './slots'
 import { keyDay } from './keys'
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
@@ -435,13 +435,22 @@ export function slotBar(id:any,key:any,rules?:any){
        type is deliberately never struck from the palette (inputs.ts), only
        advised against, so the man still shows and the drop still goes through.
        isAway types are handled by the four absence blocks above; a commitment
-       already promoted to a ground row is carried by the EVD scan just above,
-       so inputFlags() keeps only the live-voice ones here. Mirrors the absence
-       blocks' four midnight shifts so the two cannot disagree across a day
-       boundary either (the validator's day.input carries the nx/pv tails). */
+       already promoted to a ground row is carried by the EVD scan just above.
+       The gate that keeps only the live-voice ones here is `inpShow` — the
+       SAME per-day gate the validator uses to build day.input (events.ts), not
+       a second copy: inputFlags() alone was DAY-BLIND, so a timed accepted
+       input that covers several days but lands a ground row on only ONE of them
+       stayed hidden from the picker on the OTHER covered days while the
+       validator still raised INPUT_FLY there — the exact drift this scan exists
+       to close, reopened by a day (audit, Aug 26). inpShow defers an input only
+       on its row's own day (or hides SANS offers); off that day, or when the
+       row is gone entirely (an orphaned accept), it reports VISIBLE and the
+       picker warns in step with the validator. Mirrors the absence blocks' four
+       midnight shifts so the two cannot disagree across a day boundary either
+       (the validator's day.input carries the nx/pv tails). */
     const flying=String(key).indexOf(':')<0;
     const cand=(dt:any,pred:(x:any)=>boolean)=>INPUTS.find((x:any)=>
-      !isAway(x)&&isPersonal(x.type)&&inputFlags(x)&&x.person===id&&inputCoversDate(x,dt)
+      !isAway(x)&&isPersonal(x.type)&&inpShow(x,dt)&&x.person===id&&inputCoversDate(x,dt)
       &&!(canWork(x.type)&&!flying)&&pred(x));
     const iHit=(x:any,shift:number)=>{const w2=inpWin(x);
       return !!w2&&overlap(r.slotStart,r.slotEnd,w2[0]+shift,w2[1]+shift);};

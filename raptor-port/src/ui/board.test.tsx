@@ -10,7 +10,8 @@ import { App } from './App'
 import { initStore, setSession, notify, HIST } from '../state/store'
 import { DAYS } from '../engine/data'
 import { SCHED, signOf, setDayApproved, dayApproved } from '../engine/publish'
-import { slotVal, setSlotVal, txtGet } from '../engine/slots'
+import { slotVal, setSlotVal, txtGet, autoAcceptInput, inpKey } from '../engine/slots'
+import { INPUTS, inpId } from '../engine/inputs'
 import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
 import { DUTYTPL_CFG } from '../engine/dutytpl'
@@ -382,6 +383,28 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(d.ground.some((r: any) => r.prog === 'ZTEMP-B')).toBe(false)
     expect(d.ground.some((r: any) => r.prog === 'ZTEMP-A')).toBe(true)
     d.ground.pop()                                   // clean up the survivor
+    await act(async () => { afterSchedMutate(); notify() })
+  })
+
+  /* An auto-landed / accepted input row deleted by its OWN ✕ used to strip the
+     row but leave the input marked accepted — an orphan the validator still
+     read as a commitment (audit, Aug 26). The ✕ now routes a src row through
+     unacceptInput, which is the owner's round-trip: the input goes back to
+     Personal Inputs, nothing is orphaned. */
+  it('deleting an input-derived ground row sends the input back to Personal Inputs', async () => {
+    const di = SBDAY
+    const m: any = { person: 'bane', date: DAYS[di].dt, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'audit', mod: 'now' }
+    inpId(m); INPUTS.push(m)
+    expect(autoAcceptInput(m), 'the day is editable, so it lands').toBe(true)
+    await act(async () => { afterSchedMutate(); notify() })
+    const key = inpKey(m)
+    const ri = DAYS[di].ground.findIndex((r: any) => r.src === key)
+    expect(ri, 'the auto-landed row is on the day').toBeGreaterThanOrEqual(0)
+    await click(document.querySelector(`#sbBoard .sb-panel.grnd [data-grdel="${di}.${ri}"]`))
+    expect(m.acc, 'accept cleared — back under Personal Inputs').toBeFalsy()
+    expect(INPUTS.includes(m), 'the input itself survives').toBe(true)
+    expect(DAYS.some((d: any) => (d.ground || []).some((r: any) => r.src === key)), 'no orphan row on any day').toBe(false)
+    const j = INPUTS.indexOf(m); if (j >= 0) INPUTS.splice(j, 1)   // clean up
     await act(async () => { afterSchedMutate(); notify() })
   })
 

@@ -43,7 +43,7 @@ the rest are the ones the code actually has.
 | **Mobile mode** | Phone layout — top-to-bottom, reachable, one board window | `scheduler.css` `@media (max-width:820px)` / `480px`; `boardnav` | CSS + the phone board's arrows/dots; `sbWide` module-local |
 | **Qualifications** | The Quals grid; the qual ladder the validator reads | `QualsPage.tsx`; `people.ts` (`p.quals`, qual rules in `validate.ts`) | ticks are session-only; drive `QUAL`/`SC_QUAL`/`AAR_*` checks |
 | **Personal inputs** | Leave / medical / activity records | `INPUTS` in `inputs.ts`; `inputedit.tsx`; `InputsPage.tsx` | `INPUT_META` (the one table) decides every predicate |
-| **Availability / palette** | Who the crew strip offers, who is struck out, the armed reason lines, the green eligibility rings, the folded Available-crew and Personal-Inputs panels | `avail.ts` (`slotBar`, `dayOff`), `palette-html.ts`, `highlights.ts` (`paintSelRings`), `html.ts` (`availHTML` + `AVOPEN`; the Personal-Inputs fold `PIOPEN`) | `isAway`/`inputCoversDate`/`inpWin` — MUST agree with the warning list; the rings read `slotBar` itself, never a copy. `slotBar`'s busy-check now also names an unaccepted ACTIVITY commitment (`isPersonal`+`inputFlags`, four midnight tails) — same drift-with-`INPUT_FLY` rule |
+| **Availability / palette** | Who the crew strip offers, who is struck out, the armed reason lines, the green eligibility rings, the folded Available-crew and Personal-Inputs panels | `avail.ts` (`slotBar`, `dayOff`), `palette-html.ts`, `highlights.ts` (`paintSelRings`), `html.ts` (`availHTML` + `AVOPEN`; the Personal-Inputs fold `PIOPEN`) | `isAway`/`inputCoversDate`/`inpWin` — MUST agree with the warning list; the rings read `slotBar` itself, never a copy. `slotBar`'s busy-check now also names an unaccepted ACTIVITY commitment (`isPersonal` + the validator's own per-day `inpShow`, four midnight tails) — same drift-with-`INPUT_FLY` rule, and it reads the SAME gate the validator does so the two cannot diverge by a day |
 | **Post-render decoration** | Selection/search/warning classes, the armed ring, the green eligibility rings, and the ~6s just-added blue box | `highlights.ts` (`refreshHighlights` → `paintArm`/`paintSelRings`/`paintFreshAdds`) | hung AFTER the string diff, off view state (`SELID`/`ARM`/`FRESHADD`), never baked into the builder string — so a class survives an unrelated repaint; a new one adds a paint function here, never a class in the markup |
 | **Publishing / AL** | Sign-off, amendments after a day is signed | `publish.ts`, `ALPanel.tsx` | inert amendment keys through the mutation funnel |
 | **Day templates / Drafts** | Whole-day master templates; per-day alternate schedules, one of which is always the live day | `engine/daytpl.ts`, `engine/drafts.ts`; `DayTplModal.tsx`, `DraftsModal.tsx`; the board's + week's Templates/Drafts buttons (`board.ts`'s `dayTplMenu`/`draftsMenu`) | direct-write to `DAYS[di]`, one undo step via the caller's `afterSchedMutate()` — the `restoreDayVersion` shape, not the ordinary funnel. Templates refuse a published day; drafts DON'T (15 Aug 26) — a switch there rebases the day's pending set against the issued snapshot (`rebaseDayPending`, engine-rules §Drafts) |
@@ -117,8 +117,13 @@ input is read gets checked on BOTH. **The picker closed the OTHER half of this
 seam for activity inputs (Aug 26)**: `slotBar` was silent about an unaccepted
 Meeting/Appointment while `validate()` raised `INPUT_FLY` on a plant, so the
 busy-at-this-hour block now scans `INPUTS` for the non-away activity types with
-the SAME `canWork`/flying gate and four midnight tails the off-blocks use — a
-change to either reader's input handling is a drift-seam against the other.
+the SAME `canWork`/flying gate and four midnight tails the off-blocks use. The
+gate that decides whether an input still "counts" here is the validator's OWN
+per-day `inpShow` (exported from `events.ts`), NOT a second copy — the day-blind
+`inputFlags` it first used let a multi-day or orphaned accept silence the picker
+on a day the validator still warned (Aug 26 audit). One shared gate now, so a
+change to `inpShow` moves both readers together; a scan that reads the input any
+OTHER way is a new drift-seam.
 
 ### Flow C — day navigation on the phone board (view-only, no mutation)
 ```
@@ -206,8 +211,12 @@ Run this before building and again before calling it done. Most answers are
   escaped at the sink?
 - **Publishing / AL** — on a published day, does the change mark pending and
   reach the AL correctly (add-then-delete before an AL is a no-op)?
-- **Persistence** — does the feature imply data surviving a reload? Only
-  `rules` and `stores` do today; everything else is session-only. Say so.
+- **Persistence** — does the feature imply data surviving a reload? Only the
+  persisted-config family does: `rules`, `stores`, `dutytpl`, `daytpl` and (Aug
+  26) `cxreasons` cancel-reason templates, each on the same `store.get/set` +
+  untrusted-load shape. Everything else — INPUTS, publish state, the view-only
+  toggles, the notification bell (`BELLLIT`) and muted checks (`WARNOFF`) — is
+  session-only. Say so.
 - **Reference parity** — does it change the seed `INPUTS`, `DATES`, or an
   engine body the reference computes? Then `refwin.ts` and `node reference/tfin.js`
   are in scope. (Adding a NEW capability that leaves the seed alone is not.)
