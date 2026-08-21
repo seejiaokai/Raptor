@@ -59,8 +59,11 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
    NIGHT. Crew change times move, so the window is read off the shift as
    scheduled rather than assumed from the AM/PM label. */
 /* the SC day window is a setting, not a constant — it is edited on the Logic tab
-   like every other threshold, so it lives in VCONF with the rest of them */
-export const SC_DAY_FROM=7*60, SC_DAY_TO=19*60;   // squadron standard, kept for reference
+   like every other threshold, so it lives in VCONF with the rest of them. The
+   frozen SC_DAY_FROM/SC_DAY_TO copies that sat here "for reference" are gone
+   (21 Aug 26): nothing read them, and a frozen twin of a live setting is
+   exactly the stale-reader trap the one-knob tests in ruleflex.test.ts exist
+   to keep out — the standard values live in RULE_STD like every other rule's. */
 /* What an SC MAIN shift cannot share a minute with. A flight, a sim, a duty post
    or another shift means the man is wanted in two places — hard. A ground event
    or a squadron programme item is not: you can still give academics to the man

@@ -4,7 +4,6 @@ import { VCONF, SHIFT_HARD, kindOff, ruleFmt } from '../engine/rules'
 import { RANK, CHIP_LABEL, WCODE, chipText, wlbl } from '../engine/validate'
 import { INPUT_TYPES, inpMeta, canSpare, isLeave, isDownchit } from '../engine/inputs'
 import { lgT, hm24, hhmm } from '../engine/time'
-import { SC_DAY_FROM, SC_DAY_TO } from '../engine/rules'
 import { esc } from '../state/view'
 import { lgCanEdit } from '../state/auth'
 
