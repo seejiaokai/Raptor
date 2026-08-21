@@ -90,7 +90,7 @@ describe('tplFromDay — the crew-blanked mint', () => {
     expect(d.dutywaves[0].label).toBe('1st wave')
     expect(d.dutywaves[0].rows[0].role).toBe('SDO')
     expect(d.dutywaves[0].rows[0].str).toBe('0700')
-    expect(d.ground[0].prog).toBe('CAF ENGAGEMENT @ MINDEF HQ')
+    expect(d.ground[0].prog).toBe('HQ ENGAGEMENT')
     expect(d.notes).toEqual(DAYS[0].notes)
     // every person reference is blanked
     expect(d.waves[0].formations[0].aircraft[0].p).toBe('')

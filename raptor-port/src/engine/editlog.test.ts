@@ -37,9 +37,9 @@ describe('what gets recorded', () => {
     expect(rows.length).toBe(2)
     /* newest first, and people read as callsigns — never as the ids the
        model actually holds */
-    expect(rows[0]!.from).toBe('Bane')
-    expect(rows[0]!.to).toBe('Stiff')
-    expect(rows[1]!.to).toBe('Bane')
+    expect(rows[0]!.from).toBe('Ranger')
+    expect(rows[0]!.to).toBe('Saber')
+    expect(rows[1]!.to).toBe('Ranger')
   })
 
   it('an emptied seat reads as an em dash, not as a blank', () => {
@@ -109,7 +109,7 @@ describe('what gets recorded', () => {
   it('elogFor answers with the NEWEST entry for one detail, and null for a clean one', () => {
     setSlotVal(SEAT, 'bane')
     setSlotVal(SEAT, 'stiff')
-    expect(elogFor(SEAT)!.to).toBe('Stiff')
+    expect(elogFor(SEAT)!.to).toBe('Saber')
     expect(elogFor('0.0.0.0.w')).toBe(null)
   })
 

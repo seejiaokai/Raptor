@@ -321,7 +321,7 @@ describe('deletions carry what they held (12 Aug 26)', () => {
     expect(row, 'the deletion reached the log').toBeTruthy()
     expect(row!.lbl).toContain('Duty row removed')
     expect(row!.lbl).toContain('TEST ROLE')
-    expect(row!.lbl).toContain('Bane')
+    expect(row!.lbl).toContain('Ranger')
   })
 
   it('a removed flying line carries its callsign and its crew', async () => {
@@ -345,6 +345,6 @@ describe('deletions carry what they held (12 Aug 26)', () => {
     expect(row, 'the deletion reached the log').toBeTruthy()
     expect(row!.lbl).toContain('Line removed')
     expect(row!.lbl).toContain('ZULU')
-    expect(row!.lbl).toContain('Bane')
+    expect(row!.lbl).toContain('Ranger')
   })
 })

@@ -86,7 +86,7 @@ describe('puck selection (tfin B14)', () => {
     const days = personWarnDays('bane')
     expect($$('#vWeek .dwbox.open').length).toBe(days.length)
     expect($$('#vWeek .dwbox.open').every(b => b.classList.contains('pfoc'))).toBe(true)
-    expect($$('#vWeek .dwbox.open .dwwho').every(x => x.textContent === 'Bane')).toBe(true)
+    expect($$('#vWeek .dwbox.open .dwwho').every(x => x.textContent === 'Ranger')).toBe(true)
   })
 
   it('opened boxes are the days that person is flagged on', () => {
@@ -150,11 +150,11 @@ describe('puck selection (tfin B14)', () => {
 
   it('and the search box is emptied, not just its effect', async () => {
     /* the input is uncontrolled, so clearing only the state would leave a box
-       reading "bane" with nothing lit — worse than not clearing at all */
+       reading "ranger" with nothing lit — worse than not clearing at all */
     const box = $('#searchV') as HTMLInputElement
     expect(box, 'the view week has a search box').toBeTruthy()
     await act(async () => {
-      box.value = 'bane'
+      box.value = 'ranger'
       box.dispatchEvent(new Event('input', { bubbles: true }))
     })
     expect($$('#vWeek .puck.hl').length, 'the search lit somebody').toBeGreaterThan(0)
@@ -270,7 +270,7 @@ describe('highlight chips and search (tfin)', () => {
   it('search highlights by callsign and dims the rest', async () => {
     const inp = $('#searchV') as HTMLInputElement
     await act(async () => {
-      inp.value = 'bane'
+      inp.value = 'ranger'
       inp.dispatchEvent(new Event('input', { bubbles: true }))
     })
     expect($$('#vWeek .puck.hl').length).toBeGreaterThan(0)

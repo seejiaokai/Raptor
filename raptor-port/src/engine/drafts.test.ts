@@ -473,7 +473,7 @@ describe('reconcileIssuedMarks — a mark stranded at an address in neither docu
     setSlotVal(key, 'razer')                         // overwrite — a genuine change
     reconcileIssuedMarks()
     expect(SCHED.pending[key]).toBe(1)
-    setSlotVal(key, 'nact')                          // back to the same man — setSlotVal stores his callsign 'Nact'
+    setSlotVal(key, 'nact')                          // back to the same man — setSlotVal stores his callsign 'Warden'
     reconcileIssuedMarks()
     expect(SCHED.pending[key], 'canonical compare: callsign live vs id issued still match').toBeUndefined()
   })

@@ -140,7 +140,8 @@ describe('renaming a callsign', () => {
     before.forEach(x => expect(slotVal(`g:${x.di}.${x.ri}`)).toBe('dj'))
     expect(DAYS[0].ground.find((r: any) => r.who === 'Deejay'), 'the stored string was rewritten').toBeTruthy()
     expect(nameToId('Deejay')).toBe('dj')
-    expect(nameToId('dj')).toBeUndefined()      // the old name no longer resolves
+    expect(nameToId('Ace')).toBeUndefined()     // the old CALLSIGN no longer resolves
+    expect(nameToId('dj')).toBe('dj')           // the bare id always does (id-tolerant)
   })
 
   it('rewrites programme rows, including multi-person who arrays', () => {
@@ -153,11 +154,11 @@ describe('renaming a callsign', () => {
   })
 
   it('refuses a duplicate, an empty name and a no-op', () => {
-    expect(renameCallsign('dj', 'Bane')).toBe(false)     // already taken
+    expect(renameCallsign('dj', 'Ranger')).toBe(false)   // already taken
     expect(renameCallsign('dj', 'bane')).toBe(false)     // ...case-insensitively
-    expect(PEOPLE.dj.cs).toBe('DJ')
+    expect(PEOPLE.dj.cs).toBe('Ace')
     expect(renameCallsign('dj', '  ')).toBe(false)
-    expect(renameCallsign('dj', 'DJ')).toBe(false)
+    expect(renameCallsign('dj', 'Ace')).toBe(false)
     expect(renameCallsign('nobody', 'X')).toBe(false)
   })
 

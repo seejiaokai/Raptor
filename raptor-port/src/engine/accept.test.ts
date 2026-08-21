@@ -38,7 +38,7 @@ describe('accepting a personal input', () => {
     /* who is the CALLSIGN, like every other ground write — an id would render
        as free text for anyone whose id !== cs.toLowerCase(). Title is the bare
        type; the submitter's remarks travel to the row's own rmks cell. */
-    expect(row.who).toBe('Vinci')
+    expect(row.who).toBe('Zenith')
     expect(row.prog).toBe('MEETING')
     expect(row.rmks).toBe(inp.remarks)
     expect(row.str).toBe('09:00')            // 540 minutes from midnight
@@ -66,14 +66,14 @@ describe('accepting a personal input', () => {
     } finally { HOOKS.flashAdded = orig }
   })
 
-  /* regression: id and callsign diverge for some people ('haowen' → 'Hao Wen').
+  /* regression: id and callsign diverge for some people ('haowen' → 'Talisman').
      Storing the id made the row render as free text and never validate. */
   it('stores the callsign even when it differs from the id', () => {
     INPUTS.push({ person: 'haowen', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Appointment', remarks: 'x' })
     const inp = INPUTS[INPUTS.length - 1]
     expect(acceptInput(0, inp, 'g')).toBe(true)
     const ri = DAYS[0].ground.length - 1
-    expect(DAYS[0].ground[ri].who).toBe('Hao Wen')
+    expect(DAYS[0].ground[ri].who).toBe('Talisman')
     expect(slotVal(`g:0.${ri}`)).toBe('haowen')
   })
 

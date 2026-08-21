@@ -323,7 +323,7 @@ describe('the dash belongs to the crew-rest flag, not to the person', () => {
     /* give him a conflict on the same day: C (rank 12) outranks CR (rank 9) */
     const today: any = firstForm(1)!
     DAYS[1].ground = DAYS[1].ground || []
-    DAYS[1].ground.push({ prog: 'CLASHING MTG', str: today.to, end: '17:30', who: 'Waldo' })
+    DAYS[1].ground.push({ prog: 'CLASHING MTG', str: today.to, end: '17:30', who: 'Scribe' })
     validate()
     const cls = puckOf(1)
     expect(puckHtml(1), 'the conflict wins the chip').toContain('l-c"')
@@ -356,7 +356,7 @@ describe('a louder flag on the causing day', () => {
     build('01:30', '2A: BFM-5')
     const prev: any = firstForm(0)!
     DAYS[0].ground = DAYS[0].ground || []
-    DAYS[0].ground.push({ prog: 'CLASHING MTG', str: prev.to, end: '23:30', who: 'Waldo' })
+    DAYS[0].ground.push({ prog: 'CLASHING MTG', str: prev.to, end: '23:30', who: 'Scribe' })
     validate()
     expect(traceOf(0, CREW), 'the trace itself is untouched').toBeTruthy()
     expect(traceLeads(0, CREW), 'but it no longer owns the flag').toBeNull()

@@ -97,7 +97,7 @@ describe('publishing a day (tfin B26/B47)', () => {
 
   it('signNames records callsigns for the record', () => {
     sign(0)
-    expect(signNames(0)).toEqual({ cur: 'Ignite', sked: 'Bane', plan: 'Stiff', appr: 'Pump' })
+    expect(signNames(0)).toEqual({ cur: 'Torch', sked: 'Ranger', plan: 'Saber', appr: 'Piston' })
   })
 })
 
@@ -142,7 +142,7 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     publishALDay(0)
     const rec = SCHED.als[0]
     expect(rec.n).toBe(1)
-    expect(rec.sign[0].appr).toBe('Pump')
+    expect(rec.sign[0].appr).toBe('Piston')
     expect(Object.values(signOf(0)).every(v => v === '')).toBe(true)
     expect(dayApproved(0)).toBe(true)             // the day stays published
   })

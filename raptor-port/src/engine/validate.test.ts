@@ -521,7 +521,7 @@ describe('the OFT brief lead reads the remarks (owner, 5 Aug 26)', () => {
     /* prism's EP-6 briefs 15 before 1500; park him on a ground event that sits
        1430–1445 — inside 30 prior, clear of 15 prior — and the flag must
        follow the remark, not the default */
-    DAYS[0].ground.push({ prog: 'X', str: '1430', end: '1445', who: 'Prism' })
+    DAYS[0].ground.push({ prog: 'X', str: '1430', end: '1445', who: 'Recon' })
     const hit = () => validate().all.some((w: any) =>
       w.code === 'SIM_BRIEF' && w.di === 0 && (w.who || []).includes('prism'))
     expect(hit()).toBe(false)

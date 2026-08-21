@@ -104,7 +104,7 @@ describe('double-booking: the same man twice in the air', () => {
 
   it('flying + ground event overlap — also the hard clash (ground is only soft against a SHIFT)', () => {
     DAYS[1].waves[0].formations[0].aircraft[0].p = 'split'
-    DAYS[1].ground.push({ prog: 'AUDIT BRIEF', str: '0900', end: '1000', who: 'Split' })
+    DAYS[1].ground.push({ prog: 'AUDIT BRIEF', str: '0900', end: '1000', who: 'Vandal' })
     const db = hits('DOUBLE_BOOK', 'split').filter((x: any) => x.di === 1)
     expect(db.length, JSON.stringify(db)).toBeGreaterThan(0)
   })

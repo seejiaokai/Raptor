@@ -188,7 +188,7 @@ describe('the AVALON rule reaches the tail too, and stays exempt from everything
   it('the exemption stands: an AVALON jet man also on a same-evening ground row raises nothing', () => {
     const f = pushAvalon()
     f.aircraft[0].p = 'badger'
-    DAYS[0].ground.push({ prog: 'STAND-DOWN BRIEF', str: '2000', end: '2100', who: 'Badger' })
+    DAYS[0].ground.push({ prog: 'STAND-DOWN BRIEF', str: '2000', end: '2100', who: 'Pixel' })
     const bad = validate().all.filter((x: any) => (x.who || []).includes('badger')
       && (x.code === 'DOUBLE_BOOK' || x.code === 'SHIFT_SOFT'))
     expect(bad, JSON.stringify(bad)).toEqual([])

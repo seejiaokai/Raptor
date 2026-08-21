@@ -25,8 +25,8 @@ describe('the long-work-day note names the debrief assumption on a flying end', 
   it('the seed cases print the landing and flag the 2h debrief pad', () => {
     validate()
     const msgs = longdays().map((w: any) => w.msg)
-    /* Wolf and Stiff both finish on a sortie, so both spell the end out */
-    const wolf = msgs.find((m: string) => /^Wolf /.test(m))!
+    /* Static and Saber both finish on a sortie, so both spell the end out */
+    const wolf = msgs.find((m: string) => /^Static /.test(m))!
     expect(wolf, 'Wolf files a long day').toBeTruthy()
     expect(wolf, 'the real landing is named').toContain('last landing 16:05')
     expect(wolf, 'and the pad is flagged as an assumption').toContain('+ 2h debrief assumed')
@@ -55,7 +55,7 @@ describe('the long-work-day note names the debrief assumption on a flying end', 
     try {
       VCONF.debrief = 90                                  // 1h30 instead of the default 2h
       validate()
-      const wolf = longdays().map((w: any) => w.msg).find((m: string) => /^Wolf /.test(m))!
+      const wolf = longdays().map((w: any) => w.msg).find((m: string) => /^Static /.test(m))!
       expect(wolf, 'Wolf still files a long day at the smaller pad').toBeTruthy()
       expect(wolf, 'the real landing is still named').toContain('last landing 16:05')
       expect(wolf, 'the smaller pad is named as the assumption').toContain('+ 1h30 debrief assumed')
