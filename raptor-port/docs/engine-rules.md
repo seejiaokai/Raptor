@@ -71,9 +71,30 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Neither fires where the roll above makes the clock legitimate (`toM <
   VCONF.briefLead`), and neither touches a standalone wave's inert B.
 - Crew rest (VCONF.crewRest) runs off the last REST-BEARING commitment
-  (sortie or shift), and anchors on the earlier of the published in-time and
-  the leg's own brief. Breach = hard CR; nominal-inside-rest = adv TT.
+  (sortie, shift or **duty desk row** — duties joined the set 21 Aug 26,
+  owner's ruling: an Ops-O ending 21:30 with a 09:00 report next morning is a
+  breach, not merely tight turning; like a shift, a duty ends at its WRITTEN
+  end with no debrief tail, and its enders ride the `REST[]` map the palette
+  reads, so the picker and the engine agree). It anchors on the **earlier**
+  of the published in-time and the leg's own brief — rest ends when the man
+  first has to show. Breach = hard CR; nominal-inside-rest, or a prior day
+  ending only on a sim/ground event = adv TT.
   Exactly `crewRest` is legal — the breach is strictly less (owner, 6 Aug 26).
+  Reference mirrored by `refwin.ts:rerest()`; pinned in `dutyrest.test.ts`.
+- **The in-time line's grammar** (owner, 21 Aug 26 — "accept any form of
+  combination", "U make the call on what u detect"). `events.ts:intimeTime`
+  reads the FIRST valid clock time in a line — `0900`, `09:00`, `0900H`,
+  `09:00H`, `0900L`, `09:00L`, any case — and never misreads glued tokens
+  (`FL240`) or impossible clocks (`2590`). `intimeMap` scopes each line by
+  the WAVE'S OWN formation callsigns: a line naming a formation's callsign
+  anywhere in its text is that formation's in-time; a line naming none
+  covers every formation that has no line of its own; a specific line beats
+  a wide one whatever the typing order; several wide lines — the earliest is
+  the show. `waveInTime` (the wave windows) reads the same detector, so a
+  line can never set a report time the windows cannot see. The reference's
+  stricter `<CS> IN TIME` grammar reads every SEED line identically, which
+  is what keeps parity untouched where data exercises it; the wider grammar
+  is a deliberate port divergence. Pinned in `intimes.test.ts`.
 - **A sortie-caused breach spells out the debrief assumption** (owner, 15 Aug
   26 — "state why it would flag… the assumption that the crew will debrief 2
   hours after landing… because actually they can leave quickly after

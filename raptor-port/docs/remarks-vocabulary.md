@@ -70,6 +70,27 @@ Rules: `docs/engine-rules.md` §AAR, and who may teach it.
 
 ---
 
+## The in-time lines — at the top of a wave
+
+Each line the wave publishes is read for a **time** and, optionally, a
+**callsign** (21 Aug 26):
+
+| Typed | Means |
+|---|---|
+| `0900` `09:00` `0900H` `09:00H` `0900L` `09:00L` | the show time — the FIRST valid clock time in the line is the one that counts |
+| a formation's callsign anywhere in the line (`RU 0900`, `0900H: RU IN TIME`) | this line is that formation's in-time only |
+| no callsign in the line (`0900H: IN TIME + WX/NOTAMS`) | the whole wave's — every formation without a line of its own |
+
+Case is free on the callsign and the H/L suffix. A specific line always beats
+a wave-wide one, whatever order they were typed; with several wave-wide
+lines, the earliest time is the show. A number glued to letters (`FL240`)
+never reads as a time, and an impossible clock (`2590`) is skipped.
+
+The published in-time moves the formation's **report time**, which feeds crew
+rest (the anchor is the EARLIER of in-time and brief), the long-work-day
+note, and the wave windows. A line with no readable time is inert until a
+time is typed into it.
+
 ## Late show — in a flying line's RMKS
 
 | Typed | Means |

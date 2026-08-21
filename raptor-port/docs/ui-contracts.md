@@ -311,14 +311,21 @@ span could never be minted from inside the contenteditable.
   excluded on both surfaces AND re-checked in the handler: they are shifts,
   not sorties, and a typed in-time there would silently move
   `waveWindows`.
-- **Each line wears a ✕ in edit mode** (`data-itdel`), rendered by
-  `intimesInner(w, ek)` INSIDE the contenteditable block as a
-  `contenteditable="false"` island. Inside on purpose: `textedit.ts`'s
-  focusout heal redraws the block from `intimesInner`, and a heal that
-  stripped the buttons would tear the tapped ✕ out between its pointerdown
-  and its click. The commit scrape reads `span`s only, so the button never
-  leaks into the committed text. The `.iedit` grid pairs each line with its
-  ✕ without touching the span contract.
+- **Each line is its OWN contenteditable span (`data-itline`), with an
+  ordinary ✕ button (`data-itdel`) beside it — outside any editable region**
+  (reworked the same day on the owner's iPhone: the first cut put the ✕
+  inside one shared contenteditable block, where iOS would not reliably tap
+  it, and typing in the shared block let WebKit clone a span so the
+  span-scrape committed the same text twice — the owner's duplicate-line
+  report). `textedit.ts` commits ONE line at a time off `data-itline`
+  (empty → the line is deleted and its DOM pair removed at once, so the
+  remaining ✕ positions stay true until the deferred repaint), which makes
+  any stray span WebKit mints invisible to the commit. Enter commits,
+  Escape restores the model's line. The wrapper keeps `data-intimes` (the
+  history bubble anchors on it) but is not editable itself; the `.iedit`
+  grid pairs each line with its ✕. The ✕ handler resolves its index by DOM
+  POSITION within the block, falling back to the minted attribute only for
+  an element with no block around it.
 - **Both writers ride the existing `it:` key** (`routeClick` in
   `interactions.ts`, guarded `canEditSched() && HOOKS.editMode()` like every
   model-writing branch): `markEdit('it:di.gi', was, now)` — so the AL diff,

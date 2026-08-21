@@ -376,7 +376,9 @@ export function validate(){
     });
     /* ---- crew rest across the day boundary -------------------------------
        12h clear from the previous day's last commitment. A sortie's day ends at
-       land + 2h (the debrief); sims and ground events do NOT attract crew rest,
+       land + 2h (the debrief); a duty desk row ends when it ends (owner,
+       21 Aug 26 — duties bear crew rest like shifts); sims and ground events
+       do NOT attract crew rest,
        but a short gap after one is still worth calling tight turning. The
        squadron's nominal report is T/O − 3h; if the aircrew has actually been
        TOLD to come in earlier than legal — through the published in-time or the
@@ -406,8 +408,17 @@ export function validate(){
          which ends at its written time with no debrief tail to assume. */
       const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={};
       ev[idx-1].events.forEach((e:any)=>{
-        const rests=(e.kind==='fly'||e.kind==='shift');
-        const end=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift ends when it ends
+        /* A DUTY DESK ROW BEARS CREW REST TOO (owner, 21 Aug 26 — an Ops-O
+           ending 21:30 with a 09:00 report the next morning must flag, not
+           merely chip TT). This revises the earlier sortie-or-shift-only
+           rule; the incident that rule fixed — the picker's REST[] and this
+           branch disagreeing — cannot recur, because duty ends now feed BOTH
+           (prevFlyEnd builds the REST map below). Like a shift, a duty ends
+           at its written end with no debrief tail. Sims and ground events
+           still do not attract crew rest — a short gap after one stays the
+           tight-turning advisory. */
+        const rests=(e.kind==='fly'||e.kind==='shift'||e.kind==='duty');
+        const end=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift/duty ends when it ends
         if(end==null)return;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
         if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}
@@ -441,13 +452,12 @@ export function validate(){
         /* Personnel (ground crew) hold no crew-rest rule — an incentive ride
            does not put a ground-crewman on a 12-hour flying clock. */
         if(PEOPLE[id]&&PEOPLE[id].pers)return;
-        /* Crew rest runs off the last REST-BEARING commitment — a sortie or a
-           shift — not off a late desk duty. Taking the max of both meant an
-           18:00–23:59 SXO row raised a hard breach for a man who landed at 10:00,
-           while REST[] (built from prevFlyEnd alone) reported him clear: the
-           picker handed him the slot and the engine immediately red-flagged it.
-           When nothing rest-bearing happened yesterday we still fall back to the
-           last end of any kind — that is what feeds the tight-turning advisory. */
+        /* Crew rest runs off the last REST-BEARING commitment — a sortie, a
+           shift or a DUTY DESK ROW (owner, 21 Aug 26; duties joined the set,
+           see the collection above). When nothing rest-bearing happened
+           yesterday — a sim or a ground event only — we still fall back to
+           the last end of any kind, which is what feeds the tight-turning
+           advisory below. */
         const pe=prevFlyEnd[id]!=null?prevFlyEnd[id]:prevEnd[id];
         if(pe==null||!isFinite(pe))return;
         const pfly={[id]:prevFlyEnd[id]!=null};

@@ -26,7 +26,7 @@ import { INPUTS, inputFlags } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 
 export async function refWindow(): Promise<any> {
-  const html = relabel(reinput(redn(rering(rebrief(relead(rematrix(resim(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))))))
+  const html = relabel(reinput(redn(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -479,6 +479,21 @@ function rebrief(html: string): string {
     html = html.replace(from, to)
   }
   return html
+}
+
+/* A DUTY DESK ROW BEARS CREW REST (owner, 21 Aug 26 — an Ops-O ending 21:30
+   with a 09:00 report next morning must raise the hard breach, not merely
+   chip TT). The port's validate.ts widened its rest-bearing set from
+   sortie-or-shift to sortie, shift or duty; the reference computes rest from
+   the identical line, so the same one-word widening moves both engines
+   together — REST[] maps, the hard branch and the messages all follow from
+   it. Rule: docs/engine-rules.md §Validation, "Crew rest". */
+function rerest(html: string): string {
+  const from = "const rests=(e.kind==='fly'||e.kind==='shift');"
+  const to = "const rests=(e.kind==='fly'||e.kind==='shift'||e.kind==='duty');"
+  const n = html.split(from).length - 1
+  if (n !== 1) throw new Error(`refwin rerest: expected exactly 1 match, got ${n}`)
+  return html.replace(from, to)
 }
 
 /* The tight-turn chip loses its ring (owner, 7 Aug 26). Both builds chip DT

@@ -28,7 +28,48 @@ const inpShow=(inp:any,dt:any)=>{
   const di=acceptedDay(inp);
   return di<0||(DAYS[di]||{}).dt!==dt;            // defer only on the row's day
 };
-export function intimeMap(w:any){ const m:any={}; (w.intimes||[]).forEach((t:any)=>{ const tm=(t.match(/(\d{3,4})\s*H/)||[])[1]; const cs=(t.match(/\b([A-Z]{2})\s+IN\s+TIME/i)||[])[1]; if(tm&&cs)m[cs.toUpperCase()]=parseHM(tm); }); return m; }
+/* The time WRITTEN in an in-time line (owner, 21 Aug 26 — "can u accept any
+   form of combination"): 0900 · 09:00 · 0900H · 09:00H · 0900L · 09:00L, any
+   case on the suffix. The FIRST token that reads as a real clock time wins;
+   a token glued to letters (FL240, D15R) never matches, and out-of-range
+   digits (2590) are skipped rather than misread. Shared by intimeMap and
+   waveInTime so the report time and the wave windows can never read one line
+   two ways. */
+export function intimeTime(s:any){
+  const re=/(?:^|[^A-Za-z0-9])(?:(\d{1,2}):(\d{2})|(\d{3,4}))\s*[HL]?(?![A-Za-z0-9])/gi;
+  let m:any;
+  while((m=re.exec(String(s||'')))){
+    const h=m[1]!=null?+m[1]:+m[3].slice(0,m[3].length-2);
+    const mi=m[1]!=null?+m[2]:+m[3].slice(-2);
+    if(h<24&&mi<60)return h*60+mi;
+  }
+  return null;
+}
+/* WHICH formations a line's time applies to (owner, 21 Aug 26): a line that
+   names one of THIS WAVE's formation callsigns is that formation's in-time;
+   a line naming none is the WHOLE WAVE's, standing in for every formation
+   that has no line of its own (a specific line always beats a wide one,
+   whatever order they were typed). The callsign match is against the wave's
+   OWN formations — never a fixed phrase — so "0900H: RU IN TIME",
+   "RU 0900" and "0900 RU show" all reach the RU line, and a bare
+   "0900H: IN TIME + WX/NOTAMS" reaches everyone. The reference's stricter
+   "<CS> IN TIME" grammar reads every SEED line identically (each seed line
+   names its formation), so parity is untouched where data exercises it. */
+export function intimeMap(w:any){
+  const m:any={}; let wide:any=null;
+  const rx=(cs:any)=>new RegExp(`(^|[^A-Za-z0-9])${String(cs).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}([^A-Za-z0-9]|$)`,'i');
+  /* keyed by the formation's cs AS TYPED (events.ts looks up im[f.cs]);
+     the match itself trims and ignores case */
+  const css=(w.formations||[]).map((f:any)=>String(f.cs==null?'':f.cs)).filter((c:any)=>c.trim());
+  (w.intimes||[]).forEach((line:any)=>{
+    const t=intimeTime(line); if(t==null)return;
+    const hits=css.filter((cs:any)=>rx(cs.trim()).test(String(line)));
+    if(hits.length)hits.forEach((cs:any)=>m[cs]=t);
+    else if(wide==null||t<wide)wide=t;                 // several wide lines: the earliest is the show
+  });
+  if(wide!=null)css.forEach((cs:any)=>{ if(m[cs]==null)m[cs]=wide; });
+  return m;
+}
 /* "BRIEF 30 PRIOR", "brief 30", "30 mins prior" — an OFT remark that names its
    own brief lead overrides VCONF.epBrief for that line only (owner, 5 Aug 26);
    the seed EP-4s said 30 while the engine padded 15. \b keeps DEBRIEF out, the
@@ -277,7 +318,7 @@ export function collectEvents(){
 /* earliest IN-TIME of a wave (from the wave's in-time lines; fallback = earliest TO) */
 export function waveInTime(w:any){
   let best:any=null;
-  (w.intimes||[]).forEach((s:any)=>{const m=String(s).match(/(\d{3,4})\s*[hH]/); if(m){const t=parseHM(m[1]); if(t!=null&&(best==null||t<best))best=t;}});
+  (w.intimes||[]).forEach((s:any)=>{const t=intimeTime(s); if(t!=null&&(best==null||t<best))best=t;});
   if(best==null)(w.formations||[]).forEach((f:any)=>{const to=parseHM(f.to); if(to!=null&&(best==null||to<best))best=to;});
   return best;
 }

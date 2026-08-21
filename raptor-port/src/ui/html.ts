@@ -581,15 +581,25 @@ export function dayWarnHTML(di:any){
   }
   return h+`</div>`;
 }
-/* ek — the edit surfaces pass `${di}|${gi}` and each line gains its ✕
-   (data-itdel, owner 21 Aug 26). The ✕ lives INSIDE the contenteditable block
-   as a contenteditable="false" island on purpose: rendering it here keeps
-   textedit.ts's sameInner heal true (a heal that stripped the buttons would
-   tear the tapped ✕ out from under its own click), and the commit scrape
-   reads spans only, so the button never leaks into the committed text. */
+/* One line's display markup — the leading time bolded. The bold pattern
+   matches the whole grammar intimeTime accepts (0900 / 09:00, H/L suffix);
+   on the seed's own NNNNH lines it emits byte-identically to the reference's
+   narrower \d{3,4}H pattern, which is what keeps the read-only parity
+   compare untouched. */
+export function intimeLineHTML(t:any){
+  return esc(t).replace(/^(\s*(?:\d{1,2}:\d{2}|\d{3,4})\s*[HL]?)(?![0-9A-Za-z])/i,'<b>$1</b>');}
+/* ek — the edit surfaces pass `${di}|${gi}` and the block renders PER-LINE:
+   each line its own contenteditable span, each with an ordinary ✕ button
+   BESIDE it (owner's iPhone, 21 Aug 26 — a button inside a contenteditable
+   region is not reliably tappable on iOS, and typing in one shared block let
+   WebKit clone spans and duplicate lines). The wrapper div is NOT editable
+   any more; textedit.ts commits one line at a time off data-itline, which is
+   what makes a stray span WebKit mints invisible to the commit. */
 export function intimesInner(w:any,ek?:any){
-  return ((w&&w.intimes)||[]).map((t:any,i:number)=>`<span>${esc(t).replace(/^(\s*\d{3,4}\s*H)/i,'<b>$1</b>')}</span>`
-    +(ek?`<button class="itx" contenteditable="false" data-itdel="${ek}|${i}" title="Remove this in-time line" aria-label="Remove this in-time line">✕</button>`:'')).join('');}
+  return ((w&&w.intimes)||[]).map((t:any,i:number)=> ek
+    ? `<span class="itline" contenteditable="true" spellcheck="false" data-itline="${ek}|${i}">${intimeLineHTML(t)}</span>`
+      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this in-time line" aria-label="Remove this in-time line">✕</button>`
+    : `<span>${intimeLineHTML(t)}</span>`).join('');}
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on
    the formation, and the formation's own TO–LD. Both surfaces have to agree on that
@@ -902,7 +912,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
          waves are excluded: a shift briefs nothing, and a typed in-time there
          would silently move waveWindows. interactions.ts owns the click. */
       if(w.intimes&&w.intimes.length)
-        h+=`<div class="intimes${ed?' iedit':''}"${alAttr(`it:${di}.${gi}`)} ${ed?`contenteditable="true" spellcheck="false" data-intimes="${di}|${gi}"`:''}>${intimesInner(w,ed?`${di}|${gi}`:null)}</div>`;
+        h+=`<div class="intimes${ed?' iedit':''}"${alAttr(`it:${di}.${gi}`)} ${ed?`data-intimes="${di}|${gi}"`:''}>${intimesInner(w,ed?`${di}|${gi}`:null)}</div>`;
       h+=sa
         ? `<div class="cols formcols"><span>${esc(w.label||'')}<br>SHIFT</span><span class="c-c">START</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
         : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">B<br>TO</span><span class="c-c">LD</span><span>FCP / RCP</span><span>RMKS</span></div>`;

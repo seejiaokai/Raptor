@@ -137,7 +137,12 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
       out.i5 = W(id).some(x => x.code === 'DOUBLE_BOOK') ? 'DOUBLE_BOOK' : 'nothing'
       s0.more = []; if (dr) dr.id = ''; afterSchedMutate()
     }
-    /* 6 · crew rest is measured off flying, not off a desk */
+    /* 6 · a desk duty BEARS crew rest (owner, 21 Aug 26 — this flipped: the
+       original recording pinned "measured off flying, not off a desk", and
+       the owner overruled it — an Ops-O ending late must bar the morning.
+       The scenario is unchanged; the expected answers inverted, and the
+       engine and the picker must agree on the NEW rule the same way they
+       had to agree on the old one). */
     wipe(0); wipe(1); addWave(1, 'sc'); afterSchedMutate()
     {
       const d0 = DAYS[0], id = pilot(0)
@@ -199,8 +204,8 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
   T('4 · a 2300-0100 sim is stored rolled, not inverted', R.i4win, '1380-1500')
   T('4 · and it clashes with the duty inside it', R.i4, 'DOUBLE_BOOK')
   T('5 · a sim extra is seen by the engine', R.i5, 'DOUBLE_BOOK')
-  T('6 · a late desk duty raises no crew-rest breach', R.i6, 'none')
-  T('6 · and the picker agrees with the engine', R.i6b, 'clear')
+  T('6 · a late desk duty raises the crew-rest breach (owner, 21 Aug 26)', R.i6, 'CREW_REST')
+  T('6 · and the picker agrees with the engine', R.i6b, 'barred')
   T('7 · a man on a row twice does not clash with himself', R.i7, 'none')
   T('8 · slotRules reads a sim front seat', R.i8a, 'p')
   T('8 · a WSO is barred from it', R.i8b, 'BAR')

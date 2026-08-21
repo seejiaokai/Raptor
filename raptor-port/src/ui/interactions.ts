@@ -542,13 +542,12 @@ export function routeClick(e: MouseEvent) {
     setTimeout(() => {
       const blk = host.querySelector(`.intimes[data-intimes="${di}|${gi}"]`) as HTMLElement | null
       if (!blk) return
-      const sp = blk.querySelectorAll('span'); const last = sp[sp.length - 1]
-      blk.focus()
+      const sp = blk.querySelectorAll('.itline'); const last = sp[sp.length - 1] as HTMLElement | undefined
+      if (!last) return
+      last.focus()
       try {
-        if (last) {
-          const r = document.createRange(); r.selectNodeContents(last); r.collapse(false)
-          const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r)
-        }
+        const r = document.createRange(); r.selectNodeContents(last); r.collapse(false)
+        const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r)
       } catch (_) { /* a caret is a courtesy — jsdom and odd embedders may refuse */ }
     }, 0)
     return
@@ -557,7 +556,16 @@ export function routeClick(e: MouseEvent) {
   if (itd) {
     e.stopPropagation()
     if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast('Only a scheduler can edit the in-times', 'warn'); return }
-    const [dis, gis, ixs] = itd.dataset.itdel!.split('|'); const di = +dis, gi = +gis, ix = +ixs
+    const [dis, gis, ixs] = itd.dataset.itdel!.split('|'); const di = +dis, gi = +gis
+    /* the index is read off the button's POSITION in its block, not its
+       minted attribute: tapping a ✕ right after clearing another line's text
+       runs that line's focusout delete first, and the stale attribute would
+       then point one row off. textedit.ts removes the emptied pair from the
+       DOM in the same breath, so position stays true through the window
+       before the deferred repaint. The attribute is the fallback for a
+       button with no block around it (a stale or hand-made element). */
+    const wrap = itd.closest('.intimes')
+    const ix = wrap ? [...wrap.querySelectorAll('[data-itdel]')].indexOf(itd) : +ixs
     const w = DAYS[di] && DAYS[di].waves[gi]; if (!w || (w.intimes || [])[ix] == null) return
     const was = w.intimes.join(', ')
     const gone = String(w.intimes[ix])

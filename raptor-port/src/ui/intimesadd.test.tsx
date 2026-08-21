@@ -66,11 +66,74 @@ describe('adding and removing in-time lines', () => {
     const ed = dayHTML(0, true)
     expect(ed, 'add button on the edit surface').toContain(`data-itadd="0|0"`)
     expect(ed, 'a ✕ per line on the edit surface').toContain(`data-itdel="0|0|0"`)
+    /* per-line since the owner's iPhone pass (21 Aug 26): each LINE is the
+       contenteditable, the wrapper is not, and the ✕ sits outside any
+       editable region — iOS does not reliably tap a button inside one */
+    expect(ed).toContain(`data-itline="0|0|0"`)
+    expect(ed, 'the wrapper is not editable any more').not.toContain(`contenteditable="true" spellcheck="false" data-intimes=`)
     const ro = dayHTML(0, false)
     expect(ro, 'no add button read-only').not.toContain('data-itadd')
     expect(ro, 'no ✕ read-only').not.toContain('data-itdel')
+    expect(ro, 'no editable lines read-only').not.toContain('data-itline')
     /* the block itself still renders read-only — the lines are published text */
     expect(ro).toContain('class="intimes"')
+  })
+
+  it('editing ONE line commits that line alone, and a stray span WebKit mints is invisible to it', async () => {
+    const w = W0()
+    const keep = w.intimes.slice()
+    try {
+      await act(async () => { notify() })
+      const line = $(`#eWeek [data-itline="0|0|0"]`)
+      /* the duplicate bug's shape: iOS cloned a span inside the old shared
+         block and the scrape read it as a line. A stray span beside the
+         per-line spans must commit NOTHING. */
+      const ghost = document.createElement('span')
+      ghost.textContent = 'GHOST LINE'
+      line.parentElement!.appendChild(ghost)
+      line.textContent = '0930H: EDITED LINE'
+      await act(async () => { line.dispatchEvent(new Event('focusout', { bubbles: true })) })
+      expect(w.intimes[0]).toBe('0930H: EDITED LINE')
+      expect(w.intimes[1], 'the second line untouched').toBe(keep[1])
+      expect(w.intimes.join('|'), 'no ghost committed').not.toContain('GHOST')
+      expect(w.intimes.length).toBe(keep.length)
+      ghost.remove()
+    } finally {
+      w.intimes = keep.slice()
+      await act(async () => { notify() })
+    }
+  })
+
+  it('Escape puts the model line back under the caret', async () => {
+    const w = W0()
+    const keep = w.intimes.slice()
+    try {
+      await act(async () => { notify() })
+      const line = $(`#eWeek [data-itline="0|0|0"]`)
+      line.textContent = 'MANGLED MID-TYPE'
+      await act(async () => { line.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })) })
+      expect(line.textContent).toBe(keep[0])
+      expect(w.intimes[0], 'the model never took the mangle').toBe(keep[0])
+    } finally {
+      w.intimes = keep.slice()
+      await act(async () => { notify() })
+    }
+  })
+
+  it('clearing a line\'s text deletes it, and its ✕ leaves the DOM with it before the repaint', async () => {
+    const w = W0()
+    const keep = w.intimes.slice()
+    try {
+      await act(async () => { notify() })
+      const line = $(`#eWeek [data-itline="0|0|0"]`)
+      line.textContent = '   '
+      await act(async () => { line.dispatchEvent(new Event('focusout', { bubbles: true })) })
+      expect(w.intimes.length).toBe(keep.length - 1)
+      expect(w.intimes[0], 'the second line moved up').toBe(keep[1])
+    } finally {
+      w.intimes = keep.slice()
+      await act(async () => { notify() })
+    }
   })
 
   it('a standalone wave gets no add button — a typed in-time there would move the wave windows', () => {

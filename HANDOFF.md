@@ -24,14 +24,14 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the in-time add/remove controls,
-21 Aug 26 — all six gates watched this session; it sits on the Inputs-page
-date standardisation, the per-input LATE dismissal and the frozen-column
-vertical alignment fix below):
+**Last recorded green baseline** (the in-time second pass — per-line
+editor, grammar, duty crew rest — 21 Aug 26, all six gates watched this
+session; it sits on the in-time add/remove controls, the Inputs-page date
+standardisation and the per-input LATE dismissal below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2712 across 149 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2734 across 151 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -47,11 +47,13 @@ hours), and the two repaired topbar-pill assertions replaced in place → 2701 /
 147; +1 e2e for the Insights bars → 305. The two repaired Leave War
 month-navigation tests were already counted.
 
-The Inputs-page date standardisation added `inputsfmt.test.tsx` (+5 tests,
-+1 file → 2706 / 148); display-only, no DOM or e2e change. The in-time
-add/remove controls added `intimesadd.test.tsx` (+6 tests, +1 file →
-2712 / 149); edit-mode-only markup, so the read-only parity compare needed
-nothing and e2e stays 305 / 12.
+The in-time add/remove controls added `intimesadd.test.tsx` (+6 tests,
++1 file → 2712 / 149). The same-day second pass added `intimes.test.ts`
+(+13, the line grammar) and `dutyrest.test.ts` (+6, duty desk rows bear
+crew rest) and grew `intimesadd.test.tsx` to 9 (+3, the per-line editor) →
+2734 / 151; the adapted `audit` probe's item 6 flipped WITH the rule (it
+pinned "a desk raises no breach", the owner overruled it), and e2e stays
+305 / 12.
 
 DOM measures at that baseline: week **3767** under a 4000 ceiling (+24 over
 the previous 3743: a "+ In time" button per flying wave and a ✕ per in-time
@@ -1142,13 +1144,22 @@ gate — it has its own e2e DOM band (29000), measured-first.
   - **A wave label typed long on the week** becomes an `<option>` in the
     board's title `<select>` and can run past the panel (measured 2638px in a
     930px box). Recovery is picking any real title. Same class as above.
-  - **The in-time block's one-way delete is CLOSED (owner, 21 Aug 26)** —
-    every non-standalone wave carries "+ In time" in edit mode (whether or
-    not it has lines) and each line a ✕; both write the existing `it:` key,
-    the seed line is engine-neutral, and the block's `intimes.length` render
-    gate is UNCHANGED — the button is the way back, not an ungated box.
-    Contract: `docs/ui-contracts.md` §In-time lines; pinned in
-    `intimesadd.test.tsx`.
+  - **The in-time block's one-way delete is CLOSED, and the lines grew a
+    grammar (owner, 21 Aug 26, two passes in one day)** — every
+    non-standalone wave carries "+ In time" in edit mode and each line a ✕;
+    both write the existing `it:` key and the `intimes.length` render gate
+    is UNCHANGED. The SECOND pass, off the owner's iPhone: each line is its
+    OWN contenteditable span with the ✕ an ordinary button beside it (iOS
+    would not tap a button inside a contenteditable, and the shared block
+    let WebKit clone spans — the duplicate-line report), the line grammar
+    widened (0900 / 09:00 / H / L; callsign anywhere in the line scopes it
+    to that formation, no callsign = the whole wave), and **duty desk rows
+    bear crew rest now** (Ops-O till 21:30 + told to report 09:00 = hard
+    breach; `refwin.ts:rerest` mirrors the reference; the rest anchor stays
+    the EARLIER of in-time and brief). Rules: `docs/engine-rules.md`
+    §Validation; grammar: `docs/remarks-vocabulary.md` §The in-time lines;
+    contract: `docs/ui-contracts.md` §In-time lines. Pinned in
+    `intimes.test.ts`, `dutyrest.test.ts`, `intimesadd.test.tsx`.
   - **`ruleParse` stays loose** — `6 monkeys` reads as 6, `0770` as 08:10 —
     because every accepted value is echoed back FORMATTED in the field and the
     toast, so the user sees exactly what was taken.

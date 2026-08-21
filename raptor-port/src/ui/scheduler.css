@@ -939,10 +939,14 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .intimes span b{font-weight:800;color:#FFDF9E}
 .intimes[contenteditable]{outline:none}
 .intimes[contenteditable]:focus{background:rgba(229,201,74,.10)}
-/* edit mode interleaves span,✕ pairs — the grid pairs them back into rows
-   (line | its ✕) without touching the span contract textedit.ts scrapes */
+/* edit mode interleaves line,✕ pairs — the grid pairs them back into rows
+   (line | its ✕). Each LINE is its own contenteditable span and the ✕ is an
+   ordinary button outside any editable region (iOS will not reliably tap a
+   button inside one — owner's phone, 21 Aug 26). */
 .intimes.iedit{display:grid;grid-template-columns:1fr auto;gap:2px 6px;align-items:center}
-.itx{background:none;border:0;color:var(--ink-3);cursor:pointer;font-size:9px;line-height:1;padding:1px 4px;border-radius:4px;user-select:none}
+.intimes .itline{outline:none;border-radius:3px;padding:1px 2px;margin:-1px -2px}
+.intimes .itline:focus{background:rgba(229,201,74,.12)}
+.itx{background:none;border:0;color:var(--ink-3);cursor:pointer;font-size:11px;line-height:1;padding:2px 6px;border-radius:4px;user-select:none}
 .itx:hover{color:var(--hard);background:rgba(240,85,95,.12)}
 .go.night{background:rgba(240,85,95,.04)}
 .go.night .go-tab .asd{color:#FBB4B9}/* sims sub-blocks */

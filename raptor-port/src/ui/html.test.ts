@@ -172,15 +172,19 @@ const noAhRmk = (s: string) => s
   .replace(/<span>Rmks<\/span>/g, '')
   .replace(/<span class="rmk rk-e"><\/span>/g, '')
 
-/* Divergence (owner, 21 Aug 26): in-time lines can be ADDED and REMOVED — a
-   "+ In time" button on each flying wave's tab and a ✕ per line inside the
-   editable block (the fix for deleting the last line stranding the whole box).
-   All three additions are edit-mode only, the reference has none of them, so
-   lift them off the port's markup before the compare. Pinned positively in
-   intimesadd.test.tsx. */
+/* Divergence (owner, 21 Aug 26, reworked the same day for his iPhone): the
+   edit week's in-time block renders PER-LINE — each line its own
+   contenteditable span with an ordinary ✕ button beside it, plus a
+   "+ In time" button on each flying wave's tab — where the reference keeps
+   one contenteditable block of plain spans. Every difference is edit-mode
+   only, so normalise BOTH sides to the bare block-and-spans before the
+   compare (the reference-only rules here are no-ops on the port and vice
+   versa). Pinned positively in intimesadd.test.tsx. */
 const noItCtl = (s: string) => s
   .replace(/<button class="airbtn" data-itadd="[^"]*"[^>]*>\+ In time<\/button>/g, '')
-  .replace(/<button class="itx" contenteditable="false" data-itdel="[^"]*"[^>]*>✕<\/button>/g, '')
+  .replace(/<button class="itx" data-itdel="[^"]*"[^>]*>✕<\/button>/g, '')
+  .replace(/<span class="itline" contenteditable="true" spellcheck="false" data-itline="[^"]*">/g, '<span>')
+  .replace(/ (?:contenteditable="true" spellcheck="false" )?data-intimes="[^"]*"/g, '')
   .replace(/class="intimes iedit"/g, 'class="intimes"')
 
 describe('view-week markup parity with the reference', () => {

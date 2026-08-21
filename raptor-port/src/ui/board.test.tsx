@@ -1672,14 +1672,16 @@ describe('the board carries the week-only editable fields (14 Aug 26)', () => {
     const cell = $('#sbBoard .areacell[data-area]')
     expect(cell.textContent!.trim().length, 'the derived area code is shown').toBeGreaterThan(0)
   })
-  it('in-time edits commit through the funnel', async () => {
+  it('in-time edits commit through the funnel, one line at a time (21 Aug 26)', async () => {
     const it = $('#sbBoard .intimes[data-intimes]')
-    const [di, gi] = it.dataset.intimes!.split('|')
+    const line = it.querySelector('[data-itline]') as HTMLElement
+    expect(line, 'each line is its own editable span now').toBeTruthy()
+    const [di, gi] = line.dataset.itline!.split('|')
     const w = DAYS[+di].waves[+gi]
     const before = (w.intimes || []).join('|')
     await act(async () => {
-      it.querySelector('span')!.textContent = '0001H: TEST IN TIME'
-      it.dispatchEvent(new Event('focusout', { bubbles: true }))
+      line.textContent = '0001H: TEST IN TIME'
+      line.dispatchEvent(new Event('focusout', { bubbles: true }))
     })
     expect((w.intimes || []).join('|'), 'the model took the typed line').not.toBe(before)
     expect((w.intimes || [])[0]).toContain('TEST IN TIME')
