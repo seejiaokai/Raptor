@@ -12,7 +12,7 @@ import { draftSelect, draftVerLabel, loadVersionToWorkingCopy } from '../engine/
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
-import { notify } from '../state/store'
+import { notify, loadWeek } from '../state/store'
 import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
@@ -22,7 +22,7 @@ import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firs
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, draftsMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
-import { setCurWeek, isStandalone } from '../engine/waves'
+import { isStandalone } from '../engine/waves'
 import { WARN } from '../engine/validate'
 import { waveInTime } from '../engine/events'
 import { hhmm } from '../engine/time'
@@ -902,16 +902,18 @@ export function routeClick(e: MouseEvent) {
     e.stopPropagation(); return
   }
 
-  /* a week chip (the seg strips and the drawer share this) — the demo data is
-     the Jul 20 week regardless; the chips re-render for feedback and the
-     drawer closes, exactly as the reference's handler does */
+  /* a week chip (the seg strips and the drawer share this) — LOADS that week's
+     schedule now (Jul 13 seed / Jul 20 second week / a blank editable week for
+     the rest), resetting the per-week publish + history state so nothing bleeds
+     across weeks. loadWeek does the setCurWeek, model swap, revalidate and
+     notify; #dateVField is uncontrolled (Shell.tsx defaultValue) so its value is
+     set by hand. */
   const wk = t.closest('[data-wk]') as HTMLElement | null
   if (wk) {
-    view.DPREV.clear()   // day indices are only meaningful within the loaded week
-    setCurWeek(wk.dataset.wk)
+    loadWeek(wk.dataset.wk)
     const f = document.getElementById('dateVField') as HTMLInputElement | null
     if (f) f.value = wk.dataset.wk!
-    setDrawer(false); notify(); return
+    setDrawer(false); return
   }
 
   /* the Traffic button on a wave → the airspace popup */

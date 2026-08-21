@@ -318,7 +318,7 @@ export function inputFlags(inp:any){return !(inp.acc==='g'&&!inp.allday);}
 /* The `mod` stamps are spread either side of the demo week's input deadline on
    purpose (owner, 9 Aug 26 — see isLateInput below). At the standard 14 days
    the week of Mon 13 Jul is due by Mon 29 Jun, so this seed shows every case
-   a reader needs to see: comfortably early (pike, j_lee, vinci, bruise),
+   a reader needs to see: comfortably early (pike, taipan, vinci, bruise),
    exactly ON the deadline (bane — the deadline day itself is on time), just
    missed by a day (nasty), plainly late (shrek, yeti, and salsa's dental
    appointment booked after planning closed), and EXEMPT-though-latest-of-all
@@ -329,7 +329,7 @@ export let INPUTS:any[]=[
   {person:'divot', date:'Jul 13', allday:true,               type:'OML',         remarks:'Medical leave 13 Jul', mod:'2026-07-12'},
   {person:'bane',  date:'Jul 16', allday:false, s:1020,e:1110,type:'Appointment', remarks:'Medical / PHA', mod:'2026-06-29'},
   {person:'salsa', date:'Jul 14', allday:false, s:840, e:960, type:'Appointment', remarks:'Dental appt',  mod:'2026-07-09'},
-  {person:'j_lee', date:'Jul 15', allday:true,               type:'OL',          remarks:'Overseas — SG out',mod:'2026-06-22'},
+  {person:'taipan',date:'Jul 15', allday:true,               type:'OL',          remarks:'Overseas leave — off island',mod:'2026-06-22'},
   {person:'nasty', date:'Jul 14', allday:true,               type:'LL',          remarks:'Local leave',  mod:'2026-06-30'},
   {person:'shrek', date:'Jul 14', allday:true,               type:'OIL',         remarks:'OIL — CO approved, post-detachment',mod:'2026-07-02'},
   {person:'sufa',  date:'Jul 13', endDate:'Jul 17', allday:true, type:'ATT C',   remarks:'Medically down till 17 Jul', mod:'2026-07-12'},
@@ -339,6 +339,11 @@ export let INPUTS:any[]=[
   {person:'yeti',  date:'Jul 13', allday:false, s:600, e:660, type:'Appointment', remarks:'HSP blood panel',mod:'2026-07-06'},
 ];
 export const DATES=['Jul 13','Jul 14','Jul 15','Jul 16','Jul 17','Jul 18','Jul 19'];  // Mon..Sun index → date label
+/* the pristine week-1 inputs + date labels, captured here at module load —
+   before initStore mints iids or seeds demo SANS — so the week selector can
+   reload this week clean (state/store.ts:loadWeek → engine/weeks-data.ts). */
+export const WEEK1_INPUTS_SNAP=JSON.stringify(INPUTS);
+export const WEEK1_DATES=[...DATES];
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 /* THE YEAR THE UNLABELLED DATES BELONG TO (owner, 12 Aug 26 — leave that runs
    into the new year). The stored labels leave the LOADED week's year implicit

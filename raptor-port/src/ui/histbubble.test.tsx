@@ -134,7 +134,7 @@ describe('the bubble', () => {
     expect(b, 'a bubble appeared').toBeTruthy()
     /* the line it is in, the change itself, and who/when — the three rows */
     expect(b!.textContent).toContain('FCP')
-    expect(b!.textContent).toMatch(/Bane|Stiff/)
+    expect(b!.textContent).toMatch(/Ranger|Saber/)
     expect(b!.querySelector('.hb-who')!.textContent).toMatch(/\d\d:\d\d/)
   })
 

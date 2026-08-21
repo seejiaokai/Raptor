@@ -1051,8 +1051,8 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
        carry mv:g.0.4 — these are exactly the two rows the time sort swaps */
     const pairs = [...h.matchAll(/data-move="mv:g\.0\.(\d+)"[\s\S]*?data-bfld="gr:0\.\d+\.prog"[^>]*>\n([^<]*)/g)]
       .map(m => [+m[1], m[2]] as const)
-    expect(pairs.find(([, prog]) => prog === 'OPS/LOGS @ 149 SQN')?.[0]).toBe(5)
-    expect(pairs.find(([, prog]) => prog === 'HAM ENGAGEMENT @ AFTC')?.[0]).toBe(4)
+    expect(pairs.find(([, prog]) => prog === 'OPS/LOGS @ EXT SQN')?.[0]).toBe(5)
+    expect(pairs.find(([, prog]) => prog === 'TRAINING CMD VISIT')?.[0]).toBe(4)
   })
 
   it('the column headers gain a matching empty cell so the grid still lines up', () => {
@@ -1807,9 +1807,9 @@ describe('the OFT seat grid and its extras (14 Aug 26)', () => {
     await act(async () => { setSlotVal('s:0.oft.0.x1', ''); afterSchedMutate(); notify() })
     expect(DAYS[0].sims.oft[0].more || []).toEqual([])
   })
-  it('a who-text row (SIMS (149)) keeps its plain text, no seat grid', () => {
-    const who = $$('#sbBoard .sb-panel.simr .ppl .itxt').find(t => /149/.test(t.textContent!))
-    expect(who, 'the 149 slot still reads as text').toBeTruthy()
+  it('a who-text row (SIMS (EXT SQN)) keeps its plain text, no seat grid', () => {
+    const who = $$('#sbBoard .sb-panel.simr .ppl .itxt').find(t => /EXT SQN/.test(t.textContent!))
+    expect(who, 'the external-squadron slot still reads as text').toBeTruthy()
     expect(who!.closest('.fcprcp'), 'and is not forced into the seat grid').toBeFalsy()
   })
 })

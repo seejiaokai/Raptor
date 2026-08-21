@@ -49,14 +49,14 @@ describe('the dayKeys walker', () => {
   })
 
   /* CANONICAL person compare (owner, 16 Aug 26) — a seed/pre-fix row can hold a
-     person's id ('nact') where an app write stores his callsign ('Nact'); both
+     person's id ('nact') where an app write stores his callsign ('Warden'); both
      name the same man, and comparing them raw made a moved-and-restored person
      read as a permanent diff. P() folds both spellings to the id, so dayKeys
      emits one canonical value whichever form the model holds — but only for a
      value that actually resolves as a callsign; ordinary free text is untouched. */
   it('resolves a callsign to its id so both spellings compare equal; free text passes through untouched', () => {
     const dayId = { ground: [{ prog: 'DUTY', who: 'nact' }] }     // the issued/seed spelling
-    const dayCs = { ground: [{ prog: 'DUTY', who: 'Nact' }] }     // the app-write spelling
+    const dayCs = { ground: [{ prog: 'DUTY', who: 'Warden' }] }     // the app-write spelling
     const vId = dayKeys(dayId, 0).get('g:0.0')
     const vCs = dayKeys(dayCs, 0).get('g:0.0')
     expect(vId, 'the id form resolves to itself').toBe('nact')

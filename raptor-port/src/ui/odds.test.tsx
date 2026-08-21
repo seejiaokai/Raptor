@@ -6,9 +6,9 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
+import { initStore, setSession, notify, loadWeek } from '../state/store'
 import { DAYS } from '../engine/data'
-import { CURWEEK, setCurWeek, WEEKS } from '../engine/waves'
+import { CURWEEK, WEEKS } from '../engine/waves'
 import { SCHED } from '../engine/publish'
 import { USERS } from '../state/users'
 import { schedRows } from './export'
@@ -48,16 +48,21 @@ describe('the mobile drawer', () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
   })
 
-  it('a week chip re-labels the week and closes the drawer', async () => {
-    const other = WEEKS.find((w: any) => w.v !== CURWEEK)!
+  it('a week chip loads that week, re-labels and closes the drawer', async () => {
+    const day0 = DAYS[0].dt                                   // 'Jul 13' — the seed week
     await click($('#burger'))
-    await click($(`#drawerWeeks [data-wk="${other.v}"]`))
-    expect(CURWEEK === other.v || (await import('../engine/waves')).CURWEEK === other.v).toBe(true)
+    await click($(`#drawerWeeks [data-wk="20/07/2026"]`))
+    expect((await import('../engine/waves')).CURWEEK).toBe('20/07/2026')
     expect($('#drawer').classList.contains('open')).toBe(false)
-    expect(($('#dateVField') as HTMLInputElement).value).toBe(other.v)
+    expect(($('#dateVField') as HTMLInputElement).value).toBe('20/07/2026')
     /* every chip pair follows the choice */
-    expect($$(`[data-wk="${other.v}"]`).every(x => x.classList.contains('on'))).toBe(true)
-    setCurWeek('13/07/2026'); await act(async () => { notify() })
+    expect($$(`[data-wk="20/07/2026"]`).every(x => x.classList.contains('on'))).toBe(true)
+    /* the MODEL actually swapped, not just the label */
+    expect(DAYS[0].dt).toBe('Jul 20')
+    expect(DAYS[0].dt).not.toBe(day0)
+    /* restore the seed week for the rest of the suite */
+    await act(async () => { loadWeek('13/07/2026') })
+    expect(DAYS[0].dt).toBe('Jul 13')
   })
 
   it('a member drawer hides the Edit tab', async () => {

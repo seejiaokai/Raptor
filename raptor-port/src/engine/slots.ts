@@ -427,14 +427,18 @@ export function renameCallsign(id:any,next:any){
   const p=PEOPLE[id]; if(!p)return false;
   const cs=String(next==null?'':next).trim();
   if(!cs||cs===p.cs)return false;
-  /* two people sharing a callsign would make every stored `who` string
-     ambiguous — ID_BY_CS can only point one way */
-  const taken=ID_BY_CS[cs.toLowerCase()];
+  /* a name that already resolves to SOMEONE ELSE — by callsign OR by bare id
+     (nameToId is id-tolerant) — would make every stored `who` string
+     ambiguous; ID_BY_CS can only point one way */
+  const taken=nameToId(cs);
   if(taken&&taken!==id)return false;
   const oldK=String(p.cs||'').toLowerCase().trim();
+  /* rewrite every stored who that resolves to THIS person: the old-callsign
+     form AND the bare-id form the seed uses in ground/programme rows */
+  const hit=(v:any)=>{const t=String(v).toLowerCase().trim();return t===oldK||t===String(id).toLowerCase();};
   p.cs=cs;
   delete ID_BY_CS[oldK]; ID_BY_CS[cs.toLowerCase()]=id;
-  const sw=(v:any)=>(typeof v==='string'&&v.toLowerCase().trim()===oldK)?cs:v;
+  const sw=(v:any)=>(typeof v==='string'&&hit(v))?cs:v;
   const row=(r:any)=>{ if(r)r.who=Array.isArray(r.who)?r.who.map(sw):sw(r.who); };
   DAYS.forEach((d:any)=>{
     (d.ground||[]).forEach(row);

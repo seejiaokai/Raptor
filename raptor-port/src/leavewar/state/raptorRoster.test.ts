@@ -17,14 +17,14 @@ describe('projectPeople', () => {
   it('projects an FCP instructor as an instructor pilot', () => {
     // bane: FCP, CAT IP, SXO — the shape every seat/band/sxo fact rides on.
     expect(byId.get('bane')).toMatchObject({
-      callsign: 'Bane', seat: 'pilot', band: 'instructor', sxo: true,
+      callsign: 'Ranger', seat: 'pilot', band: 'instructor', sxo: true,
     })
   })
 
   it('projects an RCP non-instructor as an ops WSO', () => {
     // rocky: RCP, CAT C, no SXO.
     expect(byId.get('rocky')).toMatchObject({
-      callsign: 'Rocky', seat: 'wso', band: 'ops', sxo: false,
+      callsign: 'Hex', seat: 'wso', band: 'ops', sxo: false,
     })
   })
 

@@ -28,6 +28,17 @@ const renderStatus=()=>HOOKS.renderStatus();
                     dayCurVer(), which self-heals when the stamped version's
                     snapshot has gone (unpublishAL, undo past the issue).      */
 export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}};
+/* Reset ALL of SCHED in place. Every field is keyed by day INDEX (0..6), so
+   loading a different week without this would let one week's approvals, pending
+   edits, AL colouring and per-day drafts bleed onto the next week's identical
+   indices. In-place (not reassign) to match histApply's style and keep any held
+   reference valid. The ONE seam a future per-week publish store would hook into
+   (state/store.ts:loadWeek calls it). */
+export function resetSched(){
+  SCHED.al=0; SCHED.pending={}; SCHED.changes={}; SCHED.added={};
+  SCHED.als=[]; SCHED.dayOK={}; SCHED.sign={}; SCHED.orig={};
+  SCHED.cur={}; SCHED.drafts={}; SCHED.curDraft={};
+}
 export function dayApproved(di:any){return !!SCHED.dayOK[di];}
 export function approvedDays(){return DAYS.map((_:any,i:any)=>i).filter(dayApproved);}
 export function dowShort(di:any){return String((DAYS[di]||{}).dow||('day '+di)).slice(0,3);}

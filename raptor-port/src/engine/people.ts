@@ -1,6 +1,6 @@
 import { VCONF } from './rules'
 /* =====================================================================
-   142 SQN Flying Programme — prototype (single file, vanilla JS)
+   Squadron Flying Programme — prototype (single file, vanilla JS)
    Qual ladder: OCU → D → C → B → A → IW → IP → IR → FI
    CI ("C-cat instructor") was removed from the ladder (owner, Aug 5): every
    pilot who held it also carried the IP flag, so the instructor half was
@@ -33,69 +33,75 @@ export const isInstrPilot=(q:any)=>q==='IP'||q==='IR'||q==='FI';
 export const isOcu=(q:any)=>q==='OCU';
 export const QORDER:any={OCU:0,D:1,C:2,B:3,A:4,IW:5,IP:6,IR:7,FI:8};
 
-/* ---- people (real callsigns / quals from the LoX screenshots) ---- */
+/* ---- people ----
+   Demo roster. Every DISPLAY callsign here is FICTIONAL — invented for the
+   public demo so no real squadron callsign is shipped (owner, 21 Aug 26, the
+   sensitivity scrub). The lowercase ids are opaque internal keys, shown to
+   nobody; they are kept stable so the id-pinned tests and e2e selectors do not
+   move. `people.ts` is the single source of truth for the names — the parity
+   reference is renamed to match it by id in testing/refwin.ts:recs(). */
 /* seat: FCP=pilot RCP=wso · q=level · flight · sxo/opsSup extra quals · dt=downchit chip */
 export const PEOPLE:any={
   // ---- pilots (FCP) ----
-  bane:{cs:'Bane',seat:'FCP',q:'IP',sxo:true},
-  stiff:{cs:'Stiff',seat:'FCP',q:'IP',sxo:true},
-  slipway:{cs:'Slipway',seat:'FCP',q:'A',sxo:true},
-  dj:{cs:'DJ',seat:'FCP',q:'A'},
-  nact:{cs:'Nact',seat:'FCP',q:'IP',sxo:true},
-  prowler:{cs:'Prowler',seat:'FCP',q:'IP'},
-  pump:{cs:'Pump',seat:'FCP',q:'IP',sxo:true},
-  slash:{cs:'Slash',seat:'FCP',q:'IP'},
-  harpoon:{cs:'Harpoon',seat:'FCP',q:'IP'},
-  snap:{cs:'Snap',seat:'FCP',q:'IP',sxo:true},
-  taipan:{cs:'Taipan',seat:'FCP',q:'IP'},
-  mamba:{cs:'Mamba',seat:'FCP',q:'IP',sxo:true},
-  shaft:{cs:'Shaft',seat:'FCP',q:'IP',sxo:true},
-  chaps:{cs:'Chaps',seat:'FCP',q:'IP'},
-  boosh:{cs:'Boosh',seat:'FCP',q:'IP'},
-  beams:{cs:'Beams',seat:'FCP',q:'IP'},
-  dice:{cs:'Dice',seat:'FCP',q:'IR',sxo:true},
-  split:{cs:'Split',seat:'FCP',q:'IP'},
-  ignite:{cs:'Ignite',seat:'FCP',q:'C'},
-  bruise:{cs:'Bruise',seat:'FCP',q:'C'},
-  casper:{cs:'Casper',seat:'FCP',q:'C'},
-  razer:{cs:'Razer',seat:'FCP',q:'C',sxo:true},
-  vinci:{cs:'Vinci',seat:'FCP',q:'C'},
-  yeti:{cs:'Yeti',seat:'FCP',q:'C'},
-  pike:{cs:'Pike',seat:'FCP',q:'C'},
-  romeo:{cs:'Romeo',seat:'FCP',q:'B'},
-  salsa:{cs:'Salsa',seat:'FCP',q:'B'},
-  ipman:{cs:'Ipman',seat:'FCP',q:'B'},
-  fantom:{cs:'Fantom',seat:'FCP',q:'D'},
-  vegas:{cs:'Vegas',seat:'FCP',q:'D'},
-  krait:{cs:'Krait',seat:'FCP',q:'D'},
-  bapster:{cs:'Bapster',seat:'FCP',q:'OCU'},
-  haowen:{cs:'Hao Wen',seat:'FCP',q:'OCU'},
-  prism:{cs:'Prism',seat:'FCP',q:'OCU'},
+  bane:{cs:'Ranger',seat:'FCP',q:'IP',sxo:true},
+  stiff:{cs:'Saber',seat:'FCP',q:'IP',sxo:true},
+  slipway:{cs:'Drifter',seat:'FCP',q:'A',sxo:true},
+  dj:{cs:'Ace',seat:'FCP',q:'A'},
+  nact:{cs:'Warden',seat:'FCP',q:'IP',sxo:true},
+  prowler:{cs:'Hunter',seat:'FCP',q:'IP'},
+  pump:{cs:'Piston',seat:'FCP',q:'IP',sxo:true},
+  slash:{cs:'Blade',seat:'FCP',q:'IP'},
+  harpoon:{cs:'Trident',seat:'FCP',q:'IP'},
+  snap:{cs:'Cinch',seat:'FCP',q:'IP',sxo:true},
+  taipan:{cs:'Cobra',seat:'FCP',q:'IP'},
+  mamba:{cs:'Sidewinder',seat:'FCP',q:'IP',sxo:true},
+  shaft:{cs:'Anvil',seat:'FCP',q:'IP',sxo:true},
+  chaps:{cs:'Forge',seat:'FCP',q:'IP'},
+  boosh:{cs:'Havoc',seat:'FCP',q:'IP'},
+  beams:{cs:'Comet',seat:'FCP',q:'IP'},
+  dice:{cs:'Reaper',seat:'FCP',q:'IR',sxo:true},
+  split:{cs:'Vandal',seat:'FCP',q:'IP'},
+  ignite:{cs:'Torch',seat:'FCP',q:'C'},
+  bruise:{cs:'Gambit',seat:'FCP',q:'C'},
+  casper:{cs:'Outlaw',seat:'FCP',q:'C'},
+  razer:{cs:'Ridge',seat:'FCP',q:'C',sxo:true},
+  vinci:{cs:'Zenith',seat:'FCP',q:'C'},
+  yeti:{cs:'Bolt',seat:'FCP',q:'C'},
+  pike:{cs:'Nomad',seat:'FCP',q:'C'},
+  romeo:{cs:'Rebel',seat:'FCP',q:'B'},
+  salsa:{cs:'Saint',seat:'FCP',q:'B'},
+  ipman:{cs:'Jester',seat:'FCP',q:'B'},
+  fantom:{cs:'Diesel',seat:'FCP',q:'D'},
+  vegas:{cs:'Vapor',seat:'FCP',q:'D'},
+  krait:{cs:'Kraken',seat:'FCP',q:'D'},
+  bapster:{cs:'Wildcard',seat:'FCP',q:'OCU'},
+  haowen:{cs:'Talisman',seat:'FCP',q:'OCU'},
+  prism:{cs:'Recon',seat:'FCP',q:'OCU'},
   // ---- WSOs (RCP) ----
-  freak:{cs:'Freak',seat:'RCP',q:'IW',sxo:true},
-  wolf:{cs:'Wolf',seat:'RCP',q:'IW'},
-  dirty:{cs:'Dirty',seat:'RCP',q:'IW'},
-  stuff:{cs:'Stuff',seat:'RCP',q:'IW'},
-  glass:{cs:'Glass',seat:'RCP',q:'IW',sxo:true},
-  drill:{cs:'Drill',seat:'RCP',q:'IW'},
-  nasty:{cs:'Nasty',seat:'RCP',q:'IW'},
-  pain:{cs:'Pain',seat:'RCP',q:'B'},
-  ammo:{cs:'Ammo',seat:'RCP',q:'B'},
-  rocky:{cs:'Rocky',seat:'RCP',q:'C'},
-  divot:{cs:'Divot',seat:'RCP',q:'C'},
-  spaceman:{cs:'Spaceman',seat:'RCP',q:'C'},
-  riddler:{cs:'Riddler',seat:'RCP',q:'C'},
-  shrek:{cs:'Shrek',seat:'RCP',q:'C'},
-  xray:{cs:'X-Ray',seat:'RCP',q:'C'},
-  psy:{cs:'Psy',seat:'RCP',q:'C'},
-  plasma:{cs:'Plasma',seat:'RCP',q:'C'},
-  sufa:{cs:'Sufa',seat:'RCP',q:'C'},
-  cards:{cs:'Cards',seat:'RCP',q:'A'},
-  wrangler:{cs:'Wrangler',seat:'RCP',q:'D'},
-  badger:{cs:'Badger',seat:'RCP',q:'D'},
-  waldo:{cs:'Waldo',seat:'RCP',q:'D'},
-  nick:{cs:'Nick',seat:'RCP',q:'OCU'},
-  bullet:{cs:'Bullet',seat:'RCP',q:'OCU'},
+  freak:{cs:'Echo',seat:'RCP',q:'IW',sxo:true},
+  wolf:{cs:'Static',seat:'RCP',q:'IW'},
+  dirty:{cs:'Relay',seat:'RCP',q:'IW'},
+  stuff:{cs:'Scope',seat:'RCP',q:'IW'},
+  glass:{cs:'Basher',seat:'RCP',q:'IW',sxo:true},
+  drill:{cs:'Ledger',seat:'RCP',q:'IW'},
+  nasty:{cs:'Quill',seat:'RCP',q:'IW'},
+  pain:{cs:'Rune',seat:'RCP',q:'B'},
+  ammo:{cs:'Cinder',seat:'RCP',q:'B'},
+  rocky:{cs:'Hex',seat:'RCP',q:'C'},
+  divot:{cs:'Vector',seat:'RCP',q:'C'},
+  spaceman:{cs:'Dash',seat:'RCP',q:'C'},
+  riddler:{cs:'Ghost',seat:'RCP',q:'C'},
+  shrek:{cs:'Wisp',seat:'RCP',q:'C'},
+  xray:{cs:'Ryder',seat:'RCP',q:'C'},
+  psy:{cs:'Cutter',seat:'RCP',q:'C'},
+  plasma:{cs:'Fable',seat:'RCP',q:'C'},
+  sufa:{cs:'Grit',seat:'RCP',q:'C'},
+  cards:{cs:'Marlin',seat:'RCP',q:'A'},
+  wrangler:{cs:'Otter',seat:'RCP',q:'D'},
+  badger:{cs:'Pixel',seat:'RCP',q:'D'},
+  waldo:{cs:'Scribe',seat:'RCP',q:'D'},
+  nick:{cs:'Tally',seat:'RCP',q:'OCU'},
+  bullet:{cs:'Zulu',seat:'RCP',q:'OCU'},
   /* ---- personnel (ground crew, non-flying) ----
      Squadron ground crew who hold no flying qualification. `pers:true` is the
      semantic flag every personnel branch reads; `seat:'GND'` (a third seat
@@ -110,9 +116,9 @@ export const PEOPLE:any={
      They are roster entries only — never placed in the seed schedule — so none
      of this fires on the reference's seed week. See docs/engine-rules.md
      §Personnel. */
-  torque:{cs:'Torque',seat:'GND',pers:true,q:'',initials:'TRQ',flight:'Maint',remarks:''},
-  spanner:{cs:'Spanner',seat:'GND',pers:true,q:'',initials:'SPN',flight:'Maint',remarks:''},
-  gizmo:{cs:'Gizmo',seat:'GND',pers:true,q:'',initials:'GZM',flight:'Line',remarks:''},
+  torque:{cs:'Ratchet',seat:'GND',pers:true,q:'',initials:'RCH',flight:'Maint',remarks:''},
+  spanner:{cs:'Cotter',seat:'GND',pers:true,q:'',initials:'CTR',flight:'Maint',remarks:''},
+  gizmo:{cs:'Widget',seat:'GND',pers:true,q:'',initials:'WGT',flight:'Line',remarks:''},
   /* ---- sentinel bodies: not real aircrew. `special` keeps them out of every
      validation / availability path; `archived` keeps them out of every roster
      column, quals table and view-as list. They still resolve through PEOPLE[id]
@@ -238,7 +244,12 @@ export function isSpecial(id:any){return !!(PEOPLE[id]&&PEOPLE[id].special);}
 export function isPersonnel(id:any){return !!(PEOPLE[id]&&PEOPLE[id].pers);}
 export function realP(id:any){const p=PEOPLE[id];return (p&&!p.special)?p:null;}
 export const SPECIALS=Object.keys(PEOPLE).filter((id:any)=>PEOPLE[id].special);
-export function nameToId(nm:any){return ID_BY_CS[(nm||'').toLowerCase().trim()];}
+/* Resolve a who-string to a person id. A callsign wins (ID_BY_CS); failing that
+   a value that is ALREADY an id resolves to itself — the seed stores lowercase
+   ids in ground/programme `who` fields (they used to double as the callsign
+   lowercased, until the callsigns were rewritten for the demo scrub, 21 Aug 26),
+   and so do several tests. Id-tolerance keeps every one of those resolving. */
+export function nameToId(nm:any){const k=(nm||'').toLowerCase().trim();return ID_BY_CS[k]||(PEOPLE[nm]?nm:(PEOPLE[k]?k:undefined));}
 /* ---------------------------------------------------------------------------
    AAR from the remarks
    A line's remarks say whether it is refuelling. Remarks are written in seat

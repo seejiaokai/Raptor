@@ -407,11 +407,11 @@ describe('editing a callsign', () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'quals')!)
     if (!$('#qtbl input.qcs')) await click($('#qEdit'))
     const box2 = $('#qtbl input.qcs[data-cs="bane"]') as HTMLInputElement
-    await commit(box2, 'Snap')
+    await commit(box2, 'Cinch')                    // a callsign another person already holds
     expect(PEOPLE.bane.cs).toBe('Banzai')
 
-    await commit($('#qtbl input.qcs[data-cs="bane"]') as HTMLInputElement, 'Bane')
-    expect(PEOPLE.bane.cs).toBe('Bane')
+    await commit($('#qtbl input.qcs[data-cs="bane"]') as HTMLInputElement, 'Ranger')
+    expect(PEOPLE.bane.cs).toBe('Ranger')
   })
 })
 
@@ -688,9 +688,9 @@ describe('the View chips', () => {
     await click($('#qViewG')); const pers = callsigns().length
     await click($('#qViewA'))
     expect(callsigns().length).toBe(pilots + wsos + pers)
-    expect(callsigns()).toContain('Bane')      // a pilot
-    expect(callsigns()).toContain('Freak')     // a WSO
-    expect(callsigns()).toContain('Torque')    // ground crew
+    expect(callsigns()).toContain('Ranger')      // a pilot
+    expect(callsigns()).toContain('Echo')     // a WSO
+    expect(callsigns()).toContain('Ratchet')    // ground crew
     expect($('#qtbl tbody tr.grp').textContent).toContain('Assigned aircrew')
     expect($('#qViewA').className).toContain('on')
   })
@@ -700,9 +700,9 @@ describe('the View chips', () => {
      Remarks cell they can edit. */
   it('the Personnel view shows only ground crew, with no CAT or quals', async () => {
     await click($('#qViewG'))
-    expect(callsigns()).toContain('Torque')
-    expect(callsigns()).not.toContain('Bane')   // no pilots
-    expect(callsigns()).not.toContain('Freak')  // no WSOs
+    expect(callsigns()).toContain('Ratchet')
+    expect(callsigns()).not.toContain('Ranger')   // no pilots
+    expect(callsigns()).not.toContain('Echo')  // no WSOs
     expect($('#qtbl tbody tr.grp').textContent).toContain('Personnel (ground crew)')
     /* a personnel row carries no CAT chip and no qualification ticks */
     const row = $('#qtbl tbody tr.persrow')!
@@ -713,10 +713,10 @@ describe('the View chips', () => {
 
   it('and the seat views still show only their own seat', async () => {
     await click($('#qViewP'))
-    expect(callsigns()).not.toContain('Freak')
+    expect(callsigns()).not.toContain('Echo')
     expect($('#qtbl tbody tr.grp').textContent).toContain('Assigned pilots')
     await click($('#qViewW'))
-    expect(callsigns()).not.toContain('Bane')
+    expect(callsigns()).not.toContain('Ranger')
     expect($('#qtbl tbody tr.grp').textContent).toContain('Assigned WSOs')
     await click($('#qViewP'))
   })

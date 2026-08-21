@@ -16,11 +16,14 @@ import { HOOKS } from '../engine/hooks'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { rulesLoad } from '../engine/rules'
-import { mintInpIds } from '../engine/inputs'
+import { mintInpIds, INPUTS, DATES } from '../engine/inputs'
+import { DAYS } from '../engine/data'
+import { setCurWeek } from '../engine/waves'
+import { weekBundle } from '../engine/weeks-data'
 import { seedDemoSans } from './demoseed'
 import { storesLoad, dutyTplLoad, dayTplLoad } from '../engine'
 import { elogClear } from '../engine/editlog'
-import { markDeletion } from '../engine/publish'
+import { markDeletion, resetSched } from '../engine/publish'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit } from './history'
@@ -137,6 +140,43 @@ export function resetSession(s: any) {
      than as leftovers. Clearing is the honest half-measure while the app
      has no server to keep a real per-person record. */
   elogClear()
+}
+
+/* ---- LOAD A WEEK (the .wk selector) ----
+   Swap the whole loaded week — the schedule model AND everything keyed to it —
+   then recompute and repaint. DAYS/DATES/INPUTS are all week-scoped and mutate
+   IN PLACE (they are live bindings every reader holds; the same idiom histApply
+   uses). resetSched() closes the day-index leak (one week's approvals/AL/pending
+   must not paint another's identical indices); histInit() re-baselines so Undo
+   cannot cross weeks; the view-state clears drop any pointer into a row that no
+   longer exists (armed slot, selection, board day, per-day panels, dropped-late
+   iids). Session, page and role are deliberately untouched — this is a data
+   swap, not a login. Nothing here runs at module load, so DAYS still initialises
+   to the seed week and the parity/e2e "seven days" pins stay exact until a user
+   actually clicks a chip. */
+export function loadWeek(v: any) {
+  setCurWeek(v)
+  const wk = weekBundle(v)
+  DAYS.length = 0; wk.days.forEach((d: any) => DAYS.push(d))
+  DATES.length = 0; wk.dates.forEach((x: any) => DATES.push(x))
+  INPUTS.length = 0; wk.inputs.forEach((r: any) => INPUTS.push(r))
+  if (wk.seedSans) seedDemoSans()
+  mintInpIds()
+  resetSched()
+  view.setBoardDay(null)      // closes the phone board and disarms
+  view.armDrop()
+  view.selDrop()
+  view.clearOtherHL()
+  view.DPREV.clear()
+  view.VWORK.clear()
+  view.AVOPEN.clear()
+  view.setCarryDay(null)
+  view.setHistMode(false)
+  view.setRosDay(0)
+  view.LATEOFF.clear()
+  validate()
+  histInit()                  // new baseline for this week — Undo starts here
+  notify()
 }
 
 /* ---- wiring ---- */

@@ -24,9 +24,10 @@ import { readFileSync } from 'node:fs'
 import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
 import { DAYS } from '../engine/data'
+import { PEOPLE } from '../engine/people'
 
 export async function refWindow(): Promise<any> {
-  const html = relabel(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(redt(readFileSync('reference/scheduler.html', 'utf8'))))))))))))))))
+  const html = relabel(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(redt(renm(readFileSync('reference/scheduler.html', 'utf8')))))))))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -36,8 +37,61 @@ export async function refWindow(): Promise<any> {
   await new Promise(r => setTimeout(r, 300))
   syncInputs(w)
   reduty(w)
+  recs(w)
+  reground(w)
   w.eval('validate()')
   return w
+}
+
+/* THE SENSITIVITY SCRUB, mirrored (owner, 21 Aug 26). The port's demo roster
+   and its ground/meeting labels were rewritten to fictional handles and generic
+   titles so no real callsign or unit name ships in the public demo. The
+   reference file is read-only and still carries the originals, so — exactly as
+   syncInputs/reduty do for their divergences — the in-memory reference is
+   renamed to MATCH THE PORT before either engine runs, keeping every
+   byte-comparison (WARN messages, dayHTML markup, seed-DAYS deep-equal) exact.
+   The port is the single source of truth: recs copies PEOPLE[*].cs BY ID and
+   reground copies the day labels BY POSITION, so no original name is ever
+   written into this file. A pure data rename — no rule behaviour moves. */
+/* nameToId is id-tolerant in the port (people.ts): a who-string that is already
+   a person id resolves to itself. The seed stores lowercase ids in ground and
+   programme `who` fields — they used to double as the callsign lowercased, so
+   the reference's callsign-only lookup resolved them, until recs (below)
+   rewrites the callsigns. Teach the reference's copy the same fallback so both
+   engines resolve those who-strings identically, exactly as the ORIGINAL
+   callsigns did — a pure resolution parity, no rule moves. */
+function renm(html: string): string {
+  const from = 'function nameToId(nm){return ID_BY_CS[(nm||\'\').toLowerCase().trim()];}'
+  const to = 'function nameToId(nm){const k=(nm||\'\').toLowerCase().trim();return ID_BY_CS[k]||(PEOPLE[nm]?nm:(PEOPLE[k]?k:undefined));}'
+  const n = html.split(from).length - 1
+  if (n !== 1) throw new Error(`refwin renm: expected exactly 1 match, got ${n}`)
+  return html.split(from).join(to)
+}
+
+export function recs(w: any) {
+  const map: any = {}
+  Object.keys(PEOPLE).forEach((id: any) => { map[id] = PEOPLE[id].cs })
+  w.eval('(function(m){for(const k in m){if(PEOPLE[k])PEOPLE[k].cs=m[k];}'
+    + 'if(typeof ID_BY_CS!=="undefined"&&ID_BY_CS){for(const k in ID_BY_CS)delete ID_BY_CS[k];'
+    + 'for(const id in PEOPLE)ID_BY_CS[PEOPLE[id].cs.toLowerCase()]=id;}})('
+    + JSON.stringify(map) + ')')
+}
+
+/* The ground/all-hands/sim labels the port genericised, pushed onto the
+   reference's own DAYS by index (only the first REFN days are compared). Copies
+   the exact fields the scrub touched — allhands/ground `prog`, ground/sim `who`,
+   sim `label`/`rmks` — leaving times, ids and structure untouched (they were
+   already identical, which is why parity passed before). */
+export function reground(w: any) {
+  const refn = w.eval('DAYS.length')
+  DAYS.slice(0, refn).forEach((d: any, i: number) => {
+    const p = JSON.stringify({ allhands: d.allhands || [], ground: d.ground || [], sims: d.sims || { amt: [], oft: [] } })
+    w.eval(`(function(p){const D=DAYS[${i}];`
+      + `if(D.allhands)D.allhands.forEach((r,j)=>{if(p.allhands[j]!=null)r.prog=p.allhands[j].prog;});`
+      + `if(D.ground)D.ground.forEach((r,j)=>{if(p.ground[j]!=null){r.prog=p.ground[j].prog;r.who=p.ground[j].who;}});`
+      + `['amt','oft'].forEach(k=>{if(D.sims&&D.sims[k])D.sims[k].forEach((r,j)=>{const s=(p.sims[k]||[])[j];if(s!=null){r.label=s.label;if('who' in s)r.who=s.who;if('rmks' in s)r.rmks=s.rmks;}});});`
+      + `})(${p})`)
+  })
 }
 
 /* `w.INPUTS = [...]` does NOT work. The reference declares `let INPUTS` at the

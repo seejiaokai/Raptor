@@ -97,36 +97,36 @@ describe('the log moves with a renumbering delete (fixed 12 Aug 26)', () => {
     await click($(`#sbBoard [data-drdel="0.0.${B}"]`))
 
     /* the board is truthful: the edited man now sits at B, and the old
-       address B+1 is the bottom row, which nobody edited to say Bane */
+       address B+1 is the bottom row, which nobody edited to say Ranger */
     expect(slotVal(`d:0.0.${B}`)).toBe('bane')
     expect(slotVal(`d:0.0.${B + 1}`)).toBe('wolf')
 
     await openList()
-    /* both edits slid down one with their rows: Bane's B+1 → B, and the
+    /* both edits slid down one with their rows: Ranger's B+1 → B, and the
        bottom row's own Wolf edit B+2 → B+1 — so the address B+1 now
-       answers for WOLF's history, not Bane's */
+       answers for WOLF's history, not Ranger's */
     const wolfRow = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === `d:0.0.${B + 1}`)
-    expect(wolfRow && wolfRow.textContent, 'the old address now carries the edit that truly lives there').toContain('Wolf')
-    const row = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === `d:0.0.${B}` && (r.textContent || '').includes('Bane'))
-    expect(row, 'and Bane’s log row moved down with his row').toBeTruthy()
+    expect(wolfRow && wolfRow.textContent, 'the old address now carries the edit that truly lives there').toContain('Static')
+    const row = $$('#histBody .hl-row.hit').find(r => r.dataset.hkey === `d:0.0.${B}` && (r.textContent || '').includes('Ranger'))
+    expect(row, 'and Ranger’s log row moved down with his row').toBeTruthy()
 
     const said = await saidWhile(async () => { await click(row!); await settle() })
 
     expect(said.length, 'nothing to warn about').toBe(0)
     expect(bub(), 'the bubble came up').toBeTruthy()
     expect(histBubPinned()).toBe(true)
-    expect(bub()!.textContent).toContain('Bane')
+    expect(bub()!.textContent).toContain('Ranger')
     const anchored = $(`#sbBoard [data-slot="d:0.0.${B}"]`)
-    expect(anchored.textContent, 'and it hangs on the row that really says Bane').toContain('Bane')
+    expect(anchored.textContent, 'and it hangs on the row that really says Ranger').toContain('Ranger')
 
     /* and the flip side holds too: the bottom row answers with its OWN
-       story (Wolf), never Bane's */
+       story (Wolf), never Ranger's */
     hideHistBub()
     await act(async () => { view.setHistMode(true); notify() })
     await hover($(`#sbBoard [data-slot="d:0.0.${B + 1}"]`))
     expect(bub(), 'the bottom row still answers').toBeTruthy()
-    expect(bub()!.textContent).toContain('Wolf')
-    expect(bub()!.textContent).not.toContain('Bane')
+    expect(bub()!.textContent).toContain('Static')
+    expect(bub()!.textContent).not.toContain('Ranger')
     hideHistBub()
 
     /* net zero on the demo data — highest first, as the board itself does */

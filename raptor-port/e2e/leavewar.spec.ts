@@ -914,7 +914,7 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   expect(bg).not.toBe(other)
 
   await page.locator('[data-testid="counter-pick"]').click()
-  await expect(page.locator('[data-testid="counter-sheet"]')).toContainText('your numbers — Bane')
+  await expect(page.locator('[data-testid="counter-sheet"]')).toContainText('your numbers — Ranger')
   await expect(page.locator('[data-testid="counter-lvebal"]')).toContainText('yours')
   await page.locator('[data-testid="counter-cancel"]').click()
 

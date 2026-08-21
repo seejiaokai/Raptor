@@ -44,7 +44,7 @@ describe('renumbering and the log (delete)', () => {
     )
     try {
       setSlotVal(`d:0.0.${B + 1}`, 'bane')          // logged: — → Bane at address B+1
-      expect(elogFor(`d:0.0.${B + 1}`)!.to).toBe('Bane')
+      expect(elogFor(`d:0.0.${B + 1}`)!.to).toBe('Ranger')
 
       /* exactly what board.ts's [data-drdel] branch does */
       rows.splice(B, 1)
@@ -60,7 +60,7 @@ describe('renumbering and the log (delete)', () => {
          holds the edit owns its history, the untouched neighbour has none */
       const moved = elogFor(`d:0.0.${B}`)
       expect(moved, 'the edited row owns its history').toBeTruthy()
-      expect(moved!.to).toBe('Bane')
+      expect(moved!.to).toBe('Ranger')
       expect(elogFor(`d:0.0.${B + 1}`), 'the untouched neighbour wears nothing').toBeNull()
       expect(slotVal(`d:0.0.${B + 1}`)).toBe('')
     } finally {
@@ -87,7 +87,7 @@ describe('renumbering and the log (reorder)', () => {
       /* … and so did the log (elogRemap rides the same permutation) */
       const moved = elogFor(`d:0.0.${B + 1}`)
       expect(moved, 'his history moved with him').toBeTruthy()
-      expect(moved!.to).toBe('Bane')
+      expect(moved!.to).toBe('Ranger')
       expect(elogFor(`d:0.0.${B}`), 'nothing left at the old address').toBeNull()
       expect(slotVal(`d:0.0.${B}`)).toBe('')
     } finally {

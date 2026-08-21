@@ -141,9 +141,29 @@ through `daySnapOf`/`withDaySnap`, never a second path. The view page's
 issued DEFAULT for a published day (`dayIssuedHTML`, 15 Aug 26) is the same
 freeze again in quiet mode — one more consumer, still no second path.
 
+### Flow E — load a week (the .wk selector, 21 Aug 26)
+```
+click a week chip  → interactions.ts handler → store.ts:loadWeek(v)
+loadWeek           → setCurWeek(v) → weekBundle(v) (engine/weeks-data.ts, a fresh deep copy)
+                   → swap DAYS / DATES / INPUTS IN PLACE (all week-scoped, all live bindings)
+                   → seedDemoSans() if week 1 → mintInpIds() → resetSched() (publish.ts)
+                   → clear day-index/iid VIEW state → validate() → histInit() → notify()
+```
+The whole loaded week travels together: `DATES` and `INPUTS` are week-scoped and
+swap with `DAYS`, or personal inputs land on the wrong day. `SCHED` is keyed by
+day INDEX, so `resetSched()` is what stops one week's approvals/AL bleeding onto
+another's identical indices; history re-baselines so Undo can't cross a week.
+Session/page/role are untouched — this is a data swap, not a login. Nothing runs
+at module load, so `DAYS` still initialises to the seed week (parity/e2e's
+"seven days" hold until a user clicks a chip). Per-week publish state is NOT
+persisted — the persistent multi-week end-state is server work, and `resetSched`
++ the `weekBundle` registry are its hook points.
+
 **Every flow ends by repainting through `notify()` (or the board lane).** State
 that lives outside the funnel + `HOOKS.storeBackend` is invisible to undo, AL
 and re-validation — do not add any.
+
+**A who-string resolves by callsign OR bare id (`engine/people.ts:nameToId`, id-tolerant since the 21 Aug scrub).** The seed stores lowercase person ids in ground/programme `who` fields; they used to double as the callsign lowercased, until the demo callsigns were rewritten to fiction. `nameToId` now falls back to a value that is already a person id, so those rows keep resolving — and `slots.ts:renameCallsign` rewrites `who` by that same resolution (old-callsign form AND bare-id form), not by string match. A change to the who-storage convention or to `nameToId` is a drift-seam against `renameCallsign` and the parity reference (`testing/refwin.ts:renm`/`recs` mirror both).
 
 ---
 
