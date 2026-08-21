@@ -24,13 +24,14 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the per-input LATE dismissal, 21 Aug 26 —
-all six gates watched this session; it sits on the frozen-column vertical
-alignment fix and the 20 Aug evening batch below):
+**Last recorded green baseline** (the Inputs-page date standardisation,
+21 Aug 26 — all six gates watched this session; it sits on the per-input LATE
+dismissal, the frozen-column vertical alignment fix and the 20 Aug evening
+batch below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2701 across 147 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2706 across 148 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -46,13 +47,16 @@ hours), and the two repaired topbar-pill assertions replaced in place → 2701 /
 147; +1 e2e for the Insights bars → 305. The two repaired Leave War
 month-navigation tests were already counted.
 
+The Inputs-page date standardisation added `inputsfmt.test.tsx` (+5 tests,
++1 file → 2706 / 148); it is display-only and changed no DOM count or e2e (the
+Inputs cards are not in the perf or geometry gates), so e2e stays 305 / 12. A
+handful of existing tests moved from month-first to day-first assertions in
+place (`inputs.test.tsx`, `audit-e-window-sort.test.tsx`), no count change.
+
 DOM measures at that baseline: week **3743** under a 4000 ceiling, board
-**853** under 960 (unchanged from the previous 850 but for the LATE control:
-the global header button and its two label spans came OFF, and a `.itemcell`
-wrapper + a `.latechip` went onto each of the demo day's three late input rows
-— net +3 nodes). Test counts are unmoved (`latemark.test.tsx` stays 8 tests,
-no file added or removed), so the reconciliation above still holds at
-2701 / 147 / 305. The Leave War year matrix (~28k nodes) is outside the perf
+**853** under 960 (the per-input LATE control: the global header button and its
+two label spans came OFF, and a `.itemcell` wrapper + a `.latechip` went onto
+each of the demo day's three late input rows — net +3 over the earlier 850). The Leave War year matrix (~28k nodes) is outside the perf
 gate — it has its own e2e DOM band (29000), measured-first.
 
 **How the gates lie — the durable traps, worth more than any count:**
@@ -1750,8 +1754,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `DutyTplModal.tsx` | The **duty-template editor** (13 Aug 26) — opened from the `+ Block` picker's pencil (`TPLEDIT` in `pops.ts`). Tabs per template + New, an editable title, rows with role (a `DUTY_PICK` datalist) / start / end / ▲▼ reorder / delete, + Add role, and Reset / Delete / Done. Mirrors `UserModal`; drives `engine/dutytpl.ts` and persists on every edit. |
 | `DayTplModal.tsx` | The **day-template library editor** (15 Aug 26) — opened from the Templates picker's pencil, on either surface (`DAYTPLEDIT` in `pops.ts`, a `false\|true\|string` open-pre-selected flag). Tabs per template, an editable title, a read-only structure summary; deliberately no row editor (a day template's content is edited on the board/week themselves, which already own that surface) and no "+ New" (a template is always recaptured off a real day, never started blank). Reset / Delete / Done, all toasting. |
 | `DraftsModal.tsx` | The **drafts manager** (15 Aug 26) — opened from the Drafts picker's pencils (`DRAFTSEDIT` in `pops.ts`, carrying the day since drafts are per-day), scoped to the one day whose menu opened it. Tabs per draft (selected one marked ●), a name field that commits on blur/Enter (`draftRename` refuses empty/duplicate names, and refusing mid-keystroke would fight the typist), Select (make it live) / Delete (disabled on the selected entry, with a title saying why) / Done. |
-| `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Contract: `docs/ui-contracts.md` §The Inputs table's view state. |
-| `inputedit.tsx` | Editing ONE personal input AND adding one, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, **`normalizeInputDraft`** (every input write's shared refusals+derivations, extracted so add and edit cannot drift), `commitInputEdit` (including the accepted-row relink), **`commitNewInput`** (the board's + Add — unshifts a new row through the one funnel, Aug 26), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule), `firstPersonalType`/`firstUnavailType` (the panel defaults the board's + Add seeds), and `InputEditor` itself (an `_new` seed row opens it in add mode). Three editors over one list is how they drift apart. |
+| `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Its dates read **day-first** and Last-modified reads **day month year** (21 Aug 26, `fmtDay`/`fmtDMY` in `inputedit.tsx`; a same-day timed span sits in one cell, the `✎ ✕` actions are pinned so every card is one compact shape). Contracts: `docs/ui-contracts.md` §The Inputs table's view state, §The Inputs page speaks one day-first date voice. |
+| `inputedit.tsx` | Editing ONE personal input AND adding one, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, **`normalizeInputDraft`** (every input write's shared refusals+derivations, extracted so add and edit cannot drift), `commitInputEdit` (including the accepted-row relink), **`commitNewInput`** (the board's + Add — unshifts a new row through the one funnel, Aug 26), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule), `firstPersonalType`/`firstUnavailType` (the panel defaults the board's + Add seeds), `InputEditor` itself (an `_new` seed row opens it in add mode), and the Inputs-page date display helpers **`fmtDay`** (ISO → day-first '13 Jul') and **`fmtDMY`** (ISO → '6 Jul 26'; `fmt`/`unfmt` still round-trip the stored month-first labels — these are display only). Three editors over one list is how they drift apart. |
 | `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
 | `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer, login. |
 | `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. |
@@ -1807,6 +1811,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/leavewar/ui/monthstrip.test.tsx` | The month readout (extended 20 Aug 26). Its `layoutYear` helper now simulates a scroll the way a BROWSER does — the columns hold still and `scrollLeft` moves over them — because the readout reads cached content-space geometry instead of re-measuring every rectangle on every scroll event. A test that leaves `scrollLeft` at zero is testing a scroll that never happened. Also pins that an unrelated re-render does not blank the highlight, with a note on what that test does NOT catch. |
 | `src/leavewar/ui/frozencols.test.tsx` | The frozen roster columns drawn once (20 Aug 26, 5 tests). On a phone the callsign/counter columns are a `.mxband` overlay drawn OUTSIDE the sideways scroller instead of `position: sticky` on every row (see the frozen-columns block in HANDOFF's Leave War narrative). jsdom has no layout, so this pins the WIRING: the overlay exists on a phone (`matchMedia` stubbed) and not on a desktop, it lists the SAME people in the SAME order as the grid, it is `aria-hidden` with its buttons out of the tab order while the real cells keep the testids, its copy of a callsign still opens the person sheet, and every overlay row's `data-band-key` addresses exactly one real row (the address book `syncBandHeights` looks the measured heights up in — a key resolving to nothing would make the height pin a silent no-op). Alignment, staying put, and the pointer-events handoff are measured in `e2e/leavewar.spec.ts` (lw-phone), where the alignment walk covers EVERY row, not a sample. |
 | `src/ui/latemark.test.tsx` | The per-input LATE dismissal (21 Aug 26, 8 tests — replaced the 20 Aug global switch) — a live board input row carries a clickable `data-lateoff` chip and the old header switch is gone, the chip is solid while shown and a pressed ghost once dropped, dropping ONE clears only that input's badge while its chip stays as the way back, the WEEK goes with it (one `lateShown` read, every read surface), the ENGINE is untouched (`isLateInput` still answers true while `lateTag` prints nothing — which is what keeps the Inputs page's own mark honest), a member is refused at `routeClick` even with a hand-made chip, and a session change brings every dropped mark back. |
+| `src/ui/inputsfmt.test.tsx` | The Inputs page's day-first date voice (21 Aug 26, 5 tests) — `fmtDay` (day-first, this-year's-year implicit) and `fmtDMY` ('6 Jul 26', 'now'/blank pass through), and a rendered row of each shape: a same-day timed input carries '14 Jul 10:00–11:00' in Start with an empty `data-same` End, an all-day one-day reads just '14 Jul', a span keeps both cells, and Last-modified reads the day-month-year stamp. The pinned-actions layout is eye-verified (jsdom is 0×0). |
 | `src/ui/boardwrap.test.tsx` | The board's text boxes wrap and grow (20 Aug 26, 8 tests) — every remarks box and every name/role box is a `<textarea>`, every TIME cell is still an `<input>` (the deliberate exclusion, pinned so a later pass does not "finish the job"), a value round-trips through textarea content unchanged (the leading-newline trick), and Enter still COMMITS while Shift+Enter is left alone and Escape restores. jsdom reports every rect 0×0, so the box actually GROWING — and a long unbroken word breaking rather than overflowing — is measured in `e2e/geometry.spec.ts` instead. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |

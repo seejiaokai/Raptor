@@ -178,6 +178,43 @@ Owner, Aug 5. Three things, all view-only — none of them touches the model:
   even when the window or sort would drop it, so an open editor cannot vanish
   mid-edit.
 
+## The Inputs page speaks one day-first date voice (owner, 21 Aug 26)
+
+"Standardise the way the inputs are shown … change the modified date to show
+day month year." The page reads dates DAY-FIRST everywhere now, and every row
+card is the same compact shape.
+
+- **Two display helpers, in `ui/inputedit.tsx`.** `fmtDay(iso)` → a day-first
+  label ('2026-07-13' → '13 Jul'), this year's year left implicit and any other
+  kept ('2027-01-03' → '3 Jan 2027'), the same rule `fmt` follows. `fmtDMY(iso)`
+  → the Last-modified stamp, day-month-two-digit-year ('2026-07-06' → '6 Jul
+  26'), matching the app's own week voice ('13 Jul 26'); `'now'` (this session's
+  edits) and a blank pass through. **Display only** — the model still stores the
+  month-first `'Jul 13'` labels `fmt`/`unfmt` round-trip, so `unfmt`, the stored
+  `date`/`endDate`, dateOrd and inputCoversDate are all untouched. The one
+  storage caller (`fmt(start)` when Add writes a row) is deliberately left
+  month-first.
+- **The row's date/time is de-duplicated.** A same-day TIMED input carries its
+  whole span in the Start cell — '13 Jul 10:00–11:00' — and an EMPTY End the
+  card hides (the `data-same` marker now fires on an empty End, not a repeated
+  one), so the date reads once. An all-day one-day input reads just '13 Jul'; a
+  span (all-day range, or a timed input crossing midnight) keeps Start and End
+  as two cells joined by the '→', and the desktop table's two columns with it.
+- **The row actions are PINNED top-right.** On a phone the `✎ ✕` pair is
+  `position:absolute` in the card's corner with an 88px right reserve, so a long
+  timed date can no longer shove them onto a second line — every card is the same
+  two-line shape (name · type · date on top, remarks · modified below) whatever
+  its type, where a timed card used to stand 81px against an all-day card's 66.
+- **What is deliberately unchanged.** The schedule and board still show their
+  own '`Jul 13`' day labels (reference-locked, a different kind of date — the
+  week-grid column, not a record's stamp). The CSV export keeps the raw stored
+  values (machine-friendly for a spreadsheet). The History list's own
+  day/month + time stamp (`elogWhen`) was already day-first.
+- **Pinned in** `src/ui/inputsfmt.test.tsx` (the two helpers, and a rendered row
+  of each shape — same-day timed, all-day one-day, span — plus the modified
+  stamp); the pinned-actions layout is eye-verified on the live bundle (jsdom
+  paints 0×0).
+
 ## The board's text boxes wrap and grow (owner, 20 Aug 26)
 
 Every FREE-TEXT field on the board is a `<textarea rows="1">`, minted by the
