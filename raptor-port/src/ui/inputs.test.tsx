@@ -478,28 +478,28 @@ describe('the range calendar', () => {
 
   it('two clicks make a range, and the days between are marked', async () => {
     await click(day('14'))
-    expect(readout()).toBe('Jul 14')
+    expect(readout()).toBe('14 Jul')
     expect(day('14').classList.contains('s')).toBe(true)
     await click(day('17'))
-    expect(readout()).toBe('Jul 14 → Jul 17')
+    expect(readout()).toBe('14 Jul → 17 Jul')
     expect(day('17').classList.contains('e')).toBe(true)
     expect(day('15').classList.contains('mid')).toBe(true)
   })
 
   it('a backwards second click becomes the new start instead', async () => {
     await click(day('20'))                 // fresh range
-    expect(readout()).toBe('Jul 20')
+    expect(readout()).toBe('20 Jul')
     await click(day('16'))                 // earlier — cannot be an end
-    expect(readout()).toBe('Jul 16')
+    expect(readout()).toBe('16 Jul')
     expect(day('16').classList.contains('s')).toBe(true)
     expect($$('#inCal .rc-d.e').length).toBe(0)
     await click(day('17'))                 // now it can close
-    expect(readout()).toBe('Jul 16 → Jul 17')
+    expect(readout()).toBe('16 Jul → 17 Jul')
   })
 
   it('a third click begins a fresh range rather than sticking', async () => {
     await click(day('21'))
-    expect(readout()).toBe('Jul 21')
+    expect(readout()).toBe('21 Jul')
   })
 
   it('the picked range is what Add writes', async () => {
@@ -820,6 +820,12 @@ const lbl = (iso: string) => {
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   return MON[+iso.slice(5, 7) - 1] + ' ' + +iso.slice(8, 10)
 }
+/* the DAY-FIRST voice the Inputs page now shows (owner, 21 Aug 26); `lbl` stays
+   month-first because it also seeds the model, whose stored labels are that way */
+const lblDay = (iso: string) => {
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return +iso.slice(8, 10) + ' ' + MON[+iso.slice(5, 7) - 1]
+}
 const seed = (o: any) => { INPUTS.unshift({ allday: true, s: 0, e: 1439, type: 'LL', mod: '', ...o }); notify() }
 const startsShown = () => $$('#inBody tr td:nth-child(2)').map(td => td.textContent!.trim())
 
@@ -838,7 +844,7 @@ describe('the date window', () => {
     expect(shown().some(t => t.includes('FAR AHEAD')), 'beyond two months').toBe(false)
 
     /* the readout names the window rather than leaving the user to guess */
-    expect($('#inRangeBtn').textContent).toContain(lbl(isoIn(0)))
+    expect($('#inRangeBtn').textContent).toContain(lblDay(isoIn(0)))
     /* and an empty table under a window says it is the window */
     expect($('#inEmpty').textContent).toContain('All dates')
 
@@ -913,7 +919,7 @@ describe('the page as it first mounts, with different clocks', () => {
     vi.setSystemTime(new Date(2026, 6, 13))
     const { h, root } = await mountFresh()
     expect(h.querySelectorAll('#inBody tr').length, 'the demo rows render').toBeGreaterThan(0)
-    expect(h.querySelector('#inRangeBtn')!.textContent).toContain('Jul 13')
+    expect(h.querySelector('#inRangeBtn')!.textContent).toContain('13 Jul')
     await act(async () => root.unmount())
     h.remove()
     vi.useRealTimers()
@@ -926,7 +932,7 @@ describe('the page as it first mounts, with different clocks', () => {
     expect(h.querySelectorAll('#inBody tr').length, 'nothing falls in the next fortnight').toBe(0)
     expect(h.querySelector('#inEmpty')!.hasAttribute('hidden'), 'so the empty state IS shown').toBe(false)
     expect(h.querySelector('#inEmpty')!.textContent, 'and it names the way out').toMatch(/All dates/i)
-    expect(h.querySelector('#inRangeBtn')!.textContent, 'the window is anchored on today, not the demo week').toContain('Aug 12')
+    expect(h.querySelector('#inRangeBtn')!.textContent, 'the window is anchored on today, not the demo week').toContain('12 Aug')
     await act(async () => root.unmount())
     h.remove()
     vi.useRealTimers()

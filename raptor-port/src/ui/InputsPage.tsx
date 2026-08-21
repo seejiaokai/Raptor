@@ -13,7 +13,7 @@ import { writeInputs, notify } from '../state/store'
 /* the halves, the span control, the draft shape and the commit are shared with
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
-  fmt, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
+  fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   rosterOptions as people,
 } from './inputedit'
@@ -399,7 +399,7 @@ export function InputsPage() {
 
   const RANGE_ALL = 'All dates'
   const rangeLabel = (!range.from && !range.to) ? RANGE_ALL
-    : (range.from ? fmt(range.from) : '…') + ' → ' + (range.to ? fmt(range.to) : '…')
+    : (range.from ? fmtDay(range.from) : '…') + ' → ' + (range.to ? fmtDay(range.to) : '…')
   /* the arrow reads as the direction the column is going, not as a button */
   const th = (key: string, label: string) => (
     <th className={'insort' + (sort.key === key ? ' on' : '')} data-sort={key}
@@ -421,7 +421,7 @@ export function InputsPage() {
           <div className="ifield cal"><label>Dates</label>
             <RangeCal idPrefix="in" start={start} end={end}
               onPick={(s2, e2) => { setStart(s2); setEnd(e2); setRemarks(r => withTill(r, s2, e2)) }} />
-            <div className="rc-read" id="inDates">{start ? (fmt(start) + (end ? ' → ' + fmt(end) : '')) : 'pick a start date'}</div>
+            <div className="rc-read" id="inDates">{start ? (fmtDay(start) + (end ? ' → ' + fmtDay(end) : '')) : 'pick a start date'}</div>
           </div>
           {/* SANS Availability's own Fly/AMT/OFT ticks sit ABOVE the standard
               How-long control now (owner rework, 14 Aug 26) — it is a normal
@@ -489,7 +489,7 @@ export function InputsPage() {
               <RangeCal idPrefix="inRange" start={range.from} end={range.to}
                 onPick={(s2, e2) => { unpin(); setRange({ from: s2, to: e2 }) }} />
               <div className="rc-read">{range.from
-                ? fmt(range.from) + (range.to ? ' → ' + fmt(range.to) : ' → pick an end date')
+                ? fmtDay(range.from) + (range.to ? ' → ' + fmtDay(range.to) : ' → pick an end date')
                 : 'showing every date'}</div>
               <div className="inrange-btns">
                 <button className="abtn" id="inRangeDef" onClick={() => { unpin(); setRange(defaultRange()); setCalOpen(false) }}>Next {DEFAULT_SPAN_MONTHS} months</button>
@@ -519,8 +519,26 @@ export function InputsPage() {
           <tbody id="inBody">
             {rows.map((r: any) => {
               const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
-              const st = r.date + (r.allday ? '' : ' ' + hhmm(r.s))
-              const en = (r.endDate || r.date) + (r.allday ? '' : ' ' + hhmm(r.e))
+              /* DAY-FIRST and de-duplicated (owner, 21 Aug 26 — standardise +
+                 compress). Start carries the day-first date + its time; End
+                 drops the date when the span stays on one day, so a same-day
+                 timed input reads '13 Jul 10:00 → 11:00' rather than repeating
+                 the date, and an all-day one-day input reads just '13 Jul' (its
+                 End is empty and the card hides it). fmtDay(unfmt(...)) converts
+                 the stored 'Jul 13' label without touching what is stored. */
+              const sameDay = (r.endDate || r.date) === r.date
+              /* A same-day TIMED input keeps its whole span in ONE cell —
+                 '13 Jul 10:00–11:00' — so the card reads it on line one without
+                 the date wrapping the end time onto a line of its own; End is
+                 then empty and the card hides it. A span (all-day range or a
+                 timed input crossing midnight) keeps Start and End as two cells
+                 joined by the '→', and the desktop table's two columns with it. */
+              const day0 = fmtDay(unfmt(r.date))
+              const day1 = fmtDay(unfmt(r.endDate || r.date))
+              const st = r.allday ? day0
+                : sameDay ? `${day0} ${hhmm(r.s)}–${hhmm(r.e)}`
+                : `${day0} ${hhmm(r.s)}`
+              const en = sameDay ? '' : (r.allday ? day1 : `${day1} ${hhmm(r.e)}`)
               const inx = INPUTS.indexOf(r)
               if (editRow === r && draft) return (
                 <tr key={inx} className="ined" data-iid={r.iid}>
@@ -534,7 +552,7 @@ export function InputsPage() {
                         exactly as it was written */}
                     <RangeCal idPrefix="ined" start={draft.start} end={draft.end}
                       onPick={(s2, e2) => setDraft({ ...draft, start: s2, end: e2, remarks: withTill(draft.remarks, s2, e2) })} />
-                    <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
+                    <div className="rc-read">{draft.start ? (fmtDay(draft.start) + (draft.end ? ' → ' + fmtDay(draft.end) : '')) : 'pick a start date'}</div>
                     {/* same split as the add form: SANS's ticks sit ABOVE the
                         span picker now, not in place of it — the standard
                         span picker (or plain tick, for a type with no
@@ -567,7 +585,7 @@ export function InputsPage() {
                   <td data-fld="Remarks"><input aria-label="Remarks" data-ed="remarks" maxLength={200} value={draft.remarks}
                     onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
                   <td className="ined-sec">{r.recur || ''}</td>
-                  <td className="mono ined-sec" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
+                  <td className="mono ined-sec" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     <span className="rok" data-save={inx} title="Save" onClick={saveEdit}>✓</span>
                     <span className="rmx" data-cancel={inx} title="Cancel" onClick={() => { setEditRow(null); setDraft(null) }}>✕</span>
@@ -576,18 +594,20 @@ export function InputsPage() {
               )
               return (
                 <tr key={inx} className={flash.indexOf(r) >= 0 ? 'innew' : undefined} data-iid={r.iid}>
-                  {/* data-same marks an End that just repeats the Start, so the
-                      phone card can drop it and read "Jul 13", never
-                      "Jul 13 → Jul 13" (scheduler.css, the inputs card block);
-                      the desktop table renders both columns as ever */}
-                  <td data-label="Name">{cs}</td><td data-label="Start">{st}</td><td data-label="End" data-same={en === st ? '' : undefined}>{en}</td>
+                  {/* data-same now marks an EMPTY End — an all-day one-day
+                      input, whose date already reads once in Start — so the
+                      phone card drops it and reads just "13 Jul". A timed
+                      same-day input keeps a non-empty End (the bare end time),
+                      so it shows "13 Jul 10:00 → 11:00" (scheduler.css, the
+                      inputs card block); the desktop table renders both cells. */}
+                  <td data-label="Name">{cs}</td><td data-label="Start">{st}</td><td data-label="End" data-same={en === '' ? '' : undefined}>{en}</td>
                   <td data-label="Type"><span className="intag">{r.type}</span></td>
                   {/* the mark reads in Remarks, not beside the type (owner,
                       9 Aug 26) — same column on every surface that draws an
                       input, and the type column stays pure identity */}
                   <td data-label="Remarks">{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}</td>
                   <td data-label="Recurring">{r.recur || ''}</td>
-                  <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{r.mod || ''}</td>
+                  <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
                     <span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span>

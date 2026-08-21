@@ -52,6 +52,31 @@ export const fmt = (d: any) => {
 /* fmt's inverse — the model stores 'Jul 14' labels, the calendar speaks
    yyyy-mm-dd. A label carrying a trailing year ('Jan 3 2027') round-trips it;
    a bare one belongs to the loaded week's year, exactly as fmt left it. */
+/* ISO 'yyyy-mm-dd' → a DAY-FIRST label ('2026-07-13' → '13 Jul'), the voice
+   the Inputs page now speaks throughout (owner, 21 Aug 26 — "standardise the way
+   the inputs are shown"). Same year rule as fmt: this year stays implicit, any
+   other keeps its full year so a leave into January still reads unambiguously
+   ('2027-01-03' → '3 Jan 2027'). Display only — the model still stores the
+   month-first labels fmt/unfmt round-trip. */
+export const fmtDay = (iso: any) => {
+  if (!iso) return ''
+  const [y, m, da] = String(iso).split('-')
+  if (!m) return String(iso)
+  const lbl = String(+da) + ' ' + MON[+m]
+  return +y === baseYear() ? lbl : lbl + ' ' + y
+}
+/* ISO 'yyyy-mm-dd' → a 'day month year' STAMP with a two-digit year
+   ('2026-07-06' → '6 Jul 26'), matching the app's own week voice ('13 Jul 26').
+   'now' (this session's edits) passes through unchanged. This is the one date
+   the owner named — the Inputs page's Last-modified column (owner, 21 Aug 26 —
+   "change the modified date to show day month year"). */
+export const fmtDMY = (iso: any) => {
+  const s = String(iso || '')
+  if (!s || s === 'now') return s
+  const [y, m, da] = s.split('-')
+  if (!m) return s
+  return `${+da} ${MON[+m] || ''} ${String(y).slice(2)}`
+}
 export const unfmt = (lbl: any) => {
   const p = String(lbl || '').trim().split(/\s+/)
   const mi = MON.indexOf(p[0])

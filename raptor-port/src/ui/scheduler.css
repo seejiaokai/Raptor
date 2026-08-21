@@ -1519,9 +1519,18 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      per-cell labels are dropped except on the two metadata tails; the DOM
      stays the desktop table's column order and CSS `order` does the rest.
      The EDIT row below keeps its stacked form — a calendar needs the width. */
+  /* the actions are PINNED to the card's top-right corner (owner, 21 Aug 26 —
+     "standardise the way the inputs are shown"): before this they rode in flow
+     with margin-left:auto, so a long timed date ("13 Jul 10:00 → 11:00") shoved
+     them onto a second line and a timed card stood 81px where an all-day card
+     was 66. Out of flow, every card is the same two-line shape whatever its
+     date. The 88px right reserve is the two 30px targets + their 22px gap +
+     margin, kept clear on BOTH lines so neither the date nor the modified stamp
+     slides under them. */
   #intbl tbody tr:not(.ined){
+    position:relative;
     display:flex; flex-wrap:wrap; align-items:center;
-    column-gap:9px; row-gap:3px; padding:8px 12px 9px;
+    column-gap:9px; row-gap:3px; padding:8px 88px 9px 12px;
   }
   #intbl tbody tr:not(.ined) td{
     display:block; border-bottom:none; padding:0; text-align:left;
@@ -1541,8 +1550,8 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      also what makes everything after them wrap. The two targets keep their
      deliberate size and distance (the Aug-5 rule — delete is not undoable). */
   #intbl tbody tr:not(.ined) td.inact{
-    order:4; display:flex; gap:22px; margin-left:auto;
-    border-top:none; margin-top:0; padding:0;
+    position:absolute; top:6px; right:12px;
+    display:flex; gap:22px; margin:0; padding:0; border-top:none;
   }
   /* the 40% basis is what keeps remarks OFF line one (even the shortest
      card's first line leaves less slack than that, so remarks always wrap and

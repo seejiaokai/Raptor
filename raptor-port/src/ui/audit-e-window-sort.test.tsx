@@ -80,8 +80,8 @@ describe('the window\'s edges — today → +14 days, overlap membership', () =>
     const btns = $$('#inRangeBtn')
     const btn = btns[btns.length - 1]
     const label = btn.textContent
-    expect(label).toContain('Jul 13')
-    expect(label).toContain('Jul 27')
+    expect(label).toContain('13 Jul')
+    expect(label).toContain('27 Jul')
     let r: any
     await act(async () => { writeInputs(() => { seed({ person: 'bane', date: 'Jul 14', remarks: 'W-STAY' }); r = INPUTS[0] }) })
     expect(btn.textContent, 'after an add').toBe(label)
@@ -187,16 +187,16 @@ describe('the add form\'s calendar and the window picker do not share state', ()
     /* pick dates on the add form */
     await click($('#inCal [data-cal="2026-07-14"]'))
     await click($('#inCal [data-cal="2026-07-16"]'))
-    expect($('#inDates').textContent).toBe('Jul 14 → Jul 16')
+    expect($('#inDates').textContent).toBe('14 Jul → 16 Jul')
     /* now narrow the table window on the other calendar */
     if (!$('#inRangePop')) await click($('#inRangeBtn'))
     await click($('#inRangeCal [data-cal="2026-07-20"]'))
     await click($('#inRangeCal [data-cal="2026-07-22"]'))
-    expect($('#inDates').textContent, 'the form pick is untouched').toBe('Jul 14 → Jul 16')
-    expect($('#inRangeBtn').textContent).toContain('Jul 20')
+    expect($('#inDates').textContent, 'the form pick is untouched').toBe('14 Jul → 16 Jul')
+    expect($('#inRangeBtn').textContent).toContain('20 Jul')
     /* and re-picking on the form does not move the window */
     await click($('#inCal [data-cal="2026-07-17"]'))
-    expect($('#inRangeBtn').textContent, 'the window is untouched').toContain('Jul 20')
+    expect($('#inRangeBtn').textContent, 'the window is untouched').toContain('20 Jul')
     await showAllDates()
   })
 })
