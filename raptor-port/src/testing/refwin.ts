@@ -26,7 +26,7 @@ import { INPUTS, inputFlags } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 
 export async function refWindow(): Promise<any> {
-  const html = relabel(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))))))))))
+  const html = relabel(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(redt(readFileSync('reference/scheduler.html', 'utf8'))))))))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -142,6 +142,32 @@ function retier(html: string): string {
   for (const [from, to] of swaps) {
     const n = html.split(from).length - 1
     if (n !== 1) throw new Error(`refwin retier: expected exactly 1 match, got ${n} for: ${from.slice(0, 40)}…`)
+    html = html.replace(from, to)
+  }
+  return html
+}
+
+/* A double-booked man is not "double turning" (owner, 21 Aug 26 — the hard
+   DOUBLE_BOOK clash already speaks for him, so the DT chip and the DT_SUM
+   advisory now need some pair of his legs to be SEQUENTIAL, i.e. airborne
+   windows apart). The reference counts any 2+ sorties; patch the same
+   dturns predicate into its copy — validate.ts is the master, keep the two
+   bodies identical — so both engines carry the same rule. It fires nowhere
+   on the seed week (nobody is double-booked there), but "they agree on this
+   week" is luck, not parity — the rematrix OCU_NO_IP note's rule. */
+function redt(html: string): string {
+  const swaps: Array<[string, string]> = [
+    ["const byP={}; day.fly.filter(e=>!e.shift).forEach(e=>{(byP[e.id]=byP[e.id]||[]).push(e);});",
+     "const byP={}; day.fly.filter(e=>!e.shift).forEach(e=>{(byP[e.id]=byP[e.id]||[]).push(e);});"
+     + "const dturns=(ls)=>{for(let i=0;i<ls.length;i++)for(let j=i+1;j<ls.length;j++)if(!(ls[i].to!=null&&ls[j].to!=null&&overlap(ls[i].to,ls[i].ld,ls[j].to,ls[j].ld)))return true;return false;};"],
+    ["if(es.length>=2)markChip(di,id,'DT');",
+     "if(es.length>=2&&dturns(es))markChip(di,id,'DT');"],
+    ["const dts=Object.keys(byP).filter(id=>byP[id].length>=2);",
+     "const dts=Object.keys(byP).filter(id=>byP[id].length>=2&&dturns(byP[id]));"],
+  ]
+  for (const [from, to] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin redt: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
     html = html.replace(from, to)
   }
   return html

@@ -209,7 +209,12 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - Tight turn needs `max(VCONF.tightTurn, dekit + step)`.
 - Double turn: two+ sorties in a day → ONE DT_SUM line naming everyone;
   **adv, not hard** (owner, 4 Aug 26 — double turning is routine and planned),
-  matching the amber pucks. No span test.
+  matching the amber pucks. No span test — but **legs whose airborne windows
+  (to..ld) overlap are a double BOOKING, not a double turn** (owner, 21 Aug
+  26): the hard DOUBLE_BOOK clash speaks for that man, and he is in the DT
+  chip/DT_SUM count only if some pair of his legs is sequential. One
+  predicate (`validate.ts:dturns`) feeds both the chip and the line;
+  `refwin.ts:redt()` carries it into the parity reference.
 - **NO_BRIEF and SIM_BRIEF are adv, not hard** (owner, 4 Aug 26): the clash
   itself already carries the red; the eaten brief window is advice on top of
   it. DEBRIEF/SIM_DEBRIEF were already adv. The parity tests stay byte-exact

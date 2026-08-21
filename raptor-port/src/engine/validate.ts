@@ -151,6 +151,16 @@ export function validate(){
        handover is not a turn, a 12-hour watch is not a long flying day, and a
        shift start does not imply a brief at T/O − 2h20. */
     const byP:any={}; day.fly.filter((e:any)=>!e.shift).forEach((e:any)=>{(byP[e.id]=byP[e.id]||[]).push(e);});
+    /* A genuine double turn is two legs flown one AFTER the other. Legs whose
+       AIRBORNE windows overlap are the same air time booked twice — the hard
+       DOUBLE_BOOK clash below speaks for that man, and counting him "double
+       turning" beside it read as two problems where there is one (owner,
+       21 Aug 26 — the conflict is enough, no double-turn advisory on top).
+       The airborne window (to..ld) is the line because it is the line the
+       clash rule itself draws; a leg with no times stays counted, matching
+       the clash's own null guard, which cannot fire without them. Shared by
+       the DT chip and the DT_SUM summary so the two can never disagree. */
+    const dturns=(ls:any)=>{for(let i=0;i<ls.length;i++)for(let j=i+1;j<ls.length;j++)if(!(ls[i].to!=null&&ls[j].to!=null&&overlap(ls[i].to,ls[i].ld,ls[j].to,ls[j].ld)))return true;return false;};
     // DT (2+ sorties) + TT (tight turn = next in-time within 20-min of previous land)
     Object.keys(byP).forEach((id:any)=>{
       /* Personnel (ground crew) carry only the conflict, long-day and 7-day
@@ -159,7 +169,7 @@ export function validate(){
          still caught below as a hard conflict. */
       if(PEOPLE[id]&&PEOPLE[id].pers)return;
       const es=byP[id].slice().sort((a:any,b:any)=>a.to-b.to);
-      if(es.length>=2)markChip(di,id,'DT');
+      if(es.length>=2&&dturns(es))markChip(di,id,'DT');
       for(let i=0;i<es.length-1;i++){ const turn=es[i+1].to-es[i].ld;   // land → next T/O; need 30m dekit + 60m step = 90m
         /* The threshold and the mechanics are edited independently, so either
            can be the binding one: a 60 min threshold with 30 dekit + 60 step
@@ -343,8 +353,10 @@ export function validate(){
        One line at the head of the day telling the next scheduler how many
        bodies are flying twice. Amber, not red (owner, 4 Aug 26): double
        turning is routine and planned, so the summary now matches the amber DT
-       chips instead of shouting over them.                                     */
-    const dts=Object.keys(byP).filter((id:any)=>byP[id].length>=2&&!(PEOPLE[id]&&PEOPLE[id].pers));
+       chips instead of shouting over them. dturns (above) keeps a man whose
+       only "second sortie" overlaps his first out of this count — he is
+       double-booked, not double turning, and the hard clash already says so. */
+    const dts=Object.keys(byP).filter((id:any)=>byP[id].length>=2&&!(PEOPLE[id]&&PEOPLE[id].pers)&&dturns(byP[id]));
     if(dts.length)add('adv','DT_SUM',dts,`${dts.length} ${dts.length===1?'person is':'people are'} double turning: ${dts.map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ')}`);
     /* ---- long work day --------------------------------------------------
        Report (T/O − 3h, or the published in-time) through land + 2h, or plain

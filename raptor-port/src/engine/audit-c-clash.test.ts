@@ -48,9 +48,30 @@ describe('double-booking: the same man twice in the air', () => {
     expect(db.some((x: any) => /VL BFM & RU BFM clash/.test(x.msg))).toBe(true)
     // the negative-minute "tight turn" this used to print is gone
     expect(hits('TURN', 'split').filter((x: any) => x.di === 1)).toEqual([])
-    // DT_SUM still counts him "double turning" — HANDOFF documents this as deliberate
-    const dt = hits('DT_SUM', 'split').filter((x: any) => x.di === 1)
-    expect(dt.length).toBe(1)
+    /* and he is NOT counted "double turning" — both legs are the same air
+       time, so the clash is the whole story (owner, 21 Aug 26; this used to
+       pin the opposite, when HANDOFF carried the over-count as deliberate) */
+    expect(hits('DT_SUM', 'split').filter((x: any) => x.di === 1)).toEqual([])
+  })
+
+  it('a double-booked man carries the C chip, not DT — and no DT_SUM line', () => {
+    const a = DAYS[1].waves[0].formations[0].aircraft[0]
+    a.p = 'split'; a.w = 'split'
+    const W = validate()
+    expect(W.all.some((x: any) => x.code === 'DT_SUM' && (x.who || []).includes('split'))).toBe(false)
+    expect(W.chip[1] && W.chip[1]['split']).toBe('C')
+  })
+
+  it('double-booked in the morning AND a genuine later leg — DT_SUM still names him', () => {
+    /* one sequential pair is enough: the clash and the double turn are both
+       true of this man, and each rule speaks for its own half */
+    const w = DAYS[1].waves[0]
+    w.formations[0].aircraft[0].p = 'split'                       // 08:40–10:05
+    w.formations[1].to = '09:30'; w.formations[1].ld = '10:30'    // airborne overlap — the clash
+    w.formations[1].aircraft[0].p = 'split'
+    w.formations.push({ cs: 'ZZ', msn: 'TEST', to: '14:00', ld: '15:00', aircraft: [{ p: 'split', w: '', area: '', rmks: '', opts: {} }] })
+    expect(hits('DOUBLE_BOOK', 'split').filter((x: any) => x.di === 1).length).toBeGreaterThan(0)
+    expect(hits('DT_SUM', 'split').filter((x: any) => x.di === 1).length).toBe(1)
   })
 
   it('three sorties at once — every pair is named: three hard clashes', () => {
@@ -61,6 +82,8 @@ describe('double-booking: the same man twice in the air', () => {
     w.formations.push({ cs: 'ZZ', msn: 'TEST', to: '08:40', ld: '10:05', aircraft: [{ p: 'split', w: '', area: '', rmks: '', opts: {} }] })
     const db = hits('DOUBLE_BOOK', 'split').filter((x: any) => x.di === 1)
     expect(db.length, db.map((x: any) => x.msg).join(' | ')).toBe(3)
+    // all three legs share one air time, so no pair is a turn — no DT_SUM
+    expect(hits('DT_SUM', 'split').filter((x: any) => x.di === 1)).toEqual([])
   })
 
   it('flying + sim overlap — hard DOUBLE_BOOK', () => {
@@ -93,6 +116,8 @@ describe('double-booking: the same man twice in the air', () => {
     w.formations[1].aircraft[0].p = 'split'
     expect(hits('DOUBLE_BOOK', 'split').filter((x: any) => x.di === 1)).toEqual([])
     expect(hits('TURN', 'split').filter((x: any) => x.di === 1).length).toBe(1)
+    // sequential legs are the genuine article — DT_SUM names him
+    expect(hits('DT_SUM', 'split').filter((x: any) => x.di === 1).length).toBe(1)
   })
 })
 
