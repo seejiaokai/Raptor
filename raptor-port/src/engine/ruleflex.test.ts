@@ -25,6 +25,10 @@ import { VCONF, RULE_STD, RULE_SPEC, ruleParse, rulesSave, rulesLoad, rulesReset
 import { slotRules } from './avail'
 import { storeBackend } from './hooks'
 import { INPUT_TYPES, inpMeta, typeGroup, restsInput } from './inputs'
+import { PEOPLE, scShiftKind, scQualOK } from './people'
+import { scShiftCredit } from './oil'
+import { makeStandalone, isStandalone } from './waves'
+import { setSlotVal, txtSet } from './slots'
 
 const DSNAP = JSON.stringify(DAYS)
 afterEach(() => {
@@ -208,6 +212,129 @@ describe('which input types bear crew rest (owner, 21 Aug 26)', () => {
     INPUT_TYPES.filter((t: any) => typeGroup(t) === 'other').forEach((t: any) => {
       expect(!!inpMeta(t).half, t).toBe(t === 'SANS Availability')
     })
+  })
+})
+
+describe('one knob, every reader — an edited number reaches every rule that leans on it', () => {
+  /* The owner's second ask (21 Aug 26): "which logic depends on one another?
+     Can u make sure that if 1 logic number changes, the other logic is also
+     reading the updated number or data?" The engine's answer is that every
+     reader takes VCONF.<key> LIVE at evaluation time — there is no boot-time
+     copy anywhere — and these tests are the proof for the seams where two or
+     three rules genuinely share one number. Each test moves ONE knob and
+     watches EVERY dependent reading move with it. A future refactor that
+     caches a value at module load, or reintroduces a second literal (the
+     showLead / 19:00-AAR disease), fails here. */
+
+  const warnsFor = (di: number, id: string, code: string) => {
+    const g: any = WARN.byDay.find((x: any) => x.di === di)
+    return ((g && g.warns) || []).filter((w: any) => w.code === code && (w.who || []).includes(id))
+  }
+  const flatForms = (di: number) =>
+    (DAYS[di] as any).waves.filter((w: any) => !isStandalone(w)).flatMap((w: any) => w.formations || [])
+
+  it('the SC day window drives the currency check, the crew picker and the OIL halves from one pair of keys', () => {
+    /* scDayFrom/scDayTo are read by scShiftKind (the SC_QUAL check AND the
+       picker call the same function — no second copy) and by scShiftCredit's
+       midpoint in oil.ts. Widen the window and all three answers move. */
+    expect(scShiftKind(13 * 60, 21 * 60)).toBe('night')       // reaches past 19:00
+    expect(scShiftCredit(6 * 60, 13 * 60)).toBe(1)            // starts before 07:00 — not one half
+
+    /* the validator's own reading: a day-only body on a 13:00–21:00 shift */
+    const dayOnly = Object.keys(PEOPLE).filter(id => !PEOPLE[id].special)
+      .find(id => scQualOK(id, 'day') && !scQualOK(id, 'night'))!
+    expect(dayOnly, 'the roster holds a day-only body').toBeTruthy()
+    ;(DAYS[0] as any).waves.push(makeStandalone('sc'))
+    const gi = (DAYS[0] as any).waves.length - 1
+    setSlotVal(`0.${gi}.0.0.p`, dayOnly)
+    txtSet(`ff:0.${gi}.0.to`, '13:00')
+    txtSet(`ff:0.${gi}.0.ld`, '21:00')
+    validate()
+    expect(warnsFor(0, dayOnly, 'SC_QUAL').length, 'a night shift at the standard window').toBeGreaterThan(0)
+
+    VCONF.scDayTo = 22 * 60; VCONF.scDayFrom = 6 * 60
+    validate()
+    expect(scShiftKind(13 * 60, 21 * 60), 'the same shift is a DAY shift now').toBe('day')
+    expect(warnsFor(0, dayOnly, 'SC_QUAL'), 'and the currency check read the new window').toEqual([])
+    expect(scShiftCredit(6 * 60, 13 * 60), 'and the OIL midpoint moved with it').toBe(0.5)
+  })
+
+  it('the tight-turn floor is max(threshold, dekit+step) — live on BOTH arms, and the message quotes the live numbers', () => {
+    const [f1, f2] = flatForms(0)
+    f1.to = '10:00'; f1.ld = '11:00'
+    f2.to = '12:40'; f2.ld = '13:40'
+    f1.aircraft.push({ p: 'waldo', w: '', area: '', rmks: '', opts: {} })
+    f2.aircraft.push({ p: 'waldo', w: '', area: '', rmks: '', opts: {} })
+    validate()
+    /* 100 min land→T/O against the standard floor max(120, 30+60) = 120 */
+    let t = warnsFor(0, 'waldo', 'TURN')
+    expect(t.length, 'flagged at the standard threshold').toBe(1)
+    expect(t[0].msg).toContain('needs 120 min')
+
+    VCONF.tightTurn = 60                       // floor is now max(60, 90) = 90
+    validate()
+    expect(warnsFor(0, 'waldo', 'TURN'), 'the threshold arm read the new 60').toEqual([])
+
+    VCONF.step = 120                           // floor is now max(60, 30+120) = 150
+    validate()
+    t = warnsFor(0, 'waldo', 'TURN')
+    expect(t.length, 'the mechanics arm outgrew the threshold').toBe(1)
+    expect(t[0].msg).toContain('needs 150 min')
+    expect(t[0].msg).toContain('dekit+step 30+120')
+  })
+
+  it('the crew-rest equation reads debrief, briefLead and crewRest live — yesterday\'s end, today\'s anchor, the gap', () => {
+    /* waldo flies Monday 20:00, lands 22:00; flies Tuesday 13:30 with no
+       typed brief and no in-time, so his rest anchor is the SUGGESTED brief
+       (T/O − briefLead). Every arm of the equation is then one knob. */
+    const prev: any = flatForms(0)[0]
+    prev.to = '20:00'; prev.ld = '22:00'
+    prev.aircraft.push({ p: 'waldo', w: '', area: '', rmks: '', opts: {} })
+    const today: any = flatForms(1)[0]
+    today.to = '13:30'; today.ld = '14:55'; today.br = ''
+    today.aircraft.push({ p: 'waldo', w: '', area: '', rmks: '', opts: {} })
+    /* the seed wave publishes an 06:00 in-time for this callsign, which
+       would bind the anchor ahead of the knob under test — clear it */
+    ;(DAYS[1] as any).waves.find((w: any) => (w.formations || []).includes(today)).intimes = []
+    validate()
+    /* ended 22:00 + 2h debrief = 00:00 → clear 12:00; brief 11:10 — breach */
+    let cr = warnsFor(1, 'waldo', 'CREW_REST')
+    expect(cr.length, 'breached at the standard numbers').toBe(1)
+    expect(cr[0].msg).toContain('clear at 12:00')
+
+    VCONF.debrief = 30                         // ended 22:30 → clear 10:30 ≤ 11:10
+    validate()
+    expect(warnsFor(1, 'waldo', 'CREW_REST'), 'yesterday\'s end read the new debrief').toEqual([])
+
+    VCONF.briefLead = 240                      // suggested brief 09:30 < 10:30
+    validate()
+    cr = warnsFor(1, 'waldo', 'CREW_REST')
+    expect(cr.length, 'today\'s anchor read the new brief lead').toBe(1)
+    expect(cr[0].msg).toContain('09:30')
+
+    VCONF.crewRest = 600                       // clear 08:30 ≤ 09:30
+    validate()
+    expect(warnsFor(1, 'waldo', 'CREW_REST'), 'the gap itself read the new crew rest').toEqual([])
+  })
+
+  it('the nominal-report advisory reads reportLead live', () => {
+    /* same shape, but the brief is TYPED clear of rest — only the nominal
+       3h report falls inside it, which is CREW_TIGHT, not a breach */
+    const prev: any = flatForms(0)[0]
+    prev.to = '20:00'; prev.ld = '22:00'
+    prev.aircraft.push({ p: 'waldo', w: '', area: '', rmks: '', opts: {} })
+    const today: any = flatForms(1)[0]
+    today.to = '13:30'; today.ld = '14:55'; today.br = '12:30'
+    today.aircraft.push({ p: 'waldo', w: '', area: '', rmks: '', opts: {} })
+    ;(DAYS[1] as any).waves.find((w: any) => (w.formations || []).includes(today)).intimes = []
+    validate()
+    let ct = warnsFor(1, 'waldo', 'CREW_TIGHT')
+    expect(ct.length, 'nominal 10:30 sits inside rest clearing 12:00').toBe(1)
+    expect(warnsFor(1, 'waldo', 'CREW_REST'), 'the typed 12:30 brief itself is clear').toEqual([])
+
+    VCONF.reportLead = 60                      // nominal 12:30 — clear of the 12:00
+    validate()
+    expect(warnsFor(1, 'waldo', 'CREW_TIGHT'), 'the advisory read the new report lead').toEqual([])
   })
 })
 

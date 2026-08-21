@@ -24,14 +24,15 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the crew-rest widening — every prior-day
-commitment rest-bearing — plus the editable-rules pass, 21 Aug 26, all six
-gates watched this session; it sits on the in-time passes, the Inputs-page
-date standardisation and the per-input LATE dismissal below):
+**Last recorded green baseline** (the one-knob dependency sweep — the
+owner's "which logic depends on one another" follow-up, 21 Aug 26, all six
+gates watched this session; it sits on the crew-rest widening, the
+editable-rules pass, the in-time passes, the Inputs-page date
+standardisation and the per-input LATE dismissal below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2769 across 152 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2773 across 152 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -64,7 +65,14 @@ the late-show line and message move with it) reshaped `ruleflex` to 15,
 adding the all-bounds interdependency sweep → 2757 / 152. The
 duty-&-commitment-inputs pass grew `dutyrest.test.ts` 12 → 21 and
 `ruleflex` 15 → 18 (the restsInput table, spellings, the AM/PM half-flag
-pin) → 2769 / 152, with e2e, probes, perf and the DOM
+pin) → 2769 / 152. The one-knob dependency sweep (the owner's follow-up:
+"if 1 logic number changes, [is] the other logic also reading the updated
+number") grew `ruleflex` 18 → 22 — one test per genuinely-shared number:
+the SC day window's three readers (currency check, picker, OIL midpoint),
+the tight-turn floor's both arms, the crew-rest equation's three knobs
+(debrief / briefLead / crewRest), and reportLead's advisory — and removed
+the dead frozen `SC_DAY_FROM`/`SC_DAY_TO` twins from `rules.ts` →
+2773 / 152, with e2e, probes, perf and the DOM
 ceilings all unmoved (the Logic tab is outside every ceiling).
 
 DOM measures at that baseline: week **3767** under a 4000 ceiling (+24 over
