@@ -87,8 +87,9 @@ describe('an overnight tight turn', () => {
        suppress one. Waldo is a WSO, so seating him in the front of a second
        jet is an illegal seat: hard rule, hard ring, and the Q chip outranks
        his TT. (A second sortie in the same window would NOT do here — the
-       engine reads that as a double turn, not a clash, so it rings nothing
-       either and would prove only that two silent rules are silent.) */
+       engine reads that as a double booking now, and its hard clash rings
+       through the same overlap machinery the turn rules sit beside; the
+       illegal seat is the cleaner independent ring.) */
     plantTightTurn()
     const today: any = firstForm(1)!
     const other: any = (DAYS[1].waves || []).filter((w: any) => !isStandalone(w))

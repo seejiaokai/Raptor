@@ -24,15 +24,15 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the one-knob dependency sweep — the
-owner's "which logic depends on one another" follow-up, 21 Aug 26, all six
-gates watched this session; it sits on the crew-rest widening, the
-editable-rules pass, the in-time passes, the Inputs-page date
-standardisation and the per-input LATE dismissal below):
+**Last recorded green baseline** (the double-turn/double-booking split —
+a double-booked man is no longer counted "double turning", 21 Aug 26, all
+six gates watched this session; it sits on the one-knob dependency sweep,
+the crew-rest widening, the editable-rules pass, the in-time passes, the
+Inputs-page date standardisation and the per-input LATE dismissal below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2773 across 152 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2775 across 152 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -73,7 +73,11 @@ the tight-turn floor's both arms, the crew-rest equation's three knobs
 (debrief / briefLead / crewRest), and reportLead's advisory — and removed
 the dead frozen `SC_DAY_FROM`/`SC_DAY_TO` twins from `rules.ts` →
 2773 / 152, with e2e, probes, perf and the DOM
-ceilings all unmoved (the Logic tab is outside every ceiling).
+ceilings all unmoved (the Logic tab is outside every ceiling). The
+double-turn/double-booking split (a double-booked man drops out of the DT
+chip and DT_SUM — `validate.ts:dturns`, mirrored into the parity reference
+by `refwin.ts:redt`) grew `audit-c-clash.test.ts` by 2 → 2775 / 152; e2e,
+probes and perf unmoved again.
 
 DOM measures at that baseline: week **3767** under a 4000 ceiling (+24 over
 the previous 3743: a "+ In time" button per flying wave and a ✕ per in-time
@@ -1380,10 +1384,6 @@ gate — it has its own e2e DOM band (29000), measured-first.
   reaches `halfOf`'s PM boundary through the in-place cells; and nothing guards
   an accepted input being reassigned to a different person. All are
   MISSING-TEST, not known-wrong-behaviour.
-- **`DT_SUM` still counts a man double-BOOKED among those "double turning".**
-  The summary lists everyone with 2+ sorties, which is true of a man planned
-  into two seats at once as much as of a genuine double-turn. Harmless beside
-  the hard conflict that now fires, and left alone rather than special-cased.
 - **The activity types warn but do not bar.** Training, CSE, Meeting, Fly,
   Personal, Appointment and Other now reach the validator the moment they are
   typed, so planting a man through one raises a warning — but they are not in
