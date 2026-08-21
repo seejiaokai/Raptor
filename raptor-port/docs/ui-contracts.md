@@ -2109,8 +2109,8 @@ the colour would read as "less of a problem".
 
 - `.puck.boxred` — the solid box (`box-shadow`), the ordinary hard flag.
 - `.puck.boxdash` — a crew-rest breach on a line whose aircraft remarks say
-  `late show` / `show at brief`, while that crew still clears rest by the
-  latest show. Past the latest show it goes back to solid — see
+  `late show` / `show at brief`, while that crew still clears rest by step
+  (`VCONF.step`). Past step it goes back to solid — see
   `engine-rules.md` §validation. Published as `WARN.dash[di][id]` (`dashOf`).
 - `.puck.boxdot` — **the previous-day trace**, below.
 

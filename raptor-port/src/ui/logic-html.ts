@@ -60,8 +60,12 @@ export function lgRules(){
      t:()=>`The <b>flight brief</b> is the time in the line's <b>B</b> box. Where a line has none, this setting suggests one — ${lgV(lgT(VCONF.briefLead))} before take-off — and the scheduler accepts it or types their own.<span class="why">This number is a convenience, not a rule: it only works out the suggestion so nobody has to do the arithmetic. What every brief warning actually follows is the B on the line. A line left blank is still checked, against that same suggested time, so an unconfirmed line never goes silently unchecked. A published in-time moves the man's <b>report</b> time, and so his working day and his crew rest; it does not move the brief.</span>`},
     {sev:'set',set:['reportLead'],src:()=>`VCONF.reportLead ${VCONF.reportLead}`,
      t:()=>`The <b>nominal report</b> to the squadron is ${lgV(lgT(VCONF.reportLead))} before take-off.`},
-    {sev:'set',set:['showLead'],src:()=>`VCONF.showLead ${VCONF.showLead}`,
-     t:()=>`The <b>latest show</b> is ${lgV(lgT(VCONF.showLead))} before take-off — the line that decides how a crew-rest breach is DRAWN.<span class="why">A remark such as "2A: LATE SHOW" or "SHOW AT BRIEF" does not excuse crew rest and does not remove the warning: the breach is still red and still counted, because the reader has to see that rest was broken. What the remark changes is the ring. While the man still clears rest by the latest show, his puck rings <b>dashed</b> — a scheduler sanctioned this and he does make the jet. Once rest runs past the latest show the ring goes <b>solid</b> again: there is nothing to sanction, because he cannot walk, kit up and start engines in less than this. He is not late to the brief, he is unable to make the flight.</span>`},
+    /* the SAME step key as the busy-window row above — one knob, quoted and
+       editable on both rows it governs (owner, 21 Aug 26: editing the step
+       timing must move this line too; the separate showLead key it replaced
+       is gone) */
+    {sev:'set',set:['step'],src:()=>`VCONF.step ${VCONF.step}`,
+     t:()=>`<b>Step</b>, ${lgV(lgT(VCONF.step))} before take-off, is also the line that decides how a crew-rest breach is DRAWN — it is the same step setting as above, so changing it moves both.<span class="why">A remark such as "2A: LATE SHOW" or "SHOW AT BRIEF" does not excuse crew rest and does not remove the warning: the breach is still red and still counted, because the reader has to see that rest was broken. What the remark changes is the ring. While the man still clears rest by step, his puck rings <b>dashed</b> — a scheduler sanctioned this and he does make the jet. Once rest runs past step the ring goes <b>solid</b> again: there is nothing to sanction, because he cannot walk, kit up and start engines in less than this. He is not late to the brief, he is unable to make the flight.</span>`},
     {sev:'set',set:['debrief'],src:()=>`VCONF.debrief ${VCONF.debrief}`,
      t:()=>`The <b>flight debrief</b> runs for ${lgV(lgT(VCONF.debrief))} after landing.`},
     {sev:'set',set:['minTurn','dur'],src:()=>`VCONF.minTurn ${VCONF.minTurn} · VCONF.dur ${VCONF.dur}`,
@@ -91,7 +95,7 @@ export function lgRules(){
    sub:'The rule the squadron cares about most, and the one with the most edge cases.',
    rows:[
     {sev:'hard',code:'CREW_REST',set:['crewRest'],src:()=>`VCONF.crewRest ${VCONF.crewRest}`,
-     t:()=>`Aircrew must have ${lgV(lgT(VCONF.crewRest))} clear before they are <b>told to report</b>. Less than that is a Warning.<span class="why">Exactly ${lgT(VCONF.crewRest)} is legal — the bar is strictly greater-than.</span>`},
+     t:()=>`Aircrew flying today must have ${lgV(lgT(VCONF.crewRest))} clear before <b>the first thing on their programme</b> — the report, or anything scheduled earlier: a meeting, a sim, a duty post.<span class="why">The owner's rule (21 Aug 26): this person needs ${lgT(VCONF.crewRest)} of rest in order to fly. An 08:00 meeting ahead of a 10:00 in-time is what starts his day, so it is what the warning measures to and names. A day with no flying asks for no rest. Exactly ${lgT(VCONF.crewRest)} is legal — the bar is strictly greater-than.</span>`},
     /* set:['reportLead'] — the owner circled this exact row asking "is this
        editable as well? The number?" (21 Aug 26). The 3h IS reportLead,
        already editable further up under "The clock a day runs on"; the box

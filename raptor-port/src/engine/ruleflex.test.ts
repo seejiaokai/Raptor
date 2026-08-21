@@ -41,6 +41,17 @@ describe('the squadron standard carries the new key', () => {
     expect(VCONF.aarNight, 'no aarNight in VCONF').toBeUndefined()
     expect(RULE_SPEC.aarNight, 'no aarNight offered to the Logic tab').toBeUndefined()
   })
+  it('showLead is gone the same way — step is the ONE step-timing knob', () => {
+    /* owner, 21 Aug 26: "can I confirm this rule will still work if I change
+       the rules for step default timing?" It could not, while a second key
+       carried the crew-rest late-show line at its own 60 — editing "Step
+       before take-off" moved the busy windows and not the breach line. One
+       key now; the crew-rest side is exercised in brieftime.test.ts, the
+       busy-window side in avail.test.ts, and both read VCONF.step. */
+    expect(VCONF.showLead, 'no showLead in VCONF').toBeUndefined()
+    expect(RULE_SPEC.showLead, 'no showLead offered to the Logic tab').toBeUndefined()
+    expect(RULE_STD.v.step).toBe(60)
+  })
 })
 
 describe('ruleParse tolerates the spellings a scheduler actually types', () => {
@@ -150,15 +161,56 @@ describe('the new keys ride save / load / reset like every other rule', () => {
   it('a poisoned store — strings, out-of-bounds, dead keys — cannot reach the engine', () => {
     const was = storeBackend.impl
     storeBackend.impl = {
-      getItem: (k: string) => k === 'sqn142_rules' ? JSON.stringify({ v: { simLen: 9999, crewRest: '840', aarNight: 1200 } }) : null,
+      getItem: (k: string) => k === 'sqn142_rules' ? JSON.stringify({ v: { simLen: 9999, crewRest: '840', aarNight: 1200, showLead: 45 } }) : null,
       setItem: () => {},
     }
     try {
       rulesLoad()
       expect(VCONF.simLen, 'out of bounds refused').toBe(90)
       expect(VCONF.crewRest, 'string refused').toBe(720)
-      /* a stored override for the REMOVED aarNight key must not resurrect it */
+      /* a stored override for a REMOVED key must not resurrect it — aarNight
+         and showLead both died this way (21 Aug 26) */
       expect(VCONF.aarNight, 'a dead key stays dead').toBeUndefined()
+      expect(VCONF.showLead, 'showLead stays dead too').toBeUndefined()
     } finally { storeBackend.impl = was }
+  })
+})
+
+describe('rules that lean on each other survive ANY legal combination', () => {
+  /* The owner's standing worry (21 Aug 26 — "check if I manually change the
+     rules and for rules that depend on one another's assumption, will it
+     break and have a bug"). The Logic tab only admits values inside each
+     rule's RULE_SPEC bounds, so the space a user can actually reach is every
+     combination of those bounds — including the ones that invert an
+     assumption: a brief lead of 0, a step wider than the brief lead, an SC
+     day window that closes before it opens, crew rest at a full 24 hours.
+     The engine must stay COHERENT under all of them: never throw, and never
+     print a message with a hole in it (NaN, undefined, Infinity — each one a
+     real failure mode of minute arithmetic on a half-set rule). Rules with
+     a stated interdependence handle it explicitly — the tight turn already
+     takes max(tightTurn, dekit+step) — and this sweep is the net under
+     everything else. */
+  const sweep = (pick: (k: string, i: number) => number) => {
+    Object.keys(RULE_SPEC).forEach((k: any, i: number) => { VCONF[k] = pick(k, i) })
+    const W = validate()
+    const msgs: string[] = []
+    W.byDay.forEach((g: any) => (g.warns || []).forEach((w: any) => msgs.push(String(w.msg))))
+    msgs.forEach(m => {
+      expect(m, 'no half-computed time in any warning').not.toMatch(/NaN|undefined|Infinity/)
+    })
+    return msgs.length
+  }
+  it('every rule at its LOWEST legal value', () => {
+    expect(sweep((k: any) => RULE_SPEC[k].lo)).toBeGreaterThanOrEqual(0)
+  })
+  it('every rule at its HIGHEST legal value', () => {
+    expect(sweep((k: any) => RULE_SPEC[k].hi)).toBeGreaterThanOrEqual(0)
+  })
+  it('alternating extremes — the combinations that invert assumptions', () => {
+    /* even keys low, odd keys high on one pass; flipped on the second. Both
+       orders, because "step wider than briefLead" and "briefLead wider than
+       step" break different assumptions. */
+    sweep((k: any, i: number) => i % 2 ? RULE_SPEC[k].hi : RULE_SPEC[k].lo)
+    sweep((k: any, i: number) => i % 2 ? RULE_SPEC[k].lo : RULE_SPEC[k].hi)
   })
 })

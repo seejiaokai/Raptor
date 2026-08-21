@@ -5,6 +5,18 @@ import { store } from './hooks'
    Thresholds are taken from the 149/142 aircrew sheet (BRF 02:20, crew
    rest 08:00, min turn 20). Rules are pure functions; re-run on any edit.
    ===================================================================== */
+/* `step` is the ONE step-timing knob (owner, 21 Aug 26 — "can I confirm this
+   rule will still work if I change the rules for step default timing?"). It
+   pads the sortie's busy window (avail.ts, events.ts), sets the tight-turn
+   floor (dekit+step), AND is the crew-rest late-show line: rest still running
+   at T/O − step is a HARD breach — he is not late to the brief, he is unable
+   to walk, kit up and start engines (the 6 Aug 26 ruling, then called the
+   "latest show"). A separate `showLead` key carried that last job until
+   21 Aug 26; two keys for one physical moment meant editing "Step before
+   take-off" moved the busy windows but not the breach line — the exact drift
+   the owner asked about, so showLead was REMOVED like aarNight before it.
+   rulesLoad ignores a stored override for it (no RULE_SPEC entry). Don't
+   reintroduce a second step-like key. */
 export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, tightTurn:120, crewRest:720,
   debrief:120,      // land + 2h — the flight debrief window
   reportLead:180,   // report to squadron 3h before T/O
@@ -14,13 +26,6 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
   amtDebrief:30,    // AMT DEBRIEF row + 30 min
   openEnd:60,       // a row with a start and no end is assumed to run an hour
   maxRun:6,         // most consecutive days on the programme before a break day is due
-  /* The latest a crew can show and still make the jet (owner, 6 Aug 26). A
-     `late show` remark excuses a man from the published in-time and from the
-     brief, so crew rest expiring after brief time is fine — but not past this
-     line, because he cannot walk, kit up and start engines in less than it.
-     Rest still running at T/O − showLead is a HARD breach: he is not late to
-     the brief, he is unable to make the flight. */
-  showLead:60,      // latest show, minutes before T/O
   /* How many days before the week starts a member's input is due (owner,
      9 Aug 26; two weeks rather than one, owner 9 Aug 26). The deadline is
      the week's Monday minus this many days, and the day itself is still on
@@ -90,7 +95,6 @@ export const RULE_SPEC:any={
   dekit:     {t:'Dekit after landing',       u:'min', lo:0,  hi:240},
   briefLead: {t:'Flight brief before T/O',   u:'min', lo:0,  hi:480},
   reportLead:{t:'Nominal report before T/O', u:'min', lo:0,  hi:480},
-  showLead:  {t:'Latest show before T/O',    u:'min', lo:0,  hi:480},
   debrief:   {t:'Flight debrief after land', u:'min', lo:0,  hi:480},
   crewRest:  {t:'Crew rest',                 u:'min', lo:240,hi:1440},
   tightTurn: {t:'Tight turn threshold',      u:'min', lo:0,  hi:480},

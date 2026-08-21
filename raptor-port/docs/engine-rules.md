@@ -80,8 +80,21 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   WRITTEN end with no tail — a sim counts its box end, its brief/debrief
   windows stay the SIM_BRIEF/SIM_DEBRIEF rules' business. Every ender rides
   the `REST[]` map the palette reads, so the picker and the engine agree.
-  It anchors on the **earlier** of the published in-time and the leg's own
-  brief — rest ends when the man first has to show. Breach = hard CR;
+  It anchors on the man's **FIRST COMMITMENT of the fly-day** (owner,
+  21 Aug 26 — "reports the next day at 0800 for meeting, but even tho the
+  in time writes 1000… the first event of this day already breaks the 12
+  hour rest. Think it as, this person needs 12 hours of rest in order to
+  fly"): the earliest of the instructed flying report — itself the earlier
+  of the published in-time and the leg's own brief — and the start of any
+  other scheduled commitment that day (sim, duty post, ground event,
+  programme item; not the flying legs' derived step pads, not personal
+  inputs). The rule only exists when he FLIES that day — a meeting-only
+  day needs no rest. When an earlier event binds, the message names it
+  ("his day starts 08:00 (MTG) before the 10:00 report"), the warning
+  anchors on that row, the leave-by follows it, and a late-show remark on
+  the jet cannot dash the ring — a sanctioned late join to the sortie does
+  not excuse the meeting. Mirrored into the reference by
+  `refwin.ts:refirst()`. Breach = hard CR;
   nominal-inside-rest with the instructed report clear = adv TT (the
   advisory is now only that gap, never a severity downgrade by event kind).
   Exactly `crewRest` is legal — the breach is strictly less (owner, 6 Aug 26).
@@ -141,8 +154,11 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   show` / `show at brief` / `show @ brief` in an AIRCRAFT's remarks
   (`events.ts:lateShowOf`, parsed like `briefLeadOf` and `aarNeed`) never
   moves the anchor and never removes the warning: it stays a hard red CR,
-  counted with the rest. While the man still clears rest by the **latest
-  show** (`VCONF.showLead`, 60 min before T/O, editable) his puck rings
+  counted with the rest. While the man still clears rest by **step**
+  (`VCONF.step`, 60 min before T/O, editable — the SAME knob that pads the
+  busy window, one setting since 21 Aug 26; the separate `showLead` key it
+  replaced is removed, and the message calls the moment "step" because that
+  is the owner's word for it) his puck rings
   **dashed** — sanctioned, and he makes the jet. Past that line it rings
   **solid**: he cannot walk, kit up and start engines, so he is unable to
   make the flight. Published per person as `WARN.dash[di][id]` (`dashOf`),

@@ -31,7 +31,7 @@ date standardisation and the per-input LATE dismissal below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2749 across 152 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2757 across 152 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -56,7 +56,13 @@ pinned "a desk raises no breach", the owner overruled it), and e2e stays
 305 / 12. The crew-rest widening grew `dutyrest.test.ts` 6 → 8 (+2: sim
 and ground breaches in, the advisory-only pin inverted with the rule) →
 2736; the editable-rules pass added `ruleflex.test.ts` (+9, +1 file) and
-+2 in `logic.test.tsx`, then the NAAR wave-only ruling reshaped `ruleflex` to 11 → 2749 / 152, with e2e, probes, perf and the DOM
++2 in `logic.test.tsx`, then the NAAR wave-only ruling reshaped `ruleflex` to 11 → 2749 / 152. The first-commitment crew-rest anchor
+grew `dutyrest.test.ts` 8 → 12 (the owner's 21:30→08:00-meeting example, the
+10:00 boundary, the unchanged wording, the meeting-only exemption), and the
+step unification (showLead removed — `VCONF.step` is the one step knob, and
+the late-show line and message move with it) reshaped `ruleflex` to 15,
+adding the all-bounds interdependency sweep → 2757 / 152, with e2e, probes,
+perf and the DOM
 ceilings all unmoved (the Logic tab is outside every ceiling).
 
 DOM measures at that baseline: week **3767** under a 4000 ceiling (+24 over
@@ -1177,10 +1183,34 @@ gate — it has its own e2e DOM band (29000), measured-first.
     gone from BOTH readers (`events.ts`, `avail.ts:slotRules`), the
     short-lived `aarNight` setting was removed with it (a stored override
     for the dead key is ignored on load), and `refwin.ts:reaar()` excises
-    the reference's identical clauses. Pinned in
+    the reference's identical clauses. A SIXTH pass: **crew rest anchors
+    on the fly-day's FIRST commitment** (owner's worked example: ends
+    Monday 21:30, an 08:00 meeting Tuesday breaches even though the 10:00
+    in-time and 11:00 brief are both clear — "this person needs 12 hours
+    of rest in order to fly"). `validate.ts` takes the earliest of the
+    instructed report and any other scheduled event that day (not the
+    legs' derived pads, not personal inputs); the message names the
+    binding event, the warning anchors on its row, the leave-by follows
+    it, late-show cannot dash an event-bound breach, and a no-fly day
+    asks for no rest. `refwin.ts:refirst()` mirrors it into the patched
+    reference (it rewrites rebrief's emitted text, so it sits OUTSIDE
+    rebrief in the chain); the seed week is unchanged (WARN diff
+    verified). A SEVENTH pass: **`VCONF.step` is the ONE step-timing
+    knob** (owner, off the Casper screenshot: "he still makes the 07:40
+    show" was misleading — that moment is the STEP — and "will this rule
+    still work if I change the rules for step default timing?"). The
+    separate `showLead` key was removed the aarNight way (no RULE_SPEC
+    entry, a stored override is ignored), the crew-rest late-show line and
+    both message clauses read `VCONF.step` and say "step", the Logic tab's
+    late-show row carries a second step edit box, and a new
+    `ruleflex.test.ts` sweep runs the seed under every RULE_SPEC bound
+    combination asserting no warning ever prints NaN/undefined/Infinity.
+    Pinned in
     `ruleflex.test.ts` (both readers agree wave-only, the NAAR word
     overrides, simLen drives the
-    clash window, save/load/reset round-trips, poisoned-store refusal) and
+    clash window, save/load/reset round-trips, poisoned-store refusal),
+    `dutyrest.test.ts` (the owner's example verbatim, the 10:00-meeting
+    boundary, the unchanged told-to-report wording, meeting-only days) and
     `logic.test.tsx`. Rules: `docs/engine-rules.md`
     §Validation; grammar: `docs/remarks-vocabulary.md` §The in-time lines;
     contract: `docs/ui-contracts.md` §In-time lines. Pinned in

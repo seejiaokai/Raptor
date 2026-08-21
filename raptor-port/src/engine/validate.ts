@@ -467,6 +467,23 @@ export function validate(){
         const legs=byR[id];
         const nominal=Math.min.apply(null,legs.map(nomOf));
         const instructed=Math.min.apply(null,legs.map(insOf));
+        /* THE DAY STARTS AT ITS FIRST COMMITMENT (owner, 21 Aug 26 — "if
+           they have anything earlier like a meeting that busts crew rest
+           and they fly later, it's also a violation… think it as, this
+           person needs 12 hours of rest in order to fly"). His 21:30 →
+           09:00 example had the in-time at 10:00 and the brief at 11:00 —
+           both legal — and an 08:00 meeting that is not. So the anchor is
+           the EARLIEST of the instructed flying report and any other
+           scheduled commitment that day: a sim, a duty post, a ground
+           event, a programme item. The flying legs themselves stay on
+           insOf (their step/dekit pads are derived, not instructions), and
+           personal inputs stay out — the squadron schedules none of them,
+           and they carry their own clash rules. When nothing else starts
+           earlier, first === instructed and every message below is
+           byte-identical to before. */
+        const fe=day.events.reduce((m:any,e:any)=>e.id===id&&e.kind!=='fly'&&e.kind!=='shift'&&e.s!=null&&isFinite(e.s)&&(m==null||e.s<m.s)?e:m,null);
+        const first=Math.min(instructed,fe!=null?fe.s:Infinity);
+        const evBound=first<instructed;
         const onShift=legs.some((e:any)=>e.shift);
         /* SPELL OUT THE ASSUMPTION when a sortie set the rest-end: show the
            real landing, name the debrief pad as an assumption, then the
@@ -477,30 +494,40 @@ export function validate(){
         const tail=landed!=null
           ? `${ev[idx-1].dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`
           : `${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
-        if(pfly[id]&&instructed<earliest){
+        if(pfly[id]&&first<earliest){
           const bl=legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m);   // the leg told to report earliest is the breach
           /* The LEAVE-BY: the latest the previous day could have ended for this
              man to be clear. It is what the scheduler actually needs — "he is
              short" is a complaint, "he had to be gone by 00:00" is an
              instruction — and the previous day's puck prints it when the
-             warning is clicked. */
-          const leaveBy=hm24(instructed+1440-VCONF.crewRest);
-          /* A sanctioned late show still makes the jet if rest clears by the
-             latest show, VCONF.showLead before T/O. Then the ring is DASHED:
+             warning is clicked. first===instructed when no earlier event
+             binds, so the unbound arithmetic is unchanged. */
+          const leaveBy=hm24(first+1440-VCONF.crewRest);
+          /* A sanctioned late show still makes the jet if rest clears by
+             STEP, VCONF.step before T/O — the same knob that pads the busy
+             window, so editing the step timing moves this line with it
+             (owner, 21 Aug 26; a separate showLead key was removed for
+             exactly that drift). Then the ring is DASHED:
              same red warning, same count, but the reader can see a scheduler
              meant it. Past that line there is no sanctioning it — he cannot
              walk, kit up and start engines — so it rings solid like any other
-             breach. A shift has no take-off to measure against. */
-          const makesIt=!bl.shift&&earliest<=bl.to-VCONF.showLead;
-          const dashed=!!bl.lateShow&&makesIt;
+             breach. A shift has no take-off to measure against — and neither
+             does a MEETING: when an earlier event binds the breach, a late
+             show on the jet cannot excuse the 08:00 he reports to first. */
+          const makesIt=!bl.shift&&earliest<=bl.to-VCONF.step;
+          const dashed=!evBound&&!!bl.lateShow&&makesIt;
           markChip(di,id,'CR');markRing(di,id,'hard'); if(dashed)markDash(di,id);
           const prevDi=idx-1>=0?ev[idx-1].di:null;
-          const crMsg=(onShift?`Crew rest breach — ${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `
+          const crMsg=(evBound?`Crew rest breach — his day starts ${hm24(first)} (${fe.label}) before the ${hm24(instructed)} report, only ${dur(first+1440-pe)} rest. `
+                   :onShift?`Crew rest breach — ${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `
                    :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)
-            +(dashed?`Late show — he still makes the ${hm24(bl.to-VCONF.showLead)} show. `
-                    :(bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(bl.to-VCONF.showLead)} latest show. `:''))
+            +(dashed?`Late show — he still makes the ${hm24(bl.to-VCONF.step)} step. `
+                    :(!evBound&&bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(bl.to-VCONF.step)} step. `:''))
             +tail+`, so he had to leave by ${leaveBy}`;
-          add('hard','CREW_REST',[id],crMsg,bl.key,{prevDi,leaveBy,dashed});
+          /* the warning anchors on what binds it: the early event's own slot
+             key when a meeting caused the breach, the leg otherwise — the
+             jump then pans to the row the scheduler has to move */
+          add('hard','CREW_REST',[id],crMsg,evBound?(fe.slot||fe.key||bl.key):bl.key,{prevDi,leaveBy,dashed});
           /* The same breach, filed against the day that caused it — with
              `fromKey`, the leg on THAT day that ran late. It rides on the trace
              and NOT on the warning: parity.test.ts compares every field of
@@ -729,7 +756,7 @@ export function validate(){
 export const sevOf=(di:any,id:any)=>WARN.sev[di]&&WARN.sev[di][id];
 export const chipOf=(di:any,id:any)=>WARN.chip&&WARN.chip[di]&&WARN.chip[di][id];
 /* the ring STROKE, published per person like the ring colour above it: true
-   where a sanctioned late show still makes the latest show, so the puck reads
+   where a sanctioned late show still makes step, so the puck reads
    as a breach a scheduler meant rather than one nobody noticed. */
 export const dashOf=(di:any,id:any)=>!!(WARN.dash&&WARN.dash[di]&&WARN.dash[di][id]);
 /* THE PREVIOUS-DAY TRACE, read from the day that caused the breach: what this

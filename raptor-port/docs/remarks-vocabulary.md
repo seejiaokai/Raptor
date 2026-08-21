@@ -87,9 +87,11 @@ lines, the earliest time is the show. A number glued to letters (`FL240`)
 never reads as a time, and an impossible clock (`2590`) is skipped.
 
 The published in-time moves the formation's **report time**, which feeds crew
-rest (the anchor is the EARLIER of in-time and brief), the long-work-day
-note, and the wave windows. A line with no readable time is inert until a
-time is typed into it.
+rest (the anchor is the EARLIER of in-time and brief — and, since 21 Aug 26,
+anything scheduled even earlier that day starts the clock instead: an 08:00
+meeting ahead of a 10:00 in-time is what the 12 hours are measured to), the
+long-work-day note, and the wave windows. A line with no readable time is
+inert until a time is typed into it.
 
 ## Late show — in a flying line's RMKS
 
@@ -101,7 +103,8 @@ Case and spacing are free. **Unlike AAR, no seat tag is read** — a late show o
 a line applies to the whole aircraft, both seats.
 
 It does **not** remove a crew-rest breach or move the anchor. It changes the
-RING: dashed while the man can still make the jet by the latest show, solid
+RING: dashed while the man can still make the jet by step (the step setting
+on the Rules tab — the same one that pads a sortie's busy window), solid
 once he cannot. Rule: `engine/events.ts` `lateShowOf`.
 
 ---

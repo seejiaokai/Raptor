@@ -26,7 +26,7 @@ import { INPUTS, inputFlags } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 
 export async function refWindow(): Promise<any> {
-  const html = relabel(reinput(redn(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(readFileSync('reference/scheduler.html', 'utf8')))))))))))))
+  const html = relabel(reinput(redn(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(readFileSync('reference/scheduler.html', 'utf8'))))))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -409,9 +409,6 @@ function relabel(html: string): string {
 }
 function rebrief(html: string): string {
   const swaps: Array<[string, string]> = [
-    /* carry showLead in too, so a test that edits the latest-show rule moves
-       both engines rather than leaving the reference on the hard-coded 60 */
-    ["const VCONF={briefLead:140,", "const VCONF={showLead:60, briefLead:140,"],
     /* the dashed-ring store the CREW_REST patch below writes into, and its
        publication on WARN — the reference has neither */
     ["const ev=collectEvents(), all=[], byDay=[], sev={}, chip={};",
@@ -448,14 +445,14 @@ function rebrief(html: string): string {
      + "                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)+tail);",
      "          const _bl=legs.reduce((m,e)=>insOf(e)<insOf(m)?e:m);"
      + "const _lv=hm24(instructed+1440-VCONF.crewRest);"
-     + "const _mk=!_bl.shift&&earliest<=_bl.to-(VCONF.showLead!=null?VCONF.showLead:60);"
+     + "const _mk=!_bl.shift&&earliest<=_bl.to-VCONF.step;"
      + "const _da=!!_bl.lateShow&&_mk;"
      + "markChip(di,id,'CR');markRing(di,id,'hard');if(_da){dash[di]=dash[di]||{};dash[di][id]=true;}\n"
      + "          add('hard','CREW_REST',[id],\n"
      + "            (onShift?`Crew rest breach — ${legs.filter(e=>e.shift).map(e=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `\n"
      + "                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)"
-     + "+(_da?`Late show — he still makes the ${hm24(_bl.to-(VCONF.showLead!=null?VCONF.showLead:60))} show. `"
-     + ":(_bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(_bl.to-(VCONF.showLead!=null?VCONF.showLead:60))} latest show. `:''))"
+     + "+(_da?`Late show — he still makes the ${hm24(_bl.to-VCONF.step)} step. `"
+     + ":(_bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(_bl.to-VCONF.step)} step. `:''))"
      + "+tail+`, so he had to leave by ${_lv}`);"
      + "{const _w=ws[ws.length-1];_w.prevDi=idx-1>=0?ev[idx-1].di:null;_w.leaveBy=_lv;_w.dashed=_da;}"],
     /* the reference's fly.push has no lateShow, so _bo's exemption could never
@@ -489,6 +486,38 @@ function rebrief(html: string): string {
    rest from the identical line, so the same substitution moves both engines
    together — REST[] maps, the hard branch and the messages all follow from
    it. Rule: docs/engine-rules.md §Validation, "Crew rest". */
+/* THE DAY STARTS AT ITS FIRST COMMITMENT (owner, 21 Aug 26 — "if they have
+   anything earlier like a meeting that busts crew rest and they fly later,
+   it's also a violation… this person needs 12 hours of rest in order to
+   fly"). The port anchors the crew-rest breach on the EARLIEST of the
+   instructed flying report and any other scheduled commitment that day
+   (sim, duty, ground, programme — not the flying legs' own derived pads,
+   not personal inputs). Parity compares the message text and the dashed
+   ring, so the reference gets the identical anchor, message branch and
+   late-show guard. These swaps target the text rebrief() has already
+   emitted, so refirst must sit OUTSIDE rebrief in the chain. */
+function refirst(html: string): string {
+  const swaps: Array<[string, string]> = [
+    ['const instructed=Math.min.apply(null,legs.map(insOf));',
+     'const instructed=Math.min.apply(null,legs.map(insOf));'
+     + "const fe=day.events.reduce((m,e)=>e.id===id&&e.kind!=='fly'&&e.kind!=='shift'&&e.s!=null&&isFinite(e.s)&&(m==null||e.s<m.s)?e:m,null);"
+     + 'const first=Math.min(instructed,fe!=null?fe.s:Infinity);'
+     + 'const evBound=first<instructed;'],
+    ['if(pfly[id]&&instructed<earliest){', 'if(pfly[id]&&first<earliest){'],
+    ['const _lv=hm24(instructed+1440-VCONF.crewRest);', 'const _lv=hm24(first+1440-VCONF.crewRest);'],
+    ['const _da=!!_bl.lateShow&&_mk;', 'const _da=!evBound&&!!_bl.lateShow&&_mk;'],
+    ["add('hard','CREW_REST',[id],\n            (onShift?",
+     "add('hard','CREW_REST',[id],\n            (evBound?`Crew rest breach — his day starts ${hm24(first)} (${fe.label}) before the ${hm24(instructed)} report, only ${dur(first+1440-pe)} rest. `:onShift?"],
+    [':(_bl.lateShow?', ':(!evBound&&_bl.lateShow?'],
+  ]
+  for (const [from, to] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin refirst: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
+    html = html.replace(from, to)
+  }
+  return html
+}
+
 /* NIGHT AAR IS THE WAVE'S CALL, NOT THE CLOCK'S (owner, 21 Aug 26 — "make
    the rule for NAAR instead of a time: if the wave is night and AAR is
    mentioned, it's night AAR. Or NAAR is mentioned"). The reference decides

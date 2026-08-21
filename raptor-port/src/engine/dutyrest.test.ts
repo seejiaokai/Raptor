@@ -15,7 +15,11 @@
      - the REST map (the palette's "he is not clear yet") carries every
        kind of ender, so the picker and the engine cannot disagree;
      - a non-flying commitment ends at its WRITTEN end — no debrief tail;
-     - a prior day that IS 12h clear stays silent, whatever its kind. */
+     - a prior day that IS 12h clear stays silent, whatever its kind;
+     - THE DAY STARTS AT ITS FIRST COMMITMENT (the owner's 21:30 / 08:00
+       meeting / 10:00 in-time / 11:00 brief example): an earlier scheduled
+       event on the fly-day binds the breach, the message names it, and the
+       warning anchors on its row — but only when he flies that day. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { validate, WARN, REST, restClear } from './validate'
@@ -129,6 +133,70 @@ describe('a duty row bears crew rest', () => {
     expect(cr, 'hard breach off a sim').toBeTruthy()
     expect(cr.msg).toContain('ended 21:30')
     expect(cr.msg).not.toContain('debrief assumed')
+  })
+
+  /* THE DAY STARTS AT ITS FIRST COMMITMENT (owner, 21 Aug 26 — his own
+     worked example, verbatim: ends Monday 21:30, "reports the next day at
+     0800 for meeting, but even tho the in time writes 1000, and brief time
+     writes 1100. The first event of this day already breaks the 12 hour
+     rest"). The in-time and brief are both clear of the 09:30 line; the
+     08:00 meeting is not, and the meeting is what the warning names. */
+  it("the owner's example: 21:30 end, 10:00 in-time, 11:00 brief — an 08:00 meeting still breaches", () => {
+    const ru = ruOf()
+    const seat = ru.aircraft[1]
+    const w2: any = (DAYS[TUE] as any).waves[1]
+    const wasIn = w2.intimes.slice(), wasW = seat.w, wasBr = ru.br
+    plant(() => {
+      seat.w = 'stuff'; w2.intimes = [...wasIn.slice(0, 1), '1000H: RU IN TIME']; ru.br = '11:00'
+      ;(DAYS[TUE] as any).ground.push({ prog: 'MTG W OC', str: '0800', end: '0900', who: 'stuff' })
+    }, () => { seat.w = wasW; w2.intimes = wasIn; ru.br = wasBr; (DAYS[TUE] as any).ground.pop() })
+    validate()
+    const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
+    expect(cr, 'the meeting binds the breach').toBeTruthy()
+    expect(cr.sev).toBe('hard')
+    expect(cr.msg, 'names the first commitment').toContain('his day starts 08:00 (MTG W OC)')
+    expect(cr.msg, 'and the report it precedes').toContain('before the 10:00 report')
+    expect(cr.msg).toContain('ended 21:30')
+    /* leave-by follows the MEETING: 08:00 + 24h − 12h = Monday 20:00 */
+    expect(cr.leaveBy).toBe('20:00')
+    /* the warning anchors on the meeting's own row, so the jump pans there */
+    expect(String(cr.key)).toMatch(/^g:1\./)
+  })
+
+  it('the same meeting at 10:00 is clear — the rule is arithmetic, not suspicion of meetings', () => {
+    const ru = ruOf()
+    const seat = ru.aircraft[1]
+    const w2: any = (DAYS[TUE] as any).waves[1]
+    const wasIn = w2.intimes.slice(), wasW = seat.w
+    plant(() => {
+      seat.w = 'stuff'; w2.intimes = [...wasIn.slice(0, 1), '1000H: RU IN TIME']
+      ;(DAYS[TUE] as any).ground.push({ prog: 'MTG W OC', str: '1000', end: '1100', who: 'stuff' })
+    }, () => { seat.w = wasW; w2.intimes = wasIn; (DAYS[TUE] as any).ground.pop() })
+    validate()
+    expect(stuffWarns().find((w: any) => w.code === 'CREW_REST'), '10:00 is past the 09:30 clearance').toBeFalsy()
+  })
+
+  it('with no earlier event the breach message is byte-identical to before — told to report', () => {
+    const ru = ruOf()
+    const seat = ru.aircraft[1]
+    const w2: any = (DAYS[TUE] as any).waves[1]
+    const wasIn = w2.intimes.slice(), wasW = seat.w
+    plant(() => { seat.w = 'stuff'; w2.intimes = [...wasIn.slice(0, 1), '0900H: RU IN TIME'] },
+      () => { seat.w = wasW; w2.intimes = wasIn })
+    validate()
+    const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
+    expect(cr.msg).toContain('told to report 09:00')
+    expect(cr.msg).not.toContain('his day starts')
+  })
+
+  it('an early meeting with NO flying that day asks for no rest at all', () => {
+    /* the rule exists because he flies — a meeting-only day carries no
+       12-hour requirement, however late Monday ran */
+    const wasG = ((DAYS[TUE] as any).ground || []).length
+    plant(() => { (DAYS[TUE] as any).ground.push({ prog: 'MTG W OC', str: '0800', end: '0900', who: 'stuff' }) },
+      () => { (DAYS[TUE] as any).ground.length = wasG })
+    validate()
+    expect(stuffWarns().find((w: any) => w.code === 'CREW_REST'), 'no sortie, no crew-rest rule').toBeFalsy()
   })
 
   it('a prior day that IS clear stays silent, whatever its kind', () => {
