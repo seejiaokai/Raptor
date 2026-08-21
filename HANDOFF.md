@@ -165,6 +165,57 @@ gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **ACTIVITY INPUTS AUTO-LAND ON THE GROUND PROGRAMME + THE PICKER WARNS
+  BEFORE THE PLANT (owner, Aug 26 — "by default all inputs are accepted… so
+  schedulers already get the conflict off the get go").** Two reinforcing
+  halves.
+  - **The picker now names an unaccepted activity commitment.** `slotBar`
+    (`avail.ts`) read only `EVD` (built from `day.events`), so a personal
+    ACTIVITY input (Meeting, Appointment, Training, Fly with, Duty, Personal,
+    Other) that lived only in `day.input` was invisible to the crew picker
+    while the VALIDATOR raised `INPUT_FLY` the instant a man was planted onto
+    it — the one drift the picker and the warning list must never have. The
+    busy-at-this-hour block now also scans `INPUTS` for the non-away activity
+    types, mirroring the four `isAway` "off-blocks" right above it (same
+    `canWork`/flying gate, same four midnight-tail shifts) and returns the SAME
+    soft `already on X` a scheduled event gives — NOT a strike-out, so it
+    respects the standing decision (`inputs.ts:178-181`) that activity types
+    stay in the palette. `inputFlags()` keeps an already-promoted (timed,
+    accepted) input out of this scan — the ground event carries it instead.
+    Leave/medical were never the gap: they are absences and already struck
+    through via the off-blocks. Pinned in `inputground.test.ts` (picker + validator
+    agree, incl. the tomorrow tail).
+  - **A filed activity input drops onto the ground programme by default.**
+    `slots.ts:autoAcceptInput(row)` is the ONE gate every creation path calls
+    (the two + Add dialogs via `commitNewInput`'s non-`toGround` branch, the
+    Inputs page's own `add()`, and the boot/week-load pass): isPersonal +
+    editable day → `acceptInput(di,row,'g')`; leave/medical/SANS and a
+    PUBLISHED day are silent no-ops (owner's call — a late input on an issued
+    day stays under Personal Inputs, no surprise AL churn, and the picker still
+    warns via the half above). `slots.ts:autoAcceptSeedInputs()` runs the pass
+    at boot (`initStore`) and on a week swap (`loadWeek`, after `resetSched` so
+    `dayApproved` is clean), then WIPES the pending/added/changes marks so the
+    seed's auto-landed rows are the week's zero-state, not unpublished edits.
+    **PARITY-SAFE by the demoseed rule**: this runs ONLY at the boot path,
+    which the parity harness never calls, so the added `d.ground` rows stay
+    invisible to the byte-compares — do NOT mark `acc` in the seed `INPUTS` or
+    add rows in `data.ts`, that data IS read by parity. The accept/unaccept
+    round-trip is unchanged: removing an auto-landed ground row (`unacceptInput`)
+    returns the input to Personal Inputs, and it can be re-added — pinned in
+    `inputground.test.ts`.
+  - **Two display touches.** An input-derived ground row is tinted
+    (`rowCls` adds `.gr-frominput` when the row carries a `src` back-link — set
+    only by `acceptInput`, on both the week's `plRow` and the board's `sb-arow`;
+    a faint accent rail, `scheduler.css`, ordered before `.cx` so a cancelled
+    one still reads cancelled). And **Personal Inputs folds to a one-line
+    summary by default** now it is the faded audit echo rather than the primary
+    surface: `PIOPEN`/`togglePInputs` (`state/view.ts`, the `AVOPEN` precedent —
+    session-only, cleared on session/week change), the header the toggle
+    (`data-pitog`, `interactions.ts`, gated on `canEditSched()` so it works on
+    BOTH the edit week and the board). Unavailable is deliberately left open —
+    it is a live drop target and the day's must-read. Tests: `inputground.test.ts`,
+    the Personal-Inputs fold in `html.test.ts`.
+
 - **THE DEMO IS SCRUBBED + HAS A SECOND, SWITCHABLE WEEK (owner, 21 Aug 26).**
   Every callsign shown in the app is now FICTION and the ground/meeting labels
   are generic — the sensitivity scrub. `people.ts` is the single source of the
@@ -1817,8 +1868,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `time.ts` | `parseHM`/`hhmm`/`minus`/`overlap` (half-open — abutting windows do not clash). |
 | `events.ts` | `collectEvents()` — the per-day event build the validator consumes; appends tomorrow's inputs shifted +1440 (the midnight tail, marked `nx`) and collects AVALON crew (`day.sacrew`) for the one check the wave's `noconf` does not cover. |
 | `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`, `dashOf`, the crew-rest trace (`traceOf`/`traceLeads`/`traceIx`/`tracesOn`), and **`workSpan`** — ONE person's working day out of their events (report → last landing + debrief, or start → end), the shared definition behind both the LONGDAY note and the Insights work-hours totals. **The conflict engine.** |
-| `avail.ts` | `slotRules`/`slotBar` eligibility, `dayOff`/`dayEngaged`, free-count ranking. |
-| `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`** (Ground removal and Unavailable filing use inert amendment keys, including every loaded day of a span). |
+| `avail.ts` | `slotRules`/`slotBar` eligibility, `dayOff`/`dayEngaged`, free-count ranking. `slotBar`'s busy-at-this-hour block also scans `INPUTS` for unaccepted ACTIVITY commitments (Aug 26), mirroring the four `isAway` off-blocks (canWork/flying gate, four midnight tails) so the picker and the validator's `INPUT_FLY` cannot drift. |
+| `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`** (Ground removal and Unavailable filing use inert amendment keys, including every loaded day of a span), and **`autoAcceptInput`/`autoAcceptSeedInputs`** (Aug 26 — the one gate every creation path calls to auto-land an activity input on its editable day's ground programme; the seed pass is boot-only and wipes its own amendment marks, so parity stays blind). |
 | `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering (delete-time), and its bijective sibling `permuteKeys`/`moveKeys` for a reorder. |
 | `order.ts` | `groundOrder(rows, man)` — Ground Programme's render-time start-time sort, pulled out of `ui/html.ts` so `reorder.ts` can freeze a rendered order into the model without the engine importing from `ui/`. `man` (a day's `d.gman`) returns model order untouched. Also holds `DUTY_ORDER`. |
 | `reorder.ts` | The board's row movers: one function per list (`moveFormation`/`moveAircraft`/`moveDutyRow`/`moveSimRow`/`moveGroundRow`/`moveProgRow`/`moveNote`) plus `applyMove`, the one entry point the UI calls — parses `mv:` addresses and resolves a flying row's two meanings (resequence vs. carry the formation) by what it was dropped on. Also every AUTO SORT: `sortWave`/`sortDutyBlock`/`sortSims`/`sortGround`/`sortProg` (rows inside one block), **`sortWaves`/`sortDutyBlocks` (the blocks themselves, by the earliest time in each — 11 Aug 26, Sort all only)**, and `sortDay`, which composes the lot inside-out. Exports `REORDERED_DI`, the stale-arm signal `state/view.ts` pops. |
@@ -1841,7 +1892,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 |---|---|
 | `store.ts` | `notify()`/subscribe/version plus the narrow `notifyBoard()`/`subscribeBoard()` lane used by day-only board navigation, so a swipe does not wake the seven-day edit week; `wireStore()` maps HOOKS→global notify (including the role-aware `editMode()`); **`resetSession()` — the ONE session-change path, used by every login and logout**; **`loadWeek(v)` — the ONE week-change path** (21 Aug 26): swaps DAYS/DATES/INPUTS in place, re-seeds demo SANS for week 1, `resetSched()`, clears day-index/iid view state, revalidates and re-baselines history so no state crosses a week; write helpers; `initStore()` boot (wires, **rulesLoad**, validate, history baseline). |
 | `demoseed.ts` | **Demo-only SANS Availability seed** (14 Aug 26) — `seedDemoSans()` pushes six records straight into `INPUTS`, called from `initStore()` at BOOT, deliberately NOT part of `engine/inputs.ts`'s seed array: every parity gate and the ~40 snapshot-reset tests read `INPUTS` pristine (none call `initStore()`), so they stay blind to these rows by construction while a real built app still sees them. Idempotent (guarded per person+date, `stores-boot.test.ts` boots twice). Rules: `docs/engine-rules.md` §SANS Availability. |
-| `view.ts` | UI state the engine reads: CURPAGE, SBDAY, ROSDAY, ARM, selection (SELID/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — clicking a puck lights every copy of that person), `afterSchedMutate()`, `focusWarn`, `setPage` (which sweeps body-level popups, closes the board, and captures the day being left), setters. Also `DPREV`/`prunePreviews` (the edit surfaces' version previews) and **`VWORK`/`toggleViewWork`** (15 Aug 26 — which PUBLISHED days the VIEW page is showing the live working copy for instead of its frozen issued default; deliberately NOT DPREV, so the two pages' choices can never cross — `docs/ui-contracts.md`). Also `CARRYDAY`/`weekLeftDay`/`scrollWeekToDay` — the day carried between View-only and Edit Schedule; the two geometry helpers live here, not in `ui/pan.ts`, because `pan.ts` already imports this module and `setPage` is the one moment the outgoing week still has layout. Contract: `docs/ui-contracts.md` §The day carries across a page switch. |
+| `view.ts` | UI state the engine reads: CURPAGE, SBDAY, ROSDAY, ARM, selection (SELID/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — clicking a puck lights every copy of that person), `afterSchedMutate()`, `focusWarn`, `setPage` (which sweeps body-level popups, closes the board, and captures the day being left), setters. Also `DPREV`/`prunePreviews` (the edit surfaces' version previews) and **`VWORK`/`toggleViewWork`** (15 Aug 26 — which PUBLISHED days the VIEW page is showing the live working copy for instead of its frozen issued default; deliberately NOT DPREV, so the two pages' choices can never cross — `docs/ui-contracts.md`). Also `CARRYDAY`/`weekLeftDay`/`scrollWeekToDay` — the day carried between View-only and Edit Schedule; the two geometry helpers live here, not in `ui/pan.ts`, because `pan.ts` already imports this module and `setPage` is the one moment the outgoing week still has layout. Contract: `docs/ui-contracts.md` §The day carries across a page switch. Also `AVOPEN`/`toggleAvail` (Available-crew fold) and **`PIOPEN`/`togglePInputs`** (Aug 26 — the Personal Inputs fold, collapsed by default; same session-only pattern, cleared on session/week change). |
 | `history.ts` | HIST snapshots, `histPush`/`histApply`, undo/redo bodies. |
 | `auth.ts` | SESSION, `setSession` (resets LGEDIT, the Logic tab's own edit mode), `canEditSched`, ME/`setMe`. |
 | `users.ts` | The Manage-users prototype list. |
@@ -1926,6 +1977,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/leavewar/ui/frozencols.test.tsx` | The frozen roster columns drawn once (20 Aug 26, 5 tests). On a phone the callsign/counter columns are a `.mxband` overlay drawn OUTSIDE the sideways scroller instead of `position: sticky` on every row (see the frozen-columns block in HANDOFF's Leave War narrative). jsdom has no layout, so this pins the WIRING: the overlay exists on a phone (`matchMedia` stubbed) and not on a desktop, it lists the SAME people in the SAME order as the grid, it is `aria-hidden` with its buttons out of the tab order while the real cells keep the testids, its copy of a callsign still opens the person sheet, and every overlay row's `data-band-key` addresses exactly one real row (the address book `syncBandHeights` looks the measured heights up in — a key resolving to nothing would make the height pin a silent no-op). Alignment, staying put, and the pointer-events handoff are measured in `e2e/leavewar.spec.ts` (lw-phone), where the alignment walk covers EVERY row, not a sample. |
 | `src/ui/latemark.test.tsx` | The per-input LATE dismissal (21 Aug 26, 8 tests — replaced the 20 Aug global switch) — a live board input row carries a clickable `data-lateoff` chip and the old header switch is gone, the chip is solid while shown and a pressed ghost once dropped, dropping ONE clears only that input's badge while its chip stays as the way back, the WEEK goes with it (one `lateShown` read, every read surface), the ENGINE is untouched (`isLateInput` still answers true while `lateTag` prints nothing — which is what keeps the Inputs page's own mark honest), a member is refused at `routeClick` even with a hand-made chip, and a session change brings every dropped mark back. |
 | `src/ui/inputsfmt.test.tsx` | The Inputs page's day-first date voice (21 Aug 26, 5 tests) — `fmtDay` (day-first, this-year's-year implicit) and `fmtDMY` ('6 Jul 26', 'now'/blank pass through), and a rendered row of each shape: a same-day timed input carries '14 Jul 10:00–11:00' in Start with an empty `data-same` End, an all-day one-day reads just '14 Jul', a span keeps both cells, and Last-modified reads the day-month-year stamp. The pinned-actions layout is eye-verified (jsdom is 0×0). |
+| `src/engine/inputground.test.ts` | Activity inputs auto-land on the Ground Programme + the picker warns first (Aug 26, 8 tests) — the picker (`slotBar`) and the validator (`INPUT_FLY`) agree about an unaccepted activity input, incl. a tomorrow-midnight-tail case and that an ACCEPTED one is not double-reported; `autoAcceptInput`'s gate (activity type lands, leave/med refused, published day refused); the land→remove→re-add ground round-trip; and that `autoAcceptSeedInputs` leaves no amendment marks (a clean zero-state). |
 | `src/ui/boardwrap.test.tsx` | The board's text boxes wrap and grow (20 Aug 26, 8 tests) — every remarks box and every name/role box is a `<textarea>`, every TIME cell is still an `<input>` (the deliberate exclusion, pinned so a later pass does not "finish the job"), a value round-trips through textarea content unchanged (the leading-newline trick), and Enter still COMMITS while Shift+Enter is left alone and Escape restores. jsdom reports every rect 0×0, so the box actually GROWING — and a long unbroken word breaking rather than overflowing — is measured in `e2e/geometry.spec.ts` instead. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |

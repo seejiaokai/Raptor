@@ -16,6 +16,7 @@ import { parseHM } from '../engine/time'
 import { setDayPreview, DPREV, VWORK, setPage } from '../state/view'
 import { setSession } from '../state/auth'
 import { acceptInput, unacceptInput } from '../engine/slots'
+import { PIOPEN } from '../state/view'
 
 let w: any
 
@@ -594,7 +595,20 @@ describe('the scheduler-side controls', () => {
     }
   })
 
+  it('the Personal Inputs block folds to a summary by default; the header toggles it', () => {
+    PIOPEN.delete(0)                                 // the default: collapsed
+    const collapsed = dayHTML(0, true)
+    const cblk = collapsed.slice(collapsed.indexOf('sec-inp'), collapsed.indexOf('sec-avail'))
+    expect(cblk).toContain('data-pitog="0"')         // the header is the toggle
+    expect(cblk).not.toContain('data-acc=')          // no rows drawn while folded
+    PIOPEN.add(0)                                     // expand
+    const open = dayHTML(0, true)
+    expect(open.slice(open.indexOf('sec-inp'), open.indexOf('sec-avail'))).toContain('data-acc=')
+    PIOPEN.delete(0)                                  // leave it as we found it
+  })
+
   it('personal inputs carry an accept control; Other offers both destinations', () => {
+    PIOPEN.add(0)     // the block folds to a summary by default now — expand it to read its rows
     const e = dayHTML(0, true)
     const blk = e.slice(e.indexOf('sec-inp'), e.indexOf('sec-unav'))
     expect(blk).toContain('data-acc="g"')
@@ -603,6 +617,7 @@ describe('the scheduler-side controls', () => {
   })
 
   it('an accepted input stays put, faded, and offers Undo', () => {
+    PIOPEN.add(0)     // expand the Personal Inputs fold to see the faded accepted row
     const inp: any = INPUTS.find((i: any) => i.type === 'Meeting' && i.date === 'Jul 13')
     acceptInput(0, inp, 'g')
     const e = dayHTML(0, true)

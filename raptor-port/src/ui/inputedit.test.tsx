@@ -15,6 +15,7 @@ import { DAYS } from '../engine/data'
 import { acceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { inpId } from '../engine/inputs'
 import { INPEDIT, setInpEdit } from './pops'
+import { PIOPEN } from '../state/view'
 import { HALF_AM, commitInputEdit, unfmt, sansOverlapRefusal } from './inputedit'
 import { HOOKS } from '../engine/hooks'
 import { DATES } from '../engine/inputs'
@@ -55,7 +56,10 @@ beforeAll(async () => {
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await page('editsched')
 })
-beforeEach(async () => { if (INPEDIT) await act(async () => { setInpEdit(null); notify() }) })
+/* Personal Inputs folds to a summary by default now (Aug 26) — expand day 0's
+   so the week's and board's input rows and their edit buttons render for the
+   tests below to click. */
+beforeEach(async () => { await act(async () => { if (INPEDIT) setInpEdit(null); PIOPEN.add(0); notify() }) })
 
 describe('the control — which surfaces carry it, and who may press it', () => {
   it('every input row on the edit week carries one', () => {

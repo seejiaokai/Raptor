@@ -22,7 +22,8 @@ import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { INPUTS, isUnavail } from '../engine/inputs'
-import { inpKey, setSlotVal } from '../engine/slots'
+import { inpKey, setSlotVal, unacceptInput } from '../engine/slots'
+import { DATES } from '../engine/inputs'
 import { ELOG, elogRows, elogFor, elogClear, keyLabel } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import { setAirKey } from './pops'
@@ -179,8 +180,14 @@ describe('the five fields that write their own model', () => {
 describe('the three actions that carried no key at all', () => {
   it('accepting an input onto the ground programme is a line in the list', async () => {
     await goEdit()
-    const inp = INPUTS.find((i: any) => !i.acc && !isUnavail(i.type))!
-    expect(inp, 'the demo week has an acceptable input').toBeTruthy()
+    /* activity inputs AUTO-LAND on the ground now (Aug 26), so make one
+       available to accept BY HAND: take an accepted one, unaccept it, and
+       expand the (now folded) Personal Inputs block so its Accept control
+       renders. The manual accept path itself is unchanged — that is what this
+       test still pins. */
+    const inp = INPUTS.find((i: any) => i.acc === 'g' && !isUnavail(i.type))!
+    expect(inp, 'the demo week has an accepted activity input').toBeTruthy()
+    await act(async () => { unacceptInput(DATES.indexOf(inp.date), inp); view.PIOPEN.add(DATES.indexOf(inp.date)); notify() })
 
     /* the real control, wherever it renders — the week and the board share it.
        The DAY comes off the button, not from the input: a multi-day input

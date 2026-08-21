@@ -43,7 +43,7 @@ the rest are the ones the code actually has.
 | **Mobile mode** | Phone layout — top-to-bottom, reachable, one board window | `scheduler.css` `@media (max-width:820px)` / `480px`; `boardnav` | CSS + the phone board's arrows/dots; `sbWide` module-local |
 | **Qualifications** | The Quals grid; the qual ladder the validator reads | `QualsPage.tsx`; `people.ts` (`p.quals`, qual rules in `validate.ts`) | ticks are session-only; drive `QUAL`/`SC_QUAL`/`AAR_*` checks |
 | **Personal inputs** | Leave / medical / activity records | `INPUTS` in `inputs.ts`; `inputedit.tsx`; `InputsPage.tsx` | `INPUT_META` (the one table) decides every predicate |
-| **Availability / palette** | Who the crew strip offers, who is struck out, the armed reason lines, the green eligibility rings, the folded Available-crew panel | `avail.ts` (`slotBar`, `dayOff`), `palette-html.ts`, `highlights.ts` (`paintSelRings`), `html.ts` (`availHTML` + `AVOPEN`) | `isAway`/`inputCoversDate`/`inpWin` — MUST agree with the warning list; the rings read `slotBar` itself, never a copy |
+| **Availability / palette** | Who the crew strip offers, who is struck out, the armed reason lines, the green eligibility rings, the folded Available-crew and Personal-Inputs panels | `avail.ts` (`slotBar`, `dayOff`), `palette-html.ts`, `highlights.ts` (`paintSelRings`), `html.ts` (`availHTML` + `AVOPEN`; the Personal-Inputs fold `PIOPEN`) | `isAway`/`inputCoversDate`/`inpWin` — MUST agree with the warning list; the rings read `slotBar` itself, never a copy. `slotBar`'s busy-check now also names an unaccepted ACTIVITY commitment (`isPersonal`+`inputFlags`, four midnight tails) — same drift-with-`INPUT_FLY` rule |
 | **Post-render decoration** | Selection/search/warning classes, the armed ring, the green eligibility rings, and the ~6s just-added blue box | `highlights.ts` (`refreshHighlights` → `paintArm`/`paintSelRings`/`paintFreshAdds`) | hung AFTER the string diff, off view state (`SELID`/`ARM`/`FRESHADD`), never baked into the builder string — so a class survives an unrelated repaint; a new one adds a paint function here, never a class in the markup |
 | **Publishing / AL** | Sign-off, amendments after a day is signed | `publish.ts`, `ALPanel.tsx` | inert amendment keys through the mutation funnel |
 | **Day templates / Drafts** | Whole-day master templates; per-day alternate schedules, one of which is always the live day | `engine/daytpl.ts`, `engine/drafts.ts`; `DayTplModal.tsx`, `DraftsModal.tsx`; the board's + week's Templates/Drafts buttons (`board.ts`'s `dayTplMenu`/`draftsMenu`) | direct-write to `DAYS[di]`, one undo step via the caller's `afterSchedMutate()` — the `restoreDayVersion` shape, not the ordinary funnel. Templates refuse a published day; drafts DON'T (15 Aug 26) — a switch there rebases the day's pending set against the issued snapshot (`rebaseDayPending`, engine-rules §Drafts) |
@@ -103,14 +103,22 @@ add form / row editor / week cell / board cell / board panel adds
       → availability: isAway / inpWin / inputCoversDate
                             → PALETTE strikes / offers the man
       → histPush + markEdit                            → UNDO + HISTORY
-  → if a scheduler ACCEPTS it onto the day: acceptInput() promotes it to a
-    Ground or Unavailable row (`acceptedDay`, inert amendment keys)  → BOARD/WEEK
+  → an ACTIVITY input auto-lands on the day: autoAcceptInput() promotes it to a
+    Ground row on an editable day (`slots.ts`; every creation path + the boot
+    pass call it; published days and leave/medical are no-ops)         → BOARD/WEEK
+  → or a scheduler ACCEPTS/UNDOES it by hand: acceptInput()/unacceptInput()
+    (`acceptedDay`, inert amendment keys — the round-trip is unchanged)  → BOARD/WEEK
 ```
 The trap this flow exists to prevent: the **palette and the warning list read
 the same input two different ways.** They must never disagree — a man struck
 out of the palette but raising no warning when planted anyway is the exact bug
 `inpWin`/`awayAllDay` were made to fail-closed against. Any change to how an
-input is read gets checked on BOTH.
+input is read gets checked on BOTH. **The picker closed the OTHER half of this
+seam for activity inputs (Aug 26)**: `slotBar` was silent about an unaccepted
+Meeting/Appointment while `validate()` raised `INPUT_FLY` on a plant, so the
+busy-at-this-hour block now scans `INPUTS` for the non-away activity types with
+the SAME `canWork`/flying gate and four midnight tails the off-blocks use — a
+change to either reader's input handling is a drift-seam against the other.
 
 ### Flow C — day navigation on the phone board (view-only, no mutation)
 ```

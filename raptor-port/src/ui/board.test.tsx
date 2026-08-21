@@ -340,6 +340,9 @@ describe('the scheduler board (tfin board group)', () => {
 })
 
 describe('duty / sim / ground panels on the board (owner request, Aug 26)', () => {
+  /* Personal Inputs folds to a summary by default now (Aug 26) — expand day 0's
+     so the rows this block inspects render. */
+  beforeAll(async () => { await act(async () => { view.PIOPEN.add(0); notify() }) })
   it('the four new panels render, in week order, before the sim-notes panel', () => {
     const kids = [...$('#sbBoard').children].map(x => x.className)
     const ix = (m: string) => kids.findIndex(c => c.includes(m))
@@ -1041,6 +1044,13 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
      [0,1,2,3,5,4]. Comparing the exact sequence, with no sort, is what
      actually protects the one property this task exists to guard. */
   it('a ground address is the model index, not the rendered position', () => {
+    /* this test is about the hand-authored programme's render-time time sort.
+       Activity inputs auto-land on the ground now (Aug 26), so drop those
+       (src-tagged) rows for the measure — the auto-land + round trip is covered
+       in inputground.test.ts. Restored after so later tests see the full day. */
+    const saved = DAYS[0].ground
+    DAYS[0].ground = (saved || []).filter((r: any) => !r.src)
+    try {
     const h = boardHTML(0)
     const order = [...h.matchAll(/data-move="mv:g\.0\.(\d+)"/g)].map(m => +m[1])
     expect(order.length).toBe(DAYS[0].ground.length)
@@ -1053,6 +1063,7 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
       .map(m => [+m[1], m[2]] as const)
     expect(pairs.find(([, prog]) => prog === 'OPS/LOGS @ EXT SQN')?.[0]).toBe(5)
     expect(pairs.find(([, prog]) => prog === 'TRAINING CMD VISIT')?.[0]).toBe(4)
+    } finally { DAYS[0].ground = saved }
   })
 
   it('the column headers gain a matching empty cell so the grid still lines up', () => {

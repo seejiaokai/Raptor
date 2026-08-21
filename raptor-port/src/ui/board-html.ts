@@ -7,7 +7,7 @@ import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
-import { esc } from '../state/view'
+import { esc, PIOPEN } from '../state/view'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, sansCardsHTML } from './html'
 
 /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
@@ -506,10 +506,20 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
 export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
   const acRo=ro??pv;
+  /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26 — the
+     block is the faded audit echo now activity inputs auto-land on ground). The
+     header is the toggle (data-pitog, routeClick). Only when editable; a
+     read-only board keeps it open — there is nothing to fold away from. */
+  const foldable=!acRo;
+  if(foldable&&rows.length&&!PIOPEN.has(di)){
+    const onG=rows.filter((r:any)=>r.acc==='g').length;
+    return `<div class="sb-panel pinp"><div class="sb-ph pl-fold" data-pitog="${di}">Personal Inputs `
+      +`<span class="sub">${rows.length} input${rows.length===1?'':'s'}${onG?` · ${onG} on programme`:''} · show ⌄</span></div></div>`;
+  }
   /* this panel's own + Add MOVED to the Ground Programme header as "+ Inputs"
      (owner, 19 Aug 26) — an activity input a scheduler adds belongs on the
      programme, so the button lives where the result lands */
-  let s=`<div class="sb-panel pinp"><div class="sb-ph">Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day'}</span></div><div class="sb-pb">`;
+  let s=`<div class="sb-panel pinp"><div class="sb-ph${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day; tap header to hide'}</span></div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
   else if(!acRo)s+=C6;
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo,acRo); });

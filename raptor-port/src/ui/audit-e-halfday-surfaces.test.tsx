@@ -12,7 +12,7 @@ import { initStore, setSession, notify, writeInputsBatch } from '../state/store'
 import { INPUTS, inpId, inpTimeText } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { acceptInput, inpKey } from '../engine/slots'
-import { afterSchedMutate } from '../state/view'
+import { afterSchedMutate, PIOPEN } from '../state/view'
 import { setInpField, removeInput, HALF_PM } from './inputedit'
 import { sbUnavailPanel, sbInputsGroupPanel } from './board-html'
 import { INPEDIT, setInpEdit } from './pops'
@@ -47,7 +47,9 @@ beforeAll(async () => {
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await page('editsched')
 })
-beforeEach(async () => { if (INPEDIT) await act(async () => { setInpEdit(null); notify() }) })
+/* Personal Inputs folds by default now (Aug 26) — expand day 0's so the week
+   and board input cells this file edits render. */
+beforeEach(async () => { await act(async () => { if (INPEDIT) setInpEdit(null); PIOPEN.add(0); notify() }) })
 
 describe('halfOf\'s PM boundary, reached through the in-place cells', () => {
   it('a start typed as 12:01 on an all-day row derives the PM half', async () => {

@@ -357,6 +357,14 @@ export function toggleViewWork(di:any,on:any){ if(on)VWORK.add(+di); else VWORK.
    persisted and never in a history snapshot. */
 export const AVOPEN=new Set()
 export function toggleAvail(di:any){ if(AVOPEN.has(+di))AVOPEN.delete(+di); else AVOPEN.add(+di) }
+/* which days' PERSONAL INPUTS block is EXPANDED — collapsed to a one-line
+   summary is the default (owner, Aug 26). Now that activity inputs auto-land on
+   the ground programme, this block is the faded audit echo rather than the
+   primary surface, so it folds away like Available crew. Same AVOPEN pattern:
+   session view state, in-place mutation, cleared on a session/week change,
+   never persisted, never in a history snapshot. */
+export const PIOPEN=new Set()
+export function togglePInputs(di:any){ if(PIOPEN.has(+di))PIOPEN.delete(+di); else PIOPEN.add(+di) }
 /* RESTARM — the one deliberate confirm in the app (owner, 16 Aug 26). "Load
    onto working copy" (the reworded restore) discards any unpublished edits on
    the day, so when there ARE some it takes two taps: the first arms this flag,

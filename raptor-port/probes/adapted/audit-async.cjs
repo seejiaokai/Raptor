@@ -103,7 +103,12 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     wipe(0)
     {
       const d = DAYS[0], fw = d.waves.find(x => !isStandalone(x)), ff = fw.formations[0]
-      const inp = INPUTS.find(i => isPersonal(i.type) && !i.acc && inputCoversDate(i, d.dt) && PEOPLE[i.person])
+      /* activity inputs AUTO-LAND on the ground now (Aug 26), so the seed has no
+         UN-accepted one — take the first personal input covering the day and put
+         it back to raw, restoring this check's precondition (a submitted-but-not-
+         yet-actioned input the plant clashes with). */
+      const inp = INPUTS.find(i => isPersonal(i.type) && inputCoversDate(i, d.dt) && PEOPLE[i.person])
+      if (inp && inp.acc) { unacceptInput(0, inp); afterSchedMutate() }
       if (!inp) { out.i3 = 'no personal input in the seed' } else {
         ff.aircraft[0].p = inp.person; afterSchedMutate()
         out.i3type = inp.type
@@ -163,7 +168,10 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     wipe(0)
     {
       const id = pilot(0); fillSlot('d:0.0.0.+', id); fillSlot('d:0.0.0.+', id); afterSchedMutate()
-      out.i7 = W(id).some(x => x.code === 'DOUBLE_BOOK') ? 'DOUBLE_BOOK' : 'none'
+      /* scope to THIS day: activity inputs auto-land now, so pilot(0) may carry
+         a real clash on another day (a flight + his own accepted appointment) —
+         that is not what this scenario is about. */
+      out.i7 = W(id).some(x => x.code === 'DOUBLE_BOOK' && x.di === 0) ? 'DOUBLE_BOOK' : 'none'
       const r = DAYS[0].dutywaves[0].rows[0]; r.id = ''; r.more = []; afterSchedMutate()
     }
     /* 8 · sim seats obey the seat rules */

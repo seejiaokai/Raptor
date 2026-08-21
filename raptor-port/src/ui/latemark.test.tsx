@@ -61,6 +61,7 @@ beforeAll(async () => {
 })
 beforeEach(async () => {
   TOASTS = []
+  view.PIOPEN.add(LATE_DI)   // Personal Inputs folds by default now — expand the day this file drives so its rows render
   if (view.LATEOFF.size) await act(async () => { view.LATEOFF.clear(); notify() })
 })
 

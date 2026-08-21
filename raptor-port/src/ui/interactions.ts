@@ -681,6 +681,18 @@ export function routeClick(e: MouseEvent) {
     view.toggleAvail(+avt.dataset.avtog!); notify(); return
   }
 
+  /* the Personal Inputs block folds and unfolds per day (owner, Aug 26 —
+     collapsed summary is the default now activity inputs auto-land on ground).
+     Scheduler-side only, but on BOTH the edit week AND the board (unlike the
+     Available-crew panel, which is week-only), so it gates on canEditSched()
+     alone, not CURPAGE — the board is an overlay, not the editsched page. */
+  const pit = t.closest('[data-pitog]') as HTMLElement | null
+  if (pit) {
+    e.stopPropagation()
+    if (!canEditSched()) return
+    view.togglePInputs(+pit.dataset.pitog!); notify(); return
+  }
+
   /* per-day publish toggle — edit page only; the view page renders .dbeak.ro
      which carries no data-beak at all */
   const beak = t.closest('button[data-beak]') as HTMLElement | null

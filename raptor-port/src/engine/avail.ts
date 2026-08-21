@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow } from './inputs'
+import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inputFlags, inpLabel } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
@@ -424,6 +424,41 @@ export function slotBar(id:any,key:any,rules?:any){
     const hit=dayEvents(r.di,id).find((e:any)=>e.s!=null&&e.e!=null
       &&selfKey(e.slot||e.key)!==self&&overlap(r.slotStart,r.slotEnd,e.s,e.e));
     if(hit)return `already on ${hit.label} ${hm24(hit.s)}–${hm24(hit.e)}`;
+    /* AND THE SAME QUESTION FOR AN UNACCEPTED PERSONAL COMMITMENT (owner, Aug 26).
+       An activity input (a meeting, an appointment) that is NOT on the Ground
+       Programme lives only in day.input: the VALIDATOR reads it and raises
+       INPUT_FLY the instant a man is planted onto it, but it never became a
+       day.event, so the EVD scan above could not see it and the picker stayed
+       silent while the warning list would complain — the one drift the picker
+       and the warning list must never have. This closes it with the SAME soft
+       "already on X" a scheduled event gives, NOT a strike-out: an activity
+       type is deliberately never struck from the palette (inputs.ts), only
+       advised against, so the man still shows and the drop still goes through.
+       isAway types are handled by the four absence blocks above; a commitment
+       already promoted to a ground row is carried by the EVD scan just above,
+       so inputFlags() keeps only the live-voice ones here. Mirrors the absence
+       blocks' four midnight shifts so the two cannot disagree across a day
+       boundary either (the validator's day.input carries the nx/pv tails). */
+    const flying=String(key).indexOf(':')<0;
+    const cand=(dt:any,pred:(x:any)=>boolean)=>INPUTS.find((x:any)=>
+      !isAway(x)&&isPersonal(x.type)&&inputFlags(x)&&x.person===id&&inputCoversDate(x,dt)
+      &&!(canWork(x.type)&&!flying)&&pred(x));
+    const iHit=(x:any,shift:number)=>{const w2=inpWin(x);
+      return !!w2&&overlap(r.slotStart,r.slotEnd,w2[0]+shift,w2[1]+shift);};
+    const onWord=(x:any,suf:string)=>{const w2=inpWin(x);
+      const tm=(!awayAllDay(x)&&w2)?` ${hm24(w2[0])}–${hm24(w2[1])}`:'';
+      return `already on ${inpLabel(x)}${tm}${suf}`;};
+    const t0=cand(DAYS[r.di].dt,(x:any)=>awayAllDay(x)||iHit(x,0));
+    if(t0)return onWord(t0,'');
+    const nd=r.slotEnd>1440?DAYS[r.di+1]:null;
+    const t1=!nd?null:cand(nd.dt,(x:any)=>awayAllDay(x)||iHit(x,1440));
+    if(t1)return onWord(t1,' (tomorrow)');
+    const pdv=r.slotStart<0&&r.di>0?DAYS[r.di-1]:null;
+    const t2=!pdv?null:cand(pdv.dt,(x:any)=>awayAllDay(x)||iHit(x,-1440));
+    if(t2)return onWord(t2,' (yesterday)');
+    const pdo=r.di>0?DAYS[r.di-1]:null;
+    const t3=!pdo?null:cand(pdo.dt,(x:any)=>{const w2=inpWin(x);return !!w2&&w2[1]>1440&&iHit(x,-1440);});
+    if(t3)return onWord(t3,' (overnight)');
   }
   return '';
 }

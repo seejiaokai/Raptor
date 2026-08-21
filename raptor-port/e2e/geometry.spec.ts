@@ -2391,6 +2391,10 @@ test.describe('editing an input from the schedule', () => {
         w.INPUTS.filter((i: any) => w.inputCoversDate(i, w.DAYS[0].dt)).forEach((i: any) => { i.remarks = t })
         w.openScheduler(0)
       }, LONG)
+      /* Personal Inputs folds to a summary by default now (Aug 26) — click the
+         header to expand it before measuring its rows. */
+      await page.waitForSelector('#schedBoard .pinp [data-pitog]')
+      await page.click('#schedBoard .pinp [data-pitog]')
       await page.waitForSelector('#schedBoard .pinp [data-inpedit]')
       const m = await page.evaluate(() => {
         const btn = document.querySelector('#schedBoard .pinp [data-inpedit]') as HTMLElement
@@ -2429,6 +2433,10 @@ test.describe('editing an input from the schedule', () => {
       await page.setViewportSize(viewport)
       await login(page); await go(page, 'editsched')
       await page.evaluate(() => (window as any).openScheduler(0))
+      /* Personal Inputs folds by default now (Aug 26) — expand it to line its
+         rows up against the ground programme's. */
+      await page.waitForSelector('#schedBoard .pinp [data-pitog]')
+      await page.click('#schedBoard .pinp [data-pitog]')
       await page.waitForSelector('#schedBoard .pinp .sb-arow')
       const m = await page.evaluate(() => {
         const lefts = (sel: string) => {

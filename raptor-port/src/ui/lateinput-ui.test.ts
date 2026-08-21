@@ -18,12 +18,14 @@ import { validate, WARN } from '../engine/validate'
 import { VCONF, rulesReset } from '../engine/rules'
 import { dayHTML } from './html'
 import { boardHTML } from './board'
+import { PIOPEN } from '../state/view'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
 beforeEach(() => {
   DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
   INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
+  PIOPEN.add(0); PIOPEN.add(1)   // Personal Inputs folds by default now — expand the days this file inspects
   rulesReset()
   validate()
 })

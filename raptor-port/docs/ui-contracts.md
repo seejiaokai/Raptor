@@ -1170,6 +1170,37 @@ Filing under Unavailable has no row key, so it uses one inert input-action key
 for every loaded day the input spans; unfiling does the same. These keys count
 and publish in the Amendments panel but paint no unrelated cell.
 
+**Accepting is now the DEFAULT for an activity input (owner, Aug 26 — "by
+default all inputs are accepted").** An activity input (Meeting, Appointment,
+Training, Fly with, Duty, Personal, Other) drops onto the ground programme the
+moment it is filed, through the one gate `engine/slots.ts:autoAcceptInput`:
+isPersonal + an EDITABLE (not-yet-published) day → `acceptInput(di,row,'g')`.
+Every creation path calls it — the two board `+ Add` dialogs (via
+`commitNewInput`'s non-`toGround` branch), the Inputs page's own `add()`, and
+the boot/week-load pass (`autoAcceptSeedInputs`, `initStore`/`loadWeek`). Leave,
+medical, SANS and a PUBLISHED day are silent no-ops: a late input on an issued
+day stays under Personal Inputs (no surprise amendment), and the crew picker's
+input-aware busy-check still warns about it either way (`engine-rules.md`
+§Personal input clash). The manual `Accept`/`Undo` controls and the round-trip
+are unchanged — removing an auto-landed row returns the input to Personal
+Inputs, and it can be re-added.
+
+**An input-derived ground row is tinted.** `rowCls` adds `.gr-frominput` to a
+ground row carrying a `src` back-link (set only by `acceptInput`), on the week
+(`plRow`) and the board (`sb-arow`) alike — a faint accent rail
+(`scheduler.css`), ordered before `.cx` so a cancelled one still reads
+cancelled. It tells an input-derived row apart from a hand-authored programme
+item.
+
+**Personal Inputs folds to a one-line summary by default.** Now that activity
+inputs auto-land, the block is the faded audit echo rather than the primary
+surface, so it collapses like Available crew: `PIOPEN`/`togglePInputs`
+(`state/view.ts`), the header the toggle (`data-pitog`, routed in
+`interactions.ts` on `canEditSched()` so it works on the edit week AND the
+board). The summary counts the rows and how many are on the programme.
+Unavailable is deliberately left OPEN — it is a live plant/drop target and the
+day's must-read.
+
 ## Editing an input from the schedule (owner, 10 Aug 26)
 
 Build two of the leave-types work: times, type, remarks and delete, reachable
