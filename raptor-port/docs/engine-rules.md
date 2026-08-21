@@ -925,20 +925,23 @@ drawn. `engine/inputs.ts` owns the whole thing — `inputDueISO`,
   and is invisible to `validate()` — tightening the rule until every input is
   late must not move the warning count by one, which is pinned. It therefore
   needs no `refwin.ts` patch: the reference never sees it.
-- **THE SCHEDULE SURFACES CAN BE TOLD TO STOP PRINTING IT** (owner, 20 Aug 26 —
-  "can u give the scheduler board the option to remove late input tags?"). A
-  squadron that runs no input deadline had no way to silence the mark:
-  `inputLead` bottoms out at 0, which still marks anything touched after the
-  Monday itself. The switch is **"Hide LATE marks"** in the board's Personal
-  Inputs panel header, admin-only, session-scoped (`LATEMARK` in
-  `state/view.ts`, reset by `resetSession`).
-  **Nothing in this file changes when it is thrown.** The gate is at the four
-  UI printers (`ui/html.ts`), not here: `isLateInput` goes on answering, the
-  deadline arithmetic is untouched, and the mark stays a mark rather than
-  becoming a configurable rule. The **Inputs page keeps printing it** — that
-  page is the paperwork record, and quieting a busy board is not the same as
-  erasing when an input was filed. So a rule change here still moves what the
-  Inputs page says, whatever the switch is set to.
+- **THE SCHEDULE SURFACES CAN BE TOLD TO STOP PRINTING IT, PER INPUT** (owner,
+  21 Aug 26 — "when I click on the late orange icon beside the line, it will
+  remove the late icon, if I click the same area again it will show"; this
+  replaced the 20 Aug global "Hide LATE marks" header button). A squadron that
+  runs no input deadline had no way to silence the mark: `inputLead` bottoms out
+  at 0, which still marks anything touched after the Monday itself. The control
+  is now a clickable **LATE chip on each late input's live board row** (Personal
+  Inputs and Unavailable), admin-only, session-scoped (`LATEOFF`, a Set of input
+  ids in `state/view.ts`, cleared by `resetSession`); tapping it drops that one
+  mark, tapping again restores it.
+  **Nothing in this file changes when a mark is dropped.** The gate is at the UI
+  printers (`ui/html.ts`, via `lateShown`), not here: `isLateInput` goes on
+  answering, the deadline arithmetic is untouched, and the mark stays a mark
+  rather than becoming a configurable rule. The **Inputs page keeps printing it**
+  — that page is the paperwork record, and quieting a busy board is not the same
+  as erasing when an input was filed. So a rule change here still moves what the
+  Inputs page says, whatever a scheduler has dropped.
 - **DOWNCHITS ARE EXEMPT** (owner, 9 Aug 26). A deadline asks a man to decide
   in advance; going DNIF is not a decision he makes, and a downchit raised the
   morning of the flight is the system working. Marking it would scold him for

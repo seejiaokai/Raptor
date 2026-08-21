@@ -1,5 +1,5 @@
 import { DAYS } from '../engine/data'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
@@ -70,37 +70,32 @@ export let HISTMODE=false
 export function setHistMode(on:any){ HISTMODE=!!on }
 export function toggleHistMode(){ HISTMODE=!HISTMODE; return HISTMODE }
 
-/* ---- THE LATE-INPUT MARKS CAN BE TURNED OFF (owner, 20 Aug 26 — "can u give
-   the scheduler board the option to remove late input tags?") ---------------
-   The mark has never had an off switch. `VCONF.inputLead` is a day count whose
-   most permissive setting is 0 ("due by the Monday itself"), so a squadron that
-   does not run an input deadline at all could not silence it short of a rule
-   change — HANDOFF has carried that as a known gap since 9 Aug 26, and this is
-   it being asked for.
+/* PER-INPUT LATE DISMISSAL (owner, 21 Aug 26 — replaced the 20 Aug global
+   declutter button). A scheduler taps the LATE chip on a board input row to
+   drop that one mark; tapping the same chip again brings it back. The board's
+   live Personal-Inputs and Unavailable rows always draw the chip on a late
+   input — solid while the mark shows, a dim ghost once dropped — so the dropped
+   state stays reachable; the week, the view-only programme and a read-only
+   board show the amber badge only while the id is NOT in this set. The Inputs
+   page keeps its own — that page is the paperwork record of what came in late
+   (owner, 20 Aug 26), and reads `isLateInput` straight.
 
-   A SWITCH, not a per-badge delete. Clearing one mark at a time would need a
-   forgiven-input registry and, worse, a way BACK for a scheduler who cleared
-   the wrong one — the "deleting the last in-time" trap. A switch is reversible
-   by pressing it again, which is the whole argument.
-
-   It hides the mark on the SCHEDULE surfaces only — the board, the edit week
-   and the view-only week, the places a scheduler reads a day. The Inputs page
-   keeps its own (`InputsPage.tsx`): that page IS the paperwork record, and
-   quieting a busy board is a different thing from erasing when an input was
-   filed. The engine is untouched either way — `isLateInput` still answers, the
-   mark was never a warning (§Stable decisions), and nothing here reaches
-   `validate()`.
-
-   ADMIN-ONLY at the write path, like every other write in this app: a member
-   must not be able to switch off the mark on their own late input.
-
-   Session-scoped and not persisted, like HISTMODE and sbWide. If the squadron
-   wants "we do not run a deadline" to stick, that is the same server/database
-   work as everything else on HANDOFF's list — the switch is not the place to
-   grow a second persistence path. */
-export let LATEMARK=true
-export function setLateMark(on:any){ LATEMARK=!!on }
-export function toggleLateMark(){ if(!canEditSched())return LATEMARK; LATEMARK=!LATEMARK; return LATEMARK }
+   ADMIN at the write path, like every other write in this app: a member must
+   not clear the mark on their own late input, or anyone's. Session-scoped and
+   not persisted, like HISTMODE and the Available-crew folds — the set is
+   cleared on every login/logout by resetSession, so a next user never inherits
+   a board with marks quietly dropped. If "we run no deadline" should stick,
+   that is the same server work as the rest of HANDOFF's list. */
+export const LATEOFF=new Set<string>()
+export function lateShown(inp:any){ return !!inp && !LATEOFF.has(inpId(inp)) }
+/* returns the NEW shown-state (true = the mark is back on), or false when a
+   member is refused — the caller toasts either way. */
+export function toggleLateOff(inp:any){
+  if(!canEditSched()) return false
+  const id=inpId(inp)
+  if(LATEOFF.has(id)){ LATEOFF.delete(id); return true }
+  LATEOFF.add(id); return false
+}
 
 /* ---- THE DAY YOU ARE LOOKING AT, CARRIED ACROSS A PAGE SWITCH ------------
    (owner, 9 Aug 26.) View-only Sched and Edit Schedule are two separate

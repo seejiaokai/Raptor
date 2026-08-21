@@ -24,9 +24,9 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the frozen-column VERTICAL alignment fix
-AND the owner's five-item 20 Aug 26 evening batch — all six gates watched this
-session):
+**Last recorded green baseline** (the per-input LATE dismissal, 21 Aug 26 —
+all six gates watched this session; it sits on the frozen-column vertical
+alignment fix and the 20 Aug evening batch below):
 
 | gate | reading |
 |---|---|
@@ -47,9 +47,13 @@ hours), and the two repaired topbar-pill assertions replaced in place → 2701 /
 month-navigation tests were already counted.
 
 DOM measures at that baseline: week **3743** under a 4000 ceiling, board
-**850** under 960 (the three context-bound add buttons, plus the LATE-mark
-switch and its two label spans in the Personal Inputs header). The Leave War year matrix (~28k nodes) is outside the perf gate — it
-has its own e2e DOM band (29000), measured-first.
+**853** under 960 (unchanged from the previous 850 but for the LATE control:
+the global header button and its two label spans came OFF, and a `.itemcell`
+wrapper + a `.latechip` went onto each of the demo day's three late input rows
+— net +3 nodes). Test counts are unmoved (`latemark.test.tsx` stays 8 tests,
+no file added or removed), so the reconciliation above still holds at
+2701 / 147 / 305. The Leave War year matrix (~28k nodes) is outside the perf
+gate — it has its own e2e DOM band (29000), measured-first.
 
 **How the gates lie — the durable traps, worth more than any count:**
 
@@ -1459,31 +1463,32 @@ has its own e2e DOM band (29000), measured-first.
   neither AAR rule fires anywhere in the week regardless. The mark is set by
   hand on the Quals page in two clicks. If the demo week ever gains a real
   AAR line, seed a few `'I'`s with it or every such line will read as a fault.
-- **RESOLVED — the late-input mark has an off switch now (owner, 20 Aug 26 —
-  "can u give the scheduler board the option to remove late input tags?").**
-  It never had one: `VCONF.inputLead` bottoms out at 0 ("due by the Monday
-  itself"), so a squadron running no deadline could not silence it short of a
-  rule change. **"Hide LATE marks"** sits in the board's **Personal Inputs**
-  panel header (`data-latetog`, admin-only, `routeClick` re-checks the role),
-  and it is a SWITCH rather than a per-badge delete on purpose — clearing marks
-  one at a time needs a forgiven-input registry and, worse, a way BACK for a
-  scheduler who cleared the wrong one; pressing the switch again IS the way
-  back. It lives there and not on the board's top bar because that bar is at
-  its measured limit (§Stable decisions: nothing joins it without something
-  leaving), which is a bad trade for a preference.
+- **RESOLVED — the late-input mark is dropped PER INPUT now (owner, 21 Aug 26 —
+  "show a late tag beside the applicable inputs … when I click on the late orange
+  icon beside the line, it will remove the late icon, if I click the same area
+  again it will show").** This REPLACED the 20 Aug global "Hide LATE marks"
+  header button, which the owner asked to remove. Every late input now carries a
+  clickable **LATE chip** on its live board row, on BOTH the Personal Inputs and
+  the Unavailable panels (`lateChip`/`.latechip` in `ui/html.ts`; it rides the
+  ITEM cell wrapped in `.itemcell` so it does not add an eighth track to the
+  seven-track c6r grid, and a non-late row is byte-identical to before). Tap it
+  to drop that one mark (solid amber → dim ghost, keeping its footprint so it
+  stays tappable), tap the same spot to bring it back — the "way back" the 20 Aug
+  entry worried a per-badge delete would lack, built in via a session-only id set
+  (`LATEOFF` in `state/view.ts`, cleared by `resetSession`).
   Three things a later pass could get wrong, all pinned by `latemark.test.tsx`:
-  the gate is at the UI (`lateTag`/`lateTagOf`/`lateRowCls`/`lateRowTitle` in
-  `html.ts`, one read each), so **`isLateInput` goes on answering and the mark
-  stays a mark, never a rule**; it covers every SCHEDULE surface at once —
-  board, edit week, view-only — because all four helpers funnel through one
-  read; and the **Inputs page keeps its own mark**, because that page is the
-  paperwork record and quieting a busy board is not the same as erasing when an
-  input was filed. Session-scoped like `HISTMODE`, reset by `resetSession`; if
-  "we run no deadline" should stick, that is the same database work as
-  everything else here, not a second persistence path.
+  the gate is at the UI passive printers (`lateTag`/`lateTagOf`/`lateRowCls`/
+  `lateRowTitle`, each reads `lateShown` once), so **`isLateInput` goes on
+  answering and the mark stays a mark, never a rule**; dropping one hides only
+  THAT input, on the board's passive badge AND the two weeks, leaving every other
+  late input showing; and the **Inputs page keeps its own mark**, because that
+  page is the paperwork record and quieting a busy board is not the same as
+  erasing when an input was filed. Admin-only at the write path (`toggleLateOff`;
+  `routeClick` re-checks). Do NOT bring the global header button back.
   (Downchits are still exempt — owner, 9 Aug 26 — so the commonest genuinely
   unavoidable late input was already covered. Leave and detachments are not.)
-  Rules: `docs/engine-rules.md` §The late-input mark.
+  Rules: `docs/engine-rules.md` §The late-input mark; placement
+  `docs/ui-contracts.md` §The LATE marks can be dropped per input.
 - **The Inputs page opens on TODAY → TWO WEEKS, and its empty table on the
   demo data is the owner's own choice** (owner, 12 Aug 26 — "it is ok to show
   any inputs from the today's date to 2 weeks down the road by default").
@@ -1801,7 +1806,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/ui/boardaddinput.test.tsx` | The board's **+ Add** input (Aug 26, 11 tests) — the button renders on a live Personal Inputs / Unavailable panel and not on a read-only one, `commitNewInput` lands a row on the open day (and refuses a malformed draft), the dialog opens in its `_new` shape (no Delete, "Add", panel-suited default type), the whole click-fill-Add gesture paints the new row under the panel, Cancel adds nothing, and a member is refused at the `routeClick` handler even with a hand-made button. |
 | `src/leavewar/ui/monthstrip.test.tsx` | The month readout (extended 20 Aug 26). Its `layoutYear` helper now simulates a scroll the way a BROWSER does — the columns hold still and `scrollLeft` moves over them — because the readout reads cached content-space geometry instead of re-measuring every rectangle on every scroll event. A test that leaves `scrollLeft` at zero is testing a scroll that never happened. Also pins that an unrelated re-render does not blank the highlight, with a note on what that test does NOT catch. |
 | `src/leavewar/ui/frozencols.test.tsx` | The frozen roster columns drawn once (20 Aug 26, 5 tests). On a phone the callsign/counter columns are a `.mxband` overlay drawn OUTSIDE the sideways scroller instead of `position: sticky` on every row (see the frozen-columns block in HANDOFF's Leave War narrative). jsdom has no layout, so this pins the WIRING: the overlay exists on a phone (`matchMedia` stubbed) and not on a desktop, it lists the SAME people in the SAME order as the grid, it is `aria-hidden` with its buttons out of the tab order while the real cells keep the testids, its copy of a callsign still opens the person sheet, and every overlay row's `data-band-key` addresses exactly one real row (the address book `syncBandHeights` looks the measured heights up in — a key resolving to nothing would make the height pin a silent no-op). Alignment, staying put, and the pointer-events handoff are measured in `e2e/leavewar.spec.ts` (lw-phone), where the alignment walk covers EVERY row, not a sample. |
-| `src/ui/latemark.test.tsx` | The LATE-mark switch (20 Aug 26, 8 tests) — the Personal Inputs header carries it on a live board and not on a preview, the label says what pressing it DOES and flips with the state, throwing it clears every mark on the board and a second press is the way back, the WEEK goes with it (one read, every schedule surface), the ENGINE is untouched (`isLateInput` still answers true while `lateTag` prints nothing — which is what keeps the Inputs page's own mark honest), a member is refused at `routeClick` even with a hand-made button, and a session change puts the marks back on. |
+| `src/ui/latemark.test.tsx` | The per-input LATE dismissal (21 Aug 26, 8 tests — replaced the 20 Aug global switch) — a live board input row carries a clickable `data-lateoff` chip and the old header switch is gone, the chip is solid while shown and a pressed ghost once dropped, dropping ONE clears only that input's badge while its chip stays as the way back, the WEEK goes with it (one `lateShown` read, every read surface), the ENGINE is untouched (`isLateInput` still answers true while `lateTag` prints nothing — which is what keeps the Inputs page's own mark honest), a member is refused at `routeClick` even with a hand-made chip, and a session change brings every dropped mark back. |
 | `src/ui/boardwrap.test.tsx` | The board's text boxes wrap and grow (20 Aug 26, 8 tests) — every remarks box and every name/role box is a `<textarea>`, every TIME cell is still an `<input>` (the deliberate exclusion, pinned so a later pass does not "finish the job"), a value round-trips through textarea content unchanged (the leading-newline trick), and Enter still COMMITS while Shift+Enter is left alone and Escape restores. jsdom reports every rect 0×0, so the box actually GROWING — and a long unbroken word breaking rather than overflowing — is measured in `e2e/geometry.spec.ts` instead. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26, 20 tests) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising. |

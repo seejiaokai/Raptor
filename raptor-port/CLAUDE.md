@@ -515,21 +515,28 @@ subscribers.
   at the END of the remark saved nothing (759), and turning off mid-word
   breaking saved nothing (757). The badge's WIDTH is the whole cost, not its
   position.
-  **It CAN be switched off now, and that is a display switch, not a rule**
-  (owner, 20 Aug 26 — "can u give the scheduler board the option to remove late
-  input tags?"). "Hide LATE marks" in the board's Personal Inputs header,
-  admin-only, session-scoped. Three parts of the shape are decided, not
-  incidental: it is a SWITCH rather than a per-badge delete (clearing marks one
-  at a time needs a forgiven-input registry and a way back for a scheduler who
-  cleared the wrong one — pressing it again IS the way back); the gate is at
-  the four printers in `ui/html.ts`, so `isLateInput` goes on answering and the
-  mark stays a mark; and the **Inputs page keeps printing it**, because that
+  **It CAN be dropped per input now, and that is a display switch, not a rule**
+  (owner, 21 Aug 26 — "show a late tag beside the applicable inputs … when I
+  click on the late orange icon beside the line, it will remove the late icon,
+  if I click the same area again it will show"). This REPLACED the 20 Aug global
+  "Hide LATE marks" header button, which the owner asked to remove. The 20 Aug
+  entry argued AGAINST a per-badge delete because clearing marks one at a time
+  needs a forgiven-input registry and a way back; the owner then asked for
+  exactly that, with the way back built in — so the registry exists (`LATEOFF`
+  in `state/view.ts`, a session-only Set of input ids) and the way back IS
+  tapping the same chip again. Three parts of the shape stay decided: the
+  board's LIVE input rows (Personal Inputs AND Unavailable) always draw a
+  clickable `latechip` on a late row — solid while shown, a dim ghost once
+  dropped — so a dropped mark stays reachable; the gate is at the passive
+  printers in `ui/html.ts` (`lateShown`), so `isLateInput` goes on answering and
+  the mark stays a mark; and the **Inputs page keeps printing it**, because that
   page is the paperwork record and quieting a busy board is not the same as
-  erasing when an input was filed. Don't move the gate into the engine, and
-  don't "finish the job" by silencing the Inputs page.
+  erasing when an input was filed. Admin-only at the write path, cleared on
+  every login/logout. Don't move the gate into the engine, don't bring back the
+  global header button, and don't "finish the job" by silencing the Inputs page.
   Rules: `docs/engine-rules.md` §The late-input mark.
   Placement: `docs/ui-contracts.md` §The late-input mark on screen, §The LATE
-  marks can be switched off.
+  marks can be dropped per input.
 - **No warning / advisory / note counts in the top bar** (owner, 20 Aug 26 —
   "what's the point of having warning, advisory and note at the top. Just
   remove it"). The three `pillbtn` counts are gone. Every day already leads

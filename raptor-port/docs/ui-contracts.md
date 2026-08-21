@@ -2889,28 +2889,40 @@ make. `interact.test.tsx` drives it directly now, and `app.test.tsx` pins that
 the buttons are absent — so a later "the top bar looks empty" pass does not put
 the sum back.
 
-## The LATE marks can be switched off (owner, 20 Aug 26)
+## The LATE marks can be dropped per input (owner, 21 Aug 26)
 
-"Can u give the scheduler board the option to remove late input tags?"
+"Show a late tag beside the applicable inputs … when I click on the late orange
+icon beside the line, it will remove the late icon, if I click the same area
+again it will show."
 
-**"Hide LATE marks"** sits in the board's **Personal Inputs** panel header,
-beside where the marks are read. Not on the board's top bar: that bar is at its
-measured limit and nothing joins it without something leaving (CLAUDE.md
-§Stable decisions), which is a poor trade for a preference.
+This REPLACED the 20 Aug global "Hide LATE marks" header button (removed at the
+owner's ask). Each late input now carries its OWN control on the board.
 
-- **A switch, not a per-badge delete.** Clearing marks one at a time needs a
-  forgiven-input registry and, worse, a way back for a scheduler who cleared
-  the wrong one. Pressing it again IS the way back.
-- **The label says what pressing it DOES** ("Hide LATE marks" / "Show LATE
-  marks"), because the marks themselves are the state and they are right there.
-- **It covers every schedule surface at once** — board, edit week, view-only —
-  because all four printers in `ui/html.ts` read the flag once each. The
-  tooltip says so, since the button sits on one panel but governs all of them.
-- **The Inputs page keeps its own mark.** That page is the paperwork record.
-- **Admin only**, at the write path (`toggleLateMark` refuses a member;
-  `routeClick` re-checks and toast-refuses a hand-made button), and
-  session-scoped like the board's History mode — `resetSession` puts it back on
-  so the next user does not inherit a quietly silenced board.
+- **The chip rides the ITEM cell of a live board input row**, on BOTH the
+  Personal Inputs and the Unavailable panels — the two surfaces the owner named
+  — drawn by `lateChip` (`ui/html.ts`) whenever `isLateInput`. It sits beside
+  the type label, wrapped in `.itemcell` so it does not add an eighth track to
+  the seven-track c6r grid (the register trap this file documents under the
+  board panels). A non-late row is byte-identical to before.
+- **Tap to drop, tap the same spot to restore.** The chip is always present on
+  a late row: solid amber while the mark shows, a dim hollow ghost (`.off`,
+  `aria-pressed="true"`) once dropped, keeping the exact footprint so it stays
+  tappable. This is the "way back" the 20 Aug entry worried a per-badge delete
+  would lack — it is built in.
+- **Dropping one hides only that input, everywhere it is READ** — the board's
+  passive badge, the edit week, the view-only week — because those funnel
+  through `lateShown` (`state/view.ts`, the `LATEOFF` id set). Every OTHER late
+  input is untouched. The live board rows keep drawing the ghost chip so the
+  drop is reversible.
+- **The Inputs page keeps its own mark.** That page is the paperwork record and
+  reads `isLateInput` straight, ungated.
+- **Admin only**, at the write path (`toggleLateOff` refuses a member;
+  `routeClick` re-checks and toast-refuses a hand-made chip), and session-scoped
+  like the board's History mode — `resetSession` clears `LATEOFF` so the next
+  user does not inherit a board with marks quietly dropped.
+- **Pinned in** `src/ui/latemark.test.tsx` (the per-input shape, the one-not-all
+  scoping, the reversibility, the member refusal, the session reset); the chip
+  drawing and the drop are eye-verified on the live bundle (jsdom paints 0×0).
 
 ## Week Insights: work hours (owner, 20 Aug 26)
 
