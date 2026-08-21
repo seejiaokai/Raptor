@@ -172,6 +172,17 @@ const noAhRmk = (s: string) => s
   .replace(/<span>Rmks<\/span>/g, '')
   .replace(/<span class="rmk rk-e"><\/span>/g, '')
 
+/* Divergence (owner, 21 Aug 26): in-time lines can be ADDED and REMOVED — a
+   "+ In time" button on each flying wave's tab and a ✕ per line inside the
+   editable block (the fix for deleting the last line stranding the whole box).
+   All three additions are edit-mode only, the reference has none of them, so
+   lift them off the port's markup before the compare. Pinned positively in
+   intimesadd.test.tsx. */
+const noItCtl = (s: string) => s
+  .replace(/<button class="airbtn" data-itadd="[^"]*"[^>]*>\+ In time<\/button>/g, '')
+  .replace(/<button class="itx" contenteditable="false" data-itdel="[^"]*"[^>]*>✕<\/button>/g, '')
+  .replace(/class="intimes iedit"/g, 'class="intimes"')
+
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
     const V = (s: string) => noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))))))
@@ -221,7 +232,7 @@ describe('view-week markup parity with the reference', () => {
     const normDow = (s: string) => s.replace(
       /<span class="dow crewday" data-crewday="(\d+)" title="Show this day's crew in the aircrew panel">/g,
       '<span class="dow sb-open" data-sbday="$1" title="Open scheduler board">')
-    const E = (s: string) => normDow(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s)))))))))))
+    const E = (s: string) => normDow(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))

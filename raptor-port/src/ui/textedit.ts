@@ -87,7 +87,11 @@ export function routeFocusOut(e: FocusEvent) {
        nothing to say when History was asked what changed. */
     const itWas = (w.intimes || []).join(', ')
     if (nv.join('|') !== (w.intimes || []).join('|')) { w.intimes = nv; markEdit(`it:${di}.${gi}`, itWas, nv.join(', ')); txtCommit() }
-    const want = intimesInner(w); if (!sameInner(it, want)) it.innerHTML = want
+    /* the heal must draw what the edit surface draws — the per-line ✕ included
+       (this block is only ever contenteditable in edit mode) — or the compare
+       below is never true and every blur rebuilds the innerHTML, detaching a
+       ✕ between its pointerdown and its click */
+    const want = intimesInner(w, `${di}|${gi}`); if (!sameInner(it, want)) it.innerHTML = want
     return
   }
   /* the typed stores text ("bombs…") — opts.bombs lives outside the txt-key

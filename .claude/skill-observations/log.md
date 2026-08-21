@@ -10,21 +10,6 @@ resolved statuses always carry their resolution date
 
 ## 2026-08-17
 
-### Observation 1: Session-start checkpoint — no observations pending
-
-**Status:** ACTIONED (2026-08-19) — already reflected: the log lives committed in the repo per the activation note; nothing to change (weekly review)
-**Date:** 2026-08-17
-**Session context:** Building Leave War sync wire 4 (weekend/PH duty earns OIL) in the Raptor repo.
-**Skill:** task-observer
-**Type:** open-source
-**Phase/Area:** 3rd-task-completion checkpoint
-
-**Issue:** Checkpoint marker: the log did not exist in this repo yet (ephemeral web container, first committed-log session); created it at the first mandatory checkpoint rather than at session start — the Session Start Protocol step was deferred while exploration ran.
-
-**Suggested improvement:** None needed yet; noting so the next session knows the log's committed-into-repo location (.claude/skill-observations/log.md) is deliberate, per the repo's activation note.
-
-**Principle:** In storage-less environments the log must live in the repo to survive; create it the moment the first write is due, not later.
-
 ### Observation 2: New walkers over shared structures — diff the skip-conditions
 
 **Status:** OPEN
@@ -39,21 +24,6 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When reviewing (or writing) a NEW consumer of a structure that existing code already consumes, explicitly diff its filter/skip conditions against each sibling consumer's — every marker a sibling honours (cancellation flags, overflow lists, sentinel entries) is either honoured or its omission argued in a comment.
 
 **Principle:** A shared structure's existing walkers encode the structure's real semantics; a new walker is wrong wherever it silently diverges from them, and the cheapest complete review of it is a skip-condition diff against its siblings.
-
-### Observation 3: Checkpoint — no observations pending (medical-sync build, tasks 1–3)
-
-**Status:** DECLINED (2026-08-19) — acknowledgement marker only, no action (weekly review)
-**Date:** 2026-08-17
-**Session context:** Leave War medical markers build — codes/counters/picker done, sync next
-**Skill:** task-observer
-**Type:** internal
-**Phase/Area:** 3rd-completion checkpoint
-
-**Issue:** Checkpoint marker only; observation 2 (diff the skip-conditions of new walkers over shared structures) is being actively applied to the sync-wire extension.
-
-**Suggested improvement:** None.
-
-**Principle:** None — acknowledgement marker.
 
 ### Observation 4: Widening a vocabulary means auditing every pruning filter over its parallel state
 
@@ -146,3 +116,19 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When one element must visually track another's scroll position via JS, do not rely on the `scroll` event as the sole driver — it is throttled/coalesced and always lags compositor-driven scrolling. Drive the follower from a rAF loop that reads the source's scroll offset each frame while scrolling. Prefer a compositor-friendly write (transform) over layout-inducing ones (scrollLeft) where the follower's own sticky children permit it.
 
 **Principle:** A scroll-linked effect computed on the main thread from the `scroll` event is inherently a frame or more behind compositor scrolling; sampling the scroll offset in requestAnimationFrame is what puts the follower in the same frame as the content it tracks.
+
+### Observation 10: Controls embedded in a contenteditable must be drawn by the same builder the heal uses
+
+**Status:** OPEN
+**Date:** 2026-08-21
+**Session context:** RAPTOR — adding per-line add/remove controls to the per-wave in-time block (a contenteditable div healed from the model on focusout)
+**Skill:** New skill candidate: none — cross-cutting frontend principle (sibling of Observations 8/9)
+**Type:** open-source
+**Phase/Area:** implementation design
+
+**Issue:** A delete button placed inside a contenteditable region that is "healed" (innerHTML rebuilt from the model on blur) gets torn out of the DOM between its own pointerdown and click whenever the heal's expected markup omits it — the click then lands on a detached node and dies silently, a dead first tap that no unit test catches (the second tap works).
+
+**Suggested improvement:** When embedding interactive islands (contenteditable="false" buttons) inside an editable region, render them from the SAME builder function the heal/diff path uses, so the equality check sees identical markup and never rebuilds under a live tap. Keep the commit scrape keyed to the text elements only (spans), so the island never leaks into the committed value.
+
+**Principle:** Any DOM region that is periodically rebuilt from a single source-of-truth builder must have ALL its interactive children owned by that builder — a control rendered by a second path is destroyed by the first at exactly the moment it is being used.
+

@@ -22,8 +22,10 @@ import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firs
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, draftsMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
-import { setCurWeek } from '../engine/waves'
+import { setCurWeek, isStandalone } from '../engine/waves'
 import { WARN } from '../engine/validate'
+import { waveInTime } from '../engine/events'
+import { hhmm } from '../engine/time'
 
 /* Focus a warning clicked from somewhere that is NOT an already-open day box —
    the board's issue list, or a chip on a puck. Both have to open the box
@@ -501,6 +503,69 @@ export function routeClick(e: MouseEvent) {
       HOOKS.toast(shown ? 'LATE mark shown' : 'LATE mark hidden — the Inputs page still shows it', 'ok')
     }
     notify(); return
+  }
+  /* a wave's IN-TIME lines come and go here (owner, 21 Aug 26 — "allow me to
+     input lines at the top of each wave… edit or delete it"). The block itself
+     is the contenteditable the scheduler TYPES in (textedit.ts commits it);
+     these two buttons are how a line is born and how one dies, which the block
+     alone never had — deleting the last line dropped the whole box out of the
+     DOM with no control to bring it back. Same control on the week and the
+     board, so it routes here. Both writers use the SAME it: key the typed path
+     uses, so the AL diff, the changes list and undo read identically — and the
+     engine needs no wiring at all: intimeMap/waveInTime parse the w.intimes
+     strings themselves, so a line is registered the moment it carries a time.
+     editMode() as well as the role, for the same reason boardMbtn checks both:
+     these branches write straight to the live model. */
+  const ita = t.closest('[data-itadd]') as HTMLElement | null
+  if (ita) {
+    e.stopPropagation()
+    if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast('Only a scheduler can edit the in-times', 'warn'); return }
+    const [dis, gis] = ita.dataset.itadd!.split('|'); const di = +dis, gi = +gis
+    const w = DAYS[di] && DAYS[di].waves[gi]; if (!w || isStandalone(w)) return
+    const was = (w.intimes || []).join(', ')
+    /* seed the line with the wave's own derived in-time (earliest line, else
+       earliest T/O — waveInTime's exact fallback), so the minted text states
+       the number the engine already assumes and nothing moves until the
+       scheduler types otherwise. No callsign on purpose: "<CS> IN TIME" is
+       the phrase that sets a formation's report time (intimeMap), and this
+       button must not pick a jet nobody chose. */
+    const t0 = waveInTime(w)
+    const line = (t0 != null ? hhmm(t0).replace(':', '') + 'H: ' : '') + 'IN TIME + WX/NOTAMS'
+    w.intimes = [...(w.intimes || []), line]
+    markEdit(`it:${di}.${gi}`, was, w.intimes.join(', '))
+    view.afterSchedMutate(); notify()
+    /* the repaint lands after React commits (LogicPage's own idiom) — then put
+       the caret at the end of the new line so typing can start at once. Scoped
+       to the surface the button lives on: the board and the week both render
+       this block under the same address. */
+    const host = (ita.closest('.sb-main') || document) as ParentNode
+    setTimeout(() => {
+      const blk = host.querySelector(`.intimes[data-intimes="${di}|${gi}"]`) as HTMLElement | null
+      if (!blk) return
+      const sp = blk.querySelectorAll('span'); const last = sp[sp.length - 1]
+      blk.focus()
+      try {
+        if (last) {
+          const r = document.createRange(); r.selectNodeContents(last); r.collapse(false)
+          const s = window.getSelection()!; s.removeAllRanges(); s.addRange(r)
+        }
+      } catch (_) { /* a caret is a courtesy — jsdom and odd embedders may refuse */ }
+    }, 0)
+    return
+  }
+  const itd = t.closest('[data-itdel]') as HTMLElement | null
+  if (itd) {
+    e.stopPropagation()
+    if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast('Only a scheduler can edit the in-times', 'warn'); return }
+    const [dis, gis, ixs] = itd.dataset.itdel!.split('|'); const di = +dis, gi = +gis, ix = +ixs
+    const w = DAYS[di] && DAYS[di].waves[gi]; if (!w || (w.intimes || [])[ix] == null) return
+    const was = w.intimes.join(', ')
+    const gone = String(w.intimes[ix])
+    w.intimes = w.intimes.filter((_: any, i: number) => i !== ix)
+    markEdit(`it:${di}.${gi}`, was, w.intimes.join(', '))
+    view.afterSchedMutate(); notify()
+    HOOKS.toast(`In-time line removed — ${gone.length > 40 ? gone.slice(0, 40) + '…' : gone}`, 'ok')
+    return
   }
   const iad = t.closest('[data-inpadd]') as HTMLElement | null
   if (iad) {

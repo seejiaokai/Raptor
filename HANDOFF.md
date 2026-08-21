@@ -24,14 +24,14 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the Inputs-page date standardisation,
-21 Aug 26 — all six gates watched this session; it sits on the per-input LATE
-dismissal, the frozen-column vertical alignment fix and the 20 Aug evening
-batch below):
+**Last recorded green baseline** (the in-time add/remove controls,
+21 Aug 26 — all six gates watched this session; it sits on the Inputs-page
+date standardisation, the per-input LATE dismissal and the frozen-column
+vertical alignment fix below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2706 across 148 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2712 across 149 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -48,15 +48,15 @@ hours), and the two repaired topbar-pill assertions replaced in place → 2701 /
 month-navigation tests were already counted.
 
 The Inputs-page date standardisation added `inputsfmt.test.tsx` (+5 tests,
-+1 file → 2706 / 148); it is display-only and changed no DOM count or e2e (the
-Inputs cards are not in the perf or geometry gates), so e2e stays 305 / 12. A
-handful of existing tests moved from month-first to day-first assertions in
-place (`inputs.test.tsx`, `audit-e-window-sort.test.tsx`), no count change.
++1 file → 2706 / 148); display-only, no DOM or e2e change. The in-time
+add/remove controls added `intimesadd.test.tsx` (+6 tests, +1 file →
+2712 / 149); edit-mode-only markup, so the read-only parity compare needed
+nothing and e2e stays 305 / 12.
 
-DOM measures at that baseline: week **3743** under a 4000 ceiling, board
-**853** under 960 (the per-input LATE control: the global header button and its
-two label spans came OFF, and a `.itemcell` wrapper + a `.latechip` went onto
-each of the demo day's three late input rows — net +3 over the earlier 850). The Leave War year matrix (~28k nodes) is outside the perf
+DOM measures at that baseline: week **3767** under a 4000 ceiling (+24 over
+the previous 3743: a "+ In time" button per flying wave and a ✕ per in-time
+line, edit mode only), board **859** under 960 (+6 over 853: the demo day's
+two waves' add buttons and four line ✕s). The Leave War year matrix (~28k nodes) is outside the perf
 gate — it has its own e2e DOM band (29000), measured-first.
 
 **How the gates lie — the durable traps, worth more than any count:**
@@ -1142,10 +1142,13 @@ gate — it has its own e2e DOM band (29000), measured-first.
   - **A wave label typed long on the week** becomes an `<option>` in the
     board's title `<select>` and can run past the panel (measured 2638px in a
     930px box). Recovery is picking any real title. Same class as above.
-  - **Deleting the last in-time** removes the whole in-times block from the
-    DOM with no control to add one back — undo restores it, which is the
-    mitigation. The render is gated on `intimes.length`; ungating it is a
-    render change with geometry consequences, so it was not done blind.
+  - **The in-time block's one-way delete is CLOSED (owner, 21 Aug 26)** —
+    every non-standalone wave carries "+ In time" in edit mode (whether or
+    not it has lines) and each line a ✕; both write the existing `it:` key,
+    the seed line is engine-neutral, and the block's `intimes.length` render
+    gate is UNCHANGED — the button is the way back, not an ungated box.
+    Contract: `docs/ui-contracts.md` §In-time lines; pinned in
+    `intimesadd.test.tsx`.
   - **`ruleParse` stays loose** — `6 monkeys` reads as 6, `0770` as 08:10 —
     because every accepted value is echoed back FORMATTED in the field and the
     toast, so the user sees exactly what was taken.

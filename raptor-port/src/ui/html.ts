@@ -581,8 +581,15 @@ export function dayWarnHTML(di:any){
   }
   return h+`</div>`;
 }
-export function intimesInner(w:any){
-  return ((w&&w.intimes)||[]).map((t:any)=>`<span>${esc(t).replace(/^(\s*\d{3,4}\s*H)/i,'<b>$1</b>')}</span>`).join('');}
+/* ek — the edit surfaces pass `${di}|${gi}` and each line gains its ✕
+   (data-itdel, owner 21 Aug 26). The ✕ lives INSIDE the contenteditable block
+   as a contenteditable="false" island on purpose: rendering it here keeps
+   textedit.ts's sameInner heal true (a heal that stripped the buttons would
+   tear the tapped ✕ out from under its own click), and the commit scrape
+   reads spans only, so the button never leaks into the committed text. */
+export function intimesInner(w:any,ek?:any){
+  return ((w&&w.intimes)||[]).map((t:any,i:number)=>`<span>${esc(t).replace(/^(\s*\d{3,4}\s*H)/i,'<b>$1</b>')}</span>`
+    +(ek?`<button class="itx" contenteditable="false" data-itdel="${ek}|${i}" title="Remove this in-time line" aria-label="Remove this in-time line">✕</button>`:'')).join('');}
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on
    the formation, and the formation's own TO–LD. Both surfaces have to agree on that
@@ -888,9 +895,14 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}" style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
         <div class="go-tab"><span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
         +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?(w.kind==='avalon'?' · availability check only':' · not cross-checked'):''}</span>`:''}</span>
-        ${sa?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}</div>`;
+        ${sa?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}</div>`;
+      /* "+ In time" renders whether or not the wave has lines — the always-there
+         add control is the fix for the old trap where deleting the last line
+         dropped the whole block with no way back (owner, 21 Aug 26). Standalone
+         waves are excluded: a shift briefs nothing, and a typed in-time there
+         would silently move waveWindows. interactions.ts owns the click. */
       if(w.intimes&&w.intimes.length)
-        h+=`<div class="intimes"${alAttr(`it:${di}.${gi}`)} ${ed?`contenteditable="true" spellcheck="false" data-intimes="${di}|${gi}"`:''}>${intimesInner(w)}</div>`;
+        h+=`<div class="intimes${ed?' iedit':''}"${alAttr(`it:${di}.${gi}`)} ${ed?`contenteditable="true" spellcheck="false" data-intimes="${di}|${gi}"`:''}>${intimesInner(w,ed?`${di}|${gi}`:null)}</div>`;
       h+=sa
         ? `<div class="cols formcols"><span>${esc(w.label||'')}<br>SHIFT</span><span class="c-c">START</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
         : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">B<br>TO</span><span class="c-c">LD</span><span>FCP / RCP</span><span>RMKS</span></div>`;

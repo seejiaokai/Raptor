@@ -264,7 +264,7 @@ a{color:var(--accent)}
 @media (prefers-reduced-motion:reduce){:root{--press-scale:1}}
 .abtn:active,.fchip:active,.pillbtn:active,.rok:active,.rmx:active,
 .inact .red:active,.mbtn:active,.dbeak:active,.wm:active,.dinfobtn:active,
-.so-clear:active,.nav a:active,.login .go:active,.sb-slot.empty:active{
+.so-clear:active,.nav a:active,.login .go:active,.sb-slot.empty:active,.itx:active{
   filter:brightness(.88);transform:scale(var(--press-scale))
 }
 
@@ -939,6 +939,11 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .intimes span b{font-weight:800;color:#FFDF9E}
 .intimes[contenteditable]{outline:none}
 .intimes[contenteditable]:focus{background:rgba(229,201,74,.10)}
+/* edit mode interleaves span,✕ pairs — the grid pairs them back into rows
+   (line | its ✕) without touching the span contract textedit.ts scrapes */
+.intimes.iedit{display:grid;grid-template-columns:1fr auto;gap:2px 6px;align-items:center}
+.itx{background:none;border:0;color:var(--ink-3);cursor:pointer;font-size:9px;line-height:1;padding:1px 4px;border-radius:4px;user-select:none}
+.itx:hover{color:var(--hard);background:rgba(240,85,95,.12)}
 .go.night{background:rgba(240,85,95,.04)}
 .go.night .go-tab .asd{color:#FBB4B9}/* sims sub-blocks */
 /* duties by wave */
