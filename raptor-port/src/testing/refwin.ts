@@ -481,16 +481,17 @@ function rebrief(html: string): string {
   return html
 }
 
-/* A DUTY DESK ROW BEARS CREW REST (owner, 21 Aug 26 — an Ops-O ending 21:30
-   with a 09:00 report next morning must raise the hard breach, not merely
-   chip TT). The port's validate.ts widened its rest-bearing set from
-   sortie-or-shift to sortie, shift or duty; the reference computes rest from
-   the identical line, so the same one-word widening moves both engines
+/* EVERYTHING THAT ENDS THE DAY BEARS CREW REST (owner, 21 Aug 26 — first
+   duties joined the sortie-or-shift set that morning, then "anything that
+   ends the day prior and affects the 12 hour crew rest will be a warning"
+   widened it to every event kind: sims, ground events and programme items
+   included). The port's validate.ts sets rests=true; the reference computes
+   rest from the identical line, so the same substitution moves both engines
    together — REST[] maps, the hard branch and the messages all follow from
    it. Rule: docs/engine-rules.md §Validation, "Crew rest". */
 function rerest(html: string): string {
   const from = "const rests=(e.kind==='fly'||e.kind==='shift');"
-  const to = "const rests=(e.kind==='fly'||e.kind==='shift'||e.kind==='duty');"
+  const to = 'const rests=true;'
   const n = html.split(from).length - 1
   if (n !== 1) throw new Error(`refwin rerest: expected exactly 1 match, got ${n}`)
   return html.replace(from, to)

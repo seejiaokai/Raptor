@@ -375,11 +375,11 @@ export function validate(){
         add('hard','DAYS_RUN',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`);}
     });
     /* ---- crew rest across the day boundary -------------------------------
-       12h clear from the previous day's last commitment. A sortie's day ends at
-       land + 2h (the debrief); a duty desk row ends when it ends (owner,
-       21 Aug 26 — duties bear crew rest like shifts); sims and ground events
-       do NOT attract crew rest,
-       but a short gap after one is still worth calling tight turning. The
+       12h clear from the previous day's last commitment — ANY commitment
+       (owner, 21 Aug 26: "anything that ends the day prior and affects the
+       12 hour crew rest will be a warning"). A sortie's day ends at land +
+       2h (the debrief); a shift, a duty desk row, a sim, a ground event or
+       a programme item ends when it ends. The
        squadron's nominal report is T/O − 3h; if the aircrew has actually been
        TOLD to come in earlier than legal — through the published in-time or the
        brief time, whichever is earlier — that is a hard breach, not a caution.
@@ -390,10 +390,11 @@ export function validate(){
        own start time IS the report time, so no 3h lead and no brief lead are
        taken off it either. */
     if(idx>0){
-      /* Track the last FLYING end separately from the last end of any kind.
-         Keeping only the single latest event meant a late duty row could mask
-         the sortie underneath it and downgrade a hard crew-rest breach to an
-         advisory — adding a duty removed a warning. */
+      /* prevFlyEnd/prevEnd were once distinct — the rest-bearing set against
+         the last end of ANY kind — and a late non-resting row could mask the
+         sortie underneath it. With every kind rest-bearing they track the
+         same number; both stay because the reference computes both and the
+         fallback below costs nothing. */
       /* WHICH leg ran late, not just how late. The end time alone answers the
          rule but not the reader: the cross-day row on this day is the one
          affordance a scheduler can act on, and it has to be able to point at
@@ -408,24 +409,26 @@ export function validate(){
          which ends at its written time with no debrief tail to assume. */
       const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={};
       ev[idx-1].events.forEach((e:any)=>{
-        /* A DUTY DESK ROW BEARS CREW REST TOO (owner, 21 Aug 26 — an Ops-O
-           ending 21:30 with a 09:00 report the next morning must flag, not
-           merely chip TT). This revises the earlier sortie-or-shift-only
-           rule; the incident that rule fixed — the picker's REST[] and this
-           branch disagreeing — cannot recur, because duty ends now feed BOTH
-           (prevFlyEnd builds the REST map below). Like a shift, a duty ends
-           at its written end with no debrief tail. Sims and ground events
-           still do not attract crew rest — a short gap after one stays the
-           tight-turning advisory. */
-        const rests=(e.kind==='fly'||e.kind==='shift'||e.kind==='duty');
+        /* EVERYTHING THAT ENDS THE DAY BEARS CREW REST (owner, 21 Aug 26 —
+           "anything that ends the day prior and affects the 12 hour crew
+           rest will be a warning"; this widened twice the same day: first
+           duties joined sortie-and-shift, then sims, ground events and
+           programme items joined them all). A sortie still ends at land +
+           debrief; every other kind ends at its WRITTEN end with no tail —
+           a sim's brief/debrief windows live in simwin, not on the event,
+           so its box end is what counts here. The tight-turning advisory
+           below is now only the nominal-vs-instructed gap, never a
+           severity downgrade by event kind; and the REST[] map the picker
+           reads is built from the same set, so they cannot disagree. */
+        const rests=true;
         const end=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift/duty ends when it ends
         if(end==null)return;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
         if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}
       });
-      /* when rest expires today, for everyone who flew or stood a shift
-         yesterday — the palette reads this to keep an SC slot closed to anyone
-         who is not yet clear */
+      /* when rest expires today, for everyone who had ANY commitment
+         yesterday — the palette reads this to keep an SC slot closed to
+         anyone who is not yet clear */
       const restMap:any={};
       Object.keys(prevFlyEnd).forEach((id:any)=>{
         const cl=prevFlyEnd[id]+VCONF.crewRest-1440;
@@ -452,12 +455,10 @@ export function validate(){
         /* Personnel (ground crew) hold no crew-rest rule — an incentive ride
            does not put a ground-crewman on a 12-hour flying clock. */
         if(PEOPLE[id]&&PEOPLE[id].pers)return;
-        /* Crew rest runs off the last REST-BEARING commitment — a sortie, a
-           shift or a DUTY DESK ROW (owner, 21 Aug 26; duties joined the set,
-           see the collection above). When nothing rest-bearing happened
-           yesterday — a sim or a ground event only — we still fall back to
-           the last end of any kind, which is what feeds the tight-turning
-           advisory below. */
+        /* Crew rest runs off the last commitment of ANY kind (owner,
+           21 Aug 26 — see the collection above). The prevEnd fallback is
+           vestigial now that everything rests, and pfly can only read true
+           when a previous end exists at all. */
         const pe=prevFlyEnd[id]!=null?prevFlyEnd[id]:prevEnd[id];
         if(pe==null||!isFinite(pe))return;
         const pfly={[id]:prevFlyEnd[id]!=null};
@@ -514,6 +515,10 @@ export function validate(){
              the ring goes rather than the chip. The warning itself is
              unchanged — still filed, still counted, still clickable. */
           markChip(di,id,'TT');
+          /* the sim/ground suffix is UNREACHABLE since every kind became
+             rest-bearing (pfly is true whenever pe exists) — the ternary
+             stays because the patched reference carries the identical line
+             and neither side can emit it */
           add('adv','CREW_TIGHT',[id],`Tight turning — T/O ${hm24(Math.min.apply(null,legs.map((e:any)=>e.to)))} puts the ${lgT(VCONF.reportLead)} report at ${hm24(nominal)}, inside ${lgT(VCONF.crewRest)}. ${tail}`
             +(pfly[id]?'':' (prior day ended on a sim or ground event, so crew rest itself does not apply)'),
             legs.reduce((m:any,e:any)=>nomOf(e)<nomOf(m)?e:m).key);

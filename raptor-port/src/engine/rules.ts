@@ -31,6 +31,13 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
   inputLead:14,     // member input deadline, days before the week's Monday
   scDayFrom:7*60,   // an SC shift wholly inside this window is a DAY shift
   scDayTo:19*60,
+  /* PROMOTED FROM HARD-CODED LITERALS (owner, 21 Aug 26 — "I don't wanna
+     hard code too many things and have no flexibility"). Both were fixed
+     numbers buried in events.ts/avail.ts; at these defaults the engine's
+     behaviour is byte-identical to before (and to the reference), so parity
+     is untouched — the gain is that the Logic tab can now move them. */
+  aarNight:19*60,   // a bare AAR is NIGHT when the sortie lands after this
+  simLen:90,        // a sim row with no end time is assumed to run this long
   /* WEEKEND / PUBLIC-HOLIDAY DUTY EARNS OIL (owner, 16-17 Aug 26 — Leave War
      sync wire 4). A duty stood on a non-working day credits OIL in Leave War:
      an SC AM or PM shift is half a day, a whole-day shift a full one, and a
@@ -92,6 +99,8 @@ export const RULE_SPEC:any={
   amtDebrief:{t:'AMT debrief',               u:'min', lo:0,  hi:240},
   scDayFrom: {t:'SC day window opens',       u:'time',lo:0,  hi:1439},
   scDayTo:   {t:'SC day window closes',      u:'time',lo:0,  hi:1439},
+  aarNight:  {t:'Bare AAR is night after',   u:'time',lo:0,  hi:1439},
+  simLen:    {t:'Assumed sim length, no end time',u:'min',lo:15,hi:480},
   oilFullMin:{t:'Weekend duty full day (OIL)',u:'min',lo:60, hi:720},
   maxRun:    {t:'Max days worked in a row',  u:'days',lo:1,  hi:14},
   inputLead: {t:'Member input deadline before the week',u:'days',lo:0,hi:60},
@@ -105,7 +114,11 @@ export const ruleFmt=(k:any,v:any)=>{const u=RULE_SPEC[k]&&RULE_SPEC[k].u;
   return u==='time'?hhmm(v):u==='days'?`${v} day${v===1?'':'s'}`:lgT(v);};
 export const ruleParse=(k:any,txt:any)=>{
   const s=String(txt).trim();
-  if(RULE_SPEC[k]&&RULE_SPEC[k].u==='time'){const m=parseHM(s); return m==null?null:m;}
+  /* clock fields tolerate the squadron's own spellings — "1900", "19:00",
+     "1900H", "19:00L" all mean the same time (owner, 21 Aug 26: "whats the
+     tolerance in detecting data that are similar, like 0900 vs 0900H").
+     The suffix is stripped, not parsed: H and L both mean local here. */
+  if(RULE_SPEC[k]&&RULE_SPEC[k].u==='time'){const m=parseHM(s.replace(/\s*[HL]$/i,'')); return m==null?null:m;}
   /* a day count is a plain number — "6", "6 days" — never minutes */
   if(RULE_SPEC[k]&&RULE_SPEC[k].u==='days'){const m=s.match(/^(\d+)/); return m?+m[1]:null;}
   /* "12h", "2h20", "90", "90 min" all mean the same thing */

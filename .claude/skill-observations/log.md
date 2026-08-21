@@ -147,3 +147,33 @@ resolved statuses always carry their resolution date
 
 **Principle:** The unit of contenteditable should equal the unit of commit. A region larger than one committed value hands the browser's editing engine authority over your data structure — and WebKit exercises that authority differently from every test environment you have.
 
+
+### Observation 12: A rule's prose lives in more places than its code — sweep them all on every rule change
+
+**Status:** OPEN
+**Date:** 2026-08-21
+**Session context:** Widening RAPTOR's crew-rest rule (any prior-day event now rest-bearing)
+**Skill:** New skill candidate: rule-change sweep (or a CLAUDE.md discipline line)
+**Type:** open-source
+**Phase/Area:** Docs/consistency pass after an engine rule change
+
+**Issue:** The morning's duty-widening pass updated the engine, the reference patch, the tests and two docs files — but missed the Logic page (`logic-html.ts`), a user-facing surface that states the same rule in prose. It was found stale only because the NEXT rule change happened to touch the same paragraph hours later. A rule that renders its own description is a copy of the rule, and copies drift.
+
+**Suggested improvement:** After changing any engine rule, grep the whole repo for the old rule's distinctive WORDING (not just its code identifiers) — e.g. "sortie or a shift" — to find prose restatements in UI copy, docs, and comments. The repo's feature-impact.md drift-seam list could name "rule prose surfaces" (engine comments, engine-rules.md, remarks-vocabulary.md, logic-html.ts) as a standing seam.
+
+**Principle:** When behaviour and its human-readable description are maintained separately, every behaviour change must be paired with a text search for the old description's wording; identifier-based greps find code, only wording-based greps find prose.
+
+### Observation 13: Test fixtures must speak the model's stored format, not the UI's accepted format
+
+**Status:** OPEN
+**Date:** 2026-08-21
+**Session context:** RAPTOR editable-rules pass — an engine test silently produced no warning
+**Skill:** New skill candidate: engine-test fixtures (or a testing discipline note)
+**Type:** open-source
+**Phase/Area:** Writing engine-level tests that mutate the data model directly
+
+**Issue:** A test planted a formation take-off as '1800' (the format the UI's input boxes accept and normalise) where the model stores '18:00'. The model-level reader (`toMin`, colon-only) returned NaN, every check for that line switched off silently, and the test failed with "no warning raised" — pointing at the rule under test rather than at the fixture. Fifteen minutes of debugging landed on the fixture, not the feature.
+
+**Suggested improvement:** When a test writes into the data model directly (bypassing the UI write path), first read one SEED value of the same field and match its format exactly. A one-line comment in the test naming the stored format prevents the next writer repeating it. For the repo: fixtures copying seed shapes beat hand-built literals.
+
+**Principle:** UI write paths normalise; direct model writes don't. A test that bypasses the write path inherits the obligation to produce exactly what the write path would have stored — the quickest proof is copying the format of an existing seed value.

@@ -159,7 +159,7 @@ export function collectEvents(){
           /* key = the aircraft's slot-key prefix, captured HERE because acs
              excludes CX'd and spare aircraft — ai is not recoverable by
              position later. Warnings anchor on it to pan to the line. */
-          acs.push({p:a.p,w:a.w,rmks:a.rmks,aar:aarNeed(a.rmks,!!w.night||ldM>19*60),key:`${di}.${gi}.${li}.${ai}`});
+          acs.push({p:a.p,w:a.w,rmks:a.rmks,aar:aarNeed(a.rmks,!!w.night||ldM>VCONF.aarNight),key:`${di}.${gi}.${li}.${ai}`});
           [['FCP',a.p],['RCP',a.w]].forEach((pair:any)=>{ const seat=pair[0],id=pair[1]; if(!id||isSpecial(id))return;
             if(seat==='FCP')fcps.push(id);
             fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,
@@ -180,7 +180,7 @@ export function collectEvents(){
       });
     });
     ['amt','oft'].forEach((k:any)=>((d.sims&&d.sims[k])||[]).forEach((s:any,ri:any)=>{ if(s.cx)return;
-      const st=parseHM(s.str), en=parseHM(s.end)!=null?parseHM(s.end):(st!=null?st+90:null);
+      const st=parseHM(s.str), en=parseHM(s.end)!=null?parseHM(s.end):(st!=null?st+VCONF.simLen:null);
       /* a sim box has the same two seats as the jet: front = pilot, back = WSO.
          only rows that actually name a p/w pair get seat-qualification checked. */
       if(s.p||s.w)simcrew.push({p:s.p,w:s.w,label:(k.toUpperCase()+' '+(s.label||'sim')),kind:k,ri});
@@ -188,7 +188,7 @@ export function collectEvents(){
          as [1380,60] — an inverted interval that `overlap` can never match, so
          every check on that row was silently switched off. And the bodies
          dropped underneath the row (more[]) are as tasked as the two in seats. */
-      const sw=win(st,en,90); if(!sw)return;
+      const sw=win(st,en,VCONF.simLen); if(!sw)return;
       [s.p,s.w,nameToId(s.who)].concat(s.pax||[]).concat(s.more||[])
         .forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim',key:'s:'+di+'.'+k+'.'+ri}); }); }));
     /* ---- sim brief / debrief windows -------------------------------------
@@ -204,7 +204,7 @@ export function collectEvents(){
     const rowIds=(r:any)=>[r.p,r.w,nameToId(r.who)].concat(r.pax||[]).concat(r.more||[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id));
     ((d.sims&&d.sims.oft)||[]).forEach((s:any,ri:any)=>{ if(s.cx)return; if(!/EP/i.test(s.label||''))return;
       const st=parseHM(s.str); if(st==null)return;
-      const en=parseHM(s.end)!=null?parseHM(s.end):st+90, ids=rowIds(s); if(!ids.length)return;
+      const en=parseHM(s.end)!=null?parseHM(s.end):st+VCONF.simLen, ids=rowIds(s); if(!ids.length)return;
       const lead=briefLeadOf(s.rmks);
       simwin.push({ids,label:'OFT '+(s.label||'sim'),bs:st-(lead!=null?lead:VCONF.epBrief),be:st,ds:en,de:en+VCONF.simDebrief,key:`s:${di}.oft.${ri}`}); });
     (()=>{ const rows=((d.sims&&d.sims.amt)||[]).filter((r:any)=>!r.cx); if(!rows.length)return;

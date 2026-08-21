@@ -1,18 +1,21 @@
-/* A DUTY DESK ROW BEARS CREW REST (owner, 21 Aug 26 — his own repro: "he
-   ended at 2130 for ops o the day prior but when I changed his in time to
-   0900 no warning. Likewise when I change the brief time to 0900"). Before
-   this, only a sortie or an SC shift the day before could raise the hard
-   CREW_REST; a late desk duty fed the tight-turning advisory only — which is
-   exactly the TT chip his screenshot shows where he expected red.
+/* EVERYTHING THAT ENDS THE DAY BEARS CREW REST (owner, 21 Aug 26, in two
+   steps the same day). First his own repro — "he ended at 2130 for ops o
+   the day prior but when I changed his in time to 0900 no warning" — put
+   duty desk rows into the rest-bearing set beside sorties and SC shifts.
+   Then the general ruling: "anything that ends the day prior and affects
+   the 12 hour crew rest will be a warning of crew rest" — so sims, ground
+   events and programme items joined too, and event kind can never again
+   downgrade a short night to the tight-turning advisory.
 
    What this pins:
      - a duty row ending late yesterday + told to report inside 12h today =
        HARD crew-rest breach, whether the instruction is the published
        in-time or a typed brief (insOf takes the EARLIER of the two);
-     - the REST map (the palette's "he is not clear yet") carries the
-       duty-ender too, so the picker and the engine cannot disagree;
-     - a duty ends at its WRITTEN end — no debrief tail is assumed;
-     - a sim or ground event yesterday still raises the advisory only. */
+     - a late GROUND EVENT and a late SIM raise the same hard breach;
+     - the REST map (the palette's "he is not clear yet") carries every
+       kind of ender, so the picker and the engine cannot disagree;
+     - a non-flying commitment ends at its WRITTEN end — no debrief tail;
+     - a prior day that IS 12h clear stays silent, whatever its kind. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { validate, WARN, REST, restClear } from './validate'
@@ -86,10 +89,53 @@ describe('a duty row bears crew rest', () => {
     expect(stuffWarns().find((w: any) => w.code === 'CREW_REST')).toBeFalsy()
   })
 
-  it('a sim or ground event yesterday still gives the advisory, not the breach', () => {
-    /* fantom sits a ground event Mon 10:30–12:30 and nothing rest-bearing;
-       plant him on Tue RU with an 0300 in-time so even a midnight-anchored
-       12h cannot be clear — only CREW_TIGHT may fire */
+  it('a late GROUND EVENT yesterday raises the hard breach too', () => {
+    /* waldo is idle across the seed week; give him a Mon evening ground
+       event to 22:00 and a Tue 09:00 report — 11h rest, an hour short */
+    const ru = ruOf()
+    const seat = ru.aircraft[1]
+    const w2: any = (DAYS[TUE] as any).waves[1]
+    const wasIn = w2.intimes.slice(), wasW = seat.w
+    plant(() => {
+      (DAYS[0] as any).ground.push({ prog: 'SQN TOWNHALL', str: '1900', end: '2200', who: 'waldo' })
+      seat.w = 'waldo'; w2.intimes = [...wasIn.slice(0, 1), '0900H: RU IN TIME']
+    }, () => { (DAYS[0] as any).ground.pop(); seat.w = wasW; w2.intimes = wasIn })
+    validate()
+    const g: any = WARN.byDay.find((x: any) => x.di === TUE)
+    const mine = ((g && g.warns) || []).filter((w: any) => (w.who || []).includes('waldo'))
+    const cr = mine.find((w: any) => w.code === 'CREW_REST')
+    expect(cr, 'hard breach off a ground event').toBeTruthy()
+    expect(cr.sev).toBe('hard')
+    /* a ground event ends at its written end — nothing is assumed */
+    expect(cr.msg).toContain('ended 22:00')
+    expect(cr.msg).not.toContain('debrief assumed')
+    /* and the palette agrees: 22:00 + 12h − 24h = 10:00 into Tuesday */
+    expect(restClear(TUE, 'waldo')).toBe(22 * 60 + VCONF.crewRest - 1440)
+  })
+
+  it('a late SIM yesterday raises it the same', () => {
+    const ru = ruOf()
+    const seat = ru.aircraft[1]
+    const w2: any = (DAYS[TUE] as any).waves[1]
+    const wasIn = w2.intimes.slice(), wasW = seat.w
+    plant(() => {
+      (DAYS[0] as any).sims.oft.push({ label: 'BFM-3', str: '1930', end: '2130', p: '', w: 'waldo', rmks: '' })
+      seat.w = 'waldo'; w2.intimes = [...wasIn.slice(0, 1), '0900H: RU IN TIME']
+    }, () => { (DAYS[0] as any).sims.oft.pop(); seat.w = wasW; w2.intimes = wasIn })
+    validate()
+    const g: any = WARN.byDay.find((x: any) => x.di === TUE)
+    const mine = ((g && g.warns) || []).filter((w: any) => (w.who || []).includes('waldo'))
+    const cr = mine.find((w: any) => w.code === 'CREW_REST')
+    expect(cr, 'hard breach off a sim').toBeTruthy()
+    expect(cr.msg).toContain('ended 21:30')
+    expect(cr.msg).not.toContain('debrief assumed')
+  })
+
+  it('a prior day that IS clear stays silent, whatever its kind', () => {
+    /* fantom's seed ground event ends 12:30 Mon, so even an 03:00 report is
+       14h30 later — clear. Before the widening this case was silent because
+       ground events did not count; now it is silent because the arithmetic
+       says so, which is the difference this file exists to hold. */
     const ru = ruOf()
     const seat = ru.aircraft[0]
     const w2: any = (DAYS[TUE] as any).waves[1]
@@ -99,6 +145,6 @@ describe('a duty row bears crew rest', () => {
     validate()
     const g: any = WARN.byDay.find((x: any) => x.di === TUE)
     const mine = ((g && g.warns) || []).filter((w: any) => (w.who || []).includes('fantom'))
-    expect(mine.find((w: any) => w.code === 'CREW_REST'), 'no hard breach off a ground event').toBeFalsy()
+    expect(mine.find((w: any) => w.code === 'CREW_REST'), 'no breach when rest is genuinely clear').toBeFalsy()
   })
 })

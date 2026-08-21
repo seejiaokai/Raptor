@@ -123,6 +123,39 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
     expect(RULE_SPEC.crewRest.lo).toBeGreaterThan(180)
   })
 
+  it('a setting quoted on two rows edits from either box — the circled CREW_TIGHT row included', async () => {
+    /* the owner circled the CREW_TIGHT advisory asking "is this editable as
+       well? The number?" (21 Aug 26). The 3h is reportLead; it now renders
+       an edit box on that row TOO, and both boxes drive the one setting. */
+    const boxes = $$('#lgBody input[data-lgset="reportLead"]') as HTMLInputElement[]
+    expect(boxes.length, 'the nominal-report row and the CREW_TIGHT row').toBeGreaterThanOrEqual(2)
+    await setField(boxes[1], '2h30')
+    expect(VCONF.reportLead).toBe(150)
+    const again = $$('#lgBody input[data-lgset="reportLead"]') as HTMLInputElement[]
+    expect(again[0].value, 'the first box shows the same setting').toBe('2h30')
+    await setField(again[0], '3h')
+    expect(VCONF.reportLead).toBe(180)
+  })
+
+  it('the promoted settings render boxes and take the squadron spellings', async () => {
+    /* every edit repaints the built markup, so the box is re-queried before
+       each write — the old node is off the DOM the moment the toast fires */
+    const box = (k: string) => $(`#lgBody input[data-lgset="${k}"]`) as HTMLInputElement
+    expect(box('aarNight'), 'the AAR night line is editable now').toBeTruthy()
+    await setField(box('aarNight'), '2000H')        // the H suffix is tolerated
+    expect(VCONF.aarNight).toBe(1200)
+    await setField(box('aarNight'), '19:00')
+    expect(VCONF.aarNight).toBe(1140)
+    expect(box('simLen'), 'the sim length is editable now').toBeTruthy()
+    await setField(box('simLen'), '2h')
+    expect(VCONF.simLen).toBe(120)
+    await setField(box('simLen'), '5')              // under the floor — refused
+    expect(VCONF.simLen).toBe(120)
+    expect(box('simLen').value, 'the refused box shows the live value again').toBe('2h')
+    await setField(box('simLen'), '90')
+    expect(VCONF.simLen).toBe(90)
+  })
+
   it('the clash matrix toggles write SHIFT_HARD', async () => {
     const c = $('#lgBody input[data-lgkind="ground"]') as HTMLInputElement
     expect(c).toBeTruthy()

@@ -24,14 +24,14 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the in-time second pass — per-line
-editor, grammar, duty crew rest — 21 Aug 26, all six gates watched this
-session; it sits on the in-time add/remove controls, the Inputs-page date
-standardisation and the per-input LATE dismissal below):
+**Last recorded green baseline** (the crew-rest widening — every prior-day
+commitment rest-bearing — plus the editable-rules pass, 21 Aug 26, all six
+gates watched this session; it sits on the in-time passes, the Inputs-page
+date standardisation and the per-input LATE dismissal below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2734 across 151 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2747 across 152 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -53,7 +53,11 @@ The in-time add/remove controls added `intimesadd.test.tsx` (+6 tests,
 crew rest) and grew `intimesadd.test.tsx` to 9 (+3, the per-line editor) →
 2734 / 151; the adapted `audit` probe's item 6 flipped WITH the rule (it
 pinned "a desk raises no breach", the owner overruled it), and e2e stays
-305 / 12.
+305 / 12. The crew-rest widening grew `dutyrest.test.ts` 6 → 8 (+2: sim
+and ground breaches in, the advisory-only pin inverted with the rule) →
+2736; the editable-rules pass added `ruleflex.test.ts` (+9, +1 file) and
++2 in `logic.test.tsx` → 2747 / 152, with e2e, probes, perf and the DOM
+ceilings all unmoved (the Logic tab is outside every ceiling).
 
 DOM measures at that baseline: week **3767** under a 4000 ceiling (+24 over
 the previous 3743: a "+ In time" button per flying wave and a ✕ per in-time
@@ -1153,10 +1157,25 @@ gate — it has its own e2e DOM band (29000), measured-first.
     would not tap a button inside a contenteditable, and the shared block
     let WebKit clone spans — the duplicate-line report), the line grammar
     widened (0900 / 09:00 / H / L; callsign anywhere in the line scopes it
-    to that formation, no callsign = the whole wave), and **duty desk rows
-    bear crew rest now** (Ops-O till 21:30 + told to report 09:00 = hard
-    breach; `refwin.ts:rerest` mirrors the reference; the rest anchor stays
-    the EARLIER of in-time and brief). Rules: `docs/engine-rules.md`
+    to that formation, no callsign = the whole wave), and **EVERY prior-day
+    commitment bears crew rest now** (a THIRD pass the same day widened
+    duty-only to all kinds — "anything that ends the day prior and affects
+    the 12 hour crew rest will be a warning": sims, ground events and
+    programme items included, each at its written end, no debrief tail;
+    `refwin.ts:rerest` mirrors the reference; the rest anchor stays the
+    EARLIER of in-time and brief; the seed week raises no new warning —
+    only the `REST[]` maps grew). A FOURTH pass the same day made the rules
+    more editable (owner: "I don't wanna hard code too many things"):
+    `VCONF.aarNight` (bare AAR turns night, standard 19:00 — was a literal
+    in BOTH `events.ts` and `avail.ts:slotRules`) and `VCONF.simLen` (an
+    open-ended sim's assumed length, standard 90) joined `RULE_SPEC`; the
+    Logic tab's CREW_TIGHT row carries a `reportLead` edit box where the
+    owner circled the 3h (a key can render on several rows now — the
+    focus-restore targets a per-render ordinal `data-lgi`); and `ruleParse`
+    clock fields tolerate an H/L suffix (`1900H` = `19:00`). Pinned in
+    `ruleflex.test.ts` (both AAR readers move together, simLen drives the
+    clash window, save/load/reset round-trips, poisoned-store refusal) and
+    `logic.test.tsx`. Rules: `docs/engine-rules.md`
     §Validation; grammar: `docs/remarks-vocabulary.md` §The in-time lines;
     contract: `docs/ui-contracts.md` §In-time lines. Pinned in
     `intimes.test.ts`, `dutyrest.test.ts`, `intimesadd.test.tsx`.

@@ -121,6 +121,37 @@ barely more than one.
   Trust this index instead of re-exploring. Prefer a fresh
   session per task; a long conversation re-sends itself every turn.
 
+**The rules-engine robustness doctrine (owner, 21 Aug 26 — "Remember
+this").** Any change that touches the rules engine carries a standing bar:
+be ~95% sure it breaks nothing before calling it done, test it, and check
+your own work. The owner named the gotcha families to walk EVERY time —
+they are his words, keep walking them:
+- **People not following the format.** What is the tolerance for
+  near-identical spellings (`0900` = `09:00` = `0900H` = `0900L`)? Loose
+  where variants mean the same thing, refused where a value could be a typo
+  (the `RULE_SPEC` bounds, the brief-lead 1–240 guard).
+- **Missing input.** If the user doesn't type what you wanted, what is
+  registered instead? Every default must be stated somewhere the user can
+  see (`openEnd`, `simLen`, the blank-B suggested brief), and "no usable
+  value" must fail CLOSED for pickers (null = unknown, never free) while
+  staying visibly inert rather than silently wrong.
+- **User errors.** A refused value is put back to the live value on screen,
+  never left looking saved; an impossible clock is skipped, not rolled into
+  a different time.
+- **Deletions and edits from another page.** The engine re-runs on every
+  mutation path (`afterSchedMutate`, `ruleApply`), so ask of each new rule:
+  which pages display its result, and do they all repaint?
+- **Sync between copies.** A rule read in two places (validator + crew
+  picker + Logic-tab prose) is a drift seam. One VCONF key, one function —
+  never a second literal. When a rule CHANGES, grep for the old rule's
+  WORDING as well as its identifiers: prose restatements (logic-html rows,
+  docs) don't show up in code greps. The 19:00 AAR literal that sat in both
+  `events.ts` and `avail.ts` until 21 Aug 26 is the standing example.
+Also standing: prefer a `VCONF` + `RULE_SPEC` setting over a hard-coded
+number for anything a squadron could plausibly set policy on, and put the
+edit box on the Logic-tab row where the number is QUOTED, not only where it
+is defined.
+
 **Task-observer activation (owner, 15 Aug 26).** At the start of any
 task-oriented session — any interaction where you will use tools and produce
 deliverables — invoke the `task-observer` skill before beginning work, so

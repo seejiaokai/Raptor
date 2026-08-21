@@ -70,17 +70,24 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     scheduler there is a brief to retype.
   Neither fires where the roll above makes the clock legitimate (`toM <
   VCONF.briefLead`), and neither touches a standalone wave's inert B.
-- Crew rest (VCONF.crewRest) runs off the last REST-BEARING commitment
-  (sortie, shift or **duty desk row** — duties joined the set 21 Aug 26,
-  owner's ruling: an Ops-O ending 21:30 with a 09:00 report next morning is a
-  breach, not merely tight turning; like a shift, a duty ends at its WRITTEN
-  end with no debrief tail, and its enders ride the `REST[]` map the palette
-  reads, so the picker and the engine agree). It anchors on the **earlier**
-  of the published in-time and the leg's own brief — rest ends when the man
-  first has to show. Breach = hard CR; nominal-inside-rest, or a prior day
-  ending only on a sim/ground event = adv TT.
+- Crew rest (VCONF.crewRest) runs off the last commitment of **ANY kind**
+  the day before (owner, 21 Aug 26, in two steps the same day: duties
+  joined the sortie-or-shift set in the morning — an Ops-O ending 21:30
+  with a 09:00 report next morning is a breach, not merely tight turning —
+  then "anything that ends the day prior and affects the 12 hour crew rest
+  will be a warning" widened it to sims, ground events and programme items
+  too). A sortie ends at land + debrief; every other kind ends at its
+  WRITTEN end with no tail — a sim counts its box end, its brief/debrief
+  windows stay the SIM_BRIEF/SIM_DEBRIEF rules' business. Every ender rides
+  the `REST[]` map the palette reads, so the picker and the engine agree.
+  It anchors on the **earlier** of the published in-time and the leg's own
+  brief — rest ends when the man first has to show. Breach = hard CR;
+  nominal-inside-rest with the instructed report clear = adv TT (the
+  advisory is now only that gap, never a severity downgrade by event kind).
   Exactly `crewRest` is legal — the breach is strictly less (owner, 6 Aug 26).
   Reference mirrored by `refwin.ts:rerest()`; pinned in `dutyrest.test.ts`.
+  The seed week raises no new warning under the widening (verified by WARN
+  diff, 21 Aug 26) — only the REST maps grew.
 - **The in-time line's grammar** (owner, 21 Aug 26 — "accept any form of
   combination", "U make the call on what u detect"). `events.ts:intimeTime`
   reads the FIRST valid clock time in a line — `0900`, `09:00`, `0900H`,
@@ -363,6 +370,11 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   currency) and already strips `NO AAR` / `NO DAAR` / `NO NAAR`. **It is
   byte-identical to `reference/scheduler.html` and pinned by `tfin.js` group
   V — do not touch it.** What is new sits on top of its answer.
+  A bare `AAR` is night when the wave is a night wave **or the sortie lands
+  after `VCONF.aarNight`** — a Logic-tab setting since 21 Aug 26 (standard
+  19:00, previously a literal in TWO places: `events.ts` for the validator
+  and `avail.ts:slotRules` for the crew picker, which would have drifted the
+  first time the rule moved). Pinned in `ruleflex.test.ts`, both readers.
   One quirk of that segmenter, found by the owner asking and pinned in
   `aar.test.ts`: it splits on an optional digit + `A`/`B` + colon, and that
   pattern turns up inside ordinary words. `AREA: … AAR` is harmless (an `A:`
@@ -601,7 +613,9 @@ flagged correctly and still swept the man out of the crew palette.
   every key in the grammar. Each is read off the same row `collectEvents`
   reads and padded the same way, so the picker and the warning list cannot
   disagree: a sortie is `[to − VCONF.step, ld + VCONF.dekit]`, a standalone
-  line is unpadded (it is a shift), a sim defaults to 90 minutes and
+  line is unpadded (it is a shift), a sim with no end defaults to
+  `VCONF.simLen` (standard 90 — a Logic-tab setting since 21 Aug 26, read by
+  `events.ts` and both `avail.ts` sites alike) and
   everything else to `VCONF.openEnd`. `.+` and `.xN` strip to their row and
   inherit its hours.
   **`null` means UNKNOWN, never FREE.** A BB shift is written `['SHIFT','','']`

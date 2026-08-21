@@ -92,10 +92,15 @@ export function lgRules(){
    rows:[
     {sev:'hard',code:'CREW_REST',set:['crewRest'],src:()=>`VCONF.crewRest ${VCONF.crewRest}`,
      t:()=>`Aircrew must have ${lgV(lgT(VCONF.crewRest))} clear before they are <b>told to report</b>. Less than that is a Warning.<span class="why">Exactly ${lgT(VCONF.crewRest)} is legal — the bar is strictly greater-than.</span>`},
-    {sev:'adv',code:'CREW_TIGHT',
+    /* set:['reportLead'] — the owner circled this exact row asking "is this
+       editable as well? The number?" (21 Aug 26). The 3h IS reportLead,
+       already editable further up under "The clock a day runs on"; the box
+       now also sits where the number is quoted, so he never has to know
+       which row owns it. Editing either box moves the same setting. */
+    {sev:'adv',code:'CREW_TIGHT',set:['reportLead'],
      t:()=>`If the <b>nominal</b> ${lgT(VCONF.reportLead)} report falls inside the rest window but the instructed report does not, that is an <b>Advisory</b>, not a breach.`},
     {sev:'set',src:()=>`prevFlyEnd → REST[di]`,
-     t:()=>`Rest is measured off the last <b>rest-bearing</b> commitment — a sortie or a shift — <b>not</b> off a late desk duty.<span class="why">A sortie ends for rest purposes at landing + the debrief; a shift ends at its LD, with no tail added.</span>`},
+     t:()=>`Rest is measured off the last commitment of <b>any kind</b> the day before — a sortie, a shift, a duty post, a sim, a ground event or a programme item all count.<span class="why">A sortie ends for rest purposes at landing + the debrief; everything else ends at its written end, with no tail added. This is the owner's 21 Aug 26 ruling: anything that ends the day prior and eats into the ${lgT(VCONF.crewRest)} is a warning, whatever kind of row it was.</span>`},
     {sev:'set',src:()=>`nomOf · insOf`,
      t:()=>`A shift's <b>own start time is its report time</b>: no ${lgT(VCONF.reportLead)} lead and no brief lead come off it.`},
     {sev:'set',src:()=>`saExempt · scSpare`,
@@ -125,6 +130,8 @@ export function lgRules(){
      t:()=>`An EP profile on the OFT briefs ${lgV(lgT(VCONF.epBrief))} before the box — unless its remarks name a lead (<b>BRIEF 30 PRIOR</b>, <b>30 mins prior</b>), which wins for that line; the AMT carries its <b>own BRIEF row</b>, and that row's time is the hard line.`},
     {sev:'adv',code:'SIM_DEBRIEF',set:['simDebrief','amtDebrief'],src:()=>`VCONF.simDebrief ${VCONF.simDebrief} · VCONF.amtDebrief ${VCONF.amtDebrief}`,
      t:()=>`A sim debriefs for ${lgV(lgT(VCONF.simDebrief))} after the box. The AMT's debrief is its <b>DEBRIEF row's own start-to-end</b> when that row carries an end; left blank, it falls back to ${lgV(lgT(VCONF.amtDebrief))} after the debrief start.`},
+    {sev:'set',set:['simLen'],src:()=>`VCONF.simLen ${VCONF.simLen}`,
+     t:()=>`A sim row with a start and <b>no end time</b> is assumed to run ${lgV(lgT(VCONF.simLen))} — its own number, not the general ${lgT(VCONF.openEnd)} other open-ended rows get.<span class="why">A box slot is a fixed block, not a meeting: assuming the meeting length under-booked every unfinished sim row by half an hour. The validator and the crew picker read this same setting, so what one flags and what the other offers cannot drift. It was a hard-coded 90 until 21 Aug 26.</span>`},
    ]},
 
   {g:'Qualification and currency',
@@ -143,8 +150,8 @@ export function lgRules(){
      t:()=>`A <b>personnel (ground crew)</b> body in the <b>rear seat</b> — an incentive passenger — raises a <b>crew-pairing</b> Advisory: the ride is a non-standard pairing that needs approval. It reuses the <b>CP</b> flag.<span class="why">Ground crew hold no flying qualification and may ride a rear seat only. They carry just three checks — a conflict, a long working day and the seven-day run — plus this pairing advisory; every other flying rule (crew rest, the seat and combination rules, refuelling, SC currency) is off for them.</span>`},
     {sev:'hard',code:'NO_IR',
      t:()=>`An <b>IRT</b> — an instrument rating test — needs an <b>IR</b> (instrument rating examiner) in the crew. IRT in a formation's <b>mission</b> wants an IR anywhere in that formation; IRT in one aircraft's <b>remarks</b> wants the IR in that aircraft.`},
-    {sev:'hard',code:'AAR_QUAL',
-     t:()=>`Air-to-air refuelling currency is read <b>straight off the remarks</b>. A bare <b>AAR</b> is night if the wave is a night wave or the sortie runs past 19:00, otherwise day.<span class="why">An <b>A:</b> tag means the front seat; a <b>B:</b> tag is ignored entirely — a WSO holds no AAR currency. <b>NO AAR / NO DAAR / NO NAAR</b> ask for nothing. Only the front seat is checked.</span>`},
+    {sev:'hard',code:'AAR_QUAL',set:['aarNight'],src:()=>`VCONF.aarNight ${hhmm(VCONF.aarNight)}`,
+     t:()=>`Air-to-air refuelling currency is read <b>straight off the remarks</b>. A bare <b>AAR</b> is night if the wave is a night wave or the sortie lands after ${lgV(hhmm(VCONF.aarNight))}, otherwise day.<span class="why">An <b>A:</b> tag means the front seat; a <b>B:</b> tag is ignored entirely — a WSO holds no AAR currency. <b>NO AAR / NO DAAR / NO NAAR</b> ask for nothing. Only the front seat is checked. The night line was a hard-coded 19:00 until 21 Aug 26; the validator and the crew picker both read this one setting now.</span>`},
     {sev:'hard',code:'AAR_INSTR',
      t:()=>`A pilot who is <b>not</b> current may still fly a refuelling sortie as <b>training</b> — but only with someone cleared to <b>instruct</b> that AAR in the back seat. If the man behind him is an instructor pilot without the mark, the line is flagged on <b>him</b>.<span class="why">Being IP / IR / FI is not enough on its own: instructing AAR from the rear cockpit is a separate sign-off, recorded on the Quals page as an <b>I</b> in place of the tick on DAAR or NAAR. When the back seat holds the right mark for what the remarks ask, the front seat's own currency warning is <b>cleared</b> — a supervised training sortie is legal and should not read as a fault. With the back seat empty, holding a WSO, or holding a pilot who is not an instructor, nobody aboard can supervise and the front-seat warning stands instead.</span>`},
     {sev:'hard',code:'SC_QUAL',set:['scDayFrom','scDayTo'],
