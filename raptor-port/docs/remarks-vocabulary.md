@@ -50,7 +50,7 @@ frozen by the reference test suite, so the trap is recorded, not fixed.
 
 | Typed | Means |
 |---|---|
-| `AAR` | this line is refuelling. **Day or night decided by the clock**: night if the wave is a night wave or the sortie lands after 19:00, otherwise day |
+| `AAR` | this line is refuelling. **Day or night decided by the wave**: night if the wave is a night wave, otherwise day — no clock is involved (owner, 21 Aug 26) |
 | `DAAR` | day refuelling, whatever the clock says |
 | `NAAR` | night refuelling, whatever the clock says |
 | `NO AAR` `NO DAAR` `NO NAAR` | cancels it — asks for nothing. Hyphens and dashes are tolerated (`NO-AAR`, `NO – DAAR`) |
@@ -70,6 +70,31 @@ Rules: `docs/engine-rules.md` §AAR, and who may teach it.
 
 ---
 
+## The in-time lines — at the top of a wave
+
+Each line the wave publishes is read for a **time** and, optionally, a
+**callsign** (21 Aug 26):
+
+| Typed | Means |
+|---|---|
+| `0900` `09:00` `0900H` `09:00H` `0900L` `09:00L` | the show time — the FIRST valid clock time in the line is the one that counts |
+| a formation's callsign anywhere in the line (`RU 0900`, `0900H: RU IN TIME`) | this line is that formation's in-time only |
+| no callsign in the line (`0900H: IN TIME + WX/NOTAMS`) | the whole wave's — every formation without a line of its own |
+
+Case is free on the callsign and the H/L suffix. A specific line always beats
+a wave-wide one, whatever order they were typed; with several wave-wide
+lines, the earliest time is the show. A number glued to letters (`FL240`)
+never reads as a time, and an impossible clock (`2590`) is skipped.
+
+The published in-time moves the formation's **report time**, which feeds crew
+rest (the anchor is the EARLIER of in-time and brief — and, since 21 Aug 26,
+anything scheduled even earlier that day starts the clock instead: an 08:00
+meeting ahead of a 10:00 in-time is what the 12 hours are measured to. That
+includes a duty-and-commitments INPUT with typed times — but never the
+Personal or SANS Availability types, leave, medical, or an all-day record),
+the long-work-day note, and the wave windows. A line with no readable time is
+inert until a time is typed into it.
+
 ## Late show — in a flying line's RMKS
 
 | Typed | Means |
@@ -80,7 +105,8 @@ Case and spacing are free. **Unlike AAR, no seat tag is read** — a late show o
 a line applies to the whole aircraft, both seats.
 
 It does **not** remove a crew-rest breach or move the anchor. It changes the
-RING: dashed while the man can still make the jet by the latest show, solid
+RING: dashed while the man can still make the jet by step (the step setting
+on the Rules tab — the same one that pads a sortie's busy window), solid
 once he cannot. Rule: `engine/events.ts` `lateShowOf`.
 
 ---

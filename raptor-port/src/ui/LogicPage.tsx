@@ -26,6 +26,12 @@ function logicBody(LGQ: string, LGF: string) {
   const fired = lgFired()
   const q = LGQ.toLowerCase()
   let shown = 0, total = 0, firedN = 0
+  /* one setting can now sit on SEVERAL rows (reportLead is quoted — and
+     editable — on both the nominal-report row and the CREW_TIGHT row, owner
+     21 Aug 26), so each rendered box also carries a per-render ordinal. The
+     focus-restore after a repaint targets the ordinal, not the key — with
+     the key alone it always jumped back to the FIRST box holding it. */
+  let lgi = 0
   const strip = (h: any) => String(h).replace(/<[^>]*>/g, ' ')
   const html = lgRules().map((grp: any) => {
     const rows = grp.rows.map((r: any) => {
@@ -45,7 +51,7 @@ function logicBody(LGQ: string, LGF: string) {
         const off = ruleOff(k)
         return `<span class="lgcell ${off ? 'adv' : ''}"><span class="k">${esc(RULE_SPEC[k].t)}</span>`
           + (lgCanEdit()
-            ? `<input class="lgin" data-lgset="${k}" value="${esc(ruleFmt(k, VCONF[k]))}"`
+            ? `<input class="lgin" data-lgset="${k}" data-lgi="${lgi++}" value="${esc(ruleFmt(k, VCONF[k]))}"`
             + ` aria-label="${esc(RULE_SPEC[k].t)}">`
             : `<span class="val">${esc(ruleFmt(k, VCONF[k]))}</span>`)
           + (off ? `<span class="lgstd">standard ${esc(ruleFmt(k, RULE_STD.v[k]))}</span>`
@@ -127,7 +133,10 @@ export function LogicPage() {
     }
     const onPointerDown = (e: Event) => {
       const t = (e.target as HTMLElement).closest('[data-lgset],[data-lgkind]') as HTMLElement | null
-      LGNEXT = t ? (t.dataset.lgset ? ['lgset', t.dataset.lgset] : ['lgkind', t.dataset.lgkind]) : null
+      /* prefer the ordinal — a key can render on several rows now, and the
+         key selector alone re-focused the first of them */
+      LGNEXT = t ? (t.dataset.lgi != null ? ['lgi', t.dataset.lgi]
+        : t.dataset.lgset ? ['lgset', t.dataset.lgset] : ['lgkind', t.dataset.lgkind]) : null
     }
     host.addEventListener('change', onChange)
     host.addEventListener('pointerdown', onPointerDown)

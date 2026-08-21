@@ -5,7 +5,9 @@ import { aarNeed, aarOK, PEOPLE } from './people'
 describe('DAAR / NAAR from the remarks (tfin V)', () => {
   const N = (r: string, n?: any) => aarNeed(r, !!n)
 
-  it('a bare AAR is day by default and night by the clock', () => {
+  /* the night ARGUMENT is the wave's flag since 21 Aug 26 (the callers no
+     longer derive it from a landing time) — aarNeed itself is unchanged */
+  it('a bare AAR is day by default and night when the caller says night', () => {
     expect(N('1A: AAR')).toBe('DAAR'); expect(N('1A: AAR', 1)).toBe('NAAR')
   })
 

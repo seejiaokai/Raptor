@@ -513,7 +513,7 @@ test.describe('the crew-rest rings are three distinguishable strokes', () => {
 
     /* Drive the seed to a state that renders all three at once. The seed's one
        crew-rest breach (casper, Tue, traced back to Mon) is too deep for a late
-       show to save — rest clears 10:45, the latest show is 07:40 — so the
+       show to save — rest clears 10:45, step is 07:40 — so the
        remark alone leaves it solid; shortening crew rest is what puts it in the
        sanctioned band. Both go through the ordinary funnel. */
     const ok = await page.evaluate(() => {

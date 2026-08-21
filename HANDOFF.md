@@ -24,14 +24,14 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the Inputs-page date standardisation,
-21 Aug 26 — all six gates watched this session; it sits on the per-input LATE
-dismissal, the frozen-column vertical alignment fix and the 20 Aug evening
-batch below):
+**Last recorded green baseline** (the crew-rest widening — every prior-day
+commitment rest-bearing — plus the editable-rules pass, 21 Aug 26, all six
+gates watched this session; it sits on the in-time passes, the Inputs-page
+date standardisation and the per-input LATE dismissal below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2706 across 148 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2769 across 152 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -47,16 +47,30 @@ hours), and the two repaired topbar-pill assertions replaced in place → 2701 /
 147; +1 e2e for the Insights bars → 305. The two repaired Leave War
 month-navigation tests were already counted.
 
-The Inputs-page date standardisation added `inputsfmt.test.tsx` (+5 tests,
-+1 file → 2706 / 148); it is display-only and changed no DOM count or e2e (the
-Inputs cards are not in the perf or geometry gates), so e2e stays 305 / 12. A
-handful of existing tests moved from month-first to day-first assertions in
-place (`inputs.test.tsx`, `audit-e-window-sort.test.tsx`), no count change.
+The in-time add/remove controls added `intimesadd.test.tsx` (+6 tests,
++1 file → 2712 / 149). The same-day second pass added `intimes.test.ts`
+(+13, the line grammar) and `dutyrest.test.ts` (+6, duty desk rows bear
+crew rest) and grew `intimesadd.test.tsx` to 9 (+3, the per-line editor) →
+2734 / 151; the adapted `audit` probe's item 6 flipped WITH the rule (it
+pinned "a desk raises no breach", the owner overruled it), and e2e stays
+305 / 12. The crew-rest widening grew `dutyrest.test.ts` 6 → 8 (+2: sim
+and ground breaches in, the advisory-only pin inverted with the rule) →
+2736; the editable-rules pass added `ruleflex.test.ts` (+9, +1 file) and
++2 in `logic.test.tsx`, then the NAAR wave-only ruling reshaped `ruleflex` to 11 → 2749 / 152. The first-commitment crew-rest anchor
+grew `dutyrest.test.ts` 8 → 12 (the owner's 21:30→08:00-meeting example, the
+10:00 boundary, the unchanged wording, the meeting-only exemption), and the
+step unification (showLead removed — `VCONF.step` is the one step knob, and
+the late-show line and message move with it) reshaped `ruleflex` to 15,
+adding the all-bounds interdependency sweep → 2757 / 152. The
+duty-&-commitment-inputs pass grew `dutyrest.test.ts` 12 → 21 and
+`ruleflex` 15 → 18 (the restsInput table, spellings, the AM/PM half-flag
+pin) → 2769 / 152, with e2e, probes, perf and the DOM
+ceilings all unmoved (the Logic tab is outside every ceiling).
 
-DOM measures at that baseline: week **3743** under a 4000 ceiling, board
-**853** under 960 (the per-input LATE control: the global header button and its
-two label spans came OFF, and a `.itemcell` wrapper + a `.latechip` went onto
-each of the demo day's three late input rows — net +3 over the earlier 850). The Leave War year matrix (~28k nodes) is outside the perf
+DOM measures at that baseline: week **3767** under a 4000 ceiling (+24 over
+the previous 3743: a "+ In time" button per flying wave and a ✕ per in-time
+line, edit mode only), board **859** under 960 (+6 over 853: the demo day's
+two waves' add buttons and four line ✕s). The Leave War year matrix (~28k nodes) is outside the perf
 gate — it has its own e2e DOM band (29000), measured-first.
 
 **How the gates lie — the durable traps, worth more than any count:**
@@ -1142,10 +1156,81 @@ gate — it has its own e2e DOM band (29000), measured-first.
   - **A wave label typed long on the week** becomes an `<option>` in the
     board's title `<select>` and can run past the panel (measured 2638px in a
     930px box). Recovery is picking any real title. Same class as above.
-  - **Deleting the last in-time** removes the whole in-times block from the
-    DOM with no control to add one back — undo restores it, which is the
-    mitigation. The render is gated on `intimes.length`; ungating it is a
-    render change with geometry consequences, so it was not done blind.
+  - **The in-time block's one-way delete is CLOSED, and the lines grew a
+    grammar (owner, 21 Aug 26, two passes in one day)** — every
+    non-standalone wave carries "+ In time" in edit mode and each line a ✕;
+    both write the existing `it:` key and the `intimes.length` render gate
+    is UNCHANGED. The SECOND pass, off the owner's iPhone: each line is its
+    OWN contenteditable span with the ✕ an ordinary button beside it (iOS
+    would not tap a button inside a contenteditable, and the shared block
+    let WebKit clone spans — the duplicate-line report), the line grammar
+    widened (0900 / 09:00 / H / L; callsign anywhere in the line scopes it
+    to that formation, no callsign = the whole wave), and **EVERY prior-day
+    commitment bears crew rest now** (a THIRD pass the same day widened
+    duty-only to all kinds — "anything that ends the day prior and affects
+    the 12 hour crew rest will be a warning": sims, ground events and
+    programme items included, each at its written end, no debrief tail;
+    `refwin.ts:rerest` mirrors the reference; the rest anchor stays the
+    EARLIER of in-time and brief; the seed week raises no new warning —
+    only the `REST[]` maps grew). A FOURTH pass the same day made the rules
+    more editable (owner: "I don't wanna hard code too many things"):
+    `VCONF.simLen` (an
+    open-ended sim's assumed length, standard 90) joined `RULE_SPEC`; the
+    Logic tab's CREW_TIGHT row carries a `reportLead` edit box where the
+    owner circled the 3h (a key can render on several rows now — the
+    focus-restore targets a per-render ordinal `data-lgi`); and `ruleParse`
+    clock fields tolerate an H/L suffix (`1900H` = `19:00`). A FIFTH pass:
+    **night AAR is the wave's call, never the clock's** (owner: "make the
+    rule for NAAR instead of a time") — the lands-after-19:00 clause is
+    gone from BOTH readers (`events.ts`, `avail.ts:slotRules`), the
+    short-lived `aarNight` setting was removed with it (a stored override
+    for the dead key is ignored on load), and `refwin.ts:reaar()` excises
+    the reference's identical clauses. A SIXTH pass: **crew rest anchors
+    on the fly-day's FIRST commitment** (owner's worked example: ends
+    Monday 21:30, an 08:00 meeting Tuesday breaches even though the 10:00
+    in-time and 11:00 brief are both clear — "this person needs 12 hours
+    of rest in order to fly"). `validate.ts` takes the earliest of the
+    instructed report and any other scheduled event that day (not the
+    legs' derived pads, not personal inputs); the message names the
+    binding event, the warning anchors on its row, the leave-by follows
+    it, late-show cannot dash an event-bound breach, and a no-fly day
+    asks for no rest. `refwin.ts:refirst()` mirrors it into the patched
+    reference (it rewrites rebrief's emitted text, so it sits OUTSIDE
+    rebrief in the chain); the seed week is unchanged (WARN diff
+    verified). A SEVENTH pass: **`VCONF.step` is the ONE step-timing
+    knob** (owner, off the Casper screenshot: "he still makes the 07:40
+    show" was misleading — that moment is the STEP — and "will this rule
+    still work if I change the rules for step default timing?"). The
+    separate `showLead` key was removed the aarNight way (no RULE_SPEC
+    entry, a stored override is ignored), the crew-rest late-show line and
+    both message clauses read `VCONF.step` and say "step", the Logic tab's
+    late-show row carries a second step edit box, and a new
+    `ruleflex.test.ts` sweep runs the seed under every RULE_SPEC bound
+    combination asserting no warning ever prints NaN/undefined/Infinity.
+    An EIGHTH pass: **duty & commitment INPUTS bear crew rest, both
+    sides** (owner: "everything in duty and commitments affects crew
+    rest… do not include personal, sans availability"; "use the timings u
+    see"). `inputs.ts:restsInput` is the type set (Training, CSE, Meeting,
+    Fly with, Appointment, Duty, OD, Other — never the type spelled
+    'Personal', SANS, leave or medical), typed times only (all-day records
+    move nothing), the `nx`/`pv` midnight-tail copies are skipped so
+    today's own meeting can't file as yesterday's end, an input-bound
+    breach is named via `inpLabel` but anchors on the LEG (an unaccepted
+    input has no board row), and `refwin.ts:reirest()` mirrors the set as
+    an inline regex (change one, change both). AM/PM quick-picks were
+    ALREADY absent from that group except SANS (`INPUT_META.half`) — now
+    pinned. Seed effect: no new warning; vinci's Monday Meeting input now
+    holds his Tuesday REST entry at 05:00 (WARN diff verified).
+    Pinned in
+    `ruleflex.test.ts` (both readers agree wave-only, the NAAR word
+    overrides, simLen drives the
+    clash window, save/load/reset round-trips, poisoned-store refusal),
+    `dutyrest.test.ts` (the owner's example verbatim, the 10:00-meeting
+    boundary, the unchanged told-to-report wording, meeting-only days) and
+    `logic.test.tsx`. Rules: `docs/engine-rules.md`
+    §Validation; grammar: `docs/remarks-vocabulary.md` §The in-time lines;
+    contract: `docs/ui-contracts.md` §In-time lines. Pinned in
+    `intimes.test.ts`, `dutyrest.test.ts`, `intimesadd.test.tsx`.
   - **`ruleParse` stays loose** — `6 monkeys` reads as 6, `0770` as 08:10 —
     because every accepted value is echoed back FORMATTED in the field and the
     toast, so the user sees exactly what was taken.

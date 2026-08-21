@@ -29,7 +29,7 @@ export function personBusy(d:any,id:any){
      an AMT box session with 8 aircrew makes all 8 of them busy for that window. */
   const sm=d.sims||{}; ['amt','oft'].forEach((k:any)=>(sm[k]||[]).forEach((o:any)=>{ if(o.cx)return;
     if(o.p===id||o.w===id||nameToId(o.who)===id||(o.pax||[]).includes(id)||has(o))
-      add(parseHM(o.str),parseHM(o.end),90); }));
+      add(parseHM(o.str),parseHM(o.end),VCONF.simLen); }));
   (d.dutywaves||[]).forEach((dw:any)=>dw.rows.forEach((r:any)=>{ if(r.cx)return; if(has(r,r.id))add(parseHM(r.str),parseHM(r.end)); }));
   (d.ground||[]).forEach((g:any)=>{ if(g.cx)return; if(has(g,nameToId(g.who)))add(parseHM(g.str),parseHM(g.end)); });
   (d.allhands||[]).forEach((x:any)=>{ if(x.cx)return;
@@ -155,9 +155,11 @@ export function slotRules(key:any){
        duty block (waveDutyBlock), so a `d:` key can tell whether its row is an
        AVALON desk without walking back through DAYS.waves at all. */
     if(kk==='d'){const dwx=((DAYS[+parts[0]]||{}).dutywaves||[])[+parts[1]]; if(dwx&&dwx.sa==='avalon')out.avDuty=true;}
-    /* a sim runs 90 minutes when it names no end, matching events.ts;
-       everything else falls to VCONF.openEnd, as win() does by default */
-    const w2=r&&win(parseHM(r.str),parseHM(r.end),kk==='s'?90:undefined);
+    /* a sim with no end runs VCONF.simLen, matching events.ts (a setting
+       since 21 Aug 26 — the literal 90 here would have drifted the moment
+       the Logic tab moved it); everything else falls to VCONF.openEnd, as
+       win() does by default */
+    const w2=r&&win(parseHM(r.str),parseHM(r.end),kk==='s'?VCONF.simLen:undefined);
     if(w2){out.slotStart=w2[0]; out.slotEnd=w2[1];}
   }
   /* a SIM box has the same two seats as the jet and the engine checks its
@@ -191,7 +193,12 @@ export function slotRules(key:any){
     if(f&&ac){
       let ld=parseHM(f.ld); const to=parseHM(f.to);
       if(ld!=null&&to!=null&&ld<to)ld+=1440;
-      out.aar=aarNeed(ac.rmks,!!wv.night||(ld!=null&&ld>19*60));
+      /* the same rule the validator applies (events.ts): night AAR is the
+         WAVE's nightness, never the landing clock (owner, 21 Aug 26). This
+         line once carried its own literal 19:00 — the drift seam the owner
+         warned about ("rules engine affects many parts… are they in sync") —
+         so whatever the rule is, it must stay identical in both places. */
+      out.aar=aarNeed(ac.rmks,!!wv.night);
     }
     /* the sortie's window, PADDED to the step and the dekit — because that is
        what the validator judges an input against (the brief/debrief loop), and

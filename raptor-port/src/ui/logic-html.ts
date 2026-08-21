@@ -60,8 +60,12 @@ export function lgRules(){
      t:()=>`The <b>flight brief</b> is the time in the line's <b>B</b> box. Where a line has none, this setting suggests one — ${lgV(lgT(VCONF.briefLead))} before take-off — and the scheduler accepts it or types their own.<span class="why">This number is a convenience, not a rule: it only works out the suggestion so nobody has to do the arithmetic. What every brief warning actually follows is the B on the line. A line left blank is still checked, against that same suggested time, so an unconfirmed line never goes silently unchecked. A published in-time moves the man's <b>report</b> time, and so his working day and his crew rest; it does not move the brief.</span>`},
     {sev:'set',set:['reportLead'],src:()=>`VCONF.reportLead ${VCONF.reportLead}`,
      t:()=>`The <b>nominal report</b> to the squadron is ${lgV(lgT(VCONF.reportLead))} before take-off.`},
-    {sev:'set',set:['showLead'],src:()=>`VCONF.showLead ${VCONF.showLead}`,
-     t:()=>`The <b>latest show</b> is ${lgV(lgT(VCONF.showLead))} before take-off — the line that decides how a crew-rest breach is DRAWN.<span class="why">A remark such as "2A: LATE SHOW" or "SHOW AT BRIEF" does not excuse crew rest and does not remove the warning: the breach is still red and still counted, because the reader has to see that rest was broken. What the remark changes is the ring. While the man still clears rest by the latest show, his puck rings <b>dashed</b> — a scheduler sanctioned this and he does make the jet. Once rest runs past the latest show the ring goes <b>solid</b> again: there is nothing to sanction, because he cannot walk, kit up and start engines in less than this. He is not late to the brief, he is unable to make the flight.</span>`},
+    /* the SAME step key as the busy-window row above — one knob, quoted and
+       editable on both rows it governs (owner, 21 Aug 26: editing the step
+       timing must move this line too; the separate showLead key it replaced
+       is gone) */
+    {sev:'set',set:['step'],src:()=>`VCONF.step ${VCONF.step}`,
+     t:()=>`<b>Step</b>, ${lgV(lgT(VCONF.step))} before take-off, is also the line that decides how a crew-rest breach is DRAWN — it is the same step setting as above, so changing it moves both.<span class="why">A remark such as "2A: LATE SHOW" or "SHOW AT BRIEF" does not excuse crew rest and does not remove the warning: the breach is still red and still counted, because the reader has to see that rest was broken. What the remark changes is the ring. While the man still clears rest by step, his puck rings <b>dashed</b> — a scheduler sanctioned this and he does make the jet. Once rest runs past step the ring goes <b>solid</b> again: there is nothing to sanction, because he cannot walk, kit up and start engines in less than this. He is not late to the brief, he is unable to make the flight.</span>`},
     {sev:'set',set:['debrief'],src:()=>`VCONF.debrief ${VCONF.debrief}`,
      t:()=>`The <b>flight debrief</b> runs for ${lgV(lgT(VCONF.debrief))} after landing.`},
     {sev:'set',set:['minTurn','dur'],src:()=>`VCONF.minTurn ${VCONF.minTurn} · VCONF.dur ${VCONF.dur}`,
@@ -91,11 +95,16 @@ export function lgRules(){
    sub:'The rule the squadron cares about most, and the one with the most edge cases.',
    rows:[
     {sev:'hard',code:'CREW_REST',set:['crewRest'],src:()=>`VCONF.crewRest ${VCONF.crewRest}`,
-     t:()=>`Aircrew must have ${lgV(lgT(VCONF.crewRest))} clear before they are <b>told to report</b>. Less than that is a Warning.<span class="why">Exactly ${lgT(VCONF.crewRest)} is legal — the bar is strictly greater-than.</span>`},
-    {sev:'adv',code:'CREW_TIGHT',
+     t:()=>`Aircrew flying today must have ${lgV(lgT(VCONF.crewRest))} clear before <b>the first thing on their programme</b> — the report, or anything scheduled earlier: a meeting, a sim, a duty post, or a duty-and-commitments input with typed times.<span class="why">The owner's rule (21 Aug 26): this person needs ${lgT(VCONF.crewRest)} of rest in order to fly. An 08:00 meeting ahead of a 10:00 in-time is what starts his day, so it is what the warning measures to and names — whether it sits on the Ground Programme or came in as an input. A day with no flying asks for no rest. Exactly ${lgT(VCONF.crewRest)} is legal — the bar is strictly greater-than.</span>`},
+    /* set:['reportLead'] — the owner circled this exact row asking "is this
+       editable as well? The number?" (21 Aug 26). The 3h IS reportLead,
+       already editable further up under "The clock a day runs on"; the box
+       now also sits where the number is quoted, so he never has to know
+       which row owns it. Editing either box moves the same setting. */
+    {sev:'adv',code:'CREW_TIGHT',set:['reportLead'],
      t:()=>`If the <b>nominal</b> ${lgT(VCONF.reportLead)} report falls inside the rest window but the instructed report does not, that is an <b>Advisory</b>, not a breach.`},
     {sev:'set',src:()=>`prevFlyEnd → REST[di]`,
-     t:()=>`Rest is measured off the last <b>rest-bearing</b> commitment — a sortie or a shift — <b>not</b> off a late desk duty.<span class="why">A sortie ends for rest purposes at landing + the debrief; a shift ends at its LD, with no tail added.</span>`},
+     t:()=>`Rest is measured off the last commitment of <b>any kind</b> the day before — a sortie, a shift, a duty post, a sim, a ground event, a programme item, or a <b>duty-and-commitments input</b> all count.<span class="why">A sortie ends for rest purposes at landing + the debrief; everything else ends at its written end, with no tail added. This is the owner's 21 Aug 26 ruling: anything that ends the day prior and eats into the ${lgT(VCONF.crewRest)} is a warning, whatever kind of row it was. For inputs the same ruling names its own limits: only the Duty &amp; other commitments types except <b>Personal</b> and <b>SANS Availability</b> — leave and medical never count — and only when the input carries <b>typed times</b>; an all-day record has no timing to measure to.</span>`},
     {sev:'set',src:()=>`nomOf · insOf`,
      t:()=>`A shift's <b>own start time is its report time</b>: no ${lgT(VCONF.reportLead)} lead and no brief lead come off it.`},
     {sev:'set',src:()=>`saExempt · scSpare`,
@@ -125,6 +134,8 @@ export function lgRules(){
      t:()=>`An EP profile on the OFT briefs ${lgV(lgT(VCONF.epBrief))} before the box — unless its remarks name a lead (<b>BRIEF 30 PRIOR</b>, <b>30 mins prior</b>), which wins for that line; the AMT carries its <b>own BRIEF row</b>, and that row's time is the hard line.`},
     {sev:'adv',code:'SIM_DEBRIEF',set:['simDebrief','amtDebrief'],src:()=>`VCONF.simDebrief ${VCONF.simDebrief} · VCONF.amtDebrief ${VCONF.amtDebrief}`,
      t:()=>`A sim debriefs for ${lgV(lgT(VCONF.simDebrief))} after the box. The AMT's debrief is its <b>DEBRIEF row's own start-to-end</b> when that row carries an end; left blank, it falls back to ${lgV(lgT(VCONF.amtDebrief))} after the debrief start.`},
+    {sev:'set',set:['simLen'],src:()=>`VCONF.simLen ${VCONF.simLen}`,
+     t:()=>`A sim row with a start and <b>no end time</b> is assumed to run ${lgV(lgT(VCONF.simLen))} — its own number, not the general ${lgT(VCONF.openEnd)} other open-ended rows get.<span class="why">A box slot is a fixed block, not a meeting: assuming the meeting length under-booked every unfinished sim row by half an hour. The validator and the crew picker read this same setting, so what one flags and what the other offers cannot drift. It was a hard-coded 90 until 21 Aug 26.</span>`},
    ]},
 
   {g:'Qualification and currency',
@@ -144,7 +155,7 @@ export function lgRules(){
     {sev:'hard',code:'NO_IR',
      t:()=>`An <b>IRT</b> — an instrument rating test — needs an <b>IR</b> (instrument rating examiner) in the crew. IRT in a formation's <b>mission</b> wants an IR anywhere in that formation; IRT in one aircraft's <b>remarks</b> wants the IR in that aircraft.`},
     {sev:'hard',code:'AAR_QUAL',
-     t:()=>`Air-to-air refuelling currency is read <b>straight off the remarks</b>. A bare <b>AAR</b> is night if the wave is a night wave or the sortie runs past 19:00, otherwise day.<span class="why">An <b>A:</b> tag means the front seat; a <b>B:</b> tag is ignored entirely — a WSO holds no AAR currency. <b>NO AAR / NO DAAR / NO NAAR</b> ask for nothing. Only the front seat is checked.</span>`},
+     t:()=>`Air-to-air refuelling currency is read <b>straight off the remarks</b>. A bare <b>AAR</b> is <b>night on a night wave</b>, day otherwise — writing <b>NAAR</b> or <b>DAAR</b> says it outright, whatever the wave.<span class="why">An <b>A:</b> tag means the front seat; a <b>B:</b> tag is ignored entirely — a WSO holds no AAR currency. <b>NO AAR / NO DAAR / NO NAAR</b> ask for nothing. Only the front seat is checked. The clock is out of this rule by the owner's call (21 Aug 26): a landing time used to tip a bare AAR to night after 19:00, and doesn't any more — the wave's own day/night setting is the whole answer.</span>`},
     {sev:'hard',code:'AAR_INSTR',
      t:()=>`A pilot who is <b>not</b> current may still fly a refuelling sortie as <b>training</b> — but only with someone cleared to <b>instruct</b> that AAR in the back seat. If the man behind him is an instructor pilot without the mark, the line is flagged on <b>him</b>.<span class="why">Being IP / IR / FI is not enough on its own: instructing AAR from the rear cockpit is a separate sign-off, recorded on the Quals page as an <b>I</b> in place of the tick on DAAR or NAAR. When the back seat holds the right mark for what the remarks ask, the front seat's own currency warning is <b>cleared</b> — a supervised training sortie is legal and should not read as a fault. With the back seat empty, holding a WSO, or holding a pilot who is not an instructor, nobody aboard can supervise and the front-seat warning stands instead.</span>`},
     {sev:'hard',code:'SC_QUAL',set:['scDayFrom','scDayTo'],

@@ -111,7 +111,7 @@ export function boardHTML(di: number, pv?: boolean) {
          which already reaches the board, so no board-side wiring is needed. */
       + `${sa || mvRO ? '' : `<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}`
       + `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`
-      + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
+      + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     /* The IN TIME + WX/NOTAMS lines edit exactly as the week's do (html.ts):
        an editable .intimes block committing `it:` through the global
@@ -120,7 +120,7 @@ export function boardHTML(di: number, pv?: boolean) {
        before; this makes the published lines themselves editable here too
        (owner, 14 Aug 26 — the board should edit everything the week can). */
     if (w.intimes && w.intimes.length)
-      fly += `<div class="intimes"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `contenteditable="true" spellcheck="false" data-intimes="${di}|${gi}"`}>${intimesInner(w)}</div>`
+      fly += `<div class="intimes${mvRO ? '' : ' iedit'}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`)}</div>`
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
     w.formations.forEach((f: any, li: number) => { f.aircraft.forEach((a: any, ai: number) => {

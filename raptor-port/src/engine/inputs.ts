@@ -267,6 +267,21 @@ export function isUnavail(t:any){const m=inpMeta(t); return !!m&&m.grp!=='act';}
 export function isPersonal(t:any){const m=inpMeta(t); return !!m&&m.grp==='act';}
 /* the SANS availability type — see the INPUT_META entry's comment */
 export function isSansAvail(t:any){const m=inpMeta(t); return !!m&&m.grp==='sans';}
+/* DOES THIS INPUT TYPE BEAR CREW REST? (owner, 21 Aug 26 — "everything in
+   duty and commitments affects crew rest if the person is flying… do not
+   include personal, sans availability"). The "Duty & other commitments"
+   dropdown group minus those two: Training, CSE, Meeting, Fly with,
+   Appointment, Duty, OD, Other. Leave and medical types are out of scope by
+   the same ruling — a downchit is not a working day.
+   NAMING TRAP: the exclusion is the TYPE spelled 'Personal', not the
+   "personal inputs" feature — every type in this file is a personal input.
+   validate.ts additionally requires TYPED times (a window narrower than
+   all-day): the owner's words were "use the timings u see", and an all-day
+   record has none. The patched reference mirrors this set as an inline
+   regex in refwin.ts:reirest() — change one, change both. */
+export function restsInput(t:any){const m=inpMeta(t);
+  if(!m||m.grp==='leave'||m.grp==='med')return false;
+  const c=inpType(t); return c!=='Personal'&&c!=='SANS Availability';}
 export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim());}
 /* "Other" is the catch-all: the TYPE says nothing, so what the person actually
    typed is the name of the thing (owner, Aug 26). Everywhere an input is

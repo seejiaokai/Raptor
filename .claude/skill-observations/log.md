@@ -10,21 +10,6 @@ resolved statuses always carry their resolution date
 
 ## 2026-08-17
 
-### Observation 1: Session-start checkpoint — no observations pending
-
-**Status:** ACTIONED (2026-08-19) — already reflected: the log lives committed in the repo per the activation note; nothing to change (weekly review)
-**Date:** 2026-08-17
-**Session context:** Building Leave War sync wire 4 (weekend/PH duty earns OIL) in the Raptor repo.
-**Skill:** task-observer
-**Type:** open-source
-**Phase/Area:** 3rd-task-completion checkpoint
-
-**Issue:** Checkpoint marker: the log did not exist in this repo yet (ephemeral web container, first committed-log session); created it at the first mandatory checkpoint rather than at session start — the Session Start Protocol step was deferred while exploration ran.
-
-**Suggested improvement:** None needed yet; noting so the next session knows the log's committed-into-repo location (.claude/skill-observations/log.md) is deliberate, per the repo's activation note.
-
-**Principle:** In storage-less environments the log must live in the repo to survive; create it the moment the first write is due, not later.
-
 ### Observation 2: New walkers over shared structures — diff the skip-conditions
 
 **Status:** OPEN
@@ -39,21 +24,6 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When reviewing (or writing) a NEW consumer of a structure that existing code already consumes, explicitly diff its filter/skip conditions against each sibling consumer's — every marker a sibling honours (cancellation flags, overflow lists, sentinel entries) is either honoured or its omission argued in a comment.
 
 **Principle:** A shared structure's existing walkers encode the structure's real semantics; a new walker is wrong wherever it silently diverges from them, and the cheapest complete review of it is a skip-condition diff against its siblings.
-
-### Observation 3: Checkpoint — no observations pending (medical-sync build, tasks 1–3)
-
-**Status:** DECLINED (2026-08-19) — acknowledgement marker only, no action (weekly review)
-**Date:** 2026-08-17
-**Session context:** Leave War medical markers build — codes/counters/picker done, sync next
-**Skill:** task-observer
-**Type:** internal
-**Phase/Area:** 3rd-completion checkpoint
-
-**Issue:** Checkpoint marker only; observation 2 (diff the skip-conditions of new walkers over shared structures) is being actively applied to the sync-wire extension.
-
-**Suggested improvement:** None.
-
-**Principle:** None — acknowledgement marker.
 
 ### Observation 4: Widening a vocabulary means auditing every pruning filter over its parallel state
 
@@ -146,3 +116,109 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When one element must visually track another's scroll position via JS, do not rely on the `scroll` event as the sole driver — it is throttled/coalesced and always lags compositor-driven scrolling. Drive the follower from a rAF loop that reads the source's scroll offset each frame while scrolling. Prefer a compositor-friendly write (transform) over layout-inducing ones (scrollLeft) where the follower's own sticky children permit it.
 
 **Principle:** A scroll-linked effect computed on the main thread from the `scroll` event is inherently a frame or more behind compositor scrolling; sampling the scroll offset in requestAnimationFrame is what puts the follower in the same frame as the content it tracks.
+
+### Observation 10: Controls embedded in a contenteditable must be drawn by the same builder the heal uses
+
+**Status:** OPEN
+**Date:** 2026-08-21
+**Session context:** RAPTOR — adding per-line add/remove controls to the per-wave in-time block (a contenteditable div healed from the model on focusout)
+**Skill:** New skill candidate: none — cross-cutting frontend principle (sibling of Observations 8/9)
+**Type:** open-source
+**Phase/Area:** implementation design
+
+**Issue:** A delete button placed inside a contenteditable region that is "healed" (innerHTML rebuilt from the model on blur) gets torn out of the DOM between its own pointerdown and click whenever the heal's expected markup omits it — the click then lands on a detached node and dies silently, a dead first tap that no unit test catches (the second tap works).
+
+**Suggested improvement:** When embedding interactive islands (contenteditable="false" buttons) inside an editable region, render them from the SAME builder function the heal/diff path uses, so the equality check sees identical markup and never rebuilds under a live tap. Keep the commit scrape keyed to the text elements only (spans), so the island never leaks into the committed value.
+
+**Principle:** Any DOM region that is periodically rebuilt from a single source-of-truth builder must have ALL its interactive children owned by that builder — a control rendered by a second path is destroyed by the first at exactly the moment it is being used.
+
+### Observation 11: A single shared contenteditable is the wrong unit for a list — iOS breaks it two ways at once
+
+**Status:** OPEN
+**Date:** 2026-08-21
+**Session context:** RAPTOR — the in-time editor's first cut (one contenteditable block of spans, ✕ buttons as contenteditable=false islands inside it) failed on the owner's iPhone: the ✕ was un-tappable, and typing after a deletion duplicated a line
+**Skill:** New skill candidate: none — cross-cutting frontend principle (extends Observation 10)
+**Type:** open-source
+**Phase/Area:** implementation design / device verification
+
+**Issue:** Two independent iOS failures shared one root — a list edited as ONE contenteditable region. (1) iOS Safari does not reliably deliver taps to buttons inside a contenteditable, even contenteditable="false" islands, so a control that works in desktop Chrome and passes jsdom tests is dead on the phone. (2) WebKit's editing engine clones/splits child spans around deletions, so a commit that scrapes child elements re-reads cloned content as new items — data duplication invisible to any test that types via textContent.
+
+**Suggested improvement:** Edit lists per-item: each item its own small contenteditable, controls as ordinary buttons OUTSIDE any editable region, commits reading exactly one item's textContent. Treat "does this control sit inside a contenteditable?" as a design smell to catch at review time, and treat contenteditable behaviour as device-verified only — jsdom and even desktop Chromium cannot exercise WebKit's editing engine.
+
+**Principle:** The unit of contenteditable should equal the unit of commit. A region larger than one committed value hands the browser's editing engine authority over your data structure — and WebKit exercises that authority differently from every test environment you have.
+
+
+### Observation 12: A rule's prose lives in more places than its code — sweep them all on every rule change
+
+**Status:** OPEN
+**Date:** 2026-08-21
+**Session context:** Widening RAPTOR's crew-rest rule (any prior-day event now rest-bearing)
+**Skill:** New skill candidate: rule-change sweep (or a CLAUDE.md discipline line)
+**Type:** open-source
+**Phase/Area:** Docs/consistency pass after an engine rule change
+
+**Issue:** The morning's duty-widening pass updated the engine, the reference patch, the tests and two docs files — but missed the Logic page (`logic-html.ts`), a user-facing surface that states the same rule in prose. It was found stale only because the NEXT rule change happened to touch the same paragraph hours later. A rule that renders its own description is a copy of the rule, and copies drift.
+
+**Suggested improvement:** After changing any engine rule, grep the whole repo for the old rule's distinctive WORDING (not just its code identifiers) — e.g. "sortie or a shift" — to find prose restatements in UI copy, docs, and comments. The repo's feature-impact.md drift-seam list could name "rule prose surfaces" (engine comments, engine-rules.md, remarks-vocabulary.md, logic-html.ts) as a standing seam.
+
+**Principle:** When behaviour and its human-readable description are maintained separately, every behaviour change must be paired with a text search for the old description's wording; identifier-based greps find code, only wording-based greps find prose.
+
+### Observation 13: Test fixtures must speak the model's stored format, not the UI's accepted format
+
+**Status:** OPEN
+**Date:** 2026-08-21
+**Session context:** RAPTOR editable-rules pass — an engine test silently produced no warning
+**Skill:** New skill candidate: engine-test fixtures (or a testing discipline note)
+**Type:** open-source
+**Phase/Area:** Writing engine-level tests that mutate the data model directly
+
+**Issue:** A test planted a formation take-off as '1800' (the format the UI's input boxes accept and normalise) where the model stores '18:00'. The model-level reader (`toMin`, colon-only) returned NaN, every check for that line switched off silently, and the test failed with "no warning raised" — pointing at the rule under test rather than at the fixture. Fifteen minutes of debugging landed on the fixture, not the feature.
+
+**Suggested improvement:** When a test writes into the data model directly (bypassing the UI write path), first read one SEED value of the same field and match its format exactly. A one-line comment in the test naming the stored format prevents the next writer repeating it. For the repo: fixtures copying seed shapes beat hand-built literals.
+
+**Principle:** UI write paths normalise; direct model writes don't. A test that bypasses the write path inherits the obligation to produce exactly what the write path would have stored — the quickest proof is copying the format of an existing seed value.
+
+### Observation 14: A rule from a non-technical owner arrives in layers — restate the decision table before coding each layer
+
+**Status:** OPEN
+**Date:** 2026-08-21
+**Session context:** RAPTOR crew-rest rule — four owner corrections in one day (duties count → everything counts → NAAR is wave-not-clock → the day starts at its first commitment)
+**Skill:** New skill candidate: rules-engine elicitation (or a CLAUDE.md confidence-rule note)
+**Type:** open-source
+**Phase/Area:** Requirements capture for validation-rule changes
+
+**Issue:** Each implementation pass was correct against the owner's literal words, and each was then revealed incomplete by the next message: "duty rows count" became "anything that ends the day prior", then the analogous same-day side ("anything earlier like a meeting") arrived only after the prior-day side shipped. The rule the owner held all along was symmetrical and simple — "12 clear hours before the person's working day, if they fly" — but it was delivered as corrections to visible behaviour, one screenshot at a time.
+
+**Suggested improvement:** When a rule change comes from observed behaviour ("no warning here"), before building, restate the WHOLE rule as a plain-language decision table (what counts, on both sides of the boundary; what triggers the requirement; what is exempt) and ask one confirm question if any cell is inferred. The restatement costs a sentence; a missed cell costs a full build-test-ship cycle.
+
+**Principle:** A correction to a rule is usually a sample from a simpler, more general rule the person already holds. After the second correction to the same rule, stop patching cells and propose the general rule back for confirmation.
+
+### Observation 15: pkill -f in a compound command kills its own shell — bracket the pattern
+
+**Status:** OPEN
+**Date:** 2026-08-21
+**Session context:** RAPTOR gate runs — `pkill -f "vite preview" ; npm run build && …` chains died with exit 144 and no output, three times before diagnosis
+**Skill:** New skill candidate: shell-command hygiene (or a note in any run-the-gates skill)
+**Type:** open-source
+**Phase/Area:** Killing a stale dev server before running browser gates
+
+**Issue:** `pkill -f "vite preview"` matches FULL command lines, and the wrapper shell executing the compound command carries the literal text "vite preview" inside its own `sh -c` arguments — so pkill killed its own process group. The chain died before any later command ran, with a bare exit 144 that read like a harness quirk; one run silently skipped the build+e2e gates entirely, and only reading the empty output file revealed nothing had run.
+
+**Suggested improvement:** In compound commands, write the pattern so it cannot match itself: `pkill -f "vite [p]review"` (the character class is absent from the pattern's own text). Also treat "exit 144 with an empty output file" as "the chain never ran" — verify the gate actually produced its result line before counting it green.
+
+**Principle:** A process-killing command embedded in a larger command line is itself a match candidate; make the pattern self-excluding, and never count a gate as run without seeing its output.
+
+### Observation 16: Two settings holding the same default for one physical moment are a latent drift seam — merge on discovery
+
+**Status:** OPEN
+**Date:** 2026-08-21
+**Session context:** RAPTOR — the owner asked "will this rule still work if I change the rules for step default timing?"; the answer was NO because `showLead` (crew-rest late-show line) and `step` (busy-window pad) were separate keys both at 60
+**Skill:** New skill candidate: rules-engine robustness review (or a CLAUDE.md doctrine note — added there this session)
+**Type:** open-source
+**Phase/Area:** Editable-settings design in a validation engine
+
+**Issue:** Two settings were born at different times for what a domain expert regards as ONE moment (the crew steps to the jet). Because both defaulted to 60 they were indistinguishable in every test and every message — the seam was invisible until the owner asked what happens when he edits one of them. Editing "Step before take-off" would have moved the busy windows and the tight-turn floor but silently NOT the crew-rest breach line, which would keep printing a time derived from the other, unedited key.
+
+**Suggested improvement:** When auditing editable settings (or adding one), group keys by VALUE and by the real-world moment they describe: any two keys sharing a default deserve the question "are these the same thing wearing two names?" The user's own vocabulary is the test — if the domain has one word for it ("step"), the engine gets one key for it.
+
+**Principle:** Identical defaults hide duplicated concepts; a settings audit should diff meanings, not just look for hard-coded literals.

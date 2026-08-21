@@ -4,8 +4,9 @@
    that suggestion. Crew rest anchors on the earlier of the in-time and the
    brief, for everyone. A `late show` remark does not move that anchor and
    does not excuse the breach — it is still a red warning, counted — it
-   changes the RING: dashed while the crew still clears rest by the latest
-   show (VCONF.showLead before T/O), solid once they cannot make the jet.
+   changes the RING: dashed while the crew still clears rest by step
+   (VCONF.step before T/O — the one step knob), solid once they cannot make
+   the jet.
 
    Snapshot/restore pattern lifted from engine/insights.test.ts so mutating
    DAYS here cannot leak into another test file. */
@@ -194,7 +195,7 @@ describe('the crew-rest anchor (owner worked examples)', () => {
       expect(r.flagged, `left ${left}`).toBe(true)
       expect(r.sev, `left ${left} is still a hard warning`).toBe('hard')
       expect(r.dashed, `left ${left} rings dashed`).toBe(true)
-      expect(r.msg).toContain('still makes the 14:20 show')
+      expect(r.msg).toContain('still makes the 14:20 step')
     }
   })
 
@@ -209,17 +210,28 @@ describe('the crew-rest anchor (owner worked examples)', () => {
     }
   })
 
-  it('the dashed/solid boundary is the editable latest-show rule', () => {
-    const orig = VCONF.showLead
+  it('the dashed/solid boundary is the editable STEP rule — one knob with the busy window', () => {
+    const orig = VCONF.step
     try {
-      /* 02:21 clears rest at 14:21 — past a 60-minute show (14:20), inside a
+      /* 02:21 clears rest at 14:21 — past a 60-minute step (14:20), inside a
          120-minute one (13:20)... which makes it worse, so widen the other
-         way: a 30-minute show puts the line at 14:50 and he makes it */
-      VCONF.showLead = 60
+         way: a 30-minute step puts the line at 14:50 and he makes it. The
+         message quotes the moved line, so an edited rule never prints a
+         stale time. */
+      VCONF.step = 60
       expect(run('02:21', '2A: LATE SHOW').dashed).toBe(false)
-      VCONF.showLead = 30
-      expect(run('02:21', '2A: LATE SHOW').dashed).toBe(true)
-    } finally { VCONF.showLead = orig }
+      VCONF.step = 30
+      const r30 = run('02:21', '2A: LATE SHOW')
+      expect(r30.dashed).toBe(true)
+      expect(r30.msg).toContain('still makes the 14:50 step')
+      /* the owner's own example (21 Aug 26): step set to 1h15. The line is
+         now 14:05; rest clearing 14:21 misses it, and the refusal names the
+         moved line too. */
+      VCONF.step = 75
+      const r75 = run('02:21', '2A: LATE SHOW')
+      expect(r75.dashed).toBe(false)
+      expect(r75.msg).toContain('after the 14:05 step')
+    } finally { VCONF.step = orig }
   })
 
   /* the previous-day trace: the warning must say when he had to leave, and

@@ -14,7 +14,7 @@ import { afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { notify } from '../state/store'
 import { canEditSched } from '../state/auth'
-import { fmtTxt, intimesInner, areaText, atimeText } from './html'
+import { fmtTxt, intimeLineHTML, areaText, atimeText } from './html'
 
 let SCRATCH: any = null
 function sameInner(el: any, want: any) {
@@ -74,20 +74,45 @@ export function routeFocusOut(e: FocusEvent) {
     else heal(ip, field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field))
     return
   }
-  const it = t.closest('[data-intimes]') as HTMLElement | null
-  if (it) {
-    const [di, gi] = it.dataset.intimes!.split('|'); const w = DAYS[+di!].waves[+gi!]
-    const nv = [...it.querySelectorAll('span')].map(s => s.textContent!.trim()).filter(Boolean)
-    /* READ BEFORE THE ASSIGNMENT — this and the three below are the fields that
-       live outside the txt-key grammar, so they write the model themselves and
-       call markEdit by hand instead of going through txtSet. That is why they
-       used to leave the edit log empty: markEdit logs only when handed both
-       values (editlog.ts), and none of them passed any, so changing a jet's
-       stores or an airspace booking marked the cell as edited and then had
-       nothing to say when History was asked what changed. */
-    const itWas = (w.intimes || []).join(', ')
-    if (nv.join('|') !== (w.intimes || []).join('|')) { w.intimes = nv; markEdit(`it:${di}.${gi}`, itWas, nv.join(', ')); txtCommit() }
-    const want = intimesInner(w); if (!sameInner(it, want)) it.innerHTML = want
+  /* ONE in-time line commits itself (owner's iPhone, 21 Aug 26). The block
+     used to be a single contenteditable scraped span-by-span, and iOS WebKit
+     broke it twice over: a ✕ button inside the editable region was not
+     reliably tappable, and typing after a deletion let WebKit clone a span so
+     the scrape read the same text twice. Each line is its own contenteditable
+     span now — whatever WebKit does INSIDE it, the commit reads that one
+     span's textContent and nothing else.
+     READ BEFORE THE ASSIGNMENT — this and the three below are the fields that
+     live outside the txt-key grammar, so they write the model themselves and
+     call markEdit by hand instead of going through txtSet. That is why they
+     used to leave the edit log empty: markEdit logs only when handed both
+     values (editlog.ts), and none of them passed any. */
+  const il = t.closest('[data-itline]') as HTMLElement | null
+  if (il) {
+    const [di, gi, ixs] = il.dataset.itline!.split('|'); const ix = +ixs!
+    const w = DAYS[+di!].waves[+gi!]
+    const lines = w.intimes || []
+    if (lines[ix] == null) return              // deleted or undone from under the caret
+    const nv = (il.textContent || '').trim()
+    const itWas = lines.join(', ')
+    if (!nv) {
+      /* clearing a line's text still deletes it, as the old block did — and
+         its DOM pair goes NOW, so the ✕ buttons beside it keep their true
+         positions until the deferred repaint lands (interactions.ts resolves
+         a ✕ by position, exactly for this window) */
+      w.intimes = lines.filter((_: any, i: number) => i !== ix)
+      markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', '))
+      const btn = il.nextElementSibling
+      if (btn && (btn as HTMLElement).matches && (btn as HTMLElement).matches('[data-itdel]')) btn.remove()
+      il.remove()
+      txtCommit()
+      return
+    }
+    if (nv !== lines[ix]) {
+      w.intimes = lines.map((v: any, i: number) => i === ix ? nv : v)
+      markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', '))
+      txtCommit()
+    }
+    const want = intimeLineHTML(nv); if (!sameInner(il, want)) il.innerHTML = want
     return
   }
   /* the typed stores text ("bombs…") — opts.bombs lives outside the txt-key
@@ -185,6 +210,21 @@ export function routeKeyDown(e: KeyboardEvent) {
       const k = (bx as any).dataset.bfld
       if (k) { const v = txtGet(k); (bx as any).value = String(v == null ? '' : v) }
       bx.blur()
+    }
+    return
+  }
+  /* an IN-TIME line gets the same two keys (21 Aug 26, with the per-line
+     rework): Enter commits by blurring into the branch above, Escape puts the
+     model's line back — including a line mid-mangle on a phone keyboard. */
+  const il = t && t.closest && t.closest('[data-itline]') as HTMLElement | null
+  if (il) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); il.blur() }
+    else if (e.key === 'Escape') {
+      e.preventDefault()
+      const [di, gi, ix] = il.dataset.itline!.split('|')
+      const v = (DAYS[+di!].waves[+gi!].intimes || [])[+ix!]
+      il.innerHTML = intimeLineHTML(v == null ? '' : v)
+      il.blur()
     }
     return
   }

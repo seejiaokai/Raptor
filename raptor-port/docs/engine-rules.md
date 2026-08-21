@@ -70,10 +70,69 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     scheduler there is a brief to retype.
   Neither fires where the roll above makes the clock legitimate (`toM <
   VCONF.briefLead`), and neither touches a standalone wave's inert B.
-- Crew rest (VCONF.crewRest) runs off the last REST-BEARING commitment
-  (sortie or shift), and anchors on the earlier of the published in-time and
-  the leg's own brief. Breach = hard CR; nominal-inside-rest = adv TT.
+- Crew rest (VCONF.crewRest) runs off the last commitment of **ANY kind**
+  the day before (owner, 21 Aug 26, in two steps the same day: duties
+  joined the sortie-or-shift set in the morning — an Ops-O ending 21:30
+  with a 09:00 report next morning is a breach, not merely tight turning —
+  then "anything that ends the day prior and affects the 12 hour crew rest
+  will be a warning" widened it to sims, ground events and programme items
+  too). A sortie ends at land + debrief; every other kind ends at its
+  WRITTEN end with no tail — a sim counts its box end, its brief/debrief
+  windows stay the SIM_BRIEF/SIM_DEBRIEF rules' business. Every ender rides
+  the `REST[]` map the palette reads, so the picker and the engine agree.
+  It anchors on the man's **FIRST COMMITMENT of the fly-day** (owner,
+  21 Aug 26 — "reports the next day at 0800 for meeting, but even tho the
+  in time writes 1000… the first event of this day already breaks the 12
+  hour rest. Think it as, this person needs 12 hours of rest in order to
+  fly"): the earliest of the instructed flying report — itself the earlier
+  of the published in-time and the leg's own brief — and the start of any
+  other scheduled commitment that day (sim, duty post, ground event,
+  programme item; not the flying legs' derived step pads). The rule only
+  exists when he FLIES that day — a meeting-only
+  day needs no rest. When an earlier event binds, the message names it
+  ("his day starts 08:00 (MTG) before the 10:00 report"), the warning
+  anchors on that row, the leave-by follows it, and a late-show remark on
+  the jet cannot dash the ring — a sanctioned late join to the sortie does
+  not excuse the meeting. Mirrored into the reference by
+  `refwin.ts:refirst()`.
+  **Duty & commitment INPUTS joined both sides the same day** (owner —
+  "everything in duty and commitments affects crew rest… do not include
+  personal, sans availability"; "use the timings u see"): an input whose
+  type passes `inputs.ts:restsInput` (Training, CSE, Meeting, Fly with,
+  Appointment, Duty, OD, Other — NOT the type spelled 'Personal', not SANS
+  Availability, and no leave or medical type) counts exactly like a
+  scheduled event, on BOTH sides, provided it carries TYPED times: an
+  all-day record spans the full 1439 minutes and moves nothing. Ending
+  late yesterday it starts the clock at its written end (no debrief tail)
+  and rides `REST[]`; starting early on a fly-day it binds the anchor, is
+  named in the message via `inpLabel` (an Other reads by its remarks), and
+  the warning anchors on the LEG — an unaccepted input has no board row to
+  jump to. The `nx`/`pv` midnight-tail copies in `day.input` are skipped —
+  counting an `nx` copy would file today's own meeting as yesterday's end.
+  Mirrored by `refwin.ts:reirest()` (the type set is an inline regex there;
+  change `restsInput`, change it too). On the seed this adds no warning —
+  the one visible change is vinci's Monday Meeting (09:00–17:00) holding
+  his Tuesday REST entry at 05:00. Breach = hard CR;
+  nominal-inside-rest with the instructed report clear = adv TT (the
+  advisory is now only that gap, never a severity downgrade by event kind).
   Exactly `crewRest` is legal — the breach is strictly less (owner, 6 Aug 26).
+  Reference mirrored by `refwin.ts:rerest()`; pinned in `dutyrest.test.ts`.
+  The seed week raises no new warning under the widening (verified by WARN
+  diff, 21 Aug 26) — only the REST maps grew.
+- **The in-time line's grammar** (owner, 21 Aug 26 — "accept any form of
+  combination", "U make the call on what u detect"). `events.ts:intimeTime`
+  reads the FIRST valid clock time in a line — `0900`, `09:00`, `0900H`,
+  `09:00H`, `0900L`, `09:00L`, any case — and never misreads glued tokens
+  (`FL240`) or impossible clocks (`2590`). `intimeMap` scopes each line by
+  the WAVE'S OWN formation callsigns: a line naming a formation's callsign
+  anywhere in its text is that formation's in-time; a line naming none
+  covers every formation that has no line of its own; a specific line beats
+  a wide one whatever the typing order; several wide lines — the earliest is
+  the show. `waveInTime` (the wave windows) reads the same detector, so a
+  line can never set a report time the windows cannot see. The reference's
+  stricter `<CS> IN TIME` grammar reads every SEED line identically, which
+  is what keeps parity untouched where data exercises it; the wider grammar
+  is a deliberate port divergence. Pinned in `intimes.test.ts`.
 - **A sortie-caused breach spells out the debrief assumption** (owner, 15 Aug
   26 — "state why it would flag… the assumption that the crew will debrief 2
   hours after landing… because actually they can leave quickly after
@@ -113,8 +172,11 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   show` / `show at brief` / `show @ brief` in an AIRCRAFT's remarks
   (`events.ts:lateShowOf`, parsed like `briefLeadOf` and `aarNeed`) never
   moves the anchor and never removes the warning: it stays a hard red CR,
-  counted with the rest. While the man still clears rest by the **latest
-  show** (`VCONF.showLead`, 60 min before T/O, editable) his puck rings
+  counted with the rest. While the man still clears rest by **step**
+  (`VCONF.step`, 60 min before T/O, editable — the SAME knob that pads the
+  busy window, one setting since 21 Aug 26; the separate `showLead` key it
+  replaced is removed, and the message calls the moment "step" because that
+  is the owner's word for it) his puck rings
   **dashed** — sanctioned, and he makes the jet. Past that line it rings
   **solid**: he cannot walk, kit up and start engines, so he is unable to
   make the flight. Published per person as `WARN.dash[di][id]` (`dashOf`),
@@ -342,6 +404,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   currency) and already strips `NO AAR` / `NO DAAR` / `NO NAAR`. **It is
   byte-identical to `reference/scheduler.html` and pinned by `tfin.js` group
   V — do not touch it.** What is new sits on top of its answer.
+  A bare `AAR` is night **when the wave is a night wave** — the wave's own
+  day/night flag is the whole answer; writing `NAAR`/`DAAR` says it outright
+  either way. **The clock is out of this rule** (owner, 21 Aug 26 — "make
+  the rule for NAAR instead of a time"): a lands-after-19:00 clause used to
+  tip a bare AAR to night, written as a literal in TWO places (`events.ts`
+  for the validator, `avail.ts:slotRules` for the crew picker); it briefly
+  became a setting that same day and was then removed with the rule — do
+  not reintroduce a landing-time line here. `refwin.ts:reaar()` excises the
+  reference's identical clauses so parity holds off-seed too. Pinned in
+  `ruleflex.test.ts`, both readers.
   One quirk of that segmenter, found by the owner asking and pinned in
   `aar.test.ts`: it splits on an optional digit + `A`/`B` + colon, and that
   pattern turns up inside ordinary words. `AREA: … AAR` is harmless (an `A:`
@@ -580,7 +652,9 @@ flagged correctly and still swept the man out of the crew palette.
   every key in the grammar. Each is read off the same row `collectEvents`
   reads and padded the same way, so the picker and the warning list cannot
   disagree: a sortie is `[to − VCONF.step, ld + VCONF.dekit]`, a standalone
-  line is unpadded (it is a shift), a sim defaults to 90 minutes and
+  line is unpadded (it is a shift), a sim with no end defaults to
+  `VCONF.simLen` (standard 90 — a Logic-tab setting since 21 Aug 26, read by
+  `events.ts` and both `avail.ts` sites alike) and
   everything else to `VCONF.openEnd`. `.+` and `.xN` strip to their row and
   inherit its hours.
   **`null` means UNKNOWN, never FREE.** A BB shift is written `['SHIFT','','']`

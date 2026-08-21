@@ -5,6 +5,18 @@ import { store } from './hooks'
    Thresholds are taken from the 149/142 aircrew sheet (BRF 02:20, crew
    rest 08:00, min turn 20). Rules are pure functions; re-run on any edit.
    ===================================================================== */
+/* `step` is the ONE step-timing knob (owner, 21 Aug 26 — "can I confirm this
+   rule will still work if I change the rules for step default timing?"). It
+   pads the sortie's busy window (avail.ts, events.ts), sets the tight-turn
+   floor (dekit+step), AND is the crew-rest late-show line: rest still running
+   at T/O − step is a HARD breach — he is not late to the brief, he is unable
+   to walk, kit up and start engines (the 6 Aug 26 ruling, then called the
+   "latest show"). A separate `showLead` key carried that last job until
+   21 Aug 26; two keys for one physical moment meant editing "Step before
+   take-off" moved the busy windows but not the breach line — the exact drift
+   the owner asked about, so showLead was REMOVED like aarNight before it.
+   rulesLoad ignores a stored override for it (no RULE_SPEC entry). Don't
+   reintroduce a second step-like key. */
 export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, tightTurn:120, crewRest:720,
   debrief:120,      // land + 2h — the flight debrief window
   reportLead:180,   // report to squadron 3h before T/O
@@ -14,13 +26,6 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
   amtDebrief:30,    // AMT DEBRIEF row + 30 min
   openEnd:60,       // a row with a start and no end is assumed to run an hour
   maxRun:6,         // most consecutive days on the programme before a break day is due
-  /* The latest a crew can show and still make the jet (owner, 6 Aug 26). A
-     `late show` remark excuses a man from the published in-time and from the
-     brief, so crew rest expiring after brief time is fine — but not past this
-     line, because he cannot walk, kit up and start engines in less than it.
-     Rest still running at T/O − showLead is a HARD breach: he is not late to
-     the brief, he is unable to make the flight. */
-  showLead:60,      // latest show, minutes before T/O
   /* How many days before the week starts a member's input is due (owner,
      9 Aug 26; two weeks rather than one, owner 9 Aug 26). The deadline is
      the week's Monday minus this many days, and the day itself is still on
@@ -31,6 +36,15 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
   inputLead:14,     // member input deadline, days before the week's Monday
   scDayFrom:7*60,   // an SC shift wholly inside this window is a DAY shift
   scDayTo:19*60,
+  /* PROMOTED FROM A HARD-CODED LITERAL (owner, 21 Aug 26 — "I don't wanna
+     hard code too many things and have no flexibility"). It was a fixed 90
+     buried in events.ts/avail.ts; at this default the engine's behaviour is
+     byte-identical to before (and to the reference), so parity is untouched
+     — the gain is that the Logic tab can now move it. A sibling `aarNight`
+     setting lived here for a few hours the same day and was REMOVED by the
+     owner's next ruling: night AAR is the wave's nightness (or an explicit
+     NAAR), never a landing-time line — don't reintroduce a clock for it. */
+  simLen:90,        // a sim row with no end time is assumed to run this long
   /* WEEKEND / PUBLIC-HOLIDAY DUTY EARNS OIL (owner, 16-17 Aug 26 — Leave War
      sync wire 4). A duty stood on a non-working day credits OIL in Leave War:
      an SC AM or PM shift is half a day, a whole-day shift a full one, and a
@@ -81,7 +95,6 @@ export const RULE_SPEC:any={
   dekit:     {t:'Dekit after landing',       u:'min', lo:0,  hi:240},
   briefLead: {t:'Flight brief before T/O',   u:'min', lo:0,  hi:480},
   reportLead:{t:'Nominal report before T/O', u:'min', lo:0,  hi:480},
-  showLead:  {t:'Latest show before T/O',    u:'min', lo:0,  hi:480},
   debrief:   {t:'Flight debrief after land', u:'min', lo:0,  hi:480},
   crewRest:  {t:'Crew rest',                 u:'min', lo:240,hi:1440},
   tightTurn: {t:'Tight turn threshold',      u:'min', lo:0,  hi:480},
@@ -92,6 +105,7 @@ export const RULE_SPEC:any={
   amtDebrief:{t:'AMT debrief',               u:'min', lo:0,  hi:240},
   scDayFrom: {t:'SC day window opens',       u:'time',lo:0,  hi:1439},
   scDayTo:   {t:'SC day window closes',      u:'time',lo:0,  hi:1439},
+  simLen:    {t:'Assumed sim length, no end time',u:'min',lo:15,hi:480},
   oilFullMin:{t:'Weekend duty full day (OIL)',u:'min',lo:60, hi:720},
   maxRun:    {t:'Max days worked in a row',  u:'days',lo:1,  hi:14},
   inputLead: {t:'Member input deadline before the week',u:'days',lo:0,hi:60},
@@ -105,7 +119,11 @@ export const ruleFmt=(k:any,v:any)=>{const u=RULE_SPEC[k]&&RULE_SPEC[k].u;
   return u==='time'?hhmm(v):u==='days'?`${v} day${v===1?'':'s'}`:lgT(v);};
 export const ruleParse=(k:any,txt:any)=>{
   const s=String(txt).trim();
-  if(RULE_SPEC[k]&&RULE_SPEC[k].u==='time'){const m=parseHM(s); return m==null?null:m;}
+  /* clock fields tolerate the squadron's own spellings — "1900", "19:00",
+     "1900H", "19:00L" all mean the same time (owner, 21 Aug 26: "whats the
+     tolerance in detecting data that are similar, like 0900 vs 0900H").
+     The suffix is stripped, not parsed: H and L both mean local here. */
+  if(RULE_SPEC[k]&&RULE_SPEC[k].u==='time'){const m=parseHM(s.replace(/\s*[HL]$/i,'')); return m==null?null:m;}
   /* a day count is a plain number — "6", "6 days" — never minutes */
   if(RULE_SPEC[k]&&RULE_SPEC[k].u==='days'){const m=s.match(/^(\d+)/); return m?+m[1]:null;}
   /* "12h", "2h20", "90", "90 min" all mean the same thing */

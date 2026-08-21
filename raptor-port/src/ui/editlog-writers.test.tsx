@@ -111,20 +111,20 @@ describe('the five fields that write their own model', () => {
     f.atime = was
   })
 
-  it('the IN-TIMES strip records the list either side', async () => {
+  it('the IN-TIMES strip records the list either side (per-line since 21 Aug 26)', async () => {
     await goEdit()
-    const it = $('#eWeek .intimes[data-intimes]')
-    expect(it, 'an in-times strip renders on the edit week').toBeTruthy()
-    const [di, gi] = it.dataset.intimes!.split('|')
+    const line = $('#eWeek .intimes[data-intimes] [data-itline]')
+    expect(line, 'each in-time line is its own editable span on the edit week').toBeTruthy()
+    const [di, gi] = line.dataset.itline!.split('|')
     const w = DAYS[+di!].waves[+gi!]
     const was = (w.intimes || []).slice()
-    it.innerHTML = '<span>1200H</span><span>1330H</span>'
-    await blur(it)
+    line.textContent = '1200H: TEST LINE'
+    await blur(line)
 
     const row = elogFor(`it:${di}.${gi}`)
     expect(row, 'the change reached the log').toBeTruthy()
-    expect(row!.to).toContain('1200H')
-    expect(row!.to).toContain('1330H')
+    expect(row!.to).toContain('1200H: TEST LINE')
+    expect(row!.to, 'the untouched second line rides the list').toContain(was[1])
     w.intimes = was
   })
 

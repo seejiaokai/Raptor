@@ -294,6 +294,63 @@ amendment. Both branches compare against `areaText()`/`atimeText()`, the
 same functions the builder renders with, so identical text is not a change,
 a real edit still commits, and an emptied cell still stores the blank.
 
+## In-time lines: added and removed per wave (owner, 21 Aug 26)
+
+"Allow me to input lines at the top of each wave where I can reflect the in
+time likewise to be able to edit or delete it." Before this, the in-time
+block could only be TYPED IN: deleting the last line dropped the whole box
+out of the DOM with no control to bring it back (undo was the only way
+home), and there was no way to add a line at all — Enter commits, so a new
+span could never be minted from inside the contenteditable.
+
+- **"+ In time" renders on every non-standalone wave, in edit mode only,
+  whether or not the wave currently has lines** — the always-there add
+  control IS the vanishing-box fix. Week: an `.airbtn` in the wave tab
+  beside Traffic (`html.ts`). Board: an `.mbtn add` in the wave header's
+  control cluster (`board.ts`). Standalone waves (SC/AVALON/BB) are
+  excluded on both surfaces AND re-checked in the handler: they are shifts,
+  not sorties, and a typed in-time there would silently move
+  `waveWindows`.
+- **Each line is its OWN contenteditable span (`data-itline`), with an
+  ordinary ✕ button (`data-itdel`) beside it — outside any editable region**
+  (reworked the same day on the owner's iPhone: the first cut put the ✕
+  inside one shared contenteditable block, where iOS would not reliably tap
+  it, and typing in the shared block let WebKit clone a span so the
+  span-scrape committed the same text twice — the owner's duplicate-line
+  report). `textedit.ts` commits ONE line at a time off `data-itline`
+  (empty → the line is deleted and its DOM pair removed at once, so the
+  remaining ✕ positions stay true until the deferred repaint), which makes
+  any stray span WebKit mints invisible to the commit. Enter commits,
+  Escape restores the model's line. The wrapper keeps `data-intimes` (the
+  history bubble anchors on it) but is not editable itself; the `.iedit`
+  grid pairs each line with its ✕. The ✕ handler resolves its index by DOM
+  POSITION within the block, falling back to the minted attribute only for
+  an element with no block around it.
+- **Both writers ride the existing `it:` key** (`routeClick` in
+  `interactions.ts`, guarded `canEditSched() && HOOKS.editMode()` like every
+  model-writing branch): `markEdit('it:di.gi', was, now)` — so the AL diff,
+  the changes list, undo and the issued-mark reconcile read exactly as a
+  typed edit does. The engine needed no wiring: `intimeMap`/`waveInTime`
+  parse the `w.intimes` strings themselves, so a line is registered the
+  moment it carries a time.
+- **The minted line is engine-neutral**: it seeds with the wave's own
+  derived in-time (`waveInTime` — earliest line, else earliest T/O, its
+  exact fallback) as `HHMMH: IN TIME + WX/NOTAMS`, so the stated number is
+  the one the engine already assumes; a wave with no derivable time seeds
+  the bare phrase, which parses as nothing until a time is typed. NO
+  callsign, deliberately: `<CS> IN TIME` is the phrase that sets a
+  formation's report time (`intimeMap`), and the button must not pick a
+  jet nobody chose. After the repaint the caret lands at the end of the
+  new line (the LogicPage deferred-focus idiom), scoped to the surface the
+  button was tapped on.
+- Deleting a line by clearing its text still works (the focusout scrape
+  drops empties — unchanged); the ✕ is the phone-first path. The ✕ toasts
+  what went; the add answers with the focused caret instead of a toast.
+
+Pinned in `intimesadd.test.tsx`; the reference-parity divergence is lifted
+by `noItCtl` in `html.test.ts` (all three additions are edit-mode-only, so
+the read-only compare needed nothing).
+
 ## Amendment marks on screen
 
 `alAttr(key)` emits `data-alc="n"` (published in AL n) or `data-alp="1"`
@@ -2052,8 +2109,8 @@ the colour would read as "less of a problem".
 
 - `.puck.boxred` — the solid box (`box-shadow`), the ordinary hard flag.
 - `.puck.boxdash` — a crew-rest breach on a line whose aircraft remarks say
-  `late show` / `show at brief`, while that crew still clears rest by the
-  latest show. Past the latest show it goes back to solid — see
+  `late show` / `show at brief`, while that crew still clears rest by step
+  (`VCONF.step`). Past step it goes back to solid — see
   `engine-rules.md` §validation. Published as `WARN.dash[di][id]` (`dashOf`).
 - `.puck.boxdot` — **the previous-day trace**, below.
 
