@@ -118,7 +118,7 @@ export function resetSession(s: any) {
   view.armDrop()                  // ARM (belt-and-braces: setBoardDay only disarms if ARM was already set)
   view.DPREV.clear()              // day-preview map — same in-place-mutation pattern as DWOPEN/HLSET
   view.VWORK.clear()              // view-page working-copy choices — back to the issued default
-  view.AVOPEN.clear()             // Available-crew panels fold back to their one-line default
+  view.AVSHUT.clear()             // Available-crew panels return to their open default
   view.PIOPEN.clear()             // Personal-Inputs panels fold back too
   /* the carried day too: setPage above captures whatever week the OUTGOING
      session was parked on, and a new session must open on the week's own
@@ -130,6 +130,7 @@ export function resetSession(s: any) {
   view.BELLLIT.clear()            // notification glows never carry across a login/logout
   view.WARNOFF.clear()            // muted board warnings come back for the next session
   view.WMOPEN.clear()
+  view.NOTEPUB.clear()            // "public" scheduler-note flags reset with the session
   /* the Leave War page's role rides the Raptor session: an admin login is a
      Leave War admin, everyone else (and a logout) is a member. This is the
      ONE production writer of that role — the standalone app's own toggle was
@@ -174,11 +175,12 @@ export function loadWeek(v: any) {
   view.clearOtherHL()
   view.DPREV.clear()
   view.VWORK.clear()
-  view.AVOPEN.clear()
+  view.AVSHUT.clear()
   view.PIOPEN.clear()
   view.BELLLIT.clear()
   view.WARNOFF.clear()
   view.WMOPEN.clear()
+  view.NOTEPUB.clear()
   view.setCarryDay(null)
   view.setHistMode(false)
   view.setRosDay(0)

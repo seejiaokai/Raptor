@@ -200,7 +200,7 @@ export function Shell() {
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
         <div className="mark">
           <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
-          <span className="tx"><span className="k">142 SQN · Flying Programme</span><span className="v">RAPTOR</span></span>
+          <span className="tx"><span className="k">142</span><span className="v">RAPTOR</span></span>
         </div>
         <nav className="nav" id="topnav">
           <a data-page="editsched" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'editsched' ? 'on' : ''} onClick={() => nav('editsched')} onKeyDown={navKey('editsched')}>Edit Schedule</a>
@@ -322,7 +322,7 @@ export function Shell() {
             <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
           </div>
-          <div className="title"><h1 id="eTitle">142 SQN Scheduling board · Jul 13</h1><span className="sub mono">Edit mode · changes are local to this prototype</span></div>
+          <div className="title"><h1 id="eTitle">142 Scheduling board · Jul 13</h1><span className="sub mono">Edit mode · changes are local to this prototype</span></div>
           <div className={'schedbanner ' + b.cls} id="eBanner" style={{ ['--al' as any]: b.col }}
             dangerouslySetInnerHTML={{ __html: b.html }} />
           <ALPanel />

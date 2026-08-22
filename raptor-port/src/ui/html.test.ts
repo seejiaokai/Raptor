@@ -603,7 +603,10 @@ describe('the scheduler-side controls', () => {
     expect(cblk).not.toContain('data-acc=')          // no rows drawn while folded
     PIOPEN.add(0)                                     // expand
     const open = dayHTML(0, true)
-    expect(open.slice(open.indexOf('sec-inp'), open.indexOf('sec-avail'))).toContain('data-acc=')
+    const oblk = open.slice(open.indexOf('sec-inp'), open.indexOf('sec-avail'))
+    expect(oblk).toContain('data-acc=')
+    /* the housekeeping reminder (owner, Aug 26) rides the expanded panel */
+    expect(oblk).toContain('deleted by the scheduler here')
     PIOPEN.delete(0)                                  // leave it as we found it
   })
 

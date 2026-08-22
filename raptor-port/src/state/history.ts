@@ -3,7 +3,7 @@ import { INPUTS } from '../engine/inputs'
 import { SCHED } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { logAction } from '../engine/editlog'
-import { armDrop, prunePreviews } from './view'
+import { armDrop, prunePreviews, WARNOFF } from './view'
 
 const toast=(...a:any[])=>HOOKS.toast(...a)
 const reflow=()=>HOOKS.reflow()
@@ -19,7 +19,14 @@ export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
    per-day alternate blobs and which one the live day is. In the snapshot for
    the same reason the AL records are: a duplicate or a draft switch is one
    ordinary undo step, and undoing past it must bring the blobs back too. */
-export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft});}
+/* `wo` carries the muted-check set (view.WARNOFF). Hiding or un-hiding a board
+   warning pushes its own history step (interactions.ts), so undo/redo walk back
+   over a mute the same as any other edit (owner, Aug 26 — "when I click undo I
+   should revert my hidden warning changes"). A Set is not JSON-serialisable, so
+   it rides as an array and histApply rebuilds it. It is the one session-view set
+   in the snapshot — the rest (folds, previews, late marks) are not undoable and
+   stay out on purpose. */
+export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,wo:[...WARNOFF]});}
 export function histInit(){HIST.stack=[histSnap()];HIST.ix=0;syncHistBtns();}
 export function histPush(){
   if(HIST.lock)return;
@@ -43,6 +50,7 @@ export function histApply(i:any){
   SCHED.orig=s.o||{};
   SCHED.cur=s.cv||{};   // stale entries are inert — dayCurVer self-heals
   SCHED.drafts=s.dr||{}; SCHED.curDraft=s.cd||{};
+  WARNOFF.clear(); (s.wo||[]).forEach((k:any)=>WARNOFF.add(k));   // muted checks are an undo step
   /* the model has just been swapped wholesale — an armed slot may now point at a
      wave, row or aircraft that no longer exists. The arm strip stayed on screen
      and the next tap threw "Cannot read properties of undefined" out of flyRef

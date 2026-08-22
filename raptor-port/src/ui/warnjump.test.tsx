@@ -382,10 +382,10 @@ describe('the board day tab clears a stale warning focus', () => {
 describe('the Available-crew list is never the destination (edit week)', () => {
   beforeAll(async () => {
     await click($$('.nav a[data-page]').find(a => (a as HTMLElement).dataset.page === 'editsched')!)
-    /* the panel collapses to one line by default (13 Aug 26); the hazard these
-       tests guard — a warning jump landing on a free-crew puck — only exists
-       while the grids are up, so open every day's panel */
-    await act(async () => { WARN.byDay.forEach((_: any, di: number) => view.AVOPEN.add(di)); notify() })
+    /* the panel is open by default now (owner, Aug 26); the hazard these tests
+       guard — a warning jump landing on a free-crew puck — only exists while the
+       grids are up, so make sure no day is folded (AVSHUT holds folded days) */
+    await act(async () => { view.AVSHUT.clear(); notify() })
   })
 
   it('the edit week really is rendering the free-crew block', () => {

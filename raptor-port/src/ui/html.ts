@@ -13,7 +13,7 @@ import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, s
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, PIOPEN, VWORK, CURPAGE, lateShown, restArmed } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -329,23 +329,41 @@ export function plRmk(base:any,ed:any,o:any,rmkTxt:any,late?:any){
 /* free-text planning notes attached to a whole block (currently the Sims block).
    Read-only viewers see the note only when there is one; schedulers always get the
    box so there is somewhere to write before anything has been written. */
-/* The scheduler's hand-over note for one block of the day. EDIT AND BOARD ONLY —
-   the view-only week is the ISSUED programme and must not carry working notes,
-   so this returns nothing when ed is false even if the note has text in it
-   (owner request, Aug 26). Reading is still open to any scheduler-side viewer;
-   only writing needs canEditSched(). */
+/* The scheduler's hand-over note for one block of the day. Scheduler-side by
+   default (edit week + board), so the view-only week — the ISSUED programme —
+   normally carries none of it. But a scheduler can now MAKE ONE PUBLIC (owner,
+   Aug 26): a public note also shows on the view-only week, under the header
+   "Notes", while the edit week and board header read "Public notes" and carry
+   the toggle. The public flag is view.NOTEPUB, keyed by this note's own funnel
+   key. On the view-only week a public note prints only when it has text (an
+   empty box is nothing to issue); note that a public note whose SECTION has no
+   rows on the view-only week is not drawn, because the empty section itself is
+   not — an acceptable edge, the note still reads on the edit side. Reading a
+   scheduler-side note is open to any scheduler-side viewer; only writing (and
+   flipping the public flag) needs canEditSched(). */
 export function blkNoteHTML(di:any,d:any,ed:any,key:any,field:any){
-  if(!ed)return '';
-  const v=d[field]||'', a=alAttr(`${key}:${di}`);
-  return `<div class="blknote-h">Scheduler notes</div>`
-    +(canEditSched()
+  const k=`${key}:${di}`, v=d[field]||'', a=alAttr(k), pub=notePub(k);
+  if(!ed){
+    if(!pub||!v)return '';
+    return `<div class="blknote-h">Notes</div><div class="blknote"${a}>${esc(v)}</div>`;
+  }
+  const ce=canEditSched();
+  return `<div class="blknote-h">${pub?'Public notes':'Scheduler notes'}${ce?notePubTog(k,pub):''}</div>`
+    +(ce
       ? `<div class="blknote ed" contenteditable="true" spellcheck="false" data-txt="${key}:${di}"${a}>${esc(v)}</div>`
       : `<div class="blknote"${a}>${esc(v)}</div>`);
 }
+/* The show-on-view-only toggle that rides a scheduler-note header, on the edit
+   week and the board alike. One builder so the two surfaces cannot drift. */
+export function notePubTog(k:any,pub:any){
+  return `<button class="notepub${pub?' on':''}" data-notepub="${esc(k)}" title="${pub?'Showing on the view-only schedule — tap to keep it scheduler-only':'Show this note on the view-only schedule'}">${pub?'On view-only ✓':'Make public'}</button>`;
+}
 /* Available-crew block: active aircrew by wave, then SANS grouped separately (they run to
    different currency requirements — see sanStatus()). Rendered at the bottom of the day.
-   COLLAPSED to its one-line summary by default (owner, 13 Aug 26 — "the window
-   is pretty big"); the header toggles per day through AVOPEN. Expanded, a wave
+   OPEN by default now (owner, Aug 26 — "all available crew section will open by
+   default in edit schedule"); the header toggles per day through AVSHUT, which
+   tracks the days the scheduler has folded (reversing the 13 Aug 26 "the window
+   is pretty big" collapse-by-default). Expanded, a wave
    line counts EVERYONE who can fly it — its own leftovers PLUS the all-day
    crew, who are by construction free for every wave — because the old
    leftovers-only count printed "— none free —" over a wave 22 people could
@@ -369,7 +387,7 @@ export function availHTML(d:any,di:any,ed:any){
      ANYTHING today — as a pointer to that grid, not a second listing of it. */
   const sansOffering=Object.keys(PEOPLE).filter((id:any)=>PEOPLE[id].san&&!PEOPLE[id].archived&&sansAvailOn(id,d.dt)).length;
   const allA=active(A.anyWave);
-  if(!AVOPEN.has(di)){
+  if(AVSHUT.has(di)){
     const parts=[`${allA.length} all day`];
     A.wins.forEach((w:any,i:any)=>{const n=active(A.byWave[i]).length;
       if(n)parts.push(`+${n} ${w.night?'night':(ORD[i]||(i+1)+'th')+' wave'}`);});
@@ -1111,7 +1129,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26).
          Now that activity inputs auto-land on the ground programme, this block
          is the faded audit echo, not the primary planning surface — so it folds
-         away like Available crew (the PIOPEN/AVOPEN pattern), the header the
+         away by default (the PIOPEN session-view pattern), the header the
          toggle. Only this group (acc) folds and only in edit mode; Unavailable
          stays open — it is a live drop target and the day's must-read. */
       const foldable=!!acc&&!!ed;
@@ -1125,6 +1143,10 @@ export function dayHTML(di:any,ed:any,vsel?:any){
          rather than every row carrying a hint it has no room for.
          Scheduler-side only: the view-only week cannot edit anything. */
       let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>${title}${ed?`<span class="pl-hint">times and remarks type in place · clear a time for all day · press the type to change it${foldable?' · hide ⌃':''}</span>`:''}</div>`;
+      /* Housekeeping reminder (owner, Aug 26): an input the scheduler is not
+         going to action should be cleared out here — press its type to open the
+         editor and Delete. Personal Inputs group only (acc), scheduler-side. */
+      if(acc&&ed&&rows.length)s+=`<div class="pl-inpnote">Rejected personal inputs should be deleted by the scheduler here.</div>`;
       /* Unavailable is the block the squadron reads every single day, so it
          prints even when nobody is on it — "Nil" is the answer, not a missing
          section. */

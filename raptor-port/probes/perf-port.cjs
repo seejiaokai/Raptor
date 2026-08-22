@@ -281,16 +281,18 @@ async function trial(b, measureSize) {
      (5078 against 5530), because a week row swaps its spans for cells rather
      than gaining a column.
      LOWERED to 4000 on 13 Aug 26, from 5530, with a measurement: the
-     Available-crew panel now boots COLLAPSED to a one-line summary (owner ask
-     the same day) and the default week render fell 5099 → 3621 nodes. This
-     probe measures that default; a scheduler who expands a day's panel puts
-     its pucks back deliberately, which is data-driven growth the ceiling is
-     not judging. 4000 leaves ~10% headroom over the reading — the same
-     order the old ceiling held over its own — because a slack ceiling
-     catches nothing: the 5530 bar would have passed a change that silently
-     re-expanded every panel, which is precisely the regression this number
-     now guards. */
-  const DOM_CEILING = { week: 4000, board: 960 }
+     Available-crew panel booted COLLAPSED to a one-line summary (owner ask the
+     same day) and the default week render fell 5099 → 3621 nodes.
+     RAISED to 5450 on Aug 26 — the owner reversed that default ("all available
+     crew section will open by default in edit schedule"), so every day's panel
+     draws its pucks in the ZERO STATE now and the default week render measured
+     4940 nodes here. That is the reading this probe measures, so the ceiling has
+     to cover it; 5450 leaves ~10% headroom over it, the same order the old
+     ceilings held. What it still guards is growth BEYOND the open default — the
+     13 Aug worry (a slack bar passing a silent re-expansion) is moot now that the
+     expansion is the intended default, but a fresh regression on top of it is
+     exactly what 5450 catches. A scheduler who FOLDS panels only shrinks it. */
+  const DOM_CEILING = { week: 5450, board: 960 }
   for (const [surface, s] of Object.entries(size)) {
     const cap = DOM_CEILING[surface]
     T(`perf · the ${surface} stays under its recorded DOM ceiling (${cap})`,

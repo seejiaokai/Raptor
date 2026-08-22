@@ -3295,33 +3295,34 @@ test.describe('the green eligibility rings', () => {
   })
 })
 
-/* The Available-crew panel folds to ONE line by default (owner, 13 Aug 26 —
-   "the window is pretty big"), and the header line is the whole control. */
+/* The Available-crew panel is OPEN by default now (owner, Aug 26 — "all
+   available crew section will open by default in edit schedule"); the header line
+   is the whole control and folds it to one line. */
 test.describe('the Available-crew panel folds', () => {
-  test('one line closed, opens on tap, closes back — and it stays short', async ({ page }) => {
+  test('open by default, folds on tap, opens back', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
     await go(page, 'editsched')
-    const closed = await page.evaluate(() => {
+    const open = await page.evaluate(() => {
       const p = document.querySelector('#eWeek .day[data-day="0"] .availpuck') as HTMLElement
       return p ? { h: p.getBoundingClientRect().height, grids: p.querySelectorAll('.ap-grid').length } : null
     })
-    expect(closed, 'the panel renders').not.toBeNull()
-    expect(closed!.grids, 'no puck grid while closed').toBe(0)
-    expect(closed!.h, 'closed it really is one line').toBeLessThan(40)
+    expect(open, 'the panel renders').not.toBeNull()
+    expect(open!.grids, 'open by default, the grids are up').toBeGreaterThan(0)
     await clickHere(page, '#eWeek .day[data-day="0"] .ap-h[data-avtog]')
     await page.waitForTimeout(300)
-    const open = await page.evaluate(() => {
+    const closed = await page.evaluate(() => {
       const p = document.querySelector('#eWeek .day[data-day="0"] .availpuck') as HTMLElement
       return { h: p.getBoundingClientRect().height, grids: p.querySelectorAll('.ap-grid').length }
     })
-    expect(open.grids, 'open, the grids are back').toBeGreaterThan(0)
-    expect(open.h, 'and the panel really grew').toBeGreaterThan(closed!.h * 2)
+    expect(closed.grids, 'folded, no puck grid').toBe(0)
+    expect(closed.h, 'folded it really is one line').toBeLessThan(40)
+    expect(open!.h, 'and open really is taller').toBeGreaterThan(closed.h * 2)
     await clickHere(page, '#eWeek .day[data-day="0"] .ap-h[data-avtog]')
     await page.waitForTimeout(200)
     const again = await page.evaluate(() =>
-      (document.querySelector('#eWeek .day[data-day="0"] .availpuck') as HTMLElement).getBoundingClientRect().height)
-    expect(again, 'closed again').toBeLessThan(40)
+      (document.querySelector('#eWeek .day[data-day="0"] .availpuck') as HTMLElement).querySelectorAll('.ap-grid').length)
+    expect(again, 'open again').toBeGreaterThan(0)
   })
 })
 

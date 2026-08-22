@@ -350,17 +350,20 @@ export const DPREV=new Map()
    regardless), and it becomes meaningful again if the day is re-published. */
 export const VWORK=new Set()
 export function toggleViewWork(di:any,on:any){ if(on)VWORK.add(+di); else VWORK.delete(+di) }
-/* which days' Available-crew panel is EXPANDED — collapsed to its one-line
-   summary is the default (owner, 13 Aug 26: "the window is pretty big").
-   Session view state in the DWOPEN pattern: in-place mutation because ESM
-   cannot reassign across modules, cleared on a session change, never
-   persisted and never in a history snapshot. */
-export const AVOPEN=new Set()
-export function toggleAvail(di:any){ if(AVOPEN.has(+di))AVOPEN.delete(+di); else AVOPEN.add(+di) }
+/* which days' Available-crew panel the scheduler has COLLAPSED. OPEN is the
+   default now (owner, Aug 26 — "all available crew section will open by default
+   in edit schedule"), so this tracks the exceptions: a day in the set is folded
+   to its one-line summary, a day absent is expanded. It reversed the 13 Aug 26
+   default ("the window is pretty big"), which is why the set now names shut days
+   rather than open ones. Session view state in the DWOPEN pattern: in-place
+   mutation because ESM cannot reassign across modules, cleared on a session
+   change, never persisted and never in a history snapshot. */
+export const AVSHUT=new Set()
+export function toggleAvail(di:any){ if(AVSHUT.has(+di))AVSHUT.delete(+di); else AVSHUT.add(+di) }
 /* which days' PERSONAL INPUTS block is EXPANDED — collapsed to a one-line
    summary is the default (owner, Aug 26). Now that activity inputs auto-land on
    the ground programme, this block is the faded audit echo rather than the
-   primary surface, so it folds away like Available crew. Same AVOPEN pattern:
+   primary surface, so it folds away by default. Same session-view pattern:
    session view state, in-place mutation, cleared on a session/week change,
    never persisted, never in a history snapshot. */
 export const PIOPEN=new Set()
@@ -400,6 +403,21 @@ export function warnShown(w:any){ return !WARNOFF.has(warnMuteKey(w)) }
 export function toggleWarnOff(key:any){ if(!canEditSched())return false; if(WARNOFF.has(key)){WARNOFF.delete(key);return true} WARNOFF.add(key); return false }
 export const WMOPEN=new Set<number>()
 export function toggleWarnMuted(di:any){ if(WMOPEN.has(+di))WMOPEN.delete(+di); else WMOPEN.add(+di) }
+/* SCHEDULER NOTES CAN BE MADE PUBLIC (owner, Aug 26 — "Scheduler notes can
+   toggle to show in view only schedule. In which it will show as Public notes in
+   edit schedule and scheduler board but in view only schedule it shows Notes").
+   A per-note-block flag keyed by the note's own funnel key, `${key}:${di}` (e.g.
+   `pn:0`) — the same key the note's text rides — so a note made public on the
+   week is public on the board and on the view-only week, one flag for all three.
+   OFF (default): the block is scheduler-side only, header "Scheduler notes". ON:
+   it also renders on the view-only week under the header "Notes", and the edit
+   week + board header read "Public notes". It is a display CHOICE, not schedule
+   data, so it stays a session-only view set on the LATEOFF precedent: admin-gated
+   at the write path, cleared on a session/week change, never persisted, never in
+   a history snapshot (unlike a mute, this one the owner did not ask to undo). */
+export const NOTEPUB=new Set<string>()
+export function notePub(key:any){ return NOTEPUB.has(String(key)) }
+export function toggleNotePub(key:any){ if(!canEditSched())return false; const k=String(key); if(NOTEPUB.has(k)){NOTEPUB.delete(k);return false} NOTEPUB.add(k); return true }
 /* RESTARM — the one deliberate confirm in the app (owner, 16 Aug 26). "Load
    onto working copy" (the reworded restore) discards any unpublished edits on
    the day, so when there ARE some it takes two taps: the first arms this flag,

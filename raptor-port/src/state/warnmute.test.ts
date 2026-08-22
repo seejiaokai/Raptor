@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { WARNOFF, warnMuteKey, warnShown, toggleWarnOff } from './view'
 import { setSession } from './auth'
+import { histInit, histPush, undo, redo } from './history'
 
 /* Muting a board warning (owner, Aug 26 — "turn off that specific warning
    advisory … but if things change that warning will appear again"). The mute is
@@ -34,5 +35,19 @@ describe('a muted board warning', () => {
     setSession({ user: 'user', role: 'main' })
     expect(toggleWarnOff(k)).toBe(false)
     expect(WARNOFF.has(k), 'a member cannot mute').toBe(false)
+  })
+
+  /* Undo reverts a mute now (owner, Aug 26 — "when I click undo I should revert
+     my hidden warning changes"). WARNOFF rides the history snapshot and the mute
+     handler pushes a step, so undo/redo walk over it like any other edit. */
+  it('is an undo step — undo brings the check back, redo hides it again', () => {
+    const k = warnMuteKey({ di: 0, code: 'C', who: ['x'], msg: 'clash' })
+    histInit()                                    // baseline: nothing muted
+    toggleWarnOff(k); histPush()                  // the mute handler's two steps
+    expect(WARNOFF.has(k), 'muted').toBe(true)
+    undo()
+    expect(WARNOFF.has(k), 'undo un-mutes').toBe(false)
+    redo()
+    expect(WARNOFF.has(k), 'redo re-mutes').toBe(true)
   })
 })

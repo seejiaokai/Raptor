@@ -293,22 +293,25 @@ describe('the edit page (tfin)', () => {
    can fly the wave — the all-day crew included — because the old
    leftovers-only count printed "— none free —" over a wave 22 people could
    fly, which the owner read as a bug. */
-describe('the Available-crew panel folds (owner, 13 Aug 26)', () => {
-  it('collapsed to one line by default; expanded counts everyone who can fly', async () => {
+describe('the Available-crew panel folds (owner, Aug 26 — open by default)', () => {
+  it('expanded by default and counts everyone who can fly; the header folds it', async () => {
     const day = () => $(`#eWeek .day[data-day="0"]`)
-    expect(day().querySelector('.availpuck .ap-grid')).toBeFalsy()
     const head = () => day().querySelector('.ap-h[data-avtog="0"]') as HTMLElement
     expect(head()).toBeTruthy()
-    expect(head().textContent).toMatch(/all day/)
-    await click(head())
+    /* OPEN is the zero-state now: the grids are up and the wave count reads live */
     expect(day().querySelectorAll('.availpuck .ap-grid').length).toBeGreaterThan(0)
     const A = availByWave(DAYS[0])
     const act0 = (ids: any[]) => ids.filter(id => !PEOPLE[id].san)
     const total = act0(A.byWave[0]).length + act0(A.anyWave).length
     const grp = [...day().querySelectorAll('.availpuck .ap-grp')].find(g => /wave/i.test(g.textContent!))!
     expect(grp.textContent).toContain(`· ${total} can fly`)
+    /* tapping the header folds it to the one-line summary */
     await click(head())
     expect(day().querySelector('.availpuck .ap-grid')).toBeFalsy()
+    expect(head().textContent).toMatch(/all day/)
+    /* and tapping again re-opens it */
+    await click(head())
+    expect(day().querySelectorAll('.availpuck .ap-grid').length).toBeGreaterThan(0)
   })
 })
 
