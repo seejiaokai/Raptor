@@ -16,6 +16,8 @@ import { validate } from '../engine/validate'
 import { InputsPage, initialRange } from './InputsPage'
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
+import { ME, setMe } from '../state/auth'
+import { draftOf, commitInputEdit, commitNewInput, removeInput } from './inputedit'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -280,6 +282,66 @@ describe('the Inputs page (tfin)', () => {
     await click($('#inBody [data-edit]'))
     expect($('#inBody [data-cancel]'), 'the row opened as fields').toBeTruthy()
     await click($('#inBody [data-cancel]'))
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+  })
+
+  /* owner, 22 Aug 26 — "for normal user account they can only input their own
+     self. Which is whoever they are viewing as." Admin keeps the full roster
+     select on both this form and the month calendar; a member's Person is the
+     view-as person, printed as a value rather than offered as a choice — the
+     rule the calendar's add dialog already applied, now on the page's own
+     form too. */
+  it('a member files for the view-as person only, and the fixed Person follows View-as', async () => {
+    await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
+    expect($('#inPerson'), 'the roster select is a scheduler\'s').toBeFalsy()
+    expect($('#inPersonFixed').textContent, 'the value is the view-as callsign').toBe(PEOPLE[ME].cs)
+    /* switch who is being viewed as — the fixed value follows LIVE, and so
+       does what the add actually writes (filedFor reads ME at commit, not a
+       state seeded when the page mounted) */
+    await act(async () => { setMe('dj'); notify() })
+    expect($('#inPersonFixed').textContent).toBe(PEOPLE.dj.cs)
+    const n = INPUTS.length
+    await click($('#inAdd'))
+    expect(INPUTS.length, 'the add went through').toBe(n + 1)
+    expect(INPUTS[0].person, 'and landed on the view-as person').toBe('dj')
+    await click(rowFor(0).querySelector('.rmx'))
+    expect(INPUTS.length).toBe(n)
+    await act(async () => { setMe('bane'); setSession({ user: 'a', role: 'admin' }); notify() })
+    expect(($('#inPerson') as unknown as HTMLSelectElement), 'admin gets the roster select back').toBeTruthy()
+  })
+
+  it('a member\'s row editor keeps the person as plain text', async () => {
+    await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
+    await click($('#inBody [data-edit]'))
+    const ed = $('#inBody tr.ined')
+    expect(ed, 'the row opened as fields').toBeTruthy()
+    expect(ed.querySelector('select[data-ed="person"]'), 'no Person select for a member').toBeFalsy()
+    expect(ed.querySelector('[data-fld="Person"]')!.textContent, 'the name still prints').toBeTruthy()
+    await click($('#inBody [data-cancel]'))
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+  })
+
+  /* the write paths repeat the gate (CLAUDE.md: role checks at the page AND
+     the write path) — a member's UI can no longer produce either call, so
+     these drive the functions directly, the hand-made-call net */
+  it('the write paths hold on their own: no member re-person, adds pinned to the viewer', async () => {
+    await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
+    /* commitInputEdit refuses a person change from a member */
+    const r = INPUTS.find((x: any) => x.person && x.person !== ME)!
+    expect(r, 'a row belonging to someone else exists').toBeTruthy()
+    const was = r.person
+    const d = draftOf(r); d.person = ME
+    let ok: any
+    await act(async () => { ok = commitInputEdit(r, d) })
+    expect(ok, 'the re-person is refused').toBe(false)
+    expect(r.person, 'and nothing moved').toBe(was)
+    /* commitNewInput pins a hand-made draft onto the viewer */
+    await act(async () => {
+      ok = commitNewInput({ person: was, type: 'LL', start: '2026-07-14', allday: true, remarks: '' })
+    })
+    expect(ok).toBe(true)
+    expect(INPUTS[0].person, 'the add landed on the view-as person, not the claimed one').toBe(ME)
+    await act(async () => { removeInput(INPUTS[0]) })
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 

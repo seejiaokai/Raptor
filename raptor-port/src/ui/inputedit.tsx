@@ -24,7 +24,7 @@ import { writeInputsBatch, notify } from '../state/store'
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { retractLwRow, rowSig } from '../leavewar/sync'
-import { canEditSched } from '../state/auth'
+import { canEditSched, ME } from '../state/auth'
 import { INPEDIT, setInpEdit } from './pops'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
@@ -331,6 +331,14 @@ export const TYPE_ALLOW: any = {
    as commitInputEdit's relink already relies on. */
 export function commitNewInput(draft: any, toGround?: boolean): boolean {
   if (!draft) return false
+  /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
+     for whoever they are viewing as; the Person choice is a scheduler's).
+     The member-reachable seeds (the calendar's openAdd) already carry ME and
+     render no Person control, so for a real gesture this changes nothing —
+     it is the net for a hand-made call, the same place-and-shape as
+     reassignInput's own gate below. Pinned BEFORE normalize so the SANS
+     aircrew check judges the person actually being written. */
+  if (!canEditSched()) draft = { ...draft, person: ME }
   const n = normalizeInputDraft(draft, null)
   if (!n) return false
   const { s, e, date, endDate, half } = n
@@ -379,6 +387,17 @@ export function commitInputEdit(r: any, draft: any) {
   if (!r || !draft) return false
   if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
     HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
+    return false
+  }
+  /* write-path role backstop (owner, 22 Aug 26): moving an input onto a
+     DIFFERENT person is a scheduler's act — the same line reassignInput and
+     the calendar drag (caldrag.ts) already draw. A member's editors no
+     longer render a Person control at all, so a real gesture cannot trip
+     this; it refuses the hand-made call. Editing their own row's times,
+     type or remarks stays theirs (draftOf seeds person from the row, so an
+     untouched person sails through). */
+  if (!canEditSched() && draft.person !== r.person) {
+    HOOKS.toast('Only a scheduler can move an input to another person', 'warn')
     return false
   }
   const n = normalizeInputDraft(draft, r)

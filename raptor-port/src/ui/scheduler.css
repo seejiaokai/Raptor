@@ -1420,6 +1420,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 /* the All-day checkbox keeps its natural size and sits on the control line */
 .ifield.chk{justify-content:flex-start}
 .ifield.chk>input[type=checkbox]{width:18px;height:18px;min-width:18px;accent-color:var(--accent);margin:9px 0}
+/* A MEMBER'S PERSON IS A VALUE, NOT A CHOICE (owner, 22 Aug 26 — a member
+   files for whoever they are viewing as; only a scheduler picks anyone).
+   Printed as plain text on the same 36px control line the selects sit on —
+   deliberately NOT drawn as a boxed input, so it cannot read as a control
+   that stopped working (the SANS fixed-type precedent, .inped-v). */
+.inper-fixed{height:36px;line-height:36px;font-weight:600;font-size:12.5px;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .infilter{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.4)}
 .infilter select,.infilter input{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:7px 9px;border-radius:8px}
 /* table-layout:fixed so ONE long remark cannot widen the whole page. A remark

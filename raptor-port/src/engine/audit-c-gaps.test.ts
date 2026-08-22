@@ -12,6 +12,7 @@ import { dayOff } from './avail'
 import { SCHED } from './publish'
 import { HOOKS } from './hooks'
 import { commitInputEdit, setInpField, draftOf } from '../ui/inputedit'
+import { setSession } from '../state/auth'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -222,6 +223,11 @@ describe("gap (f): halfOf's boundaries through setInpField", () => {
 
 /* ---- (g) an accepted input reassigned to a different person --------------- */
 describe('gap (g): reassigning an accepted input to another person', () => {
+  /* re-personing is a SCHEDULER act since 22 Aug 26 (commitInputEdit's own
+     write-path gate — a member files and keeps inputs for the view-as person
+     only), so this drives the call under the session the real gesture has */
+  beforeEach(() => setSession({ user: 'a', role: 'admin' }))
+  afterEach(() => setSession(null))
   it('relinks the ground row to the new person — one row, new callsign, still accepted', () => {
     INPUTS.push({ person: 'split', date: 'Jul 15', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'audit', mod: '' })
     const r = INPUTS[INPUTS.length - 1]

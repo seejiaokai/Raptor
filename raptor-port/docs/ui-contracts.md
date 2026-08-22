@@ -168,6 +168,17 @@ All three type dropdowns (add form, filter, row editor) carry the same three
 `<optgroup>`s, from `TYPE_GROUPS`/`typeGroup`. Twenty flat options is not a
 list anyone can pick from.
 
+- **A member's Person is a value, not a choice (owner, 22 Aug 26).** The
+  full-roster `#inPerson` select renders for a scheduler only; a member sees
+  the view-as callsign printed plainly (`#inPersonFixed`, `.inper-fixed` —
+  on the same 36px control line, deliberately not boxed, so it cannot read
+  as a dead control; a one-entry dropdown would only pretend to be one, the
+  SANS fixed-type precedent). It follows the topbar's View-as LIVE, and so
+  does the commit — `add()` reads `ME` at write time (`filedFor`), never
+  the mounted state. The row editor draws the same line: a member's open
+  row prints its person as text where a scheduler gets the select. The
+  rule and its write-path backstops: `engine-rules.md` §Auth / roles.
+
 ## The Inputs table's view state (`ui/InputsPage.tsx`)
 
 Owner, Aug 5. Three things, all view-only — none of them touches the model:

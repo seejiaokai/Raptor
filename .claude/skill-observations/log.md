@@ -267,3 +267,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When speccing UI work for a code-writing agent, require at least one test per interactive control that dispatches a real event on the rendered element and asserts the visible outcome (textContent/DOM), naming this as a hard requirement in the spec. Orchestrator review should specifically ask "does any test click the actual button?"
 
 **Principle:** In frameworks where rendering is subscription-driven, a test that mutates state directly bypasses the exact wiring (mutate → notify → repaint) most likely to be missing; only an event on the real control exercises it.
+
+### Observation 20: Capture full-suite output to a file on the first run
+
+**Status:** OPEN
+**Date:** 2026-08-22
+**Session context:** Tightening the Inputs page person choice (member self-only); the full vitest suite (~5 min) reported 2 failures but only a `tail -5` was kept, forcing a second full run just to learn WHICH tests failed
+**Skill:** New rule candidate for raptor-port/CLAUDE.md §Token discipline (project instruction, not a standalone skill)
+**Type:** internal
+**Phase/Area:** verification / gate-running workflow
+
+**Issue:** Piping a long-running full test suite through `tail` discards the failure detail; when the run is red, identifying the failing files costs a complete re-run (~5 min here). A second, backgrounded double-run was started and had to be killed — pure waste.
+
+**Suggested improvement:** Always redirect a full-suite run to a scratchpad log file (`> run.log 2>&1; tail run.log`), so a red result can be diagnosed by grepping the file instead of re-running. One sentence in CLAUDE.md §Token discipline would encode it.
+
+**Principle:** Expensive verification runs should be captured in full the first time; the cost of keeping output is zero, the cost of re-producing it is the whole run.

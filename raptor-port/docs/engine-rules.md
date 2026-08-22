@@ -1763,6 +1763,7 @@ the squadron's programme*, not read vs write:
 | | member | admin |
 |---|---|---|
 | Inputs — add / edit / delete | **yes** | yes |
+| Inputs — choosing WHO an input is for | no — always the view-as person | yes |
 | Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT | **yes** | yes |
 | Quals — `Edit quals` (which columns the LoX carries) | no | yes |
 | Quals — `Add person` (put someone on the roster) | no | yes |
@@ -1775,6 +1776,19 @@ detachments — the reference's `View only — ask a scheduler` gate made the
 people they belong to ask someone else to type them. Accepting one into the
 programme did NOT open with it: entering an input is the crew's, issuing it
 is the scheduler's (`interactions.ts`, `canEditSched()`).
+
+**Who an input is FOR is part of that line (owner, 22 Aug 26 — "for normal
+user account they can only input their own self. Which is whoever they are
+viewing as").** An admin picks anyone, on the Inputs page's form and the
+month calendar alike; a member's input always lands on the view-as person
+(`ME`), read live at commit. The Person control is therefore a scheduler's
+on every editor — the page's add form and row editor print a member's
+person as a plain value, the shared dialog hides the field
+(`inputedit.tsx`, `canEditSched()`-gated) — and the write paths repeat the
+gate: `commitNewInput` pins a non-scheduler's draft onto `ME`,
+`commitInputEdit` refuses a non-scheduler person change, and the calendar
+drag (`caldrag.ts`) has always refused moving someone else's chip. Pinned
+in `inputs.test.tsx`.
 
 ## History
 
