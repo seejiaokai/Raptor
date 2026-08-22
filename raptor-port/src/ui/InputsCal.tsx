@@ -51,6 +51,16 @@ export const MAX_CHIPS = 3
    number rather than a second 450 that could quietly drift from this one. */
 export const HOLD_ADD = 450
 const HOLD_SLOP = 8 // px of drift a hold can absorb before it reads as a scroll/pan instead — same idea as caldrag's SLOP
+/* a horizontal drag past this, and more sideways than vertical, PAGES the
+   month (owner, 22 Aug 26 — "allow me to swipe left and right… to see
+   different months"). Well above HOLD_SLOP so a hold/tap is never read as a
+   swipe, and about one phone cell wide (~55px on a 390px screen) so it takes
+   a deliberate drag, not a stray finger. A DISCRETE step on release, not a
+   finger-tracking carousel: this grid is a fixed layout, not a native
+   scroller, so none of the board/Leave-War fling-vs-scrollLeft hazards apply
+   — the swipe just decides a direction and calls the same step() the ‹ ›
+   arrows do. */
+export const SWIPE_MIN = 50
 
 /* yyyy-mm-dd → today's own iso, local time (the calendar's "Today" jump and
    its today-ring both want the viewer's own day, not UTC's). */
@@ -114,6 +124,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
   { fPerson: string, fType: string, fSearch: string, seedIso?: string, onClose: () => void }) {
   useVersion()
   const gridRef = useRef<HTMLDivElement>(null)
+  /* the deps-`[]` gesture effect below must always call the CURRENT month
+     stepper, never the one captured on its first render (which would page
+     from the wrong month forever). A ref updated every render is the
+     standard "latest callback" seam for that — the effect reads
+     stepRef.current at gesture time, when it is fresh. */
+  const stepRef = useRef<(n: number) => void>(() => {})
 
   /* The day popover: which day (if any) is open, and whether it should land
      already switched into one puck's inline edit box — a puck-chip tap opens
@@ -235,22 +251,25 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
     }
     const offDrag = initCalDrag(el, { onTap })
 
-    /* HOLD-TO-ADD / TAP-TO-OPEN over empty cell space — this calendar's own
-       tiny pointer machine, deliberately separate from caldrag's rather than
-       a mode bolted onto it: it has no ghost, no drop target, and a
-       different meaning for "released early" (open the popover, not "do
-       nothing"). `rec.fired` is read by the pointerup handler below to know
-       the hold already fired and the release must NOT also open the
-       popover — the same "one gesture, one outcome" rule caldrag's own
-       armed/tap split enforces for chips. */
+    /* HOLD-TO-ADD / TAP-TO-OPEN / SWIPE-TO-PAGE over empty cell space — this
+       calendar's own tiny pointer machine, deliberately separate from
+       caldrag's rather than a mode bolted onto it: it has no ghost, no drop
+       target, and three meanings for a release depending on how the finger
+       moved. `rec.fired` records that the hold already added a row, so the
+       release must NOT also open the popover or page — the same "one
+       gesture, one outcome" rule caldrag's own armed/tap split enforces for
+       chips. The swipe verdict is taken on RELEASE from the total travel, so
+       no per-move state or animation is needed; onMove only cancels the hold
+       timer once the finger has clearly left a hold. */
     let st: { iso: string, x0: number, y0: number, timer: any, fired: boolean, pointerId: number } | null = null
-    const clear = () => { if (st) clearTimeout(st.timer); st = null }
+    const reset = () => { if (st) clearTimeout(st.timer); st = null }
+    const cancelHold = () => { if (st) clearTimeout(st.timer) } // stop the add timer but keep tracking for a swipe/tap verdict on up
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement
       if (t.closest('[data-icdrag]') || t.closest('.ic-more')) return // a chip's or +N more's own gesture
       const cell = t.closest('[data-icday]') as HTMLElement | null
       if (!cell) return
-      clear()
+      reset()
       const iso = cell.dataset.icday!
       const rec = { iso, x0: e.clientX, y0: e.clientY, timer: 0 as any, fired: false, pointerId: e.pointerId }
       rec.timer = setTimeout(() => { rec.fired = true; openAdd(iso) }, HOLD_ADD)
@@ -258,27 +277,41 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
     }
     const onMove = (e: PointerEvent) => {
       if (!st || e.pointerId !== st.pointerId) return
-      if (Math.abs(e.clientX - st.x0) > HOLD_SLOP || Math.abs(e.clientY - st.y0) > HOLD_SLOP) clear() // a scroll/pan, not a hold
+      // any real drift means this is not a still hold — stop the add timer,
+      // but keep `st` alive so the release can still read it as a swipe or tap
+      if (Math.abs(e.clientX - st.x0) > HOLD_SLOP || Math.abs(e.clientY - st.y0) > HOLD_SLOP) cancelHold()
     }
     const onUp = (e: PointerEvent) => {
       if (!st || e.pointerId !== st.pointerId) return
-      const { iso, fired } = st
-      clear()
-      if (!fired) { setPopIso(iso); setPopPuckEdit(null) } // released early, barely moved — a tap
+      const { iso, fired, x0, y0 } = st
+      reset()
+      if (fired) return // the hold already added a row — the release does nothing more
+      const dx = e.clientX - x0, dy = e.clientY - y0
+      /* a decisive sideways drag pages the month: left (finger moves −x) is
+         the NEXT month, right the PREVIOUS — the direction a page turns, and
+         the way every month-swipe calendar reads. Horizontal-dominant so a
+         diagonal scroll never pages by accident. */
+      if (Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) { stepRef.current(dx < 0 ? 1 : -1); return }
+      // barely moved — a tap opens the day popover (a longer pan does nothing)
+      if (Math.abs(dx) <= HOLD_SLOP && Math.abs(dy) <= HOLD_SLOP) { setPopIso(iso); setPopPuckEdit(null) }
     }
-    const onCancel = (e: PointerEvent) => { if (st && e.pointerId === st.pointerId) clear() }
+    const onCancel = (e: PointerEvent) => { if (st && e.pointerId === st.pointerId) reset() }
 
+    /* down FILTERS by target, so it stays on the grid; move/up/cancel go on
+       WINDOW so a swipe that ends past the grid's edge still completes and
+       resets — a release off-element would otherwise leave the gesture
+       half-open. Every handler no-ops unless `st` is the matching pointer. */
     el.addEventListener('pointerdown', onDown, { passive: true })
-    el.addEventListener('pointermove', onMove, { passive: true })
-    el.addEventListener('pointerup', onUp, { passive: true })
-    el.addEventListener('pointercancel', onCancel, { passive: true })
+    window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('pointerup', onUp, { passive: true })
+    window.addEventListener('pointercancel', onCancel, { passive: true })
     return () => {
       offDrag()
-      clear()
+      reset()
       el.removeEventListener('pointerdown', onDown)
-      el.removeEventListener('pointermove', onMove)
-      el.removeEventListener('pointerup', onUp)
-      el.removeEventListener('pointercancel', onCancel)
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onCancel)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -295,6 +328,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
     setCalMonth({ y: cur.y + Math.floor(m0 / 12), m: ((m0 % 12) + 12) % 12 + 1 })
     notify()
   }
+  /* keep the swipe gesture's stepper current — see stepRef above */
+  stepRef.current = step
   const goToday = () => { const d = new Date(); setCalMonth({ y: d.getFullYear(), m: d.getMonth() + 1 }); notify() }
 
   const cells = monthCells(cur.y, cur.m)

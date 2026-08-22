@@ -329,6 +329,42 @@ describe('a popover entry row shows its remark on an aligned second line', () =>
   })
 })
 
+describe('a horizontal swipe pages the month', () => {
+  /* down on a cell (bubbles to the grid), release on window at an offset —
+     the gesture reads the total travel on release. A cell that always exists
+     whatever month is showing, so the same helper works after a page. */
+  const swipe = async (dx: number, dy = 0) => {
+    const cell = $('[data-icday]')!
+    await act(async () => {
+      cell.dispatchEvent(ptr('pointerdown', 200, 300))
+      window.dispatchEvent(ptr('pointerup', 200 + dx, 300 + dy))
+    })
+  }
+  it('swipe left → next month, swipe right → previous; vertical or short drags do not page', async () => {
+    await goJul2026()
+    expect($('.ic-mon')!.textContent).toContain('July 2026')
+    await swipe(-80)                                   // left → next
+    expect(CALMONTH).toEqual({ y: 2026, m: 8 })
+    expect($('.ic-mon')!.textContent).toContain('August 2026')
+    await swipe(80)                                    // right → previous
+    expect(CALMONTH).toEqual({ y: 2026, m: 7 })
+    await swipe(40, 130)                               // mostly vertical — a scroll, not a page
+    expect(CALMONTH, 'a vertical drag never pages').toEqual({ y: 2026, m: 7 })
+    await swipe(-40)                                   // under SWIPE_MIN — neither a page nor a tap
+    expect(CALMONTH, 'a short drag never pages').toEqual({ y: 2026, m: 7 })
+    expect($('.ic-pop'), 'and a short drag did not open the popover either').toBeFalsy()
+    await goJul2026()
+  })
+  it('pages across a year boundary and back', async () => {
+    await act(async () => { setCalMonth({ y: 2026, m: 12 }); notify() })
+    await swipe(-80)
+    expect(CALMONTH, 'December → next is January of the next year').toEqual({ y: 2027, m: 1 })
+    await swipe(80)
+    expect(CALMONTH, 'January → previous is December of the year before').toEqual({ y: 2026, m: 12 })
+    await goJul2026()
+  })
+})
+
 describe('a popover entry row opens the same edit route as a chip', () => {
   it('tapping a row sets INPEDIT to that EXACT record (object identity, not a re-lookup)', async () => {
     const rec: any = INPUTS.find((r: any) => r.person === 'divot' && r.type === 'OML')
