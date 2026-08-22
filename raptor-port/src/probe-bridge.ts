@@ -23,6 +23,7 @@ import { collectEvents } from './engine/events'
 import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef, acceptInput, unacceptInput, inpKey, acceptedDay, renameCallsign } from './engine/slots'
 import { slotBar, dayEngaged, slotRules, dayOff, dayAway, sansGate, SANS_LABEL } from './engine/avail'
 import { isStandalone, makeStandalone, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE, dayCount, saExempt } from './engine/waves'
+import * as waves from './engine/waves'
 import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays, permuteKeys, moveKeys } from './engine/keys'
 import { applyMove } from './engine/reorder'
 import { hhmm, parseHM, hmOK, minus, overlap, hm24 } from './engine/time'
@@ -47,6 +48,9 @@ export function installProbeBridge() {
   Object.defineProperty(w, 'ARM', { get: () => view.ARM, configurable: true })
   Object.defineProperty(w, 'SBDAY', { get: () => view.SBDAY, configurable: true })
   Object.defineProperty(w, 'CURPAGE', { get: () => view.CURPAGE, configurable: true })
+  /* the loaded week's Monday (dd/mm/yyyy), a `let` reassigned by setCurWeek —
+     a getter so a probe reads the current week after a continuous-nav crossing */
+  Object.defineProperty(w, 'CURWEEK', { get: () => waves.CURWEEK, configurable: true })
   /* STORE_CFG is a `let`, reassigned whole by storesLoad/storesReset — same
      reason as ARM/SBDAY/CURPAGE above, a getter so a probe never reads a
      stale array after a load/reset */

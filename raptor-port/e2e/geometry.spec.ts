@@ -3120,26 +3120,53 @@ test.describe('the day arrows', () => {
     expect(m.barH, 'the arrows cost the bar 10px and no second row').toBeLessThan(86)
   })
 
-  test('phone: tapping them steps the day, and they stop at both ends of the week', async ({ page }) => {
+  test('phone: tapping them steps the day and flows continuously across weeks', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)
     await go(page, 'editsched')
     await page.evaluate(() => (window as any).openScheduler(0))
     await page.waitForSelector('#sbPrevDay')
-    expect(await page.locator('#sbPrevDay').isDisabled(), 'Monday has no day before it').toBe(true)
+    /* CONTINUOUS ACROSS WEEKS (owner, 22 Aug 26): no longer disabled at the ends */
+    expect(await page.locator('#sbPrevDay').isDisabled(), 'Monday still steps back — into last week').toBe(false)
     for (let i = 1; i <= 6; i++) {
       await page.click('#sbNextDay')
       await page.waitForTimeout(120)
       expect(await page.evaluate(() => (window as any).SBDAY)).toBe(i)
     }
-    expect(await page.locator('#sbNextDay').isDisabled(), 'and Sunday has none after it').toBe(true)
-    await page.click('#sbPrevDay')
-    await page.waitForTimeout(120)
-    expect(await page.evaluate(() => (window as any).SBDAY)).toBe(5)
-    /* the day really is redrawn, not just the title: every board address starts
-       with the day index */
+    /* one more next off Sunday loads the following week and lands on its Monday */
+    const wk0 = await page.evaluate(() => (window as any).CURWEEK)
+    expect(await page.locator('#sbNextDay').isDisabled(), 'Sunday still steps forward — into next week').toBe(false)
+    await page.click('#sbNextDay')
+    await page.waitForTimeout(150)
+    expect(await page.evaluate(() => (window as any).SBDAY)).toBe(0)
+    expect(await page.evaluate(() => (window as any).CURWEEK), 'the next week is loaded').not.toBe(wk0)
+    /* the day really is redrawn on the new week: every board address starts with
+       the day index, and it is day 0 */
     expect(await page.evaluate(() =>
-      document.querySelector('#sbBoard [data-slot]')!.getAttribute('data-slot')!.replace(/^[a-z]+:/, '').split('.')[0])).toBe('5')
+      document.querySelector('#sbBoard [data-slot]')!.getAttribute('data-slot')!.replace(/^[a-z]+:/, '').split('.')[0])).toBe('0')
+    /* and stepping back off Monday returns to the previous week's Sunday */
+    await page.click('#sbPrevDay')
+    await page.waitForTimeout(150)
+    expect(await page.evaluate(() => (window as any).SBDAY)).toBe(6)
+    expect(await page.evaluate(() => (window as any).CURWEEK), 'back on the week we came from').toBe(wk0)
+  })
+
+  test('phone: the top-left calendar icon opens the week picker', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(2))
+    await page.waitForSelector('#sbCal')
+    /* it sits on the bar's first line, left of the day title */
+    const order = await page.evaluate(() => {
+      const cal = document.querySelector('#sbCal') as HTMLElement
+      const title = document.querySelector('.sb-title') as HTMLElement
+      return { calLeft: Math.round(cal.getBoundingClientRect().left), titleLeft: Math.round(title.getBoundingClientRect().left) }
+    })
+    expect(order.calLeft, 'the calendar icon is left of the day title').toBeLessThan(order.titleLeft)
+    await page.click('#sbCal')
+    await page.waitForSelector('#weekCal .rc-grid')
+    expect(await page.locator('#weekCal').isVisible()).toBe(true)
   })
 
   test('desktop: the arrows are not drawn, because all seven days are on the bar', async ({ page }) => {

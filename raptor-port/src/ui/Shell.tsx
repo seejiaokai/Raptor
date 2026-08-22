@@ -5,7 +5,8 @@
 import { useEffect, useMemo, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { WEEKS, CURWEEK } from '../engine/waves'
+import { CURWEEK } from '../engine/waves'
+import { weekWindow } from './weeknav'
 import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pendCount } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
@@ -26,7 +27,8 @@ import { legendHTML } from './html'
 import { routeClick } from './interactions'
 import { routeFocusOut, routeKeyDown } from './textedit'
 import { DayPop, InsightsModal, UserModal, AirPop } from './Modals'
-import { setInsights, setUserModal, setDrawer } from './pops'
+import { WeekCal } from './WeekCal'
+import { setInsights, setUserModal, setDrawer, setWeekCal } from './pops'
 import { Drawer } from './Drawer'
 import { exportCSV, schedRows } from './export'
 import { InputsPage } from './InputsPage'
@@ -55,6 +57,14 @@ function banner() {
     : ''
   return { col, cls, html: `<span class="sb-badge">${txt}${which}${extra}</span>` + alRoll }
 }
+
+/* the week-jump calendar glyph — same stroke idiom as the notification bell */
+const CAL_ICON = (
+  <svg className="calglyph" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M7 2.5v3M17 2.5v3M3.5 9.5h17M6 4.5h12a2.5 2.5 0 0 1 2.5 2.5v11A2.5 2.5 0 0 1 18 20.5H6A2.5 2.5 0 0 1 3.5 18V7A2.5 2.5 0 0 1 6 4.5Z"
+      fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
 
 const HL_CHIPS: [string, string, string][] = [
   ['A', 'A', 'Cat A (4-ship FL)'], ['B', 'B', 'Cat B (2-ship FL)'], ['C', 'C', 'Cat C (operational wingman)'], ['D', 'D', 'Cat D (wingman)'],
@@ -267,9 +277,15 @@ export function Shell() {
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">
+        {/* Rolling week window (owner, 22 Aug 26): prev · current · +1 · +2,
+            re-centred on whatever week is loaded — replaces the fixed 5 chips.
+            The trailing calendar icon opens the month picker to jump anywhere;
+            data-wk is unchanged, so interactions.ts already loads the week. */}
         <div className="seg" id="weekSeg">
-          <input className="datef" id="dateVField" defaultValue={CURWEEK} style={{ maxWidth: 120 }} />
-          {WEEKS.map((w: any) => <button key={w.v} className={'wk' + (w.v === CURWEEK ? ' on' : '')} data-wk={w.v}>{w.lbl}</button>)}
+          {weekWindow(CURWEEK).map(w => <button key={w.v}
+            className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
+          <button className="wk wk-cal" aria-label="Jump to a week" title="Jump to a week"
+            onClick={() => { setWeekCal('view'); notify() }}>{CAL_ICON}</button>
         </div>
         <div className="filters">
           <span className="lab">Highlight</span>
@@ -283,7 +299,15 @@ export function Shell() {
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
         </div>
-        <div className="title"><h1 id="vTitle">{DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</h1><span className="sub mono" id="vSub">142 · week of 13 Jul 26 · all times local</span></div>
+        {/* The big "Jul 13 – Jul 19" title and the "142 · week of… · all times
+            local" sub-line were removed (owner, 22 Aug 26) — redundant clutter;
+            the day cards carry the dates, and the seg / calendar carry the week.
+            On a phone (where the seg is hidden) a lone calendar icon sits here as
+            the way to jump weeks; the arrows-free swipe is the day-to-day nav. */}
+        <div className="wknav-m">
+          <button className="wknav-mbtn" aria-label="Jump to a week" title="Jump to a week"
+            onClick={() => { setWeekCal('view'); notify() }}>{CAL_ICON}</button>
+        </div>
         <div className={'schedbanner ' + b.cls + (rulesOffCount() ? ' rules-off' : '')} id="vBanner"
           style={{ ['--al' as any]: b.col }} dangerouslySetInnerHTML={{ __html: b.html }} />
         <details className="legendbox" id="vLegendBox">
@@ -303,7 +327,10 @@ export function Shell() {
       <section className={'page' + (page === 'editsched' ? ' on editing' : '')} id="page-editsched">
         <div className="edit-inner">
           <div className="seg" id="weekSegE">
-            {WEEKS.map((w: any) => <button key={w.v} className={'wk' + (w.v === CURWEEK ? ' on' : '')} data-wk={w.v}>{w.lbl}</button>)}
+            {weekWindow(CURWEEK).map(w => <button key={w.v}
+              className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
+            <button className="wk wk-cal" aria-label="Jump to a week" title="Jump to a week"
+              onClick={() => { setWeekCal('view'); notify() }}>{CAL_ICON}</button>
           </div>
           <div className="filters">
             {/* Undo / redo moved to the sticky top bar (owner, Aug 26) so they
@@ -371,6 +398,7 @@ export function Shell() {
       <InsightsModal />
       <UserModal />
       <AirPop />
+      <WeekCal />
       <Drawer />
     </div>
   )

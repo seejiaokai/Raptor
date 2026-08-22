@@ -8,8 +8,9 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify, writeSlot, resetSession, subscribe, subscribeBoard } from '../state/store'
+import { initStore, setSession, notify, writeSlot, resetSession, subscribe, subscribeBoard, loadWeek } from '../state/store'
 import { DAYS } from '../engine/data'
+import { CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
 import { slotVal } from '../engine/slots'
 import * as view from '../state/view'
@@ -55,6 +56,9 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   if (SBWIDE) { await act(async () => { toggleWide(); notify() }) }
+  // continuous arrows can load an adjacent week — reset to the seed so the
+  // DAYS[]/allhands assertions below start on the week they assume
+  if (CURWEEK !== '13/07/2026') await act(async () => { loadWeek('13/07/2026') })
   await act(async () => { view.setPage('editsched'); openScheduler(2); notify() })
 })
 
@@ -63,28 +67,42 @@ afterEach(async () => {
   await act(async () => { cancelSortAll(); if (CXT) { (await import('./board')).setCxt(null) } notify() })
 })
 
-/* SCENARIO 1 (spam): the next-day arrow hammered past the end of the week */
-describe('arrow spamming past the ends of the week', () => {
-  it('ten rapid next-day clicks from mid-week clamp on Sunday with every panel agreeing', async () => {
-    await act(async () => { openScheduler(4); notify() })
+/* SCENARIO 1 (spam): the next-day arrow hammered past the end of the week now
+   FLOWS into the following weeks instead of clamping (owner, 22 Aug 26). Ten
+   forward clicks from Friday of the seed week land two weeks on, and the arrow
+   is never disabled; every panel still agrees on the day it settles. */
+describe('arrow spamming rolls continuously through the weeks', () => {
+  it('ten rapid next-day clicks from Friday land two weeks on, Monday, with every panel agreeing', async () => {
+    await act(async () => { openScheduler(4); notify() })       // Friday, seed week
     for (let i = 0; i < 10; i++) await act(async () => { $('#sbNextDay').click() })
-    expect(view.SBDAY).toBe(6)
-    expect(($('#sbNextDay') as HTMLButtonElement).disabled).toBe(true)
-    /* every surface on the board must say Sunday — the bar, the on-dot, the
-       checks header and the inputs header (scenario 10's no-stale-panel) */
-    expect($('#sbDay').textContent).toBe(DAYS[6].dow)
+    /* 4→5→6→[wk+1]0→1→2→3→4→5→6→[wk+2]0 : two boundary crossings, settling on Monday */
+    expect(view.SBDAY).toBe(0)
+    expect(CURWEEK, 'two weeks past the seed').toBe('27/07/2026')
+    expect(($('#sbNextDay') as HTMLButtonElement).disabled, 'never disabled at an end now').toBe(false)
+    /* every surface on the board must agree on the settled day — the bar, the
+       on-dot, the checks header and the inputs header */
+    expect($('#sbDay').textContent).toBe(DAYS[0].dow)
     const on = $$('#sbDays [data-sbtab]').filter(d => d.classList.contains('on'))
     expect(on.length).toBe(1)
-    expect(on[0].dataset.sbtab).toBe('6')
-    expect($('#sbWarn').textContent).toContain(`for ${DAYS[6].dow}`)
-    expect($('#sbInputs').textContent).toContain(`Inputs · ${DAYS[6].dow} ${DAYS[6].dt}`)
+    expect(on[0].dataset.sbtab).toBe('0')
+    expect($('#sbWarn').textContent).toContain(`for ${DAYS[0].dow}`)
+    expect($('#sbInputs').textContent).toContain(`Inputs · ${DAYS[0].dow} ${DAYS[0].dt}`)
+    // restore the seed week AND drain effects so the week-crossing churn does
+    // not leak deferred renders into a later test's act()
+    await act(async () => { loadWeek('13/07/2026') })
+    await act(async () => {})
   })
 
-  it('and ten previous-day clicks clamp on Monday the same way', async () => {
+  it('and ten previous-day clicks roll back the same way', async () => {
+    await act(async () => { openScheduler(2); notify() })       // Wednesday, seed week
     for (let i = 0; i < 10; i++) await act(async () => { $('#sbPrevDay').click() })
-    expect(view.SBDAY).toBe(0)
-    expect(($('#sbPrevDay') as HTMLButtonElement).disabled).toBe(true)
-    expect($('#sbInputs').textContent).toContain(`Inputs · ${DAYS[0].dow}`)
+    /* 2→1→0→[wk-1]6→5→4→3→2→1→0→[wk-2]6 : settling on Sunday two weeks back */
+    expect(view.SBDAY).toBe(6)
+    expect(CURWEEK, 'two weeks before the seed').toBe('29/06/2026')
+    expect(($('#sbPrevDay') as HTMLButtonElement).disabled).toBe(false)
+    expect($('#sbInputs').textContent).toContain(`Inputs · ${DAYS[6].dow}`)
+    await act(async () => { loadWeek('13/07/2026') })
+    await act(async () => {})
   })
 })
 

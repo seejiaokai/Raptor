@@ -26,7 +26,9 @@ import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
-import { notify, notifyBoard } from '../state/store'
+import { notify, notifyBoard, loadWeek } from '../state/store'
+import { CURWEEK } from '../engine/waves'
+import { shiftWeek } from './weeknav'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
@@ -1360,15 +1362,20 @@ export function boardTab(n: number) {
    which is the one thing a pair of arrows cannot. `prevDay`/`nextDay` below are
    what the arrows call.
    --------------------------------------------------------------------------- */
-/* The arrows are DISABLED at the ends of the loaded week rather than toasting
-   "last day" at a finger that has nowhere to go — the same shape as this bar's
-   undo/redo pair, and the reason the toast the swipe used is gone with it: a
-   swipe had no way to show it was refusing, and a button does. */
+/* CONTINUOUS ACROSS WEEKS (owner, 22 Aug 26 — "in scheduler board it's
+   continuous arrow between weeks"). Stepping off the loaded week's ends no
+   longer stops: past Monday loads the PREVIOUS week and opens its Sunday, past
+   Sunday loads the NEXT week and opens its Monday. This supersedes the earlier
+   "arrows disabled at the week's ends" shape (the board swipe stays gone; only
+   the arrows changed). loadWeek closes the board as it swaps the week, so the
+   boardTab that reopens the day MUST run after it — the two synchronous notifies
+   batch into one repaint, so the board never visibly blinks shut. */
 export function boardDayStep(n: number) {
   const di = view.SBDAY
   if (di == null) return
   const to = di + n
-  if (to < 0 || to >= DAYS.length) return
+  if (to < 0) { loadWeek(shiftWeek(CURWEEK, -1)); boardTab(6); return }
+  if (to >= DAYS.length) { loadWeek(shiftWeek(CURWEEK, 1)); boardTab(0); return }
   boardTab(to)
 }
 /* ---------------------------------------------------------------------------

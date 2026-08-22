@@ -15,8 +15,9 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
+import { initStore, setSession, notify, loadWeek } from '../state/store'
 import { DAYS } from '../engine/data'
+import { CURWEEK } from '../engine/waves'
 import * as view from '../state/view'
 import { openScheduler, toggleWide, SBWIDE, boardTab, boardDayStep } from './board'
 import { HOOKS } from '../engine/hooks'
@@ -77,6 +78,9 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   if (SBWIDE) { await act(async () => { toggleWide(); notify() }) }
+  // the continuous-arrow tests load an adjacent week; reset to the seed so each
+  // test starts on the week its DAYS[] assertions assume
+  if (CURWEEK !== '13/07/2026') await act(async () => { loadWeek('13/07/2026') })
   await act(async () => { openScheduler(2); notify() })      // Wednesday, middle of the week
 })
 
@@ -169,26 +173,38 @@ describe('the day is stepped by the two arrows on the bar', () => {
     }
   })
 
-  /* DISABLED at the ends rather than toasting at a finger with nowhere to go —
-     the same shape as this bar's undo/redo pair, and something a swipe could
-     never do: it had no way to show it was refusing. */
-  it('disables the previous arrow on the first day of the week', async () => {
+  /* CONTINUOUS ACROSS WEEKS (owner, 22 Aug 26 — "continuous arrow between
+     weeks"). The arrows are no longer disabled at the week's ends; stepping off
+     an end loads the adjacent week and opens Sunday/Monday there. This replaced
+     the earlier "disabled at the ends" shape — the board swipe stays gone. */
+  it('the arrows stay enabled at both ends of the week', async () => {
     await act(async () => { openScheduler(0); notify() })
-    expect(($('#sbPrevDay') as HTMLButtonElement).disabled).toBe(true)
+    expect(($('#sbPrevDay') as HTMLButtonElement).disabled).toBe(false)
+    await act(async () => { openScheduler(DAYS.length - 1); notify() })
     expect(($('#sbNextDay') as HTMLButtonElement).disabled).toBe(false)
   })
 
-  it('disables the next arrow on the last day', async () => {
-    await act(async () => { openScheduler(DAYS.length - 1); notify() })
-    expect(($('#sbNextDay') as HTMLButtonElement).disabled).toBe(true)
-    expect(($('#sbPrevDay') as HTMLButtonElement).disabled).toBe(false)
+  it('stepping back off Monday loads the previous week and opens its Sunday', async () => {
+    await act(async () => { openScheduler(0); notify() })       // Monday of the seed week
+    await act(async () => { $('#sbPrevDay').click() })
+    expect(CURWEEK, 'the previous week is loaded').toBe('06/07/2026')
+    expect(view.SBDAY, 'and the board opens on its Sunday').toBe(6)
   })
 
-  it('never steps outside the loaded week even when called directly', async () => {
+  it('stepping forward off Sunday loads the next week and opens its Monday', async () => {
+    await act(async () => { openScheduler(DAYS.length - 1); notify() })   // Sunday of the seed week
+    await act(async () => { $('#sbNextDay').click() })
+    expect(CURWEEK, 'the next week is loaded').toBe('20/07/2026')
+    expect(view.SBDAY, 'and the board opens on its Monday').toBe(0)
+  })
+
+  it('crosses the week boundary when boardDayStep is called directly at an end', async () => {
     await act(async () => { openScheduler(0); notify(); boardDayStep(-1) })
-    expect(view.SBDAY, 'the week is one week — there is no day before Monday').toBe(0)
-    await act(async () => { openScheduler(DAYS.length - 1); notify(); boardDayStep(1) })
-    expect(view.SBDAY).toBe(DAYS.length - 1)
+    expect(CURWEEK).toBe('06/07/2026')
+    expect(view.SBDAY).toBe(6)
+    await act(async () => { loadWeek('13/07/2026'); openScheduler(DAYS.length - 1); notify(); boardDayStep(1) })
+    expect(CURWEEK).toBe('20/07/2026')
+    expect(view.SBDAY).toBe(0)
   })
 
   /* the dots are the only thing that says WHICH of the seven you are on, which

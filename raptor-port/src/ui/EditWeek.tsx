@@ -9,7 +9,7 @@ import { HOOKS } from '../engine/hooks'
 import { dayHTML, dayPreviewHTML } from './html'
 import { daySnapOf } from '../engine/publish'
 import { paletteHTML, paletteDay } from './palette-html'
-import { ARM, CARRYDAY, CURPAGE, DPREV, setCarryDay, scrollWeekToDay } from '../state/view'
+import { ARM, CARRYDAY, CURPAGE, DPREV, WEEKJUMP, setCarryDay, setWeekJump, scrollWeekToDay } from '../state/view'
 import { refreshHighlights } from './highlights'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
@@ -47,9 +47,12 @@ export function EditWeek() {
       root.innerHTML = html.join('')
     }
     root.scrollLeft = sl
+    /* a continuous-swipe week load lands on Monday / the last day — see ViewWeek
+       for the reasoning; consumed in this same repaint so nothing flashes */
+    if (WEEKJUMP) { root.scrollLeft = WEEKJUMP === 'sun' ? Math.max(0, root.scrollWidth - root.clientWidth) : 0; setWeekJump(null) }
     /* the carried day from a page switch — see ViewWeek for the reasoning;
        both weeks consume it the same way so the hop works in both directions */
-    if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
+    else if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
     prev.current = { ed, html }
     refreshHighlights()
   }, [version])

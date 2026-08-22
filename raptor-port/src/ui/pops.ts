@@ -42,6 +42,13 @@ export function setInpEdit(r: any) { INPEDIT = r }
 /* the mobile drawer */
 export let DRAWER = false
 export function setDrawer(on: boolean) { DRAWER = on }
+/* The week-jump calendar (owner, Aug 26) — a month grid that loads any week by
+   tapping a date, snapping to that date's Monday-week. `false` closed; 'view'
+   opened from the schedule seg / mobile icon; 'board' opened from the scheduler
+   board's top-left icon, where the pick also opens the tapped day. The calendar
+   itself is store-free chrome; this is just which surface asked for it. */
+export let WEEKCAL: false | 'view' | 'board' = false
+export function setWeekCal(v: false | 'view' | 'board') { WEEKCAL = v }
 /* The listed view of the edit log (owner, 11 Aug 26). `false` closed; open it
    with `'all'` for the whole week or a day index to narrow it to one day —
    the filter IS the open state, so there is no second flag to keep in step

@@ -134,6 +134,11 @@ arrow / dot scrub  → boardDayStep(±1)  → SBDAY changes
 ```
 `boardTab` is view-only by contract. A "navigation" feature that quietly
 validates or writes has crossed from Flow C into Flow A and needs its guards.
+**Continuous across weeks (22 Aug 26):** at the week's ends `boardDayStep`
+instead crosses into Flow E — `loadWeek(shiftWeek(±1))` then `boardTab(0|6)` —
+so an END step IS a full week load (global lane + validate), while a within-week
+step stays the view-only board lane. The board's `#sbCal` calendar icon is a
+Flow E entry point too (loads the tapped day's week, then opens that day).
 
 ### Flow D — publish / amendment / load-a-version
 ```
@@ -155,9 +160,10 @@ through `daySnapOf`/`withDaySnap`, never a second path. The view page's
 issued DEFAULT for a published day (`dayIssuedHTML`, 15 Aug 26) is the same
 freeze again in quiet mode — one more consumer, still no second path.
 
-### Flow E — load a week (the .wk selector, 21 Aug 26)
+### Flow E — load a week (the week selector, 21 Aug 26; reworked 22 Aug 26)
 ```
-click a week chip  → interactions.ts handler → store.ts:loadWeek(v)
+a rolling week button (weekWindow, weeknav.ts) OR a WeekCal day tap OR a
+  continuous board arrow / edge-swipe  → store.ts:loadWeek(v)
 loadWeek           → setCurWeek(v) → weekBundle(v) (engine/weeks-data.ts, a fresh deep copy)
                    → swap DAYS / DATES / INPUTS IN PLACE (all week-scoped, all live bindings)
                    → seedDemoSans() if week 1 → mintInpIds() → resetSched() (publish.ts)
@@ -171,7 +177,16 @@ Session/page/role are untouched — this is a data swap, not a login. Nothing ru
 at module load, so `DAYS` still initialises to the seed week (parity/e2e's
 "seven days" hold until a user clicks a chip). Per-week publish state is NOT
 persisted — the persistent multi-week end-state is server work, and `resetSched`
-+ the `weekBundle` registry are its hook points.
++ the `weekBundle` registry are its hook points. **The selector is now a rolling
+window + a calendar, and navigation is continuous (22 Aug 26):** the desktop segs
+draw `weekWindow(CURWEEK)` (prev·current·+1·+2, re-centring), the `WeekCal` month
+picker jumps to any week, and the phone view/edit carousel crosses weeks by SWIPE
+(`pan.ts` edge-overswipe → `loadWeek`, landing the scroll via `view.WEEKJUMP` in
+the ViewWeek/EditWeek repaint). **All week label/Monday math is one drift-seam in
+`ui/weeknav.ts`** (`mondayOf`/`shiftWeek`/`weekWindow`/`dayIndexInWeek`); any date
+that names a week or steps one must go through it, not a second literal. Every
+`data-wk` value is still an arbitrary `dd/mm/yyyy` Monday, so the shared
+`interactions.ts` handler is unchanged — the engine builds any week already.
 
 **Every flow ends by repainting through `notify()` (or the board lane).** State
 that lives outside the funnel + `HOOKS.storeBackend` is invisible to undo, AL
