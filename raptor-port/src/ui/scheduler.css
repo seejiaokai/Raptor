@@ -1786,7 +1786,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    the drawer's 440, the airspace popup's 460, the modal's 470 (see the
    MODALS banner below for that ladder in full). Desktop-first; the phone
    form follows in its own media block. */
-.inpcal{position:fixed;inset:0;z-index:350;background:var(--bg);display:flex;flex-direction:column}
+/* overflow:hidden clips the month-change slide (InputsCal.tsx animates the grid
+   in from ±28px) so an off-edge page never shows a scrollbar; the day popover is
+   its own position:fixed layer, so it escapes this clip and is unaffected. */
+.inpcal{position:fixed;inset:0;z-index:350;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 .ic-head{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--edge);
   background:var(--panel);flex-wrap:wrap}
 /* every nav/action button here rides .abtn's own look, just enlarged to a

@@ -3287,6 +3287,17 @@ chips drop their text and become compact colour bars.
   grid edge still completes. This is the calendar's OWN surface — the board's
   removed swipe (a stable decision) does not govern it, and the owner asked
   for this one explicitly.
+- *The page SLIDES* (owner, 22 Aug 26 — "I want swipe animation when I swipe
+  left and right"). A `useLayoutEffect` keyed on `[cur.y, cur.m]` runs the new
+  grid in from the side the page turned (next from the right, previous from the
+  left) with the Web Animations API — `grid.animate([...])` on the SAME element,
+  never a re-key or a second panel, so the gesture listeners (their deps-`[]`
+  effect) and the layout are untouched. `slideDirRef` carries the direction from
+  `step()` / `goToday()` and is consumed each run, so only a real page slides —
+  the first open and the seed-month jump (dir 0) don't. No-op under
+  `prefers-reduced-motion` and where `animate` is absent (jsdom). `.inpcal` is
+  `overflow:hidden` so the ±28px entry never shows a scrollbar; the day popover
+  is its own `position:fixed` layer and escapes that clip.
 
 **The day popover** (`.ic-pop`, bottom sheet ≤820px / centred card above).
 The day's full entry list (tap a row → the same edit dialog): each
