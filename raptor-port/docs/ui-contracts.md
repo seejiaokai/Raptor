@@ -1055,6 +1055,16 @@ routes `data-air`):
   them on one row instead of stacking each full-width. The line is one DOM child
   shorter (nine, not ten) but the grid still counts ten items — pinned in
   `board-stores.test.tsx` and `e2e/geometry.spec.ts`.
+- **The sign-off names sit two-up, like the edit-schedule strip** (owner, 22 Aug
+  26 — "make the board sign-off similar to the one in edit schedule"). `.board-sign`
+  shares the compact `.day-sign` inner CSS (`Sign-off` header and `X to sign` state
+  each on their own full-width row; the four name pills flex-grow between). Its
+  own container is untouched (`#sbSignBar` margin, `position:static`, the `.sb-pub`
+  publish strip below). On a phone the pills are pinned to a 50% flex-basis inside
+  the `max-width:820px` block, so `CUR CK · SKED CK` / `PLANNED BY · APPROVED BY`
+  land two-per-row regardless of the board panel's slightly narrower width;
+  desktop keeps the content-width row the edit week also shows. CSS-only — the
+  `signoffHTML` markup is one shared builder and is byte-unchanged.
 - **The publish strip** — version chip, pending count, ⓘ, Publish day, Publish
   AL (14 Aug 26, "the board's sign-off panel now carries the same… controls the
   week day head does"). `html.ts`'s `dayStatHTML(di, ed)` is the ONE builder

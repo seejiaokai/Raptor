@@ -1094,15 +1094,31 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
    line rather than wrapping cleanly under it. */
 .sb-pub{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:0 0 100%;margin-top:4px}
 /* the per-day strip, in the day's own header. Four names, two rows on a phone,
-   and the day's Publish button stays locked until all four carry one. */
+   and the day's Publish button stays locked until all four carry one.
+   The scheduler board's sign-off (`.board-sign`) shares this same compact,
+   two-up grid (owner, 22 Aug 26 — "make the board sign-off similar to the one
+   in edit schedule"): the pills flex-grow and wrap two per row instead of each
+   taking a full-width line of its own. Only the INNER layout is shared — the
+   board keeps its own container (`#sbSignBar` margin, `position:static`, the
+   `.sb-pub` publish strip on its own row below). */
 .signoff.day-sign{margin:8px 10px 0;padding:6px 8px;gap:4px;background:var(--panel-2);border-color:var(--edge)}
-.signoff.day-sign .so-h{font-size:8.5px;letter-spacing:.08em;flex:0 0 100%;margin:0 0 1px}
-.signoff.day-sign .sgn{padding:2px 3px 2px 7px;gap:4px;flex:1 1 auto;min-width:0}
-.signoff.day-sign .sgn>.k{font-size:9px}
-.signoff.day-sign .sgn>.v{font-size:10.5px;min-width:52px;padding:1px 15px 1px 3px}
-.signoff.day-sign .sgn::after{right:6px;font-size:8px}
-.signoff.day-sign .so-state{flex:0 0 100%;margin-left:0;font-size:9.5px;padding-top:1px}
-.signoff.day-sign button.so-clear{padding:2px 6px;font-size:9.5px}
+.signoff.day-sign .so-h,.signoff.board-sign .so-h{font-size:8.5px;letter-spacing:.08em;flex:0 0 100%;margin:0 0 1px}
+.signoff.day-sign .sgn,.signoff.board-sign .sgn{padding:2px 3px 2px 7px;gap:4px;flex:1 1 auto;min-width:0}
+.signoff.day-sign .sgn>.k,.signoff.board-sign .sgn>.k{font-size:9px}
+.signoff.day-sign .sgn>.v,.signoff.board-sign .sgn>.v{font-size:10.5px;min-width:52px;padding:1px 15px 1px 3px}
+.signoff.day-sign .sgn::after,.signoff.board-sign .sgn::after{right:6px;font-size:8px}
+.signoff.day-sign .so-state,.signoff.board-sign .so-state{flex:0 0 100%;margin-left:0;font-size:9.5px;padding-top:1px}
+.signoff.day-sign button.so-clear,.signoff.board-sign button.so-clear{padding:2px 6px;font-size:9.5px}
+/* Force EXACTLY two pills per row on the board ON A PHONE. The edit-schedule
+   strip lands its 2x2 by content width alone — its day card is ~14px wider than
+   the board's sign panel, just enough that the longer PLANNED BY / APPROVED BY
+   labels fit two-up. The board's panel is that bit narrower, so on auto basis
+   those two wrap one-per-line. Pinning a 50% flex-basis makes the grid
+   width-independent: two pills fill a row, the rest wrap in pairs. Phone-scoped
+   so the desktop board keeps the content-width row the edit week also shows. */
+@media (max-width:820px){
+  .signoff.board-sign .sgn{flex:1 1 calc(50% - 3px)}
+}
 /* not yet signed off — the same button, darkened. Deliberately not `opacity`:
    a half-transparent cyan over a dark panel reads as a rendering fault, a solid
    dim blue reads as "this button is not live yet". */
