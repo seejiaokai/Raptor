@@ -510,7 +510,7 @@ export function InputsPage() {
         <button className="abtn" id="inExport" onClick={() => {
           const out: any[][] = [['Name', 'Date', 'Start', 'End', 'Type', 'Remarks']]
           INPUTS.forEach((r: any) => out.push([PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person, r.date, r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, r.remarks]))
-          exportCSV('142SQN-inputs.csv', out)
+          exportCSV('142-inputs.csv', out)
           /* a phone browser often shows nothing at all when a download lands —
              no bar, no tray notification the user is looking at — so the tap
              otherwise reads as dead (owner audit) */

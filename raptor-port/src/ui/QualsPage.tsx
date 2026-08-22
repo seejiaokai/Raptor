@@ -536,7 +536,7 @@ export function QualsPage() {
            Personnel hold no qualifications, so every qual column is blank. */
         ...cols.map(c => p.pers ? '' : qualNA(p, c) ? '–' : p.quals[c.k] === 'I' ? 'I' : p.quals[c.k] ? 'Y' : '')])
     })
-    exportCSV(`142SQN-LoX-${qSeatView}.csv`, rows)
+    exportCSV(`142-LoX-${qSeatView}.csv`, rows)
     /* same reason as the Inputs page's export: a phone shows nothing when a
        download lands, so the tap otherwise reads as dead */
     HOOKS.toast('CSV downloaded', 'ok')

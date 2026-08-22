@@ -283,7 +283,7 @@ export function Shell() {
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
         </div>
-        <div className="title"><h1 id="vTitle">{DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</h1><span className="sub mono" id="vSub">142 SQN · week of 13 Jul 26 · all times local</span></div>
+        <div className="title"><h1 id="vTitle">{DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</h1><span className="sub mono" id="vSub">142 · week of 13 Jul 26 · all times local</span></div>
         <div className={'schedbanner ' + b.cls + (rulesOffCount() ? ' rules-off' : '')} id="vBanner"
           style={{ ['--al' as any]: b.col }} dangerouslySetInnerHTML={{ __html: b.html }} />
         <details className="legendbox" id="vLegendBox">
@@ -314,7 +314,7 @@ export function Shell() {
                 on desktop, so this page needs no separate control. */}
             <button className="abtn" id="throwPucks" onClick={() => HOOKS.toast('Auto-throw uses the Quals rules to seat crews (stub in prototype).')}>Throw pucks (auto)</button>
             <button className="abtn" id="exportSched" onClick={() => {
-              exportCSV('142SQN-schedule.csv', schedRows())
+              exportCSV('142-schedule.csv', schedRows())
               /* same reason as the Inputs page's export: a phone shows nothing
                  when a download lands, so the tap otherwise reads as dead */
               HOOKS.toast('CSV downloaded', 'ok')
