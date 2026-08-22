@@ -48,14 +48,14 @@ describe('the mobile drawer', () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
   })
 
-  it('a week chip loads that week, re-labels and closes the drawer', async () => {
+  it('a rolling week button loads that week, re-labels and re-centres', async () => {
     const day0 = DAYS[0].dt                                   // 'Jul 13' — the seed week
-    await click($('#burger'))
-    await click($(`#drawerWeeks [data-wk="20/07/2026"]`))
+    /* the seg's rolling window from the seed week is [06,13,20,27]/07, so the
+       +1 button (20/07) is present; clicking it loads that week */
+    await click($(`#weekSeg [data-wk="20/07/2026"]`))
     expect((await import('../engine/waves')).CURWEEK).toBe('20/07/2026')
-    expect($('#drawer').classList.contains('open')).toBe(false)
-    expect(($('#dateVField') as HTMLInputElement).value).toBe('20/07/2026')
-    /* every chip pair follows the choice */
+    /* the window re-centres on the loaded week, so 20/07 is now the selected
+       button in every seg that renders it */
     expect($$(`[data-wk="20/07/2026"]`).every(x => x.classList.contains('on'))).toBe(true)
     /* the MODEL actually swapped, not just the label */
     expect(DAYS[0].dt).toBe('Jul 20')
@@ -63,6 +63,17 @@ describe('the mobile drawer', () => {
     /* restore the seed week for the rest of the suite */
     await act(async () => { loadWeek('13/07/2026') })
     expect(DAYS[0].dt).toBe('Jul 13')
+  })
+
+  it('the drawer offers a calendar opener in place of week chips', async () => {
+    await click($('#burger'))
+    expect($('#drawerPickWeek')).toBeTruthy()
+    expect($('#drawerWeeks [data-wk]')).toBeFalsy()
+    await click($('#drawerPickWeek'))
+    expect($('#drawer').classList.contains('open')).toBe(false)
+    expect($('#weekCal') && !($('#weekCal') as HTMLElement).hasAttribute('hidden')).toBe(true)
+    /* close it again for the rest of the suite */
+    await click($('#weekCal .x'))
   })
 
   it('a member drawer hides the Edit tab', async () => {

@@ -306,6 +306,19 @@ a{color:var(--accent)}
 .wk{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);padding:6px 14px;border-radius:11px;cursor:pointer;font-size:12px;font-weight:500}
 .wk:hover{border-color:var(--edge-2);color:var(--ink)}
 .wk.on{background:rgba(87,201,122,.14);color:#A8E6BC;border-color:rgba(87,201,122,.55);font-weight:600}
+/* the calendar-icon button that ends the rolling week strip, and the accent dot
+   marking whichever button is the week the notional today falls in */
+.wk-cal{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px}
+.btnglyph{width:16px;height:16px;display:block;color:var(--ink-2)}
+.wk-cal:hover .btnglyph{color:var(--accent)}
+.wk.todaywk{position:relative}
+.wk.todaywk::after{content:'';position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+/* the mobile-only calendar bar that stands where the removed title was (desktop
+   uses the seg); shown by the phone @media block below */
+.wknav-m{display:none}
+.wknav-mbtn{display:inline-flex;align-items:center;justify-content:center;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:10px;width:42px;height:36px;cursor:pointer}
+.wknav-mbtn:hover,.wknav-mbtn:active{border-color:var(--accent);color:var(--accent)}
+.wknav-mbtn .btnglyph{width:20px;height:20px;color:inherit}
 
 /* filter / highlight chips */
 .filters{display:flex;gap:6px;padding:8px 20px;flex-wrap:wrap;border-bottom:1px solid var(--edge);align-items:center;background:rgba(20,24,29,.35)}
@@ -331,7 +344,8 @@ a{color:var(--accent)}
    heading). Wraps under the heading on a very narrow screen rather than
    crushing it. */
 .title .calview{
-  margin-left:auto; align-self:center;
+  /* sits BESIDE the heading (owner, 22 Aug 26), not pushed to the far right */
+  align-self:center;
   background:var(--accent); color:var(--accent-ink); border-color:var(--accent);
   font-size:13px; padding:9px 15px; border-radius:10px;
   box-shadow:0 2px 14px rgba(59,198,232,.38);
@@ -1552,6 +1566,28 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .rc-d.mid{background:rgba(59,198,232,.13)}
 .rc-d.s,.rc-d.e{background:var(--accent);color:#04222b;font-weight:800}
 .rc-x{padding:3px 0}
+/* THE DATE-JUMP CALENDAR (WeekCal.tsx) — a DAY picker. Same `.rc-*` grid, sized
+   up for a modal and a thumb: `.sel` is the day the user is currently on (a
+   solid accent fill), `.today` rings the notional today. The week is transparent
+   here, so a single day is lit, not a row. Placed after the range rules so these
+   win the cascade on a shared cell. */
+.weekcal-box{width:min(94vw,360px)}
+.rangecal.weekcal{width:100%;background:transparent;border:none;padding:0}
+.weekcal .rc-h{margin-bottom:8px}
+.weekcal .rc-mon{font-size:13px}
+.weekcal .rc-nav{width:34px;height:34px;font-size:17px;border-radius:8px;background:var(--panel-2)}
+.weekcal .rc-dow,.weekcal .rc-grid{gap:3px}
+.weekcal .rc-dow span{font-size:9.5px;padding-bottom:2px}
+.weekcal .rc-d{font-size:13px;padding:9px 0;border-radius:7px;font-weight:600;background:var(--panel-2);border-color:var(--edge)}
+.weekcal .rc-d.wk{background:#0D1014;color:var(--ink-3)}
+.weekcal .rc-d:hover:not(.sel){border-color:rgba(59,198,232,.5)}
+.weekcal .rc-d.sel{background:var(--accent);border-color:var(--accent);color:#04222b;font-weight:800}
+.weekcal .rc-d.today:not(.sel){box-shadow:inset 0 0 0 1.5px var(--accent)}
+.weekcal-hint{font-size:11px;color:var(--ink-3);margin-top:11px;text-align:center;letter-spacing:.02em}
+.sb-calbtn .btnglyph{width:17px;height:17px;color:currentColor;display:block}
+/* the board's action-row glyphs (History) follow the button's own text colour,
+   so the History toggle's icon goes accent with it when active */
+.sb-actions .btnglyph{width:16px;height:16px;color:currentColor;display:block}
 .rc-read{font-size:9.5px;color:var(--ink-3);margin-top:4px;letter-spacing:.02em}
 /* A row that has just been added lights up and HOLDS before fading (owner,
    Aug 5 for the flash; harmonized 15 Aug 26 to match the board's .sb-fresh
@@ -2048,6 +2084,9 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .topbar .nav{display:none}
   .acct .sel,.acct .rolebadge{display:none}
   .seg{display:none}
+  /* the seg (with the rolling week buttons) is desktop-only; on a phone the lone
+     calendar icon carries week-jumping and the swipe carries day-to-day */
+  .wknav-m{display:flex;justify-content:flex-end;padding:8px 12px 0}
   /* the qualification filters are the fastest way to read a phone screen —
      "who here is a supervisor / an instructor / SANS" — so instead of hiding
      the row it becomes ONE horizontally scrollable line with the label pinned */
@@ -3423,6 +3462,11 @@ button.sanscard:hover{border-color:var(--accent)}
   .sb-actions .abtn{width:30px;min-width:0;height:30px;padding:0;display:inline-flex;
     align-items:center;justify-content:center;flex:0 0 auto;font-size:14px;line-height:1}
   .sb-actions .dver{max-width:92px;flex:0 1 auto}
+  /* the top-left calendar icon matches the 30px action buttons and never grows
+     the bar: it is fixed-width so the title (flex:1 1 0) absorbs the space it
+     takes, keeping line 1 to one row — the geometry gate's ROW assertion */
+  .sb-top>.sb-calbtn{width:30px;min-width:0;height:30px;padding:0;display:inline-flex;
+    align-items:center;justify-content:center;flex:0 0 auto}
   /* ---- the day chips become DOTS (owner: remove the Mon–Sun buttons) ------
      Same seven elements, same click handler — a tap on a dot still jumps
      straight to that day, which is what keeps Monday→Friday one gesture

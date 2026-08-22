@@ -505,7 +505,10 @@ export function InputsPage() {
             }}>
               {typeOptions()}
             </select></div>
-          <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder="e.g. medical appt" maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
+          {/* the "e.g. medical appt" hint is dropped for SANS Availability
+              (owner, 22 Aug 26) — a SANS availability line is not a medical note,
+              so the example only misleads on that type */}
+          <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder={isSansAvail(type) ? '' : 'e.g. medical appt'} maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={add}>Add input</button></div>
         </div>
       </div>

@@ -643,8 +643,14 @@ subscribers.
   tracking the finger behind a preview pane, then that carousel with its
   hit-testing, settle and animation reworked and a phone-only gate — each round
   paying back what the last one cost. `#sbPrevDay`/`#sbNextDay` call
-  `boardDayStep(±1)` and are DISABLED at the week's ends (a gesture cannot show
-  that it is refusing; a button can). They flank the DAY STRIP rather than the
+  `boardDayStep(±1)`. They USED to be disabled at the week's ends; since 22 Aug 26
+  they are CONTINUOUS ACROSS WEEKS instead (owner — "in scheduler board it's
+  continuous arrow between weeks"): stepping off Monday loads the previous week's
+  Sunday, off Sunday the next week's Monday (`boardDayStep` calls `loadWeek` then
+  `boardTab`). The swipe stays gone — only the arrows changed. Do not re-add the
+  end-of-week `disabled`. A top-left calendar icon (`#sbCal`) opens the week
+  picker in 'board' context, where a pick loads that week and opens the tapped
+  day. They flank the DAY STRIP rather than the
   bar's first line, which has 6px of slack and would have had to give up the day
   name; the bar went 70px → 75px and nothing came off line one. Above 820px they
   are not drawn — a desktop bar already carries all seven days as chips, which is
@@ -662,6 +668,39 @@ subscribers.
   lane must not wake the mounted EditWeek or EditRoster. Real mutations still use
   the global lane and repaint both.
   Contract: `docs/ui-contracts.md` §The board on a phone is ONE window.
+- **Week navigation is a rolling window + a calendar, and it is CONTINUOUS**
+  (owner, 22 Aug 26). The fixed 5-chip `WEEKS` strip is gone from the segs;
+  `weekWindow(CURWEEK)` (`src/ui/weeknav.ts`) draws four `data-wk` buttons —
+  prev · current · +1 · +2 — that re-centre on whatever week is loaded, the
+  loaded one `.on` and the today-week dotted. A calendar icon opens `WeekCal`
+  (`src/ui/WeekCal.tsx`, the app's own `.rc-*` picker, single-date with a
+  whole-week highlight); tapping any day loads that day's week (`loadWeek` +
+  `mondayOf`). On a phone the seg is hidden and a lone calendar icon stands where
+  the removed title was; the view/edit week is stepped day-to-day by SWIPE, which
+  is CONTINUOUS across weeks (swipe off Sunday → next week's Monday, off Monday →
+  previous week's Sunday — `pan.ts` edge-overswipe + `WEEKJUMP` landing the
+  scroll in the same repaint). `WEEKS` (`engine/waves.ts`) is kept for
+  probe-bridge/reference but is no longer the seg render source. The engine
+  already builds any week (`weekBundle`/`emptyWeek`), so nothing bounds this.
+  The big `Jul 13 – Jul 19` title (`#vTitle`) and the `142 · week of… · all times
+  local` sub (`#vSub`) were REMOVED as redundant clutter — the day cards carry
+  the dates. Don't re-add the fixed chips, the title/sub, or the end-of-week
+  clamp. All week label/Monday math lives in `weeknav.ts` (one drift seam).
+  The DATE PICKER is a DAY picker (owner — "the week will be transparent to the
+  user … as the user scrolls it will feel like a continuous flow"): tapping a day
+  loads that day's week and lands the view on that exact day (`WEEKJUMP` carries a
+  day index; the board opens it). Don't turn it back into a week-row picker.
+- **Personal INPUTS are GLOBAL, not week-scoped** (owner, 22 Aug 26 — "show all
+  inputs regardless of which week I am selected on"). `loadWeek` swaps DAYS/DATES
+  but NOT `INPUTS`; every authored week's inputs are merged into the one `INPUTS`
+  array at boot (`initStore` + `weeks-data.ts:otherWeekInputs`, idempotent, and
+  boot-only so parity stays 728/0). Each week's SCHEDULE still shows only its own
+  because the day builders and auto-land match by DATE (`inputCoversDate` /
+  `DATES.indexOf`). The one gotcha, kept in `loadWeek`: it clears every input's
+  `acc` so `autoAcceptSeedInputs` re-lands the date-matching rows onto the fresh
+  (ground-row-less) days — without it an input stays marked accepted with nothing
+  on the day. Don't re-add the `INPUTS` swap, and don't move the `acc` clear.
+  Flow: `docs/feature-impact.md` §Flow E.
 - **No repeat-weeks on inputs** (owner, 22 Aug 26 — "remove repeated weeks
   everywhere"). The Inputs form's "Repeat wks" field, the table's Recurring
   column and the record's `recur` write are all deleted. The feature never

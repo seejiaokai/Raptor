@@ -3,11 +3,10 @@
    the DRAWER flag in pops.ts; every action closes the drawer, as the
    reference's handlers all end with classList.remove('open'). */
 import { PEOPLE } from '../engine/people'
-import { WEEKS, CURWEEK } from '../engine/waves'
 import { SESSION, ME, setMe } from '../state/auth'
 import { CURPAGE } from '../state/view'
 import { notify, setPage, resetSession } from '../state/store'
-import { DRAWER, setDrawer, setUserModal } from './pops'
+import { DRAWER, setDrawer, setUserModal, setWeekCal } from './pops'
 import { useVersion } from './useStore'
 
 export function Drawer() {
@@ -42,9 +41,13 @@ export function Drawer() {
           {people.map(id => <button key={id} className={'fchip' + (id === ME ? ' on' : '')} data-va={id}
             onClick={() => { setMe(id); setDrawer(false); notify() }}>{PEOPLE[id].cs}</button>)}
         </div>
+        {/* Week chips became a single calendar opener (owner, 22 Aug 26): the
+            phone jumps weeks from the month picker, and steps day-to-day by
+            swiping the schedule (continuous across weeks). */}
         <h4>Week</h4>
         <div className="drawer-row" id="drawerWeeks">
-          {WEEKS.map((w: any) => <button key={w.v} className={'wk' + (w.v === CURWEEK ? ' on' : '')} data-wk={w.v}>{w.lbl}</button>)}
+          <button className="abtn" id="drawerPickWeek"
+            onClick={() => { setDrawer(false); setWeekCal('view'); notify() }}>Pick a date…</button>
         </div>
         <h4>Account</h4>
         {/* resetSession (state/store.ts) is the one session-change path — see Shell.tsx's

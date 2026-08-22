@@ -5,7 +5,9 @@
    dots on a phone, and the wave blocks in a day mirroring each other's
    sideways swipe. */
 import * as view from '../state/view'
-import { notify } from '../state/store'
+import { notify, loadWeek } from '../state/store'
+import { CURWEEK } from '../engine/waves'
+import { shiftWeek } from './weeknav'
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement | null
 
@@ -257,6 +259,47 @@ function onDotsClick(e: MouseEvent) {
   const el = $('vWeek')!.querySelectorAll('.day')[+b.dataset.day!]
   el && el.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' })
 }
+/* ---- CONTINUOUS SWIPE ACROSS WEEKS (owner, 22 Aug 26) ----
+   The view/edit week is a scroll-snap carousel, one day per snap on a phone.
+   Swiping OFF the last day (already pinned at the right edge) loads the next
+   week and lands on Monday; off the first day loads the previous week and lands
+   on Sunday. The edge is read at touch-START — "you are on Sunday, swipe again"
+   — so an ordinary within-week swipe (which does not begin pinned at an end)
+   never crosses. A swipe that begins on an inner horizontal scroller (a wave
+   `.go` block scrolls its own RMKS/AREA/TIME) is left to that scroller.
+   Phone only; desktop steps weeks with the seg buttons and never snaps. */
+const SWIPE_TH = 45
+let swEl: HTMLElement | null = null
+let swStartX = 0, swAtLeft = false, swAtRight = false
+function onWeekTouchStart(e: TouchEvent) {
+  swEl = null
+  if (window.innerWidth > 820) return
+  if (view.CURPAGE !== 'viewsched' && view.CURPAGE !== 'editsched') return
+  if (view.SBDAY != null) return                 // the board is open — its arrows own week-stepping
+  if (!e.touches || e.touches.length !== 1) return
+  const t = e.target as HTMLElement
+  if (!t.closest) return
+  if (t.closest('.go')) return                   // an inner wave scroller owns this gesture
+  const w = t.closest('.week') as HTMLElement | null
+  if (!w) return
+  const max = w.scrollWidth - w.clientWidth
+  if (max <= 1) return                           // nothing to be at the edge OF (headless / not laid out)
+  swEl = w
+  swStartX = e.touches[0].clientX
+  swAtLeft = w.scrollLeft <= 1
+  swAtRight = w.scrollLeft >= max - 1
+}
+function onWeekTouchEnd(e: TouchEvent) {
+  const w = swEl; swEl = null
+  if (!w || window.innerWidth > 820) return
+  const endX = (e.changedTouches && e.changedTouches.length) ? e.changedTouches[0].clientX : swStartX
+  const dx = endX - swStartX
+  /* right edge + swipe left (content advancing) → next week, land on Monday;
+     left edge + swipe right (retreating) → previous week, land on Sunday */
+  if (swAtRight && dx <= -SWIPE_TH) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)) }
+  else if (swAtLeft && dx >= SWIPE_TH) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)) }
+}
+
 function onResize() { updateWeekNav() }
 
 export function initPan() {
@@ -265,6 +308,8 @@ export function initPan() {
   document.addEventListener('scroll', onDocScroll, true)
   document.addEventListener('scroll', onDotsScroll, true)
   document.addEventListener('click', onDotsClick)
+  document.addEventListener('touchstart', onWeekTouchStart, { passive: true })
+  document.addEventListener('touchend', onWeekTouchEnd, { passive: true })
   if (trk) trk.addEventListener('scroll', onTrackScroll)
   window.addEventListener('resize', onResize)
   updateWeekNav()
@@ -276,6 +321,8 @@ export function initPan() {
     document.removeEventListener('scroll', onDocScroll, true)
     document.removeEventListener('scroll', onDotsScroll, true)
     document.removeEventListener('click', onDotsClick)
+    document.removeEventListener('touchstart', onWeekTouchStart)
+    document.removeEventListener('touchend', onWeekTouchEnd)
     if (trk) trk.removeEventListener('scroll', onTrackScroll)
     window.removeEventListener('resize', onResize)
   }

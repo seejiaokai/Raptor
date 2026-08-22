@@ -134,6 +134,11 @@ arrow / dot scrub  → boardDayStep(±1)  → SBDAY changes
 ```
 `boardTab` is view-only by contract. A "navigation" feature that quietly
 validates or writes has crossed from Flow C into Flow A and needs its guards.
+**Continuous across weeks (22 Aug 26):** at the week's ends `boardDayStep`
+instead crosses into Flow E — `loadWeek(shiftWeek(±1))` then `boardTab(0|6)` —
+so an END step IS a full week load (global lane + validate), while a within-week
+step stays the view-only board lane. The board's `#sbCal` calendar icon is a
+Flow E entry point too (loads the tapped day's week, then opens that day).
 
 ### Flow D — publish / amendment / load-a-version
 ```
@@ -155,23 +160,42 @@ through `daySnapOf`/`withDaySnap`, never a second path. The view page's
 issued DEFAULT for a published day (`dayIssuedHTML`, 15 Aug 26) is the same
 freeze again in quiet mode — one more consumer, still no second path.
 
-### Flow E — load a week (the .wk selector, 21 Aug 26)
+### Flow E — load a week (the week selector, 21 Aug 26; reworked 22 Aug 26)
 ```
-click a week chip  → interactions.ts handler → store.ts:loadWeek(v)
+a rolling week button (weekWindow, weeknav.ts) OR a WeekCal day tap OR a
+  continuous board arrow / edge-swipe  → store.ts:loadWeek(v)
 loadWeek           → setCurWeek(v) → weekBundle(v) (engine/weeks-data.ts, a fresh deep copy)
-                   → swap DAYS / DATES / INPUTS IN PLACE (all week-scoped, all live bindings)
-                   → seedDemoSans() if week 1 → mintInpIds() → resetSched() (publish.ts)
+                   → swap DAYS / DATES IN PLACE (live bindings); INPUTS is GLOBAL, NOT swapped
+                   → clear every input's `acc` → mintInpIds() → resetSched() (publish.ts)
+                   → autoAcceptSeedInputs() (re-lands date-matching inputs on the fresh days)
                    → clear day-index/iid VIEW state → validate() → histInit() → notify()
 ```
-The whole loaded week travels together: `DATES` and `INPUTS` are week-scoped and
-swap with `DAYS`, or personal inputs land on the wrong day. `SCHED` is keyed by
-day INDEX, so `resetSched()` is what stops one week's approvals/AL bleeding onto
-another's identical indices; history re-baselines so Undo can't cross a week.
+`DAYS` and `DATES` swap with the week. **`INPUTS` is GLOBAL since 22 Aug 26**
+(owner — "show all inputs regardless of which week I am selected on"): it is
+merged once at boot (`store.ts:initStore` + `weeks-data.ts:otherWeekInputs`) and
+NOT swapped, so every week's inputs stay present for the Inputs page; each week's
+SCHEDULE still shows only its own because the day builders and auto-land match by
+date (`inputCoversDate` / `DATES.indexOf`). Because the fresh DAYS carry no
+ground rows, loadWeek CLEARS each input's `acc` so `autoAcceptSeedInputs` re-lands
+the date-matching ones — else a row stays marked accepted with nothing on the day
+(a silent drift-seam: the accept flag lives on the global row, the ground row on
+the swapped-away days). `SCHED` is keyed by day INDEX, so `resetSched()` is what
+stops one week's approvals/AL bleeding onto another's identical indices; history
+re-baselines so Undo can't cross a week.
 Session/page/role are untouched — this is a data swap, not a login. Nothing runs
 at module load, so `DAYS` still initialises to the seed week (parity/e2e's
 "seven days" hold until a user clicks a chip). Per-week publish state is NOT
 persisted — the persistent multi-week end-state is server work, and `resetSched`
-+ the `weekBundle` registry are its hook points.
++ the `weekBundle` registry are its hook points. **The selector is now a rolling
+window + a calendar, and navigation is continuous (22 Aug 26):** the desktop segs
+draw `weekWindow(CURWEEK)` (prev·current·+1·+2, re-centring), the `WeekCal` month
+picker jumps to any week, and the phone view/edit carousel crosses weeks by SWIPE
+(`pan.ts` edge-overswipe → `loadWeek`, landing the scroll via `view.WEEKJUMP` in
+the ViewWeek/EditWeek repaint). **All week label/Monday math is one drift-seam in
+`ui/weeknav.ts`** (`mondayOf`/`shiftWeek`/`weekWindow`/`dayIndexInWeek`); any date
+that names a week or steps one must go through it, not a second literal. Every
+`data-wk` value is still an arbitrary `dd/mm/yyyy` Monday, so the shared
+`interactions.ts` handler is unchanged — the engine builds any week already.
 
 **Every flow ends by repainting through `notify()` (or the board lane).** State
 that lives outside the funnel + `HOOKS.storeBackend` is invisible to undo, AL

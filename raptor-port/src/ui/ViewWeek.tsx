@@ -7,7 +7,7 @@
    surfaces. */
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
-import { CARRYDAY, CURPAGE, DPREV, VWORK, setCarryDay, scrollWeekToDay } from '../state/view'
+import { CARRYDAY, CURPAGE, DPREV, VWORK, WEEKJUMP, setCarryDay, setWeekJump, scrollWeekToDay } from '../state/view'
 import { daySnapOf, dayApproved } from '../engine/publish'
 import { isDraftVer } from '../engine/drafts'
 import { dayHTML, dayIssuedHTML, withDaySnap } from './html'
@@ -62,12 +62,22 @@ export function ViewWeek() {
       root.innerHTML = html.join('')
     }
     root.scrollLeft = sl
+    /* A continuous-nav week load lands on the right day — Monday (swiped
+       forward), the last day (swiped back), or a specific day index (a calendar
+       day-pick) — overriding the scroll hold in this same repaint so the new
+       week never flashes the day it left. Consumed once. */
+    if (WEEKJUMP != null) {
+      if (WEEKJUMP === 'mon') root.scrollLeft = 0
+      else if (WEEKJUMP === 'sun') root.scrollLeft = Math.max(0, root.scrollWidth - root.clientWidth)
+      else scrollWeekToDay(root, WEEKJUMP)
+      setWeekJump(null)
+    }
     /* ...unless a page switch left a day to carry (owner, 9 Aug 26): the
        other week was parked on it, and this one lands there rather than
        wherever it was last left. Consumed once — a repaint that is not a
        page switch must keep holding scroll, which is the B54 guarantee the
        line above exists for. */
-    if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
+    else if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
     prev.current = html
     /* the reference re-hangs selection/highlight classes after every render */
     refreshHighlights()

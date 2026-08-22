@@ -6,7 +6,8 @@ import { useEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode, esc, restArmed } from '../state/view'
-import { closeHistList } from './pops'
+import { closeHistList, setWeekCal } from './pops'
+import { CalIcon, HistIcon } from './icons'
 import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
 import { daySnapOf, dayVersions, verLabel, alColor, dayPendCount } from '../engine/publish'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
@@ -256,6 +257,16 @@ export function SchedBoard() {
           button is still its words, and nothing here needs a second markup
           path to maintain. */}
       <div className="sb-top" ref={topRef}>
+        {/* THE CALENDAR ICON, TOP-LEFT (owner, 22 Aug 26 — "on scheduler board
+            mode, the top left u could put a calendar icon to select the date").
+            Opens the same month picker as the schedule seg, but in 'board'
+            context so the tapped date both loads its week AND opens that day on
+            the board. */}
+        <button className="abtn sb-calbtn" id="sbCal" title="Jump to a date" aria-label="Jump to a date"
+          onClick={() => { setWeekCal('board'); notify() }}>
+          <span className="bi"><CalIcon /></span>
+          <span className="bl"> Calendar</span>
+        </button>
         <div className="sb-title">
           {/* THE DAY NAME IS CUT TO THREE LETTERS ON A PHONE (owner, 12 Aug 26 —
               "Seems like the Wednesday blocked off the date. Maybe use short
@@ -290,8 +301,11 @@ export function SchedBoard() {
             The dots stay between them: they are the only thing that says WHICH
             day of the seven you are on, and they are still a scrub bar. */}
         <div className="sb-nav">
+          {/* No longer disabled at the week's ends (owner, 22 Aug 26): stepping
+              off Monday loads the previous week's Sunday, and off Sunday the next
+              week's Monday — a continuous day flow. boardDayStep does the load. */}
           <button className="abtn sb-arrow" id="sbPrevDay" title="Previous day"
-            disabled={SBDAY == null || SBDAY <= 0}
+            disabled={SBDAY == null}
             onClick={() => boardDayStep(-1)}><span className="bi">‹</span><span className="bl"> Previous day</span></button>
           {/* the same seven buttons on both surfaces — CSS makes them chips on a
               desktop and dots on a phone, so there is one list, one click
@@ -299,7 +313,7 @@ export function SchedBoard() {
           <div className="sb-days" id="sbDays" ref={daysRef}
             onClick={e => { const t = (e.target as HTMLElement).closest('[data-sbtab]') as HTMLElement | null; if (t) boardTab(+t.dataset.sbtab!) }} />
           <button className="abtn sb-arrow" id="sbNextDay" title="Next day"
-            disabled={SBDAY == null || SBDAY >= DAYS.length - 1}
+            disabled={SBDAY == null}
             onClick={() => boardDayStep(1)}><span className="bi">›</span><span className="bl"> Next day</span></button>
         </div>
         <div className="sb-actions">
@@ -344,7 +358,7 @@ export function SchedBoard() {
             aria-pressed={HISTMODE}
             title={HISTMODE ? 'Stop showing who changed each detail' : 'Show who changed each detail, and when — hover it, or tap it on a phone'}
             onClick={() => { toggleHistMode(); hideHistBub(); notify() }}>
-            <span className="bi">🕘</span><span className="bl"> History</span></button>
+            <span className="bi"><HistIcon /></span><span className="bl"> History</span></button>
           {/* the day's OTHER drafts join the published versions (owner, 15 Aug
               26) — same shape as the week's verSelHTML: never the selected one
               (Live IS it, and names it), 'd:<id>' values ride DPREV like any

@@ -19,7 +19,7 @@ import { rulesLoad } from '../engine/rules'
 import { mintInpIds, INPUTS, DATES } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { setCurWeek } from '../engine/waves'
-import { weekBundle } from '../engine/weeks-data'
+import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans } from './demoseed'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, dayTplLoad, autoAcceptSeedInputs } from '../engine'
 import { elogClear } from '../engine/editlog'
@@ -171,8 +171,15 @@ export function loadWeek(v: any) {
   const wk = weekBundle(v)
   DAYS.length = 0; wk.days.forEach((d: any) => DAYS.push(d))
   DATES.length = 0; wk.dates.forEach((x: any) => DATES.push(x))
-  INPUTS.length = 0; wk.inputs.forEach((r: any) => INPUTS.push(r))
-  if (wk.seedSans) seedDemoSans()
+  /* INPUTS IS GLOBAL now (owner, 22 Aug 26) — NOT swapped with the week. The
+     Inputs page shows every week's inputs; each week's schedule still shows only
+     its own because autoAcceptSeedInputs and the day builders match by date.
+     `wk.inputs`/`wk.seedSans` are unused here now (kept on the bundle for the
+     boot merge and any future caller). But the freshly-loaded DAYS are pristine
+     (no ground rows), so a previous load's accept flags would leave inputs
+     marked accepted with nothing on the day — clear `acc` so autoAcceptSeedInputs
+     re-lands each date-matching input onto this week's clean days. */
+  INPUTS.forEach((r: any) => { if (r.acc) delete r.acc })
   mintInpIds()
   resetSched()
   autoAcceptSeedInputs()      // land activity inputs on ground (dayApproved now clean)
@@ -265,6 +272,18 @@ export function initStore() {
   cxReasonsLoad()
   dutyTplLoad()
   dayTplLoad()
+  /* GLOBAL INPUTS (owner, 22 Aug 26 — "show all inputs regardless of which week
+     I am selected on"). The module-load INPUTS array is week 1's; merge every
+     OTHER authored week's inputs in ONCE here so the Inputs page carries them
+     all. Each week's SCHEDULE still shows only its own, because inputCoversDate
+     matches by date and a week only loads its seven days. Idempotent (initStore
+     may run twice in tests) — guarded on the same person|date|type|start
+     identity seedDemoSans guards on. Boot-only, so the parity harness (which
+     never boots) stays blind, exactly like seedDemoSans and autoAcceptSeedInputs. */
+  otherWeekInputs().forEach((r: any) => {
+    const dup = INPUTS.some((x: any) => x.person === r.person && x.date === r.date && x.type === r.type && (x.s ?? '') === (r.s ?? ''))
+    if (!dup) INPUTS.push(r)
+  })
   /* demo-only SANS Availability rows (see state/demoseed.ts for why this
      lives here and not in engine/inputs.ts's INPUTS array) — pushed before
      mintInpIds so they mint an iid exactly like every other seed row */
