@@ -686,6 +686,21 @@ subscribers.
   local` sub (`#vSub`) were REMOVED as redundant clutter — the day cards carry
   the dates. Don't re-add the fixed chips, the title/sub, or the end-of-week
   clamp. All week label/Monday math lives in `weeknav.ts` (one drift seam).
+  The DATE PICKER is a DAY picker (owner — "the week will be transparent to the
+  user … as the user scrolls it will feel like a continuous flow"): tapping a day
+  loads that day's week and lands the view on that exact day (`WEEKJUMP` carries a
+  day index; the board opens it). Don't turn it back into a week-row picker.
+- **Personal INPUTS are GLOBAL, not week-scoped** (owner, 22 Aug 26 — "show all
+  inputs regardless of which week I am selected on"). `loadWeek` swaps DAYS/DATES
+  but NOT `INPUTS`; every authored week's inputs are merged into the one `INPUTS`
+  array at boot (`initStore` + `weeks-data.ts:otherWeekInputs`, idempotent, and
+  boot-only so parity stays 728/0). Each week's SCHEDULE still shows only its own
+  because the day builders and auto-land match by DATE (`inputCoversDate` /
+  `DATES.indexOf`). The one gotcha, kept in `loadWeek`: it clears every input's
+  `acc` so `autoAcceptSeedInputs` re-lands the date-matching rows onto the fresh
+  (ground-row-less) days — without it an input stays marked accepted with nothing
+  on the day. Don't re-add the `INPUTS` swap, and don't move the `acc` clear.
+  Flow: `docs/feature-impact.md` §Flow E.
 - **No repeat-weeks on inputs** (owner, 22 Aug 26 — "remove repeated weeks
   everywhere"). The Inputs form's "Repeat wks" field, the table's Recurring
   column and the record's `recur` write are all deleted. The feature never

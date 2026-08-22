@@ -165,14 +165,23 @@ freeze again in quiet mode — one more consumer, still no second path.
 a rolling week button (weekWindow, weeknav.ts) OR a WeekCal day tap OR a
   continuous board arrow / edge-swipe  → store.ts:loadWeek(v)
 loadWeek           → setCurWeek(v) → weekBundle(v) (engine/weeks-data.ts, a fresh deep copy)
-                   → swap DAYS / DATES / INPUTS IN PLACE (all week-scoped, all live bindings)
-                   → seedDemoSans() if week 1 → mintInpIds() → resetSched() (publish.ts)
+                   → swap DAYS / DATES IN PLACE (live bindings); INPUTS is GLOBAL, NOT swapped
+                   → clear every input's `acc` → mintInpIds() → resetSched() (publish.ts)
+                   → autoAcceptSeedInputs() (re-lands date-matching inputs on the fresh days)
                    → clear day-index/iid VIEW state → validate() → histInit() → notify()
 ```
-The whole loaded week travels together: `DATES` and `INPUTS` are week-scoped and
-swap with `DAYS`, or personal inputs land on the wrong day. `SCHED` is keyed by
-day INDEX, so `resetSched()` is what stops one week's approvals/AL bleeding onto
-another's identical indices; history re-baselines so Undo can't cross a week.
+`DAYS` and `DATES` swap with the week. **`INPUTS` is GLOBAL since 22 Aug 26**
+(owner — "show all inputs regardless of which week I am selected on"): it is
+merged once at boot (`store.ts:initStore` + `weeks-data.ts:otherWeekInputs`) and
+NOT swapped, so every week's inputs stay present for the Inputs page; each week's
+SCHEDULE still shows only its own because the day builders and auto-land match by
+date (`inputCoversDate` / `DATES.indexOf`). Because the fresh DAYS carry no
+ground rows, loadWeek CLEARS each input's `acc` so `autoAcceptSeedInputs` re-lands
+the date-matching ones — else a row stays marked accepted with nothing on the day
+(a silent drift-seam: the accept flag lives on the global row, the ground row on
+the swapped-away days). `SCHED` is keyed by day INDEX, so `resetSched()` is what
+stops one week's approvals/AL bleeding onto another's identical indices; history
+re-baselines so Undo can't cross a week.
 Session/page/role are untouched — this is a data swap, not a login. Nothing runs
 at module load, so `DAYS` still initialises to the seed week (parity/e2e's
 "seven days" hold until a user clicks a chip). Per-week publish state is NOT
