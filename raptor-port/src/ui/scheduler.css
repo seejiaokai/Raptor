@@ -2197,18 +2197,33 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .fcell{padding:3px 2px 4px}
   .cols.formcols span{padding:3px 4px}
   .daydots{display:flex}
-  /* Columnar lists (programme / duties / sims / ground / inputs) all render 1:1 too.
-     Give START / END their own breathing room so the puck never butts against END. */
-  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:minmax(0,1fr) 44px 44px minmax(calc(var(--puck-w) + 14px),1fr);gap:5px 11px}
-  /* Common Programme's Rmks column has no room beside three text columns and the
-     pucks at 390px (unlike the duties list, which stacks its two times into one
-     column to free the space), so on a phone it drops to a full-width strip
-     under the row. The heading is hidden and an empty read-only cell (.rk-e)
-     takes no line; an edit-mode blank stays, since it is the only place to tap
-     to write one. */
-  .allhands .ah-cols>:nth-child(5){display:none}
-  .allhands .ah-row .rmk{grid-column:1/-1;grid-row:auto;padding-top:0;font-size:9px}
-  .allhands .ah-row .rmk.rk-e{display:none}
+  /* Columnar lists (programme / duties / sims / ground / inputs) all render 1:1 too. */
+  /* COMMON PROGRAMME now stacks its two times into one TIME column on a phone,
+     exactly as the duties / sims / ground lists (.pl-row) do — which frees the
+     room for RMKS to sit BESIDE the pucks instead of dropping to a strip below
+     (owner, 22 Aug 26 — "make the common programme layout similar to" those).
+     Row becomes NAME | TIME | PEOPLE | RMKS. Placed by POSITION, not by class:
+     the .ah-cols markup is byte-compared against the reference
+     (html.test.ts:noAhRmk), so it stays Name/Start/End/People/Rmks, and each
+     .ah-row stays .nm, start-.t, end-.t, .ppl, .rmk — the positions are fixed. */
+  /* the .plist.one proportions (wide NAME, one-puck PEOPLE): the programme's
+     names are long (STANDARDISATION at 104px) and its people cells are usually
+     one body, so NAME takes the room — the same call the flying table made
+     (CLAUDE.md, 12 Aug 26 name-priority). A rare second body wraps under the
+     first, exactly as it does on the ground list. */
+  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:132px 34px calc(var(--puck-w) + 2px) minmax(0,1fr);gap:3px 5px;padding:4px 6px}
+  .allhands .ah-cols>:nth-child(1){grid-column:1}
+  .allhands .ah-cols>:nth-child(2){grid-column:2;font-size:0}
+  .allhands .ah-cols>:nth-child(2)::before{content:'TIME';font-size:9px}
+  .allhands .ah-cols>:nth-child(3){display:none}
+  .allhands .ah-cols>:nth-child(4){grid-column:3}
+  .allhands .ah-cols>:nth-child(5){grid-column:4}
+  .allhands .ah-row>.nm{grid-column:1;grid-row:1/span 2}
+  .allhands .ah-row>:nth-child(2){grid-column:2;grid-row:1}
+  .allhands .ah-row>:nth-child(3){grid-column:2;grid-row:2;padding-top:0}
+  .allhands .ah-row .ppl{grid-column:3;grid-row:1/span 2;gap:2px}
+  .allhands .ah-row .rmk{grid-column:4;grid-row:1/span 2;font-size:8.5px;padding-top:2px;overflow:hidden}
+  .allhands .ah-row .rmk .ntx{min-width:0}
   /* Duties / sims / ground / inputs on a phone: remarks sit to the RIGHT of the pucks
      here too, not on a strip below — same as the flying table, same as the desktop.
      The trick that pays for it is stacking START over END into one TIME column instead
@@ -2263,9 +2278,6 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    collide checks still passed) but a fair warning that a tablet was being
    re-proportioned to fix a phone. A tablet's even split was never the
    complaint, so it keeps it. */
-@media (max-width:480px){
-  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:minmax(0,1fr) 44px 44px calc(var(--puck-w) + 8px)}
-}
 @media (max-width:374px){
   .form,.cols.formcols{grid-template-columns:34px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
   .form .bto b,.form .bto span,.form .ld{font-size:8.5px}

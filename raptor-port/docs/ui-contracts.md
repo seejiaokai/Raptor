@@ -770,9 +770,19 @@ edit week now:
     ordinary `ap:di.ri.rmks` funnel key (generic in `slots.ts`), is snapshotted
     for the AL in `restore.ts` (the one enumerated add — reorder globs it for
     free), and shows in the week view too (`.ah-row` grew a fifth `Rmks` cell via
-    `plRmk`; empty read-only cells stay hidden on a phone). Export is flying-only
-    and untouched. Pinned in `board.test.tsx`, `boardrmk.test.tsx`,
-    `restore.test.ts` and `e2e/geometry.spec.ts`.
+    `plRmk`). **On a phone the Common Programme now reads exactly like the
+    duties/sims/ground lists** (owner, 22 Aug 26 — "make the common programme
+    layout similar" to them): the two time columns STACK into one TIME column,
+    which frees the room for RMKS to sit BESIDE the pucks instead of dropping to
+    a full-width strip below the row, so the phone row is `NAME | TIME | PEOPLE |
+    RMKS` on the wide-NAME/one-puck `.plist.one` proportions. Done purely in the
+    phone `@media` by POSITION (`nth-child`), NOT by adding classes — the
+    `.ah-cols` markup is byte-compared against the reference (`html.test.ts`
+    `noAhRmk`), so the row stays `.nm, start-.t, end-.t, .ppl, .rmk` and the
+    header stays Name/Start/End/People/Rmks. Desktop is unchanged (both sections
+    already share the 5-column layout). Export is flying-only and untouched.
+    Pinned in `board.test.tsx`, `boardrmk.test.tsx`, `restore.test.ts` and
+    `e2e/geometry.spec.ts`.
 - **The day is stepped by TWO ARROWS on the bar, and there is no swipe**
   (owner, 12 Aug 26 — "remove the swipe for the mobile scheduler board too. Just
   put arrows at the edges of the bar at the top to navigate left and right
