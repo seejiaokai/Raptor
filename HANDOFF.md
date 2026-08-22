@@ -24,18 +24,20 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the double-turn/double-booking split —
-a double-booked man is no longer counted "double turning", 21 Aug 26, all
-six gates watched this session; it sits on the one-knob dependency sweep,
-the crew-rest widening, the editable-rules pass, the in-time passes, the
-Inputs-page date standardisation and the per-input LATE dismissal below):
+**Last recorded green baseline** (the 22 Aug 26 batch — the crew-rest
+message reworded cause-first with the leave-by demoted to data, and the
+Inputs page's aligned card columns; all six gates watched this session. It
+sits on the double-turn/double-booking split, the one-knob dependency
+sweep, the crew-rest widening, the editable-rules pass, the in-time
+passes, the Inputs-page date standardisation and the per-input LATE
+dismissal below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2822 across 158 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2823 across 158 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 306 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `npm run test:e2e` | 307 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
 | `perf` | 4/4 |
 
@@ -94,7 +96,12 @@ The five-ask UI batch (Aug 26 — header trim, undo-reverts-a-mute, the Personal
 Inputs reminder, public scheduler notes, Available crew open by default) added
 `notepub.test.tsx` (4) and +1 in `warnmute.test.ts` (the undo round-trip) → 2822
 / 158; e2e, probes and reference unmoved. The perf WEEK ceiling was RAISED 4000
-→ 5450 for the open-by-default Available crew (measured below).
+→ 5450 for the open-by-default Available crew (measured below). The 22 Aug
+batch (crew-rest cause-first rewording — parity-mirrored via
+`refwin.ts:rebrief/refirst` — and the Inputs-page aligned cards) added the
+`.bl`-splits test to `inputsfmt.test.tsx` (5 → 6) → 2823 / 158, and the
+Inputs alignment walk (sets its own phone viewport, so no new skip) → e2e
+307 / 12; probes, perf and the reference unmoved.
 
 DOM measures: board **851** under 960 (unchanged this batch). The WEEK jumped to
 **4940** — the Available-crew panels draw their pucks in the zero state now that
@@ -1358,8 +1365,11 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
     of rest in order to fly"). `validate.ts` takes the earliest of the
     instructed report and any other scheduled event that day (not the
     legs' derived pads, not personal inputs); the message names the
-    binding event, the warning anchors on its row, the leave-by follows
-    it, late-show cannot dash an event-bound breach, and a no-fly day
+    binding event, the warning anchors on its row, the leave-by is
+    measured from it (DATA only since 22 Aug 26 — the message reads
+    cause-first and no longer restates the leave-by the trace row's lead
+    prints; `docs/engine-rules.md` §Validation has the shape), late-show
+    cannot dash an event-bound breach, and a no-fly day
     asks for no rest. `refwin.ts:refirst()` mirrors it into the patched
     reference (it rewrites rebrief's emitted text, so it sits OUTSIDE
     rebrief in the chain); the seed week is unchanged (WARN diff
@@ -2004,7 +2014,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `DutyTplModal.tsx` | The **duty-template editor** (13 Aug 26) — opened from the `+ Block` picker's pencil (`TPLEDIT` in `pops.ts`). Tabs per template + New, an editable title, rows with role (a `DUTY_PICK` datalist) / start / end / ▲▼ reorder / delete, + Add role, and Reset / Delete / Done. Mirrors `UserModal`; drives `engine/dutytpl.ts` and persists on every edit. |
 | `DayTplModal.tsx` | The **day-template library editor** (15 Aug 26) — opened from the Templates picker's pencil, on either surface (`DAYTPLEDIT` in `pops.ts`, a `false\|true\|string` open-pre-selected flag). Tabs per template, an editable title, a read-only structure summary; deliberately no row editor (a day template's content is edited on the board/week themselves, which already own that surface) and no "+ New" (a template is always recaptured off a real day, never started blank). Reset / Delete / Done, all toasting. |
 | `DraftsModal.tsx` | The **drafts manager** (15 Aug 26) — opened from the Drafts picker's pencils (`DRAFTSEDIT` in `pops.ts`, carrying the day since drafts are per-day), scoped to the one day whose menu opened it. Tabs per draft (selected one marked ●), a name field that commits on blur/Enter (`draftRename` refuses empty/duplicate names, and refusing mid-keystroke would fight the typist), Select (make it live) / Delete (disabled on the selected entry, with a title saying why) / Done. |
-| `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Its dates read **day-first** and Last-modified reads **day month year** (21 Aug 26, `fmtDay`/`fmtDMY` in `inputedit.tsx`; a same-day timed span sits in one cell, the `✎ ✕` actions are pinned so every card is one compact shape). Contracts: `docs/ui-contracts.md` §The Inputs table's view state, §The Inputs page speaks one day-first date voice. |
+| `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Its dates read **day-first** and Last-modified reads **day month year** (21 Aug 26, `fmtDay`/`fmtDMY` in `inputedit.tsx`; a same-day timed span sits in one cell, the `✎ ✕` actions are pinned so every card is one compact shape). **The phone card is a grid of ALIGNED columns since 22 Aug 26** (callsign / type / date at fixed x on every card, remarks below the callsign — `scheduler.css` ≤820px block, CSS-only so td order holds) and the two spaceless chips wear `.bl` split-span short forms there (SANS AVAIL / APPOINT); the desktop table carries per-column `th` widths. Contracts: `docs/ui-contracts.md` §The Inputs table's view state, §The Inputs page speaks one day-first date voice. |
 | `inputedit.tsx` | Editing ONE personal input AND adding one, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, **`normalizeInputDraft`** (every input write's shared refusals+derivations, extracted so add and edit cannot drift), `commitInputEdit` (including the accepted-row relink), **`commitNewInput`** (the board's + Add — unshifts a new row through the one funnel, Aug 26), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule), `firstPersonalType`/`firstUnavailType` (the panel defaults the board's + Add seeds), `InputEditor` itself (an `_new` seed row opens it in add mode), and the Inputs-page date display helpers **`fmtDay`** (ISO → day-first '13 Jul') and **`fmtDMY`** (ISO → '6 Jul 26'; `fmt`/`unfmt` still round-trip the stored month-first labels — these are display only). Three editors over one list is how they drift apart. |
 | `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
 | `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer, login. |
@@ -2062,7 +2072,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/leavewar/ui/frozencols.test.tsx` | The frozen roster columns drawn once (20 Aug 26, 5 tests). On a phone the callsign/counter columns are a `.mxband` overlay drawn OUTSIDE the sideways scroller instead of `position: sticky` on every row (see the frozen-columns block in HANDOFF's Leave War narrative). jsdom has no layout, so this pins the WIRING: the overlay exists on a phone (`matchMedia` stubbed) and not on a desktop, it lists the SAME people in the SAME order as the grid, it is `aria-hidden` with its buttons out of the tab order while the real cells keep the testids, its copy of a callsign still opens the person sheet, and every overlay row's `data-band-key` addresses exactly one real row (the address book `syncBandHeights` looks the measured heights up in — a key resolving to nothing would make the height pin a silent no-op). Alignment, staying put, and the pointer-events handoff are measured in `e2e/leavewar.spec.ts` (lw-phone), where the alignment walk covers EVERY row, not a sample. |
 | `src/ui/notepub.test.tsx` | Public scheduler notes (Aug 26, 4 tests) — the edit-week header/toggle flip with the flag (`Scheduler notes`+`Make public` → `Public notes`+`On view-only ✓`); the view-only week shows nothing unless the note is public AND has text, then heads it "Notes" with no toggle; the board header mirrors the flag and neither a read-only board nor a member gets the control; the flag is per-note (`pn:0` public leaves `gn:0` alone). |
 | `src/ui/latemark.test.tsx` | The per-input LATE dismissal (21 Aug 26, 8 tests — replaced the 20 Aug global switch) — a live board input row carries a clickable `data-lateoff` chip and the old header switch is gone, the chip is solid while shown and a pressed ghost once dropped, dropping ONE clears only that input's badge while its chip stays as the way back, the WEEK goes with it (one `lateShown` read, every read surface), the ENGINE is untouched (`isLateInput` still answers true while `lateTag` prints nothing — which is what keeps the Inputs page's own mark honest), a member is refused at `routeClick` even with a hand-made chip, and a session change brings every dropped mark back. |
-| `src/ui/inputsfmt.test.tsx` | The Inputs page's day-first date voice (21 Aug 26, 5 tests) — `fmtDay` (day-first, this-year's-year implicit) and `fmtDMY` ('6 Jul 26', 'now'/blank pass through), and a rendered row of each shape: a same-day timed input carries '14 Jul 10:00–11:00' in Start with an empty `data-same` End, an all-day one-day reads just '14 Jul', a span keeps both cells, and Last-modified reads the day-month-year stamp. The pinned-actions layout is eye-verified (jsdom is 0×0). |
+| `src/ui/inputsfmt.test.tsx` | The Inputs page's day-first date voice (21 Aug 26, 6 tests since the 22 Aug alignment pass) — `fmtDay` (day-first, this-year's-year implicit) and `fmtDMY` ('6 Jul 26', 'now'/blank pass through), a rendered row of each shape: a same-day timed input carries '14 Jul 10:00–11:00' in Start with an empty `data-same` End, an all-day one-day reads just '14 Jul', a span keeps both cells, Last-modified reads the day-month-year stamp — and the `.bl` chip splits (SANS Availability / Appointment carry a hideable tail, a short chip none). The card GRID itself is measured by the page's first e2e ("the phone Inputs cards align their type and date columns", geometry.spec.ts) — jsdom is 0×0. |
 | `src/engine/inputground.test.ts` | Activity inputs auto-land on the Ground Programme + the picker warns first (Aug 26, 10 tests) — the picker (`slotBar`) and the validator (`INPUT_FLY`) agree about an unaccepted activity input, incl. a tomorrow-midnight-tail case, that an ACCEPTED one is not double-reported, and (Aug 26 audit) that a MULTI-DAY accept still bars the man on its OTHER covered days and an ORPHANED accept (row gone, `acc` left) still warns — the two drifts the day-blind gate reopened, now pinned via the shared `inpShow`; `autoAcceptInput`'s gate (activity type lands, leave/med refused, published day refused); the land→remove→re-add ground round-trip; and that `autoAcceptSeedInputs` leaves no amendment marks (a clean zero-state). The board's own ✕ round-trip (`grdel`→`unacceptInput`) is pinned in `board.test.tsx`. |
 | `src/engine/cxreasons.test.ts` | Cancel-reason templates (Aug 26, 20 tests) — the shipped seven, `CXR_STD` immutability, add/rename/reorder/delete with their guards (empty, case-folded duplicate, over-long, the 24-cap), the save/load round-trip (null while standard, the list once diverged), the untrusted-blob sanitising (non-string/empty/over-long/case-duplicate dropped, 24-cap, corrupt JSON, fallback to standard) and reset. Mirrors `stores.test.ts`. |
 | `src/state/bell.test.ts` | The notification bell's seam (Aug 26, 3 tests) — a glow is specific to the current page AND view-as person (`markBell`/`bellLit`), a different person does not inherit it, `clearBell` acknowledges only the current view/person, and `markBell(…,false)` turns one off. |

@@ -237,3 +237,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Add one line to CLAUDE.md §Build & verify's drive recipe: place ad-hoc drive scripts inside raptor-port (or set NODE_PATH) and import from '@playwright/test' — the e2e suite's package is the only Playwright installed.
 
 **Principle:** A documented "write a quick script" recipe should state where the script must live and which package name to import, because module resolution and package aliasing fail before the recipe's own content ever runs.
+
+### Observation 18: Fixed CSS tracks sized from font arithmetic were wrong three times in one pass — probe-measure in the built page
+
+**Status:** OPEN
+**Date:** 2026-08-22
+**Session context:** Reworking the Inputs page's phone cards into a grid of aligned columns (fixed callsign/type tracks). Estimated widths from font-size arithmetic three times and was wrong all three: a chip estimated 90px measured 100; a chip estimated 125px measured 129 (wrapped at a 128px cell); the longest callsign estimated 70px measured 76. Each miss shipped a build + screenshot round to discover. The fix each time was a probe span injected into the LIVE page (same classes, whiteSpace:nowrap, read getBoundingClientRect) which gave the exact number in one round.
+**Skill:** New skill candidate: css-track-sizing (or a rule in the repo's UI-work guidance)
+**Type:** open-source
+**Phase/Area:** layout implementation — choosing fixed grid/table column widths
+
+**Issue:** When a fixed track must fit known text, estimating width as chars × per-glyph advance is reliably off by 5–15% (letter-spacing, font metrics, padding, bold), and a 1px miss makes the text wrap — a binary failure discovered only by screenshot.
+
+**Suggested improvement:** Before choosing any fixed track/column width that must fit specific text: inject a probe span with the target's real classes into the built page, measure every candidate string (longest label, longest name, widest time run), and derive the track from the measured max plus a stated margin. Record the measured numbers in the CSS comment (this repo's existing convention) so the next editor re-measures rather than re-estimates.
+
+**Principle:** A layout number that makes text fit is a measurement, not a calculation — take it from the rendering engine that will enforce it, with the exact styles that will apply, before writing it into a stylesheet.
