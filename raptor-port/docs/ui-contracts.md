@@ -3253,9 +3253,24 @@ chips drop their text and become compact colour bars.
   longer than the chip hold because an empty cell has a tap meaning too)* →
   the add dialog seeded for that date, person = ME, everyone allowed (page
   parity; the dialog hides Person for members so the seed sticks).
+- *Swipe the grid sideways* (past `SWIPE_MIN`, 50px, and more horizontal than
+  vertical) → page the month, **left → next / right → previous**, the same
+  `step()` the `‹ ›` arrows call (owner, 22 Aug 26). A DISCRETE step decided
+  on release from the total travel, not a finger-tracking carousel — the grid
+  is a fixed layout, not a native scroller, so the board/Leave-War
+  fling-vs-`scrollLeft` hazards do not apply. Shares the empty-cell machine: a
+  still release is still a tap, a hold still adds, a vertical drag still
+  scrolls. `move`/`up`/`cancel` listen on `window` so a swipe ending past the
+  grid edge still completes. This is the calendar's OWN surface — the board's
+  removed swipe (a stable decision) does not govern it, and the owner asked
+  for this one explicitly.
 
 **The day popover** (`.ic-pop`, bottom sheet ≤820px / centred card above).
-The day's full entry list (tap a row → the same edit dialog), the
+The day's full entry list (tap a row → the same edit dialog): each
+`.ic-poprow` reads its callsign, type and (timed only) window on one
+identity line, with the input's **remark** on an aligned second line under
+it (`.ic-poprow-rmk`, owner 22 Aug 26 — "show remarks too and align them
+nicely"; a remark-less row draws no line and stays one tidy line). Then the
 scheduler's one-line **day remark** (everyone reads, schedulers edit;
 draft-local, committed on Enter/blur), **planning notes** — free-text pucks
 a scheduler drops on days (dashed-cyan chips, visibly not real inputs;

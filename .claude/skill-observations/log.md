@@ -297,3 +297,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When pkill/pgrep -f must run inside a larger command whose text contains the pattern, break the self-match with a character class: `pkill -f "vite [p]review"`. Worth one line wherever the preview-kill step is documented (HANDOFF's stale-preview trap).
 
 **Principle:** A full-command-line process match can always match the process doing the matching; neutralise the pattern (bracket class) or run the kill as its own minimal command.
+
+### Observation 22: Checkpoint — no new skill observation
+
+**Status:** ACTIONED (2026-08-22) — checkpoint marker, no change needed
+**Date:** 2026-08-22
+**Session context:** Shipping the calendar day-popover remark line (3rd deliverable of the session)
+**Skill:** task-observer
+**Type:** internal
+**Phase/Area:** mandatory 3rd-completion checkpoint
+
+**Issue:** Checkpoint reached after completing three deliverables (member person-scope, repeat-weeks removal, calendar remarks). Observations #20 (capture full-suite output) and #21 (pkill self-match) already cover the friction seen; nothing further accumulated.
+
+**Suggested improvement:** None — marker only.
+
+**Principle:** Writing an explicit no-new-observation marker at the checkpoint keeps the enforcement honest without inventing low-signal entries.
+
+### Observation 23: CI-only flake — unstubbed browser API + abandoned timer in jsdom
+
+**Status:** ACTIONED (2026-08-22) — stubbed document.elementFromPoint in the affected test file
+**Date:** 2026-08-22
+**Session context:** Shipping calendar changes; a PR gate failed on a test the local suite passed
+**Skill:** New rule candidate for raptor-port/CLAUDE.md §Build & verify (the "green on PR, red on CI" hazard section)
+**Type:** internal
+**Phase/Area:** verification / CI-vs-local test isolation
+
+**Issue:** A test that arms a gesture machine which calls a browser-only DOM API (document.elementFromPoint) via a setTimeout hold-timer passed locally but failed on the ~30% slower CI runner: the abandoned timer fired mid-test, threw "elementFromPoint is not a function" (jsdom does not define it), and the uncaught async error poisoned an unrelated assertion (SBDAY expected 6 got 2). Local timing cleared the timer before it fired, masking the gap. The fix already existed as a pattern in a sibling test file (caldrag.test.tsx stubs the same API) but had not been applied to the newer file.
+
+**Suggested improvement:** When a test drives code that hit-tests through document.elementFromPoint (or any jsdom-absent browser API) on a timer, stub it in beforeAll — null return = "nothing under the pointer". Better: a global vitest setup stub so no future touch-drag test can regress. Diagnose a PR-passed/main-failed (or intermittent) failure by reading for the uncaught async error FIRST, not the assertion it corrupts.
+
+**Principle:** A jsdom-absent browser API called from an abandoned timer is a latent CI flake that hides behind local timing; stub the API at the environment boundary rather than chasing the corrupted assertion downstream, and apply the stub wherever the pattern recurs — precedent in one test file is a checklist item for the next.

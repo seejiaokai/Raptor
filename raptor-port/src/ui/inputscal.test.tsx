@@ -82,9 +82,13 @@ describe('monthCells (pure)', () => {
 })
 
 describe('the Inputs page calendar toggle', () => {
-  it('#inCalBtn sits in the filter bar and opens the overlay; #icClose closes it', async () => {
+  it('#inCalBtn leads the title row as a prominent switch and opens the overlay; #icClose closes it', async () => {
     expect($('#inCalBtn'), 'the toggle button exists').toBeTruthy()
-    expect($('#inCalBtn')!.closest('.infilter'), 'it lives in the filter bar').toBeTruthy()
+    /* lifted into the title row and accent-styled (owner, 22 Aug 26 — "make
+       the calendar button more obvious"); it is no longer the plain grey
+       button in the filter bar */
+    expect($('#inCalBtn')!.closest('.title'), 'it leads the title row now').toBeTruthy()
+    expect($('#inCalBtn')!.classList.contains('calview'), 'and wears the prominent style').toBe(true)
     expect($('#inpCal'), 'closed to start with').toBeFalsy()
 
     await click($('#inCalBtn'))
@@ -298,6 +302,70 @@ describe('.ic-more opens the popover listing every entry, not just MAX_CHIPS', (
     } finally {
       await act(async () => { extras.forEach(r => { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }); notify() })
     }
+  })
+})
+
+describe('a popover entry row shows its remark on an aligned second line', () => {
+  it('a remark renders as .ic-poprow-rmk under the identity line; a blank one draws none', async () => {
+    const withRmk: any = { person: 'yeti', date: 'Jul 24', allday: true, type: 'Training', remarks: 'brief the new guy', mod: 'now' }
+    const noRmk: any = { person: 'yeti', date: 'Jul 24', allday: true, type: 'OL', remarks: '', mod: 'now' }
+    await act(async () => { [withRmk, noRmk].forEach(r => { INPUTS.unshift(r); inpId(r) }); notify() })
+    try {
+      /* two entries is under the chip cutoff, so there is no "+N more" to
+         click — tap the cell's empty space to open the popover, the same
+         gesture the empty-cell test uses */
+      const cell = $('[data-icday="2026-07-24"]')!
+      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 40, 40)) })
+      await act(async () => { cell.dispatchEvent(ptr('pointerup', 40, 40)) })
+      expect($('.ic-pop')).toBeTruthy()
+      const row = $(`[data-popiid="${withRmk.iid}"]`)!
+      const rmk = row.querySelector('.ic-poprow-rmk')
+      expect(rmk, 'the remark line renders').toBeTruthy()
+      expect(rmk!.textContent).toBe('brief the new guy')
+      /* the identity line still carries who + type, unchanged */
+      expect(row.querySelector('.ic-poprow-top .ic-poprow-who')!.textContent).toBe(PEOPLE.yeti.cs)
+      /* a remark-less row draws no remark line at all — it stays one tidy line */
+      expect($(`[data-popiid="${noRmk.iid}"]`)!.querySelector('.ic-poprow-rmk'), 'no empty remark line').toBeFalsy()
+      await click($('#icPopClose'))
+    } finally {
+      await act(async () => { [withRmk, noRmk].forEach(r => { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }); notify() })
+    }
+  })
+})
+
+describe('a horizontal swipe pages the month', () => {
+  /* down on a cell (bubbles to the grid), release on window at an offset —
+     the gesture reads the total travel on release. A cell that always exists
+     whatever month is showing, so the same helper works after a page. */
+  const swipe = async (dx: number, dy = 0) => {
+    const cell = $('[data-icday]')!
+    await act(async () => {
+      cell.dispatchEvent(ptr('pointerdown', 200, 300))
+      window.dispatchEvent(ptr('pointerup', 200 + dx, 300 + dy))
+    })
+  }
+  it('swipe left → next month, swipe right → previous; vertical or short drags do not page', async () => {
+    await goJul2026()
+    expect($('.ic-mon')!.textContent).toContain('July 2026')
+    await swipe(-80)                                   // left → next
+    expect(CALMONTH).toEqual({ y: 2026, m: 8 })
+    expect($('.ic-mon')!.textContent).toContain('August 2026')
+    await swipe(80)                                    // right → previous
+    expect(CALMONTH).toEqual({ y: 2026, m: 7 })
+    await swipe(40, 130)                               // mostly vertical — a scroll, not a page
+    expect(CALMONTH, 'a vertical drag never pages').toEqual({ y: 2026, m: 7 })
+    await swipe(-40)                                   // under SWIPE_MIN — neither a page nor a tap
+    expect(CALMONTH, 'a short drag never pages').toEqual({ y: 2026, m: 7 })
+    expect($('.ic-pop'), 'and a short drag did not open the popover either').toBeFalsy()
+    await goJul2026()
+  })
+  it('pages across a year boundary and back', async () => {
+    await act(async () => { setCalMonth({ y: 2026, m: 12 }); notify() })
+    await swipe(-80)
+    expect(CALMONTH, 'December → next is January of the next year').toEqual({ y: 2027, m: 1 })
+    await swipe(80)
+    expect(CALMONTH, 'January → previous is December of the year before').toEqual({ y: 2026, m: 12 })
+    await goJul2026()
   })
 })
 

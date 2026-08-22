@@ -428,7 +428,17 @@ export function InputsPage() {
 
   return (
     <>
-      <div className="title"><h1>Personal Inputs</h1></div>
+      {/* the Calendar-view switch leads the page now (owner, 22 Aug 26 — "make
+          the calendar button more obvious… I want people to see it"): a prominent
+          accent button in the title row, not a plain grey one buried at the end
+          of the wrapping filter bar. Same id/handler as before, so every caller
+          and test is unchanged — it still just flips INPVIEW over the same
+          filtered/windowed data. */}
+      <div className="title">
+        <h1>Personal Inputs</h1>
+        <button className="abtn calview" id="inCalBtn" title="See a whole month at a glance"
+          onClick={() => { setInpView('cal'); notify() }}>📅 Calendar view</button>
+      </div>
       <div className="inbar">
         <div className="ingrid">
           {/* A MEMBER'S PERSON IS A VALUE, NOT A CHOICE (owner, 22 Aug 26 —
@@ -529,10 +539,9 @@ export function InputsPage() {
           )}
         </div>
         <div className="searchbox">🔍<input id="inFSearch" placeholder="search" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></div>
-        {/* the month-calendar view of the same page (owner ask, Aug 26) — a
-            toggle, not a second page, so it opens over whatever the table is
-            already filtered and windowed to (see INPVIEW, state/view.ts) */}
-        <button className="abtn" id="inCalBtn" title="Month calendar view" onClick={() => { setInpView('cal'); notify() }}>📅 Calendar</button>
+        {/* the Calendar-view switch moved to the title row (see above) — it opens
+            over whatever the table is already filtered and windowed to
+            (INPVIEW, state/view.ts); wherever it sits, the filters still apply */}
         <button className="abtn" id="inExport" onClick={() => {
           const out: any[][] = [['Name', 'Date', 'Start', 'End', 'Type', 'Remarks']]
           INPUTS.forEach((r: any) => out.push([PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person, r.date, r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, r.remarks]))
