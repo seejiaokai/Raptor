@@ -221,6 +221,18 @@ a{color:var(--accent)}
    hand-written colour there is how the two drift apart. */
 .topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 20px;
   background:linear-gradient(180deg,var(--topbar-a),var(--topbar-b));border-bottom:1px solid var(--edge)}
+/* EDIT SCHEDULE wears a blue-tinted top bar so it reads instantly as a
+   different mode from the near-identical View-only sched (owner, 22 Aug 26 —
+   "make a nice light blue gradient … when we are viewing in edit schedule").
+   It only re-defines the SAME two gradient stops the bar already paints, so the
+   phone's sticky burger/mark lead — which paints those very custom props to stop
+   the sideways-scroll leak — picks up the tint in lockstep and nothing shows
+   through. View-only keeps the neutral dark. Both widths. */
+.topbar.editing{
+  --topbar-a:#15384c;
+  --topbar-b:#0b1c27;
+  border-bottom-color:rgba(59,198,232,.5);
+}
 .mark{display:flex;align-items:center;gap:8px;line-height:1}
 .mark .tx{display:flex;flex-direction:column;gap:3px;min-width:0}
 .mark .k{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
@@ -238,9 +250,12 @@ a{color:var(--accent)}
 .acct .sel label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
 .acct select{background:transparent;border:none;color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;padding:2px}
 .acct select:focus{outline:none}
-.rolebadge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
-.rolebadge.admin{background:rgba(59,198,232,.16);color:var(--accent);border:1px solid rgba(59,198,232,.5)}
-.rolebadge.main{background:rgba(138,150,163,.16);color:var(--ink-2);border:1px solid var(--edge-2)}
+/* The role indicator rides .abtn's own look now (owner, 22 Aug 26 — moved to
+   the far right, "same design as the others"); only the Admin accent tint is
+   its own, so the role still reads at a glance. It is a <span>, so it carries
+   no cursor/hover — it reports the role, it is not a control. */
+.rolechip{text-transform:uppercase;letter-spacing:.06em;cursor:default}
+.rolechip.admin{border-color:rgba(59,198,232,.5);color:var(--accent)}
 .abtn{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);cursor:pointer;font-size:12px;font-weight:600;padding:6px 12px;border-radius:9px}
 .abtn:hover{border-color:var(--edge-2)}
 .abtn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -313,6 +328,12 @@ a{color:var(--accent)}
 .wk-cal:hover .btnglyph{color:var(--accent)}
 .wk.todaywk{position:relative}
 .wk.todaywk::after{content:'';position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+/* The view page's week nav now rides INSIDE the .filters row as one inline
+   group (owner, 22 Aug 26 — "all in 1 row"), calendar first. It keeps the id
+   #weekSeg for the week-click tests but not the standalone .seg's padding /
+   border / background, which would draw a box inside the filter row. Hidden on
+   a phone in the @media block below, exactly as the old .seg was. */
+.wkseg{display:inline-flex;gap:8px;align-items:center}
 /* the mobile-only calendar bar that stands where the removed title was (desktop
    uses the seg); shown by the phone @media block below */
 .wknav-m{display:none}
@@ -1103,6 +1124,25 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .signoff.day-sign .sgn::after{right:6px;font-size:8px}
 .signoff.day-sign .so-state{flex:0 0 100%;margin-left:0;font-size:9.5px;padding-top:1px}
 .signoff.day-sign button.so-clear{padding:2px 6px;font-size:9.5px}
+/* DESKTOP: all four role pills on ONE row (owner, 22 Aug 26 — "align all these
+   into 1 row. so 4 in 1 row"). The day column is only ~530px, too narrow for
+   four horizontal "LABEL — name —" pills (they wrap 3 + 1), and squeezing them
+   would clip the names to a few characters. So on the DAY sign-off each pill
+   stacks its label over its value: the pill needs only the name's width, the
+   four share the row equally, and every name stays fully readable. The header
+   and the "N to sign" state keep their own full-width lines. Scoped to
+   `.day-sign` — the board's own sign-off is ~1400px and already fits four
+   across as horizontal pills, so it is left alone. */
+@media (min-width:821px){
+  .signoff.day-sign{flex-wrap:wrap}
+  .signoff.day-sign .so-h{flex:1 0 100%;margin:0 0 3px}
+  .signoff.day-sign .sgn{flex:1 1 0;min-width:0;flex-direction:column;align-items:stretch;
+    gap:1px;border-radius:10px;padding:4px 10px 5px}
+  .signoff.day-sign .sgn>.v{min-width:0;padding:0 15px 0 0;overflow:hidden;text-overflow:ellipsis}
+  .signoff.day-sign .sgn::after{top:auto;bottom:6px}
+  .signoff.day-sign button.so-clear{flex:0 0 auto}
+  .signoff.day-sign .so-state{flex:1 1 auto;margin-left:auto}
+}
 /* not yet signed off — the same button, darkened. Deliberately not `opacity`:
    a half-transparent cyan over a dark panel reads as a rendering fault, a solid
    dim blue reads as "this button is not live yet". */
@@ -1789,11 +1829,19 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 /* the 1px gap on an --edge background draws every gridline for free — no
    per-cell borders to keep aligned across up to 42 cells */
 .ic-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:1fr;gap:1px;background:var(--edge)}
-.ic-day,.ic-x{background:var(--panel);overflow:hidden;padding:2px 3px;min-height:0}
+/* position:relative is the +N more anchor (below): the title + sections may
+   legitimately fill the cell (the owner's call), so the overflow trim must
+   never be able to carry the one "there is more here" affordance away with
+   the inputs it stands for. */
+.ic-day,.ic-x{background:var(--panel);overflow:hidden;padding:2px 3px;min-height:0;position:relative}
 .ic-num{font-size:11px;font-weight:700;color:var(--ink-2);width:18px;height:18px;line-height:18px;text-align:center}
 .ic-today .ic-num{border-radius:50%;background:var(--accent);color:var(--accent-ink)}
 .ic-wk .ic-num{color:var(--ink-3)}
-.ic-rmk{font-size:9.5px;font-style:italic;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* the day's TITLE (owner, 22 Aug 26 — the free text typed beside the date in
+   the popover; was the italic one-line remark). It WRAPS by his word ("u will
+   allow wrap text") and may run the cell — the title and sections outrank the
+   input chips below them. */
+.ic-rmk{font-size:10px;font-weight:700;color:var(--ink);line-height:1.25;white-space:normal;overflow-wrap:anywhere}
 .ic-chip{font-size:10px;border-radius:3px;padding:1px 4px;margin-bottom:1px;white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis;cursor:pointer;color:var(--ink);display:block}
 /* the three tones mirror inputTone (ui/inputedit.tsx) — the table's row
@@ -1803,14 +1851,32 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-chip.amb{background:rgba(229,168,59,.14);box-shadow:inset 2px 0 0 var(--adv)}
 .ic-chip.san{background:rgba(178,77,234,.16);box-shadow:inset 2px 0 0 var(--san)}
 .ic-chip.plan{border:1px dashed var(--accent);background:transparent;color:var(--ink-2)}
-.ic-more{display:block;background:none;border:0;padding:0;font-size:10px;color:var(--accent);cursor:pointer}
+/* the INPUT chips pack side by side now (owner, 22 Aug 26 — "coloured pucks
+   arranged side by side, just showing the callsign and the input"); each chip
+   shrinks-to-fit and ellipses only when a single one outgrows the cell */
+.ic-inrow{display:flex;flex-wrap:wrap;gap:2px;align-content:start}
+.ic-inrow .ic-chip{display:inline-block;margin-bottom:0;max-width:100%;flex:0 1 auto}
+/* a pucks section on the cell — tiny CAT-tinted person chips in a row */
+.ic-pks{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:1px;cursor:pointer}
+.ic-pk{font-size:9px;font-weight:700;line-height:1;padding:2px 4px;border-radius:3px;
+  background:var(--edge-2);color:#0d1013;white-space:nowrap}
+/* pinned to the cell's bottom-right, over whatever is there: when it renders
+   at all it must be VISIBLE — an overflowing cell used to clip it out with
+   the very inputs it announces (review fix, 22 Aug 26). The panel background
+   keeps it legible over a chip it happens to cover. */
+.ic-more{position:absolute;right:2px;bottom:1px;display:block;background:var(--panel);border:0;
+  padding:0 2px;font-size:10px;color:var(--accent);cursor:pointer}
 
 @media (max-width:820px){
   /* the phone form: a chip too narrow to hold a label becomes a plain colour
      bar (owner-approved shape) — the tone still reads, the day still tells
-     its own story from the number and the ring alone */
-  .ic-chip{height:6px;padding:0;font-size:0;border-radius:2px;margin-bottom:2px}
-  .ic-rmk{display:none}
+     its own story from the number and the ring alone. Side by side now, like
+     their desktop selves, so six read as a row of stubs, not a stack. */
+  .ic-chip{height:6px;width:14px;padding:0;font-size:0;border-radius:2px;margin-bottom:2px;flex:0 0 auto}
+  /* the TITLE stays visible on a phone (owner: "on mobile and desktop"),
+     one size down */
+  .ic-rmk{font-size:8.5px}
+  .ic-pk{font-size:0;width:10px;height:6px;padding:0;border-radius:2px}
   .ic-more{font-size:9px}
   /* the bar gets tighter horizontal padding, but the buttons in it keep
      their 44px touch target from the desktop rule above */
@@ -1831,9 +1897,13 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   width:min(92vw,420px);max-height:70vh;overflow-y:auto;display:flex;flex-direction:column}
 .ic-pop-head{display:flex;align-items:center;gap:8px;padding:12px 15px;border-bottom:1px solid var(--edge);
   position:sticky;top:0;background:var(--panel)}
-.ic-pop-head b{font-size:15px;font-weight:700;flex:1}
+/* the date is content-sized so the TITLE beside it gets ALL the spare width
+   (b used to be flex:1, which split the head 50/50 with the title input and
+   started the field mid-head — review fix, 22 Aug 26); the ✕ pins itself
+   right so a member's title-less head still reads date … ✕ */
+.ic-pop-head b{font-size:15px;font-weight:700;flex:0 0 auto}
 .ic-pop-head .x{background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px;
-  min-width:44px;min-height:44px}
+  min-width:44px;min-height:44px;margin-left:auto}
 .ic-pop-body{padding:12px 15px;display:flex;flex-direction:column;gap:14px}
 .ic-pop-empty{color:var(--ink-3);font-size:12.5px;font-style:italic}
 .ic-pop-rows{display:flex;flex-direction:column;gap:4px}
@@ -1861,11 +1931,42 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    word breaks rather than widening the sheet) and aligned to the card's
    left edge like the callsign above it */
 .ic-poprow-rmk{font-size:11.5px;color:var(--ink-3);line-height:1.35;overflow-wrap:anywhere;white-space:normal}
-.ic-poprmk-ro{font-size:12.5px;color:var(--ink-2)}
+/* the TITLE beside the date in the head — the input takes the head's spare
+   width (the date is content-sized, the ✕ fixed), the read-only form is the
+   same slot as plain text */
+.ic-pop-head .ic-title-edit{flex:1;min-width:0}
+.ic-title-ro{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+/* the + Note / + Pucks pair, small buttons on one line at the top of the
+   sections area (owner, 22 Aug 26) */
+.ic-secbtns{display:flex;gap:6px}
+/* one SECTION — full width, an admin drag handle at its left; the dragover
+   bars are the board row-drag's own vocabulary (a 2px accent edge on the
+   half the drop would land) */
+.ic-secs{display:flex;flex-direction:column;gap:6px}
+.ic-sec{display:flex;align-items:flex-start;gap:6px}
+.ic-sec.dragging{opacity:.45}
+.ic-sec.dragover{box-shadow:0 -2px 0 var(--accent)}
+.ic-sec.dragover.after{box-shadow:0 2px 0 var(--accent)}
+.ic-sec>.ic-poppuck,.ic-sec>.ic-poppuck-edit,.ic-sec>.ic-secpucks{flex:1;min-width:0}
+.ic-sechandle{cursor:grab;color:var(--ink-3);font-size:13px;line-height:1;padding:6px 2px;user-select:none}
+.ic-sechandle:hover{color:var(--accent)}
+/* a pucks row — the app's canonical pucks, full width, wrap as they fill;
+   each with its own ✕ while editing, and the + add… picker at the end */
+.ic-secpucks{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:24px}
+.ic-secpk{display:inline-flex;align-items:center;gap:2px}
+.ic-secpk .seat{display:flex}
+.ic-pkdel{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:11px;padding:2px 3px}
+.ic-pkdel:hover{color:var(--hard)}
+.ic-pop select.ic-pkadd{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);
+  border-radius:7px;font:600 11px 'Inter Tight',sans-serif;padding:3px 5px;cursor:pointer;width:auto}
+/* the inputs block at the bottom: its small + Input leads it, top-left */
+.ic-inp-sec{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.ic-inp-sec .ic-pop-rows{align-self:stretch}
 .ic-poppucks-wrap{display:flex;flex-direction:column;gap:6px}
 .ic-poppucks{display:flex;flex-direction:column;gap:6px}
-.ic-poppuck{display:flex;align-items:center;gap:6px}
-.ic-poppuck-txt{flex:1;font-size:12.5px}
+.ic-poppuck{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--edge-2);
+  border-radius:8px;padding:5px 5px 5px 10px}
+.ic-poppuck-txt{flex:1;font-size:12.5px;overflow-wrap:anywhere}
 .ic-poppuck button{background:none;border:none;color:var(--ink-2);cursor:pointer;min-width:32px;min-height:32px}
 .ic-poppuck button:hover{color:var(--accent)}
 /* the remark/note text fields borrow .inped-f/.inped-k for the label look
@@ -2082,10 +2183,16 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 @media (max-width:820px){
   .burger{display:flex}
   .topbar .nav{display:none}
-  .acct .sel,.acct .rolebadge{display:none}
+  .acct .sel{display:none}
+  /* the role chip moved out of .acct to the far right of the bar (22 Aug 26);
+     it stays hidden on the tight phone bar, as it was in its old spot */
+  .spring .rolechip{display:none}
   .seg{display:none}
   /* the seg (with the rolling week buttons) is desktop-only; on a phone the lone
-     calendar icon carries week-jumping and the swipe carries day-to-day */
+     calendar icon carries week-jumping and the swipe carries day-to-day. The view
+     page's week nav now rides inside .filters as .wkseg, so hide that (and its
+     divider) too — the .wknav-m calendar + swipe still carry navigation. */
+  #page-viewsched .wkseg,#page-viewsched .wkdiv{display:none}
   .wknav-m{display:flex;justify-content:flex-end;padding:8px 12px 0}
   /* the qualification filters are the fastest way to read a phone screen —
      "who here is a supervisor / an instructor / SANS" — so instead of hiding
@@ -2318,6 +2425,19 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .plist .pl-row .rmk{font-size:10.5px}
   .plist .pl-sub,.availpuck .ap-grp{font-size:9.5px}
   .sub-h{font-size:11px}
+  /* Ground Programme and Common Programme share the SIMS layout on DESKTOP
+     (owner, 22 Aug 26 — "align … the same as how the sims are … which can
+     accommodate 2 pucks side by side"): the same Name / Start / End / two-puck
+     People / Rmks tracks every plist block already uses. Ground keeps `.one` on
+     the block so the PHONE still gives its long item names ("HQ ENGAGEMENT" …) a
+     wide name column — which is why this override is desktop-only rather than a
+     class change — and Common Programme's own `.allhands` grid is brought onto
+     the identical tracks (its Start/End were 42px and its People column was a
+     wider 112–232px band; both now match Sims). */
+  .plist.one.sec-grnd .pl-cols,.plist.one.sec-grnd .pl-row,
+  .allhands .ah-cols,.allhands .ah-row{
+    grid-template-columns:minmax(64px,1fr) 44px 44px calc(var(--puck-w)*2 + 10px) minmax(0,1.25fr);
+  }
 }
 /* ============ SCHEDULER BOARD (deep single-day editor) ============ */
 .schedboard{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column}
@@ -2339,6 +2459,16 @@ body.sb-lock{overflow:hidden}
 .sb-title{font-weight:700;font-size:15px}
 .sb-title b{color:var(--accent)}
 .sb-title .mono{color:var(--ink-3);font-weight:500;font-size:12px}
+/* DESKTOP: the day title is a FIXED-WIDTH slot so the day chips beside it do not
+   slide left and right as the day name changes length (owner, 22 Aug 26 —
+   "space the words like friday out such that … buttons like mon 13 tue 14 don't
+   shift left and right … it's very hard to click properly"). The widest title
+   measured ("Wednesday Jul 17 · scheduler board") is ~297px; 312px clears it and
+   the today dot, and a shorter day pads the slot rather than pulling the chips
+   in. The phone keeps its own ellipsised title (the max-width:820 block). */
+@media (min-width:821px){
+  .sb-title{flex:0 0 312px;width:312px;white-space:nowrap}
+}
 /* THE DAY STRIP AND ITS ARROWS (owner, 12 Aug 26 — "put arrows at the edges of
    the bar at the top to navigate left and right between days").
    Above 820px `.sb-nav` is display:contents, so `.sb-days` stays a direct flex

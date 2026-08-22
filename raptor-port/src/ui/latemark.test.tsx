@@ -97,15 +97,25 @@ describe('the per-input LATE dismissal', () => {
     await act(async () => { openScheduler(LATE_DI); notify() })
     const chips = $$('#schedBoard [data-lateoff]')
     expect(chips.length, 'a late day draws a chip per late row').toBeGreaterThan(0)
-    const badgesBefore = $$('#schedBoard .latetag').length
+    /* asserted PER INPUT since 22 Aug 26 — the board's read-only "Inputs ·
+       day" summary band, which the old board-wide `.latetag` count read, was
+       removed, and a raw badge count was never quite the claim anyway: an
+       auto-landed activity input legitimately draws its badge on BOTH its
+       Personal Inputs row and its promoted Ground row, so "one input
+       dropped" can be two badges fewer. lateTag IS the one gate every
+       passive surface prints through, so reading it per input is exact. */
+    const dropped: any = INPUTS.find((i: any) => inpId(i) === chips[0].getAttribute('data-lateoff'))
+    expect(dropped, 'the chip addresses a real input').toBeTruthy()
+    const others = lateSeeds().filter((i: any) => i.date === 'Jul 14' && i !== dropped)
 
     await click(chips[0])
-    expect($$('#schedBoard .latetag').length, 'exactly one badge went').toBe(badgesBefore - 1)
+    expect(lateTag(dropped), 'the dropped input stops showing').toBe('')
+    for (const o of others) expect(lateTag(o), `${o.person}'s mark stays`).not.toBe('')
     expect($$('#schedBoard [data-lateoff]').length, 'the chip itself stays, as a ghost').toBe(chips.length)
     expect(TOASTS.join(' '), 'and it says where it still is').toContain('Inputs page')
 
     await click($('#schedBoard [data-lateoff]'))
-    expect($$('#schedBoard .latetag').length, 'pressing the same spot is the way back').toBe(badgesBefore)
+    expect(lateTag(dropped), 'pressing the same spot is the way back').not.toBe('')
   })
 
   it('the week is covered by the same read — one gate, every schedule surface', () => {

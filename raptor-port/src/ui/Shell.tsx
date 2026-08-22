@@ -59,12 +59,16 @@ function banner() {
   return { col, cls, html: `<span class="sb-badge">${txt}${which}${extra}</span>` + alRoll }
 }
 
+// OCU sits with the CAT levels (right of D), not with the tag group (owner,
+// 22 Aug 26 — "move ocu to the right of D"): it IS a category, so it reads as
+// one more rung on the A–D ladder rather than a tag beside SXO/SANS.
 const HL_CHIPS: [string, string, string][] = [
   ['A', 'A', 'Cat A (4-ship FL)'], ['B', 'B', 'Cat B (2-ship FL)'], ['C', 'C', 'Cat C (operational wingman)'], ['D', 'D', 'Cat D (wingman)'],
+  ['OCU', 'OCU', 'OCU (ab-initio)'],
 ]
 const HL_CHIPS2: [string, string, string][] = [
   ['SUP', 'SUP', 'Supervisors — Cat A & B'], ['FL', 'FL', 'All flight leads (Cat A & B)'], ['INS', 'Ins', 'Instructors (IW / IP / IR / FI)'],
-  ['SXO', 'SXO', 'SXO-qualified'], ['SANS', 'SANS', 'SANS — staff-assigned & NS aircrew'], ['OCU', 'OCU', 'OCU (ab-initio)'],
+  ['SXO', 'SXO', 'SXO-qualified'], ['SANS', 'SANS', 'SANS — staff-assigned & NS aircrew'],
 ]
 
 export function Shell() {
@@ -199,7 +203,10 @@ export function Shell() {
   const rulesOff = rulesOffCount()
 
   const topbar = useMemo(() => (
-      <div className="topbar">
+      /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
+         22 Aug 26) so it is unmistakable from the near-identical View-only mode
+         at a glance — both widths; View-only keeps the neutral dark. */
+      <div className={'topbar' + (page === 'editsched' ? ' editing' : '')}>
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
         <div className="mark">
           <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
@@ -229,7 +236,6 @@ export function Shell() {
               <select id="viewAs" aria-label="View the schedule as" value={ME} onChange={e => { setMe(e.target.value); notify() }}>
                 {people.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
               </select></div>
-            <span className={'rolebadge ' + (admin ? 'admin' : '')} id="roleBadge">{admin ? 'Admin' : 'Member'}</span>
             {admin && <button className="abtn" id="manageUsers" data-admin=""
               onClick={() => { if (!admin) return; setUserModal(true); notify() }}>Manage users</button>}
           </div>
@@ -264,23 +270,35 @@ export function Shell() {
               admin-only Manage-users modal, which lives in ui/pops.ts and so can't be
               reached from state/store.ts without the state layer importing the UI layer. */}
           <button className="abtn ghost" id="logout" onClick={() => { setUserModal(false); resetSession(null); notify() }}>Logout</button>
+          {/* The role indicator, moved to the FAR RIGHT of the bar, after every
+              other control (owner, 22 Aug 26 — "move the admin button to always
+              the far right … same design as the others"). Styled as one of the
+              .abtn buttons rather than the old pill; the accent tint keeps the
+              Admin state legible. Hidden on a phone, as it was in its old spot,
+              so the tight one-row phone bar stays uncrowded. */}
+          <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge">{admin ? 'Admin' : 'Member'}</span>
         </div>
       </div>
   ), [page, admin, ME, fast, HIST.ix, HIST.stack.length, bellLit()])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">
-        {/* Rolling week window (owner, 22 Aug 26): prev · current · +1 · +2,
-            re-centred on whatever week is loaded — replaces the fixed 5 chips.
-            The trailing calendar icon opens the month picker to jump anywhere;
-            data-wk is unchanged, so interactions.ts already loads the week. */}
-        <div className="seg" id="weekSeg">
-          {weekWindow(CURWEEK).map(w => <button key={w.v}
-            className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
-          <button className="wk wk-cal" aria-label="Jump to a date" title="Jump to a date"
-            onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
-        </div>
-        <div className="filters">
+        {/* The week nav and the Highlight filter share ONE row now (owner,
+            22 Aug 26 — "which is all in 1 row"): the calendar sits FAR LEFT,
+            then the rolling week window (prev · current · +1 · +2, re-centred
+            on the loaded week), then the Highlight chips — all in the one
+            .filters flex row. `#weekSeg` is kept so the week-click tests and
+            `interactions.ts` (`closest('[data-wk]')`) are untouched; `.wkseg`
+            is hidden on a phone exactly as the old standalone `.seg` was, where
+            the lone `.wknav-m` calendar and the day swipe take over. */}
+        <div className="filters" id="viewChrome">
+          <span className="wkseg" id="weekSeg">
+            <button className="wk wk-cal" aria-label="Jump to a date" title="Jump to a date"
+              onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
+            {weekWindow(CURWEEK).map(w => <button key={w.v}
+              className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
+          </span>
+          <span className="div wkdiv"></span>
           <span className="lab">Highlight</span>
           {HL_CHIPS.map(([k, t, ttl]) => <button key={k} className={'fchip' + (HLSET.has(k) ? ' on' : '')} data-hl={k} title={ttl}
             onClick={() => { HLSET.has(k) ? HLSET.delete(k) : HLSET.add(k); notify() }}>{t}</button>)}
@@ -319,11 +337,12 @@ export function Shell() {
   const editPage = useMemo(() => (
       <section className={'page' + (page === 'editsched' ? ' on editing' : '')} id="page-editsched">
         <div className="edit-inner">
+          {/* Calendar far left (owner, 22 Aug 26), matching the view page. */}
           <div className="seg" id="weekSegE">
-            {weekWindow(CURWEEK).map(w => <button key={w.v}
-              className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
             <button className="wk wk-cal" aria-label="Jump to a date" title="Jump to a date"
               onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
+            {weekWindow(CURWEEK).map(w => <button key={w.v}
+              className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
           </div>
           <div className="filters">
             {/* Undo / redo moved to the sticky top bar (owner, Aug 26) so they
@@ -342,7 +361,10 @@ export function Shell() {
             <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
           </div>
-          <div className="title"><h1 id="eTitle">142 Scheduling board · Jul 13</h1><span className="sub mono">Edit mode · changes are local to this prototype</span></div>
+          {/* The "142 Scheduling board · Jul 13 / Edit mode · changes are local
+              to this prototype" title was removed (owner, 22 Aug 26) on both
+              widths — it carried a stale hardcoded date and being on Edit
+              Schedule already says it is the edit surface. */}
           <div className={'schedbanner ' + b.cls} id="eBanner" style={{ ['--al' as any]: b.col }}
             dangerouslySetInnerHTML={{ __html: b.html }} />
           <ALPanel />

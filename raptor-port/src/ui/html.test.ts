@@ -61,11 +61,12 @@ const noInpGrp = (s: string) => s.replace(
 const noNotes = (s: string) => s.replace(
   /<div class="blknote-h">[^<]*<\/div><div class="blknote[^>]*>[\s\S]*?<\/div>/g, '')
 
-/* Divergence #5: the port titles the block "Ground Programme" (owner casing,
-   Aug 26) with the "· scheduler" qualifier in edit mode only; the reference
-   says "Ground programme · scheduler" in both. Normalise the title on both
+/* Divergence #5: the port titles the block just "Ground Programme" (owner
+   casing, Aug 26; the "· scheduler" qualifier was dropped 22 Aug 26); the
+   reference says "Ground programme · scheduler". Normalise the title on both
    sides rather than excising the block, which keeps every ground ROW under
-   byte comparison. */
+   byte comparison. The `· scheduler` group stays OPTIONAL so the reference's
+   copy still normalises even though the port no longer emits one. */
 const grndTitle = (s: string) => s.replace(
   /<div class="sub-h">Ground [Pp]rogramme(?: · scheduler)?<\/div>/, '<div class="sub-h">GRND</div>')
 
@@ -397,8 +398,10 @@ describe('view-week markup parity with the reference', () => {
   it('the day carries the three blocks, in order, on the scheduler side', () => {
     const e = dayHTML(0, true)
     const at = (m: string) => e.indexOf(m)
-    expect(at('>Ground Programme · scheduler<')).toBeGreaterThan(-1)
-    expect(at('>Personal Inputs<')).toBeGreaterThan(at('>Ground Programme · scheduler<'))
+    // Header is just "Ground Programme" on both surfaces now (owner, 22 Aug 26 —
+    // the "· scheduler" qualifier was dropped).
+    expect(at('>Ground Programme<')).toBeGreaterThan(-1)
+    expect(at('>Personal Inputs<')).toBeGreaterThan(at('>Ground Programme<'))
     expect(at('>Unavailable<')).toBeGreaterThan(at('>Personal Inputs<'))
   })
 

@@ -25,11 +25,21 @@
    happen exactly once, in one place. */
 import { canEditSched } from './auth'
 
-/* one puck dropped on a day — a plain to-do, addressed by its own id rather
-   than its position, the same reason inpId exists (engine/inputs.ts): an
-   array a caller can unshift into must never be addressed by index. */
+/* one SECTION dropped on a day, addressed by its own id rather than its
+   position, the same reason inpId exists (engine/inputs.ts): an array a
+   caller can unshift into must never be addressed by index. Two kinds since
+   22 Aug 26 (owner's popover redesign): a NOTE (`kind` absent or 'note' —
+   free text, the original planning-note shape, so every pre-existing entry
+   reads as one unchanged) and a PUCKS row (`kind:'pucks'`, `ids` a list of
+   person ids — "add pucks into it"). The name PLANPUCKS predates the split
+   and is kept: history.ts and the tests hold this binding. */
 export const PLANPUCKS: any[] = []
-/* ISO date ('yyyy-mm-dd') -> one-line scheduler remark for that day */
+/* ISO date ('yyyy-mm-dd') -> the day's free-text TITLE (owner, 22 Aug 26 —
+   typed beside the date in the day popover, shown as the cell's own heading
+   on the month view, wrapping). This is the same store that carried the old
+   "Day remark" — one line of per-day scheduler text — promoted to a title;
+   the name is kept because history.ts's `dm` snapshot key and the tests
+   hold it. */
 export const DAYRMK: Record<string, string> = {}
 
 /* mints ids the same way inpId mints iids (engine/inputs.ts) — monotonic
@@ -97,6 +107,65 @@ export function removePlanPuck(id: string) {
   const ix = PLANPUCKS.findIndex((x: any) => x.id === id)
   if (ix < 0) return false
   PLANPUCKS.splice(ix, 1)
+  return true
+}
+
+/* ---- the pucks-row section (owner, 22 Aug 26 — "+pucks button to enable me
+   to add pucks into it … using the full width") ----------------------------- */
+
+/* an EMPTY pucks row is legal on creation — unlike a note, its content is
+   added by picking people one at a time, so refusing empty would refuse the
+   only way to start one. Appends (not unshifts): the owner arranges section
+   order by hand, and a new section belongs at the end of what is already
+   arranged, not on top of it. */
+export function addPuckRow(iso: string) {
+  if (!canEditSched()) return false
+  PLANPUCKS.push({ id: nextPuckId(), date: iso, kind: 'pucks', ids: [] })
+  return true
+}
+
+/* add/remove one person on a pucks row — one verb, because the UI is one
+   control (pick a name to add it, tap its ✕ to drop it) and two mutators
+   would be two write paths for one gesture. Refuses a note section: `ids`
+   on a note would be silent garbage nothing renders. */
+export function togglePuckPerson(id: string, personId: string) {
+  if (!canEditSched()) return false
+  const p = PLANPUCKS.find((x: any) => x.id === id)
+  if (!p || p.kind !== 'pucks' || !personId) return false
+  const ids: string[] = p.ids || (p.ids = [])
+  const ix = ids.indexOf(personId)
+  if (ix >= 0) ids.splice(ix, 1)
+  else ids.push(personId)
+  return true
+}
+
+/* reorder one day's sections by drag (owner, 22 Aug 26 — "the admin is able
+   to shift these up and down by drag and dropping"). `beforeId` null means
+   the end of that day's run. Same-day only: a cross-day move is caldrag's
+   movePlanPuck, a different verb with a different meaning. The splice works
+   on the GLOBAL array but computes its target from the day's own sequence,
+   so sections of other days are never disturbed. */
+export function movePlanSection(id: string, beforeId: string | null) {
+  if (!canEditSched()) return false
+  const p = PLANPUCKS.find((x: any) => x.id === id)
+  if (!p || id === beforeId) return false
+  const before = beforeId ? PLANPUCKS.find((x: any) => x.id === beforeId) : null
+  if (beforeId && (!before || before.date !== p.date)) return false
+  const from = PLANPUCKS.indexOf(p)
+  PLANPUCKS.splice(from, 1)
+  if (before) {
+    const to = PLANPUCKS.indexOf(before)
+    PLANPUCKS.splice(to, 0, p)
+    if (PLANPUCKS.indexOf(p) === from) return false // landed where it began — no-op
+  } else {
+    /* to the end of THIS day's run: after the last same-day section, which
+       (with the day's sections contiguous or not) is simply after the last
+       entry carrying this date. */
+    let last = -1
+    PLANPUCKS.forEach((x: any, i: number) => { if (x.date === p.date) last = i })
+    PLANPUCKS.splice(last + 1, 0, p)
+    if (PLANPUCKS.indexOf(p) === from) return false
+  }
   return true
 }
 

@@ -15,15 +15,18 @@ import * as view from './view'
 import { resetSession } from './store'
 
 /* a stand-in week: rects are the one thing jsdom will not give us, so the day
-   boxes carry their own. Day 2's box is the first whose right edge is still
-   past the container's left edge + 8, so day 2 is the honest answer. */
-function fakeWeek(id: string, days: number[], rights: number[]) {
+   boxes carry their own LEFT edges. The reading names the day whose left edge
+   sits nearest the container's own left (100) — the exact inverse of
+   scrollWeekToDay, which parks a day's left edge there (22 Aug 26; the old
+   right-edge reading named the day mostly scrolled OFF, which is why the
+   aircrew palette showed Wednesday while the scheduler looked at Thursday). */
+function fakeWeek(id: string, days: number[], lefts: number[]) {
   const el: any = {
     id,
     getBoundingClientRect: () => ({ left: 100 }),
     querySelectorAll: () => days.map((d, i) => ({
       dataset: { day: String(d) },
-      getBoundingClientRect: () => ({ right: rights[i] }),
+      getBoundingClientRect: () => ({ left: lefts[i] }),
     })),
   }
   return el
@@ -32,18 +35,19 @@ function fakeWeek(id: string, days: number[], rights: number[]) {
 beforeEach(() => { view.setCarryDay(null); view.setPage('viewsched') })
 
 describe('weekLeftDay — the reading itself', () => {
-  it('names the leftmost day still on screen, not the first in the model', () => {
-    // days 0 and 1 are scrolled off (right edge behind 108), day 2 is not
-    expect(view.weekLeftDay(fakeWeek('vWeek', [0, 1, 2, 3], [20, 60, 400, 700]))).toBe(2)
+  it('names the day whose left edge sits nearest the view edge, not the first in the model', () => {
+    // days 0 and 1 are scrolled off to the left; day 2's left edge is AT the
+    // view edge (100), day 3 a full column right of it
+    expect(view.weekLeftDay(fakeWeek('vWeek', [0, 1, 2, 3], [-1000, -450, 100, 650]))).toBe(2)
   })
 
-  it('allows 8px of slack, so a sliver of a day does not count as the one you are on', () => {
-    /* right edge at 104 is past the container's left (100) but inside the
-       slack, so it is treated as gone. This is the same boundary pan.ts's
-       palette follow uses — they share this function precisely so the two
-       can never drift apart. */
-    expect(view.weekLeftDay(fakeWeek('vWeek', [0, 1], [104, 500]))).toBe(1)
-    expect(view.weekLeftDay(fakeWeek('vWeek', [0, 1], [112, 500]))).toBe(0)
+  it('a day mostly scrolled off is not the one you are on — the flip is at the midpoint', () => {
+    /* day 0 sits 400px off to the left, day 1 only 50px right of the edge: the
+       reader is looking at day 1. The old right-edge reading answered day 0
+       here — the exact off-by-one the owner reported. */
+    expect(view.weekLeftDay(fakeWeek('vWeek', [0, 1], [-300, 150]))).toBe(1)
+    // ...but a day only just nudged off (30px) is still the nearest, so it holds
+    expect(view.weekLeftDay(fakeWeek('vWeek', [0, 1], [70, 620]))).toBe(0)
   })
 
   it('returns null rather than a guess when there is nothing to read', () => {

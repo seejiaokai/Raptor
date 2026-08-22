@@ -15,7 +15,6 @@ import { WARN } from '../engine/validate'
 import { slotVal } from '../engine/slots'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler, toggleWide, SBWIDE, boardTab, boardDayStep, askSortAll, cancelSortAll, askCx, cxCommit, SORTALL, CXT } from './board'
-import { sbInputsHTML } from './board-html'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -86,7 +85,6 @@ describe('arrow spamming rolls continuously through the weeks', () => {
     expect(on.length).toBe(1)
     expect(on[0].dataset.sbtab).toBe('0')
     expect($('#sbWarn').textContent).toContain(`for ${DAYS[0].dow}`)
-    expect($('#sbInputs').textContent).toContain(`Inputs · ${DAYS[0].dow} ${DAYS[0].dt}`)
     // restore the seed week AND drain effects so the week-crossing churn does
     // not leak deferred renders into a later test's act()
     await act(async () => { loadWeek('13/07/2026') })
@@ -100,7 +98,7 @@ describe('arrow spamming rolls continuously through the weeks', () => {
     expect(view.SBDAY).toBe(6)
     expect(CURWEEK, 'two weeks before the seed').toBe('29/06/2026')
     expect(($('#sbPrevDay') as HTMLButtonElement).disabled).toBe(false)
-    expect($('#sbInputs').textContent).toContain(`Inputs · ${DAYS[6].dow}`)
+    expect($('#sbDay').textContent).toBe(DAYS[6].dow)
     await act(async () => { loadWeek('13/07/2026') })
     await act(async () => {})
   })
@@ -161,8 +159,7 @@ describe('boardTab is view-only, and the first real mutation repaints everything
     expect(g, 'a mutation flows through the global lane').toBeGreaterThan(0)
     expect(WARN.byDay, 'and validated').not.toBe(undefined)
     expect($('#eWeek')!.innerHTML, 'the hidden week repainted with the write').not.toBe(weekHTML)
-    expect($('#sbInputs').textContent, 'the board panels repainted on the stepped-to day').toContain(`Inputs · ${DAYS[3].dow}`)
-    expect($('#sbDay').textContent).toBe(DAYS[3].dow)
+    expect($('#sbDay').textContent, 'the board panels repainted on the stepped-to day').toBe(DAYS[3].dow)
     await act(async () => { writeSlot('d:3.0.0', was) })      // put it back
   })
 })

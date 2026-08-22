@@ -451,6 +451,24 @@ export function Matrix() {
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
 
+  // ---- the desktop horizontal scrollbar, pinned to the foot of the SCREEN
+  // (owner, 22 Aug 26: "on desktop the horizontal scroll is not tagged to the
+  // screen. I need to scroll all the way down to scroll") ---------------------
+  //
+  // `.mx-wrap` scrolls sideways with NO height cap (the one-vertical-scroll
+  // rule at the top of matrix.css), so its own horizontal scrollbar rides the
+  // FOOT of a year-tall grid — unreachable until the whole page is scrolled
+  // down. This is a proxy for it (the Raptor `hsSet`/`hsSync` idiom): a fixed
+  // slim strip at the bottom of the viewport, as wide as the grid, whose inner
+  // spacer is as wide as the grid's CONTENT so the browser sizes its thumb for
+  // free. It drives `.mx-wrap.scrollLeft` and is driven back by it, both writes
+  // compare-guarded so the pair settles instead of ping-ponging. Shown only
+  // while the grid's own scrollbar is BELOW the fold, so the two never stack.
+  // Desktop only — a phone finger-scrolls the grid and carries its own frozen
+  // header; and never in jsdom, which has no layout to measure.
+  const hbarRef = useRef<HTMLDivElement>(null)
+  const [hbar, setHbar] = useState<{ left: number; width: number; scrollW: number } | null>(null)
+
   useEffect(() => {
     setStuck(null)
     // jsdom has neither matchMedia nor layout — the mirror is a browser-only
@@ -498,6 +516,25 @@ export function Matrix() {
       mirrorRef.current.scrollLeft = wrapRef.current.scrollLeft
     }
   }, [stuck])
+
+  // The bottom scrollbar starts at the grid's current position the moment it
+  // appears, so its thumb is never a frame out of step on show.
+  useEffect(() => { if (hbar) syncHbar() }, [hbar])
+
+  // Show / hide / size the bottom scrollbar on vertical page scroll and on
+  // resize. Re-bound on the layout signals that change the grid's scroll width
+  // or its box (a zoom step, a row-set reflow, a war swap, the counts block
+  // folding, and the phone/desktop switch) so the measured spacer stays right.
+  useEffect(() => {
+    measureHbar()
+    window.addEventListener('scroll', measureHbar, { passive: true })
+    window.addEventListener('resize', measureHbar)
+    return () => {
+      window.removeEventListener('scroll', measureHbar)
+      window.removeEventListener('resize', measureHbar)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phone, zoom, visWindow, period.id, dates.length, countsOpen])
   // The mirror FOLLOWS the grid and never drives it (owner, 20 Aug 26 — the
   // sixth report, and the one that found it: "when the top bar freezes the
   // sideways scroll can only move a bit and halts quickly"). It used to be a
@@ -513,6 +550,46 @@ export function Matrix() {
   const syncMirror = () => {
     const m = mirrorRef.current, w = wrapRef.current
     if (m && w && m.scrollLeft !== w.scrollLeft) m.scrollLeft = w.scrollLeft
+  }
+
+  // The bottom scrollbar follows the grid; the compare stops the two writing
+  // to each other forever (an unchanged scrollLeft fires no event).
+  const syncHbar = () => {
+    const h = hbarRef.current, w = wrapRef.current
+    if (h && w && h.scrollLeft !== w.scrollLeft) h.scrollLeft = w.scrollLeft
+  }
+  // ...and the grid follows the bottom scrollbar when THAT is the one dragged.
+  // Writing wrap.scrollLeft fires the wrap's own onScroll, which calls
+  // syncHbar — equal by then, so it no-ops and the pair rests.
+  const onHbarScroll = () => {
+    const h = hbarRef.current, w = wrapRef.current
+    if (h && w && w.scrollLeft !== h.scrollLeft) w.scrollLeft = h.scrollLeft
+  }
+  // Only write state when the bar's presence or dimensions actually change:
+  // measureHbar runs on every vertical page scroll, and this component renders
+  // a ~25,000-node grid — a setState per wheel-tick is exactly the cost the
+  // rest of this file bends over backwards to avoid.
+  const applyHbar = (next: { left: number; width: number; scrollW: number } | null) =>
+    setHbar(prev => {
+      if (!prev && !next) return prev
+      if (prev && next && prev.left === next.left && prev.width === next.width && prev.scrollW === next.scrollW) return prev
+      return next
+    })
+  // Decide whether the proxy is wanted, and at what size. Cheap reads only (one
+  // rect + scrollWidth). It is NOT wanted when: this is a phone (its own
+  // scroll); the grid does not overflow sideways; there is no layout yet (jsdom
+  // 0×0); the grid's own scrollbar is already on screen (its bottom is at or
+  // above the fold — showing both would stack two bars); or the grid has been
+  // scrolled entirely out of view.
+  const measureHbar = () => {
+    const w = wrapRef.current
+    if (!w || phone) { applyHbar(null); return }
+    const overflow = w.scrollWidth - w.clientWidth
+    const r = w.getBoundingClientRect()
+    if (overflow <= 1 || r.width === 0 || r.bottom <= window.innerHeight || r.bottom <= 0 || r.top >= window.innerHeight) {
+      applyHbar(null); return
+    }
+    applyHbar({ left: r.left, width: r.width, scrollW: w.scrollWidth })
   }
 
   // The frozen header tracks the grid on a requestAnimationFrame LOOP, not
@@ -804,6 +881,9 @@ export function Matrix() {
     // where the loop has not spun up yet, the loop covers the frames the
     // coalesced scroll event skips.
     syncMirror()
+    // Keep the desktop bottom scrollbar's thumb in step with the grid (no-op
+    // when it is not shown — the ref is null then).
+    syncHbar()
     startPump()
     if (idleRef.current) clearTimeout(idleRef.current)
     idleRef.current = setTimeout(() => { idleRef.current = null; measureWindow() }, SCROLL_REST_MS)
@@ -1622,6 +1702,25 @@ export function Matrix() {
         )}
       </div>
       </div>
+
+      {/* The desktop horizontal scrollbar, fixed to the foot of the SCREEN
+          (owner, 22 Aug 26). A proxy for `.mx-wrap`'s own scrollbar, which
+          rides the bottom of a year-tall grid out of reach; its `left`/`width`
+          overlay the grid and the inner spacer is as wide as the grid content
+          so the browser sizes the thumb. Shown only while the real scrollbar
+          is below the fold. Never in jsdom or on a phone — Matrix mounts it
+          off a live desktop measurement. */}
+      {hbar && (
+        <div
+          className="mx-hbar"
+          data-testid="hscroll"
+          ref={hbarRef}
+          style={{ left: hbar.left, width: hbar.width }}
+          onScroll={onHbarScroll}
+        >
+          <div className="mx-hbar-in" style={{ width: hbar.scrollW }} />
+        </div>
+      )}
 
       {/* Rendered outside `.mx-wrap` on purpose: that wrapper scrolls, and a
           sheet inside it would be clipped by its own scroller. Keyed by the

@@ -17,10 +17,11 @@
    hold-to-add/tap gesture on the empty cell space around those chips, and
    the day popover (`data-icmore` opens it too) that both routes land on. */
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
-import { INPUTS, inputCoversDate, inpLabel, defaultAllday } from '../engine/inputs'
-import { PEOPLE } from '../engine/people'
+import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLetters } from '../engine/inputs'
+import { PEOPLE, QCOLOR } from '../engine/people'
 import { hhmm } from '../engine/time'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck } from '../state/plan'
+import { puck } from './html'
+import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, togglePuckPerson, movePlanSection } from '../state/plan'
 import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth } from '../state/view'
 import { canEditSched, ME } from '../state/auth'
@@ -39,7 +40,12 @@ const DOW = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
    and jsdom renders no layout at all, so a height rule could never be pinned
    by a test — only eyeballed on the live view, forever. A count is the same
    rule on every screen and is exactly what a test can assert against. */
-export const MAX_CHIPS = 3
+/* Applies to the INPUT chips only since the 22 Aug 26 cell redesign — the
+   title, notes and pucks sections draw in full ("if it fills up the whole day
+   box, so be it"; inputs are the stated lesser priority). Raised 3 → 6 with
+   the same redesign: input chips pack side by side now, so six fit where
+   three stacked lines used to. */
+export const MAX_CHIPS = 6
 
 /* HOLD-TO-ADD on empty cell space — deliberately longer than caldrag's own
    180ms chip hold (caldrag.ts's HOLD). A chip has only one meaning under a
@@ -143,6 +149,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
   const [popPuckEdit, setPopPuckEdit] = useState<string | null>(null)
   const [rmkDraft, setRmkDraft] = useState('')
   const [puckDraft, setPuckDraft] = useState('')
+  /* the section being DRAGGED to a new position in the popover (owner, 22 Aug
+     26 — "shift these up and down by drag and dropping"), and which section
+     the pointer is over + which half (the Matrix roster drag's half rule:
+     the lower half means "after this one", which is what makes the last
+     position reachable at all). Both null outside a drag. */
+  const [secDrag, setSecDrag] = useState<string | null>(null)
+  const [secOver, setSecOver] = useState<{ id: string, after: boolean } | null>(null)
 
   /* the remark draft is seeded fresh every time a DIFFERENT day's popover
      opens, never on a repaint — the same "seed on prop change, not on every
@@ -245,8 +258,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         if (r) { setInpEdit(r); notify() } // object resolve — never index; the modal opens above this overlay
       } else {
         setPopIso(entry.fromIso)
-        setPopPuckEdit(entry.pid)
-        setPuckDraft(PLANPUCKS.find((p: any) => p.id === entry.pid)?.text || '')
+        /* a NOTE opens already in its own edit box; a PUCKS row has no text
+           to edit, so its tap just opens the day (its people are edited
+           through the row's own picker/✕ controls there). */
+        const sec = PLANPUCKS.find((p: any) => p.id === entry.pid)
+        if (sec && sec.kind === 'pucks') { setPopPuckEdit(null) }
+        else { setPopPuckEdit(entry.pid); setPuckDraft(sec?.text || '') }
       }
     }
     const offDrag = initCalDrag(el, { onTap })
@@ -358,109 +375,206 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
        commits (rather than a second copy of the write), so there is exactly
        one place per field that decides what "commit" means. */
     const blurOnEnter = (e: ReactKeyboardEvent) => { if (e.key === 'Enter') (e.target as HTMLElement).blur() }
+    /* the roster the pucks-row picker offers — active people by callsign, the
+       same working set every other person select on the page draws from. */
+    const roster = Object.keys(PEOPLE)
+      .filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
+      .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
+    /* SECTION DRAG (admin) — the Matrix roster drag's shape scaled down: the
+       handle starts it, elementFromPoint + the row-half rule track it, and
+       the release resolves "after X" to "before whatever follows X" in this
+       day's own section order. Window listeners for the life of one drag. */
+    const startSecDrag = (e: React.PointerEvent, id: string) => {
+      if (e.button != null && e.button !== 0) return
+      e.preventDefault()
+      setSecDrag(id)
+      let over: { id: string, after: boolean } | null = null
+      const move = (ev: PointerEvent) => {
+        const el = document.elementFromPoint(ev.clientX, ev.clientY)
+        const row = el && (el as Element).closest ? (el as Element).closest('[data-sec]') : null
+        const overId = row?.getAttribute('data-sec') ?? null
+        let after = false
+        if (row) {
+          const r = (row as HTMLElement).getBoundingClientRect()
+          after = r.height > 0 && ev.clientY > r.top + r.height / 2
+        }
+        if (overId !== (over?.id ?? null) || after !== (over?.after ?? false)) {
+          over = overId ? { id: overId, after } : null
+          setSecOver(over)
+        }
+      }
+      const end = (commit: boolean) => {
+        window.removeEventListener('pointermove', move)
+        window.removeEventListener('pointerup', up)
+        window.removeEventListener('pointercancel', cancel)
+        setSecDrag(null); setSecOver(null)
+        if (!commit || !over || over.id === id) return
+        const secs = dayEntries(iso, { fPerson, fType, fSearch }).pucks
+        let beforeId: string | null = over.id
+        if (over.after) {
+          const ix = secs.findIndex((s: any) => s.id === over!.id)
+          beforeId = secs[ix + 1]?.id ?? null
+        }
+        if (beforeId !== id) writeInputs(() => movePlanSection(id, beforeId))
+      }
+      const up = () => end(true)
+      const cancel = () => end(false)
+      window.addEventListener('pointermove', move)
+      window.addEventListener('pointerup', up)
+      window.addEventListener('pointercancel', cancel)
+    }
     return (
       <div className="ic-popwrap" onPointerDown={e => { if (e.target === e.currentTarget) closePop() }}>
         <div className="ic-pop" role="dialog" aria-label={`${fmtDay(iso)} details`}>
+          {/* the day TITLE lives beside the date (owner, 22 Aug 26 — "beside
+              the date, I can input free text there, and it will show up as
+              the title on the calendar view"). A scheduler edits it in place
+              (draft-apart-from-model, commit on Enter/blur); a member reads
+              it as plain text. It is the same per-day store the old Day
+              remark field wrote (DAYRMK), promoted to the header. */}
           <div className="ic-pop-head">
             <b>{fmtDay(iso)}</b>
+            {sched ? (
+              <input id="icRmkEdit" className="ic-title-edit" placeholder="Day title…"
+                aria-label="Day title" value={rmkDraft}
+                onChange={e => setRmkDraft(e.target.value)}
+                onBlur={() => writeInputs(() => setDayRemark(iso, rmkDraft))}
+                onKeyDown={blurOnEnter} />
+            ) : hasRmk ? (
+              <span className="ic-title-ro">{DAYRMK[iso]}</span>
+            ) : null}
             <button type="button" className="x" id="icPopClose" aria-label="Close" onClick={closePop}>✕</button>
           </div>
           <div className="ic-pop-body">
-            {entries.inputs.length === 0 && !hasRmk && (
-              <div className="ic-pop-empty">Nothing on this day — hold the cell or tap + Add input</div>
-            )}
-            {entries.inputs.length > 0 && (
-              <div className="ic-pop-rows">
-                {entries.inputs.map((r: any) => (
-                  <button key={r.iid} type="button" className={'ic-poprow ' + inputTone(r.type)}
-                    data-popiid={r.iid} onClick={() => { setInpEdit(r); notify() }}>
-                    {/* the identity line — callsign, type, and (timed only) the
-                        window pinned right, the same three fields the row always
-                        carried; wrapped now so a remark can sit under it */}
-                    <span className="ic-poprow-top">
-                      <span className="ic-poprow-who">{PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person}</span>
-                      <span className="ic-poprow-lbl">{inpLabel(r)}</span>
-                      {!r.allday && <span className="ic-poprow-win">{hhmm(r.s)}–{hhmm(r.e)}</span>}
-                    </span>
-                    {/* the remark as its own aligned line under the identity
-                        (owner, 22 Aug 26 — "show remarks too and align them
-                        nicely"); absent when the input carries none, so a
-                        remark-less row stays the single tidy line it was */}
-                    {r.remarks && <span className="ic-poprow-rmk">{r.remarks}</span>}
-                  </button>
-                ))}
+            {/* THE SECTIONS (owner, 22 Aug 26): small + Note / + Pucks buttons
+                at the top; each section is a full-width block below — a note
+                is free text, a pucks row is people — and an admin drags the ⠿
+                handle to rearrange them. Members read them, nothing more. */}
+            {sched && (
+              <div className="ic-secbtns">
+                <button type="button" className="abtn sm" id="icAddPuck"
+                  onClick={() => { setPopPuckEdit(''); setPuckDraft('') }}>+ Note</button>
+                <button type="button" className="abtn sm" id="icAddPucks"
+                  onClick={() => writeInputs(() => addPuckRow(iso))}>+ Pucks</button>
               </div>
             )}
-
-            {/* the day remark — a scheduler edits it with a draft-apart-from-
-                model field (the page's own idiom: type freely, commit once on
-                Enter/blur so a stray tap elsewhere never loses what was
-                typed); a member reads it as plain text, or sees nothing when
-                there isn't one. */}
-            {sched ? (
-              <label className="inped-f">
-                <span className="inped-k">Day remark</span>
-                <input id="icRmkEdit" value={rmkDraft} onChange={e => setRmkDraft(e.target.value)}
-                  onBlur={() => writeInputs(() => setDayRemark(iso, rmkDraft))}
-                  onKeyDown={blurOnEnter} />
-              </label>
-            ) : hasRmk ? (
-              <div className="inped-f">
-                <span className="inped-k">Day remark</span>
-                <span className="ic-poprmk-ro">{DAYRMK[iso]}</span>
-              </div>
-            ) : null}
-
-            {/* planning notes — visible to everyone, editable only by a
-                scheduler. Shown even with zero notes when a scheduler could
-                add one; hidden for a member seeing none, so an empty section
-                heading never sits there for nothing. */}
-            {(entries.pucks.length > 0 || sched) && (
-              <div className="ic-poppucks-wrap">
-                <span className="inped-k">Planning notes</span>
-                <div className="ic-poppucks">
-                  {entries.pucks.map((p: any) => sched && popPuckEdit === p.id ? (
-                    <input key={p.id} className="ic-poppuck-edit" autoFocus value={puckDraft}
-                      aria-label="Edit planning note" onChange={e => setPuckDraft(e.target.value)}
-                      onBlur={() => {
-                        const t = puckDraft.trim()
-                        if (t && t !== p.text) writeInputs(() => editPlanPuck(p.id, t))
-                        setPopPuckEdit(null)
-                      }}
-                      onKeyDown={blurOnEnter} />
-                  ) : (
-                    <div key={p.id} className="ic-poppuck">
-                      <span className="ic-poppuck-txt">{p.text}</span>
-                      {sched && <>
-                        <button type="button" data-ppedit={p.id} aria-label="Edit note"
-                          onClick={() => { setPopPuckEdit(p.id); setPuckDraft(p.text) }}>✏</button>
-                        <button type="button" data-ppdel={p.id} aria-label="Delete note"
-                          onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>
-                      </>}
+            {entries.pucks.length > 0 && (
+              <div className="ic-secs">
+                {entries.pucks.map((p: any) => {
+                  /* an EMPTY pucks row is a scheduler's work-in-progress; a
+                     member would see only a bare band with nothing in it and
+                     nothing to do — skip it for them (review fix, 22 Aug 26) */
+                  if (!sched && p.kind === 'pucks' && !(p.ids || []).length) return null
+                  const dragCls = secDrag === p.id ? ' dragging'
+                    : secDrag && secOver && secOver.id === p.id ? (secOver.after ? ' dragover after' : ' dragover') : ''
+                  return (
+                    <div key={p.id} className={'ic-sec' + dragCls} data-sec={p.id}>
+                      {sched && (
+                        <span className="ic-sechandle" data-sechandle={p.id} title="Drag to reorder"
+                          style={{ touchAction: 'none' }}
+                          onPointerDown={e => startSecDrag(e, p.id)}>⠿</span>
+                      )}
+                      {p.kind === 'pucks' ? (
+                        /* a full-width row of the app's own canonical pucks;
+                           the picker adds one per pick, its ✕ drops one, and
+                           the trailing ✕ deletes the whole row (always drawn
+                           for a scheduler — review fix, 22 Aug 26: it used to
+                           appear only once the row was emptied, which made a
+                           filled row look undeletable). Clicks STOP here: the
+                           injected puck() markup matches the document-level
+                           routeClick's `.puck[data-person]` branch, which
+                           would silently toggle the schedule pages' selection
+                           from inside this overlay. */
+                        <div className="ic-secpucks" data-secpucks={p.id} onClick={e => e.stopPropagation()}>
+                          {(p.ids || []).map((id: string) => (
+                            <span key={id} className="ic-secpk">
+                              <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
+                              {sched && <button type="button" className="ic-pkdel" data-pkdel={`${p.id}.${id}`}
+                                aria-label={`Remove ${PEOPLE[id] ? PEOPLE[id].cs : id}`}
+                                onClick={() => writeInputs(() => togglePuckPerson(p.id, id))}>✕</button>}
+                            </span>
+                          ))}
+                          {sched && (
+                            <select className="ic-pkadd" aria-label="Add a person" value=""
+                              onChange={e => { const v = e.target.value; if (v) writeInputs(() => togglePuckPerson(p.id, v)) }}>
+                              <option value="">+ add…</option>
+                              {roster.filter(id => !(p.ids || []).includes(id)).map(id =>
+                                <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+                            </select>
+                          )}
+                          {sched && <button type="button" data-ppdel={p.id}
+                            className="ic-pkdel ic-rowdel" aria-label="Delete pucks row" title="Delete this pucks row"
+                            onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>}
+                        </div>
+                      ) : sched && popPuckEdit === p.id ? (
+                        <input className="ic-poppuck-edit" autoFocus value={puckDraft}
+                          aria-label="Edit planning note" onChange={e => setPuckDraft(e.target.value)}
+                          onBlur={() => {
+                            const t = puckDraft.trim()
+                            if (t && t !== p.text) writeInputs(() => editPlanPuck(p.id, t))
+                            setPopPuckEdit(null)
+                          }}
+                          onKeyDown={blurOnEnter} />
+                      ) : (
+                        <div className="ic-poppuck">
+                          <span className="ic-poppuck-txt">{p.text}</span>
+                          {sched && <>
+                            <button type="button" data-ppedit={p.id} aria-label="Edit note"
+                              onClick={() => { setPopPuckEdit(p.id); setPuckDraft(p.text) }}>✏</button>
+                            <button type="button" data-ppdel={p.id} aria-label="Delete note"
+                              onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>
+                          </>}
+                        </div>
+                      )}
                     </div>
+                  )
+                })}
+              </div>
+            )}
+            {sched && popPuckEdit === '' && (
+              <input className="ic-poppuck-edit" autoFocus value={puckDraft} aria-label="New planning note"
+                placeholder="e.g. brief the new guy"
+                onChange={e => setPuckDraft(e.target.value)}
+                onBlur={() => {
+                  const t = puckDraft.trim()
+                  if (t) writeInputs(() => addPlanPuck(iso, t))
+                  setPopPuckEdit(null); setPuckDraft('')
+                }}
+                onKeyDown={blurOnEnter} />
+            )}
+
+            {/* THE INPUTS, at the BOTTOM (owner, 22 Aug 26 — "have the inputs
+                at the bottom, then the + input button at the very top of all
+                inputs on the top left, a small button"). Everyone may add —
+                page-rights parity with the openAdd seed above, the same reach
+                a member already has on the Inputs table's own + Add. */}
+            <div className="ic-inp-sec">
+              <button type="button" className="abtn sm primary" id="icPopAdd" onClick={() => openAdd(iso)}>+ Input</button>
+              {entries.inputs.length === 0 ? (
+                <div className="ic-pop-empty">No inputs on this day — hold the cell or tap + Input</div>
+              ) : (
+                <div className="ic-pop-rows">
+                  {entries.inputs.map((r: any) => (
+                    <button key={r.iid} type="button" className={'ic-poprow ' + inputTone(r.type)}
+                      data-popiid={r.iid} onClick={() => { setInpEdit(r); notify() }}>
+                      {/* the identity line — callsign, type, and (timed only) the
+                          window pinned right, the same three fields the row always
+                          carried; wrapped now so a remark can sit under it */}
+                      <span className="ic-poprow-top">
+                        <span className="ic-poprow-who">{PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person}</span>
+                        <span className="ic-poprow-lbl">{inpLabel(r)}</span>
+                        {!r.allday && <span className="ic-poprow-win">{hhmm(r.s)}–{hhmm(r.e)}</span>}
+                      </span>
+                      {/* the remark as its own aligned line under the identity
+                          (owner, 22 Aug 26 — "show remarks too and align them
+                          nicely"); absent when the input carries none, so a
+                          remark-less row stays the single tidy line it was */}
+                      {r.remarks && <span className="ic-poprow-rmk">{r.remarks}</span>}
+                    </button>
                   ))}
                 </div>
-                {sched && (popPuckEdit === '' ? (
-                  <input className="ic-poppuck-edit" autoFocus value={puckDraft} aria-label="New planning note"
-                    placeholder="e.g. brief the new guy"
-                    onChange={e => setPuckDraft(e.target.value)}
-                    onBlur={() => {
-                      const t = puckDraft.trim()
-                      if (t) writeInputs(() => addPlanPuck(iso, t))
-                      setPopPuckEdit(null); setPuckDraft('')
-                    }}
-                    onKeyDown={blurOnEnter} />
-                ) : (
-                  <button type="button" className="abtn" id="icAddPuck"
-                    onClick={() => { setPopPuckEdit(''); setPuckDraft('') }}>+ Note</button>
-                ))}
-              </div>
-            )}
-
-            {/* EVERYONE may add — page-rights parity with the openAdd seed
-                above, and the same reach a member already has to file their
-                own input from the Inputs table's own + Add. */}
-            <button type="button" className="abtn primary" id="icPopAdd" onClick={() => openAdd(iso)}>+ Add input</button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -484,26 +598,58 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
           const wk = i % 7 >= 5
           const isToday = iso === todayIso
           const { inputs, pucks } = dayEntries(iso, { fPerson, fType, fSearch })
-          const chips = [
-            ...inputs.map((r: any) => ({ kind: 'input' as const, row: r })),
-            ...pucks.map((p: any) => ({ kind: 'puck' as const, row: p })),
-          ]
-          const shown = chips.slice(0, MAX_CHIPS)
-          const extra = chips.length - shown.length
+          /* THE CELL'S PRIORITY ORDER (owner, 22 Aug 26): the day TITLE, then
+             the sections — notes and tiny pucks, drawn in FULL ("if it fills
+             up the whole day box, so be it") — then the inputs, the lesser
+             priority, as side-by-side mini chips capped at MAX_CHIPS with a
+             +N more. Only the INPUTS are counted against the cap now; the
+             cap used to cover sections too, back when they shared one
+             column. */
+          const shown = inputs.slice(0, MAX_CHIPS)
+          const extra = inputs.length - shown.length
           const day = +iso.slice(8, 10)
           const rmk = DAYRMK[iso]
           return (
             <div key={iso} className={'ic-day' + (isToday ? ' ic-today' : '') + (wk ? ' ic-wk' : '')} data-icday={iso}>
               <div className="ic-num">{day}</div>
+              {/* the day's TITLE — free text typed beside the date in the
+                  popover, allowed to wrap (owner: "it will show up as the
+                  title on the calendar view for mobile and desktop"). Keeps
+                  the .ic-rmk class its tests and store history know it by. */}
               {rmk && <div className="ic-rmk" title={rmk}>{rmk}</div>}
-              {shown.map(c => c.kind === 'input' ? (
-                <div key={'i' + c.row.iid} className={'ic-chip ' + inputTone(c.row.type)} data-iid={c.row.iid} data-icdrag>
-                  {PEOPLE[c.row.person] ? PEOPLE[c.row.person].cs : c.row.person} {inpLabel(c.row)}
-                  {!c.row.allday ? ` ${hhmm(c.row.s)}–${hhmm(c.row.e)}` : ''}
+              {pucks.map((p: any) => p.kind === 'pucks' ? (
+                /* a pucks section as a row of TINY person chips, CAT-tinted
+                   from the same QCOLOR ladder the Quals page uses */
+                <div key={'p' + p.id} className="ic-pks" data-pid={p.id} data-icdrag>
+                  {(p.ids || []).map((id: string) => {
+                    const per = PEOPLE[id]
+                    const col = per && QCOLOR[per.q]
+                    /* the Quals qmini's own colour pairing (QualsPage.tsx):
+                       white text on every CAT fill except the pale C/B,
+                       which carry dark; no CAT (ground crew, q:'') → the
+                       personnel white with dark text, the same colour their
+                       pucks wear everywhere else. The default --edge-2 grey
+                       under dark text was unreadable (review fix, 22 Aug 26). */
+                    const dark = !col || per.q === 'C' || per.q === 'B'
+                    return <span key={id} className="ic-pk" style={{ background: col || 'var(--pers)', color: dark ? '#04222b' : '#fff' }}>{per ? per.cs : id}</span>
+                  })}
                 </div>
               ) : (
-                <div key={'p' + c.row.id} className="ic-chip plan" data-pid={c.row.id} data-icdrag>{c.row.text}</div>
+                <div key={'p' + p.id} className="ic-chip plan" data-pid={p.id} data-icdrag>{p.text}</div>
               ))}
+              {shown.length > 0 && (
+                /* inputs side by side (owner: "coloured pucks arranged side by
+                   side, just showing the callsign and the input") — the times
+                   live in the popover; a SANS record reads as its F/O/A
+                   letters on the purple chip, never the words. */
+                <div className="ic-inrow">
+                  {shown.map((r: any) => (
+                    <div key={'i' + r.iid} className={'ic-chip ' + inputTone(r.type)} data-iid={r.iid} data-icdrag>
+                      {PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person} {isSansAvail(r.type) ? (sansLetters(r) || 'F/O/A') : inpLabel(r)}
+                    </div>
+                  ))}
+                </div>
+              )}
               {extra > 0 && <button type="button" className="ic-more" data-icmore={iso}
                 onClick={() => { setPopIso(iso); setPopPuckEdit(null) }}>+{extra} more</button>}
             </div>

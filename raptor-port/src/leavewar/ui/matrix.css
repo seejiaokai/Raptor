@@ -1258,4 +1258,37 @@
 .mx-banded .mxbody .bal,
 .mx-banded .mxbody tr.grp td.grphd { position: static; }
 
+/* The desktop horizontal scrollbar, fixed to the foot of the SCREEN (owner,
+   22 Aug 26 — "on desktop the horizontal scroll is not tagged to the screen. I
+   need to scroll all the way down to scroll"). `.mx-wrap` scrolls sideways with
+   no height cap (the one-vertical-scroll rule at the top of this file), so its
+   native scrollbar rides the FOOT of a year-tall grid, out of reach. This proxy
+   sits at the bottom of the viewport and drives it. Its left/width are set from
+   JS to overlay the grid; the inner spacer is as wide as the grid's content, so
+   the browser sizes the thumb for free. The webkit rules force a visible,
+   grabbable thumb even where the OS uses hover-only overlay scrollbars — the
+   whole point is that it is always THERE. z below the sheets (79/80) and the
+   phone frozen header (55); above the grid. Phone gets none of this (Matrix only
+   mounts it off a desktop measurement). */
+.mx-hbar {
+  position: fixed;
+  bottom: 0;
+  height: 15px;
+  z-index: 50;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--panel-2);
+  border-top: 1px solid var(--edge);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, .35);
+  scrollbar-width: thin;
+}
+.mx-hbar-in { height: 1px; }
+.mx-hbar::-webkit-scrollbar { height: 13px; }
+.mx-hbar::-webkit-scrollbar-track { background: var(--panel-2); }
+.mx-hbar::-webkit-scrollbar-thumb {
+  background: var(--edge-2);
+  border-radius: 7px;
+  border: 3px solid var(--panel-2);
+}
+
 }

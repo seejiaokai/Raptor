@@ -1935,62 +1935,110 @@ test('a phone nudge moves a row and the board still reads correctly', async ({ p
   expect(await first()).not.toBe(was)
 })
 
-/* The board's inputs-band remarks cell is a ONE-LINE truncated summary whose
-   full text lives in its title tooltip — not wrapping prose. That was not
-   obvious from the stylesheet: the wrap rule (`overflow-wrap:anywhere`)
-   listed `.sbi-rmk` while the markup emits `.sbi-rm`, a typo carried over
-   verbatim from the original page, so for the whole life of both builds the
-   rule matched nothing. Correcting the spelling was measured first and
-   changes NOTHING — `white-space:nowrap` leaves no soft wrap opportunity for
-   the property to act on, at either width — so the dead name was deleted
-   instead (9 Aug 26). This test is what stops that being re-argued, or
-   re-"fixed" into a rule that does nothing: it asserts the cell's real
-   contract in a real browser, which is the only place it is visible at all
-   (jsdom reports every rect as 0x0 and loads no stylesheet).
-   The remark is one 80-character unbreakable word on purpose: a wrappable
-   sentence would pass this test even with the nowrap lost. */
-test('a long unbreakable remark stays one clipped line and keeps its full text in the tooltip', async ({ page }) => {
-  const LONG = 'RETURNINGFROMDETACHMENTVIAPAYALEBARANDTENGAHWITHNOFIXEDTIMEOFARRIVALPLEASECONFIRM'
-  for (const size of [DESK, PHONE]) {
-    await page.setViewportSize(size)
-    await login(page); await go(page, 'editsched')
-    await page.evaluate(() => (window as any).openScheduler(0))
-    /* `#sbInputs`, not `#sbBoard`: the two input PANELS inside the board draw
-       their rows as ground-programme rows now (owner, 10 Aug 26), so the
-       compact `.sbi-row` this cell belongs to lives in the day's inputs strip
-       — which is where it always was, and where the clipping contract below
-       is still exactly the contract. */
-    await page.waitForSelector('#sbInputs .sbi-row .sbi-rm')
-    await page.evaluate((t) => {
-      const w = window as any
-      w.INPUTS.filter((i: any) => w.inputCoversDate(i, w.DAYS[0].dt)).forEach((i: any) => { i.remarks = t })
-      w.renderScheduler()
-    }, LONG)
-    await page.waitForTimeout(300)
-    const m = await page.evaluate(() => {
-      const el = document.querySelector('#sbInputs .sbi-row .sbi-rm') as HTMLElement
-      const row = el.parentElement as HTMLElement
-      const cs = getComputedStyle(el)
-      return {
-        text: el.textContent, title: el.title,
-        h: Math.round(el.getBoundingClientRect().height),
-        ws: cs.whiteSpace, te: cs.textOverflow, ov: cs.overflowX,
-        rowW: Math.round(row.getBoundingClientRect().width), rowScrollW: row.scrollWidth,
-      }
+/* ---- the 22 Aug 26 chrome batch — five geometry/paint contracts jsdom
+   cannot see (0x0 rects, no stylesheet), pinned here in the real browser ---- */
+
+test('the desktop day sign-off is ONE row of four equal pills', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page); await go(page, 'editsched')
+  const m = await page.evaluate(() => {
+    const so = document.querySelector('#page-editsched .signoff.day-sign')!
+    const pills = [...so.querySelectorAll('.sgn')].map(p => {
+      const r = p.getBoundingClientRect(); return { w: Math.round(r.width), top: Math.round(r.top) }
     })
-    const tag = size === DESK ? 'desktop' : 'phone'
-    expect(m.text, `${tag}: sanity — the long remark really is the one being measured`).toBe(LONG)
-    expect(m.title, `${tag}: the full text is reachable in the tooltip, since the cell clips it`).toBe(LONG)
-    /* ONE line. A wrapped 80-character word would be several times this at
-       11px/10.5px, so a lost nowrap fails here rather than passing quietly. */
-    expect(m.h, `${tag}: the remark stays on a single line`).toBeLessThanOrEqual(20)
-    expect(m.ws, `${tag}: nowrap is the mechanism, not an accident of the text`).toBe('nowrap')
-    expect(m.te, `${tag}: clipped with an ellipsis, not cut mid-glyph`).toBe('ellipsis')
-    expect(m.ov, `${tag}: the overflow is hidden, so the ellipsis can be drawn`).toBe('hidden')
-    /* and the row it sits in gains no sideways scroll from it */
-    expect(m.rowScrollW, `${tag}: the remark does not push its own row wider`).toBeLessThanOrEqual(m.rowW + 1)
-  }
+    return { rows: new Set(pills.map(p => p.top)).size, widths: pills.map(p => p.w) }
+  })
+  expect(m.widths.length, 'four pills').toBe(4)
+  expect(m.rows, 'all four on one row').toBe(1)
+  /* equal shares of the row — flex 1 1 0, not luck: the widest and narrowest
+     stay within a border's worth of each other */
+  expect(Math.max(...m.widths) - Math.min(...m.widths)).toBeLessThanOrEqual(8)
 })
+
+test('the board title is a fixed slot, so the day chips do not shift between days', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(2)) // Wednesday, the widest name
+  await page.waitForSelector('.schedboard .sb-days')
+  const read = () => page.evaluate(() => ({
+    title: Math.round(document.querySelector('.schedboard .sb-title')!.getBoundingClientRect().width),
+    daysLeft: Math.round(document.querySelector('.schedboard .sb-days')!.getBoundingClientRect().left),
+  }))
+  const wed = await read()
+  await page.evaluate(() => (window as any).openScheduler(4)) // Friday, the narrowest
+  await page.waitForTimeout(150)
+  const fri = await read()
+  expect(wed.title, 'the slot holds its width').toBe(fri.title)
+  expect(wed.daysLeft, 'the chips stay put').toBe(fri.daysLeft)
+})
+
+test('Ground and Common Programme share the sims columns on desktop', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page); await go(page, 'editsched')
+  const m = await page.evaluate(() => {
+    const day = document.querySelector('#page-editsched .day')!
+    const ppl = (sel: string) => {
+      const row = day.querySelector(sel); const p = row?.querySelector('.ppl')
+      return p ? { left: Math.round(p.getBoundingClientRect().left), w: Math.round(p.getBoundingClientRect().width) } : null
+    }
+    return { sim: ppl('.sec-sim .pl-row'), grnd: ppl('.sec-grnd .pl-row'), common: ppl('.allhands .ah-row') }
+  })
+  expect(m.sim && m.grnd && m.common, 'all three rows render').toBeTruthy()
+  expect(m.grnd!.left, 'ground People starts where sims does').toBe(m.sim!.left)
+  expect(m.common!.left, 'common People starts where sims does').toBe(m.sim!.left)
+  /* two pucks side by side: the column holds at least 2×74px + the gap */
+  expect(m.grnd!.w).toBeGreaterThanOrEqual(152)
+  expect(m.common!.w).toBeGreaterThanOrEqual(152)
+})
+
+test('the top bar wears the edit tint on Edit Schedule only', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page)
+  const bg = () => page.evaluate(() => getComputedStyle(document.querySelector('.topbar')!).backgroundImage)
+  const view = await bg()
+  await go(page, 'editsched')
+  const edit = await bg()
+  expect(edit, 'the two modes paint differently').not.toBe(view)
+  await go(page, 'viewsched')
+  expect(await bg(), 'and View-only keeps the neutral bar').toBe(view)
+})
+
+test('the Leave War desktop grid grows a fixed bottom scrollbar that drives it', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page); await go(page, 'leavewar')
+  await page.waitForSelector('.mx-wrap')
+  /* scroll the PAGE down so the grid's own scrollbar is below the fold */
+  await page.evaluate(() => window.scrollBy(0, 400))
+  await page.waitForTimeout(200)
+  const m = await page.evaluate(() => {
+    const el = document.querySelector('.mx-hbar')
+    if (!el) return null
+    const r = el.getBoundingClientRect()
+    return { bottom: Math.round(r.bottom), vh: window.innerHeight }
+  })
+  expect(m, 'the proxy scrollbar appears').toBeTruthy()
+  expect(m!.bottom, 'pinned to the foot of the screen').toBe(m!.vh)
+  /* it DRIVES the grid, and following the grid never loops */
+  const sync = await page.evaluate(() => {
+    const h = document.querySelector('.mx-hbar')!, w = document.querySelector('.mx-wrap')!
+    h.scrollLeft = 500
+    h.dispatchEvent(new Event('scroll'))
+    return { h: h.scrollLeft, w: w.scrollLeft }
+  })
+  expect(sync.w, 'the grid follows the proxy').toBe(sync.h)
+  /* and it never leaks onto the Raptor pages */
+  await go(page, 'viewsched')
+  expect(await page.$('.mx-hbar'), 'gone off the Leave War page').toBeFalsy()
+})
+
+/* TOMBSTONE (22 Aug 26): "a long unbreakable remark stays one clipped line"
+   gated the board's read-only "Inputs · day" summary band's `.sbi-rm` cell —
+   nowrap + ellipsis + tooltip, and the dead `.sbi-rmk` wrap-rule story
+   (9 Aug 26). The band itself was removed from the board at the owner's ask
+   ("remove this inputs bar"), so the cell renders nowhere and the contract
+   has no surface; `sbInputsHTML` survives only as a probe-bridge builder.
+   The board's LIVE input rows wrap by design (the 20 Aug textarea work,
+   gated by their own tests below). */
 
 /* finding #1 (whole-branch review, 9 Aug 26): sbGrip() used to return '' for
    a read-only board, but every row template in scheduler.css unconditionally
