@@ -301,9 +301,11 @@ because the flying line's own cell is three fixed 46px time tracks plus two
 the Role/Item cell across the first PAIR, which is what leaves row 1
 (Role | Start | End) pixel-identical.
 
-**Common Programme is deliberately excluded** (`.cprog` keeps its own
-three-track phone grid and a 98px remarks box) — the owner asked for "all
-except common programme". Pinned by e2e, in both directions.
+**Common Programme rides the same `c6r` grid** (owner, 22 Aug 26 — reversed the
+earlier "all except common programme"): its old Detail/location column was
+dropped and the row collapsed onto `c6r`, so on a phone its remarks box aligns
+with the flying line exactly like the duty/sim/ground rows. There is no longer a
+`.cprog` shape — every board list is `c6r`. Pinned by e2e.
 
 That span is applied BY POSITION (`:nth-child(2)`), not by class: every c6r row
 reserves a leading grip track, so child 2 is always the name cell — but a
@@ -755,12 +757,13 @@ edit week now:
   row the reveal used to save: a box that shares the pucks' line costs no extra
   height, so hiding it bought nothing worth the "+".
   - **Applies to every board section that carries remarks** — duties, sims
-    (AMT / OFT), ground (`.sb-arow.c6r`) and, new in this pass, Common Programme
-    (`.sb-arow.cprog`) and the promoted Personal-Inputs / Unavailable input rows.
+    (AMT / OFT), ground, Common Programme and the promoted Personal-Inputs /
+    Unavailable input rows. All of them are `.sb-arow.c6r` now (Common Programme
+    dropped its Detail column and its own `cprog` grid on 22 Aug 26).
     `board-html.ts`'s `sbRmk` always emits a plain `.rmkin` with a faded
     `Remarks` placeholder — no `.empty`, no per-row state.
-  - **The phone TEMPLATE must be restated for each two-class row modifier.**
-    `.sb-arow.c6r` and `.sb-arow.cprog` each outrank the one-class phone base
+  - **The phone TEMPLATE must be restated for the two-class row modifier.**
+    `.sb-arow.c6r` outranks the one-class phone base
     grid, and a media query adds no specificity, so the desktop template wins at
     390px and crushes the row unless the phone block restates the three-track
     grid AND places `.ppl` at `grid-column:1/2`, `.rmkin` at `2/-1`. `.sb-wide`
@@ -1032,7 +1035,7 @@ routes `data-air`):
 - **Remarks are always drawn beside the pucks** — the `data-rmkadd` "R" reveal
   is gone (owner, 16 Aug 26; see the "every remarks box rides the pucks' row"
   contract above). `sbRmk` emits a plain `.rmkin` with a faded `Remarks`
-  placeholder on every c6r / cprog / input row, empty or not. **The flying line's
+  placeholder on every c6r / input row, empty or not. **The flying line's
   own always-visible remarks box (`.nts` in `board.ts`) carries the same faded
   `Remarks` placeholder** (owner,
   16 Aug 26) — so an empty one reads the same way. A STANDALONE line keeps its

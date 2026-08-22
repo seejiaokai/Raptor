@@ -3566,7 +3566,7 @@ test('the phone board clears its parked aircrew tab', async ({ page }) => {
    Both are invisible to Vitest — jsdom reports every rect 0x0, so it can prove
    which element was emitted and nothing about where it sits or how tall it got.
    These are the measurements. */
-test('the phone board: duty/sim/ground remarks align with the flying line, Common Programme does not', async ({ page }) => {
+test('the phone board: duty/sim/ground AND Common Programme remarks align with the flying line', async ({ page }) => {
   await page.setViewportSize(PHONE)
   await login(page)
   await go(page, 'editsched')
@@ -3579,28 +3579,31 @@ test('the phone board: duty/sim/ground remarks align with the flying line, Commo
     const W = (e: Element) => Math.round(e.getBoundingClientRect().width)
     const fly = document.querySelector('#sbBoard .sb-line .nts')!
     const c6r = [...document.querySelectorAll('#sbBoard .sb-arow.c6r .rmkin')]
-    const prog = [...document.querySelectorAll('#sbBoard .sb-arow.cprog .rmkin')]
+    const prog = [...document.querySelectorAll('#sbBoard .sb-panel.prog .sb-arow.c6r .rmkin')]
     return {
       flyLeft: L(fly), flyWidth: W(fly),
       c6rCount: c6r.length,
       c6rLefts: [...new Set(c6r.map(L))],
       c6rWidths: [...new Set(c6r.map(W))],
+      progCount: prog.length,
       progLefts: [...new Set(prog.map(L))],
+      progWidths: [...new Set(prog.map(W))],
     }
   })
 
   expect(m.c6rCount, 'the day draws duty/sim/ground rows').toBeGreaterThan(0)
   /* ONE left edge across every c6r panel, and it is the flying line's */
-  expect(m.c6rLefts, 'every duty/sim/ground remarks box starts at one x').toHaveLength(1)
+  expect(m.c6rLefts, 'every remarks box starts at one x').toHaveLength(1)
   expect(m.c6rLefts[0], 'and that x is the flying line\'s remarks box').toBe(m.flyLeft)
   expect(m.c6rWidths[0], 'same width, so the right edges agree too').toBe(m.flyWidth)
 
-  /* Common Programme was deliberately excluded from the ask, so it must NOT
-     have moved with the others — this is the half a later "consistency" pass
-     is most likely to break */
-  if (m.progLefts.length) {
-    expect(m.progLefts[0], 'Common Programme keeps its own narrower box').toBeGreaterThan(m.flyLeft)
-  }
+  /* Common Programme now rides the SAME c6r grid (owner, 22 Aug 26 — reversed
+     the earlier "all except common programme"), so its remarks box aligns with
+     the flying line exactly like the duty/sim/ground rows do. */
+  expect(m.progCount, 'the Common Programme draws its rows').toBeGreaterThan(0)
+  expect(m.progLefts, 'its remarks all start at one x too').toHaveLength(1)
+  expect(m.progLefts[0], 'and that x is the flying line\'s').toBe(m.flyLeft)
+  expect(m.progWidths[0], 'same width as the flying line\'s box').toBe(m.flyWidth)
 })
 
 test('the phone board: a long remark grows its box instead of scrolling inside it', async ({ page }) => {

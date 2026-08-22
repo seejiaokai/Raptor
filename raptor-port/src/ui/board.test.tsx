@@ -1782,7 +1782,7 @@ describe('Common Programme remarks (16 Aug 26)', () => {
   afterAll(async () => {
     await act(async () => { DAYS[0].allhands[0].rmks = rmks0; notify() })
   })
-  const progRow = (ri: number) => $(`#sbBoard .sb-panel.prog .sb-arow.cprog[data-move="mv:p.0.${ri}"]`)
+  const progRow = (ri: number) => $(`#sbBoard .sb-panel.prog .sb-arow.c6r[data-move="mv:p.0.${ri}"]`)
   it('a programme row renders a remarks input bound to ap:di.ri.rmks', () => {
     const row = progRow(0)
     expect(row, 'a Common Programme row is present').toBeTruthy()
@@ -1792,7 +1792,7 @@ describe('Common Programme remarks (16 Aug 26)', () => {
     expect(rmk.getAttribute('placeholder')).toBe('Remarks')
   })
   it('the header carries a Rmks column', () => {
-    const cols = $('#sbBoard .sb-panel.prog .sb-acols.cprog')
+    const cols = $('#sbBoard .sb-panel.prog .sb-acols.c6r')
     expect(cols, 'the programme header exists').toBeTruthy()
     expect(cols.textContent).toContain('Rmks')
   })
