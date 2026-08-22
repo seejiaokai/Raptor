@@ -1115,15 +1115,21 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
    line rather than wrapping cleanly under it. */
 .sb-pub{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:0 0 100%;margin-top:4px}
 /* the per-day strip, in the day's own header. Four names, two rows on a phone,
-   and the day's Publish button stays locked until all four carry one. */
+   and the day's Publish button stays locked until all four carry one.
+   The scheduler board's sign-off (`.board-sign`) shares this same compact,
+   two-up grid (owner, 22 Aug 26 — "make the board sign-off similar to the one
+   in edit schedule"): the pills flex-grow and wrap two per row instead of each
+   taking a full-width line of its own. Only the INNER layout is shared — the
+   board keeps its own container (`#sbSignBar` margin, `position:static`, the
+   `.sb-pub` publish strip on its own row below). */
 .signoff.day-sign{margin:8px 10px 0;padding:6px 8px;gap:4px;background:var(--panel-2);border-color:var(--edge)}
-.signoff.day-sign .so-h{font-size:8.5px;letter-spacing:.08em;flex:0 0 100%;margin:0 0 1px}
-.signoff.day-sign .sgn{padding:2px 3px 2px 7px;gap:4px;flex:1 1 auto;min-width:0}
-.signoff.day-sign .sgn>.k{font-size:9px}
-.signoff.day-sign .sgn>.v{font-size:10.5px;min-width:52px;padding:1px 15px 1px 3px}
-.signoff.day-sign .sgn::after{right:6px;font-size:8px}
-.signoff.day-sign .so-state{flex:0 0 100%;margin-left:0;font-size:9.5px;padding-top:1px}
-.signoff.day-sign button.so-clear{padding:2px 6px;font-size:9.5px}
+.signoff.day-sign .so-h,.signoff.board-sign .so-h{font-size:8.5px;letter-spacing:.08em;flex:0 0 100%;margin:0 0 1px}
+.signoff.day-sign .sgn,.signoff.board-sign .sgn{padding:2px 3px 2px 7px;gap:4px;flex:1 1 auto;min-width:0}
+.signoff.day-sign .sgn>.k,.signoff.board-sign .sgn>.k{font-size:9px}
+.signoff.day-sign .sgn>.v,.signoff.board-sign .sgn>.v{font-size:10.5px;min-width:52px;padding:1px 15px 1px 3px}
+.signoff.day-sign .sgn::after,.signoff.board-sign .sgn::after{right:6px;font-size:8px}
+.signoff.day-sign .so-state,.signoff.board-sign .so-state{flex:0 0 100%;margin-left:0;font-size:9.5px;padding-top:1px}
+.signoff.day-sign button.so-clear,.signoff.board-sign button.so-clear{padding:2px 6px;font-size:9.5px}
 /* DESKTOP: all four role pills on ONE row (owner, 22 Aug 26 — "align all these
    into 1 row. so 4 in 1 row"). The day column is only ~530px, too narrow for
    four horizontal "LABEL — name —" pills (they wrap 3 + 1), and squeezing them
@@ -1132,7 +1138,8 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
    four share the row equally, and every name stays fully readable. The header
    and the "N to sign" state keep their own full-width lines. Scoped to
    `.day-sign` — the board's own sign-off is ~1400px and already fits four
-   across as horizontal pills, so it is left alone. */
+   across as horizontal pills, so it is left alone (and the board-sign share
+   above is phone-shaped: its own desktop row is untouched by this block). */
 @media (min-width:821px){
   .signoff.day-sign{flex-wrap:wrap}
   .signoff.day-sign .so-h{flex:1 0 100%;margin:0 0 3px}
@@ -1142,6 +1149,16 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
   .signoff.day-sign .sgn::after{top:auto;bottom:6px}
   .signoff.day-sign button.so-clear{flex:0 0 auto}
   .signoff.day-sign .so-state{flex:1 1 auto;margin-left:auto}
+}
+/* Force EXACTLY two pills per row on the board ON A PHONE. The edit-schedule
+   strip lands its 2x2 by content width alone — its day card is ~14px wider than
+   the board's sign panel, just enough that the longer PLANNED BY / APPROVED BY
+   labels fit two-up. The board's panel is that bit narrower, so on auto basis
+   those two wrap one-per-line. Pinning a 50% flex-basis makes the grid
+   width-independent: two pills fill a row, the rest wrap in pairs. Phone-scoped
+   so the desktop board keeps the content-width row the edit week also shows. */
+@media (max-width:820px){
+  .signoff.board-sign .sgn{flex:1 1 calc(50% - 3px)}
 }
 /* not yet signed off — the same button, darkened. Deliberately not `opacity`:
    a half-transparent cyan over a dark panel reads as a rendering fault, a solid
@@ -1810,7 +1827,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    the drawer's 440, the airspace popup's 460, the modal's 470 (see the
    MODALS banner below for that ladder in full). Desktop-first; the phone
    form follows in its own media block. */
-.inpcal{position:fixed;inset:0;z-index:350;background:var(--bg);display:flex;flex-direction:column}
+/* overflow:hidden clips the month-change slide (InputsCal.tsx animates the grid
+   in from ±28px) so an off-edge page never shows a scrollbar; the day popover is
+   its own position:fixed layer, so it escapes this clip and is unaffected. */
+.inpcal{position:fixed;inset:0;z-index:350;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 .ic-head{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--edge);
   background:var(--panel);flex-wrap:wrap}
 /* every nav/action button here rides .abtn's own look, just enlarged to a
@@ -2191,9 +2211,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   /* the seg (with the rolling week buttons) is desktop-only; on a phone the lone
      calendar icon carries week-jumping and the swipe carries day-to-day. The view
      page's week nav now rides inside .filters as .wkseg, so hide that (and its
-     divider) too — the .wknav-m calendar + swipe still carry navigation. */
+     divider) too — the .wknav-m calendar + swipe still carry navigation.
+     The icon sits far LEFT, aligned with the DRAFT banner and the day cards
+     below it (owner, 22 Aug 26), with a bottom gap so it never touches that
+     grey box. */
   #page-viewsched .wkseg,#page-viewsched .wkdiv{display:none}
-  .wknav-m{display:flex;justify-content:flex-end;padding:8px 12px 0}
+  .wknav-m{display:flex;justify-content:flex-start;padding:8px 20px 10px}
   /* the qualification filters are the fastest way to read a phone screen —
      "who here is a supervisor / an instructor / SANS" — so instead of hiding
      the row it becomes ONE horizontally scrollable line with the label pinned */
@@ -2304,18 +2327,33 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .fcell{padding:3px 2px 4px}
   .cols.formcols span{padding:3px 4px}
   .daydots{display:flex}
-  /* Columnar lists (programme / duties / sims / ground / inputs) all render 1:1 too.
-     Give START / END their own breathing room so the puck never butts against END. */
-  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:minmax(0,1fr) 44px 44px minmax(calc(var(--puck-w) + 14px),1fr);gap:5px 11px}
-  /* Common Programme's Rmks column has no room beside three text columns and the
-     pucks at 390px (unlike the duties list, which stacks its two times into one
-     column to free the space), so on a phone it drops to a full-width strip
-     under the row. The heading is hidden and an empty read-only cell (.rk-e)
-     takes no line; an edit-mode blank stays, since it is the only place to tap
-     to write one. */
-  .allhands .ah-cols>:nth-child(5){display:none}
-  .allhands .ah-row .rmk{grid-column:1/-1;grid-row:auto;padding-top:0;font-size:9px}
-  .allhands .ah-row .rmk.rk-e{display:none}
+  /* Columnar lists (programme / duties / sims / ground / inputs) all render 1:1 too. */
+  /* COMMON PROGRAMME now stacks its two times into one TIME column on a phone,
+     exactly as the duties / sims / ground lists (.pl-row) do — which frees the
+     room for RMKS to sit BESIDE the pucks instead of dropping to a strip below
+     (owner, 22 Aug 26 — "make the common programme layout similar to" those).
+     Row becomes NAME | TIME | PEOPLE | RMKS. Placed by POSITION, not by class:
+     the .ah-cols markup is byte-compared against the reference
+     (html.test.ts:noAhRmk), so it stays Name/Start/End/People/Rmks, and each
+     .ah-row stays .nm, start-.t, end-.t, .ppl, .rmk — the positions are fixed. */
+  /* the .plist.one proportions (wide NAME, one-puck PEOPLE): the programme's
+     names are long (STANDARDISATION at 104px) and its people cells are usually
+     one body, so NAME takes the room — the same call the flying table made
+     (CLAUDE.md, 12 Aug 26 name-priority). A rare second body wraps under the
+     first, exactly as it does on the ground list. */
+  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:132px 34px calc(var(--puck-w) + 2px) minmax(0,1fr);gap:3px 5px;padding:4px 6px}
+  .allhands .ah-cols>:nth-child(1){grid-column:1}
+  .allhands .ah-cols>:nth-child(2){grid-column:2;font-size:0}
+  .allhands .ah-cols>:nth-child(2)::before{content:'TIME';font-size:9px}
+  .allhands .ah-cols>:nth-child(3){display:none}
+  .allhands .ah-cols>:nth-child(4){grid-column:3}
+  .allhands .ah-cols>:nth-child(5){grid-column:4}
+  .allhands .ah-row>.nm{grid-column:1;grid-row:1/span 2}
+  .allhands .ah-row>:nth-child(2){grid-column:2;grid-row:1}
+  .allhands .ah-row>:nth-child(3){grid-column:2;grid-row:2;padding-top:0}
+  .allhands .ah-row .ppl{grid-column:3;grid-row:1/span 2;gap:2px}
+  .allhands .ah-row .rmk{grid-column:4;grid-row:1/span 2;font-size:8.5px;padding-top:2px;overflow:hidden}
+  .allhands .ah-row .rmk .ntx{min-width:0}
   /* Duties / sims / ground / inputs on a phone: remarks sit to the RIGHT of the pucks
      here too, not on a strip below — same as the flying table, same as the desktop.
      The trick that pays for it is stacking START over END into one TIME column instead
@@ -2370,9 +2408,6 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    collide checks still passed) but a fair warning that a tablet was being
    re-proportioned to fix a phone. A tablet's even split was never the
    complaint, so it keeps it. */
-@media (max-width:480px){
-  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:minmax(0,1fr) 44px 44px calc(var(--puck-w) + 8px)}
-}
 @media (max-width:374px){
   .form,.cols.formcols{grid-template-columns:34px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
   .form .bto b,.form .bto span,.form .ld{font-size:8.5px}
@@ -3272,15 +3307,11 @@ button.sanscard:hover{border-color:var(--accent)}
    that are not wrapping at all, which is most of them. Wrapped lines are
    correspondingly tight; that is the trade and it favours the common case. */
 .sb-arow textarea,.sb-line textarea,.sb-psub textarea{line-height:12px}
-/* the c6r grid — duty / sim / ground rows: Item | Start | End | People | Rmks | ctl.
-   Distinct from the prog grid (whose column 2 is Detail), so it carries its own
-   modifier instead of bending the shared rule. */
+/* the c6r grid — Common Programme / duty / sim / ground / input rows all share it:
+   Item | Start | End | People | Rmks | ctl. The Common Programme used to carry an
+   extra DETAIL column (its own `cprog` grid), but the owner dropped it (22 Aug 26)
+   so every board list is now the one shape — nothing here is non-c6r any more. */
 .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:18px 1.3fr 52px 52px minmax(96px,1.2fr) 1fr 92px}
-/* Common Programme grew a Rmks column (owner, 16 Aug 26). It is the board's one
-   non-c6r row — Item | Detail | Start | End | People | ctl — so the remarks cell
-   slots in before the control strip on its own eight-track grid, the same minmax
-   the c6r lists give their Rmks. */
-.sb-acols.cprog,.sb-arow.cprog{grid-template-columns:18px 1.5fr 1.1fr 52px 52px minmax(96px,1.1fr) minmax(96px,1fr) 92px}
 /* THE AMT BOX CREW — a fixed two-column FCP | RCP grid (owner, 13 Aug 26). Seats
    pair left-to-right (FCP left, RCP right) and stack top-to-bottom, positions
    1..n down; an emptied seat keeps its slot (the pax-hole rule) so the pairing
@@ -3734,33 +3765,12 @@ button.sanscard:hover{border-color:var(--accent)}
   .schedboard:not(.sb-wide) .sb-line>.lin,.schedboard:not(.sb-wide) .sb-line>.msn,
   .schedboard:not(.sb-wide) .sb-line>.tm,.schedboard:not(.sb-wide) .sb-line>.sb-bcell{align-self:end}
   .sb-acols,.sb-arow{grid-template-columns:1fr 46px 46px;gap:6px}
+  /* the base header hides its 3rd / 6th / 7th cells on a phone; c6r reverts its
+     Start (child 3) and hides its People (child 5) in its own block below. Every
+     board list is c6r now (the Common Programme's old Detail-column `cprog` shape
+     is gone, 22 Aug 26), so there is no non-c6r row left to place by `order`. */
   .sb-acols>:nth-child(3),.sb-acols>:nth-child(6),.sb-acols>:nth-child(7){display:none}
   .sb-arow .ppl,.sb-arow .lctl{grid-column:1 / -1}
-  /* THE ROW HAS TO MATCH ITS OWN HEADINGS (owner, 12 Aug 26 — "the END time
-     falls onto its own line"). The header rule above hides DETAIL on a phone,
-     leaving three headings — Item | Start | End — but the ROW went on emitting
-     five cells into that three-column track, so auto-placement filled line 1
-     with Item, DETAIL and Start: the detail box sat under the START heading,
-     Start sat under END, and End was pushed onto a line of its own 228px wide,
-     reading as a second nameless field. Measured at 390px before the fix: an
-     empty detail box 46px wide under "START", `0745` under "END", `0815`
-     stranded below.
-     `order` is what fixes it rather than a re-shuffled template, because the
-     cells' SOURCE order is fixed by the desktop grid they also serve: the two
-     times are pulled up beside the item, and detail drops to its own
-     full-width strip under them, where a phone has the room to read it. The
-     defaults stay 0 for prog rows only — c6r's own cells are placed by the
-     block below and are untouched here. */
-  /* EVERY rule here is scoped `:not(.c6r)`, and that is load-bearing rather
-     than tidy: a c6r row's children are role, str, end, PEOPLE, remarks,
-     controls, and its remarks box is an `.ain` like the programme row's
-     detail box. Ordering by class alone therefore reached into the duty,
-     sim and ground rows and lifted their remarks above their people. Scope
-     it, or fixing one row shape silently re-lays out three others. */
-  .sb-arow:not(.c6r)>.atm{order:0}
-  .sb-arow:not(.c6r)>.ain:nth-of-type(2){order:1;grid-column:1 / -1}
-  .sb-arow:not(.c6r)>.ppl{order:2}
-  .sb-arow:not(.c6r)>.lctl{order:3}
   /* People stack two-wide, like the week's PEOPLE column (owner, 8 Aug 26:
      the AMT BOX's eight pax wrapped four abreast on a phone, reading as two
      unrelated ranks of names where the week shows the same row as vertical
@@ -3794,9 +3804,10 @@ button.sanscard:hover{border-color:var(--accent)}
      50 + 6 + 46 + 6 + 46 = 154, matching the flying line exactly, while
      row 1 lays out pixel-identically (Role 28→244, Start 250→296, End
      302→348 at 390px — verified unchanged after the change).
-     Common Programme is deliberately NOT included (owner: "do this for all
-     except common programme") — `.cprog` keeps its own three-track phone
-     grid and its 98px remarks below.
+     Common Programme now rides this same grid: the owner's earlier "do this
+     for all except common programme" was reversed (22 Aug 26 — "make the
+     common programme mobile layout similar to" the ground list), so its rows
+     are plain c6r and inherit everything here rather than a `cprog` of their own.
      THE ONE COST, measured before/after rather than reasoned about: a puck
      PAIR is 152px, so a pair plus the 6px gap plus the 154px remarks needs
      312px of row, and the row has the viewport less 70px of chrome. At
@@ -3835,20 +3846,6 @@ button.sanscard:hover{border-color:var(--accent)}
   .sb-inputs{max-height:none;overflow:visible}
   .sbi-row{grid-template-columns:84px var(--puck-w) 1fr;gap:7px}
   .sbi-row .sbi-rm{grid-column:1 / -1;font-size:10.5px;color:var(--ink-3)}
-  /* cprog needs its phone TEMPLATE restated, not just its cells placed — the
-     same register trap c6r documents above: `.sb-arow.cprog` (two classes)
-     outranks the phone base `.sb-acols,.sb-arow` (one), and a media query adds
-     no specificity, so the eight-track DESKTOP grid kept winning at 390px and
-     crushed the Item box to a stub while the pucks and remarks overlapped. */
-  .sb-acols.cprog,.sb-arow.cprog{grid-template-columns:1fr 46px 46px}
-  /* Common Programme's remarks ride the pucks' row too, aligned under Start —
-     People to the left (the Item track), remarks the two time tracks right.
-     cprog is the board's only non-c6r row; its remarks input is a third .ain,
-     so it needs order:2 to fall onto the People row rather than row 1, and the
-     trailing (control) header cell is hidden like People's and Detail's. */
-  .sb-arow.cprog>.ppl{grid-column:1 / 2}
-  .sb-arow.cprog>.rmkin{order:2;grid-column:2 / -1;align-self:start}
-  .sb-acols.cprog>:nth-child(8){display:none}
 }
 /* ---- the board in its DESKTOP layout on a phone -------------------------------
    Opened from a day's date in edit mode. The phone stack is right for quick
@@ -3933,12 +3930,6 @@ button.sanscard:hover{border-color:var(--accent)}
    grid and every column stands on its own — same undo as .ppl/.lctl above */
 .schedboard.sb-wide .sb-arow.c6r>:nth-child(2),
 .schedboard.sb-wide .sb-acols.c6r>:nth-child(2){grid-column:auto}
-/* Common Programme's own eight-track grid in the wide view (owner, 16 Aug 26 —
-   its new Rmks column). The phone stack put People and remarks on the pucks'
-   row; here every column stands on its own, so the remarks input drops back to
-   its grid cell, same as the c6r rmkin above. */
-.schedboard.sb-wide .sb-acols.cprog,.schedboard.sb-wide .sb-arow.cprog{grid-template-columns:18px 120px 54px 54px 1fr 1fr 1fr 1fr}
-.schedboard.sb-wide .sb-arow.cprog>.rmkin{grid-column:auto}
 .schedboard.sb-wide .sbi-row{grid-template-columns:96px var(--puck-w) 112px 1fr;gap:9px}
 .schedboard.sb-wide .sbi-row .sbi-rm{grid-column:auto;font-size:11px}
 

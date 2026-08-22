@@ -16,7 +16,7 @@
    for: caldrag.ts's drag/tap machine on `[data-icdrag]`, this file's OWN
    hold-to-add/tap gesture on the empty cell space around those chips, and
    the day popover (`data-icmore` opens it too) that both routes land on. */
-import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLetters } from '../engine/inputs'
 import { PEOPLE, QCOLOR } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -136,6 +136,14 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
      standard "latest callback" seam for that — the effect reads
      stepRef.current at gesture time, when it is fresh. */
   const stepRef = useRef<(n: number) => void>(() => {})
+  /* The month-change slide (owner, 22 Aug 26 — "I want swipe animation when I
+     swipe left and right"). `slideDirRef` records which way the last step went
+     so the layout effect below can slide the new grid IN from that side, then
+     consumes it (back to 0). Only a real ‹ › / swipe / Today sets it, so the
+     first open and the seed-month jump both read 0 and DON'T slide. The grid
+     itself is never re-keyed/remounted, so the pointer listeners wired on it
+     (the deps-[] effect) survive every page. */
+  const slideDirRef = useRef(0)
 
   /* The day popover: which day (if any) is open, and whether it should land
      already switched into one puck's inline edit box — a puck-chip tap opens
@@ -341,13 +349,43 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
      way InputsPage's own toggle does. Caught on the live view, not by the
      suite: the tests drove CALMONTH directly and never saw the stuck title. */
   const step = (n: number) => {
+    slideDirRef.current = n
     const m0 = (cur.m - 1) + n
     setCalMonth({ y: cur.y + Math.floor(m0 / 12), m: ((m0 % 12) + 12) % 12 + 1 })
     notify()
   }
   /* keep the swipe gesture's stepper current — see stepRef above */
   stepRef.current = step
-  const goToday = () => { const d = new Date(); setCalMonth({ y: d.getFullYear(), m: d.getMonth() + 1 }); notify() }
+  const goToday = () => {
+    const d = new Date(); const ny = d.getFullYear(), nm = d.getMonth() + 1
+    /* Today reads as a jump, not a page — slide only when it actually crosses a
+       month, and in the direction it travels (forward if it lands later). */
+    slideDirRef.current = (ny * 12 + nm) - (cur.y * 12 + cur.m) < 0 ? -1 : 1
+    setCalMonth({ y: ny, m: nm }); notify()
+  }
+
+  /* THE SLIDE. After the month's DOM is in place, run the new grid in from the
+     side the page turned: next (finger swept left, or ›) enters from the right,
+     previous from the left. The Web Animations API plays it on the SAME element
+     — no re-key, no second panel — so it never disturbs the gesture listeners
+     or the layout. `dir` is consumed each run, so only a real page slides; the
+     first open and the seed-month jump (dir 0) don't. Also a no-op when the
+     browser honours prefers-reduced-motion, and where `animate` is absent
+     (jsdom under test). */
+  useLayoutEffect(() => {
+    const dir = slideDirRef.current
+    slideDirRef.current = 0
+    if (!dir) return
+    const el = gridRef.current
+    if (!el || typeof el.animate !== 'function') return
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const from = dir > 0 ? 28 : -28
+    el.animate(
+      [{ transform: `translateX(${from}px)`, opacity: 0.25 }, { transform: 'translateX(0)', opacity: 1 }],
+      { duration: 240, easing: 'cubic-bezier(0.22, 0.61, 0.36, 1)' },
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cur.y, cur.m])
 
   const cells = monthCells(cur.y, cur.m)
   const todayIso = isoToday()
