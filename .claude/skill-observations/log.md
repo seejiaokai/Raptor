@@ -312,3 +312,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** None — marker only.
 
 **Principle:** Writing an explicit no-new-observation marker at the checkpoint keeps the enforcement honest without inventing low-signal entries.
+
+### Observation 23: CI-only flake — unstubbed browser API + abandoned timer in jsdom
+
+**Status:** ACTIONED (2026-08-22) — stubbed document.elementFromPoint in the affected test file
+**Date:** 2026-08-22
+**Session context:** Shipping calendar changes; a PR gate failed on a test the local suite passed
+**Skill:** New rule candidate for raptor-port/CLAUDE.md §Build & verify (the "green on PR, red on CI" hazard section)
+**Type:** internal
+**Phase/Area:** verification / CI-vs-local test isolation
+
+**Issue:** A test that arms a gesture machine which calls a browser-only DOM API (document.elementFromPoint) via a setTimeout hold-timer passed locally but failed on the ~30% slower CI runner: the abandoned timer fired mid-test, threw "elementFromPoint is not a function" (jsdom does not define it), and the uncaught async error poisoned an unrelated assertion (SBDAY expected 6 got 2). Local timing cleared the timer before it fired, masking the gap. The fix already existed as a pattern in a sibling test file (caldrag.test.tsx stubs the same API) but had not been applied to the newer file.
+
+**Suggested improvement:** When a test drives code that hit-tests through document.elementFromPoint (or any jsdom-absent browser API) on a timer, stub it in beforeAll — null return = "nothing under the pointer". Better: a global vitest setup stub so no future touch-drag test can regress. Diagnose a PR-passed/main-failed (or intermittent) failure by reading for the uncaught async error FIRST, not the assertion it corrupts.
+
+**Principle:** A jsdom-absent browser API called from an abandoned timer is a latent CI flake that hides behind local timing; stub the API at the environment boundary rather than chasing the corrupted assertion downstream, and apply the stub wherever the pattern recurs — precedent in one test file is a checklist item for the next.
