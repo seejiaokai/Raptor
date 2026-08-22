@@ -344,7 +344,8 @@ a{color:var(--accent)}
    heading). Wraps under the heading on a very narrow screen rather than
    crushing it. */
 .title .calview{
-  margin-left:auto; align-self:center;
+  /* sits BESIDE the heading (owner, 22 Aug 26), not pushed to the far right */
+  align-self:center;
   background:var(--accent); color:var(--accent-ink); border-color:var(--accent);
   font-size:13px; padding:9px 15px; border-radius:10px;
   box-shadow:0 2px 14px rgba(59,198,232,.38);
