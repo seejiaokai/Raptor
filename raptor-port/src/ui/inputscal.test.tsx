@@ -82,9 +82,13 @@ describe('monthCells (pure)', () => {
 })
 
 describe('the Inputs page calendar toggle', () => {
-  it('#inCalBtn sits in the filter bar and opens the overlay; #icClose closes it', async () => {
+  it('#inCalBtn leads the title row as a prominent switch and opens the overlay; #icClose closes it', async () => {
     expect($('#inCalBtn'), 'the toggle button exists').toBeTruthy()
-    expect($('#inCalBtn')!.closest('.infilter'), 'it lives in the filter bar').toBeTruthy()
+    /* lifted into the title row and accent-styled (owner, 22 Aug 26 — "make
+       the calendar button more obvious"); it is no longer the plain grey
+       button in the filter bar */
+    expect($('#inCalBtn')!.closest('.title'), 'it leads the title row now').toBeTruthy()
+    expect($('#inCalBtn')!.classList.contains('calview'), 'and wears the prominent style').toBe(true)
     expect($('#inpCal'), 'closed to start with').toBeFalsy()
 
     await click($('#inCalBtn'))
