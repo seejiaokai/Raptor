@@ -230,17 +230,18 @@ describe('the crew-rest anchor (owner worked examples)', () => {
       VCONF.step = 75
       const r75 = run('02:21', '2A: LATE SHOW')
       expect(r75.dashed).toBe(false)
-      expect(r75.msg).toContain('after the 14:05 step')
+      expect(r75.msg).toContain('the 14:05 step is still before rest clears')
     } finally { VCONF.step = orig }
   })
 
-  /* the previous-day trace: the warning must say when he had to leave, and
-     name the day it is measured from, so the UI needs no second derivation */
+  /* the previous-day trace: the warning must carry when he had to leave and
+     the day it is measured from — as DATA (owner, 22 Aug 26: the trace row's
+     bold lead prints it, so the message saying it too read as repetition) */
   it('names the leave-by time and the previous day', () => {
     const r = run('01:30', '2A: BFM-5')
     /* anchor 12:00 − 12h = 00:00 the previous day */
     expect(r.leaveBy).toBe('00:00')
-    expect(r.msg).toContain('so he had to leave by 00:00')
+    expect(r.msg, 'the message no longer restates the leave-by').not.toContain('leave by')
     expect(r.prevDi).toBe(0)
   })
 

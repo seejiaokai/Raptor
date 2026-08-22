@@ -148,11 +148,13 @@ describe('the previous-day trace', () => {
     expect(h).toContain('had to leave by 00:00')
   })
 
-  it('the warning names the time he had to leave', () => {
+  it('the warning carries the time he had to leave — as data, not message text', () => {
     const ix = build('01:30', '2A: BFM-5')
     const w = WARN.byDay[1].warns[ix]
     expect(w.leaveBy, 'anchor 12:00 less 12h crew rest').toBe('00:00')
-    expect(w.msg).toContain('so he had to leave by 00:00')
+    /* owner, 22 Aug 26: the trace row's bold lead prints the leave-by, so the
+       message restating it read twice — it is a data field only now */
+    expect(w.msg).not.toContain('leave by')
     expect(w.prevDi, 'and which day to look back at').toBe(0)
   })
 
