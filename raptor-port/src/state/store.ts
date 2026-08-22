@@ -21,7 +21,7 @@ import { DAYS } from '../engine/data'
 import { setCurWeek } from '../engine/waves'
 import { weekBundle } from '../engine/weeks-data'
 import { seedDemoSans } from './demoseed'
-import { storesLoad, dutyTplLoad, dayTplLoad } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, dayTplLoad, autoAcceptSeedInputs } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched } from '../engine/publish'
 import { afterSchedMutate } from './view'
@@ -119,6 +119,7 @@ export function resetSession(s: any) {
   view.DPREV.clear()              // day-preview map — same in-place-mutation pattern as DWOPEN/HLSET
   view.VWORK.clear()              // view-page working-copy choices — back to the issued default
   view.AVOPEN.clear()             // Available-crew panels fold back to their one-line default
+  view.PIOPEN.clear()             // Personal-Inputs panels fold back too
   /* the carried day too: setPage above captures whatever week the OUTGOING
      session was parked on, and a new session must open on the week's own
      opening position — on a phone that is today's column, which initPan
@@ -126,6 +127,9 @@ export function resetSession(s: any) {
   view.setCarryDay(null)
   view.setHistMode(false)         // the board's History toggle is a per-session view mode
   view.LATEOFF.clear()            // dropped LATE marks come back for the next session, like every other view mode
+  view.BELLLIT.clear()            // notification glows never carry across a login/logout
+  view.WARNOFF.clear()            // muted board warnings come back for the next session
+  view.WMOPEN.clear()
   /* the Leave War page's role rides the Raptor session: an admin login is a
      Leave War admin, everyone else (and a logout) is a member. This is the
      ONE production writer of that role — the standalone app's own toggle was
@@ -163,6 +167,7 @@ export function loadWeek(v: any) {
   if (wk.seedSans) seedDemoSans()
   mintInpIds()
   resetSched()
+  autoAcceptSeedInputs()      // land activity inputs on ground (dayApproved now clean)
   view.setBoardDay(null)      // closes the phone board and disarms
   view.armDrop()
   view.selDrop()
@@ -170,6 +175,10 @@ export function loadWeek(v: any) {
   view.DPREV.clear()
   view.VWORK.clear()
   view.AVOPEN.clear()
+  view.PIOPEN.clear()
+  view.BELLLIT.clear()
+  view.WARNOFF.clear()
+  view.WMOPEN.clear()
   view.setCarryDay(null)
   view.setHistMode(false)
   view.setRosDay(0)
@@ -244,6 +253,7 @@ export function initStore() {
   wireStore()
   rulesLoad()
   storesLoad()
+  cxReasonsLoad()
   dutyTplLoad()
   dayTplLoad()
   /* demo-only SANS Availability rows (see state/demoseed.ts for why this
@@ -254,6 +264,10 @@ export function initStore() {
      address — see mintInpIds in engine/inputs.ts for why an id minted later
      than the snapshot it should be in is worse than no id at all */
   mintInpIds()
+  /* land every activity input on its day's ground programme before the first
+     validate + baseline — boot-only, so parity (which never boots) stays blind;
+     SCHED is fresh here, so every day reads editable. See autoAcceptSeedInputs. */
+  autoAcceptSeedInputs()
   validate()
   histInit()
   notify()

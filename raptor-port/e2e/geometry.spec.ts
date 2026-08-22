@@ -2391,6 +2391,10 @@ test.describe('editing an input from the schedule', () => {
         w.INPUTS.filter((i: any) => w.inputCoversDate(i, w.DAYS[0].dt)).forEach((i: any) => { i.remarks = t })
         w.openScheduler(0)
       }, LONG)
+      /* Personal Inputs folds to a summary by default now (Aug 26) — click the
+         header to expand it before measuring its rows. */
+      await page.waitForSelector('#schedBoard .pinp [data-pitog]')
+      await page.click('#schedBoard .pinp [data-pitog]')
       await page.waitForSelector('#schedBoard .pinp [data-inpedit]')
       const m = await page.evaluate(() => {
         const btn = document.querySelector('#schedBoard .pinp [data-inpedit]') as HTMLElement
@@ -2429,6 +2433,10 @@ test.describe('editing an input from the schedule', () => {
       await page.setViewportSize(viewport)
       await login(page); await go(page, 'editsched')
       await page.evaluate(() => (window as any).openScheduler(0))
+      /* Personal Inputs folds by default now (Aug 26) — expand it to line its
+         rows up against the ground programme's. */
+      await page.waitForSelector('#schedBoard .pinp [data-pitog]')
+      await page.click('#schedBoard .pinp [data-pitog]')
       await page.waitForSelector('#schedBoard .pinp .sb-arow')
       const m = await page.evaluate(() => {
         const lefts = (sel: string) => {
@@ -3645,4 +3653,27 @@ test('the Insights bars draw, and their lengths mean something', async ({ page }
   expect(Math.min(...m.ratios), 'and a shorter row is genuinely shorter').toBeLessThan(0.95)
   expect(m.clipped, 'no value is clipped by its own cell').toBe(0)
   expect(m.headings.some(h => h.startsWith('Work hours')), 'the work-hours section is there').toBe(true)
+})
+
+/* The desktop checks panel is resizable against the roster (owner, Aug 26 —
+   "move the border to reduce the amount of warning shown. Vice versa"). jsdom
+   cannot see the drag change a height; only a real browser can. The grip is a
+   no-op until dragged (default 38% content-sizing), so the rest of the board's
+   geometry is unaffected — this pins that dragging it actually grows the panel. */
+test('the desktop checks panel resizes by its grip', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#schedBoard .sb-line')
+  const grip = page.locator('#schedBoard .sb-wsplit')
+  await expect(grip).toBeVisible()
+  const before = (await page.locator('#schedBoard .sb-warn').boundingBox())!.height
+  const box = (await grip.boundingBox())!
+  const cx = box.x + box.width / 2, cy = box.y + box.height / 2
+  await page.mouse.move(cx, cy)
+  await page.mouse.down()
+  await page.mouse.move(cx, cy + 90, { steps: 10 })
+  await page.mouse.up()
+  const after = (await page.locator('#schedBoard .sb-warn').boundingBox())!.height
+  expect(after, 'dragging the grip down grows the checks panel').toBeGreaterThan(before + 40)
 })

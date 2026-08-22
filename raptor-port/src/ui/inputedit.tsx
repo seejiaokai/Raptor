@@ -13,7 +13,7 @@
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, dateOrd, baseYear, withRemarksTail } from '../engine/inputs'
-import { acceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
+import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
@@ -340,15 +340,22 @@ export function commitNewInput(draft: any, toGround?: boolean): boolean {
   writeInputsBatch(() => {
     INPUTS.unshift(row)
     if (toGround) {
-      /* isUnavail is acceptInput's own refusal, re-checked here only to say
-         something useful if a future caller mis-routes; the dialog's ground
-         context can only offer activity types. A duplicate content key
-         (identical person|date|type|start already promoted) is the one
-         genuine refusal left — the input still lands, just unaccepted, and
-         the toast says where to find it. */
+      /* the board's Ground "+ Inputs" is a DELIBERATE scheduler act — it lands
+         the row on the programme whatever the day's publish state (an ordinary
+         AL on a published day), and reports the one duplicate-content-key
+         refusal. isUnavail is acceptInput's own refusal, re-checked here only
+         to say something useful if a future caller mis-routes; the dialog's
+         ground context can only offer activity types. */
       const di = DATES.indexOf(date)
       if (di >= 0 && !isUnavail(row.type) && !acceptInput(di, row, 'g'))
         HOOKS.toast('An identical row is already on the Ground Programme — added under Personal Inputs instead', 'warn')
+    } else {
+      /* every OTHER add auto-lands an activity input on an EDITABLE day (owner,
+         Aug 26 — the default is now "on the programme"). autoAcceptInput is the
+         one gate: leave/medical/SANS and already-published days are silent
+         no-ops, leaving the row under Personal Inputs where the input-aware
+         busy-check still warns. */
+      autoAcceptInput(row)
     }
   })
   const cs = PEOPLE[row.person] ? PEOPLE[row.person].cs : row.person

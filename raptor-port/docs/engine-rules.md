@@ -672,6 +672,30 @@ flagged correctly and still swept the man out of the crew palette.
   place, must short-circuit BEFORE the overlap test. Reversed, every all-day
   absence starts being judged against a window it does not have. A test in
   `slotrules.test.ts` fails if it is ever reversed.
+- **Personal input clash — the picker now reads UNACCEPTED activity inputs
+  too (Aug 26).** The four filter blocks above cover `isAway` types (leave,
+  medical, actioned Fly-with) and STRIKE the man out. But an activity input
+  (Meeting, Appointment, …) is not `isAway`: it lived only in `day.input`, so
+  the validator raised `INPUT_FLY` on a plant while the picker's busy-check —
+  which reads `EVD`, built from `day.events` — stayed silent, the one drift
+  the picker and the warning list must never have. `slotBar`'s busy-at-this-
+  hour block now also scans `INPUTS` for the non-away activity types, with the
+  SAME `canWork`/flying gate and the SAME four midnight-tail shifts the
+  off-blocks carry, and returns the soft `already on <type> <hh:mm–hh:mm>` a
+  scheduled event gives — NOT a strike-out (activity types deliberately stay
+  in the palette). `inputFlags()` excludes an already-promoted timed input:
+  its ground row carries the clash as an event instead, so it is caught by the
+  `EVD` scan and never double-reported. Pinned in `inputground.test.ts`.
+- **An activity input auto-lands on the ground programme (Aug 26).**
+  `slots.ts:autoAcceptInput(row)` is the one gate: `isPersonal(row.type)` and
+  an editable (`!dayApproved`) day → `acceptInput(di,row,'g')`. It fires at
+  every creation point (the two `+ Add` dialogs, the Inputs page `add`, and the
+  boot/week-load `autoAcceptSeedInputs`), never on a repaint, so a manual
+  removal sticks for the session. A PUBLISHED day is left alone (a late input
+  stays under Personal Inputs; the picker still warns per the bullet above).
+  The boot pass is parity-safe by the demoseed rule — it runs only where the
+  harness never does — and wipes its own pending/added marks so the seed's
+  auto-landed rows are the week's zero-state.
 - **`dayOff` stays narrow — off for the WHOLE day.** It also feeds the
   day-info "off" tally and the palette's struck-through rank, and a man on AM
   leave is not off for the day. **Known, deliberate consequence: a half-day

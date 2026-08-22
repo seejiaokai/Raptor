@@ -8,6 +8,7 @@ import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInpu
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
+import { autoAcceptInput } from '../engine/slots'
 import { ME } from '../state/auth'
 import { writeInputs, notify } from '../state/store'
 /* the halves, the span control, the draft shape and the commit are shared with
@@ -304,16 +305,23 @@ export function InputsPage() {
        row type — see commitInputEdit for the reasoning. Only equal times are
        refused, being a zero-length absence. */
     if (!allday && (e as number) === (s as number)) return HOOKS.toast('Give the input a start and end that are not the same time', 'warn')
-    writeInputs(() => INPUTS.unshift(withId({
-      person, date, endDate, allday, s, e,
-      /* only carried when it is one — an absence typed as an exact range is
-         not a half-day and must not read as one */
-      ...(!allday && half ? { half } : {}),
-      /* SANS's own Fly/AMT/OFT flags — never carried by a non-SANS type */
-      ...(isSansAvail(type) ? { sans: sansFlags(sans) } : {}),
-      type, remarks: remarks.trim(),
-      recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
-    })))
+    writeInputs(() => {
+      INPUTS.unshift(withId({
+        person, date, endDate, allday, s, e,
+        /* only carried when it is one — an absence typed as an exact range is
+           not a half-day and must not read as one */
+        ...(!allday && half ? { half } : {}),
+        /* SANS's own Fly/AMT/OFT flags — never carried by a non-SANS type */
+        ...(isSansAvail(type) ? { sans: sansFlags(sans) } : {}),
+        type, remarks: remarks.trim(),
+        recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
+      }))
+      /* an ACTIVITY input files straight onto the Ground Programme (owner, Aug
+         26 — "by default all inputs are accepted"); leave/medical/SANS and a
+         published day are silent no-ops. Inside the SAME write so add-plus-land
+         is one undo step, exactly as commitNewInput's toGround already is. */
+      autoAcceptInput(INPUTS[0])
+    })
     /* the row INPUTS.unshift just made — pin it to the top of the table and
        light it, so the add is visible even from a view that would filter it
        out. The flash comes off on a timer; the pin waits for the user. */

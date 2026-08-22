@@ -13,7 +13,7 @@ import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, s
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, VWORK, CURPAGE, lateShown, restArmed } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVOPEN, PIOPEN, VWORK, CURPAGE, lateShown, restArmed } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -637,7 +637,13 @@ export function ted(path:any,val:any,ed:any,cls:any,tag?:any,ph?:any){
    INTO, so validate now (cheap, no DOM) and defer the re-render to a macrotask
    that bails while focus is still inside some other editable text node. */
 export let TXTQ=0;
-export function rowCls(o:any){return (o&&o.cx?' cx':'')+(o&&o.flag?' redbox':'');}
+/* `gr-frominput` tints a ground row that came from a personal input (owner,
+   Aug 26 — activity inputs auto-land on the programme now, so the two need
+   telling apart). `src` is the accept back-link, set only by acceptInput on a
+   promoted ground row (slots.ts) — no aircraft, formation or plain input row
+   carries it — so this reads true for exactly the input-derived rows on both
+   the week (plRow) and the board (sb-arow), and nothing else. */
+export function rowCls(o:any){return (o&&o.cx?' cx':'')+(o&&o.flag?' redbox':'')+(o&&o.src?' gr-frominput':'');}
 /* CX carries its reason: "CX DUE WX" rather than a bare CX, so the next
    scheduler reading the day knows why the line went. */
 export function cxText(o:any){const r=o&&o.cxr?String(o.cxr).trim():'';return r?('CX DUE '+r):'CX';}
@@ -1102,11 +1108,23 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        Name | Start | End | People.  All-day rows span the two time columns. */
     const inGrp=(title:any,filt:any,cls:any,always?:any,acc?:any)=>{ const rows=dayInputs.filter(filt);
       if(!rows.length&&!always)return'';
+      /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26).
+         Now that activity inputs auto-land on the ground programme, this block
+         is the faded audit echo, not the primary planning surface — so it folds
+         away like Available crew (the PIOPEN/AVOPEN pattern), the header the
+         toggle. Only this group (acc) folds and only in edit mode; Unavailable
+         stays open — it is a live drop target and the day's must-read. */
+      const foldable=!!acc&&!!ed;
+      if(foldable&&rows.length&&!PIOPEN.has(di)){
+        const onG=rows.filter((r:any)=>r.acc==='g').length;
+        return `<div class="sub plist one sec ${cls||''}"><div class="sub-h pl-fold" data-pitog="${di}">`
+          +`<span>${title}</span><span class="pl-hint">${rows.length} input${rows.length===1?'':'s'}${onG?` · ${onG} on programme`:''} · show ⌄</span></div></div>`;
+      }
       /* what is typeable is only discoverable on hover, and half the squadron
          is on a phone where there is no hover — so the block says it once,
          rather than every row carrying a hint it has no room for.
          Scheduler-side only: the view-only week cannot edit anything. */
-      let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h">${title}${ed?`<span class="pl-hint">times and remarks type in place · clear a time for all day · press the type to change it</span>`:''}</div>`;
+      let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>${title}${ed?`<span class="pl-hint">times and remarks type in place · clear a time for all day · press the type to change it${foldable?' · hide ⌃':''}</span>`:''}</div>`;
       /* Unavailable is the block the squadron reads every single day, so it
          prints even when nobody is on it — "Nil" is the answer, not a missing
          section. */

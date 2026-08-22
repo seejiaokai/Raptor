@@ -10,7 +10,7 @@ import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pen
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { resetSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, CURPAGE, setDayPreview, toggleViewWork } from '../state/view'
+import { HLSET, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
 import { signOf } from '../engine/publish'
@@ -211,6 +211,16 @@ export function Shell() {
           <a data-page="leavewar" role="button" tabIndex={0} className={page === 'leavewar' ? 'on' : ''} onClick={() => nav('leavewar')} onKeyDown={navKey('leavewar')}>Leave War</a>
         </nav>
         <div className="spring">
+          {/* Undo / redo live at the TOP now (owner, Aug 26 — "so I'll always
+              see it when I'm editing to undo if needed"), in the sticky bar
+              rather than the filters row that scrolls away. Only while editing;
+              the board carries its own pair in its own top bar. Same undo()/
+              redo()/HIST wiring — no new stack. Desktop-facing (hidden with the
+              rest of the bar's controls when the phone bar tightens). */}
+          {page === 'editsched' && <div className="tb-hist">
+            <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}>↶ Undo</button>
+            <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}>↷ Redo</button>
+          </div>}
           <div className="acct">
             <div className="sel"><label>View as</label>
               <select id="viewAs" aria-label="View the schedule as" value={ME} onChange={e => { setMe(e.target.value); notify() }}>
@@ -232,6 +242,18 @@ export function Shell() {
               route to the same lists. `openWarns` (state/view.ts) is left in
               place — it is mirrored on the probe bridge and is the one call a
               future "expand everything" control would use. */}
+          {/* THE NOTIFICATION BELL (owner, Aug 26). Always present, on every
+              page and both widths; it GLOWS when the current view + view-as
+              person has an alert (bellLit, state/view.ts). What raises an alert
+              is the owner's own next step — this is the button and its per-view
+              glow. Tapping it acknowledges the current view's alert. NOT the
+              removed week-wide count pills: this is a per-person indicator, not
+              a sum, so the 20 Aug decision does not touch it. */}
+          <button className={'bellbtn' + (bellLit() ? ' on' : '')} id="notifyBell" aria-label="Notifications" title="Notifications for this view"
+            onClick={() => { const was = bellLit(); clearBell(); HOOKS.toast(was ? 'Notifications cleared' : 'No new notifications for this view'); notify() }}>
+            <svg className="bellglyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a6 6 0 0 0-6 6c0 3.5-1.2 5.4-2.2 6.5-.5.6-.1 1.5.7 1.5h15c.8 0 1.2-.9.7-1.5C19.2 13.4 18 11.5 18 8a6 6 0 0 0-6-6Zm0 20a2.6 2.6 0 0 0 2.5-2h-5a2.6 2.6 0 0 0 2.5 2Z" fill="currentColor" /></svg>
+            <span className="belldot" aria-hidden="true"></span>
+          </button>
           <button className="abtn" id="insightBtn" title="Week insights" onClick={() => { setInsights(true); notify() }}>Insights</button>
           {/* resetSession (state/store.ts) is the one session-change path: it clears
               SBDAY itself, plus CURPAGE and the leftover selection/highlight/preview
@@ -241,7 +263,7 @@ export function Shell() {
           <button className="abtn ghost" id="logout" onClick={() => { setUserModal(false); resetSession(null); notify() }}>Logout</button>
         </div>
       </div>
-  ), [page, admin, ME, fast])
+  ), [page, admin, ME, fast, HIST.ix, HIST.stack.length, bellLit()])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">
@@ -284,9 +306,8 @@ export function Shell() {
             {WEEKS.map((w: any) => <button key={w.v} className={'wk' + (w.v === CURWEEK ? ' on' : '')} data-wk={w.v}>{w.lbl}</button>)}
           </div>
           <div className="filters">
-            <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}>↶ Undo</button>
-            <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}>↷ Redo</button>
-            <span className="div"></span>
+            {/* Undo / redo moved to the sticky top bar (owner, Aug 26) so they
+                stay in view while the page scrolls — see the topbar above. */}
             {/* + Add wave removed here (owner, 13 Aug 26) — a wave is created
                 from the board's own inline "+ Wave", between Common Programme
                 and the flying waves, and nowhere else. The board is reachable

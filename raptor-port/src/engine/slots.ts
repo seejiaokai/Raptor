@@ -1,8 +1,8 @@
 import { DAYS } from './data'
 import { PEOPLE, nameToId, ID_BY_CS } from './people'
-import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd } from './publish'
+import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
-import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, inpLabel } from './inputs'
+import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel } from './inputs'
 import { shiftKeys } from './keys'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
@@ -362,6 +362,44 @@ export function acceptInput(di:any,inp:any,dest:any){
      already ORs both forms, so nothing that read the old key breaks. */
   markStructuralAdd(`gr:${di}.${ri}.prog`);
   return true;
+}
+/* AUTO-LAND AN ACTIVITY INPUT ON THE GROUND PROGRAMME (owner, Aug 26). Every
+   personal ACTIVITY input (a meeting, an appointment — isPersonal) drops onto
+   its day's ground programme the moment it is filed, so a scheduler sees the
+   commitment in place and the crew picker's busy-check warns BEFORE a plant,
+   not after. Leave, medical, OD and SANS are not activity types (isPersonal
+   is false), so they never promote — they stay in the Unavailable block, and
+   acceptInput's own isUnavail gate is the backstop. A day already PUBLISHED is
+   left alone (owner's call): a late input there stays under Personal Inputs
+   and the input-aware busy-check (avail.ts) still warns, without churning the
+   issued document with a surprise amendment. This is the ONE decision "should
+   a new/seed input auto-land, and do it" — every creation path (the two + Add
+   dialogs, the Inputs page, the boot/week-load pass) calls it, so they cannot
+   drift. It fires ONLY at creation and at boot, never on a repaint, so a
+   scheduler who then REMOVES the row (unaccept) keeps it in Personal Inputs
+   for the session. Returns true when it promoted the row. */
+export function autoAcceptInput(row:any):boolean{
+  if(!row||row.acc||!isPersonal(row.type))return false;
+  const di=DATES.indexOf(row.date);
+  if(di<0||dayApproved(di))return false;
+  return acceptInput(di,row,'g');
+}
+/* THE BOOT / WEEK-LOAD PASS (owner, Aug 26). Land every activity input already
+   in INPUTS onto its day's ground programme, so a freshly-loaded week opens
+   with commitments in place exactly as if a scheduler had accepted each one.
+   MUST run only from the boot path (initStore) and the week swap (loadWeek) —
+   NEVER at module scope — because the parity harness reads DAYS/INPUTS pristine
+   and never boots, so these rows stay invisible to it, the SAME guarantee that
+   hides seedDemoSans. Run it where dayApproved() is already clean (a fresh
+   SCHED at boot; AFTER resetSched() on a week swap) so every day reads
+   editable. The seed's auto-landed rows are the week's ZERO-STATE, not
+   unpublished edits — acceptInput marks each pending/added through the
+   amendment funnel (correct for an interactive add), so the marks are wiped
+   here; the ground rows on DAYS remain, and the following histInit() baselines
+   a clean model. */
+export function autoAcceptSeedInputs(){
+  INPUTS.forEach((r:any)=>autoAcceptInput(r));
+  SCHED.pending={}; SCHED.changes={}; SCHED.added={};
 }
 /* Which day carries the row this input was accepted onto, or -1. The row does
    NOT record its day, and the caller cannot infer it: a multi-day input
