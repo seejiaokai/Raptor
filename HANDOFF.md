@@ -24,21 +24,25 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (22 Aug 26, the Inputs-calendar UX batch —
-remarks on the day-popover entries, swipe-to-page-months on the grid, and
-the Calendar-view switch made a prominent accent button in the title row,
-plus a CI-flake fix; all six gates watched this session. It sits on the
-same day's two calendar-decision closures (member self-only Person,
-repeat-weeks removed) and the passes below):
+**Last recorded green baseline** (22 Aug 26, the calendar-nav + global-inputs
+batch — PR #294: continuous week navigation, the date/day picker, the clearer
+calendar/history icons, the Inputs-page tweaks, and personal inputs made global;
+all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2875 across 161 files — two vitest projects: raptor + leavewar |
-| `node reference/tfin.js` | 728/0 (the reference is read-only) |
+| `npm test` | 2894 across 163 files — two vitest projects: raptor + leavewar |
+| `node reference/tfin.js` | 728/0 (the reference is read-only; the global-inputs merge is boot-only so parity is blind to it) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 309 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `npm run test:e2e` | 310 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop (full run on the calendar-nav commit; the day-picker + global-inputs commits re-verified by the full unit suite and the targeted inputs/calendar/board specs) |
 | `probes:adapted` | 6/6 |
-| `perf` | 4/4 — week DOM 4940 ≤ 5450, board 855 ≤ 960 |
+| `perf` | 4/4 — week DOM 4940 ≤ 5450, board 855 ≤ 960 (unchanged; the board calendar icon is +1 node offset by fewer week chips, and WeekCal is a modal outside the zero-state) |
+
+Reconciles against the 2875/161, 309 e2e reading this replaced: +3 files
+(`weeknav.test.ts`, `swipeweeks.test.tsx`, and the WeekCal/day-step tests folded
+into existing files), and +19 tests net across the calendar-nav, day-picker,
+board cross-week, and global-inputs (`loadweek.test` rewrite) work → 2894/163;
++1 e2e (the board's top-left calendar-icon test) → 310.
 
 The counts reconcile against the reading this replaced (2872 / 161, same
 e2e): the calendar-UX batch added +3 in `inputscal.test.tsx` (the
@@ -2044,7 +2048,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `InputsCal.tsx` / `caldrag.ts` / `state/plan.ts` | **The Inputs month calendar (22 Aug 26)** — the page's full-screen Google-style month view (`INPVIEW`/`CALMONTH` in `state/view.ts`): colour-coded chips off `inputTone` (the one colour source, shared with the table's row stripes), hold-to-add (450ms), tap-a-day → the day popover (entries, scheduler day remark, planning-note pucks, + Add input for everyone), `+N more` count-based overflow. `caldrag.ts` is the calendar's OWN chip-drag machine (drag.ts stays scoped to board pucks) — `commitChipMove` slides a span by the day-delta from the GRABBED cell through `commitInputEdit`. `state/plan.ts` holds `PLANPUCKS`/`DAYRMK`: session-only by owner choice (scratch-pad, like INPUTS), scheduler-gated at the write path, riding the undo snapshot (`pp`/`dm`). Contract: `docs/ui-contracts.md` §The Inputs month calendar; the copied-filter drift-seam is named in `docs/feature-impact.md` §4. |
 | `inputedit.tsx` | Editing ONE personal input AND adding one, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, **`normalizeInputDraft`** (every input write's shared refusals+derivations, extracted so add and edit cannot drift), `commitInputEdit` (including the accepted-row relink), **`commitNewInput`** (the board's + Add — unshifts a new row through the one funnel, Aug 26), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule), `firstPersonalType`/`firstUnavailType` (the panel defaults the board's + Add seeds), `InputEditor` itself (an `_new` seed row opens it in add mode), and the Inputs-page date display helpers **`fmtDay`** (ISO → day-first '13 Jul') and **`fmtDMY`** (ISO → '6 Jul 26'; `fmt`/`unfmt` still round-trip the stored month-first labels — these are display only). Three editors over one list is how they drift apart. |
 | `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
-| `WeekCal.tsx` / `weeknav.ts` | **The week-jump calendar (22 Aug 26)** — `WeekCal` is the app's `.rc-*` month picker as a single-date week jumper with a whole-week highlight (`.inwk`/`.cur`); tapping a day loads that week (`loadWeek(mondayOf(iso))`), and from the board it also opens the tapped day. Opened via the `WEEKCAL` flag (`pops.ts`) from the schedule seg, the mobile calendar icon, and the board's `#sbCal`. `weeknav.ts` is the one place for week math: `mondayOf`, `shiftWeek` (continuous ±7 days), `weekWindow` (the desktop rolling prev·current·+1·+2 buttons + labels + today mark), `dayIndexInWeek`, iso⇄key converters, `TODAY_WEEK`. All week-label/Monday math lives here (one drift seam). |
+| `WeekCal.tsx` / `weeknav.ts` / `icons.tsx` | **The date-jump calendar (22 Aug 26)** — `WeekCal` is the app's `.rc-*` month picker as a DAY picker (the week is transparent): the single current day is lit (`.sel`) + the notional today ringed (`.today`), and tapping a day loads its week and lands the view on that exact day (schedule carousel via `WEEKJUMP` day-index; board via `boardTab`). Opened via the `WEEKCAL` flag (`pops.ts`) from the schedule seg, the mobile calendar icon, and the board's `#sbCal`. `weeknav.ts` is the one place for week math: `mondayOf`, `shiftWeek` (continuous ±7 days), `weekWindow` (the desktop rolling prev·current·+1·+2 buttons + labels + today mark), `dayIndexInWeek`, iso⇄key converters, `TODAY_WEEK`. `icons.tsx` holds the shared inline-SVG glyphs (`CalIcon`, `HistIcon`) for the toolbar buttons, sized by `.btnglyph`. |
 | `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer (its week chips became a single "Pick a week…" calendar opener, 22 Aug 26), login. |
 | `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. |
 | `scheduler.css` | The ported stylesheet — it carries MEASURED contracts, not preferences. |
