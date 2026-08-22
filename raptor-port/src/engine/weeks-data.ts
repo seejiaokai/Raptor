@@ -37,3 +37,10 @@ export function weekBundle(v:any){
   if(v==='20/07/2026') return {days:JSON.parse(JSON.stringify(WEEK2_DAYS)), dates:WEEK2_DATES.slice(), inputs:JSON.parse(JSON.stringify(WEEK2_INPUTS)), seedSans:false};
   return emptyWeek(v);
 }
+/* PERSONAL INPUTS ARE GLOBAL, NOT WEEK-SCOPED (owner, 22 Aug 26 — "show all
+   inputs regardless of which week I am selected on"). The module-load INPUTS is
+   week 1's; this hands boot every OTHER authored week's inputs to merge in once,
+   so the Inputs page carries them all while date-matching still scopes each
+   week's SCHEDULE to its own. A fresh deep copy — the backing dataset is never
+   handed out live. Blank/other weeks contribute nothing. */
+export function otherWeekInputs(){ return JSON.parse(JSON.stringify(WEEK2_INPUTS)); }
