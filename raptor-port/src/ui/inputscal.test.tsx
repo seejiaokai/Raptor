@@ -4,16 +4,19 @@
    are later tasks and carry no assertions here; this file only pins the
    shell, the view-state round trip, and the DISPLAY contract (the data
    attributes those later tasks will hook). */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
-import { INPUTS, inpId } from '../engine/inputs'
+import { initStore, setSession, notify, undo, writeInputs } from '../state/store'
+import { INPUTS, inpId, defaultAllday } from '../engine/inputs'
 import { INPVIEW, CALMONTH, setCalMonth } from '../state/view'
-import { DAYRMK } from '../state/plan'
+import { DAYRMK, PLANPUCKS, addPlanPuck, removePlanPuck } from '../state/plan'
+import { ME } from '../state/auth'
 import { PEOPLE } from '../engine/people'
-import { monthCells, MAX_CHIPS } from './InputsCal'
+import { fmt, fmtDay, firstPersonalType } from './inputedit'
+import { INPEDIT, setInpEdit } from './pops'
+import { monthCells, MAX_CHIPS, HOLD_ADD } from './InputsCal'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -30,6 +33,24 @@ const setSelect = async (sel: string, v: string) => act(async () => {
   setter.call(el, v)
   el.dispatchEvent(new Event('change', { bubbles: true }))
 })
+/* a REAL PointerEvent — jsdom 30 (this repo's version, verified in
+   caldrag.test.tsx) constructs one with clientX/clientY/pointerId round-
+   tripping, so both caldrag.ts's own machine and InputsCal.tsx's own
+   hold-to-add gesture (both native pointer listeners on the grid) see a
+   genuine event, not a stand-in. */
+const ptr = (type: string, x: number, y: number, id = 1) =>
+  new PointerEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: id, pointerType: 'touch', isPrimary: true })
+/* a React-controlled text input needs the native value setter, or React's
+   own change-detection swallows a same-string re-set — the same trick every
+   other *.test.tsx in this app uses. */
+const typeInto = async (el: Element, value: string) => act(async () => {
+  const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+  setter.call(el, value)
+  el.dispatchEvent(new Event('input', { bubbles: true }))
+})
+/* React delegates onBlur off the bubbling focusout event, not bare blur —
+   DutyTplModal.test.tsx's own idiom. */
+const focusOut = async (el: Element) => act(async () => { el.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
 /* jump the open calendar straight to the seeded demo week's month, rather
    than clicking ‹/› however many times it takes to get there from whatever
    month the seed-from-range effect landed on */
@@ -80,6 +101,27 @@ describe('the Inputs page calendar toggle', () => {
     await goJul2026()
     expect($('.ic-mon')!.textContent).toBe('July 2026')
     expect(CALMONTH).toEqual({ y: 2026, m: 7 })
+  })
+
+  /* the header buttons must repaint what they change — setCalMonth is a bare
+     module-let write, so each button has to notify() itself. This clicks the
+     REAL buttons, because the helper above (setCalMonth + notify by hand) is
+     exactly how the missing notify slipped past the suite and had to be
+     caught on the live view instead. */
+  it('the ‹ › and Today buttons actually move the visible month', async () => {
+    expect($('.ic-mon')!.textContent).toBe('July 2026')
+    await click($('#icPrev'))
+    expect($('.ic-mon')!.textContent).toBe('June 2026')
+    await click($('#icNext'))
+    await click($('#icNext'))
+    expect($('.ic-mon')!.textContent).toBe('August 2026')
+    /* a real clock sits under Today, so pin the shape rather than the name:
+       whatever month it is, the title repaints to it and CALMONTH agrees */
+    await click($('#icToday'))
+    const now = new Date()
+    expect(CALMONTH).toEqual({ y: now.getFullYear(), m: now.getMonth() + 1 })
+    expect($('.ic-mon')!.textContent).toContain(String(now.getFullYear()))
+    await goJul2026()                    // back where the chip tests expect
   })
 })
 
@@ -173,5 +215,246 @@ describe('filtering the calendar', () => {
       await setSelect('#inFPerson', 'all')
       expect($('.ic-filterpill'), 'the pill goes with the last active filter').toBeFalsy()
     }
+  })
+})
+
+/* ---------------------------------------------------------------------------
+   THE DAY POPOVER, HOLD-TO-ADD, AND THE GESTURE WIRING — every one of these
+   drives a REAL event on the rendered element and reads the resulting DOM
+   back, never the model alone (a bug already got past this session once by
+   driving state instead of the control). The calendar stays open at July
+   2026 from the describes above; these use empty days (no seeded record
+   touches Jul 6/8/9/11/18/27) so each test's fixture is its own. */
+describe('the day popover — tap an empty cell, close it two ways', () => {
+  it('a quick tap opens .ic-pop for that day; ✕ closes it; the backdrop closes it too', async () => {
+    const cell = $('[data-icday="2026-07-06"]')!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 40, 40)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 40, 40)) })
+    expect($('.ic-pop'), 'the popover opens on a tap').toBeTruthy()
+    expect($('.ic-pop-head b')!.textContent).toBe(fmtDay('2026-07-06'))
+
+    await click($('#icPopClose'))
+    expect($('.ic-pop'), 'closes on the ✕').toBeFalsy()
+
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 40, 40)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 40, 40)) })
+    expect($('.ic-pop')).toBeTruthy()
+    await act(async () => { $('.ic-popwrap')!.dispatchEvent(ptr('pointerdown', 5, 5)) })
+    expect($('.ic-pop'), 'closes on a backdrop pointerdown').toBeFalsy()
+  })
+})
+
+describe('hold-to-add on an empty cell', () => {
+  it(`holding ${HOLD_ADD}ms seeds a new personal input for ME, without also opening the popover`, async () => {
+    vi.useFakeTimers()
+    try {
+      const cell = $('[data-icday="2026-07-08"]')!
+      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 30, 30)) })
+      await act(async () => { vi.advanceTimersByTime(HOLD_ADD) })
+      await act(async () => { cell.dispatchEvent(ptr('pointerup', 30, 30)) })
+
+      expect(INPEDIT, 'the add-input dialog seeded').toBeTruthy()
+      expect(INPEDIT._new).toBe(true)
+      expect(INPEDIT.date).toBe(fmt('2026-07-08'))
+      expect(INPEDIT.person).toBe(ME)
+      expect(INPEDIT.allday).toBe(defaultAllday(firstPersonalType()))
+      expect($('.ic-pop'), 'the fired hold suppressed the tap-to-open popover').toBeFalsy()
+    } finally {
+      vi.useRealTimers()
+      await act(async () => { setInpEdit(null); notify() })
+    }
+  })
+
+  it('releasing before the hold fires, with no meaningful movement, opens the popover instead', async () => {
+    vi.useFakeTimers()
+    try {
+      const cell = $('[data-icday="2026-07-08"]')!
+      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 30, 30)) })
+      await act(async () => { vi.advanceTimersByTime(HOLD_ADD - 50) }) // short of the hold
+      await act(async () => { cell.dispatchEvent(ptr('pointerup', 30, 30)) })
+
+      expect(INPEDIT, 'no add-dialog for an early release').toBeFalsy()
+      expect($('.ic-pop'), 'a tap opens the popover instead').toBeTruthy()
+      await click($('#icPopClose'))
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})
+
+describe('.ic-more opens the popover listing every entry, not just MAX_CHIPS', () => {
+  it('lists all of a day\'s entries beyond the chip cutoff', async () => {
+    const extras: any[] = []
+    for (let i = 0; i < MAX_CHIPS + 2; i++) {
+      extras.push({ person: 'yeti', date: 'Jul 27', allday: true, type: 'Training', remarks: '', mod: 'now' })
+    }
+    await act(async () => { extras.forEach(r => { INPUTS.unshift(r); inpId(r) }); notify() })
+    try {
+      const more = $('[data-icday="2026-07-27"] [data-icmore]')!
+      await click(more)
+      expect($('.ic-pop')).toBeTruthy()
+      expect($$('.ic-poprow').length, 'every entry, not the MAX_CHIPS cutoff').toBe(extras.length)
+      await click($('#icPopClose'))
+    } finally {
+      await act(async () => { extras.forEach(r => { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }); notify() })
+    }
+  })
+})
+
+describe('a popover entry row opens the same edit route as a chip', () => {
+  it('tapping a row sets INPEDIT to that EXACT record (object identity, not a re-lookup)', async () => {
+    const rec: any = INPUTS.find((r: any) => r.person === 'divot' && r.type === 'OML')
+    expect(rec, 'the seeded OML record exists').toBeTruthy()
+    const more = $('[data-icday="2026-07-13"] [data-icmore]')!
+    await click(more)
+    const row = $(`[data-popiid="${rec.iid}"]`)!
+    expect(row, 'the row renders').toBeTruthy()
+    await click(row)
+    expect(INPEDIT).toBe(rec)
+    expect($('.ic-pop'), 'the popover stays open under the modal').toBeTruthy()
+    await act(async () => { setInpEdit(null); notify() })
+    await click($('#icPopClose'))
+  })
+})
+
+describe('the day popover — scheduler day remark', () => {
+  it('typing #icRmkEdit and blurring commits it to DAYRMK and repaints the cell\'s .ic-rmk; undo reverts it', async () => {
+    const iso = '2026-07-09'
+    const cell = $(`[data-icday="${iso}"]`)!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    expect($('.ic-pop')).toBeTruthy()
+
+    const input = $('#icRmkEdit') as HTMLInputElement
+    expect(input, 'a scheduler sees the editable remark field').toBeTruthy()
+    await typeInto(input, 'CO visiting')
+    await focusOut(input)
+
+    expect(DAYRMK[iso]).toBe('CO visiting')
+    expect(cell.querySelector('.ic-rmk')!.textContent).toBe('CO visiting')
+
+    await act(async () => { undo() })
+    expect(DAYRMK[iso]).toBeUndefined()
+
+    await click($('#icPopClose'))
+  })
+})
+
+describe('the day popover — planning notes (pucks)', () => {
+  it('+ Note adds one (Enter commits) shown as a .plan chip; ✏ edits, ✕ removes; undo walks it all back', async () => {
+    const iso = '2026-07-11'
+    const cell = $(`[data-icday="${iso}"]`)!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    expect($('.ic-pop')).toBeTruthy()
+
+    await click($('#icAddPuck'))
+    const addInput = $('.ic-poppuck-edit') as HTMLInputElement
+    expect(addInput, 'the new-note box opened').toBeTruthy()
+    await typeInto(addInput, 'brief the new guy')
+    await act(async () => { addInput.focus(); addInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })) })
+
+    expect(PLANPUCKS.some((p: any) => p.date === iso && p.text === 'brief the new guy'), 'Enter committed the note').toBe(true)
+    expect(cell.querySelector('.ic-chip.plan'), 'the day shows a plan chip').toBeTruthy()
+
+    const pid = PLANPUCKS.find((p: any) => p.date === iso)!.id
+
+    await click($(`[data-ppedit="${pid}"]`))
+    const editInput = $('.ic-poppuck-edit') as HTMLInputElement
+    await typeInto(editInput, 'brief the new guy at 0800')
+    await focusOut(editInput)
+    expect(PLANPUCKS.find((p: any) => p.id === pid)!.text).toBe('brief the new guy at 0800')
+
+    await click($(`[data-ppdel="${pid}"]`))
+    expect(PLANPUCKS.find((p: any) => p.id === pid)).toBeUndefined()
+
+    await act(async () => { undo() }) // back over the delete
+    expect(PLANPUCKS.find((p: any) => p.id === pid)).toBeTruthy()
+    await act(async () => { undo() }) // back over the edit
+    expect(PLANPUCKS.find((p: any) => p.id === pid)!.text).toBe('brief the new guy')
+    await act(async () => { undo() }) // back over the add
+    expect(PLANPUCKS.find((p: any) => p.id === pid)).toBeUndefined()
+
+    await click($('#icPopClose'))
+  })
+})
+
+describe('a puck chip tap opens the popover with that note already in edit mode', () => {
+  it('caldrag routes a puck tap to onTap, which pre-opens its inline edit box', async () => {
+    const iso = '2026-07-18'
+    let added = false
+    await act(async () => { writeInputs(() => { added = addPlanPuck(iso, 'check quals') }) })
+    expect(added).toBe(true)
+    const pid = PLANPUCKS.find((p: any) => p.date === iso)!.id
+    try {
+      const chip = $(`[data-icday="${iso}"] [data-icdrag][data-pid="${pid}"]`)!
+      expect(chip, 'the plan chip renders').toBeTruthy()
+      await act(async () => { chip.dispatchEvent(ptr('pointerdown', 5, 5)) })
+      await act(async () => { chip.dispatchEvent(ptr('pointerup', 5, 5)) })
+
+      expect($('.ic-pop'), 'the popover opened').toBeTruthy()
+      expect($('.ic-pop-head b')!.textContent).toBe(fmtDay(iso))
+      const editBox = $('.ic-poppuck-edit') as HTMLInputElement
+      expect(editBox, 'the note is already switched into its inline edit box').toBeTruthy()
+      expect(editBox.value).toBe('check quals')
+      await click($('#icPopClose'))
+    } finally {
+      await act(async () => { writeInputs(() => { removePlanPuck(pid) }) })
+    }
+  })
+})
+
+describe('caldrag chip-tap wiring, driven on the real grid', () => {
+  it('a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record', async () => {
+    const rec: any = INPUTS.find((r: any) => r.person === 'bane' && r.type === 'Appointment' && r.date === 'Jul 16')
+    expect(rec, 'the seeded Appointment record exists').toBeTruthy()
+    const chip = $(`[data-icday="2026-07-16"] [data-icdrag][data-iid="${rec.iid}"]`)!
+    expect(chip, 'the chip renders').toBeTruthy()
+    await act(async () => { chip.dispatchEvent(ptr('pointerdown', 5, 5)) })
+    await act(async () => { chip.dispatchEvent(ptr('pointerup', 5, 5)) })
+    expect(INPEDIT).toBe(rec)
+    await act(async () => { setInpEdit(null); notify() })
+  })
+})
+
+describe('member session — reduced controls, same reach to add and to open a chip', () => {
+  it('no remark editor, no +Note, but +Add input and the chip-edit route both stay', async () => {
+    const iso = '2026-07-13' // divot's OML lives here, among several other entries
+    const rec: any = INPUTS.find((r: any) => r.person === 'bane' && r.type === 'Appointment' && r.date === 'Jul 16')
+    await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
+    try {
+      const more = $(`[data-icday="${iso}"] [data-icmore]`)!
+      await click(more)
+      expect($('.ic-pop')).toBeTruthy()
+      expect($('#icRmkEdit'), 'no remark editor for a member').toBeFalsy()
+      expect($('#icAddPuck'), 'no +Note for a member').toBeFalsy()
+      expect($('#icPopAdd'), '+Add input stays available to everyone').toBeTruthy()
+      await click($('#icPopClose'))
+
+      const chip = $(`[data-icday="2026-07-16"] [data-icdrag][data-iid="${rec.iid}"]`)!
+      await act(async () => { chip.dispatchEvent(ptr('pointerdown', 5, 5)) })
+      await act(async () => { chip.dispatchEvent(ptr('pointerup', 5, 5)) })
+      expect(INPEDIT, 'a chip tap still opens the modal for a member').toBe(rec)
+      await act(async () => { setInpEdit(null); notify() })
+    } finally {
+      await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    }
+  })
+})
+
+describe('Esc layering: popover first, then the calendar', () => {
+  it('the first Esc closes just the popover; the second closes the calendar', async () => {
+    const cell = $('[data-icday="2026-07-06"]')!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    expect($('.ic-pop')).toBeTruthy()
+
+    await act(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect($('.ic-pop'), 'first Esc closes just the popover').toBeFalsy()
+    expect($('#inpCal'), 'the calendar itself is still open').toBeTruthy()
+
+    await act(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect($('#inpCal'), 'second Esc closes the calendar').toBeFalsy()
+    expect(INPVIEW).toBe('table')
   })
 })
