@@ -267,6 +267,18 @@ export function isUnavail(t:any){const m=inpMeta(t); return !!m&&m.grp!=='act';}
 export function isPersonal(t:any){const m=inpMeta(t); return !!m&&m.grp==='act';}
 /* the SANS availability type — see the INPUT_META entry's comment */
 export function isSansAvail(t:any){const m=inpMeta(t); return !!m&&m.grp==='sans';}
+/* THE ALL-DAY DEFAULT A BRAND-NEW INPUT OPENS WITH (owner, 22 Aug 26 —
+   "untick all day by default for all u see under duty and other commitments
+   except sans availability"). Every "Duty & other commitments" type BUT SANS
+   Availability opens with All day OFF, because those are timed commitments the
+   aircrew states real hours for (a meeting, an appointment, a training slot).
+   Leave, medical and SANS Availability keep All day ON: an absence or a
+   whole-window availability reads all-day far more often than not. Keyed off
+   the SAME dropdown grouping the legend uses (typeGroup 'other' is exactly the
+   "Duty & other commitments" heading) so the two can never drift.
+   A NEW-INPUT default ONLY — it decides what an empty add form starts on, and
+   never touches the saved allday of a record already on file. */
+export function defaultAllday(t:any){return !(typeGroup(t)==='other'&&!isSansAvail(t));}
 /* DOES THIS INPUT TYPE BEAR CREW REST? (owner, 21 Aug 26 — "everything in
    duty and commitments affects crew rest if the person is flying… do not
    include personal, sans availability"). The "Duty & other commitments"

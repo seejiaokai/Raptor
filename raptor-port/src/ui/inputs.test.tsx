@@ -135,6 +135,29 @@ describe('the Inputs page (tfin)', () => {
     await click($('#inSpan [data-span="all"]'))
   })
 
+  /* the All day default follows the type (owner, 22 Aug 26): every "Duty &
+     other commitments" type but SANS opens timed, so the box lands UNTICKED;
+     leave, medical and SANS keep it ticked. It is a default, re-seeded on each
+     type change, so the record written by an untouched form proves it. */
+  it('unticks All day by default for Duty & other commitments, but not SANS or leave', async () => {
+    /* every timed "Duty & other commitments" type opens with the plain tick
+       UP and UNCHECKED — the whole group bar SANS (the record a timed window
+       actually lands from is pinned in boardaddinput.test.tsx's Meeting add) */
+    for (const t of ['Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'OD', 'Other']) {
+      await setType(t)
+      expect($('#inSpan'), `${t} takes the plain tick, not the span picker`).toBeFalsy()
+      expect(($('#inAllday') as HTMLInputElement).checked, `${t} opens unticked`).toBe(false)
+    }
+    /* SANS Availability is the carve-out: it takes the span picker and opens
+       on all-day, exactly as leave and medical do */
+    await setType('SANS Availability')
+    expect($('#inAllday'), 'SANS has the span picker, not the plain tick').toBeFalsy()
+    expect(($('#inSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'SANS opens all-day').toBe('true')
+    /* a leave type is unchanged — still opens all-day */
+    await setType('LL')
+    expect(($('#inSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'leave opens all-day').toBe('true')
+  })
+
   /* switching away from a half-capable type must not strand an invisible half
      on the record — the row would claim a window nobody could see or change */
   it('changing to a type with no halves clears the half', async () => {

@@ -4,7 +4,7 @@
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
 import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/slots'
-import { INPUTS, DATES, withRemarksTail, inpId } from '../engine/inputs'
+import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
@@ -589,10 +589,16 @@ export function routeClick(e: MouseEvent) {
     const pool = kind === 's' ? rosterOptions().filter(id => PEOPLE[id].san) : rosterOptions()
     const person = pool[0]
     if (!person) { HOOKS.toast(kind === 's' ? 'No SANS aircrew on the roster' : 'No crew on the roster to file an input for', 'warn'); return }
+    const seedType = kind === 'u' ? firstUnavailType() : kind === 's' ? firstSansType() : firstPersonalType()
+    /* the seed opens on the type's own All day default (owner, 22 Aug 26): OFF
+       for a personal/ground commitment (06:00–18:00 window), ON for a leave,
+       medical or SANS add. The dialog's own type dropdown re-seeds this too, so
+       the two entry points agree — see defaultAllday and the InputsPage form. */
+    const seedAllday = defaultAllday(seedType)
     setInpEdit({
       _new: true, _ctx: kind, person,
-      type: kind === 'u' ? firstUnavailType() : kind === 's' ? firstSansType() : firstPersonalType(),
-      date, allday: true, s: 0, e: 1439,
+      type: seedType,
+      date, allday: seedAllday, s: seedAllday ? 0 : 360, e: seedAllday ? 1439 : 1080,
       /* the range seed is a COMPLETED one-day range (endDate = date), not a
          bare start: RangeCal treats "start with no end" as a range waiting
          for its end, so a bare seed made the first calendar click COMPLETE a

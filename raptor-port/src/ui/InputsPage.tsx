@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, withRemarksTail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, defaultAllday, withRemarksTail } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -191,7 +191,7 @@ export function InputsPage() {
   const [type, setType] = useState(INPUT_TYPES[0])
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
-  const [allday, setAllday] = useState(true)
+  const [allday, setAllday] = useState(defaultAllday(INPUT_TYPES[0]))
   /* '' | 'am' | 'pm' — a LABEL for the window below, never a second source of
      truth. s/e stay the only thing the engine reads. */
   const [half, setHalf] = useState('')
@@ -460,6 +460,12 @@ export function InputsPage() {
             <select id="inType" aria-label="Input type" value={type} onChange={e => {
               const t = e.target.value
               setType(t)
+              /* the All day tick follows the type's default: OFF for the
+                 timed "Duty & other commitments" types, ON for leave, medical
+                 and SANS (see defaultAllday). This is the form's default, so
+                 it re-seeds on every type change — like the half and sans
+                 payload below — and the user is free to re-tick it after. */
+              setAllday(defaultAllday(t))
               /* a half-day belongs to the types that offer one. Switching to a
                  type without the picker would otherwise strand an invisible
                  'am' on the record, and the row would claim a half nobody

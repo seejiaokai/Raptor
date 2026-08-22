@@ -157,6 +157,8 @@ describe('the dialog opened from each add', () => {
     expect(opts.length).toBeGreaterThan(0)
     expect(opts.every(t => isUnavail(t) && !isSansAvail(t)), 'no activity types and no SANS here').toBe(true)
     expect($('#inpEdCal'), 'the two-click range calendar is in the dialog').toBeTruthy()
+    /* an absence still opens all-day — leave/medical keep the ON default */
+    expect(($('#inpEditSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'an Unavailable add opens all-day').toBe('true')
     expect(($('#inpEditRmk') as HTMLInputElement).value, 'a one-day pick reads till <that day>, like the Inputs page').toBe('till 13 Jul')
     await act(async () => { setInpEdit(null); notify() })
     await click($('#sbClose'))
@@ -168,6 +170,9 @@ describe('the dialog opened from each add', () => {
     expect(opts.length).toBeGreaterThan(0)
     expect(opts.every(t => isPersonal(t)), 'meetings, courses… — nothing that means absent').toBe(true)
     expect($('#inpEdCal'), 'single day — the open day').toBe(null)
+    /* a personal commitment opens with All day OFF (owner, 22 Aug 26) — the
+       plain tick is up (no halves) and it is unticked, matching the Inputs form */
+    expect(($('#inpEditAllday') as HTMLInputElement).checked, 'a personal add opens timed').toBe(false)
     await act(async () => { setInpEdit(null); notify() })
     await click($('#sbClose'))
   })
@@ -218,6 +223,9 @@ describe('adding through the board', () => {
     expect(INPEDIT).toBe(null)
     const row = onMon().find((i: any) => i.person === 'bane' && i.type === 'Meeting')!
     expect(row, 'the input exists on Monday').toBeTruthy()
+    /* untouched All day → a timed window landed, not an all-day record */
+    expect(row.allday, 'a Meeting board-add opens and lands timed').toBe(false)
+    expect([row.s, row.e]).toEqual([360, 1080])
     expect(row.acc, 'and it is already accepted onto the programme').toBe('g')
     expect((DAYS[0].ground || []).length).toBe(gBefore + 1)
     /* the ground programme panel now draws the row — the programme name is an

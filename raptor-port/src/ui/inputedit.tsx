@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, dateOrd, baseYear, withRemarksTail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, defaultAllday, dateOrd, baseYear, withRemarksTail } from '../engine/inputs'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
@@ -713,6 +713,11 @@ export function InputEditor() {
                   setDraft({
                     ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }),
                     sans: isSansAvail(t) ? (draft.sans || {}) : null,
+                    /* re-seed the All day default on a brand-new add only, so the
+                       board add agrees with the Inputs form (defaultAllday): a
+                       personal commitment opens timed, leave/medical/SANS all-day.
+                       An EDIT keeps whatever the saved record already carries. */
+                    ...(isNew ? { allday: defaultAllday(t) } : {}),
                   })
                 }}>{typeOptions(ctx ? TYPE_ALLOW[ctx] : undefined)}</select>
             </label>}

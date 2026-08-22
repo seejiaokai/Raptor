@@ -153,6 +153,16 @@ two 10 Aug additions took one:
   The row editor mirrors it on the `.ined-ad` line.
   It writes only the two time fields the form already had, plus a `half`
   label — **no new engine input**.
+- **The All day tick opens OFF for a "Duty & other commitments" type, ON for
+  everything else** (owner, 22 Aug 26). A brand-new input re-seeds its All day
+  state from `defaultAllday(type)` on every type change: the timed group
+  (Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, OD, Other)
+  starts UNTICKED with the 06:00–18:00 window live, because those are
+  commitments the aircrew states real hours for; leave, medical and **SANS
+  Availability** keep All day ON. It is a default only — a user is free to
+  re-tick it, and an existing record's saved `allday` is never touched. Same
+  default drives the board's + Inputs / + Add seed (`interactions.ts`) and its
+  dialog's type dropdown (new adds only), so the two entry points agree.
 
 All three type dropdowns (add form, filter, row editor) carry the same three
 `<optgroup>`s, from `TYPE_GROUPS`/`typeGroup`. Twenty flat options is not a
