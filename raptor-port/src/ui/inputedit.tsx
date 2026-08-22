@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, dateOrd, baseYear, withRemarksTail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, defaultAllday, dateOrd, baseYear, withRemarksTail } from '../engine/inputs'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
@@ -100,6 +100,14 @@ export const HALF_PM: [string, string] = ['12:01', '23:59']
 export const hasHalf = (t: string) => !!(inpMeta(t) || {}).half
 export type Span = 'all' | 'am' | 'pm' | 'custom'
 export const spanOf = (allday: boolean, half: string): Span => allday ? 'all' : half === 'am' ? 'am' : half === 'pm' ? 'pm' : 'custom'
+/* This is the ONE place the input colour code is decided — the Inputs
+   table's row stripes and the month calendar's chips (a view built in
+   parallel) both import this instead of each re-deriving its own tone, so
+   the two surfaces cannot drift apart. Red = a man who is absent (leave,
+   medical, OD); amber = a local commitment (activity / duty & other
+   commitments); purple = SANS Availability, wearing the same `--san`
+   purple the rest of the app already reads as SANS. */
+export const inputTone = (t: any) => isSansAvail(t) ? 'san' : isUnavail(t) ? 'red' : 'amb'
 /* what a span means in the four fields it drives */
 export const spanFields = (m: Span) => m === 'all' ? { allday: true, half: '', sTime: '06:00', eTime: '18:00' }
   : m === 'am' ? { allday: false, half: 'am', sTime: HALF_AM[0], eTime: HALF_AM[1] }
@@ -713,6 +721,11 @@ export function InputEditor() {
                   setDraft({
                     ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }),
                     sans: isSansAvail(t) ? (draft.sans || {}) : null,
+                    /* re-seed the All day default on a brand-new add only, so the
+                       board add agrees with the Inputs form (defaultAllday): a
+                       personal commitment opens timed, leave/medical/SANS all-day.
+                       An EDIT keeps whatever the saved record already carries. */
+                    ...(isNew ? { allday: defaultAllday(t) } : {}),
                   })
                 }}>{typeOptions(ctx ? TYPE_ALLOW[ctx] : undefined)}</select>
             </label>}

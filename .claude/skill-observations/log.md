@@ -252,3 +252,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Before choosing any fixed track/column width that must fit specific text: inject a probe span with the target's real classes into the built page, measure every candidate string (longest label, longest name, widest time run), and derive the track from the measured max plus a stated margin. Record the measured numbers in the CSS comment (this repo's existing convention) so the next editor re-measures rather than re-estimates.
 
 **Principle:** A layout number that makes text fit is a measurement, not a calculation — take it from the rendering engine that will enforce it, with the exact styles that will apply, before writing it into a stylesheet.
+
+### Observation 19: Delegated UI tests must drive real controls, not state setters
+
+**Status:** OPEN
+**Date:** 2026-08-22
+**Session context:** Building the Inputs month-calendar; a delegated subagent's month-stepping buttons never repainted (setCalMonth without notify) yet its 11 jsdom tests passed, because the tests stepped months via the state setter + manual notify instead of clicking the real ‹ › buttons. Caught only on the live-view screenshot pass.
+**Skill:** New skill candidate: delegated-ui-specs (or a rule for dispatching-parallel-agents)
+**Type:** open-source
+**Phase/Area:** Subagent spec-writing for UI tasks
+
+**Issue:** A spec told the agent WHAT to test (month navigation works) but not HOW (through the rendered control). The agent tested the model transition directly, which cannot catch a missing repaint wire between control and store.
+
+**Suggested improvement:** When speccing UI work for a code-writing agent, require at least one test per interactive control that dispatches a real event on the rendered element and asserts the visible outcome (textContent/DOM), naming this as a hard requirement in the spec. Orchestrator review should specifically ask "does any test click the actual button?"
+
+**Principle:** In frameworks where rendering is subscription-driven, a test that mutates state directly bypasses the exact wiring (mutate → notify → repaint) most likely to be missing; only an event on the real control exercises it.

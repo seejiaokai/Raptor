@@ -1786,6 +1786,13 @@ reason the AL records do — a duplicate or a draft switch is one ordinary
 undo step, and undoing past it brings the stowed blobs back too. Undo is
 refused while focus is in an editable field.
 
+The snapshot also carries the Inputs-calendar's two session-only planning
+stores (`state/plan.ts`) — `PLANPUCKS` (`pp`) and `DAYRMK` (`dm`), the
+scheduler's month-calendar to-dos and day remarks. Neither persists to
+storage, but both ride undo/redo like any other edit; an older snapshot
+taken before this feature landed carries neither field and restores both to
+empty rather than throwing.
+
 ## The edit log (`engine/editlog.ts`, owner, 11 Aug 26)
 
 Who changed which detail, when, and what it was before. Distinct from

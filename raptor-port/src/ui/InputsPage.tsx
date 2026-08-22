@@ -4,19 +4,21 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, withRemarksTail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, defaultAllday, withRemarksTail } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { autoAcceptInput } from '../engine/slots'
 import { ME } from '../state/auth'
 import { writeInputs, notify } from '../state/store'
+import { INPVIEW, setInpView } from '../state/view'
+import { InputsCal } from './InputsCal'
 /* the halves, the span control, the draft shape and the commit are shared with
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
-  rosterOptions as people,
+  rosterOptions as people, inputTone,
 } from './inputedit'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
@@ -191,7 +193,7 @@ export function InputsPage() {
   const [type, setType] = useState(INPUT_TYPES[0])
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
-  const [allday, setAllday] = useState(true)
+  const [allday, setAllday] = useState(defaultAllday(INPUT_TYPES[0]))
   /* '' | 'am' | 'pm' — a LABEL for the window below, never a second source of
      truth. s/e stay the only thing the engine reads. */
   const [half, setHalf] = useState('')
@@ -460,6 +462,12 @@ export function InputsPage() {
             <select id="inType" aria-label="Input type" value={type} onChange={e => {
               const t = e.target.value
               setType(t)
+              /* the All day tick follows the type's default: OFF for the
+                 timed "Duty & other commitments" types, ON for leave, medical
+                 and SANS (see defaultAllday). This is the form's default, so
+                 it re-seeds on every type change — like the half and sans
+                 payload below — and the user is free to re-tick it after. */
+              setAllday(defaultAllday(t))
               /* a half-day belongs to the types that offer one. Switching to a
                  type without the picker would otherwise strand an invisible
                  'am' on the record, and the row would claim a half nobody
@@ -507,6 +515,10 @@ export function InputsPage() {
           )}
         </div>
         <div className="searchbox">🔍<input id="inFSearch" placeholder="search" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></div>
+        {/* the month-calendar view of the same page (owner ask, Aug 26) — a
+            toggle, not a second page, so it opens over whatever the table is
+            already filtered and windowed to (see INPVIEW, state/view.ts) */}
+        <button className="abtn" id="inCalBtn" title="Month calendar view" onClick={() => { setInpView('cal'); notify() }}>📅 Calendar</button>
         <button className="abtn" id="inExport" onClick={() => {
           const out: any[][] = [['Name', 'Date', 'Start', 'End', 'Type', 'Remarks']]
           INPUTS.forEach((r: any) => out.push([PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person, r.date, r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, r.remarks]))
@@ -604,8 +616,12 @@ export function InputsPage() {
                   </td>
                 </tr>
               )
+              /* the stripe mirrors the month calendar's chip tones — both
+                 read inputTone so the two surfaces can't disagree on a
+                 colour (see ui/inputedit.tsx) */
+              const rowCls = ['in-' + inputTone(r.type), ...(flash.indexOf(r) >= 0 ? ['innew'] : [])].join(' ')
               return (
-                <tr key={inx} className={flash.indexOf(r) >= 0 ? 'innew' : undefined} data-iid={r.iid}>
+                <tr key={inx} className={rowCls} data-iid={r.iid}>
                   {/* data-same now marks an EMPTY End — an all-day one-day
                       input, whose date already reads once in Start — so the
                       phone card drops it and reads just "13 Jul". A timed
@@ -650,6 +666,12 @@ export function InputsPage() {
             : 'No inputs match.'}
         </div>
       </div>
+      {/* the table stays mounted underneath — closing the calendar is then a
+          free round trip, scroll position and all, rather than a re-navigate
+          that has to rebuild the list from scratch */}
+      {INPVIEW === 'cal' && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
+        seedIso={range.from || isoOf(new Date())}
+        onClose={() => { setInpView('table'); notify() }} />}
     </>
   )
 }

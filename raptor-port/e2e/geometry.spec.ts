@@ -3718,3 +3718,78 @@ test('the phone Inputs cards align their type and date columns', async ({ page }
   expect(m.below.rkTop, 'remarks sit below the callsign line').toBeGreaterThanOrEqual(m.below.nameBottom - 0.5)
   expect(Math.abs(m.below.rkLeft - m.below.nameLeft), 'and start under it').toBeLessThan(1.5)
 })
+
+/* --------------------------------------------------------------------------
+   THE INPUTS MONTH CALENDAR (owner ask, 22 Aug 26). jsdom pins the grid's
+   COUNT (7 columns of cells in the markup) but not its geometry — only a
+   real layout engine can prove the columns come out equal, that the overlay
+   really fills the viewport, and that a chip never paints outside its own
+   day cell. The phone check also pins the owner-approved compact form:
+   chips are bare colour bars, not text. */
+test.describe('the Inputs month calendar', () => {
+  for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
+    test(`fills the viewport with 7 equal columns, chips inside their cells, on ${name}`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page)
+      await go(page, 'inputs')
+      await page.click('#inCalBtn')
+      await page.waitForSelector('#inpCal')
+
+      /* the overlay is the whole screen — that is what "full screen" means */
+      const box = await page.evaluate(() => {
+        const r = document.getElementById('inpCal')!.getBoundingClientRect()
+        return { x: r.x, y: r.y, w: r.width, h: r.height, iw: innerWidth, ih: innerHeight }
+      })
+      expect(box.x).toBe(0); expect(box.y).toBe(0)
+      expect(Math.abs(box.w - box.iw)).toBeLessThan(1)
+      expect(Math.abs(box.h - box.ih)).toBeLessThan(1)
+
+      /* seven equal columns — the first grid row, blanks included, and no
+         horizontal spill past the overlay's own right edge */
+      const cols = await page.evaluate(() => {
+        const cells = [...document.querySelectorAll('.ic-grid>*')].slice(0, 7)
+        const ws = cells.map(el => +el.getBoundingClientRect().width.toFixed(1))
+        const right = Math.max(...[...document.querySelectorAll('.ic-grid>*')].map(el => el.getBoundingClientRect().right))
+        return { n: cells.length, ws, right, iw: innerWidth }
+      })
+      expect(cols.n).toBe(7)
+      for (const w of cols.ws) expect(Math.abs(w - cols.ws[0]), 'columns are equal within a px').toBeLessThan(1.5)
+      expect(cols.right, 'the grid never scrolls the page sideways').toBeLessThanOrEqual(cols.iw + 0.5)
+
+      /* step to the seeded demo month (July 2026) — bounded, not hardcoded:
+         the seed month follows the real clock, so walk ‹ until the title
+         reads out, and fail loudly if two years of clicks never find it */
+      for (let i = 0; i < 24; i++) {
+        if ((await page.locator('.ic-mon').textContent()) === 'July 2026') break
+        await page.click('#icPrev')
+      }
+      expect(await page.locator('.ic-mon').textContent()).toBe('July 2026')
+      await page.waitForSelector('.ic-chip')
+
+      /* every chip paints inside its own day cell — the one geometric
+         promise the whole month view rests on */
+      const stray = await page.evaluate(() => {
+        const bad: any[] = []
+        for (const cell of document.querySelectorAll('[data-icday]')) {
+          const c = cell.getBoundingClientRect()
+          for (const chip of cell.querySelectorAll('.ic-chip')) {
+            const r = chip.getBoundingClientRect()
+            if (r.left < c.left - 0.5 || r.right > c.right + 0.5 || r.top < c.top - 0.5 || r.bottom > c.bottom + 0.5)
+              bad.push({ day: (cell as HTMLElement).dataset.icday, chip: { l: r.left, r: r.right, t: r.top, b: r.bottom }, cell: { l: c.left, r: c.right, t: c.top, b: c.bottom } })
+          }
+        }
+        return bad.slice(0, 4)
+      })
+      expect(stray, 'no chip paints outside its day cell').toEqual([])
+
+      if (name === 'phone') {
+        /* the owner-approved phone form: chips shrink to colour bars */
+        const h = await page.evaluate(() => [...document.querySelectorAll('.ic-chip')]
+          .map(el => +el.getBoundingClientRect().height.toFixed(1)))
+        expect(h.length).toBeGreaterThan(0)
+        for (const v of h) expect(v, 'phone chips are compact colour bars').toBeLessThanOrEqual(10)
+      }
+      await page.click('#icClose')
+    })
+  }
+})

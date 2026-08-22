@@ -135,6 +135,29 @@ describe('the Inputs page (tfin)', () => {
     await click($('#inSpan [data-span="all"]'))
   })
 
+  /* the All day default follows the type (owner, 22 Aug 26): every "Duty &
+     other commitments" type but SANS opens timed, so the box lands UNTICKED;
+     leave, medical and SANS keep it ticked. It is a default, re-seeded on each
+     type change, so the record written by an untouched form proves it. */
+  it('unticks All day by default for Duty & other commitments, but not SANS or leave', async () => {
+    /* every timed "Duty & other commitments" type opens with the plain tick
+       UP and UNCHECKED — the whole group bar SANS (the record a timed window
+       actually lands from is pinned in boardaddinput.test.tsx's Meeting add) */
+    for (const t of ['Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'OD', 'Other']) {
+      await setType(t)
+      expect($('#inSpan'), `${t} takes the plain tick, not the span picker`).toBeFalsy()
+      expect(($('#inAllday') as HTMLInputElement).checked, `${t} opens unticked`).toBe(false)
+    }
+    /* SANS Availability is the carve-out: it takes the span picker and opens
+       on all-day, exactly as leave and medical do */
+    await setType('SANS Availability')
+    expect($('#inAllday'), 'SANS has the span picker, not the plain tick').toBeFalsy()
+    expect(($('#inSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'SANS opens all-day').toBe('true')
+    /* a leave type is unchanged — still opens all-day */
+    await setType('LL')
+    expect(($('#inSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'leave opens all-day').toBe('true')
+  })
+
   /* switching away from a half-capable type must not strand an invisible half
      on the record — the row would claim a window nobody could see or change */
   it('changing to a type with no halves clears the half', async () => {
@@ -281,6 +304,32 @@ describe('the Inputs page (tfin)', () => {
     expect(narrowed).toBeGreaterThan(0)
     expect(narrowed).toBeLessThan(all)
     expect($$('#inBody .intag').every(x => x.textContent === 'OML')).toBe(true)
+  })
+
+  /* one colour source for both this table and the month calendar
+     (ui/inputedit.tsx's inputTone) — pin the three tones it can produce
+     against the seed data that already carries all three: divot's OML
+     (medical, red), vinci's Meeting (an activity under "Duty & other
+     commitments", amber), and the demo SANS Availability seed (state/
+     demoseed.ts, filed for nick) for purple. toContain, not equality —
+     the flash class ('innew') can ride the same row. */
+  it('stripes rows red/amber/purple by inputTone', async () => {
+    /* an earlier test in this file ('the filters narrow the table') leaves
+       the type filter on OML and never resets it — put it back to All so
+       every seeded person is on screen for this assertion */
+    await act(async () => {
+      const sel = $('#inFType') as unknown as HTMLSelectElement
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
+      setter.call(sel, 'all')
+      sel.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    const redIx = INPUTS.findIndex((r: any) => r.person === 'divot' && r.type === 'OML')
+    expect(rowFor(redIx).className, 'medical leave').toContain('in-red')
+    const ambIx = INPUTS.findIndex((r: any) => r.person === 'vinci' && r.type === 'Meeting')
+    expect(rowFor(ambIx).className, 'an activity commitment').toContain('in-amb')
+    const sanIx = INPUTS.findIndex((r: any) => r.person === 'nick' && r.type === 'SANS Availability')
+    expect(sanIx, 'the demo SANS seed is present').toBeGreaterThanOrEqual(0)
+    expect(rowFor(sanIx).className, 'SANS Availability').toContain('in-san')
   })
 
   it('an added downchit re-validates the week (reflow)', async () => {
