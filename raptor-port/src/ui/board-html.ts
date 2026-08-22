@@ -171,7 +171,17 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
     +(ro?'':`<span class="gctl">${sbSortBtn(`p.${di}`,ro)}<button class="mbtn add" data-padd="${di}" title="Add a squadron-wide item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like.</div>`;
   else{
-    s+=`<div class="sb-acols cprog"><span></span><span>Item</span><span>Detail</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
+    /* SAME c6r shape as the ground / duty / sim rows — Item | Start | End |
+       People | Rmks | ctl — so the Common Programme reads and lays out exactly
+       like the Ground Programme below it on a phone (owner, 22 Aug 26 — "make
+       the common programme mobile layout similar to this", pointing at the
+       ground list). The old `cprog` grid carried an extra DETAIL / location
+       column between Item and Start; the owner asked for it gone ("no need for
+       detail and location — you can remove it"), and dropping it is what lets
+       the row collapse onto the c6r template with no divergence left to keep.
+       The `.sub` model field and its `ap:*.sub` funnel key stay (keys.test.ts /
+       publish.test.ts pin the keyspace) — it simply has no board editor now. */
+    s+=`<div class="sb-acols c6r"><span></span><span>Item</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div>`;
     rows.forEach((x:any,ri:any)=>{
       const arr=whoArr(x);
       /* same hole guard as the week view — an empty .itxt shifts every later puck.
@@ -181,9 +191,8 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
       const inner=arr.map((nm:any,k:any)=>{const id=nameToId(nm);
         if(id&&PEOPLE[id])return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' draggable="true"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id))}</span>`;
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
-      s+=`<div class="sb-arow cprog${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
+      s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +`<input class="ain" data-bfld="ap:${di}.${ri}.prog"${alAttr(`ap:${di}.${ri}.prog`)}${ro?' disabled':''} value="${esc(x.prog||'')}">`
-        +`<input class="ain" data-bfld="ap:${di}.${ri}.sub"${alAttr(`ap:${di}.${ri}.sub`)}${ro?' disabled':''} value="${esc(x.sub||'')}" placeholder="detail / location">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)}${ro?' disabled':''} value="${esc(x.str||'')}">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.end"${alAttr(`ap:${di}.${ri}.end`)}${ro?' disabled':''} value="${esc(x.end||'')}">`
         +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner||'<span class="itxt">all</span>'}</div>`
