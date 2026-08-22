@@ -24,25 +24,29 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the 22 Aug 26 batch — the crew-rest
-message reworded cause-first with the leave-by demoted to data, and the
-Inputs page's aligned card columns; all six gates watched this session. It
-sits on the double-turn/double-booking split, the one-knob dependency
-sweep, the crew-rest widening, the editable-rules pass, the in-time
-passes, the Inputs-page date standardisation and the per-input LATE
-dismissal below):
+**Last recorded green baseline** (the 22 Aug 26 evening batch — the Inputs
+month calendar with its planning layer, the per-type All-day defaults, and
+the table's tone stripes; all six gates watched this session. It sits on
+the crew-rest cause-first rewording, the aligned Inputs cards, the
+double-turn/double-booking split, the one-knob dependency sweep and the
+passes below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2823 across 158 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2868 across 161 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 307 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `npm run test:e2e` | 309 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
-| `perf` | 4/4 |
+| `perf` | 4/4 — week DOM 4940 ≤ 5450, board 855 ≤ 960 (the calendar adds nothing to either) |
 
-The counts reconcile against the reading this replaced (2689 across 146 files,
-303 e2e / 11 skips). Frozen columns: +1 test in `frozencols.test.tsx` and +1
+The counts reconcile against the reading this replaced (2823 across 158
+files, 307 e2e / 12 skips): the All-day-defaults pass +1 in
+`inputs.test.tsx` → 2824; the calendar +8 (`plan.test.ts`), +23
+(`inputscal.test.tsx`), +12 (`caldrag.test.tsx`) as three new files, and +1
+stripe test in `inputs.test.tsx` → 2868 / 161; +2 e2e (the calendar's
+viewport/columns/chips-in-cells walk, both widths) → 309. The chain before
+that reconciled against (2689 across 146 files, 303 e2e / 11 skips). Frozen columns: +1 test in `frozencols.test.tsx` and +1
 e2e (the whole-roster alignment walk, phone-only, so the desktop project skips
 it and the skip count moves with it) → 2690 / 146 / 304. The evening batch: +8
 tests and +1 file for `latemark.test.tsx`, +3 in `insights.test.ts` (work
