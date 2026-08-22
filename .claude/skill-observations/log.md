@@ -297,3 +297,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When pkill/pgrep -f must run inside a larger command whose text contains the pattern, break the self-match with a character class: `pkill -f "vite [p]review"`. Worth one line wherever the preview-kill step is documented (HANDOFF's stale-preview trap).
 
 **Principle:** A full-command-line process match can always match the process doing the matching; neutralise the pattern (bracket class) or run the kill as its own minimal command.
+
+### Observation 22: Checkpoint — no new skill observation
+
+**Status:** ACTIONED (2026-08-22) — checkpoint marker, no change needed
+**Date:** 2026-08-22
+**Session context:** Shipping the calendar day-popover remark line (3rd deliverable of the session)
+**Skill:** task-observer
+**Type:** internal
+**Phase/Area:** mandatory 3rd-completion checkpoint
+
+**Issue:** Checkpoint reached after completing three deliverables (member person-scope, repeat-weeks removal, calendar remarks). Observations #20 (capture full-suite output) and #21 (pkill self-match) already cover the friction seen; nothing further accumulated.
+
+**Suggested improvement:** None — marker only.
+
+**Principle:** Writing an explicit no-new-observation marker at the checkpoint keeps the enforcement honest without inventing low-signal entries.
