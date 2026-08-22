@@ -899,12 +899,33 @@ export function routeClick(e: MouseEvent) {
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can mute a check', 'warn'); return }
     const [di, ix] = (wo.dataset.woff || '').split('.').map(Number)
     const g = WARN.byDay[di], w = g && g.warns && g.warns[ix]
-    if (w) { const shown = view.toggleWarnOff(view.warnMuteKey(w)); HOOKS.toast(shown ? 'Check shown again' : 'Check hidden — it returns if the day changes', 'ok') }
+    if (w) {
+      const shown = view.toggleWarnOff(view.warnMuteKey(w))
+      HOOKS.toast(shown ? 'Check shown again' : 'Check hidden — it returns if the day changes', 'ok')
+      /* a mute is an undo step now (owner, Aug 26 — "when I click undo I should
+         revert my hidden warning changes"): WARNOFF rides the history snapshot,
+         so push one after toggling. toggleWarnOff no-ops for a non-scheduler and
+         returns false, but the canEditSched guard above already refused those. */
+      HOOKS.histPush()
+    }
     notify(); return
   }
   /* show / hide the day's muted checks — the reveal so a muted one stays reachable */
   const wm = t.closest('[data-wmtog]') as HTMLElement | null
   if (wm) { view.toggleWarnMuted(+wm.dataset.wmtog!); notify(); e.stopPropagation(); return }
+
+  /* make a scheduler note public / scheduler-only (owner, Aug 26). Caught before
+     the text-cell routing below so tapping the header chip never opens an editor.
+     Admin-gated at the write path; not an undo step (the owner asked undo only
+     for hidden warnings). */
+  const npb = t.closest('[data-notepub]') as HTMLElement | null
+  if (npb) {
+    e.stopPropagation()
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can change this', 'warn'); return }
+    const on = view.toggleNotePub(npb.dataset.notepub!)
+    HOOKS.toast(on ? 'Note now shows on the view-only schedule' : 'Note is scheduler-only again', 'ok')
+    notify(); return
+  }
 
   const wl = t.closest('.wln[data-wdi]') as HTMLElement | null
   if (wl) { jumpToWarn(+wl.dataset.wdi!, +wl.dataset.wix!); e.stopPropagation(); return }

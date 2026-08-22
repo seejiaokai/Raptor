@@ -7,8 +7,9 @@ import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
-import { esc, PIOPEN } from '../state/view'
-import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, sansCardsHTML } from './html'
+import { esc, PIOPEN, notePub } from '../state/view'
+import { canEditSched } from '../state/auth'
+import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, sansCardsHTML, notePubTog } from './html'
 
 /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
    arrive as minutes and format with a colon (hhmm → "09:00"), but every
@@ -205,8 +206,13 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
    for. `ph` is kept in the signature and ignored, so the four call sites stay
    self-documenting about what each note is FOR without printing it. */
 export function sbNote(d:any,di:any,key:any,field:any,_ph:any,pv?:any){
-  return `<div class="sb-note"><div class="sb-nh">Scheduler notes</div>`
-    +`<textarea class="sb-nbox" data-bfld="${key}:${di}"${alAttr(`${key}:${di}`)}${pv?' disabled':''}>${esc(d[field]||'')}</textarea></div>`;
+  const k=`${key}:${di}`, pub=notePub(k);
+  /* the show-on-view-only toggle (owner, Aug 26) — same builder the week uses, so
+     a note's public state and label read the same on both surfaces. Only a live,
+     editable board offers it; a read-only board just shows the current label. */
+  const tog=(!pv&&canEditSched())?notePubTog(k,pub):'';
+  return `<div class="sb-note"><div class="sb-nh">${pub?'Public notes':'Scheduler notes'}${tog}</div>`
+    +`<textarea class="sb-nbox" data-bfld="${k}"${alAttr(k)}${pv?' disabled':''}>${esc(d[field]||'')}</textarea></div>`;
 }
 /* ---- duty / sim / ground panels (owner request, Aug 26) -------------------
    The board finally carries every section the week day carries. Same
@@ -521,7 +527,13 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
      programme, so the button lives where the result lands */
   let s=`<div class="sb-panel pinp"><div class="sb-ph${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day; tap header to hide'}</span></div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
-  else if(!acRo)s+=C6;
+  else{
+    /* Housekeeping reminder (owner, Aug 26): an input the scheduler is not going
+       to action should be cleared out here rather than left to linger — tap its
+       type to open the editor and Delete. Editable, non-empty panel only. */
+    if(!acRo)s+=`<div class="sb-pinote">Rejected personal inputs should be deleted by the scheduler here.</div>`;
+    if(!acRo)s+=C6;
+  }
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo,acRo); });
   return s+`</div></div>`;
 }

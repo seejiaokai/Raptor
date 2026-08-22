@@ -9,7 +9,7 @@ import { App } from './App'
 import { initStore, wireStore, setSession, notify } from '../state/store'
 import { slotVal, setSlotVal, rowCrew, fillSlot } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
-import { afterSchedMutate, armedKey, AVOPEN } from '../state/view'
+import { afterSchedMutate, armedKey, AVSHUT } from '../state/view'
 import { dragFrom, applyDrop, setDrag } from './drag'
 import { openScheduler, closeScheduler } from './board'
 import { DAYS } from '../engine/data'
@@ -56,11 +56,11 @@ describe('generic drag & drop across the whole edit board (tfin)', () => {
     expect(fills('s:').length).toBeGreaterThanOrEqual(2)
     expect(fills('g:').length).toBeGreaterThanOrEqual(3)
     expect(fills('a:').length).toBeGreaterThanOrEqual(3)
-    /* the Available-crew panel collapses to one line by default (13 Aug 26);
-       its pucks are drag sources only while a day's panel is expanded */
-    await act(async () => { DAYS.forEach((_, i) => AVOPEN.add(i)); notify() })
+    /* the Available-crew panel is OPEN by default now (owner, Aug 26); its pucks
+       are drag sources whenever a day's panel is expanded — AVSHUT holds only the
+       days a scheduler folded, so clearing it guarantees every panel is up */
+    await act(async () => { AVSHUT.clear(); notify() })
     expect($$('#eWeek .availpuck [data-person][draggable="true"]').length).toBeGreaterThan(10)
-    await act(async () => { AVOPEN.clear(); notify() })
   })
 
   it('roster puck -> duty seat', async () => {

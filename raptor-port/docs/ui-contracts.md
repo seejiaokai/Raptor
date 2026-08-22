@@ -1194,10 +1194,14 @@ item.
 
 **Personal Inputs folds to a one-line summary by default.** Now that activity
 inputs auto-land, the block is the faded audit echo rather than the primary
-surface, so it collapses like Available crew: `PIOPEN`/`togglePInputs`
+surface, so it collapses to a summary by default: `PIOPEN`/`togglePInputs`
 (`state/view.ts`), the header the toggle (`data-pitog`, routed in
 `interactions.ts` on `canEditSched()` so it works on the edit week AND the
-board). The summary counts the rows and how many are on the programme.
+board). The summary counts the rows and how many are on the programme. When
+expanded it also carries a housekeeping reminder — "Rejected personal inputs
+should be deleted by the scheduler here" (owner, Aug 26; `.pl-inpnote` on the
+week, `.sb-pinote` on the board) — a scheduler deletes one by pressing its type
+to open the editor and Delete.
 Unavailable is deliberately left OPEN — it is a live plant/drop target and the
 day's must-read.
 
@@ -1385,14 +1389,32 @@ real move the app already handles. The handler in `routeClick` re-checks
 `canEditSched()` (the gate is the write path, not the markup). Pinned in
 `boardaddinput.test.tsx`.
 
-## Scheduler notes (edit week + board only)
+## Scheduler notes, and making one public (owner, Aug 26)
 
 Four free-text blocks — under Programme, Duties, Sims and Ground programme —
-on keys `pn:` / `dtn:` / `sn:` / `gn:`. `blkNoteHTML` returns `''` whenever
-`ed` is false, so a populated note still never reaches the issued programme;
-writing additionally needs `canEditSched()`. The Duties and Ground sections
-render on `|| ed` so an empty section still offers its box rather than
-stranding text already in the model.
+on keys `pn:` / `dtn:` / `sn:` / `gn:`. Scheduler-side by default: `blkNoteHTML`
+returns `''` when `ed` is false, so a populated note stays off the issued
+programme; writing needs `canEditSched()`. The Duties and Ground sections render
+on `|| ed` so an empty section still offers its box rather than stranding text.
+
+A scheduler can now MAKE ONE PUBLIC (owner, Aug 26 — "Scheduler notes can toggle
+to show in view only schedule … it will show as Public notes in edit schedule
+and scheduler board but in view only schedule it shows Notes"). A per-note flag,
+`view.NOTEPUB`, keyed by the note's own funnel key (`pn:0` …) so ONE flag governs
+all three surfaces:
+
+- **Off (default):** header "Scheduler notes"; nothing on the view-only week.
+- **On:** the edit-week and board header read "Public notes" and carry the
+  toggle chip (`.notepub`, `data-notepub`, admin-gated in `routeClick`); the
+  view-only week renders the note under the header "Notes", read-only, and ONLY
+  when it has text (an empty box is nothing to issue). A public note whose
+  SECTION has no rows on the view-only week is not drawn, because the empty
+  section itself is not — an accepted edge; the note still reads on the edit side.
+
+The flag is a display choice, not schedule data: session-only on the LATEOFF
+precedent (`view.NOTEPUB`), admin-gated, cleared on a session/week change, never
+persisted and never in a history snapshot. The toggle builder is `notePubTog`
+(`html.ts`), shared by the week and board so the label cannot drift.
 
 ## Drag / arm-and-plant (hard-won — test on touch)
 
@@ -1508,21 +1530,24 @@ beside every badge.
   `!isSansAvail(...)` guards so a SANS row never draws in their blocks;
   `sbInputsHTML`'s bands view keeps its `ty-sn` chip colour.
 
-## The Available-crew panel folds (owner, 13 Aug 26)
+## The Available-crew panel folds (owner, Aug 26 — OPEN by default)
 
-The edit week's per-day Available-crew block boots COLLAPSED to its header
-line — "Available crew · N all day · +N night · N SANS offering ⌄" — and the header
-(`data-avtog`) toggles it per day (`AVOPEN` in `state/view.ts`, session view
-state in the DWOPEN pattern, cleared on a session change). Expanded, the
-grouping is unchanged but a wave line counts EVERYONE who can fly that wave —
-its own partially-free leftovers PLUS the all-day crew — because the old
-leftovers-only count printed "— none free —" over a wave 22 people could fly,
-which the owner read as a bug (the panel was lying, not the engine). The
-collapsed root keeps `.availpuck`, so drop-to-unassign still works closed.
-The default week render fell 5099 → 3621 nodes with the fold, and the perf
-gate's week ceiling was LOWERED to 4000 to pin the win (`probes/perf-port.cjs`
-carries the argued comment). Gated in `e2e/geometry.spec.ts` ("the
-Available-crew panel folds") and `ui/editweek.test.tsx`.
+The edit week's per-day Available-crew block boots OPEN now (owner, Aug 26 —
+"all available crew section will open by default in edit schedule"), reversing
+the 13 Aug 26 collapse-by-default. The fold set is `AVSHUT` in `state/view.ts`
+(session view state in the DWOPEN pattern, cleared on a session change): it names
+the days a scheduler has COLLAPSED — a day in the set shows only its header line
+("Available crew · N all day · +N night · N SANS offering ⌄"), a day absent is
+expanded. The header (`data-avtog`) toggles it per day. Expanded, the grouping is
+unchanged but a wave line counts EVERYONE who can fly that wave — its own
+partially-free leftovers PLUS the all-day crew — because the old leftovers-only
+count printed "— none free —" over a wave 22 people could fly, which the owner
+read as a bug (the panel was lying, not the engine). The collapsed root keeps
+`.availpuck`, so drop-to-unassign still works closed. The open default raised the
+week render to 4940 nodes, so the perf gate's week ceiling was RAISED 4000 →
+5450 (`probes/perf-port.cjs` carries the argued comment — it now guards growth
+ABOVE the open default). Gated in `e2e/geometry.spec.ts` ("the Available-crew
+panel folds") and `ui/editweek.test.tsx`.
 
 ## Reordering rows on the board
 
