@@ -306,6 +306,32 @@ describe('the Inputs page (tfin)', () => {
     expect($$('#inBody .intag').every(x => x.textContent === 'OML')).toBe(true)
   })
 
+  /* one colour source for both this table and the month calendar
+     (ui/inputedit.tsx's inputTone) — pin the three tones it can produce
+     against the seed data that already carries all three: divot's OML
+     (medical, red), vinci's Meeting (an activity under "Duty & other
+     commitments", amber), and the demo SANS Availability seed (state/
+     demoseed.ts, filed for nick) for purple. toContain, not equality —
+     the flash class ('innew') can ride the same row. */
+  it('stripes rows red/amber/purple by inputTone', async () => {
+    /* an earlier test in this file ('the filters narrow the table') leaves
+       the type filter on OML and never resets it — put it back to All so
+       every seeded person is on screen for this assertion */
+    await act(async () => {
+      const sel = $('#inFType') as unknown as HTMLSelectElement
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
+      setter.call(sel, 'all')
+      sel.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    const redIx = INPUTS.findIndex((r: any) => r.person === 'divot' && r.type === 'OML')
+    expect(rowFor(redIx).className, 'medical leave').toContain('in-red')
+    const ambIx = INPUTS.findIndex((r: any) => r.person === 'vinci' && r.type === 'Meeting')
+    expect(rowFor(ambIx).className, 'an activity commitment').toContain('in-amb')
+    const sanIx = INPUTS.findIndex((r: any) => r.person === 'nick' && r.type === 'SANS Availability')
+    expect(sanIx, 'the demo SANS seed is present').toBeGreaterThanOrEqual(0)
+    expect(rowFor(sanIx).className, 'SANS Availability').toContain('in-san')
+  })
+
   it('an added downchit re-validates the week (reflow)', async () => {
     validate()
     const before = validate().all.filter((x: any) => x.code === 'DNIF_FLY').length

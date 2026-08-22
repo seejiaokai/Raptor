@@ -4,6 +4,7 @@ import { SCHED } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { logAction } from '../engine/editlog'
 import { armDrop, prunePreviews, WARNOFF } from './view'
+import { PLANPUCKS, DAYRMK } from './plan'
 
 const toast=(...a:any[])=>HOOKS.toast(...a)
 const reflow=()=>HOOKS.reflow()
@@ -26,7 +27,12 @@ export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
    it rides as an array and histApply rebuilds it. It is the one session-view set
    in the snapshot — the rest (folds, previews, late marks) are not undoable and
    stay out on purpose. */
-export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,wo:[...WARNOFF]});}
+/* `pp`/`dm` carry the Inputs-calendar planning layer (state/plan.ts) —
+   PLANPUCKS and DAYRMK. Session-only like the rest of that module, but still
+   worth an undo step: a scheduler dragging pucks around a month wants the
+   same Ctrl+Z safety net as every other edit, and riding the ordinary
+   snapshot is free — it is already whole-state JSON. */
+export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,wo:[...WARNOFF],pp:PLANPUCKS,dm:DAYRMK});}
 export function histInit(){HIST.stack=[histSnap()];HIST.ix=0;syncHistBtns();}
 export function histPush(){
   if(HIST.lock)return;
@@ -51,6 +57,15 @@ export function histApply(i:any){
   SCHED.cur=s.cv||{};   // stale entries are inert — dayCurVer self-heals
   SCHED.drafts=s.dr||{}; SCHED.curDraft=s.cd||{};
   WARNOFF.clear(); (s.wo||[]).forEach((k:any)=>WARNOFF.add(k));   // muted checks are an undo step
+  /* PLANPUCKS/DAYRMK restored IN PLACE, the same live-binding idiom DAYS and
+     INPUTS use above — every reader (the calendar UI) holds these two array
+     /object identities, so a reassignment here would strand them pointing at
+     the old, now-orphaned one. `|| []` / `|| {}` cover an OLDER snapshot, from
+     before this feature landed, that carries no pp/dm at all — it restores to
+     empty rather than throwing on a missing field. */
+  PLANPUCKS.length=0; (s.pp||[]).forEach((x:any)=>PLANPUCKS.push(x));
+  for(const k of Object.keys(DAYRMK))delete DAYRMK[k];
+  Object.assign(DAYRMK,s.dm||{});
   /* the model has just been swapped wholesale — an armed slot may now point at a
      wave, row or aircraft that no longer exists. The arm strip stayed on screen
      and the next tap threw "Cannot read properties of undefined" out of flyRef

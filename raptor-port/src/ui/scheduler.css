@@ -1449,6 +1449,19 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .intbl thead th:nth-child(7){width:104px}  /* Last modified */
 .intbl thead th:nth-child(8){width:96px}   /* actions */
 .intbl tbody tr:hover{background:rgba(255,255,255,.02)}
+/* the row stripe, coloured from inputTone (ui/inputedit.tsx) — one source
+   feeding this table and the month calendar's chips alike. Same precedent
+   as .sb-arow.lateinp's inset box-shadow below, but that row is a real
+   display:grid box; #intbl is a border-collapse TABLE, and the .qname
+   seal comment above already found that a shadow on a table row/cell
+   doesn't reliably paint OVER a sibling cell — an inset shadow here stays
+   inside the cell's own box instead of bleeding across the boundary, so
+   it is safe on td:first-child. This is the desktop shape only: the phone
+   card layout below turns the tr itself into the visual card, and needs
+   the shadow on the tr instead — see that media query. */
+#inBody tr.in-red>td:first-child{box-shadow:inset 3px 0 0 var(--hard)}
+#inBody tr.in-amb>td:first-child{box-shadow:inset 3px 0 0 var(--adv)}
+#inBody tr.in-san>td:first-child{box-shadow:inset 3px 0 0 var(--san)}
 .intag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
 .inwrap{padding:6px 20px 40px}
 .rmx{color:var(--hard);cursor:pointer;font-weight:800}
@@ -1648,6 +1661,18 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      card's border/background so its shadow is not clipped by cell paint */
   #intbl tbody tr.innew{ animation:inflash 6s ease-out 1; }
   #intbl tbody tr.innew>td{ animation:none; }
+  /* the tone stripe moves to the tr here for the same reason the flash
+     did just above: the tr IS the card (its own border/radius/background),
+     and the Name cell only fills the card's top-left corner now, not its
+     full left edge — the desktop td:first-child rule would draw a short
+     stub instead of one edge-to-edge bar. Cancel that rule and shadow the
+     tr instead, which at this width is a real display:grid box (not a
+     table row), so a plain box-shadow paints normally and follows the
+     card's own border-radius. */
+  #inBody tr.in-red>td:first-child,#inBody tr.in-amb>td:first-child,#inBody tr.in-san>td:first-child{ box-shadow:none; }
+  #inBody tr.in-red{ box-shadow:inset 3px 0 0 var(--hard); }
+  #inBody tr.in-amb{ box-shadow:inset 3px 0 0 var(--adv); }
+  #inBody tr.in-san{ box-shadow:inset 3px 0 0 var(--san); }
 
   /* the inline EDIT row is a tinted form card: fields stacked and full-width,
      each labelled from its column, the calendar roomy for a thumb, the

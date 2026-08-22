@@ -100,6 +100,14 @@ export const HALF_PM: [string, string] = ['12:01', '23:59']
 export const hasHalf = (t: string) => !!(inpMeta(t) || {}).half
 export type Span = 'all' | 'am' | 'pm' | 'custom'
 export const spanOf = (allday: boolean, half: string): Span => allday ? 'all' : half === 'am' ? 'am' : half === 'pm' ? 'pm' : 'custom'
+/* This is the ONE place the input colour code is decided — the Inputs
+   table's row stripes and the month calendar's chips (a view built in
+   parallel) both import this instead of each re-deriving its own tone, so
+   the two surfaces cannot drift apart. Red = a man who is absent (leave,
+   medical, OD); amber = a local commitment (activity / duty & other
+   commitments); purple = SANS Availability, wearing the same `--san`
+   purple the rest of the app already reads as SANS. */
+export const inputTone = (t: any) => isSansAvail(t) ? 'san' : isUnavail(t) ? 'red' : 'amb'
 /* what a span means in the four fields it drives */
 export const spanFields = (m: Span) => m === 'all' ? { allday: true, half: '', sTime: '06:00', eTime: '18:00' }
   : m === 'am' ? { allday: false, half: 'am', sTime: HALF_AM[0], eTime: HALF_AM[1] }

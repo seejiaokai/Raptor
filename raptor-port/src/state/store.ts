@@ -29,6 +29,7 @@ import * as view from './view'
 import { histPush, histInit } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS } from './auth'
 import { setRole as lwSetRole } from '../leavewar/state/store'
+import { clearPlan } from './plan'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -131,6 +132,12 @@ export function resetSession(s: any) {
   view.WARNOFF.clear()            // muted board warnings come back for the next session
   view.WMOPEN.clear()
   view.NOTEPUB.clear()            // "public" scheduler-note flags reset with the session
+  /* the Inputs-calendar planning layer is a scratch pad, not a record — a
+     login/logout must not hand the next user the previous user's open
+     calendar month or its half-planned pucks and remarks. */
+  view.setInpView('table')
+  view.setCalMonth(null)
+  clearPlan()
   /* the Leave War page's role rides the Raptor session: an admin login is a
      Leave War admin, everyone else (and a logout) is a member. This is the
      ONE production writer of that role — the standalone app's own toggle was

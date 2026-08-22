@@ -47,6 +47,24 @@ export let CURPAGE:any='viewsched'
 export let ROSDAY:any=0
 export function setRosDay(n:any){ ROSDAY=n }
 
+/* ---- INPUTS PAGE: TABLE vs CALENDAR (owner, Aug 26) -----------------------
+   Which of the Inputs page's two views is up. Session view state in the
+   CURPAGE family, but deliberately its OWN flag rather than a CURPAGE value:
+   the calendar is a view of the same page, not a different page, so a hop to
+   another page and back must land on whichever of the two the scheduler had
+   open — it survives leaving/returning to Inputs within a session on purpose. */
+export let INPVIEW:'table'|'cal'='table'
+export function setInpView(v:'table'|'cal'){ INPVIEW=v }
+/* the calendar's open month, or null. Null is not "January" — it means
+   nothing has chosen a month yet, so the calendar derives one from whatever
+   date window the Inputs page itself is showing the moment it first opens,
+   rather than this module guessing at a default with no page to ask. Once
+   set it stays exactly where the scheduler left it, the same carried-state
+   idea as CARRYDAY. `m` is 1-12, calendar convention, not the 0-11 a JS Date
+   uses — every reader here converts at its own edge. */
+export let CALMONTH:{y:number,m:number}|null=null
+export function setCalMonth(v:{y:number,m:number}|null){ CALMONTH=v }
+
 /* ---- HISTORY MODE (owner, 11 Aug 26) --------------------------------------
    The board's History toggle. A VIEW mode, not an edit mode: it changes what
    the board tells you and never what it will let you do — a detail stays

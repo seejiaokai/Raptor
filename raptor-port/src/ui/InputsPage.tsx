@@ -16,7 +16,7 @@ import { writeInputs, notify } from '../state/store'
 import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
-  rosterOptions as people,
+  rosterOptions as people, inputTone,
 } from './inputedit'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
@@ -610,8 +610,12 @@ export function InputsPage() {
                   </td>
                 </tr>
               )
+              /* the stripe mirrors the month calendar's chip tones — both
+                 read inputTone so the two surfaces can't disagree on a
+                 colour (see ui/inputedit.tsx) */
+              const rowCls = ['in-' + inputTone(r.type), ...(flash.indexOf(r) >= 0 ? ['innew'] : [])].join(' ')
               return (
-                <tr key={inx} className={flash.indexOf(r) >= 0 ? 'innew' : undefined} data-iid={r.iid}>
+                <tr key={inx} className={rowCls} data-iid={r.iid}>
                   {/* data-same now marks an EMPTY End — an all-day one-day
                       input, whose date already reads once in Start — so the
                       phone card drops it and reads just "13 Jul". A timed
