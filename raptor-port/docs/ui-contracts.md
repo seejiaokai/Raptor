@@ -3199,3 +3199,67 @@ nothing and is there all day).
   there), so it is gated in `e2e/geometry.spec.ts`, which also pins that no
   value is clipped by its own cell — `.v` went 22px to 42px, because "25h35"
   needs 33.
+
+## The Inputs month calendar (owner, 22 Aug 26)
+
+A full-screen, Google-Calendar-style view of the personal inputs, toggled
+from the Inputs page's filter bar (`#inCalBtn` ↔ `#icClose`, view state
+`INPVIEW` in `state/view.ts` — a view of the SAME page, not a page, so it
+survives a hop to another page and back). The table stays mounted
+underneath; closing the calendar is a free round trip, scroll position
+included. `ui/InputsCal.tsx` — a React component on purpose (a new, small
+surface; the string-builder discipline is for the dense parity-bound ones).
+
+**The month grid.** Monday-first, seven equal columns on BOTH phone and
+desktop (the owner picked the grid over a phone day-list). Opens on the
+month of the table's own window (`CALMONTH`, seeded once, then carried for
+the session); `‹ ›` step months, `Today` jumps home. Each day cell is
+`[data-icday="yyyy-mm-dd"]`.
+
+**Chips and tones.** Every input covering a day draws a chip in that day's
+cell — multi-day spans chip on every covered day. The colour code is decided
+in ONE place, `inputTone` (`ui/inputedit.tsx`): red `--hard` = an absence
+(leave, medical, OD), amber `--adv` = a local commitment, purple `--san` =
+SANS availability. The same helper feeds the Inputs TABLE's row stripes, so
+the two surfaces cannot drift. The calendar respects the page's
+person/type/search filters (a header pill names any active filter, so an
+emptied month explains itself). At most `MAX_CHIPS` (3) chips draw per cell
+— a COUNT rule, not a height rule, deliberately: one rule on every screen
+size and one jsdom can pin — the rest fold into `+N more`. Under 820px
+chips drop their text and become compact colour bars.
+
+**Gestures.** Decided at pointerdown by target:
+- *Tap a chip* → the shared input-edit dialog (`setInpEdit`, the global
+  modal). *Hold a chip (180ms) and drag* → move it to another day.
+  `ui/caldrag.ts` is the calendar's OWN pointer machine — `drag.ts` stays
+  scoped to board pucks (stable decision) — copying its feel (180/8/26,
+  wobble-restart, the click-eater). The drop applies a DAY-DELTA from the
+  grabbed cell, so a span grabbed by its middle SLIDES whole rather than
+  re-anchoring; `commitInputEdit` does the write (accepted-row relink and
+  Leave-War retraction included). A member may move their OWN input only.
+- *Tap an empty cell* → the day popover. *Hold it (`HOLD_ADD`, 450ms —
+  longer than the chip hold because an empty cell has a tap meaning too)* →
+  the add dialog seeded for that date, person = ME, everyone allowed (page
+  parity; the dialog hides Person for members so the seed sticks).
+
+**The day popover** (`.ic-pop`, bottom sheet ≤820px / centred card above).
+The day's full entry list (tap a row → the same edit dialog), the
+scheduler's one-line **day remark** (everyone reads, schedulers edit;
+draft-local, committed on Enter/blur), **planning notes** — free-text pucks
+a scheduler drops on days (dashed-cyan chips, visibly not real inputs;
+inline ✏/✕), and `+ Add input` for everyone. `+N more` opens the same
+popover.
+
+**Escape peels one layer per press**: input dialog → popover → calendar.
+The z-ladder, documented here because three overlays now stack: calendar
+350 < board 400 < day popover 420 < drawer 440 < airpop 460 < modal 470.
+
+**Storage semantics.** Day remarks (`DAYRMK`) and planning notes
+(`PLANPUCKS`) live in `state/plan.ts`: SESSION-ONLY by the owner's explicit
+choice (scratch-pad, like INPUTS itself — a reload starts clean), gated to
+schedulers at the write path, cleared on login/logout, and riding the undo
+snapshot (`pp`/`dm` in histSnap) so Ctrl+Z walks a planning session back
+step by step.
+
+**Known edge, accepted**: a recurring input (`recur`) chips its first span
+only — parity with `inputCoversDate` everywhere else in the app.

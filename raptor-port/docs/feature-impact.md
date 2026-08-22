@@ -43,6 +43,7 @@ the rest are the ones the code actually has.
 | **Mobile mode** | Phone layout — top-to-bottom, reachable, one board window | `scheduler.css` `@media (max-width:820px)` / `480px`; `boardnav` | CSS + the phone board's arrows/dots; `sbWide` module-local |
 | **Qualifications** | The Quals grid; the qual ladder the validator reads | `QualsPage.tsx`; `people.ts` (`p.quals`, qual rules in `validate.ts`) | ticks are session-only; drive `QUAL`/`SC_QUAL`/`AAR_*` checks |
 | **Personal inputs** | Leave / medical / activity records | `INPUTS` in `inputs.ts`; `inputedit.tsx`; `InputsPage.tsx` | `INPUT_META` (the one table) decides every predicate |
+| **Inputs month calendar** | The Inputs page's full-screen month view: colour-coded chips, hold-to-add, chip drag between days, the day popover with scheduler day remarks and planning-note pucks (`ui-contracts.md` §The Inputs month calendar) | `InputsCal.tsx`, `caldrag.ts`, `state/plan.ts` (`PLANPUCKS`/`DAYRMK`, session-only, undo-snapshotted) | `dayEntries` reads `inputCoversDate` + the page's OWN filters (one filter logic, copied — see §4); **`inputTone` (`inputedit.tsx`) is the ONE colour source** for its chips AND the table's row stripes — a tone decided anywhere else is the drift-seam reopening; chip drag writes through `commitInputEdit`, pucks/remarks through `writeInputs(plan.ts mutators)` |
 | **Availability / palette** | Who the crew strip offers, who is struck out, the armed reason lines, the green eligibility rings, the folded Available-crew and Personal-Inputs panels | `avail.ts` (`slotBar`, `dayOff`), `palette-html.ts`, `highlights.ts` (`paintSelRings`), `html.ts` (`availHTML` + `AVOPEN`; the Personal-Inputs fold `PIOPEN`) | `isAway`/`inputCoversDate`/`inpWin` — MUST agree with the warning list; the rings read `slotBar` itself, never a copy. `slotBar`'s busy-check now also names an unaccepted ACTIVITY commitment (`isPersonal` + the validator's own per-day `inpShow`, four midnight tails) — same drift-with-`INPUT_FLY` rule, and it reads the SAME gate the validator does so the two cannot diverge by a day |
 | **Post-render decoration** | Selection/search/warning classes, the armed ring, the green eligibility rings, and the ~6s just-added blue box | `highlights.ts` (`refreshHighlights` → `paintArm`/`paintSelRings`/`paintFreshAdds`) | hung AFTER the string diff, off view state (`SELID`/`ARM`/`FRESHADD`), never baked into the builder string — so a class survives an unrelated repaint; a new one adds a paint function here, never a class in the markup |
 | **Publishing / AL** | Sign-off, amendments after a day is signed | `publish.ts`, `ALPanel.tsx` | inert amendment keys through the mutation funnel |
@@ -246,6 +247,14 @@ ON these, don't route around them):
   the Inputs page's add form, its row editor and the schedule's
   Unavailable-reassign dialog all call it, so the three can never disagree
   on who is offered or in what order.
+- **`inputTone` (`inputedit.tsx`) is the one input colour code** (22 Aug 26)
+  — the Inputs table's row stripes and the month calendar's chips both read
+  it, so red/amber/purple cannot mean different things on the two surfaces.
+  BUT a known SMALL drift-seam rides beside it: `InputsCal.tsx:dayEntries`
+  COPIES the table's three-filter logic (person/type/search,
+  `InputsPage.tsx` ~368-370) rather than importing it — a fourth filter
+  added to the page must be added to `dayEntries` too, or the calendar
+  quietly shows what the table hides.
 - **`draftVerLabel`/`daySnapOf` are the one version-label/resolve path**
   (15 Aug 26) — a `'d:<id>'` draft version and an AL/ORIG version both
   label and resolve through these two, so a new preview consumer (a picker,
