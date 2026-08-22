@@ -277,7 +277,9 @@ content shrank. 131 nodes of headroom remain.
 **16 Aug 26: the remarks "+" reveal was removed and every remarks box now
 draws at all times, beside the pucks** (owner). This dropped the one `<button>`
 a c6r row the 12 Aug note added, and added a remarks `<input>` to every Common
-Programme row (`.sb-arow.cprog`, previously the one board row with none), so the
+Programme row (then `.sb-arow.cprog`, previously the one board row with none;
+that row became a plain `.sb-arow.c6r` on 22 Aug 26 when its Detail column was
+dropped — node count unchanged), so the
 count moved to 844 — still under 960, with the ceiling unmoved. The week gate
 also gained a `.rmk` cell per Common Programme row (its new `Rmks` column): 3621
 → 3743 against the then-4000 ceiling, again unmoved. (That ceiling is 5450 since

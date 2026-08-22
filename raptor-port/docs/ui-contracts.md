@@ -305,9 +305,11 @@ because the flying line's own cell is three fixed 46px time tracks plus two
 the Role/Item cell across the first PAIR, which is what leaves row 1
 (Role | Start | End) pixel-identical.
 
-**Common Programme is deliberately excluded** (`.cprog` keeps its own
-three-track phone grid and a 98px remarks box) — the owner asked for "all
-except common programme". Pinned by e2e, in both directions.
+**Common Programme rides the same `c6r` grid** (owner, 22 Aug 26 — reversed the
+earlier "all except common programme"): its old Detail/location column was
+dropped and the row collapsed onto `c6r`, so on a phone its remarks box aligns
+with the flying line exactly like the duty/sim/ground rows. There is no longer a
+`.cprog` shape — every board list is `c6r`. Pinned by e2e.
 
 That span is applied BY POSITION (`:nth-child(2)`), not by class: every c6r row
 reserves a leading grip track, so child 2 is always the name cell — but a
@@ -759,12 +761,13 @@ edit week now:
   row the reveal used to save: a box that shares the pucks' line costs no extra
   height, so hiding it bought nothing worth the "+".
   - **Applies to every board section that carries remarks** — duties, sims
-    (AMT / OFT), ground (`.sb-arow.c6r`) and, new in this pass, Common Programme
-    (`.sb-arow.cprog`) and the promoted Personal-Inputs / Unavailable input rows.
+    (AMT / OFT), ground, Common Programme and the promoted Personal-Inputs /
+    Unavailable input rows. All of them are `.sb-arow.c6r` now (Common Programme
+    dropped its Detail column and its own `cprog` grid on 22 Aug 26).
     `board-html.ts`'s `sbRmk` always emits a plain `.rmkin` with a faded
     `Remarks` placeholder — no `.empty`, no per-row state.
-  - **The phone TEMPLATE must be restated for each two-class row modifier.**
-    `.sb-arow.c6r` and `.sb-arow.cprog` each outrank the one-class phone base
+  - **The phone TEMPLATE must be restated for the two-class row modifier.**
+    `.sb-arow.c6r` outranks the one-class phone base
     grid, and a media query adds no specificity, so the desktop template wins at
     390px and crushes the row unless the phone block restates the three-track
     grid AND places `.ppl` at `grid-column:1/2`, `.rmkin` at `2/-1`. `.sb-wide`
@@ -774,9 +777,19 @@ edit week now:
     ordinary `ap:di.ri.rmks` funnel key (generic in `slots.ts`), is snapshotted
     for the AL in `restore.ts` (the one enumerated add — reorder globs it for
     free), and shows in the week view too (`.ah-row` grew a fifth `Rmks` cell via
-    `plRmk`; empty read-only cells stay hidden on a phone). Export is flying-only
-    and untouched. Pinned in `board.test.tsx`, `boardrmk.test.tsx`,
-    `restore.test.ts` and `e2e/geometry.spec.ts`.
+    `plRmk`). **On a phone the Common Programme now reads exactly like the
+    duties/sims/ground lists** (owner, 22 Aug 26 — "make the common programme
+    layout similar" to them): the two time columns STACK into one TIME column,
+    which frees the room for RMKS to sit BESIDE the pucks instead of dropping to
+    a full-width strip below the row, so the phone row is `NAME | TIME | PEOPLE |
+    RMKS` on the wide-NAME/one-puck `.plist.one` proportions. Done purely in the
+    phone `@media` by POSITION (`nth-child`), NOT by adding classes — the
+    `.ah-cols` markup is byte-compared against the reference (`html.test.ts`
+    `noAhRmk`), so the row stays `.nm, start-.t, end-.t, .ppl, .rmk` and the
+    header stays Name/Start/End/People/Rmks. Desktop is unchanged (both sections
+    already share the 5-column layout). Export is flying-only and untouched.
+    Pinned in `board.test.tsx`, `boardrmk.test.tsx`, `restore.test.ts` and
+    `e2e/geometry.spec.ts`.
 - **The day is stepped by TWO ARROWS on the bar, and there is no swipe**
   (owner, 12 Aug 26 — "remove the swipe for the mobile scheduler board too. Just
   put arrows at the edges of the bar at the top to navigate left and right
@@ -1026,7 +1039,7 @@ routes `data-air`):
 - **Remarks are always drawn beside the pucks** — the `data-rmkadd` "R" reveal
   is gone (owner, 16 Aug 26; see the "every remarks box rides the pucks' row"
   contract above). `sbRmk` emits a plain `.rmkin` with a faded `Remarks`
-  placeholder on every c6r / cprog / input row, empty or not. **The flying line's
+  placeholder on every c6r / input row, empty or not. **The flying line's
   own always-visible remarks box (`.nts` in `board.ts`) carries the same faded
   `Remarks` placeholder** (owner,
   16 Aug 26) — so an empty one reads the same way. A STANDALONE line keeps its
@@ -1046,6 +1059,16 @@ routes `data-air`):
   them on one row instead of stacking each full-width. The line is one DOM child
   shorter (nine, not ten) but the grid still counts ten items — pinned in
   `board-stores.test.tsx` and `e2e/geometry.spec.ts`.
+- **The sign-off names sit two-up, like the edit-schedule strip** (owner, 22 Aug
+  26 — "make the board sign-off similar to the one in edit schedule"). `.board-sign`
+  shares the compact `.day-sign` inner CSS (`Sign-off` header and `X to sign` state
+  each on their own full-width row; the four name pills flex-grow between). Its
+  own container is untouched (`#sbSignBar` margin, `position:static`, the `.sb-pub`
+  publish strip below). On a phone the pills are pinned to a 50% flex-basis inside
+  the `max-width:820px` block, so `CUR CK · SKED CK` / `PLANNED BY · APPROVED BY`
+  land two-per-row regardless of the board panel's slightly narrower width;
+  desktop keeps the content-width row the edit week also shows. CSS-only — the
+  `signoffHTML` markup is one shared builder and is byte-unchanged.
 - **The publish strip** — version chip, pending count, ⓘ, Publish day, Publish
   AL (14 Aug 26, "the board's sign-off panel now carries the same… controls the
   week day head does"). `html.ts`'s `dayStatHTML(di, ed)` is the ONE builder
@@ -3284,6 +3307,17 @@ side; the title stays visible one size down.
   grid edge still completes. This is the calendar's OWN surface — the board's
   removed swipe (a stable decision) does not govern it, and the owner asked
   for this one explicitly.
+- *The page SLIDES* (owner, 22 Aug 26 — "I want swipe animation when I swipe
+  left and right"). A `useLayoutEffect` keyed on `[cur.y, cur.m]` runs the new
+  grid in from the side the page turned (next from the right, previous from the
+  left) with the Web Animations API — `grid.animate([...])` on the SAME element,
+  never a re-key or a second panel, so the gesture listeners (their deps-`[]`
+  effect) and the layout are untouched. `slideDirRef` carries the direction from
+  `step()` / `goToday()` and is consumed each run, so only a real page slides —
+  the first open and the seed-month jump (dir 0) don't. No-op under
+  `prefers-reduced-motion` and where `animate` is absent (jsdom). `.inpcal` is
+  `overflow:hidden` so the ±28px entry never shows a scrollbar; the day popover
+  is its own `position:fixed` layer and escapes that clip.
 
 **The day popover** (`.ic-pop`, bottom sheet ≤820px / centred card above).
 Restructured 22 Aug 26 to the owner's layout, top to bottom:
