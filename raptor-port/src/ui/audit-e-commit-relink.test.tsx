@@ -6,8 +6,8 @@
    programmed week" branch, reassigning an ACCEPTED input to another person,
    moving it to another date, shortening and extending a span, an endDate past
    the last DATES entry, and delete-then-undo coherence for accepted inputs. */
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { initStore, undo, writeInputs } from '../state/store'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { initStore, setSession, undo, writeInputs } from '../state/store'
 import { INPUTS, DATES, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
@@ -100,6 +100,11 @@ describe('commitInputEdit — the keep branch and the moved-outside-week branch'
 })
 
 describe('commitInputEdit — reassigning an ACCEPTED input to another person', () => {
+  /* re-personing is a SCHEDULER act since 22 Aug 26 (commitInputEdit's own
+     write-path gate — a member files and keeps inputs for the view-as person
+     only), so this drives the call under the session the real gesture has */
+  beforeEach(() => setSession({ user: 'a', role: 'admin' }))
+  afterEach(() => setSession(null))
   it('relinks the ground row to the new person, leaving nothing of the old', () => {
     const inp: any = plant({ person: 'bane', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'handover', mod: '' })
     expect(acceptInput(0, inp, 'g')).toBe(true)

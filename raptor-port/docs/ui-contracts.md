@@ -168,6 +168,17 @@ All three type dropdowns (add form, filter, row editor) carry the same three
 `<optgroup>`s, from `TYPE_GROUPS`/`typeGroup`. Twenty flat options is not a
 list anyone can pick from.
 
+- **A member's Person is a value, not a choice (owner, 22 Aug 26).** The
+  full-roster `#inPerson` select renders for a scheduler only; a member sees
+  the view-as callsign printed plainly (`#inPersonFixed`, `.inper-fixed` —
+  on the same 36px control line, deliberately not boxed, so it cannot read
+  as a dead control; a one-entry dropdown would only pretend to be one, the
+  SANS fixed-type precedent). It follows the topbar's View-as LIVE, and so
+  does the commit — `add()` reads `ME` at write time (`filedFor`), never
+  the mounted state. The row editor draws the same line: a member's open
+  row prints its person as text where a scheduler gets the select. The
+  rule and its write-path backstops: `engine-rules.md` §Auth / roles.
+
 ## The Inputs table's view state (`ui/InputsPage.tsx`)
 
 Owner, Aug 5. Three things, all view-only — none of them touches the model:
@@ -220,12 +231,13 @@ card is the same compact shape.
   (each card's own chip width pushing its date around) never did. A
   multi-day End sits UNDER the Start in the same date column; remarks (LATE
   chip leading) are their own full-width line below the callsign;
-  recurring · modified close the card. The DOM keeps the desktop table's
-  column order — tests address Name and Start by td position — the grid
-  areas do all the visual reordering. The desktop table gained per-column
-  `th` widths in the same pass (identity/metadata narrow, Start wide enough
-  for a one-line timed span, Remarks takes the slack) — fixed layout dealt
-  eight equal columns before.
+  the modified stamp closes the card (the Recurring column left with the
+  repeat-weeks feature, owner, 22 Aug 26). The DOM keeps the desktop
+  table's column order — tests address Name and Start by td position — the
+  grid areas do all the visual reordering. The desktop table gained
+  per-column `th` widths in the same pass (identity/metadata narrow, Start
+  wide enough for a one-line timed span, Remarks takes the slack) — fixed
+  layout dealt equal columns before.
 - **The SANS chip has a phone short form.** 'SANS Availability' is the one
   type label too wide for the aligned chip column, so its chip is split the
   board day-name way — `SANS Avail` + a `.bl` tail (`ability`) hidden under
@@ -3261,5 +3273,6 @@ schedulers at the write path, cleared on login/logout, and riding the undo
 snapshot (`pp`/`dm` in histSnap) so Ctrl+Z walks a planning session back
 step by step.
 
-**Known edge, accepted**: a recurring input (`recur`) chips its first span
-only — parity with `inputCoversDate` everywhere else in the app.
+(The old known edge here — a recurring input chipping its first span only —
+is gone WITH its feature: the owner had the repeat-weeks field removed
+outright, 22 Aug 26. See CLAUDE.md §Stable decisions.)

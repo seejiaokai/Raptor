@@ -9,7 +9,7 @@ import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { autoAcceptInput } from '../engine/slots'
-import { ME } from '../state/auth'
+import { ME, canEditSched } from '../state/auth'
 import { writeInputs, notify } from '../state/store'
 import { INPVIEW, setInpView } from '../state/view'
 import { InputsCal } from './InputsCal'
@@ -94,7 +94,6 @@ const SORTKEY: any = {
   end: (r: any) => unfmt(r.endDate || r.date) + pad4(r.allday ? 1439 : (r.e ?? 0)),
   type: (r: any) => String(r.type || '').toLowerCase(),
   remarks: (r: any) => String(r.remarks || '').toLowerCase(),
-  recur: (r: any) => String(r.recur || '').toLowerCase(),
   mod: (r: any) => (r.mod === 'now' ? '9999-99-99' : String(r.mod || '')),
 }
 
@@ -201,7 +200,6 @@ export function InputsPage() {
      still writes 06:00–18:00 */
   const [sTime, setSTime] = useState('06:00')
   const [eTime, setETime] = useState('18:00')
-  const [repeat, setRepeat] = useState(0)
   const [remarks, setRemarks] = useState('')
   /* SANS Availability's own Fly/AMT/OFT payload — see SansPicker/sansRefusal
      in ui/inputedit.tsx. Only read by add() when `type` is the SANS type. */
@@ -279,6 +277,16 @@ export function InputsPage() {
   /* the row's own address, minted INSIDE the write so the snapshot this add
      pushes already carries it (see mintInpIds in engine/inputs.ts) */
   const withId = (r: any) => { inpId(r); return r }
+  /* WHO the add files for (owner, 22 Aug 26 — "for normal user account they
+     can only input their own self. Which is whoever they are viewing as").
+     A scheduler picks anyone from the form's Person select; a member's add
+     always lands on the view-as person, read LIVE from ME at commit rather
+     than from the select's state — the topbar's View-as can change while
+     this page sits open, and a member's `person` state (seeded once, no
+     control left to move it) would silently lag it. The calendar's add
+     already worked exactly this way (InputsCal.tsx openAdd seeds ME and the
+     dialog hides Person for a member); this is the page catching up. */
+  const filedFor = () => canEditSched() ? person : ME
   const add = () => {
     /* the calendar asks for a pick and the readout says so — accepting the
        click anyway and quietly dating it Monday was a trap */
@@ -293,9 +301,9 @@ export function InputsPage() {
        tap): its one window rides the exact same allday/half/s/e path as any
        other half-day type below, no separate branch and no forced all-day. */
     if (isSansAvail(type)) {
-      const why = sansRefusal(person, sans)
+      const why = sansRefusal(filedFor(), sans)
       if (why) return HOOKS.toast(why, 'warn')
-      const dup = sansOverlapRefusal(person, date, endDate, null)
+      const dup = sansOverlapRefusal(filedFor(), date, endDate, null)
       if (dup) return HOOKS.toast(dup, 'warn')
     }
     /* timing is the owner's ask (Aug 26): the validator reasons in minutes, so
@@ -309,14 +317,13 @@ export function InputsPage() {
     if (!allday && (e as number) === (s as number)) return HOOKS.toast('Give the input a start and end that are not the same time', 'warn')
     writeInputs(() => {
       INPUTS.unshift(withId({
-        person, date, endDate, allday, s, e,
+        person: filedFor(), date, endDate, allday, s, e,
         /* only carried when it is one — an absence typed as an exact range is
            not a half-day and must not read as one */
         ...(!allday && half ? { half } : {}),
         /* SANS's own Fly/AMT/OFT flags — never carried by a non-SANS type */
         ...(isSansAvail(type) ? { sans: sansFlags(sans) } : {}),
-        type, remarks: remarks.trim(),
-        recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
+        type, remarks: remarks.trim(), mod: 'now',
       }))
       /* an ACTIVITY input files straight onto the Ground Programme (owner, Aug
          26 — "by default all inputs are accepted"); leave/medical/SANS and a
@@ -424,10 +431,19 @@ export function InputsPage() {
       <div className="title"><h1>Personal Inputs</h1></div>
       <div className="inbar">
         <div className="ingrid">
+          {/* A MEMBER'S PERSON IS A VALUE, NOT A CHOICE (owner, 22 Aug 26 —
+              admin files for anyone, a member only for whoever they are
+              viewing as). The full-roster select is a scheduler's; a member
+              gets the view-as callsign printed plainly — a one-entry dropdown
+              would only pretend to be a control (the SANS fixed-type
+              precedent, inputedit.tsx) — and it follows the topbar's View-as
+              live, which is exactly what add() then commits (filedFor). */}
           <div className="ifield"><label>Person</label>
-            <select id="inPerson" aria-label="Person" value={person} onChange={e => setPerson(e.target.value)}>
-              {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-            </select></div>
+            {canEditSched()
+              ? <select id="inPerson" aria-label="Person" value={person} onChange={e => setPerson(e.target.value)}>
+                {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+              </select>
+              : <div className="inper-fixed" id="inPersonFixed" aria-label="Person">{PEOPLE[ME] ? PEOPLE[ME].cs : String(ME)}</div>}</div>
           <div className="ifield cal"><label>Dates</label>
             <RangeCal idPrefix="in" start={start} end={end}
               onPick={(s2, e2) => { setStart(s2); setEnd(e2); setRemarks(r => withTill(r, s2, e2)) }} />
@@ -479,8 +495,6 @@ export function InputsPage() {
             }}>
               {typeOptions()}
             </select></div>
-          <div className="ifield"><label>Repeat wks</label><input id="inRepeat" type="number" value={repeat} min={0} max={52}
-            onChange={e => setRepeat(Math.max(0, Math.min(52, Math.floor(+e.target.value || 0))))} /></div>
           <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder="e.g. medical appt" maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={add}>Add input</button></div>
         </div>
@@ -533,7 +547,7 @@ export function InputsPage() {
         <table className="intbl" id="intbl">
           <thead><tr>
             {th('name', 'Name')}{th('start', 'Start')}{th('end', 'End')}{th('type', 'Type')}
-            {th('remarks', 'Remarks')}{th('recur', 'Recurring')}{th('mod', 'Last modified')}
+            {th('remarks', 'Remarks')}{th('mod', 'Last modified')}
             <th></th>
           </tr></thead>
           <tbody id="inBody">
@@ -566,10 +580,18 @@ export function InputsPage() {
               const inx = INPUTS.indexOf(r)
               if (editRow === r && draft) return (
                 <tr key={inx} className="ined" data-iid={r.iid}>
-                  <td data-fld="Person"><select aria-label="Person" data-ed="person" value={draft.person}
-                    onChange={e => setDraft({ ...draft, person: e.target.value })}>
-                    {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-                  </select></td>
+                  {/* same rule as the add form (owner, 22 Aug 26): moving an
+                      input onto a DIFFERENT person is a scheduler's act — a
+                      member editing a row keeps its person, printed as the
+                      plain name every closed row already shows. The write
+                      path repeats the check (commitInputEdit), so a hand-made
+                      select could not get past this render gate anyway. */}
+                  <td data-fld="Person">{canEditSched()
+                    ? <select aria-label="Person" data-ed="person" value={draft.person}
+                      onChange={e => setDraft({ ...draft, person: e.target.value })}>
+                      {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+                    </select>
+                    : (PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person))}</td>
                   <td colSpan={2} data-fld="Dates">
                     {/* the editor's calendar owns the tail the same way — but only
                         from a click: OPENING the editor leaves an existing remark
@@ -608,7 +630,6 @@ export function InputsPage() {
                   </select></td>
                   <td data-fld="Remarks"><input aria-label="Remarks" data-ed="remarks" maxLength={200} value={draft.remarks}
                     onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
-                  <td className="ined-sec">{r.recur || ''}</td>
                   <td className="mono ined-sec" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     <span className="rok" data-save={inx} title="Save" onClick={saveEdit}>✓</span>
@@ -647,7 +668,6 @@ export function InputsPage() {
                       9 Aug 26) — same column on every surface that draws an
                       input, and the type column stays pure identity */}
                   <td data-label="Remarks">{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}</td>
-                  <td data-label="Recurring">{r.recur || ''}</td>
                   <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>

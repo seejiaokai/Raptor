@@ -24,24 +24,28 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (the 22 Aug 26 evening batch — the Inputs
-month calendar with its planning layer, the per-type All-day defaults, and
-the table's tone stripes; all six gates watched this session. It sits on
-the crew-rest cause-first rewording, the aligned Inputs cards, the
-double-turn/double-booking split, the one-knob dependency sweep and the
-passes below):
+**Last recorded green baseline** (22 Aug 26, the two calendar-decision
+closures — the Inputs page's Person choice became a scheduler's (a member
+files for the view-as person only), and the repeat-weeks feature was
+removed everywhere; all six gates watched this session. It sits on the
+same day's Inputs month calendar batch and the passes below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2868 across 161 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2872 across 161 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 309 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
-| `perf` | 4/4 — week DOM 4940 ≤ 5450, board 855 ≤ 960 (the calendar adds nothing to either) |
+| `perf` | 4/4 — week DOM 4940 ≤ 5450, board 855 ≤ 960 |
 
-The counts reconcile against the reading this replaced (2823 across 158
-files, 307 e2e / 12 skips): the All-day-defaults pass +1 in
+The counts reconcile against the reading this replaced (2868 / 161, same
+e2e): the person-scope pass +3 in `inputs.test.tsx` (the fixed member
+Person, the member row editor, the write-path pins) and the repeat-weeks
+removal +1 (its absence pinned) → 2872; the two audit relink tests now run
+their scheduler act under an admin session (repaired in place, not
+added). The chain before that reconciled against
+(2823 across 158 files, 307 e2e / 12 skips): the All-day-defaults pass +1 in
 `inputs.test.tsx` → 2824; the calendar +8 (`plan.test.ts`), +23
 (`inputscal.test.tsx`), +12 (`caldrag.test.tsx`) as three new files, and +1
 stripe test in `inputs.test.tsx` → 2868 / 161; +2 e2e (the calendar's
@@ -195,15 +199,16 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
-- **Two owner decisions reserved off the Inputs month calendar (22 Aug 26 —
-  flagged in the ship report, not built).** (1) The calendar lets a member
-  file inputs for THEMSELVES only (person seeds to ME and the dialog hides
-  the field), but the Inputs page's own add form still lets a member pick
-  anyone — tighten the page to match, or leave the page loose? (2) A
-  recurring input (`recur:'xN wks'`) chips only its FIRST span on the
-  calendar, parity with `inputCoversDate` everywhere else — drawing every
-  repetition is a real feature (the record stores one span), not a fix.
-  Neither moves without the owner.
+- **Both owner decisions reserved off the Inputs month calendar are CLOSED
+  (22 Aug 26).** (1) Person scope: admin files inputs for anyone on both
+  the page and the calendar; a member only for the view-as person — the
+  page was tightened to match the calendar (rules: `docs/engine-rules.md`
+  §Auth / roles; contract: `docs/ui-contracts.md` §The Inputs add form).
+  (2) Repeat weeks: removed outright rather than drawn — the owner's
+  "remove repeated weeks everywhere" (`CLAUDE.md` §Stable decisions has the
+  reasoning; do not re-add the field). Both pinned in `inputs.test.tsx`.
+  This bullet leaves the list next session — kept one cycle only so the
+  ship report's two flagged questions read as answered.
 
 - **THE OVERNIGHT UI BATCH + A DEVIL'S-ADVOCATE PASS ON AUTO-LAND (owner, Aug 26
   — four asks then "do a full bug test of the recent implementation … I'll be
