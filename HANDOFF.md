@@ -195,6 +195,16 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **Two owner decisions reserved off the Inputs month calendar (22 Aug 26 —
+  flagged in the ship report, not built).** (1) The calendar lets a member
+  file inputs for THEMSELVES only (person seeds to ME and the dialog hides
+  the field), but the Inputs page's own add form still lets a member pick
+  anyone — tighten the page to match, or leave the page loose? (2) A
+  recurring input (`recur:'xN wks'`) chips only its FIRST span on the
+  calendar, parity with `inputCoversDate` everywhere else — drawing every
+  repetition is a real feature (the record stores one span), not a fix.
+  Neither moves without the owner.
+
 - **THE OVERNIGHT UI BATCH + A DEVIL'S-ADVOCATE PASS ON AUTO-LAND (owner, Aug 26
   — four asks then "do a full bug test of the recent implementation … I'll be
   sleeping now u have control").**
