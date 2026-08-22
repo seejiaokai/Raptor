@@ -24,27 +24,34 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (22 Aug 26, the two calendar-decision
-closures — the Inputs page's Person choice became a scheduler's (a member
-files for the view-as person only), and the repeat-weeks feature was
-removed everywhere; all six gates watched this session. It sits on the
-same day's Inputs month calendar batch and the passes below):
+**Last recorded green baseline** (22 Aug 26, the Inputs-calendar UX batch —
+remarks on the day-popover entries, swipe-to-page-months on the grid, and
+the Calendar-view switch made a prominent accent button in the title row,
+plus a CI-flake fix; all six gates watched this session. It sits on the
+same day's two calendar-decision closures (member self-only Person,
+repeat-weeks removed) and the passes below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2872 across 161 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2875 across 161 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 309 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
 | `perf` | 4/4 — week DOM 4940 ≤ 5450, board 855 ≤ 960 |
 
-The counts reconcile against the reading this replaced (2868 / 161, same
-e2e): the person-scope pass +3 in `inputs.test.tsx` (the fixed member
-Person, the member row editor, the write-path pins) and the repeat-weeks
-removal +1 (its absence pinned) → 2872; the two audit relink tests now run
-their scheduler act under an admin session (repaired in place, not
-added). The chain before that reconciled against
+The counts reconcile against the reading this replaced (2872 / 161, same
+e2e): the calendar-UX batch added +3 in `inputscal.test.tsx` (the
+day-popover remark line, and the two swipe-paging tests), the Calendar
+button reused an existing toggle test (relocated the assertion, no net
+count), and the elementFromPoint CI-flake fix stubbed
+`audit-gesture-bubble.test.tsx` (no test added) → 2875. The 2872 reading
+this replaced reconciled against 2868 / 161 (same e2e): the person-scope
+pass +3 in `inputs.test.tsx` (the fixed member Person, the member row
+editor, the write-path pins) and the repeat-weeks removal +1 (its absence
+pinned) → 2872; the two audit relink tests now run their scheduler act
+under an admin session (repaired in place, not added). The chain before
+that reconciled against
 (2823 across 158 files, 307 e2e / 12 skips): the All-day-defaults pass +1 in
 `inputs.test.tsx` → 2824; the calendar +8 (`plan.test.ts`), +23
 (`inputscal.test.tsx`), +12 (`caldrag.test.tsx`) as three new files, and +1
