@@ -32,10 +32,10 @@ Inputs-page date standardisation and the per-input LATE dismissal below):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2780 across 153 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2817 across 157 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 305 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `npm run test:e2e` | 306 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
 | `perf` | 4/4 |
 
@@ -77,13 +77,26 @@ ceilings all unmoved (the Logic tab is outside every ceiling). The
 double-turn/double-booking split (a double-booked man drops out of the DT
 chip and DT_SUM — `validate.ts:dturns`, mirrored into the parity reference
 by `refwin.ts:redt`) grew `audit-c-clash.test.ts` by 2 → 2775 / 152; e2e,
-probes and perf unmoved again.
+probes and perf unmoved again. (The scrub-and-second-week pass, PR #283, carried
+the reading the table above quotes at session start: 2780 / 153.)
 
-DOM measures at that baseline: week **3767** under a 4000 ceiling (+24 over
-the previous 3743: a "+ In time" button per flying wave and a ✕ per in-time
-line, edit mode only), board **859** under 960 (+6 over 853: the demo day's
-two waves' add buttons and four line ✕s). The Leave War year matrix (~28k nodes) is outside the perf
-gate — it has its own e2e DOM band (29000), measured-first.
+PR #284 (ground-programme auto-land + four scheduler-board tools — editable
+cancel reasons, a top-bar notification bell, top-bar undo/redo, adjustable +
+mutable board checks, and two picker/validator drift fixes) added
+`inputground.test.ts`, `cxreasons.test.ts` (20), `bell.test.ts` (3) and
+`warnmute.test.ts` (2), a board delete round-trip in `board.test.tsx`, and
+scattered updates where the auto-land behaviour shifted existing suites (the
+`audit` probe scoped to its day, Personal Inputs expanded before its rows are
+read, a raw input restored where auto-accept now lands one) → 2817 / 157. One
+desktop grip-drag geometry test → e2e 306 / 12. Probes 6/6 and perf 4/4 held.
+
+DOM measures at that baseline: week **3750** under a 4000 ceiling, board **851**
+under 960 — both a touch below the previous 3767 / 859, the auto-land
+Personal-Inputs fold (collapsed to a one-line summary by default) removing more
+nodes than the session's new board controls (the per-check mute ✕s, the resize
+grip, the "N hidden" reveal) add. Ceilings unmoved. The Leave War year matrix
+(~28k nodes) is outside the perf gate — it has its own e2e DOM band (29000),
+measured-first.
 
 **How the gates lie — the durable traps, worth more than any count:**
 
