@@ -309,8 +309,8 @@ a{color:var(--accent)}
 /* the calendar-icon button that ends the rolling week strip, and the accent dot
    marking whichever button is the week the notional today falls in */
 .wk-cal{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px}
-.calglyph{width:16px;height:16px;display:block;color:var(--ink-2)}
-.wk-cal:hover .calglyph{color:var(--accent)}
+.btnglyph{width:16px;height:16px;display:block;color:var(--ink-2)}
+.wk-cal:hover .btnglyph{color:var(--accent)}
 .wk.todaywk{position:relative}
 .wk.todaywk::after{content:'';position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
 /* the mobile-only calendar bar that stands where the removed title was (desktop
@@ -318,7 +318,7 @@ a{color:var(--accent)}
 .wknav-m{display:none}
 .wknav-mbtn{display:inline-flex;align-items:center;justify-content:center;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:10px;width:42px;height:36px;cursor:pointer}
 .wknav-mbtn:hover,.wknav-mbtn:active{border-color:var(--accent);color:var(--accent)}
-.wknav-mbtn .calglyph{width:20px;height:20px;color:inherit}
+.wknav-mbtn .btnglyph{width:20px;height:20px;color:inherit}
 
 /* filter / highlight chips */
 .filters{display:flex;gap:6px;padding:8px 20px;flex-wrap:wrap;border-bottom:1px solid var(--edge);align-items:center;background:rgba(20,24,29,.35)}
@@ -1565,11 +1565,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .rc-d.mid{background:rgba(59,198,232,.13)}
 .rc-d.s,.rc-d.e{background:var(--accent);color:#04222b;font-weight:800}
 .rc-x{padding:3px 0}
-/* THE WEEK-JUMP CALENDAR (WeekCal.tsx). Same `.rc-*` grid, sized up for a modal
-   and a thumb, with a WHOLE-WEEK highlight instead of RangeCal's two-endpoint
-   range: `.inwk` is the week under the cursor, `.cur` is the loaded week (always
-   lit so you can see where you are), `.today` rings the notional today. Placed
-   after the range rules so these win the cascade on a shared cell. */
+/* THE DATE-JUMP CALENDAR (WeekCal.tsx) — a DAY picker. Same `.rc-*` grid, sized
+   up for a modal and a thumb: `.sel` is the day the user is currently on (a
+   solid accent fill), `.today` rings the notional today. The week is transparent
+   here, so a single day is lit, not a row. Placed after the range rules so these
+   win the cascade on a shared cell. */
 .weekcal-box{width:min(94vw,360px)}
 .rangecal.weekcal{width:100%;background:transparent;border:none;padding:0}
 .weekcal .rc-h{margin-bottom:8px}
@@ -1579,11 +1579,14 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .weekcal .rc-dow span{font-size:9.5px;padding-bottom:2px}
 .weekcal .rc-d{font-size:13px;padding:9px 0;border-radius:7px;font-weight:600;background:var(--panel-2);border-color:var(--edge)}
 .weekcal .rc-d.wk{background:#0D1014;color:var(--ink-3)}
-.weekcal .rc-d.inwk{background:rgba(59,198,232,.16);border-color:rgba(59,198,232,.4);color:var(--ink)}
-.weekcal .rc-d.cur{background:rgba(59,198,232,.30);border-color:var(--accent);color:#EAF9FE;font-weight:700}
-.weekcal .rc-d.today{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.weekcal .rc-d:hover:not(.sel){border-color:rgba(59,198,232,.5)}
+.weekcal .rc-d.sel{background:var(--accent);border-color:var(--accent);color:#04222b;font-weight:800}
+.weekcal .rc-d.today:not(.sel){box-shadow:inset 0 0 0 1.5px var(--accent)}
 .weekcal-hint{font-size:11px;color:var(--ink-3);margin-top:11px;text-align:center;letter-spacing:.02em}
-.sb-calbtn .calglyph{width:17px;height:17px;color:currentColor;display:block}
+.sb-calbtn .btnglyph{width:17px;height:17px;color:currentColor;display:block}
+/* the board's action-row glyphs (History) follow the button's own text colour,
+   so the History toggle's icon goes accent with it when active */
+.sb-actions .btnglyph{width:16px;height:16px;color:currentColor;display:block}
 .rc-read{font-size:9.5px;color:var(--ink-3);margin-top:4px;letter-spacing:.02em}
 /* A row that has just been added lights up and HOLDS before fading (owner,
    Aug 5 for the flash; harmonized 15 Aug 26 to match the board's .sb-fresh

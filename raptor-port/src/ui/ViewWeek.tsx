@@ -62,10 +62,16 @@ export function ViewWeek() {
       root.innerHTML = html.join('')
     }
     root.scrollLeft = sl
-    /* A continuous-swipe week load lands on Monday (swiped forward) or the last
-       day (swiped back), overriding the scroll hold — done in this same repaint
-       so the new week never flashes the day the swipe left. Consumed once. */
-    if (WEEKJUMP) { root.scrollLeft = WEEKJUMP === 'sun' ? Math.max(0, root.scrollWidth - root.clientWidth) : 0; setWeekJump(null) }
+    /* A continuous-nav week load lands on the right day — Monday (swiped
+       forward), the last day (swiped back), or a specific day index (a calendar
+       day-pick) — overriding the scroll hold in this same repaint so the new
+       week never flashes the day it left. Consumed once. */
+    if (WEEKJUMP != null) {
+      if (WEEKJUMP === 'mon') root.scrollLeft = 0
+      else if (WEEKJUMP === 'sun') root.scrollLeft = Math.max(0, root.scrollWidth - root.clientWidth)
+      else scrollWeekToDay(root, WEEKJUMP)
+      setWeekJump(null)
+    }
     /* ...unless a page switch left a day to carry (owner, 9 Aug 26): the
        other week was parked on it, and this one lands there rather than
        wherever it was last left. Consumed once — a repaint that is not a

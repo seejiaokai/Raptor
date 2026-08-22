@@ -47,7 +47,7 @@ export function Drawer() {
         <h4>Week</h4>
         <div className="drawer-row" id="drawerWeeks">
           <button className="abtn" id="drawerPickWeek"
-            onClick={() => { setDrawer(false); setWeekCal('view'); notify() }}>Pick a week…</button>
+            onClick={() => { setDrawer(false); setWeekCal('view'); notify() }}>Pick a date…</button>
         </div>
         <h4>Account</h4>
         {/* resetSession (state/store.ts) is the one session-change path — see Shell.tsx's

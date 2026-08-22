@@ -131,15 +131,16 @@ export function toggleLateOff(inp:any){
    agree on the boundary case by construction rather than by coincidence. */
 export let CARRYDAY:any=null
 export function setCarryDay(n:any){ CARRYDAY=n }
-/* CONTINUOUS SWIPE across weeks (owner, 22 Aug 26). A swipe off the loaded
-   week's last/first day loads the adjacent week; this tells the week render
-   where to land the scroll — 'mon' = day 0 (came from swiping FORWARD past
-   Sunday), 'sun' = the last day (swiping BACK past Monday). Consumed in the
-   SAME repaint that rebuilds the week, so the new week never flashes the wrong
-   day. Unlike CARRYDAY it is NOT cleared by loadWeek: pan.ts sets it just
-   before loadWeek, and ViewWeek/EditWeek clear it when they land the scroll. */
-export let WEEKJUMP:'mon'|'sun'|null=null
-export function setWeekJump(v:'mon'|'sun'|null){ WEEKJUMP=v }
+/* WHERE TO LAND THE SCROLL after a continuous-nav week load (owner, 22 Aug 26).
+   The week is transparent to the user — they scroll a continuous run of days —
+   so a load tells the week render which day to land on: 'mon' = day 0 (swiped
+   FORWARD past Sunday), 'sun' = the last day (swiped BACK past Monday), or a
+   day INDEX 0..6 (a calendar day-pick lands on that exact day). Consumed in the
+   SAME repaint that rebuilds the week, so nothing flashes. Unlike CARRYDAY it is
+   NOT cleared by loadWeek: the caller sets it just before loadWeek, and
+   ViewWeek/EditWeek clear it when they land the scroll. */
+export let WEEKJUMP:'mon'|'sun'|number|null=null
+export function setWeekJump(v:'mon'|'sun'|number|null){ WEEKJUMP=v }
 /* The 8px slack is what stops a day scrolled all but out of view from
    counting as the one being read. Null, never a guess, when there is no DOM
    (the headless state tests) or no week built yet — the caller then leaves

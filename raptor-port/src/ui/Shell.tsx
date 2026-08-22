@@ -7,6 +7,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
+import { CalIcon } from './icons'
 import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pendCount } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
@@ -57,14 +58,6 @@ function banner() {
     : ''
   return { col, cls, html: `<span class="sb-badge">${txt}${which}${extra}</span>` + alRoll }
 }
-
-/* the week-jump calendar glyph — same stroke idiom as the notification bell */
-const CAL_ICON = (
-  <svg className="calglyph" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M7 2.5v3M17 2.5v3M3.5 9.5h17M6 4.5h12a2.5 2.5 0 0 1 2.5 2.5v11A2.5 2.5 0 0 1 18 20.5H6A2.5 2.5 0 0 1 3.5 18V7A2.5 2.5 0 0 1 6 4.5Z"
-      fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-)
 
 const HL_CHIPS: [string, string, string][] = [
   ['A', 'A', 'Cat A (4-ship FL)'], ['B', 'B', 'Cat B (2-ship FL)'], ['C', 'C', 'Cat C (operational wingman)'], ['D', 'D', 'Cat D (wingman)'],
@@ -284,8 +277,8 @@ export function Shell() {
         <div className="seg" id="weekSeg">
           {weekWindow(CURWEEK).map(w => <button key={w.v}
             className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
-          <button className="wk wk-cal" aria-label="Jump to a week" title="Jump to a week"
-            onClick={() => { setWeekCal('view'); notify() }}>{CAL_ICON}</button>
+          <button className="wk wk-cal" aria-label="Jump to a date" title="Jump to a date"
+            onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
         </div>
         <div className="filters">
           <span className="lab">Highlight</span>
@@ -305,8 +298,8 @@ export function Shell() {
             On a phone (where the seg is hidden) a lone calendar icon sits here as
             the way to jump weeks; the arrows-free swipe is the day-to-day nav. */}
         <div className="wknav-m">
-          <button className="wknav-mbtn" aria-label="Jump to a week" title="Jump to a week"
-            onClick={() => { setWeekCal('view'); notify() }}>{CAL_ICON}</button>
+          <button className="wknav-mbtn" aria-label="Jump to a date" title="Jump to a date"
+            onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
         </div>
         <div className={'schedbanner ' + b.cls + (rulesOffCount() ? ' rules-off' : '')} id="vBanner"
           style={{ ['--al' as any]: b.col }} dangerouslySetInnerHTML={{ __html: b.html }} />
@@ -329,8 +322,8 @@ export function Shell() {
           <div className="seg" id="weekSegE">
             {weekWindow(CURWEEK).map(w => <button key={w.v}
               className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
-            <button className="wk wk-cal" aria-label="Jump to a week" title="Jump to a week"
-              onClick={() => { setWeekCal('view'); notify() }}>{CAL_ICON}</button>
+            <button className="wk wk-cal" aria-label="Jump to a date" title="Jump to a date"
+              onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
           </div>
           <div className="filters">
             {/* Undo / redo moved to the sticky top bar (owner, Aug 26) so they

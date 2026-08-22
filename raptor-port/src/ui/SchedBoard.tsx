@@ -7,6 +7,7 @@ import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode, esc, restArmed } from '../state/view'
 import { closeHistList, setWeekCal } from './pops'
+import { CalIcon, HistIcon } from './icons'
 import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
 import { daySnapOf, dayVersions, verLabel, alColor, dayPendCount } from '../engine/publish'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
@@ -261,9 +262,9 @@ export function SchedBoard() {
             Opens the same month picker as the schedule seg, but in 'board'
             context so the tapped date both loads its week AND opens that day on
             the board. */}
-        <button className="abtn sb-calbtn" id="sbCal" title="Jump to a week" aria-label="Jump to a week"
+        <button className="abtn sb-calbtn" id="sbCal" title="Jump to a date" aria-label="Jump to a date"
           onClick={() => { setWeekCal('board'); notify() }}>
-          <span className="bi"><svg className="calglyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2.5v3M17 2.5v3M3.5 9.5h17M6 4.5h12a2.5 2.5 0 0 1 2.5 2.5v11A2.5 2.5 0 0 1 18 20.5H6A2.5 2.5 0 0 1 3.5 18V7A2.5 2.5 0 0 1 6 4.5Z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+          <span className="bi"><CalIcon /></span>
           <span className="bl"> Calendar</span>
         </button>
         <div className="sb-title">
@@ -357,7 +358,7 @@ export function SchedBoard() {
             aria-pressed={HISTMODE}
             title={HISTMODE ? 'Stop showing who changed each detail' : 'Show who changed each detail, and when — hover it, or tap it on a phone'}
             onClick={() => { toggleHistMode(); hideHistBub(); notify() }}>
-            <span className="bi">🕘</span><span className="bl"> History</span></button>
+            <span className="bi"><HistIcon /></span><span className="bl"> History</span></button>
           {/* the day's OTHER drafts join the published versions (owner, 15 Aug
               26) — same shape as the week's verSelHTML: never the selected one
               (Live IS it, and names it), 'd:<id>' values ride DPREV like any

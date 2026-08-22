@@ -47,9 +47,14 @@ export function EditWeek() {
       root.innerHTML = html.join('')
     }
     root.scrollLeft = sl
-    /* a continuous-swipe week load lands on Monday / the last day — see ViewWeek
-       for the reasoning; consumed in this same repaint so nothing flashes */
-    if (WEEKJUMP) { root.scrollLeft = WEEKJUMP === 'sun' ? Math.max(0, root.scrollWidth - root.clientWidth) : 0; setWeekJump(null) }
+    /* a continuous-nav week load lands on Monday / the last day / a specific day
+       index — see ViewWeek for the reasoning; consumed in this same repaint */
+    if (WEEKJUMP != null) {
+      if (WEEKJUMP === 'mon') root.scrollLeft = 0
+      else if (WEEKJUMP === 'sun') root.scrollLeft = Math.max(0, root.scrollWidth - root.clientWidth)
+      else scrollWeekToDay(root, WEEKJUMP)
+      setWeekJump(null)
+    }
     /* the carried day from a page switch — see ViewWeek for the reasoning;
        both weeks consume it the same way so the hop works in both directions */
     else if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
