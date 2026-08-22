@@ -301,6 +301,34 @@ describe('.ic-more opens the popover listing every entry, not just MAX_CHIPS', (
   })
 })
 
+describe('a popover entry row shows its remark on an aligned second line', () => {
+  it('a remark renders as .ic-poprow-rmk under the identity line; a blank one draws none', async () => {
+    const withRmk: any = { person: 'yeti', date: 'Jul 24', allday: true, type: 'Training', remarks: 'brief the new guy', mod: 'now' }
+    const noRmk: any = { person: 'yeti', date: 'Jul 24', allday: true, type: 'OL', remarks: '', mod: 'now' }
+    await act(async () => { [withRmk, noRmk].forEach(r => { INPUTS.unshift(r); inpId(r) }); notify() })
+    try {
+      /* two entries is under the chip cutoff, so there is no "+N more" to
+         click — tap the cell's empty space to open the popover, the same
+         gesture the empty-cell test uses */
+      const cell = $('[data-icday="2026-07-24"]')!
+      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 40, 40)) })
+      await act(async () => { cell.dispatchEvent(ptr('pointerup', 40, 40)) })
+      expect($('.ic-pop')).toBeTruthy()
+      const row = $(`[data-popiid="${withRmk.iid}"]`)!
+      const rmk = row.querySelector('.ic-poprow-rmk')
+      expect(rmk, 'the remark line renders').toBeTruthy()
+      expect(rmk!.textContent).toBe('brief the new guy')
+      /* the identity line still carries who + type, unchanged */
+      expect(row.querySelector('.ic-poprow-top .ic-poprow-who')!.textContent).toBe(PEOPLE.yeti.cs)
+      /* a remark-less row draws no remark line at all — it stays one tidy line */
+      expect($(`[data-popiid="${noRmk.iid}"]`)!.querySelector('.ic-poprow-rmk'), 'no empty remark line').toBeFalsy()
+      await click($('#icPopClose'))
+    } finally {
+      await act(async () => { [withRmk, noRmk].forEach(r => { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }); notify() })
+    }
+  })
+})
+
 describe('a popover entry row opens the same edit route as a chip', () => {
   it('tapping a row sets INPEDIT to that EXACT record (object identity, not a re-lookup)', async () => {
     const rec: any = INPUTS.find((r: any) => r.person === 'divot' && r.type === 'OML')

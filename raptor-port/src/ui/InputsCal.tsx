@@ -339,9 +339,19 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                 {entries.inputs.map((r: any) => (
                   <button key={r.iid} type="button" className={'ic-poprow ' + inputTone(r.type)}
                     data-popiid={r.iid} onClick={() => { setInpEdit(r); notify() }}>
-                    <span className="ic-poprow-who">{PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person}</span>
-                    <span className="ic-poprow-lbl">{inpLabel(r)}</span>
-                    {!r.allday && <span className="ic-poprow-win">{hhmm(r.s)}–{hhmm(r.e)}</span>}
+                    {/* the identity line — callsign, type, and (timed only) the
+                        window pinned right, the same three fields the row always
+                        carried; wrapped now so a remark can sit under it */}
+                    <span className="ic-poprow-top">
+                      <span className="ic-poprow-who">{PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person}</span>
+                      <span className="ic-poprow-lbl">{inpLabel(r)}</span>
+                      {!r.allday && <span className="ic-poprow-win">{hhmm(r.s)}–{hhmm(r.e)}</span>}
+                    </span>
+                    {/* the remark as its own aligned line under the identity
+                        (owner, 22 Aug 26 — "show remarks too and align them
+                        nicely"); absent when the input carries none, so a
+                        remark-less row stays the single tidy line it was */}
+                    {r.remarks && <span className="ic-poprow-rmk">{r.remarks}</span>}
                   </button>
                 ))}
               </div>

@@ -3255,7 +3255,11 @@ chips drop their text and become compact colour bars.
   parity; the dialog hides Person for members so the seed sticks).
 
 **The day popover** (`.ic-pop`, bottom sheet ≤820px / centred card above).
-The day's full entry list (tap a row → the same edit dialog), the
+The day's full entry list (tap a row → the same edit dialog): each
+`.ic-poprow` reads its callsign, type and (timed only) window on one
+identity line, with the input's **remark** on an aligned second line under
+it (`.ic-poprow-rmk`, owner 22 Aug 26 — "show remarks too and align them
+nicely"; a remark-less row draws no line and stays one tidy line). Then the
 scheduler's one-line **day remark** (everyone reads, schedulers edit;
 draft-local, committed on Enter/blur), **planning notes** — free-text pucks
 a scheduler drops on days (dashed-cyan chips, visibly not real inputs;

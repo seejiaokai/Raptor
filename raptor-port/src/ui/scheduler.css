@@ -1784,16 +1784,26 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    so it borrows .ic-chip's own tone stripes rather than a second copy of
    them, keeping the calendar and this popover reading the same three
    colours off the same inputTone function */
-.ic-poprow{display:flex;align-items:center;gap:8px;text-align:left;background:var(--bg);
+/* a column now (was a single flex line): the identity line on top, the
+   remark — when there is one — on its own line under it, both starting at
+   the same left edge so a stack of rows reads as aligned cards */
+.ic-poprow{display:flex;flex-direction:column;align-items:stretch;gap:3px;text-align:left;background:var(--bg);
   border:1px solid var(--edge-2);border-radius:8px;padding:8px 10px;cursor:pointer;min-height:44px;
-  font:inherit;color:inherit}
+  justify-content:center;font:inherit;color:inherit}
 .ic-poprow:hover{border-color:var(--accent)}
 .ic-poprow.red{box-shadow:inset 2px 0 0 var(--hard)}
 .ic-poprow.amb{box-shadow:inset 2px 0 0 var(--adv)}
 .ic-poprow.san{box-shadow:inset 2px 0 0 var(--san)}
+/* the identity line keeps the old row's flex: who at the left, type beside
+   it, the window pinned right */
+.ic-poprow-top{display:flex;align-items:center;gap:8px}
 .ic-poprow-who{font-weight:700;font-size:12px}
 .ic-poprow-lbl{flex:1;font-size:12px;color:var(--ink-2)}
 .ic-poprow-win{font-size:11px;color:var(--ink-3)}
+/* the remark reads muted under the identity, wrapping at the space (a long
+   word breaks rather than widening the sheet) and aligned to the card's
+   left edge like the callsign above it */
+.ic-poprow-rmk{font-size:11.5px;color:var(--ink-3);line-height:1.35;overflow-wrap:anywhere;white-space:normal}
 .ic-poprmk-ro{font-size:12.5px;color:var(--ink-2)}
 .ic-poppucks-wrap{display:flex;flex-direction:column;gap:6px}
 .ic-poppucks{display:flex;flex-direction:column;gap:6px}
