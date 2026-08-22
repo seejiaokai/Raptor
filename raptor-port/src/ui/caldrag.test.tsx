@@ -12,7 +12,7 @@ import { beforeAll, beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { initStore, setSession, undo, writeInputs, histInit } from '../state/store'
 import { setMe } from '../state/auth'
 import { INPUTS, inpId } from '../engine/inputs'
-import { PLANPUCKS, addPlanPuck } from '../state/plan'
+import { PLANPUCKS, addPlanPuck, addPuckRow, togglePuckPerson } from '../state/plan'
 import { HOOKS } from '../engine/hooks'
 import { commitChipMove, initCalDrag } from './caldrag'
 
@@ -81,7 +81,19 @@ describe('commitChipMove — puck moves', () => {
     expect(PLANPUCKS.find(p => p.id === pid)?.date).toBe('2026-07-10')
   })
 
-  it('a non-scheduler is refused with the planning-note toast, and nothing moves', () => {
+  it('a pucks-row section moves the same way and says what it is', () => {
+    writeInputs(() => { addPuckRow('2026-07-10') })
+    const sec = PLANPUCKS.find((p: any) => p.kind === 'pucks')!
+    writeInputs(() => { togglePuckPerson(sec.id, 'bane') })
+
+    const ok = commitChipMove({ kind: 'puck', pid: sec.id }, '2026-07-10', '2026-07-12')
+    expect(ok).toBe(true)
+    expect(sec.date).toBe('2026-07-12')
+    expect(sec.ids, 'its people ride the move').toEqual(['bane'])
+    expect(said_()).toContain('Pucks row moved')
+  })
+
+  it('a non-scheduler is refused with the planning-section toast, and nothing moves', () => {
     writeInputs(() => { addPlanPuck('2026-07-10', 'Check quals') })
     const pid = PLANPUCKS[0].id
     setSession({ user: 'user', role: 'main' } as any)
@@ -89,7 +101,7 @@ describe('commitChipMove — puck moves', () => {
     const ok = commitChipMove({ kind: 'puck', pid }, '2026-07-10', '2026-07-12')
     expect(ok).toBe(false)
     expect(PLANPUCKS.find(p => p.id === pid)?.date).toBe('2026-07-10')
-    expect(said_()).toContain('Only a scheduler can move planning notes')
+    expect(said_()).toContain('Only a scheduler can move planning sections')
   })
 })
 

@@ -373,8 +373,11 @@ describe('a popover entry row opens the same edit route as a chip', () => {
   it('tapping a row sets INPEDIT to that EXACT record (object identity, not a re-lookup)', async () => {
     const rec: any = INPUTS.find((r: any) => r.person === 'divot' && r.type === 'OML')
     expect(rec, 'the seeded OML record exists').toBeTruthy()
-    const more = $('[data-icday="2026-07-13"] [data-icmore]')!
-    await click(more)
+    /* a cell TAP is the popover's front door (the +N more button only exists
+       past MAX_CHIPS, which the redesigned side-by-side cell rarely hits) */
+    const cell = $('[data-icday="2026-07-13"]')!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
     const row = $(`[data-popiid="${rec.iid}"]`)!
     expect(row, 'the row renders').toBeTruthy()
     await click(row)
@@ -485,18 +488,109 @@ describe('caldrag chip-tap wiring, driven on the real grid', () => {
   })
 })
 
+describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs', () => {
+  it('a SANS chip reads its F/O/A letters, never the words', async () => {
+    /* the seeded records carry sans flags (state/demoseed.ts) — find one on
+       its cell and read the chip the calendar drew for it */
+    const rec: any = INPUTS.find((r: any) => r.type === 'SANS Availability' && r.sans)
+    expect(rec, 'a seeded SANS record exists').toBeTruthy()
+    await setSelect('#inFType', 'SANS Availability')
+    try {
+      const chip = host.querySelector(`[data-iid="${rec.iid}"]`)!
+      expect(chip, 'its chip renders').toBeTruthy()
+      expect(chip.textContent).not.toContain('SANS')
+      expect(chip.textContent).not.toContain('Availability')
+      expect(chip.textContent).toMatch(/[FOA](\/[FOA])*/)
+    } finally {
+      await setSelect('#inFType', 'all')
+    }
+  })
+
+  it('+ Pucks adds a full-width pucks row; picking a person chips it on the cell; ✕ takes it off', async () => {
+    const iso = '2026-07-09'
+    const cell = $(`[data-icday="${iso}"]`)!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    expect($('.ic-pop')).toBeTruthy()
+
+    await click($('#icAddPucks'))
+    const sec: any = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
+    expect(sec, 'the pucks section exists').toBeTruthy()
+    try {
+      /* pick a person through the row's own select */
+      const sel = $('.ic-pkadd') as HTMLSelectElement
+      expect(sel, 'the add-person picker renders').toBeTruthy()
+      await act(async () => {
+        sel.value = 'bane'
+        sel.dispatchEvent(new Event('change', { bubbles: true }))
+      })
+      expect(sec.ids).toEqual(['bane'])
+      /* the popover row draws the canonical puck, the CELL its tiny chip */
+      expect($(`[data-secpucks="${sec.id}"] .puck`), 'the real puck renders in the row').toBeTruthy()
+      expect(cell.querySelector('.ic-pks .ic-pk'), 'the cell carries the tiny chip').toBeTruthy()
+      /* the ✕ beside the puck takes the person off again */
+      await click($(`[data-pkdel="${sec.id}.bane"]`))
+      expect(sec.ids).toEqual([])
+    } finally {
+      await act(async () => { removePlanPuck(sec.id); notify() })
+      await click($('#icPopClose'))
+    }
+  })
+
+  it('the popover orders sections above the inputs block, + Input leading it', async () => {
+    const iso = '2026-07-13'
+    await act(async () => { addPlanPuck(iso, 'note first'); notify() })
+    const cell = $(`[data-icday="${iso}"]`)!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    try {
+      const body = $('.ic-pop-body')!
+      const secs = body.querySelector('.ic-secs')!
+      const inpSec = body.querySelector('.ic-inp-sec')!
+      expect(secs, 'sections render').toBeTruthy()
+      expect(inpSec, 'the inputs block renders').toBeTruthy()
+      expect(secs.compareDocumentPosition(inpSec) & Node.DOCUMENT_POSITION_FOLLOWING,
+        'sections sit ABOVE the inputs block').toBeTruthy()
+      /* + Input is the block's own first control, top-left */
+      expect(inpSec.firstElementChild!.id).toBe('icPopAdd')
+      /* the admin section buttons lead the body */
+      expect(body.firstElementChild!.classList.contains('ic-secbtns')).toBe(true)
+    } finally {
+      const note: any = PLANPUCKS.find((p: any) => p.text === 'note first')
+      await act(async () => { if (note) removePlanPuck(note.id); notify() })
+      await click($('#icPopClose'))
+    }
+  })
+
+  it('the day title renders in the popover head beside the date', async () => {
+    const iso = '2026-07-10'
+    const cell = $(`[data-icday="${iso}"]`)!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    try {
+      const head = $('.ic-pop-head')!
+      expect(head.querySelector('#icRmkEdit'), 'the title input lives in the head').toBeTruthy()
+    } finally {
+      await click($('#icPopClose'))
+    }
+  })
+})
+
 describe('member session — reduced controls, same reach to add and to open a chip', () => {
   it('no remark editor, no +Note, but +Add input and the chip-edit route both stay', async () => {
     const iso = '2026-07-13' // divot's OML lives here, among several other entries
     const rec: any = INPUTS.find((r: any) => r.person === 'bane' && r.type === 'Appointment' && r.date === 'Jul 16')
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     try {
-      const more = $(`[data-icday="${iso}"] [data-icmore]`)!
-      await click(more)
+      /* the cell tap is the popover's front door — see the identity test above */
+      const cell = $(`[data-icday="${iso}"]`)!
+      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+      await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
       expect($('.ic-pop')).toBeTruthy()
-      expect($('#icRmkEdit'), 'no remark editor for a member').toBeFalsy()
+      expect($('#icRmkEdit'), 'no title editor for a member').toBeFalsy()
       expect($('#icAddPuck'), 'no +Note for a member').toBeFalsy()
-      expect($('#icPopAdd'), '+Add input stays available to everyone').toBeTruthy()
+      expect($('#icAddPucks'), 'no +Pucks for a member').toBeFalsy()
+      expect($('#icPopAdd'), '+Input stays available to everyone').toBeTruthy()
       await click($('#icPopClose'))
 
       const chip = $(`[data-icday="2026-07-16"] [data-icdrag][data-iid="${rec.iid}"]`)!

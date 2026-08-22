@@ -21,7 +21,7 @@
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
 import { draftOf, commitInputEdit, fmtDay } from './inputedit'
-import { movePlanPuck } from '../state/plan'
+import { movePlanPuck, PLANPUCKS } from '../state/plan'
 import { writeInputs } from '../state/store'
 import { canEditSched, ME } from '../state/auth'
 import { INPUTS } from '../engine/inputs'
@@ -67,11 +67,14 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
   if (entry.kind === 'puck') {
     /* movePlanPuck carries its own canEditSched() gate; asking again here
        would just be a second copy of the same check that could one day
-       disagree with the first. Read what it decided instead. */
+       disagree with the first. Read what it decided instead. The caption
+       names the section's KIND (22 Aug 26) — a pucks row dragged to another
+       day is not a "note", and this toast is the move's one visible word. */
+    const kind = PLANPUCKS.find((p: any) => p.id === entry.pid)?.kind === 'pucks' ? 'Pucks row' : 'Note'
     let did = false
     writeInputs(() => { did = movePlanPuck(entry.pid, toIso) })
-    if (did) HOOKS.toast('Note moved', 'ok')
-    else if (!canEditSched()) HOOKS.toast('Only a scheduler can move planning notes', 'warn')
+    if (did) HOOKS.toast(`${kind} moved`, 'ok')
+    else if (!canEditSched()) HOOKS.toast('Only a scheduler can move planning sections', 'warn')
     return did
   }
 

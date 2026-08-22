@@ -112,6 +112,9 @@ function sbiRmk(inp:any,dt?:any){
   const sbt=sb?`<span class="sansb" title="SANS availability">${esc(sb)}</span>`:'';
   return `<span class="sbi-rm" title="${esc(v)}">${lt}${sbt}${esc(v)||(lt||sbt?'':'—')}</span>`;
 }
+/* No longer rendered on the board (owner, 22 Aug 26 — the summary band was
+   removed; the live Personal Inputs / Unavailable / SANS panels carry the
+   data). Kept as a pure builder because probe-bridge still exposes it. */
 export function sbInputsHTML(d:any,di:any){
   const rows=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt));
   let h=`<div class="sbi-h"><b>Inputs · ${esc(d.dow)} ${esc(d.dt)}</b>`
@@ -412,7 +415,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
      only ground-eligible types and commitNewInput accepts the new row straight
      onto this section (see interactions.ts / ui/inputedit.tsx). "+ Item" beside
      it stays the bare-row add for things that are not anybody's input. */
-  let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme · scheduler <span class="sub">briefs, reviews, admin</span>`
+  let s=`<div class="sb-panel grnd"><div class="sb-ph">Ground Programme <span class="sub">briefs, reviews, admin</span>`
     +(ro?'':`<span class="gctl"><button class="sb-addinp" data-inpadd="${di}.g" title="Add a personal input (meeting, course…) — it goes straight onto the Ground Programme">+ Inputs</button>${sbSortBtn(`g.${di}`,ro)}<button class="mbtn add" data-gradd="${di}" title="Add a ground item">+ Item</button></span>`)+`</div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No ground items yet — “+ Item” adds one.</div>`;
   else{

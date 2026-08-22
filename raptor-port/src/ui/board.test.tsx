@@ -91,11 +91,9 @@ describe('the scheduler board (tfin board group)', () => {
     expect(sign.compareDocumentPosition(warn) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
-  it('board inputs panel, banded by time of day', () => {
-    expect($$('#sbInputs .sbi-row').length).toBeGreaterThanOrEqual(1)
-    expect($$('#sbInputs .sbi-band').length).toBeGreaterThanOrEqual(1)
-    expect(/morning/i.test($('#sbInputs').textContent!)).toBe(true)
-  })
+  /* The read-only "Inputs · <day>" summary band was removed from the board
+     (owner, 22 Aug 26); the live Personal Inputs / Unavailable / SANS panels
+     carry the data, and they have their own coverage below. */
 
   it('sched setSlotVal — a board slot round-trips through the funnel', () => {
     const slot = document.querySelector('#sbBoard .seat[data-slot]') || document.querySelector('#sbBoard .sb-slot.empty[data-slot]')
@@ -359,7 +357,7 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
   })
 
   it('the panel headers carry the owner labels', () => {
-    expect($('#sbBoard .sb-panel.grnd .sb-ph').textContent).toContain('Ground Programme · scheduler')
+    expect($('#sbBoard .sb-panel.grnd .sb-ph').textContent).toContain('Ground Programme')
     expect($('#sbBoard .sb-panel.pinp .sb-ph').textContent).toContain('Personal Inputs')
   })
 

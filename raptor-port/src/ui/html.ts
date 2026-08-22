@@ -1103,7 +1103,12 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        empty section. */
     if((d.ground&&d.ground.length)||ed){
       const grd=d.ground||[];
-      h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme${ed?' · scheduler':''}</div>`+(grd.length?plCols():'');
+      /* Header is just "Ground Programme" on both surfaces now (owner, 22 Aug
+         26 — "change all the ground programme scheduler to GROUND PROGRAMME");
+         the old edit-mode "· scheduler" qualifier is gone. Parity still holds —
+         the reference carries the qualifier and html.test.ts normalises both to
+         "GRND", tolerating its absence. */
+      h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>`+(grd.length?plCols():'');
       groundOrder(grd,d.gman).forEach(({row:x,ri}:any)=>{const id=nameToId(x.who), key=`g:${di}.${ri}`;
         const inner=((id&&PEOPLE[id])?lSeat(di,id,key,ed):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+moreSeats(di,key,ed);
         const n=rowCrew('g',[di,ri]).filter(Boolean).length;

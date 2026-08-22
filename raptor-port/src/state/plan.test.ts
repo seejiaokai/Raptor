@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setSession } from './auth'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, movePlanPuck, removePlanPuck, clearPlan } from './plan'
+import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, movePlanPuck, removePlanPuck, clearPlan, addPuckRow, togglePuckPerson, movePlanSection } from './plan'
 import { INPVIEW, CALMONTH, setInpView, setCalMonth } from './view'
 import { undo, redo, histInit, HIST, histApply, resetSession, writeInputs } from './store'
 import { histSnap } from './history'
@@ -108,6 +108,89 @@ describe('resetSession forgets the planning layer', () => {
     expect(Object.keys(DAYRMK).length).toBe(0)
     expect(INPVIEW).toBe('table')
     expect(CALMONTH).toBe(null)
+  })
+})
+
+describe('the pucks-row sections (owner, 22 Aug 26)', () => {
+  it('addPuckRow appends an empty pucks section; togglePuckPerson adds then removes a person', () => {
+    expect(addPuckRow('2026-08-24')).toBe(true)
+    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    expect(sec.kind).toBe('pucks')
+    expect(sec.ids).toEqual([])
+
+    expect(togglePuckPerson(sec.id, 'bane')).toBe(true)
+    expect(sec.ids).toEqual(['bane'])
+    expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)
+    expect(sec.ids).toEqual(['bane', 'yeti'])
+    expect(togglePuckPerson(sec.id, 'bane')).toBe(true)      // toggle OFF
+    expect(sec.ids).toEqual(['yeti'])
+  })
+
+  it('togglePuckPerson refuses a note section and an empty person', () => {
+    addPlanPuck('2026-08-24', 'a note')
+    const note = PLANPUCKS[0]
+    expect(togglePuckPerson(note.id, 'bane')).toBe(false)
+    addPuckRow('2026-08-24')
+    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    expect(togglePuckPerson(sec.id, '')).toBe(false)
+  })
+
+  it('a member is refused by all three new mutators', () => {
+    addPuckRow('2026-08-24')
+    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    setSession({ user: 'user', role: 'main' })
+    expect(addPuckRow('2026-08-25')).toBe(false)
+    expect(togglePuckPerson(sec.id, 'bane')).toBe(false)
+    expect(movePlanSection(sec.id, null)).toBe(false)
+  })
+
+  it('movePlanSection reorders within one day and refuses a cross-day target', () => {
+    /* three sections on one day (note, note, pucks), one on another */
+    addPlanPuck('2026-08-24', 'first')   // unshifts
+    addPlanPuck('2026-08-24', 'second')  // unshifts above it
+    addPuckRow('2026-08-24')             // appends
+    addPlanPuck('2026-08-25', 'other day')
+    const day = () => PLANPUCKS.filter((p: any) => p.date === '2026-08-24').map((p: any) => p.text || p.kind)
+    expect(day()).toEqual(['second', 'first', 'pucks'])
+
+    const pucksSec = PLANPUCKS.find((p: any) => p.kind === 'pucks')
+    const firstSec = PLANPUCKS.find((p: any) => p.text === 'first')
+    const otherSec = PLANPUCKS.find((p: any) => p.text === 'other day')
+
+    /* pucks row to the TOP (before 'second') */
+    const secondSec = PLANPUCKS.find((p: any) => p.text === 'second')
+    expect(movePlanSection(pucksSec.id, secondSec.id)).toBe(true)
+    expect(day()).toEqual(['pucks', 'second', 'first'])
+
+    /* 'second' to the END (beforeId null) */
+    expect(movePlanSection(secondSec.id, null)).toBe(true)
+    expect(day()).toEqual(['pucks', 'first', 'second'])
+
+    /* a cross-day target is refused, and nothing moves */
+    expect(movePlanSection(firstSec.id, otherSec.id)).toBe(false)
+    expect(day()).toEqual(['pucks', 'first', 'second'])
+
+    /* before itself / already-in-place are no-ops */
+    expect(movePlanSection(firstSec.id, firstSec.id)).toBe(false)
+    expect(movePlanSection(pucksSec.id, firstSec.id)).toBe(false) // already directly before it
+    expect(day()).toEqual(['pucks', 'first', 'second'])
+
+    /* the other day's own run was never disturbed */
+    expect(PLANPUCKS.filter((p: any) => p.date === '2026-08-25').length).toBe(1)
+  })
+
+  it('a pucks row rides the undo snapshot like every other planning write', () => {
+    histInit()
+    writeInputs(() => addPuckRow('2026-08-24'))
+    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    writeInputs(() => togglePuckPerson(sec.id, 'bane'))
+    expect(PLANPUCKS.find((p: any) => p.kind === 'pucks')!.ids).toEqual(['bane'])
+    undo()
+    expect(PLANPUCKS.find((p: any) => p.kind === 'pucks')!.ids).toEqual([])
+    undo()
+    expect(PLANPUCKS.find((p: any) => p.kind === 'pucks')).toBeUndefined()
+    redo(); redo()
+    expect(PLANPUCKS.find((p: any) => p.kind === 'pucks')!.ids).toEqual(['bane'])
   })
 })
 

@@ -24,25 +24,28 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (22 Aug 26, the calendar-nav + global-inputs
-batch — PR #294: continuous week navigation, the date/day picker, the clearer
-calendar/history icons, the Inputs-page tweaks, and personal inputs made global;
-all six gates watched this session):
+**Last recorded green baseline** (22 Aug 26 evening, the chrome + calendar
+batch — one-row view chrome, role chip far right, edit-bar tint, day sign-off
+one row, fixed board title, board inputs band removed, ground/common desktop
+alignment, the Leave War desktop bottom scrollbar, the Inputs-calendar
+cell/popover redesign, and the `weekLeftDay` palette-day fix; all six gates
+watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2894 across 163 files — two vitest projects: raptor + leavewar |
-| `node reference/tfin.js` | 728/0 (the reference is read-only; the global-inputs merge is boot-only so parity is blind to it) |
+| `npm test` | 2903 across 163 files — two vitest projects: raptor + leavewar |
+| `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 310 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop (full run on the calendar-nav commit; the day-picker + global-inputs commits re-verified by the full unit suite and the targeted inputs/calendar/board specs) |
+| `npm run test:e2e` | 314 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 |
-| `perf` | 4/4 — week DOM 4940 ≤ 5450, board 855 ≤ 960 (unchanged; the board calendar icon is +1 node offset by fewer week chips, and WeekCal is a modal outside the zero-state) |
+| `perf` | 4/4 — week DOM 4940 ≤ 5450, board 855 ≤ 960 (the removed inputs band is a sibling of `#sbBoard`, outside the measured surface; the calendar is its own page, outside both ceilings) |
 
-Reconciles against the 2875/161, 309 e2e reading this replaced: +3 files
-(`weeknav.test.ts`, `swipeweeks.test.tsx`, and the WeekCal/day-step tests folded
-into existing files), and +19 tests net across the calendar-nav, day-picker,
-board cross-week, and global-inputs (`loadweek.test` rewrite) work → 2894/163;
-+1 e2e (the board's top-left calendar-icon test) → 310.
+Reconciles against the 2894/163, 310 e2e reading this replaced: +5 plan-section
+tests, +4 calendar-redesign tests (`inputscal` 26 → 30), +1 caldrag pucks-move,
+−1 board (the inputs-band render test left with the band) → 2903/163; e2e −1
+(the removed band's clipping test, deleted with a tombstone) +5 (the chrome
+batch's new geometry pins: sign-off row, board title slot, ground/common
+columns, topbar tint, the LW bottom scrollbar) → 314.
 
 The counts reconcile against the reading this replaced (2872 / 161, same
 e2e): the calendar-UX batch added +3 in `inputscal.test.tsx` (the
@@ -209,6 +212,29 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   are still there.
 
 ## Known issues / open work
+
+- **THE 22 AUG EVENING BATCH (owner, ~14 asks then "I am going to sleep u
+  have control").** Chrome: view-page week nav + HIGHLIGHT one row (calendar
+  far left; OCU beside D), role chip far right as `.rolechip`, the edit
+  page's blue `.topbar.editing` tint, `#eTitle` deleted, day sign-off four
+  pills in one desktop row (`.signoff.day-sign`, label-over-value). Board:
+  `.sb-title` FIXED at 312px on desktop so the day chips stop shifting
+  (sized to the widest "Wednesday…" title — re-measure before narrowing),
+  and the read-only "Inputs · day" summary band REMOVED (`sbInputsHTML`
+  stays as a probe-bridge builder only). Week: Ground Programme + Common
+  Programme share the Sims 5-track grid ON DESKTOP ONLY (the ≥821px block —
+  the phone keeps `.plist.one`'s wide name column on purpose); both headers
+  say bare "Ground Programme" (parity normaliser already tolerated it).
+  Leave War desktop: a FIXED bottom horizontal scrollbar proxy
+  (`.mx-hbar`, Matrix.tsx) drives `.mx-wrap` two-way, compare-guarded,
+  shown only while the grid's own scrollbar is below the fold — never on
+  the phone or in jsdom. Inputs calendar: the cell/popover redesign (see
+  the file map row). And a REAL BUG: `weekLeftDay` named the day mostly
+  scrolled OFF (first right-edge past +8px), so the aircrew palette lagged
+  the visible day by one — it reads nearest-LEFT-edge now, the true inverse
+  of `scrollWeekToDay` (`carryday.test.ts` rewritten to left edges). This
+  bullet leaves the list once the ship report lands; the durable contracts
+  moved to `docs/ui-contracts.md` in the same PR.
 
 - **Both owner decisions reserved off the Inputs month calendar are CLOSED
   (22 Aug 26).** (1) Person scope: admin files inputs for anyone on both
@@ -2026,7 +2052,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | file | what it does |
 |---|---|
 | `App.tsx` | Login vs Shell + board overlay (the board is a SIBLING of the shell so logout unmounts it). |
-| `Shell.tsx` | Topbar, nav, both schedule pages' chrome, global listeners (click/change/contextmenu/focusout/keydown, drag, pan), banner, memoized sections. The topbar now carries the **notification bell** (`#notifyBell`, glows off `bellLit()`, every page/width) and, on the edit page only, **undo/redo** (`.tb-hist`, moved up from the scroll-away `.filters` row — desktop-facing, so the topbar memo deps grew `HIST.ix`/`HIST.stack.length`/`bellLit()`). |
+| `Shell.tsx` | Topbar, nav, both schedule pages' chrome, global listeners (click/change/contextmenu/focusout/keydown, drag, pan), banner, memoized sections. The topbar carries the **notification bell** (`#notifyBell`, glows off `bellLit()`, every page/width), the edit page's **undo/redo** (`.tb-hist`, desktop-facing; memo deps carry `HIST.ix`/`HIST.stack.length`/`bellLit()`), and — 22 Aug 26 — the **role chip far right** after Logout (`#roleBadge`, `.abtn.rolechip`, phone-hidden) and a **blue `.topbar.editing` tint on Edit Schedule** (redefines `--topbar-a/b` so the phone's sticky burger/mark lead tints in lockstep). The VIEW page's chrome is ONE row since 22 Aug 26 (`#viewChrome`: calendar far left inside `.wkseg`+`#weekSeg`, week buttons, HIGHLIGHT chips — OCU rides the CAT group right of D — then search); the edit seg's calendar sits far left too; the old `#eTitle` "142 Scheduling board" heading is deleted. |
 | `ViewWeek.tsx` / `EditWeek.tsx` | The week surfaces: build `dayHTML` per day, diff strings, swap only changed days, hold scroll; `EditRoster` palette. CURPAGE-gated. |
 | `SchedBoard.tsx` | The full-screen day board: panels with per-panel string diff; subscribes to both the global store and the board-only view lane; CxDialog (cancel-with-reason — its chips read the editable `CXR_CFG` now, plus an admin `✎ Edit` inline template editor) and the Sort-all confirm, both wired to `HOOKS.closeBoardDialogs`. Mounts the desktop checks-panel resize grip (`.sb-wsplit`, wired by `board.ts:wireWarnSplit`). |
 | `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, per-section and whole-day sorts, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. `boardHTML` now renders the in-time block, per-formation area strip and Traffic button (14 Aug 26 — week-only before); `boardSignHTML` is the sign-off as its own `#sbSign` element (so the checks bar can sit below it); `boardWarnHTML` reads the "N issues · N warning" severity-coloured bar. Also `boardDayStep`, the day arrows' one call (12 Aug 26 — the swipe and its whole carousel are deleted; do not rebuild them, the tombstone comment in this file says why). `boardWarnHTML` now also draws a per-check MUTE ✕ and a "N hidden" reveal for muted checks (Aug 26, `view.warnShown`/`WMOPEN`); `grdel` routes a `src`-bearing ground delete through `unacceptInput` (the auto-land round-trip, Aug 26 audit); and **`wireWarnSplit`** is the desktop grip that resizes `.sb-warn` against the roster (a no-op until dragged, so the default geometry holds). |
@@ -2045,7 +2071,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `DayTplModal.tsx` | The **day-template library editor** (15 Aug 26) — opened from the Templates picker's pencil, on either surface (`DAYTPLEDIT` in `pops.ts`, a `false\|true\|string` open-pre-selected flag). Tabs per template, an editable title, a read-only structure summary; deliberately no row editor (a day template's content is edited on the board/week themselves, which already own that surface) and no "+ New" (a template is always recaptured off a real day, never started blank). Reset / Delete / Done, all toasting. |
 | `DraftsModal.tsx` | The **drafts manager** (15 Aug 26) — opened from the Drafts picker's pencils (`DRAFTSEDIT` in `pops.ts`, carrying the day since drafts are per-day), scoped to the one day whose menu opened it. Tabs per draft (selected one marked ●), a name field that commits on blur/Enter (`draftRename` refuses empty/duplicate names, and refusing mid-keystroke would fight the typist), Select (make it live) / Delete (disabled on the selected entry, with a title saying why) / Done. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Its dates read **day-first** and Last-modified reads **day month year** (21 Aug 26, `fmtDay`/`fmtDMY` in `inputedit.tsx`; a same-day timed span sits in one cell, the `✎ ✕` actions are pinned so every card is one compact shape). **The phone card is a grid of ALIGNED columns since 22 Aug 26** (callsign / type / date at fixed x on every card, remarks below the callsign — `scheduler.css` ≤820px block, CSS-only so td order holds) and the two spaceless chips wear `.bl` split-span short forms there (SANS AVAIL / APPOINT); the desktop table carries per-column `th` widths. Contracts: `docs/ui-contracts.md` §The Inputs table's view state, §The Inputs page speaks one day-first date voice. |
-| `InputsCal.tsx` / `caldrag.ts` / `state/plan.ts` | **The Inputs month calendar (22 Aug 26)** — the page's full-screen Google-style month view (`INPVIEW`/`CALMONTH` in `state/view.ts`): colour-coded chips off `inputTone` (the one colour source, shared with the table's row stripes), hold-to-add (450ms), tap-a-day → the day popover (entries, scheduler day remark, planning-note pucks, + Add input for everyone), `+N more` count-based overflow. `caldrag.ts` is the calendar's OWN chip-drag machine (drag.ts stays scoped to board pucks) — `commitChipMove` slides a span by the day-delta from the GRABBED cell through `commitInputEdit`. `state/plan.ts` holds `PLANPUCKS`/`DAYRMK`: session-only by owner choice (scratch-pad, like INPUTS), scheduler-gated at the write path, riding the undo snapshot (`pp`/`dm`). Contract: `docs/ui-contracts.md` §The Inputs month calendar; the copied-filter drift-seam is named in `docs/feature-impact.md` §4. |
+| `InputsCal.tsx` / `caldrag.ts` / `state/plan.ts` | **The Inputs month calendar (22 Aug 26; cell + popover REDESIGNED the same evening)** — the page's full-screen Google-style month view (`INPVIEW`/`CALMONTH` in `state/view.ts`). The CELL reads title-first (owner: sections outrank inputs): the free-text **day TITLE** (`DAYRMK`, bold, wraps, both widths), the note/pucks **sections** in full, then the inputs as SIDE-BY-SIDE mini chips off `inputTone` (callsign + type, no times; a SANS chip prints its F/O/A letters, never the words), capped at `MAX_CHIPS` (6, inputs only) → `+N more`. The DAY POPOVER: the title edited beside the date in the head (`#icRmkEdit`), small `+ Note`/`+ Pucks` buttons (scheduler), full-width sections with an admin ⠿ **drag-reorder** (`movePlanSection`, same-day, half-rule), and the inputs at the BOTTOM led by a small `+ Input` (everyone). `state/plan.ts` holds `PLANPUCKS` (notes + `kind:'pucks'` person-rows: `addPuckRow`/`togglePuckPerson`/`movePlanSection`) and `DAYRMK`: session-only by owner choice, scheduler-gated at the write path, riding the undo snapshot (`pp`/`dm`). `caldrag.ts` is the calendar's OWN chip-drag machine — `commitChipMove` slides a span by the day-delta from the GRABBED cell through `commitInputEdit`; it moves sections between days too. Contract: `docs/ui-contracts.md` §The Inputs month calendar; the copied-filter drift-seam is named in `docs/feature-impact.md` §4. |
 | `inputedit.tsx` | Editing ONE personal input AND adding one, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, **`normalizeInputDraft`** (every input write's shared refusals+derivations, extracted so add and edit cannot drift), `commitInputEdit` (including the accepted-row relink), **`commitNewInput`** (the board's + Add — unshifts a new row through the one funnel, Aug 26), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule), `firstPersonalType`/`firstUnavailType` (the panel defaults the board's + Add seeds), `InputEditor` itself (an `_new` seed row opens it in add mode), and the Inputs-page date display helpers **`fmtDay`** (ISO → day-first '13 Jul') and **`fmtDMY`** (ISO → '6 Jul 26'; `fmt`/`unfmt` still round-trip the stored month-first labels — these are display only). Three editors over one list is how they drift apart. |
 | `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
 | `WeekCal.tsx` / `weeknav.ts` / `icons.tsx` | **The date-jump calendar (22 Aug 26)** — `WeekCal` is the app's `.rc-*` month picker as a DAY picker (the week is transparent): the single current day is lit (`.sel`) + the notional today ringed (`.today`), and tapping a day loads its week and lands the view on that exact day (schedule carousel via `WEEKJUMP` day-index; board via `boardTab`). Opened via the `WEEKCAL` flag (`pops.ts`) from the schedule seg, the mobile calendar icon, and the board's `#sbCal`. `weeknav.ts` is the one place for week math: `mondayOf`, `shiftWeek` (continuous ±7 days), `weekWindow` (the desktop rolling prev·current·+1·+2 buttons + labels + today mark), `dayIndexInWeek`, iso⇄key converters, `TODAY_WEEK`. `icons.tsx` holds the shared inline-SVG glyphs (`CalIcon`, `HistIcon`) for the toolbar buttons, sized by `.btnglyph`. |

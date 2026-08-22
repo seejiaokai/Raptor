@@ -45,8 +45,12 @@ one and switching to the other used to drop you back on Monday. It is the same
 week, so it is now the same day, **in both directions**.
 
 Nothing in the model knows where a week is parked, so the reading is geometry:
-`state/view.ts`'s `weekLeftDay()` returns the leftmost day box still on screen,
-with 8px of slack so a sliver does not count. `pan.ts`'s palette follow reads
+`state/view.ts`'s `weekLeftDay()` returns the day whose LEFT edge sits nearest
+the view's own left edge — the exact inverse of `scrollWeekToDay`, which parks
+a day's left edge there. (Until 22 Aug 26 it named the first day with any
+sliver still past the edge — the day mostly scrolled OFF — which is why the
+aircrew panel showed Wednesday while the scheduler looked at Thursday; the flip
+between two days is at their midpoint now.) `pan.ts`'s palette follow reads
 through the same function — shared, not copied, so the two can never disagree
 about which day you are on.
 
@@ -529,7 +533,7 @@ assertion and pins the pill structure separately.
 `boardHTML(di, pv)` renders, in order: sign-off strip (first child — pinned
 by a test; pv-suppressed) · overall notes · overall programme · flying waves
 · **Duties** (`.sb-panel.duty`) · **Sims** (`.simr`, AMT/OFT rows, its
-planning note inside the panel) · **Ground Programme · scheduler** (`.grnd`)
+planning note inside the panel) · **Ground Programme** (`.grnd`; the `· scheduler` qualifier was dropped 22 Aug 26)
 · **Personal Inputs** (`.pinp`, with the accept controls) · **Unavailable**
 (`.unav`). **Input times read 4-digit on the board** (owner, 16 Aug 26): the
 aircrew's submitted times are minutes and format with a colon everywhere else
@@ -1095,8 +1099,9 @@ Where `lateTag()` is emitted:
 
 - the week's **Personal Inputs** and **Unavailable** blocks, in the row's
   `.rmk` cell, on the edit page and the view-only page alike (`ui/html.ts`);
-- the board's **inputs bands** and its **Personal Inputs panel**, in the
-  `.sbi-rm` cell (`ui/board-html.ts`);
+- the board's **Personal Inputs panel**, in its remarks cell
+  (`ui/board-html.ts`; the read-only "Inputs · <day>" summary band that also
+  carried it was removed 22 Aug 26 — the live panels are the one surface);
 - the **Inputs page** table, in the Remarks column (`ui/InputsPage.tsx`).
 
 Three things fall out of that cell rather than the badge, and each is pinned
@@ -1128,7 +1133,9 @@ by `ui/lateinput-ui.test.ts`:
 - **The board's em-dash placeholder gives way to the badge.** `.sbi-rm` prints
   `—` for "nothing written"; `LATE —` would read as a remark that says
   nothing, so `sbiRmk` drops it when the badge is there and keeps it
-  everywhere else.
+  everywhere else. (The summary band that rendered `.sbi-rm` left the board
+  22 Aug 26; `sbInputsHTML` survives as a probe-bridge builder, so the rule
+  still holds where it renders.)
 
 **A promoted ground row carries it too, and that is the load-bearing case.**
 A personal input never reaches the view-only page on its own — accepting it
@@ -1158,7 +1165,7 @@ A day ends with three blocks, not the reference's five (owner request, Aug 26 �
 
 | block | view-only | edit week / board |
 |---|---|---|
-| `Ground Programme` — the scheduler's own rows | ✓ | ✓, titled `Ground Programme · scheduler` |
+| `Ground Programme` — the scheduler's own rows | ✓ | ✓ (titled the same on both sides since 22 Aug 26) |
 | `Personal Inputs` — what aircrew submitted | ✗ | ✓ |
 | `Unavailable` — leave, medical (HL/OML/ATT B/ATT C), OD | ✓ | ✓ |
 
@@ -1573,7 +1580,8 @@ beside every badge.
   filed record that day), a pointer to the card grid rather than a second
   listing. `sbUnavailPanel`/`sbInputsGroupPanel` still carry the explicit
   `!isSansAvail(...)` guards so a SANS row never draws in their blocks;
-  `sbInputsHTML`'s bands view keeps its `ty-sn` chip colour.
+  `sbInputsHTML`'s bands view keeps its `ty-sn` chip colour (a probe-bridge
+  builder only since 22 Aug 26 — the board no longer renders the band).
 
 ## The Available-crew panel folds (owner, Aug 26 — OPEN by default)
 
@@ -3228,6 +3236,16 @@ month of the table's own window (`CALMONTH`, seeded once, then carried for
 the session); `‹ ›` step months, `Today` jumps home. Each day cell is
 `[data-icday="yyyy-mm-dd"]`.
 
+**The cell's priority order (owner, 22 Aug 26 — "if it fills up the whole
+day box, so be it; the inputs showing is lesser priority").** Top to bottom:
+the day **TITLE** (`.ic-rmk` — bold, wraps, both widths), then the
+**sections** in their arranged order (a note as its dashed chip, a pucks row
+as tiny CAT-tinted person chips `.ic-pks`/`.ic-pk`, all drawn in FULL), then
+the **inputs** as side-by-side mini chips (`.ic-inrow`) reading callsign +
+type — no times (the popover has them) — with a SANS record reading its
+**F/O/A letters on the purple chip, never the words** (`sansLetters`; the
+colour is the label).
+
 **Chips and tones.** Every input covering a day draws a chip in that day's
 cell — multi-day spans chip on every covered day. The colour code is decided
 in ONE place, `inputTone` (`ui/inputedit.tsx`): red `--hard` = an absence
@@ -3235,10 +3253,12 @@ in ONE place, `inputTone` (`ui/inputedit.tsx`): red `--hard` = an absence
 SANS availability. The same helper feeds the Inputs TABLE's row stripes, so
 the two surfaces cannot drift. The calendar respects the page's
 person/type/search filters (a header pill names any active filter, so an
-emptied month explains itself). At most `MAX_CHIPS` (3) chips draw per cell
-— a COUNT rule, not a height rule, deliberately: one rule on every screen
-size and one jsdom can pin — the rest fold into `+N more`. Under 820px
-chips drop their text and become compact colour bars.
+emptied month explains itself). At most `MAX_CHIPS` (6 — INPUT chips only
+since the 22 Aug 26 redesign; the title and sections always draw whole)
+draw per cell — a COUNT rule, not a height rule, deliberately: one rule on
+every screen size and one jsdom can pin — the rest fold into `+N more`.
+Under 820px chips drop their text and become compact colour bars, side by
+side; the title stays visible one size down.
 
 **Gestures.** Decided at pointerdown by target:
 - *Tap a chip* → the shared input-edit dialog (`setInpEdit`, the global
@@ -3266,22 +3286,33 @@ chips drop their text and become compact colour bars.
   for this one explicitly.
 
 **The day popover** (`.ic-pop`, bottom sheet ≤820px / centred card above).
-The day's full entry list (tap a row → the same edit dialog): each
-`.ic-poprow` reads its callsign, type and (timed only) window on one
-identity line, with the input's **remark** on an aligned second line under
-it (`.ic-poprow-rmk`, owner 22 Aug 26 — "show remarks too and align them
-nicely"; a remark-less row draws no line and stays one tidy line). Then the
-scheduler's one-line **day remark** (everyone reads, schedulers edit;
-draft-local, committed on Enter/blur), **planning notes** — free-text pucks
-a scheduler drops on days (dashed-cyan chips, visibly not real inputs;
-inline ✏/✕), and `+ Add input` for everyone. `+N more` opens the same
-popover.
+Restructured 22 Aug 26 to the owner's layout, top to bottom:
+
+- **The day TITLE beside the date in the head** (`#icRmkEdit` — schedulers
+  type free text in place, committed on Enter/blur; members read it as plain
+  text). It is what the cell shows as its heading, and it is the same
+  per-day store the old "Day remark" field wrote (`DAYRMK`), promoted.
+- **`+ Note` / `+ Pucks`, two small buttons** (schedulers only). `+ Note`
+  opens a full-width free-text block; `+ Pucks` adds a full-width row of the
+  app's canonical pucks, filled one person at a time through its own
+  `+ add…` picker, each puck removable by its ✕. Both are SECTIONS
+  (`state/plan.ts` `PLANPUCKS` — a note is `kind` absent, a pucks row
+  `kind:'pucks'` with `ids`), drawn full-width in their stored order, and a
+  scheduler **drags the ⠿ handle to rearrange them** (the board row-drag's
+  half rule: the lower half of a hovered section means "after it";
+  `movePlanSection` is same-day only).
+- **The inputs at the BOTTOM**, led top-left by a small **`+ Input`**
+  (everyone — page parity with the table's own + Add). Each `.ic-poprow`
+  reads its callsign, type and (timed only) window on one identity line,
+  with the input's **remark** on an aligned second line under it
+  (`.ic-poprow-rmk`; a remark-less row stays one tidy line). Tap a row →
+  the same edit dialog. `+N more` opens the same popover.
 
 **Escape peels one layer per press**: input dialog → popover → calendar.
 The z-ladder, documented here because three overlays now stack: calendar
 350 < board 400 < day popover 420 < drawer 440 < airpop 460 < modal 470.
 
-**Storage semantics.** Day remarks (`DAYRMK`) and planning notes
+**Storage semantics.** Day titles (`DAYRMK`) and the note/pucks sections
 (`PLANPUCKS`) live in `state/plan.ts`: SESSION-ONLY by the owner's explicit
 choice (scratch-pad, like INPUTS itself — a reload starts clean), gated to
 schedulers at the write path, cleared on login/logout, and riding the undo

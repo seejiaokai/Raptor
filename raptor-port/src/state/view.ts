@@ -141,17 +141,28 @@ export function setCarryDay(n:any){ CARRYDAY=n }
    ViewWeek/EditWeek clear it when they land the scroll. */
 export let WEEKJUMP:'mon'|'sun'|number|null=null
 export function setWeekJump(v:'mon'|'sun'|number|null){ WEEKJUMP=v }
-/* The 8px slack is what stops a day scrolled all but out of view from
-   counting as the one being read. Null, never a guess, when there is no DOM
-   (the headless state tests) or no week built yet — the caller then leaves
-   the destination's own scroll alone, which is the pre-existing behaviour. */
+/* The day whose LEFT edge sits nearest the view's own left edge — the exact
+   inverse of scrollWeekToDay below, which parks a day's left edge there. The
+   old reading named the first day with ANY sliver (>8px) still past the left
+   edge, which is the day MOSTLY scrolled OFF: so the aircrew palette followed
+   the day BEFORE the one the scheduler was actually looking at (owner, 22 Aug
+   26 — "its thursday but the placeholders show wednesday"). Nearest-left-edge
+   flips between two days at their midpoint instead, which is where a reader's
+   own sense of "the leftmost day" flips too. Null, never a guess, when there is
+   no DOM (the headless state tests) or no week built yet — the caller then
+   leaves the destination's own scroll alone, the pre-existing behaviour. */
 export function weekLeftDay(el:any):any{
   if(!el||typeof el.querySelectorAll!=='function'||typeof el.getBoundingClientRect!=='function')return null
   const ds=Array.from(el.querySelectorAll('.day[data-day]')) as any[]
   if(!ds.length)return null
-  const x=el.getBoundingClientRect().left+8
-  const hit=ds.find((d:any)=>d.getBoundingClientRect().right>x)||ds[0]
-  const n=+hit.dataset.day
+  const vl=el.getBoundingClientRect().left
+  let best:any=ds[0], bestD=Infinity
+  for(const d of ds){
+    if(typeof d.getBoundingClientRect!=='function')continue
+    const dist=Math.abs(d.getBoundingClientRect().left-vl)
+    if(dist<bestD){bestD=dist; best=d}
+  }
+  const n=+best.dataset.day
   return Number.isFinite(n)?n:null
 }
 /* the write half — put day `di` at the week's left edge. Deliberately the

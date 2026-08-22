@@ -14,7 +14,6 @@ import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/draf
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
-import { sbInputsHTML } from './board-html'
 import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, wireDayDots, wireParkedRosScroll, wireWarnSplit } from './board'
 import { CXR_CFG, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsReset, cxrAreStandard } from '../engine/cxreasons'
 import { canEditSched } from '../state/auth'
@@ -33,7 +32,6 @@ export function SchedBoard() {
   const rosterRef = useRef<HTMLDivElement>(null)
   const daysRef = useRef<HTMLDivElement>(null)
   const warnRef = useRef<HTMLDivElement>(null)
-  const inputsRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLDivElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const topRef = useRef<HTMLDivElement>(null)
@@ -202,7 +200,6 @@ export function SchedBoard() {
       withDaySnap(di, ver, () => {
         set(signRef.current!, 'sign', boardSignHTML(di, true))
         set(boardRef.current!, 'board', '<div class="pv-frozen">' + boardHTML(di, true) + '</div>')
-        set(inputsRef.current!, 'inputs', sbInputsHTML(DAYS[di], di))
       })
       /* the live-checks panel becomes the preview banner — a past version is
          never validated, so live warnings against it would be nonsense.
@@ -228,7 +225,6 @@ export function SchedBoard() {
       set(signRef.current!, 'sign', boardSignHTML(di))
       set(boardRef.current!, 'board', boardHTML(di))
       set(warnRef.current!, 'warn', boardWarnHTML(di))
-      set(inputsRef.current!, 'inputs', sbInputsHTML(DAYS[di], di))
     }
     set(rosterRef.current!, 'roster', paletteHTML(paletteDay(), { head: false }))
     refreshHighlights()
@@ -428,7 +424,11 @@ export function SchedBoard() {
               side column and only the sign-off heads this column. */}
           <div className="sb-sign" id="sbSign" ref={signRef} />
           <div className="sb-board" id="sbBoard" ref={boardRef} />
-          <div className="sb-inputs" id="sbInputs" ref={inputsRef} />
+          {/* The read-only "Inputs · <day>" summary band was removed from the
+              board (owner, 22 Aug 26 — "remove this inputs bar for all in
+              scheduler board"): the board already carries the live Personal
+              Inputs, Unavailable and SANS panels, so the summary was a
+              duplicate. */}
         </div>
         {/* ONE WINDOW ON A PHONE (owner, from the deployed site, 8 Aug 26 —
             comp approved before build). The old phone board was three stacked
