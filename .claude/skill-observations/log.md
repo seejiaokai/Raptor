@@ -282,3 +282,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Always redirect a full-suite run to a scratchpad log file (`> run.log 2>&1; tail run.log`), so a red result can be diagnosed by grepping the file instead of re-running. One sentence in CLAUDE.md §Token discipline would encode it.
 
 **Principle:** Expensive verification runs should be captured in full the first time; the cost of keeping output is zero, the cost of re-producing it is the whole run.
+
+### Observation 21: pkill -f self-match kills the calling shell
+
+**Status:** OPEN
+**Date:** 2026-08-22
+**Session context:** Removing the repeat-weeks feature; killing a leftover vite preview before an e2e run
+**Skill:** New rule candidate for raptor-port/CLAUDE.md §Build & verify (project instruction)
+**Type:** open-source
+**Phase/Area:** gate-running workflow / shell hygiene
+
+**Issue:** `pkill -f "vite preview"` inside a compound Bash command matched the calling shell's own command line (the pattern text appears in it) and killed the whole command — the test run it was chained to died with exit 144 and its log was never written.
+
+**Suggested improvement:** When pkill/pgrep -f must run inside a larger command whose text contains the pattern, break the self-match with a character class: `pkill -f "vite [p]review"`. Worth one line wherever the preview-kill step is documented (HANDOFF's stale-preview trap).
+
+**Principle:** A full-command-line process match can always match the process doing the matching; neutralise the pattern (bracket class) or run the kill as its own minimal command.

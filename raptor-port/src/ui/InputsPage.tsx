@@ -94,7 +94,6 @@ const SORTKEY: any = {
   end: (r: any) => unfmt(r.endDate || r.date) + pad4(r.allday ? 1439 : (r.e ?? 0)),
   type: (r: any) => String(r.type || '').toLowerCase(),
   remarks: (r: any) => String(r.remarks || '').toLowerCase(),
-  recur: (r: any) => String(r.recur || '').toLowerCase(),
   mod: (r: any) => (r.mod === 'now' ? '9999-99-99' : String(r.mod || '')),
 }
 
@@ -201,7 +200,6 @@ export function InputsPage() {
      still writes 06:00–18:00 */
   const [sTime, setSTime] = useState('06:00')
   const [eTime, setETime] = useState('18:00')
-  const [repeat, setRepeat] = useState(0)
   const [remarks, setRemarks] = useState('')
   /* SANS Availability's own Fly/AMT/OFT payload — see SansPicker/sansRefusal
      in ui/inputedit.tsx. Only read by add() when `type` is the SANS type. */
@@ -325,8 +323,7 @@ export function InputsPage() {
         ...(!allday && half ? { half } : {}),
         /* SANS's own Fly/AMT/OFT flags — never carried by a non-SANS type */
         ...(isSansAvail(type) ? { sans: sansFlags(sans) } : {}),
-        type, remarks: remarks.trim(),
-        recur: (+repeat || 0) ? ('x' + repeat + ' wks') : '', mod: 'now',
+        type, remarks: remarks.trim(), mod: 'now',
       }))
       /* an ACTIVITY input files straight onto the Ground Programme (owner, Aug
          26 — "by default all inputs are accepted"); leave/medical/SANS and a
@@ -498,8 +495,6 @@ export function InputsPage() {
             }}>
               {typeOptions()}
             </select></div>
-          <div className="ifield"><label>Repeat wks</label><input id="inRepeat" type="number" value={repeat} min={0} max={52}
-            onChange={e => setRepeat(Math.max(0, Math.min(52, Math.floor(+e.target.value || 0))))} /></div>
           <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder="e.g. medical appt" maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={add}>Add input</button></div>
         </div>
@@ -552,7 +547,7 @@ export function InputsPage() {
         <table className="intbl" id="intbl">
           <thead><tr>
             {th('name', 'Name')}{th('start', 'Start')}{th('end', 'End')}{th('type', 'Type')}
-            {th('remarks', 'Remarks')}{th('recur', 'Recurring')}{th('mod', 'Last modified')}
+            {th('remarks', 'Remarks')}{th('mod', 'Last modified')}
             <th></th>
           </tr></thead>
           <tbody id="inBody">
@@ -635,7 +630,6 @@ export function InputsPage() {
                   </select></td>
                   <td data-fld="Remarks"><input aria-label="Remarks" data-ed="remarks" maxLength={200} value={draft.remarks}
                     onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
-                  <td className="ined-sec">{r.recur || ''}</td>
                   <td className="mono ined-sec" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     <span className="rok" data-save={inx} title="Save" onClick={saveEdit}>✓</span>
@@ -674,7 +668,6 @@ export function InputsPage() {
                       9 Aug 26) — same column on every surface that draws an
                       input, and the type column stays pure identity */}
                   <td data-label="Remarks">{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}</td>
-                  <td data-label="Recurring">{r.recur || ''}</td>
                   <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>

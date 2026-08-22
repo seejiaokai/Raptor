@@ -662,7 +662,18 @@ subscribers.
   lane must not wake the mounted EditWeek or EditRoster. Real mutations still use
   the global lane and repaint both.
   Contract: `docs/ui-contracts.md` §The board on a phone is ONE window.
-- **No drag-to-section** (owner, Aug 26 — dropped after the buttons shipped).
+- **No repeat-weeks on inputs** (owner, 22 Aug 26 — "remove repeated weeks
+  everywhere"). The Inputs form's "Repeat wks" field, the table's Recurring
+  column and the record's `recur` write are all deleted. The feature never
+  actually repeated anything — the record stored ONE span and `recur` was a
+  label nothing expanded, which surfaced when the month calendar could only
+  chip the first span — so the choice put to the owner was "draw every
+  repetition (a real feature) or live with the mismatch", and he chose
+  neither: remove it. A truly repeating input would be that real feature,
+  built only if he asks; do not re-add the label-only field, and a member
+  needing the same absence weekly files it per week. Its absence is pinned
+  in `inputs.test.tsx`. (The read-only `reference/` keeps its own Repeat
+  field — test-only, never served, same as the callsign scrub.)
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add
   drop targets to `drag.ts` for it; that machine stays scoped to pucks.

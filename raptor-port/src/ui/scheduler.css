@@ -1451,9 +1451,8 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .intbl thead th:nth-child(2){width:150px}  /* Start */
 .intbl thead th:nth-child(3){width:115px}  /* End */
 .intbl thead th:nth-child(4){width:160px}  /* Type — SANS AVAILABILITY, the widest chip, measures 129px + the cell's 24px padding, and must not wrap */
-.intbl thead th:nth-child(6){width:84px}   /* Recurring */
-.intbl thead th:nth-child(7){width:104px}  /* Last modified */
-.intbl thead th:nth-child(8){width:96px}   /* actions */
+.intbl thead th:nth-child(6){width:104px}  /* Last modified */
+.intbl thead th:nth-child(7){width:96px}   /* actions */
 .intbl tbody tr:hover{background:rgba(255,255,255,.02)}
 /* the row stripe, coloured from inputTone (ui/inputedit.tsx) — one source
    feeding this table and the month calendar's chips alike. Same precedent
@@ -1585,7 +1584,8 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      and the date taking the rest, so every chip and every date starts at
      the same x on every card. A multi-day End sits UNDER the Start in the
      same date column; remarks (LATE chip first) are their own full-width
-     line below the callsign; recurring/modified close the card as before.
+     line below the callsign; the modified stamp closes the card (the
+     Recurring column left with the repeat-weeks feature, 22 Aug 26).
      The DOM stays the desktop table's column order — tests address Name and
      Start by td position — and grid-template-areas does ALL the reordering.
      The EDIT row below keeps its stacked form — a calendar needs the width. */
@@ -1603,7 +1603,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
       "name type start"
       ".    .    end"
       "rmk  rmk  rmk"
-      "rec  mod  mod";
+      "mod  mod  mod";
     align-items:center;
     column-gap:7px; row-gap:0; padding:8px 88px 9px 12px;
   }
@@ -1629,7 +1629,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   #intbl tbody tr:not(.ined) td[data-label="Type"]{ grid-area:type }
   #intbl tbody tr:not(.ined) td[data-label="Start"]{ grid-area:start }
   /* row-gap is 0 and the later lines carry their own margin instead, so a
-     line that is absent (a one-day End, an empty remarks/recurring cell —
+     line that is absent (a one-day End, an empty remarks cell —
      display:none below) costs 0px rather than leaving a stack of gaps */
   #intbl tbody tr:not(.ined) td[data-label="End"]{ grid-area:end; margin-top:2px }
   /* the phone chip short form: the .bl tail (today only SANS Availability's
@@ -1647,21 +1647,16 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
     display:flex; gap:22px; margin:0; padding:0; border-top:none;
   }
   #intbl tbody tr:not(.ined) td[data-label="Remarks"]{ grid-area:rmk; margin-top:3px }
-  #intbl tbody tr:not(.ined) td[data-label="Recurring"],
-  #intbl tbody tr:not(.ined) td[data-label="Modified"]{
-    margin-top:3px; font-size:10.5px; color:var(--ink-3);
-  }
-  #intbl tbody tr:not(.ined) td[data-label="Recurring"]{ grid-area:rec }
   /* modified hugs the card's right edge, same stamp as before */
   #intbl tbody tr:not(.ined) td[data-label="Modified"]{
     grid-area:mod; text-align:right;
+    margin-top:3px; font-size:10.5px; color:var(--ink-3);
   }
-  #intbl tbody tr:not(.ined) td[data-label="Recurring"]::before,
   #intbl tbody tr:not(.ined) td[data-label="Modified"]::before{
     content:attr(data-label) ' '; font-size:9px; font-weight:600;
     letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3);
   }
-  #intbl tbody tr td:empty{ display:none; }      /* a blank recurring/modified tail adds nothing */
+  #intbl tbody tr td:empty{ display:none; }      /* a blank modified tail adds nothing */
   /* the just-added flash moves to the ROW here: the compact cells carry no
      padding for an inset ring to sit in, and on this surface the tr owns the
      card's border/background so its shadow is not clipped by cell paint */
@@ -1682,7 +1677,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 
   /* the inline EDIT row is a tinted form card: fields stacked and full-width,
      each labelled from its column, the calendar roomy for a thumb, the
-     read-only recurring/modified cells dropped. */
+     read-only modified cell dropped. */
   tr.ined{
     display:block; padding:3px 2px;
     background:rgba(59,198,232,.06); border-color:rgba(59,198,232,.35);

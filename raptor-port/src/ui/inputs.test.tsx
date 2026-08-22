@@ -81,6 +81,29 @@ describe('the Inputs page (tfin)', () => {
     expect(opts).toContain('OD')
   })
 
+  /* THE REPEAT-WEEKS FEATURE IS GONE (owner, 22 Aug 26 — "remove repeated
+     weeks everywhere"). It never expanded anywhere — the record stored one
+     span and only the calendar question exposed that — so the field, the
+     column and the recur write all left together. Pinned so a later "the
+     form looks thin" pass does not put it back. */
+  it('no Repeat wks field, no Recurring column, and an add writes no recur', async () => {
+    expect($('#inRepeat'), 'the Repeat wks field is gone').toBeFalsy()
+    expect($('#intbl thead th[data-sort="recur"]'), 'the Recurring heading is gone').toBeFalsy()
+    /* the add needs a start date — pick one on the form's own calendar
+       rather than leaning on a date some earlier test happened to leave.
+       TWICE, completing a one-day range: a single click leaves the picker
+       half-open, and the next test's first click would then silently
+       complete THIS range instead of starting its own */
+    await click($('#inCal [data-cal]'))
+    await click($('#inCal [data-cal]'))
+    const n = INPUTS.length
+    await click($('#inAdd'))
+    expect(INPUTS.length).toBe(n + 1)
+    expect('recur' in INPUTS[0], 'a fresh record carries no recur field').toBe(false)
+    await click(rowFor(0).querySelector('.rmx'))
+    expect(INPUTS.length).toBe(n)
+  })
+
   /* All day owns the whole window, so the two time fields go out of play. They
      were always `disabled`; the `dim` class is what makes that visible, so the
      field is not aimed at first and ignored second (owner, Aug 5). */
@@ -1076,7 +1099,7 @@ describe('sorting by column', () => {
   })
 
   it('every heading sorts, and only the sorted one is marked', async () => {
-    for (const key of ['name', 'end', 'type', 'remarks', 'recur', 'mod']) {
+    for (const key of ['name', 'end', 'type', 'remarks', 'mod']) {
       await click($(`#intbl thead th[data-sort="${key}"]`))
       expect($(`#intbl thead th[data-sort="${key}"]`).className, key).toContain('on')
       expect($$('#intbl thead th.on').length, `only ${key} is marked`).toBe(1)
