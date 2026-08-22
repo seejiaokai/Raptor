@@ -38,7 +38,17 @@ const layOutDots = () => {
   })
 }
 
+/* jsdom defines no `document.elementFromPoint`, and this file arms the board's
+   TOUCH drag (drag.ts's tdArm → tdOver, and onPointerUp) which hit-tests
+   through it. Whether the abandoned hold-timer fires before its pointerup is a
+   race: fast locally it is cleared in time, but on the ~30%-slower CI runner it
+   fires mid-test and throws `elementFromPoint is not a function` — an uncaught
+   async error that poisons the run (this failed main-bound CI once at exactly
+   `SBDAY expected 6 got 2`). Stub it the way caldrag.test.tsx already does for
+   the same reason; null = "nothing under the finger", which is a harmless drop
+   for every gesture this file drives. */
 beforeAll(async () => {
+  (document as any).elementFromPoint = () => null
   initStore()
   const host = document.createElement('div')
   document.body.appendChild(host)
