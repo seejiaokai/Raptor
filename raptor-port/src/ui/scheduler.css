@@ -1433,6 +1433,21 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .intbl td{overflow-wrap:anywhere}
 .intbl th,.intbl td{border-bottom:1px solid var(--edge);padding:9px 12px;text-align:left}
 .intbl thead th{background:var(--panel-2);color:var(--ink-2);font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;font-weight:700}
+/* DESKTOP column sizing (owner, 22 Aug 26 — "align them nicely on the
+   desktop and mobile"): fixed layout with no widths dealt eight EQUAL
+   columns, so Name was as wide as Remarks and half the row was slack.
+   Identity and metadata get what their content measures; Start is the one
+   date cell that can carry a whole timed span ("13 Jul 10:00–11:00",
+   ~142px with padding) so it gets the room to say it on one line; Remarks
+   — the only free-text column — takes everything left over. The header row
+   is what fixed layout sizes from, so the widths live on the th. */
+.intbl thead th:nth-child(1){width:90px}   /* Name */
+.intbl thead th:nth-child(2){width:150px}  /* Start */
+.intbl thead th:nth-child(3){width:115px}  /* End */
+.intbl thead th:nth-child(4){width:160px}  /* Type — SANS AVAILABILITY, the widest chip, measures 129px + the cell's 24px padding, and must not wrap */
+.intbl thead th:nth-child(6){width:84px}   /* Recurring */
+.intbl thead th:nth-child(7){width:104px}  /* Last modified */
+.intbl thead th:nth-child(8){width:96px}   /* actions */
 .intbl tbody tr:hover{background:rgba(255,255,255,.02)}
 .intag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
 .inwrap{padding:6px 20px 40px}
@@ -1540,61 +1555,87 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
     border:1px solid var(--edge); border-radius:12px;
     margin:0 0 8px; background:var(--panel);
   }
-  /* A READ row is ONE line — name · type · dates · ✎ ✕ — with the remarks
-     (and the rare recurring/modified tails) wrapping onto a second (owner,
-     18 Aug 26: "squeeze the info into as little row as possible… so that I
-     can see more data"). The values read on their own in this order, so the
-     per-cell labels are dropped except on the two metadata tails; the DOM
-     stays the desktop table's column order and CSS `order` does the rest.
+  /* A READ row is a GRID of aligned columns, not a wrap (owner, 22 Aug 26 —
+     "u can put callsign. Then. Leave some space then align the reason, then
+     the date… then below the callsign u can put the remarks"). The old
+     flex-wrap let each card's intrinsic chip width push its own date around,
+     so nothing lined up down the list. Three fixed-start columns now:
+     callsign (70px — "Sidewinder", the roster's longest, measures ~66px in
+     Inter Tight bold), the type chip (90px — APPOINTMENT, the longest label
+     once SANS wears its phone short form, measures ~87px incl. the pill),
+     and the date taking the rest, so every chip and every date starts at
+     the same x on every card. A multi-day End sits UNDER the Start in the
+     same date column; remarks (LATE chip first) are their own full-width
+     line below the callsign; recurring/modified close the card as before.
+     The DOM stays the desktop table's column order — tests address Name and
+     Start by td position — and grid-template-areas does ALL the reordering.
      The EDIT row below keeps its stacked form — a calendar needs the width. */
-  /* the actions are PINNED to the card's top-right corner (owner, 21 Aug 26 —
-     "standardise the way the inputs are shown"): before this they rode in flow
-     with margin-left:auto, so a long timed date ("13 Jul 10:00 → 11:00") shoved
-     them onto a second line and a timed card stood 81px where an all-day card
-     was 66. Out of flow, every card is the same two-line shape whatever its
-     date. The 88px right reserve is the two 30px targets + their 22px gap +
-     margin, kept clear on BOTH lines so neither the date nor the modified stamp
-     slides under them. */
+  /* the actions stay PINNED to the card's top-right corner (owner, 21 Aug 26
+     and re-blessed 22 Aug 26 — "the icons… are aligned"): the 88px right
+     reserve is the two 30px targets + their 22px gap + margin, kept clear on
+     every line so neither the date nor the modified stamp slides under them.
+     The two targets keep their deliberate size and distance (the Aug-5 rule
+     — delete is not undoable). */
   #intbl tbody tr:not(.ined){
     position:relative;
-    display:flex; flex-wrap:wrap; align-items:center;
-    column-gap:9px; row-gap:3px; padding:8px 88px 9px 12px;
+    display:grid;
+    grid-template-columns:78px 76px minmax(0,1fr);
+    grid-template-areas:
+      "name type start"
+      ".    .    end"
+      "rmk  rmk  rmk"
+      "rec  mod  mod";
+    align-items:center;
+    column-gap:7px; row-gap:0; padding:8px 88px 9px 12px;
   }
+  /* the chip is mildly COMPRESSED here and the two spaceless labels wear
+     their .bl short forms (SANS AVAIL / APPOINT — the InputsPage markup),
+     because the three columns must share a 390px card: name 78 =
+     "Sidewinder", the roster's longest, measured 76; the widest chip left
+     after the short forms, SANS AVAIL, measures 74 at this size so 76
+     holds every label whole (no chip ever wraps or truncates); and the
+     date column keeps ≥82, which holds the widest time run "12:01–23:59"
+     (75) so a timed span wraps at its space, never mid-token. All
+     measured in the built bundle, not estimated. */
+  #intbl .intag{ font-size:9px; padding:2px 5px; letter-spacing:.02em }
+  /* a time range is one token: '13 Jul' / '12:01–23:59' wraps at the space,
+     never after the en-dash mid-range (phone only — the desktop Start column
+     holds the whole run, and nowrap there could fight a narrower window) */
+  #intbl .tnw{ white-space:nowrap }
   #intbl tbody tr:not(.ined) td{
     display:block; border-bottom:none; padding:0; text-align:left;
     overflow-wrap:anywhere; min-width:0;
   }
-  #intbl tbody tr:not(.ined) td[data-label="Name"]{ order:0; font-weight:700 }
-  #intbl tbody tr:not(.ined) td[data-label="Type"]{ order:1 }
-  #intbl tbody tr:not(.ined) td[data-label="Start"]{ order:2 }
-  #intbl tbody tr:not(.ined) td[data-label="End"]{ order:3 }
+  #intbl tbody tr:not(.ined) td[data-label="Name"]{ grid-area:name; font-weight:700 }
+  #intbl tbody tr:not(.ined) td[data-label="Type"]{ grid-area:type }
+  #intbl tbody tr:not(.ined) td[data-label="Start"]{ grid-area:start }
+  /* row-gap is 0 and the later lines carry their own margin instead, so a
+     line that is absent (a one-day End, an empty remarks/recurring cell —
+     display:none below) costs 0px rather than leaving a stack of gaps */
+  #intbl tbody tr:not(.ined) td[data-label="End"]{ grid-area:end; margin-top:2px }
+  /* the phone chip short form: the .bl tail (today only SANS Availability's
+     "ability") is hidden here and only here, the board day-name idiom — the
+     desktop chip and the DOM text stay the full type string */
+  #intbl .intag .bl{ display:none }
   /* the range joiner; a one-day input reads once, never "Jul 13 → Jul 13" —
      the row marks its End cell data-same when it repeats the start */
   #intbl tbody tr:not(.ined) td[data-label="End"]::before{
     content:'→'; color:var(--ink-3); margin-right:9px;
   }
   #intbl tbody tr:not(.ined) td[data-label="End"][data-same]{ display:none }
-  /* the actions close line one; margin-left:auto soaks the slack, which is
-     also what makes everything after them wrap. The two targets keep their
-     deliberate size and distance (the Aug-5 rule — delete is not undoable). */
   #intbl tbody tr:not(.ined) td.inact{
     position:absolute; top:6px; right:12px;
     display:flex; gap:22px; margin:0; padding:0; border-top:none;
   }
-  /* the 40% basis is what keeps remarks OFF line one (even the shortest
-     card's first line leaves less slack than that, so remarks always wrap and
-     never read after the ✕) while still leaving room for the modified tail to
-     share line TWO beside them instead of taking a third */
-  #intbl tbody tr:not(.ined) td[data-label="Remarks"]{ order:5; flex:1 1 40% }
+  #intbl tbody tr:not(.ined) td[data-label="Remarks"]{ grid-area:rmk; margin-top:3px }
   #intbl tbody tr:not(.ined) td[data-label="Recurring"],
   #intbl tbody tr:not(.ined) td[data-label="Modified"]{
-    order:6; font-size:10.5px; color:var(--ink-3);
+    margin-top:3px; font-size:10.5px; color:var(--ink-3);
   }
-  /* modified hugs the second line's right edge; the 140px floor keeps a short
-     value ("now") from fitting — and floating — on line one when the card has
-     no remarks */
+  #intbl tbody tr:not(.ined) td[data-label="Recurring"]{ grid-area:rec }
+  /* modified hugs the card's right edge, same stamp as before */
   #intbl tbody tr:not(.ined) td[data-label="Modified"]{
-    order:7; margin-left:auto; min-width:140px; text-align:right;
+    grid-area:mod; text-align:right;
   }
   #intbl tbody tr:not(.ined) td[data-label="Recurring"]::before,
   #intbl tbody tr:not(.ined) td[data-label="Modified"]::before{

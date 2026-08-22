@@ -511,9 +511,11 @@ function rebrief(html: string): string {
      + "const tail=landed!=null"
      + "?`${ev[idx-1].dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`"
      + ":`${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;"],
-    /* The crew-rest breach itself (owner, 6 Aug 26): the port names the
-       LEAVE-BY time in the message and carries prevDi/leaveBy/dashed on the
-       warning, so the previous day can be traced from a click. The reference
+    /* The crew-rest breach itself (owner, 6 Aug 26; reworded cause-first
+       22 Aug 26 — tail leads, "but <commitment> — only Xh rest.", and the
+       leave-by is DATA only now, never message text): the port carries
+       prevDi/leaveBy/dashed on the warning, so the previous day can be
+       traced from a click. The reference
        says none of that, and parity compares the message text — so mirror the
        whole add, dashed ring included. `add` there takes no extras argument,
        so they are attached to the pushed warning by patching the message
@@ -529,11 +531,11 @@ function rebrief(html: string): string {
      + "const _da=!!_bl.lateShow&&_mk;"
      + "markChip(di,id,'CR');markRing(di,id,'hard');if(_da){dash[di]=dash[di]||{};dash[di][id]=true;}\n"
      + "          add('hard','CREW_REST',[id],\n"
-     + "            (onShift?`Crew rest breach — ${legs.filter(e=>e.shift).map(e=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `\n"
-     + "                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)"
-     + "+(_da?`Late show — he still makes the ${hm24(_bl.to-VCONF.step)} step. `"
-     + ":(_bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(_bl.to-VCONF.step)} step. `:''))"
-     + "+tail+`, so he had to leave by ${_lv}`);"
+     + "            `Crew rest breach — ${tail}, but `+(onShift?`${legs.filter(e=>e.shift).map(e=>e.label)[0]} starts ${hm24(instructed)} — only ${dur(instructed+1440-pe)} rest.`\n"
+     + "                   :`told to report ${hm24(instructed)} — only ${dur(instructed+1440-pe)} rest.`)"
+     + "+(_da?` Late show — he still makes the ${hm24(_bl.to-VCONF.step)} step.`"
+     + ":(_bl.lateShow?` Late show cannot save it — the ${hm24(_bl.to-VCONF.step)} step is still before rest clears.`:''))"
+     + ");"
      + "{const _w=ws[ws.length-1];_w.prevDi=idx-1>=0?ev[idx-1].di:null;_w.leaveBy=_lv;_w.dashed=_da;}"],
     /* the reference's fly.push has no lateShow, so _bo's exemption could never
        fire there — carry the same remark parse onto its legs */
@@ -587,8 +589,8 @@ function refirst(html: string): string {
     ['if(pfly[id]&&instructed<earliest){', 'if(pfly[id]&&first<earliest){'],
     ['const _lv=hm24(instructed+1440-VCONF.crewRest);', 'const _lv=hm24(first+1440-VCONF.crewRest);'],
     ['const _da=!!_bl.lateShow&&_mk;', 'const _da=!evBound&&!!_bl.lateShow&&_mk;'],
-    ["add('hard','CREW_REST',[id],\n            (onShift?",
-     "add('hard','CREW_REST',[id],\n            (evBound?`Crew rest breach — his day starts ${hm24(first)} (${fe.label}) before the ${hm24(instructed)} report, only ${dur(first+1440-pe)} rest. `:onShift?"],
+    ["add('hard','CREW_REST',[id],\n            `Crew rest breach — ${tail}, but `+(onShift?",
+     "add('hard','CREW_REST',[id],\n            `Crew rest breach — ${tail}, but `+(evBound?`his day starts ${hm24(first)} (${fe.label}) before the ${hm24(instructed)} report — only ${dur(first+1440-pe)} rest.`:onShift?"],
     [':(_bl.lateShow?', ':(!evBound&&_bl.lateShow?'],
   ]
   for (const [from, to] of swaps) {

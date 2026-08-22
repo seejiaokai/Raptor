@@ -3678,3 +3678,43 @@ test('the desktop checks panel resizes by its grip', async ({ page }) => {
   const after = (await page.locator('#schedBoard .sb-warn').boundingBox())!.height
   expect(after, 'dragging the grip down grows the checks panel').toBeGreaterThan(before + 40)
 })
+
+/* The Inputs list is a grid of ALIGNED columns on a phone (owner, 22 Aug 26 —
+   "u can put callsign. Then. Leave some space then align the reason, then the
+   date… below the callsign u can put the remarks"). The old flex-wrap let each
+   card's own chip width push its date around, and jsdom cannot see a column
+   line up across separate cards — this page had no e2e at all until now. Also
+   pins the SANS chip's phone short form: the .bl tail ("ability") hides under
+   820px so the chip reads SANS AVAIL, while the DOM text stays the full type. */
+test('the phone Inputs cards align their type and date columns', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page); await go(page, 'inputs')
+  /* the default today→two-weeks window is EMPTY on the demo data by design
+     (owner, 12 Aug 26 — do not "fix" it): All dates is the way to rows,
+     exactly as a user is told by the empty state */
+  await page.click('#inRangeBtn')
+  await page.click('#inRangeAll')
+  await page.waitForSelector('#inBody tr .intag')
+  const m = await page.evaluate(() => {
+    const rows = [...document.querySelectorAll('#inBody tr:not(.ined)')] as HTMLElement[]
+    const chipX = rows.map(r => r.querySelector('.intag')?.getBoundingClientRect().left).filter(x => x != null) as number[]
+    const dateX = rows.map(r => (r.querySelector('td[data-label="Start"]') as HTMLElement).getBoundingClientRect().left)
+    const bl = document.querySelector('#inBody .intag .bl') as HTMLElement | null
+    /* remarks sit BELOW the callsign, starting at the card's left edge */
+    const withRk = rows.find(r => { const rk = r.querySelector('td[data-label="Remarks"]') as HTMLElement | null; return !!rk && rk.offsetHeight > 0 })
+    let below: any = null
+    if (withRk) {
+      const name = withRk.querySelector('td[data-label="Name"]')!.getBoundingClientRect()
+      const rk = withRk.querySelector('td[data-label="Remarks"]')!.getBoundingClientRect()
+      below = { nameBottom: name.bottom, rkTop: rk.top, nameLeft: name.left, rkLeft: rk.left }
+    }
+    return { n: chipX.length, chipX, dateX, sansTail: bl ? getComputedStyle(bl).display : null, below }
+  })
+  expect(m.n, 'enough cards on screen to prove alignment').toBeGreaterThan(3)
+  for (const x of m.chipX) expect(Math.abs(x - m.chipX[0]), 'every type chip starts at the same x').toBeLessThan(1.5)
+  for (const x of m.dateX) expect(Math.abs(x - m.dateX[0]), 'every date starts at the same x').toBeLessThan(1.5)
+  expect(m.sansTail, 'the SANS tail is hidden on a phone — the chip reads SANS AVAIL').toBe('none')
+  expect(m.below, 'a card carrying remarks exists in the demo data').toBeTruthy()
+  expect(m.below.rkTop, 'remarks sit below the callsign line').toBeGreaterThanOrEqual(m.below.nameBottom - 0.5)
+  expect(Math.abs(m.below.rkLeft - m.below.nameLeft), 'and start under it').toBeLessThan(1.5)
+})

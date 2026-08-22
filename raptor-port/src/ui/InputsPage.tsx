@@ -543,9 +543,13 @@ export function InputsPage() {
                  joined by the '→', and the desktop table's two columns with it. */
               const day0 = fmtDay(unfmt(r.date))
               const day1 = fmtDay(unfmt(r.endDate || r.date))
-              const st = r.allday ? day0
-                : sameDay ? `${day0} ${hhmm(r.s)}–${hhmm(r.e)}`
-                : `${day0} ${hhmm(r.s)}`
+              /* the time run rides its own .tnw span so the phone card's
+                 narrow date column wraps '13 Jul' / '12:01–23:59' at the
+                 SPACE — never after the en-dash mid-range (owner, 22 Aug 26
+                 alignment pass); textContent is unchanged, the desktop Start
+                 column is sized to hold the whole thing on one line */
+              const stT = r.allday ? '' : sameDay ? `${hhmm(r.s)}–${hhmm(r.e)}` : `${hhmm(r.s)}`
+              const st = stT ? <>{day0} <span className="tnw">{stT}</span></> : day0
               const en = sameDay ? '' : (r.allday ? day1 : `${day1} ${hhmm(r.e)}`)
               const inx = INPUTS.indexOf(r)
               if (editRow === r && draft) return (
@@ -609,7 +613,20 @@ export function InputsPage() {
                       so it shows "13 Jul 10:00 → 11:00" (scheduler.css, the
                       inputs card block); the desktop table renders both cells. */}
                   <td data-label="Name">{cs}</td><td data-label="Start">{st}</td><td data-label="End" data-same={en === '' ? '' : undefined}>{en}</td>
-                  <td data-label="Type"><span className="intag">{r.type}</span></td>
+                  {/* The two chips too wide for the phone card's aligned type
+                      column wear the board day name's split-span idiom (owner,
+                      22 Aug 26 — "if there's no space like sans availability u
+                      can make it a short form on the phone to be sans avail"):
+                      one markup path, the .bl tail hidden under 820px, so the
+                      chip reads SANS AVAIL / APPOINT there while textContent
+                      stays the raw type string every test and export reads.
+                      Appointment (88px, the only other label over the 76px
+                      track — measured) rides the same rule. */}
+                  <td data-label="Type"><span className="intag">{
+                    isSansAvail(r.type) ? <>SANS Avail<span className="bl">ability</span></>
+                      : r.type === 'Appointment' ? <>Appoint<span className="bl">ment</span></>
+                        : r.type
+                  }</span></td>
                   {/* the mark reads in Remarks, not beside the type (owner,
                       9 Aug 26) — same column on every surface that draws an
                       input, and the type column stays pure identity */}

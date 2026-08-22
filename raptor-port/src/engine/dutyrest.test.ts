@@ -177,7 +177,7 @@ describe('a duty row bears crew rest', () => {
     expect(stuffWarns().find((w: any) => w.code === 'CREW_REST'), '10:00 is past the 09:30 clearance').toBeFalsy()
   })
 
-  it('with no earlier event the breach message is byte-identical to before — told to report', () => {
+  it('with no earlier event the breach message reads told-to-report, cause first', () => {
     const ru = ruOf()
     const seat = ru.aircraft[1]
     const w2: any = (DAYS[TUE] as any).waves[1]
@@ -188,6 +188,11 @@ describe('a duty row bears crew rest', () => {
     const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
     expect(cr.msg).toContain('told to report 09:00')
     expect(cr.msg).not.toContain('his day starts')
+    /* the cause-first order itself (owner, 22 Aug 26): yesterday's end →
+       rest clear → the report that breaks it, one forward chain, and no
+       trailing leave-by restatement — the trace row's lead carries that */
+    expect(cr.msg).toMatch(/^Crew rest breach — .*ended .*crew rest clear at .*, but told to report /)
+    expect(cr.msg).not.toContain('leave by')
   })
 
   it('an early meeting with NO flying that day asks for no rest at all', () => {

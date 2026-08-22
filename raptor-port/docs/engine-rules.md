@@ -89,9 +89,17 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   other scheduled commitment that day (sim, duty post, ground event,
   programme item; not the flying legs' derived step pads). The rule only
   exists when he FLIES that day — a meeting-only
-  day needs no rest. When an earlier event binds, the message names it
+  day needs no rest. **The message reasons CAUSE-FIRST, said once** (owner,
+  22 Aug 26 — "refine the way u reason the crew rest warning. Clear and
+  concise"): `Crew rest breach — <tail>, but told to report HH:MM — only
+  XhMM rest.` — yesterday's end, when rest clears, then the commitment that
+  breaks it with the shortfall in the same breath; no trailing "so he had
+  to leave by" (the cross-day trace row's bold lead already prints the
+  leave-by, so the message saying it too read as repetition).
+  When an earlier event binds, the message names it
   ("his day starts 08:00 (MTG) before the 10:00 report"), the warning
-  anchors on that row, the leave-by follows it, and a late-show remark on
+  anchors on that row, the leave-by is measured from it, and a late-show
+  remark on
   the jet cannot dash the ring — a sanctioned late join to the sortie does
   not excuse the meeting. Mirrored into the reference by
   `refwin.ts:refirst()`.
@@ -181,8 +189,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   **solid**: he cannot walk, kit up and start engines, so he is unable to
   make the flight. Published per person as `WARN.dash[di][id]` (`dashOf`),
   because a chip carries no stroke of its own.
-- **Every CR warning names the leave-by time** and the day it is measured
-  from (`leaveBy`, `prevDi` on the warning).
+- **Every CR warning carries the leave-by time** and the day it is measured
+  from — as DATA (`leaveBy`, `prevDi` on the warning), never message text
+  since 22 Aug 26: the cross-day trace row's bold lead and the puck's hover
+  title are where it prints (owner — the message restating it read twice).
 - **The breach is also filed against the day that CAUSED it** (owner, 6 Aug
   26). A crew-rest warning is raised where the man is told to report, but the
   only day a scheduler can still change is the one before, so `validate()`

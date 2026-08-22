@@ -540,8 +540,11 @@ export function validate(){
              man to be clear. It is what the scheduler actually needs — "he is
              short" is a complaint, "he had to be gone by 00:00" is an
              instruction — and the previous day's puck prints it when the
-             warning is clicked. first===instructed when no earlier event
-             binds, so the unbound arithmetic is unchanged. */
+             warning is clicked. It rides the warning/trace as DATA only since
+             22 Aug 26 (owner: the trace row's bold lead already says it, and
+             the message's old ", so he had to leave by" tail said it again —
+             "that's like repeating what u said"). first===instructed when no
+             earlier event binds, so the unbound arithmetic is unchanged. */
           const leaveBy=hm24(first+1440-VCONF.crewRest);
           /* A sanctioned late show still makes the jet if rest clears by
              STEP, VCONF.step before T/O — the same knob that pads the busy
@@ -558,12 +561,18 @@ export function validate(){
           const dashed=!evBound&&!!bl.lateShow&&makesIt;
           markChip(di,id,'CR');markRing(di,id,'hard'); if(dashed)markDash(di,id);
           const prevDi=idx-1>=0?ev[idx-1].di:null;
-          const crMsg=(evBound?`Crew rest breach — his day starts ${hm24(first)} (${fe.label}) before the ${hm24(instructed)} report, only ${dur(first+1440-pe)} rest. `
-                   :onShift?`Crew rest breach — ${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `
-                   :`Crew rest breach — told to report ${hm24(instructed)}, only ${dur(instructed+1440-pe)} rest. `)
-            +(dashed?`Late show — he still makes the ${hm24(bl.to-VCONF.step)} step. `
-                    :(!evBound&&bl.lateShow?`Late show cannot save it — rest clears ${hm24(earliest)}, after the ${hm24(bl.to-VCONF.step)} step. `:''))
-            +tail+`, so he had to leave by ${leaveBy}`;
+          /* CAUSE-FIRST, SAID ONCE (owner, 22 Aug 26 — "refine the way u
+             reason the crew rest warning. Clear and concise"): one forward
+             chain — yesterday's end → when rest clears → the commitment that
+             breaks it — with the shortfall in the same breath. The old shape
+             stated the report first, re-derived it through the tail, then
+             re-stated the leave-by the trace row's own lead already carries. */
+          const crMsg=`Crew rest breach — ${tail}, but `
+            +(evBound?`his day starts ${hm24(first)} (${fe.label}) before the ${hm24(instructed)} report — only ${dur(first+1440-pe)} rest.`
+             :onShift?`${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)} — only ${dur(instructed+1440-pe)} rest.`
+             :`told to report ${hm24(instructed)} — only ${dur(instructed+1440-pe)} rest.`)
+            +(dashed?` Late show — he still makes the ${hm24(bl.to-VCONF.step)} step.`
+                    :(!evBound&&bl.lateShow?` Late show cannot save it — the ${hm24(bl.to-VCONF.step)} step is still before rest clears.`:''));
           /* the warning anchors on what binds it: the early event's own slot
              key when a meeting caused the breach, the leg otherwise — the
              jump then pans to the row the scheduler has to move */
