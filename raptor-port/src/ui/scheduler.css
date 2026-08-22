@@ -2101,8 +2101,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .acct .sel,.acct .rolebadge{display:none}
   .seg{display:none}
   /* the seg (with the rolling week buttons) is desktop-only; on a phone the lone
-     calendar icon carries week-jumping and the swipe carries day-to-day */
-  .wknav-m{display:flex;justify-content:flex-end;padding:8px 12px 0}
+     calendar icon carries week-jumping and the swipe carries day-to-day.
+     Far LEFT, aligned with the DRAFT banner and the day cards below it (owner,
+     22 Aug 26), with a bottom gap so the icon never touches that grey box. */
+  .wknav-m{display:flex;justify-content:flex-start;padding:8px 20px 10px}
   /* the qualification filters are the fastest way to read a phone screen —
      "who here is a supervisor / an instructor / SANS" — so instead of hiding
      the row it becomes ONE horizontally scrollable line with the label pinned */
