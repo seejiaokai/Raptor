@@ -200,20 +200,43 @@ card is the same compact shape.
   one), so the date reads once. An all-day one-day input reads just '13 Jul'; a
   span (all-day range, or a timed input crossing midnight) keeps Start and End
   as two cells joined by the '→', and the desktop table's two columns with it.
+- **The phone card is a GRID of aligned columns (owner, 22 Aug 26 — "align
+  the reason, then the date… below the callsign u can put the remarks").**
+  `scheduler.css`'s ≤820px block lays each read row out on
+  `grid-template-areas` over three fixed-start tracks — callsign 70px (sized
+  to "Sidewinder", the roster's longest), type chip 90px (sized to
+  APPOINTMENT once SANS wears its short form), date the rest — so every chip
+  and every date starts at the same x on every card, which the old flex-wrap
+  (each card's own chip width pushing its date around) never did. A
+  multi-day End sits UNDER the Start in the same date column; remarks (LATE
+  chip leading) are their own full-width line below the callsign;
+  recurring · modified close the card. The DOM keeps the desktop table's
+  column order — tests address Name and Start by td position — the grid
+  areas do all the visual reordering. The desktop table gained per-column
+  `th` widths in the same pass (identity/metadata narrow, Start wide enough
+  for a one-line timed span, Remarks takes the slack) — fixed layout dealt
+  eight equal columns before.
+- **The SANS chip has a phone short form.** 'SANS Availability' is the one
+  type label too wide for the aligned chip column, so its chip is split the
+  board day-name way — `SANS Avail` + a `.bl` tail (`ability`) hidden under
+  820px — one markup path, the chip reads SANS AVAIL on a phone and the DOM
+  text stays the raw type string every test and the export read.
 - **The row actions are PINNED top-right.** On a phone the `✎ ✕` pair is
   `position:absolute` in the card's corner with an 88px right reserve, so a long
-  timed date can no longer shove them onto a second line — every card is the same
-  two-line shape (name · type · date on top, remarks · modified below) whatever
-  its type, where a timed card used to stand 81px against an all-day card's 66.
+  timed date can no longer shove them onto a second line — the owner re-blessed
+  the pair and the modified stamp on 22 Aug 26 ("the icons… are aligned").
 - **What is deliberately unchanged.** The schedule and board still show their
   own '`Jul 13`' day labels (reference-locked, a different kind of date — the
   week-grid column, not a record's stamp). The CSV export keeps the raw stored
   values (machine-friendly for a spreadsheet). The History list's own
   day/month + time stamp (`elogWhen`) was already day-first.
-- **Pinned in** `src/ui/inputsfmt.test.tsx` (the two helpers, and a rendered row
-  of each shape — same-day timed, all-day one-day, span — plus the modified
-  stamp); the pinned-actions layout is eye-verified on the live bundle (jsdom
-  paints 0×0).
+- **Pinned in** `src/ui/inputsfmt.test.tsx` (the two helpers, a rendered row
+  of each shape — same-day timed, all-day one-day, span — the modified stamp,
+  and the SANS chip's `.bl` split) and `e2e/geometry.spec.ts` ("the phone
+  Inputs cards align their type and date columns" — the page's first e2e:
+  chip and date columns line up across cards, remarks sit below the callsign,
+  the SANS tail is display:none at 390px). jsdom paints 0×0, so the grid
+  itself is only provable there and by eye on the live bundle.
 
 ## The board's text boxes wrap and grow (owner, 20 Aug 26)
 

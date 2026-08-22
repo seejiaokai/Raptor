@@ -78,4 +78,26 @@ describe('a rendered input row is compact and uniform', () => {
     expect(cell(tr, 'End').hasAttribute('data-same'), 'a real span shows its End').toBe(false)
     expect(cell(tr, 'Modified').textContent).toBe('now')
   })
+  /* the phone short forms (owner, 22 Aug 26 — "if there's no space like sans
+     availability u can make it a short form on the phone to be sans avail"):
+     the two spaceless chips are split like the board's day name — a .bl tail
+     CSS hides under 820px, reading SANS AVAIL / APPOINT there — so the DOM
+     text every test and export reads stays the full raw type string on one
+     markup path */
+  it('the two wide chips carry a .bl tail; a short chip carries none', async () => {
+    await act(async () => {
+      writeInputs(() => {
+        INPUTS.unshift({ person: 'zzv', date: 'Jul 14', allday: true, type: 'SANS Availability', remarks: 'sans split', f: true, mod: 'now' })
+      })
+    })
+    const sans = $(rowOf('sans split'), '.intag')
+    expect(sans.textContent, 'the DOM text is still the raw type').toBe('SANS Availability')
+    expect($(sans, '.bl')?.textContent, 'the hideable tail').toBe('ability')
+    const appt = $(rowOf('timed one-day'), '.intag')
+    expect(appt.textContent).toBe('Appointment')
+    expect($(appt, '.bl')?.textContent, 'APPOINTMENT measured 88px against a 76px track').toBe('ment')
+    const other = $(rowOf('allday one-day'), '.intag')
+    expect(other.textContent).toBe('LL')
+    expect(other.querySelector('.bl'), 'a short chip has no tail to hide').toBeNull()
+  })
 })
