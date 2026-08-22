@@ -11,6 +11,8 @@ import { HOOKS } from '../engine/hooks'
 import { autoAcceptInput } from '../engine/slots'
 import { ME } from '../state/auth'
 import { writeInputs, notify } from '../state/store'
+import { INPVIEW, setInpView } from '../state/view'
+import { InputsCal } from './InputsCal'
 /* the halves, the span control, the draft shape and the commit are shared with
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
@@ -513,6 +515,10 @@ export function InputsPage() {
           )}
         </div>
         <div className="searchbox">🔍<input id="inFSearch" placeholder="search" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></div>
+        {/* the month-calendar view of the same page (owner ask, Aug 26) — a
+            toggle, not a second page, so it opens over whatever the table is
+            already filtered and windowed to (see INPVIEW, state/view.ts) */}
+        <button className="abtn" id="inCalBtn" title="Month calendar view" onClick={() => { setInpView('cal'); notify() }}>📅 Calendar</button>
         <button className="abtn" id="inExport" onClick={() => {
           const out: any[][] = [['Name', 'Date', 'Start', 'End', 'Type', 'Remarks']]
           INPUTS.forEach((r: any) => out.push([PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person, r.date, r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, r.remarks]))
@@ -660,6 +666,12 @@ export function InputsPage() {
             : 'No inputs match.'}
         </div>
       </div>
+      {/* the table stays mounted underneath — closing the calendar is then a
+          free round trip, scroll position and all, rather than a re-navigate
+          that has to rebuild the list from scratch */}
+      {INPVIEW === 'cal' && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
+        seedIso={range.from || isoOf(new Date())}
+        onClose={() => { setInpView('table'); notify() }} />}
     </>
   )
 }
