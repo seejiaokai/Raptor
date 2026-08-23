@@ -7,9 +7,9 @@ export function setInsights(on: boolean) { INSIGHTS = on }
 /* the airspace/traffic popup: which wave it is looking at, as 'di|gi' */
 export let AIRKEY: string | null = null
 export function setAirKey(k: string | null) { AIRKEY = k }
-/* the Manage-users modal */
-export let USERM = false
-export function setUserModal(on: boolean) { USERM = on }
+/* the Manage-users modal flag lived here until 23 Aug 26 — Manage users is a
+   section of the Admin PAGE now (ui/AdminPage.tsx), so there is no popup
+   state to hold: the page unmounts with the session like every other page. */
 /* the Duty-templates editor (owner, 13 Aug 26) — opened from the "+ Block"
    picker's pencil. A plain on/off flag; the component keeps its own selected
    template locally, because that is ephemeral view state, not schedule state. */

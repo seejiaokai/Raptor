@@ -1,6 +1,7 @@
-/* The day-details panel (read-only on purpose), the week Insights modal, the
-   Manage-users modal and the airspace/traffic popup. Content strings are the
-   reference's, verbatim. */
+/* The day-details panel (read-only on purpose), the week Insights modal and
+   the airspace/traffic popup. Content strings are the reference's, verbatim.
+   The Manage-users modal moved to the Admin page whole (23 Aug 26) —
+   ui/AdminPage.tsx. */
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -9,13 +10,11 @@ import { lgT } from '../engine/time'
 import { validate, WARN, WCODE, wlbl } from '../engine/validate'
 import { computeInsights } from '../engine/insights'
 import { markEdit } from '../engine/publish'
-import { HOOKS } from '../engine/hooks'
 import { esc, afterSchedMutate } from '../state/view'
 import { SESSION } from '../state/auth'
-import { USERS, addUser, delUser } from '../state/users'
 import { notify } from '../state/store'
 import { dayInfoHTML } from './html'
-import { DAYPOP, setDayPop, INSIGHTS, setInsights, AIRKEY, setAirKey, USERM, setUserModal } from './pops'
+import { DAYPOP, setDayPop, INSIGHTS, setInsights, AIRKEY, setAirKey } from './pops'
 import { useVersion } from './useStore'
 
 export function DayPop() {
@@ -81,44 +80,6 @@ function insightsHTML() {
   h += `<div class="isec-h">By day</div>`
   I.dayStats.forEach((s: any) => h += `<div class="irow"><span>${s.dow}</span><span style="color:var(--ink-3)">${s.ac} sorties · ${s.forms} formations · ${s.warns ? `<span style="color:${s.hard ? 'var(--hard)' : 'var(--adv)'}">${s.warns} issue${s.warns > 1 ? 's' : ''}</span>` : '<span style="color:var(--ok)">clear</span>'}</span></div>`)
   return h
-}
-
-/* ---- Manage users (admin) — the reference's userModal, USERS mutations
-   verbatim (prototype-only, no server) ---- */
-export function UserModal() {
-  useVersion()
-  const nameRef = useRef<HTMLInputElement>(null)
-  const roleRef = useRef<HTMLSelectElement>(null)
-  if (!USERM) return <div className="modal" id="userModal" hidden />
-  const close = () => { setUserModal(false); notify() }
-  const add = () => {
-    const name = nameRef.current!.value.trim(), role = roleRef.current!.value
-    /* a silent no-op reads as a broken button (audit, 12 Aug 26): pressing Add
-       with an empty box did nothing at all and said nothing about why */
-    if (!name) return HOOKS.toast('A user needs a name')
-    addUser(name, role); nameRef.current!.value = ''; notify()
-  }
-  return (
-    <div className="modal" id="userModal">
-      <div className="modal-box">
-        <div className="modal-head"><b>Manage users</b><button className="x" id="userClose" onClick={close}>✕</button></div>
-        <div className="modal-body">
-          <div className="mfield"><label>Callsign / name</label><input id="newName" ref={nameRef} placeholder="e.g. Viper" maxLength={24} /></div>
-          <div className="mfield"><label>Role</label><select id="newRole" ref={roleRef} aria-label="Role for the new user"><option value="main">Squadron member (own inputs &amp; quals)</option><option value="admin">Scheduler / admin (edit)</option></select></div>
-          <button className="abtn primary" id="userAdd" style={{ width: '100%' }} onClick={add}>Add user</button>
-          <div className="userlist" id="userList" dangerouslySetInnerHTML={{
-            __html: USERS.map((u: any, i: number) =>
-              `<div class="urow"><span>${esc(u.name)}</span><span class="ub ${u.role}">${u.role === 'admin' ? 'Admin' : 'Member'}</span>
-      <button class="abtn" data-deluser="${i}" style="padding:2px 8px">Remove</button></div>`).join('')
-          }} onClick={e => {
-            const d = (e.target as HTMLElement).closest('[data-deluser]') as HTMLElement | null
-            if (d) { delUser(+d.dataset.deluser!); notify() }
-          }} />
-        </div>
-        <div className="modal-foot"><button className="abtn" id="userCancel" onClick={close}>Close</button></div>
-      </div>
-    </div>
-  )
 }
 
 /* ---- airspace / traffic popup — renderAir + airEdit verbatim. Traffic is a

@@ -6,7 +6,7 @@ import { PEOPLE } from '../engine/people'
 import { SESSION, ME, setMe } from '../state/auth'
 import { CURPAGE } from '../state/view'
 import { notify, setPage, resetSession } from '../state/store'
-import { DRAWER, setDrawer, setUserModal, setWeekCal } from './pops'
+import { DRAWER, setDrawer, setWeekCal } from './pops'
 import { useVersion } from './useStore'
 
 export function Drawer() {
@@ -16,6 +16,8 @@ export function Drawer() {
     ['editsched', 'Edit Schedule', !!admin], ['viewsched', 'View-only Sched', true],
     ['inputs', 'Inputs', true], ['quals', 'Quals', true], ['logic', 'Logic', true],
     ['leavewar', 'Leave War', true],
+    /* Admin last, always (owner, 23 Aug 26) — same order as the topnav */
+    ['admin', 'Admin', !!admin],
   ]
   const close = () => { setDrawer(false); notify() }
   const people = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
@@ -50,14 +52,14 @@ export function Drawer() {
             onClick={() => { setDrawer(false); setWeekCal('view'); notify() }}>Pick a date…</button>
         </div>
         <h4>Account</h4>
-        {/* resetSession (state/store.ts) is the one session-change path — see Shell.tsx's
-            logout button for why setUserModal(false) still has to happen here, at the
-            call site, rather than inside resetSession itself. */}
+        {/* resetSession (state/store.ts) is the one session-change path — the
+            Manage-users modal it used to close here moved onto the Admin PAGE
+            (23 Aug 26), which unmounts with the session on its own. */}
         {/* The menu unmounts with the outgoing shell, but its module flag does
             not. Clear it here so a second login in the same tab does not
             reopen the drawer from the previous user's session. */}
         <div className="drawer-row"><button className="abtn" id="drawerLogout"
-          onClick={() => { setDrawer(false); setUserModal(false); resetSession(null); notify() }}>Logout</button></div>
+          onClick={() => { setDrawer(false); resetSession(null); notify() }}>Logout</button></div>
       </div>
     </div>
   )

@@ -4150,3 +4150,28 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 /* a type that is not a choice (the SANS panel's add) reads as a plain value
    in the same register the select would have used */
 .inped-v{font:600 13px inherit;color:var(--ink);padding:2px 0}
+
+/* ---- The Admin page (owner, 23 Aug 26) — the seventh tab. Cards on a
+   centred column; the .urow/.ub/.mfield rules above are global (they were
+   written for the old #userModal but never scoped to .modal), so the moved
+   Manage-users section reuses them as-is. ---- */
+#page-admin .adm-inner{max-width:860px;margin:0 auto;padding:18px 20px}
+#page-admin h2{font-size:24px;font-weight:700;letter-spacing:-.025em;margin:0 0 14px}
+#page-admin .adm-sec{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+/* the Logic page's group-heading register (.lggrp>h2) — same scale, so the
+   section titles read as one family across the admin-ish surfaces */
+#page-admin .adm-sec h3{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 10px}
+#page-admin .adm-note{color:var(--ink-3);font-size:11px;line-height:1.5;margin:8px 0 0}
+#page-admin #admConfig .abtn{display:block;width:100%;text-align:left;margin-top:2px}
+#page-admin #admConfig .adm-note{margin-bottom:12px}
+/* the forced-member render — a member cannot reach this page from the nav,
+   so this is the page-gate's own answer, styled as a quiet centred panel */
+.adm-deny{max-width:520px;margin:60px auto;padding:22px 24px;text-align:center;color:var(--ink-2);
+  background:var(--panel);border:1px solid var(--edge);border-radius:12px;font-size:13px;line-height:1.6}
+/* desktop uses the width: users and configuration side by side, the
+   persistence card full-width under them */
+@media (min-width:821px){
+  #page-admin .adm-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  #page-admin .adm-grid .adm-sec{margin-bottom:0}
+  #page-admin .adm-grid{margin-bottom:14px}
+}

@@ -28,9 +28,9 @@ import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
 import { routeClick } from './interactions'
 import { routeFocusOut, routeKeyDown } from './textedit'
-import { DayPop, InsightsModal, UserModal, AirPop } from './Modals'
+import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
-import { setInsights, setUserModal, setDrawer, setWeekCal, setHistList } from './pops'
+import { setInsights, setDrawer, setWeekCal, setHistList } from './pops'
 import { Drawer } from './Drawer'
 import { exportCSV, schedRows } from './export'
 import { printSchedPDF } from './printpdf'
@@ -40,6 +40,7 @@ import { QualsPage } from './QualsPage'
 import { EditWeek, EditRoster } from './EditWeek'
 import { ALPanel } from './ALPanel'
 import { LeaveWarPage } from '../leavewar/LeaveWarPage'
+import { AdminPage } from './AdminPage'
 
 /* the week banner — the exact strings renderStatus builds, as a pure value */
 function banner() {
@@ -212,6 +213,10 @@ export function Shell() {
           <a data-page="quals" role="button" tabIndex={0} className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')} onKeyDown={navKey('quals')}>Quals</a>
           <a data-page="logic" role="button" tabIndex={0} className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')} onKeyDown={navKey('logic')}>Logic</a>
           <a data-page="leavewar" role="button" tabIndex={0} className={page === 'leavewar' ? 'on' : ''} onClick={() => nav('leavewar')} onKeyDown={navKey('leavewar')}>Leave War</a>
+          {/* the Admin tab sits LAST, always (owner, 23 Aug 26) — the tools
+              tab after the work tabs; hidden for a member like the Edit tab,
+              but the PAGE is the gate, not this attribute (AdminPage.tsx) */}
+          <a data-page="admin" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'admin' ? 'on' : ''} onClick={() => nav('admin')} onKeyDown={navKey('admin')}>Admin</a>
         </nav>
         <div className="spring">
           {/* Undo / redo live at the TOP now (owner, Aug 26 — "so I'll always
@@ -236,8 +241,8 @@ export function Shell() {
               <select id="viewAs" aria-label="View the schedule as" value={ME} onChange={e => { setMe(e.target.value); notify() }}>
                 {people.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
               </select></div>
-            {admin && <button className="abtn" id="manageUsers" data-admin=""
-              onClick={() => { if (!admin) return; setUserModal(true); notify() }}>Manage users</button>}
+            {/* the Manage users button moved to the Admin page (owner,
+                23 Aug 26) — the topbar gives its slot back */}
           </div>
           <button className={'fastsync' + (fast ? ' on' : '')} id="fastSync" title="Toggle 1-second sync (for publishing / meetings)"
             onClick={() => setFast(f => !f)}><span className="dot"></span><span id="syncLbl">{fast ? 'Sync · 1 s' : 'Sync · slow'}</span></button>
@@ -266,10 +271,11 @@ export function Shell() {
           <button className="abtn" id="insightBtn" title="Week insights" onClick={() => { setInsights(true); notify() }}>Insights</button>
           {/* resetSession (state/store.ts) is the one session-change path: it clears
               SBDAY itself, plus CURPAGE and the leftover selection/highlight/preview
-              state a next user must not inherit. setUserModal(false) here closes the
-              admin-only Manage-users modal, which lives in ui/pops.ts and so can't be
-              reached from state/store.ts without the state layer importing the UI layer. */}
-          <button className="abtn ghost" id="logout" onClick={() => { setUserModal(false); resetSession(null); notify() }}>Logout</button>
+              state a next user must not inherit. The Manage-users modal it used to
+              close here is gone (23 Aug 26) — Manage users is a PAGE section now,
+              and resetSession lands the next session on viewsched, so the Admin
+              page simply unmounts with the outgoing session. */}
+          <button className="abtn ghost" id="logout" onClick={() => { resetSession(null); notify() }}>Logout</button>
           {/* The role indicator, moved to the FAR RIGHT of the bar, after every
               other control (owner, 22 Aug 26 — "move the admin button to always
               the far right … same design as the others"). Styled as one of the
@@ -435,6 +441,9 @@ export function Shell() {
       <section className={'page' + (page === 'leavewar' ? ' on' : '')} id="page-leavewar">
         {page === 'leavewar' && <LeaveWarPage />}
       </section>
+      <section className={'page' + (page === 'admin' ? ' on' : '')} id="page-admin">
+        {page === 'admin' && <AdminPage />}
+      </section>
 
       {/* week pan arrows + the pinned proxy scrollbar (desktop) — markup 1:1;
           visibility is driven by updateWeekNav, not by React */}
@@ -449,7 +458,6 @@ export function Shell() {
 
       <DayPop />
       <InsightsModal />
-      <UserModal />
       <AirPop />
       <WeekCal />
       <Drawer />
