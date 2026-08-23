@@ -85,7 +85,9 @@ describe('the two entry points', () => {
   })
 
   it('the week day-sign strip carries a Drafts button, one per day', async () => {
-    expect($$('#eWeek .signoff.day-sign [data-draftsopen]').length).toBe($$('#eWeek .day').length)
+    /* live days only — jsdom's default desktop width also mounts the inert
+       next-week peek preview (ui/peek.ts), which carries no day-sign strip. */
+    expect($$('#eWeek .signoff.day-sign [data-draftsopen]').length).toBe($$('#eWeek .day:not(.peek)').length)
   })
 })
 

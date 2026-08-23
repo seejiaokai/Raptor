@@ -52,7 +52,10 @@ describe('the edit page (tfin)', () => {
   })
 
   it('every day carries its own sign-off strip with the four roles', () => {
-    expect($$('#eWeek .signoff.day-sign').length).toBe($$('#eWeek .day').length)
+    /* live days only — jsdom's default desktop width also mounts the inert
+       next-week peek preview (ui/peek.ts), which carries no sign-off strip
+       of its own (it is read-only and never touches SCHED). */
+    expect($$('#eWeek .signoff.day-sign').length).toBe($$('#eWeek .day:not(.peek)').length)
     const bar = $('#eWeek .day[data-day="0"] .signoff.day-sign')
     expect(bar.querySelectorAll('select[data-sign]').length).toBe(4)
     expect(['CUR CK', 'SKED CK', 'PLANNED BY', 'APPROVED BY'].every(k => bar.textContent!.includes(k))).toBe(true)

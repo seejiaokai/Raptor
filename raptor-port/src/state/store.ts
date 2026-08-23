@@ -236,7 +236,12 @@ function reconcileLandedAcc() {
    than it saves. */
 function applyWeekModel(v: any): any {
   const stashedJson = stashGet(v)
-  const s: any = stashedJson ? JSON.parse(stashedJson) : null
+  /* guarded like weekstash's own stashDays: an entry that fails to parse
+     reads as "never stashed" and the week loads from the pure seed —
+     loadWeek must never throw over a bad snapshot */
+  let s: any = null
+  try { s = stashedJson ? JSON.parse(stashedJson) : null } catch (_e) { s = null }
+  if (s && !Array.isArray(s.d)) s = null
   if (s) {
     DAYS.length = 0; s.d.forEach((d: any) => DAYS.push(d))
     /* DATES is not carried in the stash at all (weekstash.ts's own comment)
