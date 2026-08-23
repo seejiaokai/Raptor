@@ -97,11 +97,13 @@ describe('the mobile drawer', () => {
   })
 })
 
-describe('Manage users', () => {
-  it('opens from the topbar, lists the users with their roles', async () => {
-    await click($('#manageUsers'))
-    expect($('#userModal')).toBeTruthy()
-    expect(($('#userModal') as any).hidden).toBeFalsy()
+/* Manage users moved off the topbar modal and onto the Admin page whole
+   (owner, 23 Aug 26) — same ids, same list, same mutations, reached by the
+   admin nav tab instead of #manageUsers. */
+describe('Manage users (Admin page)', () => {
+  it('the Admin tab reaches it, listing the users with their roles', async () => {
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'admin')!)
+    expect($('#page-admin').classList.contains('on')).toBe(true)
     expect($$('#userList .urow').length).toBe(USERS.length)
     expect(/Admin/.test($('#userList').textContent!)).toBe(true)
   })
@@ -116,8 +118,7 @@ describe('Manage users', () => {
     expect($$('#userList .urow').length).toBe(n + 1)
     await click($(`#userList [data-deluser="${n}"]`))
     expect(USERS.length).toBe(n)
-    await click($('#userCancel'))
-    expect(($('#userModal') as any).hidden).toBe(true)
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
   })
 })
 
@@ -143,6 +144,7 @@ describe('fast sync + export', () => {
     const [bh, bm] = String(r[5]).split(':').map(Number), [th, tm] = String(r[6]).split(':').map(Number)
     expect((th! * 60 + tm!) - (bh! * 60 + bm!)).toBe(140)
     expect($('#exportSched')).toBeTruthy()
+    expect($('#exportPdf')).toBeTruthy()
   })
 })
 

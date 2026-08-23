@@ -127,6 +127,7 @@ export function resetSession(s: any) {
      scrolls to and a stale carry would immediately undo. */
   view.setCarryDay(null)
   view.setHistMode(false)         // the board's History toggle is a per-session view mode
+  view.setHlOpen(false)           // the phone's Highlight fold shuts for the next session too
   view.LATEOFF.clear()            // dropped LATE marks come back for the next session, like every other view mode
   view.BELLLIT.clear()            // notification glows never carry across a login/logout
   view.WARNOFF.clear()            // muted board warnings come back for the next session

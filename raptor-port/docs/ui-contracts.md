@@ -701,6 +701,13 @@ edit week now:
     Nearest-CENTRE, not a proportional map of the strip's width, so the same
     code works unchanged on desktop where these are still `Mon 13` chips of
     differing widths.
+    **AMENDED 23 Aug 26 (owner): the dots left the phone bar.** The dot
+    styling and the phone scrub affordances above are gone from the CSS;
+    `.sb-nav .sb-days` is `display:none` under 820px, so the seven elements,
+    `dayTabsHTML`, `wireDayDots` and every jsdom test survive untouched while
+    the phone paints none of it. The desktop chips stay, and the scrub still
+    works there. What the row carries instead is under §The day is stepped by
+    TWO ARROWS below.
   - **`+ Line` left the bar for good.** It was the only control here that
     duplicated one inside the section it acts on — every wave header
     carries its own — and the top-bar copy had to guess which wave it
@@ -808,11 +815,26 @@ edit week now:
   and its two ends ARE the screen's edges, which is what was asked for.
   `.sb-nav` is the wrapper that holds the full-width second line
   (`flex:0 0 100%; order:2`, taken over from `.sb-days`) and
-  `justify-content:space-between` pins one arrow to each edge with the dots
-  centred between them. `.sb-nav .sb-days` must reset `order:0`: `.sb-days`
-  carries `order:2` for the days when it was itself the wrapped line, and inside
-  `.sb-nav` that same property sorted the dots after BOTH arrows (measured as
-  ‹ › then the dots).
+  `justify-content:space-between` pins one arrow to each edge. **The dots sat
+  between them until 23 Aug 26 (owner): the phone day strip is gone**
+  (`.sb-nav .sb-days{display:none}` — the old `order:0` reset went with it)
+  **and the freed middle carries `#sbHl` + `#searchB`**: the highlighter
+  toggle at the arrows' 26px height, then the search box growing into the
+  row's slack (`min-width:0` so it can also shrink instead of tripping the
+  gate's overflow assertion). The arrows plus the bar's own day title are
+  what say "which day" on a phone now.
+  **The chips strip `.sb-hl` (`#sbHlStrip`) is the bar's LAST line** — the
+  same `HlChips` the week pages render, INSIDE `.sb-top` deliberately so the
+  bar's ResizeObserver republishes `--sb-topH` when it opens. Desktop: always
+  open, a full-width second bar line, no gate — nothing pins the desktop
+  bar's height to a session flag. Phone: `display:none` until `#sbHl` flips
+  `HLOPEN` (`.open`, the filters-row sideways-scroller recipe, `order:3` so
+  it lands under the day row).
+  **`#searchB` is the `#searchV` idiom exactly** — uncontrolled, wiped by the
+  blank-click clear — which includes the week-cross idiom: crossing a week
+  with the arrows leaves the box's TEXT standing while the filter keeps
+  applying, exactly as `#searchE` behaves across a week load; the blank-click
+  wipe (`interactions.ts`) is what empties it.
   **Cost: the bar went 70px → 75px**, measured at 390px, from a 26px control on a
   21px row. Nothing was taken off the first line. The geometry gate's bound moved
   70/78 → 75/82 and still blocks the regression it was written for — a second row
@@ -825,10 +847,14 @@ edit week now:
   of pinning them to the row's ends, because `.schedboard.sb-wide>*` is 1180px
   wide and pans — "the edges of the bar" there would put the two arrows most of a
   screen apart.
-  **The dots stay, and they are still a scrub bar.** They are the only thing that
-  says WHICH of the seven days is open, which is the one job a pair of arrows
-  cannot do. A tap still jumps straight to a day; press and slide still runs
-  through the week.
+  **The dots are gone from the phone bar (owner, 23 Aug 26 — a reversal of the
+  11 Aug dots build).** The day strip and the blue current-day square paint
+  nothing under 820px; the arrows and the bar's day title carry "which day".
+  On DESKTOP the seven chips stay, a tap still jumps straight to a day, and
+  press-and-slide still scrubs the week — the removal is `display:none` only,
+  so the machinery is one CSS rule from either state. `.sb-wide` (the desktop
+  layout at phone width) restates `display:flex` and keeps the chips, since
+  that mode IS the desktop bar.
   **A scrub never starts under a finger already holding a puck** (audit,
   12 Aug 26). A day change repaints the panels, which detaches the node
   `drag.ts`'s touch machine is carrying, and its drop would then resolve
@@ -1832,10 +1858,17 @@ empty and still be looking at a lit week with nothing on screen explaining
 what was holding it. All three now go together, in `interactions.ts`'s
 blank-click branch.
 
-The **search inputs are uncontrolled** (`#searchV` / `#searchE`, `onInput`
-only, no `value` prop), so their DOM value is wiped by hand — clearing just
-the state would leave a box reading "bane" with nothing lit, which is worse
-than not clearing at all. The chips redraw themselves from `HLSET`.
+The **search inputs are uncontrolled** (`#searchV` / `#searchE` / the board
+bar's `#searchB`, `onInput` only, no `value` prop), so their DOM value is
+wiped by hand — clearing just the state would leave a box reading "bane" with
+nothing lit, which is worse than not clearing at all. The chips redraw
+themselves from `HLSET`.
+
+**Search and the Highlight chips are reachable on all THREE schedule
+surfaces since 23 Aug 26** — the view week, the edit week and the board bar —
+one `HLSET`/`SEARCH` pair and one chip definition (`ui/hlchips.tsx`) behind
+all of them, so a chip lit anywhere is lit everywhere and this clear rule
+covers the lot.
 
 **The scope is the whole app shell, not just the page bodies** (owner, 15 Aug
 26 — a blank click "beside the edit schedule date or above" left the pucks
@@ -2005,7 +2038,11 @@ input for the key change (`g:di.ri` → `gr:di.ri.prog`) this needed.
 **Silent actions now toast.** A tap that changes something and says nothing
 back reads as "did it register?" — closed on the Inputs page (save, delete,
 CSV export), the Quals page (add-person, CSV export), the schedule export
-("Export to Excel" on the Shell topbar), and the template/draft editors'
+(`#exportSched` on the Edit page's `.filters` row — an Excel-file icon since
+23 Aug 26, not a text label, with a `#exportPdf` sibling that prints the
+week through the browser's print pipeline, "Save as PDF" in the dialog;
+that printable layout is deliberately basic for now — `ui/printpdf.ts`),
+and the template/draft editors'
 destructive actions (`DayTplModal`/`DraftsModal` — Reset, Delete). A phone
 browser often shows nothing at all when a CSV download lands — no bar, no
 tray notification the user is looking at — which is what makes the export
@@ -2368,7 +2405,8 @@ the saved templates (`DUTYTPL_CFG`), an "Empty block", and a ✎ that opens the
 editor. No wave is consulted (that coupling is gone); picking a template copies
 its rows onto the day as a plain block (`board.ts`'s `blockMenu`, minting
 through `blockFromTpl`). The editor is `ui/DutyTplModal.tsx` — a `.modal`
-opened by `TPLEDIT` (`pops.ts`), mirroring `UserModal`: tabs per template + New,
+opened by `TPLEDIT` (`pops.ts`; since 23 Aug 26 the Admin page's
+`#admDutyTpl` sets the same flag as a second front door): tabs per template + New,
 an editable title, and one `.trow` per role with a `DUTY_PICK` datalist,
 start/end, ▲▼ reorder and delete; Reset / Delete / Done in the foot. Every edit
 runs the matching `engine/dutytpl.ts` mutator → `dutyTplSave()` → `notify()`,
@@ -2678,13 +2716,19 @@ except where noted:
   deliberately NOT the removed week-wide count pills. What RAISES a bell is left
   for the owner to wire (`markBell(page, who)` is the seam); tapping the bell
   acknowledges the current view's alert. Session-only, wiped on login/logout.
-- **Undo / redo** (`.tb-hist`, `#undoBtn`/`#redoBtn`) moved OUT of the edit page's
-  scroll-away `.filters` row INTO the sticky bar, shown only on the edit page, so
-  they stay in view while the page scrolls (owner: "always see it when I'm
-  editing"). Desktop-facing — hidden under 820px, where the phone board already
-  carries its own pair in its own bar. Same `undo()/redo()/HIST` wiring, no new
-  stack; the topbar memo's deps grew `HIST.ix`/`HIST.stack.length` so the disabled
-  state stays live.
+- **Undo / redo / Edit history** (`.tb-hist`, `#undoBtn`/`#redoBtn`/`#histBtn`)
+  moved OUT of the edit page's scroll-away `.filters` row INTO the sticky bar,
+  shown only on the edit page, so they stay in view while the page scrolls
+  (owner: "always see it when I'm editing"). BOTH widths since 23 Aug 26 (it
+  was desktop-only before): under 820px the trio goes icon-only (the board's
+  `.bi`/`.bl` split) and is PINNED at the right edge of the sideways-scrolling
+  phone bar — the mirror of the burger + mark's left pin, painting the bar's
+  own `--topbar-a/b` gradient vars so the `.editing` blue tint rides along.
+  `#histBtn` opens the Edit-history list (`setHistList('all')` — the renamed
+  changes list, see §History on the board) without needing the board or
+  History mode. Same `undo()/redo()/HIST` wiring, no new stack; the topbar
+  memo's deps carry `HIST.ix`/`HIST.stack.length` so the disabled state stays
+  live.
 
 ## Muting a check, and resizing the checks panel (owner, Aug 26)
 
@@ -2986,6 +3030,15 @@ inside the 820px block.
 body, newest first, whole week by default with a filter for the open day.
 Its footer states plainly that it is per-browser and per-session; that
 limitation is on the surface rather than in a document nobody opens.
+
+**The surface is named "Edit history" now, not "Changes" (owner, 23 Aug 26).**
+The rename is on the SURFACES only — the modal head reads
+`Edit history · newest first / by detail`, the board's `[data-histopen]` line
+reads `☰ Edit history · N change(s)`, and the shell's `#histBtn` opener says
+the same words — while the internals keep their names (`HISTLIST`, `elog*`,
+`histLineHTML`, the `hl-*` classes), because a vocabulary change is not a
+reason to churn every identifier and test hook. The count keeps the exact
+`N change(s)` / `No changes yet` wording the tests pin.
 
 ### The second pass (owner, 11 Aug 26)
 
@@ -3356,3 +3409,34 @@ step by step.
 (The old known edge here — a recurring input chipping its first span only —
 is gone WITH its feature: the owner had the repeat-weeks field removed
 outright, 22 Aug 26. See CLAUDE.md §Stable decisions.)
+
+## The Admin page (owner, 23 Aug 26)
+
+The seventh tab, and it is ALWAYS LAST in both navs — the tools tab after
+the work tabs (`ui/AdminPage.tsx`; the topnav entry in `Shell.tsx`, the
+drawer item in `Drawer.tsx`, both admin-hidden like the Edit tab). The nav
+hides it from a member, but **the PAGE is the gate, not the nav** (the
+standing role doctrine — checks live at the page and the write path): a
+member forced onto the page renders `#admDeny`, a plain denial with no
+tools behind it, and the write handlers still ask `canEditSched()`
+themselves. Pinned non-vacuously in `ui/admin.test.tsx` — the page really
+mounts for the forced member, and what mounts is the denial.
+
+Three cards, a 2-column grid on desktop with the last card full-width:
+
+- **`#admUsers` Manage users** — the old `#userModal` body moved here WHOLE
+  (same ids and classes: `#newName`, `#newRole`, `#userAdd`, `#userList`,
+  `.urow`/`.ub`, `[data-deluser]`; same `USERS` store and mutations in
+  `state/users.ts`). The topbar `#manageUsers` button, the modal, and its
+  `USERM`/`setUserModal` flag in `pops.ts` are gone — logout no longer has
+  a modal to close, because `resetSession` lands the next session on
+  viewsched and the page unmounts with it. The card ends with the honesty
+  note: this list drives the demo login only, no server behind it yet.
+- **`#admConfig` Squadron configuration** — `#admDutyTpl` / `#admDayTpl`
+  open the duty-template and day-template editors by setting the SAME
+  `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
+  Front doors, not new surfaces: the modals stay App-level siblings and
+  paint over this page like any other.
+- **`#admData` Data & persistence** — an honesty card only: everything
+  typed into the prototype is session-only, and this card marks the seam
+  where the shared database's controls will land.

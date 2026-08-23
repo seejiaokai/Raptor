@@ -7,12 +7,13 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
-import { CalIcon } from './icons'
+import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon } from './icons'
 import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pendCount } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { resetSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
+import { HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
+import { HlChips } from './hlchips'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
 import { signOf } from '../engine/publish'
@@ -27,17 +28,19 @@ import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
 import { routeClick } from './interactions'
 import { routeFocusOut, routeKeyDown } from './textedit'
-import { DayPop, InsightsModal, UserModal, AirPop } from './Modals'
+import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
-import { setInsights, setUserModal, setDrawer, setWeekCal } from './pops'
+import { setInsights, setDrawer, setWeekCal, setHistList } from './pops'
 import { Drawer } from './Drawer'
 import { exportCSV, schedRows } from './export'
+import { printSchedPDF } from './printpdf'
 import { InputsPage } from './InputsPage'
 import { LogicPage } from './LogicPage'
 import { QualsPage } from './QualsPage'
 import { EditWeek, EditRoster } from './EditWeek'
 import { ALPanel } from './ALPanel'
 import { LeaveWarPage } from '../leavewar/LeaveWarPage'
+import { AdminPage } from './AdminPage'
 
 /* the week banner — the exact strings renderStatus builds, as a pure value */
 function banner() {
@@ -59,17 +62,8 @@ function banner() {
   return { col, cls, html: `<span class="sb-badge">${txt}${which}${extra}</span>` + alRoll }
 }
 
-// OCU sits with the CAT levels (right of D), not with the tag group (owner,
-// 22 Aug 26 — "move ocu to the right of D"): it IS a category, so it reads as
-// one more rung on the A–D ladder rather than a tag beside SXO/SANS.
-const HL_CHIPS: [string, string, string][] = [
-  ['A', 'A', 'Cat A (4-ship FL)'], ['B', 'B', 'Cat B (2-ship FL)'], ['C', 'C', 'Cat C (operational wingman)'], ['D', 'D', 'Cat D (wingman)'],
-  ['OCU', 'OCU', 'OCU (ab-initio)'],
-]
-const HL_CHIPS2: [string, string, string][] = [
-  ['SUP', 'SUP', 'Supervisors — Cat A & B'], ['FL', 'FL', 'All flight leads (Cat A & B)'], ['INS', 'Ins', 'Instructors (IW / IP / IR / FI)'],
-  ['SXO', 'SXO', 'SXO-qualified'], ['SANS', 'SANS', 'SANS — staff-assigned & NS aircrew'],
-]
+/* The HL_CHIPS lists moved to ui/hlchips.tsx (23 Aug 26) — one definition,
+   three surfaces (view week, edit week, board), the drift-seam doctrine. */
 
 export function Shell() {
   useVersion()
@@ -219,25 +213,36 @@ export function Shell() {
           <a data-page="quals" role="button" tabIndex={0} className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')} onKeyDown={navKey('quals')}>Quals</a>
           <a data-page="logic" role="button" tabIndex={0} className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')} onKeyDown={navKey('logic')}>Logic</a>
           <a data-page="leavewar" role="button" tabIndex={0} className={page === 'leavewar' ? 'on' : ''} onClick={() => nav('leavewar')} onKeyDown={navKey('leavewar')}>Leave War</a>
+          {/* the Admin tab sits LAST, always (owner, 23 Aug 26) — the tools
+              tab after the work tabs; hidden for a member like the Edit tab,
+              but the PAGE is the gate, not this attribute (AdminPage.tsx) */}
+          <a data-page="admin" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'admin' ? 'on' : ''} onClick={() => nav('admin')} onKeyDown={navKey('admin')}>Admin</a>
         </nav>
         <div className="spring">
           {/* Undo / redo live at the TOP now (owner, Aug 26 — "so I'll always
               see it when I'm editing to undo if needed"), in the sticky bar
               rather than the filters row that scrolls away. Only while editing;
               the board carries its own pair in its own top bar. Same undo()/
-              redo()/HIST wiring — no new stack. Desktop-facing (hidden with the
-              rest of the bar's controls when the phone bar tightens). */}
+              redo()/HIST wiring — no new stack. BOTH widths since 23 Aug 26
+              (owner): the phone bar shows the trio icon-only, pinned at the
+              scrolling bar's right edge — the board's .bi/.bl split, so one
+              markup path serves both and the accessible name stays the words.
+              The third button opens the EDIT HISTORY list (the renamed changes
+              list) from the shell itself, so the log is reachable without
+              opening the board first. */}
           {page === 'editsched' && <div className="tb-hist">
-            <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}>↶ Undo</button>
-            <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}>↷ Redo</button>
+            <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
+            <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
+            <button className="abtn" id="histBtn" title="Edit history — every change this session"
+              onClick={() => { setHistList('all'); notify() }}><span className="bi"><HistIcon /></span><span className="bl"> Edit history</span></button>
           </div>}
           <div className="acct">
             <div className="sel"><label>View as</label>
               <select id="viewAs" aria-label="View the schedule as" value={ME} onChange={e => { setMe(e.target.value); notify() }}>
                 {people.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
               </select></div>
-            {admin && <button className="abtn" id="manageUsers" data-admin=""
-              onClick={() => { if (!admin) return; setUserModal(true); notify() }}>Manage users</button>}
+            {/* the Manage users button moved to the Admin page (owner,
+                23 Aug 26) — the topbar gives its slot back */}
           </div>
           <button className={'fastsync' + (fast ? ' on' : '')} id="fastSync" title="Toggle 1-second sync (for publishing / meetings)"
             onClick={() => setFast(f => !f)}><span className="dot"></span><span id="syncLbl">{fast ? 'Sync · 1 s' : 'Sync · slow'}</span></button>
@@ -266,10 +271,11 @@ export function Shell() {
           <button className="abtn" id="insightBtn" title="Week insights" onClick={() => { setInsights(true); notify() }}>Insights</button>
           {/* resetSession (state/store.ts) is the one session-change path: it clears
               SBDAY itself, plus CURPAGE and the leftover selection/highlight/preview
-              state a next user must not inherit. setUserModal(false) here closes the
-              admin-only Manage-users modal, which lives in ui/pops.ts and so can't be
-              reached from state/store.ts without the state layer importing the UI layer. */}
-          <button className="abtn ghost" id="logout" onClick={() => { setUserModal(false); resetSession(null); notify() }}>Logout</button>
+              state a next user must not inherit. The Manage-users modal it used to
+              close here is gone (23 Aug 26) — Manage users is a PAGE section now,
+              and resetSession lands the next session on viewsched, so the Admin
+              page simply unmounts with the outgoing session. */}
+          <button className="abtn ghost" id="logout" onClick={() => { resetSession(null); notify() }}>Logout</button>
           {/* The role indicator, moved to the FAR RIGHT of the bar, after every
               other control (owner, 22 Aug 26 — "move the admin button to always
               the far right … same design as the others"). Styled as one of the
@@ -291,7 +297,7 @@ export function Shell() {
             `interactions.ts` (`closest('[data-wk]')`) are untouched; `.wkseg`
             is hidden on a phone exactly as the old standalone `.seg` was, where
             the lone `.wknav-m` calendar and the day swipe take over. */}
-        <div className="filters" id="viewChrome">
+        <div className={'filters' + (HLOPEN ? ' hl-open' : '')} id="viewChrome">
           <span className="wkseg" id="weekSeg">
             <button className="wk wk-cal" aria-label="Jump to a date" title="Jump to a date"
               onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
@@ -299,12 +305,19 @@ export function Shell() {
               className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
           </span>
           <span className="div wkdiv"></span>
-          <span className="lab">Highlight</span>
-          {HL_CHIPS.map(([k, t, ttl]) => <button key={k} className={'fchip' + (HLSET.has(k) ? ' on' : '')} data-hl={k} title={ttl}
-            onClick={() => { HLSET.has(k) ? HLSET.delete(k) : HLSET.add(k); notify() }}>{t}</button>)}
-          <span className="div"></span>
-          {HL_CHIPS2.map(([k, t, ttl]) => <button key={k} className={'fchip' + (HLSET.has(k) ? ' on' : '')} data-hl={k} title={ttl}
-            onClick={() => { HLSET.has(k) ? HLSET.delete(k) : HLSET.add(k); notify() }}>{t}</button>)}
+          {/* the Highlight lead is TWO elements and CSS picks one by width —
+              the histln/histln-top precedent: both are always rendered, so a
+              resize answers instantly instead of waiting for a repaint.
+              Desktop keeps a passive label (the icon replaced the word,
+              owner 23 Aug 26); the phone gets a TOGGLE that folds the chips
+              away behind it. The toggle lights (.on) whenever a filter or a
+              search is live, so a filtered week is never mysterious while
+              the chips are folded out of sight. */}
+          <span className="lab hl-lab" title="Highlight"><HlIcon /></span>
+          <button className={'hl-tog' + (HLSET.size || SEARCH ? ' on' : '')} aria-expanded={HLOPEN}
+            aria-label="Highlight filters" title="Highlight filters"
+            onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
+          <HlChips />
           <div className="right">
             <div className="searchbox">🔍<input id="searchV" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
@@ -330,7 +343,11 @@ export function Shell() {
           __html: DAYS.map((d: any, i: number) => `<button data-day="${i}" class="${i === 0 ? 'on' : ''}" title="${d.dow}"></button>`).join('')
         }}></div>
       </section>
-  ), [page, b.cls, b.col, b.html, hlSig, rulesOff, legend, CURWEEK])
+  /* HLOPEN + SEARCH ride the deps with hlSig: the fold class and the toggle's
+     lit state render here, so a fold or a search that changes without either
+     in the list would paint stale (SEARCH is the toggle's other lit source —
+     spec'd as HLOPEN alone, added for the same staleness reason). */
+  ), [page, b.cls, b.col, b.html, hlSig, HLOPEN, SEARCH, rulesOff, legend, CURWEEK])
 
   /* .editing rides unconditionally with the page since the Edit-mode toggle
      went (owner, 9 Aug 26): being on Edit Schedule IS the edit mode. */
@@ -344,20 +361,42 @@ export function Shell() {
             {weekWindow(CURWEEK).map(w => <button key={w.v}
               className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
           </div>
-          <div className="filters">
+          {/* the view page's phone calendar, same block — the edit page had no
+              phone-width opener at all; owner, 23 Aug 26 */}
+          <div className="wknav-m">
+            <button className="wknav-mbtn" aria-label="Jump to a date" title="Jump to a date"
+              onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
+          </div>
+          <div className={'filters' + (HLOPEN ? ' hl-open' : '')}>
             {/* Undo / redo moved to the sticky top bar (owner, Aug 26) so they
                 stay in view while the page scrolls — see the topbar above. */}
             {/* + Add wave removed here (owner, 13 Aug 26) — a wave is created
                 from the board's own inline "+ Wave", between Common Programme
                 and the flying waves, and nowhere else. The board is reachable
                 on desktop, so this page needs no separate control. */}
-            <button className="abtn" id="throwPucks" onClick={() => HOOKS.toast('Auto-throw uses the Quals rules to seat crews (stub in prototype).')}>Throw pucks (auto)</button>
-            <button className="abtn" id="exportSched" onClick={() => {
-              exportCSV('142-schedule.csv', schedRows())
-              /* same reason as the Inputs page's export: a phone shows nothing
-                 when a download lands, so the tap otherwise reads as dead */
-              HOOKS.toast('CSV downloaded', 'ok')
-            }}>Export to Excel</button>
+            <button className="abtn" id="exportSched" title="Export to Excel (CSV)" aria-label="Export to Excel (CSV)"
+              onClick={() => {
+                exportCSV('142-schedule.csv', schedRows())
+                /* same reason as the Inputs page's export: a phone shows nothing
+                   when a download lands, so the tap otherwise reads as dead */
+                HOOKS.toast('CSV downloaded', 'ok')
+              }}><XlsIcon /></button>
+            <button className="abtn" id="exportPdf" title="Export as PDF (print)" aria-label="Export as PDF (print)"
+              onClick={() => {
+                printSchedPDF()
+                /* the print dialog can take a beat to appear, and on a phone it
+                   slides over the page — say what to do once it does */
+                HOOKS.toast('Print dialog opened — choose "Save as PDF"', 'ok')
+              }}><PdfIcon /></button>
+            {/* the SAME Highlight strip as the view page (owner, 23 Aug 26 —
+                "highlight is on both weeks now"): one HlChips definition, the
+                same two-element lead with CSS picking by width, the same
+                phone fold. #searchE stays the row's right pin, untouched. */}
+            <span className="lab hl-lab" title="Highlight"><HlIcon /></span>
+            <button className={'hl-tog' + (HLSET.size || SEARCH ? ' on' : '')} aria-expanded={HLOPEN}
+              aria-label="Highlight filters" title="Highlight filters"
+              onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
+            <HlChips />
             <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
           </div>
@@ -378,7 +417,12 @@ export function Shell() {
           </div>
         </div>
       </section>
-  ), [page, b.cls, b.col, b.html, HIST.ix, HIST.stack.length, legend, CURWEEK])
+  /* hlSig + HLOPEN + SEARCH are NEW here and load-bearing: the edit page never
+     rendered the chips before, so its memo had no highlight deps at all —
+     without hlSig the chips' .on state would go stale the moment a chip was
+     toggled on another surface, and without HLOPEN/SEARCH the fold and the
+     toggle's lit state would freeze (same reasoning as the view page's). */
+  ), [page, b.cls, b.col, b.html, HIST.ix, HIST.stack.length, hlSig, HLOPEN, SEARCH, legend, CURWEEK])
 
   return (
     <div id="shell" style={{ ['--al' as any]: b.col }}>
@@ -397,6 +441,9 @@ export function Shell() {
       <section className={'page' + (page === 'leavewar' ? ' on' : '')} id="page-leavewar">
         {page === 'leavewar' && <LeaveWarPage />}
       </section>
+      <section className={'page' + (page === 'admin' ? ' on' : '')} id="page-admin">
+        {page === 'admin' && <AdminPage />}
+      </section>
 
       {/* week pan arrows + the pinned proxy scrollbar (desktop) — markup 1:1;
           visibility is driven by updateWeekNav, not by React */}
@@ -411,7 +458,6 @@ export function Shell() {
 
       <DayPop />
       <InsightsModal />
-      <UserModal />
       <AirPop />
       <WeekCal />
       <Drawer />

@@ -188,6 +188,15 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     await p2.goto(URL)
     await p2.fill('#luser', 'a'); await p2.fill('#lpass', 'a')
     await p2.click('#loginForm button[type=submit]'); await p2.waitForTimeout(900)
+    /* The highlight chips FOLD behind the .hl-tog highlighter icon on a phone
+       since 23 Aug 26, so the strip only overflows once the fold is open —
+       open it first, then hold the original assertion: the strip must scroll
+       ITSELF, and the page must never gain a sideways swipe (both states). */
+    const f0 = await p2.evaluate(() => ({
+      pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    }))
+    await p2.evaluate(() => { const el = document.querySelector('#page-viewsched .filters .hl-tog'); el && el.click() })
+    await p2.waitForTimeout(300)
     const f = await p2.evaluate(() => {
       const el = document.querySelector('#page-viewsched .filters')
       return {
@@ -198,7 +207,8 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     })
     console.log(`   phone filters: display ${f.display} · chips ${f.chips} · own side-scroll ${f.sideScroll}`)
     T('phone · the filter strip is on screen', f.display, 'flex')
-    T('phone · it scrolls itself rather than the page', f.sideScroll ? 'itself' : 'no scroll', 'itself')
+    T('phone · folded, the page gains no sideways swipe', f0.pageOverflow, 0)
+    T('phone · opened, it scrolls itself rather than the page', f.sideScroll ? 'itself' : 'no scroll', 'itself')
     T('phone · and the page gains no sideways swipe', f.pageOverflow, 0)
 
     await p2.evaluate(() => go('editsched')); await p2.waitForTimeout(600)

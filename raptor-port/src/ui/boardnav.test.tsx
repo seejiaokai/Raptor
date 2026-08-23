@@ -332,6 +332,50 @@ describe('dragging along the day dots runs through the week', () => {
   })
 })
 
+/* SEARCH + HIGHLIGHT ON THE BAR (owner, 23 Aug 26 — the phone dots left the
+   day row and this pair took the freed middle). jsdom pins the wiring: the
+   uncontrolled #searchB writes view.SEARCH, #sbHl drives view.HLOPEN and the
+   strip's open class, and a chip inside #sbHlStrip toggles the SAME HLSET the
+   week pages read. Which of it is visible at which width is the geometry
+   gate's question. */
+describe('the day row carries a search box and the highlight fold', () => {
+  beforeEach(async () => {
+    await act(async () => { view.HLSET.clear(); view.setSearch(''); view.setHlOpen(false); notify() })
+  })
+
+  it('typing in #searchB sets view.SEARCH', async () => {
+    const box = $('#searchB') as HTMLInputElement
+    expect(box, 'the search box is on the bar').toBeTruthy()
+    await act(async () => {
+      box.value = 'bane'
+      box.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    expect(view.SEARCH).toBe('bane')
+  })
+
+  it('#sbHl flips HLOPEN and the chips strip gains open', async () => {
+    const strip = $('#sbHlStrip')
+    expect(strip, 'the strip is rendered unconditionally').toBeTruthy()
+    expect(strip.className).not.toContain('open')
+    await act(async () => { $('#sbHl').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+    expect(view.HLOPEN).toBe(true)
+    expect($('#sbHlStrip').className).toContain('open')
+    await act(async () => { $('#sbHl').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+    expect(view.HLOPEN).toBe(false)
+    expect($('#sbHlStrip').className).not.toContain('open')
+  })
+
+  it('a chip inside the strip toggles the shared HLSET', async () => {
+    const chip = $('#sbHlStrip .fchip[data-hl="SUP"]')
+    expect(chip, 'the same HlChips set as the week pages').toBeTruthy()
+    await act(async () => { chip.dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+    expect(view.HLSET.has('SUP')).toBe(true)
+    expect($('#sbHlStrip .fchip[data-hl="SUP"]').className).toContain('on')
+    await act(async () => { $('#sbHlStrip .fchip[data-hl="SUP"]').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+    expect(view.HLSET.has('SUP')).toBe(false)
+  })
+})
+
 /* THE PARKED AIRCREW HANDLE HANDS ITS SCROLL BACK (owner, 11 Aug 26 — a
    screenshot of a drag down the right-hand edge that moved nothing).
    A position:fixed element gives its touch scroll to the VIEWPORT, not to

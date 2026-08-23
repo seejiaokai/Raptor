@@ -46,18 +46,26 @@ export function EditWeek() {
     } else {
       root.innerHTML = html.join('')
     }
-    root.scrollLeft = sl
     /* a continuous-nav week load lands on Monday / the last day / a specific day
-       index — see ViewWeek for the reasoning; consumed in this same repaint */
+       index, REPLACING the scroll hold — no sl re-pin first, and smooth briefly
+       off for the landing writes, or the two animated writes sweep the whole
+       week the wrong way (owner, 23 Aug 26). See ViewWeek for the full
+       reasoning; consumed in this same repaint. */
     if (WEEKJUMP != null) {
+      const was = root.style.scrollBehavior
+      root.style.scrollBehavior = 'auto'
       if (WEEKJUMP === 'mon') root.scrollLeft = 0
       else if (WEEKJUMP === 'sun') root.scrollLeft = Math.max(0, root.scrollWidth - root.clientWidth)
       else scrollWeekToDay(root, WEEKJUMP)
+      root.style.scrollBehavior = was
       setWeekJump(null)
+    } else {
+      /* a within-week repaint holds the week's scroll position (B54) */
+      root.scrollLeft = sl
+      /* the carried day from a page switch — see ViewWeek for the reasoning;
+         both weeks consume it the same way so the hop works in both directions */
+      if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
     }
-    /* the carried day from a page switch — see ViewWeek for the reasoning;
-       both weeks consume it the same way so the hop works in both directions */
-    else if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
     prev.current = { ed, html }
     refreshHighlights()
   }, [version])

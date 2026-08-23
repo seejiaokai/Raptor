@@ -406,8 +406,12 @@ export function wireWarnSplit(side: HTMLElement) {
 function histLineHTML(cls: string) {
   if (!view.HISTMODE) return ''
   const n = ELOG.rows.length
+  /* "Edit history", the surface's one name everywhere (owner, 23 Aug 26) —
+     the modal head and the topbar opener say the same words, so the way in
+     and the thing it opens can never read as two features. The count keeps
+     the exact 'N change(s)' / 'No changes yet' wording the tests pin. */
   return `<button class="${cls}" data-histopen title="Every change made this session, newest first">`
-    + `☰ ${n ? `${n} change${n > 1 ? 's' : ''} this session` : 'No changes yet'}</button>`
+    + `☰ Edit history · ${n ? `${n} change${n > 1 ? 's' : ''}` : 'No changes yet'}</button>`
 }
 
 export function dayTabsHTML(di: number) {
@@ -1358,9 +1362,12 @@ export function boardTab(n: number) {
    `.sb-pane`/`.sb-peek` preview, `touch-action:pan-y pinch-zoom` on `.sb-main`
    (the seam it needed, so the scroller is back to the browser's default), and
    the axis-sharing `wireParkedRosScroll` grew to split a finger with it.
-   The dots stay, and they are still a scrub bar: they say WHICH day you are on,
-   which is the one thing a pair of arrows cannot. `prevDay`/`nextDay` below are
-   what the arrows call.
+   PHONE: THE DOTS ARE REMOVED (owner, 23 Aug 26) — the row between the arrows
+   carries search + highlight now (#searchB / #sbHl, SchedBoard.tsx), and the
+   arrows plus the bar's day title carry "which day". Desktop keeps its Mon–Sun
+   chips, still a scrub bar — the removal is display:none in scheduler.css, so
+   dayTabsHTML, wireDayDots and every jsdom test here are untouched.
+   `prevDay`/`nextDay` below are what the arrows call.
    --------------------------------------------------------------------------- */
 /* CONTINUOUS ACROSS WEEKS (owner, 22 Aug 26 — "in scheduler board it's
    continuous arrow between weeks"). Stepping off the loaded week's ends no

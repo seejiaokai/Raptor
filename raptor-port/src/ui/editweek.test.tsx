@@ -353,4 +353,13 @@ describe('the crew-day picker', () => {
     await click(nav('-1'))
     expect(ROSDAY).toBe(DAYS.length - 2)
   })
+
+  it('the edit page carries the phone calendar opener, and it opens the picker', async () => {
+    const btn = $('#page-editsched .wknav-m .wknav-mbtn')
+    expect(btn).toBeTruthy()
+    await click(btn)
+    expect($('#weekCal') && !($('#weekCal') as HTMLElement).hasAttribute('hidden')).toBe(true)
+    /* close it again so nothing leaks into a later test */
+    await click($('#weekCal .x'))
+  })
 })

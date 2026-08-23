@@ -6,7 +6,8 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
+import { initStore, setSession, notify, loadWeek } from '../state/store'
+import { CURWEEK } from '../engine/waves'
 import { ROSDAY, setRosDay } from '../state/view'
 import * as view from '../state/view'
 import { hsSet, panDays, rosDayFollow } from './pan'
@@ -100,6 +101,35 @@ describe('week panning (tfin)', () => {
     w.scrollLeft = 564
     panDays(-1)
     expect(landed).toBe(0)
+  })
+
+  /* the desktop arrows are continuous across weeks (owner, 23 Aug 26) — the
+     same edge-cross the phone swipe does. Stub geometry as above; the restore
+     idiom is swipeweeks.test.tsx's. */
+  it('the › arrow jammed at the right edge crosses to next week and lands on Monday', async () => {
+    const w = $('#vWeek')
+    const days = $$('#vWeek .day')
+    days.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: days.length * 564, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1128, configurable: true })
+    w.scrollLeft = days.length * 564 - 1128        // jammed at max
+    await act(async () => { panDays(1) })
+    expect(CURWEEK, 'the following week loaded').toBe('20/07/2026')
+    expect(view.WEEKJUMP, 'the landing flag was consumed by the repaint').toBe(null)
+    expect(w.scrollLeft, 'landed on Monday, not held at the old edge').toBe(0)
+    await act(async () => { loadWeek('13/07/2026') })
+  })
+
+  it('the ‹ arrow at the left edge crosses to the previous week', async () => {
+    const w = $('#vWeek')
+    const days = $$('#vWeek .day')
+    days.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: days.length * 564, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1128, configurable: true })
+    w.scrollLeft = 0
+    await act(async () => { panDays(-1) })
+    expect(CURWEEK, 'the previous week loaded').toBe('06/07/2026')
+    await act(async () => { loadWeek('13/07/2026') })
   })
 
   it('panning the week walks the palette along, debounced', async () => {

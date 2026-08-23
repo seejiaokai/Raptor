@@ -117,6 +117,18 @@ describe('the two ways in', () => {
     expect($('#sbWarn .histln'), 'the phone entry is still on the checks panel').toBeTruthy()
   })
 
+  /* THE THIRD WAY IN (owner, 23 Aug 26): the shell's own top bar carries an
+     Edit-history opener beside undo/redo on the edit page, so the log is
+     reachable without opening the board and without History mode. The modal
+     head says the same words as the button — one surface, one name. */
+  it('the topbar #histBtn opens the list, and the head says Edit history', async () => {
+    const btn = $('#histBtn')
+    expect(btn, 'the opener rides the edit page top bar').toBeTruthy()
+    await click(btn)
+    expect($('#histModal').hasAttribute('hidden'), 'the list opened').toBe(false)
+    expect($('#histModal .modal-head b').textContent).toContain('Edit history')
+  })
+
   it('both carry the same count, and both open the list', async () => {
     await act(async () => { view.setHistMode(true); notify() })
     await seed()

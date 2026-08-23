@@ -5,9 +5,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode, esc, restArmed } from '../state/view'
+import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch } from '../state/view'
 import { closeHistList, setWeekCal } from './pops'
-import { CalIcon, HistIcon } from './icons'
+import { CalIcon, HistIcon, HlIcon } from './icons'
+import { HlChips } from './hlchips'
 import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
 import { daySnapOf, dayVersions, verLabel, alColor, dayPendCount } from '../engine/publish'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
@@ -294,8 +295,11 @@ export function SchedBoard() {
             are hidden there, so the desktop bar is untouched — it still has all
             seven days on it as chips, which is why it never needed a swipe or
             an arrow in the first place.
-            The dots stay between them: they are the only thing that says WHICH
-            day of the seven you are on, and they are still a scrub bar. */}
+            PHONE: THE DOTS ARE REMOVED (owner, 23 Aug 26) — the row between
+            the arrows carries SEARCH + HIGHLIGHT now, and the arrows plus the
+            day title carry "which day". Desktop keeps its chips, still a
+            scrub bar; the removal is display:none in CSS so dayTabsHTML,
+            wireDayDots and every jsdom test are untouched. */}
         <div className="sb-nav">
           {/* No longer disabled at the week's ends (owner, 22 Aug 26): stepping
               off Monday loads the previous week's Sunday, and off Sunday the next
@@ -308,6 +312,19 @@ export function SchedBoard() {
               handler, and a tap on a dot still jumps straight to that day */}
           <div className="sb-days" id="sbDays" ref={daysRef}
             onClick={e => { const t = (e.target as HTMLElement).closest('[data-sbtab]') as HTMLElement | null; if (t) boardTab(+t.dataset.sbtab!) }} />
+          {/* SEARCH + HIGHLIGHT in the freed middle of the day row (owner, 23
+              Aug 26 — the phone dots left it empty between the arrows). On
+              desktop .sb-nav is display:contents, so these flow into the
+              bar's flexible middle beside the day chips. The toggle lights
+              while a filter/search is live AND the strip is folded, so a
+              filtered board is never mysterious; #searchB is the #searchV
+              idiom exactly — uncontrolled, wiped by the blank-click clear
+              (interactions.ts). */}
+          <button className={'abtn sb-hltog' + ((HLSET.size || SEARCH) && !HLOPEN ? ' on' : '')} id="sbHl"
+            aria-expanded={HLOPEN} aria-label="Highlight filters" title="Highlight by category / quals"
+            onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
+          <div className="searchbox sb-search">🔍<input id="searchB" placeholder="name / callsign"
+            onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           <button className="abtn sb-arrow" id="sbNextDay" title="Next day"
             disabled={SBDAY == null}
             onClick={() => boardDayStep(1)}><span className="bi">›</span><span className="bl"> Next day</span></button>
@@ -413,6 +430,15 @@ export function SchedBoard() {
           <button className="abtn primary" id="sbDone" onClick={() => { HOOKS.toast('Schedule updated'); closeScheduler() }}><span className="bi">✓</span><span className="bl"> Done</span></button>
           <button className="abtn ghost" id="sbClose" onClick={closeScheduler}><span className="bi">✕</span><span className="bl"> Close</span></button>
         </div>
+        {/* THE HIGHLIGHT CHIPS STRIP (owner, 23 Aug 26) — the same HlChips the
+            two week pages render, so a chip lit here is lit there. Rendered
+            UNCONDITIONALLY: desktop shows it always (a full-width second bar
+            line — no open gate, so nothing pins the desktop bar's height to a
+            session flag), the phone folds it behind #sbHl (CSS). It sits
+            INSIDE .sb-top deliberately: the bar's ResizeObserver republishes
+            --sb-topH when the strip opens, so the drawer and the scroller
+            below keep clearing the bar without a second observer. */}
+        <div className={'sb-hl' + (HLOPEN ? ' open' : '')} id="sbHlStrip"><HlChips /></div>
       </div>
       <div className="sb-main" ref={mainRef}>
         <div className={'sb-boardwrap' + (HISTMODE ? ' hist-on' : '')} ref={wrapRef}>

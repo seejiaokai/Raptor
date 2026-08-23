@@ -85,6 +85,8 @@ export function installProbeBridge() {
      reach (a squadron member's Edit Schedule link doesn't exist to click),
      the same way w.openScheduler already forces SBDAY open with no click. */
   w.setPage = (p: string) => { view.setPage(p); notify() }
+  /* Shell.tsx and ui-contracts already claim this mirror exists — make it true */
+  w.openWarns = (sev: any) => { view.openWarns(sev); notify() }
   /* the Leave War role, same precedent as w.setPage: production writes it
      only from resetSession (the Raptor login), but the vendored e2e suite
      needs mid-test member↔admin switches that no click path reaches since
