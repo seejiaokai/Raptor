@@ -340,6 +340,10 @@ a{color:var(--accent)}
 .wknav-mbtn{display:inline-flex;align-items:center;justify-content:center;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:10px;width:42px;height:36px;cursor:pointer}
 .wknav-mbtn:hover,.wknav-mbtn:active{border-color:var(--accent);color:var(--accent)}
 .wknav-mbtn .btnglyph{width:20px;height:20px;color:inherit}
+/* the filter row's icon-only export buttons (Excel / PDF) — same 16px glyph
+   sizing as .sb-actions, centred so the compact button doesn't lean */
+.filters .abtn .btnglyph{width:16px;height:16px;color:currentColor}
+#exportSched,#exportPdf{display:inline-flex;align-items:center;justify-content:center}
 
 /* filter / highlight chips */
 .filters{display:flex;gap:6px;padding:8px 20px;flex-wrap:wrap;border-bottom:1px solid var(--edge);align-items:center;background:rgba(20,24,29,.35)}

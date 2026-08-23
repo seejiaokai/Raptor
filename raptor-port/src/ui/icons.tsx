@@ -18,6 +18,34 @@ export function CalIcon() {
   )
 }
 
+/** A spreadsheet file: the folded-corner document with a small table inside —
+ *  the grid says "Excel" at 16px where lettering would blur to noise. */
+export function XlsIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6" />
+      <rect x="7.5" y="12" width="9" height="6.5" />
+      <path d="M7.5 15.25h9M12 12v6.5" />
+    </svg>
+  )
+}
+
+/** A document file with text lines and a download arrow — "get this page as a
+ *  document", no lettering for the same at-16px reason as XlsIcon. */
+export function PdfIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6" />
+      <path d="M8 12h8M8 15h8" />
+      <path d="M12 17v3.5M10 18.5l2 2 2-2" />
+    </svg>
+  )
+}
+
 /** The standard "history" glyph — a clock with a counter-clockwise arrow — so
  *  the board's History toggle no longer reads as a plain clock. */
 export function HistIcon() {

@@ -2005,7 +2005,11 @@ input for the key change (`g:di.ri` → `gr:di.ri.prog`) this needed.
 **Silent actions now toast.** A tap that changes something and says nothing
 back reads as "did it register?" — closed on the Inputs page (save, delete,
 CSV export), the Quals page (add-person, CSV export), the schedule export
-("Export to Excel" on the Shell topbar), and the template/draft editors'
+(`#exportSched` on the Edit page's `.filters` row — an Excel-file icon since
+23 Aug 26, not a text label, with a `#exportPdf` sibling that prints the
+week through the browser's print pipeline, "Save as PDF" in the dialog;
+that printable layout is deliberately basic for now — `ui/printpdf.ts`),
+and the template/draft editors'
 destructive actions (`DayTplModal`/`DraftsModal` — Reset, Delete). A phone
 browser often shows nothing at all when a CSV download lands — no bar, no
 tray notification the user is looking at — which is what makes the export

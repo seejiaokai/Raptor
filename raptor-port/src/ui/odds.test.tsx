@@ -143,6 +143,7 @@ describe('fast sync + export', () => {
     const [bh, bm] = String(r[5]).split(':').map(Number), [th, tm] = String(r[6]).split(':').map(Number)
     expect((th! * 60 + tm!) - (bh! * 60 + bm!)).toBe(140)
     expect($('#exportSched')).toBeTruthy()
+    expect($('#exportPdf')).toBeTruthy()
   })
 })
 

@@ -7,7 +7,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
-import { CalIcon } from './icons'
+import { CalIcon, XlsIcon, PdfIcon } from './icons'
 import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pendCount } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
@@ -32,6 +32,7 @@ import { WeekCal } from './WeekCal'
 import { setInsights, setUserModal, setDrawer, setWeekCal } from './pops'
 import { Drawer } from './Drawer'
 import { exportCSV, schedRows } from './export'
+import { printSchedPDF } from './printpdf'
 import { InputsPage } from './InputsPage'
 import { LogicPage } from './LogicPage'
 import { QualsPage } from './QualsPage'
@@ -351,12 +352,20 @@ export function Shell() {
                 from the board's own inline "+ Wave", between Common Programme
                 and the flying waves, and nowhere else. The board is reachable
                 on desktop, so this page needs no separate control. */}
-            <button className="abtn" id="exportSched" onClick={() => {
-              exportCSV('142-schedule.csv', schedRows())
-              /* same reason as the Inputs page's export: a phone shows nothing
-                 when a download lands, so the tap otherwise reads as dead */
-              HOOKS.toast('CSV downloaded', 'ok')
-            }}>Export to Excel</button>
+            <button className="abtn" id="exportSched" title="Export to Excel (CSV)" aria-label="Export to Excel (CSV)"
+              onClick={() => {
+                exportCSV('142-schedule.csv', schedRows())
+                /* same reason as the Inputs page's export: a phone shows nothing
+                   when a download lands, so the tap otherwise reads as dead */
+                HOOKS.toast('CSV downloaded', 'ok')
+              }}><XlsIcon /></button>
+            <button className="abtn" id="exportPdf" title="Export as PDF (print)" aria-label="Export as PDF (print)"
+              onClick={() => {
+                printSchedPDF()
+                /* the print dialog can take a beat to appear, and on a phone it
+                   slides over the page — say what to do once it does */
+                HOOKS.toast('Print dialog opened — choose "Save as PDF"', 'ok')
+              }}><PdfIcon /></button>
             <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
           </div>
