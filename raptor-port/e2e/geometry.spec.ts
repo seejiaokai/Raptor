@@ -3534,6 +3534,86 @@ test.describe('the crew-day picker', () => {
     expect(ends.prevDisabled).toBe(true)
     expect(ends.nextDisabled).toBe(false)
   })
+
+  test('desktop: the day header and column headings stay pinned as the roster scrolls', async ({ page }) => {
+    await page.setViewportSize(WIDE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eRoster .rcol .rh')
+
+    const m = await page.evaluate(() => {
+      const er = document.getElementById('eRoster')!
+      const erh = er.querySelector('.er-h') as HTMLElement
+      const rh = er.querySelector('.rcol .rh') as HTMLElement
+      // where the column heading naturally sits before any scroll
+      const rhNatural = rh.getBoundingClientRect().top - er.getBoundingClientRect().top
+      // scroll the panel as far down as it goes
+      er.scrollTop = er.scrollHeight
+      const erR = er.getBoundingClientRect()
+      const hR = erh.getBoundingClientRect()
+      const rhR = rh.getBoundingClientRect()
+      return {
+        scrolled: er.scrollTop,
+        rhNatural,
+        dayHeaderGap: Math.round(hR.top - erR.top),   // ~panel padding when pinned
+        dayHeaderVisible: hR.bottom > erR.top && hR.top < erR.bottom,
+        colHeadGap: Math.round(rhR.top - erR.top),     // pinned just under the day line
+        colHeadVisible: rhR.bottom > erR.top && rhR.top < erR.bottom,
+      }
+    })
+
+    // the seed roster is tall enough that the panel really scrolls — otherwise
+    // there is nothing to pin and the test would prove nothing
+    expect(m.scrolled, 'the palette actually has an overflow to scroll').toBeGreaterThan(60)
+    expect(m.rhNatural, 'the column heading naturally starts well down the panel').toBeGreaterThan(50)
+    // after scrolling to the bottom, both headings are still at the top, visible
+    expect(m.dayHeaderVisible, 'the "Aircrew · <day>" line is still on screen').toBe(true)
+    expect(m.dayHeaderGap, 'the day line is pinned to the panel top').toBeLessThan(14)
+    expect(m.colHeadVisible, 'the "Pilots · N free" heading is still on screen').toBe(true)
+    expect(m.colHeadGap, 'the column heading is pinned just under the day line').toBeLessThan(40)
+  })
+
+  test('desktop: › steps one clean day at a time to a whole-day end, then rolls into next week', async ({ page }) => {
+    await page.setViewportSize(WIDE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eWeek .day[data-day]')
+    // start on Monday
+    await page.evaluate(() => { const w = document.getElementById('eWeek')!; w.style.scrollBehavior = 'auto'; w.scrollLeft = 0 })
+    await page.waitForTimeout(150)
+
+    // the day snapped nearest the week's left edge — the "front" day, sliver-proof
+    const frontDay = () => page.evaluate(() => {
+      const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left
+      const days = [...w.querySelectorAll('.day[data-day]')] as HTMLElement[]
+      let best = days[0], bd = Infinity
+      for (const d of days) { const g = Math.abs(d.getBoundingClientRect().left - wl); if (g < bd) { bd = g; best = d } }
+      return { day: +best.dataset.day!, gap: Math.round(bd) }
+    })
+
+    const seq: number[] = []
+    const gaps: number[] = []
+    let f = await frontDay(); seq.push(f.day); gaps.push(f.gap)
+    for (let i = 0; i < 8; i++) {
+      await page.evaluate(() => { const n = document.getElementById('weekNext') as HTMLButtonElement | null; n && n.click() })
+      await page.waitForTimeout(450)
+      f = await frontDay(); seq.push(f.day); gaps.push(f.gap)
+    }
+
+    // the front day climbs by exactly one each click, until it rolls over to Monday
+    const wrapAt = seq.findIndex((d, i) => i > 0 && d < seq[i - 1])
+    expect(wrapAt, 'the week rolls over to an earlier day at some point').toBeGreaterThan(0)
+    const beforeWrap = seq.slice(0, wrapAt)
+    for (let i = 1; i < beforeWrap.length; i++) {
+      expect(beforeWrap[i], `click ${i} advances exactly one day (no dead click, no skipped Sat/Sun)`).toBe(beforeWrap[i - 1] + 1)
+    }
+    // the roll-over lands on Monday of the next week
+    expect(seq[wrapAt], 'stepping past the last front day rolls to Monday').toBe(0)
+    // every landing is a whole column flush at the left — never a fractional
+    // sliver of a prior day (the leading pad is ~20px; a real sliver was 100s)
+    const worst = Math.max(...gaps.slice(0, wrapAt + 1))
+    expect(worst, 'each stop is a whole day flush at the left, not a sliver').toBeLessThan(60)
+  })
 })
 
 /* ===================================================================
