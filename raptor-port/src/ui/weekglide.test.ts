@@ -72,6 +72,27 @@ describe('a fired glide leaves nothing behind', () => {
     expect(document.body.style.overflowX).toBe('')
   })
 
+  /* OVERLAPPING GLIDES must not strand the week hidden (24 Aug 26). A second
+     cross firing before the first's slide ends used to capture the
+     already-hidden styles as ITS baseline and restore to hidden, so the whole
+     week went blank and the page stayed clipped until a reload. The burst now
+     shares one baseline, captured on the first glide and restored on the last. */
+  it('two overlapping glides reveal the real week once, never restore it to hidden', () => {
+    vi.useFakeTimers()
+    setW(400)
+    const root = mkRoot(390)
+    view.setWeekJump('mon'); beginGlide(root)!()
+    expect(root.style.visibility).toBe('hidden')
+    // a SECOND cross fires while the first is still sliding
+    view.setWeekJump('sun'); beginGlide(root)!()
+    expect(root.style.visibility, 'still hidden mid-burst').toBe('hidden')
+    // both clones' fallback timers fire
+    vi.runAllTimers()
+    expect(root.style.visibility, 'the week is revealed, not stranded hidden').toBe('')
+    expect(document.body.style.overflowX, 'the page clip is lifted').toBe('')
+    expect(document.querySelectorAll('body > .week').length, 'all four clones cleaned up').toBe(1)
+  })
+
   /* owner, 23 Aug 26 — "bleeding at the top bar when swiping". The clone is
      position:fixed from the week's rect.top, which is above the sticky top bar
      once the page is scrolled; at z-index 60 (the bar's own) it tied and, being

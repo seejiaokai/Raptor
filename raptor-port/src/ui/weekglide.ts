@@ -33,6 +33,24 @@ import { weekScrollMax } from './pan'
 
 const DUR = 280
 
+/* OVERLAPPING GLIDES share ONE baseline (owner-scale robustness, 24 Aug 26).
+   A glide hides the real week (visibility:hidden) and clips the page
+   (body.overflowX:hidden), and restores both when it ends. If a SECOND cross
+   fires while the first is still sliding, the naive "capture root.style on the
+   way in, put it back on the way out" corrupts itself: the second glide reads
+   the ALREADY-hidden values as its baseline and restores to hidden, leaving the
+   week blank and the page clipped until a reload. So the baseline is captured
+   ONCE, when the first glide of a burst starts (inFlight 0→1), and restored ONCE,
+   when the last finishes (→0) — to the MOST RECENT cross's landing, tracked here
+   so out-of-order finishes still land the right week. This module is the only
+   writer of these two styles, so the captured baseline is always their real
+   pre-glide value. */
+let inFlight = 0
+let savedVis: string | null = null
+let savedOverflowX: string | null = null
+let lastRoot: HTMLElement | null = null
+let lastLanded = 0
+
 function reducedMotion() {
   /* jsdom has no matchMedia; treat its absence as "motion allowed" */
   try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches } catch { return false }
@@ -115,13 +133,16 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
        still drag, and whose `sun` landing the phone snap does not always hold —
        is never seen at a half-scrolled or wrong-day position. It keeps its box
        (visibility, not display) so nothing reflows, and is revealed, re-landed,
-       when the clones come off. */
-    const prevVis = root.style.visibility
+       when the clones come off. The pre-glide styles are captured ONCE per burst
+       (see the module baseline above) so an overlapping second cross can't read
+       the already-hidden values as its baseline and restore to hidden. */
+    if (inFlight === 0) {
+      savedVis = root.style.visibility
+      savedOverflowX = document.body.style.overflowX
+    }
+    inFlight++
+    lastRoot = root; lastLanded = landed        // the most recent cross owns the final landing
     root.style.visibility = 'hidden'
-
-    /* the one-screen offset would otherwise widen the page — clip it for the
-       length of the slide, then restore whatever was there */
-    const prevOverflowX = document.body.style.overflowX
     document.body.style.overflowX = 'hidden'
 
     /* start: outgoing clone covering the viewport, incoming clone one screen off
@@ -142,15 +163,20 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
     const finish = () => {
       if (done) return
       done = true
-      /* re-land the real week (any leftover fling has died by now) and reveal it
-         by taking the clones off. smooth briefly off so the re-land is instant. */
-      const wasSB = root.style.scrollBehavior
-      root.style.scrollBehavior = 'auto'
-      root.scrollLeft = landed
-      root.style.scrollBehavior = wasSB
-      root.style.visibility = prevVis            // reveal the settled week
-      document.body.style.overflowX = prevOverflowX
       out.remove(); inc.remove()
+      /* only the LAST glide of a burst re-lands the real week and reveals it —
+         a still-sliding earlier/later glide keeps root hidden behind its own
+         clones. It re-lands the MOST RECENT cross's target (lastLanded), so an
+         out-of-order finish can't leave the week on a stale day. */
+      if (--inFlight > 0) return
+      const r = lastRoot || root
+      const wasSB = r.style.scrollBehavior
+      r.style.scrollBehavior = 'auto'
+      r.scrollLeft = lastLanded
+      r.style.scrollBehavior = wasSB
+      r.style.visibility = savedVis ?? ''            // reveal the settled week
+      document.body.style.overflowX = savedOverflowX ?? ''
+      savedVis = savedOverflowX = null; lastRoot = null
     }
     inc.addEventListener('transitionend', finish, { once: true })
     setTimeout(finish, DUR + 120)             // fallback if transitionend never fires

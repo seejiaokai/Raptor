@@ -177,7 +177,10 @@ loadWeek           → stashPut(CURWEEK, weekStashSnap()) (weekstash.ts — the
                        `acc` for rows a restore's DAYS already landed, so the
                        pass below does not try to re-add them) → mintInpIds()
                    → stashed? re-run `autoAcceptInput` per row with
-                       pending/changes/added protected : autoAcceptSeedInputs()
+                       pending/changes/added protected, SKIPPING any row this
+                       week deliberately unaccepted (the stash's `un` set of
+                       content keys — else the blanket re-land silently undoes
+                       a scheduler's removal, 24 Aug 26) : autoAcceptSeedInputs()
                        (both land date-matching inputs on the fresh/restored days)
                    → clear day-index/iid VIEW state; WARNOFF restored from the
                        stash instead of cleared, when there is one
@@ -190,7 +193,13 @@ NOT swapped, so every week's inputs stay present for the Inputs page; each week'
 SCHEDULE still shows only its own because the day builders and auto-land match by
 date (`inputCoversDate` / `DATES.indexOf`). `acc` is always cleared first (it
 records the LOADED week's landing only) so `autoAcceptSeedInputs`/the restore
-pass can re-derive it fresh for whichever DAYS this call just put in place.
+pass can re-derive it fresh for whichever DAYS this call just put in place. But
+because `INPUTS` is not stashed, a row a scheduler UNACCEPTED on this week would
+be re-landed by that pass on the way back in; the stash therefore also carries
+`un` — the content keys (`inpKey`) of this week's personal rows that are sitting
+UNLANDED on an editable day — and the restore's `autoAcceptInput` loop skips
+them, so a deliberate removal survives a week round-trip while a genuinely new
+input (never in `un`) still lands (`store.ts:unacceptedKeys`; 24 Aug 26).
 `SCHED` is keyed by day INDEX; on a fresh (never-stashed) week `resetSched()` is
 still what stops one week's approvals/AL bleeding onto another's identical
 indices, and on a restored week the stash's own SCHED fields serve the same

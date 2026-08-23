@@ -13,10 +13,25 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { initStore, loadWeek } from './store'
 import { DAYS } from '../engine/data'
 import { DATES, INPUTS, inputCoversDate } from '../engine/inputs'
+import { autoAcceptInput, unacceptInput, inpKey } from '../engine'
+import { stashClear } from '../engine/weekstash'
 import { SCHED } from '../engine/publish'
 import { HIST } from './history'
 
-beforeEach(() => { initStore(); loadWeek('13/07/2026') })
+/* is this input's ground row currently sitting on some day of the loaded week? */
+const landed = (inp: any) =>
+  DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === inpKey(inp)))
+
+/* INPUTS and the week stash are BOTH module-level session state, and neither
+   initStore nor loadWeek wipes them — a real reload discards the module, which
+   a test can't. Clear the stash and drop any rows a prior test pushed so each
+   test starts from the true first-boot state, not a neighbour's leftovers. */
+beforeEach(() => {
+  stashClear()
+  for (let i = INPUTS.length - 1; i >= 0; i--) if ((INPUTS[i] as any)._t) INPUTS.splice(i, 1)
+  initStore()
+  loadWeek('13/07/2026')
+})
 
 describe('loadWeek', () => {
   it('loads the authored second week (Jul 20)', () => {
@@ -76,5 +91,46 @@ describe('loadWeek', () => {
     loadWeek('20/07/2026')
     expect(HIST.stack.length).toBe(1)
     expect(HIST.ix).toBe(0)
+  })
+
+  /* A DELIBERATELY UNACCEPTED INPUT STAYS OFF THE GROUND ACROSS A WEEK ROUND-TRIP
+     (review fix, 24 Aug 26). A personal activity input auto-lands; a scheduler
+     may unaccept it. INPUTS is global and not stashed, so the return-to-week
+     auto-land pass used to silently re-land exactly what was removed. The stash
+     now remembers which in-week personal rows were left unaccepted and the
+     restore skips them. */
+  it('an unaccepted personal input does not reappear after leaving the week and coming back', () => {
+    // a fresh personal (activity) input on the seed week's Monday, landed on ground
+    const inp: any = { person: 'divot', date: 'Jul 13', type: 'Training', allday: false, s: 540, e: 660, _t: true }
+    INPUTS.push(inp)
+    expect(autoAcceptInput(inp)).toBe(true)
+    expect(landed(inp)).toBe(true)
+    // the scheduler removes it from the ground programme
+    unacceptInput(0, inp)
+    expect(landed(inp)).toBe(false)
+    // leave the week and come back
+    loadWeek('20/07/2026')
+    loadWeek('13/07/2026')
+    // it must STILL be off the ground — the removal survived the round-trip
+    expect(landed(inp), 'the unaccepted row must not be silently re-landed').toBe(false)
+    // and the row itself is still a personal input (it was removed from the ground, not deleted)
+    expect(INPUTS.some((r: any) => r.person === 'divot' && r.type === 'Training')).toBe(true)
+  })
+
+  /* the same round-trip must still LAND a personal input that is brand new since
+     the week was last open — the fix skips only rows that were unaccepted here,
+     never a row that never had the chance to be. */
+  it('a personal input added while away still lands when its week loads', () => {
+    // dirty the seed week first so leaving it stashes it — forces the RESTORE
+    // path (not the pure-seed path) on return, where the un-guard actually runs
+    const kept: any = { person: 'divot', date: 'Jul 13', type: 'Training', allday: false, s: 540, e: 660, _t: true }
+    INPUTS.push(kept); autoAcceptInput(kept)
+    expect(landed(kept)).toBe(true)
+    loadWeek('20/07/2026')                       // leave — week 13 is now stashed
+    const inp: any = { person: 'divot', date: 'Jul 13', type: 'Meeting', allday: false, s: 600, e: 720, _t: true }
+    INPUTS.push(inp)                             // added while on a different week
+    loadWeek('13/07/2026')                       // return via the restore path
+    expect(landed(inp), 'a never-unaccepted new input lands on return').toBe(true)
+    expect(landed(kept), 'the input already landed here stays landed').toBe(true)
   })
 })

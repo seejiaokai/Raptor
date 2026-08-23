@@ -23,7 +23,7 @@ import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans } from './demoseed'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey } from '../engine'
 import { elogClear } from '../engine/editlog'
-import { markDeletion, resetSched, SCHED } from '../engine/publish'
+import { markDeletion, resetSched, SCHED, dayApproved } from '../engine/publish'
 import { stashPut, stashGet, stashHas } from '../engine/weekstash'
 import { afterSchedMutate } from './view'
 import * as view from './view'
@@ -174,8 +174,32 @@ export function resetSession(s: any) {
    week-scoped (CLAUDE.md's "Personal INPUTS are GLOBAL" decision), and
    restoring them here would roll back edits made to them while the user was
    on a DIFFERENT week. */
+/* WHICH OF THIS WEEK'S PERSONAL INPUTS THE SCHEDULER DELIBERATELY TOOK OFF THE
+   GROUND (review fix, 24 Aug 26). A personal activity input auto-lands on its
+   day, but a scheduler may unaccept it (slots.ts unacceptInput removes the
+   ground row and drops `acc`) — a real decision. INPUTS is global and NOT
+   carried in the stash, so on the way back into this week the blanket
+   auto-land pass below used to re-land exactly those rows, silently undoing
+   the removal. So the stash remembers, by content key, which in-week personal
+   rows are sitting UNLANDED on an editable day — i.e. were unaccepted, not
+   merely un-landable because the day is published — and the restore skips the
+   auto-land for those. A row NEW since this week was last open is not in the
+   set (it had no chance to be unaccepted here), so it still lands as intended.
+   Content key (inpKey), so an id renumber between visits can't lose the mark. */
+function unacceptedKeys(): string[] {
+  const out: string[] = []
+  INPUTS.forEach((r: any) => {
+    if (!isPersonal(r.type) || r.acc) return
+    const di = DATES.indexOf(r.date)
+    if (di < 0 || dayApproved(di)) return
+    const key = inpKey(r)
+    const landed = DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === key))
+    if (!landed) out.push(key)
+  })
+  return out
+}
 function weekStashSnap() {
-  return JSON.stringify({ d: DAYS, ...schedFields(), wo: [...view.WARNOFF] })
+  return JSON.stringify({ d: DAYS, ...schedFields(), wo: [...view.WARNOFF], un: unacceptedKeys() })
 }
 
 /* WHAT THIS WEEK LOOKED LIKE THE MOMENT IT FINISHED LOADING — the yardstick
@@ -269,8 +293,12 @@ function applyWeekModel(v: any): any {
   reconcileLandedAcc()
   mintInpIds()
   if (s) {
+    /* a row this week deliberately unaccepted before must NOT be auto-landed
+       again on the way back in (see unacceptedKeys) — everything else lands,
+       including a row that is brand new since this week was last open */
+    const un = new Set<string>(Array.isArray(s.un) ? s.un : [])
     const savedPending = { ...SCHED.pending }, savedChanges = { ...SCHED.changes }, savedAdded = { ...SCHED.added }
-    INPUTS.forEach((r: any) => autoAcceptInput(r))
+    INPUTS.forEach((r: any) => { if (!un.has(inpKey(r))) autoAcceptInput(r) })
     SCHED.pending = savedPending; SCHED.changes = savedChanges; SCHED.added = savedAdded
   } else {
     autoAcceptSeedInputs()      // land activity inputs on ground (dayApproved now clean)

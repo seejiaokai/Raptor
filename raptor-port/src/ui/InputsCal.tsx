@@ -165,6 +165,18 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
      position reachable at all). Both null outside a drag. */
   const [secDrag, setSecDrag] = useState<string | null>(null)
   const [secOver, setSecOver] = useState<{ id: string, after: boolean } | null>(null)
+  /* An in-flight seated-puck or section drag parks a "cancel me, don't commit"
+     here (review fix, 24 Aug 26). Both drags run on WINDOW listeners for the
+     life of one press; if the popover closes mid-drag (Escape, the ✕, a tap
+     outside), the chip unmounts but those window listeners survive, and the
+     next stray pointerup anywhere would fire the drop — silently pulling a
+     puck off the day that just closed. The effect below fires this canceller
+     the instant the popover closes, tearing the listeners down WITHOUT
+     committing. Each drag clears it again when it ends on its own. */
+  const dragCancelRef = useRef<(() => void) | null>(null)
+  useEffect(() => {
+    if (popIso == null && dragCancelRef.current) { dragCancelRef.current(); dragCancelRef.current = null }
+  }, [popIso])
   /* the multi-select puck picker (owner, 23 Aug 26 — "a placeholder view to
      select a few pucks at 1 go … then press ok"). `pickFor` is the pucks row
      the ticks land on — a real row id, or '' meaning "make a NEW row on OK" —
@@ -452,6 +464,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         window.removeEventListener('pointermove', move)
         window.removeEventListener('pointerup', up)
         window.removeEventListener('pointercancel', cancel)
+        if (dragCancelRef.current === cancel) dragCancelRef.current = null
         setSecDrag(null); setSecOver(null)
         if (!commit || !over || over.id === id) return
         const secs = dayEntries(iso, { fPerson, fType, fSearch }).pucks
@@ -467,6 +480,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
       window.addEventListener('pointermove', move)
       window.addEventListener('pointerup', up)
       window.addEventListener('pointercancel', cancel)
+      dragCancelRef.current = cancel        // popover close → cancel, don't reorder
     }
     /* DRAG A SEATED PUCK OUT TO REMOVE IT (owner, 23 Aug 26 — "i just drag them
        out of where they are seated just like … edit schedule mode"), the phone
@@ -491,6 +505,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         window.removeEventListener('pointermove', move)
         window.removeEventListener('pointerup', up)
         window.removeEventListener('pointercancel', cancel)
+        if (dragCancelRef.current === cancel) dragCancelRef.current = null
         chip.classList.remove('pk-drag'); chip.style.transform = ''
         document.body.classList.remove('ic-dragging')
         if (!dragging || !ev) return                        // a tap, not a drag — leave the puck seated
@@ -503,6 +518,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
       window.addEventListener('pointermove', move)
       window.addEventListener('pointerup', up)
       window.addEventListener('pointercancel', cancel)
+      dragCancelRef.current = cancel        // popover close → cancel, don't drop
     }
     return (
       <div className="ic-popwrap" onPointerDown={e => { if (e.target === e.currentTarget) closePop() }}>
@@ -579,6 +595,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                               <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
                               {sched && <button type="button" className="ic-pkdel" data-pkdel={`${p.id}.${id}`}
                                 aria-label={`Remove ${PEOPLE[id] ? PEOPLE[id].cs : id}`}
+                                onPointerDown={e => e.stopPropagation()}
                                 onClick={() => writeInputs(() => togglePuckPerson(p.id, id))}>✕</button>}
                             </span>
                           ))}

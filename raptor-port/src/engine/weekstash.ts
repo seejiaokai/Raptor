@@ -38,6 +38,11 @@ export function stashPut(v:any,json:any){ WEEKSTASH[String(v)]=json; GEN[String(
 const GEN:Record<string,number>={};
 export function stashGenOf(v:any){ return GEN[String(v)]||0; }
 export function stashHas(v:any){ return Object.prototype.hasOwnProperty.call(WEEKSTASH,String(v)); }
+/* WIPE ALL SESSION MEMORY — a real reload does this by discarding the module,
+   which tests can't; call it to return the stash to first-boot (no week
+   remembered). Not wired to any product path: the app only ever grows this
+   store during a session, exactly as the header comment describes. */
+export function stashClear(){ for(const k in WEEKSTASH)delete WEEKSTASH[k]; for(const k in GEN)delete GEN[k]; }
 export function stashGet(v:any){ return WEEKSTASH[String(v)]||null; }
 /* A FRESH deep copy, in weekBundle's {days,dates} shape, for engine readers
    (weekctx.ts's bundle()) — NEVER cached, unlike the pure seed bundle it

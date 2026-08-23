@@ -310,6 +310,7 @@ function onWheel(e: WheelEvent) {
   const w = (e.target as HTMLElement).closest('.week')
   if (w) { panWk = null; hsSet(w, (w as HTMLElement).scrollLeft + e.deltaY); e.preventDefault() }  // a manual wheel-pan drops the arrow's in-flight target
 }
+function onTrackGrab() { panWk = null }   // a real scrollbar grab drops the arrows' in-flight target
 function onTrackScroll() {
   const w = hsWeek(); if (!w) return
   const trk = $('hsTrack')!
@@ -490,6 +491,13 @@ export function initPan() {
   document.addEventListener('touchend', onWeekTouchEnd, { passive: true })
   document.addEventListener('touchcancel', onWeekTouchEnd, { passive: true })
   if (trk) trk.addEventListener('scroll', onTrackScroll)
+  /* grabbing the scrollbar proxy is a manual pan, so it drops the arrows'
+     in-flight target the same way a shift+wheel pan does (onWheel above) —
+     otherwise the next arrow press counts from the burst corridor instead of
+     where the user just dragged to, and jumps. pointerdown only (a real grab);
+     the `scroll` echo our own mirror writes must NOT null it, or a live arrow
+     glide would lose its corridor mid-flight. */
+  if (trk) trk.addEventListener('pointerdown', onTrackGrab)
   window.addEventListener('resize', onResize)
   updateWeekNav()
   /* on a phone, jump to today's column, as bootApp does */
@@ -505,6 +513,7 @@ export function initPan() {
     document.removeEventListener('touchend', onWeekTouchEnd)
     document.removeEventListener('touchcancel', onWeekTouchEnd)
     if (trk) trk.removeEventListener('scroll', onTrackScroll)
+    if (trk) trk.removeEventListener('pointerdown', onTrackGrab)
     window.removeEventListener('resize', onResize)
   }
 }

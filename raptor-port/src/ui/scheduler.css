@@ -2056,7 +2056,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-pick-cats{display:flex;flex-wrap:wrap;gap:6px;padding:12px 15px;border-bottom:1px solid var(--edge)}
 /* the person grid — the app's own pucks in a wrap, each a toggle button; the
    selected ones ring accent, the already-seated ones dim and lock */
-.ic-pick-grid{display:flex;flex-wrap:wrap;gap:7px;padding:14px 15px;overflow-y:auto}
+/* flex:1 + min-height:0 so the grid soaks up the modal's spare height and the
+   foot (OK / tick) pins to the bottom edge — without it the foot floated mid-
+   sheet on a short roster in the phone full-screen variant (review fix, 24 Aug
+   26). On the desktop content-height card there is no spare height to take, so
+   it is a no-op there. */
+.ic-pick-grid{display:flex;flex-wrap:wrap;gap:7px;padding:14px 15px;overflow-y:auto;flex:1;min-height:0}
 .ic-pickp{background:none;border:1px solid transparent;border-radius:6px;padding:2px;cursor:pointer;
   line-height:0;display:inline-flex}
 .ic-pickp .seat{display:flex;pointer-events:none}
@@ -2091,6 +2096,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .ic-popwrap{align-items:flex-end;padding:0}
   .ic-pop{width:100%;max-width:100%;border-radius:12px 12px 0 0;max-height:75vh}
   .ic-pop .abtn,.ic-poprow,.ic-poppuck button{min-height:44px}
+  /* the seated-puck ✕ keeps its small glyph but earns a full 44px thumb target
+     on the phone — it was an 11px, ~15px-tall tap before (review fix, 24 Aug
+     26). Centred so the little × still sits inside the puck row cleanly. */
+  .ic-secpk .ic-pkdel{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 }
 
 /* ============ MODALS / DRAWER / AIRSPACE ============ */
