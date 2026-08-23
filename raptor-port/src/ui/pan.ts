@@ -8,6 +8,7 @@ import * as view from '../state/view'
 import { notify, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
+import { mountPeek } from './peek'
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement | null
 
@@ -22,12 +23,34 @@ export function updateWeekNav() {
 }
 /* one click = exactly one day box. Measured from the live layout (box + gap) so
    it stays right whatever the day width is, and it lands ON a day boundary
-   rather than drifting by a fraction of a box each time. */
+   rather than drifting by a fraction of a box each time. `:not(.peek)` — the
+   desktop next-week preview (ui/peek.ts) appends inert trailing day sections
+   after the real seven; every count/step here means the LIVE week only, the
+   same way `.day[data-day]` selectors already exclude peek by construction
+   (peek nodes carry `data-peek-day`, never `data-day`). */
 function dayStep(w: any) {
-  const ds = w.querySelectorAll('.day')
+  const ds = w.querySelectorAll('.day:not(.peek)')
   if (ds.length > 1) return Math.round(ds[1].offsetLeft - ds[0].offsetLeft)
   if (ds.length === 1) return Math.round(ds[0].getBoundingClientRect().width + 14)
   return Math.round(w.clientWidth * 0.9)
+}
+/* THE LIVE WEEK'S OWN SCROLL CEILING — where day 7 (Sunday) would sit flush
+   were there nothing scrollable after it. Before the peek preview this WAS
+   `scrollWidth - clientWidth` (setWeekTail's spacer was sized so the two
+   agreed); now real peek columns fill that trailing space, so scrollWidth
+   runs on past Sunday into next week's preview and the raw computation would
+   overshoot every "land on the real week's end" caller below. Desktop-gated
+   so a phone (which never renders `.peek` at all) takes the exact byte-for-
+   byte expression it always has — this function must never change what a
+   phone measures. */
+export function weekScrollMax(w: any): number {
+  if (window.innerWidth <= 820) return Math.max(0, w.scrollWidth - w.clientWidth)
+  const ds = w.querySelectorAll('.day:not(.peek)')
+  if (!ds.length) return Math.max(0, w.scrollWidth - w.clientWidth)
+  const last = ds[ds.length - 1] as HTMLElement
+  const cs = getComputedStyle(w)
+  const padR = parseFloat(cs.paddingRight) || 0
+  return Math.max(0, last.offsetLeft + last.offsetWidth + padR - w.clientWidth)
 }
 /* One click = one WHOLE day box, landing on the boundary. Rounding to the
    nearest day would stall on a click when the view sits mid-day, so step from
@@ -44,10 +67,15 @@ export function panDays(dir: number) {
      own repaint. Before this the jammed › was a dead click (plus the crew
      hint, whose jammed-arrow trigger this replaces — the scroll-jam path in
      onDocScroll still shows it). */
-  const max = Math.max(0, w.scrollWidth - w.clientWidth)
+  /* the LIVE week's own end — weekScrollMax, not raw scrollWidth-clientWidth,
+     now that the desktop preview's real columns (ui/peek.ts) can sit past
+     Sunday: an arrow still crosses weeks exactly at the live week's edge,
+     never partway through scrolling the inert preview into view. Identical
+     to the old expression on a phone, where `.peek` never renders. */
+  const max = weekScrollMax(w)
   if (dir > 0 && w.scrollLeft >= max - 1) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)); return }
   if (dir < 0 && w.scrollLeft <= 1) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)); return }
-  const n = w.querySelectorAll('.day').length || 1
+  const n = w.querySelectorAll('.day:not(.peek)').length || 1
   const at = w.scrollLeft / st
   const cur = dir > 0 ? Math.floor(at + 0.02) : Math.ceil(at - 0.02)
   const tgt = Math.max(0, Math.min(n - 1, cur + dir)) * st
@@ -96,6 +124,15 @@ function hsWeek() {
    fixed calc(). Desktop only, and only when real day columns are laid out to
    measure — otherwise the spacer is cleared. */
 function setWeekTail(w: any) {
+  /* THE PEEK PREVIEW REPLACES THE SPACER (ui/peek.ts). Once the desktop
+     next-week preview is mounted its own real day columns already carry the
+     week past Sunday with no gap and no sliver — the whole job this spacer
+     existed for — so a synthetic tail on top would just push the preview
+     further off screen. Checked before the day columns are even measured:
+     `.day.peek` is unambiguous (peek nodes carry no width surprises to
+     account for; they use the identical 552px flex-basis), so there is
+     nothing here worth computing once it is present. */
+  if (w.querySelector('.day.peek')) { w.style.removeProperty('--week-tail'); return }
   const ds = w.querySelectorAll('.day')
   if (window.innerWidth <= 820 || ds.length < 2) { w.style.removeProperty('--week-tail'); return }
   const cs = getComputedStyle(w)
@@ -149,7 +186,9 @@ function hsLabel() {
    columns a screen holds; both clamp to the real day count so the spacer at
    the end reads "day 7 of 7", never "day 8". */
 function dayRangeText(w: any) {
-  const days = w.querySelectorAll('.day').length
+  /* the live week only — the desktop peek preview's real trailing columns
+     must never inflate "day N of 7" into "day N of 14" */
+  const days = w.querySelectorAll('.day:not(.peek)').length
   if (!days) return ''
   const step = dayStep(w) || 1
   const left = Math.max(0, Math.min(days - 1, Math.round(w.scrollLeft / step)))
@@ -382,7 +421,31 @@ function onWeekTouchEnd(e: TouchEvent) {
   else if (swAtLeft && dx >= SWIPE_TH) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)) }
 }
 
-function onResize() { updateWeekNav() }
+/* THE PEEK PREVIEW ACROSS A RESIZE CROSSING (ui/peek.ts). ViewWeek/EditWeek's
+   own effect only reruns on a STORE version bump, so a window resize that
+   crosses the 820px breakpoint would otherwise leave the preview mounted (or
+   missing) until the next unrelated edit — the app already treats a resize as
+   imperative DOM/CSS-var work rather than a React re-render (setWeekTail just
+   above is the standing example), so this follows the same pattern instead of
+   forcing a repaint. Gated on an ACTUAL crossing, not every resize tick — a
+   drag-resize fires this continuously, and a full day-column rebuild is not
+   the couple of style writes setWeekTail costs. `'\0'` as the "previous key"
+   forces mountPeek to reconcile regardless of what a component's own ref
+   remembers (it cannot see this call); the ref resyncs to reality the next
+   time that component's own effect runs, which is a no-op once it does since
+   the DOM already matches. Skipped while a week has not painted its seven
+   live days yet (early boot) — nothing to anchor the peek nodes after. */
+let lastDesktop = typeof window !== 'undefined' && window.innerWidth > 820
+function syncPeekOnResize() {
+  const desktop = window.innerWidth > 820
+  if (desktop === lastDesktop) return
+  lastDesktop = desktop
+  ;['vWeek', 'eWeek'].forEach(id => {
+    const el = $(id)
+    if (el && el.children.length >= 7) mountPeek(el, 7, '\0')
+  })
+}
+function onResize() { updateWeekNav(); syncPeekOnResize() }
 
 export function initPan() {
   const trk = $('hsTrack')

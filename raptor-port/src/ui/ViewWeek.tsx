@@ -7,18 +7,23 @@
    surfaces. */
 import { useEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
-import { CARRYDAY, CURPAGE, DPREV, VWORK, WEEKJUMP, setCarryDay, setWeekJump, scrollWeekToDay } from '../state/view'
+import { CARRYDAY, CURPAGE, DPREV, PEEKLAND, VWORK, WEEKJUMP, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
 import { daySnapOf, dayApproved } from '../engine/publish'
 import { isDraftVer } from '../engine/drafts'
 import { dayHTML, dayIssuedHTML, withDaySnap } from './html'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
+import { weekScrollMax } from './pan'
+import { mountPeek } from './peek'
 import { useVersion } from './useStore'
 
 export function ViewWeek() {
   const version = useVersion()
   const ref = useRef<HTMLDivElement>(null)
   const prev = useRef<string[] | null>(null)
+  /* which (desktop-ness × CURWEEK) key the trailing peek nodes currently
+     reflect — '' means none are mounted. See ui/peek.ts:mountPeek. */
+  const peekKeyRef = useRef<string>('')
 
   useEffect(() => {
     /* the reference renders only the page on screen (renderSchedule is called
@@ -57,13 +62,24 @@ export function ViewWeek() {
     /* capture the outgoing week for the cross-week glide BEFORE the DOM is
        mutated below — null unless this repaint is a phone week cross */
     const runGlide = beginGlide(root)
-    let whole = !p || p.length !== html.length || root.children.length !== html.length
+    /* `< html.length`, not `!==`: once the desktop peek preview (ui/peek.ts)
+       appends its own trailing day sections after these seven, root always
+       carries MORE children than html.length on an ordinary repaint — that
+       is expected, not a sign the live days need rebuilding from scratch.
+       Only fewer-than-expected (first mount, or something having wiped the
+       week) still forces the full rebuild. */
+    let whole = !p || p.length !== html.length || root.children.length < html.length
     if (!whole) {
       const secs = [...root.children] as HTMLElement[]
       html.forEach((h, i) => { if (h !== p![i]) secs[i].outerHTML = h })
     } else {
       root.innerHTML = html.join('')
     }
+    /* Mount/refresh the trailing peek nodes — a no-op DOM-wise on an ordinary
+       repaint (same key, already present), so this never costs the perf-B
+       guarantee above. Self-heals the `whole` branch just above, which wipes
+       any existing peek nodes as a side effect of resetting innerHTML. */
+    peekKeyRef.current = mountPeek(root, html.length, peekKeyRef.current)
     /* A continuous-nav week load lands on the right day — Monday (swiped
        forward), the last day (swiped back), or a specific day index (a calendar
        day-pick) — REPLACING the scroll hold in this same repaint so the new
@@ -76,10 +92,19 @@ export function ViewWeek() {
       const was = root.style.scrollBehavior
       root.style.scrollBehavior = 'auto'
       if (WEEKJUMP === 'mon') root.scrollLeft = 0
-      else if (WEEKJUMP === 'sun') root.scrollLeft = Math.max(0, root.scrollWidth - root.clientWidth)
+      else if (WEEKJUMP === 'sun') root.scrollLeft = weekScrollMax(root)
       else scrollWeekToDay(root, WEEKJUMP)
       root.style.scrollBehavior = was
       setWeekJump(null)
+    } else if (PEEKLAND != null) {
+      /* clicking a peek day: land the now-live day at the exact viewport x the
+         clicked preview day sat at, so it "becomes real" in place — the same
+         alternative-landing slot as WEEKJUMP above, never both in one repaint. */
+      const was = root.style.scrollBehavior
+      root.style.scrollBehavior = 'auto'
+      scrollWeekToLanding(root, PEEKLAND.di, PEEKLAND.x)
+      root.style.scrollBehavior = was
+      setPeekLand(null)
     } else {
       /* a within-week repaint holds the week's scroll position (B54) */
       root.scrollLeft = sl

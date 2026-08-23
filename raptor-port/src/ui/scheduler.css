@@ -2581,6 +2581,21 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .allhands .ah-cols,.allhands .ah-row{
     grid-template-columns:minmax(64px,1fr) 44px 44px calc(var(--puck-w)*2 + 10px) minmax(0,1.25fr);
   }
+  /* THE NEXT-WEEK PREVIEW (ui/peek.ts, owner ask). Fills the trailing space
+     .week::after used to leave empty (its own real day columns replace the
+     spacer — see pan.ts:setWeekTail) with an inert, read-only look-ahead: same
+     552px flex-basis so scroll stops still land on a whole day, dimmed and
+     with a pointer cursor so it reads as "there, but not here yet" rather than
+     as a broken/loading day. Desktop-only, matching where it is ever mounted. */
+  .day.peek{opacity:.5;cursor:pointer;transition:opacity .15s}
+  .day.peek:hover,.day.peek:focus-within{opacity:.8}
+  /* the boundary between the real week and the preview needs to read at a
+     glance — a muted label ahead of the first preview day, the same
+     small-caps "section header" treatment .pl-hint/.sub-h already use rather
+     than a new pattern. Full-width so it wraps onto its own line above the
+     day name (day-head already wraps: row-gap is set above in this block). */
+  .day.peek .peek-nextwk{flex:0 0 100%;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+    text-transform:uppercase;letter-spacing:.08em;font-size:9.5px;font-weight:700;color:var(--ink-3)}
 }
 /* ============ SCHEDULER BOARD (deep single-day editor) ============ */
 .schedboard{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column}
