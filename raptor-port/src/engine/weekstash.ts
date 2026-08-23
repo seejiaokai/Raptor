@@ -11,52 +11,34 @@
    ever sees the JSON string state/history.ts (schedFields) and state/store.ts
    (loadWeek) build.
 
-   PERSISTENCE, not just an in-session cache: a versioned localStorage
-   envelope through the existing engine/hooks.ts `store` seam, so a page
-   reload survives too (`sqn142_weeks`, `{v:SCHEMA_V, weeks:{...}}`). Loaded
-   lazily on first touch (not at module scope — storeBackend.impl is wired by
-   the app after this module has already loaded) and re-written on every
-   stashPut. LAST-WRITE-WINS across tabs: this is a single-user, per-browser
-   app with no merge machinery anywhere else, so a second tab simply
-   overwrites the blob the way every other `store.set` in this app already
-   does. Every read/write is wrapped — a missing, corrupt or version-mismatched
-   blob is silently dropped and overwritten on the next put, never thrown; a
-   `try/catch` around a private-browsing quota error keeps a stash failure
-   from ever becoming a crash. BUMP SCHEMA_V the day a stashed entry's shape
-   stops matching what loadWeek expects back (a new SCHED field, a renamed
-   one) — an old blob under the old version is exactly a "corrupt" blob to a
-   newer reader and is dropped the same way. */
-import { store } from './hooks'
+   SESSION-ONLY, DELIBERATELY (owner, 23 Aug 26 — "It's ok that u don't
+   remember once I exit the session. Just like the rest. Just that when I go
+   between sun and mon it can't be that it disappears"): everything else a
+   scheduler types — INPUTS, the Leave War (its 17 Aug 26 lockstep decision)
+   — already forgets on exit, and a schedule that reloaded remembered while
+   the inputs that fed it did not would be the exact mixed-memory confusion
+   that lockstep exists to prevent. So no localStorage: a reload returns
+   every week to the plan, the same as the rest of the app. When true
+   persistence arrives it is the future shared-server step through
+   HOOKS.storeBackend (HANDOFF.md), for all of this state at once — do not
+   re-add a browser-local envelope for just this piece. */
 import { weekBundle } from './weeks-data'
 
-const SCHEMA_V=1;
 const WEEKSTASH:Record<string,string>={};
-let loaded=false;
-function loadPersisted(){
-  if(loaded)return; loaded=true;
-  try{
-    const blob:any=store.get('weeks',null);
-    if(blob&&blob.v===SCHEMA_V&&blob.weeks&&typeof blob.weeks==='object'){
-      Object.keys(blob.weeks).forEach((k:any)=>{ if(typeof blob.weeks[k]==='string')WEEKSTASH[k]=blob.weeks[k]; });
-    }
-  }catch(_e){ /* corrupt/foreign blob — start clean, as if nothing was stashed */ }
-}
-function persist(){ try{ store.set('weeks',{v:SCHEMA_V,weeks:WEEKSTASH}); }catch(_e){} }
 
 /* v is a dd/mm/yyyy week-start key (the same one CURWEEK carries); json is a
    whole snapshot string state code built (see state/store.ts's
    weekStashSnap / state/history.ts's schedFields — the two must not drift). */
-export function stashPut(v:any,json:any){ loadPersisted(); WEEKSTASH[String(v)]=json; GEN[String(v)]=(GEN[String(v)]||0)+1; persist(); }
+export function stashPut(v:any,json:any){ WEEKSTASH[String(v)]=json; GEN[String(v)]=(GEN[String(v)]||0)+1; }
 /* HOW MANY TIMES v's stash has been (re)written this session — a cheap
    change signal for renderers that CACHE something derived from a stashed
-   week (ui/peek.ts keys its next-week preview on this): boot-time loads
-   from localStorage do not bump it (nothing derived exists yet to be
-   stale), only live stashPut writes do. Per-key, so an edit to the LOADED
-   week never invalidates a preview derived from a different week. */
+   week (ui/peek.ts keys its next-week preview on this). Per-key, so an
+   edit to the LOADED week never invalidates a preview derived from a
+   different week. */
 const GEN:Record<string,number>={};
 export function stashGenOf(v:any){ return GEN[String(v)]||0; }
-export function stashHas(v:any){ loadPersisted(); return Object.prototype.hasOwnProperty.call(WEEKSTASH,String(v)); }
-export function stashGet(v:any){ loadPersisted(); return WEEKSTASH[String(v)]||null; }
+export function stashHas(v:any){ return Object.prototype.hasOwnProperty.call(WEEKSTASH,String(v)); }
+export function stashGet(v:any){ return WEEKSTASH[String(v)]||null; }
 /* A FRESH deep copy, in weekBundle's {days,dates} shape, for engine readers
    (weekctx.ts's bundle()) — NEVER cached, unlike the pure seed bundle it
    stands in for: stash content changes as the user keeps editing the week it

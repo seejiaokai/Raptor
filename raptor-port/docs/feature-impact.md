@@ -206,12 +206,12 @@ snapshot `loadWeek` handed it on the way OUT of that week (`state/store.ts`'s
 `state/history.ts:schedFields` — the whole-history undo snapshot — so the two
 serializers cannot drift; INPUTS/PLANPUCKS/DAYRMK are deliberately excluded,
 being global) and hands a fresh copy back on the way in, restored the same
-in-place technique `history.ts:histApply` uses for Undo. It also persists
-through the existing `HOOKS.storeBackend` localStorage seam (`sqn142_weeks`,
-a versioned envelope, silently dropped if corrupt or the wrong version),
-debounced off the same `histPush` choke every ordinary edit already funnels
-through, so a page reload mid-edit survives too (`initStore` checks the boot
-week's own stash the same way). Flow F's `weekctx.ts:bundle()` reads through
+in-place technique `history.ts:histApply` uses for Undo. It is session-only on
+purpose (owner, 23 Aug 26 — forget-on-exit stays the whole app's rule, in
+lockstep with `INPUTS` and the Leave War): no localStorage, one synchronous
+stash on the way out of a week, and a stash entry that fails to parse is
+silently dropped (`stashDays` returns null and the read degrades to the pure
+seed — it runs inside `validate()`, which runs on every keystroke). Flow F's `weekctx.ts:bundle()` reads through
 the stash for free — `stashHas` is checked before its own seed-bundle cache
 on every call — so a session edit on one week is now visible to the NEXT
 week's cross-week validation exactly like an authored seed would be.
@@ -504,15 +504,11 @@ check the other):
   new SCHED field from silently reaching one snapshot and not the other. A
   future SCHED field that skips `schedFields` breaks this guarantee for
   BOTH readers at once, not just the one that forgot it.
-- **`engine/weekstash.ts`'s `SCHEMA_V` must bump when a stashed snapshot's
-  shape changes (23 Aug 26).** A stash entry is JSON built by
-  `weekStashSnap`, read back by `applyWeekModel`; a field renamed, added or
-  removed on either side without bumping `SCHEMA_V` is silently
-  misinterpreted rather than refused — an old blob under the OLD version is
-  treated as corrupt and dropped (degrading to the pure seed, never a
-  crash), but an old blob under the SAME version as a changed reader is not
-  caught by anything. Bump it the day `weekStashSnap`'s output shape stops
-  matching what `applyWeekModel` expects back.
+- **`engine/weekstash.ts`'s snapshot shape is `weekStashSnap`'s to change
+  (23 Aug 26).** A stash entry is JSON built by `weekStashSnap`, read back
+  by `applyWeekModel` in the same session — the two live in one codebase, so
+  they move together; the seam to respect is `schedFields` above, and the
+  session-only rule (no persisted blobs means no stale-schema blobs).
 - **A draft's stow can lag the live day (15 Aug 26).** `SCHED.drafts[di]`
   holds each entry's own blob; the live `DAYS[di]` is only the SELECTED
   entry's working copy, and every OTHER entry's blob is refreshed solely by

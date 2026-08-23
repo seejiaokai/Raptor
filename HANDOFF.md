@@ -393,17 +393,16 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
     persisted pristine copy is a trap — the day a deploy updates the
     built-in demo weeks, every browser that ever scrolled past one would go
     on seeing the OLD content forever, because the stash outranks the seed
-    by design. It also persists through the existing `HOOKS.storeBackend`
-    localStorage seam (`sqn142_weeks`, a versioned envelope), debounced off
-    the same `histPush` choke every edit already funnels through, so a page
-    reload mid-edit survives too — a first for this app, whose
-    `INPUTS`/Leave War are still deliberately session-only. **A missing,
-    corrupt or version-mismatched blob is silently dropped**, never thrown —
-    `weekstash.ts` wraps every read/write and degrades to "as if nothing was
-    ever stashed", because this is read inside `validate()`, which runs on
-    every keystroke; `SCHEMA_V` must bump the day a stashed snapshot's shape
-    stops matching what `loadWeek` expects back, or an old blob under the
-    unchanged version is trusted when it should read as corrupt.
+    by design. It is SESSION-ONLY on purpose (owner,
+    23 Aug 26 — "It's ok that u don't remember once I exit the session.
+    Just like the rest"): no localStorage, in lockstep with `INPUTS` and
+    the Leave War's session-only decision, so a reload returns every week
+    to the plan the way the rest of the app already does. (A localStorage
+    envelope was built and removed the same day — see CLAUDE.md's stash
+    entry before re-proposing one.) **A stash entry that fails to parse is
+    silently dropped**, never thrown — `stashDays` degrades to "as if
+    nothing was ever stashed", because it is read inside `validate()`,
+    which runs on every keystroke.
     `weekctx.ts`'s cross-week seed reads (Flow F) go through the stash for
     free (its own `bundle()` checks `stashHas` before the pure-seed cache on
     every call), so a session edit on one week is now visible to the NEXT
@@ -2070,7 +2069,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `week2.ts` | **The second demo week** (Jul 20, 21 Aug 26) — `WEEK2_DAYS`/`WEEK2_DATES`/`WEEK2_INPUTS`, authored to exercise most warning families (crew solo, CO-approval pairing, tight/double turn, double booking, OCU-no-IP, illegal seat, crew-rest breach, long day, medical downchit). Deliberately avoids the two demo blind spots (no ATT B seated, no IRT without an IR, no AAR-currency remark). Not parity-compared. |
 | `weeks-data.ts` | **The loadable-week registry** (21 Aug 26) — `weekBundle(v)` hands `state/store.ts:loadWeek` a fresh deep copy of the chosen week (Jul 13 seed / Jul 20 second / a blank editable `emptyWeek` for any other chip). A leaf module (data/inputs/week2 only), no cycle. Also **`shiftWeekKey(v,n)`** (23 Aug 26) — a `dd/mm/yyyy` ± 7n-day stepper, a deliberate second implementation of `ui/weeknav.ts:shiftWeek` (an engine→ui import would be a layering violation), pinned agreeing with it by test. |
 | `weekctx.ts` | **Cross-week seed reads for `validate.ts`** (23 Aug 26) — pure reads off `weekBundle(v)` + the global `INPUTS`, nothing mutated: `seedRunIn(curWeek,maxRun)` walks back up to `maxRun` days before Monday for the consecutive-days run, `prevSundaySeed(curWeek)` shapes the previous week's Sunday like a real `ev[idx-1]` entry (`di:null`, so `markTrace` no-ops) for Monday's crew-rest check, and — added the same day for the forward crew-rest trace — **`nextMondaySeed(curWeek)`** shapes next week's Monday as a phantom "today" (carrying `fly` too, since the phantom pass computes the current day's side of the rule) fed into `validate.ts`'s `crewRestDay` a second time so a late loaded-week Sunday can trace forward onto itself. Its own `bundle(v)` helper is STASH-AWARE (see `weekstash.ts`): `stashHas(v)` is checked before the pure-bundle cache on every call, so a week the scheduler has actually edited feeds these reads its live session state instead of the untouched seed. See its own header comment for the exact window semantics and what a non-loaded, non-stashed week cannot be made to answer (SCHED/publish state, forgotten edits). Docs: `docs/engine-rules.md` §DAYS_RUN, §Crew rest; flow: `docs/feature-impact.md` Flow F. |
-| `weekstash.ts` | **Per-week session stash** (23 Aug 26 — fixes the vanishing-duty bug, see Known issues) — a dumb store, keyed by week-start, of whatever `state/store.ts:loadWeek` last handed it on the way OUT of a week (`stashPut`/`stashGet`/`stashHas`), plus `stashDays(v)` (a fresh, never-cached `{days,dates}` copy in `weekBundle` shape, for `weekctx.ts`'s cross-week reads). Persists through the existing `HOOKS.storeBackend` seam under a versioned envelope (`sqn142_weeks`), loaded lazily, silently dropped if corrupt or the wrong `SCHEMA_V`. Holds no opinion about a snapshot's shape — that is state code's call, because WARNOFF lives in `state/view.ts` and the engine may not import `state/`. Flow: `docs/feature-impact.md` Flow E. |
+| `weekstash.ts` | **Per-week session stash** (23 Aug 26 — fixes the vanishing-duty bug, see Known issues) — a dumb store, keyed by week-start, of whatever `state/store.ts:loadWeek` last handed it on the way OUT of a week (`stashPut`/`stashGet`/`stashHas`), plus `stashDays(v)` (a fresh, never-cached `{days,dates}` copy in `weekBundle` shape, for `weekctx.ts`'s cross-week reads). Session-only on purpose (owner, 23 Aug 26 — forget-on-exit stays the app's rule, in lockstep with `INPUTS`/Leave War); an entry that fails to parse is silently dropped by `stashDays`, degrading to the pure seed. Holds no opinion about a snapshot's shape — that is state code's call, because WARNOFF lives in `state/view.ts` and the engine may not import `state/`. Flow: `docs/feature-impact.md` Flow E. |
 | `people.ts` | PEOPLE roster (quals, seat, categories), qual ladder (`OCU→D→C→B→A→IW→IP→IR→FI` — instructor-ness lives in CAT, no `ip` flag), `isScheduler`/`isLead`/`isInstr`/`isInstrPilot`/`isOcu`, **`isPersonnel` + the `pers:true`/`seat:'GND'` ground-crew category** (Aug 26 — seeded `torque`/`spanner`/`gizmo`, no CAT; `deriveQuals` short-circuits them), `scShiftKind`, `sanStatus`, `aarNeed`, and **`nameToId` (id-tolerant since 21 Aug 26** — resolves a who-string by callsign OR, failing that, a value that is already a person id; the seed stores bare ids in ground/programme `who`, which the callsign scrub would otherwise have stopped resolving). |
 | `inputs.ts` | INPUTS list + **`INPUT_META`, the one table every input type is decided by** (10 Aug 26) — `INPUT_TYPES` is derived from its keys and every predicate is a lookup: `isLeave`, `isLocalLeave`, `isDownchit` (= the medical group), **`isPersonal`/`isUnavail`** (the two day blocks, presentational only), plus `canSpare`, `canWork`, `awayAllDay`, `TYPE_GROUPS`/`typeGroup`. `isDetach` is gone with the `Detachment` type. Also DATES and the late-input block, plus `WEEK1_INPUTS_SNAP`/`WEEK1_DATES` (pristine seed-week inputs/labels for the week selector). |
 | `time.ts` | `parseHM`/`hhmm`/`minus`/`overlap` (half-open — abutting windows do not clash). |

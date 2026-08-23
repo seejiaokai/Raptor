@@ -161,11 +161,11 @@ export function resetSession(s: any) {
    switch, which silently discarded any edit made to a week once you left it
    — reported bug: a duty added on the Sunday of an unauthored week vanished
    after scrolling one week forward and back. weekstash.ts is the dumb
-   per-week store (keyed by week-start, persisted through the existing
-   engine/hooks.ts localStorage seam so a page reload survives too); these
-   two helpers are the state-layer half that knows what belongs in a
-   snapshot, because WARNOFF lives in state/view.ts and the engine may not
-   import state/. */
+   per-week store (keyed by week-start; SESSION-ONLY on purpose — see its
+   header: the owner keeps the whole app's forget-on-exit rule, this fix is
+   about navigation, not reloads); these two helpers are the state-layer
+   half that knows what belongs in a snapshot, because WARNOFF lives in
+   state/view.ts and the engine may not import state/. */
 
 /* Everything a week's own stash entry needs — DAYS plus the eleven SCHED
    fields (schedFields, shared with history.ts's histSnap so the two cannot
@@ -176,25 +176,6 @@ export function resetSession(s: any) {
    on a DIFFERENT week. */
 function weekStashSnap() {
   return JSON.stringify({ d: DAYS, ...schedFields(), wo: [...view.WARNOFF] })
-}
-
-/* PERSIST THE LOADED WEEK ON EVERY EDIT TOO, not just on the way out of it —
-   a page reload mid-edit must not lose more than the localStorage envelope's
-   own last write. Hung off HOOKS.histPush, the same choke afterSchedMutate's
-   markEdit already funnels every ordinary write through, and debounced
-   (~800ms) so a burst of edits (a drag, fast typing) does not hit
-   localStorage once per keystroke — only the last state in a burst is worth
-   keeping. `unref()` (Node/vitest only — a plain browser timer has no such
-   method) keeps a scheduled-but-unfired stash from holding a test process
-   open; the timer itself still fires normally either way. */
-let stashTimer: any = null
-function scheduleWeekStash() {
-  if (stashTimer) clearTimeout(stashTimer)
-  stashTimer = setTimeout(() => {
-    stashTimer = null
-    stashPut(CURWEEK, weekStashSnap())
-  }, 800)
-  if (stashTimer && typeof stashTimer.unref === 'function') stashTimer.unref()
 }
 
 /* WHAT THIS WEEK LOOKED LIKE THE MOMENT IT FINISHED LOADING — the yardstick
@@ -233,9 +214,9 @@ function reconcileLandedAcc() {
   })
 }
 
-/* THE ONE PLACE THE SCHEDULE MODEL FOR WEEK v GETS BUILT — shared by loadWeek
-   (an in-session switch) and initStore (a page reload landing back on a
-   stashed week), so the two restore paths cannot drift apart. Takes DAYS,
+/* THE ONE PLACE THE SCHEDULE MODEL FOR WEEK v GETS BUILT — loadWeek's one
+   entry to both the restore path and the pure-seed path, so the two cannot
+   drift apart. Takes DAYS,
    DATES and every SCHED field from the stash if one exists for v, otherwise
    from the pure weekBundle seed exactly as before. Either way it also runs
    the INPUTS acc-clear/relanding epilogue (mintInpIds + either the ordinary
@@ -313,11 +294,6 @@ function applyWeekModel(v: any): any {
    stash (if this week has been visited and edited before) or falls back to
    the same pure-bundle path as always. */
 export function loadWeek(v: any) {
-  /* a pending debounced auto-stash (scheduleWeekStash) belongs to the week
-     being LEFT — the synchronous stash below supersedes it, and letting it
-     fire after CURWEEK moves would file the NEW week's untouched state under
-     the new key (the pristine-copy trap weekBaseline's comment describes). */
-  if (stashTimer) { clearTimeout(stashTimer); stashTimer = null }
   const leaveSnap = weekStashSnap()
   if (stashHas(CURWEEK) || leaveSnap !== weekBaseline) stashPut(CURWEEK, leaveSnap)
   setCurWeek(v)
@@ -362,7 +338,7 @@ export function wireStore() {
   HOOKS.editMode = () => canEditSched() && view.CURPAGE === 'editsched'
   HOOKS.reflow = () => { validate(); notify() }
   HOOKS.renderStatus = () => notify()
-  HOOKS.histPush = () => { histPush(); scheduleWeekStash() }
+  HOOKS.histPush = () => histPush()
   HOOKS.syncHistBtns = () => notify()
   HOOKS.paintArm = () => notify()
   HOOKS.renderRosters = () => notify()
@@ -440,23 +416,6 @@ export function initStore() {
      validate + baseline — boot-only, so parity (which never boots) stays blind;
      SCHED is fresh here, so every day reads editable. See autoAcceptSeedInputs. */
   autoAcceptSeedInputs()
-  /* A PERSISTED SESSION STASH SURVIVES A RELOAD, not just an in-session week
-     switch (weekstash.ts's localStorage envelope) — if the boot week itself
-     was left mid-edit in an earlier visit, restore it now, the same
-     applyWeekModel path loadWeek's own restore branch uses. NOT a call to
-     loadWeek(CURWEEK): that would stashPut this fresh pristine boot state
-     OVER the very session data being restored before ever reading it back
-     (loadWeek always stashes the CURRENT week first, and here that IS the
-     target). Runs AFTER the ordinary boot above, not instead of it, so every
-     other boot step (rules, stores, demo SANS, the global INPUTS merge)
-     still happens exactly as today — this only changes anything in the rare
-     case a stash actually exists for the boot week, which is precisely the
-     "reload mid-edit" case the whole envelope exists for. */
-  if (stashHas(CURWEEK)) {
-    const s = applyWeekModel(CURWEEK)
-    view.WARNOFF.clear()
-    if (s) (s.wo || []).forEach((k: any) => view.WARNOFF.add(k))
-  }
   weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()

@@ -817,13 +817,18 @@ subscribers.
   from a reported bug: a duty planned on the Sunday of an unauthored week
   vanished after scrolling to 13 Jul and back, and no crew-rest flag raised
   for Ranger the way it should have). What's decided:
-  - **Per-browser session memory, not shared storage.**
-    `engine/weekstash.ts` remembers, per week-start key, the last snapshot
-    `state/store.ts:loadWeek` handed it on the way OUT of a week, and
-    persists it through the existing `HOOKS.storeBackend` seam
-    (`sqn142_weeks`, a versioned, corrupt-safe envelope) so a page reload
-    mid-edit survives too — last-write-wins across tabs, the same rule
-    every other write through that seam already lives by.
+  - **Session memory only, deliberately — a reload still forgets** (owner,
+    23 Aug 26 — "It's ok that u don't remember once I exit the session.
+    Just like the rest. Just that when I go between sun and mon it can't be
+    that it disappears"). `engine/weekstash.ts` remembers, per week-start
+    key, the last snapshot `state/store.ts:loadWeek` handed it on the way
+    OUT of a week — in memory only, in lockstep with `INPUTS` and the Leave
+    War's own 17 Aug 26 session-only decision: a schedule that survived a
+    reload while the inputs that fed it did not would be exactly the
+    mixed-memory confusion that lockstep exists to prevent. A localStorage
+    envelope was built and then removed the same day on the owner's word —
+    don't re-add a browser-local one for just this piece; real persistence
+    is the future shared-server step, for all of this state at once.
   - **Pristine weeks are deliberately NOT stashed.** Stashing every week
     unconditionally would persist a byte-copy of the pure seed for weeks
     nobody touched — and a persisted pristine copy is a trap: the day a
