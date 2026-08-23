@@ -278,8 +278,22 @@ function onDotsClick(e: MouseEvent) {
    `.go` block scrolls its own RMKS/AREA/TIME) is left to that scroller.
    Phone only; desktop steps weeks with the seg buttons and never snaps. */
 const SWIPE_TH = 45
+/* EDGE_SLOP — how far in from a true 0 / max still counts as "sitting on the
+   end day" (owner-reported, 23 Aug 26 — the swipe between weeks was unreliable:
+   19→20 Jul needed a second, harder swipe and 13→12 Jul never worked at all).
+   The phone week does not rest at 0/max on its end days. `.week` carries 12px
+   side padding and a 12px gap and sets NO `scroll-padding`, so scroll-snap
+   parks Monday one padding-width IN (~12px, not 0) and clamps Sunday a hair
+   short of max on a fractional-width viewport. A 1px edge test therefore read
+   "not at the edge" while the scheduler was plainly on Monday/Sunday, so the
+   back-swipe guard was never true and the forward one only caught when the
+   snap happened to land exactly. EDGE_SLOP covers that resting inset — one
+   padding + one gap — and stays an order of magnitude below a day column
+   (~350px+ at any phone width), so a genuine mid-week swipe still cannot be
+   mistaken for an edge one. */
+const EDGE_SLOP = 24
 let swEl: HTMLElement | null = null
-let swStartX = 0, swAtLeft = false, swAtRight = false
+let swStartX = 0, swStartY = 0, swLastX = 0, swLastY = 0, swAtLeft = false, swAtRight = false
 function onWeekTouchStart(e: TouchEvent) {
   swEl = null
   if (window.innerWidth > 820) return
@@ -294,15 +308,35 @@ function onWeekTouchStart(e: TouchEvent) {
   const max = w.scrollWidth - w.clientWidth
   if (max <= 1) return                           // nothing to be at the edge OF (headless / not laid out)
   swEl = w
-  swStartX = e.touches[0].clientX
-  swAtLeft = w.scrollLeft <= 1
-  swAtRight = w.scrollLeft >= max - 1
+  swStartX = swLastX = e.touches[0].clientX
+  swStartY = swLastY = e.touches[0].clientY
+  swAtLeft = w.scrollLeft <= EDGE_SLOP
+  swAtRight = w.scrollLeft >= max - EDGE_SLOP
 }
+/* Track the finger so a gesture the browser CANCELS mid-way (see below) still
+   has a real end position to measure — a passive move listener can't steer the
+   scroll, it only remembers where the finger went. */
+function onWeekTouchMove(e: TouchEvent) {
+  if (!swEl || !e.touches || !e.touches.length) return
+  swLastX = e.touches[0].clientX
+  swLastY = e.touches[0].clientY
+}
+/* Wired to BOTH touchend and touchcancel. When an overswipe off an end day has
+   any sub-pixel scroll room left, the browser claims the touch as a scroll and
+   dispatches `touchcancel`, NOT `touchend` — so a touchend-only wiring silently
+   dropped exactly the edge swipes that were meant to cross, which is the other
+   half of "I had to swipe twice". A sequence ends with one or the other, never
+   both, and swEl is nulled on the first, so this can't cross twice. */
 function onWeekTouchEnd(e: TouchEvent) {
   const w = swEl; swEl = null
   if (!w || window.innerWidth > 820) return
-  const endX = (e.changedTouches && e.changedTouches.length) ? e.changedTouches[0].clientX : swStartX
-  const dx = endX - swStartX
+  const ct = (e.changedTouches && e.changedTouches.length) ? e.changedTouches[0] : null
+  const endX = ct ? ct.clientX : swLastX
+  const endY = ct ? ct.clientY : swLastY
+  const dx = endX - swStartX, dy = endY - swStartY
+  /* horizontal intent only: a mostly-vertical drag (paging the day down) that
+     drifts sideways past the threshold must not be read as a week cross */
+  if (Math.abs(dx) <= Math.abs(dy)) return
   /* right edge + swipe left (content advancing) → next week, land on Monday;
      left edge + swipe right (retreating) → previous week, land on Sunday */
   if (swAtRight && dx <= -SWIPE_TH) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)) }
@@ -318,7 +352,9 @@ export function initPan() {
   document.addEventListener('scroll', onDotsScroll, true)
   document.addEventListener('click', onDotsClick)
   document.addEventListener('touchstart', onWeekTouchStart, { passive: true })
+  document.addEventListener('touchmove', onWeekTouchMove, { passive: true })
   document.addEventListener('touchend', onWeekTouchEnd, { passive: true })
+  document.addEventListener('touchcancel', onWeekTouchEnd, { passive: true })
   if (trk) trk.addEventListener('scroll', onTrackScroll)
   window.addEventListener('resize', onResize)
   updateWeekNav()
@@ -331,7 +367,9 @@ export function initPan() {
     document.removeEventListener('scroll', onDotsScroll, true)
     document.removeEventListener('click', onDotsClick)
     document.removeEventListener('touchstart', onWeekTouchStart)
+    document.removeEventListener('touchmove', onWeekTouchMove)
     document.removeEventListener('touchend', onWeekTouchEnd)
+    document.removeEventListener('touchcancel', onWeekTouchEnd)
     if (trk) trk.removeEventListener('scroll', onTrackScroll)
     window.removeEventListener('resize', onResize)
   }
