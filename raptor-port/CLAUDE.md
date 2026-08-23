@@ -687,7 +687,11 @@ subscribers.
   the removed title was; the view/edit week is stepped day-to-day by SWIPE, which
   is CONTINUOUS across weeks (swipe off Sunday → next week's Monday, off Monday →
   previous week's Sunday — `pan.ts` edge-overswipe + `WEEKJUMP` landing the
-  scroll in the same repaint). `WEEKS` (`engine/waves.ts`) is kept for
+  scroll in the same repaint). The DESKTOP `‹ ›` arrows are continuous across
+  weeks too (owner, 23 Aug 26 — completing this decision): stepping past the
+  week's last day loads the adjacent week and lands on its near edge, instead
+  of the arrows going dead at the ends. Week landings are instant — no settle
+  animation on a cross. `WEEKS` (`engine/waves.ts`) is kept for
   probe-bridge/reference but is no longer the seg render source. The engine
   already builds any week (`weekBundle`/`emptyWeek`), so nothing bounds this.
   The big `Jul 13 – Jul 19` title (`#vTitle`) and the `142 · week of… · all times
@@ -709,6 +713,12 @@ subscribers.
   (ground-row-less) days — without it an input stays marked accepted with nothing
   on the day. Don't re-add the `INPUTS` swap, and don't move the `acc` clear.
   Flow: `docs/feature-impact.md` §Flow E.
+- **Manage users lives on the Admin tab** (owner, 23 Aug 26). The topbar
+  `#manageUsers` button and the `#userModal` are gone; the same fields, list
+  and mutations sit on the Admin page (`ui/AdminPage.tsx`), the seventh nav
+  tab, ALWAYS LAST in both navs and admin-hidden like the Edit tab — but the
+  PAGE is the gate (`#admDeny`), per the standing role doctrine. Don't put
+  the button back on the topbar, and don't add a tab after Admin.
 - **No repeat-weeks on inputs** (owner, 22 Aug 26 — "remove repeated weeks
   everywhere"). The Inputs form's "Repeat wks" field, the table's Recurring
   column and the record's `recur` write are all deleted. The feature never

@@ -2405,7 +2405,8 @@ the saved templates (`DUTYTPL_CFG`), an "Empty block", and a ✎ that opens the
 editor. No wave is consulted (that coupling is gone); picking a template copies
 its rows onto the day as a plain block (`board.ts`'s `blockMenu`, minting
 through `blockFromTpl`). The editor is `ui/DutyTplModal.tsx` — a `.modal`
-opened by `TPLEDIT` (`pops.ts`), mirroring `UserModal`: tabs per template + New,
+opened by `TPLEDIT` (`pops.ts`; since 23 Aug 26 the Admin page's
+`#admDutyTpl` sets the same flag as a second front door): tabs per template + New,
 an editable title, and one `.trow` per role with a `DUTY_PICK` datalist,
 start/end, ▲▼ reorder and delete; Reset / Delete / Done in the foot. Every edit
 runs the matching `engine/dutytpl.ts` mutator → `dutyTplSave()` → `notify()`,
@@ -3408,3 +3409,34 @@ step by step.
 (The old known edge here — a recurring input chipping its first span only —
 is gone WITH its feature: the owner had the repeat-weeks field removed
 outright, 22 Aug 26. See CLAUDE.md §Stable decisions.)
+
+## The Admin page (owner, 23 Aug 26)
+
+The seventh tab, and it is ALWAYS LAST in both navs — the tools tab after
+the work tabs (`ui/AdminPage.tsx`; the topnav entry in `Shell.tsx`, the
+drawer item in `Drawer.tsx`, both admin-hidden like the Edit tab). The nav
+hides it from a member, but **the PAGE is the gate, not the nav** (the
+standing role doctrine — checks live at the page and the write path): a
+member forced onto the page renders `#admDeny`, a plain denial with no
+tools behind it, and the write handlers still ask `canEditSched()`
+themselves. Pinned non-vacuously in `ui/admin.test.tsx` — the page really
+mounts for the forced member, and what mounts is the denial.
+
+Three cards, a 2-column grid on desktop with the last card full-width:
+
+- **`#admUsers` Manage users** — the old `#userModal` body moved here WHOLE
+  (same ids and classes: `#newName`, `#newRole`, `#userAdd`, `#userList`,
+  `.urow`/`.ub`, `[data-deluser]`; same `USERS` store and mutations in
+  `state/users.ts`). The topbar `#manageUsers` button, the modal, and its
+  `USERM`/`setUserModal` flag in `pops.ts` are gone — logout no longer has
+  a modal to close, because `resetSession` lands the next session on
+  viewsched and the page unmounts with it. The card ends with the honesty
+  note: this list drives the demo login only, no server behind it yet.
+- **`#admConfig` Squadron configuration** — `#admDutyTpl` / `#admDayTpl`
+  open the duty-template and day-template editors by setting the SAME
+  `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
+  Front doors, not new surfaces: the modals stay App-level siblings and
+  paint over this page like any other.
+- **`#admData` Data & persistence** — an honesty card only: everything
+  typed into the prototype is session-only, and this card marks the seam
+  where the shared database's controls will land.
