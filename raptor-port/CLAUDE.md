@@ -690,8 +690,19 @@ subscribers.
   scroll in the same repaint). The DESKTOP `‹ ›` arrows are continuous across
   weeks too (owner, 23 Aug 26 — completing this decision): stepping past the
   week's last day loads the adjacent week and lands on its near edge, instead
-  of the arrows going dead at the ends. Week landings are instant — no settle
-  animation on a cross. `WEEKS` (`engine/waves.ts`) is kept for
+  of the arrows going dead at the ends. DESKTOP landings are instant — no settle
+  animation on an arrow cross. **The PHONE swipe cross GLIDES, though** (owner,
+  23 Aug 26 — "go with glide … glide between weeks"): the week being left is
+  cloned into a throwaway overlay and slides off in the swipe direction while the
+  freshly-loaded week slides in from the other edge, so a boundary cross reads as
+  one continuous motion instead of the old reload-flash. It is `src/ui/weekglide.ts`
+  (`beginGlide`), called from the WEEKJUMP branch of ViewWeek/EditWeek, phone-only
+  (≤820px) and reduced-motion-aware, and it no-ops without layout so the gates are
+  untouched. The swipe is NOT locked to one day — a firmer flick still crosses
+  several days within a week, which the owner explicitly kept (23 Aug 26 — "don't
+  lock the swipe to a day. I actually like how it is currently"); do not add
+  `scroll-snap-stop`. Within-week day-to-day swipes never glide (only a Monday/
+  Sunday landing does), and desktop stays instant. `WEEKS` (`engine/waves.ts`) is kept for
   probe-bridge/reference but is no longer the seg render source. The engine
   already builds any week (`weekBundle`/`emptyWeek`), so nothing bounds this.
   The big `Jul 13 – Jul 19` title (`#vTitle`) and the `142 · week of… · all times

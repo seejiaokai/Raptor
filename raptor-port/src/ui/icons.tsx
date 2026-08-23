@@ -60,6 +60,19 @@ export function HlIcon() {
   )
 }
 
+/** A search magnifier — the Lucide line glyph, so the phone search boxes read
+ *  as one of the toolbar's own muted line icons instead of the glossy full-
+ *  colour native 🔍 emoji they used to print (owner, 23 Aug 26). */
+export function SrchIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  )
+}
+
 /** The standard "history" glyph — a clock with a counter-clockwise arrow — so
  *  the board's History toggle no longer reads as a plain clock. */
 export function HistIcon() {

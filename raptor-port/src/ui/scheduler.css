@@ -364,6 +364,10 @@ a{color:var(--accent)}
 .hl-lab .btnglyph{width:16px;height:16px}
 .hl-tog{display:none}
 .searchbox{display:flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--edge);border-radius:9px;padding:4px 10px}
+/* the muted line magnifier that replaced the glossy native 🔍 emoji (owner,
+   23 Aug 26) — sized and coloured like a placeholder adornment, never shrunk
+   away by the flex input beside it */
+.searchbox .btnglyph{width:15px;height:15px;flex:0 0 auto;color:var(--ink-3)}
 .searchbox input{background:transparent;border:none;color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;width:150px}
 .searchbox input:focus{outline:none}
 .filters .right{margin-left:auto;display:flex;gap:6px;align-items:center}
@@ -2271,7 +2275,14 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      .lab it used to hold is hidden above): height:auto so align-self:stretch
      can actually stretch the button past its 26px, keeping the full-row
      opaque backdrop the leak fix demands. */
-  #page-viewsched .filters .hl-tog,#page-editsched .filters .hl-tog{position:sticky;left:0;z-index:1;
+  /* ONLY the VIEW row pins the toggle left (owner, 23 Aug 26). On the view row
+     the toggle IS the leftmost control, so a left pin sits it cleanly at the
+     edge. On the EDIT row the two export buttons come before it, so a left pin
+     dragged the opaque toggle back OVER them as the row scrolled — the export
+     button's blank edge peeking from behind the pin read as a stray empty box
+     (the owner's circle). The edit toggle now just scrolls with the exports;
+     the search pin on the right is untouched, so nothing on that row bleeds. */
+  #page-viewsched .filters .hl-tog{position:sticky;left:0;z-index:1;
     align-self:stretch;height:auto;box-shadow:-12px 0 0 var(--panel)}
   /* A SMALL SEARCH ON THE PHONE'S VIEW-ONLY SCHEDULE (owner, 20 Aug 26 — "we
      should have a small search bar too in view schedule at the top"). The box
@@ -2328,7 +2339,15 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      than a sampled colour — .editing swaps --topbar-a/b for the blue edit
      tint, and painting the vars means the pin re-tints with the bar for free
      instead of standing out as a stale grey patch. */
-  .tb-hist{display:inline-flex;position:sticky;right:0;z-index:2;
+  /* order:9 makes the trio the LAST (rightmost) child of .spring on a phone —
+     load-bearing, not cosmetic. It is FIRST in source order, so at its natural
+     flow position (just right of the mark) `right:0` never engaged and the
+     opaque pin simply sat there OVERLAPPING the sticky-left RAPTOR mark the
+     moment the bar scrolled — the trio jammed over the "R" the owner circled
+     (23 Aug 26). Pushed to the visual right, its natural position is past the
+     right edge, so `right:0` finally pins it to that edge — the true mirror of
+     the burger + mark's left pin, always in view while editing, never colliding. */
+  .tb-hist{display:inline-flex;order:9;position:sticky;right:0;z-index:2;
     background:linear-gradient(180deg,var(--topbar-a),var(--topbar-b));
     box-shadow:12px 0 0 var(--topbar-a);align-self:stretch;align-items:center;padding-left:5px}
   .tb-hist .abtn{width:30px;min-width:0;height:30px;padding:0;display:inline-flex;
