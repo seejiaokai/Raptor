@@ -34,23 +34,52 @@ function dayStep(w: any) {
   if (ds.length === 1) return Math.round(ds[0].getBoundingClientRect().width + 14)
   return Math.round(w.clientWidth * 0.9)
 }
-/* THE LIVE WEEK'S OWN SCROLL CEILING — where day 7 (Sunday) would sit flush
-   were there nothing scrollable after it. Before the peek preview this WAS
-   `scrollWidth - clientWidth` (setWeekTail's spacer was sized so the two
-   agreed); now real peek columns fill that trailing space, so scrollWidth
-   runs on past Sunday into next week's preview and the raw computation would
-   overshoot every "land on the real week's end" caller below. Desktop-gated
-   so a phone (which never renders `.peek` at all) takes the exact byte-for-
-   byte expression it always has — this function must never change what a
-   phone measures. */
+/* THE LIVE WEEK'S OWN SCROLL CEILING — the scroll position that brings the LAST
+   live day (Sunday) to the FRONT (left) of the strip. On a phone that is just
+   `scrollWidth - clientWidth` (one day fills the screen, so front == the far
+   end) and this function must never change what a phone measures — the exact
+   byte-for-byte expression it always has.
+
+   On desktop it USED to mean "Sunday jammed flush against the RIGHT edge"
+   (last.offsetLeft + width + padding − clientWidth). That is why the weekend
+   was unreachable (owner, 23 Aug 26 — "Friday not aligned on the far left …
+   Saturday and Sunday out of selection"): with three day-columns to a screen,
+   Sunday-flush-right left FRIDAY at the front, so the arrow that stepped up to
+   this ceiling could never walk Saturday or Sunday to the front to crew them,
+   and the final press only nudged before crossing (the "2 arrows to next
+   week"). The next-week preview's real columns (ui/peek.ts) are the runway
+   that makes Sunday-at-the-front a whole-screen view rather than a void, so the
+   ceiling is now Sunday's own front position: `(liveDays − 1) × dayStep`,
+   clamped to the actual scroll range. The arrows below walk every live day to
+   the front and cross only past this; the `sun` landing (crossing BACK a week)
+   lands Sunday at the front too, symmetric with `mon` landing Monday there. */
 export function weekScrollMax(w: any): number {
   if (window.innerWidth <= 820) return Math.max(0, w.scrollWidth - w.clientWidth)
   const ds = w.querySelectorAll('.day:not(.peek)')
-  if (!ds.length) return Math.max(0, w.scrollWidth - w.clientWidth)
-  const last = ds[ds.length - 1] as HTMLElement
-  const cs = getComputedStyle(w)
-  const padR = parseFloat(cs.paddingRight) || 0
-  return Math.max(0, last.offsetLeft + last.offsetWidth + padR - w.clientWidth)
+  const cap = Math.max(0, w.scrollWidth - w.clientWidth)
+  if (ds.length < 2) return cap
+  const step = Math.round((ds[1] as HTMLElement).offsetLeft - (ds[0] as HTMLElement).offsetLeft)
+  if (step <= 0) return cap
+  return Math.min(cap, (ds.length - 1) * step)
+}
+/* COUNT FROM WHERE THE LAST PRESS WAS HEADING, NOT THE LIVE SCROLL (owner, 23
+   Aug 26 — "twice on Tuesday to get to Wednesday"). An arrow scroll is a ~300ms
+   smooth glide, so a second press that lands before it finishes read a
+   half-finished scrollLeft and stepped less than a whole day — so it took two
+   presses to advance one. We remember the position the last press COMMANDED,
+   and while the glide is still in flight toward it (scrollLeft strictly between
+   where that press started and where it is going) the next press counts from
+   the destination — one press, one day, however fast the taps come. The moment
+   the glide arrives, or the strip is repositioned any other way (a manual
+   scroll lands outside that in-flight span, a new week zeroes panWk), the live
+   scrollLeft takes over again. */
+let panWk: string | null = null
+let panPrev = -1, panTgt = -1
+function panBase(w: any): number {
+  const sl = w.scrollLeft
+  if (panWk !== CURWEEK || panTgt < 0) return sl
+  const lo = Math.min(panPrev, panTgt), hi = Math.max(panPrev, panTgt)
+  return (sl > lo && sl < hi) ? panTgt : sl     // mid-glide → count from the destination
 }
 /* One click = one WHOLE day box, landing on the boundary. Rounding to the
    nearest day would stall on a click when the view sits mid-day, so step from
@@ -61,25 +90,27 @@ export function panDays(dir: number) {
      without it every test's arrow click would read as "at the edge" below and
      week-jump */
   const st = dayStep(w); if (!st) return
-  /* CONTINUOUS ACROSS WEEKS (owner, 23 Aug 26): an arrow pressed while already
-     jammed against the week's end crosses into the neighbouring week — the
+  /* CONTINUOUS ACROSS WEEKS (owner, 23 Aug 26): an arrow pressed while the last
+     live day already sits at the front crosses into the neighbouring week — the
      same edge-cross the phone swipe does, landing via WEEKJUMP in the load's
-     own repaint. Before this the jammed › was a dead click (plus the crew
-     hint, whose jammed-arrow trigger this replaces — the scroll-jam path in
-     onDocScroll still shows it). */
-  /* the LIVE week's own end — weekScrollMax, not raw scrollWidth-clientWidth,
-     now that the desktop preview's real columns (ui/peek.ts) can sit past
-     Sunday: an arrow still crosses weeks exactly at the live week's edge,
-     never partway through scrolling the inert preview into view. Identical
-     to the old expression on a phone, where `.peek` never renders. */
+     own repaint. */
+  /* the LIVE week's own end — weekScrollMax is now "Sunday at the FRONT" on
+     desktop (see there), so the arrow WALKS every live day — Monday through
+     Sunday — to the front across the next-week preview's runway, and crosses
+     only once you press past Sunday. Before this it stopped with Sunday jammed
+     right and the weekend never reached the front (owner: "Saturday and Sunday
+     out of selection"). Identical to the old flush-end on a phone, where
+     `.peek` never renders and one day fills the screen. */
   const max = weekScrollMax(w)
-  if (dir > 0 && w.scrollLeft >= max - 1) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)); return }
-  if (dir < 0 && w.scrollLeft <= 1) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)); return }
+  const base = panBase(w)
+  if (dir > 0 && base >= max - 1) { view.setWeekJump('mon'); panWk = null; loadWeek(shiftWeek(CURWEEK, 1)); return }
+  if (dir < 0 && base <= 1) { view.setWeekJump('sun'); panWk = null; loadWeek(shiftWeek(CURWEEK, -1)); return }
   const n = w.querySelectorAll('.day:not(.peek)').length || 1
-  const at = w.scrollLeft / st
+  const at = base / st
   const cur = dir > 0 ? Math.floor(at + 0.02) : Math.ceil(at - 0.02)
   const tgt = Math.max(0, Math.min(n - 1, cur + dir)) * st
   const dest = Math.min(tgt, max)
+  panWk = CURWEEK; panPrev = base; panTgt = dest
   w.scrollTo({ left: dest, behavior: 'smooth' })
 }
 
@@ -252,7 +283,7 @@ export function rosDayFollow() {
 function onWheel(e: WheelEvent) {
   if (!e.shiftKey || !e.deltaY) return
   const w = (e.target as HTMLElement).closest('.week')
-  if (w) { hsSet(w, (w as HTMLElement).scrollLeft + e.deltaY); e.preventDefault() }
+  if (w) { panWk = null; hsSet(w, (w as HTMLElement).scrollLeft + e.deltaY); e.preventDefault() }  // a manual wheel-pan drops the arrow's in-flight target
 }
 function onTrackScroll() {
   const w = hsWeek(); if (!w) return

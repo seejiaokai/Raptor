@@ -701,22 +701,38 @@ subscribers.
   weeks too (owner, 23 Aug 26 — completing this decision): stepping past the
   week's last day loads the adjacent week and lands on its near edge, instead
   of the arrows going dead at the ends. DESKTOP landings are instant — no settle
-  animation on an arrow cross. **And the desktop week ends on a WHOLE day, not a
-  broken sliver** (owner, 23 Aug 26 — "totally skip Saturday and Sunday … Friday
-  should be nicely aligned on the left … it jumps to Monday immediately"): a wide
-  screen shows 3–4 columns, so the raw scroll clamped with a MIDDLE day pinned
-  left as a fraction and the › crossed weeks off that jammed edge. A JS-sized
-  trailing spacer (`pan.ts:setWeekTail` → `.week::after` / `--week-tail`, desktop
-  only) adds just enough room to round the end UP to the last whole-day view
-  (Fri | Sat | Sun, earliest flush left, no sliver, no empty void); the arrows
-  then walk one clean day per click and only roll over PAST it. Don't reintroduce
-  a fixed `calc()` spacer — the right size depends on the live day width and the
-  viewport, which is why it is measured. The `.crew-hint` edge hint is
-  RETIRED (23 Aug 26, with the next-week preview): real preview columns now
-  continue past Sunday, so the very last day CAN sit at the front and the
-  hint's own firing condition became unreachable — the day-name picks and the
-  panel arrows still work, they just no longer need teaching. Don't
-  reintroduce the hint; the limitation it apologised for is gone. **The PHONE
+  animation on an arrow cross. **The desktop arrows walk EVERY live day — including Saturday and Sunday —
+  to the FRONT before they cross** (owner, 23 Aug 26 — "Friday not aligned on
+  the far left … Saturday and Sunday out of selection of the placeholders … 2
+  right arrows to get to next week"). A wide screen shows three columns, and the
+  ceiling used to be "Sunday jammed flush RIGHT" (`weekScrollMax` = last day's
+  right edge − clientWidth), which left FRIDAY at the front: the weekend never
+  reached the front to be crewed, and the final press only nudged the sliver
+  before crossing. `weekScrollMax` is now "the last live day at the FRONT" =
+  `(liveDays − 1) × dayStep` clamped to the scroll range — the next-week
+  preview's real columns (`ui/peek.ts`) are the runway that makes
+  Sunday-at-the-front a whole view rather than a void — so `panDays` steps Mon
+  → … → Sun, each to the front, and crosses only on the press PAST Sunday. The
+  `sun` cross-back landing is Sunday-at-the-front too, symmetric with `mon`
+  landing Monday there. The JS-sized trailing spacer stays
+  (`pan.ts:setWeekTail` → `.week::after` / `--week-tail`, desktop only) so a FREE
+  scroll fully right still stops on a whole column; don't reintroduce a fixed
+  `calc()` spacer, and don't restore the flush-right ceiling. **One arrow press
+  = one day even mid-glide** (owner, 23 Aug 26 — "twice on Tuesday to get to
+  Wednesday"): an arrow scroll is a ~300 ms smooth glide, and a second press
+  that landed before it finished read a half-finished `scrollLeft` and stepped
+  short. `panDays` now counts from the position the last press COMMANDED while
+  the glide is still in flight toward it (`panBase`), so fast taps each advance
+  a full day; a manual wheel-pan or a new week drops that target. **The DESKTOP
+  scheduler board now has week navigation** (owner, 23 Aug 26 — "in scheduler
+  board i cant go between weeks except through the calendar"): `‹ ›` week-jump
+  chips flank the seven day chips inside `#sbDays` (`board.ts:dayTabsHTML`,
+  `data-sbweek`, not `data-sbtab`), one press jumps a whole week and keeps the
+  open weekday (`boardWeekStep`); they ride inside `#sbDays`, which is
+  `display:none` on a phone, so the phone board keeps stepping days with its own
+  edge arrows and every `[data-sbtab]` scrub/test is untouched. The `.crew-hint`
+  edge hint stays RETIRED — the weekend now genuinely reaches the front, so the
+  limitation it apologised for is gone; don't reintroduce it. **The PHONE
   swipe cross GLIDES, though** (owner,
   23 Aug 26 — "go with glide … glide between weeks"): the week being left is
   cloned into a throwaway overlay and slides off in the swipe direction while the
@@ -724,7 +740,13 @@ subscribers.
   one continuous motion instead of the old reload-flash. It is `src/ui/weekglide.ts`
   (`beginGlide`), called from the WEEKJUMP branch of ViewWeek/EditWeek, phone-only
   (≤820px) and reduced-motion-aware, and it no-ops without layout so the gates are
-  untouched. The swipe is NOT locked to one day — a firmer flick still crosses
+  untouched. The clone sits at `z-index:40`, BELOW the sticky `.topbar`
+  (`z-index:60`) — it used to tie the bar at 60 and, being a `position:fixed`
+  clone anchored at the week's `rect.top` (which is above the bar once the page
+  is scrolled down) appended last to `<body>`, it painted the sliding week OVER
+  the bar for the length of the slide (owner, 23 Aug 26 — "bleeding at the top
+  bar when swiping"). The slide is page content; keep it under the chrome — any
+  value below 60. The swipe is NOT locked to one day — a firmer flick still crosses
   several days within a week, which the owner explicitly kept (23 Aug 26 — "don't
   lock the swipe to a day. I actually like how it is currently"); do not add
   `scroll-snap-stop`. Within-week day-to-day swipes never glide (only a Monday/

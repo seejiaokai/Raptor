@@ -3248,6 +3248,32 @@ test.describe('the day arrows', () => {
     expect(await page.evaluate(() => (window as any).CURWEEK), 'back on the week we came from').toBe(wk0)
   })
 
+  test('desktop: the board has visible week arrows that jump a week and keep the day', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(3))   // Thursday
+    await page.waitForSelector('#sbDays [data-sbweek]')
+    // two week arrows, and they are actually laid out (not display:none like on a phone)
+    const vis = await page.evaluate(() => {
+      const a = [...document.querySelectorAll('#sbDays [data-sbweek]')] as HTMLElement[]
+      return { n: a.length, widths: a.map(x => Math.round(x.getBoundingClientRect().width)) }
+    })
+    expect(vis.n, 'two week arrows flank the day chips').toBe(2)
+    expect(vis.widths.every(w => w > 0), 'both arrows are visible on desktop').toBe(true)
+    // clicking › jumps a whole week and keeps Thursday selected
+    const wk0 = await page.evaluate(() => (window as any).CURWEEK)
+    await page.click('#sbDays [data-sbweek="1"]')
+    await page.waitForTimeout(150)
+    expect(await page.evaluate(() => (window as any).CURWEEK), 'the next week loaded').not.toBe(wk0)
+    expect(await page.evaluate(() => (window as any).SBDAY), 'Thursday stays open').toBe(3)
+    // and ‹ returns to the week we came from, still on Thursday
+    await page.click('#sbDays [data-sbweek="-1"]')
+    await page.waitForTimeout(150)
+    expect(await page.evaluate(() => (window as any).CURWEEK), 'back to the original week').toBe(wk0)
+    expect(await page.evaluate(() => (window as any).SBDAY), 'still Thursday').toBe(3)
+  })
+
   test('phone: the top-left calendar icon opens the week picker', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)
@@ -3640,6 +3666,12 @@ test.describe('the crew-day picker', () => {
     for (let i = 1; i < beforeWrap.length; i++) {
       expect(beforeWrap[i], `each step advances exactly one day (no skipped Sat/Sun)`).toBe(beforeWrap[i - 1] + 1)
     }
+    // AND the weekend genuinely reaches the front before the roll-over — the bug
+    // (owner, 23 Aug 26 — "Saturday and Sunday out of selection") was that the
+    // arrow crossed with Friday still at the front. The contiguity check alone
+    // never caught it (a short run 0..4 is contiguous too), so pin the reach.
+    expect(beforeWrap, 'Saturday reaches the front').toContain(5)
+    expect(beforeWrap, 'Sunday reaches the front before the week rolls over').toContain(6)
     // the roll-over lands on Monday of the next week
     expect(steps[wrapAt], 'stepping past the last front day rolls to Monday').toBe(0)
 

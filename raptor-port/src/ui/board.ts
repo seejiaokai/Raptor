@@ -415,7 +415,17 @@ function histLineHTML(cls: string) {
 }
 
 export function dayTabsHTML(di: number) {
-  return DAYS.map((x: any, i: number) => `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}">${esc(x.dow.slice(0, 3))} ${esc(x.dt.replace('Jul ', ''))}</span>`).join('')
+  const chips = DAYS.map((x: any, i: number) => `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}">${esc(x.dow.slice(0, 3))} ${esc(x.dt.replace('Jul ', ''))}</span>`).join('')
+  /* WEEK ARROWS FLANK THE DAY CHIPS ON DESKTOP (owner, 23 Aug 26 — "in
+     scheduler board i cant go between weeks except through the calendar").
+     They live INSIDE #sbDays, which is display:flex on a desktop and
+     display:none on a phone — so the phone board keeps its own ‹/› day arrows
+     at the bar edges and never shows these, and every [data-sbtab] scrub/test
+     is untouched because these carry data-sbweek instead. One press jumps a
+     whole week and keeps the open weekday, so the strip relabels to the new
+     week with the same column still lit (boardWeekStep). */
+  const wk = (d: number, g: string, t: string) => `<span class="sbday sbweek" data-sbweek="${d}" title="${t}" aria-label="${t}">${g}</span>`
+  return wk(-1, '‹', 'Previous week') + chips + wk(1, '›', 'Next week')
 }
 
 /* ---- CX-with-a-reason dialog state ---- */
@@ -1384,6 +1394,18 @@ export function boardDayStep(n: number) {
   if (to < 0) { loadWeek(shiftWeek(CURWEEK, -1)); boardTab(6); return }
   if (to >= DAYS.length) { loadWeek(shiftWeek(CURWEEK, 1)); boardTab(0); return }
   boardTab(to)
+}
+/* WHOLE-WEEK JUMP for the desktop board's day-chip-flanking arrows (dayTabsHTML
+   `.sbweek`). The phone board steps DAYS with its edge arrows (boardDayStep);
+   the desktop board already lists all seven days as chips, so what it lacked
+   was a way to change the WEEK (owner, 23 Aug 26 — only the calendar could).
+   This keeps the open weekday so the same column stays selected on the loaded
+   week, and the batched notify from loadWeek+boardTab repaints once. */
+export function boardWeekStep(dir: number) {
+  const di = view.SBDAY
+  if (di == null) return
+  loadWeek(shiftWeek(CURWEEK, dir))
+  boardTab(Math.min(di, DAYS.length - 1))
 }
 /* ---------------------------------------------------------------------------
    THE PARKED AIRCREW HANDLE MUST NOT SWALLOW A SCROLL (owner, 11 Aug 26 —

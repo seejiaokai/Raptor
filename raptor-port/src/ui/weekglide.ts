@@ -46,9 +46,17 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
   return () => {
     const ghost = document.createElement('div')
     ghost.className = root.className
+    /* z-index 40, BELOW the sticky top bar (scheduler.css .topbar z-index:60).
+       The clone is fixed-positioned from the week's rect.top, which sits ABOVE
+       the bar once the page is scrolled down — so at z-index:60 it tied the bar
+       and, being appended to <body> last, painted the sliding week OVER the bar
+       for the length of the slide (owner, 23 Aug 26 — "bleeding at the top bar
+       when swiping"). The slide is page content and belongs under the chrome:
+       any value under 60 lets the bar cover it while still floating the clone
+       above the ordinary day cards it slides across. */
     ghost.style.cssText =
       `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;` +
-      `height:${rect.height}px;margin:0;overflow:hidden;pointer-events:none;z-index:60`
+      `height:${rect.height}px;margin:0;overflow:hidden;pointer-events:none;z-index:40`
     ghost.innerHTML = html
     document.body.appendChild(ghost)
     ghost.scrollLeft = sl                     // park the clone where the finger left it

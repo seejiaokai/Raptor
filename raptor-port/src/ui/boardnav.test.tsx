@@ -207,6 +207,27 @@ describe('the day is stepped by the two arrows on the bar', () => {
     expect(view.SBDAY).toBe(0)
   })
 
+  /* THE DESKTOP BOARD'S WEEK ARROWS (owner, 23 Aug 26 — "in scheduler board i
+     cant go between weeks except through the calendar"). They flank the day
+     chips inside #sbDays (data-sbweek, not data-sbtab), jump a whole week, and
+     keep the open weekday so the same column stays selected. */
+  it('the week arrows jump a whole week and keep the open weekday', async () => {
+    await act(async () => { loadWeek('13/07/2026'); openScheduler(3); notify() })   // Thursday
+    const nextWk = $$('#sbDays [data-sbweek]').find(a => a.dataset.sbweek === '1')!
+    await act(async () => { nextWk.dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+    expect(CURWEEK, 'the next week loaded').toBe('20/07/2026')
+    expect(view.SBDAY, 'and the same weekday (Thursday) stays open').toBe(3)
+    const prevWk = $$('#sbDays [data-sbweek]').find(a => a.dataset.sbweek === '-1')!
+    await act(async () => { prevWk.dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+    expect(CURWEEK, 'the previous week loaded').toBe('13/07/2026')
+    expect(view.SBDAY, 'Thursday still open').toBe(3)
+  })
+
+  it('the week arrows are two, and are not counted among the seven day tabs', () => {
+    expect($$('#sbDays [data-sbtab]').length).toBe(DAYS.length)
+    expect($$('#sbDays [data-sbweek]').length).toBe(2)
+  })
+
   /* the dots are the only thing that says WHICH of the seven you are on, which
      is why they stayed when the swipe went */
   it('moves the marked dot with it', async () => {

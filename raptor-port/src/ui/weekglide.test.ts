@@ -68,4 +68,21 @@ describe('a fired glide leaves nothing behind', () => {
     expect(root.style.transform).toBe('')
     expect(document.body.style.overflowX).toBe('')
   })
+
+  /* owner, 23 Aug 26 — "bleeding at the top bar when swiping". The clone is
+     position:fixed from the week's rect.top, which is above the sticky top bar
+     once the page is scrolled; at z-index 60 (the bar's own) it tied and, being
+     appended last, painted the sliding week over the bar. It must lose to the
+     bar — any value under 60. */
+  it('parks the sliding clone under the sticky top bar (z-index below .topbar 60)', () => {
+    vi.useFakeTimers()
+    setW(400); view.setWeekJump('mon')
+    const root = mkRoot(390)
+    beginGlide(root)!()
+    const ghost = [...document.querySelectorAll('body > .week')]
+      .find(el => (el as HTMLElement).style.position === 'fixed') as HTMLElement
+    expect(ghost, 'the fired glide spawned a fixed-position clone').toBeTruthy()
+    expect(Number(ghost.style.zIndex), 'the clone must sit below the top bar, not tie it').toBeLessThan(60)
+    vi.runAllTimers()
+  })
 })
