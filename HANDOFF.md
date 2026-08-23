@@ -24,23 +24,31 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (22 Aug 26 evening, the chrome + calendar
-batch — one-row view chrome, role chip far right, edit-bar tint, day sign-off
-one row, fixed board title, board inputs band removed, ground/common desktop
-alignment, the Leave War desktop bottom scrollbar, the Inputs-calendar
-cell/popover redesign, and the `weekLeftDay` palette-day fix; all six gates
-watched this session):
+**Last recorded green baseline** (23 Aug 26, the ten-ask batch — throw-pucks
+stub removed, Excel/PDF export icons + the print-pipeline PDF, the edit page's
+phone calendar, instant week landings + continuous desktop arrows, the topbar
+undo/redo/Edit-history trio, the highlighter fold on all three schedule views,
+the board's phone bar reworked (dots out, search + highlight in), and the
+Admin tab; all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 2903 across 163 files — two vitest projects: raptor + leavewar |
+| `npm test` | 2921 across 166 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 314 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
-| `probes:adapted` | 6/6 |
-| `perf` | 4/4 — week DOM 4940 ≤ 5450, board 855 ≤ 960 (the removed inputs band is a sibling of `#sbBoard`, outside the measured surface; the calendar is its own page, outside both ceilings) |
+| `npm run test:e2e` | 315 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `probes:adapted` | 6/6 (the `sa` phone-filters probe opens the highlight fold first now — the strip only overflows once open) |
+| `perf` | 4/4 — week DOM 4940 ≤ 5450, board 852 ≤ 960 (the new board-bar controls live in `.sb-top`, outside the measured `#sbBoard`; the Admin page is its own page, outside both ceilings) |
 
-Reconciles against the 2894/163, 310 e2e reading this replaced: +5 plan-section
+Reconciles against the 2903/163, 314 e2e reading this replaced: three new
+files — `printpdf.test.ts`, `hlfold.test.tsx`, `admin.test.tsx` (11 between
+them) — plus +1 in `editweek.test.tsx` (the phone calendar opener), +2 in
+`pan.test.tsx` (the edge-cross arrows), +1 in `histlist.test.tsx` (the topbar
+Edit-history opener) and +3 in `boardnav.test.tsx` (board search, the
+highlight strip) → 2921 / 166; e2e +1 (the phone highlight fold) → 315, with
+the three phone dot tests rewritten in place for the removed strip.
+
+The chain before that reconciled against the 2894/163, 310 e2e reading: +5 plan-section
 tests, +4 calendar-redesign tests (`inputscal` 26 → 30), +1 caldrag pucks-move,
 −1 board (the inputs-band render test left with the band) → 2903/163; e2e −1
 (the removed band's clipping test, deleted with a tombstone) +5 (the chrome
