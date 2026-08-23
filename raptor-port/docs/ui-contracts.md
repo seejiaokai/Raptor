@@ -85,10 +85,31 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   settle.
 - **An edge hint teaches the gesture** (`pan.ts:maybeCrewHint`, `.crew-hint`).
   Once per session, edit page and wide screen only, when the week is jammed
-  against its right end with a day past the current one still unreachable, a
+  against its right end with a day past the current one still off the front, a
   dismissible bubble points at the day names and the arrows. It sits BELOW the
   panel header so it never covers the arrows it describes. Geometry-only, so it
   is gated in `e2e/geometry.spec.ts` (jsdom has no scroll clamp), not in jsdom.
+- **The desktop week ends on a WHOLE day, not a sliver** (owner, 23 Aug 26 — the
+  arrows "totally skip Saturday and Sunday … Friday should be nicely aligned on
+  the left … it jumps to Monday immediately"). A wide screen shows 3–4 columns,
+  so the week's own width clamped with a MIDDLE day pinned left as a fraction and
+  the › arrow crossed weeks off that broken edge. `pan.ts:setWeekTail` measures
+  the live day step and viewport and sizes a trailing spacer (`.week::after`,
+  `--week-tail`, desktop only) so the end rounds UP to the last whole-day view
+  (Fri | Sat | Sun, earliest flush left, no sliver and no empty void); the ›
+  then walks one clean day per click and only rolls into the next week PAST that
+  stop. The very last day still cannot sit at the front on a wide screen — which
+  is exactly why the edge hint above survives. The "day a–b of n" read-out
+  (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
+  because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
+- **The desktop crew panel keeps its day + column headings in view** (owner,
+  23 Aug 26 — "when I scroll down the top of the day is hidden"). Inside the
+  `.edit-board .eroster` scroll box the "Aircrew · <day>" line and the
+  "Pilots/WSOs/Personnel · N free" column labels are `position:sticky` (day line
+  at top, columns 27px under it — the day line's measured height), so a
+  scheduler deep in a long pilot list keeps both which day and which column.
+  Desktop only; the phone palette is a short pull-out drawer. Gated in
+  `e2e/geometry.spec.ts` (jsdom has no sticky positioning).
 
 Four things make it work, and each is load-bearing:
 

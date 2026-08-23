@@ -3534,6 +3534,109 @@ test.describe('the crew-day picker', () => {
     expect(ends.prevDisabled).toBe(true)
     expect(ends.nextDisabled).toBe(false)
   })
+
+  test('desktop: the day header and column headings stay pinned as the roster scrolls', async ({ page }) => {
+    await page.setViewportSize(WIDE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eRoster .rcol .rh')
+
+    const m = await page.evaluate(() => {
+      const er = document.getElementById('eRoster')!
+      const erh = er.querySelector('.er-h') as HTMLElement
+      const rh = er.querySelector('.rcol .rh') as HTMLElement
+      // where the column heading naturally sits before any scroll
+      const rhNatural = rh.getBoundingClientRect().top - er.getBoundingClientRect().top
+      // scroll the panel as far down as it goes
+      er.scrollTop = er.scrollHeight
+      const erR = er.getBoundingClientRect()
+      const hR = erh.getBoundingClientRect()
+      const rhR = rh.getBoundingClientRect()
+      return {
+        scrolled: er.scrollTop,
+        rhNatural,
+        dayHeaderGap: Math.round(hR.top - erR.top),   // ~panel padding when pinned
+        dayHeaderVisible: hR.bottom > erR.top && hR.top < erR.bottom,
+        colHeadGap: Math.round(rhR.top - erR.top),     // pinned just under the day line
+        colHeadVisible: rhR.bottom > erR.top && rhR.top < erR.bottom,
+      }
+    })
+
+    // the seed roster is tall enough that the panel really scrolls — otherwise
+    // there is nothing to pin and the test would prove nothing
+    expect(m.scrolled, 'the palette actually has an overflow to scroll').toBeGreaterThan(60)
+    expect(m.rhNatural, 'the column heading naturally starts well down the panel').toBeGreaterThan(50)
+    // after scrolling to the bottom, both headings are still at the top, visible
+    expect(m.dayHeaderVisible, 'the "Aircrew · <day>" line is still on screen').toBe(true)
+    expect(m.dayHeaderGap, 'the day line is pinned to the panel top').toBeLessThan(14)
+    expect(m.colHeadVisible, 'the "Pilots · N free" heading is still on screen').toBe(true)
+    expect(m.colHeadGap, 'the column heading is pinned just under the day line').toBeLessThan(40)
+  })
+
+  test('desktop: › steps one clean day at a time to a whole-day end, then rolls into next week', async ({ page }) => {
+    await page.setViewportSize(WIDE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eWeek .day[data-day]')
+    // start on Monday
+    await page.evaluate(() => { const w = document.getElementById('eWeek')!; w.style.scrollBehavior = 'auto'; w.scrollLeft = 0 })
+    await page.waitForTimeout(150)
+
+    // wait until the (smooth) arrow scroll has actually SETTLED before reading —
+    // a mid-animation read on a slow CI runner would misreport the front day and
+    // make the strict per-click check flake (which it did). Poll scrollLeft until
+    // it holds steady, with a hard safety cap.
+    const settle = () => page.evaluate(() => new Promise<void>(res => {
+      const w = document.getElementById('eWeek')!
+      let last = -1, still = 0
+      const iv = setInterval(() => {
+        const s = Math.round(w.scrollLeft)
+        if (s === last) { if (++still >= 3) { clearInterval(iv); res() } }
+        else { still = 0; last = s }
+      }, 40)
+      setTimeout(() => { clearInterval(iv); res() }, 3000)
+    }))
+
+    // the day snapped nearest the week's left edge — the "front" day, sliver-proof
+    const frontDay = () => page.evaluate(() => {
+      const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left
+      const days = [...w.querySelectorAll('.day[data-day]')] as HTMLElement[]
+      let best = days[0], bd = Infinity
+      for (const d of days) { const g = Math.abs(d.getBoundingClientRect().left - wl); if (g < bd) { bd = g; best = d } }
+      return { day: +best.dataset.day!, gap: Math.round(bd) }
+    })
+
+    await settle()
+    const seq: number[] = []
+    let f = await frontDay(); seq.push(f.day)
+    for (let i = 0; i < 8; i++) {
+      await page.evaluate(() => { const n = document.getElementById('weekNext') as HTMLButtonElement | null; n && n.click() })
+      await settle()
+      f = await frontDay(); seq.push(f.day)
+    }
+
+    // collapse any consecutive duplicate readings (a settle that landed on the
+    // same day twice is not a product event — the arrow still moved one day),
+    // then assert the run is contiguous with no SKIP and rolls over to Monday.
+    const steps = seq.filter((d, i) => i === 0 || d !== seq[i - 1])
+    const wrapAt = steps.findIndex((d, i) => i > 0 && d < steps[i - 1])
+    expect(wrapAt, 'the week rolls over to an earlier day at some point').toBeGreaterThan(0)
+    const beforeWrap = steps.slice(0, wrapAt)
+    for (let i = 1; i < beforeWrap.length; i++) {
+      expect(beforeWrap[i], `each step advances exactly one day (no skipped Sat/Sun)`).toBe(beforeWrap[i - 1] + 1)
+    }
+    // the roll-over lands on Monday of the next week
+    expect(steps[wrapAt], 'stepping past the last front day rolls to Monday').toBe(0)
+
+    // and the end of the week is a whole column flush at the left — never a
+    // fractional sliver of a prior day (leading pad is ~20px; a sliver was 100s).
+    // One settled reading at the jammed end, so the check can't catch a scroll
+    // still in flight.
+    await page.evaluate(() => { const w = document.getElementById('eWeek')!; w.scrollLeft = w.scrollWidth })
+    await settle()
+    const end = await frontDay()
+    expect(end.gap, 'the last stop is a whole day flush at the left, not a sliver').toBeLessThan(40)
+  })
 })
 
 /* ===================================================================

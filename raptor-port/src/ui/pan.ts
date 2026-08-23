@@ -86,10 +86,39 @@ function hsWeek() {
   const w = activeWeekEl()
   return (w && w.offsetParent !== null) ? w : null
 }
+/* SIZE THE WEEK'S TRAILING SPACER (scheduler.css `.week::after`). On a wide
+   desktop the week's own width stops with a middle day pinned left, so the last
+   days can't reach the front and the arrow crosses weeks off a broken sliver.
+   The right amount of trailing scroll room is "round the natural end UP to one
+   whole day": then the final stop is a clean Fri | Sat | Sun with no sliver and
+   no empty void. That depends on the live day width and the viewport, so it is
+   measured here and handed to CSS as a pixel var, rather than guessed as a
+   fixed calc(). Desktop only, and only when real day columns are laid out to
+   measure — otherwise the spacer is cleared. */
+function setWeekTail(w: any) {
+  const ds = w.querySelectorAll('.day')
+  if (window.innerWidth <= 820 || ds.length < 2) { w.style.removeProperty('--week-tail'); return }
+  const cs = getComputedStyle(w)
+  const step = Math.round(ds[1].offsetLeft - ds[0].offsetLeft)
+  if (step <= 0) { w.style.removeProperty('--week-tail'); return }
+  const gap = parseFloat(cs.columnGap || cs.gap) || 0
+  const padR = parseFloat(cs.paddingRight) || 0
+  const last = ds[ds.length - 1] as HTMLElement
+  /* where the week would clamp with no spacer: the last day's right edge (plus
+     the container's own trailing padding), less one screen. Round that UP to a
+     whole day so the day at the front is never a fraction; the spacer makes up
+     the difference, less the flex gap the ::after itself sits behind. */
+  const naturalMax = Math.max(0, (last.offsetLeft + last.offsetWidth + padR) - w.clientWidth)
+  const targetMax = Math.ceil(naturalMax / step) * step
+  const tail = Math.max(0, targetMax - naturalMax - gap)
+  if (tail > 0.5) w.style.setProperty('--week-tail', Math.round(tail) + 'px')
+  else w.style.removeProperty('--week-tail')
+}
 export function hsSync() {
   const bar = $('hscroll'), trk = $('hsTrack'), inn = $('hsIn'), lbl = $('hsLbl')
   if (!bar || !trk) return
   const w = hsWeek()
+  if (w) setWeekTail(w)
   const over = w ? (w.scrollWidth - w.clientWidth) : 0
   const on = !!w && window.innerWidth > 820 && over > 12
   bar.classList.toggle('on', on)
@@ -105,28 +134,38 @@ export function hsSync() {
   inn!.style.width = Math.round(w!.scrollWidth * (tw / w!.clientWidth)) + 'px'
   const tmax = trk.scrollWidth - trk.clientWidth
   hsSet(trk, over > 0 ? (w!.scrollLeft / over) * tmax : 0)
-  const days = w!.querySelectorAll('.day').length
-  if (days) {
-    const dw = w!.scrollWidth / days
-    const a = Math.floor(w!.scrollLeft / dw) + 1, b = Math.min(days, Math.ceil((w!.scrollLeft + w!.clientWidth) / dw))
-    lbl!.textContent = `day ${a}–${b} of ${days}`
-  } else lbl!.textContent = ''
+  lbl!.textContent = dayRangeText(w!)
 }
 function hsLabel() {
   const w = hsWeek(), lbl = $('hsLbl'); if (!w || !lbl) return
-  const days = w.querySelectorAll('.day').length; if (!days) return
-  const dw = w.scrollWidth / days
-  const a = Math.floor(w.scrollLeft / dw) + 1, b = Math.min(days, Math.ceil((w.scrollLeft + w.clientWidth) / dw))
-  lbl.textContent = `day ${a}–${b} of ${days}`
+  lbl.textContent = dayRangeText(w)
+}
+
+/* THE "day a–b of n" READ-OUT. Measured from the real day step, NOT
+   scrollWidth ÷ n: the desktop week carries a trailing spacer (scheduler.css
+   `.week::after`) so the last day can reach the left edge, and that spacer is
+   part of scrollWidth — dividing it by the day count would misplace every
+   number. `left` is the day sitting at the front; `fit` is how many whole
+   columns a screen holds; both clamp to the real day count so the spacer at
+   the end reads "day 7 of 7", never "day 8". */
+function dayRangeText(w: any) {
+  const days = w.querySelectorAll('.day').length
+  if (!days) return ''
+  const step = dayStep(w) || 1
+  const left = Math.max(0, Math.min(days - 1, Math.round(w.scrollLeft / step)))
+  const fit = Math.max(1, Math.round(w.clientWidth / step))
+  const a = left + 1, b = Math.min(days, left + fit)
+  return a >= b ? `day ${a} of ${days}` : `day ${a}–${b} of ${days}`
 }
 
 /* THE CREW-PANEL EDGE HINT (owner, 15 Aug 26). The aircrew panel follows the
-   left-most day in view, but on a wide screen the last days of the week can
-   never reach the left edge — Sunday is the final day and clamps the scroll, so
-   a slice of an earlier day stays pinned to the left and the panel follows THAT
-   day, not the ones the scheduler is looking at. The day name is a button now
-   and the panel header carries ‹ › arrows; this teaches that the first time a
-   scheduler scrolls hard against the right edge with days still unreachable. */
+   left-most day in view. Even with the trailing spacer (which lets the week end
+   on a clean whole-day view rather than a broken sliver), the very last day
+   still cannot sit at the FRONT on a wide screen — Fri | Sat | Sun ends flush
+   with Friday, so the panel there shows Friday, not the weekend the scheduler is
+   looking at. The day name is a button and the panel header carries ‹ › arrows;
+   this teaches that the first time a scheduler scrolls hard against the end with
+   later days still off the front. */
 let crewHintDone = false
 let HINT_T: any = 0
 function crewHintEl() {
@@ -144,8 +183,8 @@ function crewHintEl() {
 export function hideCrewHint() { const el = $('crewHint'); if (el) el.classList.remove('on'); clearTimeout(HINT_T) }
 /* Show once per session, and only when it is actually true: a wide screen, real
    overflow, the week jammed against its right end, and a day past the current
-   left day still sitting unreachable in view. Anchored to the panel's top so it
-   sits over the thing it is talking about. */
+   left day still sitting off the front. Anchored to the panel's top so it sits
+   over the thing it is talking about. */
 function maybeCrewHint(w: any) {
   /* edit page only: the day-name picker and the panel arrows are a scheduler's
      controls, and the view week's day names open the read-only details panel. */
@@ -229,7 +268,7 @@ function onDocScroll(e: Event) {
   if (w.classList.contains('week')) {
     hsLabel(); rosDayFollow()
     /* teach the crew-day controls when the scroll jams against the right end
-       with later days still unreachable; drop the hint once it scrolls away. */
+       with later days still off the front; drop the hint once it scrolls away. */
     const over = w.scrollLeft >= (w.scrollWidth - w.clientWidth) - 1
     if (over) maybeCrewHint(w); else hideCrewHint()
     const trk = $('hsTrack'); if (!trk) return

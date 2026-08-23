@@ -691,7 +691,20 @@ subscribers.
   weeks too (owner, 23 Aug 26 — completing this decision): stepping past the
   week's last day loads the adjacent week and lands on its near edge, instead
   of the arrows going dead at the ends. DESKTOP landings are instant — no settle
-  animation on an arrow cross. **The PHONE swipe cross GLIDES, though** (owner,
+  animation on an arrow cross. **And the desktop week ends on a WHOLE day, not a
+  broken sliver** (owner, 23 Aug 26 — "totally skip Saturday and Sunday … Friday
+  should be nicely aligned on the left … it jumps to Monday immediately"): a wide
+  screen shows 3–4 columns, so the raw scroll clamped with a MIDDLE day pinned
+  left as a fraction and the › crossed weeks off that jammed edge. A JS-sized
+  trailing spacer (`pan.ts:setWeekTail` → `.week::after` / `--week-tail`, desktop
+  only) adds just enough room to round the end UP to the last whole-day view
+  (Fri | Sat | Sun, earliest flush left, no sliver, no empty void); the arrows
+  then walk one clean day per click and only roll over PAST it. Don't reintroduce
+  a fixed `calc()` spacer — the right size depends on the live day width and the
+  viewport, which is why it is measured. The `.crew-hint` edge hint STAYS: the
+  very last day still can't sit at the front on a wide screen, so the palette's
+  own ‹ › day arrows / day-name picks remain the way to crew it. **The PHONE
+  swipe cross GLIDES, though** (owner,
   23 Aug 26 — "go with glide … glide between weeks"): the week being left is
   cloned into a throwaway overlay and slides off in the swipe direction while the
   freshly-loaded week slides in from the other edge, so a boundary cross reads as
