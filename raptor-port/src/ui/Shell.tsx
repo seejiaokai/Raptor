@@ -7,7 +7,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
-import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon } from './icons'
+import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pendCount } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
@@ -319,7 +319,7 @@ export function Shell() {
             onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
           <HlChips />
           <div className="right">
-            <div className="searchbox">🔍<input id="searchV" placeholder="name / callsign"
+            <div className="searchbox"><SrchIcon /><input id="searchV" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
         </div>
@@ -397,7 +397,7 @@ export function Shell() {
               aria-label="Highlight filters" title="Highlight filters"
               onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
             <HlChips />
-            <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"
+            <div className="right"><div className="searchbox"><SrchIcon /><input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
           </div>
           {/* The "142 Scheduling board · Jul 13 / Edit mode · changes are local
