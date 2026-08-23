@@ -345,6 +345,12 @@ export function Shell() {
             {weekWindow(CURWEEK).map(w => <button key={w.v}
               className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
           </div>
+          {/* the view page's phone calendar, same block — the edit page had no
+              phone-width opener at all; owner, 23 Aug 26 */}
+          <div className="wknav-m">
+            <button className="wknav-mbtn" aria-label="Jump to a date" title="Jump to a date"
+              onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
+          </div>
           <div className="filters">
             {/* Undo / redo moved to the sticky top bar (owner, Aug 26) so they
                 stay in view while the page scrolls — see the topbar above. */}
