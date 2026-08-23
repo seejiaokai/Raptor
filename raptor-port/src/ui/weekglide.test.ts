@@ -51,21 +51,24 @@ describe('the glide only arms on a real phone week cross', () => {
 })
 
 describe('a fired glide leaves nothing behind', () => {
-  it('spawns one clone, then removes it and clears the transform + overflow lock', () => {
+  it('spawns TWO clones and hides the real week mid-slide, then cleans all of it up', () => {
     vi.useFakeTimers()
     setW(400); view.setWeekJump('mon')
     const root = mkRoot(390)
     const run = beginGlide(root)!
     run()
-    // mid-slide: the outgoing week is cloned over the viewport and the live week
-    // is shifted one screen off, with the page clipped so it can't scroll sideways
-    expect(document.querySelectorAll('body > .week').length).toBe(2)
-    expect(root.style.transform).toContain('translateX')
+    // mid-slide: BOTH weeks are cloned (outgoing + incoming) and tile the
+    // viewport, the real week is hidden behind them, and the page is clipped so
+    // it can't scroll sideways. Three `.week` in the DOM = root + the two clones.
+    expect(document.querySelectorAll('body > .week').length).toBe(3)
+    expect([...document.querySelectorAll('body > .week')].filter(el => (el as HTMLElement).style.position === 'fixed').length).toBe(2)
+    expect(root.style.visibility, 'the real week is hidden while the clones slide').toBe('hidden')
+    expect(root.style.transform, 'the real week never itself transforms now — the clones do').toBe('')
     expect(document.body.style.overflowX).toBe('hidden')
     // after the slide (no transitionend in jsdom → the fallback timer finishes it)
     vi.runAllTimers()
-    expect(document.querySelectorAll('body > .week').length).toBe(1)
-    expect(root.style.transform).toBe('')
+    expect(document.querySelectorAll('body > .week').length).toBe(1)   // both clones gone, only root
+    expect(root.style.visibility, 'the real week is revealed again').toBe('')
     expect(document.body.style.overflowX).toBe('')
   })
 
