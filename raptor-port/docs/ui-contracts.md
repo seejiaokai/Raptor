@@ -83,12 +83,12 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   drag the panel back to the edge. After the window lapses an ordinary scroll
   takes over again — scrolling still sets the day, a pick just outlasts the
   settle.
-- **An edge hint teaches the gesture** (`pan.ts:maybeCrewHint`, `.crew-hint`).
-  Once per session, edit page and wide screen only, when the week is jammed
-  against its right end with a day past the current one still off the front, a
-  dismissible bubble points at the day names and the arrows. It sits BELOW the
-  panel header so it never covers the arrows it describes. Geometry-only, so it
-  is gated in `e2e/geometry.spec.ts` (jsdom has no scroll clamp), not in jsdom.
+- **The edge hint is retired** (23 Aug 26 — was `pan.ts:maybeCrewHint`,
+  `.crew-hint`). It taught the day-name/arrow controls because the last day
+  could never sit at the front of a wide screen; the next-week preview's real
+  columns removed that limitation, so the hint's firing condition (jammed at
+  the end with a later day off the front) became unreachable and the
+  machinery was deleted. The controls it pointed at are unchanged.
 - **The desktop week ends on a WHOLE day, not a sliver** (owner, 23 Aug 26 — the
   arrows "totally skip Saturday and Sunday … Friday should be nicely aligned on
   the left … it jumps to Monday immediately"). A wide screen shows 3–4 columns,
@@ -98,8 +98,10 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   `--week-tail`, desktop only) so the end rounds UP to the last whole-day view
   (Fri | Sat | Sun, earliest flush left, no sliver and no empty void); the ›
   then walks one clean day per click and only rolls into the next week PAST that
-  stop. The very last day still cannot sit at the front on a wide screen — which
-  is exactly why the edge hint above survives. The "day a–b of n" read-out
+  stop. Since the next-week preview (23 Aug 26) the spacer measures the FULL
+  column strip — live plus preview — so the far end of the free scroll is a
+  whole column too, and the very last live day CAN now sit at the front
+  (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
 - **The desktop crew panel keeps its day + column headings in view** (owner,

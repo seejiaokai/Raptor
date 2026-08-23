@@ -701,9 +701,12 @@ subscribers.
   (Fri | Sat | Sun, earliest flush left, no sliver, no empty void); the arrows
   then walk one clean day per click and only roll over PAST it. Don't reintroduce
   a fixed `calc()` spacer — the right size depends on the live day width and the
-  viewport, which is why it is measured. The `.crew-hint` edge hint STAYS: the
-  very last day still can't sit at the front on a wide screen, so the palette's
-  own ‹ › day arrows / day-name picks remain the way to crew it. **The PHONE
+  viewport, which is why it is measured. The `.crew-hint` edge hint is
+  RETIRED (23 Aug 26, with the next-week preview): real preview columns now
+  continue past Sunday, so the very last day CAN sit at the front and the
+  hint's own firing condition became unreachable — the day-name picks and the
+  panel arrows still work, they just no longer need teaching. Don't
+  reintroduce the hint; the limitation it apologised for is gone. **The PHONE
   swipe cross GLIDES, though** (owner,
   23 Aug 26 — "go with glide … glide between weeks"): the week being left is
   cloned into a throwaway overlay and slides off in the swipe direction while the

@@ -16,6 +16,7 @@ import { weekBundle } from '../engine/weeks-data'
 import { dayHTML, dayWarnHTML } from './html'
 import { personWarns } from '../engine/avail'
 import { focusWarn, clearWarnFocus, setWarnFocus, toggleDayWarn, selectPerson, selDrop } from '../state/view'
+import * as view from '../state/view'
 
 const CREW = 'waldo'
 const DSNAP = JSON.stringify(DAYS)
@@ -455,5 +456,25 @@ describe('the forward trace across the week edge', () => {
     validate()
     expect(traceOf(6, 'bane')).toBeNull()
     ;(DAYS[6] as any).dutywaves[0].rows.pop()
+  })
+  /* THE RING MUST BE EXPLAINABLE BY A TAP (23 Aug 26, found driving the
+     built bundle): selectPerson used to open only days where the person has
+     a WARNING in the loaded week — a man whose only mark is the forward
+     trace (his breach lives on next week's Monday) had a ringed puck that a
+     click could not explain. Trace days now join PFOCUS's day list, so the
+     tap opens Sunday's "Breaks Monday" row like any other. */
+  it('clicking the puck of a man with only a forward trace opens Sunday and shows the box', () => {
+    ;(DAYS[6] as any).dutywaves[0].rows.push({ role: 'Duty', id: 'bane', str: '1300', end: '2300' })
+    validate()
+    expect(((WARN.byDay[6] || {}).warns || []).some((w: any) => (w.who || []).includes('bane')),
+      'precondition: Sunday itself carries no warning for him — only the trace').toBe(false)
+    view.selectPerson('bane', true)
+    expect(view.PFOCUS && view.PFOCUS.id, 'the tap focused him').toBe('bane')
+    expect(view.PFOCUS.days).toContain(6)
+    expect(view.DWOPEN.has(6), "Sunday's box is open").toBe(true)
+    expect(dayWarnHTML(6)).toContain('Breaks Monday')
+    view.selectPerson('bane', true)   // second tap clears, leaving no focus behind
+    ;(DAYS[6] as any).dutywaves[0].rows.pop()
+    validate()
   })
 })

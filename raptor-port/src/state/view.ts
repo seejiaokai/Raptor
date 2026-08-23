@@ -5,7 +5,7 @@ import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, personWarnDays } from '../engine/avail'
-import { validate, WARN } from '../engine/validate'
+import { validate, WARN, traceOf } from '../engine/validate'
 import { markEdit, daySnapOf } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
@@ -340,6 +340,13 @@ export function selectPerson(id:any,inWeek?:any){
     if(inWeek){
       if(!WARN.byDay.length)validate();
       const days=personWarnDays(id);
+      /* days that carry this person's cross-day TRACE count too (23 Aug 26):
+         a Sunday whose late finish busts NEXT week's Monday rings the puck
+         with no warning anywhere in the loaded week — personWarnDays alone
+         left that click a dead end, an unexplainable ring. Within a week the
+         breach day was always in the list already, so this only ever ADDS
+         the forward-trace case. */
+      for(let di=0;di<7;di++)if(traceOf(di,id)&&days.indexOf(di)<0)days.push(di);
       if(days.length){ PFOCUS={id,days}; days.forEach((di:any)=>DWOPEN.add(di)); }
     }
     SELSEEN=personCount(id);

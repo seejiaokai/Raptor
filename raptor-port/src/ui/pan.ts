@@ -124,15 +124,14 @@ function hsWeek() {
    fixed calc(). Desktop only, and only when real day columns are laid out to
    measure — otherwise the spacer is cleared. */
 function setWeekTail(w: any) {
-  /* THE PEEK PREVIEW REPLACES THE SPACER (ui/peek.ts). Once the desktop
-     next-week preview is mounted its own real day columns already carry the
-     week past Sunday with no gap and no sliver — the whole job this spacer
-     existed for — so a synthetic tail on top would just push the preview
-     further off screen. Checked before the day columns are even measured:
-     `.day.peek` is unambiguous (peek nodes carry no width surprises to
-     account for; they use the identical 552px flex-basis), so there is
-     nothing here worth computing once it is present. */
-  if (w.querySelector('.day.peek')) { w.style.removeProperty('--week-tail'); return }
+  /* THE PEEK PREVIEW JOINS THE MEASUREMENT (ui/peek.ts). The preview's real
+     day columns carry the week past Sunday, but the whole-day-end guarantee
+     this spacer exists for still applies at the strip's NEW far end: with no
+     tail, jamming the free scroll fully right would land on a fractional
+     preview column — the exact sliver the owner had removed. `.day` below
+     already includes the peek columns (same 552px flex-basis), so the same
+     round-the-end-up-to-one-whole-day arithmetic covers 7 live or 7+7
+     live-plus-preview columns without a special case. */
   const ds = w.querySelectorAll('.day')
   if (window.innerWidth <= 820 || ds.length < 2) { w.style.removeProperty('--week-tail'); return }
   const cs = getComputedStyle(w)
@@ -197,51 +196,15 @@ function dayRangeText(w: any) {
   return a >= b ? `day ${a} of ${days}` : `day ${a}–${b} of ${days}`
 }
 
-/* THE CREW-PANEL EDGE HINT (owner, 15 Aug 26). The aircrew panel follows the
-   left-most day in view. Even with the trailing spacer (which lets the week end
-   on a clean whole-day view rather than a broken sliver), the very last day
-   still cannot sit at the FRONT on a wide screen — Fri | Sat | Sun ends flush
-   with Friday, so the panel there shows Friday, not the weekend the scheduler is
-   looking at. The day name is a button and the panel header carries ‹ › arrows;
-   this teaches that the first time a scheduler scrolls hard against the end with
-   later days still off the front. */
-let crewHintDone = false
-let HINT_T: any = 0
-function crewHintEl() {
-  let el = $('crewHint')
-  if (!el) {
-    el = document.createElement('div')
-    el.id = 'crewHint'; el.className = 'crew-hint'
-    el.innerHTML = `<b>The week ends here — the › arrow continues into next week.</b> To load a later day's crew here, click that day's <b>name</b> — or use the ‹ › arrows on this panel.`
-      + `<button class="crew-hint-x" data-crewhintx title="Got it">✕</button>`
-    document.body.appendChild(el)
-    el.querySelector('[data-crewhintx]')!.addEventListener('click', ev => { ev.stopPropagation(); crewHintDone = true; hideCrewHint() })
-  }
-  return el
-}
-export function hideCrewHint() { const el = $('crewHint'); if (el) el.classList.remove('on'); clearTimeout(HINT_T) }
-/* Show once per session, and only when it is actually true: a wide screen, real
-   overflow, the week jammed against its right end, and a day past the current
-   left day still sitting off the front. Anchored to the panel's top so it sits
-   over the thing it is talking about. */
-function maybeCrewHint(w: any) {
-  /* edit page only: the day-name picker and the panel arrows are a scheduler's
-     controls, and the view week's day names open the read-only details panel. */
-  if (crewHintDone || view.ARM || view.CURPAGE !== 'editsched' || window.innerWidth <= 820) return
-  const over = w.scrollWidth - w.clientWidth
-  if (over <= 12 || w.scrollLeft < over - 1) return
-  const left = view.weekLeftDay(w)
-  const last = w.querySelectorAll('.day[data-day]').length - 1
-  if (left == null || left >= last) return
-  const el = crewHintEl(); const ros = $('eRoster')
-  /* sit just BELOW the panel's own header so the ‹ › arrows it points at stay
-     visible — a hint that covered the control it describes would be self-defeating. */
-  const r = (ros || w).getBoundingClientRect()
-  el.style.top = Math.round(r.top + 42) + 'px'
-  el.classList.add('on'); crewHintDone = true
-  clearTimeout(HINT_T); HINT_T = setTimeout(hideCrewHint, 9000)
-}
-
+/* THE CREW-PANEL EDGE HINT IS RETIRED (23 Aug 26). It existed because the
+   very last day could never sit at the FRONT on a wide screen — the week
+   clamped at Fri | Sat | Sun, so crewing Sunday needed the day-name picker or
+   the panel arrows, and a one-time hint taught that. The next-week preview
+   (ui/peek.ts) removed the limitation itself: real columns now continue past
+   Sunday, so the arrows and the free scroll walk until Sunday IS the front
+   day. The hint's own firing condition (jammed at the end with a later day
+   still off the front) is unreachable now — the day name and the panel
+   arrows both still work, they just no longer need teaching. */
 /* the palette shows one day's availability. Panning the week changes which day
    you are looking at, so the palette walks along with it — debounced, because a
    scroll fires on every frame and rebuilding 60 pucks per frame is wasteful. */
@@ -268,7 +231,6 @@ export function pickRosDay(di: number) {
   clearTimeout(ROSDAY_T)
   clearTimeout(ROSPIN_T); ROSPIN_T = setTimeout(() => { ROSPIN_T = 0 }, 500)
   if (view.ROSDAY !== di) { view.setRosDay(di); notify() }
-  hideCrewHint()
 }
 export function rosDayFollow() {
   if (view.ARM || ROSPIN_T) return           // an armed slot, or a just-made pick, pins the palette
@@ -306,10 +268,6 @@ function onDocScroll(e: Event) {
   /* a week panned → mirror to the proxy, follow with the palette */
   if (w.classList.contains('week')) {
     hsLabel(); rosDayFollow()
-    /* teach the crew-day controls when the scroll jams against the right end
-       with later days still off the front; drop the hint once it scrolls away. */
-    const over = w.scrollLeft >= (w.scrollWidth - w.clientWidth) - 1
-    if (over) maybeCrewHint(w); else hideCrewHint()
     const trk = $('hsTrack'); if (!trk) return
     const tmax = trk.scrollWidth - trk.clientWidth, wmax = w.scrollWidth - w.clientWidth
     hsSet(trk, wmax > 0 ? (w.scrollLeft / wmax) * tmax : 0)

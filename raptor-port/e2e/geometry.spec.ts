@@ -3497,25 +3497,40 @@ test.describe('the crew-day picker', () => {
     expect(head).toContain(lastDow!)
   })
 
-  test('desktop: the edge hint appears when the week jams against its right end', async ({ page }) => {
+  test('desktop: the week ends whole — Sunday can sit at the front, and the retired edge hint never shows', async ({ page }) => {
     await page.setViewportSize(WIDE)
     await login(page)
     await go(page, 'editsched')
     await page.waitForSelector('#eWeek .day[data-day]')
-    // jam right and fire a scroll so the follow/edge logic runs
+    // jam fully right: with the next-week preview and the re-measured tail the
+    // far end is still a WHOLE column (live or preview), never a sliver …
     await page.evaluate(() => {
       const w = document.getElementById('eWeek')!
       w.style.scrollBehavior = 'auto'; w.scrollLeft = w.scrollWidth
       w.dispatchEvent(new Event('scroll', { bubbles: true }))
     })
     await page.waitForTimeout(300)
-    const hint = await page.evaluate(() => {
-      const h = document.getElementById('crewHint')
-      return h ? { on: h.classList.contains('on'), text: h.textContent } : null
+    const end = await page.evaluate(() => {
+      const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left
+      let bd = Infinity
+      for (const d of w.querySelectorAll('.day')) { const g = Math.abs(d.getBoundingClientRect().left - wl); if (g < bd) bd = g }
+      return Math.round(bd)
     })
-    expect(hint, 'the hint element exists and is shown').not.toBeNull()
-    expect(hint!.on).toBe(true)
-    expect(hint!.text).toMatch(/day's name|arrows/)
+    expect(end, 'the jammed end fronts a whole column, live or preview').toBeLessThan(40)
+    // … and the old edge hint is retired: the preview removed the very
+    // limitation it taught around (Sunday could never sit at the front), so
+    // prove the limitation is gone rather than the apology present.
+    expect(await page.evaluate(() => !!document.getElementById('crewHint'))).toBe(false)
+    const sunFront = await page.evaluate(() => {
+      const w = document.getElementById('eWeek')!
+      const sun = w.querySelector('.day[data-day="6"]') as HTMLElement
+      w.style.scrollBehavior = 'auto'
+      w.scrollLeft += sun.getBoundingClientRect().left - w.getBoundingClientRect().left
+      return new Promise<number>(res => setTimeout(() => {
+        res(Math.round(Math.abs(sun.getBoundingClientRect().left - w.getBoundingClientRect().left)))
+      }, 200))
+    })
+    expect(sunFront, 'the last live day can now sit at the front').toBeLessThan(40)
   })
 
   test('desktop: the panel arrows clamp at the weeks ends', async ({ page }) => {
@@ -3634,8 +3649,15 @@ test.describe('the crew-day picker', () => {
     // still in flight.
     await page.evaluate(() => { const w = document.getElementById('eWeek')!; w.scrollLeft = w.scrollWidth })
     await settle()
-    const end = await frontDay()
-    expect(end.gap, 'the last stop is a whole day flush at the left, not a sliver').toBeLessThan(40)
+    // at the absolute end the fronting column may be a next-week PREVIEW day —
+    // the no-sliver contract holds for any column, so measure them all.
+    const end = await page.evaluate(() => {
+      const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left
+      let bd = Infinity
+      for (const d of w.querySelectorAll('.day')) { const g = Math.abs(d.getBoundingClientRect().left - wl); if (g < bd) bd = g }
+      return Math.round(bd)
+    })
+    expect(end, 'the last stop is a whole column flush at the left, not a sliver').toBeLessThan(40)
   })
 })
 
