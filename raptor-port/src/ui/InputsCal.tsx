@@ -21,9 +21,10 @@ import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLett
 import { PEOPLE, QCOLOR } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { puck } from './html'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, togglePuckPerson, movePlanSection } from '../state/plan'
+import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, addPuckPeople, togglePuckPerson, movePlanSection } from '../state/plan'
 import { notify, writeInputs } from '../state/store'
-import { CALMONTH, setCalMonth } from '../state/view'
+import { CALMONTH, setCalMonth, personMatchesCat } from '../state/view'
+import { HL_CATS } from './hlchips'
 import { canEditSched, ME } from '../state/auth'
 import { fmt, fmtDay, inputTone, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
@@ -164,6 +165,14 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
      position reachable at all). Both null outside a drag. */
   const [secDrag, setSecDrag] = useState<string | null>(null)
   const [secOver, setSecOver] = useState<{ id: string, after: boolean } | null>(null)
+  /* the multi-select puck picker (owner, 23 Aug 26 — "a placeholder view to
+     select a few pucks at 1 go … then press ok"). `pickFor` is the pucks row
+     the ticks land on — a real row id, or '' meaning "make a NEW row on OK" —
+     and null when the picker is closed; `pickIso` is the day that new row
+     belongs to; `pickSel` is the people ticked so far. */
+  const [pickFor, setPickFor] = useState<string | null>(null)
+  const [pickIso, setPickIso] = useState<string>('')
+  const [pickSel, setPickSel] = useState<Set<string>>(new Set())
 
   /* the remark draft is seeded fresh every time a DIFFERENT day's popover
      opens, never on a repaint — the same "seed on prop change, not on every
@@ -226,12 +235,15 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || INPEDIT) return
       e.stopPropagation()
+      /* the picker sits ABOVE the popover, so it eats Escape first — the same
+         one-layer-at-a-time ladder the popover follows below the modal */
+      if (pickFor != null) { setPickFor(null); setPickSel(new Set()); return }
       if (popIso) { setPopIso(null); setPopPuckEdit(null); return }
       onClose()
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [onClose, popIso])
+  }, [onClose, popIso, pickFor])
 
   /* Seed the add-input modal exactly the way a board's "+ Add" does
      (interactions.ts ~592-608) — same fields, same defaults — but with NO
@@ -413,11 +425,6 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
        commits (rather than a second copy of the write), so there is exactly
        one place per field that decides what "commit" means. */
     const blurOnEnter = (e: ReactKeyboardEvent) => { if (e.key === 'Enter') (e.target as HTMLElement).blur() }
-    /* the roster the pucks-row picker offers — active people by callsign, the
-       same working set every other person select on the page draws from. */
-    const roster = Object.keys(PEOPLE)
-      .filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
-      .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
     /* SECTION DRAG (admin) — the Matrix roster drag's shape scaled down: the
        handle starts it, elementFromPoint + the row-half rule track it, and
        the release resolves "after X" to "before whatever follows X" in this
@@ -461,6 +468,42 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
       window.addEventListener('pointerup', up)
       window.addEventListener('pointercancel', cancel)
     }
+    /* DRAG A SEATED PUCK OUT TO REMOVE IT (owner, 23 Aug 26 — "i just drag them
+       out of where they are seated just like … edit schedule mode"), the phone
+       AND desktop removal. It rides the puck itself (no handle): a small drift
+       arms the drag and the chip follows the finger; releasing OUTSIDE its own
+       row drops the person, releasing back inside cancels — the same "off its
+       seat = gone, back on = kept" feel drag.ts gives a board puck. A press
+       that never drifts is left alone, so a plain tap still does nothing
+       destructive (right-click / the ✕ are the deliberate removes). */
+    const startPkDrag = (e: React.PointerEvent, rowId: string, personId: string) => {
+      if (e.button != null && e.button !== 0) return       // left button / touch only
+      const chip = e.currentTarget as HTMLElement
+      const x0 = e.clientX, y0 = e.clientY
+      let dragging = false
+      try { chip.setPointerCapture(e.pointerId) } catch (_) { /* older engines */ }
+      const move = (ev: PointerEvent) => {
+        if (!dragging && Math.abs(ev.clientX - x0) < 6 && Math.abs(ev.clientY - y0) < 6) return
+        if (!dragging) { dragging = true; chip.classList.add('pk-drag'); document.body.classList.add('ic-dragging') }
+        chip.style.transform = `translate(${ev.clientX - x0}px, ${ev.clientY - y0}px)`
+      }
+      const done = (ev: PointerEvent | null) => {
+        window.removeEventListener('pointermove', move)
+        window.removeEventListener('pointerup', up)
+        window.removeEventListener('pointercancel', cancel)
+        chip.classList.remove('pk-drag'); chip.style.transform = ''
+        document.body.classList.remove('ic-dragging')
+        if (!dragging || !ev) return                        // a tap, not a drag — leave the puck seated
+        const over = document.elementFromPoint(ev.clientX, ev.clientY) as Element | null
+        const backInRow = !!(over && over.closest && over.closest(`[data-secpucks="${rowId}"]`))
+        if (!backInRow) writeInputs(() => togglePuckPerson(rowId, personId))   // released off its row → drop
+      }
+      const up = (ev: PointerEvent) => done(ev)
+      const cancel = () => done(null)
+      window.addEventListener('pointermove', move)
+      window.addEventListener('pointerup', up)
+      window.addEventListener('pointercancel', cancel)
+    }
     return (
       <div className="ic-popwrap" onPointerDown={e => { if (e.target === e.currentTarget) closePop() }}>
         <div className="ic-pop" role="dialog" aria-label={`${fmtDay(iso)} details`}>
@@ -493,7 +536,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                 <button type="button" className="abtn sm" id="icAddPuck"
                   onClick={() => { setPopPuckEdit(''); setPuckDraft('') }}>+ Note</button>
                 <button type="button" className="abtn sm" id="icAddPucks"
-                  onClick={() => writeInputs(() => addPuckRow(iso))}>+ Pucks</button>
+                  onClick={() => { setPickFor(''); setPickIso(iso); setPickSel(new Set()) }}>+ Pucks</button>
               </div>
             )}
             {entries.pucks.length > 0 && (
@@ -525,7 +568,14 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                            from inside this overlay. */
                         <div className="ic-secpucks" data-secpucks={p.id} onClick={e => e.stopPropagation()}>
                           {(p.ids || []).map((id: string) => (
-                            <span key={id} className="ic-secpk">
+                            /* a seated puck: RIGHT-CLICK removes it on desktop,
+                               and a DRAG off its row removes it on phone or
+                               desktop (owner, 23 Aug 26); the ✕ stays as the
+                               plain, always-there remove. touchAction:none so a
+                               drag doesn't scroll the sheet under the finger. */
+                            <span key={id} className="ic-secpk" style={sched ? { touchAction: 'none' } : undefined}
+                              onPointerDown={sched ? (e => startPkDrag(e, p.id, id)) : undefined}
+                              onContextMenu={sched ? (e => { e.preventDefault(); writeInputs(() => togglePuckPerson(p.id, id)) }) : undefined}>
                               <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
                               {sched && <button type="button" className="ic-pkdel" data-pkdel={`${p.id}.${id}`}
                                 aria-label={`Remove ${PEOPLE[id] ? PEOPLE[id].cs : id}`}
@@ -533,12 +583,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                             </span>
                           ))}
                           {sched && (
-                            <select className="ic-pkadd" aria-label="Add a person" value=""
-                              onChange={e => { const v = e.target.value; if (v) writeInputs(() => togglePuckPerson(p.id, v)) }}>
-                              <option value="">+ add…</option>
-                              {roster.filter(id => !(p.ids || []).includes(id)).map(id =>
-                                <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-                            </select>
+                            <button type="button" className="ic-pkadd" data-pkadd={p.id}
+                              onClick={() => { setPickFor(p.id); setPickIso(iso); setPickSel(new Set()) }}>+ add</button>
                           )}
                           {sched && <button type="button" data-ppdel={p.id}
                             className="ic-pkdel ic-rowdel" aria-label="Delete pucks row" title="Delete this pucks row"
@@ -600,7 +646,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                           carried; wrapped now so a remark can sit under it */}
                       <span className="ic-poprow-top">
                         <span className="ic-poprow-who">{PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person}</span>
-                        <span className="ic-poprow-lbl">{inpLabel(r)}</span>
+                        {/* a SANS row reads as its F/O/A offer letters, not the
+                            generic "SANS Availability" type name (owner, 23 Aug
+                            26 — "show the F/O/A on the inputs"); the same read
+                            the month-cell chip already gives, so the two agree.
+                            Empty ticks fall back to F/O/A, meaning "offered". */}
+                        <span className="ic-poprow-lbl">{isSansAvail(r.type) ? (sansLetters(r) || 'F/O/A') : inpLabel(r)}</span>
                         {!r.allday && <span className="ic-poprow-win">{hhmm(r.s)}–{hhmm(r.e)}</span>}
                       </span>
                       {/* the remark as its own aligned line under the identity
@@ -613,6 +664,78 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  /* THE MULTI-SELECT PUCK PICKER (owner, 23 Aug 26 — "a placeholder view to
+     select a few pucks at 1 go by clicking a few then press ok"). Opens from
+     + Pucks (pickFor='' → a NEW row is made on OK) or a row's + add (pickFor is
+     that row's id → the ticks are added to it). The category buttons LIGHT UP
+     everyone in a category at once (personMatchesCat, the same predicate the
+     highlight chips use), toggling the whole group. People already on the
+     target row are shown ticked-and-locked so a re-pick can't double them. */
+  const renderPicker = () => {
+    const roster = Object.keys(PEOPLE)
+      .filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
+      .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
+    const seated = new Set<string>(pickFor ? ((PLANPUCKS.find((p: any) => p.id === pickFor)?.ids) || []) : [])
+    const toggle = (id: string) => setPickSel(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
+    const catMatch = (key: string) => roster.filter(id => !seated.has(id) && personMatchesCat(PEOPLE[id], key))
+    const toggleCat = (key: string) => {
+      const m = catMatch(key)
+      setPickSel(prev => {
+        const n = new Set(prev)
+        const allIn = m.length > 0 && m.every(id => n.has(id))
+        m.forEach(id => { if (allIn) n.delete(id); else n.add(id) })   // whole category on, or off if already all on
+        return n
+      })
+    }
+    const close = () => { setPickFor(null); setPickSel(new Set()) }
+    const confirm = () => {
+      const ids = [...pickSel]
+      if (ids.length) {
+        if (pickFor === '') writeInputs(() => addPuckRow(pickIso, ids))
+        else writeInputs(() => addPuckPeople(pickFor!, ids))
+      }
+      close()
+    }
+    return (
+      <div className="ic-pickwrap" onPointerDown={e => { if (e.target === e.currentTarget) close() }}>
+        <div className="ic-pick" role="dialog" aria-label="Add people" onClick={e => e.stopPropagation()}>
+          <div className="ic-pick-head">
+            <b>Add people</b>
+            <span className="ic-pick-n">{pickSel.size} picked</span>
+            <button type="button" className="x" id="icPickClose" aria-label="Close" onClick={close}>✕</button>
+          </div>
+          {/* the category highlight buttons — one tap lights everyone in it */}
+          <div className="ic-pick-cats">
+            {HL_CATS.map(([k, t, ttl]) => {
+              const m = catMatch(k)
+              const allIn = m.length > 0 && m.every(id => pickSel.has(id))
+              return <button key={k} type="button" className={'fchip' + (allIn ? ' on' : '')} data-pickcat={k}
+                title={ttl} onClick={() => toggleCat(k)}>{t}</button>
+            })}
+          </div>
+          <div className="ic-pick-grid">
+            {roster.map(id => {
+              const on = pickSel.has(id), already = seated.has(id)
+              return (
+                <button key={id} type="button" disabled={already} aria-pressed={on || already}
+                  className={'ic-pickp' + (on ? ' on' : '') + (already ? ' already' : '')}
+                  data-pickp={id} title={already ? 'Already on this row' : (PEOPLE[id] ? PEOPLE[id].cs : id)}
+                  onClick={() => { if (!already) toggle(id) }}>
+                  <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
+                </button>
+              )
+            })}
+          </div>
+          <div className="ic-pick-foot">
+            <button type="button" className="abtn" id="icPickCancel" onClick={close}>Cancel</button>
+            <button type="button" className="abtn primary" id="icPickOk" disabled={pickSel.size === 0}
+              onClick={confirm}>✓ Add{pickSel.size ? ` ${pickSel.size}` : ''}</button>
           </div>
         </div>
       </div>
@@ -656,20 +779,20 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                   the .ic-rmk class its tests and store history know it by. */}
               {rmk && <div className="ic-rmk" title={rmk}>{rmk}</div>}
               {pucks.map((p: any) => p.kind === 'pucks' ? (
-                /* a pucks section as a row of TINY person chips, CAT-tinted
-                   from the same QCOLOR ladder the Quals page uses */
+                /* a pucks section as a row of TINY person chips, styled like the
+                   app's standard puck (owner, 23 Aug 26 — "the standard green or
+                   yellow"): the olive body lives in .ic-pk, and each person's
+                   CATEGORY reads as a colour line on the RIGHT (the QCOLOR
+                   ladder the Quals page uses); a SANS person carries an extra
+                   purple line on the LEFT — the same purple the real puck wears,
+                   just moved to the opposite edge so it never fights the CAT
+                   line. Ground crew (no CAT) simply get no right line. */
                 <div key={'p' + p.id} className="ic-pks" data-pid={p.id} data-icdrag>
                   {(p.ids || []).map((id: string) => {
                     const per = PEOPLE[id]
-                    const col = per && QCOLOR[per.q]
-                    /* the Quals qmini's own colour pairing (QualsPage.tsx):
-                       white text on every CAT fill except the pale C/B,
-                       which carry dark; no CAT (ground crew, q:'') → the
-                       personnel white with dark text, the same colour their
-                       pucks wear everywhere else. The default --edge-2 grey
-                       under dark text was unreadable (review fix, 22 Aug 26). */
-                    const dark = !col || per.q === 'C' || per.q === 'B'
-                    return <span key={id} className="ic-pk" style={{ background: col || 'var(--pers)', color: dark ? '#04222b' : '#fff' }}>{per ? per.cs : id}</span>
+                    const cat = per && QCOLOR[per.q]   // category → right line (drawn by .ic-pk::after off this var)
+                    return <span key={id} className={'ic-pk' + (per && per.san ? ' sans' : '')}
+                      style={cat ? ({ ['--pk-cat']: cat } as React.CSSProperties) : undefined}>{per ? per.cs : id}</span>
                   })}
                 </div>
               ) : (
@@ -695,6 +818,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         })}
       </div>
       {popIso != null && renderPop(popIso)}
+      {pickFor != null && renderPicker()}
     </div>
   )
 }

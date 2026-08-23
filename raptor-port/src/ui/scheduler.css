@@ -1902,7 +1902,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-chip.red{background:rgba(240,85,95,.16);box-shadow:inset 2px 0 0 var(--hard)}
 .ic-chip.amb{background:rgba(229,168,59,.14);box-shadow:inset 2px 0 0 var(--adv)}
 .ic-chip.san{background:rgba(178,77,234,.16);box-shadow:inset 2px 0 0 var(--san)}
-.ic-chip.plan{border:1px dashed var(--accent);background:transparent;color:var(--ink-2)}
+/* a NOTE on the cell reads as plain muted text, no box (owner, 23 Aug 26 —
+   "for the notes, dont need to put a blue dotted box outside of it"). The
+   dashed accent border it used to wear read as an editable field it is not;
+   the muted colour still sets it apart from the bold title above it. */
+.ic-chip.plan{border:none;background:transparent;color:var(--ink-2);padding-left:0}
 /* the INPUT chips pack side by side now (owner, 22 Aug 26 — "coloured pucks
    arranged side by side, just showing the callsign and the input"); each chip
    shrinks-to-fit and ellipses only when a single one outgrows the cell */
@@ -1910,8 +1914,14 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-inrow .ic-chip{display:inline-block;margin-bottom:0;max-width:100%;flex:0 1 auto}
 /* a pucks section on the cell — tiny CAT-tinted person chips in a row */
 .ic-pks{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:1px;cursor:pointer}
-.ic-pk{font-size:9px;font-weight:700;line-height:1;padding:2px 4px;border-radius:3px;
-  background:var(--edge-2);color:#0d1013;white-space:nowrap}
+/* the standard olive puck body (owner, 23 Aug 26 — "standard green or
+   yellow"); the CATEGORY reads as a line on the RIGHT (its colour handed in as
+   --pk-cat, so no cat = no line) and a SANS person carries a purple line on the
+   LEFT. Pseudo-elements, not inline box-shadows, so the phone can thin them. */
+.ic-pk{position:relative;overflow:hidden;font-size:9px;font-weight:700;line-height:1;padding:2px 4px;
+  border-radius:3px;background:var(--fcp);color:var(--fcp-ink);white-space:nowrap}
+.ic-pk::after{content:'';position:absolute;top:0;bottom:0;right:0;width:3px;background:var(--pk-cat,transparent)}
+.ic-pk.sans::before{content:'';position:absolute;top:0;bottom:0;left:0;width:3px;background:var(--san)}
 /* pinned to the cell's bottom-right, over whatever is there: when it renders
    at all it must be VISIBLE — an overflowing cell used to clip it out with
    the very inputs it announces (review fix, 22 Aug 26). The panel background
@@ -1929,6 +1939,13 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      one size down */
   .ic-rmk{font-size:8.5px}
   .ic-pk{font-size:0;width:10px;height:6px;padding:0;border-radius:2px}
+  /* thinner edge lines on the phone's bare colour bar so the olive body still reads */
+  .ic-pk::after,.ic-pk.sans::before{width:2px}
+  /* a NOTE collapses to a bare bar on the phone like every other chip (its text
+     can't fit the cell). With the desktop dashed box gone it would be an
+     invisible transparent slot, so give it a muted grey fill — visible, and
+     clearly not one of the toned input bars beside it. */
+  .ic-chip.plan{background:var(--edge-2)}
   .ic-more{font-size:9px}
   /* the bar gets tighter horizontal padding, but the buttons in it keep
      their 44px touch target from the desktop rule above */
@@ -1986,7 +2003,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 /* the TITLE beside the date in the head — the input takes the head's spare
    width (the date is content-sized, the ✕ fixed), the read-only form is the
    same slot as plain text */
-.ic-pop-head .ic-title-edit{flex:1;min-width:0}
+/* the TITLE text matches the DATE beside it (owner, 23 Aug 26 — "put it at
+   the right size of the date number"). Without an explicit size the input took
+   the UA default, which on a phone is 16px — larger than the 15px date, so the
+   title loomed over it. `.ic-pop .ic-pop-head` outspecifies the shared
+   `.ic-pop input` font shorthand so this size actually lands. */
+.ic-pop .ic-pop-head .ic-title-edit{flex:1;min-width:0;font-size:15px;font-weight:700}
 .ic-title-ro{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
 /* the + Note / + Pucks pair, small buttons on one line at the top of the
    sections area (owner, 22 Aug 26) */
@@ -2009,8 +2031,42 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-secpk .seat{display:flex}
 .ic-pkdel{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:11px;padding:2px 3px}
 .ic-pkdel:hover{color:var(--hard)}
-.ic-pop select.ic-pkadd{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);
-  border-radius:7px;font:600 11px 'Inter Tight',sans-serif;padding:3px 5px;cursor:pointer;width:auto}
+/* a seated puck being dragged off its row to remove it — lifts above its
+   neighbours and follows the finger (transform set inline by startPkDrag) */
+.ic-secpk.pk-drag{position:relative;z-index:2;opacity:.85;cursor:grabbing;pointer-events:none}
+/* the + add button that opens the multi-select picker (replaced the one-at-a
+   -time select, owner 23 Aug 26) */
+.ic-pop .ic-pkadd{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);
+  border-radius:7px;font:600 11px 'Inter Tight',sans-serif;padding:4px 9px;cursor:pointer;min-height:28px}
+.ic-pop .ic-pkadd:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ---- THE MULTI-SELECT PUCK PICKER (owner, 23 Aug 26) — a sheet over the day
+   popover; z-index 450 sits above the popover (420) and below the input-edit
+   dialog (.airpop 460) and the generic modal (470), the same ladder the
+   popover documents. */
+.ic-pickwrap{position:fixed;inset:0;z-index:450;background:rgba(4,7,10,.6);
+  display:flex;align-items:center;justify-content:center;padding:16px}
+.ic-pick{background:var(--panel);border:1px solid var(--edge);border-radius:14px;
+  width:min(94vw,520px);max-height:82vh;display:flex;flex-direction:column;overflow:hidden}
+.ic-pick-head{display:flex;align-items:center;gap:10px;padding:12px 15px;border-bottom:1px solid var(--edge)}
+.ic-pick-head b{font-size:15px;font-weight:700}
+.ic-pick-n{font-size:12px;color:var(--ink-3)}
+.ic-pick-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;
+  font-size:18px;min-width:40px;min-height:40px}
+.ic-pick-cats{display:flex;flex-wrap:wrap;gap:6px;padding:12px 15px;border-bottom:1px solid var(--edge)}
+/* the person grid — the app's own pucks in a wrap, each a toggle button; the
+   selected ones ring accent, the already-seated ones dim and lock */
+.ic-pick-grid{display:flex;flex-wrap:wrap;gap:7px;padding:14px 15px;overflow-y:auto}
+.ic-pickp{background:none;border:1px solid transparent;border-radius:6px;padding:2px;cursor:pointer;
+  line-height:0;display:inline-flex}
+.ic-pickp .seat{display:flex;pointer-events:none}
+.ic-pickp.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 10px rgba(59,198,232,.35)}
+.ic-pickp.already{opacity:.4;cursor:default}
+.ic-pick-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 15px;border-top:1px solid var(--edge)}
+.ic-pick-foot .abtn.primary[disabled]{opacity:.45;cursor:default}
+@media (max-width:820px){
+  .ic-pick{width:100vw;height:100vh;max-height:100vh;border-radius:0}
+}
 /* the inputs block at the bottom: its small + Input leads it, top-left */
 .ic-inp-sec{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .ic-inp-sec .ic-pop-rows{align-self:stretch}

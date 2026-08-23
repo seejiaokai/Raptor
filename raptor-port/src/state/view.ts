@@ -536,19 +536,25 @@ export let WFOCUS:any=null;
    fall, so a Tuesday crew-rest breach caused by a Monday night wave shows up
    on both days at once. PFOCUS is the clicked person, not a warning. */
 export let PFOCUS:any=null;                // {id, days:[…]}
+/* does ONE person match ONE highlight category key — the pure predicate behind
+   both the highlight chips (personMatchesHL, reading the live HLSET) and the
+   calendar puck-picker's category buttons (owner, 23 Aug 26 — "light up those
+   who are in that category"). One body so the two can never disagree about who
+   is a SUP or an instructor. */
+export function personMatchesCat(p:any,f:any){
+  if(f==='A')return p.q==='A';
+  if(f==='B')return p.q==='B';
+  if(f==='C')return p.q==='C';
+  if(f==='D')return p.q==='D';
+  if(f==='FL'||f==='SUP')return isLead(p.q);    // supervisors — Cat A and B
+  if(f==='INS')return isInstr(p.q);
+  if(f==='SXO')return !!(p.quals&&p.quals.sxo);
+  if(f==='SANS')return !!p.san;
+  if(f==='OCU')return isOcu(p.q);
+  return false;
+}
 export function personMatchesHL(p:any){
-  for(const f of HLSET){
-    if(f==='A'&&p.q==='A')return true;
-    if(f==='B'&&p.q==='B')return true;
-    if(f==='C'&&p.q==='C')return true;
-    if(f==='D'&&p.q==='D')return true;
-    if(f==='FL'&&isLead(p.q))return true;
-    if(f==='SUP'&&isLead(p.q))return true;      // supervisors — Cat A and B
-    if(f==='INS'&&isInstr(p.q))return true;
-    if(f==='SXO'&&p.quals.sxo)return true;
-    if(f==='SANS'&&p.san)return true;
-    if(f==='OCU'&&isOcu(p.q))return true;
-  }
+  for(const f of HLSET) if(personMatchesCat(p,f))return true;
   if(SEARCH){const s=SEARCH.toLowerCase(); if(p.cs.toLowerCase().includes(s)||(p.name||'').toLowerCase().includes(s))return true;}
   return false;
 }

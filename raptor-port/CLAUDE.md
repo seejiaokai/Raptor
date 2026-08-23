@@ -801,6 +801,34 @@ subscribers.
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add
   drop targets to `drag.ts` for it; that machine stays scoped to pucks.
+- **The calendar day popover — five owner asks, 23 Aug 26** (all in
+  `InputsCal.tsx` / `scheduler.css`, verified live before shipping;
+  `docs/ui-contracts.md` §The Inputs month calendar carries the detail):
+  - **A SANS input reads its F/O/A letters on the popover row too**, not just
+    the cell chip — the row label is `isSansAvail ? (sansLetters||'F/O/A') :
+    inpLabel`. Don't put "SANS Availability" back on the row.
+  - **The day TITLE matches the date number's size** (15px/700). Without an
+    explicit size the input took the UA default — 16px on a phone, larger than
+    the date. `.ic-pop .ic-pop-head .ic-title-edit` outspecifies the shared
+    `.ic-pop input` font. Don't drop the explicit size.
+  - **A cell NOTE is plain text, no box** (the old `.ic-chip.plan` dashed
+    accent border is gone); on the phone, where its text can't fit, it's a
+    muted `--edge-2` bar so it stays visible. Don't re-add the dashed border.
+  - **The cell mini-pucks (`.ic-pk`) are standard-olive** (`--fcp`), the
+    CATEGORY a right-edge line (`--pk-cat`, drawn by `::after`), a SANS person
+    a purple LEFT line (`.ic-pk.sans::before`). NOT the old full CAT-tint fill.
+    The stripes are pseudo-elements (not inline box-shadows) so the phone thins
+    them; the cat colour rides in as `--pk-cat`.
+  - **`+ Pucks` opens the MULTI-SELECT picker** (`.ic-pick`), not a one-at-a
+    -time `<select>`: category highlight buttons (`HL_CATS` + `personMatchesCat`
+    — the SAME predicate as the highlight chips, one body in `state/view.ts`)
+    light a whole category, and **✓ Add** batches the ticks
+    (`addPuckRow(iso,ids)` for a new row, `addPuckPeople` to top one up — both
+    dedupe). A seated puck is removed THREE ways: its ✕, a right-click
+    (desktop), or a **drag off its row** (`startPkDrag`, phone + desktop —
+    released outside its `[data-secpucks]` drops it). Don't restore the
+    per-person `<select>`, and keep `personMatchesCat` the one category
+    predicate — a second copy is the drift seam.
 - **No ⋯ collapse of the phone row control strips** (owner, 16 Aug 26 — built,
   shipped and rolled back the same day). Every flying/duty/sim/ground row's
   `▲▼/CX/■/✕` strip was tucked behind one ⋯ (a `CTLOPEN` view state, one row

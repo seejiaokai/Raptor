@@ -3377,9 +3377,13 @@ the session); `‹ ›` step months, `Today` jumps home. Each day cell is
 
 **The cell's priority order (owner, 22 Aug 26 — "if it fills up the whole
 day box, so be it; the inputs showing is lesser priority").** Top to bottom:
-the day **TITLE** (`.ic-rmk` — bold, wraps, both widths), then the
-**sections** in their arranged order (a note as its dashed chip, a pucks row
-as tiny CAT-tinted person chips `.ic-pks`/`.ic-pk`, all drawn in FULL), then
+the day **TITLE** (`.ic-rmk` — bold, wraps, both widths; sized to match the
+popover's date number since 23 Aug 26), then the **sections** in their
+arranged order (a note as plain muted text — **no box** since 23 Aug 26, a
+muted bar on the phone where its text can't fit; a pucks row as tiny
+**standard-olive** person chips `.ic-pks`/`.ic-pk` — the CATEGORY a colour
+line on the RIGHT and a SANS person a purple line on the LEFT, 23 Aug 26 — all
+drawn in FULL), then
 the **inputs** as side-by-side mini chips (`.ic-inrow`) reading callsign +
 type — no times (the popover has them) — with a SANS record reading its
 **F/O/A letters on the purple chip, never the words** (`sansLetters`; the
@@ -3443,14 +3447,31 @@ Restructured 22 Aug 26 to the owner's layout, top to bottom:
   text). It is what the cell shows as its heading, and it is the same
   per-day store the old "Day remark" field wrote (`DAYRMK`), promoted.
 - **`+ Note` / `+ Pucks`, two small buttons** (schedulers only). `+ Note`
-  opens a full-width free-text block; `+ Pucks` adds a full-width row of the
-  app's canonical pucks, filled one person at a time through its own
-  `+ add…` picker, each puck removable by its ✕. Both are SECTIONS
-  (`state/plan.ts` `PLANPUCKS` — a note is `kind` absent, a pucks row
-  `kind:'pucks'` with `ids`), drawn full-width in their stored order, and a
-  scheduler **drags the ⠿ handle to rearrange them** (the board row-drag's
-  half rule: the lower half of a hovered section means "after it";
+  opens a full-width free-text block; `+ Pucks` opens the **multi-select puck
+  picker** (owner, 23 Aug 26 — "select a few pucks at 1 go … then press ok").
+  Both are SECTIONS (`state/plan.ts` `PLANPUCKS` — a note is `kind` absent, a
+  pucks row `kind:'pucks'` with `ids`), drawn full-width in their stored order,
+  and a scheduler **drags the ⠿ handle to rearrange them** (the board
+  row-drag's half rule: the lower half of a hovered section means "after it";
   `movePlanSection` is same-day only).
+- **The multi-select puck picker** (`.ic-pick`, `renderPicker` in InputsCal;
+  owner, 23 Aug 26). A sheet over the popover (z 450, fullscreen on a phone):
+  the app's own pucks in a wrap, each a toggle; **category highlight buttons**
+  (`HL_CATS`, shared with the highlight chips via `personMatchesCat` in
+  `state/view.ts` — ONE predicate, no second copy) light up everyone in a
+  category at once, toggling the whole group; a footer **✓ Add N** commits.
+  `+ Pucks` opens it with no target (`pickFor=''`) → **OK makes a NEW row**
+  from the picks (`addPuckRow(iso, ids)`); a row's **`+ add`** opens it for
+  that row (`pickFor=<id>`) → **OK tops the row up** (`addPuckPeople`, adds
+  only the not-yet-seated). Both mutators DEDUPE. People already on the target
+  row show ticked-and-locked so a re-pick can't double them. Escape peels the
+  picker first, then the popover, then the calendar.
+- **Removing a seated puck — three ways**: its **✕** (always there), a
+  **right-click** on the desktop (`onContextMenu` → `togglePuckPerson`), or a
+  **drag off its row** on phone or desktop (`startPkDrag` — a small drift arms
+  it, the chip follows the finger, releasing OUTSIDE its own row drops the
+  person and back inside keeps it, the "off its seat = gone" feel drag.ts gives
+  a board puck). A plain tap that never drifts does nothing destructive.
 - **The inputs at the BOTTOM**, led top-left by a small **`+ Input`**
   (everyone — page parity with the table's own + Add). Each `.ic-poprow`
   reads its callsign, type and (timed only) window on one identity line,
@@ -3458,9 +3479,11 @@ Restructured 22 Aug 26 to the owner's layout, top to bottom:
   (`.ic-poprow-rmk`; a remark-less row stays one tidy line). Tap a row →
   the same edit dialog. `+N more` opens the same popover.
 
-**Escape peels one layer per press**: input dialog → popover → calendar.
-The z-ladder, documented here because three overlays now stack: calendar
-350 < board 400 < day popover 420 < drawer 440 < airpop 460 < modal 470.
+**Escape peels one layer per press**: input dialog → puck picker → popover →
+calendar. The z-ladder, documented here because the overlays stack: calendar
+350 < board 400 < day popover 420 < drawer 440 < **puck picker 450** < airpop
+460 < modal 470 (the picker sits above the popover it opens from and below the
+input-edit dialog that can open on top of a row).
 
 **Storage semantics.** Day titles (`DAYRMK`) and the note/pucks sections
 (`PLANPUCKS`) live in `state/plan.ts`: SESSION-ONLY by the owner's explicit

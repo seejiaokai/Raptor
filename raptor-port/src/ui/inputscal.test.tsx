@@ -506,7 +506,10 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     }
   })
 
-  it('+ Pucks adds a full-width pucks row; picking a person chips it on the cell; ✕ takes it off', async () => {
+  /* the multi-select puck picker (owner, 23 Aug 26 — "select a few pucks at 1
+     go … press ok", "highlight buttons to … light up those in that category")
+     and its two new removals: right-click on the desktop, and the ✕ that stays. */
+  it('+ Pucks opens the picker; a category lights its people; OK adds them as a row; right-click and ✕ remove', async () => {
     const iso = '2026-07-09'
     const cell = $(`[data-icday="${iso}"]`)!
     await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
@@ -514,26 +517,43 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     expect($('.ic-pop')).toBeTruthy()
 
     await click($('#icAddPucks'))
-    const sec: any = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
-    expect(sec, 'the pucks section exists').toBeTruthy()
+    expect($('.ic-pick'), 'the picker opened instead of making an empty row').toBeTruthy()
+    expect(PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso), 'no row until OK').toBeFalsy()
+    let sec: any
     try {
-      /* pick a person through the row's own select */
-      const sel = $('.ic-pkadd') as HTMLSelectElement
-      expect(sel, 'the add-person picker renders').toBeTruthy()
-      await act(async () => {
-        sel.value = 'bane'
-        sel.dispatchEvent(new Event('change', { bubbles: true }))
-      })
-      expect(sec.ids).toEqual(['bane'])
-      /* the popover row draws the canonical puck, the CELL its tiny chip */
-      expect($(`[data-secpucks="${sec.id}"] .puck`), 'the real puck renders in the row').toBeTruthy()
+      /* a category button lights up EVERYONE in that category at once */
+      const catA = $('.ic-pick-cats [data-pickcat="A"]')!
+      await click(catA)
+      const litA = host.querySelectorAll('.ic-pickp.on').length
+      expect(litA, 'Cat-A people lit').toBeGreaterThan(0)
+      expect(catA.className, 'the category chip reads on').toContain('on')
+      /* plus one more individual, ticked by hand */
+      const extra = host.querySelector('.ic-pickp:not(.on):not(.already)') as HTMLElement
+      const extraId = extra.getAttribute('data-pickp')!
+      await click(extra)
+      const want = litA + 1
+      expect(host.querySelectorAll('.ic-pickp.on').length).toBe(want)
+      expect(($('#icPickOk') as HTMLButtonElement).textContent).toContain(String(want))
+      /* OK creates ONE new pucks row carrying all the picks */
+      await click($('#icPickOk'))
+      expect($('.ic-pick'), 'the picker closed on OK').toBeFalsy()
+      sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
+      expect(sec, 'a pucks row was created').toBeTruthy()
+      expect(sec.ids.length).toBe(want)
+      expect(sec.ids, 'the hand-ticked person is on it').toContain(extraId)
+      expect($(`[data-secpucks="${sec.id}"] .puck`), 'the row draws real pucks').toBeTruthy()
       expect(cell.querySelector('.ic-pks .ic-pk'), 'the cell carries the tiny chip').toBeTruthy()
-      /* the ✕ beside the puck takes the person off again */
-      await click($(`[data-pkdel="${sec.id}.bane"]`))
-      expect(sec.ids).toEqual([])
+      /* RIGHT-CLICK a seated puck removes it */
+      const chip = $(`[data-secpucks="${sec.id}"]`)!.querySelector('.ic-secpk') as HTMLElement
+      await act(async () => { chip.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })) })
+      expect(sec.ids.length, 'right-click dropped one').toBe(want - 1)
+      /* the ✕ still removes the next one */
+      await click($(`[data-secpucks="${sec.id}"] .ic-pkdel`))
+      expect(sec.ids.length).toBe(want - 2)
     } finally {
-      await act(async () => { removePlanPuck(sec.id); notify() })
-      await click($('#icPopClose'))
+      sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
+      if (sec) await act(async () => { removePlanPuck(sec.id); notify() })
+      if ($('#icPopClose')) await click($('#icPopClose'))
     }
   })
 

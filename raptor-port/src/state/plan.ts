@@ -118,10 +118,28 @@ export function removePlanPuck(id: string) {
    only way to start one. Appends (not unshifts): the owner arranges section
    order by hand, and a new section belongs at the end of what is already
    arranged, not on top of it. */
-export function addPuckRow(iso: string) {
+export function addPuckRow(iso: string, ids?: string[]) {
   if (!canEditSched()) return false
-  PLANPUCKS.push({ id: nextPuckId(), date: iso, kind: 'pucks', ids: [] })
+  /* an initial roster may come from the multi-select picker (owner, 23 Aug 26
+     — "select a few pucks at 1 go … then press ok"): dedupe it, since the
+     picker's category buttons can select the same person twice. Absent ids
+     keep the empty-row-on-creation behaviour the + Pucks button always had. */
+  const seed = ids ? [...new Set(ids)] : []
+  PLANPUCKS.push({ id: nextPuckId(), date: iso, kind: 'pucks', ids: seed })
   return true
+}
+
+/* add SEVERAL people to an existing pucks row in one write (the picker's OK) —
+   only those not already on the row, so re-adding is a no-op rather than a
+   duplicate. Returns whether anything landed. */
+export function addPuckPeople(id: string, personIds: string[]) {
+  if (!canEditSched()) return false
+  const p = PLANPUCKS.find((x: any) => x.id === id)
+  if (!p || p.kind !== 'pucks') return false
+  const ids: string[] = p.ids || (p.ids = [])
+  let added = false
+  for (const pid of personIds) if (pid && !ids.includes(pid)) { ids.push(pid); added = true }
+  return added
 }
 
 /* add/remove one person on a pucks row — one verb, because the UI is one
