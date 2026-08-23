@@ -351,7 +351,6 @@ export function Shell() {
                 from the board's own inline "+ Wave", between Common Programme
                 and the flying waves, and nowhere else. The board is reachable
                 on desktop, so this page needs no separate control. */}
-            <button className="abtn" id="throwPucks" onClick={() => HOOKS.toast('Auto-throw uses the Quals rules to seat crews (stub in prototype).')}>Throw pucks (auto)</button>
             <button className="abtn" id="exportSched" onClick={() => {
               exportCSV('142-schedule.csv', schedRows())
               /* same reason as the Inputs page's export: a phone shows nothing

@@ -1158,8 +1158,8 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   stayed in the toolbar at the owner's word. The four seat buttons keep their
   `#qViewP/W/G/A` ids, so every caller and test is unchanged; pinned in
   `quals.test.tsx`. The "Throw pucks (auto)" dead
-  button is a known deliberate stub (one dataset bullet below), flagged by the
-  review but not new.
+  button the review flagged was removed on 23 Aug 26 — the auto-throw
+  feature was never built and a toast-only stub earns nothing.
 - **The week-chrome blank-click deselect was widened again (15 Aug 26).** PR
   #220 took the blank-click "clear the selection" scope to the whole `#shell`;
   the owner then reported (phone) that tapping the blank right-hand side of the
@@ -1474,7 +1474,8 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 - **One dataset.** The schedule is the demo week (Mon 13 – Sun 19 Jul 26, a
   full Monday-to-Sunday week; the weekend is non-flying, duty crew only).
   Week chips re-label but every week shows the same data (the original
-  behaved the same way). "Throw pucks (auto)" is a stub, as in the original.
+  behaved the same way). The original's "Throw pucks (auto)" stub button was
+  removed from the port on 23 Aug 26 (toast-only, no feature behind it).
 - **Only `rules` and `stores` survive a reload.** The whole Leave War —
   its manning counter definitions included (owner, 19 Aug 26: no persistence
   wanted; that configuration will live in the database when it arrives) —
