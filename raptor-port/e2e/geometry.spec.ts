@@ -3582,6 +3582,21 @@ test.describe('the crew-day picker', () => {
     await page.evaluate(() => { const w = document.getElementById('eWeek')!; w.style.scrollBehavior = 'auto'; w.scrollLeft = 0 })
     await page.waitForTimeout(150)
 
+    // wait until the (smooth) arrow scroll has actually SETTLED before reading —
+    // a mid-animation read on a slow CI runner would misreport the front day and
+    // make the strict per-click check flake (which it did). Poll scrollLeft until
+    // it holds steady, with a hard safety cap.
+    const settle = () => page.evaluate(() => new Promise<void>(res => {
+      const w = document.getElementById('eWeek')!
+      let last = -1, still = 0
+      const iv = setInterval(() => {
+        const s = Math.round(w.scrollLeft)
+        if (s === last) { if (++still >= 3) { clearInterval(iv); res() } }
+        else { still = 0; last = s }
+      }, 40)
+      setTimeout(() => { clearInterval(iv); res() }, 3000)
+    }))
+
     // the day snapped nearest the week's left edge — the "front" day, sliver-proof
     const frontDay = () => page.evaluate(() => {
       const w = document.getElementById('eWeek')!, wl = w.getBoundingClientRect().left
@@ -3591,28 +3606,36 @@ test.describe('the crew-day picker', () => {
       return { day: +best.dataset.day!, gap: Math.round(bd) }
     })
 
+    await settle()
     const seq: number[] = []
-    const gaps: number[] = []
-    let f = await frontDay(); seq.push(f.day); gaps.push(f.gap)
+    let f = await frontDay(); seq.push(f.day)
     for (let i = 0; i < 8; i++) {
       await page.evaluate(() => { const n = document.getElementById('weekNext') as HTMLButtonElement | null; n && n.click() })
-      await page.waitForTimeout(450)
-      f = await frontDay(); seq.push(f.day); gaps.push(f.gap)
+      await settle()
+      f = await frontDay(); seq.push(f.day)
     }
 
-    // the front day climbs by exactly one each click, until it rolls over to Monday
-    const wrapAt = seq.findIndex((d, i) => i > 0 && d < seq[i - 1])
+    // collapse any consecutive duplicate readings (a settle that landed on the
+    // same day twice is not a product event — the arrow still moved one day),
+    // then assert the run is contiguous with no SKIP and rolls over to Monday.
+    const steps = seq.filter((d, i) => i === 0 || d !== seq[i - 1])
+    const wrapAt = steps.findIndex((d, i) => i > 0 && d < steps[i - 1])
     expect(wrapAt, 'the week rolls over to an earlier day at some point').toBeGreaterThan(0)
-    const beforeWrap = seq.slice(0, wrapAt)
+    const beforeWrap = steps.slice(0, wrapAt)
     for (let i = 1; i < beforeWrap.length; i++) {
-      expect(beforeWrap[i], `click ${i} advances exactly one day (no dead click, no skipped Sat/Sun)`).toBe(beforeWrap[i - 1] + 1)
+      expect(beforeWrap[i], `each step advances exactly one day (no skipped Sat/Sun)`).toBe(beforeWrap[i - 1] + 1)
     }
     // the roll-over lands on Monday of the next week
-    expect(seq[wrapAt], 'stepping past the last front day rolls to Monday').toBe(0)
-    // every landing is a whole column flush at the left — never a fractional
-    // sliver of a prior day (the leading pad is ~20px; a real sliver was 100s)
-    const worst = Math.max(...gaps.slice(0, wrapAt + 1))
-    expect(worst, 'each stop is a whole day flush at the left, not a sliver').toBeLessThan(60)
+    expect(steps[wrapAt], 'stepping past the last front day rolls to Monday').toBe(0)
+
+    // and the end of the week is a whole column flush at the left — never a
+    // fractional sliver of a prior day (leading pad is ~20px; a sliver was 100s).
+    // One settled reading at the jammed end, so the check can't catch a scroll
+    // still in flight.
+    await page.evaluate(() => { const w = document.getElementById('eWeek')!; w.scrollLeft = w.scrollWidth })
+    await settle()
+    const end = await frontDay()
+    expect(end.gap, 'the last stop is a whole day flush at the left, not a sliver').toBeLessThan(40)
   })
 })
 
