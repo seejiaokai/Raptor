@@ -52,7 +52,6 @@ export function ViewWeek() {
       return withDaySnap(di, ver, () => dayHTML(di, false))
     })
     const p = prev.current
-    /* both paths hold the week's scroll position (B54) */
     const sl = root.scrollLeft
     let whole = !p || p.length !== html.length || root.children.length !== html.length
     if (!whole) {
@@ -61,23 +60,32 @@ export function ViewWeek() {
     } else {
       root.innerHTML = html.join('')
     }
-    root.scrollLeft = sl
     /* A continuous-nav week load lands on the right day — Monday (swiped
        forward), the last day (swiped back), or a specific day index (a calendar
-       day-pick) — overriding the scroll hold in this same repaint so the new
-       week never flashes the day it left. Consumed once. */
+       day-pick) — REPLACING the scroll hold in this same repaint so the new
+       week never flashes the day it left. Consumed once. It must not re-pin sl
+       first, and the landing writes run with smooth briefly off: .week carries
+       scroll-behavior:smooth, so a re-pin plus a landing were TWO animated
+       writes, and the second one swept the whole week in the wrong direction
+       (owner, 23 Aug 26 — the swipe-across-weeks double sweep). */
     if (WEEKJUMP != null) {
+      const was = root.style.scrollBehavior
+      root.style.scrollBehavior = 'auto'
       if (WEEKJUMP === 'mon') root.scrollLeft = 0
       else if (WEEKJUMP === 'sun') root.scrollLeft = Math.max(0, root.scrollWidth - root.clientWidth)
       else scrollWeekToDay(root, WEEKJUMP)
+      root.style.scrollBehavior = was
       setWeekJump(null)
+    } else {
+      /* a within-week repaint holds the week's scroll position (B54) */
+      root.scrollLeft = sl
+      /* ...unless a page switch left a day to carry (owner, 9 Aug 26): the
+         other week was parked on it, and this one lands there rather than
+         wherever it was last left. Consumed once — a repaint that is not a
+         page switch must keep holding scroll, which is the B54 guarantee the
+         line above exists for. */
+      if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
     }
-    /* ...unless a page switch left a day to carry (owner, 9 Aug 26): the
-       other week was parked on it, and this one lands there rather than
-       wherever it was last left. Consumed once — a repaint that is not a
-       page switch must keep holding scroll, which is the B54 guarantee the
-       line above exists for. */
-    else if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
     prev.current = html
     /* the reference re-hangs selection/highlight classes after every render */
     refreshHighlights()

@@ -34,15 +34,24 @@ function dayStep(w: any) {
    the day you are leaving: floor going right, ceil going left. */
 export function panDays(dir: number) {
   const w = activeWeekEl(); if (!w) return
+  /* the st guard stays FIRST: an un-stubbed jsdom week measures no step, and
+     without it every test's arrow click would read as "at the edge" below and
+     week-jump */
   const st = dayStep(w); if (!st) return
+  /* CONTINUOUS ACROSS WEEKS (owner, 23 Aug 26): an arrow pressed while already
+     jammed against the week's end crosses into the neighbouring week — the
+     same edge-cross the phone swipe does, landing via WEEKJUMP in the load's
+     own repaint. Before this the jammed › was a dead click (plus the crew
+     hint, whose jammed-arrow trigger this replaces — the scroll-jam path in
+     onDocScroll still shows it). */
+  const max = Math.max(0, w.scrollWidth - w.clientWidth)
+  if (dir > 0 && w.scrollLeft >= max - 1) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)); return }
+  if (dir < 0 && w.scrollLeft <= 1) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)); return }
   const n = w.querySelectorAll('.day').length || 1
   const at = w.scrollLeft / st
   const cur = dir > 0 ? Math.floor(at + 0.02) : Math.ceil(at - 0.02)
   const tgt = Math.max(0, Math.min(n - 1, cur + dir)) * st
-  const dest = Math.min(tgt, Math.max(0, w.scrollWidth - w.clientWidth))
-  /* pressing › while already jammed at the right end fires no scroll event, so
-     the hint would never surface from onDocScroll — trigger it here too. */
-  if (dir > 0 && dest <= w.scrollLeft + 1) maybeCrewHint(w)
+  const dest = Math.min(tgt, max)
   w.scrollTo({ left: dest, behavior: 'smooth' })
 }
 
@@ -125,7 +134,7 @@ function crewHintEl() {
   if (!el) {
     el = document.createElement('div')
     el.id = 'crewHint'; el.className = 'crew-hint'
-    el.innerHTML = `<b>That's as far right as the week scrolls.</b> To load a later day's crew here, click that day's <b>name</b> — or use the ‹ › arrows on this panel.`
+    el.innerHTML = `<b>The week ends here — the › arrow continues into next week.</b> To load a later day's crew here, click that day's <b>name</b> — or use the ‹ › arrows on this panel.`
       + `<button class="crew-hint-x" data-crewhintx title="Got it">✕</button>`
     document.body.appendChild(el)
     el.querySelector('[data-crewhintx]')!.addEventListener('click', ev => { ev.stopPropagation(); crewHintDone = true; hideCrewHint() })
