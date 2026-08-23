@@ -327,3 +327,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When a test drives code that hit-tests through document.elementFromPoint (or any jsdom-absent browser API) on a timer, stub it in beforeAll — null return = "nothing under the pointer". Better: a global vitest setup stub so no future touch-drag test can regress. Diagnose a PR-passed/main-failed (or intermittent) failure by reading for the uncaught async error FIRST, not the assertion it corrupts.
 
 **Principle:** A jsdom-absent browser API called from an abandoned timer is a latent CI flake that hides behind local timing; stub the API at the environment boundary rather than chasing the corrupted assertion downstream, and apply the stub wherever the pattern recurs — precedent in one test file is a checklist item for the next.
+
+### Observation 24: Stop-hook "commit and push" fires while a background agent owns the working tree
+
+**Status:** OPEN
+**Date:** 2026-08-23
+**Session context:** Ten-ask UI batch on Raptor — orchestrator session delegating implementation waves to background agents that commit per work package
+**Skill:** New skill candidate: orchestrating-implementation-agents (or a rule for dispatching-parallel-agents)
+**Type:** open-source
+**Phase/Area:** Delegated implementation / git hygiene
+
+**Issue:** A stop hook that checks for uncommitted/unpushed changes fired mid-session while a delegated background agent was actively editing the shared working tree. Blindly obeying it would have committed a half-finished work package out from under the agent (which commits per-package itself after its tests pass). The correct response was to push only the already-committed work and explicitly decline to commit the in-flight tree until the agent's completion notification.
+
+**Suggested improvement:** When orchestrating background agents that share the orchestrator's working tree, treat generic "commit your changes" prompts (hooks, reminders) as scoped to work the orchestrator owns: push committed history freely, but never commit a tree an active delegate is mutating. State the reason once and wait for the agent's completion.
+
+**Principle:** Automated hygiene prompts don't know about delegated ownership of shared state; the orchestrator must partition "safe to act on now" (committed history) from "owned by an in-flight worker" (the dirty tree) before complying.
