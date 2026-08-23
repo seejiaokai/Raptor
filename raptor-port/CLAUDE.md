@@ -718,12 +718,20 @@ subscribers.
   (`pan.ts:setWeekTail` → `.week::after` / `--week-tail`, desktop only) so a FREE
   scroll fully right still stops on a whole column; don't reintroduce a fixed
   `calc()` spacer, and don't restore the flush-right ceiling. **One arrow press
-  = one day even mid-glide** (owner, 23 Aug 26 — "twice on Tuesday to get to
-  Wednesday"): an arrow scroll is a ~300 ms smooth glide, and a second press
-  that landed before it finished read a half-finished `scrollLeft` and stepped
-  short. `panDays` now counts from the position the last press COMMANDED while
-  the glide is still in flight toward it (`panBase`), so fast taps each advance
-  a full day; a manual wheel-pan or a new week drops that target. **The DESKTOP
+  = one day even mid-glide, in BOTH directions** (owner, 23 Aug 26 — "twice on
+  Tuesday to get to Wednesday", and its mirror "twice back from Thursday … then
+  the next click jumps to Tuesday"): an arrow scroll is a ~350 ms smooth glide
+  that each fresh press restarts, and rapid taps OUTRUN it — by the second or
+  third press the live `scrollLeft` is still most of a day behind the column the
+  presses have already commanded, so counting the next step from it made every
+  other press cancel the last. `panDays` counts from the position the last press
+  COMMANDED (`panTgt`) while the glide is still in flight toward it, judged by a
+  BURST CORRIDOR from where the burst started (`panAnchor`, the live scrollLeft
+  the first press counted from) to `panTgt` (`panBase`) — a manual wheel-pan or
+  a new week drops the target. The corridor is anchored at the burst start, not
+  the last step: the first cut used the previous step's start (`panPrev`), a
+  one-day window a fast backlog overshoots, which left the back-direction bug
+  alive. Don't narrow it back to the last step. **The DESKTOP
   scheduler board now has week navigation** (owner, 23 Aug 26 — "in scheduler
   board i cant go between weeks except through the calendar"): `‹ ›` week-jump
   chips flank the seven day chips inside `#sbDays` (`board.ts:dayTabsHTML`,
@@ -793,6 +801,34 @@ subscribers.
   Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
   `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add
   drop targets to `drag.ts` for it; that machine stays scoped to pucks.
+- **The calendar day popover — five owner asks, 23 Aug 26** (all in
+  `InputsCal.tsx` / `scheduler.css`, verified live before shipping;
+  `docs/ui-contracts.md` §The Inputs month calendar carries the detail):
+  - **A SANS input reads its F/O/A letters on the popover row too**, not just
+    the cell chip — the row label is `isSansAvail ? (sansLetters||'F/O/A') :
+    inpLabel`. Don't put "SANS Availability" back on the row.
+  - **The day TITLE matches the date number's size** (15px/700). Without an
+    explicit size the input took the UA default — 16px on a phone, larger than
+    the date. `.ic-pop .ic-pop-head .ic-title-edit` outspecifies the shared
+    `.ic-pop input` font. Don't drop the explicit size.
+  - **A cell NOTE is plain text, no box** (the old `.ic-chip.plan` dashed
+    accent border is gone); on the phone, where its text can't fit, it's a
+    muted `--edge-2` bar so it stays visible. Don't re-add the dashed border.
+  - **The cell mini-pucks (`.ic-pk`) are standard-olive** (`--fcp`), the
+    CATEGORY a right-edge line (`--pk-cat`, drawn by `::after`), a SANS person
+    a purple LEFT line (`.ic-pk.sans::before`). NOT the old full CAT-tint fill.
+    The stripes are pseudo-elements (not inline box-shadows) so the phone thins
+    them; the cat colour rides in as `--pk-cat`.
+  - **`+ Pucks` opens the MULTI-SELECT picker** (`.ic-pick`), not a one-at-a
+    -time `<select>`: category highlight buttons (`HL_CATS` + `personMatchesCat`
+    — the SAME predicate as the highlight chips, one body in `state/view.ts`)
+    light a whole category, and **✓ Add** batches the ticks
+    (`addPuckRow(iso,ids)` for a new row, `addPuckPeople` to top one up — both
+    dedupe). A seated puck is removed THREE ways: its ✕, a right-click
+    (desktop), or a **drag off its row** (`startPkDrag`, phone + desktop —
+    released outside its `[data-secpucks]` drops it). Don't restore the
+    per-person `<select>`, and keep `personMatchesCat` the one category
+    predicate — a second copy is the drift seam.
 - **No ⋯ collapse of the phone row control strips** (owner, 16 Aug 26 — built,
   shipped and rolled back the same day). Every flying/duty/sim/ground row's
   `▲▼/CX/■/✕` strip was tucked behind one ⋯ (a `CTLOPEN` view state, one row

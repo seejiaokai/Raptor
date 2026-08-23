@@ -21,6 +21,11 @@ const HL_CHIPS2: [string, string, string][] = [
   ['SUP', 'SUP', 'Supervisors — Cat A & B'], ['FL', 'FL', 'All flight leads (Cat A & B)'], ['INS', 'Ins', 'Instructors (IW / IP / IR / FI)'],
   ['SXO', 'SXO', 'SXO-qualified'], ['SANS', 'SANS', 'SANS — staff-assigned & NS aircrew'],
 ]
+/* the same category keys/labels the calendar puck-picker lights up by (owner,
+   23 Aug 26 — "highlight buttons to select and light up those who are in that
+   category"). Exported so the picker reads ONE list, not a second copy that
+   could drift from these chips. */
+export const HL_CATS: [string, string, string][] = [...HL_CHIPS, ...HL_CHIPS2]
 
 export function HlChips() {
   const chip = ([k, t, ttl]: [string, string, string]) => (

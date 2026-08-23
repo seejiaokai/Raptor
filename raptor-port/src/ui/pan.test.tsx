@@ -189,6 +189,36 @@ describe('week panning (tfin)', () => {
     w.scrollLeft = 1128
   })
 
+  /* A RAPID BURST ADVANCES ONE DAY PER PRESS EVEN WHEN THE GLIDE LAGS FAR
+     BEHIND (owner, 23 Aug 26 — "twice back from Thursday … then the next click
+     jumps to Tuesday"). Fast taps outrun the ~350ms smooth glide: by the third
+     press the live scrollLeft is still most of a day behind the column already
+     commanded, sitting BEYOND panPrev on the origin side. The first cut of the
+     mid-glide fix gated on scrollLeft lying between panPrev and panTgt, a
+     one-day window this backlog overshoots — so it read "settled" mid-flight
+     and every other press cancelled the last (Fri→Thu→Fri→Thu, never reaching
+     Tuesday). Counting from the commanded target while scrollLeft is still on
+     the panPrev side of it fixes both directions. Geometry as above; the glide
+     is simulated by NOT settling scrollLeft, exactly like the test just above. */
+  it('a rapid same-direction burst still advances one whole day per press', () => {
+    const w = $('#vWeek')
+    const live = $$('#vWeek .day:not(.peek)')
+    live.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: 9000, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1692, configurable: true })
+    let landed = -1
+    ;(w as any).scrollTo = (o: any) => { landed = o.left; /* the glide lags: do NOT settle scrollLeft */ }
+    // sitting on Friday at the front, stepping BACK fast; the glide barely moves
+    w.scrollLeft = 2256           // Friday
+    panDays(-1); expect(landed, 'Thursday').toBe(1692)
+    w.scrollLeft = 2182           // glide still near Friday — beyond panPrev, the old window missed this
+    panDays(-1); expect(landed, 'Wednesday, not a re-command of Thursday').toBe(1128)
+    w.scrollLeft = 2109
+    panDays(-1); expect(landed, 'Tuesday, not back to Thursday').toBe(564)
+    w.scrollLeft = 2034
+    panDays(-1); expect(landed, 'Monday').toBe(0)
+  })
+
   it('panning the week walks the palette along, debounced', async () => {
     vi.useFakeTimers()
     const w = $('#vWeek')

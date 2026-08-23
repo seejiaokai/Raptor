@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setSession } from './auth'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, movePlanPuck, removePlanPuck, clearPlan, addPuckRow, togglePuckPerson, movePlanSection } from './plan'
+import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, movePlanPuck, removePlanPuck, clearPlan, addPuckRow, addPuckPeople, togglePuckPerson, movePlanSection } from './plan'
 import { INPVIEW, CALMONTH, setInpView, setCalMonth } from './view'
 import { undo, redo, histInit, HIST, histApply, resetSession, writeInputs } from './store'
 import { histSnap } from './history'
@@ -126,6 +126,27 @@ describe('the pucks-row sections (owner, 22 Aug 26)', () => {
     expect(sec.ids).toEqual(['yeti'])
   })
 
+  /* the multi-select picker (owner, 23 Aug 26) lands a whole batch at once —
+     addPuckRow may carry an initial roster, and addPuckPeople tops up an
+     existing row. Both dedupe: the picker's category buttons can pick the same
+     person twice, and re-adding an already-seated person must be a no-op. */
+  it('addPuckRow can seed a row from the picker, deduping the ids', () => {
+    expect(addPuckRow('2026-08-24', ['bane', 'yeti', 'bane'])).toBe(true)
+    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    expect(sec.kind).toBe('pucks')
+    expect(sec.ids).toEqual(['bane', 'yeti'])
+  })
+
+  it('addPuckPeople adds only the not-yet-seated, and reports whether anything landed', () => {
+    addPuckRow('2026-08-24', ['bane'])
+    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    expect(addPuckPeople(sec.id, ['yeti', 'bane', 'vinci'])).toBe(true)  // bane already on → skipped
+    expect(sec.ids).toEqual(['bane', 'yeti', 'vinci'])
+    expect(addPuckPeople(sec.id, ['yeti', 'vinci'])).toBe(false)         // all present → no-op
+    expect(sec.ids).toEqual(['bane', 'yeti', 'vinci'])
+    expect(addPuckPeople('no-such-row', ['bane'])).toBe(false)
+  })
+
   it('togglePuckPerson refuses a note section and an empty person', () => {
     addPlanPuck('2026-08-24', 'a note')
     const note = PLANPUCKS[0]
@@ -140,6 +161,7 @@ describe('the pucks-row sections (owner, 22 Aug 26)', () => {
     const sec = PLANPUCKS[PLANPUCKS.length - 1]
     setSession({ user: 'user', role: 'main' })
     expect(addPuckRow('2026-08-25')).toBe(false)
+    expect(addPuckPeople(sec.id, ['bane'])).toBe(false)
     expect(togglePuckPerson(sec.id, 'bane')).toBe(false)
     expect(movePlanSection(sec.id, null)).toBe(false)
   })

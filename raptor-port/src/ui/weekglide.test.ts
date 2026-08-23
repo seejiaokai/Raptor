@@ -85,4 +85,21 @@ describe('a fired glide leaves nothing behind', () => {
     expect(Number(ghost.style.zIndex), 'the clone must sit below the top bar, not tie it').toBeLessThan(60)
     vi.runAllTimers()
   })
+
+  /* owner, 23 Aug 26 — "artifacts bleeding between weeks". The clone carries the
+     week's class, and `.week` sets scroll-behavior:smooth, so parking it with
+     `scrollLeft = sl` was ANIMATED: the outgoing week rolled through its middle
+     days while it slid off. The clone must opt OUT of smooth so its park is an
+     instant freeze on the day the finger left. */
+  it('freezes the sliding clone on the finger day (scroll-behavior:auto, not the week\'s smooth)', () => {
+    vi.useFakeTimers()
+    setW(400); view.setWeekJump('sun')
+    const root = mkRoot(390)
+    beginGlide(root)!()
+    const ghost = [...document.querySelectorAll('body > .week')]
+      .find(el => (el as HTMLElement).style.position === 'fixed') as HTMLElement
+    expect(ghost, 'the fired glide spawned a fixed-position clone').toBeTruthy()
+    expect(ghost.style.scrollBehavior, 'the clone must not inherit .week smooth-scroll, or its park animates').toBe('auto')
+    vi.runAllTimers()
+  })
 })

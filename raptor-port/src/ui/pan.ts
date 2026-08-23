@@ -63,23 +63,44 @@ export function weekScrollMax(w: any): number {
   return Math.min(cap, (ds.length - 1) * step)
 }
 /* COUNT FROM WHERE THE LAST PRESS WAS HEADING, NOT THE LIVE SCROLL (owner, 23
-   Aug 26 — "twice on Tuesday to get to Wednesday"). An arrow scroll is a ~300ms
-   smooth glide, so a second press that lands before it finishes read a
-   half-finished scrollLeft and stepped less than a whole day — so it took two
-   presses to advance one. We remember the position the last press COMMANDED,
-   and while the glide is still in flight toward it (scrollLeft strictly between
-   where that press started and where it is going) the next press counts from
-   the destination — one press, one day, however fast the taps come. The moment
-   the glide arrives, or the strip is repositioned any other way (a manual
-   scroll lands outside that in-flight span, a new week zeroes panWk), the live
-   scrollLeft takes over again. */
+   Aug 26 — "twice on Tuesday to get to Wednesday", and its mirror the same day
+   — "twice back from Thursday … then the next click jumps to Tuesday"). An
+   arrow scroll is a ~350ms smooth glide, and each fresh press restarts that
+   glide from wherever it has crawled to. Rapid taps OUTRUN it: by the second or
+   third press the live scrollLeft is still most of a day behind the column the
+   presses have already commanded. Counting the next step from that lagging
+   scrollLeft made every other press cancel the one before it — the strip walked
+   one day for two presses and read as stuck, in BOTH directions. So we remember
+   the position the last press COMMANDED (panTgt) and, while the glide is still
+   in flight toward it — the live scrollLeft has not yet reached panTgt in the
+   glide's own direction — the next press counts from panTgt. N fast taps then
+   advance N whole days however far behind the glide has fallen. Once scrollLeft
+   reaches (or overshoots) panTgt the glide has arrived, and a new week zeroes
+   panWk and a wheel-pan nulls it, so the live scrollLeft takes over again.
+
+   The in-flight test is a CORRIDOR from where the burst STARTED (panAnchor —
+   the live scrollLeft the first press of the burst counted from) to the last
+   commanded target (panTgt): while scrollLeft is anywhere inside that corridor
+   the glide is still in flight, so count from panTgt. The first cut of this fix
+   used panPrev — the start of only the LAST step — as the near bound, a
+   one-day-wide window the backlog overshoots on the origin side, so it read
+   "settled" mid-flight and the bug survived. Anchoring at the burst start
+   instead widens the corridor to exactly the ground the glide still has to
+   cover, so a three- or five-deep backlog is still "in flight". The anchor
+   resets the moment a press counts from the live scrollLeft again — a manual
+   scroll OUT of the corridor, or a fresh burst after a settle — so a stale
+   target from an earlier action can't masquerade as in-flight (that is the far
+   edge press that must still cross the week, not glide to a day it left). The
+   residual cost is niche: a manual scroll landing back INSIDE the corridor is
+   counted from panTgt for one press, and on desktop the arrows are the nav and
+   the common manual pan (shift+wheel) nulls panWk outright anyway. */
 let panWk: string | null = null
-let panPrev = -1, panTgt = -1
+let panAnchor = -1, panTgt = -1
 function panBase(w: any): number {
   const sl = w.scrollLeft
   if (panWk !== CURWEEK || panTgt < 0) return sl
-  const lo = Math.min(panPrev, panTgt), hi = Math.max(panPrev, panTgt)
-  return (sl > lo && sl < hi) ? panTgt : sl     // mid-glide → count from the destination
+  const lo = Math.min(panAnchor, panTgt), hi = Math.max(panAnchor, panTgt)
+  return (sl >= lo - 1 && sl <= hi + 1) ? panTgt : sl   // inside the burst corridor → count from the destination
 }
 /* One click = one WHOLE day box, landing on the boundary. Rounding to the
    nearest day would stall on a click when the view sits mid-day, so step from
@@ -110,7 +131,11 @@ export function panDays(dir: number) {
   const cur = dir > 0 ? Math.floor(at + 0.02) : Math.ceil(at - 0.02)
   const tgt = Math.max(0, Math.min(n - 1, cur + dir)) * st
   const dest = Math.min(tgt, max)
-  panWk = CURWEEK; panPrev = base; panTgt = dest
+  /* a press that counted from the live scrollLeft (base !== the old panTgt)
+     STARTS a new burst — anchor it there; a press that counted from panTgt is a
+     continuation, so the anchor (the burst's true origin) is kept. */
+  const cont = panWk === CURWEEK && panTgt >= 0 && base === panTgt
+  panWk = CURWEEK; panAnchor = cont ? panAnchor : base; panTgt = dest
   w.scrollTo({ left: dest, behavior: 'smooth' })
 }
 
