@@ -776,23 +776,81 @@ subscribers.
   runs against the previous week's Sunday instead of being switched off —
   `REST[0]`, the crew picker's Monday rest-clear times, is real for the
   first time. The midnight input tails at the week's two edges read the
-  adjacent week's dates the same way. Lookback only, and bounded to those
-  two windows; the one lookahead is the pre-existing midnight-tail sliver
-  past Sunday night — nothing else looks forward. A flag always lands on the
-  day it BREAKS, never earlier: next Monday's breach appears when next week
-  is viewed, not as a hint on this Sunday — the trace mechanism addresses by
-  in-week day index, so a cross-week trace would collide with the loaded
-  week's own Monday. A same-page forward hint is a possible follow-up, not
-  shipped; don't build one without the owner asking. Every seed read is a
-  PURE function of `weekBundle` + the global `INPUTS` — what the app still
-  remembers of a week once you've left it. It never reads `SCHED` (publish
-  state) or a forgotten session edit, because `loadWeek` itself forgets
-  those the same way; an unauthored adjacent week seeds nothing. Don't
-  re-propose reading further back or further forward than this without a
-  named case — the window sizes were chosen to be exactly what the two
-  named rules need. `engine/weekctx.ts`'s header carries the full window
-  semantics; `docs/engine-rules.md` and `docs/feature-impact.md` Flow F
-  carry the detail.
+  adjacent week's dates the same way. Bounded to those two lookback windows
+  plus exactly one lookahead day — the pre-existing midnight-tail sliver
+  past Sunday night, and, since 23 Aug 26, the forward crew-rest trace
+  below; nothing else looks forward or further back than that. Don't
+  re-propose widening either window without a named case — the sizes were
+  chosen to be exactly what the named rules need.
+  **A flag still always lands on the day it BREAKS, never earlier**: next
+  Monday's own crew-rest breach still only becomes a real, clickable warning
+  when next week is loaded and viewed — the trace mechanism addresses by
+  in-week day index, so it still cannot write a second warning onto the
+  loaded week's own Monday; that half of the old ruling stands unchanged.
+  **What is superseded is this entry's old "don't build a same-page hint
+  without the owner asking" — he then asked for exactly that**, from the
+  deployed site, the same day (23 Aug 26 — "If I plan someone who bust crew
+  rest the day prior it should also flag out just like what u see for
+  outlaw"): a
+  loaded week's Sunday whose late finish busts NEXT week's Monday now draws
+  the same "Breaks Monday" trace box a within-week breach draws, built off
+  `weekctx.ts:nextMondaySeed` and a phantom pass of `validate.ts`'s own
+  `crewRestDay` (one body, two callers — the forward trace cannot drift from
+  the real rule). It carries no in-week day to jump to (`di:null`, `html.ts`
+  renders it with no click target) and writes no second warning — only the
+  pointer. `CREW_TIGHT` still never traces, forward or otherwise; only a
+  full `CREW_REST` breach does. Default demo weeks draw no forward trace
+  (verified). Rules: `docs/engine-rules.md` §validation, crew rest; on
+  screen: `docs/ui-contracts.md` §Three crew-rest rings.
+  **Session edits ARE now read where they used to be invisible** — the
+  seed's INPUTS getting richer, not the windows changing size (see the
+  per-week stash entry right below): `weekctx.ts:bundle()` checks the stash
+  before the pure seed on every cross-week read, so a scheduler's own edit
+  to an adjacent week now feeds `DAYS_RUN`, `CREW_REST` and the forward
+  trace exactly the way an authored seed always did. `SCHED` (publish state)
+  is still deliberately not read by these seed functions — the rules judge
+  the programme, not its publication state — and an unauthored, unedited
+  adjacent week still seeds nothing. `engine/weekctx.ts`'s header carries
+  the full window semantics; `docs/engine-rules.md` and
+  `docs/feature-impact.md` Flow F carry the detail.
+- **Weeks remember their edits — the per-week stash** (owner, 23 Aug 26,
+  from a reported bug: a duty planned on the Sunday of an unauthored week
+  vanished after scrolling to 13 Jul and back, and no crew-rest flag raised
+  for Ranger the way it should have). What's decided:
+  - **Per-browser session memory, not shared storage.**
+    `engine/weekstash.ts` remembers, per week-start key, the last snapshot
+    `state/store.ts:loadWeek` handed it on the way OUT of a week, and
+    persists it through the existing `HOOKS.storeBackend` seam
+    (`sqn142_weeks`, a versioned, corrupt-safe envelope) so a page reload
+    mid-edit survives too — last-write-wins across tabs, the same rule
+    every other write through that seam already lives by.
+  - **Pristine weeks are deliberately NOT stashed.** Stashing every week
+    unconditionally would persist a byte-copy of the pure seed for weeks
+    nobody touched — and a persisted pristine copy is a trap: the day a
+    deploy updates the built-in demo weeks, every browser that ever
+    scrolled past one would go on seeing the OLD content forever, because a
+    stash outranks the seed by design. A week is stashed on the way out
+    only when it changed since load, or when it already carries a stash
+    entry to keep current. **Don't re-add the unconditional stash of
+    untouched weeks.**
+  - **Publish state rides the restore.** The stash shares its SCHED field
+    list with `state/history.ts:schedFields` (the undo snapshot) so the two
+    serializers cannot drift — a week's approvals, AL and pending marks come
+    back exactly as left, not reset to the seed.
+  - **Seeds read the stash first.** The cross-week flag reads — `DAYS_RUN`
+    run-in, Monday's crew rest, the midnight tails, and now the forward
+    crew-rest trace — all go through `weekctx.ts:bundle()`, which checks
+    the stash ahead of the pure seed on every call (see the entry above).
+  - **The fake "Sync" chip stays decorative.** This is still a per-browser
+    fix, not shared/multi-device data — there is no server behind it. True
+    shared, persistent multi-week scheduling across devices and accounts is
+    still the future server step (`HANDOFF.md`); don't present this stash
+    as that, and don't move storage off the `HOOKS.storeBackend` seam —
+    that is precisely where the future shared-database backend hooks in.
+  - **Undo still re-baselines per week, and the edit log stays
+    session-only** — this stash is additive to both, not a replacement for
+    either.
+  Flow: `docs/feature-impact.md` Flow E. File map: `HANDOFF.md`.
 
 ## Where things live
 
