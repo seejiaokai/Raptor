@@ -46,6 +46,20 @@ export function PdfIcon() {
   )
 }
 
+/** A highlighter marker — the angled chisel-tip pen over a short baseline
+ *  stroke (the Lucide "highlighter" shape) — for the Highlight filter's label
+ *  and its phone fold toggle: a pen that MARKS things, not a search or an
+ *  edit, which is exactly what the chips do to the pucks. */
+export function HlIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m9 11-6 6v3h9l3-3" />
+      <path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4" />
+    </svg>
+  )
+}
+
 /** The standard "history" glyph — a clock with a counter-clockwise arrow — so
  *  the board's History toggle no longer reads as a plain clock. */
 export function HistIcon() {

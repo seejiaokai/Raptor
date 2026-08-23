@@ -88,6 +88,18 @@ export let HISTMODE=false
 export function setHistMode(on:any){ HISTMODE=!!on }
 export function toggleHistMode(){ HISTMODE=!HISTMODE; return HISTMODE }
 
+/* ---- THE HIGHLIGHT STRIP'S PHONE FOLD (owner, 23 Aug 26) ------------------
+   Whether the Highlight chips are unfolded on the narrow surfaces — the phone
+   folds them behind a highlighter-icon toggle on the view week, the edit week
+   and the board's bar; desktop always shows them. Session-only view state in
+   the HISTMODE family, and deliberately NOT cleared in loadWeek: the board's
+   cross-week arrows call loadWeek on every crossing, and collapsing an open
+   filter strip each time would fight the user mid-scrub — the fold dies with
+   the session (resetSession), like every other view mode. */
+export let HLOPEN=false
+export function setHlOpen(v:any){ HLOPEN=!!v }
+export function toggleHlOpen(){ HLOPEN=!HLOPEN }
+
 /* PER-INPUT LATE DISMISSAL (owner, 21 Aug 26 — replaced the 20 Aug global
    declutter button). A scheduler taps the LATE chip on a board input row to
    drop that one mark; tapping the same chip again brings it back. The board's

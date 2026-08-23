@@ -3108,6 +3108,39 @@ test.describe('the way into the changes list follows the width', () => {
   }
 })
 
+/* THE HIGHLIGHT CHIPS FOLD ON A PHONE (owner, 23 Aug 26) — the same
+   CSS-picks-by-width shape as the changes list above: the chips are always in
+   the markup; under 820px they have no size until the .hl-tog highlighter
+   toggle unfolds them, and on a desktop they are simply there with no tap.
+   jsdom pins the state machine (hlfold.test.tsx); only a browser can say
+   whether a folded chip really paints nothing. */
+test('the Highlight chips fold behind the toggle on a phone, and stand open on a desktop', async ({ page }) => {
+  const chipSize = () => page.evaluate(() => {
+    const c = document.querySelector('#page-viewsched .filters .fchip[data-hl]') as HTMLElement
+    const r = c.getBoundingClientRect()
+    return { w: Math.round(r.width), h: Math.round(r.height) }
+  })
+  await page.setViewportSize(PHONE)
+  await login(page)
+  const folded = await chipSize()
+  expect(folded.w, 'folded: a chip paints nothing').toBe(0)
+  expect(folded.h).toBe(0)
+  await page.click('#page-viewsched .filters .hl-tog')
+  await page.waitForTimeout(200)
+  const open = await chipSize()
+  expect(open.w, 'one tap on the highlighter unfolds them').toBeGreaterThan(0)
+  expect(open.h).toBeGreaterThan(0)
+  /* desktop: no toggle needed — fold the strip shut again on the phone, then
+     widen; the chips must be on the row even with HLOPEN false, because the
+     fold rules live inside the 820px block and desktop never gates on them */
+  await page.click('#page-viewsched .filters .hl-tog')
+  await page.waitForTimeout(200)
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.waitForTimeout(200)
+  const desk = await chipSize()
+  expect(desk.w, 'a desktop shows the chips with no tap').toBeGreaterThan(0)
+})
+
 /* ===================================================================
    THE DAY IS STEPPED BY TWO ARROWS (owner, 12 Aug 26 — "remove the swipe for
    the mobile scheduler board too. Just put arrows at the edges of the bar at

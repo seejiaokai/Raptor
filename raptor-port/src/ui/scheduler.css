@@ -355,6 +355,14 @@ a{color:var(--accent)}
 .fchip:hover{border-color:var(--edge-2);color:var(--ink)}
 .fchip.on{background:rgba(59,198,232,.16);color:var(--accent);border-color:rgba(59,198,232,.6)}
 .filters .div{width:1px;align-self:stretch;background:var(--edge);margin:0 4px}
+/* the Highlight lead is TWO elements and this pair of rules is what picks one
+   (Shell.tsx renders both — the histln/histln-top precedent): desktop keeps a
+   passive label, now a highlighter GLYPH instead of the word (owner, 23 Aug
+   26), and never draws the toggle — the chips are always visible up here. The
+   820px block below flips both and holds the fold. */
+.hl-lab{display:inline-flex;align-items:center}
+.hl-lab .btnglyph{width:16px;height:16px}
+.hl-tog{display:none}
 .searchbox{display:flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--edge);border-radius:9px;padding:4px 10px}
 .searchbox input{background:transparent;border:none;color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;width:150px}
 .searchbox input:focus{outline:none}
@@ -2226,22 +2234,45 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .wknav-m{display:flex;justify-content:flex-start;padding:8px 20px 10px}
   /* the qualification filters are the fastest way to read a phone screen —
      "who here is a supervisor / an instructor / SANS" — so instead of hiding
-     the row it becomes ONE horizontally scrollable line with the label pinned */
-  #page-viewsched .filters{display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+     the row it becomes ONE horizontally scrollable line with the label pinned.
+     BOTH week pages since 23 Aug 26 (the edit page grew the same chips): every
+     selector here is comma-joined rather than copied, so the two rows are one
+     recipe and cannot drift — the view page's effect is unchanged. */
+  #page-viewsched .filters,#page-editsched .filters{display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
     -webkit-overflow-scrolling:touch;scrollbar-width:none;padding:7px 12px;gap:5px}
-  #page-viewsched .filters::-webkit-scrollbar{display:none}
-  #page-viewsched .filters>*{flex:0 0 auto}
+  #page-viewsched .filters::-webkit-scrollbar,#page-editsched .filters::-webkit-scrollbar{display:none}
+  #page-viewsched .filters>*,#page-editsched .filters>*{flex:0 0 auto}
+  /* THE PHONE FOLD (owner, 23 Aug 26): the chips and their divider hide unless
+     the row carries .hl-open (the .hl-tog toggle flips view.HLOPEN). Only the
+     HIGHLIGHT pieces fold — the exports, the search pin and the week seg's
+     .wkdiv are untouched, which is why the divider inside HlChips has its own
+     .hl-div class instead of being a bare .div nothing could tell apart. */
+  #page-viewsched .filters:not(.hl-open) .fchip[data-hl],#page-editsched .filters:not(.hl-open) .fchip[data-hl],
+  #page-viewsched .filters:not(.hl-open) .hl-div,#page-editsched .filters:not(.hl-open) .hl-div{display:none}
+  /* the two-element lead swaps: the desktop label goes, the toggle arrives.
+     .hl-lab must be beaten here — the pin rule below used to target .lab and
+     would have re-shown it (display:flex) at higher specificity. */
+  #page-viewsched .filters .hl-lab,#page-editsched .filters .hl-lab{display:none}
+  .hl-tog{display:flex;align-items:center;justify-content:center;width:30px;height:26px;flex:0 0 auto;
+    background:var(--panel-2);border:1px solid var(--edge);border-radius:9px;color:var(--ink-2);cursor:pointer}
+  .hl-tog .btnglyph{width:16px;height:16px;color:currentColor}
+  /* lit whenever a filter or search is live — the .fchip.on accent recipe, so
+     a filtered week folded out of sight still announces itself */
+  .hl-tog.on{color:var(--accent);border-color:rgba(59,198,232,.6);background:rgba(59,198,232,.16)}
   /* THE SAME LEAK, ON THE SAME PAGE (found 20 Aug 26 while adding the search
      below; the owner's report was the top bar, this is the strip under it).
-     The pinned HIGHLIGHT label was opaque but only ELEVEN PIXELS TALL — its
+     The pinned HIGHLIGHT lead was opaque but only ELEVEN PIXELS TALL — its
      own line box — inside a ~30px row, so the chips scrolling under it showed
      above and below the word, which reads as exactly the bleed he circled. And
      it pins at the strip's 12px padding edge, leaving a gutter at the very
      left with nothing painting it. Stretched to the row's full height, and the
      gutter painted by a left box-shadow — the same two fixes the top bar's
-     sticky lead needed, for the same reason. */
-  #page-viewsched .filters .lab{position:sticky;left:0;z-index:1;background:var(--panel);padding-right:6px;
-    align-self:stretch;display:flex;align-items:center;box-shadow:-12px 0 0 var(--panel)}
+     sticky lead needed, for the same reason. The pin rides .hl-tog now (the
+     .lab it used to hold is hidden above): height:auto so align-self:stretch
+     can actually stretch the button past its 26px, keeping the full-row
+     opaque backdrop the leak fix demands. */
+  #page-viewsched .filters .hl-tog,#page-editsched .filters .hl-tog{position:sticky;left:0;z-index:1;
+    align-self:stretch;height:auto;box-shadow:-12px 0 0 var(--panel)}
   /* A SMALL SEARCH ON THE PHONE'S VIEW-ONLY SCHEDULE (owner, 20 Aug 26 — "we
      should have a small search bar too in view schedule at the top"). The box
      has always been here; this strip is a sideways scroller and `.right` was
@@ -2250,14 +2281,14 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      reach. It is NOT a new box on a new row — a row of chrome is 40px of
      schedule — it is the SAME `#searchV`, pinned to the right edge the way
      HIGHLIGHT is pinned to the left, with the chips scrolling between them.
-     Opaque like `.lab`, and for the reason the top bar just taught: a
-     translucent pin over a scroller reads as a bleed. */
-  #page-viewsched .filters .right{display:flex;position:sticky;right:0;z-index:1;margin-left:auto;
+     Opaque like the left pin, and for the reason the top bar just taught: a
+     translucent pin over a scroller reads as a bleed. #searchE pins the same
+     way on the edit row (23 Aug 26). */
+  #page-viewsched .filters .right,#page-editsched .filters .right{display:flex;position:sticky;right:0;z-index:1;margin-left:auto;
     align-self:stretch;align-items:center;background:var(--panel);padding-left:6px;
     box-shadow:12px 0 0 var(--panel)}
-  #page-viewsched .filters .searchbox{padding:3px 8px;border-radius:8px}
-  #page-viewsched .filters .searchbox input{width:96px;font-size:12px}
-  #page-editsched .filters{padding:8px 12px}
+  #page-viewsched .filters .searchbox,#page-editsched .filters .searchbox{padding:3px 8px;border-radius:8px}
+  #page-viewsched .filters .searchbox input,#page-editsched .filters .searchbox input{width:96px;font-size:12px}
   .day{flex:0 0 calc(100vw - 24px);overflow-x:auto}
   .week{padding:2px 12px 30px;gap:12px}
   /* ---- phone header: ONE scrollable row ----

@@ -7,12 +7,13 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
-import { CalIcon, XlsIcon, PdfIcon, HistIcon } from './icons'
+import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon } from './icons'
 import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pendCount } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { resetSession, notify, setPage } from '../state/store'
-import { HLSET, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
+import { HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
+import { HlChips } from './hlchips'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
 import { signOf } from '../engine/publish'
@@ -60,17 +61,8 @@ function banner() {
   return { col, cls, html: `<span class="sb-badge">${txt}${which}${extra}</span>` + alRoll }
 }
 
-// OCU sits with the CAT levels (right of D), not with the tag group (owner,
-// 22 Aug 26 — "move ocu to the right of D"): it IS a category, so it reads as
-// one more rung on the A–D ladder rather than a tag beside SXO/SANS.
-const HL_CHIPS: [string, string, string][] = [
-  ['A', 'A', 'Cat A (4-ship FL)'], ['B', 'B', 'Cat B (2-ship FL)'], ['C', 'C', 'Cat C (operational wingman)'], ['D', 'D', 'Cat D (wingman)'],
-  ['OCU', 'OCU', 'OCU (ab-initio)'],
-]
-const HL_CHIPS2: [string, string, string][] = [
-  ['SUP', 'SUP', 'Supervisors — Cat A & B'], ['FL', 'FL', 'All flight leads (Cat A & B)'], ['INS', 'Ins', 'Instructors (IW / IP / IR / FI)'],
-  ['SXO', 'SXO', 'SXO-qualified'], ['SANS', 'SANS', 'SANS — staff-assigned & NS aircrew'],
-]
+/* The HL_CHIPS lists moved to ui/hlchips.tsx (23 Aug 26) — one definition,
+   three surfaces (view week, edit week, board), the drift-seam doctrine. */
 
 export function Shell() {
   useVersion()
@@ -299,7 +291,7 @@ export function Shell() {
             `interactions.ts` (`closest('[data-wk]')`) are untouched; `.wkseg`
             is hidden on a phone exactly as the old standalone `.seg` was, where
             the lone `.wknav-m` calendar and the day swipe take over. */}
-        <div className="filters" id="viewChrome">
+        <div className={'filters' + (HLOPEN ? ' hl-open' : '')} id="viewChrome">
           <span className="wkseg" id="weekSeg">
             <button className="wk wk-cal" aria-label="Jump to a date" title="Jump to a date"
               onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
@@ -307,12 +299,19 @@ export function Shell() {
               className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
           </span>
           <span className="div wkdiv"></span>
-          <span className="lab">Highlight</span>
-          {HL_CHIPS.map(([k, t, ttl]) => <button key={k} className={'fchip' + (HLSET.has(k) ? ' on' : '')} data-hl={k} title={ttl}
-            onClick={() => { HLSET.has(k) ? HLSET.delete(k) : HLSET.add(k); notify() }}>{t}</button>)}
-          <span className="div"></span>
-          {HL_CHIPS2.map(([k, t, ttl]) => <button key={k} className={'fchip' + (HLSET.has(k) ? ' on' : '')} data-hl={k} title={ttl}
-            onClick={() => { HLSET.has(k) ? HLSET.delete(k) : HLSET.add(k); notify() }}>{t}</button>)}
+          {/* the Highlight lead is TWO elements and CSS picks one by width —
+              the histln/histln-top precedent: both are always rendered, so a
+              resize answers instantly instead of waiting for a repaint.
+              Desktop keeps a passive label (the icon replaced the word,
+              owner 23 Aug 26); the phone gets a TOGGLE that folds the chips
+              away behind it. The toggle lights (.on) whenever a filter or a
+              search is live, so a filtered week is never mysterious while
+              the chips are folded out of sight. */}
+          <span className="lab hl-lab" title="Highlight"><HlIcon /></span>
+          <button className={'hl-tog' + (HLSET.size || SEARCH ? ' on' : '')} aria-expanded={HLOPEN}
+            aria-label="Highlight filters" title="Highlight filters"
+            onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
+          <HlChips />
           <div className="right">
             <div className="searchbox">🔍<input id="searchV" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
@@ -338,7 +337,11 @@ export function Shell() {
           __html: DAYS.map((d: any, i: number) => `<button data-day="${i}" class="${i === 0 ? 'on' : ''}" title="${d.dow}"></button>`).join('')
         }}></div>
       </section>
-  ), [page, b.cls, b.col, b.html, hlSig, rulesOff, legend, CURWEEK])
+  /* HLOPEN + SEARCH ride the deps with hlSig: the fold class and the toggle's
+     lit state render here, so a fold or a search that changes without either
+     in the list would paint stale (SEARCH is the toggle's other lit source —
+     spec'd as HLOPEN alone, added for the same staleness reason). */
+  ), [page, b.cls, b.col, b.html, hlSig, HLOPEN, SEARCH, rulesOff, legend, CURWEEK])
 
   /* .editing rides unconditionally with the page since the Edit-mode toggle
      went (owner, 9 Aug 26): being on Edit Schedule IS the edit mode. */
@@ -358,7 +361,7 @@ export function Shell() {
             <button className="wknav-mbtn" aria-label="Jump to a date" title="Jump to a date"
               onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
           </div>
-          <div className="filters">
+          <div className={'filters' + (HLOPEN ? ' hl-open' : '')}>
             {/* Undo / redo moved to the sticky top bar (owner, Aug 26) so they
                 stay in view while the page scrolls — see the topbar above. */}
             {/* + Add wave removed here (owner, 13 Aug 26) — a wave is created
@@ -379,6 +382,15 @@ export function Shell() {
                    slides over the page — say what to do once it does */
                 HOOKS.toast('Print dialog opened — choose "Save as PDF"', 'ok')
               }}><PdfIcon /></button>
+            {/* the SAME Highlight strip as the view page (owner, 23 Aug 26 —
+                "highlight is on both weeks now"): one HlChips definition, the
+                same two-element lead with CSS picking by width, the same
+                phone fold. #searchE stays the row's right pin, untouched. */}
+            <span className="lab hl-lab" title="Highlight"><HlIcon /></span>
+            <button className={'hl-tog' + (HLSET.size || SEARCH ? ' on' : '')} aria-expanded={HLOPEN}
+              aria-label="Highlight filters" title="Highlight filters"
+              onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
+            <HlChips />
             <div className="right"><div className="searchbox">🔍<input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
           </div>
@@ -399,7 +411,12 @@ export function Shell() {
           </div>
         </div>
       </section>
-  ), [page, b.cls, b.col, b.html, HIST.ix, HIST.stack.length, legend, CURWEEK])
+  /* hlSig + HLOPEN + SEARCH are NEW here and load-bearing: the edit page never
+     rendered the chips before, so its memo had no highlight deps at all —
+     without hlSig the chips' .on state would go stale the moment a chip was
+     toggled on another surface, and without HLOPEN/SEARCH the fold and the
+     toggle's lit state would freeze (same reasoning as the view page's). */
+  ), [page, b.cls, b.col, b.html, HIST.ix, HIST.stack.length, hlSig, HLOPEN, SEARCH, legend, CURWEEK])
 
   return (
     <div id="shell" style={{ ['--al' as any]: b.col }}>
