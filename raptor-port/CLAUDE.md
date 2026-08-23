@@ -742,13 +742,27 @@ subscribers.
   edge hint stays RETIRED — the weekend now genuinely reaches the front, so the
   limitation it apologised for is gone; don't reintroduce it. **The PHONE
   swipe cross GLIDES, though** (owner,
-  23 Aug 26 — "go with glide … glide between weeks"): the week being left is
-  cloned into a throwaway overlay and slides off in the swipe direction while the
-  freshly-loaded week slides in from the other edge, so a boundary cross reads as
-  one continuous motion instead of the old reload-flash. It is `src/ui/weekglide.ts`
-  (`beginGlide`), called from the WEEKJUMP branch of ViewWeek/EditWeek, phone-only
-  (≤820px) and reduced-motion-aware, and it no-ops without layout so the gates are
-  untouched. The clone sits at `z-index:40`, BELOW the sticky `.topbar`
+  23 Aug 26 — "go with glide … glide between weeks"): a boundary cross slides
+  instead of reload-flashing. It is `src/ui/weekglide.ts` (`beginGlide`), called
+  from the WEEKJUMP branch of ViewWeek/EditWeek, phone-only (≤820px) and
+  reduced-motion-aware, and it no-ops without layout so the gates are untouched.
+  **It slides TWO FROZEN CLONES, and hides the real week behind them** (owner,
+  24 Aug 26 — "I can see it scrolling through the week in a fast motion … don't
+  even show me that"). The first cut slid the LIVE incoming week, which still
+  carried the flick's leftover FLING, so the browser scrubbed it through Tue/Wed…
+  behind the panel — the exact "scrolling through the week" the owner rejected.
+  Now BOTH the outgoing week (frozen on the finger's day) and the incoming week
+  (frozen on its landing day) are `overflow:hidden` clones — which cannot scroll
+  or fling — and they tile the viewport while the real week is `visibility:hidden`,
+  revealed and re-landed only when the clones come off. Three load-bearing
+  details, don't drop them: the incoming clone's landing day is derived from the
+  cross DIRECTION (`fwd ? 0 : weekScrollMax`), NOT the live `scrollLeft` (the
+  phone snap doesn't reliably hold the far Sunday edge the instant it's written,
+  so reading it froze the clone on the wrong day); `void c.offsetWidth` forces
+  each clone's layout before its `scrollLeft` is set, or a fresh clone clamps to
+  0; and the real week is hidden so its own fling / flaky snap is never on
+  screen. Don't go back to sliding the live week, or to a single clone. The clone
+  sits at `z-index:40`, BELOW the sticky `.topbar`
   (`z-index:60`) — it used to tie the bar at 60 and, being a `position:fixed`
   clone anchored at the week's `rect.top` (which is above the bar once the page
   is scrolled down) appended last to `<body>`, it painted the sliding week OVER
