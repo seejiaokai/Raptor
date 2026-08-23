@@ -342,3 +342,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When orchestrating background agents that share the orchestrator's working tree, treat generic "commit your changes" prompts (hooks, reminders) as scoped to work the orchestrator owns: push committed history freely, but never commit a tree an active delegate is mutating. State the reason once and wait for the agent's completion.
 
 **Principle:** Automated hygiene prompts don't know about delegated ownership of shared state; the orchestrator must partition "safe to act on now" (committed history) from "owned by an in-flight worker" (the dirty tree) before complying.
+
+### Observation 25: Concurrent subagents collided on a repo-tree scratch file
+
+**Status:** OPEN
+**Date:** 2026-08-23
+**Session context:** Cross-week validation engine build; test-writing and docs agents ran in parallel
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** parallel delegation hygiene
+
+**Issue:** A docs-editing agent accidentally deleted (then restored) a `_scratch.test.ts` working file that a concurrently running test-writing agent had placed in the repo tree. The restore was from the docs agent's earlier read, so a mid-flight version could have been clobbered silently.
+
+**Suggested improvement:** When dispatching parallel agents that share a repo, instruct each to keep temporary/working files in its own scratchpad directory, never the repo tree, and instruct agents to treat unrecognized untracked files as another agent's property (never delete/restore them).
+
+**Principle:** Parallel agents sharing a filesystem need an explicit working-file convention; "don't touch files that aren't yours" must include untracked strays.
+
+### Observation 26: Implementing agent caught a plan-prose error by tracing the loop bound
+
+**Status:** OPEN
+**Date:** 2026-08-23
+**Session context:** Cross-week validation engine; plan said "maxRun=7, 8-day run" for the two-prior-weeks test
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** spec-to-implementation handoff
+
+**Issue:** The plan's test spec (maxRun=7 exercising the second-prior-week walk) was unreachable — the walk loop runs k=1..maxRun, and k=8 only engages when maxRun>7. The test-writing agent traced the bound, corrected to maxRun=8, and reported the deviation with reasoning instead of writing a vacuously-passing test.
+
+**Suggested improvement:** Keep instructing implementer agents to verify spec parameters against the actual code path they exercise, and to report deviations-with-reasoning rather than silently obeying or silently fixing; add this phrasing to the standard delegation prompt template.
+
+**Principle:** A test that cannot reach the code path it claims to pin passes vacuously; implementers must prove reachability, and a good delegation contract makes "correct the spec and say so" the expected move.
