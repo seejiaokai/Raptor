@@ -34,6 +34,7 @@ import { whoArr } from '../engine/slots'
 import { minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { weekBundle } from '../engine/weeks-data'
+import { stashDays, stashGenOf } from '../engine/weekstash'
 import { shiftWeek } from './weeknav'
 import { esc } from '../state/view'
 import { fmtT, storesView, rowCls, cxTag, flagTag, plCols, areaText, atimeText, lCell } from './html'
@@ -212,13 +213,24 @@ export function peekDayHTML(d: any, i: number, first: boolean): string {
 let cacheKey = ''
 let cacheHTML = ''
 export function peekKey(): string {
-  return (typeof window !== 'undefined' && window.innerWidth > 820) ? CURWEEK : ''
+  if (typeof window === 'undefined' || window.innerWidth <= 820) return ''
+  /* the stash generation of NEXT week rides the key: an edited-and-left next
+     week (the per-week session stash) must re-render the preview when we
+     come back to this one — CURWEEK alone returns to the same value and
+     would serve the pre-edit markup forever. Per-key generation, so ordinary
+     edits to the LOADED week never touch the preview (perf-B). */
+  return CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1))
 }
 export function peekWeekHTML(): string {
   const key = peekKey()
   if (!key) return ''
   if (key === cacheKey) return cacheHTML
-  const bundle = weekBundle(shiftWeek(CURWEEK, 1))
+  /* the preview shows next week AS THE APP REMEMBERS IT — the session stash
+     when the scheduler has edited that week (the same source the cross-week
+     flag seeds read), the pure seed otherwise. A corrupt stash entry parses
+     to null and degrades to the seed, matching weekctx's own fallback. */
+  const nextWk = shiftWeek(CURWEEK, 1)
+  const bundle = stashDays(nextWk) || weekBundle(nextWk)
   cacheHTML = bundle.days.map((d: any, i: number) => peekDayHTML(d, i, i === 0)).join('')
   cacheKey = key
   return cacheHTML

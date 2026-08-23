@@ -5,7 +5,7 @@ import { overlap, hm24, lgT } from './time'
 import { collectEvents } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
-import { seedRunIn, prevSundaySeed } from './weekctx'
+import { seedRunIn, prevSundaySeed, nextMondaySeed } from './weekctx'
 import { CURWEEK } from './waves'
 
 /* the reference guards its header counters with $() lookups; the engine takes
@@ -141,6 +141,219 @@ export function validate(){
       RUNLEN[i]=m;
     });
   }
+  /* ONE DAY'S CREW-REST COMPUTATION, extracted verbatim from the day loop
+     below (the buildDay-extraction precedent) so the phantom next-Monday
+     pass after the loop cannot drift from the real rule — one body, two
+     callers, never a second copy of the arithmetic. `phantom` guards every
+     write addressed to the CURRENT day (its warning, chips, rings, dash,
+     REST) — a phantom day is next week's Monday, which this WARN cannot
+     address by day index — leaving exactly one side effect: markTrace onto
+     prevSeed.di, the "Breaks Monday" box on the live Sunday that caused
+     it (owner, 23 Aug 26 — "If I plan someone who bust crew rest the day
+     prior it should also flag out just like what u see for outlaw").
+     `add` rides in as a parameter because it is the day loop's own
+     closure over that day's `ws` list; the phantom caller passes null —
+     every add here is phantom-guarded, so it is never dereferenced. */
+  const crewRestDay=(prevSeed:any,day:any,di:any,phantom:any,add:any)=>{
+      /* prevFlyEnd/prevEnd were once distinct — the rest-bearing set against
+         the last end of ANY kind — and a late non-resting row could mask the
+         sortie underneath it. With every kind rest-bearing they track the
+         same number; both stay because the reference computes both and the
+         fallback below costs nothing. */
+      /* WHICH leg ran late, not just how late. The end time alone answers the
+         rule but not the reader: the cross-day row on this day is the one
+         affordance a scheduler can act on, and it has to be able to point at
+         the sortie to move. So the winning event's own slot-key is kept beside
+         its minute count (`slot` on a flying/shift event, `key` on the others)
+         and travels on the trace — see markTrace below. */
+      /* prevFlyLd carries the raw LANDING of the winning rest-end so the tail
+         can spell out its own arithmetic (owner, 15 Aug 26 — "at least they
+         know the assumption"): a sortie ends at land + debrief, and a
+         scheduler who knows this crew walks off the jet fast can read that the
+         2h is an assumption, not a fact. Null when the winning end is a SHIFT,
+         which ends at its written time with no debrief tail to assume. */
+      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={};
+      prevSeed.events.forEach((e:any)=>{
+        /* EVERYTHING THAT ENDS THE DAY BEARS CREW REST (owner, 21 Aug 26 —
+           "anything that ends the day prior and affects the 12 hour crew
+           rest will be a warning"; this widened twice the same day: first
+           duties joined sortie-and-shift, then sims, ground events and
+           programme items joined them all). A sortie still ends at land +
+           debrief; every other kind ends at its WRITTEN end with no tail —
+           a sim's brief/debrief windows live in simwin, not on the event,
+           so its box end is what counts here. The tight-turning advisory
+           below is now only the nominal-vs-instructed gap, never a
+           severity downgrade by event kind; and the REST[] map the picker
+           reads is built from the same set, so they cannot disagree. */
+        const rests=true;
+        const end=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift/duty ends when it ends
+        if(end==null)return;
+        if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}
+      });
+      /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
+         "everything in duty and commitments affects crew rest… do not
+         include personal, sans availability", and it counts on both sides).
+         Only the restsInput types, and only entries with TYPED times — an
+         all-day record spans the full 1439 minutes and has no "timing you
+         see" (his words), so it stays with the ordinary clash rules. The
+         nx/pv copies are the midnight tails: other days' records shifted
+         into this frame — counting an nx entry would file TODAY's own
+         meeting as yesterday's end, so both are skipped. The end is the
+         written end, no debrief tail; prevFlyLd stays null so the message
+         keeps the plain "ended" wording, and prevFlyKey is cleared — an
+         input has no board slot for the previous-day trace to jump to.
+         REST[di] below is built from these same maps, so the SC picker's
+         crew-rest refusal follows this rule with no second copy. */
+      prevSeed.input.forEach((i:any)=>{
+        if(i.nx||i.pv||!restsInput(i.type))return;
+        if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;
+        if(prevEnd[i.id]==null||i.e>prevEnd[i.id])prevEnd[i.id]=i.e;
+        if(prevFlyEnd[i.id]==null||i.e>prevFlyEnd[i.id]){prevFlyEnd[i.id]=i.e; prevFlyKey[i.id]=null; prevFlyLd[i.id]=null;}
+      });
+      /* when rest expires today, for everyone who had ANY commitment
+         yesterday — the palette reads this to keep an SC slot closed to
+         anyone who is not yet clear */
+      const restMap:any={};
+      Object.keys(prevFlyEnd).forEach((id:any)=>{
+        const cl=prevFlyEnd[id]+VCONF.crewRest-1440;
+        if(cl>0)restMap[id]=cl;
+      });
+      if(!phantom)REST[di]=restMap;
+      /* today's rest-bearing commitments: sorties AND shifts */
+      const byR:any={}; day.fly.forEach((e:any)=>{(byR[e.id]=byR[e.id]||[]).push(e);});
+      /* a shift reports when it starts; a sortie reports 3h before T/O */
+      const nomOf=(e:any)=>e.shift?e.to:e.to-VCONF.reportLead;
+      /* Read the leg's OWN brief (events.ts sets it from the indicated B, or
+         from VCONF.briefLead when the line has none) — recomputing
+         `e.to-VCONF.briefLead` here would ignore a typed B and quietly
+         disagree with the brief window the same engine flags against.
+
+         A `late show` / `show at brief` remark does NOT move this anchor
+         (owner, 6 Aug 26): the breach is reported either way, in red, counted
+         like any other. What the remark changes is the RING — see makesIt
+         below — because a scheduler writing it has sanctioned the late join,
+         and the reader still needs to see that crew rest was broken. */
+      const briefOf=(e:any)=>e.brief!=null?e.brief:e.to-VCONF.briefLead;
+      const insOf=(e:any)=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,briefOf(e));
+      Object.keys(byR).forEach((id:any)=>{
+        /* Personnel (ground crew) hold no crew-rest rule — an incentive ride
+           does not put a ground-crewman on a 12-hour flying clock. */
+        if(PEOPLE[id]&&PEOPLE[id].pers)return;
+        /* Crew rest runs off the last commitment of ANY kind (owner,
+           21 Aug 26 — see the collection above). The prevEnd fallback is
+           vestigial now that everything rests, and pfly can only read true
+           when a previous end exists at all. */
+        const pe=prevFlyEnd[id]!=null?prevFlyEnd[id]:prevEnd[id];
+        if(pe==null||!isFinite(pe))return;
+        const pfly={[id]:prevFlyEnd[id]!=null};
+        const earliest=pe+VCONF.crewRest-1440;         // minutes into TODAY that crew rest expires
+        if(earliest<=0)return;                          // 12h already clear before midnight
+        const legs=byR[id];
+        const nominal=Math.min.apply(null,legs.map(nomOf));
+        const instructed=Math.min.apply(null,legs.map(insOf));
+        /* THE DAY STARTS AT ITS FIRST COMMITMENT (owner, 21 Aug 26 — "if
+           they have anything earlier like a meeting that busts crew rest
+           and they fly later, it's also a violation… think it as, this
+           person needs 12 hours of rest in order to fly"). His 21:30 →
+           09:00 example had the in-time at 10:00 and the brief at 11:00 —
+           both legal — and an 08:00 meeting that is not. So the anchor is
+           the EARLIEST of the instructed flying report and any other
+           scheduled commitment that day: a sim, a duty post, a ground
+           event, a programme item. The flying legs themselves stay on
+           insOf (their step/dekit pads are derived, not instructions).
+           PERSONAL INPUTS joined the candidate set the same day (the second
+           reduce): the restsInput types with typed times count — an 08:00
+           Meeting input before a 10:00 report binds the breach exactly as a
+           ground row would — while 'Personal', 'SANS Availability', leave,
+           medical and all-day records stay out. An input-bound breach names
+           the input in the message (inpLabel, so an Other reads by its
+           remarks) but anchors on the LEG's key — an unaccepted input has
+           no schedule row for the warning jump to pan to. When nothing else
+           starts earlier, first === instructed and every message below is
+           byte-identical to before. */
+        const fe0=day.events.reduce((m:any,e:any)=>e.id===id&&e.kind!=='fly'&&e.kind!=='shift'&&e.s!=null&&isFinite(e.s)&&(m==null||e.s<m.s)?e:m,null);
+        const fi=day.input.reduce((m:any,i:any)=>i.id===id&&!i.nx&&!i.pv&&restsInput(i.type)&&i.s!=null&&isFinite(i.s)&&i.e!=null&&i.e-i.s<1439&&(m==null||i.s<m.s)?i:m,null);
+        const fe=fi!=null&&(fe0==null||fi.s<fe0.s)?{s:fi.s,label:inpLabel(fi)}:fe0;
+        const first=Math.min(instructed,fe!=null?fe.s:Infinity);
+        const evBound=first<instructed;
+        const onShift=legs.some((e:any)=>e.shift);
+        /* SPELL OUT THE ASSUMPTION when a sortie set the rest-end: show the
+           real landing, name the debrief pad as an assumption, then the
+           derived end and the 12h clearance — so the reader can override it in
+           their head for a crew that leaves quickly. A shift (prevFlyLd null)
+           has no debrief to assume, so it keeps the plain "ended". */
+        const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;
+        const tail=landed!=null
+          ? `${prevSeed.dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`
+          : `${prevSeed.dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
+        if(pfly[id]&&first<earliest){
+          const bl=legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m);   // the leg told to report earliest is the breach
+          /* The LEAVE-BY: the latest the previous day could have ended for this
+             man to be clear. It is what the scheduler actually needs — "he is
+             short" is a complaint, "he had to be gone by 00:00" is an
+             instruction — and the previous day's puck prints it when the
+             warning is clicked. It rides the warning/trace as DATA only since
+             22 Aug 26 (owner: the trace row's bold lead already says it, and
+             the message's old ", so he had to leave by" tail said it again —
+             "that's like repeating what u said"). first===instructed when no
+             earlier event binds, so the unbound arithmetic is unchanged. */
+          const leaveBy=hm24(first+1440-VCONF.crewRest);
+          /* A sanctioned late show still makes the jet if rest clears by
+             STEP, VCONF.step before T/O — the same knob that pads the busy
+             window, so editing the step timing moves this line with it
+             (owner, 21 Aug 26; a separate showLead key was removed for
+             exactly that drift). Then the ring is DASHED:
+             same red warning, same count, but the reader can see a scheduler
+             meant it. Past that line there is no sanctioning it — he cannot
+             walk, kit up and start engines — so it rings solid like any other
+             breach. A shift has no take-off to measure against — and neither
+             does a MEETING: when an earlier event binds the breach, a late
+             show on the jet cannot excuse the 08:00 he reports to first. */
+          const makesIt=!bl.shift&&earliest<=bl.to-VCONF.step;
+          const dashed=!evBound&&!!bl.lateShow&&makesIt;
+          if(!phantom){markChip(di,id,'CR');markRing(di,id,'hard'); if(dashed)markDash(di,id);}
+          const prevDi=prevSeed.di;
+          /* CAUSE-FIRST, SAID ONCE (owner, 22 Aug 26 — "refine the way u
+             reason the crew rest warning. Clear and concise"): one forward
+             chain — yesterday's end → when rest clears → the commitment that
+             breaks it — with the shortfall in the same breath. The old shape
+             stated the report first, re-derived it through the tail, then
+             re-stated the leave-by the trace row's own lead already carries. */
+          const crMsg=`Crew rest breach — ${tail}, but `
+            +(evBound?`his day starts ${hm24(first)} (${fe.label}) before the ${hm24(instructed)} report — only ${dur(first+1440-pe)} rest.`
+             :onShift?`${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)} — only ${dur(instructed+1440-pe)} rest.`
+             :`told to report ${hm24(instructed)} — only ${dur(instructed+1440-pe)} rest.`)
+            +(dashed?` Late show — he still makes the ${hm24(bl.to-VCONF.step)} step.`
+                    :(!evBound&&bl.lateShow?` Late show cannot save it — the ${hm24(bl.to-VCONF.step)} step is still before rest clears.`:''));
+          /* the warning anchors on what binds it: the early event's own slot
+             key when a meeting caused the breach, the leg otherwise — the
+             jump then pans to the row the scheduler has to move */
+          if(!phantom)add('hard','CREW_REST',[id],crMsg,evBound?(fe.slot||fe.key||bl.key):bl.key,{prevDi,leaveBy,dashed});
+          /* The same breach, filed against the day that caused it — with
+             `fromKey`, the leg on THAT day that ran late. It rides on the trace
+             and NOT on the warning: parity.test.ts compares every field of
+             WARN.byDay against the reference, while WARN.trace is port-only, so
+             this stays clear of the reference entirely. */
+          markTrace(prevDi,id,{di,dow:day.dow,leaveBy,dashed,msg:crMsg,fromKey:prevFlyKey[id]});
+        } else if(nominal<earliest||instructed<earliest){
+          /* Chip, no ring (owner, 7 Aug 26). A tight turn is a note, not a
+             problem to fix — and this was the ONLY TT that rang: the same-day
+             tight turn above chips bare, and so does DT. One glyph meaning
+             "ringed problem" here and "unringed note" there is unreadable, so
+             the ring goes rather than the chip. The warning itself is
+             unchanged — still filed, still counted, still clickable. */
+          if(!phantom)markChip(di,id,'TT');
+          /* the sim/ground suffix is UNREACHABLE since every kind became
+             rest-bearing (pfly is true whenever pe exists) — the ternary
+             stays because the patched reference carries the identical line
+             and neither side can emit it */
+          if(!phantom)add('adv','CREW_TIGHT',[id],`Tight turning — T/O ${hm24(Math.min.apply(null,legs.map((e:any)=>e.to)))} puts the ${lgT(VCONF.reportLead)} report at ${hm24(nominal)}, inside ${lgT(VCONF.crewRest)}. ${tail}`
+            +(pfly[id]?'':' (prior day ended on a sim or ground event, so crew rest itself does not apply)'),
+            legs.reduce((m:any,e:any)=>nomOf(e)<nomOf(m)?e:m).key);
+        }
+      });
+  };
   ev.forEach((day:any,idx:any)=>{
     const di=day.di, ws:any[]=[], seen=new Set();
     /* publish this day's events for the crew picker (see dayEvents) */
@@ -423,206 +636,7 @@ export function validate(){
        unauthored previous week seeds empty maps and the guards below skip
        every man, byte-identical to the old REST[di]={} branch. */
     const prevSeed:any=idx>0?ev[idx-1]:prevSundaySeed(CURWEEK);
-    {
-      /* prevFlyEnd/prevEnd were once distinct — the rest-bearing set against
-         the last end of ANY kind — and a late non-resting row could mask the
-         sortie underneath it. With every kind rest-bearing they track the
-         same number; both stay because the reference computes both and the
-         fallback below costs nothing. */
-      /* WHICH leg ran late, not just how late. The end time alone answers the
-         rule but not the reader: the cross-day row on this day is the one
-         affordance a scheduler can act on, and it has to be able to point at
-         the sortie to move. So the winning event's own slot-key is kept beside
-         its minute count (`slot` on a flying/shift event, `key` on the others)
-         and travels on the trace — see markTrace below. */
-      /* prevFlyLd carries the raw LANDING of the winning rest-end so the tail
-         can spell out its own arithmetic (owner, 15 Aug 26 — "at least they
-         know the assumption"): a sortie ends at land + debrief, and a
-         scheduler who knows this crew walks off the jet fast can read that the
-         2h is an assumption, not a fact. Null when the winning end is a SHIFT,
-         which ends at its written time with no debrief tail to assume. */
-      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={};
-      prevSeed.events.forEach((e:any)=>{
-        /* EVERYTHING THAT ENDS THE DAY BEARS CREW REST (owner, 21 Aug 26 —
-           "anything that ends the day prior and affects the 12 hour crew
-           rest will be a warning"; this widened twice the same day: first
-           duties joined sortie-and-shift, then sims, ground events and
-           programme items joined them all). A sortie still ends at land +
-           debrief; every other kind ends at its WRITTEN end with no tail —
-           a sim's brief/debrief windows live in simwin, not on the event,
-           so its box end is what counts here. The tight-turning advisory
-           below is now only the nominal-vs-instructed gap, never a
-           severity downgrade by event kind; and the REST[] map the picker
-           reads is built from the same set, so they cannot disagree. */
-        const rests=true;
-        const end=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift/duty ends when it ends
-        if(end==null)return;
-        if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}
-      });
-      /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
-         "everything in duty and commitments affects crew rest… do not
-         include personal, sans availability", and it counts on both sides).
-         Only the restsInput types, and only entries with TYPED times — an
-         all-day record spans the full 1439 minutes and has no "timing you
-         see" (his words), so it stays with the ordinary clash rules. The
-         nx/pv copies are the midnight tails: other days' records shifted
-         into this frame — counting an nx entry would file TODAY's own
-         meeting as yesterday's end, so both are skipped. The end is the
-         written end, no debrief tail; prevFlyLd stays null so the message
-         keeps the plain "ended" wording, and prevFlyKey is cleared — an
-         input has no board slot for the previous-day trace to jump to.
-         REST[di] below is built from these same maps, so the SC picker's
-         crew-rest refusal follows this rule with no second copy. */
-      prevSeed.input.forEach((i:any)=>{
-        if(i.nx||i.pv||!restsInput(i.type))return;
-        if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;
-        if(prevEnd[i.id]==null||i.e>prevEnd[i.id])prevEnd[i.id]=i.e;
-        if(prevFlyEnd[i.id]==null||i.e>prevFlyEnd[i.id]){prevFlyEnd[i.id]=i.e; prevFlyKey[i.id]=null; prevFlyLd[i.id]=null;}
-      });
-      /* when rest expires today, for everyone who had ANY commitment
-         yesterday — the palette reads this to keep an SC slot closed to
-         anyone who is not yet clear */
-      const restMap:any={};
-      Object.keys(prevFlyEnd).forEach((id:any)=>{
-        const cl=prevFlyEnd[id]+VCONF.crewRest-1440;
-        if(cl>0)restMap[id]=cl;
-      });
-      REST[di]=restMap;
-      /* today's rest-bearing commitments: sorties AND shifts */
-      const byR:any={}; day.fly.forEach((e:any)=>{(byR[e.id]=byR[e.id]||[]).push(e);});
-      /* a shift reports when it starts; a sortie reports 3h before T/O */
-      const nomOf=(e:any)=>e.shift?e.to:e.to-VCONF.reportLead;
-      /* Read the leg's OWN brief (events.ts sets it from the indicated B, or
-         from VCONF.briefLead when the line has none) — recomputing
-         `e.to-VCONF.briefLead` here would ignore a typed B and quietly
-         disagree with the brief window the same engine flags against.
-
-         A `late show` / `show at brief` remark does NOT move this anchor
-         (owner, 6 Aug 26): the breach is reported either way, in red, counted
-         like any other. What the remark changes is the RING — see makesIt
-         below — because a scheduler writing it has sanctioned the late join,
-         and the reader still needs to see that crew rest was broken. */
-      const briefOf=(e:any)=>e.brief!=null?e.brief:e.to-VCONF.briefLead;
-      const insOf=(e:any)=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,briefOf(e));
-      Object.keys(byR).forEach((id:any)=>{
-        /* Personnel (ground crew) hold no crew-rest rule — an incentive ride
-           does not put a ground-crewman on a 12-hour flying clock. */
-        if(PEOPLE[id]&&PEOPLE[id].pers)return;
-        /* Crew rest runs off the last commitment of ANY kind (owner,
-           21 Aug 26 — see the collection above). The prevEnd fallback is
-           vestigial now that everything rests, and pfly can only read true
-           when a previous end exists at all. */
-        const pe=prevFlyEnd[id]!=null?prevFlyEnd[id]:prevEnd[id];
-        if(pe==null||!isFinite(pe))return;
-        const pfly={[id]:prevFlyEnd[id]!=null};
-        const earliest=pe+VCONF.crewRest-1440;         // minutes into TODAY that crew rest expires
-        if(earliest<=0)return;                          // 12h already clear before midnight
-        const legs=byR[id];
-        const nominal=Math.min.apply(null,legs.map(nomOf));
-        const instructed=Math.min.apply(null,legs.map(insOf));
-        /* THE DAY STARTS AT ITS FIRST COMMITMENT (owner, 21 Aug 26 — "if
-           they have anything earlier like a meeting that busts crew rest
-           and they fly later, it's also a violation… think it as, this
-           person needs 12 hours of rest in order to fly"). His 21:30 →
-           09:00 example had the in-time at 10:00 and the brief at 11:00 —
-           both legal — and an 08:00 meeting that is not. So the anchor is
-           the EARLIEST of the instructed flying report and any other
-           scheduled commitment that day: a sim, a duty post, a ground
-           event, a programme item. The flying legs themselves stay on
-           insOf (their step/dekit pads are derived, not instructions).
-           PERSONAL INPUTS joined the candidate set the same day (the second
-           reduce): the restsInput types with typed times count — an 08:00
-           Meeting input before a 10:00 report binds the breach exactly as a
-           ground row would — while 'Personal', 'SANS Availability', leave,
-           medical and all-day records stay out. An input-bound breach names
-           the input in the message (inpLabel, so an Other reads by its
-           remarks) but anchors on the LEG's key — an unaccepted input has
-           no schedule row for the warning jump to pan to. When nothing else
-           starts earlier, first === instructed and every message below is
-           byte-identical to before. */
-        const fe0=day.events.reduce((m:any,e:any)=>e.id===id&&e.kind!=='fly'&&e.kind!=='shift'&&e.s!=null&&isFinite(e.s)&&(m==null||e.s<m.s)?e:m,null);
-        const fi=day.input.reduce((m:any,i:any)=>i.id===id&&!i.nx&&!i.pv&&restsInput(i.type)&&i.s!=null&&isFinite(i.s)&&i.e!=null&&i.e-i.s<1439&&(m==null||i.s<m.s)?i:m,null);
-        const fe=fi!=null&&(fe0==null||fi.s<fe0.s)?{s:fi.s,label:inpLabel(fi)}:fe0;
-        const first=Math.min(instructed,fe!=null?fe.s:Infinity);
-        const evBound=first<instructed;
-        const onShift=legs.some((e:any)=>e.shift);
-        /* SPELL OUT THE ASSUMPTION when a sortie set the rest-end: show the
-           real landing, name the debrief pad as an assumption, then the
-           derived end and the 12h clearance — so the reader can override it in
-           their head for a crew that leaves quickly. A shift (prevFlyLd null)
-           has no debrief to assume, so it keeps the plain "ended". */
-        const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;
-        const tail=landed!=null
-          ? `${prevSeed.dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`
-          : `${prevSeed.dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
-        if(pfly[id]&&first<earliest){
-          const bl=legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m);   // the leg told to report earliest is the breach
-          /* The LEAVE-BY: the latest the previous day could have ended for this
-             man to be clear. It is what the scheduler actually needs — "he is
-             short" is a complaint, "he had to be gone by 00:00" is an
-             instruction — and the previous day's puck prints it when the
-             warning is clicked. It rides the warning/trace as DATA only since
-             22 Aug 26 (owner: the trace row's bold lead already says it, and
-             the message's old ", so he had to leave by" tail said it again —
-             "that's like repeating what u said"). first===instructed when no
-             earlier event binds, so the unbound arithmetic is unchanged. */
-          const leaveBy=hm24(first+1440-VCONF.crewRest);
-          /* A sanctioned late show still makes the jet if rest clears by
-             STEP, VCONF.step before T/O — the same knob that pads the busy
-             window, so editing the step timing moves this line with it
-             (owner, 21 Aug 26; a separate showLead key was removed for
-             exactly that drift). Then the ring is DASHED:
-             same red warning, same count, but the reader can see a scheduler
-             meant it. Past that line there is no sanctioning it — he cannot
-             walk, kit up and start engines — so it rings solid like any other
-             breach. A shift has no take-off to measure against — and neither
-             does a MEETING: when an earlier event binds the breach, a late
-             show on the jet cannot excuse the 08:00 he reports to first. */
-          const makesIt=!bl.shift&&earliest<=bl.to-VCONF.step;
-          const dashed=!evBound&&!!bl.lateShow&&makesIt;
-          markChip(di,id,'CR');markRing(di,id,'hard'); if(dashed)markDash(di,id);
-          const prevDi=prevSeed.di;
-          /* CAUSE-FIRST, SAID ONCE (owner, 22 Aug 26 — "refine the way u
-             reason the crew rest warning. Clear and concise"): one forward
-             chain — yesterday's end → when rest clears → the commitment that
-             breaks it — with the shortfall in the same breath. The old shape
-             stated the report first, re-derived it through the tail, then
-             re-stated the leave-by the trace row's own lead already carries. */
-          const crMsg=`Crew rest breach — ${tail}, but `
-            +(evBound?`his day starts ${hm24(first)} (${fe.label}) before the ${hm24(instructed)} report — only ${dur(first+1440-pe)} rest.`
-             :onShift?`${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)} — only ${dur(instructed+1440-pe)} rest.`
-             :`told to report ${hm24(instructed)} — only ${dur(instructed+1440-pe)} rest.`)
-            +(dashed?` Late show — he still makes the ${hm24(bl.to-VCONF.step)} step.`
-                    :(!evBound&&bl.lateShow?` Late show cannot save it — the ${hm24(bl.to-VCONF.step)} step is still before rest clears.`:''));
-          /* the warning anchors on what binds it: the early event's own slot
-             key when a meeting caused the breach, the leg otherwise — the
-             jump then pans to the row the scheduler has to move */
-          add('hard','CREW_REST',[id],crMsg,evBound?(fe.slot||fe.key||bl.key):bl.key,{prevDi,leaveBy,dashed});
-          /* The same breach, filed against the day that caused it — with
-             `fromKey`, the leg on THAT day that ran late. It rides on the trace
-             and NOT on the warning: parity.test.ts compares every field of
-             WARN.byDay against the reference, while WARN.trace is port-only, so
-             this stays clear of the reference entirely. */
-          markTrace(prevDi,id,{di,dow:day.dow,leaveBy,dashed,msg:crMsg,fromKey:prevFlyKey[id]});
-        } else if(nominal<earliest||instructed<earliest){
-          /* Chip, no ring (owner, 7 Aug 26). A tight turn is a note, not a
-             problem to fix — and this was the ONLY TT that rang: the same-day
-             tight turn above chips bare, and so does DT. One glyph meaning
-             "ringed problem" here and "unringed note" there is unreadable, so
-             the ring goes rather than the chip. The warning itself is
-             unchanged — still filed, still counted, still clickable. */
-          markChip(di,id,'TT');
-          /* the sim/ground suffix is UNREACHABLE since every kind became
-             rest-bearing (pfly is true whenever pe exists) — the ternary
-             stays because the patched reference carries the identical line
-             and neither side can emit it */
-          add('adv','CREW_TIGHT',[id],`Tight turning — T/O ${hm24(Math.min.apply(null,legs.map((e:any)=>e.to)))} puts the ${lgT(VCONF.reportLead)} report at ${hm24(nominal)}, inside ${lgT(VCONF.crewRest)}. ${tail}`
-            +(pfly[id]?'':' (prior day ended on a sim or ground event, so crew rest itself does not apply)'),
-            legs.reduce((m:any,e:any)=>nomOf(e)<nomOf(m)?e:m).key);
-        }
-      });
-    }
+    crewRestDay(prevSeed,day,di,false,add);
     // crew combination matrix + OCU without IP — shown as puck rings
     day.forms.forEach((f:any)=>{
       f.acs.forEach((ac:any)=>{ const p=realP(ac.p),w=realP(ac.w);
@@ -816,6 +830,17 @@ export function validate(){
     ws.sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));
     byDay[di]={di,dow:day.dow,warns:ws};
   });
+  /* THE FORWARD TRACE ACROSS THE WEEK EDGE (owner, 23 Aug 26): within a week
+     a late day draws its "Breaks <tomorrow>" box on the day that CAUSED
+     the breach; the Sunday-to-next-Monday edge was the one gap left. Run the
+     same extracted computation once more with next Monday's seed standing in
+     as the phantom day — weekctx's bundle-or-stash, the very data the real
+     Monday will validate against when its week loads — so only Sunday's own
+     trace box is written here; the breach warning itself still lands on
+     Monday when next week is viewed. The trace carries di:null (no in-week
+     day to jump to): dayTraceHTML renders it as an informational row, and an
+     unauthored, unedited next week seeds empty arrays and writes nothing. */
+  crewRestDay(ev[6],nextMondaySeed(CURWEEK),null,true,null);
   WARN={all,byDay,sev,chip,dash,trace};
   const hard=all.filter((w:any)=>w.sev==='hard').length;
   const note=all.filter((w:any)=>w.sev==='note').length;

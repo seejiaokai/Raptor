@@ -518,8 +518,13 @@ function dayTraceHTML(di:any,pf:any){
   if(!pf&&!DWOPEN.has(di))return '';
   const rows=tracesOn(di)
     .filter(({id}:any)=>!pf||id===pf)
-    .map(({id,t}:any)=>({id,t,ix:traceIx(t,id)}))
-    .filter((r:any)=>r.ix>=0);
+    .map(({id,t}:any)=>({id,t,ix:t.di==null?-1:traceIx(t,id)}))
+    /* t.di==null is the FORWARD trace across the week edge (validate.ts's
+       phantom next-Monday pass): the breach it points at lives on next
+       week's Monday, a day this week's warning list cannot address — so
+       there is no warning index to resolve and none is required. Every
+       other trace still drops out when its warning no longer resolves. */
+    .filter((r:any)=>r.ix>=0||r.t.di==null);
   if(!rows.length)return '';
   return `<div class="dwtrace">`+rows.map(({id,t,ix}:any)=>{
     const cs=PEOPLE[id]?PEOPLE[id].cs:id;
@@ -536,8 +541,14 @@ function dayTraceHTML(di:any,pf:any){
     const pan=t.fromKey?` data-wpd="${di}" data-wpk="${esc(t.fromKey)}"`:'';
     /* the active mark keys on the address the row CARRIES — the next day's
        warning — because that is what a click on it focuses */
-    const on=WFOCUS&&WFOCUS.di===t.di&&WFOCUS.ix===ix;
-    return `<div class="witem hard wtr${on?' on':''}" data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it">`
+    const on=t.di!=null&&WFOCUS&&WFOCUS.di===t.di&&WFOCUS.ix===ix;
+    /* the forward (cross-week) trace carries no data-wdi: there is no
+       warning on THIS week to focus — interactions.ts's `.witem[data-wdi]`
+       branch simply never matches it, so a tap is inert rather than a
+       misfire. The breach itself appears on Monday when next week loads. */
+    const addr=t.di!=null?` data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it"`
+                         :` title="Next week's Monday — load it to see the breach itself"`;
+    return `<div class="witem hard wtr${on?' on':''}"${addr}>`
       +`<span class="wbar"></span><span><span class="wcode">Breaks ${esc(t.dow||'the next day')}</span>`
       +`<b>${esc(cs)}</b> — had to leave by <b>${esc(t.leaveBy)}</b>. ${esc(t.msg||'')}</span></div>`;
   }).join('')+`</div>`;
