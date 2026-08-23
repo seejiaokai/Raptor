@@ -415,7 +415,13 @@ function histLineHTML(cls: string) {
 }
 
 export function dayTabsHTML(di: number) {
-  const chips = DAYS.map((x: any, i: number) => `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}">${esc(x.dow.slice(0, 3))} ${esc(x.dt.replace('Jul ', ''))}</span>`).join('')
+  /* strip the MONTH off the date so a chip reads "Mon 13", not "Mon Jul 13".
+     Must strip ANY month, not the literal 'Jul ' — the board is continuous
+     across weeks now (calendar pick / the ‹ › week-jump chips below), so its
+     days routinely fall in August, September… and a hardcoded 'Jul ' left those
+     showing the full "Mon Aug 23" (owner-scale bug found 24 Aug 26). */
+  const dayNum = (dt: string) => dt.replace(/^\S+\s+/, '')
+  const chips = DAYS.map((x: any, i: number) => `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}">${esc(x.dow.slice(0, 3))} ${esc(dayNum(x.dt))}</span>`).join('')
   /* WEEK ARROWS FLANK THE DAY CHIPS ON DESKTOP (owner, 23 Aug 26 — "in
      scheduler board i cant go between weeks except through the calendar").
      They live INSIDE #sbDays, which is display:flex on a desktop and
