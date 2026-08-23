@@ -140,16 +140,21 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   unauthored previous week seeds nothing, so the seed week's own behaviour
   and reference parity are unchanged.
 - **What a non-loaded week can and cannot be made to answer** (`weekctx.ts`
-  header). All three cross-week reads above (`seedRunIn`, `prevSundaySeed`,
-  the midnight-tail edges) are PURE reads off `weekBundle` + the global
-  `INPUTS` — the week's authored/remembered SEED shape only. `SCHED`
-  (publish/amendment state) and any session edit made to a week after
-  leaving it do not exist to be read, because the app itself forgets them
-  the same way (`loadWeek`'s own doctrine). A seed read is therefore only
-  ever as good as what the app still remembers of that week — exactly what
-  a scheduler sees on navigating back to it. Nothing is invented and
-  nothing is silently wrong; a week with no authored or remembered content
-  contributes nothing to any of the three reads.
+  header). All cross-week reads above (`seedRunIn`, `prevSundaySeed`, the
+  midnight-tail edges, and the forward crew-rest trace below) are PURE reads
+  off `weekBundle` + the global `INPUTS` — the week's authored/remembered
+  SEED shape — never a live `DAYS`/`SCHED` for a week that is not loaded.
+  **Since 23 Aug 26 that "remembered SEED shape" includes the scheduler's
+  own session edits**, not only the authored data: `weekctx.ts:bundle(v)`
+  checks the per-week session stash (`engine/weekstash.ts`, below) before
+  the pure `weekBundle` seed, so a week the scheduler has edited and left
+  feeds these reads its live remembered state. `SCHED` (publish/amendment
+  state) is still never read here regardless — the rules judge the
+  programme, not its publication state — and a week nobody has ever
+  authored or edited still contributes nothing to any of these reads. A
+  seed read is therefore only ever as good as what the app still remembers
+  of that week, session edits included — exactly what a scheduler sees on
+  navigating back to it. Nothing is invented and nothing is silently wrong.
 - **The in-time line's grammar** (owner, 21 Aug 26 — "accept any form of
   combination", "U make the call on what u detect"). `events.ts:intimeTime`
   reads the FIRST valid clock time in a line — `0900`, `09:00`, `0900H`,
@@ -239,6 +244,55 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   focus state — nothing has to be clicked for it to exist. What the UI draws
   from it (a dotted ring, a CR label, a cross-day row) is in
   `ui-contracts.md`.
+- **The forward trace across the week edge** (owner, 23 Aug 26 — "If I plan
+  someone who bust crew rest the day prior it should also flag out just
+  like what u see for outlaw"). The within-week trace above stops at the
+  loaded week's own edges — a late Sunday busting NEXT week's Monday had no
+  trace to draw, because Monday belongs to a week that is not loaded. Fixed
+  by running the SAME extracted computation (`validate.ts:crewRestDay`) a
+  second time after the day loop, with `weekctx.ts:nextMondaySeed(CURWEEK)`
+  standing in as a PHANTOM "today" and the loaded week's own Sunday
+  (`ev[6]`) as its yesterday: `crewRestDay(ev[6], nextMondaySeed(CURWEEK),
+  null, true, null)`. The `phantom` flag guards every write addressed to the
+  phantom day itself (no `add`, no chip, no ring, no `REST[]` entry — there
+  is no real day index to address), leaving exactly one side effect:
+  `markTrace(prevDi, id, …)` onto Sunday, the day that caused it. The trace
+  it writes carries `di:null` (no in-week day to jump to — `html.ts`'s
+  `dayTraceHTML` renders it as an informational row with no click target,
+  titled "Next week's Monday — load it to see the breach itself"), and it is
+  a POINTER only: the breach warning itself still lands on Monday, as a real
+  clickable `CREW_REST` line, only when next week is loaded and validated —
+  this pass writes no second warning. Because `nextMondaySeed` reads through
+  `weekctx.ts:bundle()`, an edited-and-left next week (the per-week session
+  stash, below) is exactly what Sunday is judged against, matching what the
+  real Monday will validate against once its week loads. **`CREW_TIGHT`
+  never traces**, forward or within-week — only a full hard `CREW_REST`
+  breach calls `markTrace` at all, so the phantom pass inherits that
+  automatically rather than needing its own guard. An unauthored, unedited
+  next week seeds empty arrays and the phantom pass writes nothing; the
+  default demo weeks draw no forward trace (verified). Pinned by test;
+  on-screen contract: `ui-contracts.md` §Three crew-rest rings.
+- **What a non-loaded week can be made to answer now reads the session
+  stash FIRST, the pure seed second** (23 Aug 26 — the per-week stash,
+  `engine/weekstash.ts`, fixing a reported bug: a duty planned on an
+  unauthored week's Sunday vanished after scrolling away and back, and the
+  crew-rest flag it should have raised on the following Monday never fired,
+  because every cross-week seed read only ever saw the pure, un-edited
+  seed). `weekctx.ts:bundle(v)` — the one helper every cross-week read above
+  goes through — checks `weekstash.stashHas(v)` before its own cached
+  `weekBundle(v)` seed on EVERY call: a week the scheduler has actually
+  edited and left feeds `seedRunIn`, `prevSundaySeed` and `nextMondaySeed`
+  its live, remembered session state instead of the untouched seed. This
+  widens what a seed read can see, not the WINDOW sizes it looks through —
+  `maxRun` days back, one day back for crew rest, one day forward for the
+  trace are unchanged; only the DATA those windows are read against got
+  richer. `SCHED` (publish/amendment state) rides the stash for the week's
+  own restore (Flow E) but is deliberately not read here — the rules judge
+  the programme, not its publication state. A stash entry that fails to
+  parse (a truncated write, foreign data) degrades to "as if never edited"
+  and falls through to the pure seed, never throws — this runs inside
+  `validate()`, on every keystroke. An unauthored, unstashed adjacent week
+  still seeds nothing, byte-identical to before the stash existed.
 - Tight turn needs `max(VCONF.tightTurn, dekit + step)`.
 - Double turn: two+ sorties in a day → ONE DT_SUM line naming everyone;
   **adv, not hard** (owner, 4 Aug 26 — double turning is routine and planned),

@@ -9,9 +9,11 @@ import { HOOKS } from '../engine/hooks'
 import { dayHTML, dayPreviewHTML } from './html'
 import { daySnapOf } from '../engine/publish'
 import { paletteHTML, paletteDay } from './palette-html'
-import { ARM, CARRYDAY, CURPAGE, DPREV, WEEKJUMP, setCarryDay, setWeekJump, scrollWeekToDay } from '../state/view'
+import { ARM, CARRYDAY, CURPAGE, DPREV, PEEKLAND, WEEKJUMP, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
+import { weekScrollMax } from './pan'
+import { mountPeek } from './peek'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
 
@@ -19,6 +21,9 @@ export function EditWeek() {
   const version = useVersion()
   const ref = useRef<HTMLDivElement>(null)
   const prev = useRef<{ ed: boolean, html: string[] } | null>(null)
+  /* which (desktop-ness × CURWEEK) key the trailing peek nodes currently
+     reflect — '' means none are mounted. See ui/peek.ts:mountPeek. */
+  const peekKeyRef = useRef<string>('')
 
   useEffect(() => {
     /* only the page on screen is rendered (as the reference's renderSchedule
@@ -43,13 +48,21 @@ export function EditWeek() {
     /* capture the outgoing week for the cross-week glide BEFORE the DOM is
        mutated below — null unless this repaint is a phone week cross */
     const runGlide = beginGlide(root)
-    const whole = !p || p.ed !== ed || p.html.length !== html.length || root.children.length !== html.length
+    /* `< html.length`, not `!==` — see ViewWeek for the full reasoning: once
+       the desktop peek preview (ui/peek.ts) appends its own trailing day
+       sections, root always carries more children than html.length on an
+       ordinary repaint. */
+    const whole = !p || p.ed !== ed || p.html.length !== html.length || root.children.length < html.length
     if (!whole) {
       const secs = [...root.children] as HTMLElement[]
       html.forEach((h, i) => { if (h !== p!.html[i]) secs[i].outerHTML = h })
     } else {
       root.innerHTML = html.join('')
     }
+    /* mount/refresh the trailing peek nodes — see ViewWeek for the full
+       reasoning (a no-op on an ordinary repaint; self-heals the `whole`
+       branch's wipe). */
+    peekKeyRef.current = mountPeek(root, html.length, peekKeyRef.current)
     /* a continuous-nav week load lands on Monday / the last day / a specific day
        index, REPLACING the scroll hold — no sl re-pin first, and smooth briefly
        off for the landing writes, or the two animated writes sweep the whole
@@ -59,10 +72,18 @@ export function EditWeek() {
       const was = root.style.scrollBehavior
       root.style.scrollBehavior = 'auto'
       if (WEEKJUMP === 'mon') root.scrollLeft = 0
-      else if (WEEKJUMP === 'sun') root.scrollLeft = Math.max(0, root.scrollWidth - root.clientWidth)
+      else if (WEEKJUMP === 'sun') root.scrollLeft = weekScrollMax(root)
       else scrollWeekToDay(root, WEEKJUMP)
       root.style.scrollBehavior = was
       setWeekJump(null)
+    } else if (PEEKLAND != null) {
+      /* clicking a peek day — see ViewWeek for the full reasoning; the same
+         alternative-landing slot as WEEKJUMP above, never both in one repaint. */
+      const was = root.style.scrollBehavior
+      root.style.scrollBehavior = 'auto'
+      scrollWeekToLanding(root, PEEKLAND.di, PEEKLAND.x)
+      root.style.scrollBehavior = was
+      setPeekLand(null)
     } else {
       /* a within-week repaint holds the week's scroll position (B54) */
       root.scrollLeft = sl

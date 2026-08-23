@@ -6,15 +6,17 @@
    Markup-level, because that is where both live: jsdom cannot measure a ring,
    but it can prove which class the builder emitted. The stroke itself is a
    measured contract in scheduler.css and is covered by the geometry gate. */
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { validate, WARN, traceOf, traceLeads, traceIx } from '../engine/validate'
 import { VCONF } from '../engine/rules'
 import { parseHM } from '../engine/time'
-import { isStandalone } from '../engine/waves'
-import { dayHTML } from './html'
+import { isStandalone, CURWEEK, setCurWeek } from '../engine/waves'
+import { weekBundle } from '../engine/weeks-data'
+import { dayHTML, dayWarnHTML } from './html'
 import { personWarns } from '../engine/avail'
 import { focusWarn, clearWarnFocus, setWarnFocus, toggleDayWarn, selectPerson, selDrop } from '../state/view'
+import * as view from '../state/view'
 
 const CREW = 'waldo'
 const DSNAP = JSON.stringify(DAYS)
@@ -365,5 +367,114 @@ describe('a louder flag on the causing day', () => {
     expect(puckHtml(0), 'the conflict wins the chip').toContain('l-c"')
     expect(puckOf(0), 'and both rings are worn at once').toContain('boxdot')
     expect(puckOf(0)).toContain('boxred')
+  })
+})
+
+/* THE FORWARD TRACE ACROSS THE WEEK EDGE (owner, 23 Aug 26 — "If I plan
+   someone who bust crew rest the day prior it should also flag out just like
+   what u see for outlaw"). validate.ts's crewRestDay is run a second time
+   after the day loop, with next Monday standing in as a phantom "today"
+   (weekctx.ts's nextMondaySeed) and the LOADED week's real Sunday (ev[6]) as
+   the phantom's yesterday — di:null throughout, since the phantom day
+   belongs to a week this WARN cannot address by index. Only the trace write
+   survives the phantom guard (markTrace's own di!=null-free write onto
+   ev[6]'s real index), so the write above is the only side effect. */
+describe('the forward trace across the week edge', () => {
+  /* CURWEEK stays module state across tests — this file never otherwise
+     touches it (it always validates the loaded seed week directly), so any
+     test below that moves it restores it afterward. */
+  afterEach(() => { setCurWeek('13/07/2026') })
+
+  it('the default seed week (week 1) draws no forward trace', () => {
+    validate()
+    expect(WARN.trace[6]).toBeFalsy()
+  })
+
+  it("the default second seed week (week 2) draws no forward trace either", () => {
+    const savedDays = JSON.stringify(DAYS)
+    try {
+      const wk2 = weekBundle('20/07/2026').days
+      DAYS.length = 0; wk2.forEach((d: any) => DAYS.push(d))
+      setCurWeek('20/07/2026')
+      validate()
+      expect(WARN.trace[6]).toBeFalsy()
+    } finally {
+      DAYS.length = 0; JSON.parse(savedDays).forEach((d: any) => DAYS.push(d))
+    }
+  })
+
+  /* the case the owner proved by hand: bane flies week 2's Monday (WAVE 1
+     VL, T/O 08:40, in-time 0700H — instructed report 06:20) and week 1's
+     Sunday hands him a duty that runs him till 23:00. Week 1 stays the
+     loaded week throughout — the trace lands on ITS Sunday (di 6), pointing
+     forward at a Monday this WARN cannot address by index. */
+  it('a week-2 Monday flyer given a week-1 Sunday duty till 23:00 draws a forward trace on trace[6]', () => {
+    ;(DAYS[6] as any).dutywaves[0].rows.push({ role: 'Duty', id: 'bane', str: '1300', end: '2300' })
+    validate()
+    const t = traceOf(6, 'bane')
+    expect(t, 'a forward trace crosses the week edge').toBeTruthy()
+    expect(t.di, "the breach belongs to a day this week's WARN cannot address").toBeNull()
+    expect(t.dow).toBe('Monday')
+    expect(t.msg).toMatch(/Crew rest breach/)
+
+    /* removing the duty and re-validating clears it — the trace is model
+       state, re-derived on every validate(), never a sticky flag */
+    ;(DAYS[6] as any).dutywaves[0].rows.pop()
+    validate()
+    expect(traceOf(6, 'bane')).toBeNull()
+  })
+
+  it('renders as "Breaks Monday" with no data-wdi — there is no warning on THIS week to focus', () => {
+    ;(DAYS[6] as any).dutywaves[0].rows.push({ role: 'Duty', id: 'bane', str: '1300', end: '2300' })
+    validate()
+    toggleDayWarn(6)
+    const h = dayWarnHTML(6)
+    expect(h).toContain('Breaks Monday')
+    const row = h.match(/<div class="witem hard wtr[^]*?<\/div>/)
+    expect(row, 'the trace row itself').toBeTruthy()
+    expect(row![0]).not.toContain('data-wdi')
+    ;(DAYS[6] as any).dutywaves[0].rows.pop()
+  })
+
+  /* regression: the ordinary WITHIN-week trace (this file's own `build`
+     helper, day 0 → day 1) still carries data-wdi — only the cross-week
+     trace is addressless. Already pinned above ("carries the pan address of
+     the line on this day that caused it"); restated here for locality next
+     to the new forward-trace pins. */
+  it('a real within-week trace row still carries data-wdi (regression)', () => {
+    const ix = build('01:30', '2A: BFM-5')
+    toggleDayWarn(0)
+    expect(dayHTML(0, false)).toContain(`data-wdi="1" data-wix="${ix}"`)
+  })
+
+  /* a CREW_TIGHT-only case never traces — matching the within-week rule
+     (crewRestDay's tight branch never calls markTrace, only the hard-breach
+     branch does). Sunday 09:00–18:00: clears at 06:00, inside bane's
+     05:40–06:20 nominal/instructed window, so it chips TT but never breaks. */
+  it('a CREW_TIGHT-only forward case writes no trace', () => {
+    ;(DAYS[6] as any).dutywaves[0].rows.push({ role: 'Duty', id: 'bane', str: '0900', end: '1800' })
+    validate()
+    expect(traceOf(6, 'bane')).toBeNull()
+    ;(DAYS[6] as any).dutywaves[0].rows.pop()
+  })
+  /* THE RING MUST BE EXPLAINABLE BY A TAP (23 Aug 26, found driving the
+     built bundle): selectPerson used to open only days where the person has
+     a WARNING in the loaded week — a man whose only mark is the forward
+     trace (his breach lives on next week's Monday) had a ringed puck that a
+     click could not explain. Trace days now join PFOCUS's day list, so the
+     tap opens Sunday's "Breaks Monday" row like any other. */
+  it('clicking the puck of a man with only a forward trace opens Sunday and shows the box', () => {
+    ;(DAYS[6] as any).dutywaves[0].rows.push({ role: 'Duty', id: 'bane', str: '1300', end: '2300' })
+    validate()
+    expect(((WARN.byDay[6] || {}).warns || []).some((w: any) => (w.who || []).includes('bane')),
+      'precondition: Sunday itself carries no warning for him — only the trace').toBe(false)
+    view.selectPerson('bane', true)
+    expect(view.PFOCUS && view.PFOCUS.id, 'the tap focused him').toBe('bane')
+    expect(view.PFOCUS.days).toContain(6)
+    expect(view.DWOPEN.has(6), "Sunday's box is open").toBe(true)
+    expect(dayWarnHTML(6)).toContain('Breaks Monday')
+    view.selectPerson('bane', true)   // second tap clears, leaving no focus behind
+    ;(DAYS[6] as any).dutywaves[0].rows.pop()
+    validate()
   })
 })

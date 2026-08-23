@@ -372,3 +372,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Keep instructing implementer agents to verify spec parameters against the actual code path they exercise, and to report deviations-with-reasoning rather than silently obeying or silently fixing; add this phrasing to the standard delegation prompt template.
 
 **Principle:** A test that cannot reach the code path it claims to pin passes vacuously; implementers must prove reachability, and a good delegation contract makes "correct the spec and say so" the expected move.
+
+### Observation 27: Partition files explicitly when two builders share one working tree
+
+**Status:** OPEN
+**Date:** 2026-08-23
+**Session context:** Mid-session priority shift — owner reported a data-loss bug while a feature agent was already building in the same branch/tree; a second implementation agent was launched in parallel.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** agent briefing
+
+**Issue:** Two general-purpose agents edited the same working tree concurrently. Collision was avoided only because the second brief named the first agent's files explicitly ("do NOT touch X, Y, Z — write it up instead"), turning an implicit hope into a contract. A prior session (Obs 25) had exactly this collision on a scratch file.
+
+**Suggested improvement:** When dispatching a second writer into a tree where another writer is active, the brief must list the other agent's owned files as read-only and give an escape hatch ("report the needed change instead of making it"). The orchestrator then applies cross-boundary edits itself during integration review.
+
+**Principle:** Parallel writers in one workspace need an explicit file-ownership contract in their briefs, plus an orchestrator-owned integration pass for changes that cross the boundary.

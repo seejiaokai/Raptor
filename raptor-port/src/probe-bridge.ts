@@ -31,7 +31,7 @@ import { HIST, histApply, histSnap, histPush } from './state/history'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
-import { notify, undo, redo } from './state/store'
+import { notify, undo, redo, loadWeek } from './state/store'
 import { setRole as lwSetRole, loadWars as lwLoadWars } from './leavewar/state/store'
 
 export function installProbeBridge() {
@@ -64,6 +64,10 @@ export function installProbeBridge() {
   w.validate = validate; w.collectEvents = collectEvents; w.slotBar = slotBar
   w.markEdit = markEdit; w.publishALDay = publishALDay; w.setDayApproved = setDayApproved; w.signOf = signOf
   w.afterSchedMutate = () => { view.afterSchedMutate(); notify() }
+  /* week navigation — the per-week stash work (23 Aug 26) made cross-week
+     round trips part of the engine's observable behaviour, so probes/demos
+     can now drive them the same way the week chips do */
+  w.loadWeek = loadWeek
   /* selection / arm */
   w.armSlot = (k: any, el: any) => { view.armSlot(k, el); notify() }
   w.disarmSlot = () => { view.disarmSlot(); notify() }

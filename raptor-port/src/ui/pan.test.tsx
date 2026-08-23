@@ -161,13 +161,16 @@ describe('week panning (tfin)', () => {
   })
 
   it('the day dots exist, one per day, and light the first by default', () => {
+    /* one dot per LIVE day — jsdom's default desktop width also mounts the
+       inert next-week peek preview (ui/peek.ts) trailing the live days, and
+       the dots track DAYS.length, never the peek nodes. */
     const dots = $$('#vDots button')
-    expect(dots.length).toBe($$('#vWeek .day').length)
+    expect(dots.length).toBe($$('#vWeek .day:not(.peek)').length)
     expect(dots[0]!.classList.contains('on')).toBe(true)
   })
 
   it('clicking a dot scrolls its day into view', async () => {
-    const days = $$('#vWeek .day')
+    const days = $$('#vWeek .day:not(.peek)')
     let called: any = null
     days.forEach((d, i) => { (d as any).scrollIntoView = () => { called = i } })
     await act(async () => { $$('#vDots button')[2]!.dispatchEvent(new MouseEvent('click', { bubbles: true })) })

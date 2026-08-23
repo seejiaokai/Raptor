@@ -83,12 +83,12 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   drag the panel back to the edge. After the window lapses an ordinary scroll
   takes over again — scrolling still sets the day, a pick just outlasts the
   settle.
-- **An edge hint teaches the gesture** (`pan.ts:maybeCrewHint`, `.crew-hint`).
-  Once per session, edit page and wide screen only, when the week is jammed
-  against its right end with a day past the current one still off the front, a
-  dismissible bubble points at the day names and the arrows. It sits BELOW the
-  panel header so it never covers the arrows it describes. Geometry-only, so it
-  is gated in `e2e/geometry.spec.ts` (jsdom has no scroll clamp), not in jsdom.
+- **The edge hint is retired** (23 Aug 26 — was `pan.ts:maybeCrewHint`,
+  `.crew-hint`). It taught the day-name/arrow controls because the last day
+  could never sit at the front of a wide screen; the next-week preview's real
+  columns removed that limitation, so the hint's firing condition (jammed at
+  the end with a later day off the front) became unreachable and the
+  machinery was deleted. The controls it pointed at are unchanged.
 - **The desktop week ends on a WHOLE day, not a sliver** (owner, 23 Aug 26 — the
   arrows "totally skip Saturday and Sunday … Friday should be nicely aligned on
   the left … it jumps to Monday immediately"). A wide screen shows 3–4 columns,
@@ -98,8 +98,10 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   `--week-tail`, desktop only) so the end rounds UP to the last whole-day view
   (Fri | Sat | Sun, earliest flush left, no sliver and no empty void); the ›
   then walks one clean day per click and only rolls into the next week PAST that
-  stop. The very last day still cannot sit at the front on a wide screen — which
-  is exactly why the edge hint above survives. The "day a–b of n" read-out
+  stop. Since the next-week preview (23 Aug 26) the spacer measures the FULL
+  column strip — live plus preview — so the far end of the free scroll is a
+  whole column too, and the very last live day CAN now sit at the front
+  (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
 - **The desktop crew panel keeps its day + column headings in view** (owner,
@@ -2419,6 +2421,46 @@ day-isolation assertion in `probes/perf-port.cjs` names that exemption
 precisely — any OTHER day changing is still the bug that probe was written
 for.
 
+### The forward trace across the week edge — a phantom row (owner, 23 Aug 26)
+
+The three marks above stop at the loaded week's own edges: a within-week
+breach traces backward onto the day before it, but a late Sunday busting
+NEXT week's Monday had nothing to draw, because Monday belongs to a week
+that is not on screen. Fixed the same day the owner asked for it, from the
+deployed site — "If I plan someone who bust crew rest the day prior it
+should also flag out just like what u see for outlaw" — by writing the
+SAME `.dwtrace` row onto Sunday's own card, sourced from a phantom pass of
+the engine's crew-rest computation against next week's seeded Monday
+(`engine-rules.md` §validation has the mechanism).
+
+On screen it reads as an ordinary trace row with two differences, both
+because it addresses a warning this week's DOM cannot reach:
+
+- **No `data-wdi`/`data-wix`.** Every other trace row carries the next
+  day's warning address so `interactions.ts`'s `.witem[data-wdi]` branch can
+  focus it; this row's `t.di` is `null` (the engine's own phantom-day
+  marker), so `dayTraceHTML` omits both attributes entirely rather than
+  emitting an address nothing can resolve. `interactions.ts`'s handler
+  simply never matches it — a tap on this row does nothing, by construction,
+  not by a guard that could be forgotten.
+- **The title says where the breach actually lives.** In place of "Jump to
+  the line on this day that caused it" (the within-week row's title, which
+  still applies to `fromKey`), this row carries **"Next week's Monday — load
+  it to see the breach itself"** — telling the reader there IS a real,
+  clickable warning, just not one this screen can open.
+
+It still reads text-identically to the within-week case otherwise — "Breaks
+Monday", the man's name, his leave-by time, the same message — and sits in
+the exact same place in the day's issue list (inside `.dwtrace`, ranked
+under this day's own hard rows, on-demand behind the same `DWOPEN`/`PFOCUS`
+gate). A reader should not have to learn a second shape to understand it;
+the row LOOKS the same because it means the same thing — a red consequence
+tomorrow, not a problem today — the only thing that changed is what tapping
+it can do. Filtering happens once, in `dayTraceHTML`: a row keeps only when
+its warning resolves to a real index OR `t.di==null` (the forward case),
+so a stale forward trace whose underlying breach has since been edited away
+drops out exactly like a stale within-week one does.
+
 ## Duty templates (owner, 13 Aug 26)
 
 `+ Block` under Duties opens the TEMPLATE picker — a `.wavemenu` popup listing
@@ -3461,3 +3503,61 @@ Three cards, a 2-column grid on desktop with the last card full-width:
 - **`#admData` Data & persistence** — an honesty card only: everything
   typed into the prototype is session-only, and this card marks the seam
   where the shared database's controls will land.
+
+## The next-week preview (owner ask — desktop continuous week display, 23 Aug 26)
+
+Above 820px the week strip used to leave a fixed-width dead zone past
+Sunday (a JS-sized `--week-tail` spacer, `pan.ts:setWeekTail`, sized to
+round the scroll out to a whole trailing day). That space is filled now by
+an INERT preview of next week's planned programme — the void becomes a
+look-ahead instead — built by `ui/peek.ts` and mounted as trailing
+`.day.peek` sections after the live week's own day nodes.
+
+**The inert contract**, load-bearing because the preview shares the live
+week's `.week` scroll container and CSS, and every existing delegated
+handler runs off attribute selectors:
+
+- **No `data-day`.** Preview days carry `data-peek-day` instead — every
+  `.day[data-day]` query (`state/view.ts`'s `weekLeftDay`/
+  `scrollWeekToDay`, `highlights.ts`, `interactions.ts`'s other branches)
+  already excludes a peek node by construction, with no per-site exclusion
+  to remember or forget.
+- **No `data-slot`, `data-fill`, `data-person`, `data-acc`, `contenteditable`
+  or `draggable`.** Nothing a click/drag/highlight delegate keys on
+  (`routeClick`'s slot/puck branches, `highlights.ts`'s
+  `.puck[data-person]` sweep, `drag.ts`) is ever emitted — a preview day is
+  never validated and carries no warnings to ring, no slots to fill, no
+  amendment marks to paint.
+- **Class `day peek`** on the section itself — `day` so it inherits the
+  live day's box/spacing/border rules for free (a preview card looks like a
+  day because it shares the day's CSS, not a copy of it), `peek` as the one
+  hook everything above excludes it BY, and every internal width/scroll
+  calculation that must not count it (`pan.ts`'s scrollbar sync, week-end
+  clamping) selects `.day:not(.peek)`.
+- **Appears only above 820px.** `peek.ts:peekKey()` returns `''` at
+  `window.innerWidth <= 820`, which every caller treats as "no preview" —
+  the phone week is untouched, never renders a `.peek` node, and the
+  removed `--week-tail` spacer logic still applies there unchanged.
+
+**Click-to-land.** `interactions.ts`'s `routeClick` checks `.day.peek`
+FIRST, ahead of every other branch — a peek day carries none of the
+attributes those branches key on, so without running first a click would
+fall through all of them into the empty-space clear at the bottom. A click
+records the day's screen `x` and its 0–6 index (`view.setPeekLand`), then
+calls the ordinary `loadWeek(shiftWeek(CURWEEK,1))` — not a special preview
+load, the same week switch every other entry point uses (`feature-impact.md`
+Flow E). ViewWeek/EditWeek read `PEEKLAND` on their next repaint (the same
+priority chain as `WEEKJUMP`/`CARRYDAY`/`DPREV`) and land the now-live day
+at the exact x it was clicked, so the day "becomes real" in place rather
+than the week jumping and resettling.
+
+**What it shows.** Next week AS THE APP REMEMBERS IT, not necessarily the
+pure seed — `peekWeekHTML` reads the per-week session stash
+(`stashDays`, `engine/weekstash.ts`) first and falls back to `weekBundle`'s
+pure seed only for a week nobody has edited, the same source the cross-week
+flag reads use (`engine-rules.md` §validation). It is the PLANNED PROGRAMME
+only: no inputs band, no warnings, no publish/AL state, no amendment marks
+— a scheduler previewing next week sees what is on it, not whether it has
+been signed off or who last touched it. Cached per (desktop-ness ×
+`CURWEEK` × next week's stash generation) and rebuilt only when that key
+changes, never on an ordinary repaint of the loaded week.

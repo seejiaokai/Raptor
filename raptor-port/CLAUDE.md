@@ -687,7 +687,17 @@ subscribers.
   the removed title was; the view/edit week is stepped day-to-day by SWIPE, which
   is CONTINUOUS across weeks (swipe off Sunday → next week's Monday, off Monday →
   previous week's Sunday — `pan.ts` edge-overswipe + `WEEKJUMP` landing the
-  scroll in the same repaint). The DESKTOP `‹ ›` arrows are continuous across
+  scroll in the same repaint). **A wave-dense day no longer traps that swipe**
+  (owner, 23 Aug 26 — "stuck to swipe back from Jul 20"): a flying day is almost
+  all `.go` wave blocks (each its own sideways scroller with
+  `overscroll-behavior-x:contain`), and the handler used to cede the whole
+  gesture to a `.go` the instant a touch began inside one — so on a busy Monday
+  the back-swipe had nowhere to begin and stuck, while a bare-ground Sunday
+  crossed fine. Now the block and its scrollLeft are recorded at touch-start and
+  the decision is made at touch-END: if the wave actually scrolled it owned the
+  swipe, but a wave already at its own edge (it never moved) lets the gesture
+  fall through to the week cross. Don't restore the touch-start `.go` bail.
+  The DESKTOP `‹ ›` arrows are continuous across
   weeks too (owner, 23 Aug 26 — completing this decision): stepping past the
   week's last day loads the adjacent week and lands on its near edge, instead
   of the arrows going dead at the ends. DESKTOP landings are instant — no settle
@@ -701,9 +711,12 @@ subscribers.
   (Fri | Sat | Sun, earliest flush left, no sliver, no empty void); the arrows
   then walk one clean day per click and only roll over PAST it. Don't reintroduce
   a fixed `calc()` spacer — the right size depends on the live day width and the
-  viewport, which is why it is measured. The `.crew-hint` edge hint STAYS: the
-  very last day still can't sit at the front on a wide screen, so the palette's
-  own ‹ › day arrows / day-name picks remain the way to crew it. **The PHONE
+  viewport, which is why it is measured. The `.crew-hint` edge hint is
+  RETIRED (23 Aug 26, with the next-week preview): real preview columns now
+  continue past Sunday, so the very last day CAN sit at the front and the
+  hint's own firing condition became unreachable — the day-name picks and the
+  panel arrows still work, they just no longer need teaching. Don't
+  reintroduce the hint; the limitation it apologised for is gone. **The PHONE
   swipe cross GLIDES, though** (owner,
   23 Aug 26 — "go with glide … glide between weeks"): the week being left is
   cloned into a throwaway overlay and slides off in the swipe direction while the
@@ -776,23 +789,86 @@ subscribers.
   runs against the previous week's Sunday instead of being switched off —
   `REST[0]`, the crew picker's Monday rest-clear times, is real for the
   first time. The midnight input tails at the week's two edges read the
-  adjacent week's dates the same way. Lookback only, and bounded to those
-  two windows; the one lookahead is the pre-existing midnight-tail sliver
-  past Sunday night — nothing else looks forward. A flag always lands on the
-  day it BREAKS, never earlier: next Monday's breach appears when next week
-  is viewed, not as a hint on this Sunday — the trace mechanism addresses by
-  in-week day index, so a cross-week trace would collide with the loaded
-  week's own Monday. A same-page forward hint is a possible follow-up, not
-  shipped; don't build one without the owner asking. Every seed read is a
-  PURE function of `weekBundle` + the global `INPUTS` — what the app still
-  remembers of a week once you've left it. It never reads `SCHED` (publish
-  state) or a forgotten session edit, because `loadWeek` itself forgets
-  those the same way; an unauthored adjacent week seeds nothing. Don't
-  re-propose reading further back or further forward than this without a
-  named case — the window sizes were chosen to be exactly what the two
-  named rules need. `engine/weekctx.ts`'s header carries the full window
-  semantics; `docs/engine-rules.md` and `docs/feature-impact.md` Flow F
-  carry the detail.
+  adjacent week's dates the same way. Bounded to those two lookback windows
+  plus exactly one lookahead day — the pre-existing midnight-tail sliver
+  past Sunday night, and, since 23 Aug 26, the forward crew-rest trace
+  below; nothing else looks forward or further back than that. Don't
+  re-propose widening either window without a named case — the sizes were
+  chosen to be exactly what the named rules need.
+  **A flag still always lands on the day it BREAKS, never earlier**: next
+  Monday's own crew-rest breach still only becomes a real, clickable warning
+  when next week is loaded and viewed — the trace mechanism addresses by
+  in-week day index, so it still cannot write a second warning onto the
+  loaded week's own Monday; that half of the old ruling stands unchanged.
+  **What is superseded is this entry's old "don't build a same-page hint
+  without the owner asking" — he then asked for exactly that**, from the
+  deployed site, the same day (23 Aug 26 — "If I plan someone who bust crew
+  rest the day prior it should also flag out just like what u see for
+  outlaw"): a
+  loaded week's Sunday whose late finish busts NEXT week's Monday now draws
+  the same "Breaks Monday" trace box a within-week breach draws, built off
+  `weekctx.ts:nextMondaySeed` and a phantom pass of `validate.ts`'s own
+  `crewRestDay` (one body, two callers — the forward trace cannot drift from
+  the real rule). It carries no in-week day to jump to (`di:null`, `html.ts`
+  renders it with no click target) and writes no second warning — only the
+  pointer. `CREW_TIGHT` still never traces, forward or otherwise; only a
+  full `CREW_REST` breach does. Default demo weeks draw no forward trace
+  (verified). Rules: `docs/engine-rules.md` §validation, crew rest; on
+  screen: `docs/ui-contracts.md` §Three crew-rest rings.
+  **Session edits ARE now read where they used to be invisible** — the
+  seed's INPUTS getting richer, not the windows changing size (see the
+  per-week stash entry right below): `weekctx.ts:bundle()` checks the stash
+  before the pure seed on every cross-week read, so a scheduler's own edit
+  to an adjacent week now feeds `DAYS_RUN`, `CREW_REST` and the forward
+  trace exactly the way an authored seed always did. `SCHED` (publish state)
+  is still deliberately not read by these seed functions — the rules judge
+  the programme, not its publication state — and an unauthored, unedited
+  adjacent week still seeds nothing. `engine/weekctx.ts`'s header carries
+  the full window semantics; `docs/engine-rules.md` and
+  `docs/feature-impact.md` Flow F carry the detail.
+- **Weeks remember their edits — the per-week stash** (owner, 23 Aug 26,
+  from a reported bug: a duty planned on the Sunday of an unauthored week
+  vanished after scrolling to 13 Jul and back, and no crew-rest flag raised
+  for Ranger the way it should have). What's decided:
+  - **Session memory only, deliberately — a reload still forgets** (owner,
+    23 Aug 26 — "It's ok that u don't remember once I exit the session.
+    Just like the rest. Just that when I go between sun and mon it can't be
+    that it disappears"). `engine/weekstash.ts` remembers, per week-start
+    key, the last snapshot `state/store.ts:loadWeek` handed it on the way
+    OUT of a week — in memory only, in lockstep with `INPUTS` and the Leave
+    War's own 17 Aug 26 session-only decision: a schedule that survived a
+    reload while the inputs that fed it did not would be exactly the
+    mixed-memory confusion that lockstep exists to prevent. A localStorage
+    envelope was built and then removed the same day on the owner's word —
+    don't re-add a browser-local one for just this piece; real persistence
+    is the future shared-server step, for all of this state at once.
+  - **Pristine weeks are deliberately NOT stashed.** Stashing every week
+    unconditionally would persist a byte-copy of the pure seed for weeks
+    nobody touched — and a persisted pristine copy is a trap: the day a
+    deploy updates the built-in demo weeks, every browser that ever
+    scrolled past one would go on seeing the OLD content forever, because a
+    stash outranks the seed by design. A week is stashed on the way out
+    only when it changed since load, or when it already carries a stash
+    entry to keep current. **Don't re-add the unconditional stash of
+    untouched weeks.**
+  - **Publish state rides the restore.** The stash shares its SCHED field
+    list with `state/history.ts:schedFields` (the undo snapshot) so the two
+    serializers cannot drift — a week's approvals, AL and pending marks come
+    back exactly as left, not reset to the seed.
+  - **Seeds read the stash first.** The cross-week flag reads — `DAYS_RUN`
+    run-in, Monday's crew rest, the midnight tails, and now the forward
+    crew-rest trace — all go through `weekctx.ts:bundle()`, which checks
+    the stash ahead of the pure seed on every call (see the entry above).
+  - **The fake "Sync" chip stays decorative.** This is still a per-browser
+    fix, not shared/multi-device data — there is no server behind it. True
+    shared, persistent multi-week scheduling across devices and accounts is
+    still the future server step (`HANDOFF.md`); don't present this stash
+    as that, and don't move storage off the `HOOKS.storeBackend` seam —
+    that is precisely where the future shared-database backend hooks in.
+  - **Undo still re-baselines per week, and the edit log stays
+    session-only** — this stash is additive to both, not a replacement for
+    either.
+  Flow: `docs/feature-impact.md` Flow E. File map: `HANDOFF.md`.
 
 ## Where things live
 

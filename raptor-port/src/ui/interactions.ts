@@ -22,10 +22,11 @@ import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firs
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, draftsMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
-import { isStandalone } from '../engine/waves'
+import { isStandalone, CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
 import { waveInTime } from '../engine/events'
 import { hhmm } from '../engine/time'
+import { shiftWeek } from './weeknav'
 
 /* Focus a warning clicked from somewhere that is NOT an already-open day box —
    the board's issue list, or a chip on a puck. Both have to open the box
@@ -437,6 +438,23 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
 export function routeClick(e: MouseEvent) {
   const t = e.target as HTMLElement
   if (!t || !t.closest) return
+
+  /* THE NEXT-WEEK PEEK, CLICK-TO-LAND (ui/peek.ts). The preview day carries
+     none of the attributes any other branch below keys on (no data-slot,
+     data-fill, data-person, data-acc, …), so this has to run first or it
+     would simply fall through every one of them and land in the blank-space
+     clear at the bottom. Record where the clicked day sat on screen, then
+     load next week — view.PEEKLAND is the landing ViewWeek/EditWeek's render
+     effect reads on its very next repaint, so the day "becomes real" exactly
+     where it was clicked rather than the week jumping and re-settling. */
+  const peekDay = t.closest('.day.peek') as HTMLElement | null
+  if (peekDay) {
+    e.stopPropagation()
+    const di = +peekDay.dataset.peekDay!
+    view.setPeekLand({ di, x: peekDay.getBoundingClientRect().left })
+    loadWeek(shiftWeek(CURWEEK, 1))
+    return
+  }
 
   /* accepting a personal input — the same control on the week and the board, so
      it is routed here rather than duplicated in board.ts. Promotes the input

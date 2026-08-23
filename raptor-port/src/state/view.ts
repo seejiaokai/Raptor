@@ -5,7 +5,7 @@ import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, personWarnDays } from '../engine/avail'
-import { validate, WARN } from '../engine/validate'
+import { validate, WARN, traceOf } from '../engine/validate'
 import { markEdit, daySnapOf } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
@@ -153,6 +153,20 @@ export function setCarryDay(n:any){ CARRYDAY=n }
    ViewWeek/EditWeek clear it when they land the scroll. */
 export let WEEKJUMP:'mon'|'sun'|number|null=null
 export function setWeekJump(v:'mon'|'sun'|number|null){ WEEKJUMP=v }
+/* WHERE TO LAND A CLICK ON THE NEXT-WEEK PEEK (owner ask — desktop continuous
+   week display). Clicking an inert preview day loads that week and the day
+   the scheduler clicked should "become real" at the same screen position —
+   so the click records which live day index will land (0..6, the SAME index
+   the peek day carried) and the exact viewport x its left edge sat at, then
+   loadWeek fires. The SAME alternative-landing slot as WEEKJUMP/CARRYDAY —
+   never additive with either: ViewWeek/EditWeek's render effect checks
+   WEEKJUMP first, PEEKLAND second, and only falls through to the ordinary
+   scroll-hold/CARRYDAY branch when neither is set (interactions.ts's
+   routeClick sets this and calls loadWeek directly, never setWeekJump — a
+   peek click is never also a swipe/arrow cross). Consumed once, the WEEKJUMP
+   pattern: the effect clears it the moment it lands the scroll. */
+export let PEEKLAND:{di:number,x:number}|null=null
+export function setPeekLand(v:{di:number,x:number}|null){ PEEKLAND=v }
 /* The day whose LEFT edge sits nearest the view's own left edge — the exact
    inverse of scrollWeekToDay below, which parks a day's left edge there. The
    old reading named the first day with ANY sliver (>8px) still past the left
@@ -187,6 +201,20 @@ export function scrollWeekToDay(el:any,di:any){
   const d=el.querySelector(`.day[data-day="${di}"]`)
   if(!d||typeof d.getBoundingClientRect!=='function')return
   el.scrollLeft+=d.getBoundingClientRect().left-el.getBoundingClientRect().left
+}
+/* the PEEKLAND write half — park live day `di` at viewport x `x` (not the
+   week's own left edge, which is what scrollWeekToDay always targets). Same
+   `.day[data-day]` selector, so it can never resolve onto a trailing peek
+   node even after the week just loaded a fresh one. Clamped to the week's
+   real scroll range, since `x` was measured against the OLD week's layout a
+   render ago and a narrower new day, or a resize in between, could ask for
+   an x outside it. */
+export function scrollWeekToLanding(el:any,di:any,x:number){
+  if(!el||di==null||typeof el.querySelector!=='function')return
+  const d=el.querySelector(`.day[data-day="${di}"]`)
+  if(!d||typeof d.getBoundingClientRect!=='function')return
+  const max=Math.max(0,el.scrollWidth-el.clientWidth)
+  el.scrollLeft=Math.max(0,Math.min(max,el.scrollLeft+(d.getBoundingClientRect().left-x)))
 }
 export function setBoardDay(n:any){
   if(ARM&&ARM.di!==n)disarmSlot();
@@ -312,6 +340,13 @@ export function selectPerson(id:any,inWeek?:any){
     if(inWeek){
       if(!WARN.byDay.length)validate();
       const days=personWarnDays(id);
+      /* days that carry this person's cross-day TRACE count too (23 Aug 26):
+         a Sunday whose late finish busts NEXT week's Monday rings the puck
+         with no warning anywhere in the loaded week — personWarnDays alone
+         left that click a dead end, an unexplainable ring. Within a week the
+         breach day was always in the list already, so this only ever ADDS
+         the forward-trace case. */
+      for(let di=0;di<7;di++)if(traceOf(di,id)&&days.indexOf(di)<0)days.push(di);
       if(days.length){ PFOCUS={id,days}; days.forEach((di:any)=>DWOPEN.add(di)); }
     }
     SELSEEN=personCount(id);

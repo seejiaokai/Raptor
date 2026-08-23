@@ -4,36 +4,60 @@
    Everything here is a PURE READ off weekBundle(v) + the global (date-keyed)
    INPUTS array — nothing here mutates SCHED, DAYS, or INPUTS.
 
-   WINDOW SEMANTICS: lookback only, and bounded — up to VCONF.maxRun days
-   before the loaded week's Monday for the consecutive-days run (seedRunIn),
-   1 day for crew rest (prevSundaySeed). The one exception, already built into
-   buildDay's own tails (events.ts) and NOT duplicated here, is the sliver of
-   LOOKAHEAD past midnight: a Sunday sortie/shift that runs past 23:59 reaches
-   into next Monday's inputs. Every flag still lands on the day it breaks —
-   next Monday's own rest bust fires when next week is loaded and validated,
-   seeded by THIS week's Sunday through prevSundaySeed.
+   WINDOW SEMANTICS: bounded both ways — up to VCONF.maxRun days before the
+   loaded week's Monday for the consecutive-days run (seedRunIn), 1 day back
+   for crew rest (prevSundaySeed), and 1 day FORWARD (nextMondaySeed) for the
+   forward crew-rest trace: the "Breaks Monday" box on a Sunday whose late
+   finish busts next week's Monday (owner, 23 Aug 26 — planning it must flag
+   "just like what u see for outlaw"). The midnight sliver (a Sunday shift
+   running past 23:59 reading next Monday's inputs) lives in buildDay's own
+   tails (events.ts), not here. Every flag still lands on the day it breaks —
+   next Monday's own breach warning fires when next week is loaded and
+   validated, seeded by THIS week's Sunday through prevSundaySeed; the
+   forward trace is a pointer to it, not a second warning.
 
-   WHAT A NON-LOADED WEEK CANNOT BE MADE TO ANSWER: `weekBundle(v)` (see its
-   own comment in weeks-data.ts) hands back the week's SEED/authored shape
-   only — SCHED (publish/amendment state) and any session edit made to a week
-   after leaving it do not exist to be read, because the app itself forgets
-   them the same way (loadWeek's own doctrine — "Personal INPUTS are GLOBAL"
-   in CLAUDE.md is the one deliberate exception, and INPUTS is read live here,
-   not off the bundle). A seed read is therefore only ever as good as what the
-   app still remembers of that week, which is exactly what a scheduler sees on
-   navigating back to it — nothing is invented and nothing is silently wrong. */
+   WHAT A NON-LOADED WEEK ANSWERS WITH (since the per-week session stash,
+   23 Aug 26): bundle() below reads the STASH first — what loadWeek last saw
+   of a week the scheduler actually edited (weekstash.ts, persisted per
+   browser) — and falls back to `weekBundle(v)`'s pure seed/authored shape
+   for a week never touched. Either way a seed read matches exactly what a
+   scheduler sees on navigating back to that week — nothing is invented and
+   nothing is silently wrong. SCHED (publish/amendment state) rides the
+   stash for the week's own restore but is deliberately not read here: the
+   rules judge the programme, not its publication state. ("Personal INPUTS
+   are GLOBAL" in CLAUDE.md stays the other half — INPUTS is read live here,
+   not off the bundle.) */
 import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
 import { INPUTS, inputCoversDate, isPersonal } from './inputs'
 import { PEOPLE, isSpecial } from './people'
+import { stashDays } from './weekstash'
 
 /* weekBundle(v) is a pure function of v for the two authored weeks and a
    fresh-but-identical blank for everything else (weeks-data.ts) — so caching
    it by key is pure perf, never a drift seam: nothing INPUTS-dependent is
    cached here, only the bundle's own days/dates shape. Module-level and never
-   cleared — the set of weeks ever asked for in one session is small. */
+   cleared — the set of weeks ever asked for in one session is small.
+
+   STASH-AWARE (the per-week session-stash fix): a week the scheduler has
+   actually edited and then navigated away from is no longer well described
+   by its pure seed — weekstash.ts holds what loadWeek last saw of it. Check
+   stashHas FIRST, every call, before ever touching the cache: this is what
+   keeps a week that GAINS a stash entry mid-session from going on serving a
+   stale cached seed bundle forever after — there is nothing to invalidate,
+   the stashed branch is simply checked ahead of the cache on every read.
+   stashDays hands back a fresh copy every time (never itself cached), because
+   unlike the seed it keeps changing while the scheduler is still editing it. */
 const bundleCache:any={};
-function bundle(v:any){ if(!(v in bundleCache))bundleCache[v]=weekBundle(v); return bundleCache[v]; }
+function bundle(v:any){
+  /* stashDays, not stashHas-then-trust: a persisted blob that fails to parse
+     comes back null and the read falls through to the pure seed — a corrupt
+     localStorage entry must degrade to "as if never edited", never crash a
+     validate() that runs on every keystroke. */
+  const st=stashDays(v); if(st)return st;
+  if(!(v in bundleCache))bundleCache[v]=weekBundle(v);
+  return bundleCache[v];
+}
 
 /* WHICH ids counted as "on the programme" for one bundle day — the seed-side
    mirror of the two things that put a body on RUNLEN's on-set for a LOADED
@@ -119,4 +143,20 @@ export function prevSundaySeed(curWeek:any){
   const day=prevBundle.days[6];
   const built=buildDay(day,6,null,null,true);
   return {events:built.events,input:built.input,dow:built.dow,di:null};
+}
+
+/* NEXT WEEK'S MONDAY AS A PHANTOM "TODAY" for the forward crew-rest trace
+   (validate.ts's crewRestDay phantom pass — owner, 23 Aug 26: planning a
+   late Sunday must draw the same "Breaks Monday" box the within-week edge
+   draws). prevSundaySeed's mirror image, one day the other way, but the
+   phantom pass computes the CURRENT day's side of the rule too, so this
+   seed also carries `fly` — the rest-bearing commitments the rule anchors
+   on. Reads through the same bundle() as every other seed, so an edited
+   next week (the session stash) is what Sunday is judged against — exactly
+   what the real Monday will validate against when its week loads. di:null:
+   this day belongs to a week this WARN cannot address by index. */
+export function nextMondaySeed(curWeek:any){
+  const nextBundle=bundle(shiftWeekKey(curWeek,1));
+  const built=buildDay(nextBundle.days[0],0,null,null,true);
+  return {fly:built.fly,events:built.events,input:built.input,dow:built.dow,di:null};
 }

@@ -32,14 +32,14 @@ the rest are the ones the code actually has.
 
 | Surface | What it is | Where it lives | Fed by |
 |---|---|---|---|
-| **Warnings** | The day's checks list, the puck rings, the board issue list | `validate.ts` → `WARN`/`REST`/`EVD`; drawn in `html.ts` (day warnings), `board.ts` (issue list), `highlights.ts` (rings) | every `validate()` run; re-read, never cached. Since 23 Aug 26 the run counter and Monday's crew rest also seed from the adjacent week via `engine/weekctx.ts` (Flow F) |
+| **Warnings** | The day's checks list, the puck rings, the board issue list | `validate.ts` → `WARN`/`REST`/`EVD`; drawn in `html.ts` (day warnings), `board.ts` (issue list), `highlights.ts` (rings) | every `validate()` run; re-read, never cached. Since 23 Aug 26 the run counter and Monday's crew rest also seed from the adjacent week via `engine/weekctx.ts` (Flow F), and a loaded week's Sunday that busts NEXT week's Monday draws a forward "Breaks Monday" trace box on Sunday itself (`validate.ts`'s `crewRestDay` phantom pass, `weekctx.ts:nextMondaySeed`, rendered by `html.ts:dayTraceHTML`) — a pointer only, `di:null`, no click target; the real breach warning still lands on Monday when next week loads |
 | **Layout / geometry** | Row heights, column widths, board node count, overflow | `scheduler.css` (measured contracts), the string builders | gated by `e2e/geometry.spec.ts` + `perf-port.cjs` DOM ceilings |
 | **History (edit log)** | The list is NAMED "Edit history" on every surface since 23 Aug 26 (was "Changes"), newest first; the board bubble; opened from the topbar's `#histBtn` as well as the board | `editlog.ts` (`ELOG`), `HistoryModal.tsx`, `histbubble.ts` | `markEdit`/`logEdit`/`logAction`, only when BOTH from/to values are passed |
 | **Undo / redo** | Step back/forward through snapshots | `state/history.ts` (`HIST`, `histPush`/`histApply`) | every mutation batch pushes one snapshot |
 | **Scheduler board** | The full-screen day board (desktop + phone); its bar carries search + the highlight fold since 23 Aug 26 (`#searchB`, `#sbHl`/`#sbHlStrip` — the same `HLSET`/`SEARCH` pair as the weeks, phone dots hidden to make the room) | `SchedBoard.tsx`, `board.ts`, `board-html.ts`; `hlchips.tsx` (the one chip definition) | global store lane + board-only view lane (`SBDAY`) |
 | **Edit Schedule** | The editable seven-day week (`CURPAGE==='editsched'`) | `EditWeek.tsx`, `EditRoster` palette | writes go through the mutation funnel; gated by `editMode()` |
 | **View-only Schedule** | The read-only week (`CURPAGE==='viewsched'`, the default) | `ViewWeek.tsx` | same builders, no write controls; `editMode()` is false |
-| **Desktop mode** | Wide layout — must USE the width, not just stretch | `scheduler.css` (default rules, `min-width` / `>820px`) | CSS media queries; no separate "mode" state |
+| **Desktop mode** | Wide layout — must USE the width, not just stretch | `scheduler.css` (default rules, `min-width` / `>820px`) | CSS media queries; no separate "mode" state. Above 820px the week strip's own trailing space (past the last day) is filled by the **next-week PEEK preview** (23 Aug 26) — inert, read-only, planned-programme-only day columns off `ui/peek.ts`, replacing the old JS-sized `--week-tail` spacer (`pan.ts:setWeekTail`); clicking a preview day loads that week, landing the day at the same screen x. Phone untouched — `peekKey()` returns `''` at ≤820px. **Sits outside the perf DOM-ceiling gate**: `npm run perf` (`probes/perf-port.cjs`) measures every surface at a fixed 390px phone viewport, so the preview's real nodes never mount inside it and are not counted toward the week ceiling — `peek.ts` still holds itself to the SAME rebuild-only-on-key-change discipline the gate's own perf1-B check asks of the live week (rebuild only on desktop-ness × CURWEEK, never on an ordinary repaint), it is just not gated on it |
 | **Mobile mode** | Phone layout — top-to-bottom, reachable, one board window | `scheduler.css` `@media (max-width:820px)` / `480px`; `boardnav` | CSS + the phone board's arrows/dots; `sbWide` module-local |
 | **Qualifications** | The Quals grid; the qual ladder the validator reads | `QualsPage.tsx`; `people.ts` (`p.quals`, qual rules in `validate.ts`) | ticks are session-only; drive `QUAL`/`SC_QUAL`/`AAR_*` checks |
 | **Personal inputs** | Leave / medical / activity records | `INPUTS` in `inputs.ts`; `inputedit.tsx`; `InputsPage.tsx` | `INPUT_META` (the one table) decides every predicate |
@@ -160,28 +160,61 @@ through `daySnapOf`/`withDaySnap`, never a second path. The view page's
 issued DEFAULT for a published day (`dayIssuedHTML`, 15 Aug 26) is the same
 freeze again in quiet mode — one more consumer, still no second path.
 
-### Flow E — load a week (the week selector, 21 Aug 26; reworked 22 Aug 26)
+### Flow E — load a week (the week selector, 21 Aug 26; reworked 22 Aug 26;
+per-week session stash added 23 Aug 26)
 ```
 a rolling week button (weekWindow, weeknav.ts) OR a WeekCal day tap OR a
   continuous board arrow / edge-swipe  → store.ts:loadWeek(v)
-loadWeek           → setCurWeek(v) → weekBundle(v) (engine/weeks-data.ts, a fresh deep copy)
+loadWeek           → stashPut(CURWEEK, weekStashSnap()) (weekstash.ts — the
+                       OUTGOING week's DAYS + SCHED fields + WARNOFF, before
+                       anything about it moves)
+                   → setCurWeek(v) → applyWeekModel(v):
+                       stashHas(v)? restore DAYS/SCHED IN PLACE from its stash
+                       : weekBundle(v) (engine/weeks-data.ts, a fresh deep copy)
+                       → DATES always from weekBundle(v).dates (pure labels)
                    → swap DAYS / DATES IN PLACE (live bindings); INPUTS is GLOBAL, NOT swapped
-                   → clear every input's `acc` → mintInpIds() → resetSched() (publish.ts)
-                   → autoAcceptSeedInputs() (re-lands date-matching inputs on the fresh days)
-                   → clear day-index/iid VIEW state → validate() → histInit() → notify()
+                   → clear every input's `acc` → reconcileLandedAcc() (re-derives
+                       `acc` for rows a restore's DAYS already landed, so the
+                       pass below does not try to re-add them) → mintInpIds()
+                   → stashed? re-run `autoAcceptInput` per row with
+                       pending/changes/added protected : autoAcceptSeedInputs()
+                       (both land date-matching inputs on the fresh/restored days)
+                   → clear day-index/iid VIEW state; WARNOFF restored from the
+                       stash instead of cleared, when there is one
+                   → validate() → histInit() → notify()
 ```
 `DAYS` and `DATES` swap with the week. **`INPUTS` is GLOBAL since 22 Aug 26**
 (owner — "show all inputs regardless of which week I am selected on"): it is
 merged once at boot (`store.ts:initStore` + `weeks-data.ts:otherWeekInputs`) and
 NOT swapped, so every week's inputs stay present for the Inputs page; each week's
 SCHEDULE still shows only its own because the day builders and auto-land match by
-date (`inputCoversDate` / `DATES.indexOf`). Because the fresh DAYS carry no
-ground rows, loadWeek CLEARS each input's `acc` so `autoAcceptSeedInputs` re-lands
-the date-matching ones — else a row stays marked accepted with nothing on the day
-(a silent drift-seam: the accept flag lives on the global row, the ground row on
-the swapped-away days). `SCHED` is keyed by day INDEX, so `resetSched()` is what
-stops one week's approvals/AL bleeding onto another's identical indices; history
-re-baselines so Undo can't cross a week.
+date (`inputCoversDate` / `DATES.indexOf`). `acc` is always cleared first (it
+records the LOADED week's landing only) so `autoAcceptSeedInputs`/the restore
+pass can re-derive it fresh for whichever DAYS this call just put in place.
+`SCHED` is keyed by day INDEX; on a fresh (never-stashed) week `resetSched()` is
+still what stops one week's approvals/AL bleeding onto another's identical
+indices, and on a restored week the stash's own SCHED fields serve the same
+role (they were THIS week's, saved on the way out). History re-baselines either
+way so Undo can't cross a week.
+**PER-WEEK SESSION STASH (23 Aug 26 — the fix for a reported bug: a duty added
+on an unauthored week's Sunday vanished after scrolling a week forward and
+back, and the crew-rest flag it should have raised on the next Monday never
+appeared because Flow F's cross-week seed reads only ever saw the un-edited
+seed).** `engine/weekstash.ts` remembers, per week-start key, the last
+snapshot `loadWeek` handed it on the way OUT of that week (`state/store.ts`'s
+`weekStashSnap`, sharing its eleven-field SCHED list with
+`state/history.ts:schedFields` — the whole-history undo snapshot — so the two
+serializers cannot drift; INPUTS/PLANPUCKS/DAYRMK are deliberately excluded,
+being global) and hands a fresh copy back on the way in, restored the same
+in-place technique `history.ts:histApply` uses for Undo. It is session-only on
+purpose (owner, 23 Aug 26 — forget-on-exit stays the whole app's rule, in
+lockstep with `INPUTS` and the Leave War): no localStorage, one synchronous
+stash on the way out of a week, and a stash entry that fails to parse is
+silently dropped (`stashDays` returns null and the read degrades to the pure
+seed — it runs inside `validate()`, which runs on every keystroke). Flow F's `weekctx.ts:bundle()` reads through
+the stash for free — `stashHas` is checked before its own seed-bundle cache
+on every call — so a session edit on one week is now visible to the NEXT
+week's cross-week validation exactly like an authored seed would be.
 Session/page/role are untouched — this is a data swap, not a login. Nothing runs
 at module load, so `DAYS` still initialises to the seed week (parity/e2e's
 "seven days" hold until a user clicks a chip). Per-week publish state is NOT
@@ -200,6 +233,22 @@ instant, and a within-week swipe never glides. **All week label/Monday math is o
 that names a week or steps one must go through it, not a second literal. Every
 `data-wk` value is still an arbitrary `dd/mm/yyyy` Monday, so the shared
 `interactions.ts` handler is unchanged — the engine builds any week already.
+**A DESKTOP-ONLY entry into this same flow (23 Aug 26): clicking a day in the
+next-week PEEK preview** (`ui/peek.ts`, filling the week strip's trailing
+space past 820px — see §1 Desktop mode) **is ALSO `loadWeek`, not a special
+case.** `interactions.ts` reads `.day.peek`'s `data-peek-day` first (it runs
+ahead of every other click branch, since a peek day carries none of their
+attributes to fall through to), records the clicked screen position as
+`view.PEEKLAND`, and calls `loadWeek(shiftWeek(CURWEEK,1))` — the ordinary
+switch above, unmodified. ViewWeek/EditWeek read `PEEKLAND` the same way they
+already read `WEEKJUMP`/`CARRYDAY`/`DPREV` (one more entry in that same
+priority chain) to land the now-real day at the exact x it was clicked, then
+clear it. The preview itself never mutates anything it shows — it reads
+`stashDays`/`weekBundle` for NEXT week the same way Flow F's seed reads do,
+formats with its own small pure renderers (`peekPuck`/`peekRow`, deliberately
+not `html.ts`'s `puck`/`plRow` — see §4's drift-seam entry), and is rebuilt
+only when `CURWEEK` or next week's stash generation changes (`peekKey()`),
+never on an ordinary repaint.
 
 ### Flow F — `validate()` reads across the week line (23 Aug 26)
 ```
@@ -435,6 +484,31 @@ check the other):
   violation worse than the duplication). Not yet pinned by a test asserting
   the two agree across month/year/leap boundaries — change either's date
   math and walk the other by hand until that test exists.
+- **`ui/peek.ts`'s `peekPuck`/`peekRow` mirror `html.ts`'s `puck`/`plRow`
+  visual shape, deliberately as a SECOND copy (23 Aug 26).** The next-week
+  preview cannot call the live builders directly — `puck`/`plRow` key their
+  amendment/warn classes off the SAME 0–6 day-index namespace the loaded
+  week uses (`ff:0.0.0` addresses `SCHED.changes`/`pending` by day index), so
+  calling them for a preview day would paint THIS week's pending marks and
+  warn rings onto NEXT week's programme. `peekPuck`/`peekRow` reproduce only
+  the visual identity (qual chip, RCP tint, SANS line, the row's five-cell
+  shape) with none of that state-reading. A future change to what a puck or
+  a row LOOKS like — a new qual chip, a new tint, a reshaped row — must touch
+  both files or the preview quietly falls out of visual sync with the real
+  week; nothing currently tests the two agree, so check by eye.
+- **`weekStashSnap` (`state/store.ts`) shares its SCHED field list with
+  `state/history.ts:schedFields` (23 Aug 26) — the anti-drift device, not an
+  accident.** Both serialize "the same eleven SCHED fields" for two different
+  purposes (the per-week stash vs. the whole-history undo snapshot); calling
+  the shared function rather than listing the fields twice is what stops a
+  new SCHED field from silently reaching one snapshot and not the other. A
+  future SCHED field that skips `schedFields` breaks this guarantee for
+  BOTH readers at once, not just the one that forgot it.
+- **`engine/weekstash.ts`'s snapshot shape is `weekStashSnap`'s to change
+  (23 Aug 26).** A stash entry is JSON built by `weekStashSnap`, read back
+  by `applyWeekModel` in the same session — the two live in one codebase, so
+  they move together; the seam to respect is `schedFields` above, and the
+  session-only rule (no persisted blobs means no stale-schema blobs).
 - **A draft's stow can lag the live day (15 Aug 26).** `SCHED.drafts[di]`
   holds each entry's own blob; the live `DAYS[di]` is only the SELECTED
   entry's working copy, and every OTHER entry's blob is refreshed solely by

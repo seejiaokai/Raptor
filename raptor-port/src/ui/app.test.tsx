@@ -31,10 +31,15 @@ describe('the app shell', () => {
   })
 
   it('the week renders one section per day, each with the day markup', () => {
-    const secs = host.querySelectorAll('#vWeek section.day')
+    const secs = host.querySelectorAll('#vWeek section.day:not(.peek)')
     expect(secs.length).toBe(DAYS.length)
     expect(host.querySelectorAll('#vWeek .puck').length).toBeGreaterThan(20)
     expect(host.querySelectorAll('#vWeek .allhands').length).toBeGreaterThanOrEqual(4)
+    /* jsdom's default innerWidth (1024) is desktop-width, so the next-week
+       peek preview (ui/peek.ts) trails the live days here too — pinned as its
+       own companion assertion rather than excluded from the count above. */
+    const peeks = host.querySelectorAll('#vWeek section.day.peek[data-peek-day]')
+    expect(peeks.length).toBe(7)
   })
 
   /* The three week-wide count pills left the topbar on 20 Aug 26 (owner: "what

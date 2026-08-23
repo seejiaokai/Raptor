@@ -8,6 +8,7 @@ import * as view from '../state/view'
 import { notify, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
+import { mountPeek } from './peek'
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement | null
 
@@ -22,12 +23,34 @@ export function updateWeekNav() {
 }
 /* one click = exactly one day box. Measured from the live layout (box + gap) so
    it stays right whatever the day width is, and it lands ON a day boundary
-   rather than drifting by a fraction of a box each time. */
+   rather than drifting by a fraction of a box each time. `:not(.peek)` — the
+   desktop next-week preview (ui/peek.ts) appends inert trailing day sections
+   after the real seven; every count/step here means the LIVE week only, the
+   same way `.day[data-day]` selectors already exclude peek by construction
+   (peek nodes carry `data-peek-day`, never `data-day`). */
 function dayStep(w: any) {
-  const ds = w.querySelectorAll('.day')
+  const ds = w.querySelectorAll('.day:not(.peek)')
   if (ds.length > 1) return Math.round(ds[1].offsetLeft - ds[0].offsetLeft)
   if (ds.length === 1) return Math.round(ds[0].getBoundingClientRect().width + 14)
   return Math.round(w.clientWidth * 0.9)
+}
+/* THE LIVE WEEK'S OWN SCROLL CEILING — where day 7 (Sunday) would sit flush
+   were there nothing scrollable after it. Before the peek preview this WAS
+   `scrollWidth - clientWidth` (setWeekTail's spacer was sized so the two
+   agreed); now real peek columns fill that trailing space, so scrollWidth
+   runs on past Sunday into next week's preview and the raw computation would
+   overshoot every "land on the real week's end" caller below. Desktop-gated
+   so a phone (which never renders `.peek` at all) takes the exact byte-for-
+   byte expression it always has — this function must never change what a
+   phone measures. */
+export function weekScrollMax(w: any): number {
+  if (window.innerWidth <= 820) return Math.max(0, w.scrollWidth - w.clientWidth)
+  const ds = w.querySelectorAll('.day:not(.peek)')
+  if (!ds.length) return Math.max(0, w.scrollWidth - w.clientWidth)
+  const last = ds[ds.length - 1] as HTMLElement
+  const cs = getComputedStyle(w)
+  const padR = parseFloat(cs.paddingRight) || 0
+  return Math.max(0, last.offsetLeft + last.offsetWidth + padR - w.clientWidth)
 }
 /* One click = one WHOLE day box, landing on the boundary. Rounding to the
    nearest day would stall on a click when the view sits mid-day, so step from
@@ -44,10 +67,15 @@ export function panDays(dir: number) {
      own repaint. Before this the jammed › was a dead click (plus the crew
      hint, whose jammed-arrow trigger this replaces — the scroll-jam path in
      onDocScroll still shows it). */
-  const max = Math.max(0, w.scrollWidth - w.clientWidth)
+  /* the LIVE week's own end — weekScrollMax, not raw scrollWidth-clientWidth,
+     now that the desktop preview's real columns (ui/peek.ts) can sit past
+     Sunday: an arrow still crosses weeks exactly at the live week's edge,
+     never partway through scrolling the inert preview into view. Identical
+     to the old expression on a phone, where `.peek` never renders. */
+  const max = weekScrollMax(w)
   if (dir > 0 && w.scrollLeft >= max - 1) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)); return }
   if (dir < 0 && w.scrollLeft <= 1) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)); return }
-  const n = w.querySelectorAll('.day').length || 1
+  const n = w.querySelectorAll('.day:not(.peek)').length || 1
   const at = w.scrollLeft / st
   const cur = dir > 0 ? Math.floor(at + 0.02) : Math.ceil(at - 0.02)
   const tgt = Math.max(0, Math.min(n - 1, cur + dir)) * st
@@ -96,6 +124,14 @@ function hsWeek() {
    fixed calc(). Desktop only, and only when real day columns are laid out to
    measure — otherwise the spacer is cleared. */
 function setWeekTail(w: any) {
+  /* THE PEEK PREVIEW JOINS THE MEASUREMENT (ui/peek.ts). The preview's real
+     day columns carry the week past Sunday, but the whole-day-end guarantee
+     this spacer exists for still applies at the strip's NEW far end: with no
+     tail, jamming the free scroll fully right would land on a fractional
+     preview column — the exact sliver the owner had removed. `.day` below
+     already includes the peek columns (same 552px flex-basis), so the same
+     round-the-end-up-to-one-whole-day arithmetic covers 7 live or 7+7
+     live-plus-preview columns without a special case. */
   const ds = w.querySelectorAll('.day')
   if (window.innerWidth <= 820 || ds.length < 2) { w.style.removeProperty('--week-tail'); return }
   const cs = getComputedStyle(w)
@@ -149,7 +185,9 @@ function hsLabel() {
    columns a screen holds; both clamp to the real day count so the spacer at
    the end reads "day 7 of 7", never "day 8". */
 function dayRangeText(w: any) {
-  const days = w.querySelectorAll('.day').length
+  /* the live week only — the desktop peek preview's real trailing columns
+     must never inflate "day N of 7" into "day N of 14" */
+  const days = w.querySelectorAll('.day:not(.peek)').length
   if (!days) return ''
   const step = dayStep(w) || 1
   const left = Math.max(0, Math.min(days - 1, Math.round(w.scrollLeft / step)))
@@ -158,51 +196,15 @@ function dayRangeText(w: any) {
   return a >= b ? `day ${a} of ${days}` : `day ${a}–${b} of ${days}`
 }
 
-/* THE CREW-PANEL EDGE HINT (owner, 15 Aug 26). The aircrew panel follows the
-   left-most day in view. Even with the trailing spacer (which lets the week end
-   on a clean whole-day view rather than a broken sliver), the very last day
-   still cannot sit at the FRONT on a wide screen — Fri | Sat | Sun ends flush
-   with Friday, so the panel there shows Friday, not the weekend the scheduler is
-   looking at. The day name is a button and the panel header carries ‹ › arrows;
-   this teaches that the first time a scheduler scrolls hard against the end with
-   later days still off the front. */
-let crewHintDone = false
-let HINT_T: any = 0
-function crewHintEl() {
-  let el = $('crewHint')
-  if (!el) {
-    el = document.createElement('div')
-    el.id = 'crewHint'; el.className = 'crew-hint'
-    el.innerHTML = `<b>The week ends here — the › arrow continues into next week.</b> To load a later day's crew here, click that day's <b>name</b> — or use the ‹ › arrows on this panel.`
-      + `<button class="crew-hint-x" data-crewhintx title="Got it">✕</button>`
-    document.body.appendChild(el)
-    el.querySelector('[data-crewhintx]')!.addEventListener('click', ev => { ev.stopPropagation(); crewHintDone = true; hideCrewHint() })
-  }
-  return el
-}
-export function hideCrewHint() { const el = $('crewHint'); if (el) el.classList.remove('on'); clearTimeout(HINT_T) }
-/* Show once per session, and only when it is actually true: a wide screen, real
-   overflow, the week jammed against its right end, and a day past the current
-   left day still sitting off the front. Anchored to the panel's top so it sits
-   over the thing it is talking about. */
-function maybeCrewHint(w: any) {
-  /* edit page only: the day-name picker and the panel arrows are a scheduler's
-     controls, and the view week's day names open the read-only details panel. */
-  if (crewHintDone || view.ARM || view.CURPAGE !== 'editsched' || window.innerWidth <= 820) return
-  const over = w.scrollWidth - w.clientWidth
-  if (over <= 12 || w.scrollLeft < over - 1) return
-  const left = view.weekLeftDay(w)
-  const last = w.querySelectorAll('.day[data-day]').length - 1
-  if (left == null || left >= last) return
-  const el = crewHintEl(); const ros = $('eRoster')
-  /* sit just BELOW the panel's own header so the ‹ › arrows it points at stay
-     visible — a hint that covered the control it describes would be self-defeating. */
-  const r = (ros || w).getBoundingClientRect()
-  el.style.top = Math.round(r.top + 42) + 'px'
-  el.classList.add('on'); crewHintDone = true
-  clearTimeout(HINT_T); HINT_T = setTimeout(hideCrewHint, 9000)
-}
-
+/* THE CREW-PANEL EDGE HINT IS RETIRED (23 Aug 26). It existed because the
+   very last day could never sit at the FRONT on a wide screen — the week
+   clamped at Fri | Sat | Sun, so crewing Sunday needed the day-name picker or
+   the panel arrows, and a one-time hint taught that. The next-week preview
+   (ui/peek.ts) removed the limitation itself: real columns now continue past
+   Sunday, so the arrows and the free scroll walk until Sunday IS the front
+   day. The hint's own firing condition (jammed at the end with a later day
+   still off the front) is unreachable now — the day name and the panel
+   arrows both still work, they just no longer need teaching. */
 /* the palette shows one day's availability. Panning the week changes which day
    you are looking at, so the palette walks along with it — debounced, because a
    scroll fires on every frame and rebuilding 60 pucks per frame is wasteful. */
@@ -229,7 +231,6 @@ export function pickRosDay(di: number) {
   clearTimeout(ROSDAY_T)
   clearTimeout(ROSPIN_T); ROSPIN_T = setTimeout(() => { ROSPIN_T = 0 }, 500)
   if (view.ROSDAY !== di) { view.setRosDay(di); notify() }
-  hideCrewHint()
 }
 export function rosDayFollow() {
   if (view.ARM || ROSPIN_T) return           // an armed slot, or a just-made pick, pins the palette
@@ -267,10 +268,6 @@ function onDocScroll(e: Event) {
   /* a week panned → mirror to the proxy, follow with the palette */
   if (w.classList.contains('week')) {
     hsLabel(); rosDayFollow()
-    /* teach the crew-day controls when the scroll jams against the right end
-       with later days still off the front; drop the hint once it scrolls away. */
-    const over = w.scrollLeft >= (w.scrollWidth - w.clientWidth) - 1
-    if (over) maybeCrewHint(w); else hideCrewHint()
     const trk = $('hsTrack'); if (!trk) return
     const tmax = trk.scrollWidth - trk.clientWidth, wmax = w.scrollWidth - w.clientWidth
     hsSet(trk, wmax > 0 ? (w.scrollLeft / wmax) * tmax : 0)
@@ -333,20 +330,34 @@ const SWIPE_TH = 45
 const EDGE_SLOP = 24
 let swEl: HTMLElement | null = null
 let swStartX = 0, swStartY = 0, swLastX = 0, swLastY = 0, swAtLeft = false, swAtRight = false
+/* THE WAVE BLOCK A GESTURE BEGINS ON, and its scroll position at that instant.
+   A day's flying waves each scroll sideways in their own `.go` block. We used to
+   cede the WHOLE gesture to that block the moment a touch began inside one — but
+   a flying day is almost all wave blocks, so on such a day the week-cross swipe
+   had nowhere to begin and simply stuck (owner, 23 Aug 26 — "stuck to swipe back
+   from Jul 20": Monday is wave-dense, so back never crossed, while Sunday, a bare
+   ground day with no waves, crossed forward fine). A wave block also carries
+   overscroll-behavior-x:contain, so when it is at its own edge it neither scrolls
+   nor chains to the week — a true dead end. So instead of bailing, we REMEMBER the
+   block and its scrollLeft, and decide at touch-END: if the block actually moved,
+   it owned the swipe; if it did not (it was at its edge), the gesture falls
+   through to the week-cross like a touch on any bare part of the day. */
+let swGo: HTMLElement | null = null, swGoSL = -1
 function onWeekTouchStart(e: TouchEvent) {
-  swEl = null
+  swEl = null; swGo = null
   if (window.innerWidth > 820) return
   if (view.CURPAGE !== 'viewsched' && view.CURPAGE !== 'editsched') return
   if (view.SBDAY != null) return                 // the board is open — its arrows own week-stepping
   if (!e.touches || e.touches.length !== 1) return
   const t = e.target as HTMLElement
   if (!t.closest) return
-  if (t.closest('.go')) return                   // an inner wave scroller owns this gesture
+  const go = t.closest('.go') as HTMLElement | null   // an inner wave scroller MAY own this gesture — decided at end
   const w = t.closest('.week') as HTMLElement | null
   if (!w) return
   const max = w.scrollWidth - w.clientWidth
   if (max <= 1) return                           // nothing to be at the edge OF (headless / not laid out)
   swEl = w
+  swGo = go; swGoSL = go ? go.scrollLeft : -1
   swStartX = swLastX = e.touches[0].clientX
   swStartY = swLastY = e.touches[0].clientY
   swAtLeft = w.scrollLeft <= EDGE_SLOP
@@ -376,13 +387,41 @@ function onWeekTouchEnd(e: TouchEvent) {
   /* horizontal intent only: a mostly-vertical drag (paging the day down) that
      drifts sideways past the threshold must not be read as a week cross */
   if (Math.abs(dx) <= Math.abs(dy)) return
+  /* the gesture began inside a wave block that actually scrolled → it owned the
+     swipe, so this is not a week cross. A block that never moved (it was at its
+     own edge) falls through, which is what unsticks a wave-dense day's swipe. */
+  if (swGo && Math.abs(swGo.scrollLeft - swGoSL) > 2) return
   /* right edge + swipe left (content advancing) → next week, land on Monday;
      left edge + swipe right (retreating) → previous week, land on Sunday */
   if (swAtRight && dx <= -SWIPE_TH) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)) }
   else if (swAtLeft && dx >= SWIPE_TH) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)) }
 }
 
-function onResize() { updateWeekNav() }
+/* THE PEEK PREVIEW ACROSS A RESIZE CROSSING (ui/peek.ts). ViewWeek/EditWeek's
+   own effect only reruns on a STORE version bump, so a window resize that
+   crosses the 820px breakpoint would otherwise leave the preview mounted (or
+   missing) until the next unrelated edit — the app already treats a resize as
+   imperative DOM/CSS-var work rather than a React re-render (setWeekTail just
+   above is the standing example), so this follows the same pattern instead of
+   forcing a repaint. Gated on an ACTUAL crossing, not every resize tick — a
+   drag-resize fires this continuously, and a full day-column rebuild is not
+   the couple of style writes setWeekTail costs. `'\0'` as the "previous key"
+   forces mountPeek to reconcile regardless of what a component's own ref
+   remembers (it cannot see this call); the ref resyncs to reality the next
+   time that component's own effect runs, which is a no-op once it does since
+   the DOM already matches. Skipped while a week has not painted its seven
+   live days yet (early boot) — nothing to anchor the peek nodes after. */
+let lastDesktop = typeof window !== 'undefined' && window.innerWidth > 820
+function syncPeekOnResize() {
+  const desktop = window.innerWidth > 820
+  if (desktop === lastDesktop) return
+  lastDesktop = desktop
+  ;['vWeek', 'eWeek'].forEach(id => {
+    const el = $(id)
+    if (el && el.children.length >= 7) mountPeek(el, 7, '\0')
+  })
+}
+function onResize() { updateWeekNav(); syncPeekOnResize() }
 
 export function initPan() {
   const trk = $('hsTrack')

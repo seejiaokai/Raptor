@@ -16,17 +16,18 @@ import { HOOKS } from '../engine/hooks'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { rulesLoad } from '../engine/rules'
-import { mintInpIds, INPUTS, DATES } from '../engine/inputs'
+import { mintInpIds, INPUTS, DATES, isPersonal } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { setCurWeek } from '../engine/waves'
+import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans } from './demoseed'
-import { storesLoad, cxReasonsLoad, dutyTplLoad, dayTplLoad, autoAcceptSeedInputs } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey } from '../engine'
 import { elogClear } from '../engine/editlog'
-import { markDeletion, resetSched } from '../engine/publish'
+import { markDeletion, resetSched, SCHED } from '../engine/publish'
+import { stashPut, stashGet, stashHas } from '../engine/weekstash'
 import { afterSchedMutate } from './view'
 import * as view from './view'
-import { histPush, histInit } from './history'
+import { histPush, histInit, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS } from './auth'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { clearPlan } from './plan'
@@ -155,35 +156,153 @@ export function resetSession(s: any) {
   elogClear()
 }
 
+/* ---- PER-WEEK SESSION STASH (the other half of the .wk selector) ----
+   loadWeek used to always rebuild DAYS from weekBundle's PURE seed on a
+   switch, which silently discarded any edit made to a week once you left it
+   — reported bug: a duty added on the Sunday of an unauthored week vanished
+   after scrolling one week forward and back. weekstash.ts is the dumb
+   per-week store (keyed by week-start; SESSION-ONLY on purpose — see its
+   header: the owner keeps the whole app's forget-on-exit rule, this fix is
+   about navigation, not reloads); these two helpers are the state-layer
+   half that knows what belongs in a snapshot, because WARNOFF lives in
+   state/view.ts and the engine may not import state/. */
+
+/* Everything a week's own stash entry needs — DAYS plus the eleven SCHED
+   fields (schedFields, shared with history.ts's histSnap so the two cannot
+   drift) plus WARNOFF. Deliberately NOT `i:INPUTS`/`pp:PLANPUCKS`/`dm:DAYRMK`
+   the way histSnap's whole-history snapshot is — those three are GLOBAL, not
+   week-scoped (CLAUDE.md's "Personal INPUTS are GLOBAL" decision), and
+   restoring them here would roll back edits made to them while the user was
+   on a DIFFERENT week. */
+function weekStashSnap() {
+  return JSON.stringify({ d: DAYS, ...schedFields(), wo: [...view.WARNOFF] })
+}
+
+/* WHAT THIS WEEK LOOKED LIKE THE MOMENT IT FINISHED LOADING — the yardstick
+   loadWeek's stash-on-leave compares against. Stashing every week
+   unconditionally would store a byte-copy of the pure seed for weeks nobody
+   touched, and a PERSISTED pristine copy is a trap: the day a deploy updates
+   the built-in demo weeks, every browser that ever scrolled past one would
+   go on seeing the old content forever (the stash outranks the seed by
+   design). So a week is stashed on the way out only when it CHANGED since
+   load, or when it already has a stash entry to keep current. Captured after
+   the model is applied and WARNOFF restored — the same fields the snapshot
+   serializes — in both loadWeek and initStore. */
+let weekBaseline = ''
+
+/* THE autoAcceptSeedInputs LANDING-MECHANICS GOTCHA a stash restore runs
+   into: acceptInput (engine/slots.ts) does not just set `row.acc='g'`, it
+   PUSHES a real ground row onto DAYS. A stash restore hands back DAYS with
+   that row ALREADY on it (it was there when the week was last left), but the
+   epilogue below still clears every input's `acc` first (see its own
+   comment) so a genuinely NEW input can land — which means the already-
+   landed row's `acc` reads false too. Calling acceptInput again for it does
+   NOT duplicate the row (acceptInput's own dedup guard, keyed on the row's
+   content, refuses a second push) — but it also leaves `acc` unset, so the
+   Inputs page would offer to "Accept" a row that is already sitting on the
+   board. This reconciles that BEFORE the real landing pass runs, by reading
+   `acc` straight off whether a matching ground row already exists — no call
+   into acceptInput, so no duplicate write, no edit-log entry, no flashAdded
+   for something that was never actually re-added. */
+function reconcileLandedAcc() {
+  INPUTS.forEach((r: any) => {
+    if (r.acc || !isPersonal(r.type)) return
+    const di = DATES.indexOf(r.date)
+    if (di < 0) return
+    const key = inpKey(r)
+    if (DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === key))) r.acc = 'g'
+  })
+}
+
+/* THE ONE PLACE THE SCHEDULE MODEL FOR WEEK v GETS BUILT — loadWeek's one
+   entry to both the restore path and the pure-seed path, so the two cannot
+   drift apart. Takes DAYS,
+   DATES and every SCHED field from the stash if one exists for v, otherwise
+   from the pure weekBundle seed exactly as before. Either way it also runs
+   the INPUTS acc-clear/relanding epilogue (mintInpIds + either the ordinary
+   autoAcceptSeedInputs or, on a restore, the same landing pass with the
+   amendment-tracking fields (pending/changes/added) protected — a row landed
+   just now because it is NEW since this week was last open must read as
+   BASELINE, the same rule autoAcceptSeedInputs itself already enforces on a
+   fresh week, not as a pending edit the scheduler just made; the fields this
+   stash actually restored are snapshotted first and put back after, so only
+   what THIS pass adds is undone). Returns the parsed stash object (or null)
+   so the caller can also restore WARNOFF from its `wo` field — the one piece
+   of view state the stash carries, because it lives in state/view.ts and
+   this function stays inside the DAYS/DATES/SCHED/INPUTS layer its callers
+   already touch. Callers own everything else: which view-state clears run,
+   validate(), histInit(), notify() — they differ enough (initStore also does
+   its own boot-only merges first) that folding them in here would cost more
+   than it saves. */
+function applyWeekModel(v: any): any {
+  const stashedJson = stashGet(v)
+  /* guarded like weekstash's own stashDays: an entry that fails to parse
+     reads as "never stashed" and the week loads from the pure seed —
+     loadWeek must never throw over a bad snapshot */
+  let s: any = null
+  try { s = stashedJson ? JSON.parse(stashedJson) : null } catch (_e) { s = null }
+  if (s && !Array.isArray(s.d)) s = null
+  if (s) {
+    DAYS.length = 0; s.d.forEach((d: any) => DAYS.push(d))
+    /* DATES is not carried in the stash at all (weekstash.ts's own comment)
+       — it is a pure function of v, so weekBundle(v).dates is exactly right
+       whether v is authored or blank, restore or fresh. */
+    DATES.length = 0; weekBundle(v).dates.forEach((x: any) => DATES.push(x))
+    SCHED.changes = s.c || {}; SCHED.pending = s.p || {}; SCHED.added = s.ad || {}
+    SCHED.als = s.a || []; SCHED.al = s.al || 0; SCHED.dayOK = s.ok || {}
+    SCHED.sign = s.sg || {}; SCHED.orig = s.o || {}; SCHED.cur = s.cv || {}
+    SCHED.drafts = s.dr || {}; SCHED.curDraft = s.cd || {}
+  } else {
+    const wk = weekBundle(v)
+    DAYS.length = 0; wk.days.forEach((d: any) => DAYS.push(d))
+    DATES.length = 0; wk.dates.forEach((x: any) => DATES.push(x))
+    resetSched()
+  }
+  /* INPUTS IS GLOBAL (owner, 22 Aug 26) — NOT swapped with the week. The
+     Inputs page shows every week's inputs; each week's schedule still shows
+     only its own because autoAcceptSeedInputs and the day builders match by
+     date. `acc` records the LOADED week's landing only (weekctx.ts's own
+     comment says the same) — clear it so autoAcceptSeedInputs (or the
+     restore-landing pass below) re-derives it fresh for THIS week's DAYS,
+     whichever shape they just took above. */
+  INPUTS.forEach((r: any) => { if (r.acc) delete r.acc })
+  reconcileLandedAcc()
+  mintInpIds()
+  if (s) {
+    const savedPending = { ...SCHED.pending }, savedChanges = { ...SCHED.changes }, savedAdded = { ...SCHED.added }
+    INPUTS.forEach((r: any) => autoAcceptInput(r))
+    SCHED.pending = savedPending; SCHED.changes = savedChanges; SCHED.added = savedAdded
+  } else {
+    autoAcceptSeedInputs()      // land activity inputs on ground (dayApproved now clean)
+  }
+  return s
+}
+
 /* ---- LOAD A WEEK (the .wk selector) ----
    Swap the whole loaded week — the schedule model AND everything keyed to it —
    then recompute and repaint. DAYS/DATES/INPUTS are all week-scoped and mutate
    IN PLACE (they are live bindings every reader holds; the same idiom histApply
-   uses). resetSched() closes the day-index leak (one week's approvals/AL/pending
-   must not paint another's identical indices); histInit() re-baselines so Undo
-   cannot cross weeks; the view-state clears drop any pointer into a row that no
-   longer exists (armed slot, selection, board day, per-day panels, dropped-late
-   iids). Session, page and role are deliberately untouched — this is a data
-   swap, not a login. Nothing here runs at module load, so DAYS still initialises
-   to the seed week and the parity/e2e "seven days" pins stay exact until a user
-   actually clicks a chip. */
+   uses). resetSched() (inside applyWeekModel, on a non-restored week) closes
+   the day-index leak (one week's approvals/AL/pending must not paint another's
+   identical indices); histInit() re-baselines so Undo cannot cross weeks; the
+   view-state clears drop any pointer into a row that no longer exists (armed
+   slot, selection, board day, per-day panels, dropped-late iids). Session, page
+   and role are deliberately untouched — this is a data swap, not a login.
+   Nothing here runs at module load, so DAYS still initialises to the seed week
+   and the parity/e2e "seven days" pins stay exact until a user actually clicks
+   a chip.
+
+   THE WEEK BEING LEFT IS STASHED FIRST, before setCurWeek moves CURWEEK off
+   it — this is the fix for the vanishing-duty bug: a session edit used to
+   live only in the DAYS objects this function was about to discard and
+   rebuild from the pure seed. applyWeekModel then either restores v's own
+   stash (if this week has been visited and edited before) or falls back to
+   the same pure-bundle path as always. */
 export function loadWeek(v: any) {
+  const leaveSnap = weekStashSnap()
+  if (stashHas(CURWEEK) || leaveSnap !== weekBaseline) stashPut(CURWEEK, leaveSnap)
   setCurWeek(v)
-  const wk = weekBundle(v)
-  DAYS.length = 0; wk.days.forEach((d: any) => DAYS.push(d))
-  DATES.length = 0; wk.dates.forEach((x: any) => DATES.push(x))
-  /* INPUTS IS GLOBAL now (owner, 22 Aug 26) — NOT swapped with the week. The
-     Inputs page shows every week's inputs; each week's schedule still shows only
-     its own because autoAcceptSeedInputs and the day builders match by date.
-     `wk.inputs`/`wk.seedSans` are unused here now (kept on the bundle for the
-     boot merge and any future caller). But the freshly-loaded DAYS are pristine
-     (no ground rows), so a previous load's accept flags would leave inputs
-     marked accepted with nothing on the day — clear `acc` so autoAcceptSeedInputs
-     re-lands each date-matching input onto this week's clean days. */
-  INPUTS.forEach((r: any) => { if (r.acc) delete r.acc })
-  mintInpIds()
-  resetSched()
-  autoAcceptSeedInputs()      // land activity inputs on ground (dayApproved now clean)
+  const s = applyWeekModel(v)
   view.setBoardDay(null)      // closes the phone board and disarms
   view.armDrop()
   view.selDrop()
@@ -193,13 +312,18 @@ export function loadWeek(v: any) {
   view.AVSHUT.clear()
   view.PIOPEN.clear()
   view.BELLLIT.clear()
+  /* the muted-warnings set is the one view-state field a stash restores
+     (weekStashSnap) — a scheduler who quieted a check on this week should
+     not have it reappear just because they looked away and came back. */
   view.WARNOFF.clear()
+  if (s) (s.wo || []).forEach((k: any) => view.WARNOFF.add(k))
   view.WMOPEN.clear()
   view.NOTEPUB.clear()
   view.setCarryDay(null)
   view.setHistMode(false)
   view.setRosDay(0)
   view.LATEOFF.clear()
+  weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()                  // new baseline for this week — Undo starts here
   notify()
@@ -297,6 +421,7 @@ export function initStore() {
      validate + baseline — boot-only, so parity (which never boots) stays blind;
      SCHED is fresh here, so every day reads editable. See autoAcceptSeedInputs. */
   autoAcceptSeedInputs()
+  weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()
   notify()
