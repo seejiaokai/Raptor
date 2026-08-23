@@ -1362,9 +1362,12 @@ export function boardTab(n: number) {
    `.sb-pane`/`.sb-peek` preview, `touch-action:pan-y pinch-zoom` on `.sb-main`
    (the seam it needed, so the scroller is back to the browser's default), and
    the axis-sharing `wireParkedRosScroll` grew to split a finger with it.
-   The dots stay, and they are still a scrub bar: they say WHICH day you are on,
-   which is the one thing a pair of arrows cannot. `prevDay`/`nextDay` below are
-   what the arrows call.
+   PHONE: THE DOTS ARE REMOVED (owner, 23 Aug 26) — the row between the arrows
+   carries search + highlight now (#searchB / #sbHl, SchedBoard.tsx), and the
+   arrows plus the bar's day title carry "which day". Desktop keeps its Mon–Sun
+   chips, still a scrub bar — the removal is display:none in scheduler.css, so
+   dayTabsHTML, wireDayDots and every jsdom test here are untouched.
+   `prevDay`/`nextDay` below are what the arrows call.
    --------------------------------------------------------------------------- */
 /* CONTINUOUS ACROSS WEEKS (owner, 22 Aug 26 — "in scheduler board it's
    continuous arrow between weeks"). Stepping off the loaded week's ends no

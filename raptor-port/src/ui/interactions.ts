@@ -1123,7 +1123,7 @@ export function routeClick(e: MouseEvent) {
        all. The chips redraw themselves from HLSET on the notify below. */
     if (view.HLSET.size || view.SEARCH) {
       view.clearOtherHL()
-      document.querySelectorAll('#searchV,#searchE').forEach((el: any) => { el.value = '' })
+      document.querySelectorAll('#searchV,#searchE,#searchB').forEach((el: any) => { el.value = '' })
       any = true
     }
     if (any) notify()

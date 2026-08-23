@@ -2568,6 +2568,20 @@ body.sb-lock{overflow:hidden}
 .sb-days{display:flex;gap:5px}
 .sb-days .sbday{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer}
 .sb-days .sbday.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+/* SEARCH + HIGHLIGHT ON THE BAR (owner, 23 Aug 26). Both live inside .sb-nav
+   in the markup; up here .sb-nav is display:contents, so they flow into the
+   bar's flexible middle beside the day chips. The chips strip .sb-hl is
+   ALWAYS open on a desktop — a full-width second bar line (basis 100% wraps
+   it inside the flex-wrap .sb-top) with no open gate, so nothing pins the
+   desktop bar's height to a session flag. The phone block below folds it
+   behind #sbHl instead. */
+.sb-hltog{display:inline-flex;align-items:center;justify-content:center}
+.sb-hltog .btnglyph{width:16px;height:16px;color:currentColor}
+.sb-hltog.on{color:var(--accent);border-color:rgba(59,198,232,.6);background:rgba(59,198,232,.16)}
+.sb-hl{flex:0 0 100%;display:flex;gap:5px;align-items:center;padding:4px 0 0}
+/* the divider inside HlChips styles itself off .filters elsewhere; restated
+   here because this strip is not a .filters row */
+.sb-hl .div{width:1px;align-self:stretch;background:var(--edge);margin:0 4px}
 /* the today dot — "· today" cost 46px of a 125px title on a phone and
    ellipsised the DATE, which is the one thing the owner asked the bar to keep
    (11 Aug 26). It says the same in 5px, and reads on desktop too. */
@@ -3681,41 +3695,33 @@ button.sanscard:hover{border-color:var(--accent)}
      takes, keeping line 1 to one row — the geometry gate's ROW assertion */
   .sb-top>.sb-calbtn{width:30px;min-width:0;height:30px;padding:0;display:inline-flex;
     align-items:center;justify-content:center;flex:0 0 auto}
-  /* ---- the day chips become DOTS (owner: remove the Mon–Sun buttons) ------
-     Same seven elements, same click handler — a tap on a dot still jumps
-     straight to that day, which is what keeps Monday→Friday one gesture
-     instead of five swipes. font-size:0 empties the chip of its text without
-     removing a node, so the board's DOM ceiling is untouched. */
-  /* EVERY DAY OWNS THE SAME FOOTPRINT, and only the mark inside it changes.
-     The obvious build — a 6px dot that grows to a 16px pill when selected —
-     re-lays the strip out on every step of a scrub, because the widening dot
-     shoves its neighbours sideways by up to 10px while the finger is tracking
-     them. On a 7-dot strip that is more than a dot's width, so the day under
-     the finger moves as you drag, which is exactly the slippery feel this
-     control exists to avoid. The BOX is a fixed 16px square (also a far
-     better touch target than 6px) and the visible dot is drawn by ::after,
-     so selecting one changes no geometry at all. */
+  /* ---- THE PHONE DOTS ARE GONE (owner, 23 Aug 26) -------------------------
+     A REVERSAL of the 11 Aug "chips become dots" build: the seven dots AND
+     the blue "current day" square leave the phone bar to free the day row
+     for SEARCH + HIGHLIGHT (#searchB / #sbHl, between the two arrows). The
+     arrows plus the bar's own day title carry "which day" now. Desktop is
+     untouched — its Mon–Sun chips stay, and they are still a scrub bar
+     there. The removal is display:none (below) and nothing else, so
+     dayTabsHTML, wireDayDots and every jsdom test keep working against the
+     same seven elements. */
   /* THE DAY ROW, ARROWS AT ITS TWO ENDS (owner, 12 Aug 26 — the swipe's
      replacement; board.ts §THE DAY IS REACHED BY ARROWS has the why).
-     The wrapper takes the full-width second line the dots used to hold on their
-     own (`flex:0 0 100%; order:2`), and `justify-content:space-between` puts one
-     arrow against each screen edge with the dots centred between them by
-     `flex:1`. Height is the whole cost of this control and it is spent
-     deliberately: 26px arrows against 16px dots take the row from 21px to 26px,
-     so the bar measures 75px where it measured 70 (both first-hand at 390px).
-     That is still less than half the 166px of four stacked rows it replaced, and
-     a step control a thumb can hit without aiming is worth 5px — the alternative
-     was two more buttons on the first line, which has 6px of slack and would
-     have taken them out of the day name. `align-items:center` so a 26px arrow
-     does not drag the 16px dots off centre. */
+     The wrapper takes a full-width second line of the bar (`flex:0 0 100%;
+     order:2`), and `justify-content:space-between` puts one arrow against
+     each screen edge — since 23 Aug 26 with #sbHl and the #searchB box
+     between them (the dots' old spot; the search grows into the slack).
+     26px arrows set the row's height; #sbHl matches at 26px and the search
+     is capped at 24px, so the row — and the bar the geometry gate measures —
+     costs what it cost with the dots. `align-items:center` keeps the three
+     heights on one optical line. */
   .sb-nav{display:flex;align-items:center;justify-content:space-between;
     gap:6px;flex:0 0 100%;order:2}
-  /* `order:0` matters: `.sb-days` carries `order:2` below, which is what used to
-     wrap the dots onto their own line of `.sb-top`. Inside `.sb-nav` that same
-     property sorted the dots AFTER both arrows — measured as ‹ › then the dots —
-     so it is reset to DOM order here. The wrapper is the thing that holds
-     `order:2` against `.sb-top` now. */
-  .sb-nav .sb-days{flex:1 1 auto;order:0}
+  /* the dots leave the PHONE bar (owner, 23 Aug 26 — see the block comment
+     above). display:none rather than removal, so the desktop chips, the
+     scrub wiring and the seven [data-sbtab] elements the tests drive are all
+     still there; the scrub survives on the desktop, where the strip is
+     drawn. Their old `flex/order` juggling went with them. */
+  .sb-nav .sb-days{display:none}
   /* An honest 26x40 target at the very edge of the screen — wider than tall,
      because horizontal room is what this row has and a thumb reaching the edge
      is more accurate sideways than vertically. `.abtn`'s own phone rule sizes
@@ -3724,33 +3730,21 @@ button.sanscard:hover{border-color:var(--accent)}
     width:40px;min-width:40px;height:26px;padding:0;flex:0 0 auto;font-size:19px;
     line-height:1}
   .sb-nav .sb-arrow .bi{font-style:normal;transform:translateY(-1px)}
-  .sb-days{gap:2px;justify-content:center;flex:0 0 100%;order:2}
-  .sb-days .sbday{position:relative;font-size:0;width:16px;height:16px;padding:0;
-    border:none;background:none;border-radius:0}
-  .sb-days .sbday::after{content:'';position:absolute;top:5px;bottom:5px;left:5px;right:5px;
-    border-radius:50%;background:var(--edge-2);transition:left .15s ease,right .15s ease}
-  .sb-days .sbday.on::after{left:0;right:0;border-radius:3px;background:var(--accent)}
-  /* ---- and the strip is a SCRUB BAR (owner, 11 Aug 26) -------------------
-     Press and slide along it to run through the week. Two properties make
-     that work, and neither is decoration:
-     `touch-action:none` — without it the browser claims a horizontal drag
-     here for its own scrolling and the pointermove events stop arriving
-     mid-gesture, so the scrub dies halfway along the strip.
-     The padding — the dots themselves are 6px tall, which is not a target a
-     thumb can find, let alone track along. The strip keeps its 9px of dots
-     and grows a 13px band around them, so the whole row is grabbable while
-     the bar's own height is unchanged (it was already taller than its
-     content; this only spends slack that existed). */
-  /* `none`, and nothing is lost by it. The instinct is `pan-y` — claim the
-     horizontal axis, leave vertical to the browser — but this strip lives in
-     `.sb-top`, which is a SIBLING of the scroller (`.sb-main`), so a vertical
-     drag here has no scrollable ancestor to chain to and scrolls nothing
-     under either value. Measured both ways. `none` is the one to keep,
-     because `pan-y` lets the browser claim any gesture it reads as vertical
-     and CANCEL the pointer stream mid-way, which on a diagonal scrub would
-     drop the drag halfway along the strip. */
-  .sb-days{touch-action:none;padding:2px 0 3px;cursor:ew-resize}
-  .sb-days .sbday{cursor:ew-resize}
+  /* the freed middle: the highlighter toggle at the arrows' 26px height, and
+     the search box growing into whatever the row has left (min-width:0 so it
+     can also SHRINK — a flex item's auto min-width would otherwise force the
+     row past 390px and trip the gate's overflow assertion) */
+  .sb-nav .sb-hltog{width:30px;min-width:0;height:26px;padding:0;flex:0 0 auto}
+  .sb-nav .sb-search{flex:1 1 auto;min-width:0;height:24px;padding:2px 8px}
+  .sb-nav .sb-search input{width:100%;min-width:0;flex:1;font-size:12px}
+  /* the chips strip folds behind #sbHl on a phone — the filters-row scroller
+     recipe when open, one nowrap sideways line. order:3 lands it UNDER the
+     day row (.sb-nav holds order:2 against .sb-top). */
+  .sb-hl{display:none}
+  .sb-hl.open{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;order:3}
+  .sb-hl.open::-webkit-scrollbar{display:none}
+  .sb-hl.open>*{flex:0 0 auto}
   /* the THIRD row of this same shape (review, 9 Aug 26 round 1): a duty
      block's sub-header packs its editable label input, ⇅ Auto sort, + Row
      and ✕ Block into one line and ran 5px past a 390px row — smaller than
@@ -3914,7 +3908,10 @@ button.sanscard:hover{border-color:var(--accent)}
    `.schedboard.sb-wide>*` is 1180px wide and pans, so "the edges of the bar"
    would put the next-day arrow most of a screen away from the previous-day one */
 .schedboard.sb-wide .sb-nav{justify-content:center;gap:10px}
-.schedboard.sb-wide .sb-nav .sb-days{flex:0 0 auto}
+/* display:flex restated since 23 Aug 26: the phone block hides .sb-days (the
+   dots-removal), but this mode IS the desktop layout, so it gets the desktop
+   day chips back — base .sb-days/.sbday styling, since the dot rules are gone */
+.schedboard.sb-wide .sb-nav .sb-days{flex:0 0 auto;display:flex}
 .schedboard.sb-wide{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
 .schedboard.sb-wide>*{min-width:1180px}
 .schedboard.sb-wide .sb-main{flex-direction:row;overflow-y:hidden;overflow-x:visible;min-height:0}

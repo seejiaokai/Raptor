@@ -615,8 +615,9 @@ subscribers.
 - **The phone board's top bar is ONE row, and the day is STEPPED BY ARROWS on
   the day strip below it** (owner, 11 Aug 26 — comp approved before build; the
   day was SWIPED until 12 Aug 26, see the amendment at the end of this entry).
-  The seven Mon–Sun chips are dots
-  now, `+ Line` is gone from the bar (every wave header already has one),
+  The seven Mon–Sun chips became dots
+  then LEFT the phone bar entirely on 23 Aug 26 (see the amendment below);
+  `+ Line` is gone from the bar (every wave header already has one),
   undo/redo are on it, and every label is icon-only under 820px. Do not add
   a control back to this bar's FIRST LINE without taking one off: the whole point
   was getting it from 166px to 70px on a 780px screen, and the geometry gate
@@ -631,10 +632,13 @@ subscribers.
   displace one. The changes LIST is the worked example of the alternative —
   it wanted a ninth button and went to the day's checks panel instead
   (`docs/ui-contracts.md` §History on the board).
-  **The dots are also a scrub bar** (owner, same day) — press and slide to
-  run through the week. Every dot keeps the same footprint whatever is
-  selected; do not make the current one grow, it shifts the strip under a
-  tracking finger.
+  **The dots were also a scrub bar** (owner, same day) — press and slide to
+  run through the week. On 23 Aug 26 the dots (and the blue current-day
+  square) were REMOVED from the phone bar (owner) to free the day row for
+  search + highlight; the scrub survives on DESKTOP, where the Mon–Sun chips
+  still draw, and there the old rule stands: every chip keeps the same
+  footprint whatever is selected — do not make the current one grow, it
+  shifts the strip under a tracking finger.
   **THE DAY IS STEPPED BY TWO ARROWS, AND THE SWIPE IS GONE** (owner, 12 Aug 26
   — "remove the swipe for the mobile scheduler board too. Just put arrows at the
   edges of the bar at the top to navigate left and right between days"). Do not
@@ -654,10 +658,14 @@ subscribers.
   bar's first line, which has 6px of slack and would have had to give up the day
   name; the bar went 70px → 75px and nothing came off line one. Above 820px they
   are not drawn — a desktop bar already carries all seven days as chips, which is
-  why it never needed either control. The dots stay, still a scrub bar: they are
-  the only thing that says WHICH day is open. Gone with the swipe: the
-  `.sb-pane` preview and `.sb-main`'s own `touch-action`, so the scroller is the
-  browser's default again.
+  why it never needed either control. The dots sat between the arrows until
+  23 Aug 26, when the owner removed them from the phone bar: the freed middle
+  of the day row carries `#searchB` + `#sbHl` (search + the highlight fold)
+  and the arrows plus the bar's day title carry "which day" — desktop chips
+  unchanged, the one-row rule unchanged, and the removal is `display:none` in
+  CSS so `dayTabsHTML`/`wireDayDots` and the jsdom tests are untouched. Gone
+  with the swipe (which STAYS gone): the `.sb-pane` preview and `.sb-main`'s
+  own `touch-action`, so the scroller is the browser's default again.
   **THE DAY NAME ON THAT BAR IS THREE LETTERS ON A PHONE** (owner, 12 Aug 26 —
   "Seems like the Wednesday blocked off the date"). The title box ellipses, so
   the long day names were eating the date beside them. The word is SPLIT — `Wed`

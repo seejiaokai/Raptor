@@ -1373,10 +1373,13 @@ test('board at 390px: taps near the right edge land where they aim', async ({ pa
       const el = document.elementFromPoint(Math.min(386, r.right - 4), r.top + r.height / 2)
       return el ? ((el as HTMLElement).id || el.className || el.tagName).toString() : 'nothing'
     }
-    return { close: at('#sbClose'), sun: at('#sbDays [data-sbtab="6"]'), rmk: at('#sbBoard .sb-line .nts') }
+    /* the Sunday dot used to be probed here; the phone dots left the bar on
+       23 Aug 26, so the right-edge control on the day row is the next-day
+       arrow now — same question (does the drawer's sliver steal the tap?) */
+    return { close: at('#sbClose'), next: at('#sbNextDay'), rmk: at('#sbBoard .sb-line .nts') }
   })
   expect(hits.close, 'the Close button owns its own pixels').toBe('sbClose')
-  expect(hits.sun, 'the Sunday chip owns its pixels').toContain('sbday')
+  expect(hits.next, 'the next-day arrow owns its pixels').toContain('sbNextDay')
   expect(hits.rmk, 'a remarks input owns its right end').toContain('nts')
   const band = await page.locator('#schedBoard .sb-ros').boundingBox()
   expect(band!.height, 'a handle, not a full-height wall').toBeLessThan(500)
@@ -2663,29 +2666,36 @@ test.describe('the phone board keeps its controls to one row', () => {
     expect(m.clipped, 'and it fits').toBeLessThanOrEqual(0)
   })
 
-  test('the day chips are dots, and tapping one still jumps to that day', async ({ page }) => {
+  /* REWRITTEN 23 Aug 26 (owner): this test used to pin the day chips as DOTS
+     and a tap-to-jump; the dots are gone from the phone bar now — the day row
+     carries search + highlight between the arrows, and the arrows are the
+     step control. The seven [data-sbtab] elements are still in the markup
+     (dayTabsHTML is untouched — only CSS hides them), so what a browser must
+     prove is that they paint NOTHING at phone width and that the arrows still
+     do the whole job. */
+  test('phone: the day strip is gone from the bar, and the arrows still step the day', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)
     await go(page, 'editsched')
     await page.evaluate(() => (window as any).openScheduler(0))
-    await page.waitForSelector('#sbDays [data-sbtab]')
+    await page.waitForSelector('#sbDays [data-sbtab]', { state: 'attached' })
     const m = await page.evaluate(() => {
-      const ds = [...document.querySelectorAll('#sbDays [data-sbtab]')] as HTMLElement[]
-      const w = ds.map(d => Math.round(d.getBoundingClientRect().width))
-      const mark = getComputedStyle(ds[3], '::after').borderRadius
-      return { widths: w, dotBox: w[3], allEqual: new Set(w).size === 1, mark }
+      const strip = document.querySelector('#sbDays') as HTMLElement
+      const r = strip.getBoundingClientRect()
+      return {
+        w: Math.round(r.width), h: Math.round(r.height),
+        display: getComputedStyle(strip).display,
+        tabs: strip.querySelectorAll('[data-sbtab]').length,
+      }
     })
-    expect(m.dotBox, 'a day is a small square, not a Mon-13 chip').toBeLessThanOrEqual(18)
-    /* THE SCRUB DEPENDS ON THIS: if the selected day's box grew, every dot
-       after it would shift sideways under a tracking finger. Only the mark
-       inside the box changes. */
-    expect(m.allEqual, 'every day owns the same footprint, selected or not').toBe(true)
-    await page.locator('#sbDays [data-sbtab]').nth(3).click()
-    expect(await page.evaluate(() => (window as any).SBDAY)).toBe(3)
-    const after = await page.evaluate(() =>
-      new Set([...document.querySelectorAll('#sbDays [data-sbtab]')]
-        .map(d => Math.round(d.getBoundingClientRect().width))).size)
-    expect(after, 'and still the same after one is selected').toBe(1)
+    expect(m.tabs, 'the seven elements are still in the markup — CSS hides, nothing else').toBe(7)
+    expect(m.display, 'and the strip is display:none').toBe('none')
+    expect(m.w, 'so it paints nothing').toBe(0)
+    expect(m.h).toBe(0)
+    /* the arrows still carry the day */
+    await page.click('#sbNextDay')
+    await page.waitForTimeout(150)
+    expect(await page.evaluate(() => (window as any).SBDAY)).toBe(1)
   })
 
   /* THE PAIRING THAT TOOK TWO ATTEMPTS (owner, 11 Aug 26 — a drag down the
@@ -3164,6 +3174,8 @@ test.describe('the day arrows', () => {
       const prev = document.querySelector('#sbPrevDay') as HTMLElement
       const next = document.querySelector('#sbNextDay') as HTMLElement
       const dots = document.querySelector('#sbDays') as HTMLElement
+      const hl = document.querySelector('#sbHl') as HTMLElement
+      const search = document.querySelector('.sb-nav .sb-search') as HTMLElement
       const r = (e: HTMLElement) => e.getBoundingClientRect()
       const acts = [...document.querySelectorAll('.sb-actions > .abtn, .sb-actions > select')] as HTMLElement[]
       return {
@@ -3174,9 +3186,12 @@ test.describe('the day arrows', () => {
         /* the arrows are on their OWN line, under the title and the buttons */
         arrowsBelowActions: Math.round(r(prev).top) >= Math.round(r(acts[0]).bottom),
         sameLine: Math.round(r(prev).top) === Math.round(r(next).top),
-        /* and the dots are still between them, not pushed off */
-        dotsBetween: Math.round(r(dots).left) >= Math.round(r(prev).right)
-          && Math.round(r(dots).right) <= Math.round(r(next).left),
+        /* the day strip left this row on 23 Aug 26 — search + highlight
+           took its place between the two arrows */
+        dotsW: Math.round(r(dots).width),
+        middleBetween: Math.round(r(hl).left) >= Math.round(r(prev).right)
+          && Math.round(r(search).left) >= Math.round(r(hl).right)
+          && Math.round(r(search).right) <= Math.round(r(next).left),
         overflow: top.scrollWidth - top.clientWidth,
         pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       }
@@ -3185,7 +3200,8 @@ test.describe('the day arrows', () => {
     expect(m.nextRight, 'and the next one against the right').toBeLessThanOrEqual(10)
     expect(m.sameLine, 'both on the same line').toBe(true)
     expect(m.arrowsBelowActions, 'on the day row, below the title and the buttons').toBe(true)
-    expect(m.dotsBetween, 'with the seven dots still between them').toBe(true)
+    expect(m.dotsW, 'the dots are gone from the row').toBe(0)
+    expect(m.middleBetween, 'with the highlight toggle then the search between the arrows').toBe(true)
     expect(m.overflow, 'nothing is clipped or pushed off the bar').toBeLessThanOrEqual(0)
     expect(m.pageOverflow, 'and the board gains no sideways scrollbar').toBeLessThanOrEqual(0)
     /* a real target, not a hairline: 40x26 is a bigger area than the 30x30 the

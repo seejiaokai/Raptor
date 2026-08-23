@@ -701,6 +701,13 @@ edit week now:
     Nearest-CENTRE, not a proportional map of the strip's width, so the same
     code works unchanged on desktop where these are still `Mon 13` chips of
     differing widths.
+    **AMENDED 23 Aug 26 (owner): the dots left the phone bar.** The dot
+    styling and the phone scrub affordances above are gone from the CSS;
+    `.sb-nav .sb-days` is `display:none` under 820px, so the seven elements,
+    `dayTabsHTML`, `wireDayDots` and every jsdom test survive untouched while
+    the phone paints none of it. The desktop chips stay, and the scrub still
+    works there. What the row carries instead is under §The day is stepped by
+    TWO ARROWS below.
   - **`+ Line` left the bar for good.** It was the only control here that
     duplicated one inside the section it acts on — every wave header
     carries its own — and the top-bar copy had to guess which wave it
@@ -808,11 +815,26 @@ edit week now:
   and its two ends ARE the screen's edges, which is what was asked for.
   `.sb-nav` is the wrapper that holds the full-width second line
   (`flex:0 0 100%; order:2`, taken over from `.sb-days`) and
-  `justify-content:space-between` pins one arrow to each edge with the dots
-  centred between them. `.sb-nav .sb-days` must reset `order:0`: `.sb-days`
-  carries `order:2` for the days when it was itself the wrapped line, and inside
-  `.sb-nav` that same property sorted the dots after BOTH arrows (measured as
-  ‹ › then the dots).
+  `justify-content:space-between` pins one arrow to each edge. **The dots sat
+  between them until 23 Aug 26 (owner): the phone day strip is gone**
+  (`.sb-nav .sb-days{display:none}` — the old `order:0` reset went with it)
+  **and the freed middle carries `#sbHl` + `#searchB`**: the highlighter
+  toggle at the arrows' 26px height, then the search box growing into the
+  row's slack (`min-width:0` so it can also shrink instead of tripping the
+  gate's overflow assertion). The arrows plus the bar's own day title are
+  what say "which day" on a phone now.
+  **The chips strip `.sb-hl` (`#sbHlStrip`) is the bar's LAST line** — the
+  same `HlChips` the week pages render, INSIDE `.sb-top` deliberately so the
+  bar's ResizeObserver republishes `--sb-topH` when it opens. Desktop: always
+  open, a full-width second bar line, no gate — nothing pins the desktop
+  bar's height to a session flag. Phone: `display:none` until `#sbHl` flips
+  `HLOPEN` (`.open`, the filters-row sideways-scroller recipe, `order:3` so
+  it lands under the day row).
+  **`#searchB` is the `#searchV` idiom exactly** — uncontrolled, wiped by the
+  blank-click clear — which includes the week-cross idiom: crossing a week
+  with the arrows leaves the box's TEXT standing while the filter keeps
+  applying, exactly as `#searchE` behaves across a week load; the blank-click
+  wipe (`interactions.ts`) is what empties it.
   **Cost: the bar went 70px → 75px**, measured at 390px, from a 26px control on a
   21px row. Nothing was taken off the first line. The geometry gate's bound moved
   70/78 → 75/82 and still blocks the regression it was written for — a second row
@@ -825,10 +847,14 @@ edit week now:
   of pinning them to the row's ends, because `.schedboard.sb-wide>*` is 1180px
   wide and pans — "the edges of the bar" there would put the two arrows most of a
   screen apart.
-  **The dots stay, and they are still a scrub bar.** They are the only thing that
-  says WHICH of the seven days is open, which is the one job a pair of arrows
-  cannot do. A tap still jumps straight to a day; press and slide still runs
-  through the week.
+  **The dots are gone from the phone bar (owner, 23 Aug 26 — a reversal of the
+  11 Aug dots build).** The day strip and the blue current-day square paint
+  nothing under 820px; the arrows and the bar's day title carry "which day".
+  On DESKTOP the seven chips stay, a tap still jumps straight to a day, and
+  press-and-slide still scrubs the week — the removal is `display:none` only,
+  so the machinery is one CSS rule from either state. `.sb-wide` (the desktop
+  layout at phone width) restates `display:flex` and keeps the chips, since
+  that mode IS the desktop bar.
   **A scrub never starts under a finger already holding a puck** (audit,
   12 Aug 26). A day change repaints the panels, which detaches the node
   `drag.ts`'s touch machine is carrying, and its drop would then resolve
@@ -1832,10 +1858,17 @@ empty and still be looking at a lit week with nothing on screen explaining
 what was holding it. All three now go together, in `interactions.ts`'s
 blank-click branch.
 
-The **search inputs are uncontrolled** (`#searchV` / `#searchE`, `onInput`
-only, no `value` prop), so their DOM value is wiped by hand — clearing just
-the state would leave a box reading "bane" with nothing lit, which is worse
-than not clearing at all. The chips redraw themselves from `HLSET`.
+The **search inputs are uncontrolled** (`#searchV` / `#searchE` / the board
+bar's `#searchB`, `onInput` only, no `value` prop), so their DOM value is
+wiped by hand — clearing just the state would leave a box reading "bane" with
+nothing lit, which is worse than not clearing at all. The chips redraw
+themselves from `HLSET`.
+
+**Search and the Highlight chips are reachable on all THREE schedule
+surfaces since 23 Aug 26** — the view week, the edit week and the board bar —
+one `HLSET`/`SEARCH` pair and one chip definition (`ui/hlchips.tsx`) behind
+all of them, so a chip lit anywhere is lit everywhere and this clear rule
+covers the lot.
 
 **The scope is the whole app shell, not just the page bodies** (owner, 15 Aug
 26 — a blank click "beside the edit schedule date or above" left the pucks
