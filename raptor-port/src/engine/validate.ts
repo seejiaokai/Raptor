@@ -5,6 +5,8 @@ import { overlap, hm24, lgT } from './time'
 import { collectEvents } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
+import { seedRunIn, prevSundaySeed } from './weekctx'
+import { CURWEEK } from './waves'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -121,9 +123,16 @@ export function validate(){
      post, a sim, a ground item, a programme row. Leave and downchits are not
      tasking, so a day off breaks the run exactly as it should. Computed in one
      pass up front because a run is a property of the WEEK, not of a day, and
-     the per-day loop below can then just read the number off. */
+     the per-day loop below can then just read the number off.
+     SEEDED FROM THE PREVIOUS WEEK since the cross-week work (owner: the
+     engine reads continuously, "it doesn't just stay within a week") — a man
+     who worked straight through last week walks into this Monday already
+     carrying his count, so the limit breaks on the true seventh day, not on
+     this week's seventh. seedRunIn (weekctx.ts) walks back from last Sunday
+     through weekBundle data, at most maxRun days; an unauthored previous
+     week seeds nothing, which is byte-identical to the old fresh start. */
   const RUNLEN:any[]=[]; {
-    const run:any={};
+    const run:any=seedRunIn(CURWEEK,VCONF.maxRun);
     ev.forEach((day:any,i:any)=>{
       const on=new Set<any>();
       (day.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))on.add(e.id); });
@@ -400,8 +409,21 @@ export function validate(){
        and no others. It ends the previous day for rest purposes at its LD (no
        debrief tail is added), and it must itself start 12h clear — the shift's
        own start time IS the report time, so no 3h lead and no brief lead are
-       taken off it either. */
-    if(idx>0){
+       taken off it either.
+
+       MONDAY IS NO LONGER EXEMPT (the cross-week work — owner: a late Sunday
+       must bust the next Monday's rest). The old `if(idx>0)` guard meant the
+       first loaded day had no yesterday and the whole block was skipped;
+       prevSundaySeed (weekctx.ts) now stands in as Monday's yesterday, built
+       from the previous week's bundle by the very same buildDay the loaded
+       days use, shaped exactly like ev[idx-1]. Its di is null, so the
+       markTrace below no-ops (its own guard) and the breach carries
+       prevDi:null — the trace belongs to a day this WARN cannot address, and
+       the warning's own message already names Sunday and its end time. An
+       unauthored previous week seeds empty maps and the guards below skip
+       every man, byte-identical to the old REST[di]={} branch. */
+    const prevSeed:any=idx>0?ev[idx-1]:prevSundaySeed(CURWEEK);
+    {
       /* prevFlyEnd/prevEnd were once distinct — the rest-bearing set against
          the last end of ANY kind — and a late non-resting row could mask the
          sortie underneath it. With every kind rest-bearing they track the
@@ -420,7 +442,7 @@ export function validate(){
          2h is an assumption, not a fact. Null when the winning end is a SHIFT,
          which ends at its written time with no debrief tail to assume. */
       const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={};
-      ev[idx-1].events.forEach((e:any)=>{
+      prevSeed.events.forEach((e:any)=>{
         /* EVERYTHING THAT ENDS THE DAY BEARS CREW REST (owner, 21 Aug 26 —
            "anything that ends the day prior and affects the 12 hour crew
            rest will be a warning"; this widened twice the same day: first
@@ -452,7 +474,7 @@ export function validate(){
          input has no board slot for the previous-day trace to jump to.
          REST[di] below is built from these same maps, so the SC picker's
          crew-rest refusal follows this rule with no second copy. */
-      ev[idx-1].input.forEach((i:any)=>{
+      prevSeed.input.forEach((i:any)=>{
         if(i.nx||i.pv||!restsInput(i.type))return;
         if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;
         if(prevEnd[i.id]==null||i.e>prevEnd[i.id])prevEnd[i.id]=i.e;
@@ -532,8 +554,8 @@ export function validate(){
            has no debrief to assume, so it keeps the plain "ended". */
         const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;
         const tail=landed!=null
-          ? `${ev[idx-1].dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`
-          : `${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
+          ? `${prevSeed.dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`
+          : `${prevSeed.dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
         if(pfly[id]&&first<earliest){
           const bl=legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m);   // the leg told to report earliest is the breach
           /* The LEAVE-BY: the latest the previous day could have ended for this
@@ -560,7 +582,7 @@ export function validate(){
           const makesIt=!bl.shift&&earliest<=bl.to-VCONF.step;
           const dashed=!evBound&&!!bl.lateShow&&makesIt;
           markChip(di,id,'CR');markRing(di,id,'hard'); if(dashed)markDash(di,id);
-          const prevDi=idx-1>=0?ev[idx-1].di:null;
+          const prevDi=prevSeed.di;
           /* CAUSE-FIRST, SAID ONCE (owner, 22 Aug 26 — "refine the way u
              reason the crew rest warning. Clear and concise"): one forward
              chain — yesterday's end → when rest clears → the commitment that
@@ -600,7 +622,7 @@ export function validate(){
             legs.reduce((m:any,e:any)=>nomOf(e)<nomOf(m)?e:m).key);
         }
       });
-    } else REST[di]={};
+    }
     // crew combination matrix + OCU without IP — shown as puck rings
     day.forms.forEach((f:any)=>{
       f.acs.forEach((ac:any)=>{ const p=realP(ac.p),w=realP(ac.w);

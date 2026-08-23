@@ -1,9 +1,12 @@
-/* AUDIT C — the midnight tail's documented holes (day 0 backwards, the last
+/* AUDIT C — the midnight tail at the week edges (day 0 backwards, the last
    loaded day forwards), both directions at once on an interior day, and
    day.sacrew being rebuilt rather than staled when the AVALON crew changes.
-   The holes are DOCUMENTED-DELIBERATE (HANDOFF: they fix themselves the day
-   the app carries more than one week) — pinned here so a regression in either
-   direction is visible against a recorded baseline. */
+   The two edge cases were DOCUMENTED-DELIBERATE HOLES until the cross-week
+   engine work (owner ask: continuous rule reading): collectEvents now hands
+   the loaded week's Monday/Sunday the ADJACENT week's edge date labels
+   (events.ts + weeks-data.ts:edgeDate), and the global date-keyed INPUTS
+   array answers them — so the same fixtures that once pinned the holes now
+   pin the fix, positively. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
@@ -24,23 +27,23 @@ beforeEach(() => {
 const hits = (code: string, id: string) =>
   validate().all.filter((x: any) => x.code === code && (x.who || []).includes(id))
 
-describe('the documented holes at the week edges', () => {
-  it("the LAST day's overnight tail is unchecked — next Monday's leave is invisible (documented)", () => {
+describe('the week edges run the tail too (the old documented holes, now closed)', () => {
+  it("the LAST day's overnight tail reaches next Monday — its leave now collides (was invisible)", () => {
     DAYS[6].dutywaves[0].rows.push({ role: 'SDO', id: 'split', str: '1900', end: '0700' })
     INPUTS.push({ person: 'split', date: 'Jul 20', allday: true, type: 'OL', remarks: '', mod: '' })
     expect(() => validate()).not.toThrow()
-    expect(hits('LEAVE_FLY', 'split')).toEqual([])
-    expect(collectEvents()[6].input.some((i: any) => i.nx)).toBe(false)
+    expect(hits('LEAVE_FLY', 'split').length).toBeGreaterThan(0)
+    expect(collectEvents()[6].input.some((i: any) => i.nx && i.id === 'split')).toBe(true)
   })
 
-  it("day 0's backward tail is unchecked — the Sunday before is invisible (documented mirror)", () => {
+  it("day 0's backward tail reaches the Sunday before — its leave now collides (was the invisible mirror)", () => {
     const f = DAYS[0].waves[0].formations[0]
     f.to = '00:30'; f.ld = '02:00'; f.br = ''
     f.aircraft[0].p = 'split'
     INPUTS.push({ person: 'split', date: 'Jul 12', allday: true, type: 'OL', remarks: '', mod: '' })
     expect(() => validate()).not.toThrow()
-    expect(hits('LEAVE_FLY', 'split')).toEqual([])
-    expect(collectEvents()[0].input.some((i: any) => i.pv)).toBe(false)
+    expect(hits('LEAVE_FLY', 'split').length).toBeGreaterThan(0)
+    expect(collectEvents()[0].input.some((i: any) => i.pv && i.id === 'split')).toBe(true)
   })
 })
 

@@ -127,6 +127,29 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Reference mirrored by `refwin.ts:rerest()`; pinned in `dutyrest.test.ts`.
   The seed week raises no new warning under the widening (verified by WARN
   diff, 21 Aug 26) — only the REST maps grew.
+- **Monday now checks against the previous week's Sunday** (owner, 23 Aug
+  26). `idx>0` used to gate the whole crew-rest block off on the loaded
+  week's first day, so a late Sunday finish never counted against Monday's
+  report and the crew picker's Monday rest times (`REST[0]`) were always
+  empty. `weekctx.ts:prevSundaySeed` now stands in for `ev[idx-1]` on
+  Monday — a pure read of the previous week's Sunday off `weekBundle` +
+  `INPUTS`, shaped like a real day entry but with `di:null` — so the block
+  runs unconditionally and `REST[0]` is real. `di:null` makes `markTrace` a
+  no-op there: a Sunday-caused breach traces onto Sunday's OWN day when that
+  week is loaded, never onto a synthetic slot on the week now on screen. An
+  unauthored previous week seeds nothing, so the seed week's own behaviour
+  and reference parity are unchanged.
+- **What a non-loaded week can and cannot be made to answer** (`weekctx.ts`
+  header). All three cross-week reads above (`seedRunIn`, `prevSundaySeed`,
+  the midnight-tail edges) are PURE reads off `weekBundle` + the global
+  `INPUTS` — the week's authored/remembered SEED shape only. `SCHED`
+  (publish/amendment state) and any session edit made to a week after
+  leaving it do not exist to be read, because the app itself forgets them
+  the same way (`loadWeek`'s own doctrine). A seed read is therefore only
+  ever as good as what the app still remembers of that week — exactly what
+  a scheduler sees on navigating back to it. Nothing is invented and
+  nothing is silently wrong; a week with no authored or remembered content
+  contributes nothing to any of the three reads.
 - **The in-time line's grammar** (owner, 21 Aug 26 — "accept any form of
   combination", "U make the call on what u detect"). `events.ts:intimeTime`
   reads the FIRST valid clock time in a line — `0900`, `09:00`, `0900H`,
@@ -521,10 +544,17 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   both copies and the warning dedup collapses them to one. `slotBar` runs
   the same filter chain over the next day's inputs for any slot whose window
   passes 1440 (reason suffixed "(tomorrow)"), so the picker and the warning
-  list move together. The loaded week's LAST day has no next day, so its
-  tail is unchecked until the app carries more than one week. The parity
-  gate excises the `nx` entries and `sacrew` exactly as it excises `key`
-  (port-only); `overnight.test.ts` pins them positively.
+  list move together. **The loaded week's LAST day's tail now reads the
+  FOLLOWING week's Monday too** (owner, 23 Aug 26 — closing the hole this line
+  used to describe): `weeks-data.ts:edgeDate` + `events.ts:buildDay` read the
+  next week's Monday date label through the global `INPUTS`, the same
+  date-keyed array a genuinely adjacent week's inputs already live in — no
+  live `DAYS` for that week is needed or read. A genuinely unauthored next
+  week still seeds nothing, so a Sunday tail is checked only against what
+  the app actually has on file for the Monday after. The parity gate excises
+  the `nx` entries and `sacrew` exactly as it excises `key` (port-only);
+  `overnight.test.ts` and `audit-c-tail`'s fixtures pin the fixed edges
+  positively.
 - **AND THE TAIL RUNS BOTH WAYS (11 Aug 26).** The half above covers a window
   running PAST minute 1440; the mirror is a window opening BEFORE minute 0,
   and a small-hours take-off produces one with no overnight row involved —
@@ -537,9 +567,14 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   ordinary daytime sortie can never match one because its window never goes
   negative. `slotBar` carries the matching backward block (reason suffixed
   "(yesterday)"), because the picker and the warning list are required not to
-  drift apart. Day 0 has no yesterday, exactly as the last day has no
-  tomorrow. Found by measuring both directions against the same shape: the
-  forward case flagged, the backward case was silent.
+  drift apart. **Day 0's pv tail now reads the PRIOR week's Sunday the same
+  way** (owner, 23 Aug 26 — the mirror half of the same fix): a small-hours
+  Monday take-off's brief/report window opening before minute 0 is judged
+  against the previous week's Sunday inputs through the same `edgeDate` +
+  `INPUTS` read, not left unchecked because the loaded week has no day
+  before it. A genuinely unauthored previous week still seeds nothing.
+  Found by measuring both directions against the same shape: the forward
+  case flagged, the backward case was silent.
 - **A duty block is minted from a TEMPLATE, not a wave** (owner, 13 Aug 26 —
   supersedes the 10 Aug wave-driven desk). `+ Block` on the scheduler board
   lists the saved templates (`engine/dutytpl.ts`) directly — no wave has to
@@ -584,6 +619,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   is. The flag lands on the day that BREAKS the limit — the day the scheduler
   has to clear — not on the whole run. Because a run is a property of the week
   rather than of a day, it is precomputed before the per-day loop.
+  **The count now walks in from before the loaded week** (owner, 23 Aug 26 —
+  the flagging engine reads continuously, not just within a week).
+  `weekctx.ts:seedRunIn` seeds each person's Monday run with a pure walk back
+  through `weekBundle` + the global `INPUTS`, up to `maxRun` days before
+  Monday (two prior weeks when `maxRun>7`), stopping the moment a nearer day
+  is clear — a person absent on a closer day can never carry a run in from a
+  farther one. A run that started before Monday and breaks the limit ON
+  Monday now flags Monday, not only from Tuesday on. An unauthored prior
+  week seeds nothing, so a scheduler who has never touched last week sees
+  exactly today's behaviour, and reference parity is unchanged.
   NB the label carries no `{maxRun}` token: `wlbl()` renders every token
   through `lgT()`, which would print a day count as minutes.
 - Warning labels embed `{crewRest}`-style tokens; `wlbl()` interpolates the

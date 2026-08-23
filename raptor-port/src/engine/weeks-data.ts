@@ -24,6 +24,33 @@ function weekLabels(v:any){
   for(let i=0;i<7;i++){out.push(`${MON[m-1]} ${d}`); d++; if(d>dim(m,y)){d=1;m++;if(m>12){m=1;y++;}}}
   return out;
 }
+/* the cross-week engine reads (events.ts, weekctx.ts) need this under a name
+   that says what it hands back — a thin re-export, same function */
+export {weekLabels as weekDateLabels};
+/* a dd/mm/yyyy Monday key, shifted by 7·n days (n may be negative), still a
+   dd/mm/yyyy Monday key. WHY a second implementation instead of importing
+   ui/weeknav.ts:shiftWeek, which does the identical ±7n-day walk: that walker
+   goes through `Date.UTC`, and the engine stays Date-free by house rule (see
+   weekLabels/dim above) — an engine→ui import would also be a layering
+   violation the wrong way round. This is a deliberate drift seam, pinned by
+   a test asserting the two walkers agree across month/year/leap boundaries
+   so they cannot silently diverge. */
+export function shiftWeekKey(v:any,n:any){
+  const parts=String(v).split('/').map((x:any)=>parseInt(x,10));
+  let d=parts[0]||1,m=parts[1]||1,y=parts[2]||2026;
+  const days=Math.abs((n||0)*7);
+  const pad=(x:any)=>String(x).padStart(2,'0');
+  if((n||0)>=0){ for(let i=0;i<days;i++){ d++; if(d>dim(m,y)){d=1;m++;if(m>12){m=1;y++;}} } }
+  else { for(let i=0;i<days;i++){ d--; if(d<1){m--;if(m<1){m=12;y--;} d=dim(m,y);} } }
+  return `${pad(d)}/${pad(m)}/${y}`;
+}
+/* the date label a cross-week seed read lands on at CURWEEK's edge: dir -1 is
+   the PREVIOUS week's Sunday (crew rest / days-run look back that far), dir
+   +1 is the NEXT week's Monday (the Sunday midnight-tail looks that far
+   forward — the only lookahead anywhere in this engine, see events.ts). */
+export function edgeDate(curWeek:any,dir:any){
+  return dir<0 ? weekLabels(shiftWeekKey(curWeek,-1))[6] : weekLabels(shiftWeekKey(curWeek,1))[0];
+}
 /* a blank week: every day section present-but-empty (exactly the seed weekend's
    shape) so dayCount/dayKeys never hit a hole, and the edit flow can add waves
    and lines to it like any other week */

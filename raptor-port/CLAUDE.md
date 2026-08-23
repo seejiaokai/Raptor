@@ -767,6 +767,32 @@ subscribers.
   stay always-visible on a phone. The four sibling touches from that batch —
   the aircrew-tab gutter, board 4-digit input times, plural warnings, and the
   week's faded `Remarks` placeholder — STAND; only the ⋯ collapse was undone.
+- **The flagging engine reads across week boundaries** (owner, 23 Aug 26 —
+  "It is a continuous reading of the flagging engine. It doesn't just stay
+  within a week"). Two rules used to compute strictly inside the loaded
+  Mon–Sun week and are fixed: the consecutive-days run (`DAYS_RUN`,
+  `VCONF.maxRun`) now walks in seeded up to `maxRun` days before Monday, and
+  Monday's crew-rest check (`CREW_REST`/`CREW_TIGHT`, `VCONF.crewRest`) now
+  runs against the previous week's Sunday instead of being switched off —
+  `REST[0]`, the crew picker's Monday rest-clear times, is real for the
+  first time. The midnight input tails at the week's two edges read the
+  adjacent week's dates the same way. Lookback only, and bounded to those
+  two windows; the one lookahead is the pre-existing midnight-tail sliver
+  past Sunday night — nothing else looks forward. A flag always lands on the
+  day it BREAKS, never earlier: next Monday's breach appears when next week
+  is viewed, not as a hint on this Sunday — the trace mechanism addresses by
+  in-week day index, so a cross-week trace would collide with the loaded
+  week's own Monday. A same-page forward hint is a possible follow-up, not
+  shipped; don't build one without the owner asking. Every seed read is a
+  PURE function of `weekBundle` + the global `INPUTS` — what the app still
+  remembers of a week once you've left it. It never reads `SCHED` (publish
+  state) or a forgotten session edit, because `loadWeek` itself forgets
+  those the same way; an unauthored adjacent week seeds nothing. Don't
+  re-propose reading further back or further forward than this without a
+  named case — the window sizes were chosen to be exactly what the two
+  named rules need. `engine/weekctx.ts`'s header carries the full window
+  semantics; `docs/engine-rules.md` and `docs/feature-impact.md` Flow F
+  carry the detail.
 
 ## Where things live
 

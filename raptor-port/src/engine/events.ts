@@ -3,8 +3,9 @@ import { INPUTS, inputCoversDate, inputFlags, inpWin, isSansAvail } from './inpu
 import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
 import { toMin, parseHM, win } from './time'
 import { VCONF } from './rules'
-import { isStandalone, saExempt } from './waves'
+import { isStandalone, saExempt, CURWEEK } from './waves'
 import { whoArr, acceptedDay } from './slots'
+import { edgeDate } from './weeks-data'
 /* THE ACCEPT DEFERRAL IS PER-DAY, NOT PER-INPUT (audit, 12 Aug 26).
    inputFlags defers a timed accepted input to the ground row the accept
    created — but that row lives on ONE day, while the input may cover
@@ -16,7 +17,7 @@ import { whoArr, acceptedDay } from './slots'
    row's own day, so that is the only day the deferral now applies to.
    A deferred input whose row cannot be found at all stays VISIBLE: with no
    row anywhere, hiding it here would silence the man's absence outright. */
-export const inpShow=(inp:any,dt:any)=>{
+export const inpShow=(inp:any,dt:any,xweek?:any)=>{
   /* SANS AVAILABILITY IS AN OFFER, NOT A COMMITMENT — it must never reach
      day.input (brief/debrief clashes, INPUT_FLY, the midnight-tail machinery
      all read that array). sansGate (avail.ts) is the only thing that judges
@@ -24,6 +25,13 @@ export const inpShow=(inp:any,dt:any)=>{
      construction sites funnel through here, so this one line keeps it out
      everywhere at once. */
   if(isSansAvail(inp.type))return false;
+  /* CROSS-WEEK SEED READS BYPASS THE ACCEPTED-ROW DEDUP (weekctx.ts, via
+     buildDay's xweek flag). acceptedDay(inp) below finds the row on the
+     LOADED week's live DAYS — it has no idea a non-loaded day even exists,
+     so for a pristine snapshot day (no landed ground row of its own to defer
+     to) it would silently drop a spanning input's timed window from the
+     seed. The tails (nx/pv, below) never set xweek and keep this dedup. */
+  if(xweek)return true;
   if(inputFlags(inp))return true;                 // not a timed accepted input
   const di=acceptedDay(inp);
   return di<0||(DAYS[di]||{}).dt!==dt;            // defer only on the row's day
@@ -89,8 +97,15 @@ export const briefLeadOf=(rmks:any)=>{ const s=String(rmks||'');
    own labelling and the phrase is what carries meaning — the same shape as
    briefLeadOf above and aarNeed in people.ts. */
 export const lateShowOf=(rmks:any)=>/\b(?:late\s*show|show\s*(?:at|@)\s*brief|brief\s*show)\b/i.test(String(rmks||''));
-export function collectEvents(){
-  return DAYS.map((d:any,di:any)=>{
+/* THE PER-DAY BUILDER, extracted so a cross-week seed read (weekctx.ts) can
+   run the exact same rule logic against an ADJACENT week's day — the day
+   object comes from weekBundle(prevWeek) instead of the live DAYS array —
+   without a second copy of any of it. nextDt/prevDt are date labels (not
+   DAYS lookups) so the caller decides what's "next"/"previous", which is
+   what lets collectEvents below hand the loaded week's Monday/Sunday the
+   ADJACENT WEEK's edge dates instead of nothing. xweek marks a cross-week
+   read for inpShow (see its own comment) — never set by collectEvents. */
+export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     const fly:any[]=[],forms:any[]=[],events:any[]=[],simcrew:any[]=[],sacrew:any[]=[];
     (d.waves||[]).forEach((w:any,gi:any)=>{
       const im=intimeMap(w);
@@ -279,7 +294,7 @@ export function collectEvents(){
        window still comes through with null s/e and stays uncheckable. */
     const mapInp=(inp:any)=>{const w2=inpWin(inp);
       return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks};};
-    const input:any[]=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&inpShow(inp,d.dt)).map(mapInp);
+    const input:any[]=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&inpShow(inp,d.dt,xweek)).map(mapInp);
     /* THE MIDNIGHT TAIL (owner, 11 Aug 26 — "the default warning engine also checks
        in the same modality for all applicable rules based on timing"). A window that
        runs past midnight — a night sortie's landing and debrief, an overnight duty
@@ -292,8 +307,7 @@ export function collectEvents(){
        with no usable window stays uncheckable, exactly as its unshifted copy is.
        `nx` marks the entries as port-only for the parity excision (parity.test.ts)
        and the positive pin in the overnight suite. */
-    const nd=DAYS[di+1];
-    if(nd)INPUTS.filter((inp:any)=>inputCoversDate(inp,nd.dt)&&inpShow(inp,nd.dt)).forEach((inp:any)=>{
+    if(nextDt!=null)INPUTS.filter((inp:any)=>inputCoversDate(inp,nextDt)&&inpShow(inp,nextDt)).forEach((inp:any)=>{
       const m=mapInp(inp); if(m.s==null||m.e==null)return;
       input.push({...m,s:m.s+1440,e:m.e+1440,nx:true});
     });
@@ -315,13 +329,20 @@ export function collectEvents(){
        ordinary daytime sortie can never match one of these — its window never
        goes negative — so this adds no warning to any day that did not earn one.
        `pv` marks them port-only for the parity excision, as `nx` does. */
-    const pd=DAYS[di-1];
-    if(pd)INPUTS.filter((inp:any)=>inputCoversDate(inp,pd.dt)&&inpShow(inp,pd.dt)).forEach((inp:any)=>{
+    if(prevDt!=null)INPUTS.filter((inp:any)=>inputCoversDate(inp,prevDt)&&inpShow(inp,prevDt)).forEach((inp:any)=>{
       const m=mapInp(inp); if(m.s==null||m.e==null)return;
       input.push({...m,s:m.s-1440,e:m.e-1440,pv:true});
     });
     return {di,dow:d.dow,dt:d.dt,fly,forms,input,events,simcrew,simwin,sacrew};
-  });
+}
+/* the loaded week's Monday pv-tail and Sunday nx-tail used to read nothing
+   past DAYS' own ends (owner ask: continuous rule reading — see weekctx.ts).
+   edgeDate hands them the adjacent week's Monday/Sunday date label instead,
+   and the global (date-keyed) INPUTS array already carries every authored
+   week's rows, so the tail's existing INPUTS.filter(inputCoversDate...) just
+   starts finding matches at the week edges it could never reach before. */
+export function collectEvents(){
+  return DAYS.map((d:any,di:any)=>buildDay(d,di, DAYS[di+1]?DAYS[di+1].dt:edgeDate(CURWEEK,1), DAYS[di-1]?DAYS[di-1].dt:edgeDate(CURWEEK,-1)));
 }
 /* earliest IN-TIME of a wave (from the wave's in-time lines; fallback = earliest TO) */
 export function waveInTime(w:any){

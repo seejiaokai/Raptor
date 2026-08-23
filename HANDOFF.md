@@ -1532,13 +1532,22 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
     owner named AVALON jet seats and duty roles; BB stays wholly `noconf`
     with no fixed hours and nothing on it is checked at all. Ask him before
     extending the bar to BB.
-  - **The loaded week's LAST day has no next day**, so its overnight tail is
-    unchecked (nothing to shift in). Fixes itself the day the app carries
-    more than one week of data — same missing piece as the first bullet in
-    this list. **The FIRST day is now the mirror of it**: the tail runs both
-    ways since 11 Aug 26 (see below), so day 0 has no yesterday to shift in
-    either, and a small-hours take-off on the Monday is unchecked against the
-    Sunday before. Same fix, same day.
+  - **CLOSED 23 Aug 26.** The loaded week's LAST day's overnight tail and the
+    FIRST day's mirror tail used to read as nothing-to-shift-in, because the
+    app only ever held one week. Both now read the adjacent week's date
+    labels through the global `INPUTS` (`weeks-data.ts:edgeDate`,
+    `events.ts:buildDay`) — no live `DAYS` for that week needed or read, and
+    an unauthored adjacent week still seeds nothing. Same change also seeded
+    the 7-day run counter and Monday's crew-rest check across the week line
+    (`engine/weekctx.ts`) — the app never carried more than one week's DAYS
+    at once, so this was the fix, not a new mechanism. Rules:
+    `docs/engine-rules.md` §DAYS_RUN, §Crew rest, "The midnight tail" +
+    "AND THE TAIL RUNS BOTH WAYS"; flow: `docs/feature-impact.md` Flow F.
+    The tail edges are pinned by `audit-c-tail.test.ts` (its fixtures flipped
+    to positive pins 23 Aug 26); the run-counter and crew-rest seed reads are
+    pinned by `crossweek.test.ts` (real seed data + the shiftWeekKey drift
+    seam) and `weekctx.test.ts` (synthetic adjacent weeks: the hard/tight
+    split, the maxRun>7 two-week walk, the acc/xweek bypasses).
   - **Exempt-line pucks ring from their OWN red rules only** (owner, 11 Aug
     26 — asked and answered twice, settled the same day): an SC spare or an
     AVALON seat rings for the availability check, a spare also for SC
@@ -2009,7 +2018,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 |---|---|
 | `data.ts` | The seed week (Jul 13): DAYS with waves/formations/aircraft, duties, sims, ground, programme rows. Plus `WEEK1_DAYS_SNAP`, the pristine model captured at module load for the week selector. Ground/meeting labels are GENERIC (no real unit names) and every callsign is FICTION (the 21 Aug 26 sensitivity scrub). |
 | `week2.ts` | **The second demo week** (Jul 20, 21 Aug 26) — `WEEK2_DAYS`/`WEEK2_DATES`/`WEEK2_INPUTS`, authored to exercise most warning families (crew solo, CO-approval pairing, tight/double turn, double booking, OCU-no-IP, illegal seat, crew-rest breach, long day, medical downchit). Deliberately avoids the two demo blind spots (no ATT B seated, no IRT without an IR, no AAR-currency remark). Not parity-compared. |
-| `weeks-data.ts` | **The loadable-week registry** (21 Aug 26) — `weekBundle(v)` hands `state/store.ts:loadWeek` a fresh deep copy of the chosen week (Jul 13 seed / Jul 20 second / a blank editable `emptyWeek` for any other chip). A leaf module (data/inputs/week2 only), no cycle. |
+| `weeks-data.ts` | **The loadable-week registry** (21 Aug 26) — `weekBundle(v)` hands `state/store.ts:loadWeek` a fresh deep copy of the chosen week (Jul 13 seed / Jul 20 second / a blank editable `emptyWeek` for any other chip). A leaf module (data/inputs/week2 only), no cycle. Also **`shiftWeekKey(v,n)`** (23 Aug 26) — a `dd/mm/yyyy` ± 7n-day stepper, a deliberate second implementation of `ui/weeknav.ts:shiftWeek` (an engine→ui import would be a layering violation), pinned agreeing with it by test. |
+| `weekctx.ts` | **Cross-week seed reads for `validate.ts`** (23 Aug 26) — pure reads off `weekBundle(v)` + the global `INPUTS`, nothing mutated: `seedRunIn(curWeek,maxRun)` walks back up to `maxRun` days before Monday for the consecutive-days run, `prevSundaySeed(curWeek)` shapes the previous week's Sunday like a real `ev[idx-1]` entry (`di:null`, so `markTrace` no-ops) for Monday's crew-rest check. See its own header comment for the exact window semantics and what a non-loaded week cannot be made to answer (SCHED/publish state, forgotten edits). Docs: `docs/engine-rules.md` §DAYS_RUN, §Crew rest; flow: `docs/feature-impact.md` Flow F. |
 | `people.ts` | PEOPLE roster (quals, seat, categories), qual ladder (`OCU→D→C→B→A→IW→IP→IR→FI` — instructor-ness lives in CAT, no `ip` flag), `isScheduler`/`isLead`/`isInstr`/`isInstrPilot`/`isOcu`, **`isPersonnel` + the `pers:true`/`seat:'GND'` ground-crew category** (Aug 26 — seeded `torque`/`spanner`/`gizmo`, no CAT; `deriveQuals` short-circuits them), `scShiftKind`, `sanStatus`, `aarNeed`, and **`nameToId` (id-tolerant since 21 Aug 26** — resolves a who-string by callsign OR, failing that, a value that is already a person id; the seed stores bare ids in ground/programme `who`, which the callsign scrub would otherwise have stopped resolving). |
 | `inputs.ts` | INPUTS list + **`INPUT_META`, the one table every input type is decided by** (10 Aug 26) — `INPUT_TYPES` is derived from its keys and every predicate is a lookup: `isLeave`, `isLocalLeave`, `isDownchit` (= the medical group), **`isPersonal`/`isUnavail`** (the two day blocks, presentational only), plus `canSpare`, `canWork`, `awayAllDay`, `TYPE_GROUPS`/`typeGroup`. `isDetach` is gone with the `Detachment` type. Also DATES and the late-input block, plus `WEEK1_INPUTS_SNAP`/`WEEK1_DATES` (pristine seed-week inputs/labels for the week selector). |
 | `time.ts` | `parseHM`/`hhmm`/`minus`/`overlap` (half-open — abutting windows do not clash). |

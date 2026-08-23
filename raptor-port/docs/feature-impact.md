@@ -32,7 +32,7 @@ the rest are the ones the code actually has.
 
 | Surface | What it is | Where it lives | Fed by |
 |---|---|---|---|
-| **Warnings** | The day's checks list, the puck rings, the board issue list | `validate.ts` → `WARN`/`REST`/`EVD`; drawn in `html.ts` (day warnings), `board.ts` (issue list), `highlights.ts` (rings) | every `validate()` run; re-read, never cached |
+| **Warnings** | The day's checks list, the puck rings, the board issue list | `validate.ts` → `WARN`/`REST`/`EVD`; drawn in `html.ts` (day warnings), `board.ts` (issue list), `highlights.ts` (rings) | every `validate()` run; re-read, never cached. Since 23 Aug 26 the run counter and Monday's crew rest also seed from the adjacent week via `engine/weekctx.ts` (Flow F) |
 | **Layout / geometry** | Row heights, column widths, board node count, overflow | `scheduler.css` (measured contracts), the string builders | gated by `e2e/geometry.spec.ts` + `perf-port.cjs` DOM ceilings |
 | **History (edit log)** | The list is NAMED "Edit history" on every surface since 23 Aug 26 (was "Changes"), newest first; the board bubble; opened from the topbar's `#histBtn` as well as the board | `editlog.ts` (`ELOG`), `HistoryModal.tsx`, `histbubble.ts` | `markEdit`/`logEdit`/`logAction`, only when BOTH from/to values are passed |
 | **Undo / redo** | Step back/forward through snapshots | `state/history.ts` (`HIST`, `histPush`/`histApply`) | every mutation batch pushes one snapshot |
@@ -200,6 +200,32 @@ instant, and a within-week swipe never glides. **All week label/Monday math is o
 that names a week or steps one must go through it, not a second literal. Every
 `data-wk` value is still an arbitrary `dd/mm/yyyy` Monday, so the shared
 `interactions.ts` handler is unchanged — the engine builds any week already.
+
+### Flow F — `validate()` reads across the week line (23 Aug 26)
+```
+validate() (fired by any Flow A/E trigger, on the LOADED week only)
+  → RUNLEN pre-pass: weekctx.ts:seedRunIn(CURWEEK, VCONF.maxRun)
+      → weekBundle(prevWeek[, prevWeek-2 if maxRun>7]) + global INPUTS
+        (pure reads — no live DAYS for the prior week, nothing mutated)
+      → seeds each person's run-in count walking into Monday
+  → CREW_REST pre-pass, Monday only: weekctx.ts:prevSundaySeed(CURWEEK)
+      → weekBundle(prevWeek) + INPUTS → stands in for ev[idx-1];
+        di:null so markTrace no-ops (no synthetic trace on the loaded week)
+      → REST[0] (Monday's crew-picker rest-clear times) is now real
+  → midnight input tails at the loaded week's Monday/Sunday edges
+      → weeks-data.ts:edgeDate + events.ts:buildDay read the adjacent
+        week's date labels through the SAME global INPUTS — not a second
+        data source, no live DAYS for that week either
+  surfaces repainted: the warnings list, pucks/chips/rings (highlights.ts),
+  the crew picker's REST times (avail.ts), the Logic tab's CREW_REST/DAYS_RUN rows
+```
+Every flag still lands on the day it breaks: next Monday's rest bust or
+run-break appears when next week is loaded and validated, not as a hint on
+this Sunday. A non-loaded week's seed is only ever what `weekBundle` still
+holds — its authored/remembered SEED shape (see `engine/weekctx.ts`'s header)
+— `SCHED`/publish state and forgotten manual edits are not read, matching
+what `loadWeek` (Flow E) itself forgets on switch. An unauthored adjacent
+week seeds nothing.
 
 **Every flow ends by repainting through `notify()` (or the board lane).** State
 that lives outside the funnel + `HOOKS.storeBackend` is invisible to undo, AL
@@ -402,6 +428,13 @@ check the other):
   that iterates aircrew and ask whether a `pers` body belongs in it. They are
   seeded but kept OUT of the seed schedule, which is what keeps parity clean.
 
+- **`shiftWeekKey` (`engine/weeks-data.ts`) vs `shiftWeek` (`ui/weeknav.ts`)
+  — a DELIBERATE second copy (23 Aug 26).** Both step a `dd/mm/yyyy` Monday
+  key by whole weeks; the engine needs one to walk `weekctx.ts`'s seed reads
+  back without importing `ui/` (an engine→ui import would be a layering
+  violation worse than the duplication). Not yet pinned by a test asserting
+  the two agree across month/year/leap boundaries — change either's date
+  math and walk the other by hand until that test exists.
 - **A draft's stow can lag the live day (15 Aug 26).** `SCHED.drafts[di]`
   holds each entry's own blob; the live `DAYS[di]` is only the SELECTED
   entry's working copy, and every OTHER entry's blob is refreshed solely by

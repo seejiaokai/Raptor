@@ -94,7 +94,7 @@ export function lgRules(){
    sub:'The rule the squadron cares about most, and the one with the most edge cases.',
    rows:[
     {sev:'hard',code:'CREW_REST',set:['crewRest'],src:()=>`VCONF.crewRest ${VCONF.crewRest}`,
-     t:()=>`Aircrew flying today must have ${lgV(lgT(VCONF.crewRest))} clear before <b>the first thing on their programme</b> — the report, or anything scheduled earlier: a meeting, a sim, a duty post, or a duty-and-commitments input with typed times.<span class="why">The owner's rule (21 Aug 26): this person needs ${lgT(VCONF.crewRest)} of rest in order to fly. An 08:00 meeting ahead of a 10:00 in-time is what starts his day, so it is what the warning measures to and names — whether it sits on the Ground Programme or came in as an input. A day with no flying asks for no rest. Exactly ${lgT(VCONF.crewRest)} is legal — the bar is strictly greater-than.</span>`},
+     t:()=>`Aircrew flying today must have ${lgV(lgT(VCONF.crewRest))} clear before <b>the first thing on their programme</b> — the report, or anything scheduled earlier: a meeting, a sim, a duty post, or a duty-and-commitments input with typed times.<span class="why">The owner's rule (21 Aug 26): this person needs ${lgT(VCONF.crewRest)} of rest in order to fly. An 08:00 meeting ahead of a 10:00 in-time is what starts his day, so it is what the warning measures to and names — whether it sits on the Ground Programme or came in as an input. Monday checks against the previous week's Sunday, not against nothing — a late Sunday finish can still bust a Monday report. A day with no flying asks for no rest. Exactly ${lgT(VCONF.crewRest)} is legal — the bar is strictly greater-than.</span>`},
     /* set:['reportLead'] — the owner circled this exact row asking "is this
        editable as well? The number?" (21 Aug 26). The 3h IS reportLead,
        already editable further up under "The clock a day runs on"; the box
@@ -119,7 +119,7 @@ export function lgRules(){
     {sev:'note',code:'LONGDAY',set:['longDay'],src:()=>`VCONF.longDay ${VCONF.longDay}`,
      t:()=>`More than ${lgV(lgT(VCONF.longDay))} on the books, first commitment to last, is a <b>long work day</b> — a grey note, not a warning.`},
     {sev:'hard',code:'DAYS_RUN',set:['maxRun'],src:()=>`VCONF.maxRun ${VCONF.maxRun}`,
-     t:()=>`Nobody may be on the programme more than <span class="val">${VCONF.maxRun}</span> days in a row — a <b>break day</b> is due. The Warning lands on the day that breaks the limit, which is the day to clear.<span class="why">Every kind of tasking counts: a flight, a duty post, a sim, a ground item, a programme row. Leave and downchits are not tasking, so a day off resets the count.</span>`},
+     t:()=>`Nobody may be on the programme more than <span class="val">${VCONF.maxRun}</span> days in a row — a <b>break day</b> is due. It is counted across the week boundary — last week's tail carries in — so a run that started before Monday still catches. The Warning lands on the day that breaks the limit, which is the day to clear.<span class="why">Every kind of tasking counts: a flight, a duty post, a sim, a ground item, a programme row. Leave and downchits are not tasking, so a day off resets the count.</span>`},
    ]},
 
   {g:'Briefs and debriefs',
