@@ -2628,9 +2628,18 @@ body.sb-lock{overflow:hidden}
    control. The phone block below turns the wrapper into the real row. */
 .sb-nav{display:contents}
 .sb-nav .sb-arrow{display:none}
-.sb-days{display:flex;gap:5px}
+.sb-days{display:flex;gap:5px;align-items:center}
 .sb-days .sbday{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer}
 .sb-days .sbday.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+/* THE WEEK-JUMP ARROWS flanking the day chips (board.ts dayTabsHTML). Chip-
+   shaped so they read as part of the strip, but glyph-only and muted, so the
+   dated days stay the emphasis; a hair of margin sets each off from the row it
+   bounds. Inside #sbDays, so display:none on a phone with the rest of the
+   strip — the phone board steps days with its own edge arrows. */
+.sb-days .sbweek{padding:4px 8px;color:var(--ink-3);font-size:15px;line-height:1;font-weight:700}
+.sb-days .sbweek:first-child{margin-right:3px}
+.sb-days .sbweek:last-child{margin-left:3px}
+.sb-days .sbweek:hover{color:var(--ink);border-color:var(--edge-2)}
 /* SEARCH + HIGHLIGHT ON THE BAR (owner, 23 Aug 26). Both live inside .sb-nav
    in the markup; up here .sb-nav is display:contents, so they flow into the
    bar's flexible middle beside the day chips. The chips strip .sb-hl is

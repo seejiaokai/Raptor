@@ -15,7 +15,7 @@ import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/draf
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
-import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, wireDayDots, wireParkedRosScroll, wireWarnSplit } from './board'
+import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit } from './board'
 import { CXR_CFG, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsReset, cxrAreStandard } from '../engine/cxreasons'
 import { canEditSched } from '../state/auth'
 import { refreshHighlights } from './highlights'
@@ -311,7 +311,7 @@ export function SchedBoard() {
               desktop and dots on a phone, so there is one list, one click
               handler, and a tap on a dot still jumps straight to that day */}
           <div className="sb-days" id="sbDays" ref={daysRef}
-            onClick={e => { const t = (e.target as HTMLElement).closest('[data-sbtab]') as HTMLElement | null; if (t) boardTab(+t.dataset.sbtab!) }} />
+            onClick={e => { const t = (e.target as HTMLElement).closest('[data-sbtab],[data-sbweek]') as HTMLElement | null; if (!t) return; if (t.dataset.sbweek != null) boardWeekStep(+t.dataset.sbweek); else boardTab(+t.dataset.sbtab!) }} />
           {/* SEARCH + HIGHLIGHT in the freed middle of the day row (owner, 23
               Aug 26 — the phone dots left it empty between the arrows). On
               desktop .sb-nav is display:contents, so these flow into the

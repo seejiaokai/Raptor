@@ -10,7 +10,7 @@ import { initStore, setSession, notify, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { ROSDAY, setRosDay } from '../state/view'
 import * as view from '../state/view'
-import { hsSet, panDays, rosDayFollow } from './pan'
+import { hsSet, panDays, rosDayFollow, weekScrollMax } from './pan'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -130,6 +130,63 @@ describe('week panning (tfin)', () => {
     await act(async () => { panDays(-1) })
     expect(CURWEEK, 'the previous week loaded').toBe('06/07/2026')
     await act(async () => { loadWeek('13/07/2026') })
+  })
+
+  /* THE WEEKEND MUST REACH THE FRONT BEFORE THE ARROW CROSSES (owner, 23 Aug
+     26 — "Friday not aligned on the far left … Saturday and Sunday out of
+     selection of the placeholders"). On a wide screen three day-columns show at
+     once; the ceiling used to be "Sunday jammed flush right", which left Friday
+     at the front and the weekend unreachable. It is now "the last live day at
+     the front" — the peek preview is the runway — so the arrow walks every day
+     to the front (Sat, then Sun) and crosses only on the press PAST Sunday. */
+  it('weekScrollMax on desktop is the last live day at the FRONT, not jammed right', () => {
+    const w = $('#vWeek')
+    const live = $$('#vWeek .day:not(.peek)')
+    live.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: 9000, configurable: true }) // peek runway well past Sunday
+    Object.defineProperty(w, 'clientWidth', { value: 1692, configurable: true }) // three days to a screen
+    // (liveDays-1) * step = 6 * 564, NOT last.right - clientWidth (which would be far smaller)
+    expect(weekScrollMax(w)).toBe(6 * 564)
+  })
+
+  it('the › arrow walks Saturday then Sunday to the front, and crosses only past Sunday', async () => {
+    const w = $('#vWeek')
+    const live = $$('#vWeek .day:not(.peek)')
+    live.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: 9000, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1692, configurable: true })
+    let landed = -1
+    ;(w as any).scrollTo = (o: any) => { landed = o.left; (w as any).scrollLeft = o.left }
+    w.scrollLeft = 0
+    const seen: number[] = []
+    for (let i = 0; i < 6; i++) { panDays(1); seen.push(landed) }   // Tue,Wed,Thu,Fri,Sat,Sun fronts
+    expect(seen, 'each press lands the next day at the front, up to Sunday').toEqual([564, 1128, 1692, 2256, 2820, 3384])
+    // now sitting on Sunday-at-front — the NEXT › crosses to next week's Monday
+    await act(async () => { panDays(1) })
+    expect(CURWEEK, 'only the press past Sunday crosses the week').toBe('20/07/2026')
+    expect(w.scrollLeft, 'and lands on Monday').toBe(0)
+    await act(async () => { loadWeek('13/07/2026') })
+  })
+
+  /* ONE PRESS = ONE DAY EVEN MID-GLIDE (owner, 23 Aug 26 — "twice on Tuesday to
+     get to Wednesday"). The arrow scroll is a ~300ms smooth glide; a second
+     press that lands before it finishes must count from where the last press
+     was HEADING, not the half-finished scrollLeft. */
+  it('a second press during the glide still advances a whole day', () => {
+    const w = $('#vWeek')
+    const live = $$('#vWeek .day:not(.peek)')
+    live.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: 9000, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1692, configurable: true })
+    let landed = -1
+    ;(w as any).scrollTo = (o: any) => { landed = o.left; /* NOTE: do NOT settle scrollLeft — simulate mid-glide */ }
+    w.scrollLeft = 0
+    panDays(1)                    // commands 564 (Tuesday), glide begins
+    expect(landed).toBe(564)
+    w.scrollLeft = 300            // still mid-glide, 300 of the way to 564
+    panDays(1)                    // second press before it settles
+    expect(landed, 'counted from the commanded 564, not the mid-glide 300 → Wednesday').toBe(1128)
+    w.scrollLeft = 1128
   })
 
   it('panning the week walks the palette along, debounced', async () => {
