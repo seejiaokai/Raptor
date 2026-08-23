@@ -236,6 +236,25 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   bullet leaves the list once the ship report lands; the durable contracts
   moved to `docs/ui-contracts.md` in the same PR.
 
+- **THE CROSS-CHAT PORT (22 Aug 26, after the evening batch).** A parallel
+  chat had built five more owner asks on a pre-batch `main` (its draft PR
+  #296): phone Common Programme stacks its times into one TIME column so
+  RMKS sits beside the pucks (view page, `nth-child` in the ≤820px block —
+  parity-safe); the BOARD's Common Programme drops its Detail column and
+  collapses onto the shared `c6r` grid (no `.cprog` shape left); the board
+  sign-off shares `.day-sign`'s compact inner CSS with a phone-only 50%
+  flex-basis (two pills per row); the phone view-page calendar icon sits
+  far LEFT aligned with the DRAFT banner; and the month calendar's page
+  turns SLIDE in from the travelled side (`useLayoutEffect` on the same
+  `.ic-grid` — no re-key, so the gesture listeners survive; no-op under
+  reduced-motion and jsdom). The owner caught the split, told the old chat
+  to stand down, and this session merged that branch onto the batch: two
+  conflict files (`scheduler.css` — union: board-sign share + the day-sign
+  desktop one-row block below the unconditional rules, `.wkseg` hide + the
+  far-left `.wknav-m`; `InputsCal.tsx` — import union, the slide effect
+  auto-merged onto the redesigned grid). **Owner hold: do NOT merge or
+  publish this port until he says so** — it ships as its own draft PR.
+
 - **Both owner decisions reserved off the Inputs month calendar are CLOSED
   (22 Aug 26).** (1) Person scope: admin files inputs for anyone on both
   the page and the calendar; a member only for the view-as person — the
