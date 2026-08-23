@@ -12,6 +12,7 @@ import { daySnapOf, dayApproved } from '../engine/publish'
 import { isDraftVer } from '../engine/drafts'
 import { dayHTML, dayIssuedHTML, withDaySnap } from './html'
 import { refreshHighlights } from './highlights'
+import { beginGlide } from './weekglide'
 import { useVersion } from './useStore'
 
 export function ViewWeek() {
@@ -53,6 +54,9 @@ export function ViewWeek() {
     })
     const p = prev.current
     const sl = root.scrollLeft
+    /* capture the outgoing week for the cross-week glide BEFORE the DOM is
+       mutated below — null unless this repaint is a phone week cross */
+    const runGlide = beginGlide(root)
     let whole = !p || p.length !== html.length || root.children.length !== html.length
     if (!whole) {
       const secs = [...root.children] as HTMLElement[]
@@ -89,6 +93,8 @@ export function ViewWeek() {
     prev.current = html
     /* the reference re-hangs selection/highlight classes after every render */
     refreshHighlights()
+    /* now the new week is written and landed on its near edge — slide it in */
+    if (runGlide) runGlide()
   }, [version])
 
   return <div className="week" id="vWeek" ref={ref} />

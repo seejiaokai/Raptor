@@ -11,6 +11,7 @@ import { daySnapOf } from '../engine/publish'
 import { paletteHTML, paletteDay } from './palette-html'
 import { ARM, CARRYDAY, CURPAGE, DPREV, WEEKJUMP, setCarryDay, setWeekJump, scrollWeekToDay } from '../state/view'
 import { refreshHighlights } from './highlights'
+import { beginGlide } from './weekglide'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
 
@@ -39,6 +40,9 @@ export function EditWeek() {
     })
     const p = prev.current
     const sl = root.scrollLeft
+    /* capture the outgoing week for the cross-week glide BEFORE the DOM is
+       mutated below — null unless this repaint is a phone week cross */
+    const runGlide = beginGlide(root)
     const whole = !p || p.ed !== ed || p.html.length !== html.length || root.children.length !== html.length
     if (!whole) {
       const secs = [...root.children] as HTMLElement[]
@@ -68,6 +72,8 @@ export function EditWeek() {
     }
     prev.current = { ed, html }
     refreshHighlights()
+    /* now the new week is written and landed on its near edge — slide it in */
+    if (runGlide) runGlide()
   }, [version])
 
   return <div className="week" id="eWeek" ref={ref} />

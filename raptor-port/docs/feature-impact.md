@@ -191,7 +191,11 @@ window + a calendar, and navigation is continuous (22 Aug 26):** the desktop seg
 draw `weekWindow(CURWEEK)` (prev·current·+1·+2, re-centring), the `WeekCal` month
 picker jumps to any week, and the phone view/edit carousel crosses weeks by SWIPE
 (`pan.ts` edge-overswipe → `loadWeek`, landing the scroll via `view.WEEKJUMP` in
-the ViewWeek/EditWeek repaint). **All week label/Monday math is one drift-seam in
+the ViewWeek/EditWeek repaint). **That phone cross GLIDES (23 Aug 26):** the
+WEEKJUMP branch calls `weekglide.ts:beginGlide`, which clones the outgoing week
+and slides it off while the new one slides in — a phone-only visual layer over the
+same `loadWeek`+WEEKJUMP flow, no new data path. Desktop arrow crosses stay
+instant, and a within-week swipe never glides. **All week label/Monday math is one drift-seam in
 `ui/weeknav.ts`** (`mondayOf`/`shiftWeek`/`weekWindow`/`dayIndexInWeek`); any date
 that names a week or steps one must go through it, not a second literal. Every
 `data-wk` value is still an arbitrary `dd/mm/yyyy` Monday, so the shared
