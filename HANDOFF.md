@@ -1544,9 +1544,10 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
     `docs/engine-rules.md` §DAYS_RUN, §Crew rest, "The midnight tail" +
     "AND THE TAIL RUNS BOTH WAYS"; flow: `docs/feature-impact.md` Flow F.
     The tail edges are pinned by `audit-c-tail.test.ts` (its fixtures flipped
-    to positive pins 23 Aug 26); the run-counter and crew-rest seed reads
-    themselves have no dedicated test yet — the next session should add one
-    before trusting this further.
+    to positive pins 23 Aug 26); the run-counter and crew-rest seed reads are
+    pinned by `crossweek.test.ts` (real seed data + the shiftWeekKey drift
+    seam) and `weekctx.test.ts` (synthetic adjacent weeks: the hard/tight
+    split, the maxRun>7 two-week walk, the acc/xweek bypasses).
   - **Exempt-line pucks ring from their OWN red rules only** (owner, 11 Aug
     26 — asked and answered twice, settled the same day): an SC spare or an
     AVALON seat rings for the availability check, a spare also for SC
