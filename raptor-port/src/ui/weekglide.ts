@@ -54,12 +54,24 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
        when swiping"). The slide is page content and belongs under the chrome:
        any value under 60 lets the bar cover it while still floating the clone
        above the ordinary day cards it slides across. */
+    /* scroll-behavior:auto is LOAD-BEARING, not tidiness. The clone carries the
+       week's own class, and `.week` sets scroll-behavior:smooth — so the
+       `ghost.scrollLeft = sl` below was being ANIMATED, not applied: the clone
+       started at 0 (Monday) and smooth-scrolled toward Sunday over a few hundred
+       ms, so the outgoing week visibly rolled through Tuesday, Wednesday,
+       Thursday… WHILE it slid off screen (owner, 23 Aug 26 — "artifacts bleeding
+       between weeks"). The clone must be FROZEN on the day the finger left, so
+       its park is an instant jump, exactly as the incoming week's landing forces
+       scroll-behavior:auto for the same reason (ViewWeek/EditWeek). Same root
+       cause the pan.ts hsSet note calls out: a direct scrollLeft on a .week is
+       animated unless the element opts out. */
     ghost.style.cssText =
       `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;` +
-      `height:${rect.height}px;margin:0;overflow:hidden;pointer-events:none;z-index:40`
+      `height:${rect.height}px;margin:0;overflow:hidden;pointer-events:none;z-index:40;` +
+      `scroll-behavior:auto`
     ghost.innerHTML = html
     document.body.appendChild(ghost)
-    ghost.scrollLeft = sl                     // park the clone where the finger left it
+    ghost.scrollLeft = sl                     // park the clone where the finger left it (instant, per above)
 
     /* start: new week parked one screen off in the swipe direction, clone in
        place. Both set with transitions off so the browser paints the start
