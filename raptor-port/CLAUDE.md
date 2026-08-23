@@ -718,12 +718,20 @@ subscribers.
   (`pan.ts:setWeekTail` → `.week::after` / `--week-tail`, desktop only) so a FREE
   scroll fully right still stops on a whole column; don't reintroduce a fixed
   `calc()` spacer, and don't restore the flush-right ceiling. **One arrow press
-  = one day even mid-glide** (owner, 23 Aug 26 — "twice on Tuesday to get to
-  Wednesday"): an arrow scroll is a ~300 ms smooth glide, and a second press
-  that landed before it finished read a half-finished `scrollLeft` and stepped
-  short. `panDays` now counts from the position the last press COMMANDED while
-  the glide is still in flight toward it (`panBase`), so fast taps each advance
-  a full day; a manual wheel-pan or a new week drops that target. **The DESKTOP
+  = one day even mid-glide, in BOTH directions** (owner, 23 Aug 26 — "twice on
+  Tuesday to get to Wednesday", and its mirror "twice back from Thursday … then
+  the next click jumps to Tuesday"): an arrow scroll is a ~350 ms smooth glide
+  that each fresh press restarts, and rapid taps OUTRUN it — by the second or
+  third press the live `scrollLeft` is still most of a day behind the column the
+  presses have already commanded, so counting the next step from it made every
+  other press cancel the last. `panDays` counts from the position the last press
+  COMMANDED (`panTgt`) while the glide is still in flight toward it, judged by a
+  BURST CORRIDOR from where the burst started (`panAnchor`, the live scrollLeft
+  the first press counted from) to `panTgt` (`panBase`) — a manual wheel-pan or
+  a new week drops the target. The corridor is anchored at the burst start, not
+  the last step: the first cut used the previous step's start (`panPrev`), a
+  one-day window a fast backlog overshoots, which left the back-direction bug
+  alive. Don't narrow it back to the last step. **The DESKTOP
   scheduler board now has week navigation** (owner, 23 Aug 26 — "in scheduler
   board i cant go between weeks except through the calendar"): `‹ ›` week-jump
   chips flank the seven day chips inside `#sbDays` (`board.ts:dayTabsHTML`,
