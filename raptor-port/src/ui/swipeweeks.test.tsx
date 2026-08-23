@@ -114,6 +114,44 @@ describe('a swipe the browser cancels mid-gesture still crosses', () => {
   })
 })
 
+describe('a wave-dense day does not trap the week swipe', () => {
+  /* the owner bug (23 Aug 26 — "stuck to swipe back from Jul 20"): a flying day
+     is almost entirely `.go` wave blocks, and the old handler ceded the whole
+     gesture to a `.go` the instant a touch began inside one, so the week-cross
+     never armed. A block already at its own edge (jsdom never scrolls it) must
+     let the swipe fall through to the week. */
+  const aGo = () => {
+    const g = $('#vWeek .go')
+    expect(g, 'the seed week renders at least one wave block to swipe on').toBeTruthy()
+    return g
+  }
+
+  it('a right swipe begun on a wave block at the left edge still steps back a week', async () => {
+    stubWeek(12)                                   // sitting on Monday, snapped 12px in
+    const g = aGo()
+    await touch(g, 'touchstart', 200)              // finger lands ON a wave block
+    await touch(g, 'touchend', 300)                // and swipes right past threshold
+    expect(CURWEEK, 'the wave block did not eat the back-swipe').toBe('06/07/2026')
+  })
+
+  it('a left swipe begun on a wave block at the right edge still advances a week', async () => {
+    stubWeek(2390)                                 // sitting on Sunday
+    const g = aGo()
+    await touch(g, 'touchstart', 300)
+    await touch(g, 'touchend', 200)
+    expect(CURWEEK, 'the wave block did not eat the forward swipe').toBe('20/07/2026')
+  })
+
+  it('but a wave block that actually scrolled keeps the gesture — no cross', async () => {
+    stubWeek(12)                                   // on Monday, at the week edge
+    const g = aGo()
+    await touch(g, 'touchstart', 200)
+    g.scrollLeft = 60                              // the wave consumed the drag itself
+    await touch(g, 'touchend', 300)
+    expect(CURWEEK, 'a wave the finger actually scrolled owns the swipe').toBe('13/07/2026')
+  })
+})
+
 describe('a vertical-dominant drag at an edge does not cross', () => {
   it('a mostly-downward drag that drifts sideways is not a week swipe', async () => {
     const w = stubWeek(true)

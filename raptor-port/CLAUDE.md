@@ -687,7 +687,17 @@ subscribers.
   the removed title was; the view/edit week is stepped day-to-day by SWIPE, which
   is CONTINUOUS across weeks (swipe off Sunday → next week's Monday, off Monday →
   previous week's Sunday — `pan.ts` edge-overswipe + `WEEKJUMP` landing the
-  scroll in the same repaint). The DESKTOP `‹ ›` arrows are continuous across
+  scroll in the same repaint). **A wave-dense day no longer traps that swipe**
+  (owner, 23 Aug 26 — "stuck to swipe back from Jul 20"): a flying day is almost
+  all `.go` wave blocks (each its own sideways scroller with
+  `overscroll-behavior-x:contain`), and the handler used to cede the whole
+  gesture to a `.go` the instant a touch began inside one — so on a busy Monday
+  the back-swipe had nowhere to begin and stuck, while a bare-ground Sunday
+  crossed fine. Now the block and its scrollLeft are recorded at touch-start and
+  the decision is made at touch-END: if the wave actually scrolled it owned the
+  swipe, but a wave already at its own edge (it never moved) lets the gesture
+  fall through to the week cross. Don't restore the touch-start `.go` bail.
+  The DESKTOP `‹ ›` arrows are continuous across
   weeks too (owner, 23 Aug 26 — completing this decision): stepping past the
   week's last day loads the adjacent week and lands on its near edge, instead
   of the arrows going dead at the ends. DESKTOP landings are instant — no settle

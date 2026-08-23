@@ -330,20 +330,34 @@ const SWIPE_TH = 45
 const EDGE_SLOP = 24
 let swEl: HTMLElement | null = null
 let swStartX = 0, swStartY = 0, swLastX = 0, swLastY = 0, swAtLeft = false, swAtRight = false
+/* THE WAVE BLOCK A GESTURE BEGINS ON, and its scroll position at that instant.
+   A day's flying waves each scroll sideways in their own `.go` block. We used to
+   cede the WHOLE gesture to that block the moment a touch began inside one — but
+   a flying day is almost all wave blocks, so on such a day the week-cross swipe
+   had nowhere to begin and simply stuck (owner, 23 Aug 26 — "stuck to swipe back
+   from Jul 20": Monday is wave-dense, so back never crossed, while Sunday, a bare
+   ground day with no waves, crossed forward fine). A wave block also carries
+   overscroll-behavior-x:contain, so when it is at its own edge it neither scrolls
+   nor chains to the week — a true dead end. So instead of bailing, we REMEMBER the
+   block and its scrollLeft, and decide at touch-END: if the block actually moved,
+   it owned the swipe; if it did not (it was at its edge), the gesture falls
+   through to the week-cross like a touch on any bare part of the day. */
+let swGo: HTMLElement | null = null, swGoSL = -1
 function onWeekTouchStart(e: TouchEvent) {
-  swEl = null
+  swEl = null; swGo = null
   if (window.innerWidth > 820) return
   if (view.CURPAGE !== 'viewsched' && view.CURPAGE !== 'editsched') return
   if (view.SBDAY != null) return                 // the board is open — its arrows own week-stepping
   if (!e.touches || e.touches.length !== 1) return
   const t = e.target as HTMLElement
   if (!t.closest) return
-  if (t.closest('.go')) return                   // an inner wave scroller owns this gesture
+  const go = t.closest('.go') as HTMLElement | null   // an inner wave scroller MAY own this gesture — decided at end
   const w = t.closest('.week') as HTMLElement | null
   if (!w) return
   const max = w.scrollWidth - w.clientWidth
   if (max <= 1) return                           // nothing to be at the edge OF (headless / not laid out)
   swEl = w
+  swGo = go; swGoSL = go ? go.scrollLeft : -1
   swStartX = swLastX = e.touches[0].clientX
   swStartY = swLastY = e.touches[0].clientY
   swAtLeft = w.scrollLeft <= EDGE_SLOP
@@ -373,6 +387,10 @@ function onWeekTouchEnd(e: TouchEvent) {
   /* horizontal intent only: a mostly-vertical drag (paging the day down) that
      drifts sideways past the threshold must not be read as a week cross */
   if (Math.abs(dx) <= Math.abs(dy)) return
+  /* the gesture began inside a wave block that actually scrolled → it owned the
+     swipe, so this is not a week cross. A block that never moved (it was at its
+     own edge) falls through, which is what unsticks a wave-dense day's swipe. */
+  if (swGo && Math.abs(swGo.scrollLeft - swGoSL) > 2) return
   /* right edge + swipe left (content advancing) → next week, land on Monday;
      left edge + swipe right (retreating) → previous week, land on Sunday */
   if (swAtRight && dx <= -SWIPE_TH) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)) }
