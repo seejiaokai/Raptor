@@ -7,7 +7,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
-import { CalIcon, XlsIcon, PdfIcon } from './icons'
+import { CalIcon, XlsIcon, PdfIcon, HistIcon } from './icons'
 import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pendCount } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
@@ -29,7 +29,7 @@ import { routeClick } from './interactions'
 import { routeFocusOut, routeKeyDown } from './textedit'
 import { DayPop, InsightsModal, UserModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
-import { setInsights, setUserModal, setDrawer, setWeekCal } from './pops'
+import { setInsights, setUserModal, setDrawer, setWeekCal, setHistList } from './pops'
 import { Drawer } from './Drawer'
 import { exportCSV, schedRows } from './export'
 import { printSchedPDF } from './printpdf'
@@ -226,11 +226,18 @@ export function Shell() {
               see it when I'm editing to undo if needed"), in the sticky bar
               rather than the filters row that scrolls away. Only while editing;
               the board carries its own pair in its own top bar. Same undo()/
-              redo()/HIST wiring — no new stack. Desktop-facing (hidden with the
-              rest of the bar's controls when the phone bar tightens). */}
+              redo()/HIST wiring — no new stack. BOTH widths since 23 Aug 26
+              (owner): the phone bar shows the trio icon-only, pinned at the
+              scrolling bar's right edge — the board's .bi/.bl split, so one
+              markup path serves both and the accessible name stays the words.
+              The third button opens the EDIT HISTORY list (the renamed changes
+              list) from the shell itself, so the log is reachable without
+              opening the board first. */}
           {page === 'editsched' && <div className="tb-hist">
-            <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}>↶ Undo</button>
-            <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}>↷ Redo</button>
+            <button className="abtn hbtn" id="undoBtn" title="Undo" disabled={HIST.ix <= 0} onClick={() => { undo(); notify() }}><span className="bi">↶</span><span className="bl"> Undo</span></button>
+            <button className="abtn hbtn" id="redoBtn" title="Redo" disabled={HIST.ix >= HIST.stack.length - 1} onClick={() => { redo(); notify() }}><span className="bi">↷</span><span className="bl"> Redo</span></button>
+            <button className="abtn" id="histBtn" title="Edit history — every change this session"
+              onClick={() => { setHistList('all'); notify() }}><span className="bi"><HistIcon /></span><span className="bl"> Edit history</span></button>
           </div>}
           <div className="acct">
             <div className="sel"><label>View as</label>

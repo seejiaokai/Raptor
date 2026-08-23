@@ -406,8 +406,12 @@ export function wireWarnSplit(side: HTMLElement) {
 function histLineHTML(cls: string) {
   if (!view.HISTMODE) return ''
   const n = ELOG.rows.length
+  /* "Edit history", the surface's one name everywhere (owner, 23 Aug 26) —
+     the modal head and the topbar opener say the same words, so the way in
+     and the thing it opens can never read as two features. The count keeps
+     the exact 'N change(s)' / 'No changes yet' wording the tests pin. */
   return `<button class="${cls}" data-histopen title="Every change made this session, newest first">`
-    + `☰ ${n ? `${n} change${n > 1 ? 's' : ''} this session` : 'No changes yet'}</button>`
+    + `☰ Edit history · ${n ? `${n} change${n > 1 ? 's' : ''}` : 'No changes yet'}</button>`
 }
 
 export function dayTabsHTML(di: number) {

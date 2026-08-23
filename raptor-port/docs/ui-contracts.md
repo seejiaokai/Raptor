@@ -2682,13 +2682,19 @@ except where noted:
   deliberately NOT the removed week-wide count pills. What RAISES a bell is left
   for the owner to wire (`markBell(page, who)` is the seam); tapping the bell
   acknowledges the current view's alert. Session-only, wiped on login/logout.
-- **Undo / redo** (`.tb-hist`, `#undoBtn`/`#redoBtn`) moved OUT of the edit page's
-  scroll-away `.filters` row INTO the sticky bar, shown only on the edit page, so
-  they stay in view while the page scrolls (owner: "always see it when I'm
-  editing"). Desktop-facing — hidden under 820px, where the phone board already
-  carries its own pair in its own bar. Same `undo()/redo()/HIST` wiring, no new
-  stack; the topbar memo's deps grew `HIST.ix`/`HIST.stack.length` so the disabled
-  state stays live.
+- **Undo / redo / Edit history** (`.tb-hist`, `#undoBtn`/`#redoBtn`/`#histBtn`)
+  moved OUT of the edit page's scroll-away `.filters` row INTO the sticky bar,
+  shown only on the edit page, so they stay in view while the page scrolls
+  (owner: "always see it when I'm editing"). BOTH widths since 23 Aug 26 (it
+  was desktop-only before): under 820px the trio goes icon-only (the board's
+  `.bi`/`.bl` split) and is PINNED at the right edge of the sideways-scrolling
+  phone bar — the mirror of the burger + mark's left pin, painting the bar's
+  own `--topbar-a/b` gradient vars so the `.editing` blue tint rides along.
+  `#histBtn` opens the Edit-history list (`setHistList('all')` — the renamed
+  changes list, see §History on the board) without needing the board or
+  History mode. Same `undo()/redo()/HIST` wiring, no new stack; the topbar
+  memo's deps carry `HIST.ix`/`HIST.stack.length` so the disabled state stays
+  live.
 
 ## Muting a check, and resizing the checks panel (owner, Aug 26)
 
@@ -2990,6 +2996,15 @@ inside the 820px block.
 body, newest first, whole week by default with a filter for the open day.
 Its footer states plainly that it is per-browser and per-session; that
 limitation is on the surface rather than in a document nobody opens.
+
+**The surface is named "Edit history" now, not "Changes" (owner, 23 Aug 26).**
+The rename is on the SURFACES only — the modal head reads
+`Edit history · newest first / by detail`, the board's `[data-histopen]` line
+reads `☰ Edit history · N change(s)`, and the shell's `#histBtn` opener says
+the same words — while the internals keep their names (`HISTLIST`, `elog*`,
+`histLineHTML`, the `hl-*` classes), because a vocabulary change is not a
+reason to churn every identifier and test hook. The count keeps the exact
+`N change(s)` / `No changes yet` wording the tests pin.
 
 ### The second pass (owner, 11 Aug 26)
 

@@ -119,7 +119,7 @@ export function HistoryModal() {
     <div className="modal" id="histModal" onClick={e => { if ((e.target as HTMLElement).id === 'histModal') close() }}>
       <div className="modal-box" style={{ width: 560 }}>
         <div className="modal-head">
-          <b>Changes · {HISTGROUP ? 'by detail' : 'newest first'}</b>
+          <b>Edit history · {HISTGROUP ? 'by detail' : 'newest first'}</b>
           <button className="x" id="histClose" aria-label="Close" onClick={close}>✕</button>
         </div>
         <div className="hl-filter" role="group" aria-label="Which days to list, and how to group them">
