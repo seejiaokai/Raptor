@@ -6,7 +6,7 @@ import { PEOPLE } from '../engine/people'
 import { SESSION, ME, setMe } from '../state/auth'
 import { CURPAGE } from '../state/view'
 import { notify, setPage, resetSession } from '../state/store'
-import { DRAWER, setDrawer, setWeekCal } from './pops'
+import { DRAWER, setDrawer, setWeekCal, setInsights } from './pops'
 import { useVersion } from './useStore'
 
 export function Drawer() {
@@ -50,6 +50,12 @@ export function Drawer() {
         <div className="drawer-row" id="drawerWeeks">
           <button className="abtn" id="drawerPickWeek"
             onClick={() => { setDrawer(false); setWeekCal('view'); notify() }}>Pick a date…</button>
+          {/* Insights lives here on a phone (owner, 24 Aug 26): the topbar dropped
+              its Insights + Logout buttons so the phone bar could be a clean,
+              non-scrolling row, and this is where the week-insights modal is
+              reached instead. On desktop the topbar button is untouched. */}
+          <button className="abtn" id="drawerInsights"
+            onClick={() => { setDrawer(false); setInsights(true); notify() }}>Week insights</button>
         </div>
         <h4>Account</h4>
         {/* resetSession (state/store.ts) is the one session-change path — the

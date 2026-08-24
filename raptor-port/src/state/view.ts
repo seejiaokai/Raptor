@@ -99,6 +99,15 @@ export function toggleHistMode(){ HISTMODE=!HISTMODE; return HISTMODE }
 export let HLOPEN=false
 export function setHlOpen(v:any){ HLOPEN=!!v }
 export function toggleHlOpen(){ HLOPEN=!HLOPEN }
+/* WHICH highlight GROUP is expanded (owner, 24 Aug 26 — "categorise them into
+   CAT … Type … Quals … these sub categories will expand when selected"). The
+   three group tabs (hlchips.tsx) are always shown; picking one reveals its
+   chips and collapses the others, ''=all collapsed. Same session-only view
+   state as HLOPEN above, and NOT cleared on loadWeek for the same reason — the
+   board's cross-week arrows would otherwise fold the strip mid-scrub. */
+export let HLGROUP=''
+export function setHlGroup(v:any){ HLGROUP=v||'' }
+export function toggleHlGroup(g:any){ HLGROUP = HLGROUP===g ? '' : g }
 
 /* PER-INPUT LATE DISMISSAL (owner, 21 Aug 26 — replaced the 20 Aug global
    declutter button). A scheduler taps the LATE chip on a board input row to
@@ -551,6 +560,16 @@ export function personMatchesCat(p:any,f:any){
   if(f==='SXO')return !!(p.quals&&p.quals.sxo);
   if(f==='SANS')return !!p.san;
   if(f==='OCU')return isOcu(p.q);
+  /* the Quals group (owner, 24 Aug 26) — the currency/qualification flags
+     deriveQuals writes onto p.quals (engine/people.ts). daar/naar can be 'I'
+     (instructor) or true; either counts as "holds it", so a plain truthiness
+     read is right. Guarded on p.quals like the SXO case, so a placeholder or a
+     man with no quals block never throws. */
+  if(f==='SCD')return !!(p.quals&&p.quals.scDay);
+  if(f==='SCN')return !!(p.quals&&p.quals.scNight);
+  if(f==='DAAR')return !!(p.quals&&p.quals.daar);
+  if(f==='NAAR')return !!(p.quals&&p.quals.naar);
+  if(f==='TF')return !!(p.quals&&p.quals.tf);
   return false;
 }
 export function personMatchesHL(p:any){

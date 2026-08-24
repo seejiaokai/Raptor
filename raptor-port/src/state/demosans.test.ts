@@ -109,7 +109,7 @@ describe('seedDemoSans, wired through initStore()', () => {
 
     // and through the shared builder directly, the same call sanscards.test.tsx makes
     const section = sansSectionHTML(DAYS[di], di, true)
-    expect(section).toContain('SANS Availability')
+    expect(section).toContain('SANS Avail')
     expect(cardCount(section)).toBe(2)
   })
 

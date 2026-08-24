@@ -583,7 +583,7 @@ export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
      lists, so it gets its own add HERE, "likewise"): opens the same dialog,
      locked to the SANS type and offering SANS aircrew only */
   const addBtn=ro?'':`<button class="sb-addinp" data-inpadd="${di}.s" title="Add a SANS availability for this day">+ Add</button>`;
-  let s=`<div class="sb-panel sansav"><div class="sb-ph">SANS Availability <span class="sub">what SANS aircrew are offering${ro?'':' — press a card to edit'}</span>${addBtn}</div><div class="sb-pb">`;
+  let s=`<div class="sb-panel sansav"><div class="sb-ph">SANS Avail <span class="sub">what SANS aircrew are offering${ro?'':' — press a card to edit'}</span>${addBtn}</div><div class="sb-pb">`;
   s+=rows.length?sansCardsHTML(rows,di,ro):`<div class="sb-empty">No SANS availability filed for this day.</div>`;
   return s+`</div></div>`;
 }

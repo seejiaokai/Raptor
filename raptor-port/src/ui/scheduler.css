@@ -354,6 +354,28 @@ a{color:var(--accent)}
 .fchip{min-width:34px;text-align:center;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);padding:6px 11px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:600}
 .fchip:hover{border-color:var(--edge-2);color:var(--ink)}
 .fchip.on{background:rgba(59,198,232,.16);color:var(--accent);border-color:rgba(59,198,232,.6)}
+/* THE THREE HIGHLIGHT GROUP TABS (owner, 24 Aug 26 — CAT / Type / Quals). A tab
+   reads as a category header (bolder, wider-tracked than a chip) with a caret
+   that turns down when its group is open; the group's chips sit inline right
+   after it and stay display:none until .hl-grp.open (every key stays in the DOM
+   — the drift-seam doctrine and the jsdom tests both want them present, so this
+   is visibility, not existence). `.has` lights a tab and shows a count whenever
+   one of its chips is active while collapsed, so a live filter is never hidden
+   behind a shut tab. */
+.hl-grp{display:inline-flex;align-items:center;gap:5px}
+.hl-gtab{display:inline-flex;align-items:center;gap:5px;background:var(--panel-2);border:1px solid var(--edge);
+  color:var(--ink-2);padding:6px 10px;border-radius:9px;cursor:pointer;font-size:11px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase}
+.hl-gtab:hover{border-color:var(--edge-2);color:var(--ink)}
+.hl-gtab::after{content:'';width:6px;height:6px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;
+  transform:rotate(-45deg);transition:transform .15s ease;opacity:.6;margin-left:1px}
+.hl-gtab.open{color:var(--ink);border-color:var(--edge-2);background:var(--raised)}
+.hl-gtab.open::after{transform:rotate(45deg);opacity:.8}
+.hl-gtab.has{color:var(--accent);border-color:rgba(59,198,232,.5)}
+.hl-gn{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;padding:0 4px;
+  border-radius:999px;background:rgba(59,198,232,.2);color:var(--accent);font-size:9px;font-weight:800;letter-spacing:0}
+.hl-gchips{display:none;align-items:center;gap:5px}
+.hl-grp.open .hl-gchips{display:inline-flex}
 .filters .div{width:1px;align-self:stretch;background:var(--edge);margin:0 4px}
 /* the Highlight lead is TWO elements and this pair of rules is what picks one
    (Shell.tsx renders both — the histln/histln-top precedent): desktop keeps a
@@ -2339,8 +2361,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      HIGHLIGHT pieces fold — the exports, the search pin and the week seg's
      .wkdiv are untouched, which is why the divider inside HlChips has its own
      .hl-div class instead of being a bare .div nothing could tell apart. */
-  #page-viewsched .filters:not(.hl-open) .fchip[data-hl],#page-editsched .filters:not(.hl-open) .fchip[data-hl],
-  #page-viewsched .filters:not(.hl-open) .hl-div,#page-editsched .filters:not(.hl-open) .hl-div{display:none}
+  #page-viewsched .filters:not(.hl-open) .hl-grp,#page-editsched .filters:not(.hl-open) .hl-grp{display:none}
   /* the two-element lead swaps: the desktop label goes, the toggle arrives.
      .hl-lab must be beaten here — the pin rule below used to target .lab and
      would have re-shown it (display:flex) at higher specificity. */
@@ -2394,58 +2415,60 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      It used to wrap onto four rows (182px of chrome before you saw any schedule).
      Now it is a single nowrap strip that scrolls sideways, with the mark + burger
      pinned left, and every control inside it tightened a notch. */
-  .topbar{gap:9px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
-    scrollbar-width:none;padding:8px 12px}
+  .topbar{gap:8px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;padding:8px 14px}
   .topbar::-webkit-scrollbar{display:none}
   .topbar>*{flex:0 0 auto}
-  /* THE STICKY LEAD PAINTS THE BAR, OPAQUELY (owner, 20 Aug 26 — the leak).
-     The bar scrolls sideways and the burger and mark are pinned over it, so
-     whatever they do not cover, the scrolling controls show through. The mark
-     used to wear a gradient fading to TRANSPARENT on its right — a soft edge
-     that reads as a bleed the moment a pill passes under it — and two gutters
-     were never covered at all: the bar's 12px left padding (outside the
-     burger's pinned box) and the 5px between the burger and the mark's 41px
-     offset. The mark now paints the bar's own two stops at full alpha, and the
-     two gutters are painted by a flat left box-shadow on each — flat rather
-     than the gradient because 12px and 6px of a two-stop ramp that spans six
-     RGB points cannot show a seam, and a pseudo-element for each would be two
-     more nodes on the phone's tightest bar. */
-  .topbar .burger,.topbar .mark{position:sticky;left:0;z-index:2}
-  .topbar .burger{box-shadow:-12px 0 0 var(--topbar-a)}
-  .topbar .mark{background:linear-gradient(180deg,var(--topbar-a),var(--topbar-b));
-    box-shadow:-6px 0 0 var(--topbar-a);padding-right:10px;left:41px}
+  /* THE PHONE TOP BAR IS A CLEAN, NON-SCROLLING ROW (owner, 24 Aug 26 — "the
+     top bar on mobile looks bad, unlike the desktop version. And when I scroll
+     I could see the buttons design leaking"). The old bar crammed six controls
+     into a sideways scroller, then pinned the burger, the mark and the undo/
+     redo trio OVER it with opaque box-shadows so they'd stay put while the
+     middle scrolled. That overlap WAS the leak: the moment the strip scrolled,
+     a control slid out from behind a pin and peeked past it (the "nc · slow"
+     sync pill bleeding out from under the RAPTOR mark). Two moves retire both
+     the clutter and the leak together:
+       1. The two SECONDARY actions leave the bar for the burger drawer —
+          Logout already lived there, and Insights joins it (Drawer.tsx). What
+          remains — burger, mark, sync, bell and the edit-only undo/redo/history
+          trio — fits ONE row on every common phone, so the bar no longer needs
+          to scroll at all, and reads as uncluttered as the desktop bar.
+       2. With nothing overflowing, nothing is pinned. Every sticky position and
+          opaque box-shadow patch that caused the leak is gone; the bar is a
+          plain flex line. overflow-x:auto is kept only as a safety net for a
+          sub-340px screen, where the row now scrolls as ONE piece — no pins, so
+          no control can emerge from behind another. */
   .topbar .mark .k{font-size:8.5px;letter-spacing:.14em}
   .topbar .mark .v{font-size:15px}
   .topbar .mark .rglyph{width:24px;height:24px}
   .burger{width:32px;height:30px}
-  /* UNDO / REDO / EDIT HISTORY, PINNED RIGHT (owner, 23 Aug 26 — the trio now
-     rides the phone bar too). Icon-only (.bl off), and PINNED at the right
-     edge of this sideways-scrolling bar — the mirror of the burger + mark's
-     left pin above, built the same way: sticky, opaque, and the gutter the
-     pin cannot cover (the bar's 12px right padding) painted by a flat
-     box-shadow. Like the mark, it paints the bar's own gradient VARS rather
-     than a sampled colour — .editing swaps --topbar-a/b for the blue edit
-     tint, and painting the vars means the pin re-tints with the bar for free
-     instead of standing out as a stale grey patch. */
-  /* order:9 makes the trio the LAST (rightmost) child of .spring on a phone —
-     load-bearing, not cosmetic. It is FIRST in source order, so at its natural
-     flow position (just right of the mark) `right:0` never engaged and the
-     opaque pin simply sat there OVERLAPPING the sticky-left RAPTOR mark the
-     moment the bar scrolled — the trio jammed over the "R" the owner circled
-     (23 Aug 26). Pushed to the visual right, its natural position is past the
-     right edge, so `right:0` finally pins it to that edge — the true mirror of
-     the burger + mark's left pin, always in view while editing, never colliding. */
-  .tb-hist{display:inline-flex;order:9;position:sticky;right:0;z-index:2;
-    background:linear-gradient(180deg,var(--topbar-a),var(--topbar-b));
-    box-shadow:12px 0 0 var(--topbar-a);align-self:stretch;align-items:center;padding-left:5px}
+  /* Insights + Logout move into the burger drawer on a phone (Drawer.tsx); the
+     empty .acct (its "View as" select is already phone-hidden) leaves too, so
+     it stops eating a flex gap. The bar keeps only what a scheduler reaches
+     without opening the menu. */
+  .topbar #insightBtn,.topbar #logout,.spring .acct{display:none}
+  /* UNDO / REDO / EDIT HISTORY (owner, 23 Aug 26 — the trio rides the phone bar
+     while editing). Icon-only (.bl off) and ordered LAST so it sits at the
+     thumb-friendly right edge. No longer sticky: the decluttered row fits, so
+     the trio just sits in flow with the same clean look as the desktop bar. */
+  .tb-hist{display:inline-flex;order:9;align-items:center;gap:6px}
   .tb-hist .abtn{width:30px;min-width:0;height:30px;padding:0;display:inline-flex;
     align-items:center;justify-content:center}
   .tb-hist .bl{display:none}
-  .spring{gap:6px;flex-wrap:nowrap}
+  .spring{gap:7px;flex-wrap:nowrap}
   .topbar .pillbtn{padding:5px 9px;font-size:11px;gap:5px}
   .topbar .pillbtn .dot{width:6px;height:6px}
   .topbar .abtn{padding:5px 9px;font-size:11px}
   .topbar .fastsync{padding:5px 8px;font-size:10.5px}
+  /* On the EDIT page the undo/redo/history trio joins the bar, so the sync pill
+     sheds its label down to a single status dot to make the room — the trio and
+     the bell are what a scheduler reaches mid-edit, and the sync state still
+     reads off the dot's colour. The view page keeps the full "Sync · slow"
+     pill (it has the room). This is what lets the edit bar fit one clean row
+     instead of scrolling the history button off the right edge. */
+  .topbar.editing .fastsync #syncLbl{display:none}
+  .topbar.editing .fastsync{padding:6px 8px}
+  .topbar.editing .fastsync .dot{margin:0}
   /* ---- flying grid on a phone: THE WHOLE LINE FITS, no sideways swipe ----
      Never scaled: iOS/WebKit shrinks boxes under CSS zoom but leaves the text at its
      specified px, which clipped B/TO, LD and the puck callsigns. Instead the phone
@@ -3320,6 +3343,11 @@ button.sarole:hover{border-color:var(--accent);color:var(--accent);opacity:1}
    reads as "SANS" (--san, e.g. .sanscard-l, .puck.san) — that accent used to
    live on the removed .rh.sans rules, reused here rather than left dead. */
 .rall.rsans .rh2{color:var(--san)}
+/* PERSONNEL as a full-width band (owner swap, 24 Aug 26) — ground crew left the
+   narrow seat-column grid for their own band under SANS Avail. .rall is a
+   column (header on top), so the pucks live in their own row-wrapping strip
+   below the header instead of stacking one-per-line down a puck-wide column. */
+.rall.rpers .rpers-pucks{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-start}
 .rsans-row{display:flex;align-items:center;gap:6px}
 /* a SIBLING of .rpuck, never nested inside it — nesting the badge into the
    puck's own flex column re-triggers the 74×74 flex-basis trap a struck

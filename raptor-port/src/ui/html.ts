@@ -475,7 +475,7 @@ export function sansSectionHTML(d:any,di:any,ed:any){
   if(!ed)return '';
   const rows=INPUTS.filter((inp:any)=>inputCoversDate(inp,d.dt)&&isSansAvail(inp.type));
   if(!rows.length)return '';
-  return `<div class="sub plist one sec sec-sans"><div class="sub-h">SANS Availability`
+  return `<div class="sub plist one sec sec-sans"><div class="sub-h">SANS Avail`
     +`<span class="pl-hint">press a card to edit</span></div>`
     +sansCardsHTML(rows,di,false)+`</div>`;
 }

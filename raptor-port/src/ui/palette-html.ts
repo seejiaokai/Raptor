@@ -148,14 +148,34 @@ export function paletteHTML(di:any,opts?:any){
     : '';
   const head=o.head===false?'':`<div class="er-h">${ARM?'Tap a name to plan':'Aircrew'}`
     +(d.dow?` · ${dayLbl}`:'')+`</div>`;
-  /* Personnel (ground crew) get their own column, shown only when the squadron
-     actually has some — a squadron with no ground crew never sees an empty
-     third column. They can be dropped into a rear seat, a duty desk, a ground
-     row or a sim; slotBar strikes them the moment a FRONT seat is armed. */
+  /* Personnel (ground crew) — shown only when the squadron actually has some.
+     They can be dropped into a rear seat, a duty desk, a ground row or a sim;
+     slotBar strikes them the moment a FRONT seat is armed. Same sorted list,
+     free count and arm-greying col() computes, drawn as a full-width band whose
+     pucks wrap horizontally rather than a narrow seat column — see the swap
+     comment below. */
   const hasPers=sel('GND').length>0;
+  const persBand=()=>{
+    const act=sel('GND'), free=act.filter((id:any)=>!rank(id)).length;
+    let colWhy='';
+    if(armKey){const whys=act.map((id:any)=>slotBar(id,armKey,arules)).filter(Boolean);
+      if(whys.length>=2&&whys.every((w:any)=>w===whys[0]))colWhy=whys[0];}
+    return `<div class="rall rpers"><div class="rh2">Personnel · ${free} free</div>`
+      +(colWhy?`<div class="rwhy">${esc(colWhy)}</div>`:'')
+      +`<div class="rpers-pucks">`
+      +act.map((id:any)=>rosterPuck(id,di,armKey,eng,off,sby,arules,!!colWhy)).join('')
+      +`</div></div>`;
+  };
+  /* SANS Avail and Personnel SWAPPED (owner, 24 Aug 26). The SANS availability
+     band — the day's "who is offering to fly / observe / AAR" list — now sits
+     directly under the two crew columns, and ground crew drop to their own
+     full-width band at the very bottom, out of the seat-column grid: they were
+     the least-central column and the SANS offers earn the more prominent slot.
+     The crew columns stay Pilots | WSOs. */
   return head+armStripHTML()+specialRowHTML(di)
-    +`<div class="rcols">${col('Pilots','FCP')}${col('WSOs','RCP')}${hasPers?col('Personnel','GND'):''}</div>`
-    +sansAvailHTML(di,armKey,eng,off,sby,arules);
+    +`<div class="rcols">${col('Pilots','FCP')}${col('WSOs','RCP')}</div>`
+    +sansAvailHTML(di,armKey,eng,off,sby,arules)
+    +(hasPers?persBand():'');
 }
 export function specialRowHTML(di:any){
   if(!SPECIALS.length)return '';
@@ -186,7 +206,7 @@ export function sansAvailHTML(di:any,armKey:any,eng:any,off:any,sby:any,arules:a
      column is barred for one structural cause (e.g. every WSO); here eleven
      different people can each be barred for a different SANS record, or none
      at all, and folding those into one line would just be wrong. */
-  return `<div class="rall rsans"><div class="rh2">SANS Availability</div>`
+  return `<div class="rall rsans"><div class="rh2">SANS Avail</div>`
     +ids.map((id:any)=>{
       const badge=sansBadge(id,d.dt);
       /* the record's own remarks, ellipsized (owner, 14 Aug 26) — a sibling of

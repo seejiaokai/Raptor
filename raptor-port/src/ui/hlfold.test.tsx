@@ -33,7 +33,7 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-  await act(async () => { view.HLSET.clear(); view.setSearch(''); view.setHlOpen(false); notify() })
+  await act(async () => { view.HLSET.clear(); view.setSearch(''); view.setHlOpen(false); view.setHlGroup(''); notify() })
 })
 
 describe('the edit page carries the Highlight chips (owner, 23 Aug 26)', () => {
@@ -89,8 +89,39 @@ describe('the two-element lead — CSS picks one by width', () => {
 
   it('the view page still carries its chips (regression — the move to hlchips.tsx)', () => {
     const chips = $$('#page-viewsched .filters .fchip[data-hl]')
-    expect(chips.length).toBe(10)
+    /* CAT(5) + Type(4) + Quals(6) = 15 keys, all in the DOM (the accordion
+       only hides them with CSS). OCU stayed in CAT; DAAR is one of the new
+       Quals keys (owner, 24 Aug 26). */
+    expect(chips.length).toBe(15)
     expect(chips.map(c => c.dataset.hl)).toContain('OCU')
-    expect($('#page-viewsched .filters .hl-div'), 'and the divider between the two groups').toBeTruthy()
+    expect(chips.map(c => c.dataset.hl)).toContain('DAAR')
+    /* the three category tabs replace the old single divider */
+    const tabs = $$('#page-viewsched .filters [data-hlgrp]')
+    expect(tabs.map(t => t.dataset.hlgrp)).toEqual(['cat', 'type', 'quals'])
+  })
+})
+
+describe('the CAT / Type / Quals accordion (owner, 24 Aug 26)', () => {
+  it('a group tab flips view.HLGROUP and marks its .hl-grp open', async () => {
+    await act(async () => { view.setPage('viewsched'); view.setHlGroup(''); notify() })
+    const quals = $('#page-viewsched .filters [data-hlgrp="quals"] .hl-gtab')
+    expect(quals, 'the Quals tab is present').toBeTruthy()
+    await click(quals)
+    expect(view.HLGROUP).toBe('quals')
+    expect($('#page-viewsched .filters [data-hlgrp="quals"]').className).toContain('open')
+    /* picking another collapses the first — one group open at a time */
+    await click($('#page-viewsched .filters [data-hlgrp="cat"] .hl-gtab'))
+    expect(view.HLGROUP).toBe('cat')
+    expect($('#page-viewsched .filters [data-hlgrp="quals"]').className).not.toContain('open')
+    /* tapping the open tab again collapses it */
+    await click($('#page-viewsched .filters [data-hlgrp="cat"] .hl-gtab'))
+    expect(view.HLGROUP).toBe('')
+  })
+
+  it('a collapsed group whose chip is active lights its tab with a count', async () => {
+    await act(async () => { view.setPage('viewsched'); view.setHlGroup(''); view.HLSET.clear(); view.HLSET.add('TF'); notify() })
+    const tab = $('#page-viewsched .filters [data-hlgrp="quals"] .hl-gtab')
+    expect(tab.className, 'the Quals tab shows it holds a live filter').toContain('has')
+    expect($('#page-viewsched .filters [data-hlgrp="quals"] .hl-gn')?.textContent).toBe('1')
   })
 })
