@@ -417,3 +417,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Add to the gotcha-family walk: when a change widens the population a computation runs over, list every ambient input (loaded week, base year, current page, viewer) the computation reads and ask whether the old population guaranteed it matched the row and the new one does not.
 
 **Principle:** A scope-widening change must re-audit not only what each row carries but what each row's computations borrow from the environment — assumptions that were invariants under the old scope become bugs under the new one without any code in the computation changing.
+
+### Observation 30: Intent caches must hook every manual channel, and tolerances must match their misalignment source
+
+**Status:** OPEN
+**Date:** 2026-08-24
+**Session context:** Owner reported the desktop week arrow needing 2 clicks from Saturday to reach Sunday. Two distinct root causes reproduced in a real browser: (1) a free scroll parks the strip a few dozen px shy of a day boundary, and the arrow's hairline 0.02-day tolerance — sized for arithmetic rounding drift — read that human parking imprecision as "still on the previous day", making the first click an invisible nudge; (2) the arrows' burst-corridor cache (which remembers the last commanded scroll target) was invalidated on shift+wheel and scrollbar grabs but NOT on plain horizontal wheel/trackpad pans, so a stale target made one click from Saturday jump a whole week.
+**Skill:** CLAUDE.md rules-engine robustness doctrine (gotcha families)
+**Type:** open-source
+**Phase/Area:** UI state caching / tolerance sizing
+
+**Issue:** Both halves came from the same earlier fix (the mid-glide burst corridor): the cache of user intent was hooked only to the manual-pan channels the feature was tested with, and the boundary tolerance was reused from a context (float drift) whose error magnitude is orders below the new context (where a pointer rests).
+
+**Suggested improvement:** When adding state that caches intent to override live readings, enumerate every input channel that can move the live state (wheel with and without modifiers, touch, pointer drags, keyboard, programmatic) and invalidate on each — grep the listener wiring, not memory. When reusing a tolerance, name the source of misalignment it must absorb and size it to that source.
+
+**Principle:** A cache of user intent is only as correct as the completeness of its invalidation list, and a tolerance calibrated for one error source silently under-covers a larger one — both fail invisibly, as actions that "work" but answer a stale or mis-read position.

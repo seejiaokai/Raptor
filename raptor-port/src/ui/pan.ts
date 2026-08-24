@@ -102,9 +102,23 @@ function panBase(w: any): number {
   const lo = Math.min(panAnchor, panTgt), hi = Math.max(panAnchor, panTgt)
   return (sl >= lo - 1 && sl <= hi + 1) ? panTgt : sl   // inside the burst corridor → count from the destination
 }
-/* One click = one WHOLE day box, landing on the boundary. Rounding to the
-   nearest day would stall on a click when the view sits mid-day, so step from
-   the day you are leaving: floor going right, ceil going left. */
+/* One click = one WHOLE day box, landing on the boundary. Stepping is from the
+   day you are leaving — floor going right, ceil going left — so a click when
+   the view sits genuinely mid-day advances to the next boundary instead of
+   stalling. But a park CLOSE to a boundary counts as ON it (owner, 24 Aug 26 —
+   "when the left most day on the screen is Saturday, I require 2 right arrow
+   clicks to go to Sunday instead of 1"): a free scroll — the proxy scrollbar,
+   a trackpad — rests wherever the finger stopped, routinely a few dozen pixels
+   shy of the column the user can see sitting at the front. A hairline 0.02
+   tolerance read that park as "still on Friday", so the first press only
+   nudged those invisible pixels to the true boundary and the SECOND press did
+   the move the user asked for — and the same held in mirror going left, and at
+   the week's ends, where the 1px edge test made the cross need a nudge-press
+   first too. PARK_TOL treats anything within about a third of a day of a
+   boundary as parked on that boundary — far past any real resting drift, and
+   far short of a genuine mid-day view, where the day-you-are-leaving semantics
+   above still decide. */
+const PARK_TOL = 0.35
 export function panDays(dir: number) {
   const w = activeWeekEl(); if (!w) return
   /* the st guard stays FIRST: an un-stubbed jsdom week measures no step, and
@@ -124,11 +138,12 @@ export function panDays(dir: number) {
      `.peek` never renders and one day fills the screen. */
   const max = weekScrollMax(w)
   const base = panBase(w)
-  if (dir > 0 && base >= max - 1) { view.setWeekJump('mon'); panWk = null; loadWeek(shiftWeek(CURWEEK, 1)); return }
-  if (dir < 0 && base <= 1) { view.setWeekJump('sun'); panWk = null; loadWeek(shiftWeek(CURWEEK, -1)); return }
+  const slop = PARK_TOL * st
+  if (dir > 0 && base >= max - slop) { view.setWeekJump('mon'); panWk = null; loadWeek(shiftWeek(CURWEEK, 1)); return }
+  if (dir < 0 && base <= slop) { view.setWeekJump('sun'); panWk = null; loadWeek(shiftWeek(CURWEEK, -1)); return }
   const n = w.querySelectorAll('.day:not(.peek)').length || 1
   const at = base / st
-  const cur = dir > 0 ? Math.floor(at + 0.02) : Math.ceil(at - 0.02)
+  const cur = dir > 0 ? Math.floor(at + PARK_TOL) : Math.ceil(at - PARK_TOL)
   const tgt = Math.max(0, Math.min(n - 1, cur + dir)) * st
   const dest = Math.min(tgt, max)
   /* a press that counted from the live scrollLeft (base !== the old panTgt)
@@ -306,7 +321,22 @@ export function rosDayFollow() {
    unfamiliar sites without the JIT, and there that walk was a visible per-tick
    tax the scroll had to wait for (owner, 11 Aug 26 — Edge scroll stutter). */
 function onWheel(e: WheelEvent) {
-  if (!e.shiftKey || !e.deltaY) return
+  if (!e.shiftKey) {
+    /* A PLAIN horizontal wheel/trackpad pan over the week is a manual pan too,
+       and it must drop the arrows' in-flight target the same way shift+wheel
+       and a scrollbar grab do. It used to be invisible here (the browser
+       scrolls it natively, no preventDefault needed), so the burst corridor
+       survived it: arrow to Sunday, trackpad back to Saturday — a position
+       INSIDE the old corridor — and the next › counted from the stale Sunday
+       target and jumped a whole week (reproduced 24 Aug 26, the second half of
+       the owner's Saturday-arrow report). The common no-shift VERTICAL scroll
+       still exits on booleans alone — deltaX is 0 there — which is the perf
+       contract this non-passive listener lives under (the Edge no-JIT note
+       above); only a real horizontal tick pays the closest() walk. */
+    if (e.deltaX) { const t = e.target as HTMLElement; if (t && t.closest && t.closest('.week')) panWk = null }
+    return
+  }
+  if (!e.deltaY) return
   const w = (e.target as HTMLElement).closest('.week')
   if (w) { panWk = null; hsSet(w, (w as HTMLElement).scrollLeft + e.deltaY); e.preventDefault() }  // a manual wheel-pan drops the arrow's in-flight target
 }
