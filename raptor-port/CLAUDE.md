@@ -796,7 +796,26 @@ subscribers.
   `onWheel` now drops `panWk` on any plain horizontal tick over a `.week`
   (booleans-only on the common vertical path — the Edge no-JIT contract
   holds). Don't shrink PARK_TOL back to a hairline, and don't remove the
-  deltaX invalidation. **The DESKTOP
+  deltaX invalidation. **The proxy scrollbar must never write the week back
+  mid-glide** (owner, 24 Aug 26 — desktop `‹ ›` arrows "don't go day by day …
+  stuck halfway then zoom past a few days"). `panDays` fires a
+  `scroll-behavior:smooth` glide; every frame of it mirrors the week to the
+  pinned `#hsTrack` proxy, and the track's own echoed `scroll` used to run
+  `onTrackScroll`, which wrote the week straight back with `behavior:'instant'`
+  — and an instant scroll CANCELS an in-flight smooth scroll. The mirror lags a
+  frame, so its back-write landed a few px behind where the glide had reached,
+  killing the animation and freezing the strip mid-day (or, when a frame slipped
+  through, scrubbing it fast — exactly the report). The B33 self-terminating
+  two-way sync is sound for two STATIC positions, but the week is not static
+  mid-glide, so the loop is now broken by ORIGIN, not position: `mirrorToTrack`
+  records the exact scrollLeft it puts on the track (`trkEcho`), and an
+  `onTrackScroll` that finds the track still sitting there is that echo — it
+  updates the label and leaves the week alone. Only a real drag of the native
+  scrollbar thumb (the track somewhere ELSE) drives the week, and that path also
+  drops `panWk` — the native scrollbar doesn't reliably fire the `pointerdown`
+  that `onTrackGrab` listens for, so the corridor is invalidated here instead.
+  Don't route the week→track mirror around `mirrorToTrack`, and don't let
+  `onTrackScroll` write the week unconditionally again. **The DESKTOP
   scheduler board now has week navigation** (owner, 23 Aug 26 — "in scheduler
   board i cant go between weeks except through the calendar"): `‹ ›` week-jump
   chips flank the seven day chips inside `#sbDays` (`board.ts:dayTabsHTML`,

@@ -309,6 +309,50 @@ describe('week panning (tfin)', () => {
     expect(landed, 'counted from where the user actually is — Sunday fronts').toBe(6 * 564)
   })
 
+  /* THE ARROW GLIDE IS NO LONGER MURDERED BY THE PROXY MIRROR (owner, 24 Aug 26 —
+     desktop ‹ › arrows "don't go day by day … stuck halfway then zoom past a few
+     days"). panDays fires a scroll-behavior:smooth glide; every frame of it
+     mirrors to the proxy track, and the track's echoed scroll used to write the
+     week straight back with behavior:'instant', cancelling the smooth scroll and
+     freezing the strip mid-day. The mirror now tags the position it wrote
+     (trkEcho); a track scroll still sitting there is that echo and must leave the
+     week alone. Only a real drag of the scrollbar thumb — the track somewhere
+     ELSE — drives the week. Geometry stubbed as elsewhere; onDocScroll/
+     onTrackScroll are exercised through their live document/track listeners. */
+  const wireProxy = async () => {
+    await act(async () => { view.setPage('viewsched'); notify() })
+    const w = $('#vWeek'), trk = $('#hsTrack')
+    const sb = $('#schedBoard'); if (sb) (sb as any).hidden = true
+    Object.defineProperty(w, 'offsetParent', { value: document.body, configurable: true })
+    Object.defineProperty(w, 'scrollWidth', { value: 9000, configurable: true })   // wmax 7308
+    Object.defineProperty(w, 'clientWidth', { value: 1692, configurable: true })
+    Object.defineProperty(trk, 'scrollWidth', { value: 1000, configurable: true }) // tmax 600
+    Object.defineProperty(trk, 'clientWidth', { value: 400, configurable: true })
+    ;(w as any).scrollTo = (o: any) => { (w as any).scrollLeft = o.left }
+    ;(trk as any).scrollTo = (o: any) => { (trk as any).scrollLeft = o.left }
+    return { w, trk }
+  }
+
+  it('an echoed track scroll during a glide leaves the week alone; a real thumb-drag drives it', async () => {
+    const { w, trk } = await wireProxy()
+    /* a week move mirrors to the track and records trkEcho (=93 for scrollLeft
+       1128: (1128/7308)*600) */
+    w.scrollLeft = 1128
+    await act(async () => { w.dispatchEvent(new Event('scroll')) })
+    expect(Math.round(trk.scrollLeft)).toBe(93)
+    /* the glide advances a frame — the week is now past where the mirror last
+       read it, but the track has NOT moved (still the echo position) */
+    w.scrollLeft = 1692
+    await act(async () => { trk.dispatchEvent(new Event('scroll')) })
+    expect(w.scrollLeft, 'the echo must not write the week back and cancel the glide').toBe(1692)
+    /* now the user actually drags the thumb somewhere else — that DOES drive the
+       week: track 300 → (300/600)*7308 = 3654 */
+    trk.scrollLeft = 300
+    await act(async () => { trk.dispatchEvent(new Event('scroll')) })
+    expect(Math.round(w.scrollLeft), 'a genuine drag still scrubs the week').toBe(3654)
+    dropCorridor(w)
+  })
+
   it('panning the week walks the palette along, debounced', async () => {
     vi.useFakeTimers()
     const w = $('#vWeek')
