@@ -6,6 +6,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
+import { ACCOUNTS } from '../state/auth'
 import { DAYS } from '../engine/data'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -23,6 +24,23 @@ describe('the app shell', () => {
   it('starts on the login page', () => {
     expect(host.querySelector('#login')).toBeTruthy()
     expect(host.querySelector('#shell')).toBeFalsy()
+  })
+
+  /* the demo-credentials hint is deliberately gone from the sign-in card
+     (owner, 24 Aug 26 — "can u not show the admin and user login on the
+     front page?") */
+  it('the login card shows no demo-credential hint', () => {
+    expect(host.querySelector('#loginForm .hint')).toBeFalsy()
+    expect(host.querySelector('#login')!.textContent).not.toMatch(/full edit|member/)
+  })
+
+  /* the accounts are ad/a (admin) and us/us (member) — owner, 24 Aug 26; the
+     old a/a and user/user must be gone */
+  it('the accounts are ad/a and us/us, and the old names are gone', () => {
+    expect(ACCOUNTS.a).toBeFalsy()
+    expect(ACCOUNTS.user).toBeFalsy()
+    expect(ACCOUNTS.ad).toMatchObject({ pass: 'a', role: 'admin' })
+    expect(ACCOUNTS.us).toMatchObject({ pass: 'us', role: 'main' })
   })
 
   it('admin login opens the shell', async () => {

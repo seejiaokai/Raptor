@@ -295,11 +295,13 @@ Any NEW Playwright script must pass `executablePath:'/opt/pw-browsers/chromium'`
 doesn't ship, so a bare `chromium.launch()` dies with "Executable doesn't
 exist … run npx playwright install" — do NOT run that, it re-downloads for
 nothing. Every probe in `reference/probes/` already hardcodes the path.
-Login is `a`/`a` (admin) or `user`/`user` (squadron member — NOT view-only
+Login is `ad`/`a` (admin) or `us`/`us` (squadron member — NOT view-only
 since 5 Aug 26: a member edits their own Inputs and ticks their own quals;
-the split is in `docs/engine-rules.md` §Auth / roles). The username is
-lowercased before matching, the PASSWORD is compared exactly, so `A`/`A` is
-rejected.
+the split is in `docs/engine-rules.md` §Auth / roles). The account names
+changed from a/a · user/user on 24 Aug 26 (owner ask, which also removed
+the credentials hint from the sign-in card — don't re-print them there).
+The username is lowercased before matching, the PASSWORD is compared
+exactly, so `AD`/`a` works and `ad`/`A` is rejected.
 **The deployed site is reachable now, and checking work against it is a
 standing instruction (owner, 7 Aug 26).** The proxy used to answer 403 for
 `github.io`; the owner opened it, and both the page and `githubstatus.com`

@@ -43,9 +43,11 @@ export function Login() {
             value={pass} onChange={e => setPass(e.target.value)} />
           <div className="err" id="lerr">{err}</div>
           <button className="go" type="submit">Sign in</button>
-          <div className="hint">
-            <b>a</b> / <b>a</b> · full edit &nbsp;·&nbsp; <b>user</b> / <b>user</b> · member
-          </div>
+          {/* the demo-credentials hint (a/a · user/user) is deliberately NOT
+              printed here any more (owner, 24 Aug 26 — "can u not show the
+              admin and user login on the front page?"). The accounts
+              themselves are unchanged — this hides the reminder from the
+              public page, it does not secure the prototype auth. */}
         </form>
 
         <details className="login-build">

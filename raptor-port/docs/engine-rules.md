@@ -1896,7 +1896,9 @@ a stale stowed blob while the live day already is that draft.
 
 ## Auth / roles
 
-`a/a` = admin, `user/user` = member. `canEditSched()` = session AND admin.
+`ad/a` = admin, `us/us` = member (owner, 24 Aug 26 — renamed from a/a and
+user/user; the sign-in card no longer prints them). `canEditSched()` =
+session AND admin.
 Logout closes the scheduler board (a sibling of the shell) and resets LGEDIT.
 The login is a prototype gate, not security — the deployed app is public.
 
