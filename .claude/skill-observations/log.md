@@ -402,3 +402,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** Triaging a finding as "can't happen" requires a positive reachability argument (what would have to be true for it to fire, and why no product path satisfies that), not an absence-of-evidence argument. If the data model itself is ambiguous (a value whose meaning depends on ambient state), treat it as a defect family, not a single site.
 
 **Principle:** A stored value whose meaning depends on ambient state is a latent bug everywhere it is read; declining one read-site as theoretical says nothing about the other read-sites the same ambiguity feeds.
+
+### Observation 29: Widening a list's scope invalidates per-row reads of ambient context
+
+**Status:** OPEN
+**Date:** 2026-08-24
+**Session context:** Owner filed a Dec 24 → Jan 8 leave from the live site while viewing an August week; the Inputs page stamped it LATE though it was filed 4 months early. Root cause: the late-input deadline is computed from the CURRENTLY LOADED week (CURWEEK), which was correct while the Inputs page was week-scoped, and became wrong when inputs went global (22 Aug) — a far-future input is now judged against whatever week the viewer happens to have loaded.
+**Skill:** CLAUDE.md rules-engine robustness doctrine (gotcha families)
+**Type:** open-source
+**Phase/Area:** post-change audit scope
+
+**Issue:** When a display surface widens its scope (week-scoped list → global list), per-row computations that silently assumed the old scope (here: "the loaded week IS this row's week") keep compiling and keep rendering — they just become wrong for the rows the widening added. The cross-year audit walked readers of the row's own fields (date/endDate) but not readers of ambient context (CURWEEK) that the old scope had made coincidentally correct.
+
+**Suggested improvement:** Add to the gotcha-family walk: when a change widens the population a computation runs over, list every ambient input (loaded week, base year, current page, viewer) the computation reads and ask whether the old population guaranteed it matched the row and the new one does not.
+
+**Principle:** A scope-widening change must re-audit not only what each row carries but what each row's computations borrow from the environment — assumptions that were invariants under the old scope become bugs under the new one without any code in the computation changing.
