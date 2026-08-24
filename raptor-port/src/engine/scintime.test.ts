@@ -16,7 +16,8 @@
    both covered by brieftime.test.ts, so this file stays purely about SC. */
 import { afterEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { validate, WARN } from './validate'
+import { INPUTS } from './inputs'
+import { validate, WARN, workSpan, dayEvents } from './validate'
 import { makeStandalone } from './waves'
 
 const TUE = 1
@@ -65,5 +66,93 @@ describe('an SC line reads its B box as the in-time', () => {
     expect(cr, 'a later B cannot push the report past the shift start').toBeTruthy()
     expect(cr.msg).toContain('SC AM starts 07:00')
     expect(cr.msg).not.toContain('starts 08:00')
+  })
+})
+
+/* THE B EXTENDS THE DAY (owner, 24 Aug 26 — "if B is filled earlier than TO
+   for main only, include the long day duty hours span calculation"). The span
+   is workSpan(), shared by the long-day note and the week's duty-hour totals,
+   so one assert covers both surfaces. stuff also stands OPS-O 12:00–17:00 this
+   Tuesday, so his day ends at 17:00 whatever the B says. */
+describe('a typed early B extends the long-day span', () => {
+  it('B 05:00 starts the day at 05:00; blank B keeps the 07:00 shift start', () => {
+    addSC('05:00')
+    expect(workSpan(dayEvents(TUE, 'stuff'))!.s).toBe(300)
+    ;(DAYS[TUE] as any).waves.pop()
+    addSC()
+    expect(workSpan(dayEvents(TUE, 'stuff'))!.s).toBe(420)
+  })
+
+  it('a B that tips the span past 12h raises the long-day note off the B itself', () => {
+    addSC('04:30')                              // 04:30 → 17:00 is 12h30
+    const g: any = WARN.byDay.find((x: any) => x.di === TUE)
+    const ld = ((g && g.warns) || []).find((w: any) =>
+      w.code === 'LONGDAY' && (w.who || []).includes('stuff'))
+    expect(ld, 'the in-time counts toward duty hours now').toBeTruthy()
+    expect(ld.msg).toContain('12h30')
+    expect(ld.msg).toContain('04:30')
+  })
+
+  it('MAIN only — the same B on a SPARE row moves nothing', () => {
+    const w: any = makeStandalone('sc')
+    w.formations[0].br = '04:30'
+    w.formations[0].aircraft[2].p = 'stuff'     // rows 2–3 are SPARE
+    ;(DAYS[TUE] as any).waves.push(w)
+    validate()
+    const evs: any = dayEvents(TUE, 'stuff')
+    expect(evs.some((e: any) => e.kind === 'shift'), 'a spare reports nowhere').toBe(false)
+    expect(workSpan(evs)!.s, 'his day starts at his 12:00 duty, not the B').toBe(720)
+  })
+})
+
+/* THE IN-TIME WINDOW ADVISORY (owner, 24 Aug 26 — "have a no brief advisory as
+   well if anything cuts or ends between B and TO time for SC main"). From the
+   typed B to the shift start the man is already on duty; a commitment that cuts
+   into or ends inside that window advises in amber — it is not the hard clash
+   the shift window itself raises, but it is not nothing either. split has a
+   clean seed Tuesday, so every warning below is the test's own doing. */
+describe('anything cutting the B→TO window advises', () => {
+  const ILEN = INPUTS.length
+  const OLEN = (DAYS[TUE] as any).sims.oft.length
+  const addSCFor = (id: string, br?: string, spare = false) => {
+    const w: any = makeStandalone('sc')
+    if (br != null) w.formations[0].br = br
+    w.formations[0].aircraft[spare ? 2 : 0].p = id
+    ;(DAYS[TUE] as any).waves.push(w)
+    validate()
+  }
+  afterEach(() => { INPUTS.length = ILEN; (DAYS[TUE] as any).sims.oft.length = OLEN })
+  const advs = (id: string) => validate().all.filter((x: any) =>
+    x.di === TUE && x.code === 'SC_INTIME' && (x.who || []).includes(id))
+
+  it('a timed input inside the window advises; one ending exactly at the B does not', () => {
+    INPUTS.push({ person: 'split', date: 'Jul 14', allday: false, s: 330, e: 390, type: 'Meeting', remarks: '', mod: '' })
+    INPUTS.push({ person: 'split', date: 'Jul 14', allday: false, s: 240, e: 300, type: 'Appointment', remarks: '', mod: '' })
+    addSCFor('split', '05:00')
+    const a = advs('split')
+    expect(a.length, 'the 05:30 meeting cuts the window, the 04:00–05:00 appointment ends at the B').toBe(1)
+    expect(a[0].sev).toBe('adv')
+    expect(a[0].msg).toContain('Meeting')
+    expect(a[0].msg).toContain('05:30–06:30')
+  })
+
+  it('a sim seat inside the window advises; one crossing into the shift is the hard clash instead', () => {
+    ;(DAYS[TUE] as any).sims.oft.push({ label: 'X', str: '0530', end: '0630', p: 'split' })
+    addSCFor('split', '05:00')
+    expect(advs('split').length, 'the box sits wholly inside B→TO').toBe(1)
+    ;(DAYS[TUE] as any).sims.oft.pop()
+    ;(DAYS[TUE] as any).sims.oft.push({ label: 'X', str: '0630', end: '0730', p: 'split' })
+    const all = validate().all.filter((x: any) => x.di === TUE && (x.who || []).includes('split'))
+    expect(all.some((x: any) => x.code === 'DOUBLE_BOOK'), 'crossing 07:00 is the clash rule’s business').toBe(true)
+    expect(all.some((x: any) => x.code === 'SC_INTIME'), 'and not double-reported as the advisory').toBe(false)
+  })
+
+  it('no B, or a SPARE row, and the window does not exist', () => {
+    INPUTS.push({ person: 'split', date: 'Jul 14', allday: false, s: 330, e: 390, type: 'Meeting', remarks: '', mod: '' })
+    addSCFor('split')
+    expect(advs('split'), 'a blank B opens no window').toEqual([])
+    ;(DAYS[TUE] as any).waves.pop()
+    addSCFor('split', '05:00', true)
+    expect(advs('split'), 'a spare reports nowhere').toEqual([])
   })
 })

@@ -196,6 +196,8 @@ export function lgRules(){
    rows:[
     {sev:'set',src:()=>`saExempt · isStandalone`,
      t:()=>`An <b>SC MAIN</b> line is fully cross-checked, at the hours written on it.`},
+    {sev:'adv',code:'SC_INTIME',
+     t:()=>`A typed <b>B</b> on an SC line is that crew's <b>in-time</b>, not a brief. On a <b>MAIN</b> it starts the crew-rest clock and the duty-hours day, and anything that cuts into — or ends inside — the window between the B and the shift start draws this advisory. A <b>SPARE</b> reports nowhere, so his B does nothing.<span class="why">The hard rules stay on the shift's own hours: a commitment before the shift start has not double-booked the shift yet, which is why the window reads amber rather than red — and something crossing the start itself is the conflict rule's business, said once, not twice.</span>`},
     {sev:'set',src:()=>`scSpare`,
      t:()=>`An <b>SC SPARE</b> is standing by, not tasked: he is checked for <b>currency</b>, and for being <b>able to stand it at all</b> — nothing else. He may fly, sit a sim or stand a duty in the same hours, and none of it raises anything; but an overseas leave or a downchit across the shift does.`},
     {sev:'set',src:()=>`w.noconf`,
