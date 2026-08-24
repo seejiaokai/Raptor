@@ -16,7 +16,7 @@ import { HOOKS } from '../engine/hooks'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { rulesLoad } from '../engine/rules'
-import { mintInpIds, INPUTS, DATES, isPersonal } from '../engine/inputs'
+import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
@@ -190,7 +190,7 @@ function unacceptedKeys(): string[] {
   const out: string[] = []
   INPUTS.forEach((r: any) => {
     if (!isPersonal(r.type) || r.acc) return
-    const di = DATES.indexOf(r.date)
+    const di = dateIx(r.date, r.yr)
     if (di < 0 || dayApproved(di)) return
     const key = inpKey(r)
     const landed = DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === key))
@@ -231,7 +231,7 @@ let weekBaseline = ''
 function reconcileLandedAcc() {
   INPUTS.forEach((r: any) => {
     if (r.acc || !isPersonal(r.type)) return
-    const di = DATES.indexOf(r.date)
+    const di = dateIx(r.date, r.yr)
     if (di < 0) return
     const key = inpKey(r)
     if (DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === key))) r.acc = 'g'
@@ -272,6 +272,11 @@ function applyWeekModel(v: any): any {
        — it is a pure function of v, so weekBundle(v).dates is exactly right
        whether v is authored or blank, restore or fresh. */
     DATES.length = 0; weekBundle(v).dates.forEach((x: any) => DATES.push(x))
+    /* re-label the restored days from the fresh DATES (24 Aug 26): dt is
+       index-determined, and although a stash written and restored for the
+       SAME week derives identical labels today, enforcing the invariant here
+       costs one line and removes the assumption. */
+    s.d.forEach((d: any, i: number) => { if (d && DATES[i] != null) d.dt = DATES[i] })
     SCHED.changes = s.c || {}; SCHED.pending = s.p || {}; SCHED.added = s.ad || {}
     SCHED.als = s.a || []; SCHED.al = s.al || 0; SCHED.dayOK = s.ok || {}
     SCHED.sign = s.sg || {}; SCHED.orig = s.o || {}; SCHED.cur = s.cv || {}
@@ -441,6 +446,13 @@ export function initStore() {
      lives here and not in engine/inputs.ts's INPUTS array) — pushed before
      mintInpIds so they mint an iid exactly like every other seed row */
   seedDemoSans()
+  /* ANCHOR EVERY SEED INPUT TO ITS YEAR (24 Aug 26). A bare 'Jul 13' label
+     is resolved through the row's `yr`; at boot CURWEEK is the seed week, so
+     baseYear() is exactly the year every demo/authored/SANS seed row means.
+     Idempotent (initStore may run twice in tests), and boot-only so the
+     parity harness — which never boots — still reads the pristine INPUTS
+     literals, the same guarantee seedDemoSans leans on. */
+  INPUTS.forEach((r: any) => { if (r.yr == null) r.yr = baseYear() })
   /* before histInit, so the FIRST snapshot already carries every input's
      address — see mintInpIds in engine/inputs.ts for why an id minted later
      than the snapshot it should be in is worse than no id at all */

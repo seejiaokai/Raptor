@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, defaultAllday, dateOrd, baseYear, withRemarksTail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail } from '../engine/inputs'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
@@ -77,11 +77,15 @@ export const fmtDMY = (iso: any) => {
   if (!m) return s
   return `${+da} ${MON[+m] || ''} ${String(y).slice(2)}`
 }
-export const unfmt = (lbl: any) => {
+/* `yr` is the row's own anchor year (24 Aug 26): a bare label on a record
+   belongs to the year the record was created under, not to whatever week is
+   loaded when it is next opened for edit — without it, editing a 2026 input
+   from a 2027 week silently re-dated it a year forward. */
+export const unfmt = (lbl: any, yr?: any) => {
   const p = String(lbl || '').trim().split(/\s+/)
   const mi = MON.indexOf(p[0])
   if (mi < 1 || !p[1]) return ''
-  const y = p.length > 2 && isFinite(+p[2]) ? +p[2] : baseYear()
+  const y = p.length > 2 && isFinite(+p[2]) ? +p[2] : (isFinite(+yr) && +yr > 0 ? +yr : baseYear())
   return `${y}-${String(mi).padStart(2, '0')}-${String(+p[1]).padStart(2, '0')}`
 }
 
@@ -196,7 +200,9 @@ export function sansOverlapRefusal(person: any, date: any, endDate: any, except:
   if (na == null || nb == null) return ''
   const clash = INPUTS.some((x: any) => {
     if (x === except || x.person !== person || !isSansAvail(x.type)) return false
-    const a = dateOrd(x.date), b = dateOrd(x.endDate || x.date)
+    /* each existing record's labels resolve through ITS anchor year — a
+       record for this month/day LAST year is not a clash (24 Aug 26) */
+    const a = dateOrd(x.date, x.yr), b = dateOrd(x.endDate || x.date, x.yr)
     return a != null && b != null && na <= b && a <= nb
   })
   return clash ? 'A SANS availability is already filed for one of these days — edit that entry instead of adding another' : ''
@@ -220,7 +226,7 @@ export const typeOptions = (allow?: (t: string) => boolean) => TYPE_GROUPS.map((
 /* The draft is held apart from the model so Cancel is a real cancel. */
 export const draftOf = (r: any) => ({
   person: r.person, type: r.type, allday: !!r.allday, half: r.half || '',
-  start: unfmt(r.date), end: r.endDate ? unfmt(r.endDate) : '',
+  start: unfmt(r.date, r.yr), end: r.endDate ? unfmt(r.endDate, r.yr) : '',
   sTime: r.allday ? '06:00' : hhmm(r.s), eTime: r.allday ? '18:00' : hhmm(r.e),
   remarks: r.remarks || '',
   // SANS Availability's own Fly/AMT/OFT payload — a plain object, not derived from s/e/half
@@ -345,7 +351,9 @@ export function commitNewInput(draft: any, toGround?: boolean): boolean {
   const flags = isSansAvail(draft.type) ? sansFlags(draft.sans) : {}
   const row: any = {
     person: draft.person, type: draft.type, allday: !!draft.allday,
-    s, e, date, remarks: String(draft.remarks || '').trim(), mod: 'now',
+    /* yr anchors the bare date labels to the year they were picked under —
+       fmt leaves the loaded year implicit, and this is what reads it back */
+    s, e, date, yr: baseYear(), remarks: String(draft.remarks || '').trim(), mod: 'now',
     ...(endDate ? { endDate } : {}),
     ...(half ? { half } : {}),
     ...(Object.keys(flags).length ? { sans: flags } : {}),
@@ -362,7 +370,7 @@ export function commitNewInput(draft: any, toGround?: boolean): boolean {
          refusal. isUnavail is acceptInput's own refusal, re-checked here only
          to say something useful if a future caller mis-routes; the dialog's
          ground context can only offer activity types. */
-      const di = DATES.indexOf(date)
+      const di = dateIx(date)
       if (di >= 0 && !isUnavail(row.type) && !acceptInput(di, row, 'g'))
         HOOKS.toast('An identical row is already on the Ground Programme — added under Personal Inputs instead', 'warn')
     } else {
@@ -448,6 +456,9 @@ export function commitInputEdit(r: any, draft: any) {
     if (wasAcc) unacceptInput(wasDi, r)
     r.person = draft.person; r.type = draft.type; r.allday = draft.allday
     r.s = s; r.e = e; r.date = date; r.remarks = String(draft.remarks || '').trim(); r.mod = 'now'
+    /* the edit re-derived its labels against the CURRENT loaded year (fmt),
+       so the anchor moves with them — an edit is a re-statement of the date */
+    r.yr = baseYear()
     /* SANS Availability used to force allday:true and carry per-event windows
        of its own in `sans` — that is what made a per-event time pair
        impossible to clear on a phone (see SansPicker above). It is a normal
@@ -479,7 +490,7 @@ export function commitInputEdit(r: any, draft: any) {
          a false "moved outside the programmed week" toast, though no date
          had moved (audit, 12 Aug 26). Mirrors markInputDays semantics. */
       const keep = wasDi >= 0 && DATES[wasDi] && inputCoversDate(r, DATES[wasDi])
-      const startDi = DATES.indexOf(r.date)
+      const startDi = dateIx(r.date, r.yr)
       const di = keep ? wasDi : (startDi >= 0 ? startDi : DATES.findIndex(dt => inputCoversDate(r, dt)))
       /* acceptInput REFUSES a leave / medical / overseas-duty type — those are
          issued through the Unavailable block and never become a programme row.

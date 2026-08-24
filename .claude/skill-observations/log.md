@@ -387,3 +387,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When dispatching a second writer into a tree where another writer is active, the brief must list the other agent's owned files as read-only and give an escape hatch ("report the needed change instead of making it"). The orchestrator then applies cross-boundary edits itself during integration review.
 
 **Principle:** Parallel writers in one workspace need an explicit file-ownership contract in their briefs, plus an orchestrator-owned integration pass for changes that cross the boundary.
+
+### Observation 28: A "declined as theoretical" engine finding the owner later proved real
+
+**Status:** OPEN
+**Date:** 2026-08-24
+**Session context:** Raptor cross-year date-anchoring fix (owner challenged a bug-sweep finding declined as "can't actually happen")
+**Skill:** none — general review methodology
+**Type:** open-source
+**Phase/Area:** Bug-sweep verification / finding triage
+
+**Issue:** A review finding about ambiguous date resolution was declined as theoretical without tracing actual reachability. The owner's one-line question exposed that the ambiguity was reachable through an existing navigation feature, and the fix touched 15 files — the "theoretical" framing had hidden a multi-site defect family (matching, auto-landing, labels, caches, editors, sync).
+
+**Suggested improvement:** Triaging a finding as "can't happen" requires a positive reachability argument (what would have to be true for it to fire, and why no product path satisfies that), not an absence-of-evidence argument. If the data model itself is ambiguous (a value whose meaning depends on ambient state), treat it as a defect family, not a single site.
+
+**Principle:** A stored value whose meaning depends on ambient state is a latent bug everywhere it is read; declining one read-site as theoretical says nothing about the other read-sites the same ambiguity feeds.

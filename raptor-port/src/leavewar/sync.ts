@@ -71,9 +71,12 @@ function isoToLabel(iso: string): string {
 }
 
 /* 'Feb 11' -> '2026-02-11', through dateOrd so the two directions cannot
-   disagree about what a label means. Null for anything unreadable. */
-function labelToISO(lbl: unknown): string | null {
-  const ord = dateOrd(lbl)
+   disagree about what a label means. Null for anything unreadable. `yr` is
+   the ROW'S anchor year (engine/inputs.ts, 24 Aug 26) — a bare label on an
+   input belongs to the year the row was created under, not to whatever week
+   Raptor happens to have loaded when the sync runs. */
+function labelToISO(lbl: unknown, yr?: unknown): string | null {
+  const ord = dateOrd(lbl, yr)
   if (ord == null) return null
   const p = (n: number) => String(n).padStart(2, '0')
   return `${Math.floor(ord / 10000)}-${p(Math.floor(ord / 100) % 100)}-${p(ord % 100)}`
@@ -200,9 +203,9 @@ const portionOfRow = (row: any): Portion => (isDownchit(row.type) ? medRowPortio
    it (owner, 18 Aug 26: refining an OL's remarks must not seize the leave from
    Leave War, which does not show remarks anyway). */
 export function rowSig(row: any): string | null {
-  const start = labelToISO(row.date)
+  const start = labelToISO(row.date, row.yr)
   if (!start) return null
-  const end = row.endDate ? labelToISO(row.endDate) ?? start : start
+  const end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
   /* lwTypeOf, so an 'ATT C' row and the ATTC run it mirrors reduce to the
      same signature — the two vocabularies must meet in ONE for the diff to
      see them as the same fact. */
@@ -270,6 +273,10 @@ export function runOutbound(): void {
              'ATT B' input, the type the Inputs page and INPUT_META know. */
           type: INPUT_FOR_LW[r.type] ?? r.type,
           date: isoToLabel(r.start),
+          /* the anchor year every creation path stamps (engine/inputs.ts,
+             24 Aug 26) — isoToLabel leaves baseYear()'s year implicit, and
+             this is what reads it back once the loaded week moves on */
+          yr: baseYear(),
           /* The remarks read "till 17 Jul" for a span, "on 15 Jul" for a
              single day — the same tail the Inputs-page calendar writes, so a
              synced leave says how long it runs wherever remarks are read, and
@@ -334,9 +341,9 @@ export function runOutbound(): void {
  */
 export function retractLwRow(row: any): void {
   if (!row?.lw) return
-  const start = labelToISO(row.date)
+  const start = labelToISO(row.date, row.yr)
   if (!start) return
-  let end = row.endDate ? labelToISO(row.endDate) ?? start : start
+  let end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
   if (end < start) end = start
   const type = lwTypeOf(row.type)
   const portion = portionOfRow(row)
@@ -433,9 +440,9 @@ export function runInbound(): void {
          become an invisible grid row no matrix draws — skip rather than
          write a cell nobody can see or clear. */
       if (!known.has(row.person)) continue
-      const start = labelToISO(row.date)
+      const start = labelToISO(row.date, row.yr)
       if (!start) continue
-      let end = row.endDate ? labelToISO(row.endDate) ?? start : start
+      let end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
       if (end < start) end = start
       const portion = portionOfRow(row)
       const type = lwTypeOf(row.type)

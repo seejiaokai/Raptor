@@ -870,6 +870,36 @@ still refused at the write path is a GENUINELY backwards range (an end before
 its start in real time); the calendar cannot make one, but `commitInputEdit`
 guards it anyway, the same as every other malformed value.
 
+**Every input is ANCHORED to a real year** (owner, 24 Aug 26 — "What if
+another year has the same day and date … fix it very carefully"). The
+implicit-year convention above left a bare label meaning "this label, in
+whatever week is CURRENTLY loaded": an input filed for `Jul 13` of 2026
+covered — and auto-landed on — Jul 13 of any year the continuous week scroll
+reached, and the New Year-spanning week's own bare January labels resolved to
+the wrong year, so the very leave the 12 Aug entry describes never covered the
+January days of the week it was filed on. Three parts, one convention:
+- every input carries **`yr`**, the loaded year its bare labels were written
+  under — stamped at boot for the seeds (`initStore`), by every creation path
+  (the Inputs page add, both board + Adds, the Leave War mint), and
+  RE-stamped by `commitInputEdit`, whose `fmt` re-derives the labels against
+  the current year. `dateOrd(lbl, fb)` takes it as the bare-label fallback;
+  a row with no `yr` (a probe, an old snapshot) falls back to `baseYear()`,
+  exactly the old behaviour. `inpKey` carries `yr` as its last segment so
+  same-worded rows a year apart never share an edit address.
+- `inputCoversDate` resolves BOTH sides to real dates (`dateOrd` each way)
+  — its single-day arm was bare string equality, the exact site of the
+  cross-year match — and `dateIx(lbl, yr)` replaces every
+  `DATES.indexOf(inp.date)` so the auto-land pass plants by date value,
+  never by words.
+- `weekLabels` (weeks-data.ts) labels a day outside the loaded week's own
+  year WITH its year (`Jan 1 2027` on the week of Dec 28 2026) — the same
+  convention `fmt` already followed — and the two cross-year label caches
+  re-derive under the current year (`weekctx`'s bundle cache is keyed by
+  loaded year; `stashDays` re-labels a stashed week's days on every read).
+The seed `INPUTS`/`DATES` literals stay untouched (the boot stamp is
+boot-only, invisible to the parity harness). Pinned in
+`engine/crossyear.test.ts`.
+
 **Two sorties at once are a CONFLICT, not a turn** (owner, 11 Aug 26).
 Sortie-vs-sortie is excluded from the double-booking loop because two
 back-to-back legs overlap the moment the step and dekit pads are added, and

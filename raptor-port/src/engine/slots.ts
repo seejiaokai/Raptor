@@ -2,7 +2,7 @@ import { DAYS } from './data'
 import { PEOPLE, nameToId, ID_BY_CS } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
-import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel } from './inputs'
+import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
 import { shiftKeys } from './keys'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
@@ -318,7 +318,13 @@ export const rollCx=(f:any)=>{f.cx=f.aircraft.length>0&&f.aircraft.every((a:any)
    The link back to the source input is `src` on the ground row, so unaccept
    can find and remove the row it created even after other rows shift around
    it. Storing an index instead would rot the moment a row above it is deleted. */
-export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${inp.s==null?'':inp.s}`;}
+/* The trailing segment is the row's anchor year `yr` (24 Aug 26): without it
+   two inputs a year apart — same person, type, start AND bare date words —
+   shared one key, so the global data-inpedit resolver could open last year's
+   record from this year's card. The RAW field, never baseYear(): a fallback
+   that moved with the loaded week would change the key on every week switch
+   and orphan the ground rows that store it as `src`. */
+export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${inp.s==null?'':inp.s}|${inp.yr==null?'':inp.yr}`;}
 const markInputDays=(inp:any,fallback:any)=>{const token=inpId(inp);let any=false;DAYS.forEach((d:any,i:any)=>{if(inputCoversDate(inp,d.dt)){markInputFiling(i,token);any=true;}});if(!any&&+fallback>=0)markInputFiling(+fallback,token);};
 export function acceptInput(di:any,inp:any,dest:any){
   const d=DAYS[di]; if(!d||!inp)return false;
@@ -380,7 +386,10 @@ export function acceptInput(di:any,inp:any,dest:any){
    for the session. Returns true when it promoted the row. */
 export function autoAcceptInput(row:any):boolean{
   if(!row||row.acc||!isPersonal(row.type))return false;
-  const di=DATES.indexOf(row.date);
+  /* dateIx, not DATES.indexOf (24 Aug 26): the index must come from the DATE
+     the row means, or a 2026 input landed on the identically-worded day of a
+     loaded 2027 week. */
+  const di=dateIx(row.date,row.yr);
   if(di<0||dayApproved(di))return false;
   return acceptInput(di,row,'g');
 }
@@ -438,7 +447,7 @@ export function unacceptInput(di:any,inp:any){
   }
   delete inp.acc;
   if(was==='u'){
-    const d2=+di>=0?+di:DATES.indexOf(inp.date);
+    const d2=+di>=0?+di:dateIx(inp.date,inp.yr);
     markInputDays(inp,d2);
   }
   /* The amendment was marked on an inert deletion/input-action key above.
