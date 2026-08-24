@@ -1092,7 +1092,10 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .st-addrow .st-add{font-size:10px;font-weight:800;padding:4px 9px;border-radius:4px;border:1px solid var(--edge-2);background:transparent;color:var(--ink-2);cursor:pointer}
 .st-addrow .st-add:hover{border-color:var(--accent);color:var(--accent)}
 .bombs{font-size:8px;color:var(--ink-2);min-width:34px;border-bottom:1px dashed var(--edge-2);outline:none;padding:0 2px}
-.bombs:empty::before{content:'bombs…';color:var(--ink-3)}
+/* the visible word is "Config" (owner, 24 Aug 26 — the field takes any
+   loadout note, not only bombs); the class and the opts.bombs key stay put so
+   no saved jet config is disturbed — only the placeholder the user reads. */
+.bombs:empty::before{content:'Config…';color:var(--ink-3)}
 /* approval / amendment banner */
 /* ---- sign-off strip ----------------------------------------------------------
    Four names have to be on an amendment before it goes out: who checked the
@@ -1592,6 +1595,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 #inBody tr.in-amb>td:first-child{box-shadow:inset 3px 0 0 var(--adv)}
 #inBody tr.in-san>td:first-child{box-shadow:inset 3px 0 0 var(--san)}
 .intag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
+/* the SANS row's F/O/A offer letters — the crew group's purple (--san), the
+   same accent the SANS chip/puck wears everywhere, so the two agree at a
+   glance. A quiet pill beside the type tag, never replacing it. */
+#inBody .foa{display:inline-block;margin-left:6px;font-size:8.5px;font-weight:700;letter-spacing:.04em;color:var(--san);border:1px solid rgba(178,77,234,.45);border-radius:999px;padding:1px 6px;vertical-align:middle;white-space:nowrap}
 .inwrap{padding:6px 20px 40px}
 .rmx{color:var(--hard);cursor:pointer;font-weight:800}
 /* Every heading sorts (owner, Aug 5). The arrow is a fixed-width column of its
@@ -1782,6 +1789,9 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      "ability") is hidden here and only here, the board day-name idiom — the
      desktop chip and the DOM text stay the full type string */
   #intbl .intag .bl{ display:none }
+  /* the F/O/A pill rides the type line on the phone card too, a touch smaller
+     so it sits with the shortened chip rather than pushing the row wider */
+  #inBody .foa{ font-size:8px; margin-left:4px; padding:1px 5px }
   /* the range joiner; a one-day input reads once, never "Jul 13 → Jul 13" —
      the row marks its End cell data-same when it repeats the start */
   #intbl tbody tr:not(.ined) td[data-label="End"]::before{

@@ -417,6 +417,31 @@ describe('the Inputs page (tfin)', () => {
     expect(rowFor(sanIx).className, 'SANS Availability').toContain('in-san')
   })
 
+  /* owner, 24 Aug 26 — "include the F/O/A in the inputs as well". A SANS row
+     wears its offer letters in a chip BESIDE the type tag; the tag itself stays
+     the pure type string the sort/export and the .intag pin above still read. */
+  it('a SANS row shows its F/O/A offer letters beside the type, never inside it', async () => {
+    /* the earlier filter test can leave fType on OML — put it back to All so
+       every seeded SANS person is on screen */
+    await act(async () => {
+      const sel = $('#inFType') as unknown as HTMLSelectElement
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
+      setter.call(sel, 'all')
+      sel.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    /* bullet's seed ticks all three (F/O/A); nick's ticks Fly only (F) */
+    const bulletIx = INPUTS.findIndex((r: any) => r.person === 'bullet' && r.type === 'SANS Availability')
+    const nickIx = INPUTS.findIndex((r: any) => r.person === 'nick' && r.type === 'SANS Availability')
+    expect(bulletIx, 'the all-letters SANS seed is present').toBeGreaterThanOrEqual(0)
+    expect(rowFor(bulletIx).querySelector('.foa')!.textContent).toBe('F/O/A')
+    expect(rowFor(nickIx).querySelector('.foa')!.textContent).toBe('F')
+    /* the type tag stays pure identity — no letters leaked into it */
+    expect(rowFor(bulletIx).querySelector('.intag')!.textContent).toBe('SANS Availability')
+    /* a non-SANS row carries no F/O/A chip at all */
+    const omlIx = INPUTS.findIndex((r: any) => r.type === 'OML')
+    expect(rowFor(omlIx).querySelector('.foa')).toBeNull()
+  })
+
   it('an added downchit re-validates the week (reflow)', async () => {
     validate()
     const before = validate().all.filter((x: any) => x.code === 'DNIF_FLY').length

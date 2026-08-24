@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, defaultAllday, withRemarksTail, baseYear } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, sansLetters, defaultAllday, withRemarksTail, baseYear } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -673,11 +673,21 @@ export function InputsPage() {
                       stays the raw type string every test and export reads.
                       Appointment (88px, the only other label over the 76px
                       track — measured) rides the same rule. */}
+                  {/* a SANS row also wears its F/O/A offer letters (owner,
+                      24 Aug 26 — "include the F/O/A in the inputs as well"), the
+                      same read the calendar popover and the month chip already
+                      give (sansLetters, InputsCal). The letters sit in a chip
+                      BESIDE .intag, never inside it, so .intag's textContent
+                      stays the pure type string the sort/export/tests read
+                      (inputs.test.tsx pins '.intag' === 'OML'). Empty ticks fall
+                      back to F/O/A, meaning "offered". The offer's WINDOW is
+                      already reflected in the Start/End columns — a timed SANS
+                      row reads its span there like any other timed input. */}
                   <td data-label="Type"><span className="intag">{
                     isSansAvail(r.type) ? <>SANS Avail<span className="bl">ability</span></>
                       : r.type === 'Appointment' ? <>Appoint<span className="bl">ment</span></>
                         : r.type
-                  }</span></td>
+                  }</span>{isSansAvail(r.type) && <span className="foa" title="Available for">{sansLetters(r) || 'F/O/A'}</span>}</td>
                   {/* the mark reads in Remarks, not beside the type (owner,
                       9 Aug 26) — same column on every surface that draws an
                       input, and the type column stays pure identity */}
