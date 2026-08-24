@@ -12,6 +12,14 @@
   --bg:#0B0D10; --panel:#14181D; --panel-2:#1A1F26; --raised:#20262E;
   /* the top bar's two stops, opaque — see the .topbar rule */
   --topbar-a:#0E1116; --topbar-b:#090B0E;
+  /* the filters row is a translucent rgba(--panel,.35) over --bg; this is the
+     OPAQUE colour that composite resolves to (0.35·#14181D over #0B0D10). The
+     row now paints it directly, and the mobile sticky pins (the highlight fold
+     toggle's left gutter, the search box's backdrop) paint the SAME token — so
+     an opaque pin over the scroller reads as the row it sits on, not a lighter
+     --panel patch beside it (owner, 24 Aug 26 — "the buttons … some weird
+     shade"). */
+  --filters-bg:#0E1115;
   --edge:#2A313A; --edge-2:#39424D; --ink:#F1F4F7; --ink-2:#B6C0CB; --ink-3:#8A96A3;
   --accent:#3BC6E8; --accent-ink:#052A34;
   --hard:#F0555F; --adv:#E5A83B; --ok:#57C97A;
@@ -349,7 +357,7 @@ a{color:var(--accent)}
 #exportSched,#exportPdf{display:inline-flex;align-items:center;justify-content:center}
 
 /* filter / highlight chips */
-.filters{display:flex;gap:6px;padding:8px 20px;flex-wrap:wrap;border-bottom:1px solid var(--edge);align-items:center;background:rgba(20,24,29,.35)}
+.filters{display:flex;gap:6px;padding:8px 20px;flex-wrap:wrap;border-bottom:1px solid var(--edge);align-items:center;background:var(--filters-bg)}
 .filters .lab{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-right:2px;font-weight:600}
 .fchip{min-width:34px;text-align:center;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);padding:6px 11px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:600}
 .fchip:hover{border-color:var(--edge-2);color:var(--ink)}
@@ -2407,7 +2415,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      (the owner's circle). The edit toggle now just scrolls with the exports;
      the search pin on the right is untouched, so nothing on that row bleeds. */
   #page-viewsched .filters .hl-tog{position:sticky;left:0;z-index:1;
-    align-self:stretch;height:auto;box-shadow:-12px 0 0 var(--panel)}
+    align-self:stretch;height:auto;box-shadow:-12px 0 0 var(--filters-bg)}
   /* A SMALL SEARCH ON THE PHONE'S VIEW-ONLY SCHEDULE (owner, 20 Aug 26 — "we
      should have a small search bar too in view schedule at the top"). The box
      has always been here; this strip is a sideways scroller and `.right` was
@@ -2420,8 +2428,8 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      translucent pin over a scroller reads as a bleed. #searchE pins the same
      way on the edit row (23 Aug 26). */
   #page-viewsched .filters .right,#page-editsched .filters .right{display:flex;position:sticky;right:0;z-index:1;margin-left:auto;
-    align-self:stretch;align-items:center;background:var(--panel);padding-left:6px;
-    box-shadow:12px 0 0 var(--panel)}
+    align-self:stretch;align-items:center;background:var(--filters-bg);padding-left:6px;
+    box-shadow:12px 0 0 var(--filters-bg)}
   #page-viewsched .filters .searchbox,#page-editsched .filters .searchbox{padding:3px 8px;border-radius:8px}
   #page-viewsched .filters .searchbox input,#page-editsched .filters .searchbox input{width:96px;font-size:12px}
   .day{flex:0 0 calc(100vw - 24px);overflow-x:auto}
