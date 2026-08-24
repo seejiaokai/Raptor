@@ -13,7 +13,7 @@ import { INPUTS, inpId, defaultAllday } from '../engine/inputs'
 import { INPVIEW, CALMONTH, setCalMonth } from '../state/view'
 import { DAYRMK, PLANPUCKS, addPlanPuck, removePlanPuck } from '../state/plan'
 import { ME } from '../state/auth'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, QORDER } from '../engine/people'
 import { fmt, fmtDay, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { monthCells, MAX_CHIPS, HOLD_ADD } from './InputsCal'
@@ -555,6 +555,45 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     } finally {
       sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
       if (sec) await act(async () => { removePlanPuck(sec.id); notify() })
+      if ($('#icPopClose')) await click($('#icPopClose'))
+    }
+  })
+
+  /* the picker's within-group order and the SANS seat split (owner, 24 Aug 26 —
+     "arrange sans into pilot then wso … arranged in the cat hierarchy order.
+     Like FI then IR then IP etc for pilot"). */
+  it('picker: SANS splits into Pilots then WSOs, and every group reads in CAT-ladder order (highest first)', async () => {
+    const iso = '2026-07-09'
+    const cell = $(`[data-icday="${iso}"]`)!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await click($('#icAddPucks'))
+    expect($('.ic-pick'), 'the picker opened').toBeTruthy()
+    try {
+      const grp = (label: string) => $$('.ic-pick-body .ic-pick-grp')
+        .find(g => (g.querySelector('.ic-pick-gh')?.firstChild?.textContent || '') === label)
+      const idsIn = (label: string) => {
+        const g = grp(label); expect(g, `group "${label}" present`).toBeTruthy()
+        return [...g!.querySelectorAll('.ic-pickp')].map(b => b.getAttribute('data-pickp')!)
+      }
+      /* SANS is split, pilots before WSOs */
+      const heads = $$('.ic-pick-body .ic-pick-gh').map(h => h.firstChild?.textContent || '')
+      const iPil = heads.indexOf('SANS · Pilots'), iWso = heads.indexOf('SANS · WSOs')
+      expect(iPil, 'SANS · Pilots header present').toBeGreaterThanOrEqual(0)
+      expect(iWso, 'SANS · WSOs comes after SANS · Pilots').toBeGreaterThan(iPil)
+      /* SANS pilots are all front-seat, SANS WSOs all not */
+      expect(idsIn('SANS · Pilots').every(id => PEOPLE[id].seat === 'FCP'), 'SANS pilots are FCP').toBe(true)
+      expect(idsIn('SANS · WSOs').every(id => PEOPLE[id].seat !== 'FCP'), 'SANS WSOs are not FCP').toBe(true)
+      /* every seat group reads highest CAT first (QORDER non-increasing) */
+      const ladderOK = (label: string) => {
+        const ranks = idsIn(label).map(id => QORDER[PEOPLE[id].q] ?? -1)
+        return ranks.every((r, i) => i === 0 || ranks[i - 1] >= r)
+      }
+      for (const label of ['Pilots', 'WSOs', 'SANS · Pilots', 'SANS · WSOs']) {
+        expect(ladderOK(label), `${label} in CAT-ladder order`).toBe(true)
+      }
+    } finally {
+      if ($('#icPickCancel')) await click($('#icPickCancel'))
       if ($('#icPopClose')) await click($('#icPopClose'))
     }
   })

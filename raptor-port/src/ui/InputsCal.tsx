@@ -18,7 +18,7 @@
    the day popover (`data-icmore` opens it too) that both routes land on. */
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLetters } from '../engine/inputs'
-import { PEOPLE, QCOLOR } from '../engine/people'
+import { PEOPLE, QCOLOR, QORDER } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { puck } from './html'
 import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, addPuckPeople, togglePuckPerson, movePlanSection } from '../state/plan'
@@ -722,14 +722,27 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
     }
     /* the roster is grouped by seat, the way the aircrew palette lays its crew
        out (owner, 24 Aug 26 — "arrange them just like how the placeholders
-       arranges them. Not like this mess"): Pilots, WSOs, then SANS (any seat,
-       purple), then Personnel — each callsign-sorted, and an empty group is
-       simply dropped rather than drawn as a bare heading. */
-    const bySort = (a: string, b: string) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs)
-    const inSeat = (seat: string) => roster.filter(id => !PEOPLE[id].san && PEOPLE[id].seat === seat).sort(bySort)
+       arranges them"): Pilots, WSOs, then SANS — split the SAME pilots-then-WSOs
+       way (owner, 24 Aug 26) — then Personnel. An empty group is simply dropped
+       rather than drawn as a bare heading.
+       Within every group the crew read in CAT-ladder order, highest first: FI,
+       IR, IP, … for pilots; FI, IW, … for WSOs (owner, 24 Aug 26 — "the cat
+       hierarchy order … the order I told previously"). QORDER is that ladder
+       ascending (OCU=0 … FI=8), so we sort by it DESCENDING; callsign breaks a
+       tie, and Personnel (no CAT) all tie there and stay callsign-sorted. */
+    const byCat = (a: string, b: string) =>
+      ((QORDER[PEOPLE[b].q] ?? -1) - (QORDER[PEOPLE[a].q] ?? -1)) || PEOPLE[a].cs.localeCompare(PEOPLE[b].cs)
+    const inSeat = (seat: string) => roster.filter(id => !PEOPLE[id].san && PEOPLE[id].seat === seat).sort(byCat)
+    /* SANS carry a seat too; FCP are the SANS pilots, everyone else (RCP — the
+       only other aircrew seat) the SANS WSOs. Using `!== 'FCP'` for the WSO side
+       rather than `=== 'RCP'` guarantees no SANS member can fall through the two
+       groups and vanish from the picker. */
+    const sansSeat = (fcp: boolean) =>
+      roster.filter(id => PEOPLE[id].san && (fcp ? PEOPLE[id].seat === 'FCP' : PEOPLE[id].seat !== 'FCP')).sort(byCat)
     const groups: [string, string[]][] = [
       ['Pilots', inSeat('FCP')], ['WSOs', inSeat('RCP')],
-      ['SANS', roster.filter(id => PEOPLE[id].san).sort(bySort)], ['Personnel', inSeat('GND')],
+      ['SANS · Pilots', sansSeat(true)], ['SANS · WSOs', sansSeat(false)],
+      ['Personnel', inSeat('GND')],
     ]
     const puckBtn = (id: string) => {
       const on = pickSel.has(id), already = seated.has(id), dim = !already && !matchesHi(id)
