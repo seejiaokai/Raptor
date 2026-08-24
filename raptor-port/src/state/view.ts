@@ -572,9 +572,14 @@ export function personMatchesCat(p:any,f:any){
   if(f==='TF')return !!(p.quals&&p.quals.tf);
   return false;
 }
+/* Multiple highlight chips INTERSECT — a person must match EVERY lit chip, not
+   any of them (owner, 24 Aug 26 — "SC D and CAT A … only highlight those who
+   are SC D qualified who are CAT A. It's not SC D plus CAT A"). So each extra
+   chip narrows the lit set. Search stays its own independent highlight (its
+   name matches light up regardless of the chips), exactly as before. */
 export function personMatchesHL(p:any){
-  for(const f of HLSET) if(personMatchesCat(p,f))return true;
   if(SEARCH){const s=SEARCH.toLowerCase(); if(p.cs.toLowerCase().includes(s)||(p.name||'').toLowerCase().includes(s))return true;}
+  if(HLSET.size){ for(const f of HLSET) if(!personMatchesCat(p,f))return false; return true; }
   return false;
 }
 /* {map: day index -> {ids:Set, sev}, echo:Set, sev} for the current warning

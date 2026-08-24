@@ -716,7 +716,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
        when nothing is lit OR the person matches any lit category, otherwise it
        fades. Selecting is still one tap on the puck itself, bright or faded. */
     const toggleHi = (k: string) => setPickHi(prev => { const n = new Set(prev); n.has(k) ? n.delete(k) : n.add(k); return n })
-    const matchesHi = (id: string) => pickHi.size === 0 || [...pickHi].some(k => personMatchesCat(PEOPLE[id], k))
+    /* multiple lit chips INTERSECT — a puck is applicable only if it matches
+       EVERY lit chip, not any of them (owner, 24 Aug 26; matches the schedule
+       pages' personMatchesHL). */
+    const matchesHi = (id: string) => pickHi.size === 0 || [...pickHi].every(k => personMatchesCat(PEOPLE[id], k))
     const close = () => { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp('') }
     const confirm = () => {
       const ids = [...pickSel]

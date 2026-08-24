@@ -530,6 +530,12 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
       expect(host.querySelectorAll('.ic-pickp.on').length, 'highlighting never selects a puck').toBe(0)
       expect(host.querySelectorAll('.ic-pickp.dim').length, 'non-matching pucks faded').toBeGreaterThan(0)
       expect(host.querySelectorAll('.ic-pickp:not(.dim):not(.already)').length, 'matching pucks stay bright').toBeGreaterThan(0)
+      /* a SECOND lit category INTERSECTS, it never broadens (owner, 24 Aug 26):
+         CAT A ∩ CAT D is empty, so lighting D on top of A fades everyone — AND */
+      const catD = $('.ic-pick-cats [data-pickcat="D"]')!
+      await click(catD)
+      expect(host.querySelectorAll('.ic-pickp:not(.dim):not(.already)').length, 'A AND D matches nobody').toBe(0)
+      await click(catD)   // clear D, back to just A
       /* pick two people by hand — a tap selects, faded or not */
       const pickTwo = [...host.querySelectorAll('.ic-pickp:not(.already)')].slice(0, 2) as HTMLElement[]
       const pickedIds = pickTwo.map(b => b.getAttribute('data-pickp')!)

@@ -125,3 +125,36 @@ describe('the CAT / Type / Quals accordion (owner, 24 Aug 26)', () => {
     expect($('#page-viewsched .filters [data-hlgrp="quals"] .hl-gn')?.textContent).toBe('1')
   })
 })
+
+/* the MATCH SEMANTICS behind the chips: two lit chips INTERSECT, they do not
+   union (owner, 24 Aug 26 — "SC D and CAT A … only … those who are SC D
+   qualified who are CAT A. It's not SC D plus CAT A"). Pure predicate, no DOM. */
+describe('personMatchesHL — multiple chips AND together', () => {
+  beforeEach(() => { view.HLSET.clear(); view.setSearch('') })
+  const both = { q: 'A', quals: { scDay: true } }        // CAT A AND SC-Day
+  const catAonly = { q: 'A', quals: {} }                 // CAT A, no SC-Day
+  const scdOnly = { q: 'C', quals: { scDay: true } }     // SC-Day, not CAT A
+
+  it('a person must match EVERY lit chip, not any of them', () => {
+    view.HLSET.add('A'); view.HLSET.add('SCD')
+    expect(view.personMatchesHL(both), 'CAT A + SC-Day → lit').toBe(true)
+    expect(view.personMatchesHL(catAonly), 'CAT A only → faded').toBe(false)
+    expect(view.personMatchesHL(scdOnly), 'SC-Day only → faded').toBe(false)
+  })
+
+  it('one lit chip still lights everyone in that category', () => {
+    view.HLSET.add('A')
+    expect(view.personMatchesHL(both)).toBe(true)
+    expect(view.personMatchesHL(catAonly)).toBe(true)
+    expect(view.personMatchesHL(scdOnly)).toBe(false)
+  })
+
+  it('search stays an independent highlight, lighting its name matches regardless of the chips', () => {
+    view.HLSET.add('A'); view.HLSET.add('SCD')
+    const ghost = { ...catAonly, cs: 'Ghost', name: 'Ghost' }   // fails the AND (no SC-Day)
+    expect(view.personMatchesHL(ghost), 'no search, fails a chip → faded').toBe(false)
+    view.setSearch('ghost')
+    expect(view.personMatchesHL(ghost), 'name matches search → lit anyway').toBe(true)
+    view.setSearch('')
+  })
+})
