@@ -2111,14 +2111,20 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-secpk{display:inline-flex;align-items:center;justify-content:flex-start;gap:2px;min-height:var(--puck-h)}
 .ic-secpk .seat{display:flex}
 /* a removed puck leaves a BLANK cell that holds its grid position so the
-   survivors never shift (owner, 24 Aug 26); the cell is invisible but occupies
-   its third of the row. */
-.ic-secpk-gap{visibility:hidden}
+   survivors never shift (owner, 24 Aug 26); invisible but it occupies its third
+   of the row. opacity:0 rather than visibility:hidden so it is still hit-tested
+   — an empty slot is a real drop target for a swap/move (startPkDrag). */
+.ic-secpk-gap{opacity:0}
 .ic-pkdel{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:11px;padding:2px 3px}
 .ic-pkdel:hover{color:var(--hard)}
-/* a seated puck being dragged off its row to remove it — lifts above its
-   neighbours and follows the finger (transform set inline by startPkDrag) */
-.ic-secpk.pk-drag{position:relative;z-index:2;opacity:.85;cursor:grabbing;pointer-events:none}
+/* a seated puck lifted for a drag — floats above its neighbours and follows the
+   finger (transform set inline by startPkDrag); pointer-events:none so the slot
+   UNDER the finger is what elementFromPoint reads. */
+.ic-secpk.pk-drag{position:relative;z-index:3;opacity:.85;cursor:grabbing;pointer-events:none}
+/* the slot a lifted puck is hovering over — where it will swap/land on release.
+   A gap target flips back to opaque so its dashed ring shows over the empty cell. */
+.ic-secpk.pk-swap-target{outline:2px dashed var(--accent);outline-offset:1px;border-radius:6px}
+.ic-secpk-gap.pk-swap-target{opacity:1}
 /* the + add button that opens the multi-select picker (replaced the one-at-a
    -time select, owner 23 Aug 26) */
 .ic-pop .ic-pkadd{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);

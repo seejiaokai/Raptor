@@ -21,7 +21,7 @@ import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLett
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { puck } from './html'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, addPuckPeople, togglePuckPerson, movePlanSection } from '../state/plan'
+import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from '../state/plan'
 import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, matchesHiSet } from '../state/view'
 import { HL_GROUPS } from './hlchips'
@@ -489,43 +489,65 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
       window.addEventListener('pointercancel', cancel)
       dragCancelRef.current = cancel        // popover close → cancel, don't reorder
     }
-    /* DRAG A SEATED PUCK OUT TO REMOVE IT (owner, 23 Aug 26 — "i just drag them
-       out of where they are seated just like … edit schedule mode"), the phone
-       AND desktop removal. It rides the puck itself (no handle): a small drift
-       arms the drag and the chip follows the finger; releasing OUTSIDE its own
-       row drops the person, releasing back inside cancels — the same "off its
-       seat = gone, back on = kept" feel drag.ts gives a board puck. A press
-       that never drifts is left alone, so a plain tap still does nothing
-       destructive (right-click / the ✕ are the deliberate removes). */
-    const startPkDrag = (e: React.PointerEvent, rowId: string, personId: string) => {
+    /* DRAG A SEATED PUCK — reorder it, swap it, or lift it off the row (owner,
+       23 Aug 26 "i just drag them out … just like edit schedule mode"; 24 Aug 26
+       "shift the pucks around … when I move pucks over each other it will swap
+       the crew"). It rides the puck itself (no handle): a small drift arms the
+       drag and the chip follows the finger. On release —
+         • over ANOTHER slot in the same row → SWAP the two (dropping onto an
+           empty slot just moves it there, the blank riding back to the vacated
+           slot — movePuckPerson),
+         • back on its OWN slot / between cells → nothing, a cancel,
+         • OUTSIDE the row → drop the person (togglePuckPerson, the removal).
+       A press that never drifts is left alone, so a plain tap still does nothing
+       destructive (right-click is the other deliberate remove). The lifted chip
+       is pointer-events:none (.pk-drag), so elementFromPoint reads the slot UNDER
+       the finger, not the chip; the gaps are opacity:0 (not visibility:hidden)
+       so an empty slot is a real drop target too. */
+    const startPkDrag = (e: React.PointerEvent, rowId: string, personId: string, fromIx: number) => {
       if (e.button != null && e.button !== 0) return       // left button / touch only
       const chip = e.currentTarget as HTMLElement
       const x0 = e.clientX, y0 = e.clientY
       let dragging = false
       try { chip.setPointerCapture(e.pointerId) } catch (_) { /* older engines */ }
+      /* which slot is the finger over? cell null / ix -1 when the point is
+         between cells; inRow false once it has left the row altogether. */
+      const slotAt = (ev: PointerEvent) => {
+        const over = document.elementFromPoint(ev.clientX, ev.clientY) as Element | null
+        const inRow = !!(over && over.closest && over.closest(`[data-secpucks="${rowId}"]`))
+        const cell = over && over.closest ? over.closest(`[data-secpucks="${rowId}"] .ic-secpk`) as HTMLElement | null : null
+        const ix = cell && cell.dataset.pkidx != null ? +cell.dataset.pkidx : -1
+        return { inRow, ix, cell }
+      }
+      const clearLit = () => document.querySelectorAll(`[data-secpucks="${rowId}"] .pk-swap-target`).forEach(x => x.classList.remove('pk-swap-target'))
       const move = (ev: PointerEvent) => {
         if (!dragging && Math.abs(ev.clientX - x0) < 6 && Math.abs(ev.clientY - y0) < 6) return
         if (!dragging) { dragging = true; chip.classList.add('pk-drag'); document.body.classList.add('ic-dragging') }
         chip.style.transform = `translate(${ev.clientX - x0}px, ${ev.clientY - y0}px)`
+        const { ix, cell } = slotAt(ev)
+        clearLit()
+        if (cell && ix >= 0 && ix !== fromIx) cell.classList.add('pk-swap-target')   // show the swap target
       }
       const done = (ev: PointerEvent | null) => {
         window.removeEventListener('pointermove', move)
         window.removeEventListener('pointerup', up)
         window.removeEventListener('pointercancel', cancel)
         if (dragCancelRef.current === cancel) dragCancelRef.current = null
+        clearLit()
         chip.classList.remove('pk-drag'); chip.style.transform = ''
         document.body.classList.remove('ic-dragging')
         if (!dragging || !ev) return                        // a tap, not a drag — leave the puck seated
-        const over = document.elementFromPoint(ev.clientX, ev.clientY) as Element | null
-        const backInRow = !!(over && over.closest && over.closest(`[data-secpucks="${rowId}"]`))
-        if (!backInRow) writeInputs(() => togglePuckPerson(rowId, personId))   // released off its row → drop
+        const { inRow, ix } = slotAt(ev)
+        if (!inRow) writeInputs(() => togglePuckPerson(rowId, personId))                          // off the row → drop
+        else if (ix >= 0 && ix !== fromIx) writeInputs(() => movePuckPerson(rowId, fromIx, ix))   // over a slot → swap
+        // inRow but no slot → a cancel, leave it seated
       }
       const up = (ev: PointerEvent) => done(ev)
       const cancel = () => done(null)
       window.addEventListener('pointermove', move)
       window.addEventListener('pointerup', up)
       window.addEventListener('pointercancel', cancel)
-      dragCancelRef.current = cancel        // popover close → cancel, don't drop
+      dragCancelRef.current = cancel        // popover close → cancel, don't drop/swap
     }
     return (
       <div className="ic-popwrap" onPointerDown={e => { if (e.target === e.currentTarget) closePop() }}>
@@ -594,20 +616,22 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                               26 — "3 pucks per row"). A removed puck BLANKS its slot
                               rather than closing the gap (togglePuckPerson), so an
                               empty cell holds the position and the survivors never
-                              shift; only trailing blanks are trimmed. */}
+                              shift; only trailing blanks are trimmed. data-pkidx is
+                              the slot's index, read by startPkDrag to swap one puck
+                              onto another (or onto an empty slot). */}
                           <div className="ic-secpk-grid">
                             {(p.ids || []).map((id: string, i: number) => !id ? (
-                              <span key={'g' + i} className="ic-secpk ic-secpk-gap" aria-hidden="true" />
+                              <span key={'g' + i} className="ic-secpk ic-secpk-gap" data-pkidx={i} aria-hidden="true" />
                             ) : (
-                              /* a seated puck carries NO ✕ now (owner, 24 Aug 26):
-                                 removal is a DRAG off its row (phone + desktop) or a
-                                 RIGHT-CLICK (desktop), so the always-there ✕ was
-                                 redundant. touchAction:none so a drag doesn't scroll
-                                 the sheet under the finger. */
-                              <span key={id} className="ic-secpk" style={sched ? { touchAction: 'none' } : undefined}
-                                onPointerDown={sched ? (e => startPkDrag(e, p.id, id)) : undefined}
+                              /* a seated puck carries NO ✕ (owner, 24 Aug 26): drag
+                                 it onto another puck to SWAP, onto an empty slot to
+                                 MOVE, or off the row to REMOVE; a right-click also
+                                 removes (desktop). touchAction:none so the drag
+                                 doesn't scroll the sheet under the finger. */
+                              <span key={id} className="ic-secpk" data-pkidx={i} style={sched ? { touchAction: 'none' } : undefined}
+                                onPointerDown={sched ? (e => startPkDrag(e, p.id, id, i)) : undefined}
                                 onContextMenu={sched ? (e => { e.preventDefault(); writeInputs(() => togglePuckPerson(p.id, id)) }) : undefined}
-                                title={sched ? `${PEOPLE[id] ? PEOPLE[id].cs : id} — drag off or right-click to remove` : (PEOPLE[id] ? PEOPLE[id].cs : id)}>
+                                title={sched ? `${PEOPLE[id] ? PEOPLE[id].cs : id} — drag to swap, off the row to remove` : (PEOPLE[id] ? PEOPLE[id].cs : id)}>
                                 <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
                               </span>
                             ))}

@@ -166,6 +166,23 @@ export function togglePuckPerson(id: string, personId: string) {
   return true
 }
 
+/* SWAP two slots of a pucks row (owner, 24 Aug 26 — "shift the pucks around …
+   when I move pucks over each other it will swap the crew"). Dragging a puck
+   onto another exchanges the two; dropping it onto an empty slot moves it there
+   (the blank rides back to the vacated slot). Trailing blanks are trimmed after,
+   exactly as a removal does, so moving the last puck earlier doesn't leave a
+   dangling empty cell — internal gaps still hold their place. */
+export function movePuckPerson(id: string, from: number, to: number) {
+  if (!canEditSched()) return false
+  const p = PLANPUCKS.find((x: any) => x.id === id)
+  if (!p || p.kind !== 'pucks') return false
+  const ids: string[] = p.ids || (p.ids = [])
+  if (from === to || from < 0 || to < 0 || from >= ids.length || to >= ids.length) return false
+  const t = ids[from]; ids[from] = ids[to]; ids[to] = t
+  while (ids.length && !ids[ids.length - 1]) ids.pop()
+  return true
+}
+
 /* reorder one day's sections by drag (owner, 22 Aug 26 — "the admin is able
    to shift these up and down by drag and dropping"). `beforeId` null means
    the end of that day's run. Same-day only: a cross-day move is caldrag's
