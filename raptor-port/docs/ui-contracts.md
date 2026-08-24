@@ -2287,8 +2287,18 @@ is offered as a ghost **above** the box, carrying `data-bacc` (the key) and
 `data-bval` (the value); `interactions.ts` writes it through `txtSet` on click,
 so accepting is an ordinary edit — pending mark, next AL, undoable. It is
 never applied silently: the model stays blank until somebody decides, and a
-blank line is still validated against that same suggested time. Standalone
-waves have no B at all — they are shifts and brief nothing.
+blank line is still validated against that same suggested time.
+
+**SC is the exception (owner, 24 Aug 26).** On the week an SC line has no B
+column (it shows SHIFT / START / END). On the board it keeps its B input — but
+that box is an **in-time**, not a brief: no blue suggested-brief ghost is
+offered on an SC line, and typing one is read by the engine as the crew's
+report time (`docs/engine-rules.md`, the SC B rule). The board also drops the
+SC wave header's "in-time · N ac" note. AVALON/BB are unchanged — the owner
+named SC. Note the seam this leaves: an SC in-time is entered and shown only on
+the board, not on the desktop week's shift row; "we will hardly have a brief
+time," so it is rare, but a value typed on the board is not surfaced on the
+week.
 
 Two measured contracts moved with it: `.acrow`'s `min-height` grew to
 `--puck-h + 20px` for the third line in the B/TO stack, and the board's
