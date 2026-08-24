@@ -178,6 +178,25 @@ export function hsSet(el: any, px: number) {
   if (Math.abs(el.scrollLeft - px) > HS_EPS) el.scrollLeft = px // browser ignored 'instant'
   return true
 }
+/* THE TRACK IS DRIVEN BY THE WEEK, NEVER THE OTHER WAY ROUND UNLESS THE USER
+   GRABS IT (owner, 24 Aug 26 — desktop ‹ › arrows "don't go day by day … stuck
+   halfway then zoom past a few days"). An arrow press fires a
+   scroll-behavior:smooth glide on the week. Every animation frame of that glide
+   emits a week `scroll`, which onDocScroll mirrors to this proxy track; the
+   track's own echoed `scroll` then ran onTrackScroll, which wrote the week
+   straight back with behavior:'instant' — and an instant scroll CANCELS an
+   in-flight smooth scroll. The mirror lags the glide by a frame, so its
+   back-write lands a few pixels behind where the glide has already reached,
+   killing the animation and freezing the strip mid-day; when a frame slips
+   through uncancelled the leftover motion scrubs it fast. The B33 self-
+   terminating sync is sound for two STATIC positions, but the week is not static
+   mid-glide, so the loop had to be broken by ORIGIN, not by position alone.
+   trkEcho remembers the exact scrollLeft our last mirror put on the track. When
+   onTrackScroll sees the track still sitting there, this scroll is that echo —
+   it must not touch the week. Only when the track has moved somewhere ELSE (a
+   real drag of the native scrollbar thumb) does it drive the week. */
+let trkEcho = -1
+function mirrorToTrack(trk: any, px: number) { hsSet(trk, px); trkEcho = trk.scrollLeft }
 function hsWeek() {
   const sb = $('schedBoard')
   if (sb && !(sb as any).hidden) return null
@@ -240,7 +259,7 @@ export function hsSync() {
      mapped overflow-to-overflow rather than by a width ratio */
   inn!.style.width = Math.round(w!.scrollWidth * (tw / w!.clientWidth)) + 'px'
   const tmax = trk.scrollWidth - trk.clientWidth
-  hsSet(trk, over > 0 ? (w!.scrollLeft / over) * tmax : 0)
+  mirrorToTrack(trk, over > 0 ? (w!.scrollLeft / over) * tmax : 0)
   lbl!.textContent = dayRangeText(w!)
 }
 function hsLabel() {
@@ -344,8 +363,17 @@ function onTrackGrab() { panWk = null }   // a real scrollbar grab drops the arr
 function onTrackScroll() {
   const w = hsWeek(); if (!w) return
   const trk = $('hsTrack')!
+  /* our own mirror echo — the track is still where we last put it (see trkEcho).
+     Follow with the label, but do NOT write the week: during an arrow glide that
+     write would cancel the smooth scroll and stick or scrub the strip. */
+  if (Math.abs(trk.scrollLeft - trkEcho) <= HS_EPS) { hsLabel(); return }
+  /* a genuine drag of the scrollbar thumb — it drives the week, and drops the
+     arrows' in-flight target the same way a shift+wheel pan or grab does (the
+     native scrollbar does not always fire the pointerdown onTrackGrab listens
+     for, so nulling here closes that gap). */
   const tmax = trk.scrollWidth - trk.clientWidth
   const wmax = w.scrollWidth - w.clientWidth
+  panWk = null
   hsSet(w, tmax > 0 ? (trk.scrollLeft / tmax) * wmax : 0)
   hsLabel()
 }
@@ -357,7 +385,7 @@ function onDocScroll(e: Event) {
     hsLabel(); rosDayFollow()
     const trk = $('hsTrack'); if (!trk) return
     const tmax = trk.scrollWidth - trk.clientWidth, wmax = w.scrollWidth - w.clientWidth
-    hsSet(trk, wmax > 0 ? (w.scrollLeft / wmax) * tmax : 0)
+    mirrorToTrack(trk, wmax > 0 ? (w.scrollLeft / wmax) * tmax : 0)
     return
   }
   /* Swiping one wave block sideways drags every other wave in the same day with
