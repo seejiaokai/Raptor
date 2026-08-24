@@ -18,6 +18,13 @@ let host: HTMLDivElement
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
 
+/* module pan state (the burst corridor) survives between tests; a plain
+   horizontal wheel over the week is the fix's own way of dropping it, so the
+   tests use it both as the subject under test and as their reset */
+const dropCorridor = (w: HTMLElement) => {
+  w.dispatchEvent(new WheelEvent('wheel', { deltaX: 1, bubbles: true }))
+}
+
 /* a stand-in scrollable: hsSet only touches scrollLeft/scrollWidth/clientWidth
    and scrollTo, so a plain object is enough */
 const stub = (scrollLeft: number, scrollWidth: number, clientWidth: number, refuseInstant = false) => {
@@ -94,13 +101,19 @@ describe('week panning (tfin)', () => {
     w.scrollLeft = 0
     panDays(1)
     expect(landed).toBe(564)
-    /* from mid-day going LEFT: step from the day you are leaving (ceil) */
+    /* 36px past Tuesday reads as PARKED ON Tuesday (PARK_TOL — the eye sees
+       Tuesday at the front), so ‹ steps a real day to Monday, not a 36px
+       nudge back to the boundary */
+    dropCorridor(w)
     w.scrollLeft = 600
     panDays(-1)
-    expect(landed).toBe(564)
-    w.scrollLeft = 564
-    panDays(-1)
     expect(landed).toBe(0)
+    /* a genuine MID-day park still steps from the day you are leaving (ceil):
+       halfway between Tuesday and Wednesday, ‹ lands on Tuesday */
+    dropCorridor(w)
+    w.scrollLeft = 850
+    panDays(-1)
+    expect(landed).toBe(564)
   })
 
   /* the desktop arrows are continuous across weeks (owner, 23 Aug 26) — the
@@ -217,6 +230,83 @@ describe('week panning (tfin)', () => {
     panDays(-1); expect(landed, 'Tuesday, not back to Thursday').toBe(564)
     w.scrollLeft = 2034
     panDays(-1); expect(landed, 'Monday').toBe(0)
+  })
+
+  /* A FREE SCROLL PARKS SHY OF THE BOUNDARY, AND ONE PRESS MUST STILL MOVE A
+     WHOLE DAY (owner, 24 Aug 26 — "when the left most day on the screen is
+     Saturday, I require 2 right arrow clicks to go to Sunday instead of 1").
+     Dragging the proxy scrollbar (or a trackpad) rests the strip wherever the
+     pointer stopped — routinely a few dozen px short of the column visibly at
+     the front. The old 0.02 tolerance read that park as "still on Friday", so
+     the first press nudged the invisible 30px to the true boundary and only
+     the second press reached Sunday. Reproduced in a real browser before the
+     fix: park 2790 → click → 2820 (Saturday still) → click → 3384 (Sunday). */
+  it('parked a hair shy of Saturday, one › press fronts Sunday', () => {
+    const w = $('#vWeek')
+    const live = $$('#vWeek .day:not(.peek)')
+    live.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: 9000, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1692, configurable: true })
+    let landed = -1
+    ;(w as any).scrollTo = (o: any) => { landed = o.left; (w as any).scrollLeft = o.left }
+    dropCorridor(w)
+    w.scrollLeft = 5 * 564 - 30      // Saturday at the front to the eye, 30px shy
+    panDays(1)
+    expect(CURWEEK, 'no week cross — Sunday is still ahead').toBe('13/07/2026')
+    expect(landed, 'one press fronts Sunday, not a 30px nudge').toBe(6 * 564)
+  })
+
+  it('parked a hair shy of the far end, › crosses the week instead of nudging first', async () => {
+    const w = $('#vWeek')
+    const live = $$('#vWeek .day:not(.peek)')
+    live.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: 9000, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1692, configurable: true })
+    ;(w as any).scrollTo = (o: any) => { (w as any).scrollLeft = o.left }
+    dropCorridor(w)
+    w.scrollLeft = 6 * 564 - 30      // Sunday at the front to the eye
+    await act(async () => { panDays(1) })
+    expect(CURWEEK, 'the press crosses — no invisible nudge-press first').toBe('20/07/2026')
+    await act(async () => { loadWeek('13/07/2026') })
+  })
+
+  it('parked a hair inside the left edge, ‹ crosses to the previous week', async () => {
+    const w = $('#vWeek')
+    const live = $$('#vWeek .day:not(.peek)')
+    live.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: 9000, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1692, configurable: true })
+    ;(w as any).scrollTo = (o: any) => { (w as any).scrollLeft = o.left }
+    dropCorridor(w)
+    w.scrollLeft = 30                // Monday at the front to the eye
+    await act(async () => { panDays(-1) })
+    expect(CURWEEK, 'the press crosses back — no nudge to true zero first').toBe('06/07/2026')
+    await act(async () => { loadWeek('13/07/2026') })
+  })
+
+  /* THE STALE CORRIDOR AFTER A PLAIN HORIZONTAL PAN (the second half of the
+     same report, reproduced 24 Aug 26): arrow-walk to Sunday, trackpad back to
+     Saturday — a position INSIDE the burst corridor — and the next › counted
+     from the stale Sunday target and jumped a whole week, skipping Sunday. A
+     plain (no-shift) horizontal wheel over the week is a manual pan and must
+     drop the arrows' in-flight target like shift+wheel and a scrollbar grab. */
+  it('a plain horizontal wheel drops the stale corridor, so › from Saturday fronts Sunday', () => {
+    const w = $('#vWeek')
+    const live = $$('#vWeek .day:not(.peek)')
+    live.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: 9000, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1692, configurable: true })
+    let landed = -1
+    ;(w as any).scrollTo = (o: any) => { landed = o.left; (w as any).scrollLeft = o.left }
+    dropCorridor(w)
+    w.scrollLeft = 0
+    for (let i = 0; i < 6; i++) panDays(1)          // walk to Sunday; corridor target = 3384
+    expect(w.scrollLeft).toBe(6 * 564)
+    w.scrollLeft = 5 * 564                          // trackpad back to Saturday — inside the corridor
+    dropCorridor(w)                                 // the pan's own wheel tick
+    panDays(1)
+    expect(CURWEEK, 'no week jump off the stale Sunday target').toBe('13/07/2026')
+    expect(landed, 'counted from where the user actually is — Sunday fronts').toBe(6 * 564)
   })
 
   it('panning the week walks the palette along, debounced', async () => {

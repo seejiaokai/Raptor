@@ -731,7 +731,25 @@ subscribers.
   a new week drops the target. The corridor is anchored at the burst start, not
   the last step: the first cut used the previous step's start (`panPrev`), a
   one-day window a fast backlog overshoots, which left the back-direction bug
-  alive. Don't narrow it back to the last step. **The DESKTOP
+  alive. Don't narrow it back to the last step. **A park NEAR a day boundary
+  counts as ON it, and a plain horizontal wheel drops the corridor** (owner,
+  24 Aug 26 — "when the left most day on the screen is Saturday, I require 2
+  right arrow clicks to go to Sunday instead of 1"). A free scroll — the proxy
+  scrollbar, a trackpad — rests the strip wherever the pointer stopped,
+  routinely a few dozen px shy of the column visibly at the front; the old
+  hairline 0.02 tolerance read that as "still on Friday", so the first press
+  nudged the invisible gap and only the second moved a day — and the 1px
+  edge tests made the week-cross need the same nudge-press first.
+  `pan.ts:PARK_TOL` (0.35 of a day) now decides both the step counting and
+  the edge-cross guards; a genuinely mid-day park still steps from the day
+  being left. The same session's second find: a NO-SHIFT horizontal
+  wheel/trackpad pan scrolls the week natively, invisible to `onWheel`, so
+  the corridor survived it — arrow to Sunday, trackpad back to Saturday, and
+  the next › counted from the stale Sunday target and jumped a whole week.
+  `onWheel` now drops `panWk` on any plain horizontal tick over a `.week`
+  (booleans-only on the common vertical path — the Edge no-JIT contract
+  holds). Don't shrink PARK_TOL back to a hairline, and don't remove the
+  deltaX invalidation. **The DESKTOP
   scheduler board now has week navigation** (owner, 23 Aug 26 — "in scheduler
   board i cant go between weeks except through the calendar"): `‹ ›` week-jump
   chips flank the seven day chips inside `#sbDays` (`board.ts:dayTabsHTML`,
