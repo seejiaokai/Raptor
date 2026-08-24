@@ -1,11 +1,14 @@
 import type { Page } from '@playwright/test'
 
-/* Login is a/a for full edit, user/user for view-only. The username is
-   lowercased before matching but the PASSWORD is compared exactly. */
+/* Login is ad/a for full edit, us/us for the member (owner, 24 Aug 26). The
+   username is lowercased before matching but the PASSWORD is compared
+   exactly. The parameter keeps its historical 'a' | 'user' shape so the 100+
+   call sites stay untouched; the map below is the one place that knows the
+   real credentials. */
 export async function login(page: Page, who: 'a' | 'user' = 'a') {
   await page.goto('/')
-  await page.fill('#luser', who)
-  await page.fill('#lpass', who)
+  await page.fill('#luser', who === 'a' ? 'ad' : 'us')
+  await page.fill('#lpass', who === 'a' ? 'a' : 'us')
   await page.click('#loginForm button[type=submit]')
   await page.waitForSelector('#vWeek .day', { state: 'attached' })
   await page.waitForTimeout(400)
