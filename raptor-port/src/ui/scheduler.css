@@ -568,6 +568,21 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
      swipe from scrolling the week underneath (owner, 8 Aug 26) */
   .eroster .ros-body{flex:1 1 auto;min-height:0;overflow-y:auto;
     overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-right:2px}
+  /* KEEP THE DAY LINE IN VIEW ON THE PHONE PALETTE TOO (owner, 24 Aug 26 — "I
+     just need the placeholder date to be shown when I scroll down so that I
+     know who I'm selected to"). The DESKTOP panel got this on 23 Aug (the
+     min-width:821px block above), but that scrolls .eroster itself; the phone
+     drawer scrolls its inner .ros-body and never pinned anything, so a
+     scheduler deep in a long crew list lost which DAY he was crewing. Same two
+     pins as the desktop panel — the "Aircrew · <day>" line (with its ‹ › day
+     arrows) at the very top, the "Pilots/WSOs · N free" column labels just
+     under it — painted the drawer's own near-black (--bg) so the pucks pass
+     behind them rather than through, and so the header reads as the drawer, not
+     a lighter patch. The board's own roster draws no .er-h (head:false), so it
+     is untouched. */
+  .eroster .ros-body .er-h{position:sticky;top:0;z-index:4;background:var(--bg)}
+  .edit-board .eroster .ros-body .rcol .rh{position:sticky;top:27px;z-index:3;
+    background:var(--bg);padding-bottom:1px}
   .edit-board .week{padding-right:0}
 }
 /* ---- who may be planned where ----------------------------------------------
