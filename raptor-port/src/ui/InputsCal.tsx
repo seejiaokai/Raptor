@@ -568,7 +568,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                   /* an EMPTY pucks row is a scheduler's work-in-progress; a
                      member would see only a bare band with nothing in it and
                      nothing to do — skip it for them (review fix, 22 Aug 26) */
-                  if (!sched && p.kind === 'pucks' && !(p.ids || []).length) return null
+                  if (!sched && p.kind === 'pucks' && !(p.ids || []).some(Boolean)) return null
                   const dragCls = secDrag === p.id ? ' dragging'
                     : secDrag && secOver && secOver.id === p.id ? (secOver.after ? ' dragover after' : ' dragover') : ''
                   return (
@@ -590,22 +590,28 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                            would silently toggle the schedule pages' selection
                            from inside this overlay. */
                         <div className="ic-secpucks" data-secpucks={p.id} onClick={e => e.stopPropagation()}>
-                          {(p.ids || []).map((id: string) => (
-                            /* a seated puck: RIGHT-CLICK removes it on desktop,
-                               and a DRAG off its row removes it on phone or
-                               desktop (owner, 23 Aug 26); the ✕ stays as the
-                               plain, always-there remove. touchAction:none so a
-                               drag doesn't scroll the sheet under the finger. */
-                            <span key={id} className="ic-secpk" style={sched ? { touchAction: 'none' } : undefined}
-                              onPointerDown={sched ? (e => startPkDrag(e, p.id, id)) : undefined}
-                              onContextMenu={sched ? (e => { e.preventDefault(); writeInputs(() => togglePuckPerson(p.id, id)) }) : undefined}>
-                              <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
-                              {sched && <button type="button" className="ic-pkdel" data-pkdel={`${p.id}.${id}`}
-                                aria-label={`Remove ${PEOPLE[id] ? PEOPLE[id].cs : id}`}
-                                onPointerDown={e => e.stopPropagation()}
-                                onClick={() => writeInputs(() => togglePuckPerson(p.id, id))}>✕</button>}
-                            </span>
-                          ))}
+                          {/* the pucks sit in a fixed 3-column grid (owner, 24 Aug
+                              26 — "3 pucks per row"). A removed puck BLANKS its slot
+                              rather than closing the gap (togglePuckPerson), so an
+                              empty cell holds the position and the survivors never
+                              shift; only trailing blanks are trimmed. */}
+                          <div className="ic-secpk-grid">
+                            {(p.ids || []).map((id: string, i: number) => !id ? (
+                              <span key={'g' + i} className="ic-secpk ic-secpk-gap" aria-hidden="true" />
+                            ) : (
+                              /* a seated puck carries NO ✕ now (owner, 24 Aug 26):
+                                 removal is a DRAG off its row (phone + desktop) or a
+                                 RIGHT-CLICK (desktop), so the always-there ✕ was
+                                 redundant. touchAction:none so a drag doesn't scroll
+                                 the sheet under the finger. */
+                              <span key={id} className="ic-secpk" style={sched ? { touchAction: 'none' } : undefined}
+                                onPointerDown={sched ? (e => startPkDrag(e, p.id, id)) : undefined}
+                                onContextMenu={sched ? (e => { e.preventDefault(); writeInputs(() => togglePuckPerson(p.id, id)) }) : undefined}
+                                title={sched ? `${PEOPLE[id] ? PEOPLE[id].cs : id} — drag off or right-click to remove` : (PEOPLE[id] ? PEOPLE[id].cs : id)}>
+                                <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
+                              </span>
+                            ))}
+                          </div>
                           {sched && (
                             <button type="button" className="ic-pkadd" data-pkadd={p.id}
                               onClick={() => { setPickFor(p.id); setPickIso(iso); setPickSel(new Set()) }}>+ add</button>
@@ -703,7 +709,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
      target row are shown ticked-and-locked so a re-pick can't double them. */
   const renderPicker = () => {
     const roster = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
-    const seated = new Set<string>(pickFor ? ((PLANPUCKS.find((p: any) => p.id === pickFor)?.ids) || []) : [])
+    const seated = new Set<string>(pickFor ? (((PLANPUCKS.find((p: any) => p.id === pickFor)?.ids) || []).filter(Boolean)) : [])
     const toggle = (id: string) => setPickSel(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
     /* HIGHLIGHT = a visual fade, never a selection (owner, 24 Aug 26). Toggling
        a chip lights/darkens its key in pickHi; a puck is "applicable" (bright)
@@ -849,7 +855,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                    just moved to the opposite edge so it never fights the CAT
                    line. Ground crew (no CAT) simply get no right line. */
                 <div key={'p' + p.id} className="ic-pks" data-pid={p.id} data-icdrag>
-                  {(p.ids || []).map((id: string) => {
+                  {/* the cell summary lists the real people only — gaps in the
+                      row (blanked slots) are positional, not members. */}
+                  {(p.ids || []).filter(Boolean).map((id: string) => {
                     const per = PEOPLE[id]
                     const cat = per && QCOLOR[per.q]   // category → right line (drawn by .ic-pk::after off this var)
                     return <span key={id} className={'ic-pk' + (per && per.san ? ' sans' : '')}

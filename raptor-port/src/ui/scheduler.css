@@ -2103,11 +2103,17 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-sec>.ic-poppuck,.ic-sec>.ic-poppuck-edit,.ic-sec>.ic-secpucks{flex:1;min-width:0}
 .ic-sechandle{cursor:grab;color:var(--ink-3);font-size:13px;line-height:1;padding:6px 2px;user-select:none}
 .ic-sechandle:hover{color:var(--accent)}
-/* a pucks row — the app's canonical pucks, full width, wrap as they fill;
-   each with its own ✕ while editing, and the + add… picker at the end */
+/* a pucks row — the app's canonical pucks in a fixed THREE-column grid (owner,
+   24 Aug 26 — "3 pucks per row"), then the + add… picker and the row's own ✕.
+   The grid is a full-width flex child so those two controls wrap below it. */
 .ic-secpucks{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:24px}
-.ic-secpk{display:inline-flex;align-items:center;gap:2px}
+.ic-secpk-grid{flex:1 1 100%;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;align-items:center}
+.ic-secpk{display:inline-flex;align-items:center;justify-content:flex-start;gap:2px;min-height:var(--puck-h)}
 .ic-secpk .seat{display:flex}
+/* a removed puck leaves a BLANK cell that holds its grid position so the
+   survivors never shift (owner, 24 Aug 26); the cell is invisible but occupies
+   its third of the row. */
+.ic-secpk-gap{visibility:hidden}
 .ic-pkdel{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:11px;padding:2px 3px}
 .ic-pkdel:hover{color:var(--hard)}
 /* a seated puck being dragged off its row to remove it — lifts above its
@@ -2191,10 +2197,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .ic-popwrap{align-items:flex-end;padding:0}
   .ic-pop{width:100%;max-width:100%;border-radius:12px 12px 0 0;max-height:75vh}
   .ic-pop .abtn,.ic-poprow,.ic-poppuck button{min-height:44px}
-  /* the seated-puck ✕ keeps its small glyph but earns a full 44px thumb target
-     on the phone — it was an 11px, ~15px-tall tap before (review fix, 24 Aug
-     26). Centred so the little × still sits inside the puck row cleanly. */
-  .ic-secpk .ic-pkdel{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  /* the row's ✕ (delete this whole pucks row) keeps its small glyph but earns a
+     full 44px thumb target on the phone. The per-puck ✕ is gone (owner, 24 Aug
+     26 — removal is drag-off / right-click now), so only the row-delete remains. */
+  .ic-secpucks .ic-rowdel{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 }
 
 /* ============ MODALS / DRAWER / AIRSPACE ============ */

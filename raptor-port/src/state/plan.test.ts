@@ -112,7 +112,7 @@ describe('resetSession forgets the planning layer', () => {
 })
 
 describe('the pucks-row sections (owner, 22 Aug 26)', () => {
-  it('addPuckRow appends an empty pucks section; togglePuckPerson adds then removes a person', () => {
+  it('addPuckRow appends an empty pucks section; togglePuckPerson adds, then removal leaves a GAP', () => {
     expect(addPuckRow('2026-08-24')).toBe(true)
     const sec = PLANPUCKS[PLANPUCKS.length - 1]
     expect(sec.kind).toBe('pucks')
@@ -122,8 +122,22 @@ describe('the pucks-row sections (owner, 22 Aug 26)', () => {
     expect(sec.ids).toEqual(['bane'])
     expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)
     expect(sec.ids).toEqual(['bane', 'yeti'])
-    expect(togglePuckPerson(sec.id, 'bane')).toBe(true)      // toggle OFF
-    expect(sec.ids).toEqual(['yeti'])
+    /* removing a NON-last person blanks its slot so the survivors keep their
+       grid positions (owner, 24 Aug 26) — the gap stays, it does not close */
+    expect(togglePuckPerson(sec.id, 'bane')).toBe(true)
+    expect(sec.ids).toEqual(['', 'yeti'])
+    /* removing the last real person trims the now-trailing blanks — row empties */
+    expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)
+    expect(sec.ids).toEqual([])
+  })
+
+  it('togglePuckPerson keeps an internal gap but trims a trailing one', () => {
+    addPuckRow('2026-08-24', ['bane', 'yeti', 'vinci'])
+    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)     // middle → gap kept
+    expect(sec.ids).toEqual(['bane', '', 'vinci'])
+    expect(togglePuckPerson(sec.id, 'vinci')).toBe(true)    // now-last → trailing blanks trimmed
+    expect(sec.ids).toEqual(['bane'])
   })
 
   /* the multi-select picker (owner, 23 Aug 26) lands a whole batch at once —

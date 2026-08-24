@@ -545,13 +545,16 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
       expect(sec.ids, 'the hand-picked people are on it').toEqual(expect.arrayContaining(pickedIds))
       expect($(`[data-secpucks="${sec.id}"] .puck`), 'the row draws real pucks').toBeTruthy()
       expect(cell.querySelector('.ic-pks .ic-pk'), 'the cell carries the tiny chip').toBeTruthy()
-      /* RIGHT-CLICK a seated puck removes it */
-      const chip = $(`[data-secpucks="${sec.id}"]`)!.querySelector('.ic-secpk') as HTMLElement
+      /* the per-puck ✕ is gone now (owner, 24 Aug 26 — removal is drag-off or
+         right-click); no seated puck carries a delete button anymore */
+      expect($(`[data-secpucks="${sec.id}"] [data-pkdel]`), 'no per-puck ✕').toBeFalsy()
+      /* RIGHT-CLICK a seated puck removes it, leaving a GAP so the rest don't
+         shift — the blanked slot stays in place */
+      const chip = $(`[data-secpucks="${sec.id}"]`)!.querySelector('.ic-secpk:not(.ic-secpk-gap)') as HTMLElement
       await act(async () => { chip.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })) })
-      expect(sec.ids.length, 'right-click dropped one').toBe(1)
-      /* the ✕ still removes the next one */
-      await click($(`[data-secpucks="${sec.id}"] .ic-pkdel`))
-      expect(sec.ids.length).toBe(0)
+      expect(sec.ids.filter(Boolean).length, 'right-click dropped one puck').toBe(1)
+      expect(sec.ids[0], 'the removed slot is blanked, not closed').toBe('')
+      expect($(`[data-secpucks="${sec.id}"] .ic-secpk-gap`), 'a gap cell holds the position').toBeTruthy()
     } finally {
       sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
       if (sec) await act(async () => { removePlanPuck(sec.id); notify() })
