@@ -221,6 +221,18 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **The notional TODAY stays pinned to the demo week until real data
+  arrives (owner, 24 Aug 26 — "eventually it should always register the
+  real current date").** `weeknav.ts`'s `TODAY = '13/07/2026'` (the seed
+  week's `today:true` day) drives only the today-ring/dot on the week
+  pickers; every time-STAMP — an input's "Last modified", and with it the
+  late-input mark — already reads the device's real clock. Decided (and
+  told to the owner) that the switch waits for real squadron data:
+  flipping it now would ring an empty real-date week while all demo
+  content sits in July 2026.
+  When the demo is replaced, point that one literal (and nothing else) at
+  the device date.
+
 - **Deliberately open from the 23 Aug 26 ten-ask batch.** The PDF export's
   layout is a plain black-on-white table on purpose — polish waits until the
   owner has seen it on paper (`printpdf.ts`'s header says the same). The

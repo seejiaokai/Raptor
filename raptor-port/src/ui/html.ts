@@ -679,7 +679,7 @@ export function cxText(o:any){const r=o&&o.cxr?String(o.cxr).trim():'';return r?
 export function cxTag(o:any){return o&&o.cx?`<span class="cxtag" title="${esc(cxText(o))}">${esc(cxText(o))}</span>`:'';}
 export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Flagged for the next scheduler">!</span>':'';}
 /* LATE INPUT (owner, 9 Aug 26) — the mark that rides on an input last changed
-   after the week's deadline (engine/inputs.ts's isLateInput). It is drawn
+   after its own week's deadline (engine/inputs.ts's isLateInput). It is drawn
    wherever the input itself is drawn, on every page including View-only, and
    it is deliberately NOT gated on edit mode or on the role: the whole ask was
    that it stick with the input rather than being a scheduler's private note.
