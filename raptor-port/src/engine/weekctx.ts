@@ -29,7 +29,7 @@
    not off the bundle.) */
 import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
-import { INPUTS, inputCoversDate, isPersonal } from './inputs'
+import { INPUTS, inputCoversDate, isPersonal, baseYear } from './inputs'
 import { PEOPLE, isSpecial } from './people'
 import { stashDays } from './weekstash'
 
@@ -55,8 +55,14 @@ function bundle(v:any){
      localStorage entry must degrade to "as if never edited", never crash a
      validate() that runs on every keystroke. */
   const st=stashDays(v); if(st)return st;
-  if(!(v in bundleCache))bundleCache[v]=weekBundle(v);
-  return bundleCache[v];
+  /* keyed by v AND the loaded year (24 Aug 26): a blank week's labels leave
+     the CURRENT baseYear() implicit (weeks-data.ts weekLabels), so the same
+     v generated under one loaded year reads wrong under another — real at a
+     New Year boundary, where the week of Dec 28 is read both as "next week"
+     (loaded year 2026) and as "last week" (loaded year 2027). */
+  const ck=v+'@'+baseYear();
+  if(!(ck in bundleCache))bundleCache[ck]=weekBundle(v);
+  return bundleCache[ck];
 }
 
 /* WHICH ids counted as "on the programme" for one bundle day — the seed-side

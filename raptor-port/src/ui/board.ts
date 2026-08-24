@@ -420,7 +420,10 @@ export function dayTabsHTML(di: number) {
      across weeks now (calendar pick / the ‹ › week-jump chips below), so its
      days routinely fall in August, September… and a hardcoded 'Jul ' left those
      showing the full "Mon Aug 23" (owner-scale bug found 24 Aug 26). */
-  const dayNum = (dt: string) => dt.replace(/^\S+\s+/, '')
+  /* strip the month, and the trailing year a New Year-spanning week's labels
+     carry ('Jan 1 2027' — weeks-data.ts weekLabels): the chip has room for
+     'Fri 1', not 'Fri 1 2027' */
+  const dayNum = (dt: string) => dt.replace(/^\S+\s+/, '').replace(/\s+\d{4}$/, '')
   const chips = DAYS.map((x: any, i: number) => `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}">${esc(x.dow.slice(0, 3))} ${esc(dayNum(x.dt))}</span>`).join('')
   /* WEEK ARROWS FLANK THE DAY CHIPS ON DESKTOP (owner, 23 Aug 26 — "in
      scheduler board i cant go between weeks except through the calendar").

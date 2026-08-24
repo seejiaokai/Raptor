@@ -374,19 +374,42 @@ export function baseYear(){const y=+String(weekStartISO()).slice(0,4);return isF
    running Dec 28 → Jan 3 sorts FORWARDS: without the year 'Jan 3' read as 103,
    BEHIND 'Dec 28' at 1228, so the span covered nothing (owner, 12 Aug 26). A
    label may carry a trailing 4-digit year for a date outside baseYear()'s year;
-   without one it belongs to baseYear(). */
-export function dateOrd(lbl:any){
+   without one it belongs to `fb` — an INPUT ROW'S OWN anchor year (`yr`, the
+   loaded year the row was created or last edited under; owner bug, 24 Aug 26)
+   — falling back to baseYear() when no anchor is given. Before `fb` a bare
+   label re-resolved against whatever week was CURRENTLY loaded, so an input
+   filed for Jul 13 2026 covered Jul 13 of any year the user scrolled to. */
+export function dateOrd(lbl:any,fb?:any){
   const p=String(lbl==null?'':lbl).trim().split(/\s+/);
   const m=MONTHS.indexOf(p[0]), d=+p[1];
   if(m<0||!isFinite(d))return null;
-  const y=p.length>2&&isFinite(+p[2])?+p[2]:baseYear();
+  const y=p.length>2&&isFinite(+p[2])?+p[2]:(isFinite(+fb)&&+fb>0?+fb:baseYear());
   return y*10000+(m+1)*100+d;
 }
+/* Does this input cover the loaded-week day labelled `dt`? Both sides resolve
+   to REAL dates: dt through the week-label convention (bare = baseYear; a day
+   outside the loaded week's own year is labelled WITH its year — weeks-data.ts
+   weekLabels), the input's labels through its own `yr` anchor. The single-day
+   arm used to be bare string equality, which is exactly how a 2026 input
+   matched the same words meaning a 2027 day; it keeps string equality only as
+   the fallback for a label no calendar can parse, where it can do no harm. */
 export function inputCoversDate(inp:any,dt:any){
-  if(!inp.endDate)return inp.date===dt;
-  const t=dateOrd(dt), a=dateOrd(inp.date), b=dateOrd(inp.endDate);
+  const t=dateOrd(dt), a=dateOrd(inp.date,inp.yr);
+  if(!inp.endDate){ if(t==null||a==null)return inp.date===dt; return t===a; }
+  const b=dateOrd(inp.endDate,inp.yr);
   if(t==null||a==null||b==null)return false;
   return t>=a&&t<=b;
+}
+/* The loaded day index a label resolves to — BY DATE VALUE, never by string.
+   DATES.indexOf(inp.date) was the other half of the cross-year bug: 'Jul 13'
+   anchored to 2026 string-matched the 'Jul 13' of a loaded 2027 week, so the
+   auto-land pass planted last year's input on this year's ground programme.
+   Falls back to the plain indexOf only for an unparseable label. */
+export function dateIx(lbl:any,yr?:any){
+  const o=dateOrd(lbl,yr);
+  if(o==null)return DATES.indexOf(lbl);
+  for(let i=0;i<DATES.length;i++){ if(dateOrd(DATES[i])===o)return i; }
+  return -1;
 }
 /* THE SANS RECORD COVERING one person on one day, or null — the single place
    that finds it, so sansGate (avail.ts), the badge below and the palette /

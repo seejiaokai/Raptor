@@ -58,5 +58,15 @@ export function stashDays(v:any){
   /* a blob that fails to parse (truncated write, foreign data) degrades to
      "as if never edited" — callers fall back to the pure seed. Never throw:
      this is read inside validate(), which runs on every keystroke. */
-  try{ return {days:JSON.parse(s).d, dates:weekBundle(v).dates}; }catch(_e){ return null; }
+  try{
+    const days=JSON.parse(s).d, dates=weekBundle(v).dates;
+    /* RE-LABEL every day for the year convention NOW in force (24 Aug 26).
+       The stash was written while ITS week was loaded, so its labels leave
+       that week's own year implicit — read later under a different loaded
+       year (weekctx's cross-week seeds at a New Year boundary), a bare
+       'Dec 28' would resolve to the wrong year. dt is index-determined, and
+       `dates` was just re-derived under the current convention. */
+    (days||[]).forEach((d:any,i:number)=>{ if(d&&dates[i]!=null)d.dt=dates[i]; });
+    return {days,dates};
+  }catch(_e){ return null; }
 }

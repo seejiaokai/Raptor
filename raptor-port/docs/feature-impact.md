@@ -191,7 +191,10 @@ loadWeek           → stashPut(CURWEEK, weekStashSnap()) (weekstash.ts — the
 merged once at boot (`store.ts:initStore` + `weeks-data.ts:otherWeekInputs`) and
 NOT swapped, so every week's inputs stay present for the Inputs page; each week's
 SCHEDULE still shows only its own because the day builders and auto-land match by
-date (`inputCoversDate` / `DATES.indexOf`). `acc` is always cleared first (it
+date — by date VALUE, through each row's `yr` anchor year (`inputCoversDate` /
+`dateIx`; 24 Aug 26 — bare-string matching used to land a 2026 input on the
+identically-worded day of any other year, see `docs/engine-rules.md` §Every
+input is anchored to a real year). `acc` is always cleared first (it
 records the LOADED week's landing only) so `autoAcceptSeedInputs`/the restore
 pass can re-derive it fresh for whichever DAYS this call just put in place. But
 because `INPUTS` is not stashed, a row a scheduler UNACCEPTED on this week would
@@ -381,6 +384,17 @@ ON these, don't route around them):
   `dateOrd`/`fmt`/`unfmt`/`inputCoversDate` all read one representation and a
   span into the new year sorts and covers correctly. Before this there were two
   readings of a yearless label and they disagreed across a year boundary.
+  **And a bare label on an INPUT is anchored by the row's own `yr`** (24 Aug
+  26): every creation path stamps it, `commitInputEdit` re-stamps it, and
+  every reader (`inputCoversDate`, `dateIx`, `draftOf`/`unfmt`,
+  `sansOverlapRefusal`, the Leave War sync's `labelToISO`, `inpKey`) resolves
+  through it — a new reader of `inp.date`/`inp.endDate` must pass the row's
+  `yr` too, or it re-inherits the "Jul 13 of whatever year is loaded" bug.
+  Week labels themselves follow the same convention (`weekLabels` stamps a
+  day outside the loaded year), and the two cross-year label caches re-derive
+  per loaded year (`weekctx` bundle cache, `stashDays`). Rules:
+  `docs/engine-rules.md` §Every input is anchored; pins:
+  `engine/crossyear.test.ts`.
 
 **Where the wiring is a drift-seam** (two copies of one truth that a change can
 split — these are where this app's recurring bugs come from; touch one side and

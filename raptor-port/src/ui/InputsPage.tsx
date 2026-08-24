@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, defaultAllday, withRemarksTail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, defaultAllday, withRemarksTail, baseYear } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -317,7 +317,9 @@ export function InputsPage() {
     if (!allday && (e as number) === (s as number)) return HOOKS.toast('Give the input a start and end that are not the same time', 'warn')
     writeInputs(() => {
       INPUTS.unshift(withId({
-        person: filedFor(), date, endDate, allday, s, e,
+        /* yr anchors the bare labels to the year they were picked under —
+           the same stamp every other creation path writes (24 Aug 26) */
+        person: filedFor(), date, endDate, allday, s, e, yr: baseYear(),
         /* only carried when it is one — an absence typed as an exact range is
            not a half-day and must not read as one */
         ...(!allday && half ? { half } : {}),
