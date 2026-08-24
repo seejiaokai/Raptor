@@ -895,27 +895,30 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
-        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}
+        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${ed?`<span class="dhtpl"><button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button><button class="dhbtn" data-draftsopen="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span>`:''}
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${vsel?verSelHTML(di):(ed?'':viewVerSelHTML(di))}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
-      /* THE WEEK'S ENTRY into day templates (owner ask, 15 Aug 26) rides inside
-         this strip, not the day-head above it: day-head (dow/dt/badge/dstat) is
-         still byte-compared against the reference verbatim (html.test.ts has no
-         divergence idiom for it), but this whole signoff.day-sign block already
-         is — html.test.ts's noSign excises it wholesale, edit-mode only, because
-         signoffHTML itself nests no <div> so the excision's lazy match runs to
-         THIS wrapper's own close. The new button is a bare <button> for exactly
-         that reason: adding a <div> here would end the excision early and drag
-         real markup back under comparison. Opens the same picker the board's own
-         "Templates" control does (board.ts's dayTplMenu) — one picker, reached
-         from either surface, via routeClick's data-daytplopen (interactions.ts). */
-      /* "Drafts" rides in the same excised strip, for the same reason, as the
-         Templates button beside it — a bare <button>, no nested <div>, so the
-         noSign excision's lazy match still runs to this wrapper's own close.
-         Opens the one drafts menu board.ts's draftsMenu builds (routeClick's
-         data-draftsopen), the same one-picker-two-doors shape as Templates. */
-      +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}<button class="dbeak" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button><button class="dbeak" data-draftsopen="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></div>`:'')
+      /* TEMPLATES + DRAFTS MOVED UP INTO THE DAY-HEAD (owner, 24 Aug 26 — "move
+         templates and drafts button to between the date and turn pattern … then
+         the sign off buttons can now use the full width of the day"). They ride
+         in a `.dhtpl` span between the date (.dt) and the turn-pattern badge, so
+         the sign-off strip below is left to the four role pills alone and they
+         stretch the day's full width, equally spaced (scheduler.css).
+         The day-head is otherwise byte-compared against the reference verbatim,
+         so html.test.ts gains a `noDhTpl` excision — the sanctioned noSign idiom
+         — that lifts the whole `.dhtpl` span off both strings before comparison;
+         the span nests no other <span>, so its lazy `</span>` match ends on its
+         own close. The buttons keep their data-daytplopen/data-draftsopen
+         routeClick doors (one picker each), only relocated; they wear a `.dhbtn`
+         class rather than the `.dbeak` they used to, because the day's publish
+         control is also `.dbeak` and now sits AFTER them — several tests read the
+         day's first `.dbeak` as the publish button (pubsweep), so a distinct
+         class keeps that selector pointing where it always did.
+         The sign-off block stays exactly as it was minus the two buttons: still
+         edit-mode only, still excised wholesale by noSign (signoffHTML nests no
+         <div>, so the lazy match runs to this wrapper's own close). */
+      +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}</div>`:'')
       +`<div class="day-body">`;
     /* warnings are live-model state — a snapshot is never validated */
     if(!PV)h+=dayWarnHTML(di);

@@ -224,6 +224,14 @@ describe('view-week markup parity with the reference', () => {
        nests no <div>, so the lazy match ends at the strip's own close — and
        pin the new pill structure separately below. */
     const noSign = (s: string) => s.replace(/<div class="signoff day-sign"[\s\S]*?<\/div>/, '')
+    /* Divergence (owner, 24 Aug 26): Templates + Drafts moved up into the
+       day-head, between the date and the turn-pattern badge, in a `.dhtpl` span
+       (they used to ride the sign-off strip noSign cuts). The reference has no
+       such span, so lift it off both sides before the compare — the same idiom
+       as noSign. The span nests no other <span>, so the lazy `</span>` ends on
+       its own close; a no-op on the reference, and the move is pinned positively
+       below. */
+    const noDhTpl = (s: string) => s.replace(/<span class="dhtpl">[\s\S]*?<\/span>/, '')
     /* The Available-crew strip sits inside noInpGrp's cut on both sides (the
        port's first input group precedes it, the reference's strip is the cut's
        own start), so it is not byte-compared here; the pins below assert the
@@ -238,7 +246,7 @@ describe('view-week markup parity with the reference', () => {
     const normDow = (s: string) => s.replace(
       /<span class="dow crewday" data-crewday="(\d+)" title="Show this day's crew in the aircrew panel">/g,
       '<span class="dow sb-open" data-sbday="$1" title="Open scheduler board">')
-    const E = (s: string) => normDow(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))))))))
+    const E = (s: string) => normDow(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(s)))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))

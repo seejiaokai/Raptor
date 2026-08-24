@@ -84,10 +84,12 @@ describe('the two entry points', () => {
     finally { HOOKS.editMode = real }
   })
 
-  it('the week day-sign strip carries a Drafts button, one per day', async () => {
+  it('the week day-head carries a Drafts button, one per day', async () => {
     /* live days only — jsdom's default desktop width also mounts the inert
-       next-week peek preview (ui/peek.ts), which carries no day-sign strip. */
-    expect($$('#eWeek .signoff.day-sign [data-draftsopen]').length).toBe($$('#eWeek .day:not(.peek)').length)
+       next-week peek preview (ui/peek.ts), which carries no day-head controls.
+       Templates + Drafts moved from the sign-off strip into the day-head's
+       .dhtpl span (owner, 24 Aug 26). */
+    expect($$('#eWeek .day-head .dhtpl [data-draftsopen]').length).toBe($$('#eWeek .day:not(.peek)').length)
   })
 })
 

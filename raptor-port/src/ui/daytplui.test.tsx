@@ -74,11 +74,13 @@ describe('the board entry point', () => {
 })
 
 describe('the edit week entry point', () => {
-  it('the day-sign strip carries a Templates button, one per day', async () => {
+  it('the day-head carries a Templates button, one per day', async () => {
     await resetLib()
     /* live days only — jsdom's default desktop width also mounts the inert
-       next-week peek preview (ui/peek.ts), which carries no day-sign strip. */
-    expect($$('#eWeek .signoff.day-sign [data-daytplopen]').length).toBe($$('#eWeek .day:not(.peek)').length)
+       next-week peek preview (ui/peek.ts), which carries no day-head controls.
+       Templates + Drafts moved from the sign-off strip into the day-head's
+       .dhtpl span (owner, 24 Aug 26). */
+    expect($$('#eWeek .day-head .dhtpl [data-daytplopen]').length).toBe($$('#eWeek .day:not(.peek)').length)
   })
 
   it('the view-only page renders no day-sign strip at all, so no entry point either', async () => {
