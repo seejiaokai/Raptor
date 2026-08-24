@@ -1237,13 +1237,22 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
    above is phone-shaped: its own desktop row is untouched by this block). */
 @media (min-width:821px){
   .signoff.day-sign{flex-wrap:wrap}
-  .signoff.day-sign .so-h{flex:1 0 100%;margin:0 0 3px}
-  .signoff.day-sign .sgn{flex:1 1 0;min-width:0;flex-direction:column;align-items:stretch;
+  /* The header row carries the label and the "N to sign" state together —
+     "SIGN-OFF" at the left, the count at the far right, in line with it
+     (owner, 24 Aug 26 — "put the 4 to sign word on the top right row in line
+     with the word Sign-off"). The state span is last in the DOM, so `order`
+     pulls it up beside the header, and a zero-height full-width break
+     (`::before`, ordered between them) drops the four role pills onto their
+     own line underneath — where, with the state no longer sharing the row,
+     they stretch to fill the whole day width. */
+  .signoff.day-sign .so-h{flex:0 0 auto;order:0;margin:0}
+  .signoff.day-sign .so-state{flex:0 0 auto;order:1;margin-left:auto;padding-top:0}
+  .signoff.day-sign::before{content:'';order:2;flex:0 0 100%;height:0}
+  .signoff.day-sign .sgn{order:3;flex:1 1 0;min-width:0;flex-direction:column;align-items:stretch;
     gap:1px;border-radius:10px;padding:4px 10px 5px}
   .signoff.day-sign .sgn>.v{min-width:0;padding:0 15px 0 0;overflow:hidden;text-overflow:ellipsis}
   .signoff.day-sign .sgn::after{top:auto;bottom:6px}
-  .signoff.day-sign button.so-clear{flex:0 0 auto}
-  .signoff.day-sign .so-state{flex:1 1 auto;margin-left:auto}
+  .signoff.day-sign button.so-clear{order:4;flex:0 0 auto}
 }
 /* Force EXACTLY two pills per row on the board ON A PHONE. The edit-schedule
    strip lands its 2x2 by content width alone — its day card is ~14px wider than
