@@ -24,6 +24,17 @@ function runOne(name, target) {
   const url = target === 'ref' ? REF_URL : PORT_URL
   src = src.split('file:///home/claude/scheduler.html').join(url)
   src = src.split("'/tmp/").join(`'${OUT}/${target}-`)
+  /* the port renamed its accounts on 24 Aug 26 (admin a/a → ad/a, member
+     user/user → us/us) while the read-only reference keeps the originals, so
+     a reference probe's hard-coded login only opens the reference. Substitute
+     the literals when driving the port — probes that pass a login through a
+     variable (`who`) are not caught here and need the adapted set instead. */
+  if (target === 'port') {
+    src = src.split("'#luser','a'").join("'#luser','ad'")
+    src = src.split("'#luser', 'a'").join("'#luser', 'ad'")
+    src = src.split("'#luser','user'").join("'#luser','us'")
+    src = src.split("'#lpass','user'").join("'#lpass','us'")
+  }
   const tmp = path.join(OUT, `_${target}-${file}`)
   fs.mkdirSync(OUT, { recursive: true })
   fs.writeFileSync(tmp, src, 'latin1')

@@ -32,7 +32,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     console.log(`${ok ? ' ok  ' : 'FAIL '} ${n.padEnd(58)} want ${want} · got ${got}`)
   }
   await p.goto(URL)
-  await p.fill('#luser', 'a'); await p.fill('#lpass', 'a')
+  await p.fill('#luser', 'ad'); await p.fill('#lpass', 'a')
   await p.click('#loginForm button[type=submit]'); await p.waitForTimeout(900)
 
   /* ---- parse · the remarks grammar, engine-only (ran clean before too) ---- */

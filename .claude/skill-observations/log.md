@@ -432,3 +432,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When adding state that caches intent to override live readings, enumerate every input channel that can move the live state (wheel with and without modifiers, touch, pointer drags, keyboard, programmatic) and invalidate on each — grep the listener wiring, not memory. When reusing a tolerance, name the source of misalignment it must absorb and size it to that source.
 
 **Principle:** A cache of user intent is only as correct as the completeness of its invalidation list, and a tolerance calibrated for one error source silently under-covers a larger one — both fail invisibly, as actions that "work" but answer a stale or mis-read position.
+
+### Observation 31: Paginated list tools that ignore their page-size params need a parse-the-file reflex
+
+**Status:** OPEN
+**Date:** 2026-08-24
+**Session context:** Raptor ship chain — polling GitHub Actions run status repeatedly while merging PRs
+**Skill:** New skill candidate: none — cross-cutting tooling practice
+**Type:** open-source
+**Phase/Area:** CI status polling via MCP list tools
+
+**Issue:** The Actions list tool overflowed the token limit on every single call this session even with per_page=1 in the resource URI — the pagination param was silently ignored and the full 72KB response saved to a file each time. Four calls, four overflows, four identical python-parse recoveries.
+
+**Suggested improvement:** When a list tool ignores its pagination parameter once, stop re-trying variations of the parameter; go straight to the saved-file parse (one-line python/jq) as the standard recipe for the rest of the session, and note the recipe in the session's working notes the first time.
+
+**Principle:** A tool parameter that provably has no effect will not start working on the next call — after one confirmed ignore, route around it permanently instead of re-negotiating with it each time.
+
+### Observation 32: Renames must sweep the local-only gate scripts, not just CI
+
+**Status:** OPEN
+**Date:** 2026-08-24
+**Session context:** Raptor — SC MAIN/SPARE badge session; full local gate run found all six adapted probes and the perf probe broken
+**Skill:** New skill candidate: none — repo CLAUDE.md doctrine
+**Type:** open-source
+**Phase/Area:** Build & verify gates
+
+**Issue:** A login rename (admin a/a → ad/a) shipped with CI green, but the six adapted probes and the perf probe log in with hard-coded credentials and are LOCAL-ONLY gates — they silently broke and stayed broken until the next session's full gate run. The perf probe then needed a per-build split (the read-only reference keeps the old accounts), and the reference-probe runner needed a source-substitution shim.
+
+**Suggested improvement:** When renaming any credential, account, id or selector, grep the ENTIRE gate surface — including scripts CI never runs (probes/, perf, runners) — not just src/ and the CI-exercised suites. In this repo: `grep -rn <old-literal> probes/ e2e/` belongs in the rename checklist alongside the src sweep.
+
+**Principle:** A rename that passes CI can still break gates that only run locally; the sweep for old literals must cover every script that exercises the system, not just the code and the CI path — and paired read-only fixtures (a frozen reference build) may deliberately KEEP the old literal, so the sweep must split by target, not blanket-replace.
