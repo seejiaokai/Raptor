@@ -18,7 +18,7 @@
    the day popover (`data-icmore` opens it too) that both routes land on. */
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLetters } from '../engine/inputs'
-import { PEOPLE, QCOLOR, QORDER } from '../engine/people'
+import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { puck } from './html'
 import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, addPuckPeople, togglePuckPerson, movePlanSection } from '../state/plan'
@@ -727,18 +727,19 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
        rather than drawn as a bare heading.
        Within every group the crew read in CAT-ladder order, highest first: FI,
        IR, IP, … for pilots; FI, IW, … for WSOs (owner, 24 Aug 26 — "the cat
-       hierarchy order … the order I told previously"). QORDER is that ladder
-       ascending (OCU=0 … FI=8), so we sort by it DESCENDING; callsign breaks a
-       tie, and Personnel (no CAT) all tie there and stay callsign-sorted. */
-    const byCat = (a: string, b: string) =>
-      ((QORDER[PEOPLE[b].q] ?? -1) - (QORDER[PEOPLE[a].q] ?? -1)) || PEOPLE[a].cs.localeCompare(PEOPLE[b].cs)
-    const inSeat = (seat: string) => roster.filter(id => !PEOPLE[id].san && PEOPLE[id].seat === seat).sort(byCat)
+       hierarchy order … the order I told previously"). byCrew is the shared
+       reading-order comparator (engine/people.ts) — seat, then CAT ladder
+       descending, then callsign — the SAME order the availability panel uses,
+       one body so the two cannot drift. Each group here is one seat, so byCrew's
+       seat term ties and the ladder decides; Personnel (no CAT) stay callsign-
+       sorted. */
+    const inSeat = (seat: string) => roster.filter(id => !PEOPLE[id].san && PEOPLE[id].seat === seat).sort(byCrew)
     /* SANS carry a seat too; FCP are the SANS pilots, everyone else (RCP — the
        only other aircrew seat) the SANS WSOs. Using `!== 'FCP'` for the WSO side
        rather than `=== 'RCP'` guarantees no SANS member can fall through the two
        groups and vanish from the picker. */
     const sansSeat = (fcp: boolean) =>
-      roster.filter(id => PEOPLE[id].san && (fcp ? PEOPLE[id].seat === 'FCP' : PEOPLE[id].seat !== 'FCP')).sort(byCat)
+      roster.filter(id => PEOPLE[id].san && (fcp ? PEOPLE[id].seat === 'FCP' : PEOPLE[id].seat !== 'FCP')).sort(byCrew)
     const groups: [string, string[]][] = [
       ['Pilots', inSeat('FCP')], ['WSOs', inSeat('RCP')],
       ['SANS · Pilots', sansSeat(true)], ['SANS · WSOs', sansSeat(false)],

@@ -7,7 +7,8 @@ import { refWindow } from '../testing/refwin'
 import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, isUnavail } from '../engine/inputs'
 import { validate, CHIP_LABEL, chipText } from '../engine/validate'
-import { dayHTML, dayPreviewHTML, dayIssuedHTML, withDaySnap, legendHTML } from './html'
+import { dayHTML, dayPreviewHTML, dayIssuedHTML, withDaySnap, legendHTML, availHTML } from './html'
+import { PEOPLE, QORDER, SEATRANK } from '../engine/people'
 import { SCHED, signOf, setDayApproved, alIssue } from '../engine/publish'
 import { restoreDayVersion } from '../engine/restore'
 import { dayDrafts, draftDup } from '../engine/drafts'
@@ -214,6 +215,30 @@ describe('view-week markup parity with the reference', () => {
       expect(s).not.toContain('>Leave</div>')
       expect(s).not.toContain('>Downchit</div>')
     }
+  })
+
+  /* the available-crew pucks read pilots-then-WSOs, each block in CAT-ladder
+     order highest-first (owner, 24 Aug 26 — same reading order as the picker,
+     the shared byCrew comparator). Checked across every grid of every day, with
+     a guard that at least one grid actually mixes seats so the order is really
+     exercised. */
+  it('the available-crew strip lists pilots-then-WSOs in CAT-ladder order', () => {
+    let sawMix = false
+    DAYS.forEach((d: any, di: number) => {
+      for (const g of availHTML(d, di, true).matchAll(/<div class="ap-grid">([\s\S]*?)<\/div>/g)) {
+        const ids = [...g[1].matchAll(/data-person="([^"]+)"/g)].map(m => m[1])
+        const seats = new Set(ids.map(id => PEOPLE[id].seat))
+        if (seats.has('FCP') && seats.has('RCP')) sawMix = true
+        for (let i = 1; i < ids.length; i++) {
+          const a = PEOPLE[ids[i - 1]], b = PEOPLE[ids[i]]
+          const sa = SEATRANK[a.seat] ?? 3, sb = SEATRANK[b.seat] ?? 3
+          expect(sa <= sb, `day ${di}: ${a.cs} (${a.seat}) must not follow ${b.cs} (${b.seat})`).toBe(true)
+          if (sa === sb) expect((QORDER[a.q] ?? -1) >= (QORDER[b.q] ?? -1),
+            `day ${di}: ${a.cs} (${a.q}) must not follow ${b.cs} (${b.q})`).toBe(true)
+        }
+      }
+    })
+    expect(sawMix, 'a grid mixing pilots and WSOs exists (so the order is exercised)').toBe(true)
   })
 
   it('the edit-mode markup is byte-identical too (minus the sign-off strip)', () => {

@@ -1,5 +1,5 @@
 import { DAYS } from '../engine/data'
-import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME } from '../engine/people'
+import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
@@ -376,7 +376,10 @@ export function availHTML(d:any,di:any,ed:any){
      a duty, a sim or a programme item */
   const pk=(id:any)=>`<span class="seat"${ed?` draggable="true" data-person="${id}"`:''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;
   const active=(ids:any)=>ids.filter((id:any)=>!PEOPLE[id].san);
-  const grid=(ids:any)=>ids.length?`<div class="ap-grid">`+ids.map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
+  /* pilots-then-WSOs in CAT-ladder order (owner, 24 Aug 26 — the same reading
+     order as the add-people picker; byCrew is the shared comparator). availByWave
+     hands these back callsign-sorted; this is a display re-order only. */
+  const grid=(ids:any)=>ids.length?`<div class="ap-grid">`+[...ids].sort(byCrew).map(pk).join('')+`</div>`:`<div class="ap-empty">— none free —</div>`;
   const bandTxt=(w:any)=>{const a=w.s>0?hhmm(w.s):'AM', b=w.e<1440?hhmm(w.e):'end';return `${a}–${b}`;};
   /* SANS AVAILABILITY LEFT THIS PANEL ENTIRELY (owner, 14 Aug 26) — it used to
      list every SANS body availByWave found free, which is the wrong
