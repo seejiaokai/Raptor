@@ -15,7 +15,7 @@ const boot = async (b, cfg) => {
   })
   const p = await ctx.newPage(); p.on('pageerror', e => console.log('  PAGEERR', e.message))
   await p.goto(URL)
-  await p.fill('#luser', 'a'); await p.fill('#lpass', 'a')
+  await p.fill('#luser', 'ad'); await p.fill('#lpass', 'a')
   await p.click('#loginForm button[type=submit]'); await p.waitForTimeout(900)
   return { p, ctx }
 }

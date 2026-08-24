@@ -36,7 +36,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
   const p = await ctx.newPage(); p.setDefaultTimeout(20000)
   p.on('pageerror', e => console.log('  PAGEERR', e.message))
   await p.goto(URL)
-  await p.fill('#luser', 'a'); await p.fill('#lpass', 'a')
+  await p.fill('#luser', 'ad'); await p.fill('#lpass', 'a')
   await p.click('#loginForm button[type=submit]'); await p.waitForTimeout(900)
 
   const badges = () => p.evaluate(() => [...document.querySelectorAll('#vWeek .day .badge')].map(x => x.textContent))
@@ -186,7 +186,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     const p2 = await ctx2.newPage(); p2.setDefaultTimeout(20000)
     p2.on('pageerror', e => console.log('  PAGEERR', e.message))
     await p2.goto(URL)
-    await p2.fill('#luser', 'a'); await p2.fill('#lpass', 'a')
+    await p2.fill('#luser', 'ad'); await p2.fill('#lpass', 'a')
     await p2.click('#loginForm button[type=submit]'); await p2.waitForTimeout(900)
     /* The highlight chips FOLD behind the .hl-tog highlighter icon on a phone
        since 23 Aug 26, so the strip only overflows once the fold is open —

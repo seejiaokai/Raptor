@@ -1091,10 +1091,14 @@ routes `data-air`):
   placeholder on every c6r / input row, empty or not. **The flying line's
   own always-visible remarks box (`.nts` in `board.ts`) carries the same faded
   `Remarks` placeholder** (owner,
-  16 Aug 26) — so an empty one reads the same way. A STANDALONE line keeps its
-  MAIN/SPARE ghost text instead (the Stable decision in `CLAUDE.md`), so the
-  `Remarks` placeholder is emitted only on a formation line, never in place of
-  that ghost. **The edit week's flying line matches** (`html.ts`'s `ted` call,
+  16 Aug 26) — so an empty one reads the same way. A STANDALONE line shows a
+  solid MAIN/SPARE badge above its remarks box instead — `html.ts:saRoleHTML`,
+  a flip BUTTON in edit mode, the same chip read-only elsewhere (owner, 24 Aug
+  26; supersedes the 10 Aug ghost-text placeholder, which vanished the moment
+  a remark was typed and could never be changed — the Stable decision in
+  `CLAUDE.md` carries the full story). Its remarks box now carries the same
+  plain faded `Remarks` as every other line.
+  **The edit week's flying line matches** (`html.ts`'s `ted` call,
   same day): its remarks box shows the faded `Remarks` too — but EDIT MODE ONLY,
   since a read-only view page has nothing to type into it, and it is registered
   as a deliberate divergence in `html.test.ts` (`noRmkPh`) so the reference

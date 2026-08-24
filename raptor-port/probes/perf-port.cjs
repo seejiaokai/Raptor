@@ -79,7 +79,9 @@ const boot = async (b, url, cfg) => {
   const p = await ctx.newPage(); p.on('pageerror', e => console.log('  PAGEERR', e.message))
   const cdp = await ctx.newCDPSession(p)
   await p.goto(url)
-  await p.fill('#luser', 'ad'); await p.fill('#lpass', 'a')
+  /* the port's admin account renamed to ad/a on 24 Aug 26; the read-only
+     reference still ships its original a/a */
+  await p.fill('#luser', url === REF ? 'a' : 'ad'); await p.fill('#lpass', 'a')
   await p.click('#loginForm button[type=submit]'); await p.waitForTimeout(900)
   await p.evaluate(() => go('editsched')); await p.waitForTimeout(600)
   if (cfg.board) { await p.evaluate(() => openScheduler(1)); await p.waitForTimeout(600) }
