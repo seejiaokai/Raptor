@@ -678,6 +678,25 @@ export function rowCls(o:any){return (o&&o.cx?' cx':'')+(o&&o.flag?' redbox':'')
 export function cxText(o:any){const r=o&&o.cxr?String(o.cxr).trim():'';return r?('CX DUE '+r):'CX';}
 export function cxTag(o:any){return o&&o.cx?`<span class="cxtag" title="${esc(cxText(o))}">${esc(cxText(o))}</span>`:'';}
 export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Flagged for the next scheduler">!</span>':'';}
+/* THE MAIN/SPARE BADGE ON A STANDALONE LINE (owner, 24 Aug 26 — "for SC, can
+   I have the option to change the line to SPARE from MAIN, vice versa. Either
+   a button that goes into remarks. Rather than a default main or spare faded
+   in the remarks"). The role used to live only as the remarks box's faded
+   placeholder, which vanished the moment anything was typed and could never
+   be changed. It is a solid badge in the remarks cell now, on every surface
+   alike; in edit mode it is a button that FLIPS the line (interactions.ts's
+   data-sarole branch). Flipping is an engine-visible change, not a rename —
+   scSpare/saExempt/dayCount all hang off a.spare — so the handler goes
+   through afterSchedMutate, and the remarks box placeholder is plain
+   "Remarks" like every other line. */
+export function saRoleText(a:any){return a.role||(a.spare?'SPARE':'MAIN');}
+export function saRoleHTML(key:any,a:any,ed:any){
+  const sp=!!a.spare, role=saRoleText(a);
+  if(!ed)return `<span class="sarole ro${sp?' sp':''}">${esc(role)}</span>`;
+  return `<button class="sarole${sp?' sp':''}" data-sarole="${key}" title="${sp
+    ?'SPARE — standing by, checked for availability and currency only. Click to make this line MAIN.'
+    :'MAIN — fully cross-checked. Click to make this line SPARE.'}">${esc(role)}</button>`;
+}
 /* LATE INPUT (owner, 9 Aug 26) — the mark that rides on an input last changed
    after its own week's deadline (engine/inputs.ts's isLateInput). It is drawn
    wherever the input itself is drawn, on every page including View-only, and
@@ -1010,7 +1029,9 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           /* marks "nothing at all to say about this jet". RMKS is a real column again so
              the empty cell just stays blank rather than being hidden, but the class is
              kept as the hook anything later needs to spot a silent aircraft. */
-          const rmkE=(!ed&&!(a.rmks||'').trim()&&!storesView(o)&&!a.cx&&!a.flag)?' rmk-e':'';
+          /* `!sa` — a standalone line always shows its MAIN/SPARE badge now,
+             so it is never a "silent" cell even with empty remarks */
+          const rmkE=(!ed&&!sa&&!(a.rmks||'').trim()&&!storesView(o)&&!a.cx&&!a.flag)?' rmk-e':'';
           /* AN EXEMPT LINE'S PUCK FOLLOWS ITS OWN RULES AND NOTHING ELSE
              (owner, 11 Aug 26, second pass — "the rings should also follow").
              A fully checked line wears the day's worst decoration like every
@@ -1038,7 +1059,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
           h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w))}</span></div>
-              <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${ted(`fr:${key}`,a.rmks,ed,'ntx',null,sa?(a.role||(a.spare?'SPARE':'MAIN')):(ed?'Remarks':null))}${sa?'':stores}</div>`;
+              <div class="rmkcell${ai?'':' r1'}${acx}${rmkE}" style="--gr:${ai+1}"${alAttr(`st:${key}`)}>${cxTag(a)}${flagTag(a)}${sa?saRoleHTML(key,a,ed):''}${ted(`fr:${key}`,a.rmks,ed,'ntx',null,ed?'Remarks':null)}${sa?'':stores}</div>`;
         });
         /* AREA strip: full-width row under this formation's aircraft. Rendered whenever
            there is something to show, or always in edit mode so it can be filled in. */

@@ -1074,6 +1074,31 @@ export function routeClick(e: MouseEvent) {
   const c = t.closest('[data-dwclear]')
   if (c) { view.clearWarnFocus(); notify(); e.stopPropagation(); return }
 
+  /* THE MAIN/SPARE BADGE FLIP on a standalone line (owner, 24 Aug 26 — "can I
+     have the option to change the line to SPARE from MAIN, vice versa") —
+     html.ts's saRoleHTML renders the button on the week and the board alike,
+     and this one branch serves both. The flip is engine-visible, not a label
+     rename: scSpare/saExempt stop (or start) exempting the line and dayCount
+     stops (or starts) counting it, so it goes through afterSchedMutate the
+     way CX does, and the `st:` line key carries the pending mark into the
+     next AL exactly like a stores change on the same cell. */
+  const sr = t.closest('[data-sarole]') as HTMLElement | null
+  if (sr && HOOKS.editMode() && canEditSched()) {
+    const [di, gi, li, ai] = sr.dataset.sarole!.split('.').map(Number)
+    const a = DAYS[di!]?.waves[gi!]?.formations[li!]?.aircraft[ai!]
+    if (a) {
+      const was = a.role || (a.spare ? 'SPARE' : 'MAIN')
+      a.spare = !a.spare
+      a.role = a.spare ? 'SPARE' : 'MAIN'
+      markEdit(`st:${di}.${gi}.${li}.${ai}`, was, a.role)
+      view.afterSchedMutate(); notify()
+      HOOKS.toast(a.spare
+        ? 'Line is SPARE now — standing by, checked for availability and currency only'
+        : 'Line is MAIN now — fully cross-checked', 'ok')
+    }
+    e.stopPropagation(); return
+  }
+
   /* a stores chip click removes that config (edit mode) — chips only render
      when on now, so a click can only ever be a removal. NO return: the
      blank-space clear below still sees the click, as it always has. */

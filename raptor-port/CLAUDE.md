@@ -595,10 +595,22 @@ subscribers.
   to any board list. (The Ground Programme's render-time time sort predates
   this and stays — it was a separate owner request and already avoids the
   problem, since time-less rows sink to where the model appends them.)
-- **MAIN/SPARE on a standalone line is ghost text, and it disappears when a
-  remark is typed** (owner, 10 Aug 26). It was a permanent chip; the owner was
-  shown the trade-off — a line carrying a remark no longer says whether it is
-  main or spare — and chose ghost text anyway. Don't "fix" the disappearance.
+- **MAIN/SPARE on a standalone line is a clickable BADGE in the remarks cell,
+  and clicking it flips the line** (owner, 24 Aug 26 — "can I have the option
+  to change the line to SPARE from MAIN, vice versa … rather than a default
+  main or spare faded in the remarks"; supersedes the 10 Aug ghost-text
+  decision, which had exactly the trade-off the owner came back about: a line
+  carrying a remark stopped saying whether it was main or spare, and the role
+  could never be changed at all). `html.ts:saRoleHTML` draws it on the week
+  and the board alike — a button in edit mode, the same chip read-only
+  elsewhere — and the remarks box placeholder is plain `Remarks` like every
+  other line. The flip is ENGINE-VISIBLE, not a rename: `a.spare` + `a.role`
+  flip together, `scSpare`/`saExempt`/the shift count all follow, and the
+  handler (`interactions.ts`, `data-sarole`) marks the line's `st:` key
+  pending the way CX does, so the change rides the next AL. The next-week
+  peek keeps the role as compact fallback TEXT (`saRoleText`, the one label
+  body). Don't bring back the placeholder, and don't make the flip a
+  label-only rename. Pins: `sarole.test.tsx`.
 - **Duties are decoupled from waves** (owner, 13 Aug 26 — supersedes the 10 Aug
   "AVALON auto-creates its desk; SC does not"). No wave auto-creates a duty desk,
   AVALON included, and deleting a wave leaves any duty block alone. Every desk

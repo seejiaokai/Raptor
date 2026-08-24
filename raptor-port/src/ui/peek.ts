@@ -37,7 +37,7 @@ import { weekBundle } from '../engine/weeks-data'
 import { stashDays, stashGenOf } from '../engine/weekstash'
 import { shiftWeek } from './weeknav'
 import { esc } from '../state/view'
-import { fmtT, storesView, rowCls, cxTag, flagTag, plCols, areaText, atimeText, lCell } from './html'
+import { fmtT, storesView, rowCls, cxTag, flagTag, plCols, areaText, atimeText, lCell, saRoleText } from './html'
 
 /* a plain, non-interactive puck — the same visual identity (qual chip, RCP
    tint, SANS line) as html.ts's `puck()`, minus everything that function
@@ -94,7 +94,11 @@ function peekFormation(w: any, f: any): string {
     const acx = (f.cx ? '' : rowCls(a)) + ((sa && a.spare) ? ' spare' : '')
     const stores = sa ? '' : storesView(a.opts || {})
     const rmkE = (!(a.rmks || '').trim() && !stores && !a.cx && !a.flag) ? ' rmk-e' : ''
-    const rmkTxt = a.rmks || (sa ? (a.role || (a.spare ? 'SPARE' : 'MAIN')) : '')
+    /* the preview keeps the role as compact fallback TEXT, not the live
+       surfaces' .sarole badge — a peek column is inert and dimmed, and the
+       one-line text keeps its DOM under the perf ceiling. Label body shared
+       with saRoleHTML via saRoleText so the two spellings cannot drift. */
+    const rmkTxt = a.rmks || (sa ? saRoleText(a) : '')
     h += `<div class="acrow${ai ? '' : ' r1'}${acx}" style="--gr:${ai + 1}">${peekPucks(a)}</div>`
       + `<div class="rmkcell${ai ? '' : ' r1'}${acx}${rmkE}" style="--gr:${ai + 1}">${cxTag(a)}${flagTag(a)}<span class="ntx">${esc(rmkTxt)}</span>${stores}</div>`
   })

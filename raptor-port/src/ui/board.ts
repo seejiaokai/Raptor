@@ -17,7 +17,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, srcInput } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, srcInput, saRoleHTML } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -180,7 +180,8 @@ export function boardHTML(di: number, pv?: boolean) {
         <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
-          ${boxHTML('nts', `data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis}`, a.rmks || '', sa ? esc(a.role || (a.spare ? 'SPARE' : 'MAIN')) : 'Remarks')}
+          ${sa ? saRoleHTML(key, a, !stoRO) : ''}
+          ${boxHTML('nts', `data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis}`, a.rmks || '', 'Remarks')}
           ${sa ? '' : (stoRO
             ? storesView(a.opts)
             : `<span class="stores">`
