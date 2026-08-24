@@ -20,10 +20,10 @@
    (avail.ts) judges a flying/OFT slot against (VCONF.step before, dekit
    after a sortie's to/ld; a sim's own s/e, unpadded) — so validate() never
    raises SANS_AVAIL against its own seed. demosans.test.ts pins that.
-   `mod` stamps sit on or before the week's input deadline (inputDueISO() —
-   Mon 29 Jun for the week of Mon 13 Jul) so none of these wears the
-   late-input mark, the same idiom the seed INPUTS rows already use (see
-   engine/inputs.ts's own comment on the `mod` spread).
+   `mod` stamps sit on or before these rows' own week's input deadline
+   (inputOwnDueISO — Mon 29 Jun for their week of Mon 13 Jul) so none of
+   these wears the late-input mark, the same idiom the seed INPUTS rows
+   already use (see engine/inputs.ts's own comment on the `mod` spread).
 
    The two half-day records below carry EXPLICIT s/e alongside `half` —
    0/720 for AM, 721/1439 for PM, the exact minutes HALF_AM/HALF_PM

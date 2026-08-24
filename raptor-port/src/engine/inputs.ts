@@ -458,10 +458,20 @@ export function sansBadge(id:any,dt:any){
 }
 /* ---- LATE INPUTS (owner, 9 Aug 26) ---------------------------------------
    The squadron wants members' inputs in before the week is planned, and wants
-   a late one to SAY it is late wherever it appears. The deadline is the week's
-   Monday minus VCONF.inputLead days, and the deadline day itself is still on
-   time — "no later than a week prior" means the 10th is fine for the week of
-   the 17th, the 11th is not.
+   a late one to SAY it is late wherever it appears. The deadline is the
+   Monday of the week the INPUT'S OWN first day falls in, minus
+   VCONF.inputLead days, and the deadline day itself is still on time — "no
+   later than a week prior" means the 10th is fine for the week of the 17th,
+   the 11th is not.
+
+   THE DEADLINE RUNS WITH THE INPUT'S OWN WEEK (owner, 24 Aug 26 — "it's a
+   running deadline"). It used to be computed from the LOADED week (CURWEEK),
+   which was an invariant while every surface only ever drew the loaded
+   week's inputs — and became silently wrong the day the Inputs page went
+   global (22 Aug 26): a leave for 24 Dec filed four months early wore a
+   LATE tag because the AUGUST week being viewed had a long-expired
+   deadline. A span is judged by its FIRST day's week — the earliest week it
+   touches, whose planning the change could have disturbed.
 
    What is measured is `mod`, the stamp the Inputs page prints as "Last
    modified" — so an input raised early but CHANGED after the deadline reads
@@ -500,14 +510,34 @@ export function weekStartISO(wk?:any){
   const d=+p[0],m=+p[1],y=+p[2];
   return (isFinite(d)&&isFinite(m)&&isFinite(y))?`${y}-${pad2(m)}-${pad2(d)}`:'';
 }
-/* the last day an input may be touched and still count as on time */
-export function inputDueISO(wk?:any){
-  const ws=weekStartISO(wk); if(!ws)return '';
+/* a week-start ISO date → that week's input deadline (its Monday minus the
+   lead), '' in for '' out so unknown stays unknown */
+function dueOfWeekISO(ws:any){
+  if(!ws)return '';
   const n=Math.max(0,+VCONF.inputLead||0);
   const t=Date.UTC(+ws.slice(0,4),+ws.slice(5,7)-1,+ws.slice(8,10))-n*86400000;
   const d=new Date(t);
   return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`;
 }
+/* the last day an input for the LOADED week (or the given week key) may be
+   touched and still count as on time — kept for callers that reason about a
+   week rather than an input (probe-bridge, tests); the mark itself judges
+   each input by inputOwnDueISO below */
+export function inputDueISO(wk?:any){ return dueOfWeekISO(weekStartISO(wk)); }
+/* the Monday of the week the input's own FIRST day falls in, resolved
+   through the row's anchor year (dateOrd + inp.yr, the 24 Aug 26 convention)
+   so 'Jul 13' filed for 2027 is judged against 2027's week. '' when the date
+   is unreadable — an unknown week is an unknown deadline, and unknown never
+   accuses (the same rule inputStampISO already applies to the stamp). */
+export function inputWeekStartISO(inp:any){
+  const o=dateOrd(inp&&inp.date,inp&&inp.yr); if(o==null)return '';
+  const ms=Date.UTC(Math.floor(o/10000),Math.floor(o/100)%100-1,o%100);
+  const d=new Date(ms-(((new Date(ms).getUTCDay()+6)%7)*86400000));
+  return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`;
+}
+/* the running deadline: the last day THIS input may be touched and still
+   count as on time, wherever the viewer happens to be */
+export function inputOwnDueISO(inp:any){ return dueOfWeekISO(inputWeekStartISO(inp)); }
 /* 'now' is what the Inputs page writes for anything touched this session, so
    it resolves to today rather than reading as "no stamp" — an input edited
    right now is exactly the case the deadline is about. */
@@ -518,7 +548,7 @@ export function inputStampISO(inp:any){
 }
 export function isLateInput(inp:any){
   if(!inp||isDownchit(inp.type))return false;
-  const s=inputStampISO(inp), due=inputDueISO();
+  const s=inputStampISO(inp), due=inputOwnDueISO(inp);
   return !!s&&!!due&&s>due;
 }
 /* '2026-08-11' → '11 Aug', the form the rest of the app prints dates in */
@@ -577,6 +607,9 @@ export function withRemarksTail(remark:any, startISO:any, endISO:any, single:'on
 /* what the mark says when you hover it — plain enough for the squadron */
 export function lateNote(inp:any){
   if(!isLateInput(inp))return '';
-  return `Late input — last changed ${isoLabel(inputStampISO(inp))}, after the ${isoLabel(inputDueISO())} deadline for the week of ${isoLabel(weekStartISO())}.`;
+  /* dates outside the loaded week's own year carry it — 'Jan 4 2027' — the
+     same convention every label in the app follows (weekLabels, fmt) */
+  const lbl=(iso:any)=>{const l=isoLabel(iso); const y=+String(iso).slice(0,4); return l&&y!==baseYear()?`${l} ${y}`:l;};
+  return `Late input — last changed ${lbl(inputStampISO(inp))}, after the ${lbl(inputOwnDueISO(inp))} deadline for its week of ${lbl(inputWeekStartISO(inp))}.`;
 }
 

@@ -1139,16 +1139,30 @@ Personal Inputs, faded, so the scheduler can see what they have dealt with.
 
 ## The late-input mark (owner, 9 Aug 26)
 
-A member's input is due **`VCONF.inputLead` days before the week's Monday**
-(standard **14** — owner, 9 Aug 26, raised from an initial 7),
+A member's input is due **`VCONF.inputLead` days before its own week's
+Monday** (standard **14** — owner, 9 Aug 26, raised from an initial 7),
 and one last changed after that deadline is marked `LATE` wherever it is
-drawn. `engine/inputs.ts` owns the whole thing — `inputDueISO`,
-`inputStampISO`, `isLateInput`, `lateNote`.
+drawn. `engine/inputs.ts` owns the whole thing — `inputWeekStartISO`,
+`inputOwnDueISO`, `inputDueISO`, `inputStampISO`, `isLateInput`, `lateNote`.
 
 - **The deadline is relative, not a date.** Week Monday − `inputLead`. At the
   standard 14, an input for the week of Mon 17 Aug is due by Mon 3 Aug. The
   arithmetic runs through a real date, so it steps back over month and year
   boundaries rather than off the end of a day number.
+- **The deadline RUNS WITH THE INPUT'S OWN WEEK** (owner, 24 Aug 26 — "it's
+  a running deadline", after a leave for 24 Dec filed in August wore the
+  tag). The week whose Monday anchors the arithmetic is the week the
+  input's own FIRST day falls in — `inputWeekStartISO`, resolved through
+  the row's `yr` anchor so the same month/day a year apart gets a
+  year-apart deadline — never the loaded week. It used to read `CURWEEK`,
+  which was an invariant while every surface drew only the loaded week's
+  inputs, and broke silently when the Inputs page went global (22 Aug 26).
+  A span is judged by its first day's week: the earliest week it touches,
+  whose planning a late change could have disturbed. An input whose date
+  cannot be parsed has an unknown week, an unknown deadline, and is never
+  accused — the same fail-quiet rule the stamp already follows.
+  `inputDueISO(wk?)` (loaded-week / given-week arithmetic) is kept for
+  callers that reason about a week rather than an input.
 - **The deadline day itself is ON TIME.** Late is strictly `stamp > due` —
   "no later than a fortnight prior" makes the 3rd fine and the 4th late. Pinned
   in `engine/lateinput.test.ts`, and it is the assertion most likely to be

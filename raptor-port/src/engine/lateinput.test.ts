@@ -6,6 +6,7 @@
 import { describe, expect, it, afterEach } from 'vitest'
 import { VCONF, rulesReset } from './rules'
 import { INPUTS, isDownchit, isLateInput, inputDueISO, weekStartISO, inputStampISO, lateNote, isoLabel } from './inputs'
+import { otherWeekInputs } from './weeks-data'
 
 afterEach(() => rulesReset())
 
@@ -95,6 +96,59 @@ describe('what counts as late', () => {
     expect(n).toContain('29 Jun')         // the deadline it missed
     expect(n).toContain('13 Jul')         // the week it was for
     expect(lateNote(on('')), 'nothing to say about an unstamped input').toBe('')
+  })
+})
+
+/* THE DEADLINE RUNS WITH THE INPUT'S OWN WEEK (owner, 24 Aug 26 — a leave for
+   24 Dec filed in August wore a LATE tag: the check compared the stamp against
+   the LOADED week's deadline, which was an invariant while the Inputs page was
+   week-scoped and became wrong the day inputs went global. Each input is now
+   judged against the Monday of the week its OWN first day falls in.) */
+describe("the deadline runs with the input's own week", () => {
+  it('a leave filed months ahead of its week is not late, whatever week is loaded', () => {
+    /* the reported case: filed 24 Aug for 24 Dec → 8 Jan, while the loaded
+       demo week (13 Jul) had a long-expired deadline of 29 Jun */
+    const r: any = { person: 'yeti', date: 'Dec 24', endDate: 'Jan 8 2027', allday: true, type: 'LL', yr: 2026, mod: '2026-08-24' }
+    expect(isLateInput(r)).toBe(false)
+    /* its own week starts Mon 21 Dec, so its own deadline is 7 Dec — and the
+       deadline day itself stays on time, same as ever */
+    expect(isLateInput({ ...r, mod: '2026-12-07' }), 'ON its own deadline').toBe(false)
+    expect(isLateInput({ ...r, mod: '2026-12-08' }), 'a day past it').toBe(true)
+  })
+
+  it("an input for NEXT week gets next week's deadline, not the loaded week's", () => {
+    /* loaded 13 Jul week is due 29 Jun; the 20 Jul week is due 6 Jul — a stamp
+       between the two used to read late and is on time for its own week */
+    const r: any = { person: 'vegas', date: 'Jul 20', allday: true, type: 'Appointment', mod: '2026-07-01' }
+    expect(isLateInput(r)).toBe(false)
+    expect(isLateInput({ ...r, mod: '2026-07-06' }), 'ON its own deadline').toBe(false)
+    expect(isLateInput({ ...r, mod: '2026-07-07' }), 'a day past it').toBe(true)
+  })
+
+  it("reads the input's anchor year — the same month/day a year on has a different deadline", () => {
+    const r26: any = { person: 'yeti', date: 'Jul 13', type: 'Meeting', yr: 2026, mod: '2026-07-10' }
+    expect(isLateInput(r26), 'after its 29 Jun 2026 deadline').toBe(true)
+    expect(isLateInput({ ...r26, yr: 2027 }), 'a year early for 13 Jul 2027').toBe(false)
+  })
+
+  it('never accuses an input whose DATE it cannot read — symmetric with the stamp rule', () => {
+    /* an unreadable date means an unknown week and an unknown deadline; an
+       unknown is not evidence, exactly as with an unreadable stamp */
+    expect(isLateInput({ person: 'yeti', date: 'whenever', type: 'LL', mod: '2026-07-12' })).toBe(false)
+  })
+
+  it("the second demo week's PHA is judged against ITS week and reads on time", () => {
+    const vegas = otherWeekInputs().find((i: any) => i.person === 'vegas')
+    expect(vegas.mod, 'stamped on its own 6 Jul deadline').toBe('2026-07-06')
+    expect(isLateInput(vegas)).toBe(false)
+  })
+
+  it("the note names the input's own week, with its year when it is not the loaded one", () => {
+    /* week of Mon 4 Jan 2027, due 21 Dec 2026, stamped 2 Jan 2027 — late */
+    const n = lateNote({ person: 'yeti', date: 'Jan 4 2027', allday: true, type: 'LL', yr: 2026, mod: '2027-01-02' })
+    expect(n).toContain('2 Jan 2027')     // when it was last changed
+    expect(n).toContain('21 Dec')         // the deadline it missed (2026 = the loaded year, bare)
+    expect(n).toContain('4 Jan 2027')     // the week it is for
   })
 })
 
