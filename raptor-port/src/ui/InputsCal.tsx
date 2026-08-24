@@ -24,7 +24,7 @@ import { puck } from './html'
 import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, addPuckPeople, togglePuckPerson, movePlanSection } from '../state/plan'
 import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, personMatchesCat } from '../state/view'
-import { HL_CATS } from './hlchips'
+import { HL_GROUPS } from './hlchips'
 import { canEditSched, ME } from '../state/auth'
 import { fmt, fmtDay, inputTone, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
@@ -185,6 +185,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
   const [pickFor, setPickFor] = useState<string | null>(null)
   const [pickIso, setPickIso] = useState<string>('')
   const [pickSel, setPickSel] = useState<Set<string>>(new Set())
+  /* the picker's HIGHLIGHT is a pure visual filter, NOT a selection (owner,
+     24 Aug 26 — "when I mentioned highlight, it just means u will fade those
+     pucks so that I know which puck is applicable. Not select them"). `pickHi`
+     is the set of lit category keys; a puck matching any of them stays bright,
+     the rest fade. `pickGrp` is which of the CAT/Type/Quals tabs is expanded. */
+  const [pickHi, setPickHi] = useState<Set<string>>(new Set())
+  const [pickGrp, setPickGrp] = useState<string>('')
 
   /* the remark draft is seeded fresh every time a DIFFERENT day's popover
      opens, never on a repaint — the same "seed on prop change, not on every
@@ -249,7 +256,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
       e.stopPropagation()
       /* the picker sits ABOVE the popover, so it eats Escape first — the same
          one-layer-at-a-time ladder the popover follows below the modal */
-      if (pickFor != null) { setPickFor(null); setPickSel(new Set()); return }
+      if (pickFor != null) { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp(''); return }
       if (popIso) { setPopIso(null); setPopPuckEdit(null); return }
       onClose()
     }
@@ -695,22 +702,16 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
      highlight chips use), toggling the whole group. People already on the
      target row are shown ticked-and-locked so a re-pick can't double them. */
   const renderPicker = () => {
-    const roster = Object.keys(PEOPLE)
-      .filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
-      .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
+    const roster = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
     const seated = new Set<string>(pickFor ? ((PLANPUCKS.find((p: any) => p.id === pickFor)?.ids) || []) : [])
     const toggle = (id: string) => setPickSel(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
-    const catMatch = (key: string) => roster.filter(id => !seated.has(id) && personMatchesCat(PEOPLE[id], key))
-    const toggleCat = (key: string) => {
-      const m = catMatch(key)
-      setPickSel(prev => {
-        const n = new Set(prev)
-        const allIn = m.length > 0 && m.every(id => n.has(id))
-        m.forEach(id => { if (allIn) n.delete(id); else n.add(id) })   // whole category on, or off if already all on
-        return n
-      })
-    }
-    const close = () => { setPickFor(null); setPickSel(new Set()) }
+    /* HIGHLIGHT = a visual fade, never a selection (owner, 24 Aug 26). Toggling
+       a chip lights/darkens its key in pickHi; a puck is "applicable" (bright)
+       when nothing is lit OR the person matches any lit category, otherwise it
+       fades. Selecting is still one tap on the puck itself, bright or faded. */
+    const toggleHi = (k: string) => setPickHi(prev => { const n = new Set(prev); n.has(k) ? n.delete(k) : n.add(k); return n })
+    const matchesHi = (id: string) => pickHi.size === 0 || [...pickHi].some(k => personMatchesCat(PEOPLE[id], k))
+    const close = () => { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp('') }
     const confirm = () => {
       const ids = [...pickSel]
       if (ids.length) {
@@ -718,6 +719,28 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         else writeInputs(() => addPuckPeople(pickFor!, ids))
       }
       close()
+    }
+    /* the roster is grouped by seat, the way the aircrew palette lays its crew
+       out (owner, 24 Aug 26 — "arrange them just like how the placeholders
+       arranges them. Not like this mess"): Pilots, WSOs, then SANS (any seat,
+       purple), then Personnel — each callsign-sorted, and an empty group is
+       simply dropped rather than drawn as a bare heading. */
+    const bySort = (a: string, b: string) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs)
+    const inSeat = (seat: string) => roster.filter(id => !PEOPLE[id].san && PEOPLE[id].seat === seat).sort(bySort)
+    const groups: [string, string[]][] = [
+      ['Pilots', inSeat('FCP')], ['WSOs', inSeat('RCP')],
+      ['SANS', roster.filter(id => PEOPLE[id].san).sort(bySort)], ['Personnel', inSeat('GND')],
+    ]
+    const puckBtn = (id: string) => {
+      const on = pickSel.has(id), already = seated.has(id), dim = !already && !matchesHi(id)
+      return (
+        <button key={id} type="button" disabled={already} aria-pressed={on || already}
+          className={'ic-pickp' + (on ? ' on' : '') + (already ? ' already' : '') + (dim ? ' dim' : '')}
+          data-pickp={id} title={already ? 'Already on this row' : (PEOPLE[id] ? PEOPLE[id].cs : id)}
+          onClick={() => { if (!already) toggle(id) }}>
+          <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
+        </button>
+      )
     }
     return (
       <div className="ic-pickwrap" onPointerDown={e => { if (e.target === e.currentTarget) close() }}>
@@ -727,27 +750,34 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
             <span className="ic-pick-n">{pickSel.size} picked</span>
             <button type="button" className="x" id="icPickClose" aria-label="Close" onClick={close}>✕</button>
           </div>
-          {/* the category highlight buttons — one tap lights everyone in it */}
+          {/* the CAT/Type/Quals tabs — the SAME grouped strip as the schedule
+              (owner, 24 Aug 26: "apply these to all pages"). A chip tap FADES
+              everyone NOT in the lit categories so the applicable pucks stand
+              out; it never selects them. */}
           <div className="ic-pick-cats">
-            {HL_CATS.map(([k, t, ttl]) => {
-              const m = catMatch(k)
-              const allIn = m.length > 0 && m.every(id => pickSel.has(id))
-              return <button key={k} type="button" className={'fchip' + (allIn ? ' on' : '')} data-pickcat={k}
-                title={ttl} onClick={() => toggleCat(k)}>{t}</button>
-            })}
-          </div>
-          <div className="ic-pick-grid">
-            {roster.map(id => {
-              const on = pickSel.has(id), already = seated.has(id)
+            {HL_GROUPS.map(([gk, glabel, chips]) => {
+              const open = pickGrp === gk
+              const active = chips.filter(([k]) => pickHi.has(k)).length
               return (
-                <button key={id} type="button" disabled={already} aria-pressed={on || already}
-                  className={'ic-pickp' + (on ? ' on' : '') + (already ? ' already' : '')}
-                  data-pickp={id} title={already ? 'Already on this row' : (PEOPLE[id] ? PEOPLE[id].cs : id)}
-                  onClick={() => { if (!already) toggle(id) }}>
-                  <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
-                </button>
+                <span key={gk} className={'hl-grp' + (open ? ' open' : '')} data-hlgrp={gk}>
+                  <button type="button" className={'hl-gtab' + (open ? ' open' : '') + (active ? ' has' : '')}
+                    aria-expanded={open} title={`${glabel} filters — fade everyone not in them`}
+                    onClick={() => setPickGrp(g => g === gk ? '' : gk)}>{glabel}{active ? <span className="hl-gn">{active}</span> : null}</button>
+                  <span className="hl-gchips">{chips.map(([k, t, ttl]) => (
+                    <button key={k} type="button" className={'fchip' + (pickHi.has(k) ? ' on' : '')} data-pickcat={k}
+                      title={ttl} onClick={() => toggleHi(k)}>{t}</button>
+                  ))}</span>
+                </span>
               )
             })}
+          </div>
+          <div className="ic-pick-body">
+            {groups.map(([label, ids]) => ids.length === 0 ? null : (
+              <div className="ic-pick-grp" key={label}>
+                <div className="ic-pick-gh">{label}<span className="ic-pick-gn">{ids.length}</span></div>
+                <div className="ic-pick-row">{ids.map(puckBtn)}</div>
+              </div>
+            ))}
           </div>
           <div className="ic-pick-foot">
             <button type="button" className="abtn" id="icPickCancel" onClick={close}>Cancel</button>

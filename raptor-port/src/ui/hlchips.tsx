@@ -29,15 +29,16 @@ const HL_QUAL: [string, string, string][] = [
   ['SXO', 'SXO', 'SXO-qualified'], ['SCD', 'SC D', 'SC Day current'], ['SCN', 'SC N', 'SC Night current'],
   ['DAAR', 'DAAR', 'Day AAR qualified'], ['NAAR', 'NAAR', 'Night AAR qualified'], ['TF', 'TF', 'TF (terrain-following) qualified'],
 ]
-const HL_GROUPS: [string, string, [string, string, string][]][] = [
+/* exported so the calendar puck-picker renders the SAME three CAT/Type/Quals
+   groups (owner, 24 Aug 26 — "arrange them just like … apply these to all
+   pages"), each tab expanding its chips exactly as the strip does, rather than
+   a second flat copy that could drift from these definitions. */
+export const HL_GROUPS: [string, string, [string, string, string][]][] = [
   ['cat', 'CAT', HL_CAT], ['type', 'Type', HL_TYPE], ['quals', 'Quals', HL_QUAL],
 ]
-/* the same category keys/labels the calendar puck-picker lights up by (owner,
-   23 Aug 26 — "highlight buttons to select and light up those who are in that
-   category"). Exported so the picker reads ONE list, not a second copy that
-   could drift from these chips; it stays FLAT (a modal has the room, and a
-   quick multi-select is faster without an accordion), but every key the strip
-   knows, the picker knows too. */
+/* every category key/label in one flat list — kept for any caller that wants
+   the whole set (the puck-picker now reads HL_GROUPS instead, for the grouped
+   tabs, but personMatchesCat still answers each key the same way). */
 export const HL_CATS: [string, string, string][] = [...HL_CAT, ...HL_TYPE, ...HL_QUAL]
 
 export function HlChips() {

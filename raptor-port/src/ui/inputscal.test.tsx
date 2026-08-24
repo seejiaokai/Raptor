@@ -506,10 +506,10 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     }
   })
 
-  /* the multi-select puck picker (owner, 23 Aug 26 — "select a few pucks at 1
-     go … press ok", "highlight buttons to … light up those in that category")
-     and its two new removals: right-click on the desktop, and the ✕ that stays. */
-  it('+ Pucks opens the picker; a category lights its people; OK adds them as a row; right-click and ✕ remove', async () => {
+  /* the multi-select puck picker (owner, 23 Aug 26; reworked 24 Aug 26 — a
+     category "just … fade those pucks so that I know which puck is applicable.
+     Not select them", pucks grouped by seat like the palette). */
+  it('+ Pucks opens the picker; a category FADES the rest without selecting; tapping pucks selects; OK adds them; right-click and ✕ remove', async () => {
     const iso = '2026-07-09'
     const cell = $(`[data-icday="${iso}"]`)!
     await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
@@ -519,37 +519,39 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     await click($('#icAddPucks'))
     expect($('.ic-pick'), 'the picker opened instead of making an empty row').toBeTruthy()
     expect(PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso), 'no row until OK').toBeFalsy()
+    /* the roster is grouped by seat, the way the palette lays it out */
+    expect($('.ic-pick-body .ic-pick-grp'), 'pucks are grouped by seat').toBeTruthy()
     let sec: any
     try {
-      /* a category button lights up EVERYONE in that category at once */
+      /* a category chip HIGHLIGHTS by fading the rest — it selects NOTHING */
       const catA = $('.ic-pick-cats [data-pickcat="A"]')!
       await click(catA)
-      const litA = host.querySelectorAll('.ic-pickp.on').length
-      expect(litA, 'Cat-A people lit').toBeGreaterThan(0)
-      expect(catA.className, 'the category chip reads on').toContain('on')
-      /* plus one more individual, ticked by hand */
-      const extra = host.querySelector('.ic-pickp:not(.on):not(.already)') as HTMLElement
-      const extraId = extra.getAttribute('data-pickp')!
-      await click(extra)
-      const want = litA + 1
-      expect(host.querySelectorAll('.ic-pickp.on').length).toBe(want)
-      expect(($('#icPickOk') as HTMLButtonElement).textContent).toContain(String(want))
-      /* OK creates ONE new pucks row carrying all the picks */
+      expect(catA.className, 'the chip reads on (highlight is live)').toContain('on')
+      expect(host.querySelectorAll('.ic-pickp.on').length, 'highlighting never selects a puck').toBe(0)
+      expect(host.querySelectorAll('.ic-pickp.dim').length, 'non-matching pucks faded').toBeGreaterThan(0)
+      expect(host.querySelectorAll('.ic-pickp:not(.dim):not(.already)').length, 'matching pucks stay bright').toBeGreaterThan(0)
+      /* pick two people by hand — a tap selects, faded or not */
+      const pickTwo = [...host.querySelectorAll('.ic-pickp:not(.already)')].slice(0, 2) as HTMLElement[]
+      const pickedIds = pickTwo.map(b => b.getAttribute('data-pickp')!)
+      for (const b of pickTwo) await click(b)
+      expect(host.querySelectorAll('.ic-pickp.on').length).toBe(2)
+      expect(($('#icPickOk') as HTMLButtonElement).textContent).toContain('2')
+      /* OK creates ONE new pucks row carrying the two picks */
       await click($('#icPickOk'))
       expect($('.ic-pick'), 'the picker closed on OK').toBeFalsy()
       sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
       expect(sec, 'a pucks row was created').toBeTruthy()
-      expect(sec.ids.length).toBe(want)
-      expect(sec.ids, 'the hand-ticked person is on it').toContain(extraId)
+      expect(sec.ids.length).toBe(2)
+      expect(sec.ids, 'the hand-picked people are on it').toEqual(expect.arrayContaining(pickedIds))
       expect($(`[data-secpucks="${sec.id}"] .puck`), 'the row draws real pucks').toBeTruthy()
       expect(cell.querySelector('.ic-pks .ic-pk'), 'the cell carries the tiny chip').toBeTruthy()
       /* RIGHT-CLICK a seated puck removes it */
       const chip = $(`[data-secpucks="${sec.id}"]`)!.querySelector('.ic-secpk') as HTMLElement
       await act(async () => { chip.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })) })
-      expect(sec.ids.length, 'right-click dropped one').toBe(want - 1)
+      expect(sec.ids.length, 'right-click dropped one').toBe(1)
       /* the ✕ still removes the next one */
       await click($(`[data-secpucks="${sec.id}"] .ic-pkdel`))
-      expect(sec.ids.length).toBe(want - 2)
+      expect(sec.ids.length).toBe(0)
     } finally {
       sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
       if (sec) await act(async () => { removePlanPuck(sec.id); notify() })
