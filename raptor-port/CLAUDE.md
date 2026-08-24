@@ -102,6 +102,28 @@ barely more than one.
   pure waiting, three times over in one session. Batching is worth more
   again on the build side: fifteen changes in one pass ran ~6 min each, where
   a single change shipped alone took an hour and a half.
+- **Always hand him the Vercel preview link; auto-merge is still the default,
+  hold only when critical** (owner, 24 Aug 26 — "always let me know once vercel
+  is ready to be tested so i can test it" → "u can auto merge unless u feel
+  like it is very critical and needs me to test it before merging" → "always
+  give me the preview link in vercel so that i can give u immediate feedback
+  and u can use it too. since its way faster than github. then in the meantime
+  i can still hand u more work"). So on EVERY change, once the branch's Vercel
+  preview is Ready (the `vercel[bot]` PR comment carries the `…vercel.app`
+  Preview URL — it is stable per branch), send him that link. It is his fast
+  feedback surface — Vercel is up in ~1–2 min where a Pages rollout is 12–15.
+  Giving the link does NOT gate the merge: for the ordinary change keep running
+  the "Done MEANS LIVE" chain unprompted (merge on green → Pages → live-verify
+  → one notification), and his feedback can land after merge — cheap to re-cut.
+  Only when you judge a change critical/risky (a large or subtle UI change,
+  anything touching the rules engine's output, anything a green gate does not
+  prove) do you STOP before merging and wait for his go-ahead on the preview.
+  While a preview or deploy cooks he will hand you more work — take it; do not
+  idle waiting on a rollout. Note the preview sits behind Vercel SSO, so HE can
+  open it but your headless browser cannot (it 302s to `vercel.com/sso-api`) —
+  your own fast surface stays `npm run build && vite preview` driven locally,
+  the same bundle Vercel serves. "Do NOT watch PRs" still holds: unsubscribe
+  after opening; reading the preview URL off the PR once is not watching.
 - **Delegate frugally, by judgment.** The main session plans, reviews
   diffs and runs the gates first-hand. Scanning/exploration goes to
   Explore on **haiku**; multi-file or mechanical code-writing goes to
