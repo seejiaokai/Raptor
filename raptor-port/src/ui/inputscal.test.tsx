@@ -530,11 +530,14 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
       expect(host.querySelectorAll('.ic-pickp.on').length, 'highlighting never selects a puck').toBe(0)
       expect(host.querySelectorAll('.ic-pickp.dim').length, 'non-matching pucks faded').toBeGreaterThan(0)
       expect(host.querySelectorAll('.ic-pickp:not(.dim):not(.already)').length, 'matching pucks stay bright').toBeGreaterThan(0)
-      /* a SECOND lit category INTERSECTS, it never broadens (owner, 24 Aug 26):
-         CAT A ∩ CAT D is empty, so lighting D on top of A fades everyone — AND */
+      /* a second chip in the SAME category is an ALTERNATIVE — it broadens, it
+         never empties (owner, 24 Aug 26 — "CAT A and B"): A-or-D lights at
+         least as many as A alone. Across categories it would narrow instead;
+         that AND is pinned at the unit level in hlfold.test.tsx. */
+      const brightA = host.querySelectorAll('.ic-pickp:not(.dim):not(.already)').length
       const catD = $('.ic-pick-cats [data-pickcat="D"]')!
       await click(catD)
-      expect(host.querySelectorAll('.ic-pickp:not(.dim):not(.already)').length, 'A AND D matches nobody').toBe(0)
+      expect(host.querySelectorAll('.ic-pickp:not(.dim):not(.already)').length, 'A or D lights at least as many as A alone').toBeGreaterThanOrEqual(brightA)
       await click(catD)   // clear D, back to just A
       /* pick two people by hand — a tap selects, faded or not */
       const pickTwo = [...host.querySelectorAll('.ic-pickp:not(.already)')].slice(0, 2) as HTMLElement[]

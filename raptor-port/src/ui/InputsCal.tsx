@@ -23,7 +23,7 @@ import { hhmm } from '../engine/time'
 import { puck } from './html'
 import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, addPuckPeople, togglePuckPerson, movePlanSection } from '../state/plan'
 import { notify, writeInputs } from '../state/store'
-import { CALMONTH, setCalMonth, personMatchesCat } from '../state/view'
+import { CALMONTH, setCalMonth, matchesHiSet } from '../state/view'
 import { HL_GROUPS } from './hlchips'
 import { canEditSched, ME } from '../state/auth'
 import { fmt, fmtDay, inputTone, firstPersonalType } from './inputedit'
@@ -712,14 +712,15 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
     const seated = new Set<string>(pickFor ? (((PLANPUCKS.find((p: any) => p.id === pickFor)?.ids) || []).filter(Boolean)) : [])
     const toggle = (id: string) => setPickSel(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
     /* HIGHLIGHT = a visual fade, never a selection (owner, 24 Aug 26). Toggling
-       a chip lights/darkens its key in pickHi; a puck is "applicable" (bright)
-       when nothing is lit OR the person matches any lit category, otherwise it
-       fades. Selecting is still one tap on the puck itself, bright or faded. */
+       a chip lights/darkens its key in pickHi; a puck stays bright when it
+       clears the lit chips, otherwise it fades. Selecting is still one tap on
+       the puck itself, bright or faded. */
     const toggleHi = (k: string) => setPickHi(prev => { const n = new Set(prev); n.has(k) ? n.delete(k) : n.add(k); return n })
-    /* multiple lit chips INTERSECT — a puck is applicable only if it matches
-       EVERY lit chip, not any of them (owner, 24 Aug 26; matches the schedule
-       pages' personMatchesHL). */
-    const matchesHi = (id: string) => pickHi.size === 0 || [...pickHi].every(k => personMatchesCat(PEOPLE[id], k))
+    /* chips within a category are alternatives, across categories they narrow —
+       (A or B) and SC-Day (owner, 24 Aug 26 — "CAT A and B for SC D"). Same body
+       as the schedule pages' highlight (matchesHiSet, state/view.ts), so the
+       picker and the strip can't disagree. */
+    const matchesHi = (id: string) => matchesHiSet(PEOPLE[id], pickHi)
     const close = () => { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp('') }
     const confirm = () => {
       const ids = [...pickSel]

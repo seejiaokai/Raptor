@@ -572,14 +572,37 @@ export function personMatchesCat(p:any,f:any){
   if(f==='TF')return !!(p.quals&&p.quals.tf);
   return false;
 }
-/* Multiple highlight chips INTERSECT — a person must match EVERY lit chip, not
-   any of them (owner, 24 Aug 26 — "SC D and CAT A … only highlight those who
-   are SC D qualified who are CAT A. It's not SC D plus CAT A"). So each extra
-   chip narrows the lit set. Search stays its own independent highlight (its
-   name matches light up regardless of the chips), exactly as before. */
+/* which CAT / Type / Quals group each highlight key sits in — the semantic half
+   of the tabs hlchips.tsx renders. Same-group picks are ALTERNATIVES, different
+   groups NARROW (owner, 24 Aug 26 — first "SC D and CAT A … only those who are
+   both" [different groups → AND], then "CAT A and B for SC D" [(A or B) and
+   SC D → same-group OR]). A key not named here stands in its own group, so it
+   still ANDs — the safe default. hlfold.test.tsx pins this against HL_GROUPS, so
+   a chip added to one list and not the other fails a test rather than silently
+   landing in the wrong group. */
+export const HL_GROUP_OF:Record<string,string> = {
+  A:'cat', B:'cat', C:'cat', D:'cat', OCU:'cat',
+  SANS:'type', INS:'type', FL:'type', SUP:'type',
+  SXO:'quals', SCD:'quals', SCN:'quals', DAAR:'quals', NAAR:'quals', TF:'quals',
+}
+/* does a person clear a set of lit chips? Group the lit chips by HL_GROUP_OF;
+   within a group any one match passes (OR), and every group that has a lit chip
+   must pass (AND) — so {A,B,SCD} reads (A or B) and SC-Day. An empty set passes
+   everyone. ONE body for the highlight strip (HLSET → personMatchesHL) and the
+   calendar puck-picker (pickHi → InputsCal.tsx), so the two can never drift. */
+export function matchesHiSet(p:any,set:any){
+  if(!set||!set.size)return true
+  const byGroup:Record<string,string[]>={}
+  for(const f of set){const g=HL_GROUP_OF[f]||f; (byGroup[g]||(byGroup[g]=[])).push(f)}
+  for(const g in byGroup){ if(!byGroup[g].some((f:string)=>personMatchesCat(p,f)))return false }
+  return true
+}
+/* Search stays its own independent highlight — a name match lights up whatever
+   the chips say; the chips themselves run through matchesHiSet's group-OR /
+   cross-group-AND. */
 export function personMatchesHL(p:any){
   if(SEARCH){const s=SEARCH.toLowerCase(); if(p.cs.toLowerCase().includes(s)||(p.name||'').toLowerCase().includes(s))return true;}
-  if(HLSET.size){ for(const f of HLSET) if(!personMatchesCat(p,f))return false; return true; }
+  if(HLSET.size)return matchesHiSet(p,HLSET);
   return false;
 }
 /* {map: day index -> {ids:Set, sev}, echo:Set, sev} for the current warning

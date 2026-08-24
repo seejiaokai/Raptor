@@ -13,6 +13,7 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import * as view from '../state/view'
+import { HL_GROUPS } from './hlchips'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -126,20 +127,39 @@ describe('the CAT / Type / Quals accordion (owner, 24 Aug 26)', () => {
   })
 })
 
-/* the MATCH SEMANTICS behind the chips: two lit chips INTERSECT, they do not
-   union (owner, 24 Aug 26 — "SC D and CAT A … only … those who are SC D
-   qualified who are CAT A. It's not SC D plus CAT A"). Pure predicate, no DOM. */
-describe('personMatchesHL — multiple chips AND together', () => {
+/* the MATCH SEMANTICS behind the chips (owner, 24 Aug 26): chips in the SAME
+   category are ALTERNATIVES (OR), chips across DIFFERENT categories NARROW (AND).
+   First ask — "SC D and CAT A … only those who are both" (different groups).
+   Second ask — "CAT A and B for SC D" = (A or B) and SC-Day (same group OR, then
+   AND across). Pure predicate, no DOM. */
+describe('personMatchesHL — OR within a category, AND across categories', () => {
   beforeEach(() => { view.HLSET.clear(); view.setSearch('') })
   const both = { q: 'A', quals: { scDay: true } }        // CAT A AND SC-Day
   const catAonly = { q: 'A', quals: {} }                 // CAT A, no SC-Day
-  const scdOnly = { q: 'C', quals: { scDay: true } }     // SC-Day, not CAT A
+  const catBonly = { q: 'B', quals: {} }                 // CAT B, no SC-Day
+  const catConly = { q: 'C', quals: {} }                 // CAT C, no SC-Day
+  const scdOnly = { q: 'C', quals: { scDay: true } }     // SC-Day, not CAT A/B
 
-  it('a person must match EVERY lit chip, not any of them', () => {
+  it('DIFFERENT categories narrow — CAT A and SC-Day lights only those who are both', () => {
     view.HLSET.add('A'); view.HLSET.add('SCD')
     expect(view.personMatchesHL(both), 'CAT A + SC-Day → lit').toBe(true)
     expect(view.personMatchesHL(catAonly), 'CAT A only → faded').toBe(false)
     expect(view.personMatchesHL(scdOnly), 'SC-Day only → faded').toBe(false)
+  })
+
+  it('the SAME category is alternatives — CAT A and CAT B lights either', () => {
+    view.HLSET.add('A'); view.HLSET.add('B')
+    expect(view.personMatchesHL(catAonly), 'a CAT A man → lit').toBe(true)
+    expect(view.personMatchesHL(catBonly), 'a CAT B man → lit').toBe(true)
+    expect(view.personMatchesHL(catConly), 'a CAT C man → faded').toBe(false)
+  })
+
+  it("the owner's case — (CAT A or B) and SC-Day", () => {
+    view.HLSET.add('A'); view.HLSET.add('B'); view.HLSET.add('SCD')
+    expect(view.personMatchesHL({ q: 'A', quals: { scDay: true } }), 'A + SC-Day → lit').toBe(true)
+    expect(view.personMatchesHL({ q: 'B', quals: { scDay: true } }), 'B + SC-Day → lit').toBe(true)
+    expect(view.personMatchesHL(catAonly), 'A but no SC-Day → faded').toBe(false)
+    expect(view.personMatchesHL(scdOnly), 'SC-Day but CAT C → faded').toBe(false)
   })
 
   it('one lit chip still lights everyone in that category', () => {
@@ -156,5 +176,16 @@ describe('personMatchesHL — multiple chips AND together', () => {
     view.setSearch('ghost')
     expect(view.personMatchesHL(ghost), 'name matches search → lit anyway').toBe(true)
     view.setSearch('')
+  })
+})
+
+/* the group map behind that OR/AND must stay in step with the chips the tabs
+   actually render: a chip added to HL_GROUPS but not HL_GROUP_OF would silently
+   fall into its own group and AND when it should OR. Pin it both ways. */
+describe('HL_GROUP_OF matches the rendered chip groups (drift guard)', () => {
+  it('every rendered chip maps to its own tab group, and nothing extra', () => {
+    const fromChips: Record<string, string> = {}
+    for (const [gk, , chips] of HL_GROUPS) for (const [k] of chips) fromChips[k] = gk
+    expect(view.HL_GROUP_OF).toEqual(fromChips)
   })
 })
