@@ -156,8 +156,16 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
         const dekitM=shiftLine?ldM:ldM+VCONF.dekit;             // sortie: land + 30m dekit
         /* intime is the in-time the wave actually PUBLISHED (null when none is
            given); report falls back to the step time so the occupied window is
-           still right. Crew rest needs the difference between the two. */
-        const intime=(im[f.cs]!=null)?preflight(im[f.cs],VCONF.reportLead):null;
+           still right. Crew rest needs the difference between the two.
+           SC (owner, 24 Aug 26): a standalone briefs nothing, but the B box on
+           an SC line is repurposed as that crew's IN-TIME — the report time,
+           usually earlier than the shift start. Typed, it becomes the in-time
+           that anchors crew rest and the advisories; blank (the normal case)
+           leaves SC on its shift start exactly as before. AVALON/BB never reach
+           here (saExempt returns above), so w.kind==='sc' is the whole guard. */
+        const scIntime=(w.kind==='sc')?parseHM(f.br):null;
+        const intime=(scIntime!=null)?preflight(scIntime,VCONF.reportLead)
+                    :(im[f.cs]!=null)?preflight(im[f.cs],VCONF.reportLead):null;
         const report=(intime!=null)?intime:stepM;
         const fcps:any[]=[],acs:any[]=[],allCrew:any[]=[],spareCrew:any[]=[];
         f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;

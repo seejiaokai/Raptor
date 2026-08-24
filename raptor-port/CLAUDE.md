@@ -270,6 +270,14 @@ drive the real thing in a real browser BEFORE saying it works:
 npm run build && npx vite preview --port 4173     # the production bundle
 ```
 
+Drive the LOCAL preview at its ROOT — `http://localhost:4173/`, NOT
+`/Raptor/`. `vite.config.ts` sets `base:'./'`, so the preview serves assets
+from `/assets/…`; loading `/Raptor/` returns the SPA index (a 200) but every
+asset then 404s from `/Raptor/assets/…` and the page renders blank. The
+`/Raptor/` sub-path is the DEPLOYED Pages URL only. To add a standalone wave
+without clicking the picker, the probe bridge exposes `window.setPage('editsched')`,
+`window.addWave(di,'sc')` and `window.openScheduler(di)`.
+
 then a short Playwright script (`executablePath` rule below) to log in,
 navigate, **screenshot the element in question and LOOK at it**, read
 computed style, and watch for console errors, 4xx responses and page errors.
@@ -611,6 +619,24 @@ subscribers.
   peek keeps the role as compact fallback TEXT (`saRoleText`, the one label
   body). Don't bring back the placeholder, and don't make the flip a
   label-only rename. Pins: `sarole.test.tsx`.
+- **On SC, the B box is an IN-TIME, and its sortie furniture is gone** (owner,
+  24 Aug 26 — "remove the intime and 8ac note on the top right of SC … don't
+  suggest a brief time in blue. Only if the brief time is filled in then u will
+  use that as the in time for the warnings and advisories. But we will hardly
+  have a brief time"). Three parts, SC only (`w.kind==='sc'`), AVALON/BB
+  untouched: the board drops the SC wave header's "in-time · N ac" note; SC
+  lines lose the blue click-to-accept suggested-brief ghost but KEEP the empty B
+  box; and the engine reads a typed SC `f.br` as the crew's in-time —
+  `events.ts` feeds it to `intime`, `validate.ts:insOf` anchors the shift's crew
+  rest on the earlier of it and the shift start. Blank (the normal case) is
+  byte-identical to before (SC stays on its shift start). Don't restore the
+  header note or the blue suggestion on SC, and don't turn the B back into a
+  brief. One known seam left open (documented, not a bug to "fix" silently): the
+  SC in-time is entered/shown on the board only — the desktop week renders SC as
+  SHIFT / START / END with no B — so a value typed on the board isn't surfaced on
+  the week. Owner said it will be rare; raise mirroring it to the week only if he
+  asks. Pins: `scintime.test.ts`, `scboard.test.tsx`; rules
+  `docs/engine-rules.md`, placement `docs/ui-contracts.md` §The B box.
 - **Duties are decoupled from waves** (owner, 13 Aug 26 — supersedes the 10 Aug
   "AVALON auto-creates its desk; SC does not"). No wave auto-creates a duty desk,
   AVALON included, and deleting a wave leaves any duty block alone. Every desk

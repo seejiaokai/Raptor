@@ -235,7 +235,12 @@ export function validate(){
          below — because a scheduler writing it has sanctioned the late join,
          and the reader still needs to see that crew rest was broken. */
       const briefOf=(e:any)=>e.brief!=null?e.brief:e.to-VCONF.briefLead;
-      const insOf=(e:any)=>e.shift?e.to:Math.min(e.intime!=null?e.intime:Infinity,briefOf(e));
+      /* A shift reports at its start UNLESS an in-time was typed for it — an SC
+         line's B box is that crew's report time (owner, 24 Aug 26). When set it
+         is honoured (the earlier of it and the shift start, so a later value
+         cannot push the report past when the watch actually begins); when blank
+         e.intime is null and this is byte-identical to the old `e.to`. */
+      const insOf=(e:any)=>e.shift?(e.intime!=null?Math.min(e.intime,e.to):e.to):Math.min(e.intime!=null?e.intime:Infinity,briefOf(e));
       Object.keys(byR).forEach((id:any)=>{
         /* Personnel (ground crew) hold no crew-rest rule — an incentive ride
            does not put a ground-crewman on a 12-hour flying clock. */

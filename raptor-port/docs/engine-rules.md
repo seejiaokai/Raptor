@@ -18,10 +18,19 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   same value the board offers above the box as a click-to-accept suggestion,
   so a blank line is still checked but nothing is silently "decided". That
   setting is a convenience for working out the suggestion, NOT a rule: what
-  every brief-driven check follows is the indicated B. A standalone wave is a
-  shift and briefs nothing, so a value typed on one stays inert. Brief window
+  every brief-driven check follows is the indicated B. Brief window
   = brief → T/O. A published in-time still moves report time and crew rest,
   never the brief.
+- **On an SC line the B box is an IN-TIME, not a brief** (owner, 24 Aug 26 —
+  "only if the brief time is filled in then u will use that as the in time for
+  the warnings and advisories. But we will hardly have a brief time"). A
+  standalone briefs nothing, so `f.br` on `w.kind==='sc'` is read as the crew's
+  report time: typed, it becomes `intime` (via the same small-hours `preflight`
+  roll) and `insOf` anchors the shift's crew rest on the earlier of it and the
+  shift start; blank — the normal case — leaves SC on its shift start exactly as
+  before, so it is byte-identical when nobody types one. No blue suggested-brief
+  ghost is offered on SC, and the board drops its "in-time · N ac" header note.
+  AVALON/BB never reach the fly collector (`saExempt`), so their B stays inert.
 - **Typed pre-flight clocks follow a small-hours T/O across midnight.** When
   the configured brief lead already puts the default brief on the previous
   evening, an indicated B later on the clock than T/O is shifted back one day;

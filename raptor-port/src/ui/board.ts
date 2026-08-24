@@ -92,6 +92,11 @@ export function boardHTML(di: number, pv?: boolean) {
        week, which the design spec requires to render identically on both
        surfaces. */
     const sa = isStandalone(w)
+    /* SC is the one standalone that carries an editable in-time (owner, 24 Aug
+       26): its B box is repurposed as the crew's report time, so it drops the
+       "in-time · N ac" header note and the blue suggested-brief ghost that make
+       sense only on a real sortie. AVALON/BB keep theirs. */
+    const sc = w.kind === 'sc'
     const asd = w.formations.reduce((n: number, f: any) => n + f.aircraft.length, 0)
     /* SC and AVALON after Night wave (owner, 10 Aug 26) — the same list the
        + Wave picker offers, reachable from a wave that already exists. */
@@ -112,7 +117,7 @@ export function boardHTML(di: number, pv?: boolean) {
          data-air click is handled globally (interactions.ts setAirKey → AirPop),
          which already reaches the board, so no board-side wiring is needed. */
       + `${sa || mvRO ? '' : `<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}`
-      + `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`
+      + (sc ? '' : `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`)
       + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     /* The IN TIME + WX/NOTAMS lines edit exactly as the week's do (html.ts):
@@ -149,7 +154,11 @@ export function boardHTML(di: number, pv?: boolean) {
          it (interactions.ts's routeClick, data-bacc branch) — disabling
          the input's own `dis` attribute above never touched this one, so a
          read-only board still offered "click to accept" on the brief. */
-      const brSug = (!stoRO && parseHM(f.br) == null)
+      /* No suggested-brief ghost on SC: its B is an in-time to be typed when
+         needed, not a brief to auto-fill (owner, 24 Aug 26 — "we will hardly
+         have a brief time"). The box itself stays, so a real in-time can be
+         entered; only the blue suggestion goes. */
+      const brSug = (!stoRO && !sc && parseHM(f.br) == null)
         ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
         : ''
       /* sbSlot's own `pv` param means "read-only" to that function, not
