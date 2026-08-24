@@ -631,7 +631,14 @@ subscribers.
   rest on the earlier of it and the shift start. Blank (the normal case) is
   byte-identical to before (SC stays on its shift start). Don't restore the
   header note or the blue suggestion on SC, and don't turn the B back into a
-  brief. One known seam left open (documented, not a bug to "fix" silently): the
+  brief. Extended later the same day (owner): an early B on a MAIN also starts
+  the long-day / duty-hours span (`workSpan` takes `min(report, start)` for
+  shifts), and anything cutting into or ending inside the B→start window —
+  another event, or a timed `restsInput` personal input — raises the amber
+  `SC_INTIME` advisory (events already overlapping the shift stay with the hard
+  clash loop instead). SPARE rows have no event stream, so both are MAIN-only
+  by construction; conflict/double-book windows themselves still run off the
+  shift times, not the B. One known seam left open (documented, not a bug to "fix" silently): the
   SC in-time is entered/shown on the board only — the desktop week renders SC as
   SHIFT / START / END with no B — so a value typed on the board isn't surfaced on
   the week. Owner said it will be rare; raise mirroring it to the week only if he

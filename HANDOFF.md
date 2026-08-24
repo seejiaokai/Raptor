@@ -33,14 +33,17 @@ Admin tab; all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3041 across 177 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3047 across 177 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 318 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
 | `probes:adapted` | 6/6 (the `sa` phone-filters probe opens the highlight fold first now — the strip only overflows once open) |
 | `perf` | 4/4 — week DOM 4940 ≤ 5450, board 852 ≤ 960 (the new board-bar controls live in `.sb-top`, outside the measured `#sbBoard`; the Admin page is its own page, outside both ceilings) |
 
-Reconciles against the 3033/176 reading this replaced: verifying the
+Reconciles against the 3041/177 reading this replaced: the SC in-time's two
+extensions (owner, 24 Aug 26 — the long-day span starts at an early B, and the
+`SC_INTIME` window advisory) added +6 in `scintime.test.ts`, no new files.
+That 3041/177 reconciled against the 3033/176 it replaced: verifying the
 MAIN/SPARE toggle against the rules engine (owner, 24 Aug 26) added
 `scrole-rules.test.ts` (+8 — the SPARE exemption's exact reach, and the SC
 in-time swinging with the toggle) → +8 / +1.

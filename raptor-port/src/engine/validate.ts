@@ -19,6 +19,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   SC_QUAL:'SC currency — wrong shift',AAR_QUAL:'AAR currency — not qualified',AAR_INSTR:'AAR — back seat not cleared to instruct',NO_IR:'IRT without an IR examiner',
   PAX_CREW:'Incentive passenger — crew pairing needs approval',
   SHIFT_SOFT:'On shift — also down for a ground event',
+  SC_INTIME:'In-time window cut — busy between report and shift start',
   SANS_AVAIL:'SANS availability — planned outside the availability filed'};
 /* what a flag PRINTS on the puck. The internal codes stay as they are — they
    key the colours, the ranking and the tooltips — but the squadron reads these
@@ -87,7 +88,15 @@ export function workSpan(evs:any){
        back to T/O − 3h when the wave published none. Taking the min() of the
        two discarded any in-time later than T/O − 3h and inflated the day —
        three of the four long-day notes on the seed Monday were wrong. */
-    const os=o.kind==='fly'?(o.report!=null?o.report:o.to-VCONF.reportLead):o.s;
+    /* A SHIFT with a typed in-time is on duty FROM that in-time (owner, 24 Aug
+       26 — "if B is filled earlier than TO for main only, include the long day
+       duty hours span calculation"). An SC MAIN's report rides the event
+       (events.ts), so the day starts at the earlier of it and the shift start —
+       min() so a late B cannot shrink the day. Blank B leaves report equal to
+       the shift start and this line byte-identical to the old `o.s`; spares
+       never reach the event stream at all. */
+    const os=o.kind==='fly'?(o.report!=null?o.report:o.to-VCONF.reportLead)
+            :o.kind==='shift'&&o.report!=null?Math.min(o.report,o.s):o.s;
     const oe=o.kind==='fly'?o.ld+VCONF.debrief:o.e;
     if(os!=null&&(s==null||os<s))s=os;
     if(oe!=null&&(e==null||oe>e)){e=oe;ef=o.kind==='fly'?o:null;}
@@ -461,6 +470,33 @@ export function validate(){
         add('hard','DOUBLE_BOOK',[id],A.label===B.label
           ?`${PEOPLE[id]?PEOPLE[id].cs:id} is in two seats on ${A.label} at once`
           :`${A.label} & ${B.label} clash`,kOf(A)||kOf(B));} });
+    /* THE IN-TIME WINDOW (owner, 24 Aug 26 — "have a no brief advisory as well
+       if anything cuts or ends between B and TO time for SC main"). An SC MAIN
+       with a typed B earlier than the shift start is on duty from that B, so a
+       commitment that cuts into or ends inside B→start gets an amber advisory —
+       amber, not red, because the shift itself has not been double-booked yet.
+       Only a shift event can carry report<s (events.ts sets it from the SC B
+       alone; a spare has no event at all), so the guard needs no wave lookup.
+       An event that also overlaps the shift window is the clash loop's business
+       above and is not re-reported here; a timed personal input is included the
+       way crew rest includes it (restsInput, typed times only) — inputs raise
+       nothing against a shift window today, so there is nothing to double. */
+    Object.keys(byE).forEach((id:any)=>byE[id].forEach((sh:any)=>{
+      if(sh.kind!=='shift'||sh.report==null||sh.report>=sh.s)return;
+      const cs=PEOPLE[id]?PEOPLE[id].cs:id;
+      const cut=(s:any,e:any,label:any)=>{
+        markChip(di,id,'A'); markRing(di,id,'adv');
+        add('adv','SC_INTIME',[id],
+          `${cs} reports ${hm24(sh.report)} for ${sh.label} — ${label} (${hm24(s)}–${hm24(e)}) cuts into the in-time window before the ${hm24(sh.s)} start`,kOf(sh));};
+      byE[id].forEach((o:any)=>{ if(o===sh)return;
+        if(!overlap(sh.report,sh.s,o.s,o.e))return;
+        if(overlap(sh.s,sh.e,o.s,o.e))return;
+        cut(o.s,o.e,o.label);});
+      day.input.forEach((inp:any)=>{ if(inp.id!==id||inp.nx||inp.pv)return;
+        if(!restsInput(inp.type)||inp.s==null||inp.e==null||inp.e-inp.s>=1439)return;
+        if(!overlap(sh.report,sh.s,inp.s,inp.e))return;
+        cut(inp.s,inp.e,inpLabel(inp));});
+    }));
     // C via input clash (DNIF / leave / appointment vs a sortie)
     day.fly.forEach((e:any)=>day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
       if(overlap(e.step,e.dekit,inp.s,inp.e)){

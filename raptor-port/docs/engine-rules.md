@@ -31,6 +31,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   before, so it is byte-identical when nobody types one. No blue suggested-brief
   ghost is offered on SC, and the board drops its "in-time · N ac" header note.
   AVALON/BB never reach the fly collector (`saExempt`), so their B stays inert.
+  Two more consequences, MAIN only, added the same day (owner: "if B is filled
+  earlier than TO for main only, include the long day duty hours span
+  calculation. Have a no brief advisory as well if anything cuts or ends
+  between B and TO time"): `workSpan` starts a shift's day at
+  `min(report, start)`, so an early B counts toward the long-day note and the
+  week's duty-hour totals; and any commitment that overlaps the B→start window
+  raises the amber `SC_INTIME` advisory — other events unless they also overlap
+  the shift itself (that is the hard clash loop's business), plus timed
+  personal inputs through the same `restsInput` gate crew rest uses. A SPARE
+  row has no event stream, so both stay MAIN-only by construction.
 - **Typed pre-flight clocks follow a small-hours T/O across midnight.** When
   the configured brief lead already puts the default brief on the previous
   evening, an indicated B later on the clock than T/O is shifted back one day;
