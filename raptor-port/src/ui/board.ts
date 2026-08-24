@@ -17,7 +17,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, srcInput, saRoleHTML } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, srcInput, saRoleHTML, availHTML } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -247,7 +247,13 @@ export function boardHTML(di: number, pv?: boolean) {
   b += sbDutyPanel(d, di, pv, mvRO) + sbSimRowsPanel(d, di, pv, mvRO) + sbGroundPanel(d, di, pv, mvRO)
   /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
   const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
-  b += sbInputsGroupPanel(d, di, pv, dayInp, mvRO) + sbSansPanel(d, di, dayInp, mvRO) + sbUnavailPanel(d, di, dayInp, mvRO)
+  /* the available-crew strip the week already carries, now on the board too
+     (owner, 24 Aug 26 — "show available crew in scheduler board as well"). Same
+     builder, same position as the week (Personal Inputs → Available crew → SANS
+     → Unavailable), so both surfaces read the same. Live board only — withheld
+     on mvRO like every other computed/write panel, since "who is free" is a
+     live read, meaningless on a frozen past version. */
+  b += sbInputsGroupPanel(d, di, pv, dayInp, mvRO) + (mvRO ? '' : availHTML(d, di, true)) + sbSansPanel(d, di, dayInp, mvRO) + sbUnavailPanel(d, di, dayInp, mvRO)
   return b
 }
 

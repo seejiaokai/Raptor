@@ -73,6 +73,15 @@ describe('the scheduler board (tfin board group)', () => {
     expect($$('#sbRoster .rpuck').length).toBeGreaterThan(10)
   })
 
+  /* the available-crew strip the week carries now shows on the board too
+     (owner, 24 Aug 26 — "show available crew in scheduler board as well"). */
+  it('the available-crew strip shows on the board', () => {
+    const ap = $('#sbBoard .availpuck')
+    expect(ap, 'the available-crew panel renders on the board').toBeTruthy()
+    expect(ap.textContent).toContain('Available crew')
+    expect($$('#sbBoard .availpuck .ap-grid .seat').length, 'it lists crew pucks').toBeGreaterThan(0)
+  })
+
   it('sched wave title select', () => {
     expect($$('#sbBoard .sb-wtitle').length).toBeGreaterThanOrEqual(1)
   })
