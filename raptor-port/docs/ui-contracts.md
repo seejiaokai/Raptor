@@ -3364,13 +3364,22 @@ Three ways they leaked, all now closed, and all three are the checklist for
 answers "where is this man flying this week" could not be reached at all.
 
 It is the SAME box, not a new one, and it does **not** get its own row — a row
-of chrome is 40px of schedule on a device that has none to spare. It is pinned
-to the filters strip's right edge (`position: sticky; right: 0`) the way
-HIGHLIGHT is pinned to its left, with the chips scrolling between the two: 96px
-of input, ~142px of a 390px screen. Opaque and full-height by the rules above.
+of chrome is 40px of schedule on a device that has none to spare. It sits at the
+right end of the one icon row (`margin-left: auto`), 96px of input.
 
-The desktop and the Edit Schedule page are untouched — they show the same box
-in its ordinary place at the end of the strip.
+**The one-row standardisation (owner, 26 Aug 26).** Both week pages' phone
+filter bars now read identically: a SINGLE row — the calendar opener (an in-row
+`.filt-cal`, phone-only, replacing the old standalone `.wknav-m` row that Edit
+put above the icons and View put below), then the page's icons, then the search
+pinned right. The bar **wraps** rather than scrolling sideways, so when the
+highlighter is tapped (`.hl-open`) the CAT / Type / Quals chips drop to their
+OWN row below (`.hlrow`, `flex: 0 0 100%; order: 10`, wrapping its own chips)
+instead of cramming onto the icons' line. The sticky left/right pins the old
+sideways-scroller needed are gone with it. Desktop is untouched — `.filt-cal` is
+hidden (the `.seg` / `.wkseg` week window still navigates) and `.hlrow` is
+`display: contents`, so the chips still flow inline in the one desktop row.
+Pinned in `editweek.test.tsx` (the calendar opener now lives at
+`#page-editsched .filters .filt-cal`).
 
 ## No warning / advisory / note counts in the top bar (owner, 20 Aug 26)
 
