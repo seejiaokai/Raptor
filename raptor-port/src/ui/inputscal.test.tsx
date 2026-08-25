@@ -13,7 +13,7 @@ import { INPUTS, inpId, defaultAllday } from '../engine/inputs'
 import { INPVIEW, CALMONTH, setCalMonth } from '../state/view'
 import { DAYRMK, PLANPUCKS, addPlanPuck, removePlanPuck } from '../state/plan'
 import { ME } from '../state/auth'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, QORDER } from '../engine/people'
 import { fmt, fmtDay, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { monthCells, MAX_CHIPS, HOLD_ADD } from './InputsCal'
@@ -506,10 +506,10 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     }
   })
 
-  /* the multi-select puck picker (owner, 23 Aug 26 — "select a few pucks at 1
-     go … press ok", "highlight buttons to … light up those in that category")
-     and its two new removals: right-click on the desktop, and the ✕ that stays. */
-  it('+ Pucks opens the picker; a category lights its people; OK adds them as a row; right-click and ✕ remove', async () => {
+  /* the multi-select puck picker (owner, 23 Aug 26; reworked 24 Aug 26 — a
+     category "just … fade those pucks so that I know which puck is applicable.
+     Not select them", pucks grouped by seat like the palette). */
+  it('+ Pucks opens the picker; a category FADES the rest without selecting; tapping pucks selects; OK adds them; right-click and ✕ remove', async () => {
     const iso = '2026-07-09'
     const cell = $(`[data-icday="${iso}"]`)!
     await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
@@ -519,40 +519,93 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     await click($('#icAddPucks'))
     expect($('.ic-pick'), 'the picker opened instead of making an empty row').toBeTruthy()
     expect(PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso), 'no row until OK').toBeFalsy()
+    /* the roster is grouped by seat, the way the palette lays it out */
+    expect($('.ic-pick-body .ic-pick-grp'), 'pucks are grouped by seat').toBeTruthy()
     let sec: any
     try {
-      /* a category button lights up EVERYONE in that category at once */
+      /* a category chip HIGHLIGHTS by fading the rest — it selects NOTHING */
       const catA = $('.ic-pick-cats [data-pickcat="A"]')!
       await click(catA)
-      const litA = host.querySelectorAll('.ic-pickp.on').length
-      expect(litA, 'Cat-A people lit').toBeGreaterThan(0)
-      expect(catA.className, 'the category chip reads on').toContain('on')
-      /* plus one more individual, ticked by hand */
-      const extra = host.querySelector('.ic-pickp:not(.on):not(.already)') as HTMLElement
-      const extraId = extra.getAttribute('data-pickp')!
-      await click(extra)
-      const want = litA + 1
-      expect(host.querySelectorAll('.ic-pickp.on').length).toBe(want)
-      expect(($('#icPickOk') as HTMLButtonElement).textContent).toContain(String(want))
-      /* OK creates ONE new pucks row carrying all the picks */
+      expect(catA.className, 'the chip reads on (highlight is live)').toContain('on')
+      expect(host.querySelectorAll('.ic-pickp.on').length, 'highlighting never selects a puck').toBe(0)
+      expect(host.querySelectorAll('.ic-pickp.dim').length, 'non-matching pucks faded').toBeGreaterThan(0)
+      expect(host.querySelectorAll('.ic-pickp:not(.dim):not(.already)').length, 'matching pucks stay bright').toBeGreaterThan(0)
+      /* a second chip in the SAME category is an ALTERNATIVE — it broadens, it
+         never empties (owner, 24 Aug 26 — "CAT A and B"): A-or-D lights at
+         least as many as A alone. Across categories it would narrow instead;
+         that AND is pinned at the unit level in hlfold.test.tsx. */
+      const brightA = host.querySelectorAll('.ic-pickp:not(.dim):not(.already)').length
+      const catD = $('.ic-pick-cats [data-pickcat="D"]')!
+      await click(catD)
+      expect(host.querySelectorAll('.ic-pickp:not(.dim):not(.already)').length, 'A or D lights at least as many as A alone').toBeGreaterThanOrEqual(brightA)
+      await click(catD)   // clear D, back to just A
+      /* pick two people by hand — a tap selects, faded or not */
+      const pickTwo = [...host.querySelectorAll('.ic-pickp:not(.already)')].slice(0, 2) as HTMLElement[]
+      const pickedIds = pickTwo.map(b => b.getAttribute('data-pickp')!)
+      for (const b of pickTwo) await click(b)
+      expect(host.querySelectorAll('.ic-pickp.on').length).toBe(2)
+      expect(($('#icPickOk') as HTMLButtonElement).textContent).toContain('2')
+      /* OK creates ONE new pucks row carrying the two picks */
       await click($('#icPickOk'))
       expect($('.ic-pick'), 'the picker closed on OK').toBeFalsy()
       sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
       expect(sec, 'a pucks row was created').toBeTruthy()
-      expect(sec.ids.length).toBe(want)
-      expect(sec.ids, 'the hand-ticked person is on it').toContain(extraId)
+      expect(sec.ids.length).toBe(2)
+      expect(sec.ids, 'the hand-picked people are on it').toEqual(expect.arrayContaining(pickedIds))
       expect($(`[data-secpucks="${sec.id}"] .puck`), 'the row draws real pucks').toBeTruthy()
       expect(cell.querySelector('.ic-pks .ic-pk'), 'the cell carries the tiny chip').toBeTruthy()
-      /* RIGHT-CLICK a seated puck removes it */
-      const chip = $(`[data-secpucks="${sec.id}"]`)!.querySelector('.ic-secpk') as HTMLElement
+      /* the per-puck ✕ is gone now (owner, 24 Aug 26 — removal is drag-off or
+         right-click); no seated puck carries a delete button anymore */
+      expect($(`[data-secpucks="${sec.id}"] [data-pkdel]`), 'no per-puck ✕').toBeFalsy()
+      /* RIGHT-CLICK a seated puck removes it, leaving a GAP so the rest don't
+         shift — the blanked slot stays in place */
+      const chip = $(`[data-secpucks="${sec.id}"]`)!.querySelector('.ic-secpk:not(.ic-secpk-gap)') as HTMLElement
       await act(async () => { chip.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })) })
-      expect(sec.ids.length, 'right-click dropped one').toBe(want - 1)
-      /* the ✕ still removes the next one */
-      await click($(`[data-secpucks="${sec.id}"] .ic-pkdel`))
-      expect(sec.ids.length).toBe(want - 2)
+      expect(sec.ids.filter(Boolean).length, 'right-click dropped one puck').toBe(1)
+      expect(sec.ids[0], 'the removed slot is blanked, not closed').toBe('')
+      expect($(`[data-secpucks="${sec.id}"] .ic-secpk-gap`), 'a gap cell holds the position').toBeTruthy()
     } finally {
       sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
       if (sec) await act(async () => { removePlanPuck(sec.id); notify() })
+      if ($('#icPopClose')) await click($('#icPopClose'))
+    }
+  })
+
+  /* the picker's within-group order and the SANS seat split (owner, 24 Aug 26 —
+     "arrange sans into pilot then wso … arranged in the cat hierarchy order.
+     Like FI then IR then IP etc for pilot"). */
+  it('picker: SANS splits into Pilots then WSOs, and every group reads in CAT-ladder order (highest first)', async () => {
+    const iso = '2026-07-09'
+    const cell = $(`[data-icday="${iso}"]`)!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    await click($('#icAddPucks'))
+    expect($('.ic-pick'), 'the picker opened').toBeTruthy()
+    try {
+      const grp = (label: string) => $$('.ic-pick-body .ic-pick-grp')
+        .find(g => (g.querySelector('.ic-pick-gh')?.firstChild?.textContent || '') === label)
+      const idsIn = (label: string) => {
+        const g = grp(label); expect(g, `group "${label}" present`).toBeTruthy()
+        return [...g!.querySelectorAll('.ic-pickp')].map(b => b.getAttribute('data-pickp')!)
+      }
+      /* SANS is split, pilots before WSOs */
+      const heads = $$('.ic-pick-body .ic-pick-gh').map(h => h.firstChild?.textContent || '')
+      const iPil = heads.indexOf('SANS · Pilots'), iWso = heads.indexOf('SANS · WSOs')
+      expect(iPil, 'SANS · Pilots header present').toBeGreaterThanOrEqual(0)
+      expect(iWso, 'SANS · WSOs comes after SANS · Pilots').toBeGreaterThan(iPil)
+      /* SANS pilots are all front-seat, SANS WSOs all not */
+      expect(idsIn('SANS · Pilots').every(id => PEOPLE[id].seat === 'FCP'), 'SANS pilots are FCP').toBe(true)
+      expect(idsIn('SANS · WSOs').every(id => PEOPLE[id].seat !== 'FCP'), 'SANS WSOs are not FCP').toBe(true)
+      /* every seat group reads highest CAT first (QORDER non-increasing) */
+      const ladderOK = (label: string) => {
+        const ranks = idsIn(label).map(id => QORDER[PEOPLE[id].q] ?? -1)
+        return ranks.every((r, i) => i === 0 || ranks[i - 1] >= r)
+      }
+      for (const label of ['Pilots', 'WSOs', 'SANS · Pilots', 'SANS · WSOs']) {
+        expect(ladderOK(label), `${label} in CAT-ladder order`).toBe(true)
+      }
+    } finally {
+      if ($('#icPickCancel')) await click($('#icPickCancel'))
       if ($('#icPopClose')) await click($('#icPopClose'))
     }
   })

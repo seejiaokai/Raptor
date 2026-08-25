@@ -12,6 +12,14 @@
   --bg:#0B0D10; --panel:#14181D; --panel-2:#1A1F26; --raised:#20262E;
   /* the top bar's two stops, opaque — see the .topbar rule */
   --topbar-a:#0E1116; --topbar-b:#090B0E;
+  /* the filters row is a translucent rgba(--panel,.35) over --bg; this is the
+     OPAQUE colour that composite resolves to (0.35·#14181D over #0B0D10). The
+     row now paints it directly, and the mobile sticky pins (the highlight fold
+     toggle's left gutter, the search box's backdrop) paint the SAME token — so
+     an opaque pin over the scroller reads as the row it sits on, not a lighter
+     --panel patch beside it (owner, 24 Aug 26 — "the buttons … some weird
+     shade"). */
+  --filters-bg:#0E1115;
   --edge:#2A313A; --edge-2:#39424D; --ink:#F1F4F7; --ink-2:#B6C0CB; --ink-3:#8A96A3;
   --accent:#3BC6E8; --accent-ink:#052A34;
   --hard:#F0555F; --adv:#E5A83B; --ok:#57C97A;
@@ -278,7 +286,7 @@ a{color:var(--accent)}
 :root{--press-scale:.97}
 @media (prefers-reduced-motion:reduce){:root{--press-scale:1}}
 .abtn:active,.fchip:active,.pillbtn:active,.rok:active,.rmx:active,
-.inact .red:active,.mbtn:active,.dbeak:active,.wm:active,.dinfobtn:active,
+.inact .red:active,.mbtn:active,.dbeak:active,.dhbtn:active,.wm:active,.dinfobtn:active,
 .so-clear:active,.nav a:active,.login .go:active,.sb-slot.empty:active,.itx:active{
   filter:brightness(.88);transform:scale(var(--press-scale))
 }
@@ -349,11 +357,33 @@ a{color:var(--accent)}
 #exportSched,#exportPdf{display:inline-flex;align-items:center;justify-content:center}
 
 /* filter / highlight chips */
-.filters{display:flex;gap:6px;padding:8px 20px;flex-wrap:wrap;border-bottom:1px solid var(--edge);align-items:center;background:rgba(20,24,29,.35)}
+.filters{display:flex;gap:6px;padding:8px 20px;flex-wrap:wrap;border-bottom:1px solid var(--edge);align-items:center;background:var(--filters-bg)}
 .filters .lab{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-right:2px;font-weight:600}
 .fchip{min-width:34px;text-align:center;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);padding:6px 11px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:600}
 .fchip:hover{border-color:var(--edge-2);color:var(--ink)}
 .fchip.on{background:rgba(59,198,232,.16);color:var(--accent);border-color:rgba(59,198,232,.6)}
+/* THE THREE HIGHLIGHT GROUP TABS (owner, 24 Aug 26 — CAT / Type / Quals). A tab
+   reads as a category header (bolder, wider-tracked than a chip) with a caret
+   that turns down when its group is open; the group's chips sit inline right
+   after it and stay display:none until .hl-grp.open (every key stays in the DOM
+   — the drift-seam doctrine and the jsdom tests both want them present, so this
+   is visibility, not existence). `.has` lights a tab and shows a count whenever
+   one of its chips is active while collapsed, so a live filter is never hidden
+   behind a shut tab. */
+.hl-grp{display:inline-flex;align-items:center;gap:5px}
+.hl-gtab{display:inline-flex;align-items:center;gap:5px;background:var(--panel-2);border:1px solid var(--edge);
+  color:var(--ink-2);padding:6px 10px;border-radius:9px;cursor:pointer;font-size:11px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase}
+.hl-gtab:hover{border-color:var(--edge-2);color:var(--ink)}
+.hl-gtab::after{content:'';width:6px;height:6px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;
+  transform:rotate(-45deg);transition:transform .15s ease;opacity:.6;margin-left:1px}
+.hl-gtab.open{color:var(--ink);border-color:var(--edge-2);background:var(--raised)}
+.hl-gtab.open::after{transform:rotate(45deg);opacity:.8}
+.hl-gtab.has{color:var(--accent);border-color:rgba(59,198,232,.5)}
+.hl-gn{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;padding:0 4px;
+  border-radius:999px;background:rgba(59,198,232,.2);color:var(--accent);font-size:9px;font-weight:800;letter-spacing:0}
+.hl-gchips{display:none;align-items:center;gap:5px}
+.hl-grp.open .hl-gchips{display:inline-flex}
 .filters .div{width:1px;align-self:stretch;background:var(--edge);margin:0 4px}
 /* the Highlight lead is TWO elements and this pair of rules is what picks one
    (Shell.tsx renders both — the histln/histln-top precedent): desktop keeps a
@@ -538,6 +568,21 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
      swipe from scrolling the week underneath (owner, 8 Aug 26) */
   .eroster .ros-body{flex:1 1 auto;min-height:0;overflow-y:auto;
     overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-right:2px}
+  /* KEEP THE DAY LINE IN VIEW ON THE PHONE PALETTE TOO (owner, 24 Aug 26 — "I
+     just need the placeholder date to be shown when I scroll down so that I
+     know who I'm selected to"). The DESKTOP panel got this on 23 Aug (the
+     min-width:821px block above), but that scrolls .eroster itself; the phone
+     drawer scrolls its inner .ros-body and never pinned anything, so a
+     scheduler deep in a long crew list lost which DAY he was crewing. Same two
+     pins as the desktop panel — the "Aircrew · <day>" line (with its ‹ › day
+     arrows) at the very top, the "Pilots/WSOs · N free" column labels just
+     under it — painted the drawer's own near-black (--bg) so the pucks pass
+     behind them rather than through, and so the header reads as the drawer, not
+     a lighter patch. The board's own roster draws no .er-h (head:false), so it
+     is untouched. */
+  .eroster .ros-body .er-h{position:sticky;top:0;z-index:4;background:var(--bg)}
+  .edit-board .eroster .ros-body .rcol .rh{position:sticky;top:27px;z-index:3;
+    background:var(--bg);padding-bottom:1px}
   .edit-board .week{padding-right:0}
 }
 /* ---- who may be planned where ----------------------------------------------
@@ -608,6 +653,21 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .day-head .dow{font-size:16px;font-weight:700}
 .day-head .dt{color:var(--ink-3);font-size:12px}
 .day-head .badge{margin-left:auto;font-size:10.5px;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--edge);padding:2px 8px;border-radius:6px}
+/* Templates + Drafts moved into the day-head, between the date and the 4x4
+   badge (owner, 24 Aug 26). A touch smaller than the sign-off strip's own
+   .dbeak so the two solid pills read as a header control; centred against the
+   head's baseline-aligned text. The badge keeps margin-left:auto, so it floats
+   to the right edge and these sit just past the date — spatially between the
+   two, as asked. */
+.day-head .dhtpl{display:inline-flex;gap:5px;align-self:center;margin-left:4px}
+/* .dhbtn, NOT .dbeak: the publish button and the version tag in .dstat are also
+   .dbeak, and several tests read the day's FIRST .dbeak as the publish control
+   (pubsweep) — these header buttons come before it in the day, so they carry
+   their own class and wear the .dbeak look here instead of borrowing the name. */
+.day-head .dhtpl .dhbtn{font-family:inherit;font-size:10.5px;font-weight:700;letter-spacing:.02em;cursor:pointer;
+  color:var(--accent-ink);background:var(--accent);border:1px solid var(--accent);
+  padding:3px 9px;border-radius:8px;white-space:nowrap}
+.day-head .dhtpl .dhbtn:hover{filter:brightness(1.07)}
 /* ---- per-day approval strip in the day head -------------------------------
    Approval is per day, so the publish control lives on the day itself rather than
    on the week banner. `.dstat` wraps onto its own line when the head is narrow
@@ -1092,7 +1152,10 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .st-addrow .st-add{font-size:10px;font-weight:800;padding:4px 9px;border-radius:4px;border:1px solid var(--edge-2);background:transparent;color:var(--ink-2);cursor:pointer}
 .st-addrow .st-add:hover{border-color:var(--accent);color:var(--accent)}
 .bombs{font-size:8px;color:var(--ink-2);min-width:34px;border-bottom:1px dashed var(--edge-2);outline:none;padding:0 2px}
-.bombs:empty::before{content:'bombs…';color:var(--ink-3)}
+/* the visible word is "Config" (owner, 24 Aug 26 — the field takes any
+   loadout note, not only bombs); the class and the opts.bombs key stay put so
+   no saved jet config is disturbed — only the placeholder the user reads. */
+.bombs:empty::before{content:'Config…';color:var(--ink-3)}
 /* approval / amendment banner */
 /* ---- sign-off strip ----------------------------------------------------------
    Four names have to be on an amendment before it goes out: who checked the
@@ -1174,13 +1237,22 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
    above is phone-shaped: its own desktop row is untouched by this block). */
 @media (min-width:821px){
   .signoff.day-sign{flex-wrap:wrap}
-  .signoff.day-sign .so-h{flex:1 0 100%;margin:0 0 3px}
-  .signoff.day-sign .sgn{flex:1 1 0;min-width:0;flex-direction:column;align-items:stretch;
+  /* The header row carries the label and the "N to sign" state together —
+     "SIGN-OFF" at the left, the count at the far right, in line with it
+     (owner, 24 Aug 26 — "put the 4 to sign word on the top right row in line
+     with the word Sign-off"). The state span is last in the DOM, so `order`
+     pulls it up beside the header, and a zero-height full-width break
+     (`::before`, ordered between them) drops the four role pills onto their
+     own line underneath — where, with the state no longer sharing the row,
+     they stretch to fill the whole day width. */
+  .signoff.day-sign .so-h{flex:0 0 auto;order:0;margin:0}
+  .signoff.day-sign .so-state{flex:0 0 auto;order:1;margin-left:auto;padding-top:0}
+  .signoff.day-sign::before{content:'';order:2;flex:0 0 100%;height:0}
+  .signoff.day-sign .sgn{order:3;flex:1 1 0;min-width:0;flex-direction:column;align-items:stretch;
     gap:1px;border-radius:10px;padding:4px 10px 5px}
   .signoff.day-sign .sgn>.v{min-width:0;padding:0 15px 0 0;overflow:hidden;text-overflow:ellipsis}
   .signoff.day-sign .sgn::after{top:auto;bottom:6px}
-  .signoff.day-sign button.so-clear{flex:0 0 auto}
-  .signoff.day-sign .so-state{flex:1 1 auto;margin-left:auto}
+  .signoff.day-sign button.so-clear{order:4;flex:0 0 auto}
 }
 /* Force EXACTLY two pills per row on the board ON A PHONE. The edit-schedule
    strip lands its 2x2 by content width alone — its day card is ~14px wider than
@@ -1592,6 +1664,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 #inBody tr.in-amb>td:first-child{box-shadow:inset 3px 0 0 var(--adv)}
 #inBody tr.in-san>td:first-child{box-shadow:inset 3px 0 0 var(--san)}
 .intag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
+/* the SANS row's F/O/A offer letters — the crew group's purple (--san), the
+   same accent the SANS chip/puck wears everywhere, so the two agree at a
+   glance. A quiet pill beside the type tag, never replacing it. */
+#inBody .foa{display:inline-block;margin-left:6px;font-size:8.5px;font-weight:700;letter-spacing:.04em;color:var(--san);border:1px solid rgba(178,77,234,.45);border-radius:999px;padding:1px 6px;vertical-align:middle;white-space:nowrap}
 .inwrap{padding:6px 20px 40px}
 .rmx{color:var(--hard);cursor:pointer;font-weight:800}
 /* Every heading sorts (owner, Aug 5). The arrow is a fixed-width column of its
@@ -1782,6 +1858,9 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      "ability") is hidden here and only here, the board day-name idiom — the
      desktop chip and the DOM text stay the full type string */
   #intbl .intag .bl{ display:none }
+  /* the F/O/A pill rides the type line on the phone card too, a touch smaller
+     so it sits with the shortened chip rather than pushing the row wider */
+  #inBody .foa{ font-size:8px; margin-left:4px; padding:1px 5px }
   /* the range joiner; a one-day input reads once, never "Jul 13 → Jul 13" —
      the row marks its End cell data-same when it repeats the start */
   #intbl tbody tr:not(.ined) td[data-label="End"]::before{
@@ -2024,16 +2103,28 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-sec>.ic-poppuck,.ic-sec>.ic-poppuck-edit,.ic-sec>.ic-secpucks{flex:1;min-width:0}
 .ic-sechandle{cursor:grab;color:var(--ink-3);font-size:13px;line-height:1;padding:6px 2px;user-select:none}
 .ic-sechandle:hover{color:var(--accent)}
-/* a pucks row — the app's canonical pucks, full width, wrap as they fill;
-   each with its own ✕ while editing, and the + add… picker at the end */
+/* a pucks row — the app's canonical pucks in a fixed THREE-column grid (owner,
+   24 Aug 26 — "3 pucks per row"), then the + add… picker and the row's own ✕.
+   The grid is a full-width flex child so those two controls wrap below it. */
 .ic-secpucks{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:24px}
-.ic-secpk{display:inline-flex;align-items:center;gap:2px}
+.ic-secpk-grid{flex:1 1 100%;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;align-items:center}
+.ic-secpk{display:inline-flex;align-items:center;justify-content:flex-start;gap:2px;min-height:var(--puck-h)}
 .ic-secpk .seat{display:flex}
+/* a removed puck leaves a BLANK cell that holds its grid position so the
+   survivors never shift (owner, 24 Aug 26); invisible but it occupies its third
+   of the row. opacity:0 rather than visibility:hidden so it is still hit-tested
+   — an empty slot is a real drop target for a swap/move (startPkDrag). */
+.ic-secpk-gap{opacity:0}
 .ic-pkdel{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:11px;padding:2px 3px}
 .ic-pkdel:hover{color:var(--hard)}
-/* a seated puck being dragged off its row to remove it — lifts above its
-   neighbours and follows the finger (transform set inline by startPkDrag) */
-.ic-secpk.pk-drag{position:relative;z-index:2;opacity:.85;cursor:grabbing;pointer-events:none}
+/* a seated puck lifted for a drag — floats above its neighbours and follows the
+   finger (transform set inline by startPkDrag); pointer-events:none so the slot
+   UNDER the finger is what elementFromPoint reads. */
+.ic-secpk.pk-drag{position:relative;z-index:3;opacity:.85;cursor:grabbing;pointer-events:none}
+/* the slot a lifted puck is hovering over — where it will swap/land on release.
+   A gap target flips back to opaque so its dashed ring shows over the empty cell. */
+.ic-secpk.pk-swap-target{outline:2px dashed var(--accent);outline-offset:1px;border-radius:6px}
+.ic-secpk-gap.pk-swap-target{opacity:1}
 /* the + add button that opens the multi-select picker (replaced the one-at-a
    -time select, owner 23 Aug 26) */
 .ic-pop .ic-pkadd{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);
@@ -2053,24 +2144,40 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-pick-n{font-size:12px;color:var(--ink-3)}
 .ic-pick-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;
   font-size:18px;min-width:40px;min-height:40px}
-.ic-pick-cats{display:flex;flex-wrap:wrap;gap:6px;padding:12px 15px;border-bottom:1px solid var(--edge)}
-/* the person grid — the app's own pucks in a wrap, each a toggle button; the
-   selected ones ring accent, the already-seated ones dim and lock */
-/* flex:1 + min-height:0 so the grid soaks up the modal's spare height and the
-   foot (OK / tick) pins to the bottom edge — without it the foot floated mid-
-   sheet on a short roster in the phone full-screen variant (review fix, 24 Aug
-   26). On the desktop content-height card there is no spare height to take, so
-   it is a no-op there. */
-.ic-pick-grid{display:flex;flex-wrap:wrap;gap:7px;padding:14px 15px;overflow-y:auto;flex:1;min-height:0}
+.ic-pick-cats{display:flex;flex-wrap:wrap;gap:6px;padding:10px 15px;border-bottom:1px solid var(--edge)}
+/* THE PUCKS, GROUPED BY SEAT like the aircrew palette (owner, 24 Aug 26 —
+   "arrange them just like how the placeholders arranges them"). The head, the
+   category tabs and the foot are fixed flex siblings; only .ic-pick-body
+   scrolls (flex:1 + min-height:0), so a phone ALWAYS shows the tabs above and
+   Cancel/Add below — the report the owner made ("can't even see the buttons
+   above and below") was the old single .ic-pick-grid, which shared the scroll
+   with nothing pinned and a full-screen sheet the wrap's padding then clipped. */
+.ic-pick-body{flex:1;min-height:0;overflow-y:auto;padding:12px 15px;display:flex;flex-direction:column;gap:13px}
+.ic-pick-grp{display:flex;flex-direction:column;gap:6px}
+.ic-pick-gh{display:flex;align-items:center;gap:7px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  text-transform:uppercase;letter-spacing:.07em;font-size:10.5px;font-weight:700;color:var(--ink-3)}
+.ic-pick-gn{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:15px;padding:0 4px;
+  border-radius:999px;background:var(--panel-2);color:var(--ink-2);font-size:9px;font-weight:700;letter-spacing:0}
+.ic-pick-row{display:flex;flex-wrap:wrap;gap:7px}
 .ic-pickp{background:none;border:1px solid transparent;border-radius:6px;padding:2px;cursor:pointer;
-  line-height:0;display:inline-flex}
+  line-height:0;display:inline-flex;transition:opacity .12s ease}
 .ic-pickp .seat{display:flex;pointer-events:none}
 .ic-pickp.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 10px rgba(59,198,232,.35)}
 .ic-pickp.already{opacity:.4;cursor:default}
+/* the highlight FADE — a lit category dims everyone NOT in it so the applicable
+   pucks read at a glance (owner, 24 Aug 26: "fade those pucks … Not select
+   them"). Still fully tappable, just quietened; a picked puck is never dimmed,
+   or its accent ring would be unreadable. */
+.ic-pickp.dim{opacity:.22}
+.ic-pickp.dim.on{opacity:1}
 .ic-pick-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 15px;border-top:1px solid var(--edge)}
 .ic-pick-foot .abtn.primary[disabled]{opacity:.45;cursor:default}
 @media (max-width:820px){
-  .ic-pick{width:100vw;height:100vh;max-height:100vh;border-radius:0}
+  /* full-screen sheet, edge to edge — the wrap's 16px padding + centring used
+     to clip a 100vh sheet top and bottom, hiding the title and the foot; and
+     100dvh (not 100vh) keeps the foot clear of the phone browser's own toolbar. */
+  .ic-pickwrap{padding:0;align-items:stretch;justify-content:stretch}
+  .ic-pick{width:100vw;height:100vh;height:100dvh;max-height:100dvh;border-radius:0}
 }
 /* the inputs block at the bottom: its small + Input leads it, top-left */
 .ic-inp-sec{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
@@ -2096,10 +2203,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .ic-popwrap{align-items:flex-end;padding:0}
   .ic-pop{width:100%;max-width:100%;border-radius:12px 12px 0 0;max-height:75vh}
   .ic-pop .abtn,.ic-poprow,.ic-poppuck button{min-height:44px}
-  /* the seated-puck ✕ keeps its small glyph but earns a full 44px thumb target
-     on the phone — it was an 11px, ~15px-tall tap before (review fix, 24 Aug
-     26). Centred so the little × still sits inside the puck row cleanly. */
-  .ic-secpk .ic-pkdel{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  /* the row's ✕ (delete this whole pucks row) keeps its small glyph but earns a
+     full 44px thumb target on the phone. The per-puck ✕ is gone (owner, 24 Aug
+     26 — removal is drag-off / right-click now), so only the row-delete remains. */
+  .ic-secpucks .ic-rowdel{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 }
 
 /* ============ MODALS / DRAWER / AIRSPACE ============ */
@@ -2329,8 +2436,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      HIGHLIGHT pieces fold — the exports, the search pin and the week seg's
      .wkdiv are untouched, which is why the divider inside HlChips has its own
      .hl-div class instead of being a bare .div nothing could tell apart. */
-  #page-viewsched .filters:not(.hl-open) .fchip[data-hl],#page-editsched .filters:not(.hl-open) .fchip[data-hl],
-  #page-viewsched .filters:not(.hl-open) .hl-div,#page-editsched .filters:not(.hl-open) .hl-div{display:none}
+  #page-viewsched .filters:not(.hl-open) .hl-grp,#page-editsched .filters:not(.hl-open) .hl-grp{display:none}
   /* the two-element lead swaps: the desktop label goes, the toggle arrives.
      .hl-lab must be beaten here — the pin rule below used to target .lab and
      would have re-shown it (display:flex) at higher specificity. */
@@ -2361,7 +2467,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      (the owner's circle). The edit toggle now just scrolls with the exports;
      the search pin on the right is untouched, so nothing on that row bleeds. */
   #page-viewsched .filters .hl-tog{position:sticky;left:0;z-index:1;
-    align-self:stretch;height:auto;box-shadow:-12px 0 0 var(--panel)}
+    align-self:stretch;height:auto;box-shadow:-12px 0 0 var(--filters-bg)}
   /* A SMALL SEARCH ON THE PHONE'S VIEW-ONLY SCHEDULE (owner, 20 Aug 26 — "we
      should have a small search bar too in view schedule at the top"). The box
      has always been here; this strip is a sideways scroller and `.right` was
@@ -2374,8 +2480,8 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      translucent pin over a scroller reads as a bleed. #searchE pins the same
      way on the edit row (23 Aug 26). */
   #page-viewsched .filters .right,#page-editsched .filters .right{display:flex;position:sticky;right:0;z-index:1;margin-left:auto;
-    align-self:stretch;align-items:center;background:var(--panel);padding-left:6px;
-    box-shadow:12px 0 0 var(--panel)}
+    align-self:stretch;align-items:center;background:var(--filters-bg);padding-left:6px;
+    box-shadow:12px 0 0 var(--filters-bg)}
   #page-viewsched .filters .searchbox,#page-editsched .filters .searchbox{padding:3px 8px;border-radius:8px}
   #page-viewsched .filters .searchbox input,#page-editsched .filters .searchbox input{width:96px;font-size:12px}
   .day{flex:0 0 calc(100vw - 24px);overflow-x:auto}
@@ -2384,58 +2490,60 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      It used to wrap onto four rows (182px of chrome before you saw any schedule).
      Now it is a single nowrap strip that scrolls sideways, with the mark + burger
      pinned left, and every control inside it tightened a notch. */
-  .topbar{gap:9px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
-    scrollbar-width:none;padding:8px 12px}
+  .topbar{gap:8px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;padding:8px 14px}
   .topbar::-webkit-scrollbar{display:none}
   .topbar>*{flex:0 0 auto}
-  /* THE STICKY LEAD PAINTS THE BAR, OPAQUELY (owner, 20 Aug 26 — the leak).
-     The bar scrolls sideways and the burger and mark are pinned over it, so
-     whatever they do not cover, the scrolling controls show through. The mark
-     used to wear a gradient fading to TRANSPARENT on its right — a soft edge
-     that reads as a bleed the moment a pill passes under it — and two gutters
-     were never covered at all: the bar's 12px left padding (outside the
-     burger's pinned box) and the 5px between the burger and the mark's 41px
-     offset. The mark now paints the bar's own two stops at full alpha, and the
-     two gutters are painted by a flat left box-shadow on each — flat rather
-     than the gradient because 12px and 6px of a two-stop ramp that spans six
-     RGB points cannot show a seam, and a pseudo-element for each would be two
-     more nodes on the phone's tightest bar. */
-  .topbar .burger,.topbar .mark{position:sticky;left:0;z-index:2}
-  .topbar .burger{box-shadow:-12px 0 0 var(--topbar-a)}
-  .topbar .mark{background:linear-gradient(180deg,var(--topbar-a),var(--topbar-b));
-    box-shadow:-6px 0 0 var(--topbar-a);padding-right:10px;left:41px}
+  /* THE PHONE TOP BAR IS A CLEAN, NON-SCROLLING ROW (owner, 24 Aug 26 — "the
+     top bar on mobile looks bad, unlike the desktop version. And when I scroll
+     I could see the buttons design leaking"). The old bar crammed six controls
+     into a sideways scroller, then pinned the burger, the mark and the undo/
+     redo trio OVER it with opaque box-shadows so they'd stay put while the
+     middle scrolled. That overlap WAS the leak: the moment the strip scrolled,
+     a control slid out from behind a pin and peeked past it (the "nc · slow"
+     sync pill bleeding out from under the RAPTOR mark). Two moves retire both
+     the clutter and the leak together:
+       1. The two SECONDARY actions leave the bar for the burger drawer —
+          Logout already lived there, and Insights joins it (Drawer.tsx). What
+          remains — burger, mark, sync, bell and the edit-only undo/redo/history
+          trio — fits ONE row on every common phone, so the bar no longer needs
+          to scroll at all, and reads as uncluttered as the desktop bar.
+       2. With nothing overflowing, nothing is pinned. Every sticky position and
+          opaque box-shadow patch that caused the leak is gone; the bar is a
+          plain flex line. overflow-x:auto is kept only as a safety net for a
+          sub-340px screen, where the row now scrolls as ONE piece — no pins, so
+          no control can emerge from behind another. */
   .topbar .mark .k{font-size:8.5px;letter-spacing:.14em}
   .topbar .mark .v{font-size:15px}
   .topbar .mark .rglyph{width:24px;height:24px}
   .burger{width:32px;height:30px}
-  /* UNDO / REDO / EDIT HISTORY, PINNED RIGHT (owner, 23 Aug 26 — the trio now
-     rides the phone bar too). Icon-only (.bl off), and PINNED at the right
-     edge of this sideways-scrolling bar — the mirror of the burger + mark's
-     left pin above, built the same way: sticky, opaque, and the gutter the
-     pin cannot cover (the bar's 12px right padding) painted by a flat
-     box-shadow. Like the mark, it paints the bar's own gradient VARS rather
-     than a sampled colour — .editing swaps --topbar-a/b for the blue edit
-     tint, and painting the vars means the pin re-tints with the bar for free
-     instead of standing out as a stale grey patch. */
-  /* order:9 makes the trio the LAST (rightmost) child of .spring on a phone —
-     load-bearing, not cosmetic. It is FIRST in source order, so at its natural
-     flow position (just right of the mark) `right:0` never engaged and the
-     opaque pin simply sat there OVERLAPPING the sticky-left RAPTOR mark the
-     moment the bar scrolled — the trio jammed over the "R" the owner circled
-     (23 Aug 26). Pushed to the visual right, its natural position is past the
-     right edge, so `right:0` finally pins it to that edge — the true mirror of
-     the burger + mark's left pin, always in view while editing, never colliding. */
-  .tb-hist{display:inline-flex;order:9;position:sticky;right:0;z-index:2;
-    background:linear-gradient(180deg,var(--topbar-a),var(--topbar-b));
-    box-shadow:12px 0 0 var(--topbar-a);align-self:stretch;align-items:center;padding-left:5px}
+  /* Insights + Logout move into the burger drawer on a phone (Drawer.tsx); the
+     empty .acct (its "View as" select is already phone-hidden) leaves too, so
+     it stops eating a flex gap. The bar keeps only what a scheduler reaches
+     without opening the menu. */
+  .topbar #insightBtn,.topbar #logout,.spring .acct{display:none}
+  /* UNDO / REDO / EDIT HISTORY (owner, 23 Aug 26 — the trio rides the phone bar
+     while editing). Icon-only (.bl off) and ordered LAST so it sits at the
+     thumb-friendly right edge. No longer sticky: the decluttered row fits, so
+     the trio just sits in flow with the same clean look as the desktop bar. */
+  .tb-hist{display:inline-flex;order:9;align-items:center;gap:6px}
   .tb-hist .abtn{width:30px;min-width:0;height:30px;padding:0;display:inline-flex;
     align-items:center;justify-content:center}
   .tb-hist .bl{display:none}
-  .spring{gap:6px;flex-wrap:nowrap}
+  .spring{gap:7px;flex-wrap:nowrap}
   .topbar .pillbtn{padding:5px 9px;font-size:11px;gap:5px}
   .topbar .pillbtn .dot{width:6px;height:6px}
   .topbar .abtn{padding:5px 9px;font-size:11px}
   .topbar .fastsync{padding:5px 8px;font-size:10.5px}
+  /* On the EDIT page the undo/redo/history trio joins the bar, so the sync pill
+     sheds its label down to a single status dot to make the room — the trio and
+     the bell are what a scheduler reaches mid-edit, and the sync state still
+     reads off the dot's colour. The view page keeps the full "Sync · slow"
+     pill (it has the room). This is what lets the edit bar fit one clean row
+     instead of scrolling the history button off the right edge. */
+  .topbar.editing .fastsync #syncLbl{display:none}
+  .topbar.editing .fastsync{padding:6px 8px}
+  .topbar.editing .fastsync .dot{margin:0}
   /* ---- flying grid on a phone: THE WHOLE LINE FITS, no sideways swipe ----
      Never scaled: iOS/WebKit shrinks boxes under CSS zoom but leaves the text at its
      specified px, which clipped B/TO, LD and the puck callsigns. Instead the phone
@@ -3310,6 +3418,11 @@ button.sarole:hover{border-color:var(--accent);color:var(--accent);opacity:1}
    reads as "SANS" (--san, e.g. .sanscard-l, .puck.san) — that accent used to
    live on the removed .rh.sans rules, reused here rather than left dead. */
 .rall.rsans .rh2{color:var(--san)}
+/* PERSONNEL as a full-width band (owner swap, 24 Aug 26) — ground crew left the
+   narrow seat-column grid for their own band under SANS Avail. .rall is a
+   column (header on top), so the pucks live in their own row-wrapping strip
+   below the header instead of stacking one-per-line down a puck-wide column. */
+.rall.rpers .rpers-pucks{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-start}
 .rsans-row{display:flex;align-items:center;gap:6px}
 /* a SIBLING of .rpuck, never nested inside it — nesting the badge into the
    puck's own flex column re-triggers the 74×74 flex-basis trap a struck

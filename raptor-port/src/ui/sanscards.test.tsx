@@ -94,7 +94,7 @@ describe('sansSectionHTML — the week wrapper', () => {
     INPUTS.push({ person: 'ipman', date: dt(), allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now' })
     const html = sansSectionHTML(DAYS[0], 0, true)
     expect(html).toContain('sec-sans')
-    expect(html).toContain('SANS Availability')
+    expect(html).toContain('SANS Avail')
     expect(cardCount(html)).toBe(1)
   })
 })
@@ -110,7 +110,7 @@ describe("sbSansPanel — the board's SANS panel", () => {
   it('draws the panel even with nothing filed — unlike the week, the board always shows a state', () => {
     const html = sbSansPanel(DAYS[0], 0, [])
     expect(html).toContain('sb-panel sansav')
-    expect(html).toContain('SANS Availability')
+    expect(html).toContain('SANS Avail')
   })
 
   it('editable panel points at pressing a card; read-only panel carries no such hint', () => {

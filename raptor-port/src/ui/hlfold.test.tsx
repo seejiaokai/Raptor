@@ -13,6 +13,7 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import * as view from '../state/view'
+import { HL_GROUPS } from './hlchips'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -33,7 +34,7 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
-  await act(async () => { view.HLSET.clear(); view.setSearch(''); view.setHlOpen(false); notify() })
+  await act(async () => { view.HLSET.clear(); view.setSearch(''); view.setHlOpen(false); view.setHlGroup(''); notify() })
 })
 
 describe('the edit page carries the Highlight chips (owner, 23 Aug 26)', () => {
@@ -89,8 +90,102 @@ describe('the two-element lead — CSS picks one by width', () => {
 
   it('the view page still carries its chips (regression — the move to hlchips.tsx)', () => {
     const chips = $$('#page-viewsched .filters .fchip[data-hl]')
-    expect(chips.length).toBe(10)
+    /* CAT(5) + Type(4) + Quals(6) = 15 keys, all in the DOM (the accordion
+       only hides them with CSS). OCU stayed in CAT; DAAR is one of the new
+       Quals keys (owner, 24 Aug 26). */
+    expect(chips.length).toBe(15)
     expect(chips.map(c => c.dataset.hl)).toContain('OCU')
-    expect($('#page-viewsched .filters .hl-div'), 'and the divider between the two groups').toBeTruthy()
+    expect(chips.map(c => c.dataset.hl)).toContain('DAAR')
+    /* the three category tabs replace the old single divider */
+    const tabs = $$('#page-viewsched .filters [data-hlgrp]')
+    expect(tabs.map(t => t.dataset.hlgrp)).toEqual(['cat', 'type', 'quals'])
+  })
+})
+
+describe('the CAT / Type / Quals accordion (owner, 24 Aug 26)', () => {
+  it('a group tab flips view.HLGROUP and marks its .hl-grp open', async () => {
+    await act(async () => { view.setPage('viewsched'); view.setHlGroup(''); notify() })
+    const quals = $('#page-viewsched .filters [data-hlgrp="quals"] .hl-gtab')
+    expect(quals, 'the Quals tab is present').toBeTruthy()
+    await click(quals)
+    expect(view.HLGROUP).toBe('quals')
+    expect($('#page-viewsched .filters [data-hlgrp="quals"]').className).toContain('open')
+    /* picking another collapses the first — one group open at a time */
+    await click($('#page-viewsched .filters [data-hlgrp="cat"] .hl-gtab'))
+    expect(view.HLGROUP).toBe('cat')
+    expect($('#page-viewsched .filters [data-hlgrp="quals"]').className).not.toContain('open')
+    /* tapping the open tab again collapses it */
+    await click($('#page-viewsched .filters [data-hlgrp="cat"] .hl-gtab'))
+    expect(view.HLGROUP).toBe('')
+  })
+
+  it('a collapsed group whose chip is active lights its tab with a count', async () => {
+    await act(async () => { view.setPage('viewsched'); view.setHlGroup(''); view.HLSET.clear(); view.HLSET.add('TF'); notify() })
+    const tab = $('#page-viewsched .filters [data-hlgrp="quals"] .hl-gtab')
+    expect(tab.className, 'the Quals tab shows it holds a live filter').toContain('has')
+    expect($('#page-viewsched .filters [data-hlgrp="quals"] .hl-gn')?.textContent).toBe('1')
+  })
+})
+
+/* the MATCH SEMANTICS behind the chips (owner, 24 Aug 26): chips in the SAME
+   category are ALTERNATIVES (OR), chips across DIFFERENT categories NARROW (AND).
+   First ask — "SC D and CAT A … only those who are both" (different groups).
+   Second ask — "CAT A and B for SC D" = (A or B) and SC-Day (same group OR, then
+   AND across). Pure predicate, no DOM. */
+describe('personMatchesHL — OR within a category, AND across categories', () => {
+  beforeEach(() => { view.HLSET.clear(); view.setSearch('') })
+  const both = { q: 'A', quals: { scDay: true } }        // CAT A AND SC-Day
+  const catAonly = { q: 'A', quals: {} }                 // CAT A, no SC-Day
+  const catBonly = { q: 'B', quals: {} }                 // CAT B, no SC-Day
+  const catConly = { q: 'C', quals: {} }                 // CAT C, no SC-Day
+  const scdOnly = { q: 'C', quals: { scDay: true } }     // SC-Day, not CAT A/B
+
+  it('DIFFERENT categories narrow — CAT A and SC-Day lights only those who are both', () => {
+    view.HLSET.add('A'); view.HLSET.add('SCD')
+    expect(view.personMatchesHL(both), 'CAT A + SC-Day → lit').toBe(true)
+    expect(view.personMatchesHL(catAonly), 'CAT A only → faded').toBe(false)
+    expect(view.personMatchesHL(scdOnly), 'SC-Day only → faded').toBe(false)
+  })
+
+  it('the SAME category is alternatives — CAT A and CAT B lights either', () => {
+    view.HLSET.add('A'); view.HLSET.add('B')
+    expect(view.personMatchesHL(catAonly), 'a CAT A man → lit').toBe(true)
+    expect(view.personMatchesHL(catBonly), 'a CAT B man → lit').toBe(true)
+    expect(view.personMatchesHL(catConly), 'a CAT C man → faded').toBe(false)
+  })
+
+  it("the owner's case — (CAT A or B) and SC-Day", () => {
+    view.HLSET.add('A'); view.HLSET.add('B'); view.HLSET.add('SCD')
+    expect(view.personMatchesHL({ q: 'A', quals: { scDay: true } }), 'A + SC-Day → lit').toBe(true)
+    expect(view.personMatchesHL({ q: 'B', quals: { scDay: true } }), 'B + SC-Day → lit').toBe(true)
+    expect(view.personMatchesHL(catAonly), 'A but no SC-Day → faded').toBe(false)
+    expect(view.personMatchesHL(scdOnly), 'SC-Day but CAT C → faded').toBe(false)
+  })
+
+  it('one lit chip still lights everyone in that category', () => {
+    view.HLSET.add('A')
+    expect(view.personMatchesHL(both)).toBe(true)
+    expect(view.personMatchesHL(catAonly)).toBe(true)
+    expect(view.personMatchesHL(scdOnly)).toBe(false)
+  })
+
+  it('search stays an independent highlight, lighting its name matches regardless of the chips', () => {
+    view.HLSET.add('A'); view.HLSET.add('SCD')
+    const ghost = { ...catAonly, cs: 'Ghost', name: 'Ghost' }   // fails the AND (no SC-Day)
+    expect(view.personMatchesHL(ghost), 'no search, fails a chip → faded').toBe(false)
+    view.setSearch('ghost')
+    expect(view.personMatchesHL(ghost), 'name matches search → lit anyway').toBe(true)
+    view.setSearch('')
+  })
+})
+
+/* the group map behind that OR/AND must stay in step with the chips the tabs
+   actually render: a chip added to HL_GROUPS but not HL_GROUP_OF would silently
+   fall into its own group and AND when it should OR. Pin it both ways. */
+describe('HL_GROUP_OF matches the rendered chip groups (drift guard)', () => {
+  it('every rendered chip maps to its own tab group, and nothing extra', () => {
+    const fromChips: Record<string, string> = {}
+    for (const [gk, , chips] of HL_GROUPS) for (const [k] of chips) fromChips[k] = gk
+    expect(view.HL_GROUP_OF).toEqual(fromChips)
   })
 })

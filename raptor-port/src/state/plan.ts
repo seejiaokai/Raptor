@@ -143,17 +143,43 @@ export function addPuckPeople(id: string, personIds: string[]) {
 }
 
 /* add/remove one person on a pucks row — one verb, because the UI is one
-   control (pick a name to add it, tap its ✕ to drop it) and two mutators
-   would be two write paths for one gesture. Refuses a note section: `ids`
-   on a note would be silent garbage nothing renders. */
+   control (pick a name to add it, drag it off / right-click to drop it) and
+   two mutators would be two write paths for one gesture. Refuses a note
+   section: `ids` on a note would be silent garbage nothing renders.
+   REMOVAL LEAVES A GAP, not a splice (owner, 24 Aug 26 — "when I remove the
+   added pucks the rest of the pucks that was in place will not move …
+   the space that was empty will remain empty"): the slot is blanked to ''
+   so every surviving puck keeps its grid position, and only TRAILING blanks
+   are trimmed so the row never carries dead cells past its last puck. A blank
+   is skipped by every reader (`ids.filter(Boolean)`), never persisted (this
+   state is session-only), and never reaches the engine. Adds still append. */
 export function togglePuckPerson(id: string, personId: string) {
   if (!canEditSched()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
   if (!p || p.kind !== 'pucks' || !personId) return false
   const ids: string[] = p.ids || (p.ids = [])
   const ix = ids.indexOf(personId)
-  if (ix >= 0) ids.splice(ix, 1)
-  else ids.push(personId)
+  if (ix >= 0) {
+    ids[ix] = ''
+    while (ids.length && !ids[ids.length - 1]) ids.pop()
+  } else ids.push(personId)
+  return true
+}
+
+/* SWAP two slots of a pucks row (owner, 24 Aug 26 — "shift the pucks around …
+   when I move pucks over each other it will swap the crew"). Dragging a puck
+   onto another exchanges the two; dropping it onto an empty slot moves it there
+   (the blank rides back to the vacated slot). Trailing blanks are trimmed after,
+   exactly as a removal does, so moving the last puck earlier doesn't leave a
+   dangling empty cell — internal gaps still hold their place. */
+export function movePuckPerson(id: string, from: number, to: number) {
+  if (!canEditSched()) return false
+  const p = PLANPUCKS.find((x: any) => x.id === id)
+  if (!p || p.kind !== 'pucks') return false
+  const ids: string[] = p.ids || (p.ids = [])
+  if (from === to || from < 0 || to < 0 || from >= ids.length || to >= ids.length) return false
+  const t = ids[from]; ids[from] = ids[to]; ids[to] = t
+  while (ids.length && !ids[ids.length - 1]) ids.pop()
   return true
 }
 

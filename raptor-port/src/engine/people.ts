@@ -32,6 +32,9 @@ export const isInstr=(q:any)=>q==='IW'||q==='IP'||q==='IR'||q==='FI';
 export const isInstrPilot=(q:any)=>q==='IP'||q==='IR'||q==='FI';
 export const isOcu=(q:any)=>q==='OCU';
 export const QORDER:any={OCU:0,D:1,C:2,B:3,A:4,IW:5,IP:6,IR:7,FI:8};
+/* seat reading order for a mixed crew list: pilots (front) before WSOs (rear)
+   before ground crew. */
+export const SEATRANK:any={FCP:0,RCP:1,GND:2};
 
 /* ---- people ----
    Demo roster. Every DISPLAY callsign here is FICTIONAL — invented for the
@@ -191,6 +194,18 @@ Object.assign((PEOPLE.cards.sanQ),  {flown:1,carry:6,missedQtrs:2});   // >2 qtr
 Object.assign((PEOPLE.badger.sanQ), {flown:3,carry:0,missedQtrs:0});   // allowance met, proficiency not
 Object.assign((PEOPLE.vinci.sanQ),  {flown:6,carry:0,missedQtrs:0});
 Object.assign((PEOPLE.yeti.sanQ),   {flown:0,carry:0,missedQtrs:1});
+
+/* THE ONE crew-reading-order comparator (owner, 24 Aug 26). A mixed crew list
+   reads pilots-then-WSOs, each block in CAT-ladder order highest-first (QORDER
+   descending), with callsign breaking a tie; ground crew (no CAT) sink to the
+   end in callsign order. Shared by the availability panel (ui/html.ts) and the
+   add-people picker (ui/InputsCal.tsx) so the two orderings cannot drift — the
+   picker pre-splits into seat groups, where the seat term simply ties and the
+   CAT ladder decides. */
+export const byCrew=(a:any,b:any)=>
+  (SEATRANK[PEOPLE[a].seat]??3)-(SEATRANK[PEOPLE[b].seat]??3)
+  ||(QORDER[PEOPLE[b].q]??-1)-(QORDER[PEOPLE[a].q]??-1)
+  ||PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
 /* Proficiency status for a SANS member. Deliberately unwired: the rule is
    recorded and regression-tested so the highlighting can be switched on when
    the squadron asks for it, but nothing calls it yet. Not dead code — parked. */

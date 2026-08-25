@@ -99,6 +99,15 @@ export function toggleHistMode(){ HISTMODE=!HISTMODE; return HISTMODE }
 export let HLOPEN=false
 export function setHlOpen(v:any){ HLOPEN=!!v }
 export function toggleHlOpen(){ HLOPEN=!HLOPEN }
+/* WHICH highlight GROUP is expanded (owner, 24 Aug 26 — "categorise them into
+   CAT … Type … Quals … these sub categories will expand when selected"). The
+   three group tabs (hlchips.tsx) are always shown; picking one reveals its
+   chips and collapses the others, ''=all collapsed. Same session-only view
+   state as HLOPEN above, and NOT cleared on loadWeek for the same reason — the
+   board's cross-week arrows would otherwise fold the strip mid-scrub. */
+export let HLGROUP=''
+export function setHlGroup(v:any){ HLGROUP=v||'' }
+export function toggleHlGroup(g:any){ HLGROUP = HLGROUP===g ? '' : g }
 
 /* PER-INPUT LATE DISMISSAL (owner, 21 Aug 26 — replaced the 20 Aug global
    declutter button). A scheduler taps the LATE chip on a board input row to
@@ -551,11 +560,49 @@ export function personMatchesCat(p:any,f:any){
   if(f==='SXO')return !!(p.quals&&p.quals.sxo);
   if(f==='SANS')return !!p.san;
   if(f==='OCU')return isOcu(p.q);
+  /* the Quals group (owner, 24 Aug 26) — the currency/qualification flags
+     deriveQuals writes onto p.quals (engine/people.ts). daar/naar can be 'I'
+     (instructor) or true; either counts as "holds it", so a plain truthiness
+     read is right. Guarded on p.quals like the SXO case, so a placeholder or a
+     man with no quals block never throws. */
+  if(f==='SCD')return !!(p.quals&&p.quals.scDay);
+  if(f==='SCN')return !!(p.quals&&p.quals.scNight);
+  if(f==='DAAR')return !!(p.quals&&p.quals.daar);
+  if(f==='NAAR')return !!(p.quals&&p.quals.naar);
+  if(f==='TF')return !!(p.quals&&p.quals.tf);
   return false;
 }
+/* which CAT / Type / Quals group each highlight key sits in — the semantic half
+   of the tabs hlchips.tsx renders. Same-group picks are ALTERNATIVES, different
+   groups NARROW (owner, 24 Aug 26 — first "SC D and CAT A … only those who are
+   both" [different groups → AND], then "CAT A and B for SC D" [(A or B) and
+   SC D → same-group OR]). A key not named here stands in its own group, so it
+   still ANDs — the safe default. hlfold.test.tsx pins this against HL_GROUPS, so
+   a chip added to one list and not the other fails a test rather than silently
+   landing in the wrong group. */
+export const HL_GROUP_OF:Record<string,string> = {
+  A:'cat', B:'cat', C:'cat', D:'cat', OCU:'cat',
+  SANS:'type', INS:'type', FL:'type', SUP:'type',
+  SXO:'quals', SCD:'quals', SCN:'quals', DAAR:'quals', NAAR:'quals', TF:'quals',
+}
+/* does a person clear a set of lit chips? Group the lit chips by HL_GROUP_OF;
+   within a group any one match passes (OR), and every group that has a lit chip
+   must pass (AND) — so {A,B,SCD} reads (A or B) and SC-Day. An empty set passes
+   everyone. ONE body for the highlight strip (HLSET → personMatchesHL) and the
+   calendar puck-picker (pickHi → InputsCal.tsx), so the two can never drift. */
+export function matchesHiSet(p:any,set:any){
+  if(!set||!set.size)return true
+  const byGroup:Record<string,string[]>={}
+  for(const f of set){const g=HL_GROUP_OF[f]||f; (byGroup[g]||(byGroup[g]=[])).push(f)}
+  for(const g in byGroup){ if(!byGroup[g].some((f:string)=>personMatchesCat(p,f)))return false }
+  return true
+}
+/* Search stays its own independent highlight — a name match lights up whatever
+   the chips say; the chips themselves run through matchesHiSet's group-OR /
+   cross-group-AND. */
 export function personMatchesHL(p:any){
-  for(const f of HLSET) if(personMatchesCat(p,f))return true;
   if(SEARCH){const s=SEARCH.toLowerCase(); if(p.cs.toLowerCase().includes(s)||(p.name||'').toLowerCase().includes(s))return true;}
+  if(HLSET.size)return matchesHiSet(p,HLSET);
   return false;
 }
 /* {map: day index -> {ids:Set, sev}, echo:Set, sev} for the current warning

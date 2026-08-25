@@ -12,7 +12,7 @@ import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pen
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe } from '../state/auth'
 import { resetSession, notify, setPage } from '../state/store'
-import { HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
+import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
 import { HlChips } from './hlchips'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
@@ -347,7 +347,7 @@ export function Shell() {
      lit state render here, so a fold or a search that changes without either
      in the list would paint stale (SEARCH is the toggle's other lit source —
      spec'd as HLOPEN alone, added for the same staleness reason). */
-  ), [page, b.cls, b.col, b.html, hlSig, HLOPEN, SEARCH, rulesOff, legend, CURWEEK])
+  ), [page, b.cls, b.col, b.html, hlSig, HLOPEN, HLGROUP, SEARCH, rulesOff, legend, CURWEEK])
 
   /* .editing rides unconditionally with the page since the Edit-mode toggle
      went (owner, 9 Aug 26): being on Edit Schedule IS the edit mode. */
@@ -422,7 +422,7 @@ export function Shell() {
      without hlSig the chips' .on state would go stale the moment a chip was
      toggled on another surface, and without HLOPEN/SEARCH the fold and the
      toggle's lit state would freeze (same reasoning as the view page's). */
-  ), [page, b.cls, b.col, b.html, HIST.ix, HIST.stack.length, hlSig, HLOPEN, SEARCH, legend, CURWEEK])
+  ), [page, b.cls, b.col, b.html, HIST.ix, HIST.stack.length, hlSig, HLOPEN, HLGROUP, SEARCH, legend, CURWEEK])
 
   return (
     <div id="shell" style={{ ['--al' as any]: b.col }}>

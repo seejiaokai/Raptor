@@ -143,9 +143,10 @@ describe('the SANS Availability palette section', () => {
 
   it('the old per-column SANS sub-bands are gone — no SANS name inside a seat column', () => {
     const html = paletteHTML(0)
-    /* one "SANS Availability" heading — the full-width band, never a
-       per-column sub-band beside "Pilots"/"WSOs" */
-    expect((html.match(/SANS Availability/g) || []).length).toBe(1)
+    /* one "SANS Avail" heading — the full-width band, never a per-column
+       sub-band beside "Pilots"/"WSOs" (renamed from "SANS Availability",
+       owner 24 Aug 26) */
+    expect((html.match(/>SANS Avail</g) || []).length).toBe(1)
     /* the three seat columns sit in .rcols, BEFORE the full-width band —
        isolate that slice and confirm no SANS id's puck (which itself
        carries data-person twice, on the .rpuck wrapper and the inner

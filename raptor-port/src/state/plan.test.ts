@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setSession } from './auth'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, movePlanPuck, removePlanPuck, clearPlan, addPuckRow, addPuckPeople, togglePuckPerson, movePlanSection } from './plan'
+import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, movePlanPuck, removePlanPuck, clearPlan, addPuckRow, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from './plan'
 import { INPVIEW, CALMONTH, setInpView, setCalMonth } from './view'
 import { undo, redo, histInit, HIST, histApply, resetSession, writeInputs } from './store'
 import { histSnap } from './history'
@@ -112,7 +112,7 @@ describe('resetSession forgets the planning layer', () => {
 })
 
 describe('the pucks-row sections (owner, 22 Aug 26)', () => {
-  it('addPuckRow appends an empty pucks section; togglePuckPerson adds then removes a person', () => {
+  it('addPuckRow appends an empty pucks section; togglePuckPerson adds, then removal leaves a GAP', () => {
     expect(addPuckRow('2026-08-24')).toBe(true)
     const sec = PLANPUCKS[PLANPUCKS.length - 1]
     expect(sec.kind).toBe('pucks')
@@ -122,8 +122,47 @@ describe('the pucks-row sections (owner, 22 Aug 26)', () => {
     expect(sec.ids).toEqual(['bane'])
     expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)
     expect(sec.ids).toEqual(['bane', 'yeti'])
-    expect(togglePuckPerson(sec.id, 'bane')).toBe(true)      // toggle OFF
-    expect(sec.ids).toEqual(['yeti'])
+    /* removing a NON-last person blanks its slot so the survivors keep their
+       grid positions (owner, 24 Aug 26) — the gap stays, it does not close */
+    expect(togglePuckPerson(sec.id, 'bane')).toBe(true)
+    expect(sec.ids).toEqual(['', 'yeti'])
+    /* removing the last real person trims the now-trailing blanks — row empties */
+    expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)
+    expect(sec.ids).toEqual([])
+  })
+
+  it('togglePuckPerson keeps an internal gap but trims a trailing one', () => {
+    addPuckRow('2026-08-24', ['bane', 'yeti', 'vinci'])
+    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)     // middle → gap kept
+    expect(sec.ids).toEqual(['bane', '', 'vinci'])
+    expect(togglePuckPerson(sec.id, 'vinci')).toBe(true)    // now-last → trailing blanks trimmed
+    expect(sec.ids).toEqual(['bane'])
+  })
+
+  /* dragging one puck onto another SWAPS them; dragging onto an empty slot MOVES
+     it there (owner, 24 Aug 26 — "shift the pucks around … move pucks over each
+     other it will swap the crew"). movePuckPerson is the model behind the drag. */
+  it('movePuckPerson swaps two slots, and moving onto a blank rides the gap back', () => {
+    addPuckRow('2026-08-24', ['bane', 'yeti', 'vinci'])
+    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    expect(movePuckPerson(sec.id, 0, 2)).toBe(true)         // swap the ends
+    expect(sec.ids).toEqual(['vinci', 'yeti', 'bane'])
+    togglePuckPerson(sec.id, 'yeti')                        // blank the middle
+    expect(sec.ids).toEqual(['vinci', '', 'bane'])
+    expect(movePuckPerson(sec.id, 0, 1)).toBe(true)         // move onto the gap
+    expect(sec.ids).toEqual(['', 'vinci', 'bane'])          // the blank rode back to slot 0
+    expect(movePuckPerson(sec.id, 1, 1)).toBe(false)        // same slot → no-op
+    expect(movePuckPerson(sec.id, 1, 9)).toBe(false)        // out of range → no-op
+    expect(sec.ids).toEqual(['', 'vinci', 'bane'])
+  })
+
+  it('movePuckPerson trims a trailing blank when the last puck moves earlier', () => {
+    addPuckRow('2026-08-24', ['bane', 'yeti', 'vinci'])
+    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    togglePuckPerson(sec.id, 'yeti')                        // ['bane','','vinci']
+    expect(movePuckPerson(sec.id, 2, 1)).toBe(true)         // last onto the middle gap
+    expect(sec.ids).toEqual(['bane', 'vinci'])              // slot 2 empties, trailing → trimmed
   })
 
   /* the multi-select picker (owner, 23 Aug 26) lands a whole batch at once —
@@ -163,6 +202,7 @@ describe('the pucks-row sections (owner, 22 Aug 26)', () => {
     expect(addPuckRow('2026-08-25')).toBe(false)
     expect(addPuckPeople(sec.id, ['bane'])).toBe(false)
     expect(togglePuckPerson(sec.id, 'bane')).toBe(false)
+    expect(movePuckPerson(sec.id, 0, 1)).toBe(false)
     expect(movePlanSection(sec.id, null)).toBe(false)
   })
 

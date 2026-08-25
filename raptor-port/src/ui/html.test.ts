@@ -7,7 +7,8 @@ import { refWindow } from '../testing/refwin'
 import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, isUnavail } from '../engine/inputs'
 import { validate, CHIP_LABEL, chipText } from '../engine/validate'
-import { dayHTML, dayPreviewHTML, dayIssuedHTML, withDaySnap, legendHTML } from './html'
+import { dayHTML, dayPreviewHTML, dayIssuedHTML, withDaySnap, legendHTML, availHTML } from './html'
+import { PEOPLE, QORDER, SEATRANK } from '../engine/people'
 import { SCHED, signOf, setDayApproved, alIssue } from '../engine/publish'
 import { restoreDayVersion } from '../engine/restore'
 import { dayDrafts, draftDup } from '../engine/drafts'
@@ -216,6 +217,30 @@ describe('view-week markup parity with the reference', () => {
     }
   })
 
+  /* the available-crew pucks read pilots-then-WSOs, each block in CAT-ladder
+     order highest-first (owner, 24 Aug 26 — same reading order as the picker,
+     the shared byCrew comparator). Checked across every grid of every day, with
+     a guard that at least one grid actually mixes seats so the order is really
+     exercised. */
+  it('the available-crew strip lists pilots-then-WSOs in CAT-ladder order', () => {
+    let sawMix = false
+    DAYS.forEach((d: any, di: number) => {
+      for (const g of availHTML(d, di, true).matchAll(/<div class="ap-grid">([\s\S]*?)<\/div>/g)) {
+        const ids = [...g[1].matchAll(/data-person="([^"]+)"/g)].map(m => m[1])
+        const seats = new Set(ids.map(id => PEOPLE[id].seat))
+        if (seats.has('FCP') && seats.has('RCP')) sawMix = true
+        for (let i = 1; i < ids.length; i++) {
+          const a = PEOPLE[ids[i - 1]], b = PEOPLE[ids[i]]
+          const sa = SEATRANK[a.seat] ?? 3, sb = SEATRANK[b.seat] ?? 3
+          expect(sa <= sb, `day ${di}: ${a.cs} (${a.seat}) must not follow ${b.cs} (${b.seat})`).toBe(true)
+          if (sa === sb) expect((QORDER[a.q] ?? -1) >= (QORDER[b.q] ?? -1),
+            `day ${di}: ${a.cs} (${a.q}) must not follow ${b.cs} (${b.q})`).toBe(true)
+        }
+      }
+    })
+    expect(sawMix, 'a grid mixing pilots and WSOs exists (so the order is exercised)').toBe(true)
+  })
+
   it('the edit-mode markup is byte-identical too (minus the sign-off strip)', () => {
     /* THE one deliberate divergence from the reference: the sign-off pills
        carry an extra .v value span so the select can stretch invisibly over
@@ -224,6 +249,14 @@ describe('view-week markup parity with the reference', () => {
        nests no <div>, so the lazy match ends at the strip's own close — and
        pin the new pill structure separately below. */
     const noSign = (s: string) => s.replace(/<div class="signoff day-sign"[\s\S]*?<\/div>/, '')
+    /* Divergence (owner, 24 Aug 26): Templates + Drafts moved up into the
+       day-head, between the date and the turn-pattern badge, in a `.dhtpl` span
+       (they used to ride the sign-off strip noSign cuts). The reference has no
+       such span, so lift it off both sides before the compare — the same idiom
+       as noSign. The span nests no other <span>, so the lazy `</span>` ends on
+       its own close; a no-op on the reference, and the move is pinned positively
+       below. */
+    const noDhTpl = (s: string) => s.replace(/<span class="dhtpl">[\s\S]*?<\/span>/, '')
     /* The Available-crew strip sits inside noInpGrp's cut on both sides (the
        port's first input group precedes it, the reference's strip is the cut's
        own start), so it is not byte-compared here; the pins below assert the
@@ -238,7 +271,7 @@ describe('view-week markup parity with the reference', () => {
     const normDow = (s: string) => s.replace(
       /<span class="dow crewday" data-crewday="(\d+)" title="Show this day's crew in the aircrew panel">/g,
       '<span class="dow sb-open" data-sbday="$1" title="Open scheduler board">')
-    const E = (s: string) => normDow(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noSign(s))))))))))))
+    const E = (s: string) => normDow(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(s)))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
