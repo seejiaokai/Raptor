@@ -4131,3 +4131,26 @@ test.describe('the day-head lays out the same on every day', () => {
     expect(Math.abs(wide.badge!.top - wide.tpl!.top), 'desktop keeps one row').toBeLessThanOrEqual(4)
   })
 })
+
+/* The motion set (owner, 25 Aug 26 — critique follow-up, approved scope
+   "only do the motion"): pages fade in (pagein), the board slides up
+   (boardup), and BOTH go instant under reduced motion via the blanket
+   `*{animation:none!important}` rule. Pinned in a real browser because
+   jsdom computes no styles: this is the only gate that can prove the
+   animations exist AND that the reduced-motion switch really reaches them. */
+test.describe('the motion set, and its reduced-motion off-switch', () => {
+  test('pages and the board animate; reduced motion computes none', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    const anim = (sel: string) => page.evaluate(s => getComputedStyle(document.querySelector(s)!).animationName, sel)
+    expect(await anim('#page-viewsched'), 'the shown page carries its fade').toBe('pagein')
+    await go(page, 'editsched')
+    await page.click('#page-editsched .day[data-day="0"] .dt.sb-open')
+    await page.waitForSelector('#schedBoard:not([hidden])')
+    expect(await anim('#schedBoard'), 'the open board carries its rise').toBe('boardup')
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    expect(await anim('#page-editsched'), 'reduced motion silences the page fade').toBe('none')
+    expect(await anim('#schedBoard'), 'reduced motion silences the board rise').toBe('none')
+    await page.emulateMedia({ reducedMotion: null })
+  })
+})

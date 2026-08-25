@@ -36,6 +36,22 @@ several are measured and suite-enforced, not preferences.
   with an 80-character unbreakable remark: width, height and scrollWidth
   identical either way), so do not add one back. Both pinned in
   `e2e/geometry.spec.ts`.
+- **Motion is THREE entrances and nothing else** (owner, 25 Aug 26 —
+  critique follow-up, approved scope "only do the motion"): pages fade in
+  (`pagein`, opacity ONLY — an animated transform on `.page` would make it
+  a containing block for `position:fixed` descendants for 150ms), the
+  scheduler board slides up (`boardup`, keyed on `:not([hidden])` so
+  `sb-wide` toggles never replay it), and the toast fades via an inline
+  `transition:opacity` plus a WAAPI rise (`toast.ts` — the keyframes carry
+  the base `translateX(-50%)`, and the call is guarded by the InputsCal
+  idiom: `typeof animate === 'function'` + reduced-motion matchMedia,
+  try/caught so motion can never eat a toast). The single off-switch for
+  the CSS half is the blanket
+  `@media (prefers-reduced-motion:reduce){*{animation/transition:none!important}}`
+  — its `!important` beats even the toast's inline transition; only WAAPI
+  needs the JS guard. Do not add scattered hovers/entrances beyond these
+  three without an owner ask. Pinned in `e2e/geometry.spec.ts` ("the motion
+  set") — including that reduced motion really computes `none`.
 - **The phone day-head is TWO FIXED ROWS on every day** (owner, 25 Aug 26 —
   "Because of the word today, the layout is not the same … keep it
   similar"): row one is the title + date (+"· Today") with the turn-pattern

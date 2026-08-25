@@ -325,6 +325,20 @@ a{color:var(--accent)}
 /* ============ PAGE SHELL ============ */
 .page{display:none}
 .page.on{display:block}
+/* THE MOTION SET (owner, 25 Aug 26 — critique follow-up, approved scope:
+   "only do the motion"). Three entrances and nothing else: pages fade in,
+   the scheduler board slides up (its rule sits beside .schedboard), toasts
+   pop (toast.ts). A display:none flip cannot be TRANSITIONED, but a CSS
+   ANIMATION on the shown state replays each time the element re-enters
+   rendering — which is exactly the entrance hook these two toggles need.
+   The page fade is OPACITY ONLY, deliberately: an animated transform on
+   .page would make it a containing block for any position:fixed descendant
+   for 150ms — a class of pop-over glitch not worth a 4px rise. No
+   reduced-motion rule needed here: the blanket
+   `@media (prefers-reduced-motion:reduce){*{animation:none!important}}`
+   below already covers every CSS animation in the file. */
+@keyframes pagein{from{opacity:0}to{opacity:1}}
+.page.on{animation:pagein .15s ease-out}
 
 /* segment / week selector */
 .seg{display:flex;gap:8px;padding:8px 20px;flex-wrap:wrap;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.5);align-items:center}
@@ -2802,6 +2816,15 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 
 /* ============ SCHEDULER BOARD (deep single-day editor) ============ */
 .schedboard{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column}
+/* the board's entrance — part of the 25 Aug 26 motion set (see PAGE SHELL).
+   Keyed on :not([hidden]) so it replays only when the hidden attribute
+   flips (the open), never on a class change like sb-wide; the board is
+   itself position:fixed, so animating ITS transform is safe — the fixed
+   containing-block concern that keeps .page's fade opacity-only does not
+   apply to the element being animated. Reduced motion: the blanket
+   animation:none rule covers this too. */
+@keyframes boardup{from{opacity:.4;transform:translateY(14px)}to{opacity:1;transform:none}}
+.schedboard:not([hidden]){animation:boardup .2s cubic-bezier(.22,.61,.36,1)}
 /* THE PAGE BEHIND THE BOARD DOES NOT SCROLL (owner-reported, 11 Aug 26).
    The board is a fixed, full-viewport modal, but the week underneath stayed
    a live scrolling document the whole time it was open — so a drag that began
