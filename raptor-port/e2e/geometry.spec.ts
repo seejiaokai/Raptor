@@ -3635,14 +3635,36 @@ test.describe('the crew-day picker', () => {
     await login(page)
     await go(page, 'editsched')
     await page.waitForSelector('#eWeek .day[data-day]')
-    // start on Monday
-    await page.evaluate(() => { const w = document.getElementById('eWeek')!; w.style.scrollBehavior = 'auto'; w.scrollLeft = 0 })
+
+    // This test measures the STEPPING logic — which day is at the front after
+    // each arrow, that the run is contiguous, that Sat AND Sun reach the front,
+    // and that the roll-over lands on Monday. panDays() computes that identically
+    // whether the scroll is an instant jump or a settled smooth glide: it counts
+    // from the position the press COMMANDED (panTgt), which an instant scroll
+    // reaches exactly. What it does NOT test is the glide's smoothness, and the
+    // glide is the sole reason this check ever flaked — panDays() asks scrollTo()
+    // for behavior:'smooth', a ~350ms animation that has not necessarily STARTED
+    // by the next frame, so a read taken after a naive "scrollLeft held still
+    // twice" heuristic could land on the OLD day before the glide moved (proven:
+    // Sunday intermittently never read at the front though the product always put
+    // it there). So neutralise the animation for this one test — strip 'smooth'
+    // off scrollTo — and every read is of the true settled position. The product
+    // is unchanged; only the test's timing race is removed.
+    await page.evaluate(() => {
+      const proto = Element.prototype as any
+      const origTo = proto.scrollTo
+      proto.scrollTo = function (a: any) {
+        if (a && typeof a === 'object') return origTo.call(this, { ...a, behavior: 'auto' })
+        return origTo.apply(this, arguments)
+      }
+      // start on Monday
+      const w = document.getElementById('eWeek')!; w.style.scrollBehavior = 'auto'; w.scrollLeft = 0
+    })
     await page.waitForTimeout(150)
 
-    // wait until the (smooth) arrow scroll has actually SETTLED before reading —
-    // a mid-animation read on a slow CI runner would misreport the front day and
-    // make the strict per-click check flake (which it did). Poll scrollLeft until
-    // it holds steady, with a hard safety cap.
+    // with the glide neutralised the scroll lands synchronously, so this only has
+    // to confirm the position is stable — but keep the poll (not a fixed wait) so
+    // the week-jump re-render on the roll-over is given its frame to commit.
     const settle = () => page.evaluate(() => new Promise<void>(res => {
       const w = document.getElementById('eWeek')!
       let last = -1, still = 0
