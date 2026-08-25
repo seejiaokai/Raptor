@@ -364,7 +364,17 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
    ui/inputedit.tsx), and dateOrd reads it back below. Derived from CURWEEK so
    the convention tracks whatever week is loaded — there is only ever one, and
    it falls back to the demo's 2026 if CURWEEK is unreadable. */
-export function baseYear(){const y=+String(weekStartISO()).slice(0,4);return isFinite(y)&&y?y:2026;}
+/* MEMOISED 25 Aug 26 — profiled at a year-plus of INPUTS (5,000 rows), this
+   function and the weekStartISO() string-build under it were, with dateOrd's
+   own parsing, ~80% of validate() and loadWeek(): every inputCoversDate call
+   re-derived the same year from the same CURWEEK. The memo keys on CURWEEK
+   itself, so a week change re-derives on the very next call — it cannot serve
+   a stale year — and the derivation is byte-identical to the original. */
+let byWk:any, byY=0;
+export function baseYear(){
+  if(CURWEEK!==byWk||byWk===undefined){byWk=CURWEEK;const y=+String(weekStartISO()).slice(0,4);byY=isFinite(y)&&y?y:2026;}
+  return byY;
+}
 /* 'Jul 18' → 20260718, a sortable ordinal that ORDERS ACROSS YEARS. Spans used
    to be compared through DATES.indexOf, which returns -1 for any date outside
    the loaded week: a detachment running Jul 15→24 then covered NO day at all
@@ -379,12 +389,28 @@ export function baseYear(){const y=+String(weekStartISO()).slice(0,4);return isF
    — falling back to baseYear() when no anchor is given. Before `fb` a bare
    label re-resolved against whatever week was CURRENTLY loaded, so an input
    filed for Jul 13 2026 covered Jul 13 of any year the user scrolled to. */
+/* The label PARSE is memoised (25 Aug 26, same profile as baseYear above):
+   a schedule pass calls this millions of times over the same handful of day
+   and input labels, and the split/indexOf parse was the single hottest line
+   in the app. Only the parse is cached — a given string always parses the
+   same, so the memo is pure; the YEAR fallback (label year → row anchor →
+   baseYear) still resolves per call, exactly as before, so nothing here can
+   go stale when the loaded week or a row's `yr` changes. The map is capped:
+   labels are typed by users and effectively bounded, but a runaway feed must
+   degrade to a cleared cache, never to unbounded memory. */
+const ORD_MEMO=new Map<any,any>();
 export function dateOrd(lbl:any,fb?:any){
-  const p=String(lbl==null?'':lbl).trim().split(/\s+/);
-  const m=MONTHS.indexOf(p[0]), d=+p[1];
-  if(m<0||!isFinite(d))return null;
-  const y=p.length>2&&isFinite(+p[2])?+p[2]:(isFinite(+fb)&&+fb>0?+fb:baseYear());
-  return y*10000+(m+1)*100+d;
+  let c=ORD_MEMO.get(lbl);
+  if(c===undefined){
+    const p=String(lbl==null?'':lbl).trim().split(/\s+/);
+    const m=MONTHS.indexOf(p[0]), d=+p[1];
+    c=(m<0||!isFinite(d))?null:{md:(m+1)*100+d,yl:p.length>2&&isFinite(+p[2])?+p[2]:null};
+    if(ORD_MEMO.size>9000)ORD_MEMO.clear();
+    ORD_MEMO.set(lbl,c);
+  }
+  if(c===null)return null;
+  const y=c.yl!=null?c.yl:(isFinite(+fb)&&+fb>0?+fb:baseYear());
+  return y*10000+c.md;
 }
 /* Does this input cover the loaded-week day labelled `dt`? Both sides resolve
    to REAL dates: dt through the week-label convention (bare = baseYear; a day

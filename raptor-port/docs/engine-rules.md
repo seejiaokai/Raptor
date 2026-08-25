@@ -918,6 +918,18 @@ January days of the week it was filed on. Three parts, one convention:
 The seed `INPUTS`/`DATES` literals stay untouched (the boot stamp is
 boot-only, invisible to the parity harness). Pinned in
 `engine/crossyear.test.ts`.
+**The date resolution is MEMOISED, and only its pure halves** (25 Aug 26 —
+profiled at a year-plus of inputs, `dateOrd`'s label parse and the
+`baseYear()`→`weekStartISO()` chain were ~80% of every validate/loadWeek
+pass, because every `inputCoversDate` re-parsed the same handful of labels).
+`dateOrd` caches the label PARSE only (a given string always parses the
+same; capped map); `baseYear` caches its year keyed on `CURWEEK`, so a week
+change re-derives on the next call. The year FALLBACK (label year → row
+`yr` → `baseYear()`) still resolves per call — the memo cannot serve a
+stale year, and no `INPUTS` data is cached anywhere. Anti-staleness pins
+live in `crossyear.test.ts` ("the date memo never serves a stale year").
+Whole-list scans over `INPUTS` remain O(N) by design — cheap now per item;
+a by-date index belongs to the future shared-database work, not before it.
 
 **Two sorties at once are a CONFLICT, not a turn** (owner, 11 Aug 26).
 Sortie-vs-sortie is excluded from the double-booking loop because two

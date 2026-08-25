@@ -433,7 +433,13 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
     owner's END-state — persistent multi-week schedules shared across
     devices/accounts — is still server work; this is the per-browser half
     of it, and the single seam (`weekBundle` + `weekstash.ts`) is still
-    where that migration hooks in.
+    where that migration hooks in. When that work lands, give `INPUTS` a
+    by-date index in the same pass: the date-label parsing that made a
+    year of inputs slow was memoised 25 Aug 26 (engine-rules.md §date
+    resolution — a year now switches weeks in ~50ms on a phone), but the
+    whole-list scans themselves are still O(N), deliberately — indexing
+    them adds invalidation semantics to the rules engine that are only
+    worth it once real multi-year data exists.
   - **Two more pieces landed the same day on top of this.** The forward
     crew-rest trace (owner, 23 Aug 26, from the deployed site — "If I plan
     someone who bust crew rest the day prior it should also flag out just
