@@ -717,6 +717,16 @@ subscribers.
   kinds are the baseline; the library starts empty), don't make `validate` read a
   template, and don't move the show/hide gate off `WAVEHIDE`. Pinned in
   `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
+- **The highlight MENUS must read apart from their CHIPS** (owner, 25 Aug 26 —
+  the CAT / Type / Quals tabs looked so like the chips inside them that, with one
+  menu open, the next shut menu read as another selectable chip). A `.hl-gtab` is
+  a solid RAISED control in the brighter `--ink` with a bold caret — plainly a
+  menu that opens; a `.fchip` stays a flatter, quieter `--panel-2`/`--ink-2` tag
+  that only fills blue (`--accent`) once picked; and an open `.hl-grp.open` wraps
+  its tab and chips in one hairline tray (scoped to `.filters` / `.ic-pick-cats`,
+  since `.hl-grp` is a class the History accordion also uses — don't restyle the
+  bare `.hl-grp`). Don't flatten the tabs back to the chip recipe in a filter-bar
+  polish pass. All in `scheduler.css`; the strip is `ui/hlchips.tsx`.
 - **A new flying line comes up blank** (owner, 10 Aug 26). `+ Line` used to
   copy the previous line's callsign, mission and times; a plausible wrong
   value reads as filled in when nobody filled it in. **`+ Wave` follows the
