@@ -41,6 +41,8 @@ import { EditWeek, EditRoster } from './EditWeek'
 import { ALPanel } from './ALPanel'
 import { LeaveWarPage } from '../leavewar/LeaveWarPage'
 import { AdminPage } from './AdminPage'
+import { HelpPage } from './HelpPage'
+import { bugAlert, unseenReports } from '../state/reports'
 
 /* the week banner — the exact strings renderStatus builds, as a pure value */
 function banner() {
@@ -213,6 +215,10 @@ export function Shell() {
           <a data-page="quals" role="button" tabIndex={0} className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')} onKeyDown={navKey('quals')}>Quals</a>
           <a data-page="logic" role="button" tabIndex={0} className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')} onKeyDown={navKey('logic')}>Logic</a>
           <a data-page="leavewar" role="button" tabIndex={0} className={page === 'leavewar' ? 'on' : ''} onClick={() => nav('leavewar')} onKeyDown={navKey('leavewar')}>Leave War</a>
+          {/* Help is for EVERYONE (owner, 25 Aug 26 — "allows anyone to type
+              in Bug reports") — after the work tabs, before the admin-only
+              tools tab */}
+          <a data-page="help" role="button" tabIndex={0} className={page === 'help' ? 'on' : ''} onClick={() => nav('help')} onKeyDown={navKey('help')}>Help</a>
           {/* the Admin tab sits LAST, always (owner, 23 Aug 26) — the tools
               tab after the work tabs; hidden for a member like the Edit tab,
               but the PAGE is the gate, not this attribute (AdminPage.tsx) */}
@@ -258,13 +264,26 @@ export function Shell() {
               future "expand everything" control would use. */}
           {/* THE NOTIFICATION BELL (owner, Aug 26). Always present, on every
               page and both widths; it GLOWS when the current view + view-as
-              person has an alert (bellLit, state/view.ts). What raises an alert
-              is the owner's own next step — this is the button and its per-view
-              glow. Tapping it acknowledges the current view's alert. NOT the
-              removed week-wide count pills: this is a per-person indicator, not
-              a sum, so the 20 Aug decision does not touch it. */}
-          <button className={'bellbtn' + (bellLit() ? ' on' : '')} id="notifyBell" aria-label="Notifications" title="Notifications for this view"
-            onClick={() => { const was = bellLit(); clearBell(); HOOKS.toast(was ? 'Notifications cleared' : 'No new notifications for this view'); notify() }}>
+              person has an alert (bellLit, state/view.ts) — OR, since 25 Aug
+              26, when an ADMIN has unseen bug reports (bugAlert,
+              state/reports.ts — the owner's first wired trigger: "when
+              there's new reports the alarm notification will be highlighted").
+              Tapping it with a bug alert live goes straight to the Help page,
+              whose admin view is the acknowledgement (seeing the list is what
+              puts the bell out — the alert can never be lost unread).
+              Otherwise the tap acknowledges the current view's alert, as
+              before. NOT the removed week-wide count pills: this is a
+              per-person indicator, not a sum, so the 20 Aug decision does not
+              touch it. */}
+          <button className={'bellbtn' + (bellLit() || bugAlert() ? ' on' : '')} id="notifyBell" aria-label="Notifications" title="Notifications"
+            onClick={() => {
+              if (bugAlert()) {
+                const n = unseenReports()
+                HOOKS.toast(`${n} new bug report${n === 1 ? '' : 's'}`)
+                nav('help'); return
+              }
+              const was = bellLit(); clearBell(); HOOKS.toast(was ? 'Notifications cleared' : 'No new notifications for this view'); notify()
+            }}>
             <svg className="bellglyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a6 6 0 0 0-6 6c0 3.5-1.2 5.4-2.2 6.5-.5.6-.1 1.5.7 1.5h15c.8 0 1.2-.9.7-1.5C19.2 13.4 18 11.5 18 8a6 6 0 0 0-6-6Zm0 20a2.6 2.6 0 0 0 2.5-2h-5a2.6 2.6 0 0 0 2.5 2Z" fill="currentColor" /></svg>
             <span className="belldot" aria-hidden="true"></span>
           </button>
@@ -285,7 +304,7 @@ export function Shell() {
           <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge">{admin ? 'Admin' : 'Member'}</span>
         </div>
       </div>
-  ), [page, admin, ME, fast, HIST.ix, HIST.stack.length, bellLit()])
+  ), [page, admin, ME, fast, HIST.ix, HIST.stack.length, bellLit(), bugAlert()])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">
@@ -440,6 +459,9 @@ export function Shell() {
       </section>
       <section className={'page' + (page === 'leavewar' ? ' on' : '')} id="page-leavewar">
         {page === 'leavewar' && <LeaveWarPage />}
+      </section>
+      <section className={'page' + (page === 'help' ? ' on' : '')} id="page-help">
+        {page === 'help' && <HelpPage />}
       </section>
       <section className={'page' + (page === 'admin' ? ' on' : '')} id="page-admin">
         {page === 'admin' && <AdminPage />}

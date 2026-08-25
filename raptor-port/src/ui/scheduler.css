@@ -4476,7 +4476,7 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 /* the Data panel's two clearing controls — a small uppercase heading names
    each sweep, a hairline separates them, and the range mode's From/To pair
    shares one row (each date field halves, matching the single-field width) */
-#page-admin .adm-sub{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:800;margin:0 0 10px}
+#page-admin .adm-sub,#page-help .adm-sub{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:800;margin:0 0 10px}
 #page-admin .adm-sep{border:none;border-top:1px solid var(--edge);margin:18px 0 14px}
 #page-admin .adm-2col{display:flex;gap:10px}
 #page-admin .adm-2col .mfield{flex:1 1 0;min-width:0}
@@ -4487,6 +4487,28 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    so this is the page-gate's own answer, styled as a quiet centred panel */
 .adm-deny{max-width:520px;margin:60px auto;padding:22px 24px;text-align:center;color:var(--ink-2);
   background:var(--panel);border:1px solid var(--edge);border-radius:12px;font-size:13px;line-height:1.6}
+
+/* ---- The Help page (owner, 25 Aug 26) — bug reports. One centred column:
+   the report form for everyone (plus the member's own filed reports as a
+   receipt), and the admin's full list. A category chip's colour derives
+   from the category's index via --h (HelpPage.tsx), so every category keeps
+   one stable hue with no hand-kept colour map. ---- */
+#page-help .help-inner{max-width:720px;margin:0 auto;padding:18px 20px}
+#page-help h2{font-size:24px;font-weight:700;letter-spacing:-.025em;margin:0 0 12px}
+#page-help .help-card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;margin-bottom:14px}
+#page-help .help-card h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 4px}
+#page-help .help-lead{margin:0 0 12px}
+#page-help .mfield textarea{background:var(--bg);border:1px solid var(--edge);color:var(--ink);
+  font-family:'Inter Tight',sans-serif;font-size:13px;padding:8px 10px;border-radius:9px;resize:vertical;min-height:76px}
+#page-help .mfield textarea:focus{outline:none;border-color:var(--accent)}
+#page-help .buglist{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.bugrow{background:var(--bg);border:1px solid var(--edge);border-radius:10px;padding:9px 11px}
+.bughead{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.bugcat{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px;
+  color:hsl(var(--h) 70% 72%);background:hsl(var(--h) 60% 50% / .14);border:1px solid hsl(var(--h) 60% 55% / .35)}
+.bugnew{font-size:9.5px;font-weight:800;letter-spacing:.08em;padding:1px 6px;border-radius:20px;color:#fff;background:var(--hard)}
+.bugwhen{margin-left:auto;font-size:10.5px;color:var(--ink-3);white-space:nowrap}
+.bugtext{font-size:12.5px;color:var(--ink-2);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
 
 /* PHONE (<821px): one column, drill from the list into the detail. The pane is
    hidden until a category is tapped (`.drilled`), the rail hidden once it is. */

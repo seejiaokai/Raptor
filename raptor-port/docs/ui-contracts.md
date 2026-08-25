@@ -2804,9 +2804,14 @@ except where noted:
 - **A notification bell** (`#notifyBell`) sits by Insights on every page and both
   widths. It GLOWS when the current page + view-as person has an alert
   (`bellLit()`, `state/view.ts`, keyed `page|person`) — a per-person indicator,
-  deliberately NOT the removed week-wide count pills. What RAISES a bell is left
-  for the owner to wire (`markBell(page, who)` is the seam); tapping the bell
-  acknowledges the current view's alert. Session-only, wiped on login/logout.
+  deliberately NOT the removed week-wide count pills — OR when an ADMIN has
+  unseen bug reports (`bugAlert()`, `state/reports.ts` — the owner's first
+  wired trigger, 25 Aug 26; `markBell(page, who)` stays the seam for the
+  rest). A tap with a bug alert live toasts the count and goes straight to
+  the Help page, whose admin view is the acknowledgement (§The Help page);
+  otherwise the tap acknowledges the current view's alert as before. The
+  per-view registry is session-only, wiped on login/logout; the bug-report
+  glow derives from the reports themselves, which SURVIVE a login switch.
 - **Undo / redo / Edit history** (`.tb-hist`, `#undoBtn`/`#redoBtn`/`#histBtn`)
   moved OUT of the edit page's scroll-away `.filters` row INTO the sticky bar,
   shown only on the edit page, so they stay in view while the page scrolls
@@ -3610,6 +3615,46 @@ The three category panels:
   sweeps permanent (the two-tap confirm is the safety; a DB wipe won't
   ride session undo) and stay silent about today's undo nuances, which
   live in the code comments beside them. Pins: `ui/wipe.test.tsx`.
+
+## The Help page (owner, 25 Aug 26)
+
+The EIGHTH tab (`#page-help`, `ui/HelpPage.tsx`), for EVERYONE — "allows
+anyone to type in Bug reports. In which admin can view them". It sits after
+the work tabs and before Admin in BOTH navs (Admin stays last, always). One
+centred column, two cards:
+
+- **`#bugFile` Report a problem** — a category select (`#bugCat`, the
+  `BUG_CATS` list in `state/reports.ts`: one per surface plus the
+  cross-cutting three; adding a category is one string there), a
+  description box (`#bugText`) and `#bugSend`. Filing requires a category
+  and a non-blank description — a blank Send TOASTS instead of silently
+  doing nothing (the 12 Aug 26 audit rule). `who` is stamped from
+  `HOOKS.whoami()`, the edit log's identity seam, so reports start naming
+  real people the day accounts do. A MEMBER also sees their own filed
+  reports under the form (`#bugMine`) as the receipt — never anyone
+  else's.
+- **`#bugAdmin` Bug reports** (admins only) — every report NEWEST FIRST
+  (`reportRows()` sorts a copy by `t` desc), each row carrying its
+  category chip (`.bugcat`, hue derived from the category's index — no
+  hand-kept colour map), the filed date (`elogWhen`, the edit log's own
+  date format) and the text. OPENING this view is the acknowledgement:
+  the rows that were unseen keep a `NEW` badge for that visit (captured
+  into local state BEFORE `markReportsSeen()` runs), and the top-bar bell
+  goes out on the same tick.
+
+**The bell contract** (§The top bar carries the bell): `bugAlert()` lights
+`#notifyBell` for an ADMIN with unseen reports on every page; a tap goes
+straight here rather than clearing anything — the alert can never be
+acknowledged without the reports on screen. A member's bell never lights
+for their own filing.
+
+**The store** (`state/reports.ts`): a flat `REPORTS` array — DATA, not view
+state. Deliberately NOT cleared by `resetSession` (a member files, logs
+out; the next admin login still finds the report and a lit bell) and not in
+the undo snapshot (filing is not a schedule edit). DB-era: the array
+becomes a table, `fileReport` an insert pushed realtime, the bell a
+subscription — the row shape is already what a backend would sync.
+Pins: `ui/help.test.tsx`.
 
 ## The next-week preview (owner ask — desktop continuous week display, 23 Aug 26)
 
