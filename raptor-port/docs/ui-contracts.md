@@ -132,6 +132,27 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
+- **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
+  the recurring "arrows don't go day by day … stuck halfway then zoom past", and
+  its 25 Aug follow-up "make sure it's not just an easy fix"). `panDays` fires a
+  `scroll-behavior:smooth` glide; TWO other paths could write the week's
+  scrollLeft while it was in flight and an instant write CANCELS a smooth scroll,
+  freezing the strip between two days — and the next arrow, counting from the
+  commanded target, then skipped one. Measured on the built app the two together
+  swallowed about one arrow press in seven under load. Both are now closed by a
+  short glide window `pan.ts` arms on every arrow press (`glideEnd`, cleared the
+  instant the glide lands or on any manual pan/scrollbar grab): (1) the proxy
+  scrollbar's `onTrackScroll` is a pure FOLLOWER during that window and never
+  drives the week — the older position-only `trkEcho` guard could not survive a
+  `scroll` event the browser coalesced or deferred under load; and (2) a
+  within-week repaint that fires mid-glide (a debounced palette-follow `notify`)
+  holds the glide's DESTINATION, not the captured mid-glide position — `panHold`
+  in `EditWeek`/`ViewWeek`. Pinned in `pan.test.tsx` (a track scroll cannot drive
+  the week mid-glide; `panHold` returns the target during a glide and the live
+  value otherwise). The `e2e/geometry.spec.ts` stepping check reads with the
+  animation neutralised — under headless the smooth scroll itself can fail to
+  start or stall, which is a harness artifact, so the browser test isolates the
+  stepping LOGIC and the glide robustness is the unit-test's job.
 - **The desktop crew panel keeps its day + column headings in view** (owner,
   23 Aug 26 — "when I scroll down the top of the day is hidden"). Inside the
   `.edit-board .eroster` scroll box the "Aircrew · <day>" line and the

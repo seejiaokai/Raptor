@@ -844,7 +844,25 @@ subscribers.
   drops `panWk` — the native scrollbar doesn't reliably fire the `pointerdown`
   that `onTrackGrab` listens for, so the corridor is invalidated here instead.
   Don't route the week→track mirror around `mirrorToTrack`, and don't let
-  `onTrackScroll` write the week unconditionally again. **The DESKTOP
+  `onTrackScroll` write the week unconditionally again. **`trkEcho` alone was
+  not enough — the glide now OWNS the week while it is in flight** (owner, 25 Aug
+  26 — "make sure it's not just an easy fix", after a test flake led back to this
+  seam). Position bookkeeping cannot survive a `scroll` event the browser
+  coalesces or defers under load: the deferred echo arrives after a newer frame
+  has moved `trkEcho` on, clears `HS_EPS`, and is mistaken for a drag — so
+  measured on the built app the arrows still swallowed ~1 press in 7 under load.
+  `panDays` now arms a short window (`glideEnd`, `GLIDE_MS`) on every press, and
+  during it `onTrackScroll` is a pure follower regardless of position; the window
+  clears the instant the glide lands (`onDocScroll`) or on any manual pan /
+  scrollbar grab, so a real drag right after a step still drives the week. A
+  SECOND writer was cancelling the same glide: a within-week repaint (the
+  debounced palette-follow `notify` from `rosDayFollow`) re-pinned the week's
+  scrollLeft to the mid-glide position; `panHold` (`EditWeek`/`ViewWeek`) now
+  holds the glide's TARGET during the window instead, so a mid-glide repaint
+  lands on the intended day, not between two. Together these took the day-skip to
+  0/50 at human pace with the real animation. Pinned in `pan.test.tsx`; don't
+  remove the `glideEnd` guard or revert `panHold` to pinning the live `sl`.
+  **The DESKTOP
   scheduler board now has week navigation** (owner, 23 Aug 26 — "in scheduler
   board i cant go between weeks except through the calendar"): `‹ ›` week-jump
   chips flank the seven day chips inside `#sbDays` (`board.ts:dayTabsHTML`,

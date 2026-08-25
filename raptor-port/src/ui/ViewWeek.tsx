@@ -13,7 +13,7 @@ import { isDraftVer } from '../engine/drafts'
 import { dayHTML, dayIssuedHTML, withDaySnap } from './html'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
-import { weekScrollMax } from './pan'
+import { weekScrollMax, panHold } from './pan'
 import { mountPeek } from './peek'
 import { useVersion } from './useStore'
 
@@ -106,8 +106,10 @@ export function ViewWeek() {
       root.style.scrollBehavior = was
       setPeekLand(null)
     } else {
-      /* a within-week repaint holds the week's scroll position (B54) */
-      root.scrollLeft = sl
+      /* a within-week repaint holds the week's scroll position (B54) — or the
+         glide's destination if one is in flight, so a mid-glide repaint lands on
+         the intended day instead of freezing between two (see panHold). */
+      root.scrollLeft = panHold(sl)
       /* ...unless a page switch left a day to carry (owner, 9 Aug 26): the
          other week was parked on it, and this one lands there rather than
          wherever it was last left. Consumed once — a repaint that is not a

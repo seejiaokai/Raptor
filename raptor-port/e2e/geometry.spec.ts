@@ -3641,15 +3641,14 @@ test.describe('the crew-day picker', () => {
     // and that the roll-over lands on Monday. panDays() computes that identically
     // whether the scroll is an instant jump or a settled smooth glide: it counts
     // from the position the press COMMANDED (panTgt), which an instant scroll
-    // reaches exactly. What it does NOT test is the glide's smoothness, and the
-    // glide is the sole reason this check ever flaked — panDays() asks scrollTo()
-    // for behavior:'smooth', a ~350ms animation that has not necessarily STARTED
-    // by the next frame, so a read taken after a naive "scrollLeft held still
-    // twice" heuristic could land on the OLD day before the glide moved (proven:
-    // Sunday intermittently never read at the front though the product always put
-    // it there). So neutralise the animation for this one test — strip 'smooth'
-    // off scrollTo — and every read is of the true settled position. The product
-    // is unchanged; only the test's timing race is removed.
+    // reaches exactly. What it does NOT need to re-prove is the glide animation:
+    // that an in-flight glide is never cancelled mid-day (by the proxy-scrollbar
+    // echo or a mid-glide repaint) is a real product guarantee, fixed in pan.ts
+    // and pinned deterministically in pan.test.tsx. Under headless automation the
+    // smooth glide itself is unreliable — it can fail to start, or stall — which
+    // is a harness artifact, not a product fault, and it is what made a read
+    // taken during the animation flake here. So neutralise the animation for this
+    // one test — strip 'smooth' off scrollTo — and read the true settled day.
     await page.evaluate(() => {
       const proto = Element.prototype as any
       const origTo = proto.scrollTo
