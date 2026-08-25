@@ -3536,7 +3536,21 @@ tools behind it, and the write handlers still ask `canEditSched()`
 themselves. Pinned non-vacuously in `ui/admin.test.tsx` — the page really
 mounts for the forced member, and what mounts is the denial.
 
-Three cards, a 2-column grid on desktop with the last card full-width:
+**The layout is a settings console (owner, 25 Aug 26 — "the smaller left
+side has the categories and the right side is the pages for settings").** A
+category rail (`.adm-rail`, the `CATS` array in `AdminPage.tsx`) indexes the
+page and a single content pane (`.adm-pane`) shows the active category. On a
+wide screen (≥821px) the rail and pane sit side by side and both stay
+visible; below 821px the shell is one column and it DRILLS — the rail is the
+whole screen, tapping a category flips `drilled` and swaps in the pane with a
+`‹` back arrow (`.adm-back`, phone-only), the iOS-settings list→detail move
+that lets a two-pane layout fit a phone. **Every category panel stays mounted
+and only the active one shows** (`.adm-panel.on`), so `#admDutyTpl`,
+`#admDayTpl` and the user tools keep their stable ids whichever category is
+live — which is also why `admin.test.tsx` can click the template openers
+without first selecting their category. A new settings category is one `CATS`
+entry plus its `.adm-panel` section; the owner is filling this in over time.
+The three category panels:
 
 - **`#admUsers` Manage users** — the old `#userModal` body moved here WHOLE
   (same ids and classes: `#newName`, `#newRole`, `#userAdd`, `#userList`,
