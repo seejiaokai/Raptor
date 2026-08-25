@@ -21,7 +21,7 @@ import { DAYS } from '../engine/data'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans } from './demoseed'
-import { storesLoad, cxReasonsLoad, dutyTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved } from '../engine/publish'
 import { stashPut, stashGet, stashHas } from '../engine/weekstash'
@@ -429,6 +429,7 @@ export function initStore() {
   storesLoad()
   cxReasonsLoad()
   dutyTplLoad()
+  waveTplLoad()
   dayTplLoad()
   /* GLOBAL INPUTS (owner, 22 Aug 26 — "show all inputs regardless of which week
      I am selected on"). The module-load INPUTS array is week 1's; merge every

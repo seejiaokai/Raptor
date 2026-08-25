@@ -25,7 +25,8 @@ import { USERS, addUser, delUser } from '../state/users'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { HOOKS } from '../engine/hooks'
-import { setTplEdit, setDayTplEdit } from './pops'
+import { setTplEdit, setDayTplEdit, setWaveEdit } from './pops'
+import { WAVE_BUILTIN, WAVETPL_CFG, isWaveHidden, setWaveHidden, waveTplSave, kindLabel } from '../engine/wavetpl'
 import { clearHistoryData, clearEditHistory, type ClearMode } from './inputedit'
 import { useVersion } from './useStore'
 import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
@@ -34,7 +35,7 @@ import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
    panel below — nothing else in the layout moves. */
 const CATS = [
   { id: 'users', label: 'Users', sub: 'Who can sign in', icon: <UsersIcon /> },
-  { id: 'config', label: 'Squadron config', sub: 'Duty & day templates', icon: <SlidersIcon /> },
+  { id: 'config', label: 'Squadron config', sub: 'Duty, day & wave templates', icon: <SlidersIcon /> },
   { id: 'data', label: 'Data', sub: 'Storage & cleanup', icon: <DatabaseIcon /> },
 ]
 
@@ -94,6 +95,35 @@ function ClearControl(props: {
     </button>
     <p className="adm-note">{props.note}</p>
   </div>)
+}
+
+/* Show / hide each "+ Wave" entry (owner, 25 Aug 26 — "the admin page should
+   update as well so the waves or templates can be toggled to hide or open by
+   default"). One row per built-in kind and per saved template; a switch flips its
+   WAVEHIDE flag and persists at once, so the picker updates the next time it opens.
+   The list is live — a template added or deleted in the editor shows or drops here
+   on the next render, because both read the same WAVETPL_CFG. */
+function WaveVisibility() {
+  const items = [
+    ...WAVE_BUILTIN.map(b => ({ key: b.key as string, label: b.label, sub: 'Built-in kind' })),
+    ...WAVETPL_CFG.map(t => ({ key: t.id, label: t.title || 'Untitled', sub: `Template · ${kindLabel(t.kind)}` })),
+  ]
+  const flip = (key: string, hidden: boolean) => { setWaveHidden(key, !hidden); waveTplSave(); notify() }
+  return (
+    <div className="adm-wavevis" role="group" aria-label="Which waves appear in + Wave">
+      {items.map(it => {
+        const hidden = isWaveHidden(it.key)
+        return (
+          <div className="wv-item" key={it.key}>
+            <span className="wv-lbl">{it.label}<span className="wv-sub">{it.sub}</span></span>
+            <button className={'wv-tog' + (hidden ? '' : ' on')} role="switch" aria-checked={!hidden}
+              title={hidden ? 'Hidden from + Wave — tap to show' : 'Shown in + Wave — tap to hide'}
+              onClick={() => flip(it.key, hidden)}>{hidden ? 'Hidden' : 'Shown'}</button>
+          </div>
+        )
+      })}
+    </div>
+  )
 }
 
 export function AdminPage() {
@@ -180,6 +210,9 @@ export function AdminPage() {
               <p className="adm-note">A duty template is a saved duty block — its rows and times — that "+ Block" copies onto any day as a plain, conflict-checked desk.</p>
               <button className="abtn" id="admDayTpl" onClick={() => { setDayTplEdit(true); notify() }}>Day templates…</button>
               <p className="adm-note">A day template is a whole captured day — waves, duties, sims and ground rows — recaptured off a real day and re-applied from the day-templates picker.</p>
+              <button className="abtn" id="admWaveTpl" onClick={() => { setWaveEdit(true); notify() }}>Wave templates…</button>
+              <p className="adm-note">A wave template is a saved flying wave — its rule-set and lines — that "+ Wave" drops onto any day. Choose below which wave types and templates appear in that picker.</p>
+              <WaveVisibility />
             </section>
             {/* ---- Data & persistence — the honesty card. This page is where the
                 real controls land when the shared database arrives; until then the

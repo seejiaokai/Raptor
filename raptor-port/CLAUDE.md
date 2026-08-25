@@ -695,6 +695,28 @@ subscribers.
   the misleading visual is gone. Don't re-add a draft-day mark. Pinned in
   `publish.test.ts` / `interact.test.tsx`; contract in `docs/ui-contracts.md`
   §Amendment marks on screen.
+- **Flying-wave templates + the + Wave show/hide list** (owner, 25 Aug 26 — "create
+  a function similar to how duty templates functions … for + Wave … choose which set
+  of rules it follows … create, save, edit, delete, arrange … the admin page should
+  update as well so the waves or templates can be toggled to hide or open by
+  default"). The sibling of duty templates, one level up: `engine/wavetpl.ts` holds
+  the library, `ui/WaveTplModal.tsx` is the editor (opened from the + Wave pencil,
+  `WAVEEDIT`), and `+ Wave` (`board.ts:waveMenu`) lists saved templates beside its
+  four built-in kinds. A template is `{id,title,kind,lines}`: **one rule-set per
+  template** (owner's choice), exactly one of the four the app already checks waves
+  by — `fly` / `sc` / `avalon` / `bb` — and each line is a flying line with a
+  MAIN/SPARE flag that matters only on a standby kind. Placing one mints an ordinary
+  wave (`waveFromTpl` → `addWaveFromTpl`) whose OWN kind flags (`standalone`/`noconf`/
+  `night`) drive its checking, so nothing in `validate.ts` reads a template and
+  reference parity is untouched. Times store raw in the editor and normalise on blur
+  / mint / load (`waveTime`, colon form `07:00` — the one difference from duty
+  `tplTime`'s `0700`). Show/hide: a `WAVEHIDE` set (built-in key or template id),
+  toggled on **Admin → Squadron config**, default all-shown; a deleted template drops
+  its flag. Persisted like the stores/duty lists (`wavetpl` + `wavehide`), boot-loaded
+  in `initStore`, untrusted storage clamped. Don't seed built-in templates (the four
+  kinds are the baseline; the library starts empty), don't make `validate` read a
+  template, and don't move the show/hide gate off `WAVEHIDE`. Pinned in
+  `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
 - **A new flying line comes up blank** (owner, 10 Aug 26). `+ Line` used to
   copy the previous line's callsign, mission and times; a plausible wrong
   value reads as filled in when nobody filled it in. **`+ Wave` follows the

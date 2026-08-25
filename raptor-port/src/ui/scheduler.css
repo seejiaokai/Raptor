@@ -2287,6 +2287,39 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   padding:8px;width:100%;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:700;
   text-transform:uppercase;letter-spacing:.05em;cursor:pointer}
 .addrow:hover{border-color:var(--ok);color:#9BE3B4}
+/* ---- the Flying-wave-templates editor (owner, 25 Aug 26). Reuses the duty
+   editor's modal/tab/name/nudge/del/addrow chrome above; these are the parts a
+   wave template adds — the rule-set picker, its note, and a per-line card that
+   stacks callsign over mission/times/role so the extra fields still read
+   top-to-bottom on a phone. */
+.wkind{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.wkind-btn{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;
+  padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;flex:1 1 auto}
+.wkind-btn:hover{border-color:var(--accent);color:var(--ink)}
+.wkind-btn.on{border-color:var(--accent);color:var(--accent);background:rgba(59,198,232,.08)}
+.wknote{font-size:11px;line-height:1.4;color:var(--ink-3);margin:0 0 14px}
+.wline{border:1px solid var(--edge);border-radius:10px;background:var(--panel-2);padding:8px;margin-bottom:8px}
+.wline-top{display:grid;grid-template-columns:22px 1fr 30px;gap:7px;align-items:center;margin-bottom:6px}
+.wline-top .grip{display:flex;flex-direction:column;gap:1px}
+.wline-grid{display:grid;grid-template-columns:1fr 58px 58px 58px;gap:6px;align-items:center}
+.wline input{background:var(--bg);border:1px solid var(--edge);border-radius:6px;color:var(--ink);
+  font-size:13px;padding:6px 8px;height:32px;box-sizing:border-box;width:100%}
+.wline input:focus{outline:none;border-color:var(--accent)}
+.wline input.tm{font-family:'JetBrains Mono',monospace;text-align:center;font-size:12px}
+.wline input.wcs{font-weight:600}
+.wline .del{background:none;border:1px solid var(--edge);border-radius:6px;color:var(--ink-3);cursor:pointer;height:32px}
+.wline .del:hover{color:#FBB4B9;border-color:var(--hard)}
+/* the MAIN/SPARE flip — a plain MAIN reads muted, a SPARE takes the amber the
+   board's own SPARE badge uses, so the two surfaces agree at a glance */
+.wrole{border:1px solid var(--edge);border-radius:6px;background:var(--bg);color:var(--ink-2);cursor:pointer;
+  height:32px;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:.04em}
+.wrole:hover{border-color:var(--accent);color:var(--ink)}
+.wrole.spare{color:#F2D699;border-color:rgba(229,194,74,.55);background:rgba(229,194,74,.1)}
+.wrole-off{display:block}
+.wtpl-empty{text-align:center;padding:18px 10px 6px}
+.wtpl-empty p{margin:0 0 8px;font-size:14px;color:var(--ink)}
+.wtpl-empty p.sub{font-size:12px;line-height:1.5;color:var(--ink-3);max-width:340px;margin:0 auto 16px}
 .abtn.danger{color:#FBB4B9;border-color:rgba(240,85,95,.5)}
 .abtn.danger:hover{border-color:var(--hard);color:#fff;background:rgba(240,85,95,.15)}
 /* the "+ Block" template picker: the per-template role count and the pencil */
@@ -4530,6 +4563,18 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 #page-admin .adm-2col input[type=date]{width:100%;box-sizing:border-box}
 #page-admin #admConfig .abtn{display:block;width:100%;text-align:left;margin-top:2px}
 #page-admin #admConfig .adm-note{margin-bottom:12px}
+/* the + Wave show/hide list — one row per built-in kind and template, a label
+   over its kind and a switch that reads its current state as a word */
+#page-admin .adm-wavevis{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+#page-admin .wv-item{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  background:var(--panel-2);border:1px solid var(--edge);border-radius:9px}
+#page-admin .wv-lbl{display:flex;flex-direction:column;gap:1px;font-size:13px;font-weight:600;color:var(--ink);min-width:0}
+#page-admin .wv-lbl .wv-sub{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+#page-admin .wv-tog{margin-left:auto;flex:0 0 auto;border:1px solid var(--edge);border-radius:999px;
+  background:var(--bg);color:var(--ink-3);cursor:pointer;padding:5px 14px;font-size:11px;font-weight:700;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.05em;text-transform:uppercase}
+#page-admin .wv-tog.on{color:var(--accent);border-color:var(--accent);background:rgba(59,198,232,.08)}
+#page-admin .wv-tog:not(.on){opacity:.7}
 /* the forced-member render — a member cannot reach this page from the nav,
    so this is the page-gate's own answer, styled as a quiet centred panel */
 .adm-deny{max-width:520px;margin:60px auto;padding:22px 24px;text-align:center;color:var(--ink-2);
