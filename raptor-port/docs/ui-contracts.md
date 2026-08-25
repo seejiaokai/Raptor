@@ -3375,10 +3375,18 @@ pinned right. The bar **wraps** rather than scrolling sideways, so when the
 highlighter is tapped (`.hl-open`) the CAT / Type / Quals chips drop to their
 OWN row below (`.hlrow`, `flex: 0 0 100%; order: 10`, wrapping its own chips)
 instead of cramming onto the icons' line. The sticky left/right pins the old
-sideways-scroller needed are gone with it. Desktop is untouched — `.filt-cal` is
-hidden (the `.seg` / `.wkseg` week window still navigates) and `.hlrow` is
-`display: contents`, so the chips still flow inline in the one desktop row.
-Pinned in `editweek.test.tsx` (the calendar opener now lives at
+sideways-scroller needed are gone with it. On the phone `.filt-cal` is the
+calendar and `.hlrow` its own row; on the desktop `.filt-cal` is hidden and
+`.hlrow` is `display: contents`, so the chips flow inline in the one desktop row.
+
+**The desktop edit bar is one row too (owner, 26 Aug 26).** The edit page's week
+window used to be a separate `.seg` row above the filter row; it now rides inside
+the filter row as `.wkseg` (id kept `weekSegE`), so the desktop edit bar is one
+line like the view page. The order is deliberate: the week dates, then the Excel
+and PDF export icons right after them, then the highlighter — the highlighter is
+the LAST fixed icon, so expanding its CAT / Type / Quals sub-menu only pushes the
+chips to its right and never nudges the exports (the owner's explicit ask).
+Pinned in `editweek.test.tsx` (the phone calendar opener now lives at
 `#page-editsched .filters .filt-cal`).
 
 ## No warning / advisory / note counts in the top bar (owner, 20 Aug 26)
