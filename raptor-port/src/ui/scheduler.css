@@ -726,8 +726,13 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
   color:var(--accent-ink);background:var(--accent);border:1px solid var(--accent);
   padding:4px 11px;border-radius:8px;white-space:nowrap}
 /* ---- per-day version dropdown + published-version preview ---- */
-.dstat .dver{font-family:inherit;font-size:11px;font-weight:600;color:var(--ink);
+/* .sb-dver is the same select in the board's sign-off strip (owner, 26 Aug 26 —
+   moved down from the top bar); it reads exactly like the week's picker. It
+   sits first in .sb-pub, so a small right margin sets it off from the ✓ Published
+   stamp that follows. */
+.dstat .dver,.sb-pub .sb-dver{font-family:inherit;font-size:11px;font-weight:600;color:var(--ink);
   background:var(--panel-2);border:1px solid var(--edge-2);border-radius:8px;padding:3px 6px;cursor:pointer}
+.sb-pub .sb-dver{margin-right:2px}
 /* the whole day wears the version's colour while previewing, dashed — the same
    dashed-vs-solid grammar the pending marks use: dashed means "not the issued
    live document" */

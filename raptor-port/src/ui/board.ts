@@ -17,7 +17,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, srcInput, saRoleHTML, availHTML } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, verSelBoardHTML, srcInput, saRoleHTML, availHTML } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -276,9 +276,16 @@ export function boardSignHTML(di: number, pv?: boolean) {
      #sbSignBar, right after the sign-off names, so signing and publishing
      read as one block instead of two disconnected panels. */
   const ed = HOOKS.editMode()
+  /* THE VERSION PICKER MOVED HERE FROM THE TOP BAR (owner, 26 Aug 26 — arrow
+     drawn from the "Live working" dropdown down to the sign-off area, phone and
+     desktop alike). It now heads the publish strip, beside the ✓ Published
+     stamp, where "which version am I on" reads next to "which version is
+     issued". String-built (verSelBoardHTML) rather than the old React select in
+     SchedBoard's .sb-actions, so it can live inside this innerHTML sign-off
+     block; it routes through the same data-dver change listener. */
   return histLineHTML('histln-top')
     + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}`
-    + `<div class="sb-pub">${dayStatHTML(di, ed)}</div></div>`
+    + `<div class="sb-pub">${verSelBoardHTML(di)}${dayStatHTML(di, ed)}</div></div>`
 }
 
 export function boardWarnHTML(di: number) {
