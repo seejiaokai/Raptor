@@ -1434,6 +1434,19 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .allhands.sec,.availpuck.sec{border-left:3px solid var(--sec);background:var(--secbg)}
 .allhands.sec .ah-h{color:var(--sec)}
 .availpuck.sec .ap-h{color:var(--sec)}
+/* ON THE BOARD ONLY, Available crew drops its green-tinted card and wears the
+   sb-panel chrome, so it reads as one more section between the Personal Inputs
+   and SANS panels it sits between rather than a highlighted block (owner,
+   25 Aug 26 — "design it to match the scheduler board … make it blend in").
+   The week keeps the tinted .plist.sec card, which matches ITS neighbours
+   (the tinted Personal-Inputs / SANS groups) — so the blend-in is scoped to
+   #schedBoard. Green survives only as the 3px left tab, the same category tab
+   every sibling board panel carries. The id-scoped selectors outrank the
+   generic `.sec` block and the `.availpuck.sec` rules above. */
+#schedBoard .availpuck{margin:0 0 12px}
+#schedBoard .availpuck.sec-avail{border-left:3px solid var(--sec);background:var(--panel);border-radius:10px;padding-left:0}
+#schedBoard .availpuck .ap-h{color:var(--ink);background:var(--panel-2);font-size:11px;letter-spacing:.09em;padding:7px 11px}
+#schedBoard .availpuck .ap-h .n{font-family:'JetBrains Mono',monospace;text-transform:none;letter-spacing:0;color:var(--ink-3);font-weight:500;font-size:10px}
 /* The reference's edit footer (.schedfoot / .sf-box / .sf-h / .sf-body — SANS
    REQ CAA, SAF100A, VERIFIED BY) was hand-written static markup in the
    original page; nothing in this port ever builds it, so its rules were

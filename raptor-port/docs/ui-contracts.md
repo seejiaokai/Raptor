@@ -1678,6 +1678,20 @@ week render to 4940 nodes, so the perf gate's week ceiling was RAISED 4000 →
 ABOVE the open default). Gated in `e2e/geometry.spec.ts` ("the Available-crew
 panel folds") and `ui/editweek.test.tsx`.
 
+**On the board it wears the neutral panel chrome, not its green card** (owner,
+25 Aug 26 — "design it to match the scheduler board … make it blend in"). The
+same `.availpuck` markup renders in two surfaces: the edit week (between the
+tinted `.plist.sec` Personal-Inputs and SANS groups) and the board's aircrew
+column (between the neutral `.sb-panel` Personal-Inputs and SANS panels). CSS
+scoped to `#schedBoard .availpuck` (in `scheduler.css`) drops the green-tinted
+fill, the green heading and the 10px indent and adopts the `.sb-panel` / `.sb-ph`
+look — a neutral card, a neutral `--ink` uppercase header on `--panel-2`, and a
+JetBrains-Mono `.n` sub — keeping ONLY the 3px green left tab, the same
+category-colour tab every sibling board panel carries, so it lines up as one
+more section. The WEEK copy is deliberately left tinted: there its neighbours
+are tinted too, so the green card matches. Markup is unchanged, so the fold and
+drop-to-unassign contracts above are untouched.
+
 ## Reordering rows on the board
 
 A grip (`⠿`, `board-html.ts`'s `sbGrip`) sits at the far left of every
