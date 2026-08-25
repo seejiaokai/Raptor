@@ -1418,11 +1418,14 @@ test('board at 390px: Live checks folds to one line, and a fill parks the drawer
 
 /* THE BOARD PALETTE COLUMNS DO NOT OVERLAP (owner, 14 Aug 26 — "scheduler
    board mode the alignment overlaps each other. But edit schedule mode is
-   ok"). The board drawer's columns are `flex:1`; with the Personnel column
-   added the three columns squeezed below the fixed 74px puck width, so every
-   puck (and its struck-name reason line) spilled 15px into the next column.
-   Only a real browser can see it: jsdom measures every rect 0×0. Pinned here
-   at 390px, armed, where the drawer holds struck entries with reasons. */
+   ok"). The board drawer's columns are `flex:1`; with a third Personnel column
+   the three squeezed below the fixed 74px puck width, so every puck (and its
+   struck-name reason line) spilled 15px into the next column. The 24 Aug 26
+   SANS/Personnel swap resolved that structurally: the seat grid is now just
+   Pilots | WSOs, and Personnel (ground crew) drops to its own full-width band
+   (.rpers) below, its pucks wrapping instead of sharing the narrow grid. So
+   this pins TWO seat columns that never overlap, plus a Personnel band whose
+   pucks stay on screen. Only a real browser can see it: jsdom measures 0×0. */
 test('board at 390px: the armed aircrew columns never overlap their neighbour', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await login(page); await go(page, 'editsched')
@@ -1443,12 +1446,20 @@ test('board at 390px: the armed aircrew columns never overlap their neighbour', 
     // and no two adjacent columns overlap, and the last stays on screen
     let colOverlap = 0
     for (let i = 1; i < cols.length; i++) if (cols[i].left < cols[i - 1].right - 0.5) colOverlap++
+    // Personnel is a full-width band now (owner, 24 Aug 26), not a seat column;
+    // its wrapping pucks must still stay within the 390px screen
+    const pers = ros.querySelector('.rpers')
+    let persOff = 0
+    if (pers) pers.querySelectorAll('.puck').forEach(el => { if (el.getBoundingClientRect().right > 390.5) persOff++ })
     return { nCols: cols.length, spills, colOverlap,
              lastRight: cols.length ? Math.round(cols[cols.length - 1].right) : 0,
-             haswhy: ros.querySelectorAll('.rpuck.no.haswhy').length }
+             haswhy: ros.querySelectorAll('.rpuck.no.haswhy').length,
+             hasPersBand: !!pers, persOff }
   })
   expect(r.haswhy, 'the arm drew struck entries with reason lines').toBeGreaterThan(0)
-  expect(r.nCols, 'Pilots, WSOs and Personnel all drawn').toBe(3)
+  expect(r.nCols, 'Pilots and WSOs are the two seat columns now').toBe(2)
+  expect(r.hasPersBand, 'Personnel drops to its own full-width band').toBe(true)
+  expect(r.persOff, 'the Personnel band pucks stay on screen').toBe(0)
   expect(r.spills, 'no puck or reason line spills past its column').toBe(0)
   expect(r.colOverlap, 'no column overlaps its neighbour').toBe(0)
   expect(r.lastRight, 'the last column stays on screen').toBeLessThanOrEqual(390)
@@ -3119,36 +3130,41 @@ test.describe('the way into the changes list follows the width', () => {
 })
 
 /* THE HIGHLIGHT CHIPS FOLD ON A PHONE (owner, 23 Aug 26) — the same
-   CSS-picks-by-width shape as the changes list above: the chips are always in
-   the markup; under 820px they have no size until the .hl-tog highlighter
-   toggle unfolds them, and on a desktop they are simply there with no tap.
-   jsdom pins the state machine (hlfold.test.tsx); only a browser can say
-   whether a folded chip really paints nothing. */
+   CSS-picks-by-width shape as the changes list above. The strip became a
+   CAT/Type/Quals ACCORDION on 24 Aug 26: under 820px the whole group of tabs
+   has no size until the .hl-tog highlighter toggle unfolds it, and a chip then
+   stays folded behind its own tab until that tab is expanded; on a desktop the
+   tabs simply stand there with no tap. jsdom pins the state machine
+   (hlfold.test.tsx); only a browser can say whether a folded control really
+   paints nothing. */
 test('the Highlight chips fold behind the toggle on a phone, and stand open on a desktop', async ({ page }) => {
-  const chipSize = () => page.evaluate(() => {
-    const c = document.querySelector('#page-viewsched .filters .fchip[data-hl]') as HTMLElement
-    const r = c.getBoundingClientRect()
+  const size = (sel: string) => page.evaluate((s) => {
+    const el = document.querySelector(s) as HTMLElement
+    const r = el.getBoundingClientRect()
     return { w: Math.round(r.width), h: Math.round(r.height) }
-  })
+  }, sel)
+  const TAB = '#page-viewsched .filters .hl-gtab'
+  const CHIP = '#page-viewsched .filters .fchip[data-hl]'
   await page.setViewportSize(PHONE)
   await login(page)
-  const folded = await chipSize()
-  expect(folded.w, 'folded: a chip paints nothing').toBe(0)
+  const folded = await size(TAB)
+  expect(folded.w, 'folded: the tabs paint nothing').toBe(0)
   expect(folded.h).toBe(0)
   await page.click('#page-viewsched .filters .hl-tog')
   await page.waitForTimeout(200)
-  const open = await chipSize()
-  expect(open.w, 'one tap on the highlighter unfolds them').toBeGreaterThan(0)
-  expect(open.h).toBeGreaterThan(0)
-  /* desktop: no toggle needed — fold the strip shut again on the phone, then
-     widen; the chips must be on the row even with HLOPEN false, because the
-     fold rules live inside the 820px block and desktop never gates on them */
-  await page.click('#page-viewsched .filters .hl-tog')
+  const openTab = await size(TAB)
+  expect(openTab.w, 'one tap on the highlighter unfolds the tabs').toBeGreaterThan(0)
+  expect(openTab.h).toBeGreaterThan(0)
+  /* a chip is still folded behind its own tab until that tab is expanded */
+  expect((await size(CHIP)).w, 'the chips wait behind their tab').toBe(0)
+  await page.click(TAB)                    // expand the first group
   await page.waitForTimeout(200)
+  expect((await size(CHIP)).w, 'expanding a tab paints its chips').toBeGreaterThan(0)
+  /* desktop: no toggle needed — the tabs stand open with no tap, because the
+     fold rules live inside the 820px block and desktop never gates on them */
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.waitForTimeout(200)
-  const desk = await chipSize()
-  expect(desk.w, 'a desktop shows the chips with no tap').toBeGreaterThan(0)
+  expect((await size(TAB)).w, 'a desktop shows the tabs with no tap').toBeGreaterThan(0)
 })
 
 /* ===================================================================
