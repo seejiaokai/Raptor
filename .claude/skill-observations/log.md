@@ -462,3 +462,18 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When renaming any credential, account, id or selector, grep the ENTIRE gate surface — including scripts CI never runs (probes/, perf, runners) — not just src/ and the CI-exercised suites. In this repo: `grep -rn <old-literal> probes/ e2e/` belongs in the rename checklist alongside the src sweep.
 
 **Principle:** A rename that passes CI can still break gates that only run locally; the sweep for old literals must cover every script that exercises the system, not just the code and the CI path — and paired read-only fixtures (a frozen reference build) may deliberately KEEP the old literal, so the sweep must split by target, not blanket-replace.
+
+### Observation 33: vite preview with base './' serves at root — '/Raptor/' path is a silent SPA-fallback trap
+
+**Status:** OPEN
+**Date:** 2026-08-25
+**Session context:** Live-driving the Admin Data panel's new clearing controls against a local vite preview build
+**Skill:** New skill candidate: raptor-live-drive (or CLAUDE.md probes section)
+**Type:** internal
+**Phase/Area:** Local preview + Playwright drive recipe
+
+**Issue:** The app's vite base is './', so `vite preview` serves it at http://localhost:PORT/ — but the deployed URL shape (/Raptor/) also answers 200 via the SPA fallback, returning index.html whose RELATIVE asset refs then 404. curl -w '%{http_code}' on both the page AND an asset path reported 200 (the asset "200" was the fallback HTML), so the recipe looked verified while Chromium showed a blank #root. Cost three debug rounds; also found multiple leftover 'vite preview' processes from a prior background e2e run squatting alongside the new one.
+
+**Suggested improvement:** In the repo's drive recipe (CLAUDE.md or probes doc): (1) always drive http://localhost:PORT/ (root, never /Raptor/) against local previews; (2) verify an asset URL by CONTENT-TYPE or first bytes, never by status code, since SPA fallbacks make every path a 200; (3) before starting a preview, kill stale ones with a ps-based sweep, not a single pkill pattern.
+
+**Principle:** Against any SPA server with a history fallback, an HTTP 200 proves nothing about a path being right — verify by content, and verify the port is served by exactly the process you just started.

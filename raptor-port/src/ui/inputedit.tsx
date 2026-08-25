@@ -18,7 +18,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
-import { logAction } from '../engine/editlog'
+import { logAction, elogSweep } from '../engine/editlog'
 import { writeInputsBatch, notify } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
@@ -644,43 +644,88 @@ function dropInputRow(r: any) {
   const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1)
 }
 
-/* ---- CLEAR HISTORY BEFORE A DATE (owner, 25 Aug 26 — "an option on the
-   admin page to clear a set date of history data … so that the app stays
-   snappy"). One sweep over everything the app accumulates: past INPUTS,
-   past calendar pucks and day titles (state/plan.ts), and stashed past
-   weeks (engine/weekstash.ts). Doctrine points, deliberate:
+/* ---- CLEAR OLD DATA / CLEAR EDIT HISTORY (owner, 25 Aug 26 — "an option on
+   the admin page to clear a set date of history data … so that the app stays
+   snappy", then the same day: "On specific dates or a range or from this day
+   till history onwards"). The PERIOD GRAMMAR is one resolver shared by both
+   sweeps: 'before' a date (open-ended into the past), 'on' one date, or a
+   'range' inclusive of both ends — resolved once into an inclusive-lower /
+   EXCLUSIVE-upper ISO window, so every comparison below is the same
+   `>= lo && < hi` shape whatever the mode.
+
+   The DATA sweep covers everything the app accumulates: past INPUTS, past
+   calendar pucks and day titles (state/plan.ts), and stashed past weeks
+   (engine/weekstash.ts). Doctrine points, deliberate:
    - DELETION FAILS CLOSED: an input whose dates cannot be parsed is KEPT,
-     never guessed old. Only a row wholly before the cutoff goes — one that
-     touches or crosses the cutoff day stays whole.
+     never guessed old. Only a row wholly inside the period goes — one that
+     touches or crosses the period's edge stays whole. Same for a stashed
+     week: it goes only when its whole Mon–Sun span sits inside.
    - The inputs/pucks/titles sweep is ONE writeInputsBatch, so it lands as a
      single undo step (history.ts snapshots all three) — the safety net for
      a destructive button. Stashed weeks are outside the undo snapshot and
-     are gone for real; the Admin panel says so before the tap.
+     are gone for real.
    - `dry` answers "how many would go?" without touching anything — the
      panel's confirm step shows the count it is about to act on, from the
      same selection logic it will act with (one body, no drift).
    - canEditSched at the write path, per the standing role doctrine — the
-     Admin page's own gate is the page, this is the belt. */
-export function clearHistoryBefore(iso: string, dry?: boolean): number {
+     Admin page's own gate is the page, this is the belt.
+
+   The EDIT-HISTORY sweep clears ELOG rows by the LOCAL calendar date of when
+   the edit was made (the date the history list prints), never touching the
+   schedule itself. It is permanent — the log was never in the undo snapshot
+   (editlog.ts's header says why) — and the clear itself is logged AFTER the
+   sweep, so the record that history was cleared, and by whom, survives its
+   own clearing even when the period covers today. */
+export type ClearMode = 'before' | 'on' | 'range'
+const ISO_RX = /^\d{4}-\d{2}-\d{2}$/
+const isoOk = (s: any) => ISO_RX.test(String(s || '')) ? String(s) : null
+const nextIso = (iso: string) => {
+  const p = iso.split('-')
+  return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + 1)).toISOString().slice(0, 10)
+}
+/* mode + dates → the window, or null when a needed date is missing or
+   malformed (FAIL CLOSED: no window, nothing cleared). A reversed range is
+   swapped, not refused — the two pickers don't order themselves. `said` is
+   the sentence fragment both sweeps log with. */
+function clearWindow(mode: ClearMode, a: string, b?: string): { lo: string | null, hi: string, said: string } | null {
+  const A = isoOk(a)
+  if (!A) return null
+  if (mode === 'before') return { lo: null, hi: A, said: `from before ${A}` }
+  if (mode === 'on') return { lo: A, hi: nextIso(A), said: `on ${A}` }
+  const B = isoOk(b)
+  if (!B) return null
+  const x = A <= B ? A : B, y = A <= B ? B : A
+  return { lo: x, hi: nextIso(y), said: `between ${x} and ${y}` }
+}
+const ordOf = (iso: string | null) => iso == null ? null : +iso.slice(0, 4) * 10000 + +iso.slice(5, 7) * 100 + +iso.slice(8, 10)
+
+export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: boolean): number {
   if (!canEditSched()) return 0
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ''))
-  if (!m) return 0
-  const cut = +m[1] * 10000 + +m[2] * 100 + +m[3]
+  const w = clearWindow(mode, a, b)
+  if (!w) return 0
+  const loOrd = ordOf(w.lo), hiOrd = ordOf(w.hi)!
   const doomed = INPUTS.filter((r: any) => {
     const end = dateOrd(r.endDate || r.date, r.yr)
-    return end != null && end < cut
+    if (end == null || end >= hiOrd) return false
+    if (loOrd == null) return true
+    const start = dateOrd(r.date, r.yr)
+    return start != null && start >= loOrd
   })
-  const isoCut = `${m[1]}-${m[2]}-${m[3]}`
-  const oldPucks = PLANPUCKS.filter((s: any) => s.iso && s.iso < isoCut)
-  const oldRmk = Object.keys(DAYRMK).filter(k => k < isoCut)
-  /* a stashed week is old only when its SUNDAY (start+6d) is before the
-     cutoff — a week the cutoff lands inside stays remembered whole */
+  const inWin = (iso: any) => !!iso && iso < w.hi && (w.lo == null || iso >= w.lo)
+  const oldPucks = PLANPUCKS.filter((s: any) => inWin(s.iso))
+  const oldRmk = Object.keys(DAYRMK).filter(inWin)
+  /* a stashed week goes only when its WHOLE span sits inside the window —
+     Monday (the key itself) on or after the lower edge, Sunday (key+6d)
+     before the upper — so a week the period's edge lands inside stays
+     remembered whole */
   const oldWeeks = stashKeys().filter(k => {
     const p = String(k).split('/')
     if (p.length !== 3) return false
+    const mon = +p[2] * 10000 + +p[1] * 100 + +p[0]
     const d = new Date(Date.UTC(+p[2], +p[1] - 1, +p[0] + 6))
     const sun = d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate()
-    return isFinite(sun) && sun < cut
+    if (!isFinite(mon) || !isFinite(sun)) return false
+    return sun < hiOrd && (loOrd == null || mon >= loOrd)
   })
   const n = doomed.length + oldPucks.length + oldRmk.length + oldWeeks.length
   if (dry || !n) return n
@@ -690,7 +735,29 @@ export function clearHistoryBefore(iso: string, dry?: boolean): number {
     oldRmk.forEach(k => { delete DAYRMK[k] })
   })
   oldWeeks.forEach(k => stashDrop(k))
-  logAction(null, `Cleared ${n} record${n === 1 ? '' : 's'} from before ${isoCut}`)
+  logAction(null, `Cleared ${n} record${n === 1 ? '' : 's'} ${w.said}`)
+  return n
+}
+
+/* kept as the one-argument spelling of the 'before' mode — the original
+   control shipped with this name and the pins in wipe.test.tsx hold it */
+export function clearHistoryBefore(iso: string, dry?: boolean): number {
+  return clearHistoryData('before', iso, '', dry)
+}
+
+export function clearEditHistory(mode: ClearMode, a: string, b?: string, dry?: boolean): number {
+  if (!canEditSched()) return 0
+  const w = clearWindow(mode, a, b)
+  if (!w) return 0
+  /* ISO date → LOCAL midnight ms, because ELOG rows are stamped with the
+     wall clock and the history list prints local dates */
+  const ms = (iso: string | null) => {
+    if (iso == null) return null
+    const p = iso.split('-')
+    return new Date(+p[0], +p[1] - 1, +p[2]).getTime()
+  }
+  const n = elogSweep(ms(w.lo), ms(w.hi), dry)
+  if (!dry && n) logAction(null, `Edit history cleared — ${n} entr${n === 1 ? 'y' : 'ies'} ${w.said}`)
   return n
 }
 

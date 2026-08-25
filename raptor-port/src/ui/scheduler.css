@@ -4473,6 +4473,14 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 #page-admin .adm-panel{display:none}
 #page-admin .adm-panel.on{display:block}
 #page-admin .adm-note{color:var(--ink-3);font-size:11px;line-height:1.5;margin:8px 0 0}
+/* the Data panel's two clearing controls — a small uppercase heading names
+   each sweep, a hairline separates them, and the range mode's From/To pair
+   shares one row (each date field halves, matching the single-field width) */
+#page-admin .adm-sub{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:800;margin:0 0 10px}
+#page-admin .adm-sep{border:none;border-top:1px solid var(--edge);margin:18px 0 14px}
+#page-admin .adm-2col{display:flex;gap:10px}
+#page-admin .adm-2col .mfield{flex:1 1 0;min-width:0}
+#page-admin .adm-2col input[type=date]{width:100%;box-sizing:border-box}
 #page-admin #admConfig .abtn{display:block;width:100%;text-align:left;margin-top:2px}
 #page-admin #admConfig .adm-note{margin-bottom:12px}
 /* the forced-member render — a member cannot reach this page from the nav,

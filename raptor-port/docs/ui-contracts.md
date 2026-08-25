@@ -3569,26 +3569,47 @@ The three category panels:
   PRODUCTION (owner, 25 Aug 26)**: the old session-only/no-server honesty
   paragraphs are gone from the UI and live as code comments in
   `AdminPage.tsx` (and HANDOFF) for the database migration — CLAUDE.md
-  §Product bar carries the standing wording rule. Its one control: **Clear
-  old data** (owner, 25 Aug 26 — "clear a set date of history data … so that the
-  app stays snappy"). A native date field (`#admWipeDate` — `color-scheme:
-  dark` on `html` keeps the picker dark) and a TWO-TAP button (`#admWipe`):
-  the first tap dry-counts and arms it red with "Tap again to clear N old
-  records" (a zero count toasts instead of arming — no no-op confirms), the
-  second tap runs `clearHistoryBefore` (`ui/inputedit.tsx`), which sweeps
-  inputs / calendar pucks / day titles wholly before the date in ONE
-  `writeInputsBatch` (one undo step) and drops stashed past weeks
-  (`stashDrop`, gen BUMPED never reset — `peek.ts` caches on it). Deletion
-  FAILS CLOSED: an unparseable date is kept, a span touching the cutoff is
-  kept whole, and each doomed input goes through the same `dropInputRow`
-  body a single delete uses (Leave-War retract + unaccept + splice — one
-  body, no drift). Leave synced from the Leave War tab is withdrawn from
-  the war for real and does NOT come back with Undo (the war has no shared
-  undo — same as deleting such a row by hand). The on-screen note is the
-  database-era wording — it calls the wipe permanent (the two-tap confirm
-  is the safety; a DB wipe won't ride session undo) and stays silent about
-  today's undo nuances, which live in the code comment beside it.
-  Pins: `ui/wipe.test.tsx`.
+  §Product bar carries the standing wording rule. Two controls, both
+  rendered by ONE shared `ClearControl` component so their behaviour
+  cannot drift, and both speaking the same **period grammar** (owner,
+  25 Aug 26 — "an option for data range selected, specific date and option
+  for anything older than this date"): a `Period` select (`#admWipeMode` /
+  `#admLogMode`) offering *Anything older than a date* (open-ended into
+  the past, exclusive of the date), *A specific date*, or *A date range*
+  (inclusive of both ends; the two pickers `…Date`/`…Date2` sit on one
+  `adm-2col` row, and a reversed pair is swapped, not refused). Native
+  date fields (`color-scheme: dark` on `html` keeps the pickers dark) and
+  a TWO-TAP button each: the first tap dry-counts and arms it red with
+  "Tap again to clear N records/entries" (a zero count toasts instead of
+  arming — no no-op confirms; changing the mode or any date disarms), the
+  second tap acts. Both funnels live in `ui/inputedit.tsx`, share one
+  `clearWindow` period resolver, and gate on `canEditSched` at the write
+  path.
+  - **Clear old data** (`#admWipe` → `clearHistoryData`; the original
+    `clearHistoryBefore(iso)` survives as the one-argument 'before'
+    spelling) sweeps inputs / calendar pucks / day titles wholly inside
+    the period in ONE `writeInputsBatch` (one undo step) and drops
+    stashed weeks whose whole Mon–Sun span sits inside (`stashDrop`, gen
+    BUMPED never reset — `peek.ts` caches on it). Deletion FAILS CLOSED:
+    an unparseable date is kept, a span touching or crossing the period's
+    edge is kept whole, and each doomed input goes through the same
+    `dropInputRow` body a single delete uses (Leave-War retract +
+    unaccept + splice — one body, no drift). Leave synced from the Leave
+    War tab is withdrawn from the war for real and does NOT come back
+    with Undo (the war has no shared undo — same as deleting such a row
+    by hand).
+  - **Clear edit history** (`#admLog` → `clearEditHistory` →
+    `elogSweep`, `engine/editlog.ts`) clears ELOG rows by the LOCAL
+    calendar date the edit was MADE (the date the History list prints),
+    never touching the schedule. Permanent for real — the edit log was
+    never in the undo snapshot — and the clear is itself logged AFTER
+    the sweep, so the record that history was cleared survives even when
+    the period covers today.
+
+  The on-screen notes are the database-era wording — they call both
+  sweeps permanent (the two-tap confirm is the safety; a DB wipe won't
+  ride session undo) and stay silent about today's undo nuances, which
+  live in the code comments beside them. Pins: `ui/wipe.test.tsx`.
 
 ## The next-week preview (owner ask — desktop continuous week display, 23 Aug 26)
 

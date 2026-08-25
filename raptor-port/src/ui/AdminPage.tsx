@@ -26,7 +26,7 @@ import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { HOOKS } from '../engine/hooks'
 import { setTplEdit, setDayTplEdit } from './pops'
-import { clearHistoryBefore } from './inputedit'
+import { clearHistoryData, clearEditHistory, type ClearMode } from './inputedit'
 import { useVersion } from './useStore'
 import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
 
@@ -38,6 +38,64 @@ const CATS = [
   { id: 'data', label: 'Data', sub: 'Storage & cleanup', icon: <DatabaseIcon /> },
 ]
 
+/* ---- One clearing control (owner, 25 Aug 26 — "There should be an option
+   for data range selected, specific date and option for anything older than
+   this date"): the period grammar, the date fields it needs, and the two-tap
+   confirm, shared by the two sweeps on the Data panel so their behaviour
+   cannot drift. `run` is the gated funnel in inputedit.tsx — the control
+   itself never touches data, it only asks (dry) and then asks for real.
+   First tap: dry-count and arm the button with the number; second tap: act.
+   Changing the period or any date DISARMS — an armed count must always be
+   the count the second tap clears. A zero count never arms: the toast says
+   so instead of offering a no-op confirm (a silent no-op reads as a broken
+   button — the 12 Aug 26 audit rule). State is chrome, like `drilled`. */
+function ClearControl(props: {
+  idp: string; act: string; note: string; zero: string; unit: [string, string]
+  run: (mode: ClearMode, a: string, b: string, dry?: boolean) => number
+}) {
+  const [mode, setMode] = useState<ClearMode>('before')
+  const [a, setA] = useState('')
+  const [b, setB] = useState('')
+  const [armed, setArmed] = useState(-1)
+  const ready = !!a && (mode !== 'range' || !!b)
+  const go = () => {
+    if (!canEditSched() || !ready) return
+    if (armed < 0) {
+      const n = props.run(mode, a, b, true)
+      if (!n) return HOOKS.toast(props.zero)
+      setArmed(n)
+      return
+    }
+    const n = props.run(mode, a, b)
+    setArmed(-1)
+    HOOKS.toast(n ? `Cleared ${n} ${n === 1 ? props.unit[0] : props.unit[1]}` : props.zero)
+  }
+  const date = (lbl: string, v: string, set: (x: string) => void, id: string) => (
+    <div className="mfield"><label>{lbl}</label>
+      <input type="date" id={id} value={v} onChange={e => { set(e.target.value); setArmed(-1) }} /></div>
+  )
+  return (<div className="adm-clear">
+    <div className="mfield"><label>Period</label>
+      <select id={props.idp + 'Mode'} value={mode} aria-label="Which period to clear"
+        onChange={e => { setMode(e.target.value as ClearMode); setArmed(-1) }}>
+        <option value="before">Anything older than a date</option>
+        <option value="on">A specific date</option>
+        <option value="range">A date range</option>
+      </select></div>
+    {mode === 'range'
+      ? <div className="adm-2col">
+          {date('From', a, setA, props.idp + 'Date')}
+          {date('To', b, setB, props.idp + 'Date2')}
+        </div>
+      : date(mode === 'before' ? 'Older than' : 'Date', a, setA, props.idp + 'Date')}
+    <button className={'abtn' + (armed >= 0 ? ' danger' : '')} id={props.idp} style={{ width: '100%' }}
+      onClick={go} disabled={!ready}>
+      {armed >= 0 ? `Tap again to clear ${armed} ${armed === 1 ? props.unit[0] : props.unit[1]}` : props.act}
+    </button>
+    <p className="adm-note">{props.note}</p>
+  </div>)
+}
+
 export function AdminPage() {
   useVersion()
   const nameRef = useRef<HTMLInputElement>(null)
@@ -46,11 +104,6 @@ export function AdminPage() {
      rail and pane share the screen — it flips from the list to the detail */
   const [cat, setCat] = useState('users')
   const [drilled, setDrilled] = useState(false)
-  /* the Data panel's clear-old-data control: the chosen cutoff, and the armed
-     count (-1 = not armed; >=0 = first tap done, showing what a second tap
-     clears). Kept here, not in the store — it is chrome, like `drilled`. */
-  const [wipeIso, setWipeIso] = useState('')
-  const [armed, setArmed] = useState(-1)
   const admin = SESSION && SESSION.role === 'admin'
   /* the forced-member render — this is what makes the page gate non-vacuous:
      the nav already hides the tab, so the only way here as a member is state
@@ -63,22 +116,6 @@ export function AdminPage() {
        with an empty box did nothing at all and said nothing about why */
     if (!name) return HOOKS.toast('A user needs a name')
     addUser(name, role); nameRef.current!.value = ''; notify()
-  }
-  /* first tap: dry-count and arm; second tap: clear, report, disarm. A zero
-     count never arms — the button says so instead of offering a no-op
-     confirm (a silent no-op reads as a broken button, the same audit rule
-     as Add above). */
-  const wipe = () => {
-    if (!canEditSched() || !wipeIso) return
-    if (armed < 0) {
-      const n = clearHistoryBefore(wipeIso, true)
-      if (!n) return HOOKS.toast('Nothing on file from before that date')
-      setArmed(n)
-      return
-    }
-    const n = clearHistoryBefore(wipeIso)
-    setArmed(-1)
-    HOOKS.toast(n ? `Cleared ${n} old record${n === 1 ? '' : 's'}` : 'Nothing on file from before that date')
   }
   const open = (id: string) => { setCat(id); setDrilled(true) }
   const active = CATS.find(c => c.id === cat) || CATS[0]
@@ -149,16 +186,14 @@ export function AdminPage() {
                 truth is stated rather than implied. ---- */}
             <section className={'adm-panel' + (cat === 'data' ? ' on' : '')} id="admData">
               {/* Clear old data (owner, 25 Aug 26 — "clear a set date of history
-                  data. Wipe it clean so that the app stays snappy"). Two-tap
-                  confirm: the first tap counts what would go (dry run of the
-                  same selection the wipe uses) and arms the button with that
-                  number; the second tap acts. Changing the date disarms. The
-                  inputs/pucks/titles part is one undo step; the remembered
-                  past weeks are not, and the note says so up front. */}
-              <div className="mfield"><label>Clear data older than</label><input type="date" id="admWipeDate" value={wipeIso} onChange={e => { setWipeIso(e.target.value); setArmed(-1) }} /></div>
-              <button className={'abtn' + (armed >= 0 ? ' danger' : '')} id="admWipe" style={{ width: '100%' }} onClick={wipe}
-                disabled={!wipeIso}>{armed >= 0 ? `Tap again to clear ${armed} old record${armed === 1 ? '' : 's'}` : 'Clear old data…'}</button>
-              <p className="adm-note">Permanently removes personal inputs, calendar notes and past week edits from before the chosen date. Anything touching or crossing that date is kept.</p>
+                  data. Wipe it clean so that the app stays snappy", widened the
+                  same day to the full period grammar). The ids the pins hold:
+                  #admWipeMode/#admWipeDate/#admWipeDate2/#admWipe. */}
+              <h4 className="adm-sub">Schedule data</h4>
+              <ClearControl idp="admWipe" act="Clear old data…"
+                zero="Nothing on file in that period" unit={['record', 'records']}
+                note="Permanently removes personal inputs, calendar notes and past week edits in the chosen period. Anything only partly inside the period is kept whole."
+                run={clearHistoryData} />
               {/* PROTOTYPE TRUTHS, off-screen by owner's word (25 Aug 26): the
                   on-screen note above is the DATABASE-ERA wording — it calls the
                   wipe permanent, because the two-tap confirm is the safety and a
@@ -174,6 +209,17 @@ export function AdminPage() {
                     stated end-state (HANDOFF.md), this panel is where its real
                     controls land, and this wipe becomes a DB delete behind the
                     same button. */}
+              <hr className="adm-sep" />
+              {/* Clear edit history (owner, 25 Aug 26 — "also be able to just
+                  clear the history of edits"). Same grammar, same two-tap; acts
+                  on WHEN the edit was made (the date the History list prints),
+                  and the schedule itself is untouched. Permanent for real even
+                  today — the edit log was never inside the undo snapshot. */}
+              <h4 className="adm-sub">Edit history</h4>
+              <ClearControl idp="admLog" act="Clear edit history…"
+                zero="No edits on record in that period" unit={['entry', 'entries']}
+                note="Permanently removes entries from the edit history — the record of who changed what — made in the chosen period. The schedule itself is not touched."
+                run={clearEditHistory} />
             </section>
           </div>
         </div>
