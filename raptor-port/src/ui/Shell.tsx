@@ -375,20 +375,26 @@ export function Shell() {
   const editPage = useMemo(() => (
       <section className={'page' + (page === 'editsched' ? ' on editing' : '')} id="page-editsched">
         <div className="edit-inner">
-          {/* Calendar far left (owner, 22 Aug 26), matching the view page. */}
-          <div className="seg" id="weekSegE">
-            <button className="wk wk-cal" aria-label="Jump to a date" title="Jump to a date"
-              onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
-            {weekWindow(CURWEEK).map(w => <button key={w.v}
-              className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
-          </div>
           <div className={'filters' + (HLOPEN ? ' hl-open' : '')}>
-            {/* the phone calendar opener rides INSIDE the filter row now (owner,
-                26 Aug 26 — "we just need 1 row"), first control, phone-only
-                (.filt-cal), matching the view page exactly; the standalone
-                .wknav-m row is gone. The desktop keeps its .seg week window above. */}
+            {/* ONE ROW ON DESKTOP TOO, matching the view page (owner, 26 Aug 26).
+                The week window used to be a separate .seg row above; it now rides
+                inside the filter row as .wkseg, so the desktop edit bar is one
+                line. Order is deliberate (owner): the phone calendar opener, then
+                the desktop week window, then the EXPORT icons right after the
+                dates, then the highlighter — the highlighter last of the fixed
+                icons so expanding its sub-menu pushes only the chips to its right,
+                never the exports. Phone hides .wkseg (uses .filt-cal + swipe). */}
             <button className="wknav-mbtn filt-cal" aria-label="Jump to a date" title="Jump to a date"
               onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
+            <span className="wkseg" id="weekSegE">
+              <button className="wk wk-cal" aria-label="Jump to a date" title="Jump to a date"
+                onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
+              {weekWindow(CURWEEK).map(w => <button key={w.v}
+                className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
+            </span>
+            <span className="div wkdiv"></span>
+            {/* Undo / redo moved to the sticky top bar (owner, Aug 26) so they
+                stay in view while the page scrolls — see the topbar above. */}
             {/* Undo / redo moved to the sticky top bar (owner, Aug 26) so they
                 stay in view while the page scrolls — see the topbar above. */}
             {/* + Add wave removed here (owner, 13 Aug 26) — a wave is created

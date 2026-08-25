@@ -2507,7 +2507,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      The icon sits far LEFT, aligned with the DRAFT banner and the day cards
      below it (owner, 22 Aug 26), with a bottom gap so it never touches that
      grey box. */
-  #page-viewsched .wkseg,#page-viewsched .wkdiv{display:none}
+  #page-viewsched .wkseg,#page-viewsched .wkdiv,#page-editsched .wkseg,#page-editsched .wkdiv{display:none}
   /* the calendar opener is now the first control INSIDE the filter row (owner,
      26 Aug 26 — one row, not a row of its own), sized to sit on the icons' line. */
   .filters .filt-cal{display:inline-flex;width:34px;height:26px;border-radius:9px;flex:0 0 auto}
