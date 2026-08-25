@@ -278,8 +278,16 @@ export function alAttr(key:any){
   const n=SCHED.changes[key];
   if(n)return ` data-alc="${n}" title="Changed at AL${n}"`;
   if(SCHED.pending[key]){
+    /* an amendment mark only means something once the day is PUBLISHED — it says
+       "this differs from the issued document". On a still-draft day nothing has
+       been issued, so a pending edit is ordinary draft work, and an amendment-style
+       mark on every edit reads as a change to a live schedule and misleads (owner,
+       25 Aug 26). Published day → the edit previews the AL it will go out as
+       (data-aln, painted in that AL's colour on the edit surfaces); draft day →
+       NO mark. History still finds the cell by its own key + the edit log, not by
+       this attribute, so the changes list and hover are unaffected. */
     if(dayApproved(keyDay(key))){const x=nextAL();return ` data-alp="1" data-aln="${x}" title="Edited — goes out as AL${x}"`;}
-    return ` data-alp="1" title="Edited — not published yet"`;
+    return '';
   }
   return '';
 }

@@ -685,6 +685,16 @@ subscribers.
   `SAWAVE.autoDuty` or the wave-delete → `saDutyIx` linkage** — both were removed
   deliberately; `waveDutyBlock`/`saDutyIx` remain in `waves.ts` only for any AL
   snapshot still holding an old-style desk.
+- **Amendment marks are a PUBLISHED-day thing — a draft day shows none** (owner,
+  25 Aug 26 — "if I have not published the schedule yet, don't show all the orange
+  dotted lines … only once published does an AL-coloured mark make sense"). `alAttr`
+  emits a pending mark (`data-alp`/`data-aln`) only when the day is `dayApproved`;
+  a pending edit on a still-draft day emits nothing. The edit is still tracked in
+  `SCHED.pending` (the "N pending" count, the publish flow and History are
+  unchanged — History finds cells by key + the edit log, not by `data-alp`); only
+  the misleading visual is gone. Don't re-add a draft-day mark. Pinned in
+  `publish.test.ts` / `interact.test.tsx`; contract in `docs/ui-contracts.md`
+  §Amendment marks on screen.
 - **A new flying line comes up blank** (owner, 10 Aug 26). `+ Line` used to
   copy the previous line's callsign, mission and times; a plausible wrong
   value reads as filled in when nobody filled it in. **`+ Wave` follows the

@@ -510,7 +510,7 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     await act(async () => { afterSchedMutate(); notify() })
   })
 
-  it('an edited remark shows the pending mark, then its AL colour once published', async () => {
+  it('an edited remark on a draft day carries no mark, then its AL colour once published', async () => {
     const { SCHED, alIssue, unpublishAL } = await import('../engine/publish')
     const { txtGet, txtSet } = await import('../engine/slots')
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
@@ -520,9 +520,12 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     tx.textContent = 'AL MARK TEST'
     await act(async () => { tx.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
     await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+    /* the edit is TRACKED as pending (the machinery is unchanged) but, on a
+       still-draft day, carries NO amendment mark — before publishing there is
+       nothing to amend (owner, 25 Aug 26). */
     expect(SCHED.pending[key]).toBeTruthy()
     let el = document.querySelector(`#eWeek [data-txt="${key}"]`) as HTMLElement
-    expect(el.hasAttribute('data-alp'), 'pending mark rendered on the text').toBe(true)
+    expect(el.hasAttribute('data-alp'), 'a draft-day edit shows no amendment mark').toBe(false)
     await act(async () => { alIssue(8, [key]); const { notify } = await import('../state/store'); notify() })
     el = document.querySelector(`#eWeek [data-txt="${key}"]`) as HTMLElement
     expect(el.getAttribute('data-alc'), 'AL colour rendered on the text').toBe('8')

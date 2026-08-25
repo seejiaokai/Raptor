@@ -476,15 +476,24 @@ the read-only compare needed nothing).
 
 ## Amendment marks on screen
 
-`alAttr(key)` emits `data-alc="n"` (published in AL n) or `data-alp="1"`
-(pending); pending on a PUBLISHED day also carries `data-aln="n"` — the
-`nextAL()` it will go out as. Pucks and the area/time/rmk/in-times cells
-get outlines and an ALn tag; every other inline-edited string gets an
-AL-coloured underline + tag once published. Pending marks split by
-surface (owner request, Aug 26): on `#eWeek` and `#schedBoard`,
-`data-aln` items are painted DOTTED in the upcoming AL's colour (solid
-means issued, dotted means coming); the view-only page and draft-day
-edits keep the neutral dashed hint and no text-level mark. `data-aln`
+**An amendment mark is a PUBLISHED-day thing — a draft day shows none** (owner,
+25 Aug 26 — "if I have not published the schedule yet, don't show all the orange
+dotted lines … only once published does an AL-coloured mark make sense"). A mark
+says "this differs from the issued document"; before a day is published nothing
+has been issued, so a pending edit is ordinary draft work and marking it as an
+amendment misleads. So `alAttr(key)` emits `data-alc="n"` (published in AL n) for
+an issued change, and for a PENDING edit emits `data-alp="1" data-aln="n"` ONLY
+when the day is published (`dayApproved`) — the `nextAL()` it will go out as; a
+pending edit on a still-DRAFT day emits **nothing at all**. The edit is still
+TRACKED in `SCHED.pending` (the day-head "N pending" count, the publish flow and
+History are unchanged — History finds a cell by its own key + the edit log, not
+by this attribute), it just carries no visual mark until the day is published.
+Pucks and the area/time/rmk/in-times cells get outlines and an ALn tag; every
+other inline-edited string gets an AL-coloured underline + tag once published.
+Pending marks split by surface (owner request, Aug 26): on `#eWeek` and
+`#schedBoard`, `data-aln` items are painted DOTTED in the upcoming AL's colour
+(solid means issued, dotted means coming); the view-only page keeps the neutral
+dashed hint for a published day's pending edit (no text-level mark). `data-aln`
 resolves its colour through the same `--alc` palette rules as `data-alc`.
 
 A removed row has no cell left to outline. It therefore appears in the
