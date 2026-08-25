@@ -36,6 +36,34 @@ several are measured and suite-enforced, not preferences.
   with an 80-character unbreakable remark: width, height and scrollWidth
   identical either way), so do not add one back. Both pinned in
   `e2e/geometry.spec.ts`.
+- **Motion is THREE entrances and nothing else** (owner, 25 Aug 26 —
+  critique follow-up, approved scope "only do the motion"): pages fade in
+  (`pagein`, opacity ONLY — an animated transform on `.page` would make it
+  a containing block for `position:fixed` descendants for 150ms), the
+  scheduler board slides up (`boardup`, keyed on `:not([hidden])` so
+  `sb-wide` toggles never replay it), and the toast fades via an inline
+  `transition:opacity` plus a WAAPI rise (`toast.ts` — the keyframes carry
+  the base `translateX(-50%)`, and the call is guarded by the InputsCal
+  idiom: `typeof animate === 'function'` + reduced-motion matchMedia,
+  try/caught so motion can never eat a toast). The single off-switch for
+  the CSS half is the blanket
+  `@media (prefers-reduced-motion:reduce){*{animation/transition:none!important}}`
+  — its `!important` beats even the toast's inline transition; only WAAPI
+  needs the JS guard. Do not add scattered hovers/entrances beyond these
+  three without an owner ask. Pinned in `e2e/geometry.spec.ts` ("the motion
+  set") — including that reduced motion really computes `none`.
+- **The phone day-head is TWO FIXED ROWS on every day** (owner, 25 Aug 26 —
+  "Because of the word today, the layout is not the same … keep it
+  similar"): row one is the title + date (+"· Today") with the turn-pattern
+  badge at the right edge; row two is Templates/Drafts left and the
+  status/publish cluster right, pinned by `order` + a full-width
+  `.day-head::before` break in scheduler.css's `max-width:820px` block (the
+  view page, with no Templates span, keeps the same shape). Before this,
+  the wrap point followed the title's width, so the Today day shuffled its
+  controls onto different rows than every other day. Desktop keeps one
+  row. Pinned in `e2e/geometry.spec.ts` — an e2e pin on purpose: the fix
+  first landed in the WRONG media block and no jsdom test can see a media
+  query.
 
 ## The day carries across a page switch (owner, 9 Aug 26)
 
@@ -1678,6 +1706,20 @@ week render to 4940 nodes, so the perf gate's week ceiling was RAISED 4000 →
 ABOVE the open default). Gated in `e2e/geometry.spec.ts` ("the Available-crew
 panel folds") and `ui/editweek.test.tsx`.
 
+**On the board it wears the neutral panel chrome, not its green card** (owner,
+25 Aug 26 — "design it to match the scheduler board … make it blend in"). The
+same `.availpuck` markup renders in two surfaces: the edit week (between the
+tinted `.plist.sec` Personal-Inputs and SANS groups) and the board's aircrew
+column (between the neutral `.sb-panel` Personal-Inputs and SANS panels). CSS
+scoped to `#schedBoard .availpuck` (in `scheduler.css`) drops the green-tinted
+fill, the green heading and the 10px indent and adopts the `.sb-panel` / `.sb-ph`
+look — a neutral card, a neutral `--ink` uppercase header on `--panel-2`, and a
+JetBrains-Mono `.n` sub — keeping ONLY the 3px green left tab, the same
+category-colour tab every sibling board panel carries, so it lines up as one
+more section. The WEEK copy is deliberately left tinted: there its neighbours
+are tinted too, so the green card matches. Markup is unchanged, so the fold and
+drop-to-unassign contracts above are untouched.
+
 ## Reordering rows on the board
 
 A grip (`⠿`, `board-html.ts`'s `sbGrip`) sits at the far left of every
@@ -2790,9 +2832,14 @@ except where noted:
 - **A notification bell** (`#notifyBell`) sits by Insights on every page and both
   widths. It GLOWS when the current page + view-as person has an alert
   (`bellLit()`, `state/view.ts`, keyed `page|person`) — a per-person indicator,
-  deliberately NOT the removed week-wide count pills. What RAISES a bell is left
-  for the owner to wire (`markBell(page, who)` is the seam); tapping the bell
-  acknowledges the current view's alert. Session-only, wiped on login/logout.
+  deliberately NOT the removed week-wide count pills — OR when an ADMIN has
+  unseen bug reports (`bugAlert()`, `state/reports.ts` — the owner's first
+  wired trigger, 25 Aug 26; `markBell(page, who)` stays the seam for the
+  rest). A tap with a bug alert live toasts the count and goes straight to
+  the Help page, whose admin view is the acknowledgement (§The Help page);
+  otherwise the tap acknowledges the current view's alert as before. The
+  per-view registry is session-only, wiped on login/logout; the bug-report
+  glow derives from the reports themselves, which SURVIVE a login switch.
 - **Undo / redo / Edit history** (`.tb-hist`, `#undoBtn`/`#redoBtn`/`#histBtn`)
   moved OUT of the edit page's scroll-away `.filters` row INTO the sticky bar,
   shown only on the edit page, so they stay in view while the page scrolls
@@ -3522,7 +3569,21 @@ tools behind it, and the write handlers still ask `canEditSched()`
 themselves. Pinned non-vacuously in `ui/admin.test.tsx` — the page really
 mounts for the forced member, and what mounts is the denial.
 
-Three cards, a 2-column grid on desktop with the last card full-width:
+**The layout is a settings console (owner, 25 Aug 26 — "the smaller left
+side has the categories and the right side is the pages for settings").** A
+category rail (`.adm-rail`, the `CATS` array in `AdminPage.tsx`) indexes the
+page and a single content pane (`.adm-pane`) shows the active category. On a
+wide screen (≥821px) the rail and pane sit side by side and both stay
+visible; below 821px the shell is one column and it DRILLS — the rail is the
+whole screen, tapping a category flips `drilled` and swaps in the pane with a
+`‹` back arrow (`.adm-back`, phone-only), the iOS-settings list→detail move
+that lets a two-pane layout fit a phone. **Every category panel stays mounted
+and only the active one shows** (`.adm-panel.on`), so `#admDutyTpl`,
+`#admDayTpl` and the user tools keep their stable ids whichever category is
+live — which is also why `admin.test.tsx` can click the template openers
+without first selecting their category. A new settings category is one `CATS`
+entry plus its `.adm-panel` section; the owner is filling this in over time.
+The three category panels:
 
 - **`#admUsers` Manage users** — the old `#userModal` body moved here WHOLE
   (same ids and classes: `#newName`, `#newRole`, `#userAdd`, `#userList`,
@@ -3537,9 +3598,91 @@ Three cards, a 2-column grid on desktop with the last card full-width:
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
   Front doors, not new surfaces: the modals stay App-level siblings and
   paint over this page like any other.
-- **`#admData` Data & persistence** — an honesty card only: everything
-  typed into the prototype is session-only, and this card marks the seam
-  where the shared database's controls will land.
+- **`#admData` Data** — the storage-and-cleanup panel. **The screen reads
+  PRODUCTION (owner, 25 Aug 26)**: the old session-only/no-server honesty
+  paragraphs are gone from the UI and live as code comments in
+  `AdminPage.tsx` (and HANDOFF) for the database migration — CLAUDE.md
+  §Product bar carries the standing wording rule. Two controls, both
+  rendered by ONE shared `ClearControl` component so their behaviour
+  cannot drift, and both speaking the same **period grammar** (owner,
+  25 Aug 26 — "an option for data range selected, specific date and option
+  for anything older than this date"): a `Period` select (`#admWipeMode` /
+  `#admLogMode`) offering *Anything older than a date* (open-ended into
+  the past, exclusive of the date), *A specific date*, or *A date range*
+  (inclusive of both ends; the two pickers `…Date`/`…Date2` sit on one
+  `adm-2col` row, and a reversed pair is swapped, not refused). Native
+  date fields (`color-scheme: dark` on `html` keeps the pickers dark) and
+  a TWO-TAP button each: the first tap dry-counts and arms it red with
+  "Tap again to clear N records/entries" (a zero count toasts instead of
+  arming — no no-op confirms; changing the mode or any date disarms), the
+  second tap acts. Both funnels live in `ui/inputedit.tsx`, share one
+  `clearWindow` period resolver, and gate on `canEditSched` at the write
+  path.
+  - **Clear old data** (`#admWipe` → `clearHistoryData`; the original
+    `clearHistoryBefore(iso)` survives as the one-argument 'before'
+    spelling) sweeps inputs / calendar pucks / day titles wholly inside
+    the period in ONE `writeInputsBatch` (one undo step) and drops
+    stashed weeks whose whole Mon–Sun span sits inside (`stashDrop`, gen
+    BUMPED never reset — `peek.ts` caches on it). Deletion FAILS CLOSED:
+    an unparseable date is kept, a span touching or crossing the period's
+    edge is kept whole, and each doomed input goes through the same
+    `dropInputRow` body a single delete uses (Leave-War retract +
+    unaccept + splice — one body, no drift). Leave synced from the Leave
+    War tab is withdrawn from the war for real and does NOT come back
+    with Undo (the war has no shared undo — same as deleting such a row
+    by hand).
+  - **Clear edit history** (`#admLog` → `clearEditHistory` →
+    `elogSweep`, `engine/editlog.ts`) clears ELOG rows by the LOCAL
+    calendar date the edit was MADE (the date the History list prints),
+    never touching the schedule. Permanent for real — the edit log was
+    never in the undo snapshot — and the clear is itself logged AFTER
+    the sweep, so the record that history was cleared survives even when
+    the period covers today.
+
+  The on-screen notes are the database-era wording — they call both
+  sweeps permanent (the two-tap confirm is the safety; a DB wipe won't
+  ride session undo) and stay silent about today's undo nuances, which
+  live in the code comments beside them. Pins: `ui/wipe.test.tsx`.
+
+## The Help page (owner, 25 Aug 26)
+
+The EIGHTH tab (`#page-help`, `ui/HelpPage.tsx`), for EVERYONE — "allows
+anyone to type in Bug reports. In which admin can view them". It sits after
+the work tabs and before Admin in BOTH navs (Admin stays last, always). One
+centred column, two cards:
+
+- **`#bugFile` Report a problem** — a category select (`#bugCat`, the
+  `BUG_CATS` list in `state/reports.ts`: one per surface plus the
+  cross-cutting three; adding a category is one string there), a
+  description box (`#bugText`) and `#bugSend`. Filing requires a category
+  and a non-blank description — a blank Send TOASTS instead of silently
+  doing nothing (the 12 Aug 26 audit rule). `who` is stamped from
+  `HOOKS.whoami()`, the edit log's identity seam, so reports start naming
+  real people the day accounts do. A MEMBER also sees their own filed
+  reports under the form (`#bugMine`) as the receipt — never anyone
+  else's.
+- **`#bugAdmin` Bug reports** (admins only) — every report NEWEST FIRST
+  (`reportRows()` sorts a copy by `t` desc), each row carrying its
+  category chip (`.bugcat`, hue derived from the category's index — no
+  hand-kept colour map), the filed date (`elogWhen`, the edit log's own
+  date format) and the text. OPENING this view is the acknowledgement:
+  the rows that were unseen keep a `NEW` badge for that visit (captured
+  into local state BEFORE `markReportsSeen()` runs), and the top-bar bell
+  goes out on the same tick.
+
+**The bell contract** (§The top bar carries the bell): `bugAlert()` lights
+`#notifyBell` for an ADMIN with unseen reports on every page; a tap goes
+straight here rather than clearing anything — the alert can never be
+acknowledged without the reports on screen. A member's bell never lights
+for their own filing.
+
+**The store** (`state/reports.ts`): a flat `REPORTS` array — DATA, not view
+state. Deliberately NOT cleared by `resetSession` (a member files, logs
+out; the next admin login still finds the report and a lit bell) and not in
+the undo snapshot (filing is not a schedule edit). DB-era: the array
+becomes a table, `fileReport` an insert pushed realtime, the bell a
+subscription — the row shape is already what a backend would sync.
+Pins: `ui/help.test.tsx`.
 
 ## The next-week preview (owner ask — desktop continuous week display, 23 Aug 26)
 

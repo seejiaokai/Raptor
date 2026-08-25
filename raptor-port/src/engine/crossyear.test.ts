@@ -135,3 +135,26 @@ describe('the editors resolve a row through its own year', () => {
     expect(sansOverlapRefusal('krait', 'Jul 14', undefined, null)).toBe('')
   })
 })
+
+/* dateOrd/baseYear are MEMOISED (25 Aug 26 — a year of INPUTS made every
+   schedule pass re-parse the same labels millions of times). The memo caches
+   only the pure label parse; the year fallback resolves per call. These pin
+   the one way a memo could break the 24 Aug year-anchor semantics: serving a
+   stale year after the loaded week changes. */
+describe('the date memo never serves a stale year', () => {
+  it('a bare label re-resolves through baseYear on every week change', () => {
+    loadWeek('13/07/2026')
+    expect(dateOrd('Jul 14')).toBe(20260714) // warm the memo under 2026
+    loadWeek('12/07/2027')
+    expect(dateOrd('Jul 14')).toBe(20270714) // same label, new week, new year
+    loadWeek('13/07/2026')
+    expect(dateOrd('Jul 14')).toBe(20260714)
+  })
+  it('an explicit label year and a row anchor still outrank the loaded week', () => {
+    loadWeek('12/07/2027')
+    expect(dateOrd('Jul 14 2026')).toBe(20260714) // label's own year wins
+    expect(dateOrd('Jul 14', 2026)).toBe(20260714) // row anchor beats baseYear
+    expect(dateOrd('not a date', 2026)).toBe(null) // unparseable stays null
+    loadWeek('13/07/2026')
+  })
+})

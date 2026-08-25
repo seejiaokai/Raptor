@@ -85,3 +85,42 @@ export function HistIcon() {
     </svg>
   )
 }
+
+/* ---- Admin category-rail glyphs (owner, 25 Aug 26) — the same Lucide-style
+   line family as the toolbar icons above, so the settings rail reads as one
+   of the app's own surfaces rather than a bolted-on console. ---- */
+
+/** Two people — the Manage-users category. */
+export function UsersIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11" />
+    </svg>
+  )
+}
+
+/** Three sliders — the Squadron-configuration category (templates & policy). */
+export function SlidersIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3" />
+      <path d="M1 14h6M9 8h6M17 16h6" />
+    </svg>
+  )
+}
+
+/** A database cylinder — the Data & persistence category. */
+export function DatabaseIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+      <path d="M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6" />
+    </svg>
+  )
+}

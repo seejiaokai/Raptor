@@ -434,6 +434,28 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
     devices/accounts — is still server work; this is the per-browser half
     of it, and the single seam (`weekBundle` + `weekstash.ts`) is still
     where that migration hooks in.
+    **The end-state is now STATED, not implied** (owner, 25 Aug 26 — "In
+    the end it will be a live database where everyone can see changes in
+    realtime … if u can build things backend that follow this modality
+    that will be good. So that one day … we are not shocked that
+    everything backend needs to be restructured"): a LIVE shared database,
+    changes visible to everyone in real time; demo data that resets per
+    refresh is the accepted interim. This upgrades the existing
+    architecture doctrine from "keeps the option open" to "builds toward
+    the destination": every write through the mutation funnel, every
+    persistence read/write through a single pluggable seam
+    (`HOOKS.storeBackend` / Leave War's `storage.ts` / the
+    `weekBundle`+`weekstash` pair), NO state invented outside those paths,
+    and nothing cached in a way a live remote write couldn't invalidate
+    (the 25 Aug date-memo is the model: cache only what data changes can
+    never affect). When weighing two shapes for new backend-ish work, pick
+    the one a realtime-sync backend slots into without restructuring. When that work lands, give `INPUTS` a
+    by-date index in the same pass: the date-label parsing that made a
+    year of inputs slow was memoised 25 Aug 26 (engine-rules.md §date
+    resolution — a year now switches weeks in ~50ms on a phone), but the
+    whole-list scans themselves are still O(N), deliberately — indexing
+    them adds invalidation semantics to the rules engine that are only
+    worth it once real multi-year data exists.
   - **Two more pieces landed the same day on top of this.** The forward
     crew-rest trace (owner, 23 Aug 26, from the deployed site — "If I plan
     someone who bust crew rest the day prior it should also flag out just
@@ -2149,7 +2171,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `histbubble.ts` | The History bubble — one body-level element, delegated on the board wrap in the CAPTURE phase (the board's arm handler stops propagation, and a phone tap must still arm). `pointer-events:none` is load-bearing, not styling. Re-anchors on scroll rather than hiding; parks the cell's own `title` while it is up. |
 | `HistoryModal.tsx` | The changes list — every edit newest first, whole week with a filter for the open day, opened from the checks panel's `[data-histopen]` line. String-built body in the ordinary `.modal` idiom. |
 | `Modals.tsx` | DayPop (read-only day details), Insights, Airspace/traffic popup. (Manage-users moved to `AdminPage.tsx` whole, 23 Aug 26.) |
-| `AdminPage.tsx` | **The Admin page** (23 Aug 26) — the seventh tab, always last, admin-hidden in both navs but gated at the PAGE (`#admDeny` for a forced member). Carries the moved Manage-users section (same ids/store as the old modal), the two template-editor openers (`#admDutyTpl`/`#admDayTpl` set the same `pops.ts` flags as the picker pencils) and the Data & persistence honesty card. Pinned in `admin.test.tsx`. |
+| `AdminPage.tsx` | **The Admin page** (23 Aug 26; settings-console layout 25 Aug 26) — the seventh tab, always last, admin-hidden in both navs but gated at the PAGE (`#admDeny` for a forced member). A category rail (`CATS`) + one content pane: side-by-side on desktop, list→detail drill-in with a `‹` back arrow on a phone; every panel stays mounted (`.adm-panel.on` shows the active one). Carries the moved Manage-users section (same ids/store as the old modal), the two template-editor openers (`#admDutyTpl`/`#admDayTpl` set the same `pops.ts` flags as the picker pencils) and the Data panel — TWO clearing controls sharing one `ClearControl` component and one period grammar (25 Aug 26: older-than / specific date / date range, `#admWipeMode`+`#admWipeDate`(+`Date2`) and `#admLogMode`+`#admLogDate`(+`Date2`), each with a two-tap dry-count confirm): **Clear old data** (`#admWipe` → `inputedit.tsx:clearHistoryData`; fail-closed selection, one undo step, stashed weeks dropped via `stashDrop` only when their whole span sits inside the period) and **Clear edit history** (`#admLog` → `clearEditHistory` → `editlog.ts:elogSweep`; clears by the LOCAL date the edit was made, schedule untouched, permanent — never in the undo snapshot — and the clear logs itself after the sweep). Both DB-era: they become server-side deletes behind the same buttons. Pinned in `admin.test.tsx` + `wipe.test.tsx`. |
 | `DutyTplModal.tsx` | The **duty-template editor** (13 Aug 26) — opened from the `+ Block` picker's pencil (`TPLEDIT` in `pops.ts`). Tabs per template + New, an editable title, rows with role (a `DUTY_PICK` datalist) / start / end / ▲▼ reorder / delete, + Add role, and Reset / Delete / Done. Mirrors the old Manage-users modal's shape; drives `engine/dutytpl.ts` and persists on every edit. |
 | `DayTplModal.tsx` | The **day-template library editor** (15 Aug 26) — opened from the Templates picker's pencil, on either surface (`DAYTPLEDIT` in `pops.ts`, a `false\|true\|string` open-pre-selected flag). Tabs per template, an editable title, a read-only structure summary; deliberately no row editor (a day template's content is edited on the board/week themselves, which already own that surface) and no "+ New" (a template is always recaptured off a real day, never started blank). Reset / Delete / Done, all toasting. |
 | `DraftsModal.tsx` | The **drafts manager** (15 Aug 26) — opened from the Drafts picker's pencils (`DRAFTSEDIT` in `pops.ts`, carrying the day since drafts are per-day), scoped to the one day whose menu opened it. Tabs per draft (selected one marked ●), a name field that commits on blur/Enter (`draftRename` refuses empty/duplicate names, and refusing mid-keystroke would fight the typist), Select (make it live) / Delete (disabled on the selected entry, with a title saying why) / Done. |
@@ -2159,7 +2181,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
 | `WeekCal.tsx` / `weeknav.ts` / `icons.tsx` | **The date-jump calendar (22 Aug 26)** — `WeekCal` is the app's `.rc-*` month picker as a DAY picker (the week is transparent): the single current day is lit (`.sel`) + the notional today ringed (`.today`), and tapping a day loads its week and lands the view on that exact day (schedule carousel via `WEEKJUMP` day-index; board via `boardTab`). Opened via the `WEEKCAL` flag (`pops.ts`) from the schedule seg, the mobile calendar icon, and the board's `#sbCal`. `weeknav.ts` is the one place for week math: `mondayOf`, `shiftWeek` (continuous ±7 days), `weekWindow` (the desktop rolling prev·current·+1·+2 buttons + labels + today mark), `dayIndexInWeek`, iso⇄key converters, `TODAY_WEEK`. `icons.tsx` holds the shared inline-SVG glyphs (`CalIcon`, `HistIcon`, `XlsIcon`, `PdfIcon`) for the toolbar buttons, sized by `.btnglyph`. |
 | `hlchips.tsx` | The ONE Highlight chip strip (23 Aug 26) — `HlChips`, rendered on the view week, the edit week and the board bar off the same `HLSET`/`SEARCH` state, with the phone fold behind the highlighter toggle (`HLOPEN`, its `HlIcon` glyph in `icons.tsx`). One definition, three surfaces — the drift-seam doctrine. Pinned in `hlfold.test.tsx`. |
-| `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer (its week chips became a single "Pick a week…" calendar opener, 22 Aug 26), login. |
+| `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer (its week chips became a single "Pick a week…" calendar opener, 22 Aug 26; carries the Help tab for everyone, 25 Aug 26), login. |
+| `HelpPage.tsx` + `state/reports.ts` | **The Help tab** (25 Aug 26) — the eighth tab, for EVERYONE, before Admin (which stays last). Bug reports: anyone files with a category (`BUG_CATS`) + description (blank Send toasts); a member sees their own receipts; the ADMIN list is newest-first with date/who/category chip, and OPENING it is the acknowledgement (`markReportsSeen` + NEW badges captured first). The top-bar bell (`#notifyBell`) lights for an admin with unseen reports (`bugAlert` — the bell seam's first wired trigger) and a tap lands on Help. `REPORTS` is DATA: survives login switches (NOT wiped by resetSession), outside the undo snapshot; DB-era it becomes a table + realtime push, shape already right. Pinned in `help.test.tsx`. |
 | `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. |
 | `printpdf.ts` | The schedule's PDF export (23 Aug 26) — `schedPrintHTML` builds a standalone black-on-white printable document (own stylesheet, every cell escaped, layout deliberately basic for now); `printSchedPDF` prints it through a hidden iframe so "Save as PDF" in the browser dialog is the file. Pinned in `printpdf.test.ts` (the text half only, the csvText precedent). |
 | `scheduler.css` | The ported stylesheet — it carries MEASURED contracts, not preferences. |

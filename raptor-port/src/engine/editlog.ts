@@ -40,6 +40,25 @@ export const ELOG: { rows: ELogRow[]; cap: number } = { rows: [], cap: 400 }
 
 export function elogClear() { ELOG.rows.length = 0 }
 
+/* THE ADMIN SWEEP (owner, 25 Aug 26 — "clear the history of edits. On specific
+   dates or a range or from this day till history onwards"). Bounds are wall
+   clock ms, [lo, hi) — either side null for open-ended. The CALLER turns
+   calendar dates into LOCAL midnights, because the list prints local dates
+   (elogWhen) and an entry cleared "on 25/8" must be one the list showed as
+   25/8. Engine-pure on purpose: the role gate and the period grammar live at
+   the one funnel in ui/inputedit.tsx, the same split the data sweep uses.
+   NOT undoable and not snapshot-carried — the log was never in histSnap (see
+   the header above), so clearing it is permanent, which is exactly what the
+   Admin panel's wording promises. */
+export function elogSweep(lo: number | null, hi: number | null, dry?: boolean): number {
+  const keep = ELOG.rows.filter(r => !((lo == null || r.t >= lo) && (hi == null || r.t < hi)))
+  const n = ELOG.rows.length - keep.length
+  if (dry || !n) return n
+  ELOG.rows.length = 0
+  keep.forEach(r => ELOG.rows.push(r))
+  return n
+}
+
 /* THE LOG'S ADDRESSES MOVE WITH THE KEY SPACE (audit, 12 Aug 26). A delete
    or reorder renumbers every index-addressed key — keys.ts rewrites pending,
    changes, added and the issued ALs, and until this hook it left ELOG alone,

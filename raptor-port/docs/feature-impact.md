@@ -125,6 +125,13 @@ per-day `inpShow` (exported from `events.ts`), NOT a second copy — the day-bli
 on a day the validator still warned (Aug 26 audit). One shared gate now, so a
 change to `inpShow` moves both readers together; a scan that reads the input any
 OTHER way is a new drift-seam.
+**The Admin bulk sweep rides this same flow (25 Aug 26)**: `clearHistoryBefore`
+(`inputedit.tsx`, the Admin → Data "clear old data" button) removes every input
+wholly before a date through the SAME `dropInputRow` body a single delete uses
+(LW retract → unaccept → splice), in ONE `writeInputsBatch`, plus the planning
+layer (`PLANPUCKS`/`DAYRMK`) and stashed past weeks (`stashDrop`). A change to
+the single-delete semantics changes the sweep for free — that is the point; a
+second removal body would be the drift-seam this line exists to forbid.
 
 ### Flow C — day navigation on the phone board (view-only, no mutation)
 ```

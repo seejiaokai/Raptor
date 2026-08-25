@@ -462,3 +462,33 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When renaming any credential, account, id or selector, grep the ENTIRE gate surface — including scripts CI never runs (probes/, perf, runners) — not just src/ and the CI-exercised suites. In this repo: `grep -rn <old-literal> probes/ e2e/` belongs in the rename checklist alongside the src sweep.
 
 **Principle:** A rename that passes CI can still break gates that only run locally; the sweep for old literals must cover every script that exercises the system, not just the code and the CI path — and paired read-only fixtures (a frozen reference build) may deliberately KEEP the old literal, so the sweep must split by target, not blanket-replace.
+
+### Observation 33: vite preview with base './' serves at root — '/Raptor/' path is a silent SPA-fallback trap
+
+**Status:** OPEN
+**Date:** 2026-08-25
+**Session context:** Live-driving the Admin Data panel's new clearing controls against a local vite preview build
+**Skill:** New skill candidate: raptor-live-drive (or CLAUDE.md probes section)
+**Type:** internal
+**Phase/Area:** Local preview + Playwright drive recipe
+
+**Issue:** The app's vite base is './', so `vite preview` serves it at http://localhost:PORT/ — but the deployed URL shape (/Raptor/) also answers 200 via the SPA fallback, returning index.html whose RELATIVE asset refs then 404. curl -w '%{http_code}' on both the page AND an asset path reported 200 (the asset "200" was the fallback HTML), so the recipe looked verified while Chromium showed a blank #root. Cost three debug rounds; also found multiple leftover 'vite preview' processes from a prior background e2e run squatting alongside the new one.
+
+**Suggested improvement:** In the repo's drive recipe (CLAUDE.md or probes doc): (1) always drive http://localhost:PORT/ (root, never /Raptor/) against local previews; (2) verify an asset URL by CONTENT-TYPE or first bytes, never by status code, since SPA fallbacks make every path a 200; (3) before starting a preview, kill stale ones with a ps-based sweep, not a single pkill pattern.
+
+**Principle:** Against any SPA server with a history fallback, an HTTP 200 proves nothing about a path being right — verify by content, and verify the port is served by exactly the process you just started.
+
+### Observation 34: An insertion into a 5,000-line CSS file landed in the wrong @media block — geometry probe caught what no unit test could
+
+**Status:** OPEN
+**Date:** 2026-08-25
+**Session context:** Fixing phone day-header layout shifting when "· Today" widens the title
+**Skill:** projectSettings:impeccable (verify phase) / repo CLAUDE.md conventions
+**Type:** open-source
+**Phase/Area:** CSS editing + verification
+
+**Issue:** New phone-only rules were inserted next to plausible-looking neighbours (.day-head padding overrides) that actually sat inside the DESKTOP @media (min-width:821px) block — the enclosing query opened 20+ lines above the insertion point and nothing at the edit site said so. The build succeeded, the rules appeared in dist, and only a real-browser geometry measurement (comparing control offsets across two days at 390px) revealed they never applied on the phone — and were silently mis-applying on desktop.
+
+**Suggested improvement:** When inserting into a large stylesheet, first print the nearest preceding @media line (grep -n '@media' | awk range) to confirm the enclosing block; and verify layout CSS changes by measuring rendered geometry in a real browser (the repo's e2e geometry suite), never by grepping dist for the rule's presence — presence proves shipping, not applying.
+
+**Principle:** In any large file with long-range enclosing scopes (media queries, namespaces, conditional blocks), the lines adjacent to an insertion point tell you nothing about scope — resolve the enclosing construct explicitly before inserting, and verify behaviour where the scope condition is true.

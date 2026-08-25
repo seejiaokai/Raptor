@@ -4093,3 +4093,64 @@ test.describe('the Inputs month calendar', () => {
     })
   }
 })
+
+/* The phone day-head is TWO FIXED ROWS whatever the title says (owner,
+   25 Aug 26 — "Because of the word today, the layout is not the same
+   between these … keep it similar"). The head used to be one wrapping flex
+   row, so the extra width of "· Today" moved the 4x4 badge and the publish
+   cluster to different rows on different days. Pinned: every control sits
+   at the same offset within the head on the Today day and any other day,
+   and the desktop head stays one row. scheduler.css's ordered break — and
+   the reason this is an e2e pin: the fix first landed inside the WRONG
+   media block (the desktop one) and no unit test can see a media query. */
+test.describe('the day-head lays out the same on every day', () => {
+  test('phone: Today does not move the controls; desktop: one row', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    const today = await page.locator('#page-editsched .day.today[data-day]').count()
+    expect(today, 'the demo week carries a Today day — the case under test').toBeGreaterThan(0)
+    const head = (di: number) => page.evaluate(di => {
+      const h = document.querySelector(`#page-editsched .day[data-day="${di}"] .day-head`)!
+      const hb = h.getBoundingClientRect()
+      const at = (sel: string) => {
+        const el = h.querySelector(sel)
+        if (!el) return null
+        const r = el.getBoundingClientRect()
+        return { top: Math.round(r.top - hb.top), left: Math.round(r.left - hb.left) }
+      }
+      return { badge: at('.badge'), tpl: at('.dhtpl'), stat: at('.dstat'), h: Math.round(hb.height) }
+    }, di)
+    const mon = await head(0), tue = await head(1)
+    expect(mon, 'Monday (Today) and Tuesday heads are geometrically identical').toEqual(tue)
+    expect(mon.badge!.top, 'the 4x4 badge holds row one').toBeLessThan(30)
+    expect(mon.tpl!.top, 'Templates/Drafts hold row two').toBeGreaterThan(30)
+    await page.setViewportSize(DESK)
+    await page.waitForTimeout(400)
+    const wide = await head(0)
+    expect(Math.abs(wide.badge!.top - wide.tpl!.top), 'desktop keeps one row').toBeLessThanOrEqual(4)
+  })
+})
+
+/* The motion set (owner, 25 Aug 26 — critique follow-up, approved scope
+   "only do the motion"): pages fade in (pagein), the board slides up
+   (boardup), and BOTH go instant under reduced motion via the blanket
+   `*{animation:none!important}` rule. Pinned in a real browser because
+   jsdom computes no styles: this is the only gate that can prove the
+   animations exist AND that the reduced-motion switch really reaches them. */
+test.describe('the motion set, and its reduced-motion off-switch', () => {
+  test('pages and the board animate; reduced motion computes none', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    const anim = (sel: string) => page.evaluate(s => getComputedStyle(document.querySelector(s)!).animationName, sel)
+    expect(await anim('#page-viewsched'), 'the shown page carries its fade').toBe('pagein')
+    await go(page, 'editsched')
+    await page.click('#page-editsched .day[data-day="0"] .dt.sb-open')
+    await page.waitForSelector('#schedBoard:not([hidden])')
+    expect(await anim('#schedBoard'), 'the open board carries its rise').toBe('boardup')
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    expect(await anim('#page-editsched'), 'reduced motion silences the page fade').toBe('none')
+    expect(await anim('#schedBoard'), 'reduced motion silences the board rise').toBe('none')
+    await page.emulateMedia({ reducedMotion: null })
+  })
+})

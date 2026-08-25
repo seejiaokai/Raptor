@@ -232,9 +232,16 @@ ship without waiting to be asked.
   it, and when driving the built bundle (the live-view pass below), LOOK for
   UI faults and improvement openings beyond the change being made — and
   report them. As options, which is the next rule.
-- **Scope is the ask.** Improvements noticed en route are REPORTED as
-  options, never built unasked. A rejected or rolled-back idea is recorded
-  in §Stable decisions and never reintroduced silently.
+- **UI copy reads PRODUCTION, never prototype** (owner, 25 Aug 26 — "Is it
+  possible to create a production ready interface. Don't need to put all
+  these unnecessary instructions … word it such that when this goes to
+  database what would the user actually see"). No "session-only", "demo",
+  "no server yet" or "this is where controls will land" caveats on screen —
+  write every label and note as the database-era user will read it, and
+  keep the prototype truths as CODE COMMENTS beside the control (plus
+  HANDOFF) so the migration doesn't forget them. Helper text that explains
+  what a control DOES (what a template is, what a wipe removes) stays —
+  it is instruction, not apology.
 - **Verified vs assumed, always distinguished.** "Checked" means read or
   run first-hand this session; anything else is stated as an assumption.
 

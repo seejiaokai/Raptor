@@ -12,10 +12,26 @@ export function toast(msg:any,kind:any){
        bottom-centre of the screen: applyDrop got the toast, matched nothing, and
        returned silently. The dead rectangle even changed size with the last message,
        which is what made it feel random. */
-    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:540;pointer-events:none;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);padding:10px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 20px 50px -20px rgba(0,0,0,.8)';document.body.appendChild(t);}
+    /* transition:opacity — part of the 25 Aug 26 motion set: the show fades
+       in and the timeout's opacity='0' fades out instead of snapping. The
+       blanket reduced-motion rule in scheduler.css kills it (its !important
+       beats an inline style), so no JS gate is needed for this half. */
+    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:540;pointer-events:none;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);padding:10px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 20px 50px -20px rgba(0,0,0,.8);transition:opacity .22s ease';document.body.appendChild(t);}
   t.textContent=msg; t.style.opacity='1';
   t.style.borderColor=kind==='warn'?'var(--adv)':'var(--edge-2)';
   t.style.color=kind==='warn'?'var(--adv)':'var(--ink)';
+  /* the pop — a WAAPI rise, because the element's position is inline style,
+     not a class a keyframe could target cleanly. Same guard idiom as
+     InputsCal's month slide: no animate() in jsdom, and reduced-motion
+     opts out (WAAPI is the one motion the CSS blanket cannot reach). The
+     keyframes carry the base translateX(-50%) — dropping it would walk the
+     toast off-centre for the length of the animation. */
+  try{
+    if(typeof (t as any).animate==='function'&&!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))
+      (t as any).animate(
+        [{transform:'translateX(-50%) translateY(8px)'},{transform:'translateX(-50%)'}],
+        {duration:200,easing:'cubic-bezier(.22,.61,.36,1)'})
+  }catch(_){/* motion is decoration — a throw here must never eat the toast */}
   if(toastT)clearTimeout(toastT); toastT=setTimeout(()=>t.style.opacity='0',kind==='warn'?4200:2600);
 }
 
