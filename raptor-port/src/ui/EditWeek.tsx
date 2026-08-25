@@ -12,7 +12,7 @@ import { paletteHTML, paletteDay } from './palette-html'
 import { ARM, CARRYDAY, CURPAGE, DPREV, PEEKLAND, WEEKJUMP, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
-import { weekScrollMax } from './pan'
+import { weekScrollMax, panHold } from './pan'
 import { mountPeek } from './peek'
 import { editingText } from './textedit'
 import { useVersion } from './useStore'
@@ -85,8 +85,10 @@ export function EditWeek() {
       root.style.scrollBehavior = was
       setPeekLand(null)
     } else {
-      /* a within-week repaint holds the week's scroll position (B54) */
-      root.scrollLeft = sl
+      /* a within-week repaint holds the week's scroll position (B54) — or the
+         glide's destination if one is in flight, so a mid-glide repaint lands on
+         the intended day instead of freezing between two (see panHold). */
+      root.scrollLeft = panHold(sl)
       /* the carried day from a page switch — see ViewWeek for the reasoning;
          both weeks consume it the same way so the hop works in both directions */
       if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }

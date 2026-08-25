@@ -96,6 +96,39 @@ export function weekScrollMax(w: any): number {
    the common manual pan (shift+wheel) nulls panWk outright anyway. */
 let panWk: string | null = null
 let panAnchor = -1, panTgt = -1
+/* THE ARROW GLIDE OWNS THE TRACK WHILE IT IS IN FLIGHT (owner, 23-24 Aug 26 —
+   the recurring "arrows don't go day by day … stuck halfway then zoom past"
+   report). panDays fires a scroll-behavior:smooth glide, and every frame of it
+   mirrors to the proxy scrollbar. trkEcho (below) tries to tell our own mirror
+   echo from a real thumb-drag by POSITION, but a real browser coalesces and
+   defers `scroll` events under load: an echo can arrive after a newer frame has
+   already moved trkEcho on, so |track − trkEcho| clears the epsilon, the echo is
+   mistaken for a drag, and onTrackScroll writes the week back with an instant
+   scroll — which CANCELS the glide. Measured on the built app: this swallowed a
+   whole arrow press about one time in seven under load, and the next press then
+   skipped a day (4→6). Position bookkeeping alone cannot close that race, so the
+   glide also arms a short time window during which the track is a pure FOLLOWER
+   and never drives the week. A deliberate manual interaction (a scrollbar grab or
+   a wheel pan) clears the window at once, so it never makes a real drag feel
+   dead; the only cost is that a native-thumb drag STARTED within the glide's own
+   ~half second is briefly ignored, which no day-by-day arrow use ever does. */
+let glideEnd = 0
+const GLIDE_MS = 500
+/* HOLD THE GLIDE'S DESTINATION ACROSS A REPAINT, NOT THE MID-GLIDE POSITION
+   (the second half of the "stuck halfway" bug). A within-week repaint re-pins
+   the week's scrollLeft so the string-diff render does not lose the scroll — but
+   it captures the LIVE scrollLeft, and if a repaint fires mid-glide (rosDayFollow
+   debounces a palette-follow notify() ~110ms after the scroll quiets, which under
+   load can land while the glide is still easing) that captured value is a mid-day
+   position, and re-pinning it CANCELS the glide and freezes the strip between two
+   days — the next arrow then counts from the commanded target and skips a day.
+   While a glide is in flight the right thing to restore is where the glide is
+   HEADING (panTgt): the repaint then lands cleanly on the intended day instead of
+   mid-stride. Outside a glide this returns the caller's own live value unchanged,
+   so the ordinary scroll-hold (B54) is untouched. */
+export function panHold(sl: number): number {
+  return (Date.now() < glideEnd && panWk === CURWEEK && panTgt >= 0) ? panTgt : sl
+}
 function panBase(w: any): number {
   const sl = w.scrollLeft
   if (panWk !== CURWEEK || panTgt < 0) return sl
@@ -151,6 +184,7 @@ export function panDays(dir: number) {
      continuation, so the anchor (the burst's true origin) is kept. */
   const cont = panWk === CURWEEK && panTgt >= 0 && base === panTgt
   panWk = CURWEEK; panAnchor = cont ? panAnchor : base; panTgt = dest
+  glideEnd = Date.now() + GLIDE_MS   // the track follows, never drives, until the glide lands
   w.scrollTo({ left: dest, behavior: 'smooth' })
 }
 
@@ -352,17 +386,23 @@ function onWheel(e: WheelEvent) {
        still exits on booleans alone — deltaX is 0 there — which is the perf
        contract this non-passive listener lives under (the Edge no-JIT note
        above); only a real horizontal tick pays the closest() walk. */
-    if (e.deltaX) { const t = e.target as HTMLElement; if (t && t.closest && t.closest('.week')) panWk = null }
+    if (e.deltaX) { const t = e.target as HTMLElement; if (t && t.closest && t.closest('.week')) { panWk = null; glideEnd = 0 } }
     return
   }
   if (!e.deltaY) return
   const w = (e.target as HTMLElement).closest('.week')
-  if (w) { panWk = null; hsSet(w, (w as HTMLElement).scrollLeft + e.deltaY); e.preventDefault() }  // a manual wheel-pan drops the arrow's in-flight target
+  if (w) { panWk = null; glideEnd = 0; hsSet(w, (w as HTMLElement).scrollLeft + e.deltaY); e.preventDefault() }  // a manual wheel-pan drops the arrow's in-flight target and the glide's hold on the track
 }
-function onTrackGrab() { panWk = null }   // a real scrollbar grab drops the arrows' in-flight target
+function onTrackGrab() { panWk = null; glideEnd = 0 }   // a real scrollbar grab drops the arrows' in-flight target and the glide's hold on the track
 function onTrackScroll() {
   const w = hsWeek(); if (!w) return
   const trk = $('hsTrack')!
+  /* an arrow glide is in flight (see glideEnd) — the track is a pure follower
+     right now, so every event here is our own mirror, never a drag. Follow the
+     label and leave the week alone. This is the decisive half of the loop-break:
+     it does not depend on the echo POSITION surviving coalesced/deferred scroll
+     events the way the trkEcho test just below does. */
+  if (Date.now() < glideEnd) { hsLabel(); return }
   /* our own mirror echo — the track is still where we last put it (see trkEcho).
      Follow with the label, but do NOT write the week: during an arrow glide that
      write would cancel the smooth scroll and stick or scrub the strip. */
@@ -382,6 +422,11 @@ function onDocScroll(e: Event) {
   if (!w || !w.classList) return
   /* a week panned → mirror to the proxy, follow with the palette */
   if (w.classList.contains('week')) {
+    /* the glide has ARRIVED — release the track/repaint hold at once rather than
+       waiting out the safety cap, so a scrollbar drag the instant after a step
+       lands is honoured (GLIDE_MS is only the backstop for a glide that never
+       reaches its target). */
+    if (glideEnd && panWk === CURWEEK && panTgt >= 0 && Math.abs(w.scrollLeft - panTgt) <= 1) glideEnd = 0
     hsLabel(); rosDayFollow()
     const trk = $('hsTrack'); if (!trk) return
     const tmax = trk.scrollWidth - trk.clientWidth, wmax = w.scrollWidth - w.clientWidth

@@ -10,7 +10,7 @@ import { initStore, setSession, notify, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { ROSDAY, setRosDay } from '../state/view'
 import * as view from '../state/view'
-import { hsSet, panDays, rosDayFollow, weekScrollMax } from './pan'
+import { hsSet, panDays, panHold, rosDayFollow, weekScrollMax } from './pan'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -202,6 +202,33 @@ describe('week panning (tfin)', () => {
     w.scrollLeft = 1128
   })
 
+  /* A MID-GLIDE REPAINT LANDS ON THE DESTINATION, NOT HALF-WAY (owner, 23-24 Aug
+     26, the "stuck halfway" half of the desktop-arrow report). A within-week
+     repaint re-pins the week's scrollLeft to keep the string-diff render from
+     losing the scroll — but if one fires while an arrow glide is still easing
+     (rosDayFollow debounces a palette-follow notify ~110ms after the scroll
+     quiets, which under load lands mid-glide), pinning the captured mid-glide
+     position CANCELS the glide and freezes the strip between two days, and the
+     next arrow then skips one. panHold makes the repaint hold the glide's TARGET
+     instead, so it lands clean. Measured on the built app: this closed the last
+     ~1-in-7 day-skip that survived the track-echo fix. */
+  it('panHold pins the glide destination through a repaint, else the live position', () => {
+    const w = $('#vWeek')
+    const live = $$('#vWeek .day:not(.peek)')
+    live.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    Object.defineProperty(w, 'scrollWidth', { value: 9000, configurable: true })
+    Object.defineProperty(w, 'clientWidth', { value: 1692, configurable: true })
+    ;(w as any).scrollTo = (o: any) => { /* glide: do NOT settle scrollLeft */ }
+    dropCorridor(w)                                   // no glide in flight
+    expect(panHold(1234), 'outside a glide, the caller keeps its own live value').toBe(1234)
+    w.scrollLeft = 0
+    panDays(1)                                        // arm a glide to Tuesday (564)
+    expect(panHold(300), 'a mid-glide repaint holds the destination, not the half-way point').toBe(564)
+    dropCorridor(w)                                   // a manual pan drops the glide's hold
+    expect(panHold(300), 'once the arrows are no longer driving, the live value stands').toBe(300)
+    w.scrollLeft = 564
+  })
+
   /* A RAPID BURST ADVANCES ONE DAY PER PRESS EVEN WHEN THE GLIDE LAGS FAR
      BEHIND (owner, 23 Aug 26 — "twice back from Thursday … then the next click
      jumps to Tuesday"). Fast taps outrun the ~350ms smooth glide: by the third
@@ -335,6 +362,7 @@ describe('week panning (tfin)', () => {
 
   it('an echoed track scroll during a glide leaves the week alone; a real thumb-drag drives it', async () => {
     const { w, trk } = await wireProxy()
+    dropCorridor(w)   // clear any glide-hold a prior test armed, so the drag below drives the week
     /* a week move mirrors to the track and records trkEcho (=93 for scrollLeft
        1128: (1128/7308)*600) */
     w.scrollLeft = 1128
@@ -351,6 +379,31 @@ describe('week panning (tfin)', () => {
     await act(async () => { trk.dispatchEvent(new Event('scroll')) })
     expect(Math.round(w.scrollLeft), 'a genuine drag still scrubs the week').toBe(3654)
     dropCorridor(w)
+  })
+
+  /* WHILE AN ARROW GLIDE IS IN FLIGHT THE TRACK IS A PURE FOLLOWER (owner, 23-24
+     Aug 26). The trkEcho test above breaks the echo/drag loop by POSITION, but a
+     real browser coalesces and defers `scroll` events under load: an echo can
+     arrive after a newer glide frame has already advanced trkEcho, so the echo
+     clears the epsilon and is mistaken for a drag — the week is written back and
+     the glide dies. So the glide also arms a short window (see glideEnd) during
+     which onTrackScroll never drives the week, whatever the track position looks
+     like. Here the glide is armed by a real panDays; the geometry is stubbed as
+     in the corridor tests so panDays reaches its scrollTo. */
+  it('an arrow glide owns the week: a track scroll that looks like a drag cannot drive it mid-glide', async () => {
+    const { w, trk } = await wireProxy()
+    const live = $$('#vWeek .day:not(.peek)')
+    live.forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+    w.scrollLeft = 0
+    panDays(1)                                   // arm the glide (wireProxy settles scrollTo → 564)
+    const landed = w.scrollLeft
+    expect(landed, 'the arrow commanded Tuesday').toBe(564)
+    /* a track scroll far from the echo — normally read as a genuine thumb-drag —
+       arrives while the glide window is open; the guard must ignore it */
+    trk.scrollLeft = 300
+    await act(async () => { trk.dispatchEvent(new Event('scroll')) })
+    expect(w.scrollLeft, 'the glide holds the week; the track cannot drive it mid-glide').toBe(564)
+    dropCorridor(w)                              // drop the glide hold for the next test
   })
 
   it('panning the week walks the palette along, debounced', async () => {
