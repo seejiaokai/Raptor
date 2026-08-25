@@ -687,7 +687,14 @@ subscribers.
   snapshot still holding an old-style desk.
 - **A new flying line comes up blank** (owner, 10 Aug 26). `+ Line` used to
   copy the previous line's callsign, mission and times; a plausible wrong
-  value reads as filled in when nobody filled it in.
+  value reads as filled in when nobody filled it in. **`+ Wave` follows the
+  same rule** (owner, 25 Aug 26 — "keep the data clean … nothing filled"): an
+  ordinary flying wave's first line used to seed `NEW / 12:00 / 13:00`, which
+  read as filled-in and painted a green suggested-brief in-time off the 12:00;
+  it now comes up blank (`cs/msn/to/ld` empty), byte-identical to a `+ Line`
+  add. Standalone waves (SC/AVALON/BB/SPARE via `makeStandalone`) keep their
+  own kind-specific structure — this is the `!kind` branch only. Pinned in
+  `board.test.tsx`. Don't re-seed the plain wave's first line.
 - **The phone board's top bar is ONE row, and the day is STEPPED BY ARROWS on
   the day strip below it** (owner, 11 Aug 26 — comp approved before build; the
   day was SWIPED until 12 Aug 26, see the amendment at the end of this entry).

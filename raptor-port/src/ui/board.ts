@@ -1048,7 +1048,11 @@ export function addWave(di: number, kind: any) {
   const d = DAYS[di]; if (!d) return
   d.waves = d.waves || []
   if (!kind) {
-    d.waves.push({ label: 'WAVE ' + (d.waves.filter((w: any) => !isStandalone(w)).length + 1), night: false, intimes: [], traffic: [], formations: [{ cs: 'NEW', msn: '-', to: '12:00', ld: '13:00', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }] })
+    /* the wave's first line comes up BLANK, same reason as + Line above
+       (owner, 25 Aug 26 — "keep the data clean … nothing filled"): a seeded
+       NEW / 12:00 / 13:00 reads as a line somebody filled in when nobody did,
+       and the suggested-brief time then paints a green in-time off it. */
+    d.waves.push({ label: 'WAVE ' + (d.waves.filter((w: any) => !isStandalone(w)).length + 1), night: false, intimes: [], traffic: [], formations: [{ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }] })
     markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Wave added')
   }
   const w = makeStandalone(kind); if (!w) return
