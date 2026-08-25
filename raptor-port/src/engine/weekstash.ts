@@ -43,6 +43,15 @@ export function stashHas(v:any){ return Object.prototype.hasOwnProperty.call(WEE
    remembered). Not wired to any product path: the app only ever grows this
    store during a session, exactly as the header comment describes. */
 export function stashClear(){ for(const k in WEEKSTASH)delete WEEKSTASH[k]; for(const k in GEN)delete GEN[k]; }
+/* DROP ONE WEEK's memory — the Admin clear-old-data sweep (owner, 25 Aug 26).
+   The gen is BUMPED, never reset: ui/peek.ts caches previews keyed by
+   (week, gen), so resetting to 0 and then stashing again could re-serve a
+   stale preview under a collided key. A bump reads as "this week changed",
+   which is exactly what a drop is. */
+export function stashKeys(){ return Object.keys(WEEKSTASH); }
+export function stashDrop(v:any){ const k=String(v);
+  if(!Object.prototype.hasOwnProperty.call(WEEKSTASH,k))return false;
+  delete WEEKSTASH[k]; GEN[k]=(GEN[k]||0)+1; return true; }
 export function stashGet(v:any){ return WEEKSTASH[String(v)]||null; }
 /* A FRESH deep copy, in weekBundle's {days,dates} shape, for engine readers
    (weekctx.ts's bundle()) — NEVER cached, unlike the pure seed bundle it

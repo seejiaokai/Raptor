@@ -3565,9 +3565,25 @@ The three category panels:
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
   Front doors, not new surfaces: the modals stay App-level siblings and
   paint over this page like any other.
-- **`#admData` Data & persistence** — an honesty card only: everything
-  typed into the prototype is session-only, and this card marks the seam
-  where the shared database's controls will land.
+- **`#admData` Data & persistence** — the honesty card (everything typed
+  into the prototype is session-only; this card marks the seam where the
+  shared database's controls land) plus the first real control: **Clear old
+  data** (owner, 25 Aug 26 — "clear a set date of history data … so that the
+  app stays snappy"). A native date field (`#admWipeDate` — `color-scheme:
+  dark` on `html` keeps the picker dark) and a TWO-TAP button (`#admWipe`):
+  the first tap dry-counts and arms it red with "Tap again to clear N old
+  records" (a zero count toasts instead of arming — no no-op confirms), the
+  second tap runs `clearHistoryBefore` (`ui/inputedit.tsx`), which sweeps
+  inputs / calendar pucks / day titles wholly before the date in ONE
+  `writeInputsBatch` (one undo step) and drops stashed past weeks
+  (`stashDrop`, gen BUMPED never reset — `peek.ts` caches on it). Deletion
+  FAILS CLOSED: an unparseable date is kept, a span touching the cutoff is
+  kept whole, and each doomed input goes through the same `dropInputRow`
+  body a single delete uses (Leave-War retract + unaccept + splice — one
+  body, no drift). Leave synced from the Leave War tab is withdrawn from
+  the war for real and does NOT come back with Undo (the war has no shared
+  undo — same as deleting such a row by hand); the note under the button
+  says so. Pins: `ui/wipe.test.tsx`.
 
 ## The next-week preview (owner ask — desktop continuous week display, 23 Aug 26)
 

@@ -24,6 +24,8 @@ import { writeInputsBatch, notify } from '../state/store'
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { retractLwRow, rowSig } from '../leavewar/sync'
+import { PLANPUCKS, DAYRMK } from '../state/plan'
+import { stashKeys, stashDrop } from '../engine/weekstash'
 import { canEditSched, ME } from '../state/auth'
 import { INPEDIT, setInpEdit } from './pops'
 import { useVersion } from './useStore'
@@ -624,17 +626,72 @@ export function removeInput(r: any) {
   const di = r.acc ? acceptedDay(r) : -1
   const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
   const when = r.date + (r.endDate ? '–' + r.endDate : '')
-  writeInputsBatch(() => {
-    /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): deleting it
-       here WITHDRAWS the leave from the war too, before the splice while the
-       row still says what was granted. Without this the next reconcile would
-       re-mint the row from the still-approved cells — the snap-back. */
-    if (r.lw) retractLwRow(r)
-    if (r.acc) unacceptInput(acceptedDay(r), r)
-    INPUTS.splice(inx, 1)
-  })
+  writeInputsBatch(() => { dropInputRow(r) })
   logAction(di >= 0 ? di : null, `Input removed — ${cs}, ${r.type}, ${when}`)
   return true
+}
+
+/* THE one per-row removal body — removeInput above (one row, its own batch)
+   and clearHistoryBefore below (bulk, one batch) both run exactly this, so
+   the bulk sweep can never drift from what a single delete does.
+   A Leave-War-synced row (owner, 17 Aug 26 — full two-way): deleting it
+   here WITHDRAWS the leave from the war too, before the splice while the
+   row still says what was granted. Without this the next reconcile would
+   re-mint the row from the still-approved cells — the snap-back. */
+function dropInputRow(r: any) {
+  if (r.lw) retractLwRow(r)
+  if (r.acc) unacceptInput(acceptedDay(r), r)
+  const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1)
+}
+
+/* ---- CLEAR HISTORY BEFORE A DATE (owner, 25 Aug 26 — "an option on the
+   admin page to clear a set date of history data … so that the app stays
+   snappy"). One sweep over everything the app accumulates: past INPUTS,
+   past calendar pucks and day titles (state/plan.ts), and stashed past
+   weeks (engine/weekstash.ts). Doctrine points, deliberate:
+   - DELETION FAILS CLOSED: an input whose dates cannot be parsed is KEPT,
+     never guessed old. Only a row wholly before the cutoff goes — one that
+     touches or crosses the cutoff day stays whole.
+   - The inputs/pucks/titles sweep is ONE writeInputsBatch, so it lands as a
+     single undo step (history.ts snapshots all three) — the safety net for
+     a destructive button. Stashed weeks are outside the undo snapshot and
+     are gone for real; the Admin panel says so before the tap.
+   - `dry` answers "how many would go?" without touching anything — the
+     panel's confirm step shows the count it is about to act on, from the
+     same selection logic it will act with (one body, no drift).
+   - canEditSched at the write path, per the standing role doctrine — the
+     Admin page's own gate is the page, this is the belt. */
+export function clearHistoryBefore(iso: string, dry?: boolean): number {
+  if (!canEditSched()) return 0
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ''))
+  if (!m) return 0
+  const cut = +m[1] * 10000 + +m[2] * 100 + +m[3]
+  const doomed = INPUTS.filter((r: any) => {
+    const end = dateOrd(r.endDate || r.date, r.yr)
+    return end != null && end < cut
+  })
+  const isoCut = `${m[1]}-${m[2]}-${m[3]}`
+  const oldPucks = PLANPUCKS.filter((s: any) => s.iso && s.iso < isoCut)
+  const oldRmk = Object.keys(DAYRMK).filter(k => k < isoCut)
+  /* a stashed week is old only when its SUNDAY (start+6d) is before the
+     cutoff — a week the cutoff lands inside stays remembered whole */
+  const oldWeeks = stashKeys().filter(k => {
+    const p = String(k).split('/')
+    if (p.length !== 3) return false
+    const d = new Date(Date.UTC(+p[2], +p[1] - 1, +p[0] + 6))
+    const sun = d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate()
+    return isFinite(sun) && sun < cut
+  })
+  const n = doomed.length + oldPucks.length + oldRmk.length + oldWeeks.length
+  if (dry || !n) return n
+  writeInputsBatch(() => {
+    doomed.forEach((r: any) => dropInputRow(r))
+    oldPucks.forEach((s: any) => { const ix = PLANPUCKS.indexOf(s); if (ix >= 0) PLANPUCKS.splice(ix, 1) })
+    oldRmk.forEach(k => { delete DAYRMK[k] })
+  })
+  oldWeeks.forEach(k => stashDrop(k))
+  logAction(null, `Cleared ${n} record${n === 1 ? '' : 's'} from before ${isoCut}`)
+  return n
 }
 
 /* ---- the dialog the week and the board open (owner, 10 Aug 26) -----------

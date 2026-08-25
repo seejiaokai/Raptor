@@ -26,6 +26,7 @@ import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { HOOKS } from '../engine/hooks'
 import { setTplEdit, setDayTplEdit } from './pops'
+import { clearHistoryBefore } from './inputedit'
 import { useVersion } from './useStore'
 import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
 
@@ -45,6 +46,11 @@ export function AdminPage() {
      rail and pane share the screen — it flips from the list to the detail */
   const [cat, setCat] = useState('users')
   const [drilled, setDrilled] = useState(false)
+  /* the Data panel's clear-old-data control: the chosen cutoff, and the armed
+     count (-1 = not armed; >=0 = first tap done, showing what a second tap
+     clears). Kept here, not in the store — it is chrome, like `drilled`. */
+  const [wipeIso, setWipeIso] = useState('')
+  const [armed, setArmed] = useState(-1)
   const admin = SESSION && SESSION.role === 'admin'
   /* the forced-member render — this is what makes the page gate non-vacuous:
      the nav already hides the tab, so the only way here as a member is state
@@ -57,6 +63,22 @@ export function AdminPage() {
        with an empty box did nothing at all and said nothing about why */
     if (!name) return HOOKS.toast('A user needs a name')
     addUser(name, role); nameRef.current!.value = ''; notify()
+  }
+  /* first tap: dry-count and arm; second tap: clear, report, disarm. A zero
+     count never arms — the button says so instead of offering a no-op
+     confirm (a silent no-op reads as a broken button, the same audit rule
+     as Add above). */
+  const wipe = () => {
+    if (!canEditSched() || !wipeIso) return
+    if (armed < 0) {
+      const n = clearHistoryBefore(wipeIso, true)
+      if (!n) return HOOKS.toast('Nothing on file from before that date')
+      setArmed(n)
+      return
+    }
+    const n = clearHistoryBefore(wipeIso)
+    setArmed(-1)
+    HOOKS.toast(n ? `Cleared ${n} old record${n === 1 ? '' : 's'}` : 'Nothing on file from before that date')
   }
   const open = (id: string) => { setCat(id); setDrilled(true) }
   const active = CATS.find(c => c.id === cat) || CATS[0]
@@ -119,6 +141,17 @@ export function AdminPage() {
                 real controls land when the shared database arrives; until then the
                 truth is stated rather than implied. ---- */}
             <section className={'adm-panel' + (cat === 'data' ? ' on' : '')} id="admData">
+              {/* Clear old data (owner, 25 Aug 26 — "clear a set date of history
+                  data. Wipe it clean so that the app stays snappy"). Two-tap
+                  confirm: the first tap counts what would go (dry run of the
+                  same selection the wipe uses) and arms the button with that
+                  number; the second tap acts. Changing the date disarms. The
+                  inputs/pucks/titles part is one undo step; the remembered
+                  past weeks are not, and the note says so up front. */}
+              <div className="mfield"><label>Clear data older than</label><input type="date" id="admWipeDate" value={wipeIso} onChange={e => { setWipeIso(e.target.value); setArmed(-1) }} /></div>
+              <button className={'abtn' + (armed >= 0 ? ' danger' : '')} id="admWipe" style={{ width: '100%' }} onClick={wipe}
+                disabled={!wipeIso}>{armed >= 0 ? `Tap again to clear ${armed} old record${armed === 1 ? '' : 's'}` : 'Clear old data…'}</button>
+              <p className="adm-note">Removes personal inputs, calendar pucks and day titles wholly before that date, and the app's memory of edits to weeks that ended before it. Inputs, pucks and titles come back with Undo — except leave that came from the Leave War tab, which is withdrawn from the war for real, the same as deleting it by hand. The past-week memory does not come back either. Anything touching or crossing the chosen date is kept whole.</p>
               <p className="adm-note">Everything typed into this prototype is session-only — the schedule, quals, inputs and the Leave War alike are forgotten on reload and never leave this browser. A shared database for the squadron is the planned next step, and this page is where its controls will live.</p>
             </section>
           </div>
