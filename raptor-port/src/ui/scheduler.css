@@ -3034,7 +3034,12 @@ body.sb-lock{overflow:hidden}
    board palette kept the old fade that was indistinguishable from "barred". */
 .sb-roster .rpuck:active{cursor:grabbing}
 /* go / line board */
-.sb-go{border:1px solid var(--edge);border-radius:10px;margin-bottom:12px;overflow:hidden;background:var(--panel)}
+/* the board's wave blocks carry the same coloured left stripe the week's `.go`
+   does (owner, 25 Aug 26 — "match the colour edit/view schedule shows … blue for
+   flying, red for night"): flying blue, a night wave red, matching every other
+   board panel's stripe below. */
+.sb-go{border:1px solid var(--edge);border-left:3px solid var(--flight);border-radius:10px;margin-bottom:12px;overflow:hidden;background:var(--panel)}
+.sb-go.night{border-left-color:var(--hard);background:rgba(240,85,95,.04)}
 .sb-go-h{display:flex;align-items:center;gap:10px;padding:7px 11px;background:var(--panel-2);border-bottom:1px solid var(--edge);font-weight:700;font-size:12px}
 .sb-go-h .asd{color:var(--ink-3);font-weight:500;font-size:11px;font-family:'JetBrains Mono',monospace;margin-left:auto}
 .sb-go-h .night{color:#FBB4B9}
@@ -3656,6 +3661,11 @@ button.sanscard:hover{border-color:var(--accent)}
 .sb-panel.grnd{border-left:3px solid #E5A83B}
 .sb-panel.pinp{border-left:3px solid #F08A4A}
 .sb-panel.sansav{border-left:3px solid var(--san)}
+/* the Flying-waves header and the Unavailable panel were the only two board
+   sections with no coloured stripe (owner, 25 Aug 26): flying blue like the
+   week's waves, unavailable red like every down/problem cue in the app. */
+.sb-panel.wv{border-left:3px solid var(--flight)}
+.sb-panel.unav{border-left:3px solid var(--hard)}
 .sb-ph{display:flex;align-items:center;gap:9px;padding:7px 11px;background:var(--panel-2);
   border-bottom:1px solid var(--edge);font-family:'Barlow Condensed','Inter Tight',sans-serif;
   text-transform:uppercase;letter-spacing:.09em;font-size:11px;font-weight:700;color:var(--ink)}

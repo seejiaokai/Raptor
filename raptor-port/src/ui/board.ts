@@ -110,7 +110,7 @@ export function boardHTML(di: number, pv?: boolean) {
        (a session that may not edit it, board still legitimately open on
        its own page) left the whole-wave rename and delete live even
        after the flying line's own rows went inert. */
-    fly += `<div class="sb-go"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
+    fly += `<div class="sb-go${w.night ? ' night' : ''}"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
       + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${mvRO ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
       + `${w.night ? '<span class="night">· night</span>' : ''}`
       /* Traffic edits the wave's airspace bookings, the same field the week's
