@@ -433,7 +433,23 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
     owner's END-state — persistent multi-week schedules shared across
     devices/accounts — is still server work; this is the per-browser half
     of it, and the single seam (`weekBundle` + `weekstash.ts`) is still
-    where that migration hooks in. When that work lands, give `INPUTS` a
+    where that migration hooks in.
+    **The end-state is now STATED, not implied** (owner, 25 Aug 26 — "In
+    the end it will be a live database where everyone can see changes in
+    realtime … if u can build things backend that follow this modality
+    that will be good. So that one day … we are not shocked that
+    everything backend needs to be restructured"): a LIVE shared database,
+    changes visible to everyone in real time; demo data that resets per
+    refresh is the accepted interim. This upgrades the existing
+    architecture doctrine from "keeps the option open" to "builds toward
+    the destination": every write through the mutation funnel, every
+    persistence read/write through a single pluggable seam
+    (`HOOKS.storeBackend` / Leave War's `storage.ts` / the
+    `weekBundle`+`weekstash` pair), NO state invented outside those paths,
+    and nothing cached in a way a live remote write couldn't invalidate
+    (the 25 Aug date-memo is the model: cache only what data changes can
+    never affect). When weighing two shapes for new backend-ish work, pick
+    the one a realtime-sync backend slots into without restructuring. When that work lands, give `INPUTS` a
     by-date index in the same pass: the date-label parsing that made a
     year of inputs slow was memoised 25 Aug 26 (engine-rules.md §date
     resolution — a year now switches weeks in ~50ms on a phone), but the
