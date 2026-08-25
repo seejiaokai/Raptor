@@ -376,28 +376,41 @@ a{color:var(--accent)}
 .fchip{min-width:34px;text-align:center;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);padding:6px 11px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:600}
 .fchip:hover{border-color:var(--edge-2);color:var(--ink)}
 .fchip.on{background:rgba(59,198,232,.16);color:var(--accent);border-color:rgba(59,198,232,.6)}
-/* THE THREE HIGHLIGHT GROUP TABS (owner, 24 Aug 26 — CAT / Type / Quals). A tab
-   reads as a category header (bolder, wider-tracked than a chip) with a caret
-   that turns down when its group is open; the group's chips sit inline right
-   after it and stay display:none until .hl-grp.open (every key stays in the DOM
-   — the drift-seam doctrine and the jsdom tests both want them present, so this
-   is visibility, not existence). `.has` lights a tab and shows a count whenever
-   one of its chips is active while collapsed, so a live filter is never hidden
-   behind a shut tab. */
+/* THE THREE HIGHLIGHT GROUP TABS (owner, 24 Aug 26 — CAT / Type / Quals; menu
+   vs chip differentiated 25 Aug 26). A TAB is a MENU that opens; the chips
+   inside it are the choices. The owner found the two read too alike — with one
+   menu open, the next shut menu (e.g. Quals) looked like just another
+   selectable chip. So a tab is now a solid, raised control in the brighter ink
+   with a bold caret — plainly "a menu that opens" — while a chip stays a flat,
+   quieter tag that only fills blue once picked. An OPEN menu also wraps its tab
+   and its chips together in one hairline tray (scoped below to the filter bar
+   and the puck-picker, since `.hl-grp` is a shared class the History accordion
+   also uses), so the chips visibly belong to that menu and a shut neighbour
+   visibly does not. The chips stay display:none until .hl-grp.open — every key
+   stays in the DOM (the drift-seam doctrine and the jsdom tests both want them
+   present), so this is visibility, not existence. `.has` lights a tab and shows
+   a count whenever one of its chips is active while collapsed, so a live filter
+   is never hidden behind a shut tab. */
 .hl-grp{display:inline-flex;align-items:center;gap:5px}
-.hl-gtab{display:inline-flex;align-items:center;gap:5px;background:var(--panel-2);border:1px solid var(--edge);
-  color:var(--ink-2);padding:6px 10px;border-radius:9px;cursor:pointer;font-size:11px;font-weight:700;
-  letter-spacing:.06em;text-transform:uppercase}
-.hl-gtab:hover{border-color:var(--edge-2);color:var(--ink)}
-.hl-gtab::after{content:'';width:6px;height:6px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;
-  transform:rotate(-45deg);transition:transform .15s ease;opacity:.6;margin-left:1px}
-.hl-gtab.open{color:var(--ink);border-color:var(--edge-2);background:var(--raised)}
-.hl-gtab.open::after{transform:rotate(45deg);opacity:.8}
-.hl-gtab.has{color:var(--accent);border-color:rgba(59,198,232,.5)}
+.hl-gtab{display:inline-flex;align-items:center;gap:6px;background:var(--raised);border:1px solid var(--edge-2);
+  color:var(--ink);padding:6px 11px;border-radius:9px;cursor:pointer;font-size:11px;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase}
+.hl-gtab:hover{border-color:var(--ink-3);background:var(--raised)}
+/* a bigger, bolder, near-solid caret — the clearest single "this opens" cue */
+.hl-gtab::after{content:'';width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;
+  transform:rotate(-45deg);transition:transform .15s ease;opacity:.75;margin-left:1px}
+.hl-gtab.open{color:var(--ink);border-color:var(--ink-3);background:var(--raised)}
+.hl-gtab.open::after{transform:rotate(45deg);opacity:.95}
+.hl-gtab.has{color:var(--accent);border-color:rgba(59,198,232,.55);background:rgba(59,198,232,.12)}
 .hl-gn{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;padding:0 4px;
   border-radius:999px;background:rgba(59,198,232,.2);color:var(--accent);font-size:9px;font-weight:800;letter-spacing:0}
 .hl-gchips{display:none;align-items:center;gap:5px}
 .hl-grp.open .hl-gchips{display:inline-flex}
+/* the OPEN-menu tray — scoped so it never touches the History modal's own
+   .hl-grp.open. A faint fill + hairline enclose the open tab and its chips as
+   one unit, setting them apart from the shut menus on either side. */
+.filters .hl-grp.open,.ic-pick-cats .hl-grp.open{background:rgba(255,255,255,.05);
+  border:1px solid var(--edge-2);border-radius:11px;padding:3px 5px 3px 3px}
 .filters .div{width:1px;align-self:stretch;background:var(--edge);margin:0 4px}
 /* the Highlight lead is TWO elements and this pair of rules is what picks one
    (Shell.tsx renders both — the histln/histln-top precedent): desktop keeps a
