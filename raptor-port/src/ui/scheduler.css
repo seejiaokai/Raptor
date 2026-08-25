@@ -2776,6 +2776,30 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .day.peek .peek-nextwk{flex:0 0 100%;font-family:'Barlow Condensed','Inter Tight',sans-serif;
     text-transform:uppercase;letter-spacing:.08em;font-size:9.5px;font-weight:700;color:var(--ink-3)}
 }
+/* THE DAY-HEAD IS TWO FIXED ROWS ON A PHONE (owner, 25 Aug 26 — "Because of
+   the word today, the layout is not the same between these … keep it
+   similar"). As one wrapping flex row, WHERE the head broke depended on the
+   title's width: "Monday Jul 13 · Today" pushed the 4x4 badge onto row two
+   while every other day kept it on row one — same controls, different
+   places on different days. The rows are pinned by `order` plus a
+   full-width ::before break so every day reads identically: row 1 is the
+   title + date (+Today) with the turn-pattern badge at the right edge;
+   row 2 is Templates/Drafts on the left and the status / publish cluster
+   on the right. The view page, which renders no Templates span, keeps the
+   same two-row shape with its status cluster right-aligned. Desktop is
+   untouched — its wider head holds one row whatever the title says.
+   (Its own @media block, NOT the min-width:821px one above — these rules
+   landed there first by mistake and pinned the DESKTOP head into two rows;
+   the probe that caught it now lives in e2e/geometry.spec.ts.) */
+@media (max-width:820px){
+  .day-head .dow{order:1}
+  .day-head .dt{order:2}
+  .day-head .badge{order:3}
+  .day-head::before{content:'';order:4;flex-basis:100%;height:0}
+  .day-head .dhtpl{order:5;margin-left:0}
+  .day-head .dstat{order:6;margin-left:auto}
+}
+
 /* ============ SCHEDULER BOARD (deep single-day editor) ============ */
 .schedboard{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column}
 /* THE PAGE BEHIND THE BOARD DOES NOT SCROLL (owner-reported, 11 Aug 26).

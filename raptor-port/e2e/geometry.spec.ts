@@ -4093,3 +4093,41 @@ test.describe('the Inputs month calendar', () => {
     })
   }
 })
+
+/* The phone day-head is TWO FIXED ROWS whatever the title says (owner,
+   25 Aug 26 — "Because of the word today, the layout is not the same
+   between these … keep it similar"). The head used to be one wrapping flex
+   row, so the extra width of "· Today" moved the 4x4 badge and the publish
+   cluster to different rows on different days. Pinned: every control sits
+   at the same offset within the head on the Today day and any other day,
+   and the desktop head stays one row. scheduler.css's ordered break — and
+   the reason this is an e2e pin: the fix first landed inside the WRONG
+   media block (the desktop one) and no unit test can see a media query. */
+test.describe('the day-head lays out the same on every day', () => {
+  test('phone: Today does not move the controls; desktop: one row', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    const today = await page.locator('#page-editsched .day.today[data-day]').count()
+    expect(today, 'the demo week carries a Today day — the case under test').toBeGreaterThan(0)
+    const head = (di: number) => page.evaluate(di => {
+      const h = document.querySelector(`#page-editsched .day[data-day="${di}"] .day-head`)!
+      const hb = h.getBoundingClientRect()
+      const at = (sel: string) => {
+        const el = h.querySelector(sel)
+        if (!el) return null
+        const r = el.getBoundingClientRect()
+        return { top: Math.round(r.top - hb.top), left: Math.round(r.left - hb.left) }
+      }
+      return { badge: at('.badge'), tpl: at('.dhtpl'), stat: at('.dstat'), h: Math.round(hb.height) }
+    }, di)
+    const mon = await head(0), tue = await head(1)
+    expect(mon, 'Monday (Today) and Tuesday heads are geometrically identical').toEqual(tue)
+    expect(mon.badge!.top, 'the 4x4 badge holds row one').toBeLessThan(30)
+    expect(mon.tpl!.top, 'Templates/Drafts hold row two').toBeGreaterThan(30)
+    await page.setViewportSize(DESK)
+    await page.waitForTimeout(400)
+    const wide = await head(0)
+    expect(Math.abs(wide.badge!.top - wide.tpl!.top), 'desktop keeps one row').toBeLessThanOrEqual(4)
+  })
+})

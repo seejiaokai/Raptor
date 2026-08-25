@@ -36,6 +36,18 @@ several are measured and suite-enforced, not preferences.
   with an 80-character unbreakable remark: width, height and scrollWidth
   identical either way), so do not add one back. Both pinned in
   `e2e/geometry.spec.ts`.
+- **The phone day-head is TWO FIXED ROWS on every day** (owner, 25 Aug 26 —
+  "Because of the word today, the layout is not the same … keep it
+  similar"): row one is the title + date (+"· Today") with the turn-pattern
+  badge at the right edge; row two is Templates/Drafts left and the
+  status/publish cluster right, pinned by `order` + a full-width
+  `.day-head::before` break in scheduler.css's `max-width:820px` block (the
+  view page, with no Templates span, keeps the same shape). Before this,
+  the wrap point followed the title's width, so the Today day shuffled its
+  controls onto different rows than every other day. Desktop keeps one
+  row. Pinned in `e2e/geometry.spec.ts` — an e2e pin on purpose: the fix
+  first landed in the WRONG media block and no jsdom test can see a media
+  query.
 
 ## The day carries across a page switch (owner, 9 Aug 26)
 
