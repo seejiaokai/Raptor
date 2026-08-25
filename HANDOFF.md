@@ -33,7 +33,7 @@ Admin tab; all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3047 across 177 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3063 across 177 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 318 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
