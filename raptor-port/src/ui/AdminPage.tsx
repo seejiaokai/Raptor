@@ -35,7 +35,7 @@ import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
 const CATS = [
   { id: 'users', label: 'Users', sub: 'Who can sign in', icon: <UsersIcon /> },
   { id: 'config', label: 'Squadron config', sub: 'Duty & day templates', icon: <SlidersIcon /> },
-  { id: 'data', label: 'Data', sub: 'Storage & the shared database', icon: <DatabaseIcon /> },
+  { id: 'data', label: 'Data', sub: 'Storage & cleanup', icon: <DatabaseIcon /> },
 ]
 
 export function AdminPage() {
@@ -125,7 +125,14 @@ export function AdminPage() {
                 const d = (e.target as HTMLElement).closest('[data-deluser]') as HTMLElement | null
                 if (d) { delUser(+d.dataset.deluser!); notify() }
               }} />
-              <p className="adm-note">This list drives the demo login only — there is no server behind it yet, so a user added here lasts for this browser session.</p>
+              {/* PROTOTYPE TRUTH, off-screen by owner's word (25 Aug 26 — "design
+                  it and word it such that when this goes to database what would
+                  the user actually see"): this list drives the demo login only;
+                  no server behind it, a user added here lasts one browser
+                  session. When the shared database lands, these become real
+                  accounts and this comment comes out. Until then the UI reads
+                  production — the caveat lives here and in HANDOFF, not on the
+                  screen. */}
             </section>
             {/* ---- Squadron configuration — front doors to the two template
                 editors. The modals are App-level siblings (App.tsx), so they
@@ -151,8 +158,22 @@ export function AdminPage() {
               <div className="mfield"><label>Clear data older than</label><input type="date" id="admWipeDate" value={wipeIso} onChange={e => { setWipeIso(e.target.value); setArmed(-1) }} /></div>
               <button className={'abtn' + (armed >= 0 ? ' danger' : '')} id="admWipe" style={{ width: '100%' }} onClick={wipe}
                 disabled={!wipeIso}>{armed >= 0 ? `Tap again to clear ${armed} old record${armed === 1 ? '' : 's'}` : 'Clear old data…'}</button>
-              <p className="adm-note">Removes personal inputs, calendar pucks and day titles wholly before that date, and the app's memory of edits to weeks that ended before it. Inputs, pucks and titles come back with Undo — except leave that came from the Leave War tab, which is withdrawn from the war for real, the same as deleting it by hand. The past-week memory does not come back either. Anything touching or crossing the chosen date is kept whole.</p>
-              <p className="adm-note">Everything typed into this prototype is session-only — the schedule, quals, inputs and the Leave War alike are forgotten on reload and never leave this browser. A shared database for the squadron is the planned next step, and this page is where its controls will live.</p>
+              <p className="adm-note">Permanently removes personal inputs, calendar notes and past week edits from before the chosen date. Anything touching or crossing that date is kept.</p>
+              {/* PROTOTYPE TRUTHS, off-screen by owner's word (25 Aug 26): the
+                  on-screen note above is the DATABASE-ERA wording — it calls the
+                  wipe permanent, because the two-tap confirm is the safety and a
+                  DB-era wipe won't ride the session undo. What it deliberately
+                  does not say, kept here so the database migration remembers:
+                  - TODAY the inputs/pucks/titles half IS one session-undo step
+                    (writeInputsBatch), except Leave-War-synced leave, which is
+                    withdrawn from the war for real (no shared undo) — same as
+                    deleting such a row by hand. Stashed past weeks don't come
+                    back either (outside the history snapshot).
+                  - Everything in this prototype is session-only (reload forgets;
+                    nothing leaves this browser). The shared live database is the
+                    stated end-state (HANDOFF.md), this panel is where its real
+                    controls land, and this wipe becomes a DB delete behind the
+                    same button. */}
             </section>
           </div>
         </div>

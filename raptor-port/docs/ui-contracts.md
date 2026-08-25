@@ -3565,10 +3565,12 @@ The three category panels:
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
   Front doors, not new surfaces: the modals stay App-level siblings and
   paint over this page like any other.
-- **`#admData` Data & persistence** — the honesty card (everything typed
-  into the prototype is session-only; this card marks the seam where the
-  shared database's controls land) plus the first real control: **Clear old
-  data** (owner, 25 Aug 26 — "clear a set date of history data … so that the
+- **`#admData` Data** — the storage-and-cleanup panel. **The screen reads
+  PRODUCTION (owner, 25 Aug 26)**: the old session-only/no-server honesty
+  paragraphs are gone from the UI and live as code comments in
+  `AdminPage.tsx` (and HANDOFF) for the database migration — CLAUDE.md
+  §Product bar carries the standing wording rule. Its one control: **Clear
+  old data** (owner, 25 Aug 26 — "clear a set date of history data … so that the
   app stays snappy"). A native date field (`#admWipeDate` — `color-scheme:
   dark` on `html` keeps the picker dark) and a TWO-TAP button (`#admWipe`):
   the first tap dry-counts and arms it red with "Tap again to clear N old
@@ -3582,8 +3584,11 @@ The three category panels:
   body a single delete uses (Leave-War retract + unaccept + splice — one
   body, no drift). Leave synced from the Leave War tab is withdrawn from
   the war for real and does NOT come back with Undo (the war has no shared
-  undo — same as deleting such a row by hand); the note under the button
-  says so. Pins: `ui/wipe.test.tsx`.
+  undo — same as deleting such a row by hand). The on-screen note is the
+  database-era wording — it calls the wipe permanent (the two-tap confirm
+  is the safety; a DB wipe won't ride session undo) and stays silent about
+  today's undo nuances, which live in the code comment beside it.
+  Pins: `ui/wipe.test.tsx`.
 
 ## The next-week preview (owner ask — desktop continuous week display, 23 Aug 26)
 
