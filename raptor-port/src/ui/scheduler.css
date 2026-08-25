@@ -4119,9 +4119,18 @@ button.sanscard:hover{border-color:var(--accent)}
      the search box growing into whatever the row has left (min-width:0 so it
      can also SHRINK — a flex item's auto min-width would otherwise force the
      row past 390px and trip the gate's overflow assertion) */
-  .sb-nav .sb-hltog{width:30px;min-width:0;height:26px;padding:0;flex:0 0 auto}
-  .sb-nav .sb-search{flex:1 1 auto;min-width:0;height:24px;padding:2px 8px}
-  .sb-nav .sb-search input{width:100%;min-width:0;flex:1;font-size:12px}
+  /* the toggle takes the row's slack (margin-right:auto), so the pencil sits by
+     the left arrow and the search box by the right one — the same pencil-left /
+     search-right reading the week's filter bar has. */
+  .sb-nav .sb-hltog{width:30px;min-width:0;height:26px;padding:0;flex:0 0 auto;margin-right:auto}
+  /* THE SEARCH BOX IS FIXED AT THE WEEK'S SIZE (owner, 26 Aug 26 — "the name /
+     callsign box is the right size in edit and view-only; match it on the board,
+     which is too big"). It used to grow to fill the freed middle; now it holds a
+     96px input like #page-editsched/#page-viewsched's filter box, and the toggle's
+     auto margin absorbs the slack instead. min-width:0 lets it still shrink on a
+     very narrow screen before the row can overflow. */
+  .sb-nav .sb-search{flex:0 1 auto;min-width:0;height:24px;padding:3px 8px}
+  .sb-nav .sb-search input{width:96px;min-width:0;font-size:12px}
   /* the chips strip folds behind #sbHl on a phone — the filters-row scroller
      recipe when open, one nowrap sideways line. order:3 lands it UNDER the
      day row (.sb-nav holds order:2 against .sb-top). */
