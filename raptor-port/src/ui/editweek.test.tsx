@@ -358,7 +358,9 @@ describe('the crew-day picker', () => {
   })
 
   it('the edit page carries the phone calendar opener, and it opens the picker', async () => {
-    const btn = $('#page-editsched .wknav-m .wknav-mbtn')
+    /* the opener moved from a standalone .wknav-m row into the filter row itself
+       (owner, 26 Aug 26 — one row), as the phone-only .filt-cal */
+    const btn = $('#page-editsched .filters .filt-cal')
     expect(btn).toBeTruthy()
     await click(btn)
     expect($('#weekCal') && !($('#weekCal') as HTMLElement).hasAttribute('hidden')).toBe(true)

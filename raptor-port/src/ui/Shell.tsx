@@ -317,6 +317,14 @@ export function Shell() {
             is hidden on a phone exactly as the old standalone `.seg` was, where
             the lone `.wknav-m` calendar and the day swipe take over. */}
         <div className={'filters' + (HLOPEN ? ' hl-open' : '')} id="viewChrome">
+          {/* the phone calendar opener now rides INSIDE the filter row as its
+              first control (owner, 26 Aug 26 — "we just need 1 row"), so the
+              standalone .wknav-m row is gone and both week pages read the same:
+              one row of icons + search, the highlight chips dropping to a new
+              row when expanded. Phone-only (.filt-cal); the desktop keeps its
+              .wkseg week window. */}
+          <button className="wknav-mbtn filt-cal" aria-label="Jump to a date" title="Jump to a date"
+            onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
           <span className="wkseg" id="weekSeg">
             <button className="wk wk-cal" aria-label="Jump to a date" title="Jump to a date"
               onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
@@ -336,20 +344,14 @@ export function Shell() {
           <button className={'hl-tog' + (HLSET.size || SEARCH ? ' on' : '')} aria-expanded={HLOPEN}
             aria-label="Highlight filters" title="Highlight filters"
             onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
-          <HlChips />
+          {/* the highlight groups are wrapped so the phone can drop them to their
+              OWN row below the icons when expanded (owner, 26 Aug 26). On desktop
+              .hlrow is display:contents, so the chips flow inline exactly as before. */}
+          <span className="hlrow"><HlChips /></span>
           <div className="right">
             <div className="searchbox"><SrchIcon /><input id="searchV" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
-        </div>
-        {/* The big "Jul 13 – Jul 19" title and the "142 · week of… · all times
-            local" sub-line were removed (owner, 22 Aug 26) — redundant clutter;
-            the day cards carry the dates, and the seg / calendar carry the week.
-            On a phone (where the seg is hidden) a lone calendar icon sits here as
-            the way to jump weeks; the arrows-free swipe is the day-to-day nav. */}
-        <div className="wknav-m">
-          <button className="wknav-mbtn" aria-label="Jump to a date" title="Jump to a date"
-            onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
         </div>
         <div className={'schedbanner ' + b.cls + (rulesOffCount() ? ' rules-off' : '')} id="vBanner"
           style={{ ['--al' as any]: b.col }} dangerouslySetInnerHTML={{ __html: b.html }} />
@@ -380,13 +382,13 @@ export function Shell() {
             {weekWindow(CURWEEK).map(w => <button key={w.v}
               className={'wk' + (w.sel ? ' on' : '') + (w.today ? ' todaywk' : '')} data-wk={w.v}>{w.lbl}</button>)}
           </div>
-          {/* the view page's phone calendar, same block — the edit page had no
-              phone-width opener at all; owner, 23 Aug 26 */}
-          <div className="wknav-m">
-            <button className="wknav-mbtn" aria-label="Jump to a date" title="Jump to a date"
-              onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
-          </div>
           <div className={'filters' + (HLOPEN ? ' hl-open' : '')}>
+            {/* the phone calendar opener rides INSIDE the filter row now (owner,
+                26 Aug 26 — "we just need 1 row"), first control, phone-only
+                (.filt-cal), matching the view page exactly; the standalone
+                .wknav-m row is gone. The desktop keeps its .seg week window above. */}
+            <button className="wknav-mbtn filt-cal" aria-label="Jump to a date" title="Jump to a date"
+              onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
             {/* Undo / redo moved to the sticky top bar (owner, Aug 26) so they
                 stay in view while the page scrolls — see the topbar above. */}
             {/* + Add wave removed here (owner, 13 Aug 26) — a wave is created
@@ -415,7 +417,9 @@ export function Shell() {
             <button className={'hl-tog' + (HLSET.size || SEARCH ? ' on' : '')} aria-expanded={HLOPEN}
               aria-label="Highlight filters" title="Highlight filters"
               onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
-            <HlChips />
+            {/* wrapped so the phone can drop the chips to their own row below the
+                icons when expanded (owner, 26 Aug 26); display:contents on desktop. */}
+            <span className="hlrow"><HlChips /></span>
             <div className="right"><div className="searchbox"><SrchIcon /><input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
           </div>
