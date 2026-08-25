@@ -15,6 +15,11 @@ export function setAirKey(k: string | null) { AIRKEY = k }
    template locally, because that is ephemeral view state, not schedule state. */
 export let TPLEDIT = false
 export function setTplEdit(on: boolean) { TPLEDIT = on }
+/* the Flying-wave-templates editor (owner, 25 Aug 26) — the sibling of TPLEDIT,
+   opened from the "+ Wave" picker's pencil. Same shape and same reasoning: a
+   plain on/off flag, the component keeps its own selected template locally. */
+export let WAVEEDIT = false
+export function setWaveEdit(on: boolean) { WAVEEDIT = on }
 /* The Day-templates editor (owner, 15 Aug 26) — opened from the day-templates
    picker's pencil, on either entry point (the board or the edit week's
    sign-off strip), or straight after "Save this day as a template" so the
