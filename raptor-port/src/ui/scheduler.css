@@ -3785,8 +3785,17 @@ button.sanscard:hover{border-color:var(--accent)}
 .sanscard-l{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
   color:var(--san);white-space:nowrap}
 .sanscard-t{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--ink-3)}
-.sanscard-r{font-size:9.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;min-width:0}
+/* the remark WRAPS and the card grows (owner, 26 Aug 26 — "remarks are cut
+   off for sans availability. Could u wrap text and let the text grow
+   vertical in terms of row/space. Apply this to scheduler board as well"):
+   it launched nowrap+ellipsis like a table cell, but a card is not a row —
+   its grid column is fixed and its height is free, so the full remark is
+   cheaper shown than hovered. One rule serves both surfaces: the board's
+   SANS panel renders the same sansCardsHTML cards (board-html.ts).
+   overflow-wrap:anywhere so an unspaced string still breaks instead of
+   widening the column. */
+.sanscard-r{font-size:9.5px;line-height:1.35;color:var(--ink-2);white-space:normal;
+  overflow-wrap:anywhere;min-width:0}
 
 /* ---- block notes (sims / any section) ---------------------------------- */
 .blknote-h{display:flex;align-items:center;gap:7px;margin:8px 6px 3px;

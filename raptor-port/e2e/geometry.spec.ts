@@ -184,7 +184,8 @@ test.describe('the puck is one fixed size everywhere', () => {
       await page.evaluate(() => {
         const w = window as any, dt = 'Jul 13'
         const recs = [
-          { person: 'ipman', date: dt, allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now' },
+          { person: 'ipman', date: dt, allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now',
+            remarks: 'No more inputs or changes needed after this window closes on Friday' },
           { person: 'romeo', date: dt, allday: true, type: 'SANS Availability', sans: { o: true }, mod: 'now' },
           { person: 'nick', date: dt, allday: false, half: 'am', type: 'SANS Availability', sans: { a: true }, mod: 'now' },
           { person: 'waldo', date: dt, allday: false, half: 'pm', type: 'SANS Availability', sans: { f: true, o: true }, mod: 'now' },
@@ -200,6 +201,15 @@ test.describe('the puck is one fixed size everywhere', () => {
         .toBeGreaterThanOrEqual(name === 'desktop' ? 3 : 2)
       const pageOver = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
       expect(pageOver, 'the SANS card grid causes no horizontal document overflow').toBeLessThanOrEqual(0)
+      /* the remark WRAPS instead of clipping (owner, 26 Aug 26): a long
+         remark spans more than one line inside its fixed-width card — no
+         sideways overflow, the card grows down instead */
+      const rmk = await grid.locator('.sanscard-r').first().evaluate((el: any) => ({
+        overX: el.scrollWidth - el.clientWidth,
+        lines: Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight)),
+      }))
+      expect(rmk.overX, 'the remark no longer clips sideways').toBeLessThanOrEqual(1)
+      expect(rmk.lines, 'the long remark wrapped onto multiple lines').toBeGreaterThanOrEqual(2)
     })
   }
 
