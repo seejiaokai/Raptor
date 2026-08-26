@@ -1499,7 +1499,13 @@ body.arming .schedboard .ppl[data-fill] .addz{height:13px;margin-top:2px;border-
 .sec .pl-sub{color:var(--sec)}
 
 .sec .pl-cols{border-bottom-color:var(--secln)}
-.sec-prog{--sec:#3BC6E8;--secbg:rgba(59,198,232,.05);--secln:rgba(59,198,232,.28)}
+/* Common Programme reads PERIWINKLE, not the flight cyan (owner, 26 Aug 26 —
+   "common programme and flying waves are the same colours, can there be some
+   difference in colour distinction"). --accent and --flight are the same cyan,
+   so the squadron-wide programme and the flying waves were indistinguishable;
+   the waves keep the flight cyan (their identity) and the programme takes a
+   calm blue-violet that no other section uses. Board twin: .sb-panel.prog. */
+.sec-prog{--sec:#7C8CF0;--secbg:rgba(124,140,240,.06);--secln:rgba(124,140,240,.3)}
 .sec-duty{--sec:#57C97A;--secbg:rgba(87,201,122,.05);--secln:rgba(87,201,122,.28)}
 .sec-sim{--sec:#B24DEA;--secbg:rgba(178,77,234,.055);--secln:rgba(178,77,234,.3)}
 .sec-grnd{--sec:#E5A83B;--secbg:rgba(229,168,59,.05);--secln:rgba(229,168,59,.28)}
@@ -3801,7 +3807,7 @@ button.sanscard:hover{border-color:var(--accent)}
 /* ---- scheduler-board panels: overall notes / overall programme / sim notes ---- */
 .sb-panel{border:1px solid var(--edge);border-radius:10px;margin-bottom:12px;overflow:hidden;background:var(--panel)}
 .sb-panel.notes{border-left:3px solid var(--adv)}
-.sb-panel.prog{border-left:3px solid var(--accent)}
+.sb-panel.prog{border-left:3px solid #7C8CF0}  /* periwinkle — distinct from the flight cyan (owner, 26 Aug 26); matches .sec-prog on the week */
 .sb-panel.simn{border-left:3px solid var(--san)}
 /* the duty / sim / ground / personal-inputs panels wear the same hues as
    their week sections (.sec-duty etc.) so the board reads as the same day */
