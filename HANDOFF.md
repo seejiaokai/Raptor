@@ -272,6 +272,29 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
     reference (port reads `row.src`; the reference can only read the remarks
     label) — no parity fixture may build one (`refwin.ts` comment).
 
+- **A REMOVED input is DORMANT until re-accepted (owner, 26 Aug 26 — same
+  session, from testing the preview above).** He removed an accepted Training
+  from the Ground Programme and it still rang "Training but tasked — SC AM":
+  `unacceptInput` used to `delete inp.acc`, making a removal indistinguishable
+  from a fresh input, and fresh inputs count (10 Aug). Now `unacceptInput`
+  parks it as **`acc:'r'`** and `inputDormant` (`engine/inputs.ts`) blanks it
+  from the whole engine — warnings, advisories, the picker, closed hours, the
+  cross-week seeds — while it stays listed under Personal Inputs with its
+  Accept button (`accCtl` treats 'r' as un-accepted); the scheduler's Accept
+  is the one way back. The mark survives week switches (`loadWeek`'s
+  acc-clear skips 'r', `autoAcceptInput` refuses it, the week stash's `un`
+  set re-parks legacy shapes) and a reload forgets it with everything else
+  (session-only, in lockstep). An input that was never landed (acc undefined,
+  e.g. filed onto a published day) still counts — dormancy is explicit, not
+  "no acc". `commitInputEdit` clears a stray 'r' when its relink fails, so a
+  retype-to-leave can never end up dormant leave. Deleting the input remains
+  the louder form of rejection (the panel hint already says so). Rules:
+  `docs/engine-rules.md` §Validation (the acc state table); seam:
+  `docs/feature-impact.md` (`inputDormant` one body); pins:
+  `scshift-inputs.test.ts` (dormancy block), `accept.test.ts` (flipped undo
+  pins, marked FLIPPED with the owner quote), `inputground.test.ts`,
+  `loadweek.test.ts`, `board.test.tsx`.
+
 - **`npm run perf` board DOM ceiling is RED and its raise is owner-reserved
   (from PR #323, 25 Aug 26).** The "available crew on board" strip pushed the
   board to 1038 nodes, over the recorded `960` ceiling in `probes/perf-port.cjs`;

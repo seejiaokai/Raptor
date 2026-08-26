@@ -470,6 +470,23 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   ground row that can carry the clash defers to that row. An ALL-DAY promotion
   makes a TIME-LESS row, which never becomes an event and so can carry
   nothing — that one stays visible on the input itself.
+- **…except one a scheduler has REMOVED, which is DORMANT** (owner, 26 Aug 26
+  — tested the SC-grading preview, removed an accepted Training back to
+  Personal Inputs and it still rang: "if it goes there, stop it from flagging
+  anything, until its added back to ground programme"). The `acc` states:
+  `'g'` landed on the Ground Programme (the row speaks; all-day keeps the raw
+  voice) · `'u'` filed under Unavailable (bars everything, like leave) ·
+  `'r'` **removed** — `unacceptInput` parks it instead of deleting `acc`, and
+  `inputDormant` (`inputs.ts`) blanks it out of the whole engine via
+  `inputFlags` + `inpShow`: no warnings, no advisories, no picker bar, no
+  hours closed, no cross-week whisper — until the scheduler's Accept lands it
+  again · undefined = never landed (e.g. filed onto a published day) — still
+  counts, which is why dormancy is an explicit mark and not "no acc". The
+  mark survives week switches (`loadWeek`'s acc-clear skips `'r'`;
+  `autoAcceptInput`'s truthy-acc guard refuses to re-land it; the week
+  stash's `un` set re-parks legacy shapes), and `commitInputEdit` clears a
+  stray `'r'` when a relink fails so a retype-to-leave can never end up as
+  dormant leave. Deleting the input says the same thing louder.
 - **Half-days** (owner, 10 Aug 26). Leave and medical types (`half` in the
   table) can be booked AM (00:00–12:00), PM (12:01–23:59) or all day. Stored
   as the `s`/`e` minutes the record already had, plus a `half:'am'|'pm'`

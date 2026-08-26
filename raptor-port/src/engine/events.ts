@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, inputFlags, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel } from './inputs'
+import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
 import { toMin, parseHM, win } from './time'
 import { VCONF, SHIFT_HARD } from './rules'
@@ -25,6 +25,11 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
      construction sites funnel through here, so this one line keeps it out
      everywhere at once. */
   if(isSansAvail(inp.type))return false;
+  /* A REMOVED INPUT IS DORMANT (owner, 26 Aug 26 — see inputDormant): parked
+     back in Personal Inputs by unacceptInput, it speaks NOWHERE until
+     re-accepted. Before the xweek bypass on purpose — dormancy holds for
+     cross-week seed reads of the loaded week too. */
+  if(inputDormant(inp))return false;
   /* CROSS-WEEK SEED READS BYPASS THE ACCEPTED-ROW DEDUP (weekctx.ts, via
      buildDay's xweek flag). acceptedDay(inp) below finds the row on the
      LOADED week's live DAYS — it has no idea a non-loaded day even exists,

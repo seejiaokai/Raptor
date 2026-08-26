@@ -487,7 +487,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
     : `<span class="itxt">${esc(inp.person)}</span>`;
   if(RO){
     const t=inp.allday?'all day':`${hm4(inp.s)} – ${hm4(inp.e)}`;
-    return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
+    return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
       +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
       +sbiRmk(inp,dt)+`</div>`;
   }
@@ -509,7 +509,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
      label and is byte-identical to before. */
   const lc=lateChip(inp);
   const itemCell=inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
-  return `<div class="sb-arow c6r inprow${acc&&inp.acc?' accd':''}${lateRowCls(inp)}"${lateRowTitle(inp)}>`
+  return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}"${lateRowTitle(inp)}>`
     +sbGrip(true)
     +(lc?`<span class="itemcell">${itemCell}${lc}</span>`:itemCell)
     +fld('atm','str',inpHM(inp,'str'),'all day')+fld('atm','end',inpHM(inp,'end'),'')
@@ -544,10 +544,11 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   let s=`<div class="sb-panel pinp"><div class="sb-ph${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day; tap header to hide'}</span></div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
   else{
-    /* Housekeeping reminder (owner, Aug 26): an input the scheduler is not going
-       to action should be cleared out here rather than left to linger — tap its
-       type to open the editor and Delete. Editable, non-empty panel only. */
-    if(!acRo)s+=`<div class="sb-pinote">Rejected personal inputs should be deleted by the scheduler here.</div>`;
+    /* Housekeeping reminder (owner, Aug 26; reworded 26 Aug 26 with the
+       dormancy rule): a removed input no longer flags anything, so the note
+       now says that, and keeps the delete pointer for clearing the list —
+       tap its type to open the editor and Delete. Editable panel only. */
+    if(!acRo)s+=`<div class="sb-pinote">A removed input flags nothing until accepted again — delete it here if it should go entirely.</div>`;
     if(!acRo)s+=C6;
   }
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo,acRo); });

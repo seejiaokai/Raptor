@@ -205,7 +205,9 @@ export function shiftHardLabel(s:any){return SHIFT_HARD_RE.test(String(s==null?'
    avail.ts is what actually judges a flying/OFT/AMT seat against it. isUnavail
    itself is left alone (see its own comment) — the offer semantics live here,
    as an explicit carve-out at the one call site that decides "away". */
-export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type))||(isFly(inp.type)&&!!inp.acc);}
+/* the Fly leg reads ACTIONED ('g'/'u'), never 'r' — a removed Fly-with is
+   dormant (owner, 26 Aug 26) and must not strike the man out of the palette */
+export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type))||(isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'));}
 /* DOES THIS ABSENCE CLOSE THE WHOLE DAY, or only some hours (owner, 10 Aug 26 —
    AM / PM half-days)? It does when it says so, AND when it carries no usable
    window at all: {person:'pike', type:'OD'} with neither allday nor s/e is a
@@ -325,7 +327,9 @@ export function inpLabel(inp:any){
   return (isOther(inp&&inp.type)&&rm)?rm:String((inp&&inp.type)||'');
 }
 /* The validator's gate. EVERY INPUT NOW COUNTS (owner, 10 Aug 26 — "all will
-   automatically go in"). It used to be `isUnavail(type) || acc==='u' || …`,
+   automatically go in") — EXCEPT one a scheduler has since REMOVED, which is
+   dormant (acc 'r', the 26 Aug 26 rule — see inputDormant below).
+   It used to be `isUnavail(type) || acc==='u' || …`,
    so a Training or an Appointment blocked nothing at all until a scheduler had
    actioned it: it was a request, not part of anyone's programme. The owner
    wants the opposite — an input closes the man's hours the moment he types it,
@@ -344,7 +348,22 @@ export function inpLabel(inp:any){
    other covered day keeps the input's voice. This function stays the
    day-blind half because refwin.ts seeds the reference through it, where
    no day context exists. */
-export function inputFlags(inp:any){return !(inp.acc==='g'&&!inp.allday);}
+export function inputFlags(inp:any){return !inputDormant(inp)&&!(inp.acc==='g'&&!inp.allday);}
+/* A REMOVED INPUT IS DORMANT (owner, 26 Aug 26 — tested the SC-grading
+   preview, removed an accepted Training back to Personal Inputs and it still
+   flagged: "if it goes there, stop it from flagging anything, until its
+   added back to ground programme"). unacceptInput parks the input as
+   acc 'r' — still listed in Personal Inputs, Accept offered again — and this
+   predicate is the ONE body that blanks it out of the engine: inputFlags
+   above (the validator's day-blind gate, which is ALSO refwin's reference
+   seed filter, so the reference simply never receives a dormant input and
+   parity cannot diverge) and events.ts's inpShow (day.input + the midnight
+   tails + the crew picker, which reads the same gate). The other acc states
+   keep their voices: 'g' landed (the row speaks, or the raw voice for
+   all-day), 'u' actioned to Unavailable (bars duties), and undefined —
+   never landed at all, e.g. filed onto a published day — still counts, which
+   is why dormancy is this explicit marker and not "no acc". */
+export function inputDormant(inp:any){return !!inp&&inp.acc==='r';}
 /* inputs use machine-readable date + minute fields so the validator can reason about them.
    s/e are minutes-from-midnight; allday inputs cover the whole day. */
 /* The `mod` stamps are spread either side of the demo week's input deadline on

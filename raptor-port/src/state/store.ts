@@ -189,7 +189,11 @@ export function resetSession(s: any) {
 function unacceptedKeys(): string[] {
   const out: string[] = []
   INPUTS.forEach((r: any) => {
-    if (!isPersonal(r.type) || r.acc) return
+    /* 'r' (removed — dormant, engine/inputs.ts inputDormant) is exactly what
+       this set exists to remember: a deliberate removal that must not be
+       auto-re-landed on restore. Landed ('g') and Unavailable-filed ('u')
+       rows are the ones with nothing to record. */
+    if (!isPersonal(r.type) || (r.acc && r.acc !== 'r')) return
     const di = dateIx(r.date, r.yr)
     if (di < 0 || dayApproved(di)) return
     const key = inpKey(r)
@@ -293,8 +297,12 @@ function applyWeekModel(v: any): any {
      date. `acc` records the LOADED week's landing only (weekctx.ts's own
      comment says the same) — clear it so autoAcceptSeedInputs (or the
      restore-landing pass below) re-derives it fresh for THIS week's DAYS,
-     whichever shape they just took above. */
-  INPUTS.forEach((r: any) => { if (r.acc) delete r.acc })
+     whichever shape they just took above. 'r' (removed — dormant, engine/
+     inputs.ts inputDormant) is the one value that SURVIVES the clear: it is
+     not a landing record but a mark on the input itself, and keeping it is
+     what lets the cross-week seeds (weekctx.ts) and autoAccept's truthy-acc
+     guard honour a removal without re-deriving it from the stash. */
+  INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r') delete r.acc })
   reconcileLandedAcc()
   mintInpIds()
   if (s) {
@@ -303,7 +311,14 @@ function applyWeekModel(v: any): any {
        including a row that is brand new since this week was last open */
     const un = new Set<string>(Array.isArray(s.un) ? s.un : [])
     const savedPending = { ...SCHED.pending }, savedChanges = { ...SCHED.changes }, savedAdded = { ...SCHED.added }
-    INPUTS.forEach((r: any) => { if (!un.has(inpKey(r))) autoAcceptInput(r) })
+    /* an un-hit row is re-PARKED as 'r', not left acc-less: the acc-clear
+       above wiped its dormancy marker, and without putting it back the input
+       would read as fresh and start flagging again the moment the week is
+       re-entered — the exact surprise the owner reported (26 Aug 26). */
+    INPUTS.forEach((r: any) => {
+      if (un.has(inpKey(r))) { if (isPersonal(r.type)) r.acc = 'r' }
+      else autoAcceptInput(r)
+    })
     SCHED.pending = savedPending; SCHED.changes = savedChanges; SCHED.added = savedAdded
   } else {
     autoAcceptSeedInputs()      // land activity inputs on ground (dayApproved now clean)

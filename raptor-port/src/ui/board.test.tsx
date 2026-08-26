@@ -408,7 +408,9 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     const ri = DAYS[di].ground.findIndex((r: any) => r.src === key)
     expect(ri, 'the auto-landed row is on the day').toBeGreaterThanOrEqual(0)
     await click(document.querySelector(`#sbBoard .sb-panel.grnd [data-grdel="${di}.${ri}"]`))
-    expect(m.acc, 'accept cleared — back under Personal Inputs').toBeFalsy()
+    /* 'r' since 26 Aug 26 (owner): the round-trip parks it dormant — listed
+       under Personal Inputs, flagging nothing until re-accepted */
+    expect(m.acc, 'removed — back under Personal Inputs, dormant').toBe('r')
     expect(INPUTS.includes(m), 'the input itself survives').toBe(true)
     expect(DAYS.some((d: any) => (d.ground || []).some((r: any) => r.src === key)), 'no orphan row on any day').toBe(false)
     const j = INPUTS.indexOf(m); if (j >= 0) INPUTS.splice(j, 1)   // clean up

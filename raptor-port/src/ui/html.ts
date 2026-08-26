@@ -1202,10 +1202,9 @@ export function dayHTML(di:any,ed:any,vsel?:any){
          rather than every row carrying a hint it has no room for.
          Scheduler-side only: the view-only week cannot edit anything. */
       let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>${title}${ed?`<span class="pl-hint">times and remarks type in place · clear a time for all day · press the type to change it${foldable?' · hide ⌃':''}</span>`:''}</div>`;
-      /* Housekeeping reminder (owner, Aug 26): an input the scheduler is not
-         going to action should be cleared out here — press its type to open the
-         editor and Delete. Personal Inputs group only (acc), scheduler-side. */
-      if(acc&&ed&&rows.length)s+=`<div class="pl-inpnote">Rejected personal inputs should be deleted by the scheduler here.</div>`;
+      /* Housekeeping reminder (owner, Aug 26; reworded 26 Aug 26 with the
+         dormancy rule — one wording with the board's sb-pinote sibling). */
+      if(acc&&ed&&rows.length)s+=`<div class="pl-inpnote">A removed input flags nothing until accepted again — delete it here if it should go entirely.</div>`;
       /* Unavailable is the block the squadron reads every single day, so it
          prints even when nobody is on it — "Nil" is the answer, not a missing
          section. */
@@ -1227,7 +1226,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           : `<span class="itxt">${esc(inp.person)}</span>`;
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
-        s+=`<div class="pl-row${acc&&inp.acc?' accd':''}">`
+        s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}">`
           +`<span class="nm">${inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${inpTimeCells(inp,ed)}`
           +`<div class="ppl one">${pk}</div>${inpRmkCell(inp,ed,d.dt)}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
@@ -1317,7 +1316,10 @@ export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
 export function accCtl(di:any,inp:any){
   if(!canEditSched())return `<span class="accs"></span>`;
   const k=esc(inpKey(inp));
-  if(inp.acc)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Undo — removes the ground-programme row this created">Undo</button></span>`;
+  /* 'r' (removed — dormant, see engine/inputs.ts inputDormant) is NOT
+     "accepted": the row was undone, so this offers Accept again, which is the
+     one way back to a flagging state. Only 'g'/'u' show Undo. */
+  if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Undo — removes the ground-programme row this created">Undo</button></span>`;
   const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" data-acck="${k}" title="${ttl}">${lbl}</button>`;
   return `<span class="accs">`
     +(/^Other$/i.test(String(inp.type))

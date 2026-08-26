@@ -146,6 +146,16 @@ cannot import). Adding or moving a type between red and amber is the flag
 plus the refwin literal — anything else reading its own list is a new seam.
 Shift lines are excluded from the sortie "clashes with" loop (`e.shift`
 guard, both engines): the graded events loop is a shift's one voice.
+**A removed input's dormancy is its own one-body seam (26 Aug 26)**:
+`inputDormant` (`engine/inputs.ts` — acc `'r'`, written only by
+`unacceptInput`) is read by `inputFlags` (validator gate + refwin's reference
+seed filter), `inpShow` (`events.ts` — day.input, tails, and through it the
+picker), `weekctx.ts:workedSet` (cross-week run-in), `isAway`'s Fly leg, and
+the UI's `accCtl`/`accd` reads (`'r'` renders as un-accepted). Its writers'
+counterparts: `acceptInput` admits `'r'` back, `autoAcceptInput` refuses it,
+`loadWeek`'s acc-clear preserves it, `commitInputEdit` clears a stray one on
+a failed relink. A new consumer of "is this input live?" reads
+`inputDormant`, never `acc` directly.
 
 ### Flow C — day navigation on the phone board (view-only, no mutation)
 ```

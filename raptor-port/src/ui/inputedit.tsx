@@ -440,7 +440,11 @@ export function commitInputEdit(r: any, draft: any) {
        and it could never be removed. So an accepted input is un-accepted
        through the real path FIRST, edited, then re-accepted — which also
        moves the row when the date moves it to another day. */
-    const wasAcc = r.acc
+    /* 'r' (removed — dormant, engine/inputs.ts inputDormant) reads as NOT
+       accepted here: there is no row to relink, and the re-accept below must
+       not wake a parked input just because its times were edited — only the
+       Accept button re-lands it (owner, 26 Aug 26). */
+    const wasAcc = r.acc === 'r' ? undefined : r.acc
     /* the row may sit on any day the input spans, not its start date */
     const wasDi = wasAcc === 'g' ? acceptedDay(r) : -1
     /* what a SCHEDULER added to the promoted row by hand — extra crew in
@@ -519,6 +523,15 @@ export function commitInputEdit(r: any, draft: any) {
         }
       }
       else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
+      /* the un-accept above parks the input as 'r' (removed — dormant); every
+         SUCCESSFUL re-accept overwrites it, so an 'r' still here means the
+         relink failed (type refused, duplicate key, moved outside the week).
+         That failure is "no longer accepted", NOT "scheduler removed it" —
+         leaving 'r' would silence the input outright (a Meeting retyped to LL
+         would become dormant LEAVE), and would block auto-landing when its
+         new week loads. Scoped inside `wasAcc` so an input that was ALREADY
+         dormant before the edit (wasAcc reads undefined for it) stays so. */
+      if (r.acc === 'r') delete r.acc
     }
   })
   return true

@@ -168,7 +168,7 @@ export function lgRules(){
   {g:'Leave, downchit and personal inputs',
    rows:[
     {sev:'set',extra:leaves,src:()=>`INPUT_META`,
-     t:()=>`An absence is booked as one of ${lgV(INPUT_TYPES.length)} things. Every one of them closes the man for the hours it covers — flying, sims, duties and ground slots alike — from the moment it is typed:`},
+     t:()=>`An absence is booked as one of ${lgV(INPUT_TYPES.length)} things. Every one of them closes the man for the hours it covers — flying, sims, duties and ground slots alike — from the moment it is typed. The one exception: an input a scheduler has <b>removed</b> from the Ground Programme sits in Personal Inputs and flags <b>nothing</b> until it is accepted back.<span class="why">Removing it is the scheduler saying it does not stand — a rejected request must not keep ringing warnings (owner, 26 Aug 26). Deleting the input entirely says the same thing louder.</span>`},
     {sev:'hard',code:'LEAVE_FLY',
      t:()=>`On leave but planned to fly, sit a sim, stand a duty or take a ground slot — a Warning, and the <b>reason</b> is printed with it.`},
     {sev:'hard',code:'DNIF_FLY',

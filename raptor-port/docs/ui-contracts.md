@@ -1384,8 +1384,9 @@ surface, so it collapses to a summary by default: `PIOPEN`/`togglePInputs`
 (`state/view.ts`), the header the toggle (`data-pitog`, routed in
 `interactions.ts` on `canEditSched()` so it works on the edit week AND the
 board). The summary counts the rows and how many are on the programme. When
-expanded it also carries a housekeeping reminder — "Rejected personal inputs
-should be deleted by the scheduler here" (owner, Aug 26; `.pl-inpnote` on the
+expanded it also carries a housekeeping reminder — "A removed input flags
+nothing until accepted again — delete it here if it should go entirely"
+(owner, Aug 26; reworded 26 Aug 26 with the dormancy rule; `.pl-inpnote` on the
 week, `.sb-pinote` on the board) — a scheduler deletes one by pressing its type
 to open the editor and Delete.
 Unavailable is deliberately left OPEN — it is a live plant/drop target and the

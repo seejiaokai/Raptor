@@ -113,6 +113,10 @@ describe('loadWeek', () => {
     loadWeek('13/07/2026')
     // it must STILL be off the ground — the removal survived the round-trip
     expect(landed(inp), 'the unaccepted row must not be silently re-landed').toBe(false)
+    /* and still DORMANT (owner, 26 Aug 26): the 'r' mark rides the round-trip
+       (loadWeek's acc-clear skips it; the stash's un set re-parks the legacy
+       shape), so it goes on flagging nothing until a scheduler re-accepts it */
+    expect(inp.acc, 'the removal mark itself survives').toBe('r')
     // and the row itself is still a personal input (it was removed from the ground, not deleted)
     expect(INPUTS.some((r: any) => r.person === 'divot' && r.type === 'Training')).toBe(true)
   })

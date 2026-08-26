@@ -125,11 +125,22 @@ describe('accepting a personal input', () => {
     expect(unacceptInput(0, inp)).toBe(true)
     expect(DAYS[0].ground.length).toBe(n - 2)
     expect(DAYS[0].ground.some((r: any) => r.src === inpKey(inp))).toBe(false)
-    expect(inp.acc).toBeUndefined()
+    /* 'r', not undefined, since 26 Aug 26 (owner): a removal parks the input
+       DORMANT rather than resetting it to fresh — see inputDormant */
+    expect(inp.acc).toBe('r')
   })
 
   it('undo on an un-accepted input does nothing', () => {
     expect(unacceptInput(0, findInp('Meeting')!)).toBe(false)
+  })
+
+  it('undo on a removed (dormant) input does nothing — there is no second undo', () => {
+    const inp = findInp('Meeting')!
+    acceptInput(0, inp, 'g')
+    expect(unacceptInput(0, inp)).toBe(true)
+    expect(inp.acc).toBe('r')
+    expect(unacceptInput(0, inp)).toBe(false)
+    expect(inp.acc).toBe('r')
   })
 
   it('removing an accepted Ground row from a published day leaves an inert pending removal', () => {
@@ -233,7 +244,10 @@ describe('per-section scheduler notes', () => {
    to that row, so a scheduler reads it once. An ALL-DAY promotion makes a
    TIME-LESS row, which never becomes an event and so can carry nothing — that
    one stays visible on the input itself. Unavailable-typed inputs are still
-   never promotable: leave does not belong on the Ground Programme. */
+   never promotable: leave does not belong on the Ground Programme.
+   A second carve-out since 26 Aug 26 (owner): an input a scheduler REMOVED
+   from the programme (unaccept → acc 'r') is DORMANT — engine-invisible until
+   re-accepted. Removal is rejection; only fresh/never-landed inputs count. */
 describe('the validator gate on personal inputs', () => {
   it('day.input keeps every type now, actioned or not', () => {
     const inp0 = collectEvents()[0].input
@@ -256,7 +270,13 @@ describe('the validator gate on personal inputs', () => {
     expect(hits('INPUT_FLY')).toBe(0)                   // …and it is not said twice
     unacceptInput(0, inp)
     expect(hits('DOUBLE_BOOK')).toBe(dbBase)
-    expect(hits('INPUT_FLY')).toBeGreaterThan(0)        // back on the input
+    /* FLIPPED (owner, 26 Aug 26 — tested the preview, removed an accepted
+       Training and it still flagged): a REMOVED input is DORMANT (acc 'r'),
+       not "back to counting". It used to come back on the input here; now it
+       says nothing until a scheduler accepts it again. */
+    expect(inp.acc).toBe('r')
+    expect(hits('INPUT_FLY')).toBe(0)                   // dormant — not back on the input
+    /* and 'r' is re-actionable: filing it under Unavailable wakes it */
     expect(acceptInput(0, inp, 'u')).toBe(true)
     expect(hits('INPUT_FLY')).toBeGreaterThan(0)
   })
@@ -280,6 +300,10 @@ describe('the validator gate on personal inputs', () => {
     expect(validate().all.filter((x: any) => x.code === 'DOUBLE_BOOK'
       && (x.who || []).indexOf('bruise') >= 0).length).toBe(0)
     unacceptInput(0, inp)
+    /* FLIPPED (owner, 26 Aug 26): removal parks it dormant — the all-day
+       voice goes quiet with the row, and only re-accepting brings it back */
+    expect(hits().length).toBe(0)
+    expect(acceptInput(0, inp, 'g')).toBe(true)
     expect(hits().length).toBeGreaterThan(0)
   })
 

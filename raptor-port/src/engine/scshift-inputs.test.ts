@@ -11,7 +11,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS, shiftHardInput, shiftHardLabel } from './inputs'
 import { PEOPLE, nameToId } from './people'
-import { acceptInput } from './slots'
+import { acceptInput, unacceptInput } from './slots'
+import { collectEvents } from './events'
 import { SCHED } from './publish'
 import { makeStandalone } from './waves'
 import { validate } from './validate'
@@ -178,5 +179,45 @@ describe('what does NOT change', () => {
     inp('Meeting', { s: 390, e: 800 })     // 06:30–13:20: cuts the in-time window AND the shift
     expect(mine('SHIFT_SOFT').length).toBe(1)
     expect(mine('SC_INTIME').length, 'already reported — the in-time cut must not double it').toBe(0)
+  })
+})
+
+/* A REMOVED INPUT IS DORMANT (owner, 26 Aug 26 — the preview follow-up:
+   removed Comet's accepted Training back to Personal Inputs and it still rang
+   "Training but tasked — SC AM"; "if it goes there, stop it from flagging
+   anything, until its added back to ground programme"). unacceptInput parks it
+   as acc 'r'; inputDormant blanks it from the engine. */
+describe('a removed input flags nothing until re-accepted', () => {
+  it('the owner\'s exact case: accepted all-day Training vs SC MAIN, removed, re-accepted', () => {
+    addSC(P); inp('Training', { allday: true, s: undefined, e: undefined })
+    const r: any = INPUTS[INPUTS.length - 1]
+    expect(acceptInput(TUE, r, 'g')).toBe(true)
+    /* all-day promotion keeps the raw voice (time-less row carries nothing) */
+    expect(mine('INPUT_FLY').length).toBe(1)
+    unacceptInput(TUE, r)
+    expect(r.acc).toBe('r')
+    expect(mine().filter((x: any) => x.sev !== 'note').length, 'removed — silent everywhere').toBe(0)
+    expect(acceptInput(TUE, r, 'g'), 'the Accept button works again from removed').toBe(true)
+    expect(mine('INPUT_FLY').length, 'accepted back — the red returns').toBe(1)
+  })
+  it('a removed TIMED red-list input goes quiet too — row voice and raw voice both', () => {
+    addSC(P); inp('CSE')
+    const r: any = INPUTS[INPUTS.length - 1]
+    expect(acceptInput(TUE, r, 'g')).toBe(true)
+    expect(mine('DOUBLE_BOOK').length, 'the landed row carries the clash').toBe(1)
+    unacceptInput(TUE, r)
+    expect(mine().filter((x: any) => x.sev !== 'note').length).toBe(0)
+  })
+  it('dormancy is engine-wide: day.input drops the removed input', () => {
+    inp('Duty')
+    const r: any = INPUTS[INPUTS.length - 1]
+    expect(collectEvents()[TUE].input.some((x: any) => x.id === P && x.type === 'Duty')).toBe(true)
+    acceptInput(TUE, r, 'g'); unacceptInput(TUE, r)
+    expect(collectEvents()[TUE].input.some((x: any) => x.id === P && x.type === 'Duty'),
+      'inpShow blanks a dormant input out of day.input').toBe(false)
+  })
+  it('a fresh, never-landed input still counts — only a deliberate removal parks', () => {
+    addSC(P); inp('Training')                     // acc undefined — the 10 Aug rule holds
+    expect(mine('INPUT_FLY').length).toBe(1)
   })
 })

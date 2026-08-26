@@ -15,11 +15,13 @@
    reference so both engines compute from IDENTICAL input data, leaving only the
    structural divergences for the tests themselves to handle.
 
-   The push is filtered through inputFlags (owner, Aug 26): the port's
-   validator no longer sees an un-actioned personal input, and the reference
+   The push is filtered through inputFlags (owner, Aug 26): the reference
    has no accept gate of its own, so it must be fed only what the port's
    validator would see or its warnings diverge. filter() preserves order, so
-   day.input still compares byte-for-byte. */
+   day.input still compares byte-for-byte. That same filter is what keeps a
+   REMOVED input (acc 'r' — dormant since 26 Aug 26, see inputDormant) out of
+   the reference entirely: both engines are equally blind to it, so the
+   dormancy rule needs no reference-side rewrite at all. */
 import { readFileSync } from 'node:fs'
 import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
