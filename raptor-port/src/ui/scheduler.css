@@ -2530,12 +2530,19 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   /* THE PHONE FOLD (owner, 23 Aug 26; became its own row 26 Aug 26): the chips
      hide unless the row carries .hl-open (the .hl-tog toggle flips view.HLOPEN).
      Collapsed there is no chip row at all; open, the .hlrow wrapper becomes LINE
-     TWO — full width (flex-basis:100%), ordered after the icons and the search,
-     wrapping its own chips so every group stays visible below the icons rather
-     than crammed onto their line. */
+     TWO — full width (flex-basis:100%), ordered after the icons and the search.
+     It does NOT wrap: an expanded group (Quals is six chips) is one atomic
+     inline-flex unit that cannot break, so wrapping just let it run off the
+     screen edge (owner, 26 Aug 26 — "Quals is extended too much … follow how
+     the scheduler board highlighter is designed where I can scroll left and
+     right"). Line two is therefore a sideways scroller, the SAME recipe as the
+     board's .sb-hl.open further down — nowrap + overflow-x:auto, scrollbar
+     hidden, its groups held at their natural width. */
   #page-viewsched .filters:not(.hl-open) .hlrow,#page-editsched .filters:not(.hl-open) .hlrow{display:none}
-  #page-viewsched .filters.hl-open .hlrow,#page-editsched .filters.hl-open .hlrow{display:flex;flex-wrap:wrap;
-    flex:0 0 100%;order:10;gap:5px;align-items:center;padding-top:2px}
+  #page-viewsched .filters.hl-open .hlrow,#page-editsched .filters.hl-open .hlrow{display:flex;flex-wrap:nowrap;
+    flex:0 0 100%;order:10;gap:5px;align-items:center;padding-top:2px;overflow-x:auto;scrollbar-width:none}
+  #page-viewsched .filters.hl-open .hlrow::-webkit-scrollbar,#page-editsched .filters.hl-open .hlrow::-webkit-scrollbar{display:none}
+  #page-viewsched .filters.hl-open .hlrow>*,#page-editsched .filters.hl-open .hlrow>*{flex:0 0 auto}
   /* the two-element lead swaps: the desktop label goes, the toggle arrives.
      .hl-lab must be beaten here — the pin rule below used to target .lab and
      would have re-shown it (display:flex) at higher specificity. */

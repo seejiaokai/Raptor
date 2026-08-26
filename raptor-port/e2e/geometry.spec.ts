@@ -3167,6 +3167,33 @@ test('the Highlight chips fold behind the toggle on a phone, and stand open on a
   expect((await size(TAB)).w, 'a desktop shows the tabs with no tap').toBeGreaterThan(0)
 })
 
+/* THE EXPANDED CHIP ROW SCROLLS SIDEWAYS, IT DOES NOT STRETCH THE PAGE
+   (owner, 26 Aug 26 — "Quals is extended too much … follow how the scheduler
+   board highlighter is designed where I can scroll left and right"). Quals is
+   the widest group (six chips) and is one atomic inline-flex unit that cannot
+   wrap; expanded on a phone it must overflow WITHIN its own row — the same
+   nowrap + overflow-x:auto recipe as the board's .sb-hl.open — and never widen
+   the document. Only a browser can measure real overflow, so it is pinned here. */
+test('the expanded highlight chips scroll sideways, not off the page', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await page.click('#page-viewsched .filters .hl-tog')          // unfold the chips
+  await page.waitForTimeout(150)
+  await page.locator('#page-viewsched .filters .hl-gtab', { hasText: 'Quals' }).click()
+  await page.waitForTimeout(200)
+  const m = await page.evaluate(() => {
+    const row = document.querySelector('#page-viewsched .filters.hl-open .hlrow') as HTMLElement
+    return {
+      overflowX: getComputedStyle(row).overflowX,
+      rowScrollable: row.scrollWidth > row.clientWidth + 2,
+      pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    }
+  })
+  expect(m.overflowX, 'the chip row is its own sideways scroller').toBe('auto')
+  expect(m.rowScrollable, 'the six Quals chips overflow within the row').toBe(true)
+  expect(m.pageOverflow, 'the page itself never scrolls sideways').toBeLessThanOrEqual(1)
+})
+
 /* ===================================================================
    THE DAY IS STEPPED BY TWO ARROWS (owner, 12 Aug 26 — "remove the swipe for
    the mobile scheduler board too. Just put arrows at the edges of the bar at
