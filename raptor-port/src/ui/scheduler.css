@@ -3141,6 +3141,10 @@ body.sb-lock{overflow:hidden}
 .sb-warn .wln[data-wdi]:hover{filter:brightness(1.15)}
 /* mirrors .dwlist .witem.on, so the board's selected issue reads the same as the week's */
 .sb-warn .wln.on{box-shadow:0 0 0 1px rgba(59,198,232,.35);border-left-color:var(--accent)}
+/* the selected person's flagged rows — a stronger accent ring + tint so a click
+   on a flagged puck clearly points at what it triggered (owner, 26 Aug 26).
+   selectPerson clears WFOCUS, so .pksel and .on never land on the same row. */
+.sb-warn .wln.pksel{box-shadow:0 0 0 2px rgba(59,198,232,.6);border-left-color:var(--accent);background:rgba(59,198,232,.12)}
 /* the check text takes the row; the mute button (✕ to hide, ↺ to restore) sits
    at the right and only appears for a scheduler (owner, Aug 26) */
 .sb-warn .wln-t{flex:1;min-width:0;overflow-wrap:anywhere}

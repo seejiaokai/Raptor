@@ -757,6 +757,16 @@ line is deliberately not addressable. The selected state (`.wln.on`) is
 rendered **into the string**, not painted afterwards: `SchedBoard` diffs each
 panel's html to decide whether to re-hang it, so a class added later is lost
 on the next unrelated repaint.
+**And it works the OTHER way too** (owner, 26 Aug 26 — "click a puck that has any
+flagging … the top right warning column will snap to that puck and show what
+triggered that flagging"): clicking a board puck selects the person (`SELID`,
+blue — unchanged), and every `Live checks` row whose crew includes them renders
+`.pksel` (a stronger accent ring than `.on`, board.ts), so the panel points at
+what they triggered. `interactions.ts:scrollBoardWarnToSel` then scrolls the
+panel to the first such row a task after the notify that repainted it.
+`selectPerson` clears `WFOCUS`, so `.pksel` and `.on` never mark the same row —
+this stays additive to the 7 Aug rule (a puck still SELECTS, it does not jump the
+board), it just makes the checks list answer the selection.
 
 ## The board on a phone is ONE window (owner, 8 Aug 26)
 

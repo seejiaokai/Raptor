@@ -20,6 +20,7 @@ import * as view from '../state/view'
 import { cxText } from './html'
 import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave, askCx, cxCommit, CXT } from './board'
 import { applyMove } from '../engine/reorder'
+import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -381,6 +382,25 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(cells.length, 'the board has append-capable people cells').toBeGreaterThan(0)
     const missing = cells.filter(c => !c.querySelector(':scope > .addz'))
     expect(missing.length, 'so a full row takes a new puck below instead of swapping a seated one').toBe(0)
+  })
+
+  /* CLICK A FLAGGED PUCK → THE CHECKS PANEL POINTS AT WHAT IT TRIGGERED (owner,
+     26 Aug 26). Selecting a person marks their check rows `.pksel`; a second
+     click clears it. selectPerson clears WFOCUS, so `.pksel` and `.on` never land
+     together. The panel's scroll-to-first is jsdom-invisible (no layout); this
+     pins the mark, which is what carries "show what triggered". */
+  it('selecting a flagged person lights their check rows, and a second click clears them', async () => {
+    await act(async () => { openScheduler(0); notify() })   // #sbWarn renders only with the board open
+    const dw = (WARN.byDay[0] && WARN.byDay[0].warns) || []
+    const w = dw.find((x: any) => (x.who || []).length)
+    expect(w, 'the seed board day carries a crewed warning').toBeTruthy()
+    const pid = w.who[0]
+    await act(async () => { view.selectPerson(pid, false); notify() })
+    const rows = [...document.querySelectorAll('#sbWarn .wln.pksel')]
+    expect(rows.length, "the selected person's check rows light").toBeGreaterThan(0)
+    rows.forEach(r => expect(r.getAttribute('data-wix'), 'each is a real warning row').toBeTruthy())
+    await act(async () => { view.selectPerson(pid, false); notify() })
+    expect(document.querySelectorAll('#sbWarn .wln.pksel').length, 'a second click clears the mark').toBe(0)
   })
 
   /* the render-time sort (owner, Aug 26): rows read in start-time order but

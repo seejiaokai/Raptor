@@ -334,7 +334,13 @@ export function boardWarnHTML(di: number) {
          re-hang the panel, so a class added afterwards is lost on the next
          unrelated repaint */
       const on = view.WFOCUS && view.WFOCUS.di === di && view.WFOCUS.ix === ix ? ' on' : ''
-      wh += `<div class="wln ${w.sev}${on}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
+      /* the SELECTED person's flagged rows light, and clicking their puck snaps
+         the panel to the first of them (owner, 26 Aug 26 — "click a puck that has
+         any flagging … the top right warning column will snap to that puck and
+         show what triggered that flagging"). selectPerson clears WFOCUS, so
+         `.pksel` and `.on` never apply to the same row. */
+      const sel = view.SELID && (w.who || []).includes(view.SELID) ? ' pksel' : ''
+      wh += `<div class="wln ${w.sev}${on}${sel}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
         + `<span class="wln-t">${wtext(w)}</span>`
         + (canMute ? `<button class="wln-mute" data-woff="${di}.${ix}" title="Hide this check — it comes back if the situation changes">✕</button>` : '')
         + `</div>`
