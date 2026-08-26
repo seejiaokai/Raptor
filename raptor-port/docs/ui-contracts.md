@@ -180,8 +180,14 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   its STATIC vertical position so only the horizontal transform animates. An
   earlier `position:fixed;top:8px` yanked it ~300px UP to the viewport top before
   sliding, and back DOWN on expand: the "flying above then below" the owner
-  flagged (26 Aug 26). Absolute also scrolls with the board like the in-flow
-  column did, so a collapse while scrolled stays put. The rail is a slim BLUE vertical `CREW` tab styled
+  flagged (26 Aug 26). **And the `[data-roshide]` handler pins the column's
+  on-screen Y as an inline `top` at the moment of collapse** (cleared on expand):
+  the resting column is `position:sticky`, so mid-scroll its pinned top sits
+  hundreds of px from its static position, and `top:auto` alone teleported it up
+  off-screen before the slide (measured top 8 → −888 at scrollY 1200; found in
+  the 26 Aug bug pass). With the pin, the slide plays exactly where the eye last
+  saw the panel at any scroll; expand clears the inline top so sticky takes back
+  over. The rail is a slim BLUE vertical `CREW` tab styled
   off the phone drawer's accent tab and sat HIGH on the right edge (owner, 26 Aug
   26 — "make it like a blue side panel similar to the mobile one, labeled as crew
   … put it higher"); it rides the reserved right lane (`.edit-board` keeps a

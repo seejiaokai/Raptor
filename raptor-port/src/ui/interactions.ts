@@ -682,8 +682,27 @@ export function routeClick(e: MouseEvent) {
   /* the DESKTOP hide/show rail for the edit-week aircrew column (owner, 26 Aug
      26 — "hide the placeholders list … it just animates to the right side"). A
      bare body class, the same session-only, repaint-surviving idiom as ros-open
-     above; the slide + the week reclaiming its width are pure CSS off it. */
-  if (t.closest('[data-roshide]')) { document.body.classList.toggle('ros-collapsed'); e.stopPropagation(); return }
+     above; the slide + the week reclaiming its width are pure CSS off it.
+     One JS assist: the resting column is position:sticky, so mid-scroll its
+     visual top (pinned ~8px under the bar) sits hundreds of px from its static
+     position — and the collapsed rule's position:absolute/top:auto lands at the
+     static spot, teleporting the panel up off-screen before the sideways slide
+     (the same "flying" family the owner flagged, surfacing only when scrolled).
+     Pinning the on-screen Y as an inline top BEFORE the class flips keeps the
+     slide exactly where the eye last saw the panel; cleared on expand so sticky
+     takes back over. Absolute top places the MARGIN edge, hence the marginTop
+     subtraction. */
+  if (t.closest('[data-roshide]')) {
+    const er = document.querySelector('.edit-board .eroster') as HTMLElement | null
+    if (er && er.parentElement) {
+      if (!document.body.classList.contains('ros-collapsed')) {
+        const mt = parseFloat(getComputedStyle(er).marginTop) || 0
+        er.style.top = (er.getBoundingClientRect().top - er.parentElement.getBoundingClientRect().top - mt) + 'px'
+      } else er.style.top = ''
+    }
+    document.body.classList.toggle('ros-collapsed')
+    e.stopPropagation(); return
+  }
   if (t.closest('[data-disarm]')) { view.disarmSlot(); notify(); e.stopPropagation(); return }
 
   /* a tap on a palette name: plant it if something is armed, otherwise fall

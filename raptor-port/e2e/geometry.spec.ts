@@ -597,6 +597,24 @@ test('desktop: the edit-scheduler aircrew column hides to the right and the week
   }))
   expect(back.collapsed, 'a second click brings it back').toBe(false)
   expect(Math.abs(back.weekW - before.weekW), 'the week returns to its docked width').toBeLessThanOrEqual(2)
+
+  /* MID-SCROLL, THE SLIDE STAYS WHERE THE EYE IS. The resting column is
+     position:sticky, so once the page is scrolled its pinned top is far from its
+     static position — and the collapsed absolute rule alone would land it there,
+     teleporting the panel up off-screen before the sideways slide (measured:
+     top 8 → -888 at scrollY 1200 before the inline-top pin in interactions.ts). */
+  await page.evaluate(() => window.scrollTo(0, 1200))
+  await page.waitForTimeout(80)
+  const pinned = await page.evaluate(() =>
+    Math.round((document.querySelector('.edit-board .eroster') as HTMLElement).getBoundingClientRect().top))
+  await page.click('.ros-rail')
+  await page.waitForTimeout(30) // mid-slide — position already flipped to absolute
+  const midSlide = await page.evaluate(() =>
+    Math.round((document.querySelector('.edit-board .eroster') as HTMLElement).getBoundingClientRect().top))
+  expect(Math.abs(midSlide - pinned), 'collapsing mid-scroll keeps the column at its pinned top — no vertical teleport').toBeLessThanOrEqual(2)
+  await page.waitForTimeout(320)
+  await page.click('.ros-rail') // restore for any test after us
+  await page.waitForTimeout(350)
 })
 
 /* THE BOARD PEOPLE CELLS RESERVE A STEADY-HEIGHT TRAILING DROP ZONE (owner,
