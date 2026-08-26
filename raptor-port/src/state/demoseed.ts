@@ -17,9 +17,13 @@
 
    Each offer window is picked to COVER the person's own real seed
    commitment for that day at its PADDED width — the same window sansGate
-   (avail.ts) judges a flying/OFT slot against (VCONF.step before, dekit
-   after a sortie's to/ld; a sim's own s/e, unpadded) — so validate() never
-   raises SANS_AVAIL against its own seed. demosans.test.ts pins that.
+   (avail.ts) judges a flying/OFT slot against (the crew's published
+   IN-TIME when one shows earlier, else VCONF.step, before the sortie's to;
+   dekit after ld — owner, 26 Aug 26; a sim's own s/e, unpadded) — so
+   validate() never raises SANS_AVAIL against its own seed. The one
+   windowed fly record below (nick) stays clean under the in-time anchor
+   because his wave's published 19:00 in-time is LATER than his 18:45 step
+   and the min() guard keeps the step. demosans.test.ts pins that.
    `mod` stamps sit on or before these rows' own week's input deadline
    (inputOwnDueISO — Mon 29 Jun for their week of Mon 13 Jul) so none of
    these wears the late-input mark, the same idiom the seed INPUTS rows

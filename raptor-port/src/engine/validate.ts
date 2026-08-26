@@ -868,8 +868,16 @@ export function validate(){
        planned-against-what-was-filed chip, the same family as SHIFT_SOFT and
        SC_INTIME, and its label now names this case too).
        Checks are built from day.fly (domain
-       'fly', the sortie's own step→dekit window — the same window slotBar
-       judges a flying seat against, AVALON excluded because saExempt
+       'fly', window IN-TIME → dekit since 26 Aug 26 — owner: "SANS should
+       consider IN TIME till land plus 30 minutes for availability".
+       min(e.report,e.step) opens the front at the published in-time (or a
+       typed SC B) when one shows the crew earlier than the step / shift
+       start, and stays the plain step→dekit pad when no in-time is
+       published or the clock is later — a late in-time can never SHRINK
+       the occupied window, the same guard insOf/workSpan put on crew rest.
+       This is the same front edge slotBar judges a flying seat against:
+       slotRules' sansStart reads the identical seatIntime body (events.ts).
+       AVALON excluded because saExempt
        formations never reach day.fly at all) plus day.events' sim entries
        whose key names the device (`s:di.amt.ri` / `s:di.oft.ri` — domain is
        the captured word, window is the event's own s→e). A duty, ground or
@@ -888,7 +896,7 @@ export function validate(){
        planting says the same — it simply never becomes a persistent
        Advisory. 'ok' and 'na' are not a problem and need no comment. */
     const sansChecks:any[]=[];
-    day.fly.forEach((e:any)=>sansChecks.push({id:e.id,domain:'fly',s:e.step,en:e.dekit,label:e.label,key:e.key}));
+    day.fly.forEach((e:any)=>sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,label:e.label,key:e.key}));
     day.events.forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\./.exec(String(e.key||'')); if(!m)return;
       sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key}); });
     sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!p.san)return;

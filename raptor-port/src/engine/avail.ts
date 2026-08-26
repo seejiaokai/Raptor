@@ -5,7 +5,7 @@ import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare } from './waves'
 import { WARN, restClear, dayEvents } from './validate'
-import { waveWindows, inpShow, shiftEvHard } from './events'
+import { waveWindows, inpShow, shiftEvHard, seatIntime } from './events'
 import { whoArr, rowRef, XKEY } from './slots'
 import { keyDay } from './keys'
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
@@ -137,7 +137,7 @@ export function slotRules(key:any){
   /* an append target and an overflow body both sit on the row they hang off,
      so they carry its hours — strip both before looking the row up */
   const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
-  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,avJet:false,avDuty:false};
+  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false};
   out.di=keyDay(k);
   /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
      shift carried a window before, which is the whole reason a personal input
@@ -211,7 +211,22 @@ export function slotRules(key:any){
       if(st!=null){ if(en==null)en=st; if(en<st)en+=1440;
         const sh=wv&&isStandalone(wv);
         if(sh&&wv.kind==='avalon')out.avJet=true;    // MAIN or SPARE, both are jet seats (owner, 11 Aug 26)
-        out.slotStart=sh?st:st-VCONF.step; out.slotEnd=sh?en:en+VCONF.dekit; } }
+        out.slotStart=sh?st:st-VCONF.step; out.slotEnd=sh?en:en+VCONF.dekit;
+        /* SANS judges a flying seat from the crew's IN-TIME (owner, 26 Aug
+           26 — "SANS should consider IN TIME till land plus 30 minutes for
+           availability"): a published in-time line, or a typed SC B, that
+           shows the crew EARLIER than the step (or shift start) opens the
+           SANS window there instead — min(), so a late clock can never
+           SHRINK the occupied window, the same guard insOf/workSpan put on
+           crew rest. No in-time published leaves this exactly slotStart —
+           the fallback is the window the seat occupies anyway, stated on
+           the Logic tab. Its OWN field on purpose: slotStart/slotEnd still
+           judge absences and the busy-at-this-hour check, which the owner
+           did not move. The validator computes the identical front edge as
+           min(e.report,e.step) off the same seatIntime body (events.ts) —
+           the pair cannot drift. */
+        const it=seatIntime(wv,f,st);
+        out.sansStart=it!=null?Math.min(it,out.slotStart):out.slotStart; } }
     if(wv&&f&&isStandalone(wv)&&wv.kind==='sc'){
       const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null&&en!=null){ if(en<st)en+=1440; out.sc=scShiftKind(st,en); out.scEnd=en; }
@@ -402,7 +417,10 @@ export function slotBar(id:any,key:any,rules?:any){
      saying what the warning list will not, the drift-seam this gate must avoid. */
   const domain=r.sim?r.simKind:(String(key).indexOf(':')<0?'fly':null);
   if(domain&&p.san&&r.di>=0&&DAYS[r.di]&&r.slotStart!=null&&r.slotEnd!=null&&!spareLike0(r)){
-    const g=sansGate(id,DAYS[r.di].dt,domain,r.slotStart,r.slotEnd);
+    /* a flying seat is judged from its IN-TIME front edge (sansStart, set in
+       slotRules' flying branch); a sim key sets no sansStart and falls back
+       to the box's own start — a sim window is read AS FILED, unchanged */
+    const g=sansGate(id,DAYS[r.di].dt,domain,r.sansStart!=null?r.sansStart:r.slotStart,r.slotEnd);
     if(g.status==='none')return 'SANS — no availability filed for today';
     if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
     if(g.status==='window')return `SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;

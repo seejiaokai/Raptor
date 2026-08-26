@@ -17,7 +17,7 @@ import { validate, WCODE, chipOf, sevOf } from './validate'
 import { slotBar, slotRules, sansGate } from './avail'
 import { setSlotVal } from './slots'
 import { SCHED } from './publish'
-import { collectEvents } from './events'
+import { collectEvents, seatIntime } from './events'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -238,6 +238,62 @@ describe('slotBar — the SANS gate, picker side (avail.ts)', () => {
   })
   it('a ground key on a record-less SANS person is never SANS-greyed', () => {
     expect(slotBar('ipman', 'g:0.0')).not.toMatch(/^SANS/)
+  })
+})
+
+/* ---------------------------------------------------------------------------
+   The IN-TIME anchor (owner, 26 Aug 26 — "SANS should consider IN TIME till
+   land plus 30 minutes for availability"): a flying seat's SANS window opens
+   at the crew's in-time when one is published earlier than the step, and a
+   late in-time can never SHRINK the window below the step→dekit pad (the
+   min() guard). The fixture is nick's night seat: T/O 19:45 → step 18:45,
+   land 21:10 → dekit 21:40, seed in-time 19:00 (later than the step, so the
+   seed window is unchanged — which is also what keeps the demo seed's own
+   PM-half record clean). Retiming the wave's in-time to 17:00 is what moves
+   the front edge.
+   --------------------------------------------------------------------------- */
+describe('the SANS window opens at the IN-TIME (owner, 26 Aug 26)', () => {
+  const FLY_KEY = '0.1.0.1.w', FLY_ID = 'nick'
+  const EARLY = ['1700H: NIGHT WAVE IN TIME + WX/NOTAMS']   // names no callsign — a wide line, every formation
+  const hits = () => validate().all.filter((w: any) =>
+    w.code === 'SANS_AVAIL' && (w.who || []).includes(FLY_ID))
+
+  it("slotRules' sansStart: the seed's LATER in-time leaves the step (min guard); an earlier one opens the window there", () => {
+    const r0 = slotRules(FLY_KEY)
+    expect(r0.sansStart, '19:00 in-time > 18:45 step — the window cannot shrink').toBe(r0.slotStart)
+    DAYS[0].waves[1].intimes = EARLY
+    const r = slotRules(FLY_KEY)
+    expect(r.sansStart).toBe(17 * 60)
+    expect(r.slotStart, 'the occupied window itself does not move — absences and busy-hours stay on the pads').toBe(r0.slotStart)
+  })
+
+  it('slotBar greys on it: an offer covering only step→dekit now reads "available … only"', () => {
+    DAYS[0].waves[1].intimes = EARLY
+    const r = slotRules(FLY_KEY)
+    fileSans(FLY_ID, { f: true }, { s: r.slotStart, e: r.slotEnd })
+    expect(slotBar(FLY_ID, FLY_KEY)).toBe(`SANS — available ${hm24(r.slotStart)}–${hm24(r.slotEnd)} only`)
+    INPUTS.pop()
+    fileSans(FLY_ID, { f: true }, { s: 17 * 60, e: r.slotEnd })    // back to the in-time: clean
+    expect(slotBar(FLY_ID, FLY_KEY)).not.toMatch(/^SANS/)
+  })
+
+  it('the validator agrees — SANS_AVAIL raises off the in-time front edge and clears when the offer reaches it', () => {
+    DAYS[0].waves[1].intimes = EARLY
+    const r = slotRules(FLY_KEY)
+    fileSans(FLY_ID, { f: true }, { s: r.slotStart, e: r.slotEnd })
+    const h = hits()
+    expect(h.length).toBe(1)
+    expect(h[0].msg).toContain(`available ${hm24(r.slotStart)}–${hm24(r.slotEnd)} only`)
+    INPUTS.pop()
+    fileSans(FLY_ID, { f: true }, { s: 17 * 60, e: r.slotEnd })
+    expect(hits().length).toBe(0)
+  })
+
+  it('seatIntime — the one body: a typed SC B outranks wave lines; no clock reads null', () => {
+    const w = { kind: 'sc', intimes: ['0800H: SHOULD NOT WIN'], formations: [{ cs: 'SC AM', br: '06:30' }] }
+    expect(seatIntime(w, w.formations[0], 7 * 60)).toBe(6 * 60 + 30)
+    const w2 = { intimes: [], formations: [{ cs: 'VL' }] }
+    expect(seatIntime(w2, w2.formations[0], 12 * 60)).toBeNull()
   })
 })
 

@@ -543,7 +543,12 @@ check the other):
   top-level `s`/`e`/`half` — the exclusion from the absence/clash machinery
   is TYPE-based (`inpShow`, `isAway`), pinned by `sansavail.test.ts`'s leak
   guard; any new consumer of input times must decide whether SANS rows
-  belong in it.
+  belong in it. The flying-seat window SANS is judged against is its own
+  seam since 26 Aug 26 (in-time→dekit, not the step→dekit pad the absence
+  checks keep): the front edge lives ONCE in `seatIntime` (`events.ts`),
+  read by `collectEvents` (→ `e.report`, the validator's
+  `min(e.report,e.step)`) and by `slotRules` (→ `sansStart`, the picker) —
+  a third reader must call the same body.
 - **A person's category is read in many places (`p.pers` / `seat:'GND'`).**
   Personnel (ground crew, Aug 26) must be handled the same at every joint: the
   front-seat bar in BOTH `slotBar` (`avail.ts`) and `validate.ts`; the flying

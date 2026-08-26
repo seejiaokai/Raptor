@@ -1515,7 +1515,15 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   card grid (click a card to edit in the dialog), and the Available-crew
   panel's SANS tail is gone — its folded count reads "N SANS offering"
   (`docs/engine-rules.md` §SANS availability, `docs/ui-contracts.md` §SANS
-  Availability, on screen). Things worth restating so they are not read as
+  Availability, on screen). **The flying-seat window is judged from the
+  crew's IN-TIME to landing + dekit since 26 Aug 26** (owner: "SANS should
+  consider IN TIME till land plus 30 minutes for availability") — the
+  published in-time / typed SC B opens the front edge when earlier than the
+  step, the step→dekit pad is the fallback, and a later in-time never
+  shrinks the window (`min()`); the one clock body is `seatIntime`
+  (`events.ts`), read by both `collectEvents` and `slotRules.sansStart`.
+  The advisory also wears the amber `A` chip, not `CP`, since the same day.
+  Things worth restating so they are not read as
   bugs: the `SANS_AVAIL` advisory is DELIBERATELY silent when nothing is
   filed at all — the palette strike + toast still say so, but nothing
   persists in the day's warning list (the seed-parity reasoning is in
