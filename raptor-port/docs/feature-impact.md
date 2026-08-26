@@ -444,16 +444,22 @@ check the other):
   report rule, the debrief pad, which event kinds are in `EVD`) moves both, as
   it should — but anything that re-derives a span WITHOUT `workSpan` is a new
   seam.
-- **The "+ add" drop strip: one `ADDZ` body, two surfaces** (26 Aug 26). Every
-  append-capable people cell needs a full-width drop target BELOW its pucks, or a
-  full row's drop resolves to a seated `.seat` and swaps it. `html.ts` exports the
-  one `ADDZ` span; the week's `lCell` and every board `.ppl[data-fill]` cell
+- **The trailing drop zone: one `ADDZ` body, two surfaces** (26 Aug 26). Every
+  append-capable people cell needs a drop target that ISN'T over a seated puck, or
+  a full row's drop resolves to a `.seat` and swaps it. `html.ts` exports the one
+  `ADDZ` span; the week's `lCell` and every board `.ppl[data-fill]` cell
   (`board-html.ts`) both emit it, so the two cannot drift. The only surface
-  difference is CSS, not markup: the week's strip is always present, the board's
-  is `.schedboard`-scoped to `height:0` and opens (13px) only while a placement is
-  in flight — `body.dnd` (drag) or `body.arming` (armed tap, mirrored from `ARM`
-  in `highlights.ts:paintArm`). A new append cell that hand-rolls its own `.ppl`
-  without `ADDZ` is the seam this entry forbids.
+  difference is CSS, not markup: the week's strip is an always-present full-width
+  bar below the pucks; the board's is `.schedboard`-scoped to a PERMANENT,
+  steady-height TRAILING zone (`flex:1 1 var(--puck-w)`) that grows into the row's
+  leftover width and wraps to its own line only once the pucks pack it — so the
+  pucks never fill the full width and nothing reflows when a drag starts (the
+  earlier board strip opened from `height:0` on `body.dnd`/`body.arming` and
+  jumped the whole board — owner, 26 Aug 26). Its "+ add" text stays hidden on the
+  board; an empty board cell shows a bare dashed box, a filled one bare space. The
+  `.fcprcp` seat grid `display:none`s its zone (it auto-adds rows, never swaps). A
+  new append cell that hand-rolls its own `.ppl` without `ADDZ` is the seam this
+  entry forbids.
 - **The LATE mark: passive printers read one gate, the board draws the control**
   (21 Aug 26, was a global switch on 20 Aug). `lateTag`, `lateTagOf`,
   `lateRowCls` and `lateRowTitle` (`ui/html.ts`) each print the mark on a READ

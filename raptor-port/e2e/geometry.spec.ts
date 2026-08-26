@@ -599,29 +599,42 @@ test('desktop: the edit-scheduler aircrew column hides to the right and the week
   expect(Math.abs(back.weekW - before.weekW), 'the week returns to its docked width').toBeLessThanOrEqual(2)
 })
 
-/* THE BOARD "+ ADD" OVERFLOW STRIP opens only while a placement is in flight
-   (owner, 26 Aug 26). On the dense board the strip must cost no row height at
-   rest, so it collapses to zero and opens (a real drop target below the pucks)
-   only during a drag (body.dnd) or an armed tap-placement (body.arming). jsdom
-   has no layout, so only a browser can prove the height. */
-test('desktop: the board "+ add" strip is zero-height at rest and opens on drag / arm', async ({ page }) => {
+/* THE BOARD PEOPLE CELLS RESERVE A STEADY-HEIGHT TRAILING DROP ZONE (owner,
+   26 Aug 26 — "can the screen be stable when I try to add in more pucks … the
+   puck will not fill up the entire width … there's always an empty space to drop
+   the pucks"). The zone is PERMANENT: its height never depends on drag state, so
+   starting a drag reflows nothing — the earlier +ADD strip grew every people cell
+   from zero at once and jumped the whole board out from under the finger. And a
+   people row always keeps a bare patch to the RIGHT of its pucks (the zone grows
+   into the row's leftover width, wrapping to its own line only once the pucks
+   pack it), so a drop never lands on a seated puck and swaps it. jsdom has no
+   layout, so only a browser can prove the heights. */
+test('desktop: the board people cells keep a steady-height trailing drop zone', async ({ page }) => {
   await page.setViewportSize(DESK)
   await login(page)
   await go(page, 'editsched')
   await page.evaluate(() => (window as any).openScheduler(0))
-  await page.waitForSelector('#sbBoard .ppl[data-fill]')     // the cell is visible; its strip is height:0 at rest
+  await page.waitForSelector('#sbBoard .ppl[data-fill]')
   const m = await page.evaluate(() => {
-    const cell = document.querySelector('#sbBoard .ppl[data-fill]') as HTMLElement
-    const addz = cell.querySelector(':scope > .addz') as HTMLElement
-    const H = () => Math.round(addz.getBoundingClientRect().height)
-    const collapsed = H()
-    document.body.classList.add('dnd'); const dnd = H(); document.body.classList.remove('dnd')
-    document.body.classList.add('arming'); const arming = H(); document.body.classList.remove('arming')
-    return { collapsed, dnd, arming }
+    const cells = [...document.querySelectorAll('#sbBoard .ppl[data-fill]')] as HTMLElement[]
+    const heights = () => cells.map(c => Math.round(c.getBoundingClientRect().height))
+    const rest = heights()
+    document.body.classList.add('dnd'); const dnd = heights(); document.body.classList.remove('dnd')
+    document.body.classList.add('arming'); const arming = heights(); document.body.classList.remove('arming')
+    const changed = rest.filter((h, i) => h !== dnd[i] || h !== arming[i]).length
+    // a filled flat (non-grid) people cell leaves a trailing gap: the pucks stop
+    // short of the cell's right edge, and its .addz drop zone fills the rest
+    const filled = cells.find(c => !c.classList.contains('fcprcp') && c.querySelector('.puck'))!
+    const cr = filled.getBoundingClientRect()
+    const pucks = [...filled.querySelectorAll('.puck')] as HTMLElement[]
+    const lastRight = Math.max(...pucks.map(p => p.getBoundingClientRect().right))
+    const addz = filled.querySelector(':scope > .addz') as HTMLElement
+    return { cellCount: cells.length, changed, addzH: Math.round(addz.getBoundingClientRect().height),
+      trailingGap: Math.round(cr.right - lastRight) }
   })
-  expect(m.collapsed, 'no row-height cost when idle').toBe(0)
-  expect(m.dnd, 'the strip opens during a drag').toBeGreaterThan(0)
-  expect(m.arming, 'and while a tap placement is armed').toBeGreaterThan(0)
+  expect(m.changed, 'no cell changes height when a drag or arm starts — the board never jumps').toBe(0)
+  expect(m.addzH, 'the drop zone holds a steady, usable height at rest').toBeGreaterThan(0)
+  expect(m.trailingGap, 'the pucks never fill the full width — a bare drop patch always remains').toBeGreaterThan(20)
 })
 
 /* THE THREE CREW-REST STROKES, measured (owner, 6 Aug 26). Solid is his own

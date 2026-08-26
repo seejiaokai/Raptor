@@ -173,9 +173,15 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   (`.ros-rail`, in `Shell.tsx`'s `.edit-board`, `data-roshide`) toggles a bare
   `body.ros-collapsed` class — the same session-only, repaint-surviving idiom as
   the phone drawer's `ros-open` (`interactions.ts:routeClick`). Collapsed, the
-  `.edit-board .eroster` leaves the flow (`position:fixed`) and slides off past
-  the right edge on a `.24s` transform transition, and the week (`flex:1`)
-  reclaims the freed ~250px. The rail is a slim BLUE vertical `CREW` tab styled
+  `.edit-board .eroster` leaves the flow (`position:absolute` inside a
+  `position:relative` `.edit-board`) and slides off past the right edge on a
+  `.24s` transform transition, and the week (`flex:1`) reclaims the freed ~250px.
+  **`position:absolute` with `top:auto`, not `fixed`** — that keeps the column at
+  its STATIC vertical position so only the horizontal transform animates. An
+  earlier `position:fixed;top:8px` yanked it ~300px UP to the viewport top before
+  sliding, and back DOWN on expand: the "flying above then below" the owner
+  flagged (26 Aug 26). Absolute also scrolls with the board like the in-flow
+  column did, so a collapse while scrolled stays put. The rail is a slim BLUE vertical `CREW` tab styled
   off the phone drawer's accent tab and sat HIGH on the right edge (owner, 26 Aug
   26 — "make it like a blue side panel similar to the mobile one, labeled as crew
   … put it higher"); it rides the reserved right lane (`.edit-board` keeps a
@@ -658,16 +664,26 @@ names a job) and speak the ordinary grammar —
 seats `d:di.wi.ri` / `s:di.kind.ri` / `g:di.ri` (+ `.xN`, fill `.+`), texts
 `dl:/dr:/sr:/gr:` via `data-bfld` — so the board's generic arm/drag/change
 handlers cover them with no extra wiring.
-**Every append-capable people cell carries the "+ add" overflow strip** (owner,
+**Every append-capable people cell carries a trailing drop zone** (owner,
 26 Aug 26 — a full row swapped a seated puck instead of taking a new one, because
 a packed `.ppl` cell has no empty area, so the drop resolved to a `.seat` instead
-of the cell's `.+` fill). The strip is `html.ts`'s one `ADDZ` body, now reused by
-every board `.ppl[data-fill]` cell (`board-html.ts`) — the same drop-below target
-the week always had. On the DENSE board it must cost no row height at rest, so it
-is `.schedboard`-scoped to `height:0`, opening to 13px only while a placement is
-in flight — a drag (`body.dnd`) or an armed tap (`body.arming`, mirrored from
-`ARM` in `highlights.ts:paintArm`). The week keeps its always-present strip.
-Pinned in `board.test.tsx` (presence) and `e2e/geometry.spec.ts` (the geometry). Row mbtns: `dr*/sr*/gr*` cx
+of the cell's `.+` fill). The zone is `html.ts`'s one `ADDZ` body, reused by
+every board `.ppl[data-fill]` cell (`board-html.ts`) — the same drop target the
+week always had. On the DENSE board it is `.schedboard`-scoped to a PERMANENT,
+STEADY-HEIGHT trailing zone (`flex:1 1 var(--puck-w)`): it grows into the row's
+leftover width and wraps to its own `var(--puck-h)` line only once the pucks pack
+the row, so the pucks never reach the cell's right edge (there is always a bare
+patch to drop onto) and a full row shows a fresh empty line below. Its height
+NEVER depends on drag state — an earlier revision opened it from `height:0` on
+`body.dnd`/`body.arming`, which grew every people cell at once and jumped the
+whole board out from under the finger (owner, 26 Aug 26 — "can the screen be
+stable when I try to add in more pucks … the puck will not fill up the entire
+width"). The "+ add" text stays hidden throughout; only a dashed edge marks it,
+faint while a drag/arm is live and bright on the hovered cell. The seat grid
+(`.fcprcp`, sims + flying pairs) auto-adds rows and never packs edge-to-edge, so
+its zone is `display:none`. The week keeps its own always-present full-width
+strip. Pinned in `board.test.tsx` (presence) and `e2e/geometry.spec.ts` (the
+steady height + trailing gap). Row mbtns: `dr*/sr*/gr*` cx
 (CxDialog) / flag / del, `dwadd/dwdel/dradd`, `sradd`, `gradd` (board.ts).
 Duty rows render in MODEL order, not `dutySort` — an editor whose rows jump
 as a role is typed would be hostile. **Nothing re-orders a duty block on its
@@ -1267,10 +1283,12 @@ routes `data-air`):
 
 An empty People cell (`[data-fill]` with no crew) shows a grey dotted rounded
 box even without a drag in progress, so a scheduler sees where to tap or drop —
-matching the empty flying seats. On the board it is `[data-fill]:empty` (an
-empty cell is truly empty — `sbMore` renders nothing for a crewless row); on
-the week the cell already carries the `.addz` "+ add" strip, so that strip is
-bordered standing when the cell holds no puck (`:not(:has(.puck)):not(:has(.itxt))`).
+matching the empty flying seats. Both the week AND the board people cells now
+carry the `.addz` trailing zone, so on both an empty People cell is bordered
+standing through that zone when it holds no puck
+(`.ppl[data-fill]:not(:has(.puck)):not(:has(.itxt)) .addz`, scoped to
+`.page.editing` and `.schedboard`). Other empty `[data-fill]` cells that carry no
+addz still fall to the `[data-fill]:empty` "+ tap or drop" box.
 Edit surfaces only (`.page.editing` / `.schedboard`, never a `.pv-frozen`
 preview). The accent drag affordance still takes over the moment a drag starts.
 

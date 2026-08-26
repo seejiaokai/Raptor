@@ -583,7 +583,10 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
    is gone on every other page. */
 .ros-rail{display:none}
 @media (min-width:821px){
-  .edit-board{padding-right:26px}                 /* reserve the rail's lane at the right */
+  /* reserve the rail's lane at the right; position:relative makes .edit-board the
+     containing block for the collapsed (absolute) roster, so right:0 lands on the
+     board's own right edge rather than the viewport's */
+  .edit-board{padding-right:26px;position:relative}
   .edit-board .eroster{transition:transform .24s ease}
   /* a slim BLUE "CREW" tab, styled off the phone drawer's accent tab and sat
      HIGH on the right edge rather than mid-height (owner, 26 Aug 26 — "make it
@@ -604,11 +607,17 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
     border-bottom:2px solid currentColor;transform:rotate(-45deg);flex:0 0 auto;
     transition:transform .2s ease}
   body.ros-collapsed .ros-rail-chev{transform:rotate(135deg)}
-  /* collapsed: the column leaves the flow (week reclaims instantly) and slides
-     fully off to the right past the rail. fixed;right:0 sits where the sticky
-     column's right edge already was, so the transform animates from rest. */
-  body.ros-collapsed .edit-board .eroster{position:fixed;right:0;top:8px;
-    max-height:calc(100vh - 118px);transform:translateX(calc(100% + 10px));z-index:150}
+  /* collapsed: the column leaves the flow (week reclaims) and slides off to the
+     right past the rail. position:ABSOLUTE with top:auto is the whole trick — it
+     keeps the column at its STATIC vertical position (no top:8px yank), so only
+     the horizontal transform animates and the panel slides straight sideways
+     instead of flying up-then-across. An earlier position:fixed;top:8px snapped
+     the panel ~300px UP to the viewport top before sliding, and back DOWN on
+     expand — the "flying above then below" the owner flagged (26 Aug 26). Absolute
+     also scrolls with the board like the in-flow column did, so a collapse while
+     scrolled stays put too. */
+  body.ros-collapsed .edit-board .eroster{position:absolute;right:0;top:auto;
+    transform:translateX(calc(100% + 6px));z-index:150}
 }
 .eroster .rpuck{display:flex;flex:0 0 auto;cursor:grab}
 /* the grab tab — the only part on screen when the drawer is parked. 30px:
@@ -1168,19 +1177,37 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
   display:flex;align-items:center;justify-content:center;pointer-events:none;transition:none}
 body.dnd .ppl[data-fill] .addz{border-color:var(--edge-2);color:var(--ink-3)}
 body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--accent);background:rgba(59,198,232,.07)}
-/* On the dense scheduler BOARD the strip must not reserve height on every people
-   cell — it collapses to nothing and only opens (with its drop border) while a
-   drag is in flight, so a full row finally has a "+ add" target BELOW its pucks
-   instead of the drop landing on a seated puck and swapping it (owner, 26 Aug 26
-   — "when the width of the puck area is filled … there will be an +ADD area at
-   the bottom to drop more pucks"). The week keeps the always-present strip; only
-   the board reclaims the row height. */
-.schedboard .ppl .addz{height:0;margin-top:0;border-width:0}
+/* On the dense scheduler BOARD the strip is a TRAILING drop zone that grows to
+   eat the row's leftover width and wraps to its own line only once the pucks
+   pack the row — so the pucks never fill the full width (there is always a bare
+   patch to drop onto) and a full row shows a fresh empty line below, WITHOUT the
+   strip toggling height when a drag starts (which grew every people cell at once
+   and jumped the whole board out from under the finger). Owner, 26 Aug 26 —
+   "can the screen be stable when I try to add in more pucks … the puck will not
+   fill up the entire width … there's always an empty space to drop the pucks".
+   Its height never depends on drag state, so nothing reflows on grab; the "+ add"
+   text stays hidden (transparent) throughout — only a dashed edge marks it, faint
+   while a drag/arm is live and bright on the hovered cell. The week keeps its own
+   always-present full-width strip (rules above). Flex basis var(--puck-w): once a
+   whole puck no longer fits on the line, the zone wraps and reserves a new one. */
+.schedboard .ppl[data-fill] .addz{flex:1 1 var(--puck-w);min-width:calc(var(--puck-w)*.55);
+  min-height:var(--puck-h);height:auto;margin:0;align-self:stretch;color:transparent;
+  border:1px dashed transparent}
 body.dnd .schedboard .ppl[data-fill] .addz,
-body.arming .schedboard .ppl[data-fill] .addz{height:13px;margin-top:2px;border-width:1px;
-  border-color:var(--edge-2);color:var(--ink-3)}
-/* the seat grid (.fcprcp — sims, and the flying-seat pairs) is display:grid, so
-   flex-basis:100% is ignored; span the strip across both columns instead */
+body.arming .schedboard .ppl[data-fill] .addz{border-color:var(--edge-2);color:transparent}
+body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);color:transparent;
+  background:rgba(59,198,232,.09)}
+/* an EMPTY board people cell shows the standing dashed drop box at rest (owner,
+   14 Aug 26 — a scheduler sees where to tap or drop), drawn by its trailing zone.
+   The box carries NO "+ add" text (owner, 26 Aug 26 — "instead of having the
+   +ADD showing") — a bare dashed outline, like an empty flying seat. A cell that
+   already holds a puck keeps its zone bare; the affordance is only where needed. */
+.schedboard .ppl[data-fill]:not(:has(.puck)):not(:has(.itxt)) .addz{border-color:var(--edge-2)}
+/* the seat grid (.fcprcp — sims, and the flying-seat pairs) auto-adds rows as
+   pucks land, so it never packs edge-to-edge and swaps; it needs no trailing
+   zone, and a full-width one would cost every seat cell a permanent row. */
+.schedboard .ppl.fcprcp .addz{display:none}
+/* the WEEK seat grid still spans its always-present strip across both columns */
 .ppl.fcprcp .addz{grid-column:1/-1}
 /* remarks, to the RIGHT of the pucks (column 5 on desktop, its own strip on a phone) */
 .plist .pl-row .rmk{grid-column:5;font-size:9.5px;color:var(--ink-2);line-height:1.3;padding-top:3px;min-width:0;overflow-wrap:anywhere}
