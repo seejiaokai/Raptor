@@ -1,5 +1,5 @@
 import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
-import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel } from './inputs'
+import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
 import { collectEvents, shiftEvHard } from './events'
@@ -540,7 +540,11 @@ export function validate(){
        CSE, Fly with, Personal, Appointment, Duty, Other) hard-flag a shift
        exactly like OD always did; a Meeting reads as the amber SHIFT_SOFT
        advisory, the same voice its accepted ground row speaks in, so the raw
-       and landed representations of one input can never disagree. The timed
+       and landed representations of one input can never disagree. An
+       UNRECOGNISED type (a typo, or a record from an older store) fails
+       closed and hard-flags the shift like the red list (owner, 26 Aug 26 —
+       it was already hard against a sortie; softer-only-on-shifts was the
+       seam). The timed
        accepted copy is still deferred to its row (inpShow), so nothing here
        double-reports. Leave, medical and overseas duty still hard-flag a
        shift — those close the man's day outright.
@@ -555,9 +559,14 @@ export function validate(){
       day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
         if(canWork(inp.type)&&e.kind!=='shift')return;
         const dn=isDownchit(inp.type), lv=isLeave(inp.type);
-        if(!isUnavail(inp.type)&&e.kind==='shift'&&!shiftHardInput(inp.type)){
-          /* Meeting (and any future unflagged commitment) — the shift's amber
-             voice, worded byte-for-byte like the ground-row SHIFT_SOFT above */
+        if(!isUnavail(inp.type)&&e.kind==='shift'&&!shiftHardInput(inp.type)&&inpMeta(inp.type)){
+          /* Meeting — the one KNOWN soft type — is the shift's amber voice,
+             worded byte-for-byte like the ground-row SHIFT_SOFT above. An
+             UNRECOGNISED type fails closed to the hard branch below (owner,
+             26 Aug 26 — it already read hard against a sortie, and unknown
+             belongs on the serious side): the inpMeta gate is what keeps a
+             typo'd or stale-store type out of this advisory. Mirrored in
+             refwin.ts reinput as the explicit MEETING literal. */
           if(!overlap(e.s,e.e,inp.s,inp.e))return;
           markChip(di,e.id,'A'); markRing(di,e.id,'adv');
           add('adv','SHIFT_SOFT',[e.id],

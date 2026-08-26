@@ -430,17 +430,25 @@ function reinput(html: string): string {
     /* 2 — every input clashes with every kind of tasking, except that ATT B
        may still work — EXCEPT an SC MAIN shift, which may launch him (owner,
        26 Aug 26) — and an ordinary personal type is graded BY TYPE against a
-       shift: the red-list commitments hard-flag, a Meeting speaks the amber
-       SHIFT_SOFT (worded byte-for-byte like the port's, so the messages
-       compare). The reference's `un` misses SANS, which the port's isUnavail
-       carries — SANS never reaches a parity fixture (seedDemoSans is
-       boot-only), so the gap is documented, not patched. */
+       shift. The amber branch is the port's "known soft type" gate
+       (!shiftHardInput && inpMeta), which reduces to exactly MEETING — every
+       other known type is unavailable or red-list — so the reference, which
+       has no INPUT_META to consult, states that literal directly. Anything
+       else, an UNRECOGNISED type included, falls closed to the hard branch in
+       both engines (owner, 26 Aug 26 — the old !rh mirror sent unknowns
+       amber, the softness this seam close removed). The SHIFT_SOFT wording is
+       byte-for-byte the port's; its `${inp.type}` matches the port's
+       inpLabel(inp) because they differ only for 'Other', which never reaches
+       the amber branch. The reference's `un` still misses SANS, but with the
+       Meeting-only amber gate SANS now lands on the hard branch in both
+       engines anyway (seedDemoSans is boot-only, so no parity fixture reaches
+       it either way). */
     ["const dn=isDownchit(inp.type), lv=isLeave(inp.type);\n        if(!dn&&!lv)return;",
      "if(/^\\s*ATT\\s*B\\s*$/i.test(String(inp.type||''))&&e.kind!=='shift')return;"
      + "const dn=isDownchit(inp.type), lv=isLeave(inp.type);"
      + "const un=dn||lv||/^\\s*OD\\s*$/i.test(String(inp.type||''));"
-     + "const rh=/^\\s*(TRAINING|CSE|FLY\\s+WITH|PERSONAL|APPOINTMENT|DUTY|OTHER)\\s*$/i.test(String(inp.type||''));"
-     + "if(!un&&e.kind==='shift'&&!rh){"
+     + "const soft=/^\\s*MEETING\\s*$/i.test(String(inp.type||''));"
+     + "if(!un&&e.kind==='shift'&&soft){"
      + "if(!overlap(e.s,e.e,inp.s,inp.e))return;"
      + "markChip(di,e.id,'A'); markRing(di,e.id,'adv');"
      + "add('adv','SHIFT_SOFT',[e.id],`${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label} (${hm24(e.s)}–${hm24(e.e)}) and also down for ${inp.type}`);"

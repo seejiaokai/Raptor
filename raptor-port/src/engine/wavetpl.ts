@@ -189,6 +189,34 @@ export function waveFromTpl(id: string): any | null {
   const standby = kindIsStandby(t.kind)
   const S = standby ? SAWAVE[t.kind] : null
   const lines = t.lines.length ? t.lines : [mkLine()]
+  /* A STANDBY template mints the built-in's SHAPE (owner, 26 Aug 26 — closing
+     HANDOFF's "structurally lighter" seam): consecutive lines naming the same
+     shift (cs + msn + times) become ONE formation carrying a crew row per line,
+     exactly how makeStandalone packs MAIN/SPARE under a shift. The old 1:1
+     line→formation mint undercounted the day badge (waves.ts sn is max
+     non-spare PER FORMATION, so a two-MAIN template SC read "/ 1" against the
+     built-in's "/ 2") and no hand-built SC template could reproduce
+     + Wave → SC. Grouping is consecutive-only so the author's line order is
+     the formation order; a fly line stays one aircraft — that is what it is. */
+  let formations: any[]
+  if (standby) {
+    formations = []
+    let last: any = null, lastKey = ''
+    for (const l of lines) {
+      const to = waveTime(l.to), ld = waveTime(l.ld)
+      const key = `${l.cs}|${l.msn}|${to}|${ld}`
+      if (last && key === lastKey) { last.aircraft.push(mkAircraft(true, l.spare)); continue }
+      last = { cs: l.cs, msn: l.msn, shift: l.msn, to, ld, aircraft: [mkAircraft(true, l.spare)] }
+      lastKey = key
+      formations.push(last)
+    }
+  } else {
+    formations = lines.map(l => ({
+      cs: l.cs, msn: l.msn,
+      to: waveTime(l.to), ld: waveTime(l.ld),
+      aircraft: [mkAircraft(false, l.spare)],
+    }))
+  }
   return {
     label: standby ? (S?.label || t.title) : t.title,
     kind: standby ? t.kind : undefined,
@@ -196,11 +224,7 @@ export function waveFromTpl(id: string): any | null {
     noconf: standby ? !!S?.all : false,
     night: standby ? t.kind !== 'sc' : false,
     intimes: [], traffic: [],
-    formations: lines.map(l => ({
-      cs: l.cs, msn: l.msn, ...(standby ? { shift: l.msn } : {}),
-      to: waveTime(l.to), ld: waveTime(l.ld),
-      aircraft: [mkAircraft(standby, l.spare)],
-    })),
+    formations,
   }
 }
 

@@ -252,22 +252,17 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   every section. Mapped in the 26 Aug session but not built; he had not yet
   said go when the session ended.
 
-- **Two seams flagged by the 26 Aug 26 bug pass, deliberately left as-is
-  (behaviour changes an owner should call, not a bug fix):**
-  - **A STANDBY-kind wave TEMPLATE is structurally lighter than the built-in
-    it names.** `waveFromTpl` mints one single-aircraft formation per line;
-    the built-in SC packs its MAIN crews as aircraft inside one shift
-    formation. Same-shaped days therefore tally differently on the day
-    badge (`waves.ts` `sn` = max non-spare aircraft per formation: built-in
-    SC reads "/ 2", a two-MAIN SC template "/ 1"), and "save my SC as a
-    template" does not reproduce what + Wave → SC builds. Raise with the
-    owner before restructuring the mint.
-  - **A typo'd (unknown) input type grades AMBER against an SC MAIN shift**
-    (`validate.ts`'s Meeting-amber fallback) while the same typo is HARD
-    against a sortie — softer only on shifts. Fail-closed doctrine says
-    unknown belongs on the hard side; the reference patch mirrors the
-    softness, so flipping it needs the `refwin.ts` mirrors updated with it
-    (see the drift-seam comment at `inputs.ts` `SHIFT_HARD_RE`).
+- **Both 26 Aug 26 bug-pass seams are CLOSED (owner call, 26 Aug 26 — "fix
+  both").** A STANDBY-kind template now mints the built-in's shape
+  (`wavetpl.ts:waveFromTpl` groups consecutive same-shift lines into one
+  formation, so the day badge and every per-formation reader agree with
+  + Wave → SC), and an unrecognised input type fails closed to the HARD
+  conflict against a shift (the amber branch takes a known soft type only —
+  `validate.ts` `inpMeta` gate, mirrored in `refwin.ts` `reinput` as the
+  MEETING literal, cross-engine pin in `parity.test.ts`). Kept here one
+  line deep because the OLD behaviour is what any stale notes describe;
+  detail in `docs/engine-rules.md` §Validation and
+  `docs/feature-impact.md` (the five-file seam + wave-template rows).
 
 - **SC MAIN grades personal inputs PER TYPE now (owner, 26 Aug 26 — built
   this session).** Training, CSE, Fly with, Personal, Appointment, Duty and
@@ -2247,7 +2242,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `stores.ts` | The squadron's stores list — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Persisted state, so it lives here. Nothing in `validate.ts` reads a store. |
 | `cxreasons.ts` | The squadron's **cancel-reason templates** (Aug 26) — the CX dialog's quick-fill chips, moved out of `ui/board.ts`'s frozen `CX_QUICK`. Mutable `CXR_CFG` (a plain ordered STRING list — a cancel reason is free text, no stable key, addressed by position), frozen `CXR_STD` (the shipped seven), `addCxReason`/`delCxReason`/`renameCxReason`/`moveCxReason` and `cxReasonsSave`/`cxReasonsLoad`/`cxReasonsReset` against its own `cxreasons` key. The exact `stores.ts` persisted-config shape (untrusted-blob load, save-only-when-diverged, boot load in `initStore`). Nothing in `validate.ts` or the parity reference reads it. |
 | `dutytpl.ts` | The squadron's **duty-block templates** (13 Aug 26) — mutable `DUTYTPL_CFG`, frozen `DUTYTPL_STD` (Standard / SC Shift / AVALON), `addTpl`/`delTpl`/`renameTpl`/`moveTpl` and the per-row `addTplRow`/`delTplRow`/`setTplRow`/`moveTplRow`, `blockFromTpl` (mints a PLAIN `{label,rows}` duty block — no `sa`/`noconf`), and `dutyTplSave`/`dutyTplLoad`/`dutyTplReset` against its own `dutytpl` key. Persisted state, exactly like stores; nothing in `validate.ts` reads a template. Loaded at boot in `initStore`. This is what `+ Block` offers now — waves no longer create desks (§Stable decisions). |
-| `wavetpl.ts` | The squadron's **flying-wave templates** (25 Aug 26) — the `+ Wave` sibling of `dutytpl.ts`. Mutable `WAVETPL_CFG` (starts EMPTY — the four built-in kinds are the baseline), `WaveTpl = {id,title,kind,lines}` with `kind` one of `fly`/`sc`/`avalon`/`bb` (one rule-set per template), `addWaveTpl`/`delWaveTpl`/`renameWaveTpl`/`setWaveTplKind`/`moveWaveTpl` and the per-line `addWaveTplLine`/`delWaveTplLine`/`setWaveTplLine`/`moveWaveTplLine`, `waveFromTpl` (mints a wave whose own kind flags — `standalone`/`noconf`/`night` — drive its checking; nothing in `validate.ts` reads a template), `waveTime` (colon form `07:00`, the one difference from duty `tplTime`), and the `WAVEHIDE` set + `isWaveHidden`/`setWaveHidden`/`shownBuiltins`/`shownTemplates` for the Admin show/hide list. `waveTplSave`/`waveTplLoad`/`waveTplReset` against `wavetpl` + `wavehide` keys; untrusted storage clamped. Loaded at boot in `initStore`. Pinned in `wavetpl.test.ts`. |
+| `wavetpl.ts` | The squadron's **flying-wave templates** (25 Aug 26) — the `+ Wave` sibling of `dutytpl.ts`. Mutable `WAVETPL_CFG` (starts EMPTY — the four built-in kinds are the baseline), `WaveTpl = {id,title,kind,lines}` with `kind` one of `fly`/`sc`/`avalon`/`bb` (one rule-set per template), `addWaveTpl`/`delWaveTpl`/`renameWaveTpl`/`setWaveTplKind`/`moveWaveTpl` and the per-line `addWaveTplLine`/`delWaveTplLine`/`setWaveTplLine`/`moveWaveTplLine`, `waveFromTpl` (mints a wave whose own kind flags — `standalone`/`noconf`/`night` — drive its checking; nothing in `validate.ts` reads a template; since 26 Aug 26 a STANDBY kind groups consecutive same-shift lines — cs + msn + times — into ONE formation with a crew row per line, matching `makeStandalone`'s shape, while a fly line stays one formation per line), `waveTime` (colon form `07:00`, the one difference from duty `tplTime`), and the `WAVEHIDE` set + `isWaveHidden`/`setWaveHidden`/`shownBuiltins`/`shownTemplates` for the Admin show/hide list. `waveTplSave`/`waveTplLoad`/`waveTplReset` against `wavetpl` + `wavehide` keys; untrusted storage clamped. Loaded at boot in `initStore`. Pinned in `wavetpl.test.ts`. |
 | `daytpl.ts` | **Whole-day master templates** (15 Aug 26) — one level up from `dutytpl.ts`: mutable `DAYTPL_CFG`, frozen EMPTY `DAYTPL_STD` (unlike `dutytpl`'s three seeded desks — a whole day is too squadron-specific to guess at), `tplFromDay`/`addDayTpl`/`delDayTpl`/`renameDayTpl`/`moveDayTpl`, `applyDayTpl` (refuses a published day; direct-write shape mirroring `restoreDayVersion`, retiring the day's pending/added marks), `dayTplSave`/`dayTplLoad`/`dayTplReset` against its own `daytpl` key. A template's `d` blob (`DayTplBlob`) allowlists the day's STRUCTURE only — `notes`/`allhands`/`waves`/`sims`/`dutywaves`/`ground` + section notes, never `dow`/`dt`/`today`/`wc` — with every person reference blanked and every `cx`/`cxr`/`flag` mark stripped. Loaded at boot in `initStore`. Rules: `docs/engine-rules.md` §Day templates. |
 | `drafts.ts` | **Per-day alternate drafts** (15 Aug 26) — state rides `SCHED.drafts`/`SCHED.curDraft` (`publish.ts`) rather than a module of its own, so it serialises with undo like the AL records. `dayDrafts`/`curDraftId`, `draftDup`/`draftSelect` (the live `DAYS[di]` IS the selected draft's working copy, and switching stows the outgoing entry first), `draftRename`/`draftDelete` (refuses the selected entry), `isDraftVer`/`draftVerLabel` — the `'d:<id>'` version-string shape `publish.ts`'s `daySnapOf` resolves for a draft preview, and **`rebaseDayPending`** (15 Aug 26 — both dup and switch WORK on a published day now; a switch there re-marks the day's whole pending set as the `dayKeys` diff against the issued snapshot, which is what retired the old "Reopen the day first" refusal — `applyDayTpl` keeps its own). Publishing needed no change: `setDayApproved` publishes whatever is live. Session-only, like the AL list. Rules: `docs/engine-rules.md` §Drafts. |
 | `hooks.ts` | HOOKS — injectable callbacks (toast, repaints, histPush, storage, `closeBoardDialogs`, **`remapViewKeys`** — key-addressed VIEW state riding `keys.ts`'s renumbering; a wired no-op since `RMKOPEN` was retired 16 Aug 26, kept for the next such value) so verbatim bodies stay DOM-free headless; `storeBackend` is the injected localStorage (`main.tsx` plugs the real one in, null headless). |

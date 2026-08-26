@@ -383,6 +383,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   - **Meeting is the amber `SHIFT_SOFT` advisory** — you can still give a
     meeting to the man on standby — worded exactly like the accepted row's
     advisory so the raw and landed voices of one input read the same.
+  - **An UNRECOGNISED type fails closed and hard-flags the shift** (owner,
+    26 Aug 26 — closing the "softer only on shifts" seam). A type `inpMeta`
+    does not know — a typo, or a record from an older store whose type was
+    since renamed — already read hard against a sortie; it now reads hard
+    against a shift too (`INPUT_FLY` "Trainng but tasked — SC AM"). The
+    amber branch takes a KNOWN soft type only (the `inpMeta` gate in
+    `validate.ts`), which today means exactly Meeting. Mirrored in
+    `refwin.ts` `reinput` as the explicit MEETING literal; cross-engine pin
+    in `parity.test.ts`, port pins in `scshift-inputs.test.ts`.
   - **ATT B hard-flags the shift** (`DNIF_FLY` "Downchit but tasked") — he
     cannot fly, and SC MAIN counts as flying. Everywhere else the `canWork`
     carve-out stands: a duty post, a sim seat, a ground row, a programme item
@@ -401,7 +410,12 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   row, the red-list overlay: a row lifted from an input is judged by its
   SOURCE type (`row.src`, corroborated by `prog===label` so a stale key
   fails soft — the only way an accepted 'Other', whose label is the remarks,
-  still reads red), and a hand-typed row by its own words
+  still reads red). That fall-back-to-the-words for an unknown or stale
+  `row.src` is DELIBERATE and survives the 26 Aug 26 fail-closed change to
+  raw inputs: a LANDED row has its own words to be judged by, so the
+  keyword matcher is its truth, where a raw input with an unknown type has
+  nothing else to go on and fails closed. A hand-typed row is likewise
+  judged by its own words
   (`shiftHardLabel`, a regex DERIVED from the same `shiftHard` flags —
   TRAINING, CSE, FLY WITH, PERSONAL, APPOINTMENT, DUTY, OTHER, word-bounded,
   case-blind). The owner chose those keywords knowing they are common words:

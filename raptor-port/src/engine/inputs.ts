@@ -178,10 +178,14 @@ export function shiftHardInput(t:any){const m=inpMeta(t); return !!m&&!!m.shiftH
    exact key words"). DERIVED from the shiftHard flags above so the two can
    never disagree; word-boundary so "OTHER SQUADRON VISIT" trips on its word
    deliberately (the owner chose the keywords knowing they are common words).
-   DRIFT SEAM: testing/refwin.ts hand-copies this keyword list TWICE as literal
-   regexes (its reinput type list and reshift's RH ground-label list) — a new
-   shiftHard type updates this derived body silently and leaves those reference
-   patches stale; change one, change all three. */
+   DRIFT SEAM: testing/refwin.ts restates this doctrine as literal regexes —
+   reshift's RH ground-label list hand-copies THIS keyword list, and reinput
+   states the AMBER complement (the MEETING literal, since 26 Aug 26 when an
+   unknown type stopped reading soft on a shift: everything not explicitly
+   soft is hard in both engines, fail closed). So: a new shiftHard type
+   updates this derived body silently but leaves reshift's RH literal stale;
+   a type MOVED to the amber side must also join reinput's soft literal.
+   Change one, walk all three. */
 const SHIFT_HARD_RE=new RegExp('\\b('+Object.keys(INPUT_META).filter((k:any)=>INPUT_META[k].shiftHard)
   .map((k:any)=>k.toUpperCase().replace(/\s+/g,'\\s+')).join('|')+')\\b','i');
 export function shiftHardLabel(s:any){return SHIFT_HARD_RE.test(String(s==null?'':s));}

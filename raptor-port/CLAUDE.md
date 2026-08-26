@@ -708,7 +708,13 @@ subscribers.
   MAIN/SPARE flag that matters only on a standby kind. Placing one mints an ordinary
   wave (`waveFromTpl` → `addWaveFromTpl`) whose OWN kind flags (`standalone`/`noconf`/
   `night`) drive its checking, so nothing in `validate.ts` reads a template and
-  reference parity is untouched. Times store raw in the editor and normalise on blur
+  reference parity is untouched. **A STANDBY-kind template mints the built-in's
+  SHAPE** (owner, 26 Aug 26 — closing the "structurally lighter" seam):
+  consecutive lines naming the same shift (cs + msn + times) become ONE
+  formation with a crew row per line, exactly like `makeStandalone`, so the
+  day badge and every per-formation reader treat a template SC like
+  + Wave → SC; a fly line stays one formation per line. Don't return the
+  standby mint to 1:1. Times store raw in the editor and normalise on blur
   / mint / load (`waveTime`, colon form `07:00` — the one difference from duty
   `tplTime`'s `0700`). Show/hide: a `WAVEHIDE` set (built-in key or template id),
   toggled on **Admin → Squadron config**, default all-shown; a deleted template drops
