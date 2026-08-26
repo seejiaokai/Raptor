@@ -33,16 +33,26 @@ Admin tab; all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3063 across 177 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3119 across 182 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 318 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
-| `probes:adapted` | 6/6 (the `sa` phone-filters probe opens the highlight fold first now — the strip only overflows once open) |
-| `perf` | 4/4 — week DOM 4940 ≤ 5450, board 852 ≤ 960 (the new board-bar controls live in `.sb-top`, outside the measured `#sbBoard`; the Admin page is its own page, outside both ceilings) |
+| `npm run test:e2e` | 321 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `probes:adapted` | 5/6 — `sa-async` phone "scrolls itself rather than the page" is RED: it asserts the whole `.filters` strip side-scrolls, but the 26 Aug 26 filter-bar redesign moved the scroll onto the chip row (`.hlrow`), so the probe is stale, not the code (fix noted in `docs/session-state.md`). |
+| `perf` | 3/4 — week DOM 4947 ≤ 5450 ok; **board DOM 1038 > 960 ceiling is RED** (PR #323's "available crew on board" strip, ceiling raise owner-reserved — see Known issues). Timings and both behavioural checks held. |
 
-Reconciles against the 3041/177 reading this replaced: the SC in-time's two
-extensions (owner, 24 Aug 26 — the long-day span starts at an early B, and the
-`SC_INTIME` window advisory) added +6 in `scintime.test.ts`, no new files.
+Reconciles against the 3063/177, 318 e2e reading this replaced: the PR #327
+batch (flying-wave templates + mobile polish). The wave-templates feature added
+three files — `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`
+— plus engine/board/geometry pins across `board.test.ts`, `overnight.test.ts`,
+`waves.test.ts`, `textedit.test.tsx` and `geometry.spec.ts` (the +1 e2e is the
+highlight-chips sideways-scroll pin, 320 → 321). A per-file chain is not
+reconstructed below this line because the session was compacted mid-batch; the
+3119/182 and 321 totals were re-run at the merge and again at handoff.
+
+Before that, the older chain reconciles against the 3041/177 reading: the SC
+in-time's two extensions (owner, 24 Aug 26 — the long-day span starts at an
+early B, and the `SC_INTIME` window advisory) added +6 in `scintime.test.ts`,
+no new files.
 That 3041/177 reconciled against the 3033/176 it replaced: verifying the
 MAIN/SPARE toggle against the rules engine (owner, 24 Aug 26) added
 `scrole-rules.test.ts` (+8 — the SPARE exemption's exact reach, and the SC
@@ -231,6 +241,16 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   are still there.
 
 ## Known issues / open work
+
+- **`npm run perf` board DOM ceiling is RED and its raise is owner-reserved
+  (from PR #323, 25 Aug 26).** The "available crew on board" strip pushed the
+  board to 1038 nodes, over the recorded `960` ceiling in `probes/perf-port.cjs`;
+  timings and per-node cost held, and perf is a LOCAL-only gate (not CI), so
+  batches keep merging green past it. The fix is one of two owner calls: raise
+  the `960` assert to ~1100 (~10% headroom, matching the week's 5450/4947) and
+  record it in `docs/probe-sweep.md`, OR trim the board strip if the owner judges
+  the board too heavy. Do not raise it unasked. Left standing across the #327
+  batch (board-node-neutral, 1038 unchanged).
 
 - **The notional TODAY stays pinned to the demo week until real data
   arrives (owner, 24 Aug 26 — "eventually it should always register the

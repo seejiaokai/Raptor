@@ -235,7 +235,9 @@ seconds, while a node count is the same integer everywhere. Ceilings carry
 (measured 855: 829 after the 14 Aug board-full-editor batch — see the
 boundary note below — then to 835 for SANS Availability's board panel, then
 to 855 on the 15 Aug six-feature batch, the board publish strip and the
-Templates & drafts panel header), **week ≤ 5450** (measured
+Templates & drafts panel header; **now measured 1038 and OVER the 960 ceiling
+since PR #323's "available crew on board" strip — `npm run perf` is RED on this
+assert, and the raise is owner-reserved, see HANDOFF.md Known issues**), **week ≤ 5450** (measured
 3702 after the 15 Aug batch, then RAISED to 5450 on Aug 26 when the owner made
 the Available-crew panels open by DEFAULT again — every day draws its pucks in
 the zero state now, so the default week render measured 4940. That reversed the
