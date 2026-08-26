@@ -27,6 +27,12 @@ describe('Matrix', () => {
     expect(screen.getByTestId('group-IP')).toBeTruthy()
   })
 
+  it('the frozen column heads CS/Name — it holds callsigns and ground-crew names alike (owner, 26 Aug 26)', () => {
+    render(<Matrix />)
+    const th = document.querySelector('.mx .mxhead th.who')!
+    expect(th.textContent).toBe('CS/Name')
+  })
+
   it('a personnel row at rest shows callsign + chip only — the role label is edit-mode only (owner, 26 Aug 26)', () => {
     /* the standalone test seed carries no ground crew (the real app projects
        them off Raptor's roster), so mint one off an existing body; even a

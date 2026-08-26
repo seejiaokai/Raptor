@@ -642,7 +642,11 @@ export function Matrix() {
 
   const headerRow = (testids: boolean) => (
     <tr>
-      <th className="who">Callsign</th>
+      {/* CS/Name (owner, 26 Aug 26): the column holds aircrew callsigns AND
+          ground-crew names, and the short form fits the phone's 76px frozen
+          column; the Quals page's Personnel view says the long form
+          (Callsign/Name) where there is room. */}
+      <th className="who">CS/Name</th>
       {/* The counter selector lives in the column header, which is the only
           place a 40px-wide column has room for a control. The WHOLE header is
           the control (the two 13px arrows were too small to hit from a
