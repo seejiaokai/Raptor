@@ -392,12 +392,25 @@
   box-shadow: inset 0 -2px 0 rgba(242, 139, 46, .75);
 }
 
+/* Inside a tinted run every cell shares the same fill, so the border is the
+   ONLY column separator — and a grey line sinks into a coloured fill however
+   light it is (owner, 26 Aug 26, twice: the hairline was lifted a step and
+   he still couldn't see it — "the grid are hard to see, either adjust the
+   orange or the grid lines"). So the tinted cells carry their OWN border,
+   derived from the tint's hue at a higher alpha: an orange line on the
+   orange fill, a green line on the green, each clearly lighter than its
+   fill while staying in the same family. The tint's meaning keeps full
+   strength; the plain grid keeps its quiet grey. */
 .mx td.evoff {
   background: rgba(74, 201, 126, .13);
+  border-right-color: rgba(74, 201, 126, .34);
+  border-bottom-color: rgba(74, 201, 126, .34);
 }
 
 .mx td.evnolv {
   background: rgba(242, 139, 46, .14);
+  border-right-color: rgba(242, 139, 46, .34);
+  border-bottom-color: rgba(242, 139, 46, .34);
 }
 
 .mx .cat {
