@@ -484,9 +484,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   counts, which is why dormancy is an explicit mark and not "no acc". The
   mark survives week switches (`loadWeek`'s acc-clear skips `'r'`;
   `autoAcceptInput`'s truthy-acc guard refuses to re-land it; the week
-  stash's `un` set re-parks legacy shapes), and `commitInputEdit` clears a
-  stray `'r'` when a relink fails so a retype-to-leave can never end up as
-  dormant leave. Deleting the input says the same thing louder.
+  stash's `un` set records ONLY explicit `'r'` rows — never acc-less ones,
+  which can mean "never landed" and must go on counting, 26 Aug 26 bug
+  pass), and `commitInputEdit` clears a stray `'r'` when a relink fails so a
+  retype-to-leave can never end up as dormant leave — and clears the park
+  outright whenever a dormant record's TYPE changes (same pass: a retype is
+  a different commitment, so it fails closed and counts; time/remark edits
+  keep the park). Deleting the input says the same thing louder.
 - **Half-days** (owner, 10 Aug 26). Leave and medical types (`half` in the
   table) can be booked AM (00:00–12:00), PM (12:01–23:59) or all day. Stored
   as the `s`/`e` minutes the record already had, plus a `half:'am'|'pm'`

@@ -12,7 +12,7 @@ import { App } from './App'
 import { initStore, setSession, notify, undo, writeInputsBatch } from '../state/store'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { acceptInput, acceptedDay, inpKey } from '../engine/slots'
+import { acceptInput, acceptedDay, unacceptInput, inpKey } from '../engine/slots'
 import { inpId } from '../engine/inputs'
 import { INPEDIT, setInpEdit } from './pops'
 import { PIOPEN } from '../state/view'
@@ -364,6 +364,48 @@ describe('retyping an accepted input into a never-accepted type', () => {
     expect((DAYS[0].ground || []).filter((g: any) => g.src === inpKey(r)).length).toBe(1)
     expect(r.acc).toBe('g')
     expect(said.some(m => /does not go on the Ground Programme/.test(m))).toBe(false)
+  })
+})
+
+/* A DORMANT INPUT RETYPED COUNTS AGAIN (26 Aug 26 bug pass). unacceptInput
+   parks a removed row acc:'r' — silent until re-accepted. Retyping the record
+   makes it a DIFFERENT commitment, so the park must clear: without this, a
+   removed Meeting retyped to LL minted a permanently-dormant ABSENCE — the
+   validator said nothing while the crew picker still barred the man (the
+   forbidden two-voice drift), and LL is not a Personal-Inputs type, so no
+   Accept button was left anywhere to wake it. A time or remark edit on a
+   dormant record still keeps it parked — the owner's removal rule. */
+describe('editing a dormant (removed) input', () => {
+  const draftOf = (r: any, type: string) => ({
+    person: r.person, type, allday: false,
+    sTime: '0900', eTime: '1700', remarks: r.remarks || '',
+    start: unfmt(r.date), end: null,
+  })
+  const park = () => {
+    const r: any = { person: 'split', date: DATES[0], allday: false, s: 540, e: 1020, type: 'Meeting', remarks: '' }
+    INPUTS.push(r)
+    expect(acceptInput(0, r, 'g')).toBe(true)
+    unacceptInput(0, r)
+    expect(r.acc, 'removed → parked dormant').toBe('r')
+    return r
+  }
+  it('a TYPE change clears the park, so the input counts again', () => {
+    const r = park()
+    const orig = HOOKS.toast; HOOKS.toast = () => {}
+    try { commitInputEdit(r, draftOf(r, 'LL')) } finally { HOOKS.toast = orig }
+    expect(r.acc, 'the retyped record is live — it fails CLOSED and flags').toBeUndefined()
+  })
+  it('a time edit that keeps the type keeps it parked — only Accept wakes it', () => {
+    const r = park()
+    commitInputEdit(r, draftOf(r, 'Meeting'))
+    expect(r.acc, 'same commitment, still removed').toBe('r')
+  })
+  it('a dormant row reads visibly parked on the week (faded, and says why)', async () => {
+    park()
+    await act(async () => { notify() })
+    const rows = $$('#eWeek .pl-row.inp-dorm')
+    expect(rows.length, 'the removed row wears the dormant mark').toBeGreaterThan(0)
+    expect(rows[0]!.getAttribute('title')).toMatch(/flags nothing until accepted/)
   })
 })
 

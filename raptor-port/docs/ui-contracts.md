@@ -1479,7 +1479,13 @@ expanded it also carries a housekeeping reminder — "A removed input flags
 nothing until accepted again — delete it here if it should go entirely"
 (owner, Aug 26; reworded 26 Aug 26 with the dormancy rule; `.pl-inpnote` on the
 week, `.sb-pinote` on the board) — a scheduler deletes one by pressing its type
-to open the editor and Delete.
+to open the editor and Delete. **A dormant (removed, acc `'r'`) row reads
+visibly parked** (26 Aug 26 bug pass — it flags nothing, yet printed identical
+to a fresh counting row beside it): `dormRowCls`/`dormRowTitle` (`html.ts`, one
+body for the week's `.pl-row` and the board's `inprow`/`sbi-row`) fade it to
+`.5` — fainter than an accepted row's `.62` — add "· removed" after the type on
+the week, and title it "Removed from the day — flags nothing until accepted
+again". Pinned in `inputedit.test.tsx`.
 Unavailable is deliberately left OPEN — it is a live plant/drop target and the
 day's must-read.
 

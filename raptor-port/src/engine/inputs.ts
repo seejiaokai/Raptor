@@ -177,7 +177,11 @@ export function shiftHardInput(t:any){const m=inpMeta(t); return !!m&&!!m.shiftH
    training whether or not an input backs it (owner, 26 Aug 26 — "types the
    exact key words"). DERIVED from the shiftHard flags above so the two can
    never disagree; word-boundary so "OTHER SQUADRON VISIT" trips on its word
-   deliberately (the owner chose the keywords knowing they are common words). */
+   deliberately (the owner chose the keywords knowing they are common words).
+   DRIFT SEAM: testing/refwin.ts hand-copies this keyword list TWICE as literal
+   regexes (its reinput type list and reshift's RH ground-label list) — a new
+   shiftHard type updates this derived body silently and leaves those reference
+   patches stale; change one, change all three. */
 const SHIFT_HARD_RE=new RegExp('\\b('+Object.keys(INPUT_META).filter((k:any)=>INPUT_META[k].shiftHard)
   .map((k:any)=>k.toUpperCase().replace(/\s+/g,'\\s+')).join('|')+')\\b','i');
 export function shiftHardLabel(s:any){return SHIFT_HARD_RE.test(String(s==null?'':s));}

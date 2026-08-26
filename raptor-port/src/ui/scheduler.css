@@ -1559,6 +1559,12 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 .sb-arow.inprow.accd{opacity:.62}
 .pl-row.accd .ntx::after{content:' · accepted';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
 .sbi-row.accd{opacity:.62}
+/* a REMOVED (dormant) input reads visibly parked — it flags NOTHING until
+   accepted again (26 Aug 26 bug pass: a dormant row printed identical to a
+   fresh counting one beside it). Fainter than .accd (silent, not handled),
+   and it says so after the type the same way accepted rows do. */
+.pl-row.inp-dorm,.sb-arow.inprow.inp-dorm,.sbi-row.inp-dorm{opacity:.5}
+.pl-row.inp-dorm .ntx::after{content:' · removed';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
 .accs{display:inline-flex;gap:4px;align-items:center;margin-left:6px}
 .accb{font:inherit;font-size:9px;letter-spacing:.05em;text-transform:uppercase;
   padding:2px 7px;border-radius:6px;cursor:pointer;white-space:nowrap;

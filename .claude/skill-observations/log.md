@@ -518,3 +518,34 @@ the page-top state.
 offset; verifying it at one offset proves only that offset. Sticky elements
 especially: their visual position and static position diverge exactly and only
 when scrolled.
+
+### Observation 36: A dedicated adversarial review pass over recently-merged work pays for itself
+
+**Status:** OPEN
+**Date:** 2026-08-26
+**Session context:** Owner-requested bug pass over the last ten implementations (Raptor)
+**Skill:** New skill candidate: post-batch adversarial review
+**Type:** open-source
+**Phase/Area:** verification / process
+
+**Issue:** Ten implementations had each shipped with green gates (3k+ unit
+tests, reference parity, browser geometry suite) and per-change live
+verification. A dedicated adversarial pass — two parallel reviewer agents
+prompted to refute, walking the project's named gotcha families over the
+diffs — still surfaced six confirmed bugs (two silent state-machine
+lifecycle bugs, one stale-cache jump, one identity-destroying UI round-trip,
+one unescaped sink, one settings-clobber) plus a scroll-state bug found by
+re-verifying an already-"verified" fix under a state the original pass never
+exercised.
+
+**Suggested improvement:** After a batch of features lands, run a separate
+review pass with fresh eyes (subagents prompted adversarially, given the
+project's gotcha families and told to produce concrete failure scenarios,
+verified first-hand before fixing). Gate greenness is necessary, never
+sufficient: tests pin what was imagined at build time; the adversarial pass
+hunts what was not.
+
+**Principle:** The tests a feature ships with encode its author's model of
+the failure space; a reviewer instructed to refute, working from the diff
+plus the system's known drift seams, samples outside that model — which is
+exactly where the surviving bugs live.

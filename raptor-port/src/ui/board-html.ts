@@ -9,7 +9,7 @@ import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, sansCardsHTML, notePubTog, ADDZ } from './html'
+import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ } from './html'
 
 /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
    arrive as minutes and format with a colon (hhmm → "09:00"), but every
@@ -487,7 +487,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
     : `<span class="itxt">${esc(inp.person)}</span>`;
   if(RO){
     const t=inp.allday?'all day':`${hm4(inp.s)} – ${hm4(inp.e)}`;
-    return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
+    return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}><span class="sbi-t">${t}</span>${pk}`
       +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
       +sbiRmk(inp,dt)+`</div>`;
   }
@@ -509,7 +509,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
      label and is byte-identical to before. */
   const lc=lateChip(inp);
   const itemCell=inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
-  return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}"${lateRowTitle(inp)}>`
+  return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}${acc?dormRowCls(inp):''}"${lateRowTitle(inp)||(acc?dormRowTitle(inp):'')}>`
     +sbGrip(true)
     +(lc?`<span class="itemcell">${itemCell}${lc}</span>`:itemCell)
     +fld('atm','str',inpHM(inp,'str'),'all day')+fld('atm','end',inpHM(inp,'end'),'')
@@ -610,7 +610,16 @@ export function sbSlot(di:any,key:any,seat:any,id:any,pv?:any){
    said otherwise. Both halves are fixed here: read the kind first, and let
    titleToLabel round-trip the two standalone titles back out. */
 export const SA_TITLE:any={sc:'SC',avalon:'AVALON',bb:'BB'};
-export function labelToTitle(w:any){ if(w.standalone&&SA_TITLE[w.kind])return SA_TITLE[w.kind]; if(w.night)return 'Night wave'; const m=String(w.label).match(/(\d+)/); return m?((ORD[+m[1]-1]||m[1]+'th')+' wave'):(w.label||'1st wave'); }
-export function titleToLabel(v:any){ if(/night/i.test(v))return 'NIGHT WAVE'; const m=v.match(/(\d+)/); return m?('WAVE '+m[1]):v.toUpperCase(); }
+/* ONLY the canonical "WAVE N" label form ordinal-maps, and only the "Nth wave"
+   title form maps back (26 Aug 26 bug pass). The old any-digit match read a
+   fly-TEMPLATE's title as a wave number — "BFM 4-ship" showed on this dropdown
+   as "4th wave" (indistinguishable from a real one, and disagreeing with the
+   week's wl: cell), and a re-pick then ran titleToLabel('4th wave') and
+   silently REWROTE the label to WAVE 4, destroying the template identity. A
+   label that is not the canonical form now passes through VERBATIM both ways
+   (no toUpperCase either — the week's wl: cell keeps typed case, so a re-pick
+   must be a byte no-op). */
+export function labelToTitle(w:any){ if(w.standalone&&SA_TITLE[w.kind])return SA_TITLE[w.kind]; if(w.night)return 'Night wave'; const m=String(w.label).match(/^\s*WAVE\s+(\d+)\s*$/i); return m?((ORD[+m[1]-1]||m[1]+'th')+' wave'):(w.label||'1st wave'); }
+export function titleToLabel(v:any){ if(/night/i.test(v))return 'NIGHT WAVE'; const m=String(v).match(/^\s*(\d+)(?:st|nd|rd|th)\s+wave\s*$/i); return m?('WAVE '+m[1]):String(v).trim(); }
 /* the kind a Go-dropdown title names, or '' for an ordinary wave */
 export function titleToKind(v:any){ const k=Object.keys(SA_TITLE).find(x=>SA_TITLE[x]===String(v).toUpperCase()); return k||''; }

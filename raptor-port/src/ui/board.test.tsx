@@ -280,6 +280,32 @@ describe('the scheduler board (tfin board group)', () => {
     await click($(`#sbBoard [data-gdel="0.${gi}"]`))
   })
 
+  /* A TEMPLATE-TITLED WAVE KEEPS ITS NAME ON THE GO DROPDOWN (26 Aug 26 bug
+     pass). labelToTitle used to ordinal-match ANY digit, so a fly template
+     titled "BFM 4-ship" read here as "4th wave" — indistinguishable from a
+     real one and disagreeing with the week's wl: cell — and a re-pick then
+     ran titleToLabel('4th wave') and silently REWROTE the label to WAVE 4,
+     destroying the template identity. Only the canonical forms map now; any
+     other label passes through VERBATIM both ways, and the option text is
+     escaped at the builder (an unescaped `<` swallowed the option outright). */
+  it('a template-titled wave shows its own title, a re-pick is a byte no-op, and the title is escaped', async () => {
+    const d = DAYS[0]
+    await click($('[data-wvadd]'))
+    await click($('.wavemenu [data-wmkind=""]'))
+    const gi = d.waves.length - 1, w = d.waves[gi]
+    w.label = 'BFM 4-ship <chk>'
+    await act(async () => { notify() })
+    const sel = $(`#sbBoard [data-wsel="0.${gi}"]`) as HTMLSelectElement
+    /* the parser decodes the escaped entity back to `<` in the option text —
+       an UNescaped build swallows `<chk>` as a tag and the option truncates */
+    expect(sel.value, 'the dropdown carries the full title, not an ordinal or a truncation').toBe('BFM 4-ship <chk>')
+    await change(sel, 'BFM 4-ship <chk>')
+    expect(w.label, 'a re-pick keeps the label byte-identical').toBe('BFM 4-ship <chk>')
+    await change($(`#sbBoard [data-wsel="0.${gi}"]`), '4th wave')
+    expect(w.label, 'the canonical pick still maps').toBe('WAVE 4')
+    await click($(`#sbBoard [data-gdel="0.${gi}"]`))
+  })
+
   /* the ROLE pick-list on a block that belongs to no wave */
   it('clicking a duty ROLE cell offers the five roles, and picking one writes it', async () => {
     const d: any = DAYS[0], savedDW = d.dutywaves

@@ -15,7 +15,7 @@ import { DAYS } from '../engine/data'
 import { DATES, INPUTS, inputCoversDate } from '../engine/inputs'
 import { autoAcceptInput, unacceptInput, inpKey } from '../engine'
 import { stashClear } from '../engine/weekstash'
-import { SCHED } from '../engine/publish'
+import { SCHED, setDayApproved } from '../engine/publish'
 import { HIST } from './history'
 
 /* is this input's ground row currently sitting on some day of the loaded week? */
@@ -136,5 +136,25 @@ describe('loadWeek', () => {
     loadWeek('13/07/2026')                       // return via the restore path
     expect(landed(inp), 'a never-unaccepted new input lands on return').toBe(true)
     expect(landed(kept), 'the input already landed here stays landed').toBe(true)
+  })
+
+  /* A NEVER-LANDED INPUT MUST NOT COME BACK DORMANT (26 Aug 26 bug pass). An
+     input filed onto a then-PUBLISHED day is refused by auto-accept and sits
+     acc-less — which is not a removal, and it correctly still counts. The un
+     set used to record it anyway (acc-less + unlanded read as "unaccepted"),
+     so after the day was reopened and the week round-tripped, the restore
+     re-parked it acc:'r': an input no scheduler ever removed silently stopped
+     flagging. unacceptedKeys now records only the explicit 'r' mark. */
+  it('an input filed onto a published day, after a reopen and a round-trip, lands and is not dormant', () => {
+    SCHED.dayOK[0] = 1                           // Monday published (mark set directly — the sign-off gate is not under test)
+    const inp: any = { person: 'divot', date: 'Jul 13', type: 'Training', allday: false, s: 540, e: 660, _t: true }
+    INPUTS.push(inp)
+    expect(autoAcceptInput(inp), 'a published day refuses the landing').toBe(false)
+    expect(inp.acc).toBeUndefined()
+    setDayApproved(0, false)                     // the scheduler reopens the day
+    loadWeek('20/07/2026')                       // leave — the week stashes (publish state changed)
+    loadWeek('13/07/2026')                       // return via the restore path
+    expect(inp.acc, 'never removed → never dormant').not.toBe('r')
+    expect(landed(inp), 'the reopened day takes the landing').toBe(true)
   })
 })

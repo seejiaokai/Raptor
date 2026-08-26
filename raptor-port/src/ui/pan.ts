@@ -7,6 +7,7 @@
 import * as view from '../state/view'
 import { notify, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
+import { HOOKS } from '../engine/hooks'
 import { shiftWeek } from './weeknav'
 import { mountPeek } from './peek'
 
@@ -96,6 +97,15 @@ export function weekScrollMax(w: any): number {
    the common manual pan (shift+wheel) nulls panWk outright anyway. */
 let panWk: string | null = null
 let panAnchor = -1, panTgt = -1
+/* EVERY WEEK SWAP DROPS THE CORRIDOR (26 Aug 26 bug pass). The corridor is
+   keyed by the CURWEEK string alone, so it used to survive a calendar
+   round-trip: arrow-glide on week A (corridor parked mid-week), calendar to
+   week B, calendar back to A landing on Monday — the stale panTgt was inside
+   the corridor again and the FIRST arrow press counted from it, jumping three
+   days. loadWeek is the one choke every swap path funnels through (chips,
+   calendar, swipes, board steps, the arrows' own crossings), and HOOKS is the
+   doorway state/ has back into ui/ — the same seam closeBoardDialogs rides. */
+HOOKS.weekSwapped = () => { panWk = null; panAnchor = -1; panTgt = -1; glideEnd = 0 }
 /* THE ARROW GLIDE OWNS THE TRACK WHILE IT IS IN FLIGHT (owner, 23-24 Aug 26 —
    the recurring "arrows don't go day by day … stuck halfway then zoom past"
    report). panDays fires a scroll-behavior:smooth glide, and every frame of it

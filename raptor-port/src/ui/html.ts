@@ -779,6 +779,14 @@ export function lateTagOf(o:any){return lateTag(srcInput(o));}
    node, no extra grid item, nothing to knock out of register. The row's own
    INPUT still carries the full chip in the Personal Inputs panel above it. */
 export function lateRowCls(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp)&&lateShown(inp))?' lateinp':'';}
+/* a REMOVED (dormant, acc 'r' — engine/inputs.ts inputDormant) personal input
+   reads visibly PARKED (26 Aug 26 bug pass): it flags nothing until accepted
+   again, yet its row printed byte-identical to a fresh, counting one sitting
+   beside it — the scheduler could not tell which rows were silent. One class
+   body for both surfaces (the week's pl-row, the board's inprow/sbi-row),
+   faded by CSS; the title says why. */
+export function dormRowCls(inp:any){return inp&&inp.acc==='r'?' inp-dorm':'';}
+export function dormRowTitle(inp:any){return inp&&inp.acc==='r'?' title="Removed from the day — flags nothing until accepted again"':'';}
 export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp)&&lateShown(inp))?` title="${esc(lateNote(inp))}"`:'';}
 /* =====================================================================
    ONE DAY'S MARKUP
@@ -1231,7 +1239,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           : `<span class="itxt">${esc(inp.person)}</span>`;
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
-        s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}">`
+        s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}>`
           +`<span class="nm">${inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${inpTimeCells(inp,ed)}`
           +`<div class="ppl one">${pk}</div>${inpRmkCell(inp,ed,d.dt)}`
           +(acc?accCtl(di,inp):'')+`</div>`; });

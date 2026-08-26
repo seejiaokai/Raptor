@@ -242,6 +242,23 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **Two seams flagged by the 26 Aug 26 bug pass, deliberately left as-is
+  (behaviour changes an owner should call, not a bug fix):**
+  - **A STANDBY-kind wave TEMPLATE is structurally lighter than the built-in
+    it names.** `waveFromTpl` mints one single-aircraft formation per line;
+    the built-in SC packs its MAIN crews as aircraft inside one shift
+    formation. Same-shaped days therefore tally differently on the day
+    badge (`waves.ts` `sn` = max non-spare aircraft per formation: built-in
+    SC reads "/ 2", a two-MAIN SC template "/ 1"), and "save my SC as a
+    template" does not reproduce what + Wave → SC builds. Raise with the
+    owner before restructuring the mint.
+  - **A typo'd (unknown) input type grades AMBER against an SC MAIN shift**
+    (`validate.ts`'s Meeting-amber fallback) while the same typo is HARD
+    against a sortie — softer only on shifts. Fail-closed doctrine says
+    unknown belongs on the hard side; the reference patch mirrors the
+    softness, so flipping it needs the `refwin.ts` mirrors updated with it
+    (see the drift-seam comment at `inputs.ts` `SHIFT_HARD_RE`).
+
 - **SC MAIN grades personal inputs PER TYPE now (owner, 26 Aug 26 — built
   this session).** Training, CSE, Fly with, Personal, Appointment, Duty and
   Other are a hard red conflict across an SC MAIN shift (the shift may launch
@@ -280,20 +297,31 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   parks it as **`acc:'r'`** and `inputDormant` (`engine/inputs.ts`) blanks it
   from the whole engine — warnings, advisories, the picker, closed hours, the
   cross-week seeds — while it stays listed under Personal Inputs with its
-  Accept button (`accCtl` treats 'r' as un-accepted); the scheduler's Accept
-  is the one way back. The mark survives week switches (`loadWeek`'s
-  acc-clear skips 'r', `autoAcceptInput` refuses it, the week stash's `un`
-  set re-parks legacy shapes) and a reload forgets it with everything else
-  (session-only, in lockstep). An input that was never landed (acc undefined,
+  Accept button (`accCtl` treats 'r' as un-accepted) **and reads visibly
+  parked** (faded `.inp-dorm` row, "· removed" after the type — 26 Aug 26 bug
+  pass: a silent row printed identical to a counting one beside it); the
+  scheduler's Accept is the one way back. The mark survives week switches
+  (`loadWeek`'s acc-clear skips 'r', `autoAcceptInput` refuses it; the week
+  stash's `un` set records ONLY explicit 'r' rows — recording acc-less
+  unlanded rows too re-parked never-landed inputs as dormant after a
+  published-day reopen + week round-trip, fixed in the 26 Aug 26 bug pass)
+  and a reload forgets it with everything else (session-only, in lockstep). An input that was never landed (acc undefined,
   e.g. filed onto a published day) still counts — dormancy is explicit, not
   "no acc". `commitInputEdit` clears a stray 'r' when its relink fails, so a
-  retype-to-leave can never end up dormant leave. Deleting the input remains
+  retype-to-leave can never end up dormant leave — **and it clears the park
+  outright when a dormant record's TYPE changes** (26 Aug 26 bug pass:
+  retyping a removed Meeting to LL minted a permanently-dormant absence —
+  validator silent, picker still barring the man, and no Accept button left
+  anywhere, LL not being a Personal-Inputs type; a retype is a different
+  commitment, so it fails closed and counts). Time/remark edits on a dormant
+  record keep it parked. Deleting the input remains
   the louder form of rejection (the panel hint already says so). Rules:
   `docs/engine-rules.md` §Validation (the acc state table); seam:
   `docs/feature-impact.md` (`inputDormant` one body); pins:
   `scshift-inputs.test.ts` (dormancy block), `accept.test.ts` (flipped undo
   pins, marked FLIPPED with the owner quote), `inputground.test.ts`,
-  `loadweek.test.ts`, `board.test.tsx`.
+  `loadweek.test.ts` (the published-day reopen round-trip),
+  `inputedit.test.tsx` (the dormant-retype block), `board.test.tsx`.
 
 - **`npm run perf` board DOM ceiling is RED and its raise is owner-reserved
   (from PR #323, 25 Aug 26).** The "available crew on board" strip pushed the

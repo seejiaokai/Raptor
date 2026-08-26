@@ -59,6 +59,13 @@ export const HOOKS = {
      not flash. Purely a UI affordance: no-op headless, wired to
      state/view.ts's flashAdded by store.ts. */
   flashAdded: (_key: any): void => {},
+  /* THE LOADED WEEK JUST SWAPPED (state/store.ts loadWeek — every caller).
+     ui/pan.ts wires this to drop its arrow-burst corridor: the corridor is
+     keyed by the CURWEEK string alone, so a calendar round-trip AWAY from a
+     week and BACK to it used to revive a stale in-flight target and the first
+     arrow press jumped several days (26 Aug 26 bug pass). Same layering story
+     as closeBoardDialogs: state/ does not import ui/, HOOKS is the doorway. */
+  weekSwapped: (): void => {},
 }
 
 /* tiny preference store — same guarded semantics as the reference's

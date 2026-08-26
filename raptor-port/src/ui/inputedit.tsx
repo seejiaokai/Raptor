@@ -445,6 +445,8 @@ export function commitInputEdit(r: any, draft: any) {
        not wake a parked input just because its times were edited — only the
        Accept button re-lands it (owner, 26 Aug 26). */
     const wasAcc = r.acc === 'r' ? undefined : r.acc
+    /* captured for the dormant-retype clear below — the writes overwrite r.type */
+    const wasDormant = r.acc === 'r', wasType = r.type
     /* the row may sit on any day the input spans, not its start date */
     const wasDi = wasAcc === 'g' ? acceptedDay(r) : -1
     /* what a SCHEDULER added to the promoted row by hand — extra crew in
@@ -486,6 +488,16 @@ export function commitInputEdit(r: any, draft: any) {
        once above the write (the Leave-War check needs it too). */
     if (half) r.half = half; else delete r.half
     if (endDate) r.endDate = endDate; else delete r.endDate
+    /* A DORMANT record whose TYPE changes COUNTS AGAIN (26 Aug 26 bug pass).
+       Dormancy marks "the scheduler removed THIS commitment"; retype it and it
+       is a different commitment, so it fails CLOSED — it flags — rather than
+       inheriting the old removal. Without this, retyping a removed Meeting to
+       LL minted a permanently-dormant absence: the validator said nothing while
+       the crew picker still barred the man (the forbidden two-voice drift), and
+       because LL is not a Personal-Inputs type there was no Accept button left
+       to wake it. Time/remark edits on a dormant record still keep it parked —
+       only Accept (or a retype) revives it, per the owner's removal rule. */
+    if (wasDormant && r.type !== wasType && r.acc === 'r') delete r.acc
     if (wasAcc) {
       /* put it back on the day it was on, if the edit still covers that day;
          otherwise its new start date — and if the START label is not itself
