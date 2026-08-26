@@ -197,18 +197,33 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     }))
     await p2.evaluate(() => { const el = document.querySelector('#page-viewsched .filters .hl-tog'); el && el.click() })
     await p2.waitForTimeout(300)
+    /* The 26 Aug 26 filter-bar redesign moved the sideways scroll OFF the strip
+       itself: icons + search hold line one, and the expanded chips drop to the
+       .hlrow wrapper — LINE TWO, nowrap + overflow-x:auto — which is the
+       scroller now (the same recipe as the board's .sb-hl.open). So the probe
+       opens a GROUP (Quals, six chips — one atomic unit that cannot wrap) so
+       the row genuinely overflows a 390px screen, and asserts the ROW scrolls
+       itself while the page still never gains a sideways swipe in either
+       state. The old form asserted .filters itself scrolls, which is exactly
+       the pre-redesign shape — it went stale, not the code (probe trued up in
+       the 26 Aug 26 bug-pass session). */
+    await p2.evaluate(() => { const gs = document.querySelectorAll('#page-viewsched .filters .hl-gtab'); gs.length && gs[gs.length - 1].click() })
+    await p2.waitForTimeout(300)
     const f = await p2.evaluate(() => {
       const el = document.querySelector('#page-viewsched .filters')
+      const row = el.querySelector('.hlrow')
       return {
         display: getComputedStyle(el).display, chips: el.querySelectorAll('.fchip').length,
-        sideScroll: el.scrollWidth > el.clientWidth,
+        rowScroll: !!row && row.scrollWidth > row.clientWidth,
+        stripScroll: el.scrollWidth > el.clientWidth,
         pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       }
     })
-    console.log(`   phone filters: display ${f.display} · chips ${f.chips} · own side-scroll ${f.sideScroll}`)
+    console.log(`   phone filters: display ${f.display} · chips ${f.chips} · chip-row side-scroll ${f.rowScroll}`)
     T('phone · the filter strip is on screen', f.display, 'flex')
     T('phone · folded, the page gains no sideways swipe', f0.pageOverflow, 0)
-    T('phone · opened, it scrolls itself rather than the page', f.sideScroll ? 'itself' : 'no scroll', 'itself')
+    T('phone · opened, the chip ROW scrolls itself rather than the page', f.rowScroll ? 'itself' : 'no scroll', 'itself')
+    T('phone · the strip itself holds still', f.stripScroll ? 'scrolls' : 'still', 'still')
     T('phone · and the page gains no sideways swipe', f.pageOverflow, 0)
 
     await p2.evaluate(() => go('editsched')); await p2.waitForTimeout(600)

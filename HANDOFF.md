@@ -33,21 +33,22 @@ Admin tab; all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3135 across 183 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3152 across 183 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 321 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
-| `probes:adapted` | 5/6 — `sa-async` phone "scrolls itself rather than the page" is RED: it asserts the whole `.filters` strip side-scrolls, but the 26 Aug 26 filter-bar redesign moved the scroll onto the chip row (`.hlrow`), so the probe is stale, not the code (fix noted in `docs/session-state.md`). |
-| `perf` | 3/4 — week DOM 4947 ≤ 5450 ok; **board DOM 1038 > 960 ceiling is RED** (PR #323's "available crew on board" strip, ceiling raise owner-reserved — see Known issues). Timings and both behavioural checks held. |
+| `npm run test:e2e` | 324 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
+| `probes:adapted` | **all 6 GREEN** (26 Aug 26 bug pass): `sa-async`'s phone step was trued to the redesigned filter bar (the chip ROW `.hlrow` is the sideways scroller, asserted with a group opened; the strip and page must hold still), and `audit-async` step 3 restores its raw-input precondition explicitly (`unacceptInput` parks dormant now, which deliberately flags nothing — the probe clears the park to test the raw shape). Both probe-side; the code was right. |
+| `perf` | 3/4 — week DOM 4947 ≤ 5450 ok; **board DOM 1051 > 960 ceiling is RED** (PR #323's "available crew on board" strip took it to 1038; the 26 Aug 26 trailing drop zones on the board people cells add ~13 more; ceiling raise owner-reserved — see Known issues). Timings and both behavioural checks held (board per-node 0.56×). |
 
-Reconciles against the 3063/177, 318 e2e reading this replaced: the PR #327
-batch (flying-wave templates + mobile polish). The wave-templates feature added
-three files — `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`
-— plus engine/board/geometry pins across `board.test.ts`, `overnight.test.ts`,
-`waves.test.ts`, `textedit.test.tsx` and `geometry.spec.ts` (the +1 e2e is the
-highlight-chips sideways-scroll pin, 320 → 321). A per-file chain is not
-reconstructed below this line because the session was compacted mid-batch; the
-3119/182 and 321 totals were re-run at the merge and again at handoff.
+Reconciles against the 3135/183, 321 e2e reading this replaced (PR #328's
+handoff): the #329 SC-grading + dormancy + UI-polish batch took vitest to
+3143 and e2e to 324 (the roster-hide slide, the board steady drop zone and the
+flagged-puck snap pins), and the 26 Aug 26 bug pass added +9 vitest pins
+(dormant-retype and reopen round-trip in `inputedit.test.tsx`/`loadweek.test.ts`,
+the pan corridor drop in `pan.test.tsx`, the template-title round-trip in
+`board.test.tsx`, clear-all/dedupe/clamp in `wavetpl.test.ts`) plus the
+mid-scroll collapse assertion inside the existing roster geometry test →
+3152/324. All totals re-run at the handoff.
 
 Before that, the older chain reconciles against the 3041/177 reading: the SC
 in-time's two extensions (owner, 24 Aug 26 — the long-day span starts at an
@@ -242,6 +243,15 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **QUEUED, awaiting the owner's go-ahead — an Admin "Display" area (owner,
+  26 Aug 26; do NOT build without his confirmation).** His ask: remove the
+  wave Shown/Hidden toggle (`WAVEHIDE`) from Admin → Squadron config and
+  replace it with an Admin **"Display"** category holding per-section
+  open/collapsed fold defaults, set separately for View schedule, Edit
+  schedule and the Scheduler board — generalising the `PIOPEN` fold idiom to
+  every section. Mapped in the 26 Aug session but not built; he had not yet
+  said go when the session ended.
+
 - **Two seams flagged by the 26 Aug 26 bug pass, deliberately left as-is
   (behaviour changes an owner should call, not a bug fix):**
   - **A STANDBY-kind wave TEMPLATE is structurally lighter than the built-in
@@ -328,10 +338,12 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   board to 1038 nodes, over the recorded `960` ceiling in `probes/perf-port.cjs`;
   timings and per-node cost held, and perf is a LOCAL-only gate (not CI), so
   batches keep merging green past it. The fix is one of two owner calls: raise
-  the `960` assert to ~1100 (~10% headroom, matching the week's 5450/4947) and
+  the `960` assert to ~1150 (~10% headroom, matching the week's 5450/4947) and
   record it in `docs/probe-sweep.md`, OR trim the board strip if the owner judges
   the board too heavy. Do not raise it unasked. Left standing across the #327
-  batch (board-node-neutral, 1038 unchanged).
+  batch (board-node-neutral, 1038 unchanged); the #329 batch's trailing drop
+  zones on the board people cells add ~13 nodes → **1051** measured at the
+  26 Aug 26 bug-pass handoff, per-node timing still 0.56× the reference.
 
 - **The notional TODAY stays pinned to the demo week until real data
   arrives (owner, 24 Aug 26 — "eventually it should always register the
