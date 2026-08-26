@@ -444,6 +444,16 @@ check the other):
   report rule, the debrief pad, which event kinds are in `EVD`) moves both, as
   it should — but anything that re-derives a span WITHOUT `workSpan` is a new
   seam.
+- **The "+ add" drop strip: one `ADDZ` body, two surfaces** (26 Aug 26). Every
+  append-capable people cell needs a full-width drop target BELOW its pucks, or a
+  full row's drop resolves to a seated `.seat` and swaps it. `html.ts` exports the
+  one `ADDZ` span; the week's `lCell` and every board `.ppl[data-fill]` cell
+  (`board-html.ts`) both emit it, so the two cannot drift. The only surface
+  difference is CSS, not markup: the week's strip is always present, the board's
+  is `.schedboard`-scoped to `height:0` and opens (13px) only while a placement is
+  in flight — `body.dnd` (drag) or `body.arming` (armed tap, mirrored from `ARM`
+  in `highlights.ts:paintArm`). A new append cell that hand-rolls its own `.ppl`
+  without `ADDZ` is the seam this entry forbids.
 - **The LATE mark: passive printers read one gate, the board draws the control**
   (21 Aug 26, was a global switch on 20 Aug). `lateTag`, `lateTagOf`,
   `lateRowCls` and `lateRowTitle` (`ui/html.ts`) each print the mark on a READ

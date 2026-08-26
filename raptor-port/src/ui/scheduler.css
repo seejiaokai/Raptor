@@ -585,18 +585,25 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
 @media (min-width:821px){
   .edit-board{padding-right:26px}                 /* reserve the rail's lane at the right */
   .edit-board .eroster{transition:transform .24s ease}
-  .ros-rail{position:fixed;top:calc(50% - 36px);right:0;z-index:151;display:flex;
-    align-items:center;justify-content:center;width:26px;height:72px;padding:0;
-    border:1px solid var(--edge-2);border-right:none;border-radius:10px 0 0 10px;
-    background:var(--panel);color:var(--ink-2);cursor:pointer;
-    box-shadow:-9px 0 22px -14px rgba(0,0,0,.9)}
-  .ros-rail:hover{color:var(--ink);border-color:var(--ink-3);background:var(--raised)}
-  /* the chevron points RIGHT ("push it away") when open, LEFT ("pull it back")
-     when collapsed — one glyph, rotated, like .hl-gtab::after */
-  .ros-rail-chev{width:8px;height:8px;border-right:2px solid currentColor;
-    border-bottom:2px solid currentColor;transform:rotate(-45deg);margin-left:3px;
+  /* a slim BLUE "CREW" tab, styled off the phone drawer's accent tab and sat
+     HIGH on the right edge rather than mid-height (owner, 26 Aug 26 — "make it
+     like a blue side panel similar to the mobile one, labeled as crew … put it
+     higher … doesn't block much of the view"). It rides the reserved right lane,
+     so it never overlaps a day column's controls. */
+  .ros-rail{position:fixed;top:150px;right:0;z-index:151;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:8px;width:26px;padding:13px 0;
+    border:1px solid rgba(59,198,232,.5);border-right:none;border-radius:11px 0 0 11px;
+    background:rgba(59,198,232,.14);color:var(--accent);cursor:pointer;
+    box-shadow:-10px 0 24px -16px rgba(0,0,0,.9)}
+  .ros-rail:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .ros-rail b{writing-mode:vertical-rl;text-orientation:mixed;text-transform:uppercase;
+    letter-spacing:.16em;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:11px;font-weight:800}
+  /* a small chevron above the label — points RIGHT ("push it away") when open,
+     LEFT ("pull it back") when collapsed */
+  .ros-rail-chev{width:7px;height:7px;border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor;transform:rotate(-45deg);flex:0 0 auto;
     transition:transform .2s ease}
-  body.ros-collapsed .ros-rail-chev{transform:rotate(135deg);margin-left:0;margin-right:3px}
+  body.ros-collapsed .ros-rail-chev{transform:rotate(135deg)}
   /* collapsed: the column leaves the flow (week reclaims instantly) and slides
      fully off to the right past the rail. fixed;right:0 sits where the sticky
      column's right edge already was, so the transform animates from rest. */
@@ -1161,6 +1168,20 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
   display:flex;align-items:center;justify-content:center;pointer-events:none;transition:none}
 body.dnd .ppl[data-fill] .addz{border-color:var(--edge-2);color:var(--ink-3)}
 body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--accent);background:rgba(59,198,232,.07)}
+/* On the dense scheduler BOARD the strip must not reserve height on every people
+   cell — it collapses to nothing and only opens (with its drop border) while a
+   drag is in flight, so a full row finally has a "+ add" target BELOW its pucks
+   instead of the drop landing on a seated puck and swapping it (owner, 26 Aug 26
+   — "when the width of the puck area is filled … there will be an +ADD area at
+   the bottom to drop more pucks"). The week keeps the always-present strip; only
+   the board reclaims the row height. */
+.schedboard .ppl .addz{height:0;margin-top:0;border-width:0}
+body.dnd .schedboard .ppl[data-fill] .addz,
+body.arming .schedboard .ppl[data-fill] .addz{height:13px;margin-top:2px;border-width:1px;
+  border-color:var(--edge-2);color:var(--ink-3)}
+/* the seat grid (.fcprcp — sims, and the flying-seat pairs) is display:grid, so
+   flex-basis:100% is ignored; span the strip across both columns instead */
+.ppl.fcprcp .addz{grid-column:1/-1}
 /* remarks, to the RIGHT of the pucks (column 5 on desktop, its own strip on a phone) */
 .plist .pl-row .rmk{grid-column:5;font-size:9.5px;color:var(--ink-2);line-height:1.3;padding-top:3px;min-width:0;overflow-wrap:anywhere}
 .plist .pl-row .rmk .ntx{display:block}

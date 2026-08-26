@@ -175,7 +175,12 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   the phone drawer's `ros-open` (`interactions.ts:routeClick`). Collapsed, the
   `.edit-board .eroster` leaves the flow (`position:fixed`) and slides off past
   the right edge on a `.24s` transform transition, and the week (`flex:1`)
-  reclaims the freed ~250px; the rail's chevron flips `›`→`‹`. The rail is
+  reclaims the freed ~250px. The rail is a slim BLUE vertical `CREW` tab styled
+  off the phone drawer's accent tab and sat HIGH on the right edge (owner, 26 Aug
+  26 — "make it like a blue side panel similar to the mobile one, labeled as crew
+  … put it higher"); it rides the reserved right lane (`.edit-board` keeps a
+  `padding-right` for it) so it never overlaps a day column's controls, and its
+  chevron flips `›`→`‹`. The rail is
   `position:fixed` so it never rides the roster's own vertical scroll, and it
   lives inside `#page-editsched`, so it is absent on every other page and on the
   phone (`display:none` under 820px — there the palette is already a pull-out
@@ -652,7 +657,17 @@ other two say Item, its own `C6_DUTY` header, owner 10 Aug 26: a duty row
 names a job) and speak the ordinary grammar —
 seats `d:di.wi.ri` / `s:di.kind.ri` / `g:di.ri` (+ `.xN`, fill `.+`), texts
 `dl:/dr:/sr:/gr:` via `data-bfld` — so the board's generic arm/drag/change
-handlers cover them with no extra wiring. Row mbtns: `dr*/sr*/gr*` cx
+handlers cover them with no extra wiring.
+**Every append-capable people cell carries the "+ add" overflow strip** (owner,
+26 Aug 26 — a full row swapped a seated puck instead of taking a new one, because
+a packed `.ppl` cell has no empty area, so the drop resolved to a `.seat` instead
+of the cell's `.+` fill). The strip is `html.ts`'s one `ADDZ` body, now reused by
+every board `.ppl[data-fill]` cell (`board-html.ts`) — the same drop-below target
+the week always had. On the DENSE board it must cost no row height at rest, so it
+is `.schedboard`-scoped to `height:0`, opening to 13px only while a placement is
+in flight — a drag (`body.dnd`) or an armed tap (`body.arming`, mirrored from
+`ARM` in `highlights.ts:paintArm`). The week keeps its always-present strip.
+Pinned in `board.test.tsx` (presence) and `e2e/geometry.spec.ts` (the geometry). Row mbtns: `dr*/sr*/gr*` cx
 (CxDialog) / flag / del, `dwadd/dwdel/dradd`, `sradd`, `gradd` (board.ts).
 Duty rows render in MODEL order, not `dutySort` — an editor whose rows jump
 as a role is typed would be hostile. **Nothing re-orders a duty block on its

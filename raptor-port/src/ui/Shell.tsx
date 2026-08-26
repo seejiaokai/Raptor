@@ -452,7 +452,7 @@ export function Shell() {
                 the phone (display:none under 820px). */}
             <button className="ros-rail" data-roshide type="button"
               aria-label="Hide or show the aircrew panel" title="Hide or show the aircrew panel">
-              <span className="ros-rail-chev" aria-hidden="true" />
+              <span className="ros-rail-chev" aria-hidden="true" /><b>CREW</b>
             </button>
           </div>
         </div>

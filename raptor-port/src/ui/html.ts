@@ -307,10 +307,15 @@ export function moreSeats(di:any,base:any,ed:any){
    is only one puck tall, and without this there is no BELOW to drop into. It is
    invisible until a drag starts, and it never takes the hit test itself, so the
    drop still resolves to the cell and appends. */
+/* the one "+ add" strip body — the board's people cells reuse it (board-html.ts)
+   so the two surfaces cannot drift (owner, 26 Aug 26 — a full board row swapped a
+   seated puck instead of taking a new one, exactly because the board never drew
+   this drop-below target the week always has). */
+export const ADDZ=`<span class="addz" aria-hidden="true">+ add</span>`;
 export function lCell(inner:any,fillKey:any,ed:any,cls:any){
   const live=!!(ed&&fillKey);
   return `<div class="ppl ${cls||''}"${live?` data-fill="${fillKey}"`:''}>${inner||''}`
-    +(live?`<span class="addz" aria-hidden="true">+ add</span>`:'')+`</div>`;}
+    +(live?ADDZ:'')+`</div>`;}
 /* base+nf give the row its text paths (base='dr:0.1.2', nf='role'); o is the model
    row itself, which supplies the CX / red-flag decoration. Both are optional, so
    any caller that hasn't been converted still renders exactly as before. */

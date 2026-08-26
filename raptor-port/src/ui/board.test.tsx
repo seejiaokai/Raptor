@@ -370,6 +370,19 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect($('#sbBoard .sb-panel.pinp .sb-ph').textContent).toContain('Personal Inputs')
   })
 
+  /* THE "+ ADD" OVERFLOW STRIP (owner, 26 Aug 26 — a full people cell swapped a
+     seated puck instead of taking a new one, because the board never drew the
+     drop-below target the week always has). Every append-capable cell now carries
+     it; jsdom pins its presence, and its collapse/expand geometry is in
+     e2e/geometry.spec.ts (it opens height only while a drag or a tap-placement is
+     in flight, so the dense board keeps its row heights). */
+  it('every append-capable people cell carries the "+ add" overflow strip', () => {
+    const cells = [...document.querySelectorAll('#sbBoard .ppl[data-fill]')]
+    expect(cells.length, 'the board has append-capable people cells').toBeGreaterThan(0)
+    const missing = cells.filter(c => !c.querySelector(':scope > .addz'))
+    expect(missing.length, 'so a full row takes a new puck below instead of swapping a seated one').toBe(0)
+  })
+
   /* the render-time sort (owner, Aug 26): rows read in start-time order but
      keep their MODEL index as key, so a delete on a visually re-ordered row
      must remove the row it names, not the one in that screen position */
@@ -2044,7 +2057,9 @@ describe('an empty Programme people cell says nothing', () => {
     const h = boardHTML(0)
     const cell = h.match(new RegExp(`<div class="ppl" data-fill="a:0\\.${ri}\\.\\+">([^]*?)</div>`))
     expect(cell, 'the people cell still renders with its fill target').toBeTruthy()
-    expect(cell![1], 'and it is empty — no ghost word').toBe('')
+    /* no ghost word and no puck — only the "+ add" overflow strip (owner, 26 Aug
+       26), which is invisible on the board until a drag or a tap placement */
+    expect(cell![1], 'holds only the "+ add" drop strip').toBe('<span class="addz" aria-hidden="true">+ add</span>')
     expect(h).not.toContain('<span class="itxt">all</span>')
     ;(DAYS[0] as any).allhands.pop()
   })

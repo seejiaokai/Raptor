@@ -9,7 +9,7 @@ import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, sansCardsHTML, notePubTog } from './html'
+import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, sansCardsHTML, notePubTog, ADDZ } from './html'
 
 /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
    arrive as minutes and format with a colon (hhmm → "09:00"), but every
@@ -202,7 +202,7 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
            puck is there, just assume that no one is planned for that line").
            The engine already reads it that way (whoArr matches named people
            only); the word said otherwise. Empty cell, same data-fill target. */
-        +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner}</div>`
+        +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`ap:${di}.${ri}.rmks`,x.rmks,ro)
         +(ro?'':`<span class="lctl">`+sbNudge(`mv:p.${di}.${ri}`,ro)
         +`<button class="mbtn${x.cx?' on':''}" data-pcx="${di}.${ri}" title="${x.cx?'Restore this item':'Cancel this item (CX)'}">CX</button>`
@@ -331,7 +331,7 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:d.${di}.${wi}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.role`,r.role,'',ro,ro?'':` data-rolepick="${di}.${wi}.${ri}"`)
         +sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
-        +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}</div>`
+        +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`${t}.rmks`,r.rmks,ro)
         +sbRowCtl(ro,r,`${di}.${wi}.${ri}`,'dr','this duty',sbNudge(`mv:d.${di}.${wi}.${ri}`,ro))+`</div>`;
     });
@@ -380,14 +380,14 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
           const cells=Array.from({length:n},(_:any,pi:any)=>{const k=`${base}.pax.${pi}`, id=r.pax[pi];
             return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
               :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);}).join('');
-          pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${sbMore(di,base,r,ro)}</div>`;
+          pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
         }else{
           const seats=r.pax.map((id:any,pi:any)=>{
             const k=`${base}.pax.${pi}`;
             return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
               :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);
           }).join('');
-          pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${seats+sbMore(di,base,r,ro)}</div>`;
+          pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${seats+sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
         }
       }else if(!whoOnly){
         /* THE SEAT GRID NOW COVERS THE OFT TOO (owner, 14 Aug 26 — "the OFT
@@ -407,9 +407,9 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
         for(let i=0;i<n;i++){const id=more[i];
           cells+=(id&&PEOPLE[id])?sbSeat(di,`${base}.x${i}`,id,ro)
             :(ro?'':`<span class="sb-slot empty pax" data-slot="${base}.x${i}" title="Instructor / observer — tap or drop a puck to fill">+</span>`);}
-        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}</div>`;
+        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${ro?'':ADDZ}</div>`;
       }else{
-        pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}</div>`;
+        pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
       }
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:s.${di}.${kind}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.label`,r.label,'EP SIM',ro)+sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
@@ -439,7 +439,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
       const inner=((id&&PEOPLE[id])?sbSeat(di,base,id,ro):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,ro);
       s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
-        +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}</div>`
+        +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`${t}.rmks`,x.rmks,ro)
         +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro))+`</div>`;
     });
