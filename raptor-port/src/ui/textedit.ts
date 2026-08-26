@@ -241,6 +241,37 @@ export function routeKeyDown(e: KeyboardEvent) {
     }
     return
   }
+  /* THE THREE FORMATION-STRIP CELLS OUTSIDE THE TXT GRAMMAR GET THE SAME TWO
+     KEYS (owner, 26 Aug 26 — "there's no feedback when adding config in the
+     free text", reported twice: pressing Enter in the stores box only
+     inserted an invisible line break in the contenteditable span — no
+     commit, no save flash, nothing. This file's own header says "Enter
+     commits everywhere", and these three were the gap). Enter blurs into
+     routeFocusOut's own branch, which IS the write path — and, for the
+     stores box, what fires the .stsaved confirm. Escape restores what the
+     cell was SHOWING: the model's bombs text, or the derived
+     areaText/atimeText — the same functions the builder renders with (see
+     the derived-cells comment in routeFocusOut for why the model field
+     alone is the wrong restore). */
+  const fx = t && t.closest && t.closest('[data-bombs],[data-area],[data-atime]') as HTMLElement | null
+  if (fx) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fx.blur() }
+    else if (e.key === 'Escape') {
+      e.preventDefault()
+      const d = (fx as any).dataset
+      if (d.bombs) {
+        const [di, gi, li, ai] = d.bombs.split('.')
+        const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
+        fx.textContent = (a.opts && a.opts.bombs) || ''
+      } else {
+        const [di, gi, li] = (d.area || d.atime).split('.')
+        const f = DAYS[+di!].waves[+gi!].formations[+li!]
+        fx.textContent = d.area ? areaText(f) : atimeText(f)
+      }
+      fx.blur()
+    }
+    return
+  }
   const tx = t && t.closest && t.closest('[data-txt]') as HTMLElement | null
   /* Escape outside a text field puts an armed slot down — the reference's
      global escape hatch (ref 4201), lost in the port. Inside a text field

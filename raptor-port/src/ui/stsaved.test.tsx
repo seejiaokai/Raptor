@@ -80,6 +80,35 @@ describe('the .stsaved confirm on the stores free-text box', () => {
     expect(bo.classList.contains('stsaved')).toBe(false)
   })
 
+  /* Enter/Escape reached this box on 26 Aug 26 (owner, twice — "there's no
+     feedback when adding config in the free text": Enter only inserted an
+     invisible line break, committing nothing). Enter is intercepted and
+     commits by blurring into routeFocusOut; Escape restores the model text.
+     jsdom's blur() does not reliably fire focusout, so the commit half is
+     driven by the explicit focusout the other tests already use. */
+  it('Enter in the box is intercepted — it can never type a line break', async () => {
+    STSAVED.clear()
+    const bo = $('#eWeek .bombs[data-bombs]') as any
+    bo.textContent = 'PODS'
+    const ev = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })
+    await act(async () => { bo.dispatchEvent(ev) })
+    expect(ev.defaultPrevented).toBe(true)
+    await blur(bo)
+    expect(stSavedOn(bo.dataset.bombs), 'and the commit that follows flashes').toBe(true)
+  })
+
+  it('Escape restores the model text mid-type', async () => {
+    const bo = $('#eWeek .bombs[data-bombs]') as any
+    bo.textContent = 'KNOWN'
+    await blur(bo)
+    const fresh = $$('#eWeek .bombs[data-bombs]').find(e => e.dataset.bombs === bo.dataset.bombs)! as any
+    fresh.textContent = 'half-typed garba'
+    const ev = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })
+    await act(async () => { fresh.dispatchEvent(ev) })
+    expect(ev.defaultPrevented).toBe(true)
+    expect(fresh.textContent, 'the committed value is back').toBe('KNOWN')
+  })
+
   it('an expired window renders clean and is pruned on read', async () => {
     const bo = $('#eWeek .bombs[data-bombs]') as any
     const addr = bo.dataset.bombs!
