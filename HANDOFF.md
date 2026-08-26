@@ -33,7 +33,7 @@ Admin tab; all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3152 across 183 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3170 across 184 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 324 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -48,7 +48,14 @@ flagged-puck snap pins), and the 26 Aug 26 bug pass added +9 vitest pins
 the pan corridor drop in `pan.test.tsx`, the template-title round-trip in
 `board.test.tsx`, clear-all/dedupe/clamp in `wavetpl.test.ts`) plus the
 mid-scroll collapse assertion inside the existing roster geometry test →
-3152/324. All totals re-run at the handoff.
+3152/324. The PR #331 batch (26 Aug 26 evening) took vitest to 3170/184:
++8 for the two seam closures (`wavetpl.test.ts`, `scshift-inputs.test.ts`,
+the cross-engine typo pin in `parity.test.ts`), +5 SANS pins (the A chip
+and the in-time window in `sansavail.test.ts`), the new
+`src/ui/stsaved.test.tsx` (4, the stores save-confirm flash), and the
+roster/quals pins (`matrix.test.tsx`, `quals.test.tsx`); e2e stays 324/12
+with the board-bar wrap and at-rest-label assertions folded into existing
+specs. All totals re-run at the handoff.
 
 Before that, the older chain reconciles against the 3041/177 reading: the SC
 in-time's two extensions (owner, 24 Aug 26 — the long-day span starts at an
@@ -2347,6 +2354,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/engine/longday-msg.test.ts` | The long-work-day note's assumption wording (15 Aug 26) — a flying end prints the real landing + the `debrief assumed` pad, a non-flying end stays a bare clock time. The crew-rest tail's twin assertions live in `crewrest-ui.test.ts`. |
 | `src/engine/sansavail.test.ts` | SANS Availability (14 Aug 26; rewritten for the one-window rework the same day) — `sansGate`'s five statuses against the flags + standard-window shape, one window serving every ticked event, the AM/PM presets; `sansWindow`/`sansLetters`/`sansBadge`; `slotBar`'s grey-out on a flying/OFT/AMT seat and the duty/ground carve-out; the `SANS_AVAIL` advisory (fires on not-offered/window, silent on no-record); the LEAK GUARD (a timed offer never reads as a timed absence — `isAway`, `day.input`, no hard clash); the parity-guard pair. |
 | `src/ui/sanscards.test.tsx` | The SANS card grid (14 Aug 26) — the shared builder renders the same cards on the week group and the board panel, the order (bounded windows by start, then the fixed F/O/A→…→A combo order), a card's `data-inpedit` address matching `inpKey`, read-only cards carrying none, the board's empty state, the view-only week rendering nothing. |
+| `src/ui/stsaved.test.tsx` | The stores free-text save confirm (26 Aug 26) — a changed commit flashes `.stsaved` and the flash survives the deferred repaint (both builders re-read the `STSAVED` registry), an untouched blur claims nothing, an expired window renders clean and prunes on read. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step (continuous across weeks since 22 Aug 26, never disabled at the ends), the marked dot follows, the dots still scrub (desktop-only since 23 Aug 26 — the phone bar hides them), the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `src/state/demosans.test.ts` | The demo SANS seed (14 Aug 26) — shape, idempotency (`initStore()` boots twice against the same `INPUTS` array), the zero-`SANS_AVAIL`-warning proof against every seed record's own padded commitment, and the rendered card grid. |
