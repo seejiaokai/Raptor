@@ -1,7 +1,7 @@
 import { act, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Person } from '../engine'
-import { getState, initStore, setBidState, setCell } from '../state/store'
+import { getState, initStore, setBidState, setCell, setPersLabel } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -25,6 +25,20 @@ describe('Matrix', () => {
     // colour, under the IP group.
     expect(within(screen.getByTestId('row-tata')).getByText('IP')).toBeTruthy()
     expect(screen.getByTestId('group-IP')).toBeTruthy()
+  })
+
+  it('a personnel row at rest shows callsign + chip only — the role label is edit-mode only (owner, 26 Aug 26)', () => {
+    /* the standalone test seed carries no ground crew (the real app projects
+       them off Raptor's roster), so mint one off an existing body; even a
+       SET label stays off the resting roster ("no need to indicate initials
+       or flight") — it renders only as the Rearrange edit box */
+    const st = getState() as any
+    st.people.push({ ...st.people[0], id: 'gnd_t', callsign: 'WIDGET', pers: true, seat: 'gnd' })
+    setPersLabel('gnd_t', 'Avionics')
+    render(<Matrix />)
+    const row = screen.getByTestId('row-gnd_t')
+    expect(within(row).getByTestId('cat-gnd_t')).toBeTruthy()
+    expect(within(row).queryByTestId('perslabel-gnd_t')).toBeNull()
   })
 
   it('renders a column for every day of the year', () => {

@@ -1438,7 +1438,16 @@ export function Matrix() {
                               <span className="cs">{p.callsign}</span>
                               <span className={`catchip ${catClass(p)}`} data-testid={`cat-${p.id}`}>{catText(p) || 'GND'}</span>
                             </button>
-                            {p.pers && <PersLabel p={p} editable={arranging} />}
+                            {/* The free-text role label is an EDITING aid only
+                                (owner, 26 Aug 26 — "just indicate the
+                                callsign/name for the left column. No need to
+                                indicate initials or flight"): the roster at
+                                rest shows callsign + chip and nothing else —
+                                the read-only label was what truncated the
+                                personnel callsigns — and the label's edit box
+                                still appears while Rearranging, so the stored
+                                text survives for anything that later wants it. */}
+                            {p.pers && arranging && <PersLabel p={p} editable={arranging} />}
                           </div>
                         </td>
                   {/* The selected figure's value for this person, derived on
