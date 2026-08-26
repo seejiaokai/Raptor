@@ -668,6 +668,11 @@ export function routeClick(e: MouseEvent) {
 
   /* the palette drawer tab and the arm-strip cancel */
   if (t.closest('.ros-tab')) { document.body.classList.toggle('ros-open'); e.stopPropagation(); return }
+  /* the DESKTOP hide/show rail for the edit-week aircrew column (owner, 26 Aug
+     26 — "hide the placeholders list … it just animates to the right side"). A
+     bare body class, the same session-only, repaint-surviving idiom as ros-open
+     above; the slide + the week reclaiming its width are pure CSS off it. */
+  if (t.closest('[data-roshide]')) { document.body.classList.toggle('ros-collapsed'); e.stopPropagation(); return }
   if (t.closest('[data-disarm]')) { view.disarmSlot(); notify(); e.stopPropagation(); return }
 
   /* a tap on a palette name: plant it if something is armed, otherwise fall

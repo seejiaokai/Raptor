@@ -443,6 +443,17 @@ export function Shell() {
           <div className="edit-board">
             <EditWeek />
             <EditRoster />
+            {/* DESKTOP: hide/show the aircrew placeholders column (owner, 26 Aug
+                26). A fixed rail at the viewport's right edge — position:fixed so
+                it never rides the roster's own vertical scroll — toggles
+                body.ros-collapsed (interactions.ts, data-roshide); the column then
+                slides off to the right and the week reclaims the width. Lives
+                inside #page-editsched, so it is absent on every other page and on
+                the phone (display:none under 820px). */}
+            <button className="ros-rail" data-roshide type="button"
+              aria-label="Hide or show the aircrew panel" title="Hide or show the aircrew panel">
+              <span className="ros-rail-chev" aria-hidden="true" />
+            </button>
           </div>
         </div>
       </section>

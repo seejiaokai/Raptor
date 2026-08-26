@@ -167,6 +167,21 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   sliver there where the first pucks showed through as the list scrolled. A shadow
   keeps the header's box height fixed, so the 27px column-label offset stays exact;
   the panel's `overflow` clips the cap to its rounded top edge.
+- **The desktop aircrew column can be HIDDEN, sliding off to the right** (owner,
+  26 Aug 26 — "hide the placeholders list on the right of edit scheduler and it
+  just animates to the right side"). A fixed rail at the viewport's right edge
+  (`.ros-rail`, in `Shell.tsx`'s `.edit-board`, `data-roshide`) toggles a bare
+  `body.ros-collapsed` class — the same session-only, repaint-surviving idiom as
+  the phone drawer's `ros-open` (`interactions.ts:routeClick`). Collapsed, the
+  `.edit-board .eroster` leaves the flow (`position:fixed`) and slides off past
+  the right edge on a `.24s` transform transition, and the week (`flex:1`)
+  reclaims the freed ~250px; the rail's chevron flips `›`→`‹`. The rail is
+  `position:fixed` so it never rides the roster's own vertical scroll, and it
+  lives inside `#page-editsched`, so it is absent on every other page and on the
+  phone (`display:none` under 820px — there the palette is already a pull-out
+  drawer). Edit scheduler only: View schedule has no roster, and the board's own
+  roster is a separate `.sb-side` panel. Pinned in `editweek.test.tsx` (the class
+  toggle) and `e2e/geometry.spec.ts` (the real slide + width reclaim).
 
 Four things make it work, and each is load-bearing:
 

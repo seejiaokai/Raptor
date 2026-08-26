@@ -573,6 +573,36 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
     box-shadow:0 -10px 0 0 var(--panel)}
   .edit-board .eroster .rcol .rh{position:sticky;top:27px;z-index:3;background:var(--panel);padding-bottom:1px}
 }
+/* HIDE THE AIRCREW COLUMN ON THE EDIT SCHEDULER (owner, 26 Aug 26 — "hide the
+   placeholders list on the right of edit scheduler and it just animates to the
+   right side"). Desktop only; the phone palette is already a pull-out drawer.
+   A rail pinned at the viewport's RIGHT edge toggles body.ros-collapsed; the
+   column then slides off to the right on a transform transition and the week
+   (flex:1) reclaims the freed width. The rail is position:fixed so it never
+   rides the roster's own vertical scroll, and it lives in #page-editsched so it
+   is gone on every other page. */
+.ros-rail{display:none}
+@media (min-width:821px){
+  .edit-board{padding-right:26px}                 /* reserve the rail's lane at the right */
+  .edit-board .eroster{transition:transform .24s ease}
+  .ros-rail{position:fixed;top:calc(50% - 36px);right:0;z-index:151;display:flex;
+    align-items:center;justify-content:center;width:26px;height:72px;padding:0;
+    border:1px solid var(--edge-2);border-right:none;border-radius:10px 0 0 10px;
+    background:var(--panel);color:var(--ink-2);cursor:pointer;
+    box-shadow:-9px 0 22px -14px rgba(0,0,0,.9)}
+  .ros-rail:hover{color:var(--ink);border-color:var(--ink-3);background:var(--raised)}
+  /* the chevron points RIGHT ("push it away") when open, LEFT ("pull it back")
+     when collapsed — one glyph, rotated, like .hl-gtab::after */
+  .ros-rail-chev{width:8px;height:8px;border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor;transform:rotate(-45deg);margin-left:3px;
+    transition:transform .2s ease}
+  body.ros-collapsed .ros-rail-chev{transform:rotate(135deg);margin-left:0;margin-right:3px}
+  /* collapsed: the column leaves the flow (week reclaims instantly) and slides
+     fully off to the right past the rail. fixed;right:0 sits where the sticky
+     column's right edge already was, so the transform animates from rest. */
+  body.ros-collapsed .edit-board .eroster{position:fixed;right:0;top:8px;
+    max-height:calc(100vh - 118px);transform:translateX(calc(100% + 10px));z-index:150}
+}
 .eroster .rpuck{display:flex;flex:0 0 auto;cursor:grab}
 /* the grab tab — the only part on screen when the drawer is parked. 30px:
    an honest thumb width with NO invisible extension (an earlier ::before

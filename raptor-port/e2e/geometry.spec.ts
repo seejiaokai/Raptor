@@ -553,6 +553,52 @@ test('desktop: the scheduler-board chrome is tight — compact buttons on one ac
   expect(caretInChip, 'clicking a week arrow leaves no text caret in the chip').toBe(false)
 })
 
+/* THE EDIT-SCHEDULER AIRCREW COLUMN HIDES TO THE RIGHT (owner, 26 Aug 26 — "hide
+   the placeholders list on the right of edit scheduler and it just animates to the
+   right side"). jsdom proves the class toggles; only a real browser proves the
+   column actually leaves the viewport and the week reclaims the freed width. */
+test('desktop: the edit-scheduler aircrew column hides to the right and the week reclaims the width', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page)
+  await go(page, 'editsched')
+  await page.waitForSelector('.ros-rail')
+  const before = await page.evaluate(() => {
+    const w = document.querySelector('.edit-board .week') as HTMLElement
+    const e = document.querySelector('.edit-board .eroster') as HTMLElement
+    return {
+      railShown: getComputedStyle(document.querySelector('.ros-rail')!).display !== 'none',
+      weekW: Math.round(w.getBoundingClientRect().width),
+      erosterRight: Math.round(e.getBoundingClientRect().right), vw: window.innerWidth,
+    }
+  })
+  expect(before.railShown, 'the hide/show rail is drawn on desktop').toBe(true)
+  expect(before.erosterRight, 'the column starts on-screen').toBeLessThanOrEqual(before.vw + 1)
+
+  await page.click('.ros-rail')
+  await page.waitForTimeout(350) // the .24s slide settles
+  const after = await page.evaluate(() => {
+    const w = document.querySelector('.edit-board .week') as HTMLElement
+    const e = document.querySelector('.edit-board .eroster') as HTMLElement
+    return {
+      collapsed: document.body.classList.contains('ros-collapsed'),
+      weekW: Math.round(w.getBoundingClientRect().width),
+      erosterLeft: Math.round(e.getBoundingClientRect().left), vw: window.innerWidth,
+    }
+  })
+  expect(after.collapsed, 'the class is set').toBe(true)
+  expect(after.erosterLeft, 'the column has slid off past the right edge').toBeGreaterThanOrEqual(after.vw - 2)
+  expect(after.weekW, 'and the week reclaimed the freed width').toBeGreaterThan(before.weekW + 100)
+
+  await page.click('.ros-rail')
+  await page.waitForTimeout(350)
+  const back = await page.evaluate(() => ({
+    collapsed: document.body.classList.contains('ros-collapsed'),
+    weekW: Math.round((document.querySelector('.edit-board .week') as HTMLElement).getBoundingClientRect().width),
+  }))
+  expect(back.collapsed, 'a second click brings it back').toBe(false)
+  expect(Math.abs(back.weekW - before.weekW), 'the week returns to its docked width').toBeLessThanOrEqual(2)
+})
+
 /* THE THREE CREW-REST STROKES, measured (owner, 6 Aug 26). Solid is his own
    breach, dashed is his own breach that a scheduler sanctioned, dotted is the
    day he CAUSES one. Vitest can prove which class the builder emitted and
