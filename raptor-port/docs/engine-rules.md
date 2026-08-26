@@ -1119,15 +1119,19 @@ strike, the printed reason (`.no.haswhy`/`.rwhy`), the green eligibility
 rings and both toasts all read `slotBar`, so grey-out was free the moment
 this one function judged right.
 
-**The `SANS_AVAIL` advisory (`validate.ts`) — amber, reuses the `CP` chip**
-(the `PAX_CREW` precedent — no new chip, no legend byte-compare risk). Built
+**The `SANS_AVAIL` advisory (`validate.ts`) — amber, wears the `A` chip**
+(owner, 26 Aug 26 — moved off `CP`, its launch chip: `CP`'s hover says a crew
+*pairing* needs approval, which is not this man's problem; `A` is the
+planned-against-what-was-filed chip, and its `CHIP_LABEL` entry now names the
+SANS case — mirrored byte-identically into the reference's table by a
+`refwin.ts` swap, though no seed-week day renders it). Built
 per day from two check lists: `day.fly` (domain `'fly'`, window
 `e.step→e.dekit` — the same padded window `slotBar` judges a flying seat
 against) and `day.events`' sim entries whose key matches
 `^s:\d+\.(amt|oft)\.` (domain is the captured word, window is the event's own
 `s→e`). For each SANS person on each check, `sansGate` decides; **only
 `'not-offered'` and `'window'` raise** `add('adv','SANS_AVAIL',...)` +
-`markRing(di,id,'adv')` + `markChip(di,id,'CP')`.
+`markRing(di,id,'adv')` + `markChip(di,id,'A')`.
 
 **`'none' is DELIBERATELY silent here — the scoping decision, and why it is
 correct** (owner, 14 Aug 26). The owner's own example only ever describes

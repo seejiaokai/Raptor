@@ -47,7 +47,7 @@ export const chipText=(c:any)=>CHIP_TEXT[c]||c;
    silently freezing the flag. */
 export const RANK:any={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CP:8,CR:9,RUN:10,CPH:11,C:12,Q:13};
 export const CHIP_LABEL:any={DT:'Double turn',TT:'Tight turn',C:'Conflict (two events at once)',
-  A:'Advisory — on shift and also down for a ground event or programme item',CR:'Crew rest breach (<{crewRest})',Q:'Qualification — illegal seat',
+  A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',CR:'Crew rest breach (<{crewRest})',Q:'Qualification — illegal seat',
   NB:'No time for the flight brief',DB:'No time for the flight debrief',SB:'No time for the sim brief',SD:'No time for the sim debrief',LD:'Long work day (>{longDay})',
   RUN:'No break day — too many days on the programme in a row',
   CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};
@@ -861,8 +861,13 @@ export function validate(){
     });
     /* SANS AVAILABILITY (owner, 14 Aug 26) — a SANS body planted into a
        flying / OFT / AMT slot outside what he actually filed raises a
-       persistent amber Advisory, reusing the CP flag (the PAX_CREW
-       precedent — no new chip). Checks are built from day.fly (domain
+       persistent amber Advisory, wearing the amber A chip (owner, 26 Aug 26 —
+       "shouldn't sans planned outside availability be A, instead of CP?";
+       it launched on CP, the PAX_CREW precedent, but CP's hover says a crew
+       PAIRING needs approval, which is not this man's problem — A is the
+       planned-against-what-was-filed chip, the same family as SHIFT_SOFT and
+       SC_INTIME, and its label now names this case too).
+       Checks are built from day.fly (domain
        'fly', the sortie's own step→dekit window — the same window slotBar
        judges a flying seat against, AVALON excluded because saExempt
        formations never reach day.fly at all) plus day.events' sim entries
@@ -889,7 +894,7 @@ export function validate(){
     sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!p.san)return;
       const g=sansGate(c.id,day.dt,c.domain,c.s,c.en);
       if(g.status!=='not-offered'&&g.status!=='window')return;
-      markRing(di,c.id,'adv');markChip(di,c.id,'CP');
+      markRing(di,c.id,'adv');markChip(di,c.id,'A');
       const reason=g.status==='not-offered'?`not offering ${SANS_LABEL[c.domain]} today`
         :`available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
       add('adv','SANS_AVAIL',[c.id],`${p.cs} planned for ${c.label} — ${reason}`,c.key);

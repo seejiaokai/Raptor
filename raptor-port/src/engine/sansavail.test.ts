@@ -242,8 +242,10 @@ describe('slotBar — the SANS gate, picker side (avail.ts)', () => {
 })
 
 /* ---------------------------------------------------------------------------
-   The validator — SANS_AVAIL is the amber advisory, CP chip (PAX_CREW
-   precedent), raised ONLY against a FILED record. A record-less SANS man
+   The validator — SANS_AVAIL is the amber advisory, A chip (the
+   planned-against-what-was-filed chip; owner moved it off CP, 26 Aug 26 —
+   CP reads as a crew-pairing problem), raised ONLY against a FILED record.
+   A record-less SANS man
    planted the same way raises nothing persistent — the palette grey and the
    plant toast still say so, but validate() stays silent, which is exactly
    what keeps the seed (romeo/vinci/krait fly, waldo rides OFT pax, zero SANS
@@ -256,7 +258,7 @@ describe('validate() — the SANS_AVAIL advisory', () => {
   const sansAvail = (id: string) => validate().all.filter((w: any) =>
     w.code === 'SANS_AVAIL' && (w.who || []).includes(id))
 
-  it('offering only O/A raises exactly one advisory: adv, CP chip, "not offering Fly"', () => {
+  it('offering only O/A raises exactly one advisory: adv, A chip, "not offering Fly"', () => {
     setSlotVal(FLY_KEY, FLY_ID)
     fileSans(FLY_ID, { o: true, a: true })
     const hits = sansAvail(FLY_ID)
@@ -265,7 +267,7 @@ describe('validate() — the SANS_AVAIL advisory', () => {
     expect(hits[0].msg).toContain('not offering Fly')
     validate()
     expect(sevOf(0, FLY_ID)).toBe('adv')
-    expect(chipOf(0, FLY_ID)).toBe('CP')
+    expect(chipOf(0, FLY_ID)).toBe('A')
   })
 
   it('a window narrower than the sortie: "available … only"', () => {

@@ -337,6 +337,13 @@ function rematrix(html: string): string {
     ["SD:'No time for the sim debrief',LD:'Long work day (>{longDay})'};",
      "SD:'No time for the sim debrief',LD:'Long work day (>{longDay})',"
      + "CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};"],
+    /* The A label grew a SANS tail when SANS_AVAIL moved off CP onto A (owner,
+       26 Aug 26). The reference has no SANS gate, so its A chip never fires for
+       SANS and no compared day renders the label this week — the swap exists so
+       the two CHIP_LABEL tables stay byte-identical, per the rule the RANK
+       comment above states: one table, not two that happen to agree. */
+    ["A:'Advisory — on shift and also down for a ground event or programme item',",
+     "A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',"],
     ["if(p&&w&&isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');add('hard','ILLEGAL_CREW',[ac.p,ac.w],`Two OCU in one aircraft (${f.label})`);}",
      "if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!(p.q==='IP'||p.q==='IR'||p.q==='FI')&&!isInstr(w.q)){"
      + "if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`);}"
