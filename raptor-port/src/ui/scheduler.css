@@ -569,9 +569,9 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
      opaque it", owner 26 Aug 26). A shadow (not extra padding) keeps the header's
      box height fixed, so the column labels' 27px sticky offset below stays exact;
      the panel's overflow clips the cap to its rounded top edge. */
-  .edit-board .eroster .er-h{position:sticky;top:0;z-index:4;background:var(--panel);
-    box-shadow:0 -10px 0 0 var(--panel)}
-  .edit-board .eroster .rcol .rh{position:sticky;top:27px;z-index:3;background:var(--panel);padding-bottom:1px}
+  .edit-board .eroster .er-h{position:sticky;top:0;z-index:4;background:var(--bg);
+    box-shadow:0 -10px 0 0 var(--bg)}
+  .edit-board .eroster .rcol .rh{position:sticky;top:27px;z-index:3;background:var(--bg);padding-bottom:1px}
 }
 /* HIDE THE AIRCREW COLUMN ON THE EDIT SCHEDULER (owner, 26 Aug 26 — "hide the
    placeholders list on the right of edit scheduler and it just animates to the
@@ -587,7 +587,16 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
      containing block for the collapsed (absolute) roster, so right:0 lands on the
      board's own right edge rather than the viewport's */
   .edit-board{padding-right:26px;position:relative}
-  .edit-board .eroster{transition:transform .24s ease}
+  /* OPEN = a clean, full-height TRUE-BLACK opaque side panel (owner, 26 Aug 26
+     follow-up — "I can see the bleeding of it behind … make it a full black
+     opaque side panel"). The old panel used var(--panel) #14181d, the SAME tone
+     as the day blocks beside it, so the schedule read as bleeding into it; and
+     max-height:calc(100vh - 118px) left a ~110px black gap below the panel when
+     scrolled. Now it is var(--bg) (near-black, plainly a separate surface) and
+     fills down to just above the board's bottom scroll bar, so it reads as one
+     solid opaque panel top-to-bottom with nothing showing through beside it. */
+  .edit-board .eroster{transition:transform .24s ease;background:var(--bg);
+    max-height:calc(100vh - 44px);box-shadow:-16px 0 34px -22px rgba(0,0,0,.92)}
   /* a slim BLUE "CREW" tab, styled off the phone drawer's accent tab and sat
      HIGH on the right edge rather than mid-height (owner, 26 Aug 26 — "make it
      like a blue side panel similar to the mobile one, labeled as crew … put it
