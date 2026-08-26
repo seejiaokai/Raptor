@@ -2030,3 +2030,20 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
     })
   })
 })
+
+/* the Programme people cell carries NO "all" ghost (owner, 26 Aug 26 — "if no
+   puck is there, just assume that no one is planned for that line"): the
+   engine already reads an empty who as nobody planned, and the word said
+   otherwise. The cell stays a live data-fill target so pucks still land. */
+describe('an empty Programme people cell says nothing', () => {
+  it('renders no "all" text and keeps its fill target', () => {
+    ;(DAYS[0] as any).allhands.push({ prog: 'NEW ITEM', str: '0900', end: '0930', who: [] })
+    const ri = (DAYS[0] as any).allhands.length - 1
+    const h = boardHTML(0)
+    const cell = h.match(new RegExp(`<div class="ppl" data-fill="a:0\\.${ri}\\.\\+">([^]*?)</div>`))
+    expect(cell, 'the people cell still renders with its fill target').toBeTruthy()
+    expect(cell![1], 'and it is empty — no ghost word').toBe('')
+    expect(h).not.toContain('<span class="itxt">all</span>')
+    ;(DAYS[0] as any).allhands.pop()
+  })
+})

@@ -57,7 +57,11 @@ describe('SC SPARE — stood by, not cross-checked', () => {
     const w = tueWarns('nasty').find((x: any) => x.code === 'LEAVE_FLY')
     expect(w, 'MAIN on leave is a hard flag').toBeTruthy()
     expect(w.sev).toBe('hard')
-    expect(w.msg).toContain('On leave but planned to fly SC AM')
+    /* since the per-type grading (owner, 26 Aug 26) a shift has ONE voice —
+       the graded events loop — so this reads "but tasked", no longer the
+       sortie loop's "but planned to fly" beside it */
+    expect(w.msg).toContain('On leave but tasked — SC AM')
+    expect(tueWarns('nasty').filter((x: any) => x.code === 'LEAVE_FLY').length, 'and only one voice').toBe(1)
   })
 
   it('overseas leave bars even the SPARE — he cannot be reached', () => {

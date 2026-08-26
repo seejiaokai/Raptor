@@ -27,7 +27,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 
 export async function refWindow(): Promise<any> {
-  const html = relabel(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(redt(renm(readFileSync('reference/scheduler.html', 'utf8')))))))))))))))))
+  const html = relabel(reshift(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(redt(renm(readFileSync('reference/scheduler.html', 'utf8'))))))))))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -426,13 +426,23 @@ function reinput(html: string): string {
     ["if(/^Available|^Fly$/i.test(inp.type))return;",
      "if(/^Available/i.test(inp.type))return;"],
     /* 2 — every input clashes with every kind of tasking, except that ATT B
-       may still work, and an ordinary personal type stays quiet against a
-       shift (the accepted row's SHIFT_SOFT is the designed voice there) */
+       may still work — EXCEPT an SC MAIN shift, which may launch him (owner,
+       26 Aug 26) — and an ordinary personal type is graded BY TYPE against a
+       shift: the red-list commitments hard-flag, a Meeting speaks the amber
+       SHIFT_SOFT (worded byte-for-byte like the port's, so the messages
+       compare). The reference's `un` misses SANS, which the port's isUnavail
+       carries — SANS never reaches a parity fixture (seedDemoSans is
+       boot-only), so the gap is documented, not patched. */
     ["const dn=isDownchit(inp.type), lv=isLeave(inp.type);\n        if(!dn&&!lv)return;",
-     "if(/^\\s*ATT\\s*B\\s*$/i.test(String(inp.type||'')))return;"
+     "if(/^\\s*ATT\\s*B\\s*$/i.test(String(inp.type||''))&&e.kind!=='shift')return;"
      + "const dn=isDownchit(inp.type), lv=isLeave(inp.type);"
      + "const un=dn||lv||/^\\s*OD\\s*$/i.test(String(inp.type||''));"
-     + "if(!un&&e.kind==='shift')return;"],
+     + "const rh=/^\\s*(TRAINING|CSE|FLY\\s+WITH|PERSONAL|APPOINTMENT|DUTY|OTHER)\\s*$/i.test(String(inp.type||''));"
+     + "if(!un&&e.kind==='shift'&&!rh){"
+     + "if(!overlap(e.s,e.e,inp.s,inp.e))return;"
+     + "markChip(di,e.id,'A'); markRing(di,e.id,'adv');"
+     + "add('adv','SHIFT_SOFT',[e.id],`${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label} (${hm24(e.s)}–${hm24(e.e)}) and also down for ${inp.type}`);"
+     + "return;}"],
     ["add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[e.id],\n          (dn?'Downchit but tasked':'On leave but tasked')",
      "add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],"
      + "(dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)"],
@@ -440,6 +450,35 @@ function reinput(html: string): string {
   for (const [from, to] of swaps) {
     const n = html.split(from).length - 1
     if (n !== 1) throw new Error(`refwin reinput: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
+    html = html.replace(from, to)
+  }
+  return html
+}
+
+/* THE GROUND-ROW SEVERITY OVERLAY (owner, 26 Aug 26). The port upgrades a
+   ground row that IS a red-list commitment from SHIFT_SOFT to the hard clash
+   (validate.ts shiftEvHard), in the clash loop and the crew picker's `live`
+   alike. The reference has no row.src to consult, so it gets the KEYWORD half
+   only — which is all a parity fixture can exercise anyway, because the src
+   path needs an ACCEPTED input and the accept machinery diverged long ago.
+   Documented parity boundary: an accepted 'Other' vs SC MAIN would diverge
+   (port reads the source type off row.src; the reference reads the remarks
+   label) — no parity fixture may build one. */
+function reshift(html: string): string {
+  const RH = "/\\b(TRAINING|CSE|FLY\\s+WITH|PERSONAL|APPOINTMENT|DUTY|OTHER)\\b/i"
+  const swaps: Array<[string, string]> = [
+    /* the sortie-clash loop no longer speaks over a shift line — the graded
+       events loop is a shift's one voice (see validate.ts, same guard) */
+    ["day.fly.forEach(e=>day.input.forEach(inp=>{ if(inp.id!==e.id)return;",
+     "day.fly.forEach(e=>day.input.forEach(inp=>{ if(inp.id!==e.id)return;if(e.shift)return;"],
+    ["if(SHIFT_HARD[other.kind]){",
+     `if(SHIFT_HARD[other.kind]||(other.kind==='ground'&&${RH}.test(String(other.label||'')))){`],
+    ["const live=e=>SHIFT_HARD[e.kind]&&e.s!=null&&e.e!=null&&e.slot!==self;",
+     `const live=e=>(SHIFT_HARD[e.kind]||(e.kind==='ground'&&${RH}.test(String(e.label||''))))&&e.s!=null&&e.e!=null&&e.slot!==self;`],
+  ]
+  for (const [from, to] of swaps) {
+    const n = html.split(from).length - 1
+    if (n !== 1) throw new Error(`refwin reshift: expected exactly 1 match, got ${n} for: ${from.slice(0, 50)}…`)
     html = html.replace(from, to)
   }
   return html

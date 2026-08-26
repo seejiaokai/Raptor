@@ -133,6 +133,19 @@ wholly before a date through the SAME `dropInputRow` body a single delete uses
 layer (`PLANPUCKS`/`DAYRMK`) and stashed past weeks (`stashDrop`). A change to
 the single-delete semantics changes the sweep for free — that is the point; a
 second removal body would be the drift-seam this line exists to forbid.
+**The SC MAIN per-type grading is ONE seam spanning five files (26 Aug 26)**:
+the `shiftHard` flag on `INPUT_META` (`engine/inputs.ts`) is the single source
+— `shiftHardInput` (the raw-input gate in `validate.ts`), `shiftHardLabel`
+(the hand-typed ground-row keyword regex, DERIVED from the same flags),
+`events.ts:shiftEvHard` (the ground-row upgrade the validator's clash loop AND
+`avail.ts`'s picker `live` both read), the Logic-tab prose
+(`ui/logic-html.ts`, list derived via `INPUT_TYPES.filter(shiftHardInput)`),
+and the reference rewrites (`testing/refwin.ts` `reinput`/`reshift`, the ONE
+place the red list is restated as a literal regex, because the reference
+cannot import). Adding or moving a type between red and amber is the flag
+plus the refwin literal — anything else reading its own list is a new seam.
+Shift lines are excluded from the sortie "clashes with" loop (`e.shift`
+guard, both engines): the graded events loop is a shift's one voice.
 
 ### Flow C — day navigation on the phone board (view-only, no mutation)
 ```

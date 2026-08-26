@@ -198,7 +198,11 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
         +`<input class="ain" data-bfld="ap:${di}.${ri}.prog"${alAttr(`ap:${di}.${ri}.prog`)}${ro?' disabled':''} value="${esc(x.prog||'')}">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)}${ro?' disabled':''} value="${esc(x.str||'')}">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.end"${alAttr(`ap:${di}.${ri}.end`)}${ro?' disabled':''} value="${esc(x.end||'')}">`
-        +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner||'<span class="itxt">all</span>'}</div>`
+        /* no "all" ghost on an empty people cell (owner, 26 Aug 26 — "if no
+           puck is there, just assume that no one is planned for that line").
+           The engine already reads it that way (whoArr matches named people
+           only); the word said otherwise. Empty cell, same data-fill target. */
+        +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner}</div>`
         +sbRmk(`ap:${di}.${ri}.rmks`,x.rmks,ro)
         +(ro?'':`<span class="lctl">`+sbNudge(`mv:p.${di}.${ri}`,ro)
         +`<button class="mbtn${x.cx?' on':''}" data-pcx="${di}.${ri}" title="${x.cx?'Restore this item':'Cancel this item (CX)'}">CX</button>`

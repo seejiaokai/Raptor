@@ -1,8 +1,8 @@
 import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
-import { isDownchit, isLeave, isUnavail, canSpare, canWork, restsInput, inpLabel } from './inputs'
+import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
-import { collectEvents } from './events'
+import { collectEvents, shiftEvHard } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, prevSundaySeed, nextMondaySeed } from './weekctx'
@@ -423,11 +423,15 @@ export function validate(){
          another cockpit — flight, sim, another shift — or a duty POST he has to
          man → Warning, he cannot be in two places;
          a ground event or a programme item → Advisory, because you can still
-         give academics to the man who is on SC.
+         give academics to the man who is on SC — with ONE overlay (owner,
+         26 Aug 26): a ground row that IS a red-list commitment, by its source
+         input or by its own words, is the commitment, not academics → Warning.
+         shiftEvHard (events.ts) carries the overlay; Meeting stays the advisory.
        SC SPARE never reaches here at all: a spare is standing by, so he stays
        free for anything else on the day. */
     /* SHIFT_HARD is declared once at the top of the engine — the crew picker
-       shares it, so the two can never disagree about what bars a shift. */
+       shares it (and the same shiftEvHard overlay), so the two can never
+       disagree about what bars a shift. */
     const byE=evd;
     Object.keys(byE).forEach((id:any)=>{ const es=byE[id].slice().sort((a:any,b:any)=>a.s-b.s);
       for(let i=0;i<es.length;i++)for(let j=i+1;j<es.length;j++){
@@ -450,7 +454,7 @@ export function validate(){
            ring goes on too — a hard warning with a grey puck was a bug. */
         if(A.kind==='shift'||B.kind==='shift'){
           const sh=A.kind==='shift'?A:B, other=A.kind==='shift'?B:A;
-          if(SHIFT_HARD[other.kind]){
+          if(shiftEvHard(other)){
             markChip(di,id,'C'); markRing(di,id,'hard');
             add('hard','DOUBLE_BOOK',[id],`${sh.label} & ${other.label} clash`,kOf(sh)||kOf(other));
           } else {
@@ -479,8 +483,11 @@ export function validate(){
        alone; a spare has no event at all), so the guard needs no wave lookup.
        An event that also overlaps the shift window is the clash loop's business
        above and is not re-reported here; a timed personal input is included the
-       way crew rest includes it (restsInput, typed times only) — inputs raise
-       nothing against a shift window today, so there is nothing to double. */
+       way crew rest includes it (restsInput, typed times only) — and since
+       26 Aug 26 inputs DO speak against the shift window itself (the per-type
+       red/amber below), so an input reaching into the shift gets the same
+       already-reported exclusion the events have, or one Meeting would read
+       both as SHIFT_SOFT and as an in-time cut. */
     Object.keys(byE).forEach((id:any)=>byE[id].forEach((sh:any)=>{
       if(sh.kind!=='shift'||sh.report==null||sh.report>=sh.s)return;
       const cs=PEOPLE[id]?PEOPLE[id].cs:id;
@@ -495,10 +502,18 @@ export function validate(){
       day.input.forEach((inp:any)=>{ if(inp.id!==id||inp.nx||inp.pv)return;
         if(!restsInput(inp.type)||inp.s==null||inp.e==null||inp.e-inp.s>=1439)return;
         if(!overlap(sh.report,sh.s,inp.s,inp.e))return;
+        if(overlap(sh.s,sh.e,inp.s,inp.e))return;
         cut(inp.s,inp.e,inpLabel(inp));});
     }));
     // C via input clash (DNIF / leave / appointment vs a sortie)
+    /* SHIFT lines ride day.fly too, and this loop used to speak over them —
+       "Meeting clashes with SC AM" beside the shift's own graded voice, and a
+       leave read twice in two wordings. Since the per-type grading (owner,
+       26 Aug 26) the events loop below is a shift's ONE voice — red-list and
+       ATT B hard, Meeting amber, leave/med/OD hard — so a shift line is
+       excluded here outright. Real sorties are untouched. */
     day.fly.forEach((e:any)=>day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
+      if(e.shift)return;
       if(overlap(e.step,e.dekit,inp.s,inp.e)){
         /* the offer exemption is gone with the "Available *" types (owner
            decision, Aug 26). "Fly with" is now an ordinary commitment: a man who
@@ -519,23 +534,36 @@ export function validate(){
        personal input a scheduler has actioned to Unavailable, warned against a
        sortie but let a sim seat, a duty post or a ground row through silently
        — so "unavailable" guarded the jets and nothing else. Now every input
-       the validator can see clashes with every kind of tasking. Shifts are the
-       one carve-out for the ordinary personal types: an accepted row against
-       an SC shift is deliberately the soft SHIFT_SOFT advisory, and the raw
-       input must not shout red over that. Leave, medical and overseas duty
-       still hard-flag a shift — those close the man's day outright.
-       AND ONE TYPE IS EXEMPT FROM THIS LOOP ENTIRELY: ATT B (owner, 10 Aug 26).
-       He is grounded, not absent — unfit to fly but at his desk — so a duty
-       post, a sim seat, a ground row or a programme item is perfectly proper
-       and must not flag. The FLYING loop above is untouched, so putting him in
-       a jet still raises a hard warning, which is the whole distinction. This
-       is the only place in the app where "cannot fly" and "cannot work" come
-       apart, and canWork() is the only thing that separates them. */
+       the validator can see clashes with every kind of tasking. Shifts grade
+       the ordinary personal types BY TYPE now (owner, 26 Aug 26 — SC MAIN may
+       launch the man): the red-list commitments (shiftHardInput — Training,
+       CSE, Fly with, Personal, Appointment, Duty, Other) hard-flag a shift
+       exactly like OD always did; a Meeting reads as the amber SHIFT_SOFT
+       advisory, the same voice its accepted ground row speaks in, so the raw
+       and landed representations of one input can never disagree. The timed
+       accepted copy is still deferred to its row (inpShow), so nothing here
+       double-reports. Leave, medical and overseas duty still hard-flag a
+       shift — those close the man's day outright.
+       ATT B (owner, 10 Aug 26; narrowed 26 Aug 26): grounded, not absent —
+       unfit to fly but at his desk — so a duty post, a sim seat, a ground row
+       or a programme item is proper and must not flag. An SC MAIN SHIFT is the
+       exception now: the shift may require him to FLY, so it hard-flags like
+       the jet does (and the crew picker already refused him the seat — this
+       closes that drift). canWork() still separates "cannot fly" from "cannot
+       work" everywhere else. */
     day.events.forEach((e:any)=>{ if(e.kind==='fly')return;
       day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
-        if(canWork(inp.type))return;
+        if(canWork(inp.type)&&e.kind!=='shift')return;
         const dn=isDownchit(inp.type), lv=isLeave(inp.type);
-        if(!isUnavail(inp.type)&&e.kind==='shift')return;
+        if(!isUnavail(inp.type)&&e.kind==='shift'&&!shiftHardInput(inp.type)){
+          /* Meeting (and any future unflagged commitment) — the shift's amber
+             voice, worded byte-for-byte like the ground-row SHIFT_SOFT above */
+          if(!overlap(e.s,e.e,inp.s,inp.e))return;
+          markChip(di,e.id,'A'); markRing(di,e.id,'adv');
+          add('adv','SHIFT_SOFT',[e.id],
+            `${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label} (${hm24(e.s)}–${hm24(e.e)}) and also down for ${inpLabel(inp)}`,kOf(e));
+          return;
+        }
         if(!overlap(e.s,e.e,inp.s,inp.e))return;
         markChip(di,e.id,'C'); markRing(di,e.id,'hard');
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';

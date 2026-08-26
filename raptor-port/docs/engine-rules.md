@@ -349,8 +349,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   represented by the ground row `acceptInput` created (in `day.events`), so a
   clash surfaces exactly once, as `DOUBLE_BOOK`/`SHIFT_SOFT`/brief-window
   codes on the ROW — keeping the input in `day.input` too would print every
-  clash twice. (Accepted rows raising advisory `SHIFT_SOFT` vs SC shifts
-  where the raw input raised nothing is intended — do not "fix" it.) Accepted
+  clash twice. (Since 26 Aug 26 the raw voice and the row voice GRADE ALIKE
+  against an SC shift — red-list hard, Meeting amber, see the per-type rule
+  below — and the deferral is what keeps it to one voice per day.) Accepted
   to `'u'` the input itself clashes, as an `OD` does. Known edge, by
   design: an all-day input accepted to `'g'` makes a time-less ground row →
   no event → no flag, same as any time-less scheduler-typed row. Found on an
@@ -371,11 +372,50 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (owner, 4 Aug 26). The "but tasked" loop used to cover leave and downchits
   only, so an overseas duty or an actioned-to-`'u'` personal input warned
   against a sortie but let a sim seat, a duty post or a ground row through
-  silently.
-  Now all of `day.input` clashes with all of `day.events`, with one carve-out:
-  ordinary personal types stay quiet against `kind==='shift'` (the accepted
-  row's `SHIFT_SOFT` is the designed voice there); leave, downchits and
-  detachments still hard-flag a shift.
+  silently. Now all of `day.input` clashes with all of `day.events`, and
+  against `kind==='shift'` (an SC MAIN) the grading is **per TYPE** (owner,
+  26 Aug 26 — the shift may launch the man):
+  - **Red-list commitments — Training, CSE, Fly with, Personal, Appointment,
+    Duty, Other — hard-flag the shift** (`INPUT_FLY` "Training but tasked —
+    SC AM"). The list is the `shiftHard` flag on `INPUT_META`, read through
+    `shiftHardInput()` — one body for the validator, the ground-row upgrade
+    and the crew picker. All-day and timed alike.
+  - **Meeting is the amber `SHIFT_SOFT` advisory** — you can still give a
+    meeting to the man on standby — worded exactly like the accepted row's
+    advisory so the raw and landed voices of one input read the same.
+  - **ATT B hard-flags the shift** (`DNIF_FLY` "Downchit but tasked") — he
+    cannot fly, and SC MAIN counts as flying. Everywhere else the `canWork`
+    carve-out stands: a duty post, a sim seat, a ground row, a programme item
+    and the AVALON desk stay proper for him. This closed a picker/validator
+    drift — the crew picker had refused him SC seats all along. Scoped to SC
+    MAIN deliberately; the owner will look at other ATT B areas later.
+  - Leave, medical (ATT C, HL, OML) and overseas duty still hard-flag a
+    shift — those close the man's day outright.
+  - **The shift has ONE voice**: shift lines are excluded from the sortie
+    "clashes with" loop (`e.shift` guard), so a leave no longer reads twice
+    in two wordings, and the graded events loop above is the whole answer.
+    The `SC_INTIME` in-time cut excludes shift-overlapping inputs for the
+    same reason.
+- **A ground row is graded by what it IS, not only by its kind** (owner,
+  26 Aug 26). `events.ts:shiftEvHard` = `SHIFT_HARD[kind]` OR, for a ground
+  row, the red-list overlay: a row lifted from an input is judged by its
+  SOURCE type (`row.src`, corroborated by `prog===label` so a stale key
+  fails soft — the only way an accepted 'Other', whose label is the remarks,
+  still reads red), and a hand-typed row by its own words
+  (`shiftHardLabel`, a regex DERIVED from the same `shiftHard` flags —
+  TRAINING, CSE, FLY WITH, PERSONAL, APPOINTMENT, DUTY, OTHER, word-bounded,
+  case-blind). The owner chose those keywords knowing they are common words:
+  a hand-typed "DUTY OFFICER HANDOVER" goes red on purpose. A row matching
+  neither — MEETING, ACADEMICS, anything else — stays the amber
+  `SHIFT_SOFT`. Programme (`a:`) items stay advisory always. The crew
+  picker's `live` (avail.ts) reads the same `shiftEvHard`, so a Training
+  ground row inside the window bars-and-names on an armed SC MAIN slot while
+  a Meeting row does not; a raw red-list INPUT deliberately stays
+  warn-not-bar there, matching the flying-seat modality. Reference parity:
+  `refwin.ts` `reinput`/`reshift` mirror all of this keyword-only — the
+  reference has no `row.src`, so an accepted 'Other' vs SC MAIN is a
+  documented parity boundary no fixture may build. Pins:
+  `scshift-inputs.test.ts`.
 - **An actioned `Fly with` is AWAY** (owner, Aug 26: it means flying with
   another squadron). `isAway(inp)` = `isOffType(type) || (isFly(type) &&
   acc)` — it feeds `dayOff` (the Available-crew strip and the palette fade),
