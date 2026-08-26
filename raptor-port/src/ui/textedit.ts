@@ -128,7 +128,20 @@ export function routeFocusOut(e: FocusEvent) {
        as a chip toggle and contradict it. storesText is the engine's own
        rendering of that cell — see stores.ts. */
     const stWas = storesText(a.opts)
-    if (nv !== (a.opts.bombs || '')) { a.opts.bombs = nv; markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts)); txtCommit() }
+    if (nv !== (a.opts.bombs || '')) {
+      a.opts.bombs = nv; markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts))
+      /* the save CONFIRM (owner, 26 Aug 26 — "no indication or feedback…
+         idk if it's saved or not"): the box saves on blur with nothing
+         shown, so a commit that changed the load pulses the box green.
+         Class on the live node NOW for the frames before the repaint,
+         registry (state/view.ts STSAVED) so the rebuilt span keeps it —
+         the deferred repaint would otherwise swallow the flash. Only a
+         CHANGED commit flashes: tabbing through an untouched box saved
+         nothing and must not claim it did. */
+      view.noteStSaved(bo.dataset.bombs!)
+      bo.classList.remove('stsaved'); void bo.offsetWidth; bo.classList.add('stsaved')
+      txtCommit()
+    }
     heal(bo, a.opts.bombs || '')
     return
   }

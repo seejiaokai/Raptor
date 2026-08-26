@@ -205,7 +205,7 @@ export function boardHTML(di: number, pv?: boolean) {
               + STORE_CFG.filter(([k]: any) => (a.opts || {})[k]).map(([k, lab]: any) =>
                   `<span class="stchip on" data-store="${key}.${k}" title="Remove ${esc(lab)}">${esc(lab)}</span>`).join('')
               + `<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
-              + `<span class="bombs" contenteditable="true" data-bombs="${key}">${esc((a.opts || {}).bombs || '')}</span></span>`)}
+              + `<span class="bombs${view.stSavedOn(key) ? ' stsaved' : ''}" contenteditable="true" data-bombs="${key}">${esc((a.opts || {}).bombs || '')}</span></span>`)}
         </div>
         ${mvRO ? '' : `<span class="lctl">
           ${sbNudge(`mv:ac.${key}`, mvRO)}

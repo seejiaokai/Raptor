@@ -13,7 +13,7 @@ import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, s
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, notePub } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, notePub, stSavedOn } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -1058,7 +1058,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           const stores=ed
             ? `<span class="stores">`+STORE_CFG.filter(([k]:any)=>o[k]).map(([k,lab]:any)=>`<span class="stchip on" data-store="${key}.${k}" title="Remove ${esc(lab)}">${esc(lab)}</span>`).join('')
               +`<button class="stcfg" data-stcfg="${key}" title="Stores configuration">C</button>`
-              +`<span class="bombs" contenteditable="true" data-bombs="${key}">${esc(o.bombs||'')}</span></span>`
+              +`<span class="bombs${stSavedOn(key)?' stsaved':''}" contenteditable="true" data-bombs="${key}">${esc(o.bombs||'')}</span></span>`
             : storesView(o);
           const acx=(f.cx?'':rowCls(a))+((sa&&a.spare)?' spare':'');   // a cancelled formation already fades the whole block
           /* marks "nothing at all to say about this jet". RMKS is a real column again so
