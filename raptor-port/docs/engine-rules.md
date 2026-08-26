@@ -383,6 +383,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   - **Meeting is the amber `SHIFT_SOFT` advisory** — you can still give a
     meeting to the man on standby — worded exactly like the accepted row's
     advisory so the raw and landed voices of one input read the same.
+  - **An UNRECOGNISED type fails closed and hard-flags the shift** (owner,
+    26 Aug 26 — closing the "softer only on shifts" seam). A type `inpMeta`
+    does not know — a typo, or a record from an older store whose type was
+    since renamed — already read hard against a sortie; it now reads hard
+    against a shift too (`INPUT_FLY` "Trainng but tasked — SC AM"). The
+    amber branch takes a KNOWN soft type only (the `inpMeta` gate in
+    `validate.ts`), which today means exactly Meeting. Mirrored in
+    `refwin.ts` `reinput` as the explicit MEETING literal; cross-engine pin
+    in `parity.test.ts`, port pins in `scshift-inputs.test.ts`.
   - **ATT B hard-flags the shift** (`DNIF_FLY` "Downchit but tasked") — he
     cannot fly, and SC MAIN counts as flying. Everywhere else the `canWork`
     carve-out stands: a duty post, a sim seat, a ground row, a programme item
@@ -401,7 +410,12 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   row, the red-list overlay: a row lifted from an input is judged by its
   SOURCE type (`row.src`, corroborated by `prog===label` so a stale key
   fails soft — the only way an accepted 'Other', whose label is the remarks,
-  still reads red), and a hand-typed row by its own words
+  still reads red). That fall-back-to-the-words for an unknown or stale
+  `row.src` is DELIBERATE and survives the 26 Aug 26 fail-closed change to
+  raw inputs: a LANDED row has its own words to be judged by, so the
+  keyword matcher is its truth, where a raw input with an unknown type has
+  nothing else to go on and fails closed. A hand-typed row is likewise
+  judged by its own words
   (`shiftHardLabel`, a regex DERIVED from the same `shiftHard` flags —
   TRAINING, CSE, FLY WITH, PERSONAL, APPOINTMENT, DUTY, OTHER, word-bounded,
   case-blind). The owner chose those keywords knowing they are common words:
@@ -1064,8 +1078,10 @@ and an html-side helper would cycle.
 consumer — `slotBar`'s grey-out, the validator's advisory, every badge caller
 — asks, so the rule cannot drift between a picker that agrees with itself and
 a warning list that doesn't. `domain` is `'fly'|'oft'|'amt'`; `s`/`e` are the
-SLOT's own minutes-from-midnight, exactly what `slotRules` already computes.
-Five statuses:
+SLOT's own minutes-from-midnight, exactly what `slotRules` already computes —
+for a flying seat the front edge is `sansStart`, the in-time anchor (owner,
+26 Aug 26; see the `SANS_AVAIL` paragraph below), for a sim the box's own
+written hours. Five statuses:
 - `'na'` — not a SANS person at all; nothing to ask.
 - `'none'` — SANS, but no record filed for the day.
 - `'not-offered'` — a record exists but this event's box is unticked.
@@ -1105,15 +1121,30 @@ strike, the printed reason (`.no.haswhy`/`.rwhy`), the green eligibility
 rings and both toasts all read `slotBar`, so grey-out was free the moment
 this one function judged right.
 
-**The `SANS_AVAIL` advisory (`validate.ts`) — amber, reuses the `CP` chip**
-(the `PAX_CREW` precedent — no new chip, no legend byte-compare risk). Built
+**The `SANS_AVAIL` advisory (`validate.ts`) — amber, wears the `A` chip**
+(owner, 26 Aug 26 — moved off `CP`, its launch chip: `CP`'s hover says a crew
+*pairing* needs approval, which is not this man's problem; `A` is the
+planned-against-what-was-filed chip, and its `CHIP_LABEL` entry now names the
+SANS case — mirrored byte-identically into the reference's table by a
+`refwin.ts` swap, though no seed-week day renders it). Built
 per day from two check lists: `day.fly` (domain `'fly'`, window
-`e.step→e.dekit` — the same padded window `slotBar` judges a flying seat
-against) and `day.events`' sim entries whose key matches
+**in-time→dekit** since 26 Aug 26 — owner: "SANS should consider IN TIME
+till land plus 30 minutes for availability". The front edge is
+`min(e.report,e.step)`: the wave's published in-time, or a typed SC B,
+opens the window when it shows the crew earlier than the step / shift
+start; no in-time published leaves the plain `e.step→e.dekit` pad, and a
+LATER in-time can never shrink the occupied window — the same `min()`
+guard `insOf`/`workSpan` put on crew rest. `slotBar` judges the identical
+front edge: `slotRules` carries it as `sansStart`, computed off the one
+shared clock body `seatIntime` (`events.ts` — SC-B precedence and the
+limited midnight roll live there once, for `collectEvents` and the picker
+alike). `slotStart`/`slotEnd` themselves did NOT move: absences and the
+busy-at-this-hour check still judge the occupied step→dekit window)
+and `day.events`' sim entries whose key matches
 `^s:\d+\.(amt|oft)\.` (domain is the captured word, window is the event's own
 `s→e`). For each SANS person on each check, `sansGate` decides; **only
 `'not-offered'` and `'window'` raise** `add('adv','SANS_AVAIL',...)` +
-`markRing(di,id,'adv')` + `markChip(di,id,'CP')`.
+`markRing(di,id,'adv')` + `markChip(di,id,'A')`.
 
 **`'none' is DELIBERATELY silent here — the scoping decision, and why it is
 correct** (owner, 14 Aug 26). The owner's own example only ever describes

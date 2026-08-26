@@ -1839,12 +1839,14 @@ test('an admin auto-sorts and hand-drags the roster; a member gets neither tool'
 })
 
 test('an admin gives a personnel body a free-text label', async ({ page }) => {
-  // The personnel label is a desktop editing aid — it folds away on a phone,
-  // where the white chip alone carries "ground crew" (the owner's "just colour
-  // code it on mobile"). So the edit path is desktop-only; on a phone assert
-  // the fold instead.
+  // The personnel label is an EDITING aid only since 26 Aug 26 (owner —
+  // "just indicate the callsign/name for the left column. No need to
+  // indicate initials or flight"): its edit box appears while Rearranging,
+  // and the roster at rest shows callsign + chip and nothing else, at every
+  // width. The edit path is desktop-only, as before; on a phone assert the
+  // at-rest absence instead.
   if (page.viewportSize()!.width < 700) {
-    await expect(page.locator('[data-testid="perslabel-torque"]')).toBeHidden()
+    await expect(page.locator('[data-testid="perslabel-torque"]')).toHaveCount(0)
     return
   }
   await lwRole(page, 'admin')
@@ -1852,8 +1854,12 @@ test('an admin gives a personnel body a free-text label', async ({ page }) => {
   const inp = page.locator('[data-testid="perslabel-in-torque"]')
   await inp.fill('Avionics')
   await inp.press('Enter')
-  await page.locator('[data-testid="roster-arrange"]').click() // leave arrange → read-only label
-  await expect(page.locator('[data-testid="perslabel-torque"]')).toHaveText('Avionics')
+  await page.locator('[data-testid="roster-arrange"]').click() // leave arrange → callsign only
+  await expect(page.locator('[data-testid="perslabel-torque"]')).toHaveCount(0)
+  // the text still SAVED — re-entering Rearrange offers it back in the box
+  await page.locator('[data-testid="roster-arrange"]').click()
+  await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveValue('Avionics')
+  await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
 })
 
 /* ---- the 18 Aug 26 layout rework: row order, bracket, frozen header, zoom.

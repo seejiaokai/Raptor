@@ -84,6 +84,39 @@ describe('raw inputs are graded by type against SC MAIN', () => {
   })
 })
 
+/* THE FAIL-CLOSED DEFAULT (owner, 26 Aug 26 — closing HANDOFF's typo seam).
+   An UNRECOGNISED type — a typo, or a record from an older store whose type
+   was since renamed — used to slip into the Meeting-amber branch on a shift
+   while reading hard against a sortie. Unknown now grades hard on BOTH: the
+   amber branch takes a KNOWN soft type only (validate.ts's inpMeta gate,
+   mirrored in refwin.ts reinput as the MEETING literal). */
+describe('an unrecognised type fails closed against SC MAIN', () => {
+  it('a typo\'d type hard-flags the shift, timed', () => {
+    addSC(P); inp('Trainng')
+    const w = mine('INPUT_FLY')
+    expect(w.length).toBe(1)
+    expect(w[0].sev).toBe('hard')
+    expect(w[0].msg).toContain('Trainng but tasked — SC AM')
+    expect(mine('SHIFT_SOFT').length, 'no amber voice for an unknown type').toBe(0)
+  })
+  it('an ALL-DAY typo\'d type hard-flags too', () => {
+    addSC(P); inp('Appointmnt', { allday: true, s: undefined, e: undefined })
+    const w = mine('INPUT_FLY')
+    expect(w.length).toBe(1)
+    expect(w[0].msg).toContain('Appointmnt but tasked — SC AM')
+    expect(mine('SHIFT_SOFT').length).toBe(0)
+  })
+  it('the same typo is hard against a real sortie — the two representations agree', () => {
+    const f: any = (DAYS[TUE] as any).waves[0].formations[0]
+    f.aircraft[0].p = P
+    inp('Trainng', { s: 520, e: 600 })     // 08:40–10:00, inside WAVE 1's window
+    const w = mine('INPUT_FLY')
+    expect(w.length).toBe(1)
+    expect(w[0].sev).toBe('hard')
+    expect(w[0].msg).toContain('Trainng clashes with')
+  })
+})
+
 describe('accepted ground rows are graded by their source type', () => {
   it('an accepted Training row is the hard clash, spoken ONCE', () => {
     addSC(P)

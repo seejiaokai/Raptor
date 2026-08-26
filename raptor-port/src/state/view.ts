@@ -136,6 +136,28 @@ export function toggleLateOff(inp:any){
   LATEOFF.add(id); return false
 }
 
+/* ---- THE STORES FREE-TEXT BOX THAT JUST SAVED ----------------------------
+   (owner, 26 Aug 26 — "there's like no indication or feedback that when I
+   type in free text on config that it's accepting my input… idk if it's
+   saved or not. But it's actually saved.") The box commits on leaving it,
+   silently, so the commit that actually CHANGED the load pulses the box
+   green for a beat (.stsaved, scheduler.css). The class cannot simply be
+   added to the live node: the commit's deferred repaint rebuilds the day
+   and would swallow the animation milliseconds in. So textedit.ts records
+   the box's address here with a short expiry, and BOTH builders (html.ts
+   week, board.ts) re-add the class while the window is open — the flash
+   survives the swap, restarting imperceptibly close to zero. Session
+   view-state like everything above; never persisted, self-expiring, and an
+   expired key is pruned on the next read so the map cannot grow. */
+export const STSAVED=new Map<string,number>()
+export const STSAVED_MS=1400
+export function noteStSaved(k:string){ STSAVED.set(k,Date.now()+STSAVED_MS) }
+export function stSavedOn(k:string){
+  const t=STSAVED.get(k); if(t==null)return false
+  if(Date.now()>t){ STSAVED.delete(k); return false }
+  return true
+}
+
 /* ---- THE DAY YOU ARE LOOKING AT, CARRIED ACROSS A PAGE SWITCH ------------
    (owner, 9 Aug 26.) View-only Sched and Edit Schedule are two separate
    horizontal scrollers — `#vWeek` and `#eWeek` — each holding its own

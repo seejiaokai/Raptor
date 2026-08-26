@@ -107,6 +107,26 @@ export function intimeMap(w:any){
   if(wide!=null)css.forEach((cs:any)=>{ if(m[cs]==null)m[cs]=wide; });
   return m;
 }
+/* THE SEAT'S OWN IN-TIME — one body, two callers (owner, 26 Aug 26: "SANS
+   should consider IN TIME till land plus 30 minutes for availability").
+   collectEvents feeds this into every fly event's `intime`, and slotRules
+   (avail.ts) asks it for the SANS window's front edge, so the two readings
+   of "when is this crew told to report" cannot drift — the second copy
+   would be exactly the seam the one-gate doctrine exists to prevent.
+   A typed SC B outranks the wave's published in-time lines (the 24 Aug 26
+   repurposing; AVALON/BB never carry kind 'sc', so that equality is the
+   whole guard), and either clock rolls back a day when the configured
+   report lead already crosses midnight — the same limited roll
+   collectEvents' preflight applies to a typed B. `im` is the wave's parsed
+   in-time map when the caller already holds one (collectEvents builds it
+   once per wave); left out, it is derived here. */
+export function seatIntime(w:any,f:any,toM:any,im?:any){
+  const pre=(t:any)=>t!=null&&toM-VCONF.reportLead<0&&t>toM?t-1440:t;
+  const scIn=(w&&w.kind==='sc')?parseHM(f.br):null;
+  if(scIn!=null)return pre(scIn);
+  const m=im||intimeMap(w);
+  return m[f.cs]!=null?pre(m[f.cs]):null;
+}
 /* "BRIEF 30 PRIOR", "brief 30", "30 mins prior" — an OFT remark that names its
    own brief lead overrides VCONF.epBrief for that line only (owner, 5 Aug 26);
    the seed EP-4s said 30 while the engine padded 15. \b keeps DEBRIEF out, the
@@ -195,10 +215,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
            usually earlier than the shift start. Typed, it becomes the in-time
            that anchors crew rest and the advisories; blank (the normal case)
            leaves SC on its shift start exactly as before. AVALON/BB never reach
-           here (saExempt returns above), so w.kind==='sc' is the whole guard. */
-        const scIntime=(w.kind==='sc')?parseHM(f.br):null;
-        const intime=(scIntime!=null)?preflight(scIntime,VCONF.reportLead)
-                    :(im[f.cs]!=null)?preflight(im[f.cs],VCONF.reportLead):null;
+           here (saExempt returns above), so w.kind==='sc' is the whole guard.
+           The body lives in seatIntime above (26 Aug 26) so slotRules' SANS
+           window reads the identical clock — same SC-B precedence, same
+           midnight roll. */
+        const intime=seatIntime(w,f,toM,im);
         const report=(intime!=null)?intime:stepM;
         const fcps:any[]=[],acs:any[]=[],allCrew:any[]=[],spareCrew:any[]=[];
         f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;

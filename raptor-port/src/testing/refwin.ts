@@ -337,6 +337,13 @@ function rematrix(html: string): string {
     ["SD:'No time for the sim debrief',LD:'Long work day (>{longDay})'};",
      "SD:'No time for the sim debrief',LD:'Long work day (>{longDay})',"
      + "CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};"],
+    /* The A label grew a SANS tail when SANS_AVAIL moved off CP onto A (owner,
+       26 Aug 26). The reference has no SANS gate, so its A chip never fires for
+       SANS and no compared day renders the label this week — the swap exists so
+       the two CHIP_LABEL tables stay byte-identical, per the rule the RANK
+       comment above states: one table, not two that happen to agree. */
+    ["A:'Advisory — on shift and also down for a ground event or programme item',",
+     "A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',"],
     ["if(p&&w&&isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'hard');markRing(di,ac.w,'hard');add('hard','ILLEGAL_CREW',[ac.p,ac.w],`Two OCU in one aircraft (${f.label})`);}",
      "if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!(p.q==='IP'||p.q==='IR'||p.q==='FI')&&!isInstr(w.q)){"
      + "if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv');markRing(di,ac.w,'adv');markChip(di,ac.p,'CP');markChip(di,ac.w,'CP');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${f.label} — a crew solo, only allowed under the Basic Course Syllabus`);}"
@@ -430,17 +437,25 @@ function reinput(html: string): string {
     /* 2 — every input clashes with every kind of tasking, except that ATT B
        may still work — EXCEPT an SC MAIN shift, which may launch him (owner,
        26 Aug 26) — and an ordinary personal type is graded BY TYPE against a
-       shift: the red-list commitments hard-flag, a Meeting speaks the amber
-       SHIFT_SOFT (worded byte-for-byte like the port's, so the messages
-       compare). The reference's `un` misses SANS, which the port's isUnavail
-       carries — SANS never reaches a parity fixture (seedDemoSans is
-       boot-only), so the gap is documented, not patched. */
+       shift. The amber branch is the port's "known soft type" gate
+       (!shiftHardInput && inpMeta), which reduces to exactly MEETING — every
+       other known type is unavailable or red-list — so the reference, which
+       has no INPUT_META to consult, states that literal directly. Anything
+       else, an UNRECOGNISED type included, falls closed to the hard branch in
+       both engines (owner, 26 Aug 26 — the old !rh mirror sent unknowns
+       amber, the softness this seam close removed). The SHIFT_SOFT wording is
+       byte-for-byte the port's; its `${inp.type}` matches the port's
+       inpLabel(inp) because they differ only for 'Other', which never reaches
+       the amber branch. The reference's `un` still misses SANS, but with the
+       Meeting-only amber gate SANS now lands on the hard branch in both
+       engines anyway (seedDemoSans is boot-only, so no parity fixture reaches
+       it either way). */
     ["const dn=isDownchit(inp.type), lv=isLeave(inp.type);\n        if(!dn&&!lv)return;",
      "if(/^\\s*ATT\\s*B\\s*$/i.test(String(inp.type||''))&&e.kind!=='shift')return;"
      + "const dn=isDownchit(inp.type), lv=isLeave(inp.type);"
      + "const un=dn||lv||/^\\s*OD\\s*$/i.test(String(inp.type||''));"
-     + "const rh=/^\\s*(TRAINING|CSE|FLY\\s+WITH|PERSONAL|APPOINTMENT|DUTY|OTHER)\\s*$/i.test(String(inp.type||''));"
-     + "if(!un&&e.kind==='shift'&&!rh){"
+     + "const soft=/^\\s*MEETING\\s*$/i.test(String(inp.type||''));"
+     + "if(!un&&e.kind==='shift'&&soft){"
      + "if(!overlap(e.s,e.e,inp.s,inp.e))return;"
      + "markChip(di,e.id,'A'); markRing(di,e.id,'adv');"
      + "add('adv','SHIFT_SOFT',[e.id],`${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label} (${hm24(e.s)}–${hm24(e.e)}) and also down for ${inp.type}`);"

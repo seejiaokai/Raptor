@@ -6,9 +6,9 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { refWindow } from '../testing/refwin'
 import { validate, WARN, REST, EVD } from './validate'
 import { collectEvents } from './events'
-import { dayCount } from './waves'
+import { dayCount, makeStandalone } from './waves'
 import { DAYS } from './data'
-import { inputCoversDate } from './inputs'
+import { inputCoversDate, INPUTS } from './inputs'
 
 let w: any
 /* The port's week runs Mon..SUN (owner, Aug 26); the reference's stops at
@@ -121,5 +121,39 @@ describe('the weekend the port adds (owner, Aug 26)', () => {
     expect(inputCoversDate(inp, 'Jul 18')).toBe(true)
     expect(inputCoversDate(inp, 'Jul 19')).toBe(true)
     expect(inputCoversDate(inp, 'Jul 16')).toBe(false)
+  })
+})
+
+/* The 26 Aug 26 fail-closed seam close, proven CROSS-ENGINE. An unrecognised
+   input type against an SC MAIN shift grades HARD in both engines now; the
+   seed week never exercises that branch, so without this fixture the reinput
+   mirror (refwin.ts, the MEETING literal) could drift silently — inspection
+   was the only check. Same-mutation-both-sides idiom as syncInputs: the
+   reference has makeStandalone and the same seed Tuesday, so both engines are
+   handed the identical SC MAIN + typo'd input and must speak the same hard
+   INPUT_FLY. Runs LAST in this file and restores both models in finally, so
+   the seed comparisons above never see the fixture. */
+describe('an unknown type vs SC MAIN fails closed in both engines', () => {
+  it('the same typo raises the same hard INPUT_FLY, and no amber, in port and reference', () => {
+    const typo = { person: 'split', date: 'Jul 14', allday: false, s: 600, e: 660, type: 'Trainng', remarks: '', mod: '' }
+    const sc: any = makeStandalone('sc'); sc.formations[0].aircraft[0].p = 'split'
+    ;(DAYS[1] as any).waves.push(sc); INPUTS.push(typo)
+    w.eval("DAYS[1].waves.push(makeStandalone('sc'));"
+      + "DAYS[1].waves[DAYS[1].waves.length-1].formations[0].aircraft[0].p='split';"
+      + 'INPUTS.push(' + JSON.stringify(typo) + ')')
+    try {
+      const pick = (a: any[]) => a.filter((x: any) => (x.who || []).includes('split') && /Trainng/.test(x.msg))
+      const port = pick(JSON.parse(JSON.stringify(validate().all)))
+      const ref = pick(JSON.parse(w.eval('JSON.stringify(validate().all)')))
+      expect(port.length).toBe(1)
+      expect(port[0].code).toBe('INPUT_FLY')
+      expect(port[0].sev).toBe('hard')
+      expect(port[0].msg).toContain('Trainng but tasked — SC AM')
+      expect(stripKeys(port)).toEqual(ref)
+    } finally {
+      ;(DAYS[1] as any).waves.pop(); INPUTS.pop()
+      w.eval('DAYS[1].waves.pop();INPUTS.pop();validate()')
+      validate()
+    }
   })
 })

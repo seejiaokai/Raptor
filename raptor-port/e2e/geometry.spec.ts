@@ -184,7 +184,8 @@ test.describe('the puck is one fixed size everywhere', () => {
       await page.evaluate(() => {
         const w = window as any, dt = 'Jul 13'
         const recs = [
-          { person: 'ipman', date: dt, allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now' },
+          { person: 'ipman', date: dt, allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now',
+            remarks: 'No more inputs or changes needed after this window closes on Friday' },
           { person: 'romeo', date: dt, allday: true, type: 'SANS Availability', sans: { o: true }, mod: 'now' },
           { person: 'nick', date: dt, allday: false, half: 'am', type: 'SANS Availability', sans: { a: true }, mod: 'now' },
           { person: 'waldo', date: dt, allday: false, half: 'pm', type: 'SANS Availability', sans: { f: true, o: true }, mod: 'now' },
@@ -200,6 +201,15 @@ test.describe('the puck is one fixed size everywhere', () => {
         .toBeGreaterThanOrEqual(name === 'desktop' ? 3 : 2)
       const pageOver = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
       expect(pageOver, 'the SANS card grid causes no horizontal document overflow').toBeLessThanOrEqual(0)
+      /* the remark WRAPS instead of clipping (owner, 26 Aug 26): a long
+         remark spans more than one line inside its fixed-width card — no
+         sideways overflow, the card grows down instead */
+      const rmk = await grid.locator('.sanscard-r').first().evaluate((el: any) => ({
+        overX: el.scrollWidth - el.clientWidth,
+        lines: Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight)),
+      }))
+      expect(rmk.overX, 'the remark no longer clips sideways').toBeLessThanOrEqual(1)
+      expect(rmk.lines, 'the long remark wrapped onto multiple lines').toBeGreaterThanOrEqual(2)
     })
   }
 
@@ -526,6 +536,13 @@ test('desktop: the scheduler-board chrome is tight — compact buttons on one ac
       maxBtnH: Math.max(...actions.map(el => Math.round(el.getBoundingClientRect().height))),
       hlY: top(document.querySelector('.sb-hl')),
       actionsY: top(document.querySelector('.sb-actions')),
+      /* the strip opens the SECOND line, below the calendar and left-aligned
+         with it (owner, 26 Aug 26, the arrow drawing): .sb-break forces the
+         wrap, so this holds at ANY width — before it, a wide screen kept the
+         strip on line 1 because it happened to fit there */
+      calBottom: Math.round(document.querySelector('#sbCal')!.getBoundingClientRect().bottom),
+      calX: Math.round(document.querySelector('#sbCal')!.getBoundingClientRect().left),
+      hlX: Math.round(document.querySelector('.sb-hl')!.getBoundingClientRect().left),
       tabBorders: [...document.querySelectorAll('.sb-hl .hl-grp')].map(el => getComputedStyle(el).borderBottomWidth),
       arrowsShown: shown(document.querySelector('.sb-nav .sb-arrow')),
       wideShown: shown(document.querySelector('.sb-widebtn')),
@@ -535,6 +552,8 @@ test('desktop: the scheduler-board chrome is tight — compact buttons on one ac
   })
   expect(m.maxBtnH, 'board action buttons match the shell topbar height').toBeLessThanOrEqual(shellH + 4)
   expect(Math.abs((m.hlY ?? 0) - (m.actionsY ?? 9999)), 'the highlight strip sits on the action row').toBeLessThanOrEqual(6)
+  expect((m.hlY ?? 0) >= m.calBottom - 2, 'the strip sits BELOW the calendar button — the forced wrap held').toBe(true)
+  expect(Math.abs(m.hlX - m.calX), 'and left-aligned under it').toBeLessThanOrEqual(8)
   expect(m.tabBorders.length, 'the three CAT/Type/Quals tabs are present').toBe(3)
   expect(m.tabBorders.every(b => b === '0px'), 'the highlight tabs carry no bottom border').toBe(true)
   expect(m.arrowsShown, 'the ‹ › day arrows stay hidden on desktop').toBe(false)

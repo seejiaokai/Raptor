@@ -409,12 +409,16 @@ export function SchedBoard() {
         </div>
         {/* THE HIGHLIGHT CHIPS STRIP (owner, 23 Aug 26) — the same HlChips the
             two week pages render, so a chip lit here is lit there. Rendered
-            UNCONDITIONALLY: desktop shows it always (a full-width second bar
-            line — no open gate, so nothing pins the desktop bar's height to a
+            UNCONDITIONALLY: desktop shows it always (on the action row's left
+            — no open gate, so nothing pins the desktop bar's height to a
             session flag), the phone folds it behind #sbHl (CSS). It sits
             INSIDE .sb-top deliberately: the bar's ResizeObserver republishes
             --sb-topH when the strip opens, so the drawer and the scroller
-            below keep clearing the bar without a second observer. */}
+            below keep clearing the bar without a second observer.
+            .sb-break is the desktop's forced line break before it — see the
+            (3) comment in scheduler.css's min-width:821px block; display:none
+            on a phone, where the fold makes its own geometry. */}
+        <i className="sb-break" aria-hidden="true"></i>
         <div className={'sb-hl' + (HLOPEN ? ' open' : '')} id="sbHlStrip"><HlChips /></div>
       </div>
       <div className="sb-main" ref={mainRef}>

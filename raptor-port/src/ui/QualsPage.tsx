@@ -139,9 +139,12 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
   }
   /* CALLSIGN is the identity the whole app plans by — it is what every puck
      prints — so it heads the table; INITIALS sits beside it as the admin
-     record (owner, Aug 26). */
+     record (owner, Aug 26). Under the Personnel view the column reads
+     Callsign/Name (owner, 26 Aug 26): ground crew go by name as much as by
+     callsign, and the cell is where either is typed. The aircrew views keep
+     the plain word — a pilot's identity here is the callsign, full stop. */
   const head = `<thead><tr>`
-    + sortTh('cs', 'Callsign', '', 'Sort by callsign', ' style="text-align:left"')
+    + sortTh('cs', qSeatView === 'GND' ? 'Callsign/Name' : 'Callsign', '', 'Sort by callsign', ' style="text-align:left"')
     + sortTh('initials', 'Initials', '', 'Sort by initials')
     + sortTh('flight', 'Flight', '', 'Sort by flight — groups each flight together')
     + sortTh('cat', 'CAT', '', 'Sort by CAT — most senior first') +

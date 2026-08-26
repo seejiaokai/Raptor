@@ -1,5 +1,5 @@
 import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
-import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel } from './inputs'
+import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
 import { collectEvents, shiftEvHard } from './events'
@@ -47,7 +47,7 @@ export const chipText=(c:any)=>CHIP_TEXT[c]||c;
    silently freezing the flag. */
 export const RANK:any={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CP:8,CR:9,RUN:10,CPH:11,C:12,Q:13};
 export const CHIP_LABEL:any={DT:'Double turn',TT:'Tight turn',C:'Conflict (two events at once)',
-  A:'Advisory — on shift and also down for a ground event or programme item',CR:'Crew rest breach (<{crewRest})',Q:'Qualification — illegal seat',
+  A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',CR:'Crew rest breach (<{crewRest})',Q:'Qualification — illegal seat',
   NB:'No time for the flight brief',DB:'No time for the flight debrief',SB:'No time for the sim brief',SD:'No time for the sim debrief',LD:'Long work day (>{longDay})',
   RUN:'No break day — too many days on the programme in a row',
   CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};
@@ -540,7 +540,11 @@ export function validate(){
        CSE, Fly with, Personal, Appointment, Duty, Other) hard-flag a shift
        exactly like OD always did; a Meeting reads as the amber SHIFT_SOFT
        advisory, the same voice its accepted ground row speaks in, so the raw
-       and landed representations of one input can never disagree. The timed
+       and landed representations of one input can never disagree. An
+       UNRECOGNISED type (a typo, or a record from an older store) fails
+       closed and hard-flags the shift like the red list (owner, 26 Aug 26 —
+       it was already hard against a sortie; softer-only-on-shifts was the
+       seam). The timed
        accepted copy is still deferred to its row (inpShow), so nothing here
        double-reports. Leave, medical and overseas duty still hard-flag a
        shift — those close the man's day outright.
@@ -555,9 +559,14 @@ export function validate(){
       day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
         if(canWork(inp.type)&&e.kind!=='shift')return;
         const dn=isDownchit(inp.type), lv=isLeave(inp.type);
-        if(!isUnavail(inp.type)&&e.kind==='shift'&&!shiftHardInput(inp.type)){
-          /* Meeting (and any future unflagged commitment) — the shift's amber
-             voice, worded byte-for-byte like the ground-row SHIFT_SOFT above */
+        if(!isUnavail(inp.type)&&e.kind==='shift'&&!shiftHardInput(inp.type)&&inpMeta(inp.type)){
+          /* Meeting — the one KNOWN soft type — is the shift's amber voice,
+             worded byte-for-byte like the ground-row SHIFT_SOFT above. An
+             UNRECOGNISED type fails closed to the hard branch below (owner,
+             26 Aug 26 — it already read hard against a sortie, and unknown
+             belongs on the serious side): the inpMeta gate is what keeps a
+             typo'd or stale-store type out of this advisory. Mirrored in
+             refwin.ts reinput as the explicit MEETING literal. */
           if(!overlap(e.s,e.e,inp.s,inp.e))return;
           markChip(di,e.id,'A'); markRing(di,e.id,'adv');
           add('adv','SHIFT_SOFT',[e.id],
@@ -852,10 +861,23 @@ export function validate(){
     });
     /* SANS AVAILABILITY (owner, 14 Aug 26) — a SANS body planted into a
        flying / OFT / AMT slot outside what he actually filed raises a
-       persistent amber Advisory, reusing the CP flag (the PAX_CREW
-       precedent — no new chip). Checks are built from day.fly (domain
-       'fly', the sortie's own step→dekit window — the same window slotBar
-       judges a flying seat against, AVALON excluded because saExempt
+       persistent amber Advisory, wearing the amber A chip (owner, 26 Aug 26 —
+       "shouldn't sans planned outside availability be A, instead of CP?";
+       it launched on CP, the PAX_CREW precedent, but CP's hover says a crew
+       PAIRING needs approval, which is not this man's problem — A is the
+       planned-against-what-was-filed chip, the same family as SHIFT_SOFT and
+       SC_INTIME, and its label now names this case too).
+       Checks are built from day.fly (domain
+       'fly', window IN-TIME → dekit since 26 Aug 26 — owner: "SANS should
+       consider IN TIME till land plus 30 minutes for availability".
+       min(e.report,e.step) opens the front at the published in-time (or a
+       typed SC B) when one shows the crew earlier than the step / shift
+       start, and stays the plain step→dekit pad when no in-time is
+       published or the clock is later — a late in-time can never SHRINK
+       the occupied window, the same guard insOf/workSpan put on crew rest.
+       This is the same front edge slotBar judges a flying seat against:
+       slotRules' sansStart reads the identical seatIntime body (events.ts).
+       AVALON excluded because saExempt
        formations never reach day.fly at all) plus day.events' sim entries
        whose key names the device (`s:di.amt.ri` / `s:di.oft.ri` — domain is
        the captured word, window is the event's own s→e). A duty, ground or
@@ -874,13 +896,13 @@ export function validate(){
        planting says the same — it simply never becomes a persistent
        Advisory. 'ok' and 'na' are not a problem and need no comment. */
     const sansChecks:any[]=[];
-    day.fly.forEach((e:any)=>sansChecks.push({id:e.id,domain:'fly',s:e.step,en:e.dekit,label:e.label,key:e.key}));
+    day.fly.forEach((e:any)=>sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,label:e.label,key:e.key}));
     day.events.forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\./.exec(String(e.key||'')); if(!m)return;
       sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key}); });
     sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!p.san)return;
       const g=sansGate(c.id,day.dt,c.domain,c.s,c.en);
       if(g.status!=='not-offered'&&g.status!=='window')return;
-      markRing(di,c.id,'adv');markChip(di,c.id,'CP');
+      markRing(di,c.id,'adv');markChip(di,c.id,'A');
       const reason=g.status==='not-offered'?`not offering ${SANS_LABEL[c.domain]} today`
         :`available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
       add('adv','SANS_AVAIL',[c.id],`${p.cs} planned for ${c.label} — ${reason}`,c.key);

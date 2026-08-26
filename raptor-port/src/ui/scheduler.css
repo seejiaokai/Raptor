@@ -569,9 +569,9 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
      opaque it", owner 26 Aug 26). A shadow (not extra padding) keeps the header's
      box height fixed, so the column labels' 27px sticky offset below stays exact;
      the panel's overflow clips the cap to its rounded top edge. */
-  .edit-board .eroster .er-h{position:sticky;top:0;z-index:4;background:var(--panel);
-    box-shadow:0 -10px 0 0 var(--panel)}
-  .edit-board .eroster .rcol .rh{position:sticky;top:27px;z-index:3;background:var(--panel);padding-bottom:1px}
+  .edit-board .eroster .er-h{position:sticky;top:0;z-index:4;background:var(--bg);
+    box-shadow:0 -10px 0 0 var(--bg)}
+  .edit-board .eroster .rcol .rh{position:sticky;top:27px;z-index:3;background:var(--bg);padding-bottom:1px}
 }
 /* HIDE THE AIRCREW COLUMN ON THE EDIT SCHEDULER (owner, 26 Aug 26 — "hide the
    placeholders list on the right of edit scheduler and it just animates to the
@@ -587,7 +587,16 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
      containing block for the collapsed (absolute) roster, so right:0 lands on the
      board's own right edge rather than the viewport's */
   .edit-board{padding-right:26px;position:relative}
-  .edit-board .eroster{transition:transform .24s ease}
+  /* OPEN = a clean, full-height TRUE-BLACK opaque side panel (owner, 26 Aug 26
+     follow-up — "I can see the bleeding of it behind … make it a full black
+     opaque side panel"). The old panel used var(--panel) #14181d, the SAME tone
+     as the day blocks beside it, so the schedule read as bleeding into it; and
+     max-height:calc(100vh - 118px) left a ~110px black gap below the panel when
+     scrolled. Now it is var(--bg) (near-black, plainly a separate surface) and
+     fills down to just above the board's bottom scroll bar, so it reads as one
+     solid opaque panel top-to-bottom with nothing showing through beside it. */
+  .edit-board .eroster{transition:transform .24s ease;background:var(--bg);
+    max-height:calc(100vh - 44px);box-shadow:-16px 0 34px -22px rgba(0,0,0,.92)}
   /* a slim BLUE "CREW" tab, styled off the phone drawer's accent tab and sat
      HIGH on the right edge rather than mid-height (owner, 26 Aug 26 — "make it
      like a blue side panel similar to the mobile one, labeled as crew … put it
@@ -615,9 +624,17 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
      the panel ~300px UP to the viewport top before sliding, and back DOWN on
      expand — the "flying above then below" the owner flagged (26 Aug 26). Absolute
      also scrolls with the board like the in-flow column did, so a collapse while
-     scrolled stays put too. */
+     scrolled stays put too.
+     z-index sits UNDER the topbar (.topbar is z-index:60). The panel's own top
+     tucks at top:8px, inside the sticky topbar's band, so while collapsed AND
+     scrolled the sliding column crosses that band — at the old z-index:150 its
+     opaque body painted OVER the blue bar for the length of the slide ("when I
+     close the crew panel it appears on top of the top blue bar", owner 26 Aug 26).
+     40 keeps it above the week (its sticky section heads are z-index:20) so it
+     still slides cleanly over the reclaiming week, but behind the bar, so the
+     bar stays whole and only the part below it is seen to slide away. */
   body.ros-collapsed .edit-board .eroster{position:absolute;right:0;top:auto;
-    transform:translateX(calc(100% + 6px));z-index:150}
+    transform:translateX(calc(100% + 6px));z-index:40}
 }
 .eroster .rpuck{display:flex;flex:0 0 auto;cursor:grab}
 /* the grab tab — the only part on screen when the drawer is parked. 30px:
@@ -1281,7 +1298,22 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
 .st-addrow .st-new{background:var(--bg);border:1px solid var(--edge);border-radius:5px;color:var(--ink);font-size:11px;padding:4px 6px;width:100%;box-sizing:border-box}
 .st-addrow .st-add{font-size:10px;font-weight:800;padding:4px 9px;border-radius:4px;border:1px solid var(--edge-2);background:transparent;color:var(--ink-2);cursor:pointer}
 .st-addrow .st-add:hover{border-color:var(--accent);color:var(--accent)}
-.bombs{font-size:8px;color:var(--ink-2);min-width:34px;border-bottom:1px dashed var(--edge-2);outline:none;padding:0 2px}
+.bombs{font-size:8px;color:var(--ink-2);min-width:34px;border-bottom:1px dashed var(--edge-2);outline:none;padding:0 2px;border-radius:3px}
+/* the box confirms its save (owner, 26 Aug 26 — "no indication or feedback
+   that when I type in free text on config that it's accepting my input…
+   idk if it's saved or not. But it's actually saved"): the free text
+   commits on leaving the box with nothing shown, so a commit that CHANGED
+   the load pulses the box green for a beat — colour, not copy, at chip
+   scale. textedit.ts flashes the live node and records the address in
+   STSAVED (state/view.ts); the builders re-add the class inside that short
+   window so the repaint that follows the commit cannot swallow the pulse.
+   Ends fully transparent so the box settles back to its resting dashes.
+   Reduced motion: the global animation:none rule below leaves it settled. */
+@keyframes stsaved{
+  0%{background:rgba(87,201,122,.30);box-shadow:0 0 0 1px var(--ok);border-bottom-color:var(--ok)}
+  100%{background:rgba(87,201,122,0);box-shadow:0 0 0 1px rgba(87,201,122,0);border-bottom-color:var(--edge-2)}
+}
+.bombs.stsaved{animation:stsaved 1.2s ease-out 1}
 /* the visible word is "Config" (owner, 24 Aug 26 — the field takes any
    loadout note, not only bombs); the class and the opts.bombs key stay put so
    no saved jet config is disturbed — only the placeholder the user reads. */
@@ -3065,6 +3097,8 @@ body.sb-lock{overflow:hidden}
 .sb-hltog .btnglyph{width:16px;height:16px;color:currentColor}
 .sb-hltog.on{color:var(--accent);border-color:rgba(59,198,232,.6);background:rgba(59,198,232,.16)}
 .sb-hl{flex:0 0 100%;display:flex;gap:5px;align-items:center;padding:4px 0 0}
+/* the desktop's forced line break before the strip — inert on a phone */
+.sb-break{display:none}
 /* the divider inside HlChips styles itself off .filters elsewhere; restated
    here because this strip is not a .filters row */
 .sb-hl .div{width:1px;align-self:stretch;background:var(--edge);margin:0 4px}
@@ -3100,13 +3134,21 @@ body.sb-lock{overflow:hidden}
      .sb-board scroller (:not(.sb-wide)) so its side-by-side panels are untouched. */
   .schedboard:not(.sb-wide) .sb-boardwrap{overflow-y:auto}
   .schedboard:not(.sb-wide) .sb-board{flex:none;overflow:visible}
-  /* (3) THE CAT/Type/Quals STRIP SHARES THE ACTION ROW instead of a full line of
-     its own ("share the same row as the undo buttons, on the left … more usable
-     space"). order puts the strip just before the actions, which keep
-     margin-left:auto and sit at the right; the strip sits at the left of that row.
-     Phone still folds it behind #sbHl (below), untouched. */
-  .sb-hl{flex:0 0 auto;order:5;padding:0}
-  .sb-actions{order:6}
+  /* (3) THE CAT/Type/Quals STRIP SHARES THE ACTION ROW, ON THE LEFT (owner,
+     26 Aug 26, twice). First ask: "share the same row as the undo buttons,
+     on the left … more usable space" — order alone was tried, and a
+     wrapping flex row only breaks where something stops FITTING, so on a
+     wide screen the strip stayed at line 1's end and the actions wrapped
+     to a line of their own. Second ask, with an arrow drawn at the empty
+     space: "move the highlighter buttons right below calendar". .sb-break
+     (SchedBoard.tsx, display:none on the phone) is the forced break: a
+     zero-height full-width item that ENDS line 1 after the search box, so
+     the strip genuinely opens line 2 below the calendar button and the
+     actions keep margin-left:auto at that line's right.
+     Phone still folds the strip behind #sbHl (below), untouched. */
+  .sb-break{display:block;flex-basis:100%;height:0;order:5}
+  .sb-hl{flex:0 0 auto;order:6;padding:0}
+  .sb-actions{order:7}
 }
 /* ---- inputs panel: every personal input for the open day, morning → late ---- */
 .sb-inputs{flex:0 0 auto;max-height:36%;overflow:auto;padding:9px 14px 12px;
@@ -3743,8 +3785,17 @@ button.sanscard:hover{border-color:var(--accent)}
 .sanscard-l{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
   color:var(--san);white-space:nowrap}
 .sanscard-t{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--ink-3)}
-.sanscard-r{font-size:9.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;min-width:0}
+/* the remark WRAPS and the card grows (owner, 26 Aug 26 — "remarks are cut
+   off for sans availability. Could u wrap text and let the text grow
+   vertical in terms of row/space. Apply this to scheduler board as well"):
+   it launched nowrap+ellipsis like a table cell, but a card is not a row —
+   its grid column is fixed and its height is free, so the full remark is
+   cheaper shown than hovered. One rule serves both surfaces: the board's
+   SANS panel renders the same sansCardsHTML cards (board-html.ts).
+   overflow-wrap:anywhere so an unspaced string still breaks instead of
+   widening the column. */
+.sanscard-r{font-size:9.5px;line-height:1.35;color:var(--ink-2);white-space:normal;
+  overflow-wrap:anywhere;min-width:0}
 
 /* ---- block notes (sims / any section) ---------------------------------- */
 .blknote-h{display:flex;align-items:center;gap:7px;margin:8px 6px 3px;

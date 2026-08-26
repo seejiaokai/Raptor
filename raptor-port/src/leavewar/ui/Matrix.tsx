@@ -642,7 +642,11 @@ export function Matrix() {
 
   const headerRow = (testids: boolean) => (
     <tr>
-      <th className="who">Callsign</th>
+      {/* CS/Name (owner, 26 Aug 26): the column holds aircrew callsigns AND
+          ground-crew names, and the short form fits the phone's 76px frozen
+          column; the Quals page's Personnel view says the long form
+          (Callsign/Name) where there is room. */}
+      <th className="who">CS/Name</th>
       {/* The counter selector lives in the column header, which is the only
           place a 40px-wide column has room for a control. The WHOLE header is
           the control (the two 13px arrows were too small to hit from a
@@ -1438,7 +1442,16 @@ export function Matrix() {
                               <span className="cs">{p.callsign}</span>
                               <span className={`catchip ${catClass(p)}`} data-testid={`cat-${p.id}`}>{catText(p) || 'GND'}</span>
                             </button>
-                            {p.pers && <PersLabel p={p} editable={arranging} />}
+                            {/* The free-text role label is an EDITING aid only
+                                (owner, 26 Aug 26 — "just indicate the
+                                callsign/name for the left column. No need to
+                                indicate initials or flight"): the roster at
+                                rest shows callsign + chip and nothing else —
+                                the read-only label was what truncated the
+                                personnel callsigns — and the label's edit box
+                                still appears while Rearranging, so the stored
+                                text survives for anything that later wants it. */}
+                            {p.pers && arranging && <PersLabel p={p} editable={arranging} />}
                           </div>
                         </td>
                   {/* The selected figure's value for this person, derived on

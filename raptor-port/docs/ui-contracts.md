@@ -442,6 +442,22 @@ edits, so check this list when a field "won't save":
 `[data-intimes]` · `[data-bombs]` (stores text) · `[data-area]` ·
 `[data-atime]`.
 
+**The stores free-text box confirms its save** (owner, 26 Aug 26 — "no
+indication or feedback that when I type in free text on config that it's
+accepting my input… idk if it's saved or not. But it's actually saved").
+A commit that CHANGED the load pulses the box green for a beat
+(`.stsaved`, a 1.2s ease-out to transparent); an untouched tab-through
+saved nothing and shows nothing. The flash has to survive the commit's own
+deferred repaint, which rebuilds the span: `textedit.ts` flashes the live
+node AND records the address in `STSAVED` (`state/view.ts`, self-expiring),
+and both builders — `html.ts`'s week and `board.ts` — re-add the class
+while that window is open. Reduced motion falls under the global
+`animation:none` rule and simply shows the settled box. Pinned in
+`stsaved.test.tsx`. The other three out-of-grammar fields deliberately do
+NOT flash: they are ordinary-looking table cells whose text visibly sticks
+in place, where this box is a dashed chip that looks least like a field —
+the one the owner couldn't tell had saved.
+
 **AREA and AREA TIME are DERIVED, and must be compared against what was
 rendered, not against the model.** They are the only cells whose displayed
 value comes from elsewhere — the codes off the aircraft, the window off the

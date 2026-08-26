@@ -33,7 +33,7 @@ Admin tab; all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3152 across 183 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3170 across 184 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 324 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -48,7 +48,14 @@ flagged-puck snap pins), and the 26 Aug 26 bug pass added +9 vitest pins
 the pan corridor drop in `pan.test.tsx`, the template-title round-trip in
 `board.test.tsx`, clear-all/dedupe/clamp in `wavetpl.test.ts`) plus the
 mid-scroll collapse assertion inside the existing roster geometry test →
-3152/324. All totals re-run at the handoff.
+3152/324. The PR #331 batch (26 Aug 26 evening) took vitest to 3170/184:
++8 for the two seam closures (`wavetpl.test.ts`, `scshift-inputs.test.ts`,
+the cross-engine typo pin in `parity.test.ts`), +5 SANS pins (the A chip
+and the in-time window in `sansavail.test.ts`), the new
+`src/ui/stsaved.test.tsx` (4, the stores save-confirm flash), and the
+roster/quals pins (`matrix.test.tsx`, `quals.test.tsx`); e2e stays 324/12
+with the board-bar wrap and at-rest-label assertions folded into existing
+specs. All totals re-run at the handoff.
 
 Before that, the older chain reconciles against the 3041/177 reading: the SC
 in-time's two extensions (owner, 24 Aug 26 — the long-day span starts at an
@@ -252,22 +259,17 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   every section. Mapped in the 26 Aug session but not built; he had not yet
   said go when the session ended.
 
-- **Two seams flagged by the 26 Aug 26 bug pass, deliberately left as-is
-  (behaviour changes an owner should call, not a bug fix):**
-  - **A STANDBY-kind wave TEMPLATE is structurally lighter than the built-in
-    it names.** `waveFromTpl` mints one single-aircraft formation per line;
-    the built-in SC packs its MAIN crews as aircraft inside one shift
-    formation. Same-shaped days therefore tally differently on the day
-    badge (`waves.ts` `sn` = max non-spare aircraft per formation: built-in
-    SC reads "/ 2", a two-MAIN SC template "/ 1"), and "save my SC as a
-    template" does not reproduce what + Wave → SC builds. Raise with the
-    owner before restructuring the mint.
-  - **A typo'd (unknown) input type grades AMBER against an SC MAIN shift**
-    (`validate.ts`'s Meeting-amber fallback) while the same typo is HARD
-    against a sortie — softer only on shifts. Fail-closed doctrine says
-    unknown belongs on the hard side; the reference patch mirrors the
-    softness, so flipping it needs the `refwin.ts` mirrors updated with it
-    (see the drift-seam comment at `inputs.ts` `SHIFT_HARD_RE`).
+- **Both 26 Aug 26 bug-pass seams are CLOSED (owner call, 26 Aug 26 — "fix
+  both").** A STANDBY-kind template now mints the built-in's shape
+  (`wavetpl.ts:waveFromTpl` groups consecutive same-shift lines into one
+  formation, so the day badge and every per-formation reader agree with
+  + Wave → SC), and an unrecognised input type fails closed to the HARD
+  conflict against a shift (the amber branch takes a known soft type only —
+  `validate.ts` `inpMeta` gate, mirrored in `refwin.ts` `reinput` as the
+  MEETING literal, cross-engine pin in `parity.test.ts`). Kept here one
+  line deep because the OLD behaviour is what any stale notes describe;
+  detail in `docs/engine-rules.md` §Validation and
+  `docs/feature-impact.md` (the five-file seam + wave-template rows).
 
 - **SC MAIN grades personal inputs PER TYPE now (owner, 26 Aug 26 — built
   this session).** Training, CSE, Fly with, Personal, Appointment, Duty and
@@ -1520,7 +1522,15 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   card grid (click a card to edit in the dialog), and the Available-crew
   panel's SANS tail is gone — its folded count reads "N SANS offering"
   (`docs/engine-rules.md` §SANS availability, `docs/ui-contracts.md` §SANS
-  Availability, on screen). Things worth restating so they are not read as
+  Availability, on screen). **The flying-seat window is judged from the
+  crew's IN-TIME to landing + dekit since 26 Aug 26** (owner: "SANS should
+  consider IN TIME till land plus 30 minutes for availability") — the
+  published in-time / typed SC B opens the front edge when earlier than the
+  step, the step→dekit pad is the fallback, and a later in-time never
+  shrinks the window (`min()`); the one clock body is `seatIntime`
+  (`events.ts`), read by both `collectEvents` and `slotRules.sansStart`.
+  The advisory also wears the amber `A` chip, not `CP`, since the same day.
+  Things worth restating so they are not read as
   bugs: the `SANS_AVAIL` advisory is DELIBERATELY silent when nothing is
   filed at all — the palette strike + toast still say so, but nothing
   persists in the day's warning list (the seed-parity reasoning is in
@@ -2247,7 +2257,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `stores.ts` | The squadron's stores list — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Persisted state, so it lives here. Nothing in `validate.ts` reads a store. |
 | `cxreasons.ts` | The squadron's **cancel-reason templates** (Aug 26) — the CX dialog's quick-fill chips, moved out of `ui/board.ts`'s frozen `CX_QUICK`. Mutable `CXR_CFG` (a plain ordered STRING list — a cancel reason is free text, no stable key, addressed by position), frozen `CXR_STD` (the shipped seven), `addCxReason`/`delCxReason`/`renameCxReason`/`moveCxReason` and `cxReasonsSave`/`cxReasonsLoad`/`cxReasonsReset` against its own `cxreasons` key. The exact `stores.ts` persisted-config shape (untrusted-blob load, save-only-when-diverged, boot load in `initStore`). Nothing in `validate.ts` or the parity reference reads it. |
 | `dutytpl.ts` | The squadron's **duty-block templates** (13 Aug 26) — mutable `DUTYTPL_CFG`, frozen `DUTYTPL_STD` (Standard / SC Shift / AVALON), `addTpl`/`delTpl`/`renameTpl`/`moveTpl` and the per-row `addTplRow`/`delTplRow`/`setTplRow`/`moveTplRow`, `blockFromTpl` (mints a PLAIN `{label,rows}` duty block — no `sa`/`noconf`), and `dutyTplSave`/`dutyTplLoad`/`dutyTplReset` against its own `dutytpl` key. Persisted state, exactly like stores; nothing in `validate.ts` reads a template. Loaded at boot in `initStore`. This is what `+ Block` offers now — waves no longer create desks (§Stable decisions). |
-| `wavetpl.ts` | The squadron's **flying-wave templates** (25 Aug 26) — the `+ Wave` sibling of `dutytpl.ts`. Mutable `WAVETPL_CFG` (starts EMPTY — the four built-in kinds are the baseline), `WaveTpl = {id,title,kind,lines}` with `kind` one of `fly`/`sc`/`avalon`/`bb` (one rule-set per template), `addWaveTpl`/`delWaveTpl`/`renameWaveTpl`/`setWaveTplKind`/`moveWaveTpl` and the per-line `addWaveTplLine`/`delWaveTplLine`/`setWaveTplLine`/`moveWaveTplLine`, `waveFromTpl` (mints a wave whose own kind flags — `standalone`/`noconf`/`night` — drive its checking; nothing in `validate.ts` reads a template), `waveTime` (colon form `07:00`, the one difference from duty `tplTime`), and the `WAVEHIDE` set + `isWaveHidden`/`setWaveHidden`/`shownBuiltins`/`shownTemplates` for the Admin show/hide list. `waveTplSave`/`waveTplLoad`/`waveTplReset` against `wavetpl` + `wavehide` keys; untrusted storage clamped. Loaded at boot in `initStore`. Pinned in `wavetpl.test.ts`. |
+| `wavetpl.ts` | The squadron's **flying-wave templates** (25 Aug 26) — the `+ Wave` sibling of `dutytpl.ts`. Mutable `WAVETPL_CFG` (starts EMPTY — the four built-in kinds are the baseline), `WaveTpl = {id,title,kind,lines}` with `kind` one of `fly`/`sc`/`avalon`/`bb` (one rule-set per template), `addWaveTpl`/`delWaveTpl`/`renameWaveTpl`/`setWaveTplKind`/`moveWaveTpl` and the per-line `addWaveTplLine`/`delWaveTplLine`/`setWaveTplLine`/`moveWaveTplLine`, `waveFromTpl` (mints a wave whose own kind flags — `standalone`/`noconf`/`night` — drive its checking; nothing in `validate.ts` reads a template; since 26 Aug 26 a STANDBY kind groups consecutive same-shift lines — cs + msn + times — into ONE formation with a crew row per line, matching `makeStandalone`'s shape, while a fly line stays one formation per line), `waveTime` (colon form `07:00`, the one difference from duty `tplTime`), and the `WAVEHIDE` set + `isWaveHidden`/`setWaveHidden`/`shownBuiltins`/`shownTemplates` for the Admin show/hide list. `waveTplSave`/`waveTplLoad`/`waveTplReset` against `wavetpl` + `wavehide` keys; untrusted storage clamped. Loaded at boot in `initStore`. Pinned in `wavetpl.test.ts`. |
 | `daytpl.ts` | **Whole-day master templates** (15 Aug 26) — one level up from `dutytpl.ts`: mutable `DAYTPL_CFG`, frozen EMPTY `DAYTPL_STD` (unlike `dutytpl`'s three seeded desks — a whole day is too squadron-specific to guess at), `tplFromDay`/`addDayTpl`/`delDayTpl`/`renameDayTpl`/`moveDayTpl`, `applyDayTpl` (refuses a published day; direct-write shape mirroring `restoreDayVersion`, retiring the day's pending/added marks), `dayTplSave`/`dayTplLoad`/`dayTplReset` against its own `daytpl` key. A template's `d` blob (`DayTplBlob`) allowlists the day's STRUCTURE only — `notes`/`allhands`/`waves`/`sims`/`dutywaves`/`ground` + section notes, never `dow`/`dt`/`today`/`wc` — with every person reference blanked and every `cx`/`cxr`/`flag` mark stripped. Loaded at boot in `initStore`. Rules: `docs/engine-rules.md` §Day templates. |
 | `drafts.ts` | **Per-day alternate drafts** (15 Aug 26) — state rides `SCHED.drafts`/`SCHED.curDraft` (`publish.ts`) rather than a module of its own, so it serialises with undo like the AL records. `dayDrafts`/`curDraftId`, `draftDup`/`draftSelect` (the live `DAYS[di]` IS the selected draft's working copy, and switching stows the outgoing entry first), `draftRename`/`draftDelete` (refuses the selected entry), `isDraftVer`/`draftVerLabel` — the `'d:<id>'` version-string shape `publish.ts`'s `daySnapOf` resolves for a draft preview, and **`rebaseDayPending`** (15 Aug 26 — both dup and switch WORK on a published day now; a switch there re-marks the day's whole pending set as the `dayKeys` diff against the issued snapshot, which is what retired the old "Reopen the day first" refusal — `applyDayTpl` keeps its own). Publishing needed no change: `setDayApproved` publishes whatever is live. Session-only, like the AL list. Rules: `docs/engine-rules.md` §Drafts. |
 | `hooks.ts` | HOOKS — injectable callbacks (toast, repaints, histPush, storage, `closeBoardDialogs`, **`remapViewKeys`** — key-addressed VIEW state riding `keys.ts`'s renumbering; a wired no-op since `RMKOPEN` was retired 16 Aug 26, kept for the next such value) so verbatim bodies stay DOM-free headless; `storeBackend` is the injected localStorage (`main.tsx` plugs the real one in, null headless). |
@@ -2344,6 +2354,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/engine/longday-msg.test.ts` | The long-work-day note's assumption wording (15 Aug 26) — a flying end prints the real landing + the `debrief assumed` pad, a non-flying end stays a bare clock time. The crew-rest tail's twin assertions live in `crewrest-ui.test.ts`. |
 | `src/engine/sansavail.test.ts` | SANS Availability (14 Aug 26; rewritten for the one-window rework the same day) — `sansGate`'s five statuses against the flags + standard-window shape, one window serving every ticked event, the AM/PM presets; `sansWindow`/`sansLetters`/`sansBadge`; `slotBar`'s grey-out on a flying/OFT/AMT seat and the duty/ground carve-out; the `SANS_AVAIL` advisory (fires on not-offered/window, silent on no-record); the LEAK GUARD (a timed offer never reads as a timed absence — `isAway`, `day.input`, no hard clash); the parity-guard pair. |
 | `src/ui/sanscards.test.tsx` | The SANS card grid (14 Aug 26) — the shared builder renders the same cards on the week group and the board panel, the order (bounded windows by start, then the fixed F/O/A→…→A combo order), a card's `data-inpedit` address matching `inpKey`, read-only cards carrying none, the board's empty state, the view-only week rendering nothing. |
+| `src/ui/stsaved.test.tsx` | The stores free-text save confirm (26 Aug 26) — a changed commit flashes `.stsaved` and the flash survives the deferred repaint (both builders re-read the `STSAVED` registry), an untouched blur claims nothing, an expired window renders clean and prunes on read. |
 | `src/ui/editlog-writers.test.tsx` | The write paths the edit log used to miss (11 Aug 26) — the six fields that assign to the model themselves and call `markEdit` by hand, and the three whole actions that reach it with no key. Drives the real gestures on purpose: the bug was in what the callers passed, so a test calling `markEdit` with two values by hand would have passed throughout. Also pins that deletions carry what they held (12 Aug 26) — a note's words with the 60-char clip, a duty row's role and man, a line's callsign and crew — through the real delete buttons. |
 | `src/ui/boardnav.test.tsx` | The phone board's one-row top bar and how a day is reached (renamed from `boardswipe.test.tsx`, 12 Aug 26, when the swipe was replaced by two arrows) — the arrows step (continuous across weeks since 22 Aug 26, never disabled at the ends), the marked dot follows, the dots still scrub (desktop-only since 23 Aug 26 — the phone bar hides them), the parked aircrew handle still forwards its vertical drag without opening the drawer, and a sideways drag across the board does NOTHING, which is the removal itself. It also pins the SPLIT day name (12 Aug 26 — `Wed` + a hidden `nesday`, so the phone stops ellipsing the date off the bar); jsdom can only see that shape, so the two halves that MEASURE it are in `e2e/geometry.spec.ts`. `boardbackground.test.tsx` proves `boardTab` fires the board lane once and the global lane zero times. Geometry and the production-browser stress live in `e2e/geometry.spec.ts`, because jsdom measures every rect as 0. |
 | `src/state/demosans.test.ts` | The demo SANS seed (14 Aug 26) — shape, idempotency (`initStore()` boots twice against the same `INPUTS` array), the zero-`SANS_AVAIL`-warning proof against every seed record's own padded commitment, and the rendered card grid. |

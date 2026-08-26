@@ -376,6 +376,17 @@ describe('the callsign / initials columns', () => {
     PEOPLE[id].remarks = ''
     await click($('#qViewP'))
   })
+
+  /* ground crew go by name as much as by callsign, and the cell is where
+     either is typed — so under Personnel the column says so (owner, 26 Aug
+     26); the aircrew views keep the plain word, a pilot's identity here IS
+     the callsign. */
+  it('the Personnel view heads Callsign/Name; the aircrew views keep Callsign', async () => {
+    await click($('#qViewG'))
+    expect(heads()[0]).toBe('Callsign/Name')
+    await click($('#qViewP'))
+    expect(heads()[0]).toBe('Callsign')
+  })
 })
 
 /* the callsign is editable in edit mode and the rename reaches the schedule —

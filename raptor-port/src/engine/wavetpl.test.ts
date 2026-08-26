@@ -5,6 +5,7 @@ import {
   waveFromTpl, waveTime, waveTplSave, waveTplLoad, waveTplReset, waveTplAreDefault,
   setWaveHidden, isWaveHidden, shownBuiltins, shownTemplates, kindIsStandby,
 } from './wavetpl'
+import { makeStandalone, dayCount } from './waves'
 import { store, storeBackend } from './hooks'
 
 /* storeBackend.impl is null headless — wire a fake, never real localStorage
@@ -131,6 +132,62 @@ describe('minting a wave from a template', () => {
 
   it('a missing id mints nothing', () => {
     expect(waveFromTpl('nope')).toBeNull()
+  })
+
+  /* the 26 Aug 26 seam close: a standby template's consecutive same-shift lines
+     become ONE formation with a crew row per line, matching makeStandalone's
+     shape — so the day badge and every per-formation reader treat a template
+     SC exactly like + Wave → SC. */
+  it('a hand-built SC-shaped template reproduces the built-in structure exactly', () => {
+    const t = addWaveTpl('My SC', 'sc')!
+    const shifts: Array<[string, string, string]> = [['AM', '0700', '1300'], ['PM', '1300', '1900']]
+    let li = 0
+    for (const [nm, st, en] of shifts) for (let i = 0; i < 4; i++) {
+      if (li > 0) addWaveTplLine(t.id)
+      setWaveTplLine(t.id, li, 'cs', 'SC'); setWaveTplLine(t.id, li, 'msn', nm)
+      setWaveTplLine(t.id, li, 'to', st); setWaveTplLine(t.id, li, 'ld', en)
+      setWaveTplLine(t.id, li, 'spare', i >= 2)
+      li++
+    }
+    const w = waveFromTpl(t.id)
+    const ref = makeStandalone('sc')
+    expect(w.formations).toHaveLength(2)
+    expect(w.formations).toEqual(ref.formations)
+  })
+
+  it('the day badge tallies a template SC like the built-in (max non-spare per shift)', () => {
+    const t = addWaveTpl('My SC', 'sc')!
+    for (let i = 0; i < 2; i++) {
+      if (i > 0) addWaveTplLine(t.id)
+      setWaveTplLine(t.id, i, 'cs', 'SC'); setWaveTplLine(t.id, i, 'msn', 'AM')
+      setWaveTplLine(t.id, i, 'to', '0700'); setWaveTplLine(t.id, i, 'ld', '1300')
+    }
+    const w = waveFromTpl(t.id)
+    expect(w.formations).toHaveLength(1)
+    expect(w.formations[0].aircraft).toHaveLength(2)
+    expect(dayCount({ waves: [w] })).toBe('0 / 2')
+  })
+
+  it('lines naming different shifts (or times) still mint separate formations', () => {
+    const t = addWaveTpl('Split', 'sc')!
+    setWaveTplLine(t.id, 0, 'cs', 'SC'); setWaveTplLine(t.id, 0, 'msn', 'AM')
+    setWaveTplLine(t.id, 0, 'to', '0700'); setWaveTplLine(t.id, 0, 'ld', '1300')
+    addWaveTplLine(t.id)
+    setWaveTplLine(t.id, 1, 'cs', 'SC'); setWaveTplLine(t.id, 1, 'msn', 'PM')
+    setWaveTplLine(t.id, 1, 'to', '1300'); setWaveTplLine(t.id, 1, 'ld', '1900')
+    const w = waveFromTpl(t.id)
+    expect(w.formations).toHaveLength(2)
+    expect(w.formations.map((f: any) => f.shift)).toEqual(['AM', 'PM'])
+    expect(w.formations.every((f: any) => f.aircraft.length === 1)).toBe(true)
+  })
+
+  it('flying templates keep the 1:1 line-to-formation mint even with identical lines', () => {
+    const t = addWaveTpl('Pair', 'fly')!
+    setWaveTplLine(t.id, 0, 'cs', 'HAWK'); setWaveTplLine(t.id, 0, 'msn', 'DACT')
+    addWaveTplLine(t.id)
+    setWaveTplLine(t.id, 1, 'cs', 'HAWK'); setWaveTplLine(t.id, 1, 'msn', 'DACT')
+    const w = waveFromTpl(t.id)
+    expect(w.formations).toHaveLength(2)
   })
 })
 

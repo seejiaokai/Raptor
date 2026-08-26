@@ -128,7 +128,20 @@ export function routeFocusOut(e: FocusEvent) {
        as a chip toggle and contradict it. storesText is the engine's own
        rendering of that cell — see stores.ts. */
     const stWas = storesText(a.opts)
-    if (nv !== (a.opts.bombs || '')) { a.opts.bombs = nv; markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts)); txtCommit() }
+    if (nv !== (a.opts.bombs || '')) {
+      a.opts.bombs = nv; markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts))
+      /* the save CONFIRM (owner, 26 Aug 26 — "no indication or feedback…
+         idk if it's saved or not"): the box saves on blur with nothing
+         shown, so a commit that changed the load pulses the box green.
+         Class on the live node NOW for the frames before the repaint,
+         registry (state/view.ts STSAVED) so the rebuilt span keeps it —
+         the deferred repaint would otherwise swallow the flash. Only a
+         CHANGED commit flashes: tabbing through an untouched box saved
+         nothing and must not claim it did. */
+      view.noteStSaved(bo.dataset.bombs!)
+      bo.classList.remove('stsaved'); void bo.offsetWidth; bo.classList.add('stsaved')
+      txtCommit()
+    }
     heal(bo, a.opts.bombs || '')
     return
   }
@@ -225,6 +238,37 @@ export function routeKeyDown(e: KeyboardEvent) {
       const v = (DAYS[+di!].waves[+gi!].intimes || [])[+ix!]
       il.innerHTML = intimeLineHTML(v == null ? '' : v)
       il.blur()
+    }
+    return
+  }
+  /* THE THREE FORMATION-STRIP CELLS OUTSIDE THE TXT GRAMMAR GET THE SAME TWO
+     KEYS (owner, 26 Aug 26 — "there's no feedback when adding config in the
+     free text", reported twice: pressing Enter in the stores box only
+     inserted an invisible line break in the contenteditable span — no
+     commit, no save flash, nothing. This file's own header says "Enter
+     commits everywhere", and these three were the gap). Enter blurs into
+     routeFocusOut's own branch, which IS the write path — and, for the
+     stores box, what fires the .stsaved confirm. Escape restores what the
+     cell was SHOWING: the model's bombs text, or the derived
+     areaText/atimeText — the same functions the builder renders with (see
+     the derived-cells comment in routeFocusOut for why the model field
+     alone is the wrong restore). */
+  const fx = t && t.closest && t.closest('[data-bombs],[data-area],[data-atime]') as HTMLElement | null
+  if (fx) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fx.blur() }
+    else if (e.key === 'Escape') {
+      e.preventDefault()
+      const d = (fx as any).dataset
+      if (d.bombs) {
+        const [di, gi, li, ai] = d.bombs.split('.')
+        const a = DAYS[+di!].waves[+gi!].formations[+li!].aircraft[+ai!]
+        fx.textContent = (a.opts && a.opts.bombs) || ''
+      } else {
+        const [di, gi, li] = (d.area || d.atime).split('.')
+        const f = DAYS[+di!].waves[+gi!].formations[+li!]
+        fx.textContent = d.area ? areaText(f) : atimeText(f)
+      }
+      fx.blur()
     }
     return
   }
