@@ -174,8 +174,12 @@ describe('publishing an AL (tfin B49 / B26)', () => {
   })
 
   it('alAttr marks pending and published items apart', () => {
+    /* a pending edit on a still-DRAFT day carries NO mark now (owner, 25 Aug 26
+       — an amendment mark before anything is issued misleads); an ISSUED change
+       still carries its AL colour. The published-day pending preview is the next
+       test. */
     noteChange('dn:0.0')
-    expect(alAttr('dn:0.0')).toContain('data-alp')
+    expect(alAttr('dn:0.0')).toBe('')
     SCHED.changes['dn:0.1'] = 2
     expect(alAttr('dn:0.1')).toContain('data-alc="2"')
     expect(alAttr('dn:9.9')).toBe('')
@@ -191,8 +195,7 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     noteChange('dn:0.0')
     expect(alAttr('dn:0.0')).toContain('data-aln="1"')
     noteChange('dn:1.0')                          // day 1 still draft
-    expect(alAttr('dn:1.0')).toContain('data-alp')
-    expect(alAttr('dn:1.0')).not.toContain('data-aln')
+    expect(alAttr('dn:1.0')).toBe('')             // a draft-day edit carries no mark at all
   })
 
   it('the preview number tracks nextAL as amendments are issued', () => {

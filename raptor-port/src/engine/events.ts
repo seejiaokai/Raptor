@@ -120,7 +120,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
           if(w.kind==='avalon'){
             const sTo=toMin(f.to); let sLd=toMin(f.ld||f.to); if(sLd<sTo)sLd+=1440;
             if(isFinite(sTo)&&isFinite(sLd))f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;
-              [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:sTo,e:sLd,label:`${f.cs} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,work:false}); });
+              /* the warning names the wave by its FULL label (AVALON), not the
+                 formation callsign — that was shortened to "AV" on 25 Aug 26 for
+                 the narrow board callsign box, and the LEAVE_FLY/DNIF prose reads
+                 as prose ("but on AVALON — overseas"). Don't re-shorten to f.cs. */
+              [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:sTo,e:sLd,label:`${w.label} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,work:false}); });
             });
           }
           return;

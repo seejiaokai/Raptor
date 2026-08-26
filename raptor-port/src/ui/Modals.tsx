@@ -28,7 +28,11 @@ export function DayPop() {
     <div className="airpop" id="dayPop" onClick={e => { if ((e.target as HTMLElement).id === 'dayPop') close() }}>
       <div className="airpop-box" style={{ width: 520 }}>
         <div className="airpop-head"><b id="dayPopTitle">{`${d.dow} · ${d.dt}` + (wc ? ` · ${wc}` : '')}</b><button className="x" id="dayPopClose" onClick={close}>✕</button></div>
-        <div className="airpop-body" id="dayPopBody" style={{ maxHeight: '62vh' }}
+        {/* scroll the list INSIDE its own height (owner, 26 Aug 26 — the Close
+            button was landing in the middle of a long issues list). maxHeight
+            without overflow lets the content paint straight through the footer;
+            overflow:auto keeps the list scrolling and the footer pinned below. */}
+        <div className="airpop-body" id="dayPopBody" style={{ maxHeight: '62vh', overflow: 'auto', overscrollBehavior: 'contain' }}
           dangerouslySetInnerHTML={{ __html: dayInfoHTML(DAYPOP) }} />
         <div className="airpop-foot"><span style={{ flex: 1 }}></span><button className="abtn primary" id="dayPopDone" onClick={close}>Close</button></div>
       </div>

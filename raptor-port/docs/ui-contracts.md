@@ -476,15 +476,24 @@ the read-only compare needed nothing).
 
 ## Amendment marks on screen
 
-`alAttr(key)` emits `data-alc="n"` (published in AL n) or `data-alp="1"`
-(pending); pending on a PUBLISHED day also carries `data-aln="n"` — the
-`nextAL()` it will go out as. Pucks and the area/time/rmk/in-times cells
-get outlines and an ALn tag; every other inline-edited string gets an
-AL-coloured underline + tag once published. Pending marks split by
-surface (owner request, Aug 26): on `#eWeek` and `#schedBoard`,
-`data-aln` items are painted DOTTED in the upcoming AL's colour (solid
-means issued, dotted means coming); the view-only page and draft-day
-edits keep the neutral dashed hint and no text-level mark. `data-aln`
+**An amendment mark is a PUBLISHED-day thing — a draft day shows none** (owner,
+25 Aug 26 — "if I have not published the schedule yet, don't show all the orange
+dotted lines … only once published does an AL-coloured mark make sense"). A mark
+says "this differs from the issued document"; before a day is published nothing
+has been issued, so a pending edit is ordinary draft work and marking it as an
+amendment misleads. So `alAttr(key)` emits `data-alc="n"` (published in AL n) for
+an issued change, and for a PENDING edit emits `data-alp="1" data-aln="n"` ONLY
+when the day is published (`dayApproved`) — the `nextAL()` it will go out as; a
+pending edit on a still-DRAFT day emits **nothing at all**. The edit is still
+TRACKED in `SCHED.pending` (the day-head "N pending" count, the publish flow and
+History are unchanged — History finds a cell by its own key + the edit log, not
+by this attribute), it just carries no visual mark until the day is published.
+Pucks and the area/time/rmk/in-times cells get outlines and an ALn tag; every
+other inline-edited string gets an AL-coloured underline + tag once published.
+Pending marks split by surface (owner request, Aug 26): on `#eWeek` and
+`#schedBoard`, `data-aln` items are painted DOTTED in the upcoming AL's colour
+(solid means issued, dotted means coming); the view-only page keeps the neutral
+dashed hint for a published day's pending edit (no text-level mark). `data-aln`
 resolves its colour through the same `--alc` palette rules as `data-alc`.
 
 A removed row has no cell left to outline. It therefore appears in the
@@ -3355,13 +3364,30 @@ Three ways they leaked, all now closed, and all three are the checklist for
 answers "where is this man flying this week" could not be reached at all.
 
 It is the SAME box, not a new one, and it does **not** get its own row — a row
-of chrome is 40px of schedule on a device that has none to spare. It is pinned
-to the filters strip's right edge (`position: sticky; right: 0`) the way
-HIGHLIGHT is pinned to its left, with the chips scrolling between the two: 96px
-of input, ~142px of a 390px screen. Opaque and full-height by the rules above.
+of chrome is 40px of schedule on a device that has none to spare. It sits at the
+right end of the one icon row (`margin-left: auto`), 96px of input.
 
-The desktop and the Edit Schedule page are untouched — they show the same box
-in its ordinary place at the end of the strip.
+**The one-row standardisation (owner, 26 Aug 26).** Both week pages' phone
+filter bars now read identically: a SINGLE row — the calendar opener (an in-row
+`.filt-cal`, phone-only, replacing the old standalone `.wknav-m` row that Edit
+put above the icons and View put below), then the page's icons, then the search
+pinned right. The bar **wraps** rather than scrolling sideways, so when the
+highlighter is tapped (`.hl-open`) the CAT / Type / Quals chips drop to their
+OWN row below (`.hlrow`, `flex: 0 0 100%; order: 10`, wrapping its own chips)
+instead of cramming onto the icons' line. The sticky left/right pins the old
+sideways-scroller needed are gone with it. On the phone `.filt-cal` is the
+calendar and `.hlrow` its own row; on the desktop `.filt-cal` is hidden and
+`.hlrow` is `display: contents`, so the chips flow inline in the one desktop row.
+
+**The desktop edit bar is one row too (owner, 26 Aug 26).** The edit page's week
+window used to be a separate `.seg` row above the filter row; it now rides inside
+the filter row as `.wkseg` (id kept `weekSegE`), so the desktop edit bar is one
+line like the view page. The order is deliberate: the week dates, then the Excel
+and PDF export icons right after them, then the highlighter — the highlighter is
+the LAST fixed icon, so expanding its CAT / Type / Quals sub-menu only pushes the
+chips to its right and never nudges the exports (the owner's explicit ask).
+Pinned in `editweek.test.tsx` (the phone calendar opener now lives at
+`#page-editsched .filters .filt-cal`).
 
 ## No warning / advisory / note counts in the top bar (owner, 20 Aug 26)
 

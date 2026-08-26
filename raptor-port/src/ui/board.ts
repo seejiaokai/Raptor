@@ -17,11 +17,12 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, srcInput, saRoleHTML, availHTML } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, verSelBoardHTML, srcInput, saRoleHTML, availHTML } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
-import { setTplEdit, setDayTplEdit, setDraftsEdit } from './pops'
+import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
+import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -109,7 +110,7 @@ export function boardHTML(di: number, pv?: boolean) {
        (a session that may not edit it, board still legitimately open on
        its own page) left the whole-wave rename and delete live even
        after the flying line's own rows went inert. */
-    fly += `<div class="sb-go"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
+    fly += `<div class="sb-go${w.night ? ' night' : ''}"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
       + `<select class="sb-wtitle" aria-label="Wave" data-wsel="${di}.${gi}"${mvRO ? ' disabled' : ''}>${opts.map(o => `<option ${o === cur ? 'selected' : ''}>${o}</option>`).join('')}</select>`
       + `${w.night ? '<span class="night">· night</span>' : ''}`
       /* Traffic edits the wave's airspace bookings, the same field the week's
@@ -275,9 +276,16 @@ export function boardSignHTML(di: number, pv?: boolean) {
      #sbSignBar, right after the sign-off names, so signing and publishing
      read as one block instead of two disconnected panels. */
   const ed = HOOKS.editMode()
+  /* THE VERSION PICKER MOVED HERE FROM THE TOP BAR (owner, 26 Aug 26 — arrow
+     drawn from the "Live working" dropdown down to the sign-off area, phone and
+     desktop alike). It now heads the publish strip, beside the ✓ Published
+     stamp, where "which version am I on" reads next to "which version is
+     issued". String-built (verSelBoardHTML) rather than the old React select in
+     SchedBoard's .sb-actions, so it can live inside this innerHTML sign-off
+     block; it routes through the same data-dver change listener. */
   return histLineHTML('histln-top')
     + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}`
-    + `<div class="sb-pub">${dayStatHTML(di, ed)}</div></div>`
+    + `<div class="sb-pub">${verSelBoardHTML(di)}${dayStatHTML(di, ed)}</div></div>`
 }
 
 export function boardWarnHTML(di: number) {
@@ -1048,7 +1056,11 @@ export function addWave(di: number, kind: any) {
   const d = DAYS[di]; if (!d) return
   d.waves = d.waves || []
   if (!kind) {
-    d.waves.push({ label: 'WAVE ' + (d.waves.filter((w: any) => !isStandalone(w)).length + 1), night: false, intimes: [], traffic: [], formations: [{ cs: 'NEW', msn: '-', to: '12:00', ld: '13:00', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }] })
+    /* the wave's first line comes up BLANK, same reason as + Line above
+       (owner, 25 Aug 26 — "keep the data clean … nothing filled"): a seeded
+       NEW / 12:00 / 13:00 reads as a line somebody filled in when nobody did,
+       and the suggested-brief time then paints a green in-time off it. */
+    d.waves.push({ label: 'WAVE ' + (d.waves.filter((w: any) => !isStandalone(w)).length + 1), night: false, intimes: [], traffic: [], formations: [{ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }] })
     markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Wave added')
   }
   const w = makeStandalone(kind); if (!w) return
@@ -1104,10 +1116,13 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
 export function blockMenu(anchor: HTMLElement, di: any) {
   if (!canEditSched() || !HOOKS.editMode()) return
   const d = DAYS[di]; if (!d) return
-  const html = `<h5>Add a duty block</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+  /* the template editor is a pencil at the top-right of the header, matching
+     the stores Config popup (owner, 26 Aug 26 \u2014 "how the config places the edit
+     icon on the top right \u2026 do the same for \u2026 duties, not how it is at the
+     bottom currently"). Same data-blkedit hook, only relocated. */
+  const html = `<h5 class="wm-hpen">Add a duty block<button class="wm-pen" data-blkedit="1" title="Edit the duty templates">\u270e</button></h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
     + DUTYTPL_CFG.map((t: any) => `<button class="wm" data-blktpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${t.rows.length} role${t.rows.length === 1 ? '' : 's'}</span></button>`).join('')
     + `<button class="wm" data-blktpl="">Empty block</button></div>`
-    + `<div class="wm-note"><button class="wm-edit" data-blkedit="1">\u270e Edit templates</button></div>`
   popMenu(anchor, html, (e, close) => {
     if (e.target.closest('[data-blkedit]')) { close(); setTplEdit(true); notify(); e.stopPropagation(); return }
     const b = e.target.closest('[data-blktpl]'); if (!b) return
@@ -1292,17 +1307,38 @@ export function rolePickMenu(anchor: HTMLElement, addr: string) {
 export function waveMenu(anchor: HTMLElement, di: any) {
   // same SBDAY-scoped editMode() gate as addLine/addWave above, same reason.
   if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
+  /* the template editor is a pencil at the top-right of the popup's first
+     header, matching the stores Config popup (owner, 26 Aug 26 — "how the
+     config places the edit icon on the top right … do the same for flying wave
+     templates … not how it is at the bottom currently"). Same data-wvedit hook,
+     only relocated: it rides the Day header when the board's generic add shows
+     one, else the Add header. */
+  const pen = `<button class="wm-pen" data-wvedit="1" title="Edit the wave templates">✎</button>`
   const dayBtns = (di == null)
-    ? `<h5>Day</h5><div class="wm-row" id="wmDays">`
+    ? `<h5 class="wm-hpen">Day${pen}</h5><div class="wm-row" id="wmDays">`
       + DAYS.map((x: any, i: number) => `<button class="wm ${i === 0 ? 'on' : ''}" data-wmday="${i}" style="padding:6px 9px;font-size:11.5px">${esc(x.dow.slice(0, 3))}</button>`).join('')
       + `</div>` : ''
+  /* the built-in kinds are the four rule-sets, minus any an admin has hidden
+     (WAVEHIDE); 'fly' carries the empty data-wmkind the plain add already uses.
+     Saved TEMPLATES (owner, 25 Aug 26) follow in their own group, and the pencil
+     opens the wave-template editor \u2014 the same shape blockMenu gives + Block. */
+  const builtins = shownBuiltins()
+  const tpls = shownTemplates()
+  const anyStandby = builtins.some(b => b.key !== 'fly')
+  const kindRow = builtins.map(b => b.key === 'fly'
+    ? `<button class="wm" data-wmkind="">Flying wave</button>`
+    : `<button class="wm sa" data-wmkind="${b.key}">${esc(b.label)}</button>`).join('')
+  const tplRow = tpls.length
+    ? `<h5>Templates</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+      + tpls.map((t: any) => `<button class="wm" data-wmtpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${esc(kindLabel(t.kind))}${t.lines.length ? ` \u00b7 ${t.lines.length} line${t.lines.length === 1 ? '' : 's'}` : ''}</span></button>`).join('')
+      + `</div>` : ''
   const html = dayBtns
-    + `<h5>Add</h5><div class="wm-row">`
-    + `<button class="wm" data-wmkind="">Flying wave</button>`
-    + Object.keys(SAWAVE).map(k => `<button class="wm sa" data-wmkind="${k}">${SAWAVE[k].label}</button>`).join('')
-    + `</div><div class="wm-note">SC \u00b7 AVALON \u00b7 BB sit outside the day's flying count \u2014 two waves of four plus an SC reads <b>4 X 4 / 2</b>.</div>`
+    + `<h5${di == null ? '' : ' class="wm-hpen"'}>Add${di == null ? '' : pen}</h5><div class="wm-row">` + kindRow + `</div>`
+    + tplRow
+    + (anyStandby ? `<div class="wm-note">SC \u00b7 AVALON \u00b7 BB sit outside the day's flying count \u2014 two waves of four plus an SC reads <b>4 X 4 / 2</b>.</div>` : '')
   let day = (di == null) ? 0 : di
   const box = popMenu(anchor, html, (e: any, close: () => void) => {
+    if (e.target.closest('[data-wvedit]')) { close(); setWaveEdit(true); notify(); e.stopPropagation(); return }
     const dbtn = e.target.closest('[data-wmday]')
     if (dbtn) {
       day = +dbtn.dataset.wmday
@@ -1310,9 +1346,28 @@ export function waveMenu(anchor: HTMLElement, di: any) {
       box.querySelectorAll('[data-wmday]').forEach((x: any) => x.style.borderColor = x === dbtn ? 'var(--accent)' : 'var(--edge)')
       e.stopPropagation(); return
     }
+    const tbtn = e.target.closest('[data-wmtpl]')
+    if (tbtn) { addWaveFromTpl(day, tbtn.dataset.wmtpl); close(); e.stopPropagation(); return }
     const kbtn = e.target.closest('[data-wmkind]')
     if (kbtn) { addWave(day, kbtn.dataset.wmkind || null); close(); e.stopPropagation() }
   })
+}
+
+/* place a saved template onto the day \u2014 the "+ Wave" template pick. waveFromTpl
+   mints a wave whose own kind flags (standalone/noconf/night) decide its checking,
+   so this is exactly addWave's structural epilogue over that minted wave: one
+   markStructuralAdd on the new wl: key, revalidate, a named toast. The label the
+   wave carries is the template's own (a standby keeps its kind label), and it is
+   an ordinary editable wave from here \u2014 the library no longer owns it. */
+export function addWaveFromTpl(di: any, id: string) {
+  if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
+  di = +di
+  const d = DAYS[di]; if (!d) return
+  const w = waveFromTpl(id); if (!w) return
+  d.waves = d.waves || []
+  d.waves.push(w)
+  markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
+  return act(di, `"${w.label || 'Wave'}" added`)
 }
 
 /* the board layout choice survives closing and reopening it within a session */

@@ -101,6 +101,9 @@ describe('the day-detail panel (tfin H)', () => {
     await click($('#vWeek [data-dayinfo]'))
     const body = $('#dayPopBody')
     expect(body).toBeTruthy()
+    // the issues list scrolls INSIDE its own height so the footer Close button
+    // stays pinned below it, not buried mid-list (owner, 26 Aug 26)
+    expect((body as HTMLElement).style.overflow || (body as HTMLElement).style.overflowY).toBe('auto')
     expect(body.querySelector('.dip-stat')).toBeTruthy()
     expect(body.querySelector('.dip-als')).toBeTruthy()
     expect(body.querySelectorAll('.dip-r').length).toBeGreaterThanOrEqual(8)

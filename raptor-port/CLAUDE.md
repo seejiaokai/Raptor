@@ -685,9 +685,58 @@ subscribers.
   `SAWAVE.autoDuty` or the wave-delete → `saDutyIx` linkage** — both were removed
   deliberately; `waveDutyBlock`/`saDutyIx` remain in `waves.ts` only for any AL
   snapshot still holding an old-style desk.
+- **Amendment marks are a PUBLISHED-day thing — a draft day shows none** (owner,
+  25 Aug 26 — "if I have not published the schedule yet, don't show all the orange
+  dotted lines … only once published does an AL-coloured mark make sense"). `alAttr`
+  emits a pending mark (`data-alp`/`data-aln`) only when the day is `dayApproved`;
+  a pending edit on a still-draft day emits nothing. The edit is still tracked in
+  `SCHED.pending` (the "N pending" count, the publish flow and History are
+  unchanged — History finds cells by key + the edit log, not by `data-alp`); only
+  the misleading visual is gone. Don't re-add a draft-day mark. Pinned in
+  `publish.test.ts` / `interact.test.tsx`; contract in `docs/ui-contracts.md`
+  §Amendment marks on screen.
+- **Flying-wave templates + the + Wave show/hide list** (owner, 25 Aug 26 — "create
+  a function similar to how duty templates functions … for + Wave … choose which set
+  of rules it follows … create, save, edit, delete, arrange … the admin page should
+  update as well so the waves or templates can be toggled to hide or open by
+  default"). The sibling of duty templates, one level up: `engine/wavetpl.ts` holds
+  the library, `ui/WaveTplModal.tsx` is the editor (opened from the + Wave pencil,
+  `WAVEEDIT`), and `+ Wave` (`board.ts:waveMenu`) lists saved templates beside its
+  four built-in kinds. A template is `{id,title,kind,lines}`: **one rule-set per
+  template** (owner's choice), exactly one of the four the app already checks waves
+  by — `fly` / `sc` / `avalon` / `bb` — and each line is a flying line with a
+  MAIN/SPARE flag that matters only on a standby kind. Placing one mints an ordinary
+  wave (`waveFromTpl` → `addWaveFromTpl`) whose OWN kind flags (`standalone`/`noconf`/
+  `night`) drive its checking, so nothing in `validate.ts` reads a template and
+  reference parity is untouched. Times store raw in the editor and normalise on blur
+  / mint / load (`waveTime`, colon form `07:00` — the one difference from duty
+  `tplTime`'s `0700`). Show/hide: a `WAVEHIDE` set (built-in key or template id),
+  toggled on **Admin → Squadron config**, default all-shown; a deleted template drops
+  its flag. Persisted like the stores/duty lists (`wavetpl` + `wavehide`), boot-loaded
+  in `initStore`, untrusted storage clamped. Don't seed built-in templates (the four
+  kinds are the baseline; the library starts empty), don't make `validate` read a
+  template, and don't move the show/hide gate off `WAVEHIDE`. Pinned in
+  `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
+- **The highlight MENUS must read apart from their CHIPS** (owner, 25 Aug 26 —
+  the CAT / Type / Quals tabs looked so like the chips inside them that, with one
+  menu open, the next shut menu read as another selectable chip). A `.hl-gtab` is
+  a solid RAISED control in the brighter `--ink` with a bold caret — plainly a
+  menu that opens; a `.fchip` stays a flatter, quieter `--panel-2`/`--ink-2` tag
+  that only fills blue (`--accent`) once picked; and an open `.hl-grp.open` wraps
+  its tab and chips in one hairline tray (scoped to `.filters` / `.ic-pick-cats`,
+  since `.hl-grp` is a class the History accordion also uses — don't restyle the
+  bare `.hl-grp`). Don't flatten the tabs back to the chip recipe in a filter-bar
+  polish pass. All in `scheduler.css`; the strip is `ui/hlchips.tsx`.
 - **A new flying line comes up blank** (owner, 10 Aug 26). `+ Line` used to
   copy the previous line's callsign, mission and times; a plausible wrong
-  value reads as filled in when nobody filled it in.
+  value reads as filled in when nobody filled it in. **`+ Wave` follows the
+  same rule** (owner, 25 Aug 26 — "keep the data clean … nothing filled"): an
+  ordinary flying wave's first line used to seed `NEW / 12:00 / 13:00`, which
+  read as filled-in and painted a green suggested-brief in-time off the 12:00;
+  it now comes up blank (`cs/msn/to/ld` empty), byte-identical to a `+ Line`
+  add. Standalone waves (SC/AVALON/BB/SPARE via `makeStandalone`) keep their
+  own kind-specific structure — this is the `!kind` branch only. Pinned in
+  `board.test.tsx`. Don't re-seed the plain wave's first line.
 - **The phone board's top bar is ONE row, and the day is STEPPED BY ARROWS on
   the day strip below it** (owner, 11 Aug 26 — comp approved before build; the
   day was SWIPED until 12 Aug 26, see the amendment at the end of this entry).

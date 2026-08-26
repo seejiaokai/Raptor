@@ -13,7 +13,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
-import { SCHED } from '../engine/publish'
+import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { setSlotVal, slotVal, txtSet } from '../engine/slots'
 import { elogClear, elogAllFor } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
@@ -59,7 +59,7 @@ beforeEach(async () => {
   phone = false
   elogClear()
   hideHistBub()
-  SCHED.pending = {}; SCHED.changes = {}
+  SCHED.pending = {}; SCHED.changes = {}; SCHED.dayOK = {}; SCHED.sign = {}
   await act(async () => { view.setHistMode(false); setHistList(false); notify() })
 })
 afterEach(() => hideHistBub())
@@ -185,9 +185,14 @@ describe('the bubble', () => {
     expect(bub(), 'tap is a phone gesture').toBe(null)
   })
 
-  /* alAttr puts title="Edited — not published yet" on exactly these cells,
-     and the browser would pop it over the top of ours a second later */
+  /* alAttr puts a title on an amendment cell (a published day's pending edit
+     reads "Edited — goes out as ALn"), and the browser would pop it over the top
+     of ours a second later. A draft-day edit now carries NO mark and no title
+     (owner, 25 Aug 26), so this test publishes the day first to have a tooltip to
+     park at all. */
   it('parks the cell\'s own tooltip while it is up, and hands it back after', async () => {
+    const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    setDayApproved(0, true)                  // day 0 published: its next edit is a real amendment
     const el = await editedSeat()
     await act(async () => { view.setHistMode(true); notify() })
     const live = $(`#sbBoard [data-slot="${el.dataset.slot}"]`)

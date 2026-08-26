@@ -100,21 +100,35 @@ export function dayIssuedHTML(di:any){
    empty when there is nothing to navigate (the seed week), which is what keeps
    the byte-parity day head untouched. */
 export function verSelHTML(di:any){
+  const s=dverSelectHTML(di); if(!s)return ''
+  /* the home button — a static green marker on live, an active control while
+     previewing. data-golive routes through routeClick (interactions.ts). */
+  const live=DPREV.has(di)
+    ? `<button class="livebtn back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`
+    : `<span class="livebtn on" title="You’re on your live working copy — this is what publishes"><span class="dot"></span>Live copy</span>`
+  return live+s
+}
+/* THE <select> HALF of the version picker, factored out so the scheduler board
+   can show the SAME picker — bare, without the Live-copy home button — inside
+   its sign-off strip. Moved there from the board's top bar on 26 Aug 26 (owner:
+   arrow drawn from the top-bar dropdown down to the sign-off area, "likewise for
+   desktop"). ONE body so the week's verSelHTML and the board's verSelBoardHTML
+   can never drift on the grouping or the option values, and the same data-dver
+   attribute means Shell.tsx's one change listener routes both with no new wiring
+   — which is why the board's old React <select className="dver"> could simply be
+   retired. `cls` is a caller hook (the board tags its copy `sb-dver` for its own
+   placement). Empty when there is nothing to navigate — same guard as before, so
+   the byte-parity day head is untouched.
+   The day's OTHER drafts join the picker (owner, 15 Aug 26) — only the
+   non-selected ones: the selected draft IS the live day, and a 'd:' entry for it
+   would freeze its stale stowed blob; Live is that draft, by name. */
+function dverSelectHTML(di:any,cls?:any){
   const vs=dayVersions(di)
-  /* the day's OTHER drafts join the picker (owner, 15 Aug 26). Only the
-     non-selected ones: the selected draft IS the live day, and a 'd:' entry
-     for it would freeze its stale stowed blob — Live is that draft, by name. */
   const others=dayDrafts(di).filter((t:any)=>t.id!==curDraftId(di))
   if(vs.length<2&&!others.length)return ''
   const cur=DPREV.has(di)?String(DPREV.get(di)):'live'
-  const previewing=DPREV.has(di)
   const sel=dayDrafts(di).find((t:any)=>t.id===curDraftId(di))
   const liveOpt=sel?`${esc(sel.name)} · live`:'Live working copy'
-  /* the home button — a static green marker on live, an active control while
-     previewing. data-golive routes through routeClick (interactions.ts). */
-  const live=previewing
-    ? `<button class="livebtn back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`
-    : `<span class="livebtn on" title="You’re on your live working copy — this is what publishes"><span class="dot"></span>Live copy</span>`
   const plans=`<option value="live"${cur==='live'?' selected':''}>${liveOpt}</option>`
     +others.map((t:any)=>`<option value="d:${esc(t.id)}"${'d:'+t.id===cur?' selected':''}>${esc(t.name)}</option>`).join('')
   const issuedVers=vs.filter((v:any)=>v!=='live')
@@ -123,10 +137,12 @@ export function verSelHTML(di:any){
       +issuedVers.map((v:any)=>`<option value="${v}"${String(v)===cur?' selected':''}>${verLabel(v)}</option>`).join('')
       +`</optgroup>`
     : ''
-  return live+`<select class="dver" data-dver="${di}" title="Switch between your plans, or look back at an issued version">`
+  return `<select class="dver${cls?' '+cls:''}" data-dver="${di}" title="Switch between your plans, or look back at an issued version">`
     +`<optgroup label="${others.length?'Your plans':'Working copy'}">${plans}</optgroup>`
     +issued+`</select>`
 }
+/* the board's copy — bare select, tagged sb-dver, for the sign-off strip */
+export function verSelBoardHTML(di:any){ return dverSelectHTML(di,'sb-dver') }
 /* THE VIEW-ONLY WEEK'S DRAFT PICKER (owner, 15 Aug 26 — "on view schedule
    mode, you can also view the different drafts"). The view page deliberately
    never grew the version machinery — issued schedules only — and it still

@@ -735,6 +735,21 @@ describe('+ Line and + Wave refuse to act for a non-admin (smaller item)', () =>
       setSession({ user: 'a', role: 'admin' })
     }
   })
+
+  /* a new flying wave comes up BLANK, not seeded with NEW / 12:00 / 13:00
+     (owner, 25 Aug 26 — "keep the data clean … nothing filled"). Same rule
+     + Line already follows; a seeded line reads as filled-in when nobody
+     filled it, and the suggested brief then paints a green in-time off it. */
+  it('addWave seeds a blank first line, no NEW/12:00/13:00', () => {
+    const n = DAYS[0].waves.length
+    addWave(0, null)
+    expect(DAYS[0].waves.length).toBe(n + 1)
+    const f = DAYS[0].waves[n].formations[0]
+    expect(f.cs).toBe('')
+    expect(f.msn).toBe('')
+    expect(f.to).toBe('')
+    expect(f.ld).toBe('')
+  })
 })
 
 /* whole-branch re-review follow-up (9 Aug 26): a role check alone is not

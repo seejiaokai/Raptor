@@ -5,13 +5,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY, CURPAGE, DPREV, setDayPreview, HISTMODE, toggleHistMode, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch } from '../state/view'
+import { SBDAY, CURPAGE, DPREV, HISTMODE, toggleHistMode, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch } from '../state/view'
 import { closeHistList, setWeekCal } from './pops'
 import { CalIcon, HistIcon, HlIcon } from './icons'
 import { HlChips } from './hlchips'
 import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
-import { daySnapOf, dayVersions, verLabel, alColor, dayPendCount } from '../engine/publish'
-import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
+import { daySnapOf, alColor, dayPendCount } from '../engine/publish'
+import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
@@ -372,35 +372,12 @@ export function SchedBoard() {
             title={HISTMODE ? 'Stop showing who changed each detail' : 'Show who changed each detail, and when — hover it, or tap it on a phone'}
             onClick={() => { toggleHistMode(); hideHistBub(); notify() }}>
             <span className="bi"><HistIcon /></span><span className="bl"> History</span></button>
-          {/* the day's OTHER drafts join the published versions (owner, 15 Aug
-              26) — same shape as the week's verSelHTML: never the selected one
-              (Live IS it, and names it), 'd:<id>' values ride DPREV like any
-              other frozen preview, and the select now also appears on a day
-              that has drafts but no published versions yet. */}
-          {open && (dayVersions(SBDAY).length > 1 || dayDrafts(SBDAY).some((t: any) => t.id !== curDraftId(SBDAY)))
-            ? (() => {
-                /* grouped in lockstep with the week's verSelHTML (owner, 16 Aug
-                   26): your plans (live + the other drafts) above, the issued
-                   documents below, so a plan is never mistaken for a document
-                   already sent out. */
-                const sel = dayDrafts(SBDAY).find((t: any) => t.id === curDraftId(SBDAY))
-                const others = dayDrafts(SBDAY).filter((t: any) => t.id !== curDraftId(SBDAY))
-                const issued = dayVersions(SBDAY).filter((v: any) => v !== 'live')
-                return <select className="dver" aria-label="Switch between your plans, or look back at an issued version"
-                  value={String(DPREV.get(SBDAY) ?? 'live')}
-                  onChange={e => { const v = e.target.value; setDayPreview(SBDAY, v === 'live' ? null : (v === 'orig' || v.slice(0, 2) === 'd:' ? v : +v)); notify() }}>
-                  <optgroup label={others.length ? 'Your plans' : 'Working copy'}>
-                    <option value="live">{sel ? sel.name + ' · live' : 'Live working copy'}</option>
-                    {others.map((t: any) => <option key={'d:' + t.id} value={'d:' + t.id}>{t.name}</option>)}
-                  </optgroup>
-                  {issued.length
-                    ? <optgroup label="Issued · read-only">
-                        {issued.map((v: any) => <option key={String(v)} value={String(v)}>{verLabel(v)}</option>)}
-                      </optgroup>
-                    : null}
-                </select>
-              })()
-            : null}
+          {/* THE VERSION PICKER LEFT THIS BAR (owner, 26 Aug 26). It moved down
+              into the board's sign-off strip, beside the ✓ Published stamp —
+              board.ts's boardSignHTML now renders it with verSelBoardHTML, a
+              string select routed by the shared data-dver listener. The React
+              copy that lived here (grouped "Your plans" / "Issued") is retired;
+              nothing on this bar replaces it, so the bar simply gets shorter. */}
           {/* Sort all — every section on this day at once, not one row like
               every other control here. Gated on HOOKS.editMode() — the same
               flag the grip, the nudge buttons and every per-section ⇅ Auto

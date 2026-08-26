@@ -196,7 +196,12 @@ export function installProbeBridge() {
     w.closeScheduler = b.closeScheduler
     w.addWave = b.addWave
     w.waveMenu = b.waveMenu
+    w.addWaveFromTpl = b.addWaveFromTpl
     Object.defineProperty(w, 'CXT', { get: () => b.CXT, configurable: true })
+  })
+  import('./engine/wavetpl').then(m => {
+    Object.defineProperty(w, 'WAVETPL_CFG', { get: () => m.WAVETPL_CFG, configurable: true })
+    w.waveFromTpl = m.waveFromTpl; w.isWaveHidden = m.isWaveHidden; w.setWaveHidden = m.setWaveHidden
   })
   w.whoArr = whoArr
   import('./ui/html').then(m => { w.cxText = m.cxText; w.dayHTML = m.dayHTML; w.puck = m.puck })

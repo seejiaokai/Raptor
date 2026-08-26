@@ -43,6 +43,15 @@ describe('SC / AVALON / BB come up as 2 MAIN + 2 SPARE per shift (tfin S)', () =
     expect(w2.formations[0].to).toBe('19:00'); expect(w2.formations[0].ld).toBe('07:00')
   })
 
+  it('AVALON lines default to the short AV callsign, the wave keeps its full label', () => {
+    const w2 = makeStandalone('avalon')            // owner, 25 Aug 26 — "AVALON" wrapped the CS box
+    expect(w2.formations.every((f: any) => f.cs === 'AV')).toBe(true)
+    expect(w2.label).toBe('AVALON')
+    /* SC and BB were already short, so they still read as their labels */
+    expect(makeStandalone('sc').formations[0].cs).toBe('SC')
+    expect(makeStandalone('bb').formations[0].cs).toBe('BB')
+  })
+
   it('BB still leaves its times blank', () => {
     const w2 = makeStandalone('bb')
     expect(w2.formations[0].to).toBe(''); expect(w2.formations[0].ld).toBe('')
