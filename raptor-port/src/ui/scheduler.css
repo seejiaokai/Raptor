@@ -624,9 +624,17 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
      the panel ~300px UP to the viewport top before sliding, and back DOWN on
      expand — the "flying above then below" the owner flagged (26 Aug 26). Absolute
      also scrolls with the board like the in-flow column did, so a collapse while
-     scrolled stays put too. */
+     scrolled stays put too.
+     z-index sits UNDER the topbar (.topbar is z-index:60). The panel's own top
+     tucks at top:8px, inside the sticky topbar's band, so while collapsed AND
+     scrolled the sliding column crosses that band — at the old z-index:150 its
+     opaque body painted OVER the blue bar for the length of the slide ("when I
+     close the crew panel it appears on top of the top blue bar", owner 26 Aug 26).
+     40 keeps it above the week (its sticky section heads are z-index:20) so it
+     still slides cleanly over the reclaiming week, but behind the bar, so the
+     bar stays whole and only the part below it is seen to slide away. */
   body.ros-collapsed .edit-board .eroster{position:absolute;right:0;top:auto;
-    transform:translateX(calc(100% + 6px));z-index:150}
+    transform:translateX(calc(100% + 6px));z-index:40}
 }
 .eroster .rpuck{display:flex;flex:0 0 auto;cursor:grab}
 /* the grab tab — the only part on screen when the drawer is parked. 30px:
