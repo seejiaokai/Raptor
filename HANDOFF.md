@@ -52,7 +52,7 @@ mid-scroll collapse assertion inside the existing roster geometry test →
 +8 for the two seam closures (`wavetpl.test.ts`, `scshift-inputs.test.ts`,
 the cross-engine typo pin in `parity.test.ts`), +5 SANS pins (the A chip
 and the in-time window in `sansavail.test.ts`), the new
-`src/ui/stsaved.test.tsx` (4, the stores save-confirm flash), and the
+`src/ui/stsaved.test.tsx` (6, the stores save-confirm flash), and the
 roster/quals pins (`matrix.test.tsx`, `quals.test.tsx`); e2e stays 324/12
 with the board-bar wrap and at-rest-label assertions folded into existing
 specs. All totals re-run at the handoff.
