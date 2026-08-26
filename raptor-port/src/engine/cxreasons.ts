@@ -17,8 +17,12 @@ import { store } from './hooks'
    strings addressed by position. Nothing in validate.ts or the parity
    reference reads it (the seed week has no cancellations), so removal carries
    no hazard and it is parity-neutral — the same footing as the stores list. */
+/* The shipped default set — owner slimmed it to these three on 26 Aug 26
+   ("remove all the template reasons below, and put wx, ops, logs"). An admin
+   still adds/renames/reorders his own through the CX dialog's ✎ Edit, and Reset
+   returns to exactly these three. */
 export const CXR_STD: readonly string[] = Object.freeze([
-  'WX', 'U/S AIRCRAFT', 'CREW SICK', 'NO AIRSPACE', 'TASKING', 'ENGINEERING', 'SLIPPED',
+  'WX', 'OPS', 'LOGS',
 ])
 
 export const MAX_CXR = 24, MAX_CXR_LABEL = 24

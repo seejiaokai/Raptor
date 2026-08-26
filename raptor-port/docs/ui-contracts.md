@@ -161,6 +161,12 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   scheduler deep in a long pilot list keeps both which day and which column.
   Desktop only; the phone palette is a short pull-out drawer. Gated in
   `e2e/geometry.spec.ts` (jsdom has no sticky positioning).
+  The stuck day line paints an opaque cap 10px ABOVE itself
+  (`box-shadow:0 -10px 0 0 var(--panel)`, owner 26 Aug 26 — "this bleeding of the
+  pucks behind the day … opaque it"): the panel's 8px top padding used to leave a
+  sliver there where the first pucks showed through as the list scrolled. A shadow
+  keeps the header's box height fixed, so the 27px column-label offset stays exact;
+  the panel's `overflow` clips the cap to its rounded top edge.
 
 Four things make it work, and each is load-bearing:
 
@@ -907,10 +913,14 @@ edit week now:
   **The chips strip `.sb-hl` (`#sbHlStrip`) is the bar's LAST line** — the
   same `HlChips` the week pages render, INSIDE `.sb-top` deliberately so the
   bar's ResizeObserver republishes `--sb-topH` when it opens. Desktop: always
-  open, a full-width second bar line, no gate — nothing pins the desktop
-  bar's height to a session flag. Phone: `display:none` until `#sbHl` flips
-  `HLOPEN` (`.open`, the filters-row sideways-scroller recipe, `order:3` so
-  it lands under the day row).
+  open, no gate — nothing pins the desktop bar's height to a session flag; since
+  26 Aug 26 it no longer takes a FULL-WIDTH line of its own but rides the action
+  row at the LEFT (`.sb-hl{order:5}`, the actions `order:6` keeping
+  `margin-left:auto` at the right — owner, "share the same row as the undo
+  buttons, on the left … more usable space"). Phone: `display:none` until `#sbHl`
+  flips `HLOPEN` (`.open`, the filters-row sideways-scroller recipe, `order:3` so
+  it lands under the day row) — the phone fold is untouched by the desktop move,
+  both scoped by `@media`.
   **`#searchB` is the `#searchV` idiom exactly** — uncontrolled, wiped by the
   blank-click clear — which includes the week-cross idiom: crossing a week
   with the arrows leaves the box's TEXT standing while the filter keeps
@@ -928,6 +938,23 @@ edit week now:
   of pinning them to the row's ends, because `.schedboard.sb-wide>*` is 1180px
   wide and pans — "the edges of the bar" there would put the two arrows most of a
   screen apart.
+  **The desktop chrome was TIGHTENED for working space (owner, 26 Aug 26 — a run
+  of "the buttons are too big / give me more room" asks), all in `scheduler.css`
+  under `@media (min-width:821px)`, phone untouched.** (1) The action buttons
+  match the shell topbar's ~28px: `.sb-actions` is a flex row that STRETCHES to
+  its tallest child, and an icon button (History's `<HistIcon>` is a block
+  `.btnglyph`) stacked its icon over its label — 44px; `inline-flex` lays each
+  icon beside its label. Scoped to `.sb-actions .abtn:not(.sb-widebtn)` + the
+  calendar, NOT `.sb-top .abtn`, so the desktop `display:none` on the ‹ › day
+  arrows and the wide button survives. (2) The CAT/Type/Quals strip shares the
+  action row (see the strip note above). (3) The SIGN-OFF scrolls AWAY with the
+  board: `.schedboard:not(.sb-wide) .sb-boardwrap` is the scroller (`overflow-y:
+  auto`) and `#sbBoard` is `flex:none;overflow:visible`, so `#sbSign` heads the
+  column and scrolls off the top the way the phone's already does; wide mode
+  keeps its own inner `.sb-board` scroller. `jumpToChange` / warning-jump use
+  `scrollIntoView` (scroller-agnostic), so both still land a puck in view — the
+  geometry pin reads `.sb-boardwrap` now. All four are jsdom-invisible geometry,
+  pinned in `e2e/geometry.spec.ts` ("the scheduler-board chrome is tight").
   **The dots are gone from the phone bar (owner, 23 Aug 26 — a reversal of the
   11 Aug dots build).** The day strip and the blue current-day square paint
   nothing under 820px; the arrows and the bar's day title carry "which day".

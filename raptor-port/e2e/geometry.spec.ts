@@ -497,6 +497,62 @@ test('a callsign too long for its puck fades instead of being clipped clean', as
   expect(m.puck, 'and the puck is still the measured box').toEqual({ w: 74, h: 15 })
 })
 
+/* THE DESKTOP SCHEDULER-BOARD CHROME IS TIGHT (owner, 26 Aug 26 — a batch of
+   "give me more working space" asks). Four things at once, all jsdom-invisible
+   because they are height/row/border geometry: the action buttons match the
+   shell topbar's compact height (they were 44px — a flex row stretching to the
+   tallest child, which stacked an icon over its label); the CAT/Type/Quals
+   strip shares the action row instead of taking a line of its own; those tabs
+   carry NO bottom border (the History accordion's `.hl-grp` border used to
+   bleed onto them); and the sign-off scrolls away because `.sb-boardwrap` is
+   the scroller now, not `#sbBoard`. The desktop-only hides on the ‹ › arrows
+   and the wide button must survive the compact-button rule. */
+test('desktop: the scheduler-board chrome is tight — compact buttons on one action row, clean tabs', async ({ page }) => {
+  await page.setViewportSize(DESK)
+  await login(page)
+  await go(page, 'editsched')
+  const shellH = await page.evaluate(() => {
+    const b = document.querySelector('.topbar .abtn') as HTMLElement
+    return b ? Math.round(b.getBoundingClientRect().height) : 28
+  })
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbClose')
+  const m = await page.evaluate(() => {
+    const shown = (el: Element | null) => !!el && getComputedStyle(el).display !== 'none'
+    const top = (el: Element | null) => el ? Math.round(el.getBoundingClientRect().top) : null
+    const actions = [...document.querySelectorAll('.sb-actions .abtn')]
+      .filter(el => getComputedStyle(el).display !== 'none') as HTMLElement[]
+    return {
+      maxBtnH: Math.max(...actions.map(el => Math.round(el.getBoundingClientRect().height))),
+      hlY: top(document.querySelector('.sb-hl')),
+      actionsY: top(document.querySelector('.sb-actions')),
+      tabBorders: [...document.querySelectorAll('.sb-hl .hl-grp')].map(el => getComputedStyle(el).borderBottomWidth),
+      arrowsShown: shown(document.querySelector('.sb-nav .sb-arrow')),
+      wideShown: shown(document.querySelector('.sb-widebtn')),
+      boardwrapOY: getComputedStyle(document.querySelector('.sb-boardwrap')!).overflowY,
+      boardOverflow: getComputedStyle(document.querySelector('#sbBoard')!).overflow,
+    }
+  })
+  expect(m.maxBtnH, 'board action buttons match the shell topbar height').toBeLessThanOrEqual(shellH + 4)
+  expect(Math.abs((m.hlY ?? 0) - (m.actionsY ?? 9999)), 'the highlight strip sits on the action row').toBeLessThanOrEqual(6)
+  expect(m.tabBorders.length, 'the three CAT/Type/Quals tabs are present').toBe(3)
+  expect(m.tabBorders.every(b => b === '0px'), 'the highlight tabs carry no bottom border').toBe(true)
+  expect(m.arrowsShown, 'the ‹ › day arrows stay hidden on desktop').toBe(false)
+  expect(m.wideShown, 'the wide-layout button stays hidden on desktop').toBe(false)
+  expect(['auto', 'scroll'], 'the board column is the scroller, so the sign-off scrolls away').toContain(m.boardwrapOY)
+  expect(m.boardOverflow, 'the inner board no longer scrolls on its own').toBe('visible')
+
+  /* and a click on a ‹ › week arrow drops NO blinking text caret in the chip
+     (owner, 26 Aug 26 — the chips are <span> click targets, so without
+     user-select:none a tap placed a collapsed selection in the glyph). */
+  await page.click('.sb-days .sbweek')
+  const caretInChip = await page.evaluate(() => {
+    const s = window.getSelection()
+    return !!(s && s.anchorNode && (s.anchorNode.parentElement as HTMLElement | null)?.closest('.sbday'))
+  })
+  expect(caretInChip, 'clicking a week arrow leaves no text caret in the chip').toBe(false)
+})
+
 /* THE THREE CREW-REST STROKES, measured (owner, 6 Aug 26). Solid is his own
    breach, dashed is his own breach that a scheduler sanctioned, dotted is the
    day he CAUSES one. Vitest can prove which class the builder emitted and
@@ -821,13 +877,17 @@ test.describe('clicking a warning brings the puck into view', () => {
     await page.evaluate((d) => (window as any).openScheduler(d), di)
     await page.waitForSelector('#sbWarn .wln[data-wdi]')
     /* start from the bottom of the board, so landing on a puck means the panel
-       really moved rather than the target happening to be above the fold */
-    await page.evaluate(() => { const b = document.querySelector('#sbBoard') as HTMLElement; b.scrollTop = b.scrollHeight })
+       really moved rather than the target happening to be above the fold.
+       The scroller is `.sb-boardwrap` on desktop now (26 Aug 26 — the sign-off
+       scrolls away WITH the board column, so #sbBoard itself is overflow:visible
+       and the whole column scrolls); the pre-scroll and the in-view clip box both
+       read that column, not #sbBoard. */
+    await page.evaluate(() => { const b = document.querySelector('.sb-boardwrap') as HTMLElement; b.scrollTop = b.scrollHeight })
     await page.click('#sbWarn .wln[data-wdi]')
-    await settleBoth(page, '#sbBoard')
+    await settleBoth(page, '.sb-boardwrap')
 
     const m = await page.evaluate(() => {
-      const board = document.querySelector('#sbBoard') as HTMLElement
+      const board = document.querySelector('.sb-boardwrap') as HTMLElement
       const puck = document.querySelector('.sb-boardwrap .puck.wfoc') as HTMLElement
       if (!puck) return null
       const b = board.getBoundingClientRect(), p = puck.getBoundingClientRect()

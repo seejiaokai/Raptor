@@ -21,13 +21,13 @@ beforeEach(() => {
 })
 
 describe('the standard list', () => {
-  it('opens on the seven the board shipped with', () => {
-    expect(CXR_CFG).toEqual(['WX', 'U/S AIRCRAFT', 'CREW SICK', 'NO AIRSPACE', 'TASKING', 'ENGINEERING', 'SLIPPED'])
+  it('opens on the three the board shipped with', () => {
+    expect(CXR_CFG).toEqual(['WX', 'OPS', 'LOGS'])
     expect(cxrAreStandard()).toBe(true)
   })
   it('CXR_STD cannot be mutated through CXR_CFG', () => {
     addCxReason('DIVERTED')
-    expect(CXR_STD.length).toBe(7)
+    expect(CXR_STD.length).toBe(3)
   })
 })
 
@@ -51,7 +51,7 @@ describe('add / rename / delete / move', () => {
     expect(addCxReason('x'.repeat(25))).toBe('A cancel reason is at most 24 characters')
   })
   it('caps the list at 24', () => {
-    for (let i = 0; i < 17; i++) expect(addCxReason('r' + i)).toBe(null)   // 7 + 17 = 24
+    for (let i = 0; i < 21; i++) expect(addCxReason('r' + i)).toBe(null)   // 3 + 21 = 24
     expect(addCxReason('toomany')).toBe('The list holds at most 24 reasons')
   })
   it('renames by position, folding case against the OTHERS only', () => {
@@ -62,18 +62,18 @@ describe('add / rename / delete / move', () => {
     expect(CXR_CFG[0]).toBe('bad wx')
   })
   it('rename refuses a clash with another row and a bad index', () => {
-    expect(renameCxReason(0, 'CREW SICK')).toBe('CREW SICK is already on the list')
+    expect(renameCxReason(0, 'OPS')).toBe('OPS is already on the list')
     expect(renameCxReason(99, 'X')).toBe('99 is not on the list')
     expect(renameCxReason(1, '  ')).toBe('A cancel reason needs some text')
   })
   it('deletes by position and guards the bounds', () => {
     expect(delCxReason(0)).toBe(true)
-    expect(CXR_CFG[0]).toBe('U/S AIRCRAFT')
+    expect(CXR_CFG[0]).toBe('OPS')
     expect(delCxReason(99)).toBe(false)
   })
   it('moves a row and guards the bounds', () => {
     expect(moveCxReason(0, 2)).toBe(true)
-    expect(CXR_CFG.slice(0, 3)).toEqual(['U/S AIRCRAFT', 'CREW SICK', 'WX'])
+    expect(CXR_CFG.slice(0, 3)).toEqual(['OPS', 'LOGS', 'WX'])
     expect(moveCxReason(0, 99)).toBe(false)
   })
 })
@@ -125,7 +125,7 @@ describe('a hand-edited blob is untrusted', () => {
 })
 
 describe('reset', () => {
-  it('restores the shipped seven and clears storage', () => {
+  it('restores the shipped three and clears storage', () => {
     addCxReason('DIVERTED'); cxReasonsSave()
     cxReasonsReset()
     expect(cxrAreStandard()).toBe(true)

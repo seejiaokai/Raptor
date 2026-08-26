@@ -840,8 +840,8 @@ describe('CX carries a reason (tfin R group, B28)', () => {
     expect($('#cxReason')).toBeTruthy()
   })
 
-  it('it offers the usual reasons', () => {
-    expect($$('#cxQuick [data-cxq]').length).toBeGreaterThanOrEqual(6)
+  it('it offers the three shipped reasons (WX / OPS / LOGS, owner 26 Aug 26)', () => {
+    expect($$('#cxQuick [data-cxq]').map(b => b.textContent)).toEqual(['WX', 'OPS', 'LOGS'])
   })
 
   it('Un-cancel is hidden on a line that is not cancelled, and the action button says what it will do', () => {

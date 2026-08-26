@@ -563,7 +563,14 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
    pull-out drawer scrolling inside .ros-body, a different box with its own
    header height, and the owner's ask was for the desktop panel. */
 @media (min-width:821px){
-  .edit-board .eroster .er-h{position:sticky;top:0;z-index:4;background:var(--panel)}
+  /* the box-shadow is an opaque cap painted 10px ABOVE the stuck header — the
+     panel's 8px top padding used to leave a sliver there where the first pucks
+     showed through as you scrolled ("this bleeding of the pucks behind the day …
+     opaque it", owner 26 Aug 26). A shadow (not extra padding) keeps the header's
+     box height fixed, so the column labels' 27px sticky offset below stays exact;
+     the panel's overflow clips the cap to its rounded top edge. */
+  .edit-board .eroster .er-h{position:sticky;top:0;z-index:4;background:var(--panel);
+    box-shadow:0 -10px 0 0 var(--panel)}
   .edit-board .eroster .rcol .rh{position:sticky;top:27px;z-index:3;background:var(--panel);padding-bottom:1px}
 }
 .eroster .rpuck{display:flex;flex:0 0 auto;cursor:grab}
@@ -2941,7 +2948,12 @@ body.sb-lock{overflow:hidden}
 .sb-nav{display:contents}
 .sb-nav .sb-arrow{display:none}
 .sb-days{display:flex;gap:5px;align-items:center}
-.sb-days .sbday{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer}
+/* user-select:none so a click never drops a blinking text caret inside the
+   chip (owner, 26 Aug 26 — "why is there a line flashing on the arrow buttons").
+   These are click targets built as <span>s, so a tap on the ‹ › week arrows (or
+   any day chip) placed a collapsed selection in the glyph's text node, which
+   the browser then blinked. Covers .sbweek too (it is a .sbday). */
+.sb-days .sbday{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;user-select:none;-webkit-user-select:none}
 .sb-days .sbday.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 /* THE WEEK-JUMP ARROWS flanking the day chips (board.ts dayTabsHTML). Chip-
    shaped so they read as part of the strip, but glyph-only and muted, so the
@@ -2974,10 +2986,38 @@ body.sb-lock{overflow:hidden}
 /* the icon/label split every top-bar button now carries. Desktop shows both,
    so nothing here changes above 820px; the phone block hides .bl. */
 .sb-actions .bi{font-style:normal}
-.sb-actions{margin-left:auto;display:flex;gap:7px}
+.sb-actions{margin-left:auto;display:flex;gap:7px;align-items:center}
 .sb-main{flex:1;display:flex;min-height:0}
 .sb-boardwrap{flex:1;display:flex;flex-direction:column;min-height:0;min-width:0}
 .sb-board{flex:1;overflow:auto;padding:12px 14px}
+/* ===== DESKTOP scheduler-board chrome, tightened (owner, 26 Aug 26) ===== */
+@media (min-width:821px){
+  /* (1) BUTTONS MATCH THE SHELL TOPBAR HEIGHT ("the scheduler board buttons are
+     too big … make them similar to the edit schedule"). They were 44px: .sb-actions
+     is a flex row that STRETCHES to its tallest child, and an icon button (History's
+     <HistIcon> is a block .btnglyph) stacked its icon OVER its label. inline-flex
+     lays every icon beside its label, so each board button is ~28px like the
+     shell's .abtn — the calendar button included. Scoped to the action buttons
+     and the calendar (NOT `.sb-top .abtn`, which would clobber the desktop
+     display:none on the ‹ › day arrows and the wide-layout button); the hidden
+     wide button is excluded so it stays hidden. Phone keeps its 30px icon-only
+     squares (max-width:820 block below). */
+  .sb-actions .abtn:not(.sb-widebtn),.sb-calbtn{display:inline-flex;align-items:center;gap:6px}
+  /* (2) THE SIGN-OFF SCROLLS AWAY with the board instead of staying pinned above
+     it ("don't freeze this bar … so I have more working space"). The whole board
+     column (.sb-boardwrap) is the scroller now, so #sbSign heads it and scrolls
+     off the top the way the phone's already does. Wide mode keeps its own inner
+     .sb-board scroller (:not(.sb-wide)) so its side-by-side panels are untouched. */
+  .schedboard:not(.sb-wide) .sb-boardwrap{overflow-y:auto}
+  .schedboard:not(.sb-wide) .sb-board{flex:none;overflow:visible}
+  /* (3) THE CAT/Type/Quals STRIP SHARES THE ACTION ROW instead of a full line of
+     its own ("share the same row as the undo buttons, on the left … more usable
+     space"). order puts the strip just before the actions, which keep
+     margin-left:auto and sit at the right; the strip sits at the left of that row.
+     Phone still folds it behind #sbHl (below), untouched. */
+  .sb-hl{flex:0 0 auto;order:5;padding:0}
+  .sb-actions{order:6}
+}
 /* ---- inputs panel: every personal input for the open day, morning → late ---- */
 .sb-inputs{flex:0 0 auto;max-height:36%;overflow:auto;padding:9px 14px 12px;
   border-top:1px solid var(--edge);background:var(--panel-2)}
@@ -3250,13 +3290,21 @@ body.sb-lock{overflow:hidden}
 /* GROUPED BY DETAIL. The count and the caret say the row folds; the caret
    turns rather than swapping glyph, so nothing on the line changes width and
    the rows below stay put as it opens. */
-.hl-grp{border-bottom:1px solid var(--edge)}
-.hl-grp:last-child{border-bottom:none}
-.hl-grp .hl-ghead{border-bottom:none}
+/* SCOPED to `.hl-list` — the History accordion's OWN container. `.hl-grp` is a
+   shared class: the highlight strip (hlchips.tsx) and the calendar puck-picker
+   (`.ic-pick-cats`) both build their CAT/Type/Quals tabs as bare `.hl-grp`
+   spans, NOT inside `.hl-list`. Bare, this fold border drew a stray underline
+   under every strip tab except the last (`:last-child` spared QUALS) — owner,
+   26 Aug 26 ("why do the CAT and TYPE highlighter buttons have an underline …
+   make it clean like QUALS … fix everywhere"). Anchoring the whole accordion
+   look to `.hl-list` keeps it off the strip and the picker in one move. */
+.hl-list .hl-grp{border-bottom:1px solid var(--edge)}
+.hl-list .hl-grp:last-child{border-bottom:none}
+.hl-list .hl-grp .hl-ghead{border-bottom:none}
 .hl-n{font-size:10px;font-weight:700;color:var(--accent);background:rgba(59,198,232,.1);
   border-radius:999px;padding:1px 7px;flex:0 0 auto}
 .hl-caret{color:var(--ink-3);flex:0 0 auto;transition:transform .15s;display:inline-block}
-.hl-grp.open .hl-caret{transform:rotate(180deg)}
+.hl-list .hl-grp.open .hl-caret{transform:rotate(180deg)}
 .hl-sub{list-style:none;margin:0 0 6px;padding:0 0 0 14px;border-left:2px solid var(--edge)}
 .hl-subrow{border-bottom:none;padding:5px 0;font-size:11px}
 /* the group head already said both of these — repeating the day chip on every
