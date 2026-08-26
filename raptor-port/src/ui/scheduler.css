@@ -3097,6 +3097,8 @@ body.sb-lock{overflow:hidden}
 .sb-hltog .btnglyph{width:16px;height:16px;color:currentColor}
 .sb-hltog.on{color:var(--accent);border-color:rgba(59,198,232,.6);background:rgba(59,198,232,.16)}
 .sb-hl{flex:0 0 100%;display:flex;gap:5px;align-items:center;padding:4px 0 0}
+/* the desktop's forced line break before the strip — inert on a phone */
+.sb-break{display:none}
 /* the divider inside HlChips styles itself off .filters elsewhere; restated
    here because this strip is not a .filters row */
 .sb-hl .div{width:1px;align-self:stretch;background:var(--edge);margin:0 4px}
@@ -3132,13 +3134,21 @@ body.sb-lock{overflow:hidden}
      .sb-board scroller (:not(.sb-wide)) so its side-by-side panels are untouched. */
   .schedboard:not(.sb-wide) .sb-boardwrap{overflow-y:auto}
   .schedboard:not(.sb-wide) .sb-board{flex:none;overflow:visible}
-  /* (3) THE CAT/Type/Quals STRIP SHARES THE ACTION ROW instead of a full line of
-     its own ("share the same row as the undo buttons, on the left … more usable
-     space"). order puts the strip just before the actions, which keep
-     margin-left:auto and sit at the right; the strip sits at the left of that row.
-     Phone still folds it behind #sbHl (below), untouched. */
-  .sb-hl{flex:0 0 auto;order:5;padding:0}
-  .sb-actions{order:6}
+  /* (3) THE CAT/Type/Quals STRIP SHARES THE ACTION ROW, ON THE LEFT (owner,
+     26 Aug 26, twice). First ask: "share the same row as the undo buttons,
+     on the left … more usable space" — order alone was tried, and a
+     wrapping flex row only breaks where something stops FITTING, so on a
+     wide screen the strip stayed at line 1's end and the actions wrapped
+     to a line of their own. Second ask, with an arrow drawn at the empty
+     space: "move the highlighter buttons right below calendar". .sb-break
+     (SchedBoard.tsx, display:none on the phone) is the forced break: a
+     zero-height full-width item that ENDS line 1 after the search box, so
+     the strip genuinely opens line 2 below the calendar button and the
+     actions keep margin-left:auto at that line's right.
+     Phone still folds the strip behind #sbHl (below), untouched. */
+  .sb-break{display:block;flex-basis:100%;height:0;order:5}
+  .sb-hl{flex:0 0 auto;order:6;padding:0}
+  .sb-actions{order:7}
 }
 /* ---- inputs panel: every personal input for the open day, morning → late ---- */
 .sb-inputs{flex:0 0 auto;max-height:36%;overflow:auto;padding:9px 14px 12px;

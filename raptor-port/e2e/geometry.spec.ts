@@ -526,6 +526,13 @@ test('desktop: the scheduler-board chrome is tight — compact buttons on one ac
       maxBtnH: Math.max(...actions.map(el => Math.round(el.getBoundingClientRect().height))),
       hlY: top(document.querySelector('.sb-hl')),
       actionsY: top(document.querySelector('.sb-actions')),
+      /* the strip opens the SECOND line, below the calendar and left-aligned
+         with it (owner, 26 Aug 26, the arrow drawing): .sb-break forces the
+         wrap, so this holds at ANY width — before it, a wide screen kept the
+         strip on line 1 because it happened to fit there */
+      calBottom: Math.round(document.querySelector('#sbCal')!.getBoundingClientRect().bottom),
+      calX: Math.round(document.querySelector('#sbCal')!.getBoundingClientRect().left),
+      hlX: Math.round(document.querySelector('.sb-hl')!.getBoundingClientRect().left),
       tabBorders: [...document.querySelectorAll('.sb-hl .hl-grp')].map(el => getComputedStyle(el).borderBottomWidth),
       arrowsShown: shown(document.querySelector('.sb-nav .sb-arrow')),
       wideShown: shown(document.querySelector('.sb-widebtn')),
@@ -535,6 +542,8 @@ test('desktop: the scheduler-board chrome is tight — compact buttons on one ac
   })
   expect(m.maxBtnH, 'board action buttons match the shell topbar height').toBeLessThanOrEqual(shellH + 4)
   expect(Math.abs((m.hlY ?? 0) - (m.actionsY ?? 9999)), 'the highlight strip sits on the action row').toBeLessThanOrEqual(6)
+  expect((m.hlY ?? 0) >= m.calBottom - 2, 'the strip sits BELOW the calendar button — the forced wrap held').toBe(true)
+  expect(Math.abs(m.hlX - m.calX), 'and left-aligned under it').toBeLessThanOrEqual(8)
   expect(m.tabBorders.length, 'the three CAT/Type/Quals tabs are present').toBe(3)
   expect(m.tabBorders.every(b => b === '0px'), 'the highlight tabs carry no bottom border').toBe(true)
   expect(m.arrowsShown, 'the ‹ › day arrows stay hidden on desktop').toBe(false)
