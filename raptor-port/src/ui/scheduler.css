@@ -2851,12 +2851,36 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    landed there first by mistake and pinned the DESKTOP head into two rows;
    the probe that caught it now lives in e2e/geometry.spec.ts.) */
 @media (max-width:820px){
+  .day-head{gap:6px;row-gap:6px}
   .day-head .dow{order:1}
   .day-head .dt{order:2}
   .day-head .badge{order:3}
   .day-head::before{content:'';order:4;flex-basis:100%;height:0}
-  .day-head .dhtpl{order:5;margin-left:0}
-  .day-head .dstat{order:6;margin-left:auto}
+  /* COMPRESS THE DAY-HEAD CONTROLS ON MOBILE (owner, 26 Aug 26 — "compress
+     these buttons to reduce the amount of space used on the mobile"). The two
+     control spans (.dhtpl = Templates/Drafts, .dstat = Live-copy · version
+     picker · info · Published) were each their own wrapping box, so on a
+     published day with drafts the cluster stacked four rows high: Templates/
+     Drafts, then Live-copy + dropdown, then the info dot, then the Published
+     stamp — because .dstat could only wrap inside its own narrow width beside
+     .dhtpl. display:contents dissolves both boxes so all six controls become
+     direct children of the head's flex flow and pack greedily into two rows.
+     Their children inherit order:5 to stay after the title/date row (the
+     full-width ::before break above). The version dropdown is capped so a long
+     draft name can't hog a whole row. Desktop is untouched — one row there. */
+  .day-head .dhtpl,.day-head .dstat{display:contents}
+  .day-head .dhtpl>*,.day-head .dstat>*{order:5}
+  /* the two WIDE controls — the version dropdown and the Published stamp — drop
+     to a trailing row together, so the cluster reads as two tidy rows: the small
+     action chips (Templates · Drafts · Live copy · info) first, then the wide
+     status pair. Left as order:5 they scattered the Published stamp onto a
+     fourth row of its own. */
+  .day-head .dstat .dver,.day-head .dstat .dbeak{order:6}
+  .day-head .dstat .dver{max-width:150px}
+  .day-head .dhtpl .dhbtn,
+  .day-head .livebtn,
+  .day-head .dstat .dver,
+  .day-head .dstat .dbeak{padding-top:3px;padding-bottom:3px}
 }
 
 /* ============ SCHEDULER BOARD (deep single-day editor) ============ */

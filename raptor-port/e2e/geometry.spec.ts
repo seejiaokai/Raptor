@@ -4123,7 +4123,11 @@ test.describe('the Inputs month calendar', () => {
    at the same offset within the head on the Today day and any other day,
    and the desktop head stays one row. scheduler.css's ordered break — and
    the reason this is an e2e pin: the fix first landed inside the WRONG
-   media block (the desktop one) and no unit test can see a media query. */
+   media block (the desktop one) and no unit test can see a media query.
+   The two control spans (.dhtpl/.dstat) are display:contents on phone (owner,
+   26 Aug 26 — compress the cluster into two rows), so they carry no box of
+   their own: the controls are measured through their pills (a Templates
+   button, the publish control), not the vanished span wrappers. */
 test.describe('the day-head lays out the same on every day', () => {
   test('phone: Today does not move the controls; desktop: one row', async ({ page }) => {
     await page.setViewportSize(PHONE)
@@ -4140,7 +4144,7 @@ test.describe('the day-head lays out the same on every day', () => {
         const r = el.getBoundingClientRect()
         return { top: Math.round(r.top - hb.top), left: Math.round(r.left - hb.left) }
       }
-      return { badge: at('.badge'), tpl: at('.dhtpl'), stat: at('.dstat'), h: Math.round(hb.height) }
+      return { badge: at('.badge'), tpl: at('.dhtpl .dhbtn'), stat: at('.dstat .dbeak'), h: Math.round(hb.height) }
     }, di)
     const mon = await head(0), tue = await head(1)
     expect(mon, 'Monday (Today) and Tuesday heads are geometrically identical').toEqual(tue)
