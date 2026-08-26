@@ -1116,10 +1116,13 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
 export function blockMenu(anchor: HTMLElement, di: any) {
   if (!canEditSched() || !HOOKS.editMode()) return
   const d = DAYS[di]; if (!d) return
-  const html = `<h5>Add a duty block</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+  /* the template editor is a pencil at the top-right of the header, matching
+     the stores Config popup (owner, 26 Aug 26 \u2014 "how the config places the edit
+     icon on the top right \u2026 do the same for \u2026 duties, not how it is at the
+     bottom currently"). Same data-blkedit hook, only relocated. */
+  const html = `<h5 class="wm-hpen">Add a duty block<button class="wm-pen" data-blkedit="1" title="Edit the duty templates">\u270e</button></h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
     + DUTYTPL_CFG.map((t: any) => `<button class="wm" data-blktpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${t.rows.length} role${t.rows.length === 1 ? '' : 's'}</span></button>`).join('')
     + `<button class="wm" data-blktpl="">Empty block</button></div>`
-    + `<div class="wm-note"><button class="wm-edit" data-blkedit="1">\u270e Edit templates</button></div>`
   popMenu(anchor, html, (e, close) => {
     if (e.target.closest('[data-blkedit]')) { close(); setTplEdit(true); notify(); e.stopPropagation(); return }
     const b = e.target.closest('[data-blktpl]'); if (!b) return
@@ -1304,8 +1307,15 @@ export function rolePickMenu(anchor: HTMLElement, addr: string) {
 export function waveMenu(anchor: HTMLElement, di: any) {
   // same SBDAY-scoped editMode() gate as addLine/addWave above, same reason.
   if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
+  /* the template editor is a pencil at the top-right of the popup's first
+     header, matching the stores Config popup (owner, 26 Aug 26 — "how the
+     config places the edit icon on the top right … do the same for flying wave
+     templates … not how it is at the bottom currently"). Same data-wvedit hook,
+     only relocated: it rides the Day header when the board's generic add shows
+     one, else the Add header. */
+  const pen = `<button class="wm-pen" data-wvedit="1" title="Edit the wave templates">✎</button>`
   const dayBtns = (di == null)
-    ? `<h5>Day</h5><div class="wm-row" id="wmDays">`
+    ? `<h5 class="wm-hpen">Day${pen}</h5><div class="wm-row" id="wmDays">`
       + DAYS.map((x: any, i: number) => `<button class="wm ${i === 0 ? 'on' : ''}" data-wmday="${i}" style="padding:6px 9px;font-size:11.5px">${esc(x.dow.slice(0, 3))}</button>`).join('')
       + `</div>` : ''
   /* the built-in kinds are the four rule-sets, minus any an admin has hidden
@@ -1323,10 +1333,9 @@ export function waveMenu(anchor: HTMLElement, di: any) {
       + tpls.map((t: any) => `<button class="wm" data-wmtpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${esc(kindLabel(t.kind))}${t.lines.length ? ` \u00b7 ${t.lines.length} line${t.lines.length === 1 ? '' : 's'}` : ''}</span></button>`).join('')
       + `</div>` : ''
   const html = dayBtns
-    + `<h5>Add</h5><div class="wm-row">` + kindRow + `</div>`
+    + `<h5${di == null ? '' : ' class="wm-hpen"'}>Add${di == null ? '' : pen}</h5><div class="wm-row">` + kindRow + `</div>`
     + tplRow
     + (anyStandby ? `<div class="wm-note">SC \u00b7 AVALON \u00b7 BB sit outside the day's flying count \u2014 two waves of four plus an SC reads <b>4 X 4 / 2</b>.</div>` : '')
-    + `<div class="wm-note"><button class="wm-edit" data-wvedit="1">\u270e Wave templates</button></div>`
   let day = (di == null) ? 0 : di
   const box = popMenu(anchor, html, (e: any, close: () => void) => {
     if (e.target.closest('[data-wvedit]')) { close(); setWaveEdit(true); notify(); e.stopPropagation(); return }
