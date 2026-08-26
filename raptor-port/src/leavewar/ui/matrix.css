@@ -44,8 +44,16 @@
 
 .mx th,
 .mx td {
-  border-right: 1px solid rgba(42, 49, 58, .7);
-  border-bottom: 1px solid rgba(42, 49, 58, .7);
+  /* The grid hairline is --edge-2 lifted a step, not --edge: at
+     rgba(42,49,58,.7) the lines sank into any column tint — inside a
+     no-leave (evnolv) or holiday (evoff) run every cell shares the same
+     fill and the border was the ONLY column separator, and the owner
+     could not see it (26 Aug 26 — "the contrast is a little hard to see…
+     make it slightly more obvious for the grids"). A lighter blue-grey
+     reads over the dark panel, the weekend band and the amber/green
+     tints alike while staying a hairline, not a lattice. */
+  border-right: 1px solid rgba(70, 81, 94, .8);
+  border-bottom: 1px solid rgba(70, 81, 94, .8);
   /* Tight horizontal padding so the day columns stay narrow (owner, 18 Aug 26
      — "I don't like the days to be so wide"): more of the year fits on screen,
      the "extended mobile" feel. The frozen callsign/counter columns carry
