@@ -108,14 +108,22 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
          it back to raw, restoring this check's precondition (a submitted-but-not-
          yet-actioned input the plant clashes with). */
       const inp = INPUTS.find(i => isPersonal(i.type) && inputCoversDate(i, d.dt) && PEOPLE[i.person])
-      if (inp && inp.acc) { unacceptInput(0, inp); afterSchedMutate() }
+      /* unacceptInput PARKS the input dormant now (acc 'r' — owner, 26 Aug 26:
+         a deliberate removal flags nothing until re-accepted), so it no longer
+         restores this check's precondition on its own. The subject here is a
+         RAW, never-actioned input — submitted, not yet accepted OR removed —
+         so the park is cleared after the row comes off, which is exactly the
+         state a freshly filed input is in. (Found when this step went red in
+         the 26 Aug 26 bug-pass probe re-run; the dormant silence it tripped
+         over is the intended rule, pinned in scshift-inputs.test.ts.) */
+      if (inp && inp.acc) { unacceptInput(0, inp); delete inp.acc; afterSchedMutate() }
       if (!inp) { out.i3 = 'no personal input in the seed' } else {
         ff.aircraft[0].p = inp.person; afterSchedMutate()
         out.i3type = inp.type
         out.i3 = (chipOf(0, inp.person) || 'none') + '/' + (sevOf(0, inp.person) || 'none')
         acceptInput(0, inp, 'g'); afterSchedMutate()
         out.i3seen = (d.ground || []).some(g => g.src === inpKey(inp)) ? 'on the programme' : 'nowhere'
-        unacceptInput(0, inp); ff.aircraft[0].p = ''; afterSchedMutate()
+        unacceptInput(0, inp); delete inp.acc; ff.aircraft[0].p = ''; afterSchedMutate()
       }
     }
     /* 4 · a sim crossing midnight is a real window */
