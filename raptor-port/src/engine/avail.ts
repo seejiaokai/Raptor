@@ -5,7 +5,7 @@ import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare } from './waves'
 import { WARN, restClear, dayEvents } from './validate'
-import { waveWindows, inpShow } from './events'
+import { waveWindows, inpShow, shiftEvHard } from './events'
 import { whoArr, rowRef, XKEY } from './slots'
 import { keyDay } from './keys'
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
@@ -282,11 +282,15 @@ export function slotBar(id:any,key:any,rules?:any){
      stand this shift — SC AM 07–13 and SC PM 13–19 are two clean halves and a
      body on one is perfectly plannable on the other. What bars him is a
      commitment INSIDE the window, and only the hard kinds: a flight, a sim, a
-     duty post, another shift. A ground event or a programme item inside the
-     window does not bar him — plan it and the engine says so in amber. */
+     duty post, another shift — plus, since 26 Aug 26, a GROUND ROW that is a
+     red-list commitment (shiftEvHard, one body with the validator's clash
+     grading). Any other ground event or programme item inside the window does
+     not bar him — plan it and the engine says so in amber. A raw red-list
+     INPUT deliberately stays warn-not-bar here, matching the flying-seat
+     modality (inputs.ts:178-181): the validator reds him after planting. */
   if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0&&!r.scSpare){
     const self=String(key).replace(/\.\+$/,'');
-    const live=(e:any)=>SHIFT_HARD[e.kind]&&e.s!=null&&e.e!=null&&e.slot!==self;
+    const live=(e:any)=>shiftEvHard(e)&&e.s!=null&&e.e!=null&&e.slot!==self;
     /* both windows are already minutes-from-midnight of day r.di, so plain
        overlap is the whole answer here */
     let hit=dayEvents(r.di,id).find((e:any)=>live(e)&&overlap(r.scStart,r.scEnd,e.s,e.e));

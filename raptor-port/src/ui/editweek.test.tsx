@@ -368,3 +368,21 @@ describe('the crew-day picker', () => {
     await click($('#weekCal .x'))
   })
 })
+
+/* HIDE THE AIRCREW COLUMN (owner, 26 Aug 26). The desktop rail toggles a bare
+   body.ros-collapsed class (interactions.ts routeClick, data-roshide) — the same
+   session-only, repaint-surviving idiom as the phone drawer's ros-open. jsdom has
+   no layout, so the actual slide + the week reclaiming its width are pinned in
+   e2e/geometry.spec.ts; this pins the wiring. */
+describe('the edit-scheduler aircrew column hides and shows', () => {
+  it('the rail toggles body.ros-collapsed on and off', async () => {
+    document.body.classList.remove('ros-collapsed')
+    const rail = $('.edit-board .ros-rail')
+    expect(rail, 'the edit board carries a hide/show rail').toBeTruthy()
+    expect(rail.hasAttribute('data-roshide'), 'and it routes through the shared handler').toBe(true)
+    await click(rail)
+    expect(document.body.classList.contains('ros-collapsed'), 'a click hides the column').toBe(true)
+    await click(rail)
+    expect(document.body.classList.contains('ros-collapsed'), 'a second click brings it back').toBe(false)
+  })
+})

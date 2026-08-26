@@ -145,13 +145,16 @@ describe('the ground round-trip', () => {
     const m = fileMeeting(freePilot(), 600, 700)
     expect(autoAcceptInput(m)).toBe(true)
     expect(DAYS[0].ground.some((row: any) => row.src === inpKey(m))).toBe(true)
-    /* remove from the programme → the input returns, unaccepted */
+    /* remove from the programme → the input returns, parked DORMANT ('r' —
+       owner, 26 Aug 26): still listed, but flagging nothing and NOT eligible
+       for auto-relanding, or a week reload would silently undo the removal */
     unacceptInput(0, m)
-    expect(m.acc).toBeFalsy()
+    expect(m.acc).toBe('r')
     expect(DAYS.some((d: any) => (d.ground || []).some((row: any) => row.src === inpKey(m)))).toBe(false)
     expect(INPUTS.includes(m)).toBe(true)
-    /* and it can go straight back */
-    expect(autoAcceptInput(m)).toBe(true)
+    expect(autoAcceptInput(m), 'the auto-land pass must respect the removal').toBe(false)
+    /* the way back is the scheduler's own Accept — that is what wakes it */
+    expect(acceptInput(0, m, 'g')).toBe(true)
     expect(m.acc).toBe('g')
   })
 })

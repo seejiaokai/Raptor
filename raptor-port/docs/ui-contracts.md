@@ -161,6 +161,44 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   scheduler deep in a long pilot list keeps both which day and which column.
   Desktop only; the phone palette is a short pull-out drawer. Gated in
   `e2e/geometry.spec.ts` (jsdom has no sticky positioning).
+  The stuck day line paints an opaque cap 10px ABOVE itself
+  (`box-shadow:0 -10px 0 0 var(--panel)`, owner 26 Aug 26 — "this bleeding of the
+  pucks behind the day … opaque it"): the panel's 8px top padding used to leave a
+  sliver there where the first pucks showed through as the list scrolled. A shadow
+  keeps the header's box height fixed, so the 27px column-label offset stays exact;
+  the panel's `overflow` clips the cap to its rounded top edge.
+- **The desktop aircrew column can be HIDDEN, sliding off to the right** (owner,
+  26 Aug 26 — "hide the placeholders list on the right of edit scheduler and it
+  just animates to the right side"). A fixed rail at the viewport's right edge
+  (`.ros-rail`, in `Shell.tsx`'s `.edit-board`, `data-roshide`) toggles a bare
+  `body.ros-collapsed` class — the same session-only, repaint-surviving idiom as
+  the phone drawer's `ros-open` (`interactions.ts:routeClick`). Collapsed, the
+  `.edit-board .eroster` leaves the flow (`position:absolute` inside a
+  `position:relative` `.edit-board`) and slides off past the right edge on a
+  `.24s` transform transition, and the week (`flex:1`) reclaims the freed ~250px.
+  **`position:absolute` with `top:auto`, not `fixed`** — that keeps the column at
+  its STATIC vertical position so only the horizontal transform animates. An
+  earlier `position:fixed;top:8px` yanked it ~300px UP to the viewport top before
+  sliding, and back DOWN on expand: the "flying above then below" the owner
+  flagged (26 Aug 26). **And the `[data-roshide]` handler pins the column's
+  on-screen Y as an inline `top` at the moment of collapse** (cleared on expand):
+  the resting column is `position:sticky`, so mid-scroll its pinned top sits
+  hundreds of px from its static position, and `top:auto` alone teleported it up
+  off-screen before the slide (measured top 8 → −888 at scrollY 1200; found in
+  the 26 Aug bug pass). With the pin, the slide plays exactly where the eye last
+  saw the panel at any scroll; expand clears the inline top so sticky takes back
+  over. The rail is a slim BLUE vertical `CREW` tab styled
+  off the phone drawer's accent tab and sat HIGH on the right edge (owner, 26 Aug
+  26 — "make it like a blue side panel similar to the mobile one, labeled as crew
+  … put it higher"); it rides the reserved right lane (`.edit-board` keeps a
+  `padding-right` for it) so it never overlaps a day column's controls, and its
+  chevron flips `›`→`‹`. The rail is
+  `position:fixed` so it never rides the roster's own vertical scroll, and it
+  lives inside `#page-editsched`, so it is absent on every other page and on the
+  phone (`display:none` under 820px — there the palette is already a pull-out
+  drawer). Edit scheduler only: View schedule has no roster, and the board's own
+  roster is a separate `.sb-side` panel. Pinned in `editweek.test.tsx` (the class
+  toggle) and `e2e/geometry.spec.ts` (the real slide + width reclaim).
 
 Four things make it work, and each is load-bearing:
 
@@ -631,7 +669,27 @@ other two say Item, its own `C6_DUTY` header, owner 10 Aug 26: a duty row
 names a job) and speak the ordinary grammar —
 seats `d:di.wi.ri` / `s:di.kind.ri` / `g:di.ri` (+ `.xN`, fill `.+`), texts
 `dl:/dr:/sr:/gr:` via `data-bfld` — so the board's generic arm/drag/change
-handlers cover them with no extra wiring. Row mbtns: `dr*/sr*/gr*` cx
+handlers cover them with no extra wiring.
+**Every append-capable people cell carries a trailing drop zone** (owner,
+26 Aug 26 — a full row swapped a seated puck instead of taking a new one, because
+a packed `.ppl` cell has no empty area, so the drop resolved to a `.seat` instead
+of the cell's `.+` fill). The zone is `html.ts`'s one `ADDZ` body, reused by
+every board `.ppl[data-fill]` cell (`board-html.ts`) — the same drop target the
+week always had. On the DENSE board it is `.schedboard`-scoped to a PERMANENT,
+STEADY-HEIGHT trailing zone (`flex:1 1 var(--puck-w)`): it grows into the row's
+leftover width and wraps to its own `var(--puck-h)` line only once the pucks pack
+the row, so the pucks never reach the cell's right edge (there is always a bare
+patch to drop onto) and a full row shows a fresh empty line below. Its height
+NEVER depends on drag state — an earlier revision opened it from `height:0` on
+`body.dnd`/`body.arming`, which grew every people cell at once and jumped the
+whole board out from under the finger (owner, 26 Aug 26 — "can the screen be
+stable when I try to add in more pucks … the puck will not fill up the entire
+width"). The "+ add" text stays hidden throughout; only a dashed edge marks it,
+faint while a drag/arm is live and bright on the hovered cell. The seat grid
+(`.fcprcp`, sims + flying pairs) auto-adds rows and never packs edge-to-edge, so
+its zone is `display:none`. The week keeps its own always-present full-width
+strip. Pinned in `board.test.tsx` (presence) and `e2e/geometry.spec.ts` (the
+steady height + trailing gap). Row mbtns: `dr*/sr*/gr*` cx
 (CxDialog) / flag / del, `dwadd/dwdel/dradd`, `sradd`, `gradd` (board.ts).
 Duty rows render in MODEL order, not `dutySort` — an editor whose rows jump
 as a role is typed would be hostile. **Nothing re-orders a duty block on its
@@ -721,6 +779,16 @@ line is deliberately not addressable. The selected state (`.wln.on`) is
 rendered **into the string**, not painted afterwards: `SchedBoard` diffs each
 panel's html to decide whether to re-hang it, so a class added later is lost
 on the next unrelated repaint.
+**And it works the OTHER way too** (owner, 26 Aug 26 — "click a puck that has any
+flagging … the top right warning column will snap to that puck and show what
+triggered that flagging"): clicking a board puck selects the person (`SELID`,
+blue — unchanged), and every `Live checks` row whose crew includes them renders
+`.pksel` (a stronger accent ring than `.on`, board.ts), so the panel points at
+what they triggered. `interactions.ts:scrollBoardWarnToSel` then scrolls the
+panel to the first such row a task after the notify that repainted it.
+`selectPerson` clears `WFOCUS`, so `.pksel` and `.on` never mark the same row —
+this stays additive to the 7 Aug rule (a puck still SELECTS, it does not jump the
+board), it just makes the checks list answer the selection.
 
 ## The board on a phone is ONE window (owner, 8 Aug 26)
 
@@ -907,10 +975,14 @@ edit week now:
   **The chips strip `.sb-hl` (`#sbHlStrip`) is the bar's LAST line** — the
   same `HlChips` the week pages render, INSIDE `.sb-top` deliberately so the
   bar's ResizeObserver republishes `--sb-topH` when it opens. Desktop: always
-  open, a full-width second bar line, no gate — nothing pins the desktop
-  bar's height to a session flag. Phone: `display:none` until `#sbHl` flips
-  `HLOPEN` (`.open`, the filters-row sideways-scroller recipe, `order:3` so
-  it lands under the day row).
+  open, no gate — nothing pins the desktop bar's height to a session flag; since
+  26 Aug 26 it no longer takes a FULL-WIDTH line of its own but rides the action
+  row at the LEFT (`.sb-hl{order:5}`, the actions `order:6` keeping
+  `margin-left:auto` at the right — owner, "share the same row as the undo
+  buttons, on the left … more usable space"). Phone: `display:none` until `#sbHl`
+  flips `HLOPEN` (`.open`, the filters-row sideways-scroller recipe, `order:3` so
+  it lands under the day row) — the phone fold is untouched by the desktop move,
+  both scoped by `@media`.
   **`#searchB` is the `#searchV` idiom exactly** — uncontrolled, wiped by the
   blank-click clear — which includes the week-cross idiom: crossing a week
   with the arrows leaves the box's TEXT standing while the filter keeps
@@ -928,6 +1000,23 @@ edit week now:
   of pinning them to the row's ends, because `.schedboard.sb-wide>*` is 1180px
   wide and pans — "the edges of the bar" there would put the two arrows most of a
   screen apart.
+  **The desktop chrome was TIGHTENED for working space (owner, 26 Aug 26 — a run
+  of "the buttons are too big / give me more room" asks), all in `scheduler.css`
+  under `@media (min-width:821px)`, phone untouched.** (1) The action buttons
+  match the shell topbar's ~28px: `.sb-actions` is a flex row that STRETCHES to
+  its tallest child, and an icon button (History's `<HistIcon>` is a block
+  `.btnglyph`) stacked its icon over its label — 44px; `inline-flex` lays each
+  icon beside its label. Scoped to `.sb-actions .abtn:not(.sb-widebtn)` + the
+  calendar, NOT `.sb-top .abtn`, so the desktop `display:none` on the ‹ › day
+  arrows and the wide button survives. (2) The CAT/Type/Quals strip shares the
+  action row (see the strip note above). (3) The SIGN-OFF scrolls AWAY with the
+  board: `.schedboard:not(.sb-wide) .sb-boardwrap` is the scroller (`overflow-y:
+  auto`) and `#sbBoard` is `flex:none;overflow:visible`, so `#sbSign` heads the
+  column and scrolls off the top the way the phone's already does; wide mode
+  keeps its own inner `.sb-board` scroller. `jumpToChange` / warning-jump use
+  `scrollIntoView` (scroller-agnostic), so both still land a puck in view — the
+  geometry pin reads `.sb-boardwrap` now. All four are jsdom-invisible geometry,
+  pinned in `e2e/geometry.spec.ts` ("the scheduler-board chrome is tight").
   **The dots are gone from the phone bar (owner, 23 Aug 26 — a reversal of the
   11 Aug dots build).** The day strip and the blue current-day square paint
   nothing under 820px; the arrows and the bar's day title carry "which day".
@@ -1200,10 +1289,12 @@ routes `data-air`):
 
 An empty People cell (`[data-fill]` with no crew) shows a grey dotted rounded
 box even without a drag in progress, so a scheduler sees where to tap or drop —
-matching the empty flying seats. On the board it is `[data-fill]:empty` (an
-empty cell is truly empty — `sbMore` renders nothing for a crewless row); on
-the week the cell already carries the `.addz` "+ add" strip, so that strip is
-bordered standing when the cell holds no puck (`:not(:has(.puck)):not(:has(.itxt))`).
+matching the empty flying seats. Both the week AND the board people cells now
+carry the `.addz` trailing zone, so on both an empty People cell is bordered
+standing through that zone when it holds no puck
+(`.ppl[data-fill]:not(:has(.puck)):not(:has(.itxt)) .addz`, scoped to
+`.page.editing` and `.schedboard`). Other empty `[data-fill]` cells that carry no
+addz still fall to the `[data-fill]:empty` "+ tap or drop" box.
 Edit surfaces only (`.page.editing` / `.schedboard`, never a `.pv-frozen`
 preview). The accent drag affordance still takes over the moment a drag starts.
 
@@ -1384,10 +1475,17 @@ surface, so it collapses to a summary by default: `PIOPEN`/`togglePInputs`
 (`state/view.ts`), the header the toggle (`data-pitog`, routed in
 `interactions.ts` on `canEditSched()` so it works on the edit week AND the
 board). The summary counts the rows and how many are on the programme. When
-expanded it also carries a housekeeping reminder — "Rejected personal inputs
-should be deleted by the scheduler here" (owner, Aug 26; `.pl-inpnote` on the
+expanded it also carries a housekeeping reminder — "A removed input flags
+nothing until accepted again — delete it here if it should go entirely"
+(owner, Aug 26; reworded 26 Aug 26 with the dormancy rule; `.pl-inpnote` on the
 week, `.sb-pinote` on the board) — a scheduler deletes one by pressing its type
-to open the editor and Delete.
+to open the editor and Delete. **A dormant (removed, acc `'r'`) row reads
+visibly parked** (26 Aug 26 bug pass — it flags nothing, yet printed identical
+to a fresh counting row beside it): `dormRowCls`/`dormRowTitle` (`html.ts`, one
+body for the week's `.pl-row` and the board's `inprow`/`sbi-row`) fade it to
+`.5` — fainter than an accepted row's `.62` — add "· removed" after the type on
+the week, and title it "Removed from the day — flags nothing until accepted
+again". Pinned in `inputedit.test.tsx`.
 Unavailable is deliberately left OPEN — it is a live plant/drop target and the
 day's must-read.
 

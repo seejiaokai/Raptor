@@ -82,6 +82,12 @@ export function refreshHighlights(){
 }
 export function paintArm(){
   document.querySelectorAll('.armed').forEach((el:any)=>el.classList.remove('armed'));
+  /* mirror "a puck is armed for placement" onto <body>, so the board's "+ add"
+     drop strips open for a TAP placement the way body.dnd opens them for a drag
+     (owner, 26 Aug 26 — a full row must take a new puck, not swap a seated one).
+     Board-scoped in CSS; the week's strip is always present so this is a no-op
+     there. */
+  document.body.classList.toggle('arming', !!ARM);
   if(!ARM)return;
   document.querySelectorAll('[data-slot],[data-fill]').forEach((el:any)=>{
     if((el.dataset.slot||el.dataset.fill)===ARM.key)el.classList.add('armed');});

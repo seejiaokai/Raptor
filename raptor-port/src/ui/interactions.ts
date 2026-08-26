@@ -45,6 +45,17 @@ function jumpToWarn(di: number, ix: number) {
   notify(); setTimeout(scrollToWarnFocus, 0)
 }
 
+/* THE REVERSE OF jumpToWarn (owner, 26 Aug 26 — "click a puck that has any
+   flagging … the top right warning column will snap to that puck and show what
+   triggered"). Selecting a person re-renders the board checks panel with their
+   flagged rows marked `.pksel` (board.ts); a task later, once that markup is on
+   screen, scroll the panel to the first of them. scrollIntoView is
+   scroller-agnostic, so it moves whichever ancestor scrolls the checks list. */
+function scrollBoardWarnToSel() {
+  const row = document.querySelector('#sbWarn .wln.pksel') as HTMLElement | null
+  if (row && typeof row.scrollIntoView === 'function') row.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+}
+
 /* THE CHANGES LIST JUMPS TO THE DETAIL IT NAMES (owner, 11 Aug 26 — "if i
    click on the changes on the list, my view will snap to that specific change
    and show all the history of that specific change on the bubble until i click
@@ -668,6 +679,30 @@ export function routeClick(e: MouseEvent) {
 
   /* the palette drawer tab and the arm-strip cancel */
   if (t.closest('.ros-tab')) { document.body.classList.toggle('ros-open'); e.stopPropagation(); return }
+  /* the DESKTOP hide/show rail for the edit-week aircrew column (owner, 26 Aug
+     26 — "hide the placeholders list … it just animates to the right side"). A
+     bare body class, the same session-only, repaint-surviving idiom as ros-open
+     above; the slide + the week reclaiming its width are pure CSS off it.
+     One JS assist: the resting column is position:sticky, so mid-scroll its
+     visual top (pinned ~8px under the bar) sits hundreds of px from its static
+     position — and the collapsed rule's position:absolute/top:auto lands at the
+     static spot, teleporting the panel up off-screen before the sideways slide
+     (the same "flying" family the owner flagged, surfacing only when scrolled).
+     Pinning the on-screen Y as an inline top BEFORE the class flips keeps the
+     slide exactly where the eye last saw the panel; cleared on expand so sticky
+     takes back over. Absolute top places the MARGIN edge, hence the marginTop
+     subtraction. */
+  if (t.closest('[data-roshide]')) {
+    const er = document.querySelector('.edit-board .eroster') as HTMLElement | null
+    if (er && er.parentElement) {
+      if (!document.body.classList.contains('ros-collapsed')) {
+        const mt = parseFloat(getComputedStyle(er).marginTop) || 0
+        er.style.top = (er.getBoundingClientRect().top - er.parentElement.getBoundingClientRect().top - mt) + 'px'
+      } else er.style.top = ''
+    }
+    document.body.classList.toggle('ros-collapsed')
+    e.stopPropagation(); return
+  }
   if (t.closest('[data-disarm]')) { view.disarmSlot(); notify(); e.stopPropagation(); return }
 
   /* a tap on a palette name: plant it if something is armed, otherwise fall
@@ -974,6 +1009,10 @@ export function routeClick(e: MouseEvent) {
     queueHold(holdPuckStill(pk))
     view.selectPerson(pk.dataset.person, !!pk.closest('.week'))
     notify()
+    /* on the board, a click on a flagged puck also snaps the checks panel to
+       that person's first warning (owner, 26 Aug 26) — the panel re-renders with
+       the `.pksel` rows on the notify above, so the scroll waits a task */
+    if (view.SBDAY != null && pk.closest('#sbBoard')) setTimeout(scrollBoardWarnToSel, 0)
     e.stopPropagation(); return
   }
 

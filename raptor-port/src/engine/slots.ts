@@ -328,7 +328,10 @@ export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${
 const markInputDays=(inp:any,fallback:any)=>{const token=inpId(inp);let any=false;DAYS.forEach((d:any,i:any)=>{if(inputCoversDate(inp,d.dt)){markInputFiling(i,token);any=true;}});if(!any&&+fallback>=0)markInputFiling(+fallback,token);};
 export function acceptInput(di:any,inp:any,dest:any){
   const d=DAYS[di]; if(!d||!inp)return false;
-  if(inp.acc)return false;                       // already actioned — unaccept first
+  /* 'r' (removed — see unacceptInput) is NOT "already actioned": it is the
+     dormant parked state whose whole exit is this call, so the Accept button
+     must come back through here. Landed ('g') and filed ('u') still refuse. */
+  if(inp.acc&&inp.acc!=='r')return false;        // already actioned — unaccept first
   /* leave / downchit / detachment are never accepted — they are already issued
      to everyone via the Unavailable block, and promoting one to a ground row
      would make the validator flag the row against its own source input (the
@@ -382,8 +385,10 @@ export function acceptInput(di:any,inp:any,dest:any){
    a new/seed input auto-land, and do it" — every creation path (the two + Add
    dialogs, the Inputs page, the boot/week-load pass) calls it, so they cannot
    drift. It fires ONLY at creation and at boot, never on a repaint, so a
-   scheduler who then REMOVES the row (unaccept) keeps it in Personal Inputs
-   for the session. Returns true when it promoted the row. */
+   scheduler who then REMOVES the row (unaccept → acc 'r') keeps it in
+   Personal Inputs — DORMANT, flagging nothing, per the owner's 26 Aug 26 rule
+   (see unacceptInput) — and the truthy-acc guard below is what stops a week
+   load from silently re-landing it. Returns true when it promoted the row. */
 export function autoAcceptInput(row:any):boolean{
   if(!row||row.acc||!isPersonal(row.type))return false;
   /* dateIx, not DATES.indexOf (24 Aug 26): the index must come from the DATE
@@ -424,7 +429,7 @@ export function acceptedDay(inp:any){
   return -1;
 }
 export function unacceptInput(di:any,inp:any){
-  if(!inp||!inp.acc)return false;
+  if(!inp||!inp.acc||inp.acc==='r')return false; // 'r' is already removed — nothing to undo
   const was=inp.acc;
   if(inp.acc==='g'){
     /* search by content key across the week rather than trusting di — see
@@ -445,7 +450,18 @@ export function unacceptInput(di:any,inp:any){
       break;
     }
   }
-  delete inp.acc;
+  /* 'r', not delete (owner, 26 Aug 26 — tested the preview, removed Comet's
+     accepted Training back to Personal Inputs and it still flagged "Training
+     but tasked — SC AM": "when it is removed it goes into the personal input
+     section. if it goes there, stop it from flagging anything, until its
+     added back"). Deleting acc made a removed input indistinguishable from a
+     fresh one, and fresh inputs count (10 Aug). 'r' is the explicit DORMANT
+     state: inputDormant() blanks it out of the engine (inputFlags + inpShow),
+     autoAcceptInput's truthy-acc guard keeps it from re-landing at week load,
+     and accCtl reads it as "offer Accept again". An input that was never
+     landed at all (acc undefined — e.g. filed onto a published day) still
+     counts; only a deliberate removal parks. */
+  inp.acc='r';
   if(was==='u'){
     const d2=+di>=0?+di:dateIx(inp.date,inp.yr);
     markInputDays(inp,d2);

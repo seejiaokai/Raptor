@@ -20,6 +20,7 @@ import * as view from '../state/view'
 import { cxText } from './html'
 import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave, askCx, cxCommit, CXT } from './board'
 import { applyMove } from '../engine/reorder'
+import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -279,6 +280,32 @@ describe('the scheduler board (tfin board group)', () => {
     await click($(`#sbBoard [data-gdel="0.${gi}"]`))
   })
 
+  /* A TEMPLATE-TITLED WAVE KEEPS ITS NAME ON THE GO DROPDOWN (26 Aug 26 bug
+     pass). labelToTitle used to ordinal-match ANY digit, so a fly template
+     titled "BFM 4-ship" read here as "4th wave" — indistinguishable from a
+     real one and disagreeing with the week's wl: cell — and a re-pick then
+     ran titleToLabel('4th wave') and silently REWROTE the label to WAVE 4,
+     destroying the template identity. Only the canonical forms map now; any
+     other label passes through VERBATIM both ways, and the option text is
+     escaped at the builder (an unescaped `<` swallowed the option outright). */
+  it('a template-titled wave shows its own title, a re-pick is a byte no-op, and the title is escaped', async () => {
+    const d = DAYS[0]
+    await click($('[data-wvadd]'))
+    await click($('.wavemenu [data-wmkind=""]'))
+    const gi = d.waves.length - 1, w = d.waves[gi]
+    w.label = 'BFM 4-ship <chk>'
+    await act(async () => { notify() })
+    const sel = $(`#sbBoard [data-wsel="0.${gi}"]`) as HTMLSelectElement
+    /* the parser decodes the escaped entity back to `<` in the option text —
+       an UNescaped build swallows `<chk>` as a tag and the option truncates */
+    expect(sel.value, 'the dropdown carries the full title, not an ordinal or a truncation').toBe('BFM 4-ship <chk>')
+    await change(sel, 'BFM 4-ship <chk>')
+    expect(w.label, 'a re-pick keeps the label byte-identical').toBe('BFM 4-ship <chk>')
+    await change($(`#sbBoard [data-wsel="0.${gi}"]`), '4th wave')
+    expect(w.label, 'the canonical pick still maps').toBe('WAVE 4')
+    await click($(`#sbBoard [data-gdel="0.${gi}"]`))
+  })
+
   /* the ROLE pick-list on a block that belongs to no wave */
   it('clicking a duty ROLE cell offers the five roles, and picking one writes it', async () => {
     const d: any = DAYS[0], savedDW = d.dutywaves
@@ -370,6 +397,38 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect($('#sbBoard .sb-panel.pinp .sb-ph').textContent).toContain('Personal Inputs')
   })
 
+  /* THE "+ ADD" OVERFLOW STRIP (owner, 26 Aug 26 — a full people cell swapped a
+     seated puck instead of taking a new one, because the board never drew the
+     drop-below target the week always has). Every append-capable cell now carries
+     it; jsdom pins its presence, and its collapse/expand geometry is in
+     e2e/geometry.spec.ts (it opens height only while a drag or a tap-placement is
+     in flight, so the dense board keeps its row heights). */
+  it('every append-capable people cell carries the "+ add" overflow strip', () => {
+    const cells = [...document.querySelectorAll('#sbBoard .ppl[data-fill]')]
+    expect(cells.length, 'the board has append-capable people cells').toBeGreaterThan(0)
+    const missing = cells.filter(c => !c.querySelector(':scope > .addz'))
+    expect(missing.length, 'so a full row takes a new puck below instead of swapping a seated one').toBe(0)
+  })
+
+  /* CLICK A FLAGGED PUCK → THE CHECKS PANEL POINTS AT WHAT IT TRIGGERED (owner,
+     26 Aug 26). Selecting a person marks their check rows `.pksel`; a second
+     click clears it. selectPerson clears WFOCUS, so `.pksel` and `.on` never land
+     together. The panel's scroll-to-first is jsdom-invisible (no layout); this
+     pins the mark, which is what carries "show what triggered". */
+  it('selecting a flagged person lights their check rows, and a second click clears them', async () => {
+    await act(async () => { openScheduler(0); notify() })   // #sbWarn renders only with the board open
+    const dw = (WARN.byDay[0] && WARN.byDay[0].warns) || []
+    const w = dw.find((x: any) => (x.who || []).length)
+    expect(w, 'the seed board day carries a crewed warning').toBeTruthy()
+    const pid = w.who[0]
+    await act(async () => { view.selectPerson(pid, false); notify() })
+    const rows = [...document.querySelectorAll('#sbWarn .wln.pksel')]
+    expect(rows.length, "the selected person's check rows light").toBeGreaterThan(0)
+    rows.forEach(r => expect(r.getAttribute('data-wix'), 'each is a real warning row').toBeTruthy())
+    await act(async () => { view.selectPerson(pid, false); notify() })
+    expect(document.querySelectorAll('#sbWarn .wln.pksel').length, 'a second click clears the mark').toBe(0)
+  })
+
   /* the render-time sort (owner, Aug 26): rows read in start-time order but
      keep their MODEL index as key, so a delete on a visually re-ordered row
      must remove the row it names, not the one in that screen position */
@@ -408,7 +467,9 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     const ri = DAYS[di].ground.findIndex((r: any) => r.src === key)
     expect(ri, 'the auto-landed row is on the day').toBeGreaterThanOrEqual(0)
     await click(document.querySelector(`#sbBoard .sb-panel.grnd [data-grdel="${di}.${ri}"]`))
-    expect(m.acc, 'accept cleared — back under Personal Inputs').toBeFalsy()
+    /* 'r' since 26 Aug 26 (owner): the round-trip parks it dormant — listed
+       under Personal Inputs, flagging nothing until re-accepted */
+    expect(m.acc, 'removed — back under Personal Inputs, dormant').toBe('r')
     expect(INPUTS.includes(m), 'the input itself survives').toBe(true)
     expect(DAYS.some((d: any) => (d.ground || []).some((r: any) => r.src === key)), 'no orphan row on any day').toBe(false)
     const j = INPUTS.indexOf(m); if (j >= 0) INPUTS.splice(j, 1)   // clean up
@@ -838,8 +899,8 @@ describe('CX carries a reason (tfin R group, B28)', () => {
     expect($('#cxReason')).toBeTruthy()
   })
 
-  it('it offers the usual reasons', () => {
-    expect($$('#cxQuick [data-cxq]').length).toBeGreaterThanOrEqual(6)
+  it('it offers the three shipped reasons (WX / OPS / LOGS, owner 26 Aug 26)', () => {
+    expect($$('#cxQuick [data-cxq]').map(b => b.textContent)).toEqual(['WX', 'OPS', 'LOGS'])
   })
 
   it('Un-cancel is hidden on a line that is not cancelled, and the action button says what it will do', () => {
@@ -2028,5 +2089,24 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
       SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}
       notify()
     })
+  })
+})
+
+/* the Programme people cell carries NO "all" ghost (owner, 26 Aug 26 — "if no
+   puck is there, just assume that no one is planned for that line"): the
+   engine already reads an empty who as nobody planned, and the word said
+   otherwise. The cell stays a live data-fill target so pucks still land. */
+describe('an empty Programme people cell says nothing', () => {
+  it('renders no "all" text and keeps its fill target', () => {
+    ;(DAYS[0] as any).allhands.push({ prog: 'NEW ITEM', str: '0900', end: '0930', who: [] })
+    const ri = (DAYS[0] as any).allhands.length - 1
+    const h = boardHTML(0)
+    const cell = h.match(new RegExp(`<div class="ppl" data-fill="a:0\\.${ri}\\.\\+">([^]*?)</div>`))
+    expect(cell, 'the people cell still renders with its fill target').toBeTruthy()
+    /* no ghost word and no puck — only the "+ add" overflow strip (owner, 26 Aug
+       26), which is invisible on the board until a drag or a tap placement */
+    expect(cell![1], 'holds only the "+ add" drop strip').toBe('<span class="addz" aria-hidden="true">+ add</span>')
+    expect(h).not.toContain('<span class="itxt">all</span>')
+    ;(DAYS[0] as any).allhands.pop()
   })
 })

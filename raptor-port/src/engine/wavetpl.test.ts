@@ -19,6 +19,10 @@ beforeEach(() => {
   Object.keys(mem).forEach(k => delete mem[k])
   storeBackend.impl = fake
   waveTplReset()
+  /* reset deliberately SPARES the built-in kind flags now (the Admin page's
+     curation, pinned below) — clear them by hand so each test starts truly
+     clean rather than inheriting a neighbour's hides */
+  WAVEHIDE.clear()
 })
 
 describe('wave-template library CRUD', () => {
@@ -190,5 +194,45 @@ describe('persistence', () => {
     const fresh = addWaveTpl('New')!
     expect(fresh.id).not.toBe('w5')
     expect(new Set(WAVETPL_CFG.map(t => t.id)).size).toBe(WAVETPL_CFG.length)
+  })
+
+  /* hand-edited storage can carry one id twice — delete/rename/hide address by
+     id and would only ever reach the first wearer (26 Aug 26 bug pass) */
+  it('two stored entries sharing an id are told apart — the second gets a fresh one', () => {
+    store.set('wavetpl', [
+      { id: 'w3', title: 'First', kind: 'fly', lines: [{}] },
+      { id: 'w3', title: 'Second', kind: 'fly', lines: [{}] },
+    ] as any)
+    waveTplLoad()
+    expect(WAVETPL_CFG).toHaveLength(2)
+    expect(new Set(WAVETPL_CFG.map(t => t.id)).size).toBe(2)
+  })
+})
+
+/* CLEAR-ALL CLEARS THE LIBRARY, NOT THE ADMIN'S CURATION (26 Aug 26 bug pass).
+   WAVEHIDE holds two ownership domains — per-template flags (they die with the
+   library) and the built-in kind flags the Admin page sets. Wiping both meant
+   clearing the template library silently resurfaced a hidden BB in every
+   + Wave menu. */
+describe('clear-all spares the built-in show/hide flags', () => {
+  it('reset wipes the library and its template flags; the built-in kind flags survive and persist', () => {
+    const t = addWaveTpl('Mine')!
+    setWaveHidden(t.id, true)
+    setWaveHidden('bb', true)                    // the Admin page's own curation
+    waveTplReset()
+    expect(WAVETPL_CFG).toHaveLength(0)
+    expect(isWaveHidden(t.id), "the cleared template's flag dies with it").toBe(false)
+    expect(isWaveHidden('bb'), "the Admin's built-in hide survives the library clear").toBe(true)
+    expect(store.get('wavehide', null), 'and it is what persists').toEqual(['bb'])
+  })
+})
+
+/* the raw keystroke value persists per save until blur normalises it through
+   waveTime — bounded like cs/msn so a paste cannot ride storage (26 Aug 26) */
+describe('time-cell input bound', () => {
+  it('a pasted monster into to/ld is clamped before blur normalises it', () => {
+    const t = addWaveTpl('T')!
+    setWaveTplLine(t.id, 0, 'to', 'X'.repeat(400))
+    expect((WAVETPL_CFG[0]!.lines[0]!.to as string).length).toBeLessThanOrEqual(12)
   })
 })

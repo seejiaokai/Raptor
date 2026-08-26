@@ -563,8 +563,61 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
    pull-out drawer scrolling inside .ros-body, a different box with its own
    header height, and the owner's ask was for the desktop panel. */
 @media (min-width:821px){
-  .edit-board .eroster .er-h{position:sticky;top:0;z-index:4;background:var(--panel)}
+  /* the box-shadow is an opaque cap painted 10px ABOVE the stuck header — the
+     panel's 8px top padding used to leave a sliver there where the first pucks
+     showed through as you scrolled ("this bleeding of the pucks behind the day …
+     opaque it", owner 26 Aug 26). A shadow (not extra padding) keeps the header's
+     box height fixed, so the column labels' 27px sticky offset below stays exact;
+     the panel's overflow clips the cap to its rounded top edge. */
+  .edit-board .eroster .er-h{position:sticky;top:0;z-index:4;background:var(--panel);
+    box-shadow:0 -10px 0 0 var(--panel)}
   .edit-board .eroster .rcol .rh{position:sticky;top:27px;z-index:3;background:var(--panel);padding-bottom:1px}
+}
+/* HIDE THE AIRCREW COLUMN ON THE EDIT SCHEDULER (owner, 26 Aug 26 — "hide the
+   placeholders list on the right of edit scheduler and it just animates to the
+   right side"). Desktop only; the phone palette is already a pull-out drawer.
+   A rail pinned at the viewport's RIGHT edge toggles body.ros-collapsed; the
+   column then slides off to the right on a transform transition and the week
+   (flex:1) reclaims the freed width. The rail is position:fixed so it never
+   rides the roster's own vertical scroll, and it lives in #page-editsched so it
+   is gone on every other page. */
+.ros-rail{display:none}
+@media (min-width:821px){
+  /* reserve the rail's lane at the right; position:relative makes .edit-board the
+     containing block for the collapsed (absolute) roster, so right:0 lands on the
+     board's own right edge rather than the viewport's */
+  .edit-board{padding-right:26px;position:relative}
+  .edit-board .eroster{transition:transform .24s ease}
+  /* a slim BLUE "CREW" tab, styled off the phone drawer's accent tab and sat
+     HIGH on the right edge rather than mid-height (owner, 26 Aug 26 — "make it
+     like a blue side panel similar to the mobile one, labeled as crew … put it
+     higher … doesn't block much of the view"). It rides the reserved right lane,
+     so it never overlaps a day column's controls. */
+  .ros-rail{position:fixed;top:150px;right:0;z-index:151;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:8px;width:26px;padding:13px 0;
+    border:1px solid rgba(59,198,232,.5);border-right:none;border-radius:11px 0 0 11px;
+    background:rgba(59,198,232,.14);color:var(--accent);cursor:pointer;
+    box-shadow:-10px 0 24px -16px rgba(0,0,0,.9)}
+  .ros-rail:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .ros-rail b{writing-mode:vertical-rl;text-orientation:mixed;text-transform:uppercase;
+    letter-spacing:.16em;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:11px;font-weight:800}
+  /* a small chevron above the label — points RIGHT ("push it away") when open,
+     LEFT ("pull it back") when collapsed */
+  .ros-rail-chev{width:7px;height:7px;border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor;transform:rotate(-45deg);flex:0 0 auto;
+    transition:transform .2s ease}
+  body.ros-collapsed .ros-rail-chev{transform:rotate(135deg)}
+  /* collapsed: the column leaves the flow (week reclaims) and slides off to the
+     right past the rail. position:ABSOLUTE with top:auto is the whole trick — it
+     keeps the column at its STATIC vertical position (no top:8px yank), so only
+     the horizontal transform animates and the panel slides straight sideways
+     instead of flying up-then-across. An earlier position:fixed;top:8px snapped
+     the panel ~300px UP to the viewport top before sliding, and back DOWN on
+     expand — the "flying above then below" the owner flagged (26 Aug 26). Absolute
+     also scrolls with the board like the in-flow column did, so a collapse while
+     scrolled stays put too. */
+  body.ros-collapsed .edit-board .eroster{position:absolute;right:0;top:auto;
+    transform:translateX(calc(100% + 6px));z-index:150}
 }
 .eroster .rpuck{display:flex;flex:0 0 auto;cursor:grab}
 /* the grab tab — the only part on screen when the drawer is parked. 30px:
@@ -1124,6 +1177,38 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
   display:flex;align-items:center;justify-content:center;pointer-events:none;transition:none}
 body.dnd .ppl[data-fill] .addz{border-color:var(--edge-2);color:var(--ink-3)}
 body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--accent);background:rgba(59,198,232,.07)}
+/* On the dense scheduler BOARD the strip is a TRAILING drop zone that grows to
+   eat the row's leftover width and wraps to its own line only once the pucks
+   pack the row — so the pucks never fill the full width (there is always a bare
+   patch to drop onto) and a full row shows a fresh empty line below, WITHOUT the
+   strip toggling height when a drag starts (which grew every people cell at once
+   and jumped the whole board out from under the finger). Owner, 26 Aug 26 —
+   "can the screen be stable when I try to add in more pucks … the puck will not
+   fill up the entire width … there's always an empty space to drop the pucks".
+   Its height never depends on drag state, so nothing reflows on grab; the "+ add"
+   text stays hidden (transparent) throughout — only a dashed edge marks it, faint
+   while a drag/arm is live and bright on the hovered cell. The week keeps its own
+   always-present full-width strip (rules above). Flex basis var(--puck-w): once a
+   whole puck no longer fits on the line, the zone wraps and reserves a new one. */
+.schedboard .ppl[data-fill] .addz{flex:1 1 var(--puck-w);min-width:calc(var(--puck-w)*.55);
+  min-height:var(--puck-h);height:auto;margin:0;align-self:stretch;color:transparent;
+  border:1px dashed transparent}
+body.dnd .schedboard .ppl[data-fill] .addz,
+body.arming .schedboard .ppl[data-fill] .addz{border-color:var(--edge-2);color:transparent}
+body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);color:transparent;
+  background:rgba(59,198,232,.09)}
+/* an EMPTY board people cell shows the standing dashed drop box at rest (owner,
+   14 Aug 26 — a scheduler sees where to tap or drop), drawn by its trailing zone.
+   The box carries NO "+ add" text (owner, 26 Aug 26 — "instead of having the
+   +ADD showing") — a bare dashed outline, like an empty flying seat. A cell that
+   already holds a puck keeps its zone bare; the affordance is only where needed. */
+.schedboard .ppl[data-fill]:not(:has(.puck)):not(:has(.itxt)) .addz{border-color:var(--edge-2)}
+/* the seat grid (.fcprcp — sims, and the flying-seat pairs) auto-adds rows as
+   pucks land, so it never packs edge-to-edge and swaps; it needs no trailing
+   zone, and a full-width one would cost every seat cell a permanent row. */
+.schedboard .ppl.fcprcp .addz{display:none}
+/* the WEEK seat grid still spans its always-present strip across both columns */
+.ppl.fcprcp .addz{grid-column:1/-1}
 /* remarks, to the RIGHT of the pucks (column 5 on desktop, its own strip on a phone) */
 .plist .pl-row .rmk{grid-column:5;font-size:9.5px;color:var(--ink-2);line-height:1.3;padding-top:3px;min-width:0;overflow-wrap:anywhere}
 .plist .pl-row .rmk .ntx{display:block}
@@ -1441,7 +1526,13 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .sec .pl-sub{color:var(--sec)}
 
 .sec .pl-cols{border-bottom-color:var(--secln)}
-.sec-prog{--sec:#3BC6E8;--secbg:rgba(59,198,232,.05);--secln:rgba(59,198,232,.28)}
+/* Common Programme reads PERIWINKLE, not the flight cyan (owner, 26 Aug 26 —
+   "common programme and flying waves are the same colours, can there be some
+   difference in colour distinction"). --accent and --flight are the same cyan,
+   so the squadron-wide programme and the flying waves were indistinguishable;
+   the waves keep the flight cyan (their identity) and the programme takes a
+   calm blue-violet that no other section uses. Board twin: .sb-panel.prog. */
+.sec-prog{--sec:#7C8CF0;--secbg:rgba(124,140,240,.06);--secln:rgba(124,140,240,.3)}
 .sec-duty{--sec:#57C97A;--secbg:rgba(87,201,122,.05);--secln:rgba(87,201,122,.28)}
 .sec-sim{--sec:#B24DEA;--secbg:rgba(178,77,234,.055);--secln:rgba(178,77,234,.3)}
 .sec-grnd{--sec:#E5A83B;--secbg:rgba(229,168,59,.05);--secln:rgba(229,168,59,.28)}
@@ -1468,6 +1559,12 @@ body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--a
 .sb-arow.inprow.accd{opacity:.62}
 .pl-row.accd .ntx::after{content:' · accepted';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
 .sbi-row.accd{opacity:.62}
+/* a REMOVED (dormant) input reads visibly parked — it flags NOTHING until
+   accepted again (26 Aug 26 bug pass: a dormant row printed identical to a
+   fresh counting one beside it). Fainter than .accd (silent, not handled),
+   and it says so after the type the same way accepted rows do. */
+.pl-row.inp-dorm,.sb-arow.inprow.inp-dorm,.sbi-row.inp-dorm{opacity:.5}
+.pl-row.inp-dorm .ntx::after{content:' · removed';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
 .accs{display:inline-flex;gap:4px;align-items:center;margin-left:6px}
 .accb{font:inherit;font-size:9px;letter-spacing:.05em;text-transform:uppercase;
   padding:2px 7px;border-radius:6px;cursor:pointer;white-space:nowrap;
@@ -2941,7 +3038,12 @@ body.sb-lock{overflow:hidden}
 .sb-nav{display:contents}
 .sb-nav .sb-arrow{display:none}
 .sb-days{display:flex;gap:5px;align-items:center}
-.sb-days .sbday{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer}
+/* user-select:none so a click never drops a blinking text caret inside the
+   chip (owner, 26 Aug 26 — "why is there a line flashing on the arrow buttons").
+   These are click targets built as <span>s, so a tap on the ‹ › week arrows (or
+   any day chip) placed a collapsed selection in the glyph's text node, which
+   the browser then blinked. Covers .sbweek too (it is a .sbday). */
+.sb-days .sbday{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;user-select:none;-webkit-user-select:none}
 .sb-days .sbday.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 /* THE WEEK-JUMP ARROWS flanking the day chips (board.ts dayTabsHTML). Chip-
    shaped so they read as part of the strip, but glyph-only and muted, so the
@@ -2974,10 +3076,38 @@ body.sb-lock{overflow:hidden}
 /* the icon/label split every top-bar button now carries. Desktop shows both,
    so nothing here changes above 820px; the phone block hides .bl. */
 .sb-actions .bi{font-style:normal}
-.sb-actions{margin-left:auto;display:flex;gap:7px}
+.sb-actions{margin-left:auto;display:flex;gap:7px;align-items:center}
 .sb-main{flex:1;display:flex;min-height:0}
 .sb-boardwrap{flex:1;display:flex;flex-direction:column;min-height:0;min-width:0}
 .sb-board{flex:1;overflow:auto;padding:12px 14px}
+/* ===== DESKTOP scheduler-board chrome, tightened (owner, 26 Aug 26) ===== */
+@media (min-width:821px){
+  /* (1) BUTTONS MATCH THE SHELL TOPBAR HEIGHT ("the scheduler board buttons are
+     too big … make them similar to the edit schedule"). They were 44px: .sb-actions
+     is a flex row that STRETCHES to its tallest child, and an icon button (History's
+     <HistIcon> is a block .btnglyph) stacked its icon OVER its label. inline-flex
+     lays every icon beside its label, so each board button is ~28px like the
+     shell's .abtn — the calendar button included. Scoped to the action buttons
+     and the calendar (NOT `.sb-top .abtn`, which would clobber the desktop
+     display:none on the ‹ › day arrows and the wide-layout button); the hidden
+     wide button is excluded so it stays hidden. Phone keeps its 30px icon-only
+     squares (max-width:820 block below). */
+  .sb-actions .abtn:not(.sb-widebtn),.sb-calbtn{display:inline-flex;align-items:center;gap:6px}
+  /* (2) THE SIGN-OFF SCROLLS AWAY with the board instead of staying pinned above
+     it ("don't freeze this bar … so I have more working space"). The whole board
+     column (.sb-boardwrap) is the scroller now, so #sbSign heads it and scrolls
+     off the top the way the phone's already does. Wide mode keeps its own inner
+     .sb-board scroller (:not(.sb-wide)) so its side-by-side panels are untouched. */
+  .schedboard:not(.sb-wide) .sb-boardwrap{overflow-y:auto}
+  .schedboard:not(.sb-wide) .sb-board{flex:none;overflow:visible}
+  /* (3) THE CAT/Type/Quals STRIP SHARES THE ACTION ROW instead of a full line of
+     its own ("share the same row as the undo buttons, on the left … more usable
+     space"). order puts the strip just before the actions, which keep
+     margin-left:auto and sit at the right; the strip sits at the left of that row.
+     Phone still folds it behind #sbHl (below), untouched. */
+  .sb-hl{flex:0 0 auto;order:5;padding:0}
+  .sb-actions{order:6}
+}
 /* ---- inputs panel: every personal input for the open day, morning → late ---- */
 .sb-inputs{flex:0 0 auto;max-height:36%;overflow:auto;padding:9px 14px 12px;
   border-top:1px solid var(--edge);background:var(--panel-2)}
@@ -3050,6 +3180,10 @@ body.sb-lock{overflow:hidden}
 .sb-warn .wln[data-wdi]:hover{filter:brightness(1.15)}
 /* mirrors .dwlist .witem.on, so the board's selected issue reads the same as the week's */
 .sb-warn .wln.on{box-shadow:0 0 0 1px rgba(59,198,232,.35);border-left-color:var(--accent)}
+/* the selected person's flagged rows — a stronger accent ring + tint so a click
+   on a flagged puck clearly points at what it triggered (owner, 26 Aug 26).
+   selectPerson clears WFOCUS, so .pksel and .on never land on the same row. */
+.sb-warn .wln.pksel{box-shadow:0 0 0 2px rgba(59,198,232,.6);border-left-color:var(--accent);background:rgba(59,198,232,.12)}
 /* the check text takes the row; the mute button (✕ to hide, ↺ to restore) sits
    at the right and only appears for a scheduler (owner, Aug 26) */
 .sb-warn .wln-t{flex:1;min-width:0;overflow-wrap:anywhere}
@@ -3250,13 +3384,21 @@ body.sb-lock{overflow:hidden}
 /* GROUPED BY DETAIL. The count and the caret say the row folds; the caret
    turns rather than swapping glyph, so nothing on the line changes width and
    the rows below stay put as it opens. */
-.hl-grp{border-bottom:1px solid var(--edge)}
-.hl-grp:last-child{border-bottom:none}
-.hl-grp .hl-ghead{border-bottom:none}
+/* SCOPED to `.hl-list` — the History accordion's OWN container. `.hl-grp` is a
+   shared class: the highlight strip (hlchips.tsx) and the calendar puck-picker
+   (`.ic-pick-cats`) both build their CAT/Type/Quals tabs as bare `.hl-grp`
+   spans, NOT inside `.hl-list`. Bare, this fold border drew a stray underline
+   under every strip tab except the last (`:last-child` spared QUALS) — owner,
+   26 Aug 26 ("why do the CAT and TYPE highlighter buttons have an underline …
+   make it clean like QUALS … fix everywhere"). Anchoring the whole accordion
+   look to `.hl-list` keeps it off the strip and the picker in one move. */
+.hl-list .hl-grp{border-bottom:1px solid var(--edge)}
+.hl-list .hl-grp:last-child{border-bottom:none}
+.hl-list .hl-grp .hl-ghead{border-bottom:none}
 .hl-n{font-size:10px;font-weight:700;color:var(--accent);background:rgba(59,198,232,.1);
   border-radius:999px;padding:1px 7px;flex:0 0 auto}
 .hl-caret{color:var(--ink-3);flex:0 0 auto;transition:transform .15s;display:inline-block}
-.hl-grp.open .hl-caret{transform:rotate(180deg)}
+.hl-list .hl-grp.open .hl-caret{transform:rotate(180deg)}
 .hl-sub{list-style:none;margin:0 0 6px;padding:0 0 0 14px;border-left:2px solid var(--edge)}
 .hl-subrow{border-bottom:none;padding:5px 0;font-size:11px}
 /* the group head already said both of these — repeating the day chip on every
@@ -3698,7 +3840,7 @@ button.sanscard:hover{border-color:var(--accent)}
 /* ---- scheduler-board panels: overall notes / overall programme / sim notes ---- */
 .sb-panel{border:1px solid var(--edge);border-radius:10px;margin-bottom:12px;overflow:hidden;background:var(--panel)}
 .sb-panel.notes{border-left:3px solid var(--adv)}
-.sb-panel.prog{border-left:3px solid var(--accent)}
+.sb-panel.prog{border-left:3px solid #7C8CF0}  /* periwinkle — distinct from the flight cyan (owner, 26 Aug 26); matches .sec-prog on the week */
 .sb-panel.simn{border-left:3px solid var(--san)}
 /* the duty / sim / ground / personal-inputs panels wear the same hues as
    their week sections (.sec-duty etc.) so the board reads as the same day */

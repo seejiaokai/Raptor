@@ -147,7 +147,10 @@ export function setWaveTplLine(id: string, li: number, field: 'cs' | 'msn' | 'to
   if (!l) return false
   if (field === 'cs') l.cs = String(val).slice(0, MAX_CS)
   else if (field === 'msn') l.msn = String(val).slice(0, MAX_MSN)
-  else if (field === 'to' || field === 'ld') l[field] = String(val)
+  /* bounded like cs/msn — the raw keystroke value persists until blur
+     normalises it through waveTime, so an unclamped paste rode every
+     per-keystroke save into storage (26 Aug 26 bug pass) */
+  else if (field === 'to' || field === 'ld') l[field] = String(val).slice(0, 12)
   else if (field === 'spare') l.spare = kindIsStandby(t.kind) ? !!val : false
   else return false
   return true
@@ -176,8 +179,10 @@ const mkAircraft = (standby: boolean, spare: boolean): any => {
    own flags (standalone/noconf/night/kind) decide how validate.ts treats it, exactly
    as makeStandalone/addWave set them; only the LINES are the template's. Times are
    normalised through waveTime so a stored nonsense value never reaches the board.
-   The label a fly wave gets (its WAVE-N number in the flying tally) is the caller's
-   to set at placement, as addWave already does — a standby wave keeps its kind label. */
+   A fly wave CARRIES THE TEMPLATE'S TITLE as its label (addWaveFromTpl, board.ts,
+   keeps it deliberately — the label the wave carries is the template's own); a
+   standby wave keeps its kind label. The board's Go dropdown passes a non-"WAVE N"
+   label through verbatim (board-html.ts labelToTitle), so the title survives. */
 export function waveFromTpl(id: string): any | null {
   const t = WAVETPL_CFG.find(t => t.id === id)
   if (!t) return null
@@ -235,7 +240,10 @@ export function waveTplLoad() {
   if (Array.isArray(raw)) for (const t of raw) {
     if (out.length >= MAX_WTPL) break
     if (!t || typeof t !== 'object' || !Array.isArray((t as any).lines)) continue
-    const id = typeof (t as any).id === 'string' && (t as any).id ? (t as any).id : newId()
+    /* an id seen twice (hand-edited storage) gets a fresh one, or delete/
+       rename/hide would only ever address the first wearer (26 Aug 26 pass) */
+    let id = typeof (t as any).id === 'string' && (t as any).id ? (t as any).id : newId()
+    if (out.some(x => x.id === id)) id = newId()
     const title = typeof (t as any).title === 'string' ? (t as any).title.slice(0, MAX_WTITLE) : ''
     const kind: WaveKind = WAVE_KINDS.includes((t as any).kind) ? (t as any).kind : 'fly'
     const standby = kindIsStandby(kind)
@@ -260,9 +268,15 @@ export function waveTplLoad() {
   if (Array.isArray(rawH)) for (const k of rawH) if (typeof k === 'string' && valid.has(k)) WAVEHIDE.add(k)
 }
 
+/* Clear-all clears the LIBRARY — and only the library's half of the hide-set.
+   WAVEHIDE holds two ownership domains: per-template flags (they die with
+   their templates, exactly as delWaveTpl drops one) and the four BUILT-IN
+   kind flags the Admin page curates. Wiping both used to silently resurface
+   a hidden BB in every + Wave menu the day someone cleared the template
+   library (26 Aug 26 bug pass) — the Admin's curation is not this button's
+   to destroy. */
 export function waveTplReset() {
   WAVETPL_CFG = []
-  WAVEHIDE.clear()
-  store.set('wavetpl', null)
-  store.set('wavehide', null)
+  ;[...WAVEHIDE].forEach(k => { if (!WAVE_KINDS.includes(k as any)) WAVEHIDE.delete(k) })
+  waveTplSave()
 }

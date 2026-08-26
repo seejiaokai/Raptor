@@ -33,7 +33,7 @@ Admin tab; all six gates watched this session):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3119 across 182 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3135 across 183 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 321 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
@@ -241,6 +241,87 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   are still there.
 
 ## Known issues / open work
+
+- **Two seams flagged by the 26 Aug 26 bug pass, deliberately left as-is
+  (behaviour changes an owner should call, not a bug fix):**
+  - **A STANDBY-kind wave TEMPLATE is structurally lighter than the built-in
+    it names.** `waveFromTpl` mints one single-aircraft formation per line;
+    the built-in SC packs its MAIN crews as aircraft inside one shift
+    formation. Same-shaped days therefore tally differently on the day
+    badge (`waves.ts` `sn` = max non-spare aircraft per formation: built-in
+    SC reads "/ 2", a two-MAIN SC template "/ 1"), and "save my SC as a
+    template" does not reproduce what + Wave → SC builds. Raise with the
+    owner before restructuring the mint.
+  - **A typo'd (unknown) input type grades AMBER against an SC MAIN shift**
+    (`validate.ts`'s Meeting-amber fallback) while the same typo is HARD
+    against a sortie — softer only on shifts. Fail-closed doctrine says
+    unknown belongs on the hard side; the reference patch mirrors the
+    softness, so flipping it needs the `refwin.ts` mirrors updated with it
+    (see the drift-seam comment at `inputs.ts` `SHIFT_HARD_RE`).
+
+- **SC MAIN grades personal inputs PER TYPE now (owner, 26 Aug 26 — built
+  this session).** Training, CSE, Fly with, Personal, Appointment, Duty and
+  Other are a hard red conflict across an SC MAIN shift (the shift may launch
+  the man); Meeting is the amber advisory; ATT B is red on SC MAIN too
+  (narrowed from "bars the jet and nothing else" — the picker had refused him
+  SC seats all along) while keeping his desk, sim, ground and AVALON-desk
+  carve-outs. A ground row is graded by what it IS: source input type first
+  (`row.src`), the row's own words for hand-typed rows (the red-list
+  keywords, word-bounded, deliberately common words — "DUTY OFFICER
+  HANDOVER" goes red on purpose). Programme items stay advisory always; SC
+  SPARE and AVALON are untouched; the ALL AVAIL puck still never flags
+  anywhere (now pinned on ground/programme rows too). Shift lines left the
+  sortie "clashes with" loop — the graded events loop is a shift's ONE voice,
+  so a leave no longer reads twice in two wordings and `SC_INTIME` excludes
+  shift-overlapping inputs. The board's Programme people cell also dropped
+  its hardcoded "all" ghost (owner, same session): an empty cell now reads as
+  what the engine always did — nobody planned. Rules:
+  `docs/engine-rules.md` §Validation (per-type rule + ground-row grading);
+  seam map: `docs/feature-impact.md` (one flag, five files); pins:
+  `raptor-port/src/engine/scshift-inputs.test.ts`. **Open around it:**
+  - **ATT B beyond SC MAIN is deliberately unscoped** — the owner: "for now
+    we will focus on SC MAIN first, later I'll look at other areas that ATT B
+    affects". Ask before widening.
+  - **Warnings are live, not AL-snapshotted**, so an already-published day
+    carrying a red-list commitment against SC MAIN lights up on next open.
+    Presentational only; the owner was told.
+  - **Parity boundary**: an accepted 'Other' vs SC MAIN diverges from the
+    reference (port reads `row.src`; the reference can only read the remarks
+    label) — no parity fixture may build one (`refwin.ts` comment).
+
+- **A REMOVED input is DORMANT until re-accepted (owner, 26 Aug 26 — same
+  session, from testing the preview above).** He removed an accepted Training
+  from the Ground Programme and it still rang "Training but tasked — SC AM":
+  `unacceptInput` used to `delete inp.acc`, making a removal indistinguishable
+  from a fresh input, and fresh inputs count (10 Aug). Now `unacceptInput`
+  parks it as **`acc:'r'`** and `inputDormant` (`engine/inputs.ts`) blanks it
+  from the whole engine — warnings, advisories, the picker, closed hours, the
+  cross-week seeds — while it stays listed under Personal Inputs with its
+  Accept button (`accCtl` treats 'r' as un-accepted) **and reads visibly
+  parked** (faded `.inp-dorm` row, "· removed" after the type — 26 Aug 26 bug
+  pass: a silent row printed identical to a counting one beside it); the
+  scheduler's Accept is the one way back. The mark survives week switches
+  (`loadWeek`'s acc-clear skips 'r', `autoAcceptInput` refuses it; the week
+  stash's `un` set records ONLY explicit 'r' rows — recording acc-less
+  unlanded rows too re-parked never-landed inputs as dormant after a
+  published-day reopen + week round-trip, fixed in the 26 Aug 26 bug pass)
+  and a reload forgets it with everything else (session-only, in lockstep). An input that was never landed (acc undefined,
+  e.g. filed onto a published day) still counts — dormancy is explicit, not
+  "no acc". `commitInputEdit` clears a stray 'r' when its relink fails, so a
+  retype-to-leave can never end up dormant leave — **and it clears the park
+  outright when a dormant record's TYPE changes** (26 Aug 26 bug pass:
+  retyping a removed Meeting to LL minted a permanently-dormant absence —
+  validator silent, picker still barring the man, and no Accept button left
+  anywhere, LL not being a Personal-Inputs type; a retype is a different
+  commitment, so it fails closed and counts). Time/remark edits on a dormant
+  record keep it parked. Deleting the input remains
+  the louder form of rejection (the panel hint already says so). Rules:
+  `docs/engine-rules.md` §Validation (the acc state table); seam:
+  `docs/feature-impact.md` (`inputDormant` one body); pins:
+  `scshift-inputs.test.ts` (dormancy block), `accept.test.ts` (flipped undo
+  pins, marked FLIPPED with the owner quote), `inputground.test.ts`,
+  `loadweek.test.ts` (the published-day reopen round-trip),
+  `inputedit.test.tsx` (the dormant-retype block), `board.test.tsx`.
 
 - **`npm run perf` board DOM ceiling is RED and its raise is owner-reserved
   (from PR #323, 25 Aug 26).** The "available crew on board" strip pushed the
@@ -2138,7 +2219,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `people.ts` | PEOPLE roster (quals, seat, categories), qual ladder (`OCU→D→C→B→A→IW→IP→IR→FI` — instructor-ness lives in CAT, no `ip` flag), `isScheduler`/`isLead`/`isInstr`/`isInstrPilot`/`isOcu`, **`isPersonnel` + the `pers:true`/`seat:'GND'` ground-crew category** (Aug 26 — seeded `torque`/`spanner`/`gizmo`, no CAT; `deriveQuals` short-circuits them), `scShiftKind`, `sanStatus`, `aarNeed`, and **`nameToId` (id-tolerant since 21 Aug 26** — resolves a who-string by callsign OR, failing that, a value that is already a person id; the seed stores bare ids in ground/programme `who`, which the callsign scrub would otherwise have stopped resolving). |
 | `inputs.ts` | INPUTS list + **`INPUT_META`, the one table every input type is decided by** (10 Aug 26) — `INPUT_TYPES` is derived from its keys and every predicate is a lookup: `isLeave`, `isLocalLeave`, `isDownchit` (= the medical group), **`isPersonal`/`isUnavail`** (the two day blocks, presentational only), plus `canSpare`, `canWork`, `awayAllDay`, `TYPE_GROUPS`/`typeGroup`. `isDetach` is gone with the `Detachment` type. Also DATES and the late-input block, plus `WEEK1_INPUTS_SNAP`/`WEEK1_DATES` (pristine seed-week inputs/labels for the week selector). |
 | `time.ts` | `parseHM`/`hhmm`/`minus`/`overlap` (half-open — abutting windows do not clash). |
-| `events.ts` | `collectEvents()` — the per-day event build the validator consumes; appends tomorrow's inputs shifted +1440 (the midnight tail, marked `nx`) and collects AVALON crew (`day.sacrew`) for the one check the wave's `noconf` does not cover. Also `inpShow(inp, dt)` — the per-day gate deciding whether an input reaches `day.input` (defer only on its accepted row's own day; SANS never); **exported** so the crew picker reads the SAME gate and cannot drift (Aug 26 audit). |
+| `events.ts` | `collectEvents()` — the per-day event build the validator consumes; appends tomorrow's inputs shifted +1440 (the midnight tail, marked `nx`) and collects AVALON crew (`day.sacrew`) for the one check the wave's `noconf` does not cover. Also `inpShow(inp, dt)` — the per-day gate deciding whether an input reaches `day.input` (defer only on its accepted row's own day; SANS never); **exported** so the crew picker reads the SAME gate and cannot drift (Aug 26 audit). And `shiftEvHard`/`shiftHardGround` (26 Aug 26) — the SC MAIN clash grading with the ground-row red-list overlay (source type off `row.src` first, hand-typed keywords second), one body for the validator's clash loop and the picker's `live`. |
 | `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`, `dashOf`, the crew-rest trace (`traceOf`/`traceLeads`/`traceIx`/`tracesOn`), and **`workSpan`** — ONE person's working day out of their events (report → last landing + debrief, or start → end), the shared definition behind both the LONGDAY note and the Insights work-hours totals. `crewRestDay` (23 Aug 26) is the whole crew-rest computation extracted into one function with a `phantom` flag, so the day loop's ordinary call and the forward-trace pass after the loop (`crewRestDay(ev[6], nextMondaySeed(CURWEEK), null, true, null)`) share one body — the phantom pass writes only `markTrace` onto the loaded week's Sunday, nothing addressed to the (unreal) next-Monday index. **The conflict engine.** |
 | `avail.ts` | `slotRules`/`slotBar` eligibility, `dayOff`/`dayEngaged`, free-count ranking. `slotBar`'s busy-at-this-hour block also scans `INPUTS` for unaccepted ACTIVITY commitments (Aug 26), mirroring the four `isAway` off-blocks (canWork/flying gate, four midnight tails) so the picker and the validator's `INPUT_FLY` cannot drift. That scan gates on the validator's OWN per-day `inpShow` (imported from `events.ts`), not the day-blind `inputFlags` it first shipped with — one shared gate, so a multi-day or orphaned accept cannot silence the picker where the validator still warns (Aug 26 audit). |
 | `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`** (Ground removal and Unavailable filing use inert amendment keys, including every loaded day of a span), and **`autoAcceptInput`/`autoAcceptSeedInputs`** (Aug 26 — the one gate every creation path calls to auto-land an activity input on its editable day's ground programme; the seed pass is boot-only and wipes its own amendment marks, so parity stays blind). |

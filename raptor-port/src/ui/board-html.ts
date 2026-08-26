@@ -9,7 +9,7 @@ import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, sansCardsHTML, notePubTog } from './html'
+import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ } from './html'
 
 /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
    arrive as minutes and format with a colon (hhmm → "09:00"), but every
@@ -198,7 +198,11 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
         +`<input class="ain" data-bfld="ap:${di}.${ri}.prog"${alAttr(`ap:${di}.${ri}.prog`)}${ro?' disabled':''} value="${esc(x.prog||'')}">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)}${ro?' disabled':''} value="${esc(x.str||'')}">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.end"${alAttr(`ap:${di}.${ri}.end`)}${ro?' disabled':''} value="${esc(x.end||'')}">`
-        +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner||'<span class="itxt">all</span>'}</div>`
+        /* no "all" ghost on an empty people cell (owner, 26 Aug 26 — "if no
+           puck is there, just assume that no one is planned for that line").
+           The engine already reads it that way (whoArr matches named people
+           only); the word said otherwise. Empty cell, same data-fill target. */
+        +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`ap:${di}.${ri}.rmks`,x.rmks,ro)
         +(ro?'':`<span class="lctl">`+sbNudge(`mv:p.${di}.${ri}`,ro)
         +`<button class="mbtn${x.cx?' on':''}" data-pcx="${di}.${ri}" title="${x.cx?'Restore this item':'Cancel this item (CX)'}">CX</button>`
@@ -327,7 +331,7 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:d.${di}.${wi}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.role`,r.role,'',ro,ro?'':` data-rolepick="${di}.${wi}.${ri}"`)
         +sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
-        +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}</div>`
+        +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`${t}.rmks`,r.rmks,ro)
         +sbRowCtl(ro,r,`${di}.${wi}.${ri}`,'dr','this duty',sbNudge(`mv:d.${di}.${wi}.${ri}`,ro))+`</div>`;
     });
@@ -376,14 +380,14 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
           const cells=Array.from({length:n},(_:any,pi:any)=>{const k=`${base}.pax.${pi}`, id=r.pax[pi];
             return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
               :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);}).join('');
-          pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${sbMore(di,base,r,ro)}</div>`;
+          pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
         }else{
           const seats=r.pax.map((id:any,pi:any)=>{
             const k=`${base}.pax.${pi}`;
             return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
               :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);
           }).join('');
-          pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${seats+sbMore(di,base,r,ro)}</div>`;
+          pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${seats+sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
         }
       }else if(!whoOnly){
         /* THE SEAT GRID NOW COVERS THE OFT TOO (owner, 14 Aug 26 — "the OFT
@@ -403,9 +407,9 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
         for(let i=0;i<n;i++){const id=more[i];
           cells+=(id&&PEOPLE[id])?sbSeat(di,`${base}.x${i}`,id,ro)
             :(ro?'':`<span class="sb-slot empty pax" data-slot="${base}.x${i}" title="Instructor / observer — tap or drop a puck to fill">+</span>`);}
-        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}</div>`;
+        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${ro?'':ADDZ}</div>`;
       }else{
-        pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}</div>`;
+        pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
       }
       s+=`<div class="sb-arow c6r${rowCls(r)}"${rowMove(`mv:s.${di}.${kind}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.label`,r.label,'EP SIM',ro)+sbTxt('atm',`${t}.str`,r.str,'',ro)+sbTxt('atm',`${t}.end`,r.end,'',ro)
@@ -435,7 +439,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
       const inner=((id&&PEOPLE[id])?sbSeat(di,base,id,ro):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,ro);
       s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
-        +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}</div>`
+        +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`${t}.rmks`,x.rmks,ro)
         +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro))+`</div>`;
     });
@@ -483,7 +487,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
     : `<span class="itxt">${esc(inp.person)}</span>`;
   if(RO){
     const t=inp.allday?'all day':`${hm4(inp.s)} – ${hm4(inp.e)}`;
-    return `<div class="sbi-row${acc&&inp.acc?' accd':''}"><span class="sbi-t">${t}</span>${pk}`
+    return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}><span class="sbi-t">${t}</span>${pk}`
       +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
       +sbiRmk(inp,dt)+`</div>`;
   }
@@ -505,7 +509,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
      label and is byte-identical to before. */
   const lc=lateChip(inp);
   const itemCell=inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
-  return `<div class="sb-arow c6r inprow${acc&&inp.acc?' accd':''}${lateRowCls(inp)}"${lateRowTitle(inp)}>`
+  return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}${acc?dormRowCls(inp):''}"${lateRowTitle(inp)||(acc?dormRowTitle(inp):'')}>`
     +sbGrip(true)
     +(lc?`<span class="itemcell">${itemCell}${lc}</span>`:itemCell)
     +fld('atm','str',inpHM(inp,'str'),'all day')+fld('atm','end',inpHM(inp,'end'),'')
@@ -540,10 +544,11 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   let s=`<div class="sb-panel pinp"><div class="sb-ph${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>Personal Inputs <span class="sub">submitted by aircrew — accept to put it on the programme${acRo?'':'; times and remarks type in place, clear a time for all day; tap header to hide'}</span></div><div class="sb-pb">`;
   if(!rows.length)s+=`<div class="sb-empty">No personal inputs for this day.</div>`;
   else{
-    /* Housekeeping reminder (owner, Aug 26): an input the scheduler is not going
-       to action should be cleared out here rather than left to linger — tap its
-       type to open the editor and Delete. Editable, non-empty panel only. */
-    if(!acRo)s+=`<div class="sb-pinote">Rejected personal inputs should be deleted by the scheduler here.</div>`;
+    /* Housekeeping reminder (owner, Aug 26; reworded 26 Aug 26 with the
+       dormancy rule): a removed input no longer flags anything, so the note
+       now says that, and keeps the delete pointer for clearing the list —
+       tap its type to open the editor and Delete. Editable panel only. */
+    if(!acRo)s+=`<div class="sb-pinote">A removed input flags nothing until accepted again — delete it here if it should go entirely.</div>`;
     if(!acRo)s+=C6;
   }
   rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo,acRo); });
@@ -605,7 +610,16 @@ export function sbSlot(di:any,key:any,seat:any,id:any,pv?:any){
    said otherwise. Both halves are fixed here: read the kind first, and let
    titleToLabel round-trip the two standalone titles back out. */
 export const SA_TITLE:any={sc:'SC',avalon:'AVALON',bb:'BB'};
-export function labelToTitle(w:any){ if(w.standalone&&SA_TITLE[w.kind])return SA_TITLE[w.kind]; if(w.night)return 'Night wave'; const m=String(w.label).match(/(\d+)/); return m?((ORD[+m[1]-1]||m[1]+'th')+' wave'):(w.label||'1st wave'); }
-export function titleToLabel(v:any){ if(/night/i.test(v))return 'NIGHT WAVE'; const m=v.match(/(\d+)/); return m?('WAVE '+m[1]):v.toUpperCase(); }
+/* ONLY the canonical "WAVE N" label form ordinal-maps, and only the "Nth wave"
+   title form maps back (26 Aug 26 bug pass). The old any-digit match read a
+   fly-TEMPLATE's title as a wave number — "BFM 4-ship" showed on this dropdown
+   as "4th wave" (indistinguishable from a real one, and disagreeing with the
+   week's wl: cell), and a re-pick then ran titleToLabel('4th wave') and
+   silently REWROTE the label to WAVE 4, destroying the template identity. A
+   label that is not the canonical form now passes through VERBATIM both ways
+   (no toUpperCase either — the week's wl: cell keeps typed case, so a re-pick
+   must be a byte no-op). */
+export function labelToTitle(w:any){ if(w.standalone&&SA_TITLE[w.kind])return SA_TITLE[w.kind]; if(w.night)return 'Night wave'; const m=String(w.label).match(/^\s*WAVE\s+(\d+)\s*$/i); return m?((ORD[+m[1]-1]||m[1]+'th')+' wave'):(w.label||'1st wave'); }
+export function titleToLabel(v:any){ if(/night/i.test(v))return 'NIGHT WAVE'; const m=String(v).match(/^\s*(\d+)(?:st|nd|rd|th)\s+wave\s*$/i); return m?('WAVE '+m[1]):String(v).trim(); }
 /* the kind a Go-dropdown title names, or '' for an ordinary wave */
 export function titleToKind(v:any){ const k=Object.keys(SA_TITLE).find(x=>SA_TITLE[x]===String(v).toUpperCase()); return k||''; }

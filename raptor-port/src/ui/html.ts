@@ -307,10 +307,15 @@ export function moreSeats(di:any,base:any,ed:any){
    is only one puck tall, and without this there is no BELOW to drop into. It is
    invisible until a drag starts, and it never takes the hit test itself, so the
    drop still resolves to the cell and appends. */
+/* the one "+ add" strip body — the board's people cells reuse it (board-html.ts)
+   so the two surfaces cannot drift (owner, 26 Aug 26 — a full board row swapped a
+   seated puck instead of taking a new one, exactly because the board never drew
+   this drop-below target the week always has). */
+export const ADDZ=`<span class="addz" aria-hidden="true">+ add</span>`;
 export function lCell(inner:any,fillKey:any,ed:any,cls:any){
   const live=!!(ed&&fillKey);
   return `<div class="ppl ${cls||''}"${live?` data-fill="${fillKey}"`:''}>${inner||''}`
-    +(live?`<span class="addz" aria-hidden="true">+ add</span>`:'')+`</div>`;}
+    +(live?ADDZ:'')+`</div>`;}
 /* base+nf give the row its text paths (base='dr:0.1.2', nf='role'); o is the model
    row itself, which supplies the CX / red-flag decoration. Both are optional, so
    any caller that hasn't been converted still renders exactly as before. */
@@ -774,6 +779,14 @@ export function lateTagOf(o:any){return lateTag(srcInput(o));}
    node, no extra grid item, nothing to knock out of register. The row's own
    INPUT still carries the full chip in the Personal Inputs panel above it. */
 export function lateRowCls(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp)&&lateShown(inp))?' lateinp':'';}
+/* a REMOVED (dormant, acc 'r' — engine/inputs.ts inputDormant) personal input
+   reads visibly PARKED (26 Aug 26 bug pass): it flags nothing until accepted
+   again, yet its row printed byte-identical to a fresh, counting one sitting
+   beside it — the scheduler could not tell which rows were silent. One class
+   body for both surfaces (the week's pl-row, the board's inprow/sbi-row),
+   faded by CSS; the title says why. */
+export function dormRowCls(inp:any){return inp&&inp.acc==='r'?' inp-dorm':'';}
+export function dormRowTitle(inp:any){return inp&&inp.acc==='r'?' title="Removed from the day — flags nothing until accepted again"':'';}
 export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp)&&lateShown(inp))?` title="${esc(lateNote(inp))}"`:'';}
 /* =====================================================================
    ONE DAY'S MARKUP
@@ -1202,10 +1215,9 @@ export function dayHTML(di:any,ed:any,vsel?:any){
          rather than every row carrying a hint it has no room for.
          Scheduler-side only: the view-only week cannot edit anything. */
       let s=`<div class="sub plist one sec ${cls||''}"><div class="sub-h${foldable?' pl-fold':''}"${foldable?` data-pitog="${di}"`:''}>${title}${ed?`<span class="pl-hint">times and remarks type in place · clear a time for all day · press the type to change it${foldable?' · hide ⌃':''}</span>`:''}</div>`;
-      /* Housekeeping reminder (owner, Aug 26): an input the scheduler is not
-         going to action should be cleared out here — press its type to open the
-         editor and Delete. Personal Inputs group only (acc), scheduler-side. */
-      if(acc&&ed&&rows.length)s+=`<div class="pl-inpnote">Rejected personal inputs should be deleted by the scheduler here.</div>`;
+      /* Housekeeping reminder (owner, Aug 26; reworded 26 Aug 26 with the
+         dormancy rule — one wording with the board's sb-pinote sibling). */
+      if(acc&&ed&&rows.length)s+=`<div class="pl-inpnote">A removed input flags nothing until accepted again — delete it here if it should go entirely.</div>`;
       /* Unavailable is the block the squadron reads every single day, so it
          prints even when nobody is on it — "Nil" is the answer, not a missing
          section. */
@@ -1227,7 +1239,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           : `<span class="itxt">${esc(inp.person)}</span>`;
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
-        s+=`<div class="pl-row${acc&&inp.acc?' accd':''}">`
+        s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}>`
           +`<span class="nm">${inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${inpTimeCells(inp,ed)}`
           +`<div class="ppl one">${pk}</div>${inpRmkCell(inp,ed,d.dt)}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
@@ -1317,7 +1329,10 @@ export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
 export function accCtl(di:any,inp:any){
   if(!canEditSched())return `<span class="accs"></span>`;
   const k=esc(inpKey(inp));
-  if(inp.acc)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Undo — removes the ground-programme row this created">Undo</button></span>`;
+  /* 'r' (removed — dormant, see engine/inputs.ts inputDormant) is NOT
+     "accepted": the row was undone, so this offers Accept again, which is the
+     one way back to a flagging state. Only 'g'/'u' show Undo. */
+  if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Undo — removes the ground-programme row this created">Undo</button></span>`;
   const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" data-acck="${k}" title="${ttl}">${lbl}</button>`;
   return `<span class="accs">`
     +(/^Other$/i.test(String(inp.type))

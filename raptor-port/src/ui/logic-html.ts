@@ -2,7 +2,7 @@
    of the live engine objects at render time, so the page cannot drift. */
 import { VCONF, SHIFT_HARD, kindOff, ruleFmt } from '../engine/rules'
 import { RANK, CHIP_LABEL, WCODE, chipText, wlbl } from '../engine/validate'
-import { INPUT_TYPES, inpMeta, canSpare, isLeave, isDownchit } from '../engine/inputs'
+import { INPUT_TYPES, inpMeta, canSpare, isLeave, isDownchit, shiftHardInput } from '../engine/inputs'
 import { lgT, hm24, hhmm } from '../engine/time'
 import { esc } from '../state/view'
 import { lgCanEdit } from '../state/auth'
@@ -36,9 +36,10 @@ export function lgRules(){
      rule the engine does not apply, and a new type appears here the day it is
      added to the table. Same source as the Inputs page's type legend. */
   const rule=(t:any)=>{const m=inpMeta(t);
-    return !m?'':m.work?'no flying — may still stand a duty, sit a sim or take a ground slot'
+    return !m?'':m.work?'no flying — may still stand a duty, sit a sim or take a ground slot; an SC MAIN shift is a Warning, because it may require him to fly'
       :!m.local?'out of reach — cannot be planned for anything, an SC SPARE included'
       :m.grp==='med'?'cannot be planned, and cannot stand an SC SPARE'
+      :shiftHardInput(t)?'cannot be planned, but may still stand an SC SPARE; across an SC MAIN shift this is a Warning — a real commitment, not academics'
       :'cannot be planned, but may still stand an SC SPARE';};
   /* a code only earns a spelt-out name when it IS an abbreviation — "Training
      — training" says nothing twice. Same test offWord and the Inputs page's
@@ -85,7 +86,7 @@ export function lgRules(){
     {sev:'hard',code:'DOUBLE_BOOK',
      t:()=>`Two commitments at the same time for one person is a <b>Warning</b> — he cannot be in two places.<span class="why">Sortie against sortie is excluded here: that is the tight-turn rule's business, not this one.</span>`},
     {sev:'adv',code:'SHIFT_SOFT',extra:matrix,kinds:true,
-     t:()=>`A man on an <b>SC MAIN</b> shift is graded by what he runs into — ${SH.length} kinds are hard, the rest are advisory:`},
+     t:()=>`A man on an <b>SC MAIN</b> shift is graded by what he runs into — ${SH.length} kinds are hard, the rest are advisory:<span class="why">With one overlay (26 Aug 26): a personal-input commitment across the shift is graded by its TYPE — ${INPUT_TYPES.filter(shiftHardInput).join(', ')} are a <b>Warning</b>, because the shift may launch him; a Meeting stays an <b>Advisory</b>. A ground row carrying one of those words — lifted from an input or typed by hand — grades as the commitment it is, not as academics. A programme item always stays advisory.</span>`},
     {sev:'set',src:()=>`isPersonal / isUnavail`,
      t:()=>`Every personal input is a <b>real commitment</b>, <b>“Fly”</b> included — it clashes with a sortie and eats brief/debrief time exactly like an appointment.<span class="why">There used to be an “offer” exemption for “Available fly”, “Available duty” and “Fly”. Those first two types are gone, and a man who says he is flying elsewhere is not available for this sortie.</span>`},
    ]},
@@ -167,7 +168,7 @@ export function lgRules(){
   {g:'Leave, downchit and personal inputs',
    rows:[
     {sev:'set',extra:leaves,src:()=>`INPUT_META`,
-     t:()=>`An absence is booked as one of ${lgV(INPUT_TYPES.length)} things. Every one of them closes the man for the hours it covers — flying, sims, duties and ground slots alike — from the moment it is typed:`},
+     t:()=>`An absence is booked as one of ${lgV(INPUT_TYPES.length)} things. Every one of them closes the man for the hours it covers — flying, sims, duties and ground slots alike — from the moment it is typed. The one exception: an input a scheduler has <b>removed</b> from the Ground Programme sits in Personal Inputs and flags <b>nothing</b> until it is accepted back.<span class="why">Removing it is the scheduler saying it does not stand — a rejected request must not keep ringing warnings (owner, 26 Aug 26). Deleting the input entirely says the same thing louder.</span>`},
     {sev:'hard',code:'LEAVE_FLY',
      t:()=>`On leave but planned to fly, sit a sim, stand a duty or take a ground slot — a Warning, and the <b>reason</b> is printed with it.`},
     {sev:'hard',code:'DNIF_FLY',

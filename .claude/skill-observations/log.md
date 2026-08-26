@@ -492,3 +492,60 @@ resolved statuses always carry their resolution date
 **Suggested improvement:** When inserting into a large stylesheet, first print the nearest preceding @media line (grep -n '@media' | awk range) to confirm the enclosing block; and verify layout CSS changes by measuring rendered geometry in a real browser (the repo's e2e geometry suite), never by grepping dist for the rule's presence — presence proves shipping, not applying.
 
 **Principle:** In any large file with long-range enclosing scopes (media queries, namespaces, conditional blocks), the lines adjacent to an insertion point tell you nothing about scope — resolve the enclosing construct explicitly before inserting, and verify behaviour where the scope condition is true.
+
+### Observation 35: State-dependent positioning flips must be verified at multiple scroll offsets
+
+**Status:** OPEN
+**Date:** 2026-08-26
+**Session context:** Bug pass over the roster hide/show slide fix (Raptor edit scheduler)
+**Skill:** impeccable
+**Type:** open-source
+**Phase/Area:** verification / live-view pass
+
+**Issue:** A fix replacing position:fixed with position:absolute for a collapse
+animation was verified live only at scroll position 0, where it behaved
+perfectly. The element's resting state was position:sticky, so at any real
+scroll depth the flip to absolute teleported it ~900px off-screen — the exact
+bug family the fix was shipped to cure. Found next session in a dedicated bug
+pass.
+
+**Suggested improvement:** When a live verification involves an element whose
+CSS position scheme changes on a state toggle (sticky/fixed/absolute/static),
+the verification matrix must include at least one deep-scroll state, not only
+the page-top state.
+
+**Principle:** A positioning-scheme flip has different geometry at every scroll
+offset; verifying it at one offset proves only that offset. Sticky elements
+especially: their visual position and static position diverge exactly and only
+when scrolled.
+
+### Observation 36: A dedicated adversarial review pass over recently-merged work pays for itself
+
+**Status:** OPEN
+**Date:** 2026-08-26
+**Session context:** Owner-requested bug pass over the last ten implementations (Raptor)
+**Skill:** New skill candidate: post-batch adversarial review
+**Type:** open-source
+**Phase/Area:** verification / process
+
+**Issue:** Ten implementations had each shipped with green gates (3k+ unit
+tests, reference parity, browser geometry suite) and per-change live
+verification. A dedicated adversarial pass — two parallel reviewer agents
+prompted to refute, walking the project's named gotcha families over the
+diffs — still surfaced six confirmed bugs (two silent state-machine
+lifecycle bugs, one stale-cache jump, one identity-destroying UI round-trip,
+one unescaped sink, one settings-clobber) plus a scroll-state bug found by
+re-verifying an already-"verified" fix under a state the original pass never
+exercised.
+
+**Suggested improvement:** After a batch of features lands, run a separate
+review pass with fresh eyes (subagents prompted adversarially, given the
+project's gotcha families and told to produce concrete failure scenarios,
+verified first-hand before fixing). Gate greenness is necessary, never
+sufficient: tests pin what was imagined at build time; the adversarial pass
+hunts what was not.
+
+**Principle:** The tests a feature ships with encode its author's model of
+the failure space; a reviewer instructed to refute, working from the diff
+plus the system's known drift seams, samples outside that model — which is
+exactly where the surviving bugs live.

@@ -181,17 +181,29 @@ export function resetSession(s: any) {
    carried in the stash, so on the way back into this week the blanket
    auto-land pass below used to re-land exactly those rows, silently undoing
    the removal. So the stash remembers, by content key, which in-week personal
-   rows are sitting UNLANDED on an editable day — i.e. were unaccepted, not
-   merely un-landable because the day is published — and the restore skips the
-   auto-land for those. A row NEW since this week was last open is not in the
+   rows carry the explicit removal mark (acc 'r') on an editable day, and the
+   restore skips the auto-land for those. A row NEW since this week was last open is not in the
    set (it had no chance to be unaccepted here), so it still lands as intended.
    Content key (inpKey), so an id renumber between visits can't lose the mark. */
 function unacceptedKeys(): string[] {
   const out: string[] = []
   INPUTS.forEach((r: any) => {
-    if (!isPersonal(r.type) || r.acc) return
+    /* ONLY the explicit 'r' mark (removed — dormant, engine/inputs.ts
+       inputDormant) goes in: it is the one shape that provably records a
+       deliberate removal. An ACC-LESS unlanded row is NOT recorded — it can
+       also mean "never landed" (an input filed onto a then-published day that
+       has since been reopened), and recording it re-parked exactly those as
+       dormant after a week round-trip: an input no scheduler ever removed
+       silently stopped flagging (26 Aug 26 bug pass). Nothing is lost by the
+       narrowing — every removal this build writes is 'r', the acc-clear on
+       week entry deliberately preserves 'r' (below), and the stash is
+       session-memory only, so no older shape can reach this function. */
+    if (!isPersonal(r.type) || r.acc !== 'r') return
     const di = dateIx(r.date, r.yr)
     if (di < 0 || dayApproved(di)) return
+    /* the landed filter stays: content keys are not unique, so an 'r' row
+       whose key a landed TWIN also wears must not be recorded — the restore
+       loop matches by key and would re-park the twin under its live row */
     const key = inpKey(r)
     const landed = DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === key))
     if (!landed) out.push(key)
@@ -293,8 +305,12 @@ function applyWeekModel(v: any): any {
      date. `acc` records the LOADED week's landing only (weekctx.ts's own
      comment says the same) — clear it so autoAcceptSeedInputs (or the
      restore-landing pass below) re-derives it fresh for THIS week's DAYS,
-     whichever shape they just took above. */
-  INPUTS.forEach((r: any) => { if (r.acc) delete r.acc })
+     whichever shape they just took above. 'r' (removed — dormant, engine/
+     inputs.ts inputDormant) is the one value that SURVIVES the clear: it is
+     not a landing record but a mark on the input itself, and keeping it is
+     what lets the cross-week seeds (weekctx.ts) and autoAccept's truthy-acc
+     guard honour a removal without re-deriving it from the stash. */
+  INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r') delete r.acc })
   reconcileLandedAcc()
   mintInpIds()
   if (s) {
@@ -303,7 +319,14 @@ function applyWeekModel(v: any): any {
        including a row that is brand new since this week was last open */
     const un = new Set<string>(Array.isArray(s.un) ? s.un : [])
     const savedPending = { ...SCHED.pending }, savedChanges = { ...SCHED.changes }, savedAdded = { ...SCHED.added }
-    INPUTS.forEach((r: any) => { if (!un.has(inpKey(r))) autoAcceptInput(r) })
+    /* an un-hit row is re-PARKED as 'r', not left acc-less: the acc-clear
+       above wiped its dormancy marker, and without putting it back the input
+       would read as fresh and start flagging again the moment the week is
+       re-entered — the exact surprise the owner reported (26 Aug 26). */
+    INPUTS.forEach((r: any) => {
+      if (un.has(inpKey(r))) { if (isPersonal(r.type)) r.acc = 'r' }
+      else autoAcceptInput(r)
+    })
     SCHED.pending = savedPending; SCHED.changes = savedChanges; SCHED.added = savedAdded
   } else {
     autoAcceptSeedInputs()      // land activity inputs on ground (dayApproved now clean)
@@ -335,6 +358,7 @@ export function loadWeek(v: any) {
   const leaveSnap = weekStashSnap()
   if (stashHas(CURWEEK) || leaveSnap !== weekBaseline) stashPut(CURWEEK, leaveSnap)
   setCurWeek(v)
+  HOOKS.weekSwapped()         // pan.ts drops its arrow-burst corridor (stale-target fix)
   const s = applyWeekModel(v)
   view.setBoardDay(null)      // closes the phone board and disarms
   view.armDrop()

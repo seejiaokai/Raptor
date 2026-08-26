@@ -29,7 +29,7 @@
    not off the bundle.) */
 import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
-import { INPUTS, inputCoversDate, isPersonal, baseYear } from './inputs'
+import { INPUTS, inputCoversDate, isPersonal, inputDormant, baseYear } from './inputs'
 import { PEOPLE, isSpecial } from './people'
 import { stashDays } from './weekstash'
 
@@ -75,11 +75,13 @@ function bundle(v:any){
    date-matching row) — because on a NON-loaded week that landing never
    actually happens (no live DAYS to land it onto), so without this half a
    filed activity input would silently not count as work. Two of
-   autoAcceptInput's own guards are deliberately NOT mirrored: `row.acc`,
-   because that flag records the LOADED week's landing only (loadWeek clears
-   every acc and re-lands from scratch — an input spanning the boundary that
-   is accepted on the loaded side must still count as work on the seed side,
-   and the Set dedups it against any authored ground row); and dayApproved,
+   autoAcceptInput's own guards are deliberately NOT mirrored: `row.acc`'s
+   landed states ('g'/'u'), because those record the LOADED week's landing
+   only (loadWeek clears them and re-lands from scratch — an input spanning
+   the boundary that is accepted on the loaded side must still count as work
+   on the seed side, and the Set dedups it against any authored ground row) —
+   the dormant 'r' IS honoured below, being the one acc value that rides the
+   input across week switches; and dayApproved,
    which is publish state that per the file header does not exist to be read
    for a non-loaded week. xweek:true on buildDay bypasses the accepted-row dedup in inpShow
    (events.ts) — irrelevant to workedSet, which never reads day.input, but
@@ -90,6 +92,11 @@ function workedSet(day:any,ix:any){
   (built.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))ids.add(e.id); });
   INPUTS.forEach((inp:any)=>{
     if(!isPersonal(inp.type))return;
+    /* a REMOVED input (acc 'r' — dormant, owner 26 Aug 26) is the one acc
+       state this scan does honour: the mark rides the input itself and
+       survives week switches (loadWeek's clear skips it), so "would have
+       auto-landed" is genuinely false for it — autoAcceptInput refuses it. */
+    if(inputDormant(inp))return;
     if(!inputCoversDate(inp,day.dt))return;
     const id=inp.person;
     if(id&&PEOPLE[id]&&!isSpecial(id))ids.add(id);

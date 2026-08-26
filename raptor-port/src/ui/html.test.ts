@@ -641,8 +641,9 @@ describe('the scheduler-side controls', () => {
     const open = dayHTML(0, true)
     const oblk = open.slice(open.indexOf('sec-inp'), open.indexOf('sec-avail'))
     expect(oblk).toContain('data-acc=')
-    /* the housekeeping reminder (owner, Aug 26) rides the expanded panel */
-    expect(oblk).toContain('deleted by the scheduler here')
+    /* the housekeeping reminder (owner, Aug 26; reworded 26 Aug 26 with the
+       removed-input dormancy rule) rides the expanded panel */
+    expect(oblk).toContain('A removed input flags nothing until accepted again')
     PIOPEN.delete(0)                                  // leave it as we found it
   })
 

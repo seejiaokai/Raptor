@@ -145,6 +145,34 @@ describe('week panning (tfin)', () => {
     await act(async () => { loadWeek('13/07/2026') })
   })
 
+  /* EVERY WEEK SWAP DROPS THE CORRIDOR (26 Aug 26 bug pass). The corridor is
+     keyed by the CURWEEK string alone, so a calendar round-trip AWAY from a
+     week and BACK to it used to land inside the STALE corridor: the first
+     press then counted from the old panTgt and jumped several days at once.
+     loadWeek now drops it through HOOKS.weekSwapped (wired by pan.ts). */
+  it('a week round-trip drops the burst corridor — the first press after it is one day', async () => {
+    const stubGeo = () => {
+      const w = $('#vWeek')
+      $$('#vWeek .day').forEach((d, i) => Object.defineProperty(d, 'offsetLeft', { value: i * 564, configurable: true }))
+      Object.defineProperty(w, 'scrollWidth', { value: 7 * 564, configurable: true })
+      Object.defineProperty(w, 'clientWidth', { value: 1128, configurable: true })
+      ;(w as any).scrollTo = (o: any) => { (w as any).landed = o.left; (w as any).scrollLeft = o.left }
+      return w as any
+    }
+    let w = stubGeo()
+    dropCorridor(w)
+    w.scrollLeft = 0
+    panDays(1)                                       // arms the corridor: anchor 0 → tgt 564
+    expect(w.landed).toBe(564)
+    await act(async () => { loadWeek('20/07/2026') })  // calendar away…
+    await act(async () => { loadWeek('13/07/2026') })  // …and back to the same week
+    w = stubGeo()                                    // the repaint rebuilt the day nodes
+    w.scrollLeft = 0                                 // parked on Monday — INSIDE the stale corridor
+    panDays(1)
+    expect(w.landed, 'one press = one day; the stale target must not be counted from').toBe(564)
+    dropCorridor(w)
+  })
+
   /* THE WEEKEND MUST REACH THE FRONT BEFORE THE ARROW CROSSES (owner, 23 Aug
      26 — "Friday not aligned on the far left … Saturday and Sunday out of
      selection of the placeholders"). On a wide screen three day-columns show at

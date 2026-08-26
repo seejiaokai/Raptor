@@ -1,8 +1,8 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, inputFlags, inpWin, isSansAvail } from './inputs'
+import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
 import { toMin, parseHM, win } from './time'
-import { VCONF } from './rules'
+import { VCONF, SHIFT_HARD } from './rules'
 import { isStandalone, saExempt, CURWEEK } from './waves'
 import { whoArr, acceptedDay } from './slots'
 import { edgeDate } from './weeks-data'
@@ -25,6 +25,11 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
      construction sites funnel through here, so this one line keeps it out
      everywhere at once. */
   if(isSansAvail(inp.type))return false;
+  /* A REMOVED INPUT IS DORMANT (owner, 26 Aug 26 — see inputDormant): parked
+     back in Personal Inputs by unacceptInput, it speaks NOWHERE until
+     re-accepted. Before the xweek bypass on purpose — dormancy holds for
+     cross-week seed reads of the loaded week too. */
+  if(inputDormant(inp))return false;
   /* CROSS-WEEK SEED READS BYPASS THE ACCEPTED-ROW DEDUP (weekctx.ts, via
      buildDay's xweek flag). acceptedDay(inp) below finds the row on the
      LOADED week's live DAYS — it has no idea a non-loaded day even exists,
@@ -36,6 +41,30 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
   const di=acceptedDay(inp);
   return di<0||(DAYS[di]||{}).dt!==dt;            // defer only on the row's day
 };
+/* IS THIS EVENT A HARD CLASH AGAINST AN SC MAIN SHIFT? (owner, 26 Aug 26).
+   The kind table (SHIFT_HARD) still grades ground/prog as academics — amber —
+   but a GROUND ROW that IS a red-list commitment is the commitment, not
+   academics. Two recoveries, src first: a row lifted from an input carries the
+   source TYPE in row.src (inpKey = person|date|type|s|yr — the only place
+   'Other' survives, its label being the remarks), corroborated by prog===label
+   so a stale or cross-week key can never decide by the wrong row (fail-soft to
+   the keywords); a hand-typed row is judged by its own words (shiftHardLabel).
+   Programme (a:) rows stay amber always — they cannot be input-derived and the
+   owner's keyword rule was stated about ground rows. Lives HERE beside the g:
+   key grammar it parses; validator (clash loop) and crew picker (avail.ts
+   live) both call it, so the two can never disagree — the same promise
+   SHIFT_HARD itself makes. */
+export function shiftHardGround(e:any){
+  if(!e||e.kind!=='ground')return false;
+  const m=/^g:(\d+)\.(\d+)$/.exec(String(e.key||''));
+  const row=m&&DAYS[+m[1]]&&((DAYS[+m[1]].ground||[])[+m[2]]);
+  if(row&&row.src&&String(row.prog||'')===String(e.label||'')){
+    const t=String(row.src).split('|')[2];
+    if(inpMeta(t))return shiftHardInput(t);
+  }
+  return shiftHardLabel(e.label);
+}
+export function shiftEvHard(e:any){return !!SHIFT_HARD[e.kind]||shiftHardGround(e);}
 /* The time WRITTEN in an in-time line (owner, 21 Aug 26 — "can u accept any
    form of combination"): 0900 · 09:00 · 0900H · 09:00H · 0900L · 09:00L, any
    case on the suffix. The FIRST token that reads as a real clock time wins;

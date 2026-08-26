@@ -84,16 +84,23 @@ export const INPUT_META:any={
   'ATT C':      {name:'medically down — cannot report to work', grp:'med', work:false, local:true, ground:false, half:true},
   'ATT B':      {name:'medically down — no flying, may still work', grp:'med', work:true, local:true, ground:false, half:true},
   /* activity — a real commitment, but local and droppable, so he may stand by.
-     These are the types a scheduler may lift onto the Ground Programme. */
-  'Training':   {name:'training',                 grp:'act',   work:false, local:true,  ground:true,  half:false},
-  'CSE':        {name:'course',                   grp:'act',   work:false, local:true,  ground:true,  half:false},
+     These are the types a scheduler may lift onto the Ground Programme.
+     shiftHard (owner, 26 Aug 26): across an SC MAIN shift this type is a hard
+     CONFLICT, not academics — the man is genuinely committed elsewhere while the
+     shift may launch him. Meeting is the deliberate exception (advisory): you can
+     still give a meeting to the man on standby. The flag feeds shiftHardInput()
+     AND the derived label matcher below, so a future red type is one edit here.
+     A per-type Logic-tab toggle was considered and deferred — it would need a
+     rulesSave/Load blob like SHIFT_HARD's `s`; the owner named fixed types. */
+  'Training':   {name:'training',                 grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
+  'CSE':        {name:'course',                   grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   'Meeting':    {name:'meeting',                  grp:'act',   work:false, local:true,  ground:true,  half:false},
   /* renamed from 'Fly' (owner, 14 Aug 26) — reads better in the dropdown, and
      the reference's own `^Fly$` offer regexes simply stop matching, which is
      the commitment semantics both engines already agree on */
-  'Fly with':   {name:'flying with another squadron', grp:'act', work:false, local:true, ground:true, half:false},
-  'Personal':   {name:'personal',                 grp:'act',   work:false, local:true,  ground:true,  half:false},
-  'Appointment':{name:'appointment',              grp:'act',   work:false, local:true,  ground:true,  half:false},
+  'Fly with':   {name:'flying with another squadron', grp:'act', work:false, local:true, ground:true, half:false, shiftHard:true},
+  'Personal':   {name:'personal',                 grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
+  'Appointment':{name:'appointment',              grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   /* a LOCAL duty (owner, 18 Aug 26 — "a new input call Duty… local… same kind
      of rules similar to appointment"). grp:'act' makes it behave EXACTLY like
      an Appointment everywhere by construction: a personal input (drawn in the
@@ -103,11 +110,11 @@ export const INPUT_META:any={
      under the dropdown's "Duty & other commitments" heading, distinct from OD
      (overseas duty, grp:'duty' — out of reach). Placed AFTER the medical block
      so the leave/med indices the suite pins stay put. */
-  'Duty':       {name:'duty',                     grp:'act',   work:false, local:true,  ground:true,  half:false},
+  'Duty':       {name:'duty',                     grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   /* overseas duty — replaces Detachment (owner, 10 Aug 26). Out of reach:
      cannot be planned for anything at all, an SC spare included. */
   'OD':         {name:'overseas duty',            grp:'duty',  work:false, local:false, ground:false, half:false},
-  'Other':      {name:'other',                    grp:'act',   work:false, local:true,  ground:true,  half:false},
+  'Other':      {name:'other',                    grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   /* SANS AVAILABILITY (owner, 14 Aug 26) — SANS aircrew filing POSITIVE
      availability for Fly / AMT / OFT, not an absence. grp:'sans' keeps it
      out of isPersonal (it is not a Ground Programme candidate) and inside
@@ -161,6 +168,23 @@ export function isOffType(t:any){return isLeave(t)||isDownchit(t);}
 export function isFly(t:any){return /^Fly with$/i.test(String(t==null?'':t).trim());}
 /* may a NON-FLYING tasking still be given inside this input's hours? */
 export function canWork(t:any){const m=inpMeta(t); return !!m&&!!m.work;}
+/* IS THIS COMMITMENT A HARD CONFLICT ACROSS AN SC MAIN SHIFT? (owner, 26 Aug
+   26). The shift may launch the man, so most commitments are a real conflict;
+   Meeting stays the advisory. One body — the validator's raw-input gate, the
+   ground-row severity upgrade and the crew picker all ask HERE. */
+export function shiftHardInput(t:any){const m=inpMeta(t); return !!m&&!!m.shiftHard;}
+/* The HAND-TYPED fallback: a scheduler typing TRAINING onto a ground row means
+   training whether or not an input backs it (owner, 26 Aug 26 — "types the
+   exact key words"). DERIVED from the shiftHard flags above so the two can
+   never disagree; word-boundary so "OTHER SQUADRON VISIT" trips on its word
+   deliberately (the owner chose the keywords knowing they are common words).
+   DRIFT SEAM: testing/refwin.ts hand-copies this keyword list TWICE as literal
+   regexes (its reinput type list and reshift's RH ground-label list) — a new
+   shiftHard type updates this derived body silently and leaves those reference
+   patches stale; change one, change all three. */
+const SHIFT_HARD_RE=new RegExp('\\b('+Object.keys(INPUT_META).filter((k:any)=>INPUT_META[k].shiftHard)
+  .map((k:any)=>k.toUpperCase().replace(/\s+/g,'\\s+')).join('|')+')\\b','i');
+export function shiftHardLabel(s:any){return SHIFT_HARD_RE.test(String(s==null?'':s));}
 /* AWAY for availability (owner, Aug 26): leave and downchits close the day on
    type alone. A Fly means the man is flying with ANOTHER SQUADRON — so once a
    scheduler has actioned it (either destination) he reads as unavailable in
@@ -185,7 +209,9 @@ export function canWork(t:any){const m=inpMeta(t); return !!m&&!!m.work;}
    avail.ts is what actually judges a flying/OFT/AMT seat against it. isUnavail
    itself is left alone (see its own comment) — the offer semantics live here,
    as an explicit carve-out at the one call site that decides "away". */
-export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type))||(isFly(inp.type)&&!!inp.acc);}
+/* the Fly leg reads ACTIONED ('g'/'u'), never 'r' — a removed Fly-with is
+   dormant (owner, 26 Aug 26) and must not strike the man out of the palette */
+export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type))||(isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'));}
 /* DOES THIS ABSENCE CLOSE THE WHOLE DAY, or only some hours (owner, 10 Aug 26 —
    AM / PM half-days)? It does when it says so, AND when it carries no usable
    window at all: {person:'pike', type:'OD'} with neither allday nor s/e is a
@@ -305,7 +331,9 @@ export function inpLabel(inp:any){
   return (isOther(inp&&inp.type)&&rm)?rm:String((inp&&inp.type)||'');
 }
 /* The validator's gate. EVERY INPUT NOW COUNTS (owner, 10 Aug 26 — "all will
-   automatically go in"). It used to be `isUnavail(type) || acc==='u' || …`,
+   automatically go in") — EXCEPT one a scheduler has since REMOVED, which is
+   dormant (acc 'r', the 26 Aug 26 rule — see inputDormant below).
+   It used to be `isUnavail(type) || acc==='u' || …`,
    so a Training or an Appointment blocked nothing at all until a scheduler had
    actioned it: it was a request, not part of anyone's programme. The owner
    wants the opposite — an input closes the man's hours the moment he types it,
@@ -324,7 +352,22 @@ export function inpLabel(inp:any){
    other covered day keeps the input's voice. This function stays the
    day-blind half because refwin.ts seeds the reference through it, where
    no day context exists. */
-export function inputFlags(inp:any){return !(inp.acc==='g'&&!inp.allday);}
+export function inputFlags(inp:any){return !inputDormant(inp)&&!(inp.acc==='g'&&!inp.allday);}
+/* A REMOVED INPUT IS DORMANT (owner, 26 Aug 26 — tested the SC-grading
+   preview, removed an accepted Training back to Personal Inputs and it still
+   flagged: "if it goes there, stop it from flagging anything, until its
+   added back to ground programme"). unacceptInput parks the input as
+   acc 'r' — still listed in Personal Inputs, Accept offered again — and this
+   predicate is the ONE body that blanks it out of the engine: inputFlags
+   above (the validator's day-blind gate, which is ALSO refwin's reference
+   seed filter, so the reference simply never receives a dormant input and
+   parity cannot diverge) and events.ts's inpShow (day.input + the midnight
+   tails + the crew picker, which reads the same gate). The other acc states
+   keep their voices: 'g' landed (the row speaks, or the raw voice for
+   all-day), 'u' actioned to Unavailable (bars duties), and undefined —
+   never landed at all, e.g. filed onto a published day — still counts, which
+   is why dormancy is this explicit marker and not "no acc". */
+export function inputDormant(inp:any){return !!inp&&inp.acc==='r';}
 /* inputs use machine-readable date + minute fields so the validator can reason about them.
    s/e are minutes-from-midnight; allday inputs cover the whole day. */
 /* The `mod` stamps are spread either side of the demo week's input deadline on
