@@ -7,6 +7,10 @@ import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  /* deciding is an admin activity, and advancing the cycle to 'closed' is
+     admin-only since 27 Aug 26 (owner) — so the file runs as an admin; the
+     two member-view cases set 'member' themselves after advancing */
+  setRole('admin')
 })
 
 // Seed: ASICS has a pending half day of LL on 2026-01-23.
@@ -168,14 +172,20 @@ describe('moving the period on', () => {
 // The workflow the owner described: once bidding closes, the sheet is
 // view-only for the squadron while the admin account keeps working.
 describe('the edit lock', () => {
+  /* the file default is admin (advancing the cycle is admin-only, 27 Aug 26);
+     these MEMBER-lockout cases advance as the admin, then drop to member for
+     the assertion — the war closes by an admin's hand, and the member is what
+     the lock is being tested on */
   it('lets a member edit while the war is open', () => {
+    act(() => setRole('member'))
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
   })
 
   it('locks a member out of everything once bidding closes', () => {
-    advanceStage()
+    advanceStage()                    // admin closes the war
+    act(() => setRole('member'))
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
@@ -189,6 +199,7 @@ describe('the edit lock', () => {
   it('keeps a member locked out at published', () => {
     advanceStage()
     advanceStage()
+    act(() => setRole('member'))
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
@@ -207,7 +218,8 @@ describe('the edit lock', () => {
   })
 
   it('follows the role switch without a reload', () => {
-    advanceStage()
+    advanceStage()                    // admin closes the war
+    act(() => setRole('member'))
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
@@ -323,11 +335,13 @@ describe('shifting a bid', () => {
 
 // Owner, 10 Aug 26: "as an admin I can open bidding again after closing it".
 describe('reopening the period from the strip', () => {
-  it('offers a member no way back', () => {
+  it('offers a member neither control — not back, and (27 Aug 26) not forward', () => {
+    advanceStage()                    // an admin closes the war…
+    act(() => setRole('member'))      // …the member has no cycle controls at all
     render(<StageBar />)
-    fireEvent.click(screen.getByTestId('stage-advance'))
     expect(getState().period.stage).toBe('closed')
     expect(screen.queryByTestId('stage-back')).toBeNull()
+    expect(screen.queryByTestId('stage-advance')).toBeNull()
   })
 
   it('gives an admin a control back to bidding', () => {

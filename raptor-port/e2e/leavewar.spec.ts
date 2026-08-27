@@ -640,9 +640,13 @@ test('a cell Raptor owns offers no way to change it', async ({ page }) => {
 // The workflow the owner described: closing the war makes the sheet
 // view-only for the squadron, and the admin account keeps working.
 test('closing the war locks the squadron out, and the admin account still edits', async ({ page }) => {
+  // advancing the cycle is admin-only since 27 Aug 26 — the admin closes it…
+  await lwRole(page, 'admin')
   await page.locator('[data-testid="stage-advance"]').click()
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
 
+  // …and the squadron is then locked out of the closed sheet
+  await lwRole(page, 'member')
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
 
@@ -652,8 +656,8 @@ test('closing the war locks the squadron out, and the admin account still edits'
 })
 
 test('an admin moves a bid to another date, and it lands pending there', async ({ page }) => {
+  await lwRole(page, 'admin')          // advancing the cycle is admin-only (27 Aug 26)
   await page.locator('[data-testid="stage-advance"]').click()
-  await lwRole(page, 'admin')
   await page.locator('[data-testid="cell-bruise-2026-01-23"]').click()
   await page.locator('[data-testid="shift-date"]').fill('2026-01-30')
   await page.locator('[data-testid="decide-shift"]').click()

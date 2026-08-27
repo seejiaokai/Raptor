@@ -476,7 +476,11 @@ lives in the seam for reference/tests; the future shared database backend
 replaces the seam. Four seams cross the boundary, and only
 four: `main.tsx` boots it once (`lwInitStore` → `installDemoWorld` →
 `wireLeaveWarSync` → a `histInit` re-baseline, in that order), `resetSession`
-derives its role from the Raptor login (the ONE writer), `probe-bridge.ts`
+derives its role from the Raptor login (`store.ts:toggleRole` — the admin's
+view-as-member flip, 27 Aug 26 — is the only other production writer, riding
+this same seam so the war always reads the session's EFFECTIVE role; on the
+Leave War itself, moving the cycle stage forward became admin-only the same
+day — members still bid), `probe-bridge.ts`
 exposes `w.lwSetRole` for its e2e suite, and **`src/leavewar/sync.ts`** — the
 sync wires (17 Aug 26; this seam also mirrors Raptor's "View as" person into
 the Leave War store's `viewer` on every Raptor notify — what lights the
@@ -1142,4 +1146,4 @@ subscribers.
 | The rules engine | `src/engine/` — `validate.ts` is the heart |
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |
-| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written ONLY by `resetSession`; CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |
+| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` + the admin's `toggleRole`; stage-advance is admin-only (27 Aug 26, members still bid); CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |

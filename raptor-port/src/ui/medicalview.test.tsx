@@ -48,9 +48,11 @@ describe('the Medical view', () => {
   it('the title-row button carries the live count and opens the view', async () => {
     const btn = $('#inMedBtn')
     expect(btn.textContent).toContain('Medical')
-    /* bane down + shrek pending = 2 (yeti is upchitted; the seed rows add
-       their own — so at LEAST our two) */
-    expect(+($('.medcount')?.textContent || '0')).toBeGreaterThanOrEqual(2)
+    /* TWO badges now (owner, 27 Aug 26): red = down now, amber = pending.
+       bane is down and shrek pends (yeti is upchitted; the seed rows add
+       their own — so each badge reads at LEAST one) */
+    expect(+($('.medcount:not(.pend)')?.textContent || '0')).toBeGreaterThanOrEqual(1)
+    expect(+($('.medcount.pend')?.textContent || '0')).toBeGreaterThanOrEqual(1)
     await click(btn)
     expect($('#medView')).toBeTruthy()
   })

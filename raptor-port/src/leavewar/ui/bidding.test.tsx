@@ -62,7 +62,11 @@ describe('placing a bid', () => {
   })
 
   it('does nothing once bidding has closed', () => {
+    /* an admin closes the war (advancing is admin-only, 27 Aug 26), then the
+       member finds nothing to click — the behaviour under test */
+    setRole('admin')
     advanceStage() // open -> closed
+    setRole('member')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
     expect(screen.queryByTestId('bid-picker')).toBeNull()

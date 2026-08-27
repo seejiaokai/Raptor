@@ -29,7 +29,7 @@ import { stashPut, stashGet, stashHas } from '../engine/weekstash'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, schedFields } from './history'
-import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS } from './auth'
+import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggleRole, setEffectiveRole, setLgEdit } from './auth'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { clearPlan } from './plan'
 
@@ -156,6 +156,41 @@ export function resetSession(s: any) {
      than as leftovers. Clearing is the honest half-measure while the app
      has no server to keep a real per-person record. */
   elogClear()
+}
+
+/* ---- THE ADMIN'S ROLE TOGGLE (owner, 27 Aug 26) --------------------------
+   Clicking the role badge flips a REAL admin between admin and member view,
+   so he can check what a member sees without logging out; a member account
+   has no toggle at all (auth.ts's canToggleRole — LOGINROLE is the ceiling,
+   captured at login and untouched here, so the way back always exists and a
+   member can never climb).
+   Only the EFFECTIVE role moves. Every gate in the app reads SESSION.role
+   live (canEditSched, lgCanEdit, HOOKS.editMode), so the flip reaches them
+   with no second switch — but three pieces of state don't re-derive and are
+   walked here, the resetSession discipline in miniature:
+   - an admin-only PAGE left open would render as a dead editable surface
+     for the member view → fall back to View-only Sched;
+   - an ARMED slot is edit machinery mid-gesture → disarm;
+   - the Logic tab's edit mode is admin-only → off.
+   The Leave War's role follows the effective role through the same lwSetRole
+   seam resetSession drives — an admin viewing as member must read the war as
+   a member too, or the preview lies. That makes this the SECOND (and last)
+   production writer of that role; both write what the current view of the
+   session is entitled to.
+   Deliberately NOT a full resetSession: the week, selection, filters and
+   undo history all stay — the whole point is looking at the SAME screen
+   through the other role's eyes. */
+export function toggleRole() {
+  if (!canToggleRole()) return
+  const toAdmin = !(SESSION && SESSION.role === 'admin')
+  setEffectiveRole(toAdmin ? 'admin' : 'main')
+  if (!toAdmin) {
+    if (view.CURPAGE === 'editsched' || view.CURPAGE === 'admin') view.setPage('viewsched')
+    view.armDrop()
+    setLgEdit(false)
+  }
+  lwSetRole(toAdmin ? 'admin' : 'member')
+  notify()
 }
 
 /* ---- PER-WEEK SESSION STASH (the other half of the .wk selector) ----

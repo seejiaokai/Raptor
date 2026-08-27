@@ -3,9 +3,9 @@
    the DRAWER flag in pops.ts; every action closes the drawer, as the
    reference's handlers all end with classList.remove('open'). */
 import { PEOPLE } from '../engine/people'
-import { SESSION, ME, setMe } from '../state/auth'
+import { SESSION, ME, setMe, canToggleRole } from '../state/auth'
 import { CURPAGE } from '../state/view'
-import { notify, setPage, resetSession } from '../state/store'
+import { notify, setPage, resetSession, toggleRole } from '../state/store'
 import { DRAWER, setDrawer, setWeekCal, setInsights } from './pops'
 import { useVersion } from './useStore'
 
@@ -67,7 +67,15 @@ export function Drawer() {
             not. Clear it here so a second login in the same tab does not
             reopen the drawer from the previous user's session. */}
         <div className="drawer-row"><button className="abtn" id="drawerLogout"
-          onClick={() => { setDrawer(false); resetSession(null); notify() }}>Logout</button></div>
+          onClick={() => { setDrawer(false); resetSession(null); notify() }}>Logout</button>
+          {/* the phone home of the admin's role toggle (owner, 27 Aug 26) —
+              the topbar badge is hidden on the tight phone bar, so the
+              switch lives here; same LOGINROLE gate, so a member account
+              never sees it (toggleRole itself refuses too — the button is
+              convenience, the gate is in store/auth). */}
+          {canToggleRole() && <button className="abtn" id="drawerRole"
+            onClick={() => { setDrawer(false); toggleRole() }}>
+            {admin ? 'View as member' : 'Back to admin'}</button>}</div>
       </div>
     </div>
   )

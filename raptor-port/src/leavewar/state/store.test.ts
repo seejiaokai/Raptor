@@ -325,6 +325,19 @@ describe('bids', () => {
 })
 
 describe('advanceStage', () => {
+  /* advancing the cycle is ADMIN ONLY since 27 Aug 26 (owner — "for a member
+     i shouldnt be able to click on bidding closed or published"), so these
+     mechanics tests run as an admin; the member refusal is pinned on its own
+     below */
+  beforeEach(() => { setRole('admin') })
+
+  it('is refused for a member — the cycle does not move', () => {
+    setRole('member')
+    expect(getState().period.stage).toBe('open')
+    advanceStage()
+    expect(getState().period.stage).toBe('open')
+  })
+
   it('walks the period forward one stage at a time', () => {
     expect(getState().period.stage).toBe('open')
     advanceStage()
@@ -348,6 +361,7 @@ describe('advanceStage', () => {
   it('persists the stage and reloads it', () => {
     const backend = memoryBackend()
     initStore(backend)
+    setRole('admin')          // a fresh boot returns to member; advancing is admin-only
     advanceStage()
     initStore(backend)
     expect(getState().period.stage).toBe('closed')
@@ -382,6 +396,7 @@ describe('the stored stage', () => {
   it('reloads each war with its own stage, independently', () => {
     const backend = memoryBackend()
     initStore(backend)
+    setRole('admin')          // advancing is admin-only (27 Aug 26)
     advanceStage() // the open war -> closed
     const other = getState().wars.find(w => w.period.id !== getState().currentId)!
     expect(other.period.stage).toBe('draft')
@@ -822,6 +837,7 @@ describe('more than one leave war', () => {
   })
 
   it('advances the stage of the war on screen only', () => {
+    setRole('admin')          // advancing is admin-only (27 Aug 26)
     const [q1, q2] = getState().wars.map(w => w.period.id)
     selectWar(q2)
     advanceStage() // draft -> open
@@ -1328,7 +1344,9 @@ describe('reopening a period', () => {
   // button: the role switch is an affordance, so anything reachable from a
   // console has to be refused here too.
   it('refuses a member even though nothing hides the call from them', () => {
+    setRole('admin')          // an admin closes the war (advancing is admin-only)…
     advanceStage()
+    setRole('member')         // …and a member still may not step it back
     expect(getState().role).toBe('member')
     expect(getState().period.stage).toBe('closed')
     expect(reopenStage()).toBe(false)

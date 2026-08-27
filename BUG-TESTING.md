@@ -78,7 +78,7 @@ byte-exact parity gate (`node reference/tfin.js`) rather than batch-by-batch.
 | **#327** | Wave templates, blank waves, published-only marks, board stripes, highlight menus, version picker + mobile polish | ✅ 26 Aug — bug pass |
 | **#329** | SC MAIN per-type grading, dormant removed inputs, UI polish | ✅ 26 Aug — bug pass |
 | **#331** | Seam fixes, SANS in-time window + A chip, crew-panel & board-bar chrome, Leave War roster/grid, stores save flash | ⬜ (the 26 Aug pass predates it) |
-| **#333** | Medical tracker: Upchit input, mandatory documents + viewer, Medically Down / Pending Upchit / Upchit Complete sections, overlap & trim rules | ⬜ (built 27 Aug — self-tested at build, no independent pass yet) |
+| **#333** | Medical tracker: Upchit input, mandatory documents + viewer, Medically Down / Pending Upchit / Upchit Complete sections, overlap & trim rules · same-day follow-ups: admin's role-badge view toggle, Leave War stage-advance made admin-only, medical-type guard rail, Medical view polish | ⬜ (built 27 Aug — self-tested at build, no independent pass yet) |
 
 ## The queue — ordered by risk (do these next, top first)
 

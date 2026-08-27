@@ -2093,6 +2093,36 @@ the squadron's programme*, not read vs write:
 | Accepting an input into the issued programme | no | yes |
 | The Edit Schedule page at all (`canEditSched()`) | no | yes |
 | Logic — editing VCONF / SHIFT_HARD | no | yes |
+| Leave War — advancing the cycle stage (→ BIDDING CLOSED / → PUBLISHED) | no | yes |
+
+**In the Leave War, moving the cycle FORWARD is admin-only (owner, 27 Aug 26
+— "for a member i shouldnt be able to click on bidding closed or published,
+thats an admin function").** This is the ONLY member-facing change to the
+war: a member still bids while the war is open exactly as before
+(`leavewar/engine/stages.ts:canEdit` stays `role==='admin' || stage==='open'`,
+unchanged). `store.ts:advanceStage` — which had NO role guard, the lone gap
+beside `reopenStage`/`setBidWindow`, both already admin-only — now refuses a
+member at the write, and `Chrome.tsx` renders the stage-advance control only
+for an admin (absent, not disabled — the same idiom the step-back control
+uses). Nothing else about the war changed: member bidding, the bid window,
+the out-of-window dim and every sync seam are as they were. Pinned in
+`store.test.ts` (advanceStage refuses a member) and `chrome.test.tsx` (the
+control is hidden from a member).
+
+**An admin can VIEW AS a member — the role badge is a toggle (owner, 27 Aug
+26).** Clicking the topbar's Admin/Member chip (or the drawer's Account-row
+button on a phone) flips the EFFECTIVE role the whole app reads; a member
+account's chip stays an inert label. `auth.ts` keeps `LOGINROLE`, the true
+role captured at login and never moved by the toggle — the ceiling that
+means a member can never climb and a parked admin always has the way back.
+`store.ts:toggleRole` is the one coordinator: it flips `SESSION.role`
+(every gate reads it live), falls an admin-only page back to View-only
+Sched, disarms any armed slot, drops Logic edit mode, and walks the Leave
+War's role through the same `lwSetRole` seam `resetSession` drives — the
+second and last production writer of that role. Deliberately NOT a full
+`resetSession`: the week, selection, filters and undo history stay, because
+the point is seeing the SAME screen through the other role's eyes. Pinned
+in `roletoggle.test.tsx`.
 
 Inputs opened because they are the crews' OWN leave, downchits and
 detachments — the reference's `View only — ask a scheduler` gate made the

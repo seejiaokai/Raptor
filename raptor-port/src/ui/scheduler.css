@@ -264,6 +264,10 @@ a{color:var(--accent)}
    no cursor/hover — it reports the role, it is not a control. */
 .rolechip{text-transform:uppercase;letter-spacing:.06em;cursor:default}
 .rolechip.admin{border-color:rgba(59,198,232,.5);color:var(--accent)}
+/* a real admin's chip is a TOGGLE (owner, 27 Aug 26) — cursor + hover say
+   so; a member's chip keeps the inert default above */
+.rolechip.tgl{cursor:pointer}
+.rolechip.tgl:hover{filter:brightness(1.15)}
 .abtn{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);cursor:pointer;font-size:12px;font-weight:600;padding:6px 12px;border-radius:9px}
 .abtn:hover{border-color:var(--edge-2)}
 .abtn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -4937,10 +4941,16 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .medcard-t{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--ink-3)}
 .medcard-r{font-size:9.5px;line-height:1.35;color:var(--ink-2);white-space:normal;overflow-wrap:anywhere;min-width:0}
 .med-empty{padding:16px 12px;font-size:12px;color:var(--ink-3)}
-/* the Medical button's count badge on the Inputs title row */
+/* the Medical button's count badges on the Inputs title row — TWO, in the
+   sections' own colours (owner, 27 Aug 26): red = down now, amber = owing an
+   upchit. The amber one carries dark ink — white on #E5A83B fails contrast. */
 .medcount{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;margin-left:6px;
   background:var(--hard);color:#fff;border-radius:999px;padding:0 6px;line-height:15px;display:inline-block}
-#inMedBtn{display:inline-flex;align-items:center;gap:6px}
+.medcount.pend{background:var(--adv);color:#2A1F04}
+/* justify-content centres the icon + word + badges as one group when the
+   phone stretches the button full-width (owner, 27 Aug 26 — the flex row
+   otherwise jams left while the Calendar button above centres) */
+#inMedBtn{display:inline-flex;align-items:center;justify-content:center;gap:6px}
 /* the as-of month grid — a FLOATING rounded dropdown that hangs off the header
    and overlays the sections, never an in-flow band that pushes them down
    (owner, 27 Aug). Anchored to the medical header (position:relative below);

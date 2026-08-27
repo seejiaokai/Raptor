@@ -1614,8 +1614,15 @@ export function setQualCatalog(catalog: QualDef[]): void {
 }
 
 /** Walk the period to its next stage. A no-op at the end of the cycle —
- *  `nextStage` owns which transitions exist. */
+ *  `nextStage` owns which transitions exist. ADMIN ONLY (owner, 27 Aug 26 —
+ *  "for a member, i shouldnt be able to click on bidding closed or published,
+ *  thats an admin function"): moving the cycle forward is a management act,
+ *  the mirror of `reopenStage`'s existing admin-only step back. Re-checked at
+ *  the write, not just hidden in the strip, the same reason `reopenStage`
+ *  and `setBidWindow` re-check. Members otherwise bid exactly as before —
+ *  this is the ONLY member-facing change to the war. */
 export function advanceStage(): void {
+  if (state.role !== 'admin') return
   const next = nextStage(state.period.stage)
   if (!next) return
   updateCurrent(w => ({ ...w, period: { ...w.period, stage: next } }))

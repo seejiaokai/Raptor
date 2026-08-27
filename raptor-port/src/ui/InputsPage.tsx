@@ -468,12 +468,16 @@ export function InputsPage() {
     </th>
   )
 
-  /* the Medical button's badge: down now + owing an upchit, as of the app's
-     notional today (weeknav.TODAY — the one literal). Derived per render
-     like everything medical, so it can never lag the table. */
+  /* the Medical button's badges: TWO counts in the sections' own colours —
+     red for down now, amber for owing an upchit (owner, 27 Aug 26 — "show
+     the amber count as well"; one summed red number hid which kind of
+     attention was needed). As of the app's notional today (weeknav.TODAY —
+     the one literal). Derived per render like everything medical, so they
+     can never lag the table. */
   const medIso = keyToIso(TODAY)
   const medOrd = +medIso.slice(0, 4) * 10000 + +medIso.slice(5, 7) * 100 + +medIso.slice(8, 10)
-  const medCount = medDownAsOf(medOrd).length + pendingUpchits(medOrd).length
+  const medDownN = medDownAsOf(medOrd).length
+  const medPendN = pendingUpchits(medOrd).length
 
   return (
     <>
@@ -495,7 +499,9 @@ export function InputsPage() {
         <button className="abtn calview" id="inMedBtn"
           title="Who is medically down, owing an upchit, or upchitted"
           onClick={() => { setInpView('med'); notify() }}>
-          <MedIcon /> Medical{medCount > 0 && <span className="medcount">{medCount}</span>}</button>
+          <MedIcon /> Medical
+          {medDownN > 0 && <span className="medcount" title="Medically down now">{medDownN}</span>}
+          {medPendN > 0 && <span className="medcount pend" title="Owing an upchit">{medPendN}</span>}</button>
       </div>
       <div className="inbar">
         <div className="ingrid">

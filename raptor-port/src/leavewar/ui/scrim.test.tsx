@@ -5,7 +5,10 @@ import { memoryBackend } from '../state/storage'
 import { StageBar, Topbar } from './Chrome'
 import { Matrix } from './Matrix'
 
-beforeEach(() => { initStore(memoryBackend()) })
+/* these open the admin sheets (decision, counter, person), and advancing the
+   cycle to reach them is admin-only since 27 Aug 26 (owner) — so run as an
+   admin */
+beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
 
 const scrim = () => screen.getByTestId('sheet-scrim')
 

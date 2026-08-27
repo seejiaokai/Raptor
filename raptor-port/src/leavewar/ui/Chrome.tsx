@@ -25,6 +25,8 @@ import './chrome.css'
 /** Kept in step with `.umlist`'s width in chrome.css — the clamp has to know
  *  how wide the thing it is clamping actually is. */
 const LIST_WIDTH = 244
+/** Same, for the colour/mark legend popover (`.leglist`). */
+const LEGEND_WIDTH = 272
 
 export function Topbar() {
   useVersion()
@@ -194,6 +196,25 @@ export function StageBar() {
     })
   }, [showList, redDays])
 
+  // The colour/mark KEY (owner, 27 Aug 26 — "a pop out legend to explain what
+  // each colour means, especially the dotted orange and the blue shade… the *
+  // also means what"). Same hang-off-the-chip pattern as the under-manned
+  // list above, anchored to its own button so it stays reachable on a phone
+  // where the strip wraps.
+  const [legOpen, setLegOpen] = useState(false)
+  const legRef = useRef<HTMLButtonElement>(null)
+  const [legAt, setLegAt] = useState<{ left: number; top: number } | null>(null)
+  useLayoutEffect(() => {
+    if (!legOpen) { setLegAt(null); return }
+    const r = legRef.current?.getBoundingClientRect()
+    if (!r) return
+    const margin = 8
+    setLegAt({
+      left: Math.max(margin, Math.min(r.left, window.innerWidth - LEGEND_WIDTH - margin)),
+      top: r.bottom + margin,
+    })
+  }, [legOpen])
+
   return (
     <div className="filters">
       <span className="lab">Stage</span>
@@ -210,8 +231,14 @@ export function StageBar() {
           period stands.
           Forward only, and disabled at the end of the cycle: `nextStage`
           owns which transitions exist and this asks it rather than deciding
-          for itself. */}
-      <button
+          for itself.
+          ADMIN ONLY, absent rather than disabled for a member (owner, 27 Aug
+          26 — "for a member i shouldnt be able to click on bidding closed or
+          published, thats an admin function"), the same idiom as the back
+          control below; the store's advanceStage refuses a member write
+          regardless. Members still BID as before — this is the only
+          member-facing change. */}
+      {role === 'admin' && <button
         className="stage-go"
         data-testid="stage-advance"
         disabled={next === null}
@@ -219,7 +246,7 @@ export function StageBar() {
         onClick={advanceStage}
       >
         → {next ? stageLabel(next) : 'END OF CYCLE'}
-      </button>
+      </button>}
       {/* Stepping the cycle BACK — how bidding is opened again after being
           closed (owner, 10 Aug 26). Admin only, and absent rather than
           disabled for a member: a disabled control advertises something they
@@ -319,6 +346,45 @@ export function StageBar() {
                   </button>
                 )
               })}
+            </div>
+          </div>
+        </>
+      )}
+      {/* The colour/mark KEY, to the RIGHT of the under-manned tally (owner,
+          27 Aug 26). Read-only for everyone — it explains the grid, it does
+          not change it. */}
+      <button
+        ref={legRef}
+        className="fchip legkey"
+        data-testid="legend-open"
+        onClick={() => setLegOpen(o => !o)}
+        aria-expanded={legOpen}
+        title="What the colours and marks on the grid mean"
+      >
+        Key
+      </button>
+      {legOpen && (
+        <>
+          <div className="umscrim" data-testid="legend-scrim" onClick={() => setLegOpen(false)} />
+          <div
+            className="leglist"
+            data-testid="legend"
+            role="dialog"
+            aria-label="What the colours and marks mean"
+            style={legAt ? { left: legAt.left, top: legAt.top } : undefined}
+          >
+            <div className="umlist-hd">What the grid is telling you</div>
+            <div className="leglist-body">
+              <div className="leg-sec">The fill colour — where a bid stands</div>
+              <div className="leg-row"><span className="leg-sw appr">LL</span><span className="leg-t">Approved</span></div>
+              <div className="leg-row"><span className="leg-sw tbc">LL</span><span className="leg-t">Pending — waiting on a decision</span></div>
+              <div className="leg-row"><span className="leg-sw ref">LL</span><span className="leg-t">Refused</span></div>
+              <div className="leg-sec">The left edge — where it came from</div>
+              <div className="leg-row"><span className="leg-sw raptor">LL</span><span className="leg-t">Filed on the Inputs page — change it there, not here</span></div>
+              <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
+              <div className="leg-sec">The <b>*</b> — a half day</div>
+              <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">Morning (before the code)</span></div>
+              <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">Afternoon (after the code)</span></div>
             </div>
           </div>
         </>

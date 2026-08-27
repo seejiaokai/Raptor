@@ -3906,12 +3906,17 @@ changes, never on an ordinary repaint of the loaded week.
 ## The Medical view, the upload control and the document viewer (owner, 27 Aug 26)
 
 **The Medical button** sits on the Personal Inputs TITLE ROW beside the
-Calendar-view button (`#inMedBtn`, `MedIcon` + "Medical"), carrying a red
-count badge (`.medcount`) of down-now + pending-upchit as of the notional
-today. The button SIGNALS instead of the page restructuring itself — the
-owner's "the page transforms when medical inputs exist" is answered by a
-badge that reads quiet at zero, not by a control that appears and
-disappears. It flips `INPVIEW` to `'med'`.
+Calendar-view button (`#inMedBtn`, `MedIcon` + "Medical"), carrying TWO
+count badges in the sections' own colours (owner, 27 Aug 26 — "show the
+amber count as well"): red (`.medcount`) = down now, amber
+(`.medcount.pend`, dark ink — white on `--adv` fails contrast) = owing an
+upchit, both as of the notional today and each hidden at zero. The button
+SIGNALS instead of the page restructuring itself — the owner's "the page
+transforms when medical inputs exist" is answered by badges that read quiet
+at zero, not by a control that appears and disappears. It flips `INPVIEW`
+to `'med'`. Its content is `justify-content:center` so the phone's
+full-width form (where `.calview` stretches) centres the icon + word +
+badges like the Calendar button above it, instead of jamming them left.
 
 **The Medical view** (`ui/MedicalView.tsx`, `#medView`) rides the Inputs
 calendar's full-screen chassis (`.inpcal`) and deliberately IGNORES the
@@ -3921,10 +3926,18 @@ list. Three sections, each a `.medcard` grid on the `.sanscard` contract
 74×74 column-flex trap): **Medically Down** (`--hard` red, "till <date>"),
 **Pending Upchit** (`--adv` amber, "was down till <end>"), **Upchit
 Complete** (`--ok` green, "upchitted <date>", trailing 30 days newest
-first). Every section has a real empty state. The header's as-of control
-(`#medCalBtn`) opens a dropdown month grid (`.med-cal` — not a modal; a
-date pick needs no protected focus) writing `MEDASOF` (`state/view.ts`,
-null = the notional today, reset by the Today chip and on session change).
+first). Every section has a real empty state. Cards SIZE TO CONTENT and
+pack from the left (`.medcards` — capped `minmax` columns +
+`justify-content:start`; owner, 27 Aug 26: a stretch-to-fill column wasted
+the right half of every box), and a card's remark line draws only when it
+says MORE than the derived date line (`MedicalView.tsx:remarkNote` strips
+dates and medical boilerplate; the auto "till …" tail was doubling the
+status line on every card). The header's as-of control (`#medCalBtn`)
+opens a FLOATING rounded dropdown month grid hanging off the header
+(`.med-cal`, `position:absolute` + a transparent `.med-cal-scrim` that
+closes it on an outside tap — it overlays the sections rather than pushing
+them down; owner, 27 Aug 26) writing `MEDASOF` (`state/view.ts`, null =
+the notional today, reset by the Today chip and on session change).
 
 **A card tap opens the DOCUMENT VIEWER** (`ui/DocViewer.tsx`,
 `#docViewPop`, airpop chassis, `DOCVIEW` in `ui/pops.ts` holding the input
@@ -3944,3 +3957,26 @@ the in-table row editor, the board/modal editor — exactly when
 `needsDoc(type)` says the commit will demand it (one body, no drift). A
 documented row wears a paperclip (`.rclip`, `ClipIcon`) in the Inputs
 table's action cell, ungated, opening the viewer.
+
+## The role badge is the admin's view toggle (owner, 27 Aug 26)
+
+The far-right Admin/Member chip (`#roleBadge`, `.rolechip`) is a BUTTON for
+a real admin login and stays an inert `<span>` for a member — same id and
+look either way, plus `.tgl` (pointer cursor + hover) only on the button.
+Clicking it runs `store.ts:toggleRole` (see `engine-rules.md` §Auth /
+roles): the whole app — nav tabs, edit gates, the Leave War — flips to the
+member view, and the same click flips back; `LOGINROLE` in `auth.ts` is the
+ceiling that keeps a member's chip inert and the admin's way back alive.
+The chip is hidden on the phone bar (as ever), so the DRAWER's Account row
+carries the phone toggle (`#drawerRole`, "View as member" / "Back to
+admin"), rendered only for a real admin. Flipping to member off an
+admin-only page lands on View-only Sched. Pinned in `roletoggle.test.tsx`.
+
+The LEAVE WAR change of the same day (engine-rules §Auth / roles): moving
+the cycle forward is admin-only, so the stage-advance chip
+(`data-testid="stage-advance"`, "→ BIDDING CLOSED" / "→ PUBLISHED" /
+"→ END OF CYCLE") is ABSENT for a member — the same absent-not-disabled
+idiom the stage-back chip already used. That is the ONLY member-facing
+change: a member still bids while the war is open, the bid-window chip and
+the out-of-window dim are unchanged, and a member's cell tap behaves exactly
+as before.

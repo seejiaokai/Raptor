@@ -499,4 +499,66 @@
   white-space: nowrap;
 }
 
+/* ---- the colour/mark legend (owner, 27 Aug 26) --------------------------
+   Same fixed, JS-anchored popover as the under-manned list above, for the
+   same wrapping-strip reason. A read-only key: the swatches reuse the grid's
+   own state colours and edge marks, so the legend can never drift from the
+   cells it explains. */
+.legkey { cursor: pointer; }
+.leglist {
+  position: fixed;
+  top: 96px;
+  left: 8px;
+  z-index: 41;
+  width: 272px;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: 12px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .6);
+  overflow: hidden;
+}
+.leglist-body {
+  max-height: min(70vh, calc(100vh - 160px));
+  overflow-y: auto;
+  padding: 2px 0 6px;
+}
+.leg-sec {
+  padding: 9px 12px 4px;
+  font-size: 9.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 700;
+}
+.leg-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px;
+}
+.leg-t {
+  font-size: 11.5px;
+  color: var(--ink);
+  line-height: 1.3;
+}
+/* the swatch is a mini-cell: the same fill, ring and edge marks the grid
+   draws, so what the legend shows IS what a real cell shows */
+.leg-sw {
+  flex: 0 0 auto;
+  min-width: 30px;
+  text-align: center;
+  padding: 2px 5px;
+  border-radius: 5px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+  background: var(--panel-2);
+}
+.leg-sw.appr { background: rgba(87, 201, 122, .16); color: #8FE0A8; box-shadow: inset 0 0 0 1px rgba(87, 201, 122, .5); }
+.leg-sw.tbc  { background: rgba(178, 77, 234, .16); color: #D9A6F5; box-shadow: inset 0 0 0 1px rgba(178, 77, 234, .5); }
+.leg-sw.ref  { background: rgba(240, 85, 95, .16); color: #FFA6AD; box-shadow: inset 0 0 0 1px rgba(240, 85, 95, .5); }
+.leg-sw.raptor { border-left: 2px solid var(--accent); padding-left: 4px; }
+.leg-sw.moved  { border-left: 2px dotted #F2C879; padding-left: 4px; }
+
 }

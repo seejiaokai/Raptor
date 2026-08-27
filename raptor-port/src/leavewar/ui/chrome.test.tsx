@@ -1,6 +1,6 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getState, initStore, setBidState } from '../state/store'
+import { getState, initStore, setBidState, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar, Topbar } from './Chrome'
 
@@ -13,6 +13,22 @@ describe('the stage strip', () => {
     render(<StageBar />)
     expect(getState().period.stage).toBe('open')
     expect(screen.getByTestId('stage-now').textContent).toBe('OPEN FOR BIDDING')
+  })
+
+  // Advancing the cycle is an admin function (owner, 27 Aug 26 — "for a member
+  // i shouldnt be able to click on bidding closed or published"). The control
+  // is ABSENT for a member, not merely disabled — the same idiom the step-back
+  // control already uses — so there is nothing for them to click. A member
+  // still sees the stage and bids as before; this is the only change.
+  it('shows the stage-advance control to an admin and hides it from a member', () => {
+    act(() => setRole('member'))
+    const m = render(<StageBar />)
+    expect(screen.queryByTestId('stage-advance')).toBeNull()
+    expect(screen.getByTestId('stage-now').textContent).toBe('OPEN FOR BIDDING')
+    m.unmount()
+    act(() => setRole('admin'))
+    render(<StageBar />)
+    expect(screen.getByTestId('stage-advance')).toBeTruthy()
   })
 
   // The under-manned tally is the one number in the chrome that depends on
@@ -31,6 +47,30 @@ describe('the stage strip', () => {
     const after = screen.getByTestId('undermanned').textContent
     expect(after).not.toBe(before)
     expect(Number(after!.split(' ')[0])).toBe(Number(before!.split(' ')[0]) - 1)
+  })
+})
+
+describe('the colour/mark legend', () => {
+  // Owner, 27 Aug 26: a pop-out key for the grid's colours and marks. Open to
+  // everyone (it explains the grid, it does not change it) and self-consistent
+  // with the cells — the swatches carry the grid's own state/edge classes.
+  it('opens a key explaining the states, the edge marks and the half-day *', () => {
+    render(<StageBar />)
+    expect(screen.queryByTestId('legend')).toBeNull()
+    fireEvent.click(screen.getByTestId('legend-open'))
+    const leg = screen.getByTestId('legend')
+    const text = leg.textContent || ''
+    expect(text).toContain('Approved')
+    expect(text).toContain('Pending')
+    expect(text).toContain('Refused')
+    expect(text).toContain('Moved here from another day')
+    expect(text).toContain('Filed on the Inputs page')
+    expect(text).toContain('Morning')
+    expect(text).toContain('Afternoon')
+    // the swatches reuse the grid's own classes, so the key cannot drift from
+    // the cells (the dotted-orange 'moved' and the blue 'raptor' edge marks)
+    expect(leg.querySelector('.leg-sw.moved')).toBeTruthy()
+    expect(leg.querySelector('.leg-sw.raptor')).toBeTruthy()
   })
 })
 
