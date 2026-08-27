@@ -2,8 +2,10 @@ import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type T
 import {
   addDays,
   balanceOf,
+  biddingClosed,
   canDecide,
   canEditCell,
+  canEditRow,
   catClass,
   catText,
   codeOf,
@@ -1216,8 +1218,11 @@ export function Matrix() {
   // (owner, 27 Aug 26). While a war is still open for bidding, people shuffle
   // their own bids around freely — a moved mark on every re-placed bid is just
   // noise. It becomes worth showing only after close, when a shift is the
-  // admin deliberately moving someone's input off the date they bid.
-  const movedShown = period.stage === 'closed' || period.stage === 'published'
+  // admin deliberately moving someone's input off the date they bid. This gates
+  // the DISPLAY; the store gates the RECORD (an open move stores no shiftedFrom
+  // at all, so a bid moved while open stays clean even after the war closes) —
+  // one `biddingClosed` body behind both so the two cannot disagree.
+  const movedShown = biddingClosed(period.stage)
 
   // Published-stage remarks editor (owner, 27 Aug 26 — "after the leave war is
   // published … click on their inputs … and edit the remarks. but the admin
@@ -1242,7 +1247,11 @@ export function Matrix() {
   // empty cell are all things nobody asked for.
   const openable = (personId: string, date: string): boolean =>
     raptorOwns(states, personId, date) ||
-    canEditCell(period, role, date) ||
+    // A member may open a cell to EDIT only on their own row (the person they
+    // are viewing as); an admin, any row. Without the row half a member could
+    // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
+    // date/window half is `canEditCell`; both must pass.
+    (canEditCell(period, role, date) && canEditRow(role, viewer, personId)) ||
     (deciding && isBiddable(grid[personId]?.[date])) ||
     // Published remarks editor (owner, 27 Aug 26): any filled cell of the
     // viewer's own row (or every row, for an admin) is tappable to edit its
@@ -1263,7 +1272,16 @@ export function Matrix() {
   // click, not a drag — a block of runs has no one note to edit — so a member
   // still cannot drag at published. An admin may drag at every stage.
   selCtxRef.current = {
-    order: () => rosterSequence().filter(r => r.kind === 'person').map(r => (r as { p: Person }).p.id),
+    // A member drags only WITHIN their own row: the rectangle's rows come from
+    // this list, so limiting it to the viewer keeps a member's drag on their
+    // own row (a date range still selects freely along it) while an admin
+    // drags across everyone (owner, 27 Aug 26). The write path refuses other
+    // rows regardless; this is what keeps the SELECTION itself from spanning
+    // rows a member could never fill, so no confusing "skipped" appears.
+    order: () => rosterSequence()
+      .filter(r => r.kind === 'person')
+      .map(r => (r as { p: Person }).p.id)
+      .filter(id => canEditRow(role, viewer, id)),
     dates: () => dates,
     enabled: () => !arranging && !moveSel && (role === 'admin' || period.stage === 'open'),
     onSelect: s => setSel(s),
@@ -2025,7 +2043,7 @@ export function Matrix() {
         <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
       )}
       {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date)
-        && canEditCell(period, role, open.date)
+        && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
         && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
         <BidPicker
           key={`${open.id}-${open.date}`}

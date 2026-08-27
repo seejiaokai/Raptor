@@ -82,14 +82,22 @@ security model** — it is the shape a real one will take, with the check
 missing.
 
 Everything else that follows from having no accounts still holds: anyone can
-approve, refuse or shift anyone's bid, and anyone can bid on anyone's row.
+approve, refuse or shift anyone's bid.
 
-The bidding plan called for a fixed `ME` roster entry standing in for a
-session. That was not built: the tests bid on whichever row was clicked, so an
-`ME` constant would have been dead code claiming an identity model that does
-not exist. A real one arrives with accounts. Until then the app is honest
-about being a scheduler's view of everybody rather than a bidder's view of
-themselves.
+A member no longer bids on anyone's row, though (owner, 27 Aug 26 — "if I am
+viewing as a member and I view as ranger… I shouldn't be able to input on
+other people's row except mine"). The identity the bidding plan reserved for
+`ME` now exists as `viewer` — the war mirrors Raptor's "View as" person — and
+`canEditRow` (engine/stages.ts) scopes a member to that one row at the write
+path (setCell, the range/batch writers, move and shift) as well as in the grid
+(a member's tap and drag reach only their own row). An admin is scoped to none.
+This is real for the `member` role, but it is still not a security boundary:
+the role switch itself is unguarded, so a member can flip to admin and bid
+anywhere. The scoping and the identity are the shape the accounts will keep;
+the missing check is the login that stops the flip. (`viewer` is only ever
+null in the raw store / tests — the "View as" picker has no empty option and
+boot mirrors `ME`, always a person — so an un-scoped session imposes no row
+rule, which is why the tests still bid on whichever row they name.)
 
 ## What balances do not yet do
 

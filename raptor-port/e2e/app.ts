@@ -142,10 +142,19 @@ export async function puckSize(page: Page) {
    standalone app's own default role; a test that needs admin from the start
    passes 'a', and mid-test switches go through w.lwSetRole (the toggle the
    standalone app drew was removed at the merge — the role rides the login). */
-export async function openLeaveWar(page: Page, who: 'a' | 'user' = 'user') {
+export async function openLeaveWar(page: Page, who: 'a' | 'user' = 'user', viewAs: string | null = null) {
   await login(page, who)
   await go(page, 'leavewar')
   await page.waitForSelector('[data-testid="row-slipway"]')
+  /* The generic 'us' member has NO fixed identity in this prototype (there are
+     no per-person accounts yet — known-gaps.md), so the war is left UNSCOPED by
+     default: `viewer` null means canEditRow imposes no row rule, and the member
+     edits whatever row a mechanics test drives, exactly as before. The member
+     row rule (canEditRow, 27 Aug 26 — "viewing as ranger, only my row") is a
+     preview of the accounts-era behaviour; the tests that exercise it pass a
+     `viewAs` so the war scopes to that person, the way Raptor's "View as" mirror
+     will in production. */
+  await page.evaluate(id => (window as any).lwSetViewer(id), viewAs)
 }
 
 /* The mid-test role switch, via the probe bridge (see probe-bridge.ts for
@@ -153,5 +162,13 @@ export async function openLeaveWar(page: Page, who: 'a' | 'user' = 'user') {
    before the test reads the controls it changed. */
 export async function lwRole(page: Page, role: 'admin' | 'member') {
   await page.evaluate(r => (window as any).lwSetRole(r), role)
+  await page.waitForTimeout(150)
+}
+
+/* Scope the war to a person — the "View as" identity a member is restricted to
+   (canEditRow). Production mirrors Raptor's ME onto it; the e2e sets it directly
+   so a member test can prove it edits its own row and no other. */
+export async function lwView(page: Page, id: string | null) {
+  await page.evaluate(i => (window as any).lwSetViewer(i), id)
   await page.waitForTimeout(150)
 }

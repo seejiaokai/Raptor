@@ -33,7 +33,7 @@ import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
 import { notify, undo, redo, loadWeek } from './state/store'
-import { setRole as lwSetRole, loadWars as lwLoadWars } from './leavewar/state/store'
+import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars } from './leavewar/state/store'
 
 export function installProbeBridge() {
   const w = window as any
@@ -97,6 +97,12 @@ export function installProbeBridge() {
      needs mid-test member↔admin switches that no click path reaches since
      the standalone app's on-screen toggle was removed at the merge. */
   w.lwSetRole = (r: 'admin' | 'member') => lwSetRole(r)
+  /* the Leave War VIEWER — the "View as" person the war scopes a member to
+     (canEditRow). Production mirrors Raptor's ME onto it through the sync; the
+     e2e needs to pin the member's identity to the row it edits without driving
+     the Raptor "View as" picker from the Leave War tab. Same precedent as
+     w.lwSetRole. */
+  w.lwSetViewer = (id: string | null) => lwSetViewer(id)
   /* Inject a full war set into the live store. Same reason as w.lwSetRole:
      Leave War is session-only now (a memory backend, see main.tsx), so the
      under-manned e2e fixtures can no longer seed a red-day war through

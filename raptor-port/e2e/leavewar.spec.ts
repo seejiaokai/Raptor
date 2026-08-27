@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Page } from '@playwright/test'
-import { lwRole, openLeaveWar } from './app'
+import { lwRole, lwView, openLeaveWar } from './app'
 
 const CAL_MONTHS = [
   'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -712,6 +712,41 @@ test('drag-selecting a row fills the leave across the whole span', async ({ page
     await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toBeVisible()
 })
 
+// A member edits ONLY their own row — the person they are viewing as (owner,
+// 27 Aug 26 — "if I am viewing as a member and I view as ranger, I shouldn't be
+// able to input on other people's row except mine"). Here the member is scoped
+// to slipway; ammo is somebody else. The store rule (canEditRow) is unit-tested;
+// this proves the GRID honours it — the tap opens the picker on the own row and
+// nothing on another.
+test('a member scoped to one person can input on that row only', async ({ page }) => {
+  await lwView(page, 'slipway')
+  // another person's row: a tap opens nothing
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
+  // own row (viewing as slipway): the tap opens the bid picker
+  await page.locator('[data-testid="cell-slipway-2026-02-11"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
+})
+
+// The same rule on the DRAG: a scoped member's selection can only ever cover
+// their own row (the drag's row list is the viewer alone), so a drag straying
+// down onto another person's row is clamped to the viewer's row — a fill from it
+// writes the OWN row and never the other. And a drag along the own row still
+// spans dates, so scoping does not cost a member their batch fill.
+test('a member scoped to one person drag-fills their own row only', async ({ page }) => {
+  desktopOnly()
+  await lwView(page, 'slipway')
+  // strays straight down onto ammo's cell: the selection stays on slipway
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-ammo-2026-01-06')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="sel-LL"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+  await expect(page.locator('[data-testid="cell-ammo-2026-01-06"] .c')).toHaveCount(0)
+  // and a normal along-the-row drag still selects a whole span
+  await dragSelect(page, 'cell-slipway-2026-01-10', 'cell-slipway-2026-01-12')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+})
+
 test('a drag-selection offers Move, and the move banner appears on entering it', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
@@ -1050,6 +1085,10 @@ test('an open sheet is the only thing that scrolls', async ({ page }) => {
 // the grid, the title sheet answers with THEIR numbers, and any callsign
 // opens that person's all-figures sheet, member included (owner, 17 Aug 26).
 test('the viewer\'s row is lit and the title sheet answers with their numbers', async ({ page }) => {
+  // openLeaveWar leaves the war unscoped so the mechanics tests edit any row;
+  // this test is specifically about the viewer, so scope it to Bane (Ranger) —
+  // the person a fresh Raptor login views as.
+  await lwView(page, 'bane')
   const mine = page.locator('[data-testid="row-bane"]')
   await expect(mine).toHaveClass('me')
   // Painted, not merely classed — the frozen pair carries a solid tint.

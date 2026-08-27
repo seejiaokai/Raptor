@@ -3987,6 +3987,20 @@ Press-and-drag across day-cells to select a rectangle — one row or many
 people's rows — then act on the whole block at once. It is built AROUND the
 BidPicker's look and vocabulary, not instead of it.
 
+- **A member's reach is their OWN row; an admin's is every row** (owner,
+  27 Aug 26 — "if I am viewing as a member and I view as ranger on the leave
+  war, I shouldn't be able to input on other people's row except mine"). The
+  "own" row is the person the session is viewing as (`viewer`, mirrored from
+  Raptor's "View as"). For a member the drag's row list is that one row, so the
+  rectangle only ever covers their own row — a date RANGE along it still selects
+  freely — and a single tap opens the editing sheet only on their own row
+  (`Matrix.tsx` `openable` / the drag `order`). An admin's selection spans
+  everyone. This is not just an affordance: `canEditRow` (engine/stages.ts)
+  refuses another row at the WRITE path too (`setCell`, the batch writers, move
+  and shift), so nothing — not a batch, not a keyboard path — can put one
+  member's leave on another man's row. It is still not a security boundary while
+  the role switch is unguarded (a member can flip to admin) — see
+  `docs/leavewar/known-gaps.md` §The role switch is an affordance.
 - **The gesture** (`ui/select.ts`, `wireSelect`) is ONE delegated
   `pointerdown` on `.mx-wrap` — never per-cell (the grid is ~28k nodes) —
   hit-testing with `elementFromPoint().closest('[data-testid^="cell-"]')`. It
@@ -4053,12 +4067,19 @@ BidPicker's look and vocabulary, not instead of it.
   - The move itself is `moveCells(movers, delta)`, atomic — an occupied / Raptor
     / out-of-window landing refuses the whole move and says why in the banner.
   The `moved` dotted-orange edge marks the landed cells via
-  the existing `shiftedFrom` state — but **only once bidding has CLOSED**
+  the `shiftedFrom` state — but **only for a move made once bidding has CLOSED**
   (owner, 27 Aug 26): while a war is still OPEN people shuffle their own bids
-  freely, so a moved mark then is noise; `Matrix.tsx`'s `movedShown`
-  (`stage === 'closed' || 'published'`) gates the class, the `shiftedFrom`
-  data is untouched. Pinned in `deciding.test.tsx` (hidden at open, shown at
-  closed, hidden again on reopen).
+  freely, so such a move is ordinary tidying, not a management shift. This is
+  gated in TWO places behind one `biddingClosed(stage)` body (engine/stages.ts,
+  `stage === 'closed' || 'published'`): the store RECORDS `shiftedFrom` only on a
+  closed/published move (`moveCells`/`shiftBid`) — an open-bidding move stores a
+  clean `{state:'pending', source:'bid'}` and clears any stale trail — and
+  `Matrix.tsx`'s `movedShown` gates the DISPLAY. The earlier build gated only the
+  display, so a bid shuffled while open sprouted the stripe the moment the war
+  closed (the reported bug); recording it only when closed fixes that at the
+  source. Pinned in `store.test.ts` (open move → no trail, closed move → trail)
+  and `deciding.test.tsx` (a seeded trail: hidden at open, shown at closed,
+  hidden again on reopen).
 - **Dragging an EVENT row** (owner, 27 Aug 26 — "drag and select grids in the
   events column to input events. Just like what we recently implemented"). The
   same `wireSelect` gesture also claims the `event-<line>-<date>` day cells (not

@@ -5,7 +5,9 @@
 
 import {
   addDays,
+  biddingClosed,
   canEditCell,
+  canEditRow,
   inSquadron,
   isBiddable,
   isMedical,
@@ -1050,6 +1052,11 @@ export function setCell(personId: string, date: string, code: string): void {
   // reason `createWar` re-checks the role: the interface hides what a person
   // may not do, but the store is what makes it true.
   if (!canEditCell(state.period, state.role, date)) return
+  // ...and the ROW: a member writes only their own row (the person they are
+  // viewing as), an admin any. The grid stops offering another row's cell, but
+  // this is the backstop that makes it true — a stray write path can never
+  // put one member's leave onto another man's row (owner, 27 Aug 26).
+  if (!canEditRow(state.role, state.viewer, personId)) return
 
   const clean = code.trim().toUpperCase()
   const previous = state.grid[personId]?.[date]
@@ -1119,6 +1126,7 @@ export function setCellRange(
       const allowed =
         !raptorOwns(state.states, personId, d) &&
         canEditCell(state.period, state.role, d) &&
+        canEditRow(state.role, state.viewer, personId) &&
         (!person || inSquadron(person, d))
       if (!allowed) {
         skipped++
@@ -1164,6 +1172,7 @@ export function setCells(cells: { personId: string; date: string }[], code: stri
       const allowed =
         !raptorOwns(state.states, personId, date) &&
         canEditCell(state.period, state.role, date) &&
+        canEditRow(state.role, state.viewer, personId) &&
         (!person || inSquadron(person, date))
       if (!allowed) { skipped++; continue }
       setCell(personId, date, code)
@@ -1914,6 +1923,10 @@ export type ShiftResult = 'shifted' | 'occupied' | 'raptor' | 'nothing'
 export function shiftBid(personId: string, from: string, to: string): ShiftResult {
   const code = state.grid[personId]?.[from]
   if (!isBiddable(code)) return 'nothing'
+  // A member moves only their own row's bids (owner, 27 Aug 26). The sheet
+  // that reaches here already only opens on the member's own row, but the
+  // write path is what makes it true.
+  if (!canEditRow(state.role, state.viewer, personId)) return 'nothing'
   if (raptorOwns(state.states, personId, from)) return 'raptor'
   // Never overwrite. Moving one man's leave onto a day he already has
   // something booked would destroy the second booking to save the first.
@@ -1927,7 +1940,12 @@ export function shiftBid(personId: string, from: string, to: string): ShiftResul
 
   const srow = { ...(state.states[personId] ?? {}) }
   delete srow[from]
-  srow[to] = { state: 'pending', source: 'bid', shiftedFrom: from }
+  // Record the moved-from trace ONLY once bidding has closed — the same rule as
+  // moveCells: a shift while the war is OPEN is ordinary shuffling and leaves no
+  // stripe (owner, 27 Aug 26).
+  srow[to] = biddingClosed(state.period.stage)
+    ? { state: 'pending', source: 'bid', shiftedFrom: from }
+    : { state: 'pending', source: 'bid' }
 
   updateCurrent(w => ({
     ...w,
@@ -1937,16 +1955,21 @@ export function shiftBid(personId: string, from: string, to: string): ShiftResul
   return 'shifted'
 }
 
-/** Does this cell hold a bid THIS role may move? The same three conditions
+/** Does this cell hold a bid THIS role may move? The same conditions
  *  `moveCells` guards each source by (below): not Raptor-owned, a real
- *  biddable bid, and editable in the current stage/window. Kept as one body so
- *  the sheet (whether to offer Move at all), the anchor (which day is the
- *  block's first input) and the mover all read the SAME rule — a second copy
- *  would be a drift seam. */
+ *  biddable bid, editable in the current stage/window, and on a row this role
+ *  owns (a member's own, an admin's any). Kept as one body so the sheet
+ *  (whether to offer Move at all), the anchor (which day is the block's first
+ *  input) and the mover all read the SAME rule — a second copy would be a
+ *  drift seam. */
 function isMovableSource(personId: string, date: string): boolean {
   return !raptorOwns(state.states, personId, date)
     && isBiddable(state.grid[personId]?.[date])
     && canEditCell(state.period, state.role, date)
+    // A member slides only their OWN bids (owner, 27 Aug 26). Folding the row
+    // rule in here carries it to every reader of this one body at once: the
+    // sheet (whether to offer Move), the anchor and the mover's source guard.
+    && canEditRow(state.role, state.viewer, personId)
 }
 
 /** The cells of a selection that actually hold a movable bid — the drag-move
@@ -1974,8 +1997,13 @@ export function moveCells(cells: { personId: string; date: string }[], dayDelta:
   if (!dayDelta || cells.length === 0) return { reason: 'nothing' }
   const dayset = new Set(state.period.days.map((d: any) => d.date))
   const sources = new Set(cells.map(c => `${c.personId}|${c.date}`))
-  // every source must be a movable bid this role may edit
+  // every source must be a movable bid this role may edit — the same guards
+  // `isMovableSource` carries, kept inline here only to name a precise reason
+  // per cell. A member may slide only their OWN row's bids: another row is
+  // "nothing you may move" (owner, 27 Aug 26). The affordance already filters
+  // through `movableCells`, so this is the backstop against a direct call.
   for (const c of cells) {
+    if (!canEditRow(state.role, state.viewer, c.personId)) return { reason: 'nothing', at: c.date }
     if (raptorOwns(state.states, c.personId, c.date)) return { reason: 'raptor', at: c.date }
     if (!isBiddable(state.grid[c.personId]?.[c.date])) return { reason: 'nothing', at: c.date }
     if (!canEditCell(state.period, state.role, c.date)) return { reason: 'window', at: c.date }
@@ -2001,9 +2029,24 @@ export function moveCells(cells: { personId: string; date: string }[], dayDelta:
     grid[pid] = { ...(state.grid[pid] ?? {}) }
     states[pid] = { ...(state.states[pid] ?? {}) }
   }
+  // A move only leaves a "moved" trail (shiftedFrom) once bidding has CLOSED —
+  // that is a management shift, the thing the mark and the OIL audit exist to
+  // trace. While bidding is OPEN people shuffle their own bids freely, so an
+  // open-bidding move is a clean re-place with NO provenance: without this the
+  // trail was recorded on every open move and surfaced the moment the war
+  // closed, painting an orange stripe on a bid the squadron had simply tidied
+  // (owner, 27 Aug 26 — "I shouldn't see the stripes… only after bidding is
+  // closed AND the input is moved"). Clearing shiftedFrom on the open re-place
+  // also drops any stale trail a prior closed-era move had left.
+  const tracked = biddingClosed(state.period.stage)
   const moves = cells.map(c => ({ pid: c.personId, from: c.date, to: addDays(c.date, dayDelta), code: state.grid[c.personId][c.date] }))
   for (const m of moves) { delete grid[m.pid][m.from]; delete states[m.pid][m.from] }
-  for (const m of moves) { grid[m.pid][m.to] = m.code; states[m.pid][m.to] = { state: 'pending', source: 'bid', shiftedFrom: m.from } }
+  for (const m of moves) {
+    grid[m.pid][m.to] = m.code
+    states[m.pid][m.to] = tracked
+      ? { state: 'pending', source: 'bid', shiftedFrom: m.from }
+      : { state: 'pending', source: 'bid' }
+  }
   updateCurrent(w => ({ ...w, grid: { ...w.grid, ...grid }, states: { ...w.states, ...states } }))
   return 'moved'
 }

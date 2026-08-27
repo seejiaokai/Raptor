@@ -450,11 +450,23 @@ check the other):
   move): "which cells of a selection hold a movable bid" is read in THREE places
   — the sheet (offer Move at all), the anchor (`earliestDate` of the movers, so
   the first input lands on the tapped day), and the mover itself. It is one
-  exported body over the same `!raptorOwns && isBiddable && canEditCell` triple
-  `moveCells` guards each source by; a second copy is the seam. The move now
+  exported body over the same `!raptorOwns && isBiddable && canEditCell &&
+  canEditRow` guards `moveCells` guards each source by; a second copy is the
+  seam. The move now
   ignores the empty cells swept up around the inputs (a loose box no longer
   refuses as "nothing") — but the ATOMIC target guards still refuse an occupied
   / Raptor / out-of-window landing, so nothing is overwritten.
+  **The ROW guard `canEditRow` is the fourth face** (27 Aug 26 — "viewing as
+  ranger, I shouldn't be able to input on other people's row except mine"). A
+  member writes only their own row (the `viewer`/"View as" person), an admin
+  any; `canEditRow(role, viewer, personId)` (engine/stages.ts) is read at the
+  write path (`setCell`, the range/batch writers, `moveCells`/`isMovableSource`,
+  `shiftBid`) AND the grid affordance (`Matrix.tsx` `openable`, the drag `order`
+  restricted to the viewer, the BidPicker's edit gate) — the same drift-seam
+  rule as `canEditCell`: whatever the grid stops offering, the store must
+  independently refuse. `viewer === null` (raw store / tests only — production
+  always mirrors a real `ME`) imposes no row rule. Pinned in `store.test.ts`
+  §a member edits only their own row.
 - **The two role reads: `LOGINROLE` (the ceiling) vs `SESSION.role` (the
   effective role)** (27 Aug 26, the admin's view toggle). DELIBERATELY two
   values, not a drift bug — but a seam to respect: every PERMISSION gate
