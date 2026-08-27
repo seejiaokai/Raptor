@@ -79,6 +79,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   let painted = new Set<string>()  // testids currently wearing .selcell
   let raf = 0
   let lastX = 0, lastY = 0
+  let touchGesture = false   // this drag started from a finger, not a mouse
 
   const clearPaint = () => {
     for (const id of painted) wrap.querySelector(`[data-testid="${id}"]`)?.classList.remove('selcell')
@@ -99,6 +100,13 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     if (f) paint(rectCells(ctx.order(), ctx.dates(), anchor, f))
   }
 
+  // Auto-scroll the grid when a MOUSE drag reaches a wrap edge, so a desktop
+  // selection can run past the visible columns. NOT on touch (owner, 27 Aug 26
+  // — "the calendar also follows my drag … only for phone"): on a ~390px phone
+  // the 36px edge band is a big slice of the screen and the finger occludes the
+  // cells, so the day columns slid away under the drag and the selection felt
+  // out of control. A phone selects exactly the days it can see; edge scroll is
+  // never started for a touch gesture (see arm()).
   const edgeScroll = () => {
     raf = 0
     if (!armed) return
@@ -127,7 +135,9 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     // onTouchMove note.
     wrap.addEventListener('touchmove', onTouchMove, { passive: false })
     repaint()
-    if (!raf) raf = requestAnimationFrame(edgeScroll)
+    // Edge auto-scroll is a desktop-only convenience — a phone drag keeps the
+    // grid still (see edgeScroll).
+    if (!touchGesture && !raf) raf = requestAnimationFrame(edgeScroll)
   }
 
   const onMove = (e: PointerEvent) => {
@@ -198,6 +208,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     const cell = parseCellId((e.target as HTMLElement)?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
     if (!cell) return                                       // not a day cell (who / bal / handle)
     anchor = cell; armed = false; pid = e.pointerId
+    touchGesture = e.pointerType !== 'mouse'
     sx = e.clientX; sy = e.clientY; lastX = e.clientX; lastY = e.clientY
     // NB: pointer capture is taken in arm(), not here — see the note there.
     window.addEventListener('pointermove', onMove, true)

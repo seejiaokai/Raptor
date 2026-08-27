@@ -106,3 +106,42 @@ describe('wireSelect touch scroll-lock', () => {
     expect(touchmovePrevented()).toBe(true)
   })
 })
+
+// Edge auto-scroll runs the grid sideways when a MOUSE drag reaches a wrap
+// edge, so a desktop selection can extend past the visible columns. On a phone
+// it made the day columns slide away under the finger (owner, 27 Aug 26 — "the
+// calendar also follows my drag … only for phone"), so a touch drag must never
+// start it. arm() schedules the scroll via requestAnimationFrame, so a spy on
+// rAF reads exactly whether it was started.
+describe('wireSelect edge auto-scroll is desktop-only', () => {
+  let wrap: HTMLElement, cell: HTMLElement, teardown: () => void
+  let rafSpy: ReturnType<typeof vi.spyOn>
+  const origEFP = document.elementFromPoint
+  beforeEach(() => {
+    document.elementFromPoint = () => null
+    rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation(() => 1 as unknown as number)
+    wrap = document.createElement('div')
+    cell = document.createElement('div')
+    cell.setAttribute('data-testid', 'cell-ramp-2026-01-06')
+    wrap.appendChild(cell)
+    document.body.appendChild(wrap)
+    teardown = wireSelect(wrap, {
+      order: () => ['ramp'], dates: () => ['2026-01-06'],
+      enabled: () => true, onSelect: () => {},
+    })
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; rafSpy.mockRestore(); vi.useRealTimers() })
+
+  it('a mouse drag starts it (desktop keeps selecting past the edge)', () => {
+    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 5, clientY: 5, button: 0 }))
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 12, clientY: 5 }))  // > MOUSE_SLOP → arm
+    expect(rafSpy).toHaveBeenCalled()
+  })
+
+  it('a touch drag never starts it — the phone grid stays put under the finger', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })   // leave rAF real so the spy still reads it
+    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+    vi.advanceTimersByTime(200)   // hold → arm
+    expect(rafSpy).not.toHaveBeenCalled()
+  })
+})
