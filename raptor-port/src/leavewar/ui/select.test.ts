@@ -107,6 +107,61 @@ describe('wireSelect touch scroll-lock', () => {
   })
 })
 
+// The SLOW-ARM rescue (owner, 27 Aug 26 — "when I try to hold then drag … I
+// can't select a date range, I'm stuck with just adding 1 input", again, on
+// rows other than his own). The still-hold arms at 180ms only if the finger
+// barely moved; a phone user rarely pauses a clean beat before dragging, so a
+// drag begun a touch early crossed the slop before arming and was thrown away
+// as a scroll. Now a finger down past SLOWARM(140ms) that then crosses the slop
+// arms the select anyway — a slow, deliberate drag — while a quick flick, which
+// crosses the slop long before 140ms, still cedes to the sacred sideways
+// scroll. Driven here with fake timers, which is the whole point of the
+// timer-flag design (an elapsed-time read off event timeStamps is not
+// deterministic in jsdom).
+describe('wireSelect slow-arm rescues a drag begun without a pause', () => {
+  let wrap: HTMLElement, cell: HTMLElement, teardown: () => void
+  const origEFP = document.elementFromPoint
+  beforeEach(() => {
+    vi.useFakeTimers()
+    document.elementFromPoint = () => null
+    wrap = document.createElement('div')
+    cell = document.createElement('div')
+    cell.setAttribute('data-testid', 'cell-ramp-2026-01-06')
+    wrap.appendChild(cell)
+    document.body.appendChild(wrap)
+    teardown = wireSelect(wrap, {
+      order: () => ['ramp'], dates: () => ['2026-01-06'],
+      enabled: () => true, onSelect: () => {},
+    })
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+
+  const press = () => cell.dispatchEvent(new PointerEvent('pointerdown',
+    { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+  const move = (x: number, y: number) => window.dispatchEvent(new PointerEvent('pointermove',
+    { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: x, clientY: y }))
+  const touchmovePrevented = () => {
+    const ev = new TouchEvent('touchmove', { bubbles: true, cancelable: true })
+    wrap.dispatchEvent(ev)
+    return ev.defaultPrevented
+  }
+
+  it('a quick cross of the slop cedes — even the later still-hold no longer arms', () => {
+    press()
+    move(40, 5)                    // 35px > GIVEUP, before SLOWARM → a flick → cede
+    vi.advanceTimersByTime(400)    // would have armed at 180 had it not torn down
+    expect(touchmovePrevented()).toBe(false)   // never armed: the scroll kept it
+  })
+
+  it('a slow cross of the slop arms the select before the full still-hold', () => {
+    press()
+    vi.advanceTimersByTime(150)    // past SLOWARM(140), still under HOLD(180)
+    move(40, 5)                    // now a slide reads as a deliberate drag → arm
+    expect(touchmovePrevented()).toBe(true)    // armed: the scroll is now locked
+    expect(wrap.classList.contains('selecting')).toBe(true)   // and the grab shows
+  })
+})
+
 // Edge auto-scroll runs the grid sideways when a MOUSE drag reaches a wrap
 // edge, so a desktop selection can extend past the visible columns. On a phone
 // it made the day columns slide away under the finger (owner, 27 Aug 26 — "the

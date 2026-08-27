@@ -3991,10 +3991,19 @@ BidPicker's look and vocabulary, not instead of it.
   `pointerdown` on `.mx-wrap` — never per-cell (the grid is ~28k nodes) —
   hit-testing with `elementFromPoint().closest('[data-testid^="cell-"]')`. It
   ARMS before it claims anything, so the grid's sideways scroll is never
-  stolen: a mouse arms at a 4px move; a finger must HOLD 180ms, and a slide
-  past 26px before that cedes to the native scroll (caldrag's constants). The
-  highlight (`.selcell`) is written straight onto the cells, never through
-  React state. An un-armed press is an ordinary click and opens the
+  stolen: a mouse arms at a 4px move; a finger arms two ways — a HOLD of 180ms
+  still, OR a SLOW drag once the finger has been down past SLOWARM(140ms), a
+  slide past 26px then reads as a deliberate select rather than a scroll and
+  arms (owner, 27 Aug 26 — "when I hold then drag … I can't select a date
+  range, I'm stuck with just adding 1 input", on rows other than his own: a
+  phone user rarely pauses a clean beat before dragging, and a drag begun a
+  touch early crossed the slop before the still-hold and was thrown away as a
+  scroll). A QUICK flick still crosses the slop long before 140ms, so the
+  grid's sacred sideways scroll wins it — cede. The highlight (`.selcell`) is
+  written straight onto the cells, never through React state; the instant the
+  drag arms, the wrap wears `.selecting` (a brighter wash + thicker ring in
+  `matrix.css`) and Android fires a short haptic, so a phone user SEES the grab
+  land before dragging (iOS has no web haptic — the brightening carries it). An un-armed press is an ordinary click and opens the
   single-cell sheet exactly as before — **pointer capture is taken in `arm()`,
   NOT on pointerdown** (owner, 27 Aug 26 — "if i just click 1 area to input …
   it should also allow me to input"): capturing on the down retargets the

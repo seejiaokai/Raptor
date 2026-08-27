@@ -23,6 +23,9 @@ export type Selection = { people: string[]; from: string; to: string; cells: Cel
 
 /* caldrag.ts's own numbers */
 const HOLD = 180        // ms a finger must dwell before a drag arms
+const SLOWARM = 140     // ms down after which a slide past the slop arms a
+                        // SELECT instead of ceding — a slow, deliberate drag,
+                        // never a quick scroll flick (owner, 27 Aug 26)
 const SLOP = 8          // wobble tolerated while dwelling (touch)
 const GIVEUP = 26       // a pre-arm slide past this is a scroll, not a select
 const MOUSE_SLOP = 4    // a mouse arms on this move, no dwell
@@ -76,6 +79,9 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   let pid = -1
   let sx = 0, sy = 0
   let holdTimer: any = null
+  let slowTimer: any = null       // fires at SLOWARM; flips slowReady
+  let slowReady = false           // the finger has been down long enough that a
+                                  // slide now reads as a slow drag, not a flick
   let painted = new Set<string>()  // testids currently wearing .selcell
   let raf = 0
   let lastX = 0, lastY = 0
@@ -121,6 +127,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   const arm = () => {
     armed = true
     if (holdTimer) { clearTimeout(holdTimer); holdTimer = null }
+    if (slowTimer) { clearTimeout(slowTimer); slowTimer = null }
     // Capture the pointer only now that a DRAG is real. Taking it on
     // pointerdown breaks a plain tap: Chromium retargets the click that
     // follows a captured pointerup to the capturing element (the wrap), so
@@ -129,6 +136,14 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     // capture is just belt-and-braces for a fast touch drag.
     if (pid >= 0) { try { wrap.setPointerCapture(pid) } catch { /* jsdom / not capturable */ } }
     wrap.style.touchAction = 'none'
+    // Say — loudly — that the select has GRABBED. A phone user needs to SEE the
+    // long-press take before they drag, or they never learn the rhythm and the
+    // drag reads as broken (owner, 27 Aug 26 — "I can't select a range … stuck
+    // with 1 input"): `.selecting` makes the wash brighter and the ring thicker
+    // than the resting highlight (matrix.css), and Android gets a short haptic.
+    // iOS has no web vibrate, so the visual cue carries it there.
+    wrap.classList.add('selecting')
+    try { (navigator as { vibrate?: (ms: number) => void }).vibrate?.(12) } catch { /* unsupported */ }
     // Lock the scroll now, and ONLY now: the non-passive touchmove listener
     // exists for the life of an armed drag and nowhere else, so a normal
     // sideways scroll never runs JS per frame (that scroll is sacred). See the
@@ -147,7 +162,16 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
       const dx = Math.abs(e.clientX - sx), dy = Math.abs(e.clientY - sy)
       const moved = Math.max(dx, dy)
       if (e.pointerType === 'mouse') { if (moved >= MOUSE_SLOP) arm() }
-      else if (moved > GIVEUP) { teardown(); clearPaint() }  // a slide before the hold armed = a scroll; let it go
+      else if (moved > GIVEUP) {
+        // A slide past the slop before the still-hold armed. If the finger has
+        // already been down past SLOWARM (slowReady), this is a SLOW, deliberate
+        // drag the user began without pausing first — arm the select rather
+        // than lose it (owner, 27 Aug 26 — "I can't select a range … stuck with
+        // 1 input"). A quick scroll flick crosses the slop long before SLOWARM,
+        // so the grid's sacred sideways scroll still wins it: cede.
+        if (slowReady) arm()
+        else { teardown(); clearPaint() }
+      }
       return
     }
     e.preventDefault()
@@ -177,6 +201,8 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
 
   function teardown() {
     if (holdTimer) { clearTimeout(holdTimer); holdTimer = null }
+    if (slowTimer) { clearTimeout(slowTimer); slowTimer = null }
+    slowReady = false
     if (raf) { cancelAnimationFrame(raf); raf = 0 }
     window.removeEventListener('pointermove', onMove, true)
     window.removeEventListener('pointerup', onUp, true)
@@ -184,6 +210,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     if (pid >= 0) { try { wrap.releasePointerCapture(pid) } catch { /* not captured */ } }
     wrap.removeEventListener('touchmove', onTouchMove)
     wrap.style.touchAction = ''
+    wrap.classList.remove('selecting')
     anchor = null; armed = false; pid = -1
   }
   const onCancel = () => { teardown(); clearPaint() }
@@ -214,7 +241,11 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     window.addEventListener('pointermove', onMove, true)
     window.addEventListener('pointerup', onUp, true)
     window.addEventListener('pointercancel', onCancel, true)
-    if (e.pointerType !== 'mouse') holdTimer = setTimeout(arm, HOLD)
+    if (e.pointerType !== 'mouse') {
+      holdTimer = setTimeout(arm, HOLD)
+      slowReady = false
+      slowTimer = setTimeout(() => { slowReady = true }, SLOWARM)
+    }
   }
 
   wrap.addEventListener('pointerdown', onDown)

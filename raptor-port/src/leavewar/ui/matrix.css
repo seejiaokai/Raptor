@@ -642,6 +642,18 @@
   box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .6);
 }
 
+/* While a drag is ACTIVELY selecting (the wrap wears `.selecting`, set the
+   instant the long-press grabs), the wash is brighter and the ring thicker
+   than the resting highlight above. A phone user needs to SEE the grab land
+   before they drag, or the gesture reads as broken and they give up with one
+   cell tapped (owner, 27 Aug 26 — "I can't select a range … stuck with 1
+   input"). Android also gets a short haptic on arm; iOS has no web haptic, so
+   this brightening is the whole cue there. */
+.mx-wrap.selecting .mx td.selcell {
+  background: rgba(59, 198, 232, .34);
+  box-shadow: inset 0 0 0 2px rgba(59, 198, 232, .95);
+}
+
 /* Two marks that sit ON TOP of a state colour, never instead of one. The
    squadron's colour convention is approved by the owner and unchanged: green
    is approved, magenta pending, red refused. These answer a second question
