@@ -4198,13 +4198,21 @@ test('the desktop checks panel resizes by its grip', async ({ page }) => {
   const grip = page.locator('#schedBoard .sb-wsplit')
   await expect(grip).toBeVisible()
   const before = (await page.locator('#schedBoard .sb-warn').boundingBox())!.height
-  const box = (await grip.boundingBox())!
-  const cx = box.x + box.width / 2, cy = box.y + box.height / 2
-  await page.mouse.move(cx, cy)
-  await page.mouse.down()
-  await page.mouse.move(cx, cy + 90, { steps: 10 })
-  await page.mouse.up()
-  const after = (await page.locator('#schedBoard .sb-warn').boundingBox())!.height
+  /* the DOM is up before the pointer wiring (wireWarnSplit runs in a React
+     effect a beat after the board paints), so under parallel-worker load a
+     single immediate drag can land on a grip nobody is listening to yet —
+     the drag is retried, the ASSERTION is not softened */
+  let after = before
+  for (let tries = 0; tries < 3 && after <= before + 40; tries++) {
+    const box = (await grip.boundingBox())!
+    const cx = box.x + box.width / 2, cy = box.y + box.height / 2
+    await page.mouse.move(cx, cy)
+    await page.mouse.down()
+    await page.mouse.move(cx, cy + 90, { steps: 10 })
+    await page.mouse.up()
+    after = (await page.locator('#schedBoard .sb-warn').boundingBox())!.height
+    if (after <= before + 40) await page.waitForTimeout(250)
+  }
   expect(after, 'dragging the grip down grows the checks panel').toBeGreaterThan(before + 40)
 })
 

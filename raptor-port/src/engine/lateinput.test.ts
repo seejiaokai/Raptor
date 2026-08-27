@@ -60,6 +60,9 @@ describe('what counts as late', () => {
        None of them is a decision made in advance either. */
     for (const t of ['HL', 'OML', 'ATT C', 'ATT B'])
       expect(isLateInput({ ...dnif, type: t }), t).toBe(false)
+    /* Upchit joined the exemption on 27 Aug 26 by the same ruling — the
+       medical officer decides the date, never the deadline */
+    expect(isLateInput({ ...dnif, type: 'Upchit' })).toBe(false)
     /* and leave is still NOT exempt: it is applied for, which is the whole
        point of a deadline */
     for (const t of ['LL', 'OL', 'OIL', 'OFF', 'CCL', 'EL', 'OD'])

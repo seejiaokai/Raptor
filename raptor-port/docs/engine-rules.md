@@ -1260,6 +1260,61 @@ funnel:
 Accepting twice is a no-op; undo first. The input is never removed — it stays in
 Personal Inputs, faded, so the scheduler can see what they have dealt with.
 
+## The medical tracker — downchit, upchit and the trim rules (owner, 27 Aug 26)
+
+The medical group (HL, OML, ATT C, ATT B) has always been the downchit; what
+is new is the LIFECYCLE around it, and one new type.
+
+**Upchit** (`INPUT_META` grp `'upchit'`) is the paperwork that closes a
+medical-down period — the medical officer's "fit to fly again", dated. It is
+a marker type on the SANS pattern: inside `isUnavail` (no Accept controls),
+carved out of everything that would read it as an absence — `inputFlags`
+(validator-invisible AND reference-seed-invisible, the dormancy precedent, so
+parity cannot diverge), `isAway` (never strikes a palette puck), `restsInput`,
+the two Unavailable blocks (week + board), the board's Unavailable + Add list,
+and the late-input mark (same ruling as the downchits: the date is the medical
+officer's, never a deadline's). `typeGroup` maps it under the Medical dropdown
+heading; `defaultAllday` opens it all-day; it has no AM/PM control and the
+write path refuses a ranged one — an upchit is ONE date.
+
+**Derived, never stored** (`engine/medical.ts`). Who is down, who owes an
+upchit and who upchitted are pure reads over `INPUTS` and an as-of ordinal:
+
+- `medDownAsOf(ord)` — every downchit input covering the date.
+- `pendingUpchits(ord)` — per person, the latest-ended EXPIRED downchit,
+  unless (a) another downchit covers the date, (b) any downchit STARTS after
+  that end (a newer entry replaces the nag, future-dated included), or (c) an
+  upchit is dated on/after that end. Unbounded into the past — an owed upchit
+  does not age out.
+- `upchitsWithin(ord, 30)` — upchits in the trailing 30 days, newest first.
+
+Nothing runs at boot and nothing mutates on a clock tick — "auto-moves to
+Pending on expiry" is arithmetic, the `isLateInput` doctrine.
+
+**The trim rules** (planners in `engine/medical.ts`, applied by
+`applyMedPlan` in `ui/inputedit.tsx`, inside the SAME `writeInputsBatch` as
+the input that caused them — one undo step):
+
+- An **upchit on X** cuts every downchit of that person still running past X
+  to end ON X (down 10–13 Jul, upchit 12 Jul → 10–12 Jul); on/before the
+  start it deletes the row. The remarks "till …" token is rewritten
+  (`withRemarksTail`), `retractLwRow` runs first on an lw-tagged row, and the
+  Leave War's freed days clear on the next reconcile.
+- A **different-type medical overlap** wins its days: the older row is cut to
+  end the day before the new one starts, deleted when nothing remains (a tail
+  past the new end is deliberately lost — "the latest input overwrites").
+- A **same-type overlap is REFUSED**, never trimmed (`medOverlapRefusal`, the
+  `sansOverlapRefusal` shape): the person is told to edit the entry on file
+  and attach the new document to it. Upchit-vs-upchit same day likewise.
+
+**The mandatory document.** `needsDoc(t)` (= downchit or upchit, ONE body in
+`engine/inputs.ts`) decides both the upload control's visibility and the
+refusal: a NEW medical input (or a row retyped INTO the group) does not go in
+without a stored document (`state/docs.ts` — session-only blobs, id-only on
+the record, append-only so undo finds its paperwork). Rows that were already
+medical keep whatever they have — pre-feature records are not bricked.
+Everyone may VIEW any document; edit stays own-puck/admin at the write path.
+
 ## The late-input mark (owner, 9 Aug 26)
 
 A member's input is due **`VCONF.inputLead` days before its own week's

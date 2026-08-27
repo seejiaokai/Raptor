@@ -20,7 +20,8 @@ import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx } from '../engi
 import { DAYS } from '../engine/data'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
-import { seedDemoSans } from './demoseed'
+import { seedDemoSans, seedDemoMedical } from './demoseed'
+import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved } from '../engine/publish'
@@ -139,6 +140,7 @@ export function resetSession(s: any) {
      calendar month or its half-planned pucks and remarks. */
   view.setInpView('table')
   view.setCalMonth(null)
+  view.setMedAsOf(null)
   clearPlan()
   /* the Leave War page's role rides the Raptor session: an admin login is a
      Leave War admin, everyone else (and a logout) is a member. This is the
@@ -471,6 +473,9 @@ export function initStore() {
      lives here and not in engine/inputs.ts's INPUTS array) — pushed before
      mintInpIds so they mint an iid exactly like every other seed row */
   seedDemoSans()
+  /* demo-only medical lifecycle rows + placeholder documents (same boot-only
+     home and blindness guarantee — see state/demoseed.ts) */
+  seedDemoMedical(docAdd)
   /* ANCHOR EVERY SEED INPUT TO ITS YEAR (24 Aug 26). A bare 'Jul 13' label
      is resolved through the row's `yr`; at boot CURWEEK is the seed week, so
      baseYear() is exactly the year every demo/authored/SANS seed row means.

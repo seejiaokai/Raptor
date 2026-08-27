@@ -83,6 +83,20 @@ export const INPUT_META:any={
   'OML':        {name:'ordinary medical leave',   grp:'med',   work:false, local:true,  ground:false, half:true},
   'ATT C':      {name:'medically down — cannot report to work', grp:'med', work:false, local:true, ground:false, half:true},
   'ATT B':      {name:'medically down — no flying, may still work', grp:'med', work:true, local:true, ground:false, half:true},
+  /* UPCHIT (owner, 27 Aug 26) — the medical officer clears the man to fly
+     again. A PAPERWORK record, not an absence: it closes a medical-down
+     period (the write path trims the downchit to end on the upchit date) and
+     is otherwise invisible to the engine. Its own group, on the SANS
+     marker-type pattern, because both neighbours are wrong: grp:'act' would
+     auto-accept it onto the Ground Programme and bear crew rest; grp:'med'
+     would ground the man and sync it to Leave War. The carve-outs that make
+     it inert are explicit: inputFlags (validator + reference seed), isAway
+     (palette), restsInput, isLateInput (not decided in advance, same ruling
+     as the downchits), the Unavailable blocks in html.ts/board-html.ts, and
+     the board's +Add type list. typeGroup maps it to 'med' so the dropdown
+     and legend file it under Medical and a new one opens All-day.
+     Placed after ATT B so the leave/med indices the suite pins stay put. */
+  'Upchit':     {name:'medically up — fit to fly again', grp:'upchit', work:false, local:true, ground:false, half:false},
   /* activity — a real commitment, but local and droppable, so he may stand by.
      These are the types a scheduler may lift onto the Ground Programme.
      shiftHard (owner, 26 Aug 26): across an SC MAIN shift this type is a hard
@@ -215,7 +229,10 @@ export function shiftHardLabel(s:any){return SHIFT_HARD_RE.test(String(s==null?'
    as an explicit carve-out at the one call site that decides "away". */
 /* the Fly leg reads ACTIONED ('g'/'u'), never 'r' — a removed Fly-with is
    dormant (owner, 26 Aug 26) and must not strike the man out of the palette */
-export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type))||(isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'));}
+/* AN UPCHIT IS UNAVAIL BUT NOT AWAY either (owner, 27 Aug 26) — it says the
+   man is fit AGAIN, so striking him from the palette would invert its meaning.
+   Same carve-out shape as SANS, at this same one call site. */
+export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type)&&!isUpchit(inp.type))||(isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'));}
 /* DOES THIS ABSENCE CLOSE THE WHOLE DAY, or only some hours (owner, 10 Aug 26 —
    AM / PM half-days)? It does when it says so, AND when it carries no usable
    window at all: {person:'pike', type:'OD'} with neither allday nor s/e is a
@@ -280,7 +297,7 @@ export const INPUT_TYPES=Object.keys(INPUT_META);
 /* the three groups the type dropdown and the legend are cut into */
 export const TYPE_GROUPS:any=[
   {k:'leave',t:'Leave'},{k:'med',t:'Medical'},{k:'other',t:'Duty & other commitments'}];
-export function typeGroup(t:any){const m=inpMeta(t); return !m?'other':m.grp==='leave'?'leave':m.grp==='med'?'med':'other';}
+export function typeGroup(t:any){const m=inpMeta(t); return !m?'other':m.grp==='leave'?'leave':(m.grp==='med'||m.grp==='upchit')?'med':'other';}
 /* The two halves of the day's input blocks, and the ONLY place the split is
    decided — the week and the board both used to carry their own copy of this
    regex and could drift apart.
@@ -297,6 +314,17 @@ export function isUnavail(t:any){const m=inpMeta(t); return !!m&&m.grp!=='act';}
 export function isPersonal(t:any){const m=inpMeta(t); return !!m&&m.grp==='act';}
 /* the SANS availability type — see the INPUT_META entry's comment */
 export function isSansAvail(t:any){const m=inpMeta(t); return !!m&&m.grp==='sans';}
+/* the Upchit marker type — see its INPUT_META entry's comment. Like SANS it
+   stays inside isUnavail (no Accept controls, acceptInput refuses it) and is
+   carved out everywhere "unavailable" would make it an absence. */
+export function isUpchit(t:any){const m=inpMeta(t); return !!m&&m.grp==='upchit';}
+/* DOES THIS TYPE NEED A SUPPORTING DOCUMENT before it may be filed (owner,
+   27 Aug 26 — "the input cannot go in without uploading a document")? The
+   medical group and the upchit that closes it. ONE body on purpose: the
+   upload control's visibility and the write path's refusal both ask here —
+   a second copy is the drift seam where the form shows no button while the
+   commit still demands a file. */
+export function needsDoc(t:any){return isDownchit(t)||isUpchit(t);}
 /* THE ALL-DAY DEFAULT A BRAND-NEW INPUT OPENS WITH (owner, 22 Aug 26 —
    "untick all day by default for all u see under duty and other commitments
    except sans availability"). Every "Duty & other commitments" type BUT SANS
@@ -322,7 +350,7 @@ export function defaultAllday(t:any){return !(typeGroup(t)==='other'&&!isSansAva
    record has none. The patched reference mirrors this set as an inline
    regex in refwin.ts:reirest() — change one, change both. */
 export function restsInput(t:any){const m=inpMeta(t);
-  if(!m||m.grp==='leave'||m.grp==='med')return false;
+  if(!m||m.grp==='leave'||m.grp==='med'||m.grp==='upchit')return false;
   const c=inpType(t); return c!=='Personal'&&c!=='SANS Availability';}
 export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim());}
 /* "Other" is the catch-all: the TYPE says nothing, so what the person actually
@@ -356,7 +384,10 @@ export function inpLabel(inp:any){
    other covered day keeps the input's voice. This function stays the
    day-blind half because refwin.ts seeds the reference through it, where
    no day context exists. */
-export function inputFlags(inp:any){return !inputDormant(inp)&&!(inp.acc==='g'&&!inp.allday);}
+/* An UPCHIT never flags: it is a paperwork record, not a commitment, and this
+   gate is ALSO refwin's reference seed filter — the reference simply never
+   receives one, so parity cannot diverge (the dormancy precedent). */
+export function inputFlags(inp:any){return !inputDormant(inp)&&!isUpchit(inp.type)&&!(inp.acc==='g'&&!inp.allday);}
 /* A REMOVED INPUT IS DORMANT (owner, 26 Aug 26 — tested the SC-grading
    preview, removed an accepted Training back to Personal Inputs and it still
    flagged: "if it goes there, stop it from flagging anything, until its
@@ -620,7 +651,9 @@ export function inputStampISO(inp:any){
   return isISO(m)?String(m):'';
 }
 export function isLateInput(inp:any){
-  if(!inp||isDownchit(inp.type))return false;
+  /* an upchit is exempt with the downchits and by the same ruling — going up
+     is decided by the medical officer, never in advance of a deadline */
+  if(!inp||isDownchit(inp.type)||isUpchit(inp.type))return false;
   const s=inputStampISO(inp), due=inputOwnDueISO(inp);
   return !!s&&!!due&&s>due;
 }

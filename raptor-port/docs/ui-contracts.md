@@ -3902,3 +3902,45 @@ only: no inputs band, no warnings, no publish/AL state, no amendment marks
 been signed off or who last touched it. Cached per (desktop-ness ×
 `CURWEEK` × next week's stash generation) and rebuilt only when that key
 changes, never on an ordinary repaint of the loaded week.
+
+## The Medical view, the upload control and the document viewer (owner, 27 Aug 26)
+
+**The Medical button** sits on the Personal Inputs TITLE ROW beside the
+Calendar-view button (`#inMedBtn`, `MedIcon` + "Medical"), carrying a red
+count badge (`.medcount`) of down-now + pending-upchit as of the notional
+today. The button SIGNALS instead of the page restructuring itself — the
+owner's "the page transforms when medical inputs exist" is answered by a
+badge that reads quiet at zero, not by a control that appears and
+disappears. It flips `INPVIEW` to `'med'`.
+
+**The Medical view** (`ui/MedicalView.tsx`, `#medView`) rides the Inputs
+calendar's full-screen chassis (`.inpcal`) and deliberately IGNORES the
+table's filter bar — it is the squadron's medical state, not a filtered
+list. Three sections, each a `.medcard` grid on the `.sanscard` contract
+(puck inside the row-direction `.medcard-top`; texts are SIBLINGS — the
+74×74 column-flex trap): **Medically Down** (`--hard` red, "till <date>"),
+**Pending Upchit** (`--adv` amber, "was down till <end>"), **Upchit
+Complete** (`--ok` green, "upchitted <date>", trailing 30 days newest
+first). Every section has a real empty state. The header's as-of control
+(`#medCalBtn`) opens a dropdown month grid (`.med-cal` — not a modal; a
+date pick needs no protected focus) writing `MEDASOF` (`state/view.ts`,
+null = the notional today, reset by the Today chip and on session change).
+
+**A card tap opens the DOCUMENT VIEWER** (`ui/DocViewer.tsx`,
+`#docViewPop`, airpop chassis, `DOCVIEW` in `ui/pops.ts` holding the input
+OBJECT + an `up` flag): image inline, PDF in a frame, "No document on file
+for this entry" otherwise; object URLs are minted on open and revoked on
+close. Viewing is UNGATED — every account sees every document. The FOOTER
+carries the gated actions: **Edit input** (own puck or admin → the shared
+`InputEditor`), and on a Pending card, **Upchit** — the shared editor in
+ctx `'up'` (person and type fixed as VALUES, a single plain date defaulting
+to today, the mandatory `DocField`). Both upchit paths — the pending card
+and typing an Upchit on the Inputs form — are one write path.
+
+**The upload control** (`DocField` in `ui/inputedit.tsx`: `UploadIcon`
+button + hidden file input + filename chip, `.docbtn.has` turning the ok
+green once attached) renders in all three editors — the Inputs add form,
+the in-table row editor, the board/modal editor — exactly when
+`needsDoc(type)` says the commit will demand it (one body, no drift). A
+documented row wears a paperclip (`.rclip`, `ClipIcon`) in the Inputs
+table's action cell, ungated, opening the viewer.

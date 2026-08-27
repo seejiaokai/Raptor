@@ -1,6 +1,6 @@
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
-import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
@@ -1254,7 +1254,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        reads it here. */
     h+=sansSectionHTML(d,di,ed);
     // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this block
-    h+=inGrp('Unavailable',(inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type),'sec-unav',true);
+    h+=inGrp('Unavailable',(inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type),'sec-unav',true);
     h+=`</div>`; // /day-body
     return h+`</section>`;
 }

@@ -45,7 +45,7 @@ byte-exact parity gate (`node reference/tfin.js`) rather than batch-by-batch.
 
 ---
 
-## The batches (#281 → #329)
+## The batches (#281 → #333)
 
 | batch | what it is (plain language) | bug-tested? |
 |---|---|---|
@@ -78,6 +78,7 @@ byte-exact parity gate (`node reference/tfin.js`) rather than batch-by-batch.
 | **#327** | Wave templates, blank waves, published-only marks, board stripes, highlight menus, version picker + mobile polish | ✅ 26 Aug — bug pass |
 | **#329** | SC MAIN per-type grading, dormant removed inputs, UI polish | ✅ 26 Aug — bug pass |
 | **#331** | Seam fixes, SANS in-time window + A chip, crew-panel & board-bar chrome, Leave War roster/grid, stores save flash | ⬜ (the 26 Aug pass predates it) |
+| **#333** | Medical tracker: Upchit input, mandatory documents + viewer, Medically Down / Pending Upchit / Upchit Complete sections, overlap & trim rules | ⬜ (built 27 Aug — self-tested at build, no independent pass yet) |
 
 ## The queue — ordered by risk (do these next, top first)
 
@@ -104,18 +105,19 @@ The rules engine, crew-rest safety, who-can-do-what, dates, and saved data.
 11. **#317** — SC MAIN/SPARE badge + probes learn renamed accounts *(roles × engine)*
 12. **#283** — Scrubbed demo data + switchable second week *(saved week data)*
 13. **#325** — Admin console + **flexible clearing** *(roles + a destructive wipe; the Help tab / motion parts are low-risk)*
+14. **#333** — Medical tracker: Upchit trims, mandatory documents, permissions *(rules engine + roles + data lifecycle — silent-failure territory)*
 
 ### 🟡 Tier 2 — test next (functional, failures usually visible)
 
-14. **#289** — Inputs month calendar + per-type All-day defaults + colour code
-15. **#286** — Five UI asks + SQN strip (undo-a-mute, public notes, reminders)
-16. **#323** — Highlight groups (OR/AND) + pucks drag-swap + palette *(the filter bar was already checked 26 Aug)*
+15. **#289** — Inputs month calendar + per-type All-day defaults + colour code
+16. **#286** — Five UI asks + SQN strip (undo-a-mute, public notes, reminders)
+17. **#323** — Highlight groups (OR/AND) + pucks drag-swap + palette *(the filter bar was already checked 26 Aug)*
 
 ### 🟢 Tier 3 — test last (cosmetic / navigation, a bug shows itself instantly)
 
-17. **#315** — Desktop arrow from Saturday reaches Sunday in one press
-18. **#322** — Desktop day arrows: proxy scrollbar no longer cancels the glide
-19. **#326** — Desktop day-arrows: mid-glide cancellation that skipped a day
+18. **#315** — Desktop arrow from Saturday reaches Sunday in one press
+19. **#322** — Desktop day arrows: proxy scrollbar no longer cancels the glide
+20. **#326** — Desktop day-arrows: mid-glide cancellation that skipped a day
 
 ---
 

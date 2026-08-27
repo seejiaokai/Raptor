@@ -46,7 +46,7 @@ export default defineConfig({
      FORCED to chromium (the image ships no WebKit; viewport/touch/UA
      emulation is unaffected), `lw-desktop` is a plain 1440×900 window. */
   projects: [
-    { name: 'raptor', testMatch: /geometry\.spec\.ts/ },
+    { name: 'raptor', testMatch: /(geometry|medical)\.spec\.ts/ },
     { name: 'lw-phone', testMatch: /leavewar\.spec\.ts/, use: { ...devices['iPhone 13'], browserName: 'chromium' } },
     { name: 'lw-desktop', testMatch: /leavewar\.spec\.ts/, use: { viewport: { width: 1440, height: 900 } } },
   ],

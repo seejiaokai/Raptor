@@ -603,3 +603,26 @@ check the other):
 
 When you add a feature that creates a NEW drift-seam — two places that must now
 agree — name it here so the next session knows to check both.
+
+- **The medical tracker's drift-seams (27 Aug 26).** Three named pairs, each
+  ONE body on purpose — check both ends when touching either:
+  - `needsDoc` (`engine/inputs.ts`) decides BOTH the upload control's
+    visibility (`DocField` render sites: the Inputs add form, its row editor,
+    the shared modal) and the write path's refusal (`normalizeInputDraft` +
+    `InputsPage.add`). A new doc-needing type is one edit there; a second
+    predicate is the seam.
+  - `typeGroup` maps grp `'upchit'` → `'med'` so the dropdown heading, the
+    legend and `defaultAllday` all file Upchit under Medical — but
+    `restsInput` and `isDownchit` read `m.grp` DIRECTLY, so Upchit is
+    excluded there explicitly. A future marker group must walk both readers.
+  - The trim planners (`engine/medical.ts`) are pure and the ONE applier is
+    `applyMedPlan` (`ui/inputedit.tsx`), called inside the same
+    `writeInputsBatch` from all three creation funnels and both edit paths.
+    A new input-creation path that skips the planner silently un-invents the
+    overwrite rule.
+  Plus one known demo wrinkle, documented in `state/demoseed.ts`: reloading
+  week 1 restores the pristine INPUTS snapshot and drops the seeded demo
+  docIds — the viewer's "No document on file" state covers it; not a bug to
+  chase. The Medical view itself is DERIVED (`engine/medical.ts` over
+  `INPUTS` + an as-of ordinal, default the notional `weeknav.TODAY`), so it
+  cannot drift from the table; anything stored would be the seam.

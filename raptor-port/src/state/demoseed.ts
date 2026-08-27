@@ -42,6 +42,7 @@
    this seed added its first two half-day rows. Writing the real shape the
    UI itself produces is the fix, not a test workaround. */
 import { INPUTS } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
 
 const DEMO_SANS: any[] = [
   /* nick — flies Jul 13's night wave (RCP, to 19:45 / ld 21:10; padded
@@ -84,5 +85,68 @@ export function seedDemoSans() {
       x.type === 'SANS Availability' && x.person === rec.person && x.date === rec.date)
     if (already) return
     INPUTS.push({ ...rec })
+  })
+}
+
+/* ---- DEMO-ONLY MEDICAL LIFECYCLE SEED (owner, 27 Aug 26) ------------------
+   A fresh clone shows the Medical view's three sections POPULATED: sufa and
+   divot are already down (the week-1 seed rows), nasty's downchit ended on
+   9 Jul unanswered — Pending Upchit — and vinci went down in June and
+   upchitted on 29 Jun — Upchit Complete, inside the trailing 30 days of the
+   notional 13 Jul today. Same boot-only home and idempotence guard as the
+   SANS seed above, and the same blindness guarantee: parity and the
+   snapshot tests never boot.
+
+   The two added spans sit OUTSIDE the loaded Jul 13–19 week on purpose —
+   inputCoversDate matches nothing there, so the week's warning list, the
+   palette and the board stay byte-identical (demomed.test.ts pins it).
+
+   Each medical row also gets a PLACEHOLDER supporting document — a small
+   SVG the viewer can actually show — because the demo's point is seeing the
+   flow work. Session-only like every document (state/docs). RELOADING WEEK
+   1 restores the pristine snapshot and drops these docIds (loadWeek), and
+   the viewer's "No document on file" state covers that plainly — a known
+   demo wrinkle, not a bug to chase. */
+const DEMO_MED: any[] = [
+  { person: 'nasty', date: 'Jul 6', endDate: 'Jul 9', allday: true,
+    type: 'OML', remarks: 'Medically down till 9 Jul', mod: '2026-07-05' },
+  /* Jun 15–20, NOT the Jun 29 week — loadweek.test.ts pins that the blank
+     29 Jun chip shows no input, and Jun 20 still sits inside the trailing
+     30 days of the notional 13 Jul today */
+  { person: 'vinci', date: 'Jun 15', endDate: 'Jun 19', allday: true,
+    type: 'ATT B', remarks: 'Grounded — may still work, till 19 Jun', mod: '2026-06-14' },
+  { person: 'vinci', date: 'Jun 20', allday: true,
+    type: 'Upchit', remarks: 'Medically up 20 Jun', mod: '2026-06-20' },
+]
+const demoDoc = (title: string, sub: string) => new Blob([
+  `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420">` +
+  `<rect width="640" height="420" fill="#f6f7f9"/><rect x="24" y="24" width="592" height="372" rx="12" fill="#fff" stroke="#c9d1da"/>` +
+  `<text x="48" y="86" font-family="Georgia,serif" font-size="26" fill="#1c232b">${title}</text>` +
+  `<text x="48" y="122" font-family="Georgia,serif" font-size="15" fill="#5c6873">${sub}</text>` +
+  `<line x1="48" y1="150" x2="592" y2="150" stroke="#e2e7ec"/>` +
+  `<text x="48" y="190" font-family="Georgia,serif" font-size="14" fill="#8a96a3">Attending medical officer&#8217;s certification</text>` +
+  `<text x="48" y="360" font-family="Georgia,serif" font-size="14" fill="#8a96a3">Signed &#183; Medical Centre</text></svg>`
+], { type: 'image/svg+xml' })
+
+export function seedDemoMedical(docAdd: (f: any) => { id: string }) {
+  DEMO_MED.forEach(rec => {
+    const already = INPUTS.some((x: any) =>
+      x.type === rec.type && x.person === rec.person && x.date === rec.date)
+    if (already) return
+    INPUTS.push({ ...rec })
+  })
+  /* paperwork onto every doc-needing medical seed row still bare — the
+     week-1 sufa/divot rows included. Blob-guarded: a bare node context
+     without Blob simply seeds no documents, and the viewer's no-document
+     state carries it. */
+  if (typeof Blob === 'undefined') return
+  INPUTS.forEach((r: any) => {
+    if (r.docId) return
+    /* the certificate speaks the app's voice — the CALLSIGN, never the
+       roster id (the plain-language rule reaches the demo paperwork too) */
+    const cs = (PEOPLE[r.person] && PEOPLE[r.person].cs) || r.person
+    if (r.type === 'Upchit') { r.docId = docAdd(demoDoc('Upchit certificate', `${cs} — fit to fly`)).id; return }
+    if (['ATT C', 'ATT B', 'OML', 'HL'].indexOf(r.type) >= 0)
+      r.docId = docAdd(demoDoc('Medical certificate', `${cs} — ${r.type}`)).id
   })
 }
