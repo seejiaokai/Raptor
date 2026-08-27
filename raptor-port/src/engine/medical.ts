@@ -187,7 +187,7 @@ export function subtractSpans(aOrd:any,bOrd:any,spans:any[]){
     if(cur>b)break;
     if(x.s>cur)out.push({startOrd:cur,endOrd:ordShift(x.s,-1)});
     const next=ordShift(x.e,1);
-    if(next>cur)cur=next;}
+    if(next!=null&&next>cur)cur=next;}
   if(cur<=b)out.push({startOrd:cur,endOrd:b});
   return out;
 }
