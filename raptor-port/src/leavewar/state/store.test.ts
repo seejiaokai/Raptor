@@ -39,6 +39,11 @@ import {
   shiftBid,
   reopenStage,
   subscribe,
+  setCells,
+  clearCells,
+  setBidStates,
+  moveCells,
+  movableCells,
 } from './store'
 import { makeWar, seedRequirements } from '../engine'
 import { localBackend, memoryBackend } from './storage'
@@ -325,6 +330,19 @@ describe('bids', () => {
 })
 
 describe('advanceStage', () => {
+  /* advancing the cycle is ADMIN ONLY since 27 Aug 26 (owner — "for a member
+     i shouldnt be able to click on bidding closed or published"), so these
+     mechanics tests run as an admin; the member refusal is pinned on its own
+     below */
+  beforeEach(() => { setRole('admin') })
+
+  it('is refused for a member — the cycle does not move', () => {
+    setRole('member')
+    expect(getState().period.stage).toBe('open')
+    advanceStage()
+    expect(getState().period.stage).toBe('open')
+  })
+
   it('walks the period forward one stage at a time', () => {
     expect(getState().period.stage).toBe('open')
     advanceStage()
@@ -348,6 +366,7 @@ describe('advanceStage', () => {
   it('persists the stage and reloads it', () => {
     const backend = memoryBackend()
     initStore(backend)
+    setRole('admin')          // a fresh boot returns to member; advancing is admin-only
     advanceStage()
     initStore(backend)
     expect(getState().period.stage).toBe('closed')
@@ -382,6 +401,7 @@ describe('the stored stage', () => {
   it('reloads each war with its own stage, independently', () => {
     const backend = memoryBackend()
     initStore(backend)
+    setRole('admin')          // advancing is admin-only (27 Aug 26)
     advanceStage() // the open war -> closed
     const other = getState().wars.find(w => w.period.id !== getState().currentId)!
     expect(other.period.stage).toBe('draft')
@@ -822,6 +842,7 @@ describe('more than one leave war', () => {
   })
 
   it('advances the stage of the war on screen only', () => {
+    setRole('admin')          // advancing is admin-only (27 Aug 26)
     const [q1, q2] = getState().wars.map(w => w.period.id)
     selectWar(q2)
     advanceStage() // draft -> open
@@ -1328,7 +1349,9 @@ describe('reopening a period', () => {
   // button: the role switch is an affordance, so anything reachable from a
   // console has to be refused here too.
   it('refuses a member even though nothing hides the call from them', () => {
+    setRole('admin')          // an admin closes the war (advancing is admin-only)…
     advanceStage()
+    setRole('member')         // …and a member still may not step it back
     expect(getState().role).toBe('member')
     expect(getState().period.stage).toBe('closed')
     expect(reopenStage()).toBe(false)
@@ -1733,5 +1756,141 @@ describe('session-only counters', () => {
     initStore(memoryBackend())
     expect(getState().grid['ramp']?.['2026-01-05']).toBeUndefined()
     expect(getState().requirements.default.rules.some(r => r.id === 'scn')).toBe(true)
+  })
+})
+
+// The drag-selection batch writers (owner, 27 Aug 26). They carry the SAME
+// per-cell guards as their single-cell parents, batch to ONE notify, and are
+// partial by design — a selection clipping a Raptor cell writes the rest.
+describe('the batch writers (drag-select)', () => {
+  beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
+  const cells = (person: string, ...dates: string[]) => dates.map(date => ({ personId: person, date }))
+
+  it('setCells writes one code across every named cell', () => {
+    const r = setCells(cells('ramp', '2026-01-06', '2026-01-07', '2026-01-08'), 'LL')
+    expect(r).toEqual({ written: 3, skipped: 0 })
+    for (const d of ['2026-01-06', '2026-01-07', '2026-01-08']) expect(getState().grid.ramp[d]).toBe('LL')
+  })
+
+  it('setCells skips a Raptor-owned cell and writes around it — partial by design', () => {
+    // tata carries a Raptor-owned OIL on 2026-01-09 (seed)
+    const r = setCells(cells('tata', '2026-01-08', '2026-01-09', '2026-01-10'), 'LL')
+    expect(r).toEqual({ written: 2, skipped: 1 })
+    expect(getState().grid.tata['2026-01-09']).toBe('OIL')
+    expect(getState().grid.tata['2026-01-08']).toBe('LL')
+  })
+
+  it('fills across MULTIPLE people in one call', () => {
+    const r = setCells([...cells('ramp', '2026-01-06'), ...cells('dusk', '2026-01-06')], 'OL')
+    expect(r.written).toBe(2)
+    expect(getState().grid.ramp['2026-01-06']).toBe('OL')
+    expect(getState().grid.dusk['2026-01-06']).toBe('OL')
+  })
+
+  it('notifies ONCE for the whole batch', () => {
+    const fn = vi.fn()
+    subscribe(fn)
+    setCells(cells('ramp', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-12'), 'LL')
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
+
+  it('writes nothing and does not notify when every cell is refused', () => {
+    const fn = vi.fn()
+    subscribe(fn)
+    const r = setCells(cells('tata', '2026-01-09'), 'LL') // the one Raptor cell
+    expect(r).toEqual({ written: 0, skipped: 1 })
+    expect(fn).not.toHaveBeenCalled()
+  })
+
+  it('clearCells empties a set of cells', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    const r = clearCells(cells('ramp', '2026-01-06', '2026-01-07'))
+    expect(r.written).toBe(2)
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+    expect(getState().grid.ramp?.['2026-01-07']).toBeUndefined()
+  })
+
+  it('a member can fill in the window but never batch-decide', () => {
+    setRole('member')
+    expect(setCells(cells('ramp', '2026-01-06'), 'LL').written).toBe(1)
+    expect(setBidStates(cells('ramp', '2026-01-06'), 'approved')).toEqual({ decided: 0, skipped: 1 })
+    expect(getState().states.ramp['2026-01-06'].state).toBe('pending')
+  })
+
+  it('setBidStates (admin) decides biddable cells and skips a Raptor cell', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    const r = setBidStates([...cells('ramp', '2026-01-06', '2026-01-07'), ...cells('tata', '2026-01-09')], 'approved')
+    expect(r).toEqual({ decided: 2, skipped: 1 })
+    expect(getState().states.ramp['2026-01-06'].state).toBe('approved')
+    expect(getState().states.ramp['2026-01-07'].state).toBe('approved')
+  })
+
+  it('moveCells slides a block by a delta, landing pending with the moved trail', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    expect(moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 4)).toBe('moved')
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+    expect(getState().grid.ramp['2026-01-10']).toBe('LL')
+    expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending', source: 'bid', shiftedFrom: '2026-01-06' })
+    expect(getState().grid.ramp['2026-01-11']).toBe('LL')
+  })
+
+  it('moveCells allows a self-overlapping slide (the block moves over its own days)', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    // +1 lands 07 (its own vacating source) and 08 — the occupied check must
+    // exclude the selection's own sources
+    expect(moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 1)).toBe('moved')
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+    expect(getState().grid.ramp['2026-01-07']).toBe('LL')
+    expect(getState().grid.ramp['2026-01-08']).toBe('LL')
+  })
+
+  it('moveCells REFUSES atomically onto an occupied day — nothing moves', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    setCells(cells('ramp', '2026-01-10'), 'OL') // a blocker at the +4 landing of 06
+    const r = moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 4)
+    expect(r).toEqual({ reason: 'occupied', at: '2026-01-10' })
+    // atomic: the untouched source is still where it was
+    expect(getState().grid.ramp['2026-01-06']).toBe('LL')
+    expect(getState().grid.ramp['2026-01-07']).toBe('LL')
+    expect(getState().grid.ramp['2026-01-10']).toBe('OL')
+  })
+
+  it('moveCells refuses a Raptor-owned source', () => {
+    expect(moveCells(cells('tata', '2026-01-09'), 3)).toEqual({ reason: 'raptor', at: '2026-01-09' })
+  })
+
+  it('moveCells refuses a landing day outside the war', () => {
+    setCells(cells('ramp', '2026-01-06'), 'LL')
+    expect(moveCells(cells('ramp', '2026-01-06'), -400)).toMatchObject({ reason: 'window' })
+    expect(getState().grid.ramp['2026-01-06']).toBe('LL')
+  })
+
+  // The loose-selection move (owner, 27 Aug 26 — "move items … that are present
+  // … if I select more area than required it registers as nothing"). The empty
+  // cells swept up around the inputs are dropped; only the inputs move.
+  it('movableCells keeps only the cells holding a bid this role may move', () => {
+    setCells(cells('ramp', '2026-01-07', '2026-01-08'), 'LL')
+    // a loose box: 06 and 09 are empty, 07/08 hold LL
+    const box = cells('ramp', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09')
+    expect(movableCells(box)).toEqual(cells('ramp', '2026-01-07', '2026-01-08'))
+    // a Raptor-owned cell is not movable either (tata OIL on 09, seed)
+    expect(movableCells(cells('tata', '2026-01-09'))).toEqual([])
+    // a box of nothing but empty cells has nothing to move
+    expect(movableCells(cells('ramp', '2026-01-20', '2026-01-21'))).toEqual([])
+  })
+
+  it('a loose box moves the inputs present and keeps the gap between them', () => {
+    // LL on 07 and 09, a one-day gap at 08 between them
+    setCells(cells('ramp', '2026-01-07'), 'LL')
+    setCells(cells('ramp', '2026-01-09'), 'LL')
+    // the user sweeps a wider box (06..09, empties at 06 and 08) and drops it so
+    // the first input (07) lands on 15 → delta +8
+    const movers = movableCells(cells('ramp', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09'))
+    expect(moveCells(movers, 8)).toBe('moved')
+    expect(getState().grid.ramp['2026-01-15']).toBe('LL')   // first input on the tapped day
+    expect(getState().grid.ramp['2026-01-17']).toBe('LL')   // the 2-day gap is kept
+    expect(getState().grid.ramp['2026-01-16']).toBeUndefined()
+    expect(getState().grid.ramp?.['2026-01-07']).toBeUndefined()   // sources vacated
+    expect(getState().grid.ramp?.['2026-01-09']).toBeUndefined()
   })
 })

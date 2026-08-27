@@ -4,20 +4,27 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, sansLetters, defaultAllday, withRemarksTail, baseYear } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd } from '../engine/inputs'
+import { upchitTrimPlan, newMedTrimPlan } from '../engine/medical'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { autoAcceptInput } from '../engine/slots'
 import { ME, canEditSched } from '../state/auth'
-import { writeInputs, notify } from '../state/store'
+import { writeInputsBatch, notify } from '../state/store'
 import { INPVIEW, setInpView } from '../state/view'
+import { setDocView } from './pops'
+import { ClipIcon, MedIcon } from './icons'
+import { MedicalView } from './MedicalView'
+import { medDownAsOf, pendingUpchits } from '../engine/medical'
+import { TODAY, keyToIso } from './weeknav'
 import { InputsCal } from './InputsCal'
 /* the halves, the span control, the draft shape and the commit are shared with
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
+  medOverlapRefusal, upchitRefusal, applyMedPlan, DocField,
   rosterOptions as people, inputTone,
 } from './inputedit'
 import { useVersion } from './useStore'
@@ -128,6 +135,7 @@ function typeRule(t: string) {
   /* not an absence — the other three branches all describe a man who is
      unavailable in one way or another, which SANS Availability is not */
   if (m.grp === 'sans') return 'not an absence — the boxes ticked say which events he is available for, and when'
+  if (m.grp === 'upchit') return 'closes a medical-down period — records the date he is fit to fly again; needs the medical document attached'
   if (m.work) return 'no flying — may still stand a duty, sit a sim or take a ground slot'
   if (!m.local) return 'out of reach — cannot be planned for anything, an SC spare included'
   if (m.grp === 'med') return 'cannot be planned, and cannot stand an SC spare'
@@ -204,7 +212,14 @@ export function InputsPage() {
   /* SANS Availability's own Fly/AMT/OFT payload — see SansPicker/sansRefusal
      in ui/inputedit.tsx. Only read by add() when `type` is the SANS type. */
   const [sans, setSans] = useState<any>(null)
-  const [fPerson, setFPerson] = useState('all')
+  /* the supporting document a medical input is filed with (owner, 27 Aug 26)
+     — the id into state/docs; cleared after a successful add because the
+     file belongs to the input just filed, not to the next one */
+  const [docId, setDocId] = useState<string | null>(null)
+  /* A member lands on THEIR OWN inputs (owner, 27 Aug 26) — the page is their
+     paperwork first — with "Everyone" one pick away in the same filter. A
+     scheduler (admin) still opens on the whole squadron. */
+  const [fPerson, setFPerson] = useState(canEditSched() ? 'all' : ME)
   const [fType, setFType] = useState('all')
   const [fSearch, setFSearch] = useState('')
   const [editRow, setEditRow] = useState<any>(null)
@@ -306,6 +321,20 @@ export function InputsPage() {
       const dup = sansOverlapRefusal(filedFor(), date, endDate, null)
       if (dup) return HOOKS.toast(dup, 'warn')
     }
+    /* a medical input does not go in without its document (owner, 27 Aug 26)
+       — needsDoc is the same body that draws the upload button below */
+    if (needsDoc(type) && !docId)
+      return HOOKS.toast('Attach the medical document first — use the upload button', 'warn')
+    /* the medical refusals (owner, 27 Aug 26) — one shared check per rule so
+       this form, the row editor and the board dialog can never disagree */
+    if (isDownchit(type)) {
+      const dup = medOverlapRefusal(filedFor(), type, date, endDate, null)
+      if (dup) return HOOKS.toast(dup, 'warn')
+    }
+    if (isUpchit(type)) {
+      const why = upchitRefusal(filedFor(), date, endDate, null)
+      if (why) return HOOKS.toast(why, 'warn')
+    }
     /* timing is the owner's ask (Aug 26): the validator reasons in minutes, so
        a timed input carries the times the aircrew actually stated — no more
        silent 06:00–18:00. The overlap math assumes s < e within one day. */
@@ -315,7 +344,10 @@ export function InputsPage() {
        row type — see commitInputEdit for the reasoning. Only equal times are
        refused, being a zero-length absence. */
     if (!allday && (e as number) === (s as number)) return HOOKS.toast('Give the input a start and end that are not the same time', 'warn')
-    writeInputs(() => {
+    /* writeInputsBatch, not writeInputs: the medical trims below run engine
+       helpers (Leave-War retraction) that push history of their own, and the
+       add plus its trims must land as ONE undo step */
+    writeInputsBatch(() => {
       INPUTS.unshift(withId({
         /* yr anchors the bare labels to the year they were picked under —
            the same stamp every other creation path writes (24 Aug 26) */
@@ -325,8 +357,17 @@ export function InputsPage() {
         ...(!allday && half ? { half } : {}),
         /* SANS's own Fly/AMT/OFT flags — never carried by a non-SANS type */
         ...(isSansAvail(type) ? { sans: sansFlags(sans) } : {}),
+        /* the id only — the blob lives in state/docs, outside every snapshot */
+        ...(docId ? { docId } : {}),
         type, remarks: remarks.trim(), mod: 'now',
       }))
+      /* a new medical input wins its overlapping days from a different-type
+         downchit; an upchit cuts everything still running past its date
+         (owner, 27 Aug 26) */
+      if (isDownchit(type))
+        applyMedPlan(newMedTrimPlan(INPUTS[0].person, type, dateOrd(date, INPUTS[0].yr), dateOrd(endDate || date, INPUTS[0].yr), INPUTS[0]))
+      if (isUpchit(type))
+        applyMedPlan(upchitTrimPlan(INPUTS[0].person, dateOrd(date, INPUTS[0].yr), INPUTS[0]))
       /* an ACTIVITY input files straight onto the Ground Programme (owner, Aug
          26 — "by default all inputs are accepted"); leave/medical/SANS and a
          published day are silent no-ops. Inside the SAME write so add-plus-land
@@ -342,8 +383,10 @@ export function InputsPage() {
     setJustAddedIid(row.iid)
     timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
     /* the dates stay on the form after an add, so the tail that describes them
-       stays too — only what the typist wrote is cleared */
+       stays too — only what the typist wrote is cleared. The document goes
+       with its input; the next one needs its own. */
     setRemarks(withTill('', start, end))
+    setDocId(null)
   }
 
   /* the pencil turns ONE row into fields in place (owner, Aug 26). The draft is
@@ -428,6 +471,17 @@ export function InputsPage() {
     </th>
   )
 
+  /* the Medical button's badges: TWO counts in the sections' own colours —
+     red for down now, amber for owing an upchit (owner, 27 Aug 26 — "show
+     the amber count as well"; one summed red number hid which kind of
+     attention was needed). As of the app's notional today (weeknav.TODAY —
+     the one literal). Derived per render like everything medical, so they
+     can never lag the table. */
+  const medIso = keyToIso(TODAY)
+  const medOrd = +medIso.slice(0, 4) * 10000 + +medIso.slice(5, 7) * 100 + +medIso.slice(8, 10)
+  const medDownN = medDownAsOf(medOrd).length
+  const medPendN = pendingUpchits(medOrd).length
+
   return (
     <>
       {/* the Calendar-view switch leads the page now (owner, 22 Aug 26 — "make
@@ -440,6 +494,17 @@ export function InputsPage() {
         <h1>Personal Inputs</h1>
         <button className="abtn calview" id="inCalBtn" title="See a whole month at a glance"
           onClick={() => { setInpView('cal'); notify() }}>📅 Calendar view</button>
+        {/* the Medical view (owner, 27 Aug 26): who is down, who owes an
+            upchit, who upchitted. The count is down-now + pending as of the
+            notional today — the button SIGNALS instead of the page
+            restructuring itself (a control that appears and disappears with
+            the data is a trap; a badge that reads 0-quiet is not). */}
+        <button className="abtn calview" id="inMedBtn"
+          title="Who is medically down, owing an upchit, or upchitted"
+          onClick={() => { setInpView('med'); notify() }}>
+          <MedIcon /> Medical
+          {medDownN > 0 && <span className="medcount" title="Medically down now">{medDownN}</span>}
+          {medPendN > 0 && <span className="medcount pend" title="Owing an upchit">{medPendN}</span>}</button>
       </div>
       <div className="inbar">
         <div className="ingrid">
@@ -510,6 +575,10 @@ export function InputsPage() {
           {/* the "e.g. medical appt" hint is dropped for SANS Availability
               (owner, 22 Aug 26) — a SANS availability line is not a medical note,
               so the example only misleads on that type */}
+          {/* the mandatory supporting document — drawn for exactly the types
+              whose add() refuses without one (needsDoc, one body) */}
+          {needsDoc(type) && <div className="ifield"><label>Document</label>
+            <DocField docId={docId} onDoc={setDocId} /></div>}
           <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder={isSansAvail(type) ? '' : 'e.g. medical appt'} maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={add}>Add input</button></div>
         </div>
@@ -640,8 +709,15 @@ export function InputsPage() {
                       const t = e.target.value
                       setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }), sans: isSansAvail(t) ? (draft.sans || {}) : null })
                     }}>
-                    {typeOptions()}
-                  </select></td>
+                    {/* GUARD RAIL (owner, 27 Aug 26): a medical row stays
+                        medical here too — a downchit edits only within the
+                        downchit family, an upchit stays an upchit; the full
+                        cross-group list is kept for every other row. */}
+                    {typeOptions(isDownchit(r.type) ? isDownchit : isUpchit(r.type) ? isUpchit : undefined)}
+                  </select>
+                    {/* replace (or first-attach, on a retype into medical) the
+                        supporting document without leaving the row */}
+                    {needsDoc(draft.type) && <DocField docId={draft.docId} onDoc={id => setDraft({ ...draft, docId: id })} />}</td>
                   <td data-fld="Remarks"><input aria-label="Remarks" data-ed="remarks" maxLength={200} value={draft.remarks}
                     onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
                   <td className="mono ined-sec" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
@@ -694,8 +770,20 @@ export function InputsPage() {
                   <td data-label="Remarks">{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}</td>
                   <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
-                    <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
-                    <span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span>
+                    {/* the paperwork behind a medical row — EVERY account may
+                        view it (owner, 27 Aug 26), so this sits ungated where
+                        the row's other actions live */}
+                    {r.docId && <span className="rclip" data-doc={inx} title="View the document"
+                      onClick={() => { setDocView({ row: r }); notify() }}><ClipIcon /></span>}
+                    {/* Edit and delete are the owner's OWN-INPUT rights for a
+                        member (owner, 27 Aug 26): a scheduler works every row,
+                        a member only their own — someone else's row is view
+                        only (the document clip above stays, so they can still
+                        read the paperwork). The write path repeats this gate. */}
+                    {(canEditSched() || r.person === ME) && <>
+                      <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
+                      <span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span>
+                    </>}
                   </td>
                 </tr>
               )
@@ -716,6 +804,7 @@ export function InputsPage() {
       {INPVIEW === 'cal' && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
         seedIso={range.from || isoOf(new Date())}
         onClose={() => { setInpView('table'); notify() }} />}
+      {INPVIEW === 'med' && <MedicalView onClose={() => { setInpView('table'); notify() }} />}
     </>
   )
 }

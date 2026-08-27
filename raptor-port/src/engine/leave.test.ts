@@ -3,7 +3,7 @@
    assertions are kept intact below; everything after them pins the axes the
    new table added. */
 import { describe, expect, it } from 'vitest'
-import { LEAVE_TYPES, INPUT_TYPES, INPUT_META, inpMeta, canSpare, canWork, awayAllDay, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isSansAvail, offWord, inputCoversDate, typeGroup, withRemarksTail } from './inputs'
+import { LEAVE_TYPES, INPUT_TYPES, INPUT_META, inpMeta, canSpare, canWork, awayAllDay, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isSansAvail, isUpchit, isAway, inputFlags, restsInput, defaultAllday, offWord, inputCoversDate, typeGroup, withRemarksTail } from './inputs'
 import { validate } from './validate'
 
 describe('leave is LL / OL / OIL (tfin B42)', () => {
@@ -66,11 +66,29 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
       const m = inpMeta(t)
       expect(m, t).toBeTruthy()
       expect(typeof m.name === 'string' && m.name.length > 0, t).toBe(true)
-      expect(['leave', 'med', 'duty', 'act', 'sans'], t).toContain(m.grp)
+      expect(['leave', 'med', 'duty', 'act', 'sans', 'upchit'], t).toContain(m.grp)
     }
-    /* the owner's order: the new types sit below OIL */
-    expect(INPUT_TYPES.slice(3, 12)).toEqual(
-      ['OFF', 'CCL', 'PL', 'FCL', 'EL', 'HL', 'OML', 'ATT C', 'ATT B'])
+    /* the owner's order: the new types sit below OIL, Upchit closes the
+       medical block (27 Aug 26) */
+    expect(INPUT_TYPES.slice(3, 13)).toEqual(
+      ['OFF', 'CCL', 'PL', 'FCL', 'EL', 'HL', 'OML', 'ATT C', 'ATT B', 'Upchit'])
+  })
+
+  /* UPCHIT (owner, 27 Aug 26) — a paperwork record, not an absence. Inside
+     isUnavail like SANS (no Accept controls) but carved out of everything
+     that would read it as the man being gone. */
+  it('Upchit is unavail-but-inert: never away, never flags, never rests, never late', () => {
+    expect(isUpchit('Upchit')).toBe(true)
+    expect(isUpchit(' upchit ')).toBe(true)          // case-insensitive like every predicate
+    expect(isDownchit('Upchit')).toBe(false)
+    expect(isUnavail('Upchit')).toBe(true)
+    expect(isPersonal('Upchit')).toBe(false)
+    expect(isAway({ type: 'Upchit' })).toBe(false)   // fit again — never struck from the palette
+    expect(inputFlags({ type: 'Upchit', person: 'bane', date: 'Jul 13' })).toBe(false)
+    expect(restsInput('Upchit')).toBe(false)
+    expect(typeGroup('Upchit')).toBe('med')          // files under the Medical heading
+    expect(defaultAllday('Upchit')).toBe(true)       // an upchit is a date, not hours
+    expect(inpMeta('Upchit').half).toBe(false)       // no AM/PM control
   })
 
   it('isUnavail covers leave, medical and overseas duty; the rest are personal', () => {

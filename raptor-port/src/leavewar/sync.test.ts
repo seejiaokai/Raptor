@@ -24,7 +24,8 @@ import {
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { getClashes, retractLwRow, runInbound, runOutbound } from './sync'
-import { commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
+import { applyMedPlan, commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
+import { upchitTrimPlan } from '../engine/medical'
 
 const ISNAP = JSON.stringify(INPUTS)
 
@@ -316,6 +317,37 @@ describe('medical crosses both ways (owner, 17 Aug 26)', () => {
       expect(grid.ammo[d]).toBe('ATTC')
       expect(states.ammo[d]).toEqual({ state: 'approved', source: 'raptor' })
     }
+  })
+
+  /* An upchit TRIM reaches the war as the shortened span (owner, 27 Aug 26 —
+     "the att c on 13 jul will disappear ... and the leave war will update"):
+     the trimmed row covers fewer days, and the inbound reverse pass clears
+     the Raptor-owned cells no live input covers any more. */
+  it('trimming a medical span frees its war days on the next reconcile', () => {
+    writeInputs(() => INPUTS.push({
+      person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', allday: true,
+      type: 'ATT C', remarks: '', mod: '2026-06-01', yr: 2026,
+    }))
+    runInbound()
+    expect(getState().grid.ammo['2026-02-12']).toBe('ATTC')
+    const med = INPUTS.find((r: any) => r.person === 'ammo' && r.type === 'ATT C')!
+    writeInputs(() => { applyMedPlan(upchitTrimPlan('ammo', 20260211)) })
+    expect(med.endDate).toBe('Feb 11')
+    runInbound()
+    expect(getState().grid.ammo['2026-02-12'], 'the freed day clears').toBeUndefined()
+    expect(getState().grid.ammo['2026-02-11'], 'the kept days stay').toBe('ATTC')
+  })
+
+  /* An UPCHIT never crosses (owner, 27 Aug 26 — "the leave war will not show
+     upchit, it is assumed"): the inbound filter carries leave + downchits
+     only, and Upchit is neither. The war shows the trimmed medical span. */
+  it('an Upchit input never lands a war cell', () => {
+    writeInputs(() => INPUTS.push({
+      person: 'ammo', date: 'Feb 10', allday: true,
+      type: 'Upchit', remarks: '', mod: '2026-06-01',
+    }))
+    runInbound()
+    expect((getState().grid.ammo || {})['2026-02-10']).toBeUndefined()
   })
 
   it('AM and PM halves land the asterisk notation', () => {

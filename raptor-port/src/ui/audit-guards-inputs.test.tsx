@@ -12,7 +12,8 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { INPUTS, dateOrd, inputCoversDate } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { commitInputEdit, setInpField, draftOf } from './inputedit'
+import { commitInputEdit, setInpField, draftOf, removeInput } from './inputedit'
+import { SESSION, ME, setSession, setMe } from '../state/auth'
 
 const ISNAP = JSON.stringify(INPUTS)
 let said: string[] = []
@@ -163,5 +164,54 @@ describe('what is still allowed, because it is a decision and not a typo', () =>
     d.start = '2026-09-04'; d.end = ''
     expect(commitInputEdit(r, d), 'members file leave months ahead').toBe(true)
     expect(DAYS.some((x: any) => inputCoversDate(r, x.dt)), 'it simply covers no loaded day').toBe(false)
+  })
+})
+
+// A member owns only their own paperwork (owner, 27 Aug 26 — "they cant edit
+// other people's input, only can view"). The row's ✎/✕ are hidden on everyone
+// else's input; these pin the write-path backstop behind that, so a hand-made
+// call is refused too. A scheduler (admin) still works every row.
+describe('a member edits and deletes only their own inputs', () => {
+  let savedSession: any, savedMe: any
+  beforeEach(() => { savedSession = SESSION; savedMe = ME })
+  afterEach(() => { setSession(savedSession); setMe(savedMe) })
+
+  const twoPeople = () => {
+    const mine = INPUTS[0]
+    const other = INPUTS.find((i: any) => i.person !== mine.person)
+    return { mine, other }
+  }
+
+  it("refuses a member editing someone else's input", () => {
+    const { mine, other } = twoPeople()
+    setSession({ user: 'us', role: 'member' }); setMe(mine.person)
+    const d: any = draftOf(other); d.remarks = 'not mine to touch'
+    expect(commitInputEdit(other, d)).toBe(false)
+    expect(said.join(' ')).toMatch(/your own/i)
+  })
+
+  it("refuses a member deleting someone else's input", () => {
+    const { mine, other } = twoPeople()
+    setSession({ user: 'us', role: 'member' }); setMe(mine.person)
+    const n = INPUTS.length
+    expect(removeInput(other)).toBe(false)
+    expect(INPUTS.length, 'nothing was removed').toBe(n)
+    expect(said.join(' ')).toMatch(/your own/i)
+  })
+
+  it('lets a member edit their OWN input', () => {
+    const { mine } = twoPeople()
+    setSession({ user: 'us', role: 'member' }); setMe(mine.person)
+    const d: any = draftOf(mine); d.remarks = 'mine to edit'
+    expect(commitInputEdit(mine, d)).toBe(true)
+    expect(mine.remarks).toBe('mine to edit')
+  })
+
+  it("lets a scheduler edit anyone's input", () => {
+    const { other } = twoPeople()
+    setSession({ user: 'ad', role: 'admin' }); setMe('bane')
+    const d: any = draftOf(other); d.remarks = 'scheduler correction'
+    expect(commitInputEdit(other, d)).toBe(true)
+    expect(other.remarks).toBe('scheduler correction')
   })
 })

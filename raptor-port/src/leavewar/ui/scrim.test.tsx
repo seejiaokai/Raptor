@@ -1,11 +1,18 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setRole } from '../state/store'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { INPUTS } from '../../engine/inputs'
+import { advanceStage, getState, initStore, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { runInbound } from '../sync'
 import { StageBar, Topbar } from './Chrome'
 import { Matrix } from './Matrix'
 
-beforeEach(() => { initStore(memoryBackend()) })
+/* these open the admin sheets (decision, counter, person), and advancing the
+   cycle to reach them is admin-only since 27 Aug 26 (owner) — so run as an
+   admin */
+const ISNAP = JSON.stringify(INPUTS)
+beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
+afterEach(() => { INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
 
 const scrim = () => screen.getByTestId('sheet-scrim')
 
@@ -75,6 +82,20 @@ const SHEETS: { name: string; testid: string; open: () => void }[] = [
       setRole('admin')
       render(<StageBar />)
       fireEvent.click(screen.getByTestId('bid-window'))
+    },
+  },
+  {
+    name: 'the published remarks sheet',
+    testid: 'remarks-sheet',
+    open: () => {
+      // a filed leave, synced in, then published — an admin taps it to edit
+      // the note (owner, 27 Aug 26)
+      INPUTS.push({ iid: 'scrim-rmk', person: 'dusk', type: 'LL', date: 'Feb 11', yr: 2026, allday: true, remarks: 'x' })
+      runInbound()
+      advanceStage(); advanceStage()   // open -> closed -> published (admin)
+      setViewer('dusk')
+      render(<Matrix />)
+      fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     },
   },
 ]

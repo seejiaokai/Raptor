@@ -10,8 +10,8 @@ import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pendCount } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
-import { SESSION, ME, setMe } from '../state/auth'
-import { resetSession, notify, setPage } from '../state/store'
+import { SESSION, ME, setMe, canToggleRole } from '../state/auth'
+import { resetSession, toggleRole, notify, setPage } from '../state/store'
 import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDayPreview, toggleViewWork, bellLit, clearBell } from '../state/view'
 import { HlChips } from './hlchips'
 import { initDrag } from './drag'
@@ -300,8 +300,17 @@ export function Shell() {
               the far right … same design as the others"). Styled as one of the
               .abtn buttons rather than the old pill; the accent tint keeps the
               Admin state legible. Hidden on a phone, as it was in its old spot,
-              so the tight one-row phone bar stays uncrowded. */}
-          <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge">{admin ? 'Admin' : 'Member'}</span>
+              so the tight one-row phone bar stays uncrowded — the drawer's
+              Account row carries the toggle there.
+              FOR A REAL ADMIN it is now a BUTTON (owner, 27 Aug 26): clicking
+              flips the whole app between admin and member view (store.ts's
+              toggleRole — the gate is LOGINROLE, so a member's badge stays the
+              inert label it always was, same id either way). */}
+          {canToggleRole()
+            ? <button className={'abtn rolechip tgl' + (admin ? ' admin' : '')} id="roleBadge"
+              title={admin ? 'See the app as a member — click again to switch back' : 'Return to admin'}
+              onClick={() => toggleRole()}>{admin ? 'Admin' : 'Member'}</button>
+            : <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge">{admin ? 'Admin' : 'Member'}</span>}
         </div>
       </div>
   ), [page, admin, ME, fast, HIST.ix, HIST.stack.length, bellLit(), bugAlert()])

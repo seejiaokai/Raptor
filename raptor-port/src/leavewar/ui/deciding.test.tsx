@@ -1,12 +1,16 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setRole } from '../state/store'
+import { advanceStage, getState, initStore, reopenStage, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar } from './Chrome'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  /* deciding is an admin activity, and advancing the cycle to 'closed' is
+     admin-only since 27 Aug 26 (owner) — so the file runs as an admin; the
+     two member-view cases set 'member' themselves after advancing */
+  setRole('admin')
 })
 
 // Seed: ASICS has a pending half day of LL on 2026-01-23.
@@ -45,6 +49,9 @@ describe('deciding a bid', () => {
     render(<Matrix />)
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
     fireEvent.click(screen.getByTestId(PENDING))
+    // the button reads "Pending" (owner, 27 Aug 26) though the stored state
+    // token is still 'acknowledged' — the label changed, not the model
+    expect(screen.getByTestId('decide-ack').textContent).toBe('Pending')
     fireEvent.click(screen.getByTestId('decide-ack'))
     expect(getState().states.asics['2026-01-23']?.state).toBe('acknowledged')
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).toBe(before)
@@ -109,19 +116,22 @@ describe('deciding a bid', () => {
     expect(screen.queryByTestId('decide-approve')).toBeNull()
   })
 
-  // Published is the end of the cycle: the squadron has been told the
-  // outcome, so there is nothing left to decide. An admin can still correct
-  // the sheet — they edit at every stage — which is why the picker opens
-  // here and only the decision buttons are gone.
-  it('offers no decision once the period is published, though an admin may still edit', () => {
+  // Published still decides (owner, 27 Aug 26 — "if leave war is published,
+  // the admin can still have these functions"): publication freezes the
+  // picture for the squadron, but the admin still runs the war, so a late
+  // change tapped in after publication is approved/refused exactly as at
+  // closed. A bid gets the decision; an empty cell still gets the picker.
+  it('keeps the admin decision once the period is published', () => {
     advanceStage()
     advanceStage()
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    expect(screen.queryByTestId('decide-approve')).toBeNull()
-    expect(screen.queryByTestId('decide-refuse')).toBeNull()
-    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.getByTestId('decide-approve')).toBeTruthy()
+    expect(screen.getByTestId('decide-refuse')).toBeTruthy()
+    expect(screen.queryByTestId('bid-LL')).toBeNull()
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(screen.getByTestId('bid-LL')).toBeTruthy()
   })
 
   // The precedence that had to be got right: an admin at `closed` satisfies
@@ -168,14 +178,20 @@ describe('moving the period on', () => {
 // The workflow the owner described: once bidding closes, the sheet is
 // view-only for the squadron while the admin account keeps working.
 describe('the edit lock', () => {
+  /* the file default is admin (advancing the cycle is admin-only, 27 Aug 26);
+     these MEMBER-lockout cases advance as the admin, then drop to member for
+     the assertion — the war closes by an admin's hand, and the member is what
+     the lock is being tested on */
   it('lets a member edit while the war is open', () => {
+    act(() => setRole('member'))
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
   })
 
   it('locks a member out of everything once bidding closes', () => {
-    advanceStage()
+    advanceStage()                    // admin closes the war
+    act(() => setRole('member'))
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
@@ -189,6 +205,7 @@ describe('the edit lock', () => {
   it('keeps a member locked out at published', () => {
     advanceStage()
     advanceStage()
+    act(() => setRole('member'))
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
@@ -207,7 +224,8 @@ describe('the edit lock', () => {
   })
 
   it('follows the role switch without a reload', () => {
-    advanceStage()
+    advanceStage()                    // admin closes the war
+    act(() => setRole('member'))
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
@@ -321,13 +339,40 @@ describe('shifting a bid', () => {
   })
 })
 
+// Owner, 27 Aug 26: the dotted "moved" edge is noise while bidding is open —
+// people shuffle their own bids freely then — and becomes meaningful only once
+// bidding has closed, where a shift is management moving someone's input.
+describe('the moved mark waits for bidding to close', () => {
+  const MOVED = 'cell-asics-2026-01-30'
+  // Close the war, move ASICS's pending bid to 2026-01-30 (a shift), and it
+  // carries the dotted "moved" edge — the trail management can see.
+  const makeShift = () => {
+    advanceStage()                    // admin (file beforeEach) closes the war
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-01-30' } })
+    fireEvent.click(screen.getByTestId('decide-shift'))
+  }
+  it('draws the moved edge once bidding has closed', () => {
+    makeShift()
+    expect(screen.getByTestId(MOVED).querySelector('.c')!.className).toContain('moved')
+  })
+  it('hides it again if the war is reopened for bidding', () => {
+    makeShift()
+    act(() => { reopenStage() })       // back to open — the bid (and its shift) survive
+    expect(screen.getByTestId(MOVED).querySelector('.c')!.className).not.toContain('moved')
+  })
+})
+
 // Owner, 10 Aug 26: "as an admin I can open bidding again after closing it".
 describe('reopening the period from the strip', () => {
-  it('offers a member no way back', () => {
+  it('offers a member neither control — not back, and (27 Aug 26) not forward', () => {
+    advanceStage()                    // an admin closes the war…
+    act(() => setRole('member'))      // …the member has no cycle controls at all
     render(<StageBar />)
-    fireEvent.click(screen.getByTestId('stage-advance'))
     expect(getState().period.stage).toBe('closed')
     expect(screen.queryByTestId('stage-back')).toBeNull()
+    expect(screen.queryByTestId('stage-advance')).toBeNull()
   })
 
   it('gives an admin a control back to bidding', () => {

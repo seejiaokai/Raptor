@@ -622,6 +622,11 @@ test('the Raptor mark is painted, and an ordinary bid carries none', async ({ pa
   expect(parseFloat(raptor.width)).toBeGreaterThan(0)
   expect(raptor.style).toBe('solid')
 
+  // The dotted "moved" edge only shows once bidding has closed (owner, 27 Aug
+  // 26 — while a war is open, people shuffle their own bids and a moved mark
+  // is just noise). Close the war as an admin, then it paints.
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="stage-advance"]').click()
   const moved = await edge('[data-testid="cell-slash-2026-02-03"] .c')
   expect(parseFloat(moved.width)).toBeGreaterThan(0)
   expect(moved.style).toBe('dotted')
@@ -640,9 +645,13 @@ test('a cell Raptor owns offers no way to change it', async ({ page }) => {
 // The workflow the owner described: closing the war makes the sheet
 // view-only for the squadron, and the admin account keeps working.
 test('closing the war locks the squadron out, and the admin account still edits', async ({ page }) => {
+  // advancing the cycle is admin-only since 27 Aug 26 — the admin closes it…
+  await lwRole(page, 'admin')
   await page.locator('[data-testid="stage-advance"]').click()
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
 
+  // …and the squadron is then locked out of the closed sheet
+  await lwRole(page, 'member')
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
 
@@ -652,8 +661,8 @@ test('closing the war locks the squadron out, and the admin account still edits'
 })
 
 test('an admin moves a bid to another date, and it lands pending there', async ({ page }) => {
+  await lwRole(page, 'admin')          // advancing the cycle is admin-only (27 Aug 26)
   await page.locator('[data-testid="stage-advance"]').click()
-  await lwRole(page, 'admin')
   await page.locator('[data-testid="cell-bruise-2026-01-23"]').click()
   await page.locator('[data-testid="shift-date"]').fill('2026-01-30')
   await page.locator('[data-testid="decide-shift"]').click()
@@ -668,6 +677,141 @@ test('an admin moves a bid to another date, and it lands pending there', async (
   const cls = (await moved.getAttribute('class'))!
   for (const painted of ['tbc', 'appr', 'ref']) expect(cls).not.toContain(painted)
   expect(cls).toContain('moved')
+})
+
+// ---- drag-to-select (owner, 27 Aug 26) ----
+//
+// The gesture needs a real browser — pointer capture, elementFromPoint and
+// layout — so it lives here, not in the unit suite (which pins the DOM-free
+// geometry in select.test.ts). A mouse arms on a 4px move, so a Playwright
+// drag with intermediate steps always arms; the selection sheet then opens on
+// release. An un-dragged click still opens the single-cell sheet (every other
+// test above proves that path unbroken).
+
+async function dragSelect(page: Page, fromId: string, toId: string) {
+  const a = (await page.locator(`[data-testid="${fromId}"]`).boundingBox())!
+  const b = (await page.locator(`[data-testid="${toId}"]`).boundingBox())!
+  await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(a.x + a.width / 2 + 8, a.y + a.height / 2)      // arm past MOUSE_SLOP
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 6 })
+  await page.mouse.up()
+}
+
+// Desktop only: the mouse gesture (4px arm) is what Playwright can drive; the
+// phone TOUCH gesture (180ms hold) and its frozen-column overlay are checked
+// in the live-view pass, not here.
+const desktopOnly = () => test.skip(test.info().project.name !== 'lw-desktop', 'mouse-drag path')
+
+test('drag-selecting a row fills the leave across the whole span', async ({ page }) => {
+  desktopOnly()
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="sel-LL"]').click()
+  for (const d of ['2026-01-06', '2026-01-07', '2026-01-08'])
+    await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toBeVisible()
+})
+
+test('a drag-selection offers Move, and the move banner appears on entering it', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  // fill the block first: Move (and Delete) are offered only when the selection
+  // actually holds a movable bid (owner, 27 Aug 26 — an empty box is Fill-only)
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await page.locator('[data-testid="sel-LL"]').click()
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="sel-move"]').click()
+  // the sheet gives way to the move banner; the landing itself (moveCells) is
+  // pinned in store.test.ts and driven by hand in the live-view pass, where
+  // the desktop ghost and phone tap-to-place are actually looked at
+  await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
+  await page.locator('[data-testid="move-cancel"]').click()
+  await expect(page.locator('[data-testid="move-banner"]')).toHaveCount(0)
+})
+
+// A loose box — bigger than the inputs, with an empty margin — must MOVE the
+// inputs present and ignore the empties (owner, 27 Aug 26 — "move items … that
+// are present … if I select more area than required it registers as nothing").
+// The block's first input lands on the day clicked; the empty leading day (06)
+// is dropped. Desktop lands on the click; the phone preview+Confirm is checked
+// in the live-view pass.
+test('a loose box moves the inputs present, first input landing on the clicked day', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  // two inputs on 07–08; 06 stays empty
+  await dragSelect(page, 'cell-slipway-2026-01-07', 'cell-slipway-2026-01-08')
+  await page.locator('[data-testid="sel-LL"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-07"] .c')).toBeVisible()
+  await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
+  // over-select 06..08 (06 empty) and move — the empty must NOT refuse it
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
+  await page.locator('[data-testid="sel-move"]').click()
+  await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
+  // click a landing day: the first input (07) lands here, 08 rides along
+  await page.locator('[data-testid="cell-slipway-2026-01-12"]').click()
+  await expect(page.locator('[data-testid="move-banner"]')).toHaveCount(0)              // moved, mode cleared
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-12"] .c')).toBeVisible() // first input on the clicked day
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-13"] .c')).toBeVisible() // the gap is kept
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-07"] .c')).toHaveCount(0) // source vacated
+})
+
+// A right-click cancels a move on desktop (owner, 27 Aug 26 — the mouse Escape).
+test('right-click cancels a move on desktop', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await page.locator('[data-testid="sel-LL"]').click()
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await page.locator('[data-testid="sel-move"]').click()
+  await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
+  await page.locator('[data-testid="cell-slipway-2026-01-10"]').click({ button: 'right' })
+  await expect(page.locator('[data-testid="move-banner"]')).toHaveCount(0)   // cancelled, nothing moved
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+})
+
+// Dragging an EVENT row opens the event sheet pre-set to the swept span (owner,
+// 27 Aug 26 — "drag and select grids in the events column to input events").
+test('dragging an event row opens the event sheet ranged to the span', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await dragSelect(page, 'event-0-2026-01-06', 'event-0-2026-01-08')
+  await expect(page.locator('[data-testid="event-text"]')).toBeVisible()
+  // seeded to a RANGE, not a single day: the "A range" scope is the active chip
+  await expect(page.locator('[data-testid="event-scope-range"]')).toHaveClass(/approve/)
+})
+
+// The date header freezes below the top bar on a DESKTOP page scroll now, like
+// the phone (owner, 27 Aug 26). The mirror only exists once the real header has
+// scrolled up under the bar.
+test('the date header freezes on desktop when the page scrolls down', async ({ page }) => {
+  desktopOnly()
+  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+  await page.evaluate(() => window.scrollTo(0, 1400))
+  await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)   // thaws back
+})
+
+// Published-stage remarks editing (owner, 27 Aug 26): once the war is
+// published, a tap on an approved leave opens a note editor. An admin does it
+// for anyone (a member for their own is pinned in remarks.test.tsx); the note
+// lives on the Raptor input, so this proves the cross-app save in a real
+// browser.
+test('at published, a tap on an approved leave edits its note, and it sticks', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="stage-advance"]').click()   // open -> closed
+  await page.locator('[data-testid="stage-advance"]').click()   // closed -> published
+  const cell = page.locator('[data-testid="cell-prowler-2026-01-09"]')  // a Raptor-owned leave
+  await cell.click()
+  await expect(page.locator('[data-testid="remarks-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="remarks-field"]').fill('checked by e2e')
+  await page.locator('[data-testid="remarks-save"]').click()
+  await expect(page.locator('[data-testid="remarks-sheet"]')).toHaveCount(0)
+  // reopen — the note survived the round trip through the Raptor input
+  await cell.click()
+  await expect(page.locator('[data-testid="remarks-field"]')).toHaveValue('checked by e2e')
 })
 
 // ---- the frozen counter column ----

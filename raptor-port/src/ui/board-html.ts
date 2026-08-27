@@ -1,6 +1,6 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, sansBadge } from '../engine/inputs'
+import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge } from '../engine/inputs'
 import { PEOPLE, nameToId } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
@@ -559,7 +559,7 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
    editable as the ones above since the owner asked for both (10 Aug 26). */
 export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this panel
-  const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type));
+  const rows=(day||INPUTS.filter((i:any)=>inputCoversDate(i,d.dt))).filter((inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type));
   /* + Add stays here (owner, Aug 26; reworked 19 Aug 26): the dialog now
      offers only leave/medical/OD types and carries a DATE RANGE, whose till
      date lands in remarks the way the Inputs page's calendar writes it */

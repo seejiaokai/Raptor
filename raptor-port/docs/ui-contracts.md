@@ -3902,3 +3902,231 @@ only: no inputs band, no warnings, no publish/AL state, no amendment marks
 been signed off or who last touched it. Cached per (desktop-ness ×
 `CURWEEK` × next week's stash generation) and rebuilt only when that key
 changes, never on an ordinary repaint of the loaded week.
+
+## The Medical view, the upload control and the document viewer (owner, 27 Aug 26)
+
+**The Medical button** sits on the Personal Inputs TITLE ROW beside the
+Calendar-view button (`#inMedBtn`, `MedIcon` + "Medical"), carrying TWO
+count badges in the sections' own colours (owner, 27 Aug 26 — "show the
+amber count as well"): red (`.medcount`) = down now, amber
+(`.medcount.pend`, dark ink — white on `--adv` fails contrast) = owing an
+upchit, both as of the notional today and each hidden at zero. The button
+SIGNALS instead of the page restructuring itself — the owner's "the page
+transforms when medical inputs exist" is answered by badges that read quiet
+at zero, not by a control that appears and disappears. It flips `INPVIEW`
+to `'med'`. Its content is `justify-content:center` so the phone's
+full-width form (where `.calview` stretches) centres the icon + word +
+badges like the Calendar button above it, instead of jamming them left.
+
+**The Medical view** (`ui/MedicalView.tsx`, `#medView`) rides the Inputs
+calendar's full-screen chassis (`.inpcal`) and deliberately IGNORES the
+table's filter bar — it is the squadron's medical state, not a filtered
+list. Three sections, each a `.medcard` grid on the `.sanscard` contract
+(puck inside the row-direction `.medcard-top`; texts are SIBLINGS — the
+74×74 column-flex trap): **Medically Down** (`--hard` red, "till <date>"),
+**Pending Upchit** (`--adv` amber, "was down till <end>"), **Upchit
+Complete** (`--ok` green, "upchitted <date>", trailing 30 days newest
+first). Every section has a real empty state. Cards SIZE TO CONTENT and
+pack from the left (`.medcards` — capped `minmax` columns +
+`justify-content:start`; owner, 27 Aug 26: a stretch-to-fill column wasted
+the right half of every box), and a card's remark line draws only when it
+says MORE than the derived date line (`MedicalView.tsx:remarkNote` strips
+dates and medical boilerplate; the auto "till …" tail was doubling the
+status line on every card). The header's as-of control (`#medCalBtn`)
+opens a FLOATING rounded dropdown month grid hanging off the header
+(`.med-cal`, `position:absolute` + a transparent `.med-cal-scrim` that
+closes it on an outside tap — it overlays the sections rather than pushing
+them down; owner, 27 Aug 26) writing `MEDASOF` (`state/view.ts`, null =
+the notional today, reset by the Today chip and on session change).
+
+**A card tap opens the DOCUMENT VIEWER** (`ui/DocViewer.tsx`,
+`#docViewPop`, airpop chassis, `DOCVIEW` in `ui/pops.ts` holding the input
+OBJECT + an `up` flag): image inline, PDF in a frame, "No document on file
+for this entry" otherwise; object URLs are minted on open and revoked on
+close. Viewing is UNGATED — every account sees every document. The FOOTER
+carries the gated actions: **Edit input** (own puck or admin → the shared
+`InputEditor`), and on a Pending card, **Upchit** — the shared editor in
+ctx `'up'` (person and type fixed as VALUES, a single plain date defaulting
+to today, the mandatory `DocField`). Both upchit paths — the pending card
+and typing an Upchit on the Inputs form — are one write path.
+
+**The upload control** (`DocField` in `ui/inputedit.tsx`: `UploadIcon`
+button + hidden file input + filename chip, `.docbtn.has` turning the ok
+green once attached) renders in all three editors — the Inputs add form,
+the in-table row editor, the board/modal editor — exactly when
+`needsDoc(type)` says the commit will demand it (one body, no drift). A
+documented row wears a paperclip (`.rclip`, `ClipIcon`) in the Inputs
+table's action cell, ungated, opening the viewer.
+
+## The role badge is the admin's view toggle (owner, 27 Aug 26)
+
+The far-right Admin/Member chip (`#roleBadge`, `.rolechip`) is a BUTTON for
+a real admin login and stays an inert `<span>` for a member — same id and
+look either way, plus `.tgl` (pointer cursor + hover) only on the button.
+Clicking it runs `store.ts:toggleRole` (see `engine-rules.md` §Auth /
+roles): the whole app — nav tabs, edit gates, the Leave War — flips to the
+member view, and the same click flips back; `LOGINROLE` in `auth.ts` is the
+ceiling that keeps a member's chip inert and the admin's way back alive.
+The chip is hidden on the phone bar (as ever), so the DRAWER's Account row
+carries the phone toggle (`#drawerRole`, "View as member" / "Back to
+admin"), rendered only for a real admin. Flipping to member off an
+admin-only page lands on View-only Sched. Pinned in `roletoggle.test.tsx`.
+
+The LEAVE WAR change of the same day (engine-rules §Auth / roles): moving
+the cycle forward is admin-only, so the stage-advance chip
+(`data-testid="stage-advance"`, "→ BIDDING CLOSED" / "→ PUBLISHED" /
+"→ END OF CYCLE") is ABSENT for a member — the same absent-not-disabled
+idiom the stage-back chip already used. That is the ONLY member-facing
+change: a member still bids while the war is open, the bid-window chip and
+the out-of-window dim are unchanged, and a member's cell tap behaves exactly
+as before.
+
+## Selecting on the Leave War grid (owner, 27 Aug 26)
+
+Press-and-drag across day-cells to select a rectangle — one row or many
+people's rows — then act on the whole block at once. It is built AROUND the
+BidPicker's look and vocabulary, not instead of it.
+
+- **The gesture** (`ui/select.ts`, `wireSelect`) is ONE delegated
+  `pointerdown` on `.mx-wrap` — never per-cell (the grid is ~28k nodes) —
+  hit-testing with `elementFromPoint().closest('[data-testid^="cell-"]')`. It
+  ARMS before it claims anything, so the grid's sideways scroll is never
+  stolen: a mouse arms at a 4px move; a finger arms two ways — a HOLD of 180ms
+  still, OR a SLOW drag once the finger has been down past SLOWARM(140ms), a
+  slide past 26px then reads as a deliberate select rather than a scroll and
+  arms (owner, 27 Aug 26 — "when I hold then drag … I can't select a date
+  range, I'm stuck with just adding 1 input", on rows other than his own: a
+  phone user rarely pauses a clean beat before dragging, and a drag begun a
+  touch early crossed the slop before the still-hold and was thrown away as a
+  scroll). A QUICK flick still crosses the slop long before 140ms, so the
+  grid's sacred sideways scroll wins it — cede. The highlight (`.selcell`) is
+  written straight onto the cells, never through React state; the instant the
+  drag arms, the wrap wears `.selecting` (a brighter wash + thicker ring in
+  `matrix.css`) and Android fires a short haptic, so a phone user SEES the grab
+  land before dragging (iOS has no web haptic — the brightening carries it). An un-armed press is an ordinary click and opens the
+  single-cell sheet exactly as before — **pointer capture is taken in `arm()`,
+  NOT on pointerdown** (owner, 27 Aug 26 — "if i just click 1 area to input …
+  it should also allow me to input"): capturing on the down retargets the
+  click that follows a captured pointerup to `.mx-wrap` in Chromium, so the
+  cell's own onClick — the single-cell input sheet — never fired on a real
+  device. The window-level move/up listeners track a drag without the capture;
+  it is belt-and-braces for a fast touch drag only. Geometry is DOM-free and
+  unit-tested (`select.test.ts`); the gesture itself is e2e (`leavewar.spec.ts`).
+- **The sheet** (`ui/SelectSheet.tsx`, `data-testid="select-sheet"`) is the
+  BidPicker's sibling on the same `Sheet` chassis. Sections are contextual to
+  role and stage: everyone Fills while the war is OPEN (portion + leave chips;
+  admin adds the Medical row); Decide (Pending / Approve / Refuse) is the
+  admin's once bidding is CLOSED **or PUBLISHED** (owner, 27 Aug 26 — the admin
+  still runs a published war); Delete (second-tap confirm — no undo here)
+  and Move act on the editable bids the selection holds, and **show only when it
+  holds one** (`movableCells(sel.cells).length`, owner 27 Aug 26 — a loose box
+  of empty cells is Fill-only, so Move never opens on nothing to move);
+  Post-out shows only
+  for a single-person selection. Partial writes report in the `sel-note` voice
+  and keep the sheet up. The per-person negative-balance confirm the single
+  sheet shows is deliberately NOT carried here (it would ask a block-spanning
+  question per person).
+- **Move mode** (`wireMove`) moves the inputs PRESENT in the box and ignores
+  the empty cells swept up around them (owner, 27 Aug 26 — "move items … that
+  are present … if I select more area than required it registers as nothing"):
+  `Matrix.tsx` filters the rectangle through `movableCells` first, so a loose
+  box no longer refuses as "nothing". The block ANCHORS on its earliest input
+  (`earliestDate(movers)`), and that input lands on the day picked — the leading
+  empty margin is dropped, the gaps between multiple inputs ride along
+  (`daysBetween(anchor, target)` is the one delta every cell shifts by). Owner's
+  call, asked 27 Aug 26: *drop the leave on the tapped day*, not preserve a
+  leading gap.
+  - **Landing preview** (`.mvland`, a warm-amber wash + ring — deliberately NOT
+    the accent-blue of the selection or the viewer's own row, so it reads as
+    "will land here" over whatever it covers). Painted straight onto the cells
+    (`paintLanding`/`clearLanding`, no React state).
+  - **Desktop:** a faded ghost follows the mouse and the landing highlights live
+    under it; a CLICK lands the block (the hover WAS the preview). **A RIGHT-CLICK
+    cancels** the move (owner, 27 Aug 26 — the mouse equivalent of Escape;
+    `wireMove` swallows the context menu and drops the block).
+  - **Phone:** no hover, and no undo — so it is TWO steps (owner, 27 Aug 26 —
+    *show a preview, then Confirm*): a TAP stages the landing (highlighted) and
+    the banner shows **Confirm / Cancel**; Confirm commits, a fresh tap
+    re-stages, Cancel exits. A SWIPE scrolls and never stages (only a clean tap
+    fires). `movePreview` holds the staged day; the banner counts `movers`, not
+    the raw rectangle.
+  - The move itself is `moveCells(movers, delta)`, atomic — an occupied / Raptor
+    / out-of-window landing refuses the whole move and says why in the banner.
+  The `moved` dotted-orange edge marks the landed cells via
+  the existing `shiftedFrom` state — but **only once bidding has CLOSED**
+  (owner, 27 Aug 26): while a war is still OPEN people shuffle their own bids
+  freely, so a moved mark then is noise; `Matrix.tsx`'s `movedShown`
+  (`stage === 'closed' || 'published'`) gates the class, the `shiftedFrom`
+  data is untouched. Pinned in `deciding.test.tsx` (hidden at open, shown at
+  closed, hidden again on reopen).
+- **Dragging an EVENT row** (owner, 27 Aug 26 — "drag and select grids in the
+  events column to input events. Just like what we recently implemented"). The
+  same `wireSelect` gesture also claims the `event-<line>-<date>` day cells (not
+  the band / blocked / row testids that share the prefix). Events live one row
+  each, so a drag never crosses lines — the anchor's line wins and only the date
+  span matters (`eventRange`, and the focus supplies only the column, so a finger
+  straying onto another row still extends the span). On release the event sheet
+  opens pre-set to that span: scope **A range**, from → to filled on its
+  calendar, ready for the word + off/no-leave/work tag + merge-or-repeat. A
+  one-cell drag opens on the single day, exactly like a tap. Admin only
+  (`eventsEnabled` — the store refuses a member event write anyway). Pins:
+  `parseEventCell` / `eventRange` in `select.test.ts`; the sheet seed reads
+  `EventSheet`'s new optional `to` prop.
+- **The date header FREEZES on desktop too** (owner, 27 Aug 26 — "freeze top
+  panel for leave war on desktop … when I scroll down the top bar that has the
+  dates goes out of view, the top bar will freeze just like how the mobile does
+  it"). The phone's fixed header MIRROR (`.mxfixed` / `sticky-head`, an overlay
+  because the page owns the one vertical scroll so CSS sticky cannot pin against
+  it) now activates at ANY width — the `max-width:700px` gate is gone. It freezes
+  just below the app top bar (its sticky lower edge, `.topbar` bottom, z-index
+  60 over the mirror's 55), tracks the grid's horizontal scroll one-way via the
+  rAF pump, and reuses the same `.who`/`.bal` sticky-left CSS to keep its lead
+  columns frozen. Desktop keeps its own real-`sticky` frozen-left columns
+  untouched; only the header path widened.
+- **The colour/mark pop-out is labelled "Legend"** (owner, 27 Aug 26 — renamed
+  from "Key"; `Chrome.tsx`, testid `legend-open` unchanged).
+- **The word "Acknowledge" became "Pending"** on the decision controls
+  (single and batch) — the same word the colour legend already gives the
+  purple state. The stored token stays `'acknowledged'`; only the label moved.
+- **The batch writers** live in `state/store.ts` (`setCells` / `clearCells` /
+  `setBidStates` / `moveCells`) and carry the SAME per-cell guards as their
+  single-cell parents under the `quiet` suppression, so a batch can never
+  write where one cell could not; details in `docs/engine-rules.md`
+  §Auth / roles. `movableCells` factors those same guards into "which cells of a
+  selection hold a movable bid" — the ONE body the sheet (offer Move?), the
+  anchor (first input), and the mover all read, so "what moves" can't drift.
+  Pinned in `store.test.ts`, `selectsheet.test.tsx`.
+
+### Published-stage remarks editing (owner, 27 Aug 26)
+
+Once a war is PUBLISHED, a single tap on an approved leave opens a note editor
+(`ui/RemarksSheet.tsx`, testid `remarks-sheet`) — the run's OWN person (a
+member editing their own leave) or an admin (anyone). It takes precedence in
+`Matrix.tsx` over the read-only Raptor sheet and the bid/decision sheets
+(`canRemark`), and exists only at `published`; a member still cannot DRAG there
+(a block of runs has no one note). The note lives on the Raptor INPUT the cell
+derives from — a leave FILED on Inputs (Raptor-owned) or BID in the war (the
+lw-tagged row `runOutbound` mints at publish), both found by
+`sync.ts:leaveInputAt`. The save runs through Raptor's one commit path
+(`inputedit.ts:setLeaveRemarks → commitInputEdit`): a remarks-only edit leaves
+the leave's `rowSig` unchanged, so the lw tag and the war cells do not move —
+only the note the Inputs page reads is rewritten, and the member-own /
+scheduler-any gate comes free from `commitInputEdit`. To make the cell tappable
+at published for a member's own war-bid leave, `openable` gains a CHEAP branch
+(a code exists on the viewer's own row, or any row for an admin) — the precise
+"is there a backing leave" test stays in `canRemark`, run once per opened cell,
+never per drawn cell. Pinned in `remarks.test.tsx` (own → editor, admin → any,
+member-other → the read-only Raptor sheet, not-published → neither) and the
+scrim table; e2e drives the admin round trip in a real browser.
+
+## A member edits only their own personal inputs (owner, 27 Aug 26)
+
+On the Inputs page a member lands on THEIR OWN inputs — the person filter
+defaults to `ME` for a member, `all` (Everyone) for a scheduler — with
+Everyone one pick away in the same filter. On every other person's row the
+edit ✎ and delete ✕ are simply not rendered (`canEditSched() || r.person ===
+ME`); the row is view-only. The document paperclip is the exception and stays
+on every row — anyone may VIEW any attachment, gated nowhere. The write-path
+backstop behind the hidden controls lives in `commitInputEdit` / `removeInput`
+and is in `docs/engine-rules.md` §Auth / roles. Pinned in
+`audit-guards-inputs.test.ts`.

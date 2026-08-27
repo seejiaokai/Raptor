@@ -31,6 +31,7 @@ describe('the bidding window on screen', () => {
   // A draft or closed war is shut to the squadron on every date. A window
   // advertised beside "BIDDING CLOSED" would contradict the chip next to it.
   it('is absent unless the war is open', () => {
+    act(() => setRole('admin'))          // advancing the cycle is admin-only (27 Aug 26)
     render(<StageBar />)
     expect(screen.queryByTestId('bid-window')).toBeTruthy()
     fireEvent.click(screen.getByTestId('stage-advance')) // open -> closed

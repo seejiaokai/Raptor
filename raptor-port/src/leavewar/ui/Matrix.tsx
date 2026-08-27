@@ -28,7 +28,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans } from '../state/store'
+import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans, type MoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -38,6 +38,10 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
+import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
+import { SelectSheet } from './SelectSheet'
+import { RemarksSheet } from './RemarksSheet'
+import { leaveInputAt } from '../sync'
 import { useVersion } from './useStore'
 import './matrix.css'
 
@@ -45,6 +49,16 @@ import './matrix.css'
  *  same rule the count rows use; nothing in this engine rounds a real
  *  figure. */
 const show = (n: number) => String(Math.round(n * 10) / 10)
+
+/** A move refusal, in plain words for the move banner. */
+function moveReason(r: Exclude<MoveResult, 'moved'>): string {
+  switch (r.reason) {
+    case 'occupied': return `That lands on ${r.at} which is already booked — pick another day.`
+    case 'raptor': return 'One of those is filed on the Inputs page and cannot be moved here.'
+    case 'window': return 'That lands outside what you can edit — pick another day.'
+    default: return 'Nothing to move.'
+  }
+}
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
@@ -135,6 +149,17 @@ export function Matrix() {
   // controls on screen.
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string } | null>(null)
   const close = () => setOpen(null)
+  // The DRAG-SELECTION (owner, 27 Aug 26): the rectangle the last drag left,
+  // and the sheet it opens. `moveSel` is the selection currently being MOVED
+  // (Task E) — sheet closed, waiting for a drop. Both cleared on a stage/war
+  // change so a stale block cannot act on the wrong screen.
+  const [sel, setSel] = useState<Selection | null>(null)
+  const [moveSel, setMoveSel] = useState<Selection | null>(null)
+  const [moveErr, setMoveErr] = useState('')
+  // Phone move-mode: the day a tap has STAGED, awaiting a Confirm (there is no
+  // undo, so a phone drop is a two-step — preview then commit, owner 27 Aug 26).
+  // Desktop lands on the click and never sets this.
+  const [movePreview, setMovePreview] = useState<string | null>(null)
   // Whether the open cell is a POSTED-OUT day (admin tapped a greyed cell to
   // undo it, owner 18 Aug 26). A day before the person joined is blank, not a
   // post-out, so it is excluded — there is nothing to undo there.
@@ -160,7 +185,9 @@ export function Matrix() {
   const [editingWho, setEditing] = useState<string | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
-  const [eventEdit, setEventEdit] = useState<{ line: number; date: string } | null>(null)
+  // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
+  // then opens pre-set to that range; a single click leaves it undefined.
+  const [eventEdit, setEventEdit] = useState<{ line: number; date: string; to?: string } | null>(null)
   // Which manning count row's explainer is open (owner, 19 Aug 26 — a tap on
   // the row's name says what it counts and where its colours turn on).
   const [manningInfo, setManningInfo] = useState<string | null>(null)
@@ -299,6 +326,29 @@ export function Matrix() {
   // Jumping to a month is how a year-long war is navigable at all: 365
   // columns is roughly 13,600px, and nobody finds September by dragging.
   const wrapRef = useRef<HTMLDivElement>(null)
+  // Drag-select wiring: ONE delegated pointer listener on `.mx-wrap` (never
+  // per-cell — the grid is ~28k nodes), reading live state through a ref so
+  // the gesture always sees the current roster/dates/mode without re-binding.
+  // Assigned just before the return, where rosterSequence and the mode flags
+  // are in scope.
+  const selCtxRef = useRef<SelectCtx | null>(null)
+  useEffect(() => {
+    const w = wrapRef.current
+    if (!w) return
+    return wireSelect(w, {
+      order: () => selCtxRef.current?.order() ?? [],
+      dates: () => selCtxRef.current?.dates() ?? [],
+      enabled: () => selCtxRef.current?.enabled() ?? false,
+      onSelect: s => selCtxRef.current?.onSelect(s),
+      eventsEnabled: () => selCtxRef.current?.eventsEnabled?.() ?? false,
+      onEventSelect: s => selCtxRef.current?.onEventSelect?.(s),
+    })
+  }, [])
+  // A stage or war change drops any open selection or in-flight move, so a
+  // block picked on one screen can never act on another.
+  useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null) }, [period.stage, period.id])
+  // MOVE MODE is wired further down, after the `phone` breakpoint state it
+  // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and
   // in matrix.css). `mxOuterRef` is the page-flow box the overlay is absolutely
   // placed inside; `rosterBodyRef` is the one row group it must line up with.
@@ -307,6 +357,45 @@ export function Matrix() {
   const rosterBodyRef = useRef<HTMLTableSectionElement>(null)
   const [phone, setPhone] = useState(false)
   const [bandTop, setBandTop] = useState<number | null>(null)
+
+  // MOVE MODE (owner, 27 Aug 26). The picked block is dropped onto a new day.
+  // `movers` are the inputs PRESENT in the selection — the empty cells the user
+  // swept up are dropped, so a loose box no longer refuses as "nothing"; the
+  // earliest of them (`moveAnchor`) is the block's first input, and it lands on
+  // the day tapped, the rest shifting with it (gaps between inputs kept). The
+  // landing is previewed live on desktop (hover) and staged before a Confirm on
+  // phone (no undo). `daysBetween(moveAnchor, target)` is the shared delta.
+  const movers = useMemo<Cell[]>(() => (moveSel ? movableCells(moveSel.cells) : []), [moveSel])
+  const moveAnchor = useMemo(() => earliestDate(movers), [movers])
+  const landingFor = (targetDate: string): Cell[] =>
+    moveAnchor === null ? [] : movers.map(c => ({ personId: c.personId, date: addDays(c.date, daysBetween(moveAnchor, targetDate)) }))
+  const commitMove = (targetDate: string) => {
+    const w = wrapRef.current
+    if (moveAnchor === null) { setMoveSel(null); setMovePreview(null); return }
+    const r = moveCells(movers, daysBetween(moveAnchor, targetDate))
+    if (w) clearLanding(w)
+    if (r === 'moved') { setMoveSel(null); setMovePreview(null); setMoveErr('') }
+    else { setMoveErr(moveReason(r)); setMovePreview(null) }   // keep the mode, say why
+  }
+  useEffect(() => {
+    const w = wrapRef.current
+    if (!moveSel || !w) return
+    setMoveErr(''); setMovePreview(null)
+    const cleanup = wireMove(w, {
+      count: movers.length,
+      onHover: date => paintLanding(w, landingFor(date)),   // desktop live preview
+      onPick: date => {
+        // Desktop lands on the click (the hover WAS the preview); a phone has no
+        // hover, so a tap stages the landing and waits for Confirm.
+        if (phone) { paintLanding(w, landingFor(date)); setMovePreview(date) }
+        else commitMove(date)
+      },
+      onCancel: () => { clearLanding(w); setMoveSel(null); setMovePreview(null) },
+    })
+    return () => { clearLanding(w); cleanup() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moveSel])
+
   const months = monthsIn(period.start, period.end)
 
   // The month BRACKET above the dates (owner, 18 Aug 26 — "draw a line at the
@@ -445,8 +534,12 @@ export function Matrix() {
   // the same `.who`/`.bal` sticky-left CSS freeze its lead columns for free.
   // Its column widths are MEASURED off the live header (the events row is
   // what widens a column, and only layout knows by how much) and pinned via
-  // a fixed-layout colgroup. Phone only — a desktop window is tall enough
-  // that the owner has not asked for it there.
+  // a fixed-layout colgroup. On DESKTOP too now (owner, 27 Aug 26 — "freeze top
+  // panel for leave war on desktop … when I scroll down the top bar that has the
+  // dates goes out of view, the top bar will freeze just like how the mobile
+  // does it"): the app top bar stays pinned at the top (sticky, z-index 60), so
+  // the mirror freezes just below it (its lower edge) the moment the real header
+  // would slide under, at every width. No width gate any more.
   const headRef = useRef<HTMLTableSectionElement>(null)
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
@@ -471,18 +564,20 @@ export function Matrix() {
 
   useEffect(() => {
     setStuck(null)
-    // jsdom has neither matchMedia nor layout — the mirror is a browser-only
-    // creature and the browser gate is what proves it.
+    // jsdom has no layout — the mirror is a browser-only creature, and a
+    // 0-height header (jsdom, or not yet laid out) never activates.
     if (typeof window.matchMedia !== 'function') return
-    const mq = window.matchMedia('(max-width: 700px)')
     const onScroll = () => {
       const head = headRef.current
-      if (!head || !mq.matches) { setStuck(null); return }
+      if (!head) { setStuck(prev => (prev ? null : prev)); return }
       const r = head.getBoundingClientRect()
       if (r.height === 0) return // jsdom, or not laid out yet — never activate
-      // The Raptor top bar is sticky, so "the top" is its lower edge.
+      // The app top bar stays pinned (sticky, both widths), so "the top" is its
+      // LOWER edge: the mirror freezes there the instant the real header would
+      // slide under it. The bar's height is constant, so the pinned `top` needs
+      // no per-tick update. Both phone and desktop now (owner, 27 Aug 26).
       const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
-      if (r.top >= topEdge) { setStuck(null); return }
+      if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
         if (prev) return prev
         const wrap = wrapRef.current
@@ -1117,6 +1212,24 @@ export function Matrix() {
   // "is the sheet writable at all" — and has no date to narrow itself with.
   const deciding = canDecide(period.stage, role)
 
+  // The dotted-orange "moved" mark is only meaningful once bidding has CLOSED
+  // (owner, 27 Aug 26). While a war is still open for bidding, people shuffle
+  // their own bids around freely — a moved mark on every re-placed bid is just
+  // noise. It becomes worth showing only after close, when a shift is the
+  // admin deliberately moving someone's input off the date they bid.
+  const movedShown = period.stage === 'closed' || period.stage === 'published'
+
+  // Published-stage remarks editor (owner, 27 Aug 26 — "after the leave war is
+  // published … click on their inputs … and edit the remarks. but the admin
+  // can also … the same for all"). A click on an approved leave at PUBLISHED
+  // opens the note editor for the run's OWN person (a member editing their own
+  // leave) or for an admin (anyone). `viewer` is the war's mirror of Raptor's
+  // "view as" — the member's own person. It takes precedence over the
+  // read-only Raptor sheet and the bid/decision sheets below, and exists only
+  // at published; `leaveInputAt` runs once per open cell, never per grid cell.
+  const remarkRow = open && period.stage === 'published' ? leaveInputAt(open.id, open.date) : null
+  const canRemark = !!remarkRow && (role === 'admin' || (!!open && open.id === viewer))
+
   // Which sheet a click opens follows from three things: the stage, the role,
   // and what the cell already holds.
   //
@@ -1130,13 +1243,37 @@ export function Matrix() {
   const openable = (personId: string, date: string): boolean =>
     raptorOwns(states, personId, date) ||
     canEditCell(period, role, date) ||
-    (deciding && isBiddable(grid[personId]?.[date]))
+    (deciding && isBiddable(grid[personId]?.[date])) ||
+    // Published remarks editor (owner, 27 Aug 26): any filled cell of the
+    // viewer's own row (or every row, for an admin) is tappable to edit its
+    // note. Kept CHEAP — a truthiness check on the code, never leaveInputAt —
+    // because this runs for every drawn cell; the precise "is there a backing
+    // leave input" test is `canRemark`, computed once when a cell is opened.
+    (period.stage === 'published' && (role === 'admin' || personId === viewer)
+      && !!grid[personId]?.[date])
 
   // A day the squadron may not bid on, drawn as such. Without this the window
   // is invisible: a member taps an October cell, nothing happens, and the app
   // reads as broken rather than as closed. Admin sees no lock — the window
   // does not bind them, so drawing one would be a lie about their own screen.
   const lockedDate = (date: string): boolean => !canEditCell(period, role, date)
+
+  // Feed the drag-select controller live state. A member may DRAG only while
+  // the war is OPEN (batch fill). The published remarks editor is a SINGLE
+  // click, not a drag — a block of runs has no one note to edit — so a member
+  // still cannot drag at published. An admin may drag at every stage.
+  selCtxRef.current = {
+    order: () => rosterSequence().filter(r => r.kind === 'person').map(r => (r as { p: Person }).p.id),
+    dates: () => dates,
+    enabled: () => !arranging && !moveSel && (role === 'admin' || period.stage === 'open'),
+    onSelect: s => setSel(s),
+    // Events are the admin's (the store refuses a member write anyway); a drag
+    // along one event line opens the event sheet pre-set to that date span
+    // (owner, 27 Aug 26). from === to (a one-cell drag) opens on the single day.
+    eventsEnabled: () => role === 'admin' && !arranging && !moveSel,
+    onEventSelect: s => setEventEdit({ line: s.line, date: s.from, to: s.from === s.to ? undefined : s.to }),
+  }
+  const csOf = (id: string): string => displayRoster().find(p => p.id === id)?.callsign ?? id
 
   return (
     <div className="stage">
@@ -1558,7 +1695,7 @@ export function Matrix() {
                     // bid off another date.
                     const marks = [
                       here && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
-                      here && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
+                      movedShown && here && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
                     ].filter(Boolean).join(' ')
                     // A cell outside the person's time in the squadron is
                     // never actionable FOR A BID: bidding leave for a man who
@@ -1739,17 +1876,72 @@ export function Matrix() {
           sheet inside it would be clipped by its own scroller. Keyed by the
           cell so opening a second one remounts rather than carrying the
           first's portion choice across. */}
-      {/* Raptor's ownership is checked FIRST and short-circuits both other
+      {/* The published-stage remarks editor wins FIRST where it applies (an
+          approved leave, the viewer's own or an admin's any) — even over the
+          Raptor sheet, because on a published war editing the note is the
+          point, and the note lives on the same Raptor row the read-only sheet
+          would only point at. */}
+      {open && canRemark && (
+        <RemarksSheet
+          key={`rmk-${open.id}-${open.date}`}
+          callsign={open.callsign}
+          row={remarkRow}
+          code={grid[open.id]?.[open.date] ?? ''}
+          onClose={close}
+        />
+      )}
+      {/* Raptor's ownership is checked next and short-circuits both other
           sheets. That cell is approved elsewhere: offering a picker or a
           decision on it would offer an action the store will refuse, which
           is worse than offering nothing. */}
-      {open && raptorOwns(states, open.id, open.date) && (
+      {open && !canRemark && raptorOwns(states, open.id, open.date) && (
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
           code={grid[open.id]?.[open.date] ?? ''}
           onClose={close}
         />
+      )}
+      {/* The drag-selection sheet — batched fill / decide / delete / move over
+          the whole rectangle (owner, 27 Aug 26). Independent of the single-cell
+          `open`; a drag never sets `open`. */}
+      {sel && (
+        <SelectSheet
+          sel={sel}
+          people={csOf}
+          role={role}
+          canDecide={canDecide(period.stage, role)}
+          medical={role === 'admin'}
+          onPostOut={role === 'admin' ? (pid, from, archive) => setPostOut(pid, from, archive) : undefined}
+          onMove={s => setMoveSel(s)}
+          onDone={() => setSel(null)}
+          onClose={() => setSel(null)}
+        />
+      )}
+      {/* Move mode: a slim banner. On desktop a ghost follows the mouse (from
+          wireMove) and a CLICK lands the block at once; on phone a TAP stages
+          the landing (`movePreview`) and the banner turns into Confirm/Cancel,
+          since there is no hover to preview with and no undo. A refusal shows
+          here and keeps the mode. The count is `movers` — the inputs present,
+          not the raw rectangle. */}
+      {moveSel && (
+        <div className="mv-banner" data-testid="move-banner">
+          <span className="mv-msg">
+            {moveErr
+              ? moveErr
+              : movePreview
+                ? `Move ${movers.length} ${movers.length === 1 ? 'entry' : 'entries'} here?`
+                : `Tap a day to move ${movers.length} ${movers.length === 1 ? 'entry' : 'entries'}`}
+          </span>
+          {movePreview && (
+            <button className="dchip confirm" data-testid="move-confirm" onClick={() => commitMove(movePreview)}>Confirm</button>
+          )}
+          <button
+            className="dchip"
+            data-testid="move-cancel"
+            onClick={() => { const w = wrapRef.current; if (w) clearLanding(w); setMoveSel(null); setMovePreview(null) }}
+          >Cancel</button>
+        </div>
       )}
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
           and it short-circuits every bid/decision sheet below (owner, 18 Aug
@@ -1808,9 +2000,10 @@ export function Matrix() {
       )}
       {eventEdit && role === 'admin' && (
         <EventSheet
-          key={`${eventEdit.line}-${eventEdit.date}`}
+          key={`${eventEdit.line}-${eventEdit.date}-${eventEdit.to ?? ''}`}
           line={eventEdit.line}
           date={eventEdit.date}
+          to={eventEdit.to}
           onClose={() => setEventEdit(null)}
         />
       )}
@@ -1831,7 +2024,7 @@ export function Matrix() {
       {counterEdit !== false && (
         <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
       )}
-      {open && !openPostedOut && !raptorOwns(states, open.id, open.date)
+      {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date)
         && canEditCell(period, role, open.date)
         && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
         <BidPicker
@@ -1879,7 +2072,7 @@ export function Matrix() {
           onClose={close}
         />
       )}
-      {open && !raptorOwns(states, open.id, open.date) && deciding
+      {open && !canRemark && !raptorOwns(states, open.id, open.date) && deciding
         && isBiddable(grid[open.id]?.[open.date]) && (
         <DecisionSheet
           key={`${open.id}-${open.date}`}

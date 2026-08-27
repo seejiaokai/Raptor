@@ -44,6 +44,12 @@ export function setDraftsEdit(v: null | { di: number, id?: string }) { DRAFTSEDI
    the very fields the dialog exists to change. */
 export let INPEDIT: any = null
 export function setInpEdit(r: any) { INPEDIT = r }
+/* The supporting-document viewer (owner, 27 Aug 26) — every user may view
+   every input's document, so this carries only WHICH input's paperwork is on
+   screen: the INPUT OBJECT, for the same reason INPEDIT holds the object —
+   undo renumbers INPUTS under an open modal. */
+export let DOCVIEW: any = null
+export function setDocView(r: any) { DOCVIEW = r }
 /* the mobile drawer */
 export let DRAWER = false
 export function setDrawer(on: boolean) { DRAWER = on }

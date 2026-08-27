@@ -1260,6 +1260,61 @@ funnel:
 Accepting twice is a no-op; undo first. The input is never removed — it stays in
 Personal Inputs, faded, so the scheduler can see what they have dealt with.
 
+## The medical tracker — downchit, upchit and the trim rules (owner, 27 Aug 26)
+
+The medical group (HL, OML, ATT C, ATT B) has always been the downchit; what
+is new is the LIFECYCLE around it, and one new type.
+
+**Upchit** (`INPUT_META` grp `'upchit'`) is the paperwork that closes a
+medical-down period — the medical officer's "fit to fly again", dated. It is
+a marker type on the SANS pattern: inside `isUnavail` (no Accept controls),
+carved out of everything that would read it as an absence — `inputFlags`
+(validator-invisible AND reference-seed-invisible, the dormancy precedent, so
+parity cannot diverge), `isAway` (never strikes a palette puck), `restsInput`,
+the two Unavailable blocks (week + board), the board's Unavailable + Add list,
+and the late-input mark (same ruling as the downchits: the date is the medical
+officer's, never a deadline's). `typeGroup` maps it under the Medical dropdown
+heading; `defaultAllday` opens it all-day; it has no AM/PM control and the
+write path refuses a ranged one — an upchit is ONE date.
+
+**Derived, never stored** (`engine/medical.ts`). Who is down, who owes an
+upchit and who upchitted are pure reads over `INPUTS` and an as-of ordinal:
+
+- `medDownAsOf(ord)` — every downchit input covering the date.
+- `pendingUpchits(ord)` — per person, the latest-ended EXPIRED downchit,
+  unless (a) another downchit covers the date, (b) any downchit STARTS after
+  that end (a newer entry replaces the nag, future-dated included), or (c) an
+  upchit is dated on/after that end. Unbounded into the past — an owed upchit
+  does not age out.
+- `upchitsWithin(ord, 30)` — upchits in the trailing 30 days, newest first.
+
+Nothing runs at boot and nothing mutates on a clock tick — "auto-moves to
+Pending on expiry" is arithmetic, the `isLateInput` doctrine.
+
+**The trim rules** (planners in `engine/medical.ts`, applied by
+`applyMedPlan` in `ui/inputedit.tsx`, inside the SAME `writeInputsBatch` as
+the input that caused them — one undo step):
+
+- An **upchit on X** cuts every downchit of that person still running past X
+  to end ON X (down 10–13 Jul, upchit 12 Jul → 10–12 Jul); on/before the
+  start it deletes the row. The remarks "till …" token is rewritten
+  (`withRemarksTail`), `retractLwRow` runs first on an lw-tagged row, and the
+  Leave War's freed days clear on the next reconcile.
+- A **different-type medical overlap** wins its days: the older row is cut to
+  end the day before the new one starts, deleted when nothing remains (a tail
+  past the new end is deliberately lost — "the latest input overwrites").
+- A **same-type overlap is REFUSED**, never trimmed (`medOverlapRefusal`, the
+  `sansOverlapRefusal` shape): the person is told to edit the entry on file
+  and attach the new document to it. Upchit-vs-upchit same day likewise.
+
+**The mandatory document.** `needsDoc(t)` (= downchit or upchit, ONE body in
+`engine/inputs.ts`) decides both the upload control's visibility and the
+refusal: a NEW medical input (or a row retyped INTO the group) does not go in
+without a stored document (`state/docs.ts` — session-only blobs, id-only on
+the record, append-only so undo finds its paperwork). Rows that were already
+medical keep whatever they have — pre-feature records are not bricked.
+Everyone may VIEW any document; edit stays own-puck/admin at the write path.
+
 ## The late-input mark (owner, 9 Aug 26)
 
 A member's input is due **`VCONF.inputLead` days before its own week's
@@ -2038,6 +2093,90 @@ the squadron's programme*, not read vs write:
 | Accepting an input into the issued programme | no | yes |
 | The Edit Schedule page at all (`canEditSched()`) | no | yes |
 | Logic — editing VCONF / SHIFT_HARD | no | yes |
+| Leave War — advancing the cycle stage (→ BIDDING CLOSED / → PUBLISHED) | no | yes |
+| Leave War — deciding a bid (Pending / Approve / Refuse), at closed OR published | no | yes |
+| Editing or deleting ANOTHER person's personal input (own inputs: either role) | no | yes |
+
+**In the Leave War, moving the cycle FORWARD is admin-only (owner, 27 Aug 26
+— "for a member i shouldnt be able to click on bidding closed or published,
+thats an admin function").** This is the ONLY member-facing change to the
+war: a member still bids while the war is open exactly as before
+(`leavewar/engine/stages.ts:canEdit` stays `role==='admin' || stage==='open'`,
+unchanged). `store.ts:advanceStage` — which had NO role guard, the lone gap
+beside `reopenStage`/`setBidWindow`, both already admin-only — now refuses a
+member at the write, and `Chrome.tsx` renders the stage-advance control only
+for an admin (absent, not disabled — the same idiom the step-back control
+uses). Nothing else about the war changed: member bidding, the bid window,
+the out-of-window dim and every sync seam are as they were. Pinned in
+`store.test.ts` (advanceStage refuses a member) and `chrome.test.tsx` (the
+control is hidden from a member).
+
+**The Leave War drag-select batch writers carry the single-cell gates
+(owner, 27 Aug 26).** `setCells` / `clearCells` fill or empty many cells and
+ride `canEditCell` per cell — a member fills what they could fill one cell at
+a time (open stage, in window), skipping Raptor-owned/locked/out-of-squadron
+days (PARTIAL by design, like `setCellRange`). `setBidStates` is admin-only
+(a decision is management's, as the single `setBidState`'s sheet already is).
+`moveCells` is `shiftBid` for a whole selection: role-gated by `canEditCell`,
+ATOMIC (every source and every landing day validated before any write — a
+half-moved block is worse than a refused one, and there is no undo), landing
+`{state:'pending', source:'bid', shiftedFrom}` per cell; a landing that is
+occupied by a non-selected cell, Raptor-owned, or outside the war refuses the
+whole move. All batch to ONE save-and-notify under the store's `quiet`
+suppression. A batch API growing its OWN guard would be the drift-seam to
+avoid — they must always call through the same per-cell checks. Pinned in
+`store.test.ts` §the batch writers. On screen: `docs/ui-contracts.md`
+§Selecting on the Leave War grid.
+
+**An admin keeps the bid decision after PUBLISHING (owner, 27 Aug 26 — "if
+leave war is published, the admin can still have these functions").**
+`stages.ts:canDecide` is now `admin && (closed || published)`, not closed
+only: publication freezes the picture for the SQUADRON, but the admin still
+runs the war, so a late change tapped in after publication is approved /
+refused / moved exactly as at closed — via the drag-selection sheet's Decide
+row, and the single-cell decision sheet. The store's `setBidStates` was
+already stage-agnostic (admin-only, no stage check), so this is a UI-gate
+widening only. `canDecide` and `canEdit` are still disjoint per stage (a
+member never edits at closed or published), so the "no stage lets a member
+bid and an admin decide at once" invariant holds. Pinned in `stages.test.ts`
+and `deciding.test.tsx` (the admin decision survives into published). The
+single click that a MEMBER makes on their own published leave is the remarks
+editor (`docs/ui-contracts.md` §Published-stage remarks editing) — a member
+edits their own note, an admin edits anyone's, and the save runs through
+Raptor's `setLeaveRemarks → commitInputEdit`, so the same member-own gate
+applies. `sync.ts:leaveInputAt` is a new query on the sync seam that finds the
+Raptor input a war cell derives from.
+
+**A member edits and deletes only their OWN personal inputs (owner, 27 Aug
+26 — "they cant edit other people's input, only can view").** On the Inputs
+page a member LANDS on their own inputs (the person filter defaults to `ME`
+for a member, `all` for a scheduler) with "Everyone" one pick away; on every
+other person's row the ✎ and ✕ are not rendered, but the document paperclip
+stays (anyone may VIEW any attachment — owner, same day). The write-path
+backstop behind the hidden controls is in `commitInputEdit` / `removeInput`,
+gated on an ACTUAL member session (`SESSION?.role === 'member' && r.person
+!== ME`) rather than "not admin" — the app's own edit cascades (sync
+retraction, medical trims, the accepted-row relink) and every scheduler edit
+run with no member session, so they must not be caught. This SITS BESIDE the
+existing 22 Aug person-MOVE guard (a member may not reassign an input to
+another person), which stays. Pinned in `audit-guards-inputs.test.ts`
+(a member is refused another's edit and delete, allowed their own, a
+scheduler allowed any).
+
+**An admin can VIEW AS a member — the role badge is a toggle (owner, 27 Aug
+26).** Clicking the topbar's Admin/Member chip (or the drawer's Account-row
+button on a phone) flips the EFFECTIVE role the whole app reads; a member
+account's chip stays an inert label. `auth.ts` keeps `LOGINROLE`, the true
+role captured at login and never moved by the toggle — the ceiling that
+means a member can never climb and a parked admin always has the way back.
+`store.ts:toggleRole` is the one coordinator: it flips `SESSION.role`
+(every gate reads it live), falls an admin-only page back to View-only
+Sched, disarms any armed slot, drops Logic edit mode, and walks the Leave
+War's role through the same `lwSetRole` seam `resetSession` drives — the
+second and last production writer of that role. Deliberately NOT a full
+`resetSession`: the week, selection, filters and undo history stay, because
+the point is seeing the SAME screen through the other role's eyes. Pinned
+in `roletoggle.test.tsx`.
 
 Inputs opened because they are the crews' OWN leave, downchits and
 detachments — the reference's `View only — ask a scheduler` gate made the

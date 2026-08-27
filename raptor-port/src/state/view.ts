@@ -53,8 +53,18 @@ export function setRosDay(n:any){ ROSDAY=n }
    the calendar is a view of the same page, not a different page, so a hop to
    another page and back must land on whichever of the two the scheduler had
    open — it survives leaving/returning to Inputs within a session on purpose. */
-export let INPVIEW:'table'|'cal'='table'
-export function setInpView(v:'table'|'cal'){ INPVIEW=v }
+export let INPVIEW:'table'|'cal'|'med'='table'
+export function setInpView(v:'table'|'cal'|'med'){ INPVIEW=v }
+/* The Medical view's as-of date, ISO, or null for "the notional today"
+   (owner, 27 Aug 26 — "it will show all from the current view date ... u can
+   click on a calendar view to view the history as per that selected date").
+   Null is not a date: it means the view follows TODAY (ui/weeknav.ts, the
+   one literal) until someone picks, and the Today chip returns it to null
+   rather than pinning today's value — the same nothing-chosen-yet idea as
+   CALMONTH above. Session view state, cleared with the rest on session
+   change. */
+export let MEDASOF:string|null=null
+export function setMedAsOf(v:string|null){ MEDASOF=v }
 /* the calendar's open month, or null. Null is not "January" — it means
    nothing has chosen a month yet, so the calendar derives one from whatever
    date window the Inputs page itself is showing the moment it first opens,

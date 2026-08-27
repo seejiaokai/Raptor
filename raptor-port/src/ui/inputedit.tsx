@@ -12,7 +12,10 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail } from '../engine/inputs'
+import { upchitTrimPlan, newMedTrimPlan, ordLabel } from '../engine/medical'
+import { docAdd, docGet } from '../state/docs'
+import { UploadIcon } from './icons'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
@@ -26,7 +29,7 @@ import { writeInputsBatch, notify } from '../state/store'
 import { retractLwRow, rowSig } from '../leavewar/sync'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { stashKeys, stashDrop } from '../engine/weekstash'
-import { canEditSched, ME } from '../state/auth'
+import { canEditSched, ME, SESSION } from '../state/auth'
 import { INPEDIT, setInpEdit } from './pops'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
@@ -113,7 +116,7 @@ export const spanOf = (allday: boolean, half: string): Span => allday ? 'all' : 
    medical, OD); amber = a local commitment (activity / duty & other
    commitments); purple = SANS Availability, wearing the same `--san`
    purple the rest of the app already reads as SANS. */
-export const inputTone = (t: any) => isSansAvail(t) ? 'san' : isUnavail(t) ? 'red' : 'amb'
+export const inputTone = (t: any) => isSansAvail(t) ? 'san' : isUpchit(t) ? 'amb' : isUnavail(t) ? 'red' : 'amb'
 /* what a span means in the four fields it drives */
 export const spanFields = (m: Span) => m === 'all' ? { allday: true, half: '', sTime: '06:00', eTime: '18:00' }
   : m === 'am' ? { allday: false, half: 'am', sTime: HALF_AM[0], eTime: HALF_AM[1] }
@@ -210,6 +213,67 @@ export function sansOverlapRefusal(person: any, date: any, endDate: any, except:
   return clash ? 'A SANS availability is already filed for one of these days — edit that entry instead of adding another' : ''
 }
 
+/* ---- THE MEDICAL REFUSALS AND THE TRIM APPLIER (owner, 27 Aug 26) --------
+   Same-type medical overlap is REFUSED — the person is told to edit the
+   entry already on file (and attach the new document to it), because two
+   same-type records over one day share an edit address exactly like the
+   SANS case above. A DIFFERENT-type overlap is not refused: the new input
+   wins its days and the planner (engine/medical.ts) trims the old one — the
+   applier below is the write half of that plan. */
+export function medOverlapRefusal(person: any, type: any, date: any, endDate: any, except: any): string {
+  const na = dateOrd(date), nb = dateOrd(endDate || date)
+  if (na == null || nb == null) return ''
+  const t = inpType(type)
+  const clash = INPUTS.some((x: any) => {
+    if (x === except || x.person !== person || !isDownchit(x.type) || inpType(x.type) !== t) return false
+    const a = dateOrd(x.date, x.yr), b = dateOrd(x.endDate || x.date, x.yr)
+    return a != null && b != null && na <= b && a <= nb
+  })
+  return clash ? `A ${t} is already filed over these days — edit that entry instead, and attach the new document to it` : ''
+}
+/* An upchit is ONE date closing a real medical-down period — three refusals:
+   a ranged upchit, an upchit with nothing on file to close, and a second
+   upchit on the same day (the shared-edit-address hazard again). */
+export function upchitRefusal(person: any, date: any, endDate: any, except: any): string {
+  if (endDate) return 'An upchit is a single date — pick the day he is medically up'
+  const x = dateOrd(date)
+  if (x == null) return ''
+  const hasMed = INPUTS.some((r: any) => {
+    if (!isDownchit(r.type) || r.person !== person) return false
+    const a = dateOrd(r.date, r.yr)
+    return a != null && a <= x
+  })
+  if (!hasMed) return 'There is no medical-down entry to upchit — file the medical input first'
+  const dup = INPUTS.some((r: any) => r !== except && r.person === person && isUpchit(r.type) && dateOrd(r.date, r.yr) === x)
+  return dup ? 'An upchit is already filed for that day — edit that entry instead' : ''
+}
+/* ord (dateOrd form) → ISO, for the remarks-tail rewrite below */
+const ordISO = (o: any) => `${Math.floor(o / 10000)}-${String(Math.floor(o / 100) % 100).padStart(2, '0')}-${String(o % 100).padStart(2, '0')}`
+/* Apply a trim plan from engine/medical.ts. Runs INSIDE the caller's
+   writeInputsBatch so the new input and the rows it shortens land as ONE
+   undo step. A delete goes through dropInputRow (Leave-War retraction and
+   the ground-row un-accept both live there); a trim follows
+   commitInputEdit's own discipline for a Leave-War-synced row — the span is
+   part of the sync signature, so the old grant is withdrawn first and the
+   lw tag dropped, and the next reconcile lands the shorter span as
+   Raptor-owned cells. The remarks "till …" token is the calendar's to
+   rewrite (withRemarksTail), so "ATT C till 13 Jul" follows the new end
+   while the typist's own words stay. inpKey is person|date|type|s — an
+   end-trim moves none of them, so no accepted-row relink is needed. */
+export function applyMedPlan(plan: any[]) {
+  for (const p of plan || []) {
+    const r = p.row
+    if (p.action === 'delete') { dropInputRow(r); continue }
+    if (p.action !== 'trim' || p.newEndOrd == null) continue
+    if (r.lw) { retractLwRow(r); delete r.lw }
+    const a = dateOrd(r.date, r.yr)
+    if (a != null && p.newEndOrd <= a) delete r.endDate
+    else r.endDate = ordLabel(p.newEndOrd, r.yr)
+    r.remarks = withRemarksTail(r.remarks, a != null ? ordISO(a) : '', ordISO(p.newEndOrd), 'till')
+    r.mod = 'now'
+  }
+}
+
 /* THE TYPE CONTROLS. Twenty types is too many for a flat list, so every
    dropdown is cut into the same three groups the legend uses, generated from
    INPUT_META — the list you pick from, the explanation you read and the rule
@@ -233,7 +297,47 @@ export const draftOf = (r: any) => ({
   remarks: r.remarks || '',
   // SANS Availability's own Fly/AMT/OFT payload — a plain object, not derived from s/e/half
   sans: r.sans ? { ...r.sans } : null,
+  // the supporting document's id (medical types) — the blob lives in state/docs
+  docId: r.docId || null,
 })
+
+/* Edit ONLY the remarks of an existing input, through the one commit path
+   (owner, 27 Aug 26 — the published Leave War remarks editor). Everything but
+   the remark is seeded back from the row, so `rowSig` is unchanged: a
+   Leave-War-synced leave keeps its lw tag and its grid cells, only the note
+   the Inputs page reads is rewritten. The member-own / scheduler-any gate,
+   the mod timestamp and the undo snapshot all come free from commitInputEdit
+   — this must NOT grow its own copy of any of them. */
+export function setLeaveRemarks(row: any, remarks: string): boolean {
+  return commitInputEdit(row, { ...draftOf(row), remarks })
+}
+
+/* THE UPLOAD CONTROL every editor renders when needsDoc(type) — one
+   component so the add form, the in-table row editor and the modal cannot
+   grow three file inputs with three behaviours. Picking a file stores it at
+   once (state/docs) and hands the caller the id to carry on its draft; a
+   refused file (wrong kind, over the cap) toasts and keeps the old one. The
+   control never REMOVES a document — paperwork is replaced, not withdrawn. */
+export function DocField({ docId, onDoc }: { docId: any, onDoc: (id: string) => void }) {
+  const ref = useRef<HTMLInputElement>(null)
+  const doc = docGet(docId)
+  return <span className="docfield">
+    <input ref={ref} type="file" accept="image/*,application/pdf" hidden
+      onChange={e => {
+        const f = e.target.files && e.target.files[0]
+        e.target.value = ''
+        if (!f) return
+        const { id, why } = docAdd(f)
+        if (!id) { HOOKS.toast(why, 'warn'); return }
+        onDoc(id)
+      }} />
+    <button type="button" className={'abtn docbtn' + (doc ? ' has' : '')}
+      title={doc ? `Document attached — ${doc.name}. Tap to replace it.` : 'Attach the supporting document (photo or PDF)'}
+      onClick={() => ref.current && ref.current.click()}>
+      <UploadIcon />{doc ? <span className="docname">{doc.name}</span> : <span>Document</span>}
+    </button>
+  </span>
+}
 
 /* The refusals and the derivations EVERY input write shares — the edit dialog
    (commitInputEdit) and the board's + Add (commitNewInput). Kept in one place
@@ -294,6 +398,24 @@ export function normalizeInputDraft(draft: any, except: any):
     const dup = sansOverlapRefusal(draft.person, date, endDate, except)
     if (dup) { HOOKS.toast(dup, 'warn'); return null }
   }
+  /* A MEDICAL INPUT DOES NOT GO IN WITHOUT ITS DOCUMENT (owner, 27 Aug 26).
+     New rows and rows retyped INTO the medical group are refused bare; a row
+     that was already medical keeps whatever it has — the pre-feature records
+     carry no document, and refusing every edit of them would brick the
+     paperwork this exists to keep. */
+  if (needsDoc(draft.type) && !draft.docId && !(except && needsDoc(except.type))) {
+    HOOKS.toast('Attach the medical document first — use the upload button', 'warn'); return null
+  }
+  /* the medical refusals (owner, 27 Aug 26) — same-type overlap says "edit
+     that entry"; an upchit has to be a single date closing something real */
+  if (isDownchit(draft.type)) {
+    const dup = medOverlapRefusal(draft.person, draft.type, date, endDate, except)
+    if (dup) { HOOKS.toast(dup, 'warn'); return null }
+  }
+  if (isUpchit(draft.type)) {
+    const why = upchitRefusal(draft.person, date, endDate, except)
+    if (why) { HOOKS.toast(why, 'warn'); return null }
+  }
   /* Derived once, here, because the Leave-War check reads the input's PORTION
      and the label write near the end of commitInputEdit reads the same value —
      deriving it twice is how the two would drift (see the note at that write). */
@@ -316,7 +438,10 @@ export const firstSansType = () => INPUT_TYPES.find((t: any) => isSansAvail(t)) 
    other two lists — its own panel's + Add is where it is filed) */
 export const TYPE_ALLOW: any = {
   g: (t: any) => isPersonal(t),
-  u: (t: any) => isUnavail(t) && !isSansAvail(t),
+  /* Upchit is excluded like SANS — it is not an absence, so the Unavailable
+     panel's + Add must not offer it; it is filed on the Inputs page or from
+     the Medical view's pending card */
+  u: (t: any) => isUnavail(t) && !isSansAvail(t) && !isUpchit(t),
   s: (t: any) => isSansAvail(t),
 }
 
@@ -359,12 +484,23 @@ export function commitNewInput(draft: any, toGround?: boolean): boolean {
     ...(endDate ? { endDate } : {}),
     ...(half ? { half } : {}),
     ...(Object.keys(flags).length ? { sans: flags } : {}),
+    /* the supporting document's id only — the blob stays in state/docs, so
+       history snapshots (JSON of INPUTS) never copy a file */
+    ...(draft.docId ? { docId: draft.docId } : {}),
   }
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
   inpId(row)
   writeInputsBatch(() => {
     INPUTS.unshift(row)
+    /* a new medical input wins its overlapping days from a DIFFERENT-type
+       downchit, and an upchit cuts everything still running past its date
+       (owner, 27 Aug 26) — planned pure, applied here so the add and its
+       trims are ONE undo step */
+    if (isDownchit(row.type))
+      applyMedPlan(newMedTrimPlan(row.person, row.type, dateOrd(date, row.yr), dateOrd(endDate || date, row.yr), row))
+    if (isUpchit(row.type))
+      applyMedPlan(upchitTrimPlan(row.person, dateOrd(date, row.yr), row))
     if (toGround) {
       /* the board's Ground "+ Inputs" is a DELIBERATE scheduler act — it lands
          the row on the programme whatever the day's publish state (an ordinary
@@ -397,6 +533,16 @@ export function commitInputEdit(r: any, draft: any) {
   if (!r || !draft) return false
   if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
     HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
+    return false
+  }
+  /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER edits only
+     their OWN inputs. The row's ✎ is hidden on everyone else's, so a real
+     gesture cannot reach here; this refuses a hand-made call. Gated on an
+     actual member SESSION, not merely "not admin", so the app's own internal
+     edit cascades (sync retraction, medical trims, the accepted-row relink)
+     and a scheduler edit still run on any row. */
+  if (SESSION?.role === 'member' && r.person !== ME) {
+    HOOKS.toast('You can only edit your own inputs', 'warn')
     return false
   }
   /* write-path role backstop (owner, 22 Aug 26): moving an input onto a
@@ -475,6 +621,9 @@ export function commitInputEdit(r: any, draft: any) {
        only — which events are offered, never a shape of its own. */
     const flags = sansFlags(draft.sans)
     if (Object.keys(flags).length) r.sans = flags; else delete r.sans
+    /* a fresh upload REPLACES the document reference; an edit that touched
+       nothing else keeps the old one (paperwork is never silently dropped) */
+    if (draft.docId) r.docId = draft.docId
     /* DERIVED from the times, never copied from the draft (audit, 12 Aug 26).
        The in-place cells already derived it (halfOf), but the Inputs page's own
        two time boxes did not: press AM, then type 08:00 over the start, and the
@@ -498,6 +647,12 @@ export function commitInputEdit(r: any, draft: any) {
        to wake it. Time/remark edits on a dormant record still keep it parked —
        only Accept (or a retype) revives it, per the owner's removal rule. */
     if (wasDormant && r.type !== wasType && r.acc === 'r') delete r.acc
+    /* an EDIT restates the span, so the same medical rules run against the
+       person's other rows — the row itself is excluded (except-style) */
+    if (isDownchit(r.type))
+      applyMedPlan(newMedTrimPlan(r.person, r.type, dateOrd(r.date, r.yr), dateOrd(r.endDate || r.date, r.yr), r))
+    if (isUpchit(r.type))
+      applyMedPlan(upchitTrimPlan(r.person, dateOrd(r.date, r.yr), r))
     if (wasAcc) {
       /* put it back on the day it was on, if the edit still covers that day;
          otherwise its new start date — and if the START label is not itself
@@ -642,6 +797,15 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
 export function removeInput(r: any) {
   const inx = INPUTS.indexOf(r)
   if (inx < 0) { HOOKS.toast('That input is no longer there', 'warn'); return false }
+  /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER deletes
+     only their OWN inputs — the row's ✕ is hidden on everyone else's, this
+     refuses a hand-made call. Gated on an actual member SESSION (not "not
+     admin") so the app's own removal cascades and a scheduler still run on
+     any row. */
+  if (SESSION?.role === 'member' && r.person !== ME) {
+    HOOKS.toast('You can only delete your own inputs', 'warn')
+    return false
+  }
   /* WHAT was deleted, and which day it logs against — captured before the
      splice below, the same "read the row, then remove it" order every
      deletion in board.ts follows. di follows interactions.ts:424's rule for
@@ -821,6 +985,16 @@ export function InputEditor() {
      ordinary EDIT, which keeps the full type list — retyping an existing row
      across groups is a real move the app already handles. */
   const ctx = isNew ? (r._ctx || '') : ''
+  /* GUARD RAIL (owner, 27 Aug 26): a medical input stays medical. Editing a
+     downchit offers ONLY the downchit family (ATT C/B, OML, HL) — never a
+     retype into leave or a course, which would strand its mandatory document
+     and the trim rules; an upchit edit likewise stays an upchit. The
+     cross-group retype the comment above allows is kept for non-medical rows.
+     Board + Add keeps its own TYPE_ALLOW list; this only narrows an EDIT. */
+  const typeFilter = ctx ? TYPE_ALLOW[ctx]
+    : (r && !isNew && isDownchit(r.type)) ? isDownchit
+    : (r && !isNew && isUpchit(r.type)) ? isUpchit
+    : undefined
   const [draft, setDraft] = useState<any>(null)
   const box = useRef<HTMLDivElement>(null)
   /* re-seed whenever a different row is opened, never on a repaint — a
@@ -871,17 +1045,24 @@ export function InputEditor() {
               but the gate is repeated here anyway rather than trusted to
               that — canEditSched() is the same check every other
               admin-only control in this dialog's callers already uses. */}
-          {canEditSched() && <label className="inped-f">
-            <span className="inped-k">Person</span>
-            <select id="inpEditPerson" aria-label="Person" value={draft.person}
-              onChange={e => setDraft({ ...draft, person: e.target.value })}>
-              {peopleFor().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-            </select>
-          </label>}
+          {/* the upchit context comes FROM a pending card, so its person is a
+              value, not a choice — the fixed-type idiom below, one row up */}
+          {ctx === 'up'
+            ? <div className="inped-f">
+              <span className="inped-k">Person</span>
+              <span className="inped-v" id="inpEditPersonFixed">{PEOPLE[draft.person] ? PEOPLE[draft.person].cs : draft.person}</span>
+            </div>
+            : canEditSched() && <label className="inped-f">
+              <span className="inped-k">Person</span>
+              <select id="inpEditPerson" aria-label="Person" value={draft.person}
+                onChange={e => setDraft({ ...draft, person: e.target.value })}>
+                {peopleFor().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+              </select>
+            </label>}
           {/* the SANS panel's add is not a choice of type at all, so a dropdown
               with one entry would only pretend it was — the type reads as a
               plain value there (owner, 19 Aug 26) */}
-          {ctx === 's'
+          {ctx === 's' || ctx === 'up'
             ? <div className="inped-f">
               <span className="inped-k">Type</span>
               <span className="inped-v" id="inpEditTypeFixed">{draft.type}</span>
@@ -906,13 +1087,21 @@ export function InputEditor() {
                        An EDIT keeps whatever the saved record already carries. */
                     ...(isNew ? { allday: defaultAllday(t) } : {}),
                   })
-                }}>{typeOptions(ctx ? TYPE_ALLOW[ctx] : undefined)}</select>
+                }}>{typeOptions(typeFilter)}</select>
             </label>}
           {/* the Unavailable add takes a RANGE (owner, 19 Aug 26 — "I can
               select a date range as well"): the same two-click calendar the
               Inputs page uses, owning the remarks' till-date token the same
               way (withRemarksTail — a one-day pick reads "till <that day>",
               and what the typist wrote around the token survives re-picks) */}
+          {/* an upchit is ONE date (the write path refuses a range), picked
+              plainly — defaulting to today, editable for a certificate
+              signed a day or two back (owner, 27 Aug 26) */}
+          {ctx === 'up' && <label className="inped-f">
+            <span className="inped-k">Date</span>
+            <input type="date" id="inpEditUpDate" aria-label="Upchit date" value={draft.start}
+              onChange={e => setDraft({ ...draft, start: e.target.value, end: '' })} />
+          </label>}
           {ctx === 'u' && <div className="inped-f">
             <span className="inped-k">Dates</span>
             <div className="inped-dates">
@@ -930,7 +1119,9 @@ export function InputEditor() {
             <span className="inped-k">Availability</span>
             <SansPicker id="inpEditSans" sans={draft.sans} onChange={sans => setDraft({ ...draft, sans })} />
           </div>}
-          <div className="inped-f">
+          {/* an upchit has no hours — the date above is the whole record, so
+              the When row would only offer controls that mean nothing */}
+          {!isUpchit(draft.type) && <div className="inped-f">
             <span className="inped-k">When</span>
             <div className="inped-when">
               {hasHalf(draft.type)
@@ -952,16 +1143,25 @@ export function InputEditor() {
                   onChange={e => setDraft({ ...draft, eTime: e.target.value, half: '' })} />
               </span>
             </div>
-          </div>
+          </div>}
+          {/* the mandatory supporting document (owner, 27 Aug 26) — drawn for
+              exactly the types whose commit demands one (needsDoc is the one
+              body for both), so the button never appears where the file is
+              not wanted and never hides where it is */}
+          {needsDoc(draft.type) && <div className="inped-f">
+            <span className="inped-k">Document</span>
+            <DocField docId={draft.docId} onDoc={id => setDraft({ ...draft, docId: id })} />
+          </div>}
           <label className="inped-f">
             <span className="inped-k">Remarks</span>
             <input id="inpEditRmk" aria-label="Remarks" maxLength={200} value={draft.remarks} autoComplete="off"
-              placeholder="e.g. medical appt, till 15 Jul"
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
               onKeyDown={e => { if (e.key === 'Enter') save() }} />
           </label>
           <div className="inped-hint">{isNew
-            ? ctx === 'u'
+            ? ctx === 'up'
+              ? 'Pick the date he is medically up and attach the upchit document — the medical entry shortens to end on that date, and the Leave War follows.'
+              : ctx === 'u'
               ? 'Pick the dates on the calendar — the remarks carry the till date automatically, and a leave syncs to the Inputs page and Leave War.'
               : ctx === 'g'
                 ? `Added on ${when}, straight onto the Ground Programme. For a multi-day span, use the Inputs page.`

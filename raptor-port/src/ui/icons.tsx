@@ -124,3 +124,38 @@ export function DatabaseIcon() {
     </svg>
   )
 }
+
+/** An up-arrow rising from a tray — attach/upload a supporting document
+ *  (the medical inputs' mandatory paperwork). Lucide "upload" shape. */
+export function UploadIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v3a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-3" />
+      <path d="M12 15V4M7.5 8.5 12 4l4.5 4.5" />
+    </svg>
+  )
+}
+
+/** A paperclip — "this row carries a document"; tapping it opens the viewer.
+ *  Lucide "paperclip" shape, drawn in the same 2px line as its siblings. */
+export function ClipIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+    </svg>
+  )
+}
+
+/** A first-aid cross in a rounded square — the Medical view's own glyph:
+ *  medical, not "add" (the cross sits boxed, never bare). */
+export function MedIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="3" />
+      <path d="M12 8v8M8 12h8" />
+    </svg>
+  )
+}
